@@ -150,6 +150,9 @@ queues; process health differs from finite-job and protocol states.
   lookahead/clones/driver staging and release only when work actually ends.
 - [ ] **Step 3:** Allocate reserved control/live/monitor shares and borrowable backfill/
   import/maintenance capacity; oldest-due plus per-host fairness prevents starvation.
+  Share one host-local network grant owner across roles/processes under the
+  [destination fairness contract](../architecture/acquisition-services.md#pooled-transport-evidence-and-destination-fairness);
+  lost contact cannot release a still-open socket's grant.
 - [ ] **Step 4:** Bound CPU verification/compression/graph pools; terminate uncooperative
   native work at a process boundary, not abandoned blocking tasks.
 - [ ] **Step 5:** Implement role startup/readiness/idle/degraded/drain semantics and finite
@@ -161,6 +164,8 @@ queues; process health differs from finite-job and protocol states.
   recover. Observe cgroup/native/socket state, outstanding operations and queue
   age, not only Rust allocations. Negative control: one fresh probe per tick
   while old probes remain alive must show unbounded operation count.
+  Disconnect the host budget owner while sockets remain open; capacity is reused
+  only after reconciled ownership or actual close/positive process exclusion.
 - [ ] **Step 8:** Document overload behavior and include actual resource accounting in
   diagnostics; do not label deferred work as a failed remote relay measurement.
 
@@ -202,6 +207,9 @@ authenticated bounded gRPC; transport does not change admission semantics.
 
 - [ ] **Step 1:** Define Ingest, Archive, Read and Control requests/results using the shared
   identities, explicit outcome variants and schema negotiation.
+  Control includes host-scoped network permit acquisition/release with stable
+  grant identity and idempotent lost-reply resolution; callers cannot choose a
+  fresh budget domain to bypass the host total.
 - [ ] **Step 2:** Map application errors to retryable, invalid, excluded, unauthorized,
   unavailable, incompatible and ambiguous-result transport responses.
 - [ ] **Step 3:** Configure both encoding/decoding caps, deadlines, peer limits and
@@ -210,10 +218,15 @@ authenticated bounded gRPC; transport does not change admission semantics.
   keep API grants separate from service-to-service identity.
 - [ ] **Step 5:** Preserve ProducerRequestId across timeout retries; reject same identity
   with another payload and resolve a possibly committed request after disconnect.
+  Bind it to the registered producer slot/epoch and implement durable contiguous
+  acknowledgement/retirement; map RetiredRequest without silently resubmitting
+  the expired operation under a new identity.
 - [ ] **Step 6:** **Practical P01-T07:** drop a response after storage commits, retry through
   a different caller process, and inspect one logical admission/receipt. Test
   oversized outbound/inbound messages and unauthorized certificates. Negative
   control: generating a new request ID on every timeout.
+  Retry a lost network-grant reply and restart its owner with callers still live;
+  inspect actual sockets to detect double issue or premature grant reclamation.
 - [ ] **Step 7:** Run equivalent in-process/remote fixtures and compare source identities
   and result meaning; report added copies/latency rather than assuming zero cost.
 - [ ] **Step 8:** Publish version compatibility and transport failure/retry guidance.

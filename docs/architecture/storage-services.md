@@ -9,8 +9,10 @@ Inputs are validated-format admission requests from network collection, monitor
 and importer. The owner applies current policy, verifies signed events, assigns
 immutable stream/epoch/sequence identities and atomically persists identity,
 payload, outbox and request receipt. It is the only writer of its RocksDB directory.
-Producer request retries are stable; the same request key with a different digest
-is an error. No distributed caller receives a successful durable receipt before
+Producer request retries are stable; while detailed receipts exist, the same
+request key with a different digest is an error. After reclamation every request
+in the retired range is refused as RetiredRequest without a digest comparison.
+No distributed caller receives a successful durable receipt before
 the owner's synchronized write succeeds.
 
 Persistent key spaces: event ID→canonical admission metadata; sequence→immutable
@@ -31,7 +33,7 @@ first-admission and first-receive fields/corrections follow the explicit
 | `ingest.pending_max_bytes` | Explicit share of available disk | Hot lowering throttles; never erases pending work |
 | `ingest.identity_cache_bytes` | 256 MiB generic recipe | Restart/adapter-specific live update; counted in host RAM |
 | `ingest.verify_workers` | Resource-derived, explicit override | Drain before reducing |
-| `ingest.request_receipt_retention` | At least configured retry/replay horizon | Cannot expire a still-live producer request |
+| `ingest.request_receipt_retention` | Detail retention after producer acknowledgement/retirement | Cannot expire unresolved effects; see the producer-retirement contract below |
 
 Failure isolates the affected owner partition; producers pause/retry with bounded
 queues. Unknown outcome is not a negative receipt. Maintenance must never run
@@ -50,16 +52,18 @@ archive snapshots while this service is stopped.
 | Key | Starting value | Change behavior |
 |---|---|---|
 | `archive.target_file_bytes` | 256 MiB | New files; tune from corpus and row-group memory |
-| `archive.max_publish_delay` | 30 s | New batches; bounds archive freshness, not online indexing |
-| `archive.row_group_rows` | 64,000 upper starting target | Also constrained by bytes/global memory |
+| `archive.max_publish_delay` | 30 s | Batch formation/dispatch timer when authority/resources are available; actual committed archive lag is measured separately |
+| `archive.row_group_rows` | 64,000 soft starting target | Engine vector/flush granularity can exceed it; not a memory or row-count cap |
 | `archive.compression` | Zstandard level 3 | New files; schema/manifest records actual encoding |
 | `archive.prepare_workers` | 2 | Bounded pool; one logical publisher remains |
 | `archive.maintenance_budget` | Explicit CPU/I/O/time share | Hot; yields between bounded units |
 | `archive.snapshot_retention` | References plus operator recovery window | Never expire pinned readers/backups/exports |
 | `archive.scrub_interval` | 7 days, incremental traversal | Hot; persists scan cursor |
 
-Large event rows and wide tags can make a row count alone exceed memory; flush by
-bytes as well. Small low-rate files are acceptable initially and compact later;
+Large event rows and wide tags can make a row count alone exceed memory. Bound
+application input/decoded staging by bytes and own the native worker's whole
+resource grant; engine row/file/byte targets do not enforce that grant.
+Small low-rate files are acceptable initially and compact later;
 do not stall durable acquisition to fill a target size. A file digest verifies
 bytes, not cross-table completeness or authentic authorship. Scrub compares
 manifest membership/digests and logical counts with sampled revalidation; it does
@@ -70,6 +74,81 @@ a second batch if receipt state cannot be determined. Orphan prepared files are
 reclaimed only after an age/reference check, never by globbing all unlisted recent
 objects. Backup catalogs and objects together; retain required file generations.
 Remote takeover requires fencing beyond a lease in an unrelated transaction.
+
+The selected archive connection explicitly disables DuckLake data inlining
+(`DATA_INLINING_ROW_LIMIT 0`, with no persisted table/schema override enabling it).
+This matches the existing PG probe and keeps scientific payloads in Parquet.
+Verify effective options at startup and inspect the quiet one-event path.
+Inlining is an engine capability, not inherently incorrect: a future measured
+change may enable it with catalog byte/flush/backup accounting, but cannot silently
+change this storage contract. The disabled baseline pays small-file/catalog costs;
+P02-T09 must include low traffic across many active tables and compaction debt.
+
+The [real target-size probe](../../experiments/parquet-targets/README.md) wrote
+65,536-row groups with a requested 64,000-row target. Actual DuckLake settings,
+rounding and native overshoot must be inspected for the pinned release. Application
+batch bounds plus worker process/cgroup limits protect the host; an OOM/failure
+must preserve pending data and stop archive acknowledgement. It is not success.
+Engine settings are documented in [DuckLake configuration](https://ducklake.select/docs/stable/duckdb/usage/configuration)
+and [data inlining](https://ducklake.select/docs/stable/duckdb/advanced_features/data_inlining).
+
+Archive reclamation also requires a verified storage protection class: catalog
+commit and matching file membership establish logical publication, but do not
+by themselves establish persistence of local file bytes, directory entries or
+remote objects under power/host loss. P02-T04/P02-T08 must qualify the actual
+filesystem/object-store and catalog path together before that class is advertised.
+If the configured receipt class is stronger than the proven archive path, retain
+pending recovery data or refuse the configuration; do not silently weaken an
+earlier durable acknowledgement when reclaiming its WAL-backed payload.
+
+## Producer acknowledgement and receipt reclamation
+
+The producer registry allocates a monotonically increasing epoch for a stable
+logical producer slot (collector/import/measurement worker, not one per relay).
+Its process incarnation is bound to that epoch. ProducerRequestId is the registered
+slot/epoch plus monotonic request sequence; source-record identity is separate.
+An epoch permits a bounded outstanding request window under a shared byte grant:
+initially `ingest.producer_outstanding_requests=64`, with pending request/outcome
+bytes charged to the existing 32MiB producer allowance and aggregate host grants.
+An authenticated producer cannot register arbitrary slots to multiply that grant.
+Restart resolves its persisted outstanding requests before opening/retiring an
+epoch; a fresh process cannot reset sequence numbers inside an old epoch.
+
+The owner synchronizes request digest/outcome with effects. The producer advances
+a contiguous acknowledgement watermark only after storing its downstream durable
+incremental outcome/checkpoint. This transfers recoverable responsibility for
+those outcomes; it is separate from final page/EOSE coverage. A live stream or a
+page longer than the outstanding window must make this incremental handoff and
+ACK progress without first claiming complete traversal. Owner-side watermark
+persistence precedes receipt-detail GC.
+An acknowledged sequence returns `RetiredRequest` after detail reclamation; it
+must never be treated as a fresh mutation. Out-of-order completions cannot advance
+the watermark over a hole. Time-based display retention cannot close a hole.
+
+To retire an epoch, first install a durable owner-side admission-closing barrier
+serialized with the final authority check/WriteBatch. Stop/fence its producer,
+drain/resolve requests accepted before that barrier, then resolve or explicitly
+abandon remaining workflow obligations and mark retirement complete. A request
+already in flight but not committed at closure cannot commit afterwards merely
+because its producer stopped before the network request arrived.
+Abandonment preserves any already admitted scientific facts and explicit coverage
+uncertainty. Keep the current/closed-epoch high watermark per stable producer slot;
+older epochs are rejected without retaining one tombstone per request forever.
+Removing a slot requires a deployment registry-generation fence, not reuse of
+its identity. Backup/restore preserves these watermarks and unresolved receipts
+with causal closure: owner ACK(n)/GC requires inclusion of the producer's durable
+incremental checkpoint/outcomes that authorized ACK(n). A mixed cut containing
+post-GC owner state and pre-checkpoint producer state is refused, not recovered
+by treating RetiredRequest as success. Quiesce the handoff or capture a coordinated
+barrier with the required ledgers before certifying a backup.
+This protocol bounds duplicate-delivery receipt detail by outstanding work rather
+than all historical deliveries; permanent event/evidence identity still has its
+own U/P/M-sized cost. P02-T02 tests reordered ACKs, missing ACK, crash during
+watermark GC, old-epoch resubmission and restore before accepting reclamation.
+Include an outstanding window of two with a longer page and continuous live
+traffic, a verified RPC paused before commit during retirement, and the mixed-cut
+backup counterexample. Charge incremental ledger/group-commit writes as well as
+receipt space; bounded retained detail does not eliminate per-delivery work.
 
 ## Online indexer
 

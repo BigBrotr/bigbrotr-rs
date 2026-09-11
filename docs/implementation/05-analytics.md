@@ -276,7 +276,10 @@ through real serving tables, not a helper that the publisher never consumes.
 
 ## P05-T05 — Zap attestations and exact amount accounting
 
-**Dependencies:** P05-T01/T04; P01-T03; P02-T03.
+**Dependencies:** P05-T01/T04; P01-T03; P02-T03; P04-T14 for the complete
+producer-to-fact qualification. Pure decoding/reducer fixtures can precede that
+producer integration; no completed analytical generation is needed to enqueue
+issuer work from already admitted public source events.
 
 **Proposed files:** `crates/bigbrotr-protocol/src/zaps.rs`;
 `crates/bigbrotr-analytics/src/zaps.rs`;
@@ -312,7 +315,9 @@ evidence remains unresolved, not accepted by consulting today's mutable URL.
   of a globally inactive sender or recipient.
 - [ ] **Step 5:** bound invoice parsing and nested request bytes and forbid
   arbitrary URL resolution in analytical jobs. Resolve issuer evidence through
-  already admitted, attributed inputs or an explicit acquisition task.
+  already admitted, attributed inputs or P04-T14's guarded issuer-metadata producer.
+  Observed-at-fetch matching is distinct from eligible historical issuer evidence;
+  it cannot silently upgrade the historical acceptance policy.
 - [ ] **Step 6:** run the packaged case with 999+1 msats, 999 alone, conflicting
   invoices, repeated receipts and unavailable historical issuer evidence.
 
@@ -413,7 +418,7 @@ propagation reports suppressed, not a fabricated zero-valued generation.
 
 ## P05-T08 — Selective availability as bounded observations
 
-**Dependencies:** P05-T01/T06/T07; acquisition attempt/evidence contract.
+**Dependencies:** P05-T01/T06/T07; P04-T13's actual availability producer and evidence contract.
 
 **Proposed files:** `crates/bigbrotr-analytics/src/availability.rs`;
 `apps/bigbrotr/src/analytics/availability.rs`;
@@ -431,7 +436,8 @@ proof that a relay lacks an event. Historical attempts remain inspectable.
 - [ ] **Step 1:** define attempt finality and result classification, including
   completed empty exact-ID requests, explicit rejections and contested outcomes.
   Keep target selection and observation coverage in the definition.
-- [ ] **Step 2:** compute `N/(S+N)` only with at least 20 classified attempts and
+- [ ] **Step 2:** compute `N/(S+N)` only with at least 20 classified distinct event IDs
+  within the same endpoint/access/method/interval stratum and
   report `(S+N)/(S+N+U)` when its denominator is nonzero. Expose all counts and
   insufficient-sample status; a missing denominator is not zero.
 - [ ] **Step 3:** maintain old/new finalized-attempt contributions with interval
@@ -441,7 +447,7 @@ proof that a relay lacks an event. Historical attempts remain inspectable.
   aggregation. Do not infer censorship from missing peer overlap or publicize
   private authentication subjects in examples.
 - [ ] **Step 5:** run the packaged case with 19 versus 20 classified targets,
-  late finalization, timeout→served correction, duplicated receipt and policy
+  many retries of only 19 IDs, late finalization, timeout→served correction, duplicated receipt and policy
   restriction. Inspect the input IDs supporting every numerator/denominator.
 
 **Oracle and negative control:** static S/N/U sets determine the fractions. A
@@ -706,3 +712,21 @@ The central review ledger records cross-phase review and remaining release gates
 | 3 — Crash/authority | Required dirty-only and no-output commits, exact affected partitions and fenced pointer publication; split relay quality from social qualification into T12/T13. |
 | 4 — Work/state cost | Made exact quantile input, inverse references, distinct refcounts, CSR/16V vectors/K viewpoints and many-part overhead measurable; specified reverse-curation cost and all-pairs refusal (T07/T09–T13). |
 | 5 — Whole-product proof | Added explicit active-hour/day-average formulas and discriminating fixtures, ring topologies, and target-by-target actual archive→CH/artifact evidence with independent oracles and NOT_RUN outcomes (T03/T05/T11/T13). |
+
+## Useful-scale qualification and monitor ownership
+
+P05-T06's output is ResolvedRelayEvidence, distinct from P04-T11 LocalMonitorView.
+Reuse pure local field eligibility where meanings match; the Indexer owns raw/local
+projection writes and P05 owns attributed multi-observer resolution generations.
+A local timeout and imported success cannot overwrite one another's authority;
+NIP-66 local publication works with the resolved target disabled.
+
+P05-T09/T13 must qualify equal-size unrelated relay sets, identical-set cliques,
+high-fanout events, window expiry and bridge deletion. Include candidate and
+qualifying-edge output bytes: 100,000 equal-size relays admit almost five billion
+candidate pairs before better pruning. Explore sound similarity joins and exact
+identical-set grouping with bounded lazy edge explanations if they preserve the
+selected result contract; version a changed representation. Publish the exact
+profile's useful measured scope and separately labeled approximate alternative.
+Repeated correct refusal is not successful large-fleet analytics. This is a
+required physical/algorithm qualification, not a claimed implemented optimization.

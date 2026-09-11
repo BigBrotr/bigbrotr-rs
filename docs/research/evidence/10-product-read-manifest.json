@@ -1,0 +1,333 @@
+{
+  "schema_version": 1,
+  "audit": "10-product-audit",
+  "date": "2026-09-11",
+  "recorded_at_utc": "2026-09-11T09:02:32.006548+00:00",
+  "assigned_revision": "b543555",
+  "revision_basis": "Coordinator-designated frozen HEAD. No Git operations or independent Git object comparison performed. Exact worktree bytes are identified below; all 12 initial hashes still match after full reading.",
+  "scope": "Independent review of 12 assigned current-repository Markdown files, plus one useful full supplemental format spec; not a complete 64-document or legacy-source audit by this reviewer.",
+  "assigned_full_read_totals": {
+    "files": 12,
+    "lines": 2536,
+    "bytes": 336891
+  },
+  "assigned_full_reads": [
+    {
+      "path": "docs/product/dashboard-and-website.md",
+      "coverage": "full",
+      "bytes": 54215,
+      "lines": 619,
+      "sha256_before_read": "6d097c6f01dd9951bd781ca40ecc0f03facfd8e93f5326751794ac5dde54d5ed",
+      "sha256_after_full_read": "6d097c6f01dd9951bd781ca40ecc0f03facfd8e93f5326751794ac5dde54d5ed",
+      "unchanged_during_sweep": true,
+      "fully_read_line_ranges": [
+        [
+          1,
+          210
+        ],
+        [
+          211,
+          420
+        ],
+        [
+          421,
+          619
+        ]
+      ],
+      "output_truncated": false
+    },
+    {
+      "path": "docs/product/private-administration.md",
+      "coverage": "full",
+      "bytes": 10420,
+      "lines": 147,
+      "sha256_before_read": "cee79ccc2839ce2fa97c4d50a30d2e05970696445dc496c958e9feca8ff02b71",
+      "sha256_after_full_read": "cee79ccc2839ce2fa97c4d50a30d2e05970696445dc496c958e9feca8ff02b71",
+      "unchanged_during_sweep": true,
+      "fully_read_line_ranges": [
+        [
+          1,
+          147
+        ]
+      ],
+      "output_truncated": false
+    },
+    {
+      "path": "docs/product/data-and-feature-decisions.md",
+      "coverage": "full",
+      "bytes": 16017,
+      "lines": 164,
+      "sha256_before_read": "edb30ce9c5a5f514d2664b1bcf3dc32ef38719c616876412f20b06aa324b1944",
+      "sha256_after_full_read": "edb30ce9c5a5f514d2664b1bcf3dc32ef38719c616876412f20b06aa324b1944",
+      "unchanged_during_sweep": true,
+      "fully_read_line_ranges": [
+        [
+          1,
+          164
+        ]
+      ],
+      "output_truncated": false
+    },
+    {
+      "path": "docs/product/requirements-and-history.md",
+      "coverage": "full",
+      "bytes": 8788,
+      "lines": 123,
+      "sha256_before_read": "8c006bac3bd203b6e68a90eef7f8ab8e78a7f9fd408eb5f859bcebdb6ab5805a",
+      "sha256_after_full_read": "8c006bac3bd203b6e68a90eef7f8ab8e78a7f9fd408eb5f859bcebdb6ab5805a",
+      "unchanged_during_sweep": true,
+      "fully_read_line_ranges": [
+        [
+          1,
+          123
+        ]
+      ],
+      "output_truncated": false
+    },
+    {
+      "path": "docs/implementation/08-operations.md",
+      "coverage": "full",
+      "bytes": 57579,
+      "lines": 274,
+      "sha256_before_read": "709b49947c54b1c42a4835fd2ada7b12d664fd9592958f0cb72926875de85ed1",
+      "sha256_after_full_read": "709b49947c54b1c42a4835fd2ada7b12d664fd9592958f0cb72926875de85ed1",
+      "unchanged_during_sweep": true,
+      "fully_read_line_ranges": [
+        [
+          1,
+          90
+        ],
+        [
+          91,
+          180
+        ],
+        [
+          181,
+          274
+        ]
+      ],
+      "output_truncated": false
+    },
+    {
+      "path": "docs/implementation/09-product-interfaces.md",
+      "coverage": "full",
+      "bytes": 39163,
+      "lines": 198,
+      "sha256_before_read": "0b210cc091cef9fe761729300ea8c26d5e70b3e393a87f8e503ac0b1fac2010b",
+      "sha256_after_full_read": "0b210cc091cef9fe761729300ea8c26d5e70b3e393a87f8e503ac0b1fac2010b",
+      "unchanged_during_sweep": true,
+      "fully_read_line_ranges": [
+        [
+          1,
+          99
+        ],
+        [
+          100,
+          198
+        ]
+      ],
+      "output_truncated": false
+    },
+    {
+      "path": "docs/implementation/10-website.md",
+      "coverage": "full",
+      "bytes": 35594,
+      "lines": 169,
+      "sha256_before_read": "7178d266c8883c7b9686a80aadc4339c5a02f80da2f51c691a712f4aef4e4e76",
+      "sha256_after_full_read": "7178d266c8883c7b9686a80aadc4339c5a02f80da2f51c691a712f4aef4e4e76",
+      "unchanged_during_sweep": true,
+      "fully_read_line_ranges": [
+        [
+          1,
+          85
+        ],
+        [
+          86,
+          169
+        ]
+      ],
+      "output_truncated": false
+    },
+    {
+      "path": "docs/research/product-surfaces-findings.md",
+      "coverage": "full",
+      "bytes": 25147,
+      "lines": 233,
+      "sha256_before_read": "9b98b06ad3b2cb5d599cbb511c5da83f9ca2ec686038c27705f32c1ad3d87c7b",
+      "sha256_after_full_read": "9b98b06ad3b2cb5d599cbb511c5da83f9ca2ec686038c27705f32c1ad3d87c7b",
+      "unchanged_during_sweep": true,
+      "fully_read_line_ranges": [
+        [
+          1,
+          119
+        ],
+        [
+          120,
+          233
+        ]
+      ],
+      "output_truncated": false
+    },
+    {
+      "path": "docs/research/go-read-runtime-code-walkthrough.md",
+      "coverage": "full",
+      "bytes": 39076,
+      "lines": 234,
+      "sha256_before_read": "a4db86d06f3420507df48c59c4b50ea76870c273207863f30108872f2cd49585",
+      "sha256_after_full_read": "a4db86d06f3420507df48c59c4b50ea76870c273207863f30108872f2cd49585",
+      "unchanged_during_sweep": true,
+      "fully_read_line_ranges": [
+        [
+          1,
+          82
+        ],
+        [
+          83,
+          164
+        ],
+        [
+          165,
+          234
+        ]
+      ],
+      "output_truncated": false
+    },
+    {
+      "path": "docs/reviews/07-phase-6-9-recheck.md",
+      "coverage": "full",
+      "bytes": 47708,
+      "lines": 323,
+      "sha256_before_read": "bce3991520b3ecc0d8947b8e8cabd9bfc44e59080a04c023eeae1b067a5f3f27",
+      "sha256_after_full_read": "bce3991520b3ecc0d8947b8e8cabd9bfc44e59080a04c023eeae1b067a5f3f27",
+      "unchanged_during_sweep": true,
+      "fully_read_line_ranges": [
+        [
+          1,
+          110
+        ],
+        [
+          111,
+          215
+        ],
+        [
+          216,
+          323
+        ]
+      ],
+      "output_truncated": false
+    },
+    {
+      "path": "docs/reviews/05-complete-product.md",
+      "coverage": "full",
+      "bytes": 1814,
+      "lines": 29,
+      "sha256_before_read": "a077a06623e538fa52ee4dfcefd32067764c0784e71ca7fbe56827fe025092a8",
+      "sha256_after_full_read": "a077a06623e538fa52ee4dfcefd32067764c0784e71ca7fbe56827fe025092a8",
+      "unchanged_during_sweep": true,
+      "fully_read_line_ranges": [
+        [
+          1,
+          29
+        ]
+      ],
+      "output_truncated": false
+    },
+    {
+      "path": "docs/reviews/01-vision-recovery.md",
+      "coverage": "full",
+      "bytes": 1370,
+      "lines": 23,
+      "sha256_before_read": "81eefb3e5f70de0a2d14fb7bd25958b5c49cd4020d697c0d818df1faaf807154",
+      "sha256_after_full_read": "81eefb3e5f70de0a2d14fb7bd25958b5c49cd4020d697c0d818df1faaf807154",
+      "unchanged_during_sweep": true,
+      "fully_read_line_ranges": [
+        [
+          1,
+          23
+        ]
+      ],
+      "output_truncated": false
+    }
+  ],
+  "supplemental_full_reads": [
+    {
+      "path": "docs/specification/import-formats.md",
+      "coverage": "full supplemental",
+      "bytes": 7181,
+      "lines": 106,
+      "sha256_after_full_read": "14317f3403d2d334f6e4cd357e0a09224106302354c441e4d720d041c1f598c6",
+      "fully_read_line_ranges": [
+        [
+          1,
+          106
+        ]
+      ],
+      "pre_read_hash_recorded": false,
+      "output_truncated": false
+    }
+  ],
+  "supplemental_full_read_totals": {
+    "files": 1,
+    "lines": 106,
+    "bytes": 7181
+  },
+  "partial_or_search_only": [
+    {
+      "path": "docs/implementation/05-analytics.md",
+      "read_line_ranges": [
+        [
+          414,
+          453
+        ]
+      ],
+      "coverage": "targeted section plus search hits, not full"
+    },
+    {
+      "path": "docs/architecture/analytics-detail.md",
+      "read_line_ranges": [
+        [
+          139,
+          163
+        ],
+        [
+          202,
+          231
+        ]
+      ],
+      "coverage": "targeted sections plus search hits, not full"
+    },
+    {
+      "paths": [
+        "docs/implementation/03-acquisition.md",
+        "docs/implementation/04-relay-lifecycle.md",
+        "docs/specification/data-contracts.md",
+        "docs/specification/component-contracts.md",
+        "docs/architecture/acquisition-services.md",
+        "docs/engineering/configuration-and-runtime.md"
+      ],
+      "coverage": "search hits only in this audit; prior authorship/reading not counted as current full coverage"
+    },
+    {
+      "search_roots": [
+        "docs/implementation",
+        "docs/specification",
+        "docs/engineering",
+        "docs/product",
+        "docs/architecture"
+      ],
+      "coverage": "text search for dataset-publication and management-list route ownership; only returned matching lines inspected"
+    }
+  ],
+  "actions_not_performed": [
+    "No product or Go tests/builds/services/browser/device checks",
+    "No new legacy source read or legacy mutation",
+    "No Git operations",
+    "No web verification or new protocol/library guarantee adopted",
+    "No edits outside the two assigned audit outputs"
+  ],
+  "limitations": [
+    "Static design consistency can identify missing contracts; it cannot establish runtime fitness or universal optimality.",
+    "Historical source inventories and test descriptions in the read documents were read as attributed evidence, not independently reexecuted or recertified.",
+    "Line references in the report identify these frozen bytes; later coordinator repairs can move lines/change hashes."
+  ]
+}

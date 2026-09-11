@@ -1,0 +1,39 @@
+{
+  "duckdb": "1.4.5",
+  "scope": "one local COPY and metadata/readback; not DuckLake/Rust or a memory/performance test",
+  "limits": {
+    "threads": 1,
+    "duckdb_memory_limit": "128MB",
+    "input_rows": 200000
+  },
+  "requested_row_group_size": 64000,
+  "actual_row_groups": [
+    [
+      0,
+      65536
+    ],
+    [
+      1,
+      65536
+    ],
+    [
+      2,
+      65536
+    ],
+    [
+      3,
+      3392
+    ]
+  ],
+  "independent_arithmetic_readback": [
+    200000,
+    0,
+    199999,
+    19999900000
+  ],
+  "hard_64000_row_cap_counterexample": "reproduced",
+  "parquet_bytes": 238370,
+  "parquet_sha256": "505d6093d50d090b3de6b83b1c1e5244cd172f4bb5b9a63c9d3b37f62107c7bd",
+  "program_sha256": "7de59e6f7fbf136e645270919086f575191865fa67f6b94058531615ec965170",
+  "status": "PASS"
+}

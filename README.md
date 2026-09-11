@@ -27,3 +27,8 @@ The [detailed phase/task/step plan](docs/implementation/README.md),
 [coverage ledger](docs/implementation/coverage.md) are the implementation handoff.
 The [five-round expansion review](docs/reviews/09-expanded-plan-rounds.md) records
 what changed and which practical results remain owed by the future product.
+
+The [complete-document audit](docs/reviews/10-whole-repository-audit.md) records
+full coverage of the preceding 64-file Markdown baseline, further corrections
+and a new real-engine counterexample. [Decision confidence](docs/planning/decision-confidence.md)
+states which choices are justified and which target-scale claims remain untested.

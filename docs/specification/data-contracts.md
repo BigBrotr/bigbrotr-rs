@@ -213,6 +213,7 @@ attempt, not a fresh measurement. Avoid raw arbitrary exception strings.
 | NEG/COUNT/search/filter behavior | Pinned probe input/profile, bounded result/outcome, method/version | Support only for the tested behavior and vantage; malformed/timeout differs from unsupported |
 | Active write/retrieve probes | Explicit authorized profile, signed probe reference, destination outcomes, cleanup-attempt result | Requires signing scope; cleanup is best effort, no secret/payment side effect |
 | Geo/ASN | Address, family, database edition/version/date, lookup output or missing/unsupported status | Derived location, not physical-location certainty |
+| LNURL issuer metadata | Recipient/profile/request binding, URL, actual fetched time, observed key, source document and parser outcome | P04-T14; a current key match cannot backdate issuer authority for historical zap receipts |
 | Availability experiments | Eligible sampled event reference, selected endpoint, sampling frame/seed/profile and retrieval result | Provenance-enabled only; sample availability, not an exhaustive census |
 
 Every value has an explicit type; scalar measurements do not become unbounded

@@ -64,7 +64,12 @@ One owner serializes exact identity decisions for each writable directory.
   final exact admission check/commit. Same-ID concurrency cannot overwrite first
   admission or suppress a distinct permitted provenance edge.
 - [ ] **Step 4:** Implement NewFacts/AlreadyDurable/Excluded/Invalid/Retryable results and
-  ambiguous receipt resolution. Same ProducerRequestId with changed bytes errors.
+  ambiguous receipt resolution plus RetiredRequest. Same ProducerRequestId with
+  changed bytes errors while detailed receipts exist; retired ranges return
+  RetiredRequest without reconstructing reclaimed digests. Implement the registered
+  producer epoch, bounded outstanding window, contiguous acknowledgement and
+  fenced retirement/GC contract; restart
+  cannot reuse a request identity or forget unresolved effects.
 - [ ] **Step 5:** Make provenance-off allocate no P inventory or event/endpoint side channel;
   retain event-level first local receive and earlier corrections only.
 - [ ] **Step 6:** Use bounded positive cache with full equality; account for pending/flushing
@@ -72,6 +77,12 @@ One owner serializes exact identity decisions for each writable directory.
 - [ ] **Step 7:** **Practical P02-T02:** use the actual Rust binding, kill before/after synced
   commit and after commit-before-response; reopen and compare every batch member
   and receipt externally. Inject ENOSPC and simultaneous duplicate/new-edge input.
+  Reorder producer ACKs, leave a hole, interrupt receipt GC, resubmit an old epoch
+  and restore watermarks; no retired request causes a second scientific effect.
+  A two-request outstanding window must progress across longer pages/live streams
+  using incremental durable outcome handoff before final EOSE coverage. Pause a
+  verified request before commit while retiring its epoch; the owner-side closing
+  barrier must exclude its late commit.
   Negative control: marking identity before its only durable body.
 - [ ] **Step 8:** Report process crash separately from power loss/host failure; expose
   pending bytes, native write stalls, receipt latency and exact inventory growth.
@@ -118,9 +129,13 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
 
 - [ ] **Step 1:** Package a pinned DuckDB engine and compatible verified extensions in an
   isolated worker; disable uncontrolled extension/network installation at runtime.
-- [ ] **Step 2:** Encode rows with the selected starting targets: 256 MiB file target,
-  at most 64,000 rows per group plus byte bound, Zstd level 3, 30-second maximum
-  publication delay and two bounded preparation workers.
+- [ ] **Step 2:** Encode rows with the selected soft starting targets: 256 MiB files,
+  64,000 rows per group, Zstd level 3, a 30-second batch-formation/dispatch timer
+  while resources/authority are available (not a commit-latency SLA), and two
+  bounded preparation workers. Bound application decoded input separately from
+  engine targets, verify effective options/vector overshoot and inspect actual
+  Parquet metadata. Disable DuckLake inlining explicitly with no persisted
+  override; single-small-record publication must follow the same contract.
 - [ ] **Step 3:** Use the PG-backed DuckLake catalog; publish events/evidence/dictionaries/
   document references and deterministic batch receipt in one transaction.
 - [ ] **Step 4:** After an ambiguous commit, query the receipt in a new transaction; do not
@@ -135,6 +150,9 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   Negative control: two unfenced receipt-check-then-insert publishers.
 - [ ] **Step 8:** Document catalog/object backup coupling, orphan preparation visibility and
   the archive receipt's durability class; record latency/space/native memory.
+  Verify actual file/directory/object persistence before pending reclamation under
+  that class; a transactional catalog/process-kill test alone cannot qualify
+  power-loss durability or weaken a stronger previously issued receipt.
 
 ## P02-T05 — Full online representation and immutable projections
 
@@ -242,6 +260,8 @@ with original identities and correctly invalidated/rebuilt derived readiness.
 - [ ] **Step 1:** Define backup closure: control/catalog plus objects, required pending WAL
   or quiesced archive cut, dictionaries, owner/source topology, consumer progress,
   policy and separately protected secret material.
+  Include causal closure of owner ACK/receipt-GC with the producer checkpoint
+  that authorized it; refuse post-GC owner plus pre-checkpoint producer mixtures.
 - [ ] **Step 2:** Restore ownership/policy/catalog/object integrity before enabling writers,
   then embedded identities/pending state, projections and dependent workers.
 - [ ] **Step 3:** Preserve original event ordinals/receipts/observation metadata; importing a
@@ -280,8 +300,10 @@ release selection and explicit capacity limits, not a best-engine slogan.
 - [ ] **Step 3:** Vary U, new P, repeated D, actual M measurements, document-change rate,
   tag fanout, late corrections, wide records and ongoing imports/queries.
 - [ ] **Step 4:** Exercise 256 MiB/64k-row archive targets around smaller/larger bounded
-  values; record freshness, native peak RSS, file requests, compression and
-  compaction/recovery debt. A file-size target is not a memory cap.
+  application inputs; record actual group/file sizes, freshness, native peak RSS,
+  file requests, compression and compaction/recovery debt. Include quiet workloads
+  across many tables with the selected inlining setting. Engine row/byte/file
+  targets are not memory caps; verify supported settings and failure behavior.
 - [ ] **Step 5:** Measure all representations, temporary/pending/merge headroom and backup
   restore cost; report read/write amplification and worst admitted query behavior.
 - [ ] **Step 6:** Select a candidate only if correctness/recovery scenarios pass and it fits

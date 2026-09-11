@@ -17,7 +17,7 @@ configuration, documentation and independent practical oracle.
 | A02 optional first event/relay evidence | P03-T02–T07 | P02-T02/T05/T06; P05-T07; P06-T01/T02; P08-T04 | Duplicate storm preserves one logical edge; provenance-off has no hidden alternate edge table/index/work |
 | A03 imported claims and source lineage | P03-T08–T10; P05-T06 | P02-T03/T04; P06-T01; P08-T04 | Out-of-order sidecars, orphan references and disabled families; unsigned claim never becomes local witness |
 | A04 endpoint/observer/scope/method dictionaries | P01-T02; P02-T01/T03; P04-T01 | P02-T04/T07/T08; P08-T04/T05 | Independent export reader resolves every ordinal without running PG; restore cannot reuse IDs |
-| A05 actual measurements and uncertain interrupted execution | P04-T02/T06–T10 | P02-T02–T06; P05-T06/T08/T12; P06-T01; P09-T03 | External socket observer distinguishes actual failed probe from unsent intent; no false downtime vote |
+| A05 actual measurements, availability pairs, issuer metadata and uncertain interrupted execution | P04-T02/T06–T10/T13/T14 | P02-T02–T06; P05-T06/T08/T12; P06-T01; P09-T03 | External socket observer distinguishes actual failed probe from unsent intent; no false downtime vote |
 | A06 original NIP-11/HTTP/DNS/TLS evidence and parsed views | P04-T07–T09 | P02-T03/T04/T07; P05-T06; P08-T04/T07 | Repeated unchanged body, 304 without body, private namespace and offline reference closure |
 | A07 scoped traversal/coverage and unresolved gaps | P03-T01/T05–T07; P04-T01/T11 | P02-T01/T04; P05-T07/T08; P06-T01; P09-T03/T05 | Capped same-second interval and advertised-but-unserved ID stay incomplete after restart |
 | A08 current winners, exact facts, graph and score generations | P05-T01–T12 | P02-T05/T07; P06-T01–T06; P07-T05; P08-T04 | Empty new list suppresses old list; delta agrees with full oracle; no private-input influence in public aggregate |
@@ -38,7 +38,7 @@ documents each actual format's representable values and ambiguity.
 | Discovery from events, lists, directories and announcements | P04-T04/T05 | Registry/Validator; bounded tag-offset recovery, no omitted late backfill |
 | Guarded transport, DNS/TLS/proxies and egress | P04-T02 | P03 collectors, P04 probes, P07 transport; independent destination observer |
 | Validator and scoped access eligibility | P04-T06 | Monitor/Synchronizer; actual protocol success before automatic public enrollment |
-| Monitor, document capture, geo and optional active probes | P04-T07–T10 | P05-T06/T08/T12; P07-T07; P09-T03; nonmeasurement distinguished from failure |
+| Monitor, document capture, geo and optional active probes | P04-T07–T10/T13/T14 | P05-T06/T08/T12; P07-T07; P09-T03; nonmeasurement distinguished from failure |
 | Synchronizer live, linear history and NIP-77/NIP-67 paths | P03-T01–T07 | Durable ingest/archive; actual controlled peer, same-second caps, late arrivals and recovery |
 | Importer | P03-T08–T10; P08-T04/T06 | Same verifier/admission; actual pinned format fixture and resume behind durable receipt |
 | Durable ingest, archive publishing and online indexing | P02-T01–T06 | Every producer/read target; real engine crash/replay/merge and same-cut evidence |
@@ -49,7 +49,7 @@ documents each actual format's representable values and ambiguity.
 | ArchiveRelay and serving-side Negentropy | P06-T07/T08 | Real independent WS/NEG client then full-body retrieval; provenance-independent set |
 | Optional query DVM, subscriptions and payments | P06-T09–T11; P07-T01–T04 | Explicit application client/regtest; same request/result identity and unresolved payment ledger |
 | NIP-66/NIP-85 publishers and richer compatible proposals | P07-T05–T08 | Actual source-to-wire fixture, local/remote signer, legacy/new context decoders |
-| Exporter and research artifacts | P08-T04 | P09-T06/P10-T05; DuckDB reads exported files with all application/catalog services stopped |
+| Exporter, standalone analytical projections and explicit artifact publication/withdrawal | P08-T04 | P09-T06/P10-T05; DuckDB reads exported files with all application/catalog services stopped |
 | Management, CLI, jobs and access | P08-T01–T03 | P09-T07–T10; real authorization, idempotent lost reply and saved-versus-applied revision |
 | Backup/restore, migration, maintenance and diagnostics | P08-T05–T08 | Clean isolated target, old-owner fencing, corruption oracle, actual delivered alerts |
 | Packaging, independent roles and release | P08-T09–T12 | Extracted artifact outside checkout, real architecture/engine set, no hidden cached assets |
@@ -118,3 +118,10 @@ Mechanical task/reference checks complement this coverage review. They cannot
 prove that a paragraph specifies the right behavior; the five substantive
 [review rounds](../reviews/09-expanded-plan-rounds.md) describe the actual semantic
 and practical corrections made while expanding it.
+
+The [complete-document audit](../reviews/10-whole-repository-audit.md) repairs
+availability/issuer producers (P04-T13/T14), research-import versus restore scope,
+artifact publication/jobs discovery (P08), producer receipt retirement (P02),
+relay NEG output-size eligibility and DVM capability/control gates (P06/P07).
+The exact-overlap and common-term search usefulness claims remain assigned
+empirical decisions, with the expected difficult workloads written in P05/P06.

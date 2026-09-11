@@ -30,3 +30,9 @@ background services. Its event signatures are synthetic format fixtures; its
 admission portion is a Python reference model, not the Rust/Rocks implementation.
 The [Pensieve source inspection](../specification/import-formats.md) is additional
 read-only source evidence, not an executed interoperability or performance test.
+
+A subsequent [Parquet target probe](../../experiments/parquet-targets/README.md)
+used local DuckDB 1.4.5, one thread and a 128MB engine setting. A requested
+64,000-row group produced 65,536-row groups, with exact arithmetic readback.
+This corrects a hard-cap assumption; it is not a native-memory, DuckLake,
+durability or capacity result. [Evidence](evidence/parquet-targets.json).

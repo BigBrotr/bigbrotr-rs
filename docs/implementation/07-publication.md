@@ -449,7 +449,9 @@ metadata URLs must fail the egress fixture.
 
 ## P07-T09 — Complete publisher crash, restore and mixed-load acceptance
 
-**Dependencies:** P07-T01–T08; P05-T13; P06-T09–T11 for the DVM integration case.
+**Dependencies:** P07-T01–T08; P05-T13; P06-T09 for free DVM integration, T10 for advertised subscriptions and T11
+only for advertised payments. Core publication conformance does not require LND;
+paid capability is unavailable until its separate real-node gate passes.
 
 **Proposed files:** `tests/acceptance/cases/publication_system.py`;
 `tests/acceptance/oracles/publication.py`;

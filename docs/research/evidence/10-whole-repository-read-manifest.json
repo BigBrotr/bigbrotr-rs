@@ -1,0 +1,850 @@
+{
+  "scope": "Complete distributed read of all Markdown files at frozen baseline; coordinator rereads subsequent changes, not a second whole-corpus sweep",
+  "baseline_revision": "b54355541ac9be006e2464600c486d1d4ae60d02",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "6a89714614d7c8b6ed0b6d3e01dd6ad9851a04ba68a7e6302c2d6a91f0d4a3d1",
+      "bytes": 1561,
+      "lines": 27,
+      "reviewer": "coordinator",
+      "complete_read": true,
+      "read_range": [
+        1,
+        27
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "PLAN.md",
+      "sha256": "1b80a98147c2e54a3bdcbd9c258130cc169e7da52f52e9c3fdcf9f9c3df19489",
+      "bytes": 13723,
+      "lines": 161,
+      "reviewer": "coordinator",
+      "complete_read": true,
+      "read_range": [
+        1,
+        161
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "README.md",
+      "sha256": "387d6381c42ba3c51d9002c91f523c292ba810f5a4a516223cd002edf3f3029d",
+      "bytes": 1582,
+      "lines": 29,
+      "reviewer": "coordinator",
+      "complete_read": true,
+      "read_range": [
+        1,
+        29
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/architecture/acquisition-services.md",
+      "sha256": "74147ad365526f7e33d4c8d7e73086dfbcb56bf64e69abaebfacd9e3672d1152",
+      "bytes": 75351,
+      "lines": 499,
+      "reviewer": "10-acquisition-read-manifest.json",
+      "complete_read": true,
+      "read_range": [
+        1,
+        499
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/architecture/analytics-detail.md",
+      "sha256": "ee20296032ca33875bcfe0fdbd270bf6a8571e64e72f8d5904552bc0ddc601b9",
+      "bytes": 42157,
+      "lines": 575,
+      "reviewer": "10-analytics-read-manifest.json",
+      "complete_read": true,
+      "read_range": [
+        1,
+        575
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/architecture/data-and-durability.md",
+      "sha256": "484b77b5493cd8993f4fcdaeba17b35b632315dacaceb7bbaf128fadea9649e5",
+      "bytes": 18046,
+      "lines": 261,
+      "reviewer": "coordinator",
+      "complete_read": true,
+      "read_range": [
+        1,
+        261
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/architecture/derived-read-publication.md",
+      "sha256": "20ac6a79e1bbcbc576d3d9b1c5ca140705cc0e5c1d363fad871f677f00d26324",
+      "bytes": 91901,
+      "lines": 1272,
+      "reviewer": "10-analytics-read-manifest.json",
+      "complete_read": true,
+      "read_range": [
+        1,
+        1272
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/architecture/protocol-evolution.md",
+      "sha256": "ce86cc287bae80b429cb454a2b7b54aeb87fbf251d77866ccb3203330ce83270",
+      "bytes": 62464,
+      "lines": 750,
+      "reviewer": "10-analytics-read-manifest.json",
+      "complete_read": true,
+      "read_range": [
+        1,
+        750
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/architecture/search-and-reconciliation.md",
+      "sha256": "46d8e87a17158c523021965ec8fc7d32598232fec3ad15f6593d1089a7a97ffe",
+      "bytes": 19106,
+      "lines": 281,
+      "reviewer": "10-analytics-read-manifest.json",
+      "complete_read": true,
+      "read_range": [
+        1,
+        281
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/architecture/storage-services.md",
+      "sha256": "0b4e97e452489f448df28c7c1a6ffd9c29bf3c8c332e117637387e2eedce6163",
+      "bytes": 11362,
+      "lines": 176,
+      "reviewer": "coordinator",
+      "complete_read": true,
+      "read_range": [
+        1,
+        176
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/architecture/system-design.md",
+      "sha256": "7a5a339b691d570fe427ce04d9fa375f3e6763bdab6b41da93c547271bbb3310",
+      "bytes": 12461,
+      "lines": 191,
+      "reviewer": "coordinator",
+      "complete_read": true,
+      "read_range": [
+        1,
+        191
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/engineering/capacity-and-benchmarks.md",
+      "sha256": "c4bdd0c72b47f50f8c4783fa3ddcb09915c8552f43beb92a0c2bcf63f480cac2",
+      "bytes": 14906,
+      "lines": 223,
+      "reviewer": "coordinator",
+      "complete_read": true,
+      "read_range": [
+        1,
+        223
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/engineering/configuration-and-runtime.md",
+      "sha256": "4e2b9b8265663a1f40fa0c7fcb45ba848a7bb4badc3ae9e975fe5312636dbfcd",
+      "bytes": 13963,
+      "lines": 209,
+      "reviewer": "coordinator",
+      "complete_read": true,
+      "read_range": [
+        1,
+        209
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/engineering/rust-and-repository.md",
+      "sha256": "9d8b9aa7cc31a729d07dfd64839eb0ad83ad7e4b99c1ae6bb45109cbf3e7eaa5",
+      "bytes": 11126,
+      "lines": 159,
+      "reviewer": "coordinator",
+      "complete_read": true,
+      "read_range": [
+        1,
+        159
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/engineering/security-recovery-and-validation.md",
+      "sha256": "ba6f679b4d80b9ba8e094e897345fcce78e821fca1472770a6ac7c61991f3803",
+      "bytes": 15336,
+      "lines": 217,
+      "reviewer": "coordinator",
+      "complete_read": true,
+      "read_range": [
+        1,
+        217
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/implementation/00-specification.md",
+      "sha256": "a05d91a2ef2b9c414cdd71fe9cf89baf01f999f3cfc91a55aebffbb41efd24de",
+      "bytes": 5830,
+      "lines": 92,
+      "reviewer": "coordinator",
+      "complete_read": true,
+      "read_range": [
+        1,
+        92
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/implementation/01-foundation.md",
+      "sha256": "293f10c1ccaebf922f61cfca8e04b1d825e85cb0890b965342c824ce5d5f82ad",
+      "bytes": 20292,
+      "lines": 294,
+      "reviewer": "coordinator",
+      "complete_read": true,
+      "read_range": [
+        1,
+        294
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/implementation/02-storage.md",
+      "sha256": "2cdda0e1b6bfee472cdc46a4fe0f863b890b25e9b0580c1797d12518e870e6a0",
+      "bytes": 20797,
+      "lines": 305,
+      "reviewer": "coordinator",
+      "complete_read": true,
+      "read_range": [
+        1,
+        305
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/implementation/03-acquisition.md",
+      "sha256": "b2aa11cd9e30dbf26e1ad2452b53dc4573ec8fc1cda1920fe206918090a06036",
+      "bytes": 52640,
+      "lines": 401,
+      "reviewer": "10-acquisition-read-manifest.json",
+      "complete_read": true,
+      "read_range": [
+        1,
+        401
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/implementation/04-relay-lifecycle.md",
+      "sha256": "385f2d677afb4e9c76cb1c7e1d3fd327e40b233ba4f3576fa7eb813d880898ea",
+      "bytes": 57473,
+      "lines": 400,
+      "reviewer": "10-acquisition-read-manifest.json",
+      "complete_read": true,
+      "read_range": [
+        1,
+        400
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/implementation/05-analytics.md",
+      "sha256": "e3f3df4ae58bce1f5b5e54166ccd656bc9e9e7478854d4e105f52a24b7f75f3d",
+      "bytes": 45267,
+      "lines": 708,
+      "reviewer": "10-analytics-read-manifest.json",
+      "complete_read": true,
+      "read_range": [
+        1,
+        708
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/implementation/06-read-surfaces.md",
+      "sha256": "52cc1279e55e5a285cfd5cd8b5eda7af7382c265a915504a8b0ee95ba0f2d8d5",
+      "bytes": 44101,
+      "lines": 671,
+      "reviewer": "10-analytics-read-manifest.json",
+      "complete_read": true,
+      "read_range": [
+        1,
+        671
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/implementation/07-publication.md",
+      "sha256": "e54ff21e00e37a8c852e3ea69ff042c1bf69a77b90b9a628cd6ade146bc134ba",
+      "bytes": 32666,
+      "lines": 508,
+      "reviewer": "10-analytics-read-manifest.json",
+      "complete_read": true,
+      "read_range": [
+        1,
+        508
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/implementation/08-operations.md",
+      "sha256": "709b49947c54b1c42a4835fd2ada7b12d664fd9592958f0cb72926875de85ed1",
+      "bytes": 57579,
+      "lines": 274,
+      "reviewer": "10-product-read-manifest.json",
+      "complete_read": true,
+      "read_range": [
+        1,
+        274
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/implementation/09-product-interfaces.md",
+      "sha256": "0b210cc091cef9fe761729300ea8c26d5e70b3e393a87f8e503ac0b1fac2010b",
+      "bytes": 39163,
+      "lines": 198,
+      "reviewer": "10-product-read-manifest.json",
+      "complete_read": true,
+      "read_range": [
+        1,
+        198
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/implementation/10-website.md",
+      "sha256": "7178d266c8883c7b9686a80aadc4339c5a02f80da2f51c691a712f4aef4e4e76",
+      "bytes": 35594,
+      "lines": 169,
+      "reviewer": "10-product-read-manifest.json",
+      "complete_read": true,
+      "read_range": [
+        1,
+        169
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/implementation/README.md",
+      "sha256": "5b34f81f476fda727c6fe9ef5f5623147a22c0b1f5c6e1af0f893c9a2a0aa1fa",
+      "bytes": 9649,
+      "lines": 140,
+      "reviewer": "coordinator",
+      "complete_read": true,
+      "read_range": [
+        1,
+        140
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/implementation/coverage.md",
+      "sha256": "f8b4e6b99d73c430596ca379470ab0d8a103d10f9c2818d972b8bf04cc0f603e",
+      "bytes": 13878,
+      "lines": 120,
+      "reviewer": "coordinator",
+      "complete_read": true,
+      "read_range": [
+        1,
+        120
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/planning/mandate.md",
+      "sha256": "a57995b7b0bceb61d002274f9288665d19ca0d7b0915479d4330b98d7f119c0b",
+      "bytes": 5146,
+      "lines": 83,
+      "reviewer": "coordinator",
+      "complete_read": true,
+      "read_range": [
+        1,
+        83
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/planning/process.md",
+      "sha256": "55aab85fb95d46c92835c6b309d9904e030da69b54701697da58d5a9de5de658",
+      "bytes": 4915,
+      "lines": 70,
+      "reviewer": "coordinator",
+      "complete_read": true,
+      "read_range": [
+        1,
+        70
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/planning/questions.md",
+      "sha256": "f044f50a383a1f94b361d3744c5c387dd9159cd8ba1f2cab6aba177e7186ab51",
+      "bytes": 7289,
+      "lines": 81,
+      "reviewer": "coordinator",
+      "complete_read": true,
+      "read_range": [
+        1,
+        81
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/product/dashboard-and-website.md",
+      "sha256": "6d097c6f01dd9951bd781ca40ecc0f03facfd8e93f5326751794ac5dde54d5ed",
+      "bytes": 54215,
+      "lines": 619,
+      "reviewer": "10-product-read-manifest.json",
+      "complete_read": true,
+      "read_range": [
+        1,
+        619
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/product/data-and-feature-decisions.md",
+      "sha256": "edb30ce9c5a5f514d2664b1bcf3dc32ef38719c616876412f20b06aa324b1944",
+      "bytes": 16017,
+      "lines": 164,
+      "reviewer": "10-product-read-manifest.json",
+      "complete_read": true,
+      "read_range": [
+        1,
+        164
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/product/private-administration.md",
+      "sha256": "cee79ccc2839ce2fa97c4d50a30d2e05970696445dc496c958e9feca8ff02b71",
+      "bytes": 10420,
+      "lines": 147,
+      "reviewer": "10-product-read-manifest.json",
+      "complete_read": true,
+      "read_range": [
+        1,
+        147
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/product/requirements-and-history.md",
+      "sha256": "8c006bac3bd203b6e68a90eef7f8ab8e78a7f9fd408eb5f859bcebdb6ab5805a",
+      "bytes": 8788,
+      "lines": 123,
+      "reviewer": "10-product-read-manifest.json",
+      "complete_read": true,
+      "read_range": [
+        1,
+        123
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/research/acquisition-findings.md",
+      "sha256": "42f66f3df81a8270b1a6b68bcba0f0dfa95015bcc9e070187b4f1ea9de22d737",
+      "bytes": 20154,
+      "lines": 112,
+      "reviewer": "10-acquisition-read-manifest.json",
+      "complete_read": true,
+      "read_range": [
+        1,
+        112
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/research/derived-read-publication-findings.md",
+      "sha256": "aa4f1df3b52fe63833245770fb7745feb5188f646653d09baf090e3780e18847",
+      "bytes": 24379,
+      "lines": 335,
+      "reviewer": "10-analytics-read-manifest.json",
+      "complete_read": true,
+      "read_range": [
+        1,
+        335
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/research/experiment-summary.md",
+      "sha256": "37fadc11e504fbfb98f26b83f2085389abc9cfe187b1cc889e1895e8504b8a8e",
+      "bytes": 3009,
+      "lines": 32,
+      "reviewer": "coordinator",
+      "complete_read": true,
+      "read_range": [
+        1,
+        32
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/research/go-acquisition-code-walkthrough.md",
+      "sha256": "e3ed1464709f25885a085bc454132fa2420e0a10a5aae0232dc788ea2b264a55",
+      "bytes": 35206,
+      "lines": 449,
+      "reviewer": "10-acquisition-read-manifest.json",
+      "complete_read": true,
+      "read_range": [
+        1,
+        449
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/research/go-analytics-code-walkthrough.md",
+      "sha256": "beeca9d23412b4d589cf8458f27dc430d075883b280dd82fb4632190334be99e",
+      "bytes": 42933,
+      "lines": 574,
+      "reviewer": "10-analytics-read-manifest.json",
+      "complete_read": true,
+      "read_range": [
+        1,
+        574
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/research/go-read-runtime-code-walkthrough.md",
+      "sha256": "a4db86d06f3420507df48c59c4b50ea76870c273207863f30108872f2cd49585",
+      "bytes": 39076,
+      "lines": 234,
+      "reviewer": "10-product-read-manifest.json",
+      "complete_read": true,
+      "read_range": [
+        1,
+        234
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/research/go-storage-code-walkthrough.md",
+      "sha256": "b873b7218e75c081c14288dfcaa08c527709b0a78bf3ec7b0b30fd6de0541577",
+      "bytes": 13009,
+      "lines": 197,
+      "reviewer": "coordinator",
+      "complete_read": true,
+      "read_range": [
+        1,
+        197
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/research/product-surfaces-findings.md",
+      "sha256": "9b98b06ad3b2cb5d599cbb511c5da83f9ca2ec686038c27705f32c1ad3d87c7b",
+      "bytes": 25147,
+      "lines": 233,
+      "reviewer": "10-product-read-manifest.json",
+      "complete_read": true,
+      "read_range": [
+        1,
+        233
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/reviews/01-vision-recovery.md",
+      "sha256": "81eefb3e5f70de0a2d14fb7bd25958b5c49cd4020d697c0d818df1faaf807154",
+      "bytes": 1370,
+      "lines": 23,
+      "reviewer": "10-product-read-manifest.json",
+      "complete_read": true,
+      "read_range": [
+        1,
+        23
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/reviews/02-contracts-and-simplification.md",
+      "sha256": "add22b946c7ee038cedf384aa6122fb15059c50569fe9ad2069a149637aab9c2",
+      "bytes": 1583,
+      "lines": 26,
+      "reviewer": "10-analytics-read-manifest.json",
+      "complete_read": true,
+      "read_range": [
+        1,
+        26
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/reviews/03-storage-and-sdk-experiments.md",
+      "sha256": "163476c92f8b7b18c497974bb626ad56cc998ee369b301583b36f42653dadabf",
+      "bytes": 1766,
+      "lines": 26,
+      "reviewer": "coordinator",
+      "complete_read": true,
+      "read_range": [
+        1,
+        26
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/reviews/04-failures-and-growth.md",
+      "sha256": "e5840e5d3b1718851ea9b44ccea26b10fb13b5b1c0fe7027317354b841d14438",
+      "bytes": 1803,
+      "lines": 28,
+      "reviewer": "10-analytics-read-manifest.json",
+      "complete_read": true,
+      "read_range": [
+        1,
+        28
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/reviews/05-complete-product.md",
+      "sha256": "a077a06623e538fa52ee4dfcefd32067764c0784e71ca7fbe56827fe025092a8",
+      "bytes": 1814,
+      "lines": 29,
+      "reviewer": "10-product-read-manifest.json",
+      "complete_read": true,
+      "read_range": [
+        1,
+        29
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/reviews/06-reconciliation-and-delivery.md",
+      "sha256": "45d79823983d06a35575023094cb39deba601d6acccaed38acdb82d6c1e79775",
+      "bytes": 3311,
+      "lines": 48,
+      "reviewer": "coordinator",
+      "complete_read": true,
+      "read_range": [
+        1,
+        48
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/reviews/07-phase-0-4-recheck.md",
+      "sha256": "a99c44f453175d18ad34087a05c2ae1ca42e43b66679822ca63c78b7c14b7f20",
+      "bytes": 60159,
+      "lines": 395,
+      "reviewer": "10-acquisition-read-manifest.json",
+      "complete_read": true,
+      "read_range": [
+        1,
+        395
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/reviews/07-phase-5-recheck.md",
+      "sha256": "4552502f61c3f7d3937180e65d64c3dd7ec453fbf5365b813c1e79f3d181b1ae",
+      "bytes": 32843,
+      "lines": 210,
+      "reviewer": "10-analytics-read-manifest.json",
+      "complete_read": true,
+      "read_range": [
+        1,
+        210
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/reviews/07-phase-6-9-recheck.md",
+      "sha256": "bce3991520b3ecc0d8947b8e8cabd9bfc44e59080a04c023eeae1b067a5f3f27",
+      "bytes": 47708,
+      "lines": 323,
+      "reviewer": "10-product-read-manifest.json",
+      "complete_read": true,
+      "read_range": [
+        1,
+        323
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/reviews/07-vision-and-final-recheck.md",
+      "sha256": "0f75f557c22715835b32968cecdf60afe2d2763c8f957d831dd3b107ce1260f8",
+      "bytes": 19985,
+      "lines": 182,
+      "reviewer": "coordinator",
+      "complete_read": true,
+      "read_range": [
+        1,
+        182
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/reviews/08-go-code-walkthrough.md",
+      "sha256": "8c3b58ae332e42ce2120ed705a562b26eb6075e9b2c24747891c09d826adf07c",
+      "bytes": 11573,
+      "lines": 122,
+      "reviewer": "coordinator",
+      "complete_read": true,
+      "read_range": [
+        1,
+        122
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/reviews/09-expanded-plan-rounds.md",
+      "sha256": "ea71d9b776ea3bc5eb11cb9e8153f430baceb08773970874f18ea0d83cd352ef",
+      "bytes": 13016,
+      "lines": 204,
+      "reviewer": "coordinator",
+      "complete_read": true,
+      "read_range": [
+        1,
+        204
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/specification/component-contracts.md",
+      "sha256": "228acb61e44bc84a571463599f5c6f1331f5ed10598638f4fb3a9780884fb07f",
+      "bytes": 14181,
+      "lines": 220,
+      "reviewer": "coordinator",
+      "complete_read": true,
+      "read_range": [
+        1,
+        220
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/specification/data-contracts.md",
+      "sha256": "f949a5bfd9ee97b85ef006c53f0d073e7241959ddc93f21dae55619fc20ff42d",
+      "bytes": 26155,
+      "lines": 374,
+      "reviewer": "coordinator",
+      "complete_read": true,
+      "read_range": [
+        1,
+        374
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/specification/dvm-profile.md",
+      "sha256": "3451628a2e7817559a81c224b297b4de61b64c0364c940f71ca892abbe64804a",
+      "bytes": 24735,
+      "lines": 366,
+      "reviewer": "10-analytics-read-manifest.json",
+      "complete_read": true,
+      "read_range": [
+        1,
+        366
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "docs/specification/import-formats.md",
+      "sha256": "14317f3403d2d334f6e4cd357e0a09224106302354c441e4d720d041c1f598c6",
+      "bytes": 7181,
+      "lines": 106,
+      "reviewer": "10-acquisition-read-manifest.json",
+      "complete_read": true,
+      "read_range": [
+        1,
+        106
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "experiments/archive-model/README.md",
+      "sha256": "1444b3ce8a19a958d8993b0ebbdefb419ebb9c583884c355cb0947ecd9c9fe50",
+      "bytes": 2006,
+      "lines": 37,
+      "reviewer": "coordinator",
+      "complete_read": true,
+      "read_range": [
+        1,
+        37
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "experiments/clickhouse-frontier/README.md",
+      "sha256": "fbf4cbd18903257a28d6abfc2504365020dc4543251404166ef2ff1b4c0040d2",
+      "bytes": 1729,
+      "lines": 28,
+      "reviewer": "coordinator",
+      "complete_read": true,
+      "read_range": [
+        1,
+        28
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "experiments/ducklake-postgres/README.md",
+      "sha256": "a3cc0ca4571f9d1b2d670180aff64d194b8237fde0c0806866415eed6ba4f87a",
+      "bytes": 1555,
+      "lines": 25,
+      "reviewer": "coordinator",
+      "complete_read": true,
+      "read_range": [
+        1,
+        25
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "experiments/nostr-boundary/README.md",
+      "sha256": "de093966a47c8267bea96fac982ca919d940a03e36b9108498279816f436254a",
+      "bytes": 1266,
+      "lines": 24,
+      "reviewer": "coordinator",
+      "complete_read": true,
+      "read_range": [
+        1,
+        24
+      ],
+      "matches_git_blob": true
+    },
+    {
+      "path": "experiments/rocksdb-admission/README.md",
+      "sha256": "2eab99f12c5daff49f64620865ce8e43f4fa14953553cf932ea613c0ccc76e3b",
+      "bytes": 741,
+      "lines": 12,
+      "reviewer": "coordinator",
+      "complete_read": true,
+      "read_range": [
+        1,
+        12
+      ],
+      "matches_git_blob": true
+    }
+  ],
+  "totals": {
+    "markdown_files": 64,
+    "lines": 15571,
+    "bytes": 1426157,
+    "coordinator_files": 32
+  },
+  "exclusions": [
+    "No new complete reread of original Go source captures or upstream libraries",
+    "JSON evidence receives mechanical validation and targeted result/hash reconciliation, not a claim of full prose review of every raw JSON value",
+    "Product and scale/fault/browser acceptance remains unexecuted"
+  ],
+  "publication": "docs/reviews/10-whole-repository-audit.md"
+}

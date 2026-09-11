@@ -321,12 +321,104 @@ Paths: `tests/acceptance/cases/relay_lifecycle.py`,
 `docs/operations/relay-lifecycle-recovery.md`, `docs/operations/monitor-capacity.md`.
 
 - [ ] **1. Exercise first useful startup.** From clean volumes run config init/show/validate and doctor, then start intended roles. A versioned controlled seed overrides external inputs. The private-loopback journey explicitly operator-enrolls only its named fixture endpoints as unverified under the exact private route; seeding/discovery supplies independent source evidence and Validator must still demonstrate actual protocol behavior. A separately isolated controlled-public namespace case exercises default candidate auto-enrollment; no implicit private-address bypass is permitted; the full recipe's explicit public-candidate validation/automatic enrollment policy authorizes Validator work, not the source mention itself. Successful attributable public validation supplies active enrollment for acquisition; zero configured directories still permits seed→candidate→Validator→Monitor→Synchronizer. Explicit operator enrollment remains an independent permission with unverified probe state until measured. Prove role readiness from storage/policy capabilities, not named-service startup order.
-- [ ] **2. Follow one coherent source-to-evidence journey.** Seed A, ingest a signed list mentioning B and negative preference C, validate/read A/B, capture DNS/TLS/NIP-11/liveness/Geo where configured, then acquire an event from both. Event-availability experiments, if later enabled, require provenance permission and may not retain event/endpoint pairs when provenance is off; an ordinary duplicate delivery is never such an experiment. Independent fixture manifests determine endpoint/evidence/measurement/body/first-witness sets; negative C is not an operator ban and mentions are not witnesses.
+- [ ] **2. Follow one coherent source-to-evidence journey.** Seed A, ingest a signed list mentioning B and negative preference C, validate/read A/B, capture DNS/TLS/NIP-11/liveness/Geo where configured, then acquire an event from both. P04-T13 event-availability jobs, when explicitly enabled, require provenance permission and may not retain event/endpoint pairs when provenance is off; an ordinary duplicate delivery is never such an experiment. Independent fixture manifests determine endpoint/evidence/measurement/body/first-witness sets; negative C is not an operator ban and mentions are not witnesses.
 - [ ] **3. Exercise retained facts versus operational counters.** Flood valid duplicate event deliveries, queue deferred monitor work, perform actual failures and interrupt one dispatch intent. Permanent history gains only defined first/earlier provenance and executed/uncertain evidence under its schema; ordinary duplicate counters and unexecuted queue decisions remain bounded operations. Compare actual archive bytes/rows and ambiguity denominators.
 - [ ] **4. Apply pressure and isolation.** Pause PG, ingest/archive and projection separately; exhaust host permits/FD/RAM/document spool; run unavailable overlay routes alongside public fixtures. Acquisition/measurement honor distinct authority and reserved budgets, emit typed outcomes and resume from receipts without fabricating peer failure or complete coverage. Lower limits while work is active and inspect drain behavior.
 - [ ] **5. Measure finite fleet work.** Use a declared synthetic fleet size, seeded schedule and fixed duration with actual sockets for a representative subset and explicitly labeled scheduling-only expansion. Record achieved cadence, backlog age, CPU/RAM/connections/wire bytes, M growth and deduplicated document bytes. Include durable dispatch-intent, terminal and correction writes in M cost, plus current projections, dictionaries, object references and retention/pin overhead. Compare wide compressed observation rows against object-plus-reference encoding on identical low/high document-change corpora, measuring total archive/index bytes, queries, native memory and write amplification; object normalization does not automatically win. A simulation of 100000 schedules is not a measured 100000-socket capacity claim.
 - [ ] **6. Verify split-role recovery and later integrations.** Run Monitor through authenticated remote AdmitEvidence, lose an acknowledgement and restart; independent readers compare immutable fact IDs and complete source-cut ranges. Restore through P02/P08 contracts. Later phase 07 verifies signed announcements use retained fields without re-probing; later phase 06 checks authorization and field freshness through actual public sockets.
 - [ ] **7. Publish the future qualification record and operator journey.** The p04-t12 report includes exact executed cases and NOT RUN dependencies, commands, scope/versions, logical oracle results, cuts/receipts, faults, resource envelope and residual uncertainty. Run disabled directories/Geo-refresh/active-write/overlay cases and show zero corresponding outbound work; Monitor disabled must not start a hidden measurement queue. With --once, distinguish healthy zero-due success, another-owner skipped, explicit cancellation and infrastructure failure. Validate documentation command examples through the built CLI and help surface. Document bootstrap, revive/block, missing credentials/datasets, last-good refresh, monitor backlog, measurement cost and explicit lossy retention recovery. No source inspection or unexecuted fixture is reported as a passing product test.
+
+## P04-T13 — Explicit finite event-availability observations
+
+**Depends on:** P04-T02/T07, P03-T02/T03 and P02 evidence admission. P05-T08 and
+P09 availability pages consume this producer; synthetic reducer rows do not close it.
+**Files:** `apps/bigbrotr/src/acquisition/monitor/availability.rs`,
+`contracts/relay/v1/availability-job.json`, `tests/acceptance/cases/availability_probe.py`,
+`docs/operations/availability-observations.md`; extend P04's existing registry/job
+migration and A05 schema, without a second daemon or permanent retry log.
+
+- [ ] **Step 1:** define `event-availability/1` as an explicitly submitted finite
+  Monitor job. Default periodic submission is off; it requires provenance and
+  current event/endpoint grants. Input is explicit event IDs/endpoints or a pinned
+  bounded local query selection. Persist selection/method/seed if used, eligible
+  scope and whether selection completed; do not call a convenience subset random
+  or representative of the relay's whole corpus. No implicit all-relay cross product.
+- [ ] **Step 2:** validate starting limits of 100 IDs per endpoint/job, 20 IDs per
+  exact-ID request, four concurrent requests within the shared host/endpoint grant,
+  ten-second request deadline and 1,000 total ID/endpoint pairs per job. Payload
+  byte limits still apply. A larger submitted scope is refused before dispatch
+  or explicitly partitioned into separately admitted jobs, never silently truncated.
+- [ ] **Step 3:** use durable dispatch intent and the actual guarded WS stream.
+  Independently verify returned bodies and correlate each requested ID. A complete
+  ordered EOSE after all prior validation permits completed-empty classification
+  for absent requested IDs; disconnect, AUTH limitation, rate limit, dropped frame
+  or timeout remains unknown. It is scoped not-served evidence, not historical absence.
+- [ ] **Step 4:** admit A05 terminal facts per selected pair with request/attempt
+  identity, source receipt, access/observer/clock/method and selection reference.
+  Retrying persistence keeps the same fact; an intentional new probe is a new
+  attempt. Disablement/revocation stops uncommitted pairs without inventing outcomes.
+- [ ] **Step 5:** connect the actual stored facts to P05-T08 and its public/private
+  history resources. Expose disabled/no-observations/partial distinctly. With
+  provenance off, reject the job before dispatch and create no hidden pair index.
+- [ ] **Step 6:** run the shipped job against served, completed-empty, forged,
+  interrupted and timed-out controlled peers. Compare independent socket logs,
+  archived facts, distinct-ID reducer output and later P09 page data; 19 IDs with
+  repeated attempts must not cross the 20-distinct-ID ratio threshold.
+- [ ] **Step 7:** document sampling bias, all limits and pair-sized cost. Exercise
+  cancellation/receipt loss, insufficient budgets and queued jobs during backfill;
+  ordinary passive duplicates must produce no availability-experiment facts.
+
+## P04-T14 — Acquire attributed LNURL issuer metadata
+
+**Depends on:** P04-T02/T07/T08 and A06 document admission; P05-T05 consumes the
+result without networking. **Files:** `apps/bigbrotr/src/acquisition/issuer.rs`,
+`contracts/evidence/v1/issuer-observation.json`,
+`tests/acceptance/cases/issuer_evidence.py`, `docs/operations/issuer-evidence.md`.
+Use the existing finite acquisition/job/evidence owners and no separate service.
+
+- [ ] **Step 1:** define a bounded demand queue from selected unresolved zap/profile
+  subjects from admitted public inputs and explicit operator jobs. Enabling zap
+  analysis enables eligibility for guarded public metadata acquisition; operator
+  policy may disable it, yielding unavailable issuer inputs. Private-input-driven
+  external lookups require explicit disclosure/egress authority, not just read
+  permission. Bind recipient, source cut and recipient-signed profile defining the
+  LNURL endpoint before submission. A payer-signed request's lnurl alone cannot
+  authorize that recipient's issuer; uncorroborated bindings stay claims. For split
+  recipients, require the selected recipient's own profile binding too. Preserve
+  request/target references and method version without promoting their authority.
+- [ ] **Step 2:** coalesce by normalized URL, recipient binding and visibility scope;
+  use four global concurrent lookups, 10s deadline, 64KiB decoded response limit,
+  two redirects and 24h cache freshness as starting controls within shared grants.
+  Cap queued demands at 4,096 entries and 64MiB total, new network starts at
+  one/second with burst four, and unsuccessful retries at no more than one/hour
+  per recipient/URL/scope. Host/address grants still apply. Overflow reports
+  deferred coverage; feed/checkpoint work stays incremental rather than repeatedly
+  scanning the entire unresolved population. A cache hit references its original
+  observation and timestamp, creating no new A05 fetch. Cache freshness is not
+  proof that an issuer key was continuously valid for 24 hours.
+- [ ] **Step 3:** fetch only metadata through the shared guarded transport. Validate
+  expected fields including `allowsNostr`/`nostrPubkey` under the pinned NIP-57
+  contract. Never follow an invoice callback, pay, sign or resolve from analytics.
+  Persist actual retrieval time, HTTP/TLS basis, original bounded document/digest,
+  recipient/URL binding, observed key and parser outcome as A05/A06 evidence.
+- [ ] **Step 4:** distinguish observed-at-fetch key match, contradictory observation,
+  and an attributed historical issuer assertion with its own authority/time scope.
+  Today's metadata never retroactively authenticates old receipts. Observed-only
+  status is available to researchers but cannot satisfy a stronger historical
+  acceptance policy; P05 keeps that receipt unresolved without eligible evidence.
+- [ ] **Step 5:** import historical issuer evidence only under an explicit source/
+  trust class and the normal A03 validation/visibility contract. Bind every zap
+  classification to the evidence IDs and issuer-policy version. Unknown trust or
+  time scope does not become historical proof through import or a cache hit.
+- [ ] **Step 6:** run controlled provider key changes, stale cache, malformed/oversize
+  metadata, payer-selected impostor issuer, private-input disclosure denial,
+  private-address rebinding and old receipts with no eligible evidence.
+  Inspect real guarded requests, documents, classified facts and NIP-85 inputs.
+  A current-fetch-as-historical-proof variant must fail the independent oracle.
+- [ ] **Step 7:** measure lookup/cache/queue cost and the fraction of the declared zap
+  corpus remaining issuer-unresolved. Document that source acquisition cannot
+  recover unobserved historical authority; lack of evidence withholds affected
+  fields, not original receipts. Include outage/retry and policy-disable journeys.
 
 ## Coverage and configuration ownership
 
@@ -398,3 +490,16 @@ validation/automatic-public-enrollment settings, still constrained by bans and
 actual egress grants. Confirmed no archival event-delivery series and reused the
 shared Receipt type. Measurement/registry recovery resolves committed outcomes;
 post-commit revocation restricts later work rather than falsifying existing facts.
+
+## Cross-contract repairs from the whole-repository audit
+
+P04-T02 and P03-T07 implement the hostname-plus-selected-IP grants and alias
+fixture in [destination fairness](../architecture/acquisition-services.md#pooled-transport-evidence-and-destination-fairness).
+P04-T07/T08 retain pooled handshake identity/time and use the same endpoint slot
+for a coordinated fresh connection; two liveness ticks cannot refresh old TLS.
+P04-T11 writes LocalMonitorView through the Indexer. P05-T06 consumes/reuses its
+pure local eligibility rules while separately owning ResolvedRelayEvidence;
+local NIP-66 output has no cross-observer resolver dependency. Test local failure
+plus imported success, and resolver disablement, at those actual consumers.
+P04-T12 adds T13/T14 journeys when their capabilities are enabled; the original
+passive monitoring gate requires neither an availability job nor a zap lookup.

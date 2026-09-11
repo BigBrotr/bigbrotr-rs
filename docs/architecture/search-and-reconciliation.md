@@ -279,3 +279,32 @@ CPU, memory including page cache, index size, build throughput, lag, recall and
 relevance judgments. Compare CH, Tantivy or OpenSearch only with equivalent corpus,
 visibility, matching guarantees and resource budgets. No new experiment in this
 amendment proves these future product contracts.
+
+## Relay encoding eligibility and usable search scope
+
+Server NEG uses the same `RelayRetrievable` predicate as full-body delivery,
+including the complete escaped EVENT envelope under the listener's effective
+wire/buffer limits. NIP-01's 64-character limit is implemented as at most 64
+Unicode scalar values and 256 UTF-8 bytes; reject invalid Unicode. Reserve a
+conservative 12 encoded bytes per scalar plus quotes/framing, covering escaped
+surrogate-pair JSON too, so a shared set is independent of the client's ID length.
+The actual adapter validates those units consistently; a 64-multibyte-character
+fixture must not be rejected merely for exceeding 64 bytes.
+An oversized retained body stays archived but is excluded from this advertised
+retrievable set, with the limitation disclosed in capabilities/coverage. Another
+HTTP/export path may serve it under its own larger limits. Ordinary broad REQ
+still reports the specified oversized-result refusal if it encounters such a row.
+
+Bind encoding version, subscription-ID allowance and serving-limit revision into
+NEG generation/cache identity. Limit reductions invalidate incompatible sets;
+no stale generation may promise delivery under the new bound. P06-T07/T08 must
+negotiate then fetch small, escaping-heavy and oversized bodies on the same actual
+listener, including a limit change. Possessing a body alone is the wrong oracle.
+
+Search qualification must measure user usefulness as well as exact top-K truth.
+P06-T06/T12 use common/rare terms, frequent phrases with many false token matches,
+CJK/emoji, structured narrowing and old relevant results. Report the accepted and
+refused query mix, candidate work, postings/tokens/body bytes and p95/p99 under
+shared limits. Correct repeated refusal is not evidence that the default is useful
+on billions of events. Compare safe top-K pruning/Tantivy at identical semantics
+if CH misses that workload; do not silently narrow dates or rerank a recent prefix.

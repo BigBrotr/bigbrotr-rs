@@ -68,3 +68,15 @@ pinned Pensieve schema/decoder/license inspection. It corrects assumptions about
 physical document deduplication and protobuf field presence. No product code,
 future acceptance scenario, real-relay capacity or paid-service result is claimed.
 Review count is requested iteration, not a substitute for evidence.
+
+## Complete current-repository sweep
+
+The owner's subsequent question exposed a scope distinction: prior changed-file
+rereads were not a final sweep of every current document after all corrections.
+[Review 10](../reviews/10-whole-repository-audit.md) records the new complete
+64-Markdown baseline review, exact Git-verified read manifest, domain critiques,
+new producer and recovery contracts, simplifications, and actual Parquet target
+counterexample. Targeted follow-up critiques corrected weaknesses in newly added
+contracts too. Historical reviews remain dated evidence, not current defaults.
+[Decision confidence](decision-confidence.md) explicitly separates selections,
+measured properties and still-unqualified target-scale behavior.

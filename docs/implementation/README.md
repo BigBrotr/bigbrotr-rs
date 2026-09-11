@@ -28,8 +28,8 @@ updates the contract, affected tasks, fixtures and user-facing explanation.
 The [coverage ledger](coverage.md) maps every retained family, responsibility,
 public/private consumer and deliberate exclusion to actual task IDs.
 
-The current breakdown contains 114 tasks and 702 numbered steps: five planning
-tasks and 109 future implementation tasks. These counts identify scope and are
+The current breakdown contains 116 tasks and 716 numbered steps: five planning
+tasks and 111 future implementation tasks. These counts identify scope and are
 not quality or test-coverage targets.
 
 ## Phase files

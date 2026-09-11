@@ -79,16 +79,24 @@ not source code to copy without lifetime/error design.
 
 `AdmissionResult` is one of `NewFacts(Receipt)`,
 `AlreadyDurable(existing Receipt)`, `Excluded(reason)`,
-`Invalid(reason)`, `Retryable(reason)`. An existing event with a new permitted
-provenance edge is NewFacts, not a new event body. A later repeated edge is
+`Invalid(reason)`, `Retryable(reason)`, `RetiredRequest`. An existing event with a
+new permitted provenance edge is NewFacts, not a new event body. A later repeated edge is
 AlreadyDurable. A first/earlier event-level local observation can create facts
 with provenance off. Retryable never authorizes progress. Durable outcomes expose
 which body/evidence effects they cover, rather than returning a generic boolean.
+RetiredRequest reports that detailed receipt resolution is no longer available
+under a durably closed request range; it never authorizes new progress/effects.
 
-ProducerRequestId belongs to a producer incarnation plus monotonic local request
-identity; retries with another payload are rejected. Receipt persistence has a
-defined correctness horizon, separate from request log retention. SourceRecordId
-is permanent archive identity; producer retry records are operational state.
+ProducerRequestId binds a registered logical producer slot/epoch and monotonic
+local request identity; the process incarnation holds that epoch's authority.
+While receipt detail exists, retries with another payload are rejected by digest;
+after GC the retired range is refused without reconstructing that digest.
+Contiguous producer acknowledgement and fenced epoch retirement govern receipt
+reclamation, with `RetiredRequest`
+returned for already retired requests rather than executing them anew. See the
+[complete retirement contract](../architecture/storage-services.md#producer-acknowledgement-and-receipt-reclamation).
+SourceRecordId is permanent archive identity; producer retry detail is operational
+state. Its display TTL alone cannot define its correctness horizon.
 
 AdmitEvidence enforces enabled data families as well as visibility. In particular,
 provenance off excludes imported event→relay sidecars and intentional per-event
@@ -170,6 +178,7 @@ are intentional task ownership, not permission to invent missing migrations:
 | PG | 0501 analytics control; 0603 read pins; 0609 DVM jobs, 0610 subscriptions, 0611 payments |
 | PG | 0703 publication outbox, 0704 delivery, 0705 NIP-85 progress, 0707 NIP-66 progress |
 | PG | 0801 management identity, 0802 commands/revisions/jobs, 0803 saved views |
+| PG | 0804 artifact publication catalog (P08-T04); publication authority is separate from Nostr signing |
 | CH | 0001 events, 0002 evidence; 0502 current state through 0512 relay quality as named by P05; 0606 search projection |
 
 Tasks extend the named owner file rather than creating another migration with

@@ -56,5 +56,16 @@
   "source_format_inspection": {
     "path": "../external-research/pensieve",
     "access": "read only; source hashes in evidence/pensieve-format-source.json; no builds/tests or upstream source vendored"
+  },
+  "parquet_target_probe": {
+    "path": ".research/parquet-targets/run-01",
+    "engine": "DuckDB Python 1.4.5",
+    "limits": "1 thread;128MB engine setting;200000 integer rows",
+    "status": "completed; no background services; no network or Tux use",
+    "evidence": "docs/research/evidence/parquet-targets.json"
+  },
+  "whole_document_audit": {
+    "path": ".research/review-10",
+    "contents": "baseline hashes and coordinator full-read path inventory; tracked combined manifest records final baseline coverage"
   }
 }

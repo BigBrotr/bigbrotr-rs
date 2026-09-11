@@ -79,3 +79,13 @@ retain their originals/compact lineage. Provenance-off excludes interpreted
 imported event-to-relay sidecars and intentional availability pairs as well as
 ordinary witness indexes. No unanswered product question prevents this planning
 handoff; actual platform/engine/WAN limits remain explicit measurement work.
+
+## Complete-document review and limits of validation
+
+Q18: The owner asks whether all new-repository documents were actually reread
+and every choice validated as best possible. The prior pass did not establish
+that claim. The [fresh full sweep](../reviews/10-whole-repository-audit.md)
+identifies 64 complete baseline Markdown reads, new defects/corrections and the
+remaining empirical limits. [The confidence register](decision-confidence.md)
+records reasoned choices and alternatives without claiming a global optimum.
+No additional owner answer is required; product implementation has not begun.

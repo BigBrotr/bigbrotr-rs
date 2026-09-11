@@ -1,0 +1,381 @@
+{
+  "schema_version": 1,
+  "audit": "10-acquisition-audit",
+  "date": "2026-09-11",
+  "repository": "/Users/vincenzo/Documents/GitHub/BigBrotr/bigbrotr-rs",
+  "coordinator_frozen_revision": "b543555",
+  "revision_verification": "No Git command; assignment supplied revision. Seven assigned working-file hashes agree before/after full reading. Later coordinator repairs are outside this read boundary.",
+  "assigned_scope": {
+    "file_count": 7,
+    "total_lines": 2362,
+    "total_bytes": 308164,
+    "all_assigned_fully_read": true,
+    "all_before_after_hashes_equal": true,
+    "files": [
+      {
+        "path": "docs/architecture/acquisition-services.md",
+        "bytes": 75351,
+        "lines": 499,
+        "sha256_before": "74147ad365526f7e33d4c8d7e73086dfbcb56bf64e69abaebfacd9e3672d1152",
+        "sha256_after": "74147ad365526f7e33d4c8d7e73086dfbcb56bf64e69abaebfacd9e3672d1152",
+        "unchanged_during_read": true,
+        "fully_read": true,
+        "read_chunks": [
+          [
+            1,
+            90
+          ],
+          [
+            91,
+            180
+          ],
+          [
+            181,
+            265
+          ],
+          [
+            266,
+            345
+          ],
+          [
+            346,
+            425
+          ],
+          [
+            426,
+            499
+          ]
+        ],
+        "source_revision": "b543555",
+        "source_revision_basis": "Coordinator-supplied frozen revision; no Git object lookup performed."
+      },
+      {
+        "path": "docs/implementation/03-acquisition.md",
+        "bytes": 52640,
+        "lines": 401,
+        "sha256_before": "b2aa11cd9e30dbf26e1ad2452b53dc4573ec8fc1cda1920fe206918090a06036",
+        "sha256_after": "b2aa11cd9e30dbf26e1ad2452b53dc4573ec8fc1cda1920fe206918090a06036",
+        "unchanged_during_read": true,
+        "fully_read": true,
+        "read_chunks": [
+          [
+            1,
+            80
+          ],
+          [
+            81,
+            160
+          ],
+          [
+            161,
+            240
+          ],
+          [
+            241,
+            320
+          ],
+          [
+            321,
+            401
+          ]
+        ],
+        "source_revision": "b543555",
+        "source_revision_basis": "Coordinator-supplied frozen revision; no Git object lookup performed."
+      },
+      {
+        "path": "docs/implementation/04-relay-lifecycle.md",
+        "bytes": 57473,
+        "lines": 400,
+        "sha256_before": "385f2d677afb4e9c76cb1c7e1d3fd327e40b233ba4f3576fa7eb813d880898ea",
+        "sha256_after": "385f2d677afb4e9c76cb1c7e1d3fd327e40b233ba4f3576fa7eb813d880898ea",
+        "unchanged_during_read": true,
+        "fully_read": true,
+        "read_chunks": [
+          [
+            1,
+            80
+          ],
+          [
+            81,
+            160
+          ],
+          [
+            161,
+            240
+          ],
+          [
+            241,
+            320
+          ],
+          [
+            321,
+            400
+          ]
+        ],
+        "source_revision": "b543555",
+        "source_revision_basis": "Coordinator-supplied frozen revision; no Git object lookup performed."
+      },
+      {
+        "path": "docs/specification/import-formats.md",
+        "bytes": 7181,
+        "lines": 106,
+        "sha256_before": "14317f3403d2d334f6e4cd357e0a09224106302354c441e4d720d041c1f598c6",
+        "sha256_after": "14317f3403d2d334f6e4cd357e0a09224106302354c441e4d720d041c1f598c6",
+        "unchanged_during_read": true,
+        "fully_read": true,
+        "read_chunks": [
+          [
+            1,
+            106
+          ]
+        ],
+        "source_revision": "b543555",
+        "source_revision_basis": "Coordinator-supplied frozen revision; no Git object lookup performed."
+      },
+      {
+        "path": "docs/research/acquisition-findings.md",
+        "bytes": 20154,
+        "lines": 112,
+        "sha256_before": "42f66f3df81a8270b1a6b68bcba0f0dfa95015bcc9e070187b4f1ea9de22d737",
+        "sha256_after": "42f66f3df81a8270b1a6b68bcba0f0dfa95015bcc9e070187b4f1ea9de22d737",
+        "unchanged_during_read": true,
+        "fully_read": true,
+        "read_chunks": [
+          [
+            1,
+            60
+          ],
+          [
+            61,
+            112
+          ]
+        ],
+        "source_revision": "b543555",
+        "source_revision_basis": "Coordinator-supplied frozen revision; no Git object lookup performed."
+      },
+      {
+        "path": "docs/research/go-acquisition-code-walkthrough.md",
+        "bytes": 35206,
+        "lines": 449,
+        "sha256_before": "e3ed1464709f25885a085bc454132fa2420e0a10a5aae0232dc788ea2b264a55",
+        "sha256_after": "e3ed1464709f25885a085bc454132fa2420e0a10a5aae0232dc788ea2b264a55",
+        "unchanged_during_read": true,
+        "fully_read": true,
+        "read_chunks": [
+          [
+            1,
+            100
+          ],
+          [
+            101,
+            200
+          ],
+          [
+            201,
+            285
+          ],
+          [
+            286,
+            365
+          ],
+          [
+            366,
+            449
+          ]
+        ],
+        "source_revision": "b543555",
+        "source_revision_basis": "Coordinator-supplied frozen revision; no Git object lookup performed."
+      },
+      {
+        "path": "docs/reviews/07-phase-0-4-recheck.md",
+        "bytes": 60159,
+        "lines": 395,
+        "sha256_before": "a99c44f453175d18ad34087a05c2ae1ca42e43b66679822ca63c78b7c14b7f20",
+        "sha256_after": "a99c44f453175d18ad34087a05c2ae1ca42e43b66679822ca63c78b7c14b7f20",
+        "unchanged_during_read": true,
+        "fully_read": true,
+        "read_chunks": [
+          [
+            1,
+            65
+          ],
+          [
+            66,
+            130
+          ],
+          [
+            131,
+            190
+          ],
+          [
+            191,
+            240
+          ],
+          [
+            241,
+            295
+          ],
+          [
+            296,
+            350
+          ],
+          [
+            351,
+            395
+          ]
+        ],
+        "source_revision": "b543555",
+        "source_revision_basis": "Coordinator-supplied frozen revision; no Git object lookup performed."
+      }
+    ]
+  },
+  "additional_partial_reads": [
+    {
+      "path": "docs/specification/data-contracts.md",
+      "bytes": 26155,
+      "lines": 374,
+      "sha256_at_inventory": "f949a5bfd9ee97b85ef006c53f0d073e7241959ddc93f21dae55619fc20ff42d",
+      "fully_read": false,
+      "read_ranges": [
+        [
+          1,
+          170
+        ],
+        [
+          180,
+          240
+        ],
+        [
+          304,
+          340
+        ]
+      ],
+      "revision_basis": "Adjacent working-file excerpts; only end-of-read metadata captured, no independent frozen-Git match."
+    },
+    {
+      "path": "docs/engineering/configuration-and-runtime.md",
+      "bytes": 13963,
+      "lines": 209,
+      "sha256_at_inventory": "4e2b9b8265663a1f40fa0c7fcb45ba848a7bb4badc3ae9e975fe5312636dbfcd",
+      "fully_read": false,
+      "read_ranges": [
+        [
+          46,
+          90
+        ]
+      ],
+      "revision_basis": "Adjacent working-file excerpts; only end-of-read metadata captured, no independent frozen-Git match."
+    },
+    {
+      "path": "docs/implementation/05-analytics.md",
+      "bytes": 45267,
+      "lines": 708,
+      "sha256_at_inventory": "e3f3df4ae58bce1f5b5e54166ccd656bc9e9e7478854d4e105f52a24b7f75f3d",
+      "fully_read": false,
+      "read_ranges": [
+        [
+          279,
+          367
+        ]
+      ],
+      "revision_basis": "Adjacent working-file excerpts; only end-of-read metadata captured, no independent frozen-Git match."
+    },
+    {
+      "path": "docs/implementation/07-publication.md",
+      "bytes": 32666,
+      "lines": 508,
+      "sha256_at_inventory": "e54ff21e00e37a8c852e3ea69ff042c1bf69a77b90b9a628cd6ade146bc134ba",
+      "fully_read": false,
+      "read_ranges": [
+        [
+          10,
+          19
+        ],
+        [
+          146,
+          190
+        ]
+      ],
+      "revision_basis": "Adjacent working-file excerpts; only end-of-read metadata captured, no independent frozen-Git match."
+    },
+    {
+      "path": "docs/implementation/08-operations.md",
+      "bytes": 57579,
+      "lines": 274,
+      "sha256_at_inventory": "709b49947c54b1c42a4835fd2ada7b12d664fd9592958f0cb72926875de85ed1",
+      "fully_read": false,
+      "read_ranges": [
+        [
+          109,
+          139
+        ]
+      ],
+      "revision_basis": "Adjacent working-file excerpts; only end-of-read metadata captured, no independent frozen-Git match."
+    }
+  ],
+  "primary_external_sources": [
+    {
+      "url": "https://raw.githubusercontent.com/nostr-protocol/nips/a2494f4f81d46684e5814a9bf35e2b1df978f955/57.md",
+      "repository_revision": "a2494f4f81d46684e5814a9bf35e2b1df978f955",
+      "read_scope": "Protocol flow; provider nostrPubkey configuration; receipt proof limits; Appendix F issuer validation.",
+      "access_date": "2026-09-11",
+      "use": "Verify provider-key validation prerequisite; historical non-backdating is a design inference, not a NIP guarantee."
+    }
+  ],
+  "method": {
+    "full_reads": "Numbered bounded chunks with complete assigned-file coverage; headings/search matches were not full reads.",
+    "line_count": "Python bytes.splitlines()",
+    "hash_algorithm": "SHA-256",
+    "truncation_handling": "Assigned reads complete. One combined auxiliary search/read response was truncated; relevant P04 lines273–309 and P08 lines109–139 were reread completely. Omitted search output is not counted as read.",
+    "search_limitations": "A mistyped adjacent P08 path returned no file; actual docs/implementation/08-operations.md was enumerated and relevant lines read. Search-only hits beyond listed auxiliary ranges do not imply full reads."
+  },
+  "findings": [
+    {
+      "id": "ACQ-10-01",
+      "severity": "P1",
+      "status": "open_at_audited_baseline",
+      "topic": "Undefined imported source-control/tombstone format and research-versus-restore boundary"
+    },
+    {
+      "id": "ACQ-10-02",
+      "severity": "P1",
+      "status": "open_at_audited_baseline",
+      "topic": "Missing LNURL issuer-evidence acquisition producer"
+    },
+    {
+      "id": "ACQ-10-03",
+      "severity": "P2",
+      "status": "open_at_audited_baseline",
+      "topic": "Pooled socket reuse versus fresh transport measurement identity"
+    },
+    {
+      "id": "ACQ-10-04",
+      "severity": "P2",
+      "status": "open_at_audited_baseline",
+      "topic": "Hostname alias concentration bypasses per-host fairness"
+    },
+    {
+      "id": "ACQ-10-05",
+      "severity": "P2",
+      "status": "open_at_audited_baseline",
+      "topic": "Removed archival arrival-series feature persists in architecture prose"
+    },
+    {
+      "id": "ACQ-10-06",
+      "severity": "P3",
+      "status": "open_at_audited_baseline",
+      "topic": "Local monitor projection versus analytical claim-resolution ownership"
+    }
+  ],
+  "not_performed": [
+    "Git commands or independent Git-tree verification",
+    "Existing-document edits",
+    "Product implementation or scaffolding",
+    "Go or Rust builds/tests",
+    "New full Go source audit",
+    "Relay/network fixture execution",
+    "Database fault injection",
+    "Measured capacity benchmarks",
+    "Universal optimality proof"
+  ]
+}

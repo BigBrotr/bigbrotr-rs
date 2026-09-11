@@ -226,8 +226,9 @@ and resources, which preflight must explain rather than enabling extra work sile
 Legacy migration distinguishes retained source truth from old index layout. An
 older lightweight instance may still have complete original events in its journal;
 verify and import those, then rebuild selected indexes. If it holds only metadata,
-report the incompatible corpus and provide a separate analytical-projection import
-or best-effort refetch path. Do not fabricate content/signatures, label the result
+report the incompatible corpus and provide a standalone DuckDB analytical guide
+or explicit best-effort refetch path. There is no in-product projected-data importer.
+Do not fabricate content/signatures, label the result
 complete, or assume old historical provenance can be reconstructed. Old preset
 names link to this explanation and their explicit replacement configuration.
 

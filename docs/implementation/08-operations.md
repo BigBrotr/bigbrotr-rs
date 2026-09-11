@@ -44,6 +44,10 @@ P01-T08 owns `tests/acceptance/run.py`, `contracts/acceptance/result.schema.json
 | `POST /management/v1/configuration/revisions` | Approved preview digest + expected revision → accepted revision/per-role application; stale preview returns conflict |
 | `POST /management/v1/roles/{role_instance}/commands` | Typed pause/drain/resume; appropriate role grant and idempotency key |
 | `POST /management/v1/jobs`, `GET /management/v1/jobs/{job_id}`, `POST /management/v1/jobs/{job_id}/cancel` | Typed import/export/backup/verify/restore-plan/scrub/repair/migrate/derive/rank job; input/output permissions checked independently of job-control grant |
+| `GET /management/v1/jobs` | P08-T03 bounded authorized job discovery; kind/state/time filters and stable opaque cursor |
+| `GET /management/v1/roles` and `GET /management/v1/relays` | P08-T03 bounded role/registry operational summaries; protected by action/resource grants |
+| `GET /management/v1/artifacts`, `GET /management/v1/artifacts/{artifact_id}` | P08-T04 bounded authorized catalog discovery/detail independent of expired job logs; creation-time/ID cursor and state filters |
+| `POST /management/v1/artifacts/{artifact_id}/publish`, `POST /management/v1/artifacts/{artifact_id}/withdraw` | P08-T04 immutable artifact digest, expected revision, idempotency and explicit artifact.publish/withdraw grant; no signer required |
 | `GET /management/v1/storage` and `GET /management/v1/diagnostics/preview` | Authorized resource/protection summary or redacted diagnostic inventory; actual bundle generation is a typed job |
 | `GET /management/v1/principals`, `PUT /management/v1/principals/{principal_id}/grants` | List/grant with administrator authority, expected revision and reauthentication; signer/private-export grants remain explicit |
 | `POST /management/v1/tokens`, `DELETE /management/v1/tokens/{token_id}` | Scoped issue/revoke; issued token revealed once, hash/metadata thereafter; restrictive activation barrier on revoke |
@@ -106,13 +110,27 @@ independent vectors; changing lane/memory/time settings is a versioned policy.
 
 **Saved views and optional indexes:** `GET|POST /management/v1/saved-views`, `PUT|DELETE /management/v1/saved-views/{view_id}` persist an owner-scoped canonical `QueryRequest`, label and revision; update/delete require expected revision and never store credentials or reuse past authorization. Opening a view reauthorizes its current input scope. Index rebuild/retire are typed job kinds over a P06 index-generation manifest, not arbitrary DDL: preview affected capability and pinned readers, build/verify/activate replacement before reclaiming the old generation, or explicitly disable/retire only that optional index. P09 Storage/Queries must use these working routes rather than invent client-only management features. Reserve migration 0803 in the central manifest alongside 0801/0802.
 
+Job discovery is `bigbrotr jobs list` / `GET /management/v1/jobs`, with allowlisted
+kind/state/created-time filters, default 50/max 200 results, descending
+(created_at, job_id), an opaque policy-bound cursor and a listing upper cut.
+Apply caller visibility before pagination; redact inputs and distinguish expired
+detail from missing/invisible jobs. Poll again for newly created jobs. Lost-command
+resolution still uses the original command key. Reopen a clean browser with
+multiple principals/pages to prove the registry, not client memory, supplies it.
+The upper cut excludes newly created jobs; mutable state filters are evaluated
+at page-read time, so this operational listing is not a frozen historical audit.
+Role/relay/artifact summaries share the page-size/authorization rules. Roles and
+relays order by immutable role-instance and endpoint ID respectively; artifacts
+order by (created_at, artifact_id) with their own upper cut. Refresh starts a new
+listing; mutable artifact state follows the same page-read-time rule.
+
 ## P08-T04 — Portable imports, exports and useful research artifacts
 
 **Files:** extend `apps/bigbrotr/src/acquisition/import/{preflight,job,jsonl,native,pensieve,worker}.rs`, `apps/bigbrotr/src/interfaces/cli/import.rs`, `contracts/import/v1/manifest.json` and `docs/operations/import.md` from P03; create `apps/bigbrotr/src/export/{job,manifest,parquet,jsonl,documents}.rs`, `apps/bigbrotr/src/interfaces/cli/export.rs`, `contracts/artifacts/v1/export.schema.json`, `docs/operations/{export,duckdb-analysis}.md`, `tests/fixtures/corpora/{full-events,legacy-projection,claimed-provenance}/manifest.json`, `apps/bigbrotr/tests/portable_artifacts.rs`, `tests/acceptance/export_oracle.py`.
 
 **Dependencies/interfaces:** reuse P03 importer and P02/P06 pinned reads, full signed-event type, immutable origin identities and policy lease. Inputs are allowed roots/object prefixes plus a typed source manifest, never arbitrary browser file paths. Export choices are `signed-events-jsonl`, full Parquet and explicitly named analytical projection. Manifest includes schema/version, source cut/filter, exactness, visibility, methods, original/import origin, file digests/row counts, retained documents/dictionaries and missing fields. Export is not backup.
 
-- [ ] **Step 1:** implement inspection/validation before job creation: file sizes/digests/schema, allowed roots, no symlink escape, signature/canonical identity, unsupported version, compression expansion limits, and provenance-claim labeling. Full imports require reconstructable signed content/tags/signatures under their format contract (proto3 defaults are described in [import formats](../specification/import-formats.md)); projection imports enter only the named analytical dataset path.
+- [ ] **Step 1:** implement inspection/validation before job creation: file sizes/digests/schema, allowed roots, no symlink escape, signature/canonical identity, unsupported version, compression expansion limits, and provenance-claim labeling. Full imports require reconstructable signed content/tags/signatures under their format contract (proto3 defaults are described in [import formats](../specification/import-formats.md)); projected artifacts are rejected by canonical import and opened with standalone DuckDB using the shipped analysis guide. No second analytical dataset ingestion/catalog is selected.
 - [ ] **Step 2:** implement resumable source units keyed by input digest and stable unit ID; retry/move cannot change original admission or fabricate a local relay witness. Unsupported seek-resume explicitly rereads a bounded unit; progress output names that cost.
 - [ ] **Step 3:** implement pinned, policy-rechecked export chunks and atomic final manifest publication. Include referenced deduplicated monitoring documents and dictionaries; cancelled/failed files remain incomplete and cannot be listed as public datasets. Public publishing of an export is a separate grant/command, not a side effect of creating it.
 - [ ] **Step 4:** propose `cargo test -p bigbrotr --test portable_artifacts` with ordered/repeated tags, empty values, timestamp zero/u64 maximum, conflicting duplicate IDs, private claims, missing document and signature-invalid legacy rows. Negative control: edit one content byte without updating its signed ID/signature; the independent signature verifier must reject it even if a file checksum was recomputed.
@@ -121,6 +139,37 @@ independent vectors; changing lane/memory/time settings is a versioned policy.
 **Failure contract:** partial source coverage is attributed; bad units are quarantined/reported under selected import policy. A policy revocation terminates or restricts new export chunks; already delivered files cannot be recalled. Job result distinguishes complete requested scope, partial scope and failed execution.
 
 **Skew and output accounting:** reserve input/decompression/decoded-row/output/driver bytes before loading a unit and include JSON escaping or Parquet row-group/native memory in the job grant. One oversized first record is split only by a format that preserves its complete semantics, otherwise refused with exact scope; item count cannot exempt it. External-sort/spill work uses a finite scratch allowance. Export manifest paths are relative, normalized and unique with no parent traversal, disallowed symlink or platform-colliding names; referenced files cannot escape the artifact root. Run skewed large-content/repeated-tag/document fixtures, a slow download, one source dominating all chunks and full scratch disk alongside monitoring/live ingestion; retain peak RSS/cgroup/native/temp usage and independent progress of the reserved control/live shares.
+
+**Artifact publication authority:** extend this task with
+`src/export/publication.rs`, `src/interfaces/management/artifacts.rs`,
+`migrations/postgres/0804_artifact_publication.sql` and
+`contracts/artifacts/v1/publication.schema.json`. The small PG catalog binds
+artifact ID, immutable manifest/file digests, source cut/visibility-policy basis,
+storage reference, owner, revision and private/verified/published/withdrawn/expired
+state. Completion of an export leaves it private; incomplete artifacts cannot
+be published. Commands are `bigbrotr artifact publish|withdraw ARTIFACT_ID`
+and the corresponding private routes above, with expected revision and stable
+idempotency key. Publish and withdraw have explicit independent action grants;
+ordinary export/private-export or signer authority does not imply either grant.
+
+Before publication, verify manifest/reference closure and that all inputs are
+currently public-eligible. Private export is not declassification. Commit public
+catalog state and retention pin atomically before reply; retries after lost reply
+resolve the same publication. Public listing/download uses that catalog through
+the authorized HTTP artifact adapter consumed by P09-T06, never filesystem glob
+or an unrestricted storage URL. Policy restrictions invalidate affected artifact
+availability until explicit revalidation; existing authorization expires within
+the shared five-second bound. A download in progress obeys the same bound.
+Withdrawal/expiry stops subsequent discovery/access; independently delivered
+copies cannot be recalled. Published artifacts have no automatic expiry unless
+explicitly selected and their pinned bytes count in capacity forecasts. Private
+retention and removal after withdrawal remain distinct maintenance decisions.
+
+Extend this task's real acceptance with export-without-publish-grant, authorized
+publication, lost reply/retry, clean-browser listing/download, withdrawal, policy
+restriction and incomplete/altered manifest refusal. Inspect actual downloaded
+hashes and catalog/pins; neither a signed Nostr event nor a created file proves
+that a research dataset was correctly published.
 
 ## P08-T05 — Consistent backup, isolated restore and positive failover
 
@@ -147,7 +196,7 @@ independent vectors; changing lane/memory/time settings is a versioned policy.
 **Dependencies/interfaces:** P02 versioned engine adapters provide inspect/prepare/apply/checkpoint/verify for PG, Rocks, archive and CH; logical body/evidence identities survive migration. Release manifest defines reader/writer/archive/pending/API compatibility and which downgrade requires restore. Legacy migration reads an explicitly frozen/exported source, not the concurrently changing development repository or live database without a supported snapshot.
 
 - [ ] **Step 1:** implement `migrate inspect|plan|apply|resume` with single-owner fencing, required free-space estimate, backup reference, ordered transactional/nontransactional steps and durable checkpoints. Block incompatible writers before changing format; no automatic startup DDL requiring broad admin grants.
-- [ ] **Step 2:** implement legacy full-event import with original metadata/claimed provenance preserved. Inspect source journal/export for missing signed fields; route incomplete rows only to the declared projection path or explicit best-effort refetch job. Record unrepairable gaps without fabricated content/signatures.
+- [ ] **Step 2:** implement legacy full-event import with original metadata/claimed provenance preserved. Inspect source journal/export for missing signed fields; direct incomplete rows to standalone analytical use or an explicit best-effort refetch job; no in-product projected-data importer is selected. Record unrepairable gaps without fabricated content/signatures.
 - [ ] **Step 3:** implement compatibility refusal and forward-repair/restore choices for partial changes. Rebuild optional indexes from retained truth; changing an index is not a rewrite of original observation identity. New schema defaults do not invent prior facts.
 - [ ] **Step 4:** propose `cargo test -p bigbrotr --test migrations`: crash before/after each commit/checkpoint, two migrators, stale writer, unsupported future schema, insufficient reserve and interrupted index rebuild. Negative control: an old binary pointed at a format with a higher writer floor must fail before its first write, even if it can parse some rows.
 - [ ] **Step 5:** proposed `migration` scenario installs the prior supported release bundle on fresh volumes, loads exact signed fixtures, upgrades with the documented command, compares old/new logical corpus and reads, then attempts the documented rollback path. Separately migrate full/incomplete legacy fixtures and verify honest capability/gap reports. Preserve commands, compatibility manifests and before/after corpus digests.

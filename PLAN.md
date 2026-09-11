@@ -159,3 +159,15 @@ envelope, and can be installed/upgraded/restored using accurate documentation.
 Success also requires useful public datasets/examples, understandable explanations,
 responsive maintenance and an accessible interface; GitHub stars are an outcome,
 not an engineering proof.
+
+## Complete-document audit and current confidence
+
+The [whole-repository review](docs/reviews/10-whole-repository-audit.md) fully
+reread the 64-file Markdown baseline, then corrected additional data, producer,
+transport, administration and receipt-recovery gaps. The current detailed plan
+has 116 tasks/716 steps, including P04-T13 availability observations and P04-T14
+issuer metadata. Research import no longer invents a second analytical dataset
+product or foreign administrative source-control transfer. See
+[decision confidence and alternatives](docs/planning/decision-confidence.md)
+for the selected stack's total costs and remaining empirical qualifications.
+Complete documentation review is not validation of universal optimality.

@@ -364,3 +364,31 @@ job execution. Exercise unsettled/ACCEPTED versus SETTLED, wrong hash/amount,
 late settlement, cancellation, duplicate settlement polling and refund due.
 Attempt a spending RPC with the configured macaroon and require permission
 denial. No test uses real funds or claims unexecuted regtest evidence as success.
+
+## Slot ownership and authenticated control under saturation
+
+The one-active-job-per-requester rule concerns finite execution/queued jobs and
+a subscription's bounded initial snapshot. A long-lived subscription owns a
+separate subscription slot (32 globally), not a permanently occupied finite-job
+slot. Each subsequent batch acquires normal execution/output permits and releases
+them after its durable handoff. Waiting-payment records consume the financial
+allowance and requester outstanding-job slot but no running query/engine permit.
+
+Signed renewal/cancellation of an existing owned job/subscription uses a separate
+bounded control queue: initially two handlers, 32 queued controls, per-requester
+one control/second with burst two. Within the host envelope reserve one bounded
+verification worker and 4MiB for control ingress/verification/queue/feedback, so
+ordinary data jobs cannot exhaust these permits before control queue admission.
+Reject enabling this capability if that reserve cannot be supplied. Untrusted
+control-shaped frames still face cheap byte/rate checks before cryptographic work;
+the reserve does not make hostile floods free.
+It acquires no new query snapshot or data-job slot. Keep identity, purpose,
+provider/requester, expiry/replay and authorization checks. Queue/rate exhaustion
+returns a bounded typed busy/refused response; no unbounded feedback is generated.
+A valid processed cancellation stops pending work through the existing durable
+contract. P06-T09/T10 test data-slot/queue saturation while renewing/cancelling,
+with another author refused and control-flood limits independently enforced.
+
+Core and paid-capability evidence are separate. Free HTTP/relay/DVM operation
+needs no LND installation. A release claiming `lnd-prepaid-v1` still requires the
+real invoice/settlement/recovery cases; default-off is not a waiver of that claim.

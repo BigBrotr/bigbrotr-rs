@@ -1,0 +1,313 @@
+{
+  "scope": "Independent complete-file prose audit of assigned analytics/read/publication domain; no implementation execution or universal-optimality claim",
+  "requested_revision": "b543555",
+  "git_head_metadata_at_start": "b54355541ac9be006e2464600c486d1d4ae60d02",
+  "started_utc": "2026-09-11T08:54:43.180301+00:00",
+  "source_root": "/Users/vincenzo/Documents/GitHub/BigBrotr/bigbrotr-rs",
+  "sources": [
+    {
+      "path": "docs/architecture/analytics-detail.md",
+      "sha256_before": "ee20296032ca33875bcfe0fdbd270bf6a8571e64e72f8d5904552bc0ddc601b9",
+      "bytes": 42157,
+      "lines": 575,
+      "read_ranges": [
+        [
+          1,
+          575
+        ]
+      ],
+      "read_status": "complete",
+      "sha256_after": "ee20296032ca33875bcfe0fdbd270bf6a8571e64e72f8d5904552bc0ddc601b9",
+      "bytes_after": 42157,
+      "lines_after": 575,
+      "unchanged_after_full_read": true
+    },
+    {
+      "path": "docs/architecture/derived-read-publication.md",
+      "sha256_before": "20ac6a79e1bbcbc576d3d9b1c5ca140705cc0e5c1d363fad871f677f00d26324",
+      "bytes": 91901,
+      "lines": 1272,
+      "read_ranges": [
+        [
+          1,
+          1272
+        ]
+      ],
+      "read_status": "complete",
+      "sha256_after": "20ac6a79e1bbcbc576d3d9b1c5ca140705cc0e5c1d363fad871f677f00d26324",
+      "bytes_after": 91901,
+      "lines_after": 1272,
+      "unchanged_after_full_read": true
+    },
+    {
+      "path": "docs/architecture/protocol-evolution.md",
+      "sha256_before": "ce86cc287bae80b429cb454a2b7b54aeb87fbf251d77866ccb3203330ce83270",
+      "bytes": 62464,
+      "lines": 750,
+      "read_ranges": [
+        [
+          1,
+          750
+        ]
+      ],
+      "read_status": "complete",
+      "sha256_after": "ce86cc287bae80b429cb454a2b7b54aeb87fbf251d77866ccb3203330ce83270",
+      "bytes_after": 62464,
+      "lines_after": 750,
+      "unchanged_after_full_read": true
+    },
+    {
+      "path": "docs/architecture/search-and-reconciliation.md",
+      "sha256_before": "46d8e87a17158c523021965ec8fc7d32598232fec3ad15f6593d1089a7a97ffe",
+      "bytes": 19106,
+      "lines": 281,
+      "read_ranges": [
+        [
+          1,
+          281
+        ]
+      ],
+      "read_status": "complete",
+      "sha256_after": "46d8e87a17158c523021965ec8fc7d32598232fec3ad15f6593d1089a7a97ffe",
+      "bytes_after": 19106,
+      "lines_after": 281,
+      "unchanged_after_full_read": true
+    },
+    {
+      "path": "docs/implementation/05-analytics.md",
+      "sha256_before": "e3f3df4ae58bce1f5b5e54166ccd656bc9e9e7478854d4e105f52a24b7f75f3d",
+      "bytes": 45267,
+      "lines": 708,
+      "read_ranges": [
+        [
+          1,
+          708
+        ]
+      ],
+      "read_status": "complete",
+      "sha256_after": "e3f3df4ae58bce1f5b5e54166ccd656bc9e9e7478854d4e105f52a24b7f75f3d",
+      "bytes_after": 45267,
+      "lines_after": 708,
+      "unchanged_after_full_read": true
+    },
+    {
+      "path": "docs/implementation/06-read-surfaces.md",
+      "sha256_before": "52cc1279e55e5a285cfd5cd8b5eda7af7382c265a915504a8b0ee95ba0f2d8d5",
+      "bytes": 44101,
+      "lines": 671,
+      "read_ranges": [
+        [
+          1,
+          671
+        ]
+      ],
+      "read_status": "complete",
+      "sha256_after": "52cc1279e55e5a285cfd5cd8b5eda7af7382c265a915504a8b0ee95ba0f2d8d5",
+      "bytes_after": 44101,
+      "lines_after": 671,
+      "unchanged_after_full_read": true
+    },
+    {
+      "path": "docs/implementation/07-publication.md",
+      "sha256_before": "e54ff21e00e37a8c852e3ea69ff042c1bf69a77b90b9a628cd6ade146bc134ba",
+      "bytes": 32666,
+      "lines": 508,
+      "read_ranges": [
+        [
+          1,
+          508
+        ]
+      ],
+      "read_status": "complete",
+      "sha256_after": "e54ff21e00e37a8c852e3ea69ff042c1bf69a77b90b9a628cd6ade146bc134ba",
+      "bytes_after": 32666,
+      "lines_after": 508,
+      "unchanged_after_full_read": true
+    },
+    {
+      "path": "docs/specification/dvm-profile.md",
+      "sha256_before": "3451628a2e7817559a81c224b297b4de61b64c0364c940f71ca892abbe64804a",
+      "bytes": 24735,
+      "lines": 366,
+      "read_ranges": [
+        [
+          1,
+          366
+        ]
+      ],
+      "read_status": "complete",
+      "sha256_after": "3451628a2e7817559a81c224b297b4de61b64c0364c940f71ca892abbe64804a",
+      "bytes_after": 24735,
+      "lines_after": 366,
+      "unchanged_after_full_read": true
+    },
+    {
+      "path": "docs/research/derived-read-publication-findings.md",
+      "sha256_before": "aa4f1df3b52fe63833245770fb7745feb5188f646653d09baf090e3780e18847",
+      "bytes": 24379,
+      "lines": 335,
+      "read_ranges": [
+        [
+          1,
+          335
+        ]
+      ],
+      "read_status": "complete",
+      "sha256_after": "aa4f1df3b52fe63833245770fb7745feb5188f646653d09baf090e3780e18847",
+      "bytes_after": 24379,
+      "lines_after": 335,
+      "unchanged_after_full_read": true
+    },
+    {
+      "path": "docs/research/go-analytics-code-walkthrough.md",
+      "sha256_before": "beeca9d23412b4d589cf8458f27dc430d075883b280dd82fb4632190334be99e",
+      "bytes": 42933,
+      "lines": 574,
+      "read_ranges": [
+        [
+          1,
+          574
+        ]
+      ],
+      "read_status": "complete",
+      "sha256_after": "beeca9d23412b4d589cf8458f27dc430d075883b280dd82fb4632190334be99e",
+      "bytes_after": 42933,
+      "lines_after": 574,
+      "unchanged_after_full_read": true
+    },
+    {
+      "path": "docs/reviews/07-phase-5-recheck.md",
+      "sha256_before": "4552502f61c3f7d3937180e65d64c3dd7ec453fbf5365b813c1e79f3d181b1ae",
+      "bytes": 32843,
+      "lines": 210,
+      "read_ranges": [
+        [
+          1,
+          210
+        ]
+      ],
+      "read_status": "complete",
+      "sha256_after": "4552502f61c3f7d3937180e65d64c3dd7ec453fbf5365b813c1e79f3d181b1ae",
+      "bytes_after": 32843,
+      "lines_after": 210,
+      "unchanged_after_full_read": true
+    },
+    {
+      "path": "docs/reviews/02-contracts-and-simplification.md",
+      "sha256_before": "add22b946c7ee038cedf384aa6122fb15059c50569fe9ad2069a149637aab9c2",
+      "bytes": 1583,
+      "lines": 26,
+      "read_ranges": [
+        [
+          1,
+          26
+        ]
+      ],
+      "read_status": "complete",
+      "sha256_after": "add22b946c7ee038cedf384aa6122fb15059c50569fe9ad2069a149637aab9c2",
+      "bytes_after": 1583,
+      "lines_after": 26,
+      "unchanged_after_full_read": true
+    },
+    {
+      "path": "docs/reviews/04-failures-and-growth.md",
+      "sha256_before": "e5840e5d3b1718851ea9b44ccea26b10fb13b5b1c0fe7027317354b841d14438",
+      "bytes": 1803,
+      "lines": 28,
+      "read_ranges": [
+        [
+          1,
+          28
+        ]
+      ],
+      "read_status": "complete",
+      "sha256_after": "e5840e5d3b1718851ea9b44ccea26b10fb13b5b1c0fe7027317354b841d14438",
+      "bytes_after": 1803,
+      "lines_after": 28,
+      "unchanged_after_full_read": true
+    }
+  ],
+  "full_read_completed_utc": "2026-09-11T09:02:23.673253+00:00",
+  "total_files": 13,
+  "total_bytes": 465938,
+  "total_logical_lines": 6304,
+  "changed_sources": [],
+  "method": "Complete numbered file reads in bounded contiguous chunks; truncated output not counted and intervals reread. Searches used only for later crosschecks, not as complete-file coverage.",
+  "execution": "No product code, product/legacy tests, builds, benchmarks, publication, or Git commands executed.",
+  "primary_checks": [
+    {
+      "url": "https://raw.githubusercontent.com/nostr-protocol/nips/a2494f4f81d46684e5814a9bf35e2b1df978f955/01.md",
+      "scope": "Event/REQ/filter/current-state semantics shown in retrieved text",
+      "method": "web open; exact pinned revision; no live protocol execution"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nostr-protocol/nips/a2494f4f81d46684e5814a9bf35e2b1df978f955/09.md",
+      "scope": "Full retrieved deletion-request text",
+      "method": "web open; exact pinned revision; no live protocol execution"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nostr-protocol/nips/a2494f4f81d46684e5814a9bf35e2b1df978f955/40.md",
+      "scope": "Expiration policy source retrieved; supplementary check, not counted as assigned full-file reading",
+      "method": "web open; exact pinned revision; no live protocol execution"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nostr-protocol/nips/a2494f4f81d46684e5814a9bf35e2b1df978f955/45.md",
+      "scope": "Full retrieved COUNT/HLL text",
+      "method": "web open; exact pinned revision; no live protocol execution"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nostr-protocol/nips/a2494f4f81d46684e5814a9bf35e2b1df978f955/57.md",
+      "scope": "Full retrieved text across two opens, including Appendix F and receipt limitations",
+      "method": "web open; exact pinned revision; no live protocol execution"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nostr-protocol/nips/a2494f4f81d46684e5814a9bf35e2b1df978f955/66.md",
+      "scope": "Full retrieved discovery/announcement text",
+      "method": "web open; exact pinned revision; no live protocol execution"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nostr-protocol/nips/a2494f4f81d46684e5814a9bf35e2b1df978f955/77.md",
+      "scope": "Full retrieved wrapper and Negentropy v1 appendix",
+      "method": "web open; exact pinned revision; no live protocol execution"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nostr-protocol/nips/a2494f4f81d46684e5814a9bf35e2b1df978f955/85.md",
+      "scope": "Full retrieved assertion/preference text",
+      "method": "web open; exact pinned revision; no live protocol execution"
+    }
+  ],
+  "auxiliary_local_checks": {
+    "full_read": [
+      "AGENTS.md"
+    ],
+    "search_only": [
+      "docs/specification/data-contracts.md",
+      "docs/product/data-and-feature-decisions.md",
+      "docs/architecture/acquisition-services.md",
+      "docs/implementation/03-acquisition.md"
+    ],
+    "not_counted_as_full_read": true,
+    "missing_path_probe": "docs/implementation/04-monitoring.md does not exist; actual phase is 04-relay-lifecycle.md; the failed search was not coverage",
+    "coordinating_confirmation": "Root relayed complete acquisition reviewer confirmation of missing LNURL issuer-evidence producer; this audit did not independently reread that entire domain."
+  },
+  "scope_limitations": [
+    "Only assigned 13 Markdown bodies are claimed as complete domain coverage.",
+    "Historical Go code walkthrough was read, not independently repeated or executed.",
+    "Current engine/crypto/payment compatibility and practical performance were not tested.",
+    "A full reread cannot establish universal optimality."
+  ],
+  "report": {
+    "path": "docs/reviews/10-analytics-read-audit.md",
+    "sha256": "b5c5442729c8d071259febcfc4f720df69e861901c1308f1a7b193671580cdab",
+    "bytes": 20709,
+    "lines": 285
+  },
+  "final_verification_utc": "2026-09-11T09:07:54.776463+00:00",
+  "verification": {
+    "assigned_sources_unchanged": true,
+    "full_coverage_records": 13,
+    "report_local_links_checked": 14,
+    "errors": [],
+    "no_product_tests_executed": true
+  }
+}

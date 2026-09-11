@@ -12,14 +12,22 @@ for the admitted event, clocks, claims and signed fidelity.
 | `nostr-jsonl/1` | One complete NIP-01 event object per UTF-8 line; no float conversion of integers | File digest and completed line boundary; compressed streams may require replay from a declared compression unit |
 | `bigbrotr-archive/1` | Versioned manifest, typed Parquet families, dictionary/document references and source identities | Immutable manifest/file digest plus complete row group; canonical receipt before advancing |
 | `pensieve-delimited/a89cec2` | Unsigned varint byte length followed by one protobuf event; repeated until exact boundary EOF | File digest plus byte offset immediately after a complete admitted message |
-| `bigbrotr-analysis/1` | Explicitly projected analytical rows, including omitted signed fields | Named analytical dataset only; never a full-event admission path |
+| `bigbrotr-analysis/1` | Explicitly projected analytical rows, including omitted signed fields | Standalone DuckDB analysis/export only; canonical importer rejects it |
 
-Adapters yield the same bounded untrusted signed-event candidate and then invoke
+The three full-event import adapters yield a bounded untrusted signed-event
+candidate and then invoke
 the independent canonical-ID and Schnorr verifier. A parsed format is not proof
 of a valid event. No adapter trusts an archive's stored verification flag.
 Reimport preserves external source claims as claims and separately records local
 first acquisition; it never invents a local relay witness. Disabled evidence
 families follow `import.claims` and provenance policy before their interpretation.
+
+Projected artifacts do not create a second in-product dataset catalog or importer.
+P08-T04 owns their standalone DuckDB guide. Research imports retain kind-5
+deletion requests and original targets as signed events; deployment administrative
+controls belong to the distinct backup/restore manifest. Unknown mandatory
+control-bearing formats fail compatibility preflight. The destination always
+enforces its current admission restrictions.
 
 ## Pensieve: inspected source, not assumed compatibility
 

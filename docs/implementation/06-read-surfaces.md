@@ -391,7 +391,9 @@ logical deletion/expiry while the historical archive retains all signed bytes.
   setup and still receives matching live events. COUNT remains a finite request,
   not a stored subscription or live feed.
 - [ ] **Step 4:** bound 128 connections, eight subscriptions per connection,
-  64-KiB frames, 1-MiB per-client output buffer, ten-second slow-client deadline,
+  64-KiB frames, subscription IDs at most 64 Unicode scalar values/256 UTF-8
+  bytes with the shared conservative envelope allowance, 1-MiB per-client output
+  buffer, ten-second slow-client deadline,
   900-second feed retention and 3600-second subscription lifetime. Enforce global
   byte permits and refuse/close overflow rather than blocking acquisition.
   Measure complete escaped EVENT frames against the configured wire and buffer
@@ -427,7 +429,10 @@ historical reads available.
 **Boundary:** a NEG session pins the visible, retrievable full-event set as
 distinct `(created_at,event_id)` pairs ordered by time then ID. It is independent
 of provenance collection. Admission-only IDs, claims, restricted/missing bodies
-and non-visible replacements are not advertised as retrievable events.
+and non-visible replacements are not advertised as retrievable events. The shared
+RelayRetrievable predicate also checks the actual escaped body/envelope and
+maximum supported subscription-ID allowance; see the exact
+[encoding contract](../architecture/search-and-reconciliation.md#relay-encoding-eligibility-and-usable-search-scope).
 
 - [ ] **Step 1:** implement NEG-OPEN/MSG/CLOSE/ERR and the pinned exact timestamp/
   ID wire representation with independent reference fixtures. Keep NEG session
@@ -439,7 +444,11 @@ and non-visible replacements are not advertised as retrievable events.
   even with no new ordinary event arrival.
   Permanently materialize only configured shared shapes; arbitrary authorized
   filter combinations consume bounded temporary/cache state, not an enduring
-  per-query index. Cache identity includes source/view/policy generation.
+  per-query index. Cache identity includes source/view/policy generation plus
+  encoding, subscription-ID
+  allowance and serving-limit revision. Invalidate sets after a limit reduction.
+  Negotiate/fetch small, escaping-heavy and oversized stored bodies against the
+  same real listener; every advertised ID must be deliverable within its bound.
 - [ ] **Step 3:** allow bounded ad-hoc sets only up to 10,000 records. Broad shapes
   require a ready persistent projection; reject any filter limit including zero,
   search, or unsupported combinations rather than changing set semantics.
@@ -615,7 +624,11 @@ Only regtest funds are used; missing real regtest evidence is `NOT_RUN`.
 
 ## P06-T12 — Cross-surface conformance, recovery and resource fairness
 
-**Dependencies:** P06-T01–T11; P05-T13; P07-T01–T04.
+**Dependencies:** core P06-T01–T08 and P05-T13. Free DVM capability adds P06-T09
+and P07-T01–T04; subscriptions add P06-T10; advertised paid support adds P06-T11.
+Requiredness is per advertised capability: absent LND may not block a free-only
+release or count as passed paid acceptance. The full selected feature delivery
+still owes its paid-capability regtest before claiming that optional feature.
 
 **Proposed files:** `tests/acceptance/cases/read_surfaces.py`;
 `tests/acceptance/oracles/read_membership.py`;
@@ -669,3 +682,14 @@ The central review ledger records cross-phase review and remaining release gates
 | 3 — Crash/authority | Specified absolute cursor and job lifetimes, atomic snapshot/feed/outbox positions, invoice-hash recovery, matching-author cancellation and failed-versus-refund-due delivery deadlines (T03/T07/T09–T11). |
 | 4 — Work/state cost | Bounded active cursor pins, unresolved financial obligations, NEG ad-hoc sets and shared buffers; charged pretokenized search/ordered phrase verification and prohibited permanent arbitrary filter indexes (T03/T06/T08/T11). |
 | 5 — Packaged client proof | Added actual capability-client checks, oversized single-event refusal, 300-second paid-delivery failure/regtest and three-surface comparison against independent source truth, not adapter agreement (T05/T07/T11/T12). |
+
+## Qualification additions from the complete-document audit
+
+P06-T06/T12 execute the common/rare/phrase/multilingual workload in
+[usable search scope](../architecture/search-and-reconciliation.md#relay-encoding-eligibility-and-usable-search-scope),
+recording both accepted and refused user queries, full candidate work and total
+index footprint. Tiny exact fixtures alone cannot establish a useful default.
+P06-T09/T10 implement [separate subscription/control slots](../specification/dvm-profile.md#slot-ownership-and-authenticated-control-under-saturation)
+and prove owner renewal/cancellation through a saturated ordinary job queue.
+P06-T12 has distinct core, free-DVM, subscription and paid evidence requirements;
+unadvertised optional support is unavailable, never silently marked tested.

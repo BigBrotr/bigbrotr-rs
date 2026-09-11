@@ -25,7 +25,7 @@ Each selected worker validates its effective configuration and actual required a
 
 ## Shared records and invariants
 
-Names here are semantic contract names, not a requirement for a specific database schema. Every durable record carries `schema_version`, immutable `record_id`, `ingested_at`, producer identity and an acquisition/configuration revision. Preserve nonnegative signed-event timestamp integers losslessly in a 64-bit unsigned field; local UTC observations use integer microseconds and measured durations use a monotonic clock. Negative/noninteger/overflowing event timestamps receive explicit schema-rejection results. A verified event timestamp unsupported by a downstream calendar type remains an integer with a conversion-status flag. NIP-77 reserves the maximum uint64 timestamp: an event at that value cannot enter its set and receives a protocol-range gap, not silent data loss. Do not cast hostile timestamps into a smaller database type before range handling.
+Names here are semantic contract names, not a requirement for a specific database schema. Authoritative scientific facts use the exact immutable source envelope in [data contracts](../specification/data-contracts.md#immutable-source-envelope); measurement methods/scopes carry their relevant revisions. Producer request IDs and process/config execution records remain operational and are not copied into every archival event. Preserve nonnegative signed-event timestamp integers losslessly in a 64-bit unsigned field; local UTC observations use integer microseconds and measured durations use a monotonic clock. Negative/noninteger/overflowing event timestamps receive explicit schema-rejection results. A verified event timestamp unsupported by a downstream calendar type remains an integer with a conversion-status flag. NIP-77 reserves the maximum uint64 timestamp: an event at that value cannot enter its set and receives a protocol-range gap, not silent data loss. Do not cast hostile timestamps into a smaller database type before range handling.
 
 | Record | Required fields and semantics |
 |---|---|
@@ -40,7 +40,7 @@ Names here are semantic contract names, not a requirement for a specific databas
 | `AcquisitionGap` | Scope/interval or exact event id, reason, first/last observed, retry due, attempts, latest evidence, unresolved/resolved status and resolution receipt. Resolving adds history; it does not erase the earlier gap. |
 | `ImportJob` | Job id, source manifest/digests, parser and policy versions, requested scope, current phase, shard/offset, last durable receipt, bytes/records and outcomes, reject-artifact reference, terminal status. Multiple independent jobs may coexist. |
 
-`received_at - created_at` measures signed-age at receipt. It is not proof of network latency or clock skew: signed time is author-controlled. First-local-seen, first-imported-claim and first-durable-admission are three distinct answers. Compact local witness records by minimum receipt time per `(event, endpoint, observer, auth scope)`; retain separate per-session arrival series only when explicitly enabled. The product may display a cross-observer minimum as a derived value with its evidence class.
+`received_at - created_at` measures signed-age at receipt. It is not proof of network latency or clock skew: signed time is author-controlled. First-local-seen, first-imported-claim and first-durable-admission are three distinct answers. Compact local witness records by minimum receipt time per `(event, endpoint, observer, auth scope)`; ordinary repeated arrivals remain bounded operational diagnostics and never a permanent archival series. The product may display a cross-observer minimum as a derived value with its evidence class.
 
 ### Durable ingest contract
 
@@ -335,7 +335,15 @@ With provenance enabled, preserve supplied provenance as imported claims. Unknow
 
 Large joins use a bounded disk-backed staging index or external sort by event id, not a corpus-sized RAM map. Build/verify sidecar partitions, detect missing and orphan references, join in stable order, and checkpoint each completed phase behind durability. Input order does not decide whether an edge is lost. On RAM pressure spill; on scratch quota exhaustion pause with required/free bytes. Admission uses the same batch/idempotency/receipt contract as live acquisition. Native input segments are decoded into logical records unless an explicitly compatible attach operation validates formats, policies and ownership; copying arbitrary journal files into a live writer directory is not import.
 
-Local moderation is always enforced by the current admission authority. Source tombstones are preserved as source statements; default native round-trip respects them within that source corpus so removed source bodies are not accidentally restored. Preflight reads the manifest's complete control snapshot, or stages all source control records before admitting bodies when the format has no snapshot; a later tombstone in file order must not allow temporary restoration of an earlier body. They do not impose a global local ban on unrelated records from other sources. An explicit source-tombstone ignore policy is recorded in job results. Conflicting source/destination policies are shown before data admission; source claims never override a local takedown.
+The destination admission authority always enforces its current moderation policy.
+Research imports do not restore another deployment's administrative control state.
+NIP-09 kind-5 requests and their targets remain full signed archival events,
+independent of file order; serving deletion semantics are derived later. Selected
+research formats contain no administrative source-tombstone control family and
+have no source-tombstone-ignore option. An unknown mandatory control-bearing
+format fails preflight; a deployment backup must use P08 restore with its complete
+control snapshot before writers are activated. Exported visibility/loss manifests
+qualify their selected data; they do not impose a global destination ban.
 
 Default malformed/oversized JSONL records are rejected with counts and a bounded reject artifact; corrupt native framing/checksums halt the affected shard because safe record boundaries are not assured. Forged ids cannot poison dedupe. A job can finish `completed_with_rejections` with a non-success warning exit class and machine-readable counters; neither zero imported records nor completed byte reading alone counts as a successful compatible import. Replaying after a crash may increase attempted counters but not logical imported counts.
 
@@ -351,7 +359,6 @@ Default malformed/oversized JSONL records are rejected with counts and a bounded
 | `import.memory_bytes` | `256MiB` | bytes/job | J | Includes join/sort and bounded verification queues |
 | `import.scratch_bytes` | `20GiB` | bytes/job | J | Finite staging quota; pause with diagnostics |
 | `import.claims` | `enabled-families` | enum | J | `require-all` refuses disabled supplied families; `none` omits interpreted sidecars; provenance off excludes event→relay claims |
-| `import.source_tombstones` | `respect_within_source` | enum | J | Optional explicit ignore, never a local moderation bypass |
 | `import.reject_policy` | `continue_records` | enum | J | Native framing corruption still stops shard |
 | `import.reject_artifact_bytes` | `64MiB` | bytes/job | J | Counts continue after sample cap; payload redacted by default |
 | `import.checkpoint_interval` | `5s` | duration | J | Checkpoint only durable whole-record/shard boundaries |
@@ -379,9 +386,9 @@ These are implementation acceptance scenarios to execute through the packaged bi
 15. **Durability and fencing.** Kill producers/append authority before and after append, fsync/group commit, dedupe publication, receipt and progress update. On restart, progress never cites unavailable acknowledged records under the configured durability class; replay creates no false ownership. Lose a lease mid-request: stale progress writes fail while newer work proceeds.
 16. **Indexer down and disk pressure.** Stop analytics/indexing, then sustain network acquisition and import until finite spool thresholds. Show independent service operation and explicit backpressure; no unbounded memory/disk growth. ENOSPC and fsync failures stop acknowledgments and freeze affected progress. Restoring capacity resumes from receipts without claiming lost live intervals were observed.
 17. **Fairness at realistic fleet size.** Use more eligible scopes than available connections, including one huge historical relay. Every eligible scope gets bounded work; backlog/service interval measurements explain unmet cadence. Record actual wire bytes, CPU, memory, FD count, disk writes and replay lag. No ≥5k events/s or fleet-size promise follows until those measurements justify it.
-18. **Import/export round trip.** Export and import native and JSONL artifacts with full signed bytes, unknown relay claims, timestamps, source tombstones and repeated bodies. Compare logical event/claim sets and specified byte fidelity, with network traversal unchanged. A slim artifact into a fidelity-requiring canonical target fails preflight; unsigned input cannot enter verified serving.
+18. **Import/export round trip.** Export and import native and JSONL artifacts with full signed bytes, unknown relay claims, timestamps, signed deletion requests/targets and repeated bodies. Compare logical event/claim sets and specified byte fidelity, with network traversal unchanged. A slim artifact into a fidelity-requiring canonical target fails preflight; unsigned input cannot enter verified serving.
 19. **Import crash and scale.** Use a corpus larger than RAM with provenance out of order. Stop during sidecar staging, verification and admission; resume from stable source identity with bounded spill. Modify a source shard and verify resume refusal. Scratch exhaustion pauses the job with exact diagnostics; source files survive cleanup.
-20. **Moderation during import.** Apply a local takedown while a long import is running. Subsequent admission honors the new policy revision; blocked ids are not restored from the source. Native source tombstones affect only their declared source scope. A forged id cannot suppress a later authentic event.
+20. **Moderation during import.** Apply a local takedown while a long import is running. Subsequent admission honors the new policy revision; blocked ids are not restored from the source. Kind-5 originals do not become administrative import exclusions; deployment controls use restore. A forged id cannot suppress a later authentic event.
 21. **Hostile inputs and retention.** Exercise oversized lines, malformed JSON/protobuf/native frames, giant negentropy lists, malformed EOSE hints, decompression bombs, far-future/negative/out-of-range signed times and slow sockets. The binary remains bounded and records precise outcomes. After configured retention and replay, expired observation payloads do not reappear from an older journal while permitted aggregates remain explainable.
 
 The SDK must be evaluated against these entry-point scenarios, especially custom guarded dialing, `limit:0` serialization, NIP-67 hints, per-id retrieval evidence, timestamp range, cancellation, exact event verification and bounded negentropy storage. Coordinating source inspection already found that `nostr` 0.45.4 at `5c669a498e5f8dd1ec5713b11fdb92bcd858ad73` drops EOSE hint arrays in its relay-message enum; a bounded envelope must preserve them before SDK conversion. A convenience method that hides required evidence is replaced by a lower-level adapter; the protocol itself is not rewritten merely to preserve an SDK abstraction.
@@ -497,3 +504,59 @@ common byte budget or record deferred/gap evidence; do not materialize several
 full set representations merely because each layer has its own item limit.
 Explicit proxy credentials must be consumed through a supported protected
 adapter or rejected during validation, never accepted and ignored.
+
+## Selected availability and issuer-evidence producers
+
+P04-T13 owns finite, explicitly requested `event-availability/1` Monitor jobs.
+It creates A05 pair observations from actual exact-ID requests with a declared
+selection, bounded work and proven response ordering. Periodic submission is off
+by default; provenance is required. P05-T08 and the availability pages consume
+this producer. First witnesses or operational retry logs cannot replace it.
+The [task contract](../implementation/04-relay-lifecycle.md#p04-t13--explicit-finite-event-availability-observations)
+owns its starting limits and real socket-to-browser evidence.
+
+P04-T14 owns guarded LNURL issuer-metadata acquisition for selected zap/profile
+subjects. It stores actual observed time, recipient/source binding and A06 bytes;
+analytics never performs HTTP resolution. A present key match is not historical
+issuer authority. The [task contract](../implementation/04-relay-lifecycle.md#p04-t14--acquire-attributed-lnurl-issuer-metadata)
+owns demand coalescing, bounds, source trust and unresolved-history behavior.
+
+## Pooled transport evidence and destination fairness
+
+A liveness request on a pooled socket measures its actual request/read behavior.
+Its TCP/TLS/WebSocket-open fields reference the original connection-generation
+observation and original timestamps; reuse never creates a new handshake sample.
+An explicitly due fresh-connect check waits for the same endpoint permit or
+coordinates a bounded live rotation with an exposed coverage gap. No compulsory
+reconnect happens on every liveness tick. P04-T02/T07/T08 test two ticks on one
+socket while the peer changes the certificate offered on subsequent connections.
+
+After guarded resolution, all names and roles on a host share a selected-IP
+bucket: `network.address_connections=8`,
+`network.address_start_rate=4/s`, burst 8 as initial hot controls. Reserve before
+connecting, retain the concurrency permit for the actual socket lifetime and
+apply the lower endpoint/hostname/global grants too. Lowering the limit stops
+new starts and drains without dropping acknowledged work. Scoped operator
+address overrides support legitimate large shared hosts. Distinct endpoint
+identities, Host/SNI and evidence remain separate. Remote-resolved overlays use
+their route/endpoint limits when the final destination IP is unknown; the proxy
+address is not falsely treated as every relay's destination. Split hosts initially
+have host-local quotas, not a claimed globally coordinated IP bucket.
+In-process roles use one network-budget owner. Multiple processes on the same
+host acquire/release these permits through the existing private Control adapter;
+a separate per-process bucket cannot be advertised as the shared host limit.
+Retain a grant until actual socket close or positive process exclusion. After
+budget-owner loss, reconcile live holdings or drain/exclude workers before
+reissuing capacity; a timeout alone cannot forget a still-open socket. P01-T05/T07
+and P04-T02 own this host-local contract, with disconnected-owner recovery tested.
+P04-T02/P03-T07 test hundreds of allowed hostname aliases to one address plus an
+unrelated peer; actual connections must obey the shared address bound and fair
+rotation while the unrelated peer progresses. Token maps stay bounded.
+
+P04-T11 owns `LocalMonitorView`, derived by the shared Indexer from local admitted
+measurements. P05-T06 owns `ResolvedRelayEvidence`, a separately versioned
+cross-observer/imported-claim result. Reuse pure field/eligibility reducers when
+meanings match, without a universal aggregation framework. Local NIP-66 publication
+reads LocalMonitorView; public analytical APIs name the local/resolved origin.
+Disabling claim resolution cannot block local measurement publication. A local
+timeout plus imported success claims must keep those two outputs distinguishable.
