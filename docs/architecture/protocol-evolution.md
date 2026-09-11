@@ -1,8 +1,8 @@
 # Protocol evolution, evidence, and incremental assertions
 
 Status: proposed implementation and standards-development contract, 2026-09-11.
-The owner selected full historical signed-event retention with deletion-aware
-ordinary reads. The extension names and proposed upstream wording below are
+The selected design preserves full historical signed-event retention with
+deletion-aware ordinary reads, following critical review of the owner's context. The extension names and proposed upstream wording below are
 BigBrotr design proposals; nothing here has been submitted upstream or implemented.
 The owner invited richer NIP-66/NIP-85 behavior, not automatic adoption of every
 existing proposal or unrestricted collection of additional metadata.

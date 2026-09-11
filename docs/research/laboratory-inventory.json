@@ -1,0 +1,43 @@
+{
+  "captured_at": "2026-09-11",
+  "legacy_source_snapshots": ".research/source-snapshots (39 captured files; see source-inventory.json)",
+  "upstream_checkout": {
+    "path": ".research/checkouts/rust-nostr",
+    "url": "https://github.com/nostrdevkit/nostr",
+    "commit": "5c669a498e5f8dd1ec5713b11fdb92bcd858ad73",
+    "local_modification": "Only the tracked research test patch; product library code unchanged",
+    "cargo_lock_sha256": "8af0d3dec4c9630fae91adb9d14e230bbfd67ad1edee795973369c4f9378c431"
+  },
+  "protocol_baseline": {
+    "url": "https://github.com/nostr-protocol/nips",
+    "commit": "a2494f4f81d46684e5814a9bf35e2b1df978f955"
+  },
+  "generated_local_material": {
+    "path": ".research",
+    "contents": [
+      "captured source documents",
+      "upstream checkout and patch",
+      "isolated Cargo dependency cache",
+      "isolated Cargo build targets"
+    ],
+    "approximate_total": "1.7 GiB at final inspection; ignored by Git"
+  },
+  "new_remote_lab": {
+    "path": "/home/tux/bigbrotr-planning-lab-20260911",
+    "own_postgresql_container": "bigbrotr-planning-pg-20260911",
+    "postgres_running": false,
+    "process_groups": [
+      "bigbrotr-planning-ducklake-20260911",
+      "bigbrotr-planning-rocks-20260911",
+      "bigbrotr-planning-ch-20260911"
+    ],
+    "all_process_groups": "inactive/dead at final inspection"
+  },
+  "previous_remote_lab": {
+    "path": "/home/tux/bigbrotr-independent-lab-20260910-final",
+    "own_clickhouse_container": "bigbrotr-independent-lab-20260910-ch",
+    "clickhouse_running": false,
+    "usage": "Reused own Python environment and own stopped CH container for tiny isolated new probes; prior evidence retained"
+  },
+  "isolation": "No writes to the legacy project or changes to its containers. No external publication of protocol drafts or SDK findings."
+}

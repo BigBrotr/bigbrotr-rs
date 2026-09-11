@@ -141,3 +141,37 @@ more storage, sharding or more hosts—not undocumented dropped edges. Public qu
 budgets and asynchronous export jobs must prevent an unrestricted full-archive
 query from consuming the entire shared machine. Maximum throughput is measured
 inside an explicit fairness and latency envelope, not by starving every other role.
+
+## Concrete network stress scenarios
+
+For illustration only, assume every active relay delivers one 2,000-byte event
+per second before protocol/TLS overhead. This is not a measured public-relay rate.
+
+| Active relays | Deliveries/s | Payload ingress | Implication for one 1 Gbit/s NIC |
+|---|---:|---:|---|
+| 5,000 | 5,000 | 10 MB/s | Network arithmetic permits it; CPU/storage/queries still require tests |
+| 10,000 | 10,000 | 20 MB/s | Same qualification; more active work and kernel state |
+| 50,000 | 50,000 | 100 MB/s | Near the 125 MB/s theoretical line rate before overhead/other traffic |
+| 100,000 | 100,000 | 200 MB/s | Exceeds that line rate regardless of Go/Rust or storage choice |
+
+A single relay can exceed the assumed rate by orders of magnitude. Conversely,
+quiet monitored endpoints need not deliver one event/s. The scheduler must expose
+active sessions, monitoring cadence, delivery rates and historical backlog
+separately. More CPU cores cannot make a 1 Gbit/s link carry 200 MB/s of payload.
+Use faster networking or multiple collectors/links when that is the measured
+limit, and route/shard admission so the network improvement does not merely move
+the bottleneck into one owner.
+
+Illustratively, 100 billion retained edges at 10 compressed bytes each would be
+1 TB for one representation alone; at 30 bytes, 3 TB. These are sensitivity inputs,
+not achieved encodings. Add both serving directions, exact admission inventory,
+dictionaries, correction history, archive and recovery reserve before claiming
+that an 8 TB host fits the workload. Publish measured bytes/edge for actual
+fan-out distributions and scopes.
+
+Representation research references: [Roaring format and implementations](https://roaringbitmap.org/)
+and [Rust implementation](https://github.com/RoaringBitmap/roaring-rs). These identify
+candidates, not a measured membership/metadata layout for BigBrotr. Explicit bounded
+CPU pools can use [Rayon thread configuration](https://docs.rs/rayon/latest/rayon/struct.ThreadPoolBuilder.html);
+pool size must fit the shared host envelope rather than defaulting each service
+to all logical processors.

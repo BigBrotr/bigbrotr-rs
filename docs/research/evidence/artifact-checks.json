@@ -1,0 +1,8 @@
+{
+  "scope": "local links, fences, JSON examples/evidence, Python syntax and selected evidence hashes; no semantic or product verification",
+  "markdown_files": 33,
+  "json_files": 25,
+  "json_examples": 4,
+  "errors": [],
+  "status": "passed"
+}

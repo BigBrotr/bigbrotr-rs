@@ -20,3 +20,6 @@ actual website usability or complete production audit. Those claims require the
 specified implementation and practical acceptance programme. A research patch
 asserting a reproduced bug is explicitly not a regression test claiming desired
 behavior. The reproduction has not been posted upstream.
+
+[Laboratory inventory](laboratory-inventory.json) records retained sources/caches,
+exact upstream revisions and final stopped state of the owned test resources.

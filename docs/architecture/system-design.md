@@ -1,6 +1,7 @@
 # System design
 
-Status: design under active revision; implementation has not begun. The service
+Status: implementation baseline after six design revisions; product implementation
+has not begun. The service
 contracts complement this document. A proposal is not a measured capacity claim.
 
 ## The selected direction
