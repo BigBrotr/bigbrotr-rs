@@ -15,17 +15,19 @@ completeness, or an authority on whether people or statements are trustworthy.
 | Event acquisition metadata | Original admission receipt/time and scoped first local receive metadata, with immutable earlier corrections | Explains when this instance acquired an event, even without provenance | Remote signed time and import claims are separate; no invented network witness |
 | Event→relay provenance | Optional first attributable observation per event/endpoint/observer/auth scope; exact admission, compact dictionaries, immutable corrections | Answers where an event was actually observed; supports scoped reconciliation/overlap | Not every repeat delivery; not proof it remains available |
 | Imported provenance | Source-attributed claims with validation status and source times | Useful outside evidence can be compared without pretending this instance measured it | An event signature authenticates the event, not the claimed relay observation |
-| Measurement attempt | Compact typed outcome, method/version, observer/route, actual measurement time/duration and document references | Distinguishes failed, deferred, unknown and successful checks; supplies valid denominators | Unexecuted checks cannot refresh measurements; raw retention is explicit |
+| Measurement attempt | Compact typed outcome, method/version, observer/route, actual measurement time/duration and document references | Distinguishes failed, interrupted, unknown and successful executed checks; supplies valid denominators | Deferred/unexecuted scheduler work stays operational; it cannot refresh measurements |
 | NIP-11, TLS/DNS and other bounded documents | Deduplicated immutable original document versions, content digest, parse/method version and security scope | Reparse improved schemas, inspect declared behavior, diagnose changes | Avoid copying an unchanged full document into every observation; do not index every arbitrary JSON field |
 | Registry and coverage | Typed transactional identities, eligibility, attempts, gaps, source cuts and configuration epochs | Drives fair scheduling and tells users what was actually investigated | A maximum created_at or EOSE is not a completeness certificate |
 | Derived facts and scores | Versioned outputs with source cuts, definitions, parameters, viewpoint and basis | Efficient reads, explainable comparisons and reproducible results | Retain usable/pinned generations; do not accumulate a full copy per tick forever |
 | Signed outputs and job state | Durable intent, exact signed bytes, per-destination receipts, policy identity, bounded execution ledger | Safe retries, attributable publication and resumable operations | ACK is not indefinite remote retention; terminal payload retention is separate from replay tombstones |
 | Operator policy and audit | Access/configuration changes, desired/applied versions, reason and actor, protected references | Makes management and recovery accountable | No secrets in public exports, ordinary logs or a browser-readable config dump |
 
-Full signed-event archival has no automatic age limit. Raw monitor detail starts
-with the explicit 365-day retention in the Monitor contract; retained aggregate
-history names its buckets, sufficient statistics and information lost. It cannot
-pretend that raw detail remains available after expiry. Imported artifacts,
+Full signed-event archival and actual compact monitor evidence have no automatic
+age limit in the baseline. This replaces the earlier proposed 365-day raw-monitor
+default: executed measurements are reusable research evidence. An operator may
+select a declared lossy retention policy; retained aggregate history names its
+buckets, sufficient statistics and information lost. It cannot pretend that raw
+detail remains available after expiry. Imported artifacts,
 publication payloads and job details have their own retention references. Backups
 and pinned exports are included when evaluating whether bytes can be reclaimed.
 

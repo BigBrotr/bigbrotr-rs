@@ -1,0 +1,38 @@
+{
+  "captured_at": "2026-09-11",
+  "repository": "https://github.com/andotherstuff/pensieve",
+  "commit": "a89cec26ec250ba3a23da7d6a9b1efaf70bce838",
+  "source_files": [
+    {
+      "path": "docs/nostr.proto",
+      "sha256": "87ebd21309641bfc51143dc18654dfd457c19edd929851eb3a68ec32fcf590e2",
+      "bytes": 2174,
+      "lines": 67,
+      "read_scope": "complete file",
+      "matches_pinned_git_blob": true
+    },
+    {
+      "path": "crates/pensieve-core/src/proto.rs",
+      "sha256": "b9fbf324647d80039ded04568ddc4692bf1fd60cf34447d6c1028e02a9745c55",
+      "bytes": 15696,
+      "lines": 465,
+      "read_scope": "complete file",
+      "matches_pinned_git_blob": true
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "413d954bf139eaf6d135faa4b6eb06fdf4a7960df0e893496f4764acc116c32f",
+      "bytes": 4607,
+      "lines": 134,
+      "read_scope": "complete file",
+      "matches_pinned_git_blob": true
+    }
+  ],
+  "execution": "Read only; upstream code/tests not built or executed",
+  "observations": [
+    "proto3 implicit scalar defaults do not preserve absent versus empty content",
+    "created_at int64 is smaller than canonical u64 domain",
+    "length prefix EOF and unchecked allocation require independent negative controls",
+    "upstream declares PolyForm Noncommercial1.0.0; no source/schema vendored"
+  ]
+}

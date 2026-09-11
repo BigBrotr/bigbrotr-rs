@@ -72,3 +72,12 @@ billions of unique events and tens/hundreds of billions of provenance relations,
 under simultaneous acquisition, reads, ranking, export and maintenance. Avoid
 avoidable bottlenecks, measure representation/amplification costs, and preserve
 bounded overload behavior; no claim of unlimited physical capacity is justified.
+
+The owner's latest refinement requires the entire selected product on paper as
+phases, tasks and numbered steps, followed by at least five substantive expansion
+rounds. The prior overview is insufficient alone. The external Go THE PLAN is
+unfinished context; findings cannot be attributed to its future corrected state.
+Retained fields must earn their scientific value: actual relay measurements and
+first observations are useful; internal duplicate counts, retries and queues are
+bounded operations. Record corrections and practical evidence, including results
+that overturn an efficiency assumption. Do not begin product implementation.

@@ -76,7 +76,7 @@ packages/brand/              shared assets and design tokens
 contracts/http/              versioned OpenAPI/schema artifacts
 contracts/management/        private typed command, revision and job schemas
 docs/                        canonical English engineering and operator content
-deploy/                      local/private/public deployment compositions
+packaging/compose/           local/private/public deployment compositions
 ```
 
 This is a recommended future layout, not a scaffold created by this planning

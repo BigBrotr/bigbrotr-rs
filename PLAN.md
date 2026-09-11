@@ -11,6 +11,12 @@ Use one application image/binary with composable process roles. Friendly recipe
 names do not encode hidden storage behavior. All services, dashboard, management,
 website and documentation carry equal quality obligations.
 
+The [detailed phase/task/step plan](docs/implementation/README.md) is the execution
+work breakdown. Start with its [field contracts](docs/specification/data-contracts.md),
+[component contracts](docs/specification/component-contracts.md) and
+[coverage ledger](docs/implementation/coverage.md). The phase table below is only
+an overview; it is not a substitute for task prerequisites and practical evidence.
+
 ## Read the design in this order
 
 1. [Requirements and historical phases](docs/product/requirements-and-history.md)
@@ -36,6 +42,8 @@ reasoned design selections and defaults for unanswered questions. The
 and a further [full-source and feature recheck](docs/reviews/07-vision-and-final-recheck.md).
 A subsequent [selective full-file Go code walkthrough](docs/reviews/08-go-code-walkthrough.md)
 records actual call chains, useful patterns and the resulting contract refinements.
+The [five-round expansion review](docs/reviews/09-expanded-plan-rounds.md) records
+subsequent planning gaps, concrete corrections and an actual Parquet counterexample.
 The [experiment summary](docs/research/experiment-summary.md) states what was
 actually run and what remains unverified.
 

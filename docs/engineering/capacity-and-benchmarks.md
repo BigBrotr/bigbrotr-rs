@@ -73,9 +73,12 @@ and reuse warm-start vectors only when mathematically valid; periodically compar
 to full recomputation. Approximate distinct counts, sketches and sampled ranking
 have explicit error semantics and must not replace exact archival truth.
 
-Do not run all-pairs relay comparisons: R=100,000 implies almost five billion
-pairs. Generate candidate similarities using sketches/buckets, then verify exact
-set comparisons only for bounded candidates with comparable coverage. Clusters
+Do not admit unbounded all-pairs relay comparisons: R=100,000 implies almost five
+billion pairs. The exact baseline uses comparable eligible scopes and sound size
+pruning, then refuses work beyond its candidate/scan budget. A separately named
+approximate mode may use sketches/buckets to generate candidates before exact
+pair verification; it cannot claim the exact baseline's exhaustive candidate
+coverage. Equal-size fleets expose the worst case rather than making it disappear. Clusters
 are advisory; near-identical content does not mean two relay identities or their
 future behavior are interchangeable. Global PageRank passes remain O(E); caching
 one personalized vector per possible user can itself become infeasible. Cache
@@ -199,3 +202,22 @@ edges `E`, historical input tags `H` and concurrent viewpoints `K`. The
 accounts for adjacency, vectors, rebuilds and global iterations independently.
 Benchmarks must cover full graph construction, loading, normalization and artifact
 publication under competing work, not just a warm numerical kernel.
+
+## Permanent measurement sensitivity
+
+The selected compact raw-measurement archive has no automatic age expiry. With
+all endpoints actually measured every five minutes, R endpoints produce 288R
+attempts/day, before independent catalog/probe families. At a purely illustrative
+300 compressed bytes/attempt, 5,000 endpoints produce 432 MB/day; 100,000 produce
+8.64 GB/day, approximately 3.15 TB/year for this one representation. This is
+arithmetic, not measured row size, achieved cadence or a recommendation to change
+retention. Add documents, online indexes, pending intent/terminal writes, copies
+and maintenance. Unexecuted queue entries do not count as measured attempts.
+
+P02-T09 and P04-T12 measure actual bytes/attempt and achieved service intervals.
+The real tiny [Parquet probe](../../experiments/archive-model/README.md) found
+that split objects/references can be larger than already compressed wide rows;
+representation choices must include file/dictionary overhead and wider workloads.
+On finite resources, adjust explicitly configured acquisition cadence/placement,
+add capacity or select an explicitly lossy research policy; do not hide deletion
+or missed measurements behind a successful monitor status.

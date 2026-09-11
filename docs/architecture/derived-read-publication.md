@@ -190,7 +190,7 @@ availability observation history independently of derivation-run retention.
 | `work.max_duration` | 3600; cancel only at safe partition boundaries where possible | seconds | Cycle |
 | `genesis_floor` | none beyond source scope | event timestamp | Generation |
 | `overlap.window` / `jaccard_min` / `shared_min` | 86400 / 0.99 / 10000 | seconds / ratio / events | Generation |
-| `retention.completed_generations` | 100, subject to last-usable and pin protection | generations | Cycle |
+| `retention.completed_generations` | 3, subject to last-usable and active pin protection | generations | Cycle |
 | `continue_independent_targets_on_error` | true | boolean | Cycle |
 | `memory.max_bytes` / `spill.max_bytes` | 512 MiB / 8 GiB, allocator constrained | bytes | Cycle |
 
@@ -287,7 +287,7 @@ and adversarial review before their profile is labeled production-ready.
 | `graph.public_mute_policy` | suppress same-author follow edge, retain explanatory mute mass | enum | Generation |
 | `relay.window` / `min_observations` | 86400 / 5 | seconds / observations | Generation |
 | `relay.component_weights` | availability 0.5, RTT 0.3, capability 0.2, coverage 0 | normalized weights | Generation |
-| `retention.completed_generations` | 100, subject to publication/input pins | generations | Cycle |
+| `retention.completed_generations` | 3, subject to active publication/input pins | generations | Cycle |
 | `memory.max_bytes` / `spill.max_bytes` | 1 GiB / 16 GiB, allocator constrained | bytes | Cycle |
 
 Stopping Ranker leaves archive reads, derivation, and monitoring operational.
@@ -838,117 +838,59 @@ violations. Never log whole relay frames by default.
 
 ## DVM / Nostr query service
 
-Purpose: accept signed, scoped archive queries and return signed query results
-over Nostr, with planned recurring delivery and optional paid service as explicit
-independent modes. Inputs are verified request events under a documented query
-profile; outputs are bounded results/feedback and a durable job ledger. This
-service uses the same resource registry, exposure rules and cost plans as API.
+The selected optional interface is specified completely in the
+[BigBrotr query DVM profile](../specification/dvm-profile.md), with concrete
+implementation/acceptance in [P06-T09–T11](../implementation/06-read-surfaces.md)
+and the shared [signer/outbox](../implementation/07-publication.md). That profile
+owns the wire schemas, numeric kinds, limits, encryption, payment and recovery
+states; this summary does not define a competing set of defaults.
 
-The current [NIP-90](https://raw.githubusercontent.com/nostr-protocol/nips/master/90.md)
-is unrecommended and favors use-case-specific microstandards. Therefore name and
-publish a BigBrotr archive-query profile with request/result kinds selected against
-the current task registry, version, supported input/output formats, filters,
-limits, encryption, cancellation and delivery semantics. Do not repurpose kind
-5050, which is text generation. Its numerical kind is a protocol registration
-decision to resolve before enabling the listener, not an arbitrary user knob.
-Keep a separately tested NIP-90 compatibility adapter only for actually supported
-task kinds; handler announcements name this exact support, never generic DVM
-capability. This design preserves the Nostr query product without making a false
-wire-compatibility promise.
+Use directed request 5999/result 6999/feedback 7000 plus mandatory exact
+`bigbrotr.query/1` marker. This is an experimental application binding, not a
+reserved kind or generic NIP-90 compatibility claim. HTTP and ArchiveRelay remain
+the general interoperable read interfaces. The adapter is disabled by default;
+explicit handler announcements name only its actual version and capabilities.
 
-For a one-shot request, verify event structure/hash/signature from the complete
-body independently of any SDK cached ID or verification flag, target provider and
-freshness, then enforce per-author/global quotas before any costly work or signed
-feedback. A valid request to another provider is ignored. Deduplicate by request
-event ID and provider identity; accept by atomically creating a local job with
-normalized parameters, authorization policy, profile version and pinned input.
-Only after durable acceptance may a positive processing response be signed.
-Repeated delivery returns existing job state/results rather than recomputing.
-Remote result scanning can assist reconciliation but is never the job database.
+Requests contain bounded inline typed queries. Finite list/count operations share
+the read core's authority, filters, exactness and pinned source. Event-only
+subscriptions have a bounded initial snapshot, acquisition-feed handoff, numbered
+at-least-once batches and same-requester signed renewal/cancellation. A generic
+aggregate does not gain a fictitious change feed. No arbitrary URL fetching,
+remote event dereferencing, job chaining or user-granted egress is supported.
+Requested destinations must be a subset of the operator's allowlist.
 
-States are `accepted`, `waiting-payment` when enabled, `queued`, `running`,
-`result-ready`, `delivering`, `complete`, `cancelled`, or `failed`, with
-retryable/terminal cause recorded. Atomically write result artifact and outbox
-transition before delivery. A cancelled or expired job cannot be restarted by
-replaying the original request. Cancellation verifies the requesting identity and
-the selected profile's ownership/time rules. The request's event timestamp is not
-a local execution deadline or proof that it was previously accepted.
+Private requests select the explicit NIP-44 v2 variant; legacy NIP-04 is not a
+fallback. Results and sensitive feedback are encrypted without copied cleartext
+inputs. Requester/provider/timing/routing still expose metadata. Independent
+canonical ID/signature validation precedes quotas and signing; replay resolves
+the same durable job. Malformed/misdirected traffic causes no reply. A valid
+rejection may create one bounded deduplicated feedback event.
 
-Initial supported inputs are bounded inline structured query data and local event
-references that the requester is authorized to read. Arbitrary URL fetches, job
-chaining, user-selected output destinations, and arbitrary relay hints are disabled.
-An explicitly enabled future fetch mode needs the acquisition egress guard,
-allowed schemes, DNS-rebinding protection, byte/time limits and separate authority.
-Output goes only to configured destinations or validated profile destinations
-within an operator allowlist. Neither an `i` URL nor a `relays` tag grants network
-or credential access. Feedback is bounded per verified, rate-admitted request.
-A supported request rejected for resource/parameter reasons may receive one
-rejection response backed by a compact deduplication record; it is not an accepted
-execution job. Invalid signatures never receive signed feedback, and replaying a
-rejected request does not create a new feedback stream.
+Finite jobs have a 900-second absolute lifetime from acceptance, at most 60 seconds
+queued, the shared 15-second query deadline, and delivery deadline no later than
+300 seconds after durable result readiness or job expiry. Exact signed output is
+durable before networking. Read pins can release after its required bytes are
+retained; compact lineage and outstanding delivery obligations remain. At least
+one accepted configured destination satisfies delivery; client processing is not
+proven. Terminal expiry cancels undispatched sends rather than delivering after a
+refund decision. The profile specifies late-ACK and crash behavior.
 
-Plaintext requests/results are public on their relays. Encryption mode is a named
-versioned contract: legacy NIP-90 parameters reference NIP-04, while a modern
-NIP-44-based archive profile must advertise its different encoding. Reject
-unsupported encrypted requests; never fall back to plaintext. Decrypted inputs
-must not leak through echoed `i` tags, copied request content, feedback, logs,
-metrics, or result previews. Encrypt both relevant results and feedback for the
-requester under the selected profile. Requester/provider identities and event
-relationships still expose metadata. Decryption permission is distinct from
-signing permission; arbitrary remote signing does not automatically authorize it.
+Payments default off. The selected optional `lnd-prepaid-v1` uses a fixed positive
+msat quote per finite operation and an invoice-only LND adapter. Persist one
+protected preimage/hash before invoice creation, resolve ambiguity by that same
+hash, and trust independently checked node settlement rather than requester
+claims. No spending RPC or automatic refund exists; late/overpayment or paid
+undeliverable work retains an explicit refund-due ledger and operator-reported
+external resolution. Paid recurring jobs are outside this baseline. Real isolated
+LND regtest evidence is required before advertising the paid mode.
 
-Recurring delivery is an application feature, not a generic NIP-90 guarantee.
-Its contract includes maximum TTL, signed cancellation/renewal, resource/filter
-version, initial snapshot, acquisition-sequence cursor, output sequence numbers,
-retention, rate and byte limits, and replay semantics. Commit cursor advancement
-atomically with a durable result outbox. Relay acceptance acknowledges transport,
-not that the client processed a batch. Exactly-once client effects require client
-deduplication/acknowledgement under the profile; the default delivery remains at
-least once. Late historical acquisitions cannot be skipped by a created-at cursor.
-On retained-feed exhaustion pause with `resume-unavailable` and offer an explicit
-new snapshot; never manufacture continuity.
-
-Paid queries remain a fully separate planned mode, default off. Define pricing
-units, quote validity, invoice amount/currency, expiry, verified settlement source,
-request/payment binding, cancellation/refund policy and recovery before enabling
-nonzero prices. A feedback event or claimed invoice payment is not proof of
-settlement. The signer cannot spend funds. No general invoice payment automation
-is implied by operating a query provider. Revenue and settlement metrics must not
-expose plaintext private queries.
-
-| Setting | Proposed default | Unit | Reload |
-|---|---|---|---|
-| `enabled` | false | boolean | Live |
-| `profile` | required versioned archive profile; no automatic 5050 | identifier | Restart |
-| `relays` / `signer` | explicit destinations/identity required | URLs / key reference | Cycle / Identity |
-| `announce` | false until profile/kind interoperability is validated | boolean | Cycle |
-| `request.max_age` / `future_skew` | 3600 / 60 | seconds | Live |
-| `request.fetch_timeout` | 30 | seconds | Live |
-| `jobs.max_active` / `max_queued` | 4 / 64 | jobs | Live |
-| `jobs.per_author_active` / `rate` | 1 / 1 request per 10 seconds, burst 2 | jobs / rate | Live |
-| `jobs.retention` | 30 days after terminal state; retain compact replay tombstones for accepted-window safety | seconds | Cycle |
-| `results.max_bytes` | 192 KiB payload per result; whole-event and lower relay limits checked before acceptance | bytes | Live |
-| `encryption` | disabled until a named tested profile is configured | profile | Restart |
-| `subscriptions.enabled` / `max_ttl` | false / 86400 | boolean / seconds | Live |
-| `subscriptions.max_active` / `batch_interval` | 32 / 60 | subscriptions / seconds | Live |
-| `paid.enabled` / `price` | false / 0 | boolean / profile-declared units | Restart / Cycle |
-| `external_fetch.enabled` / `job_chaining.enabled` | false / false | boolean | Restart |
-| Other query/delivery limits | common tables; byte-bounded outbox required | — | as above |
-
-DVM can stop without stopping API or the relay. Accepted durable jobs remain;
-restart resumes queued work or exact signed deliveries. Recurring jobs resume
-from their committed cursor while retained evidence permits. New requests are
-rejected when queue/outbox/disk capacity is exhausted before acceptance. Running
-jobs that lose a pin fail visibly; they do not recompute on a fresher dataset under
-the old request's identity. Ingestion may encounter the provider's own output;
-origin labels and kind-specific subscriptions prevent recursive job execution
-without falsely deleting all provider-authored events from the archive.
-
-Operator tooling shows redacted job state, input quality, budget rejection,
-requester quota, cursor lag, cancellation and payment state, and publication
-receipts. A restricted diagnostic view can explain a specific job without making
-all query contents public. Public status never promises client receipt solely
-because a relay returned OK.
+DVM failure/stop does not stop API, relay or acquisition. Jobs resume the same
+source/result identity or fail explicitly if their cut is unavailable; replay
+cannot revive an expired/cancelled request. Private DVM payload retention is
+operational by default. Explicit public scientific outputs and independently
+collected public events follow their own archival policy. Role status and private
+administration expose redacted job/payment/destination state, never public raw
+query logs or a misleading universal `sent` boolean.
 
 ## Exporter and integrity work
 
@@ -1008,7 +950,8 @@ JSONL dedup is by event ID across the full selected corpus. Emit either a declar
 canonical rendering of the complete signed fields or original wire bytes when an
 explicit wire-capture mode retained them. The default canonical archive does not
 promise every encountered JSON serialization. A native backup preserves optional
-wire-capture records only when present, and per-delivery history only when enabled.
+wire-capture records only when present. Duplicate-delivery counters are operational
+telemetry, not a permanent exported event-history family in the baseline.
 Do not reconstruct a lossy event or claim the event hash is a hash of the literal
 JSONL line. Use external sort/partitioned dedup with bounded memory and
 temporary disk; when insufficient disk prevents a complete export, pause/fail
@@ -1320,3 +1263,10 @@ revocation and expired snapshot retention still apply even while a key remains
 available. An undecryptable, revoked or expired token never silently restarts at
 the latest generation. Test cross-worker/restart continuation, normal and emergency
 rotation, changed principal/filter, withheld scan positions and tampered envelopes.
+
+Cursor pages share the original absolute 900-second query pin; page requests
+do not slide retention indefinitely. Initial admission permits at most 4096
+active query pins plus the configured retained-artifact byte budget. Follow the
+server-emitted cursor after byte-bound pages and scan-only progress; the token
+must remain usable under its own documented continuation parameters. The exact
+implementation and negative controls are in P06-T03.

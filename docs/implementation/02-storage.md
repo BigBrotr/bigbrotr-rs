@@ -1,0 +1,305 @@
+# Phase 02 — Durable admission, archive and online representations
+
+**Outcome:** full accepted evidence survives the declared process-crash model,
+can be exported independently and reaches coherent online generations. Different
+durability classes, archive cuts and serving frontiers remain visible.
+All checkboxes below are future implementation work.
+
+**Depends on:** P01-T01–T08 as needed per task; P01-T09 is a later integration
+consumer, not a prerequisite creating a cycle. Read
+[data contracts](../specification/data-contracts.md),
+[component contracts](../specification/component-contracts.md) and
+[storage semantics](../architecture/storage-services.md).
+The prior Python/engine experiments are evidence for their recorded scope, not
+proof that an unbuilt Rust binding has passed these tasks.
+
+## P02-T01 — Typed control schemas and minimum relay registry
+
+**Depends on:** P01-T02/T04; the P01-T06 authority core (steps 1/2/4/5) and P01-T07 interface/transport core (steps 1–4), not their later storage acceptance. **Files:**
+`migrations/postgres/{0001_control,0002_ingest,0003_relay}.sql`,
+application `src/storage/postgres/`, `src/interfaces/migrations.rs`,
+`contracts/control/schema.json`, `apps/bigbrotr/tests/control_transactions.rs`,
+`docs/operations/schema-upgrades.md`.
+**Contract:** bounded typed control commands → atomic owner/revision/job/cut state.
+Minimum endpoint identity/enrollment exists here so P03 does not wait for all P04.
+
+- [ ] **Step 1:** Define database owners and roles for configuration/policy, lease epochs,
+  source ranges, projection frontiers, jobs, snapshot pins, publication references
+  and endpoint enrollment; body/measurement payloads stay outside control rows.
+- [ ] **Step 2:** Add primary/unique/foreign keys and checked state transitions; bounded
+  versioned JSON is diagnostic detail, not the sole checkpoint semantics.
+- [ ] **Step 3:** Separate PG application-control and DuckLake catalog ownership, privileges,
+  backups and version negotiation even when one PG server hosts both.
+- [ ] **Step 4:** Implement explicit `bigbrotr migrate inspect/apply` with a dedicated
+  migration role, serialized ownership, checksums and compatible version checks.
+- [ ] **Step 5:** Implement compare-and-swap updates for config revisions, owner epochs and
+  complete frontiers; preserve missing/zero/empty distinctions.
+- [ ] **Step 6:** Establish normalized endpoint dictionary/enrollment and explicit route/
+  policy references; later lifecycle migrations add observations/scheduling.
+- [ ] **Step 7:** **Practical P02-T01:** real PG transactions race two revision/frontier
+  updates, disconnect after commit and retry. Inspect committed rows externally,
+  including zero-output progress. Negative control: updating a watermark before
+  its required receipt or overwriting the starting input cut on completion.
+- [ ] **Step 8:** Document migration privileges, compatibility failures and rollback/forward
+  repair semantics; test the actual migration CLI on clean and incompatible DBs.
+
+## P02-T02 — Atomic RocksDB admission and exact identity inventory
+
+**Depends on:** P01-T02/T03/T05, the P01-T06 authority core and P02-T01. This task supplies the real owner used to finish P01-T06/T07 practical cases.
+**Files:** application `src/ingest/{owner,admission,receipts,sequence}.rs`,
+`src/storage/rocks/{keys,options,inventory,pending}.rs`,
+`apps/bigbrotr/tests/admission_recovery.rs`,
+`tests/acceptance/cases/admission.py`, `docs/reference/durability.md`.
+**Contract:** Admit/AdmitEvidence → typed durable result after synchronized batch.
+One owner serializes exact identity decisions for each writable directory.
+
+- [ ] **Step 1:** Specify versioned key prefixes for event-ID metadata, event ordinals,
+  provenance keys, dictionaries, sequence facts, producer receipts and owner
+  metadata. Begin with exact full identities and fixed-width ordered compact
+  ordinal keys; no truncated hash accepted as definitive identity.
+- [ ] **Step 2:** Store the first canonical full body when new; optional new/earlier local
+  witness facts; pending source records; request digest/result and contiguous
+  sequence allocation in one WAL-enabled synced WriteBatch.
+- [ ] **Step 3:** Verify outside expensive critical sections where safe, then serialize the
+  final exact admission check/commit. Same-ID concurrency cannot overwrite first
+  admission or suppress a distinct permitted provenance edge.
+- [ ] **Step 4:** Implement NewFacts/AlreadyDurable/Excluded/Invalid/Retryable results and
+  ambiguous receipt resolution. Same ProducerRequestId with changed bytes errors.
+- [ ] **Step 5:** Make provenance-off allocate no P inventory or event/endpoint side channel;
+  retain event-level first local receive and earlier corrections only.
+- [ ] **Step 6:** Use bounded positive cache with full equality; account for pending/flushing
+  maps, native caches, memtables and compaction alongside the cache's own slab.
+- [ ] **Step 7:** **Practical P02-T02:** use the actual Rust binding, kill before/after synced
+  commit and after commit-before-response; reopen and compare every batch member
+  and receipt externally. Inject ENOSPC and simultaneous duplicate/new-edge input.
+  Negative control: marking identity before its only durable body.
+- [ ] **Step 8:** Report process crash separately from power loss/host failure; expose
+  pending bytes, native write stalls, receipt latency and exact inventory growth.
+
+## P02-T03 — Portable dictionaries and deduplicated source documents
+
+**Depends on:** P02-T02. **Files:** application
+`src/storage/archive/{dictionary,documents,encoding}.rs`,
+`contracts/archive/v1/{dictionary,document,measurement}.json`,
+`apps/bigbrotr/tests/archive_references.rs`,
+`tests/fixtures/storage/documents/`, `docs/reference/archive-format.md`.
+**Contract:** canonical fact + source documents → versioned portable rows with
+resolvable namespaced references and unchanged original bytes.
+
+- [ ] **Step 1:** Implement dataset/event/endpoint/observer/access/method dictionaries with
+  immutable canonical values, normalization versions and overflow rejection.
+- [ ] **Step 2:** Create A06 objects keyed by visibility namespace and digest; verify bytes
+  on first creation and reject conflicting bytes under the same identity.
+- [ ] **Step 3:** Separate document object bytes from each fetched/type/method occurrence;
+  unchanged documents reuse payload while actual measurements retain their times.
+- [ ] **Step 4:** Preserve canonical event arrays/content and unsigned timestamp domain in
+  the chosen Arrow/Parquet mappings; do not parse content as arbitrary JSON.
+- [ ] **Step 5:** Define unknown/null/empty/value variants for measurements and structured
+  failures; credentials/raw exception payloads are excluded from retained fields.
+- [ ] **Step 6:** Include required dictionary/object additions before or with references;
+  encode parsed interpretations as versioned derived results.
+- [ ] **Step 7:** **Practical P02-T03:** write full nested/Unicode/extreme-time records,
+  1,000 unchanged document fetches, changed bytes and a second visibility scope.
+  Reopen solely with standalone DuckDB and resolve every reference. Expect one
+  object per exact bytes/scope and all actual measurements. Negative controls:
+  copying the object per poll, dropping empty tag values, cross-scope dedupe leaks.
+- [ ] **Step 8:** Document byte fidelity, unsigned time limitations in generic clients and
+  the complete difference between source objects and parsed hot fields.
+
+## P02-T04 — Transactional Parquet archive publication
+
+**Depends on:** P02-T01/T02/T03 and P01-T05/T06.
+**Files:** application `src/storage/archive/{publisher,receipts,worker}.rs`,
+`contracts/archive/v1/batch.json`, `packaging/archive-worker/`,
+`apps/bigbrotr/tests/archive_publication.rs`,
+`tests/acceptance/cases/archive.py`, `docs/operations/archive-publication.md`.
+**Contract:** deterministic complete source batch → committed DuckLake snapshot
+and archive receipt. Preparation can parallelize; logical publication has one owner.
+
+- [ ] **Step 1:** Package a pinned DuckDB engine and compatible verified extensions in an
+  isolated worker; disable uncontrolled extension/network installation at runtime.
+- [ ] **Step 2:** Encode rows with the selected starting targets: 256 MiB file target,
+  at most 64,000 rows per group plus byte bound, Zstd level 3, 30-second maximum
+  publication delay and two bounded preparation workers.
+- [ ] **Step 3:** Use the PG-backed DuckLake catalog; publish events/evidence/dictionaries/
+  document references and deterministic batch receipt in one transaction.
+- [ ] **Step 4:** After an ambiguous commit, query the receipt in a new transaction; do not
+  repeat while receipt state is unknown. Reject mismatched batch digest.
+- [ ] **Step 5:** Enforce a single positively fenced publisher and bounded native worker
+  ownership. An unrelated advisory lock cannot certify catalog commit authority.
+- [ ] **Step 6:** Handle empty and one-small-event timer batches; publish useful progress
+  without waiting for a size threshold that may never be reached.
+- [ ] **Step 7:** **Practical P02-T04:** run real PG/DuckLake transactions; kill preparation,
+  kill after catalog commit before ACK, and attempt a competing owner. Reopen the
+  catalog independently and compare exact logical fact/reference membership.
+  Negative control: two unfenced receipt-check-then-insert publishers.
+- [ ] **Step 8:** Document catalog/object backup coupling, orphan preparation visibility and
+  the archive receipt's durability class; record latency/space/native memory.
+
+## P02-T05 — Full online representation and immutable projections
+
+**Depends on:** P02-T01/T02/T03. **Files:**
+`migrations/clickhouse/{0001_events,0002_evidence}.sql`, application
+`src/storage/clickhouse/{rows,chunks,insert,readiness}.rs`,
+`contracts/serving/generation.json`,
+`apps/bigbrotr/tests/serving_visibility.rs`,
+`docs/reference/online-indexes.md`.
+**Contract:** immutable facts → full online body plus narrow indexes in an
+identified serving incarnation. Logical correction history survives merges.
+
+- [ ] **Step 1:** Create one full signed-body representation and narrow ID/time/author/tag
+  access paths; provenance adds both narrow orders only when enabled. Parsed
+  monitor fields reference document objects rather than repeat wide payloads.
+- [ ] **Step 2:** Key raw fact retries by complete immutable SourceRecordId; projection row
+  identity adds generation and subrow discriminator. Replacing merges may collapse
+  only byte-identical retries, never successive logical first-seen corrections.
+- [ ] **Step 3:** Build deterministic per-table/per-physical-partition chunks containing
+  schema, ordered membership and content digest; finite insert dedupe is optional
+  acceleration, not correctness.
+- [ ] **Step 4:** Configure synchronous durable inserts with the selected fsync settings;
+  record exact engine/version/table settings in the serving manifest.
+- [ ] **Step 5:** Resolve body candidates and correction minima only after the pinned cut;
+  deduplicate identical retry rows before logical counts and limits.
+- [ ] **Step 6:** Treat table replacement, restore or unclean loss as a new invalidated
+  serving incarnation until revalidated/rebuilt. A PG receipt cannot certify
+  missing CH parts.
+- [ ] **Step 7:** **Practical P02-T05:** force actual merges, expire insert-token history,
+  delay one tag/inverse-edge chunk and replay. Compare before/after-cut answers
+  externally. Negative controls: logical-edge ReplacingMergeTree or base-table
+  existence used to skip an incomplete secondary index.
+- [ ] **Step 8:** Record body/index duplication, candidate/body lookup costs and part debt;
+  P02-T09 selects the measured physical variant before production DDL activation.
+
+## P02-T06 — Replay, frontiers and actual recovery progress
+
+**Depends on:** P02-T02/T04/T05. **Files:** application
+`src/ingest/replay.rs`, `src/storage/indexer/{service,frontier}.rs`,
+`apps/bigbrotr/tests/replay_frontiers.rs`,
+`tests/acceptance/cases/replay.py`, `docs/operations/replay.md`.
+**Contract:** complete pending/archive source units → all required projections,
+dependency notices and contiguous serving frontier with real restart position.
+
+- [ ] **Step 1:** Read pending first and committed archive fallback using the same immutable
+  source identities; replay cannot create new first-admission timestamps.
+- [ ] **Step 2:** Bound by rows and bytes (20,000 rows/16 MiB starting batch, one-second flush);
+  separately reserve lookahead, probe arrays and driver staging before allocation.
+- [ ] **Step 3:** Track zero/nonzero chunks for each required family. Disabled projections
+  have explicit scope; absent required sinks cannot report success.
+- [ ] **Step 4:** Persist deterministic recovery units/receipts and document exactly which
+  unit restarts after an interrupted insert; displayed progress is not a seek index.
+- [ ] **Step 5:** Publish affected-key/partition notices before their consumer frontier,
+  including legitimate no-output/control-only source ranges.
+- [ ] **Step 6:** Stop at poison/unrecoverable source with typed diagnostics; allow unrelated
+  independent streams to progress without claiming one global complete cut.
+- [ ] **Step 7:** **Practical P02-T06:** interrupt each family and restart the binary; compare
+  event/tag/provenance/document membership and cuts against the immutable source.
+  Include first huge unit and a quiet single record. Negative controls: first-item
+  byte-limit exception, progress emitted before dependency notices, zero-input trap.
+- [ ] **Step 8:** Document backlog age, resume granularity, repair procedure and when readers
+  can use a stale complete generation.
+
+## P02-T07 — Snapshot leases, retention and safe reclamation
+
+**Depends on:** P02-T04/T06. **Files:** application
+`src/storage/archive/{pins,retention,compaction,scrub}.rs`,
+`src/storage/postgres/snapshot_leases.rs`,
+`contracts/archive/v1/retention.json`,
+`apps/bigbrotr/tests/retention_references.rs`,
+`docs/operations/retention.md`.
+**Contract:** complete snapshots/reference claims → bounded maintenance that
+cannot reclaim required evidence, pending data or readable generations.
+
+- [ ] **Step 1:** Register readers, exports, backups and active derived/publication inputs
+  against immutable snapshot identities; keep lease expiry distinct from evidence
+  retention and policy authorization.
+- [ ] **Step 2:** Reclaim pending payload only after committed archive and safety policy;
+  preserve identity/receipt metadata for its correctness horizon.
+- [ ] **Step 3:** Compact files without changing source identities or reference resolution;
+  record new membership atomically and retain old generations while pinned.
+- [ ] **Step 4:** Default full events/provenance/actual measurements to permanent retention.
+  Optional lossy monitor expiry emits resolution/loss/coverage manifest first.
+- [ ] **Step 5:** Delete unreferenced objects only after accounting for snapshots, exports,
+  backups, staged ownership and concurrent publication; no live-file glob cleanup.
+- [ ] **Step 6:** Use one resumable scrub executor with byte/CPU/I/O budget, persisted cursor
+  and declared full-byte versus sampled semantic verification.
+- [ ] **Step 7:** **Practical P02-T07:** hold an export/read pin while compacting, crash between
+  object preparation and snapshot commit, expire an unrelated generation and
+  resume. Independently open both retained snapshots. Negative control: GC based
+  only on latest catalog membership or wall-clock object age.
+- [ ] **Step 8:** Document retained bytes, maintenance headroom and why local compaction/
+  retention cannot erase already exported or remote copies.
+
+## P02-T08 — Restore, loss detection and repair skeleton
+
+**Depends on:** P02-T01–T07 plus P01-T06/T08.
+**Files:** application `src/storage/recovery/`,
+`contracts/backup/manifest.json`,
+`tests/acceptance/cases/storage_recovery.py`,
+`docs/operations/{backup,restore,corruption}.md`.
+**Contract:** versioned consistent backup → positively owned restored deployment
+with original identities and correctly invalidated/rebuilt derived readiness.
+
+- [ ] **Step 1:** Define backup closure: control/catalog plus objects, required pending WAL
+  or quiesced archive cut, dictionaries, owner/source topology, consumer progress,
+  policy and separately protected secret material.
+- [ ] **Step 2:** Restore ownership/policy/catalog/object integrity before enabling writers,
+  then embedded identities/pending state, projections and dependent workers.
+- [ ] **Step 3:** Preserve original event ordinals/receipts/observation metadata; importing a
+  dataset and restoring an instance must take separate command paths.
+- [ ] **Step 4:** Invalidate serving/read cursors after incompatible incarnation changes;
+  rebuild from immutable evidence instead of trusting surviving PG frontiers.
+- [ ] **Step 5:** Bound forensic work and preserve suspicious bytes; ordinary startup cannot
+  allocate an entire damaged tail or silently truncate later valid records.
+- [ ] **Step 6:** **Practical P02-T08:** restore into fresh isolated volumes while the source
+  exists, compare exact IDs/body digests/edges/dictionaries and actual read output,
+  then exercise missing object, corrupt part, wrong schema and unavailable key.
+  Negative control: counting equal rows while substituting another event.
+- [ ] **Step 7:** Prove old-owner exclusion before enabling the restored writer; rehearse
+  interrupted restore and keep the source untouched.
+- [ ] **Step 8:** Record time/temporary space and failure-class limits. P08 completes the
+  operator UX and full release drills; these safety contracts are implemented now.
+
+## P02-T09 — Physical design and mixed workload decision
+
+**Depends on:** P02-T02–T08; uses real Rust adapters and P01 harness.
+**Files:** `tests/workloads/storage/`, `contracts/workloads/storage.json`,
+`docs/decisions/storage-layout.md`,
+`docs/operations/sizing.md`, versioned CH/embedded schema migration chosen below.
+**Contract:** fixed logical semantics + candidate physical layouts → measured
+release selection and explicit capacity limits, not a best-engine slogan.
+
+- [ ] **Step 1:** Use the exact four-dimension provenance key as the maintainable baseline;
+  compare grouped sorted relay values and bitmap-plus-required-metadata only
+  when they preserve times, scopes, receipts and correction/recovery behavior.
+- [ ] **Step 2:** Compare ID-ordered full bodies plus narrow chronological/author/tag paths
+  against chronological bodies with ID access. Control physical part counts,
+  partition fanout, body duplication and cold/warm cache state. Compare physical wide repeated
+  document columns against object/reference tables under real dictionary
+  compression, visibility and standalone export; logical deduplication alone
+  does not establish lower Parquet bytes.
+- [ ] **Step 3:** Vary U, new P, repeated D, actual M measurements, document-change rate,
+  tag fanout, late corrections, wide records and ongoing imports/queries.
+- [ ] **Step 4:** Exercise 256 MiB/64k-row archive targets around smaller/larger bounded
+  values; record freshness, native peak RSS, file requests, compression and
+  compaction/recovery debt. A file-size target is not a memory cap.
+- [ ] **Step 5:** Measure all representations, temporary/pending/merge headroom and backup
+  restore cost; report read/write amplification and worst admitted query behavior.
+- [ ] **Step 6:** Select a candidate only if correctness/recovery scenarios pass and it fits
+  the intended host envelope under mixed work. Compare p95/p99 read latency,
+  sustainable catch-up rate and total bytes; if tradeoffs cross, retain the
+  simpler exact baseline and document the workload-specific alternative.
+- [ ] **Step 7:** **Practical P02-T09:** age real stores with many parts, run acquisition,
+  queries, ranking-sized scans and maintenance concurrently, then interrupt/
+  recover. Negative control: a warm isolated insert loop that hides part/compaction
+  debt is not accepted as sustainable throughput.
+- [ ] **Step 8:** Record the chosen DDL/engine settings and evidence before enabling release
+  migrations; label unrun billion-scale/host-loss cases explicitly. No capacity
+  certificate is inferred from the small planning experiments.
+
+## Phase evidence and integration
+
+P02-T01/T02 can progress before every later P01 integration slice is finished.
+P02-T04/T05/T06 feed P01-T09's first-event journey. Phase 03 consumes durable
+admission and the minimum endpoint registry; phase 05/06 consume coherent source
+cuts. Later phases extend workflows without weakening these invariants.
+Review schema/config/docs and actual engine settings together with implementation.

@@ -53,3 +53,18 @@ The [coordinating review](../reviews/08-go-code-walkthrough.md) links exact hash
 inventories, observed behavior, static-inference limits and changes integrated
 into each owning Rust contract. This is separate from the full phase Markdown
 coverage, and makes no complete-Go-audit or newly executed product-test claim.
+
+## Five-round detailed implementation expansion
+
+The owner then requested a true phase/task/step execution design and challenged
+permanent archive fields. The [new review](../reviews/09-expanded-plan-rounds.md)
+records five substantive expansion/correction rounds: producer coverage, retained
+field meaning, crash/authority boundaries, physical resource assumptions, and
+packaged cross-component journeys. [The detailed plan](../implementation/README.md)
+and [coverage ledger](../implementation/coverage.md) make the actual work explicit.
+
+This pass includes a real local DuckDB/Parquet representation probe and a complete
+pinned Pensieve schema/decoder/license inspection. It corrects assumptions about
+physical document deduplication and protobuf field presence. No product code,
+future acceptance scenario, real-relay capacity or paid-service result is claimed.
+Review count is requested iteration, not a substitute for evidence.

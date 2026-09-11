@@ -106,6 +106,28 @@ verification requirements in the
 kind counts must not be relabeled as a specific interaction without that parser.
 No publication family becomes enabled merely because a generic count exists.
 
+### Explicit active-hours and daily zap summaries
+
+The source-to-wire definitions are now fixed in
+[P05-T03/T05](../implementation/05-analytics.md) and
+[P07-T05](../implementation/07-publication.md). Activity uses the previous 30
+completed UTC days and an exact 24-bin eligible post/reply histogram. With at
+least 20 samples, choose the shortest non-wrapping whole-hour interval containing
+at least 80% of mass; ties select the earliest start. Start is 0–23 and exclusive
+end 1–24. Publish the histogram, sample count/window/coverage and method beside
+this heuristic; it is neither a timezone nor a network-wide activity claim.
+
+Daily zap amount uses accepted exact msats over the same 30 completed calendar
+days, denominator 30 regardless of active days. Standard integer satoshi totals
+require divisibility by 1,000; integer sats/day requires divisibility by 30,000.
+Otherwise omit that optional standard field while retaining exact local numerator
+and denominator. Missing evidence remains missing, not a zero global claim.
+The pinned [NIP-85](https://github.com/nostr-protocol/nips/blob/a2494f4f81d46684e5814a9bf35e2b1df978f955/85.md)
+defines the field forms; these aggregation heuristics are BigBrotr's explicit
+selected interpretation. Extreme signed timestamps stay intact in A01; select
+eligible window bounds numerically before any calendar conversion, and report
+unsupported calendar projections instead of overflowing or altering the event.
+
 ## Propagation aggregates and historical evidence
 
 The retained product is observer-relative acquisition evidence. It cannot infer

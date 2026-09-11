@@ -59,12 +59,17 @@ Do not pass user text directly to SQL or an engine-specific query language.
 Substrings, prefix completion, typo tolerance, stemming, semantic embeddings and
 arbitrary regular expressions are separate capabilities with separate costs.
 
-A release pins tokenizer, Unicode normalization and case behavior. Use a tested
-Unicode-aware tokenizer across index and query, with fixtures for Latin, CJK,
-combining marks, emoji, punctuation, URLs and mixed scripts. Preserve original
-text for display. Changing the analyzer creates a new index generation; do not
-silently change matches midway through pagination. A prototype must verify the
-selected engine release supplies the required tokenizer and phrase behavior.
+The selected analyzer is `unicode16-word-v1`: Unicode 16 NFKC, full default
+non-Turkic case folding and NFKC again; default UAX-29 word segmentation, retaining
+letter/number words and separately eligible emoji grapheme tokens. No hidden
+stemming or CJK dictionary is assumed. The exact normalization, phrase/extension
+grammar, fixtures and version-data identity are specified in
+[P06-T06](../implementation/06-read-surfaces.md#p06-t06--owned-search-index-stable-matching-and-nip-50-adapter).
+Indexer and query use the same application analyzer. CH indexes the pretokenized
+array for complete candidates; retained ordered tokens support bounded exact
+phrase verification. Native array phrase acceleration is not presumed.
+Changing this profile creates a new generation; preserve original signed text
+and refuse work whose complete candidate verification exceeds its admitted bound.
 
 The baseline ranking is deliberately explicit: normalized whole-content match,
 then contiguous query phrase, then number of distinct query terms matched;

@@ -1,0 +1,86 @@
+{
+  "status": "PASS",
+  "python": "3.9.6",
+  "duckdb": "1.4.5",
+  "scope": "Real Parquet write/read plus explicit small reference-model counterexamples",
+  "not_tested": [
+    "Nostr cryptographic validity (synthetic signatures)",
+    "Rust implementation",
+    "RocksDB/DuckLake/CH durability",
+    "production throughput",
+    "billion-row capacity"
+  ],
+  "checks": {
+    "standalone_fresh_process_full_field_roundtrip": 3,
+    "required_event_fields": [
+      "content",
+      "created_at",
+      "id",
+      "kind",
+      "pubkey",
+      "sig",
+      "tags"
+    ],
+    "before_after_source_cut_minima": [
+      100,
+      90
+    ],
+    "document_objects": 3,
+    "actual_document_observations": 1000,
+    "cross_scope_join_wrong_count": 1950,
+    "model_ordinary_repeats": 1000,
+    "model_immutable_receive_facts": 2,
+    "empty_winner_preserved": true,
+    "negative_controls_distinguished": [
+      "float64 timestamp loss",
+      "tag reorder",
+      "latest-only correction",
+      "imported claim as local observation",
+      "document join without scope",
+      "entries-only current list"
+    ]
+  },
+  "parquet_bytes": {
+    "observations.parquet": 4822,
+    "objects.parquet": 1741,
+    "events.parquet": 1942,
+    "facts.parquet": 747,
+    "wide.parquet": 6101
+  },
+  "document_representation_bytes": {
+    "objects_plus_references": 6563,
+    "repeated_wide_rows": 6101,
+    "interpretation": "Tiny repeated fixture; dictionary compression and file overhead matter. Not a universal dedup compression ratio."
+  },
+  "recorded_at_utc": "2026-09-11T08:14:37.013555+00:00",
+  "command": "python3 experiments/archive-model/probe.py --output .research/archive-model/run-02",
+  "probe_sha256": "5f3888106436fdc072c17bb4137f4b11ce135b2fe6a1c80514c6738921d10104",
+  "artifacts": [
+    {
+      "path": ".research/archive-model/run-02/events.parquet",
+      "sha256": "072ad0e30cac11ec750b974ac39ac35e40b449bf1805d6a95f0cf0ddf92e759b",
+      "bytes": 1942
+    },
+    {
+      "path": ".research/archive-model/run-02/facts.parquet",
+      "sha256": "c9d23924cbbdd045701e4dc75c69e5c3441b5a31f060180a2184ff139408f1c4",
+      "bytes": 747
+    },
+    {
+      "path": ".research/archive-model/run-02/objects.parquet",
+      "sha256": "269a9c90636b51c79773a8f4317142995e95f97a12aaab6e818be4f65e19e636",
+      "bytes": 1741
+    },
+    {
+      "path": ".research/archive-model/run-02/observations.parquet",
+      "sha256": "4370b842517c5a366b5858dcf4ba100cbb8d4a8f18a235a80a086d803917d724",
+      "bytes": 4822
+    },
+    {
+      "path": ".research/archive-model/run-02/wide.parquet",
+      "sha256": "d70c9d15ce621606c9d7b18112b7772715856441d86dcd355ca9e6fb9540c99a",
+      "bytes": 6101
+    }
+  ],
+  "review_correction": "An independent required-column check failed on the first draft because pubkey was absent. Run02 includes all seven event fields; independently checked Parquet columns and expected author bytes. Synthetic crypto remains invalid."
+}

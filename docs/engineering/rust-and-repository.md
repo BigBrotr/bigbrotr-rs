@@ -15,9 +15,11 @@ apps/
       acquisition/         seed, discovery, validation, monitoring and sync
       analytics/           job orchestration and publication of derived generations
       read/                typed resources, plans and shared serving semantics
+      network/             guarded DNS/TLS/WebSocket and configured overlay routes
       publication/         signed outbox, NIP-66/85 and query-result delivery
       interfaces/          HTTP, ArchiveRelay, internal RPC and management adapters
   dashboard/               SvelteKit/TypeScript static client
+  admin/                   separate private SvelteKit/TypeScript static bundle
   site/                    Astro/Starlight product pages, documentation and blog
 crates/
   bigbrotr-model/           storage-free event/evidence/coverage/policy types

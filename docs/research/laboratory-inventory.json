@@ -1,6 +1,6 @@
 {
   "captured_at": "2026-09-11",
-  "legacy_source_snapshots": ".research/source-snapshots (39 captured files; see source-inventory.json)",
+  "legacy_source_snapshots": ".research/source-snapshots (70 inventoried planning/context files; see source-inventory.json)",
   "upstream_checkout": {
     "path": ".research/checkouts/rust-nostr",
     "url": "https://github.com/nostrdevkit/nostr",
@@ -39,5 +39,22 @@
     "clickhouse_running": false,
     "usage": "Reused own Python environment and own stopped CH container for tiny isolated new probes; prior evidence retained"
   },
-  "isolation": "No writes to the legacy project or changes to its containers. No external publication of protocol drafts or SDK findings."
+  "isolation": "No writes to the legacy project or changes to its containers. No external publication of protocol drafts or SDK findings.",
+  "legacy_code_snapshots": {
+    "path": ".research/code-snapshots",
+    "files": 146,
+    "scope": "Selected complete Go files; four code-source manifests"
+  },
+  "archive_model_probe": {
+    "path": ".research/archive-model/run-02",
+    "engine": "local DuckDB Python 1.4.5",
+    "resources": "2 threads,256MB engine limit",
+    "processes": "completed; no background services",
+    "evidence": "docs/research/evidence/archive-model.json",
+    "superseded_draft": ".research/archive-model/run-01 (missing pubkey; superseded by corrected run02)"
+  },
+  "source_format_inspection": {
+    "path": "../external-research/pensieve",
+    "access": "read only; source hashes in evidence/pensieve-format-source.json; no builds/tests or upstream source vendored"
+  }
 }

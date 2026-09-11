@@ -126,6 +126,10 @@ Missing explicit file or unreadable bytes fail the job before applying its input
 | `seed.assumed_scheme` | `wss` | enum | J | Only operator-supplied scheme-less lines; recorded |
 | `seed.max_line_bytes` | `8192` | bytes | J | Drain/reject oversized line |
 | `seed.batch_size` | `500` | candidates | J | Atomic batch evidence writes |
+| `relay_policy.candidate_validation` | `public` | enum | H | `enrolled_only` or `disabled` restricts candidate probing; all egress/bans still apply |
+| `relay_policy.auto_enroll_validated_public` | `true` in full recipe | bool | H | Enroll only after actual attributable public protocol/read success; private routes require explicit enrollment |
+
+The full recipe grants Validator permission to test public candidates under the guarded transport, then automatically enrolls a candidate only after actual public read success. Seeder alone never proves reachability. Explicit bans and egress policy dominate this transition. Private/overlay credentials and private fixture routes need their own explicit scoped enrollment; the deterministic local acceptance recipe does not bypass public-route policy.
 
 Security/resource boundary: bounded local file reader plus registry writer, no network credentials. Report read/blank/comment/malformed/duplicate/known/blocked/pending/enrolled counts and durable batch progress. A database failure retries the unchanged batch and does not claim the whole file finished.
 
@@ -198,7 +202,7 @@ Check status is `ok`, `failed`, `unsupported`, `blocked_policy`, `auth_required`
 
 Geo uses operator-provided ASN/City files independently. Explicit unreadable configured paths fail startup; absent files mean unavailable dependency. The optional dataset refresher atomically validates and installs new files, maintains provenance/version and preserves last-good files on download failure. It never publishes download credentials. Approximate Geo has accuracy and source age; stale facts carry degraded status. Overlay checks omit public DNS/TLS/Geo when not applicable.
 
-Default monitoring emits no signed Nostr EVENT. Optional active write probes are a separate explicitly enabled probe capability with a dedicated signer reference, endpoint scope and frequency/PoW budget. It writes a small marker event, requires an OK acceptance and verifies retrieval by exact id before reporting write+read success. Persist its event id and distinguish acceptance from retrieval. Do not promise deletion of a probe already published to another relay. Auth signing is separately scoped. Announcements remain the NIP-66 publisher's responsibility; that publisher reads durable observation data and reports actual achieved freshness.
+Default monitoring emits no signed Nostr EVENT. Optional active write probes are a separate explicitly enabled probe capability with a dedicated signer reference, endpoint scope and frequency/PoW budget. The selected `monitor-write-v1` probe is kind 1, content `BigBrotr monitor probe v1.`, with one `["bigbrotr-probe", attempt_uuid]` tag and a fresh attempt timestamp; optional NIP-13 nonce work is separately bounded. The complete signed event must stay below 1 KiB and the same persisted bytes are reused after ambiguous sends. It requires an OK acceptance and verifies retrieval by exact id before reporting write+read success. Persist its event id and distinguish acceptance from retrieval. Do not promise deletion of a probe already published to another relay. Auth signing is separately scoped. Announcements remain the NIP-66 publisher's responsibility; that publisher reads durable observation data and reports actual achieved freshness.
 
 | Key | Default | Unit | Reload | Contract |
 |---|---|---|---|---|
@@ -229,7 +233,7 @@ Default monitoring emits no signed Nostr EVENT. Optional active write probes are
 | `monitor.active_write.interval` | `24h` | duration/endpoint | H | Separate from frequent read checks |
 | `monitor.active_write.max_pow` | `20` | difficulty bits | H | Exceeding relay requirement is unavailable policy, not unwritable |
 | `monitor.active_write.pow_timeout` | `1s` | CPU/wall budget | H | Dedicated bounded pool; cancel on exhaustion |
-| `monitor.raw_retention` | `365d` | duration | H | Compact older detail only through storage retention manifests |
+| `monitor.raw_retention` | `forever` | duration or forever | H | Executed measurement evidence retained; explicit lossy expiry requires a retention manifest |
 
 Compact aggregate history may remain indefinitely, but a raw-retention policy must also cover its replay log, object documents and backups. Keeping all journal observations forever while deleting a query table does not honor raw retention. Minimal coverage/run audit metadata remains sufficient to explain aggregate intervals. Per-check counters, duration histograms, due backlog, oldest unfinished check, last complete catalog, last liveness, deferred hosts, geo age and protocol result counts are required. Runtime errors in one host group do not end another host's measurement.
 
@@ -314,7 +318,6 @@ NIP-11 limits are optional request-size/subscription-count hints. A false claim 
 | `sync.safety_lag` | `48h` | duration | H | Scheduling/display qualification, not lateness guarantee |
 | `sync.deep_reverify_interval` | `7d` | duration | H | Target spread across available capacity |
 | `sync.relay_byte_budget` | absent | bytes/day/endpoint | H | Optional explicit cost ceiling; no silent default exclusion |
-| `sync.delivery_timeseries` | `false` | bool | H | Extra arrival telemetry; first witness remains retained |
 
 Wire bytes must actually be counted by route/endpoint/layer, including duplicates, reconciliation and control traffic. Aggregated metrics use bounded network/layer/reason labels; endpoint drilldowns are stored/queryable. Required diagnostics: oldest unserved endpoint, service interval distribution, traversal evidence by method, unresolved gaps by age/reason, admission/rejection/duplicate counts, new bodies versus new witnesses, bytes/day, protocol CPU, durable-ack latency, queue pressure, clean rotations, retries, active scopes and auth restrictions. Infrastructure errors must not decay relay reputation.
 
@@ -322,13 +325,13 @@ Wire bytes must actually be counted by route/endpoint/layer, including duplicate
 
 User entry point: `bigbrotr import --from PATH` creates a finite resumable job. `--dry-run` parses and verifies without archive mutation, reports compatibility and estimated scratch use, and does not claim that a later changed source has been validated. `bigbrotr import status JOB` and `bigbrotr import resume JOB` expose actual progress. A scheduler may later submit explicit jobs; enabling the daemon never discovers arbitrary local files and imports them automatically.
 
-Sources are immutable manifest-defined artifacts. Auto-detection must find exactly one supported format, otherwise require `--format`. Accept canonical JSONL with optional provenance sidecar, versioned native archive segments/manifests, and an explicitly pinned pensieve protobuf adapter. A newer native format is refused before writes. Protobuf parsing honors the pinned schema and field-wire rules; incompatible producer revisions require another adapter rather than silently reinterpreting bytes. Third-party manifestless sources must declare their shape and origin. Exact source digest/size/shard identities and policy/parser versions bind resume; changed input fails resume instead of trusting byte offsets.
+Sources are immutable manifest-defined artifacts. Auto-detection must find exactly one supported format, otherwise require `--format`. Accept canonical JSONL with optional provenance sidecar, versioned native archive segments/manifests, and the explicitly pinned Pensieve adapter specified in [import formats](../specification/import-formats.md). A newer native format is refused before writes. Protobuf parsing honors the pinned schema and field-wire rules; incompatible producer revisions require another adapter rather than silently reinterpreting bytes. Third-party manifestless sources must declare their shape and origin. Exact source digest/size/shard identities and policy/parser versions bind resume; changed input fails resume instead of trusting byte offsets.
 
 Preflight verifies manifest checksums, source shape, selected scope, required retention/fidelity capabilities and available scratch quota. Verify signatures and ids for every event regardless of source reputation. Unsigned or irreconstructable slim records are rejected from the canonical importer; there is no verification-disable knob or untrusted-mark workaround. Analytical projections may be opened by separate analysis tooling, but cannot be restored as original Nostr events. Source shape is data about available fields, never inferred from empty content or absent edges in a sample. The historical heavy-to-slim compatibility matrix is retired for canonical imports: every canonical destination retains the complete signed event.
 
 Collection selector intersection is explicit and independent of Synchronizer's current moving request windows. The importer applies the durable selector's meaningful bounds; a separate job can intentionally choose another registered import scope. An empty selected filter registry fails unless the operator explicitly supplies an unfiltered scope. Imported data does not change any network traversal, freshness or coverage record.
 
-With provenance enabled, preserve supplied provenance as imported claims. Unknown endpoint identities are created in a non-enrolled state; unreachable relays do not make a valid historical claim unrepresentable. Missing provenance is represented as a dataset source, not a fictional relay. Default mode permits dataset-only origin while explicitly indicating absence of relay claims; strict jobs can require source relay claims. Signed events do not cryptographically prove the sidecar's relay provenance or timestamps.
+With provenance enabled, preserve supplied provenance as imported claims. Unknown endpoint identities are created in a non-enrolled state; unreachable relays do not make a valid historical claim unrepresentable. Missing provenance is represented as a dataset source, not a fictional relay. The default `import.claims=enabled-families` preserves only enabled evidence families and reports excluded ones. `require-all` refuses a supplied family disabled at the destination; it does not require every event to have a relay claim. `none` imports complete signed originals without interpreted sidecars. Provenance off excludes event-to-relay claims and intentional per-event availability measurements, including alternate import paths. Signed events do not cryptographically prove the sidecar's relay provenance or timestamps.
 
 Large joins use a bounded disk-backed staging index or external sort by event id, not a corpus-sized RAM map. Build/verify sidecar partitions, detect missing and orphan references, join in stable order, and checkpoint each completed phase behind durability. Input order does not decide whether an edge is lost. On RAM pressure spill; on scratch quota exhaustion pause with required/free bytes. Admission uses the same batch/idempotency/receipt contract as live acquisition. Native input segments are decoded into logical records unless an explicitly compatible attach operation validates formats, policies and ownership; copying arbitrary journal files into a live writer directory is not import.
 
@@ -347,7 +350,7 @@ Default malformed/oversized JSONL records are rejected with counts and a bounded
 | `import.workers` | `4` | parser/verifier tasks | J | Global CPU/memory and ingest fairness apply |
 | `import.memory_bytes` | `256MiB` | bytes/job | J | Includes join/sort and bounded verification queues |
 | `import.scratch_bytes` | `20GiB` | bytes/job | J | Finite staging quota; pause with diagnostics |
-| `import.provenance_policy` | `preserve_claims` | enum | J | Optional `require_relay_claims`; no manufactured witness |
+| `import.claims` | `enabled-families` | enum | J | `require-all` refuses disabled supplied families; `none` omits interpreted sidecars; provenance off excludes event→relay claims |
 | `import.source_tombstones` | `respect_within_source` | enum | J | Optional explicit ignore, never a local moderation bypass |
 | `import.reject_policy` | `continue_records` | enum | J | Native framing corruption still stops shard |
 | `import.reject_artifact_bytes` | `64MiB` | bytes/job | J | Counts continue after sample cap; payload redacted by default |
@@ -417,7 +420,7 @@ access under its explicit scope; the resulting evidence remains scoped.
 
 `monitor.aggregate_retention=none` retains compact completed historical aggregates
 indefinitely by default, with their bucket resolution, denominator, method and
-source-retention coverage. `monitor.raw_retention=365d` is separate. Reconfiguration
+source-retention coverage. `monitor.raw_retention=forever` is separate. Reconfiguration
 cannot promise recomputation at a resolution whose source detail has expired.
 Reference/pin rules cover original documents, snapshots and backups.
 

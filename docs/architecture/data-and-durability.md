@@ -8,7 +8,7 @@
 | Original wire object, if retained | Bounded raw bytes with digest and origin; explicit fidelity mode | Optional retrieval; never confuse with canonical signed serialization |
 | Direct provenance | First verified local observation per event/endpoint with observer identity | Both event→relay and relay→event access paths |
 | Imported provenance | Separate source assertion, source time and validation metadata | Separate origin-aware query domain; never upgraded to local observation |
-| Delivery history | Optional per-delivery series with independent retention | Time-series aggregates, not the first-observation edge table |
+| Duplicate delivery/retry counters | Bounded operational telemetry only; no permanent event delivery series in the baseline | Aggregate process metrics without per-event archival fields |
 | Relay observations | Measurement records, timestamps, method/version, outcome and raw-document digest | CH history; PG latest scheduling state |
 | NIP-11 and other documents | Typed envelope plus bounded original bytes/content hash | Parsed versioned fields, never arbitrary JSON as a schema contract |
 | Coverage and registry | Transactional PG control state with backup generation | API health/capability views and scheduler queues |

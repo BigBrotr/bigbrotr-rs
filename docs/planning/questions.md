@@ -62,3 +62,20 @@ Go implementation paths. The [code walkthrough review](../reviews/08-go-code-wal
 persists what those paths actually do and what the Rust design retains or changes.
 The source remains read-only; tests were inspected as source, not reported as
 executed. Implementation remains a later explicitly started stage.
+
+## Detailed implementation breakdown and archive-value reconsideration
+
+| ID | New owner context | Selected disposition |
+|---|---|---|
+| Q14 | Go THE PLAN is incomplete and moving; surprises reveal Rust planning gaps | Qualify captured code findings, recheck external plan identity, replace reliance on overview with phase/task/step specifications |
+| Q15 | Specify all work and reconsider it at least five times before implementation | Expanded phases00–10, field/component/import/DVM contracts, coverage ledger and five actual correction rounds; future tests remain unchecked |
+| Q16 | Permanent archive should retain useful ecosystem evidence, not duplicate-ingestion logistics | Keep full signed events, first observations/corrections and actual compact monitoring evidence; remove passive delivery histories/counts; operational TTLs retain correctness obligations |
+| Q17 | Challenge storage value and duplication rather than assume a layout is efficient | Actual tiny Parquet experiment found object/reference files larger than a compressed wide layout; measure physical alternatives in P02-T09 |
+
+The [expansion review](../reviews/09-expanded-plan-rounds.md) and
+[coverage ledger](../implementation/coverage.md) record the chosen consequences.
+Private DVM payloads stay operational by default; public scientific signed outputs
+retain their originals/compact lineage. Provenance-off excludes interpreted
+imported event-to-relay sidecars and intentional availability pairs as well as
+ordinary witness indexes. No unanswered product question prevents this planning
+handoff; actual platform/engine/WAN limits remain explicit measurement work.

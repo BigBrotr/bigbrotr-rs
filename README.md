@@ -21,3 +21,9 @@ capacity model, security, recovery and practical validation programme.
 Research scripts and probes are under `experiments/`. Downloaded sources,
 intermediate data and build material stay in ignored `.research/`; tracked
 reports distinguish source inspection, measurements and proposed behavior.
+
+The [detailed phase/task/step plan](docs/implementation/README.md),
+[field contracts](docs/specification/data-contracts.md) and
+[coverage ledger](docs/implementation/coverage.md) are the implementation handoff.
+The [five-round expansion review](docs/reviews/09-expanded-plan-rounds.md) records
+what changed and which practical results remain owed by the future product.
