@@ -80,3 +80,16 @@ counterexample. Targeted follow-up critiques corrected weaknesses in newly added
 contracts too. Historical reviews remain dated evidence, not current defaults.
 [Decision confidence](decision-confidence.md) explicitly separates selections,
 measured properties and still-unqualified target-scale behavior.
+
+## Newcomer handoff and another full baseline reread
+
+[Review 11](../reviews/11-whole-repository-audit.md) covers all 70 baseline Markdown
+files through complete assigned reads, reconciled by exact Git hashes. It closes
+newly found cross-contract gaps and adds a newcomer guide plus storage, interface,
+naming, read-view and assertion-binding specifications. Targeted counter-reviews
+also corrected those additions: derived state and NEG ownership, header/member
+separation, nonrecursive archive receipts and early shared migration ownership.
+The controlled document-layout experiment preserves an initial ordering confound
+and its corrected comparison. No product implementation or capacity result is
+claimed; old review findings remain dated evidence with current dispositions in
+the coordinator report.

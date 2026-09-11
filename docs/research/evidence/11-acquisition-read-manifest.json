@@ -1,0 +1,299 @@
+{
+  "review": "11-acquisition-audit",
+  "baseline_revision": "8c81472e75da118b04809636a73f3231157227b5",
+  "baseline_manifest": ".research/review-11/baseline.json",
+  "completed_read_at_utc": "2026-09-11T16:51:44.073285+00:00",
+  "method": "Every assigned document read from first to last line in bounded sed chunks; hashes are accounting checks, not substitutes for reading. Initial working bytes independently matched git show at the baseline before reading; after reading all eight matched again.",
+  "assigned_files": [
+    {
+      "path": "docs/architecture/acquisition-services.md",
+      "bytes": 79315,
+      "lines": 562,
+      "sha256_before": "0c41f1903ee3b7a114831e703fc0785c2885004289cd8b73e1457498bbfc5060",
+      "sha256_after": "0c41f1903ee3b7a114831e703fc0785c2885004289cd8b73e1457498bbfc5060",
+      "matches_baseline_git_object": true,
+      "fully_read": true,
+      "read_ranges": [
+        [
+          1,
+          170
+        ],
+        [
+          171,
+          330
+        ],
+        [
+          331,
+          460
+        ],
+        [
+          461,
+          562
+        ]
+      ]
+    },
+    {
+      "path": "docs/implementation/03-acquisition.md",
+      "bytes": 52927,
+      "lines": 401,
+      "sha256_before": "32119e6d90db27790804fa0ba291948188b8e83c953cebeadb1ca816d3ac8140",
+      "sha256_after": "32119e6d90db27790804fa0ba291948188b8e83c953cebeadb1ca816d3ac8140",
+      "matches_baseline_git_object": true,
+      "fully_read": true,
+      "read_ranges": [
+        [
+          1,
+          135
+        ],
+        [
+          136,
+          270
+        ],
+        [
+          271,
+          401
+        ]
+      ]
+    },
+    {
+      "path": "docs/implementation/04-relay-lifecycle.md",
+      "bytes": 65279,
+      "lines": 505,
+      "sha256_before": "e0007f896735e79cd7feb6b934f86a8884f1589b7f9b610308a27c7d1221faab",
+      "sha256_after": "e0007f896735e79cd7feb6b934f86a8884f1589b7f9b610308a27c7d1221faab",
+      "matches_baseline_git_object": true,
+      "fully_read": true,
+      "read_ranges": [
+        [
+          1,
+          160
+        ],
+        [
+          161,
+          310
+        ],
+        [
+          311,
+          505
+        ]
+      ]
+    },
+    {
+      "path": "docs/specification/import-formats.md",
+      "bytes": 7646,
+      "lines": 114,
+      "sha256_before": "5fca593feea64a79b0076463bdcc0e2b5abbcbe9afefd01fbbd7381f48ed098d",
+      "sha256_after": "5fca593feea64a79b0076463bdcc0e2b5abbcbe9afefd01fbbd7381f48ed098d",
+      "matches_baseline_git_object": true,
+      "fully_read": true,
+      "read_ranges": [
+        [
+          1,
+          114
+        ]
+      ]
+    },
+    {
+      "path": "docs/research/acquisition-findings.md",
+      "bytes": 20154,
+      "lines": 112,
+      "sha256_before": "42f66f3df81a8270b1a6b68bcba0f0dfa95015bcc9e070187b4f1ea9de22d737",
+      "sha256_after": "42f66f3df81a8270b1a6b68bcba0f0dfa95015bcc9e070187b4f1ea9de22d737",
+      "matches_baseline_git_object": true,
+      "fully_read": true,
+      "read_ranges": [
+        [
+          1,
+          112
+        ]
+      ]
+    },
+    {
+      "path": "docs/research/go-acquisition-code-walkthrough.md",
+      "bytes": 35206,
+      "lines": 449,
+      "sha256_before": "e3ed1464709f25885a085bc454132fa2420e0a10a5aae0232dc788ea2b264a55",
+      "sha256_after": "e3ed1464709f25885a085bc454132fa2420e0a10a5aae0232dc788ea2b264a55",
+      "matches_baseline_git_object": true,
+      "fully_read": true,
+      "read_ranges": [
+        [
+          1,
+          160
+        ],
+        [
+          161,
+          320
+        ],
+        [
+          321,
+          449
+        ]
+      ]
+    },
+    {
+      "path": "docs/reviews/07-phase-0-4-recheck.md",
+      "bytes": 60159,
+      "lines": 395,
+      "sha256_before": "a99c44f453175d18ad34087a05c2ae1ca42e43b66679822ca63c78b7c14b7f20",
+      "sha256_after": "a99c44f453175d18ad34087a05c2ae1ca42e43b66679822ca63c78b7c14b7f20",
+      "matches_baseline_git_object": true,
+      "fully_read": true,
+      "read_ranges": [
+        [
+          1,
+          120
+        ],
+        [
+          121,
+          185
+        ],
+        [
+          186,
+          250
+        ],
+        [
+          251,
+          325
+        ],
+        [
+          326,
+          395
+        ]
+      ]
+    },
+    {
+      "path": "docs/reviews/10-acquisition-audit.md",
+      "bytes": 22697,
+      "lines": 310,
+      "sha256_before": "f04bb272081dea17d45e34f8d942720ec5538b3b33c20c5785b26888bca1d0a1",
+      "sha256_after": "f04bb272081dea17d45e34f8d942720ec5538b3b33c20c5785b26888bca1d0a1",
+      "matches_baseline_git_object": true,
+      "fully_read": true,
+      "read_ranges": [
+        [
+          1,
+          160
+        ],
+        [
+          161,
+          310
+        ]
+      ]
+    }
+  ],
+  "totals": {
+    "files": 8,
+    "lines": 2848,
+    "bytes": 343383
+  },
+  "truncation_recovery": [
+    {
+      "path": "docs/reviews/07-phase-0-4-recheck.md",
+      "truncated_attempt": [
+        121,
+        250
+      ],
+      "replacement_complete_ranges": [
+        [
+          121,
+          185
+        ],
+        [
+          186,
+          250
+        ]
+      ],
+      "reason": "Outer tool response truncated; reread both complete smaller ranges."
+    }
+  ],
+  "supplemental_reads": [
+    {
+      "path": "AGENTS.md",
+      "read_ranges": [
+        [
+          1,
+          27
+        ]
+      ],
+      "fully_read": true,
+      "bytes_at_end": 1561,
+      "lines_at_end": 27,
+      "sha256_at_end": "6a89714614d7c8b6ed0b6d3e01dd6ad9851a04ba68a7e6302c2d6a91f0d4a3d1"
+    },
+    {
+      "path": "docs/specification/data-contracts.md",
+      "read_ranges": [
+        [
+          24,
+          103
+        ],
+        [
+          141,
+          263
+        ]
+      ],
+      "fully_read": false,
+      "bytes_at_end": 26385,
+      "lines_at_end": 375,
+      "sha256_at_end": "1933b1f1da76d95bdfede4c05bf699efec07d1936c8b6fa0a0da28cdd4f31c18"
+    },
+    {
+      "path": "docs/specification/component-contracts.md",
+      "read_ranges": [
+        [
+          60,
+          113
+        ]
+      ],
+      "fully_read": false,
+      "bytes_at_end": 14922,
+      "lines_at_end": 229,
+      "sha256_at_end": "deba6a159f536969cc64b0305909e160d963f7d518afd64008a2a546ca14e853"
+    },
+    {
+      "path": "docs/implementation/05-analytics.md",
+      "read_ranges": [
+        [
+          419,
+          462
+        ]
+      ],
+      "fully_read": false,
+      "bytes_at_end": 46951,
+      "lines_at_end": 732,
+      "sha256_at_end": "e8dc7e38171db0696b749324471714812e5d3616fd0d79b48b2d7e72a9ca32ff"
+    },
+    {
+      "path": "docs/architecture/analytics-detail.md",
+      "read_ranges": [
+        [
+          186,
+          236
+        ]
+      ],
+      "fully_read": false,
+      "bytes_at_end": 42157,
+      "lines_at_end": 575,
+      "sha256_at_end": "ee20296032ca33875bcfe0fdbd270bf6a8571e64e72f8d5904552bc0ddc601b9"
+    }
+  ],
+  "search_only_documents": [
+    "docs/engineering/configuration-and-runtime.md",
+    "docs/implementation/01-foundation.md",
+    "docs/implementation/02-storage.md"
+  ],
+  "primary_source_checks": [
+    {
+      "url": "https://raw.githubusercontent.com/nostr-protocol/nips/a2494f4f81d46684e5814a9bf35e2b1df978f955/01.md",
+      "tool": "web.open",
+      "read_scope": "Returned complete 157-line source; relied on initial-response bounds and EOSE semantics at lines 127-135."
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nostr-protocol/nips/a2494f4f81d46684e5814a9bf35e2b1df978f955/57.md",
+      "tool": "web.open",
+      "read_scope": "Returned source excerpt through line 135; relied only on displayed protocol-flow lines 11-20 and issuer-field lines 85-90; not a complete read claim."
+    }
+  ],
+  "execution_boundary": "Planning and read-only source/protocol inspection only. No product/legacy build, test, relay traffic, database mutation, performance experiment, commit or push."
+}

@@ -56,6 +56,13 @@ have no Tokio/PG/CH dependencies; cancellation and secret references belong to
 application orchestration. Introduce a library only when its task has a real
 consumer and useful public contract.
 
+The [naming contract](naming.md) fixes wire/model identity spelling, qualified
+ordinals, typed measurement/score subjects and role terminology. Include
+`ReadViewStamp` in the shared read model from
+[the time/search contract](read-view-contract.md). Public Rust helper names remain
+subject to implementation review; inventing every private function now would
+create false precision without a stable consumer.
+
 ## Typed boundaries
 
 Signatures below describe ownership and results; they are specification notation,
@@ -65,7 +72,7 @@ not source code to copy without lifetime/error design.
 |---|---|---|
 | Verify | BoundedWireEvent + VerificationPolicy → VerifiedEvent or Invalid/Excluded | Recompute canonical ID; verify actual signature; record exact reason without archiving hostile body |
 | Admit | ProducerRequestId + VerifiedEvent + optional LocalObservation + BudgetGrant → AdmissionResult | Owner independently validates remote untrusted input; atomic synced body/identity/facts/receipt |
-| AdmitEvidence | ProducerRequestId + typed Measurement/Document/Claim batch → Receipt | Required dictionaries and source references validated; event validity alone cannot authenticate an evidence claim |
+| AdmitEvidence | ProducerRequestId + typed Measurement/Document/Claim batch + BudgetGrant → AdmissionResult | Same receipt/retired/conflict/refusal semantics as Admit; required dictionaries and tagged subject references validated; event validity alone cannot authenticate an evidence claim |
 | ReadPending | Owner stream + after Receipt + byte/item bound → SourceBatch | Complete committed sequences only; immutable record IDs and content digest |
 | PublishArchive | Deterministic ArchiveBatch + ownership → ArchiveCommit | Data/dictionaries/references/receipt commit once under fenced single publisher |
 | Project | SourceBatch + TableGeneration + deterministic chunk identity → ProjectionAck | Ack records actual durability class/incarnation, never merely accepted into RAM |
@@ -114,11 +121,28 @@ times, repeated ordered tag strings and a schema version; no Rust memory layout
 or lossy JSON-number conversion crosses the boundary.
 
 Initial services are Ingest (Admit/AdmitEvidence/receipt resolution), Archive
-(commit/status), Read (query/page/capabilities), and Control (config/jobs/leases).
+(commit/status), Index (derived-state commit and pinned ordered-set access),
+Read (query/page/capabilities), and Control (config/jobs/leases).
 Public HTTP/Nostr interfaces are different adapters with their own authentication.
 Frame/message/stream byte limits, deadlines, cancellation and per-peer quotas
 apply before decode/allocation. Application limits still apply after decompression.
 No unauthenticated private RPC port is published by Compose.
+
+Index is a transport surface of the existing Indexer owner, not another mandatory
+process role. `CommitDerivedDelta` takes target ownership, expected checkpoint,
+bounded typed state delta and deterministic output identity; its synchronized
+checkpoint receipt resolves ambiguous retries. `ReadIndex` takes a validated
+target/ordered-set pin plus bounded typed lookup/range request. The storage owner
+checks current admitted action/resource/policy/ReadViewStamp authority for reads,
+or explicit target-owner authority for derivation; mTLS peer identity and
+possession of another scope's pin are insufficient. Neither accepts
+arbitrary key writes, engine queries or a client-claimed lease. The
+[derived key-space contract](storage-catalog.md#rocksdb-key-spaces) separates
+working state, CH materialization and fenced PG activation. Dirty-only work is
+possible without new ingestion; stopping source projection need not stop the
+storage/RPC owner. Stopping that owner exposes unavailable dependencies or pinned
+read-only alternatives, not parallel writable mounts. P01-T07 establishes codecs;
+P05-T01/P06-T08 complete actual adapter/fault tests.
 
 Use the maintained [tonic HTTP/2 transport](https://docs.rs/tonic/0.14.6/tonic/)
 behind this application contract. Configure both encoding and decoding limits;
@@ -175,16 +199,22 @@ are intentional task ownership, not permission to invent missing migrations:
 | Engine | Reserved identifiers and owner |
 |---|---|
 | PG | 0001 control, 0002 ingest, 0003 minimal relay (P02); 0004 acquisition, 0005 import (P03); 0006 relay lifecycle (P04) |
-| PG | 0501 analytics control; 0603 read pins; 0609 DVM jobs, 0610 subscriptions, 0611 payments |
+| PG | 0501 analytics control and common artifact/file inventory with its first graph consumer; 0603 read pins; 0609 DVM jobs, 0610 subscriptions, 0611 payments |
 | PG | 0703 publication outbox, 0704 delivery, 0705 NIP-85 progress, 0707 NIP-66 progress |
 | PG | 0801 management identity, 0802 commands/revisions/jobs, 0803 saved views |
-| PG | 0804 artifact publication catalog (P08-T04); publication authority is separate from Nostr signing |
+| PG | 0804 additive artifact publication/catalog fields over 0501 inventory (P08-T04); publication authority is separate from Nostr signing |
 | CH | 0001 events, 0002 evidence; 0502 current state through 0512 relay quality as named by P05; 0606 search projection |
 
 Tasks extend the named owner file rather than creating another migration with
 the same number. Archive format migrations are separately versioned by their
 manifest. Once a migration ships, later changes use a new version and compatibility
 transition; editing its past checksum is not an upgrade strategy.
+
+The shared job identity/state foundation belongs to 0001/P02-T01; 0802 adds
+management operations. Common snapshot leases/retention claims belong to
+0002/P02-T07; 0603 adds cursor-specific pins. The
+[storage catalog](storage-catalog.md) distinguishes those initial owners from
+later additive consumers, avoiding phase cycles and duplicate mutable authorities.
 
 Config schema, OpenAPI, protobuf and archive manifests each have one generated/
 validated source pipeline. Generated reference includes defaults, units, ranges,

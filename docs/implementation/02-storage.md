@@ -13,6 +13,15 @@ consumer, not a prerequisite creating a cycle. Read
 The prior Python/engine experiments are evidence for their recorded scope, not
 proof that an unbuilt Rust binding has passed these tasks.
 
+The [storage catalog](../specification/storage-catalog.md) selects logical names,
+keys, writer authority, retention and consumer mappings. Implement P02 tables now
+and reserve later owned migrations without creating empty placeholder services.
+P02-T01/T03/T04/T05 round-trip every applicable catalog family through actual
+engine schemas and portable reconstruction. Introspected DDL, generated types,
+manifest schema and API spelling must agree with the [naming contract](../specification/naming.md).
+P05 owns the separate derived working-state/NEG directory, not a second writer
+to the ingest RocksDB directory; P02 supplies its binding/fencing primitives.
+
 ## P02-T01 — Typed control schemas and minimum relay registry
 
 **Depends on:** P01-T02/T04; the P01-T06 authority core (steps 1/2/4/5) and P01-T07 interface/transport core (steps 1–4), not their later storage acceptance. **Files:**
@@ -22,6 +31,12 @@ application `src/storage/postgres/`, `src/interfaces/migrations.rs`,
 `docs/operations/schema-upgrades.md`.
 **Contract:** bounded typed control commands → atomic owner/revision/job/cut state.
 Minimum endpoint identity/enrollment exists here so P03 does not wait for all P04.
+
+Migration 0001 establishes the shared typed finite `jobs` authority used by early
+CLI consumers; P08-T03 adds management controls over it. Migration 0002 includes
+P02-T07's `snapshot_leases` and `retention_claims`; P06 migration 0603 extends their
+references with cursor pins. This prevents later UI/read phases from becoming
+prerequisites for early durable jobs, exports or reclamation.
 
 - [ ] **Step 1:** Define database owners and roles for configuration/policy, lease epochs,
   source ranges, projection frontiers, jobs, snapshot pins, publication references

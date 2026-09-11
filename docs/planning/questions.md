@@ -89,3 +89,15 @@ identifies 64 complete baseline Markdown reads, new defects/corrections and the
 remaining empirical limits. [The confidence register](decision-confidence.md)
 records reasoned choices and alternatives without claiming a global optimum.
 No additional owner answer is required; product implementation has not begun.
+
+Q19: The owner requests another complete reread, newcomer-readable organization,
+exact table/interface/naming decisions, document-layout alternatives, user/relay
+ranking and review plus real practical validation for each submitted change.
+[Review 11](../reviews/11-whole-repository-audit.md) records the 70-file baseline
+and subsequent counter-review. The new catalogs distinguish logical data from
+physical DDL, permanent scientific evidence from rebuildable state, and public
+resources from database tables. A controlled eight-case Parquet experiment finds
+both layout winners; no unconditional document-normalization claim remains.
+Temporal views and named rank/assertion definitions now have concrete oracles.
+Implementation review is required by impact, without arbitrary clean-round quotas.
+Selections are autonomous design judgments, not new owner technology mandates.

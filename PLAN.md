@@ -19,6 +19,11 @@ an overview; it is not a substitute for task prerequisites and practical evidenc
 
 ## Read the design in this order
 
+New to the project: first read [Start here](docs/start-here.md), the
+[storage catalog](docs/specification/storage-catalog.md),
+[interface catalog](docs/specification/interface-catalog.md) and
+[shared naming](docs/specification/naming.md). These explain the terms used below.
+
 1. [Requirements and historical phases](docs/product/requirements-and-history.md)
    and [product/data/feature decisions](docs/product/data-and-feature-decisions.md)
 2. [Complete system and alternatives](docs/architecture/system-design.md)
@@ -162,9 +167,10 @@ not an engineering proof.
 
 ## Complete-document audit and current confidence
 
-The [whole-repository review](docs/reviews/10-whole-repository-audit.md) fully
-reread the 64-file Markdown baseline, then corrected additional data, producer,
-transport, administration and receipt-recovery gaps. The current detailed plan
+The latest [whole-repository review](docs/reviews/11-whole-repository-audit.md)
+fully reread its 70-file Markdown baseline, then corrected measurement subjects,
+availability confirmation, temporal reads, concrete assertion/ranking definitions,
+state/migration ownership and usable management/download routes. The current detailed plan
 has 116 tasks/716 steps, including P04-T13 availability observations and P04-T14
 issuer metadata. Research import no longer invents a second analytical dataset
 product or foreign administrative source-control transfer. See

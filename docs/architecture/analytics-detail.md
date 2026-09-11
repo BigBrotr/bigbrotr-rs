@@ -6,7 +6,9 @@ specific contracts that broad target-family names did not fully preserve.
 This document fills those gaps within the existing
 [Deriver, Ranker and assertion registry](derived-read-publication.md).
 It introduces no additional service or mandatory storage engine.
-[Protocol evolution](protocol-evolution.md) continues to own wire bindings.
+[Protocol evolution](protocol-evolution.md) owns compatibility and publication
+identity; [assertion bindings](../specification/assertion-bindings.md) owns exact
+producer, relation, subject and field mappings.
 
 ## Scope, identity and exactness
 
@@ -17,6 +19,15 @@ tags. An immutable archive total and a current-visible count are different
 definitions even when their present numbers agree. Effective deletion, expiry,
 replacement or public exposure changes can retract visible contributions without
 removing any accepted signed event or acquisition fact from the archive.
+
+For time-sensitive definitions, source cut plus completed generation is
+insufficient: bind the evaluation/window basis, `visibility_as_of_us`,
+`temporal_generation` and `expiry_deadline_us` from the
+[read-view contract](../specification/read-view-contract.md). Ordinary current
+reads require compatible target temporal identity and refuse after its deadline
+until replacement facts exist. Pausing Deriver cannot relabel old memberships
+or counts with a fresh current stamp. Only explicitly dated analysis resources
+may serve the old interpretation as stale; archived originals remain retained.
 
 Analytical intervals use `[start, end)` unless a named definition explicitly
 states otherwise. Ordinary Nostr filter bounds remain inclusive. The historical
@@ -38,6 +49,22 @@ second permanent per-event receipt table for every additive metric: reuse exact
 admission identity, committed source chunks and partition contribution manifests
 where their algebra permits it. Exact per-group distinct actors, membership
 under expiry, and corrections still require their own necessary state.
+
+The [storage catalog](../specification/storage-catalog.md#shared-derived-state-and-reconciliation-directory)
+selects a separate Indexer-owned RocksDB directory for that mutable derived
+state. Target/scope/generation-qualified keys prevent working checkpoints from
+rewriting a pinned generation. An atomic synchronized batch binds state changes,
+checkpoint and pending output identity; complete CH materialization is verified
+before the fenced PG generation pointer changes. PG records target authority and
+published manifests, not a second dirty-state commit authority. Deriver/Ranker
+own algorithms and submit bounded typed mutations through the storage owner.
+Recovery replays the same pending output or its pinned inputs without loss or
+double contribution. Retain pins and account for WAL, compaction, checkpoints,
+staged CH output and artifacts together.
+
+Migration 0501 supplies shared `artifacts`/`artifact_files` inventory for the first
+graph consumer; `graph_artifacts` is its typed graph binding. Later 0804 adds
+publication metadata, without making P05 depend on P08 or owning the files again.
 
 ## Subjects and the meaning of ranking
 
@@ -100,9 +127,15 @@ are counted in archive facts; a distinct current-visible definition counts only
 the selected serving population.
 
 Posts, replies, quotes, reposts, reports, zaps, topics and activity histograms
-remain separate registry definitions with the relation/parser and source
-verification requirements in the
-[NIP-85 contract](derived-read-publication.md#nip-85-publisher). These baseline
+use the exact versioned definitions and producer mappings in
+[assertion bindings](../specification/assertion-bindings.md). In particular,
+received reactions differ from authored reactions, comment-root/parent unions
+differ from direct replies, and payment identities differ from receipt IDs.
+P05-T02 implements T04's shared pure-parser contract before T03 activity or T04 aggregation;
+neither aggregate depends cyclically on the other's completed generation.
+Materialize per-source contributions, exact actor refcounts, unresolved-target
+reverse dependencies and family-specific publication support as specified there.
+These baseline
 kind counts must not be relabeled as a specific interaction without that parser.
 No publication family becomes enabled merely because a generic count exists.
 
@@ -368,9 +401,80 @@ operate on the full state, never the preview. Arrival, correction, expiry and a
 parser/scope revision dirty only the affected attribute/context and dependencies;
 latest-observer state and value support must retract superseded contributions.
 
+## Relay profile general-read-relay/1
+
+This is the selected initial local measurement profile, not an implemented or
+production-qualified algorithm. Its subject is `Subject::Relay{endpoint_id}`.
+It estimates a bounded read's operational behavior from one path. Its component
+vector, evidence and coverage remain useful when the scalar is withheld.
+
+| Element | Version-1 rule |
+|---|---|
+| Input stratum | Endpoint, local observer, route/address-family class, access scope, exact bounded request/method version, timeout and clock policy. Apply SourceCut before reducing corrections. Do not pool imported claims or incompatible paths. |
+| Window | Pinned observed-time `[window_end-86400s,window_end)`. The end is independent of commit time. Read required in-window anchors, effective policy boundaries and the necessary predecessor. Signed event times are not measurement times. |
+| Sampling unit | One actual compound read attempt, deduplicated by immutable attempt ID after terminal correction reduction. Children, physical duplicate rows and redelivery add no samples. A new executed network retry has its own attempt ID and recorded retry/schedule context. |
+| Success | Matching EOSE for the exact bounded request with required returned bodies verified. Empty EOSE succeeds. A preceding AUTH challenge alone is not failure if the permitted read completes. This does not establish exhaustive remote storage. |
+| Failure | An executed method's explicit access/protocol refusal, recorded actual deadline expiry, or attributable remote/transport failure before completion. It means this bounded read failed from this path, not global relay downtime. |
+| Unknown | Local policy/permit/storage failure, cancellation, unproven dispatch, interruption without terminal evidence, unusable clock or conflicting terminal results. An intent or skipped child never becomes an executed failure or successful sample. |
+| Anchors | A terminal observation anchors at its actual end time. An interrupted attempt with retained actual start can break prior carry with an unknown anchor there; an intent without proven execution supplies no invented timestamp. Equal-time conflicting states become unknown; same-state ties retain all sources and use the shortest allowed hold. |
+| Hold | Until the earliest next anchor, `anchor+2*base_cadence_at_attempt`, effective cadence/method-policy boundary, or window end. The cadence is the recorded configured base interval, not failure backoff or today's configuration. A boundary stops old carry; unknown anchors stop it too. Remaining time is unknown. |
+| Availability | Integrate success S, failure F and unknown U in checked integer microseconds. `A=S/(S+F)` when the denominator is positive; otherwise unavailable. Report `covered_fraction=(S+F)/86400s`, S/F/U and carry assumptions separately. The duration sum equals the window. |
+| Latency | Eligible successful attempts with end inside the window and measured request-write-complete→matching-EOSE duration in integer microseconds. Exact nearest-rank p50: sorted `x[ceil(n/2)]`, the lower middle for even n. `L=exp(-p50_us/1_000_000)` in float64. No latency samples means unavailable L; open/first-event RTT is a different fact. |
+| Sample gate | At least five unambiguous finalized success/failure attempts ending inside the window. Carry-in predecessors, unknowns and child checks do not satisfy the gate. Keep the exact classified count and separate successful-latency count. |
+| Composite | Only with both A and L available and the sample gate met: `Q=0.625*A+0.375*L`. Validate finite values in [0,1]. Missing L withholds Q even if failures establish A=0. Do not redistribute weights. Retain raw Q; the separately gated NIP-85 projection is half-up `round(100*Q)`, not a social percentile. |
+| Comparison | Same profile/version, observer/route/access/method/clock stratum, timeout/cadence policy and compatible window/cut basis. Publish coverage, schedule/retry mix and sample differences. Identical scale is not sufficient comparability. |
+
+Capabilities are separate tested facts and optional eligibility filters. The
+default component vector includes the selected bounded read result plus declared
+versus tested capability statuses; it has no capability scalar C or coverage
+weight. For each explicitly requested requirement (for example COUNT or NEG),
+use the latest unambiguous actual test in its declared method/access/observer
+stratum and window, retaining exact test identity and outcome. Success passes;
+an explicit tested refusal/unsupported response fails that scoped requirement;
+timeout, local failure or conflicting result is unknown. A newer inconclusive
+test cannot be replaced silently by an older successful one. A filter that
+requires a fresh passed test additionally applies its registered age limit;
+missing/unknown/stale cannot pass. NIP-11 declarations do not establish a passed
+test. Every enabled requirement/age policy is recorded with the filtered result;
+it does not alter Q or infer support from a count of advertised NIPs.
+
+The two weights preserve the earlier relative A:L ratio while removing the
+redundant read-capability contribution. This is a reasoned initial selection,
+not evidence of optimal client utility. A vector-only directory, another
+time-constant/weight choice, a minimum-coverage gate or a profile treating
+timeouts as unknown can be evaluated separately. Such semantic changes need a
+new profile/version. Five attempts can cover very little of a day; it is an
+admission floor, not confidence. Missing latency does not conceal the failures:
+the API still exposes A, sample counts and outcomes when Q is unavailable.
+
+The query plan must pay for scoped window reads and predecessor/boundary lookup,
+correction deduplication, input classification, exact latency selection and
+capability lookups. Use indexed endpoint/stratum/time partitions and a changed
+attempt/boundary dependency queue; schedule expiry without new arrivals. Store
+enough boundary state to retract changed adjacent segments. Exact p50 charges
+all eligible durations and sort/selection/spill state; a five-row source limit
+is not its implementation. Late corrections can change both adjacent timeline
+segments and latency order statistics. Bound/resume the actual affected work,
+or refuse an over-budget generation; do not rescan retained measurement history
+for every hourly score or claim O(changed rows) regardless of partition size.
+Include target artifacts, visible comparison queries and rejected/unknown inputs
+in the common job budget.
+
+The independent fixture has window [0,1440) minutes, cadence 10, and anchors
+S at -5, F at 5, U at 10, S at 25/30, F at 35 and S at 45/50. Carry-in gives
+[0,5); final carry stops at 70. Expected S=40 minutes, F=15, U=1385,
+`A=8/11`, coverage `11/288`; six classified in-window attempts meet the floor.
+Their four successful latency values `[200000,100000,300000,900000]` us give
+p50=200000, `L=exp(-0.2)` and `Q=.625*(8/11)+.375*exp(-.2)`.
+A policy boundary at minute 60 instead gives S=30, F=15, U=1395 without changing
+earlier intervals. Probe-count availability 4/6, averaging middle RTTs, carrying
+through unknown to the next success, using backoff as cadence and adding child
+checks must disagree with the oracle. All-failure inputs expose A=0 but withhold
+Q for absent L. These are specified expectations, not executed product results.
+
 ## Seed availability, optional eligibility and curation
 
-Ranker's eligible public graph and raw seeded-diffusion formula remain those in
+The `seeded-trust/1` eligible public graph and raw seeded-diffusion formula remain those in
 the [Ranker contract](derived-read-publication.md#ranker). Freeze graph membership
 before checking seeds. The initial graph includes authors of eligible current
 follow or public-mute list headers, including valid empty lists, and endpoints of
@@ -458,7 +562,12 @@ Use separate symbols in capacity records:
 
 A straightforward CSR graph with 64-bit offsets costs roughly `8*(V+1)` bytes
 for offsets plus `w*E` for neighbor ordinals, where `w` is 4 or 8 only when its
-validated ordinal range permits. Add vertex-ID mapping, weights if needed,
+validated ordinal range permits. An ordinal-to-pubkey array adds at least `32*V`
+raw bytes; the reverse pubkey-to-ordinal lookup/sort-join state, hashes/indexes,
+alignment and temporary build copies are additional. These dictionaries can
+exceed the iteration vectors: 100 million 32-byte pubkeys alone are 3.2 GB
+(decimal). Account for their persisted and resident placement separately;
+compression or mapping does not eliminate construction/join cost. Add weights if needed,
 reverse adjacency if retained, alignment, indexes and artifacts. Two float64
 iteration vectors alone cost `16*V` bytes per active viewpoint; retaining one
 final raw vector costs `8*V` before IDs, rank projections and explanations.

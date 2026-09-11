@@ -34,9 +34,10 @@ Validator/Monitor result for a journey whose purpose is to exercise that result.
 passive, refusal and no-signer journeys run earlier.
 
 Use application modules under `apps/bigbrotr`; reuse pure `bigbrotr-model` and
-`bigbrotr-protocol` values rather than new service crates. `SourceRecordId` is the
-canonical dataset/shard/epoch/sequence four-tuple, one sequence per immutable fact.
-The shared durable type is Receipt. An admission group has a contiguous sequence range and digest; publication cuts
+`bigbrotr-protocol` values rather than new service crates. `SourceRecordId` uses
+`(dataset_id, shard_id, owner_epoch, sequence)`, one sequence per immutable fact,
+from the shared naming contract. The shared durable type is `Receipt`.
+An admission group has a contiguous sequence range and digest; publication cuts
 end only at complete group boundaries. New measurement and claim facts use the
 same receipt, dictionary, authorization and recovery contracts as other producers.
 
@@ -334,39 +335,81 @@ Paths: `tests/acceptance/cases/relay_lifecycle.py`,
 P09 availability pages consume this producer; synthetic reducer rows do not close it.
 **Files:** `apps/bigbrotr/src/acquisition/monitor/availability.rs`,
 `contracts/relay/v1/availability-job.json`, `tests/acceptance/cases/availability_probe.py`,
-`docs/operations/availability-observations.md`; extend P04's existing registry/job
-migration and A05 schema, without a second daemon or permanent retry log.
+`docs/operations/availability-observations.md`; extend the existing monitor CLI,
+configuration and P04 registry/job migration, plus A05, without a second daemon
+or permanent retry log. The [architecture](../architecture/acquisition-services.md#selected-availability-and-issuer-evidence-producers)
+owns gates/profile defaults; the [interface catalog](../specification/interface-catalog.md)
+owns shared persisted-job submission/status/resume behavior.
 
 - [ ] **Step 1:** define `event-availability/1` as an explicitly submitted finite
-  Monitor job. Default periodic submission is off; it requires provenance and
-  current event/endpoint grants. Input is explicit event IDs/endpoints or a pinned
-  bounded local query selection. Persist selection/method/seed if used, eligible
-  scope and whether selection completed; do not call a convenience subset random
-  or representative of the relay's whole corpus. No implicit all-relay cross product.
-- [ ] **Step 2:** validate starting limits of 100 IDs per endpoint/job, 20 IDs per
-  exact-ID request, four concurrent requests within the shared host/endpoint grant,
-  ten-second request deadline and 1,000 total ID/endpoint pairs per job. Payload
-  byte limits still apply. A larger submitted scope is refused before dispatch
-  or explicitly partitioned into separately admitted jobs, never silently truncated.
+  Monitor job through `bigbrotr monitor availability run --selection FILE` and
+  typed `AvailabilityJobRequest` on the shared job API. Validate submission
+  idempotency/digest, explicit pairs or pinned bounded local query, source cut,
+  access/visibility and profile version. Deduplicate overlapping selected pairs
+  before applying limits. Persist the scientific `selection_id`, exact selection
+  or reproducible descriptor/method/seed, eligible scope and selection-completion
+  state separately from mutable job progress. The H gate
+  `monitor.availability.enabled=true` permits these jobs only under provenance and
+  current event/endpoint grants; it creates no periodic or continuous active
+  probing. False or provenance off returns capability-unavailable before dispatch,
+  without breaking unrelated startup. No implicit all-relay cross product or
+  unsupported representative/random-sample claim is allowed.
+- [ ] **Step 2:** capture the versioned profile's J values: 100 IDs/endpoint/job,
+  20 IDs/REQ, 1,000 pairs/job, four concurrent requests, 10s request timeout,
+  `max_network_requests=2000` and `max_duration=30m`. Reserve its consumed request
+  count durably with dispatch intent before each availability REQ, including
+  singleton follow-ups and retries after reconnect; transport/
+  AUTH traffic also obeys common frame/rate/byte grants. The job deadline includes
+  waiting and follow-up work. Persist consumed requests and deadline; resume
+  cannot reset either. Shared host/endpoint/admission grants can lower execution
+  capacity. Refuse an oversized selection or explicitly partition it into newly
+  admitted jobs before dispatch. Budget exhaustion stops new requests and exposes
+  unknown attempted pairs and separate unattempted pairs; it cannot manufacture
+  completion. Outstanding receipt resolution remains recoverable after the
+  measurement deadline. A fully exhausted job needs a new explicit submission
+  for more measurement work, not a reset hidden behind resume.
 - [ ] **Step 3:** use durable dispatch intent and the actual guarded WS stream.
-  Independently verify returned bodies and correlate each requested ID. A complete
-  ordered EOSE after all prior validation permits completed-empty classification
-  for absent requested IDs; disconnect, AUTH limitation, rate limit, dropped frame
-  or timeout remains unknown. It is scoped not-served evidence, not historical absence.
-- [ ] **Step 4:** admit A05 terminal facts per selected pair with request/attempt
-  identity, source receipt, access/observer/clock/method and selection reference.
-  Retrying persistence keeps the same fact; an intentional new probe is a new
-  attempt. Disablement/revocation stops uncommitted pairs without inventing outcomes.
+  Independently verify complete returned bodies and correlate each requested ID.
+  A valid delivered body can establish served evidence; omission from a multi-ID
+  batch remains unknown even after EOSE. Follow omitted IDs with bounded singleton
+  exact-ID REQs before claiming completed-not-served. A truly empty singleton
+  plus ordered EOSE may establish that result only after all preceding validation/
+  admission work is settled, with no invalid/dropped/unattributable input or
+  `more`, AUTH, rate-limit or other restriction. Disconnect/deadline exhaustion
+  stays unknown. Preserve final request profile and batch/singleton context in
+  the evidence. Scoped not-served is neither physical/historical absence nor a
+  deletion instruction.
+- [ ] **Step 4:** use `MeasurementSubject::RelayEndpoint{endpoint_id}` and admit
+  A05 child facts per actually attempted pair, plus the defined execution-unknown
+  recovery record where intent cannot prove dispatch. Preserve shared source
+  identity, receipt, access/observer/clock/method and `selection_id`. Each external request
+  has one `attempt_id`; batched pair children share it, while singleton confirmation
+  is a new external attempt. A logical pair is not an attempt or job identity.
+  Retrying persistence resolves the same `ProducerRequestId`/fact/receipt rather
+  than adding a measurement. Move persisted job progress only after durable
+  terminal/unknown evidence. Disablement/revocation stops later dispatch and
+  resolves actual outstanding commits; it neither erases an issued receipt nor
+  invents outcomes for selected-but-unattempted pairs.
 - [ ] **Step 5:** connect the actual stored facts to P05-T08 and its public/private
-  history resources. Expose disabled/no-observations/partial distinctly. With
-  provenance off, reject the job before dispatch and create no hidden pair index.
-- [ ] **Step 6:** run the shipped job against served, completed-empty, forged,
-  interrupted and timed-out controlled peers. Compare independent socket logs,
-  archived facts, distinct-ID reducer output and later P09 page data; 19 IDs with
-  repeated attempts must not cross the 20-distinct-ID ratio threshold.
+  history resources. Expose disabled/no-observations/partial and selected,
+  attempted, served, not-served, unknown and unattempted counts distinctly.
+  Shared persisted-job status/resume APIs retain the same input/profile/counter
+  identities. Provenance off creates no hidden pair index or background job.
+- [ ] **Step 6:** run the shipped job against a peer holding all 20 selected IDs
+  but returning one per batch plus EOSE; singleton follow-ups serve each ID.
+  Expect all served after permitted confirmation, or served plus unknown when
+  budget ends, never 19 fabricated negative votes. Include a truly missing
+  singleton, `more`, forged requested body, dropped pre-EOSE frame, AUTH/rate
+  refusal, interruption and timeout. Compare independent socket logs, archived
+  facts, distinct-ID reducer output and later P09 page data; 19 IDs with repeated
+  attempts must not cross the 20-distinct-ID ratio threshold.
 - [ ] **Step 7:** document sampling bias, all limits and pair-sized cost. Exercise
-  cancellation/receipt loss, insufficient budgets and queued jobs during backfill;
-  ordinary passive duplicates must produce no availability-experiment facts.
+  the actual CLI/Manage parser, invalid selection and idempotent submission,
+  cancellation/receipt loss, restart after consumed request budget, deadline
+  expiry while queued during backfill, and both gate/provenance-off paths.
+  Compare selected/executed/unattempted sets independently. Ordinary passive
+  duplicates must produce no availability-experiment facts; restarting or cache
+  reuse must not add network requests beyond the saved profile limits.
 
 ## P04-T14 — Acquire attributed LNURL issuer metadata
 
@@ -374,33 +417,58 @@ migration and A05 schema, without a second daemon or permanent retry log.
 result without networking. **Files:** `apps/bigbrotr/src/acquisition/issuer.rs`,
 `contracts/evidence/v1/issuer-observation.json`,
 `tests/acceptance/cases/issuer_evidence.py`, `docs/operations/issuer-evidence.md`.
-Use the existing finite acquisition/job/evidence owners and no separate service.
+Extend the existing CLI/configuration and registry job/cooldown operations.
+Use the existing finite acquisition/job/evidence owners and no separate service;
+the architecture profile and interface catalog above govern defaults and commands.
 
 - [ ] **Step 1:** define a bounded demand queue from selected unresolved zap/profile
-  subjects from admitted public inputs and explicit operator jobs. Enabling zap
-  analysis enables eligibility for guarded public metadata acquisition; operator
-  policy may disable it, yielding unavailable issuer inputs. Private-input-driven
-  external lookups require explicit disclosure/egress authority, not just read
+  subjects from admitted public inputs and explicit operator jobs. The H gate
+  `issuer.enabled=true` permits eligible demand from enabled zap analytics and
+  `bigbrotr issuer lookup --recipient PUBKEY --profile EVENT_ID`, which submits
+  typed `IssuerLookupRequest` through the shared persisted job API. Capture
+  submission identity/digest, source cut, `profile_event_id`, the
+  `issuer-metadata/1` revision, access and visibility; status/
+  resume reuse the same job and resolve ambiguous receipts. False yields
+  unavailable issuer inputs and no later dispatch, without making unrelated
+  startup fail. The default alone does not schedule arbitrary HTTP work.
+  Private-input-driven external lookups require explicit disclosure/egress authority, not just read
   permission. Bind recipient, source cut and recipient-signed profile defining the
   LNURL endpoint before submission. A payer-signed request's lnurl alone cannot
   authorize that recipient's issuer; uncorroborated bindings stay claims. For split
   recipients, require the selected recipient's own profile binding too. Preserve
   request/target references and method version without promoting their authority.
-- [ ] **Step 2:** coalesce by normalized URL, recipient binding and visibility scope;
-  use four global concurrent lookups, 10s deadline, 64KiB decoded response limit,
-  two redirects and 24h cache freshness as starting controls within shared grants.
-  Cap queued demands at 4,096 entries and 64MiB total, new network starts at
-  one/second with burst four, and unsuccessful retries at no more than one/hour
-  per recipient/URL/scope. Host/address grants still apply. Overflow reports
-  deferred coverage; feed/checkpoint work stays incremental rather than repeatedly
-  scanning the entire unresolved population. A cache hit references its original
-  observation and timestamp, creating no new A05 fetch. Cache freshness is not
-  proof that an issuer key was continuously valid for 24 hours.
+- [ ] **Step 2:** capture `issuer-metadata/1` J values: four concurrent lookups,
+  10s whole-lookup deadline including redirects, 64KiB decoded response, two
+  redirects, 24h cache freshness, 4,096 working entries/64MiB, one network start/s
+  with burst four, and one-hour unsuccessful retry spacing. Coalesce eligible
+  recipient/resource/access/visibility demand; preserve each signed profile
+  binding even when it references an existing response. Queue, active inputs/
+  decoding, cache and cooldown state share that single working grant across
+  workers. Reserve a durable registry cooldown obligation before dispatch;
+  unexpired obligations continue to consume entry capacity after cache eviction.
+  Failed or ambiguous completion extends `not_before` to at least completion/
+  recovery time plus one hour. Check it before each later start for the same
+  recipient/resource/access/visibility key; profile replacement alone cannot
+  bypass it. Retain unresolved dispatch until safe receipt/recovery retirement.
+  Expire only resolved elapsed cooldowns; under pressure evict cache values or
+  defer new identities instead of discarding cooldown obligations. Unavailable
+  registry/cooldown capacity means no dial. Host/address/current memory grants
+  still apply. Overflow reports deferred coverage; incremental feed/checkpoint
+  work avoids full repeated unresolved-population scans. A cache hit references
+  original A05/A06 evidence and time, creates no new fetch, and cannot establish
+  continuous key authority throughout the 24-hour freshness window.
 - [ ] **Step 3:** fetch only metadata through the shared guarded transport. Validate
   expected fields including `allowsNostr`/`nostrPubkey` under the pinned NIP-57
   contract. Never follow an invoice callback, pay, sign or resolve from analytics.
   Persist actual retrieval time, HTTP/TLS basis, original bounded document/digest,
   recipient/URL binding, observed key and parser outcome as A05/A06 evidence.
+  Use the canonical tagged
+  `MeasurementSubject::RecipientMetadataHttp{recipient_pubkey, profile_event_id, http_resource_id}`;
+  the guarded HTTP descriptor and actual request/redirect/dial context remain
+  distinct from a Nostr relay endpoint. A06 references resolve through that
+  subject/observation contract. No fabricated endpoint or relay enrollment is
+  required. A persistence retry resolves the original attempt and receipt;
+  a later actual fetch is a distinct `attempt_id` subject to the durable cooldown.
 - [ ] **Step 4:** distinguish observed-at-fetch key match, contradictory observation,
   and an attributed historical issuer assertion with its own authority/time scope.
   Today's metadata never retroactively authenticates old receipts. Observed-only
@@ -414,13 +482,39 @@ Use the existing finite acquisition/job/evidence owners and no separate service.
   metadata, payer-selected impostor issuer, private-input disclosure denial,
   private-address rebinding and old receipts with no eligible evidence.
   Inspect real guarded requests, documents, classified facts and NIP-85 inputs.
-  A current-fetch-as-historical-proof variant must fail the independent oracle.
+  Export an observation for a recipient with no relay identity and independently
+  resolve profile, HTTP resource and original document while the registry gains
+  zero relay enrollments. Reject mixed subject-variant fields and cross-visibility
+  document references. A current-fetch-as-historical-proof variant must fail the
+  independent oracle.
 - [ ] **Step 7:** measure lookup/cache/queue cost and the fraction of the declared zap
   corpus remaining issuer-unresolved. Document that source acquisition cannot
   recover unobserved historical authority; lack of evidence withholds affected
-  fields, not original receipts. Include outage/retry and policy-disable journeys.
+  fields, not original receipts. Include actual CLI/Manage submission/status/
+  resume, lost receipt, outage and gate-disable journeys. Drive distinct recipients
+  through a deliberately small shared grant; evict a cached response, restart the
+  worker and prove from actual start times that its durable cooldown still holds.
+  Exhaust cooldown capacity and verify deferred new demand, bounded state and
+  incremental recovery. Disabled or private-disclosure-denied jobs emit no request;
+  current lookup or cache results cannot repair missing historical authority.
 
 ## Coverage and configuration ownership
+
+For T14's historical issuer branch, P03-T10 owns the optional A03
+`IssuerAuthorityBindingV1` import/admission producer and its exact schema in
+[assertion bindings](../specification/assertion-bindings.md). T14 supplies current
+HTTP observations and must test that they cannot mint the claimed historical
+interval. Qualified operator-attested inputs and their public-use authority are
+separate; absent or disabled input withholds strict zap wire fields. No new daemon
+or automatic external trust source is introduced.
+
+T07/T08 must actually produce P05-T12's selected latency/cadence inputs: preserve
+request-write-complete to matching EOSE duration separately from handshake and
+first-event RTT, the effective base cadence/profile at the attempt and its
+method/cadence boundaries. Pooled connections reuse prior handshake evidence;
+they do not fabricate fresh handshake samples. Unavailable clock/phase fields
+withhold that latency component. The end-to-end quality fixture must consume
+these stored actual monitor fields, not injected precomputed RTTs alone.
 
 Defaults, units and reload classes are authoritative in the acquisition contract;
 these tasks must add corresponding typed fields, rendering, validation and the
@@ -440,6 +534,8 @@ behavioral change cases rather than invent parallel per-service allocators.
 | monitor.active_write enable/signer/scope/interval/PoW limits; AUTH | T10; P07 signer | Default zero signed EVENT; OK without exact verified retrieval is partial |
 | raw_retention, aggregate_retention, document references and NIP-66 handoff | T11 | Permanent default, explicit lossy manifest, no fabricated denominator or publisher probe |
 | Runtime counters, health, finite once runs, split roles and capacity reporting | T12 and each task | Actual CLI/engine evidence and bounded transient counters |
+| monitor.availability.enabled; event-availability/1 captured profile and persisted jobs | T13; existing CLI/Manage owner | False/provenance-off is unavailable without unrelated startup failure; capped batches need singleton confirmation; counters/deadline survive resume |
+| issuer.enabled; issuer-metadata/1 captured profile, shared working grant and durable cooldowns | T14; existing CLI/Manage/registry owners | Tagged non-relay subject, zero enrollment, cache eviction/restart cannot bypass cooldown, full working-set pressure defers |
 
 ## Recorded planning revisions
 

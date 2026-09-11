@@ -36,7 +36,7 @@ Shared schemas are governed by the coordinator's planned
 owns `migrations/postgres/0004_acquisition.sql` and `0005_import.sql` only. Reuse
 `SourceCut`, `SourceRecordId`, `Receipt`, `EndpointId`, observer and policy
 identity types from their canonical model modules; do not invent parallel scalar
-cursors. SourceRecordId is dataset/shard/epoch/sequence, one sequence per fact;
+cursors. SourceRecordId is `(dataset_id, shard_id, owner_epoch, sequence)`, one sequence per fact;
 receipts bind contiguous complete atomic-group ranges and their digest. Here, `AcquisitionScope` means endpoint + selector + authorization scope
 + policy epoch; `PageOutcome` means qualified evidence + receipt set + exclusions
 + gaps + next work, never a boolean complete result. Each declaration below is a
@@ -238,8 +238,10 @@ Paths: `apps/bigbrotr/src/acquisition/import/preflight.rs`, `apps/bigbrotr/src/a
 
 Dependencies: P03-T08; P01-T03 format/verification primitives and frozen producer
 schema; P02-T03/T04 archive contracts. Inputs are preflight-approved immutable
-shards; output is bounded logical event/claim/control records with exact source
-positions. This adapter boundary does not attach foreign files to a live owner.
+shards; output is bounded logical event/claim/scientific-evidence records with
+exact source positions. Selected research formats carry no administrative control
+family; deployment controls use P08 restore. This adapter boundary does not attach
+foreign files to a live owner.
 
 Paths: `apps/bigbrotr/src/acquisition/import/jsonl.rs`, `apps/bigbrotr/src/acquisition/import/native.rs`,
 `apps/bigbrotr/src/acquisition/import/pensieve.rs`, `contracts/import/v1/pensieve/source.json`,
@@ -269,11 +271,21 @@ Paths: `apps/bigbrotr/src/acquisition/import/staging.rs`, `apps/bigbrotr/src/acq
 
 - [ ] **1. Build a bounded staging plan.** Partition/external-sort body and sidecar IDs with a declared scratch quota; do not keep a corpus-sized map or a fixed ten-million-edge correctness ceiling. Persist phase and partition receipts so interrupted sort/join work can resume. Stream a single extremely popular event's claim group in bounded chunks; partition skew cannot recreate an unbounded in-memory join. Account for input, intermediate sort runs, merge output and final staging coexisting within scratch quota.
 - [ ] **2. Join source claims independently of input order.** Resolve existing/unknown endpoint identities without enrollment, preserve origin/observer/source timestamp and classify missing/orphan references. `import.claims=enabled-families` preserves only enabled interpreted claim families; provenance-off excludes imported event→relay claims without creating a hidden P inventory. `require-all` fails preflight when a disabled family would be excluded; `none` skips interpreted claims while complete signed bodies remain unchanged. Record every excluded family in the import report/export lineage manifest; dataset-only input never invents a witness.
-- [ ] **3. Admit batches through the same authority.** Default 1000 records is additionally byte-bounded. Persist a pending ProducerRequestId (registered producer slot/epoch plus local request sequence) before submission, alongside its immutable job/shard/logical range and digest. Resolve ambiguous acknowledgement using that exact request; logical source-record identity is separate and remains stable after a new worker incarnation; current moderation is checked at each atomic commit boundary. Policy update or expired authority pauses/refuses uncommitted affected records without restoring takedowns. A post-commit revocation may restrict subsequent delivery/read visibility, but cannot rewrite the already committed admission result.
+- [ ] **3. Admit batches through the same authority.** Default 1000 records is additionally byte-bounded. Persist a pending `ProducerRequestId=(producer_slot_id, producer_epoch, request_sequence)` before submission, alongside its immutable job/shard/logical range and digest. Resolve ambiguous acknowledgement using that exact request; logical source-record identity is separate and remains stable after a new worker incarnation; current moderation is checked at each atomic commit boundary. Policy update or expired authority pauses/refuses uncommitted affected records without restoring takedowns. A post-commit revocation may restrict subsequent delivery/read visibility, but cannot rewrite the already committed admission result.
 - [ ] **4. Checkpoint after durable effects.** Five-second target checkpoints name whole logical record/shard boundaries and receipt/source-manifest identity. Changed inputs fail resume; crash after admission before checkpoint replays harmlessly. Existing receipts, not attempted counters, determine logical imported totals. Retain unresolved request/cursor state for its correctness horizon independently of the display-log TTL; cancel after commit preserves that recoverable checkpoint rather than deleting staging blindly.
 - [ ] **5. Handle pressure and cleanup.** Spill on RAM pressure; scratch exhaustion pauses with required/free bytes. Bound reject artifacts to 64MiB while counters continue. Clean only owned staging objects after final job/retention rules; preserve source artifacts and other jobs. Terminal rejections have warning/non-success exit class, not a silent successful zero import.
 - [ ] **6. Exercise the discriminating job.** Make sidecars precede and follow bodies across shards, include imported B claims for an event already seen on A, run two jobs, stop during staging/admission/checkpoint, and change local moderation mid-run. With claims enabled, B appears only as an imported claim; with provenance off, B produces no interpreted event→relay claim, inventory or local witness and the report names that excluded family. require-all refuses before admission. Network progress stays unchanged and repeat logical counts remain stable in every case.
 - [ ] **7. Run future p03-t10 through import/status/resume on real stores.** Independent input and archive readers compare event/claim sets and job receipts with a corpus exceeding the configured RAM grant. Enforce skewed one-event/many-claim input, scratch failure and restart; preserve source file hashes, spill bytes, logical counts and current policy revision. Phase 08 later adds full export/restore operator integration over these same contracts.
+
+P03-T10 additionally owns `contracts/evidence/v1/issuer-authority-binding.schema.json`
+and the optional A03 `IssuerAuthorityBindingV1` parser/admission gate from
+[assertion bindings](../specification/assertion-bindings.md#zap-qualification-and-conflict-handling).
+Use the existing native scientific-claim format and `import.claims=enabled-families`
+with a registered enabled family and explicit trusted-source grant, not a new
+configuration string. Validate recipient/profile/URL, interval, authority policy,
+evidence closure, superseding corrections and public-use scope. Exercise actual
+import→receipt→P05 classification with valid, forged, conflicting and private-only
+bindings; disabling the family never stops full signed-event import.
 
 ## P03-T11 — Expose truthful acquisition operations and cost diagnostics
 
@@ -322,7 +334,7 @@ Paths: `tests/acceptance/cases/acquisition.py`, `tests/fixtures/acquisition/end_
 | Preserving wire, full verification, multiplexing, late live events and cancellation | T02–T04 |
 | Linear caps, finite partitioning, NIP-67, NEG local set/retrieval and refusals | T03, T05, T06 |
 | Hot/warm/deep sampling, fair seats, shared byte/disk/CPU pressure and split roles | T07, T12 |
-| JSONL/native/pinned pensieve, controls, claims, spill, immutable resume and moderation | T08–T10 |
+| JSONL/native/pinned pensieve, scientific evidence/claims, spill, immutable resume and destination moderation; deployment controls remain P08 restore | T08–T10 |
 | Actual CLI/engine evidence, metrics/retention/redaction and operator recovery | T11, T12 and each task's journey |
 
 No first-launch/discovery prerequisite is hidden in this phase: P04 implements

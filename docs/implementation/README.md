@@ -13,6 +13,14 @@ producers/consumers; prose and fixtures explain meaning beyond the IDs.
 
 ## Normative specification and reading order
 
+Begin with [the newcomer guide](../start-here.md), then the
+[storage catalog](../specification/storage-catalog.md),
+[interface catalog](../specification/interface-catalog.md) and
+[naming contract](../specification/naming.md). The
+[read-view contract](../specification/read-view-contract.md) and
+[assertion bindings](../specification/assertion-bindings.md) refine their owning
+P05/P06/P07 semantics; their exact task mappings are part of the handoff below.
+
 1. [Data fields, meaning, location and retention](../specification/data-contracts.md).
 2. [Component contracts, shared types, state machines and evidence runner](../specification/component-contracts.md).
 3. [Import format and source contracts](../specification/import-formats.md).

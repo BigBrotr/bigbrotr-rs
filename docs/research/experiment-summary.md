@@ -36,3 +36,22 @@ used local DuckDB 1.4.5, one thread and a 128MB engine setting. A requested
 64,000-row group produced 65,536-row groups, with exact arithmetic readback.
 This corrects a hard-cap assumption; it is not a native-memory, DuckLake,
 durability or capacity result. [Evidence](evidence/parquet-targets.json).
+
+## Review 11: controlled document placement
+
+The [document-layout experiment](../../experiments/document-layout/README.md)
+compares wide observations with separate objects/references across churn, entropy
+and file boundaries using local DuckDB 1.4.5. Eight corrected cases each reconstruct
+16,384 exact observations. Split objects save 20.04–60.10% in the two repeated-body
+16-file fixtures; wide rows win both one-file repetition cases and all high-churn
+cases. Both executed orderings, source/output hashes, 348 Parquet files and their
+metadata were retained/rechecked. The first object's namespace/digest ordering
+confound is disclosed. These are compression/reconstruction measurements, not
+throughput, memory, recovery or production NIP-11 distribution results.
+
+The separate [relay-profile arithmetic probe](../../experiments/relay-profile/README.md)
+independently enumerates the documented minute-aligned timeline and confirms its
+S/F/U, availability, coverage, lower-median latency and composite calculations.
+Incorrect probe-count, middle-average and unknown-carry alternatives differ.
+It establishes neither production window/clock correctness nor optimal ranking
+weights; those remain practical implementation/utility qualification work.

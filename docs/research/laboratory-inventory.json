@@ -67,5 +67,23 @@
   "whole_document_audit": {
     "path": ".research/review-10",
     "contents": "baseline hashes and coordinator full-read path inventory; tracked combined manifest records final baseline coverage"
+  },
+  "review_11_local_document_layout": {
+    "path": ".research/document-layout/run-01",
+    "controlled_run": ".research/document-layout/run-01/order-control",
+    "total_bytes": 85667881,
+    "evidence": "docs/research/evidence/document-layout.json",
+    "source": "experiments/document-layout/probe.py",
+    "notes": "Two finished bounded local DuckDB runs; initial ordering confound and original source preserved; no server/network/Tux/install/product activity."
+  },
+  "review_11_local_relay_arithmetic": {
+    "path": ".research/relay-profile/run-01",
+    "evidence": "docs/research/evidence/relay-profile.json",
+    "source": "experiments/relay-profile/probe.py",
+    "notes": "Finished standard-library minute-aligned arithmetic fixture and differing negative controls; no product/network/engine activity."
+  },
+  "review_11_read_accounting": {
+    "path": ".research/review-11",
+    "contents": "Frozen baseline, bounded full-text read bundles, coordinator coverage and structural check; tracked combined read manifest supplies portable identity accounting."
   }
 }

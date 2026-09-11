@@ -70,6 +70,17 @@ server, extra search cluster or distributed broker by default.
 
 ## What must be measured before calling the setup suitable
 
+The [review-11 handoff](../reviews/11-whole-repository-audit.md) makes logical
+tables, states and public resources concrete. It does not freeze unmeasured DDL.
+The [eight-case document-layout probe](../../experiments/document-layout/README.md)
+finds split objects smaller for repeated documents across many files, and wide
+rows smaller for every tested high-churn case. File/order locality, object lookup,
+privacy layout and maintenance costs can change the selection.
+`general-read-relay/1` has an explicit A/L score and separate capabilities; its
+weights are a selected explainable policy, not empirically optimal user utility.
+The ordinary temporal cursor policy needs useful completion-rate measurements
+under heavy expiration, in addition to correct invalidation.
+
 P02-T09 compares whole storage representations and recovery under the same input.
 P03-T12/P04-T12 measure actual serviced endpoint intervals under live/backfill/
 monitor/import contention. P05-T13 includes graph construction and change handling;

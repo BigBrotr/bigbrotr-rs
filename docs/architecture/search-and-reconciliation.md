@@ -81,6 +81,11 @@ never retrieve an arbitrary chronological prefix and rerank just that prefix.
 An admitted plan may refuse an excessively broad request rather than misrepresent
 its top results. Rich relevance is an engine evaluation criterion below.
 
+"Query" in this ranking means the decoded searchable literals, excluding ignored
+extension tokens and quote syntax. The exact mixed-phrase mapping, versioned
+identity and temporal eligibility stamp are normative in the
+[read-view contract](../specification/read-view-contract.md).
+
 [NIP-50](https://github.com/nostr-protocol/nips/blob/a2494f4f81d46684e5814a9bf35e2b1df978f955/50.md)
 adds a search string to ordinary filters and recommends ordering by match quality
 before limiting. Its unsupported textual `key:value` extensions are ignorable;
@@ -216,7 +221,7 @@ only the extra structure justified by measured repeated reconciliation work.
 
 The general full-scope projection is incrementally updated from visibility/current
 state changes, not merely new arrivals. Replacement/deletion and expiration affect
-set membership; scheduled expiry can create a new cut without any new event
+set membership; scheduled expiry creates a new temporal generation without any new event
 arrival. Publish a complete reconciliation cut only after those changes apply.
 Use consistent immutable read snapshots and retain their necessary files/versions;
 if the chosen binding cannot safely expose them across processes, the projection

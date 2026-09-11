@@ -35,7 +35,7 @@ Names here are semantic contract names, not a requirement for a specific databas
 | `CapabilityObservation` | Endpoint, observer, authorization scope, protocol feature, `advertised/observed/unsupported/inconclusive`, outcome reason, method/version, measured_at, expires_at, optional bounded raw-document digest. Unsupported requires attributable evidence; timeout is inconclusive. |
 | `LocalWitness` | Verified event id and signed created_at, endpoint id, local observer id, authorization-scope id, received_at, acquisition layer, visibility class and durable source record. Body deduplication does not suppress a new witness. |
 | `ImportedClaim` | Verified event id when available, claimed endpoint/subject, claimed first_seen_at, original observer if supplied, source artifact id and record position, imported_at, claim trust class. Its timestamp never replaces the local first-witness timestamp. |
-| `Measurement` | Observation id, endpoint, stable observer UUID, check family/method version, per-check timestamps/durations/statuses, endpoint/address/route context, document references and visibility. Optional signer pubkey is separate from observer UUID. |
+| `Measurement` | Observation id, the canonical A05 `MeasurementSubject` (relay endpoint or recipient-bound HTTP resource), stable observer UUID, check family/method version, per-check timestamps/durations/statuses, actual address/route context, document references and visibility. Optional signer pubkey is separate from observer UUID. |
 | `CoverageAttempt` | Attempt id, endpoint/filter/auth scope, half-open signed-time interval, algorithm and version, start/end wall times, result class, EOSE hints/cap evidence, requested/received/missing counts, policy exclusions, receipt references, next traversal position and optional parent partition. |
 | `AcquisitionGap` | Scope/interval or exact event id, reason, first/last observed, retry due, attempts, latest evidence, unresolved/resolved status and resolution receipt. Resolving adds history; it does not erase the earlier gap. |
 | `ImportJob` | Job id, source manifest/digests, parser and policy versions, requested scope, current phase, shard/offset, last durable receipt, bytes/records and outcomes, reject-artifact reference, terminal status. Multiple independent jobs may coexist. |
@@ -44,7 +44,20 @@ Names here are semantic contract names, not a requirement for a specific databas
 
 ### Durable ingest contract
 
-`Admit(batch, producer, policy_revision, idempotency_key)` returns per-record outcomes and a `DurableReceipt`, or a retryable/terminal error. The receipt identifies stream/partition, committed sequence range, durability class and batch digest. A producer must not checkpoint network traversal, observation publication readiness or import offsets beyond receipts the ingest authority guarantees survive its documented crash model. RAM acceptance, SDK callbacks, successful RPC transport and analytics visibility are not receipts.
+Use the canonical [component contracts](../specification/component-contracts.md#typed-boundaries):
+`Admit` accepts `ProducerRequestId`, a verified event, optional local observation
+and a budget grant, and returns `AdmissionResult`. `AdmitEvidence` admits typed
+measurement/document/claim batches through the same request-identity and policy
+boundary. Successful effects name the shared `Receipt`; invalid, excluded,
+retryable and retired-request outcomes retain their defined meanings. A receipt
+binds complete committed source-sequence ranges, durability class and batch
+digest. `ProducerRequestId=(producer_slot_id, producer_epoch, request_sequence)`
+is operational retry identity, not permanent `SourceRecordId`; the
+[naming contract](../specification/naming.md) defines those distinct lifetimes.
+A producer must not checkpoint network traversal, observation publication
+readiness or import offsets beyond receipts guaranteed to survive the authority's
+documented crash model. RAM acceptance, SDK callbacks, successful RPC transport
+and analytics visibility are not receipts.
 
 Admission applies finite framing/decompression bounds, strict event decoding, id recomputation and Schnorr verification, semantic acquisition scope, current moderation and event/edge deduplication. Cheap rejection may precede signature work, but an unverified claimed id must never enter a permanent seen/suppression set. Verified blocked ids produce durable suppression metadata, not event bytes. Already-held bodies with new provenance still append the provenance.
 
@@ -248,7 +261,7 @@ full NIP-11 document into every liveness record.
 
 An acquisition selector is a versioned union of structured Nostr filters, with explicit event-time inclusion policy and ephemeral policy. Selector fields express durable collection intent; request pagination `limit` and moving tail boundaries are not selector identity. Persistent author/id/tag lists use exact supported values. Reject unsupported search-based historical selectors because relevance ordering and server-defined matching cannot support this traversal algorithm. Normalize field/list order and duplicates before hashing; preserve the semantic distinction between absent and empty lists by rejecting empty lists. `since`/`until` explicitly supplied as collection policy remain part of the selector, while generated request windows do not.
 
-Work is scoped by `(endpoint_id, selector_id, auth_scope_id, policy_epoch)`. A scope change starts new evidence; automatic narrowing reuse is an optional optimization requiring a containment proof for unions of conjunctions, not a prerequisite. Ephemeral exclusion is local admission policy and identity. Nostr filters lack a general negative-kind operator; an all-kinds request cannot simply express “all except 20000–29999” without an explicit bounded positive expansion. The implementation must either compile a bounded supported positive filter set or receive-and-drop with an honest wire-policy label. Do not claim that excluded kinds were never requested when the wire uses `{}`.
+Work is scoped by `(endpoint_id, selector_id, access_scope_id, policy_epoch)`. A scope change starts new evidence; automatic narrowing reuse is an optional optimization requiring a containment proof for unions of conjunctions, not a prerequisite. Ephemeral exclusion is local admission policy and identity. Nostr filters lack a general negative-kind operator; an all-kinds request cannot simply express “all except 20000–29999” without an explicit bounded positive expansion. The implementation must either compile a bounded supported positive filter set or receive-and-drop with an honest wire-policy label. Do not claim that excluded kinds were never requested when the wire uses `{}`.
 
 Schedule bounded work quanta across every eligible endpoint with a fair queue, favoring oldest unserved scopes without starving live/recent work. Maintain optional live subscriptions only for seated endpoints; show disconnected/unserved intervals when the fleet exceeds capacity. A ten-minute rotation is not proof of continuous all-relay live coverage. Historical traversal yields at request/segment boundaries and is preemptible on a work deadline; it cannot occupy a scarce slot forever because a relay has a large history.
 
@@ -509,17 +522,71 @@ adapter or rejected during validation, never accepted and ignored.
 
 P04-T13 owns finite, explicitly requested `event-availability/1` Monitor jobs.
 It creates A05 pair observations from actual exact-ID requests with a declared
-selection, bounded work and proven response ordering. Periodic submission is off
-by default; provenance is required. P05-T08 and the availability pages consume
-this producer. First witnesses or operational retry logs cannot replace it.
+selection, bounded work and proven response ordering. There is no periodic
+submission or continuous active-probing producer; provenance is required.
+P05-T08 and the availability pages consume this producer. First witnesses or
+operational retry logs cannot replace it. A valid returned body proves served;
+an ID omitted from a multi-ID batch stays unknown despite EOSE. A completed empty
+singleton exact-ID request can establish scoped not-served only after full
+validation/ordering barriers, with no dropped/invalid input or access/rate/`more`
+restriction. This is neither deletion nor proof of physical or historical absence.
+Singleton follow-ups consume the same finite request/time budgets as batches.
 The [task contract](../implementation/04-relay-lifecycle.md#p04-t13--explicit-finite-event-availability-observations)
-owns its starting limits and real socket-to-browser evidence.
+implements the profile below and real socket-to-browser evidence.
 
-P04-T14 owns guarded LNURL issuer-metadata acquisition for selected zap/profile
-subjects. It stores actual observed time, recipient/source binding and A06 bytes;
-analytics never performs HTTP resolution. A present key match is not historical
-issuer authority. The [task contract](../implementation/04-relay-lifecycle.md#p04-t14--acquire-attributed-lnurl-issuer-metadata)
-owns demand coalescing, bounds, source trust and unresolved-history behavior.
+P04-T14 owns `issuer-metadata/1` guarded LNURL acquisition for eligible zap/profile
+subjects and explicit jobs. It uses A05's
+`MeasurementSubject::RecipientMetadataHttp{recipient_pubkey, profile_event_id, http_resource_id}`;
+relay measurements use `MeasurementSubject::RelayEndpoint{endpoint_id}`. The
+[data contract](../specification/data-contracts.md) owns those tagged shapes and
+A06 references. An HTTP resource creates no invented relay identity or enrollment.
+Capture actual observed time, recipient/source binding, request/redirect/dial
+context and A06 bytes; analytics never performs HTTP resolution. A present key
+match is not historical issuer authority. The
+[task contract](../implementation/04-relay-lifecycle.md#p04-t14--acquire-attributed-lnurl-issuer-metadata)
+implements demand coalescing, source trust and unresolved-history behavior.
+
+The two gates are deployment configuration. False or provenance-off availability
+reports the affected capability unavailable and refuses its jobs before dispatch;
+it does not fail unrelated startup. False issuer acquisition leaves affected
+analytics inputs unavailable. Invalid configuration remains a validation error.
+
+| Key | Default | Unit | Reload | Meaning |
+|---|---|---|---|---|
+| `monitor.availability.enabled` | `true` | bool | H | Permit explicitly submitted finite jobs under provenance/current grants; schedules no periodic probes |
+| `issuer.enabled` | `true` | bool | H | Permit eligible public demand from enabled zap analytics and explicit jobs; private-input disclosure still needs separate authority |
+
+These versioned profile fields are J values captured with each admitted job;
+they are not additional deployment keys. The lower current hot network, memory
+and admission grants always constrain execution. Changing a profile affects new
+jobs only; resume preserves profile, selection, counters and deadline. Gate
+disablement stops new dispatch while recovering actual outstanding receipts.
+
+| Profile | Captured defaults (field names and units) |
+|---|---|
+| `event-availability/1` | `max_ids_per_endpoint=100`, `max_ids_per_request=20`, `max_pairs=1000`, `max_concurrent_requests=4`, `request_timeout=10s`, `max_network_requests=2000`, `max_duration=30m` |
+| `issuer-metadata/1` | `max_concurrent_requests=4`, `request_timeout=10s` for the whole lookup including redirects, `max_response_bytes=64KiB`, `max_redirects=2`, `cache_freshness=24h`, `max_working_entries=4096`, `working_memory_bytes=64MiB`, `network_start_rate=1/s`, `start_burst=4`, `retry_min_interval=1h` |
+
+The issuer's queue, active requests/decoded bytes, response cache and cooldown
+working state share the single 64MiB/4,096-entry grant across workers, rather
+than each receiving that allowance. The existing registry job owner reserves a
+durable cooldown obligation before dispatch. Unexpired obligations count against
+the entry grant even after cache eviction; failed or ambiguous completion extends
+`not_before` to at least completion/recovery time plus one hour. Check that state
+before every later start for the same recipient/resource/access/visibility key.
+Keep unresolved dispatch obligations until their receipt/recovery state is safe
+to retire. If the owner or required cooldown capacity is unavailable, defer;
+never evict a cooldown to admit a new identity or bypass retry spacing. Expired,
+resolved cooldowns and evictable cache entries can release capacity. Permanent
+A05/A06 evidence remains independently retained, not resident in this cache.
+
+`bigbrotr monitor availability run --selection FILE` and
+`bigbrotr issuer lookup --recipient PUBKEY --profile EVENT_ID` submit typed
+`AvailabilityJobRequest` and `IssuerLookupRequest` through the shared persisted
+job owner. Submission idempotency, status, cancellation and resume follow the
+[interface catalog](../specification/interface-catalog.md); they do not create
+another job service. Scientific `selection_id`, logical event/endpoint pair,
+external `attempt_id` and operational job progress have distinct identities.
 
 ## Pooled transport evidence and destination fairness
 

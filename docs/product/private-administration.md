@@ -18,7 +18,7 @@ public frontend or only the private panel; static bundles contain no secrets.
 | Area | Operator can do | Context the interface must explain |
 |---|---|---|
 | Overview | Inspect health, current work and storage forecast | Started vs ready vs caught up; fresh, stale and unknown data |
-| Services | Start, drain, pause and resume individual roles | Actual dependencies, retained data, pending work and affected capabilities |
+| Services | Start, drain, pause, resume and stop configured supervised roles | Actual dependencies, retained data, pending work and affected capabilities; no arbitrary remote deployment |
 | Collection | Configure event filters, provenance and network routes | New coverage epoch, historical gaps, auth scope and predicted extra work |
 | Relays | Inspect measurements, enrollment, backoff and exclusions | Remote failure versus local inability to measure; view original evidence |
 | Jobs | Start/inspect/cancel imports, exports, derivation and ranking | Durable progress, snapshot/algorithm pinning, restart/resume behavior |

@@ -53,8 +53,10 @@ Dates used for archive partition placement are controlled ingest ranges; the
 signed timestamp remains untouched. Reject malformed/over-limit input before
 expanding large arrays or constructing signed-serialization buffers.
 
-Canonical signed serialization excludes JSON whitespace/key order and extra
-top-level fields. A full event retains every signed field and a valid original
+Canonical signed serialization excludes wire JSON formatting whitespace/key order
+outside string values and extra top-level fields. Whitespace inside signed
+content/tag strings is authenticated and preserved. A full event retains every
+signed field and a valid original
 signature; exact wire bytes are an independently configured fidelity mode.
 Object-like event content remains an uninterpreted string. Typed derived fields
 always point to their parser version and original input.
@@ -73,6 +75,13 @@ end at complete committed batch boundaries; batches are never partially
 certified. Identical retry copies share the complete source identity
 and bytes. Corrections are new facts with new identities. Dictionary additions
 required by a fact are published in the same or an earlier visible archive cut.
+
+Normalized child rows retain their parent's identity plus a typed child
+discriminator; they are not independently admitted facts or independent samples.
+Transactional archive batch receipts are technical commit metadata, not newly
+admitted scientific facts requiring another archival commit. Canonical identifier
+spellings/domains are owned by [naming](naming.md); the exact logical relation
+inventory and ownership are in [the storage catalog](storage-catalog.md).
 
 This envelope is technical lineage needed for safe replay, export and reproducible
 queries. Public event responses need not display it. It does not justify retaining
@@ -168,6 +177,15 @@ format/producer version, cursor, outcome and useful counts. It is not copied int
 every archive row. A compact dataset-level lineage descriptor can be exported;
 local paths, credentials and transient worker IDs cannot.
 
+The optional A03 `IssuerAuthorityBindingV1` claim is specified field by field in
+[assertion bindings](assertion-bindings.md#zap-qualification-and-conflict-handling).
+It is an operator-attested historical recipient/profile/URL/signer interval with
+retained evidence, explicit trusted-source/public-use policy and immutable
+correction lineage. Existing import/AdmitEvidence owns it; a self-declared class
+or present HTTP fetch supplies no historical authority. Without eligible input,
+the strict zap wire bindings stay disabled/withheld. Native exports include its
+referenced public evidence and dictionaries, never private control credentials.
+
 ## A04 — Endpoint, observer, scope and method dictionaries
 
 Endpoint identity contains normalized URL bytes and normalization version.
@@ -186,16 +204,36 @@ algorithm/protocol version and capability claims they can support.
 Large mutable health, backoff, queue and eligibility fields are PG registry
 state, not rewrites of every historical endpoint dictionary record.
 
-## A05 — Executed relay measurements
+HTTP resources have their own `HttpResourceId` dictionary: normalized guarded
+request URL and normalization version, method/visibility attribution and safe
+export representation. They do not require a relay enrollment. A redirect or
+resolved dial address is request evidence, not a change to relay identity.
+Sensitive query credentials are forbidden; an unavailable safely exportable
+binding is explicitly restricted, never silently disclosed in a dictionary.
+
+## A05 — Executed measurements
 
 A measured attempt requires permits and evidence that its declared external
 action began. A recovered pre-dispatch intent with unknown execution is retained
-as a coverage uncertainty record, not counted as an executed measurement. It records `attempt_id`, `endpoint_id`,
+as a coverage uncertainty record, not counted as an executed measurement. It records `attempt_id`, `subject`,
 `observer_id`, `route_id`, `access_scope_id`, `method_id/version`,
 `started_at`, `ended_at` when known, `duration_us`, `clock_quality`,
 `outcome`, structured error class, measurement values and document references.
 Outcomes distinguish success, remote refusal, timeout, local failure and
 interrupted/unknown completion. Deferred queue entries are not attempts.
+
+`MeasurementSubject` is a closed tagged union: `RelayEndpoint { endpoint_id }`
+or `RecipientMetadataHttp { recipient_pubkey, profile_event_id, http_resource_id }`.
+The latter records P04-T14 issuer lookup against an exact signed profile version;
+it never creates a fake relay, null endpoint relation or relay availability vote.
+Each variant requires its complete references and scope; executed non-relay HTTP
+evidence belongs here alongside relay measurements.
+Future subjects require a versioned schema and a real producer/consumer contract.
+
+For scheduled probes, retain the effective base cadence and probe profile at the
+attempt, including request limits/deadline. Adaptive retry delay is operational
+state, not the base cadence used to reconstruct a time-weighted availability
+estimate. Unknown or changed cadence/method boundaries limit supported inference.
 
 Use typed child measurements for a compound attempt; optional DNS/TLS/catalog
 checks do not acquire a new independent liveness vote accidentally. Child fields
@@ -233,13 +271,23 @@ additional intent/terminal writes are included in the M-sized monitor budget.
 
 ## A06 — Content-addressed source documents
 
-Object identity is `(visibility_namespace, content_digest)`; bytes are checked
-before publishing the object. An object row carries original bounded bytes,
-length and digest. Each occurrence/reference carries document family, endpoint/
+Object identity is `(visibility_scope_id, content_digest)`; the scope is a
+qualified dictionary identity, not a bare local integer across imported datasets.
+The earlier phrase "document visibility namespace" means this qualified scope.
+Bytes are checked before publishing the object. An object row carries original bounded bytes,
+length and digest. Each occurrence/reference carries document family, the typed
+measurement subject or a typed source-document binding, qualified visibility
 scope, fetch or observation time, declared media type/encoding, method and
 source envelope. The same bytes can support several observations/types without
 duplicating the payload. A different visibility namespace cannot expose another
 scope's object existence.
+
+A measurement occurrence references its parent attempt/source record and child
+check discriminator. An independently admitted document occurrence has its own
+source identity. A directory/import source occurrence uses its attributed source
+descriptor, not a fabricated relay measurement. These variants share document
+bytes only when the qualified visibility and digest both match. Export/import
+must resolve every reference without a live control database.
 
 Parsed views carry object identity, parser/version, outcome and typed fields.
 Re-parsing creates a new derived interpretation, not a replacement original.
@@ -252,7 +300,12 @@ the referenced objects and their mapping; a live PG registry is not required.
 Repeated unchanged NIP-11 content costs one logical object plus compact actual
 fetch observations. This does not prove lower physical Parquet bytes: dictionary
 compression of a wide repeated-body column can outperform a separate tiny object
-table. P02-T09 measures both layouts, indexes and standalone export overhead. A 304 references the previous body with explicit validator/cache
+table. P02-T09 measures both layouts, indexes and standalone export overhead.
+The [controlled layout experiment](../../experiments/document-layout/README.md)
+found both winners under different churn/file boundaries; it selects no universal
+compression ratio. Physical wide rows are allowed if the adapter preserves the
+logical object/reference view and its independent reference/retention semantics.
+A 304 references the previous body with explicit validator/cache
 basis; without that body it is incomplete evidence, not an empty document.
 An expired external Geo database does not erase prior version descriptors.
 

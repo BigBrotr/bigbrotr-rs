@@ -56,6 +56,20 @@ creation/commit timestamps. Target states are `complete`, `empty`, `suppressed`,
 suppressed names an intentional policy or missing capability. Neither a failed
 dependency nor an absent manifest may be relabeled as empty.
 
+Time-sensitive target requests/manifests additionally bind their explicit
+evaluation/window basis, `visibility_as_of_us`, `temporal_generation` and relevant
+`expiry_deadline_us`, compatible with the
+[ReadViewStamp](../specification/read-view-contract.md). Source progress and
+temporal progress are separate: an expiration can change current eligibility
+without a new source record. Pin the target generations and their temporal basis
+together; an old COMPLETE membership/count generation cannot acquire a fresh
+current stamp merely because its Deriver is paused. After its deadline, ordinary
+current dependencies refuse until a compatible target exists. Explicitly dated
+stale-analysis resources may retain the old meaning; they cannot advertise it
+as current. Verify this with Deriver stopped while expiry/read ownership stays
+active: new list/count/current-member views agree or refuse, then recovery
+matches a rebuild at equal source and temporal inputs.
+
 Write immutable artifacts, verify their integrity, then atomically commit the
 manifest and publish its pointer. Failed or abandoned staging artifacts are never
 reader-visible. Readers pin one manifest or dependency vector for the duration of
@@ -121,7 +135,7 @@ subjective trust scores.
 | Current relay lists | `current_relay_list_entries`: one winning list event per author, replaced as a whole. Preserve read/write markers and endpoint URLs; a removed entry remains removed. |
 | Global facts | `global_facts`: distinct events/authors, kinds, activity periods, event sizes and archive coverage. State count unit and accepted-source scope; do not describe acquired totals as total Nostr. |
 | Social facts | `social_facts`: current follow/mute edges and separately defined posts, replies, interactions, topics and activity statistics. Keep raw edge source IDs and parsing/coverage status. |
-| Assertion inputs | `nip85_input_facts`: versioned subject statistics with immutable source lineage, sufficient to construct all four intended assertion subject families. |
+| Assertion inputs | `nip85_input_facts`: versioned subject statistics with immutable source lineage and exact producer/subject/field mappings in [assertion bindings](../specification/assertion-bindings.md). Each of the four families enables only qualified supported fields. |
 | Relay facts and state | `relay_facts`, `relay_state_aggregates`: local observations and attributed imported monitoring claims; deduplicate samples before aggregation and preserve conflicting observations. |
 | Coverage | `relay_coverage`: per-endpoint scope/time/access context, traversal progress and explicit gaps; distinguish observation coverage from knowledge of all stored events. |
 | Overlap | `relay_dedup_candidates`, `relay_cluster_edges`, `relay_clusters`: candidate method, pairwise set statistics, qualifying edges and components. Advisory similarity, never collection identity. |
@@ -227,7 +241,7 @@ missing/suppressed reasons. A run ID is an execution identifier, not an algorith
 version. Distinct algorithm and personalized viewpoints require distinct NIP-85
 service keys; mapping is validated by the signing registry.
 
-The initial social algorithm proposal is a named seeded-trust profile. Normalize
+The initial social algorithm is the named `seeded-trust/1` profile. Normalize
 configured seed weights to a teleport vector. Use the current verified public
 follow graph, remove self-follows and duplicate edges, and distribute an author's
 outgoing mass evenly across eligible follows. Dangling mass returns to the seed
@@ -257,36 +271,30 @@ version. This is a proposed relative-rank product choice, not a claim that
 NIP-85 prescribes this normalization. A new population changes the interpretation;
 the API must expose raw values and provenance alongside the wire value.
 
-Relay quality is a separate profile with visible components: measured availability,
-path-dependent RTT, tested capabilities, and optional evidence-backed coverage.
-Do not assign a fabricated zero to an absent component. An initial general-read
-profile uses normalized available components with weights availability 0.5, RTT
-0.3, and declared/tested read-capability suitability 0.2. Coverage is separately
-reported and has zero score weight until enough comparable traversal evidence
-exists. A profile enabling it must define a capped contribution and new version.
-The same component subset is required when presenting two scores as directly
-comparable; otherwise the client receives different basis labels.
-
-Availability uses eligible time intervals with a maximum observation carry-forward
-of twice the configured expected probe cadence; uncovered time is unknown. Keep
-local and imported-observer estimates separate before any declared observer
-weighting. RTT uses successful local observations with a declared path and robust
-summary; an initial transform is `exp(-median_rtt_ms / 1000)`. Capability suitability
-is a configured named use-case requirement set, not a universal count of supported
-NIPs. Fewer than five eligible observations withholds the initial relay aggregate
-score, while individual facts remain readable. These formulas require workload
-and adversarial review before their profile is labeled production-ready.
+The separate `general-read-relay/1` profile is defined completely in
+[analytics detail](analytics-detail.md#relay-profile-general-read-relay1): exact
+outcome classes, irregular observed-time anchors, capped carry, duration
+denominator, latency sampling, comparison strata and the independent fixture.
+Its scalar is `Q=.625*A+.375*L` only when both components exist and at least five
+classified actual in-window attempts qualify. Missing L withholds Q; available
+weights are not redistributed. Tested capabilities remain a vector and optional
+declared eligibility filters, without a capability/coverage score component.
+The API exposes outcomes, coverage and latency even when Q is withheld. Full
+input processing, correction/expiry state and exact quantile costs belong to
+the profile's admitted plan; the sample floor is not a source-row cap or
+statistical confidence claim. Relay and pubkey scores are distinct subject and
+algorithm families, not interchangeable values on a 0–100 scale.
 
 | Setting | Proposed default | Unit | Reload |
 |---|---|---|---|
 | `enabled` / `interval` | true / 3600 | boolean / seconds | Live / Cycle |
-| `profiles` | seeded-trust and general-read-relay profiles, distinct identities | registry entries | Generation + Identity |
+| `profiles` | `seeded-trust/1` and `general-read-relay/1`, distinct identities | registry entries | Generation + Identity |
 | `seed_set` | empty; explicit curator required for emission | weighted pubkeys | Generation |
 | `graph.damping` / `iterations` | 0.85 / 100 | ratio / iterations | Generation |
 | `graph.ignore_self_follows` | true | boolean | Generation |
 | `graph.public_mute_policy` | suppress same-author follow edge, retain explanatory mute mass | enum | Generation |
-| `relay.window` / `min_observations` | 86400 / 5 | seconds / observations | Generation |
-| `relay.component_weights` | availability 0.5, RTT 0.3, capability 0.2, coverage 0 | normalized weights | Generation |
+| `relay.window` / `min_observations` | 86400 / 5 | seconds / classified actual attempts ending in the window | Generation |
+| `relay.component_weights` | availability .625, RTT .375; both required; capabilities/coverage separate | fixed weights | Generation/profile identity |
 | `retention.completed_generations` | 3, subject to active publication/input pins | generations | Cycle |
 | `memory.max_bytes` / `spill.max_bytes` | 1 GiB / 16 GiB, allocator constrained | bytes | Cycle |
 

@@ -207,7 +207,7 @@ destructive migration requires a verified recovery path and explicit operation.
 
 ## Typed source cuts and projection identity
 
-`SourceRecordId = (archive_namespace, shard_id, ownership_epoch, sequence)`.
+`SourceRecordId = (dataset_id, shard_id, owner_epoch, sequence)`.
 `ProjectionRowId = (projection_generation, SourceRecordId, discriminator)`; the
 discriminator identifies the exact deduplicated tag key/value or other emitted
 subrow. Source facts and payload digests remain immutable. Reprojection changes

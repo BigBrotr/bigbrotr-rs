@@ -111,7 +111,30 @@ redaction, schema migration privileges and untrusted CI input. Use Miri or
 sanitizers where unsafe/FFI boundaries warrant them; use concurrency model tests
 for coordination logic and external process fault tests for real locks/storage.
 
-## Evidence boundaries
+## Review of every coherent submitted change
+
+Before a coherent change is committed, submitted or merged, read its final diff,
+affected contracts/call chains, comments, documentation and actual validation
+results. Review behavior, failure/recovery, data meaning, authority boundaries,
+resource costs, idiomatic code and user-visible consequences. Record unresolved
+findings honestly; a blocking correctness or security finding prevents acceptance
+of the affected change. No fixed reviewer count or repeated-clean-round quota is
+required. A checkbox or green unit suite is not the substantive review itself.
+
+Select practical evidence by impact: storage/coordination changes exercise the
+actual binding and crash/replay path; protocol/HTTP changes use independent real
+clients; browser changes execute the affected journey against the backend;
+packaging/documentation changes run the delivered commands from a clean bundle.
+Pure logic also uses meaningful specification-based unit/property/oracle tests.
+Reuse prior evidence only when the relevant artifact, input, schema, dependency
+and operating assumptions remain compatible; explain the scope of reuse.
+
+At release, execute every advertised required journey and fault scenario in the
+declared environment. The implemented harness distinguishes PASS, FAIL, SKIP and
+NOT_RUN; missing execution cannot become PASS. This is the shared obligation for
+P01–P10, including website tutorials, rather than a test-category quota on each edit.
+
+## Current experimental evidence
 
 Completed now: isolated SDK receive-handler reproduction, its relay parser tests,
 DuckLake PostgreSQL commit/rollback and process-death/concurrent-writer probe,

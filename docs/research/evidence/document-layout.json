@@ -1,0 +1,4677 @@
+{
+  "experiment": "document-layout",
+  "status": "completed",
+  "date": "2026-09-11",
+  "primary_run": "chronology_control",
+  "initial_correction": "Initial objects were sorted namespace/digest, separating otherwise adjacent cross-namespace bytes. Preserve that result; first-observation order is the primary comparison. No runtime failure occurred.",
+  "all_runs_output_bytes": 85667881,
+  "overwrite_refusal": {
+    "executed": true,
+    "exit_code": 1,
+    "reason": "FileExistsError before opening a database or writing run output",
+    "existing_result_hash_unchanged": true
+  },
+  "verification": "All recorded artifact SHA-256/bytes and row groups independently rechecked; all actual codecs ZSTD; all Python logical oracles and deliberate comparator controls reported expected outcomes.",
+  "runs": [
+    {
+      "label": "initial_namespace_order",
+      "result_artifact": ".research/document-layout/run-01/result.json",
+      "result_sha256": "e43eabc90b2b71639efd7bc73b7ab2d6c7db3ff7f94c8048e112d7f033cc91a0",
+      "source_artifact": ".research/document-layout/run-01/source-before-order-control.py",
+      "rechecked_parquet_bytes": 46978968,
+      "observed_codecs": [
+        "ZSTD"
+      ],
+      "result": {
+        "status": "completed",
+        "program_sha256": "2a3693eb0092e1d7484304cfea65fd1f13d465973bf26d8002c5b34436b1ee97",
+        "python_version": "3.9.6",
+        "duckdb_version": "1.4.5",
+        "scope": "Local DuckDB Parquet bytes and streamed logical readback; no RSS, latency, capacity, durability or product claim",
+        "constraints": {
+          "threads": 1,
+          "duckdb_memory_setting": "192MB",
+          "engine_scratch_setting": "32MB",
+          "observations_per_case": 16384,
+          "body_bytes": 1024,
+          "python_source_batch_rows": 128,
+          "python_oracle_hash_bytes": 524288,
+          "output_limit_bytes": 250000000
+        },
+        "encoding": {
+          "codec": "zstd",
+          "compression_level": 3,
+          "row_group_target": 16384,
+          "observation_order": "observation_id",
+          "object_order_per_file": "namespace, digest",
+          "object_publication": "First-occurrence batch; no later global object compaction",
+          "wide_columns": "observation_id, subject_id, observed_at_us, visibility_namespace, method_id, outcome, document_digest, document_length, document_bytes",
+          "reference_columns": "observation_id, subject_id, observed_at_us, visibility_namespace, method_id, outcome, document_digest",
+          "object_columns": "visibility_namespace, document_digest, document_length, document_bytes"
+        },
+        "oracle": "Python full tuple/body comparison and SHA-256; Python namespaced merge; DuckDB decodes both candidates",
+        "cases": [
+          {
+            "case": "low-churn_low-entropy_01-files",
+            "observations": 16384,
+            "body_bytes": 1024,
+            "churn": "low",
+            "entropy": "low",
+            "observation_files_per_layout": 1,
+            "expected_unique_bodies": 8,
+            "namespaced_objects": 16,
+            "wide_bytes": 62295,
+            "split_bytes": 63087,
+            "split_minus_wide_bytes": 792,
+            "split_over_wide": 1.01271370093908,
+            "source_ordered_row_digest_sha256": "80955ed1b91ce3aed0309d4d1c0e0ce703d5b6c22b89146adbadd4e4d46fbb37",
+            "wide_oracle": {
+              "exact_rows_checked": 16384,
+              "ordered_row_digest_sha256": "80955ed1b91ce3aed0309d4d1c0e0ce703d5b6c22b89146adbadd4e4d46fbb37"
+            },
+            "split_oracle": {
+              "exact_rows_checked": 16384,
+              "ordered_row_digest_sha256": "80955ed1b91ce3aed0309d4d1c0e0ce703d5b6c22b89146adbadd4e4d46fbb37"
+            },
+            "negative_controls": {
+              "omit_restricted_object": {
+                "expected_rejection_observed": true,
+                "reason": "Missing namespaced object"
+              },
+              "tamper_body": {
+                "expected_rejection_observed": true,
+                "reason": "Reconstructed observation/subject/document bytes differ"
+              }
+            },
+            "wide_files": [
+              {
+                "path": "low-churn_low-entropy_01-files/wide-00.parquet",
+                "bytes": 62295,
+                "sha256": "ffa2a3e554be543bbedd577d6a1f44ddb14480dfaa35cbfb62c6b34970b4db8b",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 16384
+                  }
+                ]
+              }
+            ],
+            "reference_files": [
+              {
+                "path": "low-churn_low-entropy_01-files/references-00.parquet",
+                "bytes": 60763,
+                "sha256": "23caf7036d07d712bd74c615196b7ce2a392dddb105144d204c450ab99756ea5",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 16384
+                  }
+                ]
+              }
+            ],
+            "object_files": [
+              {
+                "path": "low-churn_low-entropy_01-files/objects-00.parquet",
+                "bytes": 2324,
+                "sha256": "da8a3ea636deb1922cc96099c80a7a265e3cedceda9dc2cc3b58becdc2df1b0b",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 16
+                  }
+                ]
+              }
+            ],
+            "actual_settings": {
+              "autoinstall_known_extensions": "false",
+              "autoload_known_extensions": "false",
+              "max_temp_directory_size": "30.5 MiB",
+              "memory_limit": "183.1 MiB",
+              "threads": "1"
+            }
+          },
+          {
+            "case": "low-churn_low-entropy_16-files",
+            "observations": 16384,
+            "body_bytes": 1024,
+            "churn": "low",
+            "entropy": "low",
+            "observation_files_per_layout": 16,
+            "expected_unique_bodies": 8,
+            "namespaced_objects": 16,
+            "wide_bytes": 109693,
+            "split_bytes": 87729,
+            "split_minus_wide_bytes": -21964,
+            "split_over_wide": 0.7997684446591852,
+            "source_ordered_row_digest_sha256": "80955ed1b91ce3aed0309d4d1c0e0ce703d5b6c22b89146adbadd4e4d46fbb37",
+            "wide_oracle": {
+              "exact_rows_checked": 16384,
+              "ordered_row_digest_sha256": "80955ed1b91ce3aed0309d4d1c0e0ce703d5b6c22b89146adbadd4e4d46fbb37"
+            },
+            "split_oracle": {
+              "exact_rows_checked": 16384,
+              "ordered_row_digest_sha256": "80955ed1b91ce3aed0309d4d1c0e0ce703d5b6c22b89146adbadd4e4d46fbb37"
+            },
+            "negative_controls": {
+              "omit_restricted_object": {
+                "expected_rejection_observed": true,
+                "reason": "Missing namespaced object"
+              },
+              "tamper_body": {
+                "expected_rejection_observed": true,
+                "reason": "Reconstructed observation/subject/document bytes differ"
+              }
+            },
+            "wide_files": [
+              {
+                "path": "low-churn_low-entropy_16-files/wide-00.parquet",
+                "bytes": 7417,
+                "sha256": "78c010568693f72d5bbb2204bdc1b30ba7e6667f2435c66e49cf35d8b3413aaa",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/wide-01.parquet",
+                "bytes": 6817,
+                "sha256": "46ba063e6c15abe0319e3e7a8d96e48297b40da278d631d9c7bd929f50c19437",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/wide-02.parquet",
+                "bytes": 6818,
+                "sha256": "1e838d5fa70b53ebe79c959fc87f13707eae908b6dd36a75251acf8834936599",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/wide-03.parquet",
+                "bytes": 6816,
+                "sha256": "7c393000c7a9df4b2d4bf7c6933aded271b56f72efec8698c9d0cf5e7c045164",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/wide-04.parquet",
+                "bytes": 6816,
+                "sha256": "6572425984d4635b6db5a394ae5b0ff97acb136e29e96f7e0b37b2a59a53a1ad",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/wide-05.parquet",
+                "bytes": 6819,
+                "sha256": "1a2ee3eee804697a54a47e26282faf550cf881961c01a758c4f2e4fa670963ce",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/wide-06.parquet",
+                "bytes": 6823,
+                "sha256": "8c8318f7150a78431d638d81bf492b9777ac5a3d107363f9aade82bd659a0921",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/wide-07.parquet",
+                "bytes": 6820,
+                "sha256": "6234d5fda299e9ba8f4f5ef9db756261a8999baa32d7093609f1c00c141e8464",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/wide-08.parquet",
+                "bytes": 6819,
+                "sha256": "60a5fae0d13ac376bb8ac4e1bf763eefbe9f0ae233a843244e33ca31cfc5baa2",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/wide-09.parquet",
+                "bytes": 6817,
+                "sha256": "e6314f936587698caa7abbc9c8f128ef1f80ee7bbb17d26085b614ff7fc3c0d5",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/wide-10.parquet",
+                "bytes": 6820,
+                "sha256": "ec77a216a76b787cac3a71b28943e41c209b8ae97e20d2afd333ba6af4f544a8",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/wide-11.parquet",
+                "bytes": 6817,
+                "sha256": "90d44dbfaa947d7e985a35374f80362a3050eefffdd9bff517eda8d6f57d2308",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/wide-12.parquet",
+                "bytes": 6817,
+                "sha256": "1ba3a1018540e74e07b18077e43b61332f6c8e768ef69534db529be9851f2e07",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/wide-13.parquet",
+                "bytes": 6820,
+                "sha256": "22da55776b276be31ae44531aa3b2aa80fd7e34b011ccbde00de429911a21660",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/wide-14.parquet",
+                "bytes": 6817,
+                "sha256": "5f30e4871f4fb0eb5cdfd538ec5c0ee64c3cf0f2aacb9c7bbfb20e915da6e9e5",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/wide-15.parquet",
+                "bytes": 6820,
+                "sha256": "c2e77e468f989adc069c1ac7accb9441c8246dfae089a8039600aa362067d7a8",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              }
+            ],
+            "reference_files": [
+              {
+                "path": "low-churn_low-entropy_16-files/references-00.parquet",
+                "bytes": 5899,
+                "sha256": "e764c7b5edb213169e092e289c98c9c917231b285c08caa7fd3975c1c4427f6e",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/references-01.parquet",
+                "bytes": 5299,
+                "sha256": "04183cabe80f4276b92e3c18ae2e96b4335b2624677f151cc9904290dc066b6b",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/references-02.parquet",
+                "bytes": 5300,
+                "sha256": "0d133b148748093d0173142cd542c51cc51f5797d85bbcea9a3716c7e57f6aca",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/references-03.parquet",
+                "bytes": 5298,
+                "sha256": "35ebe52f3965281b1aed68fa1d49a4dd3a910e6dab725b822a6f7ec5fe8ec7f5",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/references-04.parquet",
+                "bytes": 5298,
+                "sha256": "d64452e2d070f3b66e0bce56328205af82139ae7f0a103291c8b5d408b2871b1",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/references-05.parquet",
+                "bytes": 5301,
+                "sha256": "3f241626f5813a7a7dfced02ab115c5060b68b58259b1389512506cb20797663",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/references-06.parquet",
+                "bytes": 5305,
+                "sha256": "05fda8c9106306d6206d7c4b73c63db18766ff484480e9e6ae9eef155c8c2f55",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/references-07.parquet",
+                "bytes": 5302,
+                "sha256": "6c8573b656cb0fabe123d8f5122a61360bd9a2925de59cb9f0e0339fc02e61e5",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/references-08.parquet",
+                "bytes": 5301,
+                "sha256": "b8ccf6079793c410ea42ceb82b264595d9ad9a18fd7710d205cfda69329df582",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/references-09.parquet",
+                "bytes": 5299,
+                "sha256": "bb582748df9cfe19a5e5531bd5da1be1ba3b4557a9721254c363cc71a53b3d3e",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/references-10.parquet",
+                "bytes": 5302,
+                "sha256": "dee42177886b85e0709dadf06563cf6d88fdfe1c46d2d52a472b4360d3ba12c5",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/references-11.parquet",
+                "bytes": 5299,
+                "sha256": "1d93cf105e31944542904494e17c690d6b6204fa0534664806d5ff2c45336908",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/references-12.parquet",
+                "bytes": 5299,
+                "sha256": "80ae4e2226b4ba53a2b26bf21b155b1f7752fbfd90f99083b4b088d713d53fc9",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/references-13.parquet",
+                "bytes": 5302,
+                "sha256": "bbf56a2d86825ba61277d5881fc77916ae9f6a5b05d39a7ccb403d0937909f12",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/references-14.parquet",
+                "bytes": 5299,
+                "sha256": "733bd663191ed41e78ae06d3813816cf47d5e4ae1bbe452662d1ecad5194a4fc",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/references-15.parquet",
+                "bytes": 5302,
+                "sha256": "600fda8dad71cb797b1b032a665cee40a3eddf9da5a8faeea47ba9a96e4c4efb",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              }
+            ],
+            "object_files": [
+              {
+                "path": "low-churn_low-entropy_16-files/objects-00.parquet",
+                "bytes": 2324,
+                "sha256": "da8a3ea636deb1922cc96099c80a7a265e3cedceda9dc2cc3b58becdc2df1b0b",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 16
+                  }
+                ]
+              }
+            ],
+            "actual_settings": {
+              "autoinstall_known_extensions": "false",
+              "autoload_known_extensions": "false",
+              "max_temp_directory_size": "30.5 MiB",
+              "memory_limit": "183.1 MiB",
+              "threads": "1"
+            }
+          },
+          {
+            "case": "low-churn_high-entropy_01-files",
+            "observations": 16384,
+            "body_bytes": 1024,
+            "churn": "low",
+            "entropy": "high",
+            "observation_files_per_layout": 1,
+            "expected_unique_bodies": 8,
+            "namespaced_objects": 16,
+            "wide_bytes": 70452,
+            "split_bytes": 71226,
+            "split_minus_wide_bytes": 774,
+            "split_over_wide": 1.010986203372509,
+            "source_ordered_row_digest_sha256": "6ba31dc18d581c291aa6e2f23a4e8c0a2d303dc7004b4cec3bcf5cbc5647bba9",
+            "wide_oracle": {
+              "exact_rows_checked": 16384,
+              "ordered_row_digest_sha256": "6ba31dc18d581c291aa6e2f23a4e8c0a2d303dc7004b4cec3bcf5cbc5647bba9"
+            },
+            "split_oracle": {
+              "exact_rows_checked": 16384,
+              "ordered_row_digest_sha256": "6ba31dc18d581c291aa6e2f23a4e8c0a2d303dc7004b4cec3bcf5cbc5647bba9"
+            },
+            "negative_controls": {
+              "omit_restricted_object": {
+                "expected_rejection_observed": true,
+                "reason": "Missing namespaced object"
+              },
+              "tamper_body": {
+                "expected_rejection_observed": true,
+                "reason": "Reconstructed observation/subject/document bytes differ"
+              }
+            },
+            "wide_files": [
+              {
+                "path": "low-churn_high-entropy_01-files/wide-00.parquet",
+                "bytes": 70452,
+                "sha256": "3f0cd5a3d932c144e309a1fe7a7e28bdbfc5f4b878559de2a4c404ffa55af7b7",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 16384
+                  }
+                ]
+              }
+            ],
+            "reference_files": [
+              {
+                "path": "low-churn_high-entropy_01-files/references-00.parquet",
+                "bytes": 60763,
+                "sha256": "66ea3ff2f2ec378fde94eefed6b828c84dcc1a35d17470de60024a1600b104f4",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 16384
+                  }
+                ]
+              }
+            ],
+            "object_files": [
+              {
+                "path": "low-churn_high-entropy_01-files/objects-00.parquet",
+                "bytes": 10463,
+                "sha256": "480ed46ab59f716b24d18ca8eb31bfcb8160c42ee3e41b48a44ef6895059c8c8",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 16
+                  }
+                ]
+              }
+            ],
+            "actual_settings": {
+              "autoinstall_known_extensions": "false",
+              "autoload_known_extensions": "false",
+              "max_temp_directory_size": "30.5 MiB",
+              "memory_limit": "183.1 MiB",
+              "threads": "1"
+            }
+          },
+          {
+            "case": "low-churn_high-entropy_16-files",
+            "observations": 16384,
+            "body_bytes": 1024,
+            "churn": "low",
+            "entropy": "high",
+            "observation_files_per_layout": 16,
+            "expected_unique_bodies": 8,
+            "namespaced_objects": 16,
+            "wide_bytes": 240333,
+            "split_bytes": 95868,
+            "split_minus_wide_bytes": -144465,
+            "split_over_wide": 0.3988965310631499,
+            "source_ordered_row_digest_sha256": "6ba31dc18d581c291aa6e2f23a4e8c0a2d303dc7004b4cec3bcf5cbc5647bba9",
+            "wide_oracle": {
+              "exact_rows_checked": 16384,
+              "ordered_row_digest_sha256": "6ba31dc18d581c291aa6e2f23a4e8c0a2d303dc7004b4cec3bcf5cbc5647bba9"
+            },
+            "split_oracle": {
+              "exact_rows_checked": 16384,
+              "ordered_row_digest_sha256": "6ba31dc18d581c291aa6e2f23a4e8c0a2d303dc7004b4cec3bcf5cbc5647bba9"
+            },
+            "negative_controls": {
+              "omit_restricted_object": {
+                "expected_rejection_observed": true,
+                "reason": "Missing namespaced object"
+              },
+              "tamper_body": {
+                "expected_rejection_observed": true,
+                "reason": "Reconstructed observation/subject/document bytes differ"
+              }
+            },
+            "wide_files": [
+              {
+                "path": "low-churn_high-entropy_16-files/wide-00.parquet",
+                "bytes": 15582,
+                "sha256": "e573ba9c3113e551befb9e5bc0a16f2f97cae66bbc8162896dccadbcb099bfff",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/wide-01.parquet",
+                "bytes": 14982,
+                "sha256": "fd900a8eece43633e33087e33bb4e893d98ea2ad7800e83b8abbca8ed2c70469",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/wide-02.parquet",
+                "bytes": 14983,
+                "sha256": "4f50d1be7ae7858218fe13ee2a1f43b9f6d23c3f8ec5b2b0cc7efefa62a01ef6",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/wide-03.parquet",
+                "bytes": 14981,
+                "sha256": "cc002be6a9cd6ab2b6d3e5b3a29f5faf17b985516d79fae9a5a387f9c0d1539f",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/wide-04.parquet",
+                "bytes": 14981,
+                "sha256": "96ab480459fb654065c9c922ee0115360770cbe2c8bdbabba25ae17bc45f1cd9",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/wide-05.parquet",
+                "bytes": 14984,
+                "sha256": "66757d03013b11d1822ab9fb285e4065b280dd47a4f745fd26bb6d463fc9f394",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/wide-06.parquet",
+                "bytes": 14988,
+                "sha256": "1d3343aa5eec8844ea75a22c6d225e82f07e0f8594b9e1d0887820a27bdf7c0e",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/wide-07.parquet",
+                "bytes": 14985,
+                "sha256": "9f1157a3ccc82459f0477ecf5c8738eb4a866b4f169094d35fe01d5b9c07d443",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/wide-08.parquet",
+                "bytes": 14984,
+                "sha256": "b5a7abc0e8a48861a7f2af7d8f50003c5f81d08ef88d08d743e2dc3621109b83",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/wide-09.parquet",
+                "bytes": 14982,
+                "sha256": "3635bafe3aeee3dd12655eb887dbc94e645a039bede600b494b85644ee2fe627",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/wide-10.parquet",
+                "bytes": 14985,
+                "sha256": "d691839192c74d459757f02411bef56a23cc875ae83f4ba28514310c63c537dc",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/wide-11.parquet",
+                "bytes": 14982,
+                "sha256": "1984f5fbad07551dc072dacb28f31efd62ba08dad496bb1cff8c40c355a38848",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/wide-12.parquet",
+                "bytes": 14982,
+                "sha256": "e0d506c4d77df5c976a63797f062596c7615c64c1865b49381a5f813185dd86d",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/wide-13.parquet",
+                "bytes": 14985,
+                "sha256": "fd67ba6977893a3411fb213acd2616ec7fe9341d33787225f067ed50676052c7",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/wide-14.parquet",
+                "bytes": 14982,
+                "sha256": "36373d98eb0a1b4300e7096ad9d27774c969dd4547775deb3813c433de6b35a6",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/wide-15.parquet",
+                "bytes": 14985,
+                "sha256": "b88618a93a6582184bcb88dd2e44e328fccf9ec9d5d147fce8b7e952b29015cb",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              }
+            ],
+            "reference_files": [
+              {
+                "path": "low-churn_high-entropy_16-files/references-00.parquet",
+                "bytes": 5899,
+                "sha256": "7545d29e86b3b233760195218265cfa62d09920dfdc578cd81b592750b34146c",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/references-01.parquet",
+                "bytes": 5299,
+                "sha256": "4f9ae4f7b3c20c474f1ce646a40d943e04c608ae6c4f41a94c452c1e32df1408",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/references-02.parquet",
+                "bytes": 5300,
+                "sha256": "aea19176b7075df130a56abac45071daf35b75f627b66f35c063359137235d8d",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/references-03.parquet",
+                "bytes": 5298,
+                "sha256": "df30a794f2cc2a50f0ebbfac2bcfcff76e675382c85136faa67aa3ceaa891ee1",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/references-04.parquet",
+                "bytes": 5298,
+                "sha256": "0e512badce84dc7a74dc48f4cd79c97c64cc1d39f7f459d310cdc54da4528266",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/references-05.parquet",
+                "bytes": 5301,
+                "sha256": "82b6dc12784e9c1a4c18fb31f6c86f97846ff2e84326379f54105f1bec8df304",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/references-06.parquet",
+                "bytes": 5305,
+                "sha256": "854ac6a90d7b08c3e5714a06404d74079a48121eaa772bb29560ed5bb6831568",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/references-07.parquet",
+                "bytes": 5302,
+                "sha256": "b0b2d9f02c261f91e093555bd1358dd42d2303205d26003827cbfd3b2b44efc5",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/references-08.parquet",
+                "bytes": 5301,
+                "sha256": "7d04dafcddb6f5959af744ad69f92bfeb809f423537b196b06aa03dac846c72d",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/references-09.parquet",
+                "bytes": 5299,
+                "sha256": "c05b3583135f885f875dc30b6950675e1bb3f09be79eedf8dd702ceb263a81fb",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/references-10.parquet",
+                "bytes": 5302,
+                "sha256": "705e03a99aa443cd5f708749cb0160a772ad937a5ee5542df8230e18494dc420",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/references-11.parquet",
+                "bytes": 5299,
+                "sha256": "b114f8e1d1de5bc8f9c5f75c538bf9930c9fda60fb0ec1c340efbe80819511ea",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/references-12.parquet",
+                "bytes": 5299,
+                "sha256": "ac54a48d3ec097cf7633dad4abcb30de0ec5b7783842d48b296707589daf2682",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/references-13.parquet",
+                "bytes": 5302,
+                "sha256": "750e48209efca31739e1874b71a877bb33274a95e55593d2ecaf59b8e39625bb",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/references-14.parquet",
+                "bytes": 5299,
+                "sha256": "aafc54adcf4eef2741b2d32f4e245fa692c215177591dc98132333fc8e4792ce",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/references-15.parquet",
+                "bytes": 5302,
+                "sha256": "9ec2763dff480474f562a6c11250661768e9f568409533a714be573d79a67269",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              }
+            ],
+            "object_files": [
+              {
+                "path": "low-churn_high-entropy_16-files/objects-00.parquet",
+                "bytes": 10463,
+                "sha256": "480ed46ab59f716b24d18ca8eb31bfcb8160c42ee3e41b48a44ef6895059c8c8",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 16
+                  }
+                ]
+              }
+            ],
+            "actual_settings": {
+              "autoinstall_known_extensions": "false",
+              "autoload_known_extensions": "false",
+              "max_temp_directory_size": "30.5 MiB",
+              "memory_limit": "183.1 MiB",
+              "threads": "1"
+            }
+          },
+          {
+            "case": "high-churn_low-entropy_01-files",
+            "observations": 16384,
+            "body_bytes": 1024,
+            "churn": "high",
+            "entropy": "low",
+            "observation_files_per_layout": 1,
+            "expected_unique_bodies": 8192,
+            "namespaced_objects": 16384,
+            "wide_bytes": 354304,
+            "split_bytes": 677181,
+            "split_minus_wide_bytes": 322877,
+            "split_over_wide": 1.9112993361632948,
+            "source_ordered_row_digest_sha256": "8cbb949c4162dd1944a653bb7d0c7547258f9a8f474941ec2cde388ae06effe7",
+            "wide_oracle": {
+              "exact_rows_checked": 16384,
+              "ordered_row_digest_sha256": "8cbb949c4162dd1944a653bb7d0c7547258f9a8f474941ec2cde388ae06effe7"
+            },
+            "split_oracle": {
+              "exact_rows_checked": 16384,
+              "ordered_row_digest_sha256": "8cbb949c4162dd1944a653bb7d0c7547258f9a8f474941ec2cde388ae06effe7"
+            },
+            "negative_controls": {
+              "omit_restricted_object": {
+                "expected_rejection_observed": true,
+                "reason": "Missing namespaced object"
+              },
+              "tamper_body": {
+                "expected_rejection_observed": true,
+                "reason": "Reconstructed observation/subject/document bytes differ"
+              }
+            },
+            "wide_files": [
+              {
+                "path": "high-churn_low-entropy_01-files/wide-00.parquet",
+                "bytes": 354304,
+                "sha256": "b138465d903aa5f85429f78fb48b8329572eccecd6bc1ac96b1dc286269d214c",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 16384
+                  }
+                ]
+              }
+            ],
+            "reference_files": [
+              {
+                "path": "high-churn_low-entropy_01-files/references-00.parquet",
+                "bytes": 327705,
+                "sha256": "27de38dd39821eb643a6953edb0ccd1218acc8e830f4d610905938b3315a41f7",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 16384
+                  }
+                ]
+              }
+            ],
+            "object_files": [
+              {
+                "path": "high-churn_low-entropy_01-files/objects-00.parquet",
+                "bytes": 349476,
+                "sha256": "05fdf301e97d386519285430a4741f1a59d77118e332ae77ddc338da45a69b46",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 16384
+                  }
+                ]
+              }
+            ],
+            "actual_settings": {
+              "autoinstall_known_extensions": "false",
+              "autoload_known_extensions": "false",
+              "max_temp_directory_size": "30.5 MiB",
+              "memory_limit": "183.1 MiB",
+              "threads": "1"
+            }
+          },
+          {
+            "case": "high-churn_low-entropy_16-files",
+            "observations": 16384,
+            "body_bytes": 1024,
+            "churn": "high",
+            "entropy": "low",
+            "observation_files_per_layout": 16,
+            "expected_unique_bodies": 8192,
+            "namespaced_objects": 16384,
+            "wide_bytes": 394421,
+            "split_bytes": 678207,
+            "split_minus_wide_bytes": 283786,
+            "split_over_wide": 1.7195002294502575,
+            "source_ordered_row_digest_sha256": "8cbb949c4162dd1944a653bb7d0c7547258f9a8f474941ec2cde388ae06effe7",
+            "wide_oracle": {
+              "exact_rows_checked": 16384,
+              "ordered_row_digest_sha256": "8cbb949c4162dd1944a653bb7d0c7547258f9a8f474941ec2cde388ae06effe7"
+            },
+            "split_oracle": {
+              "exact_rows_checked": 16384,
+              "ordered_row_digest_sha256": "8cbb949c4162dd1944a653bb7d0c7547258f9a8f474941ec2cde388ae06effe7"
+            },
+            "negative_controls": {
+              "omit_restricted_object": {
+                "expected_rejection_observed": true,
+                "reason": "Missing namespaced object"
+              },
+              "tamper_body": {
+                "expected_rejection_observed": true,
+                "reason": "Reconstructed observation/subject/document bytes differ"
+              }
+            },
+            "wide_files": [
+              {
+                "path": "high-churn_low-entropy_16-files/wide-00.parquet",
+                "bytes": 25513,
+                "sha256": "4e028e9512669ee09a53c5312d06c174e4f05232cd832f01d097fcf45816cb01",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/wide-01.parquet",
+                "bytes": 24599,
+                "sha256": "6b0aeec8432718d9d42590f5a78856997a6e1b96ad78c93b073606fc48db6802",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/wide-02.parquet",
+                "bytes": 24592,
+                "sha256": "f7bbae6028393273b977fd81ede339662232e0fbcfe9b02863b16b65ed5a63b5",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/wide-03.parquet",
+                "bytes": 24590,
+                "sha256": "3b868fb295499611b142ba2a2a3b87dbdd70090c7b819f6479ea123b10625515",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/wide-04.parquet",
+                "bytes": 24593,
+                "sha256": "3df54f3e95a900d128011e24334ef74cabf9ef44b0b700bc6ee6491fbdf25c3e",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/wide-05.parquet",
+                "bytes": 24595,
+                "sha256": "24c81a70cced59fbbbfbe18aa1708638fd2178e4655c2e43a815c3f797badecb",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/wide-06.parquet",
+                "bytes": 24601,
+                "sha256": "268a4413c62bc52e7955a06ef470152a3beb3ce341f0dfe210d16b5335739e1a",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/wide-07.parquet",
+                "bytes": 24591,
+                "sha256": "ca731a7cec2c64f931003c058251badcdeb65b7806ba4e9facfca2acafd477a6",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/wide-08.parquet",
+                "bytes": 24596,
+                "sha256": "d5bbd9d425936fc013de5440d4a0c85bd4cc6baad0a011c4765e5561d16e87d8",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/wide-09.parquet",
+                "bytes": 24584,
+                "sha256": "0ee020869f633c28344f3d9cb0bcbacdba1fc231f2fff687b07c0f734a376eb6",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/wide-10.parquet",
+                "bytes": 24601,
+                "sha256": "742d57b90f1cb3df12a98436684e93271a91d8bcaf48e5dc78e9592cdee7274c",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/wide-11.parquet",
+                "bytes": 24599,
+                "sha256": "dcbb825ad81c65c778f20148b50da6ce23dbe4934ca9ad590f67da9949e2b4f6",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/wide-12.parquet",
+                "bytes": 24594,
+                "sha256": "f73df4859cfc2a660ea8db9798120e21b753d1ffbef559cde7fa35bd52cb7931",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/wide-13.parquet",
+                "bytes": 24601,
+                "sha256": "d77721d89bcd78a52d5fd8913453ce56025d732ce6444897d1e7e11107ad26de",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/wide-14.parquet",
+                "bytes": 24594,
+                "sha256": "b19ae1058d09b57daf2aac4b2ec6f60e326c419614ae159bccdd8980ed89c36c",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/wide-15.parquet",
+                "bytes": 24578,
+                "sha256": "e1c53616ef20f86a2b2d6765ae109f7120654416848e8700a9068d34df332b64",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              }
+            ],
+            "reference_files": [
+              {
+                "path": "high-churn_low-entropy_16-files/references-00.parquet",
+                "bytes": 22211,
+                "sha256": "397c2f32d2e6c9dd79216ad75ea5f7868a5f7254c73369238e24d4eb55a49a62",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/references-01.parquet",
+                "bytes": 21620,
+                "sha256": "93eae676f26bbfae1a72484c148bba71584f2b3b03229dbb6b889975acc42893",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/references-02.parquet",
+                "bytes": 21613,
+                "sha256": "b813e1ee68e3eefd328d9a5e746ca178823d3bf2529f1fbc058d61d8177debd3",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/references-03.parquet",
+                "bytes": 21610,
+                "sha256": "367bd8ae73ae2adcdeb3907f48394fdbf6e75728ed4bc6da3af294078772d767",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/references-04.parquet",
+                "bytes": 21616,
+                "sha256": "e892432249a1764757bec8822ee5e3e9764643007b6eb4208a65331c1abc9fb0",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/references-05.parquet",
+                "bytes": 21618,
+                "sha256": "407ab068a3d93237984b49b355ca8b0db4d2e8d1e242a93de3b0fa1b25755534",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/references-06.parquet",
+                "bytes": 21625,
+                "sha256": "063a80da166a56817555de10bce8413d4414145a9388df3528cc548ae407ccac",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/references-07.parquet",
+                "bytes": 21618,
+                "sha256": "88d24b5926235166ca9e7608cac3f500880101f75fa6bfdfdd5b2f3cffc9f8a9",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/references-08.parquet",
+                "bytes": 21618,
+                "sha256": "78c5e352208cd6f52dd632930d6fb23247ae77222793a8f6d6233daaf2f40b95",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/references-09.parquet",
+                "bytes": 21604,
+                "sha256": "207a946f380b2bf439497d6f00763208ee6db65dc2d581b07e354fcaa216dfca",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/references-10.parquet",
+                "bytes": 21622,
+                "sha256": "56c749cfc34a3fd98364d521ab47361fd07c81999c5c95bbc6dac20a6ddba269",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/references-11.parquet",
+                "bytes": 21621,
+                "sha256": "7af0d6a8d49d2784ad3ea74d4fa5327aff9ac0ec5165f2816eea8811f0fbd978",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/references-12.parquet",
+                "bytes": 21617,
+                "sha256": "e457f2ddfe8452a0b3e4636abb17eb1bbf6f23201cf04caa9ea51bfff069d13d",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/references-13.parquet",
+                "bytes": 21624,
+                "sha256": "0e96759bc194488989183453bf329ab3c00a1b9f310296c266add51beff788de",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/references-14.parquet",
+                "bytes": 21616,
+                "sha256": "ef6382bbf9eb084edbf502977bba5ca4aacb771cc662fffd27c6fe1659a0ca9b",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/references-15.parquet",
+                "bytes": 21606,
+                "sha256": "0215614065928d3bef357abe81a5ac9e5df94f62c48470c5d80f1956c0fbe93d",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              }
+            ],
+            "object_files": [
+              {
+                "path": "high-churn_low-entropy_16-files/objects-00.parquet",
+                "bytes": 20897,
+                "sha256": "c4298fe10433cacdc963eabfb4da763586f8f8d31a0640c3cc618d8f8f5a49a5",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/objects-01.parquet",
+                "bytes": 20755,
+                "sha256": "1727f827916f7c31f01c5c7e152602abf3da9b680def829c29aedff596fdf5a6",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/objects-02.parquet",
+                "bytes": 20628,
+                "sha256": "c442057880dcec9491f22f5dc7d9c916a6091fe4d1e7291772d76b4512f01229",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/objects-03.parquet",
+                "bytes": 20776,
+                "sha256": "204d3df5cbfcbc40a30c482f37abc9c6958c233b5c7a4f9e5c1310e34b976bcb",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/objects-04.parquet",
+                "bytes": 20609,
+                "sha256": "618bfb58171472fa1758afd454c73b7e5a425e93c1c72ba6692ab46fff6f6036",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/objects-05.parquet",
+                "bytes": 20834,
+                "sha256": "5f183155ab40a6ef45ab1ec81f5bdfd1adca4be864e5f34e054483cd2e99de6e",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/objects-06.parquet",
+                "bytes": 20715,
+                "sha256": "57edfc234509c2aab779d9da249af4be5ded98e9e4d3755d8a1b461447593e38",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/objects-07.parquet",
+                "bytes": 20752,
+                "sha256": "6831aa71f6e41f84ec0619546aaf77786e90f48539ea218194ab3ff7ce2d9a3f",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/objects-08.parquet",
+                "bytes": 20583,
+                "sha256": "fa7f8948adcbf3a5b2e230ce785c36cf16ec488bcbf943f102d9b9914446e66c",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/objects-09.parquet",
+                "bytes": 20809,
+                "sha256": "2bb0f3e1d3b1cbb2443638da7272b678aea9219874d3c7e38d6f4a5234b65064",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/objects-10.parquet",
+                "bytes": 20695,
+                "sha256": "3c33485a0e05d20080df071153880d599c972dd3bb5b7f1e1cb94ac128b3ad37",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/objects-11.parquet",
+                "bytes": 20700,
+                "sha256": "fd899cab25c73a1b247d08c7daab6843f9eaafa2c6ee4558648b1ec7b1575bd5",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/objects-12.parquet",
+                "bytes": 20698,
+                "sha256": "c9452d248c5f0abbd3d91ca985e15bbe046a90c70331f5991b5fc9f609bb9764",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/objects-13.parquet",
+                "bytes": 20812,
+                "sha256": "6e66f577a3bfaa9a375cc7978767e7f9aa8801bed717ecfd151e43620310ae3d",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/objects-14.parquet",
+                "bytes": 20713,
+                "sha256": "3067f5bab4191e2adf67936d44aa7d1bfd32f50e255c7c166e035f1f145e0b24",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/objects-15.parquet",
+                "bytes": 20772,
+                "sha256": "9231b0693ecb485d995091ca1040ad257ba68dcd0a9582d4c81e6576d273a74b",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              }
+            ],
+            "actual_settings": {
+              "autoinstall_known_extensions": "false",
+              "autoload_known_extensions": "false",
+              "max_temp_directory_size": "30.5 MiB",
+              "memory_limit": "183.1 MiB",
+              "threads": "1"
+            }
+          },
+          {
+            "case": "high-churn_high-entropy_01-files",
+            "observations": 16384,
+            "body_bytes": 1024,
+            "churn": "high",
+            "entropy": "high",
+            "observation_files_per_layout": 1,
+            "expected_unique_bodies": 8192,
+            "namespaced_objects": 16384,
+            "wide_bytes": 8765900,
+            "split_bytes": 17438720,
+            "split_minus_wide_bytes": 8672820,
+            "split_over_wide": 1.9893815808987099,
+            "source_ordered_row_digest_sha256": "587404339af56a1447fc96bf0c2842853499901a5de10fa1b3a0db105592390c",
+            "wide_oracle": {
+              "exact_rows_checked": 16384,
+              "ordered_row_digest_sha256": "587404339af56a1447fc96bf0c2842853499901a5de10fa1b3a0db105592390c"
+            },
+            "split_oracle": {
+              "exact_rows_checked": 16384,
+              "ordered_row_digest_sha256": "587404339af56a1447fc96bf0c2842853499901a5de10fa1b3a0db105592390c"
+            },
+            "negative_controls": {
+              "omit_restricted_object": {
+                "expected_rejection_observed": true,
+                "reason": "Missing namespaced object"
+              },
+              "tamper_body": {
+                "expected_rejection_observed": true,
+                "reason": "Reconstructed observation/subject/document bytes differ"
+              }
+            },
+            "wide_files": [
+              {
+                "path": "high-churn_high-entropy_01-files/wide-00.parquet",
+                "bytes": 8765900,
+                "sha256": "abd4fa66c59dfe850e9ce8051e97a7e6c44d35636e742c3171b643d467c77f18",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 16384
+                  }
+                ]
+              }
+            ],
+            "reference_files": [
+              {
+                "path": "high-churn_high-entropy_01-files/references-00.parquet",
+                "bytes": 327691,
+                "sha256": "ef80974cf5cdd06279dc7d995ce8c288ea1a5727cce46c714105e1dc4987755c",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 16384
+                  }
+                ]
+              }
+            ],
+            "object_files": [
+              {
+                "path": "high-churn_high-entropy_01-files/objects-00.parquet",
+                "bytes": 17111029,
+                "sha256": "059f3581a643499e3ac7a16da7a17398cea37875f4f48f58d7c07ed340cb539b",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 16384
+                  }
+                ]
+              }
+            ],
+            "actual_settings": {
+              "autoinstall_known_extensions": "false",
+              "autoload_known_extensions": "false",
+              "max_temp_directory_size": "30.5 MiB",
+              "memory_limit": "183.1 MiB",
+              "threads": "1"
+            }
+          },
+          {
+            "case": "high-churn_high-entropy_16-files",
+            "observations": 16384,
+            "body_bytes": 1024,
+            "churn": "high",
+            "entropy": "high",
+            "observation_files_per_layout": 16,
+            "expected_unique_bodies": 8192,
+            "namespaced_objects": 16384,
+            "wide_bytes": 8804805,
+            "split_bytes": 9064747,
+            "split_minus_wide_bytes": 259942,
+            "split_over_wide": 1.0295227435474152,
+            "source_ordered_row_digest_sha256": "587404339af56a1447fc96bf0c2842853499901a5de10fa1b3a0db105592390c",
+            "wide_oracle": {
+              "exact_rows_checked": 16384,
+              "ordered_row_digest_sha256": "587404339af56a1447fc96bf0c2842853499901a5de10fa1b3a0db105592390c"
+            },
+            "split_oracle": {
+              "exact_rows_checked": 16384,
+              "ordered_row_digest_sha256": "587404339af56a1447fc96bf0c2842853499901a5de10fa1b3a0db105592390c"
+            },
+            "negative_controls": {
+              "omit_restricted_object": {
+                "expected_rejection_observed": true,
+                "reason": "Missing namespaced object"
+              },
+              "tamper_body": {
+                "expected_rejection_observed": true,
+                "reason": "Reconstructed observation/subject/document bytes differ"
+              }
+            },
+            "wide_files": [
+              {
+                "path": "high-churn_high-entropy_16-files/wide-00.parquet",
+                "bytes": 550866,
+                "sha256": "0cc246c95d9391f3a6f3e3b05916f2ce7d2d9c6f1cf365724c2fcb066e84e39a",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/wide-01.parquet",
+                "bytes": 550267,
+                "sha256": "068fe25c2a95db5f285cbada49a07d408a333e4cf799182cb9df20b2c6182ea3",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/wide-02.parquet",
+                "bytes": 550242,
+                "sha256": "cf411a3c64c6df730e6889edccdad7bce62b7615283c7a26a6b8380648e00e38",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/wide-03.parquet",
+                "bytes": 550259,
+                "sha256": "d492f8b5edbeee709b349c33688943122362779fcc8c5c706888274f24fcc2f2",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/wide-04.parquet",
+                "bytes": 550263,
+                "sha256": "7b65d501d5e48985b48a0e0c5b6361b2d5350939c852d6c8c2fb8ddc15de07f2",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/wide-05.parquet",
+                "bytes": 550271,
+                "sha256": "699da36eb6096bd49ff500b15b5921e9b4210907e1166cb0587fb67acaad5ff2",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/wide-06.parquet",
+                "bytes": 550251,
+                "sha256": "f31cd292308c4ce7c70f5468200d5a942aba823e306caec0f252a32166183f6e",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/wide-07.parquet",
+                "bytes": 550270,
+                "sha256": "85ce5e74bffb7b6194af58e249cbc002ba8a80705731b0add31790a38f19c9af",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/wide-08.parquet",
+                "bytes": 550268,
+                "sha256": "1505d9fb9e29b38ee400b23978adc0d6e18e36725d01284803499e858458c253",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/wide-09.parquet",
+                "bytes": 550260,
+                "sha256": "8f3738279d99f5c1ae23a51fa881986441dc35d2340da1f97cf80d91e735ed74",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/wide-10.parquet",
+                "bytes": 550258,
+                "sha256": "e00d933c7ee66f16de5d8bc765a049280060e22517369e1923b84bf6ac0dbb5b",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/wide-11.parquet",
+                "bytes": 550268,
+                "sha256": "54647330e0b9bd5b96279ae00dfdc3a049c10b4b2bedb59598b74dff46067339",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/wide-12.parquet",
+                "bytes": 550275,
+                "sha256": "8432fa16a4b56d326721785bf2220d1d56f8e1080d4a13de5dd116f81622e759",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/wide-13.parquet",
+                "bytes": 550249,
+                "sha256": "273e86514623c7935f0724859cda2f29e046d7cb390581d4adbbd812b6ccbadb",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/wide-14.parquet",
+                "bytes": 550265,
+                "sha256": "1fb39b7a8c2607ca8c2c5bea70fc71edf799699411944baf47c75cae2b7a53ce",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/wide-15.parquet",
+                "bytes": 550273,
+                "sha256": "8786dd0e2640e7d9e4aa813cef80a938f3b6ee11c00c926615de076c270ae61a",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              }
+            ],
+            "reference_files": [
+              {
+                "path": "high-churn_high-entropy_16-files/references-00.parquet",
+                "bytes": 22213,
+                "sha256": "a7f2bedad61783837d18c41b81d046c4ab45f0949d265a466def9a4b6adf5ae7",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/references-01.parquet",
+                "bytes": 21626,
+                "sha256": "220d597d4b7b04a60510028539d71778ac2acf769000b340a5ec2d0f10039d3e",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/references-02.parquet",
+                "bytes": 21605,
+                "sha256": "e520f5bf0ef71d2e827c98715c2d1eb820bea64f8c112e5c417545af708b66a4",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/references-03.parquet",
+                "bytes": 21605,
+                "sha256": "61e074390e70c333d5c6d2667ae25130645b0758e729ae4d34204c958bbcbd26",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/references-04.parquet",
+                "bytes": 21618,
+                "sha256": "a9fc480f907f345c26f0ad5d153f186fcbd0cfcbbd2e5d718743e01748050dd0",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/references-05.parquet",
+                "bytes": 21628,
+                "sha256": "64aa63a3666e4498ea2502a4eb5c64838cb2b3bfc72f29f9c1351c50badc0d12",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/references-06.parquet",
+                "bytes": 21612,
+                "sha256": "8d4663568a518ce1effeb3adc9e36e3c02809d84aa2fb946d18983d6be3ec2b6",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/references-07.parquet",
+                "bytes": 21620,
+                "sha256": "a393db2d511dd7845177de1caf61f768ac7143474257ced6a5b2245b98962cea",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/references-08.parquet",
+                "bytes": 21618,
+                "sha256": "1eb370a5165b3c7a1bec469033db3e9493e4cb3bfe1293bcbd00f992ae39dc4a",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/references-09.parquet",
+                "bytes": 21605,
+                "sha256": "117721386a9529117736dc0adfd8ef6150a547eed61587b984e3c25fd18dbd3f",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/references-10.parquet",
+                "bytes": 21608,
+                "sha256": "1c61e642fe04e5ec50b2c202630acf611033416330bc2d24c846ee0eb9bfb9e4",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/references-11.parquet",
+                "bytes": 21622,
+                "sha256": "9ea70ba884abaef7d36c2e20e0a061e8ac7d59642d60cd36aca70c1c2ffe7096",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/references-12.parquet",
+                "bytes": 21615,
+                "sha256": "a83f531776aa5b1481de89e11cb22d92404f1390fb1d089e25f54a8760887517",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/references-13.parquet",
+                "bytes": 21607,
+                "sha256": "fe242f9ca6c9b88ece39aad1e52ad36d97a4a2a507bcb5babe1a9e2c0821f42e",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/references-14.parquet",
+                "bytes": 21617,
+                "sha256": "ec1e83b49353200784d642021efb2d91ccd458202a7a48d1ec0b4d4456a18ab5",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/references-15.parquet",
+                "bytes": 21620,
+                "sha256": "ac037ee40ae58dfd7a6e70fa34a1cd6565e8938510e16f16935cc2f5aa7f574c",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              }
+            ],
+            "object_files": [
+              {
+                "path": "high-churn_high-entropy_16-files/objects-00.parquet",
+                "bytes": 544815,
+                "sha256": "72e0dca20d96e731bdba5b39dd513cc225872911c0115081946507659b0459a0",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/objects-01.parquet",
+                "bytes": 544959,
+                "sha256": "d06ed8680c38cb61b8f09afd32383c8818b2f7438b0b85360fb9b3d161a0bb28",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/objects-02.parquet",
+                "bytes": 544972,
+                "sha256": "5d43fb0f7adc82849f07baf8d4aaa6aa47491023ca805556e26aea0fabf43481",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/objects-03.parquet",
+                "bytes": 544793,
+                "sha256": "8ba696f505a7d6873b1ee3275beef207d35dfc8fdacb2cc563ba4d84b20298fe",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/objects-04.parquet",
+                "bytes": 544998,
+                "sha256": "cd384ad98c5e42e83ed88bcb450042fe66225b80dec379c1a85feb3534da0caa",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/objects-05.parquet",
+                "bytes": 545008,
+                "sha256": "ad05be96fa596486e725b1ec637d30b89c262c20637340ea13f142e6a3eaad31",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/objects-06.parquet",
+                "bytes": 544786,
+                "sha256": "a04d03c96813c8cc4280cc274d4e5fb178cd1faab56a98f8926a782080bc895f",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/objects-07.parquet",
+                "bytes": 544955,
+                "sha256": "9fb0473083fbb3e93cf32876d73b2aa50152a037ebfe68fe0d0a694e7ba42248",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/objects-08.parquet",
+                "bytes": 544866,
+                "sha256": "1737501ca46d792cf9e4f400a54fd9e94004a8da602869bbf30f74c95006b5eb",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/objects-09.parquet",
+                "bytes": 544807,
+                "sha256": "9fdd517730d3d9530f0af5ef04948e8f7c802b840dfc411d37909bdc5a27355d",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/objects-10.parquet",
+                "bytes": 544802,
+                "sha256": "aded4872f7f6e5279059da66e3f9d1081983300509965e538b0d1747cffaacfc",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/objects-11.parquet",
+                "bytes": 544977,
+                "sha256": "0c29f6bf72964e21edd17ef00b8434127431ed691c795161561ff82a0a401843",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/objects-12.parquet",
+                "bytes": 544884,
+                "sha256": "8b81dd06f2127a7d93cc470f9b969ff622ab982a4f4f4d3d13619c51a6b3e7cf",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/objects-13.parquet",
+                "bytes": 544800,
+                "sha256": "96ee91d9defc6fd59b4dd1dbb1d45e6aa98b3b8b68f8552fd4d76725deacfbb6",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/objects-14.parquet",
+                "bytes": 544963,
+                "sha256": "84dcb2d41529667169284f84f5687f3fb6c9bc91051b2113394c04bd71e96d58",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/objects-15.parquet",
+                "bytes": 544923,
+                "sha256": "405b35d38b9d6cbbb025495f094d5ca14112e064d15871750691b43e817aec68",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              }
+            ],
+            "actual_settings": {
+              "autoinstall_known_extensions": "false",
+              "autoload_known_extensions": "false",
+              "max_temp_directory_size": "30.5 MiB",
+              "memory_limit": "183.1 MiB",
+              "threads": "1"
+            }
+          }
+        ],
+        "parquet_bytes_all_candidates": 46978968,
+        "limitations": [
+          "Synthetic bytes are not a real NIP-11 corpus or signed Nostr events",
+          "One writer/reader engine; no independent Parquet decoder",
+          "No elapsed-time, RSS, CPU, I/O, lookup-latency, crash, GC or distributed measurements",
+          "DuckDB memory_limit is a setting, not an observed process RSS bound"
+        ]
+      }
+    },
+    {
+      "label": "chronology_control",
+      "result_artifact": ".research/document-layout/run-01/order-control/result.json",
+      "result_sha256": "c3239b5d8c338ba1fd1f05babaf3146a146b0e9888f48218faf64607f30203e4",
+      "source_artifact": "experiments/document-layout/probe.py",
+      "rechecked_parquet_bytes": 38529336,
+      "observed_codecs": [
+        "ZSTD"
+      ],
+      "result": {
+        "status": "completed",
+        "program_sha256": "96a3de17f7b3a2159e7693725212cd1cc0cbd946076ef7650a10db5959cdc946",
+        "python_version": "3.9.6",
+        "duckdb_version": "1.4.5",
+        "scope": "Local DuckDB Parquet bytes and streamed logical readback; no RSS, latency, capacity, durability or product claim",
+        "constraints": {
+          "threads": 1,
+          "duckdb_memory_setting": "192MB",
+          "engine_scratch_setting": "32MB",
+          "observations_per_case": 16384,
+          "body_bytes": 1024,
+          "python_source_batch_rows": 128,
+          "python_oracle_hash_bytes": 524288,
+          "output_limit_bytes": 250000000
+        },
+        "encoding": {
+          "codec": "zstd",
+          "compression_level": 3,
+          "row_group_target": 16384,
+          "observation_order": "observation_id",
+          "object_order_per_file": "first_observation_id",
+          "object_publication": "First-occurrence batch; no later global object compaction",
+          "wide_columns": "observation_id, subject_id, observed_at_us, visibility_namespace, method_id, outcome, document_digest, document_length, document_bytes",
+          "reference_columns": "observation_id, subject_id, observed_at_us, visibility_namespace, method_id, outcome, document_digest",
+          "object_columns": "visibility_namespace, document_digest, document_length, document_bytes"
+        },
+        "oracle": "Python full tuple/body comparison and SHA-256; Python namespaced merge; DuckDB decodes both candidates",
+        "cases": [
+          {
+            "case": "low-churn_low-entropy_01-files",
+            "observations": 16384,
+            "body_bytes": 1024,
+            "churn": "low",
+            "entropy": "low",
+            "observation_files_per_layout": 1,
+            "expected_unique_bodies": 8,
+            "namespaced_objects": 16,
+            "wide_bytes": 62295,
+            "split_bytes": 63064,
+            "split_minus_wide_bytes": 769,
+            "split_over_wide": 1.0123444899269605,
+            "source_ordered_row_digest_sha256": "80955ed1b91ce3aed0309d4d1c0e0ce703d5b6c22b89146adbadd4e4d46fbb37",
+            "wide_oracle": {
+              "exact_rows_checked": 16384,
+              "ordered_row_digest_sha256": "80955ed1b91ce3aed0309d4d1c0e0ce703d5b6c22b89146adbadd4e4d46fbb37"
+            },
+            "split_oracle": {
+              "exact_rows_checked": 16384,
+              "ordered_row_digest_sha256": "80955ed1b91ce3aed0309d4d1c0e0ce703d5b6c22b89146adbadd4e4d46fbb37"
+            },
+            "negative_controls": {
+              "omit_restricted_object": {
+                "expected_rejection_observed": true,
+                "reason": "Missing namespaced object"
+              },
+              "tamper_body": {
+                "expected_rejection_observed": true,
+                "reason": "Reconstructed observation/subject/document bytes differ"
+              }
+            },
+            "wide_files": [
+              {
+                "path": "low-churn_low-entropy_01-files/wide-00.parquet",
+                "bytes": 62295,
+                "sha256": "ffa2a3e554be543bbedd577d6a1f44ddb14480dfaa35cbfb62c6b34970b4db8b",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 16384
+                  }
+                ]
+              }
+            ],
+            "reference_files": [
+              {
+                "path": "low-churn_low-entropy_01-files/references-00.parquet",
+                "bytes": 60763,
+                "sha256": "23caf7036d07d712bd74c615196b7ce2a392dddb105144d204c450ab99756ea5",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 16384
+                  }
+                ]
+              }
+            ],
+            "object_files": [
+              {
+                "path": "low-churn_low-entropy_01-files/objects-00.parquet",
+                "bytes": 2301,
+                "sha256": "8163df46425ede36b4e3b09534df8a7111abbe2e27f96a78bb606ad6663ee8e8",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 16
+                  }
+                ]
+              }
+            ],
+            "actual_settings": {
+              "autoinstall_known_extensions": "false",
+              "autoload_known_extensions": "false",
+              "max_temp_directory_size": "30.5 MiB",
+              "memory_limit": "183.1 MiB",
+              "threads": "1"
+            }
+          },
+          {
+            "case": "low-churn_low-entropy_16-files",
+            "observations": 16384,
+            "body_bytes": 1024,
+            "churn": "low",
+            "entropy": "low",
+            "observation_files_per_layout": 16,
+            "expected_unique_bodies": 8,
+            "namespaced_objects": 16,
+            "wide_bytes": 109693,
+            "split_bytes": 87706,
+            "split_minus_wide_bytes": -21987,
+            "split_over_wide": 0.7995587685631718,
+            "source_ordered_row_digest_sha256": "80955ed1b91ce3aed0309d4d1c0e0ce703d5b6c22b89146adbadd4e4d46fbb37",
+            "wide_oracle": {
+              "exact_rows_checked": 16384,
+              "ordered_row_digest_sha256": "80955ed1b91ce3aed0309d4d1c0e0ce703d5b6c22b89146adbadd4e4d46fbb37"
+            },
+            "split_oracle": {
+              "exact_rows_checked": 16384,
+              "ordered_row_digest_sha256": "80955ed1b91ce3aed0309d4d1c0e0ce703d5b6c22b89146adbadd4e4d46fbb37"
+            },
+            "negative_controls": {
+              "omit_restricted_object": {
+                "expected_rejection_observed": true,
+                "reason": "Missing namespaced object"
+              },
+              "tamper_body": {
+                "expected_rejection_observed": true,
+                "reason": "Reconstructed observation/subject/document bytes differ"
+              }
+            },
+            "wide_files": [
+              {
+                "path": "low-churn_low-entropy_16-files/wide-00.parquet",
+                "bytes": 7417,
+                "sha256": "78c010568693f72d5bbb2204bdc1b30ba7e6667f2435c66e49cf35d8b3413aaa",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/wide-01.parquet",
+                "bytes": 6817,
+                "sha256": "46ba063e6c15abe0319e3e7a8d96e48297b40da278d631d9c7bd929f50c19437",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/wide-02.parquet",
+                "bytes": 6818,
+                "sha256": "1e838d5fa70b53ebe79c959fc87f13707eae908b6dd36a75251acf8834936599",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/wide-03.parquet",
+                "bytes": 6816,
+                "sha256": "7c393000c7a9df4b2d4bf7c6933aded271b56f72efec8698c9d0cf5e7c045164",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/wide-04.parquet",
+                "bytes": 6816,
+                "sha256": "6572425984d4635b6db5a394ae5b0ff97acb136e29e96f7e0b37b2a59a53a1ad",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/wide-05.parquet",
+                "bytes": 6819,
+                "sha256": "1a2ee3eee804697a54a47e26282faf550cf881961c01a758c4f2e4fa670963ce",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/wide-06.parquet",
+                "bytes": 6823,
+                "sha256": "8c8318f7150a78431d638d81bf492b9777ac5a3d107363f9aade82bd659a0921",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/wide-07.parquet",
+                "bytes": 6820,
+                "sha256": "6234d5fda299e9ba8f4f5ef9db756261a8999baa32d7093609f1c00c141e8464",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/wide-08.parquet",
+                "bytes": 6819,
+                "sha256": "60a5fae0d13ac376bb8ac4e1bf763eefbe9f0ae233a843244e33ca31cfc5baa2",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/wide-09.parquet",
+                "bytes": 6817,
+                "sha256": "e6314f936587698caa7abbc9c8f128ef1f80ee7bbb17d26085b614ff7fc3c0d5",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/wide-10.parquet",
+                "bytes": 6820,
+                "sha256": "ec77a216a76b787cac3a71b28943e41c209b8ae97e20d2afd333ba6af4f544a8",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/wide-11.parquet",
+                "bytes": 6817,
+                "sha256": "90d44dbfaa947d7e985a35374f80362a3050eefffdd9bff517eda8d6f57d2308",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/wide-12.parquet",
+                "bytes": 6817,
+                "sha256": "1ba3a1018540e74e07b18077e43b61332f6c8e768ef69534db529be9851f2e07",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/wide-13.parquet",
+                "bytes": 6820,
+                "sha256": "22da55776b276be31ae44531aa3b2aa80fd7e34b011ccbde00de429911a21660",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/wide-14.parquet",
+                "bytes": 6817,
+                "sha256": "5f30e4871f4fb0eb5cdfd538ec5c0ee64c3cf0f2aacb9c7bbfb20e915da6e9e5",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/wide-15.parquet",
+                "bytes": 6820,
+                "sha256": "c2e77e468f989adc069c1ac7accb9441c8246dfae089a8039600aa362067d7a8",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              }
+            ],
+            "reference_files": [
+              {
+                "path": "low-churn_low-entropy_16-files/references-00.parquet",
+                "bytes": 5899,
+                "sha256": "e764c7b5edb213169e092e289c98c9c917231b285c08caa7fd3975c1c4427f6e",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/references-01.parquet",
+                "bytes": 5299,
+                "sha256": "04183cabe80f4276b92e3c18ae2e96b4335b2624677f151cc9904290dc066b6b",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/references-02.parquet",
+                "bytes": 5300,
+                "sha256": "0d133b148748093d0173142cd542c51cc51f5797d85bbcea9a3716c7e57f6aca",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/references-03.parquet",
+                "bytes": 5298,
+                "sha256": "35ebe52f3965281b1aed68fa1d49a4dd3a910e6dab725b822a6f7ec5fe8ec7f5",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/references-04.parquet",
+                "bytes": 5298,
+                "sha256": "d64452e2d070f3b66e0bce56328205af82139ae7f0a103291c8b5d408b2871b1",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/references-05.parquet",
+                "bytes": 5301,
+                "sha256": "3f241626f5813a7a7dfced02ab115c5060b68b58259b1389512506cb20797663",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/references-06.parquet",
+                "bytes": 5305,
+                "sha256": "05fda8c9106306d6206d7c4b73c63db18766ff484480e9e6ae9eef155c8c2f55",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/references-07.parquet",
+                "bytes": 5302,
+                "sha256": "6c8573b656cb0fabe123d8f5122a61360bd9a2925de59cb9f0e0339fc02e61e5",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/references-08.parquet",
+                "bytes": 5301,
+                "sha256": "b8ccf6079793c410ea42ceb82b264595d9ad9a18fd7710d205cfda69329df582",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/references-09.parquet",
+                "bytes": 5299,
+                "sha256": "bb582748df9cfe19a5e5531bd5da1be1ba3b4557a9721254c363cc71a53b3d3e",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/references-10.parquet",
+                "bytes": 5302,
+                "sha256": "dee42177886b85e0709dadf06563cf6d88fdfe1c46d2d52a472b4360d3ba12c5",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/references-11.parquet",
+                "bytes": 5299,
+                "sha256": "1d93cf105e31944542904494e17c690d6b6204fa0534664806d5ff2c45336908",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/references-12.parquet",
+                "bytes": 5299,
+                "sha256": "80ae4e2226b4ba53a2b26bf21b155b1f7752fbfd90f99083b4b088d713d53fc9",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/references-13.parquet",
+                "bytes": 5302,
+                "sha256": "bbf56a2d86825ba61277d5881fc77916ae9f6a5b05d39a7ccb403d0937909f12",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/references-14.parquet",
+                "bytes": 5299,
+                "sha256": "733bd663191ed41e78ae06d3813816cf47d5e4ae1bbe452662d1ecad5194a4fc",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_low-entropy_16-files/references-15.parquet",
+                "bytes": 5302,
+                "sha256": "600fda8dad71cb797b1b032a665cee40a3eddf9da5a8faeea47ba9a96e4c4efb",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              }
+            ],
+            "object_files": [
+              {
+                "path": "low-churn_low-entropy_16-files/objects-00.parquet",
+                "bytes": 2301,
+                "sha256": "8163df46425ede36b4e3b09534df8a7111abbe2e27f96a78bb606ad6663ee8e8",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 16
+                  }
+                ]
+              }
+            ],
+            "actual_settings": {
+              "autoinstall_known_extensions": "false",
+              "autoload_known_extensions": "false",
+              "max_temp_directory_size": "30.5 MiB",
+              "memory_limit": "183.1 MiB",
+              "threads": "1"
+            }
+          },
+          {
+            "case": "low-churn_high-entropy_01-files",
+            "observations": 16384,
+            "body_bytes": 1024,
+            "churn": "low",
+            "entropy": "high",
+            "observation_files_per_layout": 1,
+            "expected_unique_bodies": 8,
+            "namespaced_objects": 16,
+            "wide_bytes": 70452,
+            "split_bytes": 71254,
+            "split_minus_wide_bytes": 802,
+            "split_over_wide": 1.011383637086243,
+            "source_ordered_row_digest_sha256": "6ba31dc18d581c291aa6e2f23a4e8c0a2d303dc7004b4cec3bcf5cbc5647bba9",
+            "wide_oracle": {
+              "exact_rows_checked": 16384,
+              "ordered_row_digest_sha256": "6ba31dc18d581c291aa6e2f23a4e8c0a2d303dc7004b4cec3bcf5cbc5647bba9"
+            },
+            "split_oracle": {
+              "exact_rows_checked": 16384,
+              "ordered_row_digest_sha256": "6ba31dc18d581c291aa6e2f23a4e8c0a2d303dc7004b4cec3bcf5cbc5647bba9"
+            },
+            "negative_controls": {
+              "omit_restricted_object": {
+                "expected_rejection_observed": true,
+                "reason": "Missing namespaced object"
+              },
+              "tamper_body": {
+                "expected_rejection_observed": true,
+                "reason": "Reconstructed observation/subject/document bytes differ"
+              }
+            },
+            "wide_files": [
+              {
+                "path": "low-churn_high-entropy_01-files/wide-00.parquet",
+                "bytes": 70452,
+                "sha256": "3f0cd5a3d932c144e309a1fe7a7e28bdbfc5f4b878559de2a4c404ffa55af7b7",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 16384
+                  }
+                ]
+              }
+            ],
+            "reference_files": [
+              {
+                "path": "low-churn_high-entropy_01-files/references-00.parquet",
+                "bytes": 60763,
+                "sha256": "66ea3ff2f2ec378fde94eefed6b828c84dcc1a35d17470de60024a1600b104f4",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 16384
+                  }
+                ]
+              }
+            ],
+            "object_files": [
+              {
+                "path": "low-churn_high-entropy_01-files/objects-00.parquet",
+                "bytes": 10491,
+                "sha256": "72fd3827326ab06bc4aad24891f73da7e5ffad00f73a8d0e733037b7b4f8fedf",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 16
+                  }
+                ]
+              }
+            ],
+            "actual_settings": {
+              "autoinstall_known_extensions": "false",
+              "autoload_known_extensions": "false",
+              "max_temp_directory_size": "30.5 MiB",
+              "memory_limit": "183.1 MiB",
+              "threads": "1"
+            }
+          },
+          {
+            "case": "low-churn_high-entropy_16-files",
+            "observations": 16384,
+            "body_bytes": 1024,
+            "churn": "low",
+            "entropy": "high",
+            "observation_files_per_layout": 16,
+            "expected_unique_bodies": 8,
+            "namespaced_objects": 16,
+            "wide_bytes": 240333,
+            "split_bytes": 95896,
+            "split_minus_wide_bytes": -144437,
+            "split_over_wide": 0.39901303607910693,
+            "source_ordered_row_digest_sha256": "6ba31dc18d581c291aa6e2f23a4e8c0a2d303dc7004b4cec3bcf5cbc5647bba9",
+            "wide_oracle": {
+              "exact_rows_checked": 16384,
+              "ordered_row_digest_sha256": "6ba31dc18d581c291aa6e2f23a4e8c0a2d303dc7004b4cec3bcf5cbc5647bba9"
+            },
+            "split_oracle": {
+              "exact_rows_checked": 16384,
+              "ordered_row_digest_sha256": "6ba31dc18d581c291aa6e2f23a4e8c0a2d303dc7004b4cec3bcf5cbc5647bba9"
+            },
+            "negative_controls": {
+              "omit_restricted_object": {
+                "expected_rejection_observed": true,
+                "reason": "Missing namespaced object"
+              },
+              "tamper_body": {
+                "expected_rejection_observed": true,
+                "reason": "Reconstructed observation/subject/document bytes differ"
+              }
+            },
+            "wide_files": [
+              {
+                "path": "low-churn_high-entropy_16-files/wide-00.parquet",
+                "bytes": 15582,
+                "sha256": "e573ba9c3113e551befb9e5bc0a16f2f97cae66bbc8162896dccadbcb099bfff",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/wide-01.parquet",
+                "bytes": 14982,
+                "sha256": "fd900a8eece43633e33087e33bb4e893d98ea2ad7800e83b8abbca8ed2c70469",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/wide-02.parquet",
+                "bytes": 14983,
+                "sha256": "4f50d1be7ae7858218fe13ee2a1f43b9f6d23c3f8ec5b2b0cc7efefa62a01ef6",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/wide-03.parquet",
+                "bytes": 14981,
+                "sha256": "cc002be6a9cd6ab2b6d3e5b3a29f5faf17b985516d79fae9a5a387f9c0d1539f",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/wide-04.parquet",
+                "bytes": 14981,
+                "sha256": "96ab480459fb654065c9c922ee0115360770cbe2c8bdbabba25ae17bc45f1cd9",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/wide-05.parquet",
+                "bytes": 14984,
+                "sha256": "66757d03013b11d1822ab9fb285e4065b280dd47a4f745fd26bb6d463fc9f394",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/wide-06.parquet",
+                "bytes": 14988,
+                "sha256": "1d3343aa5eec8844ea75a22c6d225e82f07e0f8594b9e1d0887820a27bdf7c0e",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/wide-07.parquet",
+                "bytes": 14985,
+                "sha256": "9f1157a3ccc82459f0477ecf5c8738eb4a866b4f169094d35fe01d5b9c07d443",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/wide-08.parquet",
+                "bytes": 14984,
+                "sha256": "b5a7abc0e8a48861a7f2af7d8f50003c5f81d08ef88d08d743e2dc3621109b83",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/wide-09.parquet",
+                "bytes": 14982,
+                "sha256": "3635bafe3aeee3dd12655eb887dbc94e645a039bede600b494b85644ee2fe627",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/wide-10.parquet",
+                "bytes": 14985,
+                "sha256": "d691839192c74d459757f02411bef56a23cc875ae83f4ba28514310c63c537dc",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/wide-11.parquet",
+                "bytes": 14982,
+                "sha256": "1984f5fbad07551dc072dacb28f31efd62ba08dad496bb1cff8c40c355a38848",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/wide-12.parquet",
+                "bytes": 14982,
+                "sha256": "e0d506c4d77df5c976a63797f062596c7615c64c1865b49381a5f813185dd86d",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/wide-13.parquet",
+                "bytes": 14985,
+                "sha256": "fd67ba6977893a3411fb213acd2616ec7fe9341d33787225f067ed50676052c7",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/wide-14.parquet",
+                "bytes": 14982,
+                "sha256": "36373d98eb0a1b4300e7096ad9d27774c969dd4547775deb3813c433de6b35a6",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/wide-15.parquet",
+                "bytes": 14985,
+                "sha256": "b88618a93a6582184bcb88dd2e44e328fccf9ec9d5d147fce8b7e952b29015cb",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              }
+            ],
+            "reference_files": [
+              {
+                "path": "low-churn_high-entropy_16-files/references-00.parquet",
+                "bytes": 5899,
+                "sha256": "7545d29e86b3b233760195218265cfa62d09920dfdc578cd81b592750b34146c",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/references-01.parquet",
+                "bytes": 5299,
+                "sha256": "4f9ae4f7b3c20c474f1ce646a40d943e04c608ae6c4f41a94c452c1e32df1408",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/references-02.parquet",
+                "bytes": 5300,
+                "sha256": "aea19176b7075df130a56abac45071daf35b75f627b66f35c063359137235d8d",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/references-03.parquet",
+                "bytes": 5298,
+                "sha256": "df30a794f2cc2a50f0ebbfac2bcfcff76e675382c85136faa67aa3ceaa891ee1",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/references-04.parquet",
+                "bytes": 5298,
+                "sha256": "0e512badce84dc7a74dc48f4cd79c97c64cc1d39f7f459d310cdc54da4528266",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/references-05.parquet",
+                "bytes": 5301,
+                "sha256": "82b6dc12784e9c1a4c18fb31f6c86f97846ff2e84326379f54105f1bec8df304",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/references-06.parquet",
+                "bytes": 5305,
+                "sha256": "854ac6a90d7b08c3e5714a06404d74079a48121eaa772bb29560ed5bb6831568",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/references-07.parquet",
+                "bytes": 5302,
+                "sha256": "b0b2d9f02c261f91e093555bd1358dd42d2303205d26003827cbfd3b2b44efc5",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/references-08.parquet",
+                "bytes": 5301,
+                "sha256": "7d04dafcddb6f5959af744ad69f92bfeb809f423537b196b06aa03dac846c72d",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/references-09.parquet",
+                "bytes": 5299,
+                "sha256": "c05b3583135f885f875dc30b6950675e1bb3f09be79eedf8dd702ceb263a81fb",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/references-10.parquet",
+                "bytes": 5302,
+                "sha256": "705e03a99aa443cd5f708749cb0160a772ad937a5ee5542df8230e18494dc420",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/references-11.parquet",
+                "bytes": 5299,
+                "sha256": "b114f8e1d1de5bc8f9c5f75c538bf9930c9fda60fb0ec1c340efbe80819511ea",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/references-12.parquet",
+                "bytes": 5299,
+                "sha256": "ac54a48d3ec097cf7633dad4abcb30de0ec5b7783842d48b296707589daf2682",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/references-13.parquet",
+                "bytes": 5302,
+                "sha256": "750e48209efca31739e1874b71a877bb33274a95e55593d2ecaf59b8e39625bb",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/references-14.parquet",
+                "bytes": 5299,
+                "sha256": "aafc54adcf4eef2741b2d32f4e245fa692c215177591dc98132333fc8e4792ce",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "low-churn_high-entropy_16-files/references-15.parquet",
+                "bytes": 5302,
+                "sha256": "9ec2763dff480474f562a6c11250661768e9f568409533a714be573d79a67269",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              }
+            ],
+            "object_files": [
+              {
+                "path": "low-churn_high-entropy_16-files/objects-00.parquet",
+                "bytes": 10491,
+                "sha256": "72fd3827326ab06bc4aad24891f73da7e5ffad00f73a8d0e733037b7b4f8fedf",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 16
+                  }
+                ]
+              }
+            ],
+            "actual_settings": {
+              "autoinstall_known_extensions": "false",
+              "autoload_known_extensions": "false",
+              "max_temp_directory_size": "30.5 MiB",
+              "memory_limit": "183.1 MiB",
+              "threads": "1"
+            }
+          },
+          {
+            "case": "high-churn_low-entropy_01-files",
+            "observations": 16384,
+            "body_bytes": 1024,
+            "churn": "high",
+            "entropy": "low",
+            "observation_files_per_layout": 1,
+            "expected_unique_bodies": 8192,
+            "namespaced_objects": 16384,
+            "wide_bytes": 354304,
+            "split_bytes": 622256,
+            "split_minus_wide_bytes": 267952,
+            "split_over_wide": 1.7562770953757225,
+            "source_ordered_row_digest_sha256": "8cbb949c4162dd1944a653bb7d0c7547258f9a8f474941ec2cde388ae06effe7",
+            "wide_oracle": {
+              "exact_rows_checked": 16384,
+              "ordered_row_digest_sha256": "8cbb949c4162dd1944a653bb7d0c7547258f9a8f474941ec2cde388ae06effe7"
+            },
+            "split_oracle": {
+              "exact_rows_checked": 16384,
+              "ordered_row_digest_sha256": "8cbb949c4162dd1944a653bb7d0c7547258f9a8f474941ec2cde388ae06effe7"
+            },
+            "negative_controls": {
+              "omit_restricted_object": {
+                "expected_rejection_observed": true,
+                "reason": "Missing namespaced object"
+              },
+              "tamper_body": {
+                "expected_rejection_observed": true,
+                "reason": "Reconstructed observation/subject/document bytes differ"
+              }
+            },
+            "wide_files": [
+              {
+                "path": "high-churn_low-entropy_01-files/wide-00.parquet",
+                "bytes": 354304,
+                "sha256": "b138465d903aa5f85429f78fb48b8329572eccecd6bc1ac96b1dc286269d214c",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 16384
+                  }
+                ]
+              }
+            ],
+            "reference_files": [
+              {
+                "path": "high-churn_low-entropy_01-files/references-00.parquet",
+                "bytes": 327705,
+                "sha256": "27de38dd39821eb643a6953edb0ccd1218acc8e830f4d610905938b3315a41f7",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 16384
+                  }
+                ]
+              }
+            ],
+            "object_files": [
+              {
+                "path": "high-churn_low-entropy_01-files/objects-00.parquet",
+                "bytes": 294551,
+                "sha256": "d814f24e86849b5f05608da610338be6aaf7a1f92dda14ca7a5e7ea9fbbd1d4b",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 16384
+                  }
+                ]
+              }
+            ],
+            "actual_settings": {
+              "autoinstall_known_extensions": "false",
+              "autoload_known_extensions": "false",
+              "max_temp_directory_size": "30.5 MiB",
+              "memory_limit": "183.1 MiB",
+              "threads": "1"
+            }
+          },
+          {
+            "case": "high-churn_low-entropy_16-files",
+            "observations": 16384,
+            "body_bytes": 1024,
+            "churn": "high",
+            "entropy": "low",
+            "observation_files_per_layout": 16,
+            "expected_unique_bodies": 8192,
+            "namespaced_objects": 16384,
+            "wide_bytes": 394421,
+            "split_bytes": 671379,
+            "split_minus_wide_bytes": 276958,
+            "split_over_wide": 1.7021887779808884,
+            "source_ordered_row_digest_sha256": "8cbb949c4162dd1944a653bb7d0c7547258f9a8f474941ec2cde388ae06effe7",
+            "wide_oracle": {
+              "exact_rows_checked": 16384,
+              "ordered_row_digest_sha256": "8cbb949c4162dd1944a653bb7d0c7547258f9a8f474941ec2cde388ae06effe7"
+            },
+            "split_oracle": {
+              "exact_rows_checked": 16384,
+              "ordered_row_digest_sha256": "8cbb949c4162dd1944a653bb7d0c7547258f9a8f474941ec2cde388ae06effe7"
+            },
+            "negative_controls": {
+              "omit_restricted_object": {
+                "expected_rejection_observed": true,
+                "reason": "Missing namespaced object"
+              },
+              "tamper_body": {
+                "expected_rejection_observed": true,
+                "reason": "Reconstructed observation/subject/document bytes differ"
+              }
+            },
+            "wide_files": [
+              {
+                "path": "high-churn_low-entropy_16-files/wide-00.parquet",
+                "bytes": 25513,
+                "sha256": "4e028e9512669ee09a53c5312d06c174e4f05232cd832f01d097fcf45816cb01",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/wide-01.parquet",
+                "bytes": 24599,
+                "sha256": "6b0aeec8432718d9d42590f5a78856997a6e1b96ad78c93b073606fc48db6802",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/wide-02.parquet",
+                "bytes": 24592,
+                "sha256": "f7bbae6028393273b977fd81ede339662232e0fbcfe9b02863b16b65ed5a63b5",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/wide-03.parquet",
+                "bytes": 24590,
+                "sha256": "3b868fb295499611b142ba2a2a3b87dbdd70090c7b819f6479ea123b10625515",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/wide-04.parquet",
+                "bytes": 24593,
+                "sha256": "3df54f3e95a900d128011e24334ef74cabf9ef44b0b700bc6ee6491fbdf25c3e",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/wide-05.parquet",
+                "bytes": 24595,
+                "sha256": "24c81a70cced59fbbbfbe18aa1708638fd2178e4655c2e43a815c3f797badecb",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/wide-06.parquet",
+                "bytes": 24601,
+                "sha256": "268a4413c62bc52e7955a06ef470152a3beb3ce341f0dfe210d16b5335739e1a",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/wide-07.parquet",
+                "bytes": 24591,
+                "sha256": "ca731a7cec2c64f931003c058251badcdeb65b7806ba4e9facfca2acafd477a6",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/wide-08.parquet",
+                "bytes": 24596,
+                "sha256": "d5bbd9d425936fc013de5440d4a0c85bd4cc6baad0a011c4765e5561d16e87d8",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/wide-09.parquet",
+                "bytes": 24584,
+                "sha256": "0ee020869f633c28344f3d9cb0bcbacdba1fc231f2fff687b07c0f734a376eb6",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/wide-10.parquet",
+                "bytes": 24601,
+                "sha256": "742d57b90f1cb3df12a98436684e93271a91d8bcaf48e5dc78e9592cdee7274c",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/wide-11.parquet",
+                "bytes": 24599,
+                "sha256": "dcbb825ad81c65c778f20148b50da6ce23dbe4934ca9ad590f67da9949e2b4f6",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/wide-12.parquet",
+                "bytes": 24594,
+                "sha256": "f73df4859cfc2a660ea8db9798120e21b753d1ffbef559cde7fa35bd52cb7931",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/wide-13.parquet",
+                "bytes": 24601,
+                "sha256": "d77721d89bcd78a52d5fd8913453ce56025d732ce6444897d1e7e11107ad26de",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/wide-14.parquet",
+                "bytes": 24594,
+                "sha256": "b19ae1058d09b57daf2aac4b2ec6f60e326c419614ae159bccdd8980ed89c36c",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/wide-15.parquet",
+                "bytes": 24578,
+                "sha256": "e1c53616ef20f86a2b2d6765ae109f7120654416848e8700a9068d34df332b64",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              }
+            ],
+            "reference_files": [
+              {
+                "path": "high-churn_low-entropy_16-files/references-00.parquet",
+                "bytes": 22211,
+                "sha256": "397c2f32d2e6c9dd79216ad75ea5f7868a5f7254c73369238e24d4eb55a49a62",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/references-01.parquet",
+                "bytes": 21620,
+                "sha256": "93eae676f26bbfae1a72484c148bba71584f2b3b03229dbb6b889975acc42893",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/references-02.parquet",
+                "bytes": 21613,
+                "sha256": "b813e1ee68e3eefd328d9a5e746ca178823d3bf2529f1fbc058d61d8177debd3",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/references-03.parquet",
+                "bytes": 21610,
+                "sha256": "367bd8ae73ae2adcdeb3907f48394fdbf6e75728ed4bc6da3af294078772d767",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/references-04.parquet",
+                "bytes": 21616,
+                "sha256": "e892432249a1764757bec8822ee5e3e9764643007b6eb4208a65331c1abc9fb0",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/references-05.parquet",
+                "bytes": 21618,
+                "sha256": "407ab068a3d93237984b49b355ca8b0db4d2e8d1e242a93de3b0fa1b25755534",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/references-06.parquet",
+                "bytes": 21625,
+                "sha256": "063a80da166a56817555de10bce8413d4414145a9388df3528cc548ae407ccac",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/references-07.parquet",
+                "bytes": 21618,
+                "sha256": "88d24b5926235166ca9e7608cac3f500880101f75fa6bfdfdd5b2f3cffc9f8a9",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/references-08.parquet",
+                "bytes": 21618,
+                "sha256": "78c5e352208cd6f52dd632930d6fb23247ae77222793a8f6d6233daaf2f40b95",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/references-09.parquet",
+                "bytes": 21604,
+                "sha256": "207a946f380b2bf439497d6f00763208ee6db65dc2d581b07e354fcaa216dfca",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/references-10.parquet",
+                "bytes": 21622,
+                "sha256": "56c749cfc34a3fd98364d521ab47361fd07c81999c5c95bbc6dac20a6ddba269",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/references-11.parquet",
+                "bytes": 21621,
+                "sha256": "7af0d6a8d49d2784ad3ea74d4fa5327aff9ac0ec5165f2816eea8811f0fbd978",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/references-12.parquet",
+                "bytes": 21617,
+                "sha256": "e457f2ddfe8452a0b3e4636abb17eb1bbf6f23201cf04caa9ea51bfff069d13d",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/references-13.parquet",
+                "bytes": 21624,
+                "sha256": "0e96759bc194488989183453bf329ab3c00a1b9f310296c266add51beff788de",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/references-14.parquet",
+                "bytes": 21616,
+                "sha256": "ef6382bbf9eb084edbf502977bba5ca4aacb771cc662fffd27c6fe1659a0ca9b",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/references-15.parquet",
+                "bytes": 21606,
+                "sha256": "0215614065928d3bef357abe81a5ac9e5df94f62c48470c5d80f1956c0fbe93d",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              }
+            ],
+            "object_files": [
+              {
+                "path": "high-churn_low-entropy_16-files/objects-00.parquet",
+                "bytes": 20608,
+                "sha256": "52058723d48980097daeb38a57e14a9f991741723c4358d8eba041bb5778abf9",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/objects-01.parquet",
+                "bytes": 20294,
+                "sha256": "b97e00650642e3009b0f61e51a81e00878279ac1a54116b8de51497574477c79",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/objects-02.parquet",
+                "bytes": 20286,
+                "sha256": "707dabb7b481254d1bb1c0f3129c7ad1d84bc53715ee4fc9274e6f53f30b41e7",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/objects-03.parquet",
+                "bytes": 20286,
+                "sha256": "0cfd5f74a6d2a34bd85fee82711e3db10a2fd4ee167fff475de2c13fee0e0bb4",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/objects-04.parquet",
+                "bytes": 20289,
+                "sha256": "4bc91c92a289c86b41392d3a54038e2755d76967a90b48643e6c4f462be140f1",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/objects-05.parquet",
+                "bytes": 20288,
+                "sha256": "0a773831611ebf3f0539dfb46db18c7fb891b3b48e7320af019fa3f2f8328171",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/objects-06.parquet",
+                "bytes": 20290,
+                "sha256": "2b2724f9ef7acb13ea1ec1d1ba8ceb7a7b4fb31be83a5dcb7cbd70ee0d1db842",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/objects-07.parquet",
+                "bytes": 20283,
+                "sha256": "f9a497079a404d5003bd061aaa34f997e6a99f01bf604981605ed3f543d9a1d2",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/objects-08.parquet",
+                "bytes": 20289,
+                "sha256": "1b18a2c41ae29bbddeca9bfc48de75468f398fb589ae255dbb75dd2075c35d8b",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/objects-09.parquet",
+                "bytes": 20279,
+                "sha256": "c4bff12a6d42d74bbcde9d2dee77597ae7eed67d181e6a484cc16f7965b5e77e",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/objects-10.parquet",
+                "bytes": 20293,
+                "sha256": "d301783b58a8465da81b09c85ae7c25a30a84583f8da786c8e15aa915c5eea09",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/objects-11.parquet",
+                "bytes": 20294,
+                "sha256": "e3e41aada3c19dc00cd6a61c7e51eff8f98a8e0bc24cf5c83e056128ee5b8e34",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/objects-12.parquet",
+                "bytes": 20289,
+                "sha256": "ef91ca74053246e9cce324fc3bde94c6764ade5371e2624bbb7be20103a61b9f",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/objects-13.parquet",
+                "bytes": 20293,
+                "sha256": "dc2e39fa0d7b99a2e73bf34f96977f9227e05adc33d98119e79b71f3ff25abff",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/objects-14.parquet",
+                "bytes": 20289,
+                "sha256": "d273403fff32756d77e6da3a5f8aa2ac74339ad84267a216d042ae10c5f73eec",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_low-entropy_16-files/objects-15.parquet",
+                "bytes": 20270,
+                "sha256": "bce77174627181a7afc1eab7057c3cb404b89d2965a383b2972b281b6c869be4",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              }
+            ],
+            "actual_settings": {
+              "autoinstall_known_extensions": "false",
+              "autoload_known_extensions": "false",
+              "max_temp_directory_size": "30.5 MiB",
+              "memory_limit": "183.1 MiB",
+              "threads": "1"
+            }
+          },
+          {
+            "case": "high-churn_high-entropy_01-files",
+            "observations": 16384,
+            "body_bytes": 1024,
+            "churn": "high",
+            "entropy": "high",
+            "observation_files_per_layout": 1,
+            "expected_unique_bodies": 8192,
+            "namespaced_objects": 16384,
+            "wide_bytes": 8765900,
+            "split_bytes": 9033835,
+            "split_minus_wide_bytes": 267935,
+            "split_over_wide": 1.0305656007939858,
+            "source_ordered_row_digest_sha256": "587404339af56a1447fc96bf0c2842853499901a5de10fa1b3a0db105592390c",
+            "wide_oracle": {
+              "exact_rows_checked": 16384,
+              "ordered_row_digest_sha256": "587404339af56a1447fc96bf0c2842853499901a5de10fa1b3a0db105592390c"
+            },
+            "split_oracle": {
+              "exact_rows_checked": 16384,
+              "ordered_row_digest_sha256": "587404339af56a1447fc96bf0c2842853499901a5de10fa1b3a0db105592390c"
+            },
+            "negative_controls": {
+              "omit_restricted_object": {
+                "expected_rejection_observed": true,
+                "reason": "Missing namespaced object"
+              },
+              "tamper_body": {
+                "expected_rejection_observed": true,
+                "reason": "Reconstructed observation/subject/document bytes differ"
+              }
+            },
+            "wide_files": [
+              {
+                "path": "high-churn_high-entropy_01-files/wide-00.parquet",
+                "bytes": 8765900,
+                "sha256": "abd4fa66c59dfe850e9ce8051e97a7e6c44d35636e742c3171b643d467c77f18",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 16384
+                  }
+                ]
+              }
+            ],
+            "reference_files": [
+              {
+                "path": "high-churn_high-entropy_01-files/references-00.parquet",
+                "bytes": 327691,
+                "sha256": "ef80974cf5cdd06279dc7d995ce8c288ea1a5727cce46c714105e1dc4987755c",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 16384
+                  }
+                ]
+              }
+            ],
+            "object_files": [
+              {
+                "path": "high-churn_high-entropy_01-files/objects-00.parquet",
+                "bytes": 8706144,
+                "sha256": "3c9c0e4a6752853a123c64401a4e47b244f3323f10e431087c087ef7d9f6e05d",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 16384
+                  }
+                ]
+              }
+            ],
+            "actual_settings": {
+              "autoinstall_known_extensions": "false",
+              "autoload_known_extensions": "false",
+              "max_temp_directory_size": "30.5 MiB",
+              "memory_limit": "183.1 MiB",
+              "threads": "1"
+            }
+          },
+          {
+            "case": "high-churn_high-entropy_16-files",
+            "observations": 16384,
+            "body_bytes": 1024,
+            "churn": "high",
+            "entropy": "high",
+            "observation_files_per_layout": 16,
+            "expected_unique_bodies": 8192,
+            "namespaced_objects": 16384,
+            "wide_bytes": 8804805,
+            "split_bytes": 9081743,
+            "split_minus_wide_bytes": 276938,
+            "split_over_wide": 1.031453053190843,
+            "source_ordered_row_digest_sha256": "587404339af56a1447fc96bf0c2842853499901a5de10fa1b3a0db105592390c",
+            "wide_oracle": {
+              "exact_rows_checked": 16384,
+              "ordered_row_digest_sha256": "587404339af56a1447fc96bf0c2842853499901a5de10fa1b3a0db105592390c"
+            },
+            "split_oracle": {
+              "exact_rows_checked": 16384,
+              "ordered_row_digest_sha256": "587404339af56a1447fc96bf0c2842853499901a5de10fa1b3a0db105592390c"
+            },
+            "negative_controls": {
+              "omit_restricted_object": {
+                "expected_rejection_observed": true,
+                "reason": "Missing namespaced object"
+              },
+              "tamper_body": {
+                "expected_rejection_observed": true,
+                "reason": "Reconstructed observation/subject/document bytes differ"
+              }
+            },
+            "wide_files": [
+              {
+                "path": "high-churn_high-entropy_16-files/wide-00.parquet",
+                "bytes": 550866,
+                "sha256": "0cc246c95d9391f3a6f3e3b05916f2ce7d2d9c6f1cf365724c2fcb066e84e39a",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/wide-01.parquet",
+                "bytes": 550267,
+                "sha256": "068fe25c2a95db5f285cbada49a07d408a333e4cf799182cb9df20b2c6182ea3",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/wide-02.parquet",
+                "bytes": 550242,
+                "sha256": "cf411a3c64c6df730e6889edccdad7bce62b7615283c7a26a6b8380648e00e38",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/wide-03.parquet",
+                "bytes": 550259,
+                "sha256": "d492f8b5edbeee709b349c33688943122362779fcc8c5c706888274f24fcc2f2",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/wide-04.parquet",
+                "bytes": 550263,
+                "sha256": "7b65d501d5e48985b48a0e0c5b6361b2d5350939c852d6c8c2fb8ddc15de07f2",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/wide-05.parquet",
+                "bytes": 550271,
+                "sha256": "699da36eb6096bd49ff500b15b5921e9b4210907e1166cb0587fb67acaad5ff2",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/wide-06.parquet",
+                "bytes": 550251,
+                "sha256": "f31cd292308c4ce7c70f5468200d5a942aba823e306caec0f252a32166183f6e",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/wide-07.parquet",
+                "bytes": 550270,
+                "sha256": "85ce5e74bffb7b6194af58e249cbc002ba8a80705731b0add31790a38f19c9af",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/wide-08.parquet",
+                "bytes": 550268,
+                "sha256": "1505d9fb9e29b38ee400b23978adc0d6e18e36725d01284803499e858458c253",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/wide-09.parquet",
+                "bytes": 550260,
+                "sha256": "8f3738279d99f5c1ae23a51fa881986441dc35d2340da1f97cf80d91e735ed74",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/wide-10.parquet",
+                "bytes": 550258,
+                "sha256": "e00d933c7ee66f16de5d8bc765a049280060e22517369e1923b84bf6ac0dbb5b",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/wide-11.parquet",
+                "bytes": 550268,
+                "sha256": "54647330e0b9bd5b96279ae00dfdc3a049c10b4b2bedb59598b74dff46067339",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/wide-12.parquet",
+                "bytes": 550275,
+                "sha256": "8432fa16a4b56d326721785bf2220d1d56f8e1080d4a13de5dd116f81622e759",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/wide-13.parquet",
+                "bytes": 550249,
+                "sha256": "273e86514623c7935f0724859cda2f29e046d7cb390581d4adbbd812b6ccbadb",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/wide-14.parquet",
+                "bytes": 550265,
+                "sha256": "1fb39b7a8c2607ca8c2c5bea70fc71edf799699411944baf47c75cae2b7a53ce",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/wide-15.parquet",
+                "bytes": 550273,
+                "sha256": "8786dd0e2640e7d9e4aa813cef80a938f3b6ee11c00c926615de076c270ae61a",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              }
+            ],
+            "reference_files": [
+              {
+                "path": "high-churn_high-entropy_16-files/references-00.parquet",
+                "bytes": 22213,
+                "sha256": "a7f2bedad61783837d18c41b81d046c4ab45f0949d265a466def9a4b6adf5ae7",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/references-01.parquet",
+                "bytes": 21626,
+                "sha256": "220d597d4b7b04a60510028539d71778ac2acf769000b340a5ec2d0f10039d3e",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/references-02.parquet",
+                "bytes": 21605,
+                "sha256": "e520f5bf0ef71d2e827c98715c2d1eb820bea64f8c112e5c417545af708b66a4",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/references-03.parquet",
+                "bytes": 21605,
+                "sha256": "61e074390e70c333d5c6d2667ae25130645b0758e729ae4d34204c958bbcbd26",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/references-04.parquet",
+                "bytes": 21618,
+                "sha256": "a9fc480f907f345c26f0ad5d153f186fcbd0cfcbbd2e5d718743e01748050dd0",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/references-05.parquet",
+                "bytes": 21628,
+                "sha256": "64aa63a3666e4498ea2502a4eb5c64838cb2b3bfc72f29f9c1351c50badc0d12",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/references-06.parquet",
+                "bytes": 21612,
+                "sha256": "8d4663568a518ce1effeb3adc9e36e3c02809d84aa2fb946d18983d6be3ec2b6",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/references-07.parquet",
+                "bytes": 21620,
+                "sha256": "a393db2d511dd7845177de1caf61f768ac7143474257ced6a5b2245b98962cea",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/references-08.parquet",
+                "bytes": 21618,
+                "sha256": "1eb370a5165b3c7a1bec469033db3e9493e4cb3bfe1293bcbd00f992ae39dc4a",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/references-09.parquet",
+                "bytes": 21605,
+                "sha256": "117721386a9529117736dc0adfd8ef6150a547eed61587b984e3c25fd18dbd3f",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/references-10.parquet",
+                "bytes": 21608,
+                "sha256": "1c61e642fe04e5ec50b2c202630acf611033416330bc2d24c846ee0eb9bfb9e4",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/references-11.parquet",
+                "bytes": 21622,
+                "sha256": "9ea70ba884abaef7d36c2e20e0a061e8ac7d59642d60cd36aca70c1c2ffe7096",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/references-12.parquet",
+                "bytes": 21615,
+                "sha256": "a83f531776aa5b1481de89e11cb22d92404f1390fb1d089e25f54a8760887517",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/references-13.parquet",
+                "bytes": 21607,
+                "sha256": "fe242f9ca6c9b88ece39aad1e52ad36d97a4a2a507bcb5babe1a9e2c0821f42e",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/references-14.parquet",
+                "bytes": 21617,
+                "sha256": "ec1e83b49353200784d642021efb2d91ccd458202a7a48d1ec0b4d4456a18ab5",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/references-15.parquet",
+                "bytes": 21620,
+                "sha256": "ac037ee40ae58dfd7a6e70fa34a1cd6565e8938510e16f16935cc2f5aa7f574c",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              }
+            ],
+            "object_files": [
+              {
+                "path": "high-churn_high-entropy_16-files/objects-00.parquet",
+                "bytes": 545961,
+                "sha256": "27a6ad12215a8e08172bdd841223060ffa56f939fdcfcb234195d0cef1a9d590",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/objects-01.parquet",
+                "bytes": 545962,
+                "sha256": "6e88d5345ea605df35c2e6a9745dbf3c7b85e307751db9fe5e5926cb66f153ba",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/objects-02.parquet",
+                "bytes": 545936,
+                "sha256": "d9c5d5bd1d2613d2d0e2d50e4b707474bf02e25ee289829805cf2c0ec4fd009a",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/objects-03.parquet",
+                "bytes": 545955,
+                "sha256": "6f763adf180ae2e8bd47a56236b0cca14e312c80f1011ee13fdcb7d99f9cd870",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/objects-04.parquet",
+                "bytes": 545959,
+                "sha256": "6ab866d3e6f26b9e7379317eaa26f197f0180f86e6bad8b358770c9dab3c1687",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/objects-05.parquet",
+                "bytes": 545964,
+                "sha256": "883c97218b5006285f3c3c21b2670c9b5ee5501c0a6a0695d1ca65b711e10a45",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/objects-06.parquet",
+                "bytes": 545940,
+                "sha256": "f2e92e03bbe4215cc6a98e8f06caf88a7a2a2e170e93600c1ca4e22a2cd8344d",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/objects-07.parquet",
+                "bytes": 545962,
+                "sha256": "f06769d4e46c593b4de97641058214cdd7fe9af4e075beb7db0d531d0cbfd7da",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/objects-08.parquet",
+                "bytes": 545961,
+                "sha256": "545bc403343529eb51a790c8b398731ed11343fe7e93de01963009e2950b7241",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/objects-09.parquet",
+                "bytes": 545955,
+                "sha256": "9e519f97f70734c38371a08a822b9a9956a516cae603b92d620dc7f19a8a0c96",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/objects-10.parquet",
+                "bytes": 545950,
+                "sha256": "c37e534c574b2db782a0cad438a6958e1c7bd0a58f0f87749cbd848354b7be8a",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/objects-11.parquet",
+                "bytes": 545963,
+                "sha256": "89582737b4d7dae4c9a2a531811323efe478b4bb5f878389457461cc51a511c7",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/objects-12.parquet",
+                "bytes": 545970,
+                "sha256": "3f15db751ddb0ac1c7acc8ac1b1faebe32c9158a381a47e88fe44a56bb4b6cee",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/objects-13.parquet",
+                "bytes": 545941,
+                "sha256": "13c5d846716735f78cd904bc1e5ebeed9e2644344b8cc46ad2c80ecd9bca7f64",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/objects-14.parquet",
+                "bytes": 545960,
+                "sha256": "e6115ce3aae342682ff1bb856780969b885d2f09ce1f78d3de557316995af24c",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              },
+              {
+                "path": "high-churn_high-entropy_16-files/objects-15.parquet",
+                "bytes": 545965,
+                "sha256": "acc814a27c1100cb86d3ebeb2e10f59640ffa1f2c02c494dad97d380c3e0952b",
+                "actual_row_groups": [
+                  {
+                    "id": 0,
+                    "rows": 1024
+                  }
+                ]
+              }
+            ],
+            "actual_settings": {
+              "autoinstall_known_extensions": "false",
+              "autoload_known_extensions": "false",
+              "max_temp_directory_size": "30.5 MiB",
+              "memory_limit": "183.1 MiB",
+              "threads": "1"
+            }
+          }
+        ],
+        "parquet_bytes_all_candidates": 38529336,
+        "limitations": [
+          "Synthetic bytes are not a real NIP-11 corpus or signed Nostr events",
+          "One writer/reader engine; no independent Parquet decoder",
+          "No elapsed-time, RSS, CPU, I/O, lookup-latency, crash, GC or distributed measurements",
+          "DuckDB memory_limit is a setting, not an observed process RSS bound"
+        ]
+      }
+    }
+  ]
+}

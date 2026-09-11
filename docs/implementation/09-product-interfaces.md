@@ -43,6 +43,12 @@ These are UI presentation states over canonical API envelopes, not substitute ba
 
 **Browser resource rule:** respect advertised result/byte limits while streaming the response, including when Content-Length is absent or misleading. Keep only the current page plus a bounded permitted cache; cancel/discard superseded pages and revoke object URLs. Browser-safe uint64 fields remain decimal strings/BigInt as defined by the API; conversion to JavaScript Number cannot silently round timestamps/counters. Prefer server-streamed permitted artifacts for large downloads rather than constructing a whole-corpus Blob. Content/signature verification uses the proposed `apps/dashboard/src/lib/events/verify.worker.ts` worker with bounded transferred input so hostile content cannot stall navigation or multiply copies unaccounted.
 
+Cache/request identity also includes ReadViewStamp and its temporal deadline.
+Back/forward/reconnect cannot redisplay an expired ordinary answer as current;
+invalidate/mark it and re-admit the query. Explicitly authorized historical or
+dated stale analysis has its separately declared presentation semantics. P09-T01
+tests expiry without new ingestion, delayed responses and history navigation.
+
 ## P09-T02 — Public navigation, capabilities and first useful data
 
 **Files:** create `apps/dashboard/src/routes/{+layout,+page}.svelte`, `apps/dashboard/src/routes/status/+page.svelte`, `apps/dashboard/src/routes/about/+page.svelte`, `apps/dashboard/src/lib/{capabilities,answer-state,cache}.ts`, `apps/dashboard/src/lib/components/{InstanceHeader,ScopeSummary,CapabilityNotice}.svelte`, `apps/dashboard/tests/e2e/{onboarding,capabilities,status}.spec.ts`, `docs/user/dashboard/overview.md`.
@@ -133,7 +139,7 @@ The app keeps anti-CSRF/session handling at the private origin and never offers 
 
 - [ ] **Step 1:** implement schema-driven common/advanced forms showing default/effective source/lock and useful help. Allow minimal changes; changing a source-locked value explains its deployment source and does not write mounted TOML.
 - [ ] **Step 2:** implement preview with dependency/budget/listener/signing/coverage impact, apply with expected revision, per-role saved/draining/applied/restart-required/failed state and rollback as a new revision. Concurrent editor conflicts present a diff and reload/reapply path; never silently overwrite.
-- [ ] **Step 3:** implement pause/drain/resume with actual dependency/backlog/capability effects. Relay actions expose enrollment origin, exclusions, backoff and original measurement evidence; route/enrollment changes require the proper grant. No arbitrary hostname/file/script field bypasses guarded source adapters.
+- [ ] **Step 3:** implement start/pause/drain/resume/stop for configured supervised roles with actual dependency/backlog/capability effects and desired/applied outcomes. Relay actions expose enrollment origin, exclusions, backoff and original measurement evidence; route/enrollment changes require the proper grant. No arbitrary hostname/file/script field bypasses guarded source adapters.
 - [ ] **Step 4:** run `p09-t08`: two editors change different fields from the same base, apply a locked field, lower a budget below live use, disable provenance, pause Indexer and restart one affected role. Independent effective-config endpoint and observed permits/frontiers must agree with UI application status.
 - [ ] **Step 5:** drop restrictive-change invalidation notifications and disconnect PG while the page is open. Negative control persist desired security revision without role acknowledgements; the UI must not display globally applied until old authority expires and affected work stops. Retain redacted revision/action timelines and actual denied reads.
 

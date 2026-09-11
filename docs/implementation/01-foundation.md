@@ -205,7 +205,7 @@ application `src/interfaces/rpc/`, `src/ingest/client.rs`,
 **Contract:** the component vocabulary maps losslessly to in-process calls and
 authenticated bounded gRPC; transport does not change admission semantics.
 
-- [ ] **Step 1:** Define Ingest, Archive, Read and Control requests/results using the shared
+- [ ] **Step 1:** Define Ingest, Archive, Index, Read and Control requests/results using the shared
   identities, explicit outcome variants and schema negotiation.
   Control includes host-scoped network permit acquisition/release with stable
   grant identity and idempotent lost-reply resolution; callers cannot choose a

@@ -1,0 +1,636 @@
+{
+  "schema": "bigbrotr.review.read-manifest/1",
+  "review": "11-analytics-audit",
+  "baseline_revision": "8c81472e75da118b04809636a73f3231157227b5",
+  "root": "/Users/vincenzo/Documents/GitHub/BigBrotr/bigbrotr-rs",
+  "completed_at_utc": "2026-09-11T16:59:20.932251+00:00",
+  "source_identity_note": "Assigned reads use immutable baseline Git objects. After hashes remeasure those objects, not concurrently edited working-tree canonical files. Before values are the coordinator baseline inspected before reading. No claim that the whole working tree remained unchanged.",
+  "line_convention": "Logical UTF-8 lines using bytes.splitlines(); inclusive 1-based ranges; all assigned files end in newline.",
+  "assigned_files": [
+    {
+      "path": "docs/architecture/analytics-detail.md",
+      "source_revision": "8c81472e75da118b04809636a73f3231157227b5",
+      "read_source": "immutable git object via git show, numbered full-text ranges",
+      "before": {
+        "sha256": "ee20296032ca33875bcfe0fdbd270bf6a8571e64e72f8d5904552bc0ddc601b9",
+        "bytes": 42157,
+        "lines": 575
+      },
+      "before_source": ".research/review-11/baseline.json, read before assigned full-text inspection",
+      "after": {
+        "sha256": "ee20296032ca33875bcfe0fdbd270bf6a8571e64e72f8d5904552bc0ddc601b9",
+        "bytes": 42157,
+        "lines": 575
+      },
+      "unchanged_source_object": true,
+      "full_read": true,
+      "read_ranges_inclusive": [
+        [
+          1,
+          229
+        ],
+        [
+          230,
+          375
+        ],
+        [
+          376,
+          575
+        ]
+      ],
+      "covered_lines": 575
+    },
+    {
+      "path": "docs/architecture/derived-read-publication.md",
+      "source_revision": "8c81472e75da118b04809636a73f3231157227b5",
+      "read_source": "immutable git object via git show, numbered full-text ranges",
+      "before": {
+        "sha256": "20ac6a79e1bbcbc576d3d9b1c5ca140705cc0e5c1d363fad871f677f00d26324",
+        "bytes": 91901,
+        "lines": 1272
+      },
+      "before_source": ".research/review-11/baseline.json, read before assigned full-text inspection",
+      "after": {
+        "sha256": "20ac6a79e1bbcbc576d3d9b1c5ca140705cc0e5c1d363fad871f677f00d26324",
+        "bytes": 91901,
+        "lines": 1272
+      },
+      "unchanged_source_object": true,
+      "full_read": true,
+      "read_ranges_inclusive": [
+        [
+          1,
+          240
+        ],
+        [
+          241,
+          520
+        ],
+        [
+          521,
+          820
+        ],
+        [
+          821,
+          1080
+        ],
+        [
+          1081,
+          1272
+        ]
+      ],
+      "covered_lines": 1272
+    },
+    {
+      "path": "docs/architecture/protocol-evolution.md",
+      "source_revision": "8c81472e75da118b04809636a73f3231157227b5",
+      "read_source": "immutable git object via git show, numbered full-text ranges",
+      "before": {
+        "sha256": "ce86cc287bae80b429cb454a2b7b54aeb87fbf251d77866ccb3203330ce83270",
+        "bytes": 62464,
+        "lines": 750
+      },
+      "before_source": ".research/review-11/baseline.json, read before assigned full-text inspection",
+      "after": {
+        "sha256": "ce86cc287bae80b429cb454a2b7b54aeb87fbf251d77866ccb3203330ce83270",
+        "bytes": 62464,
+        "lines": 750
+      },
+      "unchanged_source_object": true,
+      "full_read": true,
+      "read_ranges_inclusive": [
+        [
+          1,
+          150
+        ],
+        [
+          151,
+          400
+        ],
+        [
+          401,
+          620
+        ],
+        [
+          621,
+          750
+        ]
+      ],
+      "covered_lines": 750
+    },
+    {
+      "path": "docs/architecture/search-and-reconciliation.md",
+      "source_revision": "8c81472e75da118b04809636a73f3231157227b5",
+      "read_source": "immutable git object via git show, numbered full-text ranges",
+      "before": {
+        "sha256": "db1755f03914a2b813eea38a1ebcf07890bd6a897796a59b47fe2a2b307f8cd0",
+        "bytes": 21069,
+        "lines": 310
+      },
+      "before_source": ".research/review-11/baseline.json, read before assigned full-text inspection",
+      "after": {
+        "sha256": "db1755f03914a2b813eea38a1ebcf07890bd6a897796a59b47fe2a2b307f8cd0",
+        "bytes": 21069,
+        "lines": 310
+      },
+      "unchanged_source_object": true,
+      "full_read": true,
+      "read_ranges_inclusive": [
+        [
+          1,
+          170
+        ],
+        [
+          171,
+          310
+        ]
+      ],
+      "covered_lines": 310
+    },
+    {
+      "path": "docs/implementation/05-analytics.md",
+      "source_revision": "8c81472e75da118b04809636a73f3231157227b5",
+      "read_source": "immutable git object via git show, numbered full-text ranges",
+      "before": {
+        "sha256": "e8dc7e38171db0696b749324471714812e5d3616fd0d79b48b2d7e72a9ca32ff",
+        "bytes": 46951,
+        "lines": 732
+      },
+      "before_source": ".research/review-11/baseline.json, read before assigned full-text inspection",
+      "after": {
+        "sha256": "e8dc7e38171db0696b749324471714812e5d3616fd0d79b48b2d7e72a9ca32ff",
+        "bytes": 46951,
+        "lines": 732
+      },
+      "unchanged_source_object": true,
+      "full_read": true,
+      "read_ranges_inclusive": [
+        [
+          1,
+          220
+        ],
+        [
+          221,
+          455
+        ],
+        [
+          456,
+          732
+        ]
+      ],
+      "covered_lines": 732
+    },
+    {
+      "path": "docs/implementation/06-read-surfaces.md",
+      "source_revision": "8c81472e75da118b04809636a73f3231157227b5",
+      "read_source": "immutable git object via git show, numbered full-text ranges",
+      "before": {
+        "sha256": "af4ad8c2ddab00a76e61d44d6313bb967d1571b24a99b8d7f3ba6e3d2e0f128a",
+        "bytes": 45898,
+        "lines": 695
+      },
+      "before_source": ".research/review-11/baseline.json, read before assigned full-text inspection",
+      "after": {
+        "sha256": "af4ad8c2ddab00a76e61d44d6313bb967d1571b24a99b8d7f3ba6e3d2e0f128a",
+        "bytes": 45898,
+        "lines": 695
+      },
+      "unchanged_source_object": true,
+      "full_read": true,
+      "read_ranges_inclusive": [
+        [
+          1,
+          220
+        ],
+        [
+          221,
+          450
+        ],
+        [
+          451,
+          695
+        ]
+      ],
+      "covered_lines": 695
+    },
+    {
+      "path": "docs/implementation/07-publication.md",
+      "source_revision": "8c81472e75da118b04809636a73f3231157227b5",
+      "read_source": "immutable git object via git show, numbered full-text ranges",
+      "before": {
+        "sha256": "8f756a2824dd6e593a4b3122e75f31207a28b5c65a800e775dd943a96686f7f8",
+        "bytes": 32851,
+        "lines": 510
+      },
+      "before_source": ".research/review-11/baseline.json, read before assigned full-text inspection",
+      "after": {
+        "sha256": "8f756a2824dd6e593a4b3122e75f31207a28b5c65a800e775dd943a96686f7f8",
+        "bytes": 32851,
+        "lines": 510
+      },
+      "unchanged_source_object": true,
+      "full_read": true,
+      "read_ranges_inclusive": [
+        [
+          1,
+          245
+        ],
+        [
+          246,
+          510
+        ]
+      ],
+      "covered_lines": 510
+    },
+    {
+      "path": "docs/specification/dvm-profile.md",
+      "source_revision": "8c81472e75da118b04809636a73f3231157227b5",
+      "read_source": "immutable git object via git show, numbered full-text ranges",
+      "before": {
+        "sha256": "4449a192e681d2b829a1441e11c8bd3599f6028052478b0ab47c7e13954083fd",
+        "bytes": 26610,
+        "lines": 394
+      },
+      "before_source": ".research/review-11/baseline.json, read before assigned full-text inspection",
+      "after": {
+        "sha256": "4449a192e681d2b829a1441e11c8bd3599f6028052478b0ab47c7e13954083fd",
+        "bytes": 26610,
+        "lines": 394
+      },
+      "unchanged_source_object": true,
+      "full_read": true,
+      "read_ranges_inclusive": [
+        [
+          1,
+          210
+        ],
+        [
+          211,
+          394
+        ]
+      ],
+      "covered_lines": 394
+    },
+    {
+      "path": "docs/research/derived-read-publication-findings.md",
+      "source_revision": "8c81472e75da118b04809636a73f3231157227b5",
+      "read_source": "immutable git object via git show, numbered full-text ranges",
+      "before": {
+        "sha256": "aa4f1df3b52fe63833245770fb7745feb5188f646653d09baf090e3780e18847",
+        "bytes": 24379,
+        "lines": 335
+      },
+      "before_source": ".research/review-11/baseline.json, read before assigned full-text inspection",
+      "after": {
+        "sha256": "aa4f1df3b52fe63833245770fb7745feb5188f646653d09baf090e3780e18847",
+        "bytes": 24379,
+        "lines": 335
+      },
+      "unchanged_source_object": true,
+      "full_read": true,
+      "read_ranges_inclusive": [
+        [
+          1,
+          140
+        ],
+        [
+          141,
+          335
+        ]
+      ],
+      "covered_lines": 335
+    },
+    {
+      "path": "docs/research/go-analytics-code-walkthrough.md",
+      "source_revision": "8c81472e75da118b04809636a73f3231157227b5",
+      "read_source": "immutable git object via git show, numbered full-text ranges",
+      "before": {
+        "sha256": "beeca9d23412b4d589cf8458f27dc430d075883b280dd82fb4632190334be99e",
+        "bytes": 42933,
+        "lines": 574
+      },
+      "before_source": ".research/review-11/baseline.json, read before assigned full-text inspection",
+      "after": {
+        "sha256": "beeca9d23412b4d589cf8458f27dc430d075883b280dd82fb4632190334be99e",
+        "bytes": 42933,
+        "lines": 574
+      },
+      "unchanged_source_object": true,
+      "full_read": true,
+      "read_ranges_inclusive": [
+        [
+          1,
+          105
+        ],
+        [
+          106,
+          300
+        ],
+        [
+          301,
+          455
+        ],
+        [
+          456,
+          574
+        ]
+      ],
+      "covered_lines": 574
+    },
+    {
+      "path": "docs/reviews/07-phase-5-recheck.md",
+      "source_revision": "8c81472e75da118b04809636a73f3231157227b5",
+      "read_source": "immutable git object via git show, numbered full-text ranges",
+      "before": {
+        "sha256": "4552502f61c3f7d3937180e65d64c3dd7ec453fbf5365b813c1e79f3d181b1ae",
+        "bytes": 32843,
+        "lines": 210
+      },
+      "before_source": ".research/review-11/baseline.json, read before assigned full-text inspection",
+      "after": {
+        "sha256": "4552502f61c3f7d3937180e65d64c3dd7ec453fbf5365b813c1e79f3d181b1ae",
+        "bytes": 32843,
+        "lines": 210
+      },
+      "unchanged_source_object": true,
+      "full_read": true,
+      "read_ranges_inclusive": [
+        [
+          1,
+          75
+        ],
+        [
+          76,
+          135
+        ],
+        [
+          136,
+          210
+        ]
+      ],
+      "covered_lines": 210
+    },
+    {
+      "path": "docs/reviews/10-analytics-read-audit.md",
+      "source_revision": "8c81472e75da118b04809636a73f3231157227b5",
+      "read_source": "immutable git object via git show, numbered full-text ranges",
+      "before": {
+        "sha256": "b5c5442729c8d071259febcfc4f720df69e861901c1308f1a7b193671580cdab",
+        "bytes": 20709,
+        "lines": 285
+      },
+      "before_source": ".research/review-11/baseline.json, read before assigned full-text inspection",
+      "after": {
+        "sha256": "b5c5442729c8d071259febcfc4f720df69e861901c1308f1a7b193671580cdab",
+        "bytes": 20709,
+        "lines": 285
+      },
+      "unchanged_source_object": true,
+      "full_read": true,
+      "read_ranges_inclusive": [
+        [
+          1,
+          140
+        ],
+        [
+          141,
+          285
+        ]
+      ],
+      "covered_lines": 285
+    }
+  ],
+  "totals": {
+    "files": 12,
+    "bytes": 490765,
+    "lines": 6642
+  },
+  "truncation_recovery": [
+    {
+      "path": "docs/architecture/analytics-detail.md",
+      "initial_attempt": [
+        1,
+        575
+      ],
+      "discarded_as_complete_read": true,
+      "replacement_complete_ranges": [
+        [
+          1,
+          229
+        ],
+        [
+          230,
+          375
+        ],
+        [
+          376,
+          575
+        ]
+      ],
+      "note": "Middle 230-375 first repaired omission; later 1-229 and 376-575 cleanly reread so the complete claim uses only untruncated bounded outputs."
+    }
+  ],
+  "supplemental_file_reads": [
+    {
+      "path": "AGENTS.md",
+      "source_revision": "8c81472e75da118b04809636a73f3231157227b5",
+      "read_source": "immutable git object via git show, numbered full-text ranges",
+      "before": {
+        "sha256": "6a89714614d7c8b6ed0b6d3e01dd6ad9851a04ba68a7e6302c2d6a91f0d4a3d1",
+        "bytes": 1561,
+        "lines": 27
+      },
+      "before_source": ".research/review-11/baseline.json, read before assigned full-text inspection",
+      "after": {
+        "sha256": "6a89714614d7c8b6ed0b6d3e01dd6ad9851a04ba68a7e6302c2d6a91f0d4a3d1",
+        "bytes": 1561,
+        "lines": 27
+      },
+      "unchanged_source_object": true,
+      "full_read": true,
+      "read_ranges_inclusive": [
+        [
+          1,
+          27
+        ]
+      ],
+      "covered_lines": 27
+    },
+    {
+      "path": "docs/specification/data-contracts.md",
+      "source_revision": "8c81472e75da118b04809636a73f3231157227b5",
+      "read_source": "immutable git object via git show, numbered full-text ranges",
+      "before": {
+        "sha256": "1933b1f1da76d95bdfede4c05bf699efec07d1936c8b6fa0a0da28cdd4f31c18",
+        "bytes": 26385,
+        "lines": 375
+      },
+      "before_source": ".research/review-11/baseline.json, read before assigned full-text inspection",
+      "after": {
+        "sha256": "1933b1f1da76d95bdfede4c05bf699efec07d1936c8b6fa0a0da28cdd4f31c18",
+        "bytes": 26385,
+        "lines": 375
+      },
+      "unchanged_source_object": true,
+      "full_read": false,
+      "read_ranges_inclusive": [
+        [
+          1,
+          115
+        ],
+        [
+          180,
+          310
+        ]
+      ],
+      "covered_lines": 246
+    },
+    {
+      "path": "docs/specification/component-contracts.md",
+      "source_revision": "8c81472e75da118b04809636a73f3231157227b5",
+      "read_source": "immutable git object via git show, numbered full-text ranges",
+      "before": {
+        "sha256": "deba6a159f536969cc64b0305909e160d963f7d518afd64008a2a546ca14e853",
+        "bytes": 14922,
+        "lines": 229
+      },
+      "before_source": ".research/review-11/baseline.json, read before assigned full-text inspection",
+      "after": {
+        "sha256": "deba6a159f536969cc64b0305909e160d963f7d518afd64008a2a546ca14e853",
+        "bytes": 14922,
+        "lines": 229
+      },
+      "unchanged_source_object": true,
+      "full_read": false,
+      "read_ranges_inclusive": [
+        [
+          70,
+          150
+        ]
+      ],
+      "covered_lines": 81
+    },
+    {
+      "path": "docs/implementation/04-relay-lifecycle.md",
+      "source_revision": "8c81472e75da118b04809636a73f3231157227b5",
+      "read_source": "immutable git object via git show, numbered full-text ranges",
+      "before": {
+        "sha256": "e0007f896735e79cd7feb6b934f86a8884f1589b7f9b610308a27c7d1221faab",
+        "bytes": 65279,
+        "lines": 505
+      },
+      "before_source": ".research/review-11/baseline.json, read before assigned full-text inspection",
+      "after": {
+        "sha256": "e0007f896735e79cd7feb6b934f86a8884f1589b7f9b610308a27c7d1221faab",
+        "bytes": 65279,
+        "lines": 505
+      },
+      "unchanged_source_object": true,
+      "full_read": false,
+      "read_ranges_inclusive": [
+        [
+          209,
+          224
+        ],
+        [
+          265,
+          310
+        ],
+        [
+          498,
+          505
+        ]
+      ],
+      "covered_lines": 70
+    }
+  ],
+  "supplemental_searches": [
+    {
+      "source_revision": "8c81472e75da118b04809636a73f3231157227b5",
+      "path": "docs/implementation/04-relay-lifecycle.md",
+      "kind": "heading/text search for measurement/cadence/producer ownership, followed by separately listed excerpts",
+      "full_read": false
+    },
+    {
+      "source_revision": "8c81472e75da118b04809636a73f3231157227b5",
+      "path": "docs/implementation/09-product-interfaces.md",
+      "kind": "relay/rank/subject/basis text search only",
+      "full_read": false,
+      "source_identity": {
+        "sha256": "0b210cc091cef9fe761729300ea8c26d5e70b3e393a87f8e503ac0b1fac2010b",
+        "bytes": 39163,
+        "lines": 198
+      }
+    },
+    {
+      "source_revision": null,
+      "path": "docs/{architecture,specification,implementation,product}",
+      "kind": "working-tree search for temporal/evaluation-time/expiry snapshot terms, output limited to 70 matches; navigation only and not claimed full reading or immutable baseline inventory",
+      "full_read": false
+    }
+  ],
+  "primary_sources": [
+    {
+      "url": "https://raw.githubusercontent.com/nostr-protocol/nips/a2494f4f81d46684e5814a9bf35e2b1df978f955/01.md",
+      "revision": "a2494f4f81d46684e5814a9bf35e2b1df978f955",
+      "method": "web open, rendered primary text",
+      "coverage": "full retrieved text",
+      "web_lines_zero_based": [
+        0,
+        156
+      ],
+      "used_for": "REQ limits/EOSE/ordered full events and source semantics"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nostr-protocol/nips/a2494f4f81d46684e5814a9bf35e2b1df978f955/50.md",
+      "revision": "a2494f4f81d46684e5814a9bf35e2b1df978f955",
+      "method": "web open, rendered primary text",
+      "coverage": "full retrieved text",
+      "web_lines_zero_based": [
+        0,
+        48
+      ],
+      "used_for": "implementation-defined relevance and ignored extensions"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nostr-protocol/nips/a2494f4f81d46684e5814a9bf35e2b1df978f955/66.md",
+      "revision": "a2494f4f81d46684e5814a9bf35e2b1df978f955",
+      "method": "web open, rendered primary text",
+      "coverage": "full retrieved text",
+      "web_lines_zero_based": [
+        0,
+        92
+      ],
+      "used_for": "RTT units/subject/timeout and distinction from new composite formula"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/nostr-protocol/nips/a2494f4f81d46684e5814a9bf35e2b1df978f955/85.md",
+      "revision": "a2494f4f81d46684e5814a9bf35e2b1df978f955",
+      "method": "web open, rendered primary text",
+      "coverage": "full retrieved text",
+      "web_lines_zero_based": [
+        0,
+        144
+      ],
+      "used_for": "subject kinds, key identity, score fields and preferences"
+    }
+  ],
+  "process_sources_read": [
+    "/Users/vincenzo/.agents/skills/using-superpowers/SKILL.md (subagent skip applies)",
+    "/Users/vincenzo/.codex/skills/karpathy-guidelines/SKILL.md",
+    "/Users/vincenzo/.agents/skills/verification-before-completion/SKILL.md"
+  ],
+  "evidence_boundaries": {
+    "product_implementation": false,
+    "runtime_tests": false,
+    "database_experiments": false,
+    "legacy_repository_access": false,
+    "network_publication": false,
+    "commit_or_push": false,
+    "git_reads": "show immutable new-repository baseline objects only"
+  },
+  "written_artifacts": [
+    "docs/reviews/11-analytics-audit.md",
+    "docs/research/evidence/11-analytics-read-manifest.json"
+  ]
+}

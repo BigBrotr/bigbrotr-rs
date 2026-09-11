@@ -1,0 +1,650 @@
+{
+  "schema_version": 1,
+  "review": "11-product-audit",
+  "reviewer": "review11_product",
+  "baseline_revision": "8c81472e75da118b04809636a73f3231157227b5",
+  "baseline_manifest": ".research/review-11/baseline.json",
+  "baseline_manifest_sha256": "455324b2273e5305bebcd1efd227f1505dfbec809ddf339199bc0872d57ab096",
+  "verification_completed_at_utc": "2026-09-11T16:56:54.816286+00:00",
+  "evidence_boundary": "Planning-only complete reading of thirteen assigned immutable Git documents. Before hashes are coordinator-provided baseline values, independently matched to Git objects after reading. No independent pre-read worktree hash capture is claimed. Worktree changes made by other reviewers are outside this full-baseline-read statement.",
+  "assigned_full_reads": [
+    {
+      "path": "docs/product/dashboard-and-website.md",
+      "scope": "full",
+      "read_source": "git show 8c81472e75da118b04809636a73f3231157227b5:docs/product/dashboard-and-website.md",
+      "before": {
+        "sha256": "1e2344e5395885cd91c89b2519a24dc0087464d27413008707b29cbbe8b0f9a5",
+        "bytes": 54269,
+        "lines": 620
+      },
+      "before_provenance": "Coordinator baseline inventory; not an independent pre-read worktree capture",
+      "after": {
+        "sha256": "1e2344e5395885cd91c89b2519a24dc0087464d27413008707b29cbbe8b0f9a5",
+        "bytes": 54269,
+        "lines": 620
+      },
+      "after_verified_at_utc": "2026-09-11T16:56:54.816286+00:00",
+      "before_after_match": true,
+      "complete_read_ranges": [
+        [
+          1,
+          220
+        ],
+        [
+          221,
+          430
+        ],
+        [
+          431,
+          620
+        ]
+      ],
+      "truncation_resolved": false
+    },
+    {
+      "path": "docs/product/private-administration.md",
+      "scope": "full",
+      "read_source": "git show 8c81472e75da118b04809636a73f3231157227b5:docs/product/private-administration.md",
+      "before": {
+        "sha256": "cee79ccc2839ce2fa97c4d50a30d2e05970696445dc496c958e9feca8ff02b71",
+        "bytes": 10420,
+        "lines": 147
+      },
+      "before_provenance": "Coordinator baseline inventory; not an independent pre-read worktree capture",
+      "after": {
+        "sha256": "cee79ccc2839ce2fa97c4d50a30d2e05970696445dc496c958e9feca8ff02b71",
+        "bytes": 10420,
+        "lines": 147
+      },
+      "after_verified_at_utc": "2026-09-11T16:56:54.816286+00:00",
+      "before_after_match": true,
+      "complete_read_ranges": [
+        [
+          1,
+          147
+        ]
+      ],
+      "truncation_resolved": true
+    },
+    {
+      "path": "docs/product/data-and-feature-decisions.md",
+      "scope": "full",
+      "read_source": "git show 8c81472e75da118b04809636a73f3231157227b5:docs/product/data-and-feature-decisions.md",
+      "before": {
+        "sha256": "edb30ce9c5a5f514d2664b1bcf3dc32ef38719c616876412f20b06aa324b1944",
+        "bytes": 16017,
+        "lines": 164
+      },
+      "before_provenance": "Coordinator baseline inventory; not an independent pre-read worktree capture",
+      "after": {
+        "sha256": "edb30ce9c5a5f514d2664b1bcf3dc32ef38719c616876412f20b06aa324b1944",
+        "bytes": 16017,
+        "lines": 164
+      },
+      "after_verified_at_utc": "2026-09-11T16:56:54.816286+00:00",
+      "before_after_match": true,
+      "complete_read_ranges": [
+        [
+          1,
+          164
+        ]
+      ],
+      "truncation_resolved": false
+    },
+    {
+      "path": "docs/product/requirements-and-history.md",
+      "scope": "full",
+      "read_source": "git show 8c81472e75da118b04809636a73f3231157227b5:docs/product/requirements-and-history.md",
+      "before": {
+        "sha256": "8c006bac3bd203b6e68a90eef7f8ab8e78a7f9fd408eb5f859bcebdb6ab5805a",
+        "bytes": 8788,
+        "lines": 123
+      },
+      "before_provenance": "Coordinator baseline inventory; not an independent pre-read worktree capture",
+      "after": {
+        "sha256": "8c006bac3bd203b6e68a90eef7f8ab8e78a7f9fd408eb5f859bcebdb6ab5805a",
+        "bytes": 8788,
+        "lines": 123
+      },
+      "after_verified_at_utc": "2026-09-11T16:56:54.816286+00:00",
+      "before_after_match": true,
+      "complete_read_ranges": [
+        [
+          1,
+          123
+        ]
+      ],
+      "truncation_resolved": true
+    },
+    {
+      "path": "docs/implementation/08-operations.md",
+      "scope": "full",
+      "read_source": "git show 8c81472e75da118b04809636a73f3231157227b5:docs/implementation/08-operations.md",
+      "before": {
+        "sha256": "8405382896c1c2aebea0f1161c8bc655487af7b57971e77d18d5a44ff9314d40",
+        "bytes": 61649,
+        "lines": 323
+      },
+      "before_provenance": "Coordinator baseline inventory; not an independent pre-read worktree capture",
+      "after": {
+        "sha256": "8405382896c1c2aebea0f1161c8bc655487af7b57971e77d18d5a44ff9314d40",
+        "bytes": 61649,
+        "lines": 323
+      },
+      "after_verified_at_utc": "2026-09-11T16:56:54.816286+00:00",
+      "before_after_match": true,
+      "complete_read_ranges": [
+        [
+          1,
+          107
+        ],
+        [
+          108,
+          215
+        ],
+        [
+          216,
+          323
+        ]
+      ],
+      "truncation_resolved": false
+    },
+    {
+      "path": "docs/implementation/09-product-interfaces.md",
+      "scope": "full",
+      "read_source": "git show 8c81472e75da118b04809636a73f3231157227b5:docs/implementation/09-product-interfaces.md",
+      "before": {
+        "sha256": "0b210cc091cef9fe761729300ea8c26d5e70b3e393a87f8e503ac0b1fac2010b",
+        "bytes": 39163,
+        "lines": 198
+      },
+      "before_provenance": "Coordinator baseline inventory; not an independent pre-read worktree capture",
+      "after": {
+        "sha256": "0b210cc091cef9fe761729300ea8c26d5e70b3e393a87f8e503ac0b1fac2010b",
+        "bytes": 39163,
+        "lines": 198
+      },
+      "after_verified_at_utc": "2026-09-11T16:56:54.816286+00:00",
+      "before_after_match": true,
+      "complete_read_ranges": [
+        [
+          1,
+          99
+        ],
+        [
+          100,
+          198
+        ]
+      ],
+      "truncation_resolved": false
+    },
+    {
+      "path": "docs/implementation/10-website.md",
+      "scope": "full",
+      "read_source": "git show 8c81472e75da118b04809636a73f3231157227b5:docs/implementation/10-website.md",
+      "before": {
+        "sha256": "7178d266c8883c7b9686a80aadc4339c5a02f80da2f51c691a712f4aef4e4e76",
+        "bytes": 35594,
+        "lines": 169
+      },
+      "before_provenance": "Coordinator baseline inventory; not an independent pre-read worktree capture",
+      "after": {
+        "sha256": "7178d266c8883c7b9686a80aadc4339c5a02f80da2f51c691a712f4aef4e4e76",
+        "bytes": 35594,
+        "lines": 169
+      },
+      "after_verified_at_utc": "2026-09-11T16:56:54.816286+00:00",
+      "before_after_match": true,
+      "complete_read_ranges": [
+        [
+          1,
+          85
+        ],
+        [
+          86,
+          169
+        ]
+      ],
+      "truncation_resolved": false
+    },
+    {
+      "path": "docs/research/product-surfaces-findings.md",
+      "scope": "full",
+      "read_source": "git show 8c81472e75da118b04809636a73f3231157227b5:docs/research/product-surfaces-findings.md",
+      "before": {
+        "sha256": "9b98b06ad3b2cb5d599cbb511c5da83f9ca2ec686038c27705f32c1ad3d87c7b",
+        "bytes": 25147,
+        "lines": 233
+      },
+      "before_provenance": "Coordinator baseline inventory; not an independent pre-read worktree capture",
+      "after": {
+        "sha256": "9b98b06ad3b2cb5d599cbb511c5da83f9ca2ec686038c27705f32c1ad3d87c7b",
+        "bytes": 25147,
+        "lines": 233
+      },
+      "after_verified_at_utc": "2026-09-11T16:56:54.816286+00:00",
+      "before_after_match": true,
+      "complete_read_ranges": [
+        [
+          1,
+          120
+        ],
+        [
+          121,
+          233
+        ]
+      ],
+      "truncation_resolved": false
+    },
+    {
+      "path": "docs/research/go-read-runtime-code-walkthrough.md",
+      "scope": "full",
+      "read_source": "git show 8c81472e75da118b04809636a73f3231157227b5:docs/research/go-read-runtime-code-walkthrough.md",
+      "before": {
+        "sha256": "a4db86d06f3420507df48c59c4b50ea76870c273207863f30108872f2cd49585",
+        "bytes": 39076,
+        "lines": 234
+      },
+      "before_provenance": "Coordinator baseline inventory; not an independent pre-read worktree capture",
+      "after": {
+        "sha256": "a4db86d06f3420507df48c59c4b50ea76870c273207863f30108872f2cd49585",
+        "bytes": 39076,
+        "lines": 234
+      },
+      "after_verified_at_utc": "2026-09-11T16:56:54.816286+00:00",
+      "before_after_match": true,
+      "complete_read_ranges": [
+        [
+          1,
+          85
+        ],
+        [
+          86,
+          170
+        ],
+        [
+          171,
+          234
+        ]
+      ],
+      "truncation_resolved": false
+    },
+    {
+      "path": "docs/reviews/07-phase-6-9-recheck.md",
+      "scope": "full",
+      "read_source": "git show 8c81472e75da118b04809636a73f3231157227b5:docs/reviews/07-phase-6-9-recheck.md",
+      "before": {
+        "sha256": "bce3991520b3ecc0d8947b8e8cabd9bfc44e59080a04c023eeae1b067a5f3f27",
+        "bytes": 47708,
+        "lines": 323
+      },
+      "before_provenance": "Coordinator baseline inventory; not an independent pre-read worktree capture",
+      "after": {
+        "sha256": "bce3991520b3ecc0d8947b8e8cabd9bfc44e59080a04c023eeae1b067a5f3f27",
+        "bytes": 47708,
+        "lines": 323
+      },
+      "after_verified_at_utc": "2026-09-11T16:56:54.816286+00:00",
+      "before_after_match": true,
+      "complete_read_ranges": [
+        [
+          1,
+          110
+        ],
+        [
+          111,
+          220
+        ],
+        [
+          221,
+          323
+        ]
+      ],
+      "truncation_resolved": false
+    },
+    {
+      "path": "docs/reviews/10-product-audit.md",
+      "scope": "full",
+      "read_source": "git show 8c81472e75da118b04809636a73f3231157227b5:docs/reviews/10-product-audit.md",
+      "before": {
+        "sha256": "7ceb89e2f34cf61e6ca6592b99309f184a0dc0a6df985d2d79b584c6868ba4b9",
+        "bytes": 19378,
+        "lines": 281
+      },
+      "before_provenance": "Coordinator baseline inventory; not an independent pre-read worktree capture",
+      "after": {
+        "sha256": "7ceb89e2f34cf61e6ca6592b99309f184a0dc0a6df985d2d79b584c6868ba4b9",
+        "bytes": 19378,
+        "lines": 281
+      },
+      "after_verified_at_utc": "2026-09-11T16:56:54.816286+00:00",
+      "before_after_match": true,
+      "complete_read_ranges": [
+        [
+          1,
+          281
+        ]
+      ],
+      "truncation_resolved": false
+    },
+    {
+      "path": "docs/engineering/rust-and-repository.md",
+      "scope": "full",
+      "read_source": "git show 8c81472e75da118b04809636a73f3231157227b5:docs/engineering/rust-and-repository.md",
+      "before": {
+        "sha256": "9d8b9aa7cc31a729d07dfd64839eb0ad83ad7e4b99c1ae6bb45109cbf3e7eaa5",
+        "bytes": 11126,
+        "lines": 159
+      },
+      "before_provenance": "Coordinator baseline inventory; not an independent pre-read worktree capture",
+      "after": {
+        "sha256": "9d8b9aa7cc31a729d07dfd64839eb0ad83ad7e4b99c1ae6bb45109cbf3e7eaa5",
+        "bytes": 11126,
+        "lines": 159
+      },
+      "after_verified_at_utc": "2026-09-11T16:56:54.816286+00:00",
+      "before_after_match": true,
+      "complete_read_ranges": [
+        [
+          1,
+          159
+        ]
+      ],
+      "truncation_resolved": true
+    },
+    {
+      "path": "docs/engineering/security-recovery-and-validation.md",
+      "scope": "full",
+      "read_source": "git show 8c81472e75da118b04809636a73f3231157227b5:docs/engineering/security-recovery-and-validation.md",
+      "before": {
+        "sha256": "ba6f679b4d80b9ba8e094e897345fcce78e821fca1472770a6ac7c61991f3803",
+        "bytes": 15336,
+        "lines": 217
+      },
+      "before_provenance": "Coordinator baseline inventory; not an independent pre-read worktree capture",
+      "after": {
+        "sha256": "ba6f679b4d80b9ba8e094e897345fcce78e821fca1472770a6ac7c61991f3803",
+        "bytes": 15336,
+        "lines": 217
+      },
+      "after_verified_at_utc": "2026-09-11T16:56:54.816286+00:00",
+      "before_after_match": true,
+      "complete_read_ranges": [
+        [
+          1,
+          217
+        ]
+      ],
+      "truncation_resolved": true
+    }
+  ],
+  "assigned_totals": {
+    "files": 13,
+    "lines": 3191,
+    "bytes": 383671
+  },
+  "output_truncation": {
+    "occurred": true,
+    "description": "Initial combined display of private administration, requirements/history, Rust repository guide and security/recovery was truncated. All four were subsequently reread completely in smaller untruncated outputs. No truncated output is credited as sole full-read evidence.",
+    "unresolved": false
+  },
+  "supplemental_reads": [
+    {
+      "path": "AGENTS.md",
+      "scope": "full",
+      "source_revision": "8c81472e75da118b04809636a73f3231157227b5",
+      "verified_identity": {
+        "sha256": "6a89714614d7c8b6ed0b6d3e01dd6ad9851a04ba68a7e6302c2d6a91f0d4a3d1",
+        "bytes": 1561,
+        "lines": 27
+      },
+      "complete_read_ranges": [
+        [
+          1,
+          27
+        ]
+      ],
+      "counts_describe_file_not_read_coverage": false
+    },
+    {
+      "path": "README.md",
+      "scope": "full",
+      "source_revision": "8c81472e75da118b04809636a73f3231157227b5",
+      "verified_identity": {
+        "sha256": "a6441913d91614405d4201cc762724117504e39bd81bf156b749ed84f6324dcd",
+        "bytes": 1922,
+        "lines": 34
+      },
+      "complete_read_ranges": [
+        [
+          1,
+          34
+        ]
+      ],
+      "counts_describe_file_not_read_coverage": false
+    },
+    {
+      "path": "docs/planning/process.md",
+      "scope": "full",
+      "source_revision": "8c81472e75da118b04809636a73f3231157227b5",
+      "verified_identity": {
+        "sha256": "900fe4d1c326c092103991076fef9e2e9b10aa4d0733e3adb666bad400235b0e",
+        "bytes": 5657,
+        "lines": 82
+      },
+      "complete_read_ranges": [
+        [
+          1,
+          82
+        ]
+      ],
+      "counts_describe_file_not_read_coverage": false
+    },
+    {
+      "path": "PLAN.md",
+      "scope": "partial",
+      "source_revision": "8c81472e75da118b04809636a73f3231157227b5",
+      "verified_identity": {
+        "sha256": "d18c0722b3234a0332b17d71fac1e335f99c4b7200649a76dc675f1a61ad4b69",
+        "bytes": 14463,
+        "lines": 173
+      },
+      "complete_read_ranges": [
+        [
+          1,
+          55
+        ]
+      ],
+      "counts_describe_file_not_read_coverage": true
+    },
+    {
+      "path": "docs/specification/component-contracts.md",
+      "scope": "partial",
+      "source_revision": "8c81472e75da118b04809636a73f3231157227b5",
+      "verified_identity": {
+        "sha256": "deba6a159f536969cc64b0305909e160d963f7d518afd64008a2a546ca14e853",
+        "bytes": 14922,
+        "lines": 229
+      },
+      "complete_read_ranges": [
+        [
+          1,
+          105
+        ],
+        [
+          159,
+          229
+        ]
+      ],
+      "counts_describe_file_not_read_coverage": true
+    },
+    {
+      "path": "docs/implementation/02-storage.md",
+      "scope": "partial",
+      "source_revision": "8c81472e75da118b04809636a73f3231157227b5",
+      "verified_identity": {
+        "sha256": "e43b63c6146ba21dd0d87adf230a655bfc59066386f4d5c613b242e1ac0ff107",
+        "bytes": 22483,
+        "lines": 327
+      },
+      "complete_read_ranges": [
+        [
+          1,
+          72
+        ]
+      ],
+      "counts_describe_file_not_read_coverage": true
+    },
+    {
+      "path": "docs/implementation/06-read-surfaces.md",
+      "scope": "partial",
+      "source_revision": "8c81472e75da118b04809636a73f3231157227b5",
+      "verified_identity": {
+        "sha256": "af4ad8c2ddab00a76e61d44d6313bb967d1571b24a99b8d7f3ba6e3d2e0f128a",
+        "bytes": 45898,
+        "lines": 695
+      },
+      "complete_read_ranges": [
+        [
+          1,
+          145
+        ],
+        [
+          231,
+          299
+        ]
+      ],
+      "counts_describe_file_not_read_coverage": true
+    },
+    {
+      "path": "docs/architecture/derived-read-publication.md",
+      "scope": "partial",
+      "source_revision": "8c81472e75da118b04809636a73f3231157227b5",
+      "verified_identity": {
+        "sha256": "20ac6a79e1bbcbc576d3d9b1c5ca140705cc0e5c1d363fad871f677f00d26324",
+        "bytes": 91901,
+        "lines": 1272
+      },
+      "complete_read_ranges": [
+        [
+          584,
+          664
+        ],
+        [
+          710,
+          785
+        ]
+      ],
+      "counts_describe_file_not_read_coverage": true
+    },
+    {
+      "path": "docs/specification/data-contracts.md",
+      "scope": "search_only",
+      "source_revision": "8c81472e75da118b04809636a73f3231157227b5",
+      "verified_identity": {
+        "sha256": "1933b1f1da76d95bdfede4c05bf699efec07d1936c8b6fa0a0da28cdd4f31c18",
+        "bytes": 26385,
+        "lines": 375
+      },
+      "complete_read_ranges": [],
+      "counts_describe_file_not_read_coverage": true
+    },
+    {
+      "path": "docs/architecture/analytics-detail.md",
+      "scope": "search_only",
+      "source_revision": "8c81472e75da118b04809636a73f3231157227b5",
+      "verified_identity": {
+        "sha256": "ee20296032ca33875bcfe0fdbd270bf6a8571e64e72f8d5904552bc0ddc601b9",
+        "bytes": 42157,
+        "lines": 575
+      },
+      "complete_read_ranges": [],
+      "counts_describe_file_not_read_coverage": true
+    },
+    {
+      "path": "docs/implementation/01-foundation.md",
+      "scope": "search_only",
+      "source_revision": "8c81472e75da118b04809636a73f3231157227b5",
+      "verified_identity": {
+        "sha256": "2858deec68f127eccf68211f375bff9a760680646a9cd8273950dc7c0ef5ce9f",
+        "bytes": 21286,
+        "lines": 307
+      },
+      "complete_read_ranges": [],
+      "counts_describe_file_not_read_coverage": true
+    }
+  ],
+  "supplemental_searches": [
+    {
+      "source_revision": "8c81472e75da118b04809636a73f3231157227b5",
+      "paths": [
+        "docs/architecture/acquisition-services.md",
+        "docs/architecture/analytics-detail.md",
+        "docs/architecture/data-and-durability.md",
+        "docs/architecture/derived-read-publication.md",
+        "docs/architecture/protocol-evolution.md",
+        "docs/architecture/search-and-reconciliation.md",
+        "docs/architecture/storage-services.md",
+        "docs/architecture/system-design.md",
+        "docs/engineering/capacity-and-benchmarks.md",
+        "docs/engineering/configuration-and-runtime.md",
+        "docs/engineering/rust-and-repository.md",
+        "docs/engineering/security-recovery-and-validation.md",
+        "docs/implementation/00-specification.md",
+        "docs/implementation/01-foundation.md",
+        "docs/implementation/02-storage.md",
+        "docs/implementation/03-acquisition.md",
+        "docs/implementation/04-relay-lifecycle.md",
+        "docs/implementation/05-analytics.md",
+        "docs/implementation/06-read-surfaces.md",
+        "docs/implementation/07-publication.md",
+        "docs/implementation/08-operations.md",
+        "docs/implementation/09-product-interfaces.md",
+        "docs/implementation/10-website.md",
+        "docs/implementation/README.md",
+        "docs/implementation/coverage.md",
+        "docs/specification/component-contracts.md",
+        "docs/specification/data-contracts.md",
+        "docs/specification/dvm-profile.md",
+        "docs/specification/import-formats.md"
+      ],
+      "scope": "Search hits only, not complete document reading",
+      "purpose": "Locate exact public/management route names, PostgreSQL table references and migration owners; check for competing declarations",
+      "patterns": [
+        "PostgreSQL / PG / table / control / lease / artifact references",
+        "/v1/{capabilities,resources,query,count,status,instance,artifacts}",
+        "management/v1/{principals,sessions,tokens,secrets,reauth,relays}",
+        "CREATE TABLE / CREATE SCHEMA / operational identifiers"
+      ]
+    },
+    {
+      "source_revision": "8c81472e75da118b04809636a73f3231157227b5",
+      "paths": [
+        "docs/architecture/derived-read-publication.md",
+        "docs/architecture/analytics-detail.md"
+      ],
+      "scope": "Headings and keyword hits only outside explicit supplemental ranges",
+      "patterns": [
+        "resource / profile / assertions / subgraph"
+      ]
+    }
+  ],
+  "skills_read": [
+    "using-superpowers (subagent skip applies)",
+    "karpathy-guidelines",
+    "verification-before-completion"
+  ],
+  "actions_not_performed": [
+    "Product implementation or product tests",
+    "Go or legacy source mutation/build/test",
+    "Tux workload",
+    "Browser or accessibility execution",
+    "Deployment",
+    "Commit or push",
+    "New external-library verification"
+  ],
+  "authored_outputs": [
+    "docs/reviews/11-product-audit.md",
+    "docs/research/evidence/11-product-read-manifest.json"
+  ]
+}

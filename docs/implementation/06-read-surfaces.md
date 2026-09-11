@@ -73,6 +73,12 @@ construct it by copying a claimed principal from user JSON. Resource entries
 declare row unit, fields, filters/sorts, history policy, counts/search support,
 freshness, cursor compatibility and unavailable states.
 
+Canonical resource IDs/routes and row units are selected in the
+[interface catalog](../specification/interface-catalog.md). Implement that
+registry rather than exposing internal table names. Every admitted context carries
+the [read-view stamp](../specification/read-view-contract.md), including time-based
+eligibility, not just source and target generations.
+
 - [ ] **Step 1:** register events/current/history, provenance, profiles/lists,
   event/social statistics, measurements/claims, relay facts/coverage/availability/
   overlap, graph scores and assertion lineage. Missing provenance/ranker/search
@@ -122,6 +128,8 @@ is an explicit resource. An ID lookup is not an archive-policy bypass.
   then apply deterministic `created_at DESC,event_id ASC` keysets and limits.
   Consult indexed logical deletion/expiry state, not a global tombstone scan
   reloaded for every page. Expiry changes visibility without a new ingestion cut.
+  Build the ordered expiry state/partition summaries and deadline checks specified
+  by the read-view contract; no global per-query expiry scan is permitted.
 - [ ] **Step 3:** implement projection selection and full-body hydration with
   independent canonical hash/signature validation where crossing an untrusted
   boundary. Never reconstruct a signed event from lossy indexed fields.
@@ -162,6 +170,12 @@ verification failure rather than trusting a known event ID.
 authenticated/encrypted cursor. It binds deployment, resource version, principal,
 normalized query/projection/sort, policy, source/target generations, issuance and
 expiry. It must not reveal withheld IDs or query text through base64 decoding.
+
+Bind `ReadViewStamp` in both the encrypted envelope and PG pin. The earlier
+relevant temporal deadline invalidates an ordinary pin with 409
+`temporal_snapshot_expired`, independently of its 900-second absolute lifetime.
+P06-T03 acceptance includes the no-ingestion page/count/expiry/NEG sequence in the
+read-view contract and records failed-completion rates under dense expirations.
 
 - [ ] **Step 1:** implement a persistent shared keyring with an AEAD profile,
   key ID/version and associated-data binding. Initial selected primitive is
@@ -243,9 +257,11 @@ runtime token management later; this task does not depend on that later UI/API.
 `apps/bigbrotr/tests/http_api.rs`; `tests/fixtures/read/http_codec.json`;
 `tests/acceptance/cases/http_api.py`.
 
-**Boundary:** GET and read-only POST routes `/v1/events`, `/v1/events/{id}`,
-`/v1/resources/{resource}`, `/v1/resources/{resource}/count` and `/v1/meta`
-decode to the same typed read request. GET uses one percent-encoded JSON filter
+**Boundary:** collection GET and read-only POST routes `/v1/events`,
+`/v1/resources/{resource}` and `/v1/resources/{resource}/count` decode to the same
+typed read request. Point `/v1/events/{id}` and metadata `/v1/meta` are GET-only.
+The [interface catalog](../specification/interface-catalog.md) owns the full
+resource registry and P08 artifact/context byte routes. GET uses one percent-encoded JSON filter
 parameter plus scalar page/cursor controls; POST uses the versioned JSON envelope.
 `GET /v1/capabilities` is the explicit capability descriptor endpoint consumed by
 the dashboard; `/v1/meta` contains instance/version and links to that descriptor.
@@ -331,6 +347,11 @@ terms. A query left with no searchable terms/phrases is invalid. API all/any/phr
 modes remain explicit; its structured options are never ignored. This grammar
 is a versioned application mapping, not a full engine query language.
 
+The [parsed search identity](../specification/read-view-contract.md#search-meaning-after-parsing)
+defines exact mixed-literal `ranking_text`, `ranking_tokens`, matching AST and
+cursor/cache identity. Ignored textual extensions and quote syntax do not become
+ranked content. Include its independent mixed-term/phrase fixtures in Step 6.
+
 - [ ] **Step 1:** implement the selected Unicode token/normalization profile in
   `apps/bigbrotr/src/read/search_analyzer.rs`, with
   an independently specified corpus covering Latin, CJK, combining marks, emoji,
@@ -343,7 +364,8 @@ is a versioned application mapping, not a full engine query language.
   extensions are ignored as the pinned NIP requires, while malformed structured
   fields are rejected. Freeze grammar and mixed phrase/term precedence in fixtures.
 - [ ] **Step 3:** implement deterministic relevance ordering: normalized whole
-  content match, contiguous phrase match, distinct matching term count, then
+  content match against parsed `ranking_text`, contiguous `ranking_tokens` match,
+  distinct matching term count, then
   authored time descending and event ID ascending. Select top K from the complete
   eligible candidate scope or refuse; never rerank only the first recent page.
 - [ ] **Step 4:** build and verify new generations, switch atomically and retain
@@ -502,6 +524,11 @@ comes from the requester mapping, not signature validity alone.
   latest. Enqueue exact signed bytes through P07, never a direct publisher path.
   Enforce the profile's absolute 900-second accepted-job lifetime, 60-second
   queue wait, 15-second query work and 300-second result-ready delivery deadline.
+  Bind ReadViewStamp to finite results and subscription batches. Its earlier
+  temporal deadline also bounds signing/dispatch/retry and payment quote admission,
+  as specified in the read-view contract. Releasing data pins never discards those
+  checks. Exercise expiry before sign, after sign/before send and before retry;
+  no fresh implicit recomputation or late ordinary delivery is permitted.
   Failed unpaid jobs and paid refund-due jobs cancel undispatched obligations;
   neither is revived by a late ACK, restart or ordinary outbox retry.
 - [ ] **Step 4:** implement the explicit NIP-44 v2 private variant and encrypted

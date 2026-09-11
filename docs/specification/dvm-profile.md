@@ -210,11 +210,21 @@ Finite job expiry is 900 s from durable acceptance; request age is a different
 admission rule. Queue wait is at most 60 s from entering queued (after settlement
 for a paid job), and actual read execution remains bounded to 15 s. Retries and
 restarts do not extend these absolute deadlines. The result delivery deadline is
-`min(result_ready_at + 300 s, job_expires_at)`, starting when the complete result
+`min(result_ready_at + 300 s, job_expires_at, temporal_deadline)`, starting when the complete result
 artifact becomes durable, including subsequent signing time. At least one
 configured destination must accept before that deadline. Check authority again
 before signing/dispatch; exact signed bytes and compact lineage allow source
 read pins to be released once no other reader needs them.
+
+`temporal_deadline` is the ordinary ReadViewStamp deadline from the
+[read-view contract](read-view-contract.md); it is unbounded only for a view whose
+declared semantics establish that no relevant expiry occurs within its lifetime.
+Preserve that stamp and authority validation after releasing source pins. Finite
+results and subscription batches recheck it before signing, each dispatch/retry
+and payment execution. Quote admission requires a sufficient safe view lifetime
+or an explicitly supported shorter quote. Expiry never authorizes recomputation
+or late delivery; the existing failure/refund rules below apply. Exercise expiry
+before sign, between sign/send and before retry with actual captured output.
 
 At deadline, cancel all undispatched DVM obligations and stop retry scheduling.
 A free job without acceptance becomes failed with its exact artifact inspectable;

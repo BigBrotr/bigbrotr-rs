@@ -20,9 +20,9 @@ Proposed shared envelopes:
 CommandReceipt { command_id, request_digest, actor_id, accepted_revision?, job_id?, outcome }
 ConfigRevision { revision, parent_revision, redacted_diff, actor_id, created_at,
                  affected_roles[], security_revision?, application_by_role[] }
-JobReceipt { job_id, kind, principal_scope, input_cut, config_revision, state,
+JobReceipt { job_id, job_revision, kind, principal_scope, input_cut, config_revision, state,
              committed_progress, display_progress, resume_unit, artifacts[], reason? }
-RoleApplication { role_instance, desired_revision, applied_revision,
+RoleApplication { role_instance_id, desired_revision, applied_revision,
                   state: pending|draining|applied|restart_required|failed, reason? }
 ```
 
@@ -42,7 +42,7 @@ P01-T08 owns `tests/acceptance/run.py`, `contracts/acceptance/result.schema.json
 | `GET /management/v1/configuration` and `GET /management/v1/configuration/revisions` | Redacted effective source/lock state and authorized revision history |
 | `POST /management/v1/configuration/previews` | Desired patch + expected revision → digest, diff, affected roles, coverage/resource/security consequences |
 | `POST /management/v1/configuration/revisions` | Approved preview digest + expected revision → accepted revision/per-role application; stale preview returns conflict |
-| `POST /management/v1/roles/{role_instance}/commands` | Typed pause/drain/resume; appropriate role grant and idempotency key |
+| `POST /management/v1/roles/{role_instance_id}/commands` | Typed start/pause/drain/resume/stop of configured supervised roles; appropriate role grant and idempotency key |
 | `POST /management/v1/jobs`, `GET /management/v1/jobs/{job_id}`, `POST /management/v1/jobs/{job_id}/cancel` | Typed import/export/backup/verify/restore-plan/scrub/repair/migrate/derive/rank job; input/output permissions checked independently of job-control grant |
 | `GET /management/v1/jobs` | P08-T03 bounded authorized job discovery; kind/state/time filters and stable opaque cursor |
 | `GET /management/v1/roles` and `GET /management/v1/relays` | P08-T03 bounded role/registry operational summaries; protected by action/resource grants |
@@ -55,7 +55,15 @@ P01-T08 owns `tests/acceptance/run.py`, `contracts/acceptance/result.schema.json
 
 Bad schema/input returns 400, missing/expired identity 401, forbidden action 403, invisible resource 404 where existence is restricted, revision/idempotency conflict 409, capacity/rate refusal 429 with retry advice, unavailable authority/dependency 503. Error codes distinguish these states; no adapter converts them to a successful empty list.
 
-A job moves `accepted → queued → running → succeeded|partial|failed|cancelled|skipped`; `paused` and `cancel_requested` are recoverable nonterminal states with a reason and last committed recovery unit. Worker restart resumes the same job identity from durable progress. Data COMPLETE is separate from job `succeeded`: a job may successfully publish a deliberately suppressed target, while a partial target never becomes COMPLETE. Task receipts record exact outputs. Frontend progress cannot assign either outcome.
+The [interface catalog](../specification/interface-catalog.md#private-management-and-cli)
+completes this route inventory with actual principal enrollment/deactivation/reset,
+reauthentication, token listing, protected secret-reference handles and paused-job
+resume. P08-T02 owns those access routes; T03 owns lifecycle/resume. Its hash-only
+single-use credential lifetimes and lost-issuance-response rules are normative.
+P09-T07/T10 must use working handlers, including last-owner protection, explicit
+revoke/reissue after a lost token response and secret provisioning guidance.
+
+A job moves `accepted → queued → running → succeeded|partial|failed|cancelled|skipped`; `paused` and `cancel_requested` are recoverable nonterminal states with a reason and last committed recovery unit. Each mutation advances monotonic `job_revision` by CAS. Worker restart recovers the same identity/progress; paused stays paused, cancel_requested drains only toward cancellation, and only eligible running/queued work proceeds under current authority. Data COMPLETE is separate from job `succeeded`: a job may successfully publish a deliberately suppressed target, while a partial target never becomes COMPLETE. Task receipts record exact outputs. Frontend progress cannot assign either outcome.
 
 ## P08-T01 — Effective configuration and complete CLI semantics
 
@@ -96,7 +104,7 @@ independent vectors; changing lane/memory/time settings is a versioned policy.
 
 **Files:** create `apps/bigbrotr/src/management/{commands,revisions,activation,jobs,lifecycle,saved_views}.rs`, `apps/bigbrotr/src/interfaces/management/{config,jobs,roles,saved_views,storage,publishing}.rs`, `apps/bigbrotr/src/interfaces/cli/{jobs,roles}.rs`, `migrations/postgres/0802_management_commands.sql`, `migrations/postgres/0803_saved_views.sql`, `contracts/management/v1/{commands,jobs,configuration,saved_views}.schema.json`, `docs/user/administration/{configuration,jobs,services}.md`, `apps/bigbrotr/tests/management_transactions.rs`.
 
-**Input/output:** preview consumes desired patch + expected revision and returns redacted diff, validation, affected roles, new coverage work and restart/exposure consequences. Apply consumes that preview digest and expected revision, records one revision by CAS, and returns per-role application. Lifecycle commands are `pause|drain|resume`; start/stop controls the selected in-process role only, never arbitrary system services. Job creation binds principal/source/destination/algorithm/config; retry returns the existing job.
+**Input/output:** preview consumes desired patch + expected revision and returns redacted diff, validation, affected roles, new coverage work and restart/exposure consequences. Apply consumes that preview digest and expected revision, records one revision by CAS, and returns per-role application. Lifecycle commands are `start|pause|drain|resume|stop` for a configured role controlled by this supervisor, never arbitrary system services or remote container deployment. Start revalidates prerequisites/budgets/authority; stop joins or positively excludes work before releasing ownership. Job creation binds principal/source/destination/algorithm/config; retry returns the existing job. Explicit resume accepts only paused nonterminal jobs under current grants and expected revision.
 
 - [ ] **Step 1:** implement preview/apply/rollback-as-new-revision and idempotency receipts in one PG transaction. Revalidate at apply; a stale preview is not authority. Locked bootstrap/database/listener/security roots remain deployment-owned and are shown with their source.
 - [ ] **Step 2:** implement role acknowledgements and restrictive activation barrier. Persist desired/applied states separately. Restrictions invalidate streams and authorization leases; dropped notifications cannot extend the initial five-second authorization lease. Do not label a restriction applied while a role retains valid old authority or undisclosed in-flight work.
@@ -143,7 +151,10 @@ listing; mutable artifact state follows the same page-read-time rule.
 **Artifact publication authority:** extend this task with
 `src/export/publication.rs`, `src/interfaces/management/artifacts.rs`,
 `migrations/postgres/0804_artifact_publication.sql` and
-`contracts/artifacts/v1/publication.schema.json`. The small PG catalog binds
+`contracts/artifacts/v1/publication.schema.json`. Extend P05-T01 migration 0501's
+common `artifacts`/`artifact_files` inventory through additive migration 0804 and
+`artifact_publications`; never recreate graph-owned files under a second retention
+identity. The small PG catalog binds
 artifact ID, immutable manifest/file digests, source cut/visibility-policy basis,
 storage reference, owner, revision and private/verified/published/withdrawn/expired
 state. Completion of an export leaves it private; incomplete artifacts cannot
@@ -170,6 +181,14 @@ publication, lost reply/retry, clean-browser listing/download, withdrawal, polic
 restriction and incomplete/altered manifest refusal. Inspect actual downloaded
 hashes and catalog/pins; neither a signed Nostr event nor a created file proves
 that a research dataset was correctly published.
+
+Implement manifest and GET/HEAD file-byte routes from the interface catalog,
+including exact ETag/length, single-range resume, authorized conditional requests,
+stream revocation and hash verification. Hosted assertion contexts use the same
+catalog/pin/visibility authority with a typed artifact kind; P07-T08 signs their
+verified configured URL/digest only after eligible bytes are published. There is
+no separate unaudited static file server or signer-implied publication grant.
+Exercise every route with the actual packaged HTTP handler and independent client.
 
 ## P08-T05 — Consistent backup, isolated restore and positive failover
 

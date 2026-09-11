@@ -240,7 +240,9 @@ without losing admitted signed bytes.
 
 ## P07-T05 — NIP-85 assertions from real fact and rank generations
 
-**Dependencies:** P07-T01–T04; P05-T01/T03–T05/T11; P02-T05/T07.
+**Dependencies:** P07-T01–T04; P05-T01/T02/T03–T05/T10; P02-T05/T07.
+P05-T11 is required only for enabled pubkey rank, T12 only for the gated relay
+rank binding; facts-only publication does not require either score computation.
 
 **Proposed files:** `crates/bigbrotr-protocol/src/nip85.rs`;
 `apps/bigbrotr/src/publication/nip85/{source,bindings,publisher,cursor}.rs`;
@@ -256,6 +258,15 @@ generation produce standard subject kinds 30382 pubkey, 30383 event, 30384
 addressable coordinate and 30385 NIP-73 identifier. Every emitted field has a
 registered producer, units, scope and absent/zero rule. A rank is optional;
 facts-only publication must work when ranking is disabled or withheld.
+
+The [assertion-binding specification](../specification/assertion-bindings.md)
+owns exact relation roles, fact/subject keys, per-field activation, family support
+thresholds, wire mappings and independent fixtures. Implement those bindings;
+the field names in Step 1 are not permission to choose a different counter.
+Historical zap fields start disabled until their explicit authority-input and
+public-scope gates qualify. Note recommendation rank has no selected producer.
+T05/T06 acceptance must traverse actual stored facts for every enabled field,
+including more than one publication page and ranker-off operation.
 
 - [ ] **Step 1:** define exact field bindings for followers, authored/reply/
   reaction/report/zap/activity/topic facts and event/addressable/external
@@ -342,7 +353,7 @@ an old counter and immediately signing must fail the recovery test.
 
 ## P07-T07 — NIP-66 monitoring discovery and announcements
 
-**Dependencies:** P07-T01–T04; P05-T06; acquisition actual measurements/documents;
+**Dependencies:** P07-T01–T04; P04-T11 local monitoring view and actual measurements/documents;
 P01-T03/T06.
 
 **Proposed files:** `crates/bigbrotr-protocol/src/nip66.rs`;
@@ -359,6 +370,11 @@ produce kind 30166 discovery and kind 10166 monitor announcements. Imported
 claims cannot be republished as local witnesses. Each published vantage/profile
 has a distinct NIP-66 signing identity so replaceable coordinates do not overwrite
 incompatible observations.
+
+The Resolver's P05-T06 imported/global selection is not a prerequisite for local
+NIP-66 publication. Acceptance disables that resolver and corrupts a separate
+imported claim while valid local monitoring still produces independently verified
+30166/10166 output. Missing local evidence still withholds the affected field.
 
 - [ ] **Step 1:** implement current standard URL and public-key subject forms
   without destructive endpoint normalization. Preserve scheme/path/query and
@@ -398,7 +414,9 @@ distinguish the selected timeout order from the conflicting legacy/proposal form
 
 ## P07-T08 — Opt-in assertion context and compatible richer protocol drafts
 
-**Dependencies:** P07-T05/T07; P05-T01; P06-T01/T05 for public context retrieval.
+**Dependencies:** P07-T05/T07; P05-T01; P06-T01/T05 and P08-T04's artifact
+publication primitives for optional hosted context retrieval. Those primitives
+depend on storage/read/authority, not on completing all publishers or P08.
 
 **Proposed files:** `apps/bigbrotr/src/publication/context.rs`;
 `apps/bigbrotr/src/interfaces/http/assertion_context.rs`;
@@ -414,6 +432,12 @@ distinguish the selected timeout order from the conflicting legacy/proposal form
 standard 30166/30382–30385 remains independently valid. The context object binds
 field occurrence, definition, units, source/observer/method, window/freshness,
 exactness/coverage and public evidence or explicitly restricted attestation.
+
+The [interface catalog](../specification/interface-catalog.md#artifact-and-assertion-context-bytes)
+owns the exact digest URL, immutable-byte adapter, publication/pin/visibility and
+independent retrieval contract. Build/verify/publish eligible context bytes before
+signing their URL/digest; signer authority does not confer artifact publication.
+If hosting is disabled, compatible core NIP-66/85 publication remains usable.
 It cannot authenticate hidden evidence merely by displaying its digest.
 
 - [ ] **Step 1:** implement deterministic bounded context serialization and

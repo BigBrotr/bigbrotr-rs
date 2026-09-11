@@ -1,8 +1,26 @@
 {
   "scope": "local links, fences, JSON examples/evidence, Python syntax and selected evidence hashes; no semantic or product verification",
-  "markdown_files": 33,
-  "json_files": 25,
+  "markdown_files": 82,
+  "json_files": 46,
   "json_examples": 4,
   "errors": [],
-  "status": "passed"
+  "additional_checks": {
+    "scope": "Markdown anchors and task/step/reference accounting; relay probe source/normative-section identity; no product validation",
+    "markdown_files": 82,
+    "anchors_checked": 297,
+    "anchor_errors": [],
+    "tasks": 116,
+    "numbered_steps": 716,
+    "future_checked_steps": 0,
+    "unresolved_task_ids": [],
+    "relay_profile_source_hashes_match": true,
+    "document_layout": {
+      "runs": 2,
+      "parquet_files_checked": 348,
+      "output_and_source_hashes_match": true,
+      "actual_row_groups_and_zstd_checked": true
+    },
+    "relay_profile_output_artifacts_match": true
+  },
+  "write_note": "Validation output was captured before replacing this report. An earlier direct output redirection temporarily emptied the report being validated; the subsequent full check passed with staged output."
 }

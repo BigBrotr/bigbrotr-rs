@@ -1,0 +1,217 @@
+{
+  "schema_version": 1,
+  "scope": "Independent arithmetic reference for the minute-aligned general-read-relay/1 hand fixture only",
+  "program_path": "experiments/relay-profile/probe.py",
+  "artifacts": [
+    {
+      "path": ".research/relay-profile/run-01/result.json",
+      "bytes": 4282,
+      "sha256": "9ca32a793764009cfcb529d79ab36b15b60de1fba90ed7e3785c764087fcbca6"
+    },
+    {
+      "path": ".research/relay-profile/run-01/source-section.md",
+      "bytes": 7392,
+      "sha256": "c00faaed939b82ece341000474b187a87f7800ca22a4228d94d0ee2bc54f3711"
+    }
+  ],
+  "verification": {
+    "program_hash_matches": true,
+    "source_section_hash_matches": true,
+    "current_normative_section_matches_captured": true,
+    "recomputed_baseline_and_boundary_match": true,
+    "method": "Reloaded standard-library reference with runpy, recomputed both cases from recorded raw inputs, and compared every component and minute-state hash"
+  },
+  "captured_normative_section": "## Relay profile general-read-relay/1\n\nThis is the selected initial local measurement profile, not an implemented or\nproduction-qualified algorithm. Its subject is `Subject::Relay{endpoint_id}`.\nIt estimates a bounded read's operational behavior from one path. Its component\nvector, evidence and coverage remain useful when the scalar is withheld.\n\n| Element | Version-1 rule |\n|---|---|\n| Input stratum | Endpoint, local observer, route/address-family class, access scope, exact bounded request/method version, timeout and clock policy. Apply SourceCut before reducing corrections. Do not pool imported claims or incompatible paths. |\n| Window | Pinned observed-time `[window_end-86400s,window_end)`. The end is independent of commit time. Read required in-window anchors, effective policy boundaries and the necessary predecessor. Signed event times are not measurement times. |\n| Sampling unit | One actual compound read attempt, deduplicated by immutable attempt ID after terminal correction reduction. Children, physical duplicate rows and redelivery add no samples. A new executed network retry has its own attempt ID and recorded retry/schedule context. |\n| Success | Matching EOSE for the exact bounded request with required returned bodies verified. Empty EOSE succeeds. A preceding AUTH challenge alone is not failure if the permitted read completes. This does not establish exhaustive remote storage. |\n| Failure | An executed method's explicit access/protocol refusal, recorded actual deadline expiry, or attributable remote/transport failure before completion. It means this bounded read failed from this path, not global relay downtime. |\n| Unknown | Local policy/permit/storage failure, cancellation, unproven dispatch, interruption without terminal evidence, unusable clock or conflicting terminal results. An intent or skipped child never becomes an executed failure or successful sample. |\n| Anchors | A terminal observation anchors at its actual end time. An interrupted attempt with retained actual start can break prior carry with an unknown anchor there; an intent without proven execution supplies no invented timestamp. Equal-time conflicting states become unknown; same-state ties retain all sources and use the shortest allowed hold. |\n| Hold | Until the earliest next anchor, `anchor+2*base_cadence_at_attempt`, effective cadence/method-policy boundary, or window end. The cadence is the recorded configured base interval, not failure backoff or today's configuration. A boundary stops old carry; unknown anchors stop it too. Remaining time is unknown. |\n| Availability | Integrate success S, failure F and unknown U in checked integer microseconds. `A=S/(S+F)` when the denominator is positive; otherwise unavailable. Report `covered_fraction=(S+F)/86400s`, S/F/U and carry assumptions separately. The duration sum equals the window. |\n| Latency | Eligible successful attempts with end inside the window and measured request-write-complete\u2192matching-EOSE duration in integer microseconds. Exact nearest-rank p50: sorted `x[ceil(n/2)]`, the lower middle for even n. `L=exp(-p50_us/1_000_000)` in float64. No latency samples means unavailable L; open/first-event RTT is a different fact. |\n| Sample gate | At least five unambiguous finalized success/failure attempts ending inside the window. Carry-in predecessors, unknowns and child checks do not satisfy the gate. Keep the exact classified count and separate successful-latency count. |\n| Composite | Only with both A and L available and the sample gate met: `Q=0.625*A+0.375*L`. Validate finite values in [0,1]. Missing L withholds Q even if failures establish A=0. Do not redistribute weights. Retain raw Q; the separately gated NIP-85 projection is half-up `round(100*Q)`, not a social percentile. |\n| Comparison | Same profile/version, observer/route/access/method/clock stratum, timeout/cadence policy and compatible window/cut basis. Publish coverage, schedule/retry mix and sample differences. Identical scale is not sufficient comparability. |\n\nCapabilities are separate tested facts and optional eligibility filters. The\ndefault component vector includes the selected bounded read result plus declared\nversus tested capability statuses; it has no capability scalar C or coverage\nweight. For each explicitly requested requirement (for example COUNT or NEG),\nuse the latest unambiguous actual test in its declared method/access/observer\nstratum and window, retaining exact test identity and outcome. Success passes;\nan explicit tested refusal/unsupported response fails that scoped requirement;\ntimeout, local failure or conflicting result is unknown. A newer inconclusive\ntest cannot be replaced silently by an older successful one. A filter that\nrequires a fresh passed test additionally applies its registered age limit;\nmissing/unknown/stale cannot pass. NIP-11 declarations do not establish a passed\ntest. Every enabled requirement/age policy is recorded with the filtered result;\nit does not alter Q or infer support from a count of advertised NIPs.\n\nThe two weights preserve the earlier relative A:L ratio while removing the\nredundant read-capability contribution. This is a reasoned initial selection,\nnot evidence of optimal client utility. A vector-only directory, another\ntime-constant/weight choice, a minimum-coverage gate or a profile treating\ntimeouts as unknown can be evaluated separately. Such semantic changes need a\nnew profile/version. Five attempts can cover very little of a day; it is an\nadmission floor, not confidence. Missing latency does not conceal the failures:\nthe API still exposes A, sample counts and outcomes when Q is unavailable.\n\nThe query plan must pay for scoped window reads and predecessor/boundary lookup,\ncorrection deduplication, input classification, exact latency selection and\ncapability lookups. Use indexed endpoint/stratum/time partitions and a changed\nattempt/boundary dependency queue; schedule expiry without new arrivals. Store\nenough boundary state to retract changed adjacent segments. Exact p50 charges\nall eligible durations and sort/selection/spill state; a five-row source limit\nis not its implementation. Late corrections can change both adjacent timeline\nsegments and latency order statistics. Bound/resume the actual affected work,\nor refuse an over-budget generation; do not rescan retained measurement history\nfor every hourly score or claim O(changed rows) regardless of partition size.\nInclude target artifacts, visible comparison queries and rejected/unknown inputs\nin the common job budget.\n\nThe independent fixture has window [0,1440) minutes, cadence 10, and anchors\nS at -5, F at 5, U at 10, S at 25/30, F at 35 and S at 45/50. Carry-in gives\n[0,5); final carry stops at 70. Expected S=40 minutes, F=15, U=1385,\n`A=8/11`, coverage `11/288`; six classified in-window attempts meet the floor.\nTheir four successful latency values `[200000,100000,300000,900000]` us give\np50=200000, `L=exp(-0.2)` and `Q=.625*(8/11)+.375*exp(-.2)`.\nA policy boundary at minute 60 instead gives S=30, F=15, U=1395 without changing\nearlier intervals. Probe-count availability 4/6, averaging middle RTTs, carrying\nthrough unknown to the next success, using backoff as cadence and adding child\nchecks must disagree with the oracle. All-failure inputs expose A=0 but withhold\nQ for absent L. These are specified expectations, not executed product results.\n\n",
+  "result": {
+    "status": "completed",
+    "profile": "general-read-relay/1",
+    "command": [
+      "/Library/Developer/CommandLineTools/usr/bin/python3",
+      "experiments/relay-profile/probe.py",
+      "--output",
+      ".research/relay-profile/run-01"
+    ],
+    "python_version": "3.9.6",
+    "program_sha256": "3cb28342876760d19ad4f5102f4b7aa6ebd5fbb2fa23b1e6615464125229da0d",
+    "normative_source": {
+      "path": "/Users/vincenzo/Documents/GitHub/BigBrotr/bigbrotr-rs/docs/architecture/analytics-detail.md",
+      "sha256_before": "908f5919b3b8cfec953413c603d87715f86eb57e76c935576cfef3400f7df940",
+      "sha256_after": "908f5919b3b8cfec953413c603d87715f86eb57e76c935576cfef3400f7df940",
+      "section_lines": [
+        404,
+        474
+      ],
+      "section_sha256": "c00faaed939b82ece341000474b187a87f7800ca22a4228d94d0ee2bc54f3711"
+    },
+    "input": {
+      "window_minutes": [
+        0,
+        1440
+      ],
+      "base_cadence_minutes": 10,
+      "hold_minutes": 20,
+      "anchors": [
+        [
+          -5,
+          "S"
+        ],
+        [
+          5,
+          "F"
+        ],
+        [
+          10,
+          "U"
+        ],
+        [
+          25,
+          "S"
+        ],
+        [
+          30,
+          "S"
+        ],
+        [
+          35,
+          "F"
+        ],
+        [
+          45,
+          "S"
+        ],
+        [
+          50,
+          "S"
+        ]
+      ],
+      "successful_in_window_latencies_us": [
+        200000,
+        100000,
+        300000,
+        900000
+      ]
+    },
+    "method": "Independently enumerate 1440 minute midpoints, choose latest anchor, apply hold/boundary; all fixture boundaries are minute-aligned",
+    "baseline": {
+      "minutes": {
+        "S": 40,
+        "F": 15,
+        "U": 1385
+      },
+      "microseconds": {
+        "S": 2400000000,
+        "F": 900000000,
+        "U": 83100000000
+      },
+      "minute_states_sha256": "6c1aebee85ac97b1adf451a5ffba63d69d793661a9045399209169d6affa3402",
+      "availability": {
+        "fraction": "8/11",
+        "float64": 0.7272727272727273
+      },
+      "covered_fraction": {
+        "fraction": "11/288",
+        "float64": 0.03819444444444445
+      },
+      "classified_attempts": 6,
+      "successful_latency_count": 4,
+      "sample_gate_met": true,
+      "p50_us": 200000,
+      "L": 0.8187307530779818,
+      "Q": 0.7615694869496978
+    },
+    "policy_boundary_minute_60": {
+      "minutes": {
+        "S": 30,
+        "F": 15,
+        "U": 1395
+      },
+      "minute_states_sha256": "f27600399ca359d88cfb3c36ccf8fa881835d67f0622dfaa3883f1b6349b2f48",
+      "availability": {
+        "fraction": "2/3",
+        "float64": 0.6666666666666666
+      },
+      "covered_fraction": {
+        "fraction": "1/32",
+        "float64": 0.03125
+      },
+      "classified_attempts": 6,
+      "successful_latency_count": 4,
+      "sample_gate_met": true,
+      "p50_us": 200000,
+      "L": 0.8187307530779818,
+      "Q": 0.7236906990709098
+    },
+    "incorrect_alternatives": {
+      "probe_count_availability": {
+        "value": {
+          "fraction": "2/3",
+          "float64": 0.6666666666666666
+        },
+        "disagrees": true
+      },
+      "average_middle_latency": {
+        "p50_us": 250000,
+        "disagrees": true
+      },
+      "ignore_unknown_anchor": {
+        "minutes": {
+          "S": 40,
+          "F": 30,
+          "U": 1370
+        },
+        "minute_states_sha256": "b93910e50e1738531a70d869f215feb39be895cc7cc4587b8a6c4b6437a2738c",
+        "disagrees": true
+      }
+    },
+    "all_failure_control": {
+      "anchors": [
+        [
+          0,
+          "F"
+        ],
+        [
+          10,
+          "F"
+        ],
+        [
+          20,
+          "F"
+        ],
+        [
+          30,
+          "F"
+        ],
+        [
+          40,
+          "F"
+        ]
+      ],
+      "minutes": {
+        "S": 0,
+        "F": 60,
+        "U": 1380
+      },
+      "availability": {
+        "fraction": "0",
+        "float64": 0.0
+      },
+      "covered_fraction": {
+        "fraction": "1/24",
+        "float64": 0.041666666666666664
+      },
+      "classified_attempts": 5,
+      "successful_latency_count": 0,
+      "sample_gate_met": true,
+      "p50_us": null,
+      "L": null,
+      "Q": null
+    },
+    "limits": "Standard library, two principal 1440-minute enumerations plus small controls; no networking, engines, Tux or product execution",
+    "not_established": [
+      "Runtime window/correction/expiry implementation",
+      "Clock correctness or non-minute-aligned boundaries",
+      "Production capacity, statistical confidence or client utility",
+      "NIP-85 publication implementation"
+    ]
+  }
+}

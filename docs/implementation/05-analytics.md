@@ -5,6 +5,8 @@ Execute its checkboxes only after implementation is authorized. The selected
 contracts are [analytics detail](../architecture/analytics-detail.md),
 [derived services](../architecture/derived-read-publication.md),
 [protocol evolution](../architecture/protocol-evolution.md),
+[assertion bindings](../specification/assertion-bindings.md),
+[storage catalog](../specification/storage-catalog.md),
 [data durability](../architecture/data-and-durability.md) and
 [capacity](../engineering/capacity-and-benchmarks.md). The
 [Go walkthrough](../research/go-analytics-code-walkthrough.md) supplies inspected
@@ -67,7 +69,7 @@ results; no extrapolation is presented as a completed 100-billion-edge run.
 
 ## P05-T01 — Definition registry and independently committed targets
 
-**Dependencies:** P01-T02/T04–T08; P02-T01/T04/T06/T07.
+**Dependencies:** P01-T02/T04–T08; P02-T01/T04/T05/T06/T07.
 
 **Proposed files:** `crates/bigbrotr-model/src/analytics.rs`;
 `apps/bigbrotr/src/analytics/{registry,scheduler,dirty,manifest,commit}.rs`;
@@ -79,6 +81,7 @@ results; no extrapolation is presented as a completed 100-billion-edge run.
 `tests/acceptance/cases/analytics_generations.py`.
 
 **Boundary:** `TargetRequest { definition_id, visibility, window, source_cut,
+evaluation_basis, visibility_as_of_us, temporal_generation, expiry_deadline_us,
 dependency_generations, config_digest }` and a fenced ownership lease produce
 either a verified `TargetManifest` plus atomic current pointer, or a typed
 capacity/source/compatibility/fencing failure. Dirty entries carry a logical key,
@@ -89,21 +92,42 @@ cancelled branches; cancelled work cannot commit later.
 - [ ] **Step 1:** define registry entries with subject type, row identity, units,
   parser, truth class, source requirements, update/retract rules, exactness,
   absent/zero distinction, API exposure and permitted protocol bindings. Reject
-  duplicate IDs and bindings that claim facts no producer supplies.
+  duplicate IDs and bindings that claim facts no producer supplies. Implement
+  the exact names/subjects/producers in the assertion-binding specification and
+  introspect their real stored keys. Migration 0501 creates shared `artifacts`
+  and `artifact_files`; `graph_artifacts` references that inventory. P08's 0804
+  adds publication metadata, not the first graph-file owner.
 - [ ] **Step 2:** implement actual selected-target execution and dependency
   planning. Share compatible unchanged partitions; do not run every family then
-  discard unselected results. Validate each dependency's cut compatibility.
+  discard unselected results. Validate each dependency's cut and temporal
+  compatibility against the [ReadViewStamp](../specification/read-view-contract.md).
+  Time-sensitive requests/manifests bind their evaluation/window basis,
+  temporal generation and relevant expiry deadline, including a conservative
+  earlier bound where necessary. A completed source cut alone cannot certify
+  current membership after an expiration with no ingestion. Carry the same
+  temporal identity through pending output, verification and publication.
 - [ ] **Step 3:** persist coalesced dirty keys and a bounded overflow-to-rebuild
-  marker. Execute dirty-only work even when the latest archive cut is unchanged;
-  advance source progress after a successful empty/no-output interval.
-- [ ] **Step 4:** stage immutable artifacts and exact touched partitions. Verify
-  counts/checksums before a fenced PG transaction publishes the manifest and
-  pointer. A stale worker may leave an orphan, never publish a target.
+  marker through the Indexer-owned derived RocksDB state contract in the storage
+  catalog. Qualify keys by target/scope/working generation; bind state mutations,
+  checkpoint and pending output ID in one synchronized atomic batch. Execute
+  dirty-only work even when the latest archive cut is unchanged; advance source
+  progress after successful empty/no-output work. PG manifests do not substitute
+  for that local state commit or permit a checkpoint to mutate a pinned target.
+- [ ] **Step 4:** stage immutable artifacts and exact touched CH partitions from
+  the pending output identity. Verify completeness/counts/checksums before a
+  fenced PG transaction publishes the manifest and pointer. Recovery replays the
+  same output or pinned input without double contribution; retain enough staged
+  state until publication resolves. A stale worker may leave an orphan, never
+  publish a target. Charge WAL, state, compaction, pending output and pins together.
 - [ ] **Step 5:** implement retry, stop, resume and retention with live pins and
   last usable generation protection. Independent targets continue after one
   fails. Configured-disabled or naturally withheld targets report suppressed;
   missing required engines, source generations or corrupt input report failed/
   unavailable and preserve an older compatible generation where policy permits.
+  After an old target's temporal deadline, an ordinary current dependency must
+  wait/refuse until a compatible target is ready. A paused Deriver cannot stamp
+  old memberships/counts with the new current time/generation. Dated stale
+  analysis is allowed only by a resource that explicitly exposes that meaning.
 - [ ] **Step 6:** run the proposed generation tests and packaged case. Inject
   crashes before artifact close, after file durability and before/after pointer
   commit; restart a fresh process and inspect the durable manifest ledger.
@@ -114,6 +138,11 @@ the same source cut, then only irrelevant events at a newer cut. Both must finis
 with the correct progress. Disable one selected target in the configuration and
 assert its engine query never ran; merely checking absent output would miss the
 historical failure. A poisoned incomplete artifact must not become current.
+Stop Deriver while keeping the expiry owner/read core running, then advance
+past an eligible expiration without ingesting anything. Fresh list, count and
+current-membership reads must agree under compatible targets or refuse; a new
+stamp over old complete target rows must fail the oracle. Resume and compare
+incremental expiry with a full rebuild at the same temporal/source basis.
 
 ## P05-T02 — Current-state headers, membership and visibility effects
 
@@ -141,7 +170,10 @@ malformed coordinates retain their defined distinction.
   member, deletion or expiry predicates first and thereby resurrect old values.
 - [ ] **Step 2:** parse profile metadata, follow/mute and relay lists as whole-list
   replacement. Preserve signed list ordering separately from set membership;
-  deduplicate logical edges without changing the source event.
+  deduplicate logical edges without changing the source event. Implement the
+  shared pure `nostr-relations/1` parser specified by T04/assertion bindings here
+  as a prerequisite for T03 and T04; pure source-syntax classification must not
+  depend on either aggregate or on resolved interaction-target facts.
 - [ ] **Step 3:** implement matching-author deletion effects, pending unknown
   targets and timestamp-driven expiry. An `e` deletion has no target-time cutoff;
   an `a` deletion applies only through the request's timestamp. Deleting a
@@ -184,7 +216,10 @@ needed for losslessness. Observed corpus activity is not global Nostr activity.
 
 - [ ] **Step 1:** register separate historical-acquired and normal-visible
   definitions. Record count/sum for mergeable means; retain exact distinct-key
-  state or reference counts rather than summing daily distinct counts.
+  state or reference counts rather than summing daily distinct counts. Bind
+  authored posts/replies/topics/activity to the exact assertion definitions:
+  T02's pure parser classifies source reply syntax, while T04 later validates
+  received targets. No T03-to-T04 aggregate dependency is introduced.
 - [ ] **Step 2:** define baseline topic extraction as distinct literal nonempty
   signed `t` values per eligible event, with UTF-8 bytewise tie breaking and no
   hidden NLP/case-folding. Keep top-five projection separate from full topic
@@ -238,8 +273,9 @@ while original full-event round-trip and archive counts remain exact.
 `tests/fixtures/analytics/interactions.json`;
 `tests/acceptance/cases/interactions.py`.
 
-**Boundary:** `Subject = Pubkey | EventId | AddressableCoordinate |
-ExternalIdentifier` stays tagged through storage, API and publication. Parsed
+**Boundary:** the assertion-binding `Subject::Pubkey`, `Event`, `Addressable`,
+`External` and separate operational `Relay` variants stay tagged through storage,
+API and publication. This task consumes only the supported interaction variants. Parsed
 references produce facts with source event, relation role, target domain,
 validation status and parser version. Event interactions and distinct actors
 are different units. A report is an author's claim, never an adjudication.
@@ -249,11 +285,17 @@ are different units. A report is an author's claim, never an adjudication.
   quotes, NIP-18 reposts, NIP-25 reactions and NIP-56 reports. Retain unknown
   input rather than invent a relation. Comment root and immediate parent are
   separately named; paired address/version references cannot double-count one
-  logical interaction in a single definition.
+  logical interaction in a single definition. Use `nostr-relations/1` and the
+  exact marker/alias/report rules in assertion bindings; T02 implements the
+  shared pure parser prerequisite, while this task owns target resolution and
+  interaction aggregation. Do not create a T03/T04 generation cycle.
 - [ ] **Step 2:** specify each counter's eligible kinds, marker precedence,
   duplicate-tag rule, self-interaction rule and reaction polarity/content rule.
   Keep all reactions, positive/negative classes and distinct reaction authors as
-  separate facts. Do not discard a known fact merely because no rank exists.
+  separate facts. Materialize the selected root-or-parent `comment-events/1`,
+  API direct-parent count, received versus authored reactions, report directions
+  and per-family publication-support union. Do not discard a known fact merely
+  because no rank exists, or sum version-local actor counts into a coordinate.
 - [ ] **Step 3:** implement unresolved-reference state and a bounded reverse
   dependency index for facts requiring the target's author or coordinate.
   Target arrival or correction dirties only indexed dependents; no whole-event
@@ -276,7 +318,7 @@ through real serving tables, not a helper that the publisher never consumes.
 
 ## P05-T05 — Zap attestations and exact amount accounting
 
-**Dependencies:** P05-T01/T04; P01-T03; P02-T03; P04-T14 for the complete
+**Dependencies:** P05-T01/T04; P01-T03; P02-T03; P03-T10/P04-T14 for the complete
 producer-to-fact qualification. Pure decoding/reducer fixtures can precede that
 producer integration; no completed analytical generation is needed to enqueue
 issuer work from already admitted public source events.
@@ -299,9 +341,18 @@ evidence remains unresolved, not accepted by consulting today's mutable URL.
 - [ ] **Step 1:** define receipt/request signature, invoice amount, description
   binding, recipient and target validation and a versioned issuer evidence
   policy. Separate syntactically valid, issuer-unresolved and accepted receipts.
+  Qualify the optional `IssuerAuthorityBindingV1` claim producer through actual
+  authorized P03-T10 import/AdmitEvidence using the exact assertion-binding
+  schema, recipient/profile/URL/interval and authority gate. Missing capability,
+  historical grant or permitted public-use scope withholds zap wire fields;
+  today's HTTP observation cannot supply an invented historical interval.
 - [ ] **Step 2:** implement exact checked msat sums and receipt/payment-identity
   deduplication with explicit conflicting-attestation handling. Preserve source
-  receipt IDs so deduplication does not erase archive evidence.
+  receipt IDs so deduplication does not erase archive evidence. Use
+  `zap-attestations/1`, `zap-issuer-historical/1` and the binding specification's
+  `(invoice_network,payment_hash)` key, agreement/conflict reduction, time basis
+  and separate recipient/content-target qualification. Unqualified impostors
+  cannot conflict an accepted identity; qualifying later conflicts retract it.
 - [ ] **Step 3:** implement contributions for sent/received counts and totals for
   the eligible subject domains. Classification changes retract the old accepted
   contribution before adding the new one.
@@ -530,9 +581,12 @@ self-edge or same-author mute suppression.
   byte sizes, source generations, mapping checksum and source-policy identity;
   pin them across rank computation and release only through manifest ownership.
 - [ ] **Step 4:** estimate and admit vertex map, offsets, adjacency, buffers,
-  rank vectors and spill together. Distinguish archive events H, social edges E,
-  evidence/provenance P, vertices V and simultaneous viewpoints K. Two float64
-  vectors alone cost 16V bytes; 100 million vertices require 1.6 GB for these.
+  rank vectors and spill together. Distinguish archive events U, current social
+  edges E, historical follow/mute tag records H, provenance P, vertices V,
+  iterations I and simultaneous viewpoints K. Two float64 vectors cost 16V
+  bytes; the ordinal-to-pubkey array alone adds 32V before reverse lookup,
+  sorting, indexes and build copies. At 100 million vertices these raw arrays
+  are respectively 1.6 GB and 3.2 GB; account for resident and disk placement.
 - [ ] **Step 5:** implement stop/resume at shard boundaries and explicit corrupt,
   missing, incompatible and over-budget outcomes. A small adjacency delta does
   not imply local-only TrustRank recomputation.
@@ -559,7 +613,7 @@ must fail the budget test.
 `crates/bigbrotr-analytics/tests/trustrank.rs`;
 `tests/fixtures/analytics/trustrank.json`; `tests/acceptance/cases/trustrank.py`.
 
-**Boundary:** pinned graph, unique finite-positive seed weights and explicit
+**Boundary:** profile `seeded-trust/1`, pinned graph, unique finite-positive seed weights and explicit
 algorithm/viewpoint configuration produce raw float64 ranks plus a separately
 versioned public integer projection. A score describes that pubkey under those
 seeds and data, not a person's identity or universal truth. Different viewpoints
@@ -623,37 +677,48 @@ graph and rank target disabled or unavailable.
 `tests/fixtures/analytics/relay_quality.json`;
 `tests/acceptance/cases/relay_quality.py`.
 
-**Boundary:** eligible local monitoring evidence for a named read-use case and
-24-hour window produces an operational component vector and optional composite.
-At least five eligible observations are required for the composite. Unknown
-measurements stay unknown; social trust and relay quality are not one score.
+**Boundary:** `Subject::Relay{endpoint_id}` and profile `general-read-relay/1`
+produce a qualified operational vector and optional composite from a pinned
+24-hour observed-time window. The complete normative rule is
+[analytics detail](../architecture/analytics-detail.md#relay-profile-general-read-relay1).
+Social trust is a separate subject/algorithm and cannot block this target.
 
-- [ ] **Step 1:** implement time-weighted availability with carry-forward limited
-  to twice the monitor cadence and explicit unknown seconds. Compute median
-  successful RTT and its `exp(-milliseconds/1000)` transform. Bind capability
-  satisfaction to the named read-use-case requirements and evidence method.
-  Select nearest-rank p50 of successful integer-microsecond durations, then
-  evaluate the transform as `exp(-duration_us/1_000_000)` in float64; the median
-  input, unit conversion and numeric tolerance remain visible in the manifest.
-- [ ] **Step 2:** apply initial availability/latency/capability weights 0.5/0.3/0.2,
-  renormalizing only available components and recording the resulting basis.
-  Compare composites only with the same basis; coverage is explanatory by
-  default, not a hidden zero-valued component.
-- [ ] **Step 3:** implement independent window expiry, late-measurement updates
-  and target commits. Insufficient historical fields suppress only the affected
-  component/composite; preserve available measurements and explanations.
-- [ ] **Step 4:** run the packaged quality case with a hand-authored timeline,
-  missing fields, stale samples, incompatible observer scopes, late correction
-  and zero-arrival expiry; compare component values before composites.
+- [ ] **Step 1:** implement the exact outcome/clock/anchor mapping and checked
+  S/F/U duration integration, `A=S/(S+F)` and covered fraction. Hold is capped by
+  twice the recorded base cadence, next anchor, effective policy boundary and
+  window end; unknown breaks carry and backoff is not the base cadence. Reduce
+  same-attempt corrections after the cut; neither children nor duplicate rows
+  add attempts. Latency uses only successful in-window request-write-complete
+  to matching-EOSE durations: exact nearest-rank lower-median p50 in us and
+  `L=exp(-p50_us/1_000_000)` float64, with input/tolerance visible.
+- [ ] **Step 2:** emit `Q=.625*A+.375*L` only with both components and at least
+  five classified finalized actual attempts ending inside the window. Carry-in
+  and unknown anchors cannot satisfy the floor. Do not redistribute missing
+  weights; all-failure evidence exposes A=0 and absent L/Q. Capabilities and
+  coverage remain separate tested/declaration vectors and optional registered
+  eligibility filters. Compare only compatible profile/method/observer/route/
+  access/clock/window bases and expose coverage/schedule differences.
+- [ ] **Step 3:** implement scoped indexed window/predecessor/boundary reads,
+  changed-attempt segment invalidation, exact latency input state, independent
+  expiry and target commits. Charge actual partition/quantile/capability work,
+  intermediate state and artifacts to the common budget; five samples is not
+  a query-row limit. Missing components preserve other facts and explanations.
+- [ ] **Step 4:** run the normative 24-hour timeline with S=40/F=15/U=1385
+  minutes and p50=200000 us, then policy boundary at minute 60, duplicates,
+  unknown interruption, all failures, incompatible scopes, late corrections
+  and zero-arrival expiry. Compare durations/components before Q. Read cutoff
+  before correction reduction must preserve the earlier pinned expectation.
 - [ ] **Step 5:** stop Ranker social computation and corrupt its graph artifact,
   then advance monitoring. Require a new relay-quality manifest while the social
   target remains failed. Restore the graph without changing that quality result.
 
 **Oracle and negative control:** a hand-integrated timeline distinguishes
 time-weighted availability from fraction of successful probes. Unobserved hours
-must reduce coverage without becoming failures. Different available-component
-bases cannot be compared as one scalar ranking. A corrupt social graph must not
-block relay-quality advancement.
+must reduce coverage without becoming failures. Unknown anchors, cadence changes,
+lower-median selection and duplicate sampling each have a differing negative
+control. Missing L must not become a redistributed A-only score. A corrupt
+social graph must not block relay-quality advancement. Measure this fixture's
+actual outcomes; the written expected values are not runtime evidence.
 
 ## P05-T13 — Whole-phase catch-up, churn and physical scale qualification
 
@@ -677,7 +742,7 @@ Qualification reports fixture truth, recovery and measured work separately.
   catch-up to a clean rebuild at the same cut. Include dirty-only changes,
   no-output source progress and window expiry with no new events.
 - [ ] **Step 3:** execute separate measured churn and many-part workloads with
-  the P02 scale driver. Record scanned H/E/P, dirty keys, rewritten partitions,
+  the P02 scale driver. Record scanned U/H/E/P, V/K/I, dirty keys, rewritten partitions,
   candidate pairs, rank iterations, memory, spill, wall time and foreground
   acquisition/read latency. Setup is outside the measurement window.
 - [ ] **Step 4:** measure auxiliary-state cardinality: dirty keys, reverse
