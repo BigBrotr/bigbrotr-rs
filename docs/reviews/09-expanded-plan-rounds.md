@@ -197,3 +197,8 @@ does not prove an executable DAG. Product acceptance remains unexecuted. The
 private GitHub destination and absence of product Cargo scaffolding were checked
 before preparing the planning commit. Git history and the owner-facing handoff
 record publication of this dossier.
+
+The main specification/evidence chunk was committed and pushed as
+`831bed3539111c69dd187f351517c366c388a339` to the private repository. This
+subsequent handoff record closes the planning checklist after that actual push;
+it does not mark any future product task or acceptance case complete.
