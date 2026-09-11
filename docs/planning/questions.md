@@ -1,16 +1,39 @@
-# Questions, answers, and working assumptions
+# Questions, design selections and owner context
 
-Questions concern product intent and operator-facing tradeoffs. Technical
-implementation choices remain the designer's responsibility.
+Technical suggestions from the owner are hypotheses to evaluate, not orders to
+adopt particular technologies. The designer compares alternatives, selects a
+coherent design and explains departures. Unanswered questions do not block the
+planning work; the selected defaults below remain revisable with new evidence.
 
-| ID | Question | Current state | Design handling |
+Operational instructions remain explicit: private temporary repository, legacy
+repository read-only, English repository content, coherent commits/pushes and
+planning/research only before product implementation.
+
+| ID | Topic | Input or answer | Selected treatment |
 |---|---|---|---|
-| Q01 | Keep product name BigBrotr and repository bigbrotr-rs; private while planning or public immediately? | Asked | Local directory uses existing brand spelling; no public publication before answer |
-| Q02 | Should replacement/deletion affect only normal serving, the historical archive too, or selectable profiles? | Asked | Preserve separate archival and serving policies; no irreversible product decision inferred |
-| Q03 | What should the default first launch provide: local observatory, complete archive with public services optional, or guided minimal selection? | Asked | Existing observatory defaults are evidence, not a final choice |
+| Q01 | Repository identity | Private `bigbrotr-rs` locally/GitHub now; eventually `bigbrotr` | Preserve BigBrotr brand; plan final transition without renaming current legacy repository |
+| Q02 | Deletion and history | Retain original events and deletion requests; consider serving policy separately | Full historical archive; ordinary relay/current reads honor logical deletion; explicit authorized history resources |
+| Q03 | First-launch priority | Every service/product area matters equally | Full scope and equal quality; order by dependencies; coherent local experience with explicit external exposure/signing |
+| Q04 | Lossy lightweight profiles | Signature retention matters; old content-loss combinations may be removed; slim exports may suffice | Retain all signed fields/signature, remove heavy_fields storage axis and old Lil/Index runtime semantics; analytical projections labeled non-verifiable |
+| Q05 | Active write probes | No separate answer received | Optional bounded probes with dedicated configured identity; passive monitoring fully works without signing |
+| Q06 | Imported provenance | No separate answer received | Retain when selected as attributable third-party claims; never relabel as direct local observations |
+| Q07 | Friendly recipe names | LilBrotr might mean complete archive without provenance; SocialBrotr may just be filters | One product/image, transparent recipe examples; no silent reinterpretation of old profile names; provenance orthogonal to social filtering |
+| Q08 | Multiple users/datasets | No separate answer received | Shared instance dataset with scoped visibility/quotas; tenant-isolated archives are a distinct future topology |
+| Q09 | Private web management | Strong interest in accessible private management as well as public dashboard | Include CLI, public explorer and private administration with roles, config revisions, jobs, diagnostics and recovery |
 
-The owner has already established these requirements: independent service toggles,
-usable defaults with selective overrides, optional provenance and public surfaces,
-large-scale acquisition, efficient varied reads, meaningful ranking, dashboard and
-website, a complete planning stage before product implementation, English content,
-and frequent useful questions throughout the design process.
+Additional owner context incorporated into the design:
+
+- Examine 5k, 10k, 50k and 100k endpoints, billions of unique events and tens or
+  hundreds of billions of provenance relations, under simultaneous workload.
+- Prefer incremental computations where valid, but account for global graph,
+  exact set and normalization work rather than promise constant-cost updates.
+- Improve NIP-66/NIP-85 concepts through compatible current behavior and explicit
+  proposed extensions; no upstream submission is part of this stage.
+- Low TrustRank should not discard historical evidence. Ranking is an attributed
+  viewpoint and may change with inputs, algorithms or curator.
+- Accessibility, installation, explanations, examples and maintenance matter to
+  adoption alongside efficient, readable and carefully reviewed code.
+
+The complete design records remaining empirical validation tasks in PLAN.md.
+They are not unanswered product questions or permission requests. The future
+implementation must supply evidence before making production-capacity claims.

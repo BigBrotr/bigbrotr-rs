@@ -1,0 +1,96 @@
+{
+  "engine": "rocks",
+  "package_version": "0.3.29",
+  "fixture_events": 200000,
+  "fixture_provenance": 1000000,
+  "preparation_seconds": 0.5297880778089166,
+  "build_seconds": 11.213676657062024,
+  "build_kv_puts_per_second": 267530.45336925186,
+  "logical_key_value_bytes": 321778740,
+  "uncompressed_event_json_bytes": 288453057,
+  "disk_apparent_bytes": 258881075,
+  "disk_allocated_bytes": 258916352,
+  "key_counts": {
+    "A": 200000,
+    "E": 200000,
+    "P": 1000000,
+    "R": 1000000,
+    "T": 600000
+  },
+  "verification_seconds": 1.2577489651739597,
+  "correctness": {
+    "exact_sample_bodies": 100,
+    "all_provenance_groups_of5": 200000,
+    "exact_query_results": true,
+    "exact_key_counts_and_logical_bytes": true
+  },
+  "queries": {
+    "event_point_decode": {
+      "unit": "us",
+      "operations": 500,
+      "unique_cases": 100,
+      "warmup_passes": 1,
+      "p50": 2.976,
+      "p95": 3.317
+    },
+    "provenance_point": {
+      "unit": "us",
+      "operations": 2500,
+      "unique_cases": 500,
+      "warmup_passes": 1,
+      "p50": 1.132,
+      "p95": 1.763
+    },
+    "event_provenance_all5": {
+      "unit": "us",
+      "operations": 500,
+      "unique_cases": 100,
+      "warmup_passes": 1,
+      "p50": 4.048,
+      "p95": 4.428
+    },
+    "author_range_first100": {
+      "unit": "us",
+      "operations": 455,
+      "unique_cases": 91,
+      "warmup_passes": 1,
+      "p50": 22.432,
+      "p95": 23.463
+    },
+    "tag_range_first100": {
+      "unit": "us",
+      "operations": 160,
+      "unique_cases": 32,
+      "warmup_passes": 1,
+      "p50": 21.329,
+      "p95": 22.251
+    },
+    "relay_range_first100": {
+      "unit": "us",
+      "operations": 160,
+      "unique_cases": 32,
+      "warmup_passes": 1,
+      "p50": 23.423,
+      "p95": 24.386
+    }
+  },
+  "batch_kv_puts": 5000,
+  "event_sample_seed": 20260910,
+  "configuration": {
+    "sync": true,
+    "lmdb_metasync": false,
+    "lmdb_map_bytes": null,
+    "rocks_memtable_bytes": 67108864,
+    "rocks_background_jobs": 2,
+    "engine_compression": "zstd",
+    "application_body_compression": "zstd level3"
+  },
+  "notes": [
+    "Build includes Parquet reads, Python serialization, indexing, sync and close.",
+    "Query timings are warm after reopen and full correctness scan; no cold-cache claim.",
+    "Range queries return ascending timestamp/id key-value pairs, limited100; no body fetch.",
+    "Footprint after flush/close, before reopen; no forced full compaction.",
+    "Fixture codec requires nonnegative timestamps and NUL-free indexed tag names/values.",
+    "Single-process static fixture; no native-engine-speed or concurrency verdict."
+  ]
+}

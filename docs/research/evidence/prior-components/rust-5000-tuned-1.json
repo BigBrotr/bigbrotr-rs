@@ -1,0 +1,147 @@
+{
+  "connect_seconds": 0.776941627,
+  "connected": 5000,
+  "failures": 0,
+  "language": "rust",
+  "n": 5000,
+  "stage": "ready",
+  "tokio_threads": 2,
+  "tuned": true,
+  "done": {
+    "bytes": 134485000,
+    "messages": 65000,
+    "stage": "done"
+  },
+  "repetition": 1,
+  "fixture": {
+    "payload_bytes": 2069,
+    "stage": "server_ready",
+    "url": "wss://127.0.0.1:33269/"
+  },
+  "samples": [
+    {
+      "Rss_bytes": 152838144,
+      "Pss_bytes": 150845440,
+      "Shared_Clean_bytes": 2240512,
+      "Shared_Dirty_bytes": 0,
+      "Private_Clean_bytes": 2146304,
+      "Private_Dirty_bytes": 148451328,
+      "Anonymous_bytes": 148451328,
+      "cpu_ticks": 82,
+      "fd_count": 5006,
+      "time": 2446303.747859378
+    },
+    {
+      "Rss_bytes": 152838144,
+      "Pss_bytes": 150844416,
+      "Shared_Clean_bytes": 2240512,
+      "Shared_Dirty_bytes": 0,
+      "Private_Clean_bytes": 2146304,
+      "Private_Dirty_bytes": 148451328,
+      "Anonymous_bytes": 148451328,
+      "cpu_ticks": 82,
+      "fd_count": 5006,
+      "time": 2446304.254599391
+    },
+    {
+      "Rss_bytes": 152838144,
+      "Pss_bytes": 150844416,
+      "Shared_Clean_bytes": 2240512,
+      "Shared_Dirty_bytes": 0,
+      "Private_Clean_bytes": 2146304,
+      "Private_Dirty_bytes": 148451328,
+      "Anonymous_bytes": 148451328,
+      "cpu_ticks": 84,
+      "fd_count": 5006,
+      "time": 2446304.761423118
+    },
+    {
+      "Rss_bytes": 152838144,
+      "Pss_bytes": 150818816,
+      "Shared_Clean_bytes": 2240512,
+      "Shared_Dirty_bytes": 0,
+      "Private_Clean_bytes": 2146304,
+      "Private_Dirty_bytes": 148451328,
+      "Anonymous_bytes": 148451328,
+      "cpu_ticks": 86,
+      "fd_count": 5006,
+      "time": 2446305.268232279
+    },
+    {
+      "Rss_bytes": 152838144,
+      "Pss_bytes": 150844416,
+      "Shared_Clean_bytes": 2240512,
+      "Shared_Dirty_bytes": 0,
+      "Private_Clean_bytes": 2146304,
+      "Private_Dirty_bytes": 148451328,
+      "Anonymous_bytes": 148451328,
+      "cpu_ticks": 88,
+      "fd_count": 5006,
+      "time": 2446305.775127021
+    },
+    {
+      "Rss_bytes": 152838144,
+      "Pss_bytes": 150819840,
+      "Shared_Clean_bytes": 2240512,
+      "Shared_Dirty_bytes": 0,
+      "Private_Clean_bytes": 2146304,
+      "Private_Dirty_bytes": 148451328,
+      "Anonymous_bytes": 148451328,
+      "cpu_ticks": 89,
+      "fd_count": 5006,
+      "time": 2446306.282224
+    },
+    {
+      "Rss_bytes": 152838144,
+      "Pss_bytes": 150822912,
+      "Shared_Clean_bytes": 2240512,
+      "Shared_Dirty_bytes": 0,
+      "Private_Clean_bytes": 2146304,
+      "Private_Dirty_bytes": 148451328,
+      "Anonymous_bytes": 148451328,
+      "cpu_ticks": 90,
+      "fd_count": 5006,
+      "time": 2446306.789125143
+    },
+    {
+      "Rss_bytes": 152838144,
+      "Pss_bytes": 150825984,
+      "Shared_Clean_bytes": 2240512,
+      "Shared_Dirty_bytes": 0,
+      "Private_Clean_bytes": 2146304,
+      "Private_Dirty_bytes": 148451328,
+      "Anonymous_bytes": 148451328,
+      "cpu_ticks": 91,
+      "fd_count": 5006,
+      "time": 2446307.29610884
+    },
+    {
+      "Rss_bytes": 152838144,
+      "Pss_bytes": 150813696,
+      "Shared_Clean_bytes": 2240512,
+      "Shared_Dirty_bytes": 0,
+      "Private_Clean_bytes": 2146304,
+      "Private_Dirty_bytes": 148451328,
+      "Anonymous_bytes": 148451328,
+      "cpu_ticks": 93,
+      "fd_count": 5006,
+      "time": 2446307.803062382
+    },
+    {
+      "Rss_bytes": 152838144,
+      "Pss_bytes": 150813696,
+      "Shared_Clean_bytes": 2240512,
+      "Shared_Dirty_bytes": 0,
+      "Private_Clean_bytes": 2146304,
+      "Private_Dirty_bytes": 148451328,
+      "Anonymous_bytes": 148451328,
+      "cpu_ticks": 95,
+      "fd_count": 5006,
+      "time": 2446308.310199185
+    }
+  ],
+  "median_rss_bytes": 152838144.0,
+  "median_pss_bytes": 150824448.0,
+  "steady_cpu_cores": 0.028494151137659116,
+  "elapsed_seconds": 12.846933205146343
+}

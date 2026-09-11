@@ -1,0 +1,24 @@
+diff --git a/nostr-sdk/src/relay/inner.rs b/nostr-sdk/src/relay/inner.rs
+index 7a716b0..cdf677e 100644
+--- a/nostr-sdk/src/relay/inner.rs
++++ b/nostr-sdk/src/relay/inner.rs
+@@ -1930,6 +1930,19 @@ mod tests {
+         assert_eq!(rx.borrow().as_deref(), Some("99"));
+     }
+ 
++    #[tokio::test]
++    async fn bigbrotr_probe_cached_id_with_changed_content() {
++        let relay = Relay::new(RelayUrl::parse("wss://relay.example.com").unwrap());
++        let valid = EventBuilder::new(Kind::TextNote, "valid").finalize(&Keys::generate()).unwrap();
++        assert!(relay.inner.handle_event_msg(SubscriptionId::new("probe"), valid.clone()).await.unwrap().is_some());
++        let mut forged = valid;
++        forged.content = String::from("changed after the valid event warmed the cache");
++        assert!(forged.verify().is_err());
++        let accepted = relay.inner.handle_event_msg(SubscriptionId::new("probe"), forged).await;
++        assert!(matches!(accepted, Ok(Some(_))), "source behavior changed: reassess the recorded concern");
++        println!("BIGBROTR_PROBE: invalid changed-content message accepted after valid ID cached");
++    }
++
+     #[tokio::test]
+     async fn test_invalid_event_does_not_poison_verification_cache() {
+         let relay = Relay::new(RelayUrl::parse("wss://relay.example.com").unwrap());

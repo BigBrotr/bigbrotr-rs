@@ -1,0 +1,56 @@
+{
+  "scope": "tiny CH logical frontier/forced-merge test, no scale or power-loss claim",
+  "version": "26.5.1.882",
+  "unsafe_logical_edge_replacement": {
+    "before": {
+      "records": 1,
+      "first_seen": 200
+    },
+    "after": {
+      "records": 0,
+      "first_seen": 0
+    },
+    "old_snapshot_lost": true
+  },
+  "delayed_family_frontier_10": "unchanged after inserts, retries and merges",
+  "immutable_identity": {
+    "old_frontier": {
+      "bodies": {
+        "records": 1,
+        "first_seen": 200
+      },
+      "tags": {
+        "records": 1,
+        "first_seen": 200
+      },
+      "event_relay": {
+        "records": 1,
+        "first_seen": 200
+      },
+      "relay_event": {
+        "records": 1,
+        "first_seen": 200
+      }
+    },
+    "new_frontier": {
+      "bodies": {
+        "records": 2,
+        "first_seen": 100
+      },
+      "tags": {
+        "records": 2,
+        "first_seen": 100
+      },
+      "event_relay": {
+        "records": 2,
+        "first_seen": 100
+      },
+      "relay_event": {
+        "records": 2,
+        "first_seen": 100
+      }
+    },
+    "retries_logically_unique": true
+  },
+  "status": "passed"
+}

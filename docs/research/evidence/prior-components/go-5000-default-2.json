@@ -1,0 +1,152 @@
+{
+  "connect_seconds": 1.070269941,
+  "connected": 5000,
+  "failures": 0,
+  "gomaxprocs": 2,
+  "language": "go",
+  "n": 5000,
+  "stage": "ready",
+  "tuned": false,
+  "done": {
+    "bytes": 134522242,
+    "gc_count": 20,
+    "gc_pause_ns": 874928,
+    "goroutines": 5001,
+    "heap_alloc": 98298656,
+    "heap_sys": 188874752,
+    "messages": 65018,
+    "stage": "done"
+  },
+  "repetition": 2,
+  "fixture": {
+    "payload_bytes": 2069,
+    "stage": "server_ready",
+    "url": "wss://127.0.0.1:36281/"
+  },
+  "samples": [
+    {
+      "Rss_bytes": 201617408,
+      "Pss_bytes": 198488064,
+      "Shared_Clean_bytes": 6250496,
+      "Shared_Dirty_bytes": 0,
+      "Private_Clean_bytes": 65536,
+      "Private_Dirty_bytes": 195301376,
+      "Anonymous_bytes": 195301376,
+      "cpu_ticks": 124,
+      "fd_count": 5006,
+      "time": 2446457.551007388
+    },
+    {
+      "Rss_bytes": 201617408,
+      "Pss_bytes": 198488064,
+      "Shared_Clean_bytes": 6250496,
+      "Shared_Dirty_bytes": 0,
+      "Private_Clean_bytes": 65536,
+      "Private_Dirty_bytes": 195301376,
+      "Anonymous_bytes": 195301376,
+      "cpu_ticks": 126,
+      "fd_count": 5006,
+      "time": 2446458.05671507
+    },
+    {
+      "Rss_bytes": 201621504,
+      "Pss_bytes": 198492160,
+      "Shared_Clean_bytes": 6250496,
+      "Shared_Dirty_bytes": 0,
+      "Private_Clean_bytes": 65536,
+      "Private_Dirty_bytes": 195305472,
+      "Anonymous_bytes": 195305472,
+      "cpu_ticks": 127,
+      "fd_count": 5006,
+      "time": 2446458.562197832
+    },
+    {
+      "Rss_bytes": 212221952,
+      "Pss_bytes": 209092608,
+      "Shared_Clean_bytes": 6250496,
+      "Shared_Dirty_bytes": 0,
+      "Private_Clean_bytes": 65536,
+      "Private_Dirty_bytes": 205905920,
+      "Anonymous_bytes": 205905920,
+      "cpu_ticks": 129,
+      "fd_count": 5006,
+      "time": 2446459.067695841
+    },
+    {
+      "Rss_bytes": 223006720,
+      "Pss_bytes": 219877376,
+      "Shared_Clean_bytes": 6250496,
+      "Shared_Dirty_bytes": 0,
+      "Private_Clean_bytes": 65536,
+      "Private_Dirty_bytes": 216690688,
+      "Anonymous_bytes": 216690688,
+      "cpu_ticks": 134,
+      "fd_count": 5006,
+      "time": 2446459.573436434
+    },
+    {
+      "Rss_bytes": 223006720,
+      "Pss_bytes": 219877376,
+      "Shared_Clean_bytes": 6250496,
+      "Shared_Dirty_bytes": 0,
+      "Private_Clean_bytes": 65536,
+      "Private_Dirty_bytes": 216690688,
+      "Anonymous_bytes": 216690688,
+      "cpu_ticks": 136,
+      "fd_count": 5006,
+      "time": 2446460.079224708
+    },
+    {
+      "Rss_bytes": 223006720,
+      "Pss_bytes": 219877376,
+      "Shared_Clean_bytes": 6250496,
+      "Shared_Dirty_bytes": 0,
+      "Private_Clean_bytes": 65536,
+      "Private_Dirty_bytes": 216690688,
+      "Anonymous_bytes": 216690688,
+      "cpu_ticks": 139,
+      "fd_count": 5006,
+      "time": 2446460.584855255
+    },
+    {
+      "Rss_bytes": 223006720,
+      "Pss_bytes": 219877376,
+      "Shared_Clean_bytes": 6250496,
+      "Shared_Dirty_bytes": 0,
+      "Private_Clean_bytes": 65536,
+      "Private_Dirty_bytes": 216690688,
+      "Anonymous_bytes": 216690688,
+      "cpu_ticks": 140,
+      "fd_count": 5006,
+      "time": 2446461.090525005
+    },
+    {
+      "Rss_bytes": 223010816,
+      "Pss_bytes": 219881472,
+      "Shared_Clean_bytes": 6250496,
+      "Shared_Dirty_bytes": 0,
+      "Private_Clean_bytes": 65536,
+      "Private_Dirty_bytes": 216694784,
+      "Anonymous_bytes": 216694784,
+      "cpu_ticks": 143,
+      "fd_count": 5006,
+      "time": 2446461.596194906
+    },
+    {
+      "Rss_bytes": 223010816,
+      "Pss_bytes": 219881472,
+      "Shared_Clean_bytes": 6250496,
+      "Shared_Dirty_bytes": 0,
+      "Private_Clean_bytes": 65536,
+      "Private_Dirty_bytes": 216694784,
+      "Anonymous_bytes": 216694784,
+      "cpu_ticks": 145,
+      "fd_count": 5006,
+      "time": 2446462.101790077
+    }
+  ],
+  "median_rss_bytes": 223006720.0,
+  "median_pss_bytes": 219877376.0,
+  "steady_cpu_cores": 0.04614590815609042,
+  "elapsed_seconds": 13.189646883867681
+}

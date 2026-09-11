@@ -5,7 +5,10 @@ from its product purpose rather than inherited implementation choices.
 
 The owner authorizes creation of this repository, research, isolated experiments,
 coherent commits, and pushing the planning work. The current Go repository remains
-read-only. Product implementation is explicitly outside this stage.
+read-only. Product implementation is explicitly outside this stage. The owner
+confirmed a private `BigBrotr/bigbrotr-rs` repository during planning, with eventual
+transition to the GitHub name `bigbrotr`; this does not authorize renaming the
+existing repository during the present stage.
 
 The design must account for every original service, the historical vision and
 master plan, all nine planned development phases, the public dashboard, and a
@@ -51,3 +54,21 @@ fixed coverage percentages, or mandatory repeated defect-free reviews.
 Deliver a clean English planning repository that another engineer can implement
 in a justified order, with concrete contracts, validation scenarios, source
 references, unresolved release risks, and a readable explanation for the owner.
+
+The owner clarified that every product area is important. Do not seek a preferred
+service to justify neglecting others. Default enablement, implementation order,
+and equal quality obligations are different concerns; sequence by dependencies
+and evidence while planning the entire product.
+
+The owner requires retaining event signatures and invited removal of lossy
+LilBrotr/IndexBrotr storage profiles. The adopted design recommendation is full
+signed-event archival, optional provenance, selectable acquisition filters and
+serving indexes, and explicitly projected analytical exports. Low TrustRank is
+not grounds for automatic archival deletion. This replaces the old heavy_fields
+configuration axis; legacy incomplete datasets require honest migration handling.
+
+The capacity design must explicitly examine 5k/10k/50k/100k relay endpoints,
+billions of unique events and tens/hundreds of billions of provenance relations,
+under simultaneous acquisition, reads, ranking, export and maintenance. Avoid
+avoidable bottlenecks, measure representation/amplification costs, and preserve
+bounded overload behavior; no claim of unlimited physical capacity is justified.

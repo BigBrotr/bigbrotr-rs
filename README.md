@@ -1,22 +1,23 @@
 # BigBrotr
 
-BigBrotr is a configurable Nostr network observatory, event archive, and platform
-for data access, analysis, and publication.
+Design and research for a clean Rust implementation of BigBrotr: a Nostr archive,
+relay observatory, analysis platform and configurable publication/read system.
 
-This repository currently contains the design for a fresh implementation. It
-does not contain a working product. The repository suffix identifies the Rust
-implementation; the product name remains **BigBrotr**.
+**Planning stage only.** Product implementation has not begun. The repository is
+private and temporarily named `bigbrotr-rs`; the product is **BigBrotr** and the
+intended final GitHub repository name is `bigbrotr`. The neighboring Go repository
+remains untouched by this work.
 
-The design covers acquisition, relay monitoring, optional provenance, analytical
-and social derivation, ranking, protocol publication, public read interfaces,
-import/export, operations, an instance-aware dashboard, and the project website.
-Technology choices are being tested against these responsibilities rather than
-treated as fixed requirements.
+Start with [the implementation plan](PLAN.md). It links the complete architecture,
+all service contracts, dashboard/private administration, website, configuration,
+capacity model, security, recovery and practical validation programme.
 
-Start with the [planning mandate](docs/planning/mandate.md), the
-[research and revision process](docs/planning/process.md), and the
-[questions and assumptions](docs/planning/questions.md).
+[Mandate](docs/planning/mandate.md) ·
+[Questions and decisions](docs/planning/questions.md) ·
+[Six research revisions](docs/planning/process.md) ·
+[Experiment results](docs/research/experiment-summary.md) ·
+[Historical source inventory](docs/research/source-inventory.json)
 
-All repository content is written in English. Design discussions with the owner
-may be in Italian. Product implementation will begin in a separate, explicitly
-started stage after this design process.
+Research scripts and probes are under `experiments/`. Downloaded sources,
+intermediate data and build material stay in ignored `.research/`; tracked
+reports distinguish source inspection, measurements and proposed behavior.

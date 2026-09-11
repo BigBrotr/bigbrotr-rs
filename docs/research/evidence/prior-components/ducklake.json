@@ -1,0 +1,60 @@
+{
+  "status": "passed",
+  "catalog_backend": "local DuckDB",
+  "stage": "complete",
+  "limits": [
+    "tiny functional dataset, not a benchmark",
+    "no PostgreSQL or multi-process test",
+    "connection reopen only; no crash, power-loss or fsync guarantee tested",
+    "fixture event IDs are hashes, not signed Nostr event validation"
+  ],
+  "sources": [
+    "https://ducklake.select/docs/stable/duckdb/introduction",
+    "https://ducklake.select/docs/stable/duckdb/usage/snapshots",
+    "https://ducklake.select/docs/stable/duckdb/maintenance/merge_adjacent_files"
+  ],
+  "duckdb_version": "1.5.5",
+  "run_directory": "/home/tux/bigbrotr-independent-lab-20260910-final/data/ducklake-probe/f535c01680654ee0be6f759bfcb6030e",
+  "extension_version": "d8a1881e",
+  "multi_table_commit_rollback": "passed",
+  "compaction": {
+    "status": "executed",
+    "output": [
+      {
+        "schema_name": "main",
+        "table_name": "events",
+        "files_processed": 3,
+        "files_created": 1
+      },
+      {
+        "schema_name": "main",
+        "table_name": "provenances",
+        "files_processed": 3,
+        "files_created": 1
+      },
+      {
+        "schema_name": "main",
+        "table_name": "documents",
+        "files_processed": 3,
+        "files_created": 1
+      },
+      {
+        "schema_name": "main",
+        "table_name": "batches",
+        "files_processed": 3,
+        "files_created": 1
+      }
+    ],
+    "merge_observed": true
+  },
+  "pre_compaction_snapshot_preserved": true,
+  "connection_reopen_and_blob_hashes": "passed",
+  "duplicate_append": {
+    "rows": 5,
+    "distinct_ids": 4,
+    "application_dedup_required": true
+  },
+  "export_manifest": "/home/tux/bigbrotr-independent-lab-20260910-final/data/ducklake-probe/f535c01680654ee0be6f759bfcb6030e/export/manifest.json",
+  "export_snapshot": 4,
+  "standalone_without_catalog": "passed"
+}

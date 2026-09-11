@@ -1,0 +1,84 @@
+{
+  "events": 200000,
+  "edges": 1000000,
+  "relays": 5000,
+  "versions": {
+    "duckdb": "1.5.5",
+    "pyarrow": "25.0.1",
+    "zstandard": "0.25.0"
+  },
+  "fixture": "deterministic synthetic content with shared vocabulary and varied hash fragments; invalid signatures",
+  "compression": "Zstd level 3 both; Parquet binary hashes and numeric relay IDs; BBJ JSON hexadecimal IDs and relay URLs",
+  "comparison_limit": "same event and edge facts; different physical encodings; not an inherent compression limit of either format",
+  "files": [
+    {
+      "path": "data/events/0000.parquet",
+      "bytes": 24342547,
+      "sha256": "75d6ffb58b89162b097715ea9c3d0abb368302a6e814bd749a4e14a5778f5501"
+    },
+    {
+      "path": "data/provenance/0000.parquet",
+      "bytes": 2597211,
+      "sha256": "fdac12c97af14faaeb40d07a69b35d3c4c2a5f68ef153ff49ce8b2b40c910a60"
+    },
+    {
+      "path": "data/journal/0000.bbj.zst",
+      "bytes": 33239607,
+      "sha256": "dbd397e930857606a0c7ffbe9fcebcf7e9b5a09d87a0d0e5464b054c99b656ef"
+    },
+    {
+      "path": "data/events/0001.parquet",
+      "bytes": 24343922,
+      "sha256": "8c68d4f93252a166d7c6e3bf0194f3383d01b1007a8ab230728812bde1c00ff9"
+    },
+    {
+      "path": "data/provenance/0001.parquet",
+      "bytes": 2597415,
+      "sha256": "73a14e33fa28dfd0faf72b45cd9a02d48a586667169a4f4a6f2665c7367a017f"
+    },
+    {
+      "path": "data/journal/0001.bbj.zst",
+      "bytes": 33244446,
+      "sha256": "7dca89ce38aef32c674d15496ff8110791f4fc41166f9fe53a3b61ea89ed1fec"
+    },
+    {
+      "path": "data/events/0002.parquet",
+      "bytes": 24348477,
+      "sha256": "eece8f4dffc14224802b8e4106f87cdd521b19b7e0fa3cf87c29f0fea0615bb9"
+    },
+    {
+      "path": "data/provenance/0002.parquet",
+      "bytes": 2597466,
+      "sha256": "611ce972b43c90049309ff9295ec2fb6c49af16a940bf9ef9cee818105e665a5"
+    },
+    {
+      "path": "data/journal/0002.bbj.zst",
+      "bytes": 33240872,
+      "sha256": "b83987a165f552a864282be46ca4193b02d7c6bebc1da3d577e5061d41797d44"
+    },
+    {
+      "path": "data/events/0003.parquet",
+      "bytes": 24351105,
+      "sha256": "ca6bc7ab0287b948ba1efecbbda3054ad968fc14682915d6989b48a31d7e4945"
+    },
+    {
+      "path": "data/provenance/0003.parquet",
+      "bytes": 2597305,
+      "sha256": "53452717c90ffe9a42007d3c414da36dac2b8d413df8ba2649fe0731068d9326"
+    },
+    {
+      "path": "data/journal/0003.bbj.zst",
+      "bytes": 33240933,
+      "sha256": "3c3b6e9fc0a86e16639be5beaaa2de5f2146b3837b6e8ac4a80806d8f9931421"
+    }
+  ],
+  "journal_raw_bytes": 474631117,
+  "content_utf8_bytes": 188917457,
+  "generation_and_verification_seconds": 14.494904663879424,
+  "storage_bytes": {
+    "events": 97386051,
+    "provenance": 10389397,
+    "journal": 132965858
+  },
+  "status": "passed"
+}

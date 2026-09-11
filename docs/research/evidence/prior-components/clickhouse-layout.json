@@ -1,0 +1,176 @@
+{
+  "status": "passed",
+  "table": "bigbrotr_independent_lab_20260910_v2.events_by_time_v2",
+  "settings": {
+    "max_threads": "2",
+    "max_insert_threads": "2",
+    "max_memory_usage": "268435456",
+    "max_execution_time": "60",
+    "use_query_cache": "0",
+    "async_insert": "0",
+    "wait_end_of_query": "1",
+    "prefer_column_name_to_alias": "1",
+    "use_top_k_dynamic_filtering": "0"
+  },
+  "methodology": "same body columns, chronological base order plus lightweight ID and author/kind/time projections; 20 warm HTTP reads, no query cache",
+  "baseline_report": "clickhouse.json",
+  "build_seconds": 1.5028487285599113,
+  "correctness": "all point sample bodies and tag top100 exactly equal to validated baseline",
+  "serial": {
+    "point_id_full_body": {
+      "samples": 20,
+      "p50_ms": 7.0118531584739685,
+      "p95_ms": 10.61796210706234,
+      "mean_ms": 7.593816216103733,
+      "min_ms": 2.5026467628777027,
+      "max_ms": 10.653418954461813,
+      "samples_ms": [
+        5.361287854611874,
+        6.393548101186752,
+        10.61796210706234,
+        7.0118531584739685,
+        4.723768215626478,
+        4.691096022725105,
+        6.587720941752195,
+        10.353607591241598,
+        5.864209029823542,
+        10.589116718620062,
+        9.38785308972001,
+        9.488911833614111,
+        5.548098124563694,
+        4.601488821208477,
+        2.5026467628777027,
+        7.2883800603449345,
+        9.870044887065887,
+        10.246457997709513,
+        10.094854049384594,
+        10.653418954461813
+      ],
+      "requested_samples": 20,
+      "errors": [],
+      "result_rows": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "parameter_variants": 20,
+      "query_example": "SELECT hex(event_id) AS event_id, hex(pubkey) AS pubkey, kind, created_at, tags, content, hex(sig) AS sig, first_seen_at FROM bigbrotr_independent_lab_20260910_v2.events_by_time_v2 WHERE event_id = unhex('7A8F7AB11DBE05BD49ADDD81C2E2D3D9D01A65A722EA89F4EBBF74AB379FBA57')",
+      "status": "passed"
+    },
+    "tag_filter_fetch_100": {
+      "samples": 20,
+      "p50_ms": 30.465171672403812,
+      "p95_ms": 31.74670599400997,
+      "mean_ms": 30.624479218386114,
+      "min_ms": 29.76108528673649,
+      "max_ms": 32.27390116080642,
+      "samples_ms": [
+        30.65046714618802,
+        30.379059724509716,
+        30.038845259696245,
+        30.57749103754759,
+        31.265115831047297,
+        32.27390116080642,
+        30.266619753092527,
+        29.962430708110332,
+        31.74670599400997,
+        30.322864651679993,
+        30.91885894536972,
+        30.817498918622732,
+        30.465171672403812,
+        30.486139934509993,
+        31.210333108901978,
+        30.15226684510708,
+        30.24975908920169,
+        30.63429705798626,
+        29.76108528673649,
+        30.310672242194414
+      ],
+      "requested_samples": 20,
+      "errors": [],
+      "result_rows": [
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "parameter_variants": 1,
+      "query_example": "SELECT hex(event_id) AS event_id, hex(pubkey) AS pubkey, kind, created_at, tags, content, hex(sig) AS sig, first_seen_at FROM bigbrotr_independent_lab_20260910_v2.events_by_time_v2 WHERE event_id IN (SELECT event_id FROM bigbrotr_independent_lab_20260910_v2.tag_postings WHERE tag_name = 't' AND tag_value = 'topic-7' ORDER BY created_at DESC, event_id DESC LIMIT 100) ORDER BY created_at DESC, event_id DESC",
+      "status": "passed"
+    }
+  },
+  "plans": {
+    "point_id_full_body": "Expression ((Project names + Projection))\n  Expression ((WHERE + Change column names to column identifiers))\n    ReadFromMergeTree (bigbrotr_independent_lab_20260910_v2.events_by_time_v2)\n    Indexes:\n      PrimaryKey\n        Keys:\n          event_id\n        Condition: (event_id in [\\'z\\x8fz\\xb1\u001d\\xbe\u0005\\xbdI\\xad\u0741\\xc2\\xe2\\xd3\\xd9\\xd0\u001ae\\xa7\"\\xea\\x89\\xf4\\xeb\\xbft\\xab7\\x9f\\xbaW\\', \\'z\\x8fz\\xb1\u001d\\xbe\u0005\\xbdI\\xad\u0741\\xc2\\xe2\\xd3\\xd9\\xd0\u001ae\\xa7\"\\xea\\x89\\xf4\\xeb\\xbft\\xab7\\x9f\\xbaW\\'])\n        Parts: 4/4\n        Granules: 28/28\n        Search Algorithm: generic exclusion search\n      Ranges: 4\n",
+    "tag_filter_fetch_100": "CreatingSets (Create sets before main query execution)\n  Expression ((Project names + (Before ORDER BY + Projection) [lifted up part]))\n    Sorting (Sorting for ORDER BY)\n      Expression ((Before ORDER BY + Projection))\n        Expression ((WHERE + Change column names to column identifiers))\n          ReadFromMergeTree (bigbrotr_independent_lab_20260910_v2.events_by_time_v2)\n          Indexes:\n            PrimaryKey\n              Keys:\n                event_id\n              Condition: (event_id in 100-element set)\n              Parts: 4/4\n              Granules: 28/28\n              Search Algorithm: generic exclusion search\n            Ranges: 4\n"
+  },
+  "plans_raw_base64": {
+    "point_id_full_body": "RXhwcmVzc2lvbiAoKFByb2plY3QgbmFtZXMgKyBQcm9qZWN0aW9uKSkKICBFeHByZXNzaW9uICgoV0hFUkUgKyBDaGFuZ2UgY29sdW1uIG5hbWVzIHRvIGNvbHVtbiBpZGVudGlmaWVycykpCiAgICBSZWFkRnJvbU1lcmdlVHJlZSAoYmlnYnJvdHJfaW5kZXBlbmRlbnRfbGFiXzIwMjYwOTEwX3YyLmV2ZW50c19ieV90aW1lX3YyKQogICAgSW5kZXhlczoKICAgICAgUHJpbWFyeUtleQogICAgICAgIEtleXM6CiAgICAgICAgICBldmVudF9pZAogICAgICAgIENvbmRpdGlvbjogKGV2ZW50X2lkIGluIFtcJ3qPerEdvgW9Sa3dgcLi09nQGmWnIuqJ9Ou/dKs3n7pXXCcsIFwneo96sR2+Bb1Jrd2BwuLT2dAaZaci6on06790qzefuldcJ10pCiAgICAgICAgUGFydHM6IDQvNAogICAgICAgIEdyYW51bGVzOiAyOC8yOAogICAgICAgIFNlYXJjaCBBbGdvcml0aG06IGdlbmVyaWMgZXhjbHVzaW9uIHNlYXJjaAogICAgICBSYW5nZXM6IDQK",
+    "tag_filter_fetch_100": "Q3JlYXRpbmdTZXRzIChDcmVhdGUgc2V0cyBiZWZvcmUgbWFpbiBxdWVyeSBleGVjdXRpb24pCiAgRXhwcmVzc2lvbiAoKFByb2plY3QgbmFtZXMgKyAoQmVmb3JlIE9SREVSIEJZICsgUHJvamVjdGlvbikgW2xpZnRlZCB1cCBwYXJ0XSkpCiAgICBTb3J0aW5nIChTb3J0aW5nIGZvciBPUkRFUiBCWSkKICAgICAgRXhwcmVzc2lvbiAoKEJlZm9yZSBPUkRFUiBCWSArIFByb2plY3Rpb24pKQogICAgICAgIEV4cHJlc3Npb24gKChXSEVSRSArIENoYW5nZSBjb2x1bW4gbmFtZXMgdG8gY29sdW1uIGlkZW50aWZpZXJzKSkKICAgICAgICAgIFJlYWRGcm9tTWVyZ2VUcmVlIChiaWdicm90cl9pbmRlcGVuZGVudF9sYWJfMjAyNjA5MTBfdjIuZXZlbnRzX2J5X3RpbWVfdjIpCiAgICAgICAgICBJbmRleGVzOgogICAgICAgICAgICBQcmltYXJ5S2V5CiAgICAgICAgICAgICAgS2V5czoKICAgICAgICAgICAgICAgIGV2ZW50X2lkCiAgICAgICAgICAgICAgQ29uZGl0aW9uOiAoZXZlbnRfaWQgaW4gMTAwLWVsZW1lbnQgc2V0KQogICAgICAgICAgICAgIFBhcnRzOiA0LzQKICAgICAgICAgICAgICBHcmFudWxlczogMjgvMjgKICAgICAgICAgICAgICBTZWFyY2ggQWxnb3JpdGhtOiBnZW5lcmljIGV4Y2x1c2lvbiBzZWFyY2gKICAgICAgICAgICAgUmFuZ2VzOiA0Cg=="
+  },
+  "storage": [
+    {
+      "name": "all_1_1_0",
+      "rows": 50006,
+      "bytes_on_disk": 27762006
+    },
+    {
+      "name": "all_2_2_0",
+      "rows": 50254,
+      "bytes_on_disk": 27908740
+    },
+    {
+      "name": "all_3_3_0",
+      "rows": 50081,
+      "bytes_on_disk": 27809484
+    },
+    {
+      "name": "all_4_4_0",
+      "rows": 49659,
+      "bytes_on_disk": 27563483
+    }
+  ],
+  "projection_storage": [
+    {
+      "name": "by_id",
+      "bytes_on_disk": 7243021
+    },
+    {
+      "name": "by_author",
+      "bytes_on_disk": 8460828
+    }
+  ],
+  "metadata_capture_note": "'utf-8' codec can't decode byte 0x8f in position 287: invalid start byte"
+}

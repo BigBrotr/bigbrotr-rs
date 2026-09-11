@@ -1,0 +1,26 @@
+{
+  "origin": "Independent component lab 2026-09-10; selected evidence imported 2026-09-11",
+  "full_bundle_sha256": "72620910a1dc854677206d2eb07278ffa8e926607ad2fdda19cc06f82adaaa2b",
+  "full_bundle_local_path": "/private/tmp/bigbrotr-lab-evidenze-2026-09-10.tar.gz",
+  "files": {
+    "fixture.json": "252c89b0b608e7cdfeeffe78b026b100c86d4b943624360e0720e7eedb35ffeb",
+    "ducklake.json": "077e2cfb5f2a97404bc9ca7547a4ab6bc6263b7e93be2126725708a9d91b2877",
+    "duckdb.json": "371f26541b5b75f36a63a09d46d7f307ea44b420eb04373836baf48a676cb78b",
+    "clickhouse.json": "47db97284724ff6630658ffa87cab5860f89114b23546aa7b92a30ac390de11f",
+    "clickhouse-layout.json": "edd74e9ec1d47c71225658f64dc365c720ba7d4e3f3132bc846276512d7cc80b",
+    "clickhouse-projection.json": "70c372cf25cccde5fce8fe2bf7326aa4281dd567df04973ef7a666d49b8db102",
+    "ranking.json": "24a079da090565fb4724a786445828be40d1afc6513711d1a39ebc0ececc8c88",
+    "kv-lmdb.json": "e5d2ed6735d69cf8e47976e479dcdc727becb765e34393c5315c7af46a1928ab",
+    "kv-rocks.json": "934838b03a9efcb2f85abb3cdfae0db2a595b180be2e9ec067e095a17700e9ed",
+    "verification.json": "f24631223440b466113618c061bb3c18591b07791178862bff855b5f1fb7099a",
+    "go-5000-default-1.json": "afaf33e08fcb4d6dde7fa7c5ca4533c0411b3018495b02541101d7d308c1dc5d",
+    "go-5000-default-2.json": "10151e3504688270f1149c5ababd410fccb053369d1ea01dd837d6b3390c8fe6",
+    "go-5000-tuned-1.json": "82ef605d7c728d2f176066c0ef41dcbf615e1613b443eb2bca5ea8e06897cc35",
+    "go-5000-tuned-2.json": "d6451981b593b6860abeb7a902b67452cdbe99989aacd3654af3496eff3a728e",
+    "rust-5000-default-1.json": "ffaaaab19abdedb9ef7629dc18a2cb838508ab620bb3033f60649975186a1bde",
+    "rust-5000-default-2.json": "0264ece51e76f080881aa13b272987b9996b3651df1ca522edf04576b1f3a94b",
+    "rust-5000-tuned-1.json": "29a69cc4c1c92e940bfcc674a9c9948c121395598a8f3ab3092f26eca6b1362d",
+    "rust-5000-tuned-2.json": "eafc555768fd3807cb3ee4bd8bf67045dbfb2dd1e5494fb49c03d306004b4039"
+  },
+  "limits": "Synthetic component evidence, not 5000 live-relay ingestion, real cryptographic throughput or full production SLO."
+}

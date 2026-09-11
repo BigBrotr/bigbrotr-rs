@@ -1,0 +1,26 @@
+{
+  "duckdb": "1.5.5",
+  "catalog": "PostgreSQL 16 disposable container",
+  "scope": "tiny functional process-crash probe; no hardware durability or throughput claim",
+  "extensions": [
+    [
+      "ducklake",
+      "d8a1881e"
+    ]
+  ],
+  "kill_before_commit": "uncommitted",
+  "kill_after_commit_before_application_receipt": "committed",
+  "single_publisher_receipt_retry": "one logical batch",
+  "concurrent_check_then_insert": {
+    "outcomes": [
+      "committed",
+      "committed"
+    ],
+    "rows": {
+      "events": 2,
+      "edges": 2,
+      "receipts": 2
+    }
+  },
+  "status": "passed"
+}

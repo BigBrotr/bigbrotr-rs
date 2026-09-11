@@ -1,0 +1,318 @@
+{
+  "captured_on": "2026-09-11",
+  "go_head": "757a8d899aefb277c0211077bc30ba0c8de68796",
+  "sources": [
+    {
+      "source": "bigbrotr-go/README.md",
+      "snapshot": ".research/source-snapshots/go/README.md",
+      "sha256": "25dad40664b470410876202c45273f52a7e02c49e392f670e3b969e4625c308a",
+      "bytes": 2041,
+      "lines": 33,
+      "classification": "historical intent or implementation evidence; not current instructions"
+    },
+    {
+      "source": "bigbrotr-go/docs/reference/cli.md",
+      "snapshot": ".research/source-snapshots/go/docs/reference/cli.md",
+      "sha256": "e27db520ddc5f6f6e9aff7ddbe05e81577a7951fa16d8cb3fb1c8e61528d77d4",
+      "bytes": 8658,
+      "lines": 157,
+      "classification": "historical intent or implementation evidence; not current instructions"
+    },
+    {
+      "source": "bigbrotr-go/docs/reference/configuration.md",
+      "snapshot": ".research/source-snapshots/go/docs/reference/configuration.md",
+      "sha256": "a11f5351641632282c432bd820efe8a4c695953f3fc4df2c2b3bfc2828841a35",
+      "bytes": 20612,
+      "lines": 372,
+      "classification": "historical intent or implementation evidence; not current instructions"
+    },
+    {
+      "source": "bigbrotr-go/docs/reference/data-model.md",
+      "snapshot": ".research/source-snapshots/go/docs/reference/data-model.md",
+      "sha256": "819b60f069bdba7bc561c4b30c8486c7faa4b1362cc7367be461ccf737d1cfed",
+      "bytes": 7033,
+      "lines": 139,
+      "classification": "historical intent or implementation evidence; not current instructions"
+    },
+    {
+      "source": "bigbrotr-go/docs/reference/http-api.md",
+      "snapshot": ".research/source-snapshots/go/docs/reference/http-api.md",
+      "sha256": "848395b877a7e6740bb9579ba41e2a48c075ef68d286b8c1f19acc1e2d1fabf7",
+      "bytes": 7205,
+      "lines": 145,
+      "classification": "historical intent or implementation evidence; not current instructions"
+    },
+    {
+      "source": "bigbrotr-go/docs/reference/journal-format.md",
+      "snapshot": ".research/source-snapshots/go/docs/reference/journal-format.md",
+      "sha256": "a0bec01eb7c85fcdfbb5ef92ad4ec1103aef2ac7c34882ba1cab75bb7bd5f6cf",
+      "bytes": 8065,
+      "lines": 169,
+      "classification": "historical intent or implementation evidence; not current instructions"
+    },
+    {
+      "source": "bigbrotr-go/docs/reference/metrics.md",
+      "snapshot": ".research/source-snapshots/go/docs/reference/metrics.md",
+      "sha256": "e61134327b1533bdcdbe97339cf67d19ebb44dd84d36d7cefe02ac0c627b1486",
+      "bytes": 7126,
+      "lines": 134,
+      "classification": "historical intent or implementation evidence; not current instructions"
+    },
+    {
+      "source": "bigbrotr-go/docs/services/api.md",
+      "snapshot": ".research/source-snapshots/go/docs/services/api.md",
+      "sha256": "341c7021cd8b2cf1bd5440b4594c4850169329252ec3292bc979c29e5f3af824",
+      "bytes": 4326,
+      "lines": 93,
+      "classification": "historical intent or implementation evidence; not current instructions"
+    },
+    {
+      "source": "bigbrotr-go/docs/services/archive-relay.md",
+      "snapshot": ".research/source-snapshots/go/docs/services/archive-relay.md",
+      "sha256": "c72212d9c183c7fcc08a5b4457f9e2ed9f92d49ab2a259c4dbe7c11ec486e5e8",
+      "bytes": 5806,
+      "lines": 123,
+      "classification": "historical intent or implementation evidence; not current instructions"
+    },
+    {
+      "source": "bigbrotr-go/docs/services/deriver.md",
+      "snapshot": ".research/source-snapshots/go/docs/services/deriver.md",
+      "sha256": "90bf3ca3f9e15f759703d55a0999a2bc69c2eb6bac72bef26456b09bc748a48d",
+      "bytes": 8946,
+      "lines": 170,
+      "classification": "historical intent or implementation evidence; not current instructions"
+    },
+    {
+      "source": "bigbrotr-go/docs/services/discoverer.md",
+      "snapshot": ".research/source-snapshots/go/docs/services/discoverer.md",
+      "sha256": "fb6f2348fa390b82d666c4cdb82d9168ea58ea0f72354f9770a29bc9952e1b76",
+      "bytes": 4762,
+      "lines": 85,
+      "classification": "historical intent or implementation evidence; not current instructions"
+    },
+    {
+      "source": "bigbrotr-go/docs/services/dvm.md",
+      "snapshot": ".research/source-snapshots/go/docs/services/dvm.md",
+      "sha256": "cd7f63e2a4312d366d8e57173818e3441c73fd8114018c40909612047abbad3f",
+      "bytes": 6189,
+      "lines": 120,
+      "classification": "historical intent or implementation evidence; not current instructions"
+    },
+    {
+      "source": "bigbrotr-go/docs/services/exporter.md",
+      "snapshot": ".research/source-snapshots/go/docs/services/exporter.md",
+      "sha256": "a93b033a3eff146f5a7ebf1d5e2fcf8d7762c1d2c0aa97978a299731f28843be",
+      "bytes": 12018,
+      "lines": 201,
+      "classification": "historical intent or implementation evidence; not current instructions"
+    },
+    {
+      "source": "bigbrotr-go/docs/services/importer.md",
+      "snapshot": ".research/source-snapshots/go/docs/services/importer.md",
+      "sha256": "def4f30eaf8f899ca18c598e70e4d703d6b85a15e44e1258a6d7cb6a8759f240",
+      "bytes": 15726,
+      "lines": 237,
+      "classification": "historical intent or implementation evidence; not current instructions"
+    },
+    {
+      "source": "bigbrotr-go/docs/services/indexer.md",
+      "snapshot": ".research/source-snapshots/go/docs/services/indexer.md",
+      "sha256": "10cac7197c7e58c02909ce204f4b0b923b5043b0531614a92f2a67da9eea866f",
+      "bytes": 6930,
+      "lines": 125,
+      "classification": "historical intent or implementation evidence; not current instructions"
+    },
+    {
+      "source": "bigbrotr-go/docs/services/monitor.md",
+      "snapshot": ".research/source-snapshots/go/docs/services/monitor.md",
+      "sha256": "941f43d5735a89d46b8ab567d95406f410a7df3ec4b9f5b5e564760d398141b6",
+      "bytes": 6057,
+      "lines": 109,
+      "classification": "historical intent or implementation evidence; not current instructions"
+    },
+    {
+      "source": "bigbrotr-go/docs/services/nip66-publisher.md",
+      "snapshot": ".research/source-snapshots/go/docs/services/nip66-publisher.md",
+      "sha256": "e44b0cbc3271111fad339027d0311bc74c5cef0a3660a8c7cc1c03bf1298382d",
+      "bytes": 2701,
+      "lines": 61,
+      "classification": "historical intent or implementation evidence; not current instructions"
+    },
+    {
+      "source": "bigbrotr-go/docs/services/nip85-publisher.md",
+      "snapshot": ".research/source-snapshots/go/docs/services/nip85-publisher.md",
+      "sha256": "14dfd3cb25968719f4e0382ac5dc84ca64975c3832e21cd39fcf7bfb654e5f99",
+      "bytes": 2973,
+      "lines": 65,
+      "classification": "historical intent or implementation evidence; not current instructions"
+    },
+    {
+      "source": "bigbrotr-go/docs/services/ranker.md",
+      "snapshot": ".research/source-snapshots/go/docs/services/ranker.md",
+      "sha256": "418a9bff663dd2d7f602c1844eb62058713a2dac90dbe491b821e14545fbe542",
+      "bytes": 4296,
+      "lines": 84,
+      "classification": "historical intent or implementation evidence; not current instructions"
+    },
+    {
+      "source": "bigbrotr-go/docs/services/seeder.md",
+      "snapshot": ".research/source-snapshots/go/docs/services/seeder.md",
+      "sha256": "93063374d8eb92c46e69f112c15bb12b6b4d50de54e118c5bcd760b4c3c12475",
+      "bytes": 3360,
+      "lines": 72,
+      "classification": "historical intent or implementation evidence; not current instructions"
+    },
+    {
+      "source": "bigbrotr-go/docs/services/synchronizer.md",
+      "snapshot": ".research/source-snapshots/go/docs/services/synchronizer.md",
+      "sha256": "290e6912df8928830e117056bead7bd11ce431548b52418d35bc1cffc3b1a28c",
+      "bytes": 8606,
+      "lines": 156,
+      "classification": "historical intent or implementation evidence; not current instructions"
+    },
+    {
+      "source": "bigbrotr-go/docs/services/validator.md",
+      "snapshot": ".research/source-snapshots/go/docs/services/validator.md",
+      "sha256": "318a4687d8db6136989c33e2dcafb5bd12703f483e1409ec989d4ba26c55d1ea",
+      "bytes": 4725,
+      "lines": 90,
+      "classification": "historical intent or implementation evidence; not current instructions"
+    },
+    {
+      "source": "bigbrotr-go/docs/spec/BIGBROTR_VISION_DECISIONS_2026-06-29.md",
+      "snapshot": ".research/source-snapshots/go/docs/spec/BIGBROTR_VISION_DECISIONS_2026-06-29.md",
+      "sha256": "ede97801d1431b5739d1f3d2b915b64a9aaed0f3e323874d08f8e5e89634a610",
+      "bytes": 276182,
+      "lines": 2819,
+      "classification": "historical intent or implementation evidence; not current instructions"
+    },
+    {
+      "source": "bigbrotr-go/docs/superpowers/plans/bigbrotr/00-MASTER-PLAN.md",
+      "snapshot": ".research/source-snapshots/go/docs/superpowers/plans/bigbrotr/00-MASTER-PLAN.md",
+      "sha256": "efa3bbe624b0aaf3dc460b5279876e33cde426f501d83ff36a1a79f739982a95",
+      "bytes": 14760,
+      "lines": 216,
+      "classification": "historical intent or implementation evidence; not current instructions"
+    },
+    {
+      "source": "bigbrotr-go/docs/superpowers/plans/bigbrotr/HANDOFF.md",
+      "snapshot": ".research/source-snapshots/go/docs/superpowers/plans/bigbrotr/HANDOFF.md",
+      "sha256": "e10bd236fb24014a6731daf1fd2857c998887a1c961db0846d24a35a4dfa1547",
+      "bytes": 177178,
+      "lines": 1815,
+      "classification": "historical intent or implementation evidence; not current instructions"
+    },
+    {
+      "source": "bigbrotr-go/docs/superpowers/plans/bigbrotr/phase-0-spec-completion/README.md",
+      "snapshot": ".research/source-snapshots/go/docs/superpowers/plans/bigbrotr/phase-0-spec-completion/README.md",
+      "sha256": "8bfbee71f440dad2b6bb55221fc2b7ff7a44a9672bbc9504860a09a79a7f0a89",
+      "bytes": 1601,
+      "lines": 23,
+      "classification": "historical intent or implementation evidence; not current instructions"
+    },
+    {
+      "source": "bigbrotr-go/docs/superpowers/plans/bigbrotr/phase-1-runtime-foundation/README.md",
+      "snapshot": ".research/source-snapshots/go/docs/superpowers/plans/bigbrotr/phase-1-runtime-foundation/README.md",
+      "sha256": "98e3767e2e4f26e151b3169fc3499121fc363081857225b9d81868e8d7e8dc83",
+      "bytes": 26175,
+      "lines": 252,
+      "classification": "historical intent or implementation evidence; not current instructions"
+    },
+    {
+      "source": "bigbrotr-go/docs/superpowers/plans/bigbrotr/phase-2-storage-spine/README.md",
+      "snapshot": ".research/source-snapshots/go/docs/superpowers/plans/bigbrotr/phase-2-storage-spine/README.md",
+      "sha256": "eac15cfcb58a53ad2053e36d3d5b3a7c5b1f7708948a918146b45d02f451d701",
+      "bytes": 27028,
+      "lines": 129,
+      "classification": "historical intent or implementation evidence; not current instructions"
+    },
+    {
+      "source": "bigbrotr-go/docs/superpowers/plans/bigbrotr/phase-3-ingest-path/README.md",
+      "snapshot": ".research/source-snapshots/go/docs/superpowers/plans/bigbrotr/phase-3-ingest-path/README.md",
+      "sha256": "05351de1a6e98f38c27925434f21236223ad0d5decebe752411c4a5775332ea5",
+      "bytes": 45877,
+      "lines": 461,
+      "classification": "historical intent or implementation evidence; not current instructions"
+    },
+    {
+      "source": "bigbrotr-go/docs/superpowers/plans/bigbrotr/phase-4-relay-lifecycle/README.md",
+      "snapshot": ".research/source-snapshots/go/docs/superpowers/plans/bigbrotr/phase-4-relay-lifecycle/README.md",
+      "sha256": "d631f31b6c51f089679a57713214935175315ba2ffc4c9b9a4c39200846155cc",
+      "bytes": 33947,
+      "lines": 212,
+      "classification": "historical intent or implementation evidence; not current instructions"
+    },
+    {
+      "source": "bigbrotr-go/docs/superpowers/plans/bigbrotr/phase-5-derivation/README.md",
+      "snapshot": ".research/source-snapshots/go/docs/superpowers/plans/bigbrotr/phase-5-derivation/README.md",
+      "sha256": "db70bfddf2eb29732792f5c25cf8f8a7a4ee5a01e5024c2d4dcb8a77ae463221",
+      "bytes": 442162,
+      "lines": 4551,
+      "classification": "historical intent or implementation evidence; not current instructions"
+    },
+    {
+      "source": "bigbrotr-go/docs/superpowers/plans/bigbrotr/phase-6-read-side/README.md",
+      "snapshot": ".research/source-snapshots/go/docs/superpowers/plans/bigbrotr/phase-6-read-side/README.md",
+      "sha256": "f5a7d67844dc69aa528df5ef493b98b821b5b7b7a32b2fe8c5654185d35d3635",
+      "bytes": 74508,
+      "lines": 982,
+      "classification": "historical intent or implementation evidence; not current instructions"
+    },
+    {
+      "source": "bigbrotr-go/docs/superpowers/plans/bigbrotr/phase-7-publication/README.md",
+      "snapshot": ".research/source-snapshots/go/docs/superpowers/plans/bigbrotr/phase-7-publication/README.md",
+      "sha256": "74818a045587998080e72d1b52170d6c0ebe12e5f880b1338477d14e36a3a7c4",
+      "bytes": 28820,
+      "lines": 296,
+      "classification": "historical intent or implementation evidence; not current instructions"
+    },
+    {
+      "source": "bigbrotr-go/docs/superpowers/plans/bigbrotr/phase-8-ops-packaging/README.md",
+      "snapshot": ".research/source-snapshots/go/docs/superpowers/plans/bigbrotr/phase-8-ops-packaging/README.md",
+      "sha256": "b984d4c2cf3ed2f6299b5a28a53c6dee976714f7be5d4090c1502c6368334a4c",
+      "bytes": 35864,
+      "lines": 320,
+      "classification": "historical intent or implementation evidence; not current instructions"
+    },
+    {
+      "source": "bigbrotr-go/docs/superpowers/plans/bigbrotr/phase-9-dashboard/README.md",
+      "snapshot": ".research/source-snapshots/go/docs/superpowers/plans/bigbrotr/phase-9-dashboard/README.md",
+      "sha256": "695f968ab005bf3f18e68cb9b4a2df2ef125f30e4d80bdd5dba6fea2f6daf4ca",
+      "bytes": 16941,
+      "lines": 107,
+      "classification": "historical intent or implementation evidence; not current instructions"
+    },
+    {
+      "source": "bigbrotr-go/go.mod",
+      "snapshot": ".research/source-snapshots/go/go.mod",
+      "sha256": "d6d7aa952ed1169f55f1dbd2a948cbf5995b6f2138673a2545fe831aa4806052",
+      "bytes": 4766,
+      "lines": 102,
+      "classification": "historical intent or implementation evidence; not current instructions"
+    },
+    {
+      "source": "bigbrotr-go/internal/config/profiles.go",
+      "snapshot": ".research/source-snapshots/go/internal/config/profiles.go",
+      "sha256": "3ca11e6e549ecc65c1233a199850bbe2ebd2f4ce8d7e42dab4b0d9def4b3c3a6",
+      "bytes": 6562,
+      "lines": 184,
+      "classification": "historical intent or implementation evidence; not current instructions"
+    },
+    {
+      "source": "BIGBROTR-THE-PLAN.md",
+      "snapshot": ".research/source-snapshots/BIGBROTR-THE-PLAN.md",
+      "sha256": "e99abda1190ba48279fb9ee9d31b6e36d3f5d11f1b27ad3951831f802e200c09",
+      "bytes": 54782,
+      "lines": 825,
+      "classification": "historical plan; not current instructions"
+    },
+    {
+      "source": "BIGBROTR-PHASE-10-CONSOLIDATION-PLAN.md",
+      "snapshot": ".research/source-snapshots/BIGBROTR-PHASE-10-CONSOLIDATION-PLAN.md",
+      "sha256": "6d5c7714efd2fbf8d2dd80f4721b720bb805eb17346ef999283bb6ba83e8baec",
+      "bytes": 24390,
+      "lines": 408,
+      "classification": "historical plan; not current instructions"
+    }
+  ]
+}

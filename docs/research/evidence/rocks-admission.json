@@ -1,0 +1,17 @@
+{
+  "binding": "rocksdict 0.3.29",
+  "scope": "synchronized atomic batch before/after process SIGKILL; no power-loss or disk-error injection; Python binding, not final Rust adapter",
+  "cases": [
+    {
+      "phase": "before_write",
+      "keys_present": 0,
+      "second_owner_refused": true
+    },
+    {
+      "phase": "after_sync_write",
+      "keys_present": 5,
+      "second_owner_refused": true
+    }
+  ],
+  "status": "passed"
+}

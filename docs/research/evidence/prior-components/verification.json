@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "transport_runs": 16,
+  "transport_smokes": 2,
+  "ranking_runs": 12,
+  "fixture_events": 200000,
+  "fixture_edges": 1000000,
+  "kv_engines": 2,
+  "clickhouse_serial_samples": 120,
+  "clickhouse_concurrent_requests": 80,
+  "lab_stopped": true,
+  "scope": "saved result consistency and recorded correctness; not a new production or crash test"
+}

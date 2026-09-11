@@ -1,0 +1,152 @@
+{
+  "connect_seconds": 1.051730089,
+  "connected": 5000,
+  "failures": 0,
+  "gomaxprocs": 2,
+  "language": "go",
+  "n": 5000,
+  "stage": "ready",
+  "tuned": false,
+  "done": {
+    "bytes": 134482931,
+    "gc_count": 20,
+    "gc_pause_ns": 687640,
+    "goroutines": 5001,
+    "heap_alloc": 134227784,
+    "heap_sys": 193036288,
+    "messages": 64999,
+    "stage": "done"
+  },
+  "repetition": 1,
+  "fixture": {
+    "payload_bytes": 2069,
+    "stage": "server_ready",
+    "url": "wss://127.0.0.1:43275/"
+  },
+  "samples": [
+    {
+      "Rss_bytes": 216625152,
+      "Pss_bytes": 213463040,
+      "Shared_Clean_bytes": 6316032,
+      "Shared_Dirty_bytes": 0,
+      "Private_Clean_bytes": 196608,
+      "Private_Dirty_bytes": 210112512,
+      "Anonymous_bytes": 210112512,
+      "cpu_ticks": 127,
+      "fd_count": 5006,
+      "time": 2446392.550760002
+    },
+    {
+      "Rss_bytes": 227352576,
+      "Pss_bytes": 224190464,
+      "Shared_Clean_bytes": 6316032,
+      "Shared_Dirty_bytes": 0,
+      "Private_Clean_bytes": 196608,
+      "Private_Dirty_bytes": 220839936,
+      "Anonymous_bytes": 220839936,
+      "cpu_ticks": 131,
+      "fd_count": 5006,
+      "time": 2446393.057125763
+    },
+    {
+      "Rss_bytes": 227356672,
+      "Pss_bytes": 224194560,
+      "Shared_Clean_bytes": 6316032,
+      "Shared_Dirty_bytes": 0,
+      "Private_Clean_bytes": 196608,
+      "Private_Dirty_bytes": 220844032,
+      "Anonymous_bytes": 220844032,
+      "cpu_ticks": 132,
+      "fd_count": 5006,
+      "time": 2446393.562656654
+    },
+    {
+      "Rss_bytes": 227356672,
+      "Pss_bytes": 224194560,
+      "Shared_Clean_bytes": 6316032,
+      "Shared_Dirty_bytes": 0,
+      "Private_Clean_bytes": 196608,
+      "Private_Dirty_bytes": 220844032,
+      "Anonymous_bytes": 220844032,
+      "cpu_ticks": 135,
+      "fd_count": 5006,
+      "time": 2446394.068578136
+    },
+    {
+      "Rss_bytes": 227356672,
+      "Pss_bytes": 224194560,
+      "Shared_Clean_bytes": 6316032,
+      "Shared_Dirty_bytes": 0,
+      "Private_Clean_bytes": 196608,
+      "Private_Dirty_bytes": 220844032,
+      "Anonymous_bytes": 220844032,
+      "cpu_ticks": 137,
+      "fd_count": 5006,
+      "time": 2446394.574129405
+    },
+    {
+      "Rss_bytes": 227360768,
+      "Pss_bytes": 224198656,
+      "Shared_Clean_bytes": 6316032,
+      "Shared_Dirty_bytes": 0,
+      "Private_Clean_bytes": 196608,
+      "Private_Dirty_bytes": 220848128,
+      "Anonymous_bytes": 220848128,
+      "cpu_ticks": 138,
+      "fd_count": 5006,
+      "time": 2446395.079632665
+    },
+    {
+      "Rss_bytes": 227360768,
+      "Pss_bytes": 224198656,
+      "Shared_Clean_bytes": 6316032,
+      "Shared_Dirty_bytes": 0,
+      "Private_Clean_bytes": 196608,
+      "Private_Dirty_bytes": 220848128,
+      "Anonymous_bytes": 220848128,
+      "cpu_ticks": 140,
+      "fd_count": 5006,
+      "time": 2446395.585314598
+    },
+    {
+      "Rss_bytes": 227360768,
+      "Pss_bytes": 224198656,
+      "Shared_Clean_bytes": 6316032,
+      "Shared_Dirty_bytes": 0,
+      "Private_Clean_bytes": 196608,
+      "Private_Dirty_bytes": 220848128,
+      "Anonymous_bytes": 220848128,
+      "cpu_ticks": 141,
+      "fd_count": 5006,
+      "time": 2446396.090987766
+    },
+    {
+      "Rss_bytes": 227549184,
+      "Pss_bytes": 224387072,
+      "Shared_Clean_bytes": 6316032,
+      "Shared_Dirty_bytes": 0,
+      "Private_Clean_bytes": 196608,
+      "Private_Dirty_bytes": 221036544,
+      "Anonymous_bytes": 221036544,
+      "cpu_ticks": 146,
+      "fd_count": 5006,
+      "time": 2446396.596582225
+    },
+    {
+      "Rss_bytes": 227549184,
+      "Pss_bytes": 224387072,
+      "Shared_Clean_bytes": 6316032,
+      "Shared_Dirty_bytes": 0,
+      "Private_Clean_bytes": 196608,
+      "Private_Dirty_bytes": 221036544,
+      "Anonymous_bytes": 221036544,
+      "cpu_ticks": 147,
+      "fd_count": 5006,
+      "time": 2446397.102220568
+    }
+  ],
+  "median_rss_bytes": 227358720.0,
+  "median_pss_bytes": 224196608.0,
+  "steady_cpu_cores": 0.04394193843929205,
+  "elapsed_seconds": 13.170510436873883
+}

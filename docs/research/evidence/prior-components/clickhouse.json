@@ -1,0 +1,1464 @@
+{
+  "database": "bigbrotr_independent_lab_20260910_v2",
+  "started_at": "2026-09-10T18:52:00.478634+00:00",
+  "status": "completed",
+  "database_created": true,
+  "settings": {
+    "max_threads": "2",
+    "max_insert_threads": "2",
+    "max_memory_usage": "268435456",
+    "max_execution_time": "60",
+    "use_query_cache": "0",
+    "async_insert": "0",
+    "wait_end_of_query": "1",
+    "prefer_column_name_to_alias": "1",
+    "use_top_k_dynamic_filtering": "0"
+  },
+  "client": "Python stdlib urllib HTTP; no native driver or persistent connection pool",
+  "methodology": {
+    "percentiles": "nearest rank",
+    "serial_samples": 20,
+    "warmup": "one excluded request per parameter variant",
+    "mixed_workers": [
+      4,
+      8
+    ],
+    "mixed_requests_per_run": 40,
+    "query_order": "serial families then mixed; text index tested afterwards"
+  },
+  "limitations": [
+    "Synthetic deterministic fixture; signatures are not validated.",
+    "Not a collector, network ingestion, live-relay, or complete production pipeline benchmark.",
+    "Small fixture only; no billion-row or production throughput extrapolation.",
+    "Warm repeated reads; OS/server caches are neither cleared nor measured as cold.",
+    "Per-query 2 threads/256 MiB is not a global memory/CPU cap; concurrency multiplies budgets.",
+    "Background merges/mutations are not globally capped by per-query settings.",
+    "Active-part bytes exclude inactive parts, WAL, temp files, server logs, replicas and backups.",
+    "No forced OPTIMIZE; concurrent background merges can affect storage snapshots and timings.",
+    "HTTP wall latency includes transport and JSON decode; serial and mixed latencies exclude warmup.",
+    "No writes occur outside the fixed lab database; the database is preserved for inspection."
+  ],
+  "fixtures": {
+    "events": [
+      {
+        "path": "/home/tux/bigbrotr-independent-lab-20260910-final/data/events/0000.parquet",
+        "bytes": 24342547
+      },
+      {
+        "path": "/home/tux/bigbrotr-independent-lab-20260910-final/data/events/0001.parquet",
+        "bytes": 24343922
+      },
+      {
+        "path": "/home/tux/bigbrotr-independent-lab-20260910-final/data/events/0002.parquet",
+        "bytes": 24348477
+      },
+      {
+        "path": "/home/tux/bigbrotr-independent-lab-20260910-final/data/events/0003.parquet",
+        "bytes": 24351105
+      }
+    ],
+    "provenance": [
+      {
+        "path": "/home/tux/bigbrotr-independent-lab-20260910-final/data/provenance/0000.parquet",
+        "bytes": 2597211
+      },
+      {
+        "path": "/home/tux/bigbrotr-independent-lab-20260910-final/data/provenance/0001.parquet",
+        "bytes": 2597415
+      },
+      {
+        "path": "/home/tux/bigbrotr-independent-lab-20260910-final/data/provenance/0002.parquet",
+        "bytes": 2597466
+      },
+      {
+        "path": "/home/tux/bigbrotr-independent-lab-20260910-final/data/provenance/0003.parquet",
+        "bytes": 2597305
+      }
+    ]
+  },
+  "server_origin": "http://127.0.0.1:48123/",
+  "server_version": "26.5.1.882",
+  "build": {
+    "imports": [
+      {
+        "path": "/home/tux/bigbrotr-independent-lab-20260910-final/data/events/0000.parquet",
+        "bytes": 24342547,
+        "sha256": "75d6ffb58b89162b097715ea9c3d0abb368302a6e814bd749a4e14a5778f5501",
+        "http_insert_wall_s": 0.28847054997459054,
+        "read_hash_insert_wall_s": 0.30198639212176204
+      },
+      {
+        "path": "/home/tux/bigbrotr-independent-lab-20260910-final/data/events/0001.parquet",
+        "bytes": 24343922,
+        "sha256": "8c68d4f93252a166d7c6e3bf0194f3383d01b1007a8ab230728812bde1c00ff9",
+        "http_insert_wall_s": 0.30419946694746614,
+        "read_hash_insert_wall_s": 0.3171247551217675
+      },
+      {
+        "path": "/home/tux/bigbrotr-independent-lab-20260910-final/data/events/0002.parquet",
+        "bytes": 24348477,
+        "sha256": "eece8f4dffc14224802b8e4106f87cdd521b19b7e0fa3cf87c29f0fea0615bb9",
+        "http_insert_wall_s": 0.3018624600954354,
+        "read_hash_insert_wall_s": 0.31390793388709426
+      },
+      {
+        "path": "/home/tux/bigbrotr-independent-lab-20260910-final/data/events/0003.parquet",
+        "bytes": 24351105,
+        "sha256": "ca6bc7ab0287b948ba1efecbbda3054ad968fc14682915d6989b48a31d7e4945",
+        "http_insert_wall_s": 0.3063903199508786,
+        "read_hash_insert_wall_s": 0.3192550749517977
+      },
+      {
+        "path": "/home/tux/bigbrotr-independent-lab-20260910-final/data/provenance/0000.parquet",
+        "bytes": 2597211,
+        "sha256": "fdac12c97af14faaeb40d07a69b35d3c4c2a5f68ef153ff49ce8b2b40c910a60",
+        "http_insert_wall_s": 0.07387266401201487,
+        "read_hash_insert_wall_s": 0.07523823576048017
+      },
+      {
+        "path": "/home/tux/bigbrotr-independent-lab-20260910-final/data/provenance/0001.parquet",
+        "bytes": 2597415,
+        "sha256": "73a14e33fa28dfd0faf72b45cd9a02d48a586667169a4f4a6f2665c7367a017f",
+        "http_insert_wall_s": 0.07319991663098335,
+        "read_hash_insert_wall_s": 0.07459871983155608
+      },
+      {
+        "path": "/home/tux/bigbrotr-independent-lab-20260910-final/data/provenance/0002.parquet",
+        "bytes": 2597466,
+        "sha256": "611ce972b43c90049309ff9295ec2fb6c49af16a940bf9ef9cee818105e665a5",
+        "http_insert_wall_s": 0.07276967307552695,
+        "read_hash_insert_wall_s": 0.07438671495765448
+      },
+      {
+        "path": "/home/tux/bigbrotr-independent-lab-20260910-final/data/provenance/0003.parquet",
+        "bytes": 2597305,
+        "sha256": "53452717c90ffe9a42007d3c414da36dac2b8d413df8ba2649fe0731068d9326",
+        "http_insert_wall_s": 0.07445318810641766,
+        "read_hash_insert_wall_s": 0.07578292302787304
+      }
+    ],
+    "derived": [
+      {
+        "table": "provenance_by_relay",
+        "wall_s": 0.2095994488336146
+      },
+      {
+        "table": "by_author",
+        "wall_s": 0.06431010877713561
+      },
+      {
+        "table": "tag_postings",
+        "wall_s": 0.30055984668433666
+      }
+    ],
+    "schema_import_derive_wall_s": 2.1924830600619316
+  },
+  "storage_before_text_index": {
+    "captured_at": "2026-09-10T18:52:02.687094+00:00",
+    "tables": [
+      {
+        "table": "by_author",
+        "active_parts": 1,
+        "rows": 200000,
+        "bytes_on_disk": 7022390,
+        "data_compressed_bytes": 7019441,
+        "data_uncompressed_bytes": 14800000,
+        "marks_bytes": 636
+      },
+      {
+        "table": "events",
+        "active_parts": 4,
+        "rows": 200000,
+        "bytes_on_disk": 95673002,
+        "data_compressed_bytes": 95665282,
+        "data_uncompressed_bytes": 255453057,
+        "marks_bytes": 4044
+      },
+      {
+        "table": "provenance",
+        "active_parts": 4,
+        "rows": 1000000,
+        "bytes_on_disk": 10559255,
+        "data_compressed_bytes": 10550109,
+        "data_uncompressed_bytes": 52000000,
+        "marks_bytes": 2662
+      },
+      {
+        "table": "provenance_by_relay",
+        "active_parts": 1,
+        "rows": 1000000,
+        "bytes_on_disk": 35593479,
+        "data_compressed_bytes": 35586543,
+        "data_uncompressed_bytes": 52000000,
+        "marks_bytes": 1536
+      },
+      {
+        "table": "tag_postings",
+        "active_parts": 1,
+        "rows": 600000,
+        "bytes_on_disk": 20936509,
+        "data_compressed_bytes": 20930365,
+        "data_uncompressed_bytes": 53335600,
+        "marks_bytes": 1335
+      }
+    ],
+    "total_bytes_on_disk": 169784635,
+    "scope": "active parts only; excludes inactive parts, logs, metadata, WAL and temporary files"
+  },
+  "validation": {
+    "status": "passed",
+    "events": {
+      "n": 200000,
+      "unique_ids": 200000,
+      "lo": 1735689600,
+      "hi": 1767225402
+    },
+    "provenance": {
+      "n": 1000000,
+      "relays": 5000
+    },
+    "edge_groups": {
+      "events": 200000,
+      "min_edges": 5,
+      "max_edges": 5,
+      "min_unique_relays": 5,
+      "max_unique_relays": 5
+    },
+    "derived_rows": {
+      "by_author": 200000,
+      "tag_postings": 600000,
+      "provenance_by_relay": 1000000
+    },
+    "provenance_fingerprints": {
+      "provenance": {
+        "x": 6765514450014365964,
+        "s": 6714019108758786484
+      },
+      "provenance_by_relay": {
+        "x": 6765514450014365964,
+        "s": 6714019108758786484
+      }
+    },
+    "sample_ids": [
+      "7A8F7AB11DBE05BD49ADDD81C2E2D3D9D01A65A722EA89F4EBBF74AB379FBA57",
+      "DA417D615799C1D9C623BA47068E0B5F42C5BEBBBB1FEFCD68302BB11380F609",
+      "E25E1FBD122281B0A9A8526865526C5BDE5871110A4CD1B35EF7782BE398D769",
+      "05496796B55B0B72E354DB34BBE7FFBE754855BA8C15F2C952E316FC6E625435",
+      "DFD4974C276ED9C6162E455E634BF5CBC63C8C4BA19FDC4F80A87998FA4400E7",
+      "CE792506EE647752124A41208336F07062426D259E9374E5996D21C9E3433D3D",
+      "2D29E6E4467E1918DB3AD3B9A4F64D36B81315EB6A172F7892462C284AA36B5F",
+      "43BEE73A0968AFD3ACD407A016332B63ACA93206D9D6D64B6C8A86CB39D25B99",
+      "AB83F80F29EDD0FD5E40C28D920F5587A5F7D599FC12F71CFC8C9D7CDB98F26F",
+      "74918DCAC9F2CECC867C1E7717FA7583FAB486513FA0004279D73A9D11AF22BB",
+      "F5E8D434F529B778E46B3631D360EFAA09BA4FB246577B757F6E9E730B781E98",
+      "D6064225CC69D5264E3AEF8569133637A4F4262365E0A435BD22EB226550D3DA",
+      "24C033E35EE46CBDB64F2D4FD0582D8F107E39808827D98FCFEEEA4D04F3ADA1",
+      "71020C05C56BCBF09E43D9D43A06A828C0609E8AD02B099784A41CC677A74586",
+      "83347405090436D20395EBEF210E9D2EF0101B3EBB4A8A7C35F368C93F955F2A",
+      "BF0F06853C0D580E9079320603B54872247A6E60094274D35059DA6745A3AE5F",
+      "752428BE7781AC1B14A5AAFCADBE00E0362BE468BF150E0D523739C067AE5DE9",
+      "2409B3DE92A2E844963578B5A94203373F8E7E163C82503A59F47859F0622ACD",
+      "60043FAD3F470F24E222A279C034297AE24D5417D1FB38496E5DA48DFE180C3B",
+      "FC6D415631544854EAAE2542353FC31334D521C9155E6C7E3A8A92681C099D43"
+    ],
+    "scope": "counts, exact ID uniqueness, edge cardinalities, orphan check, checksums and readback samples; no cryptographic signature validation"
+  },
+  "total_wall_s": 2.7336601354181767,
+  "finished_at": "2026-09-10T18:52:03.212316+00:00",
+  "workaround": "ClickHouse 26.5.1.882 top-K dynamic filtering produced TYPE_MISMATCH on reference tag query; use_top_k_dynamic_filtering=0 verified against DuckDB",
+  "query_resume_started": 1789066592.4951978,
+  "tag_top100_cross_engine_oracle": "passed",
+  "serial": {
+    "point_id_full_body": {
+      "samples": 20,
+      "p50_ms": 7.686331868171692,
+      "p95_ms": 11.017455719411373,
+      "mean_ms": 8.1338822375983,
+      "min_ms": 2.6616831310093403,
+      "max_ms": 12.5320078805089,
+      "samples_ms": [
+        12.5320078805089,
+        6.051107309758663,
+        7.686331868171692,
+        5.123765207827091,
+        6.844931282103062,
+        11.017455719411373,
+        4.7257207334041595,
+        10.56405110284686,
+        4.590378142893314,
+        10.475696064531803,
+        10.559942107647657,
+        4.730269778519869,
+        10.416414123028517,
+        10.731362272053957,
+        5.674243438988924,
+        10.568418074399233,
+        10.598836001008749,
+        10.496524162590504,
+        6.628506351262331,
+        2.6616831310093403
+      ],
+      "requested_samples": 20,
+      "errors": [],
+      "result_rows": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "parameter_variants": 20,
+      "query_example": "SELECT hex(event_id) AS event_id, hex(pubkey) AS pubkey, kind, created_at, tags, content, hex(sig) AS sig, first_seen_at FROM bigbrotr_independent_lab_20260910_v2.events WHERE event_id = unhex('7A8F7AB11DBE05BD49ADDD81C2E2D3D9D01A65A722EA89F4EBBF74AB379FBA57')",
+      "status": "passed"
+    },
+    "provenance_by_event": {
+      "samples": 20,
+      "p50_ms": 1.3885539956390858,
+      "p95_ms": 1.4405222609639168,
+      "mean_ms": 1.3854337390512228,
+      "min_ms": 1.2044399045407772,
+      "max_ms": 1.4455909840762615,
+      "samples_ms": [
+        1.4405222609639168,
+        1.3881339691579342,
+        1.41471391543746,
+        1.4117876999080181,
+        1.4180401340126991,
+        1.3688779436051846,
+        1.3519767671823502,
+        1.3819821178913116,
+        1.365091186016798,
+        1.3632569462060928,
+        1.4312244020402431,
+        1.3889451511204243,
+        1.4455909840762615,
+        1.4166869223117828,
+        1.393384300172329,
+        1.3734661042690277,
+        1.3885539956390858,
+        1.4138012193143368,
+        1.3481988571584225,
+        1.2044399045407772
+      ],
+      "requested_samples": 20,
+      "errors": [],
+      "result_rows": [
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5,
+        5
+      ],
+      "parameter_variants": 20,
+      "query_example": "SELECT relay_id, created_at, first_seen_at FROM bigbrotr_independent_lab_20260910_v2.provenance WHERE event_id = unhex('7A8F7AB11DBE05BD49ADDD81C2E2D3D9D01A65A722EA89F4EBBF74AB379FBA57') ORDER BY relay_id",
+      "status": "passed"
+    },
+    "by_author_100": {
+      "samples": 20,
+      "p50_ms": 1.712209079414606,
+      "p95_ms": 1.7858459614217281,
+      "mean_ms": 1.7053030896931887,
+      "min_ms": 1.6056103631854057,
+      "max_ms": 1.9118823111057281,
+      "samples_ms": [
+        1.6416381113231182,
+        1.712209079414606,
+        1.6173822805285454,
+        1.6178530640900135,
+        1.7120088450610638,
+        1.6553029417991638,
+        1.6056103631854057,
+        1.7480263486504555,
+        1.7147441394627094,
+        1.9118823111057281,
+        1.7858459614217281,
+        1.7310748808085918,
+        1.7534070648252964,
+        1.7197132110595703,
+        1.7282897606492043,
+        1.6676872037351131,
+        1.6660639084875584,
+        1.731986179947853,
+        1.7149043269455433,
+        1.670431811362505
+      ],
+      "requested_samples": 20,
+      "errors": [],
+      "result_rows": [
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "parameter_variants": 20,
+      "query_example": "SELECT hex(event_id) AS event_id, kind, created_at FROM bigbrotr_independent_lab_20260910_v2.by_author WHERE pubkey = unhex('94983F713FD07AC9E529C39CA8B048FE09492600B3FA5C1B5E94C7B9B0899231') ORDER BY kind, created_at, event_id LIMIT 100",
+      "status": "passed"
+    },
+    "provenance_group_count": {
+      "samples": 20,
+      "p50_ms": 8.646728005260229,
+      "p95_ms": 9.30826272815466,
+      "mean_ms": 8.67496463470161,
+      "min_ms": 8.034012746065855,
+      "max_ms": 9.637759067118168,
+      "samples_ms": [
+        8.788383100181818,
+        9.637759067118168,
+        8.841310627758503,
+        8.717679884284735,
+        8.575905114412308,
+        8.323682937771082,
+        8.193369954824448,
+        9.296250995248556,
+        8.690920192748308,
+        8.349101059138775,
+        8.034012746065855,
+        8.260795846581459,
+        8.147514890879393,
+        8.646728005260229,
+        8.665543049573898,
+        8.42875987291336,
+        9.195612743496895,
+        8.81722616031766,
+        8.580473717302084,
+        9.30826272815466
+      ],
+      "requested_samples": 20,
+      "errors": [],
+      "result_rows": [
+        5000,
+        5000,
+        5000,
+        5000,
+        5000,
+        5000,
+        5000,
+        5000,
+        5000,
+        5000,
+        5000,
+        5000,
+        5000,
+        5000,
+        5000,
+        5000,
+        5000,
+        5000,
+        5000,
+        5000
+      ],
+      "parameter_variants": 1,
+      "query_example": "SELECT relay_id, count() AS n FROM bigbrotr_independent_lab_20260910_v2.provenance_by_relay GROUP BY relay_id ORDER BY relay_id",
+      "status": "passed"
+    },
+    "relay_time_range_100": {
+      "samples": 20,
+      "p50_ms": 2.0049363374710083,
+      "p95_ms": 2.0905467681586742,
+      "mean_ms": 2.019657869823277,
+      "min_ms": 1.8790210597217083,
+      "max_ms": 2.411124762147665,
+      "samples_ms": [
+        2.0728828385472298,
+        1.9810022786259651,
+        2.0905467681586742,
+        1.9139256328344345,
+        2.03973101451993,
+        2.0418562926352024,
+        2.411124762147665,
+        1.9060722552239895,
+        1.96419982239604,
+        1.8790210597217083,
+        1.9929949194192886,
+        1.978506799787283,
+        1.9439919851720333,
+        2.038870006799698,
+        2.0796959288418293,
+        2.0263856276869774,
+        1.9838172011077404,
+        2.038358710706234,
+        2.005237154662609,
+        2.0049363374710083
+      ],
+      "requested_samples": 20,
+      "errors": [],
+      "result_rows": [
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "parameter_variants": 20,
+      "query_example": "SELECT hex(event_id) AS event_id, created_at, first_seen_at FROM bigbrotr_independent_lab_20260910_v2.provenance_by_relay WHERE relay_id = 4611 AND created_at >= 1735736623 AND created_at <= 1767108866 ORDER BY created_at DESC, event_id DESC LIMIT 100",
+      "status": "passed"
+    },
+    "tag_filter_fetch_100": {
+      "samples": 20,
+      "p50_ms": 106.46916925907135,
+      "p95_ms": 117.07786237820983,
+      "mean_ms": 106.99838404543698,
+      "min_ms": 100.87408404797316,
+      "max_ms": 122.8072983212769,
+      "samples_ms": [
+        104.58145197480917,
+        102.84559661522508,
+        100.87408404797316,
+        101.00527014583349,
+        108.54876507073641,
+        122.8072983212769,
+        117.07786237820983,
+        105.84361990913749,
+        104.80878734961152,
+        106.7005810327828,
+        106.46916925907135,
+        107.4085752479732,
+        105.13613792136312,
+        105.1001320593059,
+        105.87168205529451,
+        106.68823821470141,
+        106.49770312011242,
+        107.63273295015097,
+        106.72676004469395,
+        107.3432331904769
+      ],
+      "requested_samples": 20,
+      "errors": [],
+      "result_rows": [
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "parameter_variants": 1,
+      "query_example": "SELECT hex(event_id) AS event_id, hex(pubkey) AS pubkey, kind, created_at, tags, content, hex(sig) AS sig, first_seen_at FROM bigbrotr_independent_lab_20260910_v2.events WHERE event_id IN (SELECT event_id FROM bigbrotr_independent_lab_20260910_v2.tag_postings WHERE tag_name = 't' AND tag_value = 'topic-7' ORDER BY created_at DESC, event_id DESC LIMIT 100) ORDER BY created_at DESC, event_id DESC",
+      "status": "passed"
+    }
+  },
+  "mixed": [
+    {
+      "workers": 4,
+      "requests": 40,
+      "wall_s": 0.7544402228668332,
+      "successful_requests_per_second": 53.01944247882503,
+      "status": "passed",
+      "service_latency": {
+        "samples": 40,
+        "p50_ms": 9.720252826809883,
+        "p95_ms": 404.6234833076596,
+        "mean_ms": 64.37384625896811,
+        "min_ms": 1.7805569805204868,
+        "max_ms": 475.7561720907688,
+        "samples_ms": [
+          3.3201337791979313,
+          213.92768807709217,
+          9.720252826809883,
+          10.895720217376947,
+          1.8980768509209156,
+          17.021766863763332,
+          2.868108917027712,
+          9.139837697148323,
+          12.589894235134125,
+          7.558784913271666,
+          6.267271004617214,
+          9.420513175427914,
+          2.3845061659812927,
+          30.040052719414234,
+          1.7805569805204868,
+          375.7496988400817,
+          10.100924875587225,
+          11.028528679162264,
+          44.36598205938935,
+          31.59024892374873,
+          2.479954157024622,
+          15.105015132576227,
+          3.75976599752903,
+          9.632609784603119,
+          2.49348022043705,
+          8.295441046357155,
+          475.08828388527036,
+          3.214537166059017,
+          475.7561720907688,
+          404.6234833076596,
+          3.1820759177207947,
+          91.08245698735118,
+          11.481605004519224,
+          77.43594702333212,
+          3.532140050083399,
+          10.269670281559229,
+          10.577554814517498,
+          3.017929382622242,
+          149.89510597661138,
+          2.3620743304491043
+        ]
+      },
+      "per_query": {
+        "point_id_full_body": {
+          "samples": 7,
+          "p50_ms": 10.895720217376947,
+          "p95_ms": 77.43594702333212,
+          "mean_ms": 21.111884154379368,
+          "min_ms": 10.100924875587225,
+          "max_ms": 77.43594702333212,
+          "samples_ms": [
+            10.895720217376947,
+            17.021766863763332,
+            10.100924875587225,
+            11.481605004519224,
+            77.43594702333212,
+            10.269670281559229,
+            10.577554814517498
+          ]
+        },
+        "provenance_by_event": {
+          "samples": 7,
+          "p50_ms": 3.1820759177207947,
+          "p95_ms": 7.558784913271666,
+          "mean_ms": 3.379950299859047,
+          "min_ms": 1.7805569805204868,
+          "max_ms": 7.558784913271666,
+          "samples_ms": [
+            1.8980768509209156,
+            7.558784913271666,
+            1.7805569805204868,
+            2.49348022043705,
+            3.214537166059017,
+            3.1820759177207947,
+            3.532140050083399
+          ]
+        },
+        "by_author_100": {
+          "samples": 7,
+          "p50_ms": 3.3201337791979313,
+          "p95_ms": 31.59024892374873,
+          "mean_ms": 11.88649982213974,
+          "min_ms": 2.3620743304491043,
+          "max_ms": 31.59024892374873,
+          "samples_ms": [
+            3.3201337791979313,
+            2.3845061659812927,
+            30.040052719414234,
+            11.028528679162264,
+            31.59024892374873,
+            2.479954157024622,
+            2.3620743304491043
+          ]
+        },
+        "provenance_group_count": {
+          "samples": 7,
+          "p50_ms": 9.720252826809883,
+          "p95_ms": 91.08245698735118,
+          "mean_ms": 26.5645066808377,
+          "min_ms": 9.139837697148323,
+          "max_ms": 91.08245698735118,
+          "samples_ms": [
+            9.720252826809883,
+            9.139837697148323,
+            12.589894235134125,
+            9.420513175427914,
+            44.36598205938935,
+            9.632609784603119,
+            91.08245698735118
+          ]
+        },
+        "relay_time_range_100": {
+          "samples": 6,
+          "p50_ms": 3.75976599752903,
+          "p95_ms": 15.105015132576227,
+          "mean_ms": 6.552255246788263,
+          "min_ms": 2.868108917027712,
+          "max_ms": 15.105015132576227,
+          "samples_ms": [
+            2.868108917027712,
+            6.267271004617214,
+            15.105015132576227,
+            3.75976599752903,
+            8.295441046357155,
+            3.017929382622242
+          ]
+        },
+        "tag_filter_fetch_100": {
+          "samples": 6,
+          "p50_ms": 375.7496988400817,
+          "p95_ms": 475.7561720907688,
+          "mean_ms": 349.173405362914,
+          "min_ms": 149.89510597661138,
+          "max_ms": 475.7561720907688,
+          "samples_ms": [
+            213.92768807709217,
+            375.7496988400817,
+            475.08828388527036,
+            475.7561720907688,
+            404.6234833076596,
+            149.89510597661138
+          ]
+        }
+      },
+      "outcomes": [
+        {
+          "query": "by_author_100",
+          "latency_ms": 3.3201337791979313,
+          "result_rows": 100
+        },
+        {
+          "query": "tag_filter_fetch_100",
+          "latency_ms": 213.92768807709217,
+          "result_rows": 100
+        },
+        {
+          "query": "provenance_group_count",
+          "latency_ms": 9.720252826809883,
+          "result_rows": 5000
+        },
+        {
+          "query": "point_id_full_body",
+          "latency_ms": 10.895720217376947,
+          "result_rows": 1
+        },
+        {
+          "query": "provenance_by_event",
+          "latency_ms": 1.8980768509209156,
+          "result_rows": 5
+        },
+        {
+          "query": "point_id_full_body",
+          "latency_ms": 17.021766863763332,
+          "result_rows": 1
+        },
+        {
+          "query": "relay_time_range_100",
+          "latency_ms": 2.868108917027712,
+          "result_rows": 100
+        },
+        {
+          "query": "provenance_group_count",
+          "latency_ms": 9.139837697148323,
+          "result_rows": 5000
+        },
+        {
+          "query": "provenance_group_count",
+          "latency_ms": 12.589894235134125,
+          "result_rows": 5000
+        },
+        {
+          "query": "provenance_by_event",
+          "latency_ms": 7.558784913271666,
+          "result_rows": 5
+        },
+        {
+          "query": "relay_time_range_100",
+          "latency_ms": 6.267271004617214,
+          "result_rows": 100
+        },
+        {
+          "query": "provenance_group_count",
+          "latency_ms": 9.420513175427914,
+          "result_rows": 5000
+        },
+        {
+          "query": "by_author_100",
+          "latency_ms": 2.3845061659812927,
+          "result_rows": 100
+        },
+        {
+          "query": "by_author_100",
+          "latency_ms": 30.040052719414234,
+          "result_rows": 100
+        },
+        {
+          "query": "provenance_by_event",
+          "latency_ms": 1.7805569805204868,
+          "result_rows": 5
+        },
+        {
+          "query": "tag_filter_fetch_100",
+          "latency_ms": 375.7496988400817,
+          "result_rows": 100
+        },
+        {
+          "query": "point_id_full_body",
+          "latency_ms": 10.100924875587225,
+          "result_rows": 1
+        },
+        {
+          "query": "by_author_100",
+          "latency_ms": 11.028528679162264,
+          "result_rows": 100
+        },
+        {
+          "query": "provenance_group_count",
+          "latency_ms": 44.36598205938935,
+          "result_rows": 5000
+        },
+        {
+          "query": "by_author_100",
+          "latency_ms": 31.59024892374873,
+          "result_rows": 100
+        },
+        {
+          "query": "by_author_100",
+          "latency_ms": 2.479954157024622,
+          "result_rows": 100
+        },
+        {
+          "query": "relay_time_range_100",
+          "latency_ms": 15.105015132576227,
+          "result_rows": 100
+        },
+        {
+          "query": "relay_time_range_100",
+          "latency_ms": 3.75976599752903,
+          "result_rows": 100
+        },
+        {
+          "query": "provenance_group_count",
+          "latency_ms": 9.632609784603119,
+          "result_rows": 5000
+        },
+        {
+          "query": "provenance_by_event",
+          "latency_ms": 2.49348022043705,
+          "result_rows": 5
+        },
+        {
+          "query": "relay_time_range_100",
+          "latency_ms": 8.295441046357155,
+          "result_rows": 100
+        },
+        {
+          "query": "tag_filter_fetch_100",
+          "latency_ms": 475.08828388527036,
+          "result_rows": 100
+        },
+        {
+          "query": "provenance_by_event",
+          "latency_ms": 3.214537166059017,
+          "result_rows": 5
+        },
+        {
+          "query": "tag_filter_fetch_100",
+          "latency_ms": 475.7561720907688,
+          "result_rows": 100
+        },
+        {
+          "query": "tag_filter_fetch_100",
+          "latency_ms": 404.6234833076596,
+          "result_rows": 100
+        },
+        {
+          "query": "provenance_by_event",
+          "latency_ms": 3.1820759177207947,
+          "result_rows": 5
+        },
+        {
+          "query": "provenance_group_count",
+          "latency_ms": 91.08245698735118,
+          "result_rows": 5000
+        },
+        {
+          "query": "point_id_full_body",
+          "latency_ms": 11.481605004519224,
+          "result_rows": 1
+        },
+        {
+          "query": "point_id_full_body",
+          "latency_ms": 77.43594702333212,
+          "result_rows": 1
+        },
+        {
+          "query": "provenance_by_event",
+          "latency_ms": 3.532140050083399,
+          "result_rows": 5
+        },
+        {
+          "query": "point_id_full_body",
+          "latency_ms": 10.269670281559229,
+          "result_rows": 1
+        },
+        {
+          "query": "point_id_full_body",
+          "latency_ms": 10.577554814517498,
+          "result_rows": 1
+        },
+        {
+          "query": "relay_time_range_100",
+          "latency_ms": 3.017929382622242,
+          "result_rows": 100
+        },
+        {
+          "query": "tag_filter_fetch_100",
+          "latency_ms": 149.89510597661138,
+          "result_rows": 100
+        },
+        {
+          "query": "by_author_100",
+          "latency_ms": 2.3620743304491043,
+          "result_rows": 100
+        }
+      ],
+      "note": "latency starts inside worker; excludes executor queue wait, includes HTTP and JSON decode"
+    },
+    {
+      "workers": 8,
+      "requests": 40,
+      "wall_s": 0.7646033740602434,
+      "successful_requests_per_second": 52.314705057590274,
+      "status": "passed",
+      "service_latency": {
+        "samples": 40,
+        "p50_ms": 17.339551355689764,
+        "p95_ms": 688.5925801470876,
+        "mean_ms": 119.62015251629055,
+        "min_ms": 2.101477235555649,
+        "max_ms": 709.5527071505785,
+        "samples_ms": [
+          3.5124430432915688,
+          38.641144055873156,
+          36.57081630080938,
+          11.625553946942091,
+          3.715221770107746,
+          13.124615419656038,
+          3.7843319587409496,
+          3.2152081839740276,
+          11.092647910118103,
+          10.23628655821085,
+          533.9955789968371,
+          8.821854833513498,
+          36.80346114560962,
+          24.17371002957225,
+          23.227984085679054,
+          537.1312680654228,
+          22.203429136425257,
+          11.963806115090847,
+          2.438175957649946,
+          2.577587030827999,
+          17.339551355689764,
+          709.5527071505785,
+          22.918065078556538,
+          2.101477235555649,
+          14.99476982280612,
+          13.864717911928892,
+          99.62554089725018,
+          83.5861498489976,
+          694.594434928149,
+          77.04816339537501,
+          688.5925801470876,
+          2.4137902073562145,
+          622.5625057704747,
+          3.761349245905876,
+          4.342854954302311,
+          4.426401108503342,
+          96.41360817477107,
+          101.74045292660594,
+          101.30741400644183,
+          84.76444194093347
+        ]
+      },
+      "per_query": {
+        "point_id_full_body": {
+          "samples": 7,
+          "p50_ms": 36.80346114560962,
+          "p95_ms": 99.62554089725018,
+          "mean_ms": 45.09692273235747,
+          "min_ms": 13.124615419656038,
+          "max_ms": 99.62554089725018,
+          "samples_ms": [
+            38.641144055873156,
+            36.57081630080938,
+            13.124615419656038,
+            36.80346114560962,
+            13.864717911928892,
+            99.62554089725018,
+            77.04816339537501
+          ]
+        },
+        "provenance_by_event": {
+          "samples": 7,
+          "p50_ms": 8.821854833513498,
+          "p95_ms": 84.76444194093347,
+          "mean_ms": 28.44580854954464,
+          "min_ms": 2.101477235555649,
+          "max_ms": 84.76444194093347,
+          "samples_ms": [
+            8.821854833513498,
+            2.438175957649946,
+            2.101477235555649,
+            14.99476982280612,
+            83.5861498489976,
+            2.4137902073562145,
+            84.76444194093347
+          ]
+        },
+        "by_author_100": {
+          "samples": 7,
+          "p50_ms": 4.342854954302311,
+          "p95_ms": 23.227984085679054,
+          "mean_ms": 10.063434751438242,
+          "min_ms": 2.577587030827999,
+          "max_ms": 23.227984085679054,
+          "samples_ms": [
+            3.7843319587409496,
+            3.2152081839740276,
+            11.092647910118103,
+            23.227984085679054,
+            22.203429136425257,
+            2.577587030827999,
+            4.342854954302311
+          ]
+        },
+        "provenance_group_count": {
+          "samples": 7,
+          "p50_ms": 22.918065078556538,
+          "p95_ms": 101.74045292660594,
+          "mean_ms": 51.901207372014014,
+          "min_ms": 11.625553946942091,
+          "max_ms": 101.74045292660594,
+          "samples_ms": [
+            11.625553946942091,
+            11.963806115090847,
+            17.339551355689764,
+            22.918065078556538,
+            96.41360817477107,
+            101.74045292660594,
+            101.30741400644183
+          ]
+        },
+        "relay_time_range_100": {
+          "samples": 6,
+          "p50_ms": 3.761349245905876,
+          "p95_ms": 24.17371002957225,
+          "mean_ms": 8.304235292598605,
+          "min_ms": 3.5124430432915688,
+          "max_ms": 24.17371002957225,
+          "samples_ms": [
+            3.5124430432915688,
+            3.715221770107746,
+            10.23628655821085,
+            24.17371002957225,
+            3.761349245905876,
+            4.426401108503342
+          ]
+        },
+        "tag_filter_fetch_100": {
+          "samples": 6,
+          "p50_ms": 622.5625057704747,
+          "p95_ms": 709.5527071505785,
+          "mean_ms": 631.0715125097582,
+          "min_ms": 533.9955789968371,
+          "max_ms": 709.5527071505785,
+          "samples_ms": [
+            533.9955789968371,
+            537.1312680654228,
+            709.5527071505785,
+            694.594434928149,
+            688.5925801470876,
+            622.5625057704747
+          ]
+        }
+      },
+      "outcomes": [
+        {
+          "query": "relay_time_range_100",
+          "latency_ms": 3.5124430432915688,
+          "result_rows": 100
+        },
+        {
+          "query": "point_id_full_body",
+          "latency_ms": 38.641144055873156,
+          "result_rows": 1
+        },
+        {
+          "query": "point_id_full_body",
+          "latency_ms": 36.57081630080938,
+          "result_rows": 1
+        },
+        {
+          "query": "provenance_group_count",
+          "latency_ms": 11.625553946942091,
+          "result_rows": 5000
+        },
+        {
+          "query": "relay_time_range_100",
+          "latency_ms": 3.715221770107746,
+          "result_rows": 100
+        },
+        {
+          "query": "point_id_full_body",
+          "latency_ms": 13.124615419656038,
+          "result_rows": 1
+        },
+        {
+          "query": "by_author_100",
+          "latency_ms": 3.7843319587409496,
+          "result_rows": 100
+        },
+        {
+          "query": "by_author_100",
+          "latency_ms": 3.2152081839740276,
+          "result_rows": 100
+        },
+        {
+          "query": "by_author_100",
+          "latency_ms": 11.092647910118103,
+          "result_rows": 100
+        },
+        {
+          "query": "relay_time_range_100",
+          "latency_ms": 10.23628655821085,
+          "result_rows": 100
+        },
+        {
+          "query": "tag_filter_fetch_100",
+          "latency_ms": 533.9955789968371,
+          "result_rows": 100
+        },
+        {
+          "query": "provenance_by_event",
+          "latency_ms": 8.821854833513498,
+          "result_rows": 5
+        },
+        {
+          "query": "point_id_full_body",
+          "latency_ms": 36.80346114560962,
+          "result_rows": 1
+        },
+        {
+          "query": "relay_time_range_100",
+          "latency_ms": 24.17371002957225,
+          "result_rows": 100
+        },
+        {
+          "query": "by_author_100",
+          "latency_ms": 23.227984085679054,
+          "result_rows": 100
+        },
+        {
+          "query": "tag_filter_fetch_100",
+          "latency_ms": 537.1312680654228,
+          "result_rows": 100
+        },
+        {
+          "query": "by_author_100",
+          "latency_ms": 22.203429136425257,
+          "result_rows": 100
+        },
+        {
+          "query": "provenance_group_count",
+          "latency_ms": 11.963806115090847,
+          "result_rows": 5000
+        },
+        {
+          "query": "provenance_by_event",
+          "latency_ms": 2.438175957649946,
+          "result_rows": 5
+        },
+        {
+          "query": "by_author_100",
+          "latency_ms": 2.577587030827999,
+          "result_rows": 100
+        },
+        {
+          "query": "provenance_group_count",
+          "latency_ms": 17.339551355689764,
+          "result_rows": 5000
+        },
+        {
+          "query": "tag_filter_fetch_100",
+          "latency_ms": 709.5527071505785,
+          "result_rows": 100
+        },
+        {
+          "query": "provenance_group_count",
+          "latency_ms": 22.918065078556538,
+          "result_rows": 5000
+        },
+        {
+          "query": "provenance_by_event",
+          "latency_ms": 2.101477235555649,
+          "result_rows": 5
+        },
+        {
+          "query": "provenance_by_event",
+          "latency_ms": 14.99476982280612,
+          "result_rows": 5
+        },
+        {
+          "query": "point_id_full_body",
+          "latency_ms": 13.864717911928892,
+          "result_rows": 1
+        },
+        {
+          "query": "point_id_full_body",
+          "latency_ms": 99.62554089725018,
+          "result_rows": 1
+        },
+        {
+          "query": "provenance_by_event",
+          "latency_ms": 83.5861498489976,
+          "result_rows": 5
+        },
+        {
+          "query": "tag_filter_fetch_100",
+          "latency_ms": 694.594434928149,
+          "result_rows": 100
+        },
+        {
+          "query": "point_id_full_body",
+          "latency_ms": 77.04816339537501,
+          "result_rows": 1
+        },
+        {
+          "query": "tag_filter_fetch_100",
+          "latency_ms": 688.5925801470876,
+          "result_rows": 100
+        },
+        {
+          "query": "provenance_by_event",
+          "latency_ms": 2.4137902073562145,
+          "result_rows": 5
+        },
+        {
+          "query": "tag_filter_fetch_100",
+          "latency_ms": 622.5625057704747,
+          "result_rows": 100
+        },
+        {
+          "query": "relay_time_range_100",
+          "latency_ms": 3.761349245905876,
+          "result_rows": 100
+        },
+        {
+          "query": "by_author_100",
+          "latency_ms": 4.342854954302311,
+          "result_rows": 100
+        },
+        {
+          "query": "relay_time_range_100",
+          "latency_ms": 4.426401108503342,
+          "result_rows": 100
+        },
+        {
+          "query": "provenance_group_count",
+          "latency_ms": 96.41360817477107,
+          "result_rows": 5000
+        },
+        {
+          "query": "provenance_group_count",
+          "latency_ms": 101.74045292660594,
+          "result_rows": 5000
+        },
+        {
+          "query": "provenance_group_count",
+          "latency_ms": 101.30741400644183,
+          "result_rows": 5000
+        },
+        {
+          "query": "provenance_by_event",
+          "latency_ms": 84.76444194093347,
+          "result_rows": 5
+        }
+      ],
+      "note": "latency starts inside worker; excludes executor queue wait, includes HTTP and JSON decode"
+    }
+  ],
+  "text_index": {
+    "status": "passed",
+    "experimental_flags_enabled": false,
+    "add_index_wall_s": 0.007335197180509567,
+    "materialize_wall_s": 4.5205317991785705,
+    "explain_indexes": "Expression ((Project names + Projection))\n  Aggregating\n    Expression (Before GROUP BY)\n      Filter\n        ReadFromMergeTree (bigbrotr_independent_lab_20260910_v2.events)\n        Indexes:\n          PrimaryKey\n            Condition: true\n            Parts: 4/4\n            Granules: 28/28\n          Skip\n            Name: lab_content_text\n            Description: text GRANULARITY 100000000\n            Condition: (mode: All; tokens: [\"nostr\"])\n            Parts: 4/4\n            Granules: 28/28\n          Ranges: 4\n",
+    "result": [
+      {
+        "n": 200000
+      }
+    ],
+    "benchmark": {
+      "samples": 20,
+      "p50_ms": 1.7851958982646465,
+      "p95_ms": 1.9378908909857273,
+      "mean_ms": 1.7945559928193688,
+      "min_ms": 1.6883849166333675,
+      "max_ms": 2.0081931725144386,
+      "samples_ms": [
+        1.882888376712799,
+        2.0081931725144386,
+        1.7778826877474785,
+        1.759188249707222,
+        1.7851958982646465,
+        1.8636533059179783,
+        1.7802966758608818,
+        1.821592915803194,
+        1.7234096303582191,
+        1.6883849166333675,
+        1.7872503958642483,
+        1.797148957848549,
+        1.820181030780077,
+        1.6889972612261772,
+        1.7252741381525993,
+        1.805663574486971,
+        1.9378908909857273,
+        1.7865276895463467,
+        1.6953181475400925,
+        1.7561819404363632
+      ],
+      "requested_samples": 20,
+      "errors": [],
+      "result_rows": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "parameter_variants": 1,
+      "query_example": "SELECT count() AS n FROM bigbrotr_independent_lab_20260910_v2.events WHERE hasToken(content, 'nostr')",
+      "status": "passed"
+    },
+    "note": "index creation/materialization and result correctness checked; EXPLAIN retained, no inferred speedup"
+  },
+  "storage_after_text_index": {
+    "captured_at": "2026-09-10T18:56:42.484557+00:00",
+    "tables": [
+      {
+        "table": "by_author",
+        "active_parts": 1,
+        "rows": 200000,
+        "bytes_on_disk": 7022390,
+        "data_compressed_bytes": 7019441,
+        "data_uncompressed_bytes": 14800000,
+        "marks_bytes": 636
+      },
+      {
+        "table": "events",
+        "active_parts": 4,
+        "rows": 200000,
+        "bytes_on_disk": 214249306,
+        "data_compressed_bytes": 95665282,
+        "data_uncompressed_bytes": 255453057,
+        "marks_bytes": 4044
+      },
+      {
+        "table": "provenance",
+        "active_parts": 4,
+        "rows": 1000000,
+        "bytes_on_disk": 10559255,
+        "data_compressed_bytes": 10550109,
+        "data_uncompressed_bytes": 52000000,
+        "marks_bytes": 2662
+      },
+      {
+        "table": "provenance_by_relay",
+        "active_parts": 1,
+        "rows": 1000000,
+        "bytes_on_disk": 35593479,
+        "data_compressed_bytes": 35586543,
+        "data_uncompressed_bytes": 52000000,
+        "marks_bytes": 1536
+      },
+      {
+        "table": "tag_postings",
+        "active_parts": 1,
+        "rows": 600000,
+        "bytes_on_disk": 20936509,
+        "data_compressed_bytes": 20930365,
+        "data_uncompressed_bytes": 53335600,
+        "marks_bytes": 1335
+      }
+    ],
+    "total_bytes_on_disk": 288360939,
+    "scope": "active parts only; excludes inactive parts, logs, metadata, WAL and temporary files"
+  },
+  "query_resume_finished": 1789066602.4845755
+}

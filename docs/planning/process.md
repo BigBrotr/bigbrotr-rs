@@ -7,12 +7,12 @@ production quality can be proved by counting reviews.
 
 | Revision | Main investigation | Expected design consequence | State |
 |---|---|---|---|
-| 1 | Recover vision, original phases, service responsibilities, and product gaps | Requirements, historical crosswalk, scope and questions | In progress |
-| 2 | Define service contracts, configuration, ownership and capabilities | Complete service catalog and lifecycle model | Planned |
-| 3 | Challenge storage, protocol and Rust library choices with practical probes | Data model, durability protocol and dependency decisions | Planned |
-| 4 | Examine failure, security, resource exhaustion and recovery | Operational contracts and fault-validation programme | Planned |
-| 5 | Exercise installation, dashboard, website, documentation and contributor journeys | Complete product delivery and maintenance plan | Planned |
-| 6 | Reconcile all contracts, evidence, decisions and implementation dependencies | Implementable roadmap and final outstanding risks | Planned |
+| 1 | Recover vision, original phases, service responsibilities, and product gaps | Requirements, historical crosswalk, scope and questions | Completed; see revision 1 |
+| 2 | Define service contracts, configuration, ownership and capabilities | Complete service catalog and lifecycle model | Completed; see revision 2 |
+| 3 | Challenge storage, protocol and Rust library choices with practical probes | Data model, durability protocol and dependency decisions | Completed; see revision 3 |
+| 4 | Examine failure, security, resource exhaustion and recovery | Operational contracts and fault-validation programme | Completed; see revision 4 |
+| 5 | Exercise installation, dashboard, website, documentation and contributor journeys | Complete product delivery and maintenance plan | Completed; see revision 5 |
+| 6 | Reconcile all contracts, evidence, decisions and implementation dependencies | Implementable roadmap and final outstanding risks | In progress |
 
 Research experiments may overlap document revisions when dependencies allow.
 Only experiments run and inspected count as evidence. Readiness remains scoped:

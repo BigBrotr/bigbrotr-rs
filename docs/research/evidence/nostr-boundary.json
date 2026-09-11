@@ -1,0 +1,19 @@
+{
+  "status": "behavior reproduced",
+  "source": "https://github.com/nostrdevkit/nostr",
+  "commit": "5c669a498e5f8dd1ec5713b11fdb92bcd858ad73",
+  "nostr": "0.45.4",
+  "nostr-sdk": "0.45.2",
+  "toolchain": "1.95.0-aarch64-apple-darwin",
+  "test": "relay::inner::tests::bigbrotr_probe_cached_id_with_changed_content",
+  "result": "After a valid event warmed verification cache, handle_event_msg returned Ok(Some) for same claimed ID with modified content; Event::verify independently rejected it.",
+  "scope": "Injected test in private SDK handler; no live relay or complete application exploit tested. Test intentionally asserts reproduction, not desired behavior.",
+  "duration_test_seconds": 0.01,
+  "build_seconds": 151,
+  "patch": "experiments/nostr-boundary/cached-id-probe.patch",
+  "upstream_relay_parser_tests": {
+    "passed": 16,
+    "failed": 0,
+    "nip67_hint_discard": "parse_nip67 passed with SubscriptionId-only expected result"
+  }
+}
