@@ -1,0 +1,152 @@
+{
+  "captured_on": "2026-09-11",
+  "scope": "phase-5 surviving Markdown inventory and full reread; no product implementation audit",
+  "source_git_revision": "757a8d899aefb277c0211077bc30ba0c8de68796",
+  "source_git_revision_evidence": "docs/research/source-inventory.json:go_head; no Git command or fresh legacy HEAD query performed",
+  "source_root": "/Users/vincenzo/Documents/GitHub/BigBrotr/bigbrotr",
+  "snapshot_root": "/Users/vincenzo/Documents/GitHub/BigBrotr/bigbrotr-rs/.research/source-snapshots/go",
+  "legacy_markdown": [
+    {
+      "path": "docs/superpowers/plans/bigbrotr/phase-5-derivation/README.md",
+      "sha256": "db70bfddf2eb29732792f5c25cf8f8a7a4ee5a01e5024c2d4dcb8a77ae463221",
+      "bytes": 442162,
+      "lines": 4551,
+      "newline_count": 4550
+    }
+  ],
+  "snapshot_markdown": [
+    {
+      "path": ".research/source-snapshots/go/docs/superpowers/plans/bigbrotr/phase-5-derivation/README.md",
+      "sha256": "db70bfddf2eb29732792f5c25cf8f8a7a4ee5a01e5024c2d4dcb8a77ae463221",
+      "bytes": 442162,
+      "lines": 4551,
+      "newline_count": 4550
+    }
+  ],
+  "missing_snapshot_paths": [],
+  "extra_sources": [],
+  "new_snapshot_files_created": [],
+  "same_path_content_equal": true,
+  "retired_task_paths_named_by_readme": [
+    "task-01-deepen-deriver-spec.md",
+    "task-02-earn-review-deriver.md",
+    "task-03-earn-review-ranker.md",
+    "task-04-runs-registry-watermark.md",
+    "task-05-current-replaceable-argmax.md",
+    "task-06-current-addressable-relaylist.md",
+    "task-07-global-social-facts.md",
+    "task-08-relay-facts-provenance-conditional.md",
+    "task-09-nip85-input-facts.md",
+    "task-10-relay-dedup-jaccard.md",
+    "task-11-relay-coverage-target.md",
+    "task-12-third-party-aggregation.md",
+    "task-13-propagation-censorship-aggregates.md",
+    "task-14-fail-closed-completion-retention.md",
+    "task-15-no-limit-guardrail.md",
+    "task-16-deriver-supervisor-config-metrics.md",
+    "task-17-ranker-inputs.md",
+    "task-18-ranker-trustrank.md",
+    "task-19-ranker-relay-quality.md",
+    "task-20-ranker-runpin-failclosed-emission-guards.md",
+    "task-21-integration-acceptance-suite.md",
+    "task-22-traceability-update.md"
+  ],
+  "retired_task_source_boundary": "README lines 97-103 states these 22 task files were retired on 2026-09-06. They are absent in both current directories. No retired Git contents retrieved or claimed as fully read.",
+  "read_coverage": {
+    "source": "README.md",
+    "logical_lines": [
+      1,
+      4551
+    ],
+    "method": "Sequential bounded full-text chunks, including correction history and closing ledger; any truncated output intervals were reread. Heading searches were used only for reference locations after full reading.",
+    "chunks": [
+      [
+        1,
+        300
+      ],
+      [
+        301,
+        500
+      ],
+      [
+        501,
+        700
+      ],
+      [
+        701,
+        950
+      ],
+      [
+        951,
+        1200
+      ],
+      [
+        1201,
+        1450
+      ],
+      [
+        1451,
+        1700
+      ],
+      [
+        1701,
+        1950
+      ],
+      [
+        1951,
+        2200
+      ],
+      [
+        2201,
+        2450
+      ],
+      [
+        2451,
+        2700
+      ],
+      [
+        2701,
+        2950
+      ],
+      [
+        2951,
+        3200
+      ],
+      [
+        3201,
+        3450
+      ],
+      [
+        3451,
+        3700
+      ],
+      [
+        3701,
+        3950
+      ],
+      [
+        3951,
+        4200
+      ],
+      [
+        4201,
+        4450
+      ],
+      [
+        4451,
+        4551
+      ]
+    ],
+    "repaired_truncated_intervals": [
+      [
+        100,
+        185
+      ],
+      [
+        1279,
+        1345
+      ]
+    ],
+    "line_convention": "bytes.splitlines() gives 4551 logical lines; the file has 4550 newline characters and no terminal newline."
+  }
+}

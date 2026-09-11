@@ -26,3 +26,20 @@ limitations sufficient to reproduce the relevant observation.
 
 All six are design/research revisions. Browser journeys, website builds and the
 future product acceptance suite are planned, not executed by these revisions.
+
+## Additional full-source and feature recheck
+
+After the six baseline revisions, the owner requested another complete historical
+reread and explicit decisions for features/data/analytics. The
+[coordinating review](../reviews/07-vision-and-final-recheck.md) records the full
+original vision, consolidation plan and all 34 surviving phase-0–9 Markdown files,
+with three bounded phase reports and seven named supplemental sources. The source
+inventory now includes 31 previously missing files; this corrects the earlier
+README-only capture without retroactively overstating its coverage.
+
+This pass added concrete product/data decisions, search and server reconciliation,
+analytical definitions and graph costs; simplified premature crate boundaries;
+and repaired first-launch, observation, protocol, permissions and packaging
+acceptance details. Each phase report distinguishes preserved intent, deliberate
+changes and evidence still owed by the implementation. Mechanical artifact checks
+verify the written handoff; no new product runtime or capacity result is claimed.

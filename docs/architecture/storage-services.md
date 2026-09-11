@@ -19,7 +19,9 @@ acceleration caches; owner
 metadata/schema version. Canonical event payload is present in pending state until
 archive safety permits reclamation. Rebuilding the identity inventory from a
 consistent archive must preserve original record identities and first observation
-metadata, not manufacture new records with a new ingestion time.
+metadata, not manufacture new records with a new ingestion time. Event-level
+first-admission and first-receive fields/corrections follow the explicit
+[data contract](data-and-durability.md), including when provenance is disabled.
 
 | Key | Starting value | Change behavior |
 |---|---|---|

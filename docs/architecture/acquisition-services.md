@@ -21,7 +21,7 @@ Prefer a single binary with selectable services and in-process contract implemen
 
 Three alternatives were considered: retaining the sequential Go supervisor would reproduce unrelated-service stalls; one process per named service from day one would add operational dependencies; composable service tasks with the same durable contracts preserve small installations and allow later process separation. The third is the recommendation. The no-RPC rule and the single-root-journal layout are not product invariants.
 
-Each selected worker validates its effective configuration and actual required adapters, opens stores, restores durable progress, then acquires work. It reports process readiness separately from data freshness and empty-queue state. Leases use registry-issued fencing generations and registry time; expiration alone is insufficient if an old owner can still write. On renewal uncertainty the worker stops claims and closes its active request work before its grant can expire. Shutdown stops new claims, closes subscriptions, waits for bounded outstanding receipts and writes only receipt-backed progress. A drain timeout exits with resumable work outstanding; it does not manufacture a completed run. CLI status exposes `starting`, `idle`, `running`, `backpressured`, `dependency_unavailable`, `draining` and `stopped` with a reason and last successful durable action.
+Each selected worker validates its effective configuration and actual required adapters, opens stores, restores durable progress, then acquires work. It reports process readiness separately from data freshness and empty-queue state. Leases use registry-issued fencing generations and registry time; expiration alone is insufficient if an old owner can still write. On renewal uncertainty the worker stops claims and closes its active request work before its grant can expire. Shutdown stops new claims, closes subscriptions, waits for bounded outstanding receipts and writes only receipt-backed progress. A drain timeout exits with resumable work outstanding; it does not manufacture a completed run. CLI status uses the shared health states `starting`, `ready`, `idle`, `degraded`, `draining` and `stopped`, with separate activity, reason and last successful durable action. Running work is an activity; backpressure and unavailable dependencies explain degraded health.
 
 ## Shared records and invariants
 
@@ -113,7 +113,7 @@ These defaults are per worker. Distributed lease ownership and budget allocation
 
 ## Seeder contract
 
-User entry points: `bigbrotr seed` imports the bundled snapshot once; `bigbrotr seed --file PATH` imports an operator file; `bigbrotr seed --enroll` also records operator enrollment. The serve profile may perform bundled seeding once when initializing an empty registry. File path and content digest appear in the run report, not in a permanent periodic polling loop.
+User entry points: `bigbrotr seed` imports the bundled snapshot once; `bigbrotr seed --file PATH` imports an operator file; `bigbrotr seed --enroll` also records operator enrollment. The full local recipe performs bundled seeding once when initializing an empty registry, unless `bootstrap.seed=false` is explicitly selected. A durable bootstrap job receipt makes restart idempotent. File path and content digest appear in the run report, not in a permanent periodic polling loop.
 
 Read bounded lines, preserve source/line number, ignore blanks and comments, normalize identities, and idempotently add evidence. Do not do DNS or capability probes in Seeder. IP literals that are out of policy can be recorded as excluded without scheduling a dial. Unresolvable hostnames remain candidates for Validator. `--enroll` grants scheduling permission subject to egress and bans; it creates `probe_state=unverified`, never `reachable=true`. A later successful attributable protocol result establishes reachability.
 
@@ -232,6 +232,11 @@ Default monitoring emits no signed Nostr EVENT. Optional active write probes are
 | `monitor.raw_retention` | `365d` | duration | H | Compact older detail only through storage retention manifests |
 
 Compact aggregate history may remain indefinitely, but a raw-retention policy must also cover its replay log, object documents and backups. Keeping all journal observations forever while deleting a query table does not honor raw retention. Minimal coverage/run audit metadata remains sufficient to explain aggregate intervals. Per-check counters, duration histograms, due backlog, oldest unfinished check, last complete catalog, last liveness, deferred hosts, geo age and protocol result counts are required. Runtime errors in one host group do not end another host's measurement.
+
+Monitor record/document separation, content deduplication, export references and
+retention consequences follow the [product data decisions](../product/data-and-feature-decisions.md).
+Compact attempt history must retain actual outcomes without copying an unchanged
+full NIP-11 document into every liveness record.
 
 ## Synchronizer contract
 
@@ -377,3 +382,58 @@ These are implementation acceptance scenarios to execute through the packaged bi
 21. **Hostile inputs and retention.** Exercise oversized lines, malformed JSON/protobuf/native frames, giant negentropy lists, malformed EOSE hints, decompression bombs, far-future/negative/out-of-range signed times and slow sockets. The binary remains bounded and records precise outcomes. After configured retention and replay, expired observation payloads do not reappear from an older journal while permitted aggregates remain explainable.
 
 The SDK must be evaluated against these entry-point scenarios, especially custom guarded dialing, `limit:0` serialization, NIP-67 hints, per-id retrieval evidence, timestamp range, cancellation, exact event verification and bounded negentropy storage. Coordinating source inspection already found that `nostr` 0.45.4 at `5c669a498e5f8dd1ec5713b11fdb92bcd858ad73` drops EOSE hint arrays in its relay-message enum; a bounded envelope must preserve them before SDK conversion. A convenience method that hides required evidence is replaced by a lower-level adapter; the protocol itself is not rewritten merely to preserve an SDK abstraction.
+
+## Clarifications from the complete historical reread
+
+Shared lifecycle states and finite-job outcomes are defined in
+[configuration/runtime](../engineering/configuration-and-runtime.md). Service
+protocol phases such as probing or backfill are nested progress, not alternative
+health enums. The full local recipe has a deterministic bootstrap; an empty
+registry cannot silently satisfy its first-launch acceptance through healthy idle.
+
+Time intervals use a typed exclusive upper bound, `Finite(u64)` or `AfterMax`,
+rather than overflowing `u64::MAX + 1`. Convert a nonempty half-open range to
+NIP-01's inclusive upper timestamp with checked arithmetic: finite upper minus
+one, or u64::MAX for AfterMax. Empty/inverted ranges and lower-zero boundaries
+have explicit cases. NIP-77's reserved maximum timestamp is a protocol limitation,
+not grounds to discard a valid archived event; select another retrieval path and
+record the reconciliation coverage limit.
+
+The old zero-blocked-fetch claim is achievable for exact-ID requests under our
+control: suppress a known denied ID from the need list. Ordinary NIP-01 range
+queries cannot exclude arbitrary event IDs, so linear/live remote delivery of
+blocked bodies cannot be promised to be zero. Verify bounded rejection work, no
+retained prohibited body, no false local witness and explicit policy exclusions.
+Do not mistake unavoidable wire redelivery for a failure of exact-ID suppression.
+
+### Paid relays and measurement retention
+
+A NIP-11 payment declaration is a claim about policy, not proof that every read
+is denied. Continue permitted public reads under normal budgets; distinguish an
+actual payment-required refusal from AUTH, protocol failure and transport failure.
+No acquisition worker purchases access, pays an invoice or creates a signing
+identity automatically. An operator-provisioned authorization binding can enable
+access under its explicit scope; the resulting evidence remains scoped.
+
+`monitor.aggregate_retention=none` retains compact completed historical aggregates
+indefinitely by default, with their bucket resolution, denominator, method and
+source-retention coverage. `monitor.raw_retention=365d` is separate. Reconfiguration
+cannot promise recomputation at a resolution whose source detail has expired.
+Reference/pin rules cover original documents, snapshots and backups.
+
+When `monitor.geo.refresh=true`, an explicit `monitor.geo.sources` entry per
+ASN/City dataset supplies supported HTTPS source, protected credential reference
+if needed, archive format and expected database product/version metadata. The
+initial database reader supports MaxMind DB (`mmdb`); accepted compressed
+containers are an explicit bounded allowlist, not arbitrary extraction commands.
+`monitor.geo.refresh_interval=24h` checks source freshness; download/install occurs
+only when required by configured version/age/change evidence. Disabled refresh
+needs no URL or credential. Format/path changes drain readers and atomically
+replace a validated file, preserving last-good content and its version.
+
+Required practical fixtures: a hostname with both A and AAAA where one family
+fails and the other succeeds; same hostname with different selected IP/TLS
+results; corrupt, truncated, oversized and wrong-product Geo archives; interruption
+between temporary download/validation/atomic install; expired data with an
+unavailable refresh source. Verify actual per-family evidence, guarded dials,
+last-good reads and explicit stale/unavailable status rather than only filenames.

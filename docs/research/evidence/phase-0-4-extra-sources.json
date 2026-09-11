@@ -1,0 +1,147 @@
+{
+  "captured_on": "2026-09-11",
+  "source_git_revision_context": "757a8d899aefb277c0211077bc30ba0c8de68796",
+  "capture_note": "Original worktree files read only; hashes identify exact snapshot bytes; see phase-0\u20134 recheck for complete read coverage and supplemental boundaries.",
+  "sources": [
+    {
+      "source": "bigbrotr-go/docs/superpowers/plans/bigbrotr/phase-1-runtime-foundation/task-12-per-preset-zero-config-e2e.md",
+      "snapshot": ".research/source-snapshots/go/docs/superpowers/plans/bigbrotr/phase-1-runtime-foundation/task-12-per-preset-zero-config-e2e.md",
+      "sha256": "b1a4f88ff48a1df967aea1d19a352d330fd3d206ee72ac918d22022338c9a8b0",
+      "bytes": 14956,
+      "lines": 292,
+      "classification": "historical intent, review or claimed Go validation; not current instructions or Rust acceptance evidence",
+      "captured_on": "2026-09-11",
+      "capture_note": "Supplement recovered during full phase reread; source worktree bytes identified by hash. Legacy HEAD is contextual, not proof of committed-byte identity."
+    },
+    {
+      "source": "bigbrotr-go/docs/superpowers/plans/bigbrotr/phase-2-storage-spine/task-01-relayurl-canonicalize.md",
+      "snapshot": ".research/source-snapshots/go/docs/superpowers/plans/bigbrotr/phase-2-storage-spine/task-01-relayurl-canonicalize.md",
+      "sha256": "0f2576cf8893953518c957e5cd94578cbc821ece60f878a43effead1e7d16fa2",
+      "bytes": 4232,
+      "lines": 93,
+      "classification": "historical intent, review or claimed Go validation; not current instructions or Rust acceptance evidence",
+      "captured_on": "2026-09-11",
+      "capture_note": "Supplement recovered during full phase reread; source worktree bytes identified by hash. Legacy HEAD is contextual, not proof of committed-byte identity."
+    },
+    {
+      "source": "bigbrotr-go/docs/superpowers/plans/bigbrotr/phase-2-storage-spine/task-02-relayurl-recompose.md",
+      "snapshot": ".research/source-snapshots/go/docs/superpowers/plans/bigbrotr/phase-2-storage-spine/task-02-relayurl-recompose.md",
+      "sha256": "3a3459894b25a707ccd39e8e48af66ed22da48253ef8967c09b23a9a1f7e4a8c",
+      "bytes": 3890,
+      "lines": 83,
+      "classification": "historical intent, review or claimed Go validation; not current instructions or Rust acceptance evidence",
+      "captured_on": "2026-09-11",
+      "capture_note": "Supplement recovered during full phase reread; source worktree bytes identified by hash. Legacy HEAD is contextual, not proof of committed-byte identity."
+    },
+    {
+      "source": "bigbrotr-go/docs/superpowers/plans/bigbrotr/phase-2-storage-spine/task-03-relayurl-retarget-callers.md",
+      "snapshot": ".research/source-snapshots/go/docs/superpowers/plans/bigbrotr/phase-2-storage-spine/task-03-relayurl-retarget-callers.md",
+      "sha256": "c32bac126cd4e40703edac9a4e48e4c78759b07d66ba8029ad6672ee5d0b9da8",
+      "bytes": 8312,
+      "lines": 135,
+      "classification": "historical intent, review or claimed Go validation; not current instructions or Rust acceptance evidence",
+      "captured_on": "2026-09-11",
+      "capture_note": "Supplement recovered during full phase reread; source worktree bytes identified by hash. Legacy HEAD is contextual, not proof of committed-byte identity."
+    },
+    {
+      "source": "bigbrotr-go/docs/superpowers/plans/bigbrotr/phase-2-storage-spine/task-04-journal-segment-header.md",
+      "snapshot": ".research/source-snapshots/go/docs/superpowers/plans/bigbrotr/phase-2-storage-spine/task-04-journal-segment-header.md",
+      "sha256": "97409dd86337be76776d0ecf1ca02bf79f32405c2366f31e816744cbd37bbb2c",
+      "bytes": 4185,
+      "lines": 44,
+      "classification": "historical intent, review or claimed Go validation; not current instructions or Rust acceptance evidence",
+      "captured_on": "2026-09-11",
+      "capture_note": "Supplement recovered during full phase reread; source worktree bytes identified by hash. Legacy HEAD is contextual, not proof of committed-byte identity."
+    },
+    {
+      "source": "bigbrotr-go/docs/superpowers/plans/bigbrotr/phase-2-storage-spine/task-05-journal-at-least-once.md",
+      "snapshot": ".research/source-snapshots/go/docs/superpowers/plans/bigbrotr/phase-2-storage-spine/task-05-journal-at-least-once.md",
+      "sha256": "263f8adf3f968ed1b16b14c70db648cc5e25d9d57c485e77bc8d8ecf9fa4e821",
+      "bytes": 3631,
+      "lines": 39,
+      "classification": "historical intent, review or claimed Go validation; not current instructions or Rust acceptance evidence",
+      "captured_on": "2026-09-11",
+      "capture_note": "Supplement recovered during full phase reread; source worktree bytes identified by hash. Legacy HEAD is contextual, not proof of committed-byte identity."
+    },
+    {
+      "source": "bigbrotr-go/docs/superpowers/plans/bigbrotr/phase-2-storage-spine/task-06-earn-review-journal.md",
+      "snapshot": ".research/source-snapshots/go/docs/superpowers/plans/bigbrotr/phase-2-storage-spine/task-06-earn-review-journal.md",
+      "sha256": "cb982f9d8a402b9af42c7e3bca4fcc212586d1150d69e5659f7834fbb875f3d7",
+      "bytes": 4013,
+      "lines": 36,
+      "classification": "historical intent, review or claimed Go validation; not current instructions or Rust acceptance evidence",
+      "captured_on": "2026-09-11",
+      "capture_note": "Supplement recovered during full phase reread; source worktree bytes identified by hash. Legacy HEAD is contextual, not proof of committed-byte identity."
+    },
+    {
+      "source": "bigbrotr-go/docs/superpowers/plans/bigbrotr/coverage-matrix.md",
+      "snapshot": ".research/source-snapshots/go/docs/superpowers/plans/bigbrotr/coverage-matrix.md",
+      "sha256": "89d89c49d5d2fd374c4111827be286050646df736392f540e8c1b2ac566a39c5",
+      "bytes": 27025,
+      "lines": 268,
+      "classification": "historical intent, review or claimed Go validation; not current instructions or Rust acceptance evidence",
+      "captured_on": "2026-09-11",
+      "capture_note": "Supplement recovered during full phase reread; source worktree bytes identified by hash. Legacy HEAD is contextual, not proof of committed-byte identity."
+    },
+    {
+      "source": "bigbrotr-go/docs/superpowers/plans/bigbrotr/serve-wiring/README.md",
+      "snapshot": ".research/source-snapshots/go/docs/superpowers/plans/bigbrotr/serve-wiring/README.md",
+      "sha256": "b559897dae632ba9b88aae3b0790631952db2448e3bbe461f17488fb28a3b0c5",
+      "bytes": 8297,
+      "lines": 138,
+      "classification": "historical intent, review or claimed Go validation; not current instructions or Rust acceptance evidence",
+      "captured_on": "2026-09-11",
+      "capture_note": "Supplement recovered during full phase reread; source worktree bytes identified by hash. Legacy HEAD is contextual, not proof of committed-byte identity."
+    },
+    {
+      "source": "bigbrotr-go/docs/superpowers/plans/bigbrotr/serve-wiring/earn-review-dedupe-ds2.md",
+      "snapshot": ".research/source-snapshots/go/docs/superpowers/plans/bigbrotr/serve-wiring/earn-review-dedupe-ds2.md",
+      "sha256": "cb126c74311b7a0e43a2b9b58562e315bf5f24bfd52aa0b6e69b8f8ec874f10e",
+      "bytes": 7658,
+      "lines": 126,
+      "classification": "historical intent, review or claimed Go validation; not current instructions or Rust acceptance evidence",
+      "captured_on": "2026-09-11",
+      "capture_note": "Supplement recovered during full phase reread; source worktree bytes identified by hash. Legacy HEAD is contextual, not proof of committed-byte identity."
+    },
+    {
+      "source": "bigbrotr-go/docs/superpowers/plans/bigbrotr/serve-wiring/earn-review-storage-clickhouse.md",
+      "snapshot": ".research/source-snapshots/go/docs/superpowers/plans/bigbrotr/serve-wiring/earn-review-storage-clickhouse.md",
+      "sha256": "7bdf0148471c8822c9432934361e85651cf243f6af10f00ea62bb9203017aab1",
+      "bytes": 9140,
+      "lines": 148,
+      "classification": "historical intent, review or claimed Go validation; not current instructions or Rust acceptance evidence",
+      "captured_on": "2026-09-11",
+      "capture_note": "Supplement recovered during full phase reread; source worktree bytes identified by hash. Legacy HEAD is contextual, not proof of committed-byte identity."
+    },
+    {
+      "source": "bigbrotr-go/docs/superpowers/plans/bigbrotr/serve-wiring/task-01-serve-entry-point.md",
+      "snapshot": ".research/source-snapshots/go/docs/superpowers/plans/bigbrotr/serve-wiring/task-01-serve-entry-point.md",
+      "sha256": "c89fab0436d90eb73051eff3752ca3dc7cfc2bbf9c743442e7b0dbacb81cf6b0",
+      "bytes": 21858,
+      "lines": 341,
+      "classification": "historical intent, review or claimed Go validation; not current instructions or Rust acceptance evidence",
+      "captured_on": "2026-09-11",
+      "capture_note": "Supplement recovered during full phase reread; source worktree bytes identified by hash. Legacy HEAD is contextual, not proof of committed-byte identity."
+    },
+    {
+      "source": "bigbrotr-go/docs/superpowers/plans/bigbrotr/test-infrastructure/EXCLUSIONS.md",
+      "snapshot": ".research/source-snapshots/go/docs/superpowers/plans/bigbrotr/test-infrastructure/EXCLUSIONS.md",
+      "sha256": "22da9da80d39f21abe536dcbcc8c1f8e337b32bbe109596d71df638da7e75354",
+      "bytes": 47187,
+      "lines": 341,
+      "classification": "historical intent, review or claimed Go validation; not current instructions or Rust acceptance evidence",
+      "captured_on": "2026-09-11",
+      "capture_note": "Supplement recovered during full phase reread; source worktree bytes identified by hash. Legacy HEAD is contextual, not proof of committed-byte identity."
+    },
+    {
+      "source": "bigbrotr-go/docs/superpowers/plans/bigbrotr/test-infrastructure/NONDETERMINISM.md",
+      "snapshot": ".research/source-snapshots/go/docs/superpowers/plans/bigbrotr/test-infrastructure/NONDETERMINISM.md",
+      "sha256": "13b3b3bd91ee77f2b73bdf7f1b4f497f4e553e5c16a0dd51857c2141ac29e1e7",
+      "bytes": 40182,
+      "lines": 593,
+      "classification": "historical intent, review or claimed Go validation; not current instructions or Rust acceptance evidence",
+      "captured_on": "2026-09-11",
+      "capture_note": "Supplement recovered during full phase reread; source worktree bytes identified by hash. Legacy HEAD is contextual, not proof of committed-byte identity."
+    }
+  ]
+}

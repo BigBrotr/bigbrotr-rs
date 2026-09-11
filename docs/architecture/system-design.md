@@ -95,6 +95,35 @@ a stopped indexer makes reads stale and grows replay backlog; a stopped archive
 publisher eventually fills pending storage and causes visible intake throttling.
 No finite machine can buffer an unlimited outage.
 
+### Responsibilities are not container names
+
+| Component | Shape | Required dependency and outage behavior |
+|---|---|---|
+| URL/filter/event semantics, read core, graph algorithms | Library or internal modules | No independent daemon; callers own their lifetime |
+| Seeder, import/export, scrub, backup, migration | Finite or scheduled jobs | Durable job state; stop/resume according to the job contract |
+| Discoverer, validator, monitor, synchronizer | Continuous workers/session owners | Control state and guarded transport; admitted data flows through the ingest owner |
+| Ingest owner | Exclusive stateful role per shard | Owns RocksDB admission; no durable receipt while its storage is unavailable |
+| Archive publication and online indexing | Independent consumers | Each owns its cursor and projection; one can lag without inventing completion for the other |
+| Deriver and Ranker | Incremental/scheduled compute jobs | Require their declared complete input generations, not every upstream daemon to be running |
+| API, ArchiveRelay and private administration | Listeners with shared libraries | Read/control dependencies and policy leases; do not depend on an active collector |
+| DVM and NIP publishers | Network adapters plus durable jobs/outbox | Explicit signing identity, policy and destination receipts |
+| PostgreSQL and ClickHouse | Database processes | Separate persistence, resource limits, lifecycle and recovery |
+| DuckDB, RocksDB, Parquet | Embedded engine, embedded store and file format | Not three additional network database servers |
+
+The reference deployment can group acquisition with its ingest owner, isolate
+heavy archive/index/graph work in worker processes, and isolate read/admin
+listeners. Signing roles may run in a separate process with narrower credentials.
+All use the same application image. A compact local mode may combine compatible
+roles. Packaging recipes resolve each dependency; they do not require fifteen
+application containers or a permanent container for an occasional export.
+
+Logical supervision handles ordinary service errors within a process. It cannot
+isolate a process abort, native-library crash or whole-process OOM; workloads
+requiring that isolation must use separate processes/cgroups. Across machines,
+share durable protocols and accessible archive storage, never an uncoordinated
+embedded database directory. Container networking, volumes, secrets and per-host
+resource shares remain explicit deployment work, not consequences of a Rust crate.
+
 ## What stays optional
 
 Provenance off means no historical event/relay edge persistence, edge indexes,
@@ -110,12 +139,15 @@ online capabilities, not a second silently incompatible storage model. Ranker,
 publishers, active probes, public API, DVM and archive-relay are independently
 configurable; enabling signing or public exposure requires effective settings.
 
-OpenSearch is an optional search adapter only if required query semantics include
-relevance ranking, fuzzy matching, language analysis or other functionality that
-the validated ClickHouse search path does not provide. It incurs another body
-index, RAM budget, update stream and recovery path. Do not deploy it merely to
-search a literal token. LMDB/nostrdb is a credible serving alternative for a
-relay-first workload; it is not the default extra database beside every engine.
+Content search is included in the complete online product and may be disabled
+per deployment. Start with ClickHouse text indexing; evaluate Tantivy for richer
+embedded search or OpenSearch for a separately operated search cluster when
+query quality, features and measured total cost justify them. Search index
+coverage, ranking, rebuild and disablement are explicit in the
+[search and reconciliation contract](search-and-reconciliation.md). That contract
+also adds NIP-77 serving to ArchiveRelay independently of provenance collection.
+LMDB/nostrdb remains a credible alternative for a relay-first serving workload;
+it is not an obligatory extra database beside every engine.
 
 ## Growth and failure domains
 

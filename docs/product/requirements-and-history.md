@@ -107,3 +107,12 @@ silently reuse the incompatible old runtime profile meaning. SocialBrotr names a
 social-filter example, with provenance chosen explicitly. Recipe initialization
 writes the actual settings; stored capabilities do not infer behavior from names.
 A deployment may split roles into several containers using the same image.
+
+## Feature and source decisions
+
+[Product/data/feature decisions](data-and-feature-decisions.md) states why each
+retained data class, index and public resource earns its cost, which useful
+journeys are included, and which tempting additions do not fit the baseline.
+The [complete vision reread](../reviews/07-vision-and-final-recheck.md) maps all
+original decision definitions to retained intent or deliberate changes. Legacy
+plans are context, not feature obligations or performance certificates.

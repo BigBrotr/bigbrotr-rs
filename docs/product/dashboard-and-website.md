@@ -66,7 +66,7 @@ must describe the concrete consequences and its own authorized scope.
 Use a monorepo during the Rust rebuild. Keep build/deploy boundaries independent:
 
 ```text
-crates/                      Rust runtime, service and read contracts
+crates/                      Focused reusable Rust model, protocol and analytics libraries
 apps/dashboard/              SvelteKit + TypeScript, static build
 apps/admin/                  same frontend stack, separate private static bundle
 apps/site/                   Astro + Starlight, static site and blog
@@ -606,3 +606,14 @@ archival events, private administration and a private planning repository are
 already owner decisions. The design supports coherent local defaults, deliberate exposure and
 honest coverage without blocking independent contract, documentation or dashboard
 preparation.
+
+## Content search and reconciliation detail
+
+The [search and reconciliation contract](../architecture/search-and-reconciliation.md)
+defines event-text syntax, ranking, index coverage and disable/rebuild behavior.
+Search is part of the complete product; an optional deployment index is not an
+unspecified future feature. The private UI manages that derived index and shows
+its cost/progress. Document NIP-77 archive downloads alongside REQ, COUNT and
+NIP-50, including provenance independence and the difference between negotiation
+and a frozen corpus export. Website documentation search remains a separate
+static-site feature.

@@ -136,3 +136,38 @@ aggregate results.
 Policy restrictions use the management activation barrier, bounded authorization
 leases and fail-closed expiry. Data snapshots may remain pinned for consistency,
 but an old snapshot is not permission to bypass a newer security restriction.
+
+## Additional acceptance recovered from historical task documents
+
+Exercise shipped alert routing and its local receiver, not only rule expressions.
+Build from a clean checkout and from a reused build cache; neither artifacts nor
+images may contain a development `.env`, credentials or untracked lab material.
+Inspect effective private listener binds under bridge and explicitly supported
+host-network modes. Loopback inside a container and loopback on its host are
+different reachability contracts; doctor and installation instructions must agree
+with the actual port mapping.
+
+Provenance-off replay/restore verifies event-level first admission/receive metadata
+without allocating an edge inventory. Test timestamps at zero and u64 maximum
+through storage and filter conversion, with the distinct NIP-77 maximum exclusion.
+Exercise full text and server reconciliation through actual read entry points as
+specified in [their contract](../architecture/search-and-reconciliation.md).
+
+Required-suite results distinguish discovered/collected, executed, skipped, failed
+and NOT RUN scenarios. A required engine/client suite with no executed required
+scenario cannot report success. Missing tools or environment explain NOT RUN and
+fail the required release job; optional suites report their scope honestly. This
+is an execution check, not an arbitrary test-count quota or source-file census.
+
+The low-volume path is a distinct integration case: one admitted event smaller
+than every size threshold must reach archive publication and online queryability
+within their independent configured age/flush deadlines. Do not let steady bulk
+traffic conceal a timer that never flushes. Control pure time with a fake clock;
+use bounded monotonic progress waits for actual processes, and verify receipts,
+query results and artifact membership rather than replace readiness with sleep.
+
+For the clean-install journey, extract the actual release bundle into a fresh
+directory outside the checkout. Resolve every referenced Compose mount, config,
+seed and startup asset there before launching. Then execute the documented
+installation, useful fixture collection/read and shutdown. A developer checkout
+or cached image must not supply an undeclared missing release file.

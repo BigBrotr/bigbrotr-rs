@@ -14,12 +14,15 @@ website and documentation carry equal quality obligations.
 ## Read the design in this order
 
 1. [Requirements and historical phases](docs/product/requirements-and-history.md)
+   and [product/data/feature decisions](docs/product/data-and-feature-decisions.md)
 2. [Complete system and alternatives](docs/architecture/system-design.md)
 3. [Data, durability and indexing](docs/architecture/data-and-durability.md)
 4. [Storage service contracts](docs/architecture/storage-services.md)
 5. [Acquisition services](docs/architecture/acquisition-services.md)
 6. [Derivation, reads and publication](docs/architecture/derived-read-publication.md)
-7. [Protocol evolution](docs/architecture/protocol-evolution.md)
+   and [detailed analytical definitions and costs](docs/architecture/analytics-detail.md)
+7. [Content search and server reconciliation](docs/architecture/search-and-reconciliation.md)
+   and [Protocol evolution](docs/architecture/protocol-evolution.md)
 8. [Dashboard and website](docs/product/dashboard-and-website.md), plus
    [private administration](docs/product/private-administration.md)
 9. [Configuration/runtime](docs/engineering/configuration-and-runtime.md),
@@ -29,7 +32,8 @@ website and documentation carry equal quality obligations.
 
 The [questions ledger](docs/planning/questions.md) distinguishes owner context,
 reasoned design selections and defaults for unanswered questions. The
-[revision log](docs/planning/process.md) records six substantive reconsiderations.
+[revision log](docs/planning/process.md) records six substantive reconsiderations
+and a further [full-source and feature recheck](docs/reviews/07-vision-and-final-recheck.md).
 The [experiment summary](docs/research/experiment-summary.md) states what was
 actually run and what remains unverified.
 
@@ -45,7 +49,7 @@ builds in the same monorepo.
 
 This does duplicate some bodies between archive and online serving. That is an
 explicit space/latency tradeoff. Archive-only and tiered-serving recipes can reduce
-online storage with declared capability or latency differences. OpenSearch,
+online storage with declared capability or latency differences. Tantivy/OpenSearch,
 LMDB-based relay serving and a replicated broker are alternatives for specifically
 different search, serving or availability workloads; they are not mandatory extra
 services. Go remains technically capable; the measured language differences do
@@ -85,7 +89,7 @@ product work until the owner begins the implementation stage.
 | 3 — acquisition | Multiplexed sessions; live/backfill/reverification; NIP-77 and linear fallback; coverage/gaps; imported full events; fair bounded scheduling | Real controlled relays over sockets, caps/same-second storms/auth/late data, disconnect/crash recovery, import idempotency; scoped evidence without false completeness |
 | 4 — relay lifecycle | Seeder, all discovery sources, guarded validator, monitor families, registry and evidence lifecycle, optional active probes | Fresh-instance enrollment through CLI/Compose; broken DNS/TLS/overlays and rate limits; all eligible endpoints scheduled fairly; imported claims never become local witnesses |
 | 5 — facts and ranking | Current-state reducers, fact/assertion registry, incremental updates, graph artifacts, named viewpoints, relay similarity candidates and exact verification | Delta outputs equal slow full-recompute oracle on changing fixtures; old complete runs survive failures; skewed graph budgets and score reproducibility; no all-pairs relay explosion |
-| 6 — read surfaces | Shared typed read core; event/tag/provenance/search/count resources; HTTP API; archive-relay historical + live behavior; optional DVM adapter | Cross-surface semantic equality, deletion/replacement/tie cases, exact vs estimated counts, stable pagination, slow clients, authorization and stale capability responses |
+| 6 — read surfaces | Shared typed read core; event/tag/provenance/search/count resources; HTTP API; archive-relay historical + live behavior and server NIP-77; optional DVM adapter | Cross-surface semantic equality, deletion/replacement/tie cases, exact vs estimated counts, stable pagination, slow clients, authorization and stale capability responses; actual NIP-50 and NIP-77 client interoperability |
 | 7 — publication and protocol profiles | Signer abstraction, durable signed outbox, per-destination receipts, NIP-66/NIP-85 compatible adapters, optional proposal profiles | Wire validation with reference clients; crash after send/ACK; same-byte retries; algorithm/viewpoint keys; fresh/partial measurement semantics; no implicit publication |
 | 8 — operations and distribution | Full CLI, single image/role recipes, versioned config management, import/export formats, scrub/backup/restore/migrate, alerts, diagnostics and sizing | Clean release-bundle installation; real restore during concurrent activity; old-format migration; full/projected standalone DuckDB exports; resource/failure workload matrix |
 | 9 — dashboard and private administration | Public data explorer, provenance/relay/social/rank views, private service/config/job/storage/key/access management, shared contracts and accessibility | Browser journeys against real packaged backend, keyboard/mobile, malicious data, stale/empty/disabled states, permission boundaries and concurrent config edits |
@@ -120,7 +124,7 @@ not a data-plane bus and Docker is not a distributed storage protocol.
 | CH physical sort/projections | Chronological candidate versus ID-ordered baseline | Realistic signed corpus, many parts, concurrent queries/replay/merges and correctness oracle |
 | Exact edge inventory layout | Compact ordinals + interned stable identity dimensions | Total P-index/dictionary size, write amplification and lookup rate; not RAM-only cache timings |
 | Archive file/row-group sizes | Bounded target sizes, serial publication/parallel preparation | Freshness, compressed bytes, compaction debt, memory and object-store requests |
-| Search adapter | CH token/filter search where sufficient | Required relevance/fuzzy/language semantics and measured cost of optional OpenSearch |
+| Search adapter | CH content token/phrase search with explicit relevance and coverage | Signed multilingual correctness/relevance corpus under mixed load; compare Tantivy/OpenSearch when stronger semantics justify the cost |
 | 5k/10k/100k operating envelope | No unmeasured capacity promise | Full workload programme with real signed ingestion and dated real-relay behavior |
 | Native vs process DuckDB integration | Isolated archive/job worker using pinned engine/extensions | Packaging, cancellation, RSS/native memory and recovery under actual Rust integration |
 | Automatic multi-host failover | Not inferred from leases; explicit fencing contract | Stale writer cannot commit after takeover; loss model and quorum tested |

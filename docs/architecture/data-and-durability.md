@@ -30,6 +30,9 @@ tag list remains in the body. Do not parse content as JSON unless a kind-specifi
 deriver asks for it. Signed timestamps remain integer values; partition placement
 must not silently alter them or create unbounded adversarial partitions.
 
+Detailed retention/index/exposure rationale and the monitoring document-reference
+contract are in [product data decisions](../product/data-and-feature-decisions.md).
+
 ## Admission transaction
 
 The owner routes an event to one durable partition, checks policy and full event
@@ -70,6 +73,34 @@ tail, or a justified ordered acceleration. A conservative stale set may cause
 extra downloads; it cannot authorize false progress. Benchmark the exact edge
 inventory with dictionary bytes, compaction/write amplification, backup and
 rebuild costs. No storage engine removes the information cost of P.
+
+### First observation without provenance
+
+Every event has immutable `first_admitted_at` (the ingest owner's wall-clock time)
+and its original admission receipt. Network acquisition additionally records
+`first_received_at`: the earliest attributable receive time reported by an
+approved collector in this instance, with observer/clock-quality metadata. It is
+not the event's `created_at`, a remote server timestamp or an imported assertion.
+An import-only event has no local network-receive time until locally observed.
+Provenance off still preserves these event-level fields; it stores no relay edge
+or endpoint identity in their place.
+
+An earlier eligible local receive observation updates the compact event metadata
+and emits an immutable correction with its own SourceRecordId in the same synced
+batch. Ordinary later duplicates return existing receipts. Store the original
+admission and correction facts in the archive, preserving the original signed
+body. Read-time minimum is evaluated after source-cut filtering, just like edge
+corrections, so a late earlier timestamp cannot rewrite an already pinned answer.
+Clock regressions and uncertainty are diagnostic metadata, not evidence of
+physical network propagation or causal order. Admission receipt order remains
+separate from wall-clock order.
+
+A dataset import preserves source metadata in its source namespace and records
+local import/admission separately; it cannot backdate this instance's local
+network observation. A deployment restore preserves original receipts and these
+fields. Test replay, earlier/later duplicates, import followed by network receipt,
+clock rollback and restore with provenance disabled; none may invent a new
+first-admission time or create hidden edge state.
 
 ## Archive publication and reclamation
 

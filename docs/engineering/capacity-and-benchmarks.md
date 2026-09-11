@@ -175,3 +175,27 @@ candidates, not a measured membership/metadata layout for BigBrotr. Explicit bou
 CPU pools can use [Rayon thread configuration](https://docs.rs/rayon/latest/rayon/struct.ThreadPoolBuilder.html);
 pool size must fit the shared host envelope rather than defaulting each service
 to all logical processors.
+
+## Optional read indexes under the same host budget
+
+Content search and server-side reconciliation are exercised together with normal
+reads, not allocated another copy of the host's free memory. Record text postings/
+positions, shared set summaries, ad-hoc filtered sets, active snapshot retention
+and body-lookup cost separately. Do not benchmark a per-client full-set rebuild
+and call its memory inherent to the Negentropy protocol. Conversely, count the
+initial shared-index build and ongoing membership/expiry maintenance; cached
+fingerprints are not free to produce. See the
+[search/reconciliation scenarios](../architecture/search-and-reconciliation.md).
+
+Monitor volume has its own attempt/check/document-change dimensions. Compare
+compact attempt rows plus content-addressed document references against repeated
+wide document payloads. Vary unchanged catalog periods, churn, retries, route
+count and raw-retention/aggregate policies. Retained metadata cost and reference
+pins belong in the same disk forecast as event/provenance growth.
+
+Keep provenance cardinality `P` distinct from social graph vertices `V`, current
+edges `E`, historical input tags `H` and concurrent viewpoints `K`. The
+[graph capacity contract](../architecture/analytics-detail.md#graph-state-is-different-from-provenance-state)
+accounts for adjacency, vectors, rebuilds and global iterations independently.
+Benchmarks must cover full graph construction, loading, normalization and artifact
+publication under competing work, not just a warm numerical kernel.

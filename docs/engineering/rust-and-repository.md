@@ -6,35 +6,94 @@ compile-time isolation or a public contract justifies it.
 
 ```text
 apps/
-  bigbrotr/                CLI, wiring and process roles
-  dashboard/              SvelteKit/TypeScript, independently built static client
-  site/                   Astro/Starlight docs, product pages and blog
+  bigbrotr/                private Rust application package: CLI and role wiring
+    src/
+      config/              typed configuration and resolved topology
+      runtime/             budgets, supervision, cancellation and instrumentation
+      ingest/              durable admission, receipts, owner routing and replay
+      storage/             focused RocksDB, PG, archive and CH adapters
+      acquisition/         seed, discovery, validation, monitoring and sync
+      analytics/           job orchestration and publication of derived generations
+      read/                typed resources, plans and shared serving semantics
+      publication/         signed outbox, NIP-66/85 and query-result delivery
+      interfaces/          HTTP, ArchiveRelay, internal RPC and management adapters
+  dashboard/               SvelteKit/TypeScript static client
+  site/                    Astro/Starlight product pages, documentation and blog
 crates/
-  domain/                 event/evidence/coverage/policy types and pure rules
-  config/                 typed config, validation, resolved topology
-  protocol/               Nostr adapters, guarded transport, bounded wire envelopes
-  ingest/                 durable receipts, owner routing, admission and replay
-  storage/                RocksDB, PG, archive and CH adapters behind focused traits
-  acquisition/            six acquisition service modules
-  analytics/              derivation, graph snapshots, algorithms and run publication
-  read/                   resource registry, typed query plans and answer semantics
-  publication/            signer policies, durable jobs, NIP-66/85 and DVM adapters
-  runtime/                supervision, budgets, cancellation, instrumentation
-contracts/                versioned external schemas and generated-client inputs
-config/                   minimal overrides and supported deployment recipes
-migrations/               PG and CH changes, archive schema transitions
-packaging/                Compose, images, native service units, release bundles
-experiments/              reproducible bounded research probes, not shipped code
-docs/                     design, operations and contribution sources
+  bigbrotr-model/           storage-free event/evidence/coverage/policy types
+  bigbrotr-protocol/        information-preserving wire/filter/URL/probe primitives
+  bigbrotr-analytics/       pure reducers and graph algorithms over supplied inputs
+contracts/                 versioned external schemas and generated-client inputs
+config/                    minimal overrides and supported deployment recipes
+migrations/                PG/CH changes and archive schema transitions
+packaging/                 Compose, images, native service units and release bundles
+experiments/               reproducible bounded research probes, not shipped code
+docs/                      design, operations and contribution sources
 ```
 
-Avoid a generic `utils` crate, one crate per tiny struct, public traits for every
+This replaces the earlier ten-library sketch. Runtime, configuration, ingestion,
+reads and database adapters initially remain focused modules in the application,
+not separately published packages. The three candidate libraries have useful
+storage-independent boundaries. They are introduced when their first real use
+exists, not scaffolded empty to satisfy this drawing. Split further when build
+isolation, independent reuse or deployment requires it; merge a proposed library
+back into the application if it has no coherent external contract.
+
+Avoid a generic `utils` crate, one crate per service/struct, public traits for every
 function, a universal key/value checkpoint API for unrelated state machines, and
 plugin frameworks before a real extension boundary exists. Services own modules
 and state transitions; database adapters do not call business services. Dependency
-direction is application → services → domain/contracts; infrastructure implements
-focused storage/transport interfaces. Keep protocol values out of unrelated
-storage engine abstractions.
+direction is interfaces/wiring → application responsibilities → model/protocol/
+algorithm libraries; infrastructure implements focused storage/transport contracts.
+The pure model/analytics libraries do not depend on Tokio, ClickHouse or RocksDB.
+Protocol I/O is an explicit optional dependency where actually useful. Keep
+application-specific configuration and secrets out of reusable public types.
+
+## Rust terminology and external reuse
+
+| Term | Meaning here | Does it require a process or container? |
+|---|---|---|
+| Module | Namespace and visibility boundary inside Rust source, often a file/directory | No |
+| Library crate | A compiled Rust library with public APIs another Rust program can use | No |
+| Binary crate | A compiled executable, such as the BigBrotr CLI/server | Running it creates a process |
+| Cargo package | A manifest and versioned source distribution; may contain a library and binary targets | No |
+| Cargo workspace | Related packages built/tested together with shared dependency coordination | No |
+| Cargo feature | Compile-time selection of code/dependencies | No; it differs from a runtime service toggle |
+| Release packaging | Binary/image/bundle installation and distribution | Depends on the selected deployment |
+| Extension/plugin | An extension mechanism belonging to a particular host application | No universal meaning or automatic Rust plugin ABI |
+
+These distinctions follow the [Cargo glossary](https://doc.rust-lang.org/cargo/appendix/glossary.html).
+A DuckDB extension, an application service and a Rust crate are different things.
+Turning monitoring off in TOML does not require recompiling a Cargo feature.
+Container users obtain one tested image and select roles/configuration at runtime.
+
+Other Rust projects should be able to depend on a useful BigBrotr library through
+Cargo, either from a published registry package or a Git revision. A private Git
+source still requires repository access; this stage publishes no package. Go's
+externally importable packages are a useful analogy, but Rust package/crate/module
+are not interchangeable terms. HTTP/Nostr contracts let Go, Python and other
+languages use a running BigBrotr without linking Rust. Add an FFI or language
+binding only for a concrete consumer that needs embedded execution.
+
+Keep application packages `publish = false`. Candidate libraries also stay
+unpublished until their API is useful and reviewed: documented invariants/errors,
+small runnable examples, doctests, dependency footprint, MSRV, compatibility and
+semantic versioning. Avoid exporting engine clients, internal job schemas, or an
+entire application framework as the price of reusing one filter or graph routine.
+Choose and document reuse-compatible licensing before public release; repository
+visibility alone grants no license. Existing code/dependency license obligations
+must be checked before copying or distributing it. Follow the
+[Cargo publishing guide](https://doc.rust-lang.org/cargo/reference/publishing.html)
+for package metadata and publication mechanics, not as a reason to publish now.
+
+Initial extensibility uses ordinary Rust interfaces compiled with the application,
+versioned resource/measurement registries, and authenticated external protocols.
+No dynamic native-plugin loader, custom runtime ABI, WASM host or polyglot service
+mesh is justified yet. Rust core plus TypeScript frontends already crosses the
+necessary language boundary through explicit schemas. A future specialized engine
+or independently maintained worker can join through a durable/versioned contract.
+
+## Idiomatic implementation
 
 Prefer owned domain values at durable boundaries, borrowing within synchronous
 parse/transform stages, and reference-counted immutable byte buffers only where

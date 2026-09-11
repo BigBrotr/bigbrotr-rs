@@ -238,7 +238,9 @@ processed completely within available resources yields no new score generation.
 
 Public mutes remain a separate observed relation, not a negative probability. The
 candidate version-1 policy removes a follow edge when that same author publicly
-mutes the recipient, and records trusted mute mass as an explanatory component.
+mutes the recipient, and retains the attributed mute relation as explanatory
+evidence. A separate trust-weighted mute statistic requires its own definition
+and compute budget before becoming a published fact.
 A broader negative reputation penalty requires a distinct documented algorithm
 version and adversarial validation; it is not silently introduced by a tunable
 negative edge. Reports and zap weighting remain supported input/statistical
@@ -713,6 +715,11 @@ event envelopes remain valid signed events; do not insert metadata into an event
 Nostr transports with no field for rich quality use protocol responses and
 documented metadata resources, without claiming EOSE conveys completeness.
 
+The [content-search contract](search-and-reconciliation.md) specifies the baseline
+text corpus, matcher, relevance tuple, optional index lifecycle and engine
+alternatives. It extends these shared read rules rather than defining a parallel
+unrestricted search API.
+
 ## API
 
 Purpose: provide stable read-only HTTP access for dashboard, external clients and
@@ -765,6 +772,15 @@ a committed index change feed; outputs are EVENT/EOSE/CLOSED/COUNT and a truthfu
 NIP-11 document. It cannot ingest an inbound EVENT, apply inbound deletion events,
 or run library background jobs that mutate the archive. Use read-only data-store
 credentials in addition to interface separation.
+
+Content search and NIP-77 server reconciliation are required supported
+capabilities of the complete read product, with per-deployment enablement.
+Their engine choices, matching/ranking, projection ownership, scoped sets,
+resource bounds and acceptance cases are defined in
+[search and reconciliation](search-and-reconciliation.md). Inputs also include
+NEG-OPEN/NEG-MSG/NEG-CLOSE; output includes NEG-MSG/NEG-ERR. They traverse the same
+authorization and cost boundary. Serving reconciliation does not require
+provenance and is distinct from Synchronizer's upstream reconciliation.
 
 Standard REQ serves deletion-aware current views and ordinary nonreplaceable
 events according to registered event policy. Return each matching event once per
@@ -1129,3 +1145,57 @@ Engineering work also needs an exact statistics catalog, pinned protocol/profile
 revisions, independently demonstrated signer compatibility, engine cancellation
 and snapshot guarantees, and measured defaults. These are explicit remaining
 design/validation obligations; none justifies dropping a historical product area.
+
+## Transport and policy regressions recovered from the complete phase reread
+
+HTTP decoding is strict before query planning: malformed percent escapes, invalid
+UTF-8, duplicate singleton fields, explicitly empty invalid values and unknown
+fields receive the declared client error. Do not use a convenience decoder that
+silently drops an undecodable predicate. Repeated fields are accepted only for
+an explicitly documented list encoding. Apply one canonical parser shared by
+request validation, filter hashing and cursor verification.
+
+Cursor tests mutate every meaning-bearing predicate, including tag name and
+value. Search whitespace is interpreted by the versioned parser: semantically
+equivalent normalized expressions share a filter identity; a change in literal
+meaning does not. Include quoted/escaped text. A client receiving a clamped page
+must be able to continue using that response's own cursor and reported effective
+page size; a clamp cannot manufacture an immediately incompatible cursor.
+
+Policy intersection has a typed `MatchNone` result. If an access grant permits
+none of the requested authors, do not remove the authors constraint and thereby
+select all authors. Apply this invariant to events, counts, text search, live
+subscriptions, NIP-77 sets and exports. Empty selection after policy evaluation
+is distinct from a disabled/unavailable capability, and from malformed empty input.
+Test restrictive changes on a read-only worker that misses notifications; the
+short authorization lease still expires and incompatible sends cease.
+
+One accepted DVM job has one resource envelope across all its filters, queries,
+feedback and results. Reserve cumulative scan/CPU/work limits and concurrent
+memory before admitting a fan-out plan; subqueries do not each receive a fresh
+full quota. Count the Nostr outer fields, tags, signature, JSON string escaping
+and framing when bounding a signed response. Use a conservative schema/row-byte
+bound before execution, and actual incremental encoded-byte accounting while
+building output. Refuse an unbounded result shape; if runtime data exceed the
+reserved bound, send a bounded explicit error or use the profile's supported
+artifact delivery, never a truncated successful signed result. Feedback itself
+has a reserved finite allowance. Real transport tests verify cumulative work and
+final wire bytes, including adversarial quote/backslash-heavy content.
+
+## Detailed analytics and additional relay acceptance
+
+The [analytical definitions](analytics-detail.md) complete the facts and Ranker
+contracts: propagation buckets and quantiles, scoped availability, exact versus
+candidate-based overlap, attributed claim resolution, seed availability, optional
+publication eligibility, current adjacency and complete graph resource costs.
+Their definitions and reference formulas govern those named outputs; they are
+not extra independently deployed services or claims of executed benchmarks.
+
+Exercise a real ArchiveRelay connection with multiple REQ filters: apply each
+filter's historical limit, deduplicate the union by event ID, send EOSE, and then
+observe newly committed matching events without applying historical limits to
+the live stream. Include `limit=0` followed by a newly committed backdated event,
+replacement of an existing subscription ID, and COUNT's response/completion
+lifecycle under the pinned protocol. A COUNT request must not accidentally open
+a REQ event feed. Repeat with overlapping filters and independent expected counts.
+Server NIP-77 uses its separately specified complete-set filter restrictions.

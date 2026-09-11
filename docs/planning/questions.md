@@ -37,3 +37,22 @@ Additional owner context incorporated into the design:
 The complete design records remaining empirical validation tasks in PLAN.md.
 They are not unanswered product questions or permission requests. The future
 implementation must supply evidence before making production-capacity claims.
+
+## Additional owner context: search, reuse and final source reread
+
+| ID | Context | Design disposition |
+|---|---|---|
+| Q10 | Content search matters; OpenSearch was only a suggestion | Required supported feature with optional deployment index; CH baseline, Tantivy/OpenSearch evaluated against explicit semantics and workload |
+| Q11 | Clients should reconcile against the archive as a relay | Add server NIP-77 to ArchiveRelay, independent of acquisition/provenance, with authorized retrievable sets and bounded shared indexes |
+| Q12 | Service/container/crate boundaries and reuse are unclear | One image, selectable roles and finite jobs; fewer initial libraries, deliberate reusable APIs; explain compilation versus execution |
+| Q13 | Reread original vision and every phase-0–9 Markdown, persist everything needed by a future implementer | Expand source inventory beyond phase READMEs, record requirement dispositions and fix discovered design gaps; no claim that planning proves production capacity |
+
+These decisions do not authorize product implementation yet. The owner's request
+remains a complete, explicit implementation baseline followed by a separate start
+of the build stage. Research conclusions and performance targets remain revisable
+when real implementation evidence contradicts them.
+
+The latest owner clarification reinforces that the original Go feature list is
+not mandatory. The product/data/feature decision catalog evaluates useful
+questions, retained evidence, indexes, public APIs and distinct score meanings;
+features may be removed or improved when their value does not justify their cost.

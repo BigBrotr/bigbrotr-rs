@@ -30,6 +30,8 @@ data dependencies and names missing ones without silently enabling more services
 | Public API/archive relay/DVM | Explicit enablement | Validate exposure, dependencies and any signer before binding |
 | Signing/publishing | No implicit identity or publication | Key reference and identity-policy version; bounded drain |
 | Rank computation | Enabled when usable input/viewpoint exists | Empty seeds yield an explicit unavailable score, not invented global trust |
+| Content search | Enabled in complete online recipe; explicit scope/index lifecycle | Rebuild generation for analyzer/backend change; disabled is not empty |
+| ArchiveRelay NIP-77 | Enabled with the explicitly selected complete relay role when its set projection is ready | Bound sessions; no implicit provenance requirement |
 | Import/export | On-demand jobs | Inputs and policy versions pinned per job |
 | Resource limits | Finite host envelope plus role shares | Reductions stop new admission and drain current work |
 | Backups | Local configuration required for off-host protection | Report unprotected durability class until configured and verified |
@@ -88,3 +90,95 @@ queryable state. Expose queue bytes/age, active permits, event/edge rates, signa
 CPU, stale frontiers, replays, compaction debt, disk reserve, errors and coverage
 age. Alerts have actionable runbooks and distinguish a remote relay failure from
 local inability to measure it.
+
+## Deterministic first launch
+
+The full local recipe resolves these enabled responsibilities: bootstrap seeding,
+Discoverer, Validator, Monitor, Synchronizer, durable ingest, archive publication/
+maintenance, Indexer, Deriver, Ranker, local HTTP API, dashboard and private
+administration. Ranker waits visibly for a usable configured viewpoint and
+complete inputs. Import/export are callable finite jobs. Public ArchiveRelay,
+DVM, NIP publishers and active signing probes remain explicitly disabled until
+configured. External directory discovery and overlay routes are off initially.
+Database processes and their credentials are supplied by the documented recipe.
+
+`bootstrap.seed=true` imports the bundled versioned list once into a newly empty
+registry, using a durable source-digest/job receipt. Validator establishes actual
+reachability; seeding never fabricates it. A failed bootstrap is visible and
+retryable. `bootstrap.seed=false` intentionally permits an empty idle deployment
+and explains how to enroll/import endpoints. Restart does not re-enroll banned
+relays or launch an independent recurring seed loop. No reachable public relay
+is required by deterministic tests: the test recipe supplies controlled signed
+relay fixtures through an explicit route, while dated real-network smoke tests
+measure the bundled list's practical usefulness separately.
+
+Clean-volume acceptance must launch the shipped executable and Compose recipe,
+observe a real durable fixture admission and archive publication, query the local
+API, open the dashboard/admin onboarding and inspect resolved role health. Assert
+actual listener addresses and zero signing/publication calls, not just an enabled
+service list. Networkless/empty/malformed bootstrap and dependency outage variants
+must identify the cause and documented recovery.
+
+## Shared lifecycle vocabulary and once semantics
+
+Health states remain `starting`, `ready`, `idle`, `degraded`, `draining`, `stopped`.
+A finite job separately reports `succeeded`, `partial`, `failed`, `cancelled` or
+`skipped`, with a typed reason, progress and coverage. A partial derivation job is
+not a COMPLETE published generation. Acquisition protocol phases are nested
+progress fields. Do not use one enum for process health, protocol state and data
+completeness. Every terminal outcome has a CLI exit/result and management view.
+
+A finite command exits after its durable result. A scheduled worker's `once`
+executes one declared bounded work unit and reports remaining work. Synchronizer
+uses an explicit bounded acquisition job (scope/deadline), rather than calling an
+infinite live loop once. Listeners run until stopped and reject meaningless
+`once` mode. CLI help lists the semantics for each role.
+
+Starting defaults: ownership lease TTL 60 s, heartbeat 20 s, graceful drain 30 s;
+all are typed durations with heartbeat below TTL and tested failure behavior.
+The 5 s authorization lease is a different, stricter policy mechanism. Expired
+ownership never authorizes a still-running worker to write; lease release follows
+actual write cessation. A timed-out process needs termination/positive exclusion
+before takeover. Tests exercise stalls longer than TTL, drain failure and stale
+owner resumption; a two-worker lease-row test alone cannot establish fencing.
+
+## Shipped operational alerts
+
+Ship Prometheus rules, Alertmanager routing/inhibition templates and linked
+runbooks. Private detail remains private. At minimum distinguish: coverage/cursor
+stall with pending eligible work; unexpected ingest halt; WAL/fsync failure or
+low disk reserve; archive/index backlog age; a monitored route/network class going
+dark; and replication lag when replicated storage is configured. Also expose
+backup age/verification failure, scrub corruption, expired policy authority and
+compaction debt. Disabled services and intentionally absent replicas are not alerts.
+
+Use low-cardinality aggregate labels and expose individual relay details through
+the read model. An upstream dependency alert may inhibit its consequential
+backlog alerts; it must not hide independent disk corruption or policy failure.
+Rules have explicit timing, severity, owning role and recovery instructions.
+
+Release verification injects these states through controlled service/engine
+failures and exercises evaluation → Alertmanager grouping/routing/inhibition →
+a local test receiver → resolution. A rule-unit test is useful but cannot prove
+that the receiver ever receives an alert. Actual operator notification endpoints
+are configured explicitly; test suites never send unsolicited external messages.
+
+### Ownership timing and run envelope
+
+`runtime.lease_ttl=60s`, `heartbeat_interval=20s`,
+`renewal_timeout=5s`, `renewal_safety_margin=20s` and
+`graceful_shutdown_timeout=30s` are the initial ownership timing keys. Validate
+heartbeat plus renewal timeout below TTL minus the safety margin. Losing a
+renewal starts bounded retry; before the safety margin is consumed stop new work
+and drain. Remaining authority can shorten the ordinary graceful timeout.
+Commit-time fencing/exclusive ownership remains the safety boundary; clock math
+or lease timing alone does not exclude a paused old owner. Test wall-clock steps
+and monotonic elapsed-time accounting. Timing changes require controlled role
+restart initially, rather than reinterpret an already granted lease in place.
+
+Each execution envelope records run/job ID, role, owner/epoch, effective config
+revision, input cut/scope, start/end times, monotonic duration, terminal outcome,
+typed reason, bounded progress/counters and output artifact/generation references.
+The owner writes its envelope; output COMPLETE publication still follows the
+consumer's transactional contract. Sensitive details have private visibility.
+Raw exception text and arbitrary unbounded JSON are not the schema.

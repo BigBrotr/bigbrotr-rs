@@ -14,7 +14,7 @@ capacity model, security, recovery and practical validation programme.
 
 [Mandate](docs/planning/mandate.md) ·
 [Questions and decisions](docs/planning/questions.md) ·
-[Six research revisions](docs/planning/process.md) ·
+[Research revisions and full-source recheck](docs/planning/process.md) ·
 [Experiment results](docs/research/experiment-summary.md) ·
 [Historical source inventory](docs/research/source-inventory.json)
 
