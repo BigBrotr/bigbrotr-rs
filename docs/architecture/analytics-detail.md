@@ -350,8 +350,14 @@ latest-observer state and value support must retract superseded contributions.
 
 Ranker's eligible public graph and raw seeded-diffusion formula remain those in
 the [Ranker contract](derived-read-publication.md#ranker). Freeze graph membership
-before checking seeds. Target-only and dangling pubkeys are vertices; a configured
-seed absent from every graph vertex is missing, not an invented active vertex.
+before checking seeds. The initial graph includes authors of eligible current
+follow or public-mute list headers, including valid empty lists, and endpoints of
+eligible relations. Retain vertices whose edges are removed by self-edge or
+same-source mute rules; they can become isolated/dangling. A malformed, deleted
+or otherwise ineligible list does not alone establish membership, although a
+pubkey can still occur through another eligible list or relation. A configured
+seed absent from this declared vertex set is missing, not an invented active
+vertex. Membership is a graph definition, not a census of people or all accounts.
 Seed configuration accepts unique pubkeys with finite positive weights; duplicate
 entries or invalid weights are configuration errors rather than implicit extra
 votes.
@@ -506,3 +512,42 @@ correctness digest, CPU/wall time, read/write/temporary bytes, RSS and cancellat
 behavior. Force physical retry duplicates when testing that boundary and verify
 that the fixture really contains them. Test spill/refusal and cancellation on a
 real engine; a fake that always returns fewer rows cannot prove those outcomes.
+
+## Execution refinements from the Go code walkthrough
+
+The [analytical code walkthrough](../research/go-analytics-code-walkthrough.md)
+examines actual planner, targets and score/publication paths. A selected-target
+configuration must stop unselected computations at execution, not only remove
+their names from a completion manifest. Independent target generations prevent
+a costly optional overlap calculation from blocking unrelated global facts.
+
+Dirty-only work is valid with no newly admitted source interval: corrections,
+policy changes, expiry and repaired/reindexed input can require a new output at
+the same data frontier. Publish its explicit dependency/revision change through
+a real progress transaction, with empty source work distinct from missing work.
+A fully inspected source interval with no eligible output still advances its
+source progress through an explicit no-output commit. Repeated control-only or
+below-floor intervals must not trap a capped reader before later useful data.
+Store the actual affected partition/key set, not merely the broad earliest-to-
+latest span. Apply the analytical half-open interval convention consistently at
+midnight and other boundaries. Every target's actual source reads bind the
+compatible source cut; a shared run identifier alone does not freeze rows against
+concurrent ingestion.
+
+Exact quantile state is charged by its complete input population and algorithm,
+not by the small number of output buckets. Use an admitted spill/external-memory
+plan or fail without a new complete generation when it cannot fit. Keep
+approximate sketches separately named. Measure empty, sparse, widely separated
+dirty partitions, whole historical reconstruction and concurrent arrivals,
+checking source membership as well as aggregate values.
+
+Current list state has a winner header independent of child entries: subject,
+coordinate, winning event ID/time, parser version, interpretation/visibility
+status and source lineage. Preserve a valid empty winner and an uninterpretable
+winning event as distinct states. Child entries alone cannot prevent an older
+backfill from resurrecting a superseded list. Maintain changed headers and their
+whole-list contribution deltas; do not rewrite every unchanged author's state
+for each small update. Test old list → newer empty list → still older backfill in
+a different touched month, and compare with a full rebuild at the same cut.
+The declared isolated-vertex policy applies consistently to graph construction,
+seed availability, raw score vectors and publication eligibility.

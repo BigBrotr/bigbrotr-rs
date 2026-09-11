@@ -1,0 +1,233 @@
+{
+  "captured_on": "2026-09-11",
+  "scope": "selected Go storage implementation; no tests executed; worktree hash identity, not a coherent committed repository snapshot",
+  "sources": [
+    {
+      "source": "bigbrotr-go/go.mod",
+      "snapshot": ".research/code-snapshots/storage/go.mod",
+      "sha256": "d6d7aa952ed1169f55f1dbd2a948cbf5995b6f2138673a2545fe831aa4806052",
+      "bytes": 4766,
+      "lines": 102,
+      "source_equal_immediately_after_capture": true,
+      "read_status": "fully read, including comments; no tests executed",
+      "source_equal_at_review_check": true
+    },
+    {
+      "source": "bigbrotr-go/internal/dedupe/store.go",
+      "snapshot": ".research/code-snapshots/storage/internal/dedupe/store.go",
+      "sha256": "bb7bbab7ad36e1ab5fee67cf5b12c75b7ea088bbbd5bc7e097e45ecf537e34dc",
+      "bytes": 4133,
+      "lines": 148,
+      "source_equal_immediately_after_capture": true,
+      "read_status": "fully read, including comments; no tests executed",
+      "source_equal_at_review_check": true
+    },
+    {
+      "source": "bigbrotr-go/internal/dedupe/keys.go",
+      "snapshot": ".research/code-snapshots/storage/internal/dedupe/keys.go",
+      "sha256": "c911bc0f5817ab98c29db99b78677a8c197640b007a3c28137a64307617f14c2",
+      "bytes": 1288,
+      "lines": 48,
+      "source_equal_immediately_after_capture": true,
+      "read_status": "fully read, including comments; no tests executed",
+      "source_equal_at_review_check": true
+    },
+    {
+      "source": "bigbrotr-go/internal/dedupe/options.go",
+      "snapshot": ".research/code-snapshots/storage/internal/dedupe/options.go",
+      "sha256": "fe27f4939a691b89fa350cc26e605154c94848f4b8cf9e0bb12f0da98d934255",
+      "bytes": 1329,
+      "lines": 38,
+      "source_equal_immediately_after_capture": true,
+      "read_status": "fully read, including comments; no tests executed",
+      "source_equal_at_review_check": true
+    },
+    {
+      "source": "bigbrotr-go/internal/dedupe/deferred.go",
+      "snapshot": ".research/code-snapshots/storage/internal/dedupe/deferred.go",
+      "sha256": "c23fed4d59c8df26180842754be2967feb3f7c8b24c61d31ac4049c1e4d77525",
+      "bytes": 7315,
+      "lines": 227,
+      "source_equal_immediately_after_capture": true,
+      "read_status": "fully read, including comments; no tests executed",
+      "source_equal_at_review_check": true
+    },
+    {
+      "source": "bigbrotr-go/internal/dedupe/hotcache.go",
+      "snapshot": ".research/code-snapshots/storage/internal/dedupe/hotcache.go",
+      "sha256": "6cbfde207dcf774f9530cbc3859b623ac8fd2a15197ccce85dd131556c1e09f1",
+      "bytes": 5052,
+      "lines": 233,
+      "source_equal_immediately_after_capture": true,
+      "read_status": "fully read, including comments; no tests executed",
+      "source_equal_at_review_check": true
+    },
+    {
+      "source": "bigbrotr-go/internal/journal/writer.go",
+      "snapshot": ".research/code-snapshots/storage/internal/journal/writer.go",
+      "sha256": "438ab2279a398f569ac07fb1dc8774bc646b6c809e45098f9e76b9c9fe6995f5",
+      "bytes": 5092,
+      "lines": 138,
+      "source_equal_immediately_after_capture": true,
+      "read_status": "fully read, including comments; no tests executed",
+      "source_equal_at_review_check": true
+    },
+    {
+      "source": "bigbrotr-go/internal/journal/segment_writer.go",
+      "snapshot": ".research/code-snapshots/storage/internal/journal/segment_writer.go",
+      "sha256": "fe1e273314816f2d132d31f914f8e3e5e5f7dd4667296863387b367d2f0afe44",
+      "bytes": 11267,
+      "lines": 423,
+      "source_equal_immediately_after_capture": true,
+      "read_status": "fully read, including comments; no tests executed",
+      "source_equal_at_review_check": true
+    },
+    {
+      "source": "bigbrotr-go/internal/journal/reader.go",
+      "snapshot": ".research/code-snapshots/storage/internal/journal/reader.go",
+      "sha256": "5d98cd08d5109e2ce63f6bea23096586470054d5cc9b83142bf4a6333244812e",
+      "bytes": 7888,
+      "lines": 199,
+      "source_equal_immediately_after_capture": true,
+      "read_status": "fully read, including comments; no tests executed",
+      "source_equal_at_review_check": true
+    },
+    {
+      "source": "bigbrotr-go/internal/journal/record.go",
+      "snapshot": ".research/code-snapshots/storage/internal/journal/record.go",
+      "sha256": "c1bd1d127b436d11dd82dbdb6787db0f911c02be49b07e14cb32bf7de1349a81",
+      "bytes": 4897,
+      "lines": 118,
+      "source_equal_immediately_after_capture": true,
+      "read_status": "fully read, including comments; no tests executed",
+      "source_equal_at_review_check": true
+    },
+    {
+      "source": "bigbrotr-go/internal/journal/reconcile.go",
+      "snapshot": ".research/code-snapshots/storage/internal/journal/reconcile.go",
+      "sha256": "52ff100a4670628cdc8da9cee64a1e9103732ea2c8e88c72513b275ececf4579",
+      "bytes": 13995,
+      "lines": 330,
+      "source_equal_immediately_after_capture": true,
+      "read_status": "fully read, including comments; no tests executed",
+      "source_equal_at_review_check": true
+    },
+    {
+      "source": "bigbrotr-go/internal/indexer/service.go",
+      "snapshot": ".research/code-snapshots/storage/internal/indexer/service.go",
+      "sha256": "58acd093bcadf336f3868fb4ea5fcc6cdde53e379453825fbea8d44caf357715",
+      "bytes": 38469,
+      "lines": 1035,
+      "source_equal_immediately_after_capture": true,
+      "read_status": "fully read, including comments; no tests executed",
+      "source_equal_at_review_check": true
+    },
+    {
+      "source": "bigbrotr-go/internal/indexer/replay.go",
+      "snapshot": ".research/code-snapshots/storage/internal/indexer/replay.go",
+      "sha256": "ac5dabc46d050e36869069bb139cb25f928c9f15c67b1de21357a15a5bb83a64",
+      "bytes": 38696,
+      "lines": 1006,
+      "source_equal_immediately_after_capture": true,
+      "read_status": "fully read, including comments; no tests executed",
+      "source_equal_at_review_check": true
+    },
+    {
+      "source": "bigbrotr-go/internal/indexer/checkpoint.go",
+      "snapshot": ".research/code-snapshots/storage/internal/indexer/checkpoint.go",
+      "sha256": "157b810d40272076ac23b3f5bd1d321bd6f88ecce4756dfaba8db7c5a36bce05",
+      "bytes": 3722,
+      "lines": 89,
+      "source_equal_immediately_after_capture": true,
+      "read_status": "fully read, including comments; no tests executed",
+      "source_equal_at_review_check": true
+    },
+    {
+      "source": "bigbrotr-go/internal/indexer/tail_reconcile.go",
+      "snapshot": ".research/code-snapshots/storage/internal/indexer/tail_reconcile.go",
+      "sha256": "71b839f11c11f3ac3b64497e6f3d70dc144b29f6424d42c011f0c17ce55d843f",
+      "bytes": 4169,
+      "lines": 104,
+      "source_equal_immediately_after_capture": true,
+      "read_status": "fully read, including comments; no tests executed",
+      "source_equal_at_review_check": true
+    },
+    {
+      "source": "bigbrotr-go/internal/indexer/insert_settings.go",
+      "snapshot": ".research/code-snapshots/storage/internal/indexer/insert_settings.go",
+      "sha256": "76e9756231202f36a7f5d579a46e8b354836f13fdef13bf970dc86ce92620c1d",
+      "bytes": 2561,
+      "lines": 59,
+      "source_equal_immediately_after_capture": true,
+      "read_status": "fully read, including comments; no tests executed",
+      "source_equal_at_review_check": true
+    },
+    {
+      "source": "bigbrotr-go/internal/indexer/rows.go",
+      "snapshot": ".research/code-snapshots/storage/internal/indexer/rows.go",
+      "sha256": "08ea1d8a5b6ea4b7bf8ecd93cea5546de7c83b6d36da6375627279428d28b51f",
+      "bytes": 7312,
+      "lines": 225,
+      "source_equal_immediately_after_capture": true,
+      "read_status": "fully read, including comments; no tests executed",
+      "source_equal_at_review_check": true
+    },
+    {
+      "source": "bigbrotr-go/internal/indexer/resident.go",
+      "snapshot": ".research/code-snapshots/storage/internal/indexer/resident.go",
+      "sha256": "2d38e8ba9270d66f03e106c57a0aa0441f95a6417e66c3138639b946207b4dcd",
+      "bytes": 6059,
+      "lines": 191,
+      "source_equal_immediately_after_capture": true,
+      "read_status": "fully read, including comments; no tests executed",
+      "source_equal_at_review_check": true
+    },
+    {
+      "source": "bigbrotr-go/internal/dedupe/inflight_test.go",
+      "snapshot": ".research/code-snapshots/storage/internal/dedupe/inflight_test.go",
+      "sha256": "ce675333a46e3688f36c7f6836e291c1093142f28a4b19dcd2003391dcb9f7e5",
+      "bytes": 4513,
+      "lines": 139,
+      "source_equal_immediately_after_capture": true,
+      "read_status": "fully read, including comments; no tests executed",
+      "source_equal_at_review_check": true
+    },
+    {
+      "source": "bigbrotr-go/internal/journal/segment_writer_concurrent_seal_test.go",
+      "snapshot": ".research/code-snapshots/storage/internal/journal/segment_writer_concurrent_seal_test.go",
+      "sha256": "28af2595d08aefa6e21faa52b77acbf9b7cecb22c5e86ccececceec595312a08",
+      "bytes": 11796,
+      "lines": 387,
+      "source_equal_immediately_after_capture": true,
+      "read_status": "fully read, including comments; no tests executed",
+      "source_equal_at_review_check": true
+    },
+    {
+      "source": "bigbrotr-go/internal/indexer/batchfirstseen_test.go",
+      "snapshot": ".research/code-snapshots/storage/internal/indexer/batchfirstseen_test.go",
+      "sha256": "7f46d6f79ae32436c1b1065cd54706e31acd03657a9bb516722eaeee22a56f4d",
+      "bytes": 5098,
+      "lines": 121,
+      "source_equal_immediately_after_capture": true,
+      "read_status": "fully read, including comments; no tests executed",
+      "source_equal_at_review_check": true
+    },
+    {
+      "source": "bigbrotr-go/internal/indexer/prepared_replay_test.go",
+      "snapshot": ".research/code-snapshots/storage/internal/indexer/prepared_replay_test.go",
+      "sha256": "757368f1309eb4f7da6269bc7fb069c7a61b86712c4cfc046b85aaead06311eb",
+      "bytes": 1058,
+      "lines": 39,
+      "source_equal_immediately_after_capture": true,
+      "read_status": "fully read, including comments; no tests executed",
+      "source_equal_at_review_check": true
+    }
+  ],
+  "totals": {
+    "files": 22,
+    "lines": 5399,
+    "production_go_files": 17,
+    "test_go_files": 4,
+    "other_files": 1
+  }
+}

@@ -34,6 +34,8 @@ The [questions ledger](docs/planning/questions.md) distinguishes owner context,
 reasoned design selections and defaults for unanswered questions. The
 [revision log](docs/planning/process.md) records six substantive reconsiderations
 and a further [full-source and feature recheck](docs/reviews/07-vision-and-final-recheck.md).
+A subsequent [selective full-file Go code walkthrough](docs/reviews/08-go-code-walkthrough.md)
+records actual call chains, useful patterns and the resulting contract refinements.
 The [experiment summary](docs/research/experiment-summary.md) states what was
 actually run and what remains unverified.
 

@@ -437,3 +437,60 @@ results; corrupt, truncated, oversized and wrong-product Geo archives; interrupt
 between temporary download/validation/atomic install; expired data with an
 unavailable refresh source. Verify actual per-family evidence, guarded dials,
 last-good reads and explicit stale/unavailable status rather than only filenames.
+
+## Refinements from the Go implementation walkthrough
+
+The [code walkthrough](../research/go-acquisition-code-walkthrough.md) traces
+the earlier scheduling, transport and admission path; these are selected Rust
+contracts, not instructions to patch that checkout.
+
+Reserve connection, buffer and handshake permits before allocating or dialing.
+Historical work has a finite scheduling quantum and can be preempted after
+receipt-backed progress even when backfill has never completed; an endless
+remote history cannot monopolize a rotating seat. Preserve separate live/control
+reservations. Index-lag throttling of new starts and draining already active work
+are distinct policies; spool exhaustion invokes the documented stronger stop.
+Cancellation, another owner holding a lease and failed remote attempts map to
+different typed outcomes and retry/backoff accounting through the actual caller.
+
+Linear-page progress is based on request-local returned IDs and boundary evidence,
+not whether the global archive gained a new body. A relay returning globally
+known events may still hold unseen older data. Exact-ID fetches validate the
+complete requested selector and membership; unsolicited IDs cannot resolve any
+need-list entry. Typed admission results distinguish a verified received/already
+held body, explicit policy exclusion, invalid input and retryable failure. A
+boolean new-body result cannot substitute for that decision or a durable receipt.
+
+Keep EVENT/EOSE wire order, then join all preceding verification/admission work
+before committing the page outcome. Track dropped/invalid/over-cap frames in
+the affected request's evidence; EOSE cannot turn omitted required data into a
+clean result. If a malformed frame cannot be attributed safely, conservatively
+invalidate affected active coverage attempts. Record rejection, exclusion and
+inconclusive coverage separately rather than store the hostile body.
+
+A known event ID never authenticates a new endpoint's delivery: verify its actual
+signed payload/signature or use the precisely bound verification cache. Test a
+known valid event followed by the same payload with an invalid, well-shaped
+signature from another endpoint; it must not produce a witness. Also retain the
+changed-content/claimed-ID sequence and an alternative valid signature case.
+
+Probe evidence records timeout, attributable rejection or demonstrated support
+independently of the next chosen acquisition algorithm. Falling back to linear
+queries does not persist a timeout as unsupported NIP-77. A NIP-42 challenge alone
+also does not prove that public reads fail. All layers share one authoritative
+route decision for mixed DNS answers and use the actual guarded transport.
+
+Use unique per-connection request generations, and test stale close against a
+replacement at the actual wire boundary. An old local handle cannot emit CLOSE
+or NEG-CLOSE that closes its replacement. Inspect wire frames, pinned-IP/SNI and
+SOCKS address types; local registry state alone is insufficient. Include an
+oversized EVENT followed by EOSE, out-of-scope responses, backdated live events
+and starvation under endless historical load in the real socket acceptance.
+
+Account for lifetime host/backoff metadata, local reconciliation vectors, encoded
+ID forms, SDK result queues and retry maps as well as sockets. Sparse time
+windows can still contain dense same-second sets. Spill/subdivide within the
+common byte budget or record deferred/gap evidence; do not materialize several
+full set representations merely because each layer has its own item limit.
+Explicit proxy credentials must be consumed through a supported protected
+adapter or rejected during validation, never accepted and ignored.

@@ -56,3 +56,9 @@ The latest owner clarification reinforces that the original Go feature list is
 not mandatory. The product/data/feature decision catalog evaluates useful
 questions, retained evidence, indexes, public APIs and distinct score meanings;
 features may be removed or improved when their value does not justify their cost.
+
+The owner additionally requested substantive complete-file reading of important
+Go implementation paths. The [code walkthrough review](../reviews/08-go-code-walkthrough.md)
+persists what those paths actually do and what the Rust design retains or changes.
+The source remains read-only; tests were inspected as source, not reported as
+executed. Implementation remains a later explicitly started stage.

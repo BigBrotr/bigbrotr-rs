@@ -635,8 +635,10 @@ resource may have a different declared contract, but a multi-page snapshot canno
 mix arbitrary live and derived state. Ordinary event ordering is descending
 `created_at`, then ascending event ID. HTTP keyset cursors bind resource/version,
 normalized filter digest, sort, source cut/generation, exposure-policy epoch,
-position and expiry, authenticated against tampering. New backfill appears in a
-new snapshot. An expired/pruned snapshot returns restart-required, never a cursor
+position and expiry, protected for integrity and confidentiality as specified
+under [cursor key ownership](#cursor-key-ownership-and-confidentiality). New
+backfill appears in a new snapshot. An expired/pruned snapshot returns
+restart-required, never a cursor
 silently rebound to latest. Policy revocation can invalidate active cursors.
 
 Count uses exactly the selected resource's visible predicate and distinct row
@@ -697,6 +699,7 @@ all timing side channels. Do not emit query text or event content in ordinary lo
 | `response.max_bytes` | 16 MiB per finite response | bytes | Live |
 | `count.mode` | auto; exact when budget admits | enum | Live |
 | `cursor.ttl` | 900 | seconds | Live |
+| `cursor.clock_skew` | 30 maximum accepted inter-worker skew; independent of policy lease authority | seconds | Live |
 | `public.rate` / `burst` | 5 / 10 per peer identity, plus global admission | requests/second / requests | Live |
 | `policy.cache_max_age` | 60 for parsed metadata; never extends authorization | seconds | Live |
 | `authorization.lease_ttl` | 5 maximum in the initial policy; revocation completes after lease expiry plus bounded drain | seconds | Live |
@@ -1199,3 +1202,121 @@ replacement of an existing subscription ID, and COUNT's response/completion
 lifecycle under the pinned protocol. A COUNT request must not accidentally open
 a REQ event feed. Repeat with overlapping filters and independent expected counts.
 Server NIP-77 uses its separately specified complete-set filter restrictions.
+
+## Visibility and real pagination continuation
+
+The [read/runtime code walkthrough](../research/go-read-runtime-code-walkthrough.md)
+adds a concrete pagination failure mode to the earlier semantic-cursor contract.
+Apply authorized visibility before keyset ordering/limit where the engine can
+implement it. Where a bounded scan and final revalidation are required, retain
+an authenticated opaque internal scan position as well as delivered-page state;
+the last delivered ID alone does not describe withheld candidates consumed after
+it. Never disclose hidden IDs, counts or raw order keys through the cursor.
+
+A mixed or entirely withheld candidate page is not proof of logical exhaustion.
+Continue within the shared work budget, return a valid protected continuation
+where the resource supports it, or report an explicit budget/policy-restart
+outcome; do not mint a cursor its own next-page validator cannot accept. Test
+following the actual returned cursor after allowed-then-withheld rows, all-
+withheld candidates, clamped pages and policy changes against other eligible
+rows. Assert progress, no repeated/skipped eligible results and no private data
+leak. A pure fullness helper cannot prove that journey.
+
+The typed read context carries the authenticated principal, grants, policy epoch
+and source visibility domain through admission, execution and delivery. Selecting
+a profile or receiving an API key is not a substitute for that context.
+
+## Lossless HTTP filters and publication traversal
+
+Define a versioned typed query envelope for collection/count resources. A
+read-only POST to the existing collection/count route carries that envelope as
+JSON; it invokes exactly the same read admission and has no mutation capability.
+GET uses one bounded percent-encoded JSON `filter` parameter for the same typed
+filter and documented scalar page/cursor options. Reject duplicated singleton
+parameters, ambiguous mixed filter encodings and unsupported fields. Enforce
+request-target/body/depth/term bounds before parsing and return the appropriate
+size refusal; POST does not bypass read budgets or authorization. OpenAPI and the
+generated SDK define these method/encoding pairs, while the dashboard hides the
+encoding detail from ordinary users.
+
+Filter arrays preserve literal values, including a comma within a tag value and
+an explicitly empty first tag value. Do not comma-split decoded arbitrary strings
+or silently drop their empty elements. An empty filter list is malformed; a
+nonempty list containing a valid empty tag value is different. Round-trip
+comma/percent/plus/Unicode/empty tag values through HTTP→typed AST→cursor and the
+Nostr adapter, and compare actual result membership. Strict decoding is not
+permission to reject a valid value that the chosen resource supports.
+
+Current-state selection first determines eligible coordinate winners at the
+source cut, then applies allowed predicates and visibility, then keyset limit.
+Never take a limited prefix of winners and apply ID/time selection afterward
+as though that prefix were the complete candidate set. Unsupported current-view
+predicates may be rejected explicitly, not silently approximated. Deletion
+horizons use an explicit absent value; absent is not timestamp zero. Test a
+never-deleted timestamp-zero winner and an actual applicable zero horizon with
+contrasting outcomes under the deletion contract.
+
+Deletion checks use source-cut-bound, incrementally maintained event/coordinate
+lookups for the relevant candidates. Do not construct a global all-history
+deletion-horizon map for each small page. Charge candidate joins and any fallback
+scan to the same read budget; an unavailable required deletion projection cannot
+be interpreted as no applicable deletions.
+
+NIP-85 publication traverses a pinned complete subject generation with durable
+page progress; batch size is a bounded work unit, not a permanent maximum number
+of subjects. Persist each page's exact signed intents and enumeration checkpoint
+without losing a suffix after restart; per-destination delivery progresses
+independently. Construct all enabled supported subject families through the
+actual producer→stored artifact→publisher path. An unwired helper or configured
+kind is not delivered feature support. Retain the shared monotonic coordinate
+timestamp, same-byte retry and clock-reversal rules above.
+
+Coalesce or serialize identical `(signed_event_id, destination, connection_epoch)`
+sends with shared acknowledgement ownership. A second waiter must not replace
+the first silently; stale completion/cleanup cannot consume another request's
+response. Public capability declarations derive from activated, actually
+populated resource bindings, not every helper in a static schema table.
+
+External assertion subjects use registered per-namespace NIP-73 parsers, including
+URL `web`, identifiers without a colon and multi-component namespaces where the
+specification defines them. Splitting every identifier at its first colon is not
+a protocol parser. Addressable subjects enforce the pinned kind/coordinate
+semantics, not merely unsigned-integer syntax. Bind only measurements whose
+direction, population and unit match the chosen assertion definition.
+
+### Cursor key ownership and confidentiality
+
+The inspected Go API can create a random cursor key per server instance. The
+Rust deployment instead owns a persisted, protected cursor keyring shared by
+its API workers. Bootstrap creates it once through the configured secret store;
+control metadata records key IDs and lifecycle, not plaintext keys. Restart or
+routing the next page to another worker must not invalidate an otherwise valid
+cursor. Cursor keys are separate from Nostr signing and API credential keys.
+
+Use a versioned authenticated-encryption envelope for self-contained continuation,
+so private scan positions are neither editable nor readable by clients. The
+initial implementation candidate is full-round XChaCha20-Poly1305 through the
+maintained RustCrypto library, using its nonce API and OS-backed secure randomness
+for independent 192-bit nonces. Verify and pin the actual dependency at
+implementation; do not implement the cipher or a reduced-round variant locally.
+The [library documentation](https://docs.rs/chacha20poly1305/0.11.0/chacha20poly1305/)
+describes this extended-nonce AEAD and its platform constraints; XChaCha is not
+claimed to be an IETF-standardized algorithm. This is an internal token format,
+not a Nostr wire extension or a claim that encryption eliminates timing leakage.
+
+Authenticate the envelope version/key ID and deployment/resource domain. Encrypt
+the semantic filter, principal/authorization scope, policy epoch, generation,
+position, issue time and expiry bindings; bound encoded and decoded sizes before
+allocation. A valid token still undergoes current authorization, snapshot
+availability and request-binding checks. Possessing it grants no additional read
+authority. Avoid secret-dependent compression and do not log complete tokens.
+
+Rotation switches issuance to a new key only after the serving workers can read
+it. Retain an old decrypt-only key through the latest permitted expiry of tokens
+it issued, including the configured clock-skew allowance. Use the common 900-second
+cursor TTL by default; increasing TTL does not retroactively extend old tokens.
+Emergency key revocation invalidates its outstanding cursors explicitly. Policy
+revocation and expired snapshot retention still apply even while a key remains
+available. An undecryptable, revoked or expired token never silently restarts at
+the latest generation. Test cross-worker/restart continuation, normal and emergency
+rotation, changed principal/filter, withheld scan positions and tampered envelopes.

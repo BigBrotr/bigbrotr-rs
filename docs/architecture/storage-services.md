@@ -146,3 +146,31 @@ Archive maintenance owns one durable scrub ledger and executor. Exporter/CLI/UI
 may request a scrub or backup-verification job through that contract; they do not
 run an independent periodic scrub schedule. Preserve one cursor, snapshot pin and
 resource budget per actual job.
+
+## Replay memory, progress and repair boundaries
+
+The [storage code walkthrough](../research/go-storage-code-walkthrough.md)
+records useful prior durable-prefix, in-flight membership and all-target recovery
+patterns. The new implementation must include pending/flushing identity state,
+positive-cache slabs, decoded rows/tags/documents, probe arrays, partition buffers,
+lookahead and native driver buffers in the same budget. A bounded cache or worker
+count does not bound those other allocations. Reserve any lookahead separately
+before preparation; release it on cancellation and never wait for it while
+holding the resources it needs. A large single source object is streamed through
+bounded replay units or explicitly refused, not admitted merely because it is
+the first item in a count-limited chunk.
+
+Distinguish displayed progress from the actual persisted recovery position. State
+which source unit must be reread after an interrupted insert and preserve its
+identity across file moves/compaction. A recorded byte offset unused by recovery
+is not an advertised seek-resume guarantee. Required family effects and dependency
+metadata precede publication of their serving frontier; an optional disabled
+projection is explicit scope, not a silently skipped required sink.
+
+Repair and forensic inspection obey memory/I/O/CPU/cancellation budgets too. Never
+load an arbitrarily large corrupt tail into RAM or perform unbounded overlapping
+checksum scans inside ordinary startup. Use documented engine recovery at its
+proven committed boundary, preserve suspicious bytes, and admit expensive forensic
+work as an explicit resumable job. Refusal must be diagnostic and must not advance
+a complete frontier over unrecovered evidence. Cheap metadata checks remain
+distinct from the full-content scrub.

@@ -1,0 +1,2397 @@
+{
+  "status": "complete",
+  "captured_at": "2026-09-11T06:49:58.826680+00:00",
+  "source_root": "/Users/vincenzo/Documents/GitHub/BigBrotr/bigbrotr",
+  "git_revision": "not freshly queried; moving working tree is identified by per-file hashes",
+  "scope": "bounded complete-file code walkthrough; no code execution or complete Go audit",
+  "sources": [
+    {
+      "source": "internal/deriver/service.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/deriver/service.go",
+      "original_before_sha256": "d0b2b91cc6a6f402ad63a8a0dbb67fb72bed0e8cd7e0d31cdc91b62a07016913",
+      "snapshot_sha256": "d0b2b91cc6a6f402ad63a8a0dbb67fb72bed0e8cd7e0d31cdc91b62a07016913",
+      "original_after_capture_sha256": "d0b2b91cc6a6f402ad63a8a0dbb67fb72bed0e8cd7e0d31cdc91b62a07016913",
+      "bytes": 19072,
+      "lines": 446,
+      "functions": [
+        {
+          "line": 71,
+          "declaration": "func OptionsFromConfig(profile string, cfg config.DeriverConfig, provenance runs.ProvenanceMode) (DeriverOptions, error) {"
+        },
+        {
+          "line": 124,
+          "declaration": "func selectTargets(names []string) ([]runs.TargetName, error) {"
+        },
+        {
+          "line": 163,
+          "declaration": "func SocialFactKinds() []uint16 {"
+        },
+        {
+          "line": 183,
+          "declaration": "func RunRequestFromPlan(plan runs.RunPlan, opts DeriverOptions) (runs.RunRequest, error) {"
+        },
+        {
+          "line": 226,
+          "declaration": "func (o DeriverOptions) ConfigureRunner(runner Runner) (Runner, error) {"
+        },
+        {
+          "line": 271,
+          "declaration": "func (o DeriverOptions) ConfigurePlanner(planner runs.WindowPlanner) (runs.WindowPlanner, error) {"
+        },
+        {
+          "line": 334,
+          "declaration": "func NewDeriverService(opts DeriverOptions, deps DeriverDeps) (*DeriverService, error) {"
+        },
+        {
+          "line": 378,
+          "declaration": "func (s *DeriverService) Name() string { return DeriverServiceName }"
+        },
+        {
+          "line": 389,
+          "declaration": "func (s *DeriverService) RunOnce(ctx context.Context) error {"
+        },
+        {
+          "line": 427,
+          "declaration": "func (s *DeriverService) runContext(ctx context.Context, now time.Time) (context.Context, context.CancelFunc) {"
+        },
+        {
+          "line": 436,
+          "declaration": "func (s *DeriverService) Health() HealthSnapshot {"
+        },
+        {
+          "line": 442,
+          "declaration": "func (s *DeriverService) setHealth(snapshot HealthSnapshot) {"
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 446,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "d0b2b91cc6a6f402ad63a8a0dbb67fb72bed0e8cd7e0d31cdc91b62a07016913",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/deriver/runner.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/deriver/runner.go",
+      "original_before_sha256": "1e9224af956e508a214d750ca6317b065391fb2836f89a6813cfaec17e879d41",
+      "snapshot_sha256": "1e9224af956e508a214d750ca6317b065391fb2836f89a6813cfaec17e879d41",
+      "original_after_capture_sha256": "1e9224af956e508a214d750ca6317b065391fb2836f89a6813cfaec17e879d41",
+      "bytes": 39910,
+      "lines": 807,
+      "functions": [
+        {
+          "line": 98,
+          "declaration": "func (r Runner) Run(ctx context.Context, request runs.RunRequest) (RunResult, error) {"
+        },
+        {
+          "line": 589,
+          "declaration": "func (r Runner) startRunRecord(ctx context.Context, request runs.RunRequest, window runs.SourceWindow, started time.Time) error {"
+        },
+        {
+          "line": 635,
+          "declaration": "func (r Runner) finishRunRecord("
+        },
+        {
+          "line": 689,
+          "declaration": "func recordedRunMetadata(payload runs.RunSummary) (string, error) {"
+        },
+        {
+          "line": 698,
+          "declaration": "func (r Runner) pruneRetainedRuns(ctx context.Context, profile string) (runs.RetentionResult, error) {"
+        },
+        {
+          "line": 725,
+          "declaration": "func RetentionPolicyFor(runRetention int, runGenerationRetention int) (runs.RetentionPolicy, bool, error) {"
+        },
+        {
+          "line": 753,
+          "declaration": "func ackFromTarget(runID string, target runs.TargetName, rows uint64, suppressed bool, err error) runs.TargetAck {"
+        },
+        {
+          "line": 771,
+          "declaration": "func recomputeError(what string, err error) error {"
+        },
+        {
+          "line": 779,
+          "declaration": "func observeDeriverError(metrics *Metrics, err error) error {"
+        },
+        {
+          "line": 791,
+          "declaration": "func (r Runner) relayStateOptions() targets.RelayStateOptions {"
+        },
+        {
+          "line": 802,
+          "declaration": "func (r Runner) relayDedupThresholds() targets.RelayDedupThresholds {"
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 807,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "1e9224af956e508a214d750ca6317b065391fb2836f89a6813cfaec17e879d41",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/deriver/readpin.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/deriver/readpin.go",
+      "original_before_sha256": "ecdd1170bb1ce3d76df14ab473d2562aa413d698d0a2445eb68dcd067bf01259",
+      "snapshot_sha256": "ecdd1170bb1ce3d76df14ab473d2562aa413d698d0a2445eb68dcd067bf01259",
+      "original_after_capture_sha256": "ecdd1170bb1ce3d76df14ab473d2562aa413d698d0a2445eb68dcd067bf01259",
+      "bytes": 2743,
+      "lines": 66,
+      "functions": [
+        {
+          "line": 28,
+          "declaration": "func NewReadPin(registry *runs.RunRegistry) (*ReadPin, error) {"
+        },
+        {
+          "line": 44,
+          "declaration": "func (r *ReadPin) LatestCompleteRuns(ctx context.Context, profile string, n int) ([]readcore.CompleteRun, error) {"
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 66,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "ecdd1170bb1ce3d76df14ab473d2562aa413d698d0a2445eb68dcd067bf01259",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/deriver/runs/window.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/deriver/runs/window.go",
+      "original_before_sha256": "4107e2d1aa9efe2b10fb1d98e86a7989cc1f5e2f68acc88e31dd39eb02f8f5b5",
+      "snapshot_sha256": "4107e2d1aa9efe2b10fb1d98e86a7989cc1f5e2f68acc88e31dd39eb02f8f5b5",
+      "original_after_capture_sha256": "4107e2d1aa9efe2b10fb1d98e86a7989cc1f5e2f68acc88e31dd39eb02f8f5b5",
+      "bytes": 18568,
+      "lines": 417,
+      "functions": [
+        {
+          "line": 33,
+          "declaration": "func (w SourceWindow) Contains(ts time.Time) bool {"
+        },
+        {
+          "line": 40,
+          "declaration": "func (w SourceWindow) IsEmpty() bool {"
+        },
+        {
+          "line": 59,
+          "declaration": "func DeriveRunID(profile string, segments SegmentRange, generation int) string {"
+        },
+        {
+          "line": 92,
+          "declaration": "func unionPeriods(left, right []uint32) []uint32 {"
+        },
+        {
+          "line": 114,
+          "declaration": "func (w Watermark) IsGenesis() bool { return w.RunID == \"\" }"
+        },
+        {
+          "line": 157,
+          "declaration": "func (r SegmentRange) IsEmpty() bool { return r.Last <= r.First }"
+        },
+        {
+          "line": 162,
+          "declaration": "func (p RunPlan) IsEmpty() bool { return p.Window.IsEmpty() }"
+        },
+        {
+          "line": 168,
+          "declaration": "func (p RunPlan) Record(serviceName string, profile string, startedAt time.Time) RunRecord {"
+        },
+        {
+          "line": 242,
+          "declaration": "func (p WindowPlanner) Plan(ctx context.Context) (RunPlan, error) {"
+        },
+        {
+          "line": 327,
+          "declaration": "func (p WindowPlanner) watermark(ctx context.Context) (Watermark, error) {"
+        },
+        {
+          "line": 358,
+          "declaration": "func (p WindowPlanner) segmentRange(ctx context.Context, watermark Watermark) (SegmentRange, error) {"
+        },
+        {
+          "line": 379,
+          "declaration": "func periodsAtOrAfter(periods []uint32, genesis time.Time) []uint32 {"
+        },
+        {
+          "line": 392,
+          "declaration": "func periodOf(at time.Time) uint32 {"
+        },
+        {
+          "line": 405,
+          "declaration": "func PeriodSpan(periods []uint32) SourceWindow {"
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 417,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "4107e2d1aa9efe2b10fb1d98e86a7989cc1f5e2f68acc88e31dd39eb02f8f5b5",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/deriver/runs/registry.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/deriver/runs/registry.go",
+      "original_before_sha256": "f358b759cb3d1f223ac47f96dce3c89dfa4478a9ff9d6ec788a9c5076fe8105b",
+      "snapshot_sha256": "f358b759cb3d1f223ac47f96dce3c89dfa4478a9ff9d6ec788a9c5076fe8105b",
+      "original_after_capture_sha256": "f358b759cb3d1f223ac47f96dce3c89dfa4478a9ff9d6ec788a9c5076fe8105b",
+      "bytes": 14012,
+      "lines": 327,
+      "functions": [
+        {
+          "line": 79,
+          "declaration": "func (r RunRecord) Validate() error {"
+        },
+        {
+          "line": 86,
+          "declaration": "func (r RunRecord) Stamp() RunMetadata {"
+        },
+        {
+          "line": 124,
+          "declaration": "func ConsumableRunStamp(ctx context.Context, reader CompleteRunReader, serviceName string, profile string) (RunMetadata, error) {"
+        },
+        {
+          "line": 168,
+          "declaration": "func NewRunRegistry(conn RunRegistryConn) *RunRegistry {"
+        },
+        {
+          "line": 180,
+          "declaration": "func (r *RunRegistry) StartRun(ctx context.Context, record RunRecord) (RunStatus, error) {"
+        },
+        {
+          "line": 195,
+          "declaration": "func (r *RunRegistry) LatestRunForWindow("
+        },
+        {
+          "line": 216,
+          "declaration": "func (r *RunRegistry) FinishRun(ctx context.Context, record RunRecord) error {"
+        },
+        {
+          "line": 230,
+          "declaration": "func (r *RunRegistry) LastCompleteRun(ctx context.Context, serviceName string, profile string) (RunRecord, bool, error) {"
+        },
+        {
+          "line": 242,
+          "declaration": "func (r *RunRegistry) RunByID(ctx context.Context, serviceName string, profile string, runID string) (RunRecord, bool, error) {"
+        },
+        {
+          "line": 255,
+          "declaration": "func (r *RunRegistry) RunRegisteredUnderAnyProfile(ctx context.Context, serviceName string, runID string) (bool, error) {"
+        },
+        {
+          "line": 266,
+          "declaration": "func (r *RunRegistry) TerminalRunsNewestFirst(ctx context.Context, serviceName string, profile string, limit uint64) ([]RunRecord, error) {"
+        },
+        {
+          "line": 282,
+          "declaration": "func (r *RunRegistry) ForgetRun(ctx context.Context, serviceName string, profile string, runID string) error {"
+        },
+        {
+          "line": 289,
+          "declaration": "func registryRun(r RunRecord) postgres.RegistryRun {"
+        },
+        {
+          "line": 309,
+          "declaration": "func deriverRun(r postgres.RegistryRun) RunRecord {"
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 327,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "f358b759cb3d1f223ac47f96dce3c89dfa4478a9ff9d6ec788a9c5076fe8105b",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/deriver/runs/completion.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/deriver/runs/completion.go",
+      "original_before_sha256": "7834254c9ae33a485549c9d3cd6160ef1a30aefd08229a2078898bdfebd82b8a",
+      "snapshot_sha256": "7834254c9ae33a485549c9d3cd6160ef1a30aefd08229a2078898bdfebd82b8a",
+      "original_after_capture_sha256": "7834254c9ae33a485549c9d3cd6160ef1a30aefd08229a2078898bdfebd82b8a",
+      "bytes": 17664,
+      "lines": 417,
+      "functions": [
+        {
+          "line": 65,
+          "declaration": "func (t TargetName) Table() string { return \"bigbrotr.\" + string(t) }"
+        },
+        {
+          "line": 70,
+          "declaration": "func (t TargetName) Known() bool {"
+        },
+        {
+          "line": 122,
+          "declaration": "func (m RunTargetManifest) RunID() string { return m.runID }"
+        },
+        {
+          "line": 125,
+          "declaration": "func (m RunTargetManifest) Len() int { return len(m.order) }"
+        },
+        {
+          "line": 128,
+          "declaration": "func (m RunTargetManifest) Targets() []TargetName {"
+        },
+        {
+          "line": 137,
+          "declaration": "func (m RunTargetManifest) Expectation(target TargetName) (TargetExpectation, bool) {"
+        },
+        {
+          "line": 148,
+          "declaration": "func PlanRunTargets(request RunRequest) (RunTargetManifest, error) {"
+        },
+        {
+          "line": 194,
+          "declaration": "func manifestInventory(selection []TargetName) ([]TargetName, error) {"
+        },
+        {
+          "line": 240,
+          "declaration": "func (s TargetAckStatus) Answered() bool {"
+        },
+        {
+          "line": 268,
+          "declaration": "func NewTargetAckLedger(runID string) *TargetAckLedger {"
+        },
+        {
+          "line": 276,
+          "declaration": "func (l *TargetAckLedger) Record(ack TargetAck) error {"
+        },
+        {
+          "line": 302,
+          "declaration": "func (l *TargetAckLedger) Ack(target TargetName) (TargetAck, bool) {"
+        },
+        {
+          "line": 311,
+          "declaration": "func (l *TargetAckLedger) Acks() []TargetAck {"
+        },
+        {
+          "line": 335,
+          "declaration": "func (v CompletionVerdict) IsComplete() bool { return v.Status == RunStatusComplete }"
+        },
+        {
+          "line": 356,
+          "declaration": "func EvaluateRunCompletion(manifest RunTargetManifest, ledger *TargetAckLedger) CompletionVerdict {"
+        },
+        {
+          "line": 411,
+          "declaration": "func joinTargets(targets []TargetName) string {"
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 417,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "7834254c9ae33a485549c9d3cd6160ef1a30aefd08229a2078898bdfebd82b8a",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/deriver/runs/checkpoint.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/deriver/runs/checkpoint.go",
+      "original_before_sha256": "ddc21e9c245554fdb10ef331c06cb3984f6fa47a6737022eeb1a1396ea3de0f7",
+      "snapshot_sha256": "ddc21e9c245554fdb10ef331c06cb3984f6fa47a6737022eeb1a1396ea3de0f7",
+      "original_after_capture_sha256": "ddc21e9c245554fdb10ef331c06cb3984f6fa47a6737022eeb1a1396ea3de0f7",
+      "bytes": 5032,
+      "lines": 131,
+      "functions": [
+        {
+          "line": 42,
+          "declaration": "func EncodeRunSummary(summary RunSummary) (string, error) {"
+        },
+        {
+          "line": 58,
+          "declaration": "func DecodeRunSummary(value string) (RunSummary, error) {"
+        },
+        {
+          "line": 68,
+          "declaration": "func LoadRunSummary(ctx context.Context, store ServiceRunReader, profile string, runID string) (RunSummary, error) {"
+        },
+        {
+          "line": 85,
+          "declaration": "func runSummaryFromServiceRun(run postgres.ServiceRun, profile string, runID string) (RunSummary, error) {"
+        },
+        {
+          "line": 122,
+          "declaration": "func RequireCompleteRunSummary(summary RunSummary) error {"
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 131,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "ddc21e9c245554fdb10ef331c06cb3984f6fa47a6737022eeb1a1396ea3de0f7",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/deriver/targets/current_replaceable.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/deriver/targets/current_replaceable.go",
+      "original_before_sha256": "6e88c6f10c656935db97211bb018bab744fa4b2aa8481cb2fa9cc33a795527c6",
+      "snapshot_sha256": "6e88c6f10c656935db97211bb018bab744fa4b2aa8481cb2fa9cc33a795527c6",
+      "original_after_capture_sha256": "6e88c6f10c656935db97211bb018bab744fa4b2aa8481cb2fa9cc33a795527c6",
+      "bytes": 15557,
+      "lines": 306,
+      "functions": [
+        {
+          "line": 174,
+          "declaration": "func CurrentReplaceableRecomputeSQL(mode runs.EngineMode) (string, error) {"
+        },
+        {
+          "line": 236,
+          "declaration": "func (r ClickHouseCurrentStateRecomputer) RecomputeCurrentReplaceable("
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 306,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "6e88c6f10c656935db97211bb018bab744fa4b2aa8481cb2fa9cc33a795527c6",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/deriver/targets/addressable.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/deriver/targets/addressable.go",
+      "original_before_sha256": "c83cc858469f2c73697aaddeeff5376424a9987e3caca482f4a7c5d61d909788",
+      "snapshot_sha256": "c83cc858469f2c73697aaddeeff5376424a9987e3caca482f4a7c5d61d909788",
+      "original_after_capture_sha256": "c83cc858469f2c73697aaddeeff5376424a9987e3caca482f4a7c5d61d909788",
+      "bytes": 14117,
+      "lines": 313,
+      "functions": [
+        {
+          "line": 191,
+          "declaration": "func CurrentAddressableRecomputeSQL(mode runs.EngineMode) (string, error) {"
+        },
+        {
+          "line": 241,
+          "declaration": "func (r ClickHouseCurrentStateRecomputer) RecomputeCurrentAddressable("
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 313,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "c83cc858469f2c73697aaddeeff5376424a9987e3caca482f4a7c5d61d909788",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/deriver/targets/relaylist.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/deriver/targets/relaylist.go",
+      "original_before_sha256": "a294d3fdc6d841d5981b5907a3cdd987d017ca3ae7b15cc797a06a88372d2691",
+      "snapshot_sha256": "a294d3fdc6d841d5981b5907a3cdd987d017ca3ae7b15cc797a06a88372d2691",
+      "original_after_capture_sha256": "a294d3fdc6d841d5981b5907a3cdd987d017ca3ae7b15cc797a06a88372d2691",
+      "bytes": 20287,
+      "lines": 461,
+      "functions": [
+        {
+          "line": 277,
+          "declaration": "func relayListRecomputeSQL(windowWinners string) string {"
+        },
+        {
+          "line": 294,
+          "declaration": "func CurrentRelayListRecomputeSQL(mode runs.EngineMode) (string, error) {"
+        },
+        {
+          "line": 345,
+          "declaration": "func relayListUnparsablePayloadCountSQL(mode runs.EngineMode) (string, error) {"
+        },
+        {
+          "line": 370,
+          "declaration": "func (r ClickHouseCurrentStateRecomputer) RecomputeCurrentRelayList("
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 461,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "a294d3fdc6d841d5981b5907a3cdd987d017ca3ae7b15cc797a06a88372d2691",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/deriver/targets/facts.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/deriver/targets/facts.go",
+      "original_before_sha256": "210425e175cdc83021af6efe2b2abfaadfd24da2b6875be4def735afe08d0691",
+      "snapshot_sha256": "210425e175cdc83021af6efe2b2abfaadfd24da2b6875be4def735afe08d0691",
+      "original_after_capture_sha256": "210425e175cdc83021af6efe2b2abfaadfd24da2b6875be4def735afe08d0691",
+      "bytes": 12433,
+      "lines": 280,
+      "functions": [
+        {
+          "line": 95,
+          "declaration": "func DeriveGlobalFactsTarget("
+        },
+        {
+          "line": 174,
+          "declaration": "func SocialEventKindCountFactKey(kind uint16) string {"
+        },
+        {
+          "line": 242,
+          "declaration": "func DeriveSocialFactsTarget("
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 280,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "210425e175cdc83021af6efe2b2abfaadfd24da2b6875be4def735afe08d0691",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/deriver/targets/nip85facts.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/deriver/targets/nip85facts.go",
+      "original_before_sha256": "5852f8f78f99d95affb653a82ed85fa550d696fd86888d912425310b644d82f7",
+      "snapshot_sha256": "5852f8f78f99d95affb653a82ed85fa550d696fd86888d912425310b644d82f7",
+      "original_after_capture_sha256": "5852f8f78f99d95affb653a82ed85fa550d696fd86888d912425310b644d82f7",
+      "bytes": 14118,
+      "lines": 307,
+      "functions": [
+        {
+          "line": 32,
+          "declaration": "func NIP85InputFactKey(sourceFactKey string) string {"
+        },
+        {
+          "line": 227,
+          "declaration": "func DeriveNIP85InputFactsTarget("
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 307,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "5852f8f78f99d95affb653a82ed85fa550d696fd86888d912425310b644d82f7",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/deriver/targets/propagation.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/deriver/targets/propagation.go",
+      "original_before_sha256": "ea429295e4172cb7620b9adca689c568b6cefbb3f6e162288985eb4d58f7e90b",
+      "snapshot_sha256": "ea429295e4172cb7620b9adca689c568b6cefbb3f6e162288985eb4d58f7e90b",
+      "original_after_capture_sha256": "ea429295e4172cb7620b9adca689c568b6cefbb3f6e162288985eb4d58f7e90b",
+      "bytes": 12997,
+      "lines": 282,
+      "functions": [
+        {
+          "line": 158,
+          "declaration": "func DeriveEventPropagationTarget("
+        },
+        {
+          "line": 240,
+          "declaration": "func ReadEventPropagationStats(ctx context.Context, conn ClickHouseSelector, run runs.RunMetadata) (EventPropagationReadResult, error) {"
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 282,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "ea429295e4172cb7620b9adca689c568b6cefbb3f6e162288985eb4d58f7e90b",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/deriver/targets/coverage.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/deriver/targets/coverage.go",
+      "original_before_sha256": "8659633d8a0d9354af23134eadf60b8c24b7dfe44b5e7fccf20bbd4be709d785",
+      "snapshot_sha256": "8659633d8a0d9354af23134eadf60b8c24b7dfe44b5e7fccf20bbd4be709d785",
+      "original_after_capture_sha256": "8659633d8a0d9354af23134eadf60b8c24b7dfe44b5e7fccf20bbd4be709d785",
+      "bytes": 17702,
+      "lines": 379,
+      "functions": [
+        {
+          "line": 116,
+          "declaration": "func DeriveRelayCoverageTarget("
+        },
+        {
+          "line": 175,
+          "declaration": "func (b CoverageClusterBasis) IsMeasured() bool { return b == CoverageClusterMeasured }"
+        },
+        {
+          "line": 203,
+          "declaration": "func DistinctRelayCount(observed, deduction uint64) uint64 {"
+        },
+        {
+          "line": 303,
+          "declaration": "func SummarizeRelayCoverage("
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 379,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "8659633d8a0d9354af23134eadf60b8c24b7dfe44b5e7fccf20bbd4be709d785",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/ranker/service.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/ranker/service.go",
+      "original_before_sha256": "a9db30d5b377be8e137363281595fda8e51af6b8df30a056ef46522103c09da7",
+      "snapshot_sha256": "a9db30d5b377be8e137363281595fda8e51af6b8df30a056ef46522103c09da7",
+      "original_after_capture_sha256": "a9db30d5b377be8e137363281595fda8e51af6b8df30a056ef46522103c09da7",
+      "bytes": 9557,
+      "lines": 243,
+      "functions": [
+        {
+          "line": 83,
+          "declaration": "func NewRankerService(opts RankerServiceOptions) (*RankerService, error) {"
+        },
+        {
+          "line": 118,
+          "declaration": "func (s *RankerService) Name() string { return RankerServiceName }"
+        },
+        {
+          "line": 124,
+          "declaration": "func RunIDForDeriverRun(deriverRunID string) string {"
+        },
+        {
+          "line": 136,
+          "declaration": "func (s *RankerService) RunOnce(ctx context.Context) error {"
+        },
+        {
+          "line": 186,
+          "declaration": "func (s *RankerService) Health() HealthSnapshot {"
+        },
+        {
+          "line": 192,
+          "declaration": "func (s *RankerService) setHealth(snapshot HealthSnapshot) {"
+        },
+        {
+          "line": 218,
+          "declaration": "func (s *RankerService) alreadyRanked(ctx context.Context, runID string) (bool, error) {"
+        },
+        {
+          "line": 230,
+          "declaration": "func (s *RankerService) dueForAttempt(now time.Time) bool {"
+        },
+        {
+          "line": 239,
+          "declaration": "func (s *RankerService) markAttempt(now time.Time) {"
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 243,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "a9db30d5b377be8e137363281595fda8e51af6b8df30a056ef46522103c09da7",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/ranker/sources.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/ranker/sources.go",
+      "original_before_sha256": "9f4cffdd249ef9b1f5e2bfd2c41defe4a877b77b86834c9176ca413afe7c6543",
+      "snapshot_sha256": "9f4cffdd249ef9b1f5e2bfd2c41defe4a877b77b86834c9176ca413afe7c6543",
+      "original_after_capture_sha256": "9f4cffdd249ef9b1f5e2bfd2c41defe4a877b77b86834c9176ca413afe7c6543",
+      "bytes": 5954,
+      "lines": 142,
+      "functions": [
+        {
+          "line": 31,
+          "declaration": "func NewClickHouseGraphSource("
+        },
+        {
+          "line": 57,
+          "declaration": "func (s *ClickHouseGraphSource) LoadGraph("
+        },
+        {
+          "line": 76,
+          "declaration": "func (s *ClickHouseGraphSource) LoadSeeds(_ context.Context, profile string) (SeedSet, SeedSetStats, error) {"
+        },
+        {
+          "line": 102,
+          "declaration": "func NewClickHouseRelayQualitySource(conn ClickHouseSelector) (*ClickHouseRelayQualitySource, error) {"
+        },
+        {
+          "line": 125,
+          "declaration": "func (s *ClickHouseRelayQualitySource) LoadRelayQualityInput("
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 142,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "9f4cffdd249ef9b1f5e2bfd2c41defe4a877b77b86834c9176ca413afe7c6543",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/ranker/graph.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/ranker/graph.go",
+      "original_before_sha256": "618bd10cc2a7b38302e6dc4ede62c01716c08247a02cabc5cedbc6fc7f452f4b",
+      "snapshot_sha256": "618bd10cc2a7b38302e6dc4ede62c01716c08247a02cabc5cedbc6fc7f452f4b",
+      "original_after_capture_sha256": "618bd10cc2a7b38302e6dc4ede62c01716c08247a02cabc5cedbc6fc7f452f4b",
+      "bytes": 17125,
+      "lines": 428,
+      "functions": [
+        {
+          "line": 41,
+          "declaration": "func (p PubkeyID) Valid() bool { return len(p) == pubkeyByteLen }"
+        },
+        {
+          "line": 45,
+          "declaration": "func (p PubkeyID) Hex() string { return hex.EncodeToString([]byte(p)) }"
+        },
+        {
+          "line": 57,
+          "declaration": "func ParsePubkeyHex(value string) (PubkeyID, error) {"
+        },
+        {
+          "line": 78,
+          "declaration": "func (p *PubkeyID) Scan(src any) error {"
+        },
+        {
+          "line": 136,
+          "declaration": "func (g SocialGraph) NodeCount() int { return len(g.nodes) }"
+        },
+        {
+          "line": 147,
+          "declaration": "func (g SocialGraph) FollowEdgeCount() int { return g.followEdges }"
+        },
+        {
+          "line": 151,
+          "declaration": "func (g SocialGraph) MuteEdgeCount() int { return g.muteEdges }"
+        },
+        {
+          "line": 155,
+          "declaration": "func (g SocialGraph) Nodes() []PubkeyID { return copyNodes(g.nodes) }"
+        },
+        {
+          "line": 158,
+          "declaration": "func (g SocialGraph) Following(node PubkeyID) []PubkeyID { return copyNodes(g.following[node]) }"
+        },
+        {
+          "line": 163,
+          "declaration": "func (g SocialGraph) Muting(node PubkeyID) []PubkeyID { return copyNodes(g.muting[node]) }"
+        },
+        {
+          "line": 168,
+          "declaration": "func (g SocialGraph) Outdegree(node PubkeyID) int { return len(g.following[node]) }"
+        },
+        {
+          "line": 172,
+          "declaration": "func (g SocialGraph) Indegree(node PubkeyID) int { return g.indegree[node] }"
+        },
+        {
+          "line": 175,
+          "declaration": "func (g SocialGraph) Has(node PubkeyID) bool {"
+        },
+        {
+          "line": 180,
+          "declaration": "func copyNodes(nodes []PubkeyID) []PubkeyID {"
+        },
+        {
+          "line": 200,
+          "declaration": "func NewSocialGraphBuilder() *SocialGraphBuilder {"
+        },
+        {
+          "line": 212,
+          "declaration": "func (b *SocialGraphBuilder) AddFollow(source, target PubkeyID) error {"
+        },
+        {
+          "line": 217,
+          "declaration": "func (b *SocialGraphBuilder) AddMute(source, target PubkeyID) error {"
+        },
+        {
+          "line": 221,
+          "declaration": "func (b *SocialGraphBuilder) add(plane map[PubkeyID]map[PubkeyID]struct{}, source, target PubkeyID) error {"
+        },
+        {
+          "line": 248,
+          "declaration": "func (b *SocialGraphBuilder) SelfEdgesDropped() uint64 { return b.selfEdgesDropped }"
+        },
+        {
+          "line": 252,
+          "declaration": "func (b *SocialGraphBuilder) Build() SocialGraph {"
+        },
+        {
+          "line": 282,
+          "declaration": "func sortedTargets(targets map[PubkeyID]struct{}) []PubkeyID {"
+        },
+        {
+          "line": 291,
+          "declaration": "func sortNodes(nodes []PubkeyID) {"
+        },
+        {
+          "line": 339,
+          "declaration": "func LoadSocialGraph("
+        },
+        {
+          "line": 415,
+          "declaration": "func addEdges(edges []GraphEdge, add func(source, target PubkeyID) error) (uint64, error) {"
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 428,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "618bd10cc2a7b38302e6dc4ede62c01716c08247a02cabc5cedbc6fc7f452f4b",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/ranker/seeds.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/ranker/seeds.go",
+      "original_before_sha256": "6df372958f4602286b8a96424b82903f2ce3ad443f261fbefa4e29f0c08d9a99",
+      "snapshot_sha256": "6df372958f4602286b8a96424b82903f2ce3ad443f261fbefa4e29f0c08d9a99",
+      "original_after_capture_sha256": "6df372958f4602286b8a96424b82903f2ce3ad443f261fbefa4e29f0c08d9a99",
+      "bytes": 5203,
+      "lines": 152,
+      "functions": [
+        {
+          "line": 22,
+          "declaration": "func (s SeedSet) Len() int { return len(s.members) }"
+        },
+        {
+          "line": 27,
+          "declaration": "func (s SeedSet) IsEmpty() bool { return len(s.members) == 0 }"
+        },
+        {
+          "line": 34,
+          "declaration": "func (s SeedSet) Members() []PubkeyID { return copyNodes(s.members) }"
+        },
+        {
+          "line": 37,
+          "declaration": "func (s SeedSet) Contains(node PubkeyID) bool {"
+        },
+        {
+          "line": 66,
+          "declaration": "func ParseSeedSet(r io.Reader) (SeedSet, SeedSetStats, error) {"
+        },
+        {
+          "line": 106,
+          "declaration": "func LoadSeedSet(path string) (SeedSet, SeedSetStats, error) {"
+        },
+        {
+          "line": 139,
+          "declaration": "func MeasureSeedCoverage(seeds SeedSet, graph SocialGraph) SeedCoverage {"
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 152,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "6df372958f4602286b8a96424b82903f2ce3ad443f261fbefa4e29f0c08d9a99",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/ranker/inputs.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/ranker/inputs.go",
+      "original_before_sha256": "ac23083456ebeca2d5f863c3a87eca4d83f42967da9cdebe271890dd1e8bdc11",
+      "snapshot_sha256": "ac23083456ebeca2d5f863c3a87eca4d83f42967da9cdebe271890dd1e8bdc11",
+      "original_after_capture_sha256": "ac23083456ebeca2d5f863c3a87eca4d83f42967da9cdebe271890dd1e8bdc11",
+      "bytes": 1820,
+      "lines": 46,
+      "functions": [
+        {
+          "line": 20,
+          "declaration": "func LoadInputFacts(ctx context.Context, runs deriverruns.ServiceRunReader, reader InputFactReader, request InputRequest) (InputFactReadResult, error) {"
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 46,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "ac23083456ebeca2d5f863c3a87eca4d83f42967da9cdebe271890dd1e8bdc11",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/ranker/runner.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/ranker/runner.go",
+      "original_before_sha256": "68d61ac0fb433ccae8ded1b59e4cdd980c01c4781809061b906691bd30ebbbff",
+      "snapshot_sha256": "68d61ac0fb433ccae8ded1b59e4cdd980c01c4781809061b906691bd30ebbbff",
+      "original_after_capture_sha256": "68d61ac0fb433ccae8ded1b59e4cdd980c01c4781809061b906691bd30ebbbff",
+      "bytes": 11373,
+      "lines": 297,
+      "functions": [
+        {
+          "line": 73,
+          "declaration": "func (r Runner) Run(ctx context.Context, request RunRequest) (RunResult, error) {"
+        },
+        {
+          "line": 204,
+          "declaration": "func (r Runner) fail(err error) (RunResult, error) {"
+        },
+        {
+          "line": 216,
+          "declaration": "func (r Runner) observe("
+        },
+        {
+          "line": 238,
+          "declaration": "func (r Runner) validate(request RunRequest) error {"
+        },
+        {
+          "line": 277,
+          "declaration": "func relayQualityPin(result RelayQualityResult) AlgorithmPin {"
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 297,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "68d61ac0fb433ccae8ded1b59e4cdd980c01c4781809061b906691bd30ebbbff",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/ranker/pin.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/ranker/pin.go",
+      "original_before_sha256": "fb00805a199318fd1c058f463b1478017a46f26bf662e2a11986b7b0ebefe9e3",
+      "snapshot_sha256": "fb00805a199318fd1c058f463b1478017a46f26bf662e2a11986b7b0ebefe9e3",
+      "original_after_capture_sha256": "fb00805a199318fd1c058f463b1478017a46f26bf662e2a11986b7b0ebefe9e3",
+      "bytes": 24511,
+      "lines": 588,
+      "functions": [
+        {
+          "line": 77,
+          "declaration": "func (p AlgorithmPin) Validate() error {"
+        },
+        {
+          "line": 113,
+          "declaration": "func (r NoEmitReason) declared() bool {"
+        },
+        {
+          "line": 123,
+          "declaration": "func (p AlgorithmPin) Ref() AlgorithmRef {"
+        },
+        {
+          "line": 143,
+          "declaration": "func (r AlgorithmRef) Validate() error {"
+        },
+        {
+          "line": 161,
+          "declaration": "func TrustRankSeededRef() AlgorithmRef {"
+        },
+        {
+          "line": 172,
+          "declaration": "func TrustRankEmptyRef() AlgorithmRef {"
+        },
+        {
+          "line": 181,
+          "declaration": "func RelayQualityRef() AlgorithmRef {"
+        },
+        {
+          "line": 224,
+          "declaration": "func (p RunPin) Canonical() (RunPin, error) {"
+        },
+        {
+          "line": 263,
+          "declaration": "func (p RunPin) Validate() error {"
+        },
+        {
+          "line": 297,
+          "declaration": "func EncodeRunPin(pin RunPin) (string, error) {"
+        },
+        {
+          "line": 319,
+          "declaration": "func DecodeRunPin(value string) (RunPin, error) {"
+        },
+        {
+          "line": 337,
+          "declaration": "func (p RunPin) Lookup(algorithmID string, subjectType string) (AlgorithmPin, bool) {"
+        },
+        {
+          "line": 355,
+          "declaration": "func RequireAlgorithmPin(pin RunPin, ref AlgorithmRef) (AlgorithmPin, error) {"
+        },
+        {
+          "line": 394,
+          "declaration": "func RequirePinnedScores(pin RunPin, scores []Score) error {"
+        },
+        {
+          "line": 444,
+          "declaration": "func (i scoreIdentity) String() string {"
+        },
+        {
+          "line": 449,
+          "declaration": "func identityOf(score Score) scoreIdentity {"
+        },
+        {
+          "line": 458,
+          "declaration": "func identityOfPin(pin AlgorithmPin) scoreIdentity {"
+        },
+        {
+          "line": 480,
+          "declaration": "func SaveRunPin(ctx context.Context, store RunRecorder, pin RunPin) error {"
+        },
+        {
+          "line": 536,
+          "declaration": "func LoadLatestCompleteRunPin(ctx context.Context, store runs.LatestCompleteRunReader, profile string) (RunPin, error) {"
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 588,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "fb00805a199318fd1c058f463b1478017a46f26bf662e2a11986b7b0ebefe9e3",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/ranker/emission.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/ranker/emission.go",
+      "original_before_sha256": "350017b28c6d874755c304dac62cabee8af09d74272fe6ad57dd1de803a140c2",
+      "snapshot_sha256": "350017b28c6d874755c304dac62cabee8af09d74272fe6ad57dd1de803a140c2",
+      "original_after_capture_sha256": "350017b28c6d874755c304dac62cabee8af09d74272fe6ad57dd1de803a140c2",
+      "bytes": 7541,
+      "lines": 188,
+      "functions": [
+        {
+          "line": 43,
+          "declaration": "func VerifyDeriverRun(ctx context.Context, store runs.ServiceRunReader, profile string, deriverRunID string) (DeriverVerification, error) {"
+        },
+        {
+          "line": 59,
+          "declaration": "func classifyDeriverRefusal(err error) errcode.Code {"
+        },
+        {
+          "line": 83,
+          "declaration": "func refusalReason(err error) string {"
+        },
+        {
+          "line": 114,
+          "declaration": "func ResolveTrustRankEmission("
+        },
+        {
+          "line": 174,
+          "declaration": "func noEmitTrustRank(reason NoEmitReason, floor uint32) TrustRankEmission {"
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 188,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "350017b28c6d874755c304dac62cabee8af09d74272fe6ad57dd1de803a140c2",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/ranker/gate.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/ranker/gate.go",
+      "original_before_sha256": "3ca13d0e1215d4e6ea75c431b68c95fd4ac6373ae067ae51bdf8769bfb284f94",
+      "snapshot_sha256": "3ca13d0e1215d4e6ea75c431b68c95fd4ac6373ae067ae51bdf8769bfb284f94",
+      "original_after_capture_sha256": "3ca13d0e1215d4e6ea75c431b68c95fd4ac6373ae067ae51bdf8769bfb284f94",
+      "bytes": 3426,
+      "lines": 87,
+      "functions": [
+        {
+          "line": 29,
+          "declaration": "func IndegreeGateFrom(c config.RankerConfig) (IndegreeGate, error) {"
+        },
+        {
+          "line": 38,
+          "declaration": "func (g IndegreeGate) Enabled() bool { return g.Floor > 0 }"
+        },
+        {
+          "line": 62,
+          "declaration": "func ApplyIndegreeGate(gate IndegreeGate, graph SocialGraph, result TrustRankResult) (GateResult, error) {"
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 87,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "3ca13d0e1215d4e6ea75c431b68c95fd4ac6373ae067ae51bdf8769bfb284f94",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/ranker/trustrank.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/ranker/trustrank.go",
+      "original_before_sha256": "d5b09d7a1215c7b99ad5bc235eb58dfa0ea48ed8240da144357926d3ee2baa19",
+      "snapshot_sha256": "d5b09d7a1215c7b99ad5bc235eb58dfa0ea48ed8240da144357926d3ee2baa19",
+      "original_after_capture_sha256": "d5b09d7a1215c7b99ad5bc235eb58dfa0ea48ed8240da144357926d3ee2baa19",
+      "bytes": 16779,
+      "lines": 425,
+      "functions": [
+        {
+          "line": 57,
+          "declaration": "func DefaultTrustRankParams() TrustRankParams {"
+        },
+        {
+          "line": 75,
+          "declaration": "func (p TrustRankParams) Validate() error {"
+        },
+        {
+          "line": 112,
+          "declaration": "func TrustRankParamsFrom(c config.RankerConfig) (TrustRankParams, error) {"
+        },
+        {
+          "line": 163,
+          "declaration": "func ComputeTrustRank("
+        },
+        {
+          "line": 272,
+          "declaration": "func trustRankIterate(params TrustRankParams, teleport []float64, following [][]int32, result *TrustRankResult) []float64 {"
+        },
+        {
+          "line": 325,
+          "declaration": "func trustRankAdjacency(nodes []PubkeyID, graph SocialGraph) (following, muting [][]int32, err error) {"
+        },
+        {
+          "line": 339,
+          "declaration": "func trustRankOrdinals(nodes, targets []PubkeyID) ([]int32, error) {"
+        },
+        {
+          "line": 362,
+          "declaration": "func trustRankTeleport(nodes []PubkeyID, seeds SeedSet) ([]float64, int, error) {"
+        },
+        {
+          "line": 389,
+          "declaration": "func trustRankOrdinal(nodes []PubkeyID, node PubkeyID) (int32, bool) {"
+        },
+        {
+          "line": 402,
+          "declaration": "func trustRankPenalty(trust []float64, muting [][]int32) ([]float64, int) {"
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 425,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "d5b09d7a1215c7b99ad5bc235eb58dfa0ea48ed8240da144357926d3ee2baa19",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/ranker/relayquality.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/ranker/relayquality.go",
+      "original_before_sha256": "1d510b40d6121d0c8418cfea42d8aeec19eef68182513b8cd0c9762940ccd673",
+      "snapshot_sha256": "1d510b40d6121d0c8418cfea42d8aeec19eef68182513b8cd0c9762940ccd673",
+      "original_after_capture_sha256": "1d510b40d6121d0c8418cfea42d8aeec19eef68182513b8cd0c9762940ccd673",
+      "bytes": 28879,
+      "lines": 670,
+      "functions": [
+        {
+          "line": 73,
+          "declaration": "func DefaultRelayQualityWeights() RelayQualityWeights {"
+        },
+        {
+          "line": 80,
+          "declaration": "func DefaultRelayQualityParams() RelayQualityParams {"
+        },
+        {
+          "line": 91,
+          "declaration": "func (w RelayQualityWeights) Weight(term RelayQualityTerm) float64 {"
+        },
+        {
+          "line": 117,
+          "declaration": "func (w RelayQualityWeights) Validate() error {"
+        },
+        {
+          "line": 144,
+          "declaration": "func (p RelayQualityParams) Validate() error {"
+        },
+        {
+          "line": 161,
+          "declaration": "func RelayQualityParamsFrom(c config.RankerConfig) (RelayQualityParams, error) {"
+        },
+        {
+          "line": 249,
+          "declaration": "func computeRelayTerms(monitors []MonitorObservationCounters, params RelayQualityParams) (relayTerms, bool) {"
+        },
+        {
+          "line": 317,
+          "declaration": "func (t relayTerms) base(weights RelayQualityWeights) [3]baseTerm {"
+        },
+        {
+          "line": 337,
+          "declaration": "func (t relayTerms) scorable(weights RelayQualityWeights) bool {"
+        },
+        {
+          "line": 359,
+          "declaration": "func updateMean(mean, value, count float64) float64 {"
+        },
+        {
+          "line": 398,
+          "declaration": "func (b RelayQualityBasis) Reduced() bool { return len(b.Absent) > 0 }"
+        },
+        {
+          "line": 429,
+          "declaration": "func validateMonitorCounters(row MonitorObservationCounters) error {"
+        },
+        {
+          "line": 480,
+          "declaration": "func coverageCredits(rows []RelayCoverageObservation, scored map[string]struct{}) (map[string]float64, error) {"
+        },
+        {
+          "line": 528,
+          "declaration": "func ComputeRelayQualityScores(request ScoreRequest, params RelayQualityParams, input RelayQualityInput) (RelayQualityResult, error) {"
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 670,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "1d510b40d6121d0c8418cfea42d8aeec19eef68182513b8cd0c9762940ccd673",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/ranker/relayquality_inputs.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/ranker/relayquality_inputs.go",
+      "original_before_sha256": "3daa4611270e25d35228d7f2c14e3bb46ba668c7a372e3358df57bae01589e8e",
+      "snapshot_sha256": "3daa4611270e25d35228d7f2c14e3bb46ba668c7a372e3358df57bae01589e8e",
+      "original_after_capture_sha256": "3daa4611270e25d35228d7f2c14e3bb46ba668c7a372e3358df57bae01589e8e",
+      "bytes": 11142,
+      "lines": 237,
+      "functions": [
+        {
+          "line": 22,
+          "declaration": "func (w RelayQualityWindow) Validate() error {"
+        },
+        {
+          "line": 46,
+          "declaration": "func (r RelayQualityInputRequest) Validate() error {"
+        },
+        {
+          "line": 192,
+          "declaration": "func ReadMonitorObservationCounters(ctx context.Context, conn ClickHouseSelector, request RelayQualityInputRequest) (MonitorCounterReadResult, error) {"
+        },
+        {
+          "line": 219,
+          "declaration": "func ReadRelayCoverage(ctx context.Context, conn ClickHouseSelector, request RelayQualityInputRequest) (RelayCoverageReadResult, error) {"
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 237,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "3daa4611270e25d35228d7f2c14e3bb46ba668c7a372e3358df57bae01589e8e",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/ranker/clickhouse.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/ranker/clickhouse.go",
+      "original_before_sha256": "33b711722ead1d6101d645665fca1c00eb6386be01bd6069ee505db6f20b14c7",
+      "snapshot_sha256": "33b711722ead1d6101d645665fca1c00eb6386be01bd6069ee505db6f20b14c7",
+      "original_after_capture_sha256": "33b711722ead1d6101d645665fca1c00eb6386be01bd6069ee505db6f20b14c7",
+      "bytes": 18385,
+      "lines": 393,
+      "functions": [
+        {
+          "line": 36,
+          "declaration": "func (w ClickHouseScoreWriter) WriteScores(ctx context.Context, scores []Score) error {"
+        },
+        {
+          "line": 66,
+          "declaration": "func (r ClickHouseInputReader) ReadInputFacts(ctx context.Context, deriverRunID string, limit uint64) (InputFactReadResult, error) {"
+        },
+        {
+          "line": 105,
+          "declaration": "func requireRunPinnedScore(row Score) error {"
+        },
+        {
+          "line": 153,
+          "declaration": "func isFoldedPubkey(s string) bool {"
+        },
+        {
+          "line": 164,
+          "declaration": "func InsertScores(ctx context.Context, conn chstorage.BatchPreparer, rows []Score) error {"
+        },
+        {
+          "line": 289,
+          "declaration": "func (r ClickHouseInputReader) readPTagEdges(ctx context.Context, deriverRunID string, kind uint16, limit uint64) (EdgeReadResult, error) {"
+        },
+        {
+          "line": 316,
+          "declaration": "func (r ClickHouseInputReader) ReadFollowEdges(ctx context.Context, deriverRunID string, limit uint64) (EdgeReadResult, error) {"
+        },
+        {
+          "line": 324,
+          "declaration": "func (r ClickHouseInputReader) ReadMuteEdges(ctx context.Context, deriverRunID string, limit uint64) (EdgeReadResult, error) {"
+        },
+        {
+          "line": 372,
+          "declaration": "func (r ClickHouseInputReader) ReadWinnerDivergence(ctx context.Context, deriverRunID string, kinds []uint16) (uint64, error) {"
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 393,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "33b711722ead1d6101d645665fca1c00eb6386be01bd6069ee505db6f20b14c7",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/nip85publisher/service.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/nip85publisher/service.go",
+      "original_before_sha256": "9c6d705784238d715c1119a7594aa1849e35e708989d8e415d637a381f683516",
+      "snapshot_sha256": "9c6d705784238d715c1119a7594aa1849e35e708989d8e415d637a381f683516",
+      "original_after_capture_sha256": "9c6d705784238d715c1119a7594aa1849e35e708989d8e415d637a381f683516",
+      "bytes": 15203,
+      "lines": 366,
+      "functions": [
+        {
+          "line": 121,
+          "declaration": "func NewService(deps ServiceDeps) (*Service, error) {"
+        },
+        {
+          "line": 175,
+          "declaration": "func (s *Service) Name() string { return ServiceName }"
+        },
+        {
+          "line": 178,
+          "declaration": "func (s *Service) RunOnce(ctx context.Context) error {"
+        },
+        {
+          "line": 231,
+          "declaration": "func (s *Service) publishProviderSurface(ctx context.Context, pin ranker.RunPin, result PublishResult) error {"
+        },
+        {
+          "line": 280,
+          "declaration": "func (s *Service) emitProviderPayloads(ctx context.Context, pin ranker.RunPin, stamp RunStamp, payloads []AssertionPayload) error {"
+        },
+        {
+          "line": 320,
+          "declaration": "func servedKinds(result PublishResult) []uint32 {"
+        },
+        {
+          "line": 339,
+          "declaration": "func (s *Service) sweepStaleCheckpoints(ctx context.Context, result PublishResult) error {"
+        },
+        {
+          "line": 356,
+          "declaration": "func (s *Service) observePublish(result PublishResult) {"
+        },
+        {
+          "line": 362,
+          "declaration": "func (s *Service) observeError() {"
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 366,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "9c6d705784238d715c1119a7594aa1849e35e708989d8e415d637a381f683516",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/nip85publisher/publisher.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/nip85publisher/publisher.go",
+      "original_before_sha256": "60b9a510df9763c98047187d195a5fa73f73eed0503c1f5522deb1e00188f06d",
+      "snapshot_sha256": "60b9a510df9763c98047187d195a5fa73f73eed0503c1f5522deb1e00188f06d",
+      "original_after_capture_sha256": "60b9a510df9763c98047187d195a5fa73f73eed0503c1f5522deb1e00188f06d",
+      "bytes": 16471,
+      "lines": 371,
+      "functions": [
+        {
+          "line": 124,
+          "declaration": "func keepSelectedKinds(payloads []AssertionPayload, kinds []uint32) []AssertionPayload {"
+        },
+        {
+          "line": 158,
+          "declaration": "func (p Publisher) Publish(ctx context.Context, request PublishRequest) (PublishResult, error) {"
+        },
+        {
+          "line": 261,
+          "declaration": "func Decide("
+        },
+        {
+          "line": 317,
+          "declaration": "func validateScoreOrigin(pin ranker.RunPin, request PublishRequest) (ranker.AlgorithmPin, error) {"
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 371,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "60b9a510df9763c98047187d195a5fa73f73eed0503c1f5522deb1e00188f06d",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/nip85publisher/emit.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/nip85publisher/emit.go",
+      "original_before_sha256": "3c2cc0ad45f8143027c351b328fc108f9ebbb3ec1669d5312368eab05377d238",
+      "snapshot_sha256": "3c2cc0ad45f8143027c351b328fc108f9ebbb3ec1669d5312368eab05377d238",
+      "original_after_capture_sha256": "3c2cc0ad45f8143027c351b328fc108f9ebbb3ec1669d5312368eab05377d238",
+      "bytes": 11756,
+      "lines": 265,
+      "functions": [
+        {
+          "line": 87,
+          "declaration": "func (e Emitter) Publish(ctx context.Context, payload AssertionPayload) (string, error) {"
+        },
+        {
+          "line": 116,
+          "declaration": "func (e Emitter) checkUsable() error {"
+        },
+        {
+          "line": 157,
+          "declaration": "func (e Emitter) sign(payload AssertionPayload) (nostr.Event, error) {"
+        },
+        {
+          "line": 196,
+          "declaration": "func nostrTags(tags [][]string) nostr.Tags {"
+        },
+        {
+          "line": 226,
+          "declaration": "func noRelayAccepted(eventID string, failures []relayFailure) error {"
+        },
+        {
+          "line": 246,
+          "declaration": "func agreedFailureCode(failures []relayFailure) errcode.Code {"
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 265,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "3c2cc0ad45f8143027c351b328fc108f9ebbb3ec1669d5312368eab05377d238",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/nip85publisher/createdat.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/nip85publisher/createdat.go",
+      "original_before_sha256": "d73c97f3d1523887179f20ee1c0836a0f425fa6558a0d6aa050410c3d79a8c47",
+      "snapshot_sha256": "d73c97f3d1523887179f20ee1c0836a0f425fa6558a0d6aa050410c3d79a8c47",
+      "original_after_capture_sha256": "d73c97f3d1523887179f20ee1c0836a0f425fa6558a0d6aa050410c3d79a8c47",
+      "bytes": 5734,
+      "lines": 114,
+      "functions": [
+        {
+          "line": 43,
+          "declaration": "func CheckRunStamp(run RunStamp) (RunStamp, error) {"
+        },
+        {
+          "line": 76,
+          "declaration": "func CreatedAtFor(run RunStamp, _ string) int64 {"
+        },
+        {
+          "line": 104,
+          "declaration": "func RunStampFor(pin ranker.RunPin) (RunStamp, error) {"
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 114,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "d73c97f3d1523887179f20ee1c0836a0f425fa6558a0d6aa050410c3d79a8c47",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/nip85publisher/state.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/nip85publisher/state.go",
+      "original_before_sha256": "8ba6e1a3e327ac9ce156f9f465ea8993f76ed4fb689c7c785da378e2776e314d",
+      "snapshot_sha256": "8ba6e1a3e327ac9ce156f9f465ea8993f76ed4fb689c7c785da378e2776e314d",
+      "original_after_capture_sha256": "8ba6e1a3e327ac9ce156f9f465ea8993f76ed4fb689c7c785da378e2776e314d",
+      "bytes": 6764,
+      "lines": 160,
+      "functions": [
+        {
+          "line": 34,
+          "declaration": "func NewPostgreSQLPublicationState(conn PublicationStateConn) *PostgreSQLPublicationState {"
+        },
+        {
+          "line": 62,
+          "declaration": "func (s *PostgreSQLPublicationState) SkipsRepublish("
+        },
+        {
+          "line": 95,
+          "declaration": "func (s *PostgreSQLPublicationState) PutPayloadHash(ctx context.Context, record AcceptedPublication) error {"
+        },
+        {
+          "line": 125,
+          "declaration": "func (s *PostgreSQLPublicationState) DeleteStale("
+        },
+        {
+          "line": 148,
+          "declaration": "func publicationEventKind(kind uint32) (int32, error) {"
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 160,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "8ba6e1a3e327ac9ce156f9f465ea8993f76ed4fb689c7c785da378e2776e314d",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/nip85publisher/runpin.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/nip85publisher/runpin.go",
+      "original_before_sha256": "32917ee9622ea6a6a3a8ce08e5c7cc53110920b3577cd3458227db929ae74708",
+      "snapshot_sha256": "32917ee9622ea6a6a3a8ce08e5c7cc53110920b3577cd3458227db929ae74708",
+      "original_after_capture_sha256": "32917ee9622ea6a6a3a8ce08e5c7cc53110920b3577cd3458227db929ae74708",
+      "bytes": 3884,
+      "lines": 86,
+      "functions": [
+        {
+          "line": 36,
+          "declaration": "func ResolveRunPin("
+        },
+        {
+          "line": 80,
+          "declaration": "func classifyRegistryFailure(err error) error {"
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 86,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "32917ee9622ea6a6a3a8ce08e5c7cc53110920b3577cd3458227db929ae74708",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/nip85publisher/payload.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/nip85publisher/payload.go",
+      "original_before_sha256": "90bb5bfedbd39c14ac1e498a93d86c32e21ac0e52beef3916f740fa104feb576",
+      "snapshot_sha256": "90bb5bfedbd39c14ac1e498a93d86c32e21ac0e52beef3916f740fa104feb576",
+      "original_after_capture_sha256": "90bb5bfedbd39c14ac1e498a93d86c32e21ac0e52beef3916f740fa104feb576",
+      "bytes": 15287,
+      "lines": 348,
+      "functions": [
+        {
+          "line": 35,
+          "declaration": "func BuildUserRankAssertions(request AssertionRequest, scores []ranker.Score) ([]AssertionPayload, error) {"
+        },
+        {
+          "line": 91,
+          "declaration": "func resolveAssertionRequest(request AssertionRequest) (resolvedRequest, error) {"
+        },
+        {
+          "line": 141,
+          "declaration": "func BuildAssertion(request AssertionRequest, row SubjectRow) (AssertionPayload, error) {"
+        },
+        {
+          "line": 191,
+          "declaration": "func requirePinnedTagNames(kind uint32, tags [][]string) error {"
+        },
+        {
+          "line": 221,
+          "declaration": "func validateUserRankScore(score ranker.Score, pin ranker.AlgorithmPin, domain float64) (int, error) {"
+        },
+        {
+          "line": 256,
+          "declaration": "func scaleRank(value float64, domain float64) (int, error) {"
+        },
+        {
+          "line": 279,
+          "declaration": "func rankFromRatio(ratio float64) int {"
+        },
+        {
+          "line": 335,
+          "declaration": "func hashPayload(payload AssertionPayload) (string, error) {"
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 348,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "90bb5bfedbd39c14ac1e498a93d86c32e21ac0e52beef3916f740fa104feb576",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/nip85publisher/facts.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/nip85publisher/facts.go",
+      "original_before_sha256": "50bbb128d1c0aecd5f3b534b6f7124c7c6503744ba5bf0f9a41b75533e006329",
+      "snapshot_sha256": "50bbb128d1c0aecd5f3b534b6f7124c7c6503744ba5bf0f9a41b75533e006329",
+      "original_after_capture_sha256": "50bbb128d1c0aecd5f3b534b6f7124c7c6503744ba5bf0f9a41b75533e006329",
+      "bytes": 13335,
+      "lines": 293,
+      "functions": [
+        {
+          "line": 119,
+          "declaration": "func tagForFact(kind uint32, factKey string) (string, bool) {"
+        },
+        {
+          "line": 136,
+          "declaration": "func ResultTagNamesForKind(kind uint32) []string {"
+        },
+        {
+          "line": 171,
+          "declaration": "func AssembleSubjects("
+        },
+        {
+          "line": 252,
+          "declaration": "func factTagsFor(kind uint32, facts map[string]float64) ([][]string, error) {"
+        },
+        {
+          "line": 276,
+          "declaration": "func renderCountFact(tagName string, factKey string, value float64) (string, error) {"
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 293,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "50bbb128d1c0aecd5f3b534b6f7124c7c6503744ba5bf0f9a41b75533e006329",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/nip85publisher/scores.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/nip85publisher/scores.go",
+      "original_before_sha256": "aee1f869b90394a066eca331c6738393782fe1a987c288b9175abed6295d4152",
+      "snapshot_sha256": "aee1f869b90394a066eca331c6738393782fe1a987c288b9175abed6295d4152",
+      "original_after_capture_sha256": "aee1f869b90394a066eca331c6738393782fe1a987c288b9175abed6295d4152",
+      "bytes": 8497,
+      "lines": 191,
+      "functions": [
+        {
+          "line": 46,
+          "declaration": "func NewClickHouseScoreSource(conn Selector) (*ClickHouseScoreSource, error) {"
+        },
+        {
+          "line": 136,
+          "declaration": "func (s *ClickHouseScoreSource) PinnedScores("
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 191,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "aee1f869b90394a066eca331c6738393782fe1a987c288b9175abed6295d4152",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/nip85publisher/kinds.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/nip85publisher/kinds.go",
+      "original_before_sha256": "66c38c6aa19441b7e25ad0919b15cbc7312e8d6e71777263aaa1fd0d0f61eeb7",
+      "snapshot_sha256": "66c38c6aa19441b7e25ad0919b15cbc7312e8d6e71777263aaa1fd0d0f61eeb7",
+      "original_after_capture_sha256": "66c38c6aa19441b7e25ad0919b15cbc7312e8d6e71777263aaa1fd0d0f61eeb7",
+      "bytes": 7601,
+      "lines": 180,
+      "functions": [
+        {
+          "line": 98,
+          "declaration": "func AssertionKindFor(subjectType string) (uint32, error) {"
+        },
+        {
+          "line": 111,
+          "declaration": "func DispatchedKinds() []uint32 {"
+        },
+        {
+          "line": 124,
+          "declaration": "func requireLowerHex64(what string) func(string) error {"
+        },
+        {
+          "line": 142,
+          "declaration": "func validateAddressableCoordinate(subject string) error {"
+        },
+        {
+          "line": 172,
+          "declaration": "func validateExternalIdentifier(subject string) error {"
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 180,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "66c38c6aa19441b7e25ad0919b15cbc7312e8d6e71777263aaa1fd0d0f61eeb7",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/nip85publisher/provider.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/nip85publisher/provider.go",
+      "original_before_sha256": "c83d14073c5e6cadebff3a3bb413afd14a971453692e60945396aa0830b19b15",
+      "snapshot_sha256": "c83d14073c5e6cadebff3a3bb413afd14a971453692e60945396aa0830b19b15",
+      "original_after_capture_sha256": "c83d14073c5e6cadebff3a3bb413afd14a971453692e60945396aa0830b19b15",
+      "bytes": 8164,
+      "lines": 190,
+      "functions": [
+        {
+          "line": 68,
+          "declaration": "func BuildProviderProfile(request ProviderRequest) (AssertionPayload, error) {"
+        },
+        {
+          "line": 124,
+          "declaration": "func BuildDeclarationList(request ProviderRequest, served []uint32) (AssertionPayload, error) {"
+        },
+        {
+          "line": 185,
+          "declaration": "func (r ProviderRequest) validate() (RunStamp, error) {"
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 190,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "c83d14073c5e6cadebff3a3bb413afd14a971453692e60945396aa0830b19b15",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/nip85publisher/schema_pin.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/nip85publisher/schema_pin.go",
+      "original_before_sha256": "235f8426d7eaf86384a48192188d54d57bf0dc5c7a45c5b8e843c5788b27ddfa",
+      "snapshot_sha256": "235f8426d7eaf86384a48192188d54d57bf0dc5c7a45c5b8e843c5788b27ddfa",
+      "original_after_capture_sha256": "235f8426d7eaf86384a48192188d54d57bf0dc5c7a45c5b8e843c5788b27ddfa",
+      "bytes": 8826,
+      "lines": 216,
+      "functions": [
+        {
+          "line": 139,
+          "declaration": "func PinnedKinds() []int {"
+        },
+        {
+          "line": 162,
+          "declaration": "func PinnedTagNames() []string {"
+        },
+        {
+          "line": 187,
+          "declaration": "func PinnedTagNamesForKind(kind uint32) ([]string, bool) {"
+        },
+        {
+          "line": 205,
+          "declaration": "func PinnedTagIsDefinedForKind(kind uint32, name string) bool {"
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 216,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "235f8426d7eaf86384a48192188d54d57bf0dc5c7a45c5b8e843c5788b27ddfa",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/deriver/genesis_composition_test.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/deriver/genesis_composition_test.go",
+      "original_before_sha256": "a9d8c26bdd9e60758a94a419846f7d27c062fdaa44a293f477e766b3304ab155",
+      "snapshot_sha256": "a9d8c26bdd9e60758a94a419846f7d27c062fdaa44a293f477e766b3304ab155",
+      "original_after_capture_sha256": "a9d8c26bdd9e60758a94a419846f7d27c062fdaa44a293f477e766b3304ab155",
+      "bytes": 8768,
+      "lines": 195,
+      "functions": [
+        {
+          "line": 18,
+          "declaration": "func (f fixedFloor) OldestEvent(context.Context) (time.Time, bool, error) { return f.at, f.found, nil }"
+        },
+        {
+          "line": 32,
+          "declaration": "func firstRunPeriods(t *testing.T, oldest time.Time, at time.Time, journal runs.JournalPositionReader) []uint32 {"
+        },
+        {
+          "line": 56,
+          "declaration": "func (oneSegmentJournal) HighestIndexedSegment(context.Context) (uint64, bool, error) {"
+        },
+        {
+          "line": 60,
+          "declaration": "func (j oneSegmentJournal) PeriodsInRange(context.Context, uint64, uint64) ([]uint32, error) {"
+        },
+        {
+          "line": 66,
+          "declaration": "func (j oneSegmentJournal) DirtyPeriodsAfter(_ context.Context, mark int64) ([]uint32, int64, error) {"
+        },
+        {
+          "line": 72,
+          "declaration": "func periodOfForTest(at time.Time) uint32 {"
+        },
+        {
+          "line": 79,
+          "declaration": "func (emptyRunsRegistry) LastCompleteRun(context.Context, string, string) (runs.RunRecord, bool, error) {"
+        },
+        {
+          "line": 85,
+          "declaration": "func (emptyRunsRegistry) LatestRunForWindow("
+        },
+        {
+          "line": 96,
+          "declaration": "func TestTheFirstRunDerivesTheArchivesOldestEventsPeriod(t *testing.T) {"
+        },
+        {
+          "line": 123,
+          "declaration": "func TestAnOperatorsGenesisIsPassedThroughVerbatim(t *testing.T) {"
+        },
+        {
+          "line": 154,
+          "declaration": "func TestAnArchiveStartingAtTheEpochGetsTheEpoch(t *testing.T) {"
+        },
+        {
+          "line": 178,
+          "declaration": "func TestTheArchiveFloorIsTheArchivesMinimumVerbatim(t *testing.T) {"
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 195,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "a9d8c26bdd9e60758a94a419846f7d27c062fdaa44a293f477e766b3304ab155",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/deriver/rerunpremise_test.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/deriver/rerunpremise_test.go",
+      "original_before_sha256": "bd75844cec60896385af48e4ba12f62d0094c447044f83be4d6e25af7a40cf3f",
+      "snapshot_sha256": "bd75844cec60896385af48e4ba12f62d0094c447044f83be4d6e25af7a40cf3f",
+      "original_after_capture_sha256": "bd75844cec60896385af48e4ba12f62d0094c447044f83be4d6e25af7a40cf3f",
+      "bytes": 7778,
+      "lines": 198,
+      "functions": [
+        {
+          "line": 22,
+          "declaration": "func (l *answeringLifecycle) StartRun(_ context.Context, record runs.RunRecord) (runs.RunStatus, error) {"
+        },
+        {
+          "line": 27,
+          "declaration": "func (l *answeringLifecycle) FinishRun(_ context.Context, record runs.RunRecord) error {"
+        },
+        {
+          "line": 32,
+          "declaration": "func rerunWindowForTest() runs.SourceWindow {"
+        },
+        {
+          "line": 44,
+          "declaration": "func TestARunTheRegistryCallsCompleteDerivesNothing(t *testing.T) {"
+        },
+        {
+          "line": 82,
+          "declaration": "func TestTheRefusalNamesTheRunAndTheRule(t *testing.T) {"
+        },
+        {
+          "line": 109,
+          "declaration": "func TestARecomputationIsANewRunAndNotAnEditOfAnOldOne(t *testing.T) {"
+        },
+        {
+          "line": 159,
+          "declaration": "func TestTheGenerationIsOnTheRecordAndNotOnlyInTheID(t *testing.T) {"
+        },
+        {
+          "line": 174,
+          "declaration": "func recordFieldNames(t *testing.T) []string {"
+        },
+        {
+          "line": 190,
+          "declaration": "func TestALifecycleFailureAtStartIsReported(t *testing.T) {"
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 198,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "bd75844cec60896385af48e4ba12f62d0094c447044f83be4d6e25af7a40cf3f",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/deriver/targets/propagationclaim_test.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/deriver/targets/propagationclaim_test.go",
+      "original_before_sha256": "b58fdad135e394e0e960734dc0cbb25b9fa1d481f573371e57379f72f1465956",
+      "snapshot_sha256": "b58fdad135e394e0e960734dc0cbb25b9fa1d481f573371e57379f72f1465956",
+      "original_after_capture_sha256": "b58fdad135e394e0e960734dc0cbb25b9fa1d481f573371e57379f72f1465956",
+      "bytes": 2720,
+      "lines": 73,
+      "functions": [
+        {
+          "line": 15,
+          "declaration": "func TestTheObservedSpreadIsNotAnUpperBoundOnPropagation(t *testing.T) {"
+        },
+        {
+          "line": 48,
+          "declaration": "func abs64(v int64) int64 {"
+        },
+        {
+          "line": 58,
+          "declaration": "func TestNoProductionCommentCallsTheSpreadAnUpperBound(t *testing.T) {"
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 73,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "b58fdad135e394e0e960734dc0cbb25b9fa1d481f573371e57379f72f1465956",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/ranker/relayquality_notmeasured_test.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/ranker/relayquality_notmeasured_test.go",
+      "original_before_sha256": "7a0a98a1217b1ae1f364d79292f4e8f7fafb8f03606dfe4d555aeb30d899c019",
+      "snapshot_sha256": "7a0a98a1217b1ae1f364d79292f4e8f7fafb8f03606dfe4d555aeb30d899c019",
+      "original_after_capture_sha256": "7a0a98a1217b1ae1f364d79292f4e8f7fafb8f03606dfe4d555aeb30d899c019",
+      "bytes": 10291,
+      "lines": 224,
+      "functions": [
+        {
+          "line": 20,
+          "declaration": "func TestUptimeDividesByItsOwnSampleCountAndNotByTheObservationCount(t *testing.T) {"
+        },
+        {
+          "line": 50,
+          "declaration": "func TestARelayWhoseLivenessNobodyMeasuredIsScoredOnWhatWasMeasured(t *testing.T) {"
+        },
+        {
+          "line": 91,
+          "declaration": "func TestARelayWithNoMeasuredTermIsCountedAndNotScored(t *testing.T) {"
+        },
+        {
+          "line": 138,
+          "declaration": "func TestARelayWhoseOnlyMeasuredTermCarriesNoWeightIsNotScored(t *testing.T) {"
+        },
+        {
+          "line": 170,
+          "declaration": "func TestMoreUpObservationsThanLivenessSamplesIsCorruptData(t *testing.T) {"
+        },
+        {
+          "line": 187,
+          "declaration": "func TestMoreLivenessSamplesThanObservationsIsCorruptData(t *testing.T) {"
+        },
+        {
+          "line": 203,
+          "declaration": "func containsTerm(terms []RelayQualityTerm, want RelayQualityTerm) bool {"
+        },
+        {
+          "line": 215,
+          "declaration": "func basisFor(t *testing.T, result RelayQualityResult, relay string) RelayQualityBasis {"
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 224,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "7a0a98a1217b1ae1f364d79292f4e8f7fafb8f03606dfe4d555aeb30d899c019",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/ranker/sources_sequence_test.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/ranker/sources_sequence_test.go",
+      "original_before_sha256": "9846acc7f2cc6bfcb5e37227c637d77f6dc1dab479d01b16c8f41a6a2780c0a8",
+      "snapshot_sha256": "9846acc7f2cc6bfcb5e37227c637d77f6dc1dab479d01b16c8f41a6a2780c0a8",
+      "original_after_capture_sha256": "9846acc7f2cc6bfcb5e37227c637d77f6dc1dab479d01b16c8f41a6a2780c0a8",
+      "bytes": 1444,
+      "lines": 42,
+      "functions": [
+        {
+          "line": 13,
+          "declaration": "func (f *failingFirstSelector) Select(context.Context, any, string, ...any) error {"
+        },
+        {
+          "line": 26,
+          "declaration": "func TestTheRelayQualityReadsAreSequentialAndTheFirstFailureStopsTheSecond(t *testing.T) {"
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 42,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "9846acc7f2cc6bfcb5e37227c637d77f6dc1dab479d01b16c8f41a6a2780c0a8",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/ranker/graphreach_test.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/ranker/graphreach_test.go",
+      "original_before_sha256": "610fbf1340594f6bb1c60e4e3d725883ad1403c1faaadf9ee0f9f84a56dbde7f",
+      "snapshot_sha256": "610fbf1340594f6bb1c60e4e3d725883ad1403c1faaadf9ee0f9f84a56dbde7f",
+      "original_after_capture_sha256": "610fbf1340594f6bb1c60e4e3d725883ad1403c1faaadf9ee0f9f84a56dbde7f",
+      "bytes": 8499,
+      "lines": 217,
+      "functions": [
+        {
+          "line": 76,
+          "declaration": "func TestEverySocialGraphAccessorWithNoProductionCallerIsDeclaredHere(t *testing.T) {"
+        },
+        {
+          "line": 114,
+          "declaration": "func exportedMethodsOf(t *testing.T, typeName string) []string {"
+        },
+        {
+          "line": 145,
+          "declaration": "func receiverTypeName(expr ast.Expr) string {"
+        },
+        {
+          "line": 167,
+          "declaration": "func productionCallSelectors(t *testing.T) map[string]bool {"
+        },
+        {
+          "line": 196,
+          "declaration": "func selectorCallsIn(line string) []string {"
+        },
+        {
+          "line": 215,
+          "declaration": "func isIdentByte(c byte) bool {"
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 217,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "610fbf1340594f6bb1c60e4e3d725883ad1403c1faaadf9ee0f9f84a56dbde7f",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/nip85publisher/declarationretry_test.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/nip85publisher/declarationretry_test.go",
+      "original_before_sha256": "759f465de13cfad995ab8f3a5317ecd5fdf16ba2a5ac1e31b26efaf6395b93b7",
+      "snapshot_sha256": "759f465de13cfad995ab8f3a5317ecd5fdf16ba2a5ac1e31b26efaf6395b93b7",
+      "original_after_capture_sha256": "759f465de13cfad995ab8f3a5317ecd5fdf16ba2a5ac1e31b26efaf6395b93b7",
+      "bytes": 10523,
+      "lines": 260,
+      "functions": [
+        {
+          "line": 30,
+          "declaration": "func newLedgerState() *ledgerState { return &ledgerState{recorded: map[string]bool{}} }"
+        },
+        {
+          "line": 32,
+          "declaration": "func (s *ledgerState) key(publisher, subject string, kind uint32, hash string) string {"
+        },
+        {
+          "line": 36,
+          "declaration": "func (s *ledgerState) SkipsRepublish(_ context.Context, publisher, subject string, kind uint32, hash string) (bool, error) {"
+        },
+        {
+          "line": 42,
+          "declaration": "func (s *ledgerState) PutPayloadHash(_ context.Context, record AcceptedPublication) error {"
+        },
+        {
+          "line": 58,
+          "declaration": "func (s *kindFailingSink) Publish(_ context.Context, payload AssertionPayload) (string, error) {"
+        },
+        {
+          "line": 66,
+          "declaration": "func countKind(kinds []uint32, want uint32) int {"
+        },
+        {
+          "line": 90,
+          "declaration": "func TestAnIncompleteDeclarationIsRetriedWhileTheAssertionsAreUnchanged(t *testing.T) {"
+        },
+        {
+          "line": 178,
+          "declaration": "func TestACycleThatDecidedAboutNothingBuildsNoDeclaration(t *testing.T) {"
+        },
+        {
+          "line": 230,
+          "declaration": "func emptySeedRunCheckpoint(t *testing.T) string {"
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 260,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "759f465de13cfad995ab8f3a5317ecd5fdf16ba2a5ac1e31b26efaf6395b93b7",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/deriver/targets/registry.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/deriver/targets/registry.go",
+      "original_before_sha256": "00edda7e9f3620a8abeea779192c190369ebebe9dd12ef7e40d831c384103e87",
+      "snapshot_sha256": "00edda7e9f3620a8abeea779192c190369ebebe9dd12ef7e40d831c384103e87",
+      "original_after_capture_sha256": "00edda7e9f3620a8abeea779192c190369ebebe9dd12ef7e40d831c384103e87",
+      "bytes": 25140,
+      "lines": 518,
+      "functions": [
+        {
+          "line": 20,
+          "declaration": "func requireFleetVector(what string, rows int) error {"
+        },
+        {
+          "line": 42,
+          "declaration": "func ExecPhase("
+        },
+        {
+          "line": 83,
+          "declaration": "func ExecAssembledPhase("
+        },
+        {
+          "line": 122,
+          "declaration": "func QueryTag(runID string, target runs.TargetName, phase string) string {"
+        },
+        {
+          "line": 440,
+          "declaration": "func requireConsumerRead(name string) (guardrail.BoundedRead, error) {"
+        },
+        {
+          "line": 447,
+          "declaration": "func requireDeclaredRead(name string) (guardrail.BoundedRead, error) {"
+        },
+        {
+          "line": 460,
+          "declaration": "func Recomputes() []guardrail.Recompute {"
+        },
+        {
+          "line": 467,
+          "declaration": "func RecomputeFor(target runs.TargetName) (guardrail.Recompute, bool) {"
+        },
+        {
+          "line": 477,
+          "declaration": "func ConsumerReads() []guardrail.BoundedRead {"
+        },
+        {
+          "line": 488,
+          "declaration": "func DeclaredReads() []guardrail.BoundedRead {"
+        },
+        {
+          "line": 500,
+          "declaration": "func DeclaredReadFor(name string) (guardrail.BoundedRead, bool) {"
+        },
+        {
+          "line": 511,
+          "declaration": "func ConsumerReadFor(name string) (guardrail.BoundedRead, bool) {"
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 518,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "00edda7e9f3620a8abeea779192c190369ebebe9dd12ef7e40d831c384103e87",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/deriver/runs/request.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/deriver/runs/request.go",
+      "original_before_sha256": "08102fc7eca7270588d0521c67dd39cbffecc9ca2f7ed16f00ab8590cf870613",
+      "snapshot_sha256": "08102fc7eca7270588d0521c67dd39cbffecc9ca2f7ed16f00ab8590cf870613",
+      "original_after_capture_sha256": "08102fc7eca7270588d0521c67dd39cbffecc9ca2f7ed16f00ab8590cf870613",
+      "bytes": 6819,
+      "lines": 135,
+      "functions": [
+        {
+          "line": 14,
+          "declaration": "func RunStampFor(request RunRequest) RunMetadata {"
+        },
+        {
+          "line": 100,
+          "declaration": "func (request RunRequest) Validate() error {"
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 135,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "08102fc7eca7270588d0521c67dd39cbffecc9ca2f7ed16f00ab8590cf870613",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/signer/signer.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/signer/signer.go",
+      "original_before_sha256": "67a84a9f8aececa207e8817c1260cc075f156358d95e37c644c244e660942ac2",
+      "snapshot_sha256": "67a84a9f8aececa207e8817c1260cc075f156358d95e37c644c244e660942ac2",
+      "original_after_capture_sha256": "67a84a9f8aececa207e8817c1260cc075f156358d95e37c644c244e660942ac2",
+      "bytes": 2398,
+      "lines": 44,
+      "functions": [],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 44,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "67a84a9f8aececa207e8817c1260cc075f156358d95e37c644c244e660942ac2",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/signer/file0600.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/signer/file0600.go",
+      "original_before_sha256": "5cb2e3c73ba7c54618a30c13e7ad102db7979afbd6ec75572c90457408597e0a",
+      "snapshot_sha256": "5cb2e3c73ba7c54618a30c13e7ad102db7979afbd6ec75572c90457408597e0a",
+      "original_after_capture_sha256": "5cb2e3c73ba7c54618a30c13e7ad102db7979afbd6ec75572c90457408597e0a",
+      "bytes": 6928,
+      "lines": 148,
+      "functions": [
+        {
+          "line": 43,
+          "declaration": "func NewFileSigner(path string) (*FileSigner, error) {"
+        },
+        {
+          "line": 115,
+          "declaration": "func (s *FileSigner) PublicKey() string { return s.pubkey }"
+        },
+        {
+          "line": 120,
+          "declaration": "func (s *FileSigner) String() string {"
+        },
+        {
+          "line": 125,
+          "declaration": "func (s *FileSigner) GoString() string { return s.String() }"
+        },
+        {
+          "line": 130,
+          "declaration": "func (s *FileSigner) Sign(ev *nostr.Event) error {"
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 148,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "5cb2e3c73ba7c54618a30c13e7ad102db7979afbd6ec75572c90457408597e0a",
+      "unchanged_during_walkthrough": true
+    },
+    {
+      "source": "internal/signer/pubkey.go",
+      "snapshot": ".research/code-snapshots/analytics/internal/signer/pubkey.go",
+      "original_before_sha256": "c2983e88568124defa5264d6d8489ebb1259ab8c3aa529b4b91499ff1bb733f5",
+      "snapshot_sha256": "c2983e88568124defa5264d6d8489ebb1259ab8c3aa529b4b91499ff1bb733f5",
+      "original_after_capture_sha256": "c2983e88568124defa5264d6d8489ebb1259ab8c3aa529b4b91499ff1bb733f5",
+      "bytes": 1163,
+      "lines": 33,
+      "functions": [
+        {
+          "line": 15,
+          "declaration": "func NormalizePubkey(pubkey string) (string, bool) {"
+        }
+      ],
+      "full_text_read": true,
+      "capture_stable": true,
+      "read_coverage": {
+        "first_line": 1,
+        "last_line": 33,
+        "complete_file": true
+      },
+      "original_after_walkthrough_sha256": "c2983e88568124defa5264d6d8489ebb1259ab8c3aa529b4b91499ff1bb733f5",
+      "unchanged_during_walkthrough": true
+    }
+  ],
+  "walkthrough_completed_at": "2026-09-11T07:06:39.927915+00:00",
+  "verification": {
+    "product_code_executed": false,
+    "tests_executed": false,
+    "legacy_writes": false,
+    "git_commands_executed": false,
+    "snapshot_hashes_verified": true,
+    "moving_sources": [],
+    "notes": [
+      "Full production and test files were read as source, including comments; test dependencies outside this inventory were not necessarily read.",
+      "Function inventory records top-level Go func declaration opening lines, not a Go typechecked call graph.",
+      "External libraries, unlisted Go files, migrations, and live database/relay behavior are outside this bounded code walkthrough."
+    ],
+    "report_links_verified": true,
+    "snapshot_ignore_rule_verified": true
+  },
+  "totals": {
+    "files": 51,
+    "production_files": 44,
+    "test_files": 7,
+    "bytes": 599900,
+    "logical_lines": 13702,
+    "top_level_function_declarations": 333
+  },
+  "report": "docs/research/go-analytics-code-walkthrough.md",
+  "targeted_protocol_checks": [
+    {
+      "source": "https://github.com/nostr-protocol/nips/blob/master/01.md",
+      "checked_on": "2026-09-11",
+      "purpose": "Equal-time replacement tie-breaking; independent primary-specification check, not part of the Go full-file inventory."
+    },
+    {
+      "source": "https://github.com/nostr-protocol/nips/blob/master/73.md",
+      "checked_on": "2026-09-11",
+      "purpose": "Web, hashtag and compound podcast identifier namespaces; independent primary-specification check, not part of the Go full-file inventory."
+    }
+  ]
+}

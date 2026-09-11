@@ -232,3 +232,30 @@ and immutable record digest. Remote contracts use a versioned binary schema wher
 batching benefits it, plus documented JSON inspection/export. Do not serialize
 Rust in-memory layout or an unversioned private struct as a permanent protocol.
 Original signed content is not mutated when projection or transport schemas evolve.
+
+## Identity and replay refinements from inspected code
+
+[NIP-01](https://github.com/nostr-protocol/nips/blob/a2494f4f81d46684e5814a9bf35e2b1df978f955/01.md)
+hashes the canonical event fields without the signature. If the same canonical
+payload arrives with another valid signature, it is the same event identity.
+Validate the received signature, keep the originally admitted valid signature
+stable in the canonical body, and do not manufacture a second event or call the
+valid alternative a payload hash collision. Optional wire evidence may retain
+variants under its independent bounded policy. An invalid alternate signature
+produces no new witness. A different canonical preimage claiming the same ID
+requires verification failure or explicit collision handling, not silent overwrite.
+
+Tag postings require an actual first value. `['x']` contributes no key/value
+posting, while `['x','']` has an explicitly empty value; full original tag arrays
+remain retained in both cases. Repeated identical postings collapse for query
+membership without modifying tag order or multiplicity in the signed body.
+Exercise these cases through storage and every applicable read adapter.
+
+Retry tokens use unambiguous versioned encodings of immutable source identities,
+target table/schema, deterministic row order and batch content. Include lengths
+for variable fields and distinguish corrections from original facts. Tokens
+must not depend on physical object location. Re-chunking can change batch tokens
+while preserving every source-record identity; never reuse an old token for new
+batch content. Finite engine deduplication remains an optimization, not the logical
+correctness boundary. Exhausted ordinal/sequence spaces fail before wraparound;
+any expansion requires an explicit version or topology/epoch transition.

@@ -171,3 +171,47 @@ directory outside the checkout. Resolve every referenced Compose mount, config,
 seed and startup asset there before launching. Then execute the documented
 installation, useful fixture collection/read and shutdown. A developer checkout
 or cached image must not supply an undeclared missing release file.
+
+## Scenarios recovered from actual Go call chains
+
+The [coordinating code review](../reviews/08-go-code-walkthrough.md) links the
+full-file walkthroughs and source manifests. Add these discriminating real-path
+fixtures to their owning implementation stages:
+
+* An endless backfill competes with unvisited endpoints; inspect bounded
+  preemption, receipt-backed resumption and retained live/control capacity.
+* A known event is redelivered from a new endpoint with invalid well-shaped
+  signature; no witness is committed. Delay verification before EOSE and deliver
+  dropped/out-of-scope frames; no completion overtakes required validation.
+* Stall the exact store while pending marks/lookahead/driver buffers grow; verify
+  all byte reservations, backpressure and recovery, including one very large unit.
+* Corrupt a large retained artifact and interrupt repair; preserve source bytes
+  and bounded forensic work without manufacturing a complete recovered frontier.
+* Disable a derived target and make dirty-only progress without new events;
+  inspect actual storage queries, touched partitions and committed output cuts.
+  Replace a list with a newer empty winner, then import an older list in another
+  month; neither entries nor graph membership may be reconstructed incorrectly.
+* Follow actual cursors through mixed/all-withheld candidates and losslessly
+  encoded tag values; distinguish absent deletion state from a zero timestamp.
+  Continue across API restart and worker changes, rotate/revoke cursor keys and
+  verify private scan positions remain opaque while policy revocation still acts.
+* Disable the cockpit, repeat stuck dependency probes, reuse a readable process
+  identity and hold an uncooperative shutdown; writer exclusion and bounded work
+  remain effective at their actual owning boundaries.
+* Publish more subjects than one batch, interrupt between pages and fail one
+  destination; resume the suffix and exact pending bytes without forgetting the
+  failed target or recasting an unwired subject helper as a working feature.
+
+These are source-derived test requirements, not tests executed in this review.
+The source reports disclose static-inference limits and do not certify all Go
+behavior or the future Rust implementation.
+
+Local signing credentials are opened with supported OS facilities that prevent
+a named pipe/device or disallowed symlink from blocking ordinary secret loading.
+Validate the opened descriptor's regular-file identity, ownership and restrictive
+permissions, then enforce the byte limit while reading; a pathname-only check
+before an ordinary blocking open is vulnerable to substitution. Define supported
+secret-mount behavior explicitly, keep errors redacted, and reject unsupported
+file types/ownership. Test these cases in isolation and independently enforce
+the typed signer's purpose/kind/subject allowlist. A generic key's ability to
+sign any event is not the application signing authority.

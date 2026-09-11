@@ -43,3 +43,13 @@ and repaired first-launch, observation, protocol, permissions and packaging
 acceptance details. Each phase report distinguishes preserved intent, deliberate
 changes and evidence still owed by the implementation. Mechanical artifact checks
 verify the written handoff; no new product runtime or capacity result is claimed.
+
+## Selective full-file implementation walkthrough
+
+The owner's next request added substantive actual Go code reading. Four bounded
+walkthroughs follow acquisition/transport, storage/replay, analytics/publication
+and actual CLI/read/lifecycle paths, with complete selected test-file readings.
+The [coordinating review](../reviews/08-go-code-walkthrough.md) links exact hashed
+inventories, observed behavior, static-inference limits and changes integrated
+into each owning Rust contract. This is separate from the full phase Markdown
+coverage, and makes no complete-Go-audit or newly executed product-test claim.

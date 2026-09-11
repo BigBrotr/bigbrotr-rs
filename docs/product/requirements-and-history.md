@@ -116,3 +116,8 @@ journeys are included, and which tempting additions do not fit the baseline.
 The [complete vision reread](../reviews/07-vision-and-final-recheck.md) maps all
 original decision definitions to retained intent or deliberate changes. Legacy
 plans are context, not feature obligations or performance certificates.
+
+The [implementation walkthrough](../reviews/08-go-code-walkthrough.md) additionally
+checks selected complete production call chains and test files. Its source-backed
+lessons refine the current contracts; actual Go behavior does not automatically
+become a required Rust feature or implementation technique.

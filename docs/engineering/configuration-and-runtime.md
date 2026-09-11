@@ -182,3 +182,28 @@ typed reason, bounded progress/counters and output artifact/generation reference
 The owner writes its envelope; output COMPLETE publication still follows the
 consumer's transactional contract. Sensitive details have private visibility.
 Raw exception text and arbitrary unbounded JSON are not the schema.
+
+## Ownership and probes at actual process boundaries
+
+The [Go entry-point walkthrough](../research/go-read-runtime-code-walkthrough.md)
+shows why an HTTP cockpit check cannot own a writer. Missing, disabled or
+unreachable health endpoints never authorize concurrent access to an embedded
+store or publication stream. Enforce storage/process exclusion and commit fencing
+at their owning boundaries. A worker identity contains a fresh cryptographic
+process-incarnation nonce; hostname/PID are diagnostic attributes, since both can
+repeat. Fencing epochs remain separate from identity uniqueness.
+
+Dependency health probes are coalesced and bounded per adapter/instance. A caller
+timeout does not free its work permit while an underlying driver is still active.
+Do not launch a fresh unbounded probe every interval while earlier calls ignore
+cancellation. Close/reset a supported transport, or escalate to the isolated
+process boundary when necessary; expose stale last-success and probe-in-flight
+state honestly. Recovery of the dependency must release the old probe and restore
+normal cadence without a reconnect storm.
+
+Shutdown stops intake, cancels work and joins owners before closing their stores.
+If a driver cannot be joined within the configured authority/drain envelope,
+process termination and positive old-owner exclusion are the recovery boundary.
+Never close a shared native handle underneath a still-running task or release
+its lease as though the task had stopped. Test cockpit outage, repeated health
+probes against a stuck driver, process-ID reuse and noncooperative shutdown.
