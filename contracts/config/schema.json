@@ -3613,6 +3613,55 @@
           "x-bigbrotr-owner": "sync",
           "x-bigbrotr-reload": "connection"
         },
+        "revisit_bands": {
+          "default": [
+            {
+              "cadence": "15m",
+              "end_age": "1h",
+              "start_age": "0s"
+            },
+            {
+              "cadence": "1h",
+              "end_age": "6h",
+              "start_age": "1h"
+            },
+            {
+              "cadence": "6h",
+              "end_age": "48h",
+              "start_age": "6h"
+            }
+          ],
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "cadence": {
+                "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+                "type": "string"
+              },
+              "end_age": {
+                "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+                "type": "string"
+              },
+              "start_age": {
+                "pattern": "^(0|[1-9][0-9]*)(us|ms|s|m|h|d)$",
+                "type": "string"
+              }
+            },
+            "required": [
+              "start_age",
+              "end_age",
+              "cadence"
+            ],
+            "type": "object"
+          },
+          "maxItems": 1024,
+          "minItems": 1,
+          "type": "array",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-intervals": "start_age < end_age; ordered disjoint half-open intervals",
+          "x-bigbrotr-owner": "sync",
+          "x-bigbrotr-reload": "evidence-epoch"
+        },
         "safety_lag": {
           "default": "48h",
           "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",

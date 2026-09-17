@@ -372,6 +372,19 @@ known-gap retries, banded revisits and deep history have separate fair queues.
 Coalescing is valid only when the actual completed range/method/time satisfies
 all covered obligations. Budget pressure records overdue work and achieved delay.
 
+The static `sync.revisit_bands` value is an ordered array of closed records with
+exactly `start_age`, `end_age` and `cadence`, each an explicit duration. The lower
+age permits zero, the upper age must be greater than the lower age, and cadence
+is positive. Adjacent boundaries and explicit gaps are allowed; overlap and
+out-of-order input are errors rather than silently reordered policy. Keep 1–1024
+bands: a nonempty declared schedule preserves the selected revisit responsibility,
+while the finite count bounds its per-scope obligation templates before runtime
+admission. This count is a configuration ceiling, not measured scheduling
+capacity. For example, `{ start_age = "0s", end_age = "1h", cadence = "15m" }`
+represents `[0,1h)` every 15 minutes. The TOML array-of-tables form is equivalent.
+Changing bands starts a new evidence epoch; activating it and capturing fixed
+wall-time intervals remain durable scheduler responsibilities.
+
 These cadences are initial explicit cost/latency choices, not measured optimal
 settings or completeness guarantees. With steady uniform arrivals and completed
 linear traversals their width/cadence sum is `4+5+7=16` historical deliveries per

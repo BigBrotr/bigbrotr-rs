@@ -721,3 +721,67 @@ fn native_compute_candidates_fit_atomic_work_and_the_declared_job_grant() {
         reject(path, &invalid);
     }
 }
+
+#[test]
+fn revisit_bands_are_closed_ordered_intervals_with_positive_cadence() {
+    let directory = tempfile::tempdir().unwrap();
+    let path = directory.path();
+    let base = example(path, "full");
+    fs::write(path.join("input.toml"), &base).unwrap();
+    let defaults = success(run(path, &["config", "show", "--file", "input.toml"]));
+    assert_eq!(
+        defaults["settings"]["sync.revisit_bands"]["value"],
+        serde_json::json!([
+            {"start_age":"0", "end_age":"3600000000", "cadence":"900000000"},
+            {"start_age":"3600000000", "end_age":"21600000000", "cadence":"3600000000"},
+            {"start_age":"21600000000", "end_age":"172800000000", "cadence":"21600000000"}
+        ])
+    );
+    let custom = format!(
+        "{base}\n[[sync.revisit_bands]]\nstart_age='0s'\nend_age='1h'\ncadence='2m'\n[[sync.revisit_bands]]\nstart_age='2h'\nend_age='18446744073709551615us'\ncadence='1h'\n"
+    );
+    fs::write(path.join("input.toml"), &custom).unwrap();
+    let show = success(run(path, &["config", "show", "--file", "input.toml"]));
+    assert_eq!(
+        show["settings"]["sync.revisit_bands"]["value"][1]["end_age"],
+        "18446744073709551615"
+    );
+    let inline = base.replace("[sync]\n", "[sync]\nrevisit_bands=[{start_age='0s',end_age='60m',cadence='120s'}, {start_age='120m',end_age='18446744073709551615us',cadence='60m'}]\n");
+    fs::write(path.join("input.toml"), inline).unwrap();
+    let inline_show = success(run(path, &["config", "show", "--file", "input.toml"]));
+    assert_eq!(
+        inline_show["settings"]["sync.revisit_bands"]["value"],
+        show["settings"]["sync.revisit_bands"]["value"]
+    );
+    let oversized = (0..1025)
+        .map(|i| format!("{{start_age='{i}s',end_age='{}s',cadence='1s'}}", i + 1))
+        .collect::<Vec<_>>()
+        .join(",");
+    let oversized = base.replace(
+        "[sync]\n",
+        &format!("[sync]\nrevisit_bands=[{oversized}]\n"),
+    );
+    assert!(invalid_error(path, &oversized).contains("1..1024"));
+    for invalid in [
+        "[{start_age='0s',end_age='1h',cadence='0s'}]",
+        "[{start_age='1h',end_age='1h',cadence='1s'}]",
+        "[{start_age='2h',end_age='1h',cadence='1s'}]",
+        "[{start_age='0s',end_age='2h',cadence='1s'}, {start_age='1h',end_age='3h',cadence='1s'}]",
+        "[{start_age='2h',end_age='3h',cadence='1s'}, {start_age='0s',end_age='1h',cadence='1s'}]",
+        "[{start_age='0s',end_age='18446744073710s',cadence='1s'}]",
+        "[{start_age='0s',end_age='1h',cadence='1s',url='WITHHELD-PAYLOAD'}]",
+        "[{start_age='0s',end_age='1h'}]",
+        "[{start_age='0s',start_age='1s',end_age='1h',cadence='1s'}]",
+        "[]",
+    ] {
+        let configured = configured_roles(&base, &["control"]);
+        let document = toml::to_string(&configured).unwrap();
+        assert!(document.contains("[sync]\n"));
+        let input = document.replace("[sync]\n", &format!("[sync]\nrevisit_bands={invalid}\n"));
+        let error = invalid_error(path, &input);
+        if !invalid.contains("start_age='0s',start_age") {
+            assert!(error.contains("sync.revisit_bands"), "{error}");
+        }
+        assert!(!error.contains("WITHHELD-PAYLOAD"));
+    }
+}

@@ -19,6 +19,7 @@ pub enum Kind {
     Paths,
     ChoiceSet(&'static [&'static str]),
     Endpoints,
+    RevisitBands,
 }
 
 #[derive(Clone, Debug)]
@@ -71,6 +72,17 @@ impl Key {
             Kind::Endpoints => {
                 json!({"type":"array","items":{"type":"string","format":"bigbrotr-endpoint/1","maxLength":8192},"maxItems":100000})
             }
+            Kind::RevisitBands => json!({
+                "type":"array", "minItems":1, "maxItems":1024,
+                "items":{"type":"object", "additionalProperties":false,
+                    "required":["start_age","end_age","cadence"],
+                    "properties":{
+                        "start_age":{"type":"string", "pattern":"^(0|[1-9][0-9]*)(us|ms|s|m|h|d)$"},
+                        "end_age":{"type":"string", "pattern":"^[1-9][0-9]*(us|ms|s|m|h|d)$"},
+                        "cadence":{"type":"string", "pattern":"^[1-9][0-9]*(us|ms|s|m|h|d)$"}
+                    }},
+                "x-bigbrotr-intervals":"start_age < end_age; ordered disjoint half-open intervals"
+            }),
         };
         if !self.default.is_null() {
             value["default"] = self.default.clone();
@@ -626,6 +638,18 @@ pub fn keys() -> Vec<Key> {
         Enum(&["retain", "drop"]),
         "retain",
         "generation",
+        "sync",
+        false
+    );
+    add!(
+        "sync.revisit_bands",
+        RevisitBands,
+        json!([
+            {"start_age":"0s", "end_age":"1h", "cadence":"15m"},
+            {"start_age":"1h", "end_age":"6h", "cadence":"1h"},
+            {"start_age":"6h", "end_age":"48h", "cadence":"6h"}
+        ]),
+        "evidence-epoch",
         "sync",
         false
     );

@@ -362,5 +362,53 @@
     },
     "review": "Complete changed source/test/owning-contract and generated key semantics reviewed locally. No new independent-agent review.",
     "remaining": "All prior runtime, engine, exact Linux and selected-product gates remain. Native scheduling/admission, physical scratch identity, target/profile/seed semantics and finite export commands are not implemented by these templates."
+  },
+  "revisit_bands_candidate": {
+    "baseline": "9df8173178f7e8f88a1d11d55501b3deabbaed4c",
+    "state": "reviewed dirty candidate before containing commit; no scheduler execution or activation",
+    "registry_keys": 344,
+    "changed_files_sha256": {
+      "apps/bigbrotr/src/config/mod.rs": "b751cbed57fc1599a27cb203e070ab0663c6114e36d981122387e93af4498578",
+      "apps/bigbrotr/src/config/registry.rs": "37c102ba86d1aaca3dc6a3071923855a48c1c6b77bf24171a8853e5d14c870d6",
+      "apps/bigbrotr/src/config/resolve.rs": "4d0a566b6c376397b268cdd5d734642cd06a8ad02e6a983ff59216117263667a",
+      "apps/bigbrotr/tests/config_entrypoint.rs": "024cecf4966eeb06fb5d69f1ba3cf24591e20ff8afc0414c31e5fa640360e348",
+      "contracts/config/schema.json": "97b7825974df0614465aa9c2157a0ec070e0c1f98041d6334768957a5e3f00e2",
+      "docs/architecture/acquisition-services.md": "52368861d9a85bbd45bab7706d502e30bcb94502f98f1966b81e4b774fbc750e",
+      "docs/reference/configuration.md": "b3dad445a425a2d20ee05093f384682d1cdced06d146ed3cc4c4ec07fff988ba"
+    },
+    "changes": [
+      "Closed 1..1024 ordered, disjoint half-open revisit bands with explicit age/cadence duration units and checked u64 normalization",
+      "Nested diagnostic integer conversion preserves the complete microsecond range as decimal strings",
+      "Same structured shape accepts TOML inline arrays and arrays of tables; duplicate/unknown fields and invalid disabled settings fail without value disclosure"
+    ],
+    "red_control": {
+      "status": "FAIL before implementation: independently expected default bands absent",
+      "log": ".research/static-config/revisit-red.log"
+    },
+    "validation": {
+      "config_cli": {
+        "status": "PASS",
+        "tests": 21,
+        "command": "cargo test --locked -p bigbrotr --test config_entrypoint",
+        "log_sha256": "78c07ee86c4d6b5a89dcb4b15d7b21a0f2ec2bc1045965af8c5928050667324a"
+      },
+      "clippy": {
+        "status": "PASS",
+        "command": "cargo clippy --locked --workspace --all-targets -- -D warnings",
+        "log_sha256": "e867f37706f9883de54d301010266b6e3c08ff4c5ec48bd4568724b7e92db3a3"
+      },
+      "fmt": {
+        "status": "PASS",
+        "command": "cargo fmt --all --check"
+      },
+      "artifacts": {
+        "status": "PASS",
+        "command": "python3 experiments/verify_artifacts.py",
+        "scope": "links, fences, JSON and selected artifact hashes; not semantic qualification",
+        "log_sha256": "87b1417d1d4ed7b6f23b6984cb30df1743246e35a3494298cb5cea69d2127707"
+      }
+    },
+    "review": "Full changed parser/registry/test/owning-contract and generated schema/reference reviewed locally. No new independent-agent review.",
+    "remaining": "Selector identity, durable epoch activation, fixed scheduled event-time obligations, fair scheduling and late-arrival comparison remain unimplemented. All prior runtime/engine/release and missing-family gates remain."
   }
 }

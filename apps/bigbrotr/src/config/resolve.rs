@@ -201,9 +201,14 @@ fn decoded_value(value: &toml::de::DeValue<'_>) -> Result<Value, String> {
             .map(|v| decoded_value(v.get_ref()))
             .collect::<Result<Vec<_>, _>>()
             .map(Value::Array),
-        DeValue::Datetime(_) | DeValue::Table(_) => {
-            Err("unsupported datetime or structured configuration value".into())
-        }
+        DeValue::Table(table) => table
+            .iter()
+            .map(|(key, value)| {
+                decoded_value(value.get_ref()).map(|value| (key.get_ref().to_string(), value))
+            })
+            .collect::<Result<serde_json::Map<_, _>, _>>()
+            .map(Value::Object),
+        DeValue::Datetime(_) => Err("unsupported datetime configuration value".into()),
     }
 }
 
@@ -233,19 +238,10 @@ fn normalize(key: &Key, value: &Value) -> Result<Value, &'static str> {
             false,
         )
         .map(Value::from),
-        Duration | DurationZero => units(
-            value,
-            &[
-                ("us", 1),
-                ("ms", 1000),
-                ("s", 1000000),
-                ("m", 60000000),
-                ("h", 3600000000),
-                ("d", 86400000000),
-            ],
-            matches!(key.kind, DurationZero),
-        )
-        .map(Value::from),
+        Duration | DurationZero => {
+            duration(value, matches!(key.kind, DurationZero)).map(Value::from)
+        }
+        RevisitBands => revisit_bands(value),
         Ratio => value
             .as_f64()
             .filter(|n| n.is_finite() && (0.0..=1.0).contains(n))
@@ -347,6 +343,64 @@ fn normalize(key: &Key, value: &Value) -> Result<Value, &'static str> {
             }
             Ok(Value::Array(result))
         }
+    }
+}
+
+fn duration(value: &Value, allow_zero: bool) -> Result<u64, &'static str> {
+    units(
+        value,
+        &[
+            ("us", 1),
+            ("ms", 1000),
+            ("s", 1000000),
+            ("m", 60000000),
+            ("h", 3600000000),
+            ("d", 86400000000),
+        ],
+        allow_zero,
+    )
+}
+
+fn revisit_bands(value: &Value) -> Result<Value, &'static str> {
+    let bands = value.as_array().ok_or("expected array of revisit bands")?;
+    if bands.is_empty() || bands.len() > 1024 {
+        return Err("expected 1..1024 revisit bands");
+    }
+    let mut previous_end = 0;
+    let mut result = Vec::with_capacity(bands.len());
+    for band in bands {
+        let fields = band
+            .as_object()
+            .ok_or("expected closed revisit band record")?;
+        if fields.len() != 3
+            || !["start_age", "end_age", "cadence"]
+                .iter()
+                .all(|name| fields.contains_key(*name))
+        {
+            return Err("revisit band requires only start_age, end_age and cadence");
+        }
+        let start = duration(&fields["start_age"], true)?;
+        let end = duration(&fields["end_age"], false)?;
+        let cadence = duration(&fields["cadence"], false)?;
+        if start >= end || start < previous_end {
+            return Err("revisit bands must be nonempty, ordered and disjoint");
+        }
+        previous_end = end;
+        result.push(json!({"start_age":start, "end_age":end, "cadence":cadence}));
+    }
+    Ok(Value::Array(result))
+}
+
+// Diagnostic numbers, including structured values, must survive JavaScript's
+// narrower exact-integer range. This never changes the resolved typed values.
+fn diagnostic_integers(value: &mut Value) {
+    match value {
+        Value::Number(number) if number.is_u64() => {
+            *value = json!(number.as_u64().unwrap().to_string())
+        }
+        Value::Array(items) => items.iter_mut().for_each(diagnostic_integers),
+        Value::Object(fields) => fields.values_mut().for_each(diagnostic_integers),
+        _ => (),
     }
 }
 
@@ -998,9 +1052,7 @@ impl Resolved {
                     value = json!("[redacted]");
                 }
                 // Public metadata never rounds large integers through a JS number.
-                if let Some(number) = value.as_u64() {
-                    value = json!(number.to_string());
-                }
+                diagnostic_integers(&mut value);
                 fields.insert(key.name.clone(),json!({"value":value,"source":self.sources[&key.name],"default_from":key.default_from,"default_add_us":key.default_add_us.to_string(),"reload":key.reload,"deployment_locked":key.root,"applicability":if self.applicable(key) {"selected"}else{"staged-unselected"}}));
             }
             report["settings"] = Value::Object(fields);
