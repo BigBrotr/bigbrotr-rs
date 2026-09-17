@@ -154,7 +154,7 @@ oracles; do not derive expected output by calling the implementation under test.
    completed steps and refresh the progress checkpoint. Never mark the whole
    phase complete from one happy path. A pending commit is not a pushed result.
 
-The practical runner currently implements `p01-t01` and `p01-event-cli`; use the
+The practical runner currently implements `p01-t01`, `p01-event-cli` and `p01-config-static`; use the
 actual source/artifact arguments in [verification](../development/verification.md).
 Engine/Compose orchestration and the remaining P01-T08 scenarios are future work;
 the current runner has no `--compose` option. A planned scenario is not executed

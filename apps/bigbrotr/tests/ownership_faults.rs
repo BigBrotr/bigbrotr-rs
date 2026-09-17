@@ -1,9 +1,5 @@
 //! P01-T06 local schedules and OS providers, not storage/process-exclusion acceptance.
-#[path = "../src/runtime/ownership.rs"]
-mod ownership;
-#[path = "../src/runtime/policy_authority.rs"]
-mod policy_authority;
-
+use bigbrotr::runtime::{ownership, policy_authority};
 use bigbrotr_model::{DatasetId, OwnerEpoch, PolicyEpoch, ProcessIncarnation};
 use ownership::{OwnershipTiming, TimingError, WriterIdentity, WriterMismatch, WriterRole};
 use policy_authority::{LeaseError, PolicyLeaseTtl};

@@ -1,10 +1,13 @@
 use super::registry::{Key, Kind, keys};
+use bigbrotr::runtime::{EnvelopeError, ProcessEnvelope, ResourceLimits, WaiterLimits};
+use bigbrotr::runtime::{ownership::OwnershipTiming, policy_authority::PolicyLeaseTtl};
 use bigbrotr_protocol::endpoint::Endpoint;
 use serde_json::{Value, json};
 use std::{
     collections::{BTreeMap, BTreeSet},
     net::IpAddr,
     path::{Component, Path},
+    time::Duration,
 };
 
 pub const MAX_CONFIG_BYTES: usize = 10 * 1024 * 1024;
@@ -289,13 +292,7 @@ fn normalize(key: &Key, value: &Value) -> Result<Value, &'static str> {
             if matches!(key.kind, Path) && !absolute_path(text) {
                 return Err("expected absolute path without dot components");
             }
-            if matches!(key.kind, Secret)
-                && !text.strip_prefix("file:").is_some_and(|path| {
-                    absolute_path(path)
-                        && !path.ends_with('/')
-                        && std::path::Path::new(path).file_name().is_some()
-                })
-            {
+            if matches!(key.kind, Secret) && bigbrotr::secrets::SecretFile::parse(text).is_err() {
                 return Err(
                     "expected protected file:/absolute/filename reference, never plaintext",
                 );
@@ -820,20 +817,24 @@ impl Resolved {
         let mut host = n("runtime.os_headroom_bytes");
         for process in ["application", "postgres", "clickhouse", "native"] {
             let prefix = format!("runtime.processes.{process}");
-            let mut total = 0;
-            for field in [
-                "baseline_bytes",
-                "payload_bytes",
-                "native_bytes",
-                "completion_reserve_bytes",
-            ] {
-                total = add(total, n(&format!("{prefix}.{field}")))?;
-            }
-            if total > n(&format!("{prefix}.memory_max_bytes")) {
-                return Err(format!(
+            // Share the runtime owner's checked envelope. This offline check
+            // admits no items or waiters and creates no running budget owner.
+            ProcessEnvelope::new(
+                n(&format!("{prefix}.memory_max_bytes")),
+                n(&format!("{prefix}.baseline_bytes")),
+                ResourceLimits::new(
+                    n(&format!("{prefix}.payload_bytes")),
+                    0,
+                    n(&format!("{prefix}.native_bytes")),
+                    n(&format!("{prefix}.completion_reserve_bytes")),
+                ),
+                WaiterLimits::new(0, 0),
+            ).map_err(|error| match error {
+                EnvelopeError::MemoryArithmeticOverflow => "resource sum overflows u64".to_owned(),
+                EnvelopeError::MemoryLimitExceeded { .. } => format!(
                     "{prefix}: baseline + payload + native + completion reserve exceeds memory maximum"
-                ));
-            }
+                ),
+            })?;
             if self.flag(&format!("{prefix}.enabled")) {
                 host = add(host, n(&format!("{prefix}.memory_max_bytes")))?;
             }
@@ -841,16 +842,16 @@ impl Resolved {
         if host > n("runtime.host_memory_bytes") {
             return Err("OS headroom plus enabled process grants exceeds host memory".into());
         }
-        let timing = add(
-            n("runtime.heartbeat_interval"),
-            n("runtime.renewal_timeout"),
-        )?;
-        let safe = n("runtime.lease_ttl")
-            .checked_sub(n("runtime.renewal_safety_margin"))
-            .ok_or("ownership safety margin must be below TTL")?;
-        if timing >= safe || n("runtime.authorization_ttl") > 5_000_000 {
-            return Err("unsafe ownership timing or authorization TTL exceeds 5s".into());
-        }
+        OwnershipTiming::new(
+            Duration::from_micros(n("runtime.lease_ttl")),
+            Duration::from_micros(n("runtime.heartbeat_interval")),
+            Duration::from_micros(n("runtime.renewal_timeout")),
+            Duration::from_micros(n("runtime.renewal_safety_margin")),
+            Duration::from_micros(n("runtime.graceful_shutdown_timeout")),
+        )
+        .map_err(|error| format!("unsafe ownership timing: {error}"))?;
+        PolicyLeaseTtl::new(Duration::from_micros(n("runtime.authorization_ttl")))
+            .map_err(|error| error.to_string())?;
         if n("read.default_page_size") > n("read.max_page_size") {
             return Err("read default page size exceeds maximum page size".into());
         }

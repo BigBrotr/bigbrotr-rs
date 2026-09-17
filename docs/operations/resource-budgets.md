@@ -19,7 +19,9 @@ The terms correspond to the static configuration's `baseline_bytes`,
 by the consumer. Replacing live limits repeats the byte-envelope validation. A
 reduction does not revoke existing ownership; when current use exceeds a new
 limit, the affected lane issues no new permits until use falls within the
-limit.
+limit. A replacement also charges the maximum of live use and the proposed
+limit for each memory dimension. Capacity retained by an older permit cannot be
+reassigned to another lane before that permit releases it.
 
 ## Admission lanes
 
@@ -64,9 +66,10 @@ data work as control work or borrow the reserve for throughput.
 
 ## Current boundary
 
-This slice supplies the ownership primitive and pressure tests. It does not yet
-wire a budget into the executable, configuration resolver, PostgreSQL, RocksDB,
-or a supervisor. It also does not enforce host-wide memory, RSS, CPU, disk, or
+The executable's offline configuration resolver uses the same checked process
+envelope. This slice also supplies the ownership primitive and pressure tests;
+PostgreSQL, RocksDB and supervisor consumers remain unimplemented. It does not
+enforce host-wide memory, RSS, CPU, disk, or
 I/O limits; choose shares across unrelated work classes; or define an async
 scheduling policy. Those claims require the concrete owners and process
 boundaries that consume this primitive.

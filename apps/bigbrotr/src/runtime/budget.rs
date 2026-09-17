@@ -450,10 +450,19 @@ impl ResourceBudget {
     /// admission observes the new limits.
     pub fn set_limits(&self, limits: ResourceLimits) -> Result<(), EnvelopeError> {
         let mut state = self.inner.lock();
+        // A reduced limit cannot release bytes still owned by existing permits.
+        // Charge both retained use and newly available capacity before allowing
+        // a transfer between lanes or between data and native allocations.
+        let transition = ResourceLimits::new(
+            limits.data_bytes.max(state.used.data_bytes),
+            limits.items.max(state.used.items),
+            limits.native_bytes.max(state.used.native_bytes),
+            limits.control_bytes.max(state.used.control_bytes),
+        );
         ProcessEnvelope::new(
             state.memory_max_bytes,
             state.baseline_bytes,
-            limits,
+            transition,
             state.waiter_limits,
         )?;
         state.limits = limits;

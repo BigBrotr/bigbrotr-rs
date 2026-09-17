@@ -110,11 +110,11 @@ foreign correlation, outage/timeout coalescing, clock faults and exhaustion.
 Simulated suspend and UTC jumps include negative interpretations that would
 incorrectly keep a lease alive; they are not host-clock mutation experiments.
 
-The integrating owner must wire the runtime modules and replace configuration's
-inline ownership arithmetic with `OwnershipTiming::new(Duration::from_micros(...))`
-for the five named settings, plus `PolicyLeaseTtl::new` for
-`runtime.authorization_ttl`. Preserve the existing smaller read-authorization
-ceiling check. The lease tracker then needs actual Control and output consumers;
+The executable's offline configuration resolver uses
+`OwnershipTiming::new(Duration::from_micros(...))` for the five named settings,
+plus `PolicyLeaseTtl::new` for `runtime.authorization_ttl`, and preserves the
+smaller read-authorization ceiling check. The lease tracker still needs actual
+Control and output consumers;
 no currently shipped command advertises live authority from this core.
 
 Manual failover still requires stopping or positively excluding the old owner,

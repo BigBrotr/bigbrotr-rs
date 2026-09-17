@@ -1,7 +1,4 @@
-#[path = "../src/runtime/mod.rs"]
-mod runtime;
-
-use runtime::{
+use bigbrotr::runtime::{
     AcquireError, BudgetSnapshot, DrainError, EnvelopeError, OwnedPermit, ProcessEnvelope,
     RequestError, ResourceBudget, ResourceLimits, ResourceRequest, WaiterLimits,
 };
@@ -62,6 +59,40 @@ fn budget(waiters: WaiterLimits) -> ResourceBudget {
     ResourceBudget::new(
         ProcessEnvelope::new(1_024, 128, ResourceLimits::new(512, 4, 256, 128), waiters).unwrap(),
     )
+}
+
+#[test]
+fn retained_allocations_cannot_be_reassigned_to_another_lane() {
+    let budget = budget(WaiterLimits::new(1, 1));
+    let held = budget
+        .try_acquire(ResourceRequest::data(512, 4, 256).unwrap())
+        .unwrap();
+    let replacement = ResourceLimits::new(128, 4, 0, 768);
+    assert_eq!(
+        budget.set_limits(replacement),
+        Err(EnvelopeError::MemoryLimitExceeded {
+            required_bytes: 1_664,
+            memory_max_bytes: 1_024,
+        })
+    );
+    assert_eq!(
+        budget.snapshot().limits(),
+        ResourceLimits::new(512, 4, 256, 128)
+    );
+    drop(held);
+    budget.set_limits(replacement).unwrap();
+    let control = budget
+        .try_acquire(ResourceRequest::control(768).unwrap())
+        .unwrap();
+    // The reverse transfer also has to charge the live control allocation.
+    assert!(matches!(
+        budget.set_limits(ResourceLimits::new(512, 4, 256, 128)),
+        Err(EnvelopeError::MemoryLimitExceeded { .. })
+    ));
+    drop(control);
+    budget
+        .set_limits(ResourceLimits::new(512, 4, 256, 128))
+        .unwrap();
 }
 
 #[test]

@@ -285,5 +285,138 @@
     "Native Linux arm64 binding build and failure scenarios",
     "All possible in-flight native instruction schedules; delayed SIGKILL trials observe only the recorded schedules"
   ],
-  "review": "Independent source audit and integrating owner complete experiment source/driver/Docker/lock review. Loop oracle verifies all three values and a contiguous prefix; missing CURRENT must refuse recreation. Raw logs and generated databases remain inventoried ignored/remote data."
+  "review": "Independent source audit and integrating owner complete experiment source/driver/Docker/lock review. Loop oracle verifies all three values and a contiguous prefix; missing CURRENT must refuse recreation. Raw logs and generated databases remain inventoried ignored/remote data.",
+  "native_linux_arm64": {
+    "run": {
+      "id": 35270058133,
+      "event": "workflow_dispatch",
+      "head_branch": "main",
+      "head_sha": "18fc02994b219f8bb79cc0d6e16b66a2a599aa4c",
+      "status": "completed",
+      "conclusion": "success",
+      "updated_at": "2026-09-17T20:33:38Z",
+      "native_job_conclusion": "success",
+      "foundation_job_conclusion": "skipped"
+    },
+    "artifact": {
+      "id": 10519510875,
+      "name": "native-rocks-linux-arm64",
+      "uploaded_zip_sha256": "94a361081a8aca2b5556243b26d81f5038956262afefb8060605605827f042be",
+      "size_bytes": 12855,
+      "local_path": ".research/implementation/native-rocks-binding/ci-35270058133",
+      "local_files": 10,
+      "local_bytes": 35693,
+      "local_inventory_sha256": "ba1114d62f98c214ed22805cd1cab79943fd9df9b5872ce0c716d9c1c2acf4db",
+      "result_sha256": "a45c9b33326691123b67d00e29fd530c675b4359901131dc86cfaebb4486e936",
+      "build_log_sha256": "62eb2c556fcb929dcce245763fc40becc1aeb5a7149c8b2ccfcfe3265a1ab1a1",
+      "image_inspect_sha256": "e3150d9fa71eb121213b8708d93b52b21234370fb8269c803b4c3a50edebb9e8",
+      "container_inspect_sha256": "b0b696c391b89b9a2e13f78700a83d86d9d706eca1dd7842f5cdce873ba1cf9a"
+    },
+    "source": {
+      "revision": "18fc02994b219f8bb79cc0d6e16b66a2a599aa4c",
+      "commit_tree": "2b752553bb275c82a60523223638919cab4a5ad1",
+      "experiment_tree": "c9a4d2e44c27fb11558feb93992a4bb8af5086d0",
+      "source_files": 6,
+      "source_hash_mismatches_against_git": 0,
+      "Cargo.lock_sha256": "7d05f7fbb69433767f4cbba32552aebb8cbb847c2cc5a3a18d81c5f304dc1f31",
+      "Cargo.toml_sha256": "914da3f633a2f756e6294a90b469e1ea50dbccf4e6b74aec7acecc7fbef47d64",
+      "Dockerfile_sha256": "4bf7a2367df2d1056d77eabf82177c4102858ba88eeacc7d88cb61cac7c0e039",
+      "driver.py_sha256": "52266d9107df882250c9ac4464be6c0662d69618d86b987ae3bb849d7e97a588",
+      "src/main.rs_sha256": "8e167b6e93159fd1572868c3277e938f6b413e596bba2b386b7ce8b6209f8404"
+    },
+    "binding": {
+      "rocksdb_crate": "0.25.0",
+      "rocksdb_crate_checksum": "d8d90add70d1d420ee487bce4a1449880a8d147451c6051b2ee5f8354553dcbf",
+      "librocksdb_sys": "0.19.0+11.8.1",
+      "librocksdb_sys_checksum": "4f45e86edad8e88efe97dbf384b4e48e1ff0f111eabf154c7b09d7a1e5fb573c",
+      "bundled_rocksdb": "11.8.1",
+      "zstd_sys": "2.1.0+zstd.1.5.7",
+      "features": [
+        "bindgen-runtime",
+        "zstd",
+        "static-implicit"
+      ],
+      "write_options": "sync=true;disable_wal=false;use_fsync=true;atomic_flush=true",
+      "binary_sha256_reported": "2a5a3c5ef870116bcf855c092b6035db031f9d2fc2a16c42e26dddbd62b34cea"
+    },
+    "runtime": {
+      "host": "Linux 6.17.0-1022-azure aarch64",
+      "container_platform": "linux/arm64/v8",
+      "rustc": "1.98.1 aarch64-unknown-linux-gnu",
+      "python": "3.11.2",
+      "cxx": "Debian c++ 12.2.0",
+      "clang_executable": "NOT_AVAILABLE",
+      "libclang_path": "/usr/lib/llvm-14/lib",
+      "docker_engine": "28.0.4 linux/arm64",
+      "base_image": "rust:1.98.1-bookworm@sha256:9a73a5088750b4c95158ab26629c854c3d6fc4b173cb7bc8079ad252d8ed7bfa",
+      "built_image_id": "sha256:0ebadd04390871a8dcfc8747af67eb61052cfecbb7d5c0df92b732215b313a53",
+      "built_image_size_bytes": 2260505953,
+      "container_id": "0e2eebb65fced801bb659f1630399454e59dcd852934a3bb8e6f15a0b55d0e47",
+      "container_user": "1001:1001",
+      "container_exit_code": 0,
+      "container_oom_killed": false,
+      "network_mode": "none",
+      "read_only_root": true,
+      "cap_drop": [
+        "ALL"
+      ],
+      "no_new_privileges": true,
+      "cpu_limit": 2,
+      "memory_bytes": 2147483648,
+      "memory_swap_bytes": 2147483648,
+      "pids_limit": 128,
+      "published_ports": 0,
+      "rw_mounts": [
+        "/out"
+      ],
+      "tmpfs": "/tmp:rw,exec,nosuid,nodev,size=64m",
+      "container_removal_step": "success"
+    },
+    "result": {
+      "format": "bigbrotr-native-rocks-binding-experiment/1",
+      "scope": "Actual rust-rocksdb binding behavior only; isolated research, not product storage/runtime authority.",
+      "overall": "PASS",
+      "cases_collected": 9,
+      "cases_passed": 9,
+      "cases_failed": 0,
+      "cases_skipped": 0,
+      "cases": [
+        "kill-before-call: NOT_CALLED, reopen mask 000",
+        "kill-after-ok-before-reply: UNKNOWN, reopen mask 111",
+        "kill-during-synced-write-loop: UNKNOWN, five delays resolved to all-or-none prefixes of 1, 7, 47, 13 and 133 batches",
+        "snapshot-before-after-reopen: SNAPSHOT_BEFORE_AFTER_REOPEN_OK",
+        "exclusive-writer-real-and-alias: cross-process real and alias refused; same-process alias refused by canonical registry",
+        "missing-column-family: REFUSED",
+        "unknown-column-family: REFUSED",
+        "missing-current: REFUSED_WITHOUT_RECREATE",
+        "explicit-caps-zstd-flush: ZSTD SST observed for facts and receipts with configured cache/WBM/write buffer/WAL/open-file/background-job caps"
+      ],
+      "not_run": [
+        "system power loss or firmware-cache loss",
+        "dedicated-filesystem ENOSPC/fsync failure injection",
+        "multi-host fencing",
+        "same-process bind-mount or device/inode alias enforcement",
+        "P02 admission semantics, runtime grants, receipts, or recovery authority"
+      ],
+      "native_observation": {
+        "rocksdb_version": "11.8.1",
+        "column_family_descriptors_with_same_block_cache": 3,
+        "write_buffer_manager": "active"
+      }
+    },
+    "linkage_checks": {
+      "source_revision_and_experiment_tree_match_git": true,
+      "all_six_source_file_hashes_match_git": true,
+      "result_cargo_lock_matches_source": true,
+      "driver_log_equals_result_json": true,
+      "image_architecture_matches_host_and_job": true,
+      "all_nine_cases_are_present_and_pass": true
+    },
+    "limits": [
+      "The executable binary is inside the locally built CI image and is not included in the downloaded artifact; its hash is reported by the executed driver but was not independently rehashed after download.",
+      "The clang executable was unavailable in the runtime image; libclang 14 libraries were installed and bindgen completed, while C++ reports Debian 12.2.0.",
+      "The successful workflow cleanup step reports removal of the owned container, but the ephemeral runner is gone and current container absence cannot be independently queried.",
+      "The five result-level NOT_RUN boundaries remain unqualified and must not be inferred from the nine passing binding cases."
+    ]
+  }
 }

@@ -213,8 +213,9 @@ The [initial static implementation](evidence/p01-static-configuration-20260917.j
 now supplies closed bounded core settings, six generated recipe candidates,
 redacted offline commands and explicit incomplete doctor results. Remaining key
 families and live/durable authority are not complete, so the step checkboxes above
-remain open. Native CI covers the implemented Rust process tests; the dedicated
-static syscall acceptance case is being added separately. Pure endpoint identity
+remain open. Native CI covers the implemented Rust process tests and the dedicated
+[static syscall acceptance case](evidence/p01-config-static-acceptance-20260917.json)
+on Linux amd64/arm64; live dependency/authority checks remain NOT_RUN. Pure endpoint identity
 normalization does not establish DNS/route authorization.
 
 ## P01-T05 — Shared resource budget, scheduling and lifecycle

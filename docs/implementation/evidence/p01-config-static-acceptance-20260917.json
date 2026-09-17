@@ -115,5 +115,190 @@
       ".research/targets/product"
     ],
     "cleanup": "Only these worktree-owned ignored resources may be retired after integrating-owner review; no unrelated cleanup performed"
+  },
+  "exact_native_integration": {
+    "run": {
+      "id": 35269748375,
+      "event": "push",
+      "head_branch": "main",
+      "head_sha": "20f4a1620a195086b5ea74d8f9b6e10e2659a0cb",
+      "status": "completed",
+      "conclusion": "success",
+      "created_at": "2026-09-17T20:15:51Z",
+      "updated_at": "2026-09-17T20:20:01Z"
+    },
+    "source": {
+      "revision": "20f4a1620a195086b5ea74d8f9b6e10e2659a0cb",
+      "tree": "4e64a60e946187b42c2ae81d8b548fd4e0a86b19",
+      "archive_sha256": "fcdc197f859a114e050d1d9746dbc2ad20aedeb71249583cbd9a4c8654206325",
+      "source_manifest_sha256": "d121d2d887e9ccc67f634ac4befb56cb77a86e91d093e29a6cf7b5f5c155cb6f",
+      "manifest_files": 325,
+      "git_files": 325,
+      "missing_files": 0,
+      "extra_files": 0,
+      "file_hash_mismatches": 0,
+      "dirty": false,
+      "state": "builder-supplied"
+    },
+    "embedded_inputs_sha256": {
+      "Cargo.lock": "3ee6c2f6830b6e03dee8fbf7787054d6ad1210dc893bc5f826414acb71866cb4",
+      "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167",
+      "contracts/release/dependencies.json": "4496e79387a93128e0c2b1c1befecf95dbc749f9943d4f054f438654d9f70b0f",
+      "contracts/protocol/versions.json": "37c76706c5a2aa4fc72a40aeed908f104620eafcee1118b7cee8baf133546c95",
+      "contracts/protocol/nip01-event.json": "b830d5ab8651f5a763ebcffdc0eb1737ba70f4602c93fc714c892865ffca2db8"
+    },
+    "build_helper_sha256": "0257fcfa1f030b969838818c904453499f65d71e5c4a77508b5e346ca2bed2e1",
+    "platforms": [
+      {
+        "runner": "macos-15",
+        "job_conclusion": "success",
+        "target": "aarch64-apple-darwin",
+        "rustc": "1.98.1 (48a229cea 2026-09-01)",
+        "binary_sha256_reported": "3b49434a4528a58120cc2c4eba211ad28584a97ab26c6fa99cb4549682fa45f8",
+        "build_result_sha256": "ae2f57737cf09e64b7543b2e0edab0df3a35181f221a6105895c5d42dfdb2cb3",
+        "local_build_inventory_sha256": "8a317cd5da1cc6acc82fe8ba4b51cfbd81e238c25457f84fd783bbdf1ad33f13",
+        "artifact": {
+          "id": 10518372980,
+          "name": "foundation-macos-15",
+          "uploaded_zip_sha256": "70cea68c8e001294a938cbf5f6246e48515177d09a76a7890633b58e73321251",
+          "size_bytes": 17185
+        },
+        "event_acceptance": {
+          "status": "NOT_RUN",
+          "reason": "Linux-only native practical step"
+        },
+        "config_acceptance": {
+          "status": "NOT_RUN",
+          "reason": "Linux-only native practical step"
+        },
+        "workflow_skipped_steps": [
+          "Prepare native syscall observer",
+          "Planning artifacts and documentation links",
+          "Dependency licenses, sources and advisories",
+          "Native foundation and signed-event practical case",
+          "Native static configuration practical case"
+        ]
+      },
+      {
+        "runner": "ubuntu-24.04",
+        "job_conclusion": "success",
+        "target": "x86_64-unknown-linux-gnu",
+        "rustc": "1.98.1 (48a229cea 2026-09-01)",
+        "binary_sha256_reported": "af4e9fa6d5933d451345813d1a601b29d1b167b1f37ceb800d8e7c305ebcd249",
+        "build_result_sha256": "4d79a9e43f8895bdb463f1c7728aae47959ad1d143e28d6e84bbbde6b7846720",
+        "local_build_inventory_sha256": "667019ae0f3755e0d988267a80e626be9f7354ffcc82ce2595a13f47e8bf08e7",
+        "artifact": {
+          "id": 10517249346,
+          "name": "foundation-ubuntu-24.04",
+          "uploaded_zip_sha256": "1349129d3091bc70b9fa2f49f4cb64f8c9f2999aea556ebbd3b098790a3af1e3",
+          "size_bytes": 344418
+        },
+        "event_acceptance": {
+          "report_sha256": "8b5e2acbcb509007be9474c251998de84614e71e5360e9598b9eaac3d0115352",
+          "result": "PASS",
+          "counts": {
+            "collected": 40,
+            "executed": 40,
+            "failed": 0,
+            "skipped": 0,
+            "not_run": 0
+          },
+          "raw_invocation_triplets": 28,
+          "all_traces_nonempty": true,
+          "every_invocation_has_nonempty_stdout_or_stderr": true,
+          "nonempty_frozen_event_corpus_check": "PASS",
+          "local_inventory_sha256": "06b1233621bee4b5f404889b17d647263e27d9b82a001b93d6e8ee706a632500"
+        },
+        "config_acceptance": {
+          "report_sha256": "69fb3cbdf0940ccfa0adb96a27b9e02196c5ac18cb65796072dd4032c105d14c",
+          "result": "PASS",
+          "counts": {
+            "collected": 64,
+            "executed": 64,
+            "failed": 0,
+            "skipped": 0,
+            "not_run": 0
+          },
+          "raw_invocation_triplets": 49,
+          "all_traces_nonempty": true,
+          "every_invocation_has_nonempty_stdout_or_stderr": true,
+          "local_inventory_sha256": "021d954f3100c7f846f931ecec109e014f27a3ae9dafe1d3cf42451bac1b035d"
+        },
+        "workflow_skipped_steps": []
+      },
+      {
+        "runner": "ubuntu-24.04-arm",
+        "job_conclusion": "success",
+        "target": "aarch64-unknown-linux-gnu",
+        "rustc": "1.98.1 (48a229cea 2026-09-01)",
+        "binary_sha256_reported": "ef09cc51889df9415178ffa232d3ece671cddf5bd75123d62575e375a063301b",
+        "build_result_sha256": "189abe76c33d23a5dfae10d9b56cced6f058c99ffce1ba1f349de76f364174b5",
+        "local_build_inventory_sha256": "03d2d8fb0f8382a2d40fa2e03e6609c2729eaf56ab7ca0801c68b4c68372b301",
+        "artifact": {
+          "id": 10517349092,
+          "name": "foundation-ubuntu-24.04-arm",
+          "uploaded_zip_sha256": "822d552ad3b85147dbf0875a8bbe77e4df9af207b282c7bd20ca02633e2c5849",
+          "size_bytes": 357679
+        },
+        "event_acceptance": {
+          "report_sha256": "f3acfad586f5e5c78f761294c64d81f081259a0d9850b70562a409e90195e7b3",
+          "result": "PASS",
+          "counts": {
+            "collected": 40,
+            "executed": 40,
+            "failed": 0,
+            "skipped": 0,
+            "not_run": 0
+          },
+          "raw_invocation_triplets": 28,
+          "all_traces_nonempty": true,
+          "every_invocation_has_nonempty_stdout_or_stderr": true,
+          "nonempty_frozen_event_corpus_check": "PASS",
+          "local_inventory_sha256": "c41b3fcd7ca1164f518ab7bbc1603a290a1e8a7e79e3056d08303f4acf026df8"
+        },
+        "config_acceptance": {
+          "report_sha256": "c2414b3426539e62094c6573d92027dae8e2d789ce3b3034c1238c4202637e4a",
+          "result": "PASS",
+          "counts": {
+            "collected": 64,
+            "executed": 64,
+            "failed": 0,
+            "skipped": 0,
+            "not_run": 0
+          },
+          "raw_invocation_triplets": 49,
+          "all_traces_nonempty": true,
+          "every_invocation_has_nonempty_stdout_or_stderr": true,
+          "local_inventory_sha256": "bbff2c70e5b2828638fec08f3699edf9e8096b0da3cdbb94d58a0301caeeddc1"
+        },
+        "workflow_skipped_steps": [
+          "Planning artifacts and documentation links",
+          "Dependency licenses, sources and advisories"
+        ]
+      }
+    ],
+    "totals": {
+      "linux_acceptance_reports": 4,
+      "report_checks_collected": 208,
+      "report_checks_executed": 208,
+      "report_checks_passed": 208,
+      "report_checks_failed": 0,
+      "report_checks_skipped": 0,
+      "report_checks_not_run": 0,
+      "workflow_failed_steps": 0,
+      "workflow_skipped_steps": 7
+    },
+    "linkage_checks": {
+      "all_build_results_match_their_source_manifest_bytes": true,
+      "all_linux_reports_match_platform_build_result_bytes": true,
+      "all_linux_reports_match_platform_binary_hash": true,
+      "all_reported_runner_fixture_and_helper_hashes_match_the_source_manifest": true,
+      "all_embedded_lock_toolchain_protocol_and_dependency_hashes_match": true
+    },
+    "limits": [
+      "Downloaded foundation artifacts contain build-result and source-manifest JSON, not executable binary bytes; binary hashes are consistent between build and execution reports but were not independently rehashed after download.",
+      "macOS practical acceptance is absent/NOT_RUN by workflow condition; only its clean archive build metadata and ordinary workflow checks succeeded.",
+      "Matrix-conditional planning/dependency steps were not run on macOS or Linux arm64; the successful Linux x86_64 job owns those checks."
+    ]
   }
 }

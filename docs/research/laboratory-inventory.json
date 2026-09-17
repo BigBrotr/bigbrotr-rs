@@ -196,7 +196,7 @@
     "local_root": ".research/implementation",
     "local_contents": "Foundation source snapshots, build targets/caches, raw acceptance and review evidence",
     "remote_root": "/home/tux/bigbrotr-implementation-20260917",
-    "remote_status": "Verified 2026-09-17: seven owned implementation containers exited; latest Rocks704 exit0/Pid0/OOMKilled=false. Detached checkout704d97e clean; no running owned implementation container.",
+    "remote_status": "Last verified at the earlier 2026-09-17 Rocks704 boundary: seven owned implementation containers exited, latest exit0/Pid0/OOMKilled=false, checkout detached704d97e clean. No Tux mutation since that observation; this is not a fresh live inspection.",
     "remote_preflight": "2026-09-17 native Rocks preflight: Linux x86_64 kernel6.12.101+deb13,61GiB RAM,366GiB available disk; all six owned implementation containers stopped, checkout clean a25e0c5, latest model container exit0/Pid0/OOMfalse. Unrelated containers/ports/volumes inspected and preserved.",
     "planned_container": "bigbrotr-implementation-foundation-20260917",
     "limits": "2 CPUs, 4 GiB memory, 512 PIDs, no published ports, fresh bind directories below remote root; no shared writable engine state",
@@ -221,7 +221,7 @@
       "purpose": "Exact Nostr SDK/secp256k1/sys source inspection for P01-T02/T03; no downloaded source shipped"
     },
     "local_crypto_fuzz_rejection": ".research/targets/rejected-crypto: intentionally invalid crypto cfg compiled only to verify product compile_error refusal; no resulting product artifact",
-    "ci": "Native foundation run35256322733, event1726638 run35259296095 and corrected event4689580 run35260018723 all passed on three targets; private downloaded evidence under local_root/foundation/ci-RUN_ID; portable model a25e0c5 run35262162809 also passed all three native jobs, Linux practical40/40 on both architectures. Core facts c74535f run35264125259 passed all three native jobs and both Linux40/40 practical reports. Codec79ebb55 run35265768144 passed all three native jobs, both Linux practical reports40/40; raw downloaded artifacts retained. Effect ebd73fa run35267422379 and config d7bd8f1 run35268002859 passed all three native jobs; both downloaded Linux event CLI reports40/40 for each, inspected with exact source/artifact identities.",
+    "ci": "Native foundation run35256322733, event1726638 run35259296095 and corrected event4689580 run35260018723 all passed on three targets; private downloaded evidence under local_root/foundation/ci-RUN_ID; portable model a25e0c5 run35262162809 also passed all three native jobs, Linux practical40/40 on both architectures. Core facts c74535f run35264125259 passed all three native jobs and both Linux40/40 practical reports. Codec79ebb55 run35265768144 passed all three native jobs, both Linux practical reports40/40; raw downloaded artifacts retained. Effect ebd73fa run35267422379 and config d7bd8f1 run35268002859 passed all three native jobs; both downloaded Linux event CLI reports40/40 for each, inspected with exact source/artifact identities. Config acceptance20f4 run35269748375 audited: two Linux40/40 event and64/64 config reports, all source manifest/input/report identities checked.",
     "event_evidence": "docs/implementation/evidence/p01-event-verification-20260917.json",
     "cbor_dependency_audit": {
       "root": ".research/checkouts/cbor-dependency-audit-20260917",
@@ -235,21 +235,48 @@
         "branch": "impl/static-config-core",
         "base": "a25e0c559ea1575d71775a9bfcc7bd85e133c1ff",
         "owner": "static_configuration agent",
-        "purpose": "P01-T04 static core; root integrates; no remote writes"
+        "purpose": "P01-T04 static core; root integrates; no remote writes",
+        "status": "Retained completed candidate; root integration recorded in Git, no active writes"
       },
       {
         "path": ".research/worktrees/rocks-binding",
         "branch": "research/native-rocks-binding",
         "base": "a25e0c559ea1575d71775a9bfcc7bd85e133c1ff",
         "owner": "foundation_dependency_audit agent",
-        "purpose": "Clearly labeled isolated native binding qualification, root integrates and owns Tux runs"
+        "purpose": "Clearly labeled isolated native binding qualification, root integrates and owns Tux runs",
+        "status": "Retained completed candidate; root integration recorded in Git, no active writes"
       },
       {
         "path": ".research/worktrees/config-acceptance",
         "branch": "impl/config-static-acceptance",
         "base": "d7bd8f13b97e3e224fe93d827d79d6a44a31aed8",
         "owner": "fact_codec_review agent",
-        "purpose": "Actual static config acceptance and capability registry; root integrates"
+        "purpose": "Actual static config acceptance and capability registry; root integrates",
+        "status": "Retained completed candidate; root integration recorded in Git, no active writes"
+      },
+      {
+        "path": ".research/worktrees/resource-budget-foundation",
+        "branch": "research/resource-budget-foundation",
+        "base": "704d97e92c75722e55d51a8f9be92bc2e6f5e678",
+        "owner": "foundation_dependency_audit agent",
+        "purpose": "Completed bounded resource core8c51713 integrated asd8bf51c; root fixes live reassignment",
+        "status": "Clean retained candidate, no active writes"
+      },
+      {
+        "path": ".research/worktrees/authority-lifetime",
+        "branch": "impl/authority-lifetime",
+        "base": "7c112a2da5fc0089c19e2c2e3ec51ec936a6af49",
+        "owner": "fact_codec_review agent",
+        "purpose": "Completed authority core147048d integrated asa1c5a3d; root owns runtime consumers",
+        "status": "Clean retained candidate, no active writes"
+      },
+      {
+        "path": ".research/worktrees/control-schema",
+        "branch": "impl/control-schema-foundation",
+        "base": "140e264756b80c7fa4dc3e668ab33be89bf8d100",
+        "owner": "static_configuration agent",
+        "purpose": "Active bounded P02-T01 DDL and migration planner; root owns driver/CLI/shared manifests and Tux",
+        "status": "Active isolated worktree; inspect before integrating"
       }
     ],
     "rocks_dependency_audit": {
@@ -288,7 +315,30 @@
       "build_limits": "2CPU/6GiB memory+swap; native build completed, transient build container removed by Docker",
       "run_limits": "2CPU/2GiB memory+swap/128PIDs/no network/no ports; read-only source, generated DBs under owned runtime-704d97e/lab",
       "status": "Completed nine binding cases on Macarm64 and TuxLinuxamd64. Runtime container exited0; generated databases and image retained. Optional clang executable absent in image recorded NOT_AVAILABLE; libclang14 and g++12 present.",
-      "evidence": "docs/implementation/evidence/p02-native-rocks-binding-20260917.json"
+      "evidence": "docs/implementation/evidence/p02-native-rocks-binding-20260917.json",
+      "native_arm_run": {
+        "run_id": 35270058133,
+        "source": "18fc02994b219f8bb79cc0d6e16b66a2a599aa4c",
+        "status": "Completed SUCCESS; downloaded report9/9 PASS with actual native arm64 identity and five NOT_RUN failure domains; hosted cleanup step succeeded, runner no longer inspectable",
+        "resources": "GitHub-hosted native isolated job, no Tux resources or external publication",
+        "local_download_root": ".research/implementation/native-rocks-binding/ci-35270058133"
+      }
+    },
+    "runtime_integration": {
+      "root": ".research/implementation/runtime",
+      "secret_review": ".research/implementation/secrets/review/inventory.json",
+      "evidence": "docs/implementation/evidence/p01-runtime-credential-integration-20260917.json",
+      "scope": "Local Mac resource/authority/credential/config checks; no running server"
+    },
+    "rpc_dependency_audit": {
+      "root": ".research/implementation/rpc-dependency-audit",
+      "owner": "fact_codec_review agent",
+      "scope": "Active read-only exact upstream source audit; no tracked edits or service"
+    },
+    "ci_evidence_audit": {
+      "root": ".research/implementation/evidence-audit",
+      "owner": "foundation_dependency_audit agent",
+      "scope": "Completed source/manifest/report audit: foundation20f4 Linux event40/40 and config64/64 on each architecture; native Rocks18fc9/9. Binary hashes report-only because artifacts omit binary/image bytes."
     }
   }
 }

@@ -1,0 +1,45 @@
+# Protected local credentials
+
+The local credential reader accepts `file:/absolute/path/to/file` references,
+bounded to 8192 UTF-8 bytes including the `file:` prefix. A reference must name a
+file: a root or trailing slash, relative path, control character, `.` or `..`
+component is invalid. Repeated separators do not change the selected file.
+Offline configuration validation checks only this syntax and does not open a
+credential. A valid reference is not authorization to use its contents.
+
+At load time every directory component is opened relative to a retained parent
+descriptor, refusing symlinks. The final descriptor must be a regular file owned
+by the effective process UID with exactly mode `0400` or `0600`. Group/world
+permissions and executable or special mode bits are refused. Metadata and bytes
+come from that same descriptor. A final FIFO does not wait for a writer, and
+opening a substituted terminal cannot acquire a controlling terminal.
+
+Provision the mount and runtime user together. Root-owned files with mode `0444`,
+including common container secret defaults, do not satisfy this boundary for an
+unprivileged process. The chosen Compose mount/user combination still needs
+packaged installation evidence; this reader alone does not qualify it. Paths
+through symlinked directories are refused too, even when the final file has the
+right owner and mode. Use an actual supported mount path.
+
+The reader preserves exact bytes, including NULs, whitespace and final newlines;
+it does not trim a password or interpret a key. The consuming credential adapter
+must validate its own format and purpose. Its positive byte limit is checked
+against the descriptor metadata and enforced again while reading, so growth
+after metadata inspection cannot bypass the limit. An empty file reaches the
+adapter as empty bytes. Errors and debug formatting omit reference names and
+contents.
+
+This boundary checks POSIX ownership and mode, not extended ACLs or external
+provider permissions. Operators must provision a filesystem/mount without wider
+ACL access until that behavior is qualified. It does not promise memory
+zeroization; downstream drivers may retain additional copies. The logical read
+buffer has `limit + 1` bytes, and `allocated_bytes()` exposes its retained vector
+capacity. Allocator overhead and temporary or driver copies need a conservative
+process allowance. Resource owners must retain their charges through the actual
+allocation lifetime, including unresolved operations.
+
+Current evidence covers the reader and offline syntax. PostgreSQL/TLS consumers,
+their resource ownership, extended ACL enforcement, actual container mounts and
+credential rotation are separate implementation and acceptance gates. Filesystem
+I/O is synchronous; `O_NONBLOCK` does not bound regular-file I/O on a stalled
+filesystem. Runtime loading must use its owning bounded blocking boundary.
