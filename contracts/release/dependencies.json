@@ -1,6 +1,6 @@
 {
   "format": "bigbrotr-dependencies/1",
-  "status": "Foundation, model, static configuration and initial PostgreSQL migration candidate; no qualified product release",
+  "status": "Foundation, model, static configuration, PostgreSQL migration and initial native Ingest store candidates; no qualified product release",
   "rust": {
     "toolchain": "1.98.1",
     "msrv": "1.98.1",
@@ -122,11 +122,24 @@
       "license": "Apache-2.0 OR ISC OR MIT",
       "license_notice": "https://github.com/rustls/rustls/tree/2976d90fd1c2db6b518700dd101b714069cfcb17#license",
       "source": "https://docs.rs/rustls/0.23.45/rustls/"
+    },
+    {
+      "name": "rocksdb",
+      "version": "0.25.0",
+      "purpose": "Private initial Ingest store initialization, exact manifest/column-family reopening and owned native resources; no event admission API",
+      "default_features": false,
+      "features": [
+        "zstd",
+        "bindgen-runtime"
+      ],
+      "license": "Apache-2.0",
+      "license_notice": "https://github.com/rust-rocksdb/rust-rocksdb/blob/e4aac69f55021e619566b6ca5902665e0ea2af4e/LICENSE",
+      "source": "https://docs.rs/rocksdb/0.25.0/rocksdb/"
     }
   ],
   "lock": "Cargo.lock",
   "native_adapters": {
-    "status": "Event crypto links secp256k1-sys0.14.1; initial PostgreSQL migration and TLS/mTLS cases executed on native Linux amd64; no product event storage binding yet",
+    "status": "Event crypto links secp256k1-sys0.14.1; initial PostgreSQL migration and TLS/mTLS cases executed on native Linux amd64; initial private Ingest store links RocksDB, with qualification scoped separately",
     "selection": "docs/research/dependency-selections.md",
     "source_inventory": "docs/research/evidence/dependency-selections.json",
     "release_gates": "P01-T01 and P02 actual bindings, offline assets, engine failures and native target qualification",
@@ -149,6 +162,84 @@
         "https://github.com/briansmith/untrusted/blob/89c8b8415f692d3803d183fc5fbf9ec08a6adcf4/LICENSE.txt"
       ],
       "evidence": "docs/implementation/evidence/p02-control-faults-tls-20260917.json"
+    },
+    "rocks": {
+      "crate": "librocksdb-sys",
+      "version": "0.19.0+11.8.1",
+      "engine": "RocksDB 11.8.1",
+      "source": "https://docs.rs/crate/librocksdb-sys/0.19.0+11.8.1/source/",
+      "crate_license_metadata": "MIT/Apache-2.0/BSD-3-Clause",
+      "license_selection": "Apache-2.0 for the inspected Rust binding headers and the dual-licensed RocksDB engine; retain LevelDB BSD-3-Clause and xxHash BSD-2-Clause notices as well as the complete applicable upstream notices.",
+      "features": [
+        "bindgen-runtime",
+        "static",
+        "zstd",
+        "zstd-sys"
+      ],
+      "compression": {
+        "crate": "zstd-sys",
+        "version": "2.1.0+zstd.1.5.7",
+        "engine": "Zstandard 1.5.7",
+        "default_features": false,
+        "features": [
+          "legacy",
+          "zdict_builder"
+        ],
+        "license": "BSD-3-Clause",
+        "license_selection": "BSD option for the dual-licensed native Zstandard code; preserve both wrapper and generated-binding notices.",
+        "source": "https://docs.rs/crate/zstd-sys/2.1.0+zstd.1.5.7/source/"
+      },
+      "unselected_features": [
+        "snappy",
+        "lz4",
+        "zlib",
+        "bzip2",
+        "jemalloc",
+        "io-uring",
+        "rtti",
+        "multi-threaded-cf",
+        "bindgen-static"
+      ],
+      "lock_graph_boundary": "bzip2-sys 0.1.13+1.0.8 and libz-sys 1.1.29 appear in Cargo.lock but are absent from the selected normal/build graphs for aarch64-apple-darwin, x86_64-unknown-linux-gnu and aarch64-unknown-linux-gnu. The static feature references them with optional dependency forwarding; it does not activate them.",
+      "build": "Compile bundled RocksDB C++20 and Zstandard C sources using the selected CC/CXX/AR and the platform C++ standard library. Build-time bindgen dynamically loads libclang; it is not an application runtime libclang dependency. Clean builds exclude ambient native overrides, prebuilt ROCKSDB_LIB_DIR and ZSTD_SYS_USE_PKG_CONFIG; no system engine substitution is selected.",
+      "build_dependencies": [
+        {
+          "name": "bindgen",
+          "version": "0.72.1",
+          "features": [
+            "runtime"
+          ],
+          "license": "BSD-3-Clause",
+          "license_notice": "https://docs.rs/crate/bindgen/0.72.1/source/LICENSE"
+        },
+        {
+          "name": "clang-sys",
+          "version": "1.9.1",
+          "features": "runtime plus clang_11_0 and its implied older API features",
+          "license": "Apache-2.0",
+          "license_notice": "https://docs.rs/crate/clang-sys/1.9.1/source/LICENSE.txt"
+        },
+        {
+          "name": "cc",
+          "version": "1.4.6",
+          "features": [
+            "parallel"
+          ],
+          "license": "MIT OR Apache-2.0",
+          "license_notice": "https://docs.rs/crate/cc/1.4.6/source/LICENSE-MIT"
+        }
+      ],
+      "toolchain_receipt": "tools/build.py records canonical compiler/archiver/libclang paths, exact versions and SHA-256 values, selected macOS SDK identity and the environment actually passed to the build. CARGO_BUILD_JOBS defaults to 2; native toolchain preparation is explicit on all selected CI runners.",
+      "preserved_license_sources": [
+        "https://docs.rs/crate/librocksdb-sys/0.19.0+11.8.1/source/src/lib.rs",
+        "https://docs.rs/crate/librocksdb-sys/0.19.0+11.8.1/source/rocksdb/LICENSE.Apache",
+        "https://docs.rs/crate/librocksdb-sys/0.19.0+11.8.1/source/rocksdb/LICENSE.leveldb",
+        "https://docs.rs/crate/librocksdb-sys/0.19.0+11.8.1/source/rocksdb/util/xxhash.h",
+        "https://docs.rs/crate/zstd-sys/2.1.0+zstd.1.5.7/source/LICENSE",
+        "https://docs.rs/crate/zstd-sys/2.1.0+zstd.1.5.7/source/LICENSE.BSD-3-Clause",
+        "https://docs.rs/crate/zstd-sys/2.1.0+zstd.1.5.7/source/zstd/LICENSE"
+      ],
+      "qualification_scope": "Exact source/license and active feature-graph inspection only in this inventory update. Candidate Mac engine tests and historical isolated binding experiments retain their own evidence. Native Linux product builds, failure/recovery workloads, admission/replay, cross-store authority and full release qualification are not established by this record."
     }
   },
   "license_policy": "New project code is MIT. Preserve upstream notices and qualify the complete release SBOM/licenses when dependencies and assets are added. This inventory is not a complete release license audit."

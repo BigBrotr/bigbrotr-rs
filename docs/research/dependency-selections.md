@@ -202,6 +202,40 @@ Keep handles private to their database: the binding does not prevent a column
 family handle from another database being passed to a batch. Always describe
 the default family explicitly with the same resource/compression policy.
 
+The first private product `IngestStore` candidate now consumes `rocksdb =0.25.0`
+with default features disabled and only `zstd` and `bindgen-runtime`. Its initial
+responsibility is explicit initialization and exact manifest/column-family
+reopening, retaining native resources through close; this is not event admission.
+The product lock selects `librocksdb-sys 0.19.0+11.8.1` and
+`zstd-sys 2.1.0+zstd.1.5.7`. The active sys features are `static`,
+`bindgen-runtime`, `zstd` and its optional dependency; Zstandard enables only
+`legacy` and `zdict_builder`. `cargo tree --locked --offline` for Mac arm64 and
+Linux amd64/arm64 confirms those graphs. The `bzip2-sys` and `libz-sys` lock
+entries are inactive: the sys crate's `static` feature forwards their static
+options only if the dependencies are otherwise enabled. Snappy, LZ4, zlib,
+bzip2, jemalloc and io-uring are not selected. Graph resolution does not execute
+or qualify any target.
+
+The exact [sys build source](https://docs.rs/crate/librocksdb-sys/0.19.0+11.8.1/source/build.rs)
+compiles bundled C++20 and runs `bindgen 0.72.1` with `runtime`, using
+`clang-sys 1.9.1`; `cc 1.4.6` enables bounded Cargo jobserver parallelism.
+Runtime here means loading libclang in the build process. This feature does not
+add an application runtime libclang requirement. The [clean builder](../development/build.md)
+selects and records the actual C/C++ compiler, archiver, libclang and applicable
+SDK, defaults to two jobs, and excludes ambient native overrides and prebuilt
+engine paths. Zstandard uses its bundled C build; the clean environment excludes
+`ZSTD_SYS_USE_PKG_CONFIG` as well. Native product Linux builds, crash/resource
+faults, admission/replay and release qualification remain separate evidence gates.
+
+The [release dependency inventory](../../contracts/release/dependencies.json)
+records exact version-qualified license paths. The wrapper and inspected sys
+headers use Apache-2.0; select the Apache option offered by RocksDB and retain
+its LevelDB BSD-3-Clause and xxHash BSD-2-Clause notices. Select Zstandard's BSD
+option and retain its wrapper and generated-binding notices. Build dependencies
+retain bindgen's BSD-3-Clause, clang-sys's Apache-2.0 and cc's MIT/Apache notices.
+This focused inventory does not replace the complete packaged SBOM and upstream
+notice collection, including platform runtime libraries and toolchain assets.
+
 Use ClickHouse's validated row mode initially, explicit `Insert::end`, named
 query IDs, bounded row streaming and per-operation server work limits. Keep
 deterministic BigBrotr chunk identities separate from query IDs. Late stream
