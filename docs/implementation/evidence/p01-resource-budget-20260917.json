@@ -1,0 +1,85 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-17",
+  "scope": "P01-T05 process-local resource ownership primitive and pressure controls; no product consumer integration",
+  "status": "PASS for listed local scenarios; executable, engine, async and operating-system enforcement NOT_RUN",
+  "source": {
+    "baseline": "704d97e92c75722e55d51a8f9be92bc2e6f5e678",
+    "state": "reviewed isolated candidate before containing commit",
+    "files_sha256": {
+      "apps/bigbrotr/src/runtime/budget.rs": "a8032d45d019ac758712ab1fd47143790ae48e428db01843d3d1266e4cc4efb8",
+      "apps/bigbrotr/src/runtime/mod.rs": "e72fc72ff0f6248ef788e9d6dac07909ea970d1d2dc65d16d4d3d33a6dc6c56b",
+      "apps/bigbrotr/tests/runtime_pressure.rs": "e5c2db9c65a17be7317150cfd5909fd20bca5e6af5d84097a24f2156fcb2edad",
+      "docs/operations/resource-budgets.md": "a97b779ae55a479c4f4a3c69d42ec452115f0716c1b7061234a2d1eb54016021"
+    }
+  },
+  "environment": {
+    "os": "Darwin 25.5.0 arm64",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)",
+    "cargo": "cargo 1.98.1 (797e8a9bc 2026-08-05)",
+    "target_root": ".research/target"
+  },
+  "commands": [
+    {
+      "command": "CARGO_TARGET_DIR=$PWD/.research/target cargo test --locked --workspace",
+      "status": "PASS",
+      "tests": 66,
+      "scope": "10 runtime pressure cases plus 56 existing workspace tests",
+      "log": ".research/resource-budget-foundation/workspace-tests.log",
+      "log_sha256": "a7522edc5a24c976ae65d78cf4107ca4cb61f1a922f5bcaf8b3b8e38897d1375"
+    },
+    {
+      "command": "cargo fmt --all -- --check",
+      "status": "PASS",
+      "log": ".research/resource-budget-foundation/fmt.log",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "command": "CARGO_TARGET_DIR=$PWD/.research/target cargo clippy --locked --workspace --all-targets -- -D warnings",
+      "status": "PASS",
+      "log": ".research/resource-budget-foundation/clippy.log",
+      "log_sha256": "d96f282dbfe954a8e9f0f7059d2cb46e30b898176a33af4541154b15fc5d4f85"
+    },
+    {
+      "command": "RUSTDOCFLAGS=-D warnings CARGO_TARGET_DIR=$PWD/.research/target cargo doc --locked --workspace --no-deps",
+      "status": "PASS",
+      "scope": "existing product module graph; the budget source is compiled through the integration test until a consumer wires it",
+      "log": ".research/resource-budget-foundation/rustdoc.log",
+      "log_sha256": "55c13f17c74ee0f75e4e0f071ee086a0e347935554d387c1b6bec8b819ef531d"
+    }
+  ],
+  "executed_scenarios": [
+    "checked process-envelope addition and rejection of overflow or excess",
+    "live limit replacement cannot exceed the original process envelope",
+    "owned permit release and retention after a caller-side timeout",
+    "reduction below live use blocks new data admission while preserving control progress",
+    "data and control saturation use independent bounded waiter lanes",
+    "queued data work cannot block immediate protected control admission",
+    "deadline expiry removes its waiter entry",
+    "close wakes queued threads and positive drain waits for owned permit release",
+    "empty and permanently oversized requests fail before admission"
+  ],
+  "review": {
+    "method": "complete authored source and test review against the scoped runtime, configuration and operations contracts",
+    "findings_fixed": [
+      "data use above a reduced limit initially blocked independent control admission",
+      "live limit replacement initially allowed a byte sum beyond the checked process envelope",
+      "the waiter deadline was initially checked after capacity and could admit on a late wake",
+      "an accounting overflow on a front waiter could initially leave a stale queue token",
+      "public enum variants initially allowed callers to bypass non-empty request construction"
+    ]
+  },
+  "limitations": [
+    "The module is compiled through a path-scoped integration test and is not wired into the executable or static configuration owner in this candidate",
+    "No PostgreSQL, RocksDB, network, or native-job owner consumes and retains these permits yet",
+    "Native bytes are explicit accounting and do not configure an allocator, cgroup, or child-process boundary",
+    "No async adapter, class-share scheduler, RSS measurement, CPU, disk, or I/O enforcement is implemented",
+    "No Linux, Tux, Compose, CI, engine, or release journey was run for this candidate"
+  ],
+  "resources": {
+    "worktree": ".research/worktrees/resource-budget-foundation",
+    "branch": "research/resource-budget-foundation",
+    "remote": null,
+    "started_services": []
+  }
+}
