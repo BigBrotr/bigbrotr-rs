@@ -3,8 +3,11 @@
 Status: initial P02-T01 foundation. The checked-in catalog contains only
 `0001_control.sql`. The executable now includes explicit inspection, planning and
 application using the selected PostgreSQL driver. Its local planner, preparation
-and entrypoint tests pass; PostgreSQL execution, concurrency, privileges and
-failure recovery are **NOT_RUN** until the recorded engine acceptance runs.
+and entrypoint tests pass. Native Linux amd64 PostgreSQL execution now covers
+the actual CLI, 104 independent SQL constraint cases, initial read-only runtime
+privileges and an engine crash/restart; see the
+[recorded engine evidence](../implementation/evidence/p02-control-engine-20260917.json).
+Concurrent migration/commit-response faults and TLS remain pending in this record.
 This is not completion of P02-T01 or a qualified installation/upgrade path.
 The [task](../implementation/02-storage.md#p02-t01--typed-control-schemas-and-minimum-relay-registry)
 and [upgrade contract](../specification/operations-contract.md) own the remaining
@@ -216,7 +219,9 @@ reader/writer compatibility, known downgrade, intentional catalog number gaps,
 and the independent SHA-256 `abc` vector. They do not execute PostgreSQL.
 
 The following engine cases are required, with externally inspected rows and exact
-source/engine identities. Their status for this slice is **NOT_RUN**. Each trigger
+source/engine identities. The evidence above records the executed single-session
+SQL, CLI, role and crash cases; multi-session races, ambiguous COMMIT and TLS
+remain **NOT_RUN** until their dedicated experiments complete. Each trigger
 has a concrete invariant and corresponding negative control below; a passing
 parser or successful DDL execution alone does not qualify them.
 

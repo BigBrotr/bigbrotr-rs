@@ -1,0 +1,144 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-17",
+  "scope": "Initial P02-T01 control migration executable and schema on actual native Linux amd64 PostgreSQL16.15; not full installation or durable event admission",
+  "source": {
+    "source": "6f7c03d1d5f00276998a733ac7a86c8aeb9cea1f",
+    "source_files": 357,
+    "manifest_exact_match": true,
+    "archive_sha256": "d07dcb3dbbcc2754b305a3e14b10c942383f6c3730499dec8fc5fd7fa1c06c9a",
+    "downloaded_binary_sha256": "5d10250e4e311721644502aaade663b509ebb525c469356e99e7ef3de4e8de0f",
+    "application_inputs_unchanged_through": "ca7eba6f1d8428446c14d209b188687da0a634bc"
+  },
+  "build": {
+    "format": "bigbrotr-build-result/1",
+    "binary_sha256": "5d10250e4e311721644502aaade663b509ebb525c469356e99e7ef3de4e8de0f",
+    "source_manifest_sha256": "c234b3e7f738507e7c63b37eaf01be2aee7805439709ee6f1922019cfd3bba3c",
+    "helper_sha256": "0257fcfa1f030b969838818c904453499f65d71e5c4a77508b5e346ca2bed2e1",
+    "build_info": {
+      "capabilities": [
+        "event-verification",
+        "config-static"
+      ],
+      "capability_scope": "Strict bounded event JSON and independent ID/BIP340 verification; offline static configuration candidates and incomplete read-only doctor diagnostics; no storage, durable configuration authority, source policy, wire transport, filter, or general NIP conformance claim",
+      "debug_info": "false",
+      "format": "bigbrotr-build/1",
+      "inputs_sha256": {
+        "Cargo.lock": "87d5ba19cc757555f53ea1328de4258d5dfa650f82703a73605561eb973b14c9",
+        "contracts/protocol/nip01-event.json": "b830d5ab8651f5a763ebcffdc0eb1737ba70f4602c93fc714c892865ffca2db8",
+        "contracts/protocol/versions.json": "37c76706c5a2aa4fc72a40aeed908f104620eafcee1118b7cee8baf133546c95",
+        "contracts/release/dependencies.json": "bd32a3f6281c358db11a936af6b8c01f4d663c74bdcb1ec99a26c73b71fa5829",
+        "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167"
+      },
+      "optimization": "3",
+      "product": "BigBrotr",
+      "profile_assertion": "release",
+      "protocol_registry_format": "bigbrotr-protocol-versions/1",
+      "protocols": {
+        "event_verifier": "bigbrotr-nip01-verifier/1",
+        "nostr_nips": "a2494f4f81d46684e5814a9bf35e2b1df978f955"
+      },
+      "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+      "schemas": {
+        "build_info": "bigbrotr-build/1",
+        "config_static": "bigbrotr-config-static/1",
+        "doctor": "bigbrotr-doctor/1",
+        "signed_event": "nip01-event/1"
+      },
+      "source": {
+        "dirty": false,
+        "manifest_sha256": "c234b3e7f738507e7c63b37eaf01be2aee7805439709ee6f1922019cfd3bba3c",
+        "revision": "6f7c03d1d5f00276998a733ac7a86c8aeb9cea1f",
+        "state": "builder-supplied",
+        "tree": "5a8bbcbde33df0c1491bb7320041359c8f03ff8c"
+      },
+      "target": "x86_64-unknown-linux-gnu",
+      "version": "0.1.0-dev"
+    }
+  },
+  "engine": {
+    "image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "server": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    },
+    "host": "Tux native Linux amd64",
+    "limits": "PG2CPU/1536MiB memory+swap/256PIDs; client2CPU/4GiB/256PIDs; internal Docker network with no published ports",
+    "raw_root": ".research/implementation/postgres"
+  },
+  "executed": [
+    {
+      "name": "actual_cli_smoke",
+      "status": "PASS",
+      "cases": 16,
+      "harness_revision": "f32b863f780d71653725f3fc8b940048912c9a33",
+      "scope": "Fresh inspect/plan does not create schema; apply exact DDL+receipt; no implicit application rows; no-op retry; seven incompatible histories with full schema+data dump comparison and specific reason; outside/mixed plaintext addresses; wrong SCRAM password with positive controls/server failure/HBA proof; receipt persists after controlled engine SIGKILL/restart"
+    },
+    {
+      "name": "independent_sql_constraints",
+      "status": "PASS",
+      "cases": 104,
+      "negative_sqlstate_cases": 84,
+      "harness_revision": "f32b863f780d71653725f3fc8b940048912c9a33",
+      "fixture_sha256": "5e72e07c0a99fd258ad45d843593e21aefd04e741c65d7c12c14e2910793307d",
+      "external_postconditions": {
+        "datasets": 1,
+        "config": 1,
+        "policy": 1,
+        "topologies": 2,
+        "streams": 3,
+        "owners": 2,
+        "jobs": {
+          "0000000000000000000000000000002a": "accepted",
+          "00000000000000000000000000000028": "succeeded",
+          "00000000000000000000000000000029": "cancelled"
+        }
+      },
+      "scope": "Actual non-superuser migrator role, ten-relation before/after snapshots, full transaction rollback, immutable revisions/heads/owner/job/cut states; synthetic exclusion records do not prove worker fencing"
+    },
+    {
+      "name": "role_separation",
+      "status": "PASS",
+      "cases": 11,
+      "harness_revision": "ca7eba6f1d8428446c14d209b188687da0a634bc",
+      "scope": "Actual runtime login cannot initialize, dedicated role can; runtime schema usage+SELECT controls; exact42501 on schema/table creation, ledger update, TRUNCATE, trigger disable, ownership and role elevation; full schema+data unchanged; neither login has superuser/CREATEROLE/CREATEDB"
+    }
+  ],
+  "retained_failures": [
+    {
+      "report": "smoke-initial.json",
+      "disposition": "Sixteen reported PASS are historical. No-mutation oracles for absent receipts compared None and wrong-password oracle accepted any backend failure; those assertions superseded, not qualified."
+    },
+    {
+      "report": "smoke-verified-failed.json",
+      "status": "FAIL",
+      "disposition": "Stronger oracle caught initdb default loopback host trust while bridge SCRAM and password controls worked. Preserved report/data, stopped old owned containers, created new lab with explicit --auth-local=trust --auth-host=scram-sha-256; unchanged strict oracle passes."
+    }
+  ],
+  "not_run": [
+    "Concurrent revision/owner/seal/frontier mutations and migration lock waiting across COMMIT",
+    "Actual lost-COMMIT reply branches and still-live old backend resolution",
+    "Actual TLS expected-name/CA/mTLS and their refusal cases",
+    "Unsafe fsync/full_page_writes and different engine-version fault cases",
+    "Peak resource envelope under mixed/aged workload, filesystem loss/fsync fault, host power loss",
+    "Native Linux arm64 PostgreSQL consumer acceptance",
+    "Production initialization, all typed runtime mutation grants/adapters, further0002/0003 schemas, command/job/pin atomic authorization and release upgrade/rollback",
+    "First signed event durable admission/archive/read/export/restart and complete selected product"
+  ],
+  "artifacts_sha256": {
+    "source-audit.json": "2967acea1116c97cd7f5930bc72d53a8bb6683ea11293fab5f40c7a3f6e4b918",
+    "build-result-6f7c03d.json": "322bd597b0a838506e3096dd930ba47728218c8fe383a6d8b3ef922b09b4d5ad",
+    "verified-scram.json": "e6873443bd9a6fc3d4d1d15c57faf4ef86535ba3e4b7533fdef027d0b9ebe9fe",
+    "constraints-schema.json": "9e80d9570b4c41e1fe6da29ec565ab3f2a894d22bff0f9e12b0b9b9e114e7320",
+    "constraints-schema.stdout": "b9113e6ef9471b8b4c3257536b45f2a6ee87b460c8d45e04634ef1c25563abcc",
+    "constraints-schema.stderr": "bfecfaff3613d45c6b6293f274f0a5b89c8ae27b904fe22aa5d0b31b75f06acc",
+    "roles-privileges.json": "e97ffe5727b5728de26c6fd1c54cc99804d9e6b23d177b054e574a61f1abe90a",
+    "resource-state-after-schema.log": "bec5c9ffcedd180adbf394f12adb7a1d448a828722c03e20f51f8527b2809889",
+    "smoke-initial.json": "a847eb92569df1f35d14bab4fdbe1357ff349da593e93c9b60f1537feac4e1d8",
+    "smoke-verified-failed.json": "009cfc72e4b036e9e83c2401928f4cc1b73186df6419bd41de7dd26d7dea5df9",
+    "hba-initial.json": "54095f3f84b5b3764187406527239a76221051cdac97e3d4607e15b16c52a237"
+  },
+  "resources": "Two separately inventoried lab generations retained. Initialcontainers stopped; SCRAM PG/client running for further authorized fault/TLS cases. Buildcontainer stopped exit0/OOMfalse. See laboratory-inventory.json and progress.md."
+}

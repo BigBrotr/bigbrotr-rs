@@ -7,9 +7,12 @@ for its fresh Rust implementation, including dashboard, private administration a
 website/documentation/blog.
 
 **Product implementation began with the owner's authorization on 2026-09-17.**
-The current CLI provides help/version/build identity and bounded independent
-[signed-event verification](docs/reference/protocols.md). Storage and product
-services are not yet implemented. This is not an installable release.
+The current CLI provides help/version/build identity, bounded independent
+[signed-event verification](docs/reference/protocols.md),
+[static configuration](docs/reference/configuration.md) and explicit initial
+[PostgreSQL control migrations](docs/operations/schema-upgrades.md).
+Durable event admission, archive and product services remain implementation work.
+This is not an installable release.
 The repository remains private and
 temporarily named `bigbrotr-rs`; the product name is **BigBrotr**. The eventual
 GitHub name `bigbrotr` is a separate transition. The neighboring Go checkout

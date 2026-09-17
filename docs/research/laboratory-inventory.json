@@ -196,8 +196,8 @@
     "local_root": ".research/implementation",
     "local_contents": "Foundation source snapshots, build targets/caches, raw acceptance and review evidence",
     "remote_root": "/home/tux/bigbrotr-implementation-20260917",
-    "remote_status": "Last verified at the earlier 2026-09-17 Rocks704 boundary: seven owned implementation containers exited, latest exit0/Pid0/OOMKilled=false, checkout detached704d97e clean. No Tux mutation since that observation; this is not a fresh live inspection.",
-    "remote_preflight": "2026-09-17 native Rocks preflight: Linux x86_64 kernel6.12.101+deb13,61GiB RAM,366GiB available disk; all six owned implementation containers stopped, checkout clean a25e0c5, latest model container exit0/Pid0/OOMfalse. Unrelated containers/ports/volumes inspected and preserved.",
+    "remote_status": "Fresh after-schema inspection: detachedca7eba6 clean; old PG/client and build stopped, current SCRAM PG/client running; no published ports; both owned networks internal",
+    "remote_preflight": "2026-09-17 PG preflight: native Linuxamd64,61GiB RAM,365GiB disk available; unrelated active containers preserved. Current lab resources recorded in postgres_migration_integration.",
     "planned_container": "bigbrotr-implementation-foundation-20260917",
     "limits": "2 CPUs, 4 GiB memory, 512 PIDs, no published ports, fresh bind directories below remote root; no shared writable engine state",
     "prior_resources": "Retired historical resources remain retired; retained qualification and object-storage labs are untouched.",
@@ -275,8 +275,8 @@
         "branch": "impl/control-schema-foundation",
         "base": "140e264756b80c7fa4dc3e668ab33be89bf8d100",
         "owner": "static_configuration agent",
-        "purpose": "Initial schema c832799 integrated b11189a; now independent SQL engine fixtures",
-        "status": "Active isolated fixture work; root owns engine execution"
+        "purpose": "Schema and independent104-case fixture integrated; now actual TLS/mTLS lab orchestration only",
+        "status": "Active isolated TLS fixture work; root owns all Tux execution"
       },
       {
         "path": ".research/worktrees/postgres-connection-settings",
@@ -288,11 +288,11 @@
       },
       {
         "path": ".research/worktrees/control-migration-proxy",
-        "branch": "research/control-migration-proxy",
-        "base": "4a8056f",
+        "branch": "research/control-migration-fault-cases",
+        "base": "e0793f317e0286c63b32c3de71518946aa68a73f",
         "owner": "fact_codec_review agent",
-        "purpose": "Bounded PostgreSQL wire fault proxy for lost-COMMIT acceptance",
-        "status": "Active isolated worktree; no engine/Tux activity"
+        "purpose": "Proxyf699 integratedb601; now real migration COMMIT fault orchestration",
+        "status": "Active isolated worktree; root runs actual PG cases"
       }
     ],
     "rocks_dependency_audit": {
@@ -360,7 +360,8 @@
         "source": "b4bb3f6f7bcb55f12cc308cf88a170a9f2e43fd1",
         "audit": ".research/implementation/foundation/ci-35272240471/audit.json",
         "audit_sha256": "e43145677ccd308473233d66475763f693d6c0a3e9cb11e34004e906a9bacd6c",
-        "result": "All342 source entries match; Linux amd64+arm64 event40+config64 each PASS; binaries absent and Mac practical skipped"
+        "result": "All342 source entries match; Linux amd64+arm64 event40+config64 each PASS; binaries absent and Mac practical skipped",
+        "audit_verified_by_root": "Native PG integration proceeded after agent audit; latest CI audit remains scoped to b4 foundation"
       }
     },
     "postgres_migration_integration": {
@@ -368,7 +369,7 @@
       "owner": "root integrating owner",
       "scope": "Local executable/driver tests and source review; PostgreSQL run not yet started",
       "remote_preflight": ".research/implementation/postgres/pre-build-host.log",
-      "remote_status": "Fresh read-only check: checkout clean704d97e, no implementation container running; unrelated workloads preserved",
+      "remote_status": "Fresh after-schema inspection: detachedca7eba6 clean; old PG/client and build stopped, current SCRAM PG/client running; no published ports; both owned networks internal",
       "planned_resources": {
         "root": "/home/tux/bigbrotr-implementation-20260917/runs/control-migrations/runtime-v2",
         "network": "bigbrotr-implementation-pg-20260917-scram",
@@ -377,7 +378,7 @@
           "bigbrotr-implementation-pg-20260917-scram-client"
         ],
         "host_ports": [],
-        "status": "NOT_CREATED; new explicit all-host SCRAM initialization",
+        "status": "Created and running;16 smoke,104 SQL and11 role cases PASS; retained for COMMIT/TLS experiments",
         "limits": "PG2CPU/1536MiB memory+swap, client2CPU/4GiB, each256PIDs; private internal network, no published ports, owned new data/secrets only"
       },
       "build": {
@@ -395,9 +396,10 @@
           "bigbrotr-implementation-pg-20260917-client"
         ],
         "network": "bigbrotr-implementation-pg-20260917",
-        "state": "Stop requested after completed initial smoke and refined oracle failure; verify actual stop result",
+        "state": "Verified stopped: PGexit0 and clientexit143, bothOOMfalse; data/network retained",
         "outcome": "Actual migration/checksum/reapply/restart passed; initial weak refusal/password oracles superseded. Refined14cases passed then SCRAM setup assertion failed: image initdb left loopback host trust. Evidence retained, no product invariant weakened."
-      }
+      },
+      "evidence": "docs/implementation/evidence/p02-control-engine-20260917.json"
     },
     "rocks_product_boundary": {
       "root": ".research/implementation/rocks-product-design",

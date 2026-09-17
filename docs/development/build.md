@@ -1,11 +1,15 @@
 # Building the current implementation
 
 The current binary provides `--help`, `--version`, `build-info` and
-[`event verify`](../reference/protocols.md). It independently verifies one signed
-event without collecting, persisting or serving it. Build information names that
-bounded capability and its pinned protocol/parser version.
+[`event verify`](../reference/protocols.md), offline
+[configuration commands](../reference/configuration.md) and explicit initial
+[control-schema migrations](../operations/schema-upgrades.md). Event verification
+does not collect, persist or serve events. Build information names the currently
+advertised bounded capabilities and their pinned protocol/parser versions;
+experimental command availability is not complete product qualification.
 
-Install Rust through rustup, a native C compiler, Python 3.9 or later and Git. The repository pins
+Install Rust through rustup, a native C compiler, Python 3.9 or later, OpenSSL
+(for ephemeral TLS test certificates) and Git. The repository pins
 Rust 1.98.1 with Rustfmt and Clippy; this is also the initially tested minimum.
 The compiler selection incorporates upstream fixes documented in
 [Rust 1.96.1](https://blog.rust-lang.org/2026/06/30/Rust-1.96.1/) and the
@@ -102,9 +106,11 @@ encoded buffer. Its [BlueOak license notice](https://blueoakcouncil.org/license/
 applies separately from project MIT code; the complete release must retain
 dependency notices. This is not yet a complete persistent CBOR reader/writer.
 
-This slice requires no native storage bindings. Their selected versions,
-C/C++/libclang/protoc requirements, ring TLS provider and offline DuckDB/extensions
-remain explicit unexecuted gates in the
+The initial PostgreSQL consumer uses tokio-postgres 0.7.18,
+tokio-postgres-rustls 0.14.0 and rustls 0.23.45 with the explicit ring provider,
+configured CA roots and expected server identity. No implicit system/web CA store
+or connection pool is enabled. Remaining native storage bindings and their
+C/C++/libclang/protoc requirements and offline DuckDB/extensions remain gates in the
 [dependency selection](../research/dependency-selections.md). Add each dependency
 with its first real adapter and update
 [the release inventory](../../contracts/release/dependencies.json), lock and tests.
