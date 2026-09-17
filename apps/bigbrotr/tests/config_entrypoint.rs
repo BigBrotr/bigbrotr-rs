@@ -785,3 +785,34 @@ fn revisit_bands_are_closed_ordered_intervals_with_positive_cadence() {
         assert!(!error.contains("WITHHELD-PAYLOAD"));
     }
 }
+
+#[test]
+fn secret_references_require_a_filename_without_reading_it() {
+    let directory = tempfile::tempdir().unwrap();
+    let path = directory.path();
+    let base = example(path, "monitor-only");
+    for reference in [
+        "file:/",
+        "file://",
+        "file:/WITHHELD-DIRECTORY/",
+        "file:/WITHHELD-DIRECTORY//",
+    ] {
+        let input = format!("{base}\n[monitor.active_write]\nsigner='{reference}'\n");
+        let error = invalid_error(path, &input);
+        assert!(error.contains("monitor.active_write.signer"));
+        assert!(!error.contains("WITHHELD-DIRECTORY"));
+    }
+    // A valid staged filename need not exist; offline validation must not load it.
+    let input =
+        format!("{base}\n[monitor.active_write]\nsigner='file:/missing/WITHHELD-FILENAME'\n");
+    fs::write(path.join("input.toml"), &input).unwrap();
+    let show = success(run(path, &["config", "show", "--file", "input.toml"]));
+    assert_eq!(
+        show["settings"]["monitor.active_write.signer"]["value"],
+        "[redacted]"
+    );
+    assert_eq!(
+        show["settings"]["monitor.active_write.signer"]["applicability"],
+        "staged-unselected"
+    );
+}

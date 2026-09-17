@@ -289,9 +289,16 @@ fn normalize(key: &Key, value: &Value) -> Result<Value, &'static str> {
             if matches!(key.kind, Path) && !absolute_path(text) {
                 return Err("expected absolute path without dot components");
             }
-            if matches!(key.kind, Secret) && !text.strip_prefix("file:").is_some_and(absolute_path)
+            if matches!(key.kind, Secret)
+                && !text.strip_prefix("file:").is_some_and(|path| {
+                    absolute_path(path)
+                        && !path.ends_with('/')
+                        && std::path::Path::new(path).file_name().is_some()
+                })
             {
-                return Err("expected protected file:/absolute/path reference, never plaintext");
+                return Err(
+                    "expected protected file:/absolute/filename reference, never plaintext",
+                );
             }
             Ok(value.clone())
         }

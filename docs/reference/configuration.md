@@ -10,6 +10,8 @@ Use `bigbrotr config init --recipe full --output instance.toml`, then `config va
 
 Storage-root comparison removes repeated separators and trailing slashes; configured paths stay intact, and filesystem links and mounts remain runtime checks.
 
+Secret references require `file:/absolute/filename` with a final filename, no dot components or trailing slash, and at most 8192 bytes including `file:`. Credential consumers require a regular file owned by the effective process UID, POSIX mode exactly `0400` or `0600`, and no symlink in any path component. Secret bytes are preserved exactly, including a trailing newline; adapters own text/key semantics. These constraints do not certify filesystem ACLs or promise memory zeroization. Offline configuration commands validate only reference syntax; they do not check ownership, permissions or contents.
+
 Static validation checks the declaration, not live engine versions, TLS certificates, permissions, filesystem aliases, accepted-work drain capacity or measured memory. Limits are checked with u64 arithmetic; complete signed events remain invariant. JSON Schema documents shapes while the CLI enforces semantic relationships.
 
 Exit codes: 0 requested output/static success, 1 I/O, 2 usage, 3 invalid configuration, 4 incomplete doctor checks. Input is a regular UTF-8 TOML file bounded to 10MiB, with the upstream parser's recursion bound. Values are not echoed in parse errors.

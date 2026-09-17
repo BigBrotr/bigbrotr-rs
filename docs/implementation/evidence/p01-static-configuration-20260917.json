@@ -410,5 +410,46 @@
     },
     "review": "Full changed parser/registry/test/owning-contract and generated schema/reference reviewed locally. No new independent-agent review.",
     "remaining": "Selector identity, durable epoch activation, fixed scheduled event-time obligations, fair scheduling and late-arrival comparison remain unimplemented. All prior runtime/engine/release and missing-family gates remain."
+  },
+  "secret_reference_review_fix": {
+    "baseline": "74be8d02669735b65998ca0baf992683f5c190f2",
+    "state": "reviewed dirty fix before containing commit",
+    "changed_files_sha256": {
+      "apps/bigbrotr/src/config/mod.rs": "a89ba8153dac96667ef665c3d728d743cafb3a90ed13b12564125a88a450ca3b",
+      "apps/bigbrotr/src/config/resolve.rs": "f46ba212457f3677545ee3930aede910d2a2ef9f06dca6bd9d94a0b309a237ed",
+      "apps/bigbrotr/tests/config_entrypoint.rs": "9c6d5a111f6a79edad023a85f0554cf33cfc8efe294dbf9c449fe8054dca999c",
+      "docs/reference/configuration.md": "8e2d2793be7dd67fff7b8b91be131a4d0afa90d8932e934f2a99bf180467cfcb"
+    },
+    "finding": "Root runtime integration review found static Secret accepted root-only and trailing-directory-slash references; descriptor reader requires a filename.",
+    "red_control": {
+      "status": "FAIL before fix: file:/ returned static success",
+      "log": ".research/static-config/secret-reference-red.log"
+    },
+    "change": "Require an absolute final filename for Secret only, preserve existing directory-path semantics; document exact byte/UID/mode/symlink and ACL/zeroization boundaries without claiming offline filesystem checks.",
+    "validation": {
+      "config_cli": {
+        "status": "PASS",
+        "tests": 22,
+        "command": "cargo test --locked -p bigbrotr --test config_entrypoint",
+        "log_sha256": "7ebcf14de39dc6d008c5a33c496c27d0791793fca63b7cf10e70c205f42a8c66"
+      },
+      "clippy": {
+        "status": "PASS",
+        "command": "cargo clippy --locked --workspace --all-targets -- -D warnings",
+        "log_sha256": "69ba9cee83ce99d8a174ddf7de43b77dcef26e9f92568147629be1af2edad849"
+      },
+      "fmt": {
+        "status": "PASS",
+        "command": "cargo fmt --all --check"
+      },
+      "artifacts": {
+        "status": "PASS",
+        "command": "python3 experiments/verify_artifacts.py",
+        "scope": "links, fences, JSON and selected artifact hashes; not semantic qualification",
+        "log_sha256": "87b1417d1d4ed7b6f23b6984cb30df1743246e35a3494298cb5cea69d2127707"
+      }
+    },
+    "integration_next": "Root will replace duplicate lexical validation with SecretFile::parse after integrating the runtime credential module; both use 8192 bytes for the entire reference. Runtime descriptor evidence belongs to its owning slice.",
+    "remaining": "All earlier static-family, durable authority, runtime, engine and release gates remain."
   }
 }
