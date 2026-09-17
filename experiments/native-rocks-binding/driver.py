@@ -91,14 +91,19 @@ def file_sha256(path):
 
 
 def command_text(*command):
-    completed = subprocess.run(
-        command,
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        timeout=10,
-        check=False,
-    )
+    try:
+        completed = subprocess.run(
+            command,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            timeout=10,
+            check=False,
+        )
+    except FileNotFoundError:
+        # bindgen needs libclang, not the clang executable. The pinned Linux
+        # image compiles C++ with GCC; optional diagnostics must report absence.
+        return {"command": list(command), "exit_code": None, "status": "NOT_AVAILABLE"}
     return {"command": list(command), "exit_code": completed.returncode, "output": completed.stdout.strip()}
 
 
