@@ -1,0 +1,64 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-17",
+  "scope": "P01-T02/T03 bounded standalone event verification; no complete task or storage qualification",
+  "candidate": {
+    "revision": "1726638127575fd1777c05439a016cb84cb9a03a",
+    "tree": "3acf31286b6f8197ce940769b43dd12ec97a2df2",
+    "source_manifest_sha256": "9295b5d488971fcd961531ff26404c35bf6d34413a820cfda8fc29ab6c754b88",
+    "linux_amd64": "Clean native build; 36/36 runner checks, 12 Rust tests and 5 runner controls passed. Container exit0, Pid0, no OOM. Event invocations had no syscall observation in this candidate.",
+    "macos_arm64": "Clean native build; 34 PASS, 2 Linux-only syscall checks NOT_RUN.",
+    "ci": "Private native run35259296095 in progress at recording; not yet evidence."
+  },
+  "fixtures": "15 historical signed variants/14 IDs plus 2 signed extremes; independent frozen canonical bytes; signed empty-tag negative",
+  "review": {
+    "kind": "Independently tasked AI dependency/core/runner review and integrating-owner complete diff review",
+    "core_findings_fixed": "Top-level arrays, signed empty tags and ignored raw invalid UTF-8 rejected with regressions; parse estimate96/node accounts for Vec minimum growth. Broken crypto fuzz cfg refuses compilation.",
+    "runner_findings": "Candidate172 gap: event tracing/read-only cwd, malformed fixture terminal report, schema hash, registry scope and exact executing-runner identity. Corrective source implemented; exact native rerun pending.",
+    "corrective_local": "Missing terminal result and omitted schema hash reproduced failing; corrected metadata3/3 tests and runner6/6 executed pass. Linux syscall negative control skipped locally, pending native execution; fmt/Clippy pass."
+  },
+  "evidence": [
+    {
+      "path": ".research/implementation/foundation/mac-clean-1726638/build-result.json",
+      "sha256": "148a2b3d7640d9c33fb8385b252672dfcdc26aa779d2a2264bb40fc36c6009bb"
+    },
+    {
+      "path": ".research/implementation/foundation/mac-event-acceptance-1726638/result.json",
+      "sha256": "5264005cb19197c2a8bb99c8aa319d62ef76c506fb3480498c8ee7f3106c1043"
+    },
+    {
+      "path": ".research/implementation/foundation/tux-event-build-1726638.json",
+      "sha256": "3e77b390256a14b2e8ebe1a1b534dbe9f099769c58f938f9ecc7b003b61ba6be"
+    },
+    {
+      "path": ".research/implementation/foundation/tux-event-acceptance-1726638.json",
+      "sha256": "cc9bdd24f1c1131f22cc75035abb9e70d7e5b2f4258275d3fe7f13aa2932240c"
+    },
+    {
+      "path": ".research/implementation/foundation/tux-events-1726638.log",
+      "sha256": "8b8a01c339af192f091018e9ba46b95b02e3e2a7637944f024f5696aba0f4f6c"
+    },
+    {
+      "path": ".research/implementation/foundation/tux-event-state-1726638.txt",
+      "sha256": "280736eb0d2ab7516a378a445d0f5b896ff2aa081e1af2b83e65347d59835afb"
+    },
+    {
+      "path": ".research/implementation/foundation/runner-review-before.log",
+      "sha256": "6d859e1a8947e8c049739a39e931fbebf7b7a9d00acf19386f5e983238cca498"
+    },
+    {
+      "path": ".research/implementation/foundation/runner-review-after.log",
+      "sha256": "f3cf2f93988e91da1f9e438937289555373bec76d2cae39a1fca95415c78dbe3"
+    },
+    {
+      "path": ".research/implementation/foundation/metadata-review-before.log",
+      "sha256": "c5095076e34fcd3e246d705858780289c52a3c875229a085f1becbfc0587834e"
+    }
+  ],
+  "remaining_gates": [
+    "Corrected native event syscall and artifact/runner qualification",
+    "P01-T02 qualified allocation, source cuts, fingerprints and engine mappings",
+    "P01-T03 WS peer/cache/filter/endpoint acceptance",
+    "Runtime grants, durable admission, archive/read/export/restart and complete product/release journeys"
+  ]
+}

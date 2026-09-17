@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Run implemented practical cases against an explicitly supplied executable."""
 import argparse
+from contextlib import contextmanager
 import hashlib
 import json
 import os
@@ -47,78 +48,32 @@ def run_process(command, working, payload=None):
         process.wait()
 
 
-def foundation(args, checks, inputs):
-    binary = args.binary.resolve()
-    if not binary.is_file() or not os.access(binary, os.X_OK):
-        checks.append({"name": "executable", "result": "NOT_RUN", "detail": "missing executable"})
-        return
-    inputs["binary_sha256"] = sha256(binary)
-    trace = shutil.which("strace") if platform.system() == "Linux" else None
-    traces = []
-    source_valid = False
-    artifact_valid = False
-    with tempfile.TemporaryDirectory(prefix="bigbrotr-cli-") as temporary:
+@contextmanager
+def read_only_directory(checks, name):
+    with tempfile.TemporaryDirectory(prefix="bigbrotr-acceptance-") as temporary:
         working = Path(temporary)
         working.chmod(0o555)
         try:
-            checks.append({"name": "read_only_cwd", "result": "PASS" if not os.access(working, os.W_OK) else "NOT_RUN",
+            checks.append({"name": name, "result": "PASS" if not os.access(working, os.W_OK) else "NOT_RUN",
                            "detail": "runtime must use an unprivileged account"})
-            for number, arguments in enumerate([["--help"], ["--version"], ["--invalid-option"], [], ["serve"], ["build-info"]]):
-                command = [str(binary), *arguments]
-                trace_file = args.evidence / ("network-" + str(number) + ".trace")
-                if trace:
-                    command = [trace, "-f", "-e", "trace=network,%file,%desc", "-o", str(trace_file), *command]
-                result = run_process(command, working)
-                (args.evidence / (str(number) + ".stdout")).write_bytes(result.stdout)
-                (args.evidence / (str(number) + ".stderr")).write_bytes(result.stderr)
-                if trace:
-                    traces.append(trace_file.read_text())
-                if arguments in [["--help"], ["--version"]]:
-                    valid = result.returncode == 0 and b"BigBrotr" in result.stdout and not result.stderr
-                elif arguments == ["build-info"]:
-                    valid = result.returncode == 0 and not result.stderr
-                    try:
-                        info = json.loads(result.stdout)
-                        inputs["build_info"] = info
-                        valid = valid and info["format"] == "bigbrotr-build/1" and info["product"] == "BigBrotr"
-                        version = re.search(r'^version = "([^"]+)"$', (args.source_root / "Cargo.toml").read_text(), re.M).group(1)
-                        compiler = re.search(r'^channel = "([^"]+)"$', (args.source_root / "rust-toolchain.toml").read_text(), re.M).group(1)
-                        target = {("Linux", "x86_64"): "x86_64-unknown-linux-gnu", ("Linux", "aarch64"): "aarch64-unknown-linux-gnu",
-                                  ("Darwin", "arm64"): "aarch64-apple-darwin", ("Darwin", "x86_64"): "x86_64-apple-darwin"}.get((platform.system(), platform.machine()))
-                        valid = valid and info["version"] == version and info["rustc"].startswith("rustc " + compiler + " ")
-                        valid = valid and target is not None and info["target"] == target
-                        versions = json.loads((args.source_root / "contracts/protocol/versions.json").read_text())
-                        valid = valid and all(info[name] == versions[name] for name in ("capabilities", "protocols", "schemas"))
-                        expected = {}
-                        for name in ("Cargo.lock", "rust-toolchain.toml", "contracts/release/dependencies.json", "contracts/protocol/versions.json"):
-                            expected[name] = sha256(args.source_root / name)
-                        inputs["expected_inputs_sha256"] = expected
-                        valid = valid and info["inputs_sha256"] == expected
-                        if args.source_manifest:
-                            source = json.loads(args.source_manifest.read_text())
-                            inputs["source_manifest_sha256"] = sha256(args.source_manifest)
-                            actual_files = {str(path.relative_to(args.source_root)): sha256(path)
-                                            for path in sorted(args.source_root.rglob("*")) if path.is_file()}
-                            source_valid = source["format"] == "bigbrotr-source/1" and source["files_sha256"] == actual_files
-                            source_valid = source_valid and info["source"] == {"state": "builder-supplied", "revision": source["revision"], "tree": source["tree"], "dirty": False, "manifest_sha256": inputs["source_manifest_sha256"]}
-                            valid = valid and source_valid
-                        if args.build_result:
-                            build = json.loads(args.build_result.read_text())
-                            inputs["build_result_sha256"] = sha256(args.build_result)
-                            artifact_valid = build["format"] == "bigbrotr-build-result/1" and build["binary_sha256"] == inputs["binary_sha256"] and build["build_info"] == info
-                            artifact_valid = artifact_valid and build["source_manifest_sha256"] == inputs.get("source_manifest_sha256")
-                            artifact_valid = artifact_valid and build["helper_sha256"] == sha256(args.source_root / "tools/build.py")
-                            artifact_valid = artifact_valid and info["profile_assertion"] == "release" and info["optimization"] == "3" and info["debug_info"] == "false"
-                            valid = valid and artifact_valid
-                    except (ValueError, KeyError, TypeError, AttributeError, OSError):
-                        valid = False
-                else:
-                    valid = result.returncode == 2 and not result.stdout and b"Usage:" in result.stderr
-                checks.append({"name": "cli " + " ".join(arguments), "result": "PASS" if valid else "FAIL",
-                               "exit_code": result.returncode})
-            checks.append({"name": "no_created_files", "result": "PASS" if not list(working.iterdir()) else "FAIL"})
+            yield working
         finally:
             working.chmod(0o700)
+
+
+def observed_process(args, command, working, label, trace, traces, payload=None):
+    trace_file = args.evidence / (label + ".trace")
+    if trace:
+        command = [trace, "-f", "-e", "trace=network,%file,%desc", "-o", str(trace_file), *command]
+    result = run_process(command, working, payload)
+    (args.evidence / (label + ".stdout")).write_bytes(result.stdout)
+    (args.evidence / (label + ".stderr")).write_bytes(result.stderr)
+    if trace:
+        traces.append(trace_file.read_text())
+    return result
+
+
+def syscall_checks(checks, trace, traces, expected_count, label=""):
     calls = [line for trace_text in traces for line in trace_text.splitlines()]
     prefix = r"^(?:\d+\s+)?"
     network_calls = any(re.search(prefix + r"(?:socket|socketpair|connect|bind|listen|accept\d*|send\w*|recv\w*)\(", line) for line in calls)
@@ -126,9 +81,77 @@ def foundation(args, checks, inputs):
     file_changes = any(re.search(prefix + mutation, line)
                        or (re.search(prefix + r"open\w*\(", line) and re.search(r"O_CREAT|O_TRUNC|O_TMPFILE|O_WRONLY|O_RDWR", line))
                        or re.search(prefix + r"(?:pwrite\w*|write\w*)\((?:[3-9]|\d{2,}),", line) for line in calls)
-    checks.append({"name": "no_network_syscalls", "result": ("FAIL" if network_calls else "PASS") if trace and len(traces) == 6 else "NOT_RUN",
+    observed = trace and len(traces) == expected_count and all(text.strip() for text in traces)
+    checks.append({"name": label + "no_network_syscalls", "result": ("FAIL" if network_calls else "PASS") if observed else "NOT_RUN",
                    "detail": "requires Linux strace; disabled networking alone does not observe attempted calls"})
-    checks.append({"name": "no_file_mutation_syscalls", "result": ("FAIL" if file_changes else "PASS") if trace and len(traces) == 6 else "NOT_RUN"})
+    checks.append({"name": label + "no_file_mutation_syscalls", "result": ("FAIL" if file_changes else "PASS") if observed else "NOT_RUN"})
+
+
+def foundation(args, checks, inputs):
+    binary = args.binary.resolve()
+    if not binary.is_file() or not os.access(binary, os.X_OK):
+        checks.append({"name": "executable", "result": "NOT_RUN", "detail": "missing executable"})
+        return
+    inputs["binary_sha256"] = sha256(binary)
+    inputs["acceptance_runner_sha256"] = sha256(Path(__file__))
+    selected_runner = args.source_root / "tests/acceptance/run.py"
+    checks.append({"name": "acceptance_runner_identity", "result": "PASS" if selected_runner.is_file()
+                   and inputs["acceptance_runner_sha256"] == sha256(selected_runner) else "FAIL"})
+    trace = shutil.which("strace") if platform.system() == "Linux" else None
+    traces = []
+    source_valid = False
+    artifact_valid = False
+    with read_only_directory(checks, "read_only_cwd") as working:
+        for number, arguments in enumerate([["--help"], ["--version"], ["--invalid-option"], [], ["serve"], ["build-info"]]):
+            command = [str(binary), *arguments]
+            result = observed_process(args, command, working, "cli-" + str(number), trace, traces)
+            if arguments in [["--help"], ["--version"]]:
+                valid = result.returncode == 0 and b"BigBrotr" in result.stdout and not result.stderr
+            elif arguments == ["build-info"]:
+                valid = result.returncode == 0 and not result.stderr
+                try:
+                    info = json.loads(result.stdout)
+                    inputs["build_info"] = info
+                    valid = valid and info["format"] == "bigbrotr-build/1" and info["product"] == "BigBrotr"
+                    version = re.search(r'^version = "([^"]+)"$', (args.source_root / "Cargo.toml").read_text(), re.M).group(1)
+                    compiler = re.search(r'^channel = "([^"]+)"$', (args.source_root / "rust-toolchain.toml").read_text(), re.M).group(1)
+                    target = {("Linux", "x86_64"): "x86_64-unknown-linux-gnu", ("Linux", "aarch64"): "aarch64-unknown-linux-gnu",
+                              ("Darwin", "arm64"): "aarch64-apple-darwin", ("Darwin", "x86_64"): "x86_64-apple-darwin"}.get((platform.system(), platform.machine()))
+                    valid = valid and info["version"] == version and info["rustc"].startswith("rustc " + compiler + " ")
+                    valid = valid and target is not None and info["target"] == target
+                    versions = json.loads((args.source_root / "contracts/protocol/versions.json").read_text())
+                    valid = valid and versions["format"] == "bigbrotr-protocol-versions/1"
+                    valid = valid and info["protocol_registry_format"] == versions["format"] and info["capability_scope"] == versions["scope"]
+                    valid = valid and all(info[name] == versions[name] for name in ("capabilities", "protocols", "schemas"))
+                    expected = {}
+                    for name in ("Cargo.lock", "rust-toolchain.toml", "contracts/release/dependencies.json", "contracts/protocol/versions.json", "contracts/protocol/nip01-event.json"):
+                        expected[name] = sha256(args.source_root / name)
+                    inputs["expected_inputs_sha256"] = expected
+                    valid = valid and info["inputs_sha256"] == expected
+                    if args.source_manifest:
+                        source = json.loads(args.source_manifest.read_text())
+                        inputs["source_manifest_sha256"] = sha256(args.source_manifest)
+                        actual_files = {str(path.relative_to(args.source_root)): sha256(path)
+                                        for path in sorted(args.source_root.rglob("*")) if path.is_file()}
+                        source_valid = source["format"] == "bigbrotr-source/1" and source["files_sha256"] == actual_files
+                        source_valid = source_valid and info["source"] == {"state": "builder-supplied", "revision": source["revision"], "tree": source["tree"], "dirty": False, "manifest_sha256": inputs["source_manifest_sha256"]}
+                        valid = valid and source_valid
+                    if args.build_result:
+                        build = json.loads(args.build_result.read_text())
+                        inputs["build_result_sha256"] = sha256(args.build_result)
+                        artifact_valid = build["format"] == "bigbrotr-build-result/1" and build["binary_sha256"] == inputs["binary_sha256"] and build["build_info"] == info
+                        artifact_valid = artifact_valid and build["source_manifest_sha256"] == inputs.get("source_manifest_sha256")
+                        artifact_valid = artifact_valid and build["helper_sha256"] == sha256(args.source_root / "tools/build.py")
+                        artifact_valid = artifact_valid and info["profile_assertion"] == "release" and info["optimization"] == "3" and info["debug_info"] == "false"
+                        valid = valid and artifact_valid
+                except (ValueError, KeyError, TypeError, AttributeError, OSError):
+                    valid = False
+            else:
+                valid = result.returncode == 2 and not result.stdout and b"Usage:" in result.stderr
+            checks.append({"name": "cli " + " ".join(arguments), "result": "PASS" if valid else "FAIL",
+                           "exit_code": result.returncode})
+        checks.append({"name": "no_created_files", "result": "PASS" if not list(working.iterdir()) else "FAIL"})
+    syscall_checks(checks, trace, traces, 6)
     checks.append({"name": "clean_source_identity", "result": ("PASS" if source_valid else "FAIL") if args.source_manifest else "NOT_RUN",
                    "detail": "requires the clean builder's source manifest"})
     checks.append({"name": "expected_artifact", "result": ("PASS" if artifact_valid else "FAIL") if args.build_result else "NOT_RUN",
@@ -146,11 +169,13 @@ def signed_events(args, checks, inputs):
     extra = json.loads(extremes.read_text())
     corpus.update({name: row["event"] for name, row in extra["events"].items()})
     checks.append({"name": "nonempty_frozen_event_corpus", "result": "PASS" if len(corpus) == 17 else "FAIL"})
-    with tempfile.TemporaryDirectory(prefix="bigbrotr-events-") as temporary:
-        directory = Path(temporary)
-        for name, event in corpus.items():
-            result = run_process([str(args.binary.resolve()), "event", "verify"], directory,
-                                 json.dumps(event, ensure_ascii=False, separators=(",", ":")).encode())
+    trace = shutil.which("strace") if platform.system() == "Linux" else None
+    traces = []
+    with read_only_directory(checks, "event_read_only_cwd") as directory:
+        for number, (name, event) in enumerate(corpus.items()):
+            result = observed_process(args, [str(args.binary.resolve()), "event", "verify"], directory,
+                                      "event-valid-" + str(number), trace, traces,
+                                      json.dumps(event, ensure_ascii=False, separators=(",", ":")).encode())
             try:
                 equal = json.loads(result.stdout) == event
             except (ValueError, UnicodeError):
@@ -166,10 +191,13 @@ def signed_events(args, checks, inputs):
                      ("signed_empty_tag", json.dumps(empty_tag).encode(), 3, b"empty-tag"),
                      ("invalid_unknown_utf8", b'{"unknown":"\xff",' + ordinary[1:], 3, b"invalid-json"),
                      ("excess_wire", b" " * (2 * 1024 * 1024 + 1), 4, b"wire-limit")]
-        for name, payload, exit_code, reason in negatives:
-            result = run_process([str(args.binary.resolve()), "event", "verify"], directory, payload)
+        for number, (name, payload, exit_code, reason) in enumerate(negatives):
+            result = observed_process(args, [str(args.binary.resolve()), "event", "verify"], directory,
+                                      "event-invalid-" + str(number), trace, traces, payload)
             checks.append({"name": name, "result": "PASS" if result.returncode == exit_code and not result.stdout and reason in result.stderr else "FAIL"})
         checks.append({"name": "event_command_no_created_files", "result": "PASS" if not list(directory.iterdir()) else "FAIL"})
+
+    syscall_checks(checks, trace, traces, 22, "event_")
 
 
 def main():
@@ -188,7 +216,7 @@ def main():
         foundation(args, checks, inputs)
         if args.case == "p01-event-cli" and "binary_sha256" in inputs:
             signed_events(args, checks, inputs)
-    except (OSError, subprocess.SubprocessError, KeyboardInterrupt) as error:
+    except (OSError, subprocess.SubprocessError, KeyboardInterrupt, ValueError, KeyError, TypeError, AttributeError) as error:
         checks.append({"name": "execution", "result": "FAIL", "detail": type(error).__name__})
     result = "FAIL" if any(check["result"] == "FAIL" for check in checks) else (
         "NOT_RUN" if not checks or any(check["result"] == "NOT_RUN" for check in checks) else "PASS")

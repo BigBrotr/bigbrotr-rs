@@ -27,7 +27,9 @@ checkout in a read-only temporary working directory and a minimal environment.
 It checks help/version, missing/invalid arguments, unknown commands, JSON build
 identity against independent input hashes, the complete source manifest and the
 supplied build-result digest, created files and actual network/file mutation
-syscalls. Linux `strace` observes attempts outside the working directory too; merely
+syscalls. The executing runner's hash must match the selected source. The event
+case observes every positive and negative invocation too. Linux `strace` observes
+attempts outside the working directory too; merely
 disabling networking is insufficient. Missing tracing, writable root-user context
 or absent source/build manifests is NOT_RUN and fails this practical gate.
 Mac Rust process tests cover the portable CLI behavior; they do not substitute
@@ -43,8 +45,10 @@ Retained concise evidence distinguishes this
 foundation from an eventual full bundle or storage/protocol qualification.
 
 The runner's negative controls remove the executable, substitute a shell script
-printing a plausible version, supply an invalid manifest and leave a hanging
-descendant. Missing execution must be NOT_RUN; wrong output/manifest and timeout
+printing a plausible version, supply an invalid manifest/malformed fixture, echo
+unverified events, create/unlink a transient file only during event verification,
+and leave a hanging descendant. The file control requires Linux strace; missing
+execution must be NOT_RUN; wrong output/manifest and timeout
 must FAIL, and the descendant must no longer be running.
 These controls are separate from the product and never alter the product to make
 an oracle pass. The Rust process tests compare SHA-256 against the actual inputs.

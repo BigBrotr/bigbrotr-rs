@@ -54,6 +54,7 @@ fn build_information_binds_actual_inputs_and_exposes_only_implemented_contracts(
         "rust-toolchain.toml",
         "contracts/release/dependencies.json",
         "contracts/protocol/versions.json",
+        "contracts/protocol/nip01-event.json",
     ] {
         let expected: String = Sha256::digest(fs::read(root.join(file)).unwrap())
             .iter()
@@ -68,6 +69,17 @@ fn build_information_binds_actual_inputs_and_exposes_only_implemented_contracts(
         serde_json::json!(["event-verification"])
     );
     assert_eq!(info["schemas"]["build_info"], "bigbrotr-build/1");
+    assert_eq!(info["schemas"]["signed_event"], "nip01-event/1");
+    assert_eq!(
+        info["protocol_registry_format"],
+        "bigbrotr-protocol-versions/1"
+    );
+    assert!(
+        info["capability_scope"]
+            .as_str()
+            .unwrap()
+            .contains("no storage")
+    );
     assert_eq!(
         info["protocols"]["event_verifier"],
         "bigbrotr-nip01-verifier/1"

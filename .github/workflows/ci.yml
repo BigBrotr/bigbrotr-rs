@@ -35,6 +35,11 @@ jobs:
           cargo doc --locked --workspace --no-deps
         env:
           RUSTDOCFLAGS: -D warnings
+      - name: Prepare native syscall observer
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y strace
       - name: Acceptance negative controls
         run: python3 -m unittest discover -s tests/acceptance -p 'test_*.py'
       - name: Planning artifacts and documentation links
@@ -50,11 +55,6 @@ jobs:
           cargo deny check licenses sources advisories
       - name: Build from clean Git archive
         run: python3 tools/build.py --output .research/ci-build
-      - name: Prepare native syscall observer
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt-get update
-          sudo apt-get install --no-install-recommends -y strace
       - name: Native foundation and signed-event practical case
         if: runner.os == 'Linux'
         run: >-

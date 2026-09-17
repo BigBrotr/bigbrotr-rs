@@ -36,6 +36,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         "rust-toolchain.toml",
         "contracts/release/dependencies.json",
         "contracts/protocol/versions.json",
+        "contracts/protocol/nip01-event.json",
     ] {
         let path = root.join(name);
         println!("cargo::rerun-if-changed={}", path.display());
@@ -48,6 +49,22 @@ fn main() -> Result<(), Box<dyn Error>> {
     println!("cargo::rerun-if-changed=build.rs");
     let versions: serde_json::Value =
         serde_json::from_slice(&fs::read(root.join("contracts/protocol/versions.json"))?)?;
+    let nonempty_text = |value: &serde_json::Value| value.as_str().is_some_and(|s| !s.is_empty());
+    if versions["format"] != "bigbrotr-protocol-versions/1"
+        || !versions["capabilities"]
+            .as_array()
+            .is_some_and(|values| values.iter().all(nonempty_text))
+        || !["schemas", "protocols"].iter().all(|name| {
+            versions[name].as_object().is_some_and(|values| {
+                values
+                    .iter()
+                    .all(|(key, value)| !key.is_empty() && nonempty_text(value))
+            })
+        })
+        || !nonempty_text(&versions["scope"])
+    {
+        return Err("invalid protocol version registry format or fields".into());
+    }
     let compiler = Command::new(env::var_os("RUSTC").ok_or("missing compiler")?)
         .arg("-vV")
         .output()?;
@@ -75,6 +92,8 @@ fn main() -> Result<(), Box<dyn Error>> {
         "debug_info": env::var("DEBUG")?,
         "inputs_sha256": hashes,
         "capabilities": versions["capabilities"],
+        "protocol_registry_format": versions["format"],
+        "capability_scope": versions["scope"],
         "schemas": versions["schemas"],
         "protocols": versions["protocols"]
     });

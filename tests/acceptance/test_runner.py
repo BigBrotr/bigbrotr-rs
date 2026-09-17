@@ -3,6 +3,7 @@ import json
 import os
 from pathlib import Path
 import shlex
+import shutil
 import signal
 import subprocess
 import sys
@@ -14,11 +15,11 @@ RUNNER = ROOT / "tests/acceptance/run.py"
 
 
 class RunnerControls(unittest.TestCase):
-    def invoke(self, binary, evidence, manifest=None, case="p01-t01"):
+    def invoke(self, binary, evidence, manifest=None, case="p01-t01", source_root=ROOT):
         extra = ["--source-manifest", str(manifest)] if manifest else []
         result = subprocess.run(
             [sys.executable, str(RUNNER), case, "--binary", str(binary),
-             "--source-root", str(ROOT), "--evidence", str(evidence), *extra],
+             "--source-root", str(source_root), "--evidence", str(evidence), *extra],
             capture_output=True, text=True, timeout=30,
         )
         self.assertTrue((evidence / "result.json").is_file(), "runner must record a terminal result")
@@ -69,6 +70,36 @@ class RunnerControls(unittest.TestCase):
             self.assertEqual(checks["changed_payload"], "FAIL")
             self.assertEqual(checks["forged_signature"], "FAIL")
             self.assertEqual(checks["signed_empty_tag"], "FAIL")
+
+    def test_malformed_fixture_still_records_terminal_failure(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for name in ("experiments/identity-contract/signed-fixture.json",
+                         "tests/fixtures/protocol/signed-extremes.json"):
+                target = root / name
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_text("{invalid")
+            result, evidence = self.invoke(Path("/bin/cat"), root / "evidence",
+                                           case="p01-event-cli", source_root=root)
+            self.assertEqual(result.returncode, 1)
+            self.assertEqual(evidence["result"], "FAIL")
+            self.assertTrue(any(c["name"] == "execution" for c in evidence["checks"]))
+
+    @unittest.skipUnless(sys.platform.startswith("linux") and shutil.which("strace"),
+                         "event syscall control requires native Linux strace")
+    def test_event_only_transient_file_mutation_is_observed(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            binary = root / "side-effect-candidate"
+            path = shlex.quote(str(root / "transient"))
+            binary.write_text('#!/bin/sh\nif [ "$1" = event ]; then\n'
+                              + 'touch ' + path + '\nrm -f ' + path + '\nfi\nexec /bin/cat\n')
+            binary.chmod(0o755)
+            result, evidence = self.invoke(binary, root / "evidence", case="p01-event-cli")
+            checks = {c["name"]: c["result"] for c in evidence["checks"]}
+            self.assertEqual(result.returncode, 1)
+            self.assertEqual(checks["signed_event E_public"], "PASS")
+            self.assertEqual(checks["event_no_file_mutation_syscalls"], "FAIL")
 
     def test_timeout_cleans_up_descendants(self):
         with tempfile.TemporaryDirectory() as directory:

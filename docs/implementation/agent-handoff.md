@@ -154,10 +154,11 @@ oracles; do not derive expected output by calling the implementation under test.
    completed steps and refresh the progress checkpoint. Never mark the whole
    phase complete from one happy path. A pending commit is not a pushed result.
 
-The proposed practical runner is
-`python3 tests/acceptance/run.py CASE --binary dist/bigbrotr --compose packaging/compose/acceptance.yaml --evidence PATH`.
-It is a **future P01-T08 deliverable**, not an existing command that can be cited
-as already passing. Current planning checks are
+The practical runner currently implements `p01-t01` and `p01-event-cli`; use the
+actual source/artifact arguments in [verification](../development/verification.md).
+Engine/Compose orchestration and the remaining P01-T08 scenarios are future work;
+the current runner has no `--compose` option. A planned scenario is not executed
+evidence. Current planning checks are
 `python3 experiments/verify_artifacts.py` and
 `python3 experiments/verify_handoff.py --output .research/handoff-check.json`.
 The latter needs Node and the checksum-pinned first-use `--prepare` step described
