@@ -110,6 +110,9 @@ event fact families and network/import intents are structurally checked; see the
 [core fact evidence](evidence/p01-core-facts-20260917.json). Remaining receipts/proofs,
 dictionary/claim/measurement families, other recipes/decoders, generated schemas and actual engine
 round-trips remain unchecked. Structural validation never certifies a commit.
+The [bounded core fact codec](evidence/p01-fact-codec-20260917.json) preserves
+the exact canonical preimages and checks byte integrity; it does not establish
+storage authority or replace the required engine round-trips.
 
 ## P01-T03 — Protocol parsing and independent verification
 

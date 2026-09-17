@@ -1,0 +1,63 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-17",
+  "scope": "P01-T02 partial: bounded profile-1 canonical preimage encoding/decoding for event payload, eligibility, receive and provenance facts",
+  "source_state": "Root-owned dirty candidate based on c74535fc1054ea2570edf3b4c012df668fb8fd0e; resolve containing revision from Git",
+  "inputs_sha256": {
+    "Cargo.lock": "c6a72a1cafed9282b52115229268b9a37b5637965174e5ce6520a0def026bffd",
+    "crates/bigbrotr-model/src/codec.rs": "988bd21f777580945bca08306694a88348bed3fabce6c9b604678d86672d0b84",
+    "crates/bigbrotr-model/src/fingerprint.rs": "170ca62086e610870a5681bbcd808a02e5efcc8725d3e6aaed400f437e00bbf8",
+    "crates/bigbrotr-model/src/lib.rs": "8a69fca39a62eff5df9a04cd128415102503f4c7bee0f2b4461f07b450f34e8e",
+    "crates/bigbrotr-model/tests/fact_codec.rs": "983175ec29b18c934cd0028c90ceaa55a0cbe5f9caf30e879860d42a6151d380",
+    "tests/fixtures/model/core-fingerprints.json": "17aeb4833e650138150edf94dfc948fa39279f70fd9822d36a727b2e5d9d8e4b",
+    "experiments/identity-contract/golden-vectors.json": "a81a3015cf2c60ecd0fcc5d576e8a6d68b66e01396a39a28a802595d159e9dc6"
+  },
+  "executed": {
+    "environment": "Mac native aarch64, Rust1.98.1, exact existing minicbor2.3.0 with no optional features; no dependency change",
+    "workspace_tests": {
+      "passed": 31,
+      "failed": 0,
+      "result": "PASS",
+      "log": ".research/implementation/foundation/fact-codec-tests.log",
+      "scope": "Full workspace before retaining two additional independent review probes; unchanged product source"
+    },
+    "format_clippy_documentation": "PASS with workspace Clippy/docs warnings denied",
+    "focused_cases": [
+      "Five frozen independent fact preimages decode to expected typed values and encode exactly; byte-limit-minus-one refused",
+      "Every truncated prefix of each frozen fact is rejected",
+      "Unknown profile/kind/version, non-shortest/indefinite arrays, wrong arity, trailing data, invalid UTF-8 and wrong digest rejected",
+      "Foreign scope, reserved clock bits and wrong origin/lineage nullability rejected",
+      "Encoded/string/tag-node/requested-allocation budgets checked; declared u64::MAX array refused before reservation; fixed eligibility needs no requested heap allocation"
+    ],
+    "final_codec_tests": {
+      "passed": 6,
+      "failed": 0,
+      "noncanonical_equal_value_encodings_refused": 626,
+      "log": ".research/implementation/foundation/fact-codec-final-tests.log",
+      "allocation_boundary": "198 requested bytes accepted and197 refused on native64-bit host"
+    }
+  },
+  "upstream_inspection": {
+    "inventory": ".research/checkouts/cbor-dependency-audit-20260917/inventory.json",
+    "boundary": "Exact decoder primitives return borrowed slices; checked input offsets and numeric ranges. They permit non-shortest values, so closed decoder consumes exactly one whole fact then compares direct canonical re-encoding against original bytes without a second output buffer."
+  },
+  "limits": {
+    "default_encoded_bytes": 2097152,
+    "default_requested_allocation_bytes": 8388608,
+    "default_tag_nodes": 65536,
+    "default_retained_string_bytes": 262144,
+    "meaning": "Codec-local input/requested heap limits only; excludes allocator overhead, caller input buffers, runtime concurrency/native staging. Constructors and digest match do not confer cryptographic, policy, allocation or durability authority."
+  },
+  "review": {
+    "status": "Independent AI review completed without material defects; integrating owner read complete codec/callers/diff and exact upstream primitive paths",
+    "evidence": ".research/implementation/foundation/fact-codec-review/inventory.json",
+    "retained_regressions": "Equivalent-value width mutation walker, scalar/null controls and exact requested-allocation threshold retained in tests/fact_codec.rs; no absolute local include path retained",
+    "boundary": "No generic untyped maps, skip, derived CBOR deserialization or recursion. Closed v1 core families only."
+  },
+  "not_run": [
+    "Native clean candidate CI for codec additions",
+    "Persistent engine write/reopen and exact-source storage acceptance",
+    "Other family/request/proof decoders, generated archive manifests, PG/protobuf/columnar mappings",
+    "Full product admission/archive/read/export/restart journey"
+  ]
+}

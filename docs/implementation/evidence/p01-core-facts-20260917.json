@@ -2,7 +2,7 @@
   "format": "bigbrotr-implementation-evidence/1",
   "date": "2026-09-17",
   "scope": "P01-T02 partial: four core event fact families, event intents, producer request identity and exact fact/request/certification fingerprints",
-  "source_state": "Root-owned candidate on a25e0c559ea1575d71775a9bfcc7bd85e133c1ff; resolve containing commit from Git; native CI for these additions not yet run",
+  "source_state": "Clean exact revision c74535fc1054ea2570edf3b4c012df668fb8fd0e, privately pushed to origin/main; later codec additions are not covered by this revision",
   "inputs_sha256": {
     "Cargo.lock": "c6a72a1cafed9282b52115229268b9a37b5637965174e5ce6520a0def026bffd",
     "crates/bigbrotr-model/src/admission.rs": "7d546a44024bfffdb71d35b12fe68115ce3dbab7429c778803daa7441d883c3d",
@@ -49,7 +49,39 @@
     "Durable receipt/proof ownership and admitted effect generation",
     "Persistent decoders and compatibility preflight",
     "Dictionary/claim/measurement families and generated archive schemas",
-    "PG/CH/Arrow/Parquet roundtrips and actual storage admission",
-    "Native exact-revision CI for this candidate; earlier a25e0c5 results remain separately labeled"
-  ]
+    "PG/CH/Arrow/Parquet roundtrips and actual storage admission"
+  ],
+  "native_ci": {
+    "revision": "c74535fc1054ea2570edf3b4c012df668fb8fd0e",
+    "run_id": 35264125259,
+    "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/35264125259",
+    "result": "SUCCESS on native Linux amd64/arm64 and Mac arm64",
+    "metadata": ".research/implementation/foundation/ci-35264125259.json",
+    "reports": [
+      {
+        "path": ".research/implementation/foundation/ci-35264125259/foundation-ubuntu-24.04/ci-acceptance/result.json",
+        "sha256": "0dc2edb42abb49d1eb9f2ab105e7f7fabcdf78f6d11f53d17019519307385693",
+        "result": "PASS",
+        "counts": {
+          "collected": 40,
+          "executed": 40,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        }
+      },
+      {
+        "path": ".research/implementation/foundation/ci-35264125259/foundation-ubuntu-24.04-arm/ci-acceptance/result.json",
+        "sha256": "1b27d88f927bc25fc07e32845953b5ead7e25092f9b26cbbc46ada8bcde526d3",
+        "result": "PASS",
+        "counts": {
+          "collected": 40,
+          "executed": 40,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        }
+      }
+    ]
+  }
 }

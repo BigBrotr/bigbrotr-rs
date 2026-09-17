@@ -71,8 +71,28 @@ network/import intents and the reserved certification intent. These recipes are 
 implementation. Current Serde mappings describe JSON metadata; binary/columnar
 adapters must use explicit bytes/integers instead of reusing textual Serde output.
 
+`Fact::encode_preimage` writes the exact profile-1 domain-prefixed fact bytes,
+checking the output size before reservation. `decode_preimage` takes those bytes,
+an independently supplied expected digest and explicit local limits. It accepts
+only the four implemented v1 core fact families. It checks the digest, required
+array lengths, typed scalar/reference/nullability rules, entire input consumption
+and exact canonical re-encoding. Unknown profiles/kinds/versions/enums, indefinite
+values, unsupported CBOR types, trailing bytes and non-shortest encodings fail.
+The canonical comparison streams against the original input without a second
+encoded output buffer. Digest equality does not grant source authority.
+
+Default local limits are 2 MiB encoded input, 8 MiB requested allocations, 65,536
+tag arrays/string elements and 256 KiB per retained UTF-8 content/tag string.
+Lengths and checked allocation charges precede `try_reserve_exact`; malformed
+declared arrays cannot reserve more children than remaining input bytes. These
+are codec limits, not runtime grants or hard RSS bounds: input buffers, allocator
+overhead, simultaneous work and native staging remain the adapter's responsibility.
+The storage owner must bind expected digests to authoritative source identities,
+reverify complete events where required and resolve all referenced mappings.
+This preimage codec does not activate an archive manifest or storage format.
+
 The remaining P01-T02 evidence variants, generated metadata schemas, other CBOR
-recipes and bounded typed decoders, durable receipts/proofs and engine mappings
+recipes/decoders, durable receipts/proofs and engine mappings
 follow the owning
 [data](../specification/data-contracts.md) and
 [identity](../specification/identity-and-encoding.md) contracts. They are not

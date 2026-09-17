@@ -220,7 +220,7 @@
       "purpose": "Exact Nostr SDK/secp256k1/sys source inspection for P01-T02/T03; no downloaded source shipped"
     },
     "local_crypto_fuzz_rejection": ".research/targets/rejected-crypto: intentionally invalid crypto cfg compiled only to verify product compile_error refusal; no resulting product artifact",
-    "ci": "Native foundation run35256322733, event1726638 run35259296095 and corrected event4689580 run35260018723 all passed on three targets; private downloaded evidence under local_root/foundation/ci-RUN_ID; portable model a25e0c5 run35262162809 also passed all three native jobs, Linux practical40/40 on both architectures.",
+    "ci": "Native foundation run35256322733, event1726638 run35259296095 and corrected event4689580 run35260018723 all passed on three targets; private downloaded evidence under local_root/foundation/ci-RUN_ID; portable model a25e0c5 run35262162809 also passed all three native jobs, Linux practical40/40 on both architectures. Core facts c74535f run35264125259 passed all three native jobs and both Linux40/40 practical reports.",
     "event_evidence": "docs/implementation/evidence/p01-event-verification-20260917.json",
     "cbor_dependency_audit": {
       "root": ".research/checkouts/cbor-dependency-audit-20260917",
@@ -249,6 +249,11 @@
       "inventory": ".research/checkouts/rocks-dependency-audit-20260917/inventory.json",
       "inventory_sha256": "5b79542088ce1a36297e53e80eef3c06fcf91639b996b52141806cf8bd5075c3",
       "scope": "Exact rocksdb0.25.0/sys0.19.0+11.8.1 source/build/default/locking/batch/FFI risks; no native product adapter claim"
+    },
+    "codec_review": {
+      "root": ".research/implementation/foundation/fact-codec-review",
+      "target": ".research/targets/fact-codec-review",
+      "purpose": "Completed independent local malformed/scalar/canonical-width probes; sources retained as product regression tests, raw logs/inventory ignored; no remote resources"
     }
   }
 }

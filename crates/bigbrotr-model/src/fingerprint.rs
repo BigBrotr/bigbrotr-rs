@@ -148,7 +148,10 @@ fn correction<W: Write>(
         None => encoder.null()?.ok(),
     }
 }
-fn fact<W: Write>(value: &Fact, encoder: &mut Encoder<W>) -> Result<(), Error<W::Error>> {
+pub(crate) fn fact<W: Write>(
+    value: &Fact,
+    encoder: &mut Encoder<W>,
+) -> Result<(), Error<W::Error>> {
     encoder
         .writer_mut()
         .write_all(b"bigbrotr/fact/1\0")
