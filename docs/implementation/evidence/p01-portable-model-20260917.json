@@ -1,0 +1,49 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-17",
+  "scope": "P01-T02 scalar/clock/source structural values and two profile1 fingerprint recipes only",
+  "source_state": "Root-owned dirty candidate based on468958022a44ac93809d3d303237d4addf834aa5; exact native qualification pending coherent commit",
+  "inputs_sha256": {
+    "Cargo.lock": "c6a72a1cafed9282b52115229268b9a37b5637965174e5ce6520a0def026bffd",
+    "Cargo.toml": "c1e8f2080f6f1a20f783d26a9f1161c5a48ad5a5094a39f4d9e6ff9dd6be50c7",
+    "crates/bigbrotr-model/Cargo.toml": "677f5ac45669a01fbedc91b0e2c044954100d95de17b394d05e42f0723f366a1",
+    "crates/bigbrotr-model/src/event.rs": "5e65531f4c3fa086707213dcd14e37de7cb6766e7b43a92b861b53debd785cb2",
+    "crates/bigbrotr-model/src/evidence.rs": "bb7ada6190bfcf8b1c42a0c4623401ab1742106d9d9021c5a1297284b76da4e4",
+    "crates/bigbrotr-model/src/fingerprint.rs": "0910fa5a5d92e2f2730de360b650cbb8267289fd490d30ac48adc8a362332f40",
+    "crates/bigbrotr-model/src/identity.rs": "49d03ae23a850dbf935f63275f73d750c3d36df7b69b0db92e1e1137f50a559e",
+    "crates/bigbrotr-model/src/lib.rs": "bc6da3b6ccd9aa6ad45d1720d0b12d2b6de3a804a4768cbc3165d8d9555299bd",
+    "crates/bigbrotr-model/src/scalar.rs": "b0a2889dd8b13485994c38c34198bcf48741787bdd7a1156b600845694c640c0",
+    "crates/bigbrotr-model/src/source.rs": "23820b94c2acc5b30bae7a3b07c3ef9915e7d9877a39c94a4bb96bc0907b63ca",
+    "crates/bigbrotr-model/tests/portable_values.rs": "adccec73d3ca888e4f78b966d31ed0909f429f81c8fb38335c8527dcf9e066c3",
+    "crates/bigbrotr-model/tests/source_identity.rs": "0161ec32be505bcd4361ba6b98f68ce1fd05cb210330e70bf5963cfc9bfca7d7",
+    "crates/bigbrotr-protocol/src/event.rs": "6a20725a6dd2ce2703e7f90d7d77e99397274f6d1fe81bf549137f0e4570cdc3",
+    "tests/fixtures/model/admission-two-records.json": "11c3b6a44ebc8df935136a318ec53f617369ab18055c91bc0c4b65d6a02dcef0"
+  },
+  "local_macos_arm64": {
+    "rust": "1.98.1",
+    "results": "Workspace21 tests PASS before adding multi-record vector; final model10/10 plus CLI metadata3/3 PASS. Fmt, Clippy with warnings denied and docs passed. Advisory/license/source checks PASS.",
+    "raw_workspace_log": ".research/implementation/foundation/portable-model-tests.log",
+    "dependency_log": ".research/implementation/foundation/model-deny.log",
+    "advisory_database_revision": "f58ccfe51a5954186716998f01360d1079a8a3a5"
+  },
+  "independent_expectations": [
+    "Existing frozen hand-assembled body/admission preimage bytes and system OpenSSL digests",
+    "New literal two-record admission vector: sequences23/24, distinct digests; tests never regenerate it",
+    "Exact byte-order, u64/i64 limits, decimal JSON negative cases, clock missing/null/zero/reserved flags and structural cut/batch counterexamples"
+  ],
+  "review": {
+    "kind": "Independent AI source/dependency/codec review plus integrating-owner complete source/diff review",
+    "findings_resolved": [
+      "Topology checked advancement was missing: added while preserving zero/fullu64",
+      "Exhaustion diagnostic now avoids prescribing a wrong transition",
+      "Single-record hash fixture could not catch membership/last-bound errors: independent two-record literal vector added"
+    ],
+    "boundaries": "No persistent decoder, other profile domains, allocated-registry authority, batch-boundary certification or storage guarantees inferred"
+  },
+  "not_run": [
+    "Native exact candidate build/CI for model additions",
+    "PG/protobuf/CH/Arrow/Parquet fidelity adapters",
+    "Persistent closed fact/request/proof decoders and compatibility preflight",
+    "Allocation uniqueness/fencing, durable admission and complete end-to-end product"
+  ]
+}

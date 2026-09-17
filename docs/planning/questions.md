@@ -207,3 +207,12 @@ not a new owner requirement or a change to admitted-event semantics. The
 and [protocol reference](../reference/protocols.md) record evidence and remaining
 native/runtime/storage qualification. Unknown wire extensions remain bounded
 and excluded from signed content; their presence grants no authority.
+
+Q32 (implementation decision, 2026-09-17): Use maintained `minicbor` 2.3.0 without
+optional features for the selected deterministic-CBOR recipes. Exact source
+inspection found its direct streaming encoder suitable; its permissive decoder
+does not enforce the profile. BigBrotr owns closed typed mappings and, before
+persistent decoding, bounded shape checks plus canonical-byte comparison.
+This does not change profile-1 bytes or reopen storage selection. The
+[selection record](../research/dependency-selections.md#implemented-fingerprint-codec-slice)
+records the BlueOak license notice and implemented versus future boundaries.

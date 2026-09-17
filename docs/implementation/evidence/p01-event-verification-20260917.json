@@ -8,14 +8,14 @@
     "source_manifest_sha256": "9295b5d488971fcd961531ff26404c35bf6d34413a820cfda8fc29ab6c754b88",
     "linux_amd64": "Clean native build; 36/36 runner checks, 12 Rust tests and 5 runner controls passed. Container exit0, Pid0, no OOM. Event invocations had no syscall observation in this candidate.",
     "macos_arm64": "Clean native build; 34 PASS, 2 Linux-only syscall checks NOT_RUN.",
-    "ci": "Private native run35259296095 in progress at recording; not yet evidence."
+    "ci": "PASS native Linux amd64/arm64 and Mac arm64: private run35259296095. Linux reports36/36 within original non-event-traced scope."
   },
   "fixtures": "15 historical signed variants/14 IDs plus 2 signed extremes; independent frozen canonical bytes; signed empty-tag negative",
   "review": {
     "kind": "Independently tasked AI dependency/core/runner review and integrating-owner complete diff review",
     "core_findings_fixed": "Top-level arrays, signed empty tags and ignored raw invalid UTF-8 rejected with regressions; parse estimate96/node accounts for Vec minimum growth. Broken crypto fuzz cfg refuses compilation.",
-    "runner_findings": "Candidate172 gap: event tracing/read-only cwd, malformed fixture terminal report, schema hash, registry scope and exact executing-runner identity. Corrective source implemented; exact native rerun pending.",
-    "corrective_local": "Missing terminal result and omitted schema hash reproduced failing; corrected metadata3/3 tests and runner6/6 executed pass. Linux syscall negative control skipped locally, pending native execution; fmt/Clippy pass."
+    "runner_findings": "All listed findings implemented and corrected candidate4689580 qualified under exact native runner/binary/source identities. Native transient-file negative control fails the syscall gate as intended.",
+    "corrective_local": "Missing terminal result and omitted schema hash reproduced failing; corrected metadata3/3 and runner6/6 executed locally pass, with Linux syscall control skipped on Mac and subsequently passed on Tux/native CI; fmt/Clippy pass."
   },
   "evidence": [
     {
@@ -53,12 +53,71 @@
     {
       "path": ".research/implementation/foundation/metadata-review-before.log",
       "sha256": "c5095076e34fcd3e246d705858780289c52a3c875229a085f1becbfc0587834e"
+    },
+    {
+      "path": ".research/implementation/foundation/mac-clean-4689580/build-result.json",
+      "sha256": "751553e8c1ce8ec0fd71507f10007f1c0e0b214b2eb58014a385526888b5eec0"
+    },
+    {
+      "path": ".research/implementation/foundation/mac-event-acceptance-4689580/result.json",
+      "sha256": "fc2d82fbf5439161bf0e840af4e940eada66f8e2d981791846d260ad9d578a4d"
+    },
+    {
+      "path": ".research/implementation/foundation/tux-event-build-4689580.json",
+      "sha256": "70b516df679fe43279b00c742c8152ea71a7f43382c89f655d9a5cc3789c885c"
+    },
+    {
+      "path": ".research/implementation/foundation/tux-event-acceptance-4689580.json",
+      "sha256": "d46974d225668b6616235ee11724874faf5a4bc9effdd783a24427efcc0a23f3"
+    },
+    {
+      "path": ".research/implementation/foundation/tux-events-4689580.log",
+      "sha256": "b08147121ff34d06110034ce8863165b9778dd19f7fe34f5f98bc169fb0444fd"
+    },
+    {
+      "path": ".research/implementation/foundation/tux-event-state-4689580.txt",
+      "sha256": "ae21926a495a6ec580c48c2bd75c91687104a063f0db2c7135fa59e7485da071"
+    },
+    {
+      "path": ".research/implementation/foundation/ci-35260018723.json",
+      "sha256": "2caaff7827e548c32679bd332779dc3e7356beee676eb12bea59f5f27db3d01f"
     }
   ],
   "remaining_gates": [
-    "Corrected native event syscall and artifact/runner qualification",
     "P01-T02 qualified allocation, source cuts, fingerprints and engine mappings",
     "P01-T03 WS peer/cache/filter/endpoint acceptance",
     "Runtime grants, durable admission, archive/read/export/restart and complete product/release journeys"
-  ]
+  ],
+  "corrected_candidate": {
+    "revision": "468958022a44ac93809d3d303237d4addf834aa5",
+    "tree": "3d77198255c375f2d4afd6e6e8543a465650dc09",
+    "source_manifest_sha256": "815071e2f0ad88e41b7c7fd4c7d93f31ab10bbda518d0d5595b734097c5f9bb6",
+    "linux_amd64": "Clean Tux native build; practical40/40 including all event syscall observations; Rust12/12 and runner7/7 PASS. Owned container exited0/Pid0/OOMKilled=false.",
+    "macos_arm64": "Clean build; practical36 PASS,4 Linux syscall NOT_RUN; no native Linux claim.",
+    "ci": "PASS private run35260018723 on native Linux amd64/arm64 and Mac arm64; Linux reports40/40.",
+    "ci_reports": [
+      {
+        "path": ".research/implementation/foundation/ci-35260018723/foundation-ubuntu-24.04/ci-acceptance/result.json",
+        "sha256": "60bbee80039a344b7a22f03b3bf5e583074d96d922e853f7bf98141b3299ea1f",
+        "counts": {
+          "collected": 40,
+          "executed": 40,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        }
+      },
+      {
+        "path": ".research/implementation/foundation/ci-35260018723/foundation-ubuntu-24.04-arm/ci-acceptance/result.json",
+        "sha256": "7e9d3d05e09262900df7b2fb2c0b4abe438b38975c137f02c71d4899ca1fa7ce",
+        "counts": {
+          "collected": 40,
+          "executed": 40,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        }
+      }
+    ]
+  }
 }

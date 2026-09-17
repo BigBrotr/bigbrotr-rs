@@ -96,6 +96,12 @@ intentionally broken `secp256k1_fuzz` compilation mode. The clean builder also
 strips ambient compiler flags. Upstream wrapper/native licenses remain distinct
 and are recorded in the dependency inventory.
 
+The portable model uses `minicbor` 2.3.0 without optional features for its first
+closed fingerprint recipes. It streams typed fields into SHA-256 without a second
+encoded buffer. Its [BlueOak license notice](https://blueoakcouncil.org/license/1.0.0)
+applies separately from project MIT code; the complete release must retain
+dependency notices. This is not yet a complete persistent CBOR reader/writer.
+
 This slice requires no native storage bindings. Their selected versions,
 C/C++/libclang/protoc requirements, ring TLS provider and offline DuckDB/extensions
 remain explicit unexecuted gates in the

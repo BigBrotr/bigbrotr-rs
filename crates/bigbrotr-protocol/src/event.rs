@@ -1,5 +1,5 @@
 use crate::bounds::{EventLimits, preflight};
-use bigbrotr_model::{EventId, SignedEvent};
+use bigbrotr_model::{Digest256, EventId, SignedEvent};
 use secp256k1::{XOnlyPublicKey, schnorr};
 use serde::Serialize;
 use sha2::{Digest, Sha256};
@@ -70,6 +70,11 @@ impl VerifiedEvent {
     }
     pub fn normalized_bytes(&self) -> usize {
         self.normalized_bytes
+    }
+    /// Profile-1 payload identity for the value verified by this invocation.
+    /// Scope eligibility, source envelopes and commit receipts remain separate.
+    pub fn body_digest(&self) -> Digest256 {
+        self.event.body_digest()
     }
 }
 

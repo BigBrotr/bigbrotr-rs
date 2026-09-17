@@ -54,6 +54,14 @@
       "purpose": "Independent BIP340 verification of computed event digest; default features off, std only",
       "license": "CC0-1.0",
       "source": "https://docs.rs/secp256k1/0.33.1/secp256k1/"
+    },
+    {
+      "name": "minicbor",
+      "version": "2.3.0",
+      "purpose": "Closed profile-1 deterministic CBOR fingerprint recipes; direct streaming encoder, no optional features",
+      "license": "BlueOak-1.0.0",
+      "license_notice": "https://blueoakcouncil.org/license/1.0.0",
+      "source": "https://docs.rs/minicbor/2.3.0/minicbor/"
     }
   ],
   "lock": "Cargo.lock",

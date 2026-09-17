@@ -3,8 +3,8 @@
 Selected 2026-09-17 for the implementation handoff. These are default dependency
 families and exact **qualification candidates**, not a qualified production lock.
 P01-T01 freezes the actual toolchain, features, transitive lock, native libraries
-and extension assets after the gates below pass. No product crate or adapter has
-been implemented by this research. Existing engine probes do not qualify Rust
+and extension assets after the gates below pass. The initial research implemented
+no product adapter; implemented subsets are recorded below. Existing engine probes do not qualify Rust
 bindings or their cancellation, serialization and connection-pool behavior.
 
 This replaces the unnamed SQL/HTTP/RocksDB/ClickHouse adapter choices in the
@@ -57,6 +57,34 @@ the actual lock and native tests, not that observation alone, qualify its behavi
 Sources: [secp256k1 0.33.1 verification](https://docs.rs/secp256k1/0.33.1/secp256k1/schnorr/fn.verify.html),
 [nostr 0.45.5 Event](https://docs.rs/nostr/0.45.5/nostr/struct.Event.html), and
 [pinned NIP-01](https://github.com/nostr-protocol/nips/blob/a2494f4f81d46684e5814a9bf35e2b1df978f955/01.md).
+
+## Implemented fingerprint codec slice
+
+P01-T02 selects `minicbor` 2.3.0 with default features disabled and no optional
+features/transitive dependencies. Exact published source at upstream commit
+`67b22f849a0ff12b669a0c304236ffe9744f9a79` uses shortest big-endian integers and
+definite arrays/bytes/UTF-8 through a streaming writer. The model privately uses
+only direct typed body/admission recipes; it does not expose a general CBOR value
+API or infer canonical maps from Rust map ordering. The initial frozen vectors
+test those actual recipes, not every future fact/proof format.
+
+The decoder accepts non-shortest encodings and the generic decode helper does
+not require EOF. Future persistent readers must cap bytes/counts before allocation,
+decode closed schemas, check exact arity/order/required fields and EOF, and compare
+canonical re-encoding against original bytes. They may not use generic map/derive
+decoding or unknown-field skipping as profile enforcement. This is a recorded
+adapter requirement, not an implemented decoder claim.
+
+The exact archive hash/source inspection and isolated Rust probe are inventoried
+in `.research/checkouts/cbor-dependency-audit-20260917/inventory.json`. The
+BlueOak-1.0.0 notice was inspected and explicitly allowed; distributed copies must
+include its [license text or link](https://blueoakcouncil.org/license/1.0.0), also
+recorded in the release dependency inventory. Full packaged license/SBOM delivery
+remains P08's responsibility.
+
+Sources: [encoder](https://github.com/twittner/minicbor/blob/67b22f849a0ff12b669a0c304236ffe9744f9a79/minicbor/src/encode/encoder.rs),
+[decoder](https://github.com/twittner/minicbor/blob/67b22f849a0ff12b669a0c304236ffe9744f9a79/minicbor/src/decode/decoder.rs),
+[streaming writer](https://docs.rs/minicbor/2.3.0/minicbor/encode/write/trait.Write.html).
 
 ## PostgreSQL ownership and cancellation
 

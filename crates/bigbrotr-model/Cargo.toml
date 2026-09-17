@@ -10,6 +10,11 @@ publish = false
 
 [dependencies]
 serde.workspace = true
+minicbor.workspace = true
+sha2.workspace = true
+
+[dev-dependencies]
+serde_json.workspace = true
 
 [lints]
 workspace = true

@@ -23,7 +23,10 @@ dependencies = [
 name = "bigbrotr-model"
 version = "0.1.0-dev"
 dependencies = [
+ "minicbor",
  "serde",
+ "serde_json",
+ "sha2",
 ]
 
 [[package]]
@@ -199,6 +202,12 @@ name = "memchr"
 version = "2.8.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cf8baf1c55e62ffcace7a9f06f4bd9cd3f0c4beb022d3b367256b91b87513d98"
+
+[[package]]
+name = "minicbor"
+version = "2.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c12b4033ffaa92fbf9df03df38d19324f52bad130dd223f811734a8006dd2d69"
 
 [[package]]
 name = "once_cell"

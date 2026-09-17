@@ -12,6 +12,22 @@ impl fmt::Display for InvalidHex {
 }
 impl std::error::Error for InvalidHex {}
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum IdentityError {
+    Hex(InvalidHex),
+    Zero,
+}
+
+impl fmt::Display for IdentityError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::Hex(error) => error.fmt(f),
+            Self::Zero => f.write_str("allocated identities cannot be all zero"),
+        }
+    }
+}
+impl std::error::Error for IdentityError {}
+
 fn decode<const N: usize>(text: &str) -> Result<[u8; N], InvalidHex> {
     if text.len() != N * 2 {
         return Err(InvalidHex);
@@ -30,21 +46,45 @@ fn decode<const N: usize>(text: &str) -> Result<[u8; N], InvalidHex> {
 
 macro_rules! fixed_hex {
     ($name:ident, $size:literal) => {
-        #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-        pub struct $name([u8; $size]);
-
+        fixed_hex!(@shared $name, $size);
         impl $name {
             pub const fn from_bytes(bytes: [u8; $size]) -> Self {
                 Self(bytes)
-            }
-            pub const fn as_bytes(&self) -> &[u8; $size] {
-                &self.0
             }
         }
         impl FromStr for $name {
             type Err = InvalidHex;
             fn from_str(value: &str) -> Result<Self, Self::Err> {
                 decode(value).map(Self)
+            }
+        }
+    };
+    ($name:ident, $size:literal, nonzero) => {
+        fixed_hex!(@shared $name, $size);
+        impl TryFrom<[u8; $size]> for $name {
+            type Error = IdentityError;
+            fn try_from(bytes: [u8; $size]) -> Result<Self, Self::Error> {
+                if bytes == [0; $size] {
+                    Err(IdentityError::Zero)
+                } else {
+                    Ok(Self(bytes))
+                }
+            }
+        }
+        impl FromStr for $name {
+            type Err = IdentityError;
+            fn from_str(value: &str) -> Result<Self, Self::Err> {
+                Self::try_from(decode(value).map_err(IdentityError::Hex)?)
+            }
+        }
+    };
+    (@shared $name:ident, $size:literal) => {
+        #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+        pub struct $name([u8; $size]);
+
+        impl $name {
+            pub const fn as_bytes(&self) -> &[u8; $size] {
+                &self.0
             }
         }
         impl fmt::Display for $name {
@@ -86,3 +126,8 @@ macro_rules! fixed_hex {
 fixed_hex!(EventId, 32);
 fixed_hex!(PublicKey, 32);
 fixed_hex!(Signature, 64);
+fixed_hex!(Digest256, 32);
+fixed_hex!(DatasetId, 16, nonzero);
+fixed_hex!(AllocationDomainId, 16, nonzero);
+fixed_hex!(ProducerSlotId, 16, nonzero);
+fixed_hex!(ProjectionGenerationId, 16, nonzero);

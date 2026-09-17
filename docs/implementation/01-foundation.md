@@ -81,9 +81,9 @@ enables lossless-model work without claiming those adapters are qualified.
 **Contract:** untrusted serialized fields → validated scalar/domain values or
 typed errors; SourceRecordId and SourceCut have exactly one shared meaning.
 
-- [ ] **Step 1:** Define fixed-length binary IDs/signatures, checked ordinals/sequences,
+- [x] **Step 1:** Define fixed-length binary IDs/signatures, checked ordinals/sequences,
   NostrTime u64, observed UTC microseconds, duration and clock uncertainty.
-- [ ] **Step 2:** Encode complete ordered tags/content without normalization; distinguish
+- [x] **Step 2:** Encode complete ordered tags/content without normalization; distinguish
   absent value, empty string, duplicate tag and missing optional measurement.
 - [ ] **Step 3:** Define four-part source identities, contiguous atomic-batch receipts and
   topology-aware cuts; reject incompatible namespaces and arithmetic overflow.
@@ -102,6 +102,12 @@ typed errors; SourceRecordId and SourceCut have exactly one shared meaning.
   timestamp conversion, tag sorting and empty-value omission must differ.
 - [ ] **Step 8:** Generate the data reference and examples from the same schemas; ensure a
   projected export cannot be parsed as an independently verifiable full event.
+
+The [portable model reference](../reference/data-model.md) covers implemented
+scalars, clock quality, qualified references, structural source cuts/batches and
+the first body/admission fingerprint recipes. Remaining receipts/proofs, typed
+fact families, other recipes/decoders, generated schemas and actual engine
+round-trips remain unchecked. Structural validation never certifies a commit.
 
 ## P01-T03 — Protocol parsing and independent verification
 
