@@ -59,7 +59,22 @@ pub fn parse(input: &str) -> Result<Resolved, String> {
         .keys()
         .map(|k| (k.clone(), "schema-default"))
         .collect::<BTreeMap<_, _>>();
-    for (key, value) in super::recipes::overrides(recipe)? {
+    let mut recipe_values = super::recipes::overrides(recipe)?;
+    for prefix in ["postgres.control", "postgres.catalog", "clickhouse"] {
+        let boundary = format!("{prefix}.tls.local_boundary");
+        // TOML cannot express null. Selecting TLS without a plaintext boundary
+        // must preserve the schema's absence, rather than inherit an inapplicable
+        // recipe exception. An explicit incompatible boundary is still rejected.
+        if explicit
+            .get(&format!("{prefix}.tls.mode"))
+            .and_then(Value::as_str)
+            == Some("verify-full")
+            && !explicit.contains_key(&boundary)
+        {
+            recipe_values.remove(&boundary);
+        }
+    }
+    for (key, value) in recipe_values {
         values.insert(key.clone(), value);
         sources.insert(key, "recipe");
     }

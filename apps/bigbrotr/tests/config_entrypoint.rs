@@ -222,6 +222,55 @@ fn required_owners_tls_and_unimplemented_enablement_cannot_be_hidden() {
 }
 
 #[test]
+fn explicit_verify_full_does_not_inherit_plaintext_recipe_boundary() {
+    let directory = tempfile::tempdir().unwrap();
+    let path = directory.path();
+    let base = example(path, "full");
+    for prefix in ["postgres.control", "postgres.catalog", "clickhouse"] {
+        let section = format!("[{prefix}.tls]\n");
+        let plaintext =
+            format!("{section}local_boundary = \"loopback\"\nmode = \"local-plaintext\"");
+        assert!(base.contains(&plaintext));
+        let tls = format!(
+            "{section}mode = \"verify-full\"\nca_file = \"/etc/bigbrotr/ca.pem\"\nserver_name = \"db.example\""
+        );
+        let document = base.replace(&plaintext, &tls);
+        let document = if prefix == "clickhouse" {
+            document.replace("http://127.0.0.1:8123", "https://db.example:8443")
+        } else {
+            document
+        };
+        fs::write(path.join("tls.toml"), &document).unwrap();
+        success(run(path, &["config", "validate", "--file", "tls.toml"]));
+        let show = success(run(path, &["config", "show", "--file", "tls.toml"]));
+        let boundary = &show["settings"][format!("{prefix}.tls.local_boundary")];
+        assert_eq!(boundary["value"], Value::Null);
+        assert_eq!(boundary["source"], "schema-default");
+        assert_eq!(
+            show["settings"][format!("{prefix}.tls.mode")]["source"],
+            "file"
+        );
+        for value in ["loopback", "private-bridge"] {
+            let invalid = document.replace(
+                &section,
+                &format!("{section}local_boundary = \"{value}\"\n"),
+            );
+            assert!(
+                invalid_error(path, &invalid)
+                    .contains("local boundary is ineffective under verify-full")
+            );
+        }
+        // Omitting both fields still selects the recipe's local transport.
+        let inherited = base.replace(&plaintext, &section);
+        fs::write(path.join("inherited.toml"), &inherited).unwrap();
+        let show = success(run(path, &["config", "show", "--file", "inherited.toml"]));
+        let boundary = &show["settings"][format!("{prefix}.tls.local_boundary")];
+        assert_eq!(boundary["value"], "loopback");
+        assert_eq!(boundary["source"], "recipe");
+    }
+}
+
+#[test]
 fn redacted_show_and_incomplete_doctor_do_not_read_staged_secret_contents() {
     let directory = tempfile::tempdir().unwrap();
     let path = directory.path();

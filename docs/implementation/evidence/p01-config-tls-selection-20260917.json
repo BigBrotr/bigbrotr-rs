@@ -1,0 +1,44 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-17",
+  "scope": "P01-T04 static TLS selection regression found while preparing P02-T01 engine acceptance",
+  "source": {
+    "base_revision": "adc41a1322f75c9abdeee6796edf21ffcb3d42a9",
+    "state": "candidate before containing commit",
+    "files_sha256": {
+      "apps/bigbrotr/src/config/resolve.rs": "9c57587ef0db7d2905e4b5f9490317f7abce1775ef42d3e234ddab966bc7303b",
+      "apps/bigbrotr/src/config/mod.rs": "846e39ba5c7e248e391f8c6fefe287f73dccf1049347d905876b903d8745095d",
+      "apps/bigbrotr/tests/config_entrypoint.rs": "a0fe41ac362eed68804202964cbb75307072d86cc5e81c5af832cbe20a4ee58b",
+      "docs/reference/configuration.md": "1d21b7230d58aee3e83f177c124c34c2e394e5b0d5acf11c39e2e0d2ea1d014e",
+      ".research/implementation/postgres/tls-recipe-red.log": "87680d71c631264112920203d64bb0f1ce922dfdf7e93f31343d53971f76c305",
+      ".research/implementation/postgres/tls-recipe-green.log": "01a4628cf19daf6dfd4896ed13ce2697f510a49adc6a4db5d44d651c4793a89a"
+    }
+  },
+  "environment": "Darwin arm64, Rust 1.98.1",
+  "observations": [
+    {
+      "status": "FAIL_EXPECTED",
+      "command": "cargo test -p bigbrotr --test config_entrypoint explicit_verify_full_does_not_inherit_plaintext_recipe_boundary",
+      "detail": "Original resolver rejected explicit verify-full with omitted local_boundary because recipe restored loopback."
+    },
+    {
+      "status": "PASS",
+      "command": "cargo test -p bigbrotr --test config_entrypoint",
+      "tests": 23,
+      "detail": "Actual CLI tests all three engine prefixes: absent boundary is schema-default null; explicit loopback/private-bridge under verify-full still rejected; omission of both mode and boundary retains local recipe."
+    },
+    {
+      "status": "PASS",
+      "command": "cargo clippy -p bigbrotr --all-targets -- -D warnings"
+    },
+    {
+      "status": "PASS",
+      "command": "python3 experiments/verify_artifacts.py",
+      "scope": "structural artifact checks only"
+    }
+  ],
+  "not_run": [
+    "Actual TLS/mTLS engine acceptance of this new candidate",
+    "New native Linux build and execution"
+  ]
+}
