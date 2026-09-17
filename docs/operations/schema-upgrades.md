@@ -9,7 +9,8 @@ privileges and an engine crash/restart; see the
 [recorded engine evidence](../implementation/evidence/p02-control-engine-20260917.json).
 The [subsequent fault/TLS evidence](../implementation/evidence/p02-control-faults-tls-20260917.json) records
 six actual migration fault/concurrency cases and ten TLS/mTLS cases on the
-corrected ffb94a8 binary. Config/owner/job/topology races remain separate pending work.
+corrected ffb94a8 binary. The [seven relational race cases](../implementation/evidence/p02-control-races-20260917.json)
+subsequently passed with actual lock barriers and complete expected rows.
 This is not completion of P02-T01 or a qualified installation/upgrade path.
 The [task](../implementation/02-storage.md#p02-t01--typed-control-schemas-and-minimum-relay-registry)
 and [upgrade contract](../specification/operations-contract.md) own the remaining
@@ -224,8 +225,9 @@ and the independent SHA-256 `abc` vector. They do not execute PostgreSQL.
 The following engine cases are required, with externally inspected rows and exact
 source/engine identities. The evidence above records single-session SQL, CLI,
 role and crash cases, followed by migration lock concurrency, ambiguous COMMIT
-and TLS. Config/owner/job/topology races remain **NOT_RUN** until their dedicated
-experiments complete. Each trigger
+and TLS, then config/owner/job/topology races with independently observed lock
+barriers and expected durable rows. Runtime adapters and receipt-backed consumer
+frontiers remain unimplemented. Each trigger
 has a concrete invariant and corresponding negative control below; a passing
 parser or successful DDL execution alone does not qualify them.
 

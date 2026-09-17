@@ -1,0 +1,216 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-17",
+  "scope": "P02-T01 initial0001 relational transaction races, actual native Linux amd64 PG16.15; no durable runtime CAS/job/ownership adapter qualification",
+  "application_source": {
+    "dirty": false,
+    "manifest_sha256": "d657ba02c59ba8b71289873b43202b4dad180a5113c8cc84dc229606fae4b57a",
+    "revision": "ffb94a8f54418276c2c8115199a55da406e55bb8",
+    "state": "builder-supplied",
+    "tree": "1b068ecbba47d66feaafa0266490bf3d7d75fb8b"
+  },
+  "binary_sha256": "f5f8de1695ff94e2c09df5749c932820919dc4003021358c746d9adb12a9d1f4",
+  "harness_revision": "65b05d53c98d92cba045fdb617dcf4c84d206483",
+  "harness_sha256": "ab294e387043b460fbedf1030176d5eb924b39cc373a835b49802504a2f6e78d",
+  "lab_sha256": "6795263800d72609eca086a1ebf47e74f2b65488c9de2de5f893966476282fd8",
+  "migration_sha256": "f59a155b5533c1674d5e381f6b55a7954b3b5fb550668b942f00efdf3677d5be",
+  "server": {
+    "version": "160015",
+    "fsync": "on",
+    "full_page_writes": "on",
+    "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+  },
+  "status": "PASS",
+  "counts": {
+    "PASS": 7,
+    "FAIL": 0,
+    "UNKNOWN": 0,
+    "NOT_RUN": 0
+  },
+  "cleanup": "PASS",
+  "cases": {
+    "revision_cas": {
+      "status": "PASS",
+      "observed": {
+        "barrier": {
+          "waiter": 1613,
+          "backend_start": "2026-09-17 21:57:26.993186+00",
+          "state": "active",
+          "wait_type": "Lock",
+          "wait_event": "transactionid",
+          "blockers": [
+            1606
+          ],
+          "holder_start": "2026-09-17 21:57:26.865052+00",
+          "waiting_locks": [
+            {
+              "type": "transactionid",
+              "mode": "ShareLock",
+              "transaction": "815",
+              "relation": null
+            }
+          ]
+        },
+        "committed_winners": 1,
+        "loser_cas_rows": 0,
+        "loser_action": "ROLLBACK",
+        "history_revisions": [
+          1,
+          2
+        ]
+      }
+    },
+    "owner_acquisition": {
+      "status": "PASS",
+      "observed": {
+        "barrier": {
+          "waiter": 1669,
+          "backend_start": "2026-09-17 21:57:27.804812+00",
+          "state": "active",
+          "wait_type": "Lock",
+          "wait_event": "transactionid",
+          "blockers": [
+            1662
+          ],
+          "holder_start": "2026-09-17 21:57:27.69563+00",
+          "waiting_locks": [
+            {
+              "type": "transactionid",
+              "mode": "ShareLock",
+              "transaction": "817",
+              "relation": null
+            }
+          ]
+        },
+        "committed_winners": 1,
+        "loser_sqlstate": "23505",
+        "successor_incarnation": "\\x0000000000000000000000000000001f"
+      }
+    },
+    "topology_uncommitted_parent": {
+      "status": "PASS",
+      "observed": {
+        "uncommitted_parent_count": 0,
+        "append_sqlstate": "P0002",
+        "committed_shards": [
+          0
+        ],
+        "closed_bound": 0
+      }
+    },
+    "topology_late_append": {
+      "status": "PASS",
+      "observed": {
+        "barrier": {
+          "waiter": 1781,
+          "backend_start": "2026-09-17 21:57:29.385969+00",
+          "state": "active",
+          "wait_type": "Lock",
+          "wait_event": "transactionid",
+          "blockers": [
+            1774
+          ],
+          "holder_start": "2026-09-17 21:57:29.263816+00",
+          "waiting_locks": [
+            {
+              "type": "transactionid",
+              "mode": "ShareLock",
+              "transaction": "820",
+              "relation": null
+            }
+          ]
+        },
+        "append_sqlstate": "23514",
+        "all_rows_unchanged": true
+      }
+    },
+    "job_before_release": {
+      "status": "PASS",
+      "observed": {
+        "barrier": {
+          "waiter": 1838,
+          "backend_start": "2026-09-17 21:57:30.184918+00",
+          "state": "active",
+          "wait_type": "Lock",
+          "wait_event": "transactionid",
+          "blockers": [
+            1831
+          ],
+          "holder_start": "2026-09-17 21:57:30.057341+00",
+          "waiting_locks": [
+            {
+              "type": "transactionid",
+              "mode": "ShareLock",
+              "transaction": "825",
+              "relation": null
+            }
+          ]
+        },
+        "contender_sqlstate": "00000",
+        "later_update_sqlstate": "23514",
+        "job_state": "queued"
+      }
+    },
+    "release_before_job": {
+      "status": "PASS",
+      "observed": {
+        "barrier": {
+          "waiter": 1901,
+          "backend_start": "2026-09-17 21:57:31.117741+00",
+          "state": "active",
+          "wait_type": "Lock",
+          "wait_event": "transactionid",
+          "blockers": [
+            1894
+          ],
+          "holder_start": "2026-09-17 21:57:31.004847+00",
+          "waiting_locks": [
+            {
+              "type": "transactionid",
+              "mode": "ShareLock",
+              "transaction": "828",
+              "relation": null
+            }
+          ]
+        },
+        "contender_sqlstate": "23514",
+        "later_update_sqlstate": "23514",
+        "job_state": "accepted"
+      }
+    },
+    "final_inspection": {
+      "status": "PASS",
+      "observed": {
+        "exit": 0,
+        "receipt_unchanged": true,
+        "full_relation_rows_match": true,
+        "schema_and_data_sha256": "5f42f91529950b91f3cfc272ef2d6d28b93e01264bdc26fd70086b86f5bafffd"
+      }
+    }
+  },
+  "external_final_row_counts": {
+    "jobs": 2,
+    "datasets": 1,
+    "owner_epochs": 4,
+    "role_instances": 1,
+    "schema_versions": 1,
+    "config_revisions": 2,
+    "job_input_bounds": 0,
+    "policy_revisions": 1,
+    "topology_streams": 1,
+    "topology_generations": 2
+  },
+  "independent_root_review": "All ten observed relations match the independently authored fixture and explicit deltas; one config CAS winner, one next-epoch winner, exact topology membership, queued/accepted job states and unchanged migration receipt. Holder/waiter PID and backend_start checked, actual transaction lock waits observed.",
+  "limits": [
+    "Fixtures use synthetic owner exclusion records, not a real worker fence",
+    "PostgreSQL constraint races use migrator psql sessions; runtime typed adapters/grants and policy authorization remain work",
+    "No CH receipt-backed frontiers or actual archive/source pins yet",
+    "Native Linux arm64, resource pressure, filesystem/fsync fault and full release upgrade not exercised"
+  ],
+  "artifacts_sha256": {
+    "concurrency-v3.json": "0395548e8158d7f586d51fc10ffb2f1978e791182fb5efdd7638a263c063b4a0",
+    "concurrency-expected-v3.json": "5deeaea3395972ff804d28c9131fc4075c9ccd37c42623d36ac4faa607b6a65f",
+    "concurrency-observed-v3.json": "5297bdb23147e8a191b3b9631a32d3be517b2fa1702eb2bb3c4417b532f979d8",
+    "concurrency-native-v3.log": "23b0273b1c08bb5197160c6d6d6f4d802b070c3ee9182e386c75582db5429394"
+  }
+}

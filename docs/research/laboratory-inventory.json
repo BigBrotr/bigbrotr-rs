@@ -300,7 +300,7 @@
         "base": "f32b863f780d71653725f3fc8b940048912c9a33",
         "owner": "foundation_dependency_audit agent",
         "purpose": "Independent bounded P02 implementation responsibility; root integrates",
-        "status": "Clean b72077f; root and independent review complete; integration next"
+        "status": "Cleanb72077f integrated544e1e5/c9f3ccc;125 root workspace tests and Clippy PASS"
       },
       {
         "path": ".research/worktrees/control-concurrency",
@@ -308,7 +308,7 @@
         "base": "fcb6424ad028497bac22d9c0a904fa06041e7167",
         "owner": "static_configuration agent",
         "purpose": "Independent bounded P02 implementation responsibility; root integrates",
-        "status": "Active isolated0001 state-race harness work, root ownsTux"
+        "status": "Clean7857dab integrated65b05d5; seven real PG race cases PASS; exact backend cleanup observed"
       },
       {
         "path": ".research/worktrees/ingest-control-schema",
@@ -317,6 +317,14 @@
         "owner": "foundation_dependency_audit agent",
         "purpose": "Bounded 0002 source/allocation/producer authority and independent SQL fixtures; root integrates and executes PG",
         "status": "Active isolated implementation; no Tux by agent"
+      },
+      {
+        "path": ".research/worktrees/rocks-native-options",
+        "branch": "impl/rocks-native-options",
+        "base": "0d99af6925660caf29735fcd810ead5b850dd865",
+        "owner": "fact_codec_review agent",
+        "purpose": "Real checked Rocks native profile and effective WBM accounting oracle; root owns store/Cargo/Tux",
+        "status": "Active isolated implementation; historical research WBM wiring finding recorded in evidence"
       }
     ],
     "rocks_dependency_audit": {
@@ -393,7 +401,7 @@
       "owner": "root integrating owner",
       "scope": "Actual control schema/CLI/roles/restart and native Linux amd64 lost-COMMIT, two-apply race, TLS/mTLS; further control state races in progress",
       "remote_preflight": ".research/implementation/postgres/pre-build-host.log",
-      "remote_status": "Fresh post-TLS inspection: clean detached84be00e; only runtime-v3 PG/client running for next concurrency cases; two fault containers stopped, older labs/builds stopped; no published ports",
+      "remote_status": "Latest exact checkout65b05d5 for completed state races; runtime-v3 PG/client retained running; prior observed containers/networks unchanged, verify again before mutation",
       "initial_lab": {
         "root": "/home/tux/bigbrotr-implementation-20260917/runs/control-migrations/runtime",
         "containers": [
@@ -439,7 +447,7 @@
         "client": "bigbrotr-implementation-pg-20260917-tlsfix-client",
         "network": "bigbrotr-implementation-pg-20260917-tlsfix",
         "published_ports": [],
-        "status": "Running after6 fault/concurrency cases and10 TLS cases PASS; exact server config restored; retained for bounded schema concurrency runs",
+        "status": "Running after six fault/concurrency cases, ten TLS cases and seven relational race cases PASS; all created contender backends excluded and wrappers joined; only isolated retained PG/client remain",
         "limits": "PG2CPU/1536MiB memory+swap; client2CPU/4GiB;256PIDs each; internal network, no ports; new owned bind data and secrets",
         "retained_fault_containers": [
           "bigbrotr-implementation-pg-20260917-tlsfix-client-fault-commits",
@@ -448,7 +456,8 @@
         "fault_container_status": "Stopped exit143 OOMfalse after each run; exact lab+fault ownership labels verified",
         "retained_private_pki": "runtime-v3/secrets/tls_first-tls; ephemeral certificates/private keys0600, no key downloaded or committed"
       },
-      "fault_tls_evidence": "docs/implementation/evidence/p02-control-faults-tls-20260917.json"
+      "fault_tls_evidence": "docs/implementation/evidence/p02-control-faults-tls-20260917.json",
+      "concurrency_evidence": "docs/implementation/evidence/p02-control-races-20260917.json"
     },
     "rocks_product_boundary": {
       "root": ".research/implementation/rocks-product-design",
