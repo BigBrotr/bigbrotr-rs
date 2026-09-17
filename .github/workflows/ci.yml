@@ -5,16 +5,22 @@ on:
     branches: [main]
   pull_request:
   workflow_dispatch:
+    inputs:
+      native_rocks_binding:
+        description: Run only the isolated native Linux arm64 RocksDB binding experiment
+        type: boolean
+        default: false
 
 permissions:
   contents: read
 
 concurrency:
-  group: ci-${{ github.ref }}
+  group: ci-${{ github.ref }}-${{ inputs.native_rocks_binding && 'native-rocks-binding' || 'foundation' }}
   cancel-in-progress: true
 
 jobs:
   foundation:
+    if: github.event_name != 'workflow_dispatch' || !inputs.native_rocks_binding
     strategy:
       fail-fast: false
       matrix:
@@ -83,6 +89,71 @@ jobs:
             .research/ci-build/source-manifest.json
             .research/ci-acceptance/
             .research/ci-config-acceptance/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14
+
+  native-rocks-linux-arm64:
+    if: github.event_name == 'workflow_dispatch' && inputs.native_rocks_binding
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: bash
+    env:
+      LAB_IMAGE: bigbrotr-native-rocks-binding:qualification
+      LAB_CONTAINER: bigbrotr-native-rocks-binding-qualification
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Capture exact clean source and native target
+        run: |
+          test "$(uname -m)" = aarch64
+          test -z "$(git status --porcelain --untracked-files=all)"
+          mkdir -p .research/native-binding/source .research/native-binding/out
+          git rev-parse HEAD > .research/native-binding/source-revision.txt
+          git rev-parse HEAD:experiments/native-rocks-binding > .research/native-binding/experiment-tree.txt
+          git archive HEAD experiments/native-rocks-binding | tar -x -C .research/native-binding/source
+          find .research/native-binding/source -type f -print0 | sort -z | xargs -0 sha256sum > .research/native-binding/source.sha256
+          uname -a > .research/native-binding/host.txt
+          docker version > .research/native-binding/docker-version.txt
+      - name: Build isolated exact-source binding image
+        env:
+          DOCKER_BUILDKIT: '0'
+        run: |
+          docker build --pull=false --memory 6g --memory-swap 6g --cpu-period 100000 --cpu-quota 200000 \
+            --label "org.bigbrotr.source=$GITHUB_SHA" -t "$LAB_IMAGE" \
+            .research/native-binding/source/experiments/native-rocks-binding \
+            2>&1 | tee .research/native-binding/build.log
+          docker image inspect "$LAB_IMAGE" > .research/native-binding/image.json
+          test "$(docker image inspect --format '{{.Architecture}}' "$LAB_IMAGE")" = arm64
+      - name: Execute actual native binding recovery cases
+        run: |
+          docker run --name "$LAB_CONTAINER" --init --user "$(id -u):$(id -g)" \
+            --cpus 2 --memory 2g --memory-swap 2g --pids-limit 128 \
+            --network none --read-only --cap-drop ALL --security-opt no-new-privileges \
+            --tmpfs /tmp:rw,exec,nosuid,nodev,size=64m \
+            --mount "type=bind,src=$PWD/.research/native-binding/out,dst=/out" \
+            "$LAB_IMAGE" --lab-root /out/lab --output /out/result.json \
+            2>&1 | tee .research/native-binding/driver.log
+      - name: Capture and remove only the owned container
+        if: always()
+        run: |
+          if docker container inspect "$LAB_CONTAINER" > .research/native-binding/container.json 2>/dev/null; then
+            docker rm -f "$LAB_CONTAINER"
+          fi
+      - name: Retain private binding evidence
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: native-rocks-linux-arm64
+          path: |
+            .research/native-binding/*.txt
+            .research/native-binding/*.sha256
+            .research/native-binding/*.json
+            .research/native-binding/*.log
+            .research/native-binding/out/result.json
           include-hidden-files: true
           if-no-files-found: error
           retention-days: 14

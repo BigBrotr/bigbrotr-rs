@@ -121,6 +121,14 @@ mounted fresh output directory is its only host write boundary.
 The integrating owner schedules and inventories the Linux run. This branch does
 not mutate Tux or claim amd64/arm64 results before that exact revision executes.
 
+The existing private CI workflow has an explicit `native_rocks_binding=true`
+manual selection for the isolated native Linux arm64 case. It runs only this
+research job, using a clean Git archive, the same pinned container recipe and
+finite build/run limits; it does not promote an image or certify the product.
+The job retains source, binary, lock, image and actual case identities in private
+artifacts for 14 days. Download concise evidence before expiry. A queued or
+successful build without the driver's nonempty case report is not acceptance.
+
 ## Explicit limits
 
 System power loss, firmware cache loss, dedicated-filesystem ENOSPC/fsync failure
