@@ -349,6 +349,30 @@
         "owner": "foundation_dependency_audit agent",
         "purpose": "Eight bounded 0002 concurrency schedules and all-relation observer",
         "status": "Clean78943ef integrated faa9920 and fixes15c14ed; all eight actualPG races PASS, native lab stopped-retained"
+      },
+      {
+        "path": ".research/worktrees/ingest-admission-fixture",
+        "branch": "impl/ingest-admission-fixture",
+        "base": "66517d999ee8d784cd74962484a7e2eb136ac39f",
+        "owner": "foundation_dependency_audit agent",
+        "purpose": "Independent real signed-event admission semantic fixture",
+        "status": "Clean be8826a candidate; root integration review pending"
+      },
+      {
+        "path": ".research/worktrees/dictionary-model",
+        "branch": "impl/dictionary-model",
+        "base": "a842b939df46d12ae36708d9ff735c0f47e1b9b9",
+        "owner": "fact_codec_review agent",
+        "purpose": "Closed dictionary descriptors and actual fact/fingerprint codecs for admission",
+        "status": "Active isolated implementation"
+      },
+      {
+        "path": ".research/worktrees/receipt-codec",
+        "branch": "impl/receipt-codec",
+        "base": "a842b939df46d12ae36708d9ff735c0f47e1b9b9",
+        "owner": "foundation_dependency_audit agent",
+        "purpose": "Bounded operational encoding of existing structural Receipt",
+        "status": "Clean d0b592e completed candidate; 33 model tests and Clippy PASS, root review pending"
       }
     ],
     "rocks_dependency_audit": {
@@ -538,7 +562,8 @@
       "store_evidence": "docs/implementation/evidence/p02-ingest-store-mac-20260918.json",
       "store_review": ".research/implementation/rocks-product-design/store-review/review.json",
       "store_review_sha256": "da40c55b34725d80b4f4ebeb2837a153c482ff95b44cd7825252ad408dfec62e",
-      "native_target_reuse": "Root integrated tests reused the completed agent Cargo target; native archive unchanged, previous app/test executable hashes are historical cache identities."
+      "native_target_reuse": "Root integrated tests reused the completed agent Cargo target; native archive unchanged, previous app/test executable hashes are historical cache identities.",
+      "pending_reader": "Root-owned current candidate; source batch markers and bounded native feed, independent review at .research/implementation/rocks-product-design/pending-review. Initial native fixture checks PASS; final review/fix verification pending."
     },
     "ingest_control_review": {
       "root": ".research/implementation/postgres/ingest-review",
@@ -575,9 +600,14 @@
       "root": "/home/tux/bigbrotr-implementation-20260917/runs/native-store-94a40de",
       "container": "bigbrotr-implementation-native-store-94a40de",
       "image": "sha256:8d906f267439748924d6a9de9cab47855279cc196a7397d9cb7a690c77fddfe3",
-      "status": "Running exact Git-source release build followed by release workspace tests; no terminal result yet",
+      "status": "Completed exit 0/OOM false; 144 release workspace tests PASS. All 398 exact Git source entries, archive, manifest and downloaded ELF independently verified; no admission/recovery qualification.",
       "limits": "2CPU/6GiB memory+swap/512PIDs, two Cargo/native jobs, readonly source, new owned output, tmp512MiB, no host ports",
-      "local_log": ".research/implementation/rocks-product-design/native-store-linux.log"
+      "local_log": ".research/implementation/rocks-product-design/native-store-linux.log",
+      "evidence": "docs/implementation/evidence/p02-ingest-store-linux-20260918.json",
+      "audit": ".research/implementation/rocks-product-design/native-store-linux-evidence/audit.json",
+      "audit_sha256": "c35fd42b7c9ff0e4b40d923d469af1bbc38e11887a2398bb234b13b9804c1562",
+      "artifact_sha256": "3755fab1c97c6e833089a2061602be44b13cd885834e809db3d8ab3d62aad523",
+      "resources_lifecycle": "Root verified terminal Docker state and updated owned remote resources.json after the read-only audit."
     },
     "ci_35284179910": {
       "source": "8d1db2bad1f6960ab90c960ab735bb3e5cf84cb6",

@@ -1,0 +1,93 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-18",
+  "scope": "P02-T02 native ingest initialize/reopen and resource lifetime, exact-source Linux amd64 release build and workspace tests; not event admission or release qualification",
+  "status": "PASS",
+  "source": {
+    "revision": "94a40dec560983d0ed9694cff95987bfd5cb68ab",
+    "tree": "218eedf7d95b9b99e18285d5b739c79bdd9b4b39",
+    "files": 398,
+    "archive_sha256": "65f0ce814242b28099869abafd1044f4141ea0e10f60bc8344f3ba4ef05e0da8",
+    "manifest_sha256": "dae7d47a3a9ea2221dcf8978a2a43cca8063460647dcb65cb76e03bb62479929",
+    "all_git_blobs_archive_manifest_and_actual_remote_source_equal": true
+  },
+  "artifact": {
+    "sha256": "3755fab1c97c6e833089a2061602be44b13cd885834e809db3d8ab3d62aad523",
+    "bytes": 6998136,
+    "elf": {
+      "magic": "7f454c46",
+      "class": 2,
+      "byte_order": 1,
+      "elf_type": 3,
+      "machine": 62
+    },
+    "file_output": "/Users/vincenzo/Documents/GitHub/BigBrotr/bigbrotr-rs/.research/implementation/rocks-product-design/native-store-linux-evidence/bigbrotr: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 3.2.0, BuildID[sha1]=8203d23542c36dedd34abc09d09fd341b6ac78bc, not stripped",
+    "independently_rehashed_download": true,
+    "reexecuted_by_auditor": false
+  },
+  "engine_dependencies": {
+    "rocksdb": "0.25.0",
+    "librocksdb-sys": "0.19.0+11.8.1",
+    "zstd-sys": "2.1.0+zstd.1.5.7",
+    "bindgen": "0.72.1",
+    "clang-sys": "1.9.1",
+    "cc": "1.4.6"
+  },
+  "native_toolchain": {
+    "rustc": "1.98.1 (48a229cea 2026-09-01)",
+    "c_cpp_libclang": "Debian Clang 14.0.6",
+    "build_jobs": 2,
+    "receipt_sha256": "494f98df7314952b220f48bbd0402ad671a801c1d4ff7af8f1d1bfa49fea18c9",
+    "audit_boundary": "Recorded receipt paths/versions/hashes and actual passed environment inspected; tool binaries not independently downloaded or rehashed by auditor."
+  },
+  "checks": {
+    "workspace_PASS": 144,
+    "FAIL": 0,
+    "IGNORED": 0,
+    "store_cases": 10,
+    "option_profile_cases": {
+      "native_engine": 3,
+      "static_limits": 2
+    },
+    "empty_groups": 4,
+    "empty_groups_count_as_evidence": false
+  },
+  "environment": {
+    "host": "ssh tux",
+    "target": "x86_64-unknown-linux-gnu",
+    "container": "e124aba63d43c129fc6355dd636f3c52c29a186bede2465f0526b6451d21870c",
+    "image": "sha256:8d906f267439748924d6a9de9cab47855279cc196a7397d9cb7a690c77fddfe3",
+    "exit_code": 0,
+    "oom_killed": false,
+    "cpu": 2,
+    "memory_and_swap_total_bytes": 6442450944,
+    "pids": 512,
+    "host_ports": []
+  },
+  "review": {
+    "independent_AI_audit": ".research/implementation/rocks-product-design/native-store-linux-evidence/audit.json",
+    "audit_sha256": "c35fd42b7c9ff0e4b40d923d469af1bbc38e11887a2398bb234b13b9804c1562",
+    "root_review": "Complete audit, build receipt and test receipt read; retained raw artifacts rehashed. Actual tests inspected during the Mac/root source review. Auditor did not rerun the native cases."
+  },
+  "not_run": [
+    "macOS-only case-insensitive alias test is excluded by cfg on Linux; no skipped case was counted as PASS.",
+    "Four zero-test groups (protocol unit plus three doctest groups) are empty and add no scenario evidence.",
+    "Temporary native test databases were removed by the tests; auditor reviewed exact tests and results but did not rerun them or inspect retained test rows.",
+    "No durable signed-event admission, replay/receipt protocol, external authority integration, archive/read/export journey, fault injection, ENOSPC, fsync failure, power loss, or restart handoff qualification.",
+    "No native Linux arm64 qualification from this Linux amd64 run; no release image, Compose installation, build-once promotion, or full product qualification.",
+    "No measured peak RSS/native allocation ceiling, mixed/aged workload capacity, or performance claim.",
+    "Actual binary retained and hashed, but auditor did not reexecute it; build-info is retained helper output bound by source and artifact receipts."
+  ],
+  "raw_root": ".research/implementation/rocks-product-design/native-store-linux-evidence",
+  "raw_hashes": {
+    "bigbrotr": "3755fab1c97c6e833089a2061602be44b13cd885834e809db3d8ab3d62aad523",
+    "build-result.json": "494f98df7314952b220f48bbd0402ad671a801c1d4ff7af8f1d1bfa49fea18c9",
+    "native-store-linux.log": "6d9e1bb2c270b0f9a2eabc9f07657821092e749a16637caf84463e2d7e611a4f",
+    "remote-observation.json": "d8c9a14a81decb076b1ae9698424b79ceb9e3ea360a3092d97fd8ebb7d560b3d",
+    "source-manifest.json": "dae7d47a3a9ea2221dcf8978a2a43cca8063460647dcb65cb76e03bb62479929",
+    "source.tar": "65f0ce814242b28099869abafd1044f4141ea0e10f60bc8344f3ba4ef05e0da8",
+    "test-groups.json": "ad32c9b8ad5dda847d9776e6814ccc22f86124c7540ace0890db90296cc13458",
+    "workspace-test-result.json": "9b428a2426f5e71a766e3c3b4b12b8ac1f36307620c4070acc46a1ea20029288"
+  },
+  "lifecycle": "Container stopped-retained after successful run. Root later updated resources.json from planned-build-and-tests to observed completed-build-and-workspace-tests; the audit preserves its earlier observation."
+}
