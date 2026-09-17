@@ -418,5 +418,17 @@
       "The successful workflow cleanup step reports removal of the owned container, but the ephemeral runner is gone and current container absence cannot be independently queried.",
       "The five result-level NOT_RUN boundaries remain unqualified and must not be inferred from the nine passing binding cases."
     ]
+  },
+  "subsequent_review": {
+    "date": "2026-09-17",
+    "finding": "The original experiment sets WriteBufferManager only in per-CF Options. rocksdb_open_column_families projects those into ColumnFamilyOptions and takes DBOptions only from its separate db_options argument. The configured shared16MiB WBM is therefore not installed. A non-null native LOG pointer does not prove that budget is active.",
+    "sources": [
+      "experiments/native-rocks-binding/src/main.rs:103-124,179-190",
+      "experiments/native-rocks-binding/driver.py:134-143",
+      "librocksdb-sys0.19.0+11.8.1/rocksdb/db/c.cc:2041-2057,6180-6183",
+      "librocksdb-sys0.19.0+11.8.1/rocksdb/include/rocksdb/options.h:1257-1272"
+    ],
+    "disposition": "Historical raw reports and executed case outcomes are preserved. Their shared configured WBM claim is withdrawn; pointer observations labeled active below are the old harness classification, not accepted resource evidence. Atomicity/reopen/snapshot/lock/CF/ZSTD and separately introspected option observations retain their recorded scopes. The new product options adapter must install WBM on DBOptions and measure its memory accounting with a disconnected-manager negative control.",
+    "qualification": "Product WBM configuration and effective accounting NOT_RUN at this correction; no RSS or workload qualification."
   }
 }

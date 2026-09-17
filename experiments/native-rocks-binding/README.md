@@ -29,9 +29,9 @@ headers/lock implementation were inspected before this run.
 column-family handles. It separates initialization of a fresh path from reopen,
 which requires an existing `CURRENT` and the exact CF set. It explicitly opens
 `default`, `facts`, and `receipts` with the same shared 32 MiB block cache,
-shared 16 MiB stalling write-buffer
-manager, 2 MiB per-CF write buffers, two write buffers per CF, 16 MiB total WAL
-limit, 64 open files, two background jobs, and Zstandard compression. The DB uses
+an intended shared 16 MiB stalling write-buffer manager (the wiring defect below
+means this claim was not established), 2 MiB per-CF write buffers, two write buffers
+per CF, 16 MiB total WAL trigger, 64 open files, two background jobs, and Zstandard compression. The DB uses
 `use_fsync=true` and atomic flush. Every admission-shaped batch uses
 `WriteOptions.sync=true` and `disable_wal=false` and writes one literal value to
 all three CFs.
@@ -140,3 +140,18 @@ allocation, receipts,
 ownership authority. A write error or lost response is never labeled rollback or
 success before a fresh open checks its exact keys. Cache and WBM settings are
 soft native controls, not a process RSS guarantee.
+
+## Subsequent WBM wiring finding
+
+The original source assigns `set_write_buffer_manager` only to column-family
+Options. In the selected native C API, `rocksdb_open_column_families` converts
+those into `ColumnFamilyOptions` and constructs `DBOptions` only from the separate
+database options. WBM belongs to `DBOptions`, so the configured shared manager
+was not attached. The old driver's non-null LOG pointer check does not establish
+the selected budget. Historical reports remain reproducible, but their shared
+WBM claim is withdrawn in the
+[recorded evidence](../../docs/implementation/evidence/p02-native-rocks-binding-20260917.json).
+Other observed persistence, snapshot, locking, CF and ZSTD results retain their
+narrow scope. Do not use this old WBM wiring or its pointer-only oracle in the
+product adapter: attach the manager to DB options and observe its actual memory
+accounting after writes, with a disconnected-manager negative control.
