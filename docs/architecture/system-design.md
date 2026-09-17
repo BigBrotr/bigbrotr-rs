@@ -63,8 +63,10 @@ edit DuckLake's internal metadata directly.
    a local durable receipt. This survives process restart subject to the engine
    and storage contract; it is not a promise against loss of the host or disk.
 2. **Archived:** data and an archive batch receipt committed together through
-   DuckLake, with checksummed files and a catalog snapshot. This permits pending
-   body reclamation only after the configured backup/replication requirements.
+   DuckLake, with complete file membership and qualified persistence for the
+   declared failure class. File-hash capture is separately explicit under the
+   archive storage contract. Pending reclamation also respects the configured
+   backup/replication requirements.
 3. **Queryable:** all required serving structures for the published batch or
    generation are visible under the read contract. A partially indexed batch
    cannot be called complete.
@@ -96,7 +98,9 @@ Continuous session loops, finite jobs and listeners have different lifecycle
 interfaces. Shared runtime facilities provide cancellation, supervision, budgets,
 leases where needed, observability and health. They do not force a live listener
 into a synthetic RunOnce polling model. A stopped ranker does not stop collection;
-a stopped indexer makes reads stale and grows replay backlog; a stopped archive
+a stopped projector grows replay backlog; prior reads remain available only
+while their authority and temporal dependencies are valid. Stopping its state
+owner separately removes dependent capabilities. A stopped archive
 publisher eventually fills pending storage and causes visible intake throttling.
 No finite machine can buffer an unlimited outage.
 
@@ -177,16 +181,31 @@ it is not an obligatory extra database beside every engine.
 | Topology | Ownership and storage | What it solves |
 |---|---|---|
 | One host | One durable ingest owner initially; local NVMe; PG + CH; local Parquet plus off-host backup | Simple reference deployment and measured resource accounting |
-| Multiple role hosts | Collectors route to owner; archive storage shared through object storage; read/rank workers isolated | Independent CPU, connection and query capacity |
+| Multiple role hosts | Collectors route to one fixed ingest owner; archive files remain local when all archive jobs run on their storage host, or use a qualified object route for distributed archive-byte workers | Isolate the specifically constrained CPU, connection, query or storage work; movement has network and coordination costs |
 | Sharded admission | Stable event-ID owner routing; durable shard epochs; per-shard frontiers | Write throughput once one owner is measured insufficient |
 | Replicated admission | Replicated log with explicit quorum acknowledgements before durable receipt | Continued ingestion and defined RPO under host loss |
 | Replicated serving | CH replication/sharding with documented consistency and routing | Query scale and serving availability |
 
 The initial supported placements are one host and fixed split roles with manual
-fenced handoff, one ingest shard and object archive access from every split reader.
+fenced handoff and one ingest shard. A hot gateway uses CH/Control without archive
+credentials; archive readers execute on the local archive host or use the qualified
+object route. Splitting collectors or hot gateways alone does not require S3.
 Sharding, replicated admission/serving and automatic failover in the table are
 growth directions requiring their own implemented/qualified capability. Shared
 PG, Docker and matching local path names do not enable them.
+
+Use the single-host full recipe as the first reference deployment. Choose a
+second host for an observed resource or isolation requirement, not for a service
+name. Remote gateways move connection/serialization work, while their queries
+still consume CH resources. Remote collectors add network/socket/verification
+capacity but still feed the same bounded ingest owner. Remote rank workers load
+pinned graph artifacts once and return completed results; do not turn every edge
+visit into RPC. Offload export only when its source locality, transfer and scratch
+cost fit the job grant. Separating CH/storage can relieve database CPU/RAM/I/O
+contention, but requires the explicit dataset migration and owner procedure.
+Measure end-to-end latency, network bytes, queue age and remaining bottleneck
+before accepting a split as an improvement. Neither split roles nor S3 alone
+supply high availability or increased admission write throughput.
 
 A shared PostgreSQL connection does not make local RocksDB or a local file path
 shared. Never mount the same RocksDB directory in multiple writers. A lease with
@@ -216,10 +235,11 @@ single-host observatory.
 | Serving existing data | PG + CH, archive access for rebuild/cold tiers as configured | Read adapters; optional derive/rank | Existing complete generations with freshness/coverage metadata; no collector requirement |
 | Custom/split roles | Required durable contracts reachable locally/remotely | Explicit selection | Preflight resolves dependencies; no silently started producer daemons |
 
-A service enabled in a recipe must have its engine/data dependency. Stopping a
-service leaves its already retained data readable when the read store remains
-available. Archive-only is an intentional capability selection, not a claim that
-all CH-backed resources can work without CH.
+A service enabled in a recipe must have its engine/data dependency. Retained
+results remain readable only while the required store, policy and temporal
+conditions are valid; immutable dated resources and current-state resources have
+different maintenance needs. Archive-only is an intentional capability selection,
+not a claim that all CH-backed resources can work without CH.
 Serving existing data uses matching PG policy/frontier/pin state directly through
 local Control or its authenticated remote adapter. Arbitrary populated CH plus
 empty PG is not ready data; current/NEG capabilities retain their explicit
