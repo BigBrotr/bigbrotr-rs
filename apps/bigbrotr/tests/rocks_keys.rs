@@ -1,12 +1,11 @@
-#[path = "../src/storage/rocks/keys.rs"]
-mod keys;
-
+use bigbrotr::storage::rocks::keys::{
+    ColumnFamily, IngestKey, KeyDomain, KeyError, MAX_INGEST_KEY_BYTES, decode_key,
+};
 use bigbrotr_model::{
     AllocationDomainId, DatasetId, DictionaryKind, Digest256, EventId, Ordinal, OwnerEpoch,
     ProducerEpoch, ProducerRequestId, ProducerSlotId, QualifiedRef, RequestSequence, Sequence,
     SourceRecordId,
 };
-use keys::{ColumnFamily, IngestKey, KeyDomain, KeyError, MAX_INGEST_KEY_BYTES, decode_key};
 
 fn literal_bytes(hex: &str) -> Vec<u8> {
     let (pairs, remainder) = hex.as_bytes().as_chunks::<2>();

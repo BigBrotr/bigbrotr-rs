@@ -143,7 +143,10 @@ hostname shape and retains its loopback/private-bridge boundary for the connecte
 owner; that owner must resolve, vet and pin an in-bound address before connecting.
 It performs no DNS, TLS handshake or PostgreSQL I/O;
 wrong-name/CA, authentication, timeout, task ownership and lost-COMMIT cases stay
-in the actual adapter acceptance gate.
+in the actual adapter acceptance gate. The later migration consumer has now executed
+the scoped native Linux amd64 COMMIT/TLS scenarios recorded in
+[its evidence](../implementation/evidence/p02-control-faults-tls-20260917.json);
+this does not qualify the future pooled service or other native targets.
 
 ## HTTP, WebSocket and RPC limits
 

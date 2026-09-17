@@ -17,7 +17,8 @@ Domain tags are globally unique even though RocksDB also supplies the column
 family. A decoder receives the actual column family and rejects a domain assigned
 to another one. It also rejects an unsupported version, unknown tag, truncated or
 extended key, invalid allocated identity/counter, and an invalid embedded
-dictionary namespace. No decoder accepts a prefix as a complete key.
+dictionary namespace. No decoder accepts a proper prefix as a complete key. The
+singleton manifest key is exactly its two-byte domain prefix.
 
 `KeyDomain::prefix()` returns the fixed two-byte prefix for caller-bounded engine scans.
 `IngestKey::encode()` returns a stack-backed `EncodedKey`; `decode_key()` reads

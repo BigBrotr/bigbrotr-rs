@@ -80,10 +80,13 @@ The [identity/encoding contract](../specification/identity-and-encoding.md) and
 [effect table](../specification/operations-contract.md) fix exact bytes and recovery.
 One owner serializes exact identity decisions for each writable directory.
 
-- [ ] **Step 1:** Specify versioned key prefixes for event-ID metadata, event ordinals,
+- [x] **Step 1:** Specify versioned key prefixes for event-ID metadata, event ordinals,
   scoped eligibility/receive minima, provenance keys, dictionaries, sequence facts, producer receipts and owner
   metadata. Begin with exact full identities and fixed-width ordered compact
   ordinal keys; no truncated hash accepted as definitive identity.
+  The [key reference](../reference/ingest-key-format.md) and
+  [codec evidence](evidence/p02-ingest-keys-20260917.json) cover key bytes only;
+  value codecs and actual engine/admission remain the subsequent steps.
 - [ ] **Step 2:** Store new shared EventPayload plus first verified signed
   representative per eligible scope, scoped first-receive/earlier corrections,
   optional witness facts, dictionary dependencies, pending records, strict

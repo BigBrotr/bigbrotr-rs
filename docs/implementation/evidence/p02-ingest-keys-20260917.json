@@ -1,0 +1,48 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-17",
+  "scope": "P02-T02 Step1 closed persistent key format, without engine/value/admission acceptance",
+  "source": {
+    "base_revision": "544e1e5",
+    "candidate_origin": "b72077f490dce7f93886775390afee54428f3a5a",
+    "state": "integration candidate before containing commit",
+    "files_sha256": {
+      "apps/bigbrotr/src/storage/mod.rs": "01c4a989f6ccd898b40369c30fff079ac1406b09b8311a29e94dd48274ae4cb2",
+      "apps/bigbrotr/src/storage/rocks/mod.rs": "a28b6ddf542f4c7ab0cf6172963fe106eed420201155c9f60f94fcb72f0c347e",
+      "apps/bigbrotr/src/storage/rocks/keys.rs": "510730346e2b8842227f53119df1d6b3bc783a1046d266794430a6bea15987d4",
+      "apps/bigbrotr/tests/rocks_keys.rs": "ffe0914157d0d18327316e322fcd79037610eb7f4df16994a2f7999c8602918e",
+      "docs/reference/ingest-key-format.md": "1ea7c96671cc75c41f6e0fb52b8b4eeede8217aa07e48907fbee56854ca8e606"
+    }
+  },
+  "environment": "Darwin arm64, Rust1.98.1",
+  "executed": [
+    {
+      "command": "cargo test --workspace --locked",
+      "status": "PASS",
+      "tests": 125,
+      "scope": "Includes8 actual library key codec tests with literal bytes, namespace refusal and unsigned order"
+    },
+    {
+      "command": "cargo clippy --workspace --all-targets --locked -- -D warnings",
+      "status": "PASS"
+    }
+  ],
+  "independent_ai_review": {
+    "report": ".research/implementation/rocks-product-design/key-review.md",
+    "inventory": ".research/implementation/rocks-product-design/key-review-inventory.json",
+    "tests": 14,
+    "scope": "Eight original plus six independent boundary/corruption/order probes; no engine",
+    "finding": "Clarified proper-prefix refusal: singleton manifest is intentionally its complete two-byte domain prefix. Product codec unchanged."
+  },
+  "artifacts_sha256": {
+    "key-integration-tests.log": "e61f132f9e03f66999357b7bed6832820d7a0b1791b3ecb28a298d02b80c924c",
+    "key-integration-clippy.log": "dbb3c716d235222c2b288d237988002bcf722bb5798a4f75a8f661a540e45557",
+    "key-review.md": "a10ebfcf580e63a3c52748c68da0f5f413661485da2f2b255b4676e00c6f48c8",
+    "key-review-inventory.json": "2bc5bbcb9a10f16441bf405cdf21faa274c54bf9b3c6249d6762fcff32adaa3a"
+  },
+  "not_run": [
+    "Product Rocks options/manifest and actual store create/reopen",
+    "Persistent value codec, atomic admission/certification, producer receipts/ACK/retirement",
+    "Crash/recovery, filesystem faults and restore"
+  ]
+}
