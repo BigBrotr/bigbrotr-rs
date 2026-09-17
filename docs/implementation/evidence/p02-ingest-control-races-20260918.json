@@ -1,0 +1,323 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-18",
+  "scope": "P02-T01/P02-T07 migration0002 relational concurrency on native Linux amd64 PostgreSQL16.15; synthetic cross-engine attestations, not runtime coordination qualification",
+  "status": "PASS",
+  "application_source": {
+    "dirty": false,
+    "manifest_sha256": "7920fdca2541dc818432a03895c3d7fb107b7602d3d441716060cd551ca5b009",
+    "revision": "15c14edc7135fbe96e3e7e116f5627e03ea2cee1",
+    "state": "builder-supplied",
+    "tree": "cc71918664795b014a75209641a4929de76a3288"
+  },
+  "binary_sha256": "a3345bf73be9bbfdb554cb6b9e46b6c41ed7335ccc0f4971cfef1e46e299b3fa",
+  "harness_revision": "15c14edc7135fbe96e3e7e116f5627e03ea2cee1",
+  "harness_sha256": "c53b03d5944577ccbad09e33bbf3147c73adbbdc6dfc9d430d14c742b503962b",
+  "shared_harness_sha256": "ab294e387043b460fbedf1030176d5eb924b39cc373a835b49802504a2f6e78d",
+  "lab_sha256": "6df5afbd10a1edc1b049b09a527179b1485bc3ff18903b275f38e0529df64d0b",
+  "migration_sha256": {
+    "0001": "f59a155b5533c1674d5e381f6b55a7954b3b5fb550668b942f00efdf3677d5be",
+    "0002": "6a355b4d0066c60397bc09c7aa1f5d8d27722fbfbf9e9b859f02d55217f80202"
+  },
+  "server": {
+    "version": "160015",
+    "fsync": "on",
+    "full_page_writes": "on",
+    "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+  },
+  "counts": {
+    "PASS": 8,
+    "FAIL": 0,
+    "UNKNOWN": 0,
+    "NOT_RUN": 0
+  },
+  "cleanup": "PASS",
+  "cases": {
+    "frontier_seal_before_lower_close": {
+      "status": "PASS",
+      "observed": {
+        "barrier": {
+          "waiter": 186,
+          "backend_start": "2026-09-17 22:47:28.641043+00",
+          "state": "active",
+          "wait_type": "Lock",
+          "wait_event": "transactionid",
+          "blockers": [
+            179
+          ],
+          "holder_start": "2026-09-17 22:47:28.52071+00",
+          "waiting_locks": [
+            {
+              "type": "transactionid",
+              "mode": "ShareLock",
+              "transaction": "736",
+              "relation": null
+            }
+          ]
+        },
+        "close_sqlstate": "23514",
+        "sealed_bound": 5,
+        "source_state": "open"
+      }
+    },
+    "lower_close_before_chunk_commit": {
+      "status": "PASS",
+      "observed": {
+        "barrier": {
+          "waiter": 247,
+          "backend_start": "2026-09-17 22:47:29.550389+00",
+          "state": "active",
+          "wait_type": "Lock",
+          "wait_event": "transactionid",
+          "blockers": [
+            241
+          ],
+          "holder_start": "2026-09-17 22:47:29.42115+00",
+          "waiting_locks": [
+            {
+              "type": "transactionid",
+              "mode": "ShareLock",
+              "transaction": "738",
+              "relation": null
+            }
+          ]
+        },
+        "commit_sqlstate": "23514",
+        "source_final": 4,
+        "chunk_state": "prepared"
+      }
+    },
+    "close_before_mismatched_handoff": {
+      "status": "PASS",
+      "observed": {
+        "barrier": {
+          "waiter": 310,
+          "backend_start": "2026-09-17 22:47:30.533329+00",
+          "state": "active",
+          "wait_type": "Lock",
+          "wait_event": "transactionid",
+          "blockers": [
+            303
+          ],
+          "holder_start": "2026-09-17 22:47:30.425249+00",
+          "waiting_locks": [
+            {
+              "type": "transactionid",
+              "mode": "ShareLock",
+              "transaction": "740",
+              "relation": null
+            }
+          ]
+        },
+        "handoff_sqlstate": "23514",
+        "source_final": 5,
+        "attempted_handoff": 4
+      }
+    },
+    "drain_before_new_chunk": {
+      "status": "PASS",
+      "observed": {
+        "barrier": {
+          "waiter": 373,
+          "backend_start": "2026-09-17 22:47:31.285044+00",
+          "state": "active",
+          "wait_type": "Lock",
+          "wait_event": "transactionid",
+          "blockers": [
+            366
+          ],
+          "holder_start": "2026-09-17 22:47:31.160527+00",
+          "waiting_locks": [
+            {
+              "type": "transactionid",
+              "mode": "ShareLock",
+              "transaction": "742",
+              "relation": null
+            }
+          ]
+        },
+        "insert_sqlstate": "23514",
+        "owner_state": "draining",
+        "new_chunk_count": 0
+      }
+    },
+    "chunk_complete_before_release": {
+      "status": "PASS",
+      "observed": {
+        "barrier": {
+          "waiter": 436,
+          "backend_start": "2026-09-17 22:47:32.185072+00",
+          "state": "active",
+          "wait_type": "Lock",
+          "wait_event": "transactionid",
+          "blockers": [
+            429
+          ],
+          "holder_start": "2026-09-17 22:47:32.052625+00",
+          "waiting_locks": [
+            {
+              "type": "transactionid",
+              "mode": "ShareLock",
+              "transaction": "744",
+              "relation": null
+            }
+          ]
+        },
+        "chunk_state": "committed",
+        "owner_state": "released",
+        "exclusion_is_synthetic": true
+      }
+    },
+    "frontier_publish_cas": {
+      "status": "PASS",
+      "observed": {
+        "barrier": {
+          "waiter": 499,
+          "backend_start": "2026-09-17 22:47:33.136714+00",
+          "state": "active",
+          "wait_type": "Lock",
+          "wait_event": "transactionid",
+          "blockers": [
+            492
+          ],
+          "holder_start": "2026-09-17 22:47:33.00581+00",
+          "waiting_locks": [
+            {
+              "type": "transactionid",
+              "mode": "ShareLock",
+              "transaction": "746",
+              "relation": null
+            }
+          ]
+        },
+        "committed_winners": 1,
+        "loser_rows": 0,
+        "published_revision": 2
+      }
+    },
+    "claim_before_lease_release": {
+      "status": "PASS",
+      "observed": {
+        "barrier": {
+          "waiter": 561,
+          "backend_start": "2026-09-17 22:47:34.128566+00",
+          "state": "active",
+          "wait_type": "Lock",
+          "wait_event": "transactionid",
+          "blockers": [
+            554
+          ],
+          "holder_start": "2026-09-17 22:47:34.004446+00",
+          "waiting_locks": [
+            {
+              "type": "transactionid",
+              "mode": "ShareLock",
+              "transaction": "748",
+              "relation": null
+            }
+          ]
+        },
+        "lease_state": "released",
+        "claim_state": "active",
+        "claim_survived_release": true
+      }
+    },
+    "lease_release_before_claim": {
+      "status": "PASS",
+      "observed": {
+        "barrier": {
+          "waiter": 624,
+          "backend_start": "2026-09-17 22:47:35.005777+00",
+          "state": "active",
+          "wait_type": "Lock",
+          "wait_event": "transactionid",
+          "blockers": [
+            617
+          ],
+          "holder_start": "2026-09-17 22:47:34.886096+00",
+          "waiting_locks": [
+            {
+              "type": "transactionid",
+              "mode": "ShareLock",
+              "transaction": "750",
+              "relation": null
+            }
+          ]
+        },
+        "claim_sqlstate": "23514",
+        "lease_state": "released",
+        "new_claim_count": 0
+      }
+    }
+  },
+  "final": {
+    "status": "PASS",
+    "inspect_exit": 0,
+    "receipt_unchanged": true,
+    "schema_and_data_sha256": "bfc0053c156c7363b48b8d945a2c22c9031142334b62cbbf636dd93c72e016f7",
+    "relations_compared": 23
+  },
+  "fixture_attestations": "synthetic-unvalidated",
+  "source_audit": {
+    "revision": "15c14edc7135fbe96e3e7e116f5627e03ea2cee1",
+    "tree": "cc71918664795b014a75209641a4929de76a3288",
+    "binary_sha256": "a3345bf73be9bbfdb554cb6b9e46b6c41ed7335ccc0f4971cfef1e46e299b3fa",
+    "source_manifest_sha256": "7920fdca2541dc818432a03895c3d7fb107b7602d3d441716060cd551ca5b009",
+    "source_files_verified": 389,
+    "archive_sha256": "ddf9b383eb53688b2030b7319083ab9263c1a77e33fc13043719986466ade298",
+    "result": "PASS"
+  },
+  "external_final_row_counts": {
+    "jobs": 0,
+    "datasets": 1,
+    "consumers": 2,
+    "owner_epochs": 6,
+    "producer_slots": 0,
+    "role_instances": 3,
+    "source_streams": 4,
+    "producer_epochs": 0,
+    "schema_versions": 2,
+    "snapshot_leases": 2,
+    "config_revisions": 1,
+    "job_input_bounds": 0,
+    "policy_revisions": 1,
+    "retention_claims": 1,
+    "topology_streams": 4,
+    "projection_chunks": 2,
+    "allocation_domains": 0,
+    "consumer_frontiers": 16,
+    "producer_checkpoints": 0,
+    "topology_generations": 1,
+    "projection_generations": 3,
+    "projection_chunk_bounds": 8,
+    "consumer_frontier_revisions": 4
+  },
+  "review": {
+    "kind": "Independent AI review plus integrating owner full source/diff/result review",
+    "report_sha256": "a906b9384e16f51675b62eeb182bdd9f19d711d2d65c4dcad9c26eb3f2c20bb5",
+    "findings": "Actual executable/receipt/source identity preflight and literal initial draining-owner preconditions corrected in15c14ed; 18 source-only discrimination probes PASS. Complete CLI responses and receipt metadata checked.",
+    "root_observation": "All eight waits are actual PostgreSQL transaction locks, with holder/waiter PID and backend_start. Every case compares all23 relation rows against its prior snapshot plus independently authored literal deltas. Root read complete final observed rows and confirmed source2=closed4/source3=closed5, owner52=draining, owner54=released with committed chunk91, consumer71=head2, released leases100/101 and exactly one independently active claim110. External cleanup confirmed zero contender backends."
+  },
+  "environment": {
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "client_image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+    "build": "Fresh locked Git-archive build, rustc1.98.1, 2CPU/6GiB memory+swap/512PIDs; old helper does not assert compiler job count.",
+    "lab": "Owned internal network, no published ports; PG2CPU/1536MiB and client2CPU/4GiB,256PIDs each. Stopped and retained after completed inspection; PGexit0/clientexit143, no OOM."
+  },
+  "limits": [
+    "No real archive/ClickHouse receipts or native owner exclusion; all attestation digests and joined evidence are synthetic.",
+    "Runtime parameter codecs, authority/CAS adapters, grant renewal, retention/reclamation and crash recovery remain separate work.",
+    "No native Linux arm64 PG, disk/fsync/resource-pressure or full signed-event/installation/release qualification."
+  ],
+  "raw_root": ".research/implementation/postgres",
+  "artifacts_sha256": {
+    "ingest-races-v5.json": "67425a0c0ce4bb4f3023bfa5009a929ff84d9843b255802aa0c520d48d5799bd",
+    "ingest-races-observed-v5.json": "a9a8e61f3a6beaed0e74443e8230d20a70d00a477d39222ac76c09c7317a9e24",
+    "ingest-races-native-v5.log": "c95364f36e3ff317593f4c51936225f1b9402926e49490045531a8b7beb7c9d8",
+    "ingest-races-cleanup-v5.log": "eb0884e7cd311b11c6cee16f0da348d7c5023c9c68b05f34dff93e49586021d0",
+    "source-audit-15c14ed.json": "c398cf19b7c53383e96cd5edae3646a07858bb8c79162ed2c96e361b19926e9b",
+    "build-result-15c14ed.json": "ada7ef284a86a8a5b05847f600337b240d1c70f167b7b5c9d609d72f9a0d1fc1",
+    "source-manifest-15c14ed.json": "7920fdca2541dc818432a03895c3d7fb107b7602d3d441716060cd551ca5b009",
+    "resources-v5.json": "39186d652c1dbd16b1d63c5682cceb2fe7773c4cc4ff12cc7c346683588bfb2d"
+  }
+}

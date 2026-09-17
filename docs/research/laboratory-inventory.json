@@ -348,7 +348,7 @@
         "base": "fa9b6b3768baf825c2c9b6dcac616f0338f548cb",
         "owner": "foundation_dependency_audit agent",
         "purpose": "Eight bounded 0002 concurrency schedules and all-relation observer",
-        "status": "Clean 78943ef candidate; independent review and root native run pending"
+        "status": "Clean78943ef integrated faa9920 and fixes15c14ed; all eight actualPG races PASS, native lab stopped-retained"
       }
     ],
     "rocks_dependency_audit": {
@@ -423,9 +423,9 @@
     "postgres_migration_integration": {
       "local_root": ".research/implementation/postgres",
       "owner": "root integrating owner",
-      "scope": "Actual 0001 CLI/schema/fault/TLS/races and new 0002 CLI/74 SQL cases; 0002 races pending",
+      "scope": "Actual 0001 CLI/schema/fault/TLS/races and 0002 CLI/74SQL/eight concurrency cases completed; typed runtime adapters remain work",
       "remote_preflight": ".research/implementation/postgres/pre-build-host.log",
-      "remote_status": "Read-only inspected 2026-09-18: clean detached 145eb7c, runtime-v4 PG/client running; runtime-v3 stopped, all three PG builds exited 0; unrelated workloads preserved; 363 GiB available.",
+      "remote_status": "After native15c14ed race audit, all owned PG labs stopped and retained. Checkout advanced clean to1f61b31 for new native builder image; root orchestrates the isolated image build.",
       "initial_lab": {
         "root": "/home/tux/bigbrotr-implementation-20260917/runs/control-migrations/runtime",
         "containers": [
@@ -482,22 +482,15 @@
         "limits": "2CPU/6GiB memory+swap/512PIDs, read-only exact source, fresh owned output, no published ports",
         "root": "/home/tux/bigbrotr-implementation-20260917/runs/control-migrations/build-ffb94a8"
       },
-      "build": {
-        "source": "9cd823a72afc96f6c41e3987f5026c2a51a1e2cc",
-        "artifact_sha256": "4b36ae7651fa5cbf36bd369218cfc8263e4de1a693d5e56fec3c6c778089ffa7",
-        "container": "bigbrotr-implementation-pg-build-9cd823a",
-        "status": "Completed exit 0/OOM false; downloaded executable and all 386 source entries independently verified",
-        "limits": "2 CPU/6 GiB memory+swap/512 PIDs; clean read-only source, fresh output; no explicit compiler-job assertion",
-        "root": "/home/tux/bigbrotr-implementation-20260917/runs/control-migrations/build-9cd823a"
-      },
-      "current_lab": {
+      "ingest_evidence": "docs/implementation/evidence/p02-ingest-control-engine-20260918.json",
+      "previous_ingest_lab": {
         "root": "/home/tux/bigbrotr-implementation-20260917/runs/control-migrations/runtime-v4",
         "owner": "c8f3f49271adbe75711e2aed44860927",
         "postgres": "bigbrotr-implementation-pg-20260917-ingest",
         "client": "bigbrotr-implementation-pg-20260917-ingest-client",
         "network": "bigbrotr-implementation-pg-20260917-ingest",
         "published_ports": [],
-        "status": "Running after 14 actual CLI/harness and 74 SQL cases PASS; three dedicated ingest databases retained, no unfinished write observed",
+        "status": "Stopped and retained before runtime-v5; PGexit0/clientexit143, no OOM; completed 14 harness and 74 SQL cases retained",
         "limits": "PG 2 CPU/1536 MiB memory+swap; client 2 CPU/4 GiB; 256 PIDs each; internal network, no host ports; new owned bind data and private secrets",
         "database_names": [
           "bb_first_ingest_fresh",
@@ -505,7 +498,36 @@
           "bb_first_ingest_unregistered"
         ]
       },
-      "ingest_evidence": "docs/implementation/evidence/p02-ingest-control-engine-20260918.json"
+      "previous_ingest_build": {
+        "source": "9cd823a72afc96f6c41e3987f5026c2a51a1e2cc",
+        "artifact_sha256": "4b36ae7651fa5cbf36bd369218cfc8263e4de1a693d5e56fec3c6c778089ffa7",
+        "container": "bigbrotr-implementation-pg-build-9cd823a",
+        "status": "Completed exit 0/OOM false; downloaded executable and all 386 source entries independently verified",
+        "limits": "2 CPU/6 GiB memory+swap/512 PIDs; clean read-only source, fresh output; no explicit compiler-job assertion",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/control-migrations/build-9cd823a"
+      },
+      "build": {
+        "source": "15c14edc7135fbe96e3e7e116f5627e03ea2cee1",
+        "artifact_sha256": "a3345bf73be9bbfdb554cb6b9e46b6c41ed7335ccc0f4971cfef1e46e299b3fa",
+        "container": "bigbrotr-implementation-pg-build-15c14ed",
+        "status": "Completed exit0/OOMfalse; 389 source files/archive and downloaded binary independently verified",
+        "limits": "2CPU/6GiB memory+swap/512PIDs; clean read-only source and fresh output, no compiler-job assertion",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/control-migrations/build-15c14ed"
+      },
+      "current_lab": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/control-migrations/runtime-v5",
+        "owner": "a6ca965c4d0924ea44748fde1f73a5f0",
+        "postgres": "bigbrotr-implementation-pg-20260917-ingestraces",
+        "client": "bigbrotr-implementation-pg-20260917-ingestraces-client",
+        "network": "bigbrotr-implementation-pg-20260917-ingestraces",
+        "published_ports": [],
+        "status": "Stopped-retained after eight actual 0002 races, final inspection and backend cleanup PASS; PGexit0/clientexit143/OOMfalse",
+        "limits": "PG2CPU/1536MiB memory+swap, client2CPU/4GiB,256PIDs each; internal network with no host ports",
+        "database_names": [
+          "bb_first_races_ingest_concurrency"
+        ]
+      },
+      "ingest_races_evidence": "docs/implementation/evidence/p02-ingest-control-races-20260918.json"
     },
     "rocks_product_boundary": {
       "root": ".research/implementation/rocks-product-design",
@@ -528,6 +550,21 @@
       "root": ".research/implementation/postgres/ingest-runner-review",
       "review_sha256": "a29f9516f24e18a464cd897ca02375cc0592f65779c18e5c3c8a206f51847bc5",
       "scope": "Independent AI full runner/catalog review, two oracle fixes verified; no remote writes by reviewer"
+    },
+    "ingest_races_review": {
+      "root": ".research/implementation/postgres/ingest-races-review",
+      "review_sha256": "a906b9384e16f51675b62eeb182bdd9f19d711d2d65c4dcad9c26eb3f2c20bb5",
+      "scope": "Independent AI full schedule/session review, two findings fixed; 18 local oracle probes, root supplies separate native evidence"
+    },
+    "native_product_builder": {
+      "source": "1f61b31d20bc03f28f25c26dcccf0f64ec1a4906",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/native-builder-1f61b31",
+      "tag": "bigbrotr-implementation-native-builder:1f61b31",
+      "status": "Completed successfully; build-created intermediate containers removed by Docker; fresh product Rocks build not yet run",
+      "limits": "Legacy Docker builder 2CPU/6GiB memory+swap; only pinned Rust base and native package prerequisites, no host ports",
+      "local_log": ".research/implementation/rocks-product-design/native-builder-linux.log",
+      "image": "sha256:8d906f267439748924d6a9de9cab47855279cc196a7397d9cb7a690c77fddfe3",
+      "log_sha256": "9fbc26a1ea0ad4d1b207d3fe9ab1d115d913a34d9475c79f8c944f397a42185d"
     }
   }
 }
