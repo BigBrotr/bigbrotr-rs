@@ -8,6 +8,13 @@ context and deliberate changes. This table is a coverage argument, not evidence
 that future code exists. Follow the task for numbered actions, paths, faults,
 configuration, documentation and independent practical oracle.
 
+Coverage is different from specification readiness. The
+[remaining-contract register](../planning/specification-readiness.md) maps
+S01/S02 to P00-T06, S03/S04 to P00-T07, S05/S06/S08 to P00-T08 and S07/empirical
+decision records to P00-T09; P00-T10 reconciles the resulting baseline. Those
+tasks are open. A row below proves that work has an owner, not that its last
+semantic ambiguity or practical evidence has already been resolved.
+
 ## Useful data and its complete journey
 
 | Selected information | Producer / authority | Storage and read/export work | Discriminating practical evidence |

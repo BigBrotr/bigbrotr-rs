@@ -101,3 +101,11 @@ both layout winners; no unconditional document-normalization claim remains.
 Temporal views and named rank/assertion definitions now have concrete oracles.
 Implementation review is required by impact, without arbitrary clean-round quotas.
 Selections are autonomous design judgments, not new owner technology mandates.
+
+Q20: The owner asks what still needs specification before implementation and
+accepts practical decisions only where doing so makes sense. The
+[readiness assessment](specification-readiness.md) separates genuine semantic
+gaps, contract consolidation, empirical design choices and private coding detail.
+S01–S08 are explicit remaining paper work under P00-T06–T10; writing those tasks
+does not close them. No new permission question or product implementation follows
+from this assessment. Earlier completed reviews retain their historical scope.

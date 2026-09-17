@@ -81,3 +81,10 @@ Retained fields must earn their scientific value: actual relay measurements and
 first observations are useful; internal duplicate counts, retries and queues are
 bounded operations. Record corrections and practical evidence, including results
 that overturn an efficiency assumption. Do not begin product implementation.
+
+The owner further accepts leaving decisions to practical evaluation only where
+that can actually improve the choice. Close semantic, authority, persistent-format
+and client-behavior ambiguities on paper. Bound empirical alternatives by an
+explicit experiment and decision point; leave private implementation details to
+code review instead of manufacturing false precision. The current remaining
+paper work is recorded in [specification readiness](specification-readiness.md).

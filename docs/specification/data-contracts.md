@@ -124,6 +124,12 @@ first acquired time and first local observation; export full or explicitly
 projected rows. **Not supported by these facts:** last remote availability,
 number of deliveries, true origin time or first appearance on the entire network.
 
+**Known paper gap:** [S01](../planning/specification-readiness.md#s01--one-event-encountered-through-several-visibility-scopes)
+must close same-event arrival across private/public scopes, separately visible
+metadata and replay before implementing that transition. Neither this one-body
+rule nor provenance-off implies that the first envelope's visibility can be
+silently overwritten or that all later source scopes have identical eligibility.
+
 ## A02 — First local provenance and corrections
 
 Enabled provenance has logical key

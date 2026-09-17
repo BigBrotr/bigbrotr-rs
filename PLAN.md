@@ -17,6 +17,12 @@ work breakdown. Start with its [field contracts](docs/specification/data-contrac
 [coverage ledger](docs/implementation/coverage.md). The phase table below is only
 an overview; it is not a substitute for task prerequisites and practical evidence.
 
+The current [specification-readiness assessment](docs/planning/specification-readiness.md)
+lists remaining paper closure in P00-T06–T10. It separates semantic/format gaps
+from justified empirical decisions and private implementation details. The
+selected architecture below is not a claim that those remaining contracts are
+already closed or that product implementation has begun.
+
 ## Read the design in this order
 
 New to the project: first read [Start here](docs/start-here.md), the
@@ -171,9 +177,15 @@ The latest [whole-repository review](docs/reviews/11-whole-repository-audit.md)
 fully reread its 70-file Markdown baseline, then corrected measurement subjects,
 availability confirmation, temporal reads, concrete assertion/ranking definitions,
 state/migration ownership and usable management/download routes. The current detailed plan
-has 116 tasks/716 steps, including P04-T13 availability observations and P04-T14
+has 121 tasks/746 steps, including P04-T13 availability observations and P04-T14
 issuer metadata. Research import no longer invents a second analytical dataset
 product or foreign administrative source-control transfer. See
 [decision confidence and alternatives](docs/planning/decision-confidence.md)
 for the selected stack's total costs and remaining empirical qualifications.
 Complete documentation review is not validation of universal optimality.
+
+The later [focused readiness review](docs/reviews/12-specification-readiness.md)
+adds five planning closure tasks. Most existing architecture decisions remain
+selected; same-event visibility transitions, portable encoding and cross-contract
+composition need further paper work. Empirical choices have explicit decision
+points rather than an unbounded instruction to benchmark everything later.

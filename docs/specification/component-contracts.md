@@ -6,6 +6,11 @@ must agree. Change a shared contract here and update its producer, consumers,
 fixtures and public documentation together. A task cannot invent a second
 meaning for an existing receipt, event, policy or completion state.
 
+The [readiness register](../planning/specification-readiness.md) identifies
+remaining paper closure. In particular, exact persistent encodings and cross-scope
+admission effects must be settled through P00-T06 before adapters assign them
+implicit meanings; the signature notation below is not a complete wire schema.
+
 ## Dependency map
 
 ```mermaid

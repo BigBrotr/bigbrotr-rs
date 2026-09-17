@@ -98,3 +98,10 @@ There is no remaining permission request hidden in this register. Product
 implementation still waits for the owner's separate start instruction. The
 current honest conclusion is a reviewed, improved design with explicit empirical
 obligations, not a proven global optimum or a finished production system.
+
+The later [specification-readiness assessment](specification-readiness.md) also
+identifies remaining paper closure, including same-event visibility transitions
+and exact persistent digest/identity encoding. Those are not empirical tuning
+choices. P00-T06–T10 must close their rules and cross-contract examples before
+declaring the paper baseline complete. This register's technology selections do
+not imply that every selected interface is already specified field by field.

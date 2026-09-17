@@ -1,0 +1,38 @@
+{
+  "review_date": "2026-09-17",
+  "baseline_commit": "78ea43b43523a90c9d9d215ef80b98456ba91242",
+  "scope": "Mechanical planning-artifact validation; not semantic closure, product tests or benchmarks",
+  "artifact_verifier": {
+    "scope": "local links, fences, JSON examples/evidence, Python syntax and selected evidence hashes; no semantic or product verification",
+    "markdown_files": 84,
+    "json_files": 47,
+    "json_examples": 4,
+    "errors": []
+  },
+  "additional_checks": {
+    "task_ids": 121,
+    "numbered_steps": 746,
+    "future_product_steps_checked": 0,
+    "new_closure_steps_checked": 0,
+    "changed_markdown_anchor_links_checked": 5,
+    "changed_markdown_concrete_task_references_checked": 240,
+    "git_diff_check_exit": 0
+  },
+  "changed_markdown_sha256": {
+    "PLAN.md": "cd69849498918b5ac9be4c8b3f38cbcdc983d35c56faf5533f93baa5db61f617",
+    "README.md": "8d44c17d4fc492cfdadb48dfc80b2124ab98523468331e498640cc027125e573",
+    "docs/implementation/00-specification.md": "dd6d991f08e5ed311aeb3fcb7abd0257a5c2396ba21620e4a7b3bca592ce4b72",
+    "docs/implementation/README.md": "28b68123d1cd6d8dd73be5dd35c12aacd6d607d7d36ccc34df93e1e6c45fdd64",
+    "docs/implementation/coverage.md": "0f76061a56a75050c3320059c67520b141aa11079c74e7dfaba2c891bdebcd2f",
+    "docs/planning/decision-confidence.md": "b1bf882ab49d472af1a79f9a078392c77b6216cb886cc24ccdbfca82d77dccc5",
+    "docs/planning/mandate.md": "8817537de1401825ca8dbf37bfef0587649462557f62ab8f37c67b7e97615efb",
+    "docs/planning/process.md": "549d7bdaefc510d694bb37054cdcf9be7167a9f49182cbe09d29171955cd3671",
+    "docs/planning/questions.md": "9a13a21603ecedea2a215cc52f21b94ad86f191dac7dbe0d1a96752bf197dc8e",
+    "docs/planning/specification-readiness.md": "c02bedad523015ae9b8be1ec226be17c42f238f941bfb06fa59c2705929f4193",
+    "docs/reviews/12-specification-readiness.md": "f6cfc2733fa35a6b1dc0aa82118823dfca61088429f2ff1b660ef6e7cff6f7bd",
+    "docs/specification/component-contracts.md": "2a38e897d4d419c9f32307e37387ac3b28d26851faf16bb4da0b006ac87841f7",
+    "docs/specification/data-contracts.md": "4b164eb1a0b71474712cb500ed38c45022a8d8dcfce16004627e4a2ce3c8f9de"
+  },
+  "errors": [],
+  "validation_note": "The first task-count check recognized only **Step N:** and omitted the existing **N. description** style in phases 03/04. It reported 578 rather than 746. The corrected check recognizes both numbered forms; task documents were not changed to make the count pass."
+}

@@ -93,3 +93,14 @@ The controlled document-layout experiment preserves an initial ordering confound
 and its corrected comparison. No product implementation or capacity result is
 claimed; old review findings remain dated evidence with current dispositions in
 the coordinator report.
+
+## Specification readiness before implementation
+
+[Review 12](../reviews/12-specification-readiness.md) is a focused follow-up to
+the owner's request for the remaining paper work. It identifies unresolved
+same-event visibility transitions, exact persistent encoding and incomplete
+cross-contract composition; it distinguishes them from physical selections
+that need practical evidence. The [readiness register](specification-readiness.md)
+and P00-T06–T10 state concrete closure outputs. This pass assesses and plans that
+closure; it does not claim to have completed the new tasks, reread every document
+again, or implemented/tested the product.

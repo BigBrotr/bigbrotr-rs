@@ -36,9 +36,15 @@ updates the contract, affected tasks, fixtures and user-facing explanation.
 The [coverage ledger](coverage.md) maps every retained family, responsibility,
 public/private consumer and deliberate exclusion to actual task IDs.
 
-The current breakdown contains 116 tasks and 716 numbered steps: five planning
+The current breakdown contains 121 tasks and 746 numbered steps: ten planning
 tasks and 111 future implementation tasks. These counts identify scope and are
 not quality or test-coverage targets.
+
+The [readiness register](../planning/specification-readiness.md) identifies
+remaining paper closure in P00-T06–T10. P00-T01–T05 remain records of earlier
+completed work; they are not evidence that the later findings are already fixed.
+Close meaning/authority/persistent-interface decisions on paper. Resolve physical
+choices with their defined experiments and private coding details during review.
 
 ## Phase files
 
@@ -146,3 +152,5 @@ in [the revision dossier](../reviews/09-expanded-plan-rounds.md). Completion of
 that planning work means the selected product has an explicit build/validation
 path. It does not mean the future implementation or every performance assumption
 has already passed. Product work begins only when the owner starts that stage.
+The subsequent readiness assessment also identifies remaining paper ambiguities;
+the existence of implementation tasks for them is not their specification closure.

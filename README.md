@@ -34,3 +34,8 @@ records full coverage of its 70-file Markdown baseline, concrete corrections,
 the table/interface/naming handoff and a controlled document-layout experiment.
 [Decision confidence](docs/planning/decision-confidence.md)
 states which choices are justified and which target-scale claims remain untested.
+
+The subsequent [specification-readiness assessment](docs/planning/specification-readiness.md)
+identifies remaining paper contracts and justified practical decisions. Its
+[closure tasks](docs/implementation/00-specification.md#p00-t06--close-event-scope-identity-and-encoding-contracts)
+remain open; completed earlier reviews do not mean those new findings are resolved.
