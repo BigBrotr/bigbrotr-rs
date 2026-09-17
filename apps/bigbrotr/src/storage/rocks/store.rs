@@ -1,0 +1,337 @@
+//! The private native ingest directory owner; opening is not an authority grant.
+use super::{
+    keys::KeyDomain,
+    manifest::{IngestManifest, ManifestError},
+    options::{
+        INGEST_COLUMN_FAMILIES, RocksNativeLimits, RocksNativeProfile, RocksNativeResources,
+        RocksNativeUsage,
+    },
+};
+use crate::runtime::OwnedPermit;
+use rocksdb::{DB, ReadOptions, WriteBatch, WriteOptions};
+use rustix::fs::{Mode, OFlags};
+use std::{
+    collections::BTreeSet,
+    fmt, fs,
+    io::{self, Read},
+    path::{Path, PathBuf},
+    sync::Mutex,
+};
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum StoreError {
+    InsufficientNativeReservation,
+    InvalidPath,
+    PathExists,
+    MissingDatabase,
+    InvalidCurrent,
+    Filesystem,
+    ParentDirectorySync,
+    AlreadyOpen,
+    ReservationUnavailable,
+    EngineOpen,
+    ColumnFamiliesMismatch,
+    MissingManifest,
+    InvalidManifest(ManifestError),
+    ManifestMismatch,
+    ManifestRead,
+    /// The synchronized write may have committed. Preserve and resolve the directory.
+    ManifestCommitUnknown,
+}
+impl fmt::Display for StoreError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str(match self {
+            Self::InsufficientNativeReservation => {
+                "store requires an adequate owned native reservation"
+            }
+            Self::InvalidPath => {
+                "store requires an absolute directory path with an existing parent"
+            }
+            Self::PathExists => "initialization target already exists; inspect the existing state",
+            Self::MissingDatabase => {
+                "initialized store or CURRENT is absent; reopen cannot create it"
+            }
+            Self::InvalidCurrent => "CURRENT must be a bounded regular manifest pointer",
+            Self::Filesystem => "store filesystem operation failed",
+            Self::ParentDirectorySync => {
+                "initialization parent could not be synchronized; preserve the partial directory"
+            }
+            Self::AlreadyOpen => "store path is already reserved by this process",
+            Self::ReservationUnavailable => "store reservation state is unavailable",
+            Self::EngineOpen => "native store inspection or exclusive open failed",
+            Self::ColumnFamiliesMismatch => "store column families do not match the ingest layout",
+            Self::MissingManifest => "ingest manifest is absent; existing state must be preserved",
+            Self::InvalidManifest(_) => "ingest manifest is malformed or incompatible",
+            Self::ManifestMismatch => {
+                "ingest manifest does not match the complete expected identity"
+            }
+            Self::ManifestRead => "ingest manifest could not be read",
+            Self::ManifestCommitUnknown => {
+                "manifest commit outcome is unknown; preserve and resolve the store"
+            }
+        })
+    }
+}
+impl std::error::Error for StoreError {}
+
+/// A native directory owner, without admission or ownership-grant operations.
+///
+/// Open/close are synchronous. The caller must retain and join its bounded worker;
+/// an async timeout cannot cancel FFI or authorize a replacement writer.
+pub struct IngestStore {
+    // Field order is the lifetime invariant, including every error after open:
+    // CFs/DB and native jobs close before resources, permit and path reservation.
+    db: DB,
+    resources: RocksNativeResources,
+    _reservation: StoreReservation,
+    manifest: IngestManifest,
+}
+impl IngestStore {
+    /// Creates only an absent target under an existing parent, then synchronizes
+    /// the initial manifest. Failure never removes or silently reinitializes data.
+    pub fn initialize(
+        path: &Path,
+        manifest: IngestManifest,
+        limits: RocksNativeLimits,
+        permit: OwnedPermit,
+    ) -> Result<Self, StoreError> {
+        require_permit(&permit, limits)?;
+        let path = fresh_path(path)?;
+        let reservation = StoreReservation {
+            _permit: permit,
+            path: PathReservation::acquire(path)?,
+        };
+        let mut builder = fs::DirBuilder::new();
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::DirBuilderExt;
+            builder.mode(0o700);
+        }
+        builder.create(&reservation.path.0).map_err(|error| {
+            if error.kind() == io::ErrorKind::AlreadyExists {
+                StoreError::PathExists
+            } else {
+                StoreError::Filesystem
+            }
+        })?;
+        // RocksDB synchronizes entries inside its DB/WAL directories, but did
+        // not create this directory and cannot persist its entry in the parent.
+        // Keep both reservations until this syscall returns, even on failure.
+        let parent = rustix::fs::open(
+            reservation.path.0.parent().ok_or(StoreError::InvalidPath)?,
+            OFlags::RDONLY | OFlags::DIRECTORY | OFlags::CLOEXEC | OFlags::NOFOLLOW,
+            Mode::empty(),
+        )
+        .map_err(|_| StoreError::ParentDirectorySync)?;
+        rustix::fs::fsync(&parent).map_err(|_| StoreError::ParentDirectorySync)?;
+        drop(parent);
+        let store = Self::open_native(reservation, manifest, limits, true)?;
+        let mut batch = WriteBatch::default();
+        batch.put(KeyDomain::Manifest.prefix(), manifest.encode().as_bytes());
+        let mut write = WriteOptions::default();
+        write.set_sync(true);
+        write.disable_wal(false);
+        write.set_ignore_missing_column_families(false);
+        store
+            .db
+            .write_opt(batch, &write)
+            .map_err(|_| StoreError::ManifestCommitUnknown)?;
+        Ok(store)
+    }
+
+    /// Opens exactly the existing ingest layout and manifest. Compatibility
+    /// checks do not establish current control authority or authorize takeover.
+    pub fn reopen(
+        path: &Path,
+        expected: IngestManifest,
+        limits: RocksNativeLimits,
+        permit: OwnedPermit,
+    ) -> Result<Self, StoreError> {
+        require_permit(&permit, limits)?;
+        if !path.is_absolute() {
+            return Err(StoreError::InvalidPath);
+        }
+        let path = fs::canonicalize(path).map_err(|error| {
+            if error.kind() == io::ErrorKind::NotFound {
+                StoreError::MissingDatabase
+            } else {
+                StoreError::Filesystem
+            }
+        })?;
+        if !path.is_dir() {
+            return Err(StoreError::InvalidPath);
+        }
+        let reservation = StoreReservation {
+            _permit: permit,
+            path: PathReservation::acquire(path)?,
+        };
+        check_current(&reservation.path.0)?;
+        let store = Self::open_native(reservation, expected, limits, false)?;
+        // Keep the native pin local: the codec borrows at most the fixed format,
+        // and oversized native values need no additional Rust-owned value copy.
+        let found = {
+            let mut read = ReadOptions::default();
+            read.set_verify_checksums(true);
+            read.fill_cache(false);
+            let pinned = store
+                .db
+                .get_pinned_opt(KeyDomain::Manifest.prefix(), &read)
+                .map_err(|_| StoreError::ManifestRead)?
+                .ok_or(StoreError::MissingManifest)?;
+            IngestManifest::decode(&pinned).map_err(StoreError::InvalidManifest)?
+        };
+        if found != expected {
+            return Err(StoreError::ManifestMismatch);
+        }
+        Ok(store)
+    }
+
+    fn open_native(
+        reservation: StoreReservation,
+        manifest: IngestManifest,
+        limits: RocksNativeLimits,
+        initialize: bool,
+    ) -> Result<Self, StoreError> {
+        // On a failed native open, this later local drops its native allocations
+        // before the reservation argument can release the budget/path.
+        let mut profile = RocksNativeProfile::build(limits);
+        if initialize {
+            profile.db_options.create_if_missing(true);
+            profile.db_options.create_missing_column_families(true);
+            profile.db_options.set_error_if_exists(true);
+        } else {
+            let mut names = DB::list_cf(&profile.db_options, &reservation.path.0)
+                .map_err(|_| StoreError::EngineOpen)?;
+            if names.len() != INGEST_COLUMN_FAMILIES.len() {
+                return Err(StoreError::ColumnFamiliesMismatch);
+            }
+            names.sort_unstable();
+            if !names.iter().map(String::as_str).eq(INGEST_COLUMN_FAMILIES) {
+                return Err(StoreError::ColumnFamiliesMismatch);
+            }
+        }
+        let db = DB::open_cf_descriptors(
+            &profile.db_options,
+            &reservation.path.0,
+            profile.column_families,
+        )
+        .map_err(|_| StoreError::EngineOpen)?;
+        Ok(Self {
+            db,
+            resources: profile.resources,
+            _reservation: reservation,
+            manifest,
+        })
+    }
+
+    pub const fn manifest(&self) -> &IngestManifest {
+        &self.manifest
+    }
+    pub const fn native_limits(&self) -> RocksNativeLimits {
+        self.resources.limits()
+    }
+    pub fn native_usage(&self) -> RocksNativeUsage {
+        self.resources.usage()
+    }
+}
+
+fn require_permit(permit: &OwnedPermit, limits: RocksNativeLimits) -> Result<(), StoreError> {
+    if permit.request().units().native_bytes() < limits.native_allowance_bytes() {
+        return Err(StoreError::InsufficientNativeReservation);
+    }
+    Ok(())
+}
+
+fn fresh_path(path: &Path) -> Result<PathBuf, StoreError> {
+    if !path.is_absolute() {
+        return Err(StoreError::InvalidPath);
+    }
+    let leaf = path.file_name().ok_or(StoreError::InvalidPath)?;
+    let parent = fs::canonicalize(path.parent().ok_or(StoreError::InvalidPath)?)
+        .map_err(|_| StoreError::InvalidPath)?;
+    if !parent.is_dir() {
+        return Err(StoreError::InvalidPath);
+    }
+    let path = parent.join(leaf);
+    match fs::symlink_metadata(&path) {
+        Ok(_) => Err(StoreError::PathExists),
+        Err(error) if error.kind() == io::ErrorKind::NotFound => Ok(path),
+        Err(_) => Err(StoreError::Filesystem),
+    }
+}
+
+fn check_current(path: &Path) -> Result<(), StoreError> {
+    let path = path.join("CURRENT");
+    // Do not follow a replaced symlink or block opening a FIFO. Validate the
+    // opened descriptor itself; stable operator-controlled roots are required.
+    let descriptor = rustix::fs::open(
+        &path,
+        OFlags::RDONLY | OFlags::CLOEXEC | OFlags::NOFOLLOW | OFlags::NONBLOCK,
+        Mode::empty(),
+    )
+    .map_err(|error| {
+        if error == rustix::io::Errno::NOENT {
+            StoreError::MissingDatabase
+        } else {
+            StoreError::InvalidCurrent
+        }
+    })?;
+    let mut file = fs::File::from(descriptor);
+    let metadata = file.metadata().map_err(|_| StoreError::Filesystem)?;
+    if !metadata.is_file() || !(1..=128).contains(&metadata.len()) {
+        return Err(StoreError::InvalidCurrent);
+    }
+    let mut bytes = [0; 129];
+    let len = metadata.len() as usize; // Proven <= 128 above, on every target.
+    file.read_exact(&mut bytes[..len])
+        .map_err(|_| StoreError::InvalidCurrent)?;
+    if file
+        .read(&mut bytes[len..len + 1])
+        .map_err(|_| StoreError::InvalidCurrent)?
+        != 0
+    {
+        return Err(StoreError::InvalidCurrent);
+    }
+    let digits = bytes[..len]
+        .strip_prefix(b"MANIFEST-")
+        .and_then(|s| s.strip_suffix(b"\n"))
+        .ok_or(StoreError::InvalidCurrent)?;
+    if digits.is_empty() || digits.len() > 20 || !digits.iter().all(u8::is_ascii_digit) {
+        return Err(StoreError::InvalidCurrent);
+    }
+    digits
+        .iter()
+        .try_fold(0u64, |number, digit| {
+            number.checked_mul(10)?.checked_add(u64::from(digit - b'0'))
+        })
+        .ok_or(StoreError::InvalidCurrent)?;
+    Ok(())
+}
+
+struct StoreReservation {
+    _permit: OwnedPermit,
+    path: PathReservation,
+}
+static OPEN_PATHS: Mutex<BTreeSet<PathBuf>> = Mutex::new(BTreeSet::new());
+struct PathReservation(PathBuf);
+impl PathReservation {
+    fn acquire(path: PathBuf) -> Result<Self, StoreError> {
+        let mut paths = OPEN_PATHS
+            .lock()
+            .map_err(|_| StoreError::ReservationUnavailable)?;
+        if !paths.insert(path.clone()) {
+            return Err(StoreError::AlreadyOpen);
+        }
+        Ok(Self(path))
+    }
+}
+impl Drop for PathReservation {
+    fn drop(&mut self) {
+        // Remove our own path even during unwinding, but never clear poison:
+        // future acquisition remains closed after a reservation invariant panic.
+        OPEN_PATHS
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .remove(&self.0);
+    }
+}

@@ -191,7 +191,8 @@ impl ResourceRequest {
         })
     }
 
-    fn units(self) -> ResourceLimits {
+    /// Returns the resource units owned by this request.
+    pub const fn units(self) -> ResourceLimits {
         self.units
     }
 
