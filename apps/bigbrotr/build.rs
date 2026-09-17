@@ -35,6 +35,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         "Cargo.lock",
         "rust-toolchain.toml",
         "contracts/release/dependencies.json",
+        "contracts/protocol/versions.json",
     ] {
         let path = root.join(name);
         println!("cargo::rerun-if-changed={}", path.display());
@@ -45,6 +46,8 @@ fn main() -> Result<(), Box<dyn Error>> {
         hashes.insert(name.into(), hash.into());
     }
     println!("cargo::rerun-if-changed=build.rs");
+    let versions: serde_json::Value =
+        serde_json::from_slice(&fs::read(root.join("contracts/protocol/versions.json"))?)?;
     let compiler = Command::new(env::var_os("RUSTC").ok_or("missing compiler")?)
         .arg("-vV")
         .output()?;
@@ -71,9 +74,9 @@ fn main() -> Result<(), Box<dyn Error>> {
         "optimization": env::var("OPT_LEVEL")?,
         "debug_info": env::var("DEBUG")?,
         "inputs_sha256": hashes,
-        "capabilities": [],
-        "schemas": {"build_info": "bigbrotr-build/1"},
-        "protocols": {}
+        "capabilities": versions["capabilities"],
+        "schemas": versions["schemas"],
+        "protocols": versions["protocols"]
     });
     let output = PathBuf::from(env::var_os("OUT_DIR").ok_or("missing build output path")?);
     fs::write(

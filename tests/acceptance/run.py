@@ -22,13 +22,14 @@ def sha256(path):
     return digest.hexdigest()
 
 
-def run_process(command, working):
+def run_process(command, working, payload=None):
     # The tracer and its child share an owned process group. Losing the tracer's
     # reply must not leave a candidate or one of its descendants running.
     process = subprocess.Popen(command, cwd=working, env={"LANG": "C", "LC_ALL": "C"},
+                               stdin=subprocess.PIPE if payload is not None else subprocess.DEVNULL,
                                stdout=subprocess.PIPE, stderr=subprocess.PIPE, start_new_session=True)
     try:
-        stdout, stderr = process.communicate(timeout=10)
+        stdout, stderr = process.communicate(input=payload, timeout=10)
         return subprocess.CompletedProcess(command, process.returncode, stdout, stderr)
     finally:
         try:
@@ -86,9 +87,10 @@ def foundation(args, checks, inputs):
                                   ("Darwin", "arm64"): "aarch64-apple-darwin", ("Darwin", "x86_64"): "x86_64-apple-darwin"}.get((platform.system(), platform.machine()))
                         valid = valid and info["version"] == version and info["rustc"].startswith("rustc " + compiler + " ")
                         valid = valid and target is not None and info["target"] == target
-                        valid = valid and info["capabilities"] == [] and info["protocols"] == {} and info["schemas"] == {"build_info": "bigbrotr-build/1"}
+                        versions = json.loads((args.source_root / "contracts/protocol/versions.json").read_text())
+                        valid = valid and all(info[name] == versions[name] for name in ("capabilities", "protocols", "schemas"))
                         expected = {}
-                        for name in ("Cargo.lock", "rust-toolchain.toml", "contracts/release/dependencies.json"):
+                        for name in ("Cargo.lock", "rust-toolchain.toml", "contracts/release/dependencies.json", "contracts/protocol/versions.json"):
                             expected[name] = sha256(args.source_root / name)
                         inputs["expected_inputs_sha256"] = expected
                         valid = valid and info["inputs_sha256"] == expected
@@ -133,9 +135,46 @@ def foundation(args, checks, inputs):
                    "detail": "equality against supplied build result; not release authenticity"})
 
 
+def signed_events(args, checks, inputs):
+    # Literal independently signed fixtures are decoded by Python's integer-
+    # preserving JSON parser, never by the candidate used as the oracle.
+    historical = args.source_root / "experiments/identity-contract/signed-fixture.json"
+    extremes = args.source_root / "tests/fixtures/protocol/signed-extremes.json"
+    inputs["event_fixtures_sha256"] = {str(path.relative_to(args.source_root)): sha256(path)
+                                      for path in (historical, extremes)}
+    corpus = json.loads(historical.read_text())["events"]
+    extra = json.loads(extremes.read_text())
+    corpus.update({name: row["event"] for name, row in extra["events"].items()})
+    checks.append({"name": "nonempty_frozen_event_corpus", "result": "PASS" if len(corpus) == 17 else "FAIL"})
+    with tempfile.TemporaryDirectory(prefix="bigbrotr-events-") as temporary:
+        directory = Path(temporary)
+        for name, event in corpus.items():
+            result = run_process([str(args.binary.resolve()), "event", "verify"], directory,
+                                 json.dumps(event, ensure_ascii=False, separators=(",", ":")).encode())
+            try:
+                equal = json.loads(result.stdout) == event
+            except (ValueError, UnicodeError):
+                equal = False
+            checks.append({"name": "signed_event " + name, "result": "PASS" if result.returncode == 0 and not result.stderr and equal else "FAIL"})
+        original = corpus["E_public"]
+        changed = dict(original, content=original["content"] + "!")
+        forged = dict(original, sig="00" * 64)
+        empty_tag = extra["invalid_structure"]["empty-tag"]
+        ordinary = json.dumps(original, separators=(",", ":")).encode()
+        negatives = [("changed_payload", json.dumps(changed).encode(), 3, b"event-id-mismatch"),
+                     ("forged_signature", json.dumps(forged).encode(), 3, b"invalid-signature"),
+                     ("signed_empty_tag", json.dumps(empty_tag).encode(), 3, b"empty-tag"),
+                     ("invalid_unknown_utf8", b'{"unknown":"\xff",' + ordinary[1:], 3, b"invalid-json"),
+                     ("excess_wire", b" " * (2 * 1024 * 1024 + 1), 4, b"wire-limit")]
+        for name, payload, exit_code, reason in negatives:
+            result = run_process([str(args.binary.resolve()), "event", "verify"], directory, payload)
+            checks.append({"name": name, "result": "PASS" if result.returncode == exit_code and not result.stdout and reason in result.stderr else "FAIL"})
+        checks.append({"name": "event_command_no_created_files", "result": "PASS" if not list(directory.iterdir()) else "FAIL"})
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("case", choices=["p01-t01"])
+    parser.add_argument("case", choices=["p01-t01", "p01-event-cli"])
     parser.add_argument("--binary", required=True, type=Path)
     parser.add_argument("--source-root", required=True, type=Path)
     parser.add_argument("--source-manifest", type=Path)
@@ -147,6 +186,8 @@ def main():
     checks, inputs = [], {}
     try:
         foundation(args, checks, inputs)
+        if args.case == "p01-event-cli" and "binary_sha256" in inputs:
+            signed_events(args, checks, inputs)
     except (OSError, subprocess.SubprocessError, KeyboardInterrupt) as error:
         checks.append({"name": "execution", "result": "FAIL", "detail": type(error).__name__})
     result = "FAIL" if any(check["result"] == "FAIL" for check in checks) else (
@@ -158,7 +199,7 @@ def main():
                          "failed": sum(c["result"] == "FAIL" for c in checks), "skipped": 0,
                          "not_run": sum(c["result"] == "NOT_RUN" for c in checks)},
               "cleanup": "Owned process groups terminated/joined; only the runner-owned temporary working directory removed; evidence retained.",
-              "limits": ["No storage, protocol, release bundle or product qualification."]}
+              "limits": ["No storage, WebSocket/protocol-suite, runtime grant, release bundle or complete product qualification."]}
     (args.evidence / "result.json").write_text(json.dumps(report, indent=2) + "\n")
     print(result + ": " + str(args.evidence / "result.json"))
     return {"PASS": 0, "FAIL": 1, "NOT_RUN": 2}[result]

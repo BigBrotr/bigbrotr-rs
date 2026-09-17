@@ -9,7 +9,9 @@ repository.workspace = true
 publish = false
 
 [dependencies]
+bigbrotr-protocol.workspace = true
 clap.workspace = true
+serde_json.workspace = true
 
 [build-dependencies]
 serde_json.workspace = true

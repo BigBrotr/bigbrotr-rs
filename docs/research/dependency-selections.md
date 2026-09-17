@@ -32,6 +32,32 @@ targeted at the adapter boundary, not an audit of every dependency. SQLx's
 describes both online schema checking and checked-in offline metadata; SQLx can
 also operate without those macros. Its rejection here does not claim otherwise.
 
+## Implemented event-verification dependency slice
+
+P01-T02/T03 uses `secp256k1` 0.33.1 with only `std` and locked
+`secp256k1-sys` 0.14.1, plus Serde 1.0.229/serde_json 1.0.151 and SHA-2 0.11.0.
+The narrow API verifies the actual signature against the recomputed 32-byte digest.
+The model and parser are BigBrotr-owned: source inspection of `nostr` 0.45.5 found
+its EventId/PublicKey deserializers also accept NIP-19/NIP-21 spellings, and it
+would add a separate secp256k1 0.30 line. Its timestamp/kind types themselves
+retain u64/u16; no narrowing failure is alleged. Its full verifier recomputes IDs,
+but signature-only verification and higher-level cache behavior cannot define
+BigBrotr's admission boundary. This is a focused departure from the earlier
+`nostr`-types candidate, preserving the selected protocol/data semantics.
+
+The [release inventory](../../contracts/release/dependencies.json) pins actual
+dependencies; [protocol reference](../reference/protocols.md) records the
+implemented boundaries and independent fixtures. Exact published-source archives
+and inspection identities are inventoried under ignored
+`.research/checkouts/nostr-dependency-audit-20260917/`. The maintained wrapper is
+CC0-1.0, its vendored native code retains MIT notices, and a native C compiler is
+required. Source comparison found sys 0.14.1 is a metadata-only patch over 0.14.0;
+the actual lock and native tests, not that observation alone, qualify its behavior.
+
+Sources: [secp256k1 0.33.1 verification](https://docs.rs/secp256k1/0.33.1/secp256k1/schnorr/fn.verify.html),
+[nostr 0.45.5 Event](https://docs.rs/nostr/0.45.5/nostr/struct.Event.html), and
+[pinned NIP-01](https://github.com/nostr-protocol/nips/blob/a2494f4f81d46684e5814a9bf35e2b1df978f955/01.md).
+
 ## PostgreSQL ownership and cancellation
 
 Use typed domain-to-row mappings and `$n` parameters; checked conversions retain

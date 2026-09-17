@@ -53,6 +53,7 @@ fn build_information_binds_actual_inputs_and_exposes_only_implemented_contracts(
         "Cargo.lock",
         "rust-toolchain.toml",
         "contracts/release/dependencies.json",
+        "contracts/protocol/versions.json",
     ] {
         let expected: String = Sha256::digest(fs::read(root.join(file)).unwrap())
             .iter()
@@ -62,9 +63,19 @@ fn build_information_binds_actual_inputs_and_exposes_only_implemented_contracts(
     }
     assert!(info["rustc"].as_str().unwrap().contains("rustc 1.98.1"));
     assert!(!info["target"].as_str().unwrap().is_empty());
-    assert!(info["capabilities"].as_array().unwrap().is_empty());
+    assert_eq!(
+        info["capabilities"],
+        serde_json::json!(["event-verification"])
+    );
     assert_eq!(info["schemas"]["build_info"], "bigbrotr-build/1");
-    assert!(info["protocols"].as_object().unwrap().is_empty());
+    assert_eq!(
+        info["protocols"]["event_verifier"],
+        "bigbrotr-nip01-verifier/1"
+    );
+    assert_eq!(
+        info["protocols"]["nostr_nips"],
+        "a2494f4f81d46684e5814a9bf35e2b1df978f955"
+    );
     assert!(matches!(
         info["source"]["state"].as_str(),
         Some("unrecorded" | "builder-supplied")

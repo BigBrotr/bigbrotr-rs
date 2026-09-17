@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:bigbrotr:nip01-event:1",
+  "title": "Complete unverified Nostr event",
+  "description": "Structure only. Requires duplicate signed-field rejection, bounded parsing, canonical ID recomputation and BIP340 verification; JSON Schema alone does not establish validity.",
+  "type": "object",
+  "required": ["id", "pubkey", "created_at", "kind", "tags", "content", "sig"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "pubkey": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "created_at": {"type": "integer", "minimum": 0, "maximum": 18446744073709551615},
+    "kind": {"type": "integer", "minimum": 0, "maximum": 65535},
+    "tags": {"type": "array", "items": {"type": "array", "minItems": 1, "items": {"type": "string"}}},
+    "content": {"type": "string"},
+    "sig": {"type": "string", "pattern": "^[0-9a-f]{128}$"}
+  },
+  "additionalProperties": true,
+  "$comment": "Unknown top-level fields are bounded and omitted from canonical signed content. Runtime requires literal unsigned integer tokens for created_at/kind (no fractional/exponent forms), strict Unicode, and source policy limits. Full events keep protocol numbers; separate metadata will use decimal strings."
+}

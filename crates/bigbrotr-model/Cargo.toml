@@ -1,0 +1,15 @@
+[package]
+name = "bigbrotr-model"
+description = "Lossless, storage-independent BigBrotr domain values"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[dependencies]
+serde.workspace = true
+
+[lints]
+workspace = true

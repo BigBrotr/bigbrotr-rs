@@ -1,6 +1,6 @@
 {
   "format": "bigbrotr-dependencies/1",
-  "status": "foundation candidate; no qualified product release",
+  "status": "foundation and signed-event candidate; no qualified product release",
   "rust": {
     "toolchain": "1.98.1",
     "msrv": "1.98.1",
@@ -13,17 +13,63 @@
     ]
   },
   "direct_dependencies": [
-    {"name": "clap", "version": "4.6.7", "purpose": "CLI parsing, help and usage errors", "license": "MIT OR Apache-2.0", "source": "https://docs.rs/clap/4.6.7/clap/"},
-    {"name": "serde_json", "version": "1.0.151", "purpose": "Build metadata encoding and independent test decoding", "license": "MIT OR Apache-2.0", "source": "https://docs.rs/serde_json/1.0.151/serde_json/"},
-    {"name": "sha2", "version": "0.11.0", "purpose": "Build input SHA-256 identities", "license": "MIT OR Apache-2.0", "source": "https://docs.rs/sha2/0.11.0/sha2/"},
-    {"name": "tempfile", "version": "3.27.0", "purpose": "Isolated process-test directories; test-only", "license": "MIT OR Apache-2.0", "source": "https://docs.rs/tempfile/3.27.0/tempfile/"}
+    {
+      "name": "clap",
+      "version": "4.6.7",
+      "purpose": "CLI parsing, help and usage errors",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://docs.rs/clap/4.6.7/clap/"
+    },
+    {
+      "name": "serde_json",
+      "version": "1.0.151",
+      "purpose": "Bounded typed Nostr JSON parsing, canonical serialization, build metadata and independent test decoding",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://docs.rs/serde_json/1.0.151/serde_json/"
+    },
+    {
+      "name": "sha2",
+      "version": "0.11.0",
+      "purpose": "Build input hashes and NIP-01 canonical ID SHA-256",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://docs.rs/sha2/0.11.0/sha2/"
+    },
+    {
+      "name": "tempfile",
+      "version": "3.27.0",
+      "purpose": "Isolated process-test directories; test-only",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://docs.rs/tempfile/3.27.0/tempfile/"
+    },
+    {
+      "name": "serde",
+      "version": "1.0.229",
+      "purpose": "Typed lossless event/identity serialization; known-field duplicate rejection",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://docs.rs/serde/1.0.229/serde/"
+    },
+    {
+      "name": "secp256k1",
+      "version": "0.33.1",
+      "purpose": "Independent BIP340 verification of computed event digest; default features off, std only",
+      "license": "CC0-1.0",
+      "source": "https://docs.rs/secp256k1/0.33.1/secp256k1/"
+    }
   ],
   "lock": "Cargo.lock",
   "native_adapters": {
-    "status": "NOT_RUN; no native storage, TLS or protocol adapter linked yet",
+    "status": "Event cryptography links secp256k1-sys0.14.1; no storage or TLS bindings yet",
     "selection": "docs/research/dependency-selections.md",
     "source_inventory": "docs/research/evidence/dependency-selections.json",
-    "release_gates": "P01-T01 and P02 actual bindings, offline assets, engine failures and native target qualification"
+    "release_gates": "P01-T01 and P02 actual bindings, offline assets, engine failures and native target qualification",
+    "crypto": {
+      "crate": "secp256k1-sys",
+      "version": "0.14.1",
+      "source": "https://docs.rs/crate/secp256k1-sys/0.14.1/source/",
+      "build": "Vendored C library through locked cc1.4.6; native C compiler required",
+      "license": "CC0-1.0 wrapper and MIT vendored libsecp256k1; notices retained in dependency sources",
+      "features": "std/alloc; no rand, recovery or fuzz crypto selected; clean builder strips ambient rustflags"
+    }
   },
   "license_policy": "New project code is MIT. Preserve upstream notices and qualify the complete release SBOM/licenses when dependencies and assets are added. This inventory is not a complete release license audit."
 }

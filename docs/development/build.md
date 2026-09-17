@@ -1,11 +1,11 @@
 # Building the current implementation
 
-The current foundation binary provides `--help`, `--version` and `build-info`.
-It does not yet collect, persist or serve events. Available product capabilities
-are explicitly empty in its build information; selected future adapters are not
-compiled just to make a manifest look complete.
+The current binary provides `--help`, `--version`, `build-info` and
+[`event verify`](../reference/protocols.md). It independently verifies one signed
+event without collecting, persisting or serving it. Build information names that
+bounded capability and its pinned protocol/parser version.
 
-Install Rust through rustup, Python 3.9 or later and Git. The repository pins
+Install Rust through rustup, a native C compiler, Python 3.9 or later and Git. The repository pins
 Rust 1.98.1 with Rustfmt and Clippy; this is also the initially tested minimum.
 The compiler selection incorporates upstream fixes documented in
 [Rust 1.96.1](https://blog.rust-lang.org/2026/06/30/Rust-1.96.1/) and the
@@ -89,7 +89,14 @@ limits, no published ports, the exact source checkout mounted read-only, and onl
 the inventoried output directory writable. Its root default is for image building;
 root execution cannot pass the read-only-directory acceptance check.
 
-This foundation requires no native storage bindings. Their selected versions,
+Event verification links `secp256k1` 0.33.1 and vendored `secp256k1-sys` 0.14.1
+through locked `cc` 1.4.6. Only `std`/`alloc` features are active; no signing RNG,
+recovery or SDK pool is selected. The protocol crate refuses the dependency's
+intentionally broken `secp256k1_fuzz` compilation mode. The clean builder also
+strips ambient compiler flags. Upstream wrapper/native licenses remain distinct
+and are recorded in the dependency inventory.
+
+This slice requires no native storage bindings. Their selected versions,
 C/C++/libclang/protoc requirements, ring TLS provider and offline DuckDB/extensions
 remain explicit unexecuted gates in the
 [dependency selection](../research/dependency-selections.md). Add each dependency

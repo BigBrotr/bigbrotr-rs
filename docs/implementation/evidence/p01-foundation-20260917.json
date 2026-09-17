@@ -71,11 +71,9 @@
   "review": {
     "kind": "independently tasked AI review plus root complete diff review",
     "findings": "lifecycle, file side effects, truthful per-check source status, manifest/profile/clean assertions and helper/artifact identities corrected",
-    "status": "Original material findings resolved by focused AI re-review; final helper-digest binding and cleanup wording fixed by root. Tampered helper digest reproduced accepted before fix and rejected after fix. Final source qualification pending next candidate."
+    "status": "Focused AI review findings resolved, final helper-digest negative control rejects, final source clean builds/practical rerun successful within the listed environment boundaries."
   },
   "not_run": [
-    "Native Linux arm64 (CI definition exists; execution pending)",
-    "Actual GitHub Actions execution",
     "Native storage/TLS/protocol adapters, offline assets and complete release license/SBOM validation",
     "Any event ingestion/archive/read/export/restart",
     "Packaged install/release, browser, host loss and capacity qualification"
@@ -100,6 +98,45 @@
     "tux-build-895927c.json": {
       "path": ".research/implementation/foundation/tux-build-895927c.json",
       "sha256": "7f8f999c986d4f91e7f2e7984c2755400b08231a47cb3752f733243aa53acc50"
+    }
+  },
+  "final_source_requalification": {
+    "revision": "a289df47f595562caed932b7882cb3cb4f9c7df8",
+    "tree": "3824b431eaf62c707051987692149cc7ef58a282",
+    "source_manifest_sha256": "a55f96c9b529a44d6e8bb58b45ea5e1dc63a45f14d5cebdf800a798aad8dcdc7",
+    "linux_amd64": "Clean release build, practical12/12, Rust3/3 and Python4/4 PASS; bounded nonroot container exited0 without OOM",
+    "macos_arm64": "Clean release build; practical10 PASS,2 Linux-only NOT_RUN",
+    "raw_paths": [
+      ".research/implementation/foundation/tux-native-a289df4.log",
+      ".research/implementation/foundation/tux-acceptance-a289df4.json",
+      ".research/implementation/foundation/tux-build-a289df4.json",
+      ".research/implementation/foundation/mac-clean-a289df4/build-result.json",
+      ".research/implementation/foundation/mac-clean-acceptance-a289df4/result.json"
+    ],
+    "ci": "PASS on native GitHub-hosted ubuntu24.04 amd64/arm64 and macos15 arm64; https://github.com/BigBrotr/bigbrotr-rs/actions/runs/35256322733",
+    "ci_reports": {
+      "x86_64": {
+        "path": ".research/implementation/foundation/ci-35256322733/foundation-ubuntu-24.04/ci-acceptance/result.json",
+        "sha256": "8777576d78c410a8af0914207183e6df3581ffe7da1aeb60943b4649ba212d86",
+        "counts": {
+          "collected": 12,
+          "executed": 12,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        }
+      },
+      "aarch64": {
+        "path": ".research/implementation/foundation/ci-35256322733/foundation-ubuntu-24.04-arm/ci-acceptance/result.json",
+        "sha256": "af2f7cf0cbe529223e2a599fecf5ae55512b9fbdd4e6beb7b798007f1ea13283",
+        "counts": {
+          "collected": 12,
+          "executed": 12,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        }
+      }
     }
   }
 }

@@ -1,6 +1,7 @@
 # Practical implementation verification
 
-The shared runner currently implements only P01-T01's executable boundary.
+The shared runner implements P01-T01's executable boundary and the bounded
+`p01-event-cli` signed-event diagnostic slice of P01-T02/T03.
 Additional P01-T08 cases and engine/fixture orchestration are still required.
 No planned task ID silently maps to a successful empty scenario.
 
@@ -14,6 +15,12 @@ python3 tests/acceptance/run.py p01-t01 \
   --build-result .research/build-candidate/build-result.json \
   --evidence .research/p01-t01
 ```
+
+Replace `p01-t01` with `p01-event-cli` to additionally verify the 17 independently
+signed fixture variants, compare every decoded field and exercise changed payload,
+forged signature, signed empty tag, invalid unknown UTF-8 and over-limit wire input.
+It runs the same exact supplied artifact; no fixture signing or network peer is
+required. This does not mark P01-T03's controlled WebSocket scenario complete.
 
 Use a fresh evidence directory. The case invokes the actual binary outside the
 checkout in a read-only temporary working directory and a minimal environment.

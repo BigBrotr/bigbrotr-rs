@@ -55,10 +55,10 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install --no-install-recommends -y strace
-      - name: Native foundation practical case
+      - name: Native foundation and signed-event practical case
         if: runner.os == 'Linux'
         run: >-
-          python3 tests/acceptance/run.py p01-t01
+          python3 tests/acceptance/run.py p01-event-cli
           --binary .research/ci-build/bigbrotr
           --source-root .research/ci-build/source
           --source-manifest .research/ci-build/source-manifest.json

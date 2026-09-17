@@ -71,7 +71,7 @@ def build(args):
     if info["source"] != {"state": "builder-supplied", "revision": revision, "tree": tree,
                           "dirty": False, "manifest_sha256": manifest_hash}:
         raise ValueError("binary reports a different source identity")
-    for name in ("Cargo.lock", "rust-toolchain.toml", "contracts/release/dependencies.json"):
+    for name in ("Cargo.lock", "rust-toolchain.toml", "contracts/release/dependencies.json", "contracts/protocol/versions.json"):
         if info["inputs_sha256"][name] != members[name]:
             raise ValueError("binary reports different build inputs: " + name)
     (output / "build-result.json").write_text(json.dumps({

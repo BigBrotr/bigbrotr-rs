@@ -1,0 +1,68 @@
+{
+  "format": "bigbrotr-signed-extremes/1",
+  "test_keys": "Public integers 1 and 2; never real accounts",
+  "authoring": "python-secp256k1 0.14.0",
+  "events": {
+    "unsigned-maximum": {
+      "event": {
+        "pubkey": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+        "created_at": 18446744073709551615,
+        "kind": 65535,
+        "tags": [
+          [
+            ""
+          ],
+          [
+            "x"
+          ],
+          [
+            "x",
+            ""
+          ],
+          [
+            "t",
+            "é",
+            "a,b"
+          ],
+          [
+            "t",
+            "é"
+          ],
+          [
+            "t",
+            "é"
+          ]
+        ],
+        "content": "{\"value\":\"still text\"}\n\"\\/\b\t\n\f\r\u0000\u0001é𝄞 ",
+        "id": "d77fac87d3251e321410ada19ad9f0534b5ccf1813202ccfcdbaa9637d3fe280",
+        "sig": "fe03109bd891ea72d6ee48c2c7425eef1780301a6fc8f7ce5cf2b21fd6f3cddf320348c8956fe0c7b338ebe56e3398c390bb9549dcf168d50cdf29e96e93ebd2"
+      },
+      "canonical_hex": "5b302c2237396265363637656639646362626163353561303632393563653837306230373032396266636462326463653238643935396632383135623136663831373938222c31383434363734343037333730393535313631352c36353533352c5b5b22225d2c5b2278225d2c5b2278222c22225d2c5b2274222c22c3a9222c22612c62225d2c5b2274222c2265cc81225d2c5b2274222c22c3a9225d5d2c227b5c2276616c75655c223a5c227374696c6c20746578745c227d5c6e5c225c5c2f5c625c745c6e5c665c725c75303030305c7530303031c3a9f09d849ee280a8225d"
+    },
+    "timestamp-zero": {
+      "event": {
+        "pubkey": "c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+        "created_at": 0,
+        "kind": 0,
+        "tags": [],
+        "content": "",
+        "id": "e258cc73c1ed89e28f28705e91a79dcb0c62f0ee4a61756730525c03dd68283c",
+        "sig": "4fd1163b0c418a2c3ff7caf8707ad4ec1cae51f92273e0c885f136bca90a4035f5d633503b767c439a0ff8019a7e4c5274cf9442576c3bffa80b23a7a8301583"
+      },
+      "canonical_hex": "5b302c2263363034376639343431656437643664333034353430366539356330376364383563373738653462386365663363613761626163303962393563373039656535222c302c302c5b5d2c22225d"
+    }
+  },
+  "invalid_structure": {
+    "empty-tag": {
+      "pubkey": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+      "created_at": 1,
+      "kind": 1,
+      "tags": [
+        []
+      ],
+      "content": "",
+      "id": "b35511f05dccfa763f99b05a6af900d1d59592f445ac152c08d695a604eb0331",
+      "sig": "2ee61ff6704efe579e97160e9d4df1d8e3585a8f4db4d27d2518054d30cf78a62927aed625b789f7cac25894727dfe15f71c6f92229c598bf879a9df0758bdab"
+    }
+  }
+}

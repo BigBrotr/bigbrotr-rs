@@ -14,10 +14,10 @@ RUNNER = ROOT / "tests/acceptance/run.py"
 
 
 class RunnerControls(unittest.TestCase):
-    def invoke(self, binary, evidence, manifest=None):
+    def invoke(self, binary, evidence, manifest=None, case="p01-t01"):
         extra = ["--source-manifest", str(manifest)] if manifest else []
         result = subprocess.run(
-            [sys.executable, str(RUNNER), "p01-t01", "--binary", str(binary),
+            [sys.executable, str(RUNNER), case, "--binary", str(binary),
              "--source-root", str(ROOT), "--evidence", str(evidence), *extra],
             capture_output=True, text=True, timeout=30,
         )
@@ -55,6 +55,20 @@ class RunnerControls(unittest.TestCase):
             self.assertEqual(result.returncode, 1)
             source = next(c for c in evidence["checks"] if c["name"] == "clean_source_identity")
             self.assertEqual(source["result"], "FAIL")
+
+    def test_permissive_event_echo_cannot_pass_the_crypto_boundary(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            binary = root / "permissive-candidate"
+            binary.write_text("#!/bin/sh\nexec /bin/cat\n")
+            binary.chmod(0o755)
+            result, evidence = self.invoke(binary, root / "evidence", case="p01-event-cli")
+            self.assertEqual(result.returncode, 1)
+            checks = {check["name"]: check["result"] for check in evidence["checks"]}
+            self.assertEqual(checks["signed_event E_public"], "PASS")
+            self.assertEqual(checks["changed_payload"], "FAIL")
+            self.assertEqual(checks["forged_signature"], "FAIL")
+            self.assertEqual(checks["signed_empty_tag"], "FAIL")
 
     def test_timeout_cleans_up_descendants(self):
         with tempfile.TemporaryDirectory() as directory:

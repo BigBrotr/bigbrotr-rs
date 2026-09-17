@@ -51,7 +51,7 @@ reporting its exact build/schema/protocol versions. Product name remains BigBrot
   Follow [development and delivery](../engineering/development-and-delivery.md):
   Mac authoring, exact-revision isolated Tux runs, and native Linux arm64
   acceptance on an available isolated runner; emulation is labeled separately.
-- [ ] **Step 5:** Add formatting/lint/build/documentation jobs with warnings selected by
+- [x] **Step 5:** Add formatting/lint/build/documentation jobs with warnings selected by
   relevance; no arbitrary comment length, coverage ratio or test-count rule.
   Start isolated least-privilege CI here, with pinned actions and no untrusted
   PR access to Tux, trusted caches or release credentials.
@@ -61,13 +61,15 @@ reporting its exact build/schema/protocol versions. Product name remains BigBrot
   invalid flags and read-only working directory. Expect actionable nonzero exit
   on invalid input, useful help/version and no created files or network activity.
   Negative control: a wrapper printing hardcoded version fails metadata comparison.
-- [ ] **Step 8:** Document build commands, supported platforms, artifact identity and known
+- [x] **Step 8:** Document build commands, supported platforms, artifact identity and known
   native portability limits; commit this independently usable foundation.
 
 Foundation evidence: [2026-09-17](evidence/p01-foundation-20260917.json) and
 [native Linux amd64 practical case](evidence/p01-t01-linux-amd64-20260917.json).
-The native engine tuple, Linux arm64 and actual CI execution remain separate
-unchecked gates; this slice enables lossless-model work without claiming them.
+The exact `a289df4` foundation also passed native Linux arm64/amd64 and Mac arm64
+CI [run 35256322733](https://github.com/BigBrotr/bigbrotr-rs/actions/runs/35256322733).
+The native storage/TLS/extension tuple remains an unchecked gate; this slice
+enables lossless-model work without claiming those adapters are qualified.
 
 ## P01-T02 — Lossless domain identity and evidence types
 
@@ -112,9 +114,9 @@ invalid/excluded result. Protocol hints never become local measurement evidence.
 
 - [ ] **Step 1:** Pin NIP/spec/SDK revisions and register supported parser/probe versions.
   Preserve raw envelope fields needed for explicit extensions and imports.
-- [ ] **Step 2:** Parse bounded JSON with duplicate-field/depth/string/tag limits before
+- [x] **Step 2:** Parse bounded JSON with duplicate-field/depth/string/tag limits before
   expanding attacker-controlled arrays; reject malformed singleton fields.
-- [ ] **Step 3:** Recompute NIP-01 canonical ID and verify Schnorr against the actual payload;
+- [x] **Step 3:** Recompute NIP-01 canonical ID and verify Schnorr against the actual payload;
   make the verified constructor inaccessible to ordinary deserialization.
 - [ ] **Step 4:** Bind verification-cache keys to exact verified payload/signature; count
   cache memory and invalid-input work in runtime grants.
@@ -129,6 +131,13 @@ invalid/excluded result. Protocol hints never become local measurement evidence.
   P02-T02/P03-T02 once real admission and guarded collectors exist. A permissive fake verifier is a negative control, never the oracle.
 - [ ] **Step 8:** Publish conformance fixtures and limitation notes; do not inherit
   client-oriented rejection of old/deleted events into historical archival policy.
+
+The first P01-T02/T03 slice is the [lossless event model](../reference/data-model.md)
+and real [`event verify` CLI](../reference/protocols.md). Mac tests exercise frozen
+signed variants/extremes, literal canonical bytes and malformed/limit controls.
+The complete P01-T02 storage mappings, P01-T03 cache/filter/endpoint work and
+controlled WebSocket practical case remain unchecked. `p01-event-cli` is a
+bounded diagnostic acceptance case, not a substitute for that transport scenario.
 
 ## P01-T04 — Configuration, defaults and topology resolution
 

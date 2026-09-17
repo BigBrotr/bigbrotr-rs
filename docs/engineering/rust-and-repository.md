@@ -112,7 +112,7 @@ invariant exists, not a prose translation of the code.
 |---|---|---|
 | Async networking | Tokio, rustls, `tokio-tungstenite` 0.29 family | Supplied guarded streams preserve DNS/IP pinning and Host/SNI; explicit frame/message/buffer limits, proxy behavior and cancellation |
 | HTTP and private RPC | axum 0.8 / Hyper 1 / Tower 0.5; tonic + tonic-prost 0.14 / prost 0.14 | One runtime/middleware family; hard body/queue bounds, both RPC codec limits, propagated deadlines and operation authorization; no public generic RPC |
-| Nostr semantics/crypto | `nostr` types and maintained secp256k1 implementation | Independent admission verification; wire extensions retained; no blind SDK pool defaults |
+| Nostr semantics/crypto | BigBrotr lossless boundary types + `secp256k1` 0.33.1, sys 0.14.1 | Exact lowercase wire decoding and actual payload verification; [source-inspected selection](../research/dependency-selections.md#implemented-event-verification-dependency-slice); SDK pool defaults never define admission |
 | Durable embedded state | rust-rocksdb `rocksdb` 0.25 family | Actual binding's synced WAL/atomic batch, exclusive owner, native build/cache/compaction bounds; native 11.8.1 candidate needs fresh qualification |
 | PostgreSQL | `tokio-postgres` 0.7 + `deadpool-postgres` 0.14 + rustls connector; explicit migrations | Direct PG transaction ownership and bounded pool; parameters, lost COMMIT resolution and connection-wide cancellation races; SQLx/ORM not selected |
 | Parquet/Arrow | Apache Arrow/Parquet 58 family, aligned to duckdb-rs | Nested tags/raw bytes/extreme integers round trip, bounded row groups; ordinary artifacts only, no independent DuckLake file mutations |

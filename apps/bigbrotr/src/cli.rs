@@ -8,4 +8,11 @@ pub fn command() -> clap::Command {
         .subcommand_required(true)
         .disable_help_subcommand(true)
         .subcommand(clap::Command::new("build-info").about("Print embedded build identity as JSON"))
+        .subcommand(clap::Command::new("event")
+            .about("Inspect a signed event without admitting it to storage")
+            .subcommand_required(true)
+            .disable_help_subcommand(true)
+            .subcommand(clap::Command::new("verify")
+                .about("Verify one bounded Nostr JSON event from stdin; output its complete normalized JSON")
+                .after_help("Exit codes: 0 verified, 1 I/O failure, 2 usage, 3 invalid event, 4 excluded by input limits. No durable admission or source policy is implied.")))
 }

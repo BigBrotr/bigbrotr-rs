@@ -196,3 +196,14 @@ revisions and inventoried isolated Tux resources. Preserve unrelated workloads,
 the local Go checkout and private distribution boundaries. Ask only for missing
 information or authority that materially prevents a correct next step. Report
 executed evidence, measured limits and remaining gates honestly, in Italian.
+
+Q31 (implementation decision, 2026-09-17): Exact source inspection found that the
+candidate Nostr SDK's ID/key deserializers accept alternate textual encodings and
+would add a second crypto version. Use BigBrotr's strict lossless model with direct
+maintained `secp256k1` 0.33.1 verification, retaining u64 time/u16 kind and the
+pinned NIP baseline. This is an autonomous dependency-boundary decision under Q30,
+not a new owner requirement or a change to admitted-event semantics. The
+[selection record](../research/dependency-selections.md#implemented-event-verification-dependency-slice)
+and [protocol reference](../reference/protocols.md) record evidence and remaining
+native/runtime/storage qualification. Unknown wire extensions remain bounded
+and excluded from signed content; their presence grants no authority.

@@ -1,4 +1,5 @@
 mod cli;
+mod event;
 
 use std::{
     io::{self, Write},
@@ -8,6 +9,7 @@ use std::{
 fn main() -> ExitCode {
     let matches = cli::command().get_matches();
     match matches.subcommand_name() {
+        Some("event") => event::verify_stdin(),
         Some("build-info") => {
             let mut stdout = io::stdout().lock();
             if writeln!(
