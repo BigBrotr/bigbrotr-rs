@@ -125,7 +125,9 @@ Constructing these values verifies structure only. The owning admission adapter
 must establish sufficient effects, authority, commit, protection and retention
 before returning them or advancing progress. Invalid/excluded/retryable outcomes
 are not event progress bases. The model does not define a second receipt ledger
-or an independent receipt fingerprint/serialization format.
+or an independent receipt fingerprint. The [operational receipt encoding](../reference/ingest-receipt-format.md)
+serializes this same structural value with explicit version and decode limits;
+deserialization cannot manufacture authority or a durable outcome.
 
 ProducerRequestId binds a registered logical producer slot/epoch and monotonic
 local request identity; the process incarnation holds that epoch's authority.

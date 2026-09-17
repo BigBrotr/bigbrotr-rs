@@ -7,6 +7,7 @@ pub mod evidence;
 pub mod fact;
 mod fingerprint;
 pub mod identity;
+pub mod receipt_codec;
 pub mod scalar;
 pub mod source;
 

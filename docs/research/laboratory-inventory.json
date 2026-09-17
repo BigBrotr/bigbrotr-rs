@@ -565,7 +565,16 @@
       "native_target_reuse": "Root integrated tests reused the completed agent Cargo target; native archive unchanged, previous app/test executable hashes are historical cache identities.",
       "pending_reader": "Integrated native complete-batch reader with retained marker, data grant and snapshot; five Mac pending tests plus nine key tests and Clippy PASS. No admission/GC or Linux pending-reader qualification.",
       "pending_evidence": "docs/implementation/evidence/p02-ingest-pending-mac-20260918.json",
-      "pending_review_sha256": "e61b5397ce8c36a658a6f467cfc088609a25c93d17d300b4a324ee4fea21bdc4"
+      "pending_review_sha256": "e61b5397ce8c36a658a6f467cfc088609a25c93d17d300b4a324ee4fea21bdc4",
+      "receipt_codec": {
+        "candidate": "d0b592e7dab9fa810e5983ad2632ee6a761ebd74",
+        "worktree": ".research/worktrees/receipt-codec",
+        "root": ".research/implementation/rocks-product-design",
+        "evidence": "docs/implementation/evidence/p02-ingest-receipt-codec-20260918.json",
+        "author_inventory_sha256": "657dcb162600b74995b90febe6d155e4c380185239e9bf7db715de53976be666",
+        "scope": "Root integrated Mac model33 tests and Clippy PASS; operational codec only, no native ledger/authority/ACK/GC. Author read provenance corrected explicitly.",
+        "review_sha256": "b52d2a2e8739264db0d9a9c87e3290ba1f1f06a155fe6752b03e83198745a4d8"
+      }
     },
     "ingest_control_review": {
       "root": ".research/implementation/postgres/ingest-review",

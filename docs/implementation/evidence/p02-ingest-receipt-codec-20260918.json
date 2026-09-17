@@ -1,0 +1,51 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-18",
+  "scope": "P02-T02 operational receipt serialization only; no persistent ledger or durable admission authority",
+  "status": "PASS",
+  "source": {
+    "base_revision": "667d1c9d2972e27268258da17a4bc7747f3e0245",
+    "candidate_revision": "d0b592e7dab9fa810e5983ad2632ee6a761ebd74",
+    "state": "Root integrated dirty tree tested with ordinary Cargo; root removes arbitrary probe-count threshold without removing probes",
+    "sha256": {
+      "crates/bigbrotr-model/src/receipt_codec.rs": "758b6342b30b38610a2a5893d36d931a195177b701f8f5f63324ba204b53c33e",
+      "crates/bigbrotr-model/tests/receipt_codec.rs": "4de78a7bf63400d2fa2bfbd0491c690917862f94d57f3a6e28563b78bfeae6b7",
+      "docs/reference/ingest-receipt-format.md": "d78559574b06a17e1fd115e25d0cf2d350d62590cee52168065f7ff59f7c053f"
+    }
+  },
+  "environment": {
+    "target": "aarch64-apple-darwin",
+    "rustc": "1.98.1",
+    "build_jobs": 2
+  },
+  "checks": {
+    "model_tests": 33,
+    "receipt_tests": 6,
+    "failed": 0,
+    "ignored": 0,
+    "clippy": "PASS model all-targets -Dwarnings"
+  },
+  "observed": [
+    "Two independent literal receipts (486-byte NewFacts and 199-byte AlreadyDurable) round-trip exactly.",
+    "Strict closed version/result/protection and full request/context/dependency encoding; constructor validation rechecks namespaces, sorted uniqueness and batch closure.",
+    "All truncations, trailing bytes and wider equivalent CBOR heads rejected; counts, input bytes and requested vector allocation bounded before reserve."
+  ],
+  "not_run": [
+    "Actual receipt lookup/write, owner authority, durable effects, commit ambiguity, ACK/GC and restart.",
+    "Process/native memory envelope, Linux execution or release qualification for this codec."
+  ],
+  "logs_sha256": {
+    "receipt-integrated-tests.log": "68fc8205a67aeaf1e9f21247b3068d8c47b4157cf8c497b74851a24dc9f06ca6",
+    "receipt-integrated-clippy.log": "f91775ba28965e22e94c0817ee4a41230beb16c6b622b19064640d19a6164b17"
+  },
+  "author_inventory": {
+    "path": ".research/worktrees/receipt-codec/.research/implementation/receipt-codec/inventory.json",
+    "sha256": "657dcb162600b74995b90febe6d155e4c380185239e9bf7db715de53976be666",
+    "provenance": "Corrected inventory separates reconstructed earlier source reads from post-commit exact contract ranges; five nonexistent contract paths withdrawn. Root independently read actual owning contracts and complete receipt source/test/reference."
+  },
+  "independent_AI_review": {
+    "report": ".research/implementation/rocks-product-design/receipt-review/review.json",
+    "sha256": "b52d2a2e8739264db0d9a9c87e3290ba1f1f06a155fe6752b03e83198745a4d8",
+    "result": "Complete source and independent literal-vector review; no concrete open finding. Reviewer read root logs, no additional Rust decoder/native run."
+  }
+}

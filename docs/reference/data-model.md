@@ -78,8 +78,9 @@ full u64/checked advancement; recovery generations retain all bytes16 values.
 Neither a context nor a proof digest verifies registration, authority, sufficient
 effects, physical persistence, retention or restore closure. Those remain the
 storage/producer owners' responsibility. Receipt/proof/basis values have no generic
-Serde deserialization or activated persistent format; transport readers must
-bound work and validate the owning protocol before using them.
+Serde deserialization. The [closed operational receipt codec](ingest-receipt-format.md)
+serializes the existing receipt with explicit version and resource limits;
+storage and transport readers must still validate the owning protocol and authority.
 
 The fingerprint recipes stream `bigbrotr/body/1`, `bigbrotr/fact/1`,
 `bigbrotr/producer-request/1`, `bigbrotr/admission-batch/1` and
