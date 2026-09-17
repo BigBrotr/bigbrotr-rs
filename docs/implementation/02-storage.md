@@ -54,8 +54,11 @@ prerequisites for early durable jobs, exports or reclamation.
   migration role, serialized ownership, checksums and compatible version checks.
   [Initial catalog/engine evidence](evidence/p02-control-engine-20260917.json) and
   [serialized commit/TLS evidence](evidence/p02-control-faults-tls-20260917.json)
-  cover the current 0001 catalog; later schema/adapters and full release upgrades
-  remain separate steps.
+  cover migration 0001. The [0002 engine cases](evidence/p02-ingest-control-engine-20260918.json)
+  add latest-target application, eligible upgrade and atomic unregistered-source
+  refusal; [0002 races](evidence/p02-ingest-control-races-20260918.json) exercise
+  relational coordination. Typed runtime adapters, later schemas and full release
+  upgrades remain separate steps.
 - [ ] **Step 5:** Implement compare-and-swap updates for config revisions, owner epochs and
   complete frontiers; preserve missing/zero/empty distinctions.
 - [ ] **Step 6:** Establish normalized endpoint dictionary/enrollment and explicit route/
