@@ -6,6 +6,11 @@ every decision is correct or optimal. This register separates a reasoned choice,
 a narrow experiment and an unperformed qualification. It supplements the
 [system design](../architecture/system-design.md), not a competing architecture.
 
+The subsequent [architecture challenge](../reviews/13-architecture-alternatives.md)
+questions several selections in this register, including archive authority and
+ordinary read semantics. Its alternatives are advisory, not adopted defaults;
+the coordinator records which recommendations it supports, limits or declines.
+
 ## What the design optimizes
 
 BigBrotr combines a verifiable historical archive, relay observatory, research

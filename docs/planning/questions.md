@@ -109,3 +109,12 @@ gaps, contract consolidation, empirical design choices and private coding detail
 S01–S08 are explicit remaining paper work under P00-T06–T10; writing those tasks
 does not close them. No new permission question or product implementation follows
 from this assessment. Earlier completed reviews retain their historical scope.
+
+Q21: The owner asks for a deeper challenge of the plan's actual choices, from
+product architecture to algorithms/frameworks/representations, including
+independent opinions, before discussing changes. The
+[architecture challenge](../reviews/13-architecture-alternatives.md) reconciles
+three separately tasked AI reviews, counterarguments and bounded experiments.
+They are not external human certification. Recommendations remain advisory;
+the selected specifications and P00 closure status are unchanged. No percentage
+of optimality, new product benchmark or whole-repository reread is claimed.

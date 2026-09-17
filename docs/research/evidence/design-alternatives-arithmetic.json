@@ -1,0 +1,63 @@
+{
+  "scope": "Arithmetic from selected defaults, not a performance benchmark or observed public-network rate",
+  "source": "docs/architecture/acquisition-services.md",
+  "source_sha256": "fe4db48080f6343caec17b012f5aa446d8be61824e5af1bbaf93de1c0d5496a5",
+  "defaults": {
+    "sync.hot_window": {
+      "literal": "1h",
+      "seconds": 3600
+    },
+    "sync.hot_interval": {
+      "literal": "15m",
+      "seconds": 900
+    },
+    "sync.warm_window": {
+      "literal": "48h",
+      "seconds": 172800
+    },
+    "sync.warm_interval": {
+      "literal": "1h",
+      "seconds": 3600
+    }
+  },
+  "assumptions": [
+    "Steady homogeneous arrival rate per relay; events remain in the relevant created_at windows",
+    "Each due linear sweep completes and returns the entire retained window",
+    "Hot and warm sweeps independently run at their targets without coalescing, deferral or negotiation savings",
+    "Exclude live delivery, initial backfill, retries, overlap at page boundaries, late-created timestamps and deep re-verification"
+  ],
+  "mean_historical_deliveries_per_new_event": {
+    "hot": "4",
+    "warm": "48",
+    "total": "52"
+  },
+  "endpoint_pair_count": {
+    "endpoints": 100000,
+    "unordered_pairs": 4999950000
+  },
+  "negative_controls": {
+    "only_hot_ignores_warm": "4",
+    "only_warm_ignores_hot": "48"
+  },
+  "limits": [
+    "52 is a steady-state work sensitivity, not a guaranteed per-event count",
+    "Negentropy, scoped rotation and postponement change actual work; postponement changes achieved observation cadence",
+    "No claim that an alternative achieves the same detection latency at 1/52 the cost"
+  ],
+  "relay_score_counterexample": {
+    "source": "docs/architecture/analytics-detail.md",
+    "source_sha256": "908f5919b3b8cfec953413c603d87715f86eb57e76c935576cfef3400f7df940",
+    "formula": "Q=0.625*A+0.375*exp(-p50_seconds)",
+    "fast": {
+      "availability": 0.8,
+      "p50_seconds": 0.02,
+      "score": 0.8675745024900332
+    },
+    "reliable": {
+      "availability": 0.999,
+      "p50_seconds": 0.5,
+      "score": 0.8518239973922376
+    },
+    "result": "The faster, less available relay sorts first; arithmetic demonstrates a utility choice, not measured relay behavior"
+  }
+}

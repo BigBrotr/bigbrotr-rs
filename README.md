@@ -39,3 +39,9 @@ The subsequent [specification-readiness assessment](docs/planning/specification-
 identifies remaining paper contracts and justified practical decisions. Its
 [closure tasks](docs/implementation/00-specification.md#p00-t06--close-event-scope-identity-and-encoding-contracts)
 remain open; completed earlier reviews do not mean those new findings are resolved.
+
+The latest [architecture challenge](docs/reviews/13-architecture-alternatives.md)
+asks whether different choices would improve the product, beyond making the
+current plan complete. It reconciles three independent AI reviews and proposes
+specific changes and bounded comparisons. These are advisory alternatives for
+discussion; they do not silently replace the selected specifications.

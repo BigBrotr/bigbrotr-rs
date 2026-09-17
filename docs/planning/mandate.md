@@ -88,3 +88,10 @@ and client-behavior ambiguities on paper. Bound empirical alternatives by an
 explicit experiment and decision point; leave private implementation details to
 code review instead of manufacturing false precision. The current remaining
 paper work is recorded in [specification readiness](specification-readiness.md).
+
+The owner also requests a challenge to the selected solution itself: alternative
+approaches, algorithms, implementations and frameworks that could materially
+improve the product, including independently reasoned reviews. Record precise
+recommendations and counterarguments for discussion, beyond a completeness
+checklist. Do not equate independent AI reviewers with external human experts,
+or silently adopt conflicting alternatives as another normative specification.

@@ -1,0 +1,26 @@
+{
+  "baseline": "41cc3818349e834c524da1a73fdc0f7e85ad62bc",
+  "scope": "Mechanical artifact and arithmetic checks only. Three advisory AI reviews reconciled; no new product/engine/runtime/capacity benchmark or complete-repository reread.",
+  "mechanical_checks": {
+    "scope": "local links, fences, JSON examples/evidence, Python syntax and selected evidence hashes; no semantic or product verification",
+    "markdown_files": 88,
+    "json_files": 49,
+    "json_examples": 4,
+    "errors": []
+  },
+  "changed_document_local_links_checked": 122,
+  "changed_document_anchored_links_checked": 19,
+  "report_sha256": {
+    "docs/reviews/13-architecture-alternatives.md": "d5e80e0960a9b863eb583ba57ad20e46d01cbf5bcedbf44f413e29dd93eb3718",
+    "docs/reviews/13-product-alternatives.md": "492764ce9b39a24a7db271d5586634948795bb4f06f5464ae04db128524b3f3a",
+    "docs/reviews/13-runtime-alternatives.md": "2102b604730f1656bc99934ef53f85e72f6ad05fe32802b2db2a108b53a53990",
+    "docs/reviews/13-storage-alternatives.md": "7f0e8e1f1d51ef82082a92fe0d698a30fbee0a89ed0ba3f4adc08d3dc69579c7"
+  },
+  "arithmetic_source_hashes_verified": true,
+  "unchanged_implementation_plan": {
+    "tasks": 121,
+    "steps": 746
+  },
+  "existing_normative_documents_changed": [],
+  "errors": []
+}

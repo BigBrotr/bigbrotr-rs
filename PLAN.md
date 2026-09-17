@@ -23,6 +23,12 @@ from justified empirical decisions and private implementation details. The
 selected architecture below is not a claim that those remaining contracts are
 already closed or that product implementation has begun.
 
+A subsequent [architecture challenge](docs/reviews/13-architecture-alternatives.md)
+recommends reconsidering acquisition work, duplicate certification, read modes,
+ranking, process placement and selected storage/product alternatives. It is
+advisory for discussion; the selected contracts below remain unchanged until
+an adopted decision is reconciled across their owning documents.
+
 ## Read the design in this order
 
 New to the project: first read [Start here](docs/start-here.md), the

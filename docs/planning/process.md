@@ -104,3 +104,21 @@ that need practical evidence. The [readiness register](specification-readiness.m
 and P00-T06–T10 state concrete closure outputs. This pass assesses and plans that
 closure; it does not claim to have completed the new tasks, reread every document
 again, or implemented/tested the product.
+
+## Challenging architecture choices, not only specification completeness
+
+[Review 13](../reviews/13-architecture-alternatives.md) responds to the owner's
+request for choices that could improve the final product. Three separately
+tasked AI reviewers examined storage, runtime/analytics and product/interfaces.
+The coordinator read their reports and challenged duplicate-proof semantics,
+traversal guarantees, overlap output preservation and the true cost of replacing
+archive authority. Their independent reports remain visible, including proposals
+the coordinator does not recommend adopting now.
+
+This pass uses targeted contract inspection, primary documentation and checked
+arithmetic. The current linear sweep defaults imply 52 historical deliveries per
+new event under the explicitly idealized complete-sweep model; this is not a
+public-network measurement. No product, database or capacity benchmark was run,
+and this is not a fresh full-document audit. Recommendations are advisory for
+discussion. Selected architecture documents and P00 completion status stay
+unchanged; adopted changes would require coherent contract/task reconciliation.
