@@ -201,10 +201,11 @@ CLI performs a migration through the proxy. The expected observations are:
 | `after` | Backend COMMIT completion observed, reply suppressed; outcome-unknown, exit 4 | Exact version 1 receipt/schema; retry current without rewriting either |
 | `release` | Hold COMMIT; observe an actual inspector waiting on its shared advisory lock; release and receive applied, exit 0 | The already-waiting inspector must see version 1; fresh direct resolution/retry preserve it |
 | `close` | Hold COMMIT; observe the waiter, its real five-second lock timeout/refusal, and the original owner still holding the exclusive lock; close, causing outcome-unknown, exit 4 | Fresh inspection sees absence; retry applies exactly version 1 |
+| `race` | Hold the first apply at COMMIT; observe a second actual apply waiting on its exclusive advisory lock; release the first | Exactly one apply installs version 1; the second returns current with zero applied and an empty plan; fresh inspection and retry preserve one receipt |
 
 For each hold, `pg_stat_activity` and `pg_locks` must show the same owner PID idle
 in transaction with the exact granted ExclusiveLock and a different inspector
-PID with an ungranted ShareLock and `Lock/advisory` wait event. The checks use the
+PID with an ungranted ShareLock (ExclusiveLock for the second apply in `race`) and `Lock/advisory` wait event. The checks use the
 actual migration lock pair and two-int advisory namespace. They never infer a
 lock wait solely from elapsed time. In `close`, the original owner must still be
 observed after the inspector refuses; otherwise the scenario is incomplete.
@@ -237,9 +238,9 @@ reuse the existing finite lab helpers. Every required case must be PASS for exit
 that result. SIGKILL/host loss may leave the last report RUNNING and resources
 retained; that is incomplete evidence requiring operator reconciliation.
 
-Driver status at implementation: **actual PostgreSQL cases NOT_RUN**. Local checks
+Driver status at initial implementation: **actual PostgreSQL cases NOT_RUN**. Subsequent revision-bound results belong in the implementation evidence; this historical status is not the current run result. Local checks
 exercise process-output bounds, timeout refusal, safe metadata validation and
 exclusive file creation, plus Python parsing/help. Those checks do not simulate a
 successful database scenario or qualify commit recovery. Root's exact-source
-native run must supply the five real outcomes before this driver contributes any
+native run must supply the six real outcomes before this driver contributes any
 P02-T01 acceptance evidence.

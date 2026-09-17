@@ -15,7 +15,7 @@ import time
 import lab
 
 FAULT_LABEL = "org.bigbrotr.control-migration-fault"
-CASES = ("pass", "before", "after", "release", "close")
+CASES = ("pass", "before", "after", "release", "close", "race")
 TABLES = sorted(("schema_versions", "datasets", "topology_generations", "topology_streams",
                  "role_instances", "owner_epochs", "config_revisions", "policy_revisions",
                  "jobs", "job_input_bounds"))
@@ -270,12 +270,12 @@ def lock_holders(rows):
             and {"mode": "ExclusiveLock", "granted": True} in row["locks"]]
 
 
-def await_waiter(state, database, owner, timeout=2.5):
+def await_waiter(state, database, owner, mode="ShareLock", timeout=2.5):
     end = time.monotonic() + timeout
     while True:
         rows = backends(state, database)
         waiting = [row for row in rows if row["pid"] != owner and row["wait_type"] == "Lock"
-                   and row["wait_event"] == "advisory" and {"mode": "ShareLock", "granted": False} in row["locks"]]
+                   and row["wait_event"] == "advisory" and {"mode": mode, "granted": False} in row["locks"]]
         if waiting and any(row["pid"] == owner for row in lock_holders(rows)):
             return rows
         if time.monotonic() >= end:
@@ -316,7 +316,7 @@ def configs(root, state, database, proxy_port):
 def run_case(root, state, container, case, save, source, expected):
     database = case["database"]
     mode = {"pass": "pass", "before": "before-forward", "after": "after-complete",
-            "release": "hold", "close": "hold"}[case["name"]]
+            "release": "hold", "close": "hold", "race": "hold"}[case["name"]]
     processes = []
     proxy = None
     case["status"] = "RUNNING"
@@ -349,15 +349,24 @@ def run_case(root, state, container, case, save, source, expected):
             owners = lock_holders(case["held_backends"])
             require(len(owners) == 1, "held-owner-not-observed")
             owner = owners[0]["pid"]
-            inspector = Process(migration_args(state["client"], "inspect", direct_path))
+            racing = case["name"] == "race"
+            inspector = Process(migration_args(state["client"], "apply" if racing else "inspect", direct_path))
             processes.append(inspector)
-            case["waiting_backends"] = await_waiter(state, database, owner)
+            case["waiting_backends"] = await_waiter(state, database, owner, "ExclusiveLock" if racing else "ShareLock")
             require(inspector.process.poll() is None and not inspector.stdout, "inspector-not-blocked")
             save()
-            if case["name"] == "release":
+            if case["name"] in ("release", "race"):
                 proxy.send("release")
                 case["blocked_inspector"] = client_result(inspector, 15)
-                validate_inspection(case["blocked_inspector"], True, expected)
+                if racing:
+                    other = case["blocked_inspector"]
+                    require(other["exit"] == 0 and other["output"].get("status") == "current"
+                            and other["output"].get("source_version") == "1"
+                            and other["output"].get("current_version") == "1"
+                            and other["output"].get("applied_count") == "0"
+                            and other["output"].get("steps") == [], "racing-apply-not-current")
+                else:
+                    validate_inspection(case["blocked_inspector"], True, expected)
             else:
                 case["blocked_inspector"] = client_result(inspector, 7)
                 require(case["blocked_inspector"]["exit"] == 1 and case["blocked_inspector"]["output"] is None
@@ -377,7 +386,7 @@ def run_case(root, state, container, case, save, source, expected):
         counts = {key: receipt[key] for key in ("commits_seen", "commits_forwarded", "server_commit_complete", "client_commit_complete", "faults")}
         expected_counts = {
             "pass": (1, 1, 1, 1, 0), "before": (1, 0, 0, 0, 1), "after": (1, 1, 1, 0, 1),
-            "release": (1, 1, 1, 1, 1), "close": (1, 0, 0, 0, 1),
+            "release": (1, 1, 1, 1, 1), "close": (1, 0, 0, 0, 1), "race": (1, 1, 1, 1, 1),
         }[case["name"]]
         require(tuple(counts.values()) == expected_counts, "proxy-boundary-mismatch")
         lost = case["name"] in ("before", "after", "close")
@@ -523,7 +532,7 @@ def run(root, build, run_name):
         save()
         for case in report["cases"]:
             run_case(root, {**state, "client": name}, name, case, save, source, expected)
-        require(len(report["cases"]) == 5 and all(case["status"] == "PASS" for case in report["cases"]), "case-set-incomplete")
+        require(len(report["cases"]) == len(CASES) and all(case["status"] == "PASS" for case in report["cases"]), "case-set-incomplete")
         require(all(digest(source / "experiments/control-migrations" / filename) == sha
                     for filename, sha in report["sources"].items())
                 and digest(build / "bigbrotr") == report["binary_sha256"]
