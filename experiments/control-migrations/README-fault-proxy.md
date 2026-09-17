@@ -150,3 +150,96 @@ and schema together. An old backend still holding that lock must keep resolution
 unavailable. Run a normal pass control, demonstrate the fault counters actually
 changed, and preserve all unavailable/unknown outcomes. No product test hook or
 faked engine receipt is supplied by this experiment.
+
+## Real migration fault driver
+
+`fault_cases.py` consumes an already running lab from `lab.py`. It does not create
+or restart PostgreSQL, alter authentication, rebuild the executable, remove data,
+or use SSH. Run from the lab state's same clean evolving Git source checkout;
+`--build` names the existing exact artifact directory whose receipt and binary
+hash must match `resources.json`. The lab's original client build/source/runtime
+mounts are inspected before another container is created. The initial driver development referenced
+application revision `6f7c03d` and PostgreSQL 16.15. A newer clean build can be used
+when its receipt matches the lab state and its migration SQL matches the harness;
+the actual application and harness revisions are always recorded separately.
+
+```sh
+python3 experiments/control-migrations/fault_cases.py \
+  --root /owned/lab/runtime-v2 \
+  --build /owned/lab/build-6f7c03d \
+  --run-name faults_a
+```
+
+Use actual inventoried paths. The run name contains 1–20 lowercase letters or
+underscores. Existing output directories, databases, configuration files and
+container names are refused. PostgreSQL and the original client must already be
+running, with host authentication explicitly SCRAM, including loopback. The
+original laboratory that inherited Docker initdb loopback trust is not an input
+for these SCRAM fault cases. Run sequentially with other laboratory work; a
+concurrent PostgreSQL restart or source/artifact change invalidates this run.
+
+The driver creates one additional labeled container named from the state's
+client plus `-fault-<run-name>`, sharing only the PostgreSQL network namespace.
+It uses the original readonly build/source mounts and writable owned runtime
+mount, 2 CPUs, 4 GiB memory and memory+swap limit, 256 PIDs, readonly root, no
+capabilities, no-new-privileges and no published ports. It verifies those limits
+and records a separate random ownership label. All clients created for these
+cases, including concurrent inspectors and retries, run in that container.
+`finally` stops only this exactly labeled container and retains it for inventory;
+it never stops the original client or PostgreSQL. A local `docker exec` wrapper
+exit is not treated as remote process exclusion.
+
+Every case creates its own database and two immutable configuration paths: direct
+`127.0.0.1:5432` and the proxy's chosen loopback port. No persistent file is
+rewritten to switch an in-flight client from one endpoint to the other. The actual
+CLI performs a migration through the proxy. The expected observations are:
+
+| Case | Proxy / real CLI | Fresh direct resolution and one retry |
+|---|---|---|
+| `pass` | COMMIT and reply forwarded; applied, exit 0 | Version 1; retry current, zero applied, exact schema/data and receipt unchanged |
+| `before` | COMMIT withheld and sockets closed; outcome-unknown, exit 4 | No control namespace; retry applies exactly version 1 |
+| `after` | Backend COMMIT completion observed, reply suppressed; outcome-unknown, exit 4 | Exact version 1 receipt/schema; retry current without rewriting either |
+| `release` | Hold COMMIT; observe an actual inspector waiting on its shared advisory lock; release and receive applied, exit 0 | The already-waiting inspector must see version 1; fresh direct resolution/retry preserve it |
+| `close` | Hold COMMIT; observe the waiter, its real five-second lock timeout/refusal, and the original owner still holding the exclusive lock; close, causing outcome-unknown, exit 4 | Fresh inspection sees absence; retry applies exactly version 1 |
+
+For each hold, `pg_stat_activity` and `pg_locks` must show the same owner PID idle
+in transaction with the exact granted ExclusiveLock and a different inspector
+PID with an ungranted ShareLock and `Lock/advisory` wait event. The checks use the
+actual migration lock pair and two-int advisory namespace. They never infer a
+lock wait solely from elapsed time. In `close`, the original owner must still be
+observed after the inspector refuses; otherwise the scenario is incomplete.
+The ten-second idle timeout remains unchanged. A slow host that misses this
+window produces FAIL/UNKNOWN, never a substituted successful case. PostgreSQL's
+[wait-event catalog](https://www.postgresql.org/docs/16/monitoring-stats.html)
+defines the lock observation.
+
+A fresh actual `migrate inspect` resolves each outcome under the product's
+transaction lock. Independent psql then checks namespace absence or all ten
+expected control tables plus the exact receipt checksum/name/version/compatibility
+metadata. That checksum comes from the original binary source revision's SQL,
+which must still match the harness checkout. The driver also records
+`lab.schema_digest`; because that pg_dump includes data, this is labeled
+`schema_and_data_sha256` and compared within one database across a current retry,
+not between databases with different receipt timestamps. Backend disappearance
+is observed after resolution and retry. No committed-absence conclusion follows
+from proxy socket closure alone.
+
+The new `<run-name>-faults/report.json` retains each step, safe proxy events,
+actual CLI envelopes, external rows/digests, process-lock observations, source/
+artifact/engine identities and stopped container identity. Updates replace this
+owned report atomically. A failed scenario stops the run; later cases remain
+NOT_RUN, partial observations remain, and unknown execution/cleanup is explicit.
+Proxy/concurrent-client stdout and stderr are capped at 64 KiB each; only closed
+metadata and parsed migration envelopes are saved. Raw SQL, passwords, backend
+keys and raw exception/stderr bytes are never saved. SQL/normal CLI/dump calls
+reuse the existing finite lab helpers. Every required case must be PASS for exit
+0; missing receipts, empty observations or an unconfirmed container stop prevent
+that result. SIGKILL/host loss may leave the last report RUNNING and resources
+retained; that is incomplete evidence requiring operator reconciliation.
+
+Driver status at implementation: **actual PostgreSQL cases NOT_RUN**. Local checks
+exercise process-output bounds, timeout refusal, safe metadata validation and
+exclusive file creation, plus Python parsing/help. Those checks do not simulate a
+successful database scenario or qualify commit recovery. Root's exact-source
+native run must supply the five real outcomes before this driver contributes any
+P02-T01 acceptance evidence.
