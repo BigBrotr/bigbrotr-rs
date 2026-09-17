@@ -1,0 +1,56 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-18",
+  "scope": "Independent signed-event admission oracle and actual protocol fixture checks; no native admission execution",
+  "status": "PASS",
+  "source_candidates": [
+    "be8826a3a3fbb03452181c5875fe7355daa0bde6",
+    "1768c251b1d28742b4a32fefa4f1074ee633d8a9"
+  ],
+  "root_adjustments": [
+    "Actual Endpoint parser reproduced omitted trailing slash on both relay descriptors; fixed fixture values to its exact canonical result.",
+    "Replaced research synthetic lineage digest with retained complete signed I event JSONL artifact; source_dataset_id null because no source dataset is present."
+  ],
+  "sha256": {
+    "tests/fixtures/ingest/README.md": "3d5efc2d9c66134bd51c9ef2450fc0f4222ed2bc49721255c182553f7c6ed140",
+    "tests/fixtures/ingest/signed-event-admission.json": "c6334e8ecb4544e476fafcfaff4ee4472267b43597a6f1fb28ffe5ea59f75fef",
+    "tests/fixtures/ingest/import-event.jsonl": "c30658a75b2b913e509b7618f36ebae75fa1d5680dc8fe4e322aae638d8affae",
+    "experiments/identity-contract/signed-fixture.json": "4c931ab34cb7adeb707fc2866f4a50b3ec8b694cbb2d4fb5e335f8f37a2d8875"
+  },
+  "checks": {
+    "scenarios": 5,
+    "operations": 15,
+    "inventory_states": 10,
+    "changed_expected_operations_or_inventories": false,
+    "body_vector_hashes": "PASS two literal preimages",
+    "actual_rust_verifier": "PASS three complete signed events plus corrupted signature rejection; computed body digests match literals",
+    "actual_endpoint_parser": "PASS both missing-slash counterexamples reproduced and normalized outputs idempotent",
+    "import_artifact": "PASS complete JSON fields equal signed corpus I, whole-file SHA and LF checked"
+  },
+  "author_evidence": {
+    "inventory": ".research/worktrees/ingest-admission-fixture/.research/implementation/ingest-admission-fixture/inventory.json",
+    "sha256": "31099306c81ec3dc705f8a10228c9de51be608ce1bb67d20dafa36b8b5a358ff",
+    "scope": "Fresh research verifier reports fifteen variants with libsecp256k1 and independent equation checks; root read report, separately executed actual Rust verifier for selected fixture inputs."
+  },
+  "root_probes": {
+    "root": ".research/implementation/rocks-product-design/fixture-review",
+    "sha256": {
+      "endpoint_probe": "eb5f43ce6ab97c42cfb95868c1d26853e51e89b489ea2930813d6eba87573036",
+      "endpoint-probe.log": "bf8fa007b090a0dad8bebebd3253d55c30e1966c15ef0f439f61a9e09f5acaf5",
+      "E_private.json": "a8c1782812dfc4ab250f064d8e5a864872a893c9987687f6cf14f4834b21dd2e",
+      "event_probe.rs": "08d407dc104c901b5f5bd6c3094a99bc50613aaa32f7f59dd5fae197ca3c1957",
+      "invalid.json": "277c68b9b78bd35b63129c2e6e5315152f483529d2d0ea5318ae9d9af1b816d1",
+      "E_public.json": "fb716ac0719110986762abe8d6c46e2f2edd82e6a1dd4493fb591ab935a6e204",
+      "I.json": "c30658a75b2b913e509b7618f36ebae75fa1d5680dc8fe4e322aae638d8affae",
+      "event-probe.log": "cc0c6a71c71383be2e6f6c6eb9c5a6352fc5454c0fdbf0122a137445c7499937",
+      "endpoint_probe.rs": "1144656e2274dde8da77c3786cc3b3ca75a4dfd1a3aa4f802c70134311f3e8ff",
+      "event_probe": "839fbdd201ebf00507371df543a29baf3a8a2777d3406eca06848a982e36487a"
+    },
+    "protocol_rlib_sha256": "680bd35dd92ee6f5743f92a73ce8222d77c9c331f13baf6ca1bd52f0f59968f2",
+    "method": "Isolated rustc programs linked to cached actual protocol rlib; ordinary local build, not clean release evidence."
+  },
+  "not_run": [
+    "Fixture consumption by native admission, registered owner/policy, atomic receipts/ACK/GC and crash/restart.",
+    "Public/private read/export journey, native Linux or release qualification."
+  ]
+}

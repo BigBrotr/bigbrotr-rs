@@ -581,6 +581,12 @@
         "evidence": "docs/implementation/evidence/p02-ingest-dictionary-codec-20260918.json",
         "review_sha256": "a5cd491fbe18a93a5cff57b501fc07ea460787b6b318374877881c4187210f48",
         "scope": "Integrated Mac workspace166 tests and Clippy PASS. Native libraries rebuilt for this feature tuple; no dictionary allocator/admission authority."
+      },
+      "signed_fixture": {
+        "worktree": ".research/worktrees/ingest-admission-fixture",
+        "root": ".research/implementation/rocks-product-design/fixture-review",
+        "evidence": "docs/implementation/evidence/p02-ingest-signed-fixture-20260918.json",
+        "scope": "Retained complete signed input and independent expected states; actual Rust crypto/URL checks only, native admission remains work."
       }
     },
     "ingest_control_review": {

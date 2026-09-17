@@ -1,0 +1,1675 @@
+{
+  "schema": "bigbrotr-signed-event-admission-fixture/1",
+  "purpose": "Independent semantic oracle for the first durable RocksDB event Admit consumer.",
+  "bounds": {
+    "scenario_count": 5,
+    "operation_count": 15,
+    "source_event_count": 3,
+    "max_scientific_deltas_per_operation": 4,
+    "max_dictionary_deltas_per_operation": 1,
+    "source_corpus_max_bytes": 65536,
+    "fixture_max_bytes": 131072
+  },
+  "source_corpus": {
+    "path": "experiments/identity-contract/signed-fixture.json",
+    "sha256": "4c931ab34cb7adeb707fc2866f4a50b3ec8b694cbb2d4fb5e335f8f37a2d8875",
+    "actual_bytes_at_authoring": 58802,
+    "verification_command": "python3 experiments/identity-contract/signed_fixture.py",
+    "verification_evidence_path": "experiments/identity-contract/signed-fixture-evidence.json"
+  },
+  "dictionary_descriptor_contract": {
+    "candidate_commit": "a3f3a26ee38e86b1a2788e1267ac0ad773218406",
+    "path": "docs/specification/dictionary-descriptors.md",
+    "sha256": "85c8dfb93614da00b079f3e09605c24929845c0e0ad010f959e6e44c9008f5ee",
+    "normalization_version": 1,
+    "descriptor_version": 1,
+    "qualified_ref_placeholder": "$binding:<name>"
+  },
+  "event_refs": {
+    "E_private": {
+      "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+      "body_digest": "bdbd8f628b366155b487202a4a3d507f3df03b1695d04e1abe0e18a2cfbe5427",
+      "signature": "f455e992a8359238a5583f91843be3c4fd0847574162222afdd8dc0aee67f5fab742f6eaf378cae2d66ce268f7b86698b4912579c534d568c6f53adf4cc90c85",
+      "expected_signature_valid": true
+    },
+    "E_public": {
+      "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+      "body_digest": "bdbd8f628b366155b487202a4a3d507f3df03b1695d04e1abe0e18a2cfbe5427",
+      "signature": "9444d1fab8095f14d43137f841a400f0648cd614515f53bb5545749e373056381ce2963d43fdb5d10d9294846da6fc895d1fdfaf3417399a5c2699414877c180",
+      "expected_signature_valid": true
+    },
+    "I": {
+      "event_id": "8a0096a3a84f1460c11a432355666cb9fd377cca00a5a1e08ef0071c9c0b9849",
+      "body_digest": "1e05f420946c84c3ee8b178daf05dd564c9904c7ed18f7ab99874aec878337fb",
+      "signature": "ab9e62de93391621735c773f4b1c40f41029d7d49369993a63a226c4ce14605859b112dd261b5fa4f8a2b82bbac0a67323f39c4d007555711547bfd25560b4a6",
+      "expected_signature_valid": true
+    },
+    "E_public_invalid_signature": {
+      "base_event_ref": "E_public",
+      "signature": "9544d1fab8095f14d43137f841a400f0648cd614515f53bb5545749e373056381ce2963d43fdb5d10d9294846da6fc895d1fdfaf3417399a5c2699414877c180",
+      "expected_signature_valid": false,
+      "mutation": "signature byte 0 changed from 0x94 to 0x95; signed fields and claimed event ID unchanged"
+    }
+  },
+  "body_digest_recipe": "SHA-256(bigbrotr/body/1\\0 || deterministic-CBOR([event_id,pubkey,created_at,kind,tags,content]))",
+  "body_digest_vectors": {
+    "E_shared_body": {
+      "event_refs": [
+        "E_private",
+        "E_public"
+      ],
+      "preimage_hex": "62696762726f74722f626f64792f3100865820a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb582079be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f817980101848161788261786082617462c3a982617462c3a9781c73616d65206576656e740a77697468206f7264657265642074616773",
+      "sha256": "bdbd8f628b366155b487202a4a3d507f3df03b1695d04e1abe0e18a2cfbe5427"
+    },
+    "I_body": {
+      "event_refs": [
+        "I"
+      ],
+      "preimage_hex": "62696762726f74722f626f64792f31008658208a0096a3a84f1460c11a432355666cb9fd377cca00a5a1e08ef0071c9c0b98495820f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f901018073696d706f7274207468656e206e6574776f726b",
+      "sha256": "1e05f420946c84c3ee8b178daf05dd564c9904c7ed18f7ab99874aec878337fb"
+    }
+  },
+  "owner_selected_bindings": {
+    "rule": "Harness assigns concrete same-dataset QualifiedRefs and source identities before each scenario; symbolic names below are fixture bindings, not allocator order. Resolve every $binding:<name> to that scenario binding before constructing the typed descriptor.",
+    "base": {
+      "visibility_scopes": [
+        {
+          "name": "public",
+          "dictionary_kind": "visibility-scope",
+          "normalization_version": 1,
+          "descriptor_schema": "visibility",
+          "descriptor_version": 1,
+          "descriptor": {
+            "class": "public"
+          }
+        },
+        {
+          "name": "private",
+          "dictionary_kind": "visibility-scope",
+          "normalization_version": 1,
+          "descriptor_schema": "visibility",
+          "descriptor_version": 1,
+          "descriptor": {
+            "class": "private"
+          }
+        }
+      ],
+      "observers": [
+        {
+          "name": "fixture-observer",
+          "dictionary_kind": "observer",
+          "normalization_version": 1,
+          "descriptor_schema": "observer",
+          "descriptor_version": 1,
+          "descriptor": {
+            "clock": "system-utc",
+            "vantage": "fixture-vantage",
+            "software": null,
+            "method_id": null,
+            "public_key": null,
+            "route_class": null,
+            "software_version": null
+          }
+        }
+      ],
+      "dataset_lineages": [
+        {
+          "name": "fixture-import-lineage",
+          "dictionary_kind": "dataset-lineage",
+          "normalization_version": 1,
+          "descriptor_schema": "dataset-lineage",
+          "descriptor_version": 1,
+          "descriptor": {
+            "format": "nostr-jsonl",
+            "format_version": 1,
+            "source_dataset_id": null,
+            "source_artifact_digest": "c30658a75b2b913e509b7618f36ebae75fa1d5680dc8fe4e322aae638d8affae"
+          }
+        }
+      ],
+      "clock_qualities": [
+        {
+          "name": "fixture-clock",
+          "clock_id": "fixture-observer",
+          "resolution_us": 1,
+          "uncertainty_us": null,
+          "anomaly_flags": 0
+        }
+      ]
+    },
+    "witness_only_when_provenance_enabled": {
+      "endpoints": [
+        {
+          "name": "R_public",
+          "dictionary_kind": "endpoint",
+          "normalization_version": 1,
+          "descriptor_schema": "endpoint",
+          "descriptor_version": 1,
+          "descriptor": {
+            "url": "wss://public.example/"
+          }
+        },
+        {
+          "name": "R_private",
+          "dictionary_kind": "endpoint",
+          "normalization_version": 1,
+          "descriptor_schema": "endpoint",
+          "descriptor_version": 1,
+          "descriptor": {
+            "url": "wss://private.example/"
+          }
+        }
+      ],
+      "access_scopes": [
+        {
+          "name": "public-access",
+          "dictionary_kind": "access-scope",
+          "normalization_version": 1,
+          "descriptor_schema": "access-scope",
+          "descriptor_version": 1,
+          "descriptor": {
+            "class": "public",
+            "label": null,
+            "visibility_scope_id": "$binding:public"
+          }
+        },
+        {
+          "name": "private-access",
+          "dictionary_kind": "access-scope",
+          "normalization_version": 1,
+          "descriptor_schema": "access-scope",
+          "descriptor_version": 1,
+          "descriptor": {
+            "class": "protected",
+            "label": "private-access",
+            "visibility_scope_id": "$binding:private"
+          }
+        }
+      ],
+      "verification_methods": [
+        {
+          "name": "nip01-bip340-full-verification",
+          "dictionary_kind": "method",
+          "normalization_version": 1,
+          "descriptor_schema": "event-verification",
+          "descriptor_version": 1,
+          "descriptor": {
+            "input": "nip01-event/1",
+            "algorithm": "sha256-bip340",
+            "capability": "event-id-and-signature",
+            "output_unit": "verification-result",
+            "failure_taxonomy": "bigbrotr-nip01-verifier/1",
+            "algorithm_version": 1,
+            "protocol_revision": "a2494f4f81d46684e5814a9bf35e2b1df978f955"
+          }
+        }
+      ]
+    },
+    "sets": {
+      "base_only_no_witness_bindings": [
+        "base"
+      ],
+      "base_plus_witness": [
+        "base",
+        "witness_only_when_provenance_enabled"
+      ]
+    },
+    "event_dictionary_rule": "No event mapping is preinstalled. First payload admission creates exactly one typed event mapping for the event ID in the same synced batch; its QualifiedRef, ordinal and source identity are owner-assigned."
+  },
+  "unconstrained_owner_outputs": [
+    "dataset_id",
+    "dictionary allocation domain and ordinals",
+    "dictionary source-record identities",
+    "event ordinals",
+    "fact source-record identities",
+    "contiguous sequence endpoints",
+    "fact envelope recorded_at representation beyond the injected test clock",
+    "fact and batch digests",
+    "receipt bytes and dependency ordering consistent with the contract"
+  ],
+  "expected_inventory_states": {
+    "p2p_private": {
+      "event_dictionary_values": [
+        "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb"
+      ],
+      "event_payloads": [
+        {
+          "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+          "body_digest": "bdbd8f628b366155b487202a4a3d507f3df03b1695d04e1abe0e18a2cfbe5427"
+        }
+      ],
+      "event_eligibility": [
+        {
+          "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+          "visibility_scope": "private",
+          "body_digest": "bdbd8f628b366155b487202a4a3d507f3df03b1695d04e1abe0e18a2cfbe5427",
+          "signature": "f455e992a8359238a5583f91843be3c4fd0847574162222afdd8dc0aee67f5fab742f6eaf378cae2d66ce268f7b86698b4912579c534d568c6f53adf4cc90c85",
+          "first_eligible_at_us": 10000000,
+          "origin": "network",
+          "import_lineage": null
+        }
+      ],
+      "event_receive": [
+        {
+          "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+          "visibility_scope": "private",
+          "selected_received_at_us": 10000000,
+          "history_received_at_us": [
+            10000000
+          ],
+          "selected_observer": "fixture-observer",
+          "selected_clock_quality": "fixture-clock"
+        }
+      ],
+      "provenance": [
+        {
+          "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+          "visibility_scope": "private",
+          "endpoint": "R_private",
+          "observer": "fixture-observer",
+          "access_scope": "private-access",
+          "selected_received_at_us": 10000000,
+          "history_received_at_us": [
+            10000000
+          ],
+          "selected_clock_quality": "fixture-clock",
+          "selected_verification_method": "nip01-bip340-full-verification"
+        }
+      ]
+    },
+    "p2p_public": {
+      "event_dictionary_values": [
+        "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb"
+      ],
+      "event_payloads": [
+        {
+          "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+          "body_digest": "bdbd8f628b366155b487202a4a3d507f3df03b1695d04e1abe0e18a2cfbe5427"
+        }
+      ],
+      "event_eligibility": [
+        {
+          "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+          "visibility_scope": "private",
+          "body_digest": "bdbd8f628b366155b487202a4a3d507f3df03b1695d04e1abe0e18a2cfbe5427",
+          "signature": "f455e992a8359238a5583f91843be3c4fd0847574162222afdd8dc0aee67f5fab742f6eaf378cae2d66ce268f7b86698b4912579c534d568c6f53adf4cc90c85",
+          "first_eligible_at_us": 10000000,
+          "origin": "network",
+          "import_lineage": null
+        },
+        {
+          "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+          "visibility_scope": "public",
+          "body_digest": "bdbd8f628b366155b487202a4a3d507f3df03b1695d04e1abe0e18a2cfbe5427",
+          "signature": "9444d1fab8095f14d43137f841a400f0648cd614515f53bb5545749e373056381ce2963d43fdb5d10d9294846da6fc895d1fdfaf3417399a5c2699414877c180",
+          "first_eligible_at_us": 20000000,
+          "origin": "network",
+          "import_lineage": null
+        }
+      ],
+      "event_receive": [
+        {
+          "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+          "visibility_scope": "private",
+          "selected_received_at_us": 10000000,
+          "history_received_at_us": [
+            10000000
+          ],
+          "selected_observer": "fixture-observer",
+          "selected_clock_quality": "fixture-clock"
+        },
+        {
+          "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+          "visibility_scope": "public",
+          "selected_received_at_us": 20000000,
+          "history_received_at_us": [
+            20000000
+          ],
+          "selected_observer": "fixture-observer",
+          "selected_clock_quality": "fixture-clock"
+        }
+      ],
+      "provenance": [
+        {
+          "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+          "visibility_scope": "private",
+          "endpoint": "R_private",
+          "observer": "fixture-observer",
+          "access_scope": "private-access",
+          "selected_received_at_us": 10000000,
+          "history_received_at_us": [
+            10000000
+          ],
+          "selected_clock_quality": "fixture-clock",
+          "selected_verification_method": "nip01-bip340-full-verification"
+        },
+        {
+          "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+          "visibility_scope": "public",
+          "endpoint": "R_public",
+          "observer": "fixture-observer",
+          "access_scope": "public-access",
+          "selected_received_at_us": 20000000,
+          "history_received_at_us": [
+            20000000
+          ],
+          "selected_clock_quality": "fixture-clock",
+          "selected_verification_method": "nip01-bip340-full-verification"
+        }
+      ]
+    },
+    "p2p_corrected": {
+      "event_dictionary_values": [
+        "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb"
+      ],
+      "event_payloads": [
+        {
+          "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+          "body_digest": "bdbd8f628b366155b487202a4a3d507f3df03b1695d04e1abe0e18a2cfbe5427"
+        }
+      ],
+      "event_eligibility": [
+        {
+          "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+          "visibility_scope": "private",
+          "body_digest": "bdbd8f628b366155b487202a4a3d507f3df03b1695d04e1abe0e18a2cfbe5427",
+          "signature": "f455e992a8359238a5583f91843be3c4fd0847574162222afdd8dc0aee67f5fab742f6eaf378cae2d66ce268f7b86698b4912579c534d568c6f53adf4cc90c85",
+          "first_eligible_at_us": 10000000,
+          "origin": "network",
+          "import_lineage": null
+        },
+        {
+          "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+          "visibility_scope": "public",
+          "body_digest": "bdbd8f628b366155b487202a4a3d507f3df03b1695d04e1abe0e18a2cfbe5427",
+          "signature": "9444d1fab8095f14d43137f841a400f0648cd614515f53bb5545749e373056381ce2963d43fdb5d10d9294846da6fc895d1fdfaf3417399a5c2699414877c180",
+          "first_eligible_at_us": 20000000,
+          "origin": "network",
+          "import_lineage": null
+        }
+      ],
+      "event_receive": [
+        {
+          "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+          "visibility_scope": "private",
+          "selected_received_at_us": 10000000,
+          "history_received_at_us": [
+            10000000
+          ],
+          "selected_observer": "fixture-observer",
+          "selected_clock_quality": "fixture-clock"
+        },
+        {
+          "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+          "visibility_scope": "public",
+          "selected_received_at_us": 15000000,
+          "history_received_at_us": [
+            20000000,
+            15000000
+          ],
+          "selected_observer": "fixture-observer",
+          "selected_clock_quality": "fixture-clock"
+        }
+      ],
+      "provenance": [
+        {
+          "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+          "visibility_scope": "private",
+          "endpoint": "R_private",
+          "observer": "fixture-observer",
+          "access_scope": "private-access",
+          "selected_received_at_us": 10000000,
+          "history_received_at_us": [
+            10000000
+          ],
+          "selected_clock_quality": "fixture-clock",
+          "selected_verification_method": "nip01-bip340-full-verification"
+        },
+        {
+          "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+          "visibility_scope": "public",
+          "endpoint": "R_public",
+          "observer": "fixture-observer",
+          "access_scope": "public-access",
+          "selected_received_at_us": 15000000,
+          "history_received_at_us": [
+            20000000,
+            15000000
+          ],
+          "selected_clock_quality": "fixture-clock",
+          "selected_verification_method": "nip01-bip340-full-verification"
+        }
+      ]
+    },
+    "reverse_public": {
+      "event_dictionary_values": [
+        "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb"
+      ],
+      "event_payloads": [
+        {
+          "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+          "body_digest": "bdbd8f628b366155b487202a4a3d507f3df03b1695d04e1abe0e18a2cfbe5427"
+        }
+      ],
+      "event_eligibility": [
+        {
+          "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+          "visibility_scope": "public",
+          "body_digest": "bdbd8f628b366155b487202a4a3d507f3df03b1695d04e1abe0e18a2cfbe5427",
+          "signature": "9444d1fab8095f14d43137f841a400f0648cd614515f53bb5545749e373056381ce2963d43fdb5d10d9294846da6fc895d1fdfaf3417399a5c2699414877c180",
+          "first_eligible_at_us": 10000000,
+          "origin": "network",
+          "import_lineage": null
+        }
+      ],
+      "event_receive": [
+        {
+          "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+          "visibility_scope": "public",
+          "selected_received_at_us": 10000000,
+          "history_received_at_us": [
+            10000000
+          ],
+          "selected_observer": "fixture-observer",
+          "selected_clock_quality": "fixture-clock"
+        }
+      ],
+      "provenance": [
+        {
+          "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+          "visibility_scope": "public",
+          "endpoint": "R_public",
+          "observer": "fixture-observer",
+          "access_scope": "public-access",
+          "selected_received_at_us": 10000000,
+          "history_received_at_us": [
+            10000000
+          ],
+          "selected_clock_quality": "fixture-clock",
+          "selected_verification_method": "nip01-bip340-full-verification"
+        }
+      ]
+    },
+    "reverse_private": {
+      "event_dictionary_values": [
+        "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb"
+      ],
+      "event_payloads": [
+        {
+          "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+          "body_digest": "bdbd8f628b366155b487202a4a3d507f3df03b1695d04e1abe0e18a2cfbe5427"
+        }
+      ],
+      "event_eligibility": [
+        {
+          "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+          "visibility_scope": "public",
+          "body_digest": "bdbd8f628b366155b487202a4a3d507f3df03b1695d04e1abe0e18a2cfbe5427",
+          "signature": "9444d1fab8095f14d43137f841a400f0648cd614515f53bb5545749e373056381ce2963d43fdb5d10d9294846da6fc895d1fdfaf3417399a5c2699414877c180",
+          "first_eligible_at_us": 10000000,
+          "origin": "network",
+          "import_lineage": null
+        },
+        {
+          "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+          "visibility_scope": "private",
+          "body_digest": "bdbd8f628b366155b487202a4a3d507f3df03b1695d04e1abe0e18a2cfbe5427",
+          "signature": "f455e992a8359238a5583f91843be3c4fd0847574162222afdd8dc0aee67f5fab742f6eaf378cae2d66ce268f7b86698b4912579c534d568c6f53adf4cc90c85",
+          "first_eligible_at_us": 20000000,
+          "origin": "network",
+          "import_lineage": null
+        }
+      ],
+      "event_receive": [
+        {
+          "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+          "visibility_scope": "public",
+          "selected_received_at_us": 10000000,
+          "history_received_at_us": [
+            10000000
+          ],
+          "selected_observer": "fixture-observer",
+          "selected_clock_quality": "fixture-clock"
+        },
+        {
+          "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+          "visibility_scope": "private",
+          "selected_received_at_us": 20000000,
+          "history_received_at_us": [
+            20000000
+          ],
+          "selected_observer": "fixture-observer",
+          "selected_clock_quality": "fixture-clock"
+        }
+      ],
+      "provenance": [
+        {
+          "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+          "visibility_scope": "public",
+          "endpoint": "R_public",
+          "observer": "fixture-observer",
+          "access_scope": "public-access",
+          "selected_received_at_us": 10000000,
+          "history_received_at_us": [
+            10000000
+          ],
+          "selected_clock_quality": "fixture-clock",
+          "selected_verification_method": "nip01-bip340-full-verification"
+        },
+        {
+          "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+          "visibility_scope": "private",
+          "endpoint": "R_private",
+          "observer": "fixture-observer",
+          "access_scope": "private-access",
+          "selected_received_at_us": 20000000,
+          "history_received_at_us": [
+            20000000
+          ],
+          "selected_clock_quality": "fixture-clock",
+          "selected_verification_method": "nip01-bip340-full-verification"
+        }
+      ]
+    },
+    "provenance_off_private": {
+      "event_dictionary_values": [
+        "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb"
+      ],
+      "event_payloads": [
+        {
+          "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+          "body_digest": "bdbd8f628b366155b487202a4a3d507f3df03b1695d04e1abe0e18a2cfbe5427"
+        }
+      ],
+      "event_eligibility": [
+        {
+          "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+          "visibility_scope": "private",
+          "body_digest": "bdbd8f628b366155b487202a4a3d507f3df03b1695d04e1abe0e18a2cfbe5427",
+          "signature": "f455e992a8359238a5583f91843be3c4fd0847574162222afdd8dc0aee67f5fab742f6eaf378cae2d66ce268f7b86698b4912579c534d568c6f53adf4cc90c85",
+          "first_eligible_at_us": 10000000,
+          "origin": "network",
+          "import_lineage": null
+        }
+      ],
+      "event_receive": [
+        {
+          "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+          "visibility_scope": "private",
+          "selected_received_at_us": 10000000,
+          "history_received_at_us": [
+            10000000
+          ],
+          "selected_observer": "fixture-observer",
+          "selected_clock_quality": "fixture-clock"
+        }
+      ],
+      "provenance": []
+    },
+    "provenance_off_public": {
+      "event_dictionary_values": [
+        "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb"
+      ],
+      "event_payloads": [
+        {
+          "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+          "body_digest": "bdbd8f628b366155b487202a4a3d507f3df03b1695d04e1abe0e18a2cfbe5427"
+        }
+      ],
+      "event_eligibility": [
+        {
+          "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+          "visibility_scope": "private",
+          "body_digest": "bdbd8f628b366155b487202a4a3d507f3df03b1695d04e1abe0e18a2cfbe5427",
+          "signature": "f455e992a8359238a5583f91843be3c4fd0847574162222afdd8dc0aee67f5fab742f6eaf378cae2d66ce268f7b86698b4912579c534d568c6f53adf4cc90c85",
+          "first_eligible_at_us": 10000000,
+          "origin": "network",
+          "import_lineage": null
+        },
+        {
+          "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+          "visibility_scope": "public",
+          "body_digest": "bdbd8f628b366155b487202a4a3d507f3df03b1695d04e1abe0e18a2cfbe5427",
+          "signature": "9444d1fab8095f14d43137f841a400f0648cd614515f53bb5545749e373056381ce2963d43fdb5d10d9294846da6fc895d1fdfaf3417399a5c2699414877c180",
+          "first_eligible_at_us": 20000000,
+          "origin": "network",
+          "import_lineage": null
+        }
+      ],
+      "event_receive": [
+        {
+          "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+          "visibility_scope": "private",
+          "selected_received_at_us": 10000000,
+          "history_received_at_us": [
+            10000000
+          ],
+          "selected_observer": "fixture-observer",
+          "selected_clock_quality": "fixture-clock"
+        },
+        {
+          "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+          "visibility_scope": "public",
+          "selected_received_at_us": 20000000,
+          "history_received_at_us": [
+            20000000
+          ],
+          "selected_observer": "fixture-observer",
+          "selected_clock_quality": "fixture-clock"
+        }
+      ],
+      "provenance": []
+    },
+    "import_only": {
+      "event_dictionary_values": [
+        "8a0096a3a84f1460c11a432355666cb9fd377cca00a5a1e08ef0071c9c0b9849"
+      ],
+      "event_payloads": [
+        {
+          "event_id": "8a0096a3a84f1460c11a432355666cb9fd377cca00a5a1e08ef0071c9c0b9849",
+          "body_digest": "1e05f420946c84c3ee8b178daf05dd564c9904c7ed18f7ab99874aec878337fb"
+        }
+      ],
+      "event_eligibility": [
+        {
+          "event_id": "8a0096a3a84f1460c11a432355666cb9fd377cca00a5a1e08ef0071c9c0b9849",
+          "visibility_scope": "public",
+          "body_digest": "1e05f420946c84c3ee8b178daf05dd564c9904c7ed18f7ab99874aec878337fb",
+          "signature": "ab9e62de93391621735c773f4b1c40f41029d7d49369993a63a226c4ce14605859b112dd261b5fa4f8a2b82bbac0a67323f39c4d007555711547bfd25560b4a6",
+          "first_eligible_at_us": 45000000,
+          "origin": "import",
+          "import_lineage": "fixture-import-lineage"
+        }
+      ],
+      "event_receive": [],
+      "provenance": []
+    },
+    "import_then_network": {
+      "event_dictionary_values": [
+        "8a0096a3a84f1460c11a432355666cb9fd377cca00a5a1e08ef0071c9c0b9849"
+      ],
+      "event_payloads": [
+        {
+          "event_id": "8a0096a3a84f1460c11a432355666cb9fd377cca00a5a1e08ef0071c9c0b9849",
+          "body_digest": "1e05f420946c84c3ee8b178daf05dd564c9904c7ed18f7ab99874aec878337fb"
+        }
+      ],
+      "event_eligibility": [
+        {
+          "event_id": "8a0096a3a84f1460c11a432355666cb9fd377cca00a5a1e08ef0071c9c0b9849",
+          "visibility_scope": "public",
+          "body_digest": "1e05f420946c84c3ee8b178daf05dd564c9904c7ed18f7ab99874aec878337fb",
+          "signature": "ab9e62de93391621735c773f4b1c40f41029d7d49369993a63a226c4ce14605859b112dd261b5fa4f8a2b82bbac0a67323f39c4d007555711547bfd25560b4a6",
+          "first_eligible_at_us": 45000000,
+          "origin": "import",
+          "import_lineage": "fixture-import-lineage"
+        }
+      ],
+      "event_receive": [
+        {
+          "event_id": "8a0096a3a84f1460c11a432355666cb9fd377cca00a5a1e08ef0071c9c0b9849",
+          "visibility_scope": "public",
+          "selected_received_at_us": 46000000,
+          "history_received_at_us": [
+            46000000
+          ],
+          "selected_observer": "fixture-observer",
+          "selected_clock_quality": "fixture-clock"
+        }
+      ],
+      "provenance": [
+        {
+          "event_id": "8a0096a3a84f1460c11a432355666cb9fd377cca00a5a1e08ef0071c9c0b9849",
+          "visibility_scope": "public",
+          "endpoint": "R_public",
+          "observer": "fixture-observer",
+          "access_scope": "public-access",
+          "selected_received_at_us": 46000000,
+          "history_received_at_us": [
+            46000000
+          ],
+          "selected_clock_quality": "fixture-clock",
+          "selected_verification_method": "nip01-bip340-full-verification"
+        }
+      ]
+    },
+    "strict_original": {
+      "event_dictionary_values": [
+        "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb"
+      ],
+      "event_payloads": [
+        {
+          "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+          "body_digest": "bdbd8f628b366155b487202a4a3d507f3df03b1695d04e1abe0e18a2cfbe5427"
+        }
+      ],
+      "event_eligibility": [
+        {
+          "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+          "visibility_scope": "public",
+          "body_digest": "bdbd8f628b366155b487202a4a3d507f3df03b1695d04e1abe0e18a2cfbe5427",
+          "signature": "9444d1fab8095f14d43137f841a400f0648cd614515f53bb5545749e373056381ce2963d43fdb5d10d9294846da6fc895d1fdfaf3417399a5c2699414877c180",
+          "first_eligible_at_us": 20000000,
+          "origin": "network",
+          "import_lineage": null
+        }
+      ],
+      "event_receive": [
+        {
+          "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+          "visibility_scope": "public",
+          "selected_received_at_us": 20000000,
+          "history_received_at_us": [
+            20000000
+          ],
+          "selected_observer": "fixture-observer",
+          "selected_clock_quality": "fixture-clock"
+        }
+      ],
+      "provenance": [
+        {
+          "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+          "visibility_scope": "public",
+          "endpoint": "R_public",
+          "observer": "fixture-observer",
+          "access_scope": "public-access",
+          "selected_received_at_us": 20000000,
+          "history_received_at_us": [
+            20000000
+          ],
+          "selected_clock_quality": "fixture-clock",
+          "selected_verification_method": "nip01-bip340-full-verification"
+        }
+      ]
+    }
+  },
+  "scenarios": [
+    {
+      "name": "private_to_public_with_corrections_and_invalid",
+      "provenance_enabled": true,
+      "initial_bindings": "base_plus_witness",
+      "operations": [
+        {
+          "name": "private_first_signature_a",
+          "input": {
+            "request_id": {
+              "producer_slot_id": "55555555555555555555555555555555",
+              "producer_epoch": 1,
+              "request_sequence": 1
+            },
+            "admission_policy_version": 1,
+            "event_ref": "E_private",
+            "visibility_scope": "private",
+            "origin": "network",
+            "owner_recorded_at_us": 10000000,
+            "observation": {
+              "received_at_us": 10000000,
+              "observer": "fixture-observer",
+              "clock_quality": "fixture-clock",
+              "witness": {
+                "endpoint": "R_private",
+                "access_scope": "private-access",
+                "verification_method": "nip01-bip340-full-verification"
+              }
+            }
+          },
+          "expected": {
+            "result": "NewFacts",
+            "request_detail": "created",
+            "batch": "new_nonempty_batch",
+            "dictionary_deltas": [
+              {
+                "effect": "create",
+                "dictionary_kind": "event",
+                "normalization_version": 1,
+                "descriptor_schema": "event",
+                "descriptor_version": 1,
+                "descriptor": {
+                  "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb"
+                },
+                "assigned_ref": "owner_assigned:event:a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+                "atomic_with_request_batch": true
+              }
+            ],
+            "scientific_deltas": [
+              {
+                "kind": "event-payload/1",
+                "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+                "body_digest": "bdbd8f628b366155b487202a4a3d507f3df03b1695d04e1abe0e18a2cfbe5427",
+                "body_from_event_ref": "E_private",
+                "event_ordinal": "owner_assigned:event:a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb"
+              },
+              {
+                "kind": "event-eligibility/1",
+                "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+                "visibility_scope": "private",
+                "body_digest": "bdbd8f628b366155b487202a4a3d507f3df03b1695d04e1abe0e18a2cfbe5427",
+                "signature": "f455e992a8359238a5583f91843be3c4fd0847574162222afdd8dc0aee67f5fab742f6eaf378cae2d66ce268f7b86698b4912579c534d568c6f53adf4cc90c85",
+                "first_eligible_at_us": 10000000,
+                "origin": "network",
+                "import_lineage": null
+              },
+              {
+                "kind": "event-receive/1",
+                "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+                "visibility_scope": "private",
+                "received_at_us": 10000000,
+                "observer": "fixture-observer",
+                "clock_quality": "fixture-clock",
+                "corrects": null
+              },
+              {
+                "kind": "provenance/1",
+                "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+                "visibility_scope": "private",
+                "endpoint": "R_private",
+                "observer": "fixture-observer",
+                "access_scope": "private-access",
+                "received_at_us": 10000000,
+                "clock_quality": "fixture-clock",
+                "verification_method": "nip01-bip340-full-verification",
+                "corrects": null
+              }
+            ]
+          },
+          "expected_inventory_state_after": "p2p_private"
+        },
+        {
+          "name": "public_new_scope_signature_b",
+          "input": {
+            "request_id": {
+              "producer_slot_id": "55555555555555555555555555555555",
+              "producer_epoch": 1,
+              "request_sequence": 2
+            },
+            "admission_policy_version": 1,
+            "event_ref": "E_public",
+            "visibility_scope": "public",
+            "origin": "network",
+            "owner_recorded_at_us": 20000000,
+            "observation": {
+              "received_at_us": 20000000,
+              "observer": "fixture-observer",
+              "clock_quality": "fixture-clock",
+              "witness": {
+                "endpoint": "R_public",
+                "access_scope": "public-access",
+                "verification_method": "nip01-bip340-full-verification"
+              }
+            }
+          },
+          "expected": {
+            "result": "NewFacts",
+            "request_detail": "created",
+            "batch": "new_nonempty_batch",
+            "dictionary_deltas": [],
+            "scientific_deltas": [
+              {
+                "kind": "event-eligibility/1",
+                "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+                "visibility_scope": "public",
+                "body_digest": "bdbd8f628b366155b487202a4a3d507f3df03b1695d04e1abe0e18a2cfbe5427",
+                "signature": "9444d1fab8095f14d43137f841a400f0648cd614515f53bb5545749e373056381ce2963d43fdb5d10d9294846da6fc895d1fdfaf3417399a5c2699414877c180",
+                "first_eligible_at_us": 20000000,
+                "origin": "network",
+                "import_lineage": null
+              },
+              {
+                "kind": "event-receive/1",
+                "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+                "visibility_scope": "public",
+                "received_at_us": 20000000,
+                "observer": "fixture-observer",
+                "clock_quality": "fixture-clock",
+                "corrects": null
+              },
+              {
+                "kind": "provenance/1",
+                "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+                "visibility_scope": "public",
+                "endpoint": "R_public",
+                "observer": "fixture-observer",
+                "access_scope": "public-access",
+                "received_at_us": 20000000,
+                "clock_quality": "fixture-clock",
+                "verification_method": "nip01-bip340-full-verification",
+                "corrects": null
+              }
+            ]
+          },
+          "expected_inventory_state_after": "p2p_public"
+        },
+        {
+          "name": "later_alternate_signature_same_scope",
+          "input": {
+            "request_id": {
+              "producer_slot_id": "55555555555555555555555555555555",
+              "producer_epoch": 1,
+              "request_sequence": 3
+            },
+            "admission_policy_version": 1,
+            "event_ref": "E_private",
+            "visibility_scope": "public",
+            "origin": "network",
+            "owner_recorded_at_us": 30000000,
+            "observation": {
+              "received_at_us": 30000000,
+              "observer": "fixture-observer",
+              "clock_quality": "fixture-clock",
+              "witness": {
+                "endpoint": "R_public",
+                "access_scope": "public-access",
+                "verification_method": "nip01-bip340-full-verification"
+              }
+            }
+          },
+          "expected": {
+            "result": "AlreadyDurable",
+            "request_detail": "created",
+            "batch": null,
+            "dictionary_deltas": [],
+            "scientific_deltas": []
+          },
+          "expected_inventory_state_after": "p2p_public"
+        },
+        {
+          "name": "earlier_public_receive_and_witness",
+          "input": {
+            "request_id": {
+              "producer_slot_id": "55555555555555555555555555555555",
+              "producer_epoch": 1,
+              "request_sequence": 4
+            },
+            "admission_policy_version": 1,
+            "event_ref": "E_public",
+            "visibility_scope": "public",
+            "origin": "network",
+            "owner_recorded_at_us": 40000000,
+            "observation": {
+              "received_at_us": 15000000,
+              "observer": "fixture-observer",
+              "clock_quality": "fixture-clock",
+              "witness": {
+                "endpoint": "R_public",
+                "access_scope": "public-access",
+                "verification_method": "nip01-bip340-full-verification"
+              }
+            }
+          },
+          "expected": {
+            "result": "NewFacts",
+            "request_detail": "created",
+            "batch": "new_nonempty_batch",
+            "dictionary_deltas": [],
+            "scientific_deltas": [
+              {
+                "kind": "event-receive/1",
+                "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+                "visibility_scope": "public",
+                "received_at_us": 15000000,
+                "observer": "fixture-observer",
+                "clock_quality": "fixture-clock",
+                "corrects": "prior_selected:event-receive/1"
+              },
+              {
+                "kind": "provenance/1",
+                "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+                "visibility_scope": "public",
+                "endpoint": "R_public",
+                "observer": "fixture-observer",
+                "access_scope": "public-access",
+                "received_at_us": 15000000,
+                "clock_quality": "fixture-clock",
+                "verification_method": "nip01-bip340-full-verification",
+                "corrects": "prior_selected:provenance/1"
+              }
+            ]
+          },
+          "expected_inventory_state_after": "p2p_corrected"
+        },
+        {
+          "name": "invalid_signature_cannot_backdate",
+          "input": {
+            "request_id": {
+              "producer_slot_id": "55555555555555555555555555555555",
+              "producer_epoch": 1,
+              "request_sequence": 5
+            },
+            "admission_policy_version": 1,
+            "event_ref": "E_public",
+            "visibility_scope": "public",
+            "origin": "network",
+            "owner_recorded_at_us": 50000000,
+            "observation": {
+              "received_at_us": 1000000,
+              "observer": "fixture-observer",
+              "clock_quality": "fixture-clock",
+              "witness": {
+                "endpoint": "R_public",
+                "access_scope": "public-access",
+                "verification_method": "nip01-bip340-full-verification"
+              }
+            },
+            "signature_override": "9544d1fab8095f14d43137f841a400f0648cd614515f53bb5545749e373056381ce2963d43fdb5d10d9294846da6fc895d1fdfaf3417399a5c2699414877c180"
+          },
+          "expected": {
+            "result": "Invalid",
+            "request_detail": "created",
+            "batch": null,
+            "dictionary_deltas": [],
+            "scientific_deltas": [],
+            "reason_class": "signature"
+          },
+          "expected_inventory_state_after": "p2p_corrected"
+        }
+      ]
+    },
+    {
+      "name": "public_to_private_keeps_scope_representatives",
+      "provenance_enabled": true,
+      "initial_bindings": "base_plus_witness",
+      "operations": [
+        {
+          "name": "public_first_signature_b",
+          "input": {
+            "request_id": {
+              "producer_slot_id": "55555555555555555555555555555555",
+              "producer_epoch": 1,
+              "request_sequence": 1
+            },
+            "admission_policy_version": 1,
+            "event_ref": "E_public",
+            "visibility_scope": "public",
+            "origin": "network",
+            "owner_recorded_at_us": 10000000,
+            "observation": {
+              "received_at_us": 10000000,
+              "observer": "fixture-observer",
+              "clock_quality": "fixture-clock",
+              "witness": {
+                "endpoint": "R_public",
+                "access_scope": "public-access",
+                "verification_method": "nip01-bip340-full-verification"
+              }
+            }
+          },
+          "expected": {
+            "result": "NewFacts",
+            "request_detail": "created",
+            "batch": "new_nonempty_batch",
+            "dictionary_deltas": [
+              {
+                "effect": "create",
+                "dictionary_kind": "event",
+                "normalization_version": 1,
+                "descriptor_schema": "event",
+                "descriptor_version": 1,
+                "descriptor": {
+                  "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb"
+                },
+                "assigned_ref": "owner_assigned:event:a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+                "atomic_with_request_batch": true
+              }
+            ],
+            "scientific_deltas": [
+              {
+                "kind": "event-payload/1",
+                "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+                "body_digest": "bdbd8f628b366155b487202a4a3d507f3df03b1695d04e1abe0e18a2cfbe5427",
+                "body_from_event_ref": "E_public",
+                "event_ordinal": "owner_assigned:event:a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb"
+              },
+              {
+                "kind": "event-eligibility/1",
+                "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+                "visibility_scope": "public",
+                "body_digest": "bdbd8f628b366155b487202a4a3d507f3df03b1695d04e1abe0e18a2cfbe5427",
+                "signature": "9444d1fab8095f14d43137f841a400f0648cd614515f53bb5545749e373056381ce2963d43fdb5d10d9294846da6fc895d1fdfaf3417399a5c2699414877c180",
+                "first_eligible_at_us": 10000000,
+                "origin": "network",
+                "import_lineage": null
+              },
+              {
+                "kind": "event-receive/1",
+                "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+                "visibility_scope": "public",
+                "received_at_us": 10000000,
+                "observer": "fixture-observer",
+                "clock_quality": "fixture-clock",
+                "corrects": null
+              },
+              {
+                "kind": "provenance/1",
+                "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+                "visibility_scope": "public",
+                "endpoint": "R_public",
+                "observer": "fixture-observer",
+                "access_scope": "public-access",
+                "received_at_us": 10000000,
+                "clock_quality": "fixture-clock",
+                "verification_method": "nip01-bip340-full-verification",
+                "corrects": null
+              }
+            ]
+          },
+          "expected_inventory_state_after": "reverse_public"
+        },
+        {
+          "name": "private_new_scope_signature_a",
+          "input": {
+            "request_id": {
+              "producer_slot_id": "55555555555555555555555555555555",
+              "producer_epoch": 1,
+              "request_sequence": 2
+            },
+            "admission_policy_version": 1,
+            "event_ref": "E_private",
+            "visibility_scope": "private",
+            "origin": "network",
+            "owner_recorded_at_us": 20000000,
+            "observation": {
+              "received_at_us": 20000000,
+              "observer": "fixture-observer",
+              "clock_quality": "fixture-clock",
+              "witness": {
+                "endpoint": "R_private",
+                "access_scope": "private-access",
+                "verification_method": "nip01-bip340-full-verification"
+              }
+            }
+          },
+          "expected": {
+            "result": "NewFacts",
+            "request_detail": "created",
+            "batch": "new_nonempty_batch",
+            "dictionary_deltas": [],
+            "scientific_deltas": [
+              {
+                "kind": "event-eligibility/1",
+                "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+                "visibility_scope": "private",
+                "body_digest": "bdbd8f628b366155b487202a4a3d507f3df03b1695d04e1abe0e18a2cfbe5427",
+                "signature": "f455e992a8359238a5583f91843be3c4fd0847574162222afdd8dc0aee67f5fab742f6eaf378cae2d66ce268f7b86698b4912579c534d568c6f53adf4cc90c85",
+                "first_eligible_at_us": 20000000,
+                "origin": "network",
+                "import_lineage": null
+              },
+              {
+                "kind": "event-receive/1",
+                "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+                "visibility_scope": "private",
+                "received_at_us": 20000000,
+                "observer": "fixture-observer",
+                "clock_quality": "fixture-clock",
+                "corrects": null
+              },
+              {
+                "kind": "provenance/1",
+                "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+                "visibility_scope": "private",
+                "endpoint": "R_private",
+                "observer": "fixture-observer",
+                "access_scope": "private-access",
+                "received_at_us": 20000000,
+                "clock_quality": "fixture-clock",
+                "verification_method": "nip01-bip340-full-verification",
+                "corrects": null
+              }
+            ]
+          },
+          "expected_inventory_state_after": "reverse_private"
+        }
+      ]
+    },
+    {
+      "name": "new_scope_with_provenance_disabled",
+      "provenance_enabled": false,
+      "initial_bindings": "base_only_no_witness_bindings",
+      "operations": [
+        {
+          "name": "private_without_witness",
+          "input": {
+            "request_id": {
+              "producer_slot_id": "55555555555555555555555555555555",
+              "producer_epoch": 1,
+              "request_sequence": 1
+            },
+            "admission_policy_version": 1,
+            "event_ref": "E_private",
+            "visibility_scope": "private",
+            "origin": "network",
+            "owner_recorded_at_us": 10000000,
+            "observation": {
+              "received_at_us": 10000000,
+              "observer": "fixture-observer",
+              "clock_quality": "fixture-clock",
+              "witness": null
+            }
+          },
+          "expected": {
+            "result": "NewFacts",
+            "request_detail": "created",
+            "batch": "new_nonempty_batch",
+            "dictionary_deltas": [
+              {
+                "effect": "create",
+                "dictionary_kind": "event",
+                "normalization_version": 1,
+                "descriptor_schema": "event",
+                "descriptor_version": 1,
+                "descriptor": {
+                  "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb"
+                },
+                "assigned_ref": "owner_assigned:event:a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+                "atomic_with_request_batch": true
+              }
+            ],
+            "scientific_deltas": [
+              {
+                "kind": "event-payload/1",
+                "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+                "body_digest": "bdbd8f628b366155b487202a4a3d507f3df03b1695d04e1abe0e18a2cfbe5427",
+                "body_from_event_ref": "E_private",
+                "event_ordinal": "owner_assigned:event:a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb"
+              },
+              {
+                "kind": "event-eligibility/1",
+                "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+                "visibility_scope": "private",
+                "body_digest": "bdbd8f628b366155b487202a4a3d507f3df03b1695d04e1abe0e18a2cfbe5427",
+                "signature": "f455e992a8359238a5583f91843be3c4fd0847574162222afdd8dc0aee67f5fab742f6eaf378cae2d66ce268f7b86698b4912579c534d568c6f53adf4cc90c85",
+                "first_eligible_at_us": 10000000,
+                "origin": "network",
+                "import_lineage": null
+              },
+              {
+                "kind": "event-receive/1",
+                "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+                "visibility_scope": "private",
+                "received_at_us": 10000000,
+                "observer": "fixture-observer",
+                "clock_quality": "fixture-clock",
+                "corrects": null
+              }
+            ]
+          },
+          "expected_inventory_state_after": "provenance_off_private"
+        },
+        {
+          "name": "public_new_scope_without_witness",
+          "input": {
+            "request_id": {
+              "producer_slot_id": "55555555555555555555555555555555",
+              "producer_epoch": 1,
+              "request_sequence": 2
+            },
+            "admission_policy_version": 1,
+            "event_ref": "E_public",
+            "visibility_scope": "public",
+            "origin": "network",
+            "owner_recorded_at_us": 20000000,
+            "observation": {
+              "received_at_us": 20000000,
+              "observer": "fixture-observer",
+              "clock_quality": "fixture-clock",
+              "witness": null
+            }
+          },
+          "expected": {
+            "result": "NewFacts",
+            "request_detail": "created",
+            "batch": "new_nonempty_batch",
+            "dictionary_deltas": [],
+            "scientific_deltas": [
+              {
+                "kind": "event-eligibility/1",
+                "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+                "visibility_scope": "public",
+                "body_digest": "bdbd8f628b366155b487202a4a3d507f3df03b1695d04e1abe0e18a2cfbe5427",
+                "signature": "9444d1fab8095f14d43137f841a400f0648cd614515f53bb5545749e373056381ce2963d43fdb5d10d9294846da6fc895d1fdfaf3417399a5c2699414877c180",
+                "first_eligible_at_us": 20000000,
+                "origin": "network",
+                "import_lineage": null
+              },
+              {
+                "kind": "event-receive/1",
+                "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+                "visibility_scope": "public",
+                "received_at_us": 20000000,
+                "observer": "fixture-observer",
+                "clock_quality": "fixture-clock",
+                "corrects": null
+              }
+            ]
+          },
+          "expected_inventory_state_after": "provenance_off_public"
+        }
+      ],
+      "expected_absences": {
+        "witness_dictionary_bindings_allocated_by_requests": [],
+        "provenance_inventory": []
+      }
+    },
+    {
+      "name": "import_then_network_keeps_import_representative",
+      "provenance_enabled": true,
+      "initial_bindings": "base_plus_witness",
+      "operations": [
+        {
+          "name": "import_establishes_eligibility_without_receive",
+          "input": {
+            "request_id": {
+              "producer_slot_id": "55555555555555555555555555555555",
+              "producer_epoch": 1,
+              "request_sequence": 1
+            },
+            "admission_policy_version": 1,
+            "event_ref": "I",
+            "visibility_scope": "public",
+            "origin": "import",
+            "owner_recorded_at_us": 45000000,
+            "observation": null,
+            "import_lineage": "fixture-import-lineage"
+          },
+          "expected": {
+            "result": "NewFacts",
+            "request_detail": "created",
+            "batch": "new_nonempty_batch",
+            "dictionary_deltas": [
+              {
+                "effect": "create",
+                "dictionary_kind": "event",
+                "normalization_version": 1,
+                "descriptor_schema": "event",
+                "descriptor_version": 1,
+                "descriptor": {
+                  "event_id": "8a0096a3a84f1460c11a432355666cb9fd377cca00a5a1e08ef0071c9c0b9849"
+                },
+                "assigned_ref": "owner_assigned:event:8a0096a3a84f1460c11a432355666cb9fd377cca00a5a1e08ef0071c9c0b9849",
+                "atomic_with_request_batch": true
+              }
+            ],
+            "scientific_deltas": [
+              {
+                "kind": "event-payload/1",
+                "event_id": "8a0096a3a84f1460c11a432355666cb9fd377cca00a5a1e08ef0071c9c0b9849",
+                "body_digest": "1e05f420946c84c3ee8b178daf05dd564c9904c7ed18f7ab99874aec878337fb",
+                "body_from_event_ref": "I",
+                "event_ordinal": "owner_assigned:event:8a0096a3a84f1460c11a432355666cb9fd377cca00a5a1e08ef0071c9c0b9849"
+              },
+              {
+                "kind": "event-eligibility/1",
+                "event_id": "8a0096a3a84f1460c11a432355666cb9fd377cca00a5a1e08ef0071c9c0b9849",
+                "visibility_scope": "public",
+                "body_digest": "1e05f420946c84c3ee8b178daf05dd564c9904c7ed18f7ab99874aec878337fb",
+                "signature": "ab9e62de93391621735c773f4b1c40f41029d7d49369993a63a226c4ce14605859b112dd261b5fa4f8a2b82bbac0a67323f39c4d007555711547bfd25560b4a6",
+                "first_eligible_at_us": 45000000,
+                "origin": "import",
+                "import_lineage": "fixture-import-lineage"
+              }
+            ]
+          },
+          "expected_inventory_state_after": "import_only"
+        },
+        {
+          "name": "network_adds_receive_and_witness_only",
+          "input": {
+            "request_id": {
+              "producer_slot_id": "55555555555555555555555555555555",
+              "producer_epoch": 1,
+              "request_sequence": 2
+            },
+            "admission_policy_version": 1,
+            "event_ref": "I",
+            "visibility_scope": "public",
+            "origin": "network",
+            "owner_recorded_at_us": 46000000,
+            "observation": {
+              "received_at_us": 46000000,
+              "observer": "fixture-observer",
+              "clock_quality": "fixture-clock",
+              "witness": {
+                "endpoint": "R_public",
+                "access_scope": "public-access",
+                "verification_method": "nip01-bip340-full-verification"
+              }
+            }
+          },
+          "expected": {
+            "result": "NewFacts",
+            "request_detail": "created",
+            "batch": "new_nonempty_batch",
+            "dictionary_deltas": [],
+            "scientific_deltas": [
+              {
+                "kind": "event-receive/1",
+                "event_id": "8a0096a3a84f1460c11a432355666cb9fd377cca00a5a1e08ef0071c9c0b9849",
+                "visibility_scope": "public",
+                "received_at_us": 46000000,
+                "observer": "fixture-observer",
+                "clock_quality": "fixture-clock",
+                "corrects": null
+              },
+              {
+                "kind": "provenance/1",
+                "event_id": "8a0096a3a84f1460c11a432355666cb9fd377cca00a5a1e08ef0071c9c0b9849",
+                "visibility_scope": "public",
+                "endpoint": "R_public",
+                "observer": "fixture-observer",
+                "access_scope": "public-access",
+                "received_at_us": 46000000,
+                "clock_quality": "fixture-clock",
+                "verification_method": "nip01-bip340-full-verification",
+                "corrects": null
+              }
+            ]
+          },
+          "expected_inventory_state_after": "import_then_network"
+        }
+      ]
+    },
+    {
+      "name": "strict_request_replay_and_changed_intent_conflict",
+      "provenance_enabled": true,
+      "initial_bindings": "base_plus_witness",
+      "operations": [
+        {
+          "name": "original_request",
+          "input": {
+            "request_id": {
+              "producer_slot_id": "55555555555555555555555555555555",
+              "producer_epoch": 1,
+              "request_sequence": 1
+            },
+            "admission_policy_version": 1,
+            "event_ref": "E_public",
+            "visibility_scope": "public",
+            "origin": "network",
+            "owner_recorded_at_us": 20000000,
+            "observation": {
+              "received_at_us": 20000000,
+              "observer": "fixture-observer",
+              "clock_quality": "fixture-clock",
+              "witness": {
+                "endpoint": "R_public",
+                "access_scope": "public-access",
+                "verification_method": "nip01-bip340-full-verification"
+              }
+            }
+          },
+          "expected": {
+            "result": "NewFacts",
+            "request_detail": "created",
+            "batch": "new_nonempty_batch",
+            "dictionary_deltas": [
+              {
+                "effect": "create",
+                "dictionary_kind": "event",
+                "normalization_version": 1,
+                "descriptor_schema": "event",
+                "descriptor_version": 1,
+                "descriptor": {
+                  "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb"
+                },
+                "assigned_ref": "owner_assigned:event:a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+                "atomic_with_request_batch": true
+              }
+            ],
+            "scientific_deltas": [
+              {
+                "kind": "event-payload/1",
+                "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+                "body_digest": "bdbd8f628b366155b487202a4a3d507f3df03b1695d04e1abe0e18a2cfbe5427",
+                "body_from_event_ref": "E_public",
+                "event_ordinal": "owner_assigned:event:a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb"
+              },
+              {
+                "kind": "event-eligibility/1",
+                "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+                "visibility_scope": "public",
+                "body_digest": "bdbd8f628b366155b487202a4a3d507f3df03b1695d04e1abe0e18a2cfbe5427",
+                "signature": "9444d1fab8095f14d43137f841a400f0648cd614515f53bb5545749e373056381ce2963d43fdb5d10d9294846da6fc895d1fdfaf3417399a5c2699414877c180",
+                "first_eligible_at_us": 20000000,
+                "origin": "network",
+                "import_lineage": null
+              },
+              {
+                "kind": "event-receive/1",
+                "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+                "visibility_scope": "public",
+                "received_at_us": 20000000,
+                "observer": "fixture-observer",
+                "clock_quality": "fixture-clock",
+                "corrects": null
+              },
+              {
+                "kind": "provenance/1",
+                "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+                "visibility_scope": "public",
+                "endpoint": "R_public",
+                "observer": "fixture-observer",
+                "access_scope": "public-access",
+                "received_at_us": 20000000,
+                "clock_quality": "fixture-clock",
+                "verification_method": "nip01-bip340-full-verification",
+                "corrects": null
+              }
+            ]
+          },
+          "expected_inventory_state_after": "strict_original"
+        },
+        {
+          "name": "exact_retry_returns_original_durable_result",
+          "input": {
+            "request_id": {
+              "producer_slot_id": "55555555555555555555555555555555",
+              "producer_epoch": 1,
+              "request_sequence": 1
+            },
+            "admission_policy_version": 1,
+            "event_ref": "E_public",
+            "visibility_scope": "public",
+            "origin": "network",
+            "owner_recorded_at_us": 25000000,
+            "observation": {
+              "received_at_us": 20000000,
+              "observer": "fixture-observer",
+              "clock_quality": "fixture-clock",
+              "witness": {
+                "endpoint": "R_public",
+                "access_scope": "public-access",
+                "verification_method": "nip01-bip340-full-verification"
+              }
+            }
+          },
+          "expected": {
+            "result": "NewFacts",
+            "request_detail": "unchanged",
+            "batch": "same_batch_as:original_request",
+            "dictionary_deltas": [],
+            "scientific_deltas": [],
+            "same_stored_result_as": "original_request",
+            "request_intent_same_as": "original_request"
+          },
+          "expected_inventory_state_after": "strict_original"
+        },
+        {
+          "name": "same_request_different_valid_signature_conflicts",
+          "input": {
+            "request_id": {
+              "producer_slot_id": "55555555555555555555555555555555",
+              "producer_epoch": 1,
+              "request_sequence": 1
+            },
+            "admission_policy_version": 1,
+            "event_ref": "E_private",
+            "visibility_scope": "public",
+            "origin": "network",
+            "owner_recorded_at_us": 20000000,
+            "observation": {
+              "received_at_us": 20000000,
+              "observer": "fixture-observer",
+              "clock_quality": "fixture-clock",
+              "witness": {
+                "endpoint": "R_public",
+                "access_scope": "public-access",
+                "verification_method": "nip01-bip340-full-verification"
+              }
+            }
+          },
+          "expected": {
+            "result": "RequestConflict",
+            "request_detail": "unchanged",
+            "batch": null,
+            "dictionary_deltas": [],
+            "scientific_deltas": [],
+            "retained_request_entry_unchanged_from": "original_request"
+          },
+          "expected_inventory_state_after": "strict_original"
+        },
+        {
+          "name": "same_request_different_observation_conflicts",
+          "input": {
+            "request_id": {
+              "producer_slot_id": "55555555555555555555555555555555",
+              "producer_epoch": 1,
+              "request_sequence": 1
+            },
+            "admission_policy_version": 1,
+            "event_ref": "E_public",
+            "visibility_scope": "public",
+            "origin": "network",
+            "owner_recorded_at_us": 20000000,
+            "observation": {
+              "received_at_us": 21000000,
+              "observer": "fixture-observer",
+              "clock_quality": "fixture-clock",
+              "witness": {
+                "endpoint": "R_public",
+                "access_scope": "public-access",
+                "verification_method": "nip01-bip340-full-verification"
+              }
+            }
+          },
+          "expected": {
+            "result": "RequestConflict",
+            "request_detail": "unchanged",
+            "batch": null,
+            "dictionary_deltas": [],
+            "scientific_deltas": [],
+            "retained_request_entry_unchanged_from": "original_request"
+          },
+          "expected_inventory_state_after": "strict_original"
+        }
+      ]
+    }
+  ],
+  "import_artifact": {
+    "path": "tests/fixtures/ingest/import-event.jsonl",
+    "sha256": "c30658a75b2b913e509b7618f36ebae75fa1d5680dc8fe4e322aae638d8affae",
+    "bytes": 353,
+    "event_ref": "I",
+    "format": "nostr-jsonl",
+    "format_version": 1
+  }
+}
