@@ -2,12 +2,14 @@
 
 BigBrotr is a verifiable Nostr archive and relay observatory: full signed events,
 optional provenance, useful analytics, and configurable read/publication surfaces.
-This repository contains the design, research and detailed implementation plan for
-its fresh Rust implementation, including dashboard, private administration and
+This repository contains the implementation, design, research and detailed task plan
+for its fresh Rust implementation, including dashboard, private administration and
 website/documentation/blog.
 
-**Planning is complete for implementation handoff; product implementation has
-not begun.** This is not a runnable release. The repository remains private and
+**Product implementation began with the owner's authorization on 2026-09-17.**
+The current foundation CLI is usable for help/version/build identity; storage and
+product services are not yet implemented. This is not an installable release.
+The repository remains private and
 temporarily named `bigbrotr-rs`; the product name is **BigBrotr**. The eventual
 GitHub name `bigbrotr` is a separate transition. The neighboring Go checkout
 remains read-only.
@@ -39,10 +41,14 @@ roles use ordinary explicit endpoints when needed. No custom cluster manager is
 required. All initial Cargo packages stay unpublished; branches and parallel work
 are optional tools, while coherent commits and substantive review are required.
 
-Those are specifications for the next stage. This repository does not yet ship
-Cargo application packages, product CI workflows, Docker images or installation
-bundles. Existing check commands and their Python/Node preparation are documented
-in [planning verification](docs/engineering/development-and-delivery.md#checks-available-in-the-planning-repository).
+The initial unpublished Cargo application and isolated CI definition are present;
+Docker images and installation bundles remain future work. Follow
+[build instructions](docs/development/build.md) and
+[practical verification](docs/development/verification.md). The
+[checkpoint](docs/implementation/progress.md) distinguishes executed outcomes
+from configured workflows and remaining gates. Planning checks and their
+Python/Node preparation remain documented in
+[planning verification](docs/engineering/development-and-delivery.md#checks-available-in-the-planning-repository).
 
 ## Repository map and evidence
 

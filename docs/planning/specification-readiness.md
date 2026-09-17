@@ -2,8 +2,9 @@
 
 Assessment: 2026-09-17. This is the current paper handoff, replacing the open
 assessment at `e674d3d`. The former ambiguities have selected contracts, examples,
-producer/consumer ownership and discriminating acceptance work. Product code is
-still unimplemented. Paper closure is not a claim of global optimality, runtime
+producer/consumer ownership and discriminating acceptance work. The owner started
+implementation on 2026-09-17; the [checkpoint](../implementation/progress.md)
+records actual progress. Paper closure is not a claim of global optimality, runtime
 safety, supported throughput or completed release qualification.
 
 Start implementation through [the agent guide](../implementation/agent-handoff.md)

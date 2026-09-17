@@ -3,9 +3,11 @@
 This contract fixes the development and release workflow. It complements the
 [agent execution guide](../implementation/agent-handoff.md), which owns task
 selection and review, and the [deployment contract](../specification/deployment-contract.md),
-which owns installed roles, dependencies and authority. All product commands,
-workflows and packaging paths below remain future implementation deliverables.
-Only the planning checks explicitly identified below exist today.
+which owns installed roles, dependencies and authority. Product implementation
+started on 2026-09-17. The initial CLI/build/CI slice is described in
+[build instructions](../development/build.md); the checkpoint and task evidence
+identify executed work. Remaining workflows and packaging paths below are still
+implementation deliverables, not claims of passing acceptance.
 
 ## One source revision, different execution environments
 

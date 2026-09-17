@@ -2,7 +2,9 @@
 
 This repository designs a clean Rust implementation of **BigBrotr**. It contains
 research, decisions, service contracts, experiments and the implementation order.
-It does not yet contain the product. The repository is private and temporarily
+Implementation is now authorized and the first foundation slice is in progress;
+the [checkpoint](docs/implementation/progress.md) records actual completion.
+The repository is private and temporarily
 named `bigbrotr-rs`; transition to `bigbrotr` is a separate release operation.
 
 The design is one product: full signed-event archive, optional provenance,
@@ -21,7 +23,7 @@ The [current readiness register](docs/planning/specification-readiness.md)
 records selected closure of S01–S08 and the bounded practical qualification gates.
 Use the [agent execution guide](docs/implementation/agent-handoff.md) to implement
 and audit coherent slices. This is paper readiness, not a product release or an
-unmeasured capacity claim. The owner still separately starts implementation.
+unmeasured capacity claim. The owner explicitly started implementation on 2026-09-17.
 
 The [architecture challenge](docs/reviews/13-architecture-alternatives.md) led to
 scoped eligibility/certification, age-banded acquisition, useful traversal,
@@ -120,7 +122,7 @@ not justify a claim that Rust alone enables 5,000 relays.
 The numbering preserves the historical phase map for traceability. Thin vertical
 validation starts early; later phases complete the full responsibility rather than
 postpone all operational or user-interface thinking until the end. Do not start
-product work until the owner begins the implementation stage.
+product work without owner authorization; that authorization was given on 2026-09-17.
 
 | Phase | Concrete work and artifacts | Practical completion evidence |
 |---|---|---|

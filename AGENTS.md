@@ -1,8 +1,9 @@
 # Repository context
 
-This is the design repository for BigBrotr's fresh Rust implementation. The
-current stage is research, architecture, product design, and implementation
-planning. Do not begin product implementation until the owner starts that stage.
+This repository contains BigBrotr's fresh Rust implementation and its design.
+The owner explicitly started product implementation on 2026-09-17. Implement the
+complete selected product through the existing task plan; earlier planning-only
+statements describe the previous stage, not a current implementation restriction.
 Isolated research experiments are authorized and must be clearly labeled. The
 owner explicitly authorizes substantial, long-running, realistic experiments on
 `ssh tux` when scale can change a critical decision; research is not limited to

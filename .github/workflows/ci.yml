@@ -1,0 +1,78 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  foundation:
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm, macos-15]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Install pinned toolchain
+        run: rustup show
+      - name: Rust checks
+        run: |
+          cargo fmt --all --check
+          cargo clippy --locked --workspace --all-targets -- -D warnings
+          cargo test --locked --workspace
+          cargo doc --locked --workspace --no-deps
+        env:
+          RUSTDOCFLAGS: -D warnings
+      - name: Acceptance negative controls
+        run: python3 -m unittest discover -s tests/acceptance -p 'test_*.py'
+      - name: Planning artifacts and documentation links
+        if: matrix.runner == 'ubuntu-24.04'
+        run: |
+          python3 experiments/verify_artifacts.py
+          python3 experiments/verify_handoff.py --prepare
+          python3 experiments/verify_handoff.py --output .research/ci-handoff.json
+      - name: Dependency licenses, sources and advisories
+        if: matrix.runner == 'ubuntu-24.04'
+        run: |
+          cargo install cargo-deny --version 0.20.2 --locked
+          cargo deny check licenses sources advisories
+      - name: Build from clean Git archive
+        run: python3 tools/build.py --output .research/ci-build
+      - name: Prepare native syscall observer
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y strace
+      - name: Native foundation practical case
+        if: runner.os == 'Linux'
+        run: >-
+          python3 tests/acceptance/run.py p01-t01
+          --binary .research/ci-build/bigbrotr
+          --source-root .research/ci-build/source
+          --source-manifest .research/ci-build/source-manifest.json
+          --build-result .research/ci-build/build-result.json
+          --evidence .research/ci-acceptance
+      - name: Retain private diagnostic evidence
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: foundation-${{ matrix.runner }}
+          path: |
+            .research/ci-build/build-result.json
+            .research/ci-build/source-manifest.json
+            .research/ci-acceptance/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14

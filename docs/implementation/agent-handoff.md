@@ -1,9 +1,10 @@
 # Implementing BigBrotr from this specification
 
-This is the execution guide for a new implementation agent. The repository is
-currently a private **design repository**. Its research programs are experiments,
-not production adapters. Product implementation begins only after the owner
-explicitly starts that stage. The neighboring Go checkout remains read-only.
+This is the execution guide for a new implementation agent. This is a private
+implementation/design repository. Its research programs are experiments,
+not production adapters. The owner explicitly started product implementation on
+2026-09-17; see the [current mandate](../planning/mandate.md). The neighboring Go
+checkout remains read-only.
 
 ## Establish the baseline
 

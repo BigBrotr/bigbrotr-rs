@@ -1,0 +1,29 @@
+{
+  "format": "bigbrotr-dependencies/1",
+  "status": "foundation candidate; no qualified product release",
+  "rust": {
+    "toolchain": "1.98.1",
+    "msrv": "1.98.1",
+    "edition": "2024",
+    "reason": "Current patched compiler; supersedes the 1.95.0 research solver. The initial supported minimum is the same tested patch release.",
+    "sources": [
+      "https://doc.rust-lang.org/releases.html#version-1981-2026-09-03",
+      "https://blog.rust-lang.org/2026/06/30/Rust-1.96.1/",
+      "https://blog.rust-lang.org/2026/05/25/cve-2026-5223/"
+    ]
+  },
+  "direct_dependencies": [
+    {"name": "clap", "version": "4.6.7", "purpose": "CLI parsing, help and usage errors", "license": "MIT OR Apache-2.0", "source": "https://docs.rs/clap/4.6.7/clap/"},
+    {"name": "serde_json", "version": "1.0.151", "purpose": "Build metadata encoding and independent test decoding", "license": "MIT OR Apache-2.0", "source": "https://docs.rs/serde_json/1.0.151/serde_json/"},
+    {"name": "sha2", "version": "0.11.0", "purpose": "Build input SHA-256 identities", "license": "MIT OR Apache-2.0", "source": "https://docs.rs/sha2/0.11.0/sha2/"},
+    {"name": "tempfile", "version": "3.27.0", "purpose": "Isolated process-test directories; test-only", "license": "MIT OR Apache-2.0", "source": "https://docs.rs/tempfile/3.27.0/tempfile/"}
+  ],
+  "lock": "Cargo.lock",
+  "native_adapters": {
+    "status": "NOT_RUN; no native storage, TLS or protocol adapter linked yet",
+    "selection": "docs/research/dependency-selections.md",
+    "source_inventory": "docs/research/evidence/dependency-selections.json",
+    "release_gates": "P01-T01 and P02 actual bindings, offline assets, engine failures and native target qualification"
+  },
+  "license_policy": "New project code is MIT. Preserve upstream notices and qualify the complete release SBOM/licenses when dependencies and assets are added. This inventory is not a complete release license audit."
+}

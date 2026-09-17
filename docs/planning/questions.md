@@ -6,8 +6,9 @@ coherent design and explains departures. Unanswered questions do not block the
 planning work; the selected defaults below remain revisable with new evidence.
 
 Operational instructions remain explicit: private temporary repository, legacy
-repository read-only, English repository content, coherent commits/pushes and
-planning/research only before product implementation.
+repository read-only, English repository content and coherent commits/pushes.
+Q30 records the explicit transition to implementation; earlier stage statements
+below are historical.
 
 | ID | Topic | Input or answer | Selected treatment |
 |---|---|---|---|
@@ -182,3 +183,16 @@ trust, native target evidence, candidate promotion, signed release manifests and
 ordinary Compose initialization/upgrade. Docker Hub namespace/credentials and
 real release keys are provisioning inputs for implementation/release, not
 resources created by this planning pass. No product workflow has run yet.
+
+Q30 (2026-09-17): The owner explicitly starts autonomous implementation of the
+complete selected product and authorizes edits, builds, isolated experiments,
+coherent commits and verified private pushes. Begin with foundation/storage risk
+slices leading to the first durable signed event, then continue through all
+selected services, interfaces, operations and website work. Do not stop at initial
+milestones or treat optional enablement as permission to omit selected work.
+Keep current task IDs and the single progress checkpoint; no competing plan.
+Mac remains the editing/Git authority; native Linux evidence uses exact Git
+revisions and inventoried isolated Tux resources. Preserve unrelated workloads,
+the local Go checkout and private distribution boundaries. Ask only for missing
+information or authority that materially prevents a correct next step. Report
+executed evidence, measured limits and remaining gates honestly, in Italian.

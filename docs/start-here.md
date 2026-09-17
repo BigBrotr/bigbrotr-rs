@@ -1,6 +1,8 @@
 # Start here: what BigBrotr is and how to build it
 
-This repository currently contains the design, not an installable Rust product.
+This repository contains the design and an implementation in progress, not an
+installable product. See the [checkpoint](implementation/progress.md) and
+[build instructions](development/build.md) for the actual current slice.
 BigBrotr collects verifiable Nostr events, studies relay behavior, derives useful
 statistics and viewpoint-dependent scores, and makes those results accessible.
 It is one product with selectable capabilities, not a different application for
@@ -163,5 +165,5 @@ Use [the agent handoff](implementation/agent-handoff.md), not a prompt asking th
 agent to invent another architecture. It links the current contract owners and
 the phase/task/step pipeline. The [readiness register](planning/specification-readiness.md)
 separates closed data/authority/client decisions from real-system gates. The
-product is still unimplemented; experiments under `experiments/` are labelled
+product is in implementation; experiments under `experiments/` are labelled
 research and never presented as running BigBrotr services.

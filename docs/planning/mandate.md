@@ -1,4 +1,28 @@
-# Planning mandate
+# Current mandate
+
+## Owner-started implementation — 2026-09-17
+
+The owner explicitly authorizes autonomous implementation of the complete selected
+product: Rust backend, storage, acquisition, analytics/ranking, publication, read
+surfaces, public dashboard, private administration, website/documentation/blog,
+packaging, CI/CD and practical validation. Follow the existing task IDs and
+cross-phase slices, starting with a real signed event through durable admission,
+archive, read/export and restart. Scaffolding or passing unit tests do not complete
+this objective. The authorization supersedes the historical planning-only stage
+below and persists through resumption.
+
+Use the Mac as the editing/Git authority and inventoried exact-revision Tux labs
+for native Linux qualification. Coherent commits and verified pushes to this
+private repository are authorized. Keep all initial Cargo packages unpublished;
+no public release, repository rename or change to the neighboring Go checkout is
+authorized. Preserve unrelated workloads and retained current experiments.
+Use the [execution guide](../implementation/agent-handoff.md),
+[delivery contract](../engineering/development-and-delivery.md) and existing
+[checkpoint](../implementation/progress.md); do not create a competing master plan.
+Routine decisions are autonomous; material evidence-driven design changes update
+their contracts, tasks, compatibility consequences and tests together.
+
+## Historical planning mandate
 
 The objective is a complete, implementable design for BigBrotr, reconsidered
 from its product purpose rather than inherited implementation choices.

@@ -3,7 +3,8 @@
 **Outcome:** a small real executable with typed domain/configuration contracts,
 bounded runtime, guarded protocol handling, private transport and an independent
 acceptance harness. It can exercise one useful vertical fixture without claiming
-the full product exists. All tasks are proposed implementation work, not executed.
+the full product exists. Checkboxes and linked evidence record completed work;
+unchecked work and future practical scenarios are not claims of execution.
 
 **Depends on:** P00 specification/review dossier. Canonical
 [data](../specification/data-contracts.md),
@@ -40,10 +41,10 @@ reporting its exact build/schema/protocol versions. Product name remains BigBrot
   resolution are not a tested release tuple: qualify native builds, feature
   unification, offline assets and the assigned P01/P02 adapter boundaries before
   enabling those capabilities.
-- [ ] **Step 2:** Build the minimal application package with narrow default features and
+- [x] **Step 2:** Build the minimal application package with narrow default features and
   `publish = false`; apply that flag to later candidate library packages too.
   Avoid a crate per process role or generic utility package.
-- [ ] **Step 3:** Wire `bigbrotr --version`, `--help` and structured diagnostic exit codes
+- [x] **Step 3:** Wire `bigbrotr --version`, `--help` and structured diagnostic exit codes
   through the real CLI parser; stdout carries requested output, stderr diagnostics.
 - [ ] **Step 4:** Establish Linux amd64/arm64 build targets and macOS development checks.
   Record native/FFI dependency build requirements and offline asset expectations.
