@@ -85,6 +85,26 @@ pub fn parse(input: &str) -> Result<Resolved, String> {
             normalize(key, value).map_err(|reason| format!("{}: {reason}", key.name))?;
         values.insert(key.name.clone(), normalized);
     }
+    // Resolve dependent defaults from normalized declared values. Current
+    // dependencies point only to literal fields, not to other derived defaults.
+    for key in &keys {
+        if let Some(source) = key.default_from
+            && sources[&key.name] == "schema-default"
+        {
+            let value = if key.default_add_us == 0 {
+                values[source].clone()
+            } else {
+                let duration = values[source].as_u64().expect("duration default source");
+                json!(
+                    duration
+                        .checked_add(key.default_add_us)
+                        .ok_or_else(|| format!("{}: derived duration exceeds u64", key.name))?
+                )
+            };
+            values.insert(key.name.clone(), value);
+            sources.insert(key.name.clone(), "derived-default");
+        }
+    }
     let local_roles = values["topology.local_roles"]
         .as_array()
         .unwrap()
@@ -210,9 +230,10 @@ fn normalize(key: &Key, value: &Value) -> Result<Value, &'static str> {
                 ("KiB", 1 << 10),
                 ("B", 1),
             ],
+            false,
         )
         .map(Value::from),
-        Duration => units(
+        Duration | DurationZero => units(
             value,
             &[
                 ("us", 1),
@@ -222,6 +243,7 @@ fn normalize(key: &Key, value: &Value) -> Result<Value, &'static str> {
                 ("h", 3600000000),
                 ("d", 86400000000),
             ],
+            matches!(key.kind, DurationZero),
         )
         .map(Value::from),
         Ratio => value
@@ -277,7 +299,7 @@ fn normalize(key: &Key, value: &Value) -> Result<Value, &'static str> {
             }
             Ok(value.clone())
         }
-        Strings | Endpoints => {
+        Strings | Paths | ChoiceSet(_) | Endpoints => {
             let values = value.as_array().ok_or("expected array")?;
             if values.len() > 100000 {
                 return Err("array exceeds 100000 entries");
@@ -289,6 +311,14 @@ fn normalize(key: &Key, value: &Value) -> Result<Value, &'static str> {
                 let text = value.as_str().ok_or("expected string array entries")?;
                 if text.is_empty() || text.len() > 8192 || text.chars().any(char::is_control) {
                     return Err("invalid bounded string array entry");
+                }
+                if matches!(key.kind, Paths) && !absolute_path(text) {
+                    return Err("expected absolute paths without dot components");
+                }
+                if let ChoiceSet(allowed) = key.kind
+                    && !allowed.contains(&text)
+                {
+                    return Err("unsupported set member");
                 }
                 let normalized = if matches!(key.kind, Endpoints) {
                     Endpoint::parse(text)
@@ -304,7 +334,12 @@ fn normalize(key: &Key, value: &Value) -> Result<Value, &'static str> {
                 if bytes > 8 * 1024 * 1024 {
                     return Err("array exceeds 8MiB encoded bytes");
                 }
-                if seen.insert(normalized.clone()) {
+                let comparison = if matches!(key.kind, Paths) {
+                    lexical_path(text)
+                } else {
+                    normalized.clone()
+                };
+                if seen.insert(comparison) {
                     result.push(Value::from(normalized));
                 } else if !matches!(key.kind, Endpoints) {
                     return Err("duplicate set entry");
@@ -325,17 +360,28 @@ fn decimal(text: &str) -> Option<u64> {
     text.parse().ok()
 }
 
-fn units(value: &Value, suffixes: &[(&str, u64)]) -> Result<u64, &'static str> {
+fn units(value: &Value, suffixes: &[(&str, u64)], allow_zero: bool) -> Result<u64, &'static str> {
     let text = value.as_str().ok_or("explicit unit required")?;
     for (suffix, factor) in suffixes {
         if let Some(number) = text.strip_suffix(suffix) {
             return decimal(number)
                 .and_then(|n| n.checked_mul(*factor))
-                .filter(|n| *n > 0)
-                .ok_or("unit value must be positive and fit u64");
+                .filter(|n| allow_zero || *n > 0)
+                .ok_or("unit value is outside the allowed u64 range");
         }
     }
     Err("unsupported unit; bytes use IEC units, durations use us/ms/s/m/h/d")
+}
+
+fn lexical_path(text: &str) -> String {
+    // Input is UTF-8 and already excludes dot components. This removes repeated
+    // separators and trailing slashes only; it never resolves filesystem links.
+    Path::new(text)
+        .components()
+        .collect::<std::path::PathBuf>()
+        .into_os_string()
+        .into_string()
+        .expect("UTF-8 components")
 }
 
 pub fn absolute_path(text: &str) -> bool {
@@ -577,6 +623,14 @@ impl Resolved {
                 ));
             }
         }
+        let checks = self.value("monitor.checks").as_array().unwrap();
+        let stored = self.value("monitor.store_checks").as_array().unwrap();
+        if stored.iter().any(|check| !checks.contains(check)) {
+            return Err("monitor.store_checks must be a subset of monitor.checks".into());
+        }
+        if self.local("monitor") && self.flag("monitor.enabled") && checks.is_empty() {
+            return Err("enabled monitor requires a nonempty computed check set".into());
+        }
         self.budgets()?;
         let mut paths = BTreeSet::new();
         for (role, key) in [
@@ -585,7 +639,7 @@ impl Resolved {
             ("archive", "storage.archive_root"),
             ("archive", "storage.scratch_root"),
         ] {
-            if self.local(role) && !paths.insert(self.present(key)?) {
+            if self.local(role) && !paths.insert(lexical_path(self.present(key)?)) {
                 return Err("local writable storage roots must be distinct; filesystem alias checks require doctor/runtime".into());
             }
         }
@@ -724,6 +778,47 @@ impl Resolved {
             .ok_or("ownership safety margin must be below TTL")?;
         if timing >= safe || n("runtime.authorization_ttl") > 5_000_000 {
             return Err("unsafe ownership timing or authorization TTL exceeds 5s".into());
+        }
+        if n("read.default_page_size") > n("read.max_page_size") {
+            return Err("read default page size exceeds maximum page size".into());
+        }
+        if n("read.authorization.lease_ttl") > n("runtime.authorization_ttl")
+            || n("read.cursor.clock_skew") > 30_000_000
+        {
+            return Err(
+                "read authorization or cursor clock-skew allowance exceeds shared ceiling".into(),
+            );
+        }
+        if n("api.request_timeout") < add(n("read.execution.timeout"), 5_000_000)? {
+            return Err(
+                "API request timeout must retain 5s delivery allowance beyond read execution"
+                    .into(),
+            );
+        }
+        if self.local("read") {
+            let read_unit = add(
+                add(
+                    n("read.request.max_bytes"),
+                    n("read.execution.max_memory_bytes"),
+                )?,
+                n("read.response.max_bytes"),
+            )?;
+            let read_total = read_unit
+                .checked_mul(n("read.execution.max_concurrent"))
+                .ok_or("read concurrent allowance overflows u64")?;
+            if read_total > n("runtime.processes.application.payload_bytes") {
+                return Err("read concurrent request/query/response allowance exceeds application work grant".into());
+            }
+            if self.text("clickhouse.placement") == Some("local")
+                && n("read.execution.max_memory_bytes")
+                    .checked_mul(n("read.execution.max_concurrent"))
+                    .ok_or("read query allowance overflows u64")?
+                    > n("runtime.processes.clickhouse.payload_bytes")
+            {
+                return Err(
+                    "read concurrent query allowance exceeds local ClickHouse work grant".into(),
+                );
+            }
         }
         let low = self.value("ingest.pending_low_fraction").as_f64().unwrap();
         let high = self.value("ingest.pending_high_fraction").as_f64().unwrap();
@@ -883,7 +978,7 @@ impl Resolved {
                 if let Some(number) = value.as_u64() {
                     value = json!(number.to_string());
                 }
-                fields.insert(key.name.clone(),json!({"value":value,"source":self.sources[&key.name],"reload":key.reload,"deployment_locked":key.root,"applicability":if self.applicable(key) {"selected"}else{"staged-unselected"}}));
+                fields.insert(key.name.clone(),json!({"value":value,"source":self.sources[&key.name],"default_from":key.default_from,"default_add_us":key.default_add_us.to_string(),"reload":key.reload,"deployment_locked":key.root,"applicability":if self.applicable(key) {"selected"}else{"staged-unselected"}}));
             }
             report["settings"] = Value::Object(fields);
         }

@@ -543,3 +543,121 @@ fn generated_consumers_match_registry_and_examples_validate_outside_checkout() {
         success(run(path, &["config", "validate", "--file", "input.toml"]));
     }
 }
+
+#[test]
+fn monitor_stored_checks_follow_selected_checks_and_refuse_incompatible_sets() {
+    let directory = tempfile::tempdir().unwrap();
+    let path = directory.path();
+    let base = example(path, "monitor-only");
+    let document = base.replace("[monitor]\n", "[monitor]\nchecks=['open','read']\n");
+    fs::write(path.join("input.toml"), &document).unwrap();
+    let show = success(run(path, &["config", "show", "--file", "input.toml"]));
+    assert_eq!(
+        show["settings"]["monitor.store_checks"]["value"],
+        serde_json::json!(["open", "read"])
+    );
+    assert_eq!(
+        show["settings"]["monitor.store_checks"]["source"],
+        "derived-default"
+    );
+    assert_eq!(
+        show["settings"]["monitor.store_checks"]["default_from"],
+        "monitor.checks"
+    );
+    fs::write(
+        path.join("input.toml"),
+        document.replace("[monitor]\n", "[monitor]\nstore_checks=['read']\n"),
+    )
+    .unwrap();
+    let explicit = success(run(path, &["config", "show", "--file", "input.toml"]));
+    assert_eq!(
+        explicit["settings"]["monitor.store_checks"]["value"],
+        serde_json::json!(["read"])
+    );
+    assert_eq!(
+        explicit["settings"]["monitor.store_checks"]["source"],
+        "file"
+    );
+    reject(
+        path,
+        &document.replace("[monitor]\n", "[monitor]\nstore_checks=['nip11']\n"),
+    );
+    reject(path, &document.replace("['open','read']", "['made_up']"));
+    reject(
+        path,
+        &document.replace("['open','read']", "['open','open']"),
+    );
+    reject(path, &document.replace("['open','read']", "[]"));
+    let disabled = document.replace("['open','read']", "[]").replace(
+        "[monitor]\nchecks=[]\nenabled = true",
+        "[monitor]\nchecks=[]\nenabled = false",
+    );
+    fs::write(path.join("input.toml"), disabled).unwrap();
+    success(run(path, &["config", "validate", "--file", "input.toml"]));
+}
+
+#[test]
+fn configured_extra_ca_paths_are_bounded_paths_without_offline_reads() {
+    let directory = tempfile::tempdir().unwrap();
+    let path = directory.path();
+    let base = example(path, "sync-only");
+    let document = format!("{base}\n[network.tls]\nextra_roots=['/missing/custom-ca.pem']\n");
+    fs::write(path.join("input.toml"), &document).unwrap();
+    let show = success(run(path, &["config", "show", "--file", "input.toml"]));
+    assert_eq!(
+        show["settings"]["network.tls.extra_roots"]["value"],
+        serde_json::json!(["/missing/custom-ca.pem"])
+    );
+    reject(
+        path,
+        &document.replace("/missing/custom-ca.pem", "relative.pem"),
+    );
+    reject(
+        path,
+        &document.replace("/missing/custom-ca.pem", "/missing/../custom-ca.pem"),
+    );
+    reject(
+        path,
+        &document.replace("['/missing/custom-ca.pem']", "['/a.pem','//a.pem']"),
+    );
+}
+
+#[test]
+fn shared_read_limits_validate_page_delivery_authority_and_process_allowances() {
+    let directory = tempfile::tempdir().unwrap();
+    let path = directory.path();
+    let base = example(path, "serve-existing");
+    let configured = format!(
+        "{base}\n[read]\ndefault_page_size=50\nmax_page_size=200\n[read.execution]\nmax_concurrent=8\ntimeout='10s'\n[read.cursor]\nclock_skew='0s'\n"
+    );
+    fs::write(path.join("input.toml"), &configured).unwrap();
+    let show = success(run(path, &["config", "show", "--file", "input.toml"]));
+    assert_eq!(show["settings"]["read.default_page_size"]["value"], "50");
+    assert_eq!(show["settings"]["read.cursor.clock_skew"]["value"], "0");
+    assert_eq!(show["settings"]["api.request_timeout"]["value"], "15000000");
+    assert_eq!(
+        show["settings"]["read.response.max_bytes"]["value"],
+        "16777216"
+    );
+    for invalid in [
+        configured.replace("default_page_size=50", "default_page_size=201"),
+        configured.replace("clock_skew='0s'", "clock_skew='31s'"),
+        configured.replace(
+            "[read.execution]\n",
+            "[read.execution]\nmax_memory_bytes='1TiB'\n",
+        ),
+        format!("{configured}\n[read.authorization]\nlease_ttl='6s'\n"),
+        configured.replace("[api]\n", "[api]\nrequest_timeout='9s'\n"),
+    ] {
+        reject(path, &invalid);
+    }
+}
+
+#[test]
+fn known_lexical_storage_aliases_cannot_create_distinct_owner_roots() {
+    let directory = tempfile::tempdir().unwrap();
+    let path = directory.path();
+    let base = example(path, "full");
+    let alias = base.replace("/var/lib/bigbrotr/index", "/var//lib/bigbrotr/ingest/");
+    assert!(invalid_error(path, &alias).contains("storage roots must be distinct"));
+}

@@ -7,6 +7,7 @@ pub enum Kind {
     UInt(u64, u64),
     Bytes,
     Duration,
+    DurationZero,
     Ratio,
     Enum(&'static [&'static str]),
     Text,
@@ -15,6 +16,8 @@ pub enum Kind {
     Proxy,
     Identity,
     Strings,
+    Paths,
+    ChoiceSet(&'static [&'static str]),
     Endpoints,
 }
 
@@ -23,6 +26,8 @@ pub struct Key {
     pub name: String,
     pub kind: Kind,
     pub default: Value,
+    pub default_from: Option<&'static str>,
+    pub default_add_us: u64,
     pub reload: &'static str,
     pub owner: &'static str,
     pub root: bool,
@@ -40,6 +45,9 @@ impl Key {
             }
             Kind::Bytes => json!({"type":"string", "pattern":"^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$"}),
             Kind::Duration => json!({"type":"string", "pattern":"^[1-9][0-9]*(us|ms|s|m|h|d)$"}),
+            Kind::DurationZero => {
+                json!({"type":"string", "pattern":"^(0|[1-9][0-9]*)(us|ms|s|m|h|d)$"})
+            }
             Kind::Ratio => json!({"type":"number","minimum":0,"maximum":1}),
             Kind::Enum(values) => json!({"type":"string", "enum":values}),
             Kind::Text => json!({"type":"string","maxLength":8192}),
@@ -54,12 +62,24 @@ impl Key {
             Kind::Strings => {
                 json!({"type":"array","items":{"type":"string","maxLength":8192},"maxItems":100000,"uniqueItems":true})
             }
+            Kind::Paths => {
+                json!({"type":"array","items":{"type":"string","format":"bigbrotr-absolute-path","maxLength":8192},"maxItems":100000,"uniqueItems":true})
+            }
+            Kind::ChoiceSet(allowed) => {
+                json!({"type":"array","items":{"type":"string","enum":allowed},"maxItems":allowed.len(),"uniqueItems":true})
+            }
             Kind::Endpoints => {
                 json!({"type":"array","items":{"type":"string","format":"bigbrotr-endpoint/1","maxLength":8192},"maxItems":100000})
             }
         };
         if !self.default.is_null() {
             value["default"] = self.default.clone();
+        }
+        if let Some(source) = self.default_from {
+            value["x-bigbrotr-default-from"] = json!(source);
+            if self.default_add_us > 0 {
+                value["x-bigbrotr-default-add-us"] = json!(self.default_add_us.to_string());
+            }
         }
         value["x-bigbrotr-reload"] = json!(self.reload);
         value["x-bigbrotr-owner"] = json!(self.owner);
@@ -77,6 +97,8 @@ pub fn keys() -> Vec<Key> {
                 name: $name.to_string(),
                 kind: $kind,
                 default: json!($default),
+                default_from: None,
+                default_add_us: 0,
                 reload: $reload,
                 owner: $owner,
                 root: $root,
@@ -648,8 +670,8 @@ pub fn keys() -> Vec<Key> {
         add!(
             format!("{feature}.enabled"),
             Bool,
-            true,
-            "restart",
+            feature != "api",
+            if feature == "api" { "live" } else { "restart" },
             owner,
             false
         );
@@ -724,6 +746,114 @@ pub fn keys() -> Vec<Key> {
             true
         );
     }
+    add!(
+        "network.tls.extra_roots",
+        Paths,
+        Vec::<String>::new(),
+        "connection",
+        "acquisition",
+        true
+    );
+    const MONITOR_CHECKS: &[&str] = &[
+        "open", "read", "dns", "tls", "http", "nip11", "nip42", "nip45", "nip50", "nip77", "geo",
+    ];
+    add!(
+        "monitor.checks",
+        ChoiceSet(MONITOR_CHECKS),
+        MONITOR_CHECKS,
+        "live",
+        "monitor",
+        false
+    );
+    add!(
+        "monitor.store_checks",
+        ChoiceSet(MONITOR_CHECKS),
+        Value::Null,
+        "live",
+        "monitor",
+        false
+    );
+    keys.last_mut()
+        .expect("store-check registry entry")
+        .default_from = Some("monitor.checks");
+    // Common read budgets are shared across adapters, never a separate budget
+    // for every HTTP, relay or gateway mount.
+    for (name, default) in [
+        ("default_page_size", 100),
+        ("max_page_size", 1000),
+        ("max_filters", 8),
+        ("max_values_per_filter_field", 100),
+        ("execution.max_concurrent", 16),
+        ("admission.queue_max", 64),
+        ("public.rate", 5),
+        ("public.burst", 10),
+    ] {
+        add!(
+            format!("read.{name}"),
+            UInt(1, u32::MAX as u64),
+            default,
+            "live",
+            "read",
+            false
+        );
+    }
+    for (name, default) in [
+        ("request.max_bytes", "64KiB"),
+        ("execution.max_scan_bytes", "256MiB"),
+        ("execution.max_memory_bytes", "64MiB"),
+        ("response.max_bytes", "16MiB"),
+    ] {
+        add!(
+            format!("read.{name}"),
+            Bytes,
+            default,
+            "live",
+            "read",
+            false
+        );
+    }
+    for (name, default) in [
+        ("execution.timeout", "15s"),
+        ("cursor.ttl", "15m"),
+        ("policy.cache_max_age", "60s"),
+        ("authorization.lease_ttl", "5s"),
+    ] {
+        add!(
+            format!("read.{name}"),
+            Duration,
+            default,
+            "live",
+            "read",
+            false
+        );
+    }
+    add!(
+        "read.cursor.clock_skew",
+        DurationZero,
+        "30s",
+        "live",
+        "read",
+        false
+    );
+    add!(
+        "read.count.mode",
+        Enum(&["auto", "exact"]),
+        "auto",
+        "live",
+        "read",
+        false
+    );
+    add!(
+        "api.request_timeout",
+        Duration,
+        "20s",
+        "live",
+        "read",
+        false
+    );
+    let timeout = keys.last_mut().expect("API timeout registry entry");
+    timeout.default_from = Some("read.execution.timeout");
+    timeout.default_add_us = 5_000_000;
     // Acquisition settings have concrete units even before their workers exist.
     for (key, default, owner, reload) in [
         ("seed.max_line_bytes", "8KiB", "control", "job"),

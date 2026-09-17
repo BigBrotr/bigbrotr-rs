@@ -233,5 +233,78 @@
     "review": "Integrating owner read complete authored config/endpoint source and diff; generated schema/reference/recipes compared byte-for-byte by executable tests.",
     "known_followup": "Lexically equivalent data roots with repeated/trailing slash bypassed the equality check; independent agent reproduced it and is correcting it. Runtime symlink/mount alias authority remains unimplemented.",
     "remaining": "Partial static configuration only. New static syscall acceptance and remaining key families are in progress; live doctor and durable authority remain unimplemented."
+  },
+  "exact_initial_candidate": {
+    "revision": "f6af10301c33426942d154eabf812d945c4a80db",
+    "tree": "6cf15ed603cf891ecb621a496521a0bb3559a7dd",
+    "source_manifest_sha256": "754a1ec63d2aca06582c224a4541b01b3843254b92ed75a7f98c40427e600732",
+    "binary_sha256": "09ec1b368c399e699cb2bb03c92c87780f823f656cc7a98d3cadf07ed120c926",
+    "profile": "release",
+    "target": "aarch64-apple-darwin",
+    "command": "python3 tools/build.py --revision f6af103 --output .research/static-config/exact-f6af103; cargo test --locked --release --workspace in exported source with isolated Cargo cache and target",
+    "tests": 40,
+    "status": "PASS for executed initial scenarios; later lexical alias finding recorded below",
+    "source_unchanged_after_tests": true,
+    "test_log_sha256": "9e8e16315fbf44652b3b599c9342414cbc008b43941897854c5054f78539a0d3",
+    "paths": {
+      "build_result": ".research/static-config/exact-f6af103/build-result.json",
+      "source_manifest": ".research/static-config/exact-f6af103/source-manifest.json",
+      "test_log": ".research/static-config/exact-f6af103/workspace-tests.log"
+    }
+  },
+  "followup_candidate": {
+    "baseline": "f6af10301c33426942d154eabf812d945c4a80db",
+    "state": "reviewed dirty follow-up; exact integrated revision qualification remains separate",
+    "changed_files_sha256": {
+      "apps/bigbrotr/src/config/mod.rs": "329f6e408a10b0e322e4856253516a4cdb6a539c070bfecef96b9dd2bb0052a5",
+      "apps/bigbrotr/src/config/registry.rs": "fe7960067c2bb9618ff310f1ddcd24a454194337f7b32a2a4246ea62d54314f3",
+      "apps/bigbrotr/src/config/resolve.rs": "ecb9f8d07553b483df425eaffd31fb2d82c6888b1991005841d76ed8df412ed1",
+      "apps/bigbrotr/tests/config_entrypoint.rs": "658dc7673ee76f4ff089113aef026b05e4cb67f6f6ba908c407479c44843538d",
+      "contracts/config/schema.json": "350d671aeb68992bb4055b4cf8b089928241d3d6db0bca00d0a03b24a0f552fc",
+      "docs/architecture/derived-read-publication.md": "c712b3baaff364aa6f92d5260310146b876b0cd0e85c50ead9ce9a741f5204f7",
+      "docs/reference/configuration.md": "bde7ce18f347db3ed1f553ed5b318539a04de3049ba2f5866c0b3ad29d052f36"
+    },
+    "registry_keys": 319,
+    "changes": [
+      "Lexical storage alias comparison rejects repeated-separator/trailing-slash aliases without changing configured file paths",
+      "Monitor computed/stored check sets, derived storage default and subset checks",
+      "Bounded custom CA path sets; no offline file reads",
+      "Shared read page/count/request/response/concurrency/cursor/authority limits and declared process-grant arithmetic",
+      "API delivery timeout derives from read execution timeout plus 5s; explicit override cannot remove that allowance"
+    ],
+    "red_controls": {
+      "path_alias": {
+        "status": "FAIL before fix: invalid candidate returned 0",
+        "log": ".research/static-config/path-alias-red.log"
+      },
+      "read_derived_timeout": {
+        "status": "FAIL before fix: 20000000us instead of independently expected 15000000us",
+        "log": ".research/static-config/read-default-red.log"
+      }
+    },
+    "validation": {
+      "final_config_cli_tests": {
+        "status": "PASS",
+        "tests": 19,
+        "command": "cargo test --locked -p bigbrotr --test config_entrypoint",
+        "log_sha256": "94bf3ccd746222b527ef8340f294e3f815d8b416bd71224feea6a388f890a1ff"
+      },
+      "clippy": {
+        "status": "PASS",
+        "command": "cargo clippy --locked --workspace --all-targets -- -D warnings",
+        "log_sha256": "6f034ba80eb6f697305e585007f064b6d6556885b6957bdad4bbb29acd86252d"
+      },
+      "fmt": {
+        "status": "PASS",
+        "command": "cargo fmt --all --check"
+      },
+      "preceding_workspace_check": {
+        "status": "PASS",
+        "tests": 44,
+        "scope": "before final specialization of path normalization to comparison only; final affected 19-test CLI suite rerun above",
+        "log_sha256": "46a6672127b928ba06768d9717469a1a9be13e85c06db74a7a8ab416a7db5546"
+      }
+    },
+    "remaining": "All prior runtime/engine/release and missing-family gates remain. No static-completion claim."
   }
 }

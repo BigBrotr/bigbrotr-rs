@@ -834,6 +834,12 @@ that reveal existence. Restricted and nonexistent point lookups use the same
 public response shape; this reduces disclosure but is not a proof of eliminating
 all timing side channels. Do not emit query text or event content in ordinary logs.
 
+Common read limits use the `read.*` configuration namespace. Adapter enablement
+remains under its own prefix (`api.enabled`, `archive_relay.enabled`, and so on);
+there is no additional `read.enabled` switch. `api.request_timeout` defaults to
+the resolved `read.execution.timeout` plus 5 seconds, rather than a competing
+fixed timeout. Explicit overrides retain at least that delivery allowance.
+
 | Common read setting | Proposed default | Unit | Reload |
 |---|---|---|---|
 | `enabled` | false for each public adapter | boolean | Live |
