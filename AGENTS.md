@@ -16,6 +16,10 @@ material and must remain read-only. Their process rules and past technology
 decisions do not constrain this new design. Preserve useful product intent and
 explicitly explain changes to it.
 
+BigBrotr's identity is a verifiable Nostr archive and observatory. Owner ideas and
+historical features are context to evaluate, not automatic obligations: include
+a capability when its useful question and total cost justify it.
+
 Write repository content and commit messages in English. Keep the product name
 BigBrotr; `bigbrotr-rs` is the repository identifier. Record user decisions and
 unresolved assumptions in `docs/planning/questions.md`, and keep the current
@@ -25,6 +29,13 @@ Base claims on source inspection, documented guarantees, or recorded experiments
 Separate measured results from extrapolations and proposals. A passing test is
 evidence for the behavior it exercises, not proof of overall production fitness.
 Review code, contracts, operations, and actual user journeys together.
+
+Map the relevant directories before working. Read complete owning files and the
+linked contracts/callers that determine the affected behavior, using bounded
+untruncated chunks. Searches locate material; snippets, headings and file counts
+are not comprehension or complete-review evidence. Scope this reading to the
+change and its real boundaries, rather than rereading the whole eventual codebase
+for every small edit. Disclose any review boundary that remains uninspected.
 
 Use coherent commits for reviewable work. Keep reproducible experiment sources
 and concise evidence; downloaded checkouts, build caches, and raw generated data
@@ -39,6 +50,17 @@ single pipeline for task selection, dependency research, independent fixtures,
 practical execution, review, documentation and coherent commits. Root AGENTS.md
 is the agent entrypoint; do not maintain a competing agent.txt instruction set.
 The current specification is authoritative over historical review suggestions.
+
+On a new session or after compaction, read the single durable
+[progress checkpoint](docs/implementation/progress.md) and follow the guide's
+resumption procedure before continuing. Verify its revision, dirty files,
+evidence paths and process/resource claims against reality; the checkpoint is
+navigation, not proof or a second task plan. Preserve another contributor's work.
+Update the same checkpoint at a meaningful task boundary or before interruption,
+including unresolved outcomes and the next bounded action. Do not create a new
+handoff file per session or copy secrets, raw logs or every completed step into it.
+The latest explicit owner instruction governs the stage; an old checkpoint does
+not revoke authorization already given in the session.
 
 Before product work, consult the readiness register. During implementation,
 audit every new persistent boundary and each end-to-end milestone; test actual

@@ -138,6 +138,7 @@ subjective trust scores.
 | Assertion inputs | `nip85_input_facts`: versioned subject statistics with immutable source lineage and exact producer/subject/field mappings in [assertion bindings](../specification/assertion-bindings.md). Each of the four families enables only qualified supported fields. |
 | Relay facts and state | `relay_facts`, `relay_state_aggregates`: local observations and attributed imported monitoring claims; deduplicate samples before aggregation and preserve conflicting observations. |
 | Coverage | `relay_coverage`: per-endpoint scope/time/access context, traversal progress and explicit gaps; distinguish observation coverage from knowledge of all stored events. |
+| Content composition | Typed projection of `relay_facts`/`relay_coverage`: exact witnessed or locally visible event/kind/author/topic counts, content bytes, author concentration and optional curator bands under [the composition populations](analytics-detail.md#relay-content-composition-from-a-declared-population). Existing direct availability jobs can supply their separately named served-requested-set population. No remote inventory claim or additional service. |
 | Overlap | `relay_dedup_candidates`, `relay_cluster_edges`, `relay_clusters`: candidate method, pairwise set statistics, qualifying edges and components. Advisory similarity, never collection identity. |
 | Propagation | `event_propagation_stats`: observer-relative acquisition timing, stratified by live/backfill/import path and clock quality; no causal propagation assertion. |
 | Availability | `relay_selective_availability`, `relay_availability_frontier`: direct scoped served/not-served/unknown evidence and labeled estimates of historical availability, with transport/auth uncertainty. |
@@ -199,7 +200,7 @@ availability observation history independently of derivation-run retention.
 |---|---|---|---|
 | `enabled` | true in the complete online recipe; false in archive-only recipes unless a separately supported offline execution mode is selected | boolean | Live |
 | `current.interval` / `facts.interval` / `overlap.interval` | 300 / 86400 / 86400 | seconds | Cycle |
-| `targets` | all supported families; dependent families explicitly suppressed when capability absent | set | Generation |
+| `targets` | explicit complete-online target set below; no wildcard activation of supported or newly registered definitions | set | Generation |
 | `work.max_ingestion_bytes` | 256 MiB per scheduled chunk; drain all chunks over repeated runs | bytes | Cycle |
 | `work.max_duration` | 3600; cancel only at safe partition boundaries where possible | seconds | Cycle |
 | `genesis_floor` | none beyond source scope | event timestamp | Generation |
@@ -207,6 +208,47 @@ availability observation history independently of derivation-run retention.
 | `retention.completed_generations` | 3, subject to last-usable and active pin protection | generations | Cycle |
 | `continue_independent_targets_on_error` | true | boolean | Cycle |
 | `memory.max_bytes` / `spill.max_bytes` | 512 MiB / 8 GiB, allocator constrained | bytes | Cycle |
+
+The complete-online recipe selects these existing target/relation bindings and
+their registered baseline definitions. This is an execution default, not a
+reduction in implementation quality or supported analytical features. A new
+registry entry never silently joins the default schedule. Independent recipes
+select only their declared capabilities; archive-only and acquisition-only do
+not start these online computations.
+
+| Selected work | Initial activation and consumer |
+|---|---|
+| `current_replaceable_events`, `current_addressable_events`, `current_relay_list_entries`, `serving.current_graph_edges` | Current headers/memberships and eligible public social relations for normal client reads, author pages and follower/following facts. Incrementally maintain these without requiring seeds, diffusion or a CSR snapshot for every tick. Current temporal deadlines remain independent of the 300-second batching cadence. |
+| `global_facts`, `social_facts`, `nip85_input_facts` | The existing baseline corpus/kind/author/activity and supported interaction definitions for dashboard/statistics/subject pages and optional publication. Field-specific missing/unsupported states remain; no signer is activated. Optional historical issuer-authority/zap bindings require their declared input grant and qualification, and unavailable rank never suppresses otherwise qualified facts. |
+| `relay_facts`, `relay_state_aggregates`, `relay_coverage` | Local/resolved monitoring, traversal/gaps and the selected base `relay.composition/1` projection. Composition selects only its public `visible-witness/1` scope and six precomputed components from [analytics detail](analytics-detail.md#materialize-only-the-selected-useful-views), when provenance inputs exist. No all-population/window/viewpoint cross-product. Missing provenance suppresses only its dependent components; local monitoring remains usable. |
+| `relay_quality_scores` operational vector, independently owned by P05-T12 | Scoped availability/latency/coverage and tested-capability explanations for the default directory when qualifying monitor inputs exist. It runs independently of social seeds and of the optional `general-read-relay/1` scalar. Insufficient evidence preserves missing reasons and any qualified components. |
+
+`nip85_input_facts` may remain sparse: do not allocate an all-event set of
+zero-engagement rows or indexes used only by a disabled publisher. A bounded
+subject lookup may produce an exact zero only after verifying subject eligibility,
+definition applicability and a compatible complete contribution target that proves
+no eligible contribution exists at that cut. Missing or temporally incompatible
+targets, unresolved issuer/target evidence and withheld bindings follow their
+registered missing/withheld rules; row absence alone never proves zero. Shared
+fact/retraction indexes needed by active dashboard or client resources remain maintained.
+Enabling publication enumerates eligible subjects under the existing complete
+keyset/job contract and admits any additional support-index work; it does not
+require pre-existing zero rows. Its potentially corpus-sized sweep remains charged.
+
+`event_propagation_stats`, `relay_overlap_groups`, `relay_overlap_members`,
+`relay_dedup_candidates`, `relay_cluster_edges`, `relay_clusters`,
+`relay_selective_availability` and `relay_availability_frontier` are supported
+explicit selections or admitted jobs, not default fleet-wide schedules. Their
+configured cadence applies only after selection. Direct availability uses an
+already authorized finite probe selection; enabling a reducer cannot start
+network probes. Topic distributions, broad alternate composition windows and
+curator bands follow the same explicitly selected read/job/schedule rules.
+The dashboard presents available measured core views plus clear job/disabled
+states; it never fills an uncomputed panel with zero or silently launches an
+exhaustive job. Bounded event drilldown and authorized corpus export remain
+available through their own read/job capabilities without building every global
+distribution. Optional features still require their full correctness, recovery,
+interop and capacity acceptance before advertised support.
 
 On stop, finish a safe partition or abandon staging; committed manifests remain
 usable. On restart, resume the ingestion/dirty ledger. If required journal history
@@ -322,6 +364,13 @@ algorithm families, not interchangeable values on a 0–100 scale.
 | `memory.max_bytes` / `spill.max_bytes` | 1 GiB / 16 GiB, allocator constrained | bytes | Cycle |
 
 Stopping Ranker leaves archive reads, derivation, and monitoring operational.
+An empty configured seed set produces `withheld:no-seeds` before allocating or
+rebuilding a diffusion/CSR job solely for ranking. Nonempty configured seeds still
+require the complete pinned graph before deciding which seeds are present; no
+missing seed becomes an invented vertex. Each explicitly configured eligible
+viewpoint has its own admitted job; no implicit fleet of curator vectors exists.
+The independently selected relay operational vector above remains scheduled
+without social seeds; only the scalar needs its explicit composite profile.
 Publishers may drain already frozen output but must not relabel old scores as new.
 Restart selects the next required compatible input generation; it may coalesce
 obsolete unpublished generations when only latest assertions are requested, with
@@ -351,6 +400,15 @@ roadmap; this registry owns meaning, provenance and computation.
 | Serialization | API schema and optional NIP kind/tag or extension binding, including quantization, omitted values, size limits and compatibility status. |
 | Explanation | Human-readable purpose, limitations, data/source lineage and references sufficient to reproduce the value. |
 
+Reuse pure definition/reducer functions across local views, derived generations
+and publication projections only when their population/method semantics match.
+Acquisition owns execution and consent for new network checks; reducers cannot
+probe, sign or select destinations. Publishers translate eligible committed
+values and use the shared outbox. Adding a metric normally adds a registry entry
+and a reducer/binding, not another independently deployed service. The optional
+[definition manifest](protocol-evolution.md#portable-definition-manifests-and-categorical-labels)
+exports this registry's meaning; it does not create another definition authority.
+
 An assertion's signer is not automatically the author of its underlying source
 events, and an imported claim's subject is not its author. Keep these identities
 separate in schemas and UI. An unpublished local assertion can name its observer
@@ -360,19 +418,52 @@ Unsigned database metadata alone is not cryptographic proof of asserted lineage;
 provide manifest hashes and a defined signed binding when that stronger claim is
 needed. Do not insert arbitrary nonstandard provenance tags and call them NIP-85.
 
-Incremental execution follows dependency semantics:
+Incremental means maintaining the declared result across changes, not requiring
+`CREATE MATERIALIZED VIEW`. ClickHouse's insert-time views process new input
+blocks; right-side join changes do not refresh previous results. Cascaded views
+also consume inserted blocks rather than the later merged source state. These
+documented semantics explain why a naive count over replayed physical rows or
+a mutable rank join cannot establish the required logical result.
+[Incremental views](https://clickhouse.com/docs/concepts/features/materialized-views/incremental-materialized-view),
+[cascading views](https://clickhouse.com/docs/concepts/features/materialized-views/cascading-materialized-views)
 
-| Computation | Update strategy and practical cost |
-|---|---|
-| Additive counts/sums over immutable accepted events | Store source-ID-keyed contributions or committed idempotent partition reductions. Process new ingestion and repair notices once; exact distinct counts require distinct-key state, not only an additive counter. |
-| Current-state facts | When a winning event changes, remove that winner's prior contribution and add the new whole object's contribution. Track dependencies so a missing referenced event arriving later can resolve a prior unknown. |
-| Rolling statistics | Advance expiry as well as arrival; preserve bucket/state boundaries and recompute affected buckets for late data. No arrivals does not mean no work when a window expires. |
-| Definition, scope or policy change | Build a new explicitly versioned result from required history; do not edit old provenance or claim a configuration-only reload recomputed it. Storage fidelity is unchanged. |
-| Social graph | Persist current adjacency and changed edges incrementally. Exact global diffusion still propagates beyond changed authors; deterministic full iteration is O(iterations × (vertices + edges)) and may require multiple disk passes. |
-| Score normalization | Relative population/percentile normalization can change many subjects after a small graph update. Rebuild the required distribution and publish changed wire values; do not assume only directly changed authors need reconsideration. |
-| Personalized viewpoints | Share immutable adjacency and parsing, but account for each viewpoint's score state and propagation cost. Admission limits the number of active profiles; many profiles do not become free because keys are cheap. |
-| Relay pair similarity | Naive all-pairs work is quadratic in endpoints, and per-event relay-pair updates are quadratic in that event's fanout. Use sound size/coverage pruning or explicitly approximate candidate generation; disclose candidate coverage and sampling. |
-| Publication | Evaluate semantic payload differences on a committed assertion generation; sign/send only changed values or missing-target deliveries. Do not recompute analytical facts inside the send loop. |
+Selected CH aggregate states/materialized views remain possible measured
+accelerators for compatible additive work. Feed logical admissions or an
+idempotent partition/generation protocol, prove replay/backfill behavior and use
+the required final merge at reads; source `ReplacingMergeTree` merges and a
+finite insert-deduplication window do not substitute for logical-event identity.
+Clock passage, deletion/replacement, repaired input and mutable join dependencies
+require explicit invalidation/retraction or a new complete reduction. An exact
+distinct aggregate can merge membership, but subtracting a removed contributor
+needs retained refcounts/sets or recomputation. No CH-only shortcut silently
+changes a visible metric into an ever-seen metric.
+
+| Computation | Update strategy and practical cost | State and served result |
+|---|---|---|
+| Additive counts/sums over immutable accepted events | Process admitted source chunks and repair notices once; replace committed partition reductions or use equivalent exact idempotence. | Derived checkpoint/contribution identity; complete CH counts/sums. A selected insert-time MV is an accelerator inside this contract. |
+| Exact unique authors/actors | Maintain per-group memberships/refcounts or exact union of retained sets; one actor in two days is one all-history actor. Refcount zero retracts its membership. | `derived.distinct_memberships` or equivalent exact partition sets, with complete typed CH counts; no sum of distinct-count scalars. |
+| Current social/interaction/NIP-85 facts | Replace an old winning list/event's whole contribution, including an empty or suppressed new winner. Dirty referenced subjects on late resolution or eligibility changes. | Derived current state, contributions and reverse dependencies; CH current relations, interaction facts and qualified assertion inputs. |
+| Rolling statistics/expiry | Advance expiry without ingestion; retain inverse contributions or recompute affected buckets for late data and noninvertible summaries. | Derived window inputs/deadlines and temporal generation; CH dated complete histograms/counts/quantiles. |
+| Definition, scope or policy change | Build a new versioned result from required history; a configuration reload alone is not recomputation. | Separate working generation and pinned old result; CH/artifacts selected by the new verified manifest only. |
+| Social graph and global rank | Current adjacency changes incrementally. Exact diffusion remains O(iterations × (vertices + edges)); percentile changes may affect subjects with no new events. | Derived changed-edge state and immutable graph/score artifacts; complete CH scores pin graph, viewpoint and normalization population. |
+| Personalized or trust-conditioned joins | Share immutable adjacency/parsing; charge each viewpoint's solver and changed-weight fanout. Mutable author weights invalidate prior joined contributions. | Optional admitted score/join state and dependency indexes; separate completed CH projection or artifact, disabled profiles allocate no extra join state. |
+| Relay pair similarity | Naive pairs are quadratic in endpoints and per-event fanout; prune soundly or disclose approximate candidates. | Existing scoped membership/candidate state and immutable result artifacts; CH complete pair/component generations. |
+| Publication | Compare eligible normalized meaning from committed inputs; sign/send changed values or missing-target deliveries. | PG publication manifests and exact-byte outbox; no fact recomputation in the send loop. |
+
+Across these cases, Indexer-owned derived RocksDB commits working transitions,
+checkpoint and pending output identity together. CH serves verified complete
+result partitions; the fenced PG manifest/pointer selects them. A source cursor
+may advance over an empty delta, while expiry/dirty work may advance a target
+without any new source cut. Both directions are required, independently of MV use.
+
+ReadCore translates authorized typed requests into bounded storage queries,
+including CH SQL over these precomputed generations; it does not require a raw
+archive rescan for each dashboard read. Public HTTP/Nostr/DVM readers retain its
+resource, authority, budget and compatible-view boundary. Direct SQL remains an
+operator/research capability against explicitly granted read-only scoped data or
+offline exports, with its own database role and resource limits. It is not an
+unrestricted public endpoint and cannot bypass those grants or silently promote
+an incomplete/stale analytical result into current product facts.
 
 Generation manifests preserve the actual dependency vector, so a frequently
 updated event count can coexist with a less frequent global graph score without
@@ -446,6 +537,27 @@ not the input observation's event time. When multiple changes occur within one
 second, coalesce before signing or wait for a valid later timestamp; do not race
 same-time replacements or drift arbitrarily into the future. Guard clock rollback
 using persisted coordinate state and surface a clock-related wait.
+
+Before constructing a new context artifact, compare a normalized assertion
+projection: values, omission/eligibility, definition/method/viewpoint/population
+meaning and withdrawal. For unchanged NIP-85 assertions, a newer internal cut or
+computation timestamp alone keeps the prior signed revision and its **original**
+context/lineage. Do not rewrite context behind an existing digest, or add a new
+context digest merely to defeat changed-content suppression. Meaningful scope,
+method or eligibility changes do require reconsideration even when numbers agree.
+NIP-66 may publish a genuinely new attempt at its configured cadence; an unchanged
+old attempt is never renewed by a scheduler tick. This pre-projection comparison
+does not replace the final digest over the actual emitted ordered bytes.
+
+Each publisher's existing scheduler uses durable fair endpoint/subject keyset
+progress, bounded pages (initially 500), encoded-byte/outbox grants and finite
+cycle duration. Coalesce unsigned updates by coordinate; preserve exact signed
+obligations. Budget refusal defers the remaining suffix, not just its first page,
+and reports oldest pending age, full-sweep age and achieved versus intended
+cadence. Separate cheap changed-value selection from costly global percentile
+recomputation. A changed rank distribution can enqueue many subjects; scheduling
+and queue overflow retain correctness through the existing rebuild/sweep marker.
+New destinations still receive stored signed bytes without recomputation.
 
 Retries send the exact stored signed event. Nostr event identity does not require
 the signer to produce a deterministic signature, so reconstructing/re-signing an

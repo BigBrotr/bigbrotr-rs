@@ -11,12 +11,12 @@ completeness, or an authority on whether people or statements are trustworthy.
 
 | Data class | Selected retained form | Why it earns its cost | Exclusions or limits |
 |---|---|---|---|
-| Verified signed event | One full immutable signed body per canonical event ID; binary IDs/key/signature, integer time, full ordered tags, original content string | Can verify, serve, reinterpret and export historical evidence later | Policy excludes invalid/oversized input explicitly; no automatic deletion by trust score |
+| Verified signed event | One immutable shared payload per canonical event ID, with the first verified signature representative independently retained for each eligible visibility scope; binary IDs/key/signature, integer time, full ordered tags and original content string | Can reconstruct, verify, serve and export a complete signed event from the caller's authorized scope | No private signature or admission envelope is reused as public evidence; policy excludes invalid/oversized input explicitly; no automatic deletion by trust score |
 | Event acquisition metadata | Original admission receipt/time and scoped first local receive metadata, with immutable earlier corrections | Explains when this instance acquired an event, even without provenance | Remote signed time and import claims are separate; no invented network witness |
 | Event→relay provenance | Optional first attributable observation per event/endpoint/observer/auth scope; exact admission, compact dictionaries, immutable corrections | Answers where an event was actually observed; supports scoped reconciliation/overlap | Not every repeat delivery; not proof it remains available |
 | Imported provenance | Source-attributed claims with validation status and source times | Useful outside evidence can be compared without pretending this instance measured it | An event signature authenticates the event, not the claimed relay observation |
 | Measurement attempt | Compact typed outcome, method/version, observer/route, actual measurement time/duration and document references | Distinguishes failed, interrupted, unknown and successful executed checks; supplies valid denominators | Deferred/unexecuted scheduler work stays operational; it cannot refresh measurements |
-| NIP-11, TLS/DNS and other bounded documents | Deduplicated immutable original document versions, content digest, parse/method version and security scope | Reparse improved schemas, inspect declared behavior, diagnose changes | Avoid copying an unchanged full document into every observation; do not index every arbitrary JSON field |
+| NIP-11, TLS/DNS and other bounded documents | Immutable logical document identities, original bytes, content digest, parse/method version and security scope | Reparse improved schemas, inspect declared behavior, diagnose changes | Repeated observations reference the same logical object; physical wide versus separate-object storage follows the measured catalog decision; do not index every arbitrary JSON field |
 | Registry and coverage | Typed transactional identities, eligibility, attempts, gaps, source cuts and configuration epochs | Drives fair scheduling and tells users what was actually investigated | A maximum created_at or EOSE is not a completeness certificate |
 | Derived facts and scores | Versioned outputs with source cuts, definitions, parameters, viewpoint and basis | Efficient reads, explainable comparisons and reproducible results | Retain usable/pinned generations; do not accumulate a full copy per tick forever |
 | Signed outputs and job state | Durable intent, exact signed bytes, per-destination receipts, policy identity, bounded execution ledger | Safe retries, attributable publication and resumable operations | ACK is not indefinite remote retention; terminal payload retention is separate from replay tombstones |
@@ -53,6 +53,12 @@ backups remain pinned. Rebuild parsed views from original documents. In CH, stor
 hot fields and references rather than duplicating full NIP-11 in every liveness
 row. A standalone export includes its referenced documents so it needs no live
 registry. This is a projection/data-model choice, not a new document database.
+
+Logical identity does not prescribe Parquet placement. A measured physical layout
+may place unchanged bytes beside observations when compression and lookup costs
+justify it, while reconstructing the same scoped object and occurrence identities.
+The [storage catalog](../specification/storage-catalog.md#document-layout-and-archive-immutability)
+and P02-T09 own that comparison, including all files, references and recovery costs.
 
 Do not retain every hostile frame merely for diagnostics. Use bounded sampled
 reject metadata; optional raw capture requires explicit size/retention/security

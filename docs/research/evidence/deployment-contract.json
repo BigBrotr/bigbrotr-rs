@@ -1,0 +1,76 @@
+{
+  "status": "MODEL_PASS",
+  "python": "3.9.6",
+  "case_count": 26,
+  "cases": [
+    "fixed-sync-linear-no-discovery-validator-monitor-or-ch",
+    "auto-without-inventory-uses-linear",
+    "forced-neg-requires-inventory",
+    "auto-with-inventory-reconciles",
+    "monitor-does-not-need-validator-or-ch",
+    "fixed-list-ban-dominates-membership",
+    "fixed-list-does-not-enroll",
+    "empty-fixed-is-error",
+    "empty-enrolled-is-idle",
+    "immutable-serving-needs-no-collector-index-or-archive",
+    "ch-alone-is-not-serving",
+    "mismatched-pg-ch-is-not-ready",
+    "empty-new-ch-with-old-frontier",
+    "current-read-stops-at-maintenance-deadline",
+    "policy-expiry-stops-immutable-serving-too",
+    "neg-serving-requires-index-owner",
+    "split-local-archive-jobs-stay-on-storage-host",
+    "split-same-local-path-does-not-share-bytes",
+    "split-declared-object-readers-have-credentials",
+    "object-route-without-reader-grant-is-inaccessible",
+    "two-writers-to-one-rocks-directory",
+    "operator-private-database-route-is-valid",
+    "relay-cannot-borrow-private-database-route",
+    "trusted-root-still-verifies-tls",
+    "expired-lease-does-not-exclude-writer",
+    "positive-exclusion-allows-planned-handoff"
+  ],
+  "negative_controls_detected": [
+    "always-require-inventory",
+    "borrow-infrastructure",
+    "ch-alone",
+    "ignore-dataset",
+    "registry-widens-fixed",
+    "require-validator",
+    "same-path-shared",
+    "split-always-needs-s3",
+    "ttl-is-exclusion"
+  ],
+  "compose": {
+    "status": "PASS",
+    "version": "5.1.0",
+    "cases": [
+      {
+        "name": "default",
+        "actual_services": [
+          "engine-placeholder"
+        ]
+      },
+      {
+        "name": "selected-profile",
+        "actual_services": [
+          "engine-placeholder",
+          "selected-placeholder"
+        ]
+      }
+    ],
+    "scope": "config parser only; no running network, engine or install"
+  },
+  "source_sha256": {
+    "probe.py": "dadc3a6da54d8453905d8efc51b8d1a900d4c5d7a9dc477d131b624573d3ed57",
+    "fixtures.json": "a27da35c670b8bf74ab0d0a29c82fc3403b89dccae5bf7b7a5332fa9f4dab42c",
+    "compose-fixture.yaml": "ac720809835963e4ac9509d892bed35fd573f7e2ac935c12209f959c4149eb9b"
+  },
+  "limitations": [
+    "No product code or resolver",
+    "Fixture authority/reachability assertions only",
+    "No engine, native process, fsync, TLS handshake, network isolation or failover execution",
+    "No Tux or legacy repository access",
+    "Not installation or capacity evidence"
+  ]
+}

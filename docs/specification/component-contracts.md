@@ -157,6 +157,12 @@ their separate meanings.
 
 ## Internal transport and topology
 
+[Deployment composition](deployment-contract.md) owns installation recipes,
+fixed relay selection, conditional dependencies, remote credentials and trusted
+infrastructure routes. Selecting a role never silently starts another worker or
+provisions a database. [Archive placement](archive-storage-contract.md) keeps
+local files as the simple default and S3 conditional on the chosen topology.
+
 The selected remote interface uses protobuf over HTTP/2 gRPC with authenticated
 peer identities and mTLS in split-role deployments. Same-process callers use
 the same application contract without serialize/deserialize copies. Protobuf
@@ -210,7 +216,8 @@ positive old-owner exclusion and preservation of dictionaries/receipts.
 * Admission: validate → reserve → atomic synced commit → durable response.
   Cancellation before commit has no receipt; after commit recovery can resolve it.
 * Archive batch: prepared → committed or ambiguous → receipt resolution →
-  pending-reclaim eligible. Object cleanup cannot race a published reference.
+  qualified protection checks → pending-reclaim eligible. File checksum capture
+  is separate from persistence qualification; cleanup cannot race a published reference.
 * Index generation: building → verified → active → retained → reclaimable.
   Unclean serving loss invalidates its incarnation before any stale PG receipt
   can restore readiness.

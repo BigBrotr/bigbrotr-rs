@@ -71,6 +71,14 @@ The protocol baseline is nostr-protocol/nips commit
 [`a2494f4f81d46684e5814a9bf35e2b1df978f955`](https://github.com/nostr-protocol/nips/commit/a2494f4f81d46684e5814a9bf35e2b1df978f955),
 committed 2026-09-09 and inspected 2026-09-11. These NIPs are evolving drafts;
 release notes must name the tested revision instead of claiming timeless support.
+
+A fresh primary-source check on 2026-09-17 found the same upstream commit.
+NIP-66/85/32/45/73/11 bytes, inspected Go excerpts and experiment identity are
+recorded in [the protocol/composition evidence](../research/evidence/protocol-composition-research.json).
+The timeout contradiction still exists. The legacy Go announcement encoder
+explicitly chooses the opposite, example-order dialect; this is a concrete
+migration difference, not evidence that either dialect has universal adoption.
+That read-only inspection executes no Go tests or live publication.
 Protocol documents are public domain under the repository
 [license](https://github.com/nostr-protocol/nips/blob/a2494f4f81d46684e5814a9bf35e2b1df978f955/README.md#license).
 
@@ -377,6 +385,70 @@ post in the stated acquired corpus and interoperability review of that meaning.
 An empty corpus omits it. A late older post invalidates it even if no current
 state changes. General-purpose clients may ignore the context, so ambiguous
 fields should remain omitted rather than depend on a disclaimer they never see.
+
+### Portable definition manifests and categorical labels
+
+The optional extension should explain new measurements without assigning a new
+Nostr kind or inventing a daemon for every metric. Select
+`bigbrotr-definition/1`, a bounded immutable UTF-8 JSON projection of the shared
+registry, hosted through the existing authorized artifact route. Each document
+contains definition ID/version, title/purpose, claim class, typed subject,
+eligible source and parser/method versions, value type/unit, population and time
+basis, formula/duplicate/conflict/unknown rules, invalidations, limitations and
+supported API/wire bindings. Declarative documentation is not executable code:
+clients never download/run a supplied reducer or interpret an arbitrary formula
+as permission to fetch sources. Method references can point to reviewed public
+documentation, with exact revision/digest when reproducibility needs it.
+
+Context assertions may name `definition_ref={id,version,sha256,url}`; they still
+carry their own units, population, quality and value rather than requiring an
+unbounded dependency fetch to interpret a number. Hash the exact stored bytes,
+verify ID/version correspondence and bind that reference inside the signed
+context chain. Definition changes produce new immutable artifacts and semantic
+versions when meaning changes. Pin context and definition publication obligations
+together; unavailable definitions yield an unverified explanation, never a new
+standard meaning. Reuse identical definitions across many subjects to avoid
+copying full method prose into every event. Initial limits are 64 KiB per
+definition, 256 KiB per context, at most 32 distinct definition references per
+context and at most one definition-fetch level, within the shared download/time
+grant. Refuse/omit unsupported extension output with an explicit reason before
+signing; do not truncate a definition or let each reference reset the budget.
+
+Optional NIP-32 namespace `bigbrotr.assertion-basis/1` has the closed vocabulary
+`local-observation`, `relay-declaration`, `attributed-claim`, `derived-fact`,
+`editorial-score`, `statistical-estimate`. Emit one `L` and at most six distinct
+`l` tags, each with the exact namespace mark; each label means the event contains
+at least one assertion of that basis, and context identifies the actual field.
+Mixed bases can coexist. A label on 30166/30382–30385 self-labels the assertion
+event; it does **not** directly label the relay, person or note as trustworthy.
+Numbers, timestamps, subjects and arbitrary topics are not copied into this
+categorical namespace. Consumers validate the namespace on each `l`; matching
+independent `#L` and `#l` filters alone is insufficient. This is an opt-in
+BigBrotr vocabulary, not a newly accepted NIP vocabulary. Standard-only mode
+omits it and the metadata reference. Unknown labels may be ignored safely.
+[Pinned NIP-32](https://github.com/nostr-protocol/nips/blob/a2494f4f81d46684e5814a9bf35e2b1df978f955/32.md)
+
+For relay composition, context may explain the typed API-only
+`relay.composition/1` components and their exact
+[population](analytics-detail.md#relay-content-composition-from-a-declared-population).
+Observed kind counts do not become NIP-66 `k` acceptance/refusal claims; observed
+topics do not silently become the relay's declared editorial policy. Neither an
+observed event count nor its author's curator band is NIP-85 `comment_cnt` or
+the relay's operational `rank`. A NIP-66 publisher can optionally attach a
+compatible public composition generation, but its local core measurement output
+remains independent when derivation or ranking is disabled. Withheld optional
+context never supplies stale lineage to fresh core fields.
+
+Broader monitoring remains the existing check/outcome/timing/capability/DNS/TLS/
+HTTP/write/coverage catalog below. Each enabled method has a finite versioned
+request profile, original observation boundaries and its own consent class.
+Passive reuse needs no new traffic; guarded public reads use acquisition grants;
+authenticated, paid or active-write probes require their explicit existing
+authorization and dedicated identity/budget. A NIP-11 declaration, discovered
+extension definition or publisher request never enables an active check.
+Fresh method versions cannot reinterpret old attempts as conformance tests they
+never performed. A self-described method makes limitations inspectable; it is
+not independent certification of measurement quality.
 
 ### Before and after examples
 

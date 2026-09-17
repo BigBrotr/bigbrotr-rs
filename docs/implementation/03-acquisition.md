@@ -97,6 +97,12 @@ Paths: `crates/bigbrotr-model/src/acquisition.rs`, `crates/bigbrotr-model/src/co
 - [ ] **3. Add typed PG operations.** Register scope, claim finite work and atomically append gap/evidence effects with Receipt/ExistingProof-backed traversal movement under the ownership epoch. A missing/invalid required basis, expired policy grant, failed gap write or stale owner rejects the whole progress update. Persist bounded classified prefixes with deduplicated dependency closure before acknowledging only mutation requests; proof-only pages require no synthetic receipt. Preserve prior evidence when a scope retires.
 - [ ] **4. Expose finite CLI jobs.** Define `bigbrotr sync run --scope S --deadline 2m`, `sync status JOB` and `sync gaps --scope S`; `--deadline` bounds the job, not all future coverage. `serve --roles synchronizer` runs scheduling independently. Results include method, attempted interval, last verification, unresolved gaps and remaining work.
 - [ ] **5. Implement configuration epochs.** `sync.selectors=[{}]`, history_since=0, ephemeral=retain and provenance=local_first_witness change semantic epochs; forced empty/no-filter settings fail without an explicit valid job scope. Render source and reload class without raw credentials.
+  Implement `sync.endpoints.mode/urls` from the acquisition/deployment contracts.
+  Fixed scope is the intersection with operator enrollment, bans and route/access
+  permission; neither existing registry rows nor later discovery expand it.
+  Unverified explicit enrollment permits the worker's own due work with Validator
+  disabled. List removals drain and retain progress; list additions do not invent
+  past coverage. Empty fixed lists fail; enrolled mode may be healthy idle.
 - [ ] **6. Exercise the discriminating fixture.** Two reordered equivalent unions share identity; a wider union, changed access/visibility scope and policy change do not. Inject a durable gap-write failure after body admission: traversal stays unchanged. This catches scalar-cursor advancement and hash-only containment shortcuts.
 - [ ] **7. Run the future p03-t01 journey.** Use the CLI against real PG/Rocks, stop/restart the job and inspect PG plus admission receipts with a separate reader. Preserve before/after scope rows and proof references; a reported “caught up” without method/gaps fails. Document finite-run exits and scope-retirement recovery.
 
@@ -133,6 +139,10 @@ Paths: `apps/bigbrotr/src/acquisition/sync/probe.rs`, `apps/bigbrotr/src/acquisi
 `docs/operations/authenticated-acquisition.md`, `config/examples/acquisition-auth.toml`.
 
 - [ ] **1. Define probe result and selection separately.** Persist not-sent, transport-indeterminate, sent-timeout, applicable rejection and demonstrated support with request/method/access scope and expiry. Select auto/linear/negentropy independently; a forced unsupported mode reports blocked instead of silently changing modes.
+  In auto, unavailable declared local inventory chooses linear with a local
+  dependency reason, preserving the independent remote capability observation.
+  Linear mode needs no reader; forced NEG refuses missing reader dependencies.
+  No mode starts an Indexer/CH as a side effect or models unavailable as empty.
 - [ ] **2. Implement the bounded ladder.** Use 10s public/30s overlay probe deadline and second-attempt ×2, current contract cache horizons, and earlier retry on behavior change. Scope generic NOTICE as uncorrelated; preserve NIP-67 hints and applicable machine reasons. Arithmetic and total job deadline remain bounded.
 - [ ] **3. Integrate operation-scoped AUTH.** Continue permitted public reads after a challenge; sign only with an explicit binding, correlate AUTH OK by signed event ID, and reissue only the refused request after accepted AUTH. Binding changes create new evidence scope and drain the prior socket.
 - [ ] **4. Treat NIP-11 as a hint.** Declared subscription/size limits may lower a request but never raise local budgets. Preserve payment/write restrictions separately; do not purchase access or treat a payment advertisement as read failure.
@@ -170,11 +180,21 @@ Paths: `apps/bigbrotr/src/acquisition/sync/linear.rs`, `apps/bigbrotr/src/acquis
 `tests/fixtures/acquisition/linear_caps.json`, `docs/operations/coverage.md`.
 
 - [ ] **1. Convert interval bounds exactly.** Finite upper maps to inclusive upper−1; AfterMax maps to u64 maximum; empty/inverted/zero cases never underflow. Start from the configured 24h window, request a bounded 500-event page with 30s timeout (90s overlay), and retain the full selector. Window growth/shrinkage never changes the collection identity.
+  Follow the finite-history planner: freeze the pass horizon, retain its next
+  interval/pending children/learned width, and advance only the contiguous
+  attempted prefix with its gaps. Time subdivision cannot binary-search away
+  unqueried sparse history; new wall time creates a separate extension.
 - [ ] **2. Track request-local progress.** Verify/order/scope-check responses, retain local walk ID/boundary state and overlap the oldest returned second. A global body dedupe hit or short page cannot end traversal; each verified record needs its Receipt/ExistingProof basis before the page contributes evidence.
 - [ ] **3. Interpret EOSE hints.** Preserve finish/more/auth/unknown hints; finish is a scoped relay exhaustion assertion, auth adds restriction, contradictory finish+more records an anomaly. Missing known eligible IDs remain gaps regardless of finish.
 - [ ] **4. Handle repeated boundaries finitely.** Detect repeated IDs/no older time, record the saturated-second uncertainty and visit the older interval. Subdivide only complete enumerable kind/author domains within the 128-query slice budget; persist remaining partitions instead of claiming exhaustion on budget end.
+  Optional full 0–65535 kind-domain subdivision retains its cursor and counts
+  every request against that same grant. At second zero, retain the gap without
+  issuing a negative older bound; a single saturated leaf stays unresolved.
 - [ ] **5. Handle sparse and malformed responses.** Grow empty queried intervals up to 365d then reset width after data, recording each queried range. Ordering/filter violations interrupt its scope. Limit boundary IDs, partition state, wire bytes and total elapsed work; a dense second cannot allocate an unlimited set.
 - [ ] **6. Exercise the discriminating corpus.** Prepopulate E bodies from A; B clamps 500 to 100, returns a smaller all-known page and older events, then saturates one second. B obtains appropriate witnesses and reaches older intervals while the saturated second stays unresolved. Repeat at zero/maximum and with dishonest finish. This catches Go body-novelty/count shortcuts and timestamp wraparound.
+  Add two populated time islands separated by empty responses and restart after
+  only one child partition finishes. The query transcript must account for both
+  islands and every outstanding range, independent of the reported cursor.
 - [ ] **7. Run future p03-t05 against scripted and pinned real relay sockets.** The independent source manifest identifies every fixture-exposable event; compare observed set and query transcript rather than the implementation's cursor formula. Restart at a boundary and fail a proof write; no unsupported advancement occurs. Document gap interpretation, finite partition cost and why empty/EOSE is qualified evidence.
 
 ## P03-T06 — Reconcile bounded witnessed sets and retrieve every required ID
@@ -194,6 +214,8 @@ Paths: `apps/bigbrotr/src/acquisition/sync/negentropy.rs`, `apps/bigbrotr/src/ac
 - [ ] **2. Resolve stale/unavailable inputs safely.** Use a conservative older subset with extra downloads or defer when tail/set bounds exceed the grant. Never infer coverage from unavailable storage. Keep unrelated live acquisition independent and expose the reader watermark.
 - [ ] **3. Drive the pinned NIP-77 algorithm.** Use typed bounds, 64KiB frame, 64-round/1000-message and 64MiB set starting limits, counting both directions and all representations. Join result collectors on success/error/cancel; local vector, hex/decoded buffers, sorting workspace, library-owned indexes and retry maps share the envelope. Reserve for simultaneous peak representations and allocator/native overhead measured by the fixture; a serialized set size alone is not the grant.
 - [ ] **4. Bound refusal subdivision.** Preserve successful reduced widths within a walk; distinguish size, age/auth policy and unsupported errors. A still-blocked single second becomes an explicit gap. Exclude NIP-77's reserved maximum timestamp only from that protocol; retrieve/store it through another supported path.
+  A generic `blocked` prefix is not sufficient size evidence. Repeat an auth/age
+  refusal to prove it does not create an unbounded binary subdivision tree.
 - [ ] **5. Resolve the need set explicitly.** Fetch up to 200 exact IDs bounded also by encoded bytes; retry each unresolved ID up to three total attempts. Validate full selector/request membership and actual signature; generic existing-body or suppressed outcomes do not prove a new witness. Persist advertised-unserved only after attributable requests, not after an auth/transport refusal. If exact need/retry state exceeds memory/scratch quota, stop and retain a bounded interval-level resource gap with count/sample/digest where known; discard neither missing state into a false zero nor an unbounded list into permanent proof. Reconciliation must rerun before resolving that interval.
 - [ ] **6. Publish qualified evidence.** Algorithm convergence precedes client NEG-CLOSE; join all needed Receipt/ExistingProof, exclusion and gap results before progress publication. Remote omission never deletes local history. Persist scope/source cut and proof summary without canonical per-delivery counters.
 - [ ] **7. Exercise and run future p03-t06.** Independent manifests define A/B sets, an imported B claim, one withheld body, one unsolicited response, alternate access/visibility scopes and a dense second. Hold E privately at the same endpoint/observer/access context before a public run: E must be fetched and gain public eligibility/first witness. Repeat with provenance off, both arrival orders, restricted scopes and a pinned earlier cut. Use actual NIP-77 relay implementations plus deliberate malformed scripts; observe NEG frames and standalone retained sets. Verify three bounded ID attempts, honest refusal classification, no global-membership shortcut and no growth beyond the memory grant. Document fallback/deferred outcomes.
@@ -213,7 +235,11 @@ Paths: `apps/bigbrotr/src/acquisition/sync/scheduler.rs`, `apps/bigbrotr/src/acq
 - [ ] **1. Build fair due queues.** Scope by endpoint/selector/access/visibility/policy, prefer oldest unserved work with stable tie-break and separate live/control minimum shares. Reserve permit before connection/buffer allocation; waiting jobs hold no sockets. Keep host/backoff metadata bounded and reclaim inactive entries safely.
 - [ ] **2. Implement bounded preemption.** Default active scopes=64, subscriptions/endpoint=3, work quantum=2m and live rotation=10m are constrained by the host envelope. Yield historical work at dependency-checkpointed request/segment boundaries even if it has never caught up; join cancelled work before a replacement owns its seat.
 - [ ] **3. Implement explicit revisit obligations.** Use sync.revisit_bands: [0,1h)/15m, [1h,6h)/1h, [6h,48h)/6h. Freeze each interval at scheduled time; delayed work cannot silently shift to now. Prefer supported NEG, retain linear evidence rules, preserve per-band due/completion age and byte-budget deferrals. Compare old/new schedules with late boundary arrivals and observed cost/delay. Safety lag=48h is a scheduling label, not a lateness guarantee.
+  Resume a disconnection longer than 48h with its full historical extension still
+  pending; the recent bands cannot jump that older unattempted range.
 - [ ] **4. Implement deep re-verification.** Spread the 7d target over capable scopes with persisted range/gap retry positions; linear old-range sampling stays explicitly sampling. An operator's full linear retraversal is a bounded finite job. Resolve only the exact prior gap supported by new durable evidence.
+  Persist each full pass's fixed horizon across restart and temporary fallback;
+  completing a gap queue/sample cannot refresh its full-range completion time.
 - [ ] **5. Apply pressure and policy transitions.** Distinguish throttling new starts from draining active work; hard spool/disk failure stops acknowledgements. A newly banned/re-scoped worker loses authority, while another relay/overlay failure only backs off its own work. Optional per-endpoint daily byte ceilings count control and duplicate traffic without silently hiding missed work.
 - [ ] **6. Exercise the discriminating fleet.** One relay grows history forever, many small relays wait, one overlay is down and Indexer pauses. Small scopes still get bounded work and monitor/control retain permits; no infinite-backfill seat monopoly, global five-failure shutdown or four-worker budget multiplication is allowed.
 - [ ] **7. Run future p03-t07 with actual CLI workers/engines.** An independent scheduler observer records request starts, per-scope service intervals, held permits and dependency-checkpointed yields under a fixed host grant. Restart/lose a lease mid-request and verify stale progress rejection. Retain maximum memory/FD/spool use and honest unmet cadence; document tuning without a 5k/100k unmeasured capacity promise.
@@ -324,6 +350,11 @@ Paths: `tests/acceptance/cases/acquisition.py`, `tests/fixtures/acquisition/end_
 `docs/operations/acquisition-recovery.md`, `docs/validation/acquisition.md`.
 
 - [ ] **1. Assemble supported recipe cases.** Launch built roles from clean isolated volumes for full local, provenance-off, archive-only and split-role ingest. Enroll controlled fixtures through P02 minimal registry so the completed phase 04 lifecycle is not an accidental prerequisite; the concrete P04-T02 transport remains required. Declare a no-CH archive-only variant: local-set unavailable is explicit and linear/live/import work without starting a hidden Indexer.
+  Add the shipped sync-only fixed-list recipe, with Monitor/Discoverer/Validator
+  disabled and no CH. Pre-enroll both selected A and unrelated B; mention C from
+  A's event; independently observe traffic only for A. Restart, remove/re-add A,
+  ban it and retry with auto/linear/forced NEG to prove actual scope, drain and
+  conditional dependency behavior, including remote ingest.
 - [ ] **2. Run one coherent data journey.** Two relays supply overlapping signed events, late/backdated records, a capped interval and a withheld advertised ID while an out-of-order import runs. Independently derive expected bodies, first witnesses, imported claims, explicit exclusions and unresolved gaps from the fixture manifest.
 - [ ] **3. Exercise receipt and proof failures.** Kill at admission-before/after-sync, lost reply, producer proof-checkpoint write, archive publication and worker ownership loss. Recover with P02 tooling and compare stable identities/full signatures; no cursor cites unavailable acknowledged data under the tested durability class.
 - [ ] **4. Exercise sustained bounded pressure.** Pause Indexer/archive separately, reduce RAM/connections, fill scratch/spool and inject slow verification/consumer. Acquisition stops or yields explicitly at the finite grant; live/control fairness remains visible, and no unsupported dropped interval is reported covered. Measure RSS/native allocation, file descriptors, every staging generation, spool/WAL and physical CH merge/temporary headroom through independent OS/engine observers; include one huge same-second need set and a heavily skewed import while queries are active.
@@ -359,7 +390,7 @@ No value in this table introduces a second allocator or scalar coverage cursor.
 
 | Family | Task owner | Discriminating changed-setting case |
 |---|---|---|
-| sync.enabled/selectors/history_since/ephemeral/provenance | T01/T04 | Disabled work creates no hidden queue; semantic change creates an epoch |
+| sync.enabled/endpoints.mode/endpoints.urls/selectors/history_since/ephemeral/provenance | T01/T04 | Disabled work creates no hidden queue; fixed selection cannot expand from registry/discovery; semantic change creates an epoch |
 | sync.mode/capability_probe_timeout/capability_reprobe | T03 | Forced unavailable mode is blocked; inconclusive cache retries separately |
 | sync.active_endpoints/subscriptions_per_endpoint/work_quantum | T07 | Lower grant drains; unfinished backfill still yields |
 | sync.live_enabled/live_rotation/connection_lifetime/idle_timeout | T04/T07 | Disabled live has no subscription; clean rotation preserves historical state |

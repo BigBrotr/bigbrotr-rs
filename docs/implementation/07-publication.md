@@ -167,6 +167,11 @@ signer/coordinate. A lease lost during signing prevents stale commit/send.
   requester/provider bindings in DVM output tags remain part of the digest.
   Coordinate timestamp ordering applies to replaceable/addressable outputs;
   ordinary DVM result identity remains the accepted job and exact result bytes.
+  Compare normalized values/omission/definition/viewpoint/population before
+  constructing a replacement context. An unchanged NIP-85 evaluation at a newer
+  cut reuses the original signed context and lineage; it cannot manufacture a
+  changed payload by refreshing only the context's computation timestamp/digest.
+  Meaningful method/scope/eligibility changes remain changes even at equal values.
 - [ ] **Step 2:** persist desired artifact, source lineage, policy and key identity
   before signing. Atomically publish exact signed bytes and destination rows
   before networking. Failure may leave recoverable prepared work, never an
@@ -288,6 +293,12 @@ including more than one publication page and ranker-off operation.
   minimum eligible events one, topic projection five). Page size is not a total
   population limit. Dirty subjects drive updates; a complete initial/backfill
   sweep has a persisted cursor and can be interrupted/resumed.
+  Give each sweep finite work/time and encoded-byte admission; fairly resume its
+  remaining suffix across cycles. Coalesce unsigned changes, retain already
+  signed obligations, and report oldest dirty/full-sweep age under global rank
+  changes. A 500-row page neither bounds a population nor guarantees one-hour
+  freshness during backlog. Expiry and score-population changes dirty subjects
+  without new subject events; the bounded overflow marker schedules a full sweep.
 - [ ] **Step 5:** enforce one service key per distinct algorithm/viewpoint,
   including personalized configuration. Semantic changes create new desired
   revisions; unchanged subjects reuse signed bytes. Check zero, absent,
@@ -396,6 +407,11 @@ imported claim while valid local monitoring still produces independently verifie
   announcement 86,400 s. Default public fields include RTT/capabilities/network
   and sanitized NIP-11; geo/DNS/TLS/HTTP detail is opt-in. Geo precision four
   applies only when enabled and valid measurement data exists.
+  Use durable fair endpoint traversal and bounded 500-subject work pages under
+  the shared cycle/outbox grants; report achieved versus intended cadence. The
+  same numerical result from a new actual attempt may publish on cadence, while
+  repeatedly reading an old attempt cannot refresh it. Core local publication
+  remains usable with every optional composition/ranking target disabled.
 - [ ] **Step 5:** derive announcement check/frequency/timeout claims from actual
   configured/performed capability, with units and intended cadence clear.
   Publish optional kind-0/relay-list metadata through the same exact-byte outbox;
@@ -444,6 +460,11 @@ It cannot authenticate hidden evidence merely by displaying its digest.
   content-addressed publication before signing its reference tag:
   `["bigbrotr:meta","1",sha256,"https://.../<digest>.json"]`. Do not include the
   enclosing event ID in the pre-signing metadata and create a circular hash.
+  Export `bigbrotr-definition/1` from the canonical registry, with exact-byte
+  digest/ID/version references and immutable artifact ownership. Enforce the
+  selected 64-KiB definition/256-KiB context/32-reference/single-fetch-level bounds
+  cumulatively, and no executable formula or fetched code. Reuse definition
+  artifacts across subjects; source or schema changes cannot rewrite old bytes.
 - [ ] **Step 2:** validate public-field privacy before storing the object. Exclude
   internal paths, credential/auth subjects, host IDs and source details outside
   the grant; preserve exact field occurrence and honest retained-input status.
@@ -454,6 +475,12 @@ It cannot authenticate hidden evidence merely by displaying its digest.
 - [ ] **Step 4:** implement only the explicitly selected categorical NIP-32
   bindings where useful. Do not use NIP-78 kind 30078 as a generic public extension
   container or adopt conflicting kind/field claims from issue 2195.
+  Use `bigbrotr.assertion-basis/1` and the six defined values; validate each
+  `l` namespace mark and field-to-basis mapping. Labels describe the assertion
+  event, not universal relay/person/content quality. Optional relay composition
+  is API-only context under its declared population; it cannot fill NIP-66 `k`
+  or NIP-85 `comment_cnt`/operational `rank`. Its absent dependencies omit/withhold
+  the optional extension with a reason, without disabling qualified core output.
 - [ ] **Step 5:** prepare the three reviewable upstream documents with pinned
   primary spec references, exact proposed changes, backward compatibility,
   competing interpretations and independent interoperability fixtures. Separate
@@ -463,6 +490,10 @@ It cannot authenticate hidden evidence merely by displaying its digest.
   that validates it; exercise missing/tampered/private metadata, repeated field
   tags, redirects, DNS rebinding and an unmerged dialect. Preserve ordinary
   standard interpretation when the extension is unavailable.
+  Include wrong definition ID/version despite a correct byte hash, cross-subject
+  context, numeric labels, mismatched L/l namespace, dependency-fetch exhaustion,
+  unchanged facts under a new internal generation and curator-band unknowns.
+  Verify that no acquired-content count becomes a standard acceptance claim.
 
 **Oracle and negative control:** independently hash the exact context bytes and
 map each declared field occurrence to the signed event. A tampered object must

@@ -105,6 +105,14 @@ by globbing all unlisted recent objects. Backup catalogs and objects together;
 retain required file generations.
 Remote takeover requires fencing beyond a lease in an unrelated transaction.
 
+Use the native transactional writer and the
+[local/S3 placement contract](../specification/archive-storage-contract.md#actual-publication-and-protection-boundaries).
+Typed batch preparation is not an application-owned Parquet transaction protocol.
+Qualified file/catalog persistence and semantic receipts establish the advertised
+protection class; full-file checksum capture/backup/scrub state is separately
+recorded. Native INSERT does not imply a precomputed application SHA-256 or a
+mandatory extra S3 read of every new file before reclamation.
+
 The selected archive connection explicitly disables DuckLake data inlining
 (`DATA_INLINING_ROW_LIMIT 0`, with no persisted table/schema override enabling it).
 This matches the existing PG probe and keeps scientific payloads in Parquet.

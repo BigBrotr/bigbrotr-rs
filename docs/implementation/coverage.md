@@ -50,6 +50,7 @@ documents each actual format's representable values and ambiguity.
 | Importer | P03-T08–T10; P08-T04/T06 | Same verifier/admission; actual pinned format fixture and resume behind durable receipt |
 | Durable ingest, archive publishing and online indexing | P02-T01–T06 | Every producer/read target; real engine crash/replay/merge and same-cut evidence |
 | Deriver and scientific facts | P05-T01–T09/T12 | Read resources/NIP-85; independent full-recompute oracle per target |
+| Witnessed relay content composition | P05-T07; optional served-probe population P05-T08; optional viewpoint bands P05-T11 | Existing relay_coverage/relay_facts, P09 relay views, optional P07-T08 context; independent grouping with private/imported/replacement/expiry/replay controls; no current remote inventory claim |
 | Ranker, named viewpoints and bounded graph artifacts | P05-T10/T11 | P06 scores/P07-T05/P09-T05; actual CSR/skew/resource and convergence evidence |
 | Shared read core and counts | P06-T01–T05 | HTTP/relay/DVM/MCP/ContextVM; independent expected membership, exact units and real cursor continuation |
 | Optional content search | P06-T06 | API/NIP-50/dashboard; old high-relevance result beyond recent prefix, Unicode/phrase oracle |
@@ -61,6 +62,7 @@ documents each actual format's representable values and ambiguity.
 | Management, CLI, jobs and access | P08-T01–T03 | P09-T07–T10; real authorization, idempotent lost reply and saved-versus-applied revision |
 | Backup/restore, migration, maintenance and diagnostics | P08-T05–T08 | Clean isolated target, old-owner fencing, corruption oracle, actual delivered alerts |
 | Packaging, independent roles and release | P08-T09–T12 | Extracted artifact outside checkout, real architecture/engine set, no hidden cached assets |
+| Local/S3 archive placement and split consumers | P02-T04/T07–T09; P08-T05/T09/T10 | Remote reader without source mounts, least-privilege credentials, complete catalog/file restore and explicit relocation; no mandatory S3 for a collector-only split |
 | Public dashboard and private administration | P09-T01–T11 | Complete actual browser/keyboard/assistive journeys with separately named environments |
 | Complete website, reference, blog, releases and adoption | P10-T01–T10 | Built route inventory, executed displayed commands, legacy mapping and artifact verification |
 
@@ -74,6 +76,8 @@ documents each actual format's representable values and ambiguity.
 | Erase original events on NIP-09, expiry or low rank | Retain accepted originals; ordinary serving follows defined current/deletion/expiry policy; exceptional operator removal is separate | P05-T02, P06-T02/T07, P08-T07 |
 | Every relay can be synchronized completely from EOSE or NEG inventory | Qualified scoped coverage and explicit gaps; fetch verification remains required | P03-T05/T06; NIP-77 comparison is not an atomic remote snapshot |
 | Every analytic family shares one run and graph dependency | Independent target publication; relay operational quality works without social ranking | P05-T01/T12; failure in one target preserves other complete targets |
+| All analytics are naive CH insertion-triggered materialized views | Use eligible native acceleration, but own logical replay, retraction, window/dependency invalidation and complete target progress explicitly | P05-T01–T12; real-engine counterexamples distinguish replay, changed join input and expiry from a new input block |
+| Every deployment needs every worker or a bundled object store | Selected roles compose over declared owner capabilities; fixed lists need no discovery/validator; local files default, S3 conditional | P01/P03/P04/P08 and deployment contract; actual shipped recipes must prove absence of hidden dependencies |
 | DuckDB or Parquet replaces durable ingress | Synced pending receipt first, transactional immutable archive next; DuckDB for archive/offline work | P02-T02/T04; a portable file format alone is not an admission/recovery protocol |
 | OpenSearch is mandatory for content search | CH pretokenized index baseline, exact shared analyzer, optional alternatives measured if they solve demonstrated deficits | P02-T09/P06-T06; no duplicate search cluster by default |
 | Rust alone guarantees many more simultaneous relays | Use Rust's ownership/runtime advantages, measure real per-connection buffers/native/TLS and mixed workload | P01-T05/P03-T12/P04-T12/P08-T08; earlier isolated comparison did not prove a fleet capacity |

@@ -195,6 +195,38 @@ endpoint, or add undeclared capability weights. General external engagement and
 relay operational rank remain different binding/profile identities even when
 their external URL bytes coincide.
 
+## Relay composition bindings stay separate from relay rank
+
+P05-T07 materializes `relay.composition/1` components for `Subject::Relay` in
+`relay_facts`/`relay_coverage`; P05-T08 supplies the existing direct probe-set
+population. Exact definitions are in
+[analytics detail](../architecture/analytics-detail.md#relay-content-composition-from-a-declared-population).
+The local fact key additionally binds population ID, endpoint/observer/access/
+visibility stratum, signed-time selection and generation; the ordinary fact
+prefix convention above applies only to the existing fact tables, not an implicit
+renaming of `relay.composition/1`. Components are `events`, `events-by-kind`,
+`authors`, `content-bytes`, `signed-time-range`, `topics`,
+`author-concentration` and `top-10-author-share`. Optional
+`relay.composition.curator-bands/1` also pins the selected public P05-T11 profile,
+score generation, graph population and unknown bins.
+
+The API exposes these through the existing `relay_coverage` resource's typed
+composition projection. All components are API/context-only; none maps to an
+existing standard scalar tag. Specifically, NIP-66 `k` describes accepted kinds,
+not frequencies in acquired content, and NIP-85 `comment_cnt` describes its
+registered interaction relation, not total relay events. Curator bands do not
+replace `nip85-relay-rank/1` or alter `general-read-relay/1`. No new subject kind,
+publisher identity or mandatory Ranker dependency is needed for base counts.
+
+P07-T08 exports compatible optional context/definition manifests with explicit
+field `api_only` bindings. P07-T07's core local measurements work with P05-T07/P05-T11
+unavailable; optional composition publication requires separately permitted
+public body/evidence inputs and cannot reveal private witnesses through counts.
+Acceptance must compare exact source membership as well as scalar values,
+withhold undefined empty-population ratios, preserve known-zero versus unknown
+score bins, and prove that adding imported/private claims cannot change public
+local-witness counts.
+
 ## Zap qualification and conflict handling
 
 `zap-attestations/1` validates bounded receipt/request signatures, kind and tag

@@ -160,9 +160,11 @@ defaults. It makes the local dashboard/read API and authenticated administration
 panel available on loopback for first verification. Import/export/backup are ready
 operator commands and panel jobs rather than jobs
 that copy arbitrary data on startup. Integrity maintenance has its own explicit
-schedule. Publishers, DVM and publicly exposed read listeners require deliberate
-enablement and any relevant signing identity. A disabled public endpoint is a
-deployment choice, not incomplete implementation. Relay-only, archive-only and
+schedule. Publishers, DVM, MCP, ContextVM and publicly exposed read listeners
+require deliberate enablement and any relevant signing identity. MCP and ContextVM
+are separate optional read adapters; ContextVM remains experimental under its
+[gateway contract](../specification/gateway-contracts.md). A disabled public
+endpoint is a deployment choice, not incomplete implementation. Relay-only, archive-only and
 custom examples demonstrate independent service selection without defining lower
 quality products. No configuration questionnaire is required before useful data.
 
@@ -200,8 +202,8 @@ The launch guide follows one continuous journey:
    starter. A system with no reachable external relay reports that fact without
    fabricating data or blocking local diagnostics.
 6. Link to service selection, import, sizing, backup and publishing instructions.
-   Public API/dashboard/DVM/relay/publisher enablement is explicit, with signing
-   keys required only for the services that sign.
+   Public API/dashboard/DVM/relay/MCP/ContextVM/publisher enablement is explicit,
+   with signing keys required only for the services that sign.
 
 The settings documentation separates policies from tuning. Policies include
 retained event scope, provenance retention, public resource exposure,
@@ -321,7 +323,7 @@ interactive map or graph is added.
 | Content search `/search` | Search supported event text with bounded filters and highlighted matches | Exposed full-text resource and text coverage; snippets obey serving policy; plain lookup remains usable when full text is absent |
 | Version/deletion history `/events/{event-id}/history` | Examine superseded versions or deletion evidence in a research context | Explicitly exposed historical/current-state resources, retained bodies/versions where necessary, and operator serving policy; unavailable under normal current-only serving |
 | Published datasets `/datasets` and detail | Find a released corpus; inspect schema, provenance, scope, hashes and reproduction recipe | Operator-published export manifest/resource; public browsing cannot start an unbounded export or backup job |
-| API and methodology `/about` | Learn instance operator/contact, limits, data sources, semantics, read API/relay/DVM links | Sanitized descriptor and exposed interfaces; never display private operations credentials/endpoints |
+| API and methodology `/about` | Learn instance operator/contact, limits, data sources, semantics and exposed HTTP/relay/DVM/MCP/ContextVM links | Exact-version supported adapters and subsets; ContextVM experimental; sanitized descriptor, never private operations credentials/endpoints |
 | Public status `/status` | Know if exposed read products answer and how old data is | Sanitized status resource; measured uptime window/target only if actually operated and recorded; no storage host names, logs or raw metric labels |
 
 Optional visualization does not create evidence. A timeline of sightings is more
@@ -374,9 +376,12 @@ restricted actions require the appropriate role, as defined by the
 
 **Integrate an application.** Begin with a capability request, make a bounded query,
 walk a continuation token, inspect completeness/freshness, handle `429`, and
-cancel. The same guide links to Archive Relay and DVM mappings where their
-protocols can represent the operation. HTTP-only answer-quality metadata is
-documented rather than silently dropped in protocol examples.
+cancel. The same guide links to ArchiveRelay, DVM, native MCP and experimental
+ContextVM mappings where their protocols can represent the operation. The
+gateway contract fixes each adapter's negotiated version, transport, encryption,
+authentication, supported tools and cancellation behavior. ContextVM does not use
+the DVM profile. HTTP-only answer-quality metadata is documented rather than
+silently dropped in protocol examples; disabled adapters are labeled unavailable.
 
 Queries are shareable through stable URL parameters. Back/forward and page reload
 restore filters and selected time ranges. Expensive searches run on explicit
@@ -414,7 +419,7 @@ read implementation package diagrams before understanding what BigBrotr does.
 | `/docs/<version>/operations/` | Sizing, imports/exports, backup/restore verification, repair, retention/takedown, upgrades/rollback constraints, alerts and transport deployment |
 | `/docs/<version>/administration/` | Panel/CLI parity, roles, configuration sources/locks/revisions, persistent jobs, token revocation, audit and recovery without a browser |
 | `/docs/<version>/reference/` | Generated CLI/config, HTTP schemas and errors, NIP compatibility, artifact/manifest formats and metrics definitions |
-| `/developers/` | Choose HTTP, Nostr relay/DVM or Rust library; quick requests and stable API policy |
+| `/developers/` | Choose HTTP, Nostr relay/DVM, native MCP, experimental ContextVM or a Rust library; supported versions/subsets, bounded examples and compatibility policy |
 | `/developers/api/` | Versioned OpenAPI download, typed resources, auth/quotas, pagination, errors, timestamps, exactness and capability examples |
 | `/developers/sdk/` | Supported Rust primitives and TypeScript client, examples, release compatibility and links to generated Rust API docs |
 | `/blog/` | Dated releases, tutorials, research and design notes with filters; RSS/Atom feed |
@@ -463,8 +468,13 @@ Provide curl, TypeScript and Rust HTTP examples for discovery, event lookup,
 pagination, counts, freshness, and an unavailable resource. Python researchers
 receive a plain HTTP/notebook example and export reading guide; a separately
 maintained Python SDK is not required for the first release. Nostr examples cover
-only the explicitly supported Archive Relay/DVM protocol contract, including
-the ways it cannot encode the full HTTP metadata.
+the explicitly supported ArchiveRelay/DVM contracts and the separately encrypted
+experimental ContextVM transport. Native MCP and ContextVM examples discover tools,
+use authorized bounded queries and cancellation, and preserve their supported
+read metadata. Pin each client/protocol version, label unsupported subsets, and
+execute every advertised example against its packaged adapter. These examples
+share read semantics; they do not imply interchangeable transports or full HTTP
+metadata on every protocol.
 
 ## Content maintenance and historical migration
 
@@ -599,14 +609,16 @@ clients during frontend rollout. Website/editorial corrections can deploy withou
 restarting an archive. Binary downgrade is not promised across storage migrations:
 the release runbook must describe actual compatibility and recovery requirements.
 
-Before final product acceptance, resolve the official public instance commitment,
-instance content exposure, score presentation and durable research-citation
-expectations with documented defaults in the planning register. Full history with
-deletion-aware ordinary reads, equal importance of all services, full signed
-archival events, private administration and a private planning repository are
-already owner decisions. The design supports coherent local defaults, deliberate exposure and
-honest coverage without blocking independent contract, documentation or dashboard
-preparation.
+Use the selected defaults throughout acceptance: independent self-hosting with
+local verification, explicit per-resource public exposure, explained named score
+profiles, and checksummed published exports or explicitly retained/expiring query
+snapshots for immutable citations. A live query URL is not an immutable result.
+No official hosted-instance uptime commitment is selected; creating one remains
+a separate future publication/operation decision. The
+[planning register](../planning/questions.md) and current contracts own these
+choices, rather than the earlier research question candidates. Full history with
+deletion-aware ordinary reads, equal product quality, full signed archival events,
+private administration and private planning remain established requirements.
 
 ## Content search and reconciliation detail
 

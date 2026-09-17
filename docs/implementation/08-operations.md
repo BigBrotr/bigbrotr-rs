@@ -67,7 +67,7 @@ A job moves `accepted → queued → running → succeeded|partial|failed|cancel
 
 ## P08-T01 — Effective configuration and complete CLI semantics
 
-**Files:** extend `apps/bigbrotr/src/config/{schema,resolution,validation,reference}.rs` and `apps/bigbrotr/src/interfaces/cli/{mod,config,serve,run,status,doctor}.rs`; create `contracts/config/schema.json`, `config/recipes/{full,archive-only,relay-only,social,no-provenance}.toml`, `docs/reference/{configuration,cli}.md`, `apps/bigbrotr/tests/config_cli.rs`, `tests/fixtures/config/{precedence,unknown-key,locked-field,missing-dependency}.toml`.
+**Files:** extend `apps/bigbrotr/src/config/{schema,resolution,validation,reference}.rs` and `apps/bigbrotr/src/interfaces/cli/{mod,config,serve,run,status,doctor}.rs`; create `contracts/config/schema.json`, `config/recipes/{full,archive-only,sync-only,monitor-only,serve-existing,relay-only,social,no-provenance}.toml`, `docs/reference/{configuration,cli}.md`, `apps/bigbrotr/tests/config_cli.rs`, `tests/fixtures/config/{precedence,unknown-key,locked-field,missing-dependency}.toml`.
 
 **Input/output:** typed P01 schema resolves one managed/declarative product-policy authority plus locked deployment roots and documented restrictive runtime locks into `ResolvedConfig` with mode, desired/applied revision, document digest, staged drift, value/source/lock/applicability/change behavior. Defaults/recipe/file seed managed revision 1 only; declarative file changes require validated activation, never a hidden PG override. Follow the [authority transition contract](../specification/operations-contract.md#configuration-authority-and-exact-validation). `config init` produces minimal editable TOML; `config show --format json` produces redacted diagnostics, explicitly not an importable config. `run <role>` accepts only a declared bounded unit; `serve --roles` never silently enables dependencies. Exit mapping: 0 complete/valid; 2 input/config; 3 unavailable/refused prerequisite; 4 terminal failed/partial job; 130 cancellation. JSON outcome remains more precise than exit status.
 
@@ -78,6 +78,16 @@ A job moves `accepted → queued → running → succeeded|partial|failed|cancel
 - [ ] **Step 5:** propose `python3 tests/acceptance/run.py p08-t01 --binary dist/bigbrotr --compose packaging/compose/acceptance.yaml --evidence .research/implementation/p08-t01`; initialize in a fresh directory, validate, inspect redaction, launch the selected role, observe its actual bind and bounded unit, and retain stdout/stderr/exit code plus independent socket/process observations.
 
 **Failure contract:** parse/validation errors perform no engine mutation, collection or signing. A disabled dependency is named; a role waiting for data reports idle/unavailable inputs, not invalid configuration. Redaction tests plant distinct canary credentials in every supported secret source and assert absence in help/config/log/error artifacts.
+
+T01 extends the same generated recipe inventory with `sync-only`, `monitor-only`
+and `serve-existing` from the [deployment contract](../specification/deployment-contract.md).
+`config init --recipe NAME` emits the explicit local assignment and remote adapter
+requirements. `serve --roles` cannot bootstrap missing storage or activate default
+worker blocks; omitted roles use the root assignment. Static validate names
+declared requirements; doctor checks read-only runtime facts without creating a
+dataset, migrating or performing relay probes. Test applicable versus staged
+unused secret references, fixed-list empty/widening controls and wrong serving
+dataset/frontier separately from a mere unavailable socket.
 
 ## P08-T02 — Private enrollment, sessions, grants and audit
 
@@ -254,15 +264,27 @@ Add a document-skew control: one unchanged document fetched repeatedly produces 
 
 ## P08-T09 — Native/image packaging and self-contained release bundle
 
-**Files:** create `packaging/image/Dockerfile`, `packaging/image/.dockerignore`, `packaging/compose/{full-local,archive-only,relay-only,split-roles,fixture}.yaml`, `packaging/native/{bigbrotr.service,bigbrotr.env.example}`, `packaging/release/{assemble.py,verify.py,manifest.schema.json}`, `packaging/release/assets.list`, `docs/user/getting-started/{compose,native}.md`, `tests/acceptance/bundle_inventory.py`.
+**Files:** create `packaging/image/Dockerfile`, `packaging/image/.dockerignore`, `packaging/compose/{full-local,archive-only,sync-only,monitor-only,serve-existing,relay-only,split-roles,fixture}.yaml`, `packaging/native/{bigbrotr.service,bigbrotr.env.example}`, `packaging/release/{assemble.py,verify.py,manifest.schema.json}`, `packaging/release/assets.list`, `docs/user/getting-started/{compose,native}.md`, `tests/acceptance/bundle_inventory.py`.
 
 **Artifacts:** Linux amd64/arm64 binary packages; one multi-platform application image index; separate dashboard/admin static bundles; pinned engine/extension compatibility set; minimal recipes, versioned seeds, service units, migrations, checksums, SBOM and manifest. Node is a build dependency only. Every mount/reference resolves inside the extracted bundle or is an explicit operator-created data/secret root. Runtime DuckDB extensions are bundled and verified; no hidden network download is required to start archive work.
 
 - [ ] **Step 1:** implement multi-stage release builds from pinned Cargo/toolchain/native dependencies and frontend artifacts. Exclude `.env`, caches, `.research`, worktree metadata and secrets by allowlisted asset assembly; inspect image layers as well as the final filesystem.
 - [ ] **Step 2:** implement non-root image permissions, read-only executable/assets, declared writable data/temp/secret paths, health command and signal forwarding. Package service units with explicit user/directories/limits and environment reference; no shell pipelines in role startup.
+  Provide compact and isolated application placement without a daemon per logical
+  role. Compact Control/acquisition/ingest/storage/read retains exclusive handles,
+  aggregate memory accounting and terminable on-demand native jobs. Native and
+  Compose guides show the same role set, explicit finite initialization/migration,
+  protected credential files and local or remote engines. The local archive needs
+  no object server; optional S3 follows its separate qualified storage contract.
 - [ ] **Step 3:** implement bundle inventory/resolution checks and compatibility manifest. Container engines use tested versions/digests. Record image-index digest separately from per-architecture manifest digests; a successful amd64 image cannot stand in for arm64 support.
 - [ ] **Step 4:** proposed `python3 packaging/release/assemble.py --output artifacts/release-candidate` followed by `python3 packaging/release/verify.py artifacts/release-candidate`; verify clean build and reused-cache build contain exactly allowed assets and no canary development credential. Negative control remove a required seed/config mount from an assembled test copy; inventory validation must fail before launch.
 - [ ] **Step 5:** proposed `bundle-install` acceptance extracts the archive outside the checkout with a clean image cache, resolves mounts, initializes secrets/config, runs Compose and native documented installs on their actual supported architectures, obtains durable fixture admission/archive/read, opens local interfaces and shuts down. Retain installed file digests, process UID/binds, extension availability and output receipts. No checkout path or locally cached undeclared asset may rescue installation.
+  Include fixed sync-only and monitor-only without CH, and serve-existing with
+  remote CH plus matching Control/PG. Each guide must identify all commands,
+  required credentials, expected role/status output and a real result; helper
+  assembly or Compose config validation alone is not an install result. Render
+  and inspect recipe services/roles before launch; an intentionally targeted
+  Compose profile/dependency cannot bypass application role permission.
 
 **Failure contract:** missing architecture runner, extension or required executable produces NOT RUN/failed release evidence. A discovered but unexecuted required scenario cannot be summarized as green.
 
@@ -272,10 +294,24 @@ Add a document-skew control: one unchanged document fetched repeatedly produces 
 
 **Input/output:** selected roles plus explicit engine/owner endpoints determine required durable links and finite queues. One image may run multiple roles or one role; an embedded store has one owner. Remote producers use authenticated durable receipt RPC, not a shared writable Rocks directory. Public proxy routes static dashboard and `/v1/` only; management/metrics/database ports remain private.
 
-- [ ] **Step 1:** provide full local, archive-only, relay-only over existing ready data, no-provenance, social-filter and split-role recipes. Preflight reports missing sources, ready capabilities, write owners, resources and expected binds. No recipe name changes archival fidelity.
+- [ ] **Step 1:** provide full local, fixed sync-only, monitor-only, archive-only, serve-existing (including relay-only), no-provenance, social-filter and split-role recipes. Preflight reports missing sources, ready capabilities, write owners, resources and expected binds. No recipe name changes archival fidelity. Use the deployment contract's concrete endpoint/credential/TLS roots and conditional archive/Index routes; PG/Control policy/frontiers/pins remain required for serving CH.
 - [ ] **Step 2:** implement bridge/container-loopback and explicitly supported host-network instructions with observable host reachability. Doctor reports the effective contract rather than assuming container loopback means host loopback. Apply trusted-proxy/CORS policies only to configured hops/origins.
+  The default is per-host bridge Compose or native units with routable remote
+  endpoints; no cross-host Compose DNS assumption. Private infrastructure endpoints
+  are operator roots, independent from public-relay SSRF policy. Test valid private
+  PG/CH/RPC alongside a denied discovered relay at the same address, wrong CA/name,
+  credential rotation and missing per-role grants. Read roles receive no migration
+  or unnecessary archive/write secrets. Inspect both actual application bind and
+  host publish address; host networking ignores port publishing restrictions.
 - [ ] **Step 3:** implement documented shutdown/replacement order: stop new intake, drain bounded admitted work, persist recovery, positively exclude old owners, then activate replacements. Lease defaults 60s/20s heartbeat/5s renewal/20s margin and 30s drain remain distinct from five-second policy authority; running out of authority shortens drain.
 - [ ] **Step 4:** proposed `topology` acceptance starts/stops each role against real retained data, interrupts PG/CH/archive/downstream RPC independently, and proves finite buffering and visible capabilities. Negative control pauses an old owner beyond TTL then resumes it after takeover; any accepted stale durable mutation fails the external receipt/commit oracle, regardless of lease-row state.
+  Exercise actual two-host collector/data-owner placement with local archive jobs
+  confined to the data host, distributed archive workers with a qualified object
+  route, and standalone remote serving. A same-named local archive path on another
+  host must fail reachability; verify the real route at each consumer. Populated CH with empty
+  or mismatched PG cannot become ready. Stop Index maintenance and let an ordinary
+  view deadline expire: its capability stops while eligible immutable reads remain
+  qualified. No outage may expand a fixed relay list or start an unselected worker.
 - [ ] **Step 5:** run rolling API/static-asset replacement and cursor-key rotation with active pages and subscriptions, private policy revocation and old client assets. Preserve compatible assets or require an intelligible refresh; retain network ACL/bind inspection, key-ID rotation receipts and no-leak probes from a public-side container.
 
 ## P08-T11 — Trusted release workflow and compatibility promotion
@@ -298,6 +334,10 @@ Add a document-skew control: one unchanged document fetched repeatedly produces 
 
 - [ ] **Step 1:** implement the exact scenario registry named above with setup/action/monotonic condition/timeout/oracle/evidence/cleanup. Reuse the independently signed corpus manifest and controlled relay/engine processes; never depend on public relay reachability for deterministic success.
 - [ ] **Step 2:** run proposed `python3 tests/acceptance/run.py p08-t12 --binary dist/bigbrotr --compose packaging/compose/acceptance.yaml --evidence .research/implementation/p08-t12` through extracted shipped artifacts. Execute empty-volume bootstrap, one sub-threshold event with both flush deadlines, provenance-off replay, each isolated role and public-disabled listener/signing checks.
+  Include the installed native and Docker fixed-list sync-only, monitor-only and
+  serve-existing journeys plus split-host data/authority reachability. Observe
+  actual processes, packets and engine rows for absent workers; an enabled-list
+  printout does not prove independence or zero unintended publication.
 - [ ] **Step 3:** perform concurrent live/backfill/import/read/rank/export/compaction, introduce engine outage and low disk, inspect fair progress/byte budgets, then backup/restore/upgrade via CLI. This is a workload with explicit fixture size/rates/duration and hardware manifest, not a claim of 100k-relay capacity; larger capacity tracks retain their own measured results.
 - [ ] **Step 4:** compare signed corpus/edge origins, published cuts, counts, docs/example outputs and job/outbox receipts with independent manifests and slow/alternate-engine oracles. Negative control injects a stale-success result file from a different candidate and requires rejection by manifest digest, even when every individual status says pass.
 - [ ] **Step 5:** review actual failure recovery and NOT RUN cases, update installed-version runbooks with observed limitations, and retain the final artifact/evidence mapping. No phase is complete while a required advertised role or recovery journey is unexecuted. Product publication remains a separate authorized release action.

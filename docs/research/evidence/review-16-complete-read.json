@@ -1,0 +1,1458 @@
+{
+  "date": "2026-09-17",
+  "baseline_commit": "3619443381498fc14487a10b2b2cfbbdc58ae3f7",
+  "scope": "Every baseline Markdown file completely read by its assigned reviewer; no claim each reviewer read every file or fresh whole legacy code audit",
+  "files": [
+    {
+      "path": "docs/architecture/acquisition-services.md",
+      "bytes": 87833,
+      "lines": 667,
+      "sha256": "ea1b261446bf4785b596296af786eb79d0ee30771e7e410eb5f0f380a436b026",
+      "fully_read": true,
+      "read_ranges": [
+        [
+          1,
+          667
+        ]
+      ],
+      "chunk_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "observed_sha256": "ea1b261446bf4785b596296af786eb79d0ee30771e7e410eb5f0f380a436b026",
+      "reader_manifest": "deployment-read-manifest.json"
+    },
+    {
+      "path": "docs/architecture/system-design.md",
+      "bytes": 14668,
+      "lines": 221,
+      "sha256": "50492b761fb7812f0dbaade64ba309ccfb30b78536a043218f924a8d878c6c6b",
+      "fully_read": true,
+      "read_ranges": [
+        [
+          1,
+          221
+        ]
+      ],
+      "chunk_ids": [
+        6
+      ],
+      "observed_sha256": "50492b761fb7812f0dbaade64ba309ccfb30b78536a043218f924a8d878c6c6b",
+      "reader_manifest": "deployment-read-manifest.json"
+    },
+    {
+      "path": "docs/engineering/configuration-and-runtime.md",
+      "bytes": 16249,
+      "lines": 241,
+      "sha256": "bccbdb4cb19a9a5102e49260dce831124ab7723809e3e9c934560aa2d5b99736",
+      "fully_read": true,
+      "read_ranges": [
+        [
+          1,
+          241
+        ]
+      ],
+      "chunk_ids": [
+        7,
+        8
+      ],
+      "observed_sha256": "bccbdb4cb19a9a5102e49260dce831124ab7723809e3e9c934560aa2d5b99736",
+      "reader_manifest": "deployment-read-manifest.json"
+    },
+    {
+      "path": "docs/specification/operations-contract.md",
+      "bytes": 62055,
+      "lines": 600,
+      "sha256": "3c21c4a07a49ebd8fee1b01b282d7a223c4ab69ae8e94f43f19b492212af9766",
+      "fully_read": true,
+      "read_ranges": [
+        [
+          1,
+          600
+        ]
+      ],
+      "chunk_ids": [
+        9,
+        10,
+        11,
+        12
+      ],
+      "observed_sha256": "3c21c4a07a49ebd8fee1b01b282d7a223c4ab69ae8e94f43f19b492212af9766",
+      "reader_manifest": "deployment-read-manifest.json"
+    },
+    {
+      "path": "docs/specification/component-contracts.md",
+      "bytes": 20841,
+      "lines": 303,
+      "sha256": "42f07649b2123c4ab13071b89037670bc09b76c8e074efd78ebafd05ac151239",
+      "fully_read": true,
+      "read_ranges": [
+        [
+          1,
+          303
+        ]
+      ],
+      "chunk_ids": [
+        13,
+        14
+      ],
+      "observed_sha256": "42f07649b2123c4ab13071b89037670bc09b76c8e074efd78ebafd05ac151239",
+      "reader_manifest": "deployment-read-manifest.json"
+    },
+    {
+      "path": "docs/specification/workload-contract.md",
+      "bytes": 29329,
+      "lines": 292,
+      "sha256": "35152a1a8a4a2f7febdf0928a1d8440d338004ca813bd639fe2ff5ba19ad46e9",
+      "fully_read": true,
+      "read_ranges": [
+        [
+          1,
+          292
+        ]
+      ],
+      "chunk_ids": [
+        15,
+        16
+      ],
+      "observed_sha256": "35152a1a8a4a2f7febdf0928a1d8440d338004ca813bd639fe2ff5ba19ad46e9",
+      "reader_manifest": "deployment-read-manifest.json"
+    },
+    {
+      "path": "docs/implementation/01-foundation.md",
+      "bytes": 23678,
+      "lines": 338,
+      "sha256": "625af7db4467b1aeb704a5ffcaa2b0b8cbbfd2a76ca065a8a91885b5eb68b583",
+      "fully_read": true,
+      "read_ranges": [
+        [
+          1,
+          338
+        ]
+      ],
+      "chunk_ids": [
+        17,
+        18
+      ],
+      "observed_sha256": "625af7db4467b1aeb704a5ffcaa2b0b8cbbfd2a76ca065a8a91885b5eb68b583",
+      "reader_manifest": "deployment-read-manifest.json"
+    },
+    {
+      "path": "docs/implementation/03-acquisition.md",
+      "bytes": 57170,
+      "lines": 418,
+      "sha256": "0edae5c35d9548f8dbefe4f8aa81c0d0a5e4af00b9db1eedeaf157d46146383c",
+      "fully_read": true,
+      "read_ranges": [
+        [
+          1,
+          418
+        ]
+      ],
+      "chunk_ids": [
+        19,
+        20,
+        21,
+        22
+      ],
+      "observed_sha256": "0edae5c35d9548f8dbefe4f8aa81c0d0a5e4af00b9db1eedeaf157d46146383c",
+      "reader_manifest": "deployment-read-manifest.json"
+    },
+    {
+      "path": "docs/implementation/04-relay-lifecycle.md",
+      "bytes": 73497,
+      "lines": 607,
+      "sha256": "eb80de7a415735146796840c2f993625532bf413ea505e3b2ea72fad89a88cd4",
+      "fully_read": true,
+      "read_ranges": [
+        [
+          1,
+          607
+        ]
+      ],
+      "chunk_ids": [
+        23,
+        24,
+        25,
+        26,
+        27
+      ],
+      "observed_sha256": "eb80de7a415735146796840c2f993625532bf413ea505e3b2ea72fad89a88cd4",
+      "reader_manifest": "deployment-read-manifest.json"
+    },
+    {
+      "path": "docs/implementation/08-operations.md",
+      "bytes": 64151,
+      "lines": 342,
+      "sha256": "3684666ec116b5f644e22188280e323d595b2381ac497ffe977ac13a45275d69",
+      "fully_read": true,
+      "read_ranges": [
+        [
+          1,
+          342
+        ]
+      ],
+      "chunk_ids": [
+        28,
+        29,
+        30,
+        31,
+        32
+      ],
+      "observed_sha256": "3684666ec116b5f644e22188280e323d595b2381ac497ffe977ac13a45275d69",
+      "reader_manifest": "deployment-read-manifest.json"
+    },
+    {
+      "path": "docs/research/acquisition-findings.md",
+      "bytes": 20154,
+      "lines": 112,
+      "sha256": "42f66f3df81a8270b1a6b68bcba0f0dfa95015bcc9e070187b4f1ea9de22d737",
+      "fully_read": true,
+      "read_ranges": [
+        [
+          1,
+          112
+        ]
+      ],
+      "chunk_ids": [
+        33,
+        34
+      ],
+      "observed_sha256": "42f66f3df81a8270b1a6b68bcba0f0dfa95015bcc9e070187b4f1ea9de22d737",
+      "reader_manifest": "deployment-read-manifest.json"
+    },
+    {
+      "path": "docs/research/go-acquisition-code-walkthrough.md",
+      "bytes": 35206,
+      "lines": 449,
+      "sha256": "e3ed1464709f25885a085bc454132fa2420e0a10a5aae0232dc788ea2b264a55",
+      "fully_read": true,
+      "read_ranges": [
+        [
+          1,
+          449
+        ]
+      ],
+      "chunk_ids": [
+        35,
+        36,
+        37
+      ],
+      "observed_sha256": "e3ed1464709f25885a085bc454132fa2420e0a10a5aae0232dc788ea2b264a55",
+      "reader_manifest": "deployment-read-manifest.json"
+    },
+    {
+      "path": "docs/reviews/07-phase-5-recheck.md",
+      "bytes": 32843,
+      "lines": 210,
+      "sha256": "4552502f61c3f7d3937180e65d64c3dd7ec453fbf5365b813c1e79f3d181b1ae",
+      "fully_read": true,
+      "read_ranges": [
+        [
+          1,
+          210
+        ]
+      ],
+      "chunk_ids": [
+        38,
+        39,
+        40
+      ],
+      "observed_sha256": "4552502f61c3f7d3937180e65d64c3dd7ec453fbf5365b813c1e79f3d181b1ae",
+      "reader_manifest": "deployment-read-manifest.json"
+    },
+    {
+      "path": "docs/reviews/11-analytics-audit.md",
+      "bytes": 30542,
+      "lines": 349,
+      "sha256": "516f8d83a16c02776bb362c7d3d17d9606edcdf16d3fc5ebfa0942599219cd5d",
+      "fully_read": true,
+      "read_ranges": [
+        [
+          1,
+          349
+        ]
+      ],
+      "chunk_ids": [
+        41,
+        42
+      ],
+      "observed_sha256": "516f8d83a16c02776bb362c7d3d17d9606edcdf16d3fc5ebfa0942599219cd5d",
+      "reader_manifest": "deployment-read-manifest.json"
+    },
+    {
+      "path": "docs/reviews/13-product-alternatives.md",
+      "bytes": 26639,
+      "lines": 407,
+      "sha256": "492764ce9b39a24a7db271d5586634948795bb4f06f5464ae04db128524b3f3a",
+      "fully_read": true,
+      "read_ranges": [
+        [
+          1,
+          407
+        ]
+      ],
+      "chunk_ids": [
+        43,
+        44
+      ],
+      "observed_sha256": "492764ce9b39a24a7db271d5586634948795bb4f06f5464ae04db128524b3f3a",
+      "reader_manifest": "deployment-read-manifest.json"
+    },
+    {
+      "path": "docs/reviews/10-acquisition-audit.md",
+      "bytes": 22697,
+      "lines": 310,
+      "sha256": "f04bb272081dea17d45e34f8d942720ec5538b3b33c20c5785b26888bca1d0a1",
+      "fully_read": true,
+      "read_ranges": [
+        [
+          1,
+          310
+        ]
+      ],
+      "chunk_ids": [
+        45,
+        46
+      ],
+      "observed_sha256": "f04bb272081dea17d45e34f8d942720ec5538b3b33c20c5785b26888bca1d0a1",
+      "reader_manifest": "deployment-read-manifest.json"
+    },
+    {
+      "path": "docs/reviews/07-vision-and-final-recheck.md",
+      "bytes": 19985,
+      "lines": 182,
+      "sha256": "0f75f557c22715835b32968cecdf60afe2d2763c8f957d831dd3b107ce1260f8",
+      "fully_read": true,
+      "read_ranges": [
+        [
+          1,
+          182
+        ]
+      ],
+      "chunk_ids": [
+        47,
+        48
+      ],
+      "observed_sha256": "0f75f557c22715835b32968cecdf60afe2d2763c8f957d831dd3b107ce1260f8",
+      "reader_manifest": "deployment-read-manifest.json"
+    },
+    {
+      "path": "docs/reviews/14-handoff-countercheck.md",
+      "bytes": 14058,
+      "lines": 206,
+      "sha256": "c0fb2060a88fe5b640243a71140fef06ac08e1653f3d12511888fc22bd24c659",
+      "fully_read": true,
+      "read_ranges": [
+        [
+          1,
+          206
+        ]
+      ],
+      "chunk_ids": [
+        49
+      ],
+      "observed_sha256": "c0fb2060a88fe5b640243a71140fef06ac08e1653f3d12511888fc22bd24c659",
+      "reader_manifest": "deployment-read-manifest.json"
+    },
+    {
+      "path": "docs/reviews/14-independent-closure-review.md",
+      "bytes": 13139,
+      "lines": 198,
+      "sha256": "a411d6b800c9997a91c573ab9a0c0e4d72c37c12b46ec5e49681bf386f568ba8",
+      "fully_read": true,
+      "read_ranges": [
+        [
+          1,
+          198
+        ]
+      ],
+      "chunk_ids": [
+        50
+      ],
+      "observed_sha256": "a411d6b800c9997a91c573ab9a0c0e4d72c37c12b46ec5e49681bf386f568ba8",
+      "reader_manifest": "deployment-read-manifest.json"
+    },
+    {
+      "path": "experiments/identity-contract/README.md",
+      "bytes": 8172,
+      "lines": 131,
+      "sha256": "b845e2d055a6abef5987050e2d930e836f96491a2a51e8ddd6d6813ef7acd9a1",
+      "fully_read": true,
+      "read_ranges": [
+        [
+          1,
+          131
+        ]
+      ],
+      "chunk_ids": [
+        51
+      ],
+      "observed_sha256": "b845e2d055a6abef5987050e2d930e836f96491a2a51e8ddd6d6813ef7acd9a1",
+      "reader_manifest": "deployment-read-manifest.json"
+    },
+    {
+      "path": "docs/reviews/12-specification-readiness.md",
+      "bytes": 5348,
+      "lines": 67,
+      "sha256": "f6cfc2733fa35a6b1dc0aa82118823dfca61088429f2ff1b660ef6e7cff6f7bd",
+      "fully_read": true,
+      "read_ranges": [
+        [
+          1,
+          67
+        ]
+      ],
+      "chunk_ids": [
+        52
+      ],
+      "observed_sha256": "f6cfc2733fa35a6b1dc0aa82118823dfca61088429f2ff1b660ef6e7cff6f7bd",
+      "reader_manifest": "deployment-read-manifest.json"
+    },
+    {
+      "path": "experiments/relay-profile/README.md",
+      "bytes": 2470,
+      "lines": 43,
+      "sha256": "ce35fb547952c0fab0c282a5d50ec9767bd2c681c0e0da3bd9c3638b3763d3b5",
+      "fully_read": true,
+      "read_ranges": [
+        [
+          1,
+          43
+        ]
+      ],
+      "chunk_ids": [
+        53
+      ],
+      "observed_sha256": "ce35fb547952c0fab0c282a5d50ec9767bd2c681c0e0da3bd9c3638b3763d3b5",
+      "reader_manifest": "deployment-read-manifest.json"
+    },
+    {
+      "path": "docs/reviews/04-failures-and-growth.md",
+      "bytes": 1803,
+      "lines": 28,
+      "sha256": "e5840e5d3b1718851ea9b44ccea26b10fb13b5b1c0fe7027317354b841d14438",
+      "fully_read": true,
+      "read_ranges": [
+        [
+          1,
+          28
+        ]
+      ],
+      "chunk_ids": [
+        54
+      ],
+      "observed_sha256": "e5840e5d3b1718851ea9b44ccea26b10fb13b5b1c0fe7027317354b841d14438",
+      "reader_manifest": "deployment-read-manifest.json"
+    },
+    {
+      "path": "docs/reviews/02-contracts-and-simplification.md",
+      "bytes": 1583,
+      "lines": 26,
+      "sha256": "add22b946c7ee038cedf384aa6122fb15059c50569fe9ad2069a149637aab9c2",
+      "fully_read": true,
+      "read_ranges": [
+        [
+          1,
+          26
+        ]
+      ],
+      "chunk_ids": [
+        55
+      ],
+      "observed_sha256": "add22b946c7ee038cedf384aa6122fb15059c50569fe9ad2069a149637aab9c2",
+      "reader_manifest": "deployment-read-manifest.json"
+    },
+    {
+      "path": "experiments/parquet-targets/README.md",
+      "bytes": 1270,
+      "lines": 24,
+      "sha256": "a0fd199b188547014bb83637ce18615a67ac8924cde981481c6d6b001173df1f",
+      "fully_read": true,
+      "read_ranges": [
+        [
+          1,
+          24
+        ]
+      ],
+      "chunk_ids": [
+        56
+      ],
+      "observed_sha256": "a0fd199b188547014bb83637ce18615a67ac8924cde981481c6d6b001173df1f",
+      "reader_manifest": "deployment-read-manifest.json"
+    },
+    {
+      "path": "AGENTS.md",
+      "bytes": 2766,
+      "lines": 46,
+      "sha256": "443f18f60a2b3bb3d20120fc3796e01adcb641db765c44eff4b439b2d549d5c5",
+      "read_scope": "full frozen file",
+      "read_method": "bounded tool output, no truncation in file",
+      "reader_manifest": "handoff-read-manifest.json"
+    },
+    {
+      "path": "PLAN.md",
+      "bytes": 16352,
+      "lines": 201,
+      "sha256": "541e50550681c653e186392da8f0b2a8550257015095b5b56e151d31c0e2c5d2",
+      "read_scope": "full frozen file",
+      "read_method": "bounded tool output, no truncation in file",
+      "reader_manifest": "handoff-read-manifest.json"
+    },
+    {
+      "path": "README.md",
+      "bytes": 3129,
+      "lines": 53,
+      "sha256": "6a61d6b44a93eaa6842f093e4a5481c414016f6fab854fd4832ef416bbfe65a0",
+      "read_scope": "full frozen file",
+      "read_method": "untruncated bounded tool output",
+      "reader_manifest": "handoff-read-manifest.json"
+    },
+    {
+      "path": "docs/engineering/rust-and-repository.md",
+      "bytes": 12559,
+      "lines": 167,
+      "sha256": "52d0ded4c8ab3d6b2e36ef8a395ca9dde9c0c16c98abaa3887ce75304fefadbc",
+      "read_scope": "full frozen file",
+      "read_method": "untruncated bounded tool output",
+      "reader_manifest": "handoff-read-manifest.json"
+    },
+    {
+      "path": "docs/engineering/security-recovery-and-validation.md",
+      "bytes": 18665,
+      "lines": 267,
+      "sha256": "81767989475007b806eb1cf408d0f4978b2b1e5c735cea807943c37a7240a187",
+      "read_scope": "full frozen file",
+      "read_method": "untruncated bounded tool output",
+      "reader_manifest": "handoff-read-manifest.json"
+    },
+    {
+      "path": "docs/implementation/00-specification.md",
+      "bytes": 14505,
+      "lines": 218,
+      "sha256": "ae571871ba393d34ca3894d4d3dbc7da2f1df8adff296db362c5f5c17f382a2f",
+      "read_scope": "full frozen file",
+      "read_method": "bounded tool output, no truncation in file",
+      "reader_manifest": "handoff-read-manifest.json"
+    },
+    {
+      "path": "docs/implementation/02-storage.md",
+      "bytes": 25938,
+      "lines": 373,
+      "sha256": "b4d75fc3fca1142fcab8c240cbb5002cb976cb1c7cd720d179f9bfe494f274ef",
+      "read_scope": "full frozen file",
+      "read_method": "untruncated bounded tool output",
+      "reader_manifest": "handoff-read-manifest.json"
+    },
+    {
+      "path": "docs/implementation/09-product-interfaces.md",
+      "bytes": 39631,
+      "lines": 204,
+      "sha256": "caf157a2b113b2c8deed612b4b2cf6f6abbc468926ac8eb338e33f119d3b6ce9",
+      "read_scope": "full frozen file",
+      "read_method": "untruncated bounded reads lines 1-104 and 105-204",
+      "reader_manifest": "handoff-read-manifest.json"
+    },
+    {
+      "path": "docs/implementation/10-website.md",
+      "bytes": 35594,
+      "lines": 169,
+      "sha256": "7178d266c8883c7b9686a80aadc4339c5a02f80da2f51c691a712f4aef4e4e76",
+      "read_scope": "full frozen file",
+      "read_method": "untruncated bounded reads lines 1-85 and 86-169",
+      "reader_manifest": "handoff-read-manifest.json"
+    },
+    {
+      "path": "docs/implementation/README.md",
+      "bytes": 11153,
+      "lines": 162,
+      "sha256": "848814ee5ae9a1c4af7def42026558c3f40d7312adeda261ef1336efd1050ce2",
+      "read_scope": "full frozen file",
+      "read_method": "untruncated bounded tool output",
+      "reader_manifest": "handoff-read-manifest.json"
+    },
+    {
+      "path": "docs/implementation/agent-handoff.md",
+      "bytes": 7578,
+      "lines": 106,
+      "sha256": "4b4f58f4465633b30718015fc9de73d7ff3a4578e85043459385d486d6cd9546",
+      "read_scope": "full frozen file",
+      "read_method": "untruncated bounded tool output",
+      "reader_manifest": "handoff-read-manifest.json"
+    },
+    {
+      "path": "docs/implementation/coverage.md",
+      "bytes": 15760,
+      "lines": 140,
+      "sha256": "d5bcb70d77889366eee275931606188a8718734190869855e649e58d191d85bf",
+      "read_scope": "full frozen file",
+      "read_method": "untruncated bounded tool output",
+      "reader_manifest": "handoff-read-manifest.json"
+    },
+    {
+      "path": "docs/planning/decision-confidence.md",
+      "bytes": 13220,
+      "lines": 121,
+      "sha256": "9127d3e9f37ebd8528b49ea232bf5c02f5bb81b8c31aec189567d03cf4fc69a4",
+      "read_scope": "full frozen file",
+      "read_method": "bounded tool output, no truncation in file",
+      "reader_manifest": "handoff-read-manifest.json"
+    },
+    {
+      "path": "docs/planning/mandate.md",
+      "bytes": 7194,
+      "lines": 113,
+      "sha256": "a1a94116c3b994651f8535b86c826800f5135e087874b56599d0efb7ff9df9fe",
+      "read_scope": "full frozen file",
+      "read_method": "untruncated bounded tool output",
+      "reader_manifest": "handoff-read-manifest.json"
+    },
+    {
+      "path": "docs/planning/process.md",
+      "bytes": 11060,
+      "lines": 167,
+      "sha256": "f0af7c94e6c760349013a8ceedfc457593d566e3df52e7eebfddc65e97959aab",
+      "read_scope": "full frozen file",
+      "read_method": "untruncated bounded tool output",
+      "reader_manifest": "handoff-read-manifest.json"
+    },
+    {
+      "path": "docs/planning/questions.md",
+      "bytes": 11648,
+      "lines": 145,
+      "sha256": "cd1563cccfaf85842db5300d96d4590130a73fa84241b1cce5c785b7b9c52792",
+      "read_scope": "full frozen file",
+      "read_method": "untruncated bounded tool output",
+      "reader_manifest": "handoff-read-manifest.json"
+    },
+    {
+      "path": "docs/planning/specification-readiness.md",
+      "bytes": 10723,
+      "lines": 73,
+      "sha256": "654386d10307e220744bb947f4befa9c6163d25d43b832d67ecbb002ed01ef47",
+      "read_scope": "full frozen file",
+      "read_method": "untruncated bounded tool output",
+      "reader_manifest": "handoff-read-manifest.json"
+    },
+    {
+      "path": "docs/product/dashboard-and-website.md",
+      "bytes": 54269,
+      "lines": 620,
+      "sha256": "1e2344e5395885cd91c89b2519a24dc0087464d27413008707b29cbbe8b0f9a5",
+      "read_scope": "full frozen file",
+      "read_method": "untruncated bounded reads lines 1-210, 211-420 and 421-620",
+      "reader_manifest": "handoff-read-manifest.json"
+    },
+    {
+      "path": "docs/product/data-and-feature-decisions.md",
+      "bytes": 16017,
+      "lines": 164,
+      "sha256": "edb30ce9c5a5f514d2664b1bcf3dc32ef38719c616876412f20b06aa324b1944",
+      "read_scope": "full frozen file",
+      "read_method": "untruncated bounded tool output",
+      "reader_manifest": "handoff-read-manifest.json"
+    },
+    {
+      "path": "docs/product/private-administration.md",
+      "bytes": 10991,
+      "lines": 153,
+      "sha256": "89fe804a8bfb102c4f2e3c96b45dbd9fa3c8faef4c314fbccca70aceff470521",
+      "read_scope": "full frozen file",
+      "read_method": "untruncated bounded tool output",
+      "reader_manifest": "handoff-read-manifest.json"
+    },
+    {
+      "path": "docs/product/requirements-and-history.md",
+      "bytes": 8788,
+      "lines": 123,
+      "sha256": "8c006bac3bd203b6e68a90eef7f8ab8e78a7f9fd408eb5f859bcebdb6ab5805a",
+      "read_scope": "full frozen file",
+      "read_method": "untruncated bounded tool output",
+      "reader_manifest": "handoff-read-manifest.json"
+    },
+    {
+      "path": "docs/research/dependency-selections.md",
+      "bytes": 17194,
+      "lines": 195,
+      "sha256": "62b4ee9c458b6ea51478f32ce67f9aec4c284de3ace0ac4bc7f3ccf26751132d",
+      "read_scope": "full frozen file",
+      "read_method": "untruncated bounded tool output",
+      "reader_manifest": "handoff-read-manifest.json"
+    },
+    {
+      "path": "docs/research/experiment-summary.md",
+      "bytes": 8942,
+      "lines": 100,
+      "sha256": "a43ee910a8d56f6fa9a4209a104ac9c1bf3e2a6e77cf6319755a123147c6fb0b",
+      "read_scope": "full frozen file",
+      "read_method": "untruncated bounded tool output",
+      "reader_manifest": "handoff-read-manifest.json"
+    },
+    {
+      "path": "docs/research/product-surfaces-findings.md",
+      "bytes": 25147,
+      "lines": 233,
+      "sha256": "9b98b06ad3b2cb5d599cbb511c5da83f9ca2ec686038c27705f32c1ad3d87c7b",
+      "read_scope": "full frozen file",
+      "read_method": "untruncated bounded tool output",
+      "reader_manifest": "handoff-read-manifest.json"
+    },
+    {
+      "path": "docs/research/tux-retirement-20260917.md",
+      "bytes": 3618,
+      "lines": 60,
+      "sha256": "d4df9ff32340514aa2be13e64280cdea1920c969fb42e09b762ccf3b4258b3ca",
+      "read_scope": "full frozen file",
+      "read_method": "bounded tool output, no truncation in file",
+      "reader_manifest": "handoff-read-manifest.json"
+    },
+    {
+      "path": "docs/reviews/03-storage-and-sdk-experiments.md",
+      "bytes": 1766,
+      "lines": 26,
+      "sha256": "163476c92f8b7b18c497974bb626ad56cc998ee369b301583b36f42653dadabf",
+      "read_scope": "full frozen file",
+      "read_method": "untruncated bounded tool output",
+      "reader_manifest": "handoff-read-manifest.json"
+    },
+    {
+      "path": "docs/reviews/05-complete-product.md",
+      "bytes": 1814,
+      "lines": 29,
+      "sha256": "a077a06623e538fa52ee4dfcefd32067764c0784e71ca7fbe56827fe025092a8",
+      "read_scope": "full frozen file",
+      "read_method": "untruncated bounded tool output",
+      "reader_manifest": "handoff-read-manifest.json"
+    },
+    {
+      "path": "docs/reviews/06-reconciliation-and-delivery.md",
+      "bytes": 3311,
+      "lines": 48,
+      "sha256": "45d79823983d06a35575023094cb39deba601d6acccaed38acdb82d6c1e79775",
+      "read_scope": "full frozen file",
+      "read_method": "untruncated bounded tool output",
+      "reader_manifest": "handoff-read-manifest.json"
+    },
+    {
+      "path": "docs/reviews/07-phase-0-4-recheck.md",
+      "bytes": 60159,
+      "lines": 395,
+      "sha256": "a99c44f453175d18ad34087a05c2ae1ca42e43b66679822ca63c78b7c14b7f20",
+      "read_scope": "full frozen file",
+      "read_method": "untruncated bounded reads lines 1-125, 126-245 and 246-395",
+      "reader_manifest": "handoff-read-manifest.json"
+    },
+    {
+      "path": "docs/reviews/07-phase-6-9-recheck.md",
+      "bytes": 47708,
+      "lines": 323,
+      "sha256": "bce3991520b3ecc0d8947b8e8cabd9bfc44e59080a04c023eeae1b067a5f3f27",
+      "read_scope": "full frozen file",
+      "read_method": "untruncated bounded reads lines 1-110, 111-210 and 211-323",
+      "reader_manifest": "handoff-read-manifest.json"
+    },
+    {
+      "path": "docs/reviews/08-go-code-walkthrough.md",
+      "bytes": 11573,
+      "lines": 122,
+      "sha256": "8c3b58ae332e42ce2120ed705a562b26eb6075e9b2c24747891c09d826adf07c",
+      "read_scope": "full frozen file",
+      "read_method": "untruncated bounded tool output",
+      "reader_manifest": "handoff-read-manifest.json"
+    },
+    {
+      "path": "docs/reviews/10-analytics-read-audit.md",
+      "bytes": 20709,
+      "lines": 285,
+      "sha256": "b5c5442729c8d071259febcfc4f720df69e861901c1308f1a7b193671580cdab",
+      "read_scope": "full frozen file",
+      "read_method": "untruncated bounded tool output",
+      "reader_manifest": "handoff-read-manifest.json"
+    },
+    {
+      "path": "docs/reviews/10-product-audit.md",
+      "bytes": 19378,
+      "lines": 281,
+      "sha256": "7ceb89e2f34cf61e6ca6592b99309f184a0dc0a6df985d2d79b584c6868ba4b9",
+      "read_scope": "full frozen file",
+      "read_method": "untruncated bounded tool output",
+      "reader_manifest": "handoff-read-manifest.json"
+    },
+    {
+      "path": "docs/reviews/10-whole-repository-audit.md",
+      "bytes": 13392,
+      "lines": 153,
+      "sha256": "f5894b03c994e0b8590ff6702ab6d05d501f40c8d6a818940f0fa09b7201eeab",
+      "read_scope": "full frozen file",
+      "read_method": "untruncated bounded tool output",
+      "reader_manifest": "handoff-read-manifest.json"
+    },
+    {
+      "path": "docs/reviews/13-runtime-alternatives.md",
+      "bytes": 27974,
+      "lines": 429,
+      "sha256": "2102b604730f1656bc99934ef53f85e72f6ad05fe32802b2db2a108b53a53990",
+      "read_scope": "full frozen file",
+      "read_method": "untruncated bounded reads lines 1-220 and 221-429",
+      "reader_manifest": "handoff-read-manifest.json"
+    },
+    {
+      "path": "docs/reviews/13-storage-alternatives.md",
+      "bytes": 26561,
+      "lines": 400,
+      "sha256": "7467d1e644d795fb86e8f55aa5a8a33f33d6743cb5b9c4e092be01027902db6f",
+      "read_scope": "full frozen file",
+      "read_method": "untruncated bounded reads lines 1-200 and 201-400",
+      "reader_manifest": "handoff-read-manifest.json"
+    },
+    {
+      "path": "docs/specification/interface-catalog.md",
+      "bytes": 19092,
+      "lines": 219,
+      "sha256": "ca1c514f1fd41c603e9271b2bb7210c8707f01a70843cf209ae6f06a3be26727",
+      "read_scope": "full frozen file",
+      "read_method": "untruncated bounded tool output",
+      "reader_manifest": "handoff-read-manifest.json"
+    },
+    {
+      "path": "docs/specification/naming.md",
+      "bytes": 8830,
+      "lines": 106,
+      "sha256": "dc133e54594f05917c5344a1932ac4454dfa5350b8e8b337e4dee3c77e186a61",
+      "read_scope": "full frozen file",
+      "read_method": "untruncated bounded tool output",
+      "reader_manifest": "handoff-read-manifest.json"
+    },
+    {
+      "path": "docs/start-here.md",
+      "bytes": 8836,
+      "lines": 146,
+      "sha256": "0f0b07c3b3eae9e667f904ec92d854ecc7aeece6ab810a75e2ab11813eff3277",
+      "read_scope": "full frozen file",
+      "read_method": "bounded tool output, no truncation in file",
+      "reader_manifest": "handoff-read-manifest.json"
+    },
+    {
+      "path": "experiments/document-layout/README.md",
+      "bytes": 6938,
+      "lines": 117,
+      "sha256": "e038778d96887ecd4818a9aab815f439fb6b34d5ffbb75046aeca195221bd097",
+      "read_scope": "full frozen file",
+      "read_method": "untruncated bounded tool output",
+      "reader_manifest": "handoff-read-manifest.json"
+    },
+    {
+      "path": "experiments/ducklake-postgres/README.md",
+      "bytes": 1555,
+      "lines": 25,
+      "sha256": "a3cc0ca4571f9d1b2d670180aff64d194b8237fde0c0806866415eed6ba4f87a",
+      "read_scope": "full frozen file",
+      "read_method": "untruncated bounded tool output",
+      "reader_manifest": "handoff-read-manifest.json"
+    },
+    {
+      "path": "experiments/read-rank-contract/README.md",
+      "bytes": 742,
+      "lines": 13,
+      "sha256": "97dbfe5ed633f043a88d1585bed08760fdcd866bf8aa3a5d76c431f5e4d23b05",
+      "read_scope": "full frozen file",
+      "read_method": "untruncated bounded tool output",
+      "reader_manifest": "handoff-read-manifest.json"
+    },
+    {
+      "path": "experiments/rocksdb-admission/README.md",
+      "bytes": 741,
+      "lines": 12,
+      "sha256": "2eab99f12c5daff49f64620865ce8e43f4fa14953553cf932ea613c0ccc76e3b",
+      "read_scope": "full frozen file",
+      "read_method": "untruncated bounded tool output",
+      "reader_manifest": "handoff-read-manifest.json"
+    },
+    {
+      "path": "experiments/workload-contract/README.md",
+      "bytes": 2564,
+      "lines": 41,
+      "sha256": "297b6e3e0d15972698dd600ea333eaab189d796b9cf4fd67a36050d1bc3094d8",
+      "read_scope": "full frozen file",
+      "read_method": "untruncated bounded tool output",
+      "reader_manifest": "handoff-read-manifest.json"
+    },
+    {
+      "path": "docs/architecture/derived-read-publication.md",
+      "bytes": 94732,
+      "lines": 1307,
+      "sha256": "96b91ecae1e70fce53356fddba64fe4015f341df43838873189739a8433a3c01",
+      "fully_read": true,
+      "coverage": [
+        [
+          1,
+          1307
+        ]
+      ],
+      "method": "Bounded complete tool displays; truncated protocol-evolution display replaced by explicit full contiguous ranges",
+      "reader_manifest": "protocol-read-manifest.json"
+    },
+    {
+      "path": "docs/architecture/protocol-evolution.md",
+      "bytes": 64205,
+      "lines": 776,
+      "sha256": "ad5cf3dccf95959f5266840ea48faa026e13c2c741f50a5583e719056a2f0a18",
+      "fully_read": true,
+      "coverage": [
+        [
+          1,
+          776
+        ]
+      ],
+      "method": "Bounded complete tool displays; truncated protocol-evolution display replaced by explicit full contiguous ranges",
+      "reader_manifest": "protocol-read-manifest.json"
+    },
+    {
+      "path": "docs/architecture/analytics-detail.md",
+      "bytes": 54661,
+      "lines": 722,
+      "sha256": "a2ada6ef625d5610a59f0619cfd9aa22063d80af2f8ef7faed2c5a2500603442",
+      "fully_read": true,
+      "coverage": [
+        [
+          1,
+          722
+        ]
+      ],
+      "method": "Bounded complete tool displays; truncated protocol-evolution display replaced by explicit full contiguous ranges",
+      "reader_manifest": "protocol-read-manifest.json"
+    },
+    {
+      "path": "docs/architecture/search-and-reconciliation.md",
+      "bytes": 21364,
+      "lines": 315,
+      "sha256": "cf735f9a02e09018bfc1ae4341e9d6772f3585b042ebc321c5866dd46cf1bbf3",
+      "fully_read": true,
+      "coverage": [
+        [
+          1,
+          315
+        ]
+      ],
+      "method": "Bounded complete tool displays; truncated protocol-evolution display replaced by explicit full contiguous ranges",
+      "reader_manifest": "protocol-read-manifest.json"
+    },
+    {
+      "path": "docs/implementation/05-analytics.md",
+      "bytes": 53600,
+      "lines": 815,
+      "sha256": "1314a463c58724c3a7774cf859e1d0a955f5c888008a6daa336b9847b8c29428",
+      "fully_read": true,
+      "coverage": [
+        [
+          1,
+          815
+        ]
+      ],
+      "method": "Bounded complete tool displays; truncated protocol-evolution display replaced by explicit full contiguous ranges",
+      "reader_manifest": "protocol-read-manifest.json"
+    },
+    {
+      "path": "docs/implementation/06-read-surfaces.md",
+      "bytes": 56297,
+      "lines": 847,
+      "sha256": "64bb4527e93b5d24c5132f1cc63b42701e3b156e426b82306d1b06eacfaf64d0",
+      "fully_read": true,
+      "coverage": [
+        [
+          1,
+          847
+        ]
+      ],
+      "method": "Bounded complete tool displays; truncated protocol-evolution display replaced by explicit full contiguous ranges",
+      "reader_manifest": "protocol-read-manifest.json"
+    },
+    {
+      "path": "docs/implementation/07-publication.md",
+      "bytes": 34538,
+      "lines": 534,
+      "sha256": "4ad2af652da7732406748d2ee0357895dfd0eaf847e1e3f6a9714de18aa863c6",
+      "fully_read": true,
+      "coverage": [
+        [
+          1,
+          534
+        ]
+      ],
+      "method": "Bounded complete tool displays; truncated protocol-evolution display replaced by explicit full contiguous ranges",
+      "reader_manifest": "protocol-read-manifest.json"
+    },
+    {
+      "path": "docs/specification/assertion-bindings.md",
+      "bytes": 31711,
+      "lines": 381,
+      "sha256": "4e788239e02d6a4b3993d4e159ed879ba25d226b3d53d30c4076f03ffd7a1a03",
+      "fully_read": true,
+      "coverage": [
+        [
+          1,
+          381
+        ]
+      ],
+      "method": "Bounded complete tool displays; truncated protocol-evolution display replaced by explicit full contiguous ranges",
+      "reader_manifest": "protocol-read-manifest.json"
+    },
+    {
+      "path": "docs/specification/read-view-contract.md",
+      "bytes": 12806,
+      "lines": 192,
+      "sha256": "4f2e630c2ef8c61305317b77267dedd19a3eb4ffa2fadd67bdebce3c6c66ebb2",
+      "fully_read": true,
+      "coverage": [
+        [
+          1,
+          192
+        ]
+      ],
+      "method": "Bounded complete tool displays; truncated protocol-evolution display replaced by explicit full contiguous ranges",
+      "reader_manifest": "protocol-read-manifest.json"
+    },
+    {
+      "path": "docs/specification/gateway-contracts.md",
+      "bytes": 23899,
+      "lines": 327,
+      "sha256": "e1ed3166f187e6b55cf29b68c8e551131267e9276d1f6f0667e6d505d7b5f007",
+      "fully_read": true,
+      "coverage": [
+        [
+          1,
+          327
+        ]
+      ],
+      "method": "Bounded complete tool displays; truncated protocol-evolution display replaced by explicit full contiguous ranges",
+      "reader_manifest": "protocol-read-manifest.json"
+    },
+    {
+      "path": "docs/specification/dvm-profile.md",
+      "bytes": 27341,
+      "lines": 404,
+      "sha256": "8d2b75912aeaef1d03233c0a4697bc283e2da0e2750d49cec28b46d66c808088",
+      "fully_read": true,
+      "coverage": [
+        [
+          1,
+          404
+        ]
+      ],
+      "method": "Bounded complete tool displays; truncated protocol-evolution display replaced by explicit full contiguous ranges",
+      "reader_manifest": "protocol-read-manifest.json"
+    },
+    {
+      "path": "docs/research/derived-read-publication-findings.md",
+      "bytes": 24379,
+      "lines": 335,
+      "sha256": "aa4f1df3b52fe63833245770fb7745feb5188f646653d09baf090e3780e18847",
+      "fully_read": true,
+      "coverage": [
+        [
+          1,
+          335
+        ]
+      ],
+      "method": "Bounded complete tool displays; truncated protocol-evolution display replaced by explicit full contiguous ranges",
+      "reader_manifest": "protocol-read-manifest.json"
+    },
+    {
+      "path": "docs/research/go-analytics-code-walkthrough.md",
+      "bytes": 42933,
+      "lines": 574,
+      "sha256": "beeca9d23412b4d589cf8458f27dc430d075883b280dd82fb4632190334be99e",
+      "fully_read": true,
+      "coverage": [
+        [
+          1,
+          574
+        ]
+      ],
+      "method": "Bounded complete tool displays; truncated protocol-evolution display replaced by explicit full contiguous ranges",
+      "reader_manifest": "protocol-read-manifest.json"
+    },
+    {
+      "path": "docs/research/go-read-runtime-code-walkthrough.md",
+      "bytes": 39076,
+      "lines": 234,
+      "sha256": "a4db86d06f3420507df48c59c4b50ea76870c273207863f30108872f2cd49585",
+      "fully_read": true,
+      "coverage": [
+        [
+          1,
+          234
+        ]
+      ],
+      "method": "Bounded complete tool displays; truncated protocol-evolution display replaced by explicit full contiguous ranges",
+      "reader_manifest": "protocol-read-manifest.json"
+    },
+    {
+      "path": "docs/reviews/11-product-audit.md",
+      "bytes": 23146,
+      "lines": 310,
+      "sha256": "458af08cf0ad263151b4f9c5ee2b2b8b7b108838d83dfc0b94c1efcda4001bbe",
+      "fully_read": true,
+      "coverage": [
+        [
+          1,
+          310
+        ]
+      ],
+      "method": "Bounded complete tool displays; truncated protocol-evolution display replaced by explicit full contiguous ranges",
+      "reader_manifest": "protocol-read-manifest.json"
+    },
+    {
+      "path": "docs/reviews/13-architecture-alternatives.md",
+      "bytes": 20578,
+      "lines": 311,
+      "sha256": "d5e80e0960a9b863eb583ba57ad20e46d01cbf5bcedbf44f413e29dd93eb3718",
+      "fully_read": true,
+      "coverage": [
+        [
+          1,
+          311
+        ]
+      ],
+      "method": "Bounded complete tool displays; truncated protocol-evolution display replaced by explicit full contiguous ranges",
+      "reader_manifest": "protocol-read-manifest.json"
+    },
+    {
+      "path": "docs/reviews/11-acquisition-audit.md",
+      "bytes": 16090,
+      "lines": 217,
+      "sha256": "85c132ba58cf9340653b38cb6375a05dca984230c6ce00eecf5033dacbe1b220",
+      "fully_read": true,
+      "coverage": [
+        [
+          1,
+          217
+        ]
+      ],
+      "method": "Bounded complete tool displays; truncated protocol-evolution display replaced by explicit full contiguous ranges",
+      "reader_manifest": "protocol-read-manifest.json"
+    },
+    {
+      "path": "docs/reviews/11-whole-repository-audit.md",
+      "bytes": 13489,
+      "lines": 189,
+      "sha256": "38881daf77a7455a6c7e6e19dece9367a161a6e44c1610d846282a62cccdbcd4",
+      "fully_read": true,
+      "coverage": [
+        [
+          1,
+          189
+        ]
+      ],
+      "method": "Bounded complete tool displays; truncated protocol-evolution display replaced by explicit full contiguous ranges",
+      "reader_manifest": "protocol-read-manifest.json"
+    },
+    {
+      "path": "docs/reviews/09-expanded-plan-rounds.md",
+      "bytes": 13016,
+      "lines": 204,
+      "sha256": "ea71d9b776ea3bc5eb11cb9e8153f430baceb08773970874f18ea0d83cd352ef",
+      "fully_read": true,
+      "coverage": [
+        [
+          1,
+          204
+        ]
+      ],
+      "method": "Bounded complete tool displays; truncated protocol-evolution display replaced by explicit full contiguous ranges",
+      "reader_manifest": "protocol-read-manifest.json"
+    },
+    {
+      "path": "docs/reviews/15-large-storage-and-final-handoff.md",
+      "bytes": 5413,
+      "lines": 62,
+      "sha256": "5a4437fe6099003b60f723884498f178b61dbad6d49fa784ac3d5fed87013e4b",
+      "fully_read": true,
+      "coverage": [
+        [
+          1,
+          62
+        ]
+      ],
+      "method": "Bounded complete tool displays; truncated protocol-evolution display replaced by explicit full contiguous ranges",
+      "reader_manifest": "protocol-read-manifest.json"
+    },
+    {
+      "path": "experiments/gateway-contract/README.md",
+      "bytes": 3603,
+      "lines": 52,
+      "sha256": "4054a2d524b071a9f215ea8a7eae1b25c9e4582eaccf41ad2c80a9c3fec2ccfc",
+      "fully_read": true,
+      "coverage": [
+        [
+          1,
+          52
+        ]
+      ],
+      "method": "Bounded complete tool displays; truncated protocol-evolution display replaced by explicit full contiguous ranges",
+      "reader_manifest": "protocol-read-manifest.json"
+    },
+    {
+      "path": "experiments/operations-contract/README.md",
+      "bytes": 2573,
+      "lines": 40,
+      "sha256": "25c5aaffbaecc6416d52a8666c9cb9a4264d545dcbeb071379ef776fb1238852",
+      "fully_read": true,
+      "coverage": [
+        [
+          1,
+          40
+        ]
+      ],
+      "method": "Bounded complete tool displays; truncated protocol-evolution display replaced by explicit full contiguous ranges",
+      "reader_manifest": "protocol-read-manifest.json"
+    },
+    {
+      "path": "experiments/archive-model/README.md",
+      "bytes": 2006,
+      "lines": 37,
+      "sha256": "1444b3ce8a19a958d8993b0ebbdefb419ebb9c583884c355cb0947ecd9c9fe50",
+      "fully_read": true,
+      "coverage": [
+        [
+          1,
+          37
+        ]
+      ],
+      "method": "Bounded complete tool displays; truncated protocol-evolution display replaced by explicit full contiguous ranges",
+      "reader_manifest": "protocol-read-manifest.json"
+    },
+    {
+      "path": "experiments/clickhouse-frontier/README.md",
+      "bytes": 1729,
+      "lines": 28,
+      "sha256": "fbf4cbd18903257a28d6abfc2504365020dc4543251404166ef2ff1b4c0040d2",
+      "fully_read": true,
+      "coverage": [
+        [
+          1,
+          28
+        ]
+      ],
+      "method": "Bounded complete tool displays; truncated protocol-evolution display replaced by explicit full contiguous ranges",
+      "reader_manifest": "protocol-read-manifest.json"
+    },
+    {
+      "path": "docs/reviews/01-vision-recovery.md",
+      "bytes": 1370,
+      "lines": 23,
+      "sha256": "81eefb3e5f70de0a2d14fb7bd25958b5c49cd4020d697c0d818df1faaf807154",
+      "fully_read": true,
+      "coverage": [
+        [
+          1,
+          23
+        ]
+      ],
+      "method": "Bounded complete tool displays; truncated protocol-evolution display replaced by explicit full contiguous ranges",
+      "reader_manifest": "protocol-read-manifest.json"
+    },
+    {
+      "path": "experiments/nostr-boundary/README.md",
+      "bytes": 1266,
+      "lines": 24,
+      "sha256": "de093966a47c8267bea96fac982ca919d940a03e36b9108498279816f436254a",
+      "fully_read": true,
+      "coverage": [
+        [
+          1,
+          24
+        ]
+      ],
+      "method": "Bounded complete tool displays; truncated protocol-evolution display replaced by explicit full contiguous ranges",
+      "reader_manifest": "protocol-read-manifest.json"
+    },
+    {
+      "path": "docs/architecture/data-and-durability.md",
+      "bytes": 20416,
+      "lines": 292,
+      "sha256": "c8f63bad3f1a6119e805a63854b12299db3823f35bd45cfaf5a6171b58bb28b9",
+      "read_ranges": [
+        [
+          1,
+          292
+        ]
+      ],
+      "mode": "complete frozen file, bounded untruncated chunks",
+      "reader_manifest": "root-read-manifest.json"
+    },
+    {
+      "path": "docs/architecture/storage-services.md",
+      "bytes": 21341,
+      "lines": 312,
+      "sha256": "ffb64c57e301cfec8aa7f9abc1057f75867f033025f39eeb7e2e3724599ae586",
+      "read_ranges": [
+        [
+          1,
+          312
+        ]
+      ],
+      "mode": "complete frozen file, bounded untruncated chunks",
+      "reader_manifest": "root-read-manifest.json"
+    },
+    {
+      "path": "docs/specification/data-contracts.md",
+      "bytes": 32484,
+      "lines": 462,
+      "sha256": "f294c8b81f4ef0f987c13065f5bc0f196c6a19e5c2577428df17ac3f7d166378",
+      "read_ranges": [
+        [
+          1,
+          462
+        ]
+      ],
+      "mode": "complete frozen file, bounded untruncated chunks",
+      "reader_manifest": "root-read-manifest.json"
+    },
+    {
+      "path": "docs/specification/storage-catalog.md",
+      "bytes": 31235,
+      "lines": 296,
+      "sha256": "3a4f7566677cf7efbfa480fd57d2709289ac9e23a30dcf4eb928c65f4a6564b2",
+      "read_ranges": [
+        [
+          1,
+          296
+        ]
+      ],
+      "mode": "complete frozen file, bounded untruncated chunks",
+      "reader_manifest": "root-read-manifest.json"
+    },
+    {
+      "path": "docs/specification/identity-and-encoding.md",
+      "bytes": 34879,
+      "lines": 446,
+      "sha256": "bb5d6d5f91e97c0b4400300cd2e744674b902237a18b11958335c870488dd501",
+      "read_ranges": [
+        [
+          1,
+          446
+        ]
+      ],
+      "mode": "complete frozen file, bounded untruncated chunks",
+      "reader_manifest": "root-read-manifest.json"
+    },
+    {
+      "path": "docs/specification/import-formats.md",
+      "bytes": 8509,
+      "lines": 125,
+      "sha256": "5925afc107c1e30ae9649ee6e674a636ed022ce3cf034518e2740a1d0ac191d4",
+      "read_ranges": [
+        [
+          1,
+          125
+        ]
+      ],
+      "mode": "complete frozen file, bounded untruncated chunks",
+      "reader_manifest": "root-read-manifest.json"
+    },
+    {
+      "path": "docs/engineering/capacity-and-benchmarks.md",
+      "bytes": 23297,
+      "lines": 324,
+      "sha256": "8ba19b83e73f84e38db0b13720186718e0bf27e62294ae736c10cfcc37f55616",
+      "read_ranges": [
+        [
+          1,
+          324
+        ]
+      ],
+      "mode": "complete frozen file, bounded untruncated chunks",
+      "reader_manifest": "root-read-manifest.json"
+    },
+    {
+      "path": "docs/research/go-storage-code-walkthrough.md",
+      "bytes": 13009,
+      "lines": 197,
+      "sha256": "b873b7218e75c081c14288dfcaa08c527709b0a78bf3ec7b0b30fd6de0541577",
+      "read_ranges": [
+        [
+          1,
+          197
+        ]
+      ],
+      "mode": "complete frozen file, bounded untruncated chunks",
+      "reader_manifest": "root-read-manifest.json"
+    },
+    {
+      "path": "docs/research/tux-storage-qualification-20260917.md",
+      "bytes": 14039,
+      "lines": 214,
+      "sha256": "44e203926d94eecff1b16643f3065d5f596d80790f0011f18da62abe3c96e0a0",
+      "read_ranges": [
+        [
+          1,
+          214
+        ]
+      ],
+      "mode": "complete frozen file, bounded untruncated chunks",
+      "reader_manifest": "root-read-manifest.json"
+    },
+    {
+      "path": "experiments/storage-qualification/README.md",
+      "bytes": 12155,
+      "lines": 186,
+      "sha256": "a3f4b8bd5058340a1e87d334e00f93201d3d5668dca3cc4b372574c26e5acb75",
+      "read_ranges": [
+        [
+          1,
+          186
+        ]
+      ],
+      "mode": "complete frozen file, bounded untruncated chunks",
+      "reader_manifest": "root-read-manifest.json"
+    },
+    {
+      "path": "experiments/storage-qualification/README-recovery.md",
+      "bytes": 10160,
+      "lines": 138,
+      "sha256": "d2041a2dbbdacef68f4546c24584446d2d82a940e0046f4e21b133b36d97adb3",
+      "read_ranges": [
+        [
+          1,
+          138
+        ]
+      ],
+      "mode": "complete frozen file, bounded untruncated chunks",
+      "reader_manifest": "root-read-manifest.json"
+    }
+  ],
+  "readers": [
+    {
+      "manifest": "deployment-read-manifest.json",
+      "files": 25,
+      "bytes": 685380,
+      "lines": 6771
+    },
+    {
+      "manifest": "handoff-read-manifest.json",
+      "files": 44,
+      "bytes": 686084,
+      "lines": 7543
+    },
+    {
+      "manifest": "protocol-read-manifest.json",
+      "files": 26,
+      "bytes": 685821,
+      "lines": 9260
+    },
+    {
+      "manifest": "root-read-manifest.json",
+      "files": 11,
+      "bytes": 221524,
+      "lines": 2992
+    }
+  ],
+  "total_files": 106,
+  "total_bytes": 2278809,
+  "total_lines": 26566
+}

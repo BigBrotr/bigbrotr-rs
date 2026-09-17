@@ -10,6 +10,8 @@ consumer, not a prerequisite creating a cycle. Read
 [data contracts](../specification/data-contracts.md),
 [component contracts](../specification/component-contracts.md) and
 [storage semantics](../architecture/storage-services.md).
+Local/S3 placement, credentials, qualified protection and relocation follow the
+[archive storage contract](../specification/archive-storage-contract.md).
 The prior Python/engine experiments are evidence for their recorded scope, not
 proof that an unbuilt Rust binding has passed these tasks.
 
@@ -149,7 +151,8 @@ resolvable namespaced references and unchanged original bytes.
   1,000 unchanged document fetches, changed bytes and a second visibility scope.
   Reopen solely with standalone DuckDB and resolve every reference. Expect one
   object per exact bytes/scope and all actual measurements. Negative controls:
-  copying the object per poll, dropping empty tag values, cross-scope dedupe leaks.
+  creating a new logical object per poll, dropping empty tag values, cross-scope
+  dedupe leaks. A measured wide physical layout may still repeat bytes.
 - [ ] **Step 8:** Document byte fidelity, unsigned time limitations in generic clients and
   the complete difference between source objects and parsed hot fields.
 
@@ -174,6 +177,8 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   override; single-small-record publication must follow the same contract.
 - [ ] **Step 3:** Use the PG-backed DuckLake catalog; publish events/evidence/dictionaries/
   document references and deterministic batch receipt in one transaction.
+  Use the native writer on either local files or the configured S3 destination;
+  validate catalog/root identity and disable automatic migration at ordinary attach.
 - [ ] **Step 4:** After an ambiguous commit, query the receipt in a new transaction; do not
   repeat while receipt state is unknown. Reject mismatched batch digest.
 - [ ] **Step 5:** Enforce a single positively fenced publisher and bounded native worker
@@ -184,11 +189,18 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   kill after catalog commit before ACK, and attempt a competing owner. Reopen the
   catalog independently and compare exact logical fact/reference membership.
   Negative control: two unfenced receipt-check-then-insert publishers.
+  Include a separate read-only worker without a source-data mount, refused object
+  writes, bad credentials, incomplete upload and missing committed objects. A
+  metadata-only count is not a content-read test.
 - [ ] **Step 8:** Document catalog/object backup coupling, orphan preparation visibility and
   the archive receipt's durability class; record latency/space/native memory.
   Verify actual file/directory/object persistence before pending reclamation under
   that class; a transactional catalog/process-kill test alone cannot qualify
   power-loss durability or weaken a stronger previously issued receipt.
+  Track uncaptured/captured file hashes independently of semantic receipts;
+  qualify native persistence/integrity before reclamation without requiring an
+  extra full S3 GET merely to create a first checksum. Backup/scrub/full semantic
+  verification carry their actual budgets and evidence.
 
 ## P02-T05 — Full online representation and immutable projections
 
@@ -320,6 +332,9 @@ with original identities and correctly invalidated/rebuilt derived readiness.
   exists, compare exact IDs/body digests/edges/dictionaries and actual read output,
   then exercise missing object, corrupt part, wrong schema and unavailable key.
   Negative control: counting equal rows while substituting another event.
+  Exercise local→S3 and S3→separate-prefix relocation through pinned catalog/file
+  closure, destination readback and explicit activation; a DATA_PATH edit alone
+  is refused as a migration. Restore all scientific families, not only events.
 - [ ] **Step 7:** Prove old-owner exclusion before enabling the restored writer; rehearse
   interrupted restore and keep the source untouched.
 - [ ] **Step 8:** Record time/temporary space and failure-class limits. P08 completes the
@@ -334,7 +349,7 @@ with original identities and correctly invalidated/rebuilt derived readiness.
 **Contract:** fixed logical semantics + candidate physical layouts → measured
 release selection and explicit capacity limits, not a best-engine slogan.
 
-- [ ] **Step 1:** Use the exact four-dimension provenance key as the maintainable baseline;
+- [ ] **Step 1:** Use the complete scope-qualified provenance key from A02 as the baseline;
   compare grouped sorted relay values and bitmap-plus-required-metadata only
   when they preserve times, scopes, receipts and correction/recovery behavior.
 - [ ] **Step 2:** Compare ID-ordered full bodies plus narrow chronological/author/tag paths
@@ -350,6 +365,9 @@ release selection and explicit capacity limits, not a best-engine slogan.
   file requests, compression and compaction/recovery debt. Include quiet workloads
   across many tables with the selected inlining setting. Engine row/byte/file
   targets are not memory caps; verify supported settings and failure behavior.
+  Compare local storage and a qualified S3 provider with request counts, real
+  data movement, credential rotation/outage, backup verification and relocation;
+  loopback object serving does not qualify WAN or independent-host failures.
 - [ ] **Step 5:** Measure all representations, temporary/pending/merge headroom and backup
   restore cost; report read/write amplification and worst admitted query behavior.
 - [ ] **Step 6:** Select a candidate only if correctness/recovery scenarios pass and it fits

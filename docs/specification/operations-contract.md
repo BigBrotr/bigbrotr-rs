@@ -10,6 +10,9 @@ evidence remain with the tasks listed below. Detailed record fields remain in th
 [publication](../architecture/derived-read-publication.md#signing-and-publication-delivery-boundary)
 contracts. This document owns cross-boundary ordering and deployment composition,
 not a second copy of those schemas.
+The [deployment contract](deployment-contract.md) owns installation recipes,
+fixed-relay worker selection, concrete remote PG/CH credentials and per-host
+native/Compose networking. It does not replace the authority/recovery rules here.
 
 ## Decisions and alternatives
 
@@ -61,7 +64,7 @@ with a fresh identity automatically.
 | Producer handoff: contiguous local outcomes and progress | Producer's durable ledger transaction binds classified input positions, Receipt/ExistingProof dependency closure, traversal position/gaps and its checkpoint. This need not claim EOSE/page completion. Its local durability precedes ACK(n) for contiguous mutation requests only; a proof-only prefix has no request sequence or ACK. | Lost checkpoint response: producer reads its own ledger. Lost ACK: resend same watermark. Lost certification response: re-evaluate the read under current authority. Producer never infers a receipt from `RetiredRequest` or uses certification to bypass unresolved Admit resolution. | Keep deduplicated ledger closure needed by outstanding outcomes, coverage recovery and any backup that includes corresponding owner GC; compact proofs only through a retained complete source-cut manifest. |
 | Owner ACK and receipt GC: producer epoch + contiguous n | Ingest synchronizes watermark n after producer attests durable checkpoint. GC is in that batch or later batches guarded by persisted n. No ACK over a hole. Closed-epoch summary remains. | ACK reply loss resolves by owner watermark; duplicate monotone ACK is harmless. Owner cannot use a PG-observed ACK row as proof of its own Rocks watermark. | Detail at <= n may be removed under retention policy; all later retries return `RetiredRequest`, even with a changed payload. Backup must include the producer checkpoint authorizing n. |
 | Producer close: slot/epoch + close operation | Ingest's durable closing barrier serializes with admission commit. Stop/fence producer; resolve accepted work; persist explicit abandoned workflow gaps; then complete retirement. | A previously verified RPC may resume after the barrier but cannot commit. Epoch renewal/replacement does not bypass unresolved old work. Recovery owner is ingest plus the registered producer ledger owner. | Retain current/closed epoch bounds per stable slot; deleting/reusing a slot requires registry-generation fencing. Scientific facts survive abandonment. |
-| Archive prepare: batch identity + semantic digest + source cut | Fenced archive publisher records bounded preparation intent; native worker creates only staged immutable files and checksums. Prepared files are not an archive receipt. | Worker/process loss may leave partial files. Publisher inspects deterministic preparation identity; no source cursor advances. Object upload timeout remains unknown until exact object verification. | Only job-owned unreferenced staging can be removed after active worker/transaction exclusion, age and reference checks. |
+| Archive prepare: batch identity + semantic digest + source cut | Fenced archive publisher records bounded preparation intent and typed batches; native DuckLake writes immutable files through its transactional path. Generated-file SHA state is explicitly `not_captured` or a digest with method/time under the [archive storage contract](archive-storage-contract.md); no assumed precommit hash or mandatory second read. Prepared input/files are not an archive receipt. | Worker/process loss may leave partial/orphan files. Publisher resolves deterministic batch identity and the native transaction; no source cursor advances from preparation or object listing. Timed-out upload does not establish catalog commit. | Only job-owned unreferenced staging can be removed after active worker/transaction exclusion, age and reference checks. Backup completion separately requires its verified full-file hash manifest. |
 | Archive catalog commit: same batch identity/digest | One DuckLake transaction commits every required family/dictionary/reference and batch receipt at a catalog snapshot. Files must satisfy the declared storage protection procedure. Publisher cursor/cache may follow the receipt; it is not commit authority. | Commit reply lost: publisher resolves receipt in a new healthy catalog transaction and verifies digest/cut/reference closure. Receipt present means committed. No receipt plus confirmed termination/rollback of the old transaction means not committed; unresolved transaction/catalog means unknown and no second publication. | Ingest reclaims pending only after resolved receipt, verified file membership and protection at least as strong as the original receipt class, plus replay/backup pins. Index lag alone does not require keeping pending if exact archive replay is available. |
 | CH chunk: projection generation/incarnation + source records + deterministic family/partition/chunk digest | Index owner persists plan; CH uses selected synchronous/fsync settings. Every required family has deterministic completion, including zero rows. Receipt records actual table identity and serving incarnation. | Insert reply loss: replay identical chunk or verify distinct identities/payload digest under current incarnation. Logical reads remove physical retry copies independent of dedup-token TTL. Partial chunks remain unpublished. | Retain deterministic input/chunk evidence until frontier publication and recovery obligations; physical cleanup cannot delete pinned older generations. |
 | Source frontier: expected old vector + verified required-family set | Fenced PG compare-and-set publishes a compatible contiguous SourceCut only after all required CH chunks are verified. | PG reply loss: resolve frontier by generation/incarnation/cut. CH loss or replacement invalidates incarnation first; a surviving PG receipt alone cannot restore readiness. Index recovery revalidates or replays then publishes. | Published chunk control can compact only with sufficient reconstruction metadata; source/archive truth and live pins govern data reclamation. |
@@ -96,8 +99,8 @@ one release image/binary; names below identify process responsibility, not crate
 | `job worker` on demand | One job's input pins, limited temporary root, narrow engine credentials | DuckDB archive preparation/export, graph/rank or maintenance. Termination can isolate noncooperative native code. Grants remain until exit is proven. No permanent container per finite job. |
 | PG / CH | Separate volumes, roles, limits and engine processes | Control schema, DuckLake catalog and migration credentials remain separated. CH absent in archive-only. No other process opens either Rocks directory writable. |
 
-Compact mode may co-locate control, acquisition/ingest and read with in-process
-calls, but retains ownership/grants and native worker isolation. Native abort/OOM
+Compact mode may co-locate control, acquisition/ingest, storage coordination and
+read with in-process calls, but retains ownership/grants and native worker isolation. Native abort/OOM
 then affects all co-located roles and must be documented. Default socket budgets
 are host-local, not fleet-global. Separate producers on one host that bypass the
 socket owner must use the existing Control permit recovery contract; independent
@@ -109,19 +112,30 @@ per-process counters are not an equivalent recipe.
 | Full without provenance | Full online graph, edge families absent | Bodies, scope eligibility, event receive facts, registry/monitoring and permitted non-edge analytics remain. Provenance/overlap resources say unsupported/disabled, never zero. No hidden edge inventory/replay jobs. |
 | Social-filtered | Full online or declared archive-only base plus explicit filter revision | Scope/dependency manifest names retained kinds and historical intervals. A graph target missing required kinds is partial/unavailable according to its definition; recipe name never asserts complete coverage. |
 | Archive-only | Control/PG, ingest, catalog/files and archive worker; optional acquisition | Private administration, import/export/offline jobs. No Index Rocks/CH/search/online graph/read/relay/DVM query capability. CH-backed listeners enabled here fail validation. |
+| Fixed-list sync-only | Control/PG, ingest, archive/catalog/files and guarded transport; local or declared remote owners | No Discoverer/Validator/Monitor. Explicit enrollment permits unverified sync work; fixed list excludes unrelated registry entries. Linear/live has no CH dependency; auto uses qualified reconciliation when available or reports linear fallback. |
+| Monitor-only | Control/PG, ingest, archive/catalog/files and guarded transport; local or declared remote owners | Independent passive measurements without Synchronizer/Discoverer/Validator. Private status/export without CH; public online monitor views need explicitly selected Indexer/CH/read. |
 | Serving existing data | Control/PG, read+CH, verified serving incarnation; retained archive route for promised replay/rebuild | No active acquisition/ingest required. Index storage required for NEG sets/temporal current-state maintenance/derived writes when enabled. Readiness for ordinary immutable pinned reads can survive its outage; resources needing current maintenance stop at their declared temporal deadline. |
-| Split roles | Control/PG and one fixed ingest owner host, one fixed Index storage host, archive coordinator host; CH and read/job hosts | Authenticated Ingest/Index/Archive/Read/Control routes, object archive access, fixed placement. No shared writable Rocks mount. Each host has independent aggregate quotas; dataset topology remains one shard initially. |
+| Split roles | Control/PG and one fixed ingest owner host, one fixed Index storage host, archive coordinator host; CH and read/job hosts | Authenticated Ingest/Index/Archive/Read/Control routes and fixed placement. Local archive when all its jobs share one host, or object access for distributed archive consumers. No shared writable Rocks mount. Each host has independent aggregate quotas; dataset topology remains one shard initially. |
 
-Split deployment uses object storage visible to publisher and replay/export readers;
-local source/temporary paths belong only to their owning host. Local Parquet paths
-are supported only when all archive users share the same host and owner-managed
-access; identical path strings on two machines are not shared storage. Credential
+Split deployment uses object storage when publisher and replay/export readers
+run across hosts; local source/temporary paths belong only to their owning host.
+Local Parquet remains supported when all archive users/jobs share the same host
+and owner-managed access, including a remote-collector or hot-read split. Identical
+path strings on two machines are not shared storage. Credential
 authority is deployment root plus secret provider, with per-role bucket/prefix and
 database grants. mTLS grants a peer identity; actions still require policy/owner
 authority. Routes, DNS/IP guards and deadlines are explicit. Moving an owner is a
 manual drain, checkpoint/copy/verify, positive-exclusion, topology-CAS and restart
 procedure; automatic failover, online resharding, replicated admission and fleet
 network quotas are future capabilities, not enabled by this recipe.
+
+Operator-configured PG/CH/object/private RPC endpoints use explicit trusted
+infrastructure routes and may have private IPs. They do not inherit the public
+relay CIDR exclusion, and they do not grant discovered relay/HTTP inputs access
+to those private addresses. Read-only serve-existing needs matching PG authority,
+frontiers and pins through Control as well as CH; no collector is required.
+Archive credentials are conditional on actual cold/replay/export paths, while
+current/NEG resources retain their specific temporal/index maintenance owners.
 
 Capability state includes `disabled`, `building`, `ready`, `stale`, `unavailable`
 and `retiring`, plus reason, config revision, generation/input cut and progress.

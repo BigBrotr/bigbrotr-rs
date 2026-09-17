@@ -232,6 +232,144 @@ unknown intervals; any carry-forward estimator names its finite horizon and
 never manufactures direct negative evidence. Source observation history is
 retained independently of disposable derived-run generations.
 
+## Relay content composition from a declared population
+
+`relay.composition/1` answers what the selected evidence contains. It does not
+answer how many events a remote relay currently stores. Reuse Deriver's coverage
+target, typed `relay_facts`/`relay_coverage` rows and the shared derived-state
+owner; no additional daemon, graph engine or permanent delivery log is selected.
+P05-T07 owns witnessed composition and T08 owns the existing probe-set projection.
+
+Every result fixes endpoint, local observer, access and visibility domain,
+acquisition class, SourceCut, event-created interval `[start,end)` or explicit
+all-history selection, definition/parser versions and the following population.
+Authorization applies to both bodies and supporting evidence before membership.
+
+| Population ID | Exact membership and allowed statement |
+|---|---|
+| `witness-history/1` | Distinct verified event IDs with a qualifying direct local endpoint witness admitted through the cut. Earliest-witness corrections change timing, not cardinality. "Acquired here from this endpoint within the declared corpus." Remote removal does not retract this history. |
+| `visible-witness/1` | The preceding set intersected with BigBrotr's normal-visible event set at the compatible ReadViewStamp. "Locally visible subset of acquired endpoint evidence." Resolve global authorized winners before intersection; a newer version witnessed elsewhere may suppress an older one here. This is not the relay's current-visible set. |
+| `probe-served-set/1` | Distinct requested IDs classified served by the existing availability job's latest finalized direct attempts, using its pinned selection, interval and context. "Served among these specifically requested IDs." S/N/U/unattempted counts and selection bias remain alongside composition; an older success followed by unknown does not remain a fresh positive. |
+
+Ordinary public composition selects `visible-witness/1`. Historical witness
+composition requires its explicit historical/provenance aggregate grant, and
+probe-set composition requires authorization for that selection and its evidence.
+An endpoint being public does not make every historical body or access context
+public. Restrictive policy invalidates incompatible generations and publication
+through the existing authority barrier; a small aggregate is not an exemption.
+
+Imported signed monitor events and sidecar presence claims can describe a separate
+attributed-claim population, never enter these direct-witness definitions, and
+never cause local probe traffic. Provenance disabled from creation suppresses
+these populations; existing permitted history after disablement stays historical
+with its collection gaps. A first-witness timestamp inside a recent window means
+newly discovered membership, not all IDs served during that window. Ordinary
+repeat deliveries are intentionally not retained, so they cannot reconstruct
+recent full membership or last-served time. A later traversal-sample definition
+would require an explicitly retained, bounded exact membership artifact and
+selection/coverage contract before activation; a completed traversal counter or
+EOSE alone cannot supply it. Remote COUNT remains a separately attributed relay
+response, including its filter/time/approximation status, never local exact truth.
+
+Let `E_r` be the chosen event set, `N=|E_r|`, `A` its distinct signed author keys,
+and `n_a` the number of events in `E_r` authored by `a`. These definitions are
+exact within `E_r`; unknown remote coverage does not make this local count an
+estimate of remote inventory.
+
+| Registered component | Formula/unit and missing rule |
+|---|---|
+| `events`, `events-by-kind`, `authors` | N events, exact per-kind counts, and `|A|` keys. Kind buckets partition N; distinct-author counts across buckets do not add. |
+| `content-bytes` | Sum of UTF-8 byte lengths of signed content strings, once per event; bytes of content, not relay disk, compressed archive or full wire size. |
+| `signed-time-range` | Minimum/maximum signed event timestamps when N>0. This is observed content chronology, not relay retention age or first-ever publication. |
+| `topics` | Distinct literal nonempty signed `t` strings per event under the existing topic parser. One event can contribute to multiple topic buckets; their sum need not equal N. Counts are author-supplied associations, not inferred language or adjudicated themes. |
+| `author-concentration` | Retain checked integer `sum_author_squares=Σ n_a²` and denominator N²; concentration is their ratio for N>0. Effective author-key diversity is N²/Σ n_a². Neither counts independent people nor proves resistance to many keys controlled by one actor. |
+| `top-10-author-share` | Sum of the largest min(10,|A|) author event counts divided by N, with deterministic pubkey tie ordering for explanations. Undefined for N=0. Public top-key identities require their own allowed projection; the aggregate does not authorize disclosure. |
+
+Empty completed membership yields zero counts and undefined ratios/ranges;
+missing capability, incomplete input and failed reduction remain unavailable.
+Store numerator/denominator losslessly and check the wider square/sum arithmetic;
+overflow fails that component/generation. Paging top kinds/topics is a projection
+over the complete exact state, not permission to keep only early source rows.
+Signed type/time/topic breadth is useful without automatic content classification,
+private decryption or fetching referenced media. New semantic/NLP classifications
+need a new definition with model/version, validation and resource cost.
+
+### Materialize only the selected useful views
+
+The complete online recipe selects one configured public `visible-witness/1`
+all-acquired-history scope per collection stratum when provenance is enabled.
+The existing target selection can disable it. Do not eagerly materialize every
+population × observer × credential × kind × window × curator combination.
+
+| Work placement | Initial selection and scheduling |
+|---|---|
+| Precomputed CH projection | Dashboard/directory cards and repeated client comparisons use `events`, exact per-kind counts, `authors`, `content-bytes`, `signed-time-range` and `author-concentration`. These reuse exact membership/author refcounts and small sufficient statistics rather than a new scan per display. The existing 86,400-second facts cadence drains changed endpoint partitions under shared budgets, with source/computation age visible. |
+| Bounded on-demand reads | Client drill-down and scoped research requests use top-ten share/explanations and supported alternate windows/populations over indexed retained memberships/contributions, only when the common read budget admits the complete computation. Historical populations require their grants. A small returned top ten is not assumed to be a cheap scan. |
+| Admitted analytical jobs/artifacts | Research comparisons and exports use full topic distributions, broad historical/comparison windows, probe-set composition and curator bands whose complete work exceeds a finite read. They use the existing Deriver/job/artifact/read path, not a public arbitrary-SQL endpoint. Operators may explicitly schedule a measured useful profile and reuse its immutable result. No new schedule is implicit in a request. |
+
+Topic and curator-band materialization is disabled by default; no topic-state or
+author→endpoint reverse index is allocated solely for a disabled optional profile.
+Required concentration state is the same endpoint/author refcount already needed
+for exact distinct authors, plus a square sum. Minimum/maximum retraction still
+needs admitted ordered state or a partition rebuild. Snapshot artifacts and
+authorized corpus exports let researchers evaluate new definitions offline before
+promoting them into scheduled CH projections. Publication binds only an actually
+complete compatible result; a research notebook does not auto-register a field.
+
+The daily cadence does not extend temporal validity. Expiry/visibility deadlines
+enqueue their affected current partitions independently; an overdue generation
+is explicitly dated analysis or unavailable for a current-dependent read until
+its reducer catches up. Track achieved refresh, dirty age and exact bytes/work.
+If this default is too stale or costly for the measured user journey, tune the
+existing target cadence or select on-demand scope explicitly; do not claim an
+untested freshness SLA or silently lower exactness.
+
+Optional `relay.composition.curator-bands/1` joins a **public**, pinned T11 score
+generation to these author keys. Use bands `0`, `1–25`, `26–50`, `51–75`, `76–100`
+of that generation's recorded integer rank; report both distinct authors and
+event counts per band, plus explicit unknown-author/event buckets. Known zero
+belongs to band zero; absent, stale or withheld score is unknown. Publish known
+author fraction `|K|/|A|` and known-event fraction `Σ(a in K)n_a/N`, with undefined
+empty denominators. Do not renormalize away unknown keys or recalculate percentiles
+inside one relay. The original graph population, curator/seeds, numerical bound,
+near-tie caveat and score age remain attached. This describes the selected
+curator's distribution among observed content; "famous", "trusted relay" and
+"true content" are not alternative names. It never changes operational Q,
+acquisition priority or archive retention. Missing Ranker leaves base composition
+available, with only this optional join unavailable.
+
+Maintain one exact event-membership contribution and endpoint/author refcount
+per enabled population/scope; reuse existing witness and visibility transitions
+instead of duplicating a per-event receipt for each component. On an author count
+change `n→n+δ`, update square sum by `2*n*δ+δ²` with checked signed arithmetic,
+then validate nonnegative counts. Retractions also update kinds, topics, byte sum
+and extrema using retained counts/ordered state or an admitted partition rebuild.
+An event witnessed by f endpoints can invalidate f contributions after local
+visibility changes. Source-cut-before-correction and old/new membership equality
+make replay and earlier-first-witness repair cardinality-idempotent.
+
+Advance event-time windows and probe-attempt eligibility without new arrivals;
+archive witness history alone does not expire. Keep all previously pinned results
+immutable. Use a coalesced endpoint/partition dirty queue and the existing
+overflow-to-rebuild rule. No request creates a permanent arbitrary-filter index;
+configured reusable scopes get materialization, ad-hoc scopes get bounded jobs
+or refusal. Exact distinct/topic/extrema state, visibility fanout and staged
+output count toward the existing Deriver grant. A small displayed top ten does
+not bound that work. Score-only changes can touch every endpoint with a changed
+author; an optional author→endpoint count index has its own measured cardinality.
+Global percentile changes may dirty the entire curator-band projection even with
+no new witnesses. Base counts remain reusable while the join is recomputed.
+
+Acceptance uses signed events with duplicate witnesses, two events by one key,
+duplicate topics, private-only evidence, an imported presence claim, a later
+replacement witnessed elsewhere, expiry without ingestion, and a known-zero
+versus missing score. Compare incremental state at every cut against an independent
+set/grouping oracle. Two peers can produce identical first-witness history and
+later have different remote inventories: the API must return identical historical
+composition and refuse to infer current inventory. The isolated
+[composition experiment](../../experiments/relay-composition/README.md) checks
+these distinctions on a small fixture; it is not a live relay or scale result.
+
 ## Selective availability
 
 The version-1 requested set is the distinct event IDs for which a direct bounded
@@ -494,9 +632,11 @@ Q for absent L. These are specified expectations, not executed product results.
 ## Seed availability, optional eligibility and curation
 
 The `seeded-trust/1` reference and `seeded-trust/2` default share the eligible public graph and seeded-diffusion target described in
-the [Ranker contract](derived-read-publication.md#ranker). Freeze graph membership
-before checking seeds. The initial graph includes authors of eligible current
-follow or public-mute list headers, including valid empty lists, and endpoints of
+the [Ranker contract](derived-read-publication.md#ranker). For nonempty configured
+seeds, freeze graph membership before checking which seeds are present. An empty
+configured seed set withholds before allocating a graph job solely for ranking.
+The initial graph includes authors of eligible current follow or public-mute
+list headers, including valid empty lists, and endpoints of
 eligible relations. Retain vertices whose edges are removed by self-edge or
 same-source mute rules; they can become isolated/dangling. A malformed, deleted
 or otherwise ineligible list does not alone establish membership, although a

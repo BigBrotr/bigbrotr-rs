@@ -44,7 +44,7 @@ scientific enumeration uses an authorized export job.
 | `relay_directory` | One endpoint with dated selected attributes; route/capability/eligibility filters, endpoint order or explicit comparable score order | Local/resolved relay views; C; policy-limited directory, not PG registry dump |
 | `relay_measurements` | One cut-relative executed relay attempt, typed checks and document refs; endpoint/method/window filters, observed-time/attempt order | P04 local facts; C; excludes non-relay HTTP subjects |
 | `relay_documents` | One document occurrence/version for a relay, with bounded original retrieval and parser basis; endpoint/family/window, observed-time/source order | A06 objects/references; C counts occurrences, not distinct bytes |
-| `relay_coverage` | One scoped traversal/gap/evidence summary; endpoint/filter/window, scope/source order | P03/P05 coverage; C; no universal completeness percentage |
+| `relay_coverage` | One scoped traversal/gap/evidence or `relay.composition/1` summary; endpoint/definition/population/window, scope/source order | P03/P05 coverage/composition; C; definition and observed population required; no universal completeness percentage or current remote inventory claim |
 | `relay_overlap` | One verified pair in a declared common universe/candidate generation; endpoints/window/method, ordered endpoint pair | P05 overlap; C; component connectivity is not pairwise identity |
 | `relay_availability` | One endpoint/window/method stratum with S/N/U or time-estimator basis explicitly named; endpoint/window, endpoint/stratum order | P05-T08/T12; C; unlike availability definitions never share one unlabeled fraction |
 | `network_statistics`, `event_statistics`, `social_statistics` | One named fact/subject/population/window; definition/window and applicable subject filters, definition/subject order | Independent typed fact targets; C counts fact rows, each value has its own unit |
@@ -58,6 +58,14 @@ Non-relay issuer evidence is available through its attributed assertion/measurem
 lineage and scientific exports. It is not inserted into `relay_measurements`
 with a fake endpoint. A future generic measurement resource is added only with
 a real consumer and a versioned subject schema, not as an arbitrary JSON endpoint.
+
+Composition counts, author concentration and optional viewpoint-conditioned
+summaries use the [analytical definitions](../architecture/analytics-detail.md).
+Frequently reused outputs have complete CH generations; expensive alternate
+populations use bounded jobs/artifacts. Arbitrary public SQL and unlimited
+cross-products are not read-core operations. Operators may grant separate direct
+SQL access to qualified research views or isolated export copies, with explicit
+data authority, quotas and no implied public visibility filtering.
 
 HTTP JSON metadata preserves large integers through the declared lossless scalar
 encoding; nested full Nostr events retain their mandated numeric fields. Query

@@ -1,0 +1,1641 @@
+{
+  "date": "2026-09-17",
+  "status": "PASS_scoped_engine_experiments",
+  "scope": "Actual local/S3 DuckLake-PG signed-body equivalence, separate reader, selected precommit/missing-object/restore cases, corrected S3/PG boundary probes and CH MV counterexamples. Not product, native Rust, WAN, host-loss or capacity qualification.",
+  "source_root": "experiments/object-storage",
+  "raw_report_root": ".research/object-storage-20260917",
+  "remote_root": "/home/tux/bigbrotr-object-storage-20260917",
+  "raw_reports": [
+    {
+      "path": "boundaries-boundary-v1.json",
+      "bytes": 11126,
+      "sha256": "d49c9e1caf49fc178fcc55858b722f4bd3d77d3852594582a509dee495bf3441"
+    },
+    {
+      "path": "catalog-copy.json",
+      "bytes": 235,
+      "sha256": "b90e0512265efa97a4893b2017b5c5510906d59997e9b78a2600070a0cd37b2a"
+    },
+    {
+      "path": "ch-mv-run-01/queries.json",
+      "bytes": 20168,
+      "sha256": "6505156bf1325cc5c412686ec5f48d0406ea9271a3b8ff013a3b9b81cbd28f6d"
+    },
+    {
+      "path": "ch-mv-run-01/result.json",
+      "bytes": 2176,
+      "sha256": "5643eb23f1d2d3d8337049da4d883831d0ec4559750dde099391fb88722868c7"
+    },
+    {
+      "path": "faults.json",
+      "bytes": 7967,
+      "sha256": "4ef0a2dd5eb370327b2e07b38c5fed336ffe50cf8f539d421b215b4f77a8036e"
+    },
+    {
+      "path": "inventory-before-stop.json",
+      "bytes": 9537,
+      "sha256": "3662daff9b6183695b4a6dff4d8aa3f946bdf44d6876f700ade4de31b6283634"
+    },
+    {
+      "path": "inventory-completed-workloads.json",
+      "bytes": 11432,
+      "sha256": "8b238835dda9be0ef084dbe21b8334bf0cf81bb4f25d10584740cfff5d9b7ca3"
+    },
+    {
+      "path": "inventory-final.json",
+      "bytes": 10110,
+      "sha256": "dc065a988f7eb9913392c17bd183ed6fe305e81a44ecc4eef5e81da33b13d461"
+    },
+    {
+      "path": "object-storage.json",
+      "bytes": 7630,
+      "sha256": "fe685dbc084d30cc4e38c7cf16ff5e4e4b0113ad5275289e3dd453851c737ab4"
+    },
+    {
+      "path": "reader.json",
+      "bytes": 382,
+      "sha256": "0d1de59d0818892840f0d45258c0ecea92ee7f99a48df8fced5497416fca5625"
+    }
+  ],
+  "body_experiment": {
+    "status": "PASS_local_s3_equivalence_and_s3_primitives",
+    "rows": 1048576,
+    "duckdb": "1.5.5",
+    "cache": "uncontrolled shared host caches; not cold-cache or WAN throughput",
+    "source_sha256": "5c069ccaf3886164c962c7493e5ff41f8b173b87d38aa8124e4a14119c686898",
+    "source_files": [
+      {
+        "name": "events-000000000000.parquet",
+        "bytes": 259451611,
+        "sha256": "7aa32c66605666d233e08e9e94fca71974904bd00e0df8cf593dc1ab082a876a"
+      },
+      {
+        "name": "events-000000065536.parquet",
+        "bytes": 259433905,
+        "sha256": "f28c75fe463f3eb442ceed1b84d6c5c633015ad201243cef8486edada750398d"
+      },
+      {
+        "name": "events-000000131072.parquet",
+        "bytes": 259426561,
+        "sha256": "a3f6327105a0785dce2e044afbd9386338ef1e8d75508b71f18d1be3cda5602c"
+      },
+      {
+        "name": "events-000000196608.parquet",
+        "bytes": 259427519,
+        "sha256": "c8d59d7195b2806b47dfe832c487add9bc64cb21f7978caf7ae47b9cd5fdf416"
+      },
+      {
+        "name": "events-000000262144.parquet",
+        "bytes": 259430165,
+        "sha256": "a14ec08da65378b2a8823887663a5b525cbbe0245705a3c28c3474afd7397344"
+      },
+      {
+        "name": "events-000000327680.parquet",
+        "bytes": 259424226,
+        "sha256": "84aae3c58449d45c3f5a4f6f8454bae4238c14f5f9c82d94cf1598ca1357e62a"
+      },
+      {
+        "name": "events-000000393216.parquet",
+        "bytes": 259433148,
+        "sha256": "d71d3fcda03ce763e9d9a8a199f1b19ba85439908c604bc3f6efb185419b2d94"
+      },
+      {
+        "name": "events-000000458752.parquet",
+        "bytes": 259424976,
+        "sha256": "65fca1cb6b040e65933e330881787da1e0de8a9f6a45f7dd50e44b07323f8952"
+      },
+      {
+        "name": "events-000000524288.parquet",
+        "bytes": 259426110,
+        "sha256": "8f65913ee199e5b051170cb8193112d24c31fe7555183f1990529f9fda858e2d"
+      },
+      {
+        "name": "events-000000589824.parquet",
+        "bytes": 259427997,
+        "sha256": "078015c355666f315bbffd35621fb1f891034d56d0d9fde84985ff2b701e415b"
+      },
+      {
+        "name": "events-000000655360.parquet",
+        "bytes": 259424258,
+        "sha256": "d89996db7d4abf2726cd1392df22c38d52c49df854869d34a646f9229f85b912"
+      },
+      {
+        "name": "events-000000720896.parquet",
+        "bytes": 259426461,
+        "sha256": "1086c38d3665086709d42ac8d4de3ae5926ca3d7a91b109d84d02d589c6b3c36"
+      },
+      {
+        "name": "events-000000786432.parquet",
+        "bytes": 259425423,
+        "sha256": "fcbc040faf827c0edf0ab72f467ad14cb390b8c1927674263cc67ef47af2a7a5"
+      },
+      {
+        "name": "events-000000851968.parquet",
+        "bytes": 259426988,
+        "sha256": "16457221ba6f61c8ea0304b794165442e76ed0d70a5c66bdde1985e9bddf1e29"
+      },
+      {
+        "name": "events-000000917504.parquet",
+        "bytes": 259424656,
+        "sha256": "d4161af8cc06cbdd696177cf6d213bb2712731d05e2ba7021600fc5dff949fef"
+      },
+      {
+        "name": "events-000000983040.parquet",
+        "bytes": 259419913,
+        "sha256": "b44e1afa8c7c781683b94b51c334269f279a36e5bc2238f3a2311334a51807e0"
+      }
+    ],
+    "layouts": {
+      "local": {
+        "batch_seconds": [
+          2.865856105927378,
+          2.9777748961932957,
+          5.171239512972534,
+          2.964239314198494
+        ],
+        "status": "PASS",
+        "population": [
+          1048576,
+          1048576,
+          1048576,
+          549755289600,
+          0,
+          1048575
+        ],
+        "signed_samples": 132,
+        "sample_sha256": "2ab39efad5c9d706314883caf1d51d5d6fe9cdfc0740b4c08b1b5c0195ac4239",
+        "seconds": 1.2702063750475645,
+        "files": [
+          [
+            17,
+            4153651472
+          ]
+        ],
+        "extensions": [
+          [
+            "core_functions",
+            "v1.5.5"
+          ],
+          [
+            "ducklake",
+            "d8a1881e"
+          ],
+          [
+            "httpfs",
+            "827222f"
+          ],
+          [
+            "icu",
+            "v1.5.5"
+          ],
+          [
+            "json",
+            "v1.5.5"
+          ],
+          [
+            "parquet",
+            "v1.5.5"
+          ],
+          [
+            "postgres_scanner",
+            "41223e5"
+          ]
+        ]
+      },
+      "s3": {
+        "batch_seconds": [
+          6.166399376001209,
+          6.61758956220001,
+          4.960106506943703,
+          7.011083988938481
+        ],
+        "status": "PASS",
+        "population": [
+          1048576,
+          1048576,
+          1048576,
+          549755289600,
+          0,
+          1048575
+        ],
+        "signed_samples": 132,
+        "sample_sha256": "2ab39efad5c9d706314883caf1d51d5d6fe9cdfc0740b4c08b1b5c0195ac4239",
+        "seconds": 4.224866692908108,
+        "files": [
+          [
+            16,
+            4153651207
+          ]
+        ],
+        "extensions": [
+          [
+            "core_functions",
+            "v1.5.5"
+          ],
+          [
+            "ducklake",
+            "d8a1881e"
+          ],
+          [
+            "httpfs",
+            "827222f"
+          ],
+          [
+            "icu",
+            "v1.5.5"
+          ],
+          [
+            "json",
+            "v1.5.5"
+          ],
+          [
+            "parquet",
+            "v1.5.5"
+          ],
+          [
+            "postgres_scanner",
+            "41223e5"
+          ]
+        ]
+      }
+    },
+    "objects": [
+      {
+        "key": "archive/main/events/ducklake-01a0b002-6832-7a87-a5ec-7f58b055915a.parquet",
+        "bytes": 259627419
+      },
+      {
+        "key": "archive/main/events/ducklake-01a0b002-6b17-7e7b-a8e9-bc69722efa0d.parquet",
+        "bytes": 259607496
+      },
+      {
+        "key": "archive/main/events/ducklake-01a0b002-6e29-754d-9a5f-3f002f465159.parquet",
+        "bytes": 324494719
+      },
+      {
+        "key": "archive/main/events/ducklake-01a0b002-7282-789a-9c2e-d8d57117bbb5.parquet",
+        "bytes": 194703701
+      },
+      {
+        "key": "archive/main/events/ducklake-01a0b002-8044-77e8-8c88-909367a75e73.parquet",
+        "bytes": 292061353
+      },
+      {
+        "key": "archive/main/events/ducklake-01a0b002-8323-7f31-8640-a0edd61f33cf.parquet",
+        "bytes": 259603482
+      },
+      {
+        "key": "archive/main/events/ducklake-01a0b002-8681-7dd1-88fe-08745df791ef.parquet",
+        "bytes": 324507676
+      },
+      {
+        "key": "archive/main/events/ducklake-01a0b002-8b50-73b5-a710-0166997f2ada.parquet",
+        "bytes": 162245488
+      },
+      {
+        "key": "archive/main/events/ducklake-01a0b002-9a1e-7897-a5c8-08715e63aa3d.parquet",
+        "bytes": 292045570
+      },
+      {
+        "key": "archive/main/events/ducklake-01a0b002-9d26-7688-b513-4767a6c6f7cc.parquet",
+        "bytes": 292049226
+      },
+      {
+        "key": "archive/main/events/ducklake-01a0b002-a19c-7a5c-b8a6-0ef5f4f613c2.parquet",
+        "bytes": 356951200
+      },
+      {
+        "key": "archive/main/events/ducklake-01a0b002-a5cf-7d73-ac53-1a0960ad7c5e.parquet",
+        "bytes": 97357719
+      },
+      {
+        "key": "archive/main/events/ducklake-01a0b002-ad7f-70b7-8b53-6d898b4c53d4.parquet",
+        "bytes": 292053393
+      },
+      {
+        "key": "archive/main/events/ducklake-01a0b002-b069-765a-82e6-93ffbd9518d8.parquet",
+        "bytes": 324500141
+      },
+      {
+        "key": "archive/main/events/ducklake-01a0b002-b50d-71c3-ad61-14a3ecfde67a.parquet",
+        "bytes": 324498580
+      },
+      {
+        "key": "archive/main/events/ducklake-01a0b002-b963-752b-99d7-4dbc83a81117.parquet",
+        "bytes": 97344044
+      },
+      {
+        "key": "archive/main/receipts/ducklake-01a0b002-802c-74ab-9871-b951ba780a35.parquet",
+        "bytes": 326
+      },
+      {
+        "key": "archive/main/receipts/ducklake-01a0b002-9a06-76f0-84c7-9f27d2a4dee5.parquet",
+        "bytes": 326
+      },
+      {
+        "key": "archive/main/receipts/ducklake-01a0b002-ad67-7a8a-aa8d-c89667875b9e.parquet",
+        "bytes": 326
+      },
+      {
+        "key": "archive/main/receipts/ducklake-01a0b002-c8b7-749a-a070-7208e54a3d6f.parquet",
+        "bytes": 326
+      }
+    ],
+    "multipart_range_head_list": "PASS"
+  },
+  "reader": {
+    "population": [
+      1048576,
+      1048576,
+      1048576,
+      549755289600,
+      0,
+      1048575
+    ],
+    "signed_samples": 132,
+    "sample_sha256": "2ab39efad5c9d706314883caf1d51d5d6fe9cdfc0740b4c08b1b5c0195ac4239",
+    "seconds": 4.576136345975101,
+    "receipts": [
+      4,
+      1048576
+    ],
+    "write_refusal": "AccessDenied",
+    "status": "PASS_separate_reader_without_local_data_mount"
+  },
+  "catalog_copy": {
+    "status": "PASS_quiescent_catalog_copy",
+    "bytes": 41605,
+    "sha256": "2609d8dbb87ce3bb71493cef84ed9f0e8729e24df9994a5bc4d46e935c1abc6f",
+    "scope": "same-server fresh PG database, no writers/maintenance; not off-host recovery"
+  },
+  "faults": {
+    "status": "PASS_bounded_object_failure_and_restore_cases",
+    "cases": {
+      "invalid_credentials": "AccessDenied",
+      "killed_before_commit": {
+        "signal": 9,
+        "old_pg_sessions": 0,
+        "visible_added_rows": 0,
+        "visible_receipts": 0
+      },
+      "missing_committed_object": {
+        "refused": true,
+        "error_class": "HTTPException"
+      },
+      "repaired_source": {
+        "population": [
+          1048576,
+          1048576,
+          1048576,
+          549755289600,
+          0,
+          1048575
+        ],
+        "signed_samples": 132,
+        "sample_sha256": "2ab39efad5c9d706314883caf1d51d5d6fe9cdfc0740b4c08b1b5c0195ac4239",
+        "seconds": 4.116541333030909
+      },
+      "restored_catalog_and_objects": {
+        "copied": [
+          {
+            "source": "archive/main/events/ducklake-01a0b002-6832-7a87-a5ec-7f58b055915a.parquet",
+            "target": "restored/main/events/ducklake-01a0b002-6832-7a87-a5ec-7f58b055915a.parquet",
+            "sha256": "743c0d5556ea106a3ddc268ea1e829adaf8f90c1f624c4827afb194ffddb3838",
+            "bytes": 259627419
+          },
+          {
+            "source": "archive/main/events/ducklake-01a0b002-6b17-7e7b-a8e9-bc69722efa0d.parquet",
+            "target": "restored/main/events/ducklake-01a0b002-6b17-7e7b-a8e9-bc69722efa0d.parquet",
+            "sha256": "c707da9f17daa404d4faf56a1af9c0728c1b0a3afae0fe6b6613569dff593191",
+            "bytes": 259607496
+          },
+          {
+            "source": "archive/main/events/ducklake-01a0b002-6e29-754d-9a5f-3f002f465159.parquet",
+            "target": "restored/main/events/ducklake-01a0b002-6e29-754d-9a5f-3f002f465159.parquet",
+            "sha256": "9075ffc489b0568c176f6f35ae8f4885ef155171c6e0bd04d27edd9c7de18c1b",
+            "bytes": 324494719
+          },
+          {
+            "source": "archive/main/events/ducklake-01a0b002-7282-789a-9c2e-d8d57117bbb5.parquet",
+            "target": "restored/main/events/ducklake-01a0b002-7282-789a-9c2e-d8d57117bbb5.parquet",
+            "sha256": "fa55931160eff3ba800ff48f54f7c951c67c2aaab9a08012ad80650acef9df3d",
+            "bytes": 194703701
+          },
+          {
+            "source": "archive/main/events/ducklake-01a0b002-8044-77e8-8c88-909367a75e73.parquet",
+            "target": "restored/main/events/ducklake-01a0b002-8044-77e8-8c88-909367a75e73.parquet",
+            "sha256": "ce62d3aea33d6f4ca92940a4ea0a8019fef35558b4cbc78957cefa708002d2b5",
+            "bytes": 292061353
+          },
+          {
+            "source": "archive/main/events/ducklake-01a0b002-8323-7f31-8640-a0edd61f33cf.parquet",
+            "target": "restored/main/events/ducklake-01a0b002-8323-7f31-8640-a0edd61f33cf.parquet",
+            "sha256": "dffc79603ccdbc7249eb023b755782c92dbfd1d98ccc51cf174edc7c200673d2",
+            "bytes": 259603482
+          },
+          {
+            "source": "archive/main/events/ducklake-01a0b002-8681-7dd1-88fe-08745df791ef.parquet",
+            "target": "restored/main/events/ducklake-01a0b002-8681-7dd1-88fe-08745df791ef.parquet",
+            "sha256": "d43a85cf2e88b2750b264d42cf929d4a50e2d55fe81032dbf46e214d20431fc2",
+            "bytes": 324507676
+          },
+          {
+            "source": "archive/main/events/ducklake-01a0b002-8b50-73b5-a710-0166997f2ada.parquet",
+            "target": "restored/main/events/ducklake-01a0b002-8b50-73b5-a710-0166997f2ada.parquet",
+            "sha256": "676f88667182d5cd56594414be30f3dd0955d81048b5a917e79387219eb2136d",
+            "bytes": 162245488
+          },
+          {
+            "source": "archive/main/events/ducklake-01a0b002-9a1e-7897-a5c8-08715e63aa3d.parquet",
+            "target": "restored/main/events/ducklake-01a0b002-9a1e-7897-a5c8-08715e63aa3d.parquet",
+            "sha256": "918ab35539feafee8afaeeaebc696871cf0c3b84f060c29dedafdfc8f423627e",
+            "bytes": 292045570
+          },
+          {
+            "source": "archive/main/events/ducklake-01a0b002-9d26-7688-b513-4767a6c6f7cc.parquet",
+            "target": "restored/main/events/ducklake-01a0b002-9d26-7688-b513-4767a6c6f7cc.parquet",
+            "sha256": "61e14480e70acd1f4084c762f304485a0ac012e16114cabb41cedeb425de7e98",
+            "bytes": 292049226
+          },
+          {
+            "source": "archive/main/events/ducklake-01a0b002-a19c-7a5c-b8a6-0ef5f4f613c2.parquet",
+            "target": "restored/main/events/ducklake-01a0b002-a19c-7a5c-b8a6-0ef5f4f613c2.parquet",
+            "sha256": "5f2af0f65a8a4b373fd277eaca347152b4290db0bc93430eeec0215d59723824",
+            "bytes": 356951200
+          },
+          {
+            "source": "archive/main/events/ducklake-01a0b002-a5cf-7d73-ac53-1a0960ad7c5e.parquet",
+            "target": "restored/main/events/ducklake-01a0b002-a5cf-7d73-ac53-1a0960ad7c5e.parquet",
+            "sha256": "ecdc7b3300a00491c2f12a2b06ddab78491d8a2329b1955998e409550c599f07",
+            "bytes": 97357719
+          },
+          {
+            "source": "archive/main/events/ducklake-01a0b002-ad7f-70b7-8b53-6d898b4c53d4.parquet",
+            "target": "restored/main/events/ducklake-01a0b002-ad7f-70b7-8b53-6d898b4c53d4.parquet",
+            "sha256": "323c981d08a6406b9a6e453c3ac26e899f991a49955797eabb0b2cc6dde1a0ec",
+            "bytes": 292053393
+          },
+          {
+            "source": "archive/main/events/ducklake-01a0b002-b069-765a-82e6-93ffbd9518d8.parquet",
+            "target": "restored/main/events/ducklake-01a0b002-b069-765a-82e6-93ffbd9518d8.parquet",
+            "sha256": "2fe91f2d0913c7a6429a9254630654f2a85dda8c7781a74c9cead1e9359e5896",
+            "bytes": 324500141
+          },
+          {
+            "source": "archive/main/events/ducklake-01a0b002-b50d-71c3-ad61-14a3ecfde67a.parquet",
+            "target": "restored/main/events/ducklake-01a0b002-b50d-71c3-ad61-14a3ecfde67a.parquet",
+            "sha256": "273921be0e0bc746d651389368c9053be820e4099c737e533bffa17fdecf9beb",
+            "bytes": 324498580
+          },
+          {
+            "source": "archive/main/events/ducklake-01a0b002-b963-752b-99d7-4dbc83a81117.parquet",
+            "target": "restored/main/events/ducklake-01a0b002-b963-752b-99d7-4dbc83a81117.parquet",
+            "sha256": "e038dcbf7cab41eb82dbc8880952222d75d9a04f7cea0fd0653b8051d75741e8",
+            "bytes": 97344044
+          },
+          {
+            "source": "archive/main/receipts/ducklake-01a0b002-802c-74ab-9871-b951ba780a35.parquet",
+            "target": "restored/main/receipts/ducklake-01a0b002-802c-74ab-9871-b951ba780a35.parquet",
+            "sha256": "92e5393bd99bab0925d719ad95503ab1905eddf7b94aa54b7ba8a4a8de5b3017",
+            "bytes": 326
+          },
+          {
+            "source": "archive/main/receipts/ducklake-01a0b002-9a06-76f0-84c7-9f27d2a4dee5.parquet",
+            "target": "restored/main/receipts/ducklake-01a0b002-9a06-76f0-84c7-9f27d2a4dee5.parquet",
+            "sha256": "e95bd0287a0a1a8309ffd9a94ea18b15f1546770b01e04d33cb5285f091afe14",
+            "bytes": 326
+          },
+          {
+            "source": "archive/main/receipts/ducklake-01a0b002-ad67-7a8a-aa8d-c89667875b9e.parquet",
+            "target": "restored/main/receipts/ducklake-01a0b002-ad67-7a8a-aa8d-c89667875b9e.parquet",
+            "sha256": "87e0360598699d5f67a5f06a20559f031e716a40354c1307696446f2f4591349",
+            "bytes": 326
+          },
+          {
+            "source": "archive/main/receipts/ducklake-01a0b002-c8b7-749a-a070-7208e54a3d6f.parquet",
+            "target": "restored/main/receipts/ducklake-01a0b002-c8b7-749a-a070-7208e54a3d6f.parquet",
+            "sha256": "91f1a2669fa732a8164d5738d4a3ac48e7ec879482f2bcd0fed91be292f5c1d4",
+            "bytes": 326
+          }
+        ],
+        "seconds": 15.648726463783532,
+        "verification": {
+          "population": [
+            1048576,
+            1048576,
+            1048576,
+            549755289600,
+            0,
+            1048575
+          ],
+          "signed_samples": 132,
+          "sample_sha256": "2ab39efad5c9d706314883caf1d51d5d6fe9cdfc0740b4c08b1b5c0195ac4239",
+          "seconds": 4.069238236173987
+        },
+        "scope": "same-host alternate prefix and fresh catalog; not host-loss or live migration"
+      }
+    },
+    "source_sha256": "77f18e799339b1f3602807440e276b05d62d999023ed21b81293d6c4ca345e73"
+  },
+  "stronger_boundaries": {
+    "status": "PASS_additional_object_boundaries",
+    "run_id": "boundary-v1",
+    "started_at_unix": 1789660582.3750577,
+    "sources": {
+      "verify_boundaries.py": "1a1756f7dc30f375cc600a56686e69cc483e16d2e7a0309d56a48c1ecb2bc141",
+      "probe.py": "14197a0698694f97e5a3923707b8da681a962f801b393e9aeea27916830914d2"
+    },
+    "cases": {
+      "multipart_ranges": {
+        "status": "PASS",
+        "key": "controls/boundaries-boundary-v1/payload",
+        "bytes": 8388745,
+        "sha256": "8f9a61269aba4a51f41c41645f2c09f5b864299a5f307fd3be74d771a0d20728",
+        "ranges": [
+          [
+            5242849,
+            5242927
+          ],
+          [
+            8388488,
+            8388744
+          ]
+        ],
+        "invalid_range_code": "InvalidRange"
+      },
+      "readonly_objects": {
+        "status": "PASS",
+        "successful_read": true,
+        "refusals": {
+          "put": "AccessDenied",
+          "delete": "AccessDenied",
+          "create_multipart": "AccessDenied"
+        }
+      },
+      "readonly_catalog": {
+        "status": "PASS",
+        "refusals": {
+          "insert": "42501",
+          "update": "42501",
+          "delete": "42501",
+          "create_table": "42501"
+        },
+        "transaction_read_only": "off",
+        "scope": "role grants only; loopback trust authentication is not authenticated isolation"
+      },
+      "catalog_closure_and_listing": {
+        "status": "PASS",
+        "source_and_restored": {
+          "snapshot": 6,
+          "receipts": [
+            [
+              0,
+              262144
+            ],
+            [
+              1,
+              262144
+            ],
+            [
+              2,
+              262144
+            ],
+            [
+              3,
+              262144
+            ]
+          ],
+          "files": [
+            {
+              "family": "events",
+              "kind": "data",
+              "relative_path": "main/events/ducklake-01a0b002-6832-7a87-a5ec-7f58b055915a.parquet",
+              "bytes": 259627419
+            },
+            {
+              "family": "events",
+              "kind": "data",
+              "relative_path": "main/events/ducklake-01a0b002-6b17-7e7b-a8e9-bc69722efa0d.parquet",
+              "bytes": 259607496
+            },
+            {
+              "family": "events",
+              "kind": "data",
+              "relative_path": "main/events/ducklake-01a0b002-6e29-754d-9a5f-3f002f465159.parquet",
+              "bytes": 324494719
+            },
+            {
+              "family": "events",
+              "kind": "data",
+              "relative_path": "main/events/ducklake-01a0b002-7282-789a-9c2e-d8d57117bbb5.parquet",
+              "bytes": 194703701
+            },
+            {
+              "family": "events",
+              "kind": "data",
+              "relative_path": "main/events/ducklake-01a0b002-8044-77e8-8c88-909367a75e73.parquet",
+              "bytes": 292061353
+            },
+            {
+              "family": "events",
+              "kind": "data",
+              "relative_path": "main/events/ducklake-01a0b002-8323-7f31-8640-a0edd61f33cf.parquet",
+              "bytes": 259603482
+            },
+            {
+              "family": "events",
+              "kind": "data",
+              "relative_path": "main/events/ducklake-01a0b002-8681-7dd1-88fe-08745df791ef.parquet",
+              "bytes": 324507676
+            },
+            {
+              "family": "events",
+              "kind": "data",
+              "relative_path": "main/events/ducklake-01a0b002-8b50-73b5-a710-0166997f2ada.parquet",
+              "bytes": 162245488
+            },
+            {
+              "family": "events",
+              "kind": "data",
+              "relative_path": "main/events/ducklake-01a0b002-9a1e-7897-a5c8-08715e63aa3d.parquet",
+              "bytes": 292045570
+            },
+            {
+              "family": "events",
+              "kind": "data",
+              "relative_path": "main/events/ducklake-01a0b002-9d26-7688-b513-4767a6c6f7cc.parquet",
+              "bytes": 292049226
+            },
+            {
+              "family": "events",
+              "kind": "data",
+              "relative_path": "main/events/ducklake-01a0b002-a19c-7a5c-b8a6-0ef5f4f613c2.parquet",
+              "bytes": 356951200
+            },
+            {
+              "family": "events",
+              "kind": "data",
+              "relative_path": "main/events/ducklake-01a0b002-a5cf-7d73-ac53-1a0960ad7c5e.parquet",
+              "bytes": 97357719
+            },
+            {
+              "family": "events",
+              "kind": "data",
+              "relative_path": "main/events/ducklake-01a0b002-ad7f-70b7-8b53-6d898b4c53d4.parquet",
+              "bytes": 292053393
+            },
+            {
+              "family": "events",
+              "kind": "data",
+              "relative_path": "main/events/ducklake-01a0b002-b069-765a-82e6-93ffbd9518d8.parquet",
+              "bytes": 324500141
+            },
+            {
+              "family": "events",
+              "kind": "data",
+              "relative_path": "main/events/ducklake-01a0b002-b50d-71c3-ad61-14a3ecfde67a.parquet",
+              "bytes": 324498580
+            },
+            {
+              "family": "events",
+              "kind": "data",
+              "relative_path": "main/events/ducklake-01a0b002-b963-752b-99d7-4dbc83a81117.parquet",
+              "bytes": 97344044
+            },
+            {
+              "family": "receipts",
+              "kind": "data",
+              "relative_path": "main/receipts/ducklake-01a0b002-802c-74ab-9871-b951ba780a35.parquet",
+              "bytes": 326
+            },
+            {
+              "family": "receipts",
+              "kind": "data",
+              "relative_path": "main/receipts/ducklake-01a0b002-9a06-76f0-84c7-9f27d2a4dee5.parquet",
+              "bytes": 326
+            },
+            {
+              "family": "receipts",
+              "kind": "data",
+              "relative_path": "main/receipts/ducklake-01a0b002-ad67-7a8a-aa8d-c89667875b9e.parquet",
+              "bytes": 326
+            },
+            {
+              "family": "receipts",
+              "kind": "data",
+              "relative_path": "main/receipts/ducklake-01a0b002-c8b7-749a-a070-7208e54a3d6f.parquet",
+              "bytes": 326
+            }
+          ]
+        },
+        "listings": {
+          "archive/": {
+            "expected": {
+              "archive/main/events/ducklake-01a0b002-6832-7a87-a5ec-7f58b055915a.parquet": 259627419,
+              "archive/main/events/ducklake-01a0b002-6b17-7e7b-a8e9-bc69722efa0d.parquet": 259607496,
+              "archive/main/events/ducklake-01a0b002-6e29-754d-9a5f-3f002f465159.parquet": 324494719,
+              "archive/main/events/ducklake-01a0b002-7282-789a-9c2e-d8d57117bbb5.parquet": 194703701,
+              "archive/main/events/ducklake-01a0b002-8044-77e8-8c88-909367a75e73.parquet": 292061353,
+              "archive/main/events/ducklake-01a0b002-8323-7f31-8640-a0edd61f33cf.parquet": 259603482,
+              "archive/main/events/ducklake-01a0b002-8681-7dd1-88fe-08745df791ef.parquet": 324507676,
+              "archive/main/events/ducklake-01a0b002-8b50-73b5-a710-0166997f2ada.parquet": 162245488,
+              "archive/main/events/ducklake-01a0b002-9a1e-7897-a5c8-08715e63aa3d.parquet": 292045570,
+              "archive/main/events/ducklake-01a0b002-9d26-7688-b513-4767a6c6f7cc.parquet": 292049226,
+              "archive/main/events/ducklake-01a0b002-a19c-7a5c-b8a6-0ef5f4f613c2.parquet": 356951200,
+              "archive/main/events/ducklake-01a0b002-a5cf-7d73-ac53-1a0960ad7c5e.parquet": 97357719,
+              "archive/main/events/ducklake-01a0b002-ad7f-70b7-8b53-6d898b4c53d4.parquet": 292053393,
+              "archive/main/events/ducklake-01a0b002-b069-765a-82e6-93ffbd9518d8.parquet": 324500141,
+              "archive/main/events/ducklake-01a0b002-b50d-71c3-ad61-14a3ecfde67a.parquet": 324498580,
+              "archive/main/events/ducklake-01a0b002-b963-752b-99d7-4dbc83a81117.parquet": 97344044,
+              "archive/main/receipts/ducklake-01a0b002-802c-74ab-9871-b951ba780a35.parquet": 326,
+              "archive/main/receipts/ducklake-01a0b002-9a06-76f0-84c7-9f27d2a4dee5.parquet": 326,
+              "archive/main/receipts/ducklake-01a0b002-ad67-7a8a-aa8d-c89667875b9e.parquet": 326,
+              "archive/main/receipts/ducklake-01a0b002-c8b7-749a-a070-7208e54a3d6f.parquet": 326
+            },
+            "listed_count": 22,
+            "extra_keys": [
+              "archive/main/events/ducklake-01a0b007-06e8-76d7-a642-588ba76ed639.parquet",
+              "archive/main/receipts/ducklake-01a0b007-06eb-7038-8592-8fe6019f0f4a.parquet"
+            ]
+          },
+          "restored/": {
+            "expected": {
+              "restored/main/events/ducklake-01a0b002-6832-7a87-a5ec-7f58b055915a.parquet": 259627419,
+              "restored/main/events/ducklake-01a0b002-6b17-7e7b-a8e9-bc69722efa0d.parquet": 259607496,
+              "restored/main/events/ducklake-01a0b002-6e29-754d-9a5f-3f002f465159.parquet": 324494719,
+              "restored/main/events/ducklake-01a0b002-7282-789a-9c2e-d8d57117bbb5.parquet": 194703701,
+              "restored/main/events/ducklake-01a0b002-8044-77e8-8c88-909367a75e73.parquet": 292061353,
+              "restored/main/events/ducklake-01a0b002-8323-7f31-8640-a0edd61f33cf.parquet": 259603482,
+              "restored/main/events/ducklake-01a0b002-8681-7dd1-88fe-08745df791ef.parquet": 324507676,
+              "restored/main/events/ducklake-01a0b002-8b50-73b5-a710-0166997f2ada.parquet": 162245488,
+              "restored/main/events/ducklake-01a0b002-9a1e-7897-a5c8-08715e63aa3d.parquet": 292045570,
+              "restored/main/events/ducklake-01a0b002-9d26-7688-b513-4767a6c6f7cc.parquet": 292049226,
+              "restored/main/events/ducklake-01a0b002-a19c-7a5c-b8a6-0ef5f4f613c2.parquet": 356951200,
+              "restored/main/events/ducklake-01a0b002-a5cf-7d73-ac53-1a0960ad7c5e.parquet": 97357719,
+              "restored/main/events/ducklake-01a0b002-ad7f-70b7-8b53-6d898b4c53d4.parquet": 292053393,
+              "restored/main/events/ducklake-01a0b002-b069-765a-82e6-93ffbd9518d8.parquet": 324500141,
+              "restored/main/events/ducklake-01a0b002-b50d-71c3-ad61-14a3ecfde67a.parquet": 324498580,
+              "restored/main/events/ducklake-01a0b002-b963-752b-99d7-4dbc83a81117.parquet": 97344044,
+              "restored/main/receipts/ducklake-01a0b002-802c-74ab-9871-b951ba780a35.parquet": 326,
+              "restored/main/receipts/ducklake-01a0b002-9a06-76f0-84c7-9f27d2a4dee5.parquet": 326,
+              "restored/main/receipts/ducklake-01a0b002-ad67-7a8a-aa8d-c89667875b9e.parquet": 326,
+              "restored/main/receipts/ducklake-01a0b002-c8b7-749a-a070-7208e54a3d6f.parquet": 326
+            },
+            "listed_count": 20,
+            "extra_keys": []
+          }
+        },
+        "scope": "same-host two-family path/metadata closure; source remains accessible; no live backup barrier"
+      }
+    },
+    "stage": "complete",
+    "limits": [
+      "No load rerun or scientific-data mutation",
+      "No interrupted-upload/ambiguous-COMMIT test",
+      "No independent-host, source-denied, power-loss or durability-class qualification"
+    ],
+    "inputs": {
+      "object-storage.json": "fe685dbc084d30cc4e38c7cf16ff5e4e4b0113ad5275289e3dd453851c737ab4",
+      "catalog-copy.json": "b90e0512265efa97a4893b2017b5c5510906d59997e9b78a2600070a0cd37b2a",
+      "faults.json": "4ef0a2dd5eb370327b2e07b38c5fed336ffe50cf8f539d421b215b4f77a8036e"
+    },
+    "finished_at_unix": 1789660583.2090724
+  },
+  "clickhouse_mv": {
+    "status": "PASS",
+    "scope": "Three bounded engine-semantics counterexamples with literal expected answers; not product correctness, throughput, crash recovery or MV rejection in general.",
+    "database": "relay_composition_mv_7f665cb9045640a3b5079962b4a764df",
+    "endpoint": "http://127.0.0.1:48723",
+    "source_sha256": "a49fab33a92b796e815d967b8f926abb691d2560b5bb5ce536d3541d300cd73d",
+    "probes": {
+      "replay_not_retracted_by_replacing_merge": {
+        "actual": {
+          "logical_events_after_merge": 1,
+          "naive_mv_events": 2
+        },
+        "expected": {
+          "logical_events_after_merge": 1,
+          "naive_mv_events": 2
+        },
+        "pass": true
+      },
+      "right_join_change_needs_invalidation": {
+        "actual": {
+          "full_select": [
+            {
+              "event_id": "event-b",
+              "label": "after"
+            }
+          ],
+          "prior_mv_output": [
+            {
+              "event_id": "event-b",
+              "label": "before"
+            }
+          ]
+        },
+        "expected": {
+          "full_select": [
+            {
+              "event_id": "event-b",
+              "label": "after"
+            }
+          ],
+          "prior_mv_output": [
+            {
+              "event_id": "event-b",
+              "label": "before"
+            }
+          ]
+        },
+        "pass": true
+      },
+      "clock_expiry_needs_scheduled_retraction": {
+        "actual": {
+          "initial_mv_events": 1,
+          "current_full_select_events": 0,
+          "unchanged_mv_events": 1
+        },
+        "expected": {
+          "initial_mv_events": 1,
+          "current_full_select_events": 0,
+          "unchanged_mv_events": 1
+        },
+        "pass": true
+      }
+    },
+    "not_executed": [
+      "Rust product",
+      "external relay",
+      "rank solver",
+      "durable derived-state implementation",
+      "capacity benchmark"
+    ],
+    "clickhouse_version": "26.5.1.882",
+    "expiry_polling": {
+      "queries": 40,
+      "elapsed_seconds": 2.0506384358741343,
+      "maximum_single_sleep_seconds": 0.05,
+      "interpretation": "Fixture orchestration only, not a latency benchmark"
+    },
+    "database_removed": true,
+    "transcript_sha256": "6505156bf1325cc5c412686ec5f48d0406ea9271a3b8ff013a3b9b81cbd28f6d"
+  },
+  "live_inventory": {
+    "captured_at_unix": 1789660621.428729,
+    "containers": [
+      {
+        "name": "/bigbrotr-object-storage-garage-20260917",
+        "image_id": "sha256:866bd13ed2038ba7e7190e840482bc27234c4afaf77be8cfa439ae088c1e4690",
+        "image_ref": "dxflrs/garage@sha256:866bd13ed2038ba7e7190e840482bc27234c4afaf77be8cfa439ae088c1e4690",
+        "state": {
+          "Status": "running",
+          "Running": true,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 1204780,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-17T15:32:31.209556093Z",
+          "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "memory_limit": 4294967296,
+        "memory_swap_limit": 8589934592,
+        "nano_cpus": 2000000000,
+        "ports": {},
+        "network": "host",
+        "mounts": [
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-object-storage-20260917",
+            "Destination": "/lab",
+            "RW": true
+          },
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-object-storage-20260917/garage.toml",
+            "Destination": "/etc/garage.toml",
+            "RW": false
+          }
+        ]
+      },
+      {
+        "name": "/bigbrotr-object-storage-pg-20260917",
+        "image_id": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "image_ref": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "state": {
+          "Status": "running",
+          "Running": true,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 1204846,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-17T15:32:31.392793387Z",
+          "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "memory_limit": 1073741824,
+        "memory_swap_limit": 2147483648,
+        "nano_cpus": 1000000000,
+        "ports": {
+          "5432/tcp": [
+            {
+              "HostIp": "127.0.0.1",
+              "HostPort": "48732"
+            }
+          ]
+        },
+        "network": "bridge",
+        "mounts": [
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-object-storage-20260917/pg",
+            "Destination": "/var/lib/postgresql/data",
+            "RW": true
+          }
+        ]
+      },
+      {
+        "name": "/bigbrotr-object-storage-worker-20260917",
+        "image_id": "sha256:1042b61448fef4ba92d16a8c7eb4996d027568ce64792a7877fd88511e0af7c6",
+        "image_ref": "python@sha256:1042b61448fef4ba92d16a8c7eb4996d027568ce64792a7877fd88511e0af7c6",
+        "state": {
+          "Status": "running",
+          "Running": true,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 1205033,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-17T15:32:31.615371577Z",
+          "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "memory_limit": 10737418240,
+        "memory_swap_limit": 21474836480,
+        "nano_cpus": 4000000000,
+        "ports": {},
+        "network": "host",
+        "mounts": [
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-qualification-20260917",
+            "Destination": "/baseline",
+            "RW": false
+          },
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-object-storage-20260917",
+            "Destination": "/lab",
+            "RW": true
+          }
+        ]
+      },
+      {
+        "name": "/bigbrotr-object-storage-reader-20260917",
+        "image_id": "sha256:1042b61448fef4ba92d16a8c7eb4996d027568ce64792a7877fd88511e0af7c6",
+        "image_ref": "python@sha256:1042b61448fef4ba92d16a8c7eb4996d027568ce64792a7877fd88511e0af7c6",
+        "state": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-17T15:38:46.853596939Z",
+          "FinishedAt": "2026-09-17T15:38:52.159122486Z"
+        },
+        "memory_limit": 8589934592,
+        "memory_swap_limit": 17179869184,
+        "nano_cpus": 2000000000,
+        "ports": {},
+        "network": "host",
+        "mounts": [
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-object-storage-20260917/extensions",
+            "Destination": "/extensions",
+            "RW": false
+          },
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-object-storage-20260917/venv",
+            "Destination": "/venv",
+            "RW": false
+          },
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-object-storage-20260917/reports",
+            "Destination": "/reports",
+            "RW": true
+          },
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-object-storage-20260917/src",
+            "Destination": "/app",
+            "RW": false
+          },
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-object-storage-20260917/reader.json",
+            "Destination": "/run/reader.json",
+            "RW": false
+          }
+        ]
+      },
+      {
+        "name": "/bigbrotr-object-storage-ch-mv-20260917",
+        "image_id": "sha256:07afc18d8a9706eb9d85c5c5d2752e5270f91bbc2894caeaecb73e4d0f603bf5",
+        "image_ref": "clickhouse/clickhouse-server@sha256:07afc18d8a9706eb9d85c5c5d2752e5270f91bbc2894caeaecb73e4d0f603bf5",
+        "state": {
+          "Status": "running",
+          "Running": true,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 1214663,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-17T15:50:07.065779295Z",
+          "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "memory_limit": 3221225472,
+        "memory_swap_limit": 6442450944,
+        "nano_cpus": 2000000000,
+        "ports": {
+          "8123/tcp": [
+            {
+              "HostIp": "127.0.0.1",
+              "HostPort": "48723"
+            }
+          ]
+        },
+        "network": "bridge",
+        "mounts": [
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-object-storage-20260917/ch-logs",
+            "Destination": "/var/log/clickhouse-server",
+            "RW": true
+          },
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-object-storage-20260917/ch.xml",
+            "Destination": "/etc/clickhouse-server/config.d/lab.xml",
+            "RW": false
+          },
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-object-storage-20260917/ch-data",
+            "Destination": "/var/lib/clickhouse",
+            "RW": true
+          }
+        ]
+      }
+    ],
+    "disk_available_bytes": 396240650240,
+    "running_containers": [
+      "bigbrotr-object-storage-ch-mv-20260917",
+      "bigbrotr-object-storage-worker-20260917",
+      "bigbrotr-object-storage-pg-20260917",
+      "bigbrotr-object-storage-garage-20260917",
+      "inspirehep-reindex-db-1",
+      "inspirehep-reindex-mq-1",
+      "inspirehep-reindex-cache-1",
+      "inspirehep-reindex-es-1",
+      "ollama",
+      "fileshare-lan",
+      "fileshare-tailnet",
+      "tgdataset-mongo"
+    ],
+    "memory": "MemTotal:       64954160 kB\nMemFree:         4669040 kB\nMemAvailable:   58502276 kB\nBuffers:         1032176 kB\nCached:         52288520 kB\nSwapCached:       233608 kB\nActive:          5231508 kB\nInactive:       50548628 kB\nActive(anon):    2822760 kB\nInactive(anon):  1551276 kB\nActive(file):    2408748 kB\nInactive(file): 48997352 kB\nUnevictable:           0 kB\nMlocked:               0 kB\nSwapTotal:      66206716 kB\nSwapFree:       47588064 kB\nZswap:                 0 kB\nZswapped:              0 kB\nDirty:              1000 kB\nWriteback:             0 kB\nAnonPages:       2293488 kB\nMapped:           913972 kB\nShmem:           1914932 kB\nKReclaimable:    3152168 kB\nSlab:            3874128 kB\nSReclaimable:    3152168 kB\nSUnreclaim:       721960 kB\nKernelStack:       35584 kB\nPageTables:        43236 kB\nSecPageTables:      7184 kB\nNFS_Unstable:          0 kB\nBounce:                0 kB\nWritebackTmp:          0 kB\nCommitLimit:    98683796 kB\nCommitted_AS:   33679712 kB\nVmallocTotal:   34359738367 kB\nVmallocUsed:      195808 kB\nVmallocChunk:          0 kB\nPercpu:            66432 kB\nHardwareCorrupted:     0 kB\nAnonHugePages:   1470464 kB\nShmemHugePages:        0 kB\nShmemPmdMapped:        0 kB\nFileHugePages:         0 kB\nFilePmdMapped:         0 kB\nUnaccepted:            0 kB\nHugePages_Total:       0\nHugePages_Free:        0\nHugePages_Rsvd:        0\nHugePages_Surp:        0\nHugepagesize:       2048 kB\nHugetlb:               0 kB\nDirectMap4k:     1426664 kB\nDirectMap2M:    46954496 kB\nDirectMap1G:    18874368 kB\n",
+    "sources": [
+      {
+        "path": "ch_materialized.py",
+        "bytes": 9312,
+        "sha256": "a49fab33a92b796e815d967b8f926abb691d2560b5bb5ce536d3541d300cd73d"
+      },
+      {
+        "path": "copy_catalog.py",
+        "bytes": 1312,
+        "sha256": "9058c4f9c33e5d5b395ba5f32702c5b72c8a892007be33d7b8f2ad7f0d0f3f36"
+      },
+      {
+        "path": "faults.py",
+        "bytes": 7753,
+        "sha256": "77f18e799339b1f3602807440e276b05d62d999023ed21b81293d6c4ca345e73"
+      },
+      {
+        "path": "inventory.py",
+        "bytes": 3000,
+        "sha256": "f007ed9602d948f446a4d66e1db339d76e2d63d6290b88f0ced22aad143e550f"
+      },
+      {
+        "path": "prepare_reader.py",
+        "bytes": 1551,
+        "sha256": "dce6a6951578827375c0877ec4b7955ddf5154f8b6207ed0f92e2f8c582c6014"
+      },
+      {
+        "path": "probe-original.py",
+        "bytes": 9121,
+        "sha256": "5c069ccaf3886164c962c7493e5ff41f8b173b87d38aa8124e4a14119c686898"
+      },
+      {
+        "path": "probe.py",
+        "bytes": 9205,
+        "sha256": "14197a0698694f97e5a3923707b8da681a962f801b393e9aeea27916830914d2"
+      },
+      {
+        "path": "reader.py",
+        "bytes": 1198,
+        "sha256": "ca70b6e8eda4e198c759def6f191c04a19ebdd84c167aee78e63facad4ce40ff"
+      },
+      {
+        "path": "setup.py",
+        "bytes": 3263,
+        "sha256": "87d22bde9ae07e9585119f589253f799c3c1d785ae877d1cfdf6c0e2100c5a24"
+      },
+      {
+        "path": "verify_boundaries.py",
+        "bytes": 14408,
+        "sha256": "1a1756f7dc30f375cc600a56686e69cc483e16d2e7a0309d56a48c1ecb2bc141"
+      }
+    ],
+    "worker_cgroup": "{\"memory.current\": \"6305882112\\n\", \"memory.peak\": \"10738454528\\n\", \"memory.events\": \"low 0\\nhigh 0\\nmax 2274\\noom 0\\noom_kill 0\\noom_group_kill 0\\n\", \"cpu.stat\": \"usage_usec 152553447\\nuser_usec 129589714\\nsystem_usec 22963733\\nnice_usec 0\\nnr_periods 784\\nnr_throttled 133\\nthrottled_usec 9452403\\nnr_bursts 0\\nburst_usec 0\\n\"}\n",
+    "python_packages": [
+      "boto3==1.42.70",
+      "botocore==1.42.97",
+      "coincurve==21.0.0",
+      "duckdb==1.5.5",
+      "jmespath==1.1.0",
+      "psycopg2-binary==2.9.10",
+      "pyarrow==21.0.0",
+      "python-dateutil==2.9.0.post0",
+      "s3transfer==0.16.1",
+      "six==1.17.0",
+      "urllib3==2.8.0"
+    ],
+    "extension_hashes": "[{\"name\": \"postgres_scanner.duckdb_extension\", \"bytes\": 41696558, \"sha256\": \"b1ced4cfc6311313e117c2afb3eac76508718778dde0716421503c7dbfb5605c\"}, {\"name\": \"httpfs.duckdb_extension\", \"bytes\": 21570542, \"sha256\": \"887c392b1e49128d11667c81e3698d8b00dfdeb456771acf66d05a0f74f7b7d8\"}, {\"name\": \"ducklake.duckdb_extension\", \"bytes\": 36436086, \"sha256\": \"e51bf9e8d933d0e83780ae096455501b542cf962569a2ce5613532d702c08302\"}]\n"
+  },
+  "final_inventory": {
+    "captured_at_unix": 1789660637.2830155,
+    "containers": [
+      {
+        "name": "/bigbrotr-object-storage-garage-20260917",
+        "image_id": "sha256:866bd13ed2038ba7e7190e840482bc27234c4afaf77be8cfa439ae088c1e4690",
+        "image_ref": "dxflrs/garage@sha256:866bd13ed2038ba7e7190e840482bc27234c4afaf77be8cfa439ae088c1e4690",
+        "state": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-17T15:32:31.209556093Z",
+          "FinishedAt": "2026-09-17T15:57:02.685145962Z"
+        },
+        "memory_limit": 4294967296,
+        "memory_swap_limit": 8589934592,
+        "nano_cpus": 2000000000,
+        "ports": {},
+        "network": "host",
+        "mounts": [
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-object-storage-20260917",
+            "Destination": "/lab",
+            "RW": true
+          },
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-object-storage-20260917/garage.toml",
+            "Destination": "/etc/garage.toml",
+            "RW": false
+          }
+        ]
+      },
+      {
+        "name": "/bigbrotr-object-storage-pg-20260917",
+        "image_id": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "image_ref": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "state": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-17T15:32:31.392793387Z",
+          "FinishedAt": "2026-09-17T15:57:02.246550933Z"
+        },
+        "memory_limit": 1073741824,
+        "memory_swap_limit": 2147483648,
+        "nano_cpus": 1000000000,
+        "ports": {
+          "5432/tcp": [
+            {
+              "HostIp": "127.0.0.1",
+              "HostPort": "48732"
+            }
+          ]
+        },
+        "network": "bridge",
+        "mounts": [
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-object-storage-20260917/pg",
+            "Destination": "/var/lib/postgresql/data",
+            "RW": true
+          }
+        ]
+      },
+      {
+        "name": "/bigbrotr-object-storage-worker-20260917",
+        "image_id": "sha256:1042b61448fef4ba92d16a8c7eb4996d027568ce64792a7877fd88511e0af7c6",
+        "image_ref": "python@sha256:1042b61448fef4ba92d16a8c7eb4996d027568ce64792a7877fd88511e0af7c6",
+        "state": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 137,
+          "Error": "",
+          "StartedAt": "2026-09-17T15:32:31.615371577Z",
+          "FinishedAt": "2026-09-17T15:57:17.216340829Z"
+        },
+        "memory_limit": 10737418240,
+        "memory_swap_limit": 21474836480,
+        "nano_cpus": 4000000000,
+        "ports": {},
+        "network": "host",
+        "mounts": [
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-object-storage-20260917",
+            "Destination": "/lab",
+            "RW": true
+          },
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-qualification-20260917",
+            "Destination": "/baseline",
+            "RW": false
+          }
+        ]
+      },
+      {
+        "name": "/bigbrotr-object-storage-reader-20260917",
+        "image_id": "sha256:1042b61448fef4ba92d16a8c7eb4996d027568ce64792a7877fd88511e0af7c6",
+        "image_ref": "python@sha256:1042b61448fef4ba92d16a8c7eb4996d027568ce64792a7877fd88511e0af7c6",
+        "state": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-17T15:38:46.853596939Z",
+          "FinishedAt": "2026-09-17T15:38:52.159122486Z"
+        },
+        "memory_limit": 8589934592,
+        "memory_swap_limit": 17179869184,
+        "nano_cpus": 2000000000,
+        "ports": {},
+        "network": "host",
+        "mounts": [
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-object-storage-20260917/reports",
+            "Destination": "/reports",
+            "RW": true
+          },
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-object-storage-20260917/src",
+            "Destination": "/app",
+            "RW": false
+          },
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-object-storage-20260917/reader.json",
+            "Destination": "/run/reader.json",
+            "RW": false
+          },
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-object-storage-20260917/extensions",
+            "Destination": "/extensions",
+            "RW": false
+          },
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-object-storage-20260917/venv",
+            "Destination": "/venv",
+            "RW": false
+          }
+        ]
+      },
+      {
+        "name": "/bigbrotr-object-storage-ch-mv-20260917",
+        "image_id": "sha256:07afc18d8a9706eb9d85c5c5d2752e5270f91bbc2894caeaecb73e4d0f603bf5",
+        "image_ref": "clickhouse/clickhouse-server@sha256:07afc18d8a9706eb9d85c5c5d2752e5270f91bbc2894caeaecb73e4d0f603bf5",
+        "state": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-17T15:50:07.065779295Z",
+          "FinishedAt": "2026-09-17T15:57:04.976165735Z"
+        },
+        "memory_limit": 3221225472,
+        "memory_swap_limit": 6442450944,
+        "nano_cpus": 2000000000,
+        "ports": {
+          "8123/tcp": [
+            {
+              "HostIp": "127.0.0.1",
+              "HostPort": "48723"
+            }
+          ]
+        },
+        "network": "bridge",
+        "mounts": [
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-object-storage-20260917/ch-logs",
+            "Destination": "/var/log/clickhouse-server",
+            "RW": true
+          },
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-object-storage-20260917/ch.xml",
+            "Destination": "/etc/clickhouse-server/config.d/lab.xml",
+            "RW": false
+          },
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-object-storage-20260917/ch-data",
+            "Destination": "/var/lib/clickhouse",
+            "RW": true
+          }
+        ]
+      }
+    ],
+    "disk_available_bytes": 396239507456,
+    "running_containers": [
+      "inspirehep-reindex-db-1",
+      "inspirehep-reindex-mq-1",
+      "inspirehep-reindex-cache-1",
+      "inspirehep-reindex-es-1",
+      "ollama",
+      "fileshare-lan",
+      "fileshare-tailnet",
+      "tgdataset-mongo"
+    ],
+    "memory": "MemTotal:       64954160 kB\nMemFree:         5427776 kB\nMemAvailable:   59262056 kB\nBuffers:         1032432 kB\nCached:         52244352 kB\nSwapCached:       233608 kB\nActive:          4522312 kB\nInactive:       50549752 kB\nActive(anon):    2113580 kB\nInactive(anon):  1551276 kB\nActive(file):    2408732 kB\nInactive(file): 48998476 kB\nUnevictable:           0 kB\nMlocked:               0 kB\nSwapTotal:      66206716 kB\nSwapFree:       47588064 kB\nZswap:                 0 kB\nZswapped:              0 kB\nDirty:               120 kB\nWriteback:             0 kB\nAnonPages:       1715760 kB\nMapped:           294220 kB\nShmem:           1869668 kB\nKReclaimable:    3152104 kB\nSlab:            3870444 kB\nSReclaimable:    3152104 kB\nSUnreclaim:       718340 kB\nKernelStack:       24204 kB\nPageTables:        36304 kB\nSecPageTables:      7184 kB\nNFS_Unstable:          0 kB\nBounce:                0 kB\nWritebackTmp:          0 kB\nCommitLimit:    98683796 kB\nCommitted_AS:   27475672 kB\nVmallocTotal:   34359738367 kB\nVmallocUsed:      183872 kB\nVmallocChunk:          0 kB\nPercpu:            66432 kB\nHardwareCorrupted:     0 kB\nAnonHugePages:   1302528 kB\nShmemHugePages:        0 kB\nShmemPmdMapped:        0 kB\nFileHugePages:         0 kB\nFilePmdMapped:         0 kB\nUnaccepted:            0 kB\nHugePages_Total:       0\nHugePages_Free:        0\nHugePages_Rsvd:        0\nHugePages_Surp:        0\nHugepagesize:       2048 kB\nHugetlb:               0 kB\nDirectMap4k:     1426664 kB\nDirectMap2M:    46954496 kB\nDirectMap1G:    18874368 kB\n",
+    "sources": [
+      {
+        "path": "ch_materialized.py",
+        "bytes": 9312,
+        "sha256": "a49fab33a92b796e815d967b8f926abb691d2560b5bb5ce536d3541d300cd73d"
+      },
+      {
+        "path": "copy_catalog.py",
+        "bytes": 1312,
+        "sha256": "9058c4f9c33e5d5b395ba5f32702c5b72c8a892007be33d7b8f2ad7f0d0f3f36"
+      },
+      {
+        "path": "faults.py",
+        "bytes": 7753,
+        "sha256": "77f18e799339b1f3602807440e276b05d62d999023ed21b81293d6c4ca345e73"
+      },
+      {
+        "path": "inventory.py",
+        "bytes": 3000,
+        "sha256": "f007ed9602d948f446a4d66e1db339d76e2d63d6290b88f0ced22aad143e550f"
+      },
+      {
+        "path": "prepare_reader.py",
+        "bytes": 1551,
+        "sha256": "dce6a6951578827375c0877ec4b7955ddf5154f8b6207ed0f92e2f8c582c6014"
+      },
+      {
+        "path": "probe-original.py",
+        "bytes": 9121,
+        "sha256": "5c069ccaf3886164c962c7493e5ff41f8b173b87d38aa8124e4a14119c686898"
+      },
+      {
+        "path": "probe.py",
+        "bytes": 9205,
+        "sha256": "14197a0698694f97e5a3923707b8da681a962f801b393e9aeea27916830914d2"
+      },
+      {
+        "path": "reader.py",
+        "bytes": 1198,
+        "sha256": "ca70b6e8eda4e198c759def6f191c04a19ebdd84c167aee78e63facad4ce40ff"
+      },
+      {
+        "path": "setup.py",
+        "bytes": 3263,
+        "sha256": "87d22bde9ae07e9585119f589253f799c3c1d785ae877d1cfdf6c0e2100c5a24"
+      },
+      {
+        "path": "verify_boundaries.py",
+        "bytes": 14408,
+        "sha256": "1a1756f7dc30f375cc600a56686e69cc483e16d2e7a0309d56a48c1ecb2bc141"
+      }
+    ]
+  },
+  "upstream_source_review": {
+    "recorded_at": "2026-09-17T15:57:01.410823+00:00",
+    "reviewer": "handoff_revision",
+    "checkout": ".research/checkouts/ducklake-s3-review",
+    "commit": "d8a1881e22516ea3d186d73e83c65fe5bd1a1dc4",
+    "claim": "Selective upstream source inspection, not a full DuckLake or DuckDB/httpfs audit.",
+    "hash_semantics": "Hashes identify the complete pinned files; partial-range entries do not claim full comprehension.",
+    "files": [
+      {
+        "path": "src/storage/ducklake_insert.cpp",
+        "sha256": "34e025c3378fbf2bbfdfe9baff0bd3b0359a28fe483f61101b5db8a982ace73f",
+        "bytes": 38368,
+        "file_lines": 857,
+        "scope": "full",
+        "read_ranges_inclusive": [
+          [
+            1,
+            857
+          ]
+        ]
+      },
+      {
+        "path": "src/include/common/ducklake_data_file.hpp",
+        "sha256": "598ae22373a3888cf692ad414a42b9d0cbc23564aee7d4177b53ac3a8e85bf1d",
+        "bytes": 2453,
+        "file_lines": 82,
+        "scope": "full",
+        "read_ranges_inclusive": [
+          [
+            1,
+            82
+          ]
+        ]
+      },
+      {
+        "path": "src/common/ducklake_data_file.cpp",
+        "sha256": "d6bb54aaa44c135e8f9e0cc321e9f7f119da34b31b7c8e17a675eed38d36b169",
+        "bytes": 1973,
+        "file_lines": 61,
+        "scope": "full",
+        "read_ranges_inclusive": [
+          [
+            1,
+            61
+          ]
+        ]
+      },
+      {
+        "path": "src/functions/ducklake_list_files.cpp",
+        "sha256": "1d0b65a78676962522b615311d35fc2faa3440692fd167eaf4cf412b9eae8ef8",
+        "bytes": 4363,
+        "file_lines": 115,
+        "scope": "full",
+        "read_ranges_inclusive": [
+          [
+            1,
+            115
+          ]
+        ]
+      },
+      {
+        "path": "src/storage/ducklake_transaction_manager.cpp",
+        "sha256": "b874068d1c5ddcfc788374eb52b8c400473e6ce645065eebc2b00bb68e2c157b",
+        "bytes": 1512,
+        "file_lines": 45,
+        "scope": "full",
+        "read_ranges_inclusive": [
+          [
+            1,
+            45
+          ]
+        ]
+      },
+      {
+        "path": "src/functions/ducklake_current_snapshot.cpp",
+        "sha256": "9cee396a673e3e2fcbdaa73fe6b612a3987205171aa066cc3f03a50927491afd",
+        "bytes": 1238,
+        "file_lines": 30,
+        "scope": "full",
+        "read_ranges_inclusive": [
+          [
+            1,
+            30
+          ]
+        ]
+      },
+      {
+        "path": "src/storage/ducklake_transaction.cpp",
+        "sha256": "813005692d8b4bc72747e51085de2b7337dd9c035ae410eae8dba74942b2a37e",
+        "bytes": 77155,
+        "file_lines": 2108,
+        "scope": "partial",
+        "read_ranges_inclusive": [
+          [
+            700,
+            790
+          ],
+          [
+            1290,
+            1470
+          ]
+        ]
+      }
+    ],
+    "navigation_only_not_comprehension": [
+      "src/storage/ducklake_transaction_changes.cpp",
+      "src/metadata_manager/postgres_metadata_manager.cpp",
+      "src/storage/ducklake_staged_commit.cpp"
+    ],
+    "findings": [
+      {
+        "id": "S3-H01",
+        "finding": "Reviewed native insertion/file metadata exposes paths, sizes, row counts and stats, not an application full-file SHA. Qualified persistence is distinct from checksum capture.",
+        "disposition": "Revised archive contract separates optional initial SHA capture and mandatory verified backup hashes from native publication/protection."
+      },
+      {
+        "id": "S3-H02",
+        "finding": "Old periodic multipart payload allowed aligned wrong-offset range reads to match; LIST recorded output without expected closure comparison.",
+        "disposition": "New standalone verifier uses position-dependent bytes, complete readback, cross-part/end and invalid ranges, and catalog-selected LIST/HEAD membership; remote execution NOT_RUN by this reviewer."
+      },
+      {
+        "id": "S3-H03",
+        "finding": "Original child was killed after INSERT and before COMMIT; this does not test interrupted upload or ambiguous COMMIT acknowledgement.",
+        "disposition": "Keep this evidence scope; new verifier explicitly excludes those cases."
+      },
+      {
+        "id": "S3-H04",
+        "finding": "Original dump/closure copy assumes external quiescence, and restore retains source access.",
+        "disposition": "New verifier compares source/restored snapshot and both family closures, but claims neither live backup barrier nor source-denied/independent-host restore."
+      },
+      {
+        "id": "S3-H05",
+        "finding": "Original reader tests only denied S3 PUT; PG uses loopback trust authentication.",
+        "disposition": "New verifier checks successful read before S3 PUT/DELETE/multipart denials and PG INSERT/UPDATE/DELETE/CREATE TABLE denial with transaction read-only disabled, always rolling back. This is role-grant evidence, not authentication isolation."
+      },
+      {
+        "id": "S3-H06",
+        "finding": "Old reader can leave an earlier PASS after a failed reused invocation; probe lacks terminal failure status and faults writes reports non-atomically.",
+        "disposition": "Preserve original sources and evidence; new verifier requires a fresh identity and atomically records current RUNNING/PASS/FAILED outcome with sanitized errors."
+      }
+    ],
+    "new_verifier": {
+      "path": "experiments/object-storage/verify_boundaries.py",
+      "sha256": "1a1756f7dc30f375cc600a56686e69cc483e16d2e7a0309d56a48c1ecb2bc141",
+      "local_validation": "PASS negative range/header/truncation oracles, atomic fresh-report/refusal, controlled FAILED report and Python compilation; no service or Tux execution.",
+      "local_check_path": ".research/review-16/boundaries-local-check.py"
+    }
+  },
+  "known_harness_limits": [
+    "Initial periodic range payload and unchecked LIST replaced only in separately named stronger probe; initial scope retained.",
+    "Initial probe/reader lack robust terminal or fresh-run guards. Fresh actual exit codes0 recorded; no failed rerun promoted to PASS.",
+    "prepare_reader first failed on CLI label whitespace after creating key; fixed parser and explicit existing-key recovery. No secret values tracked.",
+    "copy_catalog relies on coordinator-established sequential quiescence, not distributed fencing.",
+    "Precommit child killed after INSERT, not interrupted upload or ambiguous COMMIT.",
+    "Same-host alternate-prefix restore retains source access; later probe compares both full family path closures.",
+    "PG loopback trust means privilege test is role enforcement, not authenticated isolation.",
+    "Only132 full signed sample rows cryptographically checked; wholepopulation oracle is not allrowcrypto."
+  ],
+  "not_run": [
+    "Rust product and real multi-family schema",
+    "WAN/externalcloud costs",
+    "Actual provider TLS/credentialrefresh",
+    "Independenthost loss, power failure, replicatedGarage",
+    "Fullfleet 5k/10k/50k/100k",
+    "Sustained mixedmaintenance-aged workload"
+  ]
+}

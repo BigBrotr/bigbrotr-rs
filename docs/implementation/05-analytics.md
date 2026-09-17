@@ -41,8 +41,11 @@ not erased when collection is subsequently disabled. Job ticks, retries, duplica
 counters and last duplicate arrival are not permanent scientific facts.
 
 Common initial Deriver limits are current-state cadence 300 s, ordinary fact cadence
-86,400 s, overlap cadence 86,400 s, input chunk 256 MiB, task memory 512 MiB,
-spill 8 GiB and duration 3,600 s, admitted through P01-T05's deployment budget.
+86,400 s, overlap cadence 86,400 s only after explicit overlap selection, input
+chunk 256 MiB, task memory 512 MiB, spill 8 GiB and duration 3,600 s, admitted
+through P01-T05's deployment budget.
+The complete-online recipe uses the [explicit target inventory](../architecture/derived-read-publication.md#deriver);
+cadence settings alone do not activate optional targets or network probes.
 Ranker starts with its separate 1 GiB memory/16 GiB spill grant from the canonical
 service table; both consume the same host envelope. These are configured bounds,
 not evidence that a billion-event deployment fits.
@@ -97,6 +100,10 @@ cancelled branches; cancelled work cannot commit later.
   introspect their real stored keys. Migration 0501 creates shared `artifacts`
   and `artifact_files`; `graph_artifacts` references that inventory. P08's 0804
   adds publication metadata, not the first graph-file owner.
+  Reuse pure definition/reducer contracts across views and publishers without
+  granting reducers network/signing authority. Register composition populations
+  and components below; P07's portable definition manifest projects this same
+  registry and never becomes an executable plugin or a second schema authority.
 - [ ] **Step 2:** implement actual selected-target execution and dependency
   planning. Share compatible unchanged partitions; do not run every family then
   discard unselected results. Validate each dependency's cut and temporal
@@ -106,6 +113,14 @@ cancelled branches; cancelled work cannot commit later.
   earlier bound where necessary. A completed source cut alone cannot certify
   current membership after an expiration with no ingestion. Carry the same
   temporal identity through pending output, verification and publication.
+  Exercise the shipped default recipe with empty social seeds and publication
+  disabled: independently inspect actual jobs, engine work and retained state for
+  useful core facts/current views/relay vectors, with no unselected overlap,
+  broad propagation, probe, curator-join or rank-only CSR/diffusion job. Sparse
+  assertion lookup must distinguish a justified zero under a complete target
+  from a missing generation or unresolved field; no publisher-only support index
+  or all-event zero-row materialization starts implicitly. Then explicitly select
+  an optional job and verify its complete admitted result, not just its config flag.
 - [ ] **Step 3:** persist coalesced dirty keys and a bounded overflow-to-rebuild
   marker through the Indexer-owned derived RocksDB state contract in the storage
   catalog. Qualify keys by target/scope/working generation; bind state mutations,
@@ -119,6 +134,11 @@ cancelled branches; cancelled work cannot commit later.
   same output or pinned input without double contribution; retain enough staged
   state until publication resolves. A stale worker may leave an orphan, never
   publish a target. Charge WAL, state, compaction, pending output and pins together.
+  If a CH insert-time materialized view is selected as an accelerator, prove its
+  input/replay/merge protocol against the [maintenance and serving table](../architecture/derived-read-publication.md#assertion-registry-and-incremental-computation).
+  Replayed source rows followed by a Replacing merge, a changed right-side join
+  input, and clock-only expiry must match a full logical recomputation after the
+  required repair; a naive MV failing those cases is not the complete target.
 - [ ] **Step 5:** implement retry, stop, resume and retention with live pins and
   last usable generation protection. Independent targets continue after one
   fails. Configured-disabled or naturally withheld targets report suppressed;
@@ -428,6 +448,8 @@ appear as a successful 0-ms sample or be republished as a local witness.
 ## P05-T07 — Provenance-derived coverage and propagation statistics
 
 **Dependencies:** P05-T01; P02-T03/T04/T06; acquisition coverage/evidence contracts.
+Visible-witness composition additionally uses P05-T02's compatible visibility state;
+optional curator bands use P05-T11, without making it a base-target dependency.
 
 **Proposed files:** `crates/bigbrotr-analytics/src/{coverage,propagation}.rs`;
 `apps/bigbrotr/src/analytics/propagation.rs`;
@@ -450,6 +472,21 @@ needed for earliest useful observation evidence.
 - [ ] **Step 2:** expose acquired coverage intervals, traversal progress and gaps
   with endpoint/filter/context identity. EOSE, peer overlap and import completion
   are scoped evidence, never global completeness certificates.
+  Implement `relay.composition/1` for `witness-history/1` and
+  `visible-witness/1` under the exact [population and component contract](../architecture/analytics-detail.md#relay-content-composition-from-a-declared-population),
+  materializing only the explicitly selected reusable scopes below.
+  Reuse existing relay targets/resource and qualified witness membership; add
+  exact author refcounts, kind counts, UTF-8 content byte sum, ordered
+  signed-time extrema and square-sum concentration. Apply public
+  source/evidence eligibility before grouping. Preserve complete exact state
+  behind bounded projections; do not claim current remote inventory or infer
+  recent served membership from first sightings.
+  Follow the selected materialization table: daily changed-endpoint fact work
+  for one configured public visible scope; top-ten/alternate windows use admitted
+  reads, topics/history/probe composition use bounded jobs when needed, and
+  curator bands are disabled by default. Do not allocate optional topic/reverse
+  state or a cross product of arbitrary query scopes. Expose research artifacts
+  through existing authorized resources; no public SQL or extra query engine.
 - [ ] **Step 3:** maintain per-event spread contributions and exact frequency or
   ordered state needed for nearest-rank p50/p95/max. Corrected minima retract the
   previous value; do not average percentiles or use merge-only sketches for
@@ -457,12 +494,27 @@ needed for earliest useful observation evidence.
 - [ ] **Step 4:** partition rolling windows with explicit half-open boundaries,
   bounded spill and deterministic recomputation when noninvertible state is
   unavailable. Account for the full quantile input state, not only its output.
+  For composition, maintain old/new whole-event contributions and checked square
+  deltas `2*n*δ+δ²`, with event→endpoint fanout on visibility changes. A replacement
+  witnessed elsewhere can suppress an old local visible member. Dirty only the
+  affected endpoint/partition state; retain overflow-to-rebuild correctness and
+  charge exact author/topic/extrema state plus staged output. Window expiry does
+  not require a new source cut; pure witness-history membership does not expire.
 - [ ] **Step 5:** make provenance-off-from-creation suppressed. If collection is
   disabled later, retain usable older evidence and expose new interval gaps;
   never fabricate continuation or erase existing scientific evidence.
 - [ ] **Step 6:** run packaged incremental and full-rebuild jobs with backdated
   minima, two clock strata, many physical parts, missing coverage and corrected
   observations; compare exact bucket multisets before comparing percentiles.
+  Add real signed composition cases with duplicate witnesses/topics, two events
+  by one author, private/imported-only evidence, a replacement observed elsewhere,
+  empty/disabled states and expiry without ingestion. Compare every cut to an
+  independent set/grouping oracle and measure state/scan/write amplification.
+  Optional curator bands add T11 only when enabled: preserve known-zero/unknown
+  bins and the original normalization population, and process score-only changes
+  through bounded author→endpoint fanout or a declared rebuild. Corrupt T11 while
+  base composition continues. Two simulated peers with identical witness history
+  and different later inventories must not yield invented current counts.
 
 **Oracle and negative control:** Python sorts an independently enumerated small
 spread multiset and selects `ceil(p*n)` (one-based). A late earlier observation
@@ -497,6 +549,11 @@ proof that a relay lacks an event. Historical attempts remain inspectable.
 - [ ] **Step 3:** maintain old/new finalized-attempt contributions with interval
   expiry and immutable corrections. Distinct target counts and attempt counts
   are separate; repeated delivery of one measurement cannot increase either.
+  Expose optional `probe-served-set/1` composition through T07's pure reducer over
+  exactly this job's S set and retained bodies. Carry requested selection/method,
+  S/N/U/unattempted counts and time basis; missing or superseded positives cannot
+  become current membership. It is a selected-ID sample, never a relay inventory
+  estimate. Reuse existing actual attempt facts, not a repeat-delivery log.
 - [ ] **Step 4:** restrict public aggregates to eligible public contexts before
   aggregation. Do not infer censorship from missing peer overlap or publicize
   private authentication subjects in examples.

@@ -31,6 +31,14 @@ checks. Active acquisition/network measurements use a separate explicit command.
 Neither command starts collection, mutates store ownership or signs events.
 `serve --roles ...` resolves required
 data dependencies and names missing ones without silently enabling more services.
+The [deployment contract](../specification/deployment-contract.md) defines concrete
+native/Compose recipes and PG/CH connection roots, applicable secret references
+and verified remote TLS. Role selection is the current process's assignment,
+not permission to create another process or database. Unselected worker defaults
+are staged and create no work; omitted role arguments use the explicit local root
+assignment. Static validation checks declared dependencies; `doctor` checks their
+bounded reachability/schema/grants from the calling namespace. Neither can turn a
+reachable empty or wrong dataset into a verified serving generation.
 
 | Concern | Default design | Change behavior |
 |---|---|---|
@@ -52,8 +60,8 @@ data dependencies and names missing ones without silently enabling more services
 
 Every service's complete key table appears in its contract. Values there are
 starting defaults with units, not promised production limits. A Tux tuning recipe
-is separate from safe generic settings. A max_connections value of 128 in a generic
-worker does not mean the product supports only 128 endpoints; the recipe, memory
+is separate from safe generic settings. A max_connections value of 128 in a host
+route domain does not mean the product supports only 128 endpoints; the recipe, memory
 envelope and measured workload determine active-session capacity.
 
 ## Shared budget allocator
@@ -150,6 +158,16 @@ domains. Recipe/feature transitions and fixed split-role routes follow the
 An enabled role needs its live dependency; stopping an algorithm does not silently
 stop the storage owner or erase retained results. Archive-only allocates no online
 Index Rocks/CH domains.
+
+`sync-only` and `monitor-only` use explicit fixed endpoint lists plus one-shot
+operator enrollment, with bootstrap/discovery/validation disabled; another known
+relay cannot join their schedules. Their archival variants require no CH.
+`serve-existing` requires matching PG/Control authority and CH frontier/incarnation
+state; archive and Index routes apply only to advertised cold/maintenance/NEG
+capabilities. Remote engine credentials are deployment roots, distinct from
+public-relay routing rules. Compact placement may co-locate the explicitly selected
+application owners, while preserving native-job process termination and the
+documented shared failure scope.
 
 ## Shared lifecycle vocabulary and once semantics
 

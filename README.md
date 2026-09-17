@@ -29,7 +29,7 @@ The [detailed phase/task/step plan](docs/implementation/README.md),
 The [five-round expansion review](docs/reviews/09-expanded-plan-rounds.md) records
 what changed and which practical results remain owed by the future product.
 
-The latest [complete-document audit](docs/reviews/11-whole-repository-audit.md)
+The earlier [complete-document audit](docs/reviews/11-whole-repository-audit.md)
 records full coverage of its 70-file Markdown baseline, concrete corrections,
 the table/interface/naming handoff and a controlled document-layout experiment.
 [Decision confidence](docs/planning/decision-confidence.md)
@@ -51,3 +51,13 @@ ContextVM are specified alongside HTTP, ArchiveRelay and DVM through one read co
 The [large Tux storage and recovery report](docs/research/tux-storage-qualification-20260917.md)
 adds 20-million-event engine experiments, signed readback and actual restore
 evidence. It states their limits explicitly; it is not fleet or product acceptance.
+
+The current [full review and deployment handoff](docs/reviews/16-complete-handoff.md)
+covers its complete 106-file Markdown baseline, then reconciles independent roles,
+local/S3 storage, useful incremental analytics, compatible assertions and agent
+resumption. Start installation design with the
+[deployment contract](docs/specification/deployment-contract.md); the
+[archive placement contract](docs/specification/archive-storage-contract.md)
+explains exactly when S3 is useful. The additional
+[Tux object-storage and CH report](docs/research/tux-object-storage-20260917.md)
+records executed engine checks and their limits.

@@ -93,7 +93,7 @@ separate complete targets. Normal clients use the read core, not arbitrary SQL.
 | `serving.current_memberships` | Header key plus typed relation/member identity, with signed list order represented separately from distinct logical membership | Deriver P05-T02; children reference the complete header generation; no old members resurrect from an empty winner |
 | `current_replaceable_events`, `current_addressable_events`, `current_relay_list_entries` | Existing P05-T02 target/view names over the corresponding headers/memberships | Logical compatibility views/target bindings, not a requirement for another full copy of current state |
 | `global_facts`, `social_facts`, `nip85_input_facts` | Versioned typed facts per subject/population/window with exactness and source cut | Independent P05 targets, never a generic unlabeled number |
-| `relay_facts`, `relay_state_aggregates`, `relay_coverage` | Attributable observations, resolved evidence and qualified coverage | P04 local view / P05 resolved targets have separate ownership and input meaning |
+| `relay_facts`, `relay_state_aggregates`, `relay_coverage` | Attributable observations, resolved evidence, qualified coverage and generation-keyed `relay.composition/1` summaries of a declared witnessed population | P04 local view / P05 resolved targets have separate ownership and input meaning; observed history is not current remote inventory |
 | `relay_overlap_groups`, `relay_overlap_members`, `relay_dedup_candidates`, `relay_cluster_edges`, `relay_clusters` | Generation-qualified verified equal-set groups/members, comparable group candidates, verified group relations and connected components; endpoint pairs are the exact logical relation expanded lazily | P05 overlap target; exact/approximate candidate coverage explicit; no relay identity merging |
 | `event_propagation_stats`, `relay_selective_availability`, `relay_availability_frontier` | Existing P05 provenance-derived targets with method, denominator, observed scope and unknowns | Optional provenance inputs; first witness is not physical propagation or current presence |
 | `serving.current_graph_edges` | Selected current follow/mute relations with vertex/input lineage | Graph builder; partitioned adjacency/CSR artifacts separately account for full V/E work |
@@ -229,6 +229,12 @@ domains use their separate shape/view generation rather than an analysis target.
 | `derived.window_inputs` | Definition/scope/member or exact value/frequency, expiry deadline and inverse removal data needed for rolling windows/quantiles/current visibility; share typed variants, retain required resolution; P05 window/quantile targets and P06 temporal visibility |
 | `derived.reconciliation_sets` | Configured shape/view/policy/encoding-limit generation with distinct ordered `(created_at,event_id)` membership and compatible range summaries; P06-T08 |
 | `derived.reconciliation_pins` | Owned immutable set snapshot/read lifetime and relevant generation identities, referenced by the common PG read/retention pin contract; bounded client/cache lifetime, not a second authorization lease; P06-T08 |
+
+Relay composition reuses these contribution/distinct domains for scoped
+event/endpoint membership, author reference counts and exact concentration state.
+It does not create another permanent duplicate-delivery log, raw body copy or
+unbounded index for every possible research filter. P05-T07 owns its population
+and generation semantics.
 
 Use a WAL-enabled synchronized atomic batch for a target's state changes,
 checkpoint and deterministic pending output identity; replay after interruption

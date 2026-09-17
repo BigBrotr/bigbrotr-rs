@@ -311,8 +311,11 @@ request always returns `RetiredRequest`, without reconstructing or promising a
 discarded digest. Caller-requested semantics cannot be hidden in transport fields.
 
 Archive and projection digests bind ordered semantic content. File paths,
-compression, row groups, Parquet bytes and upload names are excluded; prepared
-files additionally have conventional SHA-256 file checksums in their manifests.
+compression, row groups, Parquet bytes and upload names are excluded. Prepared
+artifact/backup files carry conventional SHA-256 checksums in their manifests;
+native archive files track uncaptured versus captured checksum state explicitly
+under the [storage placement contract](archive-storage-contract.md#actual-publication-and-protection-boundaries).
+An engine receipt or ETag is not an application file SHA-256.
 Compaction/re-encoding preserves fact digests. Rechunking changes chunk/batch
 identity and cannot reuse an old token with different membership. Empty derived
 generations use their explicit completion manifest; a zero-row chunk is not

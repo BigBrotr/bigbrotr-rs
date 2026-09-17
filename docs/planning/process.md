@@ -165,3 +165,22 @@ research. Its independent review also corrected projection-byte accounting and
 summary-mode validation. Failed harness runs remain visible beside corrected
 ones. The paper baseline is committed separately from the later engine evidence;
 neither begins product implementation.
+
+## Complete deployment, analytics and continuity reconciliation
+
+[Review 16](../reviews/16-complete-handoff.md) accounts for all 106 baseline
+Markdown documents through complete assigned reads and Git-matched hashes, then
+reviews changed contracts and new experiments. It makes local/S3 placement and
+role composition explicit, narrows default derived work to useful bounded targets,
+adds precisely scoped relay composition and compatible publication metadata, and
+specifies a single verified resumption checkpoint for the implementation agent.
+
+Independent criticism changed the proposal too: mandatory full-file S3 readback
+was removed from the ingestion path; native persistence, semantic receipts,
+checksum capture and backup verification are separate obligations. Stronger
+experimental oracles replaced a periodic range fixture and unchecked LIST claims
+in a separately recorded run. Real ClickHouse counterexamples establish why naive
+insert-time aggregation cannot own mutable/replayed/expiring facts. A further
+full-file Go acquisition comparison clarifies fixed historical horizons,
+subdivision recovery and limited completeness claims. Engine and model findings
+retain their exact scope; product acceptance remains unexecuted.

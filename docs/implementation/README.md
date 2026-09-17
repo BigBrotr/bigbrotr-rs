@@ -14,6 +14,8 @@ producers/consumers; prose and fixtures explain meaning beyond the IDs.
 ## Normative specification and reading order
 
 Use [the agent execution guide](agent-handoff.md) for the implementation/audit pipeline.
+Use the single [current checkpoint](progress.md) to resume, after verifying its
+claims against Git and actual process/evidence state.
 Begin with [the newcomer guide](../start-here.md), then the
 [storage catalog](../specification/storage-catalog.md),
 [interface catalog](../specification/interface-catalog.md) and
@@ -28,6 +30,12 @@ P05/P06/P07 semantics; their exact task mappings are part of the handoff below.
 4. [Selected DVM application profile](../specification/dvm-profile.md), when that optional interface is enabled.
 5. The owning architecture/service specification linked by each phase.
 6. The phase's task, its specific prerequisites and practical completion evidence.
+
+[Deployment composition](../specification/deployment-contract.md) and
+[archive placement](../specification/archive-storage-contract.md) refine P01/P02/
+P03/P04/P08: native/Compose, fixed-list acquisition, conditional dependencies,
+single/split machines, local/S3 credentials, backup and relocation. They introduce
+no new product/task hierarchy or mandatory object-store service.
 
 Architecture prose defines product semantics. Tasks define how to build and
 demonstrate them. Generated schemas/reference/CLI help will be implemented from

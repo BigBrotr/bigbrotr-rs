@@ -1,0 +1,19 @@
+# Isolated Compose-parser fixture. Never start these placeholder services.
+name: bigbrotr-deployment-parser-lab
+services:
+  engine-placeholder:
+    image: example.invalid/deployment-parser-only:never-run
+    command: ["false"]
+  selected-placeholder:
+    image: example.invalid/deployment-parser-only:never-run
+    command: ["false"]
+    profiles: ["selected"]
+    depends_on:
+      engine-placeholder:
+        condition: service_started
+    ports:
+      - "127.0.0.1:19876:9876"
+  unrelated-placeholder:
+    image: example.invalid/deployment-parser-only:never-run
+    command: ["false"]
+    profiles: ["unrelated"]

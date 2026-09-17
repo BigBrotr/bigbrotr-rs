@@ -37,7 +37,7 @@ flowchart LR
   C --> G[Derivation and rank jobs]
   G --> C
   C --> Q[Read core]
-  Q --> H[HTTP, archive relay, optional DVM / MCP / ContextVM]
+  Q --> H[HTTP, archive relay, optional DVM / MCP, experimental ContextVM]
   H --> U[Public dashboard]
   L --> E[Standalone research exports]
   P[(PostgreSQL: control plus separate DuckLake catalog)] --- I
@@ -47,8 +47,10 @@ flowchart LR
 ```
 
 The diagram shows durable relationships, not one synchronous chain. Pausing a
-ranker leaves collection working. Pausing indexing leaves its previous complete
-view readable and dated. A long archive outage eventually fills finite pending
+ranker leaves collection working. Pausing source projection can leave its previous
+complete view readable while policy and temporal dependencies remain valid;
+otherwise the affected resource becomes unavailable. Stopping an Index state
+owner also removes its dependent capabilities. A long archive outage fills finite pending
 space and pauses acceptance; no service promises infinite buffering.
 
 ## What the six storage names mean
@@ -66,6 +68,25 @@ See the [storage catalog](specification/storage-catalog.md) for every selected
 logical table, keys, row units, owners and retention. Physical sort orders, codecs
 and file targets have explicit alternatives; a migration becomes a supported
 layout only after its actual engine/recovery/workload tests.
+
+## Installing and placing the roles
+
+The selected default uses local archive files. Optional S3 storage is configured
+with a bucket/root, provider endpoint where needed and a secret reference; it can
+be external cloud storage or a separately operated compatible server. It is not
+a mandatory extra container. Collectors, online gateways and archive workers can
+run on different hosts under the [deployment contract](specification/deployment-contract.md),
+which identifies their actual data/control dependencies and single-writer owners.
+A collector/gateway split can still keep all archive-byte jobs on one local data
+host. Multiple hosts alone do not add replication or failover.
+
+ClickHouse serves complete online event bodies and useful query/analytical
+projections. The read core gives clients and dashboards coherent authorized
+results; larger research/export jobs use a separately bounded archive path.
+Incremental facts have explicit deduplication, correction, retraction and expiry
+rules. Expensive all-pairs overlap and broad propagation studies do not run just
+because their table family exists. See the [analytics contract](architecture/analytics-detail.md)
+for the population and cost of each selected computation.
 
 ## What is kept
 

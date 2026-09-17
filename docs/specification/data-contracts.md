@@ -450,8 +450,9 @@ has its own body digest and does not claim the private internal fact's digest.
    deferrals produce no measurement observations.
 6. A newer empty relay list followed by older backfill: current header remains
    the empty winner, with no resurrected entries.
-7. Kill a started monitor attempt before terminal evidence: recover start and
-   record unknown completion, never classify a remote failure from missing data.
+7. Kill a monitor caller before terminal evidence: recover its dispatch intent
+   and distinguish known start from uncertain execution. Never invent a start
+   or classify a remote failure from a missing terminal result.
 8. Export a document-bearing measurement and detach the running system: resolve
    every document/dictionary, retain empty tag strings and extreme timestamps,
    and identify unavailable/lossy data explicitly.

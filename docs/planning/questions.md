@@ -143,3 +143,26 @@ ContextVM and MCP have concrete optional gateway contracts; generic public RPC
 is not selected. Product implementation has not started. New isolated Tux
 qualification uses a fresh separately inventoried lab; actual results and remaining
 failure/scale limits belong to the evidence dossier, not implied approval claims.
+
+Q25: The owner clarifies independent service selections, ordinary-hardware setup,
+optional external S3 capacity, split hosts, rich monitoring/assertions and reliable
+agent continuation. Select explicit role/capability dependencies, fixed endpoint
+sets without discovery, local archive by default and qualified S3 where placement
+requires it. Native and Compose share semantics; neither Docker nor shared PG
+provides automatic failover. Current contracts and review16 explain the choices.
+
+Q26: The owner reiterates that ideas are hypotheses and requests complete relevant
+file reads. BigBrotr's identity remains verifiable Nostr archive/observatory with
+useful client/research access. Keep concrete optional MCP; ContextVM experimental;
+no generic public RPC merely for completeness. Directory navigation and full
+owning-file/caller/contract reads precede changes; searches locate material but
+cannot stand for review coverage. One checkpoint preserves verified continuation.
+
+Q27: The owner emphasizes CH analytics, rich dashboards, Nostr reads and research.
+Select shared full online bodies plus narrow query paths and complete derived
+generations. Maintain frequent facts incrementally with replay/retraction/expiry
+ownership, not naive sum-on-insert views. Alternate populations and costly analysis
+use bounded jobs/artifacts; direct SQL is a separate authorized research/admin
+route, not an unrestricted public read-core endpoint. Actual CH counterexamples
+and measured layout candidates inform the design without claiming universal
+optimality or unlimited billion-row capacity.

@@ -14,6 +14,10 @@ historical reviews do not override current specifications.
 The [large-storage and final handoff check](../reviews/15-large-storage-and-final-handoff.md)
 adds acquisition proof/visibility corrections and actual larger engine evidence.
 It does not close the unimplemented product gates below.
+The [current full review](../reviews/16-complete-handoff.md) adds complete baseline
+read accounting, role/deployment and archive placement contracts, richer scoped
+analytics/publication definitions and a durable agent checkpoint. Its real S3 and
+CH counterexamples refine implementation requirements, not product readiness.
 
 ## Disposition of the eight paper gaps
 
@@ -42,6 +46,7 @@ its affected choice rather than weakening the invariant to preserve the plan.
 | CH physical order and projections | Complete event fields, cut-relative eligibility, no duplicate logical facts. Compare ID-first/chronological layouts and narrow access paths at identical query/filter/preservation scope, including parts, concurrent load, repair and qualified durability. | P02-T09 before release DDL. Projections are rebuildable acceleration, not independent source truth; base fallback/explicit unavailable must remain correct. Verify known fsync/recovery issues on the exact release. |
 | Exact inventory and documents | Preserve first times, scopes, signatures and exact membership. Baseline compact ordinals/flat exact keys; compare grouped layouts and wide versus referenced documents at meaningful cardinality/churn, including dictionaries and peak bytes. | P02-T09 before persistent release format. Keep simpler qualifying layout; no custom second LSM or membership-only substitute masquerading as equivalent evidence. |
 | Archive batching/inlining | Multi-family atomic receipt, standalone closure, bounded quiet-event latency and safe maintenance. Compare file/row sizes and narrow receipt inlining with explicit engine settings and catalog/backup cost. | P02-T04/T09 before tuning freeze. Smaller files or a refused incompatible configuration are preferable to accepting an event that cannot complete downstream. |
+| Local/S3 backend qualification | Local default; configured S3 optional. Preserve semantic receipts and exact closure; qualify actual catalog/object persistence, credentials, request/egress cost, missing-data refusal and isolated restore. Full-file SHA capture is separate from native durability. | P02-T04/T08/T09 and P08 split/restore journeys before provider support. The loopback Garage research proves only its stated interactions; no automatic cloud or multi-host certification. |
 | Search backend | Selected exact analyzer/filter/phrase/relevance contract and complete candidate coverage. Start with CH; compare Tantivy only for a demonstrated capability/resource deficit, including operational and index-copy costs. OpenSearch is not mandatory. | Early P06-T06 before search deployment promises. A semantics change needs a new explicit profile; do not call different results an equal-query speedup. |
 | Graph/overlap algorithms | Stationary trust target/error contract, independent reference profile, exact logical pair relation and declared approximate alternatives. Measure loading, construction, solver/residual passes, spill, equal-set grouping and output expansion. | Early P05 slices before broad materialization. Refuse incomplete exact work; do not call a spanning forest all pairs or fixed iterations convergence. |
 | Sustainable fleet envelope | Mixed workload, fair discovery/revisits, useful reads, monitor/graph/export/maintenance and outage recovery inside declared host limits. | P03–P08 acceptance before capacity advertising. Reduce qualified envelope or change placement; do not hide dropped work, overdue relays or accepted-data loss. |
@@ -67,6 +72,9 @@ residual-bounded trust profile, exact-set overlap grouping, one default socket
 owner and a single configuration authority. Keep full signed event retention and
 optional provenance; no added broker, graph database, generic plugin framework or
 public arbitrary RPC. Optional MCP and experimental ContextVM share the read core.
+Precompute useful dashboard/client facts and NIP-85 inputs with explicit delta/
+retraction state; keep alternate costly analyses as bounded jobs or offline exports.
+CH materialized views are qualified accelerators, not a second correctness owner.
 
 The [agent guide](../implementation/agent-handoff.md) requires audits at persistent,
 public, derived and distribution boundaries, practical real-system checks and

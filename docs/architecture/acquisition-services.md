@@ -12,12 +12,22 @@ BigBrotr retains six independently selectable acquisition capabilities: Seeder, 
 | Discoverer | Ordered accepted-event feed and optional external directories | Discovery evidence, candidate queue entries, extraction checkpoints | Registry; event feed only for its archive leg |
 | Validator | Due enrollment/candidate work | Admission transitions and validation observations | Registry; guarded transport |
 | Monitor | Eligible known endpoints and check schedule | Typed measurement records; latest-state projection; run envelopes | Registry; guarded transport; durable ingest |
-| Synchronizer | Enrolled endpoints, acquisition selectors, scoped traversal work | Verified bodies, local provenance, traversal/evidence/gap records | Registry; durable ingest; ordered identity-set reader; guarded transport |
+| Synchronizer | Explicitly selected enrolled endpoints, acquisition selectors, scoped traversal work | Verified bodies, local provenance, traversal/evidence/gap records | Registry; durable ingest; guarded transport; ordered identity-set reader only for reconciliation |
 | Importer | Explicit immutable corpus and manifest | Verified bodies, imported claims, job progress and rejection summaries | Durable ingest; registry identity API; policy snapshot |
 
 Seeder and Importer are finite jobs by default. The other services run independent asynchronous loops. No slow validation cycle blocks monitoring, discovery or synchronization. Disabling a producer leaves existing data usable and exposes its age. Missing required storage is a dependency failure, while an empty valid queue is healthy idle. A service-start graph must not invent a requirement to co-run Seeder, Discoverer or Validator when an existing registry already supplies relays.
 
-Prefer a single binary with selectable services and in-process contract implementations for a single host. On multiple hosts use authenticated bounded ingest RPC to an append authority, or independently owned ingest partitions with globally unique record identifiers. Do not share an embedded database directory or writable journal across processes. PostgreSQL-style transactional registry operations are a suitable control-plane implementation; the storage decision document owns the selected engine. Analytics availability is not required to admit relay events or scan discovery evidence.
+Prefer a single binary with selectable services and in-process contract implementations for a single host. On multiple hosts use authenticated bounded ingest RPC to the fixed single-shard append authority; independently owned ingest partitions are a future sharding capability, not enabled by deploying another worker. Do not share an embedded database directory or writable journal across processes. PostgreSQL-style transactional registry operations are a suitable control-plane implementation; the storage decision document owns the selected engine. Analytics availability is not required to admit relay events or scan discovery evidence.
+
+The [deployment contract](../specification/deployment-contract.md) selects native
+and Docker recipes, including fixed-list sync-only, monitor-only and serving of
+existing data. Worker selection is explicit; unselected worker defaults do not
+activate its loops. Fixed-list sync/monitor intersects its own endpoint list with
+operator enrollment, current route/access authority and bans. Operator enrollment
+permits the worker's own unverified due work without a preceding successful
+Validator run. A pre-existing unrelated registry entry never widens that list.
+Scheduling/backoff remains local to each worker; disabling Validator cannot strand
+explicitly enrolled endpoints behind a Validator-owned active-state transition.
 
 Three alternatives were considered: retaining the sequential Go supervisor would reproduce unrelated-service stalls; one process per named service from day one would add operational dependencies; composable service tasks with the same durable contracts preserve small installations and allow later process separation. The third is the recommendation. The no-RPC rule and the single-root-journal layout are not product invariants.
 
@@ -92,6 +102,11 @@ This is deliberately more conservative than the Go scheme-less identity. The rat
 
 ### Guarded dialing and budgets
 
+This section governs untrusted acquisition destinations. Operator-configured
+database/object/private-RPC endpoints instead use the separately authorized
+[infrastructure routes](../specification/deployment-contract.md#remote-endpoints-credentials-and-trust-boundaries).
+An allowed private infrastructure endpoint never becomes a private crawler rule.
+
 All websocket, HTTP, TLS, directory, Geo refresh and redirect requests go through the shared egress adapter. Direct public dialing resolves once, canonicalizes IPv4-mapped addresses for policy checks, filters all results, and dials only a pinned allowed address while retaining original Host/SNI. Re-check each fresh connection and redirect target. A hostname with both public and denied addresses may use only its public addresses; report policy exclusion if none remain. Never fall back to the OS client's default resolver or a second unguarded resolution. TLS verifies both chain and hostname; configured custom trust roots are supported, global verification bypass is not.
 
 Use explicit `public`, `private` and overlay route policies rather than inherited global localhost XOR. Public route excludes loopback, private, link-local, carrier NAT, unspecified, multicast, broadcast and reserved address space. Private routes require operator-declared hostname/endpoint plus CIDR/port scope and are ineligible for public publication. Metadata/link-local addresses remain denied unless an exact private policy explicitly names them. The default has no private route. A fixture profile can allow only its loopback relay without exposing public crawling to private addresses.
@@ -113,7 +128,7 @@ Reload classes: **H** applies atomically to new work on hot reload; lowering lim
 | `network.{tor,i2p,lokinet}.enabled` | `false` | bool | H | Enabled route requires a tested adapter and proxy/router settings |
 | `network.{tor,i2p,lokinet}.proxy` | absent | URL/reference | C | No invented reachable proxy default |
 | `network.tls.extra_roots` | `[]` | file paths | C | Strict TLS plus optional custom CAs |
-| `network.max_connections` | `128` | connections/worker | H | Validated against process FD budget with reserve |
+| `network.max_connections` | `128` | connections/host route domain | H | Shared socket owner or reconciled Control permits enforce this aggregate; validated against process FD budget with reserve |
 | `network.endpoint_connections` | `1` | connections/scope | H | Can increase explicitly for demonstrated relay needs |
 | `network.host_connections` | `4` | connections/hostname | H | Applies across services; lower global limit still wins |
 | `network.host_request_rate` | `2` | starts/s | H | Token bucket, burst 4; not a byte budget |
@@ -130,8 +145,16 @@ Reload classes: **H** applies atomically to new work on hot reload; lowering lim
 | `relay_policy.self_endpoints` | generated plus `[]` | endpoint ids | H | Synchronizer excludes; Monitor may measure them |
 | `auth.bindings` | `[]` | endpoint/signer/scope | C/E | Changed scope creates fresh evidence identity |
 | `observer.id` | generated/persisted UUID | identity | R | Never an all-zero substitute pubkey |
+| `sync.endpoints.mode`, `monitor.endpoints.mode` | `enrolled` in full recipe; `fixed` in the corresponding role-only recipe | enum | H | `enrolled` selects eligible enrolled endpoints; `fixed` additionally requires membership in that worker's explicit list |
+| `sync.endpoints.urls`, `monitor.endpoints.urls` | `[]` | canonical websocket URLs | H | Fixed mode requires 1–100,000 normalized unique entries and at most 8MiB total encoded input; enrolled mode rejects a nonempty inert list. Membership grants neither enrollment nor egress. Removing an entry drains its work, preserving evidence/progress. |
 
-These defaults are per worker. Distributed lease ownership and budget allocation must cap aggregate connections; starting four workers must not silently quadruple an operator's declared global budget. Total queue memory is bounded by a process-wide admission allocator, not the sum of independently preallocated maxima. Journal group-commit, durable partition quotas and retention are storage controls shared by all producers; do not duplicate them under Synchronizer.
+The connection ceiling is host/route-wide: starting four workers there must not
+quadruple it. Split hosts have separately declared quotas; no fleet-wide network
+allocator is implied. Worker concurrency remains additionally bounded by that
+shared ceiling. Total queue memory is bounded by a process-wide admission
+allocator, not the sum of independently preallocated maxima. Journal group-commit,
+durable partition quotas and retention are storage controls shared by all
+producers; do not duplicate them under Synchronizer.
 
 ## Seeder contract
 
@@ -214,6 +237,14 @@ Acceptance is visible through `bigbrotr run validator --once`, candidate detail 
 
 ## Monitor contract
 
+Monitor can run with Discoverer, Validator and Synchronizer disabled. Explicitly
+enrolled fixed endpoints enter its own due schedule without fabricated validation.
+Its archival recipe still requires PG attempt/policy state, ingest and archive;
+CH is needed only for explicitly selected online views. Private operational status
+and offline export remain usable without a second scientific projection in PG.
+Received probe events are bounded measurement inputs, not an implicit historical
+or live synchronization subscription.
+
 Monitor owns measurement, not relay admission or signed announcement publication. Two independent schedules share a budget: frequent lightweight liveness and slower catalog refresh. Due-time decay applies after repeated transport failures, capped at a weekly interval, with successful local evidence restoring normal cadence. New discovery mentions are hints for bounded rechecks, not proof of uptime. Fair due ordering and completed-probe counts expose whether configured cadence is actually achievable.
 
 Liveness checks websocket open and a bounded read request. A prompt EOSE on an empty relay is readable; event-based read RTT is absent when no event arrives. Separate `open_ms`, `request_to_eose_ms` and `request_to_first_event_ms` so an empty relay is not down and an EOSE duration is not mislabeled as event latency. A pass updates only fields it measured; it cannot refresh old TLS/NIP-11 values or mark an unexecuted full catalog as complete.
@@ -286,17 +317,49 @@ There is no scalar global complete flag. Preserve three separate concepts:
 
 ### Layer algorithms
 
+**Finite history planning.** Start at the collection lower bound (zero by default)
+and capture a finite target horizon H from the scheduled wall time and explicit
+selector bounds. An initial or resumed pass retains its exact `[lo,H)` obligation,
+next interval, pending subdivisions and current learned width. Later clock
+movement creates an extension obligation rather than moving that pass's finish
+line. Scan successive bounded intervals in ascending time; each linear interval
+still paginates newest-to-oldest as below. A split or age-band handoff must retain
+the entire parent range as completed qualified attempts or pending/gap work.
+`traversed_until` is the contiguous attempted prefix, not the largest timestamp
+from whichever child finished first. Retain gaps inside that prefix separately.
+
+Binary subdivision is an optimization for a costly/capped interval, never binary
+search for the first nonempty history. Sparse event populations are not monotone:
+empty responses between two populated intervals cannot justify skipping either
+side. Persist child obligations before yielding; a restart replays an unfinished
+request from its last durable boundary. Empty-span growth still queries every
+new span. A long disconnection leaves the entire unattempted extension pending;
+the latest 48-hour revisit bands alone cannot discharge older missed intervals.
+Recent/live work retains its independent fair share while that extension drains.
+
 **Live.** Open a subscription with serialized `limit:0` and the collection selector, without an invented `since=now` unless collection policy requires it. An author may submit a backdated event live. Admission verifies every body and records local observation context. Unexpected stored events from a relay ignoring limit remain bounded and are admitted if within policy; flag the behavior. Live data never advances historical traversal.
 
 **Historical linear.** For a finite internal interval `[lo, hi)`, translate to inclusive wire `since=lo, until=hi-1`, checking underflow/overflow. Request the configured limit and wait for attributable EOSE under a request deadline. Verify and scope-check returned records, then obtain their Receipt/ExistingProof basis through Admit or CertifyExisting. A short page does not finish traversal. Continue with `until=oldest_received_second`, inclusively overlapping the boundary. Track ids within the current request walk, not the global archive seen-set: an event already held elsewhere must not terminate pagination or suppress this relay's witness. Consecutive empty intervals may grow exponentially up to 365 days to avoid a daily request for decades before Nostr existed; return to the configured initial width after finding data. Each actual queried interval still has its own evidence and no inference skips an unqueried range.
 
 If the boundary repeats without exposing new ids or older seconds, record a boundary stall/uncertainty and query the older interval ending at `second-1`; this makes finite progress without claiming the boundary is exhausted. Detect ordering/filter violations and interrupt the affected scope. For explicit finite kinds/authors, subdivide a saturated second into disjoint combinations within a partition budget. An unrestricted author set cannot be exhaustively enumerated from authors already observed. An empty page yields `linear_observed`, not absolute completeness. NIP-67 `finish` can terminate the current query as relay-reported exhaustion; `more` continues; `auth` retains a restricted-scope qualifier even alongside finish. Contradictory finish+more is an anomaly, and missing known ids stay gaps despite finish.
 
+At second zero there is no older request: retain the boundary gap and finish only
+the attempted-range obligation. Optional kind subdivision may enumerate the full
+finite [0–65535 kind domain](https://github.com/nostr-protocol/nips/blob/a2494f4f81d46684e5814a9bf35e2b1df978f955/01.md#events-and-signatures)
+even when the selector omitted kinds; intersect other
+selector constraints and persist the bounded partition cursor. This preserves a
+useful Go optimization without requiring 256 bucket requests per saturated second
+by default. A still-saturated single kind/author/time leaf remains unresolved;
+an observed-author list cannot stand in for the complete author domain.
+
 **Historical negentropy.** Use a durable snapshot of locally witnessed `(created_at, event_id)` for this endpoint/observer/access/target-visibility scope, plus same-scope verified policy suppressions. Select currently authorized archive eligibility and witnesses in the exact target visibility scope before forming membership; an inaccessible private witness cannot suppress a required public retrieval, eligibility or first witness. This archive inventory does not apply serving winner/deletion/expiry filters unless the collection policy explicitly requires them. The snapshot reader reports an ingest watermark and moderation epoch; stale projections cannot be passed off as current. This is a read contract, not a requirement to maintain a permanent second provenance-sized RocksDB index. A sorted analytical projection plus a bounded committed tail, a dedicated index, or bounded reconstruction from durable shards are implementation alternatives to compare by measured reads, writes and memory.
 
 Missing entries in a conservative stale local set cause extra downloads and are safe; fabricated or stale retained-ownership entries are not. Apply current suppression/retention state, and do not infer successful retrieval from a missing/unavailable reader. A bounded committed tail may supplement a lagging reader; if it exceeds its bound, either use a conservative older subset with extra verified fetches or defer reconciliation, recording the actual reader watermark. Unrelated live acquisition continues. With provenance disabled, body membership is allowed only for a declared body-acquisition objective and requires eligibility in the target visibility scope; a globally held private-only payload is insufficient. It cannot generate local relay-witness claims.
 
-Reconcile bounded time intervals and cap local set memory, frame bytes, rounds and duration. `blocked` starts bounded subdivision; an age restriction or a one-second interval still exceeding limits becomes a gap. The client algorithm's successful processing determines protocol termination, then the client sends NEG-CLOSE to release resources. Download missing ids in bounded exact-id REQs, verify each id/body, and require a real served event to create a new local witness even if that body exists from another relay. Retry absent ids; persist `advertised_unserved` after exhaustion. A remote advertisement without retrieval remains an advertised claim, not a local witness. No upload of local archive events is part of synchronization.
+Reconcile bounded time intervals and cap local set memory, frame bytes, rounds and duration. Attributable result-size refusal permits bounded subdivision; the generic `blocked` prefix alone does not establish that cause. Preserve auth/age/policy restriction or unclassified refusal instead of retrying smaller windows indefinitely. An age restriction or a one-second interval still exceeding limits becomes a gap. Retain a useful reduced width for the current walk and its continuation; a later new pass may reconsider it within its budget. The client algorithm's successful processing determines protocol termination, then the client sends NEG-CLOSE to release resources. Download missing ids in bounded exact-id REQs, verify each id/body, and require a real served event to create a new local witness even if that body exists from another relay. Retry absent ids; persist `advertised_unserved` after exhaustion. A remote advertisement without retrieval remains an advertised claim, not a local witness. No upload of local archive events is part of synchronization.
+The pinned [NIP-77 error contract](https://github.com/nostr-protocol/nips/blob/a2494f4f81d46684e5814a9bf35e2b1df978f955/77.md#error-message-relay-to-client)
+allows `blocked` for excessive record counts or old records, so its prefix cannot
+justify a size-only retry policy.
 
 **Age-banded revisits.** Revisit explicit nonoverlapping signed-age bands,
 independently of historical progress. The initial bands are `[0,1h)` every 15m,
@@ -324,6 +387,13 @@ arrivals, backdated injections, huge relays and more endpoints than connections;
 report coverage/delay together with savings, never savings alone.
 
 **Deep re-verification.** Stagger full-range reconciliation over time for capable relays; resume at durable interval boundaries after rotation/restart. For linear relays, retry known gaps and perform rotating older interval samples. Sampling is labeled sampling and supplies no full-history verification horizon. A scheduled full linear re-traversal is supported when explicitly budgeted, with the same protocol limitations. Do not automatically shrink the tail from observed signed-age percentiles: backdated/unseen events bias that statistic. A future adaptive policy requires a bounded comparison against fixed windows and must retain a configured minimum plus visible missed/late-event metrics.
+
+Record the pass's fixed range, method, completed/pending intervals and unresolved
+gaps with its last attempt time. A completed known-gap queue or sample cycle has
+its own completion time; it cannot update the last completed full-range pass.
+Preserve an interrupted full pass across a temporary NEG-to-linear fallback.
+Only new evidence for the exact gap/scope can resolve it; a policy exclusion
+records that reason and does not become a successfully served body.
 
 NIP-11 limits are optional request-size/subscription-count hints. A false claim never increases local resource limits or establishes coverage. COUNT is never a completion test. Probe failure leaves capability inconclusive; after a longer transport-aware retry, linear fallback may be used temporarily without permanently recording “unsupported”. Signed timestamps outside ordinary calendar ranges retain the complete verified event under the integer representation above, with bounded conversion/quarantine metadata; they cannot wedge indexing or advance arbitrary frontiers. Future-created events are not evidence that historical traversal reached the future.
 
@@ -362,6 +432,14 @@ NIP-11 limits are optional request-size/subscription-count hints. A false claim 
 | `sync.relay_byte_budget` | absent | bytes/day/endpoint | H | Optional explicit cost ceiling; no silent default exclusion |
 
 Wire bytes must actually be counted by route/endpoint/layer, including duplicates, reconciliation and control traffic. Aggregated metrics use bounded network/layer/reason labels; endpoint drilldowns are stored/queryable. Required diagnostics: oldest unserved endpoint, service interval distribution, traversal evidence by method, unresolved gaps by age/reason, admission/rejection/duplicate counts, new bodies versus new witnesses, bytes/day, protocol CPU, durable-ack latency, queue pressure, clean rotations, retries, active scopes and auth restrictions. Infrastructure errors must not decay relay reputation.
+
+Synchronizer dependency rule: `linear` has no ordered-set dependency. In `auto`,
+an absent/unavailable eligible reader selects bounded linear work with an explicit
+local-dependency reason; it does not mark the remote NIP-77 capability unsupported.
+Forced `negentropy` requires that reader and remains unavailable while its
+dependency is missing. No mode starts CH or an Indexer implicitly or treats
+unavailable membership as an empty set. Local ingest/verification policy remains
+required in every mode.
 
 ## Importer contract
 

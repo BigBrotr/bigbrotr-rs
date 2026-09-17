@@ -98,3 +98,22 @@ S/F/U, availability, coverage, lower-median latency and composite calculations.
 Incorrect probe-count, middle-average and unknown-carry alternatives differ.
 It establishes neither production window/clock correctness nor optimal ranking
 weights; those remain practical implementation/utility qualification work.
+
+## Review 16: deployment, object placement and derived-state semantics
+
+The [integrated review](../reviews/16-complete-handoff.md) records a complete
+106-Markdown baseline read and the following separately scoped experiments.
+
+| Evidence | Actual result | Selected consequence |
+|---|---|---|
+| [Deployment](evidence/deployment-contract.json) | 26 model fixtures, nine wrong-rule controls and two daemon-free Compose parser cases | Resolve capabilities from selected roles, placement and real authorities; no implicit collector or mandatory object server |
+| [Relay composition](evidence/protocol-composition-research.json) | Nine real signed events, 22 independent SQLite comparisons, replay/expiry checks and 13 wrong-rule controls | Materialize useful exact population statistics with source cuts, retractions and clock invalidation; observed history is not remote inventory |
+| [Local/S3 archive](tux-object-storage-20260917.md) | 1,048,576 rows in both layouts, 132 complete signed samples, separate reader, precommit kill, missing-object refusal and same-host 20-file restore | Optional qualified S3 placement; catalog and all family dependencies define membership, not a directory glob |
+| [Stronger S3/PG boundaries](evidence/object-storage-20260917.json) | Position-dependent multipart/range bytes, exact source/restore closure, denied writer operations and role DML/DDL | Retain narrow claims and corrected oracles; lab trust authentication does not qualify production auth |
+| [Actual CH views](../../experiments/relay-composition/README.md#clickhouse-materialized-view-counterexamples) | Three counterexamples on CH 26.5.1.882 with 67 checked HTTP commands | Insert-time views do not repair replay overcounts, right-side join changes or expiry without new input |
+
+All five newly owned Tux containers stopped after these experiments. The prior
+qualification corpus was read only. No result adds a Rust product, WAN, host-loss,
+cloud-price or 5k–100k busy-relay capacity claim. Earlier weak experimental oracles
+and provisioning failures remain disclosed rather than rewritten as successful
+runs of later source.

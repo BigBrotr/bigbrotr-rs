@@ -1,0 +1,648 @@
+{
+  "clickhouse_documentation": {
+    "accessed": "2026-09-17",
+    "scope": "Official documentation on inserted-block triggers, right-side JOIN changes and cascading merges; URLs are live documentation, not immutable revision pins. Actual engine behavior requires the separately recorded real-ClickHouse probe.",
+    "urls": [
+      "https://clickhouse.com/docs/concepts/features/materialized-views/incremental-materialized-view",
+      "https://clickhouse.com/docs/concepts/features/materialized-views/cascading-materialized-views"
+    ]
+  },
+  "clickhouse_experiment": {
+    "coordinator_reported_limits": {
+      "cpus": 2,
+      "memory_GiB": 3
+    },
+    "entrypoint": "experiments/relay-composition/ch_materialized.py",
+    "executor": "Root coordinator, fresh isolated Tux ClickHouse container; protocol subagent did not start or contact lab services",
+    "http_transcript_commands": 67,
+    "raw_artifacts": ".research/object-storage-20260917/ch-mv-run-01/{result,queries}.json",
+    "result": {
+      "clickhouse_version": "26.5.1.882",
+      "database": "relay_composition_mv_7f665cb9045640a3b5079962b4a764df",
+      "database_removed": true,
+      "endpoint": "http://127.0.0.1:48723",
+      "expiry_polling": {
+        "elapsed_seconds": 2.0506384358741343,
+        "interpretation": "Fixture orchestration only, not a latency benchmark",
+        "maximum_single_sleep_seconds": 0.05,
+        "queries": 40
+      },
+      "not_executed": [
+        "Rust product",
+        "external relay",
+        "rank solver",
+        "durable derived-state implementation",
+        "capacity benchmark"
+      ],
+      "probes": {
+        "clock_expiry_needs_scheduled_retraction": {
+          "actual": {
+            "current_full_select_events": 0,
+            "initial_mv_events": 1,
+            "unchanged_mv_events": 1
+          },
+          "expected": {
+            "current_full_select_events": 0,
+            "initial_mv_events": 1,
+            "unchanged_mv_events": 1
+          },
+          "pass": true
+        },
+        "replay_not_retracted_by_replacing_merge": {
+          "actual": {
+            "logical_events_after_merge": 1,
+            "naive_mv_events": 2
+          },
+          "expected": {
+            "logical_events_after_merge": 1,
+            "naive_mv_events": 2
+          },
+          "pass": true
+        },
+        "right_join_change_needs_invalidation": {
+          "actual": {
+            "full_select": [
+              {
+                "event_id": "event-b",
+                "label": "after"
+              }
+            ],
+            "prior_mv_output": [
+              {
+                "event_id": "event-b",
+                "label": "before"
+              }
+            ]
+          },
+          "expected": {
+            "full_select": [
+              {
+                "event_id": "event-b",
+                "label": "after"
+              }
+            ],
+            "prior_mv_output": [
+              {
+                "event_id": "event-b",
+                "label": "before"
+              }
+            ]
+          },
+          "pass": true
+        }
+      },
+      "scope": "Three bounded engine-semantics counterexamples with literal expected answers; not product correctness, throughput, crash recovery or MV rejection in general.",
+      "source_sha256": "a49fab33a92b796e815d967b8f926abb691d2560b5bb5ce536d3541d300cd73d",
+      "status": "PASS",
+      "transcript_sha256": "6505156bf1325cc5c412686ec5f48d0406ea9271a3b8ff013a3b9b81cbd28f6d"
+    },
+    "verified_transcript": "All recorded HTTP responses are 200, no ClickHouse exception header or error record, exact transcript and source hashes match"
+  },
+  "date": "2026-09-17",
+  "experiment": {
+    "after_expiry": {
+      "history": {
+        "author_counts": {
+          "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798": 3,
+          "c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5": 2,
+          "f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9": 1
+        },
+        "authors": 3,
+        "content_bytes": 35,
+        "events": 6,
+        "kinds": {
+          "1": 4,
+          "30023": 1,
+          "7": 1
+        },
+        "members": [
+          "a1",
+          "a2",
+          "b1",
+          "expires",
+          "old",
+          "unscored"
+        ],
+        "sum_author_squares": 14,
+        "topics": {
+          "nostr": 2,
+          "rust": 1
+        }
+      },
+      "visible": {
+        "author_counts": {
+          "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798": 2,
+          "c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5": 1,
+          "f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9": 1
+        },
+        "authors": 3,
+        "content_bytes": 30,
+        "events": 4,
+        "kinds": {
+          "1": 3,
+          "7": 1
+        },
+        "members": [
+          "a1",
+          "a2",
+          "b1",
+          "unscored"
+        ],
+        "sum_author_squares": 6,
+        "topics": {
+          "nostr": 2,
+          "rust": 1
+        }
+      }
+    },
+    "before_expiry": {
+      "history": {
+        "author_counts": {
+          "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798": 3,
+          "c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5": 2,
+          "f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9": 1
+        },
+        "authors": 3,
+        "content_bytes": 35,
+        "events": 6,
+        "kinds": {
+          "1": 4,
+          "30023": 1,
+          "7": 1
+        },
+        "members": [
+          "a1",
+          "a2",
+          "b1",
+          "expires",
+          "old",
+          "unscored"
+        ],
+        "sum_author_squares": 14,
+        "topics": {
+          "nostr": 2,
+          "rust": 1
+        }
+      },
+      "visible": {
+        "author_counts": {
+          "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798": 2,
+          "c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5": 2,
+          "f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9": 1
+        },
+        "authors": 3,
+        "content_bytes": 32,
+        "events": 5,
+        "kinds": {
+          "1": 4,
+          "7": 1
+        },
+        "members": [
+          "a1",
+          "a2",
+          "b1",
+          "expires",
+          "unscored"
+        ],
+        "sum_author_squares": 9,
+        "topics": {
+          "nostr": 2,
+          "rust": 1
+        }
+      }
+    },
+    "context_bytes": 498,
+    "context_sha256": "0b033cb7d7d16cde033a1e1c9293faca4aa54ae6e99fa4f05c1b63ecb387e220",
+    "curator_bands": {
+      "0": {
+        "authors": 1,
+        "events": 1
+      },
+      "1-25": {
+        "authors": 0,
+        "events": 0
+      },
+      "26-50": {
+        "authors": 0,
+        "events": 0
+      },
+      "51-75": {
+        "authors": 0,
+        "events": 0
+      },
+      "76-100": {
+        "authors": 1,
+        "events": 2
+      },
+      "unknown": {
+        "authors": 1,
+        "events": 1
+      }
+    },
+    "definition_bytes": 297,
+    "definition_sha256": "2f82336babee51145502b9e388a80e473cfece620643a6d4256650b57de5319e",
+    "duplicate_replay_checks": 22,
+    "incremental_sql_cut_comparisons": 22,
+    "negative_controls": {
+      "corrupted_signed_content": true,
+      "distinct_partition_sum": true,
+      "duplicate_deliveries": true,
+      "duplicate_topic": true,
+      "imported_claim": true,
+      "no_expiry": true,
+      "no_replacement": true,
+      "private_evidence": true,
+      "remote_states_not_identifiable": true,
+      "subtract_square_only": true,
+      "tampered_context": true,
+      "wrong_definition_id": true,
+      "zero_equals_unknown": true
+    },
+    "not_executed": [
+      "Rust product",
+      "relay/network/HTTP",
+      "persistent crash recovery",
+      "capacity or timing benchmark",
+      "independent external client",
+      "full protocol conformance"
+    ],
+    "python_secp256k1": "0.14.0",
+    "scope": "In-memory Python incremental counters versus fresh SQLite set/group oracle and static expected counts; real BIP340 signatures, existing library and independent group-equation verification. Synthetic metadata subset, not a complete production schema or interoperable hosted context.",
+    "signed_extension_events": 1,
+    "signed_fixture_sha256": "b2d3dc2aa5e5bf18f356ac1c2b2216e32c38e5c60ccf151f6fac34fc6efad0c9",
+    "signed_source_events": 9,
+    "source_sha256": "8452acc5578bdd29220f7a1db03411a2f1258e675228f95dc7b423f4caa51372",
+    "sqlite": "3.51.0",
+    "status": "PASS",
+    "zero_arrival_expiry_comparisons": 2
+  },
+  "experiment_command": "python3 experiments/relay-composition/probe.py --output .research/relay-composition/run-04",
+  "final_acquisition_review": {
+    "adopted_clarifications": [
+      "Finite captured history horizon, contiguous attempted prefix, retained subdivisions/reduced width, no binary-search skipping across sparse history, and complete pending extension after a long disconnection.",
+      "Optional complete 0..65535 kind subdivision retains its bounded cursor; unknown authors cannot be enumerated from observed samples; second-zero saturation stays a gap.",
+      "Generic NIP-77 blocked is not necessarily a size limit; classify restriction before subdivision.",
+      "Full-pass completion and known-gap/sample completion have separate achieved times; interrupted full range survives fallback."
+    ],
+    "changed_files": [
+      "docs/architecture/acquisition-services.md",
+      "docs/implementation/03-acquisition.md"
+    ],
+    "countermodel": "No new executable countermodel selected: sparse-island/out-of-order-child cases are future P03 discriminating acceptance, not a reproduced product failure.",
+    "date": "2026-09-17",
+    "full_reads": [
+      {
+        "bytes": 90780,
+        "coverage": [
+          [
+            1,
+            706
+          ]
+        ],
+        "fully_read": true,
+        "lines": 706,
+        "path": "docs/architecture/acquisition-services.md",
+        "sha256": "58e9f2b8fbcfc1d09a279ae76b88fd7b0fcfe35ad09e2d7b9a36e928201fb283",
+        "snapshot": ".research/review-16/acquisition-final-source/acquisition-services.md"
+      },
+      {
+        "bytes": 58432,
+        "coverage": [
+          [
+            1,
+            433
+          ]
+        ],
+        "fully_read": true,
+        "lines": 433,
+        "path": "docs/implementation/03-acquisition.md",
+        "sha256": "c7320007438469fd055b42410049a549a5ec5b0b68a34d04c7309fce3ea1abc6",
+        "snapshot": ".research/review-16/acquisition-final-source/03-acquisition.md"
+      },
+      {
+        "bytes": 35206,
+        "coverage": [
+          [
+            1,
+            449
+          ]
+        ],
+        "fully_read": true,
+        "lines": 449,
+        "path": "docs/research/go-acquisition-code-walkthrough.md",
+        "sha256": "e3ed1464709f25885a085bc454132fa2420e0a10a5aae0232dc788ea2b264a55",
+        "snapshot": ".research/review-16/acquisition-final-source/go-acquisition-code-walkthrough.md"
+      },
+      {
+        "bytes": 8139,
+        "coverage": [
+          [
+            1,
+            332
+          ]
+        ],
+        "fully_read": true,
+        "lines": 332,
+        "origin": "earlier frozen Go snapshot",
+        "path": "internal/synchronizer/layers_linear.go",
+        "sha256": "dfa4cb1118b12694cfd9ff3ff42a2360bc4452967424ffb73272f8560d5a4830",
+        "snapshot": ".research/code-snapshots/acquisition/internal/synchronizer/layers_linear.go"
+      },
+      {
+        "bytes": 6154,
+        "coverage": [
+          [
+            1,
+            211
+          ]
+        ],
+        "fully_read": true,
+        "lines": 211,
+        "origin": "earlier frozen Go snapshot",
+        "path": "internal/synchronizer/layers_negentropy.go",
+        "sha256": "c1ef7cd975d0294e8bcda1d218f1a491e33f34354692256e2df44e33bda94f83",
+        "snapshot": ".research/code-snapshots/acquisition/internal/synchronizer/layers_negentropy.go"
+      },
+      {
+        "bytes": 10447,
+        "coverage": [
+          [
+            1,
+            322
+          ]
+        ],
+        "fully_read": true,
+        "lines": 322,
+        "origin": "earlier frozen Go snapshot",
+        "path": "pkg/negentropy/negentropy.go",
+        "sha256": "62857e6f8a7f2a5a54eb98be3c73e15225ef74ea1daae4b2e8111f5d382b75c8",
+        "snapshot": ".research/code-snapshots/acquisition/pkg/negentropy/negentropy.go"
+      },
+      {
+        "bytes": 14553,
+        "coverage": [
+          [
+            1,
+            347
+          ]
+        ],
+        "fully_read": true,
+        "lines": 347,
+        "origin": "earlier frozen Go snapshot",
+        "path": "internal/synchronizer/barrier.go",
+        "sha256": "633c3a48366f41b320836a0a629bb217cddad40b6b38beda5ee9ff6af3194727",
+        "snapshot": ".research/code-snapshots/acquisition/internal/synchronizer/barrier.go"
+      },
+      {
+        "bytes": 22519,
+        "coverage": [
+          [
+            1,
+            643
+          ]
+        ],
+        "fully_read": true,
+        "lines": 643,
+        "origin": "earlier frozen Go snapshot",
+        "path": "internal/synchronizer/engine.go",
+        "sha256": "43d0db49704e999989f6bf639c511e808cb6ed0893a043c64524827c2ad8dc4b",
+        "snapshot": ".research/code-snapshots/acquisition/internal/synchronizer/engine.go"
+      },
+      {
+        "bytes": 2318,
+        "coverage": [
+          [
+            1,
+            61
+          ]
+        ],
+        "fully_read": true,
+        "lines": 61,
+        "origin": "earlier frozen Go snapshot",
+        "path": "internal/synchronizer/layers_livetail.go",
+        "sha256": "5fe83ce7b818b4110fc8d41d55caac7fe6bec6abfbb5f2f520399c7fd5bdea4b",
+        "snapshot": ".research/code-snapshots/acquisition/internal/synchronizer/layers_livetail.go"
+      },
+      {
+        "bytes": 2232,
+        "coverage": [
+          [
+            1,
+            61
+          ]
+        ],
+        "fully_read": true,
+        "lines": 61,
+        "origin": "earlier frozen Go snapshot",
+        "path": "internal/synchronizer/layers_safetail.go",
+        "sha256": "ce1738b56f0089868078ff3a9f4f79992729e837585a150d99cb45805fc687b6",
+        "snapshot": ".research/code-snapshots/acquisition/internal/synchronizer/layers_safetail.go"
+      },
+      {
+        "bytes": 2836,
+        "coverage": [
+          [
+            1,
+            59
+          ]
+        ],
+        "fully_read": true,
+        "lines": 59,
+        "origin": "earlier frozen Go snapshot",
+        "path": "internal/synchronizer/rscoped_loader.go",
+        "sha256": "a129258f6ca54f8b6001ad1a9c9b2f6333ebf9411dfa86349613e581d13b32d2",
+        "snapshot": ".research/code-snapshots/acquisition/internal/synchronizer/rscoped_loader.go"
+      },
+      {
+        "bytes": 6436,
+        "coverage": [
+          [
+            1,
+            209
+          ]
+        ],
+        "fully_read": true,
+        "lines": 209,
+        "origin": "new read-only capture; current source matches after reading",
+        "path": "internal/synchronizer/reverify.go",
+        "sha256": "133609ebcf0e886a76f4c3d8a3d113b0d2f19c1e0c2c435f964fe3d3b36d1613",
+        "snapshot": ".research/review-16/acquisition-final-source/reverify.go"
+      },
+      {
+        "bytes": 4136,
+        "coverage": [
+          [
+            1,
+            90
+          ]
+        ],
+        "fully_read": true,
+        "lines": 90,
+        "origin": "new read-only capture; current source matches after reading",
+        "path": "internal/synchronizer/reverify_store.go",
+        "sha256": "86df4de87b102f319b8efcf2f5972fb7fb912365da473615d41b5acf898e209f",
+        "snapshot": ".research/review-16/acquisition-final-source/reverify_store.go"
+      }
+    ],
+    "new_legacy_observations": [
+      "Full reverify.go/store.go read confirms fixed Until/Next progress and 128-entry ledger pagination, preserving useful resumable bounded work.",
+      "The Go linear-only finish path can call MarkReverified after known-gap processing without a full linear traversal; Rust explicitly keeps that completion separate.",
+      "Go barrier retains sealed/unrecorded identities and confirms an advance only after successful cursor storage; no new production durability qualification follows."
+    ],
+    "not_executed": [
+      "Go builds/tests",
+      "Rust product",
+      "relay or storage fault experiment",
+      "capacity benchmark"
+    ],
+    "read_manifest": ".research/review-16/protocol-acquisition-read-manifest.json",
+    "scope": "Final synchronization planning audit; 3 complete current docs and 10 complete Go files. No Go build/test/runtime or original mutation. Initial truncated displays were replaced by complete bounded ranges.",
+    "source_pin": "NIP-01/77 relevant sections checked at nostr-protocol/nips a2494f4f81d46684e5814a9bf35e2b1df978f955; Go frozen source hashes below",
+    "verified_existing_design": [
+      "Request-local progress instead of global body novelty; body duplicate can produce a new verified scope-qualified witness.",
+      "EOSE joins previous validation/admission and preserves loss evidence; empty/short responses do not certify remote completeness.",
+      "NEG convergence and actual requested-ID retrieval are separate; remote advertisement does not produce a witness.",
+      "Fixed age bands and deep revisits preserve uncertainty; observed signed-age adaptive shrinking is not selected.",
+      "Retained Receipt/ExistingProof closure supports producer checkpoints, mutation ACKs and recovery independently of CH availability."
+    ]
+  },
+  "helper_sources": [
+    {
+      "path": "experiments/identity-contract/signed_fixture.py",
+      "sha256": "22a980753e3b41864f9d0d775a2ec20c6bbadcaee6d09738a2a4c4cbaf8735fc",
+      "used": "sign and verified helpers, library plus independent BIP340 equation verification; not its separate full identity fixture run"
+    }
+  ],
+  "legacy_actions": "Read only; no Go build/test/format/service or publication",
+  "legacy_findings": [
+    "Announcement source emits timeout/check/milliseconds (opposite selected Rust prose order).",
+    "NIP-66 source deliberately omits k/t/T without appropriate producers; supported NIPs combine declarations and targeted verdicts.",
+    "EndpointChecks invokes compound RTT phases, whose helper includes write; this source path is not a complete startup/config authorization audit. Rust keeps separate explicit active-write permission.",
+    "Relay quality retains old polling-ratio/mean-latency/NIP-breadth math; Rust named profile is a deliberate different interpretation.",
+    "NIP-85 inspected publisher still invokes BuildUserRankAssertions then sink before ledger acceptance; historical walkthrough limitations remain scoped."
+  ],
+  "legacy_root": "/Users/vincenzo/Documents/GitHub/BigBrotr/bigbrotr",
+  "legacy_sources": [
+    {
+      "bytes": 8346,
+      "path": "internal/nip66publisher/announcement.go",
+      "read_ranges": [
+        [
+          1,
+          194
+        ]
+      ],
+      "scope": "full file",
+      "sha256": "add843aed2477a9d17057ff7e133a7d389b6cdddb8a3aaac7ddd7da9282006e2"
+    },
+    {
+      "bytes": 16351,
+      "path": "internal/nip66publisher/tags.go",
+      "read_ranges": [
+        [
+          175,
+          265
+        ]
+      ],
+      "scope": "selected excerpt; not full file",
+      "sha256": "477ac791a0b8399757b1fd0fa2c137a4b7387bb3a5af9501aa923810d35e30fb"
+    },
+    {
+      "bytes": 8300,
+      "path": "internal/monitor/prober.go",
+      "read_ranges": [
+        [
+          130,
+          210
+        ]
+      ],
+      "scope": "selected excerpt; not full file",
+      "sha256": "d2ba575d46d44ab0aca345d8284df371b93a08560840f8e4f4cb095911108452"
+    },
+    {
+      "bytes": 27722,
+      "path": "internal/monitor/catalog.go",
+      "read_ranges": [
+        [
+          480,
+          545
+        ]
+      ],
+      "scope": "selected excerpt; not full file",
+      "sha256": "6768f2327ff8c54e97a6904592eac4edeaf9a3c6796cdea8b863736f0528d4b5"
+    },
+    {
+      "bytes": 28879,
+      "path": "internal/ranker/relayquality.go",
+      "read_ranges": [
+        [
+          249,
+          312
+        ]
+      ],
+      "scope": "selected excerpt; not full file",
+      "sha256": "1d510b40d6121d0c8418cfea42d8aeec19eef68182513b8cd0c9762940ccd673"
+    },
+    {
+      "bytes": 16471,
+      "path": "internal/nip85publisher/publisher.go",
+      "read_ranges": [
+        [
+          175,
+          255
+        ]
+      ],
+      "scope": "selected excerpt; not full file",
+      "sha256": "60b9a510df9763c98047187d195a5fa73f73eed0503c1f5522deb1e00188f06d"
+    }
+  ],
+  "limits": [
+    "26 assigned frozen documents were fully read as recorded in .research/review-16/protocol-read-manifest.json.",
+    "New Go inspection is selected excerpts except the full announcement file; no new complete legacy audit.",
+    "No Rust product implementation, live peer inventory validation, client interoperability, capacity or crash-recovery qualification.",
+    "Metadata fixture is a deliberately small research subset, not validation of a complete future schema."
+  ],
+  "primary": {
+    "commit": "a2494f4f81d46684e5814a9bf35e2b1df978f955",
+    "commit_time": "2026-09-09T18:29:36Z",
+    "files": [
+      {
+        "bytes": 4711,
+        "path": "66.md",
+        "sha256": "88148d6e3050f56c7601afb8779e3304ee59c4d85697c38938d69768e64bad4d"
+      },
+      {
+        "bytes": 8664,
+        "path": "85.md",
+        "sha256": "68687d16e6b880c37cb7c3e9cd58bf777fd4b74cd339ec086227dcafd1cfd5f0"
+      },
+      {
+        "bytes": 5297,
+        "path": "32.md",
+        "sha256": "c41204757dde155eaaf169601d67c68f3445e1f6a2714a9064d0fcc79ab1acb8"
+      },
+      {
+        "bytes": 9516,
+        "path": "45.md",
+        "sha256": "61371c04daf263509b230586e91a86a6688cb01609dd70d137362b381fb57ff8"
+      },
+      {
+        "bytes": 5784,
+        "path": "73.md",
+        "sha256": "23574c575c7aa97b7dca5612d2272e6bc590c5388d507c6ed59a81e0836fe401"
+      },
+      {
+        "bytes": 10443,
+        "path": "11.md",
+        "sha256": "0592cf4eb5891f60ae4c7dc815c21bd23d18404cbe21615c7e6c26d75c8cce30"
+      }
+    ],
+    "repository": "nostr-protocol/nips"
+  },
+  "primary_claims": [
+    "Upstream master remains the existing pin; NIP-66 timeout prose/example contradiction remains.",
+    "NIP-85 algorithm-key and changed-content rules remain; NIP-32 self labels target the assertion event.",
+    "NIP-45 remote counts/HLL are not proof of observed event membership or present remote inventory."
+  ],
+  "status": "planning and isolated research only"
+}

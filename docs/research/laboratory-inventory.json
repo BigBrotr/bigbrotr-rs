@@ -153,5 +153,32 @@
     "limits": "Worker8CPU/20GiB, CH8CPU/12GiB, PG1CPU/1GiB; shared host/cache/I/O. Exact image/extension/source hashes and cgroup captures in evidence.",
     "shutdown": "PG/CH exit0; idle worker sleep PID1 terminated by Docker shutdown timeout exit137 with OOMKilled=false after all workload children exited.",
     "scope": "Real signed-body engine/load/read/recovery/restore/mixed/restart slices. No complete BigBrotr runtime, Rust adapters, full fleet, power loss or billion-row qualification."
+  },
+  "object_storage_20260917": {
+    "remote_root": "/home/tux/bigbrotr-object-storage-20260917",
+    "local_raw_root": ".research/object-storage-20260917",
+    "tracked_source": "experiments/object-storage",
+    "report": "docs/research/tux-object-storage-20260917.md",
+    "evidence": "docs/research/evidence/object-storage-20260917.json",
+    "current_status": "All five owned containers stopped after completed bounded experiments; data, catalogs, source and same-host restore retained.",
+    "containers": [
+      "bigbrotr-object-storage-garage-20260917",
+      "bigbrotr-object-storage-pg-20260917",
+      "bigbrotr-object-storage-worker-20260917",
+      "bigbrotr-object-storage-reader-20260917",
+      "bigbrotr-object-storage-ch-mv-20260917"
+    ],
+    "shutdown": "Garage, PG, reader and CH exit0. Idle worker sleep PID1 terminated by Docker stop timeout exit137, OOMKilled=false; experiment children had completed.",
+    "retained_data": "1,048,576 signed synthetic events in local/S3 layouts, alternate-prefix restore, native engine data; previous qualification source mounted read-only.",
+    "disk_available_bytes_at_final_inspection": 396239507456,
+    "limits": "Worker4CPU/10GiB, Garage2CPU/4GiB, PG1CPU/1GiB; separate reader2CPU/8GiB then separate CH2CPU/3GiB. Shared host/cache/I/O; Docker default swap allowances recorded in evidence.",
+    "scope": "Actual local/S3 DuckLake-PG signed-body equivalence, separate reader, selected precommit/missing-object/restore cases, corrected S3/PG boundary probes and CH MV counterexamples. Not product, native Rust, WAN, host-loss or capacity qualification."
+  },
+  "review_16": {
+    "baseline": "3619443381498fc14487a10b2b2cfbbdc58ae3f7",
+    "full_read_ledger": "docs/research/evidence/review-16-complete-read.json",
+    "local_root": ".research/review-16",
+    "upstream_source_root": ".research/checkouts/ducklake-s3-review",
+    "notes": "Complete assigned baseline document reads, targeted source/diff integration, local deployment/composition models, native S3/CH probes; no product implementation."
   }
 }

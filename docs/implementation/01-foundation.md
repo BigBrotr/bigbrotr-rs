@@ -120,7 +120,7 @@ invalid/excluded result. Protocol hints never become local measurement evidence.
 ## P01-T04 — Configuration, defaults and topology resolution
 
 **Depends on:** P01-T01/T02. **Files:** application `src/config/`,
-`config/recipes/{full,archive-only,split-role}.toml`,
+`config/recipes/{full,archive-only,sync-only,monitor-only,serve-existing,split-role}.toml`,
 `contracts/config/schema.json`, `docs/reference/configuration.md`,
 `apps/bigbrotr/tests/config_entrypoint.rs`.
 **Contract:** one instance-wide managed/declarative product-policy authority plus
@@ -148,6 +148,13 @@ cannot stand in for completed persistent configuration application.
   An explicitly missing file errors; init refuses unintended overwrite.
 - [ ] **Step 4:** Resolve required data services without silently enabling public listeners,
   signing keys, paid adapters, active write probes or external directory discovery.
+  Apply the [deployment contract](../specification/deployment-contract.md): select
+  only assigned local roles, declare remote owners, and distinguish static missing
+  adapters from runtime unavailability. Fixed sync/monitor endpoint lists intersect
+  enrollment/authority without requiring Validator. Linear/auto fallback needs no
+  CH; serving existing CH requires matching PG/Control authority and frontiers.
+  Bind concrete PG/CH endpoints, role-specific secret references and verified TLS;
+  infrastructure private addresses do not widen untrusted acquisition egress.
 - [ ] **Step 5:** Generate schema/default/reference content; report desired versus applied
   versions and restart/cycle/generation effects for each changed setting.
 - [ ] **Step 6:** After P02-T01, implement managed-update CAS, declarative digest staging/activation,
@@ -158,7 +165,12 @@ cannot stand in for completed persistent configuration application.
   bundle using a minimal override, conflicting limits, unavailable dependency,
   fake secret and absent optional service. Observe exit/output and socket calls.
   Negative control: defaults that look valid but enable an unconfigured signer.
-- [ ] **Step 8:** Document full local, archive-only and split-role examples and resource
+  Static validation rejects an empty fixed list or an enabled forced NEG without
+  its declared reader. Doctor rejects a serve-only wrong PG/CH dataset and reports
+  a declared remote engine unreachable through container loopback; static parsing
+  cannot prove live data identity or socket reachability. Unselected worker
+  defaults and staged unused secrets create no work.
+- [ ] **Step 8:** Document full local, archive-only, sync-only, monitor-only, serving-existing and split-role examples and resource
   implications; every copied example must validate through the actual binary.
 
 ## P01-T05 — Shared resource budget, scheduling and lifecycle
@@ -247,6 +259,10 @@ authenticated bounded gRPC; transport does not change admission semantics.
   post-decompression limits; account for stream concurrency and response buffers.
 - [ ] **Step 4:** Configure mTLS peer roles for split deployment and private binds by default;
   keep API grants separate from service-to-service identity.
+  Verify expected dataset/role/schema at the connected owner; a valid peer
+  certificate to an unrelated dataset is not a usable dependency. Exercise wrong
+  CA/name, endpoint rotation and loss of policy authority without opening a new
+  empty store or replacing an owner implicitly.
 - [ ] **Step 5:** Preserve ProducerRequestId across timeout retries; reject same identity
   with another payload and resolve a possibly committed request after disconnect.
   Bind it to the registered producer slot/epoch and implement durable contiguous

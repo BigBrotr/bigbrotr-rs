@@ -14,6 +14,22 @@ linked contracts. Historical reviews explain decisions; they do not override the
 current owning specification. Resolve an actual conflict before propagating it
 into code, tests, generated schemas or documentation.
 
+Read the [progress checkpoint](progress.md) to locate current work, then verify
+it using the procedure below. The latest explicit owner stage instruction takes
+precedence over a stale checkpoint. Research authorization alone does not start
+product implementation; already authorized work does not require a new approval
+merely because the conversation was compacted.
+
+Map the relevant folders and file ownership first; `rg --files` is useful for
+navigation. Read each complete current owning document/source file and its linked
+contracts, callers and consumers needed to understand the affected behavior.
+Use bounded contiguous reads and repeat any truncated interval. Search hits and
+headings locate a call chain or rule; they do not establish that the file or
+behavior was understood. Follow actual dependency boundaries, including a caller
+that can change authority, persistence or output meaning. Record uninspected
+boundaries honestly. A focused edit needs its relevant files, not a ritual reread
+of every file in the future codebase.
+
 The key contracts have distinct ownership:
 
 | Concern | Authoritative specification |
@@ -27,12 +43,82 @@ The key contracts have distinct ownership:
 | Analytical definitions and costs | [Analytics](../architecture/analytics-detail.md), [derivation](../architecture/derived-read-publication.md), [assertion bindings](../specification/assertion-bindings.md) |
 | Useful workload acceptance | [Capacity](../engineering/capacity-and-benchmarks.md) and the task's practical scenario |
 | Code boundaries and dependency policy | [Rust and repository](../engineering/rust-and-repository.md) |
+| Browser journeys, private operation and published documentation | [Product surfaces](../product/dashboard-and-website.md), [private administration](../product/private-administration.md), [P09](09-product-interfaces.md) and [P10](10-website.md) |
 
 Do not scaffold every proposed folder or crate before its first consumer exists.
 Do not copy the research Python or a state model into a product implementation
 merely because it passes its own fixture. Generated APIs, DDL and serializers
 must express the selected contracts; their names are not a license to invent
 new data meanings during implementation.
+
+## Resume from one verified checkpoint
+
+Maintain only [progress.md](progress.md) as the current execution checkpoint.
+Task files own planned steps and completed checkboxes, specifications own meaning,
+and experiment/acceptance reports own detailed evidence. Replace the checkpoint's
+current record as work advances; Git history preserves earlier records. Do not
+append a conversation transcript or create competing per-session plans.
+
+Record enough to resume safely:
+
+| Field | Minimum useful content |
+|---|---|
+| Stage and active slice | Planning or owner-started implementation; exact existing task/step IDs, bounded purpose and owner. A planning review names its review ID without inventing completed product tasks. |
+| Repository state | Repository/worktree, branch, base commit, last observed HEAD, relevant staged/unstaged/untracked paths and their owners; identify an in-progress merge/rebase if present. Never write a guessed future commit hash. |
+| Contract changes | Links to changed owning specifications and affected consumers; unresolved semantic conflicts and decisions still conditional on evidence. |
+| Work and evidence | Actual command/run, tested commit or dirty-diff identity, input/dependency identity, result and existing report/artifact paths. Separate PASS, FAIL, SKIP, NOT_RUN and unknown/interrupted outcome. |
+| Findings and gates | Open findings, not-run required scenarios and the release/capability each prevents; link their owner instead of copying the whole backlog. |
+| Processes and lab resources | Inventory reference, owner and last observed status of relevant jobs/processes/containers/data; unfinished writes, cleanup obligations and whether status was freshly checked. No credentials or raw private data. |
+| Next action | One exact bounded action, its prerequisites, expected observable result and where to record it; name a concrete blocker when one exists. |
+
+Before resuming, inspect `git status --short --branch`, `git rev-parse HEAD`,
+the relevant staged/unstaged diff and the current task/contract text. A different
+checkout, revision or unexpected dirty file requires reconciliation with its
+owner; do not reset, overwrite or re-run it based on remembered context. A clean
+worktree does not establish that remote state or a background job is unchanged.
+
+Check that evidence paths still exist, that recorded inputs/tool versions and
+hashes match the result being reused, and that its asserted outcome was actually
+observed. Read the result, including failures and exclusions. A missing artifact
+is unavailable evidence, even when an old report contains its digest. A process
+handle or PID recorded before interruption is not proof of current ownership:
+verify the job identity, receipt/log boundary and actual owned resource before
+joining, stopping or resuming it. Use read-only inspection first; an ambiguous
+durable write must follow its owning recovery contract before retry. Missing
+terminal output means unknown, never PASS or assumed rollback.
+
+The [laboratory inventory](../research/laboratory-inventory.json) owns research
+resource records. Its dated stopped/retired observations are not live inspections.
+Retired Tux environments stay retired; separately created retained environments
+must be identified individually. Verify scope/ownership before reuse or cleanup,
+preserve unrelated workloads, and keep generated data under the inventoried
+ignored root. Do not start remote work just to refresh a handoff status.
+
+Update the checkpoint after a coherent verified slice, a material change of
+direction, or before a planned interruption/compaction. If interruption prevented
+that update, reconcile from Git, existing artifacts and receipts on resumption.
+This protocol is recovery from incomplete context, not an assumption that every
+interruption leaves a complete note.
+
+## Research the dependency actually being used
+
+Start with the task's contracts and the
+[dependency selection record](../research/dependency-selections.md). Inspect the
+repository's actual lockfile/toolchain, enabled features, native engine/extension
+assets and generated schema versions. The selected candidates are not a qualified
+release tuple. Read official documentation for that exact version and inspect
+matching source where guarantees, defaults or documentation disagree. A current
+website, search snippet or similarly named crate cannot establish an older
+binding's behavior. Record a narrow source path/commit and the consequence for
+the task; avoid copying a dependency manual into the checkpoint.
+
+Exercise the boundary when source inspection cannot decide it: actual commit
+completion, cancellation, memory ownership, encoding, engine persistence or client
+interoperability. A solver-only lock, Python binding, SDK fixture or in-memory
+model supports only its executed claim. Keep expected results independent of
+production code through frozen signed fixtures, literal expected sets/bytes,
+slow exact reducers or separately implemented clients. Reuse suitable existing
+oracles; do not derive expected output by calling the implementation under test.
 
 ## Execute a coherent task slice
 
@@ -42,16 +128,19 @@ new data meanings during implementation.
 2. Inspect the relevant existing code and the exact upstream dependency version.
    Pin the tested dependency set, including native engines/extensions. Read the
    behavior that matters: a method name or successful ACK is not a guarantee.
-3. Write an independent expected-result fixture and at least the discriminating
-   failure cases the task requires. Keep the oracle independent of the production
+3. For changed behavior, reuse or write an independent expected-result fixture
+   and the discriminating failure cases the task requires. Keep the oracle independent of the production
    reducer/query. Cover complete signed bytes and real ownership boundaries where
    relevant; do not certify crypto using fake signatures.
 4. Implement the smallest complete responsibility with idiomatic Rust, explicit
    errors, bounded work and cancellation. Keep operational state separate from
    retained scientific evidence. Update generated contracts, configuration help,
    user documentation and migrations with their actual behavior.
-5. Run appropriate unit/property/fuzz/integration tests and the real packaged
-   practical scenario. Missing infrastructure, empty fixtures and unimplemented
+5. Run checks appropriate to the changed behavior and its real packaged practical
+   scenario. Choose unit/property/fuzz/integration coverage for the risk; a small
+   documentation correction needs its affected artifact/example checks, not an
+   invented test or automatic rerun of every product scenario. Missing
+   infrastructure, empty fixtures and unimplemented
    scenarios are `NOT_RUN`, never success. Include refused and cancelled work in
    load reports. Do not repeat broad suites without a new change or concern.
 6. Review the complete diff for correctness, complexity, ownership, allocations,
@@ -60,7 +149,8 @@ new data meanings during implementation.
    checks; a passing test suite does not replace this review.
 7. Commit a coherent outcome with evidence and documentation. Record what passed,
    what was not exercised and any remaining release gate. Mark only genuinely
-   completed steps. Never mark the whole phase complete from one happy path.
+   completed steps and refresh the progress checkpoint. Never mark the whole
+   phase complete from one happy path. A pending commit is not a pushed result.
 
 The proposed practical runner is
 `python3 tests/acceptance/run.py CASE --binary dist/bigbrotr --compose packaging/compose/acceptance.yaml --evidence PATH`.
@@ -68,6 +158,40 @@ It is a **future P01-T08 deliverable**, not an existing command that can be cite
 as already passing. The current repository check is
 `python3 experiments/verify_artifacts.py`; it checks artifact structure, not
 product correctness or semantic completeness.
+
+## Deliver useful slices across the whole product
+
+The product identity is a verifiable archive and observatory. Evaluate an owner's
+idea or inherited feature by the useful question it answers, required evidence,
+authority, resource/maintenance cost and practical outcome. Ideas provide context;
+they do not automatically expand the selected product. Adopt, improve or exclude
+them explicitly through the owning contract instead of implementing every named
+technology. Native MCP serves a concrete optional agent read workflow; ContextVM
+remains an experimental alternative, with no extra public RPC selected merely
+because another transport exists.
+
+Follow the [milestones and cross-phase edges](README.md#coherent-implementation-milestones):
+first one real signed event through admission, archive, read, standalone export
+and restart; then controlled acquisition/monitoring/import; useful derived results
+and real clients; operable packaging/recovery; complete browser and website
+journeys. Introduce thin UI, help and documentation consumers as their real
+contracts exist. P09/P10 finish their full acceptance; they do not postpone all
+user experience until the backend is considered complete.
+
+Default enablement, process placement and feature quality are independent.
+An optional capability still needs its complete producer-to-user path, refusal,
+recovery and documentation before it is advertised. A release manifest may omit
+an unqualified optional capability with its gate explicit; that does not finish
+the entire selected product. MCP and ContextVM consume the same read core while
+keeping their separate protocol versions and authority; ContextVM remains
+experimental under its contract. Paid DVM evidence does not gate free HTTP reads.
+
+Select roles through the current deployment/capability matrices, with existing
+dependencies, state ownership and finite resources. A disabled Monitor, Ranker
+or publisher does not remove already valid event reads; archive-only operation
+does not invent online capabilities. Test supported independent compositions and
+their missing/stale/disabled states through actual entrypoints. Independent
+roles do not require one container or crate per service.
 
 ## Review at boundaries that can amplify mistakes
 

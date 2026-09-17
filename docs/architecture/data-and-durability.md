@@ -95,7 +95,8 @@ or endpoint identity in their place.
 
 An earlier eligible local receive observation updates that scope's compact metadata
 and emits an immutable correction with its own SourceRecordId in the same synced
-batch. Ordinary later duplicates return existing receipts. Store the original
+batch. Ordinary later duplicates use strict receipt semantics or the separate
+nonmutating ExistingProof path; neither emits another scientific fact. Store the original
 admission and correction facts in the archive, preserving the original signed
 payload and permitted signed representatives. Read-time minimum is evaluated
 after source-cut and authorization filtering, just like edge
@@ -124,8 +125,12 @@ an older replacement.
 ## Archive publication and reclamation
 
 Parquet is a columnar file format, not an append log with per-event commit. Files
-are created in bounded batches, compressed, checksummed and published through a
-catalog snapshot. DuckLake manages table membership, snapshots, schema evolution
+are created in bounded batches, compressed and published through a catalog
+snapshot. Semantic batch digests and file checksum capture are distinct:
+[archive placement](../specification/archive-storage-contract.md#actual-publication-and-protection-boundaries)
+defines qualified persistence and explicit uncaptured/captured file SHA state;
+native INSERT does not supply an application checksum automatically. DuckLake
+manages table membership, snapshots, schema evolution
 and compaction. DuckDB executes queries and maintenance. The chosen PostgreSQL
 catalog supports independent clients without sharing a writable DuckDB file.
 See [Parquet format](https://parquet.apache.org/docs/file-format/),
@@ -133,7 +138,9 @@ See [Parquet format](https://parquet.apache.org/docs/file-format/),
 and [transactions](https://ducklake.select/docs/stable/duckdb/advanced_features/transactions).
 
 One logical archive publisher owns a catalog publication stream. It may prepare
-files in parallel but serializes receipt check and transaction publication.
+typed batches in parallel but serializes receipt check and transaction publication.
+Native file writes remain engine-owned; a separately qualified staged-file path
+must use supported registration APIs and preserve the same authority.
 Events, observations/edges and the batch receipt enter one DuckLake transaction.
 A retry after ambiguous acknowledgement first queries that receipt. Two active
 publishers can both find no receipt and commit duplicates: this was reproduced

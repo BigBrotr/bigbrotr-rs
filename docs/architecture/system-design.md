@@ -123,8 +123,12 @@ and fenced archive coordination; native preparation/export/graph jobs run in
 terminable worker processes with whole-job grants. Read and private Control/admin
 have explicit process domains; enabled signing has narrow credentials and submits
 durable exact bytes to the socket owner. All use the same application image.
-Compact mode may co-locate compatible roles and disclose the wider process-failure
-scope. Packaging does not require a permanent container for an occasional export.
+Compact mode may co-locate Control, acquisition/ingest, storage coordination and
+read while retaining store ownership and terminable native jobs; disclose the
+wider process-failure scope. Packaging does not require a permanent container for
+an occasional export. The [deployment contract](../specification/deployment-contract.md)
+provides equivalent native/Compose recipes, explicit remote engine credentials
+and separate trusted infrastructure routes from public-relay egress policy.
 
 The [process/dependency matrix](../specification/operations-contract.md#process-placement-and-capabilities)
 is the resolved reference. Pausing a projector or algorithm leaves its required
@@ -207,6 +211,8 @@ single-host observatory.
 | Full archive without provenance (optional LilBrotr nickname) | Same full topology | Same work except edge persistence/index/derived facts | Event and eligible analysis resources; provenance explicitly unavailable |
 | Social-filter example | Same selected topology, explicit social filters and provenance choice | Selected kinds plus documented dependencies of desired facts | Capabilities reflect actual historical coverage, not the recipe name |
 | Archive-only | PG, RocksDB, DuckLake/Parquet | Collection/monitoring as selected, archival, import/export/offline DuckDB jobs | Private status/admin and archive exports; online CH read/derivation/rank roles disabled |
+| Fixed-list sync-only | PG, ingest RocksDB and archive; optional remote owners | Synchronizer over operator-enrolled fixed URLs; no Discoverer/Validator/Monitor | Durable archive and private progress/export; linear/live needs no CH, reconciliation needs its declared reader |
+| Monitor-only | PG, ingest RocksDB and archive; CH only for selected online views | Independent passive measurement of selected enrolled URLs | Private operational status/offline exports; online directory/history requires explicit Indexer/CH/read |
 | Serving existing data | PG + CH, archive access for rebuild/cold tiers as configured | Read adapters; optional derive/rank | Existing complete generations with freshness/coverage metadata; no collector requirement |
 | Custom/split roles | Required durable contracts reachable locally/remotely | Explicit selection | Preflight resolves dependencies; no silently started producer daemons |
 
@@ -214,6 +220,11 @@ A service enabled in a recipe must have its engine/data dependency. Stopping a
 service leaves its already retained data readable when the read store remains
 available. Archive-only is an intentional capability selection, not a claim that
 all CH-backed resources can work without CH.
+Serving existing data uses matching PG policy/frontier/pin state directly through
+local Control or its authenticated remote adapter. Arbitrary populated CH plus
+empty PG is not ready data; current/NEG capabilities retain their explicit
+maintenance dependencies and deadlines. A worker or read process needs only its
+actual engine/RPC/archive routes, never every daemon in the full recipe.
 Feature toggles, missing-dependency behavior, retained generations and exact split
 routes/credentials follow the operational matrix; the matrix distinguishes an
 enabled role from an actually ready capability. Instance policy has one managed

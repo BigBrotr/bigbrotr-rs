@@ -53,6 +53,13 @@ New to the project: first read [Start here](docs/start-here.md), the
    [capacity](docs/engineering/capacity-and-benchmarks.md) and
    [security/recovery/validation](docs/engineering/security-recovery-and-validation.md)
 
+For installation and placement also read the concrete
+[deployment contract](docs/specification/deployment-contract.md) and
+[local/S3 archive contract](docs/specification/archive-storage-contract.md).
+Fixed-relay synchronization, monitor-only and serving-existing-data recipes
+declare their actual dependencies. A split collector/gateway does not itself
+require S3; archive-byte consumers determine shared storage needs.
+
 The [questions ledger](docs/planning/questions.md) distinguishes owner context,
 reasoned design selections and defaults for unanswered questions. The
 [revision log](docs/planning/process.md) records six substantive reconsiderations
@@ -182,7 +189,7 @@ not an engineering proof.
 
 ## Complete-document audit and current confidence
 
-The latest [whole-repository review](docs/reviews/11-whole-repository-audit.md)
+The earlier [whole-repository review](docs/reviews/11-whole-repository-audit.md)
 fully reread its 70-file Markdown baseline, then corrected measurement subjects,
 availability confirmation, temporal reads, concrete assertion/ranking definitions,
 state/migration ownership and usable management/download routes. The current detailed plan
@@ -192,6 +199,13 @@ product or foreign administrative source-control transfer. See
 [decision confidence and alternatives](docs/planning/decision-confidence.md)
 for the selected stack's total costs and remaining empirical qualifications.
 Complete documentation review is not validation of universal optimality.
+
+The current [complete handoff review](docs/reviews/16-complete-handoff.md) fully
+reads the 106-file baseline and integrates installation/storage choices,
+explicitly scoped relay composition, incremental-analytics ownership, publication
+profiles, all gateway documentation and a verified resumption checkpoint.
+The 1,048,576-event local/S3 experiment and actual CH materialized-view
+counterexamples refine those contracts without checking off product tasks.
 
 The [focused readiness review](docs/reviews/12-specification-readiness.md)
 identified five planning closure tasks. The current
