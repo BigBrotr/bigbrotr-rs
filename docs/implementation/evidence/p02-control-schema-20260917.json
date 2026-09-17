@@ -1,0 +1,110 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-17",
+  "scope": "P02-T01 initial 0001 control relational foundation and pure migration catalog/planner; no completed task step or PostgreSQL qualification",
+  "source_state": "Isolated impl/control-schema-foundation candidate based on 140e264756b80c7fa4dc3e668ab33be89bf8d100; resolve containing revision from Git. Only listed new implementation/documentation plus this evidence changed; dependency lock unchanged.",
+  "inputs_sha256": {
+    "migrations/postgres/0001_control.sql": "f59a155b5533c1674d5e381f6b55a7954b3b5fb550668b942f00efdf3677d5be",
+    "apps/bigbrotr/src/storage/postgres/migrations.rs": "94b730e4ae543a3869934a2e69352384165053464fc148938564288925a3923a",
+    "apps/bigbrotr/tests/control_schema.rs": "3ce51968efc1dffe6cd9d3fcca1bfa2593e936e8cc2dc26b6bc0ab8e07ffc8f5",
+    "docs/operations/schema-upgrades.md": "20194728e681c736f15dc99ee1156faffa45208e4d7b5f8926caf814e71f65e1",
+    "Cargo.lock": "3ee6c2f6830b6e03dee8fbf7787054d6ad1210dc893bc5f826414acb71866cb4"
+  },
+  "environment": {
+    "os": "Darwin 25.5.0",
+    "architecture": "arm64",
+    "rustc": "1.98.1 (48a229cea 2026-09-01)",
+    "target": "aarch64-apple-darwin",
+    "native_database": "NOT_RUN"
+  },
+  "executed": {
+    "clean_baseline_workspace": {
+      "result": "PASS",
+      "passed": 73,
+      "log": ".research/control-schema/baseline.log"
+    },
+    "initial_planner_test": {
+      "result": "EXPECTED_COMPILE_FAILURE",
+      "reason": "Owned migrations module did not exist before implementation",
+      "log": ".research/control-schema/planner-red.log"
+    },
+    "final_workspace": {
+      "result": "PASS",
+      "passed": 80,
+      "failed": 0,
+      "ignored": 0,
+      "command": "CARGO_TARGET_DIR=.research/control-schema/target cargo test --locked --workspace",
+      "log": ".research/control-schema/final-tests.log"
+    },
+    "planner_cases": {
+      "result": "PASS",
+      "passed": 7,
+      "log": ".research/control-schema/final-tests.log",
+      "coverage": [
+        "Empty known-absent ledger creates one forward plan; exact existing receipt creates none",
+        "Immutable receipt checksum/name/compatibility metadata mismatch, duplicate history, unknown target/history refuse",
+        "Independent SHA-256 abc vector and changed newline bytes",
+        "Known downgrade and incompatible reader/writer endpoints refuse",
+        "Reserved catalog number gaps are allowed; omitted catalog prefix is not"
+      ]
+    },
+    "clippy": {
+      "result": "PASS",
+      "command": "CARGO_TARGET_DIR=.research/control-schema/target cargo clippy --locked --workspace --all-targets -- -D warnings",
+      "log": ".research/control-schema/clippy.log",
+      "scope": "Rust sources unchanged since check; subsequent SQL-only dataset deletion refusal does not alter the planner API."
+    },
+    "format": {
+      "result": "PASS",
+      "command": "cargo fmt --all --check"
+    },
+    "artifacts": {
+      "result": "PASS",
+      "command": "python3 experiments/verify_artifacts.py",
+      "log": ".research/control-schema/artifacts.log"
+    },
+    "handoff_links": {
+      "result": "PASS",
+      "command": "python3 experiments/verify_handoff.py --output .research/control-schema/handoff.json",
+      "report": ".research/control-schema/handoff.json",
+      "scope": "125 Markdown files, 402 fragments, zero link errors; existing dependency-cycle candidates require semantic reading, not test failure"
+    }
+  },
+  "design_boundaries": [
+    "No BEGIN/COMMIT or self receipt in SQL. Dedicated runner transaction/advisory ownership executes exact DDL and receipt atomically; planner performs no I/O.",
+    "BYTEA identity domains and bounded numeric(20,0) full-u64 values; original fractional numeric input must be rejected by typed adapter before PostgreSQL scale coercion.",
+    "Immutable topology and initial job cuts distinguish NULL, generation zero, empty topology and per-stream zero sequence. Seals prevent post-acceptance child mutation.",
+    "Monotone DB heads and active owner tuple checks supplement expected-revision CAS, current policy and actual exclusion at commit; they do not replace them.",
+    "One local instance/dataset, closed bounded policy documents, finite typed job identity/state; no scientific bodies, credentials or unbounded diagnostic checkpoint stored.",
+    "No runtime grants, dataset initialization, scheduler, CLI migration runner or actual engine bindings are introduced by this isolated slice."
+  ],
+  "not_run": [
+    "Native PostgreSQL 16 DDL syntax, actual domain/constraint/trigger behavior and runtime/migrator privilege separation",
+    "Exact-revision actual CLI migrate inspect/apply, concurrent migrators and before/after commit disconnect resolution",
+    "Config/topology/owner/job expected-revision races, stale owner exclusion, immutable cuts and all trigger negative controls enumerated in docs/operations/schema-upgrades.md",
+    "Source ranges/frontiers/receipts, snapshot pins/retention claims, endpoint enrollment and migrations 0002/0003",
+    "Command/job/pin atomic acceptance and scheduler recovery, policy validation/digest encoding/activation adapters",
+    "Full signed-event admission/archive/read/export/restart and packaged installation/upgrade/release journeys"
+  ],
+  "resources": {
+    "scope": "Only local ignored resources in this worktree; no engine, service, container, Tux checkout or remote mutation",
+    "paths": [
+      ".research/control-schema/target",
+      ".research/control-schema/*.log",
+      ".research/control-schema/handoff.json",
+      ".research/checkouts/handoff-validation/github-slugger"
+    ]
+  },
+  "primary_sources": [
+    "https://www.postgresql.org/docs/16/datatype-numeric.html",
+    "https://www.postgresql.org/docs/16/ddl-constraints.html",
+    "https://www.postgresql.org/docs/16/sql-createfunction.html",
+    "https://www.postgresql.org/docs/16/explicit-locking.html"
+  ],
+  "review": {
+    "type": "Implementer complete source/diff review and independent read-only review coordinated by integrating owner",
+    "scope": "DDL/planner; no native PostgreSQL execution",
+    "findings": "No concrete DDL counterexample in independent review. Implementer tightened initial/deleted dataset identity and required paused/cancel_requested reason codes. Actual trigger/row-lock/deferred semantics remain NOT_RUN.",
+    "native_cases": "See docs/operations/schema-upgrades.md; additionally exercise SET CONSTRAINTS IMMEDIATE."
+  }
+}
