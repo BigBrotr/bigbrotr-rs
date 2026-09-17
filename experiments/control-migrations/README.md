@@ -11,6 +11,7 @@ revision with `tools/build.py`:
 python3 experiments/control-migrations/lab.py setup --root /owned/lab/runtime --build /owned/lab/exact-build --source "$PWD"
 python3 experiments/control-migrations/lab.py smoke --root /owned/lab/runtime
 python3 experiments/control-migrations/lab.py schema --root /owned/lab/runtime --run-name constraints
+python3 experiments/control-migrations/privilege_cases.py --root /owned/lab/runtime
 python3 experiments/control-migrations/lab.py stop --root /owned/lab/runtime
 ```
 
@@ -21,6 +22,11 @@ The setup `--run-name` also namespaces its new container/network names. Explicit
 initdb options require SCRAM on every TCP host rule, including loopback; the
 container-local socket is trusted only for the independent synthetic lab observer.
 This fixture socket rule is not production role/grant qualification.
+The separate privilege script exercises the actual runtime and migration logins,
+grants the runtime only schema usage/reads, and requires SQLSTATE 42501 for DDL,
+ledger writes, TRUNCATE, trigger disabling, ownership change and role elevation.
+These are the initial read-only fixture grants; permissions for future typed
+runtime mutation adapters remain unimplemented and unqualified.
 `smoke.json` retains each actual result and stops at the first failure. The smoke
 run creates fresh dedicated databases, exercises the actual executable, compares
 the external checksum receipt, refuses incompatible histories and bad plaintext
