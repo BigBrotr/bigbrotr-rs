@@ -97,7 +97,7 @@
     "remote_state_mutated": false,
     "notes": "Shared active BigBrotr/unrelated services; /tmp is tmpfs. Extended realistic research is authorized; no new benchmark executed."
   },
-  "updated_at": "2026-09-17",
+  "updated_at": "2026-09-18",
   "remote_retirement_20260917": {
     "evidence": "docs/research/evidence/tux-retirement-20260917.json",
     "local_operation_records": ".research/tux-retirement-20260917",
@@ -324,7 +324,15 @@
         "base": "0d99af6925660caf29735fcd810ead5b850dd865",
         "owner": "fact_codec_review agent",
         "purpose": "Real checked Rocks native profile and effective WBM accounting oracle; root owns store/Cargo/Tux",
-        "status": "Active isolated implementation; historical research WBM wiring finding recorded in evidence"
+        "status": "Clean d75a9db, five actual Mac option tests PASS; root integration pending; native archive reused read-only and inventoried in worktree evidence"
+      },
+      {
+        "path": ".research/worktrees/rocks-build-integration",
+        "branch": "impl/rocks-build-integration",
+        "base": "8f0d44b246fac009e56160ce1766799b253dfddf",
+        "owner": "static_configuration agent",
+        "purpose": "Native Rocks C++/libclang build and CI prerequisites; root owns Cargo/engine",
+        "status": "Active independent task; no Tux/push by agent"
       }
     ],
     "rocks_dependency_audit": {
@@ -461,8 +469,20 @@
     },
     "rocks_product_boundary": {
       "root": ".research/implementation/rocks-product-design",
-      "owner": "foundation_dependency_audit agent",
-      "scope": "Read-only mapping of first production admission responsibility to existing contracts and APIs"
+      "owner": "root integrating owner; independent fact_codec_review agent",
+      "scope": "Keys and manifest product codec evidence, frozen review snapshots and isolated probes; native options/store integration is distinct.",
+      "manifest_review": ".research/implementation/rocks-product-design/manifest-review/inventory.json",
+      "manifest_evidence": "docs/implementation/evidence/p02-ingest-manifest-20260918.json"
+    },
+    "ingest_control_review": {
+      "root": ".research/implementation/postgres/ingest-review",
+      "review_sha256": "f7360e5e298fb431d0bf3b7287135c5efa0d3b71861e7b0b9a75854f4dda5cc5",
+      "scope": "Independent source review, five counterexamples fixed; actual PG 0002 NOT_RUN"
+    },
+    "ci_35278881051_audit": {
+      "root": ".research/implementation/foundation/ci-35278881051",
+      "audit_sha256": "9f1ff2d113e9eabce2e065c7955e6483197423f9afce1db6ba8eb6baba6c9c3d",
+      "scope": "370 exact source files; 208 Linux checks; 154 traces; no downloaded executables; native PG/engine acceptance not supplied"
     }
   }
 }

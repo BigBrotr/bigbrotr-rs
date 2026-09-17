@@ -1,0 +1,51 @@
+{
+  "format": "bigbrotr-ingest-manifest-codec-evidence/1",
+  "observed_date": "2026-09-18",
+  "base_revision": "8f0d44b246fac009e56160ce1766799b253dfddf",
+  "source_state": "Root dirty candidate, exact files below; containing commit supplies final source revision.",
+  "files_sha256": {
+    "apps/bigbrotr/src/storage/rocks/manifest.rs": "9da1141f0d0d094f2fcb231b49c5e23255a552f9a9ee2f2d5406da157e831c91",
+    "apps/bigbrotr/src/storage/rocks/mod.rs": "3b72c9d3dead4f2b276aeb9d9ad442fd834bfcb19e0ff1e271ef3b0cde8e9c85",
+    "apps/bigbrotr/tests/rocks_manifest.rs": "b9fc77f51deae78ca3b03b7a113f3547f6ab92418c3bb4a708ac97761639078d",
+    "crates/bigbrotr-model/src/identity.rs": "d0fe8045585667772c1a4657a8ec90f37db3782c13f6ff2708fe83ebc43dc032",
+    "crates/bigbrotr-model/src/lib.rs": "0d691c10fd913cd83b3090871201bbb61ce9205d3e92c26f344eefca4064b494",
+    "docs/reference/ingest-manifest-format.md": "60dba1df6a541866b4d897ea6518fae0dcf7cee5cf93ba1c8e4488f7f2998a40"
+  },
+  "environment": {
+    "os": "macOS",
+    "architecture": "arm64",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: aarch64-apple-darwin\nrelease: 1.98.1\nLLVM version: 22.1.8"
+  },
+  "executed": {
+    "product_tests": {
+      "command": "cargo test -p bigbrotr --test rocks_manifest",
+      "passed": 3,
+      "failed": 0,
+      "log": ".research/implementation/rocks-product-design/manifest-green.log"
+    },
+    "clippy": {
+      "command": "cargo clippy --workspace --all-targets --locked -- -D warnings",
+      "result": "PASS"
+    },
+    "format_and_diff": "PASS"
+  },
+  "independent_ai_review": {
+    "inventory": ".research/implementation/rocks-product-design/manifest-review/inventory.json",
+    "sha256": "568a650677582600704159606534749533092e2b29ef5b50f9a06a61c2e1217b",
+    "supplied_tests_passed": 3,
+    "independent_tests_passed": 6,
+    "scope": "512 namespace subsets, every u16 kind, full-value single-byte mutations, all header bytes, bounded counts/protection, zero and unsigned extremes; no source change during tests."
+  },
+  "initial_failures": [
+    "RED compilation: module and OwnerResourceId absent.",
+    "First fixture had a 33-digit second allocation-domain spelling; corrected its independent literals to 32 and asserted the complete 280-digit length.",
+    "Clippy refused chunks_exact with constant widths; tests use as_chunks."
+  ],
+  "not_run": [
+    "Actual engine initialize/reopen and sync",
+    "Current Control authority and positive writer exclusion",
+    "Restart or handoff to changed incarnation/topology/policy/recovery",
+    "Durable admission, archive, export and complete product journeys"
+  ],
+  "qualification": "Codec compatibility only. No additional P02 step or milestone marked complete."
+}
