@@ -64,7 +64,7 @@ def read_only_directory(checks, name):
 def observed_process(args, command, working, label, trace, traces, payload=None):
     trace_file = args.evidence / (label + ".trace")
     if trace:
-        command = [trace, "-f", "-e", "trace=network,%file,%desc", "-o", str(trace_file), *command]
+        command = [trace, "-f", "-s", "4096", "-e", "trace=network,%file,%desc", "-o", str(trace_file), *command]
     result = run_process(command, working, payload)
     (args.evidence / (label + ".stdout")).write_bytes(result.stdout)
     (args.evidence / (label + ".stderr")).write_bytes(result.stderr)
@@ -73,18 +73,19 @@ def observed_process(args, command, working, label, trace, traces, payload=None)
     return result
 
 
-def syscall_checks(checks, trace, traces, expected_count, label=""):
+def syscall_checks(checks, trace, traces, expected_count, label="", check_mutations=True):
     calls = [line for trace_text in traces for line in trace_text.splitlines()]
     prefix = r"^(?:\d+\s+)?"
     network_calls = any(re.search(prefix + r"(?:socket|socketpair|connect|bind|listen|accept\d*|send\w*|recv\w*)\(", line) for line in calls)
-    mutation = r"(?:creat|truncate|ftruncate|rename\w*|unlink\w*|mkdir\w*|rmdir|link\w*|symlink\w*|mknod\w*|chmod\w*|chown\w*|utime\w*)\("
+    mutation = r"(?:creat|truncate|ftruncate|rename\w*|unlink\w*|mkdir\w*|rmdir|link\w*|symlink\w*|mknod\w*|[fl]?chmod\w*|[fl]?chown\w*|utime\w*)\("
     file_changes = any(re.search(prefix + mutation, line)
                        or (re.search(prefix + r"open\w*\(", line) and re.search(r"O_CREAT|O_TRUNC|O_TMPFILE|O_WRONLY|O_RDWR", line))
                        or re.search(prefix + r"(?:pwrite\w*|write\w*)\((?:[3-9]|\d{2,}),", line) for line in calls)
     observed = trace and len(traces) == expected_count and all(text.strip() for text in traces)
     checks.append({"name": label + "no_network_syscalls", "result": ("FAIL" if network_calls else "PASS") if observed else "NOT_RUN",
                    "detail": "requires Linux strace; disabled networking alone does not observe attempted calls"})
-    checks.append({"name": label + "no_file_mutation_syscalls", "result": ("FAIL" if file_changes else "PASS") if observed else "NOT_RUN"})
+    if check_mutations:
+        checks.append({"name": label + "no_file_mutation_syscalls", "result": ("FAIL" if file_changes else "PASS") if observed else "NOT_RUN"})
 
 
 def foundation(args, checks, inputs):
@@ -202,7 +203,7 @@ def signed_events(args, checks, inputs):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("case", choices=["p01-t01", "p01-event-cli"])
+    parser.add_argument("case", choices=["p01-t01", "p01-event-cli", "p01-config-static"])
     parser.add_argument("--binary", required=True, type=Path)
     parser.add_argument("--source-root", required=True, type=Path)
     parser.add_argument("--source-manifest", type=Path)
@@ -216,6 +217,9 @@ def main():
         foundation(args, checks, inputs)
         if args.case == "p01-event-cli" and "binary_sha256" in inputs:
             signed_events(args, checks, inputs)
+        if args.case == "p01-config-static" and "binary_sha256" in inputs:
+            from config_static import configuration
+            configuration(args, checks, inputs, sys.modules[__name__])
     except (OSError, subprocess.SubprocessError, KeyboardInterrupt, ValueError, KeyError, TypeError, AttributeError) as error:
         checks.append({"name": "execution", "result": "FAIL", "detail": type(error).__name__})
     result = "FAIL" if any(check["result"] == "FAIL" for check in checks) else (
@@ -226,7 +230,7 @@ def main():
               "counts": {"collected": len(checks), "executed": sum(c["result"] in ("PASS", "FAIL") for c in checks),
                          "failed": sum(c["result"] == "FAIL" for c in checks), "skipped": 0,
                          "not_run": sum(c["result"] == "NOT_RUN" for c in checks)},
-              "cleanup": "Owned process groups terminated/joined; only the runner-owned temporary working directory removed; evidence retained.",
+              "cleanup": "Owned process groups terminated/joined; only runner-owned temporary directories removed; evidence retained.",
               "limits": ["No storage, WebSocket/protocol-suite, runtime grant, release bundle or complete product qualification."]}
     (args.evidence / "result.json").write_text(json.dumps(report, indent=2) + "\n")
     print(result + ": " + str(args.evidence / "result.json"))

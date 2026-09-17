@@ -101,6 +101,19 @@ class RunnerControls(unittest.TestCase):
             self.assertEqual(checks["signed_event E_public"], "PASS")
             self.assertEqual(checks["event_no_file_mutation_syscalls"], "FAIL")
 
+    def test_static_config_case_never_accepts_hardcoded_success(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            binary = root / "permissive-config"
+            binary.write_text('#!/bin/sh\nprintf \'{"status":"valid-static"}\\n\'\n')
+            binary.chmod(0o755)
+            result, evidence = self.invoke(binary, root / "evidence", case="p01-config-static")
+            self.assertEqual(result.returncode, 1)
+            checks = {c["name"]: c["result"] for c in evidence["checks"]}
+            self.assertEqual(checks["config_invalid_unknown_key"], "FAIL")
+            self.assertEqual(checks["config_invalid_disabled_proxy"], "FAIL")
+            self.assertEqual(checks["config_doctor_incomplete"], "FAIL")
+
     def test_timeout_cleans_up_descendants(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

@@ -66,10 +66,12 @@ fn build_information_binds_actual_inputs_and_exposes_only_implemented_contracts(
     assert!(!info["target"].as_str().unwrap().is_empty());
     assert_eq!(
         info["capabilities"],
-        serde_json::json!(["event-verification"])
+        serde_json::json!(["event-verification", "config-static"])
     );
     assert_eq!(info["schemas"]["build_info"], "bigbrotr-build/1");
     assert_eq!(info["schemas"]["signed_event"], "nip01-event/1");
+    assert_eq!(info["schemas"]["config_static"], "bigbrotr-config-static/1");
+    assert_eq!(info["schemas"]["doctor"], "bigbrotr-doctor/1");
     assert_eq!(
         info["protocol_registry_format"],
         "bigbrotr-protocol-versions/1"

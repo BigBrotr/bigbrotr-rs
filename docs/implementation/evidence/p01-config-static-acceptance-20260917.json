@@ -1,0 +1,119 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "scope": "P01-T04 offline configuration actual-executable acceptance harness only; no live engines, authority, storage, or complete task acceptance",
+  "recorded_on": "2026-09-17",
+  "source": {
+    "base_revision": "d7bd8f13b97e3e224fe93d827d79d6a44a31aed8",
+    "branch": "impl/config-static-acceptance",
+    "state": "uncommitted owned acceptance changes over the recorded base; local diagnostic build without clean-builder manifests",
+    "files_sha256": {
+      "tests/acceptance/run.py": "1a056fe313274cd32e3cdf214519d6f9ae1146d48e1108941589fc920fbf2201",
+      "tests/acceptance/config_static.py": "3ff33a5d54d122a16798885048228e9f08e414949d5bbdd1630dde33080555cc",
+      "tests/acceptance/test_runner.py": "850ffde6c4935d9ecd2058118dce11fcaf469606461690d4117ef60bc4144692",
+      "tests/acceptance/test_config_static.py": "1cabcb952392169f575e733e15af6326da748b98556d9ef105da6f1b9af22505",
+      "tests/fixtures/config/static-expectations.json": "7357897dca9167be828b6e7b0ce0e0ccab7e44e1aa21b22dd88d0c0ddb07da74",
+      "apps/bigbrotr/tests/cli_contract.rs": "161af1fa4358839a489c179a5536d939596658ad099b66686f2ee203d42f7662",
+      "contracts/protocol/versions.json": "37c76706c5a2aa4fc72a40aeed908f104620eafcee1118b7cee8baf133546c95",
+      ".github/workflows/ci.yml": "f56751712685c6ce8af0809f62ae9994c3846ab8a063bb694672c9ff17018f65",
+      "docs/development/verification.md": "4078b585f7e5daf6bb0f4956cb41566f872b4ee669429bd4ea7b85151b74bcb8"
+    }
+  },
+  "environment": {
+    "os": "Darwin",
+    "architecture": "arm64",
+    "python": "3.9.6",
+    "rustc": "1.98.1",
+    "native_linux_executed": false
+  },
+  "binary": {
+    "sha256": "08748131adde205ddbff75c25e92ab71a04e0432fd53a03f62ca93fd16fcaed5",
+    "target": "aarch64-apple-darwin",
+    "profile": "unoptimized debug local diagnostic; no release authenticity claim"
+  },
+  "executed": [
+    {
+      "command": "python3 -m unittest discover -s tests/acceptance -p 'test_*.py'",
+      "collected": 13,
+      "passed": 11,
+      "failed": 0,
+      "skipped": 2,
+      "skip_reason": "Actual event/config syscall side-effect controls require Linux strace"
+    },
+    {
+      "command": "cargo test --locked -p bigbrotr --test cli_contract",
+      "passed": 3,
+      "failed": 0
+    },
+    {
+      "command": "python3 tests/acceptance/run.py p01-config-static --binary .research/targets/product/debug/bigbrotr --source-root . --evidence .research/config-acceptance/mac-practical-final",
+      "result": "NOT_RUN",
+      "counts": {
+        "collected": 64,
+        "executed": 56,
+        "failed": 0,
+        "skipped": 0,
+        "not_run": 8
+      },
+      "config_invocations": {
+        "read_only": 40,
+        "initialization": 3
+      },
+      "not_run": [
+        "no_network_syscalls",
+        "no_file_mutation_syscalls",
+        "clean_source_identity",
+        "expected_artifact",
+        "config_init_no_network_syscalls",
+        "config_no_network_syscalls",
+        "config_no_file_mutation_syscalls",
+        "config_no_secret_open_syscalls"
+      ]
+    },
+    {
+      "command": "cargo fmt --all --check",
+      "result": "PASS"
+    },
+    {
+      "command": "git diff --check",
+      "result": "PASS"
+    },
+    {
+      "command": "python3 experiments/verify_artifacts.py",
+      "result": "PASS",
+      "scope": "Artifact/link/syntax checks only"
+    }
+  ],
+  "independent_controls": [
+    "Six literal role/dependency/fixed-endpoint expectations; generated schema/reference/recipe bytes compared separately to selected-source fixtures",
+    "Hard-coded valid-static response fails unknown-field, disabled malformed proxy and incomplete-doctor checks",
+    "Plausible report with implicit signing, public listener, extra roles or invented applied authority fails",
+    "Missing executable is NOT_RUN; missing/empty secret syscall observations are NOT_RUN",
+    "Literal failed fchmod/fchownat trace counterexample first failed its test (observer returned PASS), then passes after observer correction",
+    "Registration and build capability tests observed failing before implementation/registry changes"
+  ],
+  "raw_evidence": {
+    "owned_worktree_relative_directory": ".research/config-acceptance",
+    "retained_files_sha256": {
+      "registration-red.log": "449b1c9fe76b7e7db75c8f7cc8a4794f3b0a6ec282420a6a8a0e98ffef00d4b7",
+      "capability-red.log": "616ea528a51c32d7ed74260d6706a9b315a29baa208938bcb930de30637a3fa1",
+      "metadata-mutation-red.log": "ee3802af6c70e3d312e1f0ab0cf91bdeda7e3fa88e54d3cb85827335e69015d5",
+      "python-controls.log": "04588b06e8d2d0acecc8691466e042de01c499db6f17f896affa7987cbb522bb",
+      "cli-contract.log": "caf8d6599e166317664c5652041caba155e71a572ba831c10144e9af5256e914",
+      "mac-practical-final/result.json": "aa53e295f44dd7c79db1d142e3065914e25ae34983109c8c8ca511c4a0cbb9a1"
+    }
+  },
+  "remaining_gates": [
+    "Integrating owner must run clean exact-source/artifact manifests plus native Linux amd64 and arm64 syscall cases and real process negative controls; this Mac result remains NOT_RUN",
+    "Doctor live PG/CH/TLS/dataset/grant checks, durable policy activation, resource qualification, packaging and full P01-T04 acceptance remain separate unimplemented gates",
+    "Init explicitly permits candidate file creation; this case checks final file membership, contents, permissions, no overwrite and network attempts, without claiming syscall proof against transient/outside-directory init mutations"
+  ],
+  "resources": {
+    "remote_resources": [],
+    "owned_processes": "All local test/process groups finished; temporary directories cleaned by runner",
+    "retained_local_resources": [
+      ".research/config-acceptance",
+      ".research/targets/product"
+    ],
+    "cleanup": "Only these worktree-owned ignored resources may be retired after integrating-owner review; no unrelated cleanup performed"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "format": "bigbrotr-static-config-expectations/1",
+  "basis": "Literal selected role/dependency and safety expectations from configuration-and-runtime and deployment contracts; never generated from candidate output.",
+  "recipes": {
+    "full": {"roles": ["archive", "control", "deriver", "discoverer", "index", "ingest", "monitor", "ranker", "read", "sync", "validator"], "dependencies": ["clickhouse", "postgres.catalog", "postgres.control"], "fixed": {"sync": 0, "monitor": 0}},
+    "archive-only": {"roles": ["archive", "control", "discoverer", "ingest", "monitor", "sync", "validator"], "dependencies": ["postgres.catalog", "postgres.control"], "fixed": {"sync": 0, "monitor": 0}},
+    "sync-only": {"roles": ["archive", "control", "ingest", "sync"], "dependencies": ["postgres.catalog", "postgres.control"], "fixed": {"sync": 1, "monitor": 0}},
+    "monitor-only": {"roles": ["archive", "control", "ingest", "monitor"], "dependencies": ["postgres.catalog", "postgres.control"], "fixed": {"sync": 0, "monitor": 1}},
+    "serve-existing": {"roles": ["control", "read"], "dependencies": ["clickhouse", "postgres.control"], "fixed": {"sync": 0, "monitor": 0}},
+    "split-role": {"roles": ["sync"], "dependencies": ["archive-rpc", "control-rpc", "ingest-rpc"], "fixed": {"sync": 1, "monitor": 0}}
+  }
+}

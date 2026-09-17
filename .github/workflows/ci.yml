@@ -64,6 +64,15 @@ jobs:
           --source-manifest .research/ci-build/source-manifest.json
           --build-result .research/ci-build/build-result.json
           --evidence .research/ci-acceptance
+      - name: Native static configuration practical case
+        if: runner.os == 'Linux'
+        run: >-
+          python3 tests/acceptance/run.py p01-config-static
+          --binary .research/ci-build/bigbrotr
+          --source-root .research/ci-build/source
+          --source-manifest .research/ci-build/source-manifest.json
+          --build-result .research/ci-build/build-result.json
+          --evidence .research/ci-config-acceptance
       - name: Retain private diagnostic evidence
         if: always()
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
@@ -73,6 +82,7 @@ jobs:
             .research/ci-build/build-result.json
             .research/ci-build/source-manifest.json
             .research/ci-acceptance/
+            .research/ci-config-acceptance/
           include-hidden-files: true
           if-no-files-found: error
           retention-days: 14
