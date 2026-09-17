@@ -64,16 +64,23 @@ P01-T02 selects `minicbor` 2.3.0 with default features disabled and no optional
 features/transitive dependencies. Exact published source at upstream commit
 `67b22f849a0ff12b669a0c304236ffe9744f9a79` uses shortest big-endian integers and
 definite arrays/bytes/UTF-8 through a streaming writer. The model privately uses
-only direct typed body/admission recipes; it does not expose a general CBOR value
-API or infer canonical maps from Rust map ordering. The initial frozen vectors
-test those actual recipes, not every future fact/proof format.
+direct typed body/admission, core event fact, event request and existing-proof
+recipes; it does not expose a general CBOR value API or infer canonical maps from
+Rust map ordering.
+Frozen independent preimages test those actual recipes, not every future
+fact/proof format.
 
-The decoder accepts non-shortest encodings and the generic decode helper does
-not require EOF. Future persistent readers must cap bytes/counts before allocation,
-decode closed schemas, check exact arity/order/required fields and EOF, and compare
-canonical re-encoding against original bytes. They may not use generic map/derive
-decoding or unknown-field skipping as profile enforcement. This is a recorded
-adapter requirement, not an implemented decoder claim.
+The upstream decoder accepts non-shortest encodings and its generic decode helper
+does not require EOF. The implemented core fact decoder caps input, retained
+strings, tag nodes and requested allocation before reservation, checks closed
+schemas/arity/required fields and EOF, and compares streaming canonical
+re-encoding against the original bytes without a second output buffer. Tests
+refuse 626 equal-value noncanonical encodings; see the
+[codec evidence](../implementation/evidence/p01-fact-codec-20260917.json).
+These are codec-local bounds, not allocator/RSS or runtime grant guarantees.
+Other persistent families and proof/request decoders remain unimplemented and
+must meet the same requirements; generic map/derive decoding or unknown-field
+skipping cannot enforce the profile. No engine persistence follows from decoding.
 
 The exact archive hash/source inspection and isolated Rust probe are inventoried
 in `.research/checkouts/cbor-dependency-audit-20260917/inventory.json`. The

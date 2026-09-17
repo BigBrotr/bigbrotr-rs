@@ -85,7 +85,7 @@ typed errors; SourceRecordId and SourceCut have exactly one shared meaning.
   NostrTime u64, observed UTC microseconds, duration and clock uncertainty.
 - [x] **Step 2:** Encode complete ordered tags/content without normalization; distinguish
   absent value, empty string, duplicate tag and missing optional measurement.
-- [ ] **Step 3:** Define four-part source identities, contiguous atomic-batch receipts and
+- [x] **Step 3:** Define four-part source identities, contiguous atomic-batch receipts and
   topology-aware cuts; reject incompatible namespaces and arithmetic overflow.
   Define ExistingProof and acquisition's `EventEffectBasis = Receipt | ExistingProof`
   with retained source dependency closure; a read proof is not a mutation receipt.
@@ -107,7 +107,10 @@ The [portable model reference](../reference/data-model.md) covers implemented
 scalars, clock quality, qualified references, structural source cuts/batches and
 body/admission and core fact/event-request fingerprint recipes. The four core
 event fact families and network/import intents are structurally checked; see the
-[core fact evidence](evidence/p01-core-facts-20260917.json). Remaining receipts/proofs,
+[core fact evidence](evidence/p01-core-facts-20260917.json). Structural receipts,
+proofs and acquisition effect bases now bind exact retained dependencies; see
+[effect evidence](evidence/p01-effect-basis-20260917.json);
+actual admission/recovery authority remains P02 work. Remaining
 dictionary/claim/measurement families, other recipes/decoders, generated schemas and actual engine
 round-trips remain unchecked. Structural validation never certifies a commit.
 The [bounded core fact codec](evidence/p01-fact-codec-20260917.json) preserves

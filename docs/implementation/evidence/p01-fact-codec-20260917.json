@@ -2,7 +2,7 @@
   "format": "bigbrotr-implementation-evidence/1",
   "date": "2026-09-17",
   "scope": "P01-T02 partial: bounded profile-1 canonical preimage encoding/decoding for event payload, eligibility, receive and provenance facts",
-  "source_state": "Root-owned dirty candidate based on c74535fc1054ea2570edf3b4c012df668fb8fd0e; resolve containing revision from Git",
+  "source_state": "Committed and privately pushed source79ebb55a4913435119d070e746d791e191f07aa0; input hashes below bind implemented codec",
   "inputs_sha256": {
     "Cargo.lock": "c6a72a1cafed9282b52115229268b9a37b5637965174e5ce6520a0def026bffd",
     "crates/bigbrotr-model/src/codec.rs": "988bd21f777580945bca08306694a88348bed3fabce6c9b604678d86672d0b84",
@@ -35,6 +35,40 @@
       "noncanonical_equal_value_encodings_refused": 626,
       "log": ".research/implementation/foundation/fact-codec-final-tests.log",
       "allocation_boundary": "198 requested bytes accepted and197 refused on native64-bit host"
+    },
+    "native_ci": {
+      "run": 35265768144,
+      "revision": "79ebb55a4913435119d070e746d791e191f07aa0",
+      "result": "PASS",
+      "jobs": [
+        "Linux amd64",
+        "Linux arm64",
+        "Mac arm64"
+      ],
+      "evidence": ".research/implementation/foundation/ci-35265768144",
+      "linux_practical_reports": {
+        "x86_64": {
+          "counts": {
+            "collected": 40,
+            "executed": 40,
+            "failed": 0,
+            "skipped": 0,
+            "not_run": 0
+          },
+          "binary_sha256": "a1c91f8f5e7064d1c7b4d8ece6be80d6de60614ed2b30627d1ec2814557b88c6"
+        },
+        "aarch64": {
+          "counts": {
+            "collected": 40,
+            "executed": 40,
+            "failed": 0,
+            "skipped": 0,
+            "not_run": 0
+          },
+          "binary_sha256": "84ad1287ac54aef84298d408f860cd7302d571cde51e5be528a9bdbd473f4ce3"
+        }
+      },
+      "scope": "Workspace tests/lints/docs and clean builds on all three targets; Linux event CLI40/40 each; Mac CI practical syscall case skipped explicitly. No engine/product qualification."
     }
   },
   "upstream_inspection": {
@@ -55,7 +89,6 @@
     "boundary": "No generic untyped maps, skip, derived CBOR deserialization or recursion. Closed v1 core families only."
   },
   "not_run": [
-    "Native clean candidate CI for codec additions",
     "Persistent engine write/reopen and exact-source storage acceptance",
     "Other family/request/proof decoders, generated archive manifests, PG/protobuf/columnar mappings",
     "Full product admission/archive/read/export/restart journey"

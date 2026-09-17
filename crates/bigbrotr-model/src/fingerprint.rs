@@ -1,9 +1,9 @@
 //! Closed profile-1 recipes, not a general CBOR serializer. Only named typed
 //! fields can reach the codec; no generic values, floats, maps or extension bags.
 use crate::{
-    AdmissionBatch, ClockQuality, Digest256, EventBody, EventId, EventIntent, EventOrigin, Fact,
-    FactPayload, NostrTime, ProducerRequestId, PublicKey, QualifiedRef, SignedEvent,
-    SourceRecordId,
+    AdmissionBatch, ClockQuality, Digest256, EventBody, EventId, EventIntent, EventOrigin,
+    ExistingProof, Fact, FactPayload, NostrTime, ProducerRequestId, PublicKey, QualifiedRef,
+    SignedEvent, SourceRecordId,
 };
 use minicbor::{
     Encoder,
@@ -324,6 +324,38 @@ impl AdmissionBatch {
     }
 }
 
+fn existing_proof<W: Write>(
+    proof: &ExistingProof,
+    encoder: &mut Encoder<W>,
+) -> Result<(), Error<W::Error>> {
+    encoder
+        .writer_mut()
+        .write_all(b"bigbrotr/existing-proof/1\0")
+        .map_err(Error::write)?;
+    let context = proof.protection_context();
+    encoder
+        .array(7)?
+        .bytes(context.dataset_id.as_bytes())?
+        .u64(context.topology_generation.get())?
+        .str(context.protection_class.as_str())?
+        .bytes(context.recovery_generation.as_bytes())?
+        .u64(context.policy_epoch.get())?
+        .bytes(proof.intent_digest().as_bytes())?
+        .array(proof.dependencies().records().len() as u64)?;
+    for record in proof.dependencies().records() {
+        encoder.array(2)?;
+        source(record.source_record_id, encoder)?;
+        encoder.bytes(record.payload_digest.as_bytes())?;
+    }
+    Ok(())
+}
+impl ExistingProof {
+    /// Operational integrity key, not a signature or an authorization token.
+    pub fn digest(&self) -> Digest256 {
+        hash(|encoder| existing_proof(self, encoder))
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -339,6 +371,69 @@ mod tests {
     }
     fn hex(bytes: &[u8]) -> String {
         bytes.iter().map(|b| format!("{b:02x}")).collect()
+    }
+
+    #[test]
+    fn existing_proof_bytes_match_independent_vector() {
+        use crate::{
+            PolicyEpoch, ProtectionClass, ProtectionContext, RecoveryGenerationId,
+            SourceDependencies, TopologyGeneration,
+        };
+        let vectors: serde_json::Value = serde_json::from_str(include_str!(
+            "../../../experiments/identity-contract/golden-vectors.json"
+        ))
+        .unwrap();
+        let vector = |name| {
+            vectors["vectors"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .find(|v| v["name"] == name)
+                .unwrap()
+        };
+        let dataset_id = DatasetId::try_from([1; 16]).unwrap();
+        let proof = ExistingProof::new(
+            ProtectionContext {
+                dataset_id,
+                topology_generation: TopologyGeneration::new(1),
+                protection_class: ProtectionClass::LocalSynced,
+                recovery_generation: RecoveryGenerationId::from_bytes([3; 16]),
+                policy_epoch: PolicyEpoch::new(1),
+            },
+            vector("certification-intent")["sha256"]
+                .as_str()
+                .unwrap()
+                .parse()
+                .unwrap(),
+            SourceDependencies::new(
+                dataset_id,
+                vec![FactRef {
+                    source_record_id: SourceRecordId {
+                        dataset_id,
+                        shard_id: 0,
+                        owner_epoch: OwnerEpoch::new(1).unwrap(),
+                        sequence: Sequence::new(1).unwrap(),
+                    },
+                    payload_digest: vector("fact-eligibility")["sha256"]
+                        .as_str()
+                        .unwrap()
+                        .parse()
+                        .unwrap(),
+                }],
+            )
+            .unwrap(),
+        )
+        .unwrap();
+        let mut encoder = Encoder::new(Bytes(Vec::new()));
+        existing_proof(&proof, &mut encoder).unwrap();
+        assert_eq!(
+            hex(&encoder.into_writer().0),
+            vector("existing-proof")["preimage_hex"]
+        );
+        assert_eq!(
+            proof.digest().to_string(),
+            vector("existing-proof")["sha256"]
+        );
     }
 
     #[test]

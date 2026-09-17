@@ -379,6 +379,15 @@ every dependency. A RAM cache, retired detailed receipt or bare existence bit is
 not such evidence. Pending synced facts can qualify under the selected local-disk
 failure class, but not under a claimed off-host replica class they do not meet.
 
+The initial supported protection spelling is `local-synced`, as fixed by the
+golden proof vector; it does not claim off-host protection. Other classes require
+an explicit qualified recovery contract and compatible readers before use.
+The portable recovery-generation field retains all 16 bytes and policy epoch
+retains the full u64 domain, including zero. Registration, freshness and current
+authority are owner checks, not inferred from either scalar's value. Policy
+epoch advancement refuses overflow. Proof dependencies are nonempty, strictly
+sorted by full source ID, unique and all within the context's dataset.
+
 A producer durably checkpoints the proof (or its complete deduplicated dependency
 set) with the bounded page/import progress it authorizes. This is operational
 progress state, retained until superseded progress has at least the same closure;

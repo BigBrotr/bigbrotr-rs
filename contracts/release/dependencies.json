@@ -30,7 +30,7 @@
     {
       "name": "sha2",
       "version": "0.11.0",
-      "purpose": "Build input hashes and NIP-01 canonical ID SHA-256",
+      "purpose": "Build input hashes, NIP-01 canonical IDs and closed model fingerprint SHA-256",
       "license": "MIT OR Apache-2.0",
       "source": "https://docs.rs/sha2/0.11.0/sha2/"
     },
@@ -58,7 +58,7 @@
     {
       "name": "minicbor",
       "version": "2.3.0",
-      "purpose": "Closed profile-1 deterministic CBOR fingerprint recipes; direct streaming encoder, no optional features",
+      "purpose": "Closed profile-1 deterministic CBOR fingerprint recipes and bounded core fact decoder; direct streaming encoding, no optional features",
       "license": "BlueOak-1.0.0",
       "license_notice": "https://blueoakcouncil.org/license/1.0.0",
       "source": "https://docs.rs/minicbor/2.3.0/minicbor/"

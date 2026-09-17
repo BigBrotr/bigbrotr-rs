@@ -1,0 +1,57 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-17",
+  "scope": "P01-T02 step3 structural receipts, existing proofs and retained acquisition effect bases; no storage authority",
+  "source_state": "Root dirty candidate based on 79ebb55a4913435119d070e746d791e191f07aa0; resolve containing revision from Git",
+  "inputs_sha256": {
+    "crates/bigbrotr-model/src/effect.rs": "32d42f943c4eafc9b2fba25cab14ebac2305d0affe229784e7a9792e8fa75393",
+    "crates/bigbrotr-model/src/fingerprint.rs": "ee82ce5d69055e9a0bb8e41b4cdb2842c64d7783bbe47fc66d108644f2d2558c",
+    "crates/bigbrotr-model/src/identity.rs": "dd61fa3882d219b640261da35f79a11a74628ceb2c94b51ef002c00faa4586a2",
+    "crates/bigbrotr-model/src/scalar.rs": "daa76bc96b8f97c8f078df0b2f64c74de4e5e3ab7a07658fdb6ccc470a9406b2",
+    "crates/bigbrotr-model/src/lib.rs": "54a599cdff76e12d9200a0af7cdf865f85fd4b29ac0b5661af8e2f6f71b94b3b",
+    "crates/bigbrotr-model/tests/effect_basis.rs": "72a46a312ed7ce69066fe0b816e2c8f7ec89f0ee2675f173dae085ac67bf2876",
+    "experiments/identity-contract/golden-vectors.json": "a81a3015cf2c60ecd0fcc5d576e8a6d68b66e01396a39a28a802595d159e9dc6",
+    "Cargo.lock": "c6a72a1cafed9282b52115229268b9a37b5637965174e5ce6520a0def026bffd"
+  },
+  "executed": {
+    "environment": "Mac native aarch64, Rust1.98.1, unchanged dependency lock",
+    "workspace_before_review_fix": {
+      "result": "PASS",
+      "passed": 38,
+      "log": ".research/implementation/foundation/effect-basis-tests.log"
+    },
+    "final_model_after_review_fix": {
+      "result": "PASS",
+      "passed": 26,
+      "log": ".research/implementation/foundation/effect-basis-final-model-tests.log"
+    },
+    "format_clippy": "PASS after final code change",
+    "rustdoc": "PASS before future-dependency guard; no public API documentation change after it",
+    "cases": [
+      "Frozen independently assembled full existing-proof preimage and OpenSSL SHA-256 match",
+      "Nonempty ordered unique same-dataset closure; duplicate IDs with conflicting digest refused",
+      "NewFacts requires every contiguous batch member and exact digest; foreign context refused",
+      "Same-stream dependency beyond batch end refused; other-stream u64 maximum accepted",
+      "Certification has no mutation request/ACK identity; AlreadyDurable binds its strict request but creates no new batch",
+      "Full policy/recovery scalar domains preserved; checked policy epoch advancement; unknown protection class refused"
+    ]
+  },
+  "review": {
+    "type": "Independent AI review and integrating-owner complete source/diff review",
+    "evidence": ".research/implementation/foundation/effect-basis-review/inventory.json",
+    "finding": "NewFacts previously accepted a same-stream dependency beyond its batch end",
+    "disposition": "Reproduced with failing retained test, corrected, targeted tests and final model suite passed",
+    "red_evidence": ".research/implementation/foundation/effect-future-red.log"
+  },
+  "limits": [
+    "Structural constructors move caller-owned vectors and do not grant authority; caller must bound input allocation and work",
+    "Only local-synced protection spelling supported; no tested product persistence claim",
+    "No generic untrusted receipt/proof deserialization or persistent receipt format activated"
+  ],
+  "not_run": [
+    "Exact candidate native CI",
+    "Admission/CertifyExisting engine behavior and sufficient-effect validation",
+    "Producer checkpoint/ACK/GC/recovery protocol and actual causal backup closure",
+    "Complete signed-event admission/archive/read/export/restart journey"
+  ]
+}

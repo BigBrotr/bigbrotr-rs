@@ -59,8 +59,31 @@ when effects would deduplicate. `ProducerRequestId` cannot contain the zero valu
 reserved solely for the read-only certification fingerprint. These values grant
 no current policy, producer authority, durable outcome or existing-effect proof.
 
+`SourceDependencies` moves a nonempty, strictly source-ID-ordered vector of
+`FactRef` values; it refuses duplicates (including conflicting digests) and
+foreign datasets without silently sorting or deduplicating. `Receipt` binds the
+strict producer request and digest to this closure and a `ProtectionContext`.
+Its `NewFacts` constructor requires a contiguous `AdmissionBatch` whose every
+member occurs with the same digest in the closure; `AlreadyDurable` has no new
+batch. Closure validation traverses the ordered inputs without a second set.
+New-fact closure refuses a dependency beyond its batch end in the same stream;
+it does not compare sequence numbers across different streams.
+`ExistingProof` instead binds a certification intent digest and the same context/
+closure, with no request identity. `EventEffectBasis` keeps these two cases
+distinct so a proof-only checkpoint has no mutation sequence to acknowledge.
+
+The context carries dataset, topology, `PolicyEpoch`, `RecoveryGenerationId`
+and the currently supported `local-synced` protection class. Policy epochs retain
+full u64/checked advancement; recovery generations retain all bytes16 values.
+Neither a context nor a proof digest verifies registration, authority, sufficient
+effects, physical persistence, retention or restore closure. Those remain the
+storage/producer owners' responsibility. Receipt/proof/basis values have no generic
+Serde deserialization or activated persistent format; transport readers must
+bound work and validate the owning protocol before using them.
+
 The fingerprint recipes stream `bigbrotr/body/1`, `bigbrotr/fact/1`,
-`bigbrotr/producer-request/1` and `bigbrotr/admission-batch/1` into SHA-256 using
+`bigbrotr/producer-request/1`, `bigbrotr/admission-batch/1` and
+`bigbrotr/existing-proof/1` into SHA-256 using
 private direct minicbor encoding.
 Body identity excludes signature and acquisition envelope; ordered tags, empty
 strings, Unicode and every payload field remain significant. The model method
@@ -92,7 +115,7 @@ reverify complete events where required and resolve all referenced mappings.
 This preimage codec does not activate an archive manifest or storage format.
 
 The remaining P01-T02 evidence variants, generated metadata schemas, other CBOR
-recipes/decoders, durable receipts/proofs and engine mappings
+recipes/decoders, actual receipt/proof authority and engine mappings
 follow the owning
 [data](../specification/data-contracts.md) and
 [identity](../specification/identity-and-encoding.md) contracts. They are not

@@ -111,6 +111,22 @@ which body/evidence effects they cover, rather than returning a generic boolean.
 RetiredRequest reports that detailed receipt resolution is no longer available
 under a durably closed request range; it never authorizes new progress/effects.
 
+The shared structural `Receipt` binds its `ProducerRequestId`, exact request
+digest, dataset/topology/policy/recovery/protection context and nonempty retained
+source dependency closure. `NewFacts` additionally carries the contiguous
+`AdmissionBatch`, which binds its endpoints and digest; every batch member must
+appear in the closure with its exact digest. `AlreadyDurable` carries no new
+batch, but still binds the current strict mutation request and its dependencies.
+Closure is strictly ordered by full source ID, without duplicates or foreign
+datasets; it may include older facts from other scopes/streams internally.
+For `NewFacts`, no dependency may follow the batch end in that same source stream;
+sequences in different streams have no global ordering implication.
+Constructing these values verifies structure only. The owning admission adapter
+must establish sufficient effects, authority, commit, protection and retention
+before returning them or advancing progress. Invalid/excluded/retryable outcomes
+are not event progress bases. The model does not define a second receipt ledger
+or an independent receipt fingerprint/serialization format.
+
 ProducerRequestId binds a registered logical producer slot/epoch and monotonic
 local request identity; the process incarnation holds that epoch's authority.
 While receipt detail exists, retries with another payload are rejected by digest;

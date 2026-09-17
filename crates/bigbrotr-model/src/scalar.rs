@@ -115,6 +115,16 @@ measured_scalar!(ObservedTime, i64);
 measured_scalar!(DurationUs, u64);
 measured_scalar!(CompleteThrough, u64);
 measured_scalar!(TopologyGeneration, u64);
+measured_scalar!(PolicyEpoch, u64);
+
+impl PolicyEpoch {
+    pub fn checked_add(self, amount: u64) -> Result<Self, ScalarError> {
+        self.get()
+            .checked_add(amount)
+            .map(Self::new)
+            .ok_or(ScalarError::Exhausted)
+    }
+}
 
 impl TopologyGeneration {
     pub fn checked_add(self, amount: u64) -> Result<Self, ScalarError> {
