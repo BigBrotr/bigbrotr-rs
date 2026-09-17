@@ -370,14 +370,23 @@
       "remote_preflight": ".research/implementation/postgres/pre-build-host.log",
       "remote_status": "Fresh read-only check: checkout clean704d97e, no implementation container running; unrelated workloads preserved",
       "planned_resources": {
-        "root": "/home/tux/bigbrotr-implementation-20260917/runs/control-migrations",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/control-migrations/runtime",
         "network": "bigbrotr-implementation-pg-20260917",
         "containers": [
           "bigbrotr-implementation-pg-20260917",
-          "bigbrotr-implementation-pg-client-20260917"
+          "bigbrotr-implementation-pg-20260917-client"
         ],
         "host_ports": [],
-        "status": "NOT_CREATED"
+        "status": "NOT_CREATED",
+        "limits": "PG2CPU/1536MiB memory+swap, client2CPU/4GiB, each256PIDs; private internal network, no published ports, owned new data/secrets only"
+      },
+      "build": {
+        "source": "6f7c03d1d5f00276998a733ac7a86c8aeb9cea1f",
+        "artifact_sha256": "5d10250e4e311721644502aaade663b509ebb525c469356e99e7ef3de4e8de0f",
+        "container": "bigbrotr-implementation-pg-build-6f7c03d",
+        "status": "Completed exit0 OOMfalse",
+        "limits": "2CPU/6GiB memory+swap/512PIDs, readonly source, owned output, no published ports",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/control-migrations/build-6f7c03d"
       }
     },
     "rocks_product_boundary": {

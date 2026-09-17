@@ -1,5 +1,29 @@
 # PostgreSQL control constraint fixture
 
+`lab.py` is the accompanying Docker laboratory orchestrator. It provisions a new
+owned directory, internal network with no published ports, PostgreSQL 16.15 and
+a finite-lived client container. It refuses existing resources, never deletes
+them, and keeps randomly generated passwords in owner-only files. Run its clean
+Git checkout on the native Linux host after building the exact application
+revision with `tools/build.py`:
+
+```sh
+python3 experiments/control-migrations/lab.py setup --root /owned/lab/runtime --build /owned/lab/exact-build --source "$PWD"
+python3 experiments/control-migrations/lab.py smoke --root /owned/lab/runtime
+python3 experiments/control-migrations/lab.py stop --root /owned/lab/runtime
+```
+
+The root's parent must already exist. Image digests are explicit laboratory
+inputs in the script; this is not the ordinary Compose installer. `resources.json`
+binds container ownership, exact artifact/source receipt, engine and harness.
+`smoke.json` retains each actual result and stops at the first failure. The smoke
+run creates fresh dedicated databases, exercises the actual executable, compares
+the external checksum receipt, refuses incompatible histories and bad plaintext
+routes/passwords, and checks receipt survival after a controlled engine SIGKILL.
+It does not run the SQL fixture below or qualify host power loss, a full upgrade,
+TLS, concurrency or lost COMMIT responses. Failed/partial resources remain owned
+and inventoried for diagnosis; `stop` requires matching ownership labels.
+
 Status: **NOT_RUN**. This fixture is authored for the actual PostgreSQL **16.15**
 engine and `0001_control.sql`; static inspection is not execution evidence. Root's
 exact-revision Linux run records the eventual outcome separately. It has no Python
