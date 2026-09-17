@@ -13,7 +13,7 @@ bigbrotr-model.workspace = true
 bigbrotr-protocol.workspace = true
 clap.workspace = true
 getrandom.workspace = true
-rustix.workspace = true
+rustix = { workspace = true, features = ["time"] }
 serde_json.workspace = true
 sha2.workspace = true
 toml.workspace = true

@@ -1,0 +1,162 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "recorded_on": "2026-09-17",
+  "scope": "Partial P01-T06 identity, timing and local restrictive-policy lifetime; no persistent fencing or authenticated grant claim",
+  "source": {
+    "base_revision": "7c112a2da5fc0089c19e2c2e3ec51ec936a6af49",
+    "branch": "impl/authority-lifetime",
+    "state": "Owned uncommitted changes identified below; not a clean release build",
+    "files_sha256": {
+      "apps/bigbrotr/Cargo.toml": "fda0a153bbf1bfa59aab180465fec98763ecd082299f8c194225c7d796bff829",
+      "apps/bigbrotr/src/runtime/ownership.rs": "5804fc6bcde35db4fdf4e540e384ff0865718e4f56dcb736ad7c02c1c9a34177",
+      "apps/bigbrotr/src/runtime/policy_authority.rs": "f88effa6f6e1239569ec00d8e4ad49033518a0696f108f096d246516ad62ff2c",
+      "apps/bigbrotr/tests/ownership_faults.rs": "338575a40f79ac84a7e2e90b37e857a336b4d86f296f7098c7700ff504fef015",
+      "apps/bigbrotr/tests/policy_lifetime/cases.rs": "a4793ca3882f63f8547cd9b94ad81e7874afe7cdb40280aa922b7aee66283265",
+      "crates/bigbrotr-model/src/identity.rs": "108476680d7f4a4cd64b0def5bde51fc9cdd16337854d52ff7dd8a6e6339e22b",
+      "crates/bigbrotr-model/src/lib.rs": "b3ab1805896f3ed66c5cd64082539dc78c0072322e4e94df60b0995c16899a2f",
+      "crates/bigbrotr-model/tests/process_incarnation.rs": "45ddbb24e66ab0bad6a037190c4f2243bda641d9f1801b4606734a5574a7e6bf",
+      "docs/security/authority.md": "27b8abb270edd279b464af8a226f5410dcc6ea9b38236784ae04a879cadbf3a6"
+    },
+    "cargo_lock_sha256": "3ee6c2f6830b6e03dee8fbf7787054d6ad1210dc893bc5f826414acb71866cb4"
+  },
+  "environment": {
+    "os": "Darwin",
+    "architecture": "arm64",
+    "macos": "26.5.2",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)"
+  },
+  "executed": [
+    {
+      "command": "cargo test --locked -p bigbrotr-model --test source_identity",
+      "purpose": "Clean starting baseline",
+      "passed": 4,
+      "failed": 0
+    },
+    {
+      "command": "cargo test --locked -p bigbrotr --test ownership_faults",
+      "passed": 16,
+      "failed": 0,
+      "ignored": 0,
+      "scope": "Controlled clock schedules plus actual OS nonce draws and one-second native Mac clock expiry"
+    },
+    {
+      "command": "cargo test --locked -p bigbrotr-model --test process_incarnation",
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "command": "cargo clippy --locked -p bigbrotr --test ownership_faults -p bigbrotr-model --test process_incarnation -- -D warnings",
+      "result": "PASS"
+    },
+    {
+      "command": "cargo fmt --all --check",
+      "result": "PASS"
+    },
+    {
+      "command": "git diff --check",
+      "result": "PASS"
+    },
+    {
+      "command": "python3 experiments/verify_artifacts.py",
+      "result": "PASS",
+      "scope": "Artifact/link/syntax checks only"
+    }
+  ],
+  "negative_cases": [
+    "Absence and exact expiry refuse delivery/retry; 60-second ownership timing cannot renew five-second policy authority",
+    "Reply at request-start plus 5, 6 or 60 seconds refuses; reply at plus4 expires at plus5, not plus9",
+    "Foreign dataset/incarnation and same-context different tracker sequence1 cannot install; duplicate and old tickets cannot replace current refresh",
+    "Known newer epoch invalidates old lease and queued output; timed-out newer response cannot install but does invalidate older authority",
+    "100 refresh attempts during one timed-out unresolved driver retain one occupied slot; only terminal completion releases it",
+    "Injected UTC jumps and suspend-inclusive ticks distinguish wall-clock and awake-only negative interpretations; no actual host clock/suspend mutation",
+    "Clock error/regression invalidates permanently; request/deadline/owner/policy arithmetic refuses exhaustion",
+    "Injected partial entropy failure and zero draw refuse with static redacted reason"
+  ],
+  "upstream_sources": [
+    {
+      "package": "getrandom-0.4.3",
+      "upstream_vcs": {
+        "git": {
+          "sha1": "5e7cd5733536844a9856dc7259bd4696bbe5e3ae"
+        },
+        "path_in_vcs": ""
+      },
+      "inspected_files_sha256": {
+        "src/lib.rs": "68bd1f2daa0aec1b55da25c07744869728a8be25d7c7d127bc788cd50fd8687b",
+        "src/backends.rs": "4eeedf166b675594c32254a2ee99bf93ff8bc4e7f37f5bdfc33fb56e666fc17d",
+        "src/backends/getentropy.rs": "10f9486239aea0506eedcb13b553ed064addf27a902d8e19728a811a763dbcc7",
+        "src/backends/linux_android_with_fallback.rs": "78a5c62a17d654cccb66bc0772c7017e57b0b6451e0d7135f834917456f343fb",
+        "src/utils/sys_fill_exact.rs": "d18e26399844e96b0a8e6ff0e82a9d7d3ee315e97e31eb51498430b201cb768c"
+      },
+      "boundary": "fill failure/partial output contract and selected Mac/Linux OS backends; prior crate/license audit remains separate"
+    },
+    {
+      "package": "rustix-1.1.5",
+      "upstream_vcs": {
+        "git": {
+          "sha1": "287214b889865d8e1406a0ee71cc409b6f6191c8"
+        },
+        "path_in_vcs": ""
+      },
+      "inspected_files_sha256": {
+        "src/clockid.rs": "d277107e621f60e8daad25fe3aa62cd797499a3b3ab300f8d58bb74ea6c46e47",
+        "src/time/clock.rs": "7588a33f5279ee683f39ce72a8d0a8dfcc2e25d3dbc29990e6829d7c2df7d99b",
+        "src/backend/libc/time/syscalls.rs": "fd72bec17484f773b2d0a6d07ade470f849493f9d694a39c49df8665ed92e908",
+        "src/backend/linux_raw/vdso_wrappers.rs": "cf31e9520c46293e05f1cba001269d9b56db6e3114326ea132e095903a310e9a",
+        "src/timespec.rs": "83d4f354dcd71fd890a67aab1abb9a704a838f00c17f92038044e633c2337896"
+      },
+      "boundary": "Clock API, variants, fallible Darwin libc/Linux vDSO call and timespec bounds"
+    }
+  ],
+  "apple_clock_source": {
+    "repository": "https://api.github.com/repos/apple-oss-distributions/Libc",
+    "commit": "71bbe350ab79eef58113991d817ccc6165061a64",
+    "paths": [
+      "gen/clock_gettime.3",
+      "gen/clock_gettime.c"
+    ],
+    "files_sha256": {
+      "gen/clock_gettime.3": "d09d561f8939fa9c8ebb67733b81034747ffd7ab504049920d08e8b36c7242fc",
+      "gen/clock_gettime.c": "55ee62841451d0d936fee72658b9c0452d5571c6039789e794e42751e2050f15"
+    }
+  },
+  "official_documentation": [
+    "https://docs.rs/getrandom/0.4.3/getrandom/fn.fill.html",
+    "https://doc.rust-lang.org/std/time/struct.Instant.html",
+    "https://man7.org/linux/man-pages/man2/clock_gettime.2.html",
+    "https://github.com/apple-oss-distributions/Libc/blob/71bbe350ab79eef58113991d817ccc6165061a64/gen/clock_gettime.3"
+  ],
+  "clock_decision": "Reject std::Instant as sole authority clock because suspend accounting is unspecified. Use rustix fallible Linux Boottime and macOS Monotonic, whose respective platform contracts include suspend/sleep; unsupported OS refuses. Production tracker owns sealed provider and never accepts supplied timestamps.",
+  "raw_evidence": {
+    "worktree_relative_directory": ".research/authority-lifetime",
+    "files_sha256": {
+      "baseline.log": "86a6323a7cf0e7b8b197fd7212dbb9d212da21d3785f252dd5bea2d0ce66881d",
+      "model-red.log": "390fc7e9f6591a945824ae8660ccc07b5df7908467a9ae7358ef6da3a1792eae",
+      "lifetime-red.log": "125a18a4556d000d54366020fa7956b27f21b74c6275d024631b0454f339c960",
+      "lifetime-tests.log": "28467accb6b12b1e8eed4226321f54c68ffbd431f6e06d26919c6d31dba49a9d",
+      "identity-tests.log": "10cba49449cba977951baa2e8f573a17d7909dd57d875a6bd154659b45dbca21",
+      "clippy.log": "9b3ac89316a20ea8de9f72e4e172d268228efbc6f45dbdeb6b8d782aaadd5ffa"
+    }
+  },
+  "not_run": [
+    "Native Linux amd64/arm64 execution for this source revision",
+    "Physical host suspend/resume, VM pause/migration, privileged wall-clock changes and failing actual OS clock/entropy syscalls",
+    "Real authenticated Control/grants, durable owner epochs, engine locks/fenced commits, output streams/signing/retries and positive old-writer exclusion",
+    "Complete P01-T06 practical acceptance and any release qualification"
+  ],
+  "integration": "Root owns runtime module/app library wiring and replacing config timing arithmetic with OwnershipTiming plus PolicyLeaseTtl; preserve read authorization sub-ceiling and any rustix process feature. Tests presently import owned files via path.",
+  "resources": {
+    "remote_resources": [],
+    "active_owned_processes": [],
+    "retained_worktree_relative_paths": [
+      ".research/authority-lifetime",
+      ".research/targets/product"
+    ],
+    "cleanup": "No unrelated resources modified; retain local logs/upstream sources/cache for integrating-owner review"
+  },
+  "test_artifacts_sha256": {
+    ".research/targets/product/debug/deps/ownership_faults-3cd4a547626c3540": "9bf46b152c585cf64f62dc4c9973f72a8ec129425aa6c93edabb1fb98be1f183",
+    ".research/targets/product/debug/deps/process_incarnation-7fff470e9ef9d6c8": "f8887ac47335c888d6ec300a770d338bcf7af0912c68228079bdeb3a34778334"
+  }
+}

@@ -130,6 +130,8 @@ fixed_hex!(Digest256, 32);
 fixed_hex!(DatasetId, 16, nonzero);
 fixed_hex!(AllocationDomainId, 16, nonzero);
 fixed_hex!(ProducerSlotId, 16, nonzero);
+// Portable identity only; a parsed nonce never establishes live process authority.
+fixed_hex!(ProcessIncarnation, 16, nonzero);
 fixed_hex!(ProjectionGenerationId, 16, nonzero);
 // The proof format carries all bytes16 values; registration/freshness belongs
 // to the recovery owner, not to this portable representation.
