@@ -147,7 +147,7 @@ pub fn overrides(recipe: &str) -> Result<BTreeMap<String, Value>, String> {
     );
     set!(
         "runtime.processes.native.enabled",
-        roles.contains(&"archive") || roles.contains(&"ranker")
+        roles.contains(&"archive") || roles.contains(&"deriver") || roles.contains(&"ranker")
     );
     if recipe == "split-role" {
         for role in ["control", "ingest", "archive"] {

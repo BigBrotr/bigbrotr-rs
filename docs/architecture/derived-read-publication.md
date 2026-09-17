@@ -105,14 +105,20 @@ Reload classes used below:
 | Job | Immutable within one submitted export or DVM job; a different value makes a different job. |
 
 All compute stages acquire CPU/IO/memory admission from the instance allocator.
-Byte-bounded queues and backpressure apply between stages. Candidate worker
-budgets are 512 MiB resident/8 GiB temporary disk for Deriver, 1 GiB/16 GiB for
-Ranker, and 256 MiB/16 GiB for a JSONL export. These are reservations/ceilings
+Byte-bounded queues and backpressure apply between stages. The static
+configuration namespaces for these templates are `deriver.*`, `ranker.*` and
+`export.*`. Runtime admission checks the concrete job against its declared
+budget. Candidate worker budgets are 512 MiB resident/8 GiB temporary disk for
+Deriver, 1 GiB/16 GiB for Ranker, and 256 MiB/16 GiB for a JSONL export. These are reservations/ceilings
 within the instance budget, not minimum hardware recommendations. If a correct
 job cannot fit, spill using the chosen engine, partition an exhaustive plan, or
 return `resource-exhausted`; never score/export a silently truncated subset.
 One active heavy job per service is the initial default, with the global allocator
-deciding whether different heavy services may overlap.
+deciding whether different heavy services may overlap. Selected local native
+consumers require their declared process grant and scratch root even when Archive
+is not local. Static root applicability, distinct-root comparison and doctor
+metadata checks must use the same selection. Actual scratch alias/permission/space
+checks and child termination remain runtime gates.
 
 Worker drain defaults to 30 seconds. Finish the current safe checkpoint or cancel;
 do not pretend an uncommitted run completed. Queued work has a durable identity,
@@ -204,7 +210,7 @@ availability observation history independently of derivation-run retention.
 | `work.max_ingestion_bytes` | 256 MiB per scheduled chunk; drain all chunks over repeated runs | bytes | Cycle |
 | `work.max_duration` | 3600; cancel only at safe partition boundaries where possible | seconds | Cycle |
 | `genesis_floor` | none beyond source scope | event timestamp | Generation |
-| `overlap.window` / `jaccard_min` / `shared_min` | 86400 / 0.99 / 10000 | seconds / ratio / events | Generation |
+| `overlap.window` / `overlap.jaccard_min` / `overlap.shared_min` | 86400 / 0.99 / 10000 | seconds / ratio / events | Generation |
 | `retention.completed_generations` | 3, subject to last-usable and active pin protection | generations | Cycle |
 | `continue_independent_targets_on_error` | true | boolean | Cycle |
 | `memory.max_bytes` / `spill.max_bytes` | 512 MiB / 8 GiB, allocator constrained | bytes | Cycle |

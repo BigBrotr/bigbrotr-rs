@@ -408,6 +408,19 @@ impl Resolved {
     pub fn local(&self, role: &str) -> bool {
         self.local_roles.contains(role)
     }
+    pub fn selected_storage_roots(&self) -> impl Iterator<Item = &'static str> {
+        [
+            ("storage.ingest_root", self.local("ingest")),
+            ("storage.index_root", self.local("index")),
+            ("storage.archive_root", self.local("archive")),
+            (
+                "storage.scratch_root",
+                self.flag("runtime.processes.native.enabled"),
+            ),
+        ]
+        .into_iter()
+        .filter_map(|(key, selected)| selected.then_some(key))
+    }
     pub fn remote(&self, role: &str) -> bool {
         self.values
             .get(&format!("topology.remote.{role}.endpoint"))
@@ -459,7 +472,10 @@ impl Resolved {
                     && self.text("clickhouse.placement") == Some("local"),
                 "clickhouse",
             ),
-            (self.local("archive") || self.local("ranker"), "native"),
+            (
+                self.local("archive") || self.local("deriver") || self.local("ranker"),
+                "native",
+            ),
         ] {
             if required && !self.flag(&format!("runtime.processes.{process}.enabled")) {
                 return Err(format!(
@@ -633,13 +649,8 @@ impl Resolved {
         }
         self.budgets()?;
         let mut paths = BTreeSet::new();
-        for (role, key) in [
-            ("ingest", "storage.ingest_root"),
-            ("index", "storage.index_root"),
-            ("archive", "storage.archive_root"),
-            ("archive", "storage.scratch_root"),
-        ] {
-            if self.local(role) && !paths.insert(lexical_path(self.present(key)?)) {
+        for key in self.selected_storage_roots() {
+            if !paths.insert(lexical_path(self.present(key)?)) {
                 return Err("local writable storage roots must be distinct; filesystem alias checks require doctor/runtime".into());
             }
         }
@@ -901,6 +912,22 @@ impl Resolved {
                     .into(),
             );
         }
+        if framed > n("deriver.work.max_ingestion_bytes") || framed > n("deriver.memory.max_bytes")
+        {
+            return Err(
+                "Deriver maximum source unit does not fit its chunk or resident allowance".into(),
+            );
+        }
+        for role in ["deriver", "ranker"] {
+            if self.local(role)
+                && n(&format!("{role}.memory.max_bytes"))
+                    > n("runtime.processes.native.native_bytes")
+            {
+                return Err(format!(
+                    "{role}: native job memory exceeds declared native work grant"
+                ));
+            }
+        }
         if self.local("archive") {
             let archive_total = n("archive.worker_memory_bytes")
                 .checked_mul(n("archive.prepare_workers"))
@@ -941,12 +968,8 @@ impl Resolved {
                 return self.flag(&format!("network.{route}.enabled"));
             }
         }
-        match name {
-            "storage.ingest_root" => return self.local("ingest"),
-            "storage.index_root" => return self.local("index"),
-            "storage.archive_root" => return self.local("archive"),
-            "storage.scratch_root" => return self.flag("runtime.processes.native.enabled"),
-            _ => (),
+        if name.starts_with("storage.") {
+            return self.selected_storage_roots().any(|key| key == name);
         }
         if name.starts_with("topology.")
             || name.starts_with("config.")

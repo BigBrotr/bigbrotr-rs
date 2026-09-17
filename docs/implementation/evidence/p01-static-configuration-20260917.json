@@ -306,5 +306,61 @@
       }
     },
     "remaining": "All prior runtime/engine/release and missing-family gates remain. No static-completion claim."
+  },
+  "compute_templates_candidate": {
+    "baseline": "af62282814ccee3f7ecf4d1466dfc78bf6e297a1",
+    "state": "reviewed dirty candidate before containing commit; integrated exact revision qualification remains separate",
+    "changed_files_sha256": {
+      "apps/bigbrotr/src/config/mod.rs": "7abbf57d058de26d4b378e0a262a861421ca8b67dda470a26fa2e6953079357f",
+      "apps/bigbrotr/src/config/recipes.rs": "953d357aee6bb70fe13450144d130e0c4bb28fd379b3a140f27c28d90eeab843",
+      "apps/bigbrotr/src/config/registry.rs": "219c0c86b3910a5f14f34d0520de76ca1f0c4b323abfa38d8ec2340254f75eb4",
+      "apps/bigbrotr/src/config/resolve.rs": "81a601568c9a6b2a88331943c96bcfabac3048564be6842c9b539dca6d828989",
+      "apps/bigbrotr/tests/config_entrypoint.rs": "8f66e6151e319c7d8aa74e0cf19b53a054c2efd184472e2d3c0bf2ceddb6a746",
+      "contracts/config/schema.json": "0dbdd85e49af9a235c3ae6793d85bfeb70e96a856ef0e86ce00ea959892f94ce",
+      "docs/architecture/derived-read-publication.md": "4305a00f75a1f113f1fd21438a5edbad551222bff990b0d45058e40478a37fbc",
+      "docs/reference/configuration.md": "738571e3d8bcafeda5fc59d3ba74e241cad7555c557a86ba7171523a58fd76f3"
+    },
+    "registry_keys": 343,
+    "changes": [
+      "Typed Deriver/Ranker/export cadence, resource and generation-retention templates; no execution or detailed target/profile/seed selection",
+      "Selected Deriver/Ranker native resident ceilings fit the declared native grant; complete source units fit Deriver chunk and resident allowance",
+      "Shared selected storage-root set drives required roots, lexical distinctness, applicability and doctor metadata, including scratch for native consumers without local Archive"
+    ],
+    "red_controls": {
+      "native_scratch_alias": {
+        "status": "FAIL before fix: standalone Index plus Deriver alias returned static success",
+        "log": ".research/static-config/native-scratch-red.log"
+      },
+      "compute_defaults": {
+        "status": "FAIL before implementation: declared Deriver memory default absent",
+        "log": ".research/static-config/compute-limits-red.log"
+      }
+    },
+    "validation": {
+      "config_cli": {
+        "status": "PASS",
+        "tests": 20,
+        "command": "cargo test --locked -p bigbrotr --test config_entrypoint",
+        "log": ".research/static-config/compute-config-tests.log",
+        "log_sha256": "4ea8321689f61c80b9eddc7ca05eb72501581e5b4962c0fb8eb86bdfdd14a4d1"
+      },
+      "clippy": {
+        "status": "PASS",
+        "command": "cargo clippy --locked --workspace --all-targets -- -D warnings",
+        "log_sha256": "333bbd54faac86d0893f7d74c7ac1d2224d9bab004cfe3e8257ce4d8863bd1d7"
+      },
+      "fmt": {
+        "status": "PASS",
+        "command": "cargo fmt --all --check"
+      },
+      "artifacts": {
+        "status": "PASS",
+        "command": "python3 experiments/verify_artifacts.py",
+        "scope": "links, fences, JSON and selected artifact hashes; not semantic qualification",
+        "log_sha256": "87b1417d1d4ed7b6f23b6984cb30df1743246e35a3494298cb5cea69d2127707"
+      }
+    },
+    "review": "Complete changed source/test/owning-contract and generated key semantics reviewed locally. No new independent-agent review.",
+    "remaining": "All prior runtime, engine, exact Linux and selected-product gates remain. Native scheduling/admission, physical scratch identity, target/profile/seed semantics and finite export commands are not implemented by these templates."
   }
 }

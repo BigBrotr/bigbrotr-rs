@@ -661,3 +661,63 @@ fn known_lexical_storage_aliases_cannot_create_distinct_owner_roots() {
     let alias = base.replace("/var/lib/bigbrotr/index", "/var//lib/bigbrotr/ingest/");
     assert!(invalid_error(path, &alias).contains("storage roots must be distinct"));
 }
+
+#[test]
+fn native_compute_candidates_fit_atomic_work_and_the_declared_job_grant() {
+    let directory = tempfile::tempdir().unwrap();
+    let path = directory.path();
+    let base = example(path, "full");
+    fs::write(path.join("input.toml"), &base).unwrap();
+    let show = success(run(path, &["config", "show", "--file", "input.toml"]));
+    assert_eq!(
+        show["settings"]["deriver.memory.max_bytes"]["value"],
+        "536870912"
+    );
+    assert_eq!(
+        show["settings"]["ranker.memory.max_bytes"]["value"],
+        "1073741824"
+    );
+    assert_eq!(
+        show["settings"]["deriver.current.interval"]["value"],
+        "300000000"
+    );
+    let mut standalone = configured_roles(&base, &["control", "index", "deriver"]);
+    standalone["indexer"]["enabled"] = toml::Value::Boolean(false);
+    let scratch = path.join("native-scratch");
+    fs::create_dir(&scratch).unwrap();
+    standalone["storage"]["scratch_root"] = toml::Value::String(scratch.to_str().unwrap().into());
+    fs::write(
+        path.join("input.toml"),
+        toml::to_string(&standalone).unwrap(),
+    )
+    .unwrap();
+    let doctor = run(path, &["doctor", "--file", "input.toml"]);
+    assert_eq!(doctor.status.code(), Some(4));
+    let report: Value = serde_json::from_slice(&doctor.stdout).unwrap();
+    assert!(
+        report["checks"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|check| check["name"] == "storage.scratch_root" && check["status"] == "OBSERVED")
+    );
+    standalone["runtime"]["processes"]["native"]["enabled"] = toml::Value::Boolean(false);
+    assert!(
+        invalid_error(path, &toml::to_string(&standalone).unwrap())
+            .contains("native process grant")
+    );
+    standalone["runtime"]["processes"]["native"]["enabled"] = toml::Value::Boolean(true);
+    standalone["storage"]["scratch_root"] = toml::Value::String("/var//lib/bigbrotr/index/".into());
+    assert!(
+        invalid_error(path, &toml::to_string(&standalone).unwrap())
+            .contains("storage roots must be distinct")
+    );
+    for invalid in [
+        format!("{base}\n[deriver.memory]\nmax_bytes='2GiB'\n"),
+        format!("{base}\n[deriver.work]\nmax_ingestion_bytes='1B'\n"),
+        format!("{base}\n[ranker.memory]\nmax_bytes='2GiB'\n"),
+        format!("{base}\n[deriver.retention]\ncompleted_generations=0\n"),
+    ] {
+        reject(path, &invalid);
+    }
+}

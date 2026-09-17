@@ -450,12 +450,193 @@
     "deriver": {
       "additionalProperties": false,
       "properties": {
+        "continue_independent_targets_on_error": {
+          "default": true,
+          "type": "boolean",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "deriver",
+          "x-bigbrotr-reload": "cycle"
+        },
+        "current": {
+          "additionalProperties": false,
+          "properties": {
+            "interval": {
+              "default": "5m",
+              "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+              "type": "string",
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-owner": "deriver",
+              "x-bigbrotr-reload": "cycle"
+            }
+          },
+          "type": "object"
+        },
         "enabled": {
           "default": true,
           "type": "boolean",
           "x-bigbrotr-deployment-locked": false,
           "x-bigbrotr-owner": "deriver",
           "x-bigbrotr-reload": "live"
+        },
+        "facts": {
+          "additionalProperties": false,
+          "properties": {
+            "interval": {
+              "default": "24h",
+              "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+              "type": "string",
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-owner": "deriver",
+              "x-bigbrotr-reload": "cycle"
+            }
+          },
+          "type": "object"
+        },
+        "genesis_floor": {
+          "oneOf": [
+            {
+              "maximum": 18446744073709551615,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "format": "bigbrotr-u64",
+              "pattern": "^(0|[1-9][0-9]*)$",
+              "type": "string"
+            }
+          ],
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-maximum": 18446744073709551615,
+          "x-bigbrotr-minimum": 0,
+          "x-bigbrotr-owner": "deriver",
+          "x-bigbrotr-reload": "generation"
+        },
+        "memory": {
+          "additionalProperties": false,
+          "properties": {
+            "max_bytes": {
+              "default": "512MiB",
+              "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+              "type": "string",
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-owner": "deriver",
+              "x-bigbrotr-reload": "cycle"
+            }
+          },
+          "type": "object"
+        },
+        "overlap": {
+          "additionalProperties": false,
+          "properties": {
+            "interval": {
+              "default": "24h",
+              "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+              "type": "string",
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-owner": "deriver",
+              "x-bigbrotr-reload": "cycle"
+            },
+            "jaccard_min": {
+              "default": 0.99,
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number",
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-owner": "deriver",
+              "x-bigbrotr-reload": "generation"
+            },
+            "shared_min": {
+              "default": 10000,
+              "oneOf": [
+                {
+                  "maximum": 18446744073709551615,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "format": "bigbrotr-u64",
+                  "pattern": "^(0|[1-9][0-9]*)$",
+                  "type": "string"
+                }
+              ],
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-maximum": 18446744073709551615,
+              "x-bigbrotr-minimum": 0,
+              "x-bigbrotr-owner": "deriver",
+              "x-bigbrotr-reload": "generation"
+            },
+            "window": {
+              "default": "24h",
+              "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+              "type": "string",
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-owner": "deriver",
+              "x-bigbrotr-reload": "generation"
+            }
+          },
+          "type": "object"
+        },
+        "retention": {
+          "additionalProperties": false,
+          "properties": {
+            "completed_generations": {
+              "default": 3,
+              "oneOf": [
+                {
+                  "maximum": 4294967295,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "format": "bigbrotr-u64",
+                  "pattern": "^(0|[1-9][0-9]*)$",
+                  "type": "string"
+                }
+              ],
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-maximum": 4294967295,
+              "x-bigbrotr-minimum": 1,
+              "x-bigbrotr-owner": "deriver",
+              "x-bigbrotr-reload": "cycle"
+            }
+          },
+          "type": "object"
+        },
+        "spill": {
+          "additionalProperties": false,
+          "properties": {
+            "max_bytes": {
+              "default": "8GiB",
+              "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+              "type": "string",
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-owner": "deriver",
+              "x-bigbrotr-reload": "cycle"
+            }
+          },
+          "type": "object"
+        },
+        "work": {
+          "additionalProperties": false,
+          "properties": {
+            "max_duration": {
+              "default": "1h",
+              "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+              "type": "string",
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-owner": "deriver",
+              "x-bigbrotr-reload": "cycle"
+            },
+            "max_ingestion_bytes": {
+              "default": "256MiB",
+              "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+              "type": "string",
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-owner": "deriver",
+              "x-bigbrotr-reload": "cycle"
+            }
+          },
+          "type": "object"
         }
       },
       "type": "object"
@@ -662,6 +843,81 @@
           "x-bigbrotr-deployment-locked": false,
           "x-bigbrotr-owner": "read",
           "x-bigbrotr-reload": "restart"
+        }
+      },
+      "type": "object"
+    },
+    "export": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact": {
+          "additionalProperties": false,
+          "properties": {
+            "max_bytes": {
+              "default": "256MiB",
+              "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+              "type": "string",
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-owner": "export",
+              "x-bigbrotr-reload": "job"
+            }
+          },
+          "type": "object"
+        },
+        "concurrency": {
+          "default": 1,
+          "oneOf": [
+            {
+              "maximum": 4294967295,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "format": "bigbrotr-u64",
+              "pattern": "^(0|[1-9][0-9]*)$",
+              "type": "string"
+            }
+          ],
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-maximum": 4294967295,
+          "x-bigbrotr-minimum": 1,
+          "x-bigbrotr-owner": "export",
+          "x-bigbrotr-reload": "live"
+        },
+        "memory": {
+          "additionalProperties": false,
+          "properties": {
+            "max_bytes": {
+              "default": "256MiB",
+              "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+              "type": "string",
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-owner": "export",
+              "x-bigbrotr-reload": "job"
+            }
+          },
+          "type": "object"
+        },
+        "spill": {
+          "additionalProperties": false,
+          "properties": {
+            "max_bytes": {
+              "default": "16GiB",
+              "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+              "type": "string",
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-owner": "export",
+              "x-bigbrotr-reload": "job"
+            }
+          },
+          "type": "object"
+        },
+        "verify_restore": {
+          "default": false,
+          "type": "boolean",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "export",
+          "x-bigbrotr-reload": "job"
         }
       },
       "type": "object"
@@ -2109,6 +2365,102 @@
           "x-bigbrotr-deployment-locked": false,
           "x-bigbrotr-owner": "ranker",
           "x-bigbrotr-reload": "live"
+        },
+        "interval": {
+          "default": "1h",
+          "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "ranker",
+          "x-bigbrotr-reload": "cycle"
+        },
+        "memory": {
+          "additionalProperties": false,
+          "properties": {
+            "max_bytes": {
+              "default": "1GiB",
+              "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+              "type": "string",
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-owner": "ranker",
+              "x-bigbrotr-reload": "cycle"
+            }
+          },
+          "type": "object"
+        },
+        "relay": {
+          "additionalProperties": false,
+          "properties": {
+            "min_observations": {
+              "default": 5,
+              "oneOf": [
+                {
+                  "maximum": 18446744073709551615,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "format": "bigbrotr-u64",
+                  "pattern": "^(0|[1-9][0-9]*)$",
+                  "type": "string"
+                }
+              ],
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-maximum": 18446744073709551615,
+              "x-bigbrotr-minimum": 1,
+              "x-bigbrotr-owner": "ranker",
+              "x-bigbrotr-reload": "generation"
+            },
+            "window": {
+              "default": "24h",
+              "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+              "type": "string",
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-owner": "ranker",
+              "x-bigbrotr-reload": "generation"
+            }
+          },
+          "type": "object"
+        },
+        "retention": {
+          "additionalProperties": false,
+          "properties": {
+            "completed_generations": {
+              "default": 3,
+              "oneOf": [
+                {
+                  "maximum": 4294967295,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "format": "bigbrotr-u64",
+                  "pattern": "^(0|[1-9][0-9]*)$",
+                  "type": "string"
+                }
+              ],
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-maximum": 4294967295,
+              "x-bigbrotr-minimum": 1,
+              "x-bigbrotr-owner": "ranker",
+              "x-bigbrotr-reload": "cycle"
+            }
+          },
+          "type": "object"
+        },
+        "spill": {
+          "additionalProperties": false,
+          "properties": {
+            "max_bytes": {
+              "default": "16GiB",
+              "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+              "type": "string",
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-owner": "ranker",
+              "x-bigbrotr-reload": "cycle"
+            }
+          },
+          "type": "object"
         }
       },
       "type": "object"

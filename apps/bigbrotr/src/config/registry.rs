@@ -854,6 +854,93 @@ pub fn keys() -> Vec<Key> {
     let timeout = keys.last_mut().expect("API timeout registry entry");
     timeout.default_from = Some("read.execution.timeout");
     timeout.default_add_us = 5_000_000;
+    for (key, default, owner, reload) in [
+        ("deriver.current.interval", "5m", "deriver", "cycle"),
+        ("deriver.facts.interval", "24h", "deriver", "cycle"),
+        ("deriver.overlap.interval", "24h", "deriver", "cycle"),
+        ("deriver.work.max_duration", "1h", "deriver", "cycle"),
+        ("deriver.overlap.window", "24h", "deriver", "generation"),
+        ("ranker.interval", "1h", "ranker", "cycle"),
+        ("ranker.relay.window", "24h", "ranker", "generation"),
+    ] {
+        add!(key, Duration, default, reload, owner, false);
+    }
+    for (key, default, owner, reload) in [
+        (
+            "deriver.work.max_ingestion_bytes",
+            "256MiB",
+            "deriver",
+            "cycle",
+        ),
+        ("deriver.memory.max_bytes", "512MiB", "deriver", "cycle"),
+        ("deriver.spill.max_bytes", "8GiB", "deriver", "cycle"),
+        ("ranker.memory.max_bytes", "1GiB", "ranker", "cycle"),
+        ("ranker.spill.max_bytes", "16GiB", "ranker", "cycle"),
+        ("export.memory.max_bytes", "256MiB", "export", "job"),
+        ("export.spill.max_bytes", "16GiB", "export", "job"),
+        ("export.artifact.max_bytes", "256MiB", "export", "job"),
+    ] {
+        add!(key, Bytes, default, reload, owner, false);
+    }
+    for owner in ["deriver", "ranker"] {
+        add!(
+            format!("{owner}.retention.completed_generations"),
+            UInt(1, u32::MAX as u64),
+            3,
+            "cycle",
+            owner,
+            false
+        );
+    }
+    add!(
+        "deriver.genesis_floor",
+        UInt(0, u64::MAX),
+        Value::Null,
+        "generation",
+        "deriver",
+        false
+    );
+    add!(
+        "deriver.overlap.jaccard_min",
+        Ratio,
+        0.99,
+        "generation",
+        "deriver",
+        false
+    );
+    add!(
+        "deriver.overlap.shared_min",
+        UInt(0, u64::MAX),
+        10000,
+        "generation",
+        "deriver",
+        false
+    );
+    add!(
+        "deriver.continue_independent_targets_on_error",
+        Bool,
+        true,
+        "cycle",
+        "deriver",
+        false
+    );
+    add!(
+        "ranker.relay.min_observations",
+        UInt(1, u64::MAX),
+        5,
+        "generation",
+        "ranker",
+        false
+    );
+    add!(
+        "export.concurrency",
+        UInt(1, u32::MAX as u64),
+        1,
+        "live",
+        "export",
+        false
+    );
+    add!("export.verify_restore", Bool, false, "job", "export", false);
     // Acquisition settings have concrete units even before their workers exist.
     for (key, default, owner, reload) in [
         ("seed.max_line_bytes", "8KiB", "control", "job"),
