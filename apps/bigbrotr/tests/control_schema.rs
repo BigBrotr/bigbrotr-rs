@@ -1,5 +1,4 @@
-#[path = "../src/storage/postgres/migrations.rs"]
-mod migrations;
+use bigbrotr::storage::postgres::migrations;
 
 use migrations::{AppliedMigration, MigrationError, catalog, plan};
 

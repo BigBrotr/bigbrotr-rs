@@ -2,6 +2,8 @@ mod recipes;
 mod registry;
 mod resolve;
 
+pub(crate) use resolve::Resolved;
+
 use clap::{Arg, ArgMatches, Command};
 use serde_json::{Value, json};
 use std::{
@@ -112,8 +114,7 @@ fn run(matches: &ArgMatches, doctor: bool) -> Result<(String, u8)> {
         ));
     }
     let path = Path::new(args.get_one::<String>("file").unwrap());
-    let input = read_document(path)?;
-    let resolved = resolve::parse(&input).map_err(|e| (3, e))?;
+    let resolved = load(path)?;
     if action == "doctor" {
         return Ok((json_text(&diagnose(&resolved)), 4));
     }
@@ -137,13 +138,20 @@ fn new_identity() -> Result<String> {
     Ok(bytes.iter().map(|b| format!("{b:02x}")).collect())
 }
 
+/// Explicit startup consumers share the same bounded offline candidate checks.
+pub(crate) fn load(path: &Path) -> Result<Resolved> {
+    let input = read_document(path)?;
+    resolve::parse(&input).map_err(|error| (3, error))
+}
+
 fn read_document(path: &Path) -> Result<String> {
     let descriptor = rustix::fs::open(
         path,
         rustix::fs::OFlags::RDONLY
             | rustix::fs::OFlags::CLOEXEC
             | rustix::fs::OFlags::NOFOLLOW
-            | rustix::fs::OFlags::NONBLOCK,
+            | rustix::fs::OFlags::NONBLOCK
+            | rustix::fs::OFlags::NOCTTY,
         rustix::fs::Mode::empty(),
     )
     .map_err(|_| {

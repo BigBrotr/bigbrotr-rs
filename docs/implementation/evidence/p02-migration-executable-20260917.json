@@ -1,0 +1,76 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-17",
+  "scope": "P02-T01 explicit migration executable integration; local controls before actual PostgreSQL qualification",
+  "source": {
+    "base_revision": "4a8056fc168d5ddc590243908b541c2490bf78b2",
+    "state": "root candidate before containing commit",
+    "files_sha256": {
+      "apps/bigbrotr/src/cli.rs": "25faec8888593b9a7356f9e6d7d702b947b0427bf3be0592753d7be74141399e",
+      "apps/bigbrotr/src/main.rs": "222240e6dd5675af9e55a9e413d6e00c2eeb50b26185408d8773e77d918c0de2",
+      "apps/bigbrotr/src/lib.rs": "8d88e6bf5d8307b33ff9c3bd805bd0004eb23442e3fd0e006027816ca142c504",
+      "apps/bigbrotr/src/config/mod.rs": "9b176f53396f01cab593a3f6e457de833011efe9a340353ffa17d681fa83af85",
+      "apps/bigbrotr/src/interfaces/mod.rs": "84499360169dcfb4e97d1b94c7db50eb6c10c8bf9da0e71d1fd4a464ed1d0240",
+      "apps/bigbrotr/src/interfaces/migrations.rs": "a993c8c5b7afb1c00e7c7e9d0cd067e84975909bd271202642ca7fcf8f62477a",
+      "apps/bigbrotr/src/storage/mod.rs": "1ddc4dfbe1146dc05837ea772f5ade5893f9a370dd55ad5be298fcb6c378a867",
+      "apps/bigbrotr/src/storage/postgres/mod.rs": "4cd2404126e9cb18da43c0ff63fb48e5b529342b607c08e47f867d23265d6e94",
+      "apps/bigbrotr/src/storage/postgres/migration_runner.rs": "ec74e9938c6b8cb61329344bdd1216808e6663e71c681adc6adb24fb5ffa99af",
+      "apps/bigbrotr/src/storage/postgres/connection_settings.rs": "066de53917eb8f0ad8b3924ec6a1acd3e57a3a61bf7666e3f580e0af4bfd84ee",
+      "apps/bigbrotr/src/storage/postgres/migrations.rs": "94b730e4ae543a3869934a2e69352384165053464fc148938564288925a3923a",
+      "apps/bigbrotr/tests/migrate_entrypoint.rs": "9dd2c0d07796b78d1f9f6cc2a2c77d18f52c3e9970addd8fc8f4a3f197ca3ed8",
+      "apps/bigbrotr/tests/control_schema.rs": "92bbc093d2516cf122c05895db90ad311016ec02cc67757ea84d8cd9f793cefa",
+      "apps/bigbrotr/tests/postgres_connection_settings.rs": "b3329d57d8c161d225ef47a2d9768e602112b8bfad0160242d654337d678f614",
+      "migrations/postgres/0001_control.sql": "f59a155b5533c1674d5e381f6b55a7954b3b5fb550668b942f00efdf3677d5be",
+      "Cargo.lock": "87d5ba19cc757555f53ea1328de4258d5dfa650f82703a73605561eb973b14c9"
+    }
+  },
+  "environment": "Darwin arm64, Rust 1.98.1",
+  "executed": [
+    {
+      "command": "cargo test --workspace --locked",
+      "status": "PASS",
+      "tests": 115,
+      "log": ".research/implementation/postgres/workspace-tests.log",
+      "scope": "Before addition of one extra process test; includes actual IPv6 preparation regression and route selector"
+    },
+    {
+      "command": "cargo test -p bigbrotr --test migrate_entrypoint",
+      "status": "PASS",
+      "tests": 3,
+      "log": ".research/implementation/postgres/entrypoint-green.log",
+      "scope": "Final entrypoint suite includes invalid target and runtime username before credential loading"
+    },
+    {
+      "command": "cargo clippy --workspace --all-targets --locked -- -D warnings",
+      "status": "PASS",
+      "log": ".research/implementation/postgres/clippy.log"
+    }
+  ],
+  "discriminating_failures": [
+    {
+      "log": ".research/implementation/postgres/entrypoint-red.log",
+      "result": "Missing migrate subcommand failed both original entrypoint cases"
+    },
+    {
+      "log": ".research/implementation/postgres/ipv6-red.log",
+      "result": "Configured [::1] rejected during credential preparation; normalized typed host now passes"
+    }
+  ],
+  "review": {
+    "independent_ai_review": ".research/implementation/postgres/review/README.md",
+    "corrected": [
+      "Base SQL parameter casts avoid domain WrongType",
+      "Force synchronous_commit=on; refuse unqualified engine/durability settings",
+      "No SQL sort over damaged ledger; bounded projected metadata sorted only after validation",
+      "Plaintext resolved addresses vetted and pinned; declared boundary retained",
+      "IPv6 URL brackets removed before driver use",
+      "Session-default comment narrowed to actual overrides"
+    ]
+  },
+  "not_run": [
+    "Actual PostgreSQL DDL, authentication, TLS, runtime privilege grants",
+    "Concurrent migrators, lost COMMIT replies, backend exclusion and crash/restart",
+    "Native Linux execution of this candidate and OS/allocator resource measurements",
+    "Complete initialization, further P02-T01 schemas/adapters and first durable signed event"
+  ]
+}

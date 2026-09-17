@@ -348,7 +348,9 @@ fn parse_endpoint(raw: &str) -> Result<Endpoint, ConnectionError> {
         return Err(ConnectionError::Endpoint);
     }
     Ok(Endpoint {
-        host: host.to_owned(),
+        // URL syntax brackets IPv6; the PostgreSQL driver and IpAddr expect
+        // the address itself, including when TLS uses a separate server name.
+        host: host.trim_matches(['[', ']']).to_owned(),
         port,
     })
 }

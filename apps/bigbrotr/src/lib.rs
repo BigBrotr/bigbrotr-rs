@@ -2,3 +2,4 @@
 
 pub mod runtime;
 pub mod secrets;
+pub mod storage;

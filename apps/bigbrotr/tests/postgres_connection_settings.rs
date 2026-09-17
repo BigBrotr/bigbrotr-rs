@@ -1,9 +1,4 @@
-mod secrets {
-    pub use bigbrotr::secrets::*;
-}
-
-#[path = "../src/storage/postgres/connection_settings.rs"]
-mod connection_settings;
+use bigbrotr::{secrets, storage::postgres::connection_settings};
 
 use connection_settings::{
     ConnectionError, ConnectionSecurity, ConnectionSettings, PlaintextBoundary, PreparedTransport,
@@ -335,6 +330,15 @@ fn plaintext_is_only_prepared_for_the_declared_local_boundary() {
     settings("postgres:5432", PlaintextBoundary::PrivateBridge)
         .prepare()
         .unwrap();
+
+    let (config, _) = settings("[::1]:5432", PlaintextBoundary::Loopback)
+        .prepare()
+        .unwrap()
+        .into_parts();
+    assert_eq!(
+        config.get_hosts(),
+        &[tokio_postgres::config::Host::Tcp("::1".into())]
+    );
 }
 
 #[test]

@@ -10,6 +10,7 @@ pub fn command() -> clap::Command {
         .subcommand(clap::Command::new("build-info").about("Print embedded build identity as JSON"))
         .subcommand(crate::config::command())
         .subcommand(crate::config::doctor_command())
+        .subcommand(crate::interfaces::migrations::command())
         .subcommand(clap::Command::new("event")
             .about("Inspect a signed event without admitting it to storage")
             .subcommand_required(true)

@@ -275,8 +275,24 @@
         "branch": "impl/control-schema-foundation",
         "base": "140e264756b80c7fa4dc3e668ab33be89bf8d100",
         "owner": "static_configuration agent",
-        "purpose": "Active bounded P02-T01 DDL and migration planner; root owns driver/CLI/shared manifests and Tux",
-        "status": "Active isolated worktree; inspect before integrating"
+        "purpose": "Initial schema c832799 integrated b11189a; now independent SQL engine fixtures",
+        "status": "Active isolated fixture work; root owns engine execution"
+      },
+      {
+        "path": ".research/worktrees/postgres-connection-settings",
+        "branch": "impl/postgres-connection-settings",
+        "base": "b4bb3f6f7bcb55f12cc308cf88a170a9f2e43fd1",
+        "owner": "foundation_dependency_audit agent",
+        "purpose": "Connection preparation d2ccc7a integrated4a8056f",
+        "status": "Clean retained completed candidate"
+      },
+      {
+        "path": ".research/worktrees/control-migration-proxy",
+        "branch": "research/control-migration-proxy",
+        "base": "4a8056f",
+        "owner": "fact_codec_review agent",
+        "purpose": "Bounded PostgreSQL wire fault proxy for lost-COMMIT acceptance",
+        "status": "Active isolated worktree; no engine/Tux activity"
       }
     ],
     "rocks_dependency_audit": {
@@ -333,12 +349,41 @@
     "rpc_dependency_audit": {
       "root": ".research/implementation/rpc-dependency-audit",
       "owner": "fact_codec_review agent",
-      "scope": "Active read-only exact upstream source audit; no tracked edits or service"
+      "scope": "Completed exact upstream audit and six permissiveness probes; no product RPC acceptance"
     },
     "ci_evidence_audit": {
       "root": ".research/implementation/evidence-audit",
       "owner": "foundation_dependency_audit agent",
-      "scope": "Completed source/manifest/report audit: foundation20f4 Linux event40/40 and config64/64 on each architecture; native Rocks18fc9/9. Binary hashes report-only because artifacts omit binary/image bytes."
+      "scope": "Completed source/manifest/report audit: foundation20f4 Linux event40/40 and config64/64 on each architecture; native Rocks18fc9/9. Binary hashes report-only because artifacts omit binary/image bytes.",
+      "latest_run": {
+        "run_id": 35272240471,
+        "source": "b4bb3f6f7bcb55f12cc308cf88a170a9f2e43fd1",
+        "audit": ".research/implementation/foundation/ci-35272240471/audit.json",
+        "audit_sha256": "e43145677ccd308473233d66475763f693d6c0a3e9cb11e34004e906a9bacd6c",
+        "result": "All342 source entries match; Linux amd64+arm64 event40+config64 each PASS; binaries absent and Mac practical skipped"
+      }
+    },
+    "postgres_migration_integration": {
+      "local_root": ".research/implementation/postgres",
+      "owner": "root integrating owner",
+      "scope": "Local executable/driver tests and source review; PostgreSQL run not yet started",
+      "remote_preflight": ".research/implementation/postgres/pre-build-host.log",
+      "remote_status": "Fresh read-only check: checkout clean704d97e, no implementation container running; unrelated workloads preserved",
+      "planned_resources": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/control-migrations",
+        "network": "bigbrotr-implementation-pg-20260917",
+        "containers": [
+          "bigbrotr-implementation-pg-20260917",
+          "bigbrotr-implementation-pg-client-20260917"
+        ],
+        "host_ports": [],
+        "status": "NOT_CREATED"
+      }
+    },
+    "rocks_product_boundary": {
+      "root": ".research/implementation/rocks-product-design",
+      "owner": "foundation_dependency_audit agent",
+      "scope": "Read-only mapping of first production admission responsibility to existing contracts and APIs"
     }
   }
 }

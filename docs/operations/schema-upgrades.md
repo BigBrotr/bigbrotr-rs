@@ -1,12 +1,68 @@
 # Control schema migrations
 
 Status: initial P02-T01 foundation. The checked-in catalog contains only
-`0001_control.sql`. Its pure Rust planner has local tests; PostgreSQL execution,
-concurrency, privileges and failure recovery are **NOT_RUN** for this slice.
+`0001_control.sql`. The executable now includes explicit inspection, planning and
+application using the selected PostgreSQL driver. Its local planner, preparation
+and entrypoint tests pass; PostgreSQL execution, concurrency, privileges and
+failure recovery are **NOT_RUN** until the recorded engine acceptance runs.
 This is not completion of P02-T01 or a qualified installation/upgrade path.
 The [task](../implementation/02-storage.md#p02-t01--typed-control-schemas-and-minimum-relay-registry)
 and [upgrade contract](../specification/operations-contract.md) own the remaining
 runner, adapter and practical acceptance work.
+
+## Explicit executable commands
+
+Generate and review a configuration using `bigbrotr config init`, then provision
+the dedicated database and migration login separately. These commands use its
+configured control endpoint/database/transport but require an explicit migration
+login and protected password file, rather than the runtime application's password:
+
+```sh
+bigbrotr migrate inspect --file instance.toml --user bigbrotr_migrator --password-ref file:/run/secrets/bigbrotr-migrator
+bigbrotr migrate plan --file instance.toml --user bigbrotr_migrator --password-ref file:/run/secrets/bigbrotr-migrator --target 1
+bigbrotr migrate apply --file instance.toml --user bigbrotr_migrator --password-ref file:/run/secrets/bigbrotr-migrator --target 1
+```
+
+Apply refuses the configured runtime username. This check is not a privilege
+audit: provisioning must also enforce the ownership/grants below. All commands
+require PostgreSQL 16.15, `fsync=on` and `full_page_writes=on`; apply forces
+transaction-local `synchronous_commit=on`. They do not initialize a dataset or
+qualify a complete installation or release upgrade.
+
+Output is bounded JSON with format `bigbrotr-control-migration/1`, version/count
+strings, exact pending SQL hashes and explicit absent version as null. Exit 0
+means the reported inspect/plan/apply completed; 1 is backend/I/O/refusal, 2 usage,
+3 invalid static configuration/preparation, and 4 an unknown COMMIT outcome.
+Failure to deliver stdout after commit also requires fresh inspection. Never
+interpret an absent success response as permission to replace a database.
+
+One finite process owns one connection and transaction. It reserves a conservative
+payload grant before reading credentials, permits no waiter, and retains that
+grant through connection-driver shutdown. The allowance is not measured RSS or
+an OS limit. Connect is bounded to 10 seconds including resolution; transaction
+work to 60 seconds, with 30-second statement, 5-second lock and 10-second idle
+transaction deadlines. Local driver shutdown has a 2-second grace before abort
+and join. An uncancellable resolver may outlive the runtime grace until process
+exit; this command never recycles its credits into a long-running daemon.
+
+Plaintext routes require all of at most 16 resolved addresses to belong to the
+declared boundary: loopback, or private IPv4/IPv6 ULA for local service DNS under
+`private-bridge`. One accepted address is pinned through driver `hostaddr`, so
+connection performs no second DNS lookup. This address check cannot attest host
+network topology; the private bridge and its DNS remain operator responsibilities.
+`localhost` selects 127.0.0.1 without DNS; use `[::1]` explicitly for IPv6 loopback.
+TLS uses only the configured CA and expected server name, with optional paired
+client identity. Real authentication/TLS and route fault cases remain acceptance
+gates until executed.
+
+The database-local advisory transaction lock uses the two int4 keys 1111651442
+and 1296648018. Apply takes it exclusively; inspect/plan share it. Ledger reads
+occur in a later READ COMMITTED statement after lock acquisition. Metadata is
+projected with byte limits and at most catalog length plus one rows, then sorted
+in Rust after validation. No database sort consumes an arbitrarily expanded
+ledger, although dead/corrupt heap scan cost is not a hard I/O bound. The lock
+serializes cooperating migrators on this same authoritative database; privileged
+manual DDL or independent database clones are outside that guarantee.
 
 ## Catalog and authoritative receipt
 

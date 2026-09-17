@@ -1,6 +1,7 @@
 mod cli;
 mod config;
 mod event;
+mod interfaces;
 
 use std::{
     io::{self, Write},
@@ -13,6 +14,9 @@ fn main() -> ExitCode {
         Some("config") => config::execute(matches.subcommand_matches("config").unwrap(), false),
         Some("doctor") => config::execute(matches.subcommand_matches("doctor").unwrap(), true),
         Some("event") => event::verify_stdin(),
+        Some("migrate") => {
+            interfaces::migrations::execute(matches.subcommand_matches("migrate").unwrap())
+        }
         Some("build-info") => {
             let mut stdout = io::stdout().lock();
             if writeln!(
