@@ -23,9 +23,12 @@ or its containers were changed.
 | Embedded DuckDB / CH HTTP reads | Different query families favor different paths | Transport, concurrency and engine paths differ; do not compare as equivalent API benchmarks |
 
 Selected result files and the original bundle hash are in
-[evidence](../research/evidence/prior-components/manifest.json). The full original
-laboratory bundle remains separately retained; its path is local evidence, not a
-publicly downloadable artifact. New reproducible probes live under `experiments/`.
+[evidence](../research/evidence/prior-components/manifest.json). The recorded local
+path of the full original laboratory bundle was absent when rechecked on
+2026-09-17; selected tracked result files remain available, but that full bundle
+must not be promised as currently retrievable. New reproducible probes live under
+`experiments/`. The old remote environments were subsequently
+[retired at the owner's request](../research/tux-retirement-20260917.md).
 
 Five thousand connections are plausible in both Go and Rust. Whether BigBrotr can
 continuously synchronize those relays on Tux depends primarily on received bytes,
@@ -221,3 +224,84 @@ representation choices must include file/dictionary overhead and wider workloads
 On finite resources, adjust explicitly configured acquisition cadence/placement,
 add capacity or select an explicitly lossy research policy; do not hide deletion
 or missed measurements behind a successful monitor status.
+
+## Extended preimplementation qualification on Tux
+
+The owner explicitly authorizes elaborate, long-running and large research
+experiments on `ssh tux` where scale can change a critical design decision.
+Small correctness fixtures remain useful, but a warm toy dataset cannot settle
+aged inventory layout, archive authority or mixed-load serving. This extends the
+research programme; it does not start product implementation or adopt the advisory
+[architecture alternatives](../reviews/13-architecture-alternatives.md).
+
+The [2026-09-17 preflight](../research/evidence/tux-preflight-20260917.json) confirms
+SSH access and the 16-core/32-thread host. Resources are shared with existing
+services; that snapshot preceded the authorized retirement of all identified
+BigBrotr resources. Unrelated services remain active. `/tmp` is tmpfs, so large
+on-disk fixtures must use an inventoried dedicated directory on the actual data
+filesystem. Available
+RAM/disk and a moment of low load are not an exclusive reservation. Existing swap
+occupancy is not evidence of current swap traffic or a reason to run `swapoff`.
+
+### Decisions that merit substantial workloads
+
+| Decision | Workload that can overturn the choice | Evidence beyond a peak throughput number |
+|---|---|---|
+| Independent DuckLake archive versus retained CH authority | Full signed bodies and attributable facts, ingest/backfill plus reads and export; equal durability/backup requirements; stores aged through repeated maintenance cycles | Total and peak bytes including backups/temporary files; query completion and tail latency; replay debt; time to useful restored service; independent export fidelity |
+| Exact provenance layout and duplicate certification | Independently varied unique bodies, new edges and repeated known edges; sparse/dense/skewed fan-out; random arrivals and earlier corrections; inventory larger than effective cache | WAL/device write amplification; all dictionaries and metadata bytes; p99 known-edge checks; compaction stalls; exact results after interrupted consolidation/recovery |
+| CH access paths and CH/Tantivy search | Real-shaped multilingual signed corpus with common terms, realistic tag fan-out and selective/broad queries; parts/indexes beyond cache while writers and maintenance continue | Useful result quality with a declared ranking policy; correct filters/visibility; refusals/timeouts as well as completed queries; bytes, replay/rebuild time and ingestion impact |
+| Network ownership and acquisition scheduling | Controlled heterogeneous relay fleet, 5k then 10k/50k/100k only as justified; valid signed traffic, live/backfill/reconnect storms, late inserts, caps and mixed NIP support | Achieved observation/discovery intervals, fairness, missed work, kernel and application memory, verification CPU and bytes; charge the relay simulator/load generator separately |
+| Exact overlap and social graph strategy | Skewed sets, equal-size unrelated sets, identical classes and dense near-matches; complete graph construction/loading, multiple viewpoints and controlled changes | Candidate/output size, exact pair answers, full materialization cost, residual/error and ranking changes; total CPU/RAM/I/O including rebuild and publication |
+
+Preserve counterexamples and test awkward distributions, not only average random
+input. The same duplicate body can add a new edge; those rates must not be coupled
+accidentally. A repeated small text corpus can unrealistically favor compression,
+and a freshly bulk-loaded sorted store can hide aged random-write costs. Retain
+real signed samples where appropriate, augment with reproducible validly signed
+synthetic data, and identify synthetic semantics instead of presenting them as
+observed public-network distributions. Stress controlled peers; use public relays
+for modest compatibility/behavior sampling, not saturation traffic.
+
+### Escalation, isolation and interpretation
+
+1. Close the semantic question and independent correctness oracle. A benchmark
+   cannot choose visibility rules, authorize a weakened ACK or redefine provenance.
+2. Run a small executable vertical slice of each credible candidate. Reject
+   incorrect variants before generating a large corpus; retain identical required
+   outputs, failure classes and resource accounting across candidates.
+3. Grow through cache-sized and cache-exceeding working sets. Where disk reserve
+   permits, include retained data larger than physical host RAM. Measure each
+   candidate's actual bytes first, then budget the largest concurrent footprint,
+   backups, build inputs, logs and merge/restore reserve. Row count alone is not a
+   reason to choose a dataset size, and compressed bytes do not equal cache demand.
+4. Sustain mixed activity until repeated maintenance cycles expose backlog trends.
+   Use long soaks when steady work or failure accumulation requires them. Do not
+   call a brief burst sustainable throughput or a memory-limited small run proof
+   that billions of facts fit the full host.
+5. Inject failures into owned research processes/containers/volumes, including
+   lost replies, restart, replay and restore. Use a dedicated bounded volume for
+   ENOSPC; never fill the shared root filesystem or reboot the shared host as a
+   crash test. Process kill does not establish power-loss durability.
+6. Repeat discriminating comparisons with controlled order and documented warm/
+   cold conditions. Include background host load and uncertainty. Dedicated paths
+   and containers isolate state, not shared I/O; detect contention and rerun
+   affected comparisons. Do not globally drop caches to manufacture a cold run.
+7. Record the winning conditions and the conditions where an alternative wins.
+   Adopt a selection only when useful outcomes and total cost justify it, then
+   reconcile contracts and implementation steps. An inconclusive result remains
+   inconclusive; more elapsed time alone is not evidence.
+
+Use separately named containers, networks, ports, cgroups and data paths for owned
+experiments. Set aggregate memory/CPU/I/O/storage limits including generators,
+native engines and page cache, observe pressure throughout the run, and stop or
+reduce owned work before it endangers other workloads. Never reuse unrelated
+databases for an experiment. The retired BigBrotr databases no longer exist.
+Record tool versions and their actual paths; absence from a noninteractive SSH
+PATH is not proof a tool is uninstalled.
+
+One-host loopback tests do not measure WAN capacity or independent-host failures.
+At large connection counts, account for client/server tuple limits, server CPU,
+TLS generation and shared kernel resources. Report a harness limit as such and
+redesign the controlled topology before attributing it to Rust, Go or BigBrotr.
+If a meaningful scale exceeds the host's envelope, state the measured boundary
+and the extra resources needed rather than manufacturing a full-scale result.

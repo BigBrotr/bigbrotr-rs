@@ -118,3 +118,19 @@ three separately tasked AI reviews, counterarguments and bounded experiments.
 They are not external human certification. Recommendations remain advisory;
 the selected specifications and P00 closure status are unchanged. No percentage
 of optimality, new product benchmark or whole-repository reread is claimed.
+
+Q22: The owner reinforces that critical choices may need elaborate, large and
+realistic experiments and makes `ssh tux` available. Research is no longer
+described as limited to small probes. The
+[extended qualification protocol](../engineering/capacity-and-benchmarks.md#extended-preimplementation-qualification-on-tux)
+defines when to escalate and what evidence can decide the alternatives. A fresh
+[read-only preflight](../research/evidence/tux-preflight-20260917.json) confirms SSH
+access, current resources, shared active workloads and RAM-backed `/tmp`.
+No new large experiment or product implementation is claimed by that preflight.
+
+Q23: The owner explicitly declares everything already on Tux relating to BigBrotr
+deprecated and to be deleted. The remote retirement supersedes earlier protection
+of those particular resources; local repositories and unrelated Tux applications
+remain untouched. The [retirement record](../research/tux-retirement-20260917.md)
+documents scope and verification. Prior labs are unavailable for reuse; new
+research must recreate dependencies and fixtures deliberately.

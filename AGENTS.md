@@ -3,12 +3,18 @@
 This is the design repository for BigBrotr's fresh Rust implementation. The
 current stage is research, architecture, product design, and implementation
 planning. Do not begin product implementation until the owner starts that stage.
-Small, isolated research experiments are authorized and must be clearly labeled.
+Isolated research experiments are authorized and must be clearly labeled. The
+owner explicitly authorizes substantial, long-running, realistic experiments on
+`ssh tux` when scale can change a critical decision; research is not limited to
+small probes. Preserve the local legacy repository and unrelated workloads.
+The owner explicitly retired and authorized deletion of all pre-existing
+BigBrotr resources on Tux on 2026-09-17; do not reuse those environments. New
+research must create separately inventoried resources from scratch.
 
-The neighboring Go repository and historical projects are reference material and
-must remain read-only. Their process rules and past technology decisions do not
-constrain this new design. Preserve useful product intent and explicitly explain
-changes to it.
+The neighboring local Go repository and local historical projects are reference
+material and must remain read-only. Their process rules and past technology
+decisions do not constrain this new design. Preserve useful product intent and
+explicitly explain changes to it.
 
 Write repository content and commit messages in English. Keep the product name
 BigBrotr; `bigbrotr-rs` is the repository identifier. Record user decisions and

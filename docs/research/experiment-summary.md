@@ -25,6 +25,14 @@ behavior. The reproduction has not been posted upstream.
 [Laboratory inventory](laboratory-inventory.json) records retained sources/caches,
 exact upstream revisions and final stopped state of the owned test resources.
 
+**Remote retirement, 2026-09-17:** the owner subsequently authorized deletion of
+all pre-existing BigBrotr resources on Tux. The
+[retirement record](tux-retirement-20260917.md) supersedes the old labs' stopped/
+reusable status. Tracked experiment sources and selected result files remain
+local; new runs must recreate their environments. The prior component bundle's
+recorded local `/private/tmp` path was also absent on recheck, so its recorded hash
+does not establish current availability of the full original bundle.
+
 The archive-model run used only a local isolated directory and completed without
 background services. Its event signatures are synthetic format fixtures; its
 admission portion is a Python reference model, not the Rust/Rocks implementation.

@@ -95,3 +95,19 @@ improve the product, including independently reasoned reviews. Record precise
 recommendations and counterarguments for discussion, beyond a completeness
 checklist. Do not equate independent AI reviewers with external human experts,
 or silently adopt conflicting alternatives as another normative specification.
+
+The owner explicitly makes `ssh tux` available for substantial, realistic and
+large-scale research when needed to decide critical alternatives. Do not constrain
+qualification to tiny fixtures or defer decisive scale effects until the product
+is built. Scale isolated comparative prototypes enough to expose cache limits,
+maintenance debt, mixed-load contention and recovery costs. Preserve the legacy
+repository and unrelated services. This expands research authorization, not the
+authorization to begin product implementation or assume ownership of public relays.
+
+The owner's subsequent explicit instruction retires all pre-existing BigBrotr
+material on Tux and authorizes its deletion, including project containers, data,
+checkouts, runners and old research environments. This supersedes protection of
+those remote project resources. The neighboring local Go repository and unrelated
+Tux workloads remain protected. New experiments start with a fresh inventoried
+environment; historical measured evidence retained locally is still qualified
+evidence, not an endorsement of the retired deployment.

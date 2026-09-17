@@ -122,3 +122,21 @@ public-network measurement. No product, database or capacity benchmark was run,
 and this is not a fresh full-document audit. Recommendations are advisory for
 discussion. Selected architecture documents and P00 completion status stay
 unchanged; adopted changes would require coherent contract/task reconciliation.
+
+## Authorization for realistic large-scale qualification
+
+The owner explicitly reinforces access to `ssh tux` and the need for substantial
+experiments when scale decides a critical choice. The mandate and repository
+context now permit research beyond small probes. The capacity programme adds
+decision-specific large workloads, staged escalation, shared-host isolation and
+criteria for interpreting maintenance, recovery and cache-exceeding results.
+The recorded SSH preflight is read-only resource evidence; no new benchmark,
+remote service, large dataset or product implementation was started in this pass.
+
+The owner's subsequent instruction explicitly retires all existing BigBrotr
+resources on Tux. The [retirement record](../research/tux-retirement-20260917.md)
+documents actual deletion of dedicated runtime, source, data, runner and cache
+resources, follow-up checks and preserved unrelated workloads. It supersedes
+old inventory entries that described remote labs as stopped and reusable. New
+research starts from a fresh environment; the local legacy repository stays
+read-only. This cleanup does not count as a new benchmark or architecture result.

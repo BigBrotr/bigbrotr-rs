@@ -1,0 +1,45 @@
+{
+  "captured_at_utc": "2026-09-17T12:24:49.724382+00:00",
+  "host": "ssh tux",
+  "scope": "Read-only host preflight; not a benchmark, reservation or capacity qualification",
+  "cpu": {
+    "Model name": "AMD Ryzen 9 7950X 16-Core Processor",
+    "CPU(s)": "32",
+    "Thread(s) per core": "2",
+    "Core(s) per socket": "16",
+    "Socket(s)": "1"
+  },
+  "memory_bytes": {
+    "MemTotal": 66513059840,
+    "MemAvailable": 54610153472,
+    "SwapTotal": 67795677184,
+    "SwapFree": 44987314176
+  },
+  "swap_pages_during_approximately_one_second": {
+    "pswpin": 0,
+    "pswpout": 0
+  },
+  "filesystems": {
+    "/": {
+      "filesystem": "ext4",
+      "total_bytes": 1900107571200,
+      "available_bytes": 623850369024
+    },
+    "/tmp": {
+      "filesystem": "tmpfs",
+      "total_bytes": 33256529920,
+      "available_bytes": 17154682880
+    }
+  },
+  "active_containers": {
+    "count": 13,
+    "existing_bigbrotr_present": true,
+    "unrelated_present": true
+  },
+  "limits": [
+    "Host resources are shared; this snapshot does not reserve idle capacity",
+    "Do not place large disk fixtures in the RAM-backed /tmp",
+    "No foreign container, host setting or legacy file was changed",
+    "No acquisition, storage, recovery or end-to-end benchmark ran"
+  ]
+}

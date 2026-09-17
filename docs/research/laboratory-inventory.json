@@ -31,13 +31,17 @@
       "bigbrotr-planning-rocks-20260911",
       "bigbrotr-planning-ch-20260911"
     ],
-    "all_process_groups": "inactive/dead at final inspection"
+    "all_process_groups": "inactive/dead at final inspection",
+    "retired_at": "2026-09-17",
+    "current_status": "Deleted at owner request; historical paths and images are not a reusable environment"
   },
   "previous_remote_lab": {
     "path": "/home/tux/bigbrotr-independent-lab-20260910-final",
     "own_clickhouse_container": "bigbrotr-independent-lab-20260910-ch",
     "clickhouse_running": false,
-    "usage": "Reused own Python environment and own stopped CH container for tiny isolated new probes; prior evidence retained"
+    "usage": "Reused own Python environment and own stopped CH container for tiny isolated new probes; prior evidence retained",
+    "retired_at": "2026-09-17",
+    "current_status": "Deleted at owner request; historical paths and images are not a reusable environment"
   },
   "isolation": "No writes to the legacy project or changes to its containers. No external publication of protocol drafts or SDK findings.",
   "legacy_code_snapshots": {
@@ -85,5 +89,21 @@
   "review_11_read_accounting": {
     "path": ".research/review-11",
     "contents": "Frozen baseline, bounded full-text read bundles, coordinator coverage and structural check; tracked combined read manifest supplies portable identity accounting."
+  },
+  "tux_preflight_20260917": {
+    "evidence": "docs/research/evidence/tux-preflight-20260917.json",
+    "activity": "Read-only SSH host/resource/container inspection",
+    "remote_resources_created": false,
+    "remote_state_mutated": false,
+    "notes": "Shared active BigBrotr/unrelated services; /tmp is tmpfs. Extended realistic research is authorized; no new benchmark executed."
+  },
+  "updated_at": "2026-09-17",
+  "remote_retirement_20260917": {
+    "evidence": "docs/research/evidence/tux-retirement-20260917.json",
+    "local_operation_records": ".research/tux-retirement-20260917",
+    "local_operation_record_bytes": 1024853,
+    "remote_resources_remaining": "No identified BigBrotr paths, containers, volumes, networks, processes or units in the verified scope",
+    "new_research_environment": "Not created; provision fresh when starting qualification",
+    "unrelated_workloads": "All 20 inventoried unrelated containers retained their running/stopped status"
   }
 }
