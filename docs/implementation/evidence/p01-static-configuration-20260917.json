@@ -153,5 +153,85 @@
     ],
     "remote": null,
     "last_state": "local checks completed; no owned service or engine started"
+  },
+  "integration": {
+    "revision": "d7bd8f13b97e3e224fe93d827d79d6a44a31aed8",
+    "mac_workspace_tests": {
+      "passed": 56,
+      "result": "PASS",
+      "log": ".research/implementation/foundation/config-integrated-tests.log",
+      "sha256": "7e3530bbdefdc04316af3ff7e071529b033572539387d0ec77ab55eef855a689"
+    },
+    "native_ci": {
+      "run": "35268002859",
+      "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/35268002859",
+      "targets": [
+        {
+          "target": "aarch64-apple-darwin",
+          "source": {
+            "dirty": false,
+            "manifest_sha256": "a42bff4ccace42f593d9099d97ecd1cf79e99a22e1fe4f26430c0cba37e3f161",
+            "revision": "d7bd8f13b97e3e224fe93d827d79d6a44a31aed8",
+            "state": "builder-supplied",
+            "tree": "82334ed885f3249b8703d7fe518470d826dc20e9"
+          },
+          "binary_sha256": "7e7949cea06ab2af0d69be4e93227d9d46fd1dbdd6cfd6d0da9125d295d66fe5",
+          "build_result_sha256": "cedfb460fadbee1b1bfc58521b2c8cb36791956320d3cf8d4bbc4664c64f26f4",
+          "practical": "NOT_RUN: workflow executes syscall practical only on Linux"
+        },
+        {
+          "target": "x86_64-unknown-linux-gnu",
+          "source": {
+            "dirty": false,
+            "manifest_sha256": "a42bff4ccace42f593d9099d97ecd1cf79e99a22e1fe4f26430c0cba37e3f161",
+            "revision": "d7bd8f13b97e3e224fe93d827d79d6a44a31aed8",
+            "state": "builder-supplied",
+            "tree": "82334ed885f3249b8703d7fe518470d826dc20e9"
+          },
+          "binary_sha256": "89be9cafb78a13917fa73967620d2d3d7e874d8eec9f5698ae2813baf826efda",
+          "build_result_sha256": "3ad50b8e3812d8e6d632e36d46dc8ce492ebd419318883e8e0a770d8d721b6cd",
+          "practical": {
+            "case": "p01-event-cli",
+            "result": "PASS",
+            "counts": {
+              "collected": 40,
+              "executed": 40,
+              "failed": 0,
+              "skipped": 0,
+              "not_run": 0
+            },
+            "report_sha256": "90eb3dbf61e44d1fc4c118e1e3c6e75682badaae440f25d063f060e2acb9ba41"
+          }
+        },
+        {
+          "target": "aarch64-unknown-linux-gnu",
+          "source": {
+            "dirty": false,
+            "manifest_sha256": "a42bff4ccace42f593d9099d97ecd1cf79e99a22e1fe4f26430c0cba37e3f161",
+            "revision": "d7bd8f13b97e3e224fe93d827d79d6a44a31aed8",
+            "state": "builder-supplied",
+            "tree": "82334ed885f3249b8703d7fe518470d826dc20e9"
+          },
+          "binary_sha256": "6499bbbd32dc055cd12b16bb443b95b998985bf1a377a5605bc63f18f51fa2f1",
+          "build_result_sha256": "1dd1c4c70ec95a7e4faee4190b95ee180569ed9fbaf8780ee2f3d8eea389de72",
+          "practical": {
+            "case": "p01-event-cli",
+            "result": "PASS",
+            "counts": {
+              "collected": 40,
+              "executed": 40,
+              "failed": 0,
+              "skipped": 0,
+              "not_run": 0
+            },
+            "report_sha256": "cbf19be13b4ae559689905c88c66e5d5996a3001a69ba5dea02a8e9d6905146d"
+          }
+        }
+      ],
+      "scope": "Native Rust checks and clean build on three targets; downloaded Linux event CLI reports inspected, all 40 checks passed. Not storage or full product qualification."
+    },
+    "review": "Integrating owner read complete authored config/endpoint source and diff; generated schema/reference/recipes compared byte-for-byte by executable tests.",
+    "known_followup": "Lexically equivalent data roots with repeated/trailing slash bypassed the equality check; independent agent reproduced it and is correcting it. Runtime symlink/mount alias authority remains unimplemented.",
+    "remaining": "Partial static configuration only. New static syscall acceptance and remaining key families are in progress; live doctor and durable authority remain unimplemented."
   }
 }

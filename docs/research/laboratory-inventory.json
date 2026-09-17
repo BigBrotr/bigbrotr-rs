@@ -196,7 +196,7 @@
     "local_root": ".research/implementation",
     "local_contents": "Foundation source snapshots, build targets/caches, raw acceptance and review evidence",
     "remote_root": "/home/tux/bigbrotr-implementation-20260917",
-    "remote_status": "Six owned implementation containers exited; latest a25e0c5 exit0/Pid0/OOMKilled=false, detached source a25e0c5 clean; no active owned job at latest inspection.",
+    "remote_status": "Verified 2026-09-17: seven owned implementation containers exited; latest Rocks704 exit0/Pid0/OOMKilled=false. Detached checkout704d97e clean; no running owned implementation container.",
     "remote_preflight": "2026-09-17 native Rocks preflight: Linux x86_64 kernel6.12.101+deb13,61GiB RAM,366GiB available disk; all six owned implementation containers stopped, checkout clean a25e0c5, latest model container exit0/Pid0/OOMfalse. Unrelated containers/ports/volumes inspected and preserved.",
     "planned_container": "bigbrotr-implementation-foundation-20260917",
     "limits": "2 CPUs, 4 GiB memory, 512 PIDs, no published ports, fresh bind directories below remote root; no shared writable engine state",
@@ -208,7 +208,8 @@
       "bigbrotr-implementation-final-foundation-20260917",
       "bigbrotr-implementation-events-1726638",
       "bigbrotr-implementation-events-4689580",
-      "bigbrotr-implementation-model-a25e0c5"
+      "bigbrotr-implementation-model-a25e0c5",
+      "bigbrotr-implementation-rocks-704d97e"
     ],
     "transient_resources": "Owned bigbrotr-implementation-mount-check-20260917 diagnostic container removed after confirming tmpfs noexec; no unrelated cleanup.",
     "image": "bigbrotr-implementation-foundation:20260917 at sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
@@ -220,7 +221,7 @@
       "purpose": "Exact Nostr SDK/secp256k1/sys source inspection for P01-T02/T03; no downloaded source shipped"
     },
     "local_crypto_fuzz_rejection": ".research/targets/rejected-crypto: intentionally invalid crypto cfg compiled only to verify product compile_error refusal; no resulting product artifact",
-    "ci": "Native foundation run35256322733, event1726638 run35259296095 and corrected event4689580 run35260018723 all passed on three targets; private downloaded evidence under local_root/foundation/ci-RUN_ID; portable model a25e0c5 run35262162809 also passed all three native jobs, Linux practical40/40 on both architectures. Core facts c74535f run35264125259 passed all three native jobs and both Linux40/40 practical reports. Codec79ebb55 run35265768144 passed all three native jobs, both Linux practical reports40/40; raw downloaded artifacts retained.",
+    "ci": "Native foundation run35256322733, event1726638 run35259296095 and corrected event4689580 run35260018723 all passed on three targets; private downloaded evidence under local_root/foundation/ci-RUN_ID; portable model a25e0c5 run35262162809 also passed all three native jobs, Linux practical40/40 on both architectures. Core facts c74535f run35264125259 passed all three native jobs and both Linux40/40 practical reports. Codec79ebb55 run35265768144 passed all three native jobs, both Linux practical reports40/40; raw downloaded artifacts retained. Effect ebd73fa run35267422379 and config d7bd8f1 run35268002859 passed all three native jobs; both downloaded Linux event CLI reports40/40 for each, inspected with exact source/artifact identities.",
     "event_evidence": "docs/implementation/evidence/p01-event-verification-20260917.json",
     "cbor_dependency_audit": {
       "root": ".research/checkouts/cbor-dependency-audit-20260917",
@@ -242,6 +243,13 @@
         "base": "a25e0c559ea1575d71775a9bfcc7bd85e133c1ff",
         "owner": "foundation_dependency_audit agent",
         "purpose": "Clearly labeled isolated native binding qualification, root integrates and owns Tux runs"
+      },
+      {
+        "path": ".research/worktrees/config-acceptance",
+        "branch": "impl/config-static-acceptance",
+        "base": "d7bd8f13b97e3e224fe93d827d79d6a44a31aed8",
+        "owner": "fact_codec_review agent",
+        "purpose": "Actual static config acceptance and capability registry; root integrates"
       }
     ],
     "rocks_dependency_audit": {
@@ -260,6 +268,27 @@
       "root": ".research/implementation/foundation/effect-basis-review",
       "target": ".research/targets/effect-basis-review",
       "purpose": "Independent structural closure/proof probes; same-stream future dependency fixed; no engine/remote work"
+    },
+    "static_configuration": {
+      "root": ".research/static-config",
+      "exact_source": ".research/static-config/exact-f6af103",
+      "contents": "Isolated dependencies, target, exact clean source/build manifest and logs; completed Mac checks, no server. Ongoing extension in static-config worktree."
+    },
+    "pg_dependency_audit": {
+      "root": ".research/checkouts/pg-dependency-audit-20260917",
+      "inventory": ".research/checkouts/pg-dependency-audit-20260917/inventory.json",
+      "purpose": "Exact source/feature/license audit and isolated locked resolution; no PG server/product adapter executed."
+    },
+    "native_rocks_binding": {
+      "local_root": ".research/implementation/native-rocks-binding",
+      "mac_raw_root": ".research/worktrees/rocks-binding/.research/rawdata",
+      "remote_root": "/home/tux/bigbrotr-implementation-20260917/runs/native-rocks-b1a9e69",
+      "image": "sha256:c8dd4e4f047404d0ae1c21b50282e9ebd3883883557ad716525e71cc8d379d35",
+      "tag": "bigbrotr-native-rocks-binding:b1a9e69",
+      "build_limits": "2CPU/6GiB memory+swap; native build completed, transient build container removed by Docker",
+      "run_limits": "2CPU/2GiB memory+swap/128PIDs/no network/no ports; read-only source, generated DBs under owned runtime-704d97e/lab",
+      "status": "Completed nine binding cases on Macarm64 and TuxLinuxamd64. Runtime container exited0; generated databases and image retained. Optional clang executable absent in image recorded NOT_AVAILABLE; libclang14 and g++12 present.",
+      "evidence": "docs/implementation/evidence/p02-native-rocks-binding-20260917.json"
     }
   }
 }

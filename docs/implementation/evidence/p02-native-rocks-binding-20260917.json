@@ -1,0 +1,289 @@
+{
+  "format": "bigbrotr-native-binding-evidence/1",
+  "date": "2026-09-17",
+  "scope": "Actual rust-rocksdb binding behavior only; isolated research, not product storage/runtime authority.",
+  "result": "PASS for nine isolated binding cases on each recorded environment; P02 product acceptance incomplete",
+  "source": {
+    "rust_build_revision": "b1a9e690e8dc9b31627b391b5c98ff078603f2b8",
+    "linux_driver_revision": "704d97e92c75722e55d51a8f9be92bc2e6f5e678",
+    "mac_candidate_commit": "ad29e9637a1f24348a3fa2d8c321cf8fdac0e94f",
+    "note": "Mac final candidate sources subsequently committed; root cherry-pick b1 is identical for experiment inputs. Linux image built clean b1; 704 only changes optional compiler metadata collection in driver; Rust source/manifests/lock unchanged.",
+    "files_sha256": {
+      "experiments/native-rocks-binding/Cargo.lock": "7d05f7fbb69433767f4cbba32552aebb8cbb847c2cc5a3a18d81c5f304dc1f31",
+      "experiments/native-rocks-binding/Cargo.toml": "914da3f633a2f756e6294a90b469e1ea50dbccf4e6b74aec7acecc7fbef47d64",
+      "experiments/native-rocks-binding/Dockerfile": "4bf7a2367df2d1056d77eabf82177c4102858ba88eeacc7d88cb61cac7c0e039",
+      "experiments/native-rocks-binding/README.md": "1bfc7ea2e9b7e4b37176dd64193dcea4bb9f20785c14875e9111dcd1cce9bcfb",
+      "experiments/native-rocks-binding/driver.py": "52266d9107df882250c9ac4464be6c0662d69618d86b987ae3bb849d7e97a588",
+      "experiments/native-rocks-binding/src/main.rs": "8e167b6e93159fd1572868c3277e938f6b413e596bba2b386b7ce8b6209f8404"
+    }
+  },
+  "binding_identity": [
+    "rocksdb-crate=0.25.0",
+    "librocksdb-sys=0.19.0+11.8.1",
+    "bundled-rocksdb=11.8.1",
+    "features=bindgen-runtime,zstd,static-implicit",
+    "sync=true;disable_wal=false;use_fsync=true;atomic_flush=true"
+  ],
+  "linux": {
+    "report": ".research/implementation/native-rocks-binding/linux-704d97e/result.json",
+    "report_sha256": "27317de57fd1b8a7f9de6a9cc3ab0dd95753d9c5c300162d3e015566b186b548",
+    "artifact_identity": {
+      "binary_sha256": "0a8337fecf3e403ab5362bdbf4ea22976d4aa3d28e179487fbf0f6588b34dfdd",
+      "cargo_lock_sha256": "7d05f7fbb69433767f4cbba32552aebb8cbb847c2cc5a3a18d81c5f304dc1f31"
+    },
+    "image": "sha256:c8dd4e4f047404d0ae1c21b50282e9ebd3883883557ad716525e71cc8d379d35",
+    "host": {
+      "clang": {
+        "command": [
+          "clang",
+          "--version"
+        ],
+        "exit_code": null,
+        "status": "NOT_AVAILABLE"
+      },
+      "cxx": {
+        "command": [
+          "c++",
+          "--version"
+        ],
+        "exit_code": 0,
+        "output": "c++ (Debian 12.2.0-14+deb12u1) 12.2.0\nCopyright (C) 2022 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
+      },
+      "libclang_path": "/usr/lib/llvm-14/lib",
+      "machine": "x86_64",
+      "platform": "Linux-6.12.101+deb13-amd64-x86_64-with-glibc2.36",
+      "python": "3.11.2 (main, May 12 2026, 05:17:27) [GCC 12.2.0]",
+      "rustc": {
+        "command": [
+          "rustc",
+          "-vV"
+        ],
+        "exit_code": 0,
+        "output": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8"
+      }
+    },
+    "cases": [
+      {
+        "mask_after_reopen": "000",
+        "name": "kill-before-call",
+        "pre_resolution": "NOT_CALLED",
+        "status": "PASS"
+      },
+      {
+        "mask_after_reopen": "111",
+        "name": "kill-after-ok-before-reply",
+        "pre_resolution": "UNKNOWN",
+        "status": "PASS"
+      },
+      {
+        "name": "kill-during-synced-write-loop",
+        "pre_resolution": "UNKNOWN",
+        "status": "PASS",
+        "trials": [
+          {
+            "delay_seconds": 0.0,
+            "resolved_present_batches": 1
+          },
+          {
+            "delay_seconds": 0.002,
+            "resolved_present_batches": 1
+          },
+          {
+            "delay_seconds": 0.01,
+            "resolved_present_batches": 2
+          },
+          {
+            "delay_seconds": 0.03,
+            "resolved_present_batches": 6
+          },
+          {
+            "delay_seconds": 0.1,
+            "resolved_present_batches": 21
+          }
+        ]
+      },
+      {
+        "name": "snapshot-before-after-reopen",
+        "observed": "SNAPSHOT_BEFORE_AFTER_REOPEN_OK",
+        "status": "PASS"
+      },
+      {
+        "cross_process_alias": "REFUSED",
+        "cross_process_real": "REFUSED",
+        "name": "exclusive-writer-real-and-alias",
+        "same_process_alias": "REFUSED_BY_CANONICAL_REGISTRY",
+        "status": "PASS"
+      },
+      {
+        "name": "missing-column-family",
+        "observed": "REFUSED",
+        "status": "PASS"
+      },
+      {
+        "name": "unknown-column-family",
+        "observed": "REFUSED",
+        "status": "PASS"
+      },
+      {
+        "name": "missing-current",
+        "observed": "REFUSED_WITHOUT_RECREATE",
+        "status": "PASS"
+      },
+      {
+        "name": "explicit-caps-zstd-flush",
+        "observed": "ZSTD_SST_OK\tfact_files=1\treceipt_files=1\tcache_bytes=33554432\twrite_buffer_manager_bytes=16777216\twrite_buffer_bytes_per_cf=2097152\tmax_total_wal_bytes=16777216\tmax_open_files=64\tmax_background_jobs=2",
+        "status": "PASS"
+      }
+    ],
+    "native_log_observation": {
+      "column_family_descriptors_with_same_block_cache": 3,
+      "rocksdb_version": "11.8.1",
+      "validated_option_fields": [
+        "atomic_flush",
+        "block_size",
+        "bottommost_zstd",
+        "cache_capacity",
+        "max_background_jobs",
+        "max_open_files",
+        "max_total_wal_size",
+        "rocksdb_version",
+        "use_fsync",
+        "write_buffer_size",
+        "zstd"
+      ],
+      "write_buffer_manager": "active"
+    },
+    "runtime_limits": {
+      "cpus": 2,
+      "memory_bytes": 2147483648,
+      "swap_extra_bytes": 0,
+      "pids": 128,
+      "network": "none",
+      "root_filesystem": "read-only",
+      "tmpfs_bytes": 67108864,
+      "privilege": "unprivileged uid1000, all capabilities dropped, no-new-privileges"
+    },
+    "final_container_state": "Exited0, Pid0, OOMKilled=false; no published ports or new named volumes"
+  },
+  "mac": {
+    "report": ".research/worktrees/rocks-binding/.research/rawdata/mac-final-v2/result.json",
+    "report_sha256": "051d27b2944ae53f68948c7de8a93a12426cae7352b9e703d2647c2f383f837d",
+    "artifact_identity": {
+      "binary_sha256": "def9cb89a3fa5884b939bb3688f9fc14714a2d926a9b5d77997972666b28f8d0",
+      "cargo_lock_sha256": "7d05f7fbb69433767f4cbba32552aebb8cbb847c2cc5a3a18d81c5f304dc1f31"
+    },
+    "host": {
+      "clang": {
+        "command": [
+          "clang",
+          "--version"
+        ],
+        "exit_code": 0,
+        "output": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: arm64-apple-darwin25.5.0\nThread model: posix\nInstalledDir: /Library/Developer/CommandLineTools/usr/bin"
+      },
+      "cxx": {
+        "command": [
+          "c++",
+          "--version"
+        ],
+        "exit_code": 0,
+        "output": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: arm64-apple-darwin25.5.0\nThread model: posix\nInstalledDir: /Library/Developer/CommandLineTools/usr/bin"
+      },
+      "libclang_path": "/Library/Developer/CommandLineTools/usr/lib",
+      "machine": "arm64",
+      "platform": "macOS-26.5.2-arm64-arm-64bit",
+      "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+      "rustc": {
+        "command": [
+          "rustc",
+          "-vV"
+        ],
+        "exit_code": 0,
+        "output": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: aarch64-apple-darwin\nrelease: 1.98.1\nLLVM version: 22.1.8"
+      }
+    },
+    "cases": [
+      {
+        "mask_after_reopen": "000",
+        "name": "kill-before-call",
+        "pre_resolution": "NOT_CALLED",
+        "status": "PASS"
+      },
+      {
+        "mask_after_reopen": "111",
+        "name": "kill-after-ok-before-reply",
+        "pre_resolution": "UNKNOWN",
+        "status": "PASS"
+      },
+      {
+        "name": "kill-during-synced-write-loop",
+        "pre_resolution": "UNKNOWN",
+        "status": "PASS",
+        "trials": [
+          {
+            "delay_seconds": 0.0,
+            "resolved_present_batches": 1
+          },
+          {
+            "delay_seconds": 0.002,
+            "resolved_present_batches": 54
+          },
+          {
+            "delay_seconds": 0.01,
+            "resolved_present_batches": 252
+          },
+          {
+            "delay_seconds": 0.03,
+            "resolved_present_batches": 769
+          },
+          {
+            "delay_seconds": 0.1,
+            "resolved_present_batches": 2228
+          }
+        ]
+      },
+      {
+        "name": "snapshot-before-after-reopen",
+        "observed": "SNAPSHOT_BEFORE_AFTER_REOPEN_OK",
+        "status": "PASS"
+      },
+      {
+        "cross_process_alias": "REFUSED",
+        "cross_process_real": "REFUSED",
+        "name": "exclusive-writer-real-and-alias",
+        "same_process_alias": "REFUSED_BY_CANONICAL_REGISTRY",
+        "status": "PASS"
+      },
+      {
+        "name": "missing-column-family",
+        "observed": "REFUSED",
+        "status": "PASS"
+      },
+      {
+        "name": "unknown-column-family",
+        "observed": "REFUSED",
+        "status": "PASS"
+      },
+      {
+        "name": "missing-current",
+        "observed": "REFUSED_WITHOUT_RECREATE",
+        "status": "PASS"
+      },
+      {
+        "name": "explicit-caps-zstd-flush",
+        "observed": "ZSTD_SST_OK\tfact_files=1\treceipt_files=1\tcache_bytes=33554432\twrite_buffer_manager_bytes=16777216\twrite_buffer_bytes_per_cf=2097152\tmax_total_wal_bytes=16777216\tmax_open_files=64\tmax_background_jobs=2",
+        "status": "PASS"
+      }
+    ]
+  },
+  "not_run": [
+    "system power loss or firmware-cache loss",
+    "dedicated-filesystem ENOSPC/fsync failure injection",
+    "multi-host fencing",
+    "same-process bind-mount or device/inode alias enforcement",
+    "P02 admission semantics, runtime grants, receipts, or recovery authority",
+    "Native Linux arm64 binding build and failure scenarios",
+    "All possible in-flight native instruction schedules; delayed SIGKILL trials observe only the recorded schedules"
+  ],
+  "review": "Independent source audit and integrating owner complete experiment source/driver/Docker/lock review. Loop oracle verifies all three values and a contiguous prefix; missing CURRENT must refuse recreation. Raw logs and generated databases remain inventoried ignored/remote data."
+}

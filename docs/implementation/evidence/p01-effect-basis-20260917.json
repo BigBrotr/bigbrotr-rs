@@ -34,7 +34,75 @@
       "Same-stream dependency beyond batch end refused; other-stream u64 maximum accepted",
       "Certification has no mutation request/ACK identity; AlreadyDurable binds its strict request but creates no new batch",
       "Full policy/recovery scalar domains preserved; checked policy epoch advancement; unknown protection class refused"
-    ]
+    ],
+    "native_ci": {
+      "run": "35267422379",
+      "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/35267422379",
+      "targets": [
+        {
+          "target": "aarch64-apple-darwin",
+          "source": {
+            "dirty": false,
+            "manifest_sha256": "813aab8000bf4d7b19f402f4b4cd1c61ed774740dd608dea4bf974233bba0330",
+            "revision": "ebd73fa7a8350316599cabdc541dcab499c9714c",
+            "state": "builder-supplied",
+            "tree": "d931b128c2a468f12fb37601c9e08a65bd18c944"
+          },
+          "binary_sha256": "cdc71d7621ebef401e5d8aae02aa9b7ae4b67b5d3e717ef8b288b3c51be85ea3",
+          "build_result_sha256": "20f6475c4be308d7c2498b58224a304070e184a2f8c44ecf949e48840a131c39",
+          "practical": "NOT_RUN: workflow executes syscall practical only on Linux"
+        },
+        {
+          "target": "x86_64-unknown-linux-gnu",
+          "source": {
+            "dirty": false,
+            "manifest_sha256": "813aab8000bf4d7b19f402f4b4cd1c61ed774740dd608dea4bf974233bba0330",
+            "revision": "ebd73fa7a8350316599cabdc541dcab499c9714c",
+            "state": "builder-supplied",
+            "tree": "d931b128c2a468f12fb37601c9e08a65bd18c944"
+          },
+          "binary_sha256": "da051081d7e1b5702e94f40b750cd0c335abcd4ff814423964317beabf6795a3",
+          "build_result_sha256": "7349a7dee4efb49c4dc7d20ddea0145e1967641440e3a1e7f8cb967989986ab4",
+          "practical": {
+            "case": "p01-event-cli",
+            "result": "PASS",
+            "counts": {
+              "collected": 40,
+              "executed": 40,
+              "failed": 0,
+              "skipped": 0,
+              "not_run": 0
+            },
+            "report_sha256": "09d3f8fe57e0f3cfbb6d1a6b8e0c3d49720fed519ae63a8f6debece4d130e857"
+          }
+        },
+        {
+          "target": "aarch64-unknown-linux-gnu",
+          "source": {
+            "dirty": false,
+            "manifest_sha256": "813aab8000bf4d7b19f402f4b4cd1c61ed774740dd608dea4bf974233bba0330",
+            "revision": "ebd73fa7a8350316599cabdc541dcab499c9714c",
+            "state": "builder-supplied",
+            "tree": "d931b128c2a468f12fb37601c9e08a65bd18c944"
+          },
+          "binary_sha256": "861c699db6902c9808050c1eb06f538c2769bfbc14ec95fba41813c7d9361332",
+          "build_result_sha256": "9ce102fcd767ed1152c2095acc556be1ca6b820451ac2b22c94c40820aa16ba6",
+          "practical": {
+            "case": "p01-event-cli",
+            "result": "PASS",
+            "counts": {
+              "collected": 40,
+              "executed": 40,
+              "failed": 0,
+              "skipped": 0,
+              "not_run": 0
+            },
+            "report_sha256": "20a4297ff18f2d6011cdaf9574595d5f6f592ff8d8a1d85db96c743f085220fc"
+          }
+        }
+      ],
+      "scope": "Native Rust checks and clean build on three targets; downloaded Linux event CLI reports inspected, all 40 checks passed. Not storage or full product qualification."
+    }
   },
   "review": {
     "type": "Independent AI review and integrating-owner complete source/diff review",
@@ -49,7 +117,6 @@
     "No generic untrusted receipt/proof deserialization or persistent receipt format activated"
   ],
   "not_run": [
-    "Exact candidate native CI",
     "Admission/CertifyExisting engine behavior and sufficient-effect validation",
     "Producer checkpoint/ACK/GC/recovery protocol and actual causal backup closure",
     "Complete signed-event admission/archive/read/export/restart journey"

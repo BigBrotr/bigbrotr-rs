@@ -166,6 +166,19 @@ not stop native writes. The [0.25.0 option source](https://github.com/rust-rocks
 supplies these APIs. Its published lock selects native RocksDB 11.8.1; earlier
 engine experiments do not establish that new tuple's recovery behavior.
 
+The [native binding experiment](../../experiments/native-rocks-binding/README.md)
+now exercises that exact tuple on Mac arm64 and Tux Linux amd64. Its
+[recorded evidence](../implementation/evidence/p02-native-rocks-binding-20260917.json)
+covers nine actual binding cases: synchronized multi-family write/reopen,
+selected SIGKILL schedules, snapshot isolation, writer/alias refusal, exact
+column-family compatibility, missing-CURRENT refusal and observed Zstandard
+SSTs/shared native resource options. This isolated program is not the product
+admission owner. Disk-full/fsync failures, power loss, device/inode aliases,
+native Linux arm64 and the complete P02 receipt/authority scenarios remain open.
+Keep handles private to their database: the binding does not prevent a column
+family handle from another database being passed to a batch. Always describe
+the default family explicitly with the same resource/compression policy.
+
 Use ClickHouse's validated row mode initially, explicit `Insert::end`, named
 query IDs, bounded row streaming and per-operation server work limits. Keep
 deterministic BigBrotr chunk identities separate from query IDs. Late stream

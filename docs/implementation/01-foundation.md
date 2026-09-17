@@ -209,6 +209,14 @@ cannot stand in for completed persistent configuration application.
 - [ ] **Step 8:** Document full local, archive-only, sync-only, monitor-only, serving-existing and split-role examples and resource
   implications; every copied example must validate through the actual binary.
 
+The [initial static implementation](evidence/p01-static-configuration-20260917.json)
+now supplies closed bounded core settings, six generated recipe candidates,
+redacted offline commands and explicit incomplete doctor results. Remaining key
+families and live/durable authority are not complete, so the step checkboxes above
+remain open. Native CI covers the implemented Rust process tests; the dedicated
+static syscall acceptance case is being added separately. Pure endpoint identity
+normalization does not establish DNS/route authorization.
+
 ## P01-T05 — Shared resource budget, scheduling and lifecycle
 
 **Depends on:** P01-T04 static configuration core (steps 1–5), not its later
