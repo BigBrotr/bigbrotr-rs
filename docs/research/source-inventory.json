@@ -625,5 +625,29 @@
       "capture_note": "Supplement recovered during full phase reread; source worktree bytes identified by hash. Legacy HEAD is contextual, not proof of committed-byte identity."
     }
   ],
-  "reread_note": "2026-09-11 complete surviving phase-0\u20139 Markdown reread: 34 phase files; plus full master plan, original vision, September consolidation plan and seven named supplements. Review 07 records deliberate changes and explicit exclusions; this is not a complete Go code audit."
+  "reread_note": "2026-09-11 complete surviving phase-0\u20139 Markdown reread: 34 phase files; plus full master plan, original vision, September consolidation plan and seven named supplements. Review 07 records deliberate changes and explicit exclusions; this is not a complete Go code audit.",
+  "current_external_inspections": [
+    {
+      "captured_on": "2026-09-17",
+      "classification": "current official protocol/library source inspection and isolated research; distinct from the historical Go sources above",
+      "selection": "docs/specification/gateway-contracts.md",
+      "evidence": "docs/research/evidence/gateway-research.json",
+      "source_inventory": "Exact official MCP/ContextVM documentation and Rust/TypeScript source revisions, with source/fixture hashes and upstream test identity"
+    },
+    {
+      "captured_on": "2026-09-17",
+      "classification": "current Rust dependency candidates; source inspection and dependency resolution, not native adapter qualification",
+      "selection": "docs/research/dependency-selections.md",
+      "evidence": "docs/research/evidence/dependency-selections.json",
+      "source_inventory": "18 checksum-verified published crate archives; versions, registry MSRVs/licenses and available VCS revisions; exact ignored resolution manifest/log and lock hash"
+    },
+    {
+      "captured_on": "2026-09-17",
+      "classification": "planning artifact checker dependency; not a BigBrotr product dependency",
+      "source": "https://registry.npmjs.org/github-slugger/-/github-slugger-2.0.0.tgz",
+      "sha256": "ddde66e96b7d722ff2c3d478e7595aeccae7e75dde798d405510d862f1367d0f",
+      "consumer": "experiments/verify_handoff.py",
+      "snapshot": ".research/checkouts/handoff-validation/github-slugger"
+    }
+  ]
 }

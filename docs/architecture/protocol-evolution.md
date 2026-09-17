@@ -38,6 +38,32 @@ standards for different services.
 6. Split potential upstream work into editorial repair, measurement context and
    assertion context. Do not couple useful corrections to a large new taxonomy or
    a universal relay trust formula.
+7. Add optional finite MCP and ContextVM gateways through the selected
+   [gateway contract](../specification/gateway-contracts.md). Native MCP pins
+   2026-07-28; initial experimental ContextVM pins 2025-11-25 MCP carried in
+   kind-25910 Nostr messages with CEP-4 encryption. They expose the same typed
+   registry and authority, remain disabled in every supplied recipe, and require
+   independent client/bounded-resource qualification before advertisement.
+   ContextVM is not NIP-90 or BigBrotr's durable DVM application profile.
+
+### Gateway evolution and compatibility boundary
+
+The [2026-09-17 gateway evidence](../research/evidence/gateway-research.json)
+records separate exact revisions for MCP specification, official rmcp, ContextVM
+documentation, and Rust/TypeScript SDKs. ContextVM's base protocol and CEP-8/19
+extensions have draft status; transport similarity is not a compatibility proof.
+The selected finite subset excludes CEP-8 payment, CEP-22 oversized transfer and
+CEP-41 streams. Existing DVM finite, subscription and paid capabilities retain
+their separate contracts and qualification. No generic public RPC is introduced.
+
+Changing a gateway version requires generated request/result schemas, explicit
+capability negotiation, negative version tests and an independent client journey
+through continuation/authorization/cancellation. In particular, modern MCP uses
+per-request metadata and required result/cache fields rather than legacy
+initialization sessions. Do not rely on an SDK's `LATEST` constant or carry a
+legacy response into a newer binding without validation. Passing local schema
+and in-memory SDK tests is evidence of those cases, not production maturity or
+permission to advertise untested extensions.
 
 ## Source baseline and reading coverage
 

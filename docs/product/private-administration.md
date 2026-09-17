@@ -38,10 +38,16 @@ what it needs. A stale result retains its last useful value with an age label.
 ## Configuration transactions
 
 Bootstrap paths, database connectivity and listener/security roots come from
-operator-owned deployment configuration. Optional managed settings are versioned
-PG overrides above the config file and below explicit environment/CLI locks.
-The panel shows locked values and how to change their deployment source. Do not
-silently rewrite mounted files or let UI changes disagree with a later restart.
+operator-owned deployment configuration. Ordinary policy has one instance-wide
+authority mode. Managed mode seeds a PG desired-state document once and UI/CLI edit
+that versioned authority. Declarative mode keeps the operator document authoritative;
+the panel previews/exports patches, and a typed activation accepts its validated
+digest/revision. A changed mounted file is staged, not an invisible live override.
+The panel shows mode, desired/applied revision, staged drift and locked deployment
+roots. It never silently rewrites mounted files. Restrictive emergency runtime
+locks are visible, nonpersistent and separate from durable policy. The
+[authority transition contract](../specification/operations-contract.md#configuration-authority-and-exact-validation)
+defines mode-switch CAS, restart, conflict, restore and bootstrap behavior.
 
 An edit creates a candidate revision with expected previous revision. Validate
 schema, permissions, dependency effects, resource envelope and operational changes;

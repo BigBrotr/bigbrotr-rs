@@ -19,7 +19,7 @@ only a helper does not replace the shipped CLI path.
 
 ## P01-T01 — Reproducible workspace and executable
 
-**Files:** `Cargo.toml`, `Cargo.lock`, `rust-toolchain.toml`,
+**Files:** `Cargo.toml`, `Cargo.lock`, `rust-toolchain.toml`, `LICENSE`,
 `apps/bigbrotr/Cargo.toml`, `apps/bigbrotr/src/main.rs`,
 `apps/bigbrotr/src/cli.rs`, `docs/development/build.md`,
 `contracts/release/dependencies.json`, `apps/bigbrotr/tests/cli_contract.rs`.
@@ -30,6 +30,15 @@ reporting its exact build/schema/protocol versions. Product name remains BigBrot
 - [ ] **Step 1:** Record tested Rust/MSRV, native RocksDB toolchain, TLS crypto provider,
   DuckDB/extension and CH/PG release identities; check license/security/update
   constraints against primary sources. Record why each dependency is needed.
+  Apply the selected MIT project license and preserve separately attributable
+  third-party notices; dependency license validation remains release-specific.
+  Start from the [selected Rust adapter families](../research/dependency-selections.md)
+  and their [revision/hash inventory](../research/evidence/dependency-selections.json).
+  Keep the selected families unless a concrete qualification failure justifies
+  a documented replacement. Exact candidate releases and successful dependency
+  resolution are not a tested release tuple: qualify native builds, feature
+  unification, offline assets and the assigned P01/P02 adapter boundaries before
+  enabling those capabilities.
 - [ ] **Step 2:** Build the minimal application package with narrow default features and
   `publish = false`; avoid a crate per process role or generic utility package.
 - [ ] **Step 3:** Wire `bigbrotr --version`, `--help` and structured diagnostic exit codes
@@ -112,11 +121,24 @@ invalid/excluded result. Protocol hints never become local measurement evidence.
 `config/recipes/{full,archive-only,split-role}.toml`,
 `contracts/config/schema.json`, `docs/reference/configuration.md`,
 `apps/bigbrotr/tests/config_entrypoint.rs`.
-**Contract:** defaults + recipe + overrides + managed revision + allowed env/CLI
-→ redacted effective configuration with source attribution and reload class.
+**Contract:** one instance-wide managed/declarative product-policy authority plus
+locked deployment roots and restrictive runtime locks → redacted desired/applied
+configuration with source attribution and reload class. Follow the selected
+[authority transitions](../specification/operations-contract.md#configuration-authority-and-exact-validation);
+recipes/defaults seed managed state once, not on every restart.
+
+**Execution split:** the static configuration core is steps 1–5 (schema, typed
+normalization, recipe resolution and read-only command paths); it requires no
+managed PG writes. P01-T05/T06 and P02-T01 consume this core. The durable
+managed/declarative authority in step 6 and its database-backed practical cases
+finish after P02-T01 supplies migration 0001 and transactional CAS. An early
+offline config command may validate/stage or report authority unavailable; it
+cannot stand in for completed persistent configuration application.
 
 - [ ] **Step 1:** Encode all current service key tables with units/ranges/secret references;
-  resolve precedence once and reject unknown, duplicate and ineffective options.
+  include operational composition/maximum-unit constraints and reject unknown,
+  duplicate, unsafe and ineffective options. Do not retain a six-layer policy
+  override stack beside the selected authority mode.
 - [ ] **Step 2:** Preserve full events as an invariant; provenance toggles new evidence
   epochs, text indexing toggles capabilities, roles select processes rather than
   hidden storage profiles.
@@ -126,8 +148,10 @@ invalid/excluded result. Protocol hints never become local measurement evidence.
   signing keys, paid adapters, active write probes or external directory discovery.
 - [ ] **Step 5:** Generate schema/default/reference content; report desired versus applied
   versions and restart/cycle/generation effects for each changed setting.
-- [ ] **Step 6:** Define managed-update compare-and-swap and deployment-locked fields;
-  expose plaintext secrets through neither CLI nor management responses.
+- [ ] **Step 6:** After P02-T01, implement managed-update CAS, declarative digest staging/activation,
+  atomic mode-switch/restore reconciliation and deployment-locked roots; expose
+  plaintext secrets through neither CLI nor management responses. File drift and
+  nonpersistent emergency locks remain explicit desired/applied status.
 - [ ] **Step 7:** **Practical P01-T04:** launch configuration commands from the release
   bundle using a minimal override, conflicting limits, unavailable dependency,
   fake secret and absent optional service. Observe exit/output and socket calls.
@@ -137,7 +161,8 @@ invalid/excluded result. Protocol hints never become local measurement evidence.
 
 ## P01-T05 — Shared resource budget, scheduling and lifecycle
 
-**Depends on:** P01-T04. **Files:** application
+**Depends on:** P01-T04 static configuration core (steps 1–5), not its later
+PG-backed authority completion. **Files:** application
 `src/runtime/{budget,supervisor,cancellation,health,metrics}.rs`,
 `apps/bigbrotr/tests/runtime_pressure.rs`,
 `tests/fixtures/runtime/`, `docs/operations/resource-budgets.md`.
@@ -150,9 +175,12 @@ queues; process health differs from finite-job and protocol states.
   lookahead/clones/driver staging and release only when work actually ends.
 - [ ] **Step 3:** Allocate reserved control/live/monitor shares and borrowable backfill/
   import/maintenance capacity; oldest-due plus per-host fairness prevents starvation.
-  Share one host-local network grant owner across roles/processes under the
+  Allocate coarse process grants and local byte credits; redistribute optional
+  heavy-job grants only at job boundaries, retaining archive/ACK/recovery reserves.
+  Select one acquisition/socket owner per host/route domain by default under the
   [destination fairness contract](../architecture/acquisition-services.md#pooled-transport-evidence-and-destination-fairness);
-  lost contact cannot release a still-open socket's grant.
+  optional cross-process socket ownership retains Control permit reconciliation.
+  Lost contact cannot release a still-open socket's grant.
 - [ ] **Step 4:** Bound CPU verification/compression/graph pools; terminate uncooperative
   native work at a process boundary, not abandoned blocking tasks.
 - [ ] **Step 5:** Implement role startup/readiness/idle/degraded/drain semantics and finite
@@ -171,7 +199,8 @@ queues; process health differs from finite-job and protocol states.
 
 ## P01-T06 — Authorization and writer ownership
 
-**Depends on:** P01-T02/T04/T05. **Files:** application
+**Depends on:** P01-T02/T05 and P01-T04 static configuration core (steps 1–5),
+not its later PG-backed authority completion. **Files:** application
 `src/runtime/{ownership,policy_authority}.rs`,
 `src/interfaces/auth/`, `apps/bigbrotr/tests/ownership_faults.rs`,
 `docs/security/authority.md`, `contracts/control/authority.json`.

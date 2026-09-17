@@ -401,6 +401,25 @@ operate on the full state, never the preview. Arrival, correction, expiry and a
 parser/scope revision dirty only the affected attribute/context and dependencies;
 latest-observer state and value support must retract superseded contributions.
 
+## Relay selection and optional scalar
+
+The default directory presents comparable availability, latency, evidence
+coverage, freshness and tested capability fields. `reliable-read/1` filters by
+explicit requested tested capabilities, observed availability >=0.99 and
+covered_fraction >=0.8 in the same stratum/window, then orders by availability
+descending, p50 latency ascending with missing latency last, and endpoint ID
+ascending. A carry-in availability estimate with no in-window latency sample
+can remain listed; missing latency is never treated as zero. Unknown values do
+not satisfy a required filter. Thresholds are named product defaults, not
+statistical confidence estimates; users can request a separately identified
+policy. The unfiltered directory still displays missing/insufficient evidence.
+
+A scalar trades unlike properties: the old .625/.375 blend can rank an 80%-up
+20ms endpoint above a 99.9%-up 500ms endpoint. Therefore the blend remains an
+optional attributable profile, never the meaning of general relay quality.
+Neither choice filters archive retention. The profile below remains unchanged
+for explicit callers and compatible publication identities.
+
 ## Relay profile general-read-relay/1
 
 This is the selected initial local measurement profile, not an implemented or
@@ -474,7 +493,7 @@ Q for absent L. These are specified expectations, not executed product results.
 
 ## Seed availability, optional eligibility and curation
 
-The `seeded-trust/1` eligible public graph and raw seeded-diffusion formula remain those in
+The `seeded-trust/1` reference and `seeded-trust/2` default share the eligible public graph and seeded-diffusion target described in
 the [Ranker contract](derived-read-publication.md#ranker). Freeze graph membership
 before checking seeds. The initial graph includes authors of eligible current
 follow or public-mute list headers, including valid empty lists, and endpoints of
@@ -682,3 +701,22 @@ for each small update. Test old list → newer empty list → still older backfi
 a different touched month, and compare with a full rebuild at the same cut.
 The declared isolated-vertex policy applies consistently to graph construction,
 seed availability, raw score vectors and publication eligibility.
+
+## Exact overlap without unconditional pair materialization
+
+First canonicalize scoped/windowed exact endpoint event sets and group equal
+sets by digest plus bytewise equality verification. A digest alone is not proof
+of equality. Evaluate sound size/prefix filters and exact intersection/Jaccard
+verification across distinct groups; probabilistic candidate filters remain a
+separately labelled approximate mode. Store qualifying group relations with
+window/cut/scope identity and expand endpoint pairs lazily for authorized paging.
+This represents the full exact logical relation without eagerly writing every
+pair of equal sets. Changed membership invalidates the affected group and its
+relations; pinned generations remain immutable.
+
+An export requesting every pair still costs the output size: 100,000 mutually
+qualifying endpoints imply 4,999,950,000 pairs. Budget, resumability and declared
+refusal apply; a spanning forest or sampled candidates cannot substitute for the
+requested relation. Qualify grouping, filtering and expansion against an
+independent all-pairs oracle on small fixtures, including hash-collision negative
+controls, empty sets, skew, churn and endpoint access changes.

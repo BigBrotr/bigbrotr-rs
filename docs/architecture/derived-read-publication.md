@@ -241,14 +241,32 @@ missing/suppressed reasons. A run ID is an execution identifier, not an algorith
 version. Distinct algorithm and personalized viewpoints require distinct NIP-85
 service keys; mapping is validated by the signing registry.
 
-The initial social algorithm is the named `seeded-trust/1` profile. Normalize
-configured seed weights to a teleport vector. Use the current verified public
-follow graph, remove self-follows and duplicate edges, and distribute an author's
-outgoing mass evenly across eligible follows. Dangling mass returns to the seed
-vector. Apply damping 0.85 for 100 deterministic ordered iterations. Record the
-residual and do not imply exact convergence merely because the loop finished.
-No seeds means `withheld:no-seeds`, not unseeded PageRank. A graph that cannot be
-processed completely within available resources yields no new score generation.
+The default social algorithm is `seeded-trust/2`, with a stationary target and
+explicit error budget. Normalize configured positive seed weights to teleport
+vector t. Use the current verified public follow graph, remove self-follows and
+duplicate edges, and distribute each author's outgoing mass evenly. Dangling mass
+returns to t. With alpha=0.85, the target is the unique probability vector solving
+`x = (1-alpha)*t + alpha*P^T*x`, including seed-directed dangling redistribution.
+Initialize from t or a compatible prior probability vector; a warm start changes
+execution, not the mathematical target or input identity.
+
+The default L1 error objective is `1e-8`. For candidate x compute an upper bound r
+on `||F(x)-x||_1`, including floating-point evaluation/reduction error; accept only
+`r/(1-alpha) <= epsilon`. The residual costs a graph pass and is charged. Use
+stable bounded reductions and a documented conservative rounding bound; the
+small exact-rational fixture independently checks the claimed enclosure. The
+initial work ceiling is 256 passes, plus separately accounted residual passes;
+budget/ceiling exhaustion withholds a new generation, never returns an unfinished
+vector as converged. Check nonnegativity, finite values and total-mass error.
+Implementation may improve summation/solver strategy within this target and error
+contract, recording solver/version and actual bound. Bit-identical vectors across
+solvers/platforms are not promised.
+
+`seeded-trust/1` remains an explicitly requested compatibility/reference profile:
+start at t and run exactly 100 deterministic ordered float64 iterations with the
+same graph/dangling rule. Record residual; do not label that loop proof of
+convergence or silently change its meaning. No seeds means `withheld:no-seeds`.
+An incomplete graph or exceeded resource budget yields no new score generation.
 
 Public mutes remain a separate observed relation, not a negative probability. The
 candidate version-1 policy removes a follow edge when that same author publicly
@@ -265,13 +283,18 @@ truth. No algorithm promises immunity to a compromised curator or trusted seed.
 For a proposed public rank projection, retain raw probability and map positive
 scores to a documented percentile among eligible positive-score subjects. For
 positive score `s`, use `max(1, round(100 * count(0 < score <= s) / positive_count))`,
-with half-integer rounding upward; zero remains zero. Ties receive the same value
-and a sole positive subject maps to 100. Record the population and exact formula
+with half-integer rounding upward; zero remains zero. Equal computed scores receive the same value and a sole positive subject maps
+to 100. For version 2 these are percentiles of the computed approximation, not
+certified ordering of exact stationary probabilities: expose the error bound and
+near-tie uncertainty. Keep deterministic ID ordering for display; do not call it
+trust differentiation. Solver/configuration changes are part of the manifest. Record the population and exact formula
 version. This is a proposed relative-rank product choice, not a claim that
 NIP-85 prescribes this normalization. A new population changes the interpretation;
 the API must expose raw values and provenance alongside the wire value.
 
-The separate `general-read-relay/1` profile is defined completely in
+Relay selection defaults to the scoped operational vector, with an explicit
+use-case filter/order; no universal scalar is the default directory order. The
+optional attributed `general-read-relay/1` profile is defined completely in
 [analytics detail](analytics-detail.md#relay-profile-general-read-relay1): exact
 outcome classes, irregular observed-time anchors, capped carry, duration
 denominator, latency sampling, comparison strata and the independent fixture.
@@ -288,9 +311,9 @@ algorithm families, not interchangeable values on a 0–100 scale.
 | Setting | Proposed default | Unit | Reload |
 |---|---|---|---|
 | `enabled` / `interval` | true / 3600 | boolean / seconds | Live / Cycle |
-| `profiles` | `seeded-trust/1` and `general-read-relay/1`, distinct identities | registry entries | Generation + Identity |
+| `profiles` | `seeded-trust/2`; optional `seeded-trust/1` reference and `general-read-relay/1` composite, distinct identities | registry entries | Generation + Identity |
 | `seed_set` | empty; explicit curator required for emission | weighted pubkeys | Generation |
-| `graph.damping` / `iterations` | 0.85 / 100 | ratio / iterations | Generation |
+| `graph.damping` / `epsilon_l1` / `max_passes` | 0.85 / 1e-8 / 256 | ratio / error / passes | Generation; fixed-100 reference profile remains distinct |
 | `graph.ignore_self_follows` | true | boolean | Generation |
 | `graph.public_mute_policy` | suppress same-author follow edge, retain explanatory mute mass | enum | Generation |
 | `relay.window` / `min_observations` | 86400 / 5 | seconds / classified actual attempts ending in the window | Generation |
@@ -616,8 +639,9 @@ AND between fields in one filter, OR among values and between filters, inclusive
 time bounds, exact identifiers and case-sensitive tag matching under the pinned
 specification. Deduplicate by event ID across matching filters before delivery
 and count. Distinguish an omitted limit from zero. The current-event policy
-resolves replaceable/addressable winners before applying time predicates, then
-applies authorized deletion and exposure rules. A query restricted to an old
+authorizes the source population before replaceable/addressable winner and
+deletion reduction, then applies ordinary expiry/query/exposure predicates.
+Private inputs cannot suppress or alter the public result. A query restricted to an old
 interval must not resurrect an older replaced value. Normal ID lookup follows
 the resource's visibility semantics; full raw history requires a named historical
 resource and authorization, not a hidden `ids` bypass in standard REQ.
@@ -638,8 +662,11 @@ See [NIP-09](https://raw.githubusercontent.com/nostr-protocol/nips/master/09.md)
 and the policy explanation in [protocol evolution](protocol-evolution.md).
 Do not claim local deletion policy erases previously exported or remote copies.
 
-Queries pin one source cut and compatible index generations. A fresher point-read
-resource may have a different declared contract, but a multi-page snapshot cannot
+Snapshot queries pin one source cut and compatible index/eligibility generations.
+Ordinary chronological traversal instead fixes its candidate acquisition cut and
+rechecks a separately reported current eligibility cut per page, under the
+[read-view contract](../specification/read-view-contract.md). It does not claim
+immutable membership or equality to an earlier count. Other snapshots cannot
 mix arbitrary live and derived state. Ordinary event ordering is descending
 `created_at`, then ascending event ID. HTTP keyset cursors bind resource/version,
 normalized filter digest, sort, source cut/generation, exposure-policy epoch,

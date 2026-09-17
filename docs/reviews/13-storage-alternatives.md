@@ -376,7 +376,7 @@ private→public arrival must not expose the private first-receive time or a
 private-only signature variant through the single-body record. That is already a
 recognized semantic issue, not a new finding invented by this review. Any proposed
 certification, projection or compression must respect its eventual resolution.
-[Readiness S01](../planning/specification-readiness.md#s01--one-event-encountered-through-several-visibility-scopes),
+[Readiness S01](../planning/specification-readiness.md#disposition-of-the-eight-paper-gaps),
 lines 62–89.
 
 Retain local synchronized admission, positive owner fencing, separate durability/

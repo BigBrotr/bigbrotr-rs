@@ -12,7 +12,7 @@ details and the phase tasks own implementation and practical verification.
 1. A collector receives a signed event from a relay. It checks the exact signed
    fields and signature. An untrusted claimed event ID is insufficient.
 2. The ingest owner commits the new body, identity, applicable observations and
-   recovery receipt together in synchronized RocksDB. Only then is local durable
+   scope-qualified signed representative and recovery receipt together in synchronized RocksDB. Only then is local durable
    acceptance acknowledged. Later ordinary copies do not become new archive rows.
 3. Two independent consumers proceed. The archive publisher commits permanent
    facts to DuckLake-managed Parquet; the Indexer makes online representations in
@@ -37,7 +37,7 @@ flowchart LR
   C --> G[Derivation and rank jobs]
   G --> C
   C --> Q[Read core]
-  Q --> H[HTTP, archive relay, optional DVM]
+  Q --> H[HTTP, archive relay, optional DVM / MCP / ContextVM]
   H --> U[Public dashboard]
   L --> E[Standalone research exports]
   P[(PostgreSQL: control plus separate DuckLake catalog)] --- I
@@ -135,3 +135,12 @@ records alternatives and the measurements that could change selections. Research
 and reviews explain dated evidence and superseded choices; they do not introduce
 another set of current defaults. Nothing here claims that writing a plan proves
 100,000 busy relays, billion-row query performance or absence of future defects.
+
+## Giving the design to an implementation agent
+
+Use [the agent handoff](implementation/agent-handoff.md), not a prompt asking the
+agent to invent another architecture. It links the current contract owners and
+the phase/task/step pipeline. The [readiness register](planning/specification-readiness.md)
+separates closed data/authority/client decisions from real-system gates. The
+product is still unimplemented; experiments under `experiments/` are labelled
+research and never presented as running BigBrotr services.

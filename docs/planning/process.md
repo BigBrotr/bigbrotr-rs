@@ -140,3 +140,21 @@ resources, follow-up checks and preserved unrelated workloads. It supersedes
 old inventory entries that described remote labs as stopped and reusable. New
 research starts from a fresh environment; the local legacy repository stays
 read-only. This cleanup does not count as a new benchmark or architecture result.
+
+## Closing the paper handoff and qualifying the choices
+
+The owner delegated autonomous closure. Separate agents specified identity/bytes,
+operations/workloads and gateway protocols, with executable independent fixtures.
+The coordinator adopted and reconciled the consequential architecture changes,
+added a single agent execution guide, and ran new signed-corpus engine experiments
+on a fresh Tux lab. A separate counter-review found and corrected scope ordering,
+old acquisition tasks, read-mode cuts, winner tie handling and vector/composite
+activation. The review records its actual bounded scope, not human certification.
+
+Paper closure now has exact signed fixtures, digest vectors, transition/effect
+tables, resolved configuration/resource recipes, gateway/version/subset rules and
+workload acceptance manifests. Engine experiments remain separately labelled;
+source research found version/default/API and durability caveats that become
+explicit implementation gates. Counts of tests/documents are not the acceptance
+criterion. See current readiness, experiment evidence and the phase checkboxes
+for actual completion rather than treating this narrative as a release certificate.

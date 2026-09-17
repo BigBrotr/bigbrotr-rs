@@ -1,5 +1,11 @@
 # Security, recovery and practical validation
 
+The selected [operational contract](../specification/operations-contract.md)
+consolidates cross-store outcomes, owner/process placement, resource completion
+reserves, configuration authority, compatibility and command-order recovery. Its
+reference model is design evidence; real engine/process/release acceptance below
+remains required.
+
 ## Trust boundaries
 
 Remote relay frames, DNS results, redirects, NIP-11 JSON, seed directories, import
@@ -52,6 +58,27 @@ private keys in config dumps, environment diagnostics, logs and fixture artifact
 | Key unavailable / destination rejects publish | Keep durable pending intent and visible per-target failure | Retry does not manufacture a new signature/event each attempt |
 | Upgrade partially applies | Versioned migration checkpoint; block incompatible writers | Rehearsed rollback or forward repair with documented data-format limits |
 | Backup succeeds but is unusable | Backup verification fails until isolated restore works | Full user-visible restore journey, not object existence only |
+
+Each possible commit has committed/not-committed/outcome-unknown resolution in
+the [effect table](../specification/operations-contract.md#cross-store-effect-and-recovery-table).
+In particular a new catalog read showing no receipt is insufficient while the
+old transaction might still commit; exclude/resolve it before retry. PG recovering
+before CH, Rocks or object credentials changes availability, not their authority.
+
+The [backup/restore procedure](../specification/operations-contract.md#backup-and-restore)
+requires causal producer-checkpoint/owner-GC closure, all catalog-referenced objects,
+required pins/jobs/exact outbox bytes and policy/config/version state. Restore uses
+isolated roots, blocked production egress and positive old-owner exclusion before
+activation. Initial local-synced receipts have no host-loss guarantee. Hourly
+backup attempts, verified age <=2 h and <=4 h fixture restore are engineering
+objectives pending measured release-envelope drills, not current SLAs.
+
+The [compatibility procedure](../specification/operations-contract.md#compatibility-migration-and-rollback)
+specifies adjacent mixed-release support only inside declared schema/RPC ranges,
+reader-first additive upgrade, writer-floor activation and last safe binary
+rollback point. After an incompatible write, forward repair or fenced backup
+restore is required. Inspect/plan/doctor commands remain read-only and cannot
+take ownership merely because the browser or a health endpoint is unavailable.
 
 NIP-09 deletion requests remain archived with their targets. Read policy handles
 logical deletion/current state. Exceptional operator-directed physical removal

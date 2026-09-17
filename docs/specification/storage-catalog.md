@@ -41,9 +41,10 @@ nullable variant-specific fields do not mean an unknown value equals zero.
 
 | Selected relation | One logical row / important identity and content | Writer, retention and consumer |
 |---|---|---|
-| `archive.events` | One accepted event per dataset/event ID: seven signed fields, event ordinal, first admission and source envelope | ArchivePublisher from ingest; permanent; export and serving rebuild |
-| `archive.event_receive_facts` | First local network observation or strictly earlier correction: event ID, receive time, observer/clock; no endpoint when provenance is off | ArchivePublisher; permanent sparse history; cut-relative event metadata |
-| `archive.provenance_facts` | New/earlier `(event_id, endpoint_id, observer_id, access_scope_id)` witness with time/method and correction lineage | Only when provenance enabled; permanent; both serving directions |
+| `archive.events` | One EventPayloadV1 per dataset/event ID: ID, pubkey, created time, kind, ordered tags and content; internal event ordinal/admission envelope | ArchivePublisher from ingest; permanent; shared payload value is exported only through permitted eligibility |
+| `archive.event_eligibility_facts` | First EventEligibilityV1 per event/visibility scope: body digest, valid original scope representative signature, first eligibility time, network/import origin and nullable import lineage | ArchivePublisher from ingest; permanent; joins payload into a complete signed event; new scope is a new fact even with provenance off |
+| `archive.event_receive_facts` | First local network observation or strictly earlier correction per event/visibility scope: receive time, observer/clock; no endpoint when provenance is off | ArchivePublisher; permanent sparse history; cut-relative scoped event metadata |
+| `archive.provenance_facts` | New/earlier `(event_id, endpoint_id, observer_id, access_scope_id, visibility_scope_id)` witness with time/method and correction lineage | Only when provenance enabled; permanent; both serving directions |
 | `archive.imported_claims` | One attributable typed source assertion with source dataset/record/artifact, subject, validation/trust/time basis | Importer through ingest; accepted evidence; never local witness by implication |
 | `archive.dataset_lineage` | Immutable source-dataset/artifact descriptor and format/fidelity interpretation | Import/export through archive publication; while referenced; no local file secrets or per-delivery import logs |
 | `archive.dictionaries` | Typed immutable mapping `(dataset_id, dictionary_kind, allocation_domain, ordinal)` to its canonical identity/value and normalization version | Ingest/ArchivePublisher; while referenced; endpoint, observer, access, visibility, method, route and HTTP resource descriptors; export closure |
@@ -79,10 +80,11 @@ separate complete targets. Normal clients use the read core, not arbitrary SQL.
 
 | Selected relation or existing target | Row unit / content and required input | Owner / cost |
 |---|---|---|
-| `serving.events` | Full signed body plus source identity; one logical event, physical retries collapsed correctly | Indexer; a deliberate second body representation |
+| `serving.events` | Shared complete EventPayloadV1 plus internal source identity; one logical event, physical retries collapsed correctly | Indexer; a deliberate second payload representation; internal existence is not read authorization |
+| `serving.event_eligibility_facts` | Scope-qualified signature, body digest and acquisition attribution, unchanged from archive | Indexer; joined with authorized payload values for full signed responses; required serving family even with provenance off |
 | `serving.event_id_index`, `event_author_index`, `event_time_index` | Narrow event/filter/order references; physical projections or tables chosen in P02 | Indexer; no repeated content per index |
 | `serving.event_tag_index` | Exact supported tag key/first value + event ID/source subrow; identical posting keys collapse | Indexer; tag fanout is charged |
-| `serving.event_receive_facts` | Immutable first/earlier receive evidence for cut-relative event metadata | Indexer; sparse corrections retained while required cuts remain readable |
+| `serving.event_receive_facts` | Immutable first/earlier receive evidence per event/visibility scope for cut-relative metadata | Indexer; sparse corrections retained while required cuts remain readable |
 | `serving.provenance_by_event`, `provenance_by_relay` | Two narrow orders over the same immutable witness facts | Indexer; optional P-sized cost twice, no body copies |
 | `serving.imported_claims`, `dataset_lineage`, `dictionaries` | Source-attributed claims and referenced identity mappings | Indexer; visibility/claim trust preserved |
 | `serving.measurement_facts`, `availability_selections`, `availability_facts`, `coverage_facts` | Hot typed evidence and source references corresponding to archive families | Indexer; measurement/provenance costs accounted separately |
@@ -92,7 +94,7 @@ separate complete targets. Normal clients use the read core, not arbitrary SQL.
 | `current_replaceable_events`, `current_addressable_events`, `current_relay_list_entries` | Existing P05-T02 target/view names over the corresponding headers/memberships | Logical compatibility views/target bindings, not a requirement for another full copy of current state |
 | `global_facts`, `social_facts`, `nip85_input_facts` | Versioned typed facts per subject/population/window with exactness and source cut | Independent P05 targets, never a generic unlabeled number |
 | `relay_facts`, `relay_state_aggregates`, `relay_coverage` | Attributable observations, resolved evidence and qualified coverage | P04 local view / P05 resolved targets have separate ownership and input meaning |
-| `relay_dedup_candidates`, `relay_cluster_edges`, `relay_clusters` | Declared comparable candidate pairs, verified edges and derived connected components | P05 overlap target; exact/approximate candidate coverage explicit; no relay identity merging |
+| `relay_overlap_groups`, `relay_overlap_members`, `relay_dedup_candidates`, `relay_cluster_edges`, `relay_clusters` | Generation-qualified verified equal-set groups/members, comparable group candidates, verified group relations and connected components; endpoint pairs are the exact logical relation expanded lazily | P05 overlap target; exact/approximate candidate coverage explicit; no relay identity merging |
 | `event_propagation_stats`, `relay_selective_availability`, `relay_availability_frontier` | Existing P05 provenance-derived targets with method, denominator, observed scope and unknowns | Optional provenance inputs; first witness is not physical propagation or current presence |
 | `serving.current_graph_edges` | Selected current follow/mute relations with vertex/input lineage | Graph builder; partitioned adjacency/CSR artifacts separately account for full V/E work |
 | `serving.rank_scores`, `relay_quality_scores` | Subject type/ID, profile/viewpoint, generation, component values and availability/explanation | Ranker / independent relay quality target; bounded useful generations, not permanent full snapshots each tick |
@@ -176,9 +178,16 @@ later graph/cursor consumers do not force early storage tasks to depend on P05/P
 ## RocksDB key spaces
 
 Each writable directory has one owner. The ingest owner's versioned domains are event
-identity/admission metadata, event ordinals and dictionaries, optional exact
-provenance minima, content-object identity, ordered pending source facts, producer
+identity/admission metadata, exact event/visibility eligibility and receive minima,
+event ordinals and dictionaries, optional exact scope-qualified provenance minima,
+content-object identity, ordered pending source facts, producer
 request digest/outcome and retirement watermarks, and owner/schema metadata.
+
+The exact [identity and encoding contract](identity-and-encoding.md) owns field
+order, fingerprint bytes and allocation/restore rules. CertifyExisting performs
+a consistent read of these already durable facts and creates no permanent
+certification/duplicate-delivery key space. Producer progress may reference its
+dependency proof under the same causal backup closure as mutation receipts.
 They are not separate daemons. A WAL-enabled synchronized batch binds effects
 and receipt. Reclaim pending bodies only after verified archive protection and
 retain exact identity/retirement information for its actual recovery obligation.

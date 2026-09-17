@@ -4,7 +4,7 @@
 
 | Data | Canonical retained representation | Serving or coordination representation |
 |---|---|---|
-| Signed Nostr event | Full signed fields and original signature in archive event rows | CH event bodies, narrow author/kind/time/tag access paths |
+| Signed Nostr event | One complete shared payload plus first valid signed representative per visibility scope | CH payload and eligibility facts; authorized join returns every signed field |
 | Original wire object, if retained | Bounded raw bytes with digest and origin; explicit fidelity mode | Optional retrieval; never confuse with canonical signed serialization |
 | Direct provenance | First verified local observation per event/endpoint with observer identity | Both event→relay and relay→event access paths |
 | Imported provenance | Separate source assertion, source time and validation metadata | Separate origin-aware query domain; never upgraded to local observation |
@@ -36,8 +36,9 @@ contract are in [product data decisions](../product/data-and-feature-decisions.m
 ## Admission transaction
 
 The owner routes an event to one durable partition, checks policy and full event
-validity, and commits `event identity + canonical payload when new + pending
-record + producer request receipt + sequence` in one synchronized RocksDB batch.
+validity, and commits `event identity + shared payload when new + scoped
+eligibility/receive/provenance effects + required dictionaries + pending records +
+producer request receipt + sequence range` in one synchronized RocksDB batch.
 Same-owner concurrency is serialized for identity admission. Concurrent producers
 cannot both perform an unchecked read-then-write into separate owners. A returned
 receipt identifies shard, epoch and sequence, not just an in-memory boolean.
@@ -49,8 +50,9 @@ proof that another received JSON object or signature is valid. Bloom filters may
 avoid definite misses; a false positive must never drop a new event or provenance
 fact. Sampled cryptographic verification is not the default admission policy.
 
-Keep a permanent compact event identity inventory for exact admission and global
-reconciliation. With provenance enabled, also keep an exact edge admission
+Keep a permanent compact event identity inventory plus exact event/visibility
+eligibility and receive minima for admission and reconciliation. With provenance
+enabled, also keep an exact visibility-qualified edge admission
 inventory. Use compact event ordinals and interned endpoint/observer/semantic
 authorization-scope IDs, with minimum observation time and original receipt.
 Observer identity survives restart; auth scope identifies stable authorization
@@ -58,9 +60,14 @@ context, not each socket, session or challenge. Dictionary/ordinal mappings are
 canonical recoverable metadata, not disposable IDs that can be reassigned on
 restore.
 
-A new edge or strictly earlier attributable observation atomically updates this
+A new permitted visibility scope, new edge or strictly earlier attributable observation atomically updates this
 inventory and appends an immutable fact/correction record. Ordinary repeated
-sweeps return existing receipts without creating another permanent edge fact.
+sweeps create no permanent edge fact. Strict Admit retains request digest/outcome
+semantics even for AlreadyDurable. The distinct
+[CertifyExisting](../specification/identity-and-encoding.md#certifyexisting-without-mutation-semantics)
+read-only operation can return a dependency proof of all already durable effects
+without a ProducerRequestId, mutation or new scientific fact. New eligibility,
+first network receive, earlier correction or new witness requires Admit instead.
 This deliberately pays an extra P-sized embedded index and lookup work to avoid
 turning first-observation provenance into D-sized delivery history. A bounded
 cache sits before exact lookup, not instead of it. An instance created with provenance off allocates neither edge inventory nor
@@ -76,20 +83,22 @@ rebuild costs. No storage engine removes the information cost of P.
 
 ### First observation without provenance
 
-Every event has immutable `first_admitted_at` (the ingest owner's wall-clock time)
-and its original admission receipt. Network acquisition additionally records
-`first_received_at`: the earliest attributable receive time reported by an
-approved collector in this instance, with observer/clock-quality metadata. It is
+Every event has restricted identity-domain `first_admitted_at` and original
+admission lineage. Each permitted visibility scope independently retains its
+first valid signature and `first_eligible_at`. Network acquisition records a
+scope-qualified `first_received_at`: the earliest attributable receive reported by
+an approved collector, with observer/clock-quality metadata. It is
 not the event's `created_at`, a remote server timestamp or an imported assertion.
 An import-only event has no local network-receive time until locally observed.
-Provenance off still preserves these event-level fields; it stores no relay edge
+Provenance off still preserves these scope-qualified event fields; it stores no relay edge
 or endpoint identity in their place.
 
-An earlier eligible local receive observation updates the compact event metadata
+An earlier eligible local receive observation updates that scope's compact metadata
 and emits an immutable correction with its own SourceRecordId in the same synced
 batch. Ordinary later duplicates return existing receipts. Store the original
 admission and correction facts in the archive, preserving the original signed
-body. Read-time minimum is evaluated after source-cut filtering, just like edge
+payload and permitted signed representatives. Read-time minimum is evaluated
+after source-cut and authorization filtering, just like edge
 corrections, so a late earlier timestamp cannot rewrite an already pinned answer.
 Clock regressions and uncertainty are diagnostic metadata, not evidence of
 physical network propagation or causal order. Admission receipt order remains
@@ -101,6 +110,16 @@ network observation. A deployment restore preserves original receipts and these
 fields. Test replay, earlier/later duplicates, import followed by network receipt,
 clock rollback and restore with provenance disabled; none may invent a new
 first-admission time or create hidden edge state.
+
+Private→public receipt of the same event creates a new public eligibility fact
+even with provenance off; public results disclose only its public signature/time
+and permitted metadata. The
+[cross-scope truth table](../specification/identity-and-encoding.md#signatures-and-effect-transitions)
+also covers public→private, alternate valid signatures and import→network.
+Authorize the source population before current-coordinate winner/deletion
+reduction; ordinary expiry/query predicates follow winner selection. Private
+input cannot suppress a public result; an expired public winner does not revive
+an older replacement.
 
 ## Archive publication and reclamation
 
@@ -183,7 +202,11 @@ identical latency between full-online and tiered deployments.
 
 Full data export: deduplicated signed events, optional origin-aware provenance,
 measurement tables, schema/version/fidelity declaration, exact row counts and
-checksums. Analytical export: selected columns and filters, explicitly lossy,
+checksums. Native exports carry the shared payload value plus permitted
+eligibility representative(s), never the private original payload admission
+envelope/ordinal. All seven Nostr fields reconstruct without loss; selected
+safe dictionaries and visible lineage complete the export. Analytical export:
+selected columns and filters, explicitly lossy,
 with the same manifest discipline. DuckDB can read a standalone export directly
 without the live catalog. A glob of live DuckLake files is not a valid export:
 it can include obsolete/deleted versions or omit inlined data.
@@ -192,7 +215,10 @@ Deployment backup additionally includes a consistent catalog/control backup,
 required WAL/pending state or a quiesced archived frontier, configuration history,
 policy, keys references and separately protected key material, consumer cursors,
 publication receipts, version information and restoration order. A backup is
-accepted only after restoration into an isolated instance and comparison of
+causally closed over receipt and CertifyExisting dependency proofs, scope
+eligibility, allocation domains/counters and restrictions. Missing proof
+dependencies invalidate the corresponding progress; a mixed cut cannot invent
+an admission. Accept a backup only after restoration into an isolated instance and comparison of
 logical content, receipts, coverage and usable public/private entry points.
 
 ## Serving persistence and incarnation
@@ -221,8 +247,9 @@ do not justify unfenced DDL or deletion.
 Event ordinals, endpoint IDs, stable observers and auth-scope IDs are compact
 references, not sufficient portable provenance by themselves. Archive snapshots
 include the required immutable dictionary mappings and identity-normalization
-versions alongside referring facts. Event rows carry their original ordinal and
-Nostr ID. Archive publication includes all newly required dictionary records in
+versions alongside referring facts. Internal event rows carry original qualified
+ordinal and Nostr ID; public payload exports need the Nostr ID and body digest,
+not the private initial ordinal/envelope. Archive publication includes all newly required dictionary records in
 the same logical snapshot; restore never invents different ordinal mappings.
 Sensitive auth references export only their permitted opaque scope metadata,
 never credentials. Test export to a standalone reader without the live registry.
@@ -232,17 +259,21 @@ and immutable record digest. Remote contracts use a versioned binary schema wher
 batching benefits it, plus documented JSON inspection/export. Do not serialize
 Rust in-memory layout or an unversioned private struct as a permanent protocol.
 Original signed content is not mutated when projection or transport schemas evolve.
+The selected [identity profile](../specification/identity-and-encoding.md#fingerprint-encoding-profile-1)
+specifies SHA-256 domains, exact deterministic-CBOR preimages, checked qualified
+allocation, presence/unknown-field refusal and golden vectors. Fact and semantic
+batch identities are independent of protobuf bytes and Parquet physical encoding.
 
 ## Identity and replay refinements from inspected code
 
 [NIP-01](https://github.com/nostr-protocol/nips/blob/a2494f4f81d46684e5814a9bf35e2b1df978f955/01.md)
 hashes the canonical event fields without the signature. If the same canonical
 payload arrives with another valid signature, it is the same event identity.
-Validate the received signature, keep the originally admitted valid signature
-stable in the canonical body, and do not manufacture a second event or call the
+Validate the received signature, keep the first valid representative stable
+within each visibility scope, and do not manufacture a second event or call the
 valid alternative a payload hash collision. Optional wire evidence may retain
 variants under its independent bounded policy. An invalid alternate signature
-produces no new witness. A different canonical preimage claiming the same ID
+produces no new eligibility or witness. A different canonical preimage claiming the same ID
 requires verification failure or explicit collision handling, not silent overwrite.
 
 Tag postings require an actual first value. `['x']` contributes no key/value

@@ -289,7 +289,30 @@ Missing entries in a conservative stale local set cause extra downloads and are 
 
 Reconcile bounded time intervals and cap local set memory, frame bytes, rounds and duration. `blocked` starts bounded subdivision; an age restriction or a one-second interval still exceeding limits becomes a gap. The client algorithm's successful processing determines protocol termination, then the client sends NEG-CLOSE to release resources. Download missing ids in bounded exact-id REQs, verify each id/body, and require a real served event to create a new local witness even if that body exists from another relay. Retry absent ids; persist `advertised_unserved` after exhaustion. A remote advertisement without retrieval remains an advertised claim, not a local witness. No upload of local archive events is part of synchronization.
 
-**Recent sweeps.** Revisit hot and warm intervals independently of historical progress. Use the same linear/negentropy algorithms and evidence rules. Later sweeps may supersede earlier gaps only with specific successful evidence. A scope reaching the moving safety lag is eligible for steady scheduling, not permanently complete. A byte budget can postpone a sweep, and the dashboard must show that deferral.
+**Age-banded revisits.** Revisit explicit nonoverlapping signed-age bands,
+independently of historical progress. The initial bands are `[0,1h)` every 15m,
+`[1h,6h)` every 1h and `[6h,48h)` every 6h. Resolve each due obligation to a fixed
+half-open event-time interval at its scheduled time, with checked arithmetic;
+a delayed worker resumes that interval rather than silently moving it to now.
+Use Negentropy where supported and scoped local inventory is available; otherwise
+use the same bounded linear traversal and evidence rules. Fresh live intake,
+known-gap retries, banded revisits and deep history have separate fair queues.
+Coalescing is valid only when the actual completed range/method/time satisfies
+all covered obligations. Budget pressure records overdue work and achieved delay.
+
+These cadences are initial explicit cost/latency choices, not measured optimal
+settings or completeness guarantees. With steady uniform arrivals and completed
+linear traversals their width/cadence sum is `4+5+7=16` historical deliveries per
+new event, versus 52 for the old overlapping windows; real costs include boundary
+retries, wire protocol and skew. Late visibility near a band boundary or after
+48h can escape its next sweep and needs deeper reconciliation; no 6h universal
+discovery bound is claimed. Capability-aware reconciliation reduces transferred
+bodies but still pays inventory/set comparison costs. A scope reaching the moving
+safety lag is steady scheduling, never permanently complete. The dashboard shows
+actual revisited ranges, missed deadlines, byte cost and unresolved uncertainty.
+The controlled late-arrival fixture compares both schedules, including boundary
+arrivals, backdated injections, huge relays and more endpoints than connections;
+report coverage/delay together with savings, never savings alone.
 
 **Deep re-verification.** Stagger full-range reconciliation over time for capable relays; resume at durable interval boundaries after rotation/restart. For linear relays, retry known gaps and perform rotating older interval samples. Sampling is labeled sampling and supplies no full-history verification horizon. A scheduled full linear re-traversal is supported when explicitly budgeted, with the same protocol limitations. Do not automatically shrink the tail from observed signed-age percentiles: backdated/unseen events bias that statistic. A future adaptive policy requires a bounded comparison against fixed windows and must retain a configured minimum plus visible missed/late-event metrics.
 
@@ -324,10 +347,7 @@ NIP-11 limits are optional request-size/subscription-count hints. A false claim 
 | `sync.negentropy.fetch_attempts` | `3` | total attempts/id | H | Then durable advertised-unserved gap |
 | `sync.capability_probe_timeout` | `10s` | duration | C | Overlay 30s; second attempt deadline ×2 |
 | `sync.capability_reprobe` | `7d` | duration | H | Earlier on behavior change; inconclusive retries after 1h |
-| `sync.hot_window` | `1h` | duration | H | Recent sweep scope |
-| `sync.hot_interval` | `15m` | duration | H | Due target, budget deferral visible |
-| `sync.warm_window` | `48h` | duration | H | Must cover hot window |
-| `sync.warm_interval` | `1h` | duration | H | Potentially expensive linear re-download |
+| `sync.revisit_bands` | `[0,1h):15m`, `[1h,6h):1h`, `[6h,48h):6h` | ordered age bounds/cadence | E | Explicit disjoint bands, positive cadence; old hot/warm keys are unsupported |
 | `sync.safety_lag` | `48h` | duration | H | Scheduling/display qualification, not lateness guarantee |
 | `sync.deep_reverify_interval` | `7d` | duration | H | Target spread across available capacity |
 | `sync.relay_byte_budget` | absent | bytes/day/endpoint | H | Optional explicit cost ceiling; no silent default exclusion |
@@ -609,9 +629,18 @@ identities, Host/SNI and evidence remain separate. Remote-resolved overlays use
 their route/endpoint limits when the final destination IP is unknown; the proxy
 address is not falsely treated as every relay's destination. Split hosts initially
 have host-local quotas, not a claimed globally coordinated IP bucket.
-In-process roles use one network-budget owner. Multiple processes on the same
-host acquire/release these permits through the existing private Control adapter;
-a separate per-process bucket cannot be advertised as the shared host limit.
+The default uses one acquisition/socket owner per host and route budget domain:
+Validator, Monitor, Synchronizer, directory fetch and publication delivery are
+independently scheduled modules with local permits. A signing process submits
+authorized exact durable bytes to that owner. Co-location needs no additional
+proxy daemon. A distinct route domain must represent an independently budgeted
+transport, not another label multiplying the same public-IP limit. The
+[process matrix](../specification/operations-contract.md#process-placement-and-capabilities)
+resolves local and split placement.
+When explicitly selected process isolation requires multiple socket-owning
+processes on one host, they acquire/release permits through the existing private
+Control adapter; a separate per-process bucket cannot be advertised as the shared
+host limit.
 Retain a grant until actual socket close or positive process exclusion. After
 budget-owner loss, reconcile live holdings or drain/exclude workers before
 reissuing capacity; a timeout alone cannot forget a still-open socket. P01-T05/T07

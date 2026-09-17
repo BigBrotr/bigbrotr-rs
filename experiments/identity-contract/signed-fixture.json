@@ -1,0 +1,2295 @@
+{
+  "schema": "bigbrotr-signed-acceptance-fixture/1",
+  "test_keys": "public integers 1,2,3; never real accounts",
+  "authors": {
+    "A": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+    "B": "c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+    "C": "f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9"
+  },
+  "events": {
+    "E_private": {
+      "pubkey": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+      "created_at": 1,
+      "kind": 1,
+      "tags": [
+        [
+          "x"
+        ],
+        [
+          "x",
+          ""
+        ],
+        [
+          "t",
+          "é"
+        ],
+        [
+          "t",
+          "é"
+        ]
+      ],
+      "content": "same event\nwith ordered tags",
+      "id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+      "sig": "f455e992a8359238a5583f91843be3c4fd0847574162222afdd8dc0aee67f5fab742f6eaf378cae2d66ce268f7b86698b4912579c534d568c6f53adf4cc90c85"
+    },
+    "E_public": {
+      "pubkey": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+      "created_at": 1,
+      "kind": 1,
+      "tags": [
+        [
+          "x"
+        ],
+        [
+          "x",
+          ""
+        ],
+        [
+          "t",
+          "é"
+        ],
+        [
+          "t",
+          "é"
+        ]
+      ],
+      "content": "same event\nwith ordered tags",
+      "id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+      "sig": "9444d1fab8095f14d43137f841a400f0648cd614515f53bb5545749e373056381ce2963d43fdb5d10d9294846da6fc895d1fdfaf3417399a5c2699414877c180"
+    },
+    "I": {
+      "pubkey": "f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9",
+      "created_at": 1,
+      "kind": 1,
+      "tags": [],
+      "content": "import then network",
+      "id": "8a0096a3a84f1460c11a432355666cb9fd377cca00a5a1e08ef0071c9c0b9849",
+      "sig": "ab9e62de93391621735c773f4b1c40f41029d7d49369993a63a226c4ce14605859b112dd261b5fa4f8a2b82bbac0a67323f39c4d007555711547bfd25560b4a6"
+    },
+    "A_old": {
+      "pubkey": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+      "created_at": 10,
+      "kind": 0,
+      "tags": [],
+      "content": "{\"name\":\"public-old\"}",
+      "id": "8f5101b5fa31ca65fe30b8fd18f922ad051868605f7203941f8d3ce545fd5eca",
+      "sig": "d9f550ec90074ae4bf7c822e07e35a124b52411b6dd5e3d2e25ae235853394d3b506c55bd8d260efdebffb1c998a0bcd3ed0238fbb57ab139c467679c605e308"
+    },
+    "A_private_new": {
+      "pubkey": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+      "created_at": 20,
+      "kind": 0,
+      "tags": [],
+      "content": "{\"name\":\"private-new\"}",
+      "id": "f13b28478effc176c522447296d6cb5692be98069e90de5cc1c15a4f91eaf0bb",
+      "sig": "1e15fb4dbfb213bfcd53ec015a6298323eda464e9c64cd9775b5d8990c5a0275acedc85d691a56b7eb23154de4e8ad15460aee0ab03b57c4429d9718ebbd9577"
+    },
+    "A_private_delete": {
+      "pubkey": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+      "created_at": 25,
+      "kind": 5,
+      "tags": [
+        [
+          "e",
+          "8f5101b5fa31ca65fe30b8fd18f922ad051868605f7203941f8d3ce545fd5eca"
+        ]
+      ],
+      "content": "private request",
+      "id": "e923c22f9a2e55db78cf054344a146836317f991cad0a2abedca008bb9e93af4",
+      "sig": "c2593909ff14cc81243f21b2f9b0ba519118bdb64b44a56d8e34984d70f33d0e98450a94d39b8d0a9e11dd0217ed2b09d91090037d1fb5c8c9c5664c723e94e7"
+    },
+    "A_follows": {
+      "pubkey": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+      "created_at": 10,
+      "kind": 3,
+      "tags": [
+        [
+          "p",
+          "c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5"
+        ],
+        [
+          "p",
+          "f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9"
+        ],
+        [
+          "p",
+          "c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5"
+        ]
+      ],
+      "content": "",
+      "id": "f73e707ceb6bd46bf7144dd52252f6590dfe090e4f63568e68b6e759253d97e8",
+      "sig": "f7b13c12e96a54e82a3dbbba9714dd106e2472618bd367f36f1acb11aa151d6920150b40fa4533b97283685dd4c9170c5eaee1cd752c21cfcee25eee84e2b30a"
+    },
+    "B_follows": {
+      "pubkey": "c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+      "created_at": 10,
+      "kind": 3,
+      "tags": [
+        [
+          "p",
+          "f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9"
+        ]
+      ],
+      "content": "",
+      "id": "ab6bb07fd687beb1e9a9e249da5edb150a706cac718ca5b832a73816a9629fd0",
+      "sig": "0d289678487c0c79b9e9edef486800b03b5b6555b7b762813f45d3b33aa2f434d900f196613fece1e4b5eb72560af3212461216a69b11a79a3921e19bed5a2df"
+    },
+    "A_empty": {
+      "pubkey": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+      "created_at": 20,
+      "kind": 3,
+      "tags": [],
+      "content": "",
+      "id": "663a346ad02c94c679d401f46ae014381ce858c5c55ce301600e3e0dfa9eef40",
+      "sig": "abc5eb3869adec6ec9ba5bc254001d30cb9549ecd6980132d210deb5ccf095dea3fe135bf6bcb501e2d8f68b81c93522748bc9b78b8cb451df71d766ec629a91"
+    },
+    "B_note": {
+      "pubkey": "c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+      "created_at": 15,
+      "kind": 1,
+      "tags": [],
+      "content": "arrives after its authorized deletion",
+      "id": "57b20f44c0095dfc789765ed38caa8dd54ae37635dab32237c563146c8865b02",
+      "sig": "051b8c5ac03828f2e6ab0b4d99de9a57a455e3549e652eda67df061ef39ec1f73c01aee2ccb43a2dad348f51e9aa09ffc63ba189f9ec0449f96606d1f3632092"
+    },
+    "B_delete": {
+      "pubkey": "c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+      "created_at": 20,
+      "kind": 5,
+      "tags": [
+        [
+          "e",
+          "57b20f44c0095dfc789765ed38caa8dd54ae37635dab32237c563146c8865b02"
+        ]
+      ],
+      "content": "public request before target",
+      "id": "82663c0cfc0fd10912d04826571e26d809edb2cbb659f677659dd9c7959a2e3b",
+      "sig": "250d23f7bf10a6117c03a1bbebef6f07cd90ebd133dba0635ab24f2c358fb75329f9462210cfdc7b8fb77e37c10b1dfb6b9411c3b116e34ef4315f2b6dcadef5"
+    },
+    "A_expiring": {
+      "pubkey": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+      "created_at": 30,
+      "kind": 0,
+      "tags": [
+        [
+          "expiration",
+          "250"
+        ]
+      ],
+      "content": "{\"name\":\"expires\"}",
+      "id": "af95a8529130fa356032dfdab5f54c25d5b17aeb9b9c466d1c23360f79f57d2e",
+      "sig": "4c8d353da409a493105f27bfd4a4dd9a9c369f9b94fe629aca3cd70b30c93a5ea3320181529e9c837fd7e17b814454deb32c975c4de11cf638000440b773dbec"
+    },
+    "C_tie_a": {
+      "pubkey": "f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9",
+      "created_at": 40,
+      "kind": 0,
+      "tags": [],
+      "content": "{\"name\":\"tie-a\"}",
+      "id": "93285d1794c003058739b3e704e2d59cab399c7480c9c8612195d943d907c697",
+      "sig": "f2dda230fb9d5d2fff89c77993d667de525d86fe3eb4164ff66bb3fabafbd1802d7b61696fe7894fde684cba1077a5106697e004a86e210d767ad7dc1bd1c452"
+    },
+    "C_tie_b": {
+      "pubkey": "f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9",
+      "created_at": 40,
+      "kind": 0,
+      "tags": [],
+      "content": "{\"name\":\"tie-b\"}",
+      "id": "3120547e1a7ce23dfe681dadf42e86a0d24bd691e0dc41a0cb6cf0b2608f36e6",
+      "sig": "6792855e8d2125725b3a0dbb20eab455b3d7207860f76805b90031f393d60a3d715e189b84dc4d053cc6dac445b55b92ef545a2146c8736af7ddbee4dcfac2b3"
+    },
+    "A_public_delete": {
+      "pubkey": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+      "created_at": 35,
+      "kind": 5,
+      "tags": [
+        [
+          "e",
+          "8f5101b5fa31ca65fe30b8fd18f922ad051868605f7203941f8d3ce545fd5eca"
+        ]
+      ],
+      "content": "public request",
+      "id": "603fd3078e0f87d5c8c80d3ebe2cfdc03a922f0318189a93e7e84f2eddecfd68",
+      "sig": "f5dca31bcbaf1f5368f718394a77ed4429b603052e16be3aa6982bfb921809ecaf3cf8dbdaebeb9663eebe912cb4f21644cfcf0ecb2be5a9b2d331ee32a15507"
+    }
+  },
+  "actions": [
+    {
+      "step": 1,
+      "event": "E_private",
+      "scope": "private",
+      "origin": "network",
+      "admitted_at_us": 10000000,
+      "received_at_us": 10000000,
+      "endpoint": "R_private",
+      "valid": true
+    },
+    {
+      "step": 2,
+      "event": "E_public",
+      "scope": "public",
+      "origin": "network",
+      "admitted_at_us": 20000000,
+      "received_at_us": 20000000,
+      "endpoint": "R_public",
+      "valid": true
+    },
+    {
+      "step": 3,
+      "event": "E_private",
+      "scope": "public",
+      "origin": "network",
+      "admitted_at_us": 30000000,
+      "received_at_us": 30000000,
+      "endpoint": "R_public",
+      "valid": true
+    },
+    {
+      "step": 4,
+      "event": "E_public",
+      "scope": "public",
+      "origin": "network",
+      "admitted_at_us": 40000000,
+      "received_at_us": 15000000,
+      "endpoint": "R_public",
+      "valid": true
+    },
+    {
+      "step": 5,
+      "event": "I",
+      "scope": "public",
+      "origin": "import",
+      "admitted_at_us": 45000000,
+      "received_at_us": null,
+      "endpoint": null,
+      "valid": true
+    },
+    {
+      "step": 6,
+      "event": "I",
+      "scope": "public",
+      "origin": "network",
+      "admitted_at_us": 46000000,
+      "received_at_us": 46000000,
+      "endpoint": "R_public",
+      "valid": true
+    },
+    {
+      "step": 7,
+      "event": "A_old",
+      "scope": "public",
+      "origin": "network",
+      "admitted_at_us": 100000000,
+      "received_at_us": 100000000,
+      "endpoint": "R_public",
+      "valid": true
+    },
+    {
+      "step": 8,
+      "event": "A_private_new",
+      "scope": "private",
+      "origin": "network",
+      "admitted_at_us": 110000000,
+      "received_at_us": 110000000,
+      "endpoint": "R_private",
+      "valid": true
+    },
+    {
+      "step": 9,
+      "event": "A_private_delete",
+      "scope": "private",
+      "origin": "network",
+      "admitted_at_us": 120000000,
+      "received_at_us": 120000000,
+      "endpoint": "R_private",
+      "valid": true
+    },
+    {
+      "step": 10,
+      "event": "A_follows",
+      "scope": "public",
+      "origin": "network",
+      "admitted_at_us": 130000000,
+      "received_at_us": 130000000,
+      "endpoint": "R_public",
+      "valid": true
+    },
+    {
+      "step": 11,
+      "event": "B_follows",
+      "scope": "public",
+      "origin": "network",
+      "admitted_at_us": 140000000,
+      "received_at_us": 140000000,
+      "endpoint": "R_public",
+      "valid": true
+    },
+    {
+      "step": 12,
+      "event": "A_empty",
+      "scope": "public",
+      "origin": "network",
+      "admitted_at_us": 150000000,
+      "received_at_us": 150000000,
+      "endpoint": "R_public",
+      "valid": true
+    },
+    {
+      "step": 13,
+      "event": "B_delete",
+      "scope": "public",
+      "origin": "network",
+      "admitted_at_us": 160000000,
+      "received_at_us": 160000000,
+      "endpoint": "R_public",
+      "valid": true
+    },
+    {
+      "step": 14,
+      "event": "B_note",
+      "scope": "public",
+      "origin": "network",
+      "admitted_at_us": 170000000,
+      "received_at_us": 170000000,
+      "endpoint": "R_public",
+      "valid": true
+    },
+    {
+      "step": 15,
+      "event": "A_expiring",
+      "scope": "public",
+      "origin": "network",
+      "admitted_at_us": 180000000,
+      "received_at_us": 180000000,
+      "endpoint": "R_public",
+      "valid": true
+    },
+    {
+      "step": 16,
+      "event": "C_tie_a",
+      "scope": "public",
+      "origin": "network",
+      "admitted_at_us": 190000000,
+      "received_at_us": 190000000,
+      "endpoint": "R_public",
+      "valid": true
+    },
+    {
+      "step": 17,
+      "event": "C_tie_b",
+      "scope": "public",
+      "origin": "network",
+      "admitted_at_us": 200000000,
+      "received_at_us": 200000000,
+      "endpoint": "R_public",
+      "valid": true
+    },
+    {
+      "step": 18,
+      "event": "A_public_delete",
+      "scope": "public",
+      "origin": "network",
+      "admitted_at_us": 210000000,
+      "received_at_us": 210000000,
+      "endpoint": "R_public",
+      "valid": true
+    },
+    {
+      "step": 19,
+      "event": "E_public",
+      "scope": "public",
+      "origin": "network",
+      "admitted_at_us": 220000000,
+      "received_at_us": 22000000,
+      "endpoint": "R_second",
+      "valid": true
+    },
+    {
+      "step": 20,
+      "event": "E_public",
+      "scope": "public",
+      "origin": "network",
+      "admitted_at_us": 230000000,
+      "received_at_us": 1000000,
+      "endpoint": "R_public",
+      "valid": false
+    }
+  ],
+  "expected_queries": [
+    {
+      "name": "private-first-is-not-public",
+      "after_step": 1,
+      "visibility": [
+        "public"
+      ],
+      "now_nostr_seconds": 249,
+      "event_labels": [],
+      "event_ids": [],
+      "graph_edges": [],
+      "graph_pubkeys": []
+    },
+    {
+      "name": "public-representative",
+      "after_step": 2,
+      "visibility": [
+        "public"
+      ],
+      "now_nostr_seconds": 249,
+      "event_labels": [
+        "E_public"
+      ],
+      "event_ids": [
+        "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb"
+      ],
+      "graph_edges": [],
+      "graph_pubkeys": []
+    },
+    {
+      "name": "late-earlier-correction",
+      "after_step": 4,
+      "visibility": [
+        "public"
+      ],
+      "now_nostr_seconds": 249,
+      "event_labels": [
+        "E_public"
+      ],
+      "event_ids": [
+        "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb"
+      ],
+      "graph_edges": [],
+      "graph_pubkeys": []
+    },
+    {
+      "name": "import-only",
+      "after_step": 5,
+      "visibility": [
+        "public"
+      ],
+      "now_nostr_seconds": 249,
+      "event_labels": [
+        "E_public",
+        "I"
+      ],
+      "event_ids": [
+        "8a0096a3a84f1460c11a432355666cb9fd377cca00a5a1e08ef0071c9c0b9849",
+        "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb"
+      ],
+      "graph_edges": [],
+      "graph_pubkeys": []
+    },
+    {
+      "name": "import-then-network",
+      "after_step": 6,
+      "visibility": [
+        "public"
+      ],
+      "now_nostr_seconds": 249,
+      "event_labels": [
+        "E_public",
+        "I"
+      ],
+      "event_ids": [
+        "8a0096a3a84f1460c11a432355666cb9fd377cca00a5a1e08ef0071c9c0b9849",
+        "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb"
+      ],
+      "graph_edges": [],
+      "graph_pubkeys": []
+    },
+    {
+      "name": "private-newer-and-private-delete-do-not-suppress-public",
+      "after_step": 9,
+      "visibility": [
+        "public"
+      ],
+      "now_nostr_seconds": 249,
+      "event_labels": [
+        "E_public",
+        "I",
+        "A_old"
+      ],
+      "event_ids": [
+        "8a0096a3a84f1460c11a432355666cb9fd377cca00a5a1e08ef0071c9c0b9849",
+        "8f5101b5fa31ca65fe30b8fd18f922ad051868605f7203941f8d3ce545fd5eca",
+        "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb"
+      ],
+      "graph_edges": [],
+      "graph_pubkeys": []
+    },
+    {
+      "name": "duplicate-tags-distinct-logical-edges",
+      "after_step": 11,
+      "visibility": [
+        "public"
+      ],
+      "now_nostr_seconds": 249,
+      "event_labels": [
+        "E_public",
+        "I",
+        "A_old",
+        "A_follows",
+        "B_follows"
+      ],
+      "event_ids": [
+        "8a0096a3a84f1460c11a432355666cb9fd377cca00a5a1e08ef0071c9c0b9849",
+        "8f5101b5fa31ca65fe30b8fd18f922ad051868605f7203941f8d3ce545fd5eca",
+        "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+        "ab6bb07fd687beb1e9a9e249da5edb150a706cac718ca5b832a73816a9629fd0",
+        "f73e707ceb6bd46bf7144dd52252f6590dfe090e4f63568e68b6e759253d97e8"
+      ],
+      "graph_edges": [
+        [
+          "A",
+          "B"
+        ],
+        [
+          "A",
+          "C"
+        ],
+        [
+          "B",
+          "C"
+        ]
+      ],
+      "graph_pubkeys": [
+        [
+          "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+          "c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5"
+        ],
+        [
+          "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+          "f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9"
+        ],
+        [
+          "c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+          "f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9"
+        ]
+      ]
+    },
+    {
+      "name": "empty-winner-removes-old-edges",
+      "after_step": 12,
+      "visibility": [
+        "public"
+      ],
+      "now_nostr_seconds": 249,
+      "event_labels": [
+        "E_public",
+        "I",
+        "A_old",
+        "A_empty",
+        "B_follows"
+      ],
+      "event_ids": [
+        "663a346ad02c94c679d401f46ae014381ce858c5c55ce301600e3e0dfa9eef40",
+        "8a0096a3a84f1460c11a432355666cb9fd377cca00a5a1e08ef0071c9c0b9849",
+        "8f5101b5fa31ca65fe30b8fd18f922ad051868605f7203941f8d3ce545fd5eca",
+        "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+        "ab6bb07fd687beb1e9a9e249da5edb150a706cac718ca5b832a73816a9629fd0"
+      ],
+      "graph_edges": [
+        [
+          "B",
+          "C"
+        ]
+      ],
+      "graph_pubkeys": [
+        [
+          "c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+          "f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9"
+        ]
+      ]
+    },
+    {
+      "name": "unknown-deletion-target",
+      "after_step": 13,
+      "visibility": [
+        "public"
+      ],
+      "now_nostr_seconds": 249,
+      "event_labels": [
+        "E_public",
+        "I",
+        "A_old",
+        "A_empty",
+        "B_follows",
+        "B_delete"
+      ],
+      "event_ids": [
+        "663a346ad02c94c679d401f46ae014381ce858c5c55ce301600e3e0dfa9eef40",
+        "82663c0cfc0fd10912d04826571e26d809edb2cbb659f677659dd9c7959a2e3b",
+        "8a0096a3a84f1460c11a432355666cb9fd377cca00a5a1e08ef0071c9c0b9849",
+        "8f5101b5fa31ca65fe30b8fd18f922ad051868605f7203941f8d3ce545fd5eca",
+        "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+        "ab6bb07fd687beb1e9a9e249da5edb150a706cac718ca5b832a73816a9629fd0"
+      ],
+      "graph_edges": [
+        [
+          "B",
+          "C"
+        ]
+      ],
+      "graph_pubkeys": [
+        [
+          "c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+          "f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9"
+        ]
+      ]
+    },
+    {
+      "name": "later-target-stays-suppressed",
+      "after_step": 14,
+      "visibility": [
+        "public"
+      ],
+      "now_nostr_seconds": 249,
+      "event_labels": [
+        "E_public",
+        "I",
+        "A_old",
+        "A_empty",
+        "B_follows",
+        "B_delete"
+      ],
+      "event_ids": [
+        "663a346ad02c94c679d401f46ae014381ce858c5c55ce301600e3e0dfa9eef40",
+        "82663c0cfc0fd10912d04826571e26d809edb2cbb659f677659dd9c7959a2e3b",
+        "8a0096a3a84f1460c11a432355666cb9fd377cca00a5a1e08ef0071c9c0b9849",
+        "8f5101b5fa31ca65fe30b8fd18f922ad051868605f7203941f8d3ce545fd5eca",
+        "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+        "ab6bb07fd687beb1e9a9e249da5edb150a706cac718ca5b832a73816a9629fd0"
+      ],
+      "graph_edges": [
+        [
+          "B",
+          "C"
+        ]
+      ],
+      "graph_pubkeys": [
+        [
+          "c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+          "f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9"
+        ]
+      ]
+    },
+    {
+      "name": "before-expiry",
+      "after_step": 15,
+      "visibility": [
+        "public"
+      ],
+      "now_nostr_seconds": 249,
+      "event_labels": [
+        "E_public",
+        "I",
+        "A_expiring",
+        "A_empty",
+        "B_follows",
+        "B_delete"
+      ],
+      "event_ids": [
+        "663a346ad02c94c679d401f46ae014381ce858c5c55ce301600e3e0dfa9eef40",
+        "82663c0cfc0fd10912d04826571e26d809edb2cbb659f677659dd9c7959a2e3b",
+        "8a0096a3a84f1460c11a432355666cb9fd377cca00a5a1e08ef0071c9c0b9849",
+        "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+        "ab6bb07fd687beb1e9a9e249da5edb150a706cac718ca5b832a73816a9629fd0",
+        "af95a8529130fa356032dfdab5f54c25d5b17aeb9b9c466d1c23360f79f57d2e"
+      ],
+      "graph_edges": [
+        [
+          "B",
+          "C"
+        ]
+      ],
+      "graph_pubkeys": [
+        [
+          "c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+          "f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9"
+        ]
+      ]
+    },
+    {
+      "name": "expired-winner-does-not-resurrect-old",
+      "after_step": 15,
+      "visibility": [
+        "public"
+      ],
+      "now_nostr_seconds": 250,
+      "event_labels": [
+        "E_public",
+        "I",
+        "A_empty",
+        "B_follows",
+        "B_delete"
+      ],
+      "event_ids": [
+        "663a346ad02c94c679d401f46ae014381ce858c5c55ce301600e3e0dfa9eef40",
+        "82663c0cfc0fd10912d04826571e26d809edb2cbb659f677659dd9c7959a2e3b",
+        "8a0096a3a84f1460c11a432355666cb9fd377cca00a5a1e08ef0071c9c0b9849",
+        "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+        "ab6bb07fd687beb1e9a9e249da5edb150a706cac718ca5b832a73816a9629fd0"
+      ],
+      "graph_edges": [
+        [
+          "B",
+          "C"
+        ]
+      ],
+      "graph_pubkeys": [
+        [
+          "c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+          "f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9"
+        ]
+      ]
+    },
+    {
+      "name": "tie-uses-smallest-event-id",
+      "after_step": 17,
+      "visibility": [
+        "public"
+      ],
+      "now_nostr_seconds": 249,
+      "event_labels": [
+        "E_public",
+        "I",
+        "A_expiring",
+        "A_empty",
+        "B_follows",
+        "B_delete",
+        "C_tie_b"
+      ],
+      "event_ids": [
+        "3120547e1a7ce23dfe681dadf42e86a0d24bd691e0dc41a0cb6cf0b2608f36e6",
+        "663a346ad02c94c679d401f46ae014381ce858c5c55ce301600e3e0dfa9eef40",
+        "82663c0cfc0fd10912d04826571e26d809edb2cbb659f677659dd9c7959a2e3b",
+        "8a0096a3a84f1460c11a432355666cb9fd377cca00a5a1e08ef0071c9c0b9849",
+        "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+        "ab6bb07fd687beb1e9a9e249da5edb150a706cac718ca5b832a73816a9629fd0",
+        "af95a8529130fa356032dfdab5f54c25d5b17aeb9b9c466d1c23360f79f57d2e"
+      ],
+      "graph_edges": [
+        [
+          "B",
+          "C"
+        ]
+      ],
+      "graph_pubkeys": [
+        [
+          "c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+          "f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9"
+        ]
+      ]
+    },
+    {
+      "name": "final-before-expiry",
+      "after_step": 20,
+      "visibility": [
+        "public"
+      ],
+      "now_nostr_seconds": 249,
+      "event_labels": [
+        "E_public",
+        "I",
+        "A_expiring",
+        "A_empty",
+        "B_follows",
+        "B_delete",
+        "C_tie_b",
+        "A_public_delete"
+      ],
+      "event_ids": [
+        "3120547e1a7ce23dfe681dadf42e86a0d24bd691e0dc41a0cb6cf0b2608f36e6",
+        "603fd3078e0f87d5c8c80d3ebe2cfdc03a922f0318189a93e7e84f2eddecfd68",
+        "663a346ad02c94c679d401f46ae014381ce858c5c55ce301600e3e0dfa9eef40",
+        "82663c0cfc0fd10912d04826571e26d809edb2cbb659f677659dd9c7959a2e3b",
+        "8a0096a3a84f1460c11a432355666cb9fd377cca00a5a1e08ef0071c9c0b9849",
+        "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+        "ab6bb07fd687beb1e9a9e249da5edb150a706cac718ca5b832a73816a9629fd0",
+        "af95a8529130fa356032dfdab5f54c25d5b17aeb9b9c466d1c23360f79f57d2e"
+      ],
+      "graph_edges": [
+        [
+          "B",
+          "C"
+        ]
+      ],
+      "graph_pubkeys": [
+        [
+          "c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+          "f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9"
+        ]
+      ]
+    },
+    {
+      "name": "final-after-expiry",
+      "after_step": 20,
+      "visibility": [
+        "public"
+      ],
+      "now_nostr_seconds": 250,
+      "event_labels": [
+        "E_public",
+        "I",
+        "A_empty",
+        "B_follows",
+        "B_delete",
+        "C_tie_b",
+        "A_public_delete"
+      ],
+      "event_ids": [
+        "3120547e1a7ce23dfe681dadf42e86a0d24bd691e0dc41a0cb6cf0b2608f36e6",
+        "603fd3078e0f87d5c8c80d3ebe2cfdc03a922f0318189a93e7e84f2eddecfd68",
+        "663a346ad02c94c679d401f46ae014381ce858c5c55ce301600e3e0dfa9eef40",
+        "82663c0cfc0fd10912d04826571e26d809edb2cbb659f677659dd9c7959a2e3b",
+        "8a0096a3a84f1460c11a432355666cb9fd377cca00a5a1e08ef0071c9c0b9849",
+        "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+        "ab6bb07fd687beb1e9a9e249da5edb150a706cac718ca5b832a73816a9629fd0"
+      ],
+      "graph_edges": [
+        [
+          "B",
+          "C"
+        ]
+      ],
+      "graph_pubkeys": [
+        [
+          "c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
+          "f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9"
+        ]
+      ]
+    }
+  ],
+  "dictionaries": {
+    "dataset_id": "11111111111111111111111111111111",
+    "allocation_domain": "22222222222222222222222222222222",
+    "bootstrap_by_provenance": {
+      "false": [
+        {
+          "source_record_id": [
+            "11111111111111111111111111111111",
+            0,
+            1,
+            1
+          ],
+          "qualified_ref": [
+            "11111111111111111111111111111111",
+            4,
+            "22222222222222222222222222222222",
+            1
+          ],
+          "visibility": "public",
+          "normalization_version": 1,
+          "value": {
+            "label": "public"
+          }
+        },
+        {
+          "source_record_id": [
+            "11111111111111111111111111111111",
+            0,
+            1,
+            2
+          ],
+          "qualified_ref": [
+            "11111111111111111111111111111111",
+            4,
+            "22222222222222222222222222222222",
+            2
+          ],
+          "visibility": "private",
+          "normalization_version": 1,
+          "value": {
+            "label": "private"
+          }
+        },
+        {
+          "source_record_id": [
+            "11111111111111111111111111111111",
+            0,
+            1,
+            3
+          ],
+          "qualified_ref": [
+            "11111111111111111111111111111111",
+            2,
+            "22222222222222222222222222222222",
+            1
+          ],
+          "visibility": "public",
+          "normalization_version": 1,
+          "value": {
+            "label": "fixture-observer",
+            "clock_resolution_us": 1
+          }
+        },
+        {
+          "source_record_id": [
+            "11111111111111111111111111111111",
+            0,
+            1,
+            4
+          ],
+          "qualified_ref": [
+            "11111111111111111111111111111111",
+            9,
+            "22222222222222222222222222222222",
+            1
+          ],
+          "visibility": "public",
+          "normalization_version": 1,
+          "value": {
+            "source_dataset": "33333333333333333333333333333333",
+            "artifact_sha256": "ca6a729df13e5af29d9929c568366e415e042919df349e23b3b5fbd0c03e6efd"
+          }
+        },
+        {
+          "source_record_id": [
+            "11111111111111111111111111111111",
+            0,
+            1,
+            5
+          ],
+          "qualified_ref": [
+            "11111111111111111111111111111111",
+            8,
+            "22222222222222222222222222222222",
+            1
+          ],
+          "visibility": "private",
+          "normalization_version": 1,
+          "value": {
+            "event_id": "3120547e1a7ce23dfe681dadf42e86a0d24bd691e0dc41a0cb6cf0b2608f36e6"
+          }
+        },
+        {
+          "source_record_id": [
+            "11111111111111111111111111111111",
+            0,
+            1,
+            6
+          ],
+          "qualified_ref": [
+            "11111111111111111111111111111111",
+            8,
+            "22222222222222222222222222222222",
+            2
+          ],
+          "visibility": "private",
+          "normalization_version": 1,
+          "value": {
+            "event_id": "57b20f44c0095dfc789765ed38caa8dd54ae37635dab32237c563146c8865b02"
+          }
+        },
+        {
+          "source_record_id": [
+            "11111111111111111111111111111111",
+            0,
+            1,
+            7
+          ],
+          "qualified_ref": [
+            "11111111111111111111111111111111",
+            8,
+            "22222222222222222222222222222222",
+            3
+          ],
+          "visibility": "private",
+          "normalization_version": 1,
+          "value": {
+            "event_id": "603fd3078e0f87d5c8c80d3ebe2cfdc03a922f0318189a93e7e84f2eddecfd68"
+          }
+        },
+        {
+          "source_record_id": [
+            "11111111111111111111111111111111",
+            0,
+            1,
+            8
+          ],
+          "qualified_ref": [
+            "11111111111111111111111111111111",
+            8,
+            "22222222222222222222222222222222",
+            4
+          ],
+          "visibility": "private",
+          "normalization_version": 1,
+          "value": {
+            "event_id": "663a346ad02c94c679d401f46ae014381ce858c5c55ce301600e3e0dfa9eef40"
+          }
+        },
+        {
+          "source_record_id": [
+            "11111111111111111111111111111111",
+            0,
+            1,
+            9
+          ],
+          "qualified_ref": [
+            "11111111111111111111111111111111",
+            8,
+            "22222222222222222222222222222222",
+            5
+          ],
+          "visibility": "private",
+          "normalization_version": 1,
+          "value": {
+            "event_id": "82663c0cfc0fd10912d04826571e26d809edb2cbb659f677659dd9c7959a2e3b"
+          }
+        },
+        {
+          "source_record_id": [
+            "11111111111111111111111111111111",
+            0,
+            1,
+            10
+          ],
+          "qualified_ref": [
+            "11111111111111111111111111111111",
+            8,
+            "22222222222222222222222222222222",
+            6
+          ],
+          "visibility": "private",
+          "normalization_version": 1,
+          "value": {
+            "event_id": "8a0096a3a84f1460c11a432355666cb9fd377cca00a5a1e08ef0071c9c0b9849"
+          }
+        },
+        {
+          "source_record_id": [
+            "11111111111111111111111111111111",
+            0,
+            1,
+            11
+          ],
+          "qualified_ref": [
+            "11111111111111111111111111111111",
+            8,
+            "22222222222222222222222222222222",
+            7
+          ],
+          "visibility": "private",
+          "normalization_version": 1,
+          "value": {
+            "event_id": "8f5101b5fa31ca65fe30b8fd18f922ad051868605f7203941f8d3ce545fd5eca"
+          }
+        },
+        {
+          "source_record_id": [
+            "11111111111111111111111111111111",
+            0,
+            1,
+            12
+          ],
+          "qualified_ref": [
+            "11111111111111111111111111111111",
+            8,
+            "22222222222222222222222222222222",
+            8
+          ],
+          "visibility": "private",
+          "normalization_version": 1,
+          "value": {
+            "event_id": "93285d1794c003058739b3e704e2d59cab399c7480c9c8612195d943d907c697"
+          }
+        },
+        {
+          "source_record_id": [
+            "11111111111111111111111111111111",
+            0,
+            1,
+            13
+          ],
+          "qualified_ref": [
+            "11111111111111111111111111111111",
+            8,
+            "22222222222222222222222222222222",
+            9
+          ],
+          "visibility": "private",
+          "normalization_version": 1,
+          "value": {
+            "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb"
+          }
+        },
+        {
+          "source_record_id": [
+            "11111111111111111111111111111111",
+            0,
+            1,
+            14
+          ],
+          "qualified_ref": [
+            "11111111111111111111111111111111",
+            8,
+            "22222222222222222222222222222222",
+            10
+          ],
+          "visibility": "private",
+          "normalization_version": 1,
+          "value": {
+            "event_id": "ab6bb07fd687beb1e9a9e249da5edb150a706cac718ca5b832a73816a9629fd0"
+          }
+        },
+        {
+          "source_record_id": [
+            "11111111111111111111111111111111",
+            0,
+            1,
+            15
+          ],
+          "qualified_ref": [
+            "11111111111111111111111111111111",
+            8,
+            "22222222222222222222222222222222",
+            11
+          ],
+          "visibility": "private",
+          "normalization_version": 1,
+          "value": {
+            "event_id": "af95a8529130fa356032dfdab5f54c25d5b17aeb9b9c466d1c23360f79f57d2e"
+          }
+        },
+        {
+          "source_record_id": [
+            "11111111111111111111111111111111",
+            0,
+            1,
+            16
+          ],
+          "qualified_ref": [
+            "11111111111111111111111111111111",
+            8,
+            "22222222222222222222222222222222",
+            12
+          ],
+          "visibility": "private",
+          "normalization_version": 1,
+          "value": {
+            "event_id": "e923c22f9a2e55db78cf054344a146836317f991cad0a2abedca008bb9e93af4"
+          }
+        },
+        {
+          "source_record_id": [
+            "11111111111111111111111111111111",
+            0,
+            1,
+            17
+          ],
+          "qualified_ref": [
+            "11111111111111111111111111111111",
+            8,
+            "22222222222222222222222222222222",
+            13
+          ],
+          "visibility": "private",
+          "normalization_version": 1,
+          "value": {
+            "event_id": "f13b28478effc176c522447296d6cb5692be98069e90de5cc1c15a4f91eaf0bb"
+          }
+        },
+        {
+          "source_record_id": [
+            "11111111111111111111111111111111",
+            0,
+            1,
+            18
+          ],
+          "qualified_ref": [
+            "11111111111111111111111111111111",
+            8,
+            "22222222222222222222222222222222",
+            14
+          ],
+          "visibility": "private",
+          "normalization_version": 1,
+          "value": {
+            "event_id": "f73e707ceb6bd46bf7144dd52252f6590dfe090e4f63568e68b6e759253d97e8"
+          }
+        }
+      ],
+      "true": [
+        {
+          "source_record_id": [
+            "11111111111111111111111111111111",
+            0,
+            1,
+            1
+          ],
+          "qualified_ref": [
+            "11111111111111111111111111111111",
+            4,
+            "22222222222222222222222222222222",
+            1
+          ],
+          "visibility": "public",
+          "normalization_version": 1,
+          "value": {
+            "label": "public"
+          }
+        },
+        {
+          "source_record_id": [
+            "11111111111111111111111111111111",
+            0,
+            1,
+            2
+          ],
+          "qualified_ref": [
+            "11111111111111111111111111111111",
+            4,
+            "22222222222222222222222222222222",
+            2
+          ],
+          "visibility": "private",
+          "normalization_version": 1,
+          "value": {
+            "label": "private"
+          }
+        },
+        {
+          "source_record_id": [
+            "11111111111111111111111111111111",
+            0,
+            1,
+            3
+          ],
+          "qualified_ref": [
+            "11111111111111111111111111111111",
+            2,
+            "22222222222222222222222222222222",
+            1
+          ],
+          "visibility": "public",
+          "normalization_version": 1,
+          "value": {
+            "label": "fixture-observer",
+            "clock_resolution_us": 1
+          }
+        },
+        {
+          "source_record_id": [
+            "11111111111111111111111111111111",
+            0,
+            1,
+            4
+          ],
+          "qualified_ref": [
+            "11111111111111111111111111111111",
+            9,
+            "22222222222222222222222222222222",
+            1
+          ],
+          "visibility": "public",
+          "normalization_version": 1,
+          "value": {
+            "source_dataset": "33333333333333333333333333333333",
+            "artifact_sha256": "ca6a729df13e5af29d9929c568366e415e042919df349e23b3b5fbd0c03e6efd"
+          }
+        },
+        {
+          "source_record_id": [
+            "11111111111111111111111111111111",
+            0,
+            1,
+            5
+          ],
+          "qualified_ref": [
+            "11111111111111111111111111111111",
+            8,
+            "22222222222222222222222222222222",
+            1
+          ],
+          "visibility": "private",
+          "normalization_version": 1,
+          "value": {
+            "event_id": "3120547e1a7ce23dfe681dadf42e86a0d24bd691e0dc41a0cb6cf0b2608f36e6"
+          }
+        },
+        {
+          "source_record_id": [
+            "11111111111111111111111111111111",
+            0,
+            1,
+            6
+          ],
+          "qualified_ref": [
+            "11111111111111111111111111111111",
+            8,
+            "22222222222222222222222222222222",
+            2
+          ],
+          "visibility": "private",
+          "normalization_version": 1,
+          "value": {
+            "event_id": "57b20f44c0095dfc789765ed38caa8dd54ae37635dab32237c563146c8865b02"
+          }
+        },
+        {
+          "source_record_id": [
+            "11111111111111111111111111111111",
+            0,
+            1,
+            7
+          ],
+          "qualified_ref": [
+            "11111111111111111111111111111111",
+            8,
+            "22222222222222222222222222222222",
+            3
+          ],
+          "visibility": "private",
+          "normalization_version": 1,
+          "value": {
+            "event_id": "603fd3078e0f87d5c8c80d3ebe2cfdc03a922f0318189a93e7e84f2eddecfd68"
+          }
+        },
+        {
+          "source_record_id": [
+            "11111111111111111111111111111111",
+            0,
+            1,
+            8
+          ],
+          "qualified_ref": [
+            "11111111111111111111111111111111",
+            8,
+            "22222222222222222222222222222222",
+            4
+          ],
+          "visibility": "private",
+          "normalization_version": 1,
+          "value": {
+            "event_id": "663a346ad02c94c679d401f46ae014381ce858c5c55ce301600e3e0dfa9eef40"
+          }
+        },
+        {
+          "source_record_id": [
+            "11111111111111111111111111111111",
+            0,
+            1,
+            9
+          ],
+          "qualified_ref": [
+            "11111111111111111111111111111111",
+            8,
+            "22222222222222222222222222222222",
+            5
+          ],
+          "visibility": "private",
+          "normalization_version": 1,
+          "value": {
+            "event_id": "82663c0cfc0fd10912d04826571e26d809edb2cbb659f677659dd9c7959a2e3b"
+          }
+        },
+        {
+          "source_record_id": [
+            "11111111111111111111111111111111",
+            0,
+            1,
+            10
+          ],
+          "qualified_ref": [
+            "11111111111111111111111111111111",
+            8,
+            "22222222222222222222222222222222",
+            6
+          ],
+          "visibility": "private",
+          "normalization_version": 1,
+          "value": {
+            "event_id": "8a0096a3a84f1460c11a432355666cb9fd377cca00a5a1e08ef0071c9c0b9849"
+          }
+        },
+        {
+          "source_record_id": [
+            "11111111111111111111111111111111",
+            0,
+            1,
+            11
+          ],
+          "qualified_ref": [
+            "11111111111111111111111111111111",
+            8,
+            "22222222222222222222222222222222",
+            7
+          ],
+          "visibility": "private",
+          "normalization_version": 1,
+          "value": {
+            "event_id": "8f5101b5fa31ca65fe30b8fd18f922ad051868605f7203941f8d3ce545fd5eca"
+          }
+        },
+        {
+          "source_record_id": [
+            "11111111111111111111111111111111",
+            0,
+            1,
+            12
+          ],
+          "qualified_ref": [
+            "11111111111111111111111111111111",
+            8,
+            "22222222222222222222222222222222",
+            8
+          ],
+          "visibility": "private",
+          "normalization_version": 1,
+          "value": {
+            "event_id": "93285d1794c003058739b3e704e2d59cab399c7480c9c8612195d943d907c697"
+          }
+        },
+        {
+          "source_record_id": [
+            "11111111111111111111111111111111",
+            0,
+            1,
+            13
+          ],
+          "qualified_ref": [
+            "11111111111111111111111111111111",
+            8,
+            "22222222222222222222222222222222",
+            9
+          ],
+          "visibility": "private",
+          "normalization_version": 1,
+          "value": {
+            "event_id": "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb"
+          }
+        },
+        {
+          "source_record_id": [
+            "11111111111111111111111111111111",
+            0,
+            1,
+            14
+          ],
+          "qualified_ref": [
+            "11111111111111111111111111111111",
+            8,
+            "22222222222222222222222222222222",
+            10
+          ],
+          "visibility": "private",
+          "normalization_version": 1,
+          "value": {
+            "event_id": "ab6bb07fd687beb1e9a9e249da5edb150a706cac718ca5b832a73816a9629fd0"
+          }
+        },
+        {
+          "source_record_id": [
+            "11111111111111111111111111111111",
+            0,
+            1,
+            15
+          ],
+          "qualified_ref": [
+            "11111111111111111111111111111111",
+            8,
+            "22222222222222222222222222222222",
+            11
+          ],
+          "visibility": "private",
+          "normalization_version": 1,
+          "value": {
+            "event_id": "af95a8529130fa356032dfdab5f54c25d5b17aeb9b9c466d1c23360f79f57d2e"
+          }
+        },
+        {
+          "source_record_id": [
+            "11111111111111111111111111111111",
+            0,
+            1,
+            16
+          ],
+          "qualified_ref": [
+            "11111111111111111111111111111111",
+            8,
+            "22222222222222222222222222222222",
+            12
+          ],
+          "visibility": "private",
+          "normalization_version": 1,
+          "value": {
+            "event_id": "e923c22f9a2e55db78cf054344a146836317f991cad0a2abedca008bb9e93af4"
+          }
+        },
+        {
+          "source_record_id": [
+            "11111111111111111111111111111111",
+            0,
+            1,
+            17
+          ],
+          "qualified_ref": [
+            "11111111111111111111111111111111",
+            8,
+            "22222222222222222222222222222222",
+            13
+          ],
+          "visibility": "private",
+          "normalization_version": 1,
+          "value": {
+            "event_id": "f13b28478effc176c522447296d6cb5692be98069e90de5cc1c15a4f91eaf0bb"
+          }
+        },
+        {
+          "source_record_id": [
+            "11111111111111111111111111111111",
+            0,
+            1,
+            18
+          ],
+          "qualified_ref": [
+            "11111111111111111111111111111111",
+            8,
+            "22222222222222222222222222222222",
+            14
+          ],
+          "visibility": "private",
+          "normalization_version": 1,
+          "value": {
+            "event_id": "f73e707ceb6bd46bf7144dd52252f6590dfe090e4f63568e68b6e759253d97e8"
+          }
+        },
+        {
+          "source_record_id": [
+            "11111111111111111111111111111111",
+            0,
+            1,
+            19
+          ],
+          "qualified_ref": [
+            "11111111111111111111111111111111",
+            1,
+            "22222222222222222222222222222222",
+            1
+          ],
+          "visibility": "public",
+          "normalization_version": 1,
+          "value": {
+            "label": "R_public",
+            "normalized_url": "wss://public.example"
+          }
+        },
+        {
+          "source_record_id": [
+            "11111111111111111111111111111111",
+            0,
+            1,
+            20
+          ],
+          "qualified_ref": [
+            "11111111111111111111111111111111",
+            1,
+            "22222222222222222222222222222222",
+            2
+          ],
+          "visibility": "private",
+          "normalization_version": 1,
+          "value": {
+            "label": "R_private",
+            "normalized_url": "wss://private.example"
+          }
+        },
+        {
+          "source_record_id": [
+            "11111111111111111111111111111111",
+            0,
+            1,
+            21
+          ],
+          "qualified_ref": [
+            "11111111111111111111111111111111",
+            1,
+            "22222222222222222222222222222222",
+            3
+          ],
+          "visibility": "public",
+          "normalization_version": 1,
+          "value": {
+            "label": "R_second",
+            "normalized_url": "wss://second.example"
+          }
+        },
+        {
+          "source_record_id": [
+            "11111111111111111111111111111111",
+            0,
+            1,
+            22
+          ],
+          "qualified_ref": [
+            "11111111111111111111111111111111",
+            3,
+            "22222222222222222222222222222222",
+            1
+          ],
+          "visibility": "public",
+          "normalization_version": 1,
+          "value": {
+            "label": "public-access"
+          }
+        },
+        {
+          "source_record_id": [
+            "11111111111111111111111111111111",
+            0,
+            1,
+            23
+          ],
+          "qualified_ref": [
+            "11111111111111111111111111111111",
+            3,
+            "22222222222222222222222222222222",
+            2
+          ],
+          "visibility": "private",
+          "normalization_version": 1,
+          "value": {
+            "label": "private-access"
+          }
+        },
+        {
+          "source_record_id": [
+            "11111111111111111111111111111111",
+            0,
+            1,
+            24
+          ],
+          "qualified_ref": [
+            "11111111111111111111111111111111",
+            5,
+            "22222222222222222222222222222222",
+            1
+          ],
+          "visibility": "public",
+          "normalization_version": 1,
+          "value": {
+            "label": "nip01-bip340-full-verification",
+            "version": 1
+          }
+        }
+      ]
+    },
+    "bootstrap": "Commit the enumerated mappings first in shard0/epoch1, then append event facts in that same stream; producer is authorized for these fixture scopes. Disabled provenance has no endpoint/access/method witness dictionaries."
+  },
+  "expected_history_exports": {
+    "public_labels": [
+      "E_public",
+      "I",
+      "A_old",
+      "A_follows",
+      "B_follows",
+      "A_empty",
+      "B_delete",
+      "B_note",
+      "A_expiring",
+      "C_tie_a",
+      "C_tie_b",
+      "A_public_delete"
+    ],
+    "private_labels": [
+      "E_private",
+      "A_private_new",
+      "A_private_delete"
+    ],
+    "public_event_ids": [
+      "3120547e1a7ce23dfe681dadf42e86a0d24bd691e0dc41a0cb6cf0b2608f36e6",
+      "57b20f44c0095dfc789765ed38caa8dd54ae37635dab32237c563146c8865b02",
+      "603fd3078e0f87d5c8c80d3ebe2cfdc03a922f0318189a93e7e84f2eddecfd68",
+      "663a346ad02c94c679d401f46ae014381ce858c5c55ce301600e3e0dfa9eef40",
+      "82663c0cfc0fd10912d04826571e26d809edb2cbb659f677659dd9c7959a2e3b",
+      "8a0096a3a84f1460c11a432355666cb9fd377cca00a5a1e08ef0071c9c0b9849",
+      "8f5101b5fa31ca65fe30b8fd18f922ad051868605f7203941f8d3ce545fd5eca",
+      "93285d1794c003058739b3e704e2d59cab399c7480c9c8612195d943d907c697",
+      "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+      "ab6bb07fd687beb1e9a9e249da5edb150a706cac718ca5b832a73816a9629fd0",
+      "af95a8529130fa356032dfdab5f54c25d5b17aeb9b9c466d1c23360f79f57d2e",
+      "f73e707ceb6bd46bf7144dd52252f6590dfe090e4f63568e68b6e759253d97e8"
+    ],
+    "private_event_ids": [
+      "a669974f5d6f76e4668b0be874435f14be799c04f0e70e5ec3d0967f1babf6bb",
+      "e923c22f9a2e55db78cf054344a146836317f991cad0a2abedca008bb9e93af4",
+      "f13b28478effc176c522447296d6cb5692be98069e90de5cc1c15a4f91eaf0bb"
+    ],
+    "public_E_signature": "9444d1fab8095f14d43137f841a400f0648cd614515f53bb5545749e373056381ce2963d43fdb5d10d9294846da6fc895d1fdfaf3417399a5c2699414877c180",
+    "private_E_signature": "f455e992a8359238a5583f91843be3c4fd0847574162222afdd8dc0aee67f5fab742f6eaf378cae2d66ce268f7b86698b4912579c534d568c6f53adf4cc90c85",
+    "forbidden_public_metadata": [
+      "private first admission time 10000000",
+      "E_private signature",
+      "R_private endpoint/descriptor",
+      "original E body fact envelope/ordinal"
+    ]
+  },
+  "expected_metadata": {
+    "E_public_first_eligible_us": 20000000,
+    "E_public_first_receive_at_step2_us": 20000000,
+    "E_public_first_receive_at_step4_us": 15000000,
+    "E_private_first_receive_us": 10000000,
+    "I_first_eligible_us": 45000000,
+    "I_receive_at_step5": null,
+    "I_receive_at_step6_us": 46000000
+  },
+  "expected_final_graph": {
+    "vertices": [
+      "A",
+      "B",
+      "C"
+    ],
+    "edges": [
+      [
+        "B",
+        "C"
+      ]
+    ],
+    "follow_in_degree": {
+      "A": 0,
+      "B": 0,
+      "C": 1
+    },
+    "max_normalized_in_degree": {
+      "A": "0",
+      "B": "0",
+      "C": "1"
+    },
+    "score_basis": "explicit graph indegree fixture only, not PageRank or a future production trust score"
+  },
+  "expected_E_provenance_when_enabled": [
+    {
+      "scope": "private",
+      "endpoint": "R_private",
+      "first_received_at_us": 10000000
+    },
+    {
+      "scope": "public",
+      "endpoint": "R_public",
+      "first_received_at_us": 15000000
+    },
+    {
+      "scope": "public",
+      "endpoint": "R_second",
+      "first_received_at_us": 22000000
+    }
+  ],
+  "expected_provenance_when_disabled": [],
+  "negative_signature": "Flip byte 0 of E_public.sig at step20; do not alter its event ID or signed fields.",
+  "event_fact_count_after_step": {
+    "false": {
+      "0": 0,
+      "1": 3,
+      "2": 5,
+      "3": 5,
+      "4": 6,
+      "5": 8,
+      "6": 9,
+      "7": 12,
+      "8": 15,
+      "9": 18,
+      "10": 21,
+      "11": 24,
+      "12": 27,
+      "13": 30,
+      "14": 33,
+      "15": 36,
+      "16": 39,
+      "17": 42,
+      "18": 45,
+      "19": 45,
+      "20": 45
+    },
+    "true": {
+      "0": 0,
+      "1": 4,
+      "2": 7,
+      "3": 7,
+      "4": 9,
+      "5": 11,
+      "6": 13,
+      "7": 17,
+      "8": 21,
+      "9": 25,
+      "10": 29,
+      "11": 33,
+      "12": 37,
+      "13": 41,
+      "14": 45,
+      "15": 49,
+      "16": 53,
+      "17": 57,
+      "18": 61,
+      "19": 62,
+      "20": 62
+    }
+  },
+  "complete_source_cuts_after_step": {
+    "false": {
+      "0": [
+        "11111111111111111111111111111111",
+        1,
+        [
+          [
+            0,
+            1,
+            18
+          ]
+        ]
+      ],
+      "1": [
+        "11111111111111111111111111111111",
+        1,
+        [
+          [
+            0,
+            1,
+            21
+          ]
+        ]
+      ],
+      "2": [
+        "11111111111111111111111111111111",
+        1,
+        [
+          [
+            0,
+            1,
+            23
+          ]
+        ]
+      ],
+      "3": [
+        "11111111111111111111111111111111",
+        1,
+        [
+          [
+            0,
+            1,
+            23
+          ]
+        ]
+      ],
+      "4": [
+        "11111111111111111111111111111111",
+        1,
+        [
+          [
+            0,
+            1,
+            24
+          ]
+        ]
+      ],
+      "5": [
+        "11111111111111111111111111111111",
+        1,
+        [
+          [
+            0,
+            1,
+            26
+          ]
+        ]
+      ],
+      "6": [
+        "11111111111111111111111111111111",
+        1,
+        [
+          [
+            0,
+            1,
+            27
+          ]
+        ]
+      ],
+      "7": [
+        "11111111111111111111111111111111",
+        1,
+        [
+          [
+            0,
+            1,
+            30
+          ]
+        ]
+      ],
+      "8": [
+        "11111111111111111111111111111111",
+        1,
+        [
+          [
+            0,
+            1,
+            33
+          ]
+        ]
+      ],
+      "9": [
+        "11111111111111111111111111111111",
+        1,
+        [
+          [
+            0,
+            1,
+            36
+          ]
+        ]
+      ],
+      "10": [
+        "11111111111111111111111111111111",
+        1,
+        [
+          [
+            0,
+            1,
+            39
+          ]
+        ]
+      ],
+      "11": [
+        "11111111111111111111111111111111",
+        1,
+        [
+          [
+            0,
+            1,
+            42
+          ]
+        ]
+      ],
+      "12": [
+        "11111111111111111111111111111111",
+        1,
+        [
+          [
+            0,
+            1,
+            45
+          ]
+        ]
+      ],
+      "13": [
+        "11111111111111111111111111111111",
+        1,
+        [
+          [
+            0,
+            1,
+            48
+          ]
+        ]
+      ],
+      "14": [
+        "11111111111111111111111111111111",
+        1,
+        [
+          [
+            0,
+            1,
+            51
+          ]
+        ]
+      ],
+      "15": [
+        "11111111111111111111111111111111",
+        1,
+        [
+          [
+            0,
+            1,
+            54
+          ]
+        ]
+      ],
+      "16": [
+        "11111111111111111111111111111111",
+        1,
+        [
+          [
+            0,
+            1,
+            57
+          ]
+        ]
+      ],
+      "17": [
+        "11111111111111111111111111111111",
+        1,
+        [
+          [
+            0,
+            1,
+            60
+          ]
+        ]
+      ],
+      "18": [
+        "11111111111111111111111111111111",
+        1,
+        [
+          [
+            0,
+            1,
+            63
+          ]
+        ]
+      ],
+      "19": [
+        "11111111111111111111111111111111",
+        1,
+        [
+          [
+            0,
+            1,
+            63
+          ]
+        ]
+      ],
+      "20": [
+        "11111111111111111111111111111111",
+        1,
+        [
+          [
+            0,
+            1,
+            63
+          ]
+        ]
+      ]
+    },
+    "true": {
+      "0": [
+        "11111111111111111111111111111111",
+        1,
+        [
+          [
+            0,
+            1,
+            24
+          ]
+        ]
+      ],
+      "1": [
+        "11111111111111111111111111111111",
+        1,
+        [
+          [
+            0,
+            1,
+            28
+          ]
+        ]
+      ],
+      "2": [
+        "11111111111111111111111111111111",
+        1,
+        [
+          [
+            0,
+            1,
+            31
+          ]
+        ]
+      ],
+      "3": [
+        "11111111111111111111111111111111",
+        1,
+        [
+          [
+            0,
+            1,
+            31
+          ]
+        ]
+      ],
+      "4": [
+        "11111111111111111111111111111111",
+        1,
+        [
+          [
+            0,
+            1,
+            33
+          ]
+        ]
+      ],
+      "5": [
+        "11111111111111111111111111111111",
+        1,
+        [
+          [
+            0,
+            1,
+            35
+          ]
+        ]
+      ],
+      "6": [
+        "11111111111111111111111111111111",
+        1,
+        [
+          [
+            0,
+            1,
+            37
+          ]
+        ]
+      ],
+      "7": [
+        "11111111111111111111111111111111",
+        1,
+        [
+          [
+            0,
+            1,
+            41
+          ]
+        ]
+      ],
+      "8": [
+        "11111111111111111111111111111111",
+        1,
+        [
+          [
+            0,
+            1,
+            45
+          ]
+        ]
+      ],
+      "9": [
+        "11111111111111111111111111111111",
+        1,
+        [
+          [
+            0,
+            1,
+            49
+          ]
+        ]
+      ],
+      "10": [
+        "11111111111111111111111111111111",
+        1,
+        [
+          [
+            0,
+            1,
+            53
+          ]
+        ]
+      ],
+      "11": [
+        "11111111111111111111111111111111",
+        1,
+        [
+          [
+            0,
+            1,
+            57
+          ]
+        ]
+      ],
+      "12": [
+        "11111111111111111111111111111111",
+        1,
+        [
+          [
+            0,
+            1,
+            61
+          ]
+        ]
+      ],
+      "13": [
+        "11111111111111111111111111111111",
+        1,
+        [
+          [
+            0,
+            1,
+            65
+          ]
+        ]
+      ],
+      "14": [
+        "11111111111111111111111111111111",
+        1,
+        [
+          [
+            0,
+            1,
+            69
+          ]
+        ]
+      ],
+      "15": [
+        "11111111111111111111111111111111",
+        1,
+        [
+          [
+            0,
+            1,
+            73
+          ]
+        ]
+      ],
+      "16": [
+        "11111111111111111111111111111111",
+        1,
+        [
+          [
+            0,
+            1,
+            77
+          ]
+        ]
+      ],
+      "17": [
+        "11111111111111111111111111111111",
+        1,
+        [
+          [
+            0,
+            1,
+            81
+          ]
+        ]
+      ],
+      "18": [
+        "11111111111111111111111111111111",
+        1,
+        [
+          [
+            0,
+            1,
+            85
+          ]
+        ]
+      ],
+      "19": [
+        "11111111111111111111111111111111",
+        1,
+        [
+          [
+            0,
+            1,
+            86
+          ]
+        ]
+      ],
+      "20": [
+        "11111111111111111111111111111111",
+        1,
+        [
+          [
+            0,
+            1,
+            86
+          ]
+        ]
+      ]
+    }
+  }
+}

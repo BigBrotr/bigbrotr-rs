@@ -158,15 +158,16 @@ incremental expiry with a full rebuild at the same temporal/source basis.
 `tests/fixtures/analytics/current_state.json`;
 `tests/acceptance/cases/current_state.py`.
 
-**Boundary:** complete verified events at a cut produce independent
+**Boundary:** complete verified events at a cut within a named authorized visibility domain produce independent
 `CurrentHeader { coordinate, winner_event_id, parser_status, member_count,
 visibility_reason }` and child memberships plus exact contribution removals and
 additions. Headers exist for valid empty lists and invalid winning content;
 children never serve as proof that a winner exists. Missing `d`, empty `d` and
 malformed coordinates retain their defined distinction.
 
-- [ ] **Step 1:** implement coordinate and winner selection over full relevant
-  history: greatest `created_at`, then lowest event ID. Do not apply search,
+- [ ] **Step 1:** authorize the source population for the named visibility
+  domain before coordinate/winner selection; within it use full relevant history,
+  greatest `created_at`, then lowest event ID. Do not apply search,
   member, deletion or expiry predicates first and thereby resurrect old values.
 - [ ] **Step 2:** parse profile metadata, follow/mute and relay lists as whole-list
   replacement. Preserve signed list ordering separately from set membership;
@@ -186,6 +187,8 @@ malformed coordinates retain their defined distinction.
   generation before any downstream graph computation or serving.
 - [ ] **Step 6:** run unit and packaged tests with shuffled imports, restarts,
   empty and malformed replacements, equal-time ties and deletion before target.
+  A newer private replacement/deletion cannot change the older public winner;
+  exercise both arrival orders and provenance off.
 
 **Oracle and negative control:** a simple fixture oracle sorts the entire small
 coordinate history independently, applies the written policy and enumerates
@@ -527,11 +530,15 @@ facts and threshold components. Defaults: Jaccard at least 0.99 and at least
 - [ ] **Step 1:** define eligible set membership and coverage metadata. Use
   `min(|A|,|B|)/max(|A|,|B|)` as a sound upper bound for threshold pruning.
   Empty-set handling and unknown acquisition coverage must be explicit.
-- [ ] **Step 2:** implement partitioned exact intersection for the bounded
-  eligible profile with admitted candidate/IO limits. Complete the declared
-  profile or refuse it; never emit the first N pairs as a complete result.
-- [ ] **Step 3:** persist changed endpoint memberships and affected candidate
-  pairs; deletions/expiry can split components and require recomputation of the
+- [ ] **Step 2:** group exactly equal scoped/windowed event sets with digest plus
+  bytewise verification. Apply sound filters and exact intersection between
+  groups; apply shared-count/Jaccard thresholds within equal groups too (empty
+  or sub-10k equal sets are not automatically qualifying). Preserve the complete
+  logical endpoint-pair relation with group membership/verified group edges and
+  bounded lazy pair expansion. Admit candidate/IO/output costs; never emit the
+  first N pairs as a complete result.
+- [ ] **Step 3:** persist generation-qualified exact-set memberships and affected
+  group relations; deletions/expiry can split groups/components and require recomputation of the
   affected old component. Stable component IDs hash definition, scope, window
   and sorted member identities, not worker iteration order.
 - [ ] **Step 4:** expose member minimum incident-edge Jaccard separately from
@@ -543,7 +550,9 @@ facts and threshold components. Defaults: Jaccard at least 0.99 and at least
   candidate is later verified exactly. No extra mandatory sketch engine.
 - [ ] **Step 6:** run exact small and physical many-part fixtures, abort a job
   mid-pair enumeration, remove a bridge and rerun incrementally. Report eligible
-  pairs, pruned pairs, verified pairs, spilled bytes and refusal conditions.
+  pairs, pruned pairs, verified group relations, spilled bytes and refusal conditions.
+  Include forced digest collisions, equal empty/small sets, huge equal classes,
+  lazy expansion counts and policy changes without eager quadratic materialization.
 
 **Oracle and negative control:** independently calculate complete small set
 intersections and graph components. A chain A–B–C whose A–C similarity fails the
@@ -613,7 +622,7 @@ must fail the budget test.
 `crates/bigbrotr-analytics/tests/trustrank.rs`;
 `tests/fixtures/analytics/trustrank.json`; `tests/acceptance/cases/trustrank.py`.
 
-**Boundary:** profile `seeded-trust/1`, pinned graph, unique finite-positive seed weights and explicit
+**Boundary:** default profile `seeded-trust/2` (explicit `seeded-trust/1` reference), pinned graph, unique finite-positive seed weights and explicit
 algorithm/viewpoint configuration produce raw float64 ranks plus a separately
 versioned public integer projection. A score describes that pubkey under those
 seeds and data, not a person's identity or universal truth. Different viewpoints
@@ -623,11 +632,16 @@ have distinct score and publisher identities.
   duplicate seeds fail; empty/all-missing seeds withhold scores; partial presence
   renormalizes present weight and reports retained weight fraction. A missing or
   unreadable seed file is an error, not an empty successful run.
-- [ ] **Step 2:** implement `r0=t`, damping 0.85, 100 deterministic iterations,
-  dangling mass returned through t and stable reductions. Record residual,
-  total mass and numerical tolerance; reject NaN/infinity/negative mass.
+- [ ] **Step 2:** implement the version-2 stationary target, seed-directed dangling
+  mass, compatible warm starts and conservative residual/error enclosure in the
+  rank contract; default epsilon_l1=1e-8, alpha=.85, max_passes=256. Charge residual
+  evaluation; ceiling/budget failure withholds output. Keep exactly 100 ordered
+  iterations only for explicit version 1. Validate against exact-rational tiny
+  systems and independent cold-start computation, including near ties and a
+  deliberately underestimated rounding/error bound. Reject invalid mass.
 - [ ] **Step 3:** implement minimum indegree gate default zero after raw ranking,
-  then the specified positive-rank empirical percentile with half-up rounding,
+  then the specified positive-rank empirical percentile of the computed vector
+  with its approximation/near-tie uncertainty, with half-up rounding,
   tied values equal, zero mapped to zero and a sole eligible positive to 100.
   Record empty gating as withheld; do not substitute max-score normalization.
 - [ ] **Step 4:** keep optional reverse-graph seed-curation diagnostics on demand,
@@ -677,8 +691,9 @@ graph and rank target disabled or unavailable.
 `tests/fixtures/analytics/relay_quality.json`;
 `tests/acceptance/cases/relay_quality.py`.
 
-**Boundary:** `Subject::Relay{endpoint_id}` and profile `general-read-relay/1`
-produce a qualified operational vector and optional composite from a pinned
+**Boundary:** `Subject::Relay{endpoint_id}` receives a qualified operational
+vector independently of composite enablement; optional `general-read-relay/1`
+produces its attributed scalar from the same pinned
 24-hour observed-time window. The complete normative rule is
 [analytics detail](../architecture/analytics-detail.md#relay-profile-general-read-relay1).
 Social trust is a separate subject/algorithm and cannot block this target.
@@ -691,7 +706,8 @@ Social trust is a separate subject/algorithm and cannot block this target.
   add attempts. Latency uses only successful in-window request-write-complete
   to matching-EOSE durations: exact nearest-rank lower-median p50 in us and
   `L=exp(-p50_us/1_000_000)` float64, with input/tolerance visible.
-- [ ] **Step 2:** emit `Q=.625*A+.375*L` only with both components and at least
+- [ ] **Step 2:** always expose qualified vector fields and missing reasons. Emit
+  `Q=.625*A+.375*L` only when the composite is explicitly enabled, both components exist and at least
   five classified finalized actual attempts ending inside the window. Carry-in
   and unknown anchors cannot satisfy the floor. Do not redistribute missing
   weights; all-failure evidence exposes A=0 and absent L/Q. Capabilities and
@@ -706,7 +722,9 @@ Social trust is a separate subject/algorithm and cannot block this target.
 - [ ] **Step 4:** run the normative 24-hour timeline with S=40/F=15/U=1385
   minutes and p50=200000 us, then policy boundary at minute 60, duplicates,
   unknown interruption, all failures, incompatible scopes, late corrections
-  and zero-arrival expiry. Compare durations/components before Q. Read cutoff
+  and zero-arrival expiry. Compare durations/components before Q; disable the
+  composite and verify the vector remains available, including NULLS LAST latency
+  in reliable-read/1 selection. Read cutoff
   before correction reduction must preserve the earlier pinned expectation.
 - [ ] **Step 5:** stop Ranker social computation and corrupt its graph artifact,
   then advance monitoring. Require a new relay-quality manifest while the social

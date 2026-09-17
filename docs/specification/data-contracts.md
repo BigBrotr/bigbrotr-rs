@@ -6,6 +6,10 @@ refines the architecture summaries; a physical adapter must preserve these
 meanings and pass the specified round trips. Engine DDL, generated JSON schemas
 and Rust types are derived from this contract, not independent sources of truth.
 
+[Identity and encoding](identity-and-encoding.md) fixes cross-scope event
+eligibility, retained signature selection, qualified allocation and exact
+persistent digest preimages. Those rules apply to every family below.
+
 ## Purpose and boundaries
 
 BigBrotr retains verifiable Nostr history and attributable observations useful to
@@ -36,7 +40,7 @@ silently drops accepted evidence to preserve a throughput number.
 | EventId, PublicKey, Digest256 | 32 raw bytes; Parquet binary with length invariant | Exactly 64 lowercase hexadecimal characters in JSON |
 | Signature | 64 raw bytes | Exactly 128 lowercase hexadecimal characters in JSON; verify against actual canonical event ID/pubkey |
 | DatasetId, ObserverId, ScopeId, MethodId | Stable identity in a versioned dictionary, not an OS process ID | Export dictionary with every referenced identity; opaque identifiers do not expose credentials |
-| Ordinal | Checked unsigned 64-bit local compact reference | Never reuse after restore; portable identity is dictionary key plus canonical value |
+| Ordinal | Checked unsigned 64-bit local compact reference, starting at 1 | Qualified by dataset/kind/allocation domain; never reuse after restore; overflow requires a new allocation domain |
 | NostrTime | Original unsigned 64-bit seconds | Preserve the exact integer; APIs with unsafe JSON-number clients expose a lossless representation in their typed metadata; full Nostr events keep protocol JSON numbers |
 | ObservedTime | Signed 64-bit UTC microseconds plus ClockQuality | Null means absent, zero means the Unix epoch; monotonic elapsed time is a separate duration |
 | DurationUs | Checked unsigned 64-bit microseconds | Null if not measured; zero is a measured zero-resolution duration |
@@ -65,9 +69,13 @@ always point to their parser version and original input.
 
 Every authoritative fact has these non-null fields unless stated otherwise:
 `source_record_id`, `record_schema_version`, `record_kind`,
-`visibility_scope_id`, `payload_digest`, `recorded_at`. The digest covers a
-versioned canonical encoding of the typed fact, not a file path or human-readable
-string concatenation. Fact-specific observed time is distinct from recorded time.
+`visibility_scope_id`, `payload_digest`, `recorded_at`. The digest covers the
+complete typed fact and envelope, excluding itself, using the exact
+`bigbrotr/fact/1` SHA-256/deterministic-CBOR recipe in
+[identity and encoding](identity-and-encoding.md#exact-domains-and-field-order).
+Fact-specific observed time is distinct from recorded time. Shared event payload
+values can be exported through permitted eligibility without exposing their
+original internal admission envelope.
 
 Admission assigns a contiguous sequence range to one atomic batch, one sequence
 per fact. Its receipt binds first/last sequence and batch digest. Certified cuts
@@ -92,31 +100,37 @@ selected records, never live credentials or private control tables.
 
 ## A01 — Signed events and acquisition metadata
 
-The immutable event row contains `event_id`, `pubkey`, `created_at`, `kind`
-(unsigned 16-bit), `tags`, `content`, `sig`, `event_ordinal`,
-`first_admitted_at` and its source envelope. One logical row exists per event ID
-in the owning archive identity domain. Content and tags are never omitted by a
-storage profile. Their indexes are optional representations.
+The shared immutable payload contains `event_id`, `pubkey`, `created_at`, `kind`
+(unsigned 16-bit), `tags` and `content`, with internal event ordinal and admission
+lineage. One logical payload exists per event ID in its dataset. Separately,
+`EventEligibilityV1` retains the first valid signed representative per
+`(event_id,visibility_scope_id)`: body digest, `sig`, `first_eligible_at`,
+network/import origin, nullable import lineage and its source envelope.
+[Identity and encoding](identity-and-encoding.md#one-payload-independently-attributable-eligibility)
+owns exact fields, nullability and ordering. Joined payload and permitted
+representative are always a complete signed event; content/tags are never omitted.
 
-For the same verified canonical payload with another valid signature, retain the
-first admitted signature in the canonical event row. This is not a second event.
-A newly received invalid signature never gains a witness just because the event
-ID is already known. Raw variant preservation, when requested for research, is
-bounded explicit wire evidence, not a mutation of the canonical event.
+Another valid signature is the same event, but the representative admitted in
+another scope may differ. A public read cannot disclose the private-first
+signature, original admission envelope or time. A valid later variant in the
+same scope creates no new representative. Invalid variants create no witness or
+eligibility, even for a known ID. Optional wire retention remains independent.
 
 Local receive metadata is a separate sparse fact family:
 `event_id`, `received_at`, `observer_id`, `clock_quality`, source envelope.
-Emit the first eligible local network observation and strictly earlier
+The minimum is independently keyed by `(event_id,visibility_scope_id)`.
+Emit the first eligible local network observation in that scope and strictly earlier
 attributable corrections. The source-cut-relative minimum is the event's
 `first_received_at`; ties use source identity only for deterministic selection
 and do not prove a causal order. It remains null for import-only events.
 No later duplicate updates this family. Corrections do not rewrite old snapshots.
 
-With provenance off, these event-level facts carry no endpoint or auth-scope
+With provenance off, eligibility and receive facts carry no endpoint or auth-scope
 edge. An observer identifies the measurement authority/clock, not a hidden relay
 identity. Source-import metadata remains in its original namespace; local import
 cannot backdate this deployment's network observation or overwrite its first
-admission. A restore preserves the original deployment identity; importing a
+admission. The global `first_admitted_at` remains restricted; ordinary scoped
+responses name `first_eligible_at` explicitly. A restore preserves the original deployment identity; importing a
 dataset into another deployment creates a local admission with separate lineage.
 
 **Useful queries:** retrieve/reverify the signed event; distinguish authored time,
@@ -124,16 +138,22 @@ first acquired time and first local observation; export full or explicitly
 projected rows. **Not supported by these facts:** last remote availability,
 number of deliveries, true origin time or first appearance on the entire network.
 
-**Known paper gap:** [S01](../planning/specification-readiness.md#s01--one-event-encountered-through-several-visibility-scopes)
-must close same-event arrival across private/public scopes, separately visible
-metadata and replay before implementing that transition. Neither this one-body
-rule nor provenance-off implies that the first envelope's visibility can be
-silently overwritten or that all later source scopes have identical eligibility.
+**Cross-scope transition:** a new permitted scope is NewFacts even with provenance
+off. Private→public, public→private and import→network transitions retain separate
+representatives and acquisition metadata. Apply the source cut and authorize the
+input population before selecting current winners or deletion requests; apply
+ordinary expiry/query predicates after winner selection. Private replacements
+or deletions cannot alter a public answer. The selected
+[truth table](identity-and-encoding.md#signatures-and-effect-transitions) and
+[export/restore closure](identity-and-encoding.md#export-imports-replay-and-recovery-closure)
+replace the former S01 gap; actual adapters still require their acceptance tests.
 
 ## A02 — First local provenance and corrections
 
 Enabled provenance has logical key
-`(event_id, endpoint_id, observer_id, access_scope_id)`. Its immutable first fact
+`(event_id, endpoint_id, observer_id, access_scope_id, visibility_scope_id)`.
+Scope is part of the exact minimum key: a protected first witness cannot suppress
+a separately permitted witness. Its immutable first fact
 contains `received_at`, `clock_quality`, `verification_method_id` and source
 envelope. A correction contains the same key, an earlier attributable observation,
 and the prior fact identity it corrects where known. The query reduction chooses
@@ -387,7 +407,7 @@ These are operator-configurable retention classes, not archive-format fields.
 
 | Family | Authoritative location | Permanent baseline | Normal online index / export |
 |---|---|---|---|
-| A01 events + first local receive | Rocks pending → DuckLake Parquet | Yes | CH full body + narrow access; full signed export |
+| A01 payloads + scoped eligibility + first local receive | Rocks pending → DuckLake retained relations | Yes | CH shared body + permitted signature representative; full signed export |
 | A02 provenance | Exact Rocks key/min/receipt + immutable Parquet facts | Yes when enabled | Two narrow CH orders; scoped optional export |
 | A03 claims/lineage | Source originals + Parquet typed assertions | Accepted evidence | Origin-aware CH interpretation; attributed export |
 | A04 dictionaries | Immutable archive mappings; PG mutable registry separate | While referenced | Compact local lookup; required export mappings |
@@ -405,6 +425,14 @@ document references, unavailable/lossy families and provenance origin. Full
 events, projected events, measurements and deployment backups have distinct
 manifest types. A projected event containing ID/signature but missing signed
 fields is not independently verifiable.
+
+Native full exports include payload values plus permitted eligibility facts;
+the shared payload's private first-admission envelope/ordinal is excluded from
+public closure. All seven Nostr fields are reassembled without loss. Only safe
+dictionaries for selected facts are exported; missing authorization cannot be
+repaired by publishing a private descriptor. Native format negotiation includes
+the event-payload-value/1 and event-eligibility/1 families; the portable value
+has its own body digest and does not claim the private internal fact's digest.
 
 ## Distinguishing examples and obligations
 

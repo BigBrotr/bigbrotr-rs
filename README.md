@@ -35,13 +35,15 @@ the table/interface/naming handoff and a controlled document-layout experiment.
 [Decision confidence](docs/planning/decision-confidence.md)
 states which choices are justified and which target-scale claims remain untested.
 
-The subsequent [specification-readiness assessment](docs/planning/specification-readiness.md)
-identifies remaining paper contracts and justified practical decisions. Its
-[closure tasks](docs/implementation/00-specification.md#p00-t06--close-event-scope-identity-and-encoding-contracts)
-remain open; completed earlier reviews do not mean those new findings are resolved.
+The [current readiness register](docs/planning/specification-readiness.md) closes
+S01–S08 on paper and identifies the practical gates that only actual adapters,
+engines and packaged clients can satisfy. The [agent execution guide](docs/implementation/agent-handoff.md)
+provides task selection, dependency research, independent fixtures, practical
+checks, periodic audits and coherent commit discipline. Root [AGENTS.md](AGENTS.md)
+is the single agent entrypoint.
 
-The latest [architecture challenge](docs/reviews/13-architecture-alternatives.md)
-asks whether different choices would improve the product, beyond making the
-current plan complete. It reconciles three independent AI reviews and proposes
-specific changes and bounded comparisons. These are advisory alternatives for
-discussion; they do not silently replace the selected specifications.
+The [architecture challenge](docs/reviews/13-architecture-alternatives.md) is
+historical advice; adopted changes now live in the current contracts. The
+[independent closure review](docs/reviews/14-independent-closure-review.md)
+records concrete cross-document corrections. Optional MCP and experimental
+ContextVM are specified alongside HTTP, ArchiveRelay and DVM through one read core.

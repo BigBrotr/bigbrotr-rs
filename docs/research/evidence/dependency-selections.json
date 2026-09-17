@@ -1,0 +1,457 @@
+{
+  "observed_date": "2026-09-17",
+  "kind": "official published crate source inspection; no builds",
+  "crates": [
+    {
+      "crate": "tokio-postgres",
+      "version": "0.7.18",
+      "created_at": "2026-06-12T15:39:21.848936Z",
+      "rust_version": "1.85",
+      "license": "MIT OR Apache-2.0",
+      "repository": "https://github.com/rust-postgres/rust-postgres",
+      "archive_sha256": "a528f7d280f6d5b9cd149635c8705b0dd049754bc67d81d31fa25169a93809d3",
+      "vcs": {
+        "git": {
+          "sha1": "f1cb6ec0d5766b136cbd68f3010d64142a5daa66"
+        },
+        "path_in_vcs": "tokio-postgres"
+      },
+      "source_directory": ".research/checkouts/dependency-selections/tokio-postgres-0.7.18",
+      "disposition": "selected qualification candidate"
+    },
+    {
+      "crate": "deadpool-postgres",
+      "version": "0.14.2",
+      "created_at": "2026-08-26T15:14:50.266241Z",
+      "rust_version": "1.85",
+      "license": "MIT OR Apache-2.0",
+      "repository": "https://github.com/deadpool-rs/deadpool",
+      "archive_sha256": "65a536565624b97fc19f758cd01b15d12908d3344425066efc8162236fbd3749",
+      "vcs": {
+        "git": {
+          "sha1": "bba260f93ef4f7a63c82799563f92518b9e5d42a"
+        },
+        "path_in_vcs": "crates/deadpool-postgres"
+      },
+      "source_directory": ".research/checkouts/dependency-selections/deadpool-postgres-0.14.2",
+      "disposition": "selected qualification candidate"
+    },
+    {
+      "crate": "sqlx",
+      "version": "0.9.0",
+      "created_at": "2026-05-21T17:35:53.403466Z",
+      "rust_version": "1.94.0",
+      "license": "MIT OR Apache-2.0",
+      "repository": "https://github.com/launchbadge/sqlx",
+      "archive_sha256": "378620ccc25c62c89d8be1c819e76a88d59bdcc3304733330788948e619bfd71",
+      "vcs": {
+        "git": {
+          "sha1": "003b698e99e024f3621b8043a2426fde5b741171"
+        },
+        "path_in_vcs": ""
+      },
+      "source_directory": ".research/checkouts/dependency-selections/sqlx-0.9.0",
+      "disposition": "comparison only; not selected"
+    },
+    {
+      "crate": "axum",
+      "version": "0.8.9",
+      "created_at": "2026-04-14T07:55:20.258398Z",
+      "rust_version": "1.80",
+      "license": "MIT",
+      "repository": "https://github.com/tokio-rs/axum",
+      "archive_sha256": "31b698c5f9a010f6573133b09e0de5408834d0c82f8d7475a89fc1867a71cd90",
+      "vcs": {
+        "git": {
+          "sha1": "c59208c86fded335cd85e388030ad59347b0e5ae"
+        },
+        "path_in_vcs": "axum"
+      },
+      "source_directory": ".research/checkouts/dependency-selections/axum-0.8.9",
+      "disposition": "selected qualification candidate"
+    },
+    {
+      "crate": "tonic",
+      "version": "0.14.6",
+      "created_at": "2026-05-07T00:09:48.159613Z",
+      "rust_version": "1.88",
+      "license": "MIT",
+      "repository": "https://github.com/hyperium/tonic",
+      "archive_sha256": "ac2a5518c70fa84342385732db33fb3f44bc4cc748936eb5833d2df34d6445ef",
+      "vcs": {
+        "git": {
+          "sha1": "6cb6056b5a748bc5a29bd48f4602dbc4e552bb7d"
+        },
+        "path_in_vcs": "tonic"
+      },
+      "source_directory": ".research/checkouts/dependency-selections/tonic-0.14.6",
+      "disposition": "selected qualification candidate"
+    },
+    {
+      "crate": "prost",
+      "version": "0.14.4",
+      "created_at": "2026-06-07T10:13:40.918481Z",
+      "rust_version": "1.85",
+      "license": "Apache-2.0",
+      "repository": "https://github.com/tokio-rs/prost",
+      "archive_sha256": "528ac67416ff8646872a3c02cad9cc4ee5dc9f9540c9b10771855c95cb2e5ae1",
+      "vcs": {
+        "git": {
+          "sha1": "13646cde7eab75c81b3047767aa0a86e7dbecf12"
+        },
+        "path_in_vcs": "prost"
+      },
+      "source_directory": ".research/checkouts/dependency-selections/prost-0.14.4",
+      "disposition": "selected qualification candidate"
+    },
+    {
+      "crate": "rocksdb",
+      "version": "0.25.0",
+      "created_at": "2026-08-16T12:04:05.567337Z",
+      "rust_version": "1.88.0",
+      "license": "Apache-2.0",
+      "repository": "https://github.com/rust-rocksdb/rust-rocksdb",
+      "archive_sha256": "d8d90add70d1d420ee487bce4a1449880a8d147451c6051b2ee5f8354553dcbf",
+      "vcs": {
+        "git": {
+          "sha1": "e4aac69f55021e619566b6ca5902665e0ea2af4e"
+        },
+        "path_in_vcs": ""
+      },
+      "source_directory": ".research/checkouts/dependency-selections/rocksdb-0.25.0",
+      "disposition": "selected qualification candidate"
+    },
+    {
+      "crate": "clickhouse",
+      "version": "0.15.2",
+      "created_at": "2026-08-28T20:22:56.782520Z",
+      "rust_version": "1.89.0",
+      "license": "MIT OR Apache-2.0",
+      "repository": "https://github.com/ClickHouse/clickhouse-rs",
+      "archive_sha256": "7654154fde4d97ec1321bfe4c3965570be6fcd09e091da8afc3166ab5ee27be2",
+      "vcs": {
+        "git": {
+          "sha1": "fcb8b02537072d75d157361c59269b5d2e4102ce"
+        },
+        "path_in_vcs": ""
+      },
+      "source_directory": ".research/checkouts/dependency-selections/clickhouse-0.15.2",
+      "disposition": "selected qualification candidate"
+    },
+    {
+      "crate": "duckdb",
+      "version": "1.10505.0",
+      "created_at": "2026-07-22T13:42:37.863025Z",
+      "rust_version": "1.85.1",
+      "license": "MIT",
+      "repository": "https://github.com/duckdb/duckdb-rs",
+      "archive_sha256": "970e05eedd3f55c435194d9104f90a9b4a79a80d6e73251bc9ff43e178130c4e",
+      "vcs": {
+        "git": {
+          "sha1": "88f673c5cdf09e287c010a910db53b97e523a9fa"
+        },
+        "path_in_vcs": "crates/duckdb"
+      },
+      "source_directory": ".research/checkouts/dependency-selections/duckdb-1.10505.0",
+      "disposition": "selected qualification candidate"
+    },
+    {
+      "crate": "arrow",
+      "version": "60.0.0",
+      "created_at": "2026-09-15T15:31:03.178856Z",
+      "rust_version": "1.88",
+      "license": "Apache-2.0",
+      "repository": "https://github.com/apache/arrow-rs",
+      "archive_sha256": "234ce58e76c04e8162c2e4bc3fe53fa7c2418ef5fba7bb2838b8531b7d4fbf14",
+      "vcs": {},
+      "source_directory": ".research/checkouts/dependency-selections/arrow-60.0.0",
+      "disposition": "comparison only; not selected"
+    },
+    {
+      "crate": "parquet",
+      "version": "60.0.0",
+      "created_at": "2026-09-15T15:32:03.910524Z",
+      "rust_version": "1.88",
+      "license": "Apache-2.0",
+      "repository": "https://github.com/apache/arrow-rs",
+      "archive_sha256": "8af83d2940bc0510f9aef86d865f56fdc6095f87ab115ac885a80b7c5226d3ba",
+      "vcs": {},
+      "source_directory": ".research/checkouts/dependency-selections/parquet-60.0.0",
+      "disposition": "comparison only; not selected"
+    },
+    {
+      "crate": "arrow",
+      "version": "58.4.0",
+      "created_at": "2026-07-22T11:45:41.821094Z",
+      "rust_version": "1.85",
+      "license": "Apache-2.0",
+      "repository": "https://github.com/apache/arrow-rs",
+      "archive_sha256": "6cfdd0833e32a9874d2b55089333ad310c0be208aafa277385ce2461dec90be3",
+      "vcs": {},
+      "source_directory": ".research/checkouts/dependency-selections/arrow-58.4.0",
+      "disposition": "selected qualification candidate"
+    },
+    {
+      "crate": "parquet",
+      "version": "58.4.0",
+      "created_at": "2026-07-22T11:46:36.835807Z",
+      "rust_version": "1.85",
+      "license": "Apache-2.0",
+      "repository": "https://github.com/apache/arrow-rs",
+      "archive_sha256": "d298093b2dec60289dce0684c986d0f7679e9dd15771c2c65406e1aaf604a704",
+      "vcs": {},
+      "source_directory": ".research/checkouts/dependency-selections/parquet-58.4.0",
+      "disposition": "selected qualification candidate"
+    },
+    {
+      "crate": "tokio-postgres-rustls",
+      "version": "0.14.0",
+      "created_at": "2026-05-21T12:17:59.310120Z",
+      "rust_version": null,
+      "license": "MIT",
+      "repository": "https://github.com/jbg/tokio-postgres-rustls",
+      "archive_sha256": "4c2ad44aa0ae96db89c4742212ed41645b2f597311ff6e1945542a4d9fadc2fb",
+      "vcs": {
+        "git": {
+          "sha1": "0dd60da1804e6146633e5b87199a00db890b7ef5"
+        },
+        "path_in_vcs": ""
+      },
+      "source_directory": ".research/checkouts/dependency-selections/tokio-postgres-rustls-0.14.0",
+      "disposition": "selected qualification candidate"
+    },
+    {
+      "crate": "tonic-prost",
+      "version": "0.14.6",
+      "created_at": "2026-05-07T00:10:03.809919Z",
+      "rust_version": "1.88",
+      "license": "MIT",
+      "repository": "https://github.com/hyperium/tonic",
+      "archive_sha256": "50849f68853be452acf590cde0b146665b8d507b3b8af17261df47e02c209ea0",
+      "vcs": {
+        "git": {
+          "sha1": "6cb6056b5a748bc5a29bd48f4602dbc4e552bb7d"
+        },
+        "path_in_vcs": "tonic-prost"
+      },
+      "source_directory": ".research/checkouts/dependency-selections/tonic-prost-0.14.6",
+      "disposition": "selected qualification candidate"
+    },
+    {
+      "crate": "tonic-prost-build",
+      "version": "0.14.6",
+      "created_at": "2026-05-07T00:51:35.164958Z",
+      "rust_version": "1.88",
+      "license": "MIT",
+      "repository": "https://github.com/hyperium/tonic",
+      "archive_sha256": "654e5643eff75d7f8c99197ce1440ed19a3474eada74c12bbac488b2cafdae27",
+      "vcs": {
+        "git": {
+          "sha1": "6cb6056b5a748bc5a29bd48f4602dbc4e552bb7d"
+        },
+        "path_in_vcs": "tonic-prost-build"
+      },
+      "source_directory": ".research/checkouts/dependency-selections/tonic-prost-build-0.14.6",
+      "disposition": "selected qualification candidate"
+    },
+    {
+      "crate": "tokio-tungstenite",
+      "version": "0.30.0",
+      "created_at": "2026-07-11T12:58:44.438987Z",
+      "rust_version": "1.85",
+      "license": "MIT",
+      "repository": "https://github.com/snapview/tokio-tungstenite",
+      "archive_sha256": "17a073bfed563fa236697a068031408a93cd9522e08abf9933ead3e73411bd71",
+      "vcs": {
+        "git": {
+          "sha1": "4994a078037a18a9347b8cf49291a5031d63d9e0"
+        },
+        "path_in_vcs": ""
+      },
+      "source_directory": ".research/checkouts/dependency-selections/tokio-tungstenite-0.30.0",
+      "disposition": "comparison only; not selected"
+    },
+    {
+      "crate": "tokio-tungstenite",
+      "version": "0.29.0",
+      "created_at": "2026-03-17T15:40:13.215053Z",
+      "rust_version": "1.63",
+      "license": "MIT",
+      "repository": "https://github.com/snapview/tokio-tungstenite",
+      "archive_sha256": "8f72a05e828585856dacd553fba484c242c46e391fb0e58917c942ee9202915c",
+      "vcs": {
+        "git": {
+          "sha1": "7930ff2f825a69cad44b928b19b6fb81bffc3f7a"
+        },
+        "path_in_vcs": ""
+      },
+      "source_directory": ".research/checkouts/dependency-selections/tokio-tungstenite-0.29.0",
+      "disposition": "selected qualification candidate"
+    }
+  ],
+  "selected_family_status": "selected; exact releases require P01/P02 native and platform qualification",
+  "resolution": {
+    "command": "cargo generate-lockfile --manifest-path .research/dependency-selections/resolution/Cargo.toml",
+    "exit_code": 0,
+    "cargo_version": "cargo 1.95.0 (f2d3ce0bd 2026-03-21)",
+    "rustc_version": "rustc 1.95.0 (59807616e 2026-04-14)",
+    "manifest_text": "[package]\nname = \"bigbrotr-dependency-resolution-research\"\nversion = \"0.0.0\"\nedition = \"2024\"\npublish = false\n\n[workspace]\n\n[lib]\npath = \"probe.rs\"\n\n[dependencies]\ntokio-postgres = { version = \"=0.7.18\", default-features = false, features = [\"runtime\"] }\ndeadpool-postgres = { version = \"=0.14.2\", default-features = false, features = [\"rt_tokio_1\"] }\ntokio-postgres-rustls = { version = \"=0.14.0\", default-features = false, features = [\"ring\"] }\naxum = { version = \"=0.8.9\", default-features = false, features = [\"http1\", \"http2\", \"json\", \"tokio\", \"ws\"] }\ntonic = { version = \"=0.14.6\", default-features = false, features = [\"transport\", \"router\", \"codegen\", \"tls-ring\"] }\ntonic-prost = \"=0.14.6\"\nprost = \"=0.14.4\"\nrocksdb = { version = \"=0.25.0\", default-features = false, features = [\"zstd\", \"bindgen-runtime\"] }\nclickhouse = { version = \"=0.15.2\", default-features = false, features = [\"lz4\", \"rustls-tls-ring\", \"rustls-tls-webpki-roots\"] }\nduckdb = { version = \"=1.10505.0\", default-features = false }\narrow-array = \"=58.4.0\"\narrow-schema = \"=58.4.0\"\nparquet = { version = \"=58.4.0\", default-features = false, features = [\"arrow\", \"zstd\"] }\ntokio-tungstenite = { version = \"=0.29.0\", default-features = false, features = [\"handshake\", \"rustls-tls-webpki-roots\"] }\n\n[build-dependencies]\ntonic-prost-build = { version = \"=0.14.6\", default-features = false, features = [\"transport\"] }\n",
+    "manifest_sha256": "7a338b44d483e8f9cde4144e4b41b32fbfd341b2e2306be60107deda3ac11841",
+    "lock_sha256": "e5754475038eec1041897e2f95ebaacb86087aa4a7614f0361ce0ac6bd06d0c6",
+    "log": "    Updating crates.io index\n     Locking 351 packages to latest Rust 1.95.0 compatible versions\n      Adding arrow-array v58.4.0 (available: v60.0.0)\n      Adding arrow-schema v58.4.0 (available: v60.0.0)\n      Adding comfy-table v7.1.4 (available: v7.2.2)\n      Adding generic-array v0.14.7 (available: v0.14.9)\n      Adding matchit v0.8.4 (available: v0.8.6)\n      Adding parquet v58.4.0 (available: v60.0.0)\n      Adding tokio-tungstenite v0.29.0 (available: v0.30.0)\n",
+    "package_count_including_research_root": 352,
+    "focused_resolved_versions": {
+      "arrow": [
+        "58.4.0"
+      ],
+      "arrow-array": [
+        "58.4.0"
+      ],
+      "arrow-schema": [
+        "58.4.0"
+      ],
+      "parquet": [
+        "58.4.0"
+      ],
+      "rustls": [
+        "0.23.45"
+      ],
+      "hyper": [
+        "1.11.1"
+      ],
+      "tokio": [
+        "1.53.1"
+      ],
+      "axum": [
+        "0.8.9"
+      ],
+      "tonic": [
+        "0.14.6"
+      ],
+      "librocksdb-sys": [
+        "0.19.0+11.8.1"
+      ],
+      "libduckdb-sys": [
+        "1.10505.0"
+      ],
+      "tokio-tungstenite": [
+        "0.29.0"
+      ]
+    }
+  },
+  "limitations": [
+    "Published source inspection and dependency resolution only; no Rust adapter compilation or engine execution.",
+    "Resolution does not include optional rmcp/ContextVM feature sets or all future application dependencies.",
+    "No native ABI, Linux target, cancellation, durability, throughput or release license qualification.",
+    "Downloaded archives are registry-checksum verified; archive hashes pin sources even when vcs metadata is absent."
+  ],
+  "local_artifacts": [
+    ".research/checkouts/dependency-selections/",
+    ".research/dependency-selections/resolution/",
+    ".research/dependency-selections/resolution.log"
+  ],
+  "source_link_checks": [
+    {
+      "url": "https://docs.rs/sqlx/0.9.0/sqlx/macro.query.html",
+      "fetched_url": "https://docs.rs/sqlx/0.9.0/sqlx/macro.query.html",
+      "status": 200,
+      "content_sha256": "bc93657af33f3c88e857f4c5da1024695e954494319da97c148534c5a6fd4253"
+    },
+    {
+      "url": "https://github.com/deadpool-rs/deadpool/blob/bba260f93ef4f7a63c82799563f92518b9e5d42a/crates/deadpool-postgres/src/config.rs",
+      "fetched_url": "https://raw.githubusercontent.com/deadpool-rs/deadpool/bba260f93ef4f7a63c82799563f92518b9e5d42a/crates/deadpool-postgres/src/config.rs",
+      "status": 200,
+      "content_sha256": "fbac92dffa1505f659d6d55f762d1b67707e7e530ac969f9a160a071c199ac02"
+    },
+    {
+      "url": "https://github.com/rust-postgres/rust-postgres/blob/f1cb6ec0d5766b136cbd68f3010d64142a5daa66/tokio-postgres/src/cancel_token.rs",
+      "fetched_url": "https://raw.githubusercontent.com/rust-postgres/rust-postgres/f1cb6ec0d5766b136cbd68f3010d64142a5daa66/tokio-postgres/src/cancel_token.rs",
+      "status": 200,
+      "content_sha256": "ed5b966eaea244ddcd01583dd20164dacb63fcc9b781dbb2847ebeeea72f5400"
+    },
+    {
+      "url": "https://github.com/rust-postgres/rust-postgres/blob/f1cb6ec0d5766b136cbd68f3010d64142a5daa66/tokio-postgres/src/transaction.rs",
+      "fetched_url": "https://raw.githubusercontent.com/rust-postgres/rust-postgres/f1cb6ec0d5766b136cbd68f3010d64142a5daa66/tokio-postgres/src/transaction.rs",
+      "status": 200,
+      "content_sha256": "a2c0261a3ca426e9046d73b2b330720918f4d4a6010d0a143707f17f0333d62e"
+    },
+    {
+      "url": "https://github.com/jbg/tokio-postgres-rustls/blob/0dd60da1804e6146633e5b87199a00db890b7ef5/src/lib.rs",
+      "fetched_url": "https://raw.githubusercontent.com/jbg/tokio-postgres-rustls/0dd60da1804e6146633e5b87199a00db890b7ef5/src/lib.rs",
+      "status": 200,
+      "content_sha256": "40669c92184bbbc438cbe56e4448c978916d959b8eeb6fc21daeb3d0fffd9d49"
+    },
+    {
+      "url": "https://docs.rs/axum/0.8.9/axum/extract/struct.DefaultBodyLimit.html",
+      "fetched_url": "https://docs.rs/axum/0.8.9/axum/extract/struct.DefaultBodyLimit.html",
+      "status": 200,
+      "content_sha256": "b97152a15cfb3baa8918772303c1c3ce4018cb7d79c2658c32d44db34605e4ff"
+    },
+    {
+      "url": "https://github.com/tokio-rs/axum/blob/c59208c86fded335cd85e388030ad59347b0e5ae/axum/src/extract/ws.rs",
+      "fetched_url": "https://raw.githubusercontent.com/tokio-rs/axum/c59208c86fded335cd85e388030ad59347b0e5ae/axum/src/extract/ws.rs",
+      "status": 200,
+      "content_sha256": "1d2145ee8500333c511bbb43ba470f05e0dc65d6be411c0d42bb3bf507d0fdc5"
+    },
+    {
+      "url": "https://github.com/hyperium/tonic/blob/6cb6056b5a748bc5a29bd48f4602dbc4e552bb7d/tonic/src/transport/channel/endpoint.rs",
+      "fetched_url": "https://raw.githubusercontent.com/hyperium/tonic/6cb6056b5a748bc5a29bd48f4602dbc4e552bb7d/tonic/src/transport/channel/endpoint.rs",
+      "status": 200,
+      "content_sha256": "040d31e68f094366d2f037ff739ec0667ec887bc785575edddf2804a9a660e4a"
+    },
+    {
+      "url": "https://github.com/hyperium/tonic/blob/6cb6056b5a748bc5a29bd48f4602dbc4e552bb7d/tonic/src/codec/mod.rs",
+      "fetched_url": "https://raw.githubusercontent.com/hyperium/tonic/6cb6056b5a748bc5a29bd48f4602dbc4e552bb7d/tonic/src/codec/mod.rs",
+      "status": 200,
+      "content_sha256": "75fce3c65ce80d41bae1a61a8656ac077e908805c7f6a36e8610e98fe0bac99c"
+    },
+    {
+      "url": "https://github.com/rust-rocksdb/rust-rocksdb/blob/e4aac69f55021e619566b6ca5902665e0ea2af4e/src/db_options.rs",
+      "fetched_url": "https://raw.githubusercontent.com/rust-rocksdb/rust-rocksdb/e4aac69f55021e619566b6ca5902665e0ea2af4e/src/db_options.rs",
+      "status": 200,
+      "content_sha256": "25864bca60116e49aaa39dadca9cae038c2386c01e9f5191e5e3b39c4c93b8b3"
+    },
+    {
+      "url": "https://github.com/ClickHouse/clickhouse-rs/blob/fcb8b02537072d75d157361c59269b5d2e4102ce/src/lib.rs",
+      "fetched_url": "https://raw.githubusercontent.com/ClickHouse/clickhouse-rs/fcb8b02537072d75d157361c59269b5d2e4102ce/src/lib.rs",
+      "status": 200,
+      "content_sha256": "8a87790f97dd58d8a65a06311a0ca8c2df8d8fed70e6e54a59ebbd93300c3ac5"
+    },
+    {
+      "url": "https://github.com/ClickHouse/clickhouse-rs/blob/fcb8b02537072d75d157361c59269b5d2e4102ce/src/insert.rs",
+      "fetched_url": "https://raw.githubusercontent.com/ClickHouse/clickhouse-rs/fcb8b02537072d75d157361c59269b5d2e4102ce/src/insert.rs",
+      "status": 200,
+      "content_sha256": "22a3c4c397738fe69235ea6cedac64649717adb1a5cbce445cc83f74c8b169e9"
+    },
+    {
+      "url": "https://github.com/ClickHouse/clickhouse-rs/blob/fcb8b02537072d75d157361c59269b5d2e4102ce/src/query.rs",
+      "fetched_url": "https://raw.githubusercontent.com/ClickHouse/clickhouse-rs/fcb8b02537072d75d157361c59269b5d2e4102ce/src/query.rs",
+      "status": 200,
+      "content_sha256": "0c4ca40bd8bd392efce7f3b8ca33e71fbcb191df438a4a685d5e5d20299db01c"
+    },
+    {
+      "url": "https://github.com/duckdb/duckdb-rs/blob/88f673c5cdf09e287c010a910db53b97e523a9fa/crates/duckdb/Cargo.toml",
+      "fetched_url": "https://raw.githubusercontent.com/duckdb/duckdb-rs/88f673c5cdf09e287c010a910db53b97e523a9fa/crates/duckdb/Cargo.toml",
+      "status": 200,
+      "content_sha256": "44e2fd87c99927af76d727de25af512b8c2ce108afba31fc7d4976e3ab2a592d"
+    },
+    {
+      "url": "https://github.com/duckdb/duckdb-rs/releases/tag/v1.10505.0",
+      "fetched_url": "https://github.com/duckdb/duckdb-rs/releases/tag/v1.10505.0",
+      "status": 200,
+      "content_sha256": "580bf9ac509209a6edb2230375a5a32298811afe3f356c745344c7f72677b57b"
+    },
+    {
+      "url": "https://github.com/duckdb/duckdb-rs/blob/88f673c5cdf09e287c010a910db53b97e523a9fa/crates/duckdb/src/statement.rs",
+      "fetched_url": "https://raw.githubusercontent.com/duckdb/duckdb-rs/88f673c5cdf09e287c010a910db53b97e523a9fa/crates/duckdb/src/statement.rs",
+      "status": 200,
+      "content_sha256": "232c4c705e5d72791f3435c4624d780e96fc6bb0b89a66041713d5daafb18c4c"
+    },
+    {
+      "url": "https://github.com/duckdb/duckdb-rs/blob/88f673c5cdf09e287c010a910db53b97e523a9fa/crates/duckdb/src/arrow_batch.rs",
+      "fetched_url": "https://raw.githubusercontent.com/duckdb/duckdb-rs/88f673c5cdf09e287c010a910db53b97e523a9fa/crates/duckdb/src/arrow_batch.rs",
+      "status": 200,
+      "content_sha256": "3a2becf20179392b732a6534c28fdd84cafdf703e6fe5078722bd052bb1079e4"
+    }
+  ]
+}

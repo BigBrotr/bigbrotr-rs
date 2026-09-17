@@ -105,5 +105,34 @@
     "remote_resources_remaining": "No identified BigBrotr paths, containers, volumes, networks, processes or units in the verified scope",
     "new_research_environment": "Not created; provision fresh when starting qualification",
     "unrelated_workloads": "All 20 inventoried unrelated containers retained their running/stopped status"
+  },
+  "gateway_protocol_research": {
+    "captured_on": "2026-09-17",
+    "source_roots": [
+      ".research/checkouts/gateway-mcp-spec",
+      ".research/checkouts/gateway-rmcp",
+      ".research/checkouts/gateway-contextvm-docs",
+      ".research/checkouts/gateway-contextvm-rust",
+      ".research/checkouts/gateway-contextvm-ts"
+    ],
+    "generated_root": ".research/gateway-contract",
+    "tracked_source": "experiments/gateway-contract",
+    "evidence": "docs/research/evidence/gateway-research.json",
+    "notes": "13 schema checks, 20 upstream wire/in-memory integration tests and three separate negative probes; no relay/payment/publication/BigBrotr runtime or background process retained."
+  },
+  "rust_dependency_selection": {
+    "captured_on": "2026-09-17",
+    "source_root": ".research/checkouts/dependency-selections",
+    "generated_root": ".research/dependency-selections",
+    "selection": "docs/research/dependency-selections.md",
+    "evidence": "docs/research/evidence/dependency-selections.json",
+    "notes": "18 published crate source archives checksum-verified; isolated Cargo resolution only (351 dependencies), no Rust native adapter compilation/engine execution or retained process."
+  },
+  "handoff_link_validation": {
+    "captured_on": "2026-09-17",
+    "source": "experiments/verify_handoff.py",
+    "canonical_slugger": ".research/checkouts/handoff-validation/github-slugger",
+    "generated_root": ".research/review-14",
+    "notes": "Pinned github-slugger 2.0.0 plus standard-library checker; local fragments, task IDs/counts and manually interpreted dependency candidates. Planning artifact check only."
   }
 }

@@ -9,10 +9,9 @@ that future code exists. Follow the task for numbered actions, paths, faults,
 configuration, documentation and independent practical oracle.
 
 Coverage is different from specification readiness. The
-[remaining-contract register](../planning/specification-readiness.md) maps
+[readiness register](../planning/specification-readiness.md) maps
 S01/S02 to P00-T06, S03/S04 to P00-T07, S05/S06/S08 to P00-T08 and S07/empirical
-decision records to P00-T09; P00-T10 reconciles the resulting baseline. Those
-tasks are open. A row below proves that work has an owner, not that its last
+decision records to P00-T09; P00-T10 reconciles the resulting baseline. The current register records their paper disposition; runtime acceptance remains separate. A row below proves that work has an owner, not that its last
 semantic ambiguity or practical evidence has already been resolved.
 
 ## Useful data and its complete journey
@@ -21,6 +20,7 @@ semantic ambiguity or practical evidence has already been resolved.
 |---|---|---|---|
 | A01 full signed originals, signatures, ordered tags/content, u64 authored time | P01-T02/T03; P03-T02/T08–T10 | P02-T02–T06; P06-T02/T05/T07; P08-T04 | Recompute ID and signature outside ingestion; preserve empty/repeated tags/extreme times after restart and standalone export |
 | First local acquisition/observation, including strictly earlier corrections | P02-T02; P03-T02/T10 | P02-T04–T07; P06-T02; P08-T04 | Old pinned cut remains 100 after later eligible correction to 90; imported claim 50 cannot become local observation |
+| Scoped event eligibility/signature and portable event-payload-value/1 | P01-T02; P02-T02/T03; P03-T02/T10 | P02-T04/T05; P05-T02; P06-T02; P08-T04 | Same ID privately then publicly never leaks private signature/time/envelope, including provenance off and standalone export |
 | A02 optional first event/relay evidence | P03-T02–T07 | P02-T02/T05/T06; P05-T07; P06-T01/T02; P08-T04 | Duplicate storm preserves one logical edge; provenance-off has no hidden alternate edge table/index/work |
 | A03 imported claims and source lineage | P03-T08–T10; P05-T06 | P02-T03/T04; P06-T01; P08-T04 | Out-of-order sidecars, orphan references and disabled families; unsigned claim never becomes local witness |
 | A04 endpoint/observer/scope/method dictionaries | P01-T02; P02-T01/T03; P04-T01 | P02-T04/T07/T08; P08-T04/T05 | Independent export reader resolves every ordinal without running PG; restore cannot reuse IDs |
@@ -51,9 +51,10 @@ documents each actual format's representable values and ambiguity.
 | Durable ingest, archive publishing and online indexing | P02-T01–T06 | Every producer/read target; real engine crash/replay/merge and same-cut evidence |
 | Deriver and scientific facts | P05-T01–T09/T12 | Read resources/NIP-85; independent full-recompute oracle per target |
 | Ranker, named viewpoints and bounded graph artifacts | P05-T10/T11 | P06 scores/P07-T05/P09-T05; actual CSR/skew/resource and convergence evidence |
-| Shared read core and counts | P06-T01–T05 | HTTP/relay/DVM; independent expected membership, exact units and real cursor continuation |
+| Shared read core and counts | P06-T01–T05 | HTTP/relay/DVM/MCP/ContextVM; independent expected membership, exact units and real cursor continuation |
 | Optional content search | P06-T06 | API/NIP-50/dashboard; old high-relevance result beyond recent prefix, Unicode/phrase oracle |
 | ArchiveRelay and serving-side Negentropy | P06-T07/T08 | Real independent WS/NEG client then full-body retrieval; provenance-independent set |
+| Optional MCP / experimental ContextVM | P06-T13/T14; shared T01/T12 | Same read-core resource/mode/grants; actual independent clients, cancellation/request-ID mapping, encryption and bounded oversized refusal |
 | Optional query DVM, subscriptions and payments | P06-T09–T11; P07-T01–T04 | Explicit application client/regtest; same request/result identity and unresolved payment ledger |
 | NIP-66/NIP-85 publishers and richer compatible proposals | P07-T05–T08 | Actual source-to-wire fixture, local/remote signer, legacy/new context decoders |
 | Exporter, standalone analytical projections and explicit artifact publication/withdrawal | P08-T04 | P09-T06/P10-T05; DuckDB reads exported files with all application/catalog services stopped |
@@ -102,6 +103,11 @@ cannot remove the need to interrogate each selected endpoint. Bounds and efficie
 algorithms remove avoidable work, not those information and resource requirements.
 
 ## Dependency and delivery interpretation
+
+P01-T04 static configuration steps 1–5 feed P01-T05/T06 and P02-T01; its durable
+managed/declarative step 6 finishes after P02-T01's PG schema/CAS. This explicit
+slice dependency prevents configuration persistence from depending on its own
+future control schema through whole-task prerequisites.
 
 P01-T06 authority-core steps and P01-T07 interface-core steps precede P02;
 their actual owner/receipt acceptance runs after P02-T01/T02. This is an explicit

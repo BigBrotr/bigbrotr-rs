@@ -24,7 +24,10 @@ to the ingest RocksDB directory; P02 supplies its binding/fencing primitives.
 
 ## P02-T01 — Typed control schemas and minimum relay registry
 
-**Depends on:** P01-T02/T04; the P01-T06 authority core (steps 1/2/4/5) and P01-T07 interface/transport core (steps 1–4), not their later storage acceptance. **Files:**
+**Depends on:** P01-T02; P01-T04 static configuration core (steps 1–5), not its
+PG-backed authority step 6; the P01-T06 authority core (steps 1/2/4/5) and P01-T07
+interface/transport core (steps 1–4), not their later storage acceptance. This
+task supplies the PG schema/CAS used to finish P01-T04's durable authority. **Files:**
 `migrations/postgres/{0001_control,0002_ingest,0003_relay}.sql`,
 application `src/storage/postgres/`, `src/interfaces/migrations.rs`,
 `contracts/control/schema.json`, `apps/bigbrotr/tests/control_transactions.rs`,
@@ -65,20 +68,27 @@ prerequisites for early durable jobs, exports or reclamation.
 `src/storage/rocks/{keys,options,inventory,pending}.rs`,
 `apps/bigbrotr/tests/admission_recovery.rs`,
 `tests/acceptance/cases/admission.py`, `docs/reference/durability.md`.
-**Contract:** Admit/AdmitEvidence → typed durable result after synchronized batch.
+**Contract:** Admit/AdmitEvidence → typed durable result after synchronized batch;
+separate CertifyExisting → retained dependency proof without mutation semantics.
+The [identity/encoding contract](../specification/identity-and-encoding.md) and
+[effect table](../specification/operations-contract.md) fix exact bytes and recovery.
 One owner serializes exact identity decisions for each writable directory.
 
 - [ ] **Step 1:** Specify versioned key prefixes for event-ID metadata, event ordinals,
-  provenance keys, dictionaries, sequence facts, producer receipts and owner
+  scoped eligibility/receive minima, provenance keys, dictionaries, sequence facts, producer receipts and owner
   metadata. Begin with exact full identities and fixed-width ordered compact
   ordinal keys; no truncated hash accepted as definitive identity.
-- [ ] **Step 2:** Store the first canonical full body when new; optional new/earlier local
-  witness facts; pending source records; request digest/result and contiguous
-  sequence allocation in one WAL-enabled synced WriteBatch.
+- [ ] **Step 2:** Store new shared EventPayload plus first verified signed
+  representative per eligible scope, scoped first-receive/earlier corrections,
+  optional witness facts, dictionary dependencies, pending records, strict
+  request digest/result and contiguous sequence allocation in one synced batch.
+  A known payload in a new scope is NewFacts even with provenance off; no private
+  original signature/envelope/time is copied into its public representative.
 - [ ] **Step 3:** Verify outside expensive critical sections where safe, then serialize the
   final exact admission check/commit. Same-ID concurrency cannot overwrite first
   admission or suppress a distinct permitted provenance edge.
-- [ ] **Step 4:** Implement NewFacts/AlreadyDurable/Excluded/Invalid/Retryable results and
+- [ ] **Step 4:** Implement NewFacts/AlreadyDurable/Excluded/Invalid/Retryable,
+  RequestConflict and IncompatibleSchema outcomes and
   ambiguous receipt resolution plus RetiredRequest. Same ProducerRequestId with
   changed bytes errors while detailed receipts exist; retired ranges return
   RetiredRequest without reconstructing reclaimed digests. Implement the registered
@@ -86,7 +96,11 @@ One owner serializes exact identity decisions for each writable directory.
   fenced retirement/GC contract; restart
   cannot reuse a request identity or forget unresolved effects.
 - [ ] **Step 5:** Make provenance-off allocate no P inventory or event/endpoint side channel;
-  retain event-level first local receive and earlier corrections only.
+  retain scope eligibility and scoped first local receive/earlier corrections.
+  Implement CertifyExisting against one committed inventory view, exact verified
+  intent, complete dependencies and existing retention/protection. Return
+  NeedsAdmission for any missing effect; checkpoint/cut compaction and mixed-backup
+  rejection preserve proof closure without a second per-delivery proof ledger.
 - [ ] **Step 6:** Use bounded positive cache with full equality; account for pending/flushing
   maps, native caches, memtables and compaction alongside the cache's own slab.
 - [ ] **Step 7:** **Practical P02-T02:** use the actual Rust binding, kill before/after synced
@@ -98,7 +112,11 @@ One owner serializes exact identity decisions for each writable directory.
   using incremental durable outcome handoff before final EOSE coverage. Pause a
   verified request before commit while retiring its epoch; the owner-side closing
   barrier must exclude its late commit.
-  Negative control: marking identity before its only durable body.
+  Add both private/public arrival orders, alternate valid signatures, new scope
+  with provenance off, import→network, certification after receipt GC and missing
+  proof dependency on restore. Reuse independent signed/golden fixtures.
+  Negative controls: identity before durable payload, global first signature, or
+  bare existence used as a complete retained-effects proof.
 - [ ] **Step 8:** Report process crash separately from power loss/host failure; expose
   pending bytes, native write stalls, receipt latency and exact inventory growth.
 
@@ -180,7 +198,8 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
 **Contract:** immutable facts → full online body plus narrow indexes in an
 identified serving incarnation. Logical correction history survives merges.
 
-- [ ] **Step 1:** Create one full signed-body representation and narrow ID/time/author/tag
+- [ ] **Step 1:** Create shared payload and scope-qualified signed eligibility
+  representations, losslessly joined into full signed events, plus narrow ID/time/author/tag
   access paths; provenance adds both narrow orders only when enabled. Parsed
   monitor fields reference document objects rather than repeat wide payloads.
 - [ ] **Step 2:** Key raw fact retries by complete immutable SourceRecordId; projection row
@@ -190,7 +209,12 @@ identified serving incarnation. Logical correction history survives merges.
   schema, ordered membership and content digest; finite insert dedupe is optional
   acceleration, not correctness.
 - [ ] **Step 4:** Configure synchronous durable inserts with the selected fsync settings;
-  record exact engine/version/table settings in the serving manifest.
+  record exact engine/version/table settings in the serving manifest. Native
+  projections are optional rebuildable acceleration. Verify base and projection
+  health after recovery; degraded projection state must use a budgeted correct
+  base plan or explicit unavailability, never certify incomplete required data.
+  Qualify exact release behavior against upstream projection-fsync issue #111318;
+  INSERT settings alone cannot establish projection persistence.
 - [ ] **Step 5:** Resolve body candidates and correction minima only after the pinned cut;
   deduplicate identical retry rows before logical counts and limits.
 - [ ] **Step 6:** Treat table replacement, restore or unclean loss as a new invalidated

@@ -1,0 +1,224 @@
+{
+  "scope": "Canonical GitHub fragments, literal/range task references, declared dependency IDs and task/step counts; prose dependency cycles need human/agent review, not automatic DAG claims",
+  "slugger": {
+    "name": "github-slugger",
+    "version": "2.0.0",
+    "tarball": "https://registry.npmjs.org/github-slugger/-/github-slugger-2.0.0.tgz",
+    "sha256": "ddde66e96b7d722ff2c3d478e7595aeccae7e75dde798d405510d862f1367d0f"
+  },
+  "markdown_files": 103,
+  "checked_local_fragments": 368,
+  "checked_task_references": 1740,
+  "declared_dependency_sections": 84,
+  "tasks": 123,
+  "steps": 756,
+  "phases": [
+    {
+      "file": "docs/implementation/00-specification.md",
+      "tasks": 10,
+      "steps": 58
+    },
+    {
+      "file": "docs/implementation/01-foundation.md",
+      "tasks": 9,
+      "steps": 71
+    },
+    {
+      "file": "docs/implementation/02-storage.md",
+      "tasks": 9,
+      "steps": 72
+    },
+    {
+      "file": "docs/implementation/03-acquisition.md",
+      "tasks": 12,
+      "steps": 84
+    },
+    {
+      "file": "docs/implementation/04-relay-lifecycle.md",
+      "tasks": 14,
+      "steps": 98
+    },
+    {
+      "file": "docs/implementation/05-analytics.md",
+      "tasks": 13,
+      "steps": 77
+    },
+    {
+      "file": "docs/implementation/06-read-surfaces.md",
+      "tasks": 14,
+      "steps": 78
+    },
+    {
+      "file": "docs/implementation/07-publication.md",
+      "tasks": 9,
+      "steps": 53
+    },
+    {
+      "file": "docs/implementation/08-operations.md",
+      "tasks": 12,
+      "steps": 60
+    },
+    {
+      "file": "docs/implementation/09-product-interfaces.md",
+      "tasks": 11,
+      "steps": 55
+    },
+    {
+      "file": "docs/implementation/10-website.md",
+      "tasks": 10,
+      "steps": 50
+    }
+  ],
+  "errors": [],
+  "dependency_cycle_candidates": [
+    [
+      "P03-T02",
+      "P04-T02"
+    ],
+    [
+      "P04-T13",
+      "P05-T08"
+    ],
+    [
+      "P04-T14",
+      "P05-T05"
+    ]
+  ],
+  "source_sha256": {
+    "README.md": "dd637a6364bfc0ffd9eb9b64e2e3fb170f4d0b2eca130a34f4a25c2946cd2a9c",
+    "AGENTS.md": "443f18f60a2b3bb3d20120fc3796e01adcb641db765c44eff4b439b2d549d5c5",
+    "PLAN.md": "71e25602145f73fa4d256209268b1438408b6e9b16e3eba83b37ef8a2e826bf1",
+    "docs/architecture/acquisition-services.md": "dd0c091b7ae40dc604b1616a617470007b6cd933ef142271e5796ea1d513d02e",
+    "docs/architecture/analytics-detail.md": "a2ada6ef625d5610a59f0619cfd9aa22063d80af2f8ef7faed2c5a2500603442",
+    "docs/architecture/data-and-durability.md": "c8f63bad3f1a6119e805a63854b12299db3823f35bd45cfaf5a6171b58bb28b9",
+    "docs/architecture/derived-read-publication.md": "96b91ecae1e70fce53356fddba64fe4015f341df43838873189739a8433a3c01",
+    "docs/architecture/protocol-evolution.md": "ad5cf3dccf95959f5266840ea48faa026e13c2c741f50a5583e719056a2f0a18",
+    "docs/architecture/search-and-reconciliation.md": "cf735f9a02e09018bfc1ae4341e9d6772f3585b042ebc321c5866dd46cf1bbf3",
+    "docs/architecture/storage-services.md": "7ca2e1182814052274c39221e840b599bfebdb3eeb7ff6b611b6a0b623c30740",
+    "docs/architecture/system-design.md": "8236681cc7fc1a6f3ec96f71a29a6af1e6ad22ee685905a026f647fd70daa5b7",
+    "docs/engineering/capacity-and-benchmarks.md": "17c852ede08ef7a014f99feadb33270a3a3dea297cd053fdb6899245ab2d0a5f",
+    "docs/engineering/configuration-and-runtime.md": "bccbdb4cb19a9a5102e49260dce831124ab7723809e3e9c934560aa2d5b99736",
+    "docs/engineering/rust-and-repository.md": "52d0ded4c8ab3d6b2e36ef8a395ca9dde9c0c16c98abaa3887ce75304fefadbc",
+    "docs/engineering/security-recovery-and-validation.md": "81767989475007b806eb1cf408d0f4978b2b1e5c735cea807943c37a7240a187",
+    "docs/implementation/00-specification.md": "dd6d991f08e5ed311aeb3fcb7abd0257a5c2396ba21620e4a7b3bca592ce4b72",
+    "docs/implementation/01-foundation.md": "858801a32ecd080f07d375274914ffd3379e40be9aec9eaa5765a8fb9bace327",
+    "docs/implementation/02-storage.md": "475350959a047670d8ccd08eadbc589c3efca5d9ea1dfa37a56c5a9bb41bddf5",
+    "docs/implementation/03-acquisition.md": "d5b0578055287b583fd98a8f781f25610d7f36b8040fe673dccc4eac325b7a14",
+    "docs/implementation/04-relay-lifecycle.md": "095bd3d54aeee3a015d1df6aa9d52ef59ebf4c52fb18485eea5adc67f660e8b8",
+    "docs/implementation/05-analytics.md": "1314a463c58724c3a7774cf859e1d0a955f5c888008a6daa336b9847b8c29428",
+    "docs/implementation/06-read-surfaces.md": "64bb4527e93b5d24c5132f1cc63b42701e3b156e426b82306d1b06eacfaf64d0",
+    "docs/implementation/07-publication.md": "4ad2af652da7732406748d2ee0357895dfd0eaf847e1e3f6a9714de18aa863c6",
+    "docs/implementation/08-operations.md": "3684666ec116b5f644e22188280e323d595b2381ac497ffe977ac13a45275d69",
+    "docs/implementation/09-product-interfaces.md": "caf157a2b113b2c8deed612b4b2cf6f6abbc468926ac8eb338e33f119d3b6ce9",
+    "docs/implementation/10-website.md": "7178d266c8883c7b9686a80aadc4339c5a02f80da2f51c691a712f4aef4e4e76",
+    "docs/implementation/README.md": "848814ee5ae9a1c4af7def42026558c3f40d7312adeda261ef1336efd1050ce2",
+    "docs/implementation/agent-handoff.md": "4b4f58f4465633b30718015fc9de73d7ff3a4578e85043459385d486d6cd9546",
+    "docs/implementation/coverage.md": "d5bcb70d77889366eee275931606188a8718734190869855e649e58d191d85bf",
+    "docs/planning/decision-confidence.md": "430d0360628c2e21623a14c76af44be107e6bc90ac5fe8e12ea9472bede61dd8",
+    "docs/planning/mandate.md": "a1a94116c3b994651f8535b86c826800f5135e087874b56599d0efb7ff9df9fe",
+    "docs/planning/process.md": "3180c064d17ee0830c9d3a325ca54f1a26cdcdecbeddc5c42c55145e3072986a",
+    "docs/planning/questions.md": "cd1563cccfaf85842db5300d96d4590130a73fa84241b1cce5c785b7b9c52792",
+    "docs/planning/specification-readiness.md": "9cce9704ad6a4e073cdee60c6e81234e53ddea399dd2d9aa39876547e07e8aa3",
+    "docs/product/dashboard-and-website.md": "1e2344e5395885cd91c89b2519a24dc0087464d27413008707b29cbbe8b0f9a5",
+    "docs/product/data-and-feature-decisions.md": "edb30ce9c5a5f514d2664b1bcf3dc32ef38719c616876412f20b06aa324b1944",
+    "docs/product/private-administration.md": "89fe804a8bfb102c4f2e3c96b45dbd9fa3c8faef4c314fbccca70aceff470521",
+    "docs/product/requirements-and-history.md": "8c006bac3bd203b6e68a90eef7f8ab8e78a7f9fd408eb5f859bcebdb6ab5805a",
+    "docs/research/acquisition-findings.md": "42f66f3df81a8270b1a6b68bcba0f0dfa95015bcc9e070187b4f1ea9de22d737",
+    "docs/research/dependency-selections.md": "62b4ee9c458b6ea51478f32ce67f9aec4c284de3ace0ac4bc7f3ccf26751132d",
+    "docs/research/derived-read-publication-findings.md": "aa4f1df3b52fe63833245770fb7745feb5188f646653d09baf090e3780e18847",
+    "docs/research/experiment-summary.md": "e6446478e8728f18f3b5596b6169d3d95392978d8e7845df8230444fe5644d5a",
+    "docs/research/go-acquisition-code-walkthrough.md": "e3ed1464709f25885a085bc454132fa2420e0a10a5aae0232dc788ea2b264a55",
+    "docs/research/go-analytics-code-walkthrough.md": "beeca9d23412b4d589cf8458f27dc430d075883b280dd82fb4632190334be99e",
+    "docs/research/go-read-runtime-code-walkthrough.md": "a4db86d06f3420507df48c59c4b50ea76870c273207863f30108872f2cd49585",
+    "docs/research/go-storage-code-walkthrough.md": "b873b7218e75c081c14288dfcaa08c527709b0a78bf3ec7b0b30fd6de0541577",
+    "docs/research/product-surfaces-findings.md": "9b98b06ad3b2cb5d599cbb511c5da83f9ca2ec686038c27705f32c1ad3d87c7b",
+    "docs/research/tux-retirement-20260917.md": "d4df9ff32340514aa2be13e64280cdea1920c969fb42e09b762ccf3b4258b3ca",
+    "docs/reviews/01-vision-recovery.md": "81eefb3e5f70de0a2d14fb7bd25958b5c49cd4020d697c0d818df1faaf807154",
+    "docs/reviews/02-contracts-and-simplification.md": "add22b946c7ee038cedf384aa6122fb15059c50569fe9ad2069a149637aab9c2",
+    "docs/reviews/03-storage-and-sdk-experiments.md": "163476c92f8b7b18c497974bb626ad56cc998ee369b301583b36f42653dadabf",
+    "docs/reviews/04-failures-and-growth.md": "e5840e5d3b1718851ea9b44ccea26b10fb13b5b1c0fe7027317354b841d14438",
+    "docs/reviews/05-complete-product.md": "a077a06623e538fa52ee4dfcefd32067764c0784e71ca7fbe56827fe025092a8",
+    "docs/reviews/06-reconciliation-and-delivery.md": "45d79823983d06a35575023094cb39deba601d6acccaed38acdb82d6c1e79775",
+    "docs/reviews/07-phase-0-4-recheck.md": "a99c44f453175d18ad34087a05c2ae1ca42e43b66679822ca63c78b7c14b7f20",
+    "docs/reviews/07-phase-5-recheck.md": "4552502f61c3f7d3937180e65d64c3dd7ec453fbf5365b813c1e79f3d181b1ae",
+    "docs/reviews/07-phase-6-9-recheck.md": "bce3991520b3ecc0d8947b8e8cabd9bfc44e59080a04c023eeae1b067a5f3f27",
+    "docs/reviews/07-vision-and-final-recheck.md": "0f75f557c22715835b32968cecdf60afe2d2763c8f957d831dd3b107ce1260f8",
+    "docs/reviews/08-go-code-walkthrough.md": "8c3b58ae332e42ce2120ed705a562b26eb6075e9b2c24747891c09d826adf07c",
+    "docs/reviews/09-expanded-plan-rounds.md": "ea71d9b776ea3bc5eb11cb9e8153f430baceb08773970874f18ea0d83cd352ef",
+    "docs/reviews/10-acquisition-audit.md": "f04bb272081dea17d45e34f8d942720ec5538b3b33c20c5785b26888bca1d0a1",
+    "docs/reviews/10-analytics-read-audit.md": "b5c5442729c8d071259febcfc4f720df69e861901c1308f1a7b193671580cdab",
+    "docs/reviews/10-product-audit.md": "7ceb89e2f34cf61e6ca6592b99309f184a0dc0a6df985d2d79b584c6868ba4b9",
+    "docs/reviews/10-whole-repository-audit.md": "f5894b03c994e0b8590ff6702ab6d05d501f40c8d6a818940f0fa09b7201eeab",
+    "docs/reviews/11-acquisition-audit.md": "85c132ba58cf9340653b38cb6375a05dca984230c6ce00eecf5033dacbe1b220",
+    "docs/reviews/11-analytics-audit.md": "516f8d83a16c02776bb362c7d3d17d9606edcdf16d3fc5ebfa0942599219cd5d",
+    "docs/reviews/11-product-audit.md": "22b8d84c3a071cf83b7cf17931acd877c6caa0a60c9ddc9bc6ce96155a03cfed",
+    "docs/reviews/11-whole-repository-audit.md": "38881daf77a7455a6c7e6e19dece9367a161a6e44c1610d846282a62cccdbcd4",
+    "docs/reviews/12-specification-readiness.md": "f6cfc2733fa35a6b1dc0aa82118823dfca61088429f2ff1b660ef6e7cff6f7bd",
+    "docs/reviews/13-architecture-alternatives.md": "d5e80e0960a9b863eb583ba57ad20e46d01cbf5bcedbf44f413e29dd93eb3718",
+    "docs/reviews/13-product-alternatives.md": "492764ce9b39a24a7db271d5586634948795bb4f06f5464ae04db128524b3f3a",
+    "docs/reviews/13-runtime-alternatives.md": "2102b604730f1656bc99934ef53f85e72f6ad05fe32802b2db2a108b53a53990",
+    "docs/reviews/13-storage-alternatives.md": "7467d1e644d795fb86e8f55aa5a8a33f33d6743cb5b9c4e092be01027902db6f",
+    "docs/reviews/14-handoff-countercheck.md": "cca7ca4033371ef48e7c5177a415c38e7fab4444bd9b7dc0b0e693a545161e5f",
+    "docs/reviews/14-independent-closure-review.md": "a411d6b800c9997a91c573ab9a0c0e4d72c37c12b46ec5e49681bf386f568ba8",
+    "docs/specification/assertion-bindings.md": "4e788239e02d6a4b3993d4e159ed879ba25d226b3d53d30c4076f03ffd7a1a03",
+    "docs/specification/component-contracts.md": "e61ec8f3027e1bb9087d4d5556df9a781a0303ce973e4056f1aafbacdc3cfe68",
+    "docs/specification/data-contracts.md": "f294c8b81f4ef0f987c13065f5bc0f196c6a19e5c2577428df17ac3f7d166378",
+    "docs/specification/dvm-profile.md": "8d2b75912aeaef1d03233c0a4697bc283e2da0e2750d49cec28b46d66c808088",
+    "docs/specification/gateway-contracts.md": "e1ed3166f187e6b55cf29b68c8e551131267e9276d1f6f0667e6d505d7b5f007",
+    "docs/specification/identity-and-encoding.md": "bb5d6d5f91e97c0b4400300cd2e744674b902237a18b11958335c870488dd501",
+    "docs/specification/import-formats.md": "5925afc107c1e30ae9649ee6e674a636ed022ce3cf034518e2740a1d0ac191d4",
+    "docs/specification/interface-catalog.md": "ca1c514f1fd41c603e9271b2bb7210c8707f01a70843cf209ae6f06a3be26727",
+    "docs/specification/naming.md": "dc133e54594f05917c5344a1932ac4454dfa5350b8e8b337e4dee3c77e186a61",
+    "docs/specification/operations-contract.md": "7d6463f91f651843151f8e77e3fc5c7060324527adbc8dd15ffe560ba3b6fc42",
+    "docs/specification/read-view-contract.md": "4f2e630c2ef8c61305317b77267dedd19a3eb4ffa2fadd67bdebce3c6c66ebb2",
+    "docs/specification/storage-catalog.md": "3a4f7566677cf7efbfa480fd57d2709289ac9e23a30dcf4eb928c65f4a6564b2",
+    "docs/specification/workload-contract.md": "35152a1a8a4a2f7febdf0928a1d8440d338004ca813bd639fe2ff5ba19ad46e9",
+    "docs/start-here.md": "0f0b07c3b3eae9e667f904ec92d854ecc7aeece6ab810a75e2ab11813eff3277",
+    "experiments/archive-model/README.md": "1444b3ce8a19a958d8993b0ebbdefb419ebb9c583884c355cb0947ecd9c9fe50",
+    "experiments/clickhouse-frontier/README.md": "fbf4cbd18903257a28d6abfc2504365020dc4543251404166ef2ff1b4c0040d2",
+    "experiments/document-layout/README.md": "e038778d96887ecd4818a9aab815f439fb6b34d5ffbb75046aeca195221bd097",
+    "experiments/ducklake-postgres/README.md": "a3cc0ca4571f9d1b2d670180aff64d194b8237fde0c0806866415eed6ba4f87a",
+    "experiments/gateway-contract/README.md": "4054a2d524b071a9f215ea8a7eae1b25c9e4582eaccf41ad2c80a9c3fec2ccfc",
+    "experiments/identity-contract/README.md": "de5e564b05fe88260f6fd559d0b85ec788f6d39cd132a722f2e0ff734e46cc43",
+    "experiments/nostr-boundary/README.md": "de093966a47c8267bea96fac982ca919d940a03e36b9108498279816f436254a",
+    "experiments/operations-contract/README.md": "25c5aaffbaecc6416d52a8666c9cb9a4264d545dcbeb071379ef776fb1238852",
+    "experiments/parquet-targets/README.md": "a0fd199b188547014bb83637ce18615a67ac8924cde981481c6d6b001173df1f",
+    "experiments/read-rank-contract/README.md": "97dbfe5ed633f043a88d1585bed08760fdcd866bf8aa3a5d76c431f5e4d23b05",
+    "experiments/relay-profile/README.md": "ce35fb547952c0fab0c282a5d50ec9767bd2c681c0e0da3bd9c3638b3763d3b5",
+    "experiments/rocksdb-admission/README.md": "2eab99f12c5daff49f64620865ce8e43f4fa14953553cf932ea613c0ccc76e3b",
+    "experiments/storage-qualification/README-recovery.md": "1e814a77bddc9cbdea6f496e1f27fc51135ffa10c39a400ddb8edb1cc1164c05",
+    "experiments/workload-contract/README.md": "297b6e3e0d15972698dd600ea333eaab189d796b9cf4fd67a36050d1bc3094d8"
+  },
+  "limitations": [
+    "Does not parse arbitrary CommonMark or check external links.",
+    "Phase-level/prose-only prerequisites and conditional task slices require semantic review.",
+    "No Rust product, native adapter or engine compilation/execution."
+  ],
+  "review_date": "2026-09-17",
+  "checker_negative_fixture": {
+    "status": "PASS",
+    "deliberate_errors_detected": [
+      "missing_fragment",
+      "step_sequence",
+      "unknown_task"
+    ],
+    "product_acceptance": false
+  },
+  "dependency_cycle_dispositions": [
+    {
+      "producer": "P04-T02",
+      "consumer": "P03-T02",
+      "disposition": "Dependency paragraph explicitly says consumer consumes adapter; no reverse prerequisite."
+    },
+    {
+      "producer": "P04-T13",
+      "consumer": "P05-T08",
+      "disposition": "Dependency paragraph names availability pages/reducer as consumers, not prerequisites."
+    },
+    {
+      "producer": "P04-T14",
+      "consumer": "P05-T05",
+      "disposition": "Dependency paragraph explicitly says analytical task consumes result without networking."
+    }
+  ]
+}

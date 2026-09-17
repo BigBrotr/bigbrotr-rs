@@ -2,21 +2,27 @@
 
 These are selected semantic contracts. Physical schemas and starting sizes remain
 subject to the stated engine integration and workload tests before release.
+The [cross-store effect table](../specification/operations-contract.md#cross-store-effect-and-recovery-table)
+consolidates accepted identity, authority, atomic write set, response/unknown
+outcome, recovery owner and reclamation at every boundary. These detailed service
+rules remain its field/retention authority.
 
 ## Durable ingest owner
 
 Inputs are validated-format admission requests from network collection, monitor
 and importer. The owner applies current policy, verifies signed events, assigns
 immutable stream/epoch/sequence identities and atomically persists identity,
-payload, outbox and request receipt. It is the only writer of its RocksDB directory.
+shared payload, scoped eligibility/receive/provenance facts, required dictionaries,
+pending records and request receipt. It is the only writer of its RocksDB directory.
 Producer request retries are stable; while detailed receipts exist, the same
 request key with a different digest is an error. After reclamation every request
 in the retired range is refused as RetiredRequest without a digest comparison.
 No distributed caller receives a successful durable receipt before
 the owner's synchronized write succeeds.
 
-Persistent key spaces: event ID→canonical admission metadata; sequence→immutable
-record; request ID→digest/outcome; exact compact edge inventory when provenance is enabled; optional bounded
+Persistent key spaces: event ID→canonical admission metadata; event/visibility→
+first eligibility/receive minima; sequence→immutable record; request ID→digest/outcome;
+exact visibility-qualified compact edge inventory when provenance is enabled; optional bounded
 acceleration caches; owner
 metadata/schema version. Canonical event payload is present in pending state until
 archive safety permits reclamation. Rebuilding the identity inventory from a
@@ -24,6 +30,26 @@ consistent archive must preserve original record identities and first observatio
 metadata, not manufacture new records with a new ingestion time. Event-level
 first-admission and first-receive fields/corrections follow the explicit
 [data contract](data-and-durability.md), including when provenance is disabled.
+
+The [identity contract](../specification/identity-and-encoding.md) defines full
+signed-body factoring, scope-local representatives and fingerprint bytes. A new
+eligible scope is NewFacts even for a known event and with provenance disabled;
+the original private signature/admission time never becomes public by body reuse.
+Admit stays strict: a changed signature, observation or scope under the same
+retained request identity is RequestConflict even when both would deduplicate.
+
+`CertifyExisting` is a separate read-only operation with no ProducerRequestId.
+After full input/policy validation, one consistent committed inventory read
+proves all requested body/eligibility/receive/witness effects already retained,
+or returns NeedsAdmission. The operational proof references exact source
+dependencies, policy/topology/recovery generation and protection class. It creates
+no sequence, request outcome, delivery record or durable certification ledger.
+Missing scope, first network receive, earlier correction and new witness require
+the mutation path. Proof/checkpoint backup closure follows the
+[selected contract](../specification/identity-and-encoding.md#certifyexisting-without-mutation-semantics);
+receipt retirement does not remove its retained source basis. Actual adapter
+acceptance must demonstrate a write-free known-input path and reject a proof
+whose acknowledged progress outlives a missing dependency.
 
 | Key | Starting value | Change behavior |
 |---|---|---|
@@ -69,10 +95,14 @@ bytes, not cross-table completeness or authentic authorship. Scrub compares
 manifest membership/digests and logical counts with sampled revalidation; it does
 not reverify every signature on every maintenance pass.
 
-On ambiguous commit, inspect the batch receipt in a new transaction. Do not write
-a second batch if receipt state cannot be determined. Orphan prepared files are
-reclaimed only after an age/reference check, never by globbing all unlisted recent
-objects. Backup catalogs and objects together; retain required file generations.
+On ambiguous commit, inspect the batch receipt in a new healthy transaction.
+Receipt absence permits retry only after the previous transaction is known to
+have terminated/rolled back and cannot commit later. Catalog/credential outage or
+an unresolved old transaction is unknown, never a negative receipt. Do not write
+a second batch while that state is unknown. Orphan prepared files are reclaimed
+only after active worker/transaction exclusion plus an age/reference check, never
+by globbing all unlisted recent objects. Backup catalogs and objects together;
+retain required file generations.
 Remote takeover requires fencing beyond a lease in an unrelated transaction.
 
 The selected archive connection explicitly disables DuckLake data inlining
@@ -148,7 +178,10 @@ watermark GC, old-epoch resubmission and restore before accepting reclamation.
 Include an outstanding window of two with a longer page and continuous live
 traffic, a verified RPC paused before commit during retirement, and the mixed-cut
 backup counterexample. Charge incremental ledger/group-commit writes as well as
-receipt space; bounded retained detail does not eliminate per-delivery work.
+receipt space; bounded retained detail does not eliminate per-Admit delivery work.
+CertifyExisting avoids that mutation protocol only for its explicitly proven
+already-retained effects. Its bounded producer checkpoint still carries source
+dependencies and causal backup obligations; it does not certify relay coverage.
 
 ## Online indexer
 
@@ -159,6 +192,14 @@ API/deriver processes do not mutate these raw tables. Event-body and edge
 observation identities survive replay unchanged. A body may already exist while a
 new local witness still needs indexing. Exact edge admission suppresses ordinary
 repeats; strictly earlier attributable evidence creates an immutable correction.
+
+Its Index Rocks storage/RPC owner has a separate lifecycle from source projection
+and algorithms. Pausing either leaves typed dirty-only/expiry state commits and
+pinned ordered-set reads available when their dependencies/authority remain valid.
+Stopping the storage owner exposes the affected unavailable capabilities; it
+never authorizes another process to mount the directory writable. The
+[operational matrix](../specification/operations-contract.md#process-placement-and-capabilities)
+resolves archive-only, serving-only and split placements.
 
 | Key | Starting value | Change behavior |
 |---|---|---|
@@ -204,6 +245,9 @@ Readers and writers negotiate supported record/config/schema versions at startup
 Unknown versions stop affected work with an actionable error. Upgrade order follows
 backward-readable data formats and additive contracts before writer activation;
 destructive migration requires a verified recovery path and explicit operation.
+The [upgrade and rollback procedure](../specification/operations-contract.md#compatibility-migration-and-rollback)
+defines adjacent mixed versions, writer-floor activation, the last safe binary
+rollback boundary and forward repair or fenced backup restore after it.
 
 ## Typed source cuts and projection identity
 
@@ -227,6 +271,12 @@ run an independent periodic scrub schedule. Preserve one cursor, snapshot pin an
 resource budget per actual job.
 
 ## Replay memory, progress and repair boundaries
+
+Use the [whole-pipeline reservation and disk model](../specification/operations-contract.md#maximum-units-reservations-and-progress):
+local queues fit coarse process grants, archive/ACK/recovery retain dedicated
+completion capacity, and pending storage can reclaim through verified archive
+replay without waiting for CH. Lowering limits never makes accepted work
+undrainable; retain its old completion grant or refuse the change.
 
 The [storage code walkthrough](../research/go-storage-code-walkthrough.md)
 records useful prior durable-prefix, in-flight membership and all-target recovery

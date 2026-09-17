@@ -63,8 +63,9 @@ HTTP JSON metadata preserves large integers through the declared lossless scalar
 encoding; nested full Nostr events retain their mandated numeric fields. Query
 results expose view/cut, freshness, exactness, missing/disabled/refused state and
 coverage. Shared bounds and statuses remain in P06. Temporal invalidation uses
-the selected read-view contract; list/count/next-page cannot independently choose
-different evaluation times while claiming one unchanged result.
+the selected read-view contract. Snapshot list/count/next-page use one stamp;
+chronological traversal reports per-page current eligibility and a fixed candidate
+cut, with separately dated counts and no unchanged-membership claim.
 
 ## Artifact and assertion-context bytes
 
@@ -170,6 +171,21 @@ scrub/repair/migration and derive/rank commands likewise call their owning tasks
 
 ## Nostr, internal transport and user interfaces
 
+The optional [gateway contract](gateway-contracts.md) adds native MCP Streamable
+HTTP at `/mcp` and a separate ContextVM Nostr adapter. Both are disabled in every
+supplied recipe. MCP uses explicit protocol 2026-07-28; the initial experimental
+ContextVM binding uses 2025-11-25 MCP inside signed kind-25910 messages with
+required CEP-4 encryption. ContextVM is not NIP-90 or a DVM profile. Independent
+client and bounded-resource qualification gates apply before advertising it.
+
+The finite tools are `bigbrotr_capabilities`, `bigbrotr_query`, `bigbrotr_count`
+and `bigbrotr_get_event`, generated from this resource registry. They preserve
+registered snapshot/traversal modes, grants, exposure, row units, byte limits,
+source/evaluation metadata and opaque continuations. Traversal is current
+eligibility per page under a fixed acquisition bound, not list/count equivalence.
+No MCP/ContextVM payment, subscription, management, arbitrary proxy or file-fetch
+tool is selected. Large artifacts retain authorized HTTP download routes.
+
 ArchiveRelay serves REQ/CLOSE, finite COUNT, configured AUTH, optional NIP-50 and
 NIP-77, historical response followed by bounded live delivery. Incoming EVENT
 writes are refused. NEG advertises only eligible retrievable bodies; a later
@@ -183,8 +199,15 @@ Compatible protocol fields and proposed extensions remain separately identified.
 The [assertion binding specification](assertion-bindings.md) owns subject/field
 meaning. A generic sign-anything or pay-anything public endpoint is not selected.
 
+MCP/ContextVM authentication resolves into the same internal principals and
+five-second authorization leases as other reads. Adapter concurrency/queues are
+subdivisions of the deployment budget, never independent query allowances.
+ContextVM uses a dedicated purpose-limited signer and configured relay set;
+Nostr authentication cannot confer history, management or egress authority.
+
 Internal Ingest/Archive/Index/Read/Control gRPC uses the same typed contracts as
 in-process calls, with mTLS and bounded messages. It is not the public HTTP API.
+Generic public RPC/gRPC, MCP stdio and arbitrary MCP forwarding are not selected.
 The public dashboard, private administration and static documentation/blog site
 are three separately built interfaces in one repository. Rust library users may
 reuse reviewed pure model/protocol/analytics APIs without running the daemons.

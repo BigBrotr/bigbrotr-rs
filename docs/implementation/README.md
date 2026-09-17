@@ -13,6 +13,7 @@ producers/consumers; prose and fixtures explain meaning beyond the IDs.
 
 ## Normative specification and reading order
 
+Use [the agent execution guide](agent-handoff.md) for the implementation/audit pipeline.
 Begin with [the newcomer guide](../start-here.md), then the
 [storage catalog](../specification/storage-catalog.md),
 [interface catalog](../specification/interface-catalog.md) and
@@ -36,12 +37,12 @@ updates the contract, affected tasks, fixtures and user-facing explanation.
 The [coverage ledger](coverage.md) maps every retained family, responsibility,
 public/private consumer and deliberate exclusion to actual task IDs.
 
-The current breakdown contains 121 tasks and 746 numbered steps: ten planning
-tasks and 111 future implementation tasks. These counts identify scope and are
+The current breakdown contains 123 tasks and 756 numbered steps: ten planning
+tasks and 113 future implementation tasks. These counts identify scope and are
 not quality or test-coverage targets.
 
 The [readiness register](../planning/specification-readiness.md) identifies
-remaining paper closure in P00-T06–T10. P00-T01–T05 remain records of earlier
+paper closure and remaining runtime gates under P00-T06–T10. P00-T01–T05 remain records of earlier
 completed work; they are not evidence that the later findings are already fixed.
 Close meaning/authority/persistent-interface decisions on paper. Resolve physical
 choices with their defined experiments and private coding details during review.
@@ -56,7 +57,7 @@ choices with their defined experiments and private coding details during review.
 | [03 — Acquisition](03-acquisition.md) | Fair sessions, live/history/NEG, scope/completion evidence and resumable imports |
 | [04 — Relay lifecycle](04-relay-lifecycle.md) | Enrollment/discovery, guarded transport, validation, all measurement families and evidence lifecycle |
 | [05 — Analytics](05-analytics.md) | Current state, exact facts, provenance-derived statistics, graph/ranks and explainable relay selection |
-| [06 — Read surfaces](06-read-surfaces.md) | Shared authorized reads, search/count/cursors, ArchiveRelay, NIP-77 and optional DVM execution |
+| [06 — Read surfaces](06-read-surfaces.md) | Shared authorized reads, search/count/cursors, ArchiveRelay, NIP-77 and optional DVM/MCP/experimental ContextVM |
 | [07 — Publication](07-publication.md) | Purpose-bound signer, durable exact-byte per-target delivery, NIP-66/85 and protocol compatibility |
 | [08 — Operations](08-operations.md) | Complete CLI/management, packaging/configuration, export/backup/restore/migration, alerts and release evidence |
 | [09 — Product interfaces](09-product-interfaces.md) | Complete public dashboard and private administration, actual browser journeys and accessibility |
@@ -97,6 +98,10 @@ important apparent cycles:
   useful event journey after early storage/read slices; it does not block P02.
 * P02-T01 provides minimum endpoint enrollment before acquisition. P04 later
   extends that registry without redefining endpoint identity.
+* P01-T04's static configuration core (steps 1–5) precedes P01-T05/T06 and
+  P02-T01. P02-T01 supplies PG migrations/CAS, after which T04 step 6 and its
+  managed/declarative persistence tests finish. Whole-task T04 completion is not
+  a prerequisite for the schema it needs.
 * P04-T02 implements guarded transport early, using P01 protocol/policy/runtime
   primitives; P03 socket collectors consume it.
 * P07's signer/outbox primitives can run after their model/control prerequisites,
@@ -152,5 +157,6 @@ in [the revision dossier](../reviews/09-expanded-plan-rounds.md). Completion of
 that planning work means the selected product has an explicit build/validation
 path. It does not mean the future implementation or every performance assumption
 has already passed. Product work begins only when the owner starts that stage.
-The subsequent readiness assessment also identifies remaining paper ambiguities;
-the existence of implementation tasks for them is not their specification closure.
+The current readiness register links the selected rules and independent fixtures
+closing the later paper ambiguities. Actual adapter/release gates remain separate;
+no planned test becomes executed merely because its task is well specified.

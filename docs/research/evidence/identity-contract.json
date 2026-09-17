@@ -1,0 +1,68 @@
+{
+  "command": "python3 experiments/identity-contract/probe.py --evidence docs/research/evidence/identity-contract.json",
+  "cryptographic_event_verification_test": false,
+  "engine_or_crash_test": false,
+  "identity_and_compatibility": {
+    "atomic_overflow_refusal": true,
+    "handoff_preserves_old_mapping": true,
+    "incompatible_peer_refused_before_write": true,
+    "qualified_domain_alias_rejected": true,
+    "restore_no_reuse": true
+  },
+  "limits": [
+    "Symbolic event signatures; invalid-input flag models an independent verifier boundary.",
+    "No filesystem sync, database, process fencing, benchmark or Tux workload.",
+    "Deterministic CBOR subset probe is research code, not a proposed product codec.",
+    "History oracle covers bounded scenarios; no exhaustive state-space proof."
+  ],
+  "model": {
+    "independent_history_comparisons": 2018,
+    "negative_control_count": 9,
+    "negative_controls": {
+      "backup_missing_body": true,
+      "expiry_before_winner_resurrects_old": true,
+      "global_first_receive": true,
+      "global_first_signature": true,
+      "id_hit_bypasses_signature_verifier": true,
+      "private_deletion_suppresses_public": true,
+      "proof_missing_eligibility": true,
+      "same_event_means_same_request": true,
+      "winner_before_authorization": true
+    },
+    "scenario_runs": 52
+  },
+  "node": "v26.4.0",
+  "openssl": "LibreSSL 3.3.6",
+  "platform": "Darwin arm64",
+  "product_implemented": false,
+  "python": "3.9.6",
+  "scope": "isolated encoding/reference-model evidence only",
+  "sources": {
+    "experiments/identity-contract/golden-vectors.json": "a81a3015cf2c60ecd0fcc5d576e8a6d68b66e01396a39a28a802595d159e9dc6",
+    "experiments/identity-contract/probe.py": "d8ec5d4ee6b9316920fa3cf1df095ae9048c854adcc5450ac21cf381d3abc5de",
+    "experiments/identity-contract/reference.mjs": "45f90159b49bd9a24e27b8f3c1809baadf060ffb4e0353f94f07bb2d0c70ad07",
+    "experiments/identity-contract/write_vectors.py": "5cfe7b247303ce0a6ec2f07732dbaea7754425af8162fc028c3faccc5a0672db"
+  },
+  "status": "PASS",
+  "vectors": {
+    "digest_implementations": [
+      "Python hashlib",
+      "Node crypto",
+      "system OpenSSL"
+    ],
+    "golden_vectors": 14,
+    "independent_encoders": [
+      "Python",
+      "Node.js"
+    ],
+    "negative_controls": {
+      "domain_alias": true,
+      "drop_repeated_tags": true,
+      "little_endian": true,
+      "null_equals_empty": true,
+      "request_signature_omitted": true,
+      "sort_signed_tags": true,
+      "u64_via_float": true
+    }
+  }
+}

@@ -41,6 +41,13 @@ to disclose history; extra local CPU cannot repair those conditions.
 
 ## A workload model instead of a relay-count slogan
 
+The selected [mixed-workload acceptance contract](../specification/workload-contract.md)
+fixes the nominal 5k/10k/50k/100k tuples, event/tag/text/time distributions, aged
+stores, graph/query/maintenance mix, provisional usefulness objectives, target
+calibration rules and independent semantic fixture. It closes S07's paper inputs;
+the measurements below do not certify those new workloads. Per-class offered,
+completed, refused, cancelled, restarted and perpetually deferred work all count.
+
 Let D/s be delivered events, U/s unique events, P/s new provenance facts, B average
 wire bytes, V verification CPU seconds/event, and Q query work. Network input is
 approximately D × B plus protocol/TLS overhead; verification work is D × V before
@@ -108,12 +115,13 @@ p50/p95/p99, correctness digest, warmup/repetitions and confidence/variance. Com
 Go and Rust with the same semantics, buffers, crypto/library path, durability,
 batch size and resource limits. Component speed does not replace end-to-end tests.
 
-Provisional engineering targets must be labeled as such: bounded memory under
-sustained overload, no lost acknowledged data under the defined crash model,
-no starvation of eligible endpoints, declared read-latency/query budgets and
-replay capacity above steady admitted rate with headroom. Publish the measured
-operating envelope per release; do not turn an unmeasured 50 ms or 5k-relay number
-into a marketing guarantee.
+Provisional engineering targets are selected in the workload contract, including
+useful nominal admission/query completion, bounded monitoring lateness, archive
+and source-projection lag, recovery throughput and queue/control reserves. They
+remain objectives until measured. For costs without a justified rate, its
+calibration artifact freezes acceptance before comparing candidates; refusing all
+expensive work cannot count as a passing bounded system. Publish the measured
+operating envelope per release; an unmeasured target is not a marketing guarantee.
 
 ## Billion-scale representation challenge
 

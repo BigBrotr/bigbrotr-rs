@@ -17,7 +17,7 @@ apps/
       read/                typed resources, plans and shared serving semantics
       network/             guarded DNS/TLS/WebSocket and configured overlay routes
       publication/         signed outbox, NIP-66/85 and query-result delivery
-      interfaces/          HTTP, ArchiveRelay, internal RPC and management adapters
+      interfaces/          HTTP, ArchiveRelay, DVM, MCP/ContextVM, internal RPC and management adapters
   dashboard/               SvelteKit/TypeScript static client
   admin/                   separate private SvelteKit/TypeScript static bundle
   site/                    Astro/Starlight product pages, documentation and blog
@@ -111,13 +111,15 @@ invariant exists, not a prose translation of the code.
 
 | Area | Direction | Review/validation requirement |
 |---|---|---|
-| Async networking | Tokio, rustls, bounded websocket transport | Explicit buffer limits, DNS/IP pinning, proxy behavior, cancellation and multiplexing |
+| Async networking | Tokio, rustls, `tokio-tungstenite` 0.29 family | Supplied guarded streams preserve DNS/IP pinning and Host/SNI; explicit frame/message/buffer limits, proxy behavior and cancellation |
+| HTTP and private RPC | axum 0.8 / Hyper 1 / Tower 0.5; tonic + tonic-prost 0.14 / prost 0.14 | One runtime/middleware family; hard body/queue bounds, both RPC codec limits, propagated deadlines and operation authorization; no public generic RPC |
 | Nostr semantics/crypto | `nostr` types and maintained secp256k1 implementation | Independent admission verification; wire extensions retained; no blind SDK pool defaults |
-| Durable embedded state | Maintained RocksDB Rust binding | WAL sync/atomic batch checked through actual binding; native library builds and cache budgets |
-| PostgreSQL | Async typed SQL adapter, explicit migrations | Transaction ownership, parameterized statements, pooled connection budgets |
-| Parquet/Arrow | Apache Arrow/Parquet Rust libraries where useful | Nested tags/raw bytes round trip, bounded row groups, schema compatibility |
-| DuckLake | Pinned DuckDB engine + signed compatible extensions in archive worker | PG catalog probe, snapshot backup, extension installation unavailable at runtime still works |
-| ClickHouse | Maintained Rust client plus parameterized typed row model | Real engine version matrix, binary values, time ranges, retry/visibility semantics |
+| Durable embedded state | rust-rocksdb `rocksdb` 0.25 family | Actual binding's synced WAL/atomic batch, exclusive owner, native build/cache/compaction bounds; native 11.8.1 candidate needs fresh qualification |
+| PostgreSQL | `tokio-postgres` 0.7 + `deadpool-postgres` 0.14 + rustls connector; explicit migrations | Direct PG transaction ownership and bounded pool; parameters, lost COMMIT resolution and connection-wide cancellation races; SQLx/ORM not selected |
+| Parquet/Arrow | Apache Arrow/Parquet 58 family, aligned to duckdb-rs | Nested tags/raw bytes/extreme integers round trip, bounded row groups; ordinary artifacts only, no independent DuckLake file mutations |
+| DuckLake | Official `duckdb` 1.10505 family (DuckDB 1.5.5) + signed compatible extensions in isolated Rust worker | Exact offline native assets, PG catalog/receipt recovery, bounded output and interrupt/kill/panic behavior; Arrow iterator alone is not a memory bound |
+| ClickHouse | Official `clickhouse` 0.15 family with validated typed rows and server-side value parameters | Real engine version matrix, binary values, time ranges, explicit insert completion, server cancellation and retry/visibility semantics |
+| Agent gateways | Official rmcp 3.4.0 with explicit MCP 2026-07-28; bounded ContextVM framing over Nostr primitives | Optional/off; ContextVM SDK 0.2.2 is an interoperability oracle for its legacy binding, not a mandatory server worker; see [gateway contract](../specification/gateway-contracts.md) |
 | CLI/config/logs | clap, serde/TOML, tracing | Versioned CLI behavior, actionable errors, redaction and generated reference |
 | Frontends | SvelteKit static dashboard; Astro/Starlight site | Rust process serves static assets; no Node process required in operator deployment |
 
@@ -127,6 +129,12 @@ select a release solely from stale search snippets: the Nostr docs lookup return
 different versions, so the probe records the exact source commit. Dependency
 updates include protocol conformance, storage/recovery and reproducibility checks.
 Vendoring/offline bundles are distribution decisions, not substitutes for review.
+
+The [dependency selection record](../research/dependency-selections.md) fixes exact
+source-inspected candidates, alternatives, feature intent and early P01/P02 gates.
+These families are selected for implementation; the actual release tuple remains
+unqualified until Rust bindings, engines and Linux targets pass those gates.
+The isolated Cargo resolution result is not a build or durability test.
 
 The SDK source probe reproduced a valid-ID-cache bypass in its private receive
 handler at the recorded commit. Its NIP-67 parser also discards hints. Therefore

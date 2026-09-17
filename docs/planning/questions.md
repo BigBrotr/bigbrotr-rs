@@ -134,3 +134,12 @@ of those particular resources; local repositories and unrelated Tux applications
 remain untouched. The [retirement record](../research/tux-retirement-20260917.md)
 documents scope and verification. Prior labs are unavailable for reuse; new
 research must recreate dependencies and fixtures deliberately.
+
+Q24: The owner delegates resolution of remaining design choices and asks for a
+clean repository another implementation agent can execute, with meaningful
+periodic audits and practical validation. The selected S01–S08 contracts, agent
+handoff and current readiness register replace the prior open disposition.
+ContextVM and MCP have concrete optional gateway contracts; generic public RPC
+is not selected. Product implementation has not started. New isolated Tux
+qualification uses a fresh separately inventoried lab; actual results and remaining
+failure/scale limits belong to the evidence dossier, not implied approval claims.

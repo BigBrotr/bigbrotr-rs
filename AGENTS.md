@@ -31,3 +31,16 @@ and concise evidence; downloaded checkouts, build caches, and raw generated data
 belong under ignored `.research/` and must be inventoried. Never commit secrets,
 live credentials, or unrelated host data. Do not add arbitrary line-count,
 coverage-percentage, or repeated-clean-review requirements.
+
+## Implementation handoff
+
+Use [the agent execution guide](docs/implementation/agent-handoff.md) as the
+single pipeline for task selection, dependency research, independent fixtures,
+practical execution, review, documentation and coherent commits. Root AGENTS.md
+is the agent entrypoint; do not maintain a competing agent.txt instruction set.
+The current specification is authoritative over historical review suggestions.
+
+Before product work, consult the readiness register. During implementation,
+audit every new persistent boundary and each end-to-end milestone; test actual
+processes, engines and clients where those guarantees matter. Do not translate
+unchecked planned commands or small research probes into claimed release evidence.

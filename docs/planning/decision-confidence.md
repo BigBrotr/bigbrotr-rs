@@ -8,8 +8,9 @@ a narrow experiment and an unperformed qualification. It supplements the
 
 The subsequent [architecture challenge](../reviews/13-architecture-alternatives.md)
 questions several selections in this register, including archive authority and
-ordinary read semantics. Its alternatives are advisory, not adopted defaults;
-the coordinator records which recommendations it supports, limits or declines.
+ordinary read semantics. Its original report remains historical advice; selected changes are now adopted
+in the owning contracts and summarized in the [current readiness register](specification-readiness.md).
+That register distinguishes adopted semantics from bounded empirical gates.
 
 ## What the design optimizes
 
@@ -81,10 +82,12 @@ The [eight-case document-layout probe](../../experiments/document-layout/README.
 finds split objects smaller for repeated documents across many files, and wide
 rows smaller for every tested high-churn case. File/order locality, object lookup,
 privacy layout and maintenance costs can change the selection.
-`general-read-relay/1` has an explicit A/L score and separate capabilities; its
-weights are a selected explainable policy, not empirically optimal user utility.
-The ordinary temporal cursor policy needs useful completion-rate measurements
-under heavy expiration, in addition to correct invalidation.
+Relay selection now starts with the measurement vector and the named
+`reliable-read/1` ordering. Optional `general-read-relay/1` retains an explicit
+A/L score; its weights are a selected explainable policy, not empirically optimal
+user utility. Ordinary chronological traversal fixes its candidate acquisition
+cut and refreshes authorized eligibility per page. Its completion under churn
+must be measured separately from the stricter snapshot mode.
 
 P02-T09 compares whole storage representations and recovery under the same input.
 P03-T12/P04-T12 measure actual serviced endpoint intervals under live/backfill/
@@ -104,9 +107,8 @@ implementation still waits for the owner's separate start instruction. The
 current honest conclusion is a reviewed, improved design with explicit empirical
 obligations, not a proven global optimum or a finished production system.
 
-The later [specification-readiness assessment](specification-readiness.md) also
-identifies remaining paper closure, including same-event visibility transitions
-and exact persistent digest/identity encoding. Those are not empirical tuning
-choices. P00-T06–T10 must close their rules and cross-contract examples before
-declaring the paper baseline complete. This register's technology selections do
-not imply that every selected interface is already specified field by field.
+The current [specification-readiness assessment](specification-readiness.md)
+records selected rules for all eight former paper gaps, including same-event
+visibility and exact persistent digest/identity encoding. Their worked fixtures,
+cross-contract review and actual implementation gates remain distinct evidence.
+This register's technology selections do not certify any unimplemented adapter.

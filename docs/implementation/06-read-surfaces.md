@@ -1,4 +1,4 @@
-# Phase 06 — Query core, HTTP, ArchiveRelay and query DVM
+# Phase 06 — Query core, HTTP, ArchiveRelay, DVM and finite agent gateways
 
 This is a future implementation plan. No task, command or test below is claimed
 to exist or pass yet. Follow the [component contract](../specification/component-contracts.md),
@@ -8,13 +8,17 @@ to exist or pass yet. Follow the [component contract](../specification/component
 [data contract](../specification/data-contracts.md). The selected, complete
 [DVM application profile](../specification/dvm-profile.md) governs T09–T11;
 generic NIP-90 compatibility must not be substituted for that profile.
+The selected [gateway contract](../specification/gateway-contracts.md) governs
+optional MCP/ContextVM tasks T13/T14. ContextVM is a separate experimental MCP
+transport; its bounded finite capability does not replace DVM delivery/payment
+semantics. Both new adapters are disabled by default and require qualification.
 The [Go read walkthrough](../research/go-read-runtime-code-walkthrough.md)
 identifies implementation pitfalls without certifying future Rust behavior.
 
 All named implementation files and commands are proposed outputs. The application
 owns query admission/planning and engine adapters; pure wire codecs remain in
 `bigbrotr-protocol`. No public endpoint accepts SQL, engine credentials, arbitrary
-paths or executable expressions. API, relay and DVM use one admitted query
+paths or executable expressions. API, relay, DVM, MCP and ContextVM use one admitted query
 contract and deployment resource budget. Stopping acquisition or derivation
 does not stop reads of retained compatible generations.
 Exporter/importer user workflows and standalone artifacts are owned by P08-T04;
@@ -115,8 +119,10 @@ cannot become admissible merely by changing transport.
 `tests/fixtures/read/event_queries.json`; `tests/acceptance/cases/event_queries.py`.
 
 **Boundary:** one admitted event filter plan yields complete original signed
-events at a pinned cut plus read metadata, or an explicit typed refusal. IDs,
-tags, bodies, corrections and current headers use the same cut/incarnation.
+events plus mode/cut metadata, or an explicit typed refusal. Snapshot mode uses
+one compatible data/eligibility stamp. Traversal pins candidate IDs/tags/bodies
+at its acquisition cut and applies the separately reported newer current
+eligibility cut, as the read-view contract specifies; do not relabel it a snapshot.
 Normal visibility includes deletion/expiry rules; authorized immutable history
 is an explicit resource. An ID lookup is not an archive-policy bypass.
 
@@ -124,8 +130,8 @@ is an explicit resource. An ID lookup is not an archive-policy bypass.
   union across filters, exact case-sensitive tags/IDs and inclusive Nostr time
   bounds over the full accepted timestamp domain. Preserve absent versus zero
   limit and define strict supported filter shapes at the adapter boundary.
-- [ ] **Step 2:** select current winners before query predicates and visibility,
-  then apply deterministic `created_at DESC,event_id ASC` keysets and limits.
+- [ ] **Step 2:** authorize the source population before winner/deletion
+  reduction, then apply ordinary expiry/query predicates and deterministic `created_at DESC,event_id ASC` keysets and limits.
   Consult indexed logical deletion/expiry state, not a global tombstone scan
   reloaded for every page. Expiry changes visibility without a new ingestion cut.
   Build the ordered expiry state/partition summaries and deadline checks specified
@@ -150,7 +156,8 @@ is an explicit resource. An ID lookup is not an archive-policy bypass.
   archive fallback with Indexer stopped and then resumed.
 
 **Oracle and negative control:** an independent full-fixture evaluator sorts
-all source events, selects winners, applies policy, then filters. A newer
+the authorized source population, selects winners, then applies ordinary
+expiry/deletion/query predicates. Private inputs cannot affect a public winner. A newer
 nonmatching replacement must prevent a matching obsolete event from resurfacing.
 A reverified archive export contains both, while the normal relay response
 contains neither. Corrupt one content byte with an unchanged cached ID and require
@@ -171,11 +178,14 @@ authenticated/encrypted cursor. It binds deployment, resource version, principal
 normalized query/projection/sort, policy, source/target generations, issuance and
 expiry. It must not reveal withheld IDs or query text through base64 decoding.
 
-Bind `ReadViewStamp` in both the encrypted envelope and PG pin. The earlier
-relevant temporal deadline invalidates an ordinary pin with 409
-`temporal_snapshot_expired`, independently of its 900-second absolute lifetime.
-P06-T03 acceptance includes the no-ingestion page/count/expiry/NEG sequence in the
-read-view contract and records failed-completion rates under dense expirations.
+Bind mode, acquisition cut and `ReadViewStamp` in the encrypted envelope and PG
+pin. In `snapshot` mode the earlier relevant temporal deadline yields 409
+`temporal_snapshot_expired`, independently of the 900-second absolute lifetime.
+Ordinary chronological `traversal` instead rechecks current eligibility at each
+page/chunk, preserves its candidate cut and advances the true scanned key; it
+promises no duplicate IDs, not immutable membership or list/count equivalence.
+P06-T03 acceptance covers both modes, expiry/replacement/private-input cases,
+slow clients and scan-only pages. Record useful completion/refusal/restart rates.
 
 - [ ] **Step 1:** implement a persistent shared keyring with an AEAD profile,
   key ID/version and associated-data binding. Initial selected primitive is
@@ -653,7 +663,9 @@ Only regtest funds are used; missing real regtest evidence is `NOT_RUN`.
 
 **Dependencies:** core P06-T01–T08 and P05-T13. Free DVM capability adds P06-T09
 and P07-T01–T04; subscriptions add P06-T10; advertised paid support adds P06-T11.
-Requiredness is per advertised capability: absent LND may not block a free-only
+Advertised native MCP adds T13; advertised ContextVM adds T14. These are
+conditional gate dependencies, not requirements for a deployment that leaves
+the adapters disabled. Requiredness is per advertised capability: absent LND may not block a free-only
 release or count as passed paid acceptance. The full selected feature delivery
 still owes its paid-capability regtest before claiming that optional feature.
 
@@ -665,9 +677,13 @@ still owes its paid-capability regtest before claiming that optional feature.
 `apps/bigbrotr/tests/read_lifecycle.rs`.
 
 **Boundary:** identical admitted scope/cut produces equivalent event membership
-and count units through HTTP, ArchiveRelay and finite DVM, subject to their
+and count units through HTTP, ArchiveRelay and finite DVM, plus advertised
+MCP/ContextVM, subject to their
 documented paging/wire differences. Search and NEG support only their declared
-shapes. This scenario exercises the assembled product, not three isolated mocks.
+shapes. Compare strict snapshots at the same stamp. For chronological traversal,
+compare each page's membership/eligibility under its reported evaluation and
+fixed acquisition bound, never infer fixed cross-page membership or count equality.
+This scenario exercises the assembled product, not isolated mocks.
 
 - [ ] **Step 1:** freeze a mixed public/private/current/history fixture with
   real full signed events, derived facts, source gaps, empty lists, withheld
@@ -677,10 +693,15 @@ shapes. This scenario exercises the assembled product, not three isolated mocks.
   clients and the explicit DVM client against packaged services with actual PG/CH
   data. Validate exact response shape, signatures, cursor continuation and
   capability metadata as well as row membership.
+  Add an independent 2026-07-28 MCP client and pinned ContextVM client when
+  advertised; run the finite journeys and transport-specific negative cases.
 - [ ] **Step 3:** run foreground acquisition plus bounded queries, search, COUNT,
   multiple NEG sessions and slow subscribers. Measure aggregate memory, scan,
   CPU, output queues and acquisition latency; refuse excess work fairly without
   granting each surface a full independent machine budget.
+  Link one caller's token/key identities and verify a transport switch cannot
+  multiply principal limits. Include malformed crypto/wire admission and the
+  reserved cancellation lane before expensive query work.
 - [ ] **Step 4:** stop each service independently, append input, restart and
   catch up. Kill queries, reset connections, remove a body, invalidate a serving
   incarnation, drop PG and revoke scope with notifications blocked. Verify the
@@ -696,6 +717,110 @@ read that leaks one logically deleted/private event fails even if every adapter
 agrees. An adversarial slow client must cause its own bounded close without
 stalling acquisition. Required scenarios absent from the evidence fail the phase
 gate rather than being counted as successful.
+
+## P06-T13 — Finite MCP gateway over Streamable HTTP
+
+**Dependencies:** P06-T01–T06; P01-T04–T08. Optional protected deployments also
+need the configured external authorization server, not a new BigBrotr login
+service. Public mode has no external authorization-server dependency.
+
+**Proposed files:** `apps/bigbrotr/src/read/gateways/mcp.rs`;
+`contracts/gateways/v1/{tools,request,result}.schema.json`;
+`config/examples/mcp.toml`; `docs/user/api/mcp.md`;
+`tests/acceptance/cases/mcp_gateway.py`;
+`tests/fixtures/read/mcp_gateway.json`.
+
+**Boundary:** an authenticated finite MCP call maps through the existing registry
+into one admitted read and returns the exact typed result/error. The adapter is
+optional, off in every recipe, and has no arbitrary proxy/management/payment
+operation. Internal gRPC remains private.
+
+- [ ] **Step 1:** pin official rmcp and explicitly select protocol 2026-07-28;
+  implement server discovery, per-request version metadata/header consistency,
+  tools/list and tools/call. Generate the four `bigbrotr.tools/1` definitions from
+  the registry; include required modern result/catalog-cache fields. Page whole
+  catalog definitions with protected schema/policy-bound cursors and prove each
+  definition fits the smaller ContextVM wire allowance after encoding. Refuse
+  legacy/unknown versions explicitly, without accidental SDK-default downgrade.
+- [ ] **Step 2:** expose `/mcp` on the public read listener using bounded finite
+  JSON responses. Validate any present Origin; use public principal by default.
+  Protected mode validates exact OAuth issuer/audience/subject and publishes
+  resource metadata; never accept management sessions or identity headers as
+  authority. Resolve grants and current leases on every request.
+- [ ] **Step 3:** preserve resource schema, row units, snapshot/traversal mode,
+  source/evaluation stamp and opaque page cursor. Encode structuredContent and
+  matching JSON text within the combined 256-KiB response limit; an oversized
+  row is a typed refusal. Count remains exact-or-refused when exact requested.
+- [ ] **Step 4:** enforce 4 active/16 queued within shared admission, 64-KiB
+  request and 20-second total call bound. Propagate disconnect/deadline/revocation
+  to engine cancellation and pins. Exclude tasks, subscriptions, sampling,
+  elicitation, filesystem roots, payments and stdio from advertised capabilities.
+- [ ] **Step 5:** use a separately implemented current MCP client against the
+  packaged handler for discover/query/actual-next-cursor/get-event/search/count,
+  every advertised resource shape, protected history and unavailable resources.
+  Test missing modern fields, batch/SQL/URL input, duplicate keys, wrong audience,
+  unknown subject, identity spoof, slow disconnect and dropped-policy-notification
+  revocation. Capture actual output after expiry, not only handler return values.
+
+**Oracle and negative control:** the shared independent fixture evaluator owns
+membership. A protocol-valid tool call containing SQL must fail application
+validation; a gateway that serves the correct rows under an expired lease fails.
+Snapshot and traversal fixtures test their different promises. Schema-only
+research does not close packaged handler or OAuth acceptance.
+
+## P06-T14 — Experimental finite ContextVM gateway
+
+**Dependencies:** P06-T01–T06/T13 application schemas; P01-T03/T05/T06/T08;
+P07-T01–T04 purpose-bound signing/egress primitives. No DVM subscription/payment
+dependency. ContextVM remains disabled and unadvertised until this qualification
+passes; it is supported optional implementation scope, not a maturity claim.
+
+**Proposed files:** `apps/bigbrotr/src/read/gateways/contextvm.rs`;
+`contracts/gateways/v1/contextvm.schema.json`;
+`config/examples/contextvm.toml`; `docs/user/api/contextvm.md`;
+`tests/acceptance/cases/contextvm_gateway.py`;
+`tests/fixtures/read/contextvm_gateway.json`.
+
+**Boundary:** independently verified directed/encrypted Nostr frames carry only
+the pinned 2025-11-25 finite MCP subset and share T13's application tool schemas.
+Transport author identity constructs the same admitted principal; the adapter
+does not create durable DVM jobs or financial obligations.
+
+- [ ] **Step 1:** implement bounded application framing over selected Nostr
+  primitives, using pinned ContextVM SDKs as interop oracles. Verify both wrapper
+  and inner signed kind-25910 event, recipient, timestamp and JSON-RPC shape;
+  support CEP-4 single-layer encrypted inner events with 1059/21059 mirroring.
+  Bind signer purpose and 1–4 operator-configured relays; never learn request
+  destinations or silently enable SDK oversized-transfer/streaming defaults.
+- [ ] **Step 2:** negotiate exact 2025-11-25 before queries and cap session/replay
+  state. Identity is inner author, never supplied `_meta` or outer wrapper key.
+  Enabled empty allowlist fails configuration; explicit public mode grants only
+  public reads. Map provider/author/original-RPC-ID to verified event/token so
+  same IDs across authors cannot misroute replies or cancellations.
+- [ ] **Step 3:** intersect 2 active/8 queued/1 per author with global admission;
+  enforce 32-KiB inner request/result, 128-KiB signed wire and actual NIP-44 limits,
+  2-second queue wait and 20-second total deadline. Bound crypto/input queues
+  before dispatch. Deduplicate inner IDs without evicting live replay records.
+- [ ] **Step 4:** dispatch exact signed bytes with at most two bounded retries,
+  rechecking lease/temporal authority before sign/send. No claim of requester
+  receipt follows relay OK. Implement signed same-author cancellation; restart
+  discards active free calls and requires client retry. Keep announcements,
+  payments, CEP-22/41, DVM translation and arbitrary RPC unadvertised.
+- [ ] **Step 5:** run packaged server plus a pinned independent ContextVM client
+  through initialization/discovery/query/continuation/event lookup and count;
+  compare application results with authorized HTTP/MCP fixtures at their declared
+  mode/stamps. Test forged signature, wrong recipient/author, spoofed metadata,
+  stale/future events, same RPC IDs across authors, hostile early messages,
+  duplicate relays, rewrap replay, cross-author cancellation and queue floods.
+  Kill/restart, expire before signing/dispatch/retry, revoke with PG partitioned,
+  and inspect captured relay traffic plus actual backend cancellation.
+
+**Oracle and negative control:** independent fixture truth plus independently
+verified signed captures, not the SDK's self-reported success. An unbounded SDK
+receive queue, a cancellation keyed by an unscoped RPC ID, or a completed result
+sent under expired authority fails. Local upstream in-memory research establishes
+only its exercised cases; production memory, cross-language client, relay and
+BigBrotr authority evidence are required separately.
 
 ## Design review record
 

@@ -1,0 +1,45 @@
+{
+  "schema": "bigbrotr-research-measurement-schedule/1",
+  "meaning": "Input/expected-output fixture DSL; not the product wire schema or executed network evidence.",
+  "clock_unit": "microseconds",
+  "endpoint": "wss://fixture.invalid/measurement",
+  "scope": "public",
+  "attempts": [
+    {
+      "attempt_id": "10000000-0000-4000-8000-000000000001",
+      "actions": ["persist_intent", "crash_before_proven_start"],
+      "intent_time_us": 1000000,
+      "expected": {"actual_start_us": null, "actual_end_us": null, "scientific_remote_outcome": null, "remote_failure_denominator": false}
+    },
+    {
+      "attempt_id": "10000000-0000-4000-8000-000000000002",
+      "actions": ["persist_intent", "persist_actual_start", "crash_before_terminal"],
+      "intent_time_us": 2000000,
+      "actual_start_us": 2100000,
+      "expected": {"actual_start_us": 2100000, "actual_end_us": null, "scientific_remote_outcome": "unknown-interrupted", "remote_failure_denominator": false}
+    },
+    {
+      "attempt_id": "10000000-0000-4000-8000-000000000003",
+      "actions": ["persist_intent", "persist_actual_start", "receive_nip11", "persist_terminal", "lose_commit_response", "resolve_same_attempt"],
+      "intent_time_us": 3000000,
+      "actual_start_us": 3100000,
+      "actual_end_us": 3200000,
+      "document_utf8": "{\"name\":\"controlled fixture\",\"supported_nips\":[1,11,77]}",
+      "expected": {"actual_start_us": 3100000, "actual_end_us": 3200000, "scientific_remote_outcome": "success", "logical_terminal_count": 1, "referenced_document_count": 1, "document_required_in_full_export": true}
+    },
+    {
+      "attempt_id": "10000000-0000-4000-8000-000000000004",
+      "actions": ["scheduled_due", "local_budget_deferral"],
+      "due_us": 4000000,
+      "expected": {"actual_start_us": null, "actual_end_us": null, "scientific_remote_outcome": null, "local_deferral_count": 1, "remote_failure_denominator": false}
+    }
+  ],
+  "expected_totals": {
+    "actual_started_attempts": 2,
+    "successful_terminals": 1,
+    "unknown_interrupted": 1,
+    "remote_failure_measurements": 0,
+    "local_deferrals": 1,
+    "distinct_document_objects": 1
+  }
+}

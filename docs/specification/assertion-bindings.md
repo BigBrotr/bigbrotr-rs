@@ -29,7 +29,8 @@ identity, not proof of one person.
 The four NIP-85 subject kinds and optional field names below come from the
 [pinned NIP-85](https://github.com/nostr-protocol/nips/blob/a2494f4f81d46684e5814a9bf35e2b1df978f955/85.md).
 The counter interpretations are BigBrotr's explicit provider choices.
-`seeded-trust/1` identifies the P05-T11 pubkey algorithm;
+`seeded-trust/2` identifies the default P05-T11 pubkey algorithm;
+`seeded-trust/1` is its explicit fixed-pass reference profile;
 `general-read-relay/1` identifies P05-T12's separate relay profile. Neither
 creates another wire kind. No event/addressable/external recommendation-rank
 profile is selected. Algorithm, binding version, population, parameters and
@@ -156,7 +157,7 @@ inside the publisher or substitutes a fixture helper.
 | `t` | `authored-topic-events/1`; T03 | Top five literal nonempty signed `t` values among eligible authored posts/replies; one source contribution per value. Sort count descending, then UTF-8 bytes ascending. Emit repeated `t` tags. |
 | `active_hours_start`, `active_hours_end` | `authored-active-hours-utc/1`; T03 | P05-T03's paired 30-day, at-least-20-sample, shortest non-wrapping 80% histogram interval, with earliest-start tie break and exclusive end. Same authored posts/replies as above. |
 | `first_created_at` | `first-observed-post-created-at/1`; T03 | **Withheld on wire initially.** API `first_observed_post_created_at` is the minimum signed timestamp among eligible `authored-posts/1`, not local receipt time. Requires the separate acquired-corpus consumer interpretation gate. |
-| `rank` | `seeded-trust/1`; T11 | Its completed compatible integer projection, with its own graph/seed/population manifest. No ranker or withheld rank leaves other fields eligible. |
+| `rank` | selected `seeded-trust/2` or explicit `/1`; T11 | Its completed compatible integer projection, with its own graph/seed/population manifest. No ranker or withheld rank leaves other fields eligible. |
 
 `reaction-events-authored/1` is an additional T04 API fact counting authored
 supported reactions; it is **not** the selected `reactions_cnt`. Distinct reaction

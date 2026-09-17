@@ -26,10 +26,12 @@ would create an unnecessary second copy of the code.
 | `analysis_scope_id` | Typed target population/window/profile/viewpoint and visibility context; generation identities bind its particular input/configuration version. |
 | `ObjectId` | Qualified visibility reference plus `content_digest`; "document namespace" describes that visibility domain, not another hidden tenant. A compact scope ordinal includes its dataset/dictionary/allocation domain. |
 | `payload_digest` | Digest of the versioned typed fact encoding; not the original document's digest. |
+| `body_digest` | SHA-256 of the shared event payload under bigbrotr/body/1; excludes private admission envelope, ordinal and signature. |
 | `content_digest` | Digest of unchanged document bytes; independent of file position or parsed fields. |
 | `created_at` | In signed-event schemas, NostrTime with the protocol's unsigned integer domain. Administrative job/artifact creation uses ObservedTime in its own schema; the shared spelling does not permit casting between the two. |
-| `first_admitted_at` | Immutable time this identity domain first durably admitted the event. |
-| `received_at` / `first_received_at` | A local attributable observation / its cut-relative earliest eligible value. |
+| `first_admitted_at` | Restricted immutable time this identity domain first durably admitted the event; never substituted for scoped acquisition metadata. |
+| `first_eligible_at` | Immutable first admission into a particular visibility scope, attached to that scope's valid signature representative. |
+| `received_at` / `first_received_at` | A local attributable observation / its cut-relative earliest authorized value; minima are independently retained per event/visibility scope. |
 | `recorded_at` | When an immutable fact was recorded; not a replacement for when an action was measured. |
 | `attempt_id` | One actual external request/compound attempt; child evidence and persistence retries do not create independent attempts. |
 | `selection_id` | Immutable scientific selection/method descriptor; different from mutable job progress. |
@@ -39,9 +41,11 @@ All compact ordinal references carry a dictionary domain in the enclosing schema
 or explicit qualified reference. The portable form identifies dataset, dictionary
 kind and original allocation domain as well as the ordinal. A bare integer is
 never a cross-dataset or cross-shard identity. Shard migration preserves that
-original mapping; it cannot assign a new meaning to an old ordinal. P01-T02 and
-P02-T03 select the exact encoded dictionary-domain representation together with
-their checked allocation/recovery protocol before any portable format ships.
+original mapping; it cannot assign a new meaning to an old ordinal.
+[Identity and encoding](identity-and-encoding.md#portable-allocation-and-topology)
+selects `[dataset_id:bytes16,dictionary_kind:u16,allocation_domain:bytes16,ordinal:u64]`,
+checked allocation, topology handoff and restore rules. P01-T02/P02-T03 implement
+that contract; they do not choose an incompatible new representation.
 
 Object references follow the same rule: an enclosing dataset/domain may qualify
 a local `visibility_scope_id`, but a standalone export/import carries that domain
@@ -81,6 +85,11 @@ acknowledgements have different types because they certify different boundaries.
 [component table](component-contracts.md#typed-boundaries) owns those contracts.
 An `AdmitEvidence` operation has the same explicit failure/retired-request
 possibilities as event admission, not an unconditional successful receipt.
+
+`ExistingProof` belongs to the distinct nonmutating `CertifyExisting` operation.
+It binds retained dependencies and current authority/protection, is operational
+and private, and has no ProducerRequestId or changed-request conflict promise.
+It is not a Receipt, a new scientific observation or a relay-coverage certificate.
 
 Relation/resource names use descriptive `snake_case`, normally plural for row
 collections; established target/access-path names remain explicit in the catalog.

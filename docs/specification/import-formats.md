@@ -10,7 +10,7 @@ for the admitted event, clocks, claims and signed fidelity.
 | Format identity | Interpretation | Recovery unit |
 |---|---|---|
 | `nostr-jsonl/1` | One complete NIP-01 event object per UTF-8 line; no float conversion of integers | File digest and completed line boundary; compressed streams may require replay from a declared compression unit |
-| `bigbrotr-archive/1` | Versioned manifest, typed Parquet families, dictionary/document references and source identities | Immutable manifest/file digest plus complete row group; canonical receipt before advancing |
+| `bigbrotr-archive/1` | Versioned manifest, event-payload-value/1 plus permitted event-eligibility/1, typed evidence families, dictionary/document references and source identities | Immutable manifest/file digest plus complete row group; Receipt or sufficient ExistingProof dependency checkpoint before advancing |
 | `pensieve-delimited/a89cec2` | Unsigned varint byte length followed by one protobuf event; repeated until exact boundary EOF | File digest plus byte offset immediately after a complete admitted message |
 | `bigbrotr-analysis/1` | Explicitly projected analytical rows, including omitted signed fields | Standalone DuckDB analysis/export only; canonical importer rejects it |
 
@@ -21,6 +21,17 @@ of a valid event. No adapter trusts an archive's stored verification flag.
 Reimport preserves external source claims as claims and separately records local
 first acquisition; it never invents a local relay witness. Disabled evidence
 families follow `import.claims` and provenance policy before their interpretation.
+
+The native full-event value has no original internal event ordinal/admission
+envelope; its body digest plus permitted scope representative reassembles all
+seven Nostr fields. A public export must not disclose private-first signature,
+time, envelope or dictionary through payload reuse. Import maps source visibility
+under explicit local policy, retains attributed source eligibility as a claim,
+and establishes local eligibility independently. Unknown required eligibility
+or value schemas fail preflight before any progress; see
+[identity and encoding](identity-and-encoding.md#export-imports-replay-and-recovery-closure).
+CertifyExisting may cover an already retained event's dependencies; separate
+sidecar claims still require their own AdmitEvidence outcome.
 
 Projected artifacts do not create a second in-product dataset catalog or importer.
 P08-T04 owns their standalone DuckDB guide. Research imports retain kind-5

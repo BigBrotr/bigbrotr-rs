@@ -1,0 +1,525 @@
+{
+  "purpose": "Frozen hand-assembled canonical byte examples; signatures are synthetic format values.",
+  "expected_bytes": "Explicit hex assembly in write_vectors.py, independently of both encoders.",
+  "expected_digests": "System OpenSSL SHA-256 of frozen preimage bytes.",
+  "vectors": [
+    {
+      "name": "body-u64-ordered-tags",
+      "domain": "body",
+      "mode": "cbor",
+      "preimage_hex": "62696762726f74722f626f64792f3100865820aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa5820bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb1bffffffffffffffff0183816178826178608261786063c3a90a",
+      "sha256": "0e6fa8588956533ae2408caf6fa304437b7a0b8fd216a0e11a10cf276704f760",
+      "value": [
+        {
+          "$bytes": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        {
+          "$bytes": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        },
+        {
+          "$int": "18446744073709551615"
+        },
+        1,
+        [
+          [
+            "x"
+          ],
+          [
+            "x",
+            ""
+          ],
+          [
+            "x",
+            ""
+          ]
+        ],
+        "é\n"
+      ]
+    },
+    {
+      "name": "integer-boundaries",
+      "domain": null,
+      "mode": "cbor",
+      "preimage_hex": "8b0017181818ff19010019ffff1a000100001b00000001000000001bffffffffffffffff203b7fffffffffffffff",
+      "sha256": "4390afc8453b1c9481f306a2d073ddb8462937488ccd9e463cd20fb92b59407b",
+      "value": [
+        0,
+        23,
+        24,
+        255,
+        256,
+        65535,
+        65536,
+        {
+          "$int": "4294967296"
+        },
+        {
+          "$int": "18446744073709551615"
+        },
+        -1,
+        {
+          "$int": "-9223372036854775808"
+        }
+      ]
+    },
+    {
+      "name": "presence-and-utf8",
+      "domain": null,
+      "mode": "cbor",
+      "preimage_hex": "88f6604080a0f4f562c3a9",
+      "sha256": "d1c6b01c5a5ceba2d187bb2e854f54b53687e66347a98044efafcad89b5f907b",
+      "value": [
+        null,
+        "",
+        {
+          "$bytes": ""
+        },
+        [],
+        {},
+        false,
+        true,
+        "é"
+      ]
+    },
+    {
+      "name": "closed-map-order",
+      "domain": null,
+      "mode": "cbor",
+      "preimage_hex": "a2617a0162616102",
+      "sha256": "ade2165710f494d77ff74f543cb07dec2423ece94abcae8a2ba49b6e1400c9bc",
+      "value": {
+        "aa": 2,
+        "z": 1
+      }
+    },
+    {
+      "name": "raw-document",
+      "domain": null,
+      "mode": "raw",
+      "preimage_hex": "000affc3a9",
+      "sha256": "f647964a8a3dd876246ba91cf91f13c170eaa2584a3a335ba915ca1ca93aa331",
+      "raw_hex": "000affc3a9"
+    },
+    {
+      "name": "nostr-canonical-preimage",
+      "domain": null,
+      "mode": "raw",
+      "preimage_hex": "5b302c2262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262222c31383434363734343037333730393535313631352c312c5b5b2278225d2c5b2278222c22225d2c5b2278222c22225d5d2c22c3a95c6e225d",
+      "sha256": "5d49026d29185a49854698df2b595e07b04e0b13aafca6554300239b12988081",
+      "raw_hex": "5b302c2262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262626262222c31383434363734343037333730393535313631352c312c5b5b2278225d2c5b2278222c22225d2c5b2278222c22225d5d2c22c3a95c6e225d"
+    },
+    {
+      "name": "dictionary",
+      "domain": "dictionary",
+      "mode": "cbor",
+      "preimage_hex": "62696762726f74722f64696374696f6e6172792f31008584500101010101010101010101010101010104500202020202020202020202020202020201016a7669736962696c69747901a165636c617373667075626c6963",
+      "sha256": "e41f6f87f3b3dde2339b658bee2a16b1053031fc9da0cf830c4275add6d5e05d",
+      "value": [
+        [
+          {
+            "$bytes": "01010101010101010101010101010101"
+          },
+          4,
+          {
+            "$bytes": "02020202020202020202020202020202"
+          },
+          1
+        ],
+        1,
+        "visibility",
+        1,
+        {
+          "class": "public"
+        }
+      ]
+    },
+    {
+      "name": "fact-eligibility",
+      "domain": "fact",
+      "mode": "cbor",
+      "preimage_hex": "62696762726f74722f666163742f310086845001010101010101010101010101010101000101716576656e742d656c69676962696c697479018450010101010101010101010101010101010450020202020202020202020202020202020120865820aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa58200e6fa8588956533ae2408caf6fa304437b7a0b8fd216a0e11a10cf276704f7605840cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc20676e6574776f726bf6",
+      "sha256": "578671867996ee16e2fc7a109cf0e9a11298f767d083ddc16ddc68ceeed6938e",
+      "value": [
+        [
+          {
+            "$bytes": "01010101010101010101010101010101"
+          },
+          0,
+          1,
+          1
+        ],
+        "event-eligibility",
+        1,
+        [
+          {
+            "$bytes": "01010101010101010101010101010101"
+          },
+          4,
+          {
+            "$bytes": "02020202020202020202020202020202"
+          },
+          1
+        ],
+        -1,
+        [
+          {
+            "$bytes": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          },
+          {
+            "$bytes": "0e6fa8588956533ae2408caf6fa304437b7a0b8fd216a0e11a10cf276704f760"
+          },
+          {
+            "$bytes": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          },
+          -1,
+          "network",
+          null
+        ]
+      ]
+    },
+    {
+      "name": "producer-request",
+      "domain": "producer-request",
+      "mode": "cbor",
+      "preimage_hex": "62696762726f74722f70726f64756365722d726571756573742f31008483500303030303030303030303030303030301016561646d697401860184500101010101010101010101010101010104500202020202020202020202020202020201875820aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa5820bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb1bffffffffffffffff0183816178826178608261786063c3a90a5840cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc676e6574776f726bf6842084500101010101010101010101010101010102500202020202020202020202020202020201848450010101010101010101010101010101010250020202020202020202020202020202020101f600f6",
+      "sha256": "c82039cd222506c1f1d1caa001dd529d786af1e324fce9b93b2a0a27abc7e1e1",
+      "value": [
+        [
+          {
+            "$bytes": "03030303030303030303030303030303"
+          },
+          1,
+          1
+        ],
+        "admit",
+        1,
+        [
+          1,
+          [
+            {
+              "$bytes": "01010101010101010101010101010101"
+            },
+            4,
+            {
+              "$bytes": "02020202020202020202020202020202"
+            },
+            1
+          ],
+          [
+            {
+              "$bytes": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "$bytes": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            {
+              "$int": "18446744073709551615"
+            },
+            1,
+            [
+              [
+                "x"
+              ],
+              [
+                "x",
+                ""
+              ],
+              [
+                "x",
+                ""
+              ]
+            ],
+            "é\n",
+            {
+              "$bytes": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+            }
+          ],
+          "network",
+          null,
+          [
+            -1,
+            [
+              {
+                "$bytes": "01010101010101010101010101010101"
+              },
+              2,
+              {
+                "$bytes": "02020202020202020202020202020202"
+              },
+              1
+            ],
+            [
+              [
+                {
+                  "$bytes": "01010101010101010101010101010101"
+                },
+                2,
+                {
+                  "$bytes": "02020202020202020202020202020202"
+                },
+                1
+              ],
+              1,
+              null,
+              0
+            ],
+            null
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "certification-intent",
+      "domain": "producer-request",
+      "mode": "cbor",
+      "preimage_hex": "62696762726f74722f70726f64756365722d726571756573742f310084835000000000000000000000000000000000000070636572746966792d6578697374696e6701860184500101010101010101010101010101010104500202020202020202020202020202020201875820aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa5820bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb1bffffffffffffffff0183816178826178608261786063c3a90a5840cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc676e6574776f726bf6842084500101010101010101010101010101010102500202020202020202020202020202020201848450010101010101010101010101010101010250020202020202020202020202020202020101f600f6",
+      "sha256": "d3e010b4db854cd5707532ddf970e5ff1ec014829a0226f7e90e6e7c35b3e70d",
+      "value": [
+        [
+          {
+            "$bytes": "00000000000000000000000000000000"
+          },
+          0,
+          0
+        ],
+        "certify-existing",
+        1,
+        [
+          1,
+          [
+            {
+              "$bytes": "01010101010101010101010101010101"
+            },
+            4,
+            {
+              "$bytes": "02020202020202020202020202020202"
+            },
+            1
+          ],
+          [
+            {
+              "$bytes": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            },
+            {
+              "$bytes": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+            },
+            {
+              "$int": "18446744073709551615"
+            },
+            1,
+            [
+              [
+                "x"
+              ],
+              [
+                "x",
+                ""
+              ],
+              [
+                "x",
+                ""
+              ]
+            ],
+            "é\n",
+            {
+              "$bytes": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+            }
+          ],
+          "network",
+          null,
+          [
+            -1,
+            [
+              {
+                "$bytes": "01010101010101010101010101010101"
+              },
+              2,
+              {
+                "$bytes": "02020202020202020202020202020202"
+              },
+              1
+            ],
+            [
+              [
+                {
+                  "$bytes": "01010101010101010101010101010101"
+                },
+                2,
+                {
+                  "$bytes": "02020202020202020202020202020202"
+                },
+                1
+              ],
+              1,
+              null,
+              0
+            ],
+            null
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "admission-batch",
+      "domain": "admission-batch",
+      "mode": "cbor",
+      "preimage_hex": "62696762726f74722f61646d697373696f6e2d62617463682f31008650010101010101010101010101010101010001010181828450010101010101010101010101010101010001015820578671867996ee16e2fc7a109cf0e9a11298f767d083ddc16ddc68ceeed6938e",
+      "sha256": "cea5c3aa040dfd8d0f37bd8c7aa9b49b04dbf7ea8ff0a2df363a2f6072b55173",
+      "value": [
+        {
+          "$bytes": "01010101010101010101010101010101"
+        },
+        0,
+        1,
+        1,
+        1,
+        [
+          [
+            [
+              {
+                "$bytes": "01010101010101010101010101010101"
+              },
+              0,
+              1,
+              1
+            ],
+            {
+              "$bytes": "578671867996ee16e2fc7a109cf0e9a11298f767d083ddc16ddc68ceeed6938e"
+            }
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "archive-batch",
+      "domain": "archive-batch",
+      "mode": "cbor",
+      "preimage_hex": "62696762726f74722f617263686976652d62617463682f3100855001010101010101010101010101010101010181840001010181828450010101010101010101010101010101010001015820578671867996ee16e2fc7a109cf0e9a11298f767d083ddc16ddc68ceeed6938e",
+      "sha256": "93773dc6bf483182cce7f955a91ca8f5571bdf074da2f7105f6ca9aa985b333c",
+      "value": [
+        {
+          "$bytes": "01010101010101010101010101010101"
+        },
+        1,
+        1,
+        [
+          [
+            0,
+            1,
+            1,
+            1
+          ]
+        ],
+        [
+          [
+            [
+              {
+                "$bytes": "01010101010101010101010101010101"
+              },
+              0,
+              1,
+              1
+            ],
+            {
+              "$bytes": "578671867996ee16e2fc7a109cf0e9a11298f767d083ddc16ddc68ceeed6938e"
+            }
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "projection-chunk",
+      "domain": "projection-chunk",
+      "mode": "cbor",
+      "preimage_hex": "62696762726f74722f70726f6a656374696f6e2d6368756e6b2f3100865003030303030303030303030303030303716576656e745f656c69676962696c6974790183500101010101010101010101010101010101818300010100818384500101010101010101010101010101010100010182656576656e7400865820aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa58200e6fa8588956533ae2408caf6fa304437b7a0b8fd216a0e11a10cf276704f7605840cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc20676e6574776f726bf6",
+      "sha256": "0fc9398a28f75e81632c5eb6af9d7b685090f863941f4f7a5463b1f6ca475536",
+      "value": [
+        {
+          "$bytes": "03030303030303030303030303030303"
+        },
+        "event_eligibility",
+        1,
+        [
+          {
+            "$bytes": "01010101010101010101010101010101"
+          },
+          1,
+          [
+            [
+              0,
+              1,
+              1
+            ]
+          ]
+        ],
+        0,
+        [
+          [
+            [
+              {
+                "$bytes": "01010101010101010101010101010101"
+              },
+              0,
+              1,
+              1
+            ],
+            [
+              "event",
+              0
+            ],
+            [
+              {
+                "$bytes": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+              },
+              {
+                "$bytes": "0e6fa8588956533ae2408caf6fa304437b7a0b8fd216a0e11a10cf276704f760"
+              },
+              {
+                "$bytes": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+              },
+              -1,
+              "network",
+              null
+            ]
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "existing-proof",
+      "domain": "existing-proof",
+      "mode": "cbor",
+      "preimage_hex": "62696762726f74722f6578697374696e672d70726f6f662f3100875001010101010101010101010101010101016c6c6f63616c2d73796e6365645003030303030303030303030303030303015820d3e010b4db854cd5707532ddf970e5ff1ec014829a0226f7e90e6e7c35b3e70d81828450010101010101010101010101010101010001015820578671867996ee16e2fc7a109cf0e9a11298f767d083ddc16ddc68ceeed6938e",
+      "sha256": "5e71e24149fe8bb3c4ee6bd01f43d2cd5371021a97843ebe02eb5ebdeff4b45d",
+      "value": [
+        {
+          "$bytes": "01010101010101010101010101010101"
+        },
+        1,
+        "local-synced",
+        {
+          "$bytes": "03030303030303030303030303030303"
+        },
+        1,
+        {
+          "$bytes": "d3e010b4db854cd5707532ddf970e5ff1ec014829a0226f7e90e6e7c35b3e70d"
+        },
+        [
+          [
+            [
+              {
+                "$bytes": "01010101010101010101010101010101"
+              },
+              0,
+              1,
+              1
+            ],
+            {
+              "$bytes": "578671867996ee16e2fc7a109cf0e9a11298f767d083ddc16ddc68ceeed6938e"
+            }
+          ]
+        ]
+      ]
+    }
+  ]
+}

@@ -17,17 +17,17 @@ work breakdown. Start with its [field contracts](docs/specification/data-contrac
 [coverage ledger](docs/implementation/coverage.md). The phase table below is only
 an overview; it is not a substitute for task prerequisites and practical evidence.
 
-The current [specification-readiness assessment](docs/planning/specification-readiness.md)
-lists remaining paper closure in P00-T06–T10. It separates semantic/format gaps
-from justified empirical decisions and private implementation details. The
-selected architecture below is not a claim that those remaining contracts are
-already closed or that product implementation has begun.
+The [current readiness register](docs/planning/specification-readiness.md)
+records selected closure of S01–S08 and the bounded practical qualification gates.
+Use the [agent execution guide](docs/implementation/agent-handoff.md) to implement
+and audit coherent slices. This is paper readiness, not a product release or an
+unmeasured capacity claim. The owner still separately starts implementation.
 
-A subsequent [architecture challenge](docs/reviews/13-architecture-alternatives.md)
-recommends reconsidering acquisition work, duplicate certification, read modes,
-ranking, process placement and selected storage/product alternatives. It is
-advisory for discussion; the selected contracts below remain unchanged until
-an adopted decision is reconciled across their owning documents.
+The [architecture challenge](docs/reviews/13-architecture-alternatives.md) led to
+scoped eligibility/certification, age-banded acquisition, useful traversal,
+vector-first relay selection, residual-bounded ranking, exact-set grouping and
+simpler process/configuration authority. Current owning contracts contain the
+adopted rules; the historical recommendations are not a second specification.
 
 ## Read the design in this order
 
@@ -96,7 +96,7 @@ not justify a claim that Rust alone enables 5,000 relays.
 - Ranking consumes pinned, reproducible inputs and never deletes low-score events.
   Incremental algorithms state their affected set and when global work is needed.
 - Raw serving facts retain immutable identities across retries and compaction;
-  read snapshots cannot lose older facts due to logical-edge replacement.
+  strict read snapshots cannot lose older facts due to logical-edge replacement.
 - Services use durable contracts, bounded resources, explicit visibility and
   independent lifecycle; a downstream outage cannot be buffered forever.
 - SDKs, engine ACKs, leases, protocol hints and passing tests are interpreted only
@@ -116,7 +116,7 @@ product work until the owner begins the implementation stage.
 | 3 — acquisition | Multiplexed sessions; live/backfill/reverification; NIP-77 and linear fallback; coverage/gaps; imported full events; fair bounded scheduling | Real controlled relays over sockets, caps/same-second storms/auth/late data, disconnect/crash recovery, import idempotency; scoped evidence without false completeness |
 | 4 — relay lifecycle | Seeder, all discovery sources, guarded validator, monitor families, registry and evidence lifecycle, optional active probes | Fresh-instance enrollment through CLI/Compose; broken DNS/TLS/overlays and rate limits; all eligible endpoints scheduled fairly; imported claims never become local witnesses |
 | 5 — facts and ranking | Current-state reducers, fact/assertion registry, incremental updates, graph artifacts, named viewpoints, relay similarity candidates and exact verification | Delta outputs equal slow full-recompute oracle on changing fixtures; old complete runs survive failures; skewed graph budgets and score reproducibility; no all-pairs relay explosion |
-| 6 — read surfaces | Shared typed read core; event/tag/provenance/search/count resources; HTTP API; archive-relay historical + live behavior and server NIP-77; optional DVM adapter | Cross-surface semantic equality, deletion/replacement/tie cases, exact vs estimated counts, stable pagination, slow clients, authorization and stale capability responses; actual NIP-50 and NIP-77 client interoperability |
+| 6 — read surfaces | Shared typed read core; event/tag/provenance/search/count resources; HTTP API; archive-relay historical + live behavior and server NIP-77; optional DVM, MCP and experimental ContextVM adapters | Cross-surface semantic equality, deletion/replacement/tie cases, exact vs estimated counts, stable pagination, slow clients, authorization and stale capability responses; actual NIP-50 and NIP-77 client interoperability |
 | 7 — publication and protocol profiles | Signer abstraction, durable signed outbox, per-destination receipts, NIP-66/NIP-85 compatible adapters, optional proposal profiles | Wire validation with reference clients; crash after send/ACK; same-byte retries; algorithm/viewpoint keys; fresh/partial measurement semantics; no implicit publication |
 | 8 — operations and distribution | Full CLI, single image/role recipes, versioned config management, import/export formats, scrub/backup/restore/migrate, alerts, diagnostics and sizing | Clean release-bundle installation; real restore during concurrent activity; old-format migration; full/projected standalone DuckDB exports; resource/failure workload matrix |
 | 9 — dashboard and private administration | Public data explorer, provenance/relay/social/rank views, private service/config/job/storage/key/access management, shared contracts and accessibility | Browser journeys against real packaged backend, keyboard/mobile, malicious data, stale/empty/disabled states, permission boundaries and concurrent config edits |
@@ -183,15 +183,16 @@ The latest [whole-repository review](docs/reviews/11-whole-repository-audit.md)
 fully reread its 70-file Markdown baseline, then corrected measurement subjects,
 availability confirmation, temporal reads, concrete assertion/ranking definitions,
 state/migration ownership and usable management/download routes. The current detailed plan
-has 121 tasks/746 steps, including P04-T13 availability observations and P04-T14
-issuer metadata. Research import no longer invents a second analytical dataset
+has 123 tasks/756 steps, including P04-T13 availability observations, P04-T14
+issuer metadata, P06-T13 MCP and P06-T14 experimental ContextVM. Research import no longer invents a second analytical dataset
 product or foreign administrative source-control transfer. See
 [decision confidence and alternatives](docs/planning/decision-confidence.md)
 for the selected stack's total costs and remaining empirical qualifications.
 Complete documentation review is not validation of universal optimality.
 
-The later [focused readiness review](docs/reviews/12-specification-readiness.md)
-adds five planning closure tasks. Most existing architecture decisions remain
-selected; same-event visibility transitions, portable encoding and cross-contract
-composition need further paper work. Empirical choices have explicit decision
-points rather than an unbounded instruction to benchmark everything later.
+The [focused readiness review](docs/reviews/12-specification-readiness.md)
+identified five planning closure tasks. The current
+[readiness register](docs/planning/specification-readiness.md) records their
+selected semantic contracts, independent fixtures and corrected cross-phase
+dependencies. Empirical choices have explicit decision points and failure
+consequences; none of these documents claims the future product is qualified.

@@ -5,17 +5,75 @@ and current-state reduction remain in the data contracts. This specification
 closes two independent gaps: time can change eligibility without new ingestion,
 and search syntax is not the text that should determine relevance.
 
-## A reproducible view with an explicit time boundary
+## Select the read mode explicitly
+
+`QueryRequest.mode` is `traversal` or `snapshot`; history access remains a separate
+resource/permission, not a third way to bypass visibility. Ordinary chronological
+event lists default to `traversal`. Point lookups evaluate current eligibility.
+Search/relevance, NEG, exact context-bound counts, analytical joins and finite DVM
+results use `snapshot`; reject unsupported mode/resource combinations at admission.
+HTTP, MCP and ContextVM expose the same choice through the shared query registry.
+A strict snapshot is still available for chronological lists when requested.
+
+The shared response fields are `mode`, `candidate_cut` (SourceCut for traversal,
+null for point/snapshot operations), `view_stamp` (the complete eligibility or
+snapshot ReadViewStamp), and `eligibility_lag_us` (nonnegative lossless integer,
+or null when the resource is not current-dependent). Traversal cursors bind their
+candidate cut and mode; each page reports its fresh view_stamp. Snapshot cursors
+bind the whole unchanged stamp. Count responses identify their own stamp even
+when requested alongside traversal; adapters must not copy a preceding page's
+stamp onto an independently evaluated count.
+
+### Chronological traversal
+
+Pin a fixed acquisition upper cut and immutable `(created_at descending, event_id
+ascending)` ordering for candidates. The cursor binds the normalized filters,
+principal/policy domain, acquisition cut, mode/version, maximum lifetime and last
+**scanned** key. Never use offset pagination. Events admitted after that cut,
+including backdated events, appear only after refresh. Returned event IDs cannot
+repeat within one traversal. Skipped/ineligible candidates advance the scanned
+position; an empty page may carry a continuation and an explicit scan-budget
+reason, but must not claim exhaustion before reaching the end.
+
+Evaluate current eligibility using the latest compatible applied visibility
+state before each page/chunk is delivered. Authorize the input population before
+winner/deletion reduction. A newly admitted authorized replacement can suppress
+an old candidate even though the new event lies outside the traversal's candidate
+cut; expiry and deletion can remove candidates too. Private replacements cannot
+influence a public traversal. The page reports its eligibility evaluation stamp
+and lag; unavailable or overdue eligibility processing is a typed refusal, never
+permission to emit known expired or suppressed events. Cancellation and the
+five-second authorization lease remain mandatory.
+
+Ordinary expiry removes the affected event without invalidating the entire
+traversal. Re-evaluate an undelivered page crossing its eligibility deadline;
+bounded retries end in explicit `eligibility_busy` if it cannot be delivered
+within its query budget. Do not buffer unbounded pages while eligibility changes.
+Restrictive policy revisions still invalidate authority/cursors. Membership may
+change after an earlier page; already delivered bytes cannot be recalled.
+Therefore this mode does **not** promise exhaustive enumeration of a changing
+population or equality between an earlier count and all later pages. Counts have
+their own dated snapshot stamp. Refresh starts a new traversal. Exports requiring
+reproducibility use authorized immutable historical snapshots.
+
+Acceptance: an event expires between pages, another gets a public replacement,
+a third gets only a private replacement, and a backdated new event arrives after
+the fixed cut. Continue without duplicate IDs; omit the first two, retain the
+third, exclude the fourth until refresh. Repeat with sparse filters, skipped-only
+pages, policy revocation, an unavailable visibility reducer and concurrent reads.
+Measure completed traversals and restart/refusal rates, not just query latency.
+
+## A reproducible snapshot with an explicit time boundary
 
 `ReadViewStamp` contains `source_cut`, input/target generation IDs,
 `visibility_as_of_us`, `temporal_generation`, `expiry_deadline_us` and
 `policy_epoch`. The expiry deadline can be absent only when no eligible expiry
 can affect that view within its maximum lifetime. It is distinct from the pin's
-absolute lifetime and the short authorization lease. All body lookups, list,
-count, search candidates/ranking and NEG membership for one admitted context use
-the same stamp. Response metadata identifies it without leaking restricted IDs.
+absolute lifetime and the short authorization lease. All body lookups, lists, counts, search candidates/ranking and NEG membership
+for one snapshot context use the same stamp. Traversal fixes its candidate cut
+and reports a fresh eligibility stamp per page as specified above. Response metadata identifies it without leaking restricted IDs.
 
-For ordinary reads, a pin is valid only until the earliest relevant scheduled
+For ordinary-visibility `snapshot` reads, a pin is valid only until the earliest relevant scheduled
 eligibility change, or an earlier conservative deadline established by the plan.
 At that deadline, HTTP continuation fails with 409 `temporal_snapshot_expired`;
 the caller starts a new query and gets a new stamp. Pin lifetime expiry/reclamation
@@ -28,7 +86,8 @@ summaries (`visibility_deadlines` in the logical catalog). An admitted plan obta
 a covering deadline for the partitions it can read, then pins data and temporal
 generation together. It may choose an earlier safe deadline; it cannot skip an
 unknown partition or scan the whole archive merely to mint every cursor. Missing
-or incomplete expiry state makes the affected ordinary resource unavailable.
+or incomplete expiry state makes the affected current resource unavailable in
+both modes; traversal does not bypass visibility maintenance.
 No new source sequence is invented for the passage of time. New admission after
 an expiry uses the same source cut if appropriate and a new temporal generation.
 
@@ -85,7 +144,7 @@ quote. Payment never extends temporal eligibility. Test expiration before signin
 between signing and sending, before a retry and during quote/settlement; inspect
 the actual socket output and refund state rather than only the query result.
 
-**Practical acceptance:** with no new ingestion, expire an event between page 1,
+**Snapshot acceptance:** with no new ingestion, expire an event between page 1,
 COUNT and page 2; old-context operations fail, fresh operations agree, and the
 archive still verifies the original. Repeat with a point lookup, full-body
 hydration, search, NEG, slow output and clock anomalies. A frozen input-cut-only
@@ -93,11 +152,10 @@ cache must fail this fixture. Compare a temporal rebuild with incremental expiry
 at equal stamps. Measure completion/restart rates under dense expiry and broad
 queries: a correct refusal is not a claim of useful availability.
 
-**Alternative retained:** a separately versioned live traversal can accept changing
-membership, but must abandon fixed-snapshot list/count equivalence and state its
-pagination guarantees. It is not silently substituted into the baseline. If the
-baseline repeatedly prevents useful ordinary reads, evaluate that alternative
-with explicit client semantics before changing the contract.
+The traversal default was selected after the architecture challenge: restarting
+an entire human browsing session for one unrelated expiration is unnecessarily
+costly. Snapshot semantics remain useful where reproducibility is part of the
+operation. Neither mode is relabeled as the other for a performance comparison.
 
 ## Search meaning after parsing
 

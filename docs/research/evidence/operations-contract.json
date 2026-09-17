@@ -1,0 +1,77 @@
+{
+  "kind": "isolated-reference-state-model",
+  "contract": "docs/specification/operations-contract.md",
+  "executed_at_utc": "2026-09-17T13:47:49.299682+00:00",
+  "model_sha256": "2727124678f739b5737004be6819c01e0bd2f7fefa99a92f0663ed6ed38e016e",
+  "status": "PASS",
+  "cases": [
+    {
+      "name": "admission-response-checkpoint-ack-gc-orderings",
+      "status": "PASS",
+      "observation": "120 modeled orderings with refused illegal transitions and same-request recovery"
+    },
+    {
+      "name": "window-two-longer-page",
+      "status": "PASS",
+      "observation": "ACK hole refused; incremental handoff allows third request without claiming page completion"
+    },
+    {
+      "name": "inflight-close-and-paused-old-owner",
+      "status": "PASS",
+      "observation": "commit-boundary epoch/closure refusal; verified input and expired lease do not authorize mutation"
+    },
+    {
+      "name": "mixed-backup-cut-negative",
+      "status": "PASS",
+      "observation": "post-GC owner plus pre-checkpoint producer rejected by causal closure oracle"
+    },
+    {
+      "name": "archive-lost-response-reversed-recovery",
+      "status": "PASS",
+      "observation": "objects present/catalog unavailable stays unknown; resolution and protection precede reclaim"
+    },
+    {
+      "name": "archive-absent-receipt-live-transaction",
+      "status": "PASS",
+      "observation": "healthy receipt absence cannot authorize a second attempt until late commit is excluded"
+    },
+    {
+      "name": "ch-partial-empty-family-stale-incarnation",
+      "status": "PASS",
+      "observation": "all families required including empty completion; old PG frontier does not certify new CH"
+    },
+    {
+      "name": "derived-dirty-only-each-commit-response-lost",
+      "status": "PASS",
+      "observation": "output survives Rocks checkpoint; materialization precedes activation; old pin retained"
+    },
+    {
+      "name": "job-cancel-and-outbox-ambiguity-policy-expiry",
+      "status": "PASS",
+      "observation": "same bytes retried; separate target retained; policy/temporal invalidation prevents dispatch"
+    },
+    {
+      "name": "six-deliberately-wrong-controls",
+      "status": "PASS",
+      "observation": "ACK over hole, archive retry while unknown, partial frontier, dropped derived output, unauthorized retry, resigned retry all detected"
+    },
+    {
+      "name": "recipe-arithmetic-and-abstract-wait-graph",
+      "status": "PASS",
+      "observation": "16 GiB sum, 72/88 GiB watermarks, timing and peak-unit bounds; selected abstract graph acyclic"
+    }
+  ],
+  "enumerated_admission_orderings": 120,
+  "negative_controls_detected": 7,
+  "not_executed": [
+    "Rust product",
+    "RocksDB/PG/DuckLake/CH integration",
+    "fsync/power/host loss",
+    "real positive fencing",
+    "socket/process scheduling",
+    "native memory peaks",
+    "backup/restore/upgrade of engines",
+    "capacity benchmark"
+  ],
+  "limits": "Atomic in-memory transitions and explicit oracle fixtures; ordering checks are not a proof of engine durability or whole-system correctness."
+}

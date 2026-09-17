@@ -1,0 +1,128 @@
+{
+  "kind": "virtual-scheduler-and-workload-arithmetic",
+  "status": "PASS",
+  "executed_at_utc": "2026-09-17T13:48:54.832211+00:00",
+  "source_sha256": "6a0bcb23449215229885b1c17a76f263983796ae45644b2c3f2ab5e95e7c7d3f",
+  "fixture": {
+    "endpoints": 500,
+    "ticks": 600,
+    "quantum_capacity_per_tick": 10,
+    "queue_cap": 5000,
+    "class_shares": {
+      "control": 2,
+      "monitor": 2,
+      "live": 3,
+      "backfill": 2,
+      "maintenance": 1
+    }
+  },
+  "fair_result": {
+    "offered": {
+      "control": 600,
+      "live": 1800,
+      "backfill": 3000,
+      "maintenance": 600,
+      "monitor": 1000
+    },
+    "completed": {
+      "control": 600,
+      "monitor": 1000,
+      "live": 1800,
+      "backfill": 2000,
+      "maintenance": 600
+    },
+    "refused": {
+      "control": 0,
+      "monitor": 0,
+      "live": 0,
+      "backfill": 0,
+      "maintenance": 0
+    },
+    "remaining": {
+      "control": 0,
+      "monitor": 0,
+      "live": 0,
+      "backfill": 1000,
+      "maintenance": 0
+    },
+    "maximum_queued": 1010,
+    "maximum_wait_ticks": {
+      "control": 0,
+      "monitor": 221,
+      "live": 0,
+      "backfill": 200,
+      "maintenance": 0
+    }
+  },
+  "negative_controls_detected": 4,
+  "delivery_category_quota": {
+    "D": 2000,
+    "U": 200,
+    "P": 1000,
+    "C": 2,
+    "S": 1,
+    "C_from_existing_edge": true,
+    "S_from_known_body_new_edge": true,
+    "incorrect_existing_edge_S_physical_P": 1001
+  },
+  "unfair_control_max_wait": 0,
+  "unfair_unserved_monitor_obligations": 1000,
+  "tracks_arithmetic": [
+    {
+      "registered_endpoints": 5000,
+      "active_target": 2500,
+      "D_per_s": 2500,
+      "U_per_s": 250,
+      "P_per_s": 1250,
+      "liveness_due_per_s": "50/3",
+      "query_per_s": 20,
+      "payload_mib_per_s_before_overhead": 12.79296875
+    },
+    {
+      "registered_endpoints": 10000,
+      "active_target": 5000,
+      "D_per_s": 5000,
+      "U_per_s": 500,
+      "P_per_s": 2500,
+      "liveness_due_per_s": "100/3",
+      "query_per_s": 40,
+      "payload_mib_per_s_before_overhead": 25.5859375
+    },
+    {
+      "registered_endpoints": 50000,
+      "active_target": 25000,
+      "D_per_s": 25000,
+      "U_per_s": 2500,
+      "P_per_s": 12500,
+      "liveness_due_per_s": "500/3",
+      "query_per_s": 100,
+      "payload_mib_per_s_before_overhead": 127.9296875
+    },
+    {
+      "registered_endpoints": 100000,
+      "active_target": 50000,
+      "D_per_s": 50000,
+      "U_per_s": 5000,
+      "P_per_s": 25000,
+      "liveness_due_per_s": "1000/3",
+      "query_per_s": 200,
+      "payload_mib_per_s_before_overhead": 255.859375
+    }
+  ],
+  "mean_target_event_kib": "131/25",
+  "stationary_three_node_oracle": [
+    "400/1029",
+    "340/1029",
+    "289/1029"
+  ],
+  "not_executed": [
+    "real signed network fixture",
+    "BigBrotr product",
+    "actual socket fairness",
+    "native scheduling",
+    "database engines",
+    "throughput/latency capacity",
+    "host-loss recovery"
+  ],
+  "limits": "Ticks and work quanta are dimensionless; these results do not establish the workload SLOs or fleet capacity."
+}

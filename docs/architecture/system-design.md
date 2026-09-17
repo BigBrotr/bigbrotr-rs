@@ -3,6 +3,9 @@
 Status: implementation baseline after six design revisions; product implementation
 has not begun. The service
 contracts complement this document. A proposal is not a measured capacity claim.
+The selected [operational composition](../specification/operations-contract.md)
+resolves process placement, recipe transitions, recovery order and resource
+reservations; it does not certify the future runtime.
 
 ## The selected direction
 
@@ -110,12 +113,23 @@ No finite machine can buffer an unlimited outage.
 | PostgreSQL and ClickHouse | Database processes | Separate persistence, resource limits, lifecycle and recovery |
 | DuckDB, RocksDB, Parquet | Embedded engine, embedded store and file format | Not three additional network database servers |
 
-The reference deployment can group acquisition with its ingest owner, isolate
-heavy archive/index/graph work in worker processes, and isolate read/admin
-listeners. Signing roles may run in a separate process with narrower credentials.
-All use the same application image. A compact local mode may combine compatible
-roles. Packaging recipes resolve each dependency; they do not require fifteen
-application containers or a permanent container for an occasional export.
+The reference deployment selects one acquisition/socket owner per host and route
+budget domain, co-located with its ingest owner. Validator, Monitor, Synchronizer,
+directory fetch and publication transport use independently scheduled queues in
+that owner. A storage process owns the separate Index Rocks directory, CH projection
+and fenced archive coordination; native preparation/export/graph jobs run in
+terminable worker processes with whole-job grants. Read and private Control/admin
+have explicit process domains; enabled signing has narrow credentials and submits
+durable exact bytes to the socket owner. All use the same application image.
+Compact mode may co-locate compatible roles and disclose the wider process-failure
+scope. Packaging does not require a permanent container for an occasional export.
+
+The [process/dependency matrix](../specification/operations-contract.md#process-placement-and-capabilities)
+is the resolved reference. Pausing a projector or algorithm leaves its required
+storage owner running; stopping that owner is a separate capability transition.
+Use coarse process grants and local byte ownership, with protected archive/control
+completion capacity. No per-delivery distributed resource allocator or mandatory
+network proxy is part of the full local default.
 
 Logical supervision handles ordinary service errors within a process. It cannot
 isolate a process abort, native-library crash or whole-process OOM; workloads
@@ -126,10 +140,13 @@ resource shares remain explicit deployment work, not consequences of a Rust crat
 
 ## What stays optional
 
-Provenance off means no historical event/relay edge persistence, edge indexes,
-edge export or edge-derived facts. The registry and monitoring measurements still
-exist. Full signed events are always retained under the archive policy. Remove
-the legacy heavy_fields switch and LilBrotr/IndexBrotr profiles; projected exports
+Provenance off from initialization means no historical event/relay edge persistence,
+edge indexes, edge export or edge-derived facts. Turning it off later stops new
+edge evidence and dependent algorithms; already retained edges remain under their
+retention/access policy and explicit historical export scope. Re-enabling cannot
+reconstruct missed witnesses from retained bodies. The registry and monitoring
+measurements still exist. Full signed events are always retained under the archive
+policy. Remove the legacy heavy_fields switch and LilBrotr/IndexBrotr profiles; projected exports
 satisfy lightweight analysis without weakening canonical event fidelity.
 
 ClickHouse is required by the complete online serving and derivation deployment.
@@ -158,6 +175,12 @@ it is not an obligatory extra database beside every engine.
 | Sharded admission | Stable event-ID owner routing; durable shard epochs; per-shard frontiers | Write throughput once one owner is measured insufficient |
 | Replicated admission | Replicated log with explicit quorum acknowledgements before durable receipt | Continued ingestion and defined RPO under host loss |
 | Replicated serving | CH replication/sharding with documented consistency and routing | Query scale and serving availability |
+
+The initial supported placements are one host and fixed split roles with manual
+fenced handoff, one ingest shard and object archive access from every split reader.
+Sharding, replicated admission/serving and automatic failover in the table are
+growth directions requiring their own implemented/qualified capability. Shared
+PG, Docker and matching local path names do not enable them.
 
 A shared PostgreSQL connection does not make local RocksDB or a local file path
 shared. Never mount the same RocksDB directory in multiple writers. A lease with
@@ -189,3 +212,8 @@ A service enabled in a recipe must have its engine/data dependency. Stopping a
 service leaves its already retained data readable when the read store remains
 available. Archive-only is an intentional capability selection, not a claim that
 all CH-backed resources can work without CH.
+Feature toggles, missing-dependency behavior, retained generations and exact split
+routes/credentials follow the operational matrix; the matrix distinguishes an
+enabled role from an actually ready capability. Instance policy has one managed
+or declarative authority, and recipes seed initial values rather than overriding
+accepted policy on every restart.

@@ -4,19 +4,32 @@
 
 The Rust configuration schema owns defaults, units, ranges, applicability and
 change behavior. Generate the reference, JSON Schema and default examples from
-that model. Explicit overrides use TOML; environment variables carry a documented
-small deployment subset and secret references. CLI flags are highest precedence.
-Resolution is defaults → recipe → explicit config → optional versioned managed
-overrides → documented environment → CLI. Deployment-locked fields cannot be
-changed by the management interface; applied revision is reported per service.
-Reject duplicate/unknown keys, nonsensical bounds, conflicting settings and inert
-enabled capabilities. A deliberately specified missing file is an error.
+that model. Choose one instance-wide durable product-policy authority:
+`managed` (full-local default) or `declarative`. In managed mode, defaults/recipe/
+explicit seed document initialize revision 1 once; subsequent UI/CLI edits use
+the PG desired-state document and expected-revision CAS. Later seed-file changes
+do not override it. In declarative mode, the operator document is the sole desired
+authority; its validated hash becomes an accepted revision through the same typed
+activation command. UI edits produce patches/previews, not managed overrides.
+A file changed on disk is staged visibly until activation, including at restart.
+
+Operator-owned deployment roots hold storage/engine endpoints, topology,
+listener/security ceilings, secret providers and host/process budgets. They are
+locked against management edits. Environment/CLI accept only the documented root
+subset and restrictive emergency runtime locks, not arbitrary competing durable
+policy values. Applied revision is reported per service. The
+[authority transitions and exact validation](../specification/operations-contract.md#configuration-authority-and-exact-validation)
+define bootstrap, file drift, mode switching, restore, locks and the new composition
+keys. Reject duplicate/unknown keys, nonsensical bounds, conflicting settings and
+inert enabled capabilities. A deliberately specified missing file is an error.
 
 `config init` writes a minimal editable configuration. `config show` prints
 redacted effective values and their sources; it is a diagnostic artifact, not
 implicitly a round-trippable config. `config validate` performs static checks;
-`doctor` performs bounded dependency, disk, port, permission and route probes.
-Neither starts collection or signs events. `serve --roles ...` resolves required
+`doctor` performs bounded read-only dependency, disk, port, permission and route
+checks. Active acquisition/network measurements use a separate explicit command.
+Neither command starts collection, mutates store ownership or signs events.
+`serve --roles ...` resolves required
 data dependencies and names missing ones without silently enabling more services.
 
 | Concern | Default design | Change behavior |
@@ -51,14 +64,25 @@ batches, Rust/C++ library caches, allocator overhead, kernel sockets/page cache,
 CH queries/merges, PG connections, DuckDB jobs and graph workers. Track cgroup
 memory as well as RSS; mmap resident pages and page cache are not free resources.
 
-Each role acquires item and byte permits before allocating queued payloads.
-Release permits after ownership transfer or completion. A bounded queue at every
-layer is insufficient if batching, clones or per-connection queues multiply its
-size by R. Derive the aggregate maximum and test it. Schedule admission, live
-sessions, historic backfill, imports and maintenance with reserved minimum work
-shares and borrowable unused capacity. Reserve control/monitoring responsiveness
-under backfill load. Within a share, oldest-due work and per-host tokens prevent
-starvation; relay clusters never silently remove endpoints from observation.
+Select coarse process/domain ceilings at startup or job admission, then local
+item/byte credits before allocation. A whole native job gets its memory/CPU/I/O/
+spill grant before launch. Optional capacity is redistributed at job boundaries;
+no distributed semaphore is required on each delivery. Release local credits
+after ownership transfer or completion. A bounded queue at every layer is
+insufficient if batching, clones or per-connection queues multiply its size by R.
+Derive the aggregate maximum and test it. Schedule admission, live sessions,
+historic backfill, imports and maintenance with reserved minimum work shares.
+Completion/control reserves cannot be borrowed by intake or optional jobs.
+Within a share, oldest-due work and per-host tokens prevent starvation; relay
+clusters never silently remove endpoints from observation.
+
+The [maximum-unit and reservation contract](../specification/operations-contract.md#maximum-units-reservations-and-progress)
+defines conservative encoding/parse/copy bounds, nonblocking transfer order,
+archive/ACK recovery lanes, memory and disk equations, and resolved arithmetic
+examples. Validate unsafe relationships statically. Engine cache/query/concurrency
+settings and cgroup ceilings have distinct functions; do not shrink an engine's
+global thread pool as though it were a CPU quota without testing startup and
+background progress. Actual bound/overshoot qualification belongs to engine tests.
 
 CPU-heavy signature verification, compression and ranking use explicit bounded
 pools or isolated workers. Do not spawn one blocking task per event and rely on
@@ -118,6 +142,14 @@ API, open the dashboard/admin onboarding and inspect resolved role health. Asser
 actual listener addresses and zero signing/publication calls, not just an enabled
 service list. Networkless/empty/malformed bootstrap and dependency outage variants
 must identify the cause and documented recovery.
+
+The full-local placement uses one acquisition/socket owner co-located with ingest,
+separate storage/Index ownership, isolated native workers and explicit read/Control
+domains. Recipe/feature transitions and fixed split-role routes follow the
+[operational matrix](../specification/operations-contract.md#process-placement-and-capabilities).
+An enabled role needs its live dependency; stopping an algorithm does not silently
+stop the storage owner or erase retained results. Archive-only allocates no online
+Index Rocks/CH domains.
 
 ## Shared lifecycle vocabulary and once semantics
 

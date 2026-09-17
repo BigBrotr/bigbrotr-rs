@@ -6,10 +6,10 @@ must agree. Change a shared contract here and update its producer, consumers,
 fixtures and public documentation together. A task cannot invent a second
 meaning for an existing receipt, event, policy or completion state.
 
-The [readiness register](../planning/specification-readiness.md) identifies
-remaining paper closure. In particular, exact persistent encodings and cross-scope
-admission effects must be settled through P00-T06 before adapters assign them
-implicit meanings; the signature notation below is not a complete wire schema.
+The [readiness register](../planning/specification-readiness.md) tracks paper
+closure. [Identity and encoding](identity-and-encoding.md) selects persistent
+fingerprint bytes, cross-scope effects and the separate certification operation;
+generated interfaces must mechanically preserve those field/presence rules.
 
 ## Dependency map
 
@@ -28,7 +28,7 @@ flowchart LR
   D --> R
   D --> O[Signed outbox]
   A --> O
-  R --> H[HTTP / ArchiveRelay / DVM]
+  R --> H[HTTP / ArchiveRelay / DVM / MCP / ContextVM]
   H --> O
   H --> U[Public dashboard]
   CLI --> V[Private administration]
@@ -45,7 +45,7 @@ outage eventually fills its bounded pending allowance and stops new admission.
 | Proposed file | Definitions / ownership |
 |---|---|
 | `crates/bigbrotr-model/src/identity.rs` | DatasetId, ShardId, OwnerEpoch, Sequence, SourceRecordId, ProjectionRowId, EndpointId, Receipt, SourceCut, GenerationId |
-| `crates/bigbrotr-model/src/event.rs` | SignedEvent, VerifiedEvent, EventId, Signature, Tags, first-receive metadata |
+| `crates/bigbrotr-model/src/event.rs` | SignedEvent, VerifiedEvent, EventPayloadV1, EventEligibilityV1, EventId, Signature, Tags, scoped first-receive metadata |
 | `crates/bigbrotr-model/src/evidence.rs` | Measurement/claim/document kinds, observer/clock/access dimensions, scientific outcomes |
 | `crates/bigbrotr-model/src/coverage.rs` | Interval bound, filter scope, traversal evidence, gap and terminal reason |
 | `crates/bigbrotr-model/src/policy.rs` | VisibilityScope, Principal, Grants, PolicyEpoch; no embedded secrets/engine handles |
@@ -54,6 +54,7 @@ outage eventually fills its bounded pending allowance and stops new admission.
 | `crates/bigbrotr-model/src/publication.rs` | SignedIntent, coordinate, destination obligation and outcomes |
 | `apps/bigbrotr/src/runtime/` | Cancellation, BudgetGrant, lease authority, actual async ownership; private application modules |
 | `apps/bigbrotr/src/interfaces/rpc/` | Versioned internal transport adapters, authenticated peer identity and limits |
+| `apps/bigbrotr/src/read/gateways/` | Optional finite MCP/ContextVM application adapters; shared registry/admission, no public generic RPC |
 
 Immutable verified constructors stay private to the audited verification
 boundary. Serialized input cannot claim to be a VerifiedEvent. Pure model crates
@@ -76,7 +77,8 @@ not source code to copy without lifetime/error design.
 | Contract | Input → output | Authority and failure |
 |---|---|---|
 | Verify | BoundedWireEvent + VerificationPolicy → VerifiedEvent or Invalid/Excluded | Recompute canonical ID; verify actual signature; record exact reason without archiving hostile body |
-| Admit | ProducerRequestId + VerifiedEvent + optional LocalObservation + BudgetGrant → AdmissionResult | Owner independently validates remote untrusted input; atomic synced body/identity/facts/receipt |
+| Admit | ProducerRequestId + event intent (verified body, scope, origin/lineage, optional LocalObservation) + BudgetGrant → AdmissionResult | Owner independently validates remote input/current policy; atomic synced payload/eligibility/receive/provenance/dictionaries/receipt; exact bound-intent conflict |
+| CertifyExisting | Event intent + current authority + bounded dependency lookup → ExistingProof / NeedsAdmission / Invalid / Excluded / Retryable / IncompatibleSchema | Full validation and consistent committed inventory read; no ProducerRequestId, writes or new fact; operational dependency proof with causal backup closure |
 | AdmitEvidence | ProducerRequestId + typed Measurement/Document/Claim batch + BudgetGrant → AdmissionResult | Same receipt/retired/conflict/refusal semantics as Admit; required dictionaries and tagged subject references validated; event validity alone cannot authenticate an evidence claim |
 | ReadPending | Owner stream + after Receipt + byte/item bound → SourceBatch | Complete committed sequences only; immutable record IDs and content digest |
 | PublishArchive | Deterministic ArchiveBatch + ownership → ArchiveCommit | Data/dictionaries/references/receipt commit once under fenced single publisher |
@@ -84,17 +86,27 @@ not source code to copy without lifetime/error design.
 | ActivateFrontier | Required family acknowledgements + expected previous frontier → SourceCut | Fenced PG compare-and-swap; missing required family cannot count as complete |
 | ReadSource | Authorized scope + compatible SourceCut + bounded selector → SourceRows | Same cut/visibility across IDs, tags, bodies and correction reduction |
 | Derive | TargetDefinition + immutable inputs/config + resource grant → TargetManifest | Complete/empty/suppressed/failed independently per target; activate only verified output |
-| Query | QueryRequest + authenticated caller → QueryPage or typed refusal | Resolve policy and resource before plan; budget shared by HTTP/WS/DVM |
+| Query | QueryRequest + authenticated caller → QueryPage or typed refusal | Resolve policy/resource/query mode before plan; one budget for HTTP/WS/DVM/MCP/ContextVM |
 | Sign | ValidatedPurpose + canonical unsigned event + authorized key reference → SignedEvent | Kind/subject/key/body validated; no public generic signing endpoint |
 | Enqueue | Immutable signed bytes + lineage + destination set → OutboxReceipt | Durable bytes before send; per-destination outcomes and exact retry |
 | Manage | Actor + typed command + expected configuration revision → durable Job/Revision | Desired/applied state separate; action-level grants, no arbitrary SQL/shell |
 
+The [gateway contract](gateway-contracts.md) owns optional MCP/ContextVM wire
+versions, finite tool mappings and smaller transport limits. Both resolve into
+the ordinary authenticated principal and admitted context; supplied `_meta`,
+remote tool names or Nostr key possession cannot manufacture grants. Adapter
+subquotas divide the same deployment reservation. Shared temporal/authorization
+checks apply before encoding/signing/output, including traversal's per-page
+eligibility. Native MCP and ContextVM free-call restart/cancellation semantics do
+not inherit DVM durable job/outbox/payment promises. Internal gRPC remains private.
+
 `AdmissionResult` is one of `NewFacts(Receipt)`,
 `AlreadyDurable(existing Receipt)`, `Excluded(reason)`,
-`Invalid(reason)`, `Retryable(reason)`, `RetiredRequest`. An existing event with a
-new permitted provenance edge is NewFacts, not a new event body. A later repeated edge is
-AlreadyDurable. A first/earlier event-level local observation can create facts
-with provenance off. Retryable never authorizes progress. Durable outcomes expose
+`Invalid(reason)`, `RequestConflict`, `IncompatibleSchema`, `Retryable(reason)`,
+`RetiredRequest`. An existing event with a new permitted visibility scope or
+provenance edge is NewFacts, not a new event body. A later repeated edge in an
+existing scope is AlreadyDurable. Scoped first/earlier local observation can
+create facts with provenance off. Retryable never authorizes progress. Durable outcomes expose
 which body/evidence effects they cover, rather than returning a generic boolean.
 RetiredRequest reports that detailed receipt resolution is no longer available
 under a durably closed request range; it never authorizes new progress/effects.
@@ -109,6 +121,14 @@ returned for already retired requests rather than executing them anew. See the
 [complete retirement contract](../architecture/storage-services.md#producer-acknowledgement-and-receipt-reclamation).
 SourceRecordId is permanent archive identity; producer retry detail is operational
 state. Its display TTL alone cannot define its correctness horizon.
+
+CertifyExisting has a separate effect/proof contract and never creates a mutation
+receipt to certify another receipt. A new scope, import→network receive, earlier
+correction or new witness returns NeedsAdmission. A valid alternate signature
+in an already eligible scope may be certified after verification; a changed
+signature under the same retained **Admit** request still conflicts. Proofs are
+private operational artifacts and require retained source/dictionary dependencies
+under the actual recovery protection class. They are not public scientific facts.
 
 AdmitEvidence enforces enabled data families as well as visibility. In particular,
 provenance off excludes imported event→relay sidecars and intentional per-event
@@ -125,7 +145,7 @@ records use fixed byte fields with explicit length validation, uint64 protocol
 times, repeated ordered tag strings and a schema version; no Rust memory layout
 or lossy JSON-number conversion crosses the boundary.
 
-Initial services are Ingest (Admit/AdmitEvidence/receipt resolution), Archive
+Initial services are Ingest (Admit/AdmitEvidence/CertifyExisting/receipt resolution), Archive
 (commit/status), Index (derived-state commit and pinned ordered-set access),
 Read (query/page/capabilities), and Control (config/jobs/leases).
 Public HTTP/Nostr interfaces are different adapters with their own authentication.

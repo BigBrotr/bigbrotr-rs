@@ -1,0 +1,87 @@
+{
+  "status": "PASS",
+  "scope": "3 exact-rational tiny graph oracles and changing-eligibility traversal; no runtime/capacity claim",
+  "rank": [
+    {
+      "cold": {
+        "passes": 129,
+        "error_l1": 7.216366903439141e-10,
+        "upper_l1": 8.90018584757494e-09,
+        "vector": [
+          0.5405405401797222,
+          0.4594594598202778
+        ]
+      },
+      "same_graph_warm": {
+        "passes": 0,
+        "error_l1": 7.216366903439141e-10,
+        "upper_l1": 8.90018584757494e-09,
+        "vector": [
+          0.5405405401797222,
+          0.4594594598202778
+        ]
+      }
+    },
+    {
+      "cold": {
+        "passes": 41,
+        "error_l1": 8.660218555876568e-10,
+        "upper_l1": 6.900868015913275e-09,
+        "vector": [
+          0.4522328995104599,
+          0.35556811768002944,
+          0.19219898280951056
+        ]
+      },
+      "same_graph_warm": {
+        "passes": 0,
+        "error_l1": 8.660218555876568e-10,
+        "upper_l1": 6.900868015913275e-09,
+        "vector": [
+          0.4522328995104599,
+          0.35556811768002944,
+          0.19219898280951056
+        ]
+      }
+    },
+    {
+      "cold": {
+        "passes": 129,
+        "error_l1": 9.600784274218465e-10,
+        "upper_l1": 8.900186337923444e-09,
+        "vector": [
+          0.15,
+          0.33041788117880894,
+          0.2808551990019876,
+          0.2387269198192034
+        ]
+      },
+      "same_graph_warm": {
+        "passes": 0,
+        "error_l1": 9.600784274218465e-10,
+        "upper_l1": 8.900186337923444e-09,
+        "vector": [
+          0.15,
+          0.33041788117880894,
+          0.2808551990019876,
+          0.2387269198192034
+        ]
+      }
+    }
+  ],
+  "traversal": {
+    "first_page_before_changes": [
+      "a"
+    ],
+    "after_expiry_replacement_private_replacement_backdate": [
+      "c",
+      "d"
+    ],
+    "negative_controls_rejected": [
+      "private input suppresses public",
+      "candidate cut freezes suppression",
+      "one pass means convergence",
+      "greatest ID wins equal timestamp"
+    ]
+  }
+}

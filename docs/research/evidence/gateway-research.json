@@ -1,0 +1,343 @@
+{
+  "research_id": "gateway-contract-2026-09-17",
+  "observed_date": "2026-09-17",
+  "status": "completed isolated research; product implementation not started",
+  "scope": "Official protocol/source inspection, upstream in-memory Rust tests and official JSON Schema validation. No public relay, payment, Tux, legacy repository mutation or product listener.",
+  "sources": [
+    {
+      "repository": "https://github.com/ContextVM/contextvm-docs",
+      "revision": "fb5bafc405f7a11b39ff5d46f78c144467df980b",
+      "commit_date": "2026-09-16T16:01:49+01:00",
+      "local_ignored_checkout": ".research/checkouts/gateway-contextvm-docs"
+    },
+    {
+      "repository": "https://github.com/ContextVM/sdk",
+      "revision": "d00d862ddf27dfd9ddd77f09a47ea2b941b011cf",
+      "commit_date": "2026-09-16T15:39:53+01:00",
+      "local_ignored_checkout": ".research/checkouts/gateway-contextvm-ts"
+    },
+    {
+      "repository": "https://github.com/ContextVM/rs-sdk",
+      "revision": "848144c0af627a2ffb1793e21ed346e269acddf4",
+      "commit_date": "2026-09-04T11:54:10+01:00",
+      "local_ignored_checkout": ".research/checkouts/gateway-contextvm-rust"
+    },
+    {
+      "repository": "https://github.com/modelcontextprotocol/modelcontextprotocol",
+      "revision": "f56f204f6290f6531b14d5734eb3e0a10f0eb201",
+      "commit_date": "2026-09-16T07:28:34-07:00",
+      "local_ignored_checkout": ".research/checkouts/gateway-mcp-spec"
+    },
+    {
+      "repository": "https://github.com/modelcontextprotocol/rust-sdk",
+      "revision": "fd7811fdaa9fefa1c8034534b4d7a31c97204f89",
+      "commit_date": "2026-09-15T11:37:39-04:00",
+      "local_ignored_checkout": ".research/checkouts/gateway-rmcp"
+    }
+  ],
+  "protocols": {
+    "mcp_native_selected": "2026-07-28",
+    "contextvm_mcp_selected": "2025-11-25",
+    "contextvm_base_status": "Draft",
+    "contextvm_event_kind": 25910,
+    "cep4_status": "Final",
+    "cep8_status": "Draft",
+    "cep19_status": "Draft",
+    "dvm_relationship": "Distinct MCP transport; not NIP-90 or bigbrotr.query/1"
+  },
+  "selected_libraries": {
+    "native_mcp": {
+      "name": "rmcp",
+      "version": "3.4.0",
+      "adoption": "explicit version configuration and application authority/budgets; SDK default LATEST is 2025-11-25"
+    },
+    "contextvm_reference": {
+      "name": "contextvm-sdk",
+      "version": "0.2.2",
+      "adoption": "interop oracle; product bounded framing over selected Nostr primitives; whole unbounded SDK worker not selected"
+    },
+    "typescript_reference": {
+      "name": "@contextvm/sdk",
+      "version": "0.13.16",
+      "license_declared": "LGPL-3.0-1",
+      "adoption": "reference only"
+    }
+  },
+  "environment": {
+    "platform": "macOS-26.5.2-arm64-arm-64bit",
+    "python": "3.9.6",
+    "rustc": "rustc 1.95.0 (59807616e 2026-04-14)",
+    "cargo": "cargo 1.95.0 (f2d3ce0bd 2026-03-21)",
+    "jsonschema": "4.25.1"
+  },
+  "upstream_test_dependency_versions": [
+    {
+      "name": "contextvm-sdk",
+      "version": "0.2.2"
+    },
+    {
+      "name": "json-canon",
+      "version": "0.1.3"
+    },
+    {
+      "name": "nostr",
+      "version": "0.44.8"
+    },
+    {
+      "name": "nostr-sdk",
+      "version": "0.44.1"
+    },
+    {
+      "name": "rmcp",
+      "version": "1.8.0"
+    },
+    {
+      "name": "serde_json",
+      "version": "1.0.151"
+    },
+    {
+      "name": "tokio",
+      "version": "1.53.1"
+    }
+  ],
+  "upstream_test_lock": {
+    "path": "experiments/gateway-contract/upstream.Cargo.lock",
+    "sha256": "a3710da465be0eb9507b5b74a55c5dd51632d9dd989a99ed8da5400438e43e0e",
+    "note": "Upstream checkout lacks a root Cargo.lock; first --locked command failed without tests. Generated in ignored checkout, copied here, then --locked tests passed."
+  },
+  "schema_probe": {
+    "scope": "isolated protocol/schema research; no product integration",
+    "spec_revision": "f56f204f6290f6531b14d5734eb3e0a10f0eb201",
+    "schema_sha256": {
+      "2025-11-25": "268a5f82ba70fd7e4b6dc4aa1e64f116f74b4d0edcb69dc046829c79dd4e97e7",
+      "2026-07-28": "ef70b61f99b6d2e5e3b46863822eab08dff6a45bedc7a08914e0e5b133f40203"
+    },
+    "checks": [
+      {
+        "name": "2025-11-25 finite request",
+        "observed": true,
+        "expected": true,
+        "pass": true
+      },
+      {
+        "name": "2025-11-25 structured result",
+        "observed": true,
+        "expected": true,
+        "pass": true
+      },
+      {
+        "name": "2025-11-25 batch is not a request",
+        "observed": false,
+        "expected": false,
+        "pass": true
+      },
+      {
+        "name": "2026-07-28 finite request",
+        "observed": true,
+        "expected": true,
+        "pass": true
+      },
+      {
+        "name": "2026-07-28 structured result",
+        "observed": true,
+        "expected": true,
+        "pass": true
+      },
+      {
+        "name": "2026-07-28 batch is not a request",
+        "observed": false,
+        "expected": false,
+        "pass": true
+      },
+      {
+        "name": "modern request rejects absent version metadata",
+        "observed": false,
+        "expected": false,
+        "pass": true
+      },
+      {
+        "name": "modern result rejects absent resultType",
+        "observed": false,
+        "expected": false,
+        "pass": true
+      },
+      {
+        "name": "modern tool catalog rejects absent caching fields",
+        "observed": false,
+        "expected": false,
+        "pass": true
+      },
+      {
+        "name": "modern uncached private tool catalog",
+        "observed": true,
+        "expected": true,
+        "pass": true
+      },
+      {
+        "name": "MCP envelope alone permits arbitrary tool arguments",
+        "observed": true,
+        "expected": true,
+        "pass": true
+      },
+      {
+        "name": "duplicate keys need a parser guard before schema validation",
+        "observed": true,
+        "expected": true,
+        "pass": true
+      },
+      {
+        "name": "large fact integer remains a string",
+        "observed": "9007199254740993",
+        "expected": "9007199254740993",
+        "pass": true
+      }
+    ],
+    "passed": 13,
+    "total": 13
+  },
+  "rust_probes": [
+    {
+      "name": "upstream-tests",
+      "passed": 20,
+      "failed": 0,
+      "test_names": [
+        "ctxvm_notifications_initialized_has_kind_p_tag_and_method",
+        "ctxvm_server_announcement_has_kind_and_required_tags",
+        "ctxvm_initialize_request_has_kind_p_tag_and_jsonrpc_initialize",
+        "ctxvm_tools_list_request_has_kind_p_tag_and_method",
+        "ctxvm_tools_call_response_has_kind_e_tag_and_result",
+        "ctxvm_tools_list_response_has_kind_e_tag_and_result",
+        "ctxvm_initialize_response_has_kind_e_tag_and_result_protocol_version",
+        "ctxvm_tools_call_request_has_kind_p_tag_method_and_params",
+        "e2e_happy_path_encryption_disabled",
+        "e2e_multi_client_no_crosstalk",
+        "e2e_happy_path_encryption_optional",
+        "e2e_happy_path_encryption_required",
+        "startup_service_ready_without_client_traffic",
+        "announced_server_publishes_capabilities",
+        "first_client_older_protocol_version_not_negotiated",
+        "reordered_initialized_before_initialize_survives",
+        "stranger_notification_before_init_survives",
+        "response_shape_before_init_survives",
+        "error_response_before_init_survives",
+        "stranger_notification_with_middleware_survives"
+      ],
+      "log_path": ".research/gateway-contract/upstream-tests.log",
+      "log_sha256": "4c478f684fa7dac98634ef9e5ee1d65f0c07fa353e84bf2a09336735679b2549"
+    },
+    {
+      "name": "forged-key-test",
+      "passed": 1,
+      "failed": 0,
+      "test_names": [
+        "plaintext_forged_pubkey_is_rejected_by_signature_verify"
+      ],
+      "log_path": ".research/gateway-contract/forged-key-test.log",
+      "log_sha256": "eb310a7c137be5395e4763fd286291bde16b3cc8ff3abe3c05530488170a4aac"
+    },
+    {
+      "name": "required-encryption-test",
+      "passed": 1,
+      "failed": 0,
+      "test_names": [
+        "encryption_mode_required_drops_plaintext"
+      ],
+      "log_path": ".research/gateway-contract/required-encryption-test.log",
+      "log_sha256": "52b7e7086a370fb558a74e433ec3d4f7042b6ffc957891894cbe7741d221a618"
+    },
+    {
+      "name": "allowlist-test",
+      "passed": 1,
+      "failed": 0,
+      "test_names": [
+        "auth_allowlist_blocks_disallowed_pubkey"
+      ],
+      "log_path": ".research/gateway-contract/allowlist-test.log",
+      "log_sha256": "d4b60b6cbc834206c166001f2e83e1a25603b2edc836a3d7e1ea1cd0103c32e8"
+    }
+  ],
+  "totals": {
+    "schema_checks_passed": 13,
+    "rust_tests_passed": 23,
+    "failed": 0
+  },
+  "findings": [
+    {
+      "id": "G01",
+      "basis": "protocol source",
+      "finding": "ContextVM transports MCP in ephemeral 25910, not DVM 5999/6999/7000; no inherited durable job/result guarantee."
+    },
+    {
+      "id": "G02",
+      "basis": "source and schema probe",
+      "finding": "MCP 2026-07-28 requires per-request metadata, resultType and catalog cache fields; prior-version frames cannot be silently relabeled."
+    },
+    {
+      "id": "G03",
+      "basis": "source",
+      "finding": "rmcp 3.4.0 implements modern MCP but ProtocolVersion::LATEST remains 2025-11-25; explicitly select version."
+    },
+    {
+      "id": "G04",
+      "basis": "source",
+      "finding": "ContextVM SDK whole server has unbounded inbound queues and defaults oversized transfer on; application bounded framing selected instead."
+    },
+    {
+      "id": "G05",
+      "basis": "source risk, not reproduced defect claim",
+      "finding": "ContextVM native worker rewrites request IDs to Nostr event IDs; original-ID/same-author cancellation mapping needs an explicit acceptance case."
+    },
+    {
+      "id": "G06",
+      "basis": "CEP-8 source",
+      "finding": "Paid authorization is execution permission; CEP-8 does not require replay after result loss and delegates failed-execution remedy. No selected payment bridge."
+    },
+    {
+      "id": "G07",
+      "basis": "executed upstream tests",
+      "finding": "Signed envelope structure, encrypted round trips, no two-client crosstalk, hostile early-message survival, forged-author refusal, required-encryption refusal and allowlist refusal passed in memory."
+    },
+    {
+      "id": "G08",
+      "basis": "schema probe",
+      "finding": "Protocol-valid MCP tools/call still admits arbitrary argument objects. BigBrotr resource validation/duplicate-key guards remain application responsibilities."
+    }
+  ],
+  "unproven_release_gates": [
+    "Actual BigBrotr handlers and stores",
+    "Real bounded queue/crypto/read-engine load",
+    "Independent cross-language ContextVM and modern MCP clients",
+    "OAuth provider integration",
+    "Grant revocation and temporal expiry at actual output",
+    "Original-RPC-ID same-author cancellation through packaged gateway",
+    "Generated full tool catalog byte limits",
+    "Public relay behavior and reconnects",
+    "Payments (not selected for MCP/ContextVM)"
+  ],
+  "inventory": {
+    "ignored_roots": [
+      ".research/gateway-contract",
+      ".research/checkouts/gateway-contextvm-docs",
+      ".research/checkouts/gateway-contextvm-ts",
+      ".research/checkouts/gateway-contextvm-rust",
+      ".research/checkouts/gateway-mcp-spec",
+      ".research/checkouts/gateway-rmcp"
+    ],
+    "generated_data": "Cargo target and lock resolution, Python venv/install log, schema result and Rust test logs only",
+    "active_external_services": [],
+    "cleanup": "Delete these inventoried gateway-specific ignored directories if research caches are no longer needed; preserve other .research state."
+  },
+  "integration": {
+    "contract": "docs/specification/gateway-contracts.md",
+    "task_ids": [
+      "P06-T13",
+      "P06-T14"
+    ],
+    "existing_updates": [
+      "docs/specification/interface-catalog.md",
+      "docs/specification/component-contracts.md",
+      "docs/architecture/protocol-evolution.md",
+      "docs/implementation/06-read-surfaces.md"
+    ]
+  }
+}
