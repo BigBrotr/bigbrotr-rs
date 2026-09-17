@@ -77,14 +77,23 @@ archive snapshots while this service is stopped.
 
 | Key | Starting value | Change behavior |
 |---|---|---|
+| `archive.publisher.enabled` | true when archive publication is assigned | Hot pause of new source consumption; retain committed snapshot read/export and resolve accepted publication before stopping |
 | `archive.target_file_bytes` | 256 MiB | New files; tune from corpus and row-group memory |
 | `archive.max_publish_delay` | 30 s | Batch formation/dispatch timer when authority/resources are available; actual committed archive lag is measured separately |
 | `archive.row_group_rows` | 64,000 soft starting target | Engine vector/flush granularity can exceed it; not a memory or row-count cap |
 | `archive.compression` | Zstandard level 3 | New files; schema/manifest records actual encoding |
 | `archive.prepare_workers` | 2 | Bounded pool; one logical publisher remains |
+| `archive.worker_memory_bytes` | 512 MiB per prepare worker | Whole native job grant; its concurrent sum must fit the native domain and must admit one complete atomic unit |
 | `archive.maintenance_budget` | Explicit CPU/I/O/time share | Hot; yields between bounded units |
 | `archive.snapshot_retention` | References plus operator recovery window | Never expire pinned readers/backups/exports |
 | `archive.scrub_interval` | 7 days, incremental traversal | Hot; persists scan cursor |
+
+An enabled publisher requires a declared Ingest source. A retained Archive owner
+with `archive.publisher.enabled=false` can serve pinned snapshots without an
+active ingest owner. Similarly, an enabled Indexer requires at least one declared
+pending or archive replay source; pausing Indexer leaves its independent Index
+storage owner available. These static declarations do not prove source identity
+or usable committed data; the owning runtime adapters must check those.
 
 Large event rows and wide tags can make a row count alone exceed memory. Bound
 application input/decoded staging by bytes and own the native worker's whole

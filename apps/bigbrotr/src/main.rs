@@ -1,4 +1,5 @@
 mod cli;
+mod config;
 mod event;
 
 use std::{
@@ -9,6 +10,8 @@ use std::{
 fn main() -> ExitCode {
     let matches = cli::command().get_matches();
     match matches.subcommand_name() {
+        Some("config") => config::execute(matches.subcommand_matches("config").unwrap(), false),
+        Some("doctor") => config::execute(matches.subcommand_matches("doctor").unwrap(), true),
         Some("event") => event::verify_stdin(),
         Some("build-info") => {
             let mut stdout = io::stdout().lock();

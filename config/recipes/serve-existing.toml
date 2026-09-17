@@ -1,0 +1,128 @@
+# BigBrotr static initialization candidate, schema 1.
+# No database, owner, enrollment, listener or applied policy is created by this file.
+# Replace .example endpoints and protected secret paths before runtime activation.
+# Copying IDs does not grant ownership; config init generates fresh candidate IDs.
+[administration]
+enabled = true
+
+[api]
+enabled = true
+
+[archive.publisher]
+enabled = false
+
+[bootstrap]
+seed = false
+
+[clickhouse]
+database = "bigbrotr"
+endpoint = "http://127.0.0.1:8123"
+read_password_ref = "file:/run/secrets/bigbrotr-ch-read"
+read_user = "bigbrotr_read"
+write_password_ref = "file:/run/secrets/bigbrotr-ch-write"
+write_user = "bigbrotr_write"
+
+[clickhouse.tls]
+local_boundary = "loopback"
+mode = "local-plaintext"
+
+[config]
+authority_mode = "managed"
+recipe = "serve-existing"
+schema_version = 1
+
+[dashboard]
+enabled = true
+
+[deriver]
+enabled = false
+
+[discoverer.events]
+enabled = false
+
+[indexer]
+enabled = false
+
+[monitor]
+enabled = false
+
+[postgres.catalog]
+database = "bigbrotr_catalog"
+endpoint = "127.0.0.1:5432"
+password_ref = "file:/run/secrets/bigbrotr-catalog"
+user = "bigbrotr_catalog"
+
+[postgres.catalog.tls]
+local_boundary = "loopback"
+mode = "local-plaintext"
+
+[postgres.control]
+database = "bigbrotr_control"
+endpoint = "127.0.0.1:5432"
+password_ref = "file:/run/secrets/bigbrotr-control"
+user = "bigbrotr_control"
+
+[postgres.control.tls]
+local_boundary = "loopback"
+mode = "local-plaintext"
+
+[ranker]
+enabled = false
+
+[relay_policy]
+auto_enroll_validated_public = false
+candidate_validation = "disabled"
+
+[runtime.processes.application]
+baseline_bytes = "512MiB"
+completion_reserve_bytes = "512MiB"
+memory_max_bytes = "4GiB"
+native_bytes = "512MiB"
+payload_bytes = "2GiB"
+
+[runtime.processes.clickhouse]
+baseline_bytes = "512MiB"
+completion_reserve_bytes = "512MiB"
+enabled = true
+memory_max_bytes = "4GiB"
+native_bytes = "2GiB"
+payload_bytes = "1GiB"
+
+[runtime.processes.native]
+baseline_bytes = "128MiB"
+completion_reserve_bytes = "512MiB"
+enabled = false
+memory_max_bytes = "2GiB"
+native_bytes = "1GiB"
+payload_bytes = "256MiB"
+
+[runtime.processes.postgres]
+baseline_bytes = "512MiB"
+completion_reserve_bytes = "256MiB"
+enabled = true
+memory_max_bytes = "1536MiB"
+native_bytes = "512MiB"
+payload_bytes = "256MiB"
+
+[search]
+enabled = true
+
+[storage]
+archive_root = "/var/lib/bigbrotr/archive"
+index_root = "/var/lib/bigbrotr/index"
+ingest_root = "/var/lib/bigbrotr/ingest"
+scratch_root = "/var/lib/bigbrotr/scratch"
+
+[sync]
+enabled = false
+
+[topology]
+dataset_id = "22222222222222222222222222222222"
+instance_id = "11111111111111111111111111111111"
+local_roles = [
+    "control",
+    "read",
+]
+
+[validator]
+enabled = false

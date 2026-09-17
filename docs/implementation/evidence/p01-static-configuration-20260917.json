@@ -1,0 +1,157 @@
+{
+  "format": "bigbrotr-static-configuration-evidence/1",
+  "status": "PASS for listed local static scenarios; incomplete P01-T04 and P01-T03",
+  "observed_date": "2026-09-17",
+  "source": {
+    "baseline": "a25e0c559ea1575d71775a9bfcc7bd85e133c1ff",
+    "state": "reviewed staged candidate before containing commit",
+    "files_sha256": {
+      "Cargo.lock": "3ee6c2f6830b6e03dee8fbf7787054d6ad1210dc893bc5f826414acb71866cb4",
+      "Cargo.toml": "0f35758a8c7f2e76e4d21a432f4125aaf3d86212b865377958617d1be71ffe8c",
+      "apps/bigbrotr/Cargo.toml": "f5bb49e0b8c5667c79429217ae48a1293f1d14946f0fa454f0003d854f6455f5",
+      "apps/bigbrotr/src/cli.rs": "b95de00bb027bad47331f7ec2532f39fb6a16c3c752a781d2d4cfe600a95185b",
+      "apps/bigbrotr/src/config/mod.rs": "2b8eb12a449cd5ed570fcef1c19af7eccce00f8930f528bae8f534e29530eeb9",
+      "apps/bigbrotr/src/config/recipes.rs": "c70fb00283696715796668a0cc94e6b0ab5abd97aa4f50ab780e85078c86b542",
+      "apps/bigbrotr/src/config/registry.rs": "e589a633a5eb3916e95565bb2fc24b67fc5950097c7303792561b767c1bf15ca",
+      "apps/bigbrotr/src/config/resolve.rs": "bc1652fb94dc547fdd69b9976a80909e9b53586bdd8dc87b2229470528620bdc",
+      "apps/bigbrotr/src/main.rs": "6a5fe4f55180d366fb4792026fadeafb782c2daa72b241c7ecce2afe57cd07ef",
+      "apps/bigbrotr/tests/config_entrypoint.rs": "668d2171ae4d9303d1c6051623ab18a968d787164c5ab5b61ce1b33496d0d653",
+      "config/recipes/archive-only.toml": "16ce5f532d4e906829c70d56b272c56de75ff6c4dbf0a55f3fa667b1fd4ce496",
+      "config/recipes/full.toml": "8c38ef3dad46994449abfac8d81e8de1bb32be29094bfae68ffa5d1f288ccbb0",
+      "config/recipes/monitor-only.toml": "c226bb2f281ce0de65669309d6ccd3e035982fabbc7cf67a6c09e3661f7688c3",
+      "config/recipes/serve-existing.toml": "f1edb223671a66400d211eb67029ffce71f12cff40fbcf8f8615068b2fe24e39",
+      "config/recipes/split-role.toml": "71b7cd4ccef1bf29fd8f91646bbeef2c97b2c63abad1d7a9b100ad28186ba6bb",
+      "config/recipes/sync-only.toml": "421abc922317bf2260e8b815004e52021f24aeeb3c40b6e5d4e17f3996a61416",
+      "contracts/config/schema.json": "5693189428ed362bfcb1fc86f6ce696a0add6d181953b1d79c2315a043fde2e3",
+      "contracts/release/dependencies.json": "380236d9a2f95ed6f2973d0237f034e75d9004ca32568da250debfcb26857589",
+      "crates/bigbrotr-protocol/Cargo.toml": "4419085875d7661b507fb2a5499cbb497c201de39a274945cbae12fe6fdd16d6",
+      "crates/bigbrotr-protocol/src/endpoint.rs": "ac8ef9a86b72509b49515aabf8730df9ea7dc3b8480bb580cf0122078dff97f6",
+      "crates/bigbrotr-protocol/src/lib.rs": "e03eb5e13d89af7e953347a3aeacecc3bd5c1a150065b0ad66bd8b5b37691da0",
+      "crates/bigbrotr-protocol/tests/endpoint.rs": "6de6f1aaaa389afba5b0361abc0ac54d292542fc5f5dbcc9b751a7ea43b4e065",
+      "docs/architecture/storage-services.md": "e9d253bac26c86fe267fcb1144cd401a8fc7829cfef012ae39cc61063b8b663c",
+      "docs/reference/configuration.md": "3d3b55f0efa7972cf83a6165feef84f370165d947fb3e1445b9693f8d6726f7e",
+      "docs/research/dependency-selections.md": "e5d514724591e3bc0dadf5af0fd829eca03289eaf62db29df69157a3feb6b9c3",
+      "docs/research/evidence/static-configuration-dependencies.json": "38a100eb9537fad66b12ce120743e4e72a00f2d23cb0832852ed5816a152b7b4"
+    }
+  },
+  "environment": {
+    "os": "Darwin",
+    "machine": "arm64",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)",
+    "cargo": "cargo 1.98.1 (797e8a9bc 2026-08-05)",
+    "cargo_target": ".research/static-config/target",
+    "registry_cache": "ordinary user Cargo registry; exact archive copies inventoried separately"
+  },
+  "artifact": {
+    "path": ".research/static-config/target/debug/bigbrotr",
+    "sha256": "54e80b3ea2fca6c9e81afabf28246a33cc438c003200537dbea2eccb47886dd8",
+    "profile": "dev; dirty source candidate, not release"
+  },
+  "implemented_registry_keys": 297,
+  "commands": [
+    {
+      "command": "cargo test --locked --workspace",
+      "status": "PASS",
+      "tests": 40,
+      "scope": "15 config process tests, 3 endpoint identity tests and 22 existing tests"
+    },
+    {
+      "command": "cargo fmt --all --check",
+      "status": "PASS"
+    },
+    {
+      "command": "cargo clippy --locked --workspace --all-targets -- -D warnings",
+      "status": "PASS"
+    },
+    {
+      "command": "RUSTDOCFLAGS=\"-D warnings\" cargo doc --locked --workspace --no-deps",
+      "status": "PASS"
+    },
+    {
+      "command": "cargo deny check",
+      "status": "PASS",
+      "checks": [
+        "advisories",
+        "bans",
+        "licenses",
+        "sources"
+      ]
+    },
+    {
+      "command": "python3 experiments/verify_artifacts.py",
+      "status": "PASS",
+      "scope": "local links, fences, JSON and selected artifact hashes only"
+    }
+  ],
+  "executed_scenarios": [
+    "actual executable outside checkout and empty environment",
+    "six recipe candidates; explicit fresh candidate identities and overwrite/missing-file refusal",
+    "closed unknown/duplicate/disabled-field validation and bounded full-u64 input",
+    "unsafe grant arithmetic, TLS declaration, wrong/missing owners and inert optional enablement refusal",
+    "active Indexer/publisher source dependencies with independent paused storage owners",
+    "secret/proxy/endpoint diagnostic redaction and no secret reads by offline commands",
+    "descriptor rejection of final symlink, device and FIFO without blocking",
+    "raw endpoint array larger than 8MiB rejected before canonicalization",
+    "canonical endpoint IDNA/IPv6/path normalization, exact query distinctions, forbidden credentials/fragments/legacy IPv4",
+    "doctor exit 4 and NOT_RUN live dependencies rather than a readiness success",
+    "generated reference/schema/six examples byte equality and independent semantic negative controls"
+  ],
+  "review": {
+    "method": "complete authored source/contract diff review plus independent read-only agent counterexamples",
+    "findings_fixed": [
+      "disabled proxy syntax/credential redaction",
+      "active Indexer source dependency",
+      "Indexer atomic/query grants",
+      "pending atomic allowance",
+      "consumer applicability",
+      "raw endpoint list byte measurement",
+      "unused PG explicit-port syntax"
+    ],
+    "followup": "local regressions executed; second independent review unavailable due to orchestration agent thread limit"
+  },
+  "limitations": [
+    "No durable managed/declarative policy revisions or engine ownership",
+    "No DNS/SSRF/dial/network effects qualification",
+    "No actual PG/CH/TLS/schema/grant/disk-alias doctor adapters",
+    "No runtime admission/drain or native-memory bound measurement; conservative framing reserve requires actual encoder qualification",
+    "No Linux target, CI, Compose or release journey executed for this candidate",
+    "Remaining static key families listed explicitly in generated reference; unknown inputs and unsupported enablement fail"
+  ],
+  "logs": {
+    "baseline": {
+      "path": ".research/static-config/baseline.log",
+      "sha256": "1a412d0ef1473a06ed9613253d8e840e727e0f6f08d619740af775ab97752c8d"
+    },
+    "workspace-tests": {
+      "path": ".research/static-config/workspace-tests.log",
+      "sha256": "ff0208d0dbef75c5b0aad1f88c54225217084630f176d7fe3757d89210d8ea08"
+    },
+    "fmt": {
+      "path": ".research/static-config/fmt.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "clippy": {
+      "path": ".research/static-config/clippy.log",
+      "sha256": "88f1b8860daab5cf9a59dcadddb7ad836bf6dfea517b63202d0e007bdceb7717"
+    },
+    "docs": {
+      "path": ".research/static-config/docs.log",
+      "sha256": "119839c18e45d66b0c80e62a7a00f29c08d13e83f0933c01b99fd619da2c5187"
+    },
+    "deny": {
+      "path": ".research/static-config/deny.log",
+      "sha256": "f1a0fca39d4280363937aabd77783990ea6480bd9ca257816de3b68fc8efa845"
+    }
+  },
+  "resources": {
+    "local_root": ".research/static-config",
+    "owned": [
+      "target",
+      "reviewer-target",
+      "dependencies",
+      "logs"
+    ],
+    "remote": null,
+    "last_state": "local checks completed; no owned service or engine started"
+  }
+}

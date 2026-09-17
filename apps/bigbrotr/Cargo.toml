@@ -9,9 +9,15 @@ repository.workspace = true
 publish = false
 
 [dependencies]
+bigbrotr-model.workspace = true
 bigbrotr-protocol.workspace = true
 clap.workspace = true
+getrandom.workspace = true
+rustix.workspace = true
 serde_json.workspace = true
+sha2.workspace = true
+toml.workspace = true
+url.workspace = true
 
 [build-dependencies]
 serde_json.workspace = true

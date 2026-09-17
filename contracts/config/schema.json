@@ -1,0 +1,3495 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "administration": {
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "default": true,
+          "type": "boolean",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "control",
+          "x-bigbrotr-reload": "restart"
+        },
+        "listen": {
+          "additionalProperties": false,
+          "properties": {
+            "host": {
+              "default": "127.0.0.1",
+              "maxLength": 8192,
+              "type": "string",
+              "x-bigbrotr-deployment-locked": true,
+              "x-bigbrotr-owner": "control",
+              "x-bigbrotr-reload": "restart"
+            },
+            "port": {
+              "default": 8081,
+              "oneOf": [
+                {
+                  "maximum": 65535,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "format": "bigbrotr-u64",
+                  "pattern": "^(0|[1-9][0-9]*)$",
+                  "type": "string"
+                }
+              ],
+              "x-bigbrotr-deployment-locked": true,
+              "x-bigbrotr-maximum": 65535,
+              "x-bigbrotr-minimum": 1,
+              "x-bigbrotr-owner": "control",
+              "x-bigbrotr-reload": "restart"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "api": {
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "default": true,
+          "type": "boolean",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "read",
+          "x-bigbrotr-reload": "restart"
+        },
+        "listen": {
+          "additionalProperties": false,
+          "properties": {
+            "host": {
+              "default": "127.0.0.1",
+              "maxLength": 8192,
+              "type": "string",
+              "x-bigbrotr-deployment-locked": true,
+              "x-bigbrotr-owner": "read",
+              "x-bigbrotr-reload": "restart"
+            },
+            "port": {
+              "default": 8080,
+              "oneOf": [
+                {
+                  "maximum": 65535,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "format": "bigbrotr-u64",
+                  "pattern": "^(0|[1-9][0-9]*)$",
+                  "type": "string"
+                }
+              ],
+              "x-bigbrotr-deployment-locked": true,
+              "x-bigbrotr-maximum": 65535,
+              "x-bigbrotr-minimum": 1,
+              "x-bigbrotr-owner": "read",
+              "x-bigbrotr-reload": "restart"
+            }
+          },
+          "type": "object"
+        },
+        "public": {
+          "default": false,
+          "type": "boolean",
+          "x-bigbrotr-deployment-locked": true,
+          "x-bigbrotr-owner": "read",
+          "x-bigbrotr-reload": "restart"
+        }
+      },
+      "type": "object"
+    },
+    "archive": {
+      "additionalProperties": false,
+      "properties": {
+        "compression": {
+          "default": "zstd-3",
+          "enum": [
+            "zstd-3"
+          ],
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "archive",
+          "x-bigbrotr-reload": "cycle"
+        },
+        "max_publish_delay": {
+          "default": "30s",
+          "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "archive",
+          "x-bigbrotr-reload": "cycle"
+        },
+        "prepare_workers": {
+          "default": 2,
+          "oneOf": [
+            {
+              "maximum": 4294967295,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "format": "bigbrotr-u64",
+              "pattern": "^(0|[1-9][0-9]*)$",
+              "type": "string"
+            }
+          ],
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-maximum": 4294967295,
+          "x-bigbrotr-minimum": 1,
+          "x-bigbrotr-owner": "archive",
+          "x-bigbrotr-reload": "cycle"
+        },
+        "publisher": {
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "default": true,
+              "type": "boolean",
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-owner": "archive",
+              "x-bigbrotr-reload": "live"
+            }
+          },
+          "type": "object"
+        },
+        "row_group_rows": {
+          "default": 64000,
+          "oneOf": [
+            {
+              "maximum": 4294967295,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "format": "bigbrotr-u64",
+              "pattern": "^(0|[1-9][0-9]*)$",
+              "type": "string"
+            }
+          ],
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-maximum": 4294967295,
+          "x-bigbrotr-minimum": 1,
+          "x-bigbrotr-owner": "archive",
+          "x-bigbrotr-reload": "cycle"
+        },
+        "scrub_interval": {
+          "default": "7d",
+          "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "archive",
+          "x-bigbrotr-reload": "live"
+        },
+        "target_file_bytes": {
+          "default": "256MiB",
+          "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "archive",
+          "x-bigbrotr-reload": "cycle"
+        },
+        "worker_memory_bytes": {
+          "default": "512MiB",
+          "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "archive",
+          "x-bigbrotr-reload": "job"
+        }
+      },
+      "type": "object"
+    },
+    "archive_relay": {
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "default": false,
+          "type": "boolean",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "read",
+          "x-bigbrotr-reload": "restart"
+        },
+        "outbound_message_max_bytes": {
+          "default": "1MiB",
+          "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "read",
+          "x-bigbrotr-reload": "generation"
+        }
+      },
+      "type": "object"
+    },
+    "bootstrap": {
+      "additionalProperties": false,
+      "properties": {
+        "seed": {
+          "default": true,
+          "type": "boolean",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "control",
+          "x-bigbrotr-reload": "initialization"
+        }
+      },
+      "type": "object"
+    },
+    "clickhouse": {
+      "additionalProperties": false,
+      "properties": {
+        "database": {
+          "maxLength": 8192,
+          "type": "string",
+          "x-bigbrotr-deployment-locked": true,
+          "x-bigbrotr-owner": "index",
+          "x-bigbrotr-reload": "restart"
+        },
+        "endpoint": {
+          "maxLength": 8192,
+          "type": "string",
+          "x-bigbrotr-deployment-locked": true,
+          "x-bigbrotr-owner": "index",
+          "x-bigbrotr-reload": "restart"
+        },
+        "placement": {
+          "default": "local",
+          "enum": [
+            "local",
+            "remote"
+          ],
+          "type": "string",
+          "x-bigbrotr-deployment-locked": true,
+          "x-bigbrotr-owner": "index",
+          "x-bigbrotr-reload": "restart"
+        },
+        "read_password_ref": {
+          "format": "bigbrotr-file-secret-reference",
+          "type": "string",
+          "writeOnly": true,
+          "x-bigbrotr-deployment-locked": true,
+          "x-bigbrotr-owner": "index",
+          "x-bigbrotr-reload": "restart"
+        },
+        "read_user": {
+          "maxLength": 8192,
+          "type": "string",
+          "x-bigbrotr-deployment-locked": true,
+          "x-bigbrotr-owner": "index",
+          "x-bigbrotr-reload": "restart"
+        },
+        "tls": {
+          "additionalProperties": false,
+          "properties": {
+            "ca_file": {
+              "format": "bigbrotr-absolute-path",
+              "type": "string",
+              "x-bigbrotr-deployment-locked": true,
+              "x-bigbrotr-owner": "control",
+              "x-bigbrotr-reload": "restart"
+            },
+            "client_cert_ref": {
+              "format": "bigbrotr-file-secret-reference",
+              "type": "string",
+              "writeOnly": true,
+              "x-bigbrotr-deployment-locked": true,
+              "x-bigbrotr-owner": "control",
+              "x-bigbrotr-reload": "restart"
+            },
+            "client_key_ref": {
+              "format": "bigbrotr-file-secret-reference",
+              "type": "string",
+              "writeOnly": true,
+              "x-bigbrotr-deployment-locked": true,
+              "x-bigbrotr-owner": "control",
+              "x-bigbrotr-reload": "restart"
+            },
+            "local_boundary": {
+              "enum": [
+                "loopback",
+                "private-bridge"
+              ],
+              "type": "string",
+              "x-bigbrotr-deployment-locked": true,
+              "x-bigbrotr-owner": "control",
+              "x-bigbrotr-reload": "restart"
+            },
+            "mode": {
+              "default": "verify-full",
+              "enum": [
+                "verify-full",
+                "local-plaintext"
+              ],
+              "type": "string",
+              "x-bigbrotr-deployment-locked": true,
+              "x-bigbrotr-owner": "control",
+              "x-bigbrotr-reload": "restart"
+            },
+            "server_name": {
+              "maxLength": 8192,
+              "type": "string",
+              "x-bigbrotr-deployment-locked": true,
+              "x-bigbrotr-owner": "control",
+              "x-bigbrotr-reload": "restart"
+            }
+          },
+          "type": "object"
+        },
+        "write_password_ref": {
+          "format": "bigbrotr-file-secret-reference",
+          "type": "string",
+          "writeOnly": true,
+          "x-bigbrotr-deployment-locked": true,
+          "x-bigbrotr-owner": "index",
+          "x-bigbrotr-reload": "restart"
+        },
+        "write_user": {
+          "maxLength": 8192,
+          "type": "string",
+          "x-bigbrotr-deployment-locked": true,
+          "x-bigbrotr-owner": "index",
+          "x-bigbrotr-reload": "restart"
+        }
+      },
+      "type": "object"
+    },
+    "config": {
+      "additionalProperties": false,
+      "properties": {
+        "authority_mode": {
+          "default": "managed",
+          "enum": [
+            "managed",
+            "declarative"
+          ],
+          "type": "string",
+          "x-bigbrotr-deployment-locked": true,
+          "x-bigbrotr-owner": "control",
+          "x-bigbrotr-reload": "restart"
+        },
+        "recipe": {
+          "default": "full",
+          "enum": [
+            "full",
+            "archive-only",
+            "sync-only",
+            "monitor-only",
+            "serve-existing",
+            "split-role"
+          ],
+          "type": "string",
+          "x-bigbrotr-deployment-locked": true,
+          "x-bigbrotr-owner": "control",
+          "x-bigbrotr-reload": "initialization"
+        },
+        "schema_version": {
+          "default": 1,
+          "oneOf": [
+            {
+              "maximum": 1,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "format": "bigbrotr-u64",
+              "pattern": "^(0|[1-9][0-9]*)$",
+              "type": "string"
+            }
+          ],
+          "x-bigbrotr-deployment-locked": true,
+          "x-bigbrotr-maximum": 1,
+          "x-bigbrotr-minimum": 1,
+          "x-bigbrotr-owner": "control",
+          "x-bigbrotr-reload": "restart"
+        }
+      },
+      "required": [
+        "recipe"
+      ],
+      "type": "object"
+    },
+    "contextvm": {
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "default": false,
+          "type": "boolean",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "read",
+          "x-bigbrotr-reload": "restart"
+        }
+      },
+      "type": "object"
+    },
+    "dashboard": {
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "default": true,
+          "type": "boolean",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "read",
+          "x-bigbrotr-reload": "restart"
+        }
+      },
+      "type": "object"
+    },
+    "deriver": {
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "default": true,
+          "type": "boolean",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "deriver",
+          "x-bigbrotr-reload": "live"
+        }
+      },
+      "type": "object"
+    },
+    "discoverer": {
+      "additionalProperties": false,
+      "properties": {
+        "api": {
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "default": false,
+              "type": "boolean",
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-owner": "discoverer",
+              "x-bigbrotr-reload": "live"
+            },
+            "failure_retry": {
+              "default": "15m",
+              "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+              "type": "string",
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-owner": "discoverer",
+              "x-bigbrotr-reload": "live"
+            },
+            "interval": {
+              "default": "24h",
+              "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+              "type": "string",
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-owner": "discoverer",
+              "x-bigbrotr-reload": "live"
+            },
+            "max_response_bytes": {
+              "default": "5MiB",
+              "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+              "type": "string",
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-owner": "discoverer",
+              "x-bigbrotr-reload": "live"
+            },
+            "request_delay": {
+              "default": "1s",
+              "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+              "type": "string",
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-owner": "discoverer",
+              "x-bigbrotr-reload": "live"
+            },
+            "request_timeout": {
+              "default": "15s",
+              "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+              "type": "string",
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-owner": "discoverer",
+              "x-bigbrotr-reload": "connection"
+            },
+            "sources": {
+              "default": [],
+              "items": {
+                "maxLength": 8192,
+                "type": "string"
+              },
+              "maxItems": 100000,
+              "type": "array",
+              "uniqueItems": true,
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-owner": "discoverer",
+              "x-bigbrotr-reload": "live"
+            }
+          },
+          "type": "object"
+        },
+        "events": {
+          "additionalProperties": false,
+          "properties": {
+            "batch_size": {
+              "default": 500,
+              "oneOf": [
+                {
+                  "maximum": 4294967295,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "format": "bigbrotr-u64",
+                  "pattern": "^(0|[1-9][0-9]*)$",
+                  "type": "string"
+                }
+              ],
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-maximum": 4294967295,
+              "x-bigbrotr-minimum": 1,
+              "x-bigbrotr-owner": "discoverer",
+              "x-bigbrotr-reload": "live"
+            },
+            "enabled": {
+              "default": true,
+              "type": "boolean",
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-owner": "discoverer",
+              "x-bigbrotr-reload": "live"
+            },
+            "page_size": {
+              "default": 500,
+              "oneOf": [
+                {
+                  "maximum": 4294967295,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "format": "bigbrotr-u64",
+                  "pattern": "^(0|[1-9][0-9]*)$",
+                  "type": "string"
+                }
+              ],
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-maximum": 4294967295,
+              "x-bigbrotr-minimum": 1,
+              "x-bigbrotr-owner": "discoverer",
+              "x-bigbrotr-reload": "live"
+            },
+            "quantum": {
+              "default": 1000,
+              "oneOf": [
+                {
+                  "maximum": 4294967295,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "format": "bigbrotr-u64",
+                  "pattern": "^(0|[1-9][0-9]*)$",
+                  "type": "string"
+                }
+              ],
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-maximum": 4294967295,
+              "x-bigbrotr-minimum": 1,
+              "x-bigbrotr-owner": "discoverer",
+              "x-bigbrotr-reload": "live"
+            },
+            "slice_time": {
+              "default": "30s",
+              "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+              "type": "string",
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-owner": "discoverer",
+              "x-bigbrotr-reload": "live"
+            },
+            "workers": {
+              "default": 4,
+              "oneOf": [
+                {
+                  "maximum": 4294967295,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "format": "bigbrotr-u64",
+                  "pattern": "^(0|[1-9][0-9]*)$",
+                  "type": "string"
+                }
+              ],
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-maximum": 4294967295,
+              "x-bigbrotr-minimum": 1,
+              "x-bigbrotr-owner": "discoverer",
+              "x-bigbrotr-reload": "live"
+            }
+          },
+          "type": "object"
+        },
+        "evidence_recent_limit": {
+          "default": 100,
+          "oneOf": [
+            {
+              "maximum": 4294967295,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "format": "bigbrotr-u64",
+              "pattern": "^(0|[1-9][0-9]*)$",
+              "type": "string"
+            }
+          ],
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-maximum": 4294967295,
+          "x-bigbrotr-minimum": 1,
+          "x-bigbrotr-owner": "discoverer",
+          "x-bigbrotr-reload": "live"
+        }
+      },
+      "type": "object"
+    },
+    "dvm": {
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "default": false,
+          "type": "boolean",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "read",
+          "x-bigbrotr-reload": "restart"
+        }
+      },
+      "type": "object"
+    },
+    "import": {
+      "additionalProperties": false,
+      "properties": {
+        "batch_records": {
+          "default": 1000,
+          "oneOf": [
+            {
+              "maximum": 4294967295,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "format": "bigbrotr-u64",
+              "pattern": "^(0|[1-9][0-9]*)$",
+              "type": "string"
+            }
+          ],
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-maximum": 4294967295,
+          "x-bigbrotr-minimum": 1,
+          "x-bigbrotr-owner": "import",
+          "x-bigbrotr-reload": "job"
+        },
+        "checkpoint_interval": {
+          "default": "5s",
+          "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "import",
+          "x-bigbrotr-reload": "job"
+        },
+        "claims": {
+          "default": "enabled-families",
+          "enum": [
+            "enabled-families",
+            "require-all",
+            "none"
+          ],
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "import",
+          "x-bigbrotr-reload": "job"
+        },
+        "format": {
+          "default": "auto",
+          "enum": [
+            "auto",
+            "jsonl",
+            "native",
+            "pensieve"
+          ],
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "import",
+          "x-bigbrotr-reload": "job"
+        },
+        "max_event_bytes": {
+          "default": "256KiB",
+          "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "import",
+          "x-bigbrotr-reload": "job"
+        },
+        "max_record_bytes": {
+          "default": "16MiB",
+          "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "import",
+          "x-bigbrotr-reload": "job"
+        },
+        "memory_bytes": {
+          "default": "256MiB",
+          "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "import",
+          "x-bigbrotr-reload": "job"
+        },
+        "reject_artifact_bytes": {
+          "default": "64MiB",
+          "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "import",
+          "x-bigbrotr-reload": "job"
+        },
+        "reject_policy": {
+          "default": "continue_records",
+          "enum": [
+            "continue_records"
+          ],
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "import",
+          "x-bigbrotr-reload": "job"
+        },
+        "scratch_bytes": {
+          "default": "20GiB",
+          "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "import",
+          "x-bigbrotr-reload": "job"
+        },
+        "workers": {
+          "default": 4,
+          "oneOf": [
+            {
+              "maximum": 4294967295,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "format": "bigbrotr-u64",
+              "pattern": "^(0|[1-9][0-9]*)$",
+              "type": "string"
+            }
+          ],
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-maximum": 4294967295,
+          "x-bigbrotr-minimum": 1,
+          "x-bigbrotr-owner": "import",
+          "x-bigbrotr-reload": "job"
+        }
+      },
+      "type": "object"
+    },
+    "indexer": {
+      "additionalProperties": false,
+      "properties": {
+        "batch_max_bytes": {
+          "default": "16MiB",
+          "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "index",
+          "x-bigbrotr-reload": "cycle"
+        },
+        "batch_max_rows": {
+          "default": 20000,
+          "oneOf": [
+            {
+              "maximum": 4294967295,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "format": "bigbrotr-u64",
+              "pattern": "^(0|[1-9][0-9]*)$",
+              "type": "string"
+            }
+          ],
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-maximum": 4294967295,
+          "x-bigbrotr-minimum": 1,
+          "x-bigbrotr-owner": "index",
+          "x-bigbrotr-reload": "cycle"
+        },
+        "enabled": {
+          "default": true,
+          "type": "boolean",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "indexer",
+          "x-bigbrotr-reload": "live"
+        },
+        "flush_interval": {
+          "default": "1s",
+          "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "index",
+          "x-bigbrotr-reload": "cycle"
+        },
+        "insert_workers": {
+          "default": 2,
+          "oneOf": [
+            {
+              "maximum": 4294967295,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "format": "bigbrotr-u64",
+              "pattern": "^(0|[1-9][0-9]*)$",
+              "type": "string"
+            }
+          ],
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-maximum": 4294967295,
+          "x-bigbrotr-minimum": 1,
+          "x-bigbrotr-owner": "index",
+          "x-bigbrotr-reload": "cycle"
+        },
+        "query_memory": {
+          "default": "256MiB",
+          "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "index",
+          "x-bigbrotr-reload": "cycle"
+        }
+      },
+      "type": "object"
+    },
+    "ingest": {
+      "additionalProperties": false,
+      "properties": {
+        "group_commit_max_bytes": {
+          "default": "4MiB",
+          "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "ingest",
+          "x-bigbrotr-reload": "live"
+        },
+        "group_commit_max_delay": {
+          "default": "5ms",
+          "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "ingest",
+          "x-bigbrotr-reload": "live"
+        },
+        "identity_cache_bytes": {
+          "default": "256MiB",
+          "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "ingest",
+          "x-bigbrotr-reload": "restart"
+        },
+        "max_event_bytes": {
+          "default": "256KiB",
+          "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "ingest",
+          "x-bigbrotr-reload": "generation"
+        },
+        "pending_high_fraction": {
+          "default": 0.9,
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "ingest",
+          "x-bigbrotr-reload": "live"
+        },
+        "pending_low_fraction": {
+          "default": 0.75,
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "ingest",
+          "x-bigbrotr-reload": "live"
+        },
+        "pending_max_bytes": {
+          "default": "256GiB",
+          "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "ingest",
+          "x-bigbrotr-reload": "live"
+        },
+        "producer_outstanding_requests": {
+          "default": 64,
+          "oneOf": [
+            {
+              "maximum": 4294967295,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "format": "bigbrotr-u64",
+              "pattern": "^(0|[1-9][0-9]*)$",
+              "type": "string"
+            }
+          ],
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-maximum": 4294967295,
+          "x-bigbrotr-minimum": 1,
+          "x-bigbrotr-owner": "ingest",
+          "x-bigbrotr-reload": "live"
+        },
+        "producer_queue_bytes": {
+          "default": "32MiB",
+          "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "ingest",
+          "x-bigbrotr-reload": "live"
+        },
+        "producer_queue_items": {
+          "default": 1024,
+          "oneOf": [
+            {
+              "maximum": 4294967295,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "format": "bigbrotr-u64",
+              "pattern": "^(0|[1-9][0-9]*)$",
+              "type": "string"
+            }
+          ],
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-maximum": 4294967295,
+          "x-bigbrotr-minimum": 1,
+          "x-bigbrotr-owner": "ingest",
+          "x-bigbrotr-reload": "live"
+        },
+        "verify_workers": {
+          "default": 2,
+          "oneOf": [
+            {
+              "maximum": 4294967295,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "format": "bigbrotr-u64",
+              "pattern": "^(0|[1-9][0-9]*)$",
+              "type": "string"
+            }
+          ],
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-maximum": 4294967295,
+          "x-bigbrotr-minimum": 1,
+          "x-bigbrotr-owner": "ingest",
+          "x-bigbrotr-reload": "live"
+        },
+        "wal_sync": {
+          "default": "required",
+          "enum": [
+            "required"
+          ],
+          "type": "string",
+          "x-bigbrotr-deployment-locked": true,
+          "x-bigbrotr-owner": "ingest",
+          "x-bigbrotr-reload": "invariant"
+        }
+      },
+      "type": "object"
+    },
+    "issuer": {
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "default": true,
+          "type": "boolean",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "monitor",
+          "x-bigbrotr-reload": "live"
+        }
+      },
+      "type": "object"
+    },
+    "mcp": {
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "default": false,
+          "type": "boolean",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "read",
+          "x-bigbrotr-reload": "restart"
+        }
+      },
+      "type": "object"
+    },
+    "monitor": {
+      "additionalProperties": false,
+      "properties": {
+        "active_write": {
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "default": false,
+              "type": "boolean",
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-owner": "monitor",
+              "x-bigbrotr-reload": "live"
+            },
+            "endpoints": {
+              "default": [],
+              "items": {
+                "format": "bigbrotr-endpoint/1",
+                "maxLength": 8192,
+                "type": "string"
+              },
+              "maxItems": 100000,
+              "type": "array",
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-owner": "monitor",
+              "x-bigbrotr-reload": "live"
+            },
+            "interval": {
+              "default": "24h",
+              "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+              "type": "string",
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-owner": "monitor",
+              "x-bigbrotr-reload": "live"
+            },
+            "max_pow": {
+              "default": 20,
+              "oneOf": [
+                {
+                  "maximum": 256,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "format": "bigbrotr-u64",
+                  "pattern": "^(0|[1-9][0-9]*)$",
+                  "type": "string"
+                }
+              ],
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-maximum": 256,
+              "x-bigbrotr-minimum": 0,
+              "x-bigbrotr-owner": "monitor",
+              "x-bigbrotr-reload": "live"
+            },
+            "pow_timeout": {
+              "default": "1s",
+              "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+              "type": "string",
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-owner": "monitor",
+              "x-bigbrotr-reload": "live"
+            },
+            "signer": {
+              "format": "bigbrotr-file-secret-reference",
+              "type": "string",
+              "writeOnly": true,
+              "x-bigbrotr-deployment-locked": true,
+              "x-bigbrotr-owner": "monitor",
+              "x-bigbrotr-reload": "identity"
+            }
+          },
+          "type": "object"
+        },
+        "aggregate_retention": {
+          "default": "none",
+          "enum": [
+            "none"
+          ],
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "monitor",
+          "x-bigbrotr-reload": "live"
+        },
+        "availability": {
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "default": true,
+              "type": "boolean",
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-owner": "monitor",
+              "x-bigbrotr-reload": "live"
+            }
+          },
+          "type": "object"
+        },
+        "catalog_interval": {
+          "default": "6h",
+          "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "monitor",
+          "x-bigbrotr-reload": "live"
+        },
+        "check_timeout": {
+          "default": "15s",
+          "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "monitor",
+          "x-bigbrotr-reload": "connection"
+        },
+        "claim_batch": {
+          "default": 100,
+          "oneOf": [
+            {
+              "maximum": 4294967295,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "format": "bigbrotr-u64",
+              "pattern": "^(0|[1-9][0-9]*)$",
+              "type": "string"
+            }
+          ],
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-maximum": 4294967295,
+          "x-bigbrotr-minimum": 1,
+          "x-bigbrotr-owner": "monitor",
+          "x-bigbrotr-reload": "live"
+        },
+        "concurrency": {
+          "default": 32,
+          "oneOf": [
+            {
+              "maximum": 4294967295,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "format": "bigbrotr-u64",
+              "pattern": "^(0|[1-9][0-9]*)$",
+              "type": "string"
+            }
+          ],
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-maximum": 4294967295,
+          "x-bigbrotr-minimum": 1,
+          "x-bigbrotr-owner": "monitor",
+          "x-bigbrotr-reload": "live"
+        },
+        "enabled": {
+          "default": true,
+          "type": "boolean",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "monitor",
+          "x-bigbrotr-reload": "live"
+        },
+        "endpoints": {
+          "additionalProperties": false,
+          "properties": {
+            "mode": {
+              "default": "enrolled",
+              "enum": [
+                "enrolled",
+                "fixed"
+              ],
+              "type": "string",
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-owner": "monitor",
+              "x-bigbrotr-reload": "live"
+            },
+            "urls": {
+              "default": [],
+              "items": {
+                "format": "bigbrotr-endpoint/1",
+                "maxLength": 8192,
+                "type": "string"
+              },
+              "maxItems": 100000,
+              "type": "array",
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-owner": "monitor",
+              "x-bigbrotr-reload": "live"
+            }
+          },
+          "type": "object"
+        },
+        "failure_backoff_factor": {
+          "default": 2,
+          "oneOf": [
+            {
+              "maximum": 4294967295,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "format": "bigbrotr-u64",
+              "pattern": "^(0|[1-9][0-9]*)$",
+              "type": "string"
+            }
+          ],
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-maximum": 4294967295,
+          "x-bigbrotr-minimum": 1,
+          "x-bigbrotr-owner": "monitor",
+          "x-bigbrotr-reload": "live"
+        },
+        "failure_max_interval": {
+          "default": "7d",
+          "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "monitor",
+          "x-bigbrotr-reload": "live"
+        },
+        "geo": {
+          "additionalProperties": false,
+          "properties": {
+            "asn_file": {
+              "format": "bigbrotr-absolute-path",
+              "type": "string",
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-owner": "monitor",
+              "x-bigbrotr-reload": "connection"
+            },
+            "city_file": {
+              "format": "bigbrotr-absolute-path",
+              "type": "string",
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-owner": "monitor",
+              "x-bigbrotr-reload": "connection"
+            },
+            "geohash_precision": {
+              "default": 5,
+              "oneOf": [
+                {
+                  "maximum": 12,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "format": "bigbrotr-u64",
+                  "pattern": "^(0|[1-9][0-9]*)$",
+                  "type": "string"
+                }
+              ],
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-maximum": 12,
+              "x-bigbrotr-minimum": 1,
+              "x-bigbrotr-owner": "monitor",
+              "x-bigbrotr-reload": "live"
+            },
+            "max_age": {
+              "default": "30d",
+              "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+              "type": "string",
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-owner": "monitor",
+              "x-bigbrotr-reload": "live"
+            },
+            "max_download_bytes": {
+              "default": "100MiB",
+              "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+              "type": "string",
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-owner": "monitor",
+              "x-bigbrotr-reload": "live"
+            },
+            "refresh": {
+              "default": false,
+              "type": "boolean",
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-owner": "monitor",
+              "x-bigbrotr-reload": "live"
+            },
+            "refresh_interval": {
+              "default": "24h",
+              "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+              "type": "string",
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-owner": "monitor",
+              "x-bigbrotr-reload": "live"
+            }
+          },
+          "type": "object"
+        },
+        "host_budget": {
+          "default": 32,
+          "oneOf": [
+            {
+              "maximum": 4294967295,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "format": "bigbrotr-u64",
+              "pattern": "^(0|[1-9][0-9]*)$",
+              "type": "string"
+            }
+          ],
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-maximum": 4294967295,
+          "x-bigbrotr-minimum": 1,
+          "x-bigbrotr-owner": "monitor",
+          "x-bigbrotr-reload": "live"
+        },
+        "liveness_interval": {
+          "default": "5m",
+          "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "monitor",
+          "x-bigbrotr-reload": "live"
+        },
+        "nip11_max_bytes": {
+          "default": "1MiB",
+          "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "monitor",
+          "x-bigbrotr-reload": "live"
+        },
+        "per_host_concurrency": {
+          "default": 1,
+          "oneOf": [
+            {
+              "maximum": 4294967295,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "format": "bigbrotr-u64",
+              "pattern": "^(0|[1-9][0-9]*)$",
+              "type": "string"
+            }
+          ],
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-maximum": 4294967295,
+          "x-bigbrotr-minimum": 1,
+          "x-bigbrotr-owner": "monitor",
+          "x-bigbrotr-reload": "live"
+        },
+        "raw_retention": {
+          "default": "forever",
+          "enum": [
+            "forever"
+          ],
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "monitor",
+          "x-bigbrotr-reload": "live"
+        },
+        "retries": {
+          "default": 1,
+          "oneOf": [
+            {
+              "maximum": 4294967295,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "format": "bigbrotr-u64",
+              "pattern": "^(0|[1-9][0-9]*)$",
+              "type": "string"
+            }
+          ],
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-maximum": 4294967295,
+          "x-bigbrotr-minimum": 1,
+          "x-bigbrotr-owner": "monitor",
+          "x-bigbrotr-reload": "live"
+        },
+        "retry_initial": {
+          "default": "1s",
+          "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "monitor",
+          "x-bigbrotr-reload": "live"
+        },
+        "schedule_jitter": {
+          "default": 0.1,
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "monitor",
+          "x-bigbrotr-reload": "live"
+        }
+      },
+      "type": "object"
+    },
+    "network": {
+      "additionalProperties": false,
+      "properties": {
+        "address_connections": {
+          "default": 8,
+          "oneOf": [
+            {
+              "maximum": 4294967295,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "format": "bigbrotr-u64",
+              "pattern": "^(0|[1-9][0-9]*)$",
+              "type": "string"
+            }
+          ],
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-maximum": 4294967295,
+          "x-bigbrotr-minimum": 1,
+          "x-bigbrotr-owner": "acquisition",
+          "x-bigbrotr-reload": "live"
+        },
+        "address_start_rate": {
+          "default": 4,
+          "oneOf": [
+            {
+              "maximum": 4294967295,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "format": "bigbrotr-u64",
+              "pattern": "^(0|[1-9][0-9]*)$",
+              "type": "string"
+            }
+          ],
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-maximum": 4294967295,
+          "x-bigbrotr-minimum": 1,
+          "x-bigbrotr-owner": "acquisition",
+          "x-bigbrotr-reload": "live"
+        },
+        "connect_timeout": {
+          "default": "10s",
+          "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "acquisition",
+          "x-bigbrotr-reload": "connection"
+        },
+        "endpoint_connections": {
+          "default": 1,
+          "oneOf": [
+            {
+              "maximum": 4294967295,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "format": "bigbrotr-u64",
+              "pattern": "^(0|[1-9][0-9]*)$",
+              "type": "string"
+            }
+          ],
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-maximum": 4294967295,
+          "x-bigbrotr-minimum": 1,
+          "x-bigbrotr-owner": "acquisition",
+          "x-bigbrotr-reload": "live"
+        },
+        "host_connections": {
+          "default": 4,
+          "oneOf": [
+            {
+              "maximum": 4294967295,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "format": "bigbrotr-u64",
+              "pattern": "^(0|[1-9][0-9]*)$",
+              "type": "string"
+            }
+          ],
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-maximum": 4294967295,
+          "x-bigbrotr-minimum": 1,
+          "x-bigbrotr-owner": "acquisition",
+          "x-bigbrotr-reload": "live"
+        },
+        "host_request_rate": {
+          "default": 2,
+          "oneOf": [
+            {
+              "maximum": 4294967295,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "format": "bigbrotr-u64",
+              "pattern": "^(0|[1-9][0-9]*)$",
+              "type": "string"
+            }
+          ],
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-maximum": 4294967295,
+          "x-bigbrotr-minimum": 1,
+          "x-bigbrotr-owner": "acquisition",
+          "x-bigbrotr-reload": "live"
+        },
+        "http_redirects": {
+          "default": 3,
+          "oneOf": [
+            {
+              "maximum": 10,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "format": "bigbrotr-u64",
+              "pattern": "^(0|[1-9][0-9]*)$",
+              "type": "string"
+            }
+          ],
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-maximum": 10,
+          "x-bigbrotr-minimum": 0,
+          "x-bigbrotr-owner": "acquisition",
+          "x-bigbrotr-reload": "connection"
+        },
+        "i2p": {
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "default": false,
+              "type": "boolean",
+              "x-bigbrotr-deployment-locked": true,
+              "x-bigbrotr-owner": "acquisition",
+              "x-bigbrotr-reload": "live"
+            },
+            "proxy": {
+              "format": "bigbrotr-proxy-url",
+              "type": "string",
+              "writeOnly": true,
+              "x-bigbrotr-deployment-locked": true,
+              "x-bigbrotr-owner": "acquisition",
+              "x-bigbrotr-reload": "connection"
+            }
+          },
+          "type": "object"
+        },
+        "lokinet": {
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "default": false,
+              "type": "boolean",
+              "x-bigbrotr-deployment-locked": true,
+              "x-bigbrotr-owner": "acquisition",
+              "x-bigbrotr-reload": "live"
+            },
+            "proxy": {
+              "format": "bigbrotr-proxy-url",
+              "type": "string",
+              "writeOnly": true,
+              "x-bigbrotr-deployment-locked": true,
+              "x-bigbrotr-owner": "acquisition",
+              "x-bigbrotr-reload": "connection"
+            }
+          },
+          "type": "object"
+        },
+        "max_connections": {
+          "default": 128,
+          "oneOf": [
+            {
+              "maximum": 4294967295,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "format": "bigbrotr-u64",
+              "pattern": "^(0|[1-9][0-9]*)$",
+              "type": "string"
+            }
+          ],
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-maximum": 4294967295,
+          "x-bigbrotr-minimum": 1,
+          "x-bigbrotr-owner": "acquisition",
+          "x-bigbrotr-reload": "live"
+        },
+        "max_inflate_ratio": {
+          "default": 10,
+          "oneOf": [
+            {
+              "maximum": 4294967295,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "format": "bigbrotr-u64",
+              "pattern": "^(0|[1-9][0-9]*)$",
+              "type": "string"
+            }
+          ],
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-maximum": 4294967295,
+          "x-bigbrotr-minimum": 1,
+          "x-bigbrotr-owner": "acquisition",
+          "x-bigbrotr-reload": "connection"
+        },
+        "max_inflated_bytes": {
+          "default": "2MiB",
+          "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "acquisition",
+          "x-bigbrotr-reload": "connection"
+        },
+        "max_message_bytes": {
+          "default": "2MiB",
+          "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "acquisition",
+          "x-bigbrotr-reload": "connection"
+        },
+        "public": {
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "default": true,
+              "type": "boolean",
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-owner": "acquisition",
+              "x-bigbrotr-reload": "live"
+            }
+          },
+          "type": "object"
+        },
+        "tor": {
+          "additionalProperties": false,
+          "properties": {
+            "enabled": {
+              "default": false,
+              "type": "boolean",
+              "x-bigbrotr-deployment-locked": true,
+              "x-bigbrotr-owner": "acquisition",
+              "x-bigbrotr-reload": "live"
+            },
+            "proxy": {
+              "format": "bigbrotr-proxy-url",
+              "type": "string",
+              "writeOnly": true,
+              "x-bigbrotr-deployment-locked": true,
+              "x-bigbrotr-owner": "acquisition",
+              "x-bigbrotr-reload": "connection"
+            }
+          },
+          "type": "object"
+        },
+        "websocket_compression": {
+          "default": "disabled",
+          "enum": [
+            "disabled"
+          ],
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "acquisition",
+          "x-bigbrotr-reload": "connection"
+        }
+      },
+      "type": "object"
+    },
+    "nip66": {
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "default": false,
+          "type": "boolean",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "read",
+          "x-bigbrotr-reload": "restart"
+        }
+      },
+      "type": "object"
+    },
+    "nip85": {
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "default": false,
+          "type": "boolean",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "read",
+          "x-bigbrotr-reload": "restart"
+        }
+      },
+      "type": "object"
+    },
+    "pipeline": {
+      "additionalProperties": false,
+      "properties": {
+        "max_fact_bytes": {
+          "default": "2MiB",
+          "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "ingest",
+          "x-bigbrotr-reload": "generation"
+        },
+        "parse_arena_bytes": {
+          "default": "8MiB",
+          "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "ingest",
+          "x-bigbrotr-reload": "generation"
+        },
+        "parse_max_depth": {
+          "default": 32,
+          "oneOf": [
+            {
+              "maximum": 4294967295,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "format": "bigbrotr-u64",
+              "pattern": "^(0|[1-9][0-9]*)$",
+              "type": "string"
+            }
+          ],
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-maximum": 4294967295,
+          "x-bigbrotr-minimum": 1,
+          "x-bigbrotr-owner": "ingest",
+          "x-bigbrotr-reload": "generation"
+        },
+        "parse_max_nodes": {
+          "default": 65536,
+          "oneOf": [
+            {
+              "maximum": 4294967295,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "format": "bigbrotr-u64",
+              "pattern": "^(0|[1-9][0-9]*)$",
+              "type": "string"
+            }
+          ],
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-maximum": 4294967295,
+          "x-bigbrotr-minimum": 1,
+          "x-bigbrotr-owner": "ingest",
+          "x-bigbrotr-reload": "generation"
+        },
+        "prepare_slot_bytes": {
+          "default": "16MiB",
+          "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "ingest",
+          "x-bigbrotr-reload": "generation"
+        }
+      },
+      "type": "object"
+    },
+    "postgres": {
+      "additionalProperties": false,
+      "properties": {
+        "catalog": {
+          "additionalProperties": false,
+          "properties": {
+            "database": {
+              "maxLength": 8192,
+              "type": "string",
+              "x-bigbrotr-deployment-locked": true,
+              "x-bigbrotr-owner": "control",
+              "x-bigbrotr-reload": "restart"
+            },
+            "endpoint": {
+              "maxLength": 8192,
+              "type": "string",
+              "x-bigbrotr-deployment-locked": true,
+              "x-bigbrotr-owner": "control",
+              "x-bigbrotr-reload": "restart"
+            },
+            "password_ref": {
+              "format": "bigbrotr-file-secret-reference",
+              "type": "string",
+              "writeOnly": true,
+              "x-bigbrotr-deployment-locked": true,
+              "x-bigbrotr-owner": "control",
+              "x-bigbrotr-reload": "restart"
+            },
+            "placement": {
+              "default": "local",
+              "enum": [
+                "local",
+                "remote"
+              ],
+              "type": "string",
+              "x-bigbrotr-deployment-locked": true,
+              "x-bigbrotr-owner": "control",
+              "x-bigbrotr-reload": "restart"
+            },
+            "tls": {
+              "additionalProperties": false,
+              "properties": {
+                "ca_file": {
+                  "format": "bigbrotr-absolute-path",
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "client_cert_ref": {
+                  "format": "bigbrotr-file-secret-reference",
+                  "type": "string",
+                  "writeOnly": true,
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "client_key_ref": {
+                  "format": "bigbrotr-file-secret-reference",
+                  "type": "string",
+                  "writeOnly": true,
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "local_boundary": {
+                  "enum": [
+                    "loopback",
+                    "private-bridge"
+                  ],
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "mode": {
+                  "default": "verify-full",
+                  "enum": [
+                    "verify-full",
+                    "local-plaintext"
+                  ],
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "server_name": {
+                  "maxLength": 8192,
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                }
+              },
+              "type": "object"
+            },
+            "user": {
+              "maxLength": 8192,
+              "type": "string",
+              "x-bigbrotr-deployment-locked": true,
+              "x-bigbrotr-owner": "control",
+              "x-bigbrotr-reload": "restart"
+            }
+          },
+          "type": "object"
+        },
+        "control": {
+          "additionalProperties": false,
+          "properties": {
+            "database": {
+              "maxLength": 8192,
+              "type": "string",
+              "x-bigbrotr-deployment-locked": true,
+              "x-bigbrotr-owner": "control",
+              "x-bigbrotr-reload": "restart"
+            },
+            "endpoint": {
+              "maxLength": 8192,
+              "type": "string",
+              "x-bigbrotr-deployment-locked": true,
+              "x-bigbrotr-owner": "control",
+              "x-bigbrotr-reload": "restart"
+            },
+            "password_ref": {
+              "format": "bigbrotr-file-secret-reference",
+              "type": "string",
+              "writeOnly": true,
+              "x-bigbrotr-deployment-locked": true,
+              "x-bigbrotr-owner": "control",
+              "x-bigbrotr-reload": "restart"
+            },
+            "placement": {
+              "default": "local",
+              "enum": [
+                "local",
+                "remote"
+              ],
+              "type": "string",
+              "x-bigbrotr-deployment-locked": true,
+              "x-bigbrotr-owner": "control",
+              "x-bigbrotr-reload": "restart"
+            },
+            "tls": {
+              "additionalProperties": false,
+              "properties": {
+                "ca_file": {
+                  "format": "bigbrotr-absolute-path",
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "client_cert_ref": {
+                  "format": "bigbrotr-file-secret-reference",
+                  "type": "string",
+                  "writeOnly": true,
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "client_key_ref": {
+                  "format": "bigbrotr-file-secret-reference",
+                  "type": "string",
+                  "writeOnly": true,
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "local_boundary": {
+                  "enum": [
+                    "loopback",
+                    "private-bridge"
+                  ],
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "mode": {
+                  "default": "verify-full",
+                  "enum": [
+                    "verify-full",
+                    "local-plaintext"
+                  ],
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "server_name": {
+                  "maxLength": 8192,
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                }
+              },
+              "type": "object"
+            },
+            "user": {
+              "maxLength": 8192,
+              "type": "string",
+              "x-bigbrotr-deployment-locked": true,
+              "x-bigbrotr-owner": "control",
+              "x-bigbrotr-reload": "restart"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "ranker": {
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "default": true,
+          "type": "boolean",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "ranker",
+          "x-bigbrotr-reload": "live"
+        }
+      },
+      "type": "object"
+    },
+    "relay_policy": {
+      "additionalProperties": false,
+      "properties": {
+        "auto_enroll_validated_public": {
+          "default": true,
+          "type": "boolean",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "validator",
+          "x-bigbrotr-reload": "live"
+        },
+        "candidate_validation": {
+          "default": "public",
+          "enum": [
+            "public",
+            "enrolled_only",
+            "disabled"
+          ],
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "validator",
+          "x-bigbrotr-reload": "live"
+        }
+      },
+      "type": "object"
+    },
+    "rpc": {
+      "additionalProperties": false,
+      "properties": {
+        "batch_max_bytes": {
+          "default": "4MiB",
+          "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "runtime",
+          "x-bigbrotr-reload": "restart"
+        },
+        "max_decode_bytes": {
+          "default": "8MiB",
+          "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "runtime",
+          "x-bigbrotr-reload": "restart"
+        },
+        "max_encode_bytes": {
+          "default": "8MiB",
+          "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "runtime",
+          "x-bigbrotr-reload": "restart"
+        }
+      },
+      "type": "object"
+    },
+    "runtime": {
+      "additionalProperties": false,
+      "properties": {
+        "authorization_ttl": {
+          "default": "5s",
+          "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": true,
+          "x-bigbrotr-owner": "runtime",
+          "x-bigbrotr-reload": "live-revocation-barrier"
+        },
+        "disk_completion_reserve_bytes": {
+          "default": "64GiB",
+          "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": true,
+          "x-bigbrotr-owner": "runtime",
+          "x-bigbrotr-reload": "restart"
+        },
+        "disk_resume_margin_bytes": {
+          "default": "16GiB",
+          "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "runtime",
+          "x-bigbrotr-reload": "live"
+        },
+        "graceful_shutdown_timeout": {
+          "default": "30s",
+          "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": true,
+          "x-bigbrotr-owner": "runtime",
+          "x-bigbrotr-reload": "restart"
+        },
+        "heartbeat_interval": {
+          "default": "20s",
+          "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": true,
+          "x-bigbrotr-owner": "runtime",
+          "x-bigbrotr-reload": "restart"
+        },
+        "heavy_job_slots": {
+          "default": 1,
+          "oneOf": [
+            {
+              "maximum": 64,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "format": "bigbrotr-u64",
+              "pattern": "^(0|[1-9][0-9]*)$",
+              "type": "string"
+            }
+          ],
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-maximum": 64,
+          "x-bigbrotr-minimum": 1,
+          "x-bigbrotr-owner": "runtime",
+          "x-bigbrotr-reload": "cycle"
+        },
+        "host_memory_bytes": {
+          "default": "16GiB",
+          "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": true,
+          "x-bigbrotr-owner": "runtime",
+          "x-bigbrotr-reload": "restart"
+        },
+        "lease_ttl": {
+          "default": "60s",
+          "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": true,
+          "x-bigbrotr-owner": "runtime",
+          "x-bigbrotr-reload": "restart"
+        },
+        "os_headroom_bytes": {
+          "default": "2GiB",
+          "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": true,
+          "x-bigbrotr-owner": "runtime",
+          "x-bigbrotr-reload": "restart"
+        },
+        "pressure_stable_duration": {
+          "default": "30s",
+          "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "runtime",
+          "x-bigbrotr-reload": "live"
+        },
+        "processes": {
+          "additionalProperties": false,
+          "properties": {
+            "application": {
+              "additionalProperties": false,
+              "properties": {
+                "baseline_bytes": {
+                  "default": "128MiB",
+                  "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "runtime",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "completion_reserve_bytes": {
+                  "default": "32MiB",
+                  "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "runtime",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "enabled": {
+                  "default": true,
+                  "type": "boolean",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "runtime",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "memory_max_bytes": {
+                  "default": "1GiB",
+                  "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "runtime",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "native_bytes": {
+                  "default": "256MiB",
+                  "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "runtime",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "payload_bytes": {
+                  "default": "256MiB",
+                  "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "runtime",
+                  "x-bigbrotr-reload": "restart"
+                }
+              },
+              "type": "object"
+            },
+            "clickhouse": {
+              "additionalProperties": false,
+              "properties": {
+                "baseline_bytes": {
+                  "default": "128MiB",
+                  "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "runtime",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "completion_reserve_bytes": {
+                  "default": "32MiB",
+                  "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "runtime",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "enabled": {
+                  "default": true,
+                  "type": "boolean",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "runtime",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "memory_max_bytes": {
+                  "default": "1GiB",
+                  "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "runtime",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "native_bytes": {
+                  "default": "256MiB",
+                  "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "runtime",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "payload_bytes": {
+                  "default": "256MiB",
+                  "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "runtime",
+                  "x-bigbrotr-reload": "restart"
+                }
+              },
+              "type": "object"
+            },
+            "native": {
+              "additionalProperties": false,
+              "properties": {
+                "baseline_bytes": {
+                  "default": "128MiB",
+                  "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "runtime",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "completion_reserve_bytes": {
+                  "default": "32MiB",
+                  "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "runtime",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "enabled": {
+                  "default": true,
+                  "type": "boolean",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "runtime",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "memory_max_bytes": {
+                  "default": "1GiB",
+                  "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "runtime",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "native_bytes": {
+                  "default": "256MiB",
+                  "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "runtime",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "payload_bytes": {
+                  "default": "256MiB",
+                  "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "runtime",
+                  "x-bigbrotr-reload": "restart"
+                }
+              },
+              "type": "object"
+            },
+            "postgres": {
+              "additionalProperties": false,
+              "properties": {
+                "baseline_bytes": {
+                  "default": "128MiB",
+                  "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "runtime",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "completion_reserve_bytes": {
+                  "default": "32MiB",
+                  "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "runtime",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "enabled": {
+                  "default": true,
+                  "type": "boolean",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "runtime",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "memory_max_bytes": {
+                  "default": "1GiB",
+                  "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "runtime",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "native_bytes": {
+                  "default": "256MiB",
+                  "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "runtime",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "payload_bytes": {
+                  "default": "256MiB",
+                  "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "runtime",
+                  "x-bigbrotr-reload": "restart"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        },
+        "renewal_safety_margin": {
+          "default": "20s",
+          "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": true,
+          "x-bigbrotr-owner": "runtime",
+          "x-bigbrotr-reload": "restart"
+        },
+        "renewal_timeout": {
+          "default": "5s",
+          "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": true,
+          "x-bigbrotr-owner": "runtime",
+          "x-bigbrotr-reload": "restart"
+        }
+      },
+      "type": "object"
+    },
+    "search": {
+      "additionalProperties": false,
+      "properties": {
+        "backend": {
+          "default": "clickhouse",
+          "enum": [
+            "clickhouse"
+          ],
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "read",
+          "x-bigbrotr-reload": "generation"
+        },
+        "enabled": {
+          "default": true,
+          "type": "boolean",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "read",
+          "x-bigbrotr-reload": "generation"
+        }
+      },
+      "type": "object"
+    },
+    "secrets": {
+      "additionalProperties": false,
+      "properties": {
+        "file_provider": {
+          "default": "protected-files",
+          "enum": [
+            "protected-files"
+          ],
+          "type": "string",
+          "x-bigbrotr-deployment-locked": true,
+          "x-bigbrotr-owner": "control",
+          "x-bigbrotr-reload": "restart"
+        }
+      },
+      "type": "object"
+    },
+    "seed": {
+      "additionalProperties": false,
+      "properties": {
+        "assumed_scheme": {
+          "default": "wss",
+          "enum": [
+            "ws",
+            "wss"
+          ],
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "control",
+          "x-bigbrotr-reload": "job"
+        },
+        "batch_size": {
+          "default": 500,
+          "oneOf": [
+            {
+              "maximum": 4294967295,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "format": "bigbrotr-u64",
+              "pattern": "^(0|[1-9][0-9]*)$",
+              "type": "string"
+            }
+          ],
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-maximum": 4294967295,
+          "x-bigbrotr-minimum": 1,
+          "x-bigbrotr-owner": "control",
+          "x-bigbrotr-reload": "job"
+        },
+        "enroll": {
+          "default": false,
+          "type": "boolean",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "control",
+          "x-bigbrotr-reload": "job"
+        },
+        "file": {
+          "format": "bigbrotr-absolute-path",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "control",
+          "x-bigbrotr-reload": "job"
+        },
+        "max_line_bytes": {
+          "default": "8KiB",
+          "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "control",
+          "x-bigbrotr-reload": "job"
+        }
+      },
+      "type": "object"
+    },
+    "storage": {
+      "additionalProperties": false,
+      "properties": {
+        "archive_root": {
+          "format": "bigbrotr-absolute-path",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": true,
+          "x-bigbrotr-owner": "storage",
+          "x-bigbrotr-reload": "restart"
+        },
+        "index_root": {
+          "format": "bigbrotr-absolute-path",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": true,
+          "x-bigbrotr-owner": "storage",
+          "x-bigbrotr-reload": "restart"
+        },
+        "ingest_root": {
+          "format": "bigbrotr-absolute-path",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": true,
+          "x-bigbrotr-owner": "storage",
+          "x-bigbrotr-reload": "restart"
+        },
+        "scratch_root": {
+          "format": "bigbrotr-absolute-path",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": true,
+          "x-bigbrotr-owner": "storage",
+          "x-bigbrotr-reload": "restart"
+        }
+      },
+      "type": "object"
+    },
+    "sync": {
+      "additionalProperties": false,
+      "properties": {
+        "active_endpoints": {
+          "default": 64,
+          "oneOf": [
+            {
+              "maximum": 4294967295,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "format": "bigbrotr-u64",
+              "pattern": "^(0|[1-9][0-9]*)$",
+              "type": "string"
+            }
+          ],
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-maximum": 4294967295,
+          "x-bigbrotr-minimum": 1,
+          "x-bigbrotr-owner": "sync",
+          "x-bigbrotr-reload": "live"
+        },
+        "capability_probe_timeout": {
+          "default": "10s",
+          "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "sync",
+          "x-bigbrotr-reload": "connection"
+        },
+        "capability_reprobe": {
+          "default": "7d",
+          "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "sync",
+          "x-bigbrotr-reload": "live"
+        },
+        "connection_lifetime": {
+          "default": "24h",
+          "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "sync",
+          "x-bigbrotr-reload": "connection"
+        },
+        "deep_reverify_interval": {
+          "default": "7d",
+          "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "sync",
+          "x-bigbrotr-reload": "live"
+        },
+        "enabled": {
+          "default": true,
+          "type": "boolean",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "sync",
+          "x-bigbrotr-reload": "live"
+        },
+        "endpoints": {
+          "additionalProperties": false,
+          "properties": {
+            "mode": {
+              "default": "enrolled",
+              "enum": [
+                "enrolled",
+                "fixed"
+              ],
+              "type": "string",
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-owner": "sync",
+              "x-bigbrotr-reload": "live"
+            },
+            "urls": {
+              "default": [],
+              "items": {
+                "format": "bigbrotr-endpoint/1",
+                "maxLength": 8192,
+                "type": "string"
+              },
+              "maxItems": 100000,
+              "type": "array",
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-owner": "sync",
+              "x-bigbrotr-reload": "live"
+            }
+          },
+          "type": "object"
+        },
+        "ephemeral": {
+          "default": "retain",
+          "enum": [
+            "retain",
+            "drop"
+          ],
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "sync",
+          "x-bigbrotr-reload": "generation"
+        },
+        "history_since": {
+          "default": 0,
+          "oneOf": [
+            {
+              "maximum": 18446744073709551615,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "format": "bigbrotr-u64",
+              "pattern": "^(0|[1-9][0-9]*)$",
+              "type": "string"
+            }
+          ],
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-maximum": 18446744073709551615,
+          "x-bigbrotr-minimum": 0,
+          "x-bigbrotr-owner": "sync",
+          "x-bigbrotr-reload": "generation"
+        },
+        "idle_timeout": {
+          "default": "5m",
+          "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "sync",
+          "x-bigbrotr-reload": "connection"
+        },
+        "linear_limit": {
+          "default": 500,
+          "oneOf": [
+            {
+              "maximum": 4294967295,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "format": "bigbrotr-u64",
+              "pattern": "^(0|[1-9][0-9]*)$",
+              "type": "string"
+            }
+          ],
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-maximum": 4294967295,
+          "x-bigbrotr-minimum": 1,
+          "x-bigbrotr-owner": "sync",
+          "x-bigbrotr-reload": "live"
+        },
+        "live_enabled": {
+          "default": true,
+          "type": "boolean",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "sync",
+          "x-bigbrotr-reload": "live"
+        },
+        "live_rotation": {
+          "default": "10m",
+          "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "sync",
+          "x-bigbrotr-reload": "live"
+        },
+        "mode": {
+          "default": "auto",
+          "enum": [
+            "auto",
+            "linear",
+            "negentropy"
+          ],
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "sync",
+          "x-bigbrotr-reload": "live"
+        },
+        "negentropy": {
+          "additionalProperties": false,
+          "properties": {
+            "fetch_attempts": {
+              "default": 3,
+              "oneOf": [
+                {
+                  "maximum": 4294967295,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "format": "bigbrotr-u64",
+                  "pattern": "^(0|[1-9][0-9]*)$",
+                  "type": "string"
+                }
+              ],
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-maximum": 4294967295,
+              "x-bigbrotr-minimum": 1,
+              "x-bigbrotr-owner": "sync",
+              "x-bigbrotr-reload": "live"
+            },
+            "max_frame_bytes": {
+              "default": "64KiB",
+              "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+              "type": "string",
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-owner": "sync",
+              "x-bigbrotr-reload": "connection"
+            },
+            "max_messages": {
+              "default": 1000,
+              "oneOf": [
+                {
+                  "maximum": 4294967295,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "format": "bigbrotr-u64",
+                  "pattern": "^(0|[1-9][0-9]*)$",
+                  "type": "string"
+                }
+              ],
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-maximum": 4294967295,
+              "x-bigbrotr-minimum": 1,
+              "x-bigbrotr-owner": "sync",
+              "x-bigbrotr-reload": "live"
+            },
+            "max_rounds": {
+              "default": 64,
+              "oneOf": [
+                {
+                  "maximum": 4294967295,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "format": "bigbrotr-u64",
+                  "pattern": "^(0|[1-9][0-9]*)$",
+                  "type": "string"
+                }
+              ],
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-maximum": 4294967295,
+              "x-bigbrotr-minimum": 1,
+              "x-bigbrotr-owner": "sync",
+              "x-bigbrotr-reload": "live"
+            },
+            "max_set_bytes": {
+              "default": "64MiB",
+              "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+              "type": "string",
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-owner": "sync",
+              "x-bigbrotr-reload": "live"
+            },
+            "need_batch": {
+              "default": 200,
+              "oneOf": [
+                {
+                  "maximum": 4294967295,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "format": "bigbrotr-u64",
+                  "pattern": "^(0|[1-9][0-9]*)$",
+                  "type": "string"
+                }
+              ],
+              "x-bigbrotr-deployment-locked": false,
+              "x-bigbrotr-maximum": 4294967295,
+              "x-bigbrotr-minimum": 1,
+              "x-bigbrotr-owner": "sync",
+              "x-bigbrotr-reload": "live"
+            }
+          },
+          "type": "object"
+        },
+        "partition_budget": {
+          "default": 128,
+          "oneOf": [
+            {
+              "maximum": 4294967295,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "format": "bigbrotr-u64",
+              "pattern": "^(0|[1-9][0-9]*)$",
+              "type": "string"
+            }
+          ],
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-maximum": 4294967295,
+          "x-bigbrotr-minimum": 1,
+          "x-bigbrotr-owner": "sync",
+          "x-bigbrotr-reload": "live"
+        },
+        "provenance": {
+          "default": "local_first_witness",
+          "enum": [
+            "local_first_witness",
+            "off"
+          ],
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "sync",
+          "x-bigbrotr-reload": "generation"
+        },
+        "relay_byte_budget": {
+          "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "sync",
+          "x-bigbrotr-reload": "live"
+        },
+        "request_timeout": {
+          "default": "30s",
+          "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "sync",
+          "x-bigbrotr-reload": "connection"
+        },
+        "safety_lag": {
+          "default": "48h",
+          "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "sync",
+          "x-bigbrotr-reload": "live"
+        },
+        "subscriptions_per_endpoint": {
+          "default": 3,
+          "oneOf": [
+            {
+              "maximum": 4294967295,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "format": "bigbrotr-u64",
+              "pattern": "^(0|[1-9][0-9]*)$",
+              "type": "string"
+            }
+          ],
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-maximum": 4294967295,
+          "x-bigbrotr-minimum": 1,
+          "x-bigbrotr-owner": "sync",
+          "x-bigbrotr-reload": "live"
+        },
+        "window_width": {
+          "default": "24h",
+          "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "sync",
+          "x-bigbrotr-reload": "live"
+        },
+        "work_quantum": {
+          "default": "2m",
+          "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "sync",
+          "x-bigbrotr-reload": "live"
+        }
+      },
+      "type": "object"
+    },
+    "topology": {
+      "additionalProperties": false,
+      "properties": {
+        "dataset_id": {
+          "not": {
+            "const": "00000000000000000000000000000000"
+          },
+          "pattern": "^[0-9a-f]{32}$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": true,
+          "x-bigbrotr-owner": "control",
+          "x-bigbrotr-reload": "identity"
+        },
+        "instance_id": {
+          "not": {
+            "const": "00000000000000000000000000000000"
+          },
+          "pattern": "^[0-9a-f]{32}$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": true,
+          "x-bigbrotr-owner": "control",
+          "x-bigbrotr-reload": "identity"
+        },
+        "local_roles": {
+          "items": {
+            "maxLength": 8192,
+            "type": "string"
+          },
+          "maxItems": 100000,
+          "type": "array",
+          "uniqueItems": true,
+          "x-bigbrotr-deployment-locked": true,
+          "x-bigbrotr-owner": "control",
+          "x-bigbrotr-reload": "restart"
+        },
+        "ordered_set_reader": {
+          "default": "absent",
+          "enum": [
+            "absent",
+            "index"
+          ],
+          "type": "string",
+          "x-bigbrotr-deployment-locked": true,
+          "x-bigbrotr-owner": "index",
+          "x-bigbrotr-reload": "restart"
+        },
+        "remote": {
+          "additionalProperties": false,
+          "properties": {
+            "archive": {
+              "additionalProperties": false,
+              "properties": {
+                "ca_file": {
+                  "format": "bigbrotr-absolute-path",
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "client_cert_ref": {
+                  "format": "bigbrotr-file-secret-reference",
+                  "type": "string",
+                  "writeOnly": true,
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "client_key_ref": {
+                  "format": "bigbrotr-file-secret-reference",
+                  "type": "string",
+                  "writeOnly": true,
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "dataset_id": {
+                  "not": {
+                    "const": "00000000000000000000000000000000"
+                  },
+                  "pattern": "^[0-9a-f]{32}$",
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "endpoint": {
+                  "maxLength": 8192,
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "owner_epoch": {
+                  "oneOf": [
+                    {
+                      "maximum": 18446744073709551615,
+                      "minimum": 1,
+                      "type": "integer"
+                    },
+                    {
+                      "format": "bigbrotr-u64",
+                      "pattern": "^(0|[1-9][0-9]*)$",
+                      "type": "string"
+                    }
+                  ],
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-maximum": 18446744073709551615,
+                  "x-bigbrotr-minimum": 1,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "peer_id": {
+                  "maxLength": 8192,
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                }
+              },
+              "type": "object"
+            },
+            "control": {
+              "additionalProperties": false,
+              "properties": {
+                "ca_file": {
+                  "format": "bigbrotr-absolute-path",
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "client_cert_ref": {
+                  "format": "bigbrotr-file-secret-reference",
+                  "type": "string",
+                  "writeOnly": true,
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "client_key_ref": {
+                  "format": "bigbrotr-file-secret-reference",
+                  "type": "string",
+                  "writeOnly": true,
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "dataset_id": {
+                  "not": {
+                    "const": "00000000000000000000000000000000"
+                  },
+                  "pattern": "^[0-9a-f]{32}$",
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "endpoint": {
+                  "maxLength": 8192,
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "owner_epoch": {
+                  "oneOf": [
+                    {
+                      "maximum": 18446744073709551615,
+                      "minimum": 1,
+                      "type": "integer"
+                    },
+                    {
+                      "format": "bigbrotr-u64",
+                      "pattern": "^(0|[1-9][0-9]*)$",
+                      "type": "string"
+                    }
+                  ],
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-maximum": 18446744073709551615,
+                  "x-bigbrotr-minimum": 1,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "peer_id": {
+                  "maxLength": 8192,
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                }
+              },
+              "type": "object"
+            },
+            "index": {
+              "additionalProperties": false,
+              "properties": {
+                "ca_file": {
+                  "format": "bigbrotr-absolute-path",
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "client_cert_ref": {
+                  "format": "bigbrotr-file-secret-reference",
+                  "type": "string",
+                  "writeOnly": true,
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "client_key_ref": {
+                  "format": "bigbrotr-file-secret-reference",
+                  "type": "string",
+                  "writeOnly": true,
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "dataset_id": {
+                  "not": {
+                    "const": "00000000000000000000000000000000"
+                  },
+                  "pattern": "^[0-9a-f]{32}$",
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "endpoint": {
+                  "maxLength": 8192,
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "owner_epoch": {
+                  "oneOf": [
+                    {
+                      "maximum": 18446744073709551615,
+                      "minimum": 1,
+                      "type": "integer"
+                    },
+                    {
+                      "format": "bigbrotr-u64",
+                      "pattern": "^(0|[1-9][0-9]*)$",
+                      "type": "string"
+                    }
+                  ],
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-maximum": 18446744073709551615,
+                  "x-bigbrotr-minimum": 1,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "peer_id": {
+                  "maxLength": 8192,
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                }
+              },
+              "type": "object"
+            },
+            "ingest": {
+              "additionalProperties": false,
+              "properties": {
+                "ca_file": {
+                  "format": "bigbrotr-absolute-path",
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "client_cert_ref": {
+                  "format": "bigbrotr-file-secret-reference",
+                  "type": "string",
+                  "writeOnly": true,
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "client_key_ref": {
+                  "format": "bigbrotr-file-secret-reference",
+                  "type": "string",
+                  "writeOnly": true,
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "dataset_id": {
+                  "not": {
+                    "const": "00000000000000000000000000000000"
+                  },
+                  "pattern": "^[0-9a-f]{32}$",
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "endpoint": {
+                  "maxLength": 8192,
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "owner_epoch": {
+                  "oneOf": [
+                    {
+                      "maximum": 18446744073709551615,
+                      "minimum": 1,
+                      "type": "integer"
+                    },
+                    {
+                      "format": "bigbrotr-u64",
+                      "pattern": "^(0|[1-9][0-9]*)$",
+                      "type": "string"
+                    }
+                  ],
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-maximum": 18446744073709551615,
+                  "x-bigbrotr-minimum": 1,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "peer_id": {
+                  "maxLength": 8192,
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                }
+              },
+              "type": "object"
+            },
+            "read": {
+              "additionalProperties": false,
+              "properties": {
+                "ca_file": {
+                  "format": "bigbrotr-absolute-path",
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "client_cert_ref": {
+                  "format": "bigbrotr-file-secret-reference",
+                  "type": "string",
+                  "writeOnly": true,
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "client_key_ref": {
+                  "format": "bigbrotr-file-secret-reference",
+                  "type": "string",
+                  "writeOnly": true,
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "dataset_id": {
+                  "not": {
+                    "const": "00000000000000000000000000000000"
+                  },
+                  "pattern": "^[0-9a-f]{32}$",
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "endpoint": {
+                  "maxLength": 8192,
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "owner_epoch": {
+                  "oneOf": [
+                    {
+                      "maximum": 18446744073709551615,
+                      "minimum": 1,
+                      "type": "integer"
+                    },
+                    {
+                      "format": "bigbrotr-u64",
+                      "pattern": "^(0|[1-9][0-9]*)$",
+                      "type": "string"
+                    }
+                  ],
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-maximum": 18446744073709551615,
+                  "x-bigbrotr-minimum": 1,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                },
+                "peer_id": {
+                  "maxLength": 8192,
+                  "type": "string",
+                  "x-bigbrotr-deployment-locked": true,
+                  "x-bigbrotr-owner": "control",
+                  "x-bigbrotr-reload": "restart"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "required": [
+        "instance_id",
+        "dataset_id",
+        "local_roles"
+      ],
+      "type": "object"
+    },
+    "validator": {
+      "additionalProperties": false,
+      "properties": {
+        "claim_batch": {
+          "default": 100,
+          "oneOf": [
+            {
+              "maximum": 4294967295,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "format": "bigbrotr-u64",
+              "pattern": "^(0|[1-9][0-9]*)$",
+              "type": "string"
+            }
+          ],
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-maximum": 4294967295,
+          "x-bigbrotr-minimum": 1,
+          "x-bigbrotr-owner": "validator",
+          "x-bigbrotr-reload": "live"
+        },
+        "concurrency": {
+          "default": 20,
+          "oneOf": [
+            {
+              "maximum": 4294967295,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "format": "bigbrotr-u64",
+              "pattern": "^(0|[1-9][0-9]*)$",
+              "type": "string"
+            }
+          ],
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-maximum": 4294967295,
+          "x-bigbrotr-minimum": 1,
+          "x-bigbrotr-owner": "validator",
+          "x-bigbrotr-reload": "live"
+        },
+        "dormant_after": {
+          "default": 10,
+          "oneOf": [
+            {
+              "maximum": 4294967295,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "format": "bigbrotr-u64",
+              "pattern": "^(0|[1-9][0-9]*)$",
+              "type": "string"
+            }
+          ],
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-maximum": 4294967295,
+          "x-bigbrotr-minimum": 1,
+          "x-bigbrotr-owner": "validator",
+          "x-bigbrotr-reload": "live"
+        },
+        "enabled": {
+          "default": true,
+          "type": "boolean",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "validator",
+          "x-bigbrotr-reload": "live"
+        },
+        "handshake_timeout": {
+          "default": "10s",
+          "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "validator",
+          "x-bigbrotr-reload": "connection"
+        },
+        "nip11_max_bytes": {
+          "default": "1MiB",
+          "pattern": "^[1-9][0-9]*(B|KiB|MiB|GiB|TiB)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "validator",
+          "x-bigbrotr-reload": "live"
+        },
+        "nip11_timeout": {
+          "default": "10s",
+          "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "validator",
+          "x-bigbrotr-reload": "connection"
+        },
+        "retry_factor": {
+          "default": 2,
+          "oneOf": [
+            {
+              "maximum": 4294967295,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "format": "bigbrotr-u64",
+              "pattern": "^(0|[1-9][0-9]*)$",
+              "type": "string"
+            }
+          ],
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-maximum": 4294967295,
+          "x-bigbrotr-minimum": 1,
+          "x-bigbrotr-owner": "validator",
+          "x-bigbrotr-reload": "live"
+        },
+        "retry_initial": {
+          "default": "1h",
+          "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "validator",
+          "x-bigbrotr-reload": "live"
+        },
+        "retry_jitter": {
+          "default": 0.2,
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "validator",
+          "x-bigbrotr-reload": "live"
+        },
+        "retry_max": {
+          "default": "7d",
+          "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "validator",
+          "x-bigbrotr-reload": "live"
+        },
+        "revival_min_interval": {
+          "default": "1h",
+          "pattern": "^[1-9][0-9]*(us|ms|s|m|h|d)$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": false,
+          "x-bigbrotr-owner": "validator",
+          "x-bigbrotr-reload": "live"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "required": [
+    "config",
+    "topology"
+  ],
+  "title": "BigBrotr static initialization candidate",
+  "type": "object",
+  "x-bigbrotr-note": "Schema describes input shape. The actual CLI also checks normalization, cross-field budgets and role dependencies. Durable authority and remaining service settings are not implemented.",
+  "x-bigbrotr-version": "bigbrotr-config-static/1"
+}

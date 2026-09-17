@@ -254,3 +254,42 @@ proves no performance, durability, license completeness or platform compatibilit
 The evidence inventory records its outcome separately from published-source
 inspection. Downloaded upstream source stays under ignored
 `.research/checkouts/dependency-selections/`; it is not shipped product source.
+
+## Implemented static configuration and endpoint identity slice
+
+P01-T04 selects `toml` 1.1.6+spec-1.1.0 with only `std`, `parse`, `display`
+and `serde`. The actual parser uses the borrowed/spanned `DeTable` tree: the
+ordinary `toml::Value` integer is i64 and cannot preserve a configured full-u64
+owner epoch. The selected tree keeps the integer spelling until checked i64/u64
+conversion, rejects duplicate definitions, and enforces its finite nesting bound.
+BigBrotr rejects unknown keys and tables and caps input at 10MiB. Raw endpoint
+array spans are capped before canonicalization/deduplication; measuring only the
+canonical output accepted an independently reproduced encoded list larger than 8MiB.
+Parser diagnostics never expose source excerpts or supplied values.
+
+`url` 2.5.8 supplies maintained IDNA, IPv6 and URL parsing beneath the pure
+`bigbrotr-endpoint/1` wrapper. Inspected `url/src/host.rs` intentionally accepts
+legacy numeric IPv4 spellings. The wrapper rejects those spellings and browser
+repairs before normalization, retains query bytes/order and redacts path/query
+in Debug output. It has no DNS, route authorization, HTTP redirect or dial
+behavior; those P01-T03 gates remain separate.
+
+`getrandom` 0.4.3 supplies OS randomness for nonzero initialization candidate IDs.
+`rustix` 1.1.5 (`fs`) supplies safe `O_NOFOLLOW|O_NONBLOCK|O_CLOEXEC` opening
+followed by a regular-file descriptor check. A symlink, device or FIFO cannot
+become an unbounded configuration read. Parent-directory alias checks are not
+claimed. `config init` uses exclusive creation and never replaces existing work;
+it does not establish a durable deployment ownership receipt.
+
+Exact source archives, Cargo checksums, upstream commits, inspected license
+choices and focused source locations are recorded in
+[the static dependency evidence](evidence/static-configuration-dependencies.json).
+The four published crates offer MIT; the `url` IDNA/ICU transitive set remains in
+Cargo.lock and the existing Unicode license policy. This is focused parser/file/
+normalization inspection and local CLI evidence, not full SBOM, platform or
+runtime qualification. No alternative TOML or URL parser is carried alongside it.
+
+Sources: [toml DeTable](https://docs.rs/toml/1.1.6+spec-1.1.0/toml/de/struct.DeTable.html),
+[url host parser](https://github.com/servo/rust-url/blob/d6ea13c5f8e7e6e627f6390161b3e185bda5e5ce/url/src/host.rs),
+[getrandom fill](https://docs.rs/getrandom/0.4.3/getrandom/fn.fill.html), and
+[rustix open](https://docs.rs/rustix/1.1.5/rustix/fs/fn.open.html).

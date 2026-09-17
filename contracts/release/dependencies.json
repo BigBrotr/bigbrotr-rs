@@ -1,6 +1,6 @@
 {
   "format": "bigbrotr-dependencies/1",
-  "status": "foundation and signed-event candidate; no qualified product release",
+  "status": "Foundation, model and static-configuration candidate; no qualified product release",
   "rust": {
     "toolchain": "1.98.1",
     "msrv": "1.98.1",
@@ -62,6 +62,34 @@
       "license": "BlueOak-1.0.0",
       "license_notice": "https://blueoakcouncil.org/license/1.0.0",
       "source": "https://docs.rs/minicbor/2.3.0/minicbor/"
+    },
+    {
+      "name": "toml",
+      "version": "1.1.6+spec-1.1.0",
+      "purpose": "Bounded configuration syntax and deterministic example rendering",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://docs.rs/toml/1.1.6+spec-1.1.0/"
+    },
+    {
+      "name": "url",
+      "version": "2.5.8",
+      "purpose": "Maintained URL/IDNA parser under stricter endpoint identity wrapper",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://docs.rs/url/2.5.8/"
+    },
+    {
+      "name": "getrandom",
+      "version": "0.4.3",
+      "purpose": "OS randomness for nonzero candidate instance/dataset identities",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://docs.rs/getrandom/0.4.3/"
+    },
+    {
+      "name": "rustix",
+      "version": "1.1.5",
+      "purpose": "Safe descriptor opening with NOFOLLOW/NONBLOCK and regular-file inspection",
+      "license": "Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT",
+      "source": "https://docs.rs/rustix/1.1.5/"
     }
   ],
   "lock": "Cargo.lock",

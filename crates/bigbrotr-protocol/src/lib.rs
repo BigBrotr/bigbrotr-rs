@@ -7,3 +7,4 @@ pub mod event;
 
 pub use bounds::EventLimits;
 pub use event::{EventError, VerifiedEvent, verify_json};
+pub mod endpoint;

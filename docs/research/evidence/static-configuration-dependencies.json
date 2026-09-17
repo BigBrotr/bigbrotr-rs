@@ -1,0 +1,82 @@
+{
+  "format": "bigbrotr-static-config-dependency-audit/1",
+  "status": "exact published sources inspected at narrow parser/host/file boundary; not a complete dependency audit",
+  "records": [
+    {
+      "crate": "toml",
+      "version": "1.1.6+spec-1.1.0",
+      "archive": ".research/static-config/dependencies/toml-1.1.6+spec-1.1.0.crate",
+      "sha256": "920602543f0911ab71da12c50d59701da54c196d1a2bf5cb4b75667f137a406a",
+      "upstream_vcs": {
+        "git": {
+          "sha1": "572c005d80cca5f7bd163805c2f33ba0a5207b6d"
+        },
+        "path_in_vcs": "crates/toml"
+      },
+      "license": "MIT OR Apache-2.0",
+      "purpose": "Bounded configuration syntax and deterministic example rendering",
+      "inspected_paths": [
+        "Cargo.toml",
+        "src/de/parser/detable.rs",
+        "src/de/parser/devalue.rs (integer/span conversions)",
+        "src/de/parser/key.rs",
+        "LICENSE-MIT"
+      ]
+    },
+    {
+      "crate": "url",
+      "version": "2.5.8",
+      "archive": ".research/static-config/dependencies/url-2.5.8.crate",
+      "sha256": "ff67a8a4397373c3ef660812acab3268222035010ab8680ec4215f38ba3d0eed",
+      "upstream_vcs": {
+        "git": {
+          "sha1": "d6ea13c5f8e7e6e627f6390161b3e185bda5e5ce"
+        },
+        "path_in_vcs": "url"
+      },
+      "license": "MIT OR Apache-2.0",
+      "purpose": "Maintained URL/IDNA parser under stricter endpoint identity wrapper",
+      "inspected_paths": [
+        "src/host.rs (domain/IPv4 parsing)",
+        "LICENSE-MIT"
+      ]
+    },
+    {
+      "crate": "getrandom",
+      "version": "0.4.3",
+      "archive": ".research/static-config/dependencies/getrandom-0.4.3.crate",
+      "sha256": "300e883d756b2e4ec94e02791f39b04b522276138852cfc41d9fb7e904106099",
+      "upstream_vcs": {
+        "git": {
+          "sha1": "5e7cd5733536844a9856dc7259bd4696bbe5e3ae"
+        },
+        "path_in_vcs": ""
+      },
+      "license": "MIT OR Apache-2.0",
+      "purpose": "OS randomness for nonzero candidate instance/dataset identities",
+      "inspected_paths": [
+        "src/lib.rs (fill API)",
+        "LICENSE-MIT"
+      ]
+    },
+    {
+      "crate": "rustix",
+      "version": "1.1.5",
+      "archive": ".research/static-config/dependencies/rustix-1.1.5.crate",
+      "sha256": "891efababe418670775f199f0d233d84843c227a0949a883ce15b37c78d6629d",
+      "upstream_vcs": {
+        "git": {
+          "sha1": "287214b889865d8e1406a0ee71cc409b6f6191c8"
+        },
+        "path_in_vcs": ""
+      },
+      "license": "Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT",
+      "purpose": "Safe descriptor opening with NOFOLLOW/NONBLOCK and regular-file inspection",
+      "inspected_paths": [
+        "src/fs/abs.rs (open wrapper)",
+        "src/backend/libc/fs/types.rs (open flags)",
+        "LICENSE-MIT"
+      ]
+    }
+  ]
+}
