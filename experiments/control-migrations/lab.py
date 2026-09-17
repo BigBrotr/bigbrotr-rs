@@ -160,65 +160,133 @@ def migrate(state, action, path, *, user="bigbrotr_migrator", password="migrator
                "--password-ref", "/".join(["file:/lab/secrets", password]))
 
 
-def smoke(root):
+def schema_digest(state, database):
+    dump = docker("exec", state["postgres"], "pg_dump", "--no-password", "-U", "postgres", "-d", database,
+                  "--schema=control", "--no-owner", "--no-privileges").stdout
+    # Recent pg_dump patches randomize their psql restrict token. It is neither
+    # database content nor schema; retain every other byte in this comparison.
+    stable = "\n".join(line for line in dump.splitlines() if not line.startswith(("\\restrict ", "\\unrestrict ")))
+    return hashlib.sha256(stable.encode()).hexdigest()
+
+
+def auth_failures(state):
+    output = docker("logs", state["postgres"])
+    return (output.stdout + output.stderr).count('password authentication failed for user "bigbrotr_migrator"')
+
+
+def schema_cases(root, run_name):
     state = load(root)
-    output = root / "smoke.json"
+    output = root / (run_name + "-schema.json")
+    if output.exists():
+        raise RuntimeError("refusing to overwrite schema evidence")
+    database = "bb_" + run_name + "_schema"
+    sql(state, "postgres", f"CREATE DATABASE {database} OWNER bigbrotr_migrator;")
+    result = migrate(state, "apply", config(root, state, database))
+    if result.returncode or json.loads(result.stdout)["status"] != "applied":
+        raise RuntimeError("schema fixture prerequisite migration failed")
+    source = Path(__file__).resolve().parents[2]
+    fixture = source / "experiments/control-migrations/schema_cases.sql"
+    expected = hashlib.sha256((source / "migrations/postgres/0001_control.sql").read_bytes()).hexdigest()
+    result = docker("exec", "-i", state["postgres"], "psql", "-X", "-A", "-t", "-q", "--no-password",
+                    "-U", "bigbrotr_migrator", "-d", database, "-v", "ON_ERROR_STOP=1",
+                    "-v", "expected_migration_sha256=" + expected, data=fixture.read_text(), check=False)
+    (root / (run_name + "-schema.stdout")).write_text(result.stdout)
+    (root / (run_name + "-schema.stderr")).write_text(result.stderr)
+    summaries = [json.loads(line) for line in result.stdout.splitlines() if line.startswith('{"')]
+    summary = summaries[-1] if summaries else {}
+    observed = json.loads(sql(state, database, "SELECT json_build_object('datasets',(SELECT count(*) FROM control.datasets),'config',(SELECT count(*) FROM control.config_revisions),'policy',(SELECT count(*) FROM control.policy_revisions),'topologies',(SELECT count(*) FROM control.topology_generations WHERE sealed),'streams',(SELECT count(*) FROM control.topology_streams),'owners',(SELECT count(*) FROM control.owner_epochs),'jobs',(SELECT json_object_agg(encode(job_id,'hex'),state) FROM control.jobs));"))
+    expected_rows = {"datasets": 1, "config": 1, "policy": 1, "topologies": 2, "streams": 3, "owners": 2,
+                     "jobs": {"00000000000000000000000000000028": "succeeded", "00000000000000000000000000000029": "cancelled", "0000000000000000000000000000002a": "accepted"}}
+    passed = result.returncode == 0 and summary.get("result") == "PASS" and summary.get("executed") == 104 and observed == expected_rows
+    report = {"status": "PASS" if passed else "FAIL", "exit": result.returncode, "summary": summary,
+              "external_rows": observed, "fixture_sha256": hashlib.sha256(fixture.read_bytes()).hexdigest(),
+              "binary_sha256": state["binary_sha256"], "application_source": state["build"]["build_info"]["source"],
+              "harness_revision": command(["git", "-C", str(source), "rev-parse", "HEAD"]).stdout.strip()}
+    write_json(output, report)
+    print(json.dumps(report))
+    if not passed:
+        raise RuntimeError("actual schema fixture failed; inspect retained stdout/stderr")
+
+
+def smoke(root, run_name):
+    state = load(root)
+    output = root / (run_name + ".json")
+    clean = "bb_" + run_name + "_clean"
     if output.exists():
         raise RuntimeError("refusing to overwrite prior smoke evidence")
     report = {"format": "bigbrotr-pg-smoke/1", "binary_sha256": state["binary_sha256"],
-              "source": state["build"]["build_info"]["source"], "server": state["server"], "cases": [], "status": "RUNNING"}
+              "source": state["build"]["build_info"]["source"], "server": state["server"], "cases": [], "status": "RUNNING",
+              "harness_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+              "harness_revision": command(["git", "-C", str(Path(__file__).resolve().parents[2]), "rev-parse", "HEAD"]).stdout.strip()}
     def record(name, condition, observed):
         report["cases"].append({"name": name, "status": "PASS" if condition else "FAIL", "observed": observed})
         write_json(output, report)
         if not condition:
             raise RuntimeError("acceptance case failed: " + name)
     def create(name, template=None):
+        name = "bb_" + run_name + "_" + name
         assert re.fullmatch(r"bb_[a-z_]+", name)
         sql(state, "postgres", f"CREATE DATABASE {name} OWNER bigbrotr_migrator" + (f" TEMPLATE {template}" if template else "") + ";")
         return config(root, state, name)
     def receipt(database):
         return sql(state, database, "SELECT row_to_json(v) FROM control.schema_versions v;")
     try:
-        path = create("bb_clean")
+        path = create("clean")
         for action in ["inspect", "plan"]:
             result = migrate(state, action, path)
             value = json.loads(result.stdout) if result.stdout else {}
-            count = sql(state, "bb_clean", "SELECT count(*) FROM pg_namespace WHERE nspname='control';")
+            count = sql(state, clean, "SELECT count(*) FROM pg_namespace WHERE nspname='control';")
             record("clean_" + action, result.returncode == 0 and value.get("source_version") is None and count == "0", {"exit": result.returncode, "output": value, "control_namespaces": count, "stderr": result.stderr})
         result = migrate(state, "apply", path)
         value = json.loads(result.stdout) if result.stdout else {}
         record("first_apply", result.returncode == 0 and value.get("status") == "applied", {"exit": result.returncode, "output": value, "stderr": result.stderr})
-        first = receipt("bb_clean")
+        first = receipt(clean)
         expected = hashlib.sha256((Path(state["source"]) / "migrations/postgres/0001_control.sql").read_bytes()).hexdigest()
         saved = json.loads(first)
-        counts = json.loads(sql(state, "bb_clean", "SELECT json_build_object('datasets',(SELECT count(*) FROM control.datasets),'jobs',(SELECT count(*) FROM control.jobs),'owners',(SELECT count(*) FROM control.owner_epochs),'config',(SELECT count(*) FROM control.config_revisions),'policy',(SELECT count(*) FROM control.policy_revisions));"))
+        counts = json.loads(sql(state, clean, "SELECT json_build_object('datasets',(SELECT count(*) FROM control.datasets),'jobs',(SELECT count(*) FROM control.jobs),'owners',(SELECT count(*) FROM control.owner_epochs),'config',(SELECT count(*) FROM control.config_revisions),'policy',(SELECT count(*) FROM control.policy_revisions));"))
         record("exact_receipt_and_no_implicit_initialization", saved["checksum"] == "\\x" + expected and saved["migration"] == 1 and all(n == 0 for n in counts.values()), {"receipt": saved, "rows": counts})
         result = migrate(state, "apply", path)
         value = json.loads(result.stdout) if result.stdout else {}
-        record("reapply_is_current", result.returncode == 0 and value.get("status") == "current" and receipt("bb_clean") == first, {"exit": result.returncode, "output": value})
+        record("reapply_is_current", result.returncode == 0 and value.get("status") == "current" and receipt(clean) == first, {"exit": result.returncode, "output": value})
         for name, preparation, template in [
             ("namespace", "CREATE SCHEMA control;", None),
             ("view", "CREATE SCHEMA control; CREATE VIEW control.schema_versions AS SELECT 1;", None),
             ("unlogged", "CREATE SCHEMA control; CREATE UNLOGGED TABLE control.schema_versions(a integer);", None),
-            ("empty", "ALTER TABLE control.schema_versions DISABLE TRIGGER USER; DELETE FROM control.schema_versions;", "bb_clean"),
-            ("checksum", "ALTER TABLE control.schema_versions DISABLE TRIGGER USER; UPDATE control.schema_versions SET checksum=decode(repeat('00',32),'hex');", "bb_clean"),
-            ("unknown", "ALTER TABLE control.schema_versions DISABLE TRIGGER USER; UPDATE control.schema_versions SET migration=999;", "bb_clean"),
-            ("metadata", "ALTER TABLE control.schema_versions DISABLE TRIGGER USER; UPDATE control.schema_versions SET reader_max=2;", "bb_clean"),
+            ("empty", "ALTER TABLE control.schema_versions DISABLE TRIGGER USER; DELETE FROM control.schema_versions;", clean),
+            ("checksum", "ALTER TABLE control.schema_versions DISABLE TRIGGER USER; UPDATE control.schema_versions SET checksum=decode(repeat('00',32),'hex');", clean),
+            ("unknown", "ALTER TABLE control.schema_versions DISABLE TRIGGER USER; UPDATE control.schema_versions SET migration=999;", clean),
+            ("metadata", "ALTER TABLE control.schema_versions DISABLE TRIGGER USER; UPDATE control.schema_versions SET reader_max=2;", clean),
         ]:
-            database = "bb_" + name
-            candidate = create(database, template)
+            database = "bb_" + run_name + "_" + name
+            candidate = create(name, template)
             sql(state, database, preparation)
-            before = receipt(database) if template else None
+            before = schema_digest(state, database)
             result = migrate(state, "apply", candidate)
-            after = receipt(database) if template else None
-            record("refuse_" + name, result.returncode == 1 and before == after, {"exit": result.returncode, "stderr": result.stderr, "receipt_unchanged": before == after})
+            after = schema_digest(state, database)
+            expected_reason = {
+                "namespace": "lacks a recognized migration ledger", "view": "lacks a recognized migration ledger",
+                "unlogged": "lacks a recognized migration ledger", "empty": "invalid bounded metadata",
+                "checksum": "migration 1 has a different checksum", "unknown": "unknown applied control migration 999",
+                "metadata": "migration 1 has different metadata",
+            }[name]
+            record("refuse_" + name, result.returncode == 1 and expected_reason in result.stderr and before == after,
+                   {"exit": result.returncode, "stderr": result.stderr, "before_schema_sha256": before, "after_schema_sha256": after})
         for hostname in ["outside", "mixed"]:
-            candidate = config(root, state, "bb_clean", hostname + ":5432")
+            candidate = config(root, state, clean, hostname + ":5432")
             result = migrate(state, "inspect", candidate)
             record("refuse_plaintext_route_" + hostname, result.returncode == 1 and "resolved PostgreSQL plaintext route" in result.stderr, {"exit": result.returncode, "stderr": result.stderr})
-        candidate = config(root, state, "bb_clean")
+        candidate = config(root, state, clean)
+        before_positive = migrate(state, "inspect", candidate)
+        failures_before = auth_failures(state)
         result = migrate(state, "inspect", candidate, password="application")
-        record("scram_rejects_wrong_password", result.returncode == 1 and not result.stdout, {"exit": result.returncode, "stderr": result.stderr})
+        failures_after = auth_failures(state)
+        after_positive = migrate(state, "inspect", candidate)
+        hba = sql(state, "postgres", "SELECT bool_and(auth_method='scram-sha-256') FROM pg_hba_file_rules WHERE type='host';")
+        record("scram_rejects_wrong_password", result.returncode == 1 and not result.stdout
+               and before_positive.returncode == after_positive.returncode == 0
+               and failures_after == failures_before + 1 and hba == "t",
+               {"exit": result.returncode, "stderr": result.stderr, "positive_controls": [before_positive.returncode, after_positive.returncode],
+                "server_auth_failures_added": failures_after - failures_before, "all_host_rules_scram": hba})
         # A controlled isolated engine crash, not host power loss or fsync fault.
         docker("kill", "--signal", "KILL", state["postgres"])
         docker("start", state["postgres"])
@@ -228,7 +296,7 @@ def smoke(root):
                 raise RuntimeError("engine restart deadline exceeded")
             time.sleep(0.2)
         result = migrate(state, "inspect", candidate)
-        record("engine_crash_restart_preserves_receipt", result.returncode == 0 and receipt("bb_clean") == first, {"exit": result.returncode, "receipt_unchanged": receipt("bb_clean") == first})
+        record("engine_crash_restart_preserves_receipt", result.returncode == 0 and receipt(clean) == first, {"exit": result.returncode, "receipt_unchanged": receipt(clean) == first})
         report["status"] = "PASS"
     except Exception:
         report["status"] = "FAIL"
@@ -249,11 +317,14 @@ def stop(root):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=["setup", "smoke", "stop"])
+    parser.add_argument("action", choices=["setup", "smoke", "schema", "stop"])
     parser.add_argument("--root", required=True, type=Path)
+    parser.add_argument("--run-name", default="smoke")
     parser.add_argument("--build", type=Path)
     parser.add_argument("--source", type=Path)
     args = parser.parse_args()
+    if not re.fullmatch(r"[a-z_]{1,20}", args.run_name):
+        parser.error("run-name must contain 1..20 lowercase letters/underscores")
     if not args.root.is_absolute():
         parser.error("root must be absolute")
     if args.action == "setup":
@@ -261,6 +332,8 @@ if __name__ == "__main__":
             parser.error("setup requires absolute build and source paths")
         setup(args.root, args.build, args.source)
     elif args.action == "smoke":
-        smoke(args.root)
+        smoke(args.root, args.run_name)
+    elif args.action == "schema":
+        schema_cases(args.root, args.run_name)
     else:
         stop(args.root)

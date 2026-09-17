@@ -10,6 +10,7 @@ revision with `tools/build.py`:
 ```sh
 python3 experiments/control-migrations/lab.py setup --root /owned/lab/runtime --build /owned/lab/exact-build --source "$PWD"
 python3 experiments/control-migrations/lab.py smoke --root /owned/lab/runtime
+python3 experiments/control-migrations/lab.py schema --root /owned/lab/runtime --run-name constraints
 python3 experiments/control-migrations/lab.py stop --root /owned/lab/runtime
 ```
 
@@ -20,8 +21,14 @@ binds container ownership, exact artifact/source receipt, engine and harness.
 run creates fresh dedicated databases, exercises the actual executable, compares
 the external checksum receipt, refuses incompatible histories and bad plaintext
 routes/passwords, and checks receipt survival after a controlled engine SIGKILL.
-It does not run the SQL fixture below or qualify host power loss, a full upgrade,
-TLS, concurrency or lost COMMIT responses. Failed/partial resources remain owned
+The separate `schema` action runs the SQL fixture below in another fresh migrated
+database and checks its literal postconditions through a separate connection.
+Use a fresh `--run-name` for each repetition: earlier reports and databases are
+never overwritten. Refused migrations require the specific reason and identical
+schema/data dump hashes before/after, excluding only pg_dump's random psql restrict
+token. Wrong-password rejection requires successful same-route controls, a new
+server authentication-failure record and SCRAM host rules. This does not qualify
+host power loss, a full upgrade, TLS, concurrency or lost COMMIT responses. Failed/partial resources remain owned
 and inventoried for diagnosis; `stop` requires matching ownership labels.
 
 Status: **NOT_RUN**. This fixture is authored for the actual PostgreSQL **16.15**
