@@ -17,6 +17,10 @@ python3 experiments/control-migrations/lab.py stop --root /owned/lab/runtime
 The root's parent must already exist. Image digests are explicit laboratory
 inputs in the script; this is not the ordinary Compose installer. `resources.json`
 binds container ownership, exact artifact/source receipt, engine and harness.
+The setup `--run-name` also namespaces its new container/network names. Explicit
+initdb options require SCRAM on every TCP host rule, including loopback; the
+container-local socket is trusted only for the independent synthetic lab observer.
+This fixture socket rule is not production role/grant qualification.
 `smoke.json` retains each actual result and stops at the first failure. The smoke
 run creates fresh dedicated databases, exercises the actual executable, compares
 the external checksum receipt, refuses incompatible histories and bad plaintext

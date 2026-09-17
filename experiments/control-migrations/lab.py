@@ -49,15 +49,16 @@ def load(root):
     return state
 
 
-def setup(root, build, source):
+def setup(root, build, source, run_name):
     if source.resolve() != Path(__file__).resolve().parents[2]:
         raise RuntimeError("execute the harness from its selected Git source checkout")
     if command(["git", "-C", str(source), "status", "--porcelain", "--untracked-files=all"]).stdout:
         raise RuntimeError("laboratory harness source must be clean")
     # The root is new even when the separately built artifact already exists.
     root.mkdir(mode=0o700, parents=False, exist_ok=False)
+    prefix = PREFIX + "-" + run_name
     state = {"format": "bigbrotr-pg-lab/1", "root": str(root), "owner": secrets.token_hex(16),
-             "postgres": PREFIX, "client": PREFIX + "-client", "network": PREFIX,
+             "postgres": prefix, "client": prefix + "-client", "network": prefix,
              "postgres_image": PG_IMAGE, "client_image": CLIENT_IMAGE,
              "binary_sha256": hashlib.sha256((build / "bigbrotr").read_bytes()).hexdigest(),
              "build": json.loads((build / "build-result.json").read_text()),
@@ -89,6 +90,7 @@ def setup(root, build, source):
            "--mount", f"type=bind,src={root / 'data'},dst=/var/lib/postgresql/data",
            "--mount", f"type=bind,src={protected},dst=/run/secrets,readonly",
            "--env", "POSTGRES_PASSWORD_FILE=/run/secrets/bootstrap", "--env", "POSTGRES_DB=postgres",
+           "--env", "POSTGRES_INITDB_ARGS=--auth-local=trust --auth-host=scram-sha-256",
            PG_IMAGE, "postgres", "-c", "max_connections=32", "-c", "shared_buffers=128MB",
            "-c", "work_mem=4MB", "-c", "log_statement=none", "-c", "log_min_error_statement=panic",
            "-c", "log_parameter_max_length_on_error=0")
@@ -330,7 +332,7 @@ if __name__ == "__main__":
     if args.action == "setup":
         if not args.build or not args.source or not args.build.is_absolute() or not args.source.is_absolute():
             parser.error("setup requires absolute build and source paths")
-        setup(args.root, args.build, args.source)
+        setup(args.root, args.build, args.source, args.run_name)
     elif args.action == "smoke":
         smoke(args.root, args.run_name)
     elif args.action == "schema":

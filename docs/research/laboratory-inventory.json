@@ -370,14 +370,14 @@
       "remote_preflight": ".research/implementation/postgres/pre-build-host.log",
       "remote_status": "Fresh read-only check: checkout clean704d97e, no implementation container running; unrelated workloads preserved",
       "planned_resources": {
-        "root": "/home/tux/bigbrotr-implementation-20260917/runs/control-migrations/runtime",
-        "network": "bigbrotr-implementation-pg-20260917",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/control-migrations/runtime-v2",
+        "network": "bigbrotr-implementation-pg-20260917-scram",
         "containers": [
-          "bigbrotr-implementation-pg-20260917",
-          "bigbrotr-implementation-pg-20260917-client"
+          "bigbrotr-implementation-pg-20260917-scram",
+          "bigbrotr-implementation-pg-20260917-scram-client"
         ],
         "host_ports": [],
-        "status": "NOT_CREATED",
+        "status": "NOT_CREATED; new explicit all-host SCRAM initialization",
         "limits": "PG2CPU/1536MiB memory+swap, client2CPU/4GiB, each256PIDs; private internal network, no published ports, owned new data/secrets only"
       },
       "build": {
@@ -387,6 +387,16 @@
         "status": "Completed exit0 OOMfalse",
         "limits": "2CPU/6GiB memory+swap/512PIDs, readonly source, owned output, no published ports",
         "root": "/home/tux/bigbrotr-implementation-20260917/runs/control-migrations/build-6f7c03d"
+      },
+      "initial_lab": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/control-migrations/runtime",
+        "containers": [
+          "bigbrotr-implementation-pg-20260917",
+          "bigbrotr-implementation-pg-20260917-client"
+        ],
+        "network": "bigbrotr-implementation-pg-20260917",
+        "state": "Stop requested after completed initial smoke and refined oracle failure; verify actual stop result",
+        "outcome": "Actual migration/checksum/reapply/restart passed; initial weak refusal/password oracles superseded. Refined14cases passed then SCRAM setup assertion failed: image initdb left loopback host trust. Evidence retained, no product invariant weakened."
       }
     },
     "rocks_product_boundary": {
