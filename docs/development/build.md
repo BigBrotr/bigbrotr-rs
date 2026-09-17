@@ -26,6 +26,9 @@ cargo doc --locked --workspace --no-deps
 python3 -m unittest discover -s tests/acceptance -p 'test_*.py'
 ```
 
+Ordinary Cargo output lives under ignored `.research/targets/product`, as set by
+`.cargo/config.toml`; exact-source builds override it with their owned run directory.
+
 `--help`/`--version` and requested JSON go to stdout; usage errors go to stderr
 with exit 2. Output I/O failure exits 1. These paths use no runtime configuration,
 Git executable, files or network. No subcommand initializes a database implicitly;

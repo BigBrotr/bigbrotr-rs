@@ -196,11 +196,19 @@
     "local_root": ".research/implementation",
     "local_contents": "Foundation source snapshots, build targets/caches, raw acceptance and review evidence",
     "remote_root": "/home/tux/bigbrotr-implementation-20260917",
-    "remote_status": "Planned fresh isolated lab; preflight confirmed path absent. No new remote directory/container yet.",
+    "remote_status": "Completed native foundation run; both owned containers exited (original combined run1 due to noexec fixture failure; corrected controls0), OOMKilled=false and Pid0. 283 MiB retained. Exact source checkout clean.",
     "remote_preflight": "2026-09-17: Linux x86_64 kernel 6.12.101+deb13-amd64; 61 GiB RAM; 370 GiB available disk; prior current BigBrotr research containers stopped. Unrelated containers/ports/volumes inspected and preserved.",
     "planned_container": "bigbrotr-implementation-foundation-20260917",
     "limits": "2 CPUs, 4 GiB memory, 512 PIDs, no published ports, fresh bind directories below remote root; no shared writable engine state",
     "prior_resources": "Retired historical resources remain retired; retained qualification and object-storage labs are untouched.",
-    "qualification": "P01-T01 CLI/native source build only initially; no native engine or complete product claims."
+    "qualification": "P01-T01 CLI/native source build only initially; no native engine or complete product claims.",
+    "containers": [
+      "bigbrotr-implementation-foundation-20260917",
+      "bigbrotr-implementation-controls-20260917"
+    ],
+    "transient_resources": "Owned bigbrotr-implementation-mount-check-20260917 diagnostic container removed after confirming tmpfs noexec; no unrelated cleanup.",
+    "image": "bigbrotr-implementation-foundation:20260917 at sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+    "local_product_target": ".research/targets/product (moved from root target; package rebuilt after invalidating stale absolute test binary path)",
+    "evidence": "docs/implementation/evidence/p01-foundation-20260917.json"
   }
 }

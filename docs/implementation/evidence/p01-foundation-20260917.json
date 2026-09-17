@@ -1,0 +1,105 @@
+{
+  "format": "bigbrotr-foundation-evidence/1",
+  "date": "2026-09-17",
+  "scope": "P01-T01 executable/source-build slice and early P01-T08 CLI runner; not whole task/phase/product qualification",
+  "source": {
+    "revision": "895927c2c6c84809bdccddba931ec644a4cb9ade",
+    "tree": "e6b700f07aaa8c85de13f336508119800f6bb888",
+    "state": "clean candidate on Mac and detached Tux checkout",
+    "source_manifest_sha256": "1c587b9272b3ee11b5d0d1f29b5c1f428b6446d5182fabc9a20a5b08be658efb",
+    "transfer": "Git bundle; same commit/tree; read-only source mount on Tux"
+  },
+  "linux_amd64": {
+    "environment": "Native Linux x86_64 on Tux, Docker process isolation; kernel6.12.101+deb13-amd64",
+    "rust": "1.98.1",
+    "python": "3.11.2",
+    "strace": "6.1",
+    "image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+    "limits": {
+      "cpus": 2,
+      "memory_bytes": 4294967296,
+      "memory_swap_bytes": 4294967296,
+      "pids": 512
+    },
+    "practical": "PASS; all12 checks executed",
+    "report": "docs/implementation/evidence/p01-t01-linux-amd64-20260917.json",
+    "binary_sha256": "58f5ecd6c21672d6d43fdbf495de04e280a3e263c2047e22036ec8040c2cb8c6",
+    "rust_process_tests": "3 passed",
+    "runner_controls": "4 passed with exec tmpfs; controls container has network none"
+  },
+  "macos_arm64": {
+    "rust": "1.98.1",
+    "build": "PASS from clean Git archive with isolated Cargo home/target; same source manifest digest as Linux",
+    "binary_sha256": "1bb00dae66a635f22afed2b8019c9be53f5a237b2bce9440a80ee638241483d1",
+    "rust_process_tests": "3 passed",
+    "runner_controls": "4 passed",
+    "practical": {
+      "result": "NOT_RUN",
+      "counts": {
+        "collected": 12,
+        "executed": 10,
+        "failed": 0,
+        "skipped": 0,
+        "not_run": 2
+      },
+      "not_run": "Linux strace network/file syscall observation; no implicit PASS"
+    }
+  },
+  "checks": {
+    "cargo_fmt": "PASS",
+    "cargo_clippy_all_targets": "PASS with -D warnings",
+    "cargo_doc": "PASS",
+    "artifact_checker": "PASS",
+    "handoff_checker": "PASS; existing prose cycle candidates unchanged",
+    "cargo_deny": {
+      "version": "0.20.2",
+      "advisories": "PASS",
+      "licenses": "PASS",
+      "sources": "PASS",
+      "advisory_database_revision": "f58ccfe51a5954186716998f01360d1079a8a3a5",
+      "warning": "Unicode-3.0 allowance not encountered in active graph; present in full Cargo metadata"
+    }
+  },
+  "failures_and_corrections": [
+    "Initial test compilation assumed LowerHex for sha2 0.11 output; inspected missing trait and formatted bytes explicitly.",
+    "Initial empty executable failed all three behavior checks; implemented real Clap and build metadata; help test identified missing product name and was corrected.",
+    "Independent AI review found descendant cleanup and narrow file/source identity oracles; old runner reproduced a live descendant after timeout, corrected runner terminates the owned group.",
+    "First Tux practical and Rust tests passed, but three runner controls could not execute fixture scripts on Docker noexec tmpfs; whole command exited1. Mount flags were observed, then only controls rerun on explicit exec tmpfs, four passed. Failure retained.",
+    "Moving the owned local Cargo target cache into ignored .research retained compiled absolute test-binary paths; package-only cargo clean and rebuild restored three passing process tests. No product test was weakened.",
+    "Review found build-result helper digest unchecked; a copied result with all-zero helper digest passed expected_artifact before the fix and failed after it. Evidence retained under .research/implementation/foundation/wrong-helper-{before,after}."
+  ],
+  "review": {
+    "kind": "independently tasked AI review plus root complete diff review",
+    "findings": "lifecycle, file side effects, truthful per-check source status, manifest/profile/clean assertions and helper/artifact identities corrected",
+    "status": "Original material findings resolved by focused AI re-review; final helper-digest binding and cleanup wording fixed by root. Tampered helper digest reproduced accepted before fix and rejected after fix. Final source qualification pending next candidate."
+  },
+  "not_run": [
+    "Native Linux arm64 (CI definition exists; execution pending)",
+    "Actual GitHub Actions execution",
+    "Native storage/TLS/protocol adapters, offline assets and complete release license/SBOM validation",
+    "Any event ingestion/archive/read/export/restart",
+    "Packaged install/release, browser, host loss and capacity qualification"
+  ],
+  "raw_evidence": {
+    "tux-native-895927c.log": {
+      "path": ".research/implementation/foundation/tux-native-895927c.log",
+      "sha256": "391f29ffd1ea8a05918f73b0b7f5937266f1d5f65701bd3d7567335886cc4974"
+    },
+    "tux-controls-895927c.log": {
+      "path": ".research/implementation/foundation/tux-controls-895927c.log",
+      "sha256": "aef53467abb899014213298162f9791cc9d2a7d88de3f5f22f01fff5eb39e1e5"
+    },
+    "tux-final-state.txt": {
+      "path": ".research/implementation/foundation/tux-final-state.txt",
+      "sha256": "14a0e72869555e2ba5c3bf2381ce507c9f0305f89dc8eddbe606405075b53f00"
+    },
+    "mac-clean.log": {
+      "path": ".research/implementation/foundation/mac-clean.log",
+      "sha256": "497d3abc86018c68c4a9f3c9133e8b66e6f4dd9e3640561dbaa56804e6ace98d"
+    },
+    "tux-build-895927c.json": {
+      "path": ".research/implementation/foundation/tux-build-895927c.json",
+      "sha256": "7f8f999c986d4f91e7f2e7984c2755400b08231a47cb3752f733243aa53acc50"
+    }
+  }
+}

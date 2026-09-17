@@ -55,14 +55,19 @@ reporting its exact build/schema/protocol versions. Product name remains BigBrot
   relevance; no arbitrary comment length, coverage ratio or test-count rule.
   Start isolated least-privilege CI here, with pinned actions and no untrusted
   PR access to Tux, trusted caches or release credentials.
-- [ ] **Step 6:** Build from a clean extracted source tree without undeclared cached files;
+- [x] **Step 6:** Build from a clean extracted source tree without undeclared cached files;
   compare reported identity with the supplied lock/toolchain metadata.
-- [ ] **Step 7:** **Practical P01-T01:** run the built binary from outside the checkout with
+- [x] **Step 7:** **Practical P01-T01:** run the built binary from outside the checkout with
   invalid flags and read-only working directory. Expect actionable nonzero exit
   on invalid input, useful help/version and no created files or network activity.
   Negative control: a wrapper printing hardcoded version fails metadata comparison.
 - [ ] **Step 8:** Document build commands, supported platforms, artifact identity and known
   native portability limits; commit this independently usable foundation.
+
+Foundation evidence: [2026-09-17](evidence/p01-foundation-20260917.json) and
+[native Linux amd64 practical case](evidence/p01-t01-linux-amd64-20260917.json).
+The native engine tuple, Linux arm64 and actual CI execution remain separate
+unchecked gates; this slice enables lossless-model work without claiming them.
 
 ## P01-T02 — Lossless domain identity and evidence types
 

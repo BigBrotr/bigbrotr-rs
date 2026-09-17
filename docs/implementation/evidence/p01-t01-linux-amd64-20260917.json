@@ -1,0 +1,118 @@
+{
+  "format": "bigbrotr-acceptance/1",
+  "case": "p01-t01",
+  "required": true,
+  "result": "PASS",
+  "environment": {
+    "os": "Linux",
+    "architecture": "x86_64"
+  },
+  "inputs": {
+    "binary_sha256": "58f5ecd6c21672d6d43fdbf495de04e280a3e263c2047e22036ec8040c2cb8c6",
+    "build_info": {
+      "capabilities": [],
+      "debug_info": "false",
+      "format": "bigbrotr-build/1",
+      "inputs_sha256": {
+        "Cargo.lock": "ba48b1075f424e78f9ef53aa45edaa30d0a673d94a19bbd6fbb95b979b383205",
+        "contracts/release/dependencies.json": "dcf1017e3432d95186f7c3ab47ddeeb1abd7ffe185f948c7f93b724b134631ab",
+        "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167"
+      },
+      "optimization": "3",
+      "product": "BigBrotr",
+      "profile_assertion": "release",
+      "protocols": {},
+      "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+      "schemas": {
+        "build_info": "bigbrotr-build/1"
+      },
+      "source": {
+        "dirty": false,
+        "manifest_sha256": "1c587b9272b3ee11b5d0d1f29b5c1f428b6446d5182fabc9a20a5b08be658efb",
+        "revision": "895927c2c6c84809bdccddba931ec644a4cb9ade",
+        "state": "builder-supplied",
+        "tree": "e6b700f07aaa8c85de13f336508119800f6bb888"
+      },
+      "target": "x86_64-unknown-linux-gnu",
+      "version": "0.1.0-dev"
+    },
+    "expected_inputs_sha256": {
+      "Cargo.lock": "ba48b1075f424e78f9ef53aa45edaa30d0a673d94a19bbd6fbb95b979b383205",
+      "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167",
+      "contracts/release/dependencies.json": "dcf1017e3432d95186f7c3ab47ddeeb1abd7ffe185f948c7f93b724b134631ab"
+    },
+    "source_manifest_sha256": "1c587b9272b3ee11b5d0d1f29b5c1f428b6446d5182fabc9a20a5b08be658efb",
+    "build_result_sha256": "7f8f999c986d4f91e7f2e7984c2755400b08231a47cb3752f733243aa53acc50"
+  },
+  "checks": [
+    {
+      "name": "read_only_cwd",
+      "result": "PASS",
+      "detail": "runtime must use an unprivileged account"
+    },
+    {
+      "name": "cli --help",
+      "result": "PASS",
+      "exit_code": 0
+    },
+    {
+      "name": "cli --version",
+      "result": "PASS",
+      "exit_code": 0
+    },
+    {
+      "name": "cli --invalid-option",
+      "result": "PASS",
+      "exit_code": 2
+    },
+    {
+      "name": "cli ",
+      "result": "PASS",
+      "exit_code": 2
+    },
+    {
+      "name": "cli serve",
+      "result": "PASS",
+      "exit_code": 2
+    },
+    {
+      "name": "cli build-info",
+      "result": "PASS",
+      "exit_code": 0
+    },
+    {
+      "name": "no_created_files",
+      "result": "PASS"
+    },
+    {
+      "name": "no_network_syscalls",
+      "result": "PASS",
+      "detail": "requires Linux strace; disabled networking alone does not observe attempted calls"
+    },
+    {
+      "name": "no_file_mutation_syscalls",
+      "result": "PASS"
+    },
+    {
+      "name": "clean_source_identity",
+      "result": "PASS",
+      "detail": "requires the clean builder's source manifest"
+    },
+    {
+      "name": "expected_artifact",
+      "result": "PASS",
+      "detail": "equality against supplied build result; not release authenticity"
+    }
+  ],
+  "counts": {
+    "collected": 12,
+    "executed": 12,
+    "failed": 0,
+    "skipped": 0,
+    "not_run": 0
+  },
+  "cleanup": "Only the runner-owned temporary working directory; evidence retained.",
+  "limits": [
+    "No storage, protocol, release bundle or product qualification."
+  ]
+}

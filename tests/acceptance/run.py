@@ -105,6 +105,7 @@ def foundation(args, checks, inputs):
                             inputs["build_result_sha256"] = sha256(args.build_result)
                             artifact_valid = build["format"] == "bigbrotr-build-result/1" and build["binary_sha256"] == inputs["binary_sha256"] and build["build_info"] == info
                             artifact_valid = artifact_valid and build["source_manifest_sha256"] == inputs.get("source_manifest_sha256")
+                            artifact_valid = artifact_valid and build["helper_sha256"] == sha256(args.source_root / "tools/build.py")
                             artifact_valid = artifact_valid and info["profile_assertion"] == "release" and info["optimization"] == "3" and info["debug_info"] == "false"
                             valid = valid and artifact_valid
                     except (ValueError, KeyError, TypeError, AttributeError, OSError):
@@ -156,7 +157,7 @@ def main():
               "counts": {"collected": len(checks), "executed": sum(c["result"] in ("PASS", "FAIL") for c in checks),
                          "failed": sum(c["result"] == "FAIL" for c in checks), "skipped": 0,
                          "not_run": sum(c["result"] == "NOT_RUN" for c in checks)},
-              "cleanup": "Only the runner-owned temporary working directory; evidence retained.",
+              "cleanup": "Owned process groups terminated/joined; only the runner-owned temporary working directory removed; evidence retained.",
               "limits": ["No storage, protocol, release bundle or product qualification."]}
     (args.evidence / "result.json").write_text(json.dumps(report, indent=2) + "\n")
     print(result + ": " + str(args.evidence / "result.json"))
