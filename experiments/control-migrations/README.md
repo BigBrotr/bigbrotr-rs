@@ -1,0 +1,92 @@
+# PostgreSQL control constraint fixture
+
+Status: **NOT_RUN**. This fixture is authored for the actual PostgreSQL **16.15**
+engine and `0001_control.sql`; static inspection is not execution evidence. Root's
+exact-revision Linux run records the eventual outcome separately. It has no Python
+package, pgTAP, extension or production-planner dependency.
+
+Use a newly provisioned, isolated application database containing only migration
+0001 and its real receipt, applied by the actual BigBrotr migration runner. The
+fixture refuses another engine patch, changed receipt or pre-existing application
+rows. It does not initialize, drop, truncate or repair the schema. Its synthetic
+rows remain committed afterward for independent inspection; dispose of only the
+owned laboratory database through its recorded lifecycle. Do not run it against
+an operator's database or a DuckLake catalog.
+
+From the repository root, with the caller's protected libpq connection settings
+already selecting that owned database:
+
+```sh
+control_migration_sha="$(sha256sum migrations/postgres/0001_control.sql | cut -d ' ' -f 1)"
+psql -X --no-password --set=ON_ERROR_STOP=1 \
+  --set=expected_migration_sha256="$control_migration_sha" \
+  --file=experiments/control-migrations/schema_cases.sql
+```
+
+Use the migrator/schema owner to exercise constraints, not to claim runtime
+privilege qualification. The runner supplies the schema and receipt in its real
+transaction; this fixture compares that receipt to an independently computed file
+hash. Record Git commit/tree and clean source state, SQL/fixture hashes, PostgreSQL
+server and client versions, image digest, host architecture, caller role and owned
+resource names with stdout/stderr and exit status. Never put a credential-bearing
+DSN or password in a committed report or command argument.
+
+The script uses session-local assertion functions and temporary result/snapshot
+tables. It fixes statement, lock and idle-transaction timeouts. Every negative
+requires an explicit SQLSTATE and compares all ten application relations before
+and after its failed subtransaction. The expected states are independent literals:
+`23514` check/trigger refusal, `23503` foreign key refusal and `23505` uniqueness
+refusal. Wrong SQLSTATE, no exception or any surviving row change fails the script.
+`SET CONSTRAINTS ALL IMMEDIATE` forces deferred checks inside the caught failure
+boundary; this does not disable constraints. Separate successful transactions
+exercise real COMMIT of the initial dataset/revisions/topologies and job cut.
+
+One deliberate whole-transaction failure prints an expected `23514` error with
+`ON_ERROR_STOP` briefly off. Its captured SQLSTATE must match and the complete
+control snapshot must remain unchanged after ROLLBACK. An earlier unexpected
+failure would change the captured state to `25P02` and fail the subsequent check;
+a false success of the deliberate bad value would also fail. All other errors
+remain fatal or are caught only by their exact expected-state assertion.
+
+A successful run ends with **104** named case results, including **84** caught
+negative cases, then one JSON result with `result=PASS`, `executed=104`, `failed=0`,
+`skipped=0`, `not_run=0` and the server version and migration hash. The case-count
+assertion refuses empty or incomplete execution. This result describes only
+these SQL cases; absent final output, a disconnect or a nonzero exit is not PASS.
+
+Covered boundaries include:
+
+- Independent exact receipt and immutable ledger; full u64 maximum, zero and
+  fixed-byte identity/digest domains; server base-type parameter casts; explicit
+  demonstration of NUMERIC fractional rounding before domain checks.
+- Initial instance/dataset identity and NULL-to-1/1/0 heads; no head skip/reset,
+  no missing/foreign revision, no mutable policy history, bounded JSON object
+  storage, stale expected-value update and full rollback of revision plus head.
+- Complete sealed topology with explicit zero, closed handoff and u64 maximum;
+  a separately committed empty topology; no unsealed commit, membership mutation,
+  duplicate/late child or rewritten generation, including immediate constraints.
+- Owner epoch origin/successor, exact tuple, release evidence shape, immutable
+  history and refusal of expiry-only replacement or mutation under a draining or
+  released owner. Exclusion records are synthetic: no real worker runs here.
+- Initial finite job state/revisions, idempotency-key uniqueness, no missing,
+  duplicate, extra or foreign stream, no bound above a closed handoff, no changed
+  starting cut, no missing active owner, no stale/regressed checkpoint, and
+  terminal/pause/cancel state rules with committed successful/cancelled examples.
+
+Postconditions for external inspection are one dataset (ID ending `01`), one
+config revision, one policy revision, two sealed topology generations (0 with
+three streams, 1 empty), two Control owner epochs (1 released, 2 active), and three
+jobs: ID ending `28` succeeded with unchanged generation-0 cut, `29` cancelled
+with no cut, and `2a` accepted with an empty generation-1 cut. The ledger stays at
+one exact receipt. These hex IDs encode the small integer fixture identifiers;
+they are synthetic and have no deployed identity or cryptographic authority.
+
+This single-connection fixture does **not** qualify concurrent editor/migrator/
+owner/child races, commit-response loss, disconnect recovery, runtime grants,
+TRUNCATE/trigger-disable denial, real process exclusion, policy grants, Rust
+`ToSql`/`FromSql` encoding, fractional-input rejection in the typed adapter,
+command/job/pin atomic acceptance, retention/reclamation or any signed-event
+journey. The prepared statement verifies only PostgreSQL's explicit base-type
+casts. Those actual-client and multi-process cases remain **NOT_RUN** until root's
+separate runner and acceptance execution supplies their evidence. No P02-T01 step
+is marked complete by merely adding this fixture.
