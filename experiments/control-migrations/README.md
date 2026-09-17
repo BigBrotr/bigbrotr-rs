@@ -131,3 +131,24 @@ journey. The prepared statement verifies only PostgreSQL's explicit base-type
 casts. Those actual-client and multi-process cases remain **NOT_RUN** until root's
 separate runner and acceptance execution supplies their evidence. No P02-T01 step
 is marked complete by merely adding this fixture.
+
+## Ingest coordination fixture
+
+`ingest_cases.py --root /owned/lab/runtime --run-name ingest` uses a fresh owned
+database and the actual executable's default target 2. It checks two exact
+receipts, absence of implicit application initialization, no-op reapply, then
+runs `ingest_schema_cases.sql`: 74 named cases, including 56 SQLSTATE negatives.
+It compares every column of all 13 added relations through separate observer
+connections against independent literal final rows in the Python harness.
+
+Two further databases exercise a populated, eligible 0001 upgrade that preserves
+existing rows and receipt, and a populated topology lacking source registration.
+The latter must report the specific preflight refusal, retain exactly ten control
+tables, and preserve its full schema/data dump digest. Original 0001 suites now
+pass target 1 explicitly; their original scope does not grow with the CLI default.
+
+Results, raw SQL stdout/stderr, independently expected rows and observed rows
+remain under the owned root, never overwritten. A parser pass, missing final
+summary or skipped native run is not acceptance. This harness does not qualify
+external RocksDB/ClickHouse receipts, process fencing, concurrent schedules,
+physical reclamation, archive/read/export or native ARM PostgreSQL.

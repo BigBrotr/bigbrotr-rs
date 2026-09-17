@@ -16,6 +16,7 @@ pub enum RunError {
     InvalidLedger,
     IncompatibleEngine,
     PlaintextRoute,
+    SourceRegistrationRequired,
     Plan(migrations::MigrationError),
     CommitUnknown,
 }
@@ -27,6 +28,7 @@ impl fmt::Display for RunError {
             Self::InvalidLedger => f.write_str("control migration ledger has invalid bounded metadata"),
             Self::IncompatibleEngine => f.write_str("control migrations require PostgreSQL 16.15 with fsync and full_page_writes enabled"),
             Self::PlaintextRoute => f.write_str("resolved PostgreSQL plaintext route is outside its declared local boundary or exceeds the address limit"),
+            Self::SourceRegistrationRequired => f.write_str("control migration 2 requires explicit verified source registration for existing topology streams; no authority is inferred"),
             Self::Plan(error) => error.fmt(f),
             Self::CommitUnknown => f.write_str("migration COMMIT outcome unknown; resolve the same catalog target under migration serialization before retry"),
         }
@@ -90,7 +92,15 @@ pub async fn run(
     }
 
     for migration in plan.pending {
-        tx.batch_execute(migration.sql).await.map_err(backend)?;
+        tx.batch_execute(migration.sql).await.map_err(|error| {
+            // Migration 2's closed 55000 preflight signals legacy topology
+            // without source authority. Keep arbitrary server detail redacted.
+            if migration.version == 2 && error.code().is_some_and(|code| code.code() == "55000") {
+                RunError::SourceRegistrationRequired
+            } else {
+                backend(error)
+            }
+        })?;
         let checksum = migration.checksum();
         tx.execute(
             "INSERT INTO control.schema_versions (engine, migration, name, checksum, reader_min, reader_max, writer_floor, applied_at_us, applied_by) VALUES ($1::text, $2::bigint, $3::text, $4::bytea, $5::bigint, $6::bigint, $7::bigint, (EXTRACT(EPOCH FROM pg_catalog.clock_timestamp()) * 1000000)::bigint, CURRENT_USER)",

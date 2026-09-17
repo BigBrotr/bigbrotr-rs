@@ -47,10 +47,10 @@ fn changed_or_unrecognized_history_never_becomes_a_repair_plan() {
         Err(MigrationError::MetadataMismatch(1))
     ));
     let mut unknown = initial_receipt();
-    unknown.version = 2;
+    unknown.version = 999;
     assert!(matches!(
         plan(&[unknown], 1),
-        Err(MigrationError::UnknownMigration(2))
+        Err(MigrationError::UnknownMigration(999))
     ));
     assert!(matches!(
         plan(&[initial_receipt(), initial_receipt()], 1),
@@ -63,6 +63,55 @@ fn changed_or_unrecognized_history_never_becomes_a_repair_plan() {
     assert!(matches!(
         plan(&[], 501),
         Err(MigrationError::UnknownTarget(501))
+    ));
+}
+
+#[test]
+fn ingest_migration_extends_the_exact_prefix_without_reapplying_control() {
+    let bootstrap = plan(&[], 2).unwrap();
+    assert_eq!(
+        bootstrap
+            .pending
+            .iter()
+            .map(|m| m.version)
+            .collect::<Vec<_>>(),
+        [1, 2]
+    );
+    let upgrade = plan(&[initial_receipt()], 2).unwrap();
+    assert_eq!(upgrade.from, Some(1));
+    assert_eq!(upgrade.pending.len(), 1);
+    let migration = &upgrade.pending[0];
+    assert_eq!(migration.name, "0002_ingest.sql");
+    let checksum = migration
+        .checksum()
+        .iter()
+        .map(|b| format!("{b:02x}"))
+        .collect::<String>();
+    assert_eq!(
+        checksum,
+        "6a355b4d0066c60397bc09c7aa1f5d8d27722fbfbf9e9b859f02d55217f80202"
+    );
+    let second = AppliedMigration {
+        version: 2,
+        name: "0002_ingest.sql".into(),
+        checksum: migration.checksum(),
+        reader_min: 1,
+        reader_max: 1,
+        writer_floor: 1,
+    };
+    assert!(matches!(
+        plan(std::slice::from_ref(&second), 2),
+        Err(MigrationError::HistoryNotPrefix)
+    ));
+    assert!(
+        plan(&[initial_receipt(), second.clone()], 2)
+            .unwrap()
+            .pending
+            .is_empty()
+    );
+    assert!(matches!(
+        plan(&[initial_receipt(), second], 1),
+        Err(MigrationError::Downgrade)
     ));
 }
 

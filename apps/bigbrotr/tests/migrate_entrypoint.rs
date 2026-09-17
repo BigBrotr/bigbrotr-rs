@@ -78,8 +78,8 @@ fn unknown_target_and_application_role_fail_before_loading_credentials() {
     for (user, target, expected) in [
         (
             "migration_owner",
-            "2",
-            "unsupported control migration target 2",
+            "999",
+            "unsupported control migration target 999",
         ),
         ("bigbrotr_control", "1", "dedicated migration role"),
     ] {

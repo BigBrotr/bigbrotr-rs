@@ -157,9 +157,12 @@ def config(root, state, database, endpoint="postgres:5432", boundary="private-br
     return "/lab/" + path.name
 
 
-def migrate(state, action, path, *, user="bigbrotr_migrator", password="migrator"):
+def migrate(state, action, path, *, user="bigbrotr_migrator", password="migrator", target=1):
+    # Existing suites explicitly retain their 0001 boundary as the catalog grows.
+    # A caller may select 2, or None to exercise the executable's current default.
     return cli(state, "migrate", action, "--file", path, "--user", user,
-               "--password-ref", "/".join(["file:/lab/secrets", password]))
+               "--password-ref", "/".join(["file:/lab/secrets", password]),
+               *([] if target is None else ["--target", str(target)]))
 
 
 def schema_digest(state, database):

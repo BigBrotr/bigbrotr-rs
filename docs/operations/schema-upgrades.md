@@ -1,7 +1,7 @@
 # Control schema migrations
 
-Status: initial P02-T01 foundation. The checked-in catalog contains only
-`0001_control.sql`. The executable now includes explicit inspection, planning and
+Status: initial P02-T01 foundation. The checked-in catalog contains
+`0001_control.sql` and `0002_ingest.sql`. The executable includes explicit inspection, planning and
 application using the selected PostgreSQL driver. Its local planner, preparation
 and entrypoint tests pass. Native Linux amd64 PostgreSQL execution now covers
 the actual CLI, 104 independent SQL constraint cases, initial read-only runtime
@@ -12,6 +12,10 @@ six actual migration fault/concurrency cases and ten TLS/mTLS cases on the
 corrected ffb94a8 binary. The [seven relational race cases](../implementation/evidence/p02-control-races-20260917.json)
 subsequently passed with actual lock barriers and complete expected rows.
 This is not completion of P02-T01 or a qualified installation/upgrade path.
+The [ingest coordination schema](../reference/ingest-control-schema.md) adds
+source/allocation and producer registration, complete consumer frontiers,
+projection attestations and source-range retention. Its engine acceptance is
+separate from the earlier 0001 evidence; source review alone does not qualify it.
 The [task](../implementation/02-storage.md#p02-t01--typed-control-schemas-and-minimum-relay-registry)
 and [upgrade contract](../specification/operations-contract.md) own the remaining
 runner, adapter and practical acceptance work.
@@ -25,8 +29,8 @@ login and protected password file, rather than the runtime application's passwor
 
 ```sh
 bigbrotr migrate inspect --file instance.toml --user bigbrotr_migrator --password-ref file:/run/secrets/bigbrotr-migrator
-bigbrotr migrate plan --file instance.toml --user bigbrotr_migrator --password-ref file:/run/secrets/bigbrotr-migrator --target 1
-bigbrotr migrate apply --file instance.toml --user bigbrotr_migrator --password-ref file:/run/secrets/bigbrotr-migrator --target 1
+bigbrotr migrate plan --file instance.toml --user bigbrotr_migrator --password-ref file:/run/secrets/bigbrotr-migrator --target 2
+bigbrotr migrate apply --file instance.toml --user bigbrotr_migrator --password-ref file:/run/secrets/bigbrotr-migrator --target 2
 ```
 
 Apply refuses the configured runtime username. This check is not a privilege
@@ -34,6 +38,14 @@ audit: provisioning must also enforce the ownership/grants below. All commands
 require PostgreSQL 16.15, `fsync=on` and `full_page_writes=on`; apply forces
 transaction-local `synchronous_commit=on`. They do not initialize a dataset or
 qualify a complete installation or release upgrade.
+
+An omitted target selects the latest embedded migration, currently 2. An explicit
+target 1 preserves the initial control-only boundary for its historical fixtures.
+Migration 2 refuses existing topology members with SQLSTATE `55000`: migration 1
+had no source registry, so their exact source authority cannot be inferred.
+The CLI reports this preflight specifically and leaves the transaction uncommitted.
+Eligible databases without topology members can retain existing control rows
+while applying 2. There is no automatic backfill or destructive repair.
 
 Output is bounded JSON with format `bigbrotr-control-migration/1`, version/count
 strings, exact pending SQL hashes and explicit absent version as null. Exit 0
@@ -242,11 +254,12 @@ parser or successful DDL execution alone does not qualify them.
 | `job_input_guard`, `job_input_complete` | Commit exact membership including zero and closed-bound values; reject missing/extra/foreign stream, unsealed commit, late append, update/delete and bound above closed handoff; completion cannot replace the starting cut |
 | Runner transaction/privileges | Run actual inspect/apply on clean/incompatible databases; race migrators, terminate before commit, lose commit reply and resolve; verify exact receipt and schema together; prove runtime login cannot migrate, TRUNCATE or disable triggers |
 
-`0002_ingest.sql` and `0003_relay.sql` are intentionally not in this initial
-catalog yet. Source ranges/producer slots, receipt-backed consumer frontiers,
-projection chunks, snapshot leases/retention claims and endpoint/route enrollment
-remain P02-T01 work. Publication references arrive with their actual owner. Their
-absence prevents marking Step 1 complete and prevents advertising durable job,
+`0002_ingest.sql` supplies relational coordination, with closed transitions and
+independent constraint fixtures. Actual engine qualification and typed runtime
+adapters still own the external receipts, fencing and reclamation guarantees.
+`0003_relay.sql` and endpoint/route enrollment remain P02-T01 work. Publication
+references arrive with their actual owner. These remaining boundaries prevent
+marking Step 1 complete and prevent advertising durable job,
 read/export, acquisition or reclamation behavior from this foundation.
 
 There is no shipped predecessor release or qualified binary rollback in this

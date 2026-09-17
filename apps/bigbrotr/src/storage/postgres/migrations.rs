@@ -24,14 +24,24 @@ impl Migration {
     }
 }
 
-static MIGRATIONS: [Migration; 1] = [Migration {
-    version: 1,
-    name: "0001_control.sql",
-    sql: include_str!("../../../../../migrations/postgres/0001_control.sql"),
-    reader_min: 1,
-    reader_max: 1,
-    writer_floor: 1,
-}];
+static MIGRATIONS: [Migration; 2] = [
+    Migration {
+        version: 1,
+        name: "0001_control.sql",
+        sql: include_str!("../../../../../migrations/postgres/0001_control.sql"),
+        reader_min: 1,
+        reader_max: 1,
+        writer_floor: 1,
+    },
+    Migration {
+        version: 2,
+        name: "0002_ingest.sql",
+        sql: include_str!("../../../../../migrations/postgres/0002_ingest.sql"),
+        reader_min: 1,
+        reader_max: 1,
+        writer_floor: 1,
+    },
+];
 
 pub fn catalog() -> &'static [Migration] {
     &MIGRATIONS
