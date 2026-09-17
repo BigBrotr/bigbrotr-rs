@@ -324,7 +324,7 @@
         "base": "0d99af6925660caf29735fcd810ead5b850dd865",
         "owner": "fact_codec_review agent",
         "purpose": "Real checked Rocks native profile and effective WBM accounting oracle; root owns store/Cargo/Tux",
-        "status": "Clean d75a9db, five actual Mac option tests PASS; root integration pending; native archive reused read-only and inventoried in worktree evidence"
+        "status": "Clean d75a9db; integrated with real store in 94a40de; unit tests consume actual module"
       },
       {
         "path": ".research/worktrees/rocks-build-integration",
@@ -332,7 +332,7 @@
         "base": "8f0d44b246fac009e56160ce1766799b253dfddf",
         "owner": "static_configuration agent",
         "purpose": "Native Rocks C++/libclang build and CI prerequisites; root owns Cargo/engine",
-        "status": "Clean 25d8913, root integration pending; local native helper evidence retained"
+        "status": "Clean c9518f7; build/helper 25d8913 integrated as 1f61b31 and dependency inventory c9518f7 as 66517d9"
       },
       {
         "path": ".research/worktrees/rocks-store",
@@ -340,7 +340,7 @@
         "base": "b18d386",
         "owner": "fact_codec_review agent",
         "purpose": "First real private Rocks store and native lifetime boundary",
-        "status": "Active separate worktree b66dbdc plus owned uncommitted store changes; native Mac build/test in progress"
+        "status": "Clean 7ed90e0; combined with d75a9db in root 94a40de. Mac 145 integrated tests/Clippy PASS; root Linux run pending"
       },
       {
         "path": ".research/worktrees/ingest-control-races",
@@ -534,7 +534,11 @@
       "owner": "root integrating owner; independent fact_codec_review agent",
       "scope": "Keys and manifest product codec evidence, frozen review snapshots and isolated probes; native options/store integration is distinct.",
       "manifest_review": ".research/implementation/rocks-product-design/manifest-review/inventory.json",
-      "manifest_evidence": "docs/implementation/evidence/p02-ingest-manifest-20260918.json"
+      "manifest_evidence": "docs/implementation/evidence/p02-ingest-manifest-20260918.json",
+      "store_evidence": "docs/implementation/evidence/p02-ingest-store-mac-20260918.json",
+      "store_review": ".research/implementation/rocks-product-design/store-review/review.json",
+      "store_review_sha256": "da40c55b34725d80b4f4ebeb2837a153c482ff95b44cd7825252ad408dfec62e",
+      "native_target_reuse": "Root integrated tests reused the completed agent Cargo target; native archive unchanged, previous app/test executable hashes are historical cache identities."
     },
     "ingest_control_review": {
       "root": ".research/implementation/postgres/ingest-review",
@@ -565,6 +569,22 @@
       "local_log": ".research/implementation/rocks-product-design/native-builder-linux.log",
       "image": "sha256:8d906f267439748924d6a9de9cab47855279cc196a7397d9cb7a690c77fddfe3",
       "log_sha256": "9fbc26a1ea0ad4d1b207d3fe9ab1d115d913a34d9475c79f8c944f397a42185d"
+    },
+    "native_product_store": {
+      "source": "94a40dec560983d0ed9694cff95987bfd5cb68ab",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/native-store-94a40de",
+      "container": "bigbrotr-implementation-native-store-94a40de",
+      "image": "sha256:8d906f267439748924d6a9de9cab47855279cc196a7397d9cb7a690c77fddfe3",
+      "status": "Running exact Git-source release build followed by release workspace tests; no terminal result yet",
+      "limits": "2CPU/6GiB memory+swap/512PIDs, two Cargo/native jobs, readonly source, new owned output, tmp512MiB, no host ports",
+      "local_log": ".research/implementation/rocks-product-design/native-store-linux.log"
+    },
+    "ci_35284179910": {
+      "source": "8d1db2bad1f6960ab90c960ab735bb3e5cf84cb6",
+      "audit": ".research/implementation/foundation/ci-35284179910/audit.json",
+      "audit_sha256": "4afe0be8d003425a4de661d22d4c6fe5689232064c75ed8890984b2df7aa2923",
+      "result": "Three artifact ZIPs and 391 exact Git source entries verified. Linux amd64/arm64: 208 practical cases PASS, 154 complete process traces. Mac build receipts only; practical cases SKIPPED.",
+      "boundary": "Pre-Rocks consumer revision; no storage, PostgreSQL/TLS or release qualification. Executables not retained in artifacts, binary identities are report-linked only."
     }
   }
 }

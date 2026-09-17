@@ -1,0 +1,114 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-18",
+  "scope": "P02-T02 private native store initialize/reopen and retained resource lifetime on Mac arm64; no event admission or complete durability qualification",
+  "status": "PASS",
+  "source": {
+    "revision": "94a40dec560983d0ed9694cff95987bfd5cb68ab",
+    "tree": "218eedf7d95b9b99e18285d5b739c79bdd9b4b39",
+    "test_state": "Exact staged source before committing 94a40de; all reviewed store/Cargo hashes match the commit. Ordinary Cargo metadata is unrecorded, not a clean-builder receipt."
+  },
+  "source_hashes": {
+    "Cargo.toml": "c586922179eeb6ea34194f6c901b26c574e7958c2def39d30162c5461933433d",
+    "Cargo.lock": "bff3ccfcaf614d60e9db4a300560190db5fcd9e635d6ac30f1d4b3af6d5e573d",
+    "apps/bigbrotr/Cargo.toml": "b521ab58e86a3ad57460cc9f6fb401ffb7a3a2b7552a79bfb31ec6b03ace6c4d",
+    "apps/bigbrotr/src/storage/rocks/store.rs": "718fa56022138d260e74e00fa9531e61fb66ae02f2299f5fcb78cfd183f32c5e",
+    "apps/bigbrotr/src/storage/rocks/options.rs": "dedc01c646494260b0435507f4727c2036fc70fd2e6331f750d83bdc852bea5b",
+    "apps/bigbrotr/src/storage/rocks/mod.rs": "6762759736cc722ad670eee3b14d5c355d771e8d4f9c712785ed471083000d6e",
+    "apps/bigbrotr/tests/rocks_store.rs": "21ab788e2099253ce6e415fd4fc8cc5645dd4e868d5ef6ca2d5cd797f9040ee7",
+    "apps/bigbrotr/src/runtime/budget.rs": "a077d8cb10b85aa7300b9c5ef494e6fa60bd5be426bb6a8ba5879ceb4eef877b",
+    "docs/reference/ingest-store.md": "8e907c9c4c9b79ecc648017a027d98c3e2ad2b52e35b6eef2dcc12b6d32063fc",
+    "docs/reference/ingest-native-profile.md": "e3aea244d13da2494e8c9093b06641259557de2430262df74a0c3dde8e9b9530",
+    "experiments/ingest-store/parent_sync_probe.c": "3550bf7d6ea99196ab95ba2af5f0e129340f7f70e318f8fffe1758fd88b30f2f",
+    "experiments/ingest-store/README.md": "d311a29e1bd733e5caf10fbf389ba06c00c263ee0f0ec44c38b2cad710a774c5"
+  },
+  "dependencies": [
+    {
+      "name": "bindgen",
+      "version": "0.72.1",
+      "checksum": "993776b509cfb49c750f11b8f07a46fa23e0a1386ffc01fb1e7d343efc387895"
+    },
+    {
+      "name": "cc",
+      "version": "1.4.6",
+      "checksum": "a3eb0f42d6c360dc3f8a821f6bf2fdea7f72bfd36b3076eb0e6d1e9e0752fff4"
+    },
+    {
+      "name": "clang-sys",
+      "version": "1.9.1",
+      "checksum": "157a8ba7b480713b56f4c09fd13fc3e0a22a5dfab8097ba61cbc5feef950788a"
+    },
+    {
+      "name": "librocksdb-sys",
+      "version": "0.19.0+11.8.1",
+      "checksum": "4f45e86edad8e88efe97dbf384b4e48e1ff0f111eabf154c7b09d7a1e5fb573c"
+    },
+    {
+      "name": "rocksdb",
+      "version": "0.25.0",
+      "checksum": "d8d90add70d1d420ee487bce4a1449880a8d147451c6051b2ee5f8354553dcbf"
+    },
+    {
+      "name": "rustix",
+      "version": "1.1.5",
+      "checksum": "891efababe418670775f199f0d233d84843c227a0949a883ce15b37c78d6629d"
+    },
+    {
+      "name": "zstd-sys",
+      "version": "2.1.0+zstd.1.5.7",
+      "checksum": "0ef0a8027ec3ee71300ab3bcbcd0393f434aa72b91ca6d635a39941deae8eea0"
+    }
+  ],
+  "platform": {
+    "system": "Darwin",
+    "machine": "arm64",
+    "version": "26.5.2"
+  },
+  "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: aarch64-apple-darwin\nrelease: 1.98.1\nLLVM version: 22.1.8\n",
+  "native_archive_sha256": "cb8f44896f30e78b8ed6411c8adc8f8e09c12374bb5fde9e62b7aeea8a5a2944",
+  "native_build": "Implementing agent compiled exact vendored sources fresh with two jobs, without prebuilt engine overrides. Root reused that same Cargo target for integrated checks; its native archive hash remains unchanged. Prior app/test executable hashes in the agent inventory are historical because Cargo caches were reused. Fresh exact-revision Linux build is running separately, not PASS here.",
+  "checks": {
+    "integrated_workspace": {
+      "PASS": 145,
+      "FAIL": 0,
+      "IGNORED": 0
+    },
+    "store_cases": 11,
+    "native_option_cases": 5,
+    "clippy": "PASS workspace all-targets -Dwarnings",
+    "fmt": "PASS",
+    "artifact_and_handoff_checks": "PASS",
+    "parent_directory_probe": "One actual successful parent fsync observed before CURRENT exists through forwarding Mac dyld interposition; actual engine test also passed"
+  },
+  "behavior": [
+    "Explicit absent-directory initialization only, private target permissions and parent fsync before native creation.",
+    "WAL-enabled synchronized manifest write; whole manifest identity and exact three-column-family checks on reopen, without logical manifest repair.",
+    "Bounded CURRENT preflight, corrupt/missing/future manifest and wrong family refusal, preserved application bytes.",
+    "Canonical path and symlink/case aliases excluded within one process; actual second process refused while owner lives and opens after owner closes.",
+    "Adequate owned native permit before creation/allocations; DB/CF/background shutdown precedes cache/WBM, permit and path reservation release.",
+    "Shared WBM actually charged by all column families; intentional CF-only attachment remains unused in the negative control."
+  ],
+  "independent_AI_review": {
+    "report_sha256": "da40c55b34725d80b4f4ebeb2837a153c482ff95b44cd7825252ad408dfec62e",
+    "finding": "Missing parent directory synchronization fixed before native open; exact upstream implementation confirms RocksDB only syncs its internal directories. No residual concrete finding in reviewed scope.",
+    "limits": "Source review and implementing-agent logs; reviewer did not independently rerun engine tests."
+  },
+  "reproducible_probe": "experiments/ingest-store/README.md",
+  "not_run": [
+    "Integrated native Linux amd64/arm64 qualification (amd64 build currently running).",
+    "Power loss, filesystem/device flush guarantees, ENOSPC, fsync failure, ambiguous manifest commit and crash recovery.",
+    "Signed-event admission, producer receipt/replay/retirement, authoritative takeover, archive/read/export and backup/restore.",
+    "Mixed/aged workload capacity or hard RSS/physical WAL-size bound."
+  ],
+  "raw_root": ".research/implementation/rocks-product-design",
+  "agent_inventory": ".research/worktrees/rocks-store/.research/implementation/rocks-store/inventory.json",
+  "agent_inventory_sha256": "c3456b6853b516ea6d67f00b97f0af75ea2e1d94b8b36f4a895d26b8986340a7",
+  "logs_sha256": {
+    ".research/implementation/rocks-product-design/integrated-mac-tests.log": "686b54a0f9d54e30ca1f61616fea735bd76654ad4750d7fe6c633c1cf3f0fb56",
+    ".research/implementation/rocks-product-design/integrated-mac-clippy.log": "c7ed638970ea9044ed005a7ea390424c515380cad2e2ebe0efba5e13885f2ae9",
+    ".research/implementation/rocks-product-design/integrated-artifacts.log": "ac68e41addb3a5ee09e3f82942aee36499a2d9caa6b598047f39ed78971c961b",
+    ".research/implementation/rocks-product-design/integrated-handoff.json": "f8bb9428058c177a1cad402cb49fa3006232f7ff4b8006e832b230ba287bdd96",
+    ".research/worktrees/rocks-store/.research/implementation/rocks-store/store-parent-sync.log": "3351616ad8de41d395e528f4c55135942a6d35016310883573ec6d5d711087bc",
+    ".research/worktrees/rocks-store/.research/implementation/rocks-store/parent-sync-observation.log": "46675f8f5e2ea4bb51ed6237e32df5c637c576e2c2420276f676da93ebeebb37"
+  }
+}
