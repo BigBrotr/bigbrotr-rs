@@ -100,6 +100,15 @@ def run(root, name):
     output = root / (name + "-ingest.json")
     if output.exists():
         raise RuntimeError("refusing to overwrite ingest evidence")
+    mounted_binary = lab.docker("exec", state["client"], "sha256sum", "/build/bigbrotr").stdout.split()[0]
+    mounted_receipt = json.loads(lab.docker("exec", state["client"], "cat", "/build/build-result.json").stdout)
+    mounted_manifest = lab.docker("exec", state["client"], "sha256sum", "/build/source-manifest.json").stdout.split()[0]
+    actual_info = lab.cli(state, "build-info")
+    if (mounted_binary != state["binary_sha256"] or mounted_binary != mounted_receipt["binary_sha256"]
+            or mounted_receipt != state["build"]
+            or mounted_manifest != mounted_receipt["source_manifest_sha256"]
+            or actual_info.returncode != 0 or json.loads(actual_info.stdout) != mounted_receipt["build_info"]):
+        raise RuntimeError("mounted executable, build identity or source manifest differs from the owned artifact receipt")
     checksums = {str(i): hashlib.sha256((source / "migrations/postgres" / filename).read_bytes()).hexdigest()
                  for i, filename in [(1, "0001_control.sql"), (2, "0002_ingest.sql")]}
     report = {"format": "bigbrotr-ingest-schema-cases/1", "status": "RUNNING", "cases": [],
@@ -120,12 +129,22 @@ def run(root, name):
         lab.sql(state, "postgres", f"CREATE DATABASE {database} OWNER bigbrotr_migrator;")
         return database, lab.config(root, state, database)
 
-    def migration(database, path, action, target, expected_status, count):
+    def migration(database, path, action, target, expected_status, count, prior=None):
         result = lab.migrate(state, action, path, target=target)
         value = json.loads(result.stdout) if result.stdout else {}
+        resolved_target = 2 if target is None else target
+        current = resolved_target if count else prior
+        expected = {"format": "bigbrotr-control-migration/1", "scope": "postgres-control",
+            "status": expected_status, "source_version": str(prior) if prior is not None else None,
+            "current_version": str(current) if current is not None else None,
+            "target_version": str(resolved_target), "applied_count": str(count),
+            "steps": [{"version": str(version), "name": filename, "sha256": checksums[str(version)]}
+                      for version, filename in [(1, "0001_control.sql"), (2, "0002_ingest.sql")]
+                      if (prior or 0) < version <= resolved_target],
+            "dataset_initialization": "not-performed", "release_upgrade_qualification": "not-performed"}
         record(database + "_" + action + "_" + str(target), result.returncode == 0
-               and value.get("status") == expected_status and value.get("applied_count") == str(count),
-               {"exit": result.returncode, "output": value, "stderr": result.stderr})
+               and value == expected and not result.stderr,
+               {"exit": result.returncode, "output": value, "expected": expected, "stderr": result.stderr})
         return value
 
     def exact_receipts(database):
@@ -150,7 +169,7 @@ def run(root, name):
                and actual_tables == sorted(CONTROL_TABLES + INGEST_TABLES)
                and all(not contents for contents in empty.values()), {"tables": actual_tables, "empty_rows": empty})
         before = lab.schema_digest(state, database)
-        migration(database, path, "apply", 2, "current", 0)
+        migration(database, path, "apply", 2, "current", 0, prior=2)
         record("reapply_preserves_schema_and_data", before == lab.schema_digest(state, database), {"before": before})
         fixture = source / "experiments/control-migrations/ingest_schema_cases.sql"
         result = lab.docker("exec", "-i", state["postgres"], "psql", "-X", "-A", "-t", "-q", "--no-password",
@@ -178,7 +197,7 @@ def run(root, name):
             "INSERT INTO control.role_instances VALUES (decode(lpad('2c',32,'0'),'hex'),"
             "decode(lpad('2a',32,'0'),'hex'),'control',-1,NULL);")
         retained = rows(state, database, CONTROL_TABLES)
-        migration(database, path, "apply", 2, "applied", 1)
+        migration(database, path, "apply", 2, "applied", 1, prior=1)
         after = rows(state, database, CONTROL_TABLES)
         old_receipt = retained.pop("schema_versions")[0]
         receipts = after.pop("schema_versions")
@@ -200,7 +219,7 @@ def run(root, name):
                and "requires explicit verified source registration" in refusal.stderr and before == after and count == "10",
                {"exit": refusal.returncode, "stderr": refusal.stderr, "before_sha256": before,
                 "after_sha256": after, "table_count": count})
-        migration(database, path, "inspect", 1, "inspected", 0)
+        migration(database, path, "inspect", 1, "inspected", 0, prior=1)
         report["status"] = "PASS"
     except Exception:
         report["status"] = "FAIL"
