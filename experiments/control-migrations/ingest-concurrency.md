@@ -64,9 +64,11 @@ After every case, the observer reads every column of every row in all 23 control
 relations. The expected result starts from the prior full snapshot and applies
 only the literal row insertion or field transition named by the case. Exact
 normalized equality detects partial writes, failed rollback and mutation in any
-unrelated relation. Separate literal fixture counts and states prevent an empty
-or incomplete bootstrap from passing. The final CLI inspection must report
-current version 2, and both original migration receipts must remain byte-for-byte
+unrelated relation. Separate literal fixture counts, full owner tuples and states
+prevent an empty or incomplete bootstrap from passing. The resolution case also
+requires its owner to be draining and its chunk prepared before opening contenders.
+The complete literal final CLI response must report current version 2 with empty
+stderr, and both original migration receipts must remain byte-for-byte
 unchanged.
 
 ## Bounds and outcomes
@@ -74,7 +76,8 @@ unchanged.
 The shared session layer enforces a 4,096-byte command limit, 64 KiB output limit,
 5-second connection timeout, 30-second statement timeout, 20-second lock timeout,
 60-second idle transaction timeout, 12-second response deadline and 10-second
-lock-observation deadline. This fixture's largest setup command is 3,940 bytes.
+lock-observation deadline. The fixture's setup and contender commands fit the
+4,096-byte limit; size checks are local evidence, not engine execution.
 There is no retry that can hide a missed barrier, deadlock, unexpected SQLSTATE
 or unknown commit response.
 
@@ -84,7 +87,8 @@ unobservable cleanup is `UNKNOWN`. Unreached cases remain `NOT_RUN`. Successful
 process exit without the exact durable-row oracle cannot pass.
 
 The harness verifies the clean Git revision against the embedded application
-source identity, the mounted binary against its build receipt, both migration
+source identity, actual `build-info` against the complete mounted build receipt,
+the mounted binary and source-manifest digests, both migration
 source hashes against the database ledger, PostgreSQL `160015`, synchronous
 commit, `fsync=on` and `full_page_writes=on`. It writes only bounded identities,
 lock observations, SQLSTATEs and synthetic row values to the report. Credentials

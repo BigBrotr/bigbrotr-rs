@@ -48,6 +48,23 @@ def digest(n):
     return "\\x" + format(n, "064x")
 
 
+def migration_result(result, action, checksums):
+    applying = action == "apply"
+    expected = {
+        "format": "bigbrotr-control-migration/1", "scope": "postgres-control",
+        "status": "applied" if applying else "inspected",
+        "source_version": None if applying else "2", "current_version": "2",
+        "target_version": "2", "applied_count": "2" if applying else "0",
+        "steps": [{"version": str(version), "name": filename,
+                   "sha256": checksums[f"{version:04d}"]}
+                  for version, filename in ((1, "0001_control.sql"), (2, "0002_ingest.sql"))]
+        if applying else [],
+        "dataset_initialization": "not-performed", "release_upgrade_qualification": "not-performed",
+    }
+    require(result.returncode == 0 and not result.stderr
+            and json.loads(result.stdout) == expected, "real-cli-target-2-" + action)
+
+
 def snapshot(state, database):
     parts = [
         f"'{table}',(SELECT coalesce(jsonb_agg(v ORDER BY v::text COLLATE \"C\"),'[]'::jsonb) "
@@ -311,11 +328,18 @@ def run(root, name):
             ids[key] = container["Id"]
             report["containers"][key] = {"id": container["Id"], "image": container["Image"]}
         owned()
-        actual_hash = lab.docker(
-            "exec", state["client"], "python3", "-c",
-            "import hashlib; print(hashlib.sha256(open('/build/bigbrotr','rb').read()).hexdigest())"
-        ).stdout.strip()
-        require(actual_hash == state["binary_sha256"], "binary-receipt-mismatch")
+        actual_hash = lab.docker("exec", state["client"], "sha256sum", "/build/bigbrotr").stdout.split()[0]
+        mounted_receipt = json.loads(lab.docker(
+            "exec", state["client"], "cat", "/build/build-result.json").stdout)
+        mounted_manifest = lab.docker(
+            "exec", state["client"], "sha256sum", "/build/source-manifest.json").stdout.split()[0]
+        actual_info = lab.cli(state, "build-info")
+        require(actual_hash == state["binary_sha256"] == mounted_receipt["binary_sha256"]
+                and mounted_receipt == state["build"]
+                and mounted_manifest == mounted_receipt["source_manifest_sha256"]
+                and actual_info.returncode == 0 and not actual_info.stderr
+                and json.loads(actual_info.stdout) == mounted_receipt["build_info"],
+                "mounted-artifact-identity-mismatch")
         report["server"] = json.loads(lab.sql(state, "postgres", """SELECT json_build_object(
 'version',current_setting('server_version_num'),'fsync',current_setting('fsync'),
 'full_page_writes',current_setting('full_page_writes'),'architecture',version());"""))
@@ -326,8 +350,7 @@ def run(root, name):
         lab.sql(state, "postgres", f"CREATE DATABASE {database} OWNER {ROLE};")
         candidate = lab.config(root, state, database)
         applied = lab.cli(state, *migration_args(candidate))
-        require(applied.returncode == 0 and json.loads(applied.stdout).get("status") == "applied",
-                "real-cli-target-2-apply")
+        migration_result(applied, "apply", report["migration_sha256"])
         initial = snapshot(state, database)
         require(len(initial["schema_versions"]) == 2
                 and all(not initial[table] for table in TABLES if table != "schema_versions"),
@@ -335,7 +358,9 @@ def run(root, name):
         for migration, filename in ((1, "0001_control.sql"), (2, "0002_ingest.sql")):
             receipt = find_row(initial, "schema_versions", migration=migration)
             require(receipt["name"] == filename
-                    and receipt["checksum"] == "\\x" + report["migration_sha256"][f"{migration:04d}"],
+                    and receipt["checksum"] == "\\x" + report["migration_sha256"][f"{migration:04d}"]
+                    and receipt["engine"] == "postgres-control" and receipt["applied_by"] == ROLE
+                    and receipt["reader_min"] == receipt["reader_max"] == receipt["writer_floor"] == 1,
                     "migration-identity")
 
         setup = session("setup")
@@ -348,6 +373,20 @@ def run(root, name):
             "frontier_bounds": 12, "projection_generations": 3, "projection_chunks": 2,
             "projection_bounds": 8, "snapshot_leases": 2, "retention_claims": 0,
         }, "fixture-summary")
+        bootstrap = snapshot(state, database)
+        expected_owners = [{
+            "resource_id": bytea(resource), "epoch": 1, "dataset_id": bytea(1),
+            "role": role, "role_instance_id": bytea(instance),
+            "process_incarnation": bytea(incarnation), "acquired_at_us": 0,
+            "lease_expires_at_us": -1, "state": state_name,
+            "released_at_us": None, "exclusion_method": None, "exclusion_digest": None,
+        } for resource, role, instance, incarnation, state_name in (
+            (30, "ingest", 11, 31, "active"), (40, "archive", 13, 41, "active"),
+            (42, "archive", 13, 43, "active"), (50, "index", 14, 51, "active"),
+            (52, "index", 14, 53, "active"), (54, "index", 14, 55, "draining"),
+        )]
+        require(normalized({"owners": bootstrap["owner_epochs"]})
+                == normalized({"owners": expected_owners}), "fixture-owner-tuples")
 
         active_case = "frontier_seal_before_lower_close"
         before = snapshot(state, database)
@@ -463,6 +502,10 @@ chunk_ordinal,row_count,owner_resource_id,owner_epoch,owner_incarnation,prepared
 
         active_case = "chunk_complete_before_release"
         before = snapshot(state, database)
+        require(find_row(before, "owner_epochs", resource_id=bytea(54), epoch=1)["state"]
+                == "draining", "resolve-owner-not-draining")
+        require(find_row(before, "projection_chunks", generation_id=bytea(88),
+                         chunk_id=digest(91))["state"] == "prepared", "resolve-chunk-not-prepared")
         a, b = session("resolve_a"), session("resolve_b")
         a.execute("BEGIN;")
         a.execute(f"""UPDATE control.projection_chunks SET state='committed',committed_at_us=9,
@@ -565,8 +608,7 @@ VALUES({identity(111)},{identity(101)},{identity(1)},0,4,1,1,5,'backup',11);""")
         close_sessions()
 
         final = lab.cli(state, *migration_args(candidate, "inspect"))
-        require(final.returncode == 0 and json.loads(final.stdout).get("current_version") == "2",
-                "real-cli-final-inspect")
+        migration_result(final, "inspect", report["migration_sha256"])
         actual = snapshot(state, database)
         require(actual["schema_versions"] == initial["schema_versions"], "ledger-mutated")
         lab.write_json(directory / "observed-rows.json", actual)
