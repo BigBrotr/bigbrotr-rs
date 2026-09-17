@@ -180,5 +180,15 @@
     "local_root": ".research/review-16",
     "upstream_source_root": ".research/checkouts/ducklake-s3-review",
     "notes": "Complete assigned baseline document reads, targeted source/diff integration, local deployment/composition models, native S3/CH probes; no product implementation."
+  },
+  "review_17": {
+    "captured_on": "2026-09-17",
+    "baseline": "ca7bc727396ae770ebce084b49efb70d1338a802",
+    "local_root": ".research/final-handoff-17",
+    "clean_source_snapshot": ".research/final-handoff-17/clean-snapshot",
+    "read_ledger": "docs/research/evidence/review-17-read-evidence.json",
+    "verification": "docs/research/evidence/review-17-verification.json",
+    "status": "Completed local document checks and fresh-source first-use preparation; no running jobs, containers or remote mutations. Snapshot/raw output retained under ignored root.",
+    "scope": "Independent full-file domain reviews, changed-contract integration, canonical document/task checks and checksum-pinned slugger setup. No product/CI/release or new engine/fleet qualification."
   }
 }

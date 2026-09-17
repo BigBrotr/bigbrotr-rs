@@ -166,3 +166,19 @@ use bounded jobs/artifacts; direct SQL is a separate authorized research/admin
 route, not an unrestricted public read-core endpoint. Actual CH counterexamples
 and measured layout candidates inform the design without claiming universal
 optimality or unlimited billion-row capacity.
+
+Q28: The owner prefers ordinary deployment mechanisms over a bespoke multi-host
+system. Keep single-host Compose with local archive as the primary path; standard
+remote database/RPC/S3 endpoints retain their explicit capability, authority and
+qualification requirements. Docker alone provides no cross-host orchestration.
+
+Q29: The final handoff request adds a concrete developer/delivery workflow.
+Select Mac authoring/Git plus exact-revision Tux Linux experiments, isolated
+GitHub Actions CI and Docker Hub image distribution. The owner permits linear
+coherent commits without mandatory branches/merges. All Cargo packages remain
+unpublished initially; clean internal libraries do not force a public SDK.
+The [delivery contract](../engineering/development-and-delivery.md) closes runner
+trust, native target evidence, candidate promotion, signed release manifests and
+ordinary Compose initialization/upgrade. Docker Hub namespace/credentials and
+real release keys are provisioning inputs for implementation/release, not
+resources created by this planning pass. No product workflow has run yet.

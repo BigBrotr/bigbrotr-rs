@@ -1,0 +1,1162 @@
+{
+  "review": "17-development-and-delivery-handoff",
+  "baseline_commit": "ca7bc727396ae770ebce084b49efb70d1338a802",
+  "scope": "Independent full-file domain reviews plus root integration; not a new claim that one reviewer reread every historical file or any future implementation. Review 16 owns its complete earlier Markdown baseline.",
+  "baseline_read_records": 35,
+  "unique_baseline_files": 33,
+  "baseline_hash_verification": "PASS",
+  "reviews": [
+    {
+      "source_manifest": "agent-read.json",
+      "source_sha256": "ec29fb7fce8ab054ed214deb9980390bca8f5e4c47144e86e50f7a0bb93adc82",
+      "record": {
+        "review": "final-handoff-17",
+        "reviewer": "AI /root/final_agent_audit",
+        "captured_at": "2026-09-17T16:35:06.521284+00:00",
+        "repository": "/Users/vincenzo/Documents/GitHub/BigBrotr/bigbrotr-rs",
+        "baseline": "ca7bc727396ae770ebce084b49efb70d1338a802",
+        "scope": "Independent newcomer/agent continuity audit, read-only tracked repository. No remote inspection or Git mutations. Only this ignored manifest written.",
+        "full_reads": [
+          {
+            "path": "AGENTS.md",
+            "sha256": "9c1a2a488335fec7d3051a7f05b90884ba2ba6787b2a716ab6f76a61c354ef7c",
+            "git_blob": "7770243d7451662d45da53a5d3a189f4ccdb16d5",
+            "bytes": 4224,
+            "lines": 68,
+            "read_scope": "complete baseline file; initial aggregate truncation reread completely where affected",
+            "worktree_matches_baseline_at_record": true
+          },
+          {
+            "path": "README.md",
+            "sha256": "e825fba93f8a0b1be9175cc2fd76defc7cc60b708cad504a031f27fd6dddb8d5",
+            "git_blob": "14707907babfdd430677183bc90118059a997870",
+            "bytes": 3755,
+            "lines": 63,
+            "read_scope": "complete baseline file; initial aggregate truncation reread completely where affected",
+            "worktree_matches_baseline_at_record": true
+          },
+          {
+            "path": "PLAN.md",
+            "sha256": "0784b18ebbe82d6fe9a3ded6add9a48a9175189b808de2ecc65cd3bb48aaca8b",
+            "git_blob": "728ddbfb199afbe3a5413e9b1bb9c838729134de",
+            "bytes": 17232,
+            "lines": 215,
+            "read_scope": "complete baseline file; initial aggregate truncation reread completely where affected",
+            "worktree_matches_baseline_at_record": true
+          },
+          {
+            "path": "docs/start-here.md",
+            "sha256": "6b82b5d26d85b6354ce30bdb578e88b07a96af650c038d72b367d5b0ad794db8",
+            "git_blob": "24db50c4b7fbd7fa7460adc463916bec25051e18",
+            "bytes": 10243,
+            "lines": 167,
+            "read_scope": "complete baseline file; initial aggregate truncation reread completely where affected",
+            "worktree_matches_baseline_at_record": true
+          },
+          {
+            "path": "docs/implementation/agent-handoff.md",
+            "sha256": "33b615c41a8261fdcc125585937cfbcbebfe365957106f5c41b7aca126fb7d8c",
+            "git_blob": "96f82268673340a989c260973fc2dcf68fe9fe51",
+            "bytes": 16473,
+            "lines": 230,
+            "read_scope": "complete baseline file; initial aggregate truncation reread completely where affected",
+            "worktree_matches_baseline_at_record": true
+          },
+          {
+            "path": "docs/implementation/progress.md",
+            "sha256": "3eb0a0490070f724f27de882c466649aef60d852d20fc256835598feca0735f4",
+            "git_blob": "dcd25b8c08c82186dcb0f9af25a19fdab5653867",
+            "bytes": 3103,
+            "lines": 21,
+            "read_scope": "complete baseline file; initial aggregate truncation reread completely where affected",
+            "worktree_matches_baseline_at_record": true
+          },
+          {
+            "path": "docs/implementation/README.md",
+            "sha256": "bc82f4d0b26f71077fca6c00070bf3efcc2e27081c32d53b6257521cc07a8a54",
+            "git_blob": "3ef01f9052d5918b9f013bfe4be7c4f87ec9c750",
+            "bytes": 11667,
+            "lines": 170,
+            "read_scope": "complete baseline file; initial aggregate truncation reread completely where affected",
+            "worktree_matches_baseline_at_record": true
+          },
+          {
+            "path": "docs/implementation/coverage.md",
+            "sha256": "83c7a5130dddfcf093633803937e3703142ec3afbe6dcf8a01c71971b59a60ab",
+            "git_blob": "482b869903aed39d6b79c43d076375dc07075c87",
+            "bytes": 16976,
+            "lines": 144,
+            "read_scope": "complete baseline file; initial aggregate truncation reread completely where affected",
+            "worktree_matches_baseline_at_record": true
+          },
+          {
+            "path": "docs/planning/mandate.md",
+            "sha256": "a1a94116c3b994651f8535b86c826800f5135e087874b56599d0efb7ff9df9fe",
+            "git_blob": "0ab96dbbb00a1d7a4d29a1e708a0c4ae2311338f",
+            "bytes": 7194,
+            "lines": 113,
+            "read_scope": "complete baseline file; initial aggregate truncation reread completely where affected",
+            "worktree_matches_baseline_at_record": true
+          },
+          {
+            "path": "docs/planning/questions.md",
+            "sha256": "dc0f8ca03063e9764a1031e6401f1a8718c5fe860410c9195badcedf58875eba",
+            "git_blob": "85defea49ce59f2a6180a064fcf31fb06cdfb5f8",
+            "bytes": 13233,
+            "lines": 168,
+            "read_scope": "complete baseline file; initial aggregate truncation reread completely where affected",
+            "worktree_matches_baseline_at_record": true
+          },
+          {
+            "path": "docs/planning/specification-readiness.md",
+            "sha256": "1a43c77f1a0992415f0f6e2f2bd62d634d5d70b754171db542d22702f4bb00e3",
+            "git_blob": "7cfdcfc011dc174904c58ef69245f1f2cf252fec",
+            "bytes": 11782,
+            "lines": 81,
+            "read_scope": "complete baseline file; initial aggregate truncation reread completely where affected",
+            "worktree_matches_baseline_at_record": true
+          },
+          {
+            "path": "docs/specification/interface-catalog.md",
+            "sha256": "04faaad8f468524d54d434c5398e10325761023d5203dc93560e6fe606dfbf79",
+            "git_blob": "f8a700a21125a69d5e281a4f29c126569297490f",
+            "bytes": 19760,
+            "lines": 227,
+            "read_scope": "complete baseline file; initial aggregate truncation reread completely where affected",
+            "worktree_matches_baseline_at_record": true
+          },
+          {
+            "path": ".gitignore",
+            "sha256": "60591791b8778c17ddb627bfb43e2cd69c8440de3ee78f231934131c9fe56e25",
+            "git_blob": "ae0f5d00284a3505f69231ff0a7b4018dd315605",
+            "bytes": 95,
+            "lines": 10,
+            "read_scope": "complete baseline file; initial aggregate truncation reread completely where affected",
+            "worktree_matches_baseline_at_record": true
+          },
+          {
+            "path": "docs/engineering/rust-and-repository.md",
+            "sha256": "52d0ded4c8ab3d6b2e36ef8a395ca9dde9c0c16c98abaa3887ce75304fefadbc",
+            "git_blob": "801add13c063c3fb35abdebba57062ec724a9d93",
+            "bytes": 12559,
+            "lines": 167,
+            "read_scope": "complete baseline file; initial aggregate truncation reread completely where affected",
+            "worktree_matches_baseline_at_record": true
+          },
+          {
+            "path": "docs/research/laboratory-inventory.json",
+            "sha256": "b7a7ab0b6882266aedc57033d2c38c071d3ab6beeef83cd4048a5d0e6caaea17",
+            "git_blob": "e9ab4e91df7d136417316462a9c7212a9e8fcc08",
+            "bytes": 10914,
+            "lines": 184,
+            "read_scope": "complete baseline file; initial aggregate truncation reread completely where affected",
+            "worktree_matches_baseline_at_record": true
+          },
+          {
+            "path": "docs/research/experiment-summary.md",
+            "sha256": "6626b61f3c084cc2d378e44bd304730228e10a6ff98fb1308587ab3d10ad1230",
+            "git_blob": "9dc9b4e154348133d72ae68b71f5ba1775b274db",
+            "bytes": 11069,
+            "lines": 119,
+            "read_scope": "complete baseline file; initial aggregate truncation reread completely where affected",
+            "worktree_matches_baseline_at_record": true
+          },
+          {
+            "path": "experiments/verify_artifacts.py",
+            "sha256": "87bf805885e391e5b361590ec453cadc4b57ce822307550a33ba79eaaa1ca6f9",
+            "git_blob": "7c8d34af42c2ffcd81aa41eedb81501a38afbeed",
+            "bytes": 2104,
+            "lines": 39,
+            "read_scope": "complete baseline file; initial aggregate truncation reread completely where affected",
+            "worktree_matches_baseline_at_record": true
+          },
+          {
+            "path": "experiments/verify_handoff.py",
+            "sha256": "63ab6ae77fdd75700d75bbb1318a6556bdfa1ad297f20a236808b62c92df631c",
+            "git_blob": "9f1da4d713040924fa58b858143629ae685835c0",
+            "bytes": 10556,
+            "lines": 223,
+            "read_scope": "complete baseline file; initial aggregate truncation reread completely where affected",
+            "worktree_matches_baseline_at_record": true
+          },
+          {
+            "path": "docs/implementation/01-foundation.md",
+            "sha256": "ef6369e0073c934e8ae371dc639c31c8a69db5575fc43e55adc871668462162a",
+            "git_blob": "9f1f8a5f33c74e12799639528558b461ca805369",
+            "bytes": 24991,
+            "lines": 354,
+            "read_scope": "complete baseline file; initial aggregate truncation reread completely where affected",
+            "worktree_matches_baseline_at_record": true
+          }
+        ],
+        "checks": [
+          {
+            "command": "python3 experiments/verify_artifacts.py",
+            "result": "PASS",
+            "markdown_files": 115,
+            "json_files": 65,
+            "json_examples": 4,
+            "errors": []
+          },
+          {
+            "command": "python3 experiments/verify_handoff.py",
+            "result": "PASS",
+            "markdown_files": 115,
+            "checked_local_fragments": 392,
+            "tasks": 123,
+            "steps": 756,
+            "errors": [],
+            "dependency_cycle_candidates": [
+              [
+                "P03-T02",
+                "P04-T02"
+              ],
+              [
+                "P04-T13",
+                "P05-T08"
+              ],
+              [
+                "P04-T14",
+                "P05-T05"
+              ]
+            ],
+            "interpretation": "Prose/slice candidates, not automatically unresolved cycles; no semantic DAG claim."
+          }
+        ],
+        "directory_navigation": {
+          "mapped": [
+            "repository root",
+            "docs subdirectories and tracked paths",
+            "experiments subdirectories and tracked paths"
+          ],
+          "absent_product_paths": [
+            "Cargo.toml",
+            "Cargo.lock",
+            "rust-toolchain.toml",
+            "LICENSE",
+            "apps",
+            "crates",
+            "contracts",
+            "config",
+            "migrations",
+            "packaging",
+            "tests"
+          ],
+          "interpretation": "Consistent with planning-only descriptions. Nested Rust fixture is research, not a product workspace."
+        },
+        "findings": [
+          {
+            "id": "A1",
+            "severity": "medium",
+            "paths": [
+              "docs/implementation/agent-handoff.md:158",
+              "experiments/verify_handoff.py:3"
+            ],
+            "finding": "Agent entrypoint names only verify_artifacts.py; stronger canonical handoff validation and fresh-checkout Node/checksum-pinned slugger preparation are discoverable only in source/historical evidence. Add canonical local validation commands/prerequisites through development contract."
+          },
+          {
+            "id": "A2",
+            "severity": "medium",
+            "paths": [
+              "docs/engineering/rust-and-repository.md:72",
+              "docs/specification/interface-catalog.md:220"
+            ],
+            "finding": "Baseline still promises external Rust library reuse/registry path. Reconcile with latest owner direction that published Rust libraries are unnecessary, keep internal crates private and distinguish application interfaces from potential future reuse."
+          },
+          {
+            "id": "A3",
+            "severity": "low",
+            "paths": [
+              "docs/implementation/01-foundation.md:33",
+              "docs/engineering/rust-and-repository.md:85"
+            ],
+            "finding": "Foundation selects MIT while engineering still instructs choosing a license. Clarify selected new-code license plus independently required copy/distribution checks; do not imply missing product LICENSE authorizes copying third-party code."
+          },
+          {
+            "id": "A4",
+            "severity": "low",
+            "paths": [
+              "docs/implementation/progress.md:10",
+              "docs/implementation/agent-handoff.md:67"
+            ],
+            "finding": "Current checkpoint does not record current worktree/branch/HEAD/dirty-state although guide asks for them. Refresh final checkpoint from actual Git observation with no guessed future commit."
+          },
+          {
+            "id": "A5",
+            "severity": "medium",
+            "paths": [
+              "AGENTS.md",
+              "docs/planning/mandate.md",
+              "docs/planning/questions.md"
+            ],
+            "finding": "Latest Mac/Tux execution choice, moderate coherent commits/no branch requirement, Docker Hub preference and no Rust-library release need are not yet captured in durable baseline. Parent-owned canonical development/release contract and entrypoint links should reconcile."
+          }
+        ],
+        "positive_conclusions": [
+          "Planning-versus-product authorization is consistent; stale checkpoint explicitly cannot revoke current owner authorization.",
+          "Single checkpoint and current owning specs are clear authorities; historical reviews are not a competing plan.",
+          "Complete relevant-file reads and independent fixtures/review are required without arbitrary all-repository rereading or repeated-clean-review quotas.",
+          "Evidence existence/hash verification, missing-artifact handling, ambiguous outcomes, raw ignored roots and historical versus live lab state are explicit.",
+          "Current local links/fragments/task identities resolve.",
+          "Product build/test paths are explicitly proposed; no experiment presented as production acceptance."
+        ],
+        "limits": [
+          "No external links, actual dependency guarantees, live Tux state or remote Git state were verified.",
+          "No product code exists or was implemented/tested.",
+          "No claim of complete reading of other documents discovered by navigation or search.",
+          "All findings describe ca7bc72 baseline, before parent-owned tracked corrections."
+        ]
+      }
+    },
+    {
+      "source_manifest": "delivery-read.json",
+      "source_sha256": "cbbcef4cf0777e6a7963b29d4b9c961954870ea25ac8d7ae0e868192944bfd00",
+      "record": {
+        "schema_version": 1,
+        "review": "final-handoff-17",
+        "reviewer": "final_delivery_audit",
+        "stage": "planning-only; no product execution",
+        "observed_at_utc": "2026-09-17T16:34:58.400406+00:00",
+        "repository": "/Users/vincenzo/Documents/GitHub/BigBrotr/bigbrotr-rs",
+        "baseline_commit": "ca7bc727396ae770ebce084b49efb70d1338a802",
+        "full_read": [
+          {
+            "path": "docs/engineering/rust-and-repository.md",
+            "bytes": 12559,
+            "lines": 167,
+            "sha256": "52d0ded4c8ab3d6b2e36ef8a395ca9dde9c0c16c98abaa3887ce75304fefadbc",
+            "git_blob": "801add13c063c3fb35abdebba57062ec724a9d93",
+            "read_intervals": [
+              [
+                1,
+                167
+              ]
+            ],
+            "complete": true,
+            "truncated": false,
+            "baseline_equals_current_at_manifest": true
+          },
+          {
+            "path": "docs/engineering/security-recovery-and-validation.md",
+            "bytes": 18665,
+            "lines": 267,
+            "sha256": "81767989475007b806eb1cf408d0f4978b2b1e5c735cea807943c37a7240a187",
+            "git_blob": "284dc346a77c63b3bd0226530a5ba7fa65251f0d",
+            "read_intervals": [
+              [
+                1,
+                135
+              ],
+              [
+                136,
+                267
+              ]
+            ],
+            "complete": true,
+            "truncated": false,
+            "baseline_equals_current_at_manifest": true
+          },
+          {
+            "path": "docs/specification/deployment-contract.md",
+            "bytes": 20654,
+            "lines": 273,
+            "sha256": "646185ecd9f97acd17975f4e290dd074bba5506c7347f4eefdd2fbca3697c052",
+            "git_blob": "6bd548385e44e125ba0a67b87ce7e34154060994",
+            "read_intervals": [
+              [
+                1,
+                100
+              ],
+              [
+                101,
+                190
+              ],
+              [
+                191,
+                273
+              ]
+            ],
+            "complete": true,
+            "truncated": false,
+            "baseline_equals_current_at_manifest": true
+          },
+          {
+            "path": "docs/implementation/01-foundation.md",
+            "bytes": 24991,
+            "lines": 354,
+            "sha256": "ef6369e0073c934e8ae371dc639c31c8a69db5575fc43e55adc871668462162a",
+            "git_blob": "9f1f8a5f33c74e12799639528558b461ca805369",
+            "read_intervals": [
+              [
+                1,
+                120
+              ],
+              [
+                121,
+                240
+              ],
+              [
+                241,
+                354
+              ]
+            ],
+            "complete": true,
+            "truncated": false,
+            "baseline_equals_current_at_manifest": true
+          },
+          {
+            "path": "docs/implementation/08-operations.md",
+            "bytes": 67572,
+            "lines": 382,
+            "sha256": "bcac9dc6385420109dd7d75efe217464f2021209616d7f566e67f5b72629ac0c",
+            "git_blob": "14947c8e2bbf75c73441e152f8234957ef16621a",
+            "read_intervals": [
+              [
+                1,
+                64
+              ],
+              [
+                65,
+                128
+              ],
+              [
+                129,
+                192
+              ],
+              [
+                193,
+                256
+              ],
+              [
+                257,
+                320
+              ],
+              [
+                321,
+                382
+              ]
+            ],
+            "complete": true,
+            "truncated": false,
+            "baseline_equals_current_at_manifest": true
+          },
+          {
+            "path": "docs/implementation/10-website.md",
+            "bytes": 36983,
+            "lines": 180,
+            "sha256": "6fe93184e65bdb2160510f6f36563f87e57ecb91e3e090e8ee5a32a2bc6a9465",
+            "git_blob": "bc59187702a2fa9e9d3a06003b52f73b167c2d99",
+            "read_intervals": [
+              [
+                1,
+                60
+              ],
+              [
+                61,
+                120
+              ],
+              [
+                121,
+                180
+              ]
+            ],
+            "complete": true,
+            "truncated": false,
+            "baseline_equals_current_at_manifest": true
+          },
+          {
+            "path": "docs/product/dashboard-and-website.md",
+            "bytes": 55420,
+            "lines": 632,
+            "sha256": "c9e9fc73e844c73177f42115debbf64f5f0afe7abda792a086b32a23509007d1",
+            "git_blob": "5f72c9a6f9648fffef360695487bd596d2d5c0e4",
+            "read_intervals": [
+              [
+                1,
+                128
+              ],
+              [
+                129,
+                256
+              ],
+              [
+                257,
+                384
+              ],
+              [
+                385,
+                508
+              ],
+              [
+                509,
+                632
+              ]
+            ],
+            "complete": true,
+            "truncated": false,
+            "baseline_equals_current_at_manifest": true
+          }
+        ],
+        "total_assigned_files": 7,
+        "total_assigned_lines": 2255,
+        "ancillary_complete_reads": [
+          {
+            "path": "AGENTS.md",
+            "sha256": "9c1a2a488335fec7d3051a7f05b90884ba2ba6787b2a716ab6f76a61c354ef7c",
+            "lines": 68,
+            "complete": true
+          },
+          {
+            "path": "docs/implementation/agent-handoff.md",
+            "sha256": "33b615c41a8261fdcc125585937cfbcbebfe365957106f5c41b7aca126fb7d8c",
+            "lines": 230,
+            "complete": true
+          },
+          {
+            "path": "docs/implementation/progress.md",
+            "sha256": "3eb0a0490070f724f27de882c466649aef60d852d20fc256835598feca0735f4",
+            "lines": 21,
+            "complete": true
+          }
+        ],
+        "directory_inspection": {
+          "actual_root_entries": [
+            ".git/",
+            ".gitattributes",
+            ".gitignore",
+            ".research/",
+            ".ruff_cache/",
+            "AGENTS.md",
+            "PLAN.md",
+            "README.md",
+            "docs/",
+            "experiments/"
+          ],
+          "absent_product_delivery_paths": [
+            ".github",
+            "packaging",
+            "docker",
+            "deploy"
+          ],
+          "research_fixture_not_product": "experiments/deployment-contract/compose-fixture.yaml",
+          "tracked_product_ci_or_packaging": "none at baseline"
+        },
+        "external_primary_sources": [
+          {
+            "url": "https://docs.github.com/en/actions/reference/security/secure-use",
+            "basis": "PR-trigger privilege separation, actions pinning, persistent self-hosted-runner trust"
+          },
+          {
+            "url": "https://docs.docker.com/build/concepts/context/",
+            "basis": "build-context .dockerignore placement and Dockerfile-specific naming"
+          },
+          {
+            "url": "https://docs.docker.com/reference/cli/docker/buildx/imagetools/create/",
+            "basis": "image-index copy and index/platform identity"
+          },
+          {
+            "url": "https://docs.docker.com/compose/how-tos/production/",
+            "basis": "ordinary single-server Compose production deployment"
+          }
+        ],
+        "limitations": [
+          "Assigned owning documents fully read; linked operations/configuration/storage/contracts were not exhaustively reread by this bounded delivery audit.",
+          "No SSH/Tux operation, public destination mutation, CI execution, container build, product test or publication occurred.",
+          "Legacy checkout was not opened or modified.",
+          "These are baseline planning findings, not certification of runtime or release behavior."
+        ],
+        "finding_ids": [
+          "delivery-01-registry-destination",
+          "delivery-02-install-initialization-order",
+          "delivery-03-build-context-ignore-location",
+          "delivery-04-public-pr-and-tux-trust",
+          "delivery-05-platform-evidence-mapping",
+          "delivery-06-single-host-rollout",
+          "delivery-07-optional-pr-terminology"
+        ]
+      }
+    },
+    {
+      "source_manifest": "semantics-read.json",
+      "source_sha256": "c6db1bb249d057e8df3db9c634e86843b3ac5100bf2f3c2b1237df1fa8b08223",
+      "record": {
+        "review": "final-handoff-17-semantics",
+        "reviewer": "AI read-only independent subagent",
+        "generated_at": "2026-09-17T16:35:38.562817+00:00",
+        "repository": "/Users/vincenzo/Documents/GitHub/BigBrotr/bigbrotr-rs",
+        "baseline_head": "ca7bc727396ae770ebce084b49efb70d1338a802",
+        "current_head": "ca7bc727396ae770ebce084b49efb70d1338a802",
+        "stage": "planning_only; no product steps executed",
+        "scope": [
+          {
+            "path": "docs/architecture/system-design.md",
+            "sha256_reviewed": "b166b0a565219cbc4d6cab220040224a87ca0023f67d90ff92586317de2c5ddf",
+            "sha256_at_ledger_write": "b166b0a565219cbc4d6cab220040224a87ca0023f67d90ff92586317de2c5ddf",
+            "unchanged_since_read": true,
+            "read_mode": "full contiguous bounded line-numbered chunks; truncated initial data-and-durability read repeated in full",
+            "lines": 252,
+            "bytes": 17506
+          },
+          {
+            "path": "docs/architecture/data-and-durability.md",
+            "sha256_reviewed": "8a135f1eb30c7c25498239163e6fceaa6234f10ee58bea8489e58c0141b8044a",
+            "sha256_at_ledger_write": "8a135f1eb30c7c25498239163e6fceaa6234f10ee58bea8489e58c0141b8044a",
+            "unchanged_since_read": true,
+            "read_mode": "full contiguous bounded line-numbered chunks; truncated initial data-and-durability read repeated in full",
+            "lines": 299,
+            "bytes": 20973
+          },
+          {
+            "path": "docs/architecture/storage-services.md",
+            "sha256_reviewed": "88e9f5a32450ebb54aee4bd387be5b8b1281b664f1c77288662a3a76d13479b8",
+            "sha256_at_ledger_write": "88e9f5a32450ebb54aee4bd387be5b8b1281b664f1c77288662a3a76d13479b8",
+            "unchanged_since_read": true,
+            "read_mode": "full contiguous bounded line-numbered chunks; truncated initial data-and-durability read repeated in full",
+            "lines": 320,
+            "bytes": 21890
+          },
+          {
+            "path": "docs/architecture/acquisition-services.md",
+            "sha256_reviewed": "45999753cc13b9e19e21fab8ca68595263f72e2e58b2cb177020a624c03f2b98",
+            "sha256_at_ledger_write": "45999753cc13b9e19e21fab8ca68595263f72e2e58b2cb177020a624c03f2b98",
+            "unchanged_since_read": true,
+            "read_mode": "full contiguous bounded line-numbered chunks; truncated initial data-and-durability read repeated in full",
+            "lines": 745,
+            "bytes": 93965
+          },
+          {
+            "path": "docs/specification/storage-catalog.md",
+            "sha256_reviewed": "0bd556b79cef9972791aae9b25f7b98b3741721e37ba92bf5fe78120e74ca031",
+            "sha256_at_ledger_write": "0bd556b79cef9972791aae9b25f7b98b3741721e37ba92bf5fe78120e74ca031",
+            "unchanged_since_read": true,
+            "read_mode": "full contiguous bounded line-numbered chunks; truncated initial data-and-durability read repeated in full",
+            "lines": 302,
+            "bytes": 31709
+          },
+          {
+            "path": "docs/specification/archive-storage-contract.md",
+            "sha256_reviewed": "5ca5b5eacf8a20f7825777febafc26913f5d430e9ffa6df41d9e7b21afcf81c7",
+            "sha256_at_ledger_write": "5ca5b5eacf8a20f7825777febafc26913f5d430e9ffa6df41d9e7b21afcf81c7",
+            "unchanged_since_read": true,
+            "read_mode": "full contiguous bounded line-numbered chunks; truncated initial data-and-durability read repeated in full",
+            "lines": 213,
+            "bytes": 14636
+          },
+          {
+            "path": "docs/specification/component-contracts.md",
+            "sha256_reviewed": "7553dcc0f84e4880e6f5557eef13060cd02ecfa51f6e2f9c62bdf11ddba3addd",
+            "sha256_at_ledger_write": "7553dcc0f84e4880e6f5557eef13060cd02ecfa51f6e2f9c62bdf11ddba3addd",
+            "unchanged_since_read": true,
+            "read_mode": "full contiguous bounded line-numbered chunks; truncated initial data-and-durability read repeated in full",
+            "lines": 310,
+            "bytes": 21326
+          },
+          {
+            "path": "docs/implementation/02-storage.md",
+            "sha256_reviewed": "e5848b07ce8481b416327a92356ea6536276ea5de59276d3cbfeabc3fc71790d",
+            "sha256_at_ledger_write": "e5848b07ce8481b416327a92356ea6536276ea5de59276d3cbfeabc3fc71790d",
+            "unchanged_since_read": true,
+            "read_mode": "full contiguous bounded line-numbered chunks; truncated initial data-and-durability read repeated in full",
+            "lines": 391,
+            "bytes": 27310
+          },
+          {
+            "path": "docs/implementation/03-acquisition.md",
+            "sha256_reviewed": "7d3418142a07a23cf95d097a0dbb43fb44efffe4b6fc05742b0c3ecb5813fdfc",
+            "sha256_at_ledger_write": "7d3418142a07a23cf95d097a0dbb43fb44efffe4b6fc05742b0c3ecb5813fdfc",
+            "unchanged_since_read": true,
+            "read_mode": "full contiguous bounded line-numbered chunks; truncated initial data-and-durability read repeated in full",
+            "lines": 449,
+            "bytes": 59673
+          }
+        ],
+        "findings": [
+          {
+            "id": "SEM17-01",
+            "severity": "low",
+            "path": "docs/implementation/03-acquisition.md",
+            "lines": [
+              111,
+              127
+            ],
+            "problem": "P03-T02 practical step 7 requires an independent archive reader, but its task-specific prerequisite list has no P02-T04 archive publisher dependency.",
+            "repair": "Declare P02-T04 prerequisite specifically for step 7 archive-read practical acceptance; session/admission implementation can still begin from the earlier listed prerequisites."
+          },
+          {
+            "id": "SEM17-02",
+            "severity": "medium",
+            "path": "docs/implementation/03-acquisition.md",
+            "lines": [
+              249,
+              260,
+              264,
+              265,
+              266,
+              270,
+              289,
+              293,
+              305,
+              309
+            ],
+            "problem": "P03-T09 depends on P03-T08, but P03-T08 acceptance executes signature-verifying dry-run and successful signed-deletion-pair import before T09 concrete decoders and T10 admission/join worker exist. P03-T09 practical also calls CLI import before T10. Full-task completion sequencing would require later consumers to finish earlier prerequisites.",
+            "repair": "Declare the early T08 preflight/job/config/refusal core as T09 prerequisite; T09 supplies decoding/verification dry-run; T10 supplies successful import and completes deferred T08/T09 end-to-end cases. Retain explicit incomplete checkboxes until those consumer cases execute; no additional tasks necessary."
+          }
+        ],
+        "reviewed_topics": [
+          "archive unknown-commit recovery and positive publisher exclusion",
+          "pending protection and separately captured checksums",
+          "scoped event eligibility/signatures/receive time and provenance-off consequences",
+          "finite empty/sparse history, same-second boundaries and qualified EOSE",
+          "Negentropy scoped witness membership, body objective and advertised-versus-served evidence",
+          "single-owner embedded stores and conditional S3 placement",
+          "P02/P03 implementation and practical acceptance dependency ordering"
+        ],
+        "conclusion": "No additional actionable contract contradiction found in the nine fully read assigned documents; two bounded P03 execution-order repairs reported to root.",
+        "limits": [
+          "Linked identity/data/operations/deployment source contracts were not fully reread in this bounded audit; consistency conclusion covers their representations in the assigned files.",
+          "No external source truth or dependency version verification; no implementation or runtime correctness certification.",
+          "No legacy inspection or modification, no Tux/container operations, and no tracked edits."
+        ],
+        "additional_navigation_read": [
+          "AGENTS.md",
+          "docs/implementation/progress.md",
+          "docs/implementation/agent-handoff.md",
+          "docs/implementation/README.md"
+        ]
+      }
+    }
+  ],
+  "final_delta_reviews": [
+    {
+      "source_manifest": "agent-final-read.json",
+      "source_sha256": "f842e8069deb3d1ef1e4e11e82342573d8a71ee421c24b5efe6981111982e83a",
+      "record": {
+        "review": "final-handoff-17 integrated draft",
+        "reviewer": "AI /root/final_agent_audit",
+        "captured_at": "2026-09-17T16:45:08.969901+00:00",
+        "repository": "/Users/vincenzo/Documents/GitHub/BigBrotr/bigbrotr-rs",
+        "base": "ca7bc727396ae770ebce084b49efb70d1338a802",
+        "tracked_diff_sha256": "ba863cebd5c211f6f5a8f10b6aefadaa270d5d014ecbb0d07dbd30b3b639fdc1",
+        "scope": "Read-only integrated newcomer/agent audit; current files are a parent-owned moving working tree. Manifest identifies the reviewed snapshot, not a future commit.",
+        "reads": [
+          {
+            "path": "AGENTS.md",
+            "sha256": "4fc87a205371748470df88063dd716c8981593748b454cf112fcec9b5da4d03d",
+            "bytes": 5017,
+            "lines": 79,
+            "read_scope": "Complete current file; any later correction read as its complete changed passage"
+          },
+          {
+            "path": "README.md",
+            "sha256": "c89326c5b8e978a4fe58792d665233a5afbd90cce0c7b0ff8905c4a1c8260ad1",
+            "bytes": 4987,
+            "lines": 70,
+            "read_scope": "Complete current file; any later correction read as its complete changed passage"
+          },
+          {
+            "path": "docs/engineering/development-and-delivery.md",
+            "sha256": "d54196aa0bb860ce0dd6e5d9dc0389e4a1ffc6bece95c2684400c05828496f75",
+            "bytes": 18283,
+            "lines": 281,
+            "read_scope": "Complete current file; any later correction read as its complete changed passage"
+          },
+          {
+            "path": "docs/implementation/agent-handoff.md",
+            "sha256": "fa26a8faa71127452c451ec57bbfead56a397a6c79110ae87e48adcc699b515c",
+            "bytes": 16965,
+            "lines": 235,
+            "read_scope": "Complete current file; any later correction read as its complete changed passage"
+          },
+          {
+            "path": "docs/implementation/03-acquisition.md",
+            "sha256": "7d4ca46daaaad5a50190261b70ef06ec3e482b218b82816144e813543c7610e0",
+            "bytes": 60459,
+            "lines": 458,
+            "read_scope": "Complete current file; any later correction read as its complete changed passage"
+          },
+          {
+            "path": "docs/implementation/08-operations.md",
+            "sha256": "c77ab4c32395757c7e4d2870a88d8ed7b4f45458067d41409f590a846a8e507e",
+            "bytes": 69486,
+            "lines": 386,
+            "read_scope": "Complete current file; any later correction read as its complete changed passage"
+          },
+          {
+            "path": "docs/implementation/10-website.md",
+            "sha256": "3f6cdb8694308d39bf1d2f280b04c8a599294de50272614fc76a7ea657ff64df",
+            "bytes": 37547,
+            "lines": 180,
+            "read_scope": "Complete current file; any later correction read as its complete changed passage"
+          },
+          {
+            "path": "PLAN.md",
+            "sha256": "c07b0c9557fb96c733dc9d488814f6f18a6f41002ec00b78b05d0f9ce38df231",
+            "bytes": 17474,
+            "lines": 218,
+            "read_scope": "Complete baseline file in agent-read.json plus complete current diff; unchanged content not re-emitted"
+          },
+          {
+            "path": "docs/engineering/rust-and-repository.md",
+            "sha256": "ec8448d395c7729f4af459432cf03c5c9447d79e41f1286ad3fb746eaaa51b01",
+            "bytes": 12731,
+            "lines": 170,
+            "read_scope": "Complete baseline file in agent-read.json plus complete current diff; unchanged content not re-emitted"
+          },
+          {
+            "path": "docs/implementation/01-foundation.md",
+            "sha256": "ecde79246874f802f8465d8a0fcdf2d0ba50c43ff683a91f54a53ba07ad396ea",
+            "bytes": 25642,
+            "lines": 363,
+            "read_scope": "Complete baseline file in agent-read.json plus complete current diff; unchanged content not re-emitted"
+          },
+          {
+            "path": "docs/implementation/README.md",
+            "sha256": "85693d08a9f8170901cc48368f71dd3104e83a9210c6b24f74d7b59754ff698d",
+            "bytes": 12207,
+            "lines": 178,
+            "read_scope": "Complete baseline file in agent-read.json plus complete current diff; unchanged content not re-emitted"
+          },
+          {
+            "path": "docs/implementation/coverage.md",
+            "sha256": "df9b6039134d80cdb5f8422f00b5411c116ed3c801cad34bbeb38d433e6f0503",
+            "bytes": 17468,
+            "lines": 151,
+            "read_scope": "Complete baseline file in agent-read.json plus complete current diff; unchanged content not re-emitted"
+          },
+          {
+            "path": "docs/planning/mandate.md",
+            "sha256": "dc772ca1910347f0ddc73dda4c515adeb65e7b1b69ae23e9eb865cee7ff61ec1",
+            "bytes": 7969,
+            "lines": 124,
+            "read_scope": "Complete baseline file in agent-read.json plus complete current diff; unchanged content not re-emitted"
+          },
+          {
+            "path": "docs/planning/questions.md",
+            "sha256": "36baa9a2235d641d11ba1f105bcc1ea25a47b879bd73ab27c3970bd640454035",
+            "bytes": 14330,
+            "lines": 184,
+            "read_scope": "Complete baseline file in agent-read.json plus complete current diff; unchanged content not re-emitted"
+          },
+          {
+            "path": "docs/planning/specification-readiness.md",
+            "sha256": "3af5b9de00134d5fa9eddc2d9031221a162bd3eff735eed1ebe74a5edd940a9a",
+            "bytes": 12193,
+            "lines": 86,
+            "read_scope": "Complete baseline file in agent-read.json plus complete current diff; unchanged content not re-emitted"
+          },
+          {
+            "path": "docs/specification/interface-catalog.md",
+            "sha256": "cb23e0889f06deff93d0b6d7ea0cb1fb42ba956a4896abde8ad7115aac1ef57c",
+            "bytes": 19950,
+            "lines": 229,
+            "read_scope": "Complete baseline file in agent-read.json plus complete current diff; unchanged content not re-emitted"
+          },
+          {
+            "path": "docs/engineering/security-recovery-and-validation.md",
+            "sha256": "0f21b6ba9310aa9b214323bb4c59edee676642a6e42a48419b12e5a5657156c1",
+            "bytes": 18967,
+            "lines": 272,
+            "read_scope": "Complete current diff only; no whole-file review claim"
+          },
+          {
+            "path": "docs/product/dashboard-and-website.md",
+            "sha256": "c1e4274b336df07363af032bb10e8dda7ee891a010f0af9c548e123b16332702",
+            "bytes": 55670,
+            "lines": 635,
+            "read_scope": "Complete current diff only; no whole-file review claim"
+          },
+          {
+            "path": "docs/specification/deployment-contract.md",
+            "sha256": "d40bd7a9827dc43ec37d603481e808a5b242891b51b80408ae8f2e5d42adce79",
+            "bytes": 20964,
+            "lines": 278,
+            "read_scope": "Complete current diff only; no whole-file review claim"
+          }
+        ],
+        "findings": [
+          {
+            "id": "A6",
+            "path": "docs/engineering/development-and-delivery.md:44",
+            "finding": "Native Tux qualification originally compared Git commit/tree without excluding modified or untracked source inputs. Matching HEAD alone cannot attribute resulting artifacts to that revision.",
+            "correction": "Require staged/unstaged/untracked source verification; refuse undeclared changes; derive sources from selected tree and manifest generated inputs.",
+            "status": "addressed and correction read"
+          },
+          {
+            "id": "A7",
+            "path": "docs/implementation/10-website.md:49",
+            "finding": "Dependency summary said initialization precedes starting services, while corrected concrete flow starts required engine services before finite initialization.",
+            "correction": "Qualify summary as before application roles, with required engines running first.",
+            "status": "open"
+          }
+        ],
+        "checks": [
+          {
+            "command": "git diff --check",
+            "result": "PASS"
+          }
+        ],
+        "not_run": [
+          "No product tests, native builds, web/source validation or remote operations.",
+          "No structural rerun while parent writes pending Review 17/checkpoint; parent owns final structural validation."
+        ],
+        "limitations": [
+          "Pending Review 17 and progress checkpoint were intentionally excluded per task; no missing-file finding.",
+          "Full baseline reads were recorded in agent-read.json; this pass reuses those reads explicitly for unchanged content.",
+          "Other owning contracts beyond enumerated full-read files were not fully reread; diff-only scope is separately labeled."
+        ],
+        "conclusions": [
+          "Current entrypoints consistently link one development/delivery contract.",
+          "Current planning checker prerequisites distinguish real scripts from future product workflows.",
+          "No new stage authorization conflict found.",
+          "Candidate/actual release, native architecture, source identity, private registry/key provisioning and unpublished crate policies are explicit.",
+          "P03 preflight/decoding/durable import and archive-reader acceptance splits are coherent; no new task hierarchy or premature completion."
+        ]
+      }
+    },
+    {
+      "source_manifest": "delivery-final-read.json",
+      "source_sha256": "f204d2f0d069744dbac53fe8541f3f0306ebdf81d974e12c18a2140bf45bcdbc",
+      "record": {
+        "schema_version": 1,
+        "review": "final-handoff-17-delivery-counterreview",
+        "observed_at_utc": "2026-09-17T16:45:02.638188+00:00",
+        "base_commit": "ca7bc727396ae770ebce084b49efb70d1338a802",
+        "new_contract_full_read": {
+          "path": "docs/engineering/development-and-delivery.md",
+          "bytes": 18283,
+          "lines": 281,
+          "sha256": "d54196aa0bb860ce0dd6e5d9dc0389e4a1ffc6bece95c2684400c05828496f75",
+          "read_intervals": [
+            [
+              1,
+              110
+            ],
+            [
+              111,
+              220
+            ],
+            [
+              221,
+              281
+            ]
+          ],
+          "complete": true,
+          "truncated_intervals_reread": true,
+          "concurrent_change_reconciled": "Earlier 276-line revision was reread completely after five source-state lines were added."
+        },
+        "current_diffs": [
+          {
+            "path": "docs/engineering/rust-and-repository.md",
+            "bytes": 12731,
+            "lines": 170,
+            "sha256": "ec8448d395c7729f4af459432cf03c5c9447d79e41f1286ad3fb746eaaa51b01",
+            "diff_sha256": "01d1f4cb0170bbfd2639b0a4c260d00ce1041b984459d86de0173aacbca4099b",
+            "review_mode": "complete current diff; baseline complete file read where present in delivery-read.json",
+            "diff_fully_read": true
+          },
+          {
+            "path": "docs/engineering/security-recovery-and-validation.md",
+            "bytes": 18967,
+            "lines": 272,
+            "sha256": "0f21b6ba9310aa9b214323bb4c59edee676642a6e42a48419b12e5a5657156c1",
+            "diff_sha256": "4b04b4e5978ccf1145b7b27f3e9cdf62f40e4fefdd7600047bf0cd132baa79bb",
+            "review_mode": "complete current diff; baseline complete file read where present in delivery-read.json",
+            "diff_fully_read": true
+          },
+          {
+            "path": "docs/implementation/01-foundation.md",
+            "bytes": 25642,
+            "lines": 363,
+            "sha256": "ecde79246874f802f8465d8a0fcdf2d0ba50c43ff683a91f54a53ba07ad396ea",
+            "diff_sha256": "f2b5afd8c2cc484d89db86bfa0b9d2e420d6db5f7fcee031cff4e3efc1249842",
+            "review_mode": "complete current diff; baseline complete file read where present in delivery-read.json",
+            "diff_fully_read": true
+          },
+          {
+            "path": "docs/implementation/08-operations.md",
+            "bytes": 69486,
+            "lines": 386,
+            "sha256": "c77ab4c32395757c7e4d2870a88d8ed7b4f45458067d41409f590a846a8e507e",
+            "diff_sha256": "0744ceb3075eba303ebafa2df660926756d5382d612fda09b5b8612dfcc958ec",
+            "review_mode": "complete current diff; baseline complete file read where present in delivery-read.json",
+            "diff_fully_read": true
+          },
+          {
+            "path": "docs/implementation/10-website.md",
+            "bytes": 37547,
+            "lines": 180,
+            "sha256": "3f6cdb8694308d39bf1d2f280b04c8a599294de50272614fc76a7ea657ff64df",
+            "diff_sha256": "0764d01d9c1a86be863b3063015d97df69c0ce69f3a5d0c51641cc47ab680ae4",
+            "review_mode": "complete current diff; baseline complete file read where present in delivery-read.json",
+            "diff_fully_read": true
+          },
+          {
+            "path": "docs/product/dashboard-and-website.md",
+            "bytes": 55670,
+            "lines": 635,
+            "sha256": "c1e4274b336df07363af032bb10e8dda7ee891a010f0af9c548e123b16332702",
+            "diff_sha256": "a5c3504ddf37e8c5e8eeb4f258230c93df65e9c0fa886aeb4a91bcd39a5b5946",
+            "review_mode": "complete current diff; baseline complete file read where present in delivery-read.json",
+            "diff_fully_read": true
+          },
+          {
+            "path": "docs/specification/deployment-contract.md",
+            "bytes": 20964,
+            "lines": 278,
+            "sha256": "d40bd7a9827dc43ec37d603481e808a5b242891b51b80408ae8f2e5d42adce79",
+            "diff_sha256": "e1438ded7c2fd7b1a5cd6e76fd0cc769bf17f8ace54bd1c4d9941206fa2539ab",
+            "review_mode": "complete current diff; baseline complete file read where present in delivery-read.json",
+            "diff_fully_read": true
+          },
+          {
+            "path": "AGENTS.md",
+            "bytes": 5017,
+            "lines": 79,
+            "sha256": "4fc87a205371748470df88063dd716c8981593748b454cf112fcec9b5da4d03d",
+            "diff_sha256": "638a1d3c3ed4596c51801c49d2ad041c15f8e2221fbf07aff847940dcb0920f9",
+            "review_mode": "complete current diff; baseline complete file read where present in delivery-read.json",
+            "diff_fully_read": true
+          },
+          {
+            "path": "PLAN.md",
+            "bytes": 17474,
+            "lines": 218,
+            "sha256": "c07b0c9557fb96c733dc9d488814f6f18a6f41002ec00b78b05d0f9ce38df231",
+            "diff_sha256": "7c5a9e091cd2feed3526ef41d57ecf8083103294b92f6efd1d617d5acc827e56",
+            "review_mode": "complete current diff; baseline complete file read where present in delivery-read.json",
+            "diff_fully_read": true
+          },
+          {
+            "path": "docs/implementation/README.md",
+            "bytes": 12207,
+            "lines": 178,
+            "sha256": "85693d08a9f8170901cc48368f71dd3104e83a9210c6b24f74d7b59754ff698d",
+            "diff_sha256": "850121590a998bf8ee0d29135cfc4b6ed0113eb155de5f02de75273950ab4c89",
+            "review_mode": "complete current diff; baseline complete file read where present in delivery-read.json",
+            "diff_fully_read": true
+          },
+          {
+            "path": "docs/implementation/agent-handoff.md",
+            "bytes": 16965,
+            "lines": 235,
+            "sha256": "fa26a8faa71127452c451ec57bbfead56a397a6c79110ae87e48adcc699b515c",
+            "diff_sha256": "6a0955fab315d68b4bb4c14fbb6a01e44f984492f49d73524bed2d73a70a7c1d",
+            "review_mode": "complete current diff; baseline complete file read where present in delivery-read.json",
+            "diff_fully_read": true
+          },
+          {
+            "path": "docs/planning/mandate.md",
+            "bytes": 7969,
+            "lines": 124,
+            "sha256": "dc772ca1910347f0ddc73dda4c515adeb65e7b1b69ae23e9eb865cee7ff61ec1",
+            "diff_sha256": "d933b9e7352343b2fb5214e9b7803c452cf75a53c0ef371010a45a647006f0c9",
+            "review_mode": "complete current diff; baseline complete file read where present in delivery-read.json",
+            "diff_fully_read": true
+          },
+          {
+            "path": "docs/planning/questions.md",
+            "bytes": 14330,
+            "lines": 184,
+            "sha256": "36baa9a2235d641d11ba1f105bcc1ea25a47b879bd73ab27c3970bd640454035",
+            "diff_sha256": "a79bef2b86d1f19f224e4b1e72f00a8a0ed44e4516897b3f17b21d99cfb21c0f",
+            "review_mode": "complete current diff; baseline complete file read where present in delivery-read.json",
+            "diff_fully_read": true
+          },
+          {
+            "path": "docs/specification/interface-catalog.md",
+            "bytes": 19950,
+            "lines": 229,
+            "sha256": "cb23e0889f06deff93d0b6d7ea0cb1fb42ba956a4896abde8ad7115aac1ef57c",
+            "diff_sha256": "81f1afb18f0c119b854eb91ba047915ccbe89f0b4a3197b97bd12304ef0202e5",
+            "review_mode": "complete current diff; baseline complete file read where present in delivery-read.json",
+            "diff_fully_read": true
+          },
+          {
+            "path": "docs/implementation/03-acquisition.md",
+            "bytes": 60459,
+            "lines": 458,
+            "sha256": "7d4ca46daaaad5a50190261b70ef06ec3e482b218b82816144e813543c7610e0",
+            "diff_sha256": "6b1737f089b8a4cd4abafff59b689d9404bd188fa9eb0355eef0a34b5446e4f3",
+            "review_mode": "complete current diff; baseline complete file read where present in delivery-read.json",
+            "diff_fully_read": true
+          }
+        ],
+        "excluded_concurrent_root_work": [
+          "README.md",
+          "docs/implementation/progress.md",
+          "audit/report files"
+        ],
+        "primary_sources": [
+          {
+            "url": "https://jedisct1.github.io/minisign/",
+            "purpose": "hashed detached file signature, trusted public key and upstream verification"
+          },
+          {
+            "url": "https://docs.docker.com/docker-hub/repos/manage/access/",
+            "purpose": "Docker Hub visibility is repository-scoped"
+          }
+        ],
+        "findings": [
+          {
+            "id": "delivery-final-01",
+            "paths": [
+              "docs/engineering/development-and-delivery.md:173",
+              "docs/engineering/development-and-delivery.md:179"
+            ],
+            "finding": "Separate private candidate repository from eventual public release repository; tags in one Docker Hub repository cannot carry separate public/private visibility."
+          },
+          {
+            "id": "delivery-final-02",
+            "paths": [
+              "docs/engineering/development-and-delivery.md:198",
+              "docs/implementation/08-operations.md:325",
+              "docs/implementation/08-operations.md:386"
+            ],
+            "finding": "Specify acyclic manifest/evidence construction: frozen candidate artifact manifest; acceptance evidence binds its digest; final detached signed release manifest binds candidate and evidence digests. No artifact/evidence may embed its own eventual containing hash."
+          }
+        ],
+        "verified_clarifications": [
+          "Minisign exact-manifest authentication is consistent with upstream format and requires no mandatory public transparency service.",
+          "Native Linux target acceptance is distinct from macOS editing/emulation.",
+          "Finite engine/schema initialization now precedes runtime doctor and service startup.",
+          "Dockerfile-specific ignore filename is correct for the declared root build context.",
+          "Index and child digests must remain equal through promotion; the plan forbids rebuilding after acceptance.",
+          "Source-state rules now reject declared-HEAD-only qualification with undeclared dirty or ignored inputs."
+        ],
+        "limits": [
+          "No tracked edits, remote operations, product builds, signature executions or release rehearsals.",
+          "Root-owned README/checkpoint/report edits excluded.",
+          "New contract read fully; other current files reviewed through complete relevant diffs and previous full-read scope."
+        ]
+      }
+    }
+  ],
+  "integration_dispositions": [
+    {
+      "finding": "Native source identity needs clean/declared inputs beyond HEAD",
+      "status": "corrected",
+      "owner": "docs/engineering/development-and-delivery.md"
+    },
+    {
+      "finding": "P10 initialization wording includes engines in services",
+      "status": "corrected to application roles",
+      "owner": "docs/implementation/10-website.md"
+    },
+    {
+      "finding": "Docker Hub repository-wide privacy cannot hide candidate tags inside public release repo",
+      "status": "corrected to separate candidate/release repositories",
+      "owner": "docs/engineering/development-and-delivery.md"
+    },
+    {
+      "finding": "Candidate/acceptance/release manifest hashing needs acyclic construction",
+      "status": "corrected to detached candidate then evidence then signed release; P08/P10 aligned",
+      "owner": "docs/engineering/development-and-delivery.md"
+    }
+  ],
+  "root_integration": {
+    "scope": "Full new delivery contract read in contiguous chunks after corrections, current entrypoints and task-boundary changes reviewed; does not claim all historical Markdown reread anew.",
+    "new_contract_sha256": "5b9325e02d456c1447506942c093d130fb0de3c1ec7fee8505a9b598706d227c",
+    "new_contract_lines": 304,
+    "remaining_product_gates": "docs/planning/specification-readiness.md"
+  }
+}

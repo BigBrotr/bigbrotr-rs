@@ -182,6 +182,11 @@ wrong-CA/name/user/database and credential-rotation behavior.
 
 ## Native and Docker installation contract
 
+[Development and delivery](../engineering/development-and-delivery.md) fixes
+Docker Hub image distribution, GitHub Actions CI, exact artifact identity and
+the ordinary single-host Compose upgrade with explicit downtime/migration.
+It does not introduce a custom multi-host scheduler or a mandatory S3 service.
+
 Each released guide must give a complete path: obtain/verify/extract the supported
 bundle; select a recipe; fill endpoints and protected secret files; provision the
 explicit local engines or use existing remote ones; run the dedicated initialization/

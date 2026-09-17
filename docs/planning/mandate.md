@@ -111,3 +111,14 @@ those remote project resources. The neighboring local Go repository and unrelate
 Tux workloads remain protected. New experiments start with a fresh inventoried
 environment; historical measured evidence retained locally is still qualified
 evidence, not an endorsement of the retired deployment.
+
+The final handoff refinement selects the local Mac as primary authoring/Git
+workspace, with exact-revision native Linux qualification on Tux and isolated CI.
+Use standard Docker Compose installation and Docker Hub application images;
+GitHub Actions may run CI without using GitHub Container Registry. Keep complex
+multi-host operation optional and operator-managed. All initial Rust packages
+remain unpublished. Linear coherent commits are acceptable; branches and parallel
+agents are used only when useful, with explicit ownership. The
+[development and delivery contract](../engineering/development-and-delivery.md)
+records these reasoned decisions, practical requirements and remaining release
+provisioning inputs. Product implementation is still the next separate stage.

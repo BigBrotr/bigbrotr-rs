@@ -217,8 +217,10 @@ Internal Ingest/Archive/Index/Read/Control gRPC uses the same typed contracts as
 in-process calls, with mTLS and bounded messages. It is not the public HTTP API.
 Generic public RPC/gRPC, MCP stdio and arbitrary MCP forwarding are not selected.
 The public dashboard, private administration and static documentation/blog site
-are three separately built interfaces in one repository. Rust library users may
-reuse reviewed pure model/protocol/analytics APIs without running the daemons.
+are three separately built interfaces in one repository. Pure Rust libraries are
+internal reusable boundaries initially; all packages remain `publish = false`.
+An external stable library distribution requires the separate consumer-driven
+decision in [development and delivery](../engineering/development-and-delivery.md#package-and-license-policy).
 
 P06/P08/P09 acceptance enumerates this registry, starts the actual packaged
 handlers, walks every enabled producer-to-response workflow and verifies denied,

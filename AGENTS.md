@@ -51,6 +51,17 @@ practical execution, review, documentation and coherent commits. Root AGENTS.md
 is the agent entrypoint; do not maintain a competing agent.txt instruction set.
 The current specification is authoritative over historical review suggestions.
 
+Follow the [development and delivery contract](docs/engineering/development-and-delivery.md):
+Mac as the primary editing/Git workspace, isolated exact-revision Linux runs on
+Tux, GitHub Actions for CI and Docker Hub for images. Keep ordinary installation
+on Docker Compose with explicit initialization/migrations. All initial Cargo
+packages remain unpublished. Linear coherent commits are acceptable; branches
+and parallel agents are tools for concrete needs, not mandatory ceremony. Keep
+one integrating owner and separate writable worktrees when implementation is
+parallel. Never run untrusted PR code on the shared Tux host or with release keys.
+The same contract documents the existing planning checks and their prerequisites;
+future product workflows are not yet implemented or passing.
+
 On a new session or after compaction, read the single durable
 [progress checkpoint](docs/implementation/progress.md) and follow the guide's
 resumption procedure before continuing. Verify its revision, dirty files,

@@ -69,24 +69,23 @@ A DuckDB extension, an application service and a Rust crate are different things
 Turning monitoring off in TOML does not require recompiling a Cargo feature.
 Container users obtain one tested image and select roles/configuration at runtime.
 
-Other Rust projects should be able to depend on a useful BigBrotr library through
-Cargo, either from a published registry package or a Git revision. A private Git
-source still requires repository access; this stage publishes no package. Go's
-externally importable packages are a useful analogy, but Rust package/crate/module
-are not interchangeable terms. HTTP/Nostr contracts let Go, Python and other
-languages use a running BigBrotr without linking Rust. Add an FFI or language
-binding only for a concrete consumer that needs embedded execution.
+All initial application and candidate library packages use `publish = false`.
+No crates.io publication, Cargo publishing credentials or externally stable library
+API is required for the initial product. Internal pure APIs remain useful for
+composition and testing; another authorized Rust project can evaluate a Git
+revision without turning it into a maintained registry distribution. HTTP/Nostr
+contracts and portable artifacts serve the initial external integrations. Add a
+published crate, FFI or language binding only for a concrete independent consumer
+with justified compatibility and maintenance requirements.
 
-Keep application packages `publish = false`. Candidate libraries also stay
-unpublished until their API is useful and reviewed: documented invariants/errors,
-small runnable examples, doctests, dependency footprint, MSRV, compatibility and
-semantic versioning. Avoid exporting engine clients, internal job schemas, or an
-entire application framework as the price of reusing one filter or graph routine.
-Choose and document reuse-compatible licensing before public release; repository
-visibility alone grants no license. Existing code/dependency license obligations
-must be checked before copying or distributing it. Follow the
-[Cargo publishing guide](https://doc.rust-lang.org/cargo/reference/publishing.html)
-for package metadata and publication mechanics, not as a reason to publish now.
+The selected license for newly authored code is MIT, introduced by P01. It grants
+no right to relicense copied upstream material. Preserve dependency/asset notices
+and verify copying/distribution permissions. A later library release must qualify
+invariants/errors, examples/doctests, dependency footprint, MSRV and semantic
+versioning; avoid exporting engine clients or the whole application framework.
+The [delivery policy](development-and-delivery.md#package-and-license-policy)
+owns this decision. The [Cargo publishing guide](https://doc.rust-lang.org/cargo/reference/publishing.html)
+is a future mechanics reference, not a present publication requirement.
 
 Initial extensibility uses ordinary Rust interfaces compiled with the application,
 versioned resource/measurement registries, and authenticated external protocols.
@@ -144,6 +143,10 @@ The core should not inherit client-oriented expiry/deletion rejection when
 collecting a historical archive. See [probe evidence](../research/evidence/nostr-boundary.json).
 
 ## Maintenance and release
+
+Follow [development and delivery](development-and-delivery.md) for Mac/Tux
+source identity, linear commits, isolated CI, Docker Hub, signed manifests and
+Compose upgrade. GitHub Actions does not require GitHub Container Registry.
 
 Use rustfmt and applicable Clippy diagnostics, review public APIs and docs, and
 check unsafe/native dependencies. No arbitrary line limits or coverage quotas.

@@ -22,7 +22,8 @@ only a helper does not replace the shipped CLI path.
 **Files:** `Cargo.toml`, `Cargo.lock`, `rust-toolchain.toml`, `LICENSE`,
 `apps/bigbrotr/Cargo.toml`, `apps/bigbrotr/src/main.rs`,
 `apps/bigbrotr/src/cli.rs`, `docs/development/build.md`,
-`contracts/release/dependencies.json`, `apps/bigbrotr/tests/cli_contract.rs`.
+`contracts/release/dependencies.json`, `apps/bigbrotr/tests/cli_contract.rs`,
+`.github/workflows/ci.yml`. P08-T11 extends this same CI workflow.
 Create candidate library packages only with their P01-T02/T03 or P05 consumer.
 **Contract:** clean source + pinned toolchain/native dependencies → one executable
 reporting its exact build/schema/protocol versions. Product name remains BigBrotr.
@@ -40,13 +41,19 @@ reporting its exact build/schema/protocol versions. Product name remains BigBrot
   unification, offline assets and the assigned P01/P02 adapter boundaries before
   enabling those capabilities.
 - [ ] **Step 2:** Build the minimal application package with narrow default features and
-  `publish = false`; avoid a crate per process role or generic utility package.
+  `publish = false`; apply that flag to later candidate library packages too.
+  Avoid a crate per process role or generic utility package.
 - [ ] **Step 3:** Wire `bigbrotr --version`, `--help` and structured diagnostic exit codes
   through the real CLI parser; stdout carries requested output, stderr diagnostics.
 - [ ] **Step 4:** Establish Linux amd64/arm64 build targets and macOS development checks.
   Record native/FFI dependency build requirements and offline asset expectations.
+  Follow [development and delivery](../engineering/development-and-delivery.md):
+  Mac authoring, exact-revision isolated Tux runs, and native Linux arm64
+  acceptance on an available isolated runner; emulation is labeled separately.
 - [ ] **Step 5:** Add formatting/lint/build/documentation jobs with warnings selected by
   relevance; no arbitrary comment length, coverage ratio or test-count rule.
+  Start isolated least-privilege CI here, with pinned actions and no untrusted
+  PR access to Tux, trusted caches or release credentials.
 - [ ] **Step 6:** Build from a clean extracted source tree without undeclared cached files;
   compare reported identity with the supplied lock/toolchain metadata.
 - [ ] **Step 7:** **Practical P01-T01:** run the built binary from outside the checkout with
@@ -306,6 +313,8 @@ cleanup record and PASS/FAIL/NOT_RUN/SKIPPED, with requiredness.
   status, FAIL on wrong output, and cleanup only of recorded owned resources.
 - [ ] **Step 8:** Document evidence manifests and reproducible invocation; raw artifacts
   stay under ignored run directories while concise results are retained.
+  Bind Mac-to-Linux runs to the exact Git source/tree, dependency and input
+  manifests and owned lab resources; unknown/interrupted output cannot pass.
 
 ## P01-T09 — First useful vertical composition
 

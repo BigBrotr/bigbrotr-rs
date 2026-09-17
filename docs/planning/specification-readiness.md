@@ -18,6 +18,11 @@ The [current full review](../reviews/16-complete-handoff.md) adds complete basel
 read accounting, role/deployment and archive placement contracts, richer scoped
 analytics/publication definitions and a durable agent checkpoint. Its real S3 and
 CH counterexamples refine implementation requirements, not product readiness.
+The [final development/delivery audit](../reviews/17-development-and-delivery-handoff.md)
+closes Mac/Tux source identity, CI trust, Docker Hub promotion, ordinary Compose
+initialization/upgrade and agent entrypoint gaps. It also clarifies acquisition
+acceptance dependencies. Actual native builds and release workflows remain owed
+by P01/P08; paper closure does not provision registry accounts or release keys.
 
 ## Disposition of the eight paper gaps
 

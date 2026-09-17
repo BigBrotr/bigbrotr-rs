@@ -6,6 +6,11 @@ reserves, configuration authority, compatibility and command-order recovery. Its
 reference model is design evidence; real engine/process/release acceptance below
 remains required.
 
+The [development and delivery contract](development-and-delivery.md) owns
+Mac/Tux revision transfer, isolated CI trust, Docker Hub artifacts, release
+authentication and ordinary Compose upgrade. Apply these boundaries to the
+practical scenarios below; a shared lab host is not an untrusted PR runner.
+
 ## Trust boundaries
 
 Remote relay frames, DNS results, redirects, NIP-11 JSON, seed directories, import

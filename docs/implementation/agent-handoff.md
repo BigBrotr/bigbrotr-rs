@@ -43,6 +43,7 @@ The key contracts have distinct ownership:
 | Analytical definitions and costs | [Analytics](../architecture/analytics-detail.md), [derivation](../architecture/derived-read-publication.md), [assertion bindings](../specification/assertion-bindings.md) |
 | Useful workload acceptance | [Capacity](../engineering/capacity-and-benchmarks.md) and the task's practical scenario |
 | Code boundaries and dependency policy | [Rust and repository](../engineering/rust-and-repository.md) |
+| Development hosts, CI/release, commits and collaboration | [Development and delivery](../engineering/development-and-delivery.md) |
 | Browser journeys, private operation and published documentation | [Product surfaces](../product/dashboard-and-website.md), [private administration](../product/private-administration.md), [P09](09-product-interfaces.md) and [P10](10-website.md) |
 
 Do not scaffold every proposed folder or crate before its first consumer exists.
@@ -155,9 +156,13 @@ oracles; do not derive expected output by calling the implementation under test.
 The proposed practical runner is
 `python3 tests/acceptance/run.py CASE --binary dist/bigbrotr --compose packaging/compose/acceptance.yaml --evidence PATH`.
 It is a **future P01-T08 deliverable**, not an existing command that can be cited
-as already passing. The current repository check is
-`python3 experiments/verify_artifacts.py`; it checks artifact structure, not
-product correctness or semantic completeness.
+as already passing. Current planning checks are
+`python3 experiments/verify_artifacts.py` and
+`python3 experiments/verify_handoff.py --output .research/handoff-check.json`.
+The latter needs Node and the checksum-pinned first-use `--prepare` step described
+in [development and delivery](../engineering/development-and-delivery.md#checks-available-in-the-planning-repository).
+These check structure, links and task references, not product correctness or
+semantic completeness. Read prose cycle candidates in their actual task context.
 
 ## Deliver useful slices across the whole product
 

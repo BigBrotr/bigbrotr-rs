@@ -112,6 +112,8 @@ Dependencies: P03-T01; P04-T02 guarded network adapter; P01-T03/T05/T06/T07; P02
 adapter, guarded transport and synchronized admission. Input is a scoped request
 and bounded inbound frames; output is classified per-record Receipt/ExistingProof event-effect bases
 and an ordered `PageOutcome`. Network transport success is not durable success.
+Practical step 7 additionally requires P02-T04's actual archive reader; this
+acceptance dependency does not block the earlier session/admission implementation.
 
 Paths: `apps/bigbrotr/src/acquisition/sync/session.rs`, `apps/bigbrotr/src/acquisition/sync/admission.rs`,
 `apps/bigbrotr/src/acquisition/sync/page.rs`, `crates/bigbrotr-protocol/src/wire/relay.rs`,
@@ -251,6 +253,12 @@ freeze before compatibility certification. Inputs are explicit local source path
 manifest/shape, chosen import scope and current policy. Output is a verified
 immutable job identity, validated source manifest/destination scope or actionable preflight refusal.
 
+**Execution split:** implement the job/identity/policy/budget/preflight core first.
+It supplies P03-T09 without requiring successful full decoding or import. T09
+then supplies actual decoding/verification dry-run; P03-T10 supplies durable import
+and closes T08's signed-deletion-pair and full CLI acceptance in steps 6/7.
+Do not mark those deferred cases passed from a header-only preflight or mock.
+
 Paths: `apps/bigbrotr/src/acquisition/import/preflight.rs`, `apps/bigbrotr/src/acquisition/import/job.rs`,
 `apps/bigbrotr/src/interfaces/cli/import.rs`, `apps/bigbrotr/src/config/import.rs`,
 `migrations/postgres/0005_import.sql`, `contracts/import/v1/manifest.json`,
@@ -267,7 +275,8 @@ Paths: `apps/bigbrotr/src/acquisition/import/preflight.rs`, `apps/bigbrotr/src/a
 
 ## P03-T09 — Decode full JSONL, native and pinned protobuf artifacts
 
-Dependencies: P03-T08; P01-T03 format/verification primitives and frozen producer
+Dependencies: P03-T08 preflight core (not its deferred import acceptance);
+P01-T03 format/verification primitives and frozen producer
 schema; P02-T03/T04 archive contracts. Inputs are preflight-approved immutable
 shards; output is bounded logical event/claim/scientific-evidence records with
 exact source positions. Selected research formats carry no administrative control
@@ -286,7 +295,7 @@ Paths: `apps/bigbrotr/src/acquisition/import/jsonl.rs`, `apps/bigbrotr/src/acqui
 - [ ] **4. Implement pinned protobuf decoding.** Enforce declared field/wire types, length/recursion/output bounds and pinned producer semantics. Unknown compatible fields follow the descriptor policy; incompatible versions do not silently reinterpret signed content or provenance. Honor proto3 implicit scalar defaults: omitted content and encoded empty content both decode to the same valid empty value if signature/ID verify; do not promise unavailable presence information. Reject negative or unrepresentable int64 time without wrapping; test clean EOF separately from a truncated length prefix and refuse oversized allocation before decode.
 - [ ] **5. Normalize records through shared verification.** Recompute IDs and verify every event regardless of format or source reputation; analytical projections remain separate. Missing claims become dataset origin, not a fictional relay. Source event/observer times remain attributed imported metadata.
 - [ ] **6. Exercise the discriminating corpus.** The same independently signed events encoded in all approved formats yield identical canonical signed fields; include empty content, duplicate/nested tags, extreme valid time, invalid signature, malformed varint/length and truncated native frame. This catches lossy reconstruction and protobuf-schema guessing.
-- [ ] **7. Run future p03-t09 via CLI dry-run/import.** Compare decoded canonical event bytes and declared fidelity with a standalone independent decoder/manifest oracle; retain rejected positions and format revision. Wrong native/protobuf input cannot advance the shard checkpoint. Document safe continuation versus shard halt and compatibility certification boundaries.
+- [ ] **7. Run future p03-t09 via CLI dry-run, then import after P03-T10.** Compare decoded canonical event bytes and declared fidelity with a standalone independent decoder/manifest oracle; retain rejected positions and format revision. Wrong native/protobuf input cannot advance the shard checkpoint. Document safe continuation versus shard halt and compatibility certification boundaries.
 
 ## P03-T10 — Join claims, admit and resume imports with bounded spill
 
@@ -306,7 +315,7 @@ Paths: `apps/bigbrotr/src/acquisition/import/staging.rs`, `apps/bigbrotr/src/acq
 - [ ] **4. Checkpoint after durable effects.** Five-second target checkpoints name whole logical record/shard boundaries, event Receipt/ExistingProof dependency closure, separate claim receipts and source-manifest identity. Changed inputs fail resume; crash after admission/certification before checkpoint replays harmlessly, resolving existing mutations first. Covered logical source positions with validated effects, not attempted counters or proof count, determine logical imported totals. Deduplicate/compact proof dependencies under the shared contract; proof-only batches allocate no mutation request or ACK. Retain unresolved request/cursor state for its correctness horizon independently of the display-log TTL; cancel after commit preserves that recoverable checkpoint rather than deleting staging blindly.
 - [ ] **5. Handle pressure and cleanup.** Spill on RAM pressure; scratch exhaustion pauses with required/free bytes. Bound reject artifacts to 64MiB while counters continue. Clean only owned staging objects after final job/retention rules; preserve source artifacts and other jobs. Terminal rejections have warning/non-success exit class, not a silent successful zero import.
 - [ ] **6. Exercise the discriminating job.** Make sidecars precede and follow bodies across shards, include imported B claims for an event already seen on A, run two jobs, stop during staging/admission/checkpoint, and change local moderation mid-run. With claims enabled, B appears only as an imported claim; with provenance off, B produces no interpreted event→relay claim, inventory or local witness and the report names that excluded family. require-all refuses before admission. Network progress stays unchanged and repeat logical counts remain stable in every case.
-- [ ] **7. Run future p03-t10 through import/status/resume on real stores.** Independent input and archive readers compare event/claim sets and job receipts with a corpus exceeding the configured RAM grant. Enforce skewed one-event/many-claim input, scratch failure and restart; preserve source file hashes, spill bytes, logical counts and current policy revision. Phase 08 later adds full export/restore operator integration over these same contracts.
+- [ ] **7. Run future p03-t10 through import/status/resume on real stores.** Independent input and archive readers compare event/claim sets and job receipts with a corpus exceeding the configured RAM grant. Enforce skewed one-event/many-claim input, scratch failure and restart; preserve source file hashes, spill bytes, logical counts and current policy revision. Complete the deferred P03-T08/T09 successful-import acceptance with these real stores, including both signed deletion originals and dry-run nonmutation. Phase 08 later adds full export/restore operator integration over these same contracts.
 
 P03-T10 additionally owns `contracts/evidence/v1/issuer-authority-binding.schema.json`
 and the optional A03 `IssuerAuthorityBindingV1` parser/admission gate from

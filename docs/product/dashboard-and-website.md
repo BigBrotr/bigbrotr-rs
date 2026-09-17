@@ -188,11 +188,14 @@ The launch guide follows one continuous journey:
 2. Download a versioned release/deployment bundle. Initialize secrets locally and
    use bundled defaults plus a small override file for storage paths and selected
    services. No database-console edits or image rebuild is required.
-3. Run configuration validation and a preflight that names required dependencies,
+3. Run offline configuration validation and a preflight that names required dependencies,
    effective service set, public binds, expected storage policy and finite work
    budgets. An explicit missing file, unknown key, contradictory axis or disabled
    dependency produces an actionable error before work begins.
-4. Start through the shipped command/Compose entry point. The terminal prints the
+4. Provision/start the required engines, run the explicit finite initialization/
+   migration operation, then run runtime doctor from the role namespace. Start
+   selected roles through the shipped command/Compose entry point. Neither doctor
+   nor serve initializes schemas implicitly. The terminal prints the
    local dashboard URL, secure owner-enrollment entry point and a status command.
    Enroll the owner locally, then the private overview identifies the instance,
    shows acquisition/derivation progress, and links to useful data and management
@@ -486,7 +489,7 @@ framework or large design-system package.
 
 | Content type | Required ownership/metadata | Maintenance trigger |
 |---|---|---|
-| Guide | Owning service/workstream, supported versions, verification scenario/date | A command, config, deployment or behavior change in the same PR |
+| Guide | Owning service/workstream, supported versions, verification scenario/date | A command, config, deployment or behavior change in the same coherent change |
 | Generated reference | Owning schema/CLI/API contract and generator version | Contract change; generation diff and runtime example validation |
 | Release note | Release owner, version/date/artifact IDs, upgrade and compatibility notes | Artifact promotion; known issue/correction after release |
 | Research article | Author, date, corpus/query provenance, method version, limitations and revision log | New evidence or corrected analysis; do not silently rewrite original results |

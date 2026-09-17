@@ -52,6 +52,9 @@ New to the project: first read [Start here](docs/start-here.md), the
    [Rust/repository design](docs/engineering/rust-and-repository.md),
    [capacity](docs/engineering/capacity-and-benchmarks.md) and
    [security/recovery/validation](docs/engineering/security-recovery-and-validation.md)
+10. [Development, CI and delivery](docs/engineering/development-and-delivery.md):
+    Mac/Tux revision handoff, coherent commits, Docker Hub promotion and ordinary
+    Compose installation/upgrade. P01 and P08 implement this shared workflow.
 
 For installation and placement also read the concrete
 [deployment contract](docs/specification/deployment-contract.md) and

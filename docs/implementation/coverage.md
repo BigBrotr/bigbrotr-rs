@@ -142,3 +142,10 @@ artifact publication/jobs discovery (P08), producer receipt retirement (P02),
 relay NEG output-size eligibility and DVM capability/control gates (P06/P07).
 The exact-overlap and common-term search usefulness claims remain assigned
 empirical decisions, with the expected difficult workloads written in P05/P06.
+
+The [development and delivery contract](../engineering/development-and-delivery.md)
+maps source/host identity and early CI to P01-T01/T08, Docker Hub packaging and
+signed immutable promotion to P08-T09/T11/T12, and executable installation/release
+pages to P10-T03/T07. P03-T02's archive-reader acceptance follows P02-T04;
+P03-T08 preflight → T09 decoding/dry-run → T10 durable import closes their deferred
+acceptance without a false prerequisite cycle. No extra task hierarchy is added.

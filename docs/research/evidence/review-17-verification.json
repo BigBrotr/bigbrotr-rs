@@ -1,0 +1,387 @@
+{
+  "review": "17-development-and-delivery-handoff",
+  "observed_at_utc": "2026-09-17T16:49:22.149554+00:00",
+  "status": "PASS_FOR_PLANNING_HANDOFF_CHECKS",
+  "baseline_commit": "ca7bc727396ae770ebce084b49efb70d1338a802",
+  "branch": "main",
+  "scope": "Existing planning tooling, source-read attribution and document/task structure; substantive domain findings and corrections are in Review 17. No product implementation/CI/native build/remote experiment.",
+  "runtime": {
+    "python": "3.9.6",
+    "node": "v26.4.0",
+    "git": "git version 2.50.1 (Apple Git-155)",
+    "host": "Darwin",
+    "machine": "arm64"
+  },
+  "checks": [
+    {
+      "name": "artifacts",
+      "argv": [
+        "python3",
+        "experiments/verify_artifacts.py"
+      ],
+      "exit_code": 0,
+      "status": "PASS",
+      "stdout_sha256": "98f29ddea8265c0f65d6b0a66efe06cdf6d1e7fa75828d06b7fd2ba4a3fb7ab3",
+      "result": {
+        "scope": "local links, fences, JSON examples/evidence, Python syntax and selected evidence hashes; no semantic or product verification",
+        "markdown_files": 117,
+        "json_files": 67,
+        "json_examples": 4,
+        "errors": []
+      }
+    },
+    {
+      "name": "canonical",
+      "argv": [
+        "python3",
+        "experiments/verify_handoff.py",
+        "--output",
+        ".research/final-handoff-17/canonical-final.json"
+      ],
+      "exit_code": 0,
+      "status": "PASS",
+      "stdout_sha256": "b176f80384f48dadbe3e6454ba42908355d60648af2b5553cf377973b8b9fdec",
+      "result": {
+        "markdown_files": 117,
+        "checked_local_fragments": 397,
+        "tasks": 123,
+        "steps": 756,
+        "errors": [],
+        "dependency_cycle_candidates": [
+          [
+            "P03-T02",
+            "P04-T02"
+          ],
+          [
+            "P04-T13",
+            "P05-T08"
+          ],
+          [
+            "P04-T14",
+            "P05-T05"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "whitespace",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0,
+      "status": "PASS",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "result": {}
+    }
+  ],
+  "clean_source_verification": {
+    "source": "isolated export of tracked current files plus the four intended new handoff files; no inherited .research cache",
+    "files": 237,
+    "record_path": ".research/final-handoff-17/clean-source-check.json",
+    "record_sha256": "38d764403deece6269d897bda94d6a17064c86b5835a882f40cc69aaedd29870",
+    "results": [
+      {
+        "name": "clean-artifacts",
+        "argv": [
+          "python3",
+          "experiments/verify_artifacts.py"
+        ],
+        "exit_code": 0,
+        "expected_exit_code": 0,
+        "status": "PASS",
+        "stdout_sha256": "98f29ddea8265c0f65d6b0a66efe06cdf6d1e7fa75828d06b7fd2ba4a3fb7ab3",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "clean-missing-slugger",
+        "argv": [
+          "python3",
+          "experiments/verify_handoff.py"
+        ],
+        "exit_code": 1,
+        "expected_exit_code": 1,
+        "status": "PASS",
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_sha256": "89f7a62766e2dcceb273776a5879611adb314c9ecb8057695925b6df9046ae33"
+      },
+      {
+        "name": "clean-prepare",
+        "argv": [
+          "python3",
+          "experiments/verify_handoff.py",
+          "--prepare"
+        ],
+        "exit_code": 0,
+        "expected_exit_code": 0,
+        "status": "PASS",
+        "stdout_sha256": "b176f80384f48dadbe3e6454ba42908355d60648af2b5553cf377973b8b9fdec",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "clean-canonical",
+        "argv": [
+          "python3",
+          "experiments/verify_handoff.py",
+          "--output",
+          ".research/handoff-check.json"
+        ],
+        "exit_code": 0,
+        "expected_exit_code": 0,
+        "status": "PASS",
+        "stdout_sha256": "b176f80384f48dadbe3e6454ba42908355d60648af2b5553cf377973b8b9fdec",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "clean-git-init",
+        "argv": [
+          "git",
+          "init",
+          "--quiet"
+        ],
+        "exit_code": 0,
+        "expected_exit_code": 0,
+        "status": "PASS",
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "clean-git-stage",
+        "argv": [
+          "git",
+          "add",
+          "."
+        ],
+        "exit_code": 0,
+        "expected_exit_code": 0,
+        "status": "PASS",
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "name": "clean-whitespace",
+        "argv": [
+          "git",
+          "diff",
+          "--cached",
+          "--check"
+        ],
+        "exit_code": 0,
+        "expected_exit_code": 0,
+        "status": "PASS",
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ],
+    "markdown_inputs_match_current": true,
+    "note": "The final verification JSON is written after this run and was a labeled NOT_RUN placeholder in the snapshot. All Markdown inputs were final and hash-matched; no future product tests were invoked. The local lab inventory received its completed-run entry afterward; those JSON records are revalidated separately."
+  },
+  "counts": {
+    "markdown_files": 117,
+    "json_files": 67,
+    "canonical_fragments": 397,
+    "tasks": 123,
+    "steps": 756,
+    "checked_product_steps": 0
+  },
+  "dependency_cycle_candidates": [
+    {
+      "tasks": [
+        "P03-T02",
+        "P04-T02"
+      ],
+      "interpretation": "Guarded transport core precedes session integration; downstream collector acceptance is not a prerequisite of that transport core."
+    },
+    {
+      "tasks": [
+        "P04-T13",
+        "P05-T08"
+      ],
+      "interpretation": "Availability evidence producer precedes analytical consumer; producer core does not wait for consumer end-to-end acceptance."
+    },
+    {
+      "tasks": [
+        "P04-T14",
+        "P05-T05"
+      ],
+      "interpretation": "Issuer evidence precedes real zap classification; pure classifier fixture work can precede actual producer integration."
+    }
+  ],
+  "additional_dependency_repairs": "P03-T02 step7 uses P02-T04; P03-T08 preflight core precedes T09 decoding/dry-run, then T10 durable import completes deferred acceptance.",
+  "read_ledger": {
+    "path": "docs/research/evidence/review-17-read-evidence.json",
+    "sha256": "2b18067b09da5f6e6f9470ccb6ba962dd6bae4e1bb08403b1c469361ae8fe302",
+    "baseline_records": 35,
+    "unique_files": 33
+  },
+  "markdown_source_sha256": {
+    "README.md": "c89326c5b8e978a4fe58792d665233a5afbd90cce0c7b0ff8905c4a1c8260ad1",
+    "AGENTS.md": "4fc87a205371748470df88063dd716c8981593748b454cf112fcec9b5da4d03d",
+    "PLAN.md": "c07b0c9557fb96c733dc9d488814f6f18a6f41002ec00b78b05d0f9ce38df231",
+    "docs/architecture/acquisition-services.md": "45999753cc13b9e19e21fab8ca68595263f72e2e58b2cb177020a624c03f2b98",
+    "docs/architecture/analytics-detail.md": "cbc52209f49397cf799777aa2a35c4e0ed425e686ed46c7e6ce45b0b0d3de4b9",
+    "docs/architecture/data-and-durability.md": "8a135f1eb30c7c25498239163e6fceaa6234f10ee58bea8489e58c0141b8044a",
+    "docs/architecture/derived-read-publication.md": "4dcb6a67cb70767ad13ef8dbbb7290d921d4e650e7308780a088027691d341ef",
+    "docs/architecture/protocol-evolution.md": "3133706068700a134756a3ac8c2af22c4114eda0fcf9795ff7567f854e4b9935",
+    "docs/architecture/search-and-reconciliation.md": "cf735f9a02e09018bfc1ae4341e9d6772f3585b042ebc321c5866dd46cf1bbf3",
+    "docs/architecture/storage-services.md": "88e9f5a32450ebb54aee4bd387be5b8b1281b664f1c77288662a3a76d13479b8",
+    "docs/architecture/system-design.md": "b166b0a565219cbc4d6cab220040224a87ca0023f67d90ff92586317de2c5ddf",
+    "docs/engineering/capacity-and-benchmarks.md": "8ba19b83e73f84e38db0b13720186718e0bf27e62294ae736c10cfcc37f55616",
+    "docs/engineering/configuration-and-runtime.md": "9ef862731e8d7325e44fdc29cfb77e8ca36465ab4e63de48d3f5fdf30fd9737f",
+    "docs/engineering/development-and-delivery.md": "5b9325e02d456c1447506942c093d130fb0de3c1ec7fee8505a9b598706d227c",
+    "docs/engineering/rust-and-repository.md": "ec8448d395c7729f4af459432cf03c5c9447d79e41f1286ad3fb746eaaa51b01",
+    "docs/engineering/security-recovery-and-validation.md": "0f21b6ba9310aa9b214323bb4c59edee676642a6e42a48419b12e5a5657156c1",
+    "docs/implementation/00-specification.md": "ae571871ba393d34ca3894d4d3dbc7da2f1df8adff296db362c5f5c17f382a2f",
+    "docs/implementation/01-foundation.md": "ecde79246874f802f8465d8a0fcdf2d0ba50c43ff683a91f54a53ba07ad396ea",
+    "docs/implementation/02-storage.md": "e5848b07ce8481b416327a92356ea6536276ea5de59276d3cbfeabc3fc71790d",
+    "docs/implementation/03-acquisition.md": "7d4ca46daaaad5a50190261b70ef06ec3e482b218b82816144e813543c7610e0",
+    "docs/implementation/04-relay-lifecycle.md": "b884d1c08637d2a07d22923b9db03d3b44ba90a0dc4872a76518a7fb8a6d27c7",
+    "docs/implementation/05-analytics.md": "9546b09ee4410a82d1790203e62d735a57b7ec5a9f70699fab3fd32228d5e3f2",
+    "docs/implementation/06-read-surfaces.md": "64bb4527e93b5d24c5132f1cc63b42701e3b156e426b82306d1b06eacfaf64d0",
+    "docs/implementation/07-publication.md": "f13ff8a932fb7dbd7f8afafe012f7b1ec033f8c1fc8eabbc37b73b5aa749e0b8",
+    "docs/implementation/08-operations.md": "bb165f471eec232b063b387cc68194a752bbd572b8238964ac5270536afd3691",
+    "docs/implementation/09-product-interfaces.md": "ccc47a92ebad85819d17d4af57d8dcdaae968668488a2696d91ed42a1a4134a8",
+    "docs/implementation/10-website.md": "ba1e54efcc7ed58ca23df43670a460d466b05b11258a66985b963cd41a640c39",
+    "docs/implementation/README.md": "85693d08a9f8170901cc48368f71dd3104e83a9210c6b24f74d7b59754ff698d",
+    "docs/implementation/agent-handoff.md": "fa26a8faa71127452c451ec57bbfead56a397a6c79110ae87e48adcc699b515c",
+    "docs/implementation/coverage.md": "df9b6039134d80cdb5f8422f00b5411c116ed3c801cad34bbeb38d433e6f0503",
+    "docs/implementation/progress.md": "95430afcad1e8fc13a36d8d93376b48b57b797c5605b211282b57f7d200a9985",
+    "docs/planning/decision-confidence.md": "9127d3e9f37ebd8528b49ea232bf5c02f5bb81b8c31aec189567d03cf4fc69a4",
+    "docs/planning/mandate.md": "dc772ca1910347f0ddc73dda4c515adeb65e7b1b69ae23e9eb865cee7ff61ec1",
+    "docs/planning/process.md": "54440a4c87dfa69e573897f01d8f01fd3d9accd3af615b27bb70d9336b81adf6",
+    "docs/planning/questions.md": "36baa9a2235d641d11ba1f105bcc1ea25a47b879bd73ab27c3970bd640454035",
+    "docs/planning/specification-readiness.md": "3af5b9de00134d5fa9eddc2d9031221a162bd3eff735eed1ebe74a5edd940a9a",
+    "docs/product/dashboard-and-website.md": "c1e4274b336df07363af032bb10e8dda7ee891a010f0af9c548e123b16332702",
+    "docs/product/data-and-feature-decisions.md": "5a11fac0572bfec5c011f0acdea54797bc63b75999c4c57870b25da2988e35da",
+    "docs/product/private-administration.md": "89fe804a8bfb102c4f2e3c96b45dbd9fa3c8faef4c314fbccca70aceff470521",
+    "docs/product/requirements-and-history.md": "8c006bac3bd203b6e68a90eef7f8ab8e78a7f9fd408eb5f859bcebdb6ab5805a",
+    "docs/research/acquisition-findings.md": "42f66f3df81a8270b1a6b68bcba0f0dfa95015bcc9e070187b4f1ea9de22d737",
+    "docs/research/dependency-selections.md": "62b4ee9c458b6ea51478f32ce67f9aec4c284de3ace0ac4bc7f3ccf26751132d",
+    "docs/research/derived-read-publication-findings.md": "aa4f1df3b52fe63833245770fb7745feb5188f646653d09baf090e3780e18847",
+    "docs/research/experiment-summary.md": "6626b61f3c084cc2d378e44bd304730228e10a6ff98fb1308587ab3d10ad1230",
+    "docs/research/go-acquisition-code-walkthrough.md": "e3ed1464709f25885a085bc454132fa2420e0a10a5aae0232dc788ea2b264a55",
+    "docs/research/go-analytics-code-walkthrough.md": "beeca9d23412b4d589cf8458f27dc430d075883b280dd82fb4632190334be99e",
+    "docs/research/go-read-runtime-code-walkthrough.md": "a4db86d06f3420507df48c59c4b50ea76870c273207863f30108872f2cd49585",
+    "docs/research/go-storage-code-walkthrough.md": "b873b7218e75c081c14288dfcaa08c527709b0a78bf3ec7b0b30fd6de0541577",
+    "docs/research/product-surfaces-findings.md": "9b98b06ad3b2cb5d599cbb511c5da83f9ca2ec686038c27705f32c1ad3d87c7b",
+    "docs/research/tux-object-storage-20260917.md": "a86a54efd06a8c0aec828cd18cf9b2dad3775f0ca7901c6e9fb2ec8b2edc0f9d",
+    "docs/research/tux-retirement-20260917.md": "d4df9ff32340514aa2be13e64280cdea1920c969fb42e09b762ccf3b4258b3ca",
+    "docs/research/tux-storage-qualification-20260917.md": "44e203926d94eecff1b16643f3065d5f596d80790f0011f18da62abe3c96e0a0",
+    "docs/reviews/01-vision-recovery.md": "81eefb3e5f70de0a2d14fb7bd25958b5c49cd4020d697c0d818df1faaf807154",
+    "docs/reviews/02-contracts-and-simplification.md": "add22b946c7ee038cedf384aa6122fb15059c50569fe9ad2069a149637aab9c2",
+    "docs/reviews/03-storage-and-sdk-experiments.md": "163476c92f8b7b18c497974bb626ad56cc998ee369b301583b36f42653dadabf",
+    "docs/reviews/04-failures-and-growth.md": "e5840e5d3b1718851ea9b44ccea26b10fb13b5b1c0fe7027317354b841d14438",
+    "docs/reviews/05-complete-product.md": "a077a06623e538fa52ee4dfcefd32067764c0784e71ca7fbe56827fe025092a8",
+    "docs/reviews/06-reconciliation-and-delivery.md": "45d79823983d06a35575023094cb39deba601d6acccaed38acdb82d6c1e79775",
+    "docs/reviews/07-phase-0-4-recheck.md": "a99c44f453175d18ad34087a05c2ae1ca42e43b66679822ca63c78b7c14b7f20",
+    "docs/reviews/07-phase-5-recheck.md": "4552502f61c3f7d3937180e65d64c3dd7ec453fbf5365b813c1e79f3d181b1ae",
+    "docs/reviews/07-phase-6-9-recheck.md": "bce3991520b3ecc0d8947b8e8cabd9bfc44e59080a04c023eeae1b067a5f3f27",
+    "docs/reviews/07-vision-and-final-recheck.md": "0f75f557c22715835b32968cecdf60afe2d2763c8f957d831dd3b107ce1260f8",
+    "docs/reviews/08-go-code-walkthrough.md": "8c3b58ae332e42ce2120ed705a562b26eb6075e9b2c24747891c09d826adf07c",
+    "docs/reviews/09-expanded-plan-rounds.md": "ea71d9b776ea3bc5eb11cb9e8153f430baceb08773970874f18ea0d83cd352ef",
+    "docs/reviews/10-acquisition-audit.md": "f04bb272081dea17d45e34f8d942720ec5538b3b33c20c5785b26888bca1d0a1",
+    "docs/reviews/10-analytics-read-audit.md": "b5c5442729c8d071259febcfc4f720df69e861901c1308f1a7b193671580cdab",
+    "docs/reviews/10-product-audit.md": "7ceb89e2f34cf61e6ca6592b99309f184a0dc0a6df985d2d79b584c6868ba4b9",
+    "docs/reviews/10-whole-repository-audit.md": "f5894b03c994e0b8590ff6702ab6d05d501f40c8d6a818940f0fa09b7201eeab",
+    "docs/reviews/11-acquisition-audit.md": "85c132ba58cf9340653b38cb6375a05dca984230c6ce00eecf5033dacbe1b220",
+    "docs/reviews/11-analytics-audit.md": "516f8d83a16c02776bb362c7d3d17d9606edcdf16d3fc5ebfa0942599219cd5d",
+    "docs/reviews/11-product-audit.md": "458af08cf0ad263151b4f9c5ee2b2b8b7b108838d83dfc0b94c1efcda4001bbe",
+    "docs/reviews/11-whole-repository-audit.md": "38881daf77a7455a6c7e6e19dece9367a161a6e44c1610d846282a62cccdbcd4",
+    "docs/reviews/12-specification-readiness.md": "f6cfc2733fa35a6b1dc0aa82118823dfca61088429f2ff1b660ef6e7cff6f7bd",
+    "docs/reviews/13-architecture-alternatives.md": "d5e80e0960a9b863eb583ba57ad20e46d01cbf5bcedbf44f413e29dd93eb3718",
+    "docs/reviews/13-product-alternatives.md": "492764ce9b39a24a7db271d5586634948795bb4f06f5464ae04db128524b3f3a",
+    "docs/reviews/13-runtime-alternatives.md": "2102b604730f1656bc99934ef53f85e72f6ad05fe32802b2db2a108b53a53990",
+    "docs/reviews/13-storage-alternatives.md": "7467d1e644d795fb86e8f55aa5a8a33f33d6743cb5b9c4e092be01027902db6f",
+    "docs/reviews/14-handoff-countercheck.md": "c0fb2060a88fe5b640243a71140fef06ac08e1653f3d12511888fc22bd24c659",
+    "docs/reviews/14-independent-closure-review.md": "a411d6b800c9997a91c573ab9a0c0e4d72c37c12b46ec5e49681bf386f568ba8",
+    "docs/reviews/15-large-storage-and-final-handoff.md": "5a4437fe6099003b60f723884498f178b61dbad6d49fa784ac3d5fed87013e4b",
+    "docs/reviews/16-complete-handoff.md": "f7a93ec34cf4ae83baa591b549e9f1ba92069d9fd5b572c1ae300dbd1a95ac85",
+    "docs/reviews/16-handoff-audit.md": "28339b20fa75e5c8ca7695a0ca2ad256e89f96984dea3bb78c22308699742b90",
+    "docs/reviews/17-development-and-delivery-handoff.md": "1bfcebf34487bd5095829792138f93432668b73a10f4c0d1762c9b8dbb335291",
+    "docs/specification/archive-storage-contract.md": "5ca5b5eacf8a20f7825777febafc26913f5d430e9ffa6df41d9e7b21afcf81c7",
+    "docs/specification/assertion-bindings.md": "df5cdf3fd8a3527cfcfe050793cb8d7563e2dd1d93efad89c896677f77412d2f",
+    "docs/specification/component-contracts.md": "7553dcc0f84e4880e6f5557eef13060cd02ecfa51f6e2f9c62bdf11ddba3addd",
+    "docs/specification/data-contracts.md": "f64b018be806183850f9b2c7b6b7ec5c3541c4a41b8bd68c1a90724bb9dd22d4",
+    "docs/specification/deployment-contract.md": "d40bd7a9827dc43ec37d603481e808a5b242891b51b80408ae8f2e5d42adce79",
+    "docs/specification/dvm-profile.md": "8d2b75912aeaef1d03233c0a4697bc283e2da0e2750d49cec28b46d66c808088",
+    "docs/specification/gateway-contracts.md": "e1ed3166f187e6b55cf29b68c8e551131267e9276d1f6f0667e6d505d7b5f007",
+    "docs/specification/identity-and-encoding.md": "3e7100e8dc6233f3004b6b83361d3eb45b17cce33a0b1e7c3b812017f6a5edbf",
+    "docs/specification/import-formats.md": "5925afc107c1e30ae9649ee6e674a636ed022ce3cf034518e2740a1d0ac191d4",
+    "docs/specification/interface-catalog.md": "cb23e0889f06deff93d0b6d7ea0cb1fb42ba956a4896abde8ad7115aac1ef57c",
+    "docs/specification/naming.md": "dc133e54594f05917c5344a1932ac4454dfa5350b8e8b337e4dee3c77e186a61",
+    "docs/specification/operations-contract.md": "c6aef4bc633ab7ce5732874f367295751f3c675029b889b8e1342fd696e3d74d",
+    "docs/specification/read-view-contract.md": "4f2e630c2ef8c61305317b77267dedd19a3eb4ffa2fadd67bdebce3c6c66ebb2",
+    "docs/specification/storage-catalog.md": "0bd556b79cef9972791aae9b25f7b98b3741721e37ba92bf5fe78120e74ca031",
+    "docs/specification/workload-contract.md": "35152a1a8a4a2f7febdf0928a1d8440d338004ca813bd639fe2ff5ba19ad46e9",
+    "docs/start-here.md": "6b82b5d26d85b6354ce30bdb578e88b07a96af650c038d72b367d5b0ad794db8",
+    "experiments/archive-model/README.md": "1444b3ce8a19a958d8993b0ebbdefb419ebb9c583884c355cb0947ecd9c9fe50",
+    "experiments/clickhouse-frontier/README.md": "fbf4cbd18903257a28d6abfc2504365020dc4543251404166ef2ff1b4c0040d2",
+    "experiments/deployment-contract/README.md": "7be807dd6fa1e8db89e5e34c6ca73864a7d37feacbd4bcdeffc3b8d47a25cf50",
+    "experiments/document-layout/README.md": "e038778d96887ecd4818a9aab815f439fb6b34d5ffbb75046aeca195221bd097",
+    "experiments/ducklake-postgres/README.md": "a3cc0ca4571f9d1b2d670180aff64d194b8237fde0c0806866415eed6ba4f87a",
+    "experiments/gateway-contract/README.md": "4054a2d524b071a9f215ea8a7eae1b25c9e4582eaccf41ad2c80a9c3fec2ccfc",
+    "experiments/identity-contract/README.md": "b845e2d055a6abef5987050e2d930e836f96491a2a51e8ddd6d6813ef7acd9a1",
+    "experiments/nostr-boundary/README.md": "de093966a47c8267bea96fac982ca919d940a03e36b9108498279816f436254a",
+    "experiments/object-storage/README.md": "6d6d6e015d44a7d9d28ca76ac9740af6d5814d2d0b592d587d8693775be21335",
+    "experiments/operations-contract/README.md": "25c5aaffbaecc6416d52a8666c9cb9a4264d545dcbeb071379ef776fb1238852",
+    "experiments/parquet-targets/README.md": "a0fd199b188547014bb83637ce18615a67ac8924cde981481c6d6b001173df1f",
+    "experiments/read-rank-contract/README.md": "97dbfe5ed633f043a88d1585bed08760fdcd866bf8aa3a5d76c431f5e4d23b05",
+    "experiments/relay-composition/README.md": "add4419e8b1bbd145dfd43a593478f80a6ca9b270e21300eeffb214b94a4ba2b",
+    "experiments/relay-profile/README.md": "ce35fb547952c0fab0c282a5d50ec9767bd2c681c0e0da3bd9c3638b3763d3b5",
+    "experiments/rocksdb-admission/README.md": "2eab99f12c5daff49f64620865ce8e43f4fa14953553cf932ea613c0ccc76e3b",
+    "experiments/storage-qualification/README-recovery.md": "d2041a2dbbdacef68f4546c24584446d2d82a940e0046f4e21b133b36d97adb3",
+    "experiments/storage-qualification/README.md": "a3f4b8bd5058340a1e87d334e00f93201d3d5668dca3cc4b372574c26e5acb75",
+    "experiments/workload-contract/README.md": "297b6e3e0d15972698dd600ea333eaab189d796b9cf4fd67a36050d1bc3094d8"
+  },
+  "precommit_changed_paths": [
+    "AGENTS.md",
+    "PLAN.md",
+    "README.md",
+    "docs/engineering/development-and-delivery.md",
+    "docs/engineering/rust-and-repository.md",
+    "docs/engineering/security-recovery-and-validation.md",
+    "docs/implementation/01-foundation.md",
+    "docs/implementation/03-acquisition.md",
+    "docs/implementation/08-operations.md",
+    "docs/implementation/10-website.md",
+    "docs/implementation/README.md",
+    "docs/implementation/agent-handoff.md",
+    "docs/implementation/coverage.md",
+    "docs/implementation/progress.md",
+    "docs/planning/mandate.md",
+    "docs/planning/questions.md",
+    "docs/planning/specification-readiness.md",
+    "docs/product/dashboard-and-website.md",
+    "docs/research/evidence/review-17-read-evidence.json",
+    "docs/research/evidence/review-17-verification.json",
+    "docs/research/laboratory-inventory.json",
+    "docs/reviews/17-development-and-delivery-handoff.md",
+    "docs/specification/deployment-contract.md",
+    "docs/specification/interface-catalog.md"
+  ],
+  "remote_observation": {
+    "name": "BigBrotr/bigbrotr-rs",
+    "is_private": true,
+    "default_branch": "main",
+    "head_vs_origin_main_before_commit": {
+      "ahead": 0,
+      "behind": 0
+    },
+    "note": "Read-only GitHub metadata and git fetch observed in this pass; final commit/push identity is verified afterward through Git, not guessed here."
+  },
+  "not_run": [
+    "Product Rust/native adapter build",
+    "Real GitHub Actions workflows or Docker Hub candidate promotion",
+    "Minisign implementation/release key provisioning",
+    "Packaged installation/upgrade and browser/site acceptance",
+    "Fresh remote Tux inspection or new engine/fleet benchmark",
+    "Power-loss or independent-host loss qualification"
+  ],
+  "limitations": [
+    "Mechanical checkers do not prove semantic correctness or optimality.",
+    "Historical whole-file review coverage is attributed to its original ledger; this pass is current domain reinspection plus integration.",
+    "Clean-source execution validates planning checks only.",
+    "No claim of unlimited capacity or completed future product acceptance."
+  ]
+}

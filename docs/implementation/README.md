@@ -16,6 +16,8 @@ producers/consumers; prose and fixtures explain meaning beyond the IDs.
 Use [the agent execution guide](agent-handoff.md) for the implementation/audit pipeline.
 Use the single [current checkpoint](progress.md) to resume, after verifying its
 claims against Git and actual process/evidence state.
+Use [development and delivery](../engineering/development-and-delivery.md) for
+Mac/Tux execution, existing planning checks, CI, Docker Hub and commit policy.
 Begin with [the newcomer guide](../start-here.md), then the
 [storage catalog](../specification/storage-catalog.md),
 [interface catalog](../specification/interface-catalog.md) and
@@ -101,6 +103,12 @@ dies, while a pure formula oracle is appropriate for a deterministic graph step.
 
 The task-specific dependencies remain authoritative. These edges resolve the
 important apparent cycles:
+
+* P03-T02 session/admission implementation can precede P02-T04, but its step 7
+  archive-reader acceptance requires that real reader. P03-T08 supplies the import
+  preflight core to P03-T09; T09 adds decoding/dry-run, and T10 adds durable import
+  and closes their deferred successful-import scenarios. Those acceptance steps
+  cannot block the earlier cores on which they depend.
 
 * P01-T01–T08 provide independent foundations. P01-T09 is the integrated first
   useful event journey after early storage/read slices; it does not block P02.
