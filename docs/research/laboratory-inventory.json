@@ -276,7 +276,7 @@
         "base": "140e264756b80c7fa4dc3e668ab33be89bf8d100",
         "owner": "static_configuration agent",
         "purpose": "Schema and independent104-case fixture integrated; now actual TLS/mTLS lab orchestration only",
-        "status": "Active isolated TLS fixture work; root owns all Tux execution"
+        "status": "Clean retained5923b8c; TLS harness integratedfcb6424 and actual native cases completed"
       },
       {
         "path": ".research/worktrees/postgres-connection-settings",
@@ -292,7 +292,31 @@
         "base": "e0793f317e0286c63b32c3de71518946aa68a73f",
         "owner": "fact_codec_review agent",
         "purpose": "Proxyf699 integratedb601; now real migration COMMIT fault orchestration",
-        "status": "Active isolated worktree; root runs actual PG cases"
+        "status": "Clean retained45fa44c; orchestration integrated20158ed then root addedtwo-apply race84be00e; sixnativecasesPASS"
+      },
+      {
+        "path": ".research/worktrees/rocks-admission-keys",
+        "branch": "impl/rocks-admission-keys",
+        "base": "f32b863f780d71653725f3fc8b940048912c9a33",
+        "owner": "foundation_dependency_audit agent",
+        "purpose": "Independent bounded P02 implementation responsibility; root integrates",
+        "status": "Clean b72077f; root and independent review complete; integration next"
+      },
+      {
+        "path": ".research/worktrees/control-concurrency",
+        "branch": "research/control-concurrency",
+        "base": "fcb6424ad028497bac22d9c0a904fa06041e7167",
+        "owner": "static_configuration agent",
+        "purpose": "Independent bounded P02 implementation responsibility; root integrates",
+        "status": "Active isolated0001 state-race harness work, root ownsTux"
+      },
+      {
+        "path": ".research/worktrees/ingest-control-schema",
+        "branch": "impl/ingest-control-schema",
+        "base": "ffb94a8f54418276c2c8115199a55da406e55bb8",
+        "owner": "foundation_dependency_audit agent",
+        "purpose": "Bounded 0002 source/allocation/producer authority and independent SQL fixtures; root integrates and executes PG",
+        "status": "Active isolated implementation; no Tux by agent"
       }
     ],
     "rocks_dependency_audit": {
@@ -367,28 +391,9 @@
     "postgres_migration_integration": {
       "local_root": ".research/implementation/postgres",
       "owner": "root integrating owner",
-      "scope": "Local executable/driver tests and source review; PostgreSQL run not yet started",
+      "scope": "Actual control schema/CLI/roles/restart and native Linux amd64 lost-COMMIT, two-apply race, TLS/mTLS; further control state races in progress",
       "remote_preflight": ".research/implementation/postgres/pre-build-host.log",
-      "remote_status": "Fresh after-schema inspection: detachedca7eba6 clean; old PG/client and build stopped, current SCRAM PG/client running; no published ports; both owned networks internal",
-      "planned_resources": {
-        "root": "/home/tux/bigbrotr-implementation-20260917/runs/control-migrations/runtime-v2",
-        "network": "bigbrotr-implementation-pg-20260917-scram",
-        "containers": [
-          "bigbrotr-implementation-pg-20260917-scram",
-          "bigbrotr-implementation-pg-20260917-scram-client"
-        ],
-        "host_ports": [],
-        "status": "Created and running;16 smoke,104 SQL and11 role cases PASS; retained for COMMIT/TLS experiments",
-        "limits": "PG2CPU/1536MiB memory+swap, client2CPU/4GiB, each256PIDs; private internal network, no published ports, owned new data/secrets only"
-      },
-      "build": {
-        "source": "6f7c03d1d5f00276998a733ac7a86c8aeb9cea1f",
-        "artifact_sha256": "5d10250e4e311721644502aaade663b509ebb525c469356e99e7ef3de4e8de0f",
-        "container": "bigbrotr-implementation-pg-build-6f7c03d",
-        "status": "Completed exit0 OOMfalse",
-        "limits": "2CPU/6GiB memory+swap/512PIDs, readonly source, owned output, no published ports",
-        "root": "/home/tux/bigbrotr-implementation-20260917/runs/control-migrations/build-6f7c03d"
-      },
+      "remote_status": "Fresh post-TLS inspection: clean detached84be00e; only runtime-v3 PG/client running for next concurrency cases; two fault containers stopped, older labs/builds stopped; no published ports",
       "initial_lab": {
         "root": "/home/tux/bigbrotr-implementation-20260917/runs/control-migrations/runtime",
         "containers": [
@@ -399,7 +404,51 @@
         "state": "Verified stopped: PGexit0 and clientexit143, bothOOMfalse; data/network retained",
         "outcome": "Actual migration/checksum/reapply/restart passed; initial weak refusal/password oracles superseded. Refined14cases passed then SCRAM setup assertion failed: image initdb left loopback host trust. Evidence retained, no product invariant weakened."
       },
-      "evidence": "docs/implementation/evidence/p02-control-engine-20260917.json"
+      "evidence": "docs/implementation/evidence/p02-control-engine-20260917.json",
+      "previous_scram_lab": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/control-migrations/runtime-v2",
+        "network": "bigbrotr-implementation-pg-20260917-scram",
+        "containers": [
+          "bigbrotr-implementation-pg-20260917-scram",
+          "bigbrotr-implementation-pg-20260917-scram-client"
+        ],
+        "host_ports": [],
+        "status": "Explicitly stopped and retained after16 smoke,104 SQL and11 role cases PASS; product artifact6f7c03d",
+        "limits": "PG2CPU/1536MiB memory+swap, client2CPU/4GiB, each256PIDs; private internal network, no published ports, owned new data/secrets only"
+      },
+      "previous_build": {
+        "source": "6f7c03d1d5f00276998a733ac7a86c8aeb9cea1f",
+        "artifact_sha256": "5d10250e4e311721644502aaade663b509ebb525c469356e99e7ef3de4e8de0f",
+        "container": "bigbrotr-implementation-pg-build-6f7c03d",
+        "status": "Completed exit0 OOMfalse",
+        "limits": "2CPU/6GiB memory+swap/512PIDs, readonly source, owned output, no published ports",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/control-migrations/build-6f7c03d"
+      },
+      "build": {
+        "source": "ffb94a8f54418276c2c8115199a55da406e55bb8",
+        "artifact_sha256": "f5f8de1695ff94e2c09df5749c932820919dc4003021358c746d9adb12a9d1f4",
+        "container": "bigbrotr-implementation-pg-build-ffb94a8",
+        "status": "Completed exit0 OOMfalse; actual binary downloaded and all366 archive files independently verified",
+        "limits": "2CPU/6GiB memory+swap/512PIDs, read-only exact source, fresh owned output, no published ports",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/control-migrations/build-ffb94a8"
+      },
+      "current_lab": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/control-migrations/runtime-v3",
+        "owner": "b230f63ab5b421ff78c3a839ac17a718",
+        "postgres": "bigbrotr-implementation-pg-20260917-tlsfix",
+        "client": "bigbrotr-implementation-pg-20260917-tlsfix-client",
+        "network": "bigbrotr-implementation-pg-20260917-tlsfix",
+        "published_ports": [],
+        "status": "Running after6 fault/concurrency cases and10 TLS cases PASS; exact server config restored; retained for bounded schema concurrency runs",
+        "limits": "PG2CPU/1536MiB memory+swap; client2CPU/4GiB;256PIDs each; internal network, no ports; new owned bind data and secrets",
+        "retained_fault_containers": [
+          "bigbrotr-implementation-pg-20260917-tlsfix-client-fault-commits",
+          "bigbrotr-implementation-pg-20260917-tlsfix-client-fault-all_commits"
+        ],
+        "fault_container_status": "Stopped exit143 OOMfalse after each run; exact lab+fault ownership labels verified",
+        "retained_private_pki": "runtime-v3/secrets/tls_first-tls; ephemeral certificates/private keys0600, no key downloaded or committed"
+      },
+      "fault_tls_evidence": "docs/implementation/evidence/p02-control-faults-tls-20260917.json"
     },
     "rocks_product_boundary": {
       "root": ".research/implementation/rocks-product-design",

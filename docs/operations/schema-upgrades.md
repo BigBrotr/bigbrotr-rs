@@ -7,7 +7,9 @@ and entrypoint tests pass. Native Linux amd64 PostgreSQL execution now covers
 the actual CLI, 104 independent SQL constraint cases, initial read-only runtime
 privileges and an engine crash/restart; see the
 [recorded engine evidence](../implementation/evidence/p02-control-engine-20260917.json).
-Concurrent migration/commit-response faults and TLS remain pending in this record.
+The [subsequent fault/TLS evidence](../implementation/evidence/p02-control-faults-tls-20260917.json) records
+six actual migration fault/concurrency cases and ten TLS/mTLS cases on the
+corrected ffb94a8 binary. Config/owner/job/topology races remain separate pending work.
 This is not completion of P02-T01 or a qualified installation/upgrade path.
 The [task](../implementation/02-storage.md#p02-t01--typed-control-schemas-and-minimum-relay-registry)
 and [upgrade contract](../specification/operations-contract.md) own the remaining
@@ -55,8 +57,9 @@ connection performs no second DNS lookup. This address check cannot attest host
 network topology; the private bridge and its DNS remain operator responsibilities.
 `localhost` selects 127.0.0.1 without DNS; use `[::1]` explicitly for IPv6 loopback.
 TLS uses only the configured CA and expected server name, with optional paired
-client identity. Real authentication/TLS and route fault cases remain acceptance
-gates until executed.
+client identity. The recorded native Linux amd64 cases exercise SCRAM, TLS/mTLS,
+wrong CA/name/client identity and plaintext route refusals. Rotation/revocation,
+arbitrary TLS combinations and native arm64 acceptance remain unqualified.
 
 The database-local advisory transaction lock uses the two int4 keys 1111651442
 and 1296648018. Apply takes it exclusively; inspect/plan share it. Ledger reads
@@ -219,9 +222,10 @@ reader/writer compatibility, known downgrade, intentional catalog number gaps,
 and the independent SHA-256 `abc` vector. They do not execute PostgreSQL.
 
 The following engine cases are required, with externally inspected rows and exact
-source/engine identities. The evidence above records the executed single-session
-SQL, CLI, role and crash cases; multi-session races, ambiguous COMMIT and TLS
-remain **NOT_RUN** until their dedicated experiments complete. Each trigger
+source/engine identities. The evidence above records single-session SQL, CLI,
+role and crash cases, followed by migration lock concurrency, ambiguous COMMIT
+and TLS. Config/owner/job/topology races remain **NOT_RUN** until their dedicated
+experiments complete. Each trigger
 has a concrete invariant and corresponding negative control below; a passing
 parser or successful DDL execution alone does not qualify them.
 

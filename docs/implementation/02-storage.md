@@ -3,7 +3,7 @@
 **Outcome:** full accepted evidence survives the declared process-crash model,
 can be exported independently and reaches coherent online generations. Different
 durability classes, archive cuts and serving frontiers remain visible.
-All checkboxes below are future implementation work.
+Checked steps have their recorded implementation evidence; unchecked steps remain work.
 
 **Depends on:** P01-T01–T08 as needed per task; P01-T09 is a later integration
 consumer, not a prerequisite creating a cycle. Read
@@ -50,8 +50,12 @@ prerequisites for early durable jobs, exports or reclamation.
   versioned JSON is diagnostic detail, not the sole checkpoint semantics.
 - [ ] **Step 3:** Separate PG application-control and DuckLake catalog ownership, privileges,
   backups and version negotiation even when one PG server hosts both.
-- [ ] **Step 4:** Implement explicit `bigbrotr migrate inspect/apply` with a dedicated
+- [x] **Step 4:** Implement explicit `bigbrotr migrate inspect/apply` with a dedicated
   migration role, serialized ownership, checksums and compatible version checks.
+  [Initial catalog/engine evidence](evidence/p02-control-engine-20260917.json) and
+  [serialized commit/TLS evidence](evidence/p02-control-faults-tls-20260917.json)
+  cover the current 0001 catalog; later schema/adapters and full release upgrades
+  remain separate steps.
 - [ ] **Step 5:** Implement compare-and-swap updates for config revisions, owner epochs and
   complete frontiers; preserve missing/zero/empty distinctions.
 - [ ] **Step 6:** Establish normalized endpoint dictionary/enrollment and explicit route/

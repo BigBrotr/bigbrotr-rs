@@ -1,0 +1,210 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-17",
+  "scope": "P02-T01 migration serialization, actual ambiguous COMMIT resolution, and configured TLS/mTLS on native Linux amd64; no durable event or product release claim",
+  "source": {
+    "source": "ffb94a8f54418276c2c8115199a55da406e55bb8",
+    "source_files": 366,
+    "manifest_exact_match": true,
+    "archive_sha256": "9c50e02c5665ad2175945b66fdf34b2c855a09ad6b89a4c399bd9343b5a9a8d1",
+    "downloaded_binary_sha256": "f5f8de1695ff94e2c09df5749c932820919dc4003021358c746d9adb12a9d1f4"
+  },
+  "build": {
+    "format": "bigbrotr-build-result/1",
+    "binary_sha256": "f5f8de1695ff94e2c09df5749c932820919dc4003021358c746d9adb12a9d1f4",
+    "source_manifest_sha256": "d657ba02c59ba8b71289873b43202b4dad180a5113c8cc84dc229606fae4b57a",
+    "helper_sha256": "0257fcfa1f030b969838818c904453499f65d71e5c4a77508b5e346ca2bed2e1",
+    "build_info": {
+      "capabilities": [
+        "event-verification",
+        "config-static"
+      ],
+      "capability_scope": "Strict bounded event JSON and independent ID/BIP340 verification; offline static configuration candidates and incomplete read-only doctor diagnostics; no storage, durable configuration authority, source policy, wire transport, filter, or general NIP conformance claim",
+      "debug_info": "false",
+      "format": "bigbrotr-build/1",
+      "inputs_sha256": {
+        "Cargo.lock": "87d5ba19cc757555f53ea1328de4258d5dfa650f82703a73605561eb973b14c9",
+        "contracts/protocol/nip01-event.json": "b830d5ab8651f5a763ebcffdc0eb1737ba70f4602c93fc714c892865ffca2db8",
+        "contracts/protocol/versions.json": "37c76706c5a2aa4fc72a40aeed908f104620eafcee1118b7cee8baf133546c95",
+        "contracts/release/dependencies.json": "bd32a3f6281c358db11a936af6b8c01f4d663c74bdcb1ec99a26c73b71fa5829",
+        "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167"
+      },
+      "optimization": "3",
+      "product": "BigBrotr",
+      "profile_assertion": "release",
+      "protocol_registry_format": "bigbrotr-protocol-versions/1",
+      "protocols": {
+        "event_verifier": "bigbrotr-nip01-verifier/1",
+        "nostr_nips": "a2494f4f81d46684e5814a9bf35e2b1df978f955"
+      },
+      "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+      "schemas": {
+        "build_info": "bigbrotr-build/1",
+        "config_static": "bigbrotr-config-static/1",
+        "doctor": "bigbrotr-doctor/1",
+        "signed_event": "nip01-event/1"
+      },
+      "source": {
+        "dirty": false,
+        "manifest_sha256": "d657ba02c59ba8b71289873b43202b4dad180a5113c8cc84dc229606fae4b57a",
+        "revision": "ffb94a8f54418276c2c8115199a55da406e55bb8",
+        "state": "builder-supplied",
+        "tree": "1b068ecbba47d66feaafa0266490bf3d7d75fb8b"
+      },
+      "target": "x86_64-unknown-linux-gnu",
+      "version": "0.1.0-dev"
+    }
+  },
+  "engine": {
+    "image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "server": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    },
+    "host": "Tux native Linux amd64",
+    "limits": "PG2CPU/1536MiB memory+swap/256PIDs; client2CPU/4GiB/256PIDs; isolated internal network, no published ports"
+  },
+  "executed": [
+    {
+      "name": "commit_faults_and_two_apply_race",
+      "status": "PASS",
+      "harness_revision": "84be00ee18ff8fad5f219f1cab32b985e4b509a0",
+      "sources_sha256": {
+        "fault_cases.py": "a373d267eb6b38a7b3635a6380d0da3fc66de0f160ea7019d7bcdea4efbc7a6f",
+        "fault_proxy.py": "9ffb0d0e547d68c140ec3b1c8c00af9107f4c9cca9e75ab42b3e6f5feadcfa06",
+        "lab.py": "6795263800d72609eca086a1ebf47e74f2b65488c9de2de5f893966476282fd8"
+      },
+      "cases": [
+        {
+          "name": "pass",
+          "status": "PASS",
+          "client_exit": 0,
+          "resolved_current_version": "1",
+          "retry_status": "current",
+          "final_ledger_rows": 1,
+          "final_control_tables": 10
+        },
+        {
+          "name": "before",
+          "status": "PASS",
+          "client_exit": 4,
+          "resolved_current_version": null,
+          "retry_status": "applied",
+          "final_ledger_rows": 1,
+          "final_control_tables": 10
+        },
+        {
+          "name": "after",
+          "status": "PASS",
+          "client_exit": 4,
+          "resolved_current_version": "1",
+          "retry_status": "current",
+          "final_ledger_rows": 1,
+          "final_control_tables": 10
+        },
+        {
+          "name": "release",
+          "status": "PASS",
+          "client_exit": 0,
+          "resolved_current_version": "1",
+          "retry_status": "current",
+          "final_ledger_rows": 1,
+          "final_control_tables": 10
+        },
+        {
+          "name": "close",
+          "status": "PASS",
+          "client_exit": 4,
+          "resolved_current_version": null,
+          "retry_status": "applied",
+          "final_ledger_rows": 1,
+          "final_control_tables": 10
+        },
+        {
+          "name": "race",
+          "status": "PASS",
+          "client_exit": 0,
+          "resolved_current_version": "1",
+          "retry_status": "current",
+          "final_ledger_rows": 1,
+          "final_control_tables": 10
+        }
+      ],
+      "observations": "Three lost-response paths return outcome-unknown exit4. Fresh direct inspect under the migration lock distinguishes committed from absent; same-target retry leaves one exact receipt. Actual PG locks show inspectors blocked, old owner still alive after inspector lock timeout, and a second apply blocked exclusively then current with zero applied. Every final backend set is empty; each current retry preserves the complete schema/data dump."
+    },
+    {
+      "name": "actual_tls_and_mtls",
+      "status": "PASS",
+      "harness_revision": "fcb6424ad028497bac22d9c0a904fa06041e7167",
+      "harness_sha256": "1794436e0fc103127cec301cb4be7d63a749d105705df0de1f255fa25c87ab3e",
+      "cases": [
+        "plaintext_baseline",
+        "tls_exact_ca_and_explicit_name",
+        "tls_optional_client_certificate",
+        "tls_wrong_ca",
+        "tls_wrong_name",
+        "mtls_correct_identity",
+        "mtls_missing_certificate",
+        "mtls_wrong_identity",
+        "mtls_wrong_client_ca",
+        "restored_config_and_plaintext"
+      ],
+      "counts": {
+        "collected": 10,
+        "executed": 10,
+        "passed": 10,
+        "failed": 0,
+        "skipped": 0,
+        "not_run": 0
+      },
+      "negotiated": {
+        "protocol": "TLSv1.3",
+        "cipher": "TLS_AES_256_GCM_SHA384",
+        "bits": 256
+      },
+      "negative_controls": [
+        "wrong server CA -> unknown CA alert",
+        "wrong expected server name -> bad certificate alert",
+        "missing mandatory client certificate -> specific PG refusal",
+        "correct CA but wrong client CN -> CN mismatch",
+        "wrong client CA -> certificate verify failed"
+      ],
+      "restoration": "PASS",
+      "scope": "Each negative has same-route success before/after and a specific fresh PG rejection, zero authorization. Server SAN differs from dial address. Exact HBA/auto/base config bytes and modes, original settings, plaintext inspection and schema/data digest restored."
+    }
+  ],
+  "discovered_and_fixed": "Explicit verify-full configuration inherited a plaintext recipe boundary. Actual CLI regression failed first, focused fix ffb94a8 passed23 Mac config tests; this new exact binary is used for TLS. Historical6f7 tests are not attributed to it.",
+  "artifacts_sha256": {
+    "source-audit-ffb94a8.json": "d2633a04f09c15bb0a5eaab4bf522f247e8475130040d2e33b2fd722395bd503",
+    "build-result-ffb94a8.json": "ba7262d04014fcadc3df4e995e30d344f431acc1232f017eb101c6fcb5304f99",
+    "source-manifest-ffb94a8.json": "d657ba02c59ba8b71289873b43202b4dad180a5113c8cc84dc229606fae4b57a",
+    "faults-v3.json": "aebc753b83d639c2ab649c33d6de10e531f541c13d004698f1935f7f973c6e5a",
+    "faults-race-v3.json": "8f767b572ba3c935cb165cb88bc731d78e2b62f38c9de8c8906b2fe24cbf7f6f",
+    "tls-v3.json": "fc554f3df0ab92dd853392f649971758cbc2b5683277caefa4d3c70eefd19482",
+    "resources-v3.json": "431b55a1d6acbefcde6cfae2167ab42c8d98763de6bfd14b634a2048d35916e5",
+    "resource-state-after-tls.log": "ea6302773519dedb21c1bb3f1f8d015a54e7ab1510bf44f7d8ec49e108e6eaec"
+  },
+  "not_run": [
+    "Native Linux arm64 PG/TLS acceptance",
+    "TLS rotation/revocation, arbitrary crypto/provider combinations",
+    "Config CAS/owner/job/sealing races (separate harness in progress)",
+    "Different server-version or unsafe durability-setting refusals against a real engine",
+    "Resource pressure, disk/fsync failure, host power loss, mixed/aged workload",
+    "Full product initialization, forward upgrade/rollback, event admission/archive/read/export/restart"
+  ],
+  "resources": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/control-migrations/runtime-v3",
+    "owner": "b230f63ab5b421ff78c3a839ac17a718",
+    "postgres": "bigbrotr-implementation-pg-20260917-tlsfix",
+    "client": "bigbrotr-implementation-pg-20260917-tlsfix-client",
+    "network": "bigbrotr-implementation-pg-20260917-tlsfix",
+    "status": "PG/client running for the next schema concurrency cases; two exactly owned fault containers stopped and retained; old runtime-v2 and both build containers stopped",
+    "fault_containers": [
+      "bigbrotr-implementation-pg-20260917-tlsfix-client-fault-commits",
+      "bigbrotr-implementation-pg-20260917-tlsfix-client-fault-all_commits"
+    ],
+    "protected_data": "Secrets and generated PKI remain under the owned remote root; never downloaded or committed"
+  }
+}
