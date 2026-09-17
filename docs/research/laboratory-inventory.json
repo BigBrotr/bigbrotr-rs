@@ -316,7 +316,7 @@
         "base": "ffb94a8f54418276c2c8115199a55da406e55bb8",
         "owner": "foundation_dependency_audit agent",
         "purpose": "Bounded 0002 source/allocation/producer authority and independent SQL fixtures; root integrates and executes PG",
-        "status": "Active isolated implementation; no Tux by agent"
+        "status": "Clean 29db86d integrated fa9b6b3; actual native 14 harness and 74 SQL cases PASS"
       },
       {
         "path": ".research/worktrees/rocks-native-options",
@@ -332,7 +332,23 @@
         "base": "8f0d44b246fac009e56160ce1766799b253dfddf",
         "owner": "static_configuration agent",
         "purpose": "Native Rocks C++/libclang build and CI prerequisites; root owns Cargo/engine",
-        "status": "Active independent task; no Tux/push by agent"
+        "status": "Clean 25d8913, root integration pending; local native helper evidence retained"
+      },
+      {
+        "path": ".research/worktrees/rocks-store",
+        "branch": "impl/rocks-store",
+        "base": "b18d386",
+        "owner": "fact_codec_review agent",
+        "purpose": "First real private Rocks store and native lifetime boundary",
+        "status": "Active separate worktree b66dbdc plus owned uncommitted store changes; native Mac build/test in progress"
+      },
+      {
+        "path": ".research/worktrees/ingest-control-races",
+        "branch": "research/ingest-control-races",
+        "base": "fa9b6b3768baf825c2c9b6dcac616f0338f548cb",
+        "owner": "foundation_dependency_audit agent",
+        "purpose": "Eight bounded 0002 concurrency schedules and all-relation observer",
+        "status": "Clean 78943ef candidate; independent review and root native run pending"
       }
     ],
     "rocks_dependency_audit": {
@@ -407,9 +423,9 @@
     "postgres_migration_integration": {
       "local_root": ".research/implementation/postgres",
       "owner": "root integrating owner",
-      "scope": "Actual control schema/CLI/roles/restart and native Linux amd64 lost-COMMIT, two-apply race, TLS/mTLS; further control state races in progress",
+      "scope": "Actual 0001 CLI/schema/fault/TLS/races and new 0002 CLI/74 SQL cases; 0002 races pending",
       "remote_preflight": ".research/implementation/postgres/pre-build-host.log",
-      "remote_status": "Latest exact checkout65b05d5 for completed state races; runtime-v3 PG/client retained running; prior observed containers/networks unchanged, verify again before mutation",
+      "remote_status": "Read-only inspected 2026-09-18: clean detached 145eb7c, runtime-v4 PG/client running; runtime-v3 stopped, all three PG builds exited 0; unrelated workloads preserved; 363 GiB available.",
       "initial_lab": {
         "root": "/home/tux/bigbrotr-implementation-20260917/runs/control-migrations/runtime",
         "containers": [
@@ -440,22 +456,16 @@
         "limits": "2CPU/6GiB memory+swap/512PIDs, readonly source, owned output, no published ports",
         "root": "/home/tux/bigbrotr-implementation-20260917/runs/control-migrations/build-6f7c03d"
       },
-      "build": {
-        "source": "ffb94a8f54418276c2c8115199a55da406e55bb8",
-        "artifact_sha256": "f5f8de1695ff94e2c09df5749c932820919dc4003021358c746d9adb12a9d1f4",
-        "container": "bigbrotr-implementation-pg-build-ffb94a8",
-        "status": "Completed exit0 OOMfalse; actual binary downloaded and all366 archive files independently verified",
-        "limits": "2CPU/6GiB memory+swap/512PIDs, read-only exact source, fresh owned output, no published ports",
-        "root": "/home/tux/bigbrotr-implementation-20260917/runs/control-migrations/build-ffb94a8"
-      },
-      "current_lab": {
+      "fault_tls_evidence": "docs/implementation/evidence/p02-control-faults-tls-20260917.json",
+      "concurrency_evidence": "docs/implementation/evidence/p02-control-races-20260917.json",
+      "previous_tls_lab": {
         "root": "/home/tux/bigbrotr-implementation-20260917/runs/control-migrations/runtime-v3",
         "owner": "b230f63ab5b421ff78c3a839ac17a718",
         "postgres": "bigbrotr-implementation-pg-20260917-tlsfix",
         "client": "bigbrotr-implementation-pg-20260917-tlsfix-client",
         "network": "bigbrotr-implementation-pg-20260917-tlsfix",
         "published_ports": [],
-        "status": "Running after six fault/concurrency cases, ten TLS cases and seven relational race cases PASS; all created contender backends excluded and wrappers joined; only isolated retained PG/client remain",
+        "status": "Stopped and retained before runtime-v4: PG exit 0, client exit 143. Historical six fault, ten TLS and seven 0001 race cases PASS.",
         "limits": "PG2CPU/1536MiB memory+swap; client2CPU/4GiB;256PIDs each; internal network, no ports; new owned bind data and secrets",
         "retained_fault_containers": [
           "bigbrotr-implementation-pg-20260917-tlsfix-client-fault-commits",
@@ -464,8 +474,38 @@
         "fault_container_status": "Stopped exit143 OOMfalse after each run; exact lab+fault ownership labels verified",
         "retained_private_pki": "runtime-v3/secrets/tls_first-tls; ephemeral certificates/private keys0600, no key downloaded or committed"
       },
-      "fault_tls_evidence": "docs/implementation/evidence/p02-control-faults-tls-20260917.json",
-      "concurrency_evidence": "docs/implementation/evidence/p02-control-races-20260917.json"
+      "previous_tls_build": {
+        "source": "ffb94a8f54418276c2c8115199a55da406e55bb8",
+        "artifact_sha256": "f5f8de1695ff94e2c09df5749c932820919dc4003021358c746d9adb12a9d1f4",
+        "container": "bigbrotr-implementation-pg-build-ffb94a8",
+        "status": "Completed exit0 OOMfalse; actual binary downloaded and all366 archive files independently verified",
+        "limits": "2CPU/6GiB memory+swap/512PIDs, read-only exact source, fresh owned output, no published ports",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/control-migrations/build-ffb94a8"
+      },
+      "build": {
+        "source": "9cd823a72afc96f6c41e3987f5026c2a51a1e2cc",
+        "artifact_sha256": "4b36ae7651fa5cbf36bd369218cfc8263e4de1a693d5e56fec3c6c778089ffa7",
+        "container": "bigbrotr-implementation-pg-build-9cd823a",
+        "status": "Completed exit 0/OOM false; downloaded executable and all 386 source entries independently verified",
+        "limits": "2 CPU/6 GiB memory+swap/512 PIDs; clean read-only source, fresh output; no explicit compiler-job assertion",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/control-migrations/build-9cd823a"
+      },
+      "current_lab": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/control-migrations/runtime-v4",
+        "owner": "c8f3f49271adbe75711e2aed44860927",
+        "postgres": "bigbrotr-implementation-pg-20260917-ingest",
+        "client": "bigbrotr-implementation-pg-20260917-ingest-client",
+        "network": "bigbrotr-implementation-pg-20260917-ingest",
+        "published_ports": [],
+        "status": "Running after 14 actual CLI/harness and 74 SQL cases PASS; three dedicated ingest databases retained, no unfinished write observed",
+        "limits": "PG 2 CPU/1536 MiB memory+swap; client 2 CPU/4 GiB; 256 PIDs each; internal network, no host ports; new owned bind data and private secrets",
+        "database_names": [
+          "bb_first_ingest_fresh",
+          "bb_first_ingest_eligible",
+          "bb_first_ingest_unregistered"
+        ]
+      },
+      "ingest_evidence": "docs/implementation/evidence/p02-ingest-control-engine-20260918.json"
     },
     "rocks_product_boundary": {
       "root": ".research/implementation/rocks-product-design",
@@ -477,12 +517,17 @@
     "ingest_control_review": {
       "root": ".research/implementation/postgres/ingest-review",
       "review_sha256": "f7360e5e298fb431d0bf3b7287135c5efa0d3b71861e7b0b9a75854f4dda5cc5",
-      "scope": "Independent source review, five counterexamples fixed; actual PG 0002 NOT_RUN"
+      "scope": "Independent source review; five schema counterexamples fixed, isolated fixture negatives tightened; actual PG outcomes in p02-ingest-control-engine-20260918.json"
     },
     "ci_35278881051_audit": {
       "root": ".research/implementation/foundation/ci-35278881051",
       "audit_sha256": "9f1ff2d113e9eabce2e065c7955e6483197423f9afce1db6ba8eb6baba6c9c3d",
       "scope": "370 exact source files; 208 Linux checks; 154 traces; no downloaded executables; native PG/engine acceptance not supplied"
+    },
+    "ingest_runner_review": {
+      "root": ".research/implementation/postgres/ingest-runner-review",
+      "review_sha256": "a29f9516f24e18a464cd897ca02375cc0592f65779c18e5c3c8a206f51847bc5",
+      "scope": "Independent AI full runner/catalog review, two oracle fixes verified; no remote writes by reviewer"
     }
   }
 }

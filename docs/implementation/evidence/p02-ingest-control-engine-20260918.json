@@ -1,0 +1,158 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-18",
+  "scope": "P02-T01/P02-T07 ingest control schema 0002 and actual migration CLI on native Linux amd64 PostgreSQL 16.15; no runtime coordination adapter or complete product qualification",
+  "status": "PASS",
+  "application_source": {
+    "dirty": false,
+    "manifest_sha256": "8a2c0df1fdd35399d535942f3f8d828876e5b896b4c4753a026d7097c3c1c582",
+    "revision": "9cd823a72afc96f6c41e3987f5026c2a51a1e2cc",
+    "state": "builder-supplied",
+    "tree": "715c964474b6c72a6132c13280c5ba5b74909df8"
+  },
+  "binary_sha256": "4b36ae7651fa5cbf36bd369218cfc8263e4de1a693d5e56fec3c6c778089ffa7",
+  "harness_revision": "145eb7c497a465100cd132760d9c7317dad81364",
+  "harness_sha256": "6d8ef6ccd7dcd736c366e0007617e3e2880362e06ab13904ea745188b4ce365b",
+  "migration_sha256": {
+    "1": "f59a155b5533c1674d5e381f6b55a7954b3b5fb550668b942f00efdf3677d5be",
+    "2": "6a355b4d0066c60397bc09c7aa1f5d8d27722fbfbf9e9b859f02d55217f80202"
+  },
+  "fixture_sha256": "547594c88f89c0d83e545450655df245b9c3716acef64814f674378bc34c96e1",
+  "server": {
+    "version": "160015",
+    "fsync": "on",
+    "full_page_writes": "on",
+    "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+  },
+  "source_audit": {
+    "revision": "9cd823a72afc96f6c41e3987f5026c2a51a1e2cc",
+    "tree": "715c964474b6c72a6132c13280c5ba5b74909df8",
+    "binary_sha256": "4b36ae7651fa5cbf36bd369218cfc8263e4de1a693d5e56fec3c6c778089ffa7",
+    "source_manifest_sha256": "8a2c0df1fdd35399d535942f3f8d828876e5b896b4c4753a026d7097c3c1c582",
+    "source_files_verified": 386,
+    "archive_sha256": "9dab22974dd785b0ed8c67cdb711f62ee083becfad20c3307923a77f264f541e",
+    "result": "PASS"
+  },
+  "counts": {
+    "harness_PASS": 14,
+    "SQL_PASS": 74,
+    "SQL_exact_negative_cases": 56,
+    "FAIL": 0,
+    "SKIP": 0,
+    "UNKNOWN": 0
+  },
+  "scenarios": [
+    {
+      "name": "bb_first_ingest_fresh_plan_None",
+      "status": "PASS"
+    },
+    {
+      "name": "latest_default_is_two_without_namespace",
+      "status": "PASS"
+    },
+    {
+      "name": "bb_first_ingest_fresh_apply_None",
+      "status": "PASS"
+    },
+    {
+      "name": "two_exact_receipts_and_no_implicit_app_data",
+      "status": "PASS"
+    },
+    {
+      "name": "bb_first_ingest_fresh_apply_2",
+      "status": "PASS"
+    },
+    {
+      "name": "reapply_preserves_schema_and_data",
+      "status": "PASS"
+    },
+    {
+      "name": "independent_constraint_fixture",
+      "status": "PASS"
+    },
+    {
+      "name": "external_exact_rows_all_thirteen_ingest_relations",
+      "status": "PASS"
+    },
+    {
+      "name": "bb_first_ingest_eligible_apply_1",
+      "status": "PASS"
+    },
+    {
+      "name": "bb_first_ingest_eligible_apply_2",
+      "status": "PASS"
+    },
+    {
+      "name": "eligible_populated_upgrade_preserves_existing_rows",
+      "status": "PASS"
+    },
+    {
+      "name": "bb_first_ingest_unregistered_apply_1",
+      "status": "PASS"
+    },
+    {
+      "name": "populated_topology_refused_atomically",
+      "status": "PASS"
+    },
+    {
+      "name": "bb_first_ingest_unregistered_inspect_1",
+      "status": "PASS"
+    }
+  ],
+  "external_final_row_counts": {
+    "allocation_domains": 1,
+    "source_streams": 2,
+    "producer_slots": 1,
+    "producer_epochs": 2,
+    "producer_checkpoints": 1,
+    "consumers": 2,
+    "consumer_frontier_revisions": 3,
+    "consumer_frontiers": 6,
+    "projection_generations": 2,
+    "projection_chunks": 2,
+    "projection_chunk_bounds": 2,
+    "snapshot_leases": 1,
+    "retention_claims": 1
+  },
+  "refused_populated_topology": {
+    "exit": 1,
+    "stderr": "error: control migration 2 requires explicit verified source registration for existing topology streams; no authority is inferred\n",
+    "before_sha256": "935f36fc0fcc2bde47ca80180c6bbb7c6c253008bc8e32414665b00888b0bdc1",
+    "after_sha256": "935f36fc0fcc2bde47ca80180c6bbb7c6c253008bc8e32414665b00888b0bdc1",
+    "table_count": "10"
+  },
+  "review": {
+    "kind": "Independent AI source review with local isolated oracle probes",
+    "report_sha256": "a29f9516f24e18a464cd897ca02375cc0592f65779c18e5c3c8a206f51847bc5",
+    "findings": "Two harness flaws fixed in 145eb7c: verify actual mounted artifact/receipt/manifest before DB calls, and require complete literal CLI response with empty stderr. Eighteen CLI and seven preflight checks passed; these are not engine evidence.",
+    "root_review": "Full catalog/runner/interface changes, all 1146 DDL lines, all 590 fixture lines, full harness and independent expected rows reviewed. All 13 observed relations compare exactly after row-order normalization; all 56 caught SQLSTATE negatives match. The deliberate whole-transaction error is expected and its rollback is asserted."
+  },
+  "environment": {
+    "host": "Tux native x86_64 Linux",
+    "rustc": "1.98.1 (48a229cea 2026-09-01)",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "builder_image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+    "build": "Fresh isolated Cargo home and target, clean Git archive; container limited to 2 CPU, 6 GiB memory+swap and 512 PIDs. Old helper does not retain CARGO_BUILD_JOBS, so no explicit two-job assertion.",
+    "lab": "Internal owned network without published ports; PG 2 CPU/1536 MiB, client 2 CPU/4 GiB, 256 PIDs each. All TCP rules SCRAM. Container-local observer socket trusts only this isolated synthetic lab."
+  },
+  "limits": [
+    "Synthetic source/owner/receipt digests do not prove external engine durability or native writer exclusion.",
+    "New 0002 concurrent schedules are authored but not executed in this report.",
+    "Runtime typed PostgreSQL adapters, role mutation grants, lease expiry orchestration and physical reclamation remain work.",
+    "Native Linux arm64 PostgreSQL, disk/fsync failure and full installation/upgrade/recovery journeys not exercised.",
+    "First durable signed-event/archive/read/export/restart milestone and the complete selected product remain incomplete."
+  ],
+  "raw_root": ".research/implementation/postgres",
+  "artifacts_sha256": {
+    "ingest-v4.json": "bf15d8c76305ac67a00b0848129a743ae5055d32b01fd5fc625f228d712dcef4",
+    "ingest-v4.stdout": "9f3fa745d0b9c4c239672bf72cf40825420e1cf36b8e7348f46bd4b81da844fa",
+    "ingest-v4.stderr": "7168a31952058a339e459abe43b74ff785819417f4ca9902d14dd4b91189903e",
+    "ingest-observed-v4.json": "2a9a99a29004d4418c89661ae22a9035831f11aea89f641c46ef257938c56f18",
+    "ingest-expected-v4.json": "4988a7449541040e4d99d46ced6e830493fb025fa607fe2722f2799671bd0e8b",
+    "ingest-native-v4.log": "c4e2209c2b82e9ffbb22ca3100cfc746598f5d78170e60c21708466271510158",
+    "source-audit-9cd823a.json": "6acca065964066237f3bd989cb19b9cc9317d9a2f2d850ee74dc0c5d9bd80fc1",
+    "build-result-9cd823a.json": "209341ffa86b1b261d107cd46e461f121f4b1c50a10828d19eeebd5b3543c733",
+    "source-manifest-9cd823a.json": "8a2c0df1fdd35399d535942f3f8d828876e5b896b4c4753a026d7097c3c1c582",
+    "resources-v4.json": "b0b2b2b3c3adb34dcbff90926fc1eeaf3a44b4cd2fedc368ce960e7daa05d083"
+  }
+}
