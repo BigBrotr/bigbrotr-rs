@@ -20,3 +20,42 @@ pub struct SignedEvent {
     pub content: String,
     pub sig: Signature,
 }
+
+/// Shared authenticated fields, excluding the scope's signature representative.
+/// As with SignedEvent, constructing this value does not verify it.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct EventBody {
+    pub event_id: EventId,
+    pub pubkey: PublicKey,
+    pub created_at: NostrTime,
+    pub kind: u16,
+    pub tags: Vec<Vec<String>>,
+    pub content: String,
+}
+impl From<SignedEvent> for EventBody {
+    fn from(event: SignedEvent) -> Self {
+        Self {
+            event_id: event.id,
+            pubkey: event.pubkey,
+            created_at: event.created_at,
+            kind: event.kind,
+            tags: event.tags,
+            content: event.content,
+        }
+    }
+}
+impl EventBody {
+    /// Join only a representative authorized for the caller's selected scope.
+    /// Signature verification and scope authorization belong to their owners.
+    pub fn with_signature(self, sig: Signature) -> SignedEvent {
+        SignedEvent {
+            id: self.event_id,
+            pubkey: self.pubkey,
+            created_at: self.created_at,
+            kind: self.kind,
+            tags: self.tags,
+            content: self.content,
+            sig,
+        }
+    }
+}

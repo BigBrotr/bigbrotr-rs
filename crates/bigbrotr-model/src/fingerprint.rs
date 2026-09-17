@@ -1,6 +1,10 @@
 //! Closed profile-1 recipes, not a general CBOR serializer. Only named typed
 //! fields can reach the codec; no generic values, floats, maps or extension bags.
-use crate::{AdmissionBatch, Digest256, SignedEvent, SourceRecordId};
+use crate::{
+    AdmissionBatch, ClockQuality, Digest256, EventBody, EventId, EventIntent, EventOrigin, Fact,
+    FactPayload, NostrTime, ProducerRequestId, PublicKey, QualifiedRef, SignedEvent,
+    SourceRecordId,
+};
 use minicbor::{
     Encoder,
     encode::{Error, Write},
@@ -27,25 +31,69 @@ fn hash(
     Digest256::from_bytes(encoder.into_writer().0.finalize().into())
 }
 
-fn body<W: Write>(event: &SignedEvent, encoder: &mut Encoder<W>) -> Result<(), Error<W::Error>> {
+struct BodyFields<'a> {
+    id: EventId,
+    pubkey: PublicKey,
+    created_at: NostrTime,
+    kind: u16,
+    tags: &'a [Vec<String>],
+    content: &'a str,
+}
+impl<'a> From<&'a SignedEvent> for BodyFields<'a> {
+    fn from(event: &'a SignedEvent) -> Self {
+        Self {
+            id: event.id,
+            pubkey: event.pubkey,
+            created_at: event.created_at,
+            kind: event.kind,
+            tags: &event.tags,
+            content: &event.content,
+        }
+    }
+}
+impl<'a> From<&'a EventBody> for BodyFields<'a> {
+    fn from(event: &'a EventBody) -> Self {
+        Self {
+            id: event.event_id,
+            pubkey: event.pubkey,
+            created_at: event.created_at,
+            kind: event.kind,
+            tags: &event.tags,
+            content: &event.content,
+        }
+    }
+}
+fn body_fields<W: Write>(
+    event: BodyFields<'_>,
+    encoder: &mut Encoder<W>,
+) -> Result<(), Error<W::Error>> {
     encoder
-        .writer_mut()
-        .write_all(b"bigbrotr/body/1\0")
-        .map_err(Error::write)?;
-    encoder
-        .array(6)?
         .bytes(event.id.as_bytes())?
         .bytes(event.pubkey.as_bytes())?
         .u64(event.created_at.0)?
         .u16(event.kind)?
         .array(event.tags.len() as u64)?;
-    for tag in &event.tags {
+    for tag in event.tags {
         encoder.array(tag.len() as u64)?;
         for value in tag {
             encoder.str(value)?;
         }
     }
-    encoder.str(&event.content)?.ok()
+    encoder.str(event.content)?.ok()
+}
+fn body<W: Write>(event: &SignedEvent, encoder: &mut Encoder<W>) -> Result<(), Error<W::Error>> {
+    body_value(event.into(), encoder)
+}
+fn body_value<W: Write>(
+    event: BodyFields<'_>,
+    encoder: &mut Encoder<W>,
+) -> Result<(), Error<W::Error>> {
+    encoder
+        .writer_mut()
+        .write_all(b"bigbrotr/body/1\0")
+        .map_err(Error::write)?;
+    encoder.array(6)?;
+    body_fields(event, encoder)
 }
 
 fn source<W: Write>(id: SourceRecordId, encoder: &mut Encoder<W>) -> Result<(), Error<W::Error>> {
@@ -56,6 +104,163 @@ fn source<W: Write>(id: SourceRecordId, encoder: &mut Encoder<W>) -> Result<(), 
         .u64(id.owner_epoch.get())?
         .u64(id.sequence.get())?
         .ok()
+}
+
+fn reference<W: Write>(
+    value: QualifiedRef,
+    encoder: &mut Encoder<W>,
+) -> Result<(), Error<W::Error>> {
+    encoder
+        .array(4)?
+        .bytes(value.dataset_id.as_bytes())?
+        .u16(value.dictionary_kind as u16)?
+        .bytes(value.allocation_domain.as_bytes())?
+        .u64(value.ordinal.get())?
+        .ok()
+}
+fn clock<W: Write>(value: ClockQuality, encoder: &mut Encoder<W>) -> Result<(), Error<W::Error>> {
+    encoder.array(4)?;
+    reference(value.clock_id(), encoder)?;
+    encoder.u64(value.resolution_us().get())?;
+    match value.uncertainty_us() {
+        Some(uncertainty) => {
+            encoder.u64(uncertainty.get())?;
+        }
+        None => {
+            encoder.null()?;
+        }
+    }
+    encoder.u32(value.anomaly_flags())?.ok()
+}
+fn origin<W: Write>(value: EventOrigin, encoder: &mut Encoder<W>) -> Result<(), Error<W::Error>> {
+    encoder.str(value.as_str())?;
+    match value.import_lineage() {
+        Some(lineage) => reference(lineage, encoder),
+        None => encoder.null()?.ok(),
+    }
+}
+fn correction<W: Write>(
+    value: Option<SourceRecordId>,
+    encoder: &mut Encoder<W>,
+) -> Result<(), Error<W::Error>> {
+    match value {
+        Some(id) => source(id, encoder),
+        None => encoder.null()?.ok(),
+    }
+}
+fn fact<W: Write>(value: &Fact, encoder: &mut Encoder<W>) -> Result<(), Error<W::Error>> {
+    encoder
+        .writer_mut()
+        .write_all(b"bigbrotr/fact/1\0")
+        .map_err(Error::write)?;
+    encoder.array(6)?;
+    source(value.source_record_id(), encoder)?;
+    encoder
+        .str(value.record_kind())?
+        .u16(value.record_schema_version())?;
+    reference(value.visibility_scope_id(), encoder)?;
+    encoder.i64(value.recorded_at().get())?;
+    match value.payload() {
+        FactPayload::EventPayload(value) => {
+            encoder.array(7)?;
+            body_fields((&value.body).into(), encoder)?;
+            reference(value.event_ordinal, encoder)?;
+        }
+        FactPayload::EventEligibility(value) => {
+            encoder
+                .array(6)?
+                .bytes(value.event_id.as_bytes())?
+                .bytes(value.body_digest.as_bytes())?
+                .bytes(value.sig.as_bytes())?
+                .i64(value.first_eligible_at.get())?;
+            origin(value.origin, encoder)?;
+        }
+        FactPayload::EventReceive(value) => {
+            encoder
+                .array(5)?
+                .bytes(value.event_id.as_bytes())?
+                .i64(value.received_at.get())?;
+            reference(value.observer_id, encoder)?;
+            clock(value.clock_quality, encoder)?;
+            correction(value.corrects, encoder)?;
+        }
+        FactPayload::Provenance(value) => {
+            encoder.array(8)?.bytes(value.event_id.as_bytes())?;
+            reference(value.endpoint_id, encoder)?;
+            reference(value.observer_id, encoder)?;
+            reference(value.access_scope_id, encoder)?;
+            encoder.i64(value.received_at.get())?;
+            clock(value.clock_quality, encoder)?;
+            reference(value.verification_method_id, encoder)?;
+            correction(value.corrects, encoder)?;
+        }
+    }
+    Ok(())
+}
+
+fn event_intent<W: Write>(
+    value: &EventIntent,
+    encoder: &mut Encoder<W>,
+) -> Result<(), Error<W::Error>> {
+    encoder.array(6)?.u16(value.admission_policy_version())?;
+    reference(value.visibility_scope_id(), encoder)?;
+    encoder.array(7)?;
+    body_fields(value.event().into(), encoder)?;
+    encoder.bytes(value.event().sig.as_bytes())?;
+    origin(value.origin(), encoder)?;
+    match value.observation() {
+        None => {
+            encoder.null()?;
+        }
+        Some(local) => {
+            encoder.array(4)?.i64(local.received_at.get())?;
+            reference(local.observer_id, encoder)?;
+            clock(local.clock_quality, encoder)?;
+            match local.witness {
+                None => {
+                    encoder.null()?;
+                }
+                Some(witness) => {
+                    encoder.array(3)?;
+                    reference(witness.endpoint_id, encoder)?;
+                    reference(witness.access_scope_id, encoder)?;
+                    reference(witness.verification_method_id, encoder)?;
+                }
+            }
+        }
+    }
+    Ok(())
+}
+fn request<W: Write>(
+    id: Option<ProducerRequestId>,
+    intent: &EventIntent,
+    encoder: &mut Encoder<W>,
+) -> Result<(), Error<W::Error>> {
+    encoder
+        .writer_mut()
+        .write_all(b"bigbrotr/producer-request/1\0")
+        .map_err(Error::write)?;
+    encoder.array(4)?.array(3)?;
+    match id {
+        Some(id) => {
+            encoder
+                .bytes(id.producer_slot_id.as_bytes())?
+                .u64(id.producer_epoch.get())?
+                .u64(id.request_sequence.get())?
+                .str("admit")?;
+        }
+        None => {
+            // The reserved proof-only identity cannot be constructed as a
+            // ProducerRequestId, so it cannot accidentally enter strict Admit.
+            encoder
+                .bytes(&[0; 16])?
+                .u64(0)?
+                .u64(0)?
+                .str("certify-existing")?;
+        }
+    }
+    encoder.u16(1)?;
+    event_intent(intent, encoder)
 }
 
 fn admission<W: Write>(
@@ -90,6 +295,25 @@ impl SignedEvent {
         hash(|encoder| body(self, encoder))
     }
 }
+impl EventBody {
+    pub fn body_digest(&self) -> Digest256 {
+        hash(|encoder| body_value(self.into(), encoder))
+    }
+}
+impl Fact {
+    /// Binds the entire fact envelope and typed payload, excluding this digest.
+    pub fn payload_digest(&self) -> Digest256 {
+        hash(|encoder| fact(self, encoder))
+    }
+}
+impl EventIntent {
+    pub fn request_digest(&self, id: ProducerRequestId) -> Digest256 {
+        hash(|encoder| request(Some(id), self, encoder))
+    }
+    pub fn certification_digest(&self) -> Digest256 {
+        hash(|encoder| request(None, self, encoder))
+    }
+}
 impl AdmissionBatch {
     /// Semantic membership fingerprint, not proof of an engine commit.
     pub fn digest(&self) -> Digest256 {
@@ -112,6 +336,186 @@ mod tests {
     }
     fn hex(bytes: &[u8]) -> String {
         bytes.iter().map(|b| format!("{b:02x}")).collect()
+    }
+
+    #[test]
+    fn complete_core_fact_and_request_bytes_match_independent_vectors() {
+        use crate::{
+            AllocationDomainId, DictionaryKind, DurationUs, EventEligibility, EventPayload,
+            EventReceive, LocalObservation, ObservedTime, Ordinal, ProducerEpoch, ProducerSlotId,
+            Provenance, RequestSequence, WitnessContext,
+        };
+        let vectors: serde_json::Value = serde_json::from_str(include_str!(
+            "../../../tests/fixtures/model/core-fingerprints.json"
+        ))
+        .unwrap();
+        let original: serde_json::Value = serde_json::from_str(include_str!(
+            "../../../experiments/identity-contract/golden-vectors.json"
+        ))
+        .unwrap();
+        let reference = |kind| QualifiedRef {
+            dataset_id: DatasetId::try_from([1; 16]).unwrap(),
+            dictionary_kind: kind,
+            allocation_domain: AllocationDomainId::try_from([2; 16]).unwrap(),
+            ordinal: Ordinal::new(1).unwrap(),
+        };
+        let source_id = |sequence| SourceRecordId {
+            dataset_id: reference(DictionaryKind::VisibilityScope).dataset_id,
+            shard_id: 0,
+            owner_epoch: OwnerEpoch::new(1).unwrap(),
+            sequence: Sequence::new(sequence).unwrap(),
+        };
+        let event = SignedEvent {
+            id: EventId::from_bytes([0xaa; 32]),
+            pubkey: PublicKey::from_bytes([0xbb; 32]),
+            created_at: NostrTime(u64::MAX),
+            kind: 1,
+            tags: vec![
+                vec!["x".into()],
+                vec!["x".into(), "".into()],
+                vec!["x".into(), "".into()],
+            ],
+            content: "é\n".into(),
+            sig: Signature::from_bytes([0xcc; 64]),
+        };
+        let scope = reference(DictionaryKind::VisibilityScope);
+        let observer = reference(DictionaryKind::Observer);
+        let clock = ClockQuality::new(observer, DurationUs::new(1), None, 0).unwrap();
+        let check = |name: &str, bytes: &[u8], digest: Digest256| {
+            let vector = vectors["vectors"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .chain(original["vectors"].as_array().unwrap())
+                .find(|row| row["name"] == name)
+                .unwrap();
+            assert_eq!(hex(bytes), vector["preimage_hex"], "{name}");
+            assert_eq!(digest.to_string(), vector["sha256"], "{name}");
+        };
+        let payloads = [
+            (
+                "event-payload",
+                FactPayload::EventPayload(EventPayload {
+                    body: EventBody::from(event.clone()),
+                    event_ordinal: reference(DictionaryKind::Event),
+                }),
+            ),
+            (
+                "event-receive-correction",
+                FactPayload::EventReceive(EventReceive {
+                    event_id: event.id,
+                    received_at: ObservedTime::new(-1),
+                    observer_id: observer,
+                    clock_quality: clock,
+                    corrects: Some(source_id(1)),
+                }),
+            ),
+            (
+                "provenance-correction",
+                FactPayload::Provenance(Provenance {
+                    event_id: event.id,
+                    endpoint_id: reference(DictionaryKind::Endpoint),
+                    observer_id: observer,
+                    access_scope_id: reference(DictionaryKind::AccessScope),
+                    received_at: ObservedTime::new(-1),
+                    clock_quality: clock,
+                    verification_method_id: reference(DictionaryKind::Method),
+                    corrects: Some(source_id(1)),
+                }),
+            ),
+            (
+                "eligibility-import",
+                FactPayload::EventEligibility(EventEligibility {
+                    event_id: event.id,
+                    body_digest: event.body_digest(),
+                    sig: event.sig,
+                    first_eligible_at: ObservedTime::new(-1),
+                    origin: EventOrigin::Import(reference(DictionaryKind::DatasetLineage)),
+                }),
+            ),
+            (
+                "fact-eligibility",
+                FactPayload::EventEligibility(EventEligibility {
+                    event_id: event.id,
+                    body_digest: event.body_digest(),
+                    sig: event.sig,
+                    first_eligible_at: ObservedTime::new(-1),
+                    origin: EventOrigin::Network,
+                }),
+            ),
+        ];
+        for (name, payload) in payloads {
+            let (id, time) = if name == "fact-eligibility" {
+                (source_id(1), -1)
+            } else {
+                (source_id(2), i64::MIN)
+            };
+            let value = Fact::new(id, scope, ObservedTime::new(time), payload).unwrap();
+            let mut encoder = Encoder::new(Bytes(Vec::new()));
+            fact(&value, &mut encoder).unwrap();
+            check(name, &encoder.into_writer().0, value.payload_digest());
+        }
+        let id = ProducerRequestId {
+            producer_slot_id: ProducerSlotId::try_from([3; 16]).unwrap(),
+            producer_epoch: ProducerEpoch::new(1).unwrap(),
+            request_sequence: RequestSequence::new(1).unwrap(),
+        };
+        let observation = LocalObservation {
+            received_at: ObservedTime::new(-1),
+            observer_id: observer,
+            clock_quality: clock,
+            witness: None,
+        };
+        let intents = [
+            (
+                "request-import",
+                Some(id),
+                EventIntent::import(
+                    1,
+                    scope,
+                    event.clone(),
+                    reference(DictionaryKind::DatasetLineage),
+                )
+                .unwrap(),
+            ),
+            (
+                "request-network-provenance",
+                Some(id),
+                EventIntent::network(
+                    1,
+                    scope,
+                    event.clone(),
+                    LocalObservation {
+                        witness: Some(WitnessContext {
+                            endpoint_id: reference(DictionaryKind::Endpoint),
+                            access_scope_id: reference(DictionaryKind::AccessScope),
+                            verification_method_id: reference(DictionaryKind::Method),
+                        }),
+                        ..observation
+                    },
+                )
+                .unwrap(),
+            ),
+            (
+                "producer-request",
+                Some(id),
+                EventIntent::network(1, scope, event.clone(), observation).unwrap(),
+            ),
+            (
+                "certification-intent",
+                None,
+                EventIntent::network(1, scope, event, observation).unwrap(),
+            ),
+        ];
+        for (name, id, value) in intents {
+            let mut encoder = Encoder::new(Bytes(Vec::new()));
+            request(id, &value, &mut encoder).unwrap();
+            let digest = match id {
+                Some(id) => value.request_digest(id),
+                None => value.certification_digest(),
+            };
+            check(name, &encoder.into_writer().0, digest);
+        }
     }
 
     #[test]

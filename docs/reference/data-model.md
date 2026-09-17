@@ -41,13 +41,33 @@ uncertainty and v1 anomaly bits 0–2 only. Missing uncertainty is rejected; nul
 means unknown and `"0"` is a measured zero uncertainty. No clock or elapsed-time
 inference is made from a signed event's authored timestamp.
 
-The first fingerprint recipes stream `bigbrotr/body/1` and
-`bigbrotr/admission-batch/1` into SHA-256 using private direct minicbor encoding.
+`EventBody` factors the six shared fields and moves tags/content when split from
+or joined to a `SignedEvent`. Joining a signature does not prove its validity or
+scope authorization. `Fact` has a private immutable envelope and a closed
+`FactPayload` variant for event payload, scoped eligibility, receive and provenance.
+Construction checks the dataset and dictionary kind of every reference, including
+the clock and import lineage. A correction cannot target itself or a later
+sequence in its own stream. Cross-stream causal order, earlier observed time,
+target family/key and dictionary allocation still require the storage owner.
+`dictionary_refs()` returns field occurrences; dependency owners deduplicate them.
+
+`EventIntent` requires a local observation for network input and a dataset-lineage
+reference for import input; import cannot carry a local observation. The current
+provenance policy must separately validate presence/absence of witness context.
+Its request fingerprint binds the complete supplied signature and intent even
+when effects would deduplicate. `ProducerRequestId` cannot contain the zero values
+reserved solely for the read-only certification fingerprint. These values grant
+no current policy, producer authority, durable outcome or existing-effect proof.
+
+The fingerprint recipes stream `bigbrotr/body/1`, `bigbrotr/fact/1`,
+`bigbrotr/producer-request/1` and `bigbrotr/admission-batch/1` into SHA-256 using
+private direct minicbor encoding.
 Body identity excludes signature and acquisition envelope; ordered tags, empty
 strings, Unicode and every payload field remain significant. The model method
 does not verify a signature; the protocol's `VerifiedEvent::body_digest` exposes
 it for an already verified invocation. Frozen independent vectors compare exact
-preimage bytes as well as hashes. These two recipes are not a complete profile
+preimage bytes as well as hashes, including every implemented fact family,
+network/import intents and the reserved certification intent. These recipes are not a complete profile
 implementation. Current Serde mappings describe JSON metadata; binary/columnar
 adapters must use explicit bytes/integers instead of reusing textual Serde output.
 

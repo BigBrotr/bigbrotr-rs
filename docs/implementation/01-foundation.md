@@ -105,8 +105,10 @@ typed errors; SourceRecordId and SourceCut have exactly one shared meaning.
 
 The [portable model reference](../reference/data-model.md) covers implemented
 scalars, clock quality, qualified references, structural source cuts/batches and
-the first body/admission fingerprint recipes. Remaining receipts/proofs, typed
-fact families, other recipes/decoders, generated schemas and actual engine
+body/admission and core fact/event-request fingerprint recipes. The four core
+event fact families and network/import intents are structurally checked; see the
+[core fact evidence](evidence/p01-core-facts-20260917.json). Remaining receipts/proofs,
+dictionary/claim/measurement families, other recipes/decoders, generated schemas and actual engine
 round-trips remain unchecked. Structural validation never certifies a commit.
 
 ## P01-T03 — Protocol parsing and independent verification

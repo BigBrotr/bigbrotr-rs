@@ -1,0 +1,55 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-17",
+  "scope": "P01-T02 partial: four core event fact families, event intents, producer request identity and exact fact/request/certification fingerprints",
+  "source_state": "Root-owned candidate on a25e0c559ea1575d71775a9bfcc7bd85e133c1ff; resolve containing commit from Git; native CI for these additions not yet run",
+  "inputs_sha256": {
+    "Cargo.lock": "c6a72a1cafed9282b52115229268b9a37b5637965174e5ce6520a0def026bffd",
+    "crates/bigbrotr-model/src/admission.rs": "7d546a44024bfffdb71d35b12fe68115ce3dbab7429c778803daa7441d883c3d",
+    "crates/bigbrotr-model/src/event.rs": "0dd793f2b20b5e215302a89e6c4ddb8d66a95f8db76233c5de6ae34a19c5c1f0",
+    "crates/bigbrotr-model/src/fact.rs": "6346d63ca8ebc40b0d5fe245683c3c0395a7ef24120210086685e86ef6b9013e",
+    "crates/bigbrotr-model/src/fingerprint.rs": "0869a8a3c52417dcb9dce191c7fa5848379bd5a189ba5581a5a0f1cc4b965557",
+    "crates/bigbrotr-model/src/lib.rs": "ca8097378b8eb5af2fea0c62fdd2c9381e35067e919bb6cb722df3c58387a294",
+    "crates/bigbrotr-model/tests/core_facts.rs": "df88517050fa5edfe34dce05338effbe700380f1a6fb3b0bfc951b6d79d347da",
+    "tests/fixtures/model/core-fingerprints.json": "17aeb4833e650138150edf94dfc948fa39279f70fd9822d36a727b2e5d9d8e4b",
+    "tests/fixtures/model/write_core_vectors.py": "d057c979308e642257456a9ed0037592a6f8c2806bf95c22c186b7c2f5735036"
+  },
+  "executed": {
+    "environment": "Mac native aarch64, Rust1.98.1; no new dependency",
+    "workspace_tests": {
+      "result": "PASS",
+      "passed": 27,
+      "failed": 0,
+      "log": ".research/implementation/foundation/core-facts-tests.log"
+    },
+    "format_clippy_documentation": "PASS, warnings denied for workspace Clippy and docs",
+    "negative_controls": [
+      "New absent APIs first failed compilation (core-facts-red.log)",
+      "Foreign/wrong dictionary kinds, foreign clock and incompatible witness policy rejected",
+      "Same-stream future correction initially passed constructor; regression failed, then constructor fixed",
+      "Signature/scope/policy/observation/request identity changes alter bound digest"
+    ]
+  },
+  "independent_expectations": {
+    "core": "tests/fixtures/model/core-fingerprints.json",
+    "previous": "experiments/identity-contract/golden-vectors.json",
+    "method": "Literal independently assembled CBOR preimages and system OpenSSL SHA-256; tests never regenerate expected vectors; synthetic signatures certify encoding only",
+    "coverage": "Exact bytes/hash for all four implemented fact families, import lineage, i64 minimum/u64 maximum, correction reference, import/network intents with and without witness, reserved certification identity"
+  },
+  "review": {
+    "kind": "Independent AI review plus integrating owner complete source/diff and contract review",
+    "findings": [
+      "No material semantic defect found by independent reviewer in the bounded slice",
+      "dictionary_refs returns occurrences: now explicitly documented, dependency owner must deduplicate",
+      "Root review: same-stream future correction refused with regression"
+    ],
+    "allocation": "Constructors move payload Vec/String; fingerprint encoders borrow and stream directly to SHA without payload copies. Fixed network observation stays inline instead of per-delivery heap allocation."
+  },
+  "not_run": [
+    "Durable receipt/proof ownership and admitted effect generation",
+    "Persistent decoders and compatibility preflight",
+    "Dictionary/claim/measurement families and generated archive schemas",
+    "PG/CH/Arrow/Parquet roundtrips and actual storage admission",
+    "Native exact-revision CI for this candidate; earlier a25e0c5 results remain separately labeled"
+  ]
+}
