@@ -574,6 +574,13 @@
         "author_inventory_sha256": "657dcb162600b74995b90febe6d155e4c380185239e9bf7db715de53976be666",
         "scope": "Root integrated Mac model33 tests and Clippy PASS; operational codec only, no native ledger/authority/ACK/GC. Author read provenance corrected explicitly.",
         "review_sha256": "b52d2a2e8739264db0d9a9c87e3290ba1f1f06a155fe6752b03e83198745a4d8"
+      },
+      "dictionary_codec": {
+        "candidate": "a3f3a26ee38e86b1a2788e1267ac0ad773218406",
+        "worktree": ".research/worktrees/dictionary-model",
+        "evidence": "docs/implementation/evidence/p02-ingest-dictionary-codec-20260918.json",
+        "review_sha256": "a5cd491fbe18a93a5cff57b501fc07ea460787b6b318374877881c4187210f48",
+        "scope": "Integrated Mac workspace166 tests and Clippy PASS. Native libraries rebuilt for this feature tuple; no dictionary allocator/admission authority."
       }
     },
     "ingest_control_review": {
@@ -626,6 +633,13 @@
       "audit_sha256": "4afe0be8d003425a4de661d22d4c6fe5689232064c75ed8890984b2df7aa2923",
       "result": "Three artifact ZIPs and 391 exact Git source entries verified. Linux amd64/arm64: 208 practical cases PASS, 154 complete process traces. Mac build receipts only; practical cases SKIPPED.",
       "boundary": "Pre-Rocks consumer revision; no storage, PostgreSQL/TLS or release qualification. Executables not retained in artifacts, binary identities are report-linked only."
+    },
+    "ci_35285344284_audit": {
+      "root": ".research/implementation/foundation/ci-35285344284",
+      "source": "a842b939df46d12ae36708d9ff735c0f47e1b9b9",
+      "audit_sha256": "c8742fa973e68d272f25f5351553e7f03db8d3da02064c857faef87b323fe8b0",
+      "summary_sha256": "7c1068177a19cf8a02f032c87fd8e1552cdc6246a30c07ace28c74e8141c2a70",
+      "scope": "Independent AI audit:399 exact source entries and three ZIPs; native Rust144/144/145 tests and208 Linux practical checks PASS. Mac practical SKIP, executables not retained. Initial Rocks store/profile only; no later pending/receipt/dictionary or admission/release qualification. Root reviewed concise report, not every raw log."
     }
   }
 }

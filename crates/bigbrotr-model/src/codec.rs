@@ -1,17 +1,26 @@
-//! Closed core fact preimages only. Limits precede attacker-directed allocation;
+//! Closed core fact and dictionary preimages only. Limits precede attacker-directed allocation;
 //! exact re-encoding refuses noncanonical CBOR without a second output buffer.
 //! This is not an archive manifest, general CBOR codec or authority certificate.
 use crate::{
-    AllocationDomainId, ClockQuality, DatasetId, DictionaryKind, Digest256, DurationUs, EventBody,
-    EventEligibility, EventId, EventOrigin, EventPayload, EventReceive, Fact, FactPayload,
-    NostrTime, ObservedTime, Ordinal, OwnerEpoch, Provenance, PublicKey, QualifiedRef, Sequence,
-    Signature, SourceRecordId, fact::FactError, fingerprint,
+    AccessClass, AccessScopeDescriptor, AllocationDomainId, ClockQuality, ClockSource, DatasetId,
+    DatasetLineageDescriptor, DescriptorLabel, DictionaryDescriptor, DictionaryEntry,
+    DictionaryKind, Digest256, DurationUs, EndpointDescriptor, EventBody, EventEligibility,
+    EventId, EventOrigin, EventPayload, EventReceive, Fact, FactPayload, NostrTime, ObservedTime,
+    ObserverDescriptor, Ordinal, OwnerEpoch, Provenance, PublicKey, QualifiedRef, RouteClass,
+    Sequence, Signature, SourceRecordId,
+    dictionary::{
+        DictionaryError, EVENT_VERIFICATION_NIPS_REVISION, MAX_DESCRIPTOR_ENDPOINT_BYTES,
+        MAX_DESCRIPTOR_LABEL_BYTES,
+    },
+    fact::FactError,
+    fingerprint,
 };
 use minicbor::{Decoder, Encoder, encode::Write};
 use sha2::{Digest, Sha256};
 use std::{fmt, mem::size_of};
 
 const FACT_PREFIX: &[u8] = b"bigbrotr/fact/1\0";
+const DICTIONARY_PREFIX: &[u8] = b"bigbrotr/dictionary/1\0";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum CodecError {
@@ -26,21 +35,23 @@ pub enum CodecError {
     NonCanonical,
     DigestMismatch,
     InvalidFact(FactError),
+    InvalidDictionary(DictionaryError),
 }
 impl fmt::Display for CodecError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.write_str(match self {
-            Self::InputLimit => "fact preimage exceeds the encoded byte limit",
-            Self::AllocationLimit => "fact exceeds the requested allocation budget",
+            Self::InputLimit => "persistent preimage exceeds the encoded byte limit",
+            Self::AllocationLimit => "persistent value exceeds the requested allocation budget",
             Self::TagLimit => "fact tag structure exceeds the node limit",
-            Self::StringLimit => "fact string exceeds the UTF-8 byte limit",
-            Self::AllocationFailed => "unable to reserve memory for the fact",
-            Self::Malformed => "malformed closed fact preimage",
-            Self::InvalidValue => "invalid fact scalar or reference",
-            Self::IncompatibleSchema => "unsupported fact profile, kind, version or enum",
-            Self::NonCanonical => "fact preimage is not exact profile-1 canonical CBOR",
-            Self::DigestMismatch => "fact bytes do not match the supplied digest",
+            Self::StringLimit => "persistent string exceeds the UTF-8 byte limit",
+            Self::AllocationFailed => "unable to reserve memory for the persistent value",
+            Self::Malformed => "malformed closed persistent preimage",
+            Self::InvalidValue => "invalid persistent scalar or reference",
+            Self::IncompatibleSchema => "unsupported persistent profile, kind, version or enum",
+            Self::NonCanonical => "persistent preimage is not exact profile-1 canonical CBOR",
+            Self::DigestMismatch => "persistent bytes do not match the supplied digest",
             Self::InvalidFact(_) => "fact references violate structural invariants",
+            Self::InvalidDictionary(_) => "dictionary descriptor violates structural invariants",
         })
     }
 }
@@ -48,6 +59,7 @@ impl std::error::Error for CodecError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         match self {
             Self::InvalidFact(error) => Some(error),
+            Self::InvalidDictionary(error) => Some(error),
             _ => None,
         }
     }
@@ -67,7 +79,7 @@ pub struct FactDecodeLimits {
     pub max_allocation_bytes: usize,
     /// Tag arrays plus their string elements, including empty strings/arrays.
     pub max_tag_nodes: usize,
-    /// Retained content/tag strings; fixed schema labels are borrowed and closed.
+    /// Retained content/tag/descriptor strings; fixed schema labels are borrowed.
     pub max_string_bytes: usize,
 }
 impl Default for FactDecodeLimits {
@@ -80,6 +92,10 @@ impl Default for FactDecodeLimits {
         }
     }
 }
+
+/// The same input/allocation/string budget applies to a standalone dictionary.
+/// No tag nodes are present; descriptor-specific caps additionally apply.
+pub type DictionaryDecodeLimits = FactDecodeLimits;
 
 struct CountWriter {
     count: usize,
@@ -165,6 +181,63 @@ impl Fact {
     }
 }
 
+impl DictionaryEntry {
+    /// Encode the standalone dictionary-domain preimage, distinct from the fact
+    /// envelope containing the same mapping. Count before output reservation.
+    pub fn encode_preimage(&self, max_encoded_bytes: usize) -> Result<Vec<u8>, CodecError> {
+        let mut count = Encoder::new(CountWriter {
+            count: 0,
+            limit: max_encoded_bytes,
+        });
+        fingerprint::dictionary(self, &mut count).map_err(|_| CodecError::InputLimit)?;
+        let size = count.into_writer().count;
+        let mut bytes = Vec::new();
+        bytes
+            .try_reserve_exact(size)
+            .map_err(|_| CodecError::AllocationFailed)?;
+        bytes.resize(size, 0);
+        let mut encoder = Encoder::new(bytes.as_mut_slice());
+        fingerprint::dictionary(self, &mut encoder).map_err(|_| CodecError::Malformed)?;
+        if !encoder.into_writer().is_empty() {
+            return Err(CodecError::Malformed);
+        }
+        Ok(bytes)
+    }
+    /// Validate closed bytes and integrity, not current allocation, URL
+    /// normalization, secret classification, publication permission or authority.
+    pub fn decode_preimage(
+        bytes: &[u8],
+        expected_digest: Digest256,
+        limits: DictionaryDecodeLimits,
+    ) -> Result<Self, CodecError> {
+        if bytes.len() > limits.max_encoded_bytes {
+            return Err(CodecError::InputLimit);
+        }
+        let input = bytes
+            .strip_prefix(DICTIONARY_PREFIX)
+            .ok_or(CodecError::IncompatibleSchema)?;
+        if Digest256::from_bytes(Sha256::digest(bytes).into()) != expected_digest {
+            return Err(CodecError::DigestMismatch);
+        }
+        let mut reader = FactReader {
+            decoder: Decoder::new(input),
+            limits,
+            allocated: 0,
+            tag_nodes: 0,
+        };
+        let value = reader.dictionary()?;
+        if reader.decoder.position() != input.len() {
+            return Err(CodecError::NonCanonical);
+        }
+        let mut encoder = Encoder::new(CompareWriter(bytes));
+        fingerprint::dictionary(&value, &mut encoder).map_err(|_| CodecError::NonCanonical)?;
+        if !encoder.into_writer().0.is_empty() {
+            return Err(CodecError::NonCanonical);
+        }
+        Ok(value)
+    }
+}
+
 struct FactReader<'a> {
     decoder: Decoder<'a>,
     limits: FactDecodeLimits,
@@ -246,8 +319,11 @@ impl FactReader<'_> {
         Ok(())
     }
     fn text(&mut self) -> Result<String, CodecError> {
+        self.text_bounded(self.limits.max_string_bytes)
+    }
+    fn text_bounded(&mut self, maximum: usize) -> Result<String, CodecError> {
         let value = self.decoder.str()?;
-        if value.len() > self.limits.max_string_bytes {
+        if value.len() > self.limits.max_string_bytes.min(maximum) {
             return Err(CodecError::StringLimit);
         }
         self.charge(value.len())?;
@@ -304,13 +380,158 @@ impl FactReader<'_> {
             content,
         })
     }
+    fn map(&mut self, length: u64) -> Result<(), CodecError> {
+        if self.decoder.map()? != Some(length) {
+            return Err(CodecError::Malformed);
+        }
+        Ok(())
+    }
+    fn literal(&mut self, expected: &str) -> Result<(), CodecError> {
+        if self.decoder.str()? != expected {
+            return Err(CodecError::IncompatibleSchema);
+        }
+        Ok(())
+    }
+    fn label(&mut self) -> Result<DescriptorLabel, CodecError> {
+        DescriptorLabel::new(self.text_bounded(MAX_DESCRIPTOR_LABEL_BYTES)?)
+            .map_err(CodecError::InvalidDictionary)
+    }
+    fn dictionary(&mut self) -> Result<DictionaryEntry, CodecError> {
+        self.array(5)?;
+        let reference = self.reference()?;
+        if self.decoder.u16()? != 1 {
+            return Err(CodecError::IncompatibleSchema);
+        }
+        let schema = self.decoder.str()?;
+        if self.decoder.u16()? != 1 {
+            return Err(CodecError::IncompatibleSchema);
+        }
+        let descriptor = match (reference.dictionary_kind, schema) {
+            (DictionaryKind::Event, "event") => {
+                self.map(1)?;
+                self.literal("event_id")?;
+                DictionaryDescriptor::Event(EventId::from_bytes(self.fixed()?))
+            }
+            (DictionaryKind::VisibilityScope, "visibility") => {
+                self.map(1)?;
+                self.literal("class")?;
+                DictionaryDescriptor::Visibility {
+                    class: self.label()?,
+                }
+            }
+            (DictionaryKind::Endpoint, "endpoint") => {
+                self.map(1)?;
+                self.literal("url")?;
+                DictionaryDescriptor::Endpoint(
+                    EndpointDescriptor::new(self.text_bounded(MAX_DESCRIPTOR_ENDPOINT_BYTES)?)
+                        .map_err(CodecError::InvalidDictionary)?,
+                )
+            }
+            (DictionaryKind::Observer, "observer") => {
+                self.map(7)?;
+                self.literal("clock")?;
+                let clock = self.nullable(|r| match r.decoder.str()? {
+                    "system-utc" => Ok(ClockSource::SystemUtc),
+                    "external-utc" => Ok(ClockSource::ExternalUtc),
+                    _ => Err(CodecError::IncompatibleSchema),
+                })?;
+                self.literal("vantage")?;
+                let vantage = self.nullable(Self::label)?;
+                self.literal("software")?;
+                let software = self.nullable(Self::label)?;
+                self.literal("method_id")?;
+                let method_id = self.nullable(Self::reference)?;
+                self.literal("public_key")?;
+                let public_key = self.nullable(|r| Ok(PublicKey::from_bytes(r.fixed()?)))?;
+                self.literal("route_class")?;
+                let route_class = self.nullable(|r| match r.decoder.str()? {
+                    "public" => Ok(RouteClass::Public),
+                    "private" => Ok(RouteClass::Private),
+                    "tor" => Ok(RouteClass::Tor),
+                    "i2p" => Ok(RouteClass::I2p),
+                    "lokinet" => Ok(RouteClass::Lokinet),
+                    _ => Err(CodecError::IncompatibleSchema),
+                })?;
+                self.literal("software_version")?;
+                let software_version = self.nullable(Self::label)?;
+                DictionaryDescriptor::Observer(ObserverDescriptor {
+                    clock,
+                    vantage,
+                    software,
+                    method_id,
+                    public_key,
+                    route_class,
+                    software_version,
+                })
+            }
+            (DictionaryKind::AccessScope, "access-scope") => {
+                self.map(3)?;
+                self.literal("class")?;
+                let class = match self.decoder.str()? {
+                    "public" => AccessClass::Public,
+                    "protected" => AccessClass::Protected,
+                    _ => return Err(CodecError::IncompatibleSchema),
+                };
+                self.literal("label")?;
+                let label = self.nullable(Self::label)?;
+                self.literal("visibility_scope_id")?;
+                let visibility_scope_id = self.reference()?;
+                DictionaryDescriptor::AccessScope(AccessScopeDescriptor {
+                    class,
+                    label,
+                    visibility_scope_id,
+                })
+            }
+            (DictionaryKind::Method, "event-verification") => {
+                self.map(7)?;
+                for (key, value) in [
+                    ("input", "nip01-event/1"),
+                    ("algorithm", "sha256-bip340"),
+                    ("capability", "event-id-and-signature"),
+                    ("output_unit", "verification-result"),
+                    ("failure_taxonomy", "bigbrotr-nip01-verifier/1"),
+                ] {
+                    self.literal(key)?;
+                    self.literal(value)?;
+                }
+                self.literal("algorithm_version")?;
+                if self.decoder.u16()? != 1 {
+                    return Err(CodecError::IncompatibleSchema);
+                }
+                self.literal("protocol_revision")?;
+                self.literal(EVENT_VERIFICATION_NIPS_REVISION)?;
+                DictionaryDescriptor::EventVerification
+            }
+            (DictionaryKind::DatasetLineage, "dataset-lineage") => {
+                self.map(4)?;
+                self.literal("format")?;
+                let format = self.label()?;
+                self.literal("format_version")?;
+                let format_version = self.decoder.u16()?;
+                self.literal("source_dataset_id")?;
+                let source_dataset_id = self.nullable(|r| {
+                    DatasetId::try_from(r.fixed()?).map_err(|_| CodecError::InvalidValue)
+                })?;
+                self.literal("source_artifact_digest")?;
+                let source_artifact_digest = Digest256::from_bytes(self.fixed()?);
+                DictionaryDescriptor::DatasetLineage(DatasetLineageDescriptor {
+                    format,
+                    format_version,
+                    source_dataset_id,
+                    source_artifact_digest,
+                })
+            }
+            _ => return Err(CodecError::IncompatibleSchema),
+        };
+        DictionaryEntry::new(reference, descriptor).map_err(CodecError::InvalidDictionary)
+    }
     fn fact(&mut self) -> Result<Fact, CodecError> {
         self.array(6)?;
         let id = self.source()?;
         let kind = self.decoder.str()?;
         if !matches!(
             kind,
-            "event-payload" | "event-eligibility" | "event-receive" | "provenance"
+            "event-payload" | "event-eligibility" | "event-receive" | "provenance" | "dictionary"
         ) || self.decoder.u16()? != 1
         {
             return Err(CodecError::IncompatibleSchema);
@@ -318,6 +539,7 @@ impl FactReader<'_> {
         let scope = self.reference()?;
         let recorded_at = ObservedTime::new(self.decoder.i64()?);
         let payload = match kind {
+            "dictionary" => FactPayload::Dictionary(self.dictionary()?),
             "event-payload" => {
                 self.array(7)?;
                 FactPayload::EventPayload(EventPayload {

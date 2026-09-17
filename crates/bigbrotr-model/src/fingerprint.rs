@@ -1,9 +1,9 @@
 //! Closed profile-1 recipes, not a general CBOR serializer. Only named typed
-//! fields can reach the codec; no generic values, floats, maps or extension bags.
+//! fields can reach the codec; no generic values, floats or extension bags.
 use crate::{
-    AdmissionBatch, ClockQuality, Digest256, EventBody, EventId, EventIntent, EventOrigin,
-    ExistingProof, Fact, FactPayload, NostrTime, ProducerRequestId, PublicKey, QualifiedRef,
-    SignedEvent, SourceRecordId,
+    AdmissionBatch, ClockQuality, DictionaryDescriptor, DictionaryEntry, Digest256, EventBody,
+    EventId, EventIntent, EventOrigin, ExistingProof, Fact, FactPayload, NostrTime,
+    ProducerRequestId, PublicKey, QualifiedRef, SignedEvent, SourceRecordId,
 };
 use minicbor::{
     Encoder,
@@ -148,6 +148,135 @@ fn correction<W: Write>(
         None => encoder.null()?.ok(),
     }
 }
+fn optional_text<W: Write>(
+    value: Option<&str>,
+    encoder: &mut Encoder<W>,
+) -> Result<(), Error<W::Error>> {
+    match value {
+        Some(value) => encoder.str(value)?.ok(),
+        None => encoder.null()?.ok(),
+    }
+}
+
+pub(crate) fn dictionary_payload<W: Write>(
+    value: &DictionaryEntry,
+    encoder: &mut Encoder<W>,
+) -> Result<(), Error<W::Error>> {
+    encoder.array(5)?;
+    reference(value.reference(), encoder)?;
+    encoder
+        .u16(value.normalization_version())?
+        .str(value.descriptor_schema())?
+        .u16(value.descriptor_version())?;
+    // These exact key sequences are sorted by complete deterministic CBOR bytes.
+    // No runtime map or sort can discard duplicates or add unnamed fields.
+    match value.descriptor() {
+        DictionaryDescriptor::Event(id) => {
+            encoder.map(1)?.str("event_id")?.bytes(id.as_bytes())?;
+        }
+        DictionaryDescriptor::Visibility { class } => {
+            encoder.map(1)?.str("class")?.str(class.as_str())?;
+        }
+        DictionaryDescriptor::Endpoint(value) => {
+            encoder.map(1)?.str("url")?.str(value.url())?;
+        }
+        DictionaryDescriptor::Observer(value) => {
+            encoder.map(7)?.str("clock")?;
+            optional_text(value.clock.map(|v| v.as_str()), encoder)?;
+            encoder.str("vantage")?;
+            optional_text(value.vantage.as_ref().map(|v| v.as_str()), encoder)?;
+            encoder.str("software")?;
+            optional_text(value.software.as_ref().map(|v| v.as_str()), encoder)?;
+            encoder.str("method_id")?;
+            match value.method_id {
+                Some(id) => reference(id, encoder)?,
+                None => {
+                    encoder.null()?;
+                }
+            }
+            encoder.str("public_key")?;
+            match value.public_key {
+                Some(key) => {
+                    encoder.bytes(key.as_bytes())?;
+                }
+                None => {
+                    encoder.null()?;
+                }
+            }
+            encoder.str("route_class")?;
+            optional_text(value.route_class.map(|v| v.as_str()), encoder)?;
+            encoder.str("software_version")?;
+            optional_text(value.software_version.as_ref().map(|v| v.as_str()), encoder)?;
+        }
+        DictionaryDescriptor::AccessScope(value) => {
+            encoder
+                .map(3)?
+                .str("class")?
+                .str(value.class.as_str())?
+                .str("label")?;
+            optional_text(value.label.as_ref().map(|v| v.as_str()), encoder)?;
+            encoder.str("visibility_scope_id")?;
+            reference(value.visibility_scope_id, encoder)?;
+        }
+        DictionaryDescriptor::EventVerification => {
+            encoder
+                .map(7)?
+                .str("input")?
+                .str("nip01-event/1")?
+                .str("algorithm")?
+                .str("sha256-bip340")?
+                .str("capability")?
+                .str("event-id-and-signature")?
+                .str("output_unit")?
+                .str("verification-result")?
+                .str("failure_taxonomy")?
+                .str("bigbrotr-nip01-verifier/1")?
+                .str("algorithm_version")?
+                .u16(1)?
+                .str("protocol_revision")?
+                .str(crate::dictionary::EVENT_VERIFICATION_NIPS_REVISION)?;
+        }
+        DictionaryDescriptor::DatasetLineage(value) => {
+            encoder
+                .map(4)?
+                .str("format")?
+                .str(value.format.as_str())?
+                .str("format_version")?
+                .u16(value.format_version)?
+                .str("source_dataset_id")?;
+            match value.source_dataset_id {
+                Some(id) => {
+                    encoder.bytes(id.as_bytes())?;
+                }
+                None => {
+                    encoder.null()?;
+                }
+            }
+            encoder
+                .str("source_artifact_digest")?
+                .bytes(value.source_artifact_digest.as_bytes())?;
+        }
+    }
+    Ok(())
+}
+pub(crate) fn dictionary<W: Write>(
+    value: &DictionaryEntry,
+    encoder: &mut Encoder<W>,
+) -> Result<(), Error<W::Error>> {
+    encoder
+        .writer_mut()
+        .write_all(b"bigbrotr/dictionary/1\0")
+        .map_err(Error::write)?;
+    dictionary_payload(value, encoder)
+}
+impl DictionaryEntry {
+    /// Full qualified mapping integrity, not semantic equality across allocation
+    /// domains and not authority to use or publish the descriptor.
+    pub fn digest(&self) -> Digest256 {
+        hash(|encoder| dictionary(self, encoder))
+    }
+}
+
 pub(crate) fn fact<W: Write>(
     value: &Fact,
     encoder: &mut Encoder<W>,
@@ -164,6 +293,7 @@ pub(crate) fn fact<W: Write>(
     reference(value.visibility_scope_id(), encoder)?;
     encoder.i64(value.recorded_at().get())?;
     match value.payload() {
+        FactPayload::Dictionary(value) => dictionary_payload(value, encoder)?,
         FactPayload::EventPayload(value) => {
             encoder.array(7)?;
             body_fields((&value.body).into(), encoder)?;

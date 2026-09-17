@@ -1,0 +1,64 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-18",
+  "scope": "Closed dictionary descriptors and fact codecs for P02-T02/P02-T03; no dictionary allocator or native admission authority",
+  "status": "PASS",
+  "source": {
+    "base_revision": "a14aa95dd3c1d5d7b0b1a3616a7f849177baa433",
+    "candidate_revision": "a3f3a26ee38e86b1a2788e1267ac0ad773218406",
+    "state": "Integrated dirty Mac tree; ordinary Cargo tests, not an isolated clean release build",
+    "rust_source_patch": ".research/implementation/rocks-product-design/dictionary-integrated-source.diff",
+    "rust_source_patch_sha256": "864160cc0b0d48b92cb223d01f74cf3d73c8a2ca27761adcbef2d67835aae6f8",
+    "sha256": {
+      "crates/bigbrotr-model/src/codec.rs": "3f7e25917720603ed612fcb6817dd544b563b4cc790a051dddd6341691fc82ee",
+      "crates/bigbrotr-model/src/dictionary.rs": "8859fb577a55c605cda9ce8582617e0482164623bdda199592717b62b012d9e0",
+      "crates/bigbrotr-model/src/fact.rs": "fdb60f4d92be7b92f6b4b4fce2124290d43f1134e3ecc8df9ea4706c61eb9042",
+      "crates/bigbrotr-model/src/fingerprint.rs": "90d7f7ec0608c6be6e88a32433ec829be81499e90d77e3d91327027b5b8f049b",
+      "crates/bigbrotr-model/src/lib.rs": "409569a3170b37bcb28b061eccf2a65cf782f81a2c73f7d2bc88f76ee735f327",
+      "crates/bigbrotr-model/tests/dictionary_codec.rs": "45fecd8e7ebd95870e8423f71532eb9233893b68d6c4d15d7ca7a324fff2655d",
+      "crates/bigbrotr-model/tests/fact_codec.rs": "b93a34327a05960f6482e5076d31c5306c30cc86d16aac7d4871133eac2291a8",
+      "crates/bigbrotr-model/tests/fixtures/dictionary-v1.json": "dbeabe7bc317d823c57f409e8e2f89abb4a4a0545ba32e20142d51a02a5286a9",
+      "crates/bigbrotr-model/tests/fixtures/write_dictionary_vectors.py": "05478adf8f115473109b36a7d16e060b4ae638623bd4ccf29540798a29afa91d",
+      "docs/reference/data-model.md": "19b3189740db8d480a701b0dc00edc79c9075425c44fac298ed1c0a36faf35f5",
+      "docs/specification/data-contracts.md": "6bc38b8166ac0a936d99da7d56a4bf02abfe2b9d3a732adc0e610c913cb19fbb",
+      "docs/specification/dictionary-descriptors.md": "85c8dfb93614da00b079f3e09605c24929845c0e0ad010f959e6e44c9008f5ee",
+      "docs/specification/identity-and-encoding.md": "5b3c5a2c54a5da94b3661d42d1b5df195d3ad447d6bf355f1861ec9b99f5ddee"
+    }
+  },
+  "environment": {
+    "target": "aarch64-apple-darwin",
+    "rustc": "1.98.1",
+    "cargo_build_jobs": 2,
+    "target_directory": ".research/worktrees/rocks-store/.research/implementation/rocks-store/target",
+    "native_build": "Workspace feature tuple rebuilt native Rocks for tests and Clippy; historical cached native artifact hashes are not identities for this build"
+  },
+  "checks": {
+    "workspace_tests": 166,
+    "groups": 30,
+    "failed": 0,
+    "ignored": 0,
+    "filtered_out": 0,
+    "new_dictionary_tests": 9,
+    "clippy": "PASS --locked --workspace --all-targets -- -D warnings; observed exit0",
+    "fmt": "PASS cargo fmt --all --check",
+    "independent_vectors": "All20 literal preimages and hashes independently checked; exact original public visibility vector retained"
+  },
+  "commands": [
+    "CARGO_TARGET_DIR=\"$PWD/.research/worktrees/rocks-store/.research/implementation/rocks-store/target\" CARGO_BUILD_JOBS=2 cargo test --locked --workspace",
+    "CARGO_TARGET_DIR=\"$PWD/.research/worktrees/rocks-store/.research/implementation/rocks-store/target\" CARGO_BUILD_JOBS=2 cargo clippy --locked --workspace --all-targets -- -D warnings"
+  ],
+  "logs_sha256": {
+    "dictionary-integrated-tests.log": "d40dceb9e49752f8ada1e1bd33c6ef2439163f18933f2c492218b6ed0953657a",
+    "dictionary-integrated-clippy.log": "528d2e3a3a9a0010030530e1a69c21cfd52c32c9375931ee109e878e7397b5a8"
+  },
+  "independent_AI_review": {
+    "report": ".research/implementation/rocks-product-design/dictionary-review/review.json",
+    "sha256": "a5cd491fbe18a93a5cff57b501fc07ea460787b6b318374877881c4187210f48",
+    "result": "No concrete open finding; complete changed source and literal checks, bounded contract review documented in report"
+  },
+  "review_boundary": "Root read complete changed Rust source/tests/generator/descriptor contract and affected callers/contracts. Literal JSON checked through independent reproduction and review; archive/acquisition consumers remain unimplemented. No whole-repository review claim.",
+  "not_run": [
+    "Native dictionary allocation/admission, atomic request ledger, authority, ACK/GC, crash/restart and archive/export.",
+    "Linux execution of these dictionary additions, fuzz engine, process memory envelope or release qualification."
+  ]
+}

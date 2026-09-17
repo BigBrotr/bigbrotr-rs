@@ -74,8 +74,12 @@ fn frozen_facts_decode_losslessly_and_reencode_exactly() {
                 i64::MIN
             }
         );
-        assert_eq!(fact.payload().event_id().to_string(), "aa".repeat(32));
+        assert_eq!(
+            fact.payload().event_id().unwrap().to_string(),
+            "aa".repeat(32)
+        );
         match fact.payload() {
+            FactPayload::Dictionary(_) => panic!("event fixture contains a dictionary"),
             FactPayload::EventPayload(value) => {
                 assert_eq!(value.body.created_at.0, u64::MAX);
                 assert_eq!(value.body.pubkey.to_string(), "bb".repeat(32));

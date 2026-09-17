@@ -172,8 +172,9 @@ Dictionary kinds are: 1 endpoint, 2 observer, 3 access scope, 4 visibility scope
 are incompatible; they are not cast to the nearest known kind. A dictionary entry
 binds that reference to `normalization_version: u16`, `descriptor_schema: text`,
 `descriptor_version: u16`, the closed typed descriptor value and its digest.
-Existing descriptor field definitions remain in A04; changing their meaning
-requires a new descriptor version. Secret bytes are forbidden in all descriptors.
+A04 and its [closed descriptor schemas](dictionary-descriptors.md) own the field
+definitions; changing their meaning requires a new descriptor version. Secret bytes
+are forbidden in all descriptors.
 
 Each allocation domain has exactly one fenced allocating owner recorded in
 control authority and its synced local manifest. Allocate an ordinal and its

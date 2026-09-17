@@ -44,7 +44,9 @@ inference is made from a signed event's authored timestamp.
 `EventBody` factors the six shared fields and moves tags/content when split from
 or joined to a `SignedEvent`. Joining a signature does not prove its validity or
 scope authorization. `Fact` has a private immutable envelope and a closed
-`FactPayload` variant for event payload, scoped eligibility, receive and provenance.
+`FactPayload` variant for event payload, scoped eligibility, receive, provenance
+and dictionary mappings. `event_id()` returns an optional event subject; non-event
+dictionaries do not invent an event ID.
 Construction checks the dataset and dictionary kind of every reference, including
 the clock and import lineage. A correction cannot target itself or a later
 sequence in its own stream. Cross-stream causal order, earlier observed time,
@@ -83,8 +85,8 @@ serializes the existing receipt with explicit version and resource limits;
 storage and transport readers must still validate the owning protocol and authority.
 
 The fingerprint recipes stream `bigbrotr/body/1`, `bigbrotr/fact/1`,
-`bigbrotr/producer-request/1`, `bigbrotr/admission-batch/1` and
-`bigbrotr/existing-proof/1` into SHA-256 using
+`bigbrotr/producer-request/1`, `bigbrotr/admission-batch/1`,
+`bigbrotr/existing-proof/1` and `bigbrotr/dictionary/1` into SHA-256 using
 private direct minicbor encoding.
 Body identity excludes signature and acquisition envelope; ordered tags, empty
 strings, Unicode and every payload field remain significant. The model method
@@ -98,8 +100,8 @@ adapters must use explicit bytes/integers instead of reusing textual Serde outpu
 `Fact::encode_preimage` writes the exact profile-1 domain-prefixed fact bytes,
 checking the output size before reservation. `decode_preimage` takes those bytes,
 an independently supplied expected digest and explicit local limits. It accepts
-only the four implemented v1 core fact families. It checks the digest, required
-array lengths, typed scalar/reference/nullability rules, entire input consumption
+only the five implemented v1 fact families, including closed dictionaries. It checks
+the digest, required array lengths, typed scalar/reference/nullability rules, entire input consumption
 and exact canonical re-encoding. Unknown profiles/kinds/versions/enums, indefinite
 values, unsupported CBOR types, trailing bytes and non-shortest encodings fail.
 The canonical comparison streams against the original input without a second
@@ -114,6 +116,23 @@ overhead, simultaneous work and native staging remain the adapter's responsibili
 The storage owner must bind expected digests to authoritative source identities,
 reverify complete events where required and resolve all referenced mappings.
 This preimage codec does not activate an archive manifest or storage format.
+
+`DictionaryEntry` binds one full qualified reference to a closed immutable
+[descriptor](../specification/dictionary-descriptors.md): event, visibility,
+endpoint, observer, access scope, event verification or dataset lineage. Mapping
+and fact fingerprints have distinct domains; equal mapping digests are not
+authority. `require_same_mapping` compares full values and refuses reference or
+value conflicts. Internal method/scope references require the mapping's dataset
+and exact kind; foreign source dataset attribution in lineage remains valid.
+Route and HTTP-resource descriptor kinds are not implemented and fail closed.
+
+`DictionaryEntry::encode_preimage` and `decode_preimage` use the same bounded
+profile with `DictionaryDecodeLimits` (an alias of `FactDecodeLimits`). Labels
+are capped at 64 bytes, endpoint text at 8192 bytes, before allocating. Fixed map
+keys/enums are borrowed, nullable fields are mandatory and unsupported semantic
+versions are refused. All-unknown observer attribution remains explicit nulls.
+The model's structural endpoint wrapper does not replace the protocol normalizer
+or classify secrets/permissions; those are mandatory admission consumer checks.
 
 The remaining P01-T02 evidence variants, generated metadata schemas, other CBOR
 recipes/decoders, actual receipt/proof authority and engine mappings

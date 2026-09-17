@@ -214,6 +214,11 @@ referenced public evidence and dictionaries, never private control credentials.
 
 ## A04 — Endpoint, observer, scope and method dictionaries
 
+The [closed v1 descriptor schemas](dictionary-descriptors.md) define exact fields,
+nullability, kinds, limits and compatibility for the current signed-event admission
+consumer. Their mapping/fact codecs do not establish allocation or visibility
+authority.
+
 Endpoint identity contains normalized URL bytes and normalization version.
 Preserve scheme/host/port/path/query semantics specified by the URL contract;
 do not merge endpoints by guessed operator, shared IP, redirect or overlapping

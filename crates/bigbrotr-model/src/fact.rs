@@ -1,8 +1,9 @@
 //! Immutable, structurally validated core facts. Constructors establish neither
 //! cryptographic validity nor allocation, policy, correction or commit authority.
 use crate::{
-    ClockQuality, DatasetId, DictionaryKind, Digest256, EventBody, EventId, FactRef, ObservedTime,
-    QualifiedRef, Signature, SourceRecordId, source::SourceError,
+    ClockQuality, DatasetId, DictionaryDescriptor, DictionaryEntry, DictionaryKind, Digest256,
+    EventBody, EventId, FactRef, ObservedTime, QualifiedRef, Signature, SourceRecordId,
+    source::SourceError,
 };
 use std::fmt;
 
@@ -95,6 +96,7 @@ pub struct Provenance {
 /// represented as an untyped JSON payload or silently coerced to another kind.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum FactPayload {
+    Dictionary(DictionaryEntry),
     EventPayload(EventPayload),
     EventEligibility(EventEligibility),
     EventReceive(EventReceive),
@@ -103,18 +105,25 @@ pub enum FactPayload {
 impl FactPayload {
     pub const fn record_kind(&self) -> &'static str {
         match self {
+            Self::Dictionary(_) => "dictionary",
             Self::EventPayload(_) => "event-payload",
             Self::EventEligibility(_) => "event-eligibility",
             Self::EventReceive(_) => "event-receive",
             Self::Provenance(_) => "provenance",
         }
     }
-    pub const fn event_id(&self) -> EventId {
+    /// Optional event subject, including an event dictionary mapping. Presence
+    /// does not imply this fact is a payload or an eligibility grant.
+    pub const fn event_id(&self) -> Option<EventId> {
         match self {
-            Self::EventPayload(value) => value.body.event_id,
-            Self::EventEligibility(value) => value.event_id,
-            Self::EventReceive(value) => value.event_id,
-            Self::Provenance(value) => value.event_id,
+            Self::Dictionary(value) => match value.descriptor() {
+                DictionaryDescriptor::Event(id) => Some(*id),
+                _ => None,
+            },
+            Self::EventPayload(value) => Some(value.body.event_id),
+            Self::EventEligibility(value) => Some(value.event_id),
+            Self::EventReceive(value) => Some(value.event_id),
+            Self::Provenance(value) => Some(value.event_id),
         }
     }
     pub const fn corrects(&self) -> Option<SourceRecordId> {
@@ -129,6 +138,7 @@ impl FactPayload {
     fn references(&self) -> [Option<(QualifiedRef, DictionaryKind)>; 5] {
         use DictionaryKind as K;
         match self {
+            Self::Dictionary(value) => [value.descriptor().reference(), None, None, None, None],
             Self::EventPayload(value) => [
                 Some((value.event_ordinal, K::Event)),
                 None,
@@ -180,6 +190,11 @@ impl Fact {
     ) -> Result<Self, FactError> {
         let dataset = source_record_id.dataset_id;
         visibility_scope_id.require(dataset, DictionaryKind::VisibilityScope)?;
+        if let FactPayload::Dictionary(entry) = &payload {
+            entry
+                .reference()
+                .require(dataset, entry.descriptor().kind())?;
+        }
         for (reference, kind) in payload.references().into_iter().flatten() {
             reference.require(dataset, kind)?;
         }
@@ -223,6 +238,8 @@ impl Fact {
     }
     /// Field occurrences, including visibility; repeated references are retained.
     /// A dependency-set owner must deduplicate before persisting its closure.
+    /// A dictionary mapping defines its own reference; only its envelope and
+    /// descriptor references enter this dependency iterator.
     pub fn dictionary_refs(&self) -> impl Iterator<Item = QualifiedRef> {
         std::iter::once(self.visibility_scope_id).chain(
             self.payload
