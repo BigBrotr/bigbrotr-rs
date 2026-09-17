@@ -1,6 +1,6 @@
 {
   "format": "bigbrotr-dependencies/1",
-  "status": "Foundation, model and static-configuration candidate; no qualified product release",
+  "status": "Foundation, model, static-configuration and PostgreSQL connection-preparation candidate; no qualified product release",
   "rust": {
     "toolchain": "1.98.1",
     "msrv": "1.98.1",
@@ -90,11 +90,43 @@
       "purpose": "Safe descriptor opening with NOFOLLOW/NONBLOCK and regular-file inspection",
       "license": "Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT",
       "source": "https://docs.rs/rustix/1.1.5/"
+    },
+    {
+      "name": "tokio",
+      "version": "1.53.1",
+      "purpose": "Finite PostgreSQL connection-task runtime primitives; directly requests rt, net, time and sync, while tokio-postgres also enables required I/O features",
+      "license": "MIT",
+      "license_notice": "https://github.com/tokio-rs/tokio/blob/75fef53d0a8590c2d1dbb63672aa7b7d1ef51155/LICENSE",
+      "source": "https://docs.rs/tokio/1.53.1/tokio/"
+    },
+    {
+      "name": "tokio-postgres",
+      "version": "0.7.18",
+      "purpose": "Owned PostgreSQL connection configuration and future direct transaction lifecycle; runtime feature only",
+      "license": "MIT OR Apache-2.0",
+      "license_notice": "https://github.com/sfackler/rust-postgres/tree/f1cb6ec0d5766b136cbd68f3010d64142a5daa66#license",
+      "source": "https://docs.rs/tokio-postgres/0.7.18/tokio_postgres/"
+    },
+    {
+      "name": "tokio-postgres-rustls",
+      "version": "0.14.0",
+      "purpose": "PostgreSQL rustls connector with explicit expected server name, configured roots and channel-binding support; ring feature only",
+      "license": "MIT",
+      "license_notice": "https://github.com/jbg/tokio-postgres-rustls/blob/0dd60da1804e6146633e5b87199a00db890b7ef5/LICENSE",
+      "source": "https://docs.rs/tokio-postgres-rustls/0.14.0/tokio_postgres_rustls/"
+    },
+    {
+      "name": "rustls",
+      "version": "0.23.45",
+      "purpose": "Verify-full PostgreSQL TLS policy with configured CA roots, optional checked client identity and explicit ring provider",
+      "license": "Apache-2.0 OR ISC OR MIT",
+      "license_notice": "https://github.com/rustls/rustls/tree/2976d90fd1c2db6b518700dd101b714069cfcb17#license",
+      "source": "https://docs.rs/rustls/0.23.45/rustls/"
     }
   ],
   "lock": "Cargo.lock",
   "native_adapters": {
-    "status": "Event cryptography links secp256k1-sys0.14.1; no storage or TLS bindings yet",
+    "status": "Event cryptography links secp256k1-sys0.14.1; PostgreSQL verify-full preparation links ring/rustls but has no qualified network or engine run; no product storage binding yet",
     "selection": "docs/research/dependency-selections.md",
     "source_inventory": "docs/research/evidence/dependency-selections.json",
     "release_gates": "P01-T01 and P02 actual bindings, offline assets, engine failures and native target qualification",
@@ -105,6 +137,17 @@
       "build": "Vendored C library through locked cc1.4.6; native C compiler required",
       "license": "CC0-1.0 wrapper and MIT vendored libsecp256k1; notices retained in dependency sources",
       "features": "std/alloc; no rand, recovery or fuzz crypto selected; clean builder strips ambient rustflags"
+    },
+    "tls": {
+      "connector": "tokio-postgres-rustls 0.14.0 with rustls 0.23.45 and ring 0.17.14",
+      "features": "Explicit ring provider; rustls std/ring/tls12; no native-certs, webpki-roots or dangerous verifier",
+      "qualified_scope": "Offline parsing and connection-setting preparation only; actual TLS/PostgreSQL network behavior remains NOT_RUN",
+      "preserved_license_sources": [
+        "https://github.com/briansmith/ring/tree/2723abbca9e83347d82b056d5b239c6604f786df#license",
+        "https://github.com/rustls/webpki/blob/c14836d8de33c0ad0ac7dcb28fe9aade20831a4d/LICENSE",
+        "https://github.com/dalek-cryptography/subtle/blob/5457b5448b021d1da101ababbb854e6657233943/LICENSE",
+        "https://github.com/briansmith/untrusted/blob/89c8b8415f692d3803d183fc5fbf9ec08a6adcf4/LICENSE.txt"
+      ]
     }
   },
   "license_policy": "New project code is MIT. Preserve upstream notices and qualify the complete release SBOM/licenses when dependencies and assets are added. This inventory is not a complete release license audit."

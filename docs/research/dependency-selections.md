@@ -16,7 +16,7 @@ storage contracts; library defaults cannot override them.
 
 | Responsibility | Selected candidate | Reason and alternative disposition |
 |---|---|---|
-| PostgreSQL control transactions | `tokio-postgres` 0.7.18 + `deadpool-postgres` 0.14.2; `tokio-postgres-rustls` 0.14.0 | Direct PG transaction, parameter and cancellation APIs fit the explicit control ledger. Deadpool supplies a bounded pool without an ORM. SQLx 0.9.0 remains a credible alternative, but its additional database abstraction and optional compile-time SQL metadata workflow are unnecessary for the selected PG-only control adapter. No second PG driver is selected. |
+| PostgreSQL control transactions | `tokio-postgres` 0.7.18 + `tokio-postgres-rustls` 0.14.0; `deadpool-postgres` 0.14.2 remains the selected later pool candidate | Direct PG transaction, parameter and cancellation APIs fit the explicit control ledger. The first migration/inspection owner uses one unpooled connection, so Deadpool is deliberately deferred until a real bounded pooled consumer exists. SQLx 0.9.0 remains a credible alternative, but its additional database abstraction and optional compile-time SQL metadata workflow are unnecessary for the selected PG-only control adapter. No second PG driver is selected. |
 | HTTP API, management, static assets, ArchiveRelay upgrade and native MCP mount | `axum` 0.8.9 over Hyper 1/Tower 0.5, with `tower-http` 0.6 for appropriate middleware | Shared Tokio/Tower foundation with tonic and rmcp; route boundaries preserve distinct listener/auth/budget policies. Raw Hyper-only routing would add application plumbing; Actix/Rocket would introduce another framework with no demonstrated requirement. This is a fit decision, not a benchmark claim. |
 | Guarded outbound Nostr WebSocket | `tokio-tungstenite` 0.29.0, aligned with axum's WS dependency | Supply the already guarded TCP/TLS stream, then perform the handshake; preserve Host/SNI. Version 0.30.0 was observed but adds a second major-minor line without a required feature. No client-pool SDK defaults define acquisition behavior. |
 | Private typed RPC | `tonic` + `tonic-prost` + build-only `tonic-prost-build` 0.14.6; `prost` 0.14.4 | Generated protobuf service/message adapters on the same runtime. In-process calls remain direct typed calls. No public generic RPC, gRPC-Web or reflection endpoint follows from selecting tonic. |
@@ -124,6 +124,26 @@ Use the rustls connector with explicit CA/server-name policy and the same select
 crypto provider as the other clients. The candidate supports rustls 0.23 and
 TLS channel binding; its [published connector source](https://github.com/jbg/tokio-postgres-rustls/blob/0dd60da1804e6146633e5b87199a00db890b7ef5/src/lib.rs)
 does not replace negative certificate/hostname and pool-recovery tests.
+
+The implemented connection-preparation slice pins `tokio-postgres` 0.7.18 with
+only `runtime`, `tokio-postgres-rustls` 0.14.0 with only `ring`, rustls 0.23.45
+with `std`, `ring` and `tls12`, and Tokio 1.53.1 with `rt`, `net`, `time` and
+`sync` requested directly; `tokio-postgres` also enables Tokio's required
+`io-util`/`bytes` support. It installs no process-global crypto default: each TLS configuration uses
+an explicit ring provider and only the configured CA file. A narrow
+`MakeTlsConnect` wrapper substitutes the separately configured expected server
+name while preserving the upstream connector and channel-binding implementation.
+The preparer opens public CA files through no-follow descriptors, and loads the
+password plus optional client certificate/key through the protected-file reader.
+The current 64 KiB password, 1 MiB CA/certificate and 256 KiB key caps are
+bounded application choices, not measured PostgreSQL protocol maxima. The
+reported input byte sum and cap-plus-one reservation exclude rustls/driver copies
+and allocator overhead. Local-plaintext preparation checks only the configured
+hostname shape and retains its loopback/private-bridge boundary for the connected
+owner; that owner must resolve, vet and pin an in-bound address before connecting.
+It performs no DNS, TLS handshake or PostgreSQL I/O;
+wrong-name/CA, authentication, timeout, task ownership and lost-COMMIT cases stay
+in the actual adapter acceptance gate.
 
 ## HTTP, WebSocket and RPC limits
 

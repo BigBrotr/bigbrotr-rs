@@ -1,0 +1,174 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-17",
+  "scope": "Bounded PostgreSQL connection-setting and TLS credential preparation; no DNS, TLS handshake, PostgreSQL session, migration or durable outcome claim",
+  "source": {
+    "base_revision": "b4bb3f6f7bcb55f12cc308cf88a170a9f2e43fd1",
+    "state": "isolated branch candidate before containing commit",
+    "files_sha256": {
+      "Cargo.lock": "87d5ba19cc757555f53ea1328de4258d5dfa650f82703a73605561eb973b14c9",
+      "Cargo.toml": "51c3e804666132565e5fcef445d8d5ceac08144e76b900e52ba938b6f87583b1",
+      "apps/bigbrotr/Cargo.toml": "a286c59c915f62b3dd3bec8878b778e37d4393d7c5ba528d62a82dc15d8f5c27",
+      "apps/bigbrotr/src/storage/postgres/connection_settings.rs": "2893eb5af2f2f6f0468cf53e614cf3974104729b8a1aa76c7afcbea3d661a2d3",
+      "apps/bigbrotr/tests/postgres_connection_settings.rs": "ee55868370737206d542f80762b9bbc51df074000f9814dc340e0bc943cc34b1",
+      "contracts/release/dependencies.json": "bd32a3f6281c358db11a936af6b8c01f4d663c74bdcb1ec99a26c73b71fa5829",
+      "deny.toml": "7796d862c54d779eda8805e26cf67896edb755d6a6d69273fdc409e382e0e968",
+      "docs/research/dependency-selections.md": "521187344134cb1a0db1a6ac16950e812f0f54d9a9cc4ba2227b247b80898549"
+    }
+  },
+  "environment": {
+    "os": "Darwin 25.5.0 arm64",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)",
+    "test_certificate_tool": "LibreSSL 3.3.6",
+    "private_fixture_policy": "Tests generate synthetic private keys inside owned temporary directories and retain no key artifact in Git or evidence"
+  },
+  "resolved_dependencies": [
+    {
+      "name": "tokio",
+      "version": "1.53.1",
+      "checksum": "202caea871b69668250d242070849eb495be178ed697a3e98aebce5bc81a0bed"
+    },
+    {
+      "name": "tokio-postgres",
+      "version": "0.7.18",
+      "checksum": "a528f7d280f6d5b9cd149635c8705b0dd049754bc67d81d31fa25169a93809d3"
+    },
+    {
+      "name": "tokio-postgres-rustls",
+      "version": "0.14.0",
+      "checksum": "4c2ad44aa0ae96db89c4742212ed41645b2f597311ff6e1945542a4d9fadc2fb"
+    },
+    {
+      "name": "rustls",
+      "version": "0.23.45",
+      "checksum": "0d41d731c7d2f962d1ccc364cec258de3c0e93b38c2fb3ba97ac74513048d634"
+    },
+    {
+      "name": "ring",
+      "version": "0.17.14",
+      "checksum": "a4689e6c2294d81e88dc6261c768b63bc4fcdb852be6d1352498b114f61383b7"
+    },
+    {
+      "name": "rustls-webpki",
+      "version": "0.103.15",
+      "checksum": "f3c3cf1d8b1e7d4927e2d154c3fcb02979afb9939629c62cd9048d4f07b60ac2"
+    },
+    {
+      "name": "subtle",
+      "version": "2.6.1",
+      "checksum": "13c2bddecc57b384dee18652358fb23172facb8a2c51ccc10d74c157bdea3292"
+    },
+    {
+      "name": "untrusted",
+      "version": "0.9.0",
+      "checksum": "8ecb6da28b8a351d773b68d5825ac39017e680750f980f3a1a85cd8dd28a47c1"
+    }
+  ],
+  "features": {
+    "tokio": [
+      "rt",
+      "net",
+      "time",
+      "sync",
+      "io-util (enabled by tokio-postgres)",
+      "bytes (enabled by tokio-postgres)"
+    ],
+    "tokio-postgres": [
+      "runtime"
+    ],
+    "tokio-postgres-rustls": [
+      "ring"
+    ],
+    "rustls": [
+      "std",
+      "ring",
+      "tls12"
+    ],
+    "explicitly_absent": [
+      "native-certs",
+      "webpki-roots",
+      "aws-lc-rs",
+      "dangerous custom certificate verifier",
+      "deadpool-postgres"
+    ],
+    "resolved_feature_tree_sha256": "6e8a298be1a16ff056779a3b3166a57c4ac85d276a46b213653b600ff421ddac"
+  },
+  "input_policy": {
+    "password_max_bytes": 65536,
+    "ca_max_bytes": 1048576,
+    "client_certificate_max_bytes": 1048576,
+    "client_private_key_max_bytes": 262144,
+    "connect_timeout_max_seconds": 60,
+    "meaning": "Application preparation caps chosen for bounded work, not measured PostgreSQL protocol maxima",
+    "accounting_limit": "The exposed cap-plus-one reservation and observed source-byte sum omit rustls/Config copies, vector capacities and allocator overhead; consumers retain a separate conservative process charge through the driver lifetime"
+  },
+  "implemented": [
+    "Owned tokio-postgres Config with exact password bytes, explicit finite connect timeout and explicit TLS require/disable mode",
+    "Verify-full connector with only configured CA roots, explicit ring provider and an expected-name wrapper over upstream MakeRustlsConnect",
+    "Optional client certificate/key pair parsed from protected files and checked by rustls for a usable matching identity",
+    "Public CA descriptor walk refuses final and parent symlinks, special files and cap overflow without imposing private-key permissions",
+    "Plaintext accepts only lexical loopback or single-label private-bridge settings and retains the declared boundary for later resolved-address vetting/pinning",
+    "Static redacted errors and Debug implementations omit endpoints, users, database names, paths, password bytes and upstream parser text"
+  ],
+  "executed": [
+    {
+      "command": "CARGO_HOME=$PWD/.research/cargo-home CARGO_TARGET_DIR=$PWD/.research/target cargo test --locked -p bigbrotr --test postgres_connection_settings",
+      "status": "PASS",
+      "tests": 6,
+      "scope": "Real ephemeral X.509/key parsing, match/mismatch, paired inputs, CA descriptor/size failures, exact password bytes, plaintext boundary and redaction"
+    },
+    {
+      "command": "CARGO_HOME=$PWD/.research/cargo-home CARGO_TARGET_DIR=$PWD/.research/target cargo test --locked --workspace",
+      "status": "PASS",
+      "tests": 105
+    },
+    {
+      "command": "CARGO_HOME=$PWD/.research/cargo-home CARGO_TARGET_DIR=$PWD/.research/target cargo clippy --locked --workspace --all-targets -- -D warnings",
+      "status": "PASS"
+    },
+    {
+      "command": "CARGO_HOME=$PWD/.research/cargo-home cargo deny --manifest-path Cargo.toml check advisories licenses sources",
+      "status": "PASS"
+    },
+    {
+      "command": "RUSTDOCFLAGS=-D warnings CARGO_HOME=$PWD/.research/cargo-home CARGO_TARGET_DIR=$PWD/.research/target cargo doc --locked --workspace --no-deps",
+      "status": "PASS"
+    },
+    {
+      "command": "python3 experiments/verify_artifacts.py",
+      "status": "PASS",
+      "scope": "Links, JSON, fences and selected evidence hashes only"
+    }
+  ],
+  "license_review": {
+    "allowlist_added": [
+      "ISC",
+      "BSD-3-Clause"
+    ],
+    "notice_file_sha256": {
+      "ring-0.17.14/LICENSE": "b3d734001a94efff3579978d953391aa7115f877657d25eb54037a43875d078a",
+      "ring-0.17.14/LICENSE-other-bits": "f025ccfb7dfb6bdfedc75ca0f67acc69e6fb4998143d834f7c2f38a29989680f",
+      "ring-0.17.14/LICENSE-BoringSSL": "005fc765ddc5115da796cca915baa9557abae13ff35e0a47c47affc56f6c414d",
+      "rustls-webpki-0.103.15/LICENSE": "5b698ca13897be3afdb7174256fa1574f8c6892b8bea1a66dd6469d3fe27885a",
+      "subtle-2.6.1/LICENSE": "d1fc1bc0d155df60b2e7705b6b2ae02a05c96f948e1cec6e2fb86360b09f346b",
+      "untrusted-0.9.0/LICENSE.txt": "7abd9b6960dcf7d4d0a48606a5b71bfe37d472db68d70637f3a58a56785f1621"
+    },
+    "scope": "Exact published source notices are recorded in the dependency contract; final binary/image notice aggregation and complete SBOM remain release work"
+  },
+  "review": {
+    "counterexamples_fixed": [
+      "Unpaired client identity now fails before opening an otherwise missing password",
+      "A lexical plaintext hostname cannot certify its resolved route, so the transport retains the boundary for the connected owner to vet and pin hostaddr",
+      "Final and parent CA symlinks are both refused through descriptor-relative no-follow traversal",
+      "Mismatched real client certificate/private key and multiple private keys fail during preparation",
+      "No synthetic private key is checked in or retained as evidence"
+    ]
+  },
+  "not_run": [
+    "Actual PostgreSQL DNS/address vetting and hostaddr pinning",
+    "TLS handshake against correct and wrong CA/server names, client-certificate authentication and channel binding",
+    "PostgreSQL authentication, server/version/read-only inspection, statement and lock deadlines",
+    "Connection-task join/cancellation, ambiguous COMMIT resolution and migration privileges",
+    "Native Linux amd64/arm64 execution and packaged credential mounts"
+  ]
+}
