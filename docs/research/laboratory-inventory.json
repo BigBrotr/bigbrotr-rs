@@ -102,8 +102,8 @@
     "evidence": "docs/research/evidence/tux-retirement-20260917.json",
     "local_operation_records": ".research/tux-retirement-20260917",
     "local_operation_record_bytes": 1024853,
-    "remote_resources_remaining": "No identified BigBrotr paths, containers, volumes, networks, processes or units in the verified scope",
-    "new_research_environment": "Not created; provision fresh when starting qualification",
+    "remote_resources_remaining": "At the retirement snapshot: no identified BigBrotr paths, containers, volumes, networks, processes or units in the verified scope. A separately provisioned qualification lab is recorded below after its own final inspection.",
+    "new_research_environment": "Not yet created at that historical snapshot; subsequently provisioned from fresh resources for the September 17 qualification series.",
     "unrelated_workloads": "All 20 inventoried unrelated containers retained their running/stopped status"
   },
   "gateway_protocol_research": {
@@ -134,5 +134,24 @@
     "canonical_slugger": ".research/checkouts/handoff-validation/github-slugger",
     "generated_root": ".research/review-14",
     "notes": "Pinned github-slugger 2.0.0 plus standard-library checker; local fragments, task IDs/counts and manually interpreted dependency candidates. Planning artifact check only."
+  },
+  "storage_qualification_20260917": {
+    "remote_root": "/home/tux/bigbrotr-qualification-20260917",
+    "local_raw_root": ".research/storage-qualification-20260917",
+    "additional_recovery_raw_root": ".research/storage-recovery-qualification",
+    "tracked_source": "experiments/storage-qualification",
+    "report": "docs/research/tux-storage-qualification-20260917.md",
+    "evidence": "docs/research/evidence/storage-qualification-20260917.json",
+    "recovery_evidence": "docs/research/evidence/storage-recovery-qualification.json",
+    "current_status": "Completed bounded engine slices; all three owned containers stopped at final inspection; generated data, engine volumes and backups retained.",
+    "containers": [
+      "bigbrotr-qualification-worker-20260917",
+      "bigbrotr-qualification-pg-20260917",
+      "bigbrotr-qualification-ch-20260917"
+    ],
+    "retained_corpus": "20M signed synthetic unique events plus 100k calibration; multiple archive/CH layouts and same-device backups, not production data.",
+    "limits": "Worker8CPU/20GiB, CH8CPU/12GiB, PG1CPU/1GiB; shared host/cache/I/O. Exact image/extension/source hashes and cgroup captures in evidence.",
+    "shutdown": "PG/CH exit0; idle worker sleep PID1 terminated by Docker shutdown timeout exit137 with OOMKilled=false after all workload children exited.",
+    "scope": "Real signed-body engine/load/read/recovery/restore/mixed/restart slices. No complete BigBrotr runtime, Rust adapters, full fleet, power loss or billion-row qualification."
   }
 }

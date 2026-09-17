@@ -9,8 +9,8 @@
 | [Archive model](evidence/archive-model.json) | Real DuckDB/Parquet preserved extreme integers/tags, cut-relative corrections and reference closure; tiny object/reference layout was larger than compressed wide rows | Keep logical evidence identity, measure physical deduplication; six negative controls, no product durability/crypto claim |
 | [Prior components](evidence/prior-components/manifest.json) | Controlled Go/Rust transport, graph and storage/query comparisons | Buffer/layout/workload effects outweigh technology slogans |
 
-The PostgreSQL container and both new Tux process groups were dedicated to this
-research. The container was stopped afterwards. The Go repository, its runtime
+The earlier PostgreSQL container and both Tux process groups were dedicated to
+that research. The container was stopped afterwards. The Go repository, its runtime
 containers and the other agent's workload were not changed. Test sources are
 under `experiments/`; generated data, dependencies and the patched upstream
 checkout are ignored laboratory material.
@@ -24,6 +24,41 @@ behavior. The reproduction has not been posted upstream.
 
 [Laboratory inventory](laboratory-inventory.json) records retained sources/caches,
 exact upstream revisions and final stopped state of the owned test resources.
+
+## Current contract and adapter research
+
+| Evidence | Executed scope | Consequence and boundary |
+|---|---|---|
+| [Identity and portable encoding](evidence/identity-contract.json) | 14 frozen vectors, Python/Node encoders, three hash implementations, 52 histories/2,018 oracle comparisons, plus 44 acquisition inventory comparisons and six wrong-path controls | Exact digest/scope/replay rules; proof-only pages create no mutation receipts and private witnesses cannot suppress public acquisition. Model signatures are synthetic; no engine behavior is tested |
+| [Real signed fixture](../../experiments/identity-contract/signed-fixture-evidence.json) | 15 valid signature variants/14 IDs, independent BIP340/Node checks, 30 named public read/graph cases, four reverified exports | Shared payload with scope-specific signatures and authorized source reduction; no product storage adapter |
+| [Operational composition](evidence/operations-contract.json) | 120 admission orderings, recovery/activation/configuration scenarios, seven wrong-state controls | Explicit authority, unknown outcomes, resource composition and backup closure; in-memory model, not fsync |
+| [Workload obligations](evidence/workload-contract.json) | Literal delivery quotas, bounded virtual scheduler, four negative controls | Includes overdue/refused work and detects monitor starvation despite fast control; no real fleet SLO |
+| [Read/rank contract](evidence/read-rank-contract.json) | Three tiny exact-rational stationary systems and traversal counterexamples | Error-bounded target and candidate/current-eligibility distinction; no large-graph speed claim |
+| [MCP/ContextVM](evidence/gateway-research.json) | 13 schema cases, 20 upstream in-memory/wire tests and three negative cases | Different protocol versions/transport contracts; no live relay, OAuth or BigBrotr acceptance |
+| [Rust dependency selections](dependency-selections.md) | Published source inspection plus [Cargo resolution](evidence/dependency-selections.json): 351 dependencies | Concrete adapter families selected; no native adapter build or release qualification |
+| [Handoff validation](evidence/handoff-validation.json) | Canonical GitHub fragments, task references/counts, bad-anchor/unknown-task/skipped-step controls | Detects structural mistakes; prose dependency cycles still require review and tests do not prove semantic completeness |
+
+The [independent closure review](../reviews/14-independent-closure-review.md)
+and [operational countercheck](../reviews/14-handoff-countercheck.md) record actual
+findings, repairs and review scope. Current choices live in the owning specs,
+not in superseded recommendations. Large storage/recovery research has its own
+physical workload and cannot upgrade these models to product acceptance.
+
+## Large signed-body storage and recovery
+
+The [September 17 Tux report](tux-storage-qualification-20260917.md) records a fresh
+20-million-event corpus, four actual engine representations, independent signed
+sample/population checks and archive restore. The source Parquet occupies
+79.168 GB; the explicit DuckLake layout uses 79.222 GB of event files and CH's two
+parent-part totals about 81 GB each including their projections, before other
+deployment overhead. Default DuckLake options were substantially larger in this fixture;
+the report distinguishes combined layout tuning from an isolated codec test.
+
+Full signed sample reads support CH for the selected frequent-read product, but
+do not prove a universal engine ratio. Failed/corrected runs and scope limits
+remain documented. Real transaction/replay/mixed and restart results are recorded
+separately from the baseline insert-call timings. None certifies the future Rust
+adapters or the 5k/10k/50k/100k busy-relay workload.
 
 **Remote retirement, 2026-09-17:** the owner subsequently authorized deletion of
 all pre-existing BigBrotr resources on Tux. The

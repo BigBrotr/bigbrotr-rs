@@ -376,6 +376,124 @@ def check_model():
                 negative_controls=negative, negative_control_count=len(negative))
 
 
+def check_acquisition_progress():
+    """Bounded contract cases; these are not producer/NEG engine adapters."""
+    negative = {}
+    comparisons = 0
+
+    def local_inventory(model, scope, edge, cut):
+        facts = [f for f in model.facts if f['seq'] <= cut]
+        if scope in model.restricted:
+            return set()
+        eligible = {f['event'] for f in facts
+                    if f['kind'] == 'eligibility' and f['scope'] == scope}
+        if model.provenance:
+            witnessed = {f['event'] for f in facts if f['kind'] == 'edge'
+                         and f['scope'] == scope and f['value']['edge'] == edge}
+            eligible &= witnessed
+        return {(f['value']['created'], f['event']) for f in facts
+                if f['kind'] == 'body' and f['event'] in eligible}
+
+    def inventory_history_oracle(history, scope, edge, cut, provenance, restricted):
+        # Independent encounter reduction, with no fact/index/certify calls.
+        return {(c['created'], c['event']) for committed, c in history
+                if committed <= cut and c['valid'] and c['scope'] == scope
+                and scope not in restricted and
+                (not provenance or (c['origin'] == 'network' and c['edge'] == edge))}
+
+    private = candidate(scope='private', received=10, admitted=10, sig='private')
+    public = candidate(scope='public', received=20, admitted=20, sig='public')
+    for provenance, order in itertools.product((False, True),
+                                               ((private, public), (public, private))):
+        m = Model(provenance)
+        for i, c in enumerate(order):
+            m.admit(str(i), c)
+            for scope in ('private', 'public'):
+                for cut in [0] + [position for position, _ in m.history]:
+                    expected = inventory_history_oracle(m.history, scope, 'relay-1',
+                                                        cut, provenance, m.restricted)
+                    assert local_inventory(m, scope, 'relay-1', cut) == expected
+                    comparisons += 1
+            if i == 0:
+                other = 'public' if c['scope'] == 'private' else 'private'
+                remote = {(10, 'E')}
+                assert remote - local_inventory(m, other, 'relay-1', len(m.facts)) == remote
+                wrong_unscoped = {(f['value']['created'], f['event']) for f in m.facts
+                                  if f['kind'] == 'body'}
+                assert remote - wrong_unscoped != remote
+                negative['private_witness_or_payload_suppresses_other_scope'] = True
+        m.restricted.add('public')
+        assert local_inventory(m, 'public', 'relay-1', len(m.facts)) == set()
+        assert inventory_history_oracle(m.history, 'public', 'relay-1', len(m.facts),
+                                        provenance, m.restricted) == set()
+        comparisons += 1
+
+    # Even public import eligibility must not launder an existing private witness.
+    m = Model(True)
+    m.admit('private', private)
+    m.admit('public-import', dict(public, origin='import', received=None))
+    assert local_inventory(m, 'public', 'relay-1', len(m.facts)) == set()
+    eligible = {f['event'] for f in m.facts
+                if f['kind'] == 'eligibility' and f['scope'] == 'public'}
+    wrong_edges = {f['event'] for f in m.facts
+                   if f['kind'] == 'edge' and f['value']['edge'] == 'relay-1'}
+    negative['public_eligibility_launders_private_witness'] = eligible & wrong_edges == {'E'}
+    assert m.certify(public) == 'NeedsAdmission'
+
+    checkpoints = []
+    for provenance in (False, True):
+        m = Model(provenance)
+        m.admit('seed', public)
+        baseline = m.snapshot()
+        # Eight deliveries exceed a declared mutation window of two. They need
+        # no requests/ACKs; one bounded page checkpoint carries deduplicated basis.
+        deliveries = [dict(public, received=30+i, admitted=30+i) for i in range(8)]
+        proofs = [m.certify(c) for c in deliveries]
+        assert all(isinstance(p, dict) for p in proofs) and m.snapshot() == baseline
+        assert m.certify(deliveries[0]) == proofs[0]  # Lost read reply: re-evaluate.
+
+        def checkpoint(bases, receipt_only=False):
+            if receipt_only and any('receipt' not in basis for basis in bases):
+                return None
+            if not all(m.validate_restored_proof(p) for p in bases):
+                return None
+            return {'through_position': len(bases),
+                    'dependencies': sorted({tuple(d) for p in bases for d in p['deps']})}
+
+        result = checkpoint(proofs)
+        # Seed has precisely body, eligibility, receive and optional edge. This
+        # expected closure is enumerated separately from proof construction.
+        expected_kinds = {'body', 'eligibility', 'receive'} | ({'edge'} if provenance else set())
+        expected_dependencies = sorted((f['seq'], f['digest']) for f in m.facts
+                                       if f['kind'] in expected_kinds)
+        assert result == {'through_position': 8, 'dependencies': expected_dependencies}
+        assert m.snapshot() == baseline and len(m.requests) == 1
+        negative['receipt_only_checkpoint_blocks_certified_page'] = checkpoint(proofs, True) is None
+        wrong = copy.deepcopy(m)
+        for i, c in enumerate(deliveries):
+            assert wrong.admit(f'duplicate-{i}', c) == 'AlreadyDurable'
+        assert wrong.facts == m.facts
+        negative['synthetic_mutation_fallback_writes_per_duplicate'] = len(wrong.requests) == len(m.requests) + 8
+        # Restore from facts, without the seed's request receipt cache.
+        restored = Model(provenance)
+        restored.facts = copy.deepcopy(m.facts)
+        assert all(restored.validate_restored_proof(p) for p in proofs)
+        restored.facts = [f for f in restored.facts if f['kind'] != 'eligibility']
+        negative['checkpoint_restore_missing_scope_dependency'] = not all(
+            restored.validate_restored_proof(p) for p in proofs)
+        m.restricted.add('public')
+        negative['revoked_authority_advances_new_checkpoint'] = checkpoint(proofs) is None
+        checkpoints.append({'provenance': provenance, 'delivered': 8,
+                            'mutation_window': 2, 'new_mutation_requests': 0,
+                            'new_facts': 0, 'logical_checkpoint_commits': 1,
+                            'retained_dependencies': len(expected_dependencies)})
+    assert all(negative.values()), negative
+    return dict(inventory_history_comparisons=comparisons,
+                proof_only_checkpoints=checkpoints, negative_controls=negative,
+                negative_control_count=len(negative),
+                limits='Symbolic signatures, in-memory facts and logical checkpoint assertions; no NIP-77 exchange, PG transaction, fsync, ACK adapter or physical restart executed.')
+
+
 def check_allocation_and_compatibility():
     # Qualified identities are exact tuples; no hash or ordinal alone is an ID.
     dataset_a, dataset_b, domain_a, domain_b = (bytes([n]) * 16 for n in range(1, 5))
@@ -486,6 +604,7 @@ def main():
                   openssl=subprocess.check_output(['openssl', 'version'], text=True).strip(),
                   platform=platform.system() + ' ' + platform.machine(),
                   vectors=check_vectors(), model=check_model(),
+                  acquisition_progress=check_acquisition_progress(),
                   identity_and_compatibility=check_allocation_and_compatibility(),
                   command='python3 experiments/identity-contract/probe.py --evidence docs/research/evidence/identity-contract.json',
                   sources={str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest()

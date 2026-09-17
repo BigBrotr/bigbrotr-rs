@@ -44,10 +44,10 @@ outage eventually fills its bounded pending allowance and stops new admission.
 
 | Proposed file | Definitions / ownership |
 |---|---|
-| `crates/bigbrotr-model/src/identity.rs` | DatasetId, ShardId, OwnerEpoch, Sequence, SourceRecordId, ProjectionRowId, EndpointId, Receipt, SourceCut, GenerationId |
+| `crates/bigbrotr-model/src/identity.rs` | DatasetId, ShardId, OwnerEpoch, Sequence, SourceRecordId, ProjectionRowId, EndpointId, Receipt, ExistingProof, SourceCut, GenerationId |
 | `crates/bigbrotr-model/src/event.rs` | SignedEvent, VerifiedEvent, EventPayloadV1, EventEligibilityV1, EventId, Signature, Tags, scoped first-receive metadata |
 | `crates/bigbrotr-model/src/evidence.rs` | Measurement/claim/document kinds, observer/clock/access dimensions, scientific outcomes |
-| `crates/bigbrotr-model/src/coverage.rs` | Interval bound, filter scope, traversal evidence, gap and terminal reason |
+| `crates/bigbrotr-model/src/coverage.rs` | Interval bound, filter/access/visibility scope, EventEffectBasis, traversal evidence, gap and terminal reason |
 | `crates/bigbrotr-model/src/policy.rs` | VisibilityScope, Principal, Grants, PolicyEpoch; no embedded secrets/engine handles |
 | `crates/bigbrotr-model/src/analytics.rs` | DefinitionId, TargetManifest, typed fact values and score basis |
 | `crates/bigbrotr-model/src/read.rs` | QueryRequest, admitted context identity, QueryPage, resource/exactness states |
@@ -129,6 +129,25 @@ in an already eligible scope may be certified after verification; a changed
 signature under the same retained **Admit** request still conflicts. Proofs are
 private operational artifacts and require retained source/dictionary dependencies
 under the actual recovery protection class. They are not public scientific facts.
+
+For acquisition, `EventEffectBasis = Receipt | ExistingProof` names the retained
+basis of a verified event result; it does not change `AdmissionResult` or create
+a new receipt kind. Ordered page/import checkpoints accept either basis and
+atomically retain its deduplicated dependency closure with classified input
+positions, gaps and progress. A certified duplicate requires no mutation request,
+request-sequence allocation or ingest ACK. `NeedsAdmission` enters strict Admit
+with a fresh persisted request identity; separate claims/measurements still need
+their own AdmitEvidence receipts. Mixed pages retain both kinds of basis and ACK
+only contiguous mutation requests. A lost certification response is re-evaluated;
+an unresolved mutation must first be resolved by its original request identity.
+Checkpoint authority, restore validation and complete-source-cut compaction follow
+[the certification contract](identity-and-encoding.md#certifyexisting-without-mutation-semantics).
+Proof collection is byte/item bounded and may checkpoint classified prefixes
+without declaring EOSE or interval completion; it cannot grow one permanent
+ledger entry per repeated delivery or require a mutation to make read proof usable.
+Ordinary status/coverage responses expose authorized basis status, not private
+proof tokens or hidden source dependencies; internal checkpoint closure is never
+copied wholesale into public scientific evidence or export metadata.
 
 AdmitEvidence enforces enabled data families as well as visibility. In particular,
 provenance off excludes imported event→relay sidecars and intentional per-event

@@ -42,6 +42,8 @@ flowchart LR
   Q --> API[HTTP API]
   Q --> AR[Archive relay]
   Q --> DV[DVM adapter]
+  Q --> MC[Optional MCP adapter]
+  Q --> CV[Experimental ContextVM adapter]
   API --> UI[Dashboard]
   L --> EX[DuckDB export and offline analysis]
   PG[(PostgreSQL control and catalog)] --- A
@@ -108,8 +110,8 @@ No finite machine can buffer an unlimited outage.
 | Ingest owner | Exclusive stateful role per shard | Owns RocksDB admission; no durable receipt while its storage is unavailable |
 | Archive publication and online indexing | Independent consumers | Each owns its cursor and projection; one can lag without inventing completion for the other |
 | Deriver and Ranker | Incremental/scheduled compute jobs | Require their declared complete input generations, not every upstream daemon to be running |
-| API, ArchiveRelay and private administration | Listeners with shared libraries | Read/control dependencies and policy leases; do not depend on an active collector |
-| DVM and NIP publishers | Network adapters plus durable jobs/outbox | Explicit signing identity, policy and destination receipts |
+| API, ArchiveRelay, optional MCP and private administration | Listeners with shared libraries | Read/control dependencies and policy leases; do not depend on an active collector |
+| DVM, experimental ContextVM and NIP publishers | Network adapters plus durable jobs/outbox | Explicit signing identity, policy and destination receipts; gateway-specific protocol and authority contracts |
 | PostgreSQL and ClickHouse | Database processes | Separate persistence, resource limits, lifecycle and recovery |
 | DuckDB, RocksDB, Parquet | Embedded engine, embedded store and file format | Not three additional network database servers |
 

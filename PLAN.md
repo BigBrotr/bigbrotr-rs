@@ -63,6 +63,9 @@ The [five-round expansion review](docs/reviews/09-expanded-plan-rounds.md) recor
 subsequent planning gaps, concrete corrections and an actual Parquet counterexample.
 The [experiment summary](docs/research/experiment-summary.md) states what was
 actually run and what remains unverified.
+The [20-million-event Tux report](docs/research/tux-storage-qualification-20260917.md)
+provides larger storage/read/restore evidence without promoting component results
+to a full-product capacity claim.
 
 ## Selected architecture and why
 

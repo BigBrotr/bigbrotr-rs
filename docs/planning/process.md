@@ -158,3 +158,10 @@ source research found version/default/API and durability caveats that become
 explicit implementation gates. Counts of tests/documents are not the acceptance
 criterion. See current readiness, experiment evidence and the phase checkboxes
 for actual completion rather than treating this narrative as a release certificate.
+
+The [final storage/handoff countercheck](../reviews/15-large-storage-and-final-handoff.md)
+records further acquisition proof/visibility repairs and the actual larger-engine
+research. Its independent review also corrected projection-byte accounting and
+summary-mode validation. Failed harness runs remain visible beside corrected
+ones. The paper baseline is committed separately from the later engine evidence;
+neither begins product implementation.

@@ -1,0 +1,3488 @@
+{
+  "status": "RECORDED_WITH_SCOPE_LIMITS",
+  "corpus_rows": 20000000,
+  "product_implemented": false,
+  "full_fleet_qualified": false,
+  "scope": "large signed-body representations; independently sampled preservation; isolated recovery/restore/mixed slices",
+  "baselines": {
+    "lake": {
+      "status": "PASS_bounded_storage_queries",
+      "versions": {
+        "duckdb": "1.5.5",
+        "extensions": [
+          [
+            "ducklake",
+            "d8a1881e"
+          ]
+        ]
+      },
+      "source_bytes": 79168070464,
+      "ingest_seconds": 359.9137421930209,
+      "files": [
+        [
+          150,
+          135569204517
+        ]
+      ],
+      "measurement_scope": "summed insert calls; CH default fsync; uncontrolled cache/shared host; not durable-ACK or sustainable throughput",
+      "query_seconds": {
+        "chronological100": {
+          "count": 3,
+          "min": 0.11425110371783376,
+          "median": 0.11886282777413726,
+          "p95_nearest_rank": 0.2839085590094328,
+          "max": 0.2839085590094328
+        },
+        "count": {
+          "count": 3,
+          "min": 0.002708784770220518,
+          "median": 0.048039786983281374,
+          "p95_nearest_rank": 0.04869183572009206,
+          "max": 0.04869183572009206
+        },
+        "id_content_length": {
+          "count": 24,
+          "min": 0.08525406895205379,
+          "median": 0.09609173214994371,
+          "p95_nearest_rank": 0.11617013532668352,
+          "max": 0.12345901411026716
+        },
+        "kind_count": {
+          "count": 3,
+          "min": 0.019526850897818804,
+          "median": 0.019662081729620695,
+          "p95_nearest_rank": 0.023963554296642542,
+          "max": 0.023963554296642542
+        }
+      }
+    },
+    "lake_zstd": {
+      "status": "PASS_row_count_and_bounded_access_queries",
+      "versions": {
+        "duckdb": "1.5.5",
+        "extensions": [
+          [
+            "ducklake",
+            "d8a1881e"
+          ],
+          [
+            "postgres_scanner",
+            "41223e5"
+          ]
+        ]
+      },
+      "source_bytes": 79168070464,
+      "ingest_seconds": 313.40688155498356,
+      "files": [
+        [
+          326,
+          79221553864
+        ]
+      ],
+      "archive_options": {
+        "compression": "zstd",
+        "level": 3,
+        "row_group_rows": 8192,
+        "target_file_size": "256MB",
+        "receipt_inline_limit": 10
+      },
+      "measurement_scope": "summed insert calls; CH default fsync; uncontrolled cache/shared host; not durable-ACK or sustainable throughput",
+      "query_seconds": {
+        "chronological100": {
+          "count": 3,
+          "min": 0.06313246581703424,
+          "median": 0.06928688008338213,
+          "p95_nearest_rank": 0.5823900117538869,
+          "max": 0.5823900117538869
+        },
+        "count": {
+          "count": 3,
+          "min": 0.0026796809397637844,
+          "median": 0.004437000025063753,
+          "p95_nearest_rank": 0.023065569810569286,
+          "max": 0.023065569810569286
+        },
+        "id_content_length": {
+          "count": 24,
+          "min": 0.08674854272976518,
+          "median": 0.09343942301347852,
+          "p95_nearest_rank": 0.1025435165502131,
+          "max": 0.2982629407197237
+        },
+        "kind_count": {
+          "count": 3,
+          "min": 0.031613940838724375,
+          "median": 0.03885969193652272,
+          "p95_nearest_rank": 0.070220110937953,
+          "max": 0.070220110937953
+        }
+      }
+    },
+    "id": {
+      "status": "PASS_bounded_storage_queries",
+      "versions": {
+        "clickhouse": "26.5.1.882"
+      },
+      "source_bytes": 79168070464,
+      "ingest_seconds": 774.0835207453929,
+      "parts": [
+        [
+          29,
+          20000000,
+          81008934554
+        ]
+      ],
+      "projection_parts": [
+        [
+          29,
+          817276901
+        ]
+      ],
+      "measurement_scope": "summed insert calls; CH default fsync; uncontrolled cache/shared host; not durable-ACK or sustainable throughput",
+      "disk_accounting": "system.parts parent bytes already include projections; projection_parts is a component subset, not an additive total",
+      "query_seconds": {
+        "chronological100": {
+          "count": 3,
+          "min": 0.055242542177438736,
+          "median": 0.12686719605699182,
+          "p95_nearest_rank": 0.1480370769277215,
+          "max": 0.1480370769277215
+        },
+        "count": {
+          "count": 3,
+          "min": 0.0009745550341904163,
+          "median": 0.0015376550145447254,
+          "p95_nearest_rank": 0.0019322903826832771,
+          "max": 0.0019322903826832771
+        },
+        "id_content_length": {
+          "count": 24,
+          "min": 0.0015499070286750793,
+          "median": 0.0024560715537518263,
+          "p95_nearest_rank": 0.01872352324426174,
+          "max": 0.020812755916267633
+        },
+        "kind_count": {
+          "count": 3,
+          "min": 0.014023477211594582,
+          "median": 0.014894700143486261,
+          "p95_nearest_rank": 0.01896687690168619,
+          "max": 0.01896687690168619
+        }
+      }
+    },
+    "time": {
+      "status": "PASS_row_count_and_bounded_access_queries",
+      "versions": {
+        "clickhouse": "26.5.1.882"
+      },
+      "source_bytes": 79168070464,
+      "ingest_seconds": 789.689576049801,
+      "parts": [
+        [
+          36,
+          20000000,
+          81032680685
+        ]
+      ],
+      "projection_parts": [
+        [
+          36,
+          736584763
+        ]
+      ],
+      "measurement_scope": "summed insert calls; CH default fsync; uncontrolled cache/shared host; not durable-ACK or sustainable throughput",
+      "disk_accounting": "system.parts parent bytes already include projections; projection_parts is a component subset, not an additive total",
+      "query_seconds": {
+        "chronological100": {
+          "count": 3,
+          "min": 0.017916475888341665,
+          "median": 0.021137665957212448,
+          "p95_nearest_rank": 0.03158206166699529,
+          "max": 0.03158206166699529
+        },
+        "count": {
+          "count": 3,
+          "min": 0.0014730179682374,
+          "median": 0.0019459500908851624,
+          "p95_nearest_rank": 0.0022397590801119804,
+          "max": 0.0022397590801119804
+        },
+        "id_content_length": {
+          "count": 24,
+          "min": 0.0020112330093979836,
+          "median": 0.0032961450051516294,
+          "p95_nearest_rank": 0.020463739056140184,
+          "max": 0.037756090983748436
+        },
+        "kind_count": {
+          "count": 3,
+          "min": 0.01432627672329545,
+          "median": 0.0160441929474473,
+          "p95_nearest_rank": 0.017559741158038378,
+          "max": 0.017559741158038378
+        }
+      }
+    }
+  },
+  "raw_artifacts": [
+    {
+      "name": "aged-after-ch-restart-02.json",
+      "bytes": 4929,
+      "sha256": "14f8d15ff0421e78e1beb01f4c77c4f1a127d040bed6716b955f7e5134567c53"
+    },
+    {
+      "name": "aged-id.log",
+      "bytes": 114,
+      "sha256": "e7189476c133189f5bb0a700933f609d51cac4dca98d33513878e2f9d379a6c9"
+    },
+    {
+      "name": "aged-lake-zstd.log",
+      "bytes": 135,
+      "sha256": "0101ee7fec806045f701e864c3995e0e49fe4b500a75896fe646d43036f071c0"
+    },
+    {
+      "name": "aged-lake.log",
+      "bytes": 116,
+      "sha256": "eaf5ebfeb3877dee617de4c147c5e02b7138d1651a7b3a826ef758cdb5551d19"
+    },
+    {
+      "name": "aged-preservation-v2.json",
+      "bytes": 60967,
+      "sha256": "21bd4e55f02de6d0ae0c65d1810756d6e4a1da35a0200a21c89d6c33e07c5ef4"
+    },
+    {
+      "name": "aged-preservation-v2.log",
+      "bytes": 132,
+      "sha256": "15e7796073529eee3ed4a87d7639cb5547b4aabc5e392e2785647971677be0c2"
+    },
+    {
+      "name": "aged-time.log",
+      "bytes": 128,
+      "sha256": "aceee018dc4311c6f9f297fe4ef892d9d6d20829391b894beafa9c5761749aaa"
+    },
+    {
+      "name": "aged_id.json",
+      "bytes": 56623,
+      "sha256": "44074f825fda9f2ca2d047d85ee96790eb0b023811031f20253befd76a8a6e45"
+    },
+    {
+      "name": "aged_lake.json",
+      "bytes": 11523,
+      "sha256": "da7174e1146ff0a1cf09cab0b4f2ac64924d27a6e0f7270e3f4cf99fb46b3b44"
+    },
+    {
+      "name": "aged_lake_zstd.json",
+      "bytes": 12318,
+      "sha256": "37105ff56d42f88bc702fa982567aa6b2e0c816988bee5ca7f575e7898be7b83"
+    },
+    {
+      "name": "aged_time.json",
+      "bytes": 57292,
+      "sha256": "cd08847d8e31d70d289c92c1a3884ceed2159b2a8efb74b56928d013d9cd6ae1"
+    },
+    {
+      "name": "backup-restore-archive02.json",
+      "bytes": 118143,
+      "sha256": "9a64e48ac92eac93529ec502f339c4d78f94f38e381b80a0ae57b43b6713ea70"
+    },
+    {
+      "name": "backup-restore-archive02.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "backup-restore.json",
+      "bytes": 251,
+      "sha256": "067460551f8f84c243e02597f53ce108c2a7ef15787375f9fd65de0197c4e2d4"
+    },
+    {
+      "name": "backup-restore.log",
+      "bytes": 984,
+      "sha256": "061f5b5873d7cc0b797ba5fc94c1f7b94251630a5f0caab66de86a3c8335ea6e"
+    },
+    {
+      "name": "baselines-and-verification-complete",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "calibration-id.log",
+      "bytes": 113,
+      "sha256": "7cc5ec6037ecf26b7ebbbfece7a4e2c002f8b7bb5285b19add0bd89cd408129e"
+    },
+    {
+      "name": "calibration-lake-corrected.log",
+      "bytes": 803,
+      "sha256": "a230b7dbf795c75556bd7c25f9417198115afaeacb5ecd7f5f02fd2d5721e461"
+    },
+    {
+      "name": "calibration-lake-final.log",
+      "bytes": 115,
+      "sha256": "3b91795c15ccdfe9db87d42b6d50c472fc9ef5f05cb35547dbfad03b65b686c9"
+    },
+    {
+      "name": "calibration-lake-zstd.log",
+      "bytes": 132,
+      "sha256": "eede639ceb1cba2052d15887535e1f070f24d6a8b281deaafe6b736d0902b262"
+    },
+    {
+      "name": "calibration-lake.log",
+      "bytes": 371,
+      "sha256": "74fc8f4ac5e00850a2be6a90351e78340809843a0793f2d55d25f8b4981a29ab"
+    },
+    {
+      "name": "calibration-preservation.json",
+      "bytes": 6997,
+      "sha256": "c2b40ea499a7431b18061fe64adf430ce58318a18f9b3c108aa73d0ebfff2cc3"
+    },
+    {
+      "name": "calibration-preservation.log",
+      "bytes": 131,
+      "sha256": "4d2ddf83292e3b4c4b2d896a4100960aaece832f7eb22f0fe9ee75ba14b70267"
+    },
+    {
+      "name": "calibration-time.log",
+      "bytes": 114,
+      "sha256": "383f4ae76ea028a87cee3ccdc632054cdd2f9913c94c4354ed282272647608c9"
+    },
+    {
+      "name": "calibration_id.json",
+      "bytes": 17868,
+      "sha256": "58ff70d94d14661a9ed95f2337e24adff737e1aabe5b7549be32ac2134a46437"
+    },
+    {
+      "name": "calibration_lake.json",
+      "bytes": 4879,
+      "sha256": "1f798c892f5a85ea2ce7086506035f5723a4fbc78980674d23f5dfc80d0a3e62"
+    },
+    {
+      "name": "calibration_lake.previous.json",
+      "bytes": 4783,
+      "sha256": "7bac10ae58c80b1e881af6c77345cf8bc62a52fe7d099f4f3a9f6a5cb31e3095"
+    },
+    {
+      "name": "calibration_lake_zstd.json",
+      "bytes": 5550,
+      "sha256": "f90261a67ed48ec773815fe7bfe5c6a6b7bbe2d54cc77f7cb9c23cd39da82a83"
+    },
+    {
+      "name": "calibration_time.json",
+      "bytes": 17943,
+      "sha256": "24b6dc612d539ff9cba03c62566f9beb37dd6601045ca087eaf6afe3473fc59e"
+    },
+    {
+      "name": "ch-backup-restore.json",
+      "bytes": 1535,
+      "sha256": "366d3808fc22ff6199615afa631392ef3e031e74ef472abfc51d9005b1ed4d90"
+    },
+    {
+      "name": "ch-process-restart-02.json",
+      "bytes": 4348,
+      "sha256": "b02bec4bc6a96e91f87c60e725dc0b27a435a2be5282cd4128f85ca2373c3bbf"
+    },
+    {
+      "name": "ch-process-restart.json",
+      "bytes": 4040,
+      "sha256": "15b1f53078bd584ef3f4f7489f9d850e405ee43ad2d98d33495f9411f4a1f522"
+    },
+    {
+      "name": "collector-negative-controls.json",
+      "bytes": 513,
+      "sha256": "e1caa37d5f9734f508393e4139f516f0fc2b300688ac6d2d8d23eab6596c720d"
+    },
+    {
+      "name": "fixture-build.log",
+      "bytes": 2413,
+      "sha256": "9933d630128e90a85a6aa59212254526a4748d4dfcab446fd70282a647acd448"
+    },
+    {
+      "name": "fixture-generation-sha256.txt",
+      "bytes": 337,
+      "sha256": "466594336fa7d8320a2fd3da2fe0795a26de632414582b27d9908b3716d8dca2"
+    },
+    {
+      "name": "fixture-validation-build.log",
+      "bytes": 186,
+      "sha256": "6344f5be13a73ce25115a59c887edda8792e26a7c1861f82ee1b030262187d1d"
+    },
+    {
+      "name": "generate-aged.log",
+      "bytes": 252,
+      "sha256": "f07af403883af43cc7071fa3885447c0f5d7e3ef166bf6cc9e9bb2f4303f7d37"
+    },
+    {
+      "name": "generate-calibration.log",
+      "bytes": 248,
+      "sha256": "da56628bf14489655cc8d6ef925f5d8e740152856eb5de3cd16fdb88247ae8da"
+    },
+    {
+      "name": "inventory-before-stop.json",
+      "bytes": 17450,
+      "sha256": "7407a2a1f5755991408264bb879bb13e168bab913906cc6ef989b454551ec367"
+    },
+    {
+      "name": "inventory-final.json",
+      "bytes": 15963,
+      "sha256": "1e52eeb9b26f89dd2ea2a4d73f94e064dcc957c1efaff335f92ee5ba712e5c68"
+    },
+    {
+      "name": "inventory-qualification-live.json",
+      "bytes": 16747,
+      "sha256": "22de3df966382f57fac6a4fd8fb005e8787b662a1684e490970dbace1c58acd0"
+    },
+    {
+      "name": "layout-inspection-v2.json",
+      "bytes": 5166,
+      "sha256": "847c68a6d6d2012b986a211bcdb7ea8bea358736771da3041e0c19f668d18f48"
+    },
+    {
+      "name": "layout-inspection.json",
+      "bytes": 4602,
+      "sha256": "9ebd7255a79d21573d0e21bcfe3edde27bbc189708c9f99425c73fd5f920982e"
+    },
+    {
+      "name": "python-install.log",
+      "bytes": 4962,
+      "sha256": "ae9d63d1414516705116435ca0ef02d9648b5037b4d07b37ed47b1c5b8fd9e7a"
+    },
+    {
+      "name": "qualification_recovery_recmixed01.json",
+      "bytes": 140566,
+      "sha256": "f9d5da779964c9eea52f5e00f3ef5ab443245ed53bcb6d62c6cc478733c72996"
+    },
+    {
+      "name": "qualification_recovery_recmixed02ch.json",
+      "bytes": 126483,
+      "sha256": "0ef7826ffe1024f345979d57c1218cacc1fb6847dc2eacc518af65e8fc9685c4"
+    },
+    {
+      "name": "recovery-alias-countercheck.json",
+      "bytes": 1146,
+      "sha256": "ef86296ec95d98c6704ba913174bf07f1afdf86ad7adf95a507f5ccfb5c13e81"
+    },
+    {
+      "name": "recovery-gate-recmixed01.json",
+      "bytes": 220,
+      "sha256": "d11c712878acc13d3ac20a1359eb09fab494dca5f30e9713d0af71858d57c5b0"
+    },
+    {
+      "name": "recovery-gate-recmixed02ch.json",
+      "bytes": 607,
+      "sha256": "e9dfcbaee3187a563c07211996c5cdb715776bff5f464e258877ba4966f60b8e"
+    },
+    {
+      "name": "recovery-interruption-recmixed01.json",
+      "bytes": 321,
+      "sha256": "71b7d5376393f5c3f6e6dd66491f2e5739724487001aded0bfa930855d4b044b"
+    },
+    {
+      "name": "recovery-recmixed01.log",
+      "bytes": 979,
+      "sha256": "9806463a3a933c7383b6101c92326bb3582b6814ee939cccd7456c97f6597ee8"
+    },
+    {
+      "name": "recovery-recmixed02ch.log",
+      "bytes": 161,
+      "sha256": "9ca62fdfa979ce1e881be815f2045d7862bb669cb3548846dc04ece2a22768b3"
+    },
+    {
+      "name": "recovery-source-recmixed01.py",
+      "bytes": 30027,
+      "sha256": "66e462881cc947ffe212f8149eec9e23753a03a561a46a23b10f925730209884"
+    },
+    {
+      "name": "recovery-source-recmixed02ch.py",
+      "bytes": 31598,
+      "sha256": "fdd964ca224596adf588032bcc9ad96c52d106087d58c5c0861f4a703c598e1b"
+    },
+    {
+      "name": "restart-source-first.py",
+      "bytes": 4798,
+      "sha256": "13d7979bf8ced181a4781a37a5d3c7e89c6dfc37665db79f2250bf5b8324119a"
+    },
+    {
+      "name": "restored-preservation-archive02.json",
+      "bytes": 1136,
+      "sha256": "abf871ee508f7e9da5b95b774cb38a043f16333c73ce50d893c0aa6c3bddf7a9"
+    },
+    {
+      "name": "summary-negative-controls.json",
+      "bytes": 205,
+      "sha256": "cd86bb3382f8c64aef916ae6929838b9ccf88385c93e9b295a9731aa8c989e15"
+    }
+  ],
+  "preservation": {
+    "status": "PASS_sampled_signed_preservation_and_population_oracles",
+    "rows": 20000000,
+    "sample_rows": 1743,
+    "sample_authors": 988,
+    "scope": "sampled complete signed fields; full row/distinct-ID/count/sum and independent chronological oracle; no full-corpus signature or durability proof",
+    "engines": {
+      "lake": {
+        "status": "PASS",
+        "seconds": 239.51091104419902,
+        "full_sample_fetch_seconds": 238.18260128004476,
+        "sample_rows": 1743,
+        "complete_result_sha256": "b5f349b5031930a57a7990922474f9507e357afcfe3934fad64c5855d8cdd50e",
+        "aggregate_expected": [
+          20000000,
+          20000000,
+          199999990000000,
+          20000000,
+          0,
+          19999999
+        ],
+        "chronological_ordinals": [
+          8302321,
+          16078321,
+          526321,
+          16604642,
+          8828642,
+          1052642,
+          1578963,
+          17130963,
+          9354963,
+          17657284,
+          9881284,
+          2105284,
+          2631605,
+          10407605,
+          18183605,
+          18709926,
+          10933926,
+          3157926,
+          19236247,
+          11460247,
+          3684247,
+          11986568,
+          4210568,
+          19762568,
+          12512889,
+          4736889,
+          13039210,
+          5263210,
+          5789531,
+          13565531,
+          14091852,
+          6315852,
+          6842173,
+          14618173,
+          7368494,
+          15144494,
+          15670815,
+          118815,
+          7894815,
+          8421136,
+          645136,
+          16197136,
+          8947457,
+          16723457,
+          1171457,
+          17249778,
+          1697778,
+          9473778,
+          2224099,
+          10000099,
+          17776099,
+          10526420,
+          18302420,
+          2750420,
+          3276741,
+          18828741,
+          11052741,
+          11579062,
+          3803062,
+          19355062,
+          19881383,
+          12105383,
+          4329383,
+          4855704,
+          12631704,
+          13158025,
+          5382025,
+          5908346,
+          13684346,
+          6434667,
+          14210667,
+          6960988,
+          14736988,
+          15263309,
+          7487309,
+          15789630,
+          237630,
+          8013630,
+          16315951,
+          763951,
+          8539951,
+          16842272,
+          1290272,
+          9066272,
+          17368593,
+          1816593,
+          9592593,
+          17894914,
+          10118914,
+          2342914,
+          2869235,
+          18421235,
+          10645235,
+          11171556,
+          18947556,
+          3395556,
+          11697877,
+          19473877,
+          3921877,
+          4448198
+        ],
+        "negative_control": "same-length content mutation rejected"
+      },
+      "id": {
+        "status": "PASS",
+        "seconds": 5.600247943773866,
+        "full_sample_fetch_seconds": 3.8441647891886532,
+        "sample_rows": 1743,
+        "complete_result_sha256": "b5f349b5031930a57a7990922474f9507e357afcfe3934fad64c5855d8cdd50e",
+        "aggregate_expected": [
+          20000000,
+          20000000,
+          199999990000000,
+          20000000,
+          0,
+          19999999
+        ],
+        "chronological_ordinals": [
+          8302321,
+          16078321,
+          526321,
+          16604642,
+          8828642,
+          1052642,
+          1578963,
+          17130963,
+          9354963,
+          17657284,
+          9881284,
+          2105284,
+          2631605,
+          10407605,
+          18183605,
+          18709926,
+          10933926,
+          3157926,
+          19236247,
+          11460247,
+          3684247,
+          11986568,
+          4210568,
+          19762568,
+          12512889,
+          4736889,
+          13039210,
+          5263210,
+          5789531,
+          13565531,
+          14091852,
+          6315852,
+          6842173,
+          14618173,
+          7368494,
+          15144494,
+          15670815,
+          118815,
+          7894815,
+          8421136,
+          645136,
+          16197136,
+          8947457,
+          16723457,
+          1171457,
+          17249778,
+          1697778,
+          9473778,
+          2224099,
+          10000099,
+          17776099,
+          10526420,
+          18302420,
+          2750420,
+          3276741,
+          18828741,
+          11052741,
+          11579062,
+          3803062,
+          19355062,
+          19881383,
+          12105383,
+          4329383,
+          4855704,
+          12631704,
+          13158025,
+          5382025,
+          5908346,
+          13684346,
+          6434667,
+          14210667,
+          6960988,
+          14736988,
+          15263309,
+          7487309,
+          15789630,
+          237630,
+          8013630,
+          16315951,
+          763951,
+          8539951,
+          16842272,
+          1290272,
+          9066272,
+          17368593,
+          1816593,
+          9592593,
+          17894914,
+          10118914,
+          2342914,
+          2869235,
+          18421235,
+          10645235,
+          11171556,
+          18947556,
+          3395556,
+          11697877,
+          19473877,
+          3921877,
+          4448198
+        ],
+        "negative_control": "same-length content mutation rejected"
+      },
+      "time": {
+        "status": "PASS",
+        "seconds": 5.459954601246864,
+        "full_sample_fetch_seconds": 3.7267863848246634,
+        "sample_rows": 1743,
+        "complete_result_sha256": "b5f349b5031930a57a7990922474f9507e357afcfe3934fad64c5855d8cdd50e",
+        "aggregate_expected": [
+          20000000,
+          20000000,
+          199999990000000,
+          20000000,
+          0,
+          19999999
+        ],
+        "chronological_ordinals": [
+          8302321,
+          16078321,
+          526321,
+          16604642,
+          8828642,
+          1052642,
+          1578963,
+          17130963,
+          9354963,
+          17657284,
+          9881284,
+          2105284,
+          2631605,
+          10407605,
+          18183605,
+          18709926,
+          10933926,
+          3157926,
+          19236247,
+          11460247,
+          3684247,
+          11986568,
+          4210568,
+          19762568,
+          12512889,
+          4736889,
+          13039210,
+          5263210,
+          5789531,
+          13565531,
+          14091852,
+          6315852,
+          6842173,
+          14618173,
+          7368494,
+          15144494,
+          15670815,
+          118815,
+          7894815,
+          8421136,
+          645136,
+          16197136,
+          8947457,
+          16723457,
+          1171457,
+          17249778,
+          1697778,
+          9473778,
+          2224099,
+          10000099,
+          17776099,
+          10526420,
+          18302420,
+          2750420,
+          3276741,
+          18828741,
+          11052741,
+          11579062,
+          3803062,
+          19355062,
+          19881383,
+          12105383,
+          4329383,
+          4855704,
+          12631704,
+          13158025,
+          5382025,
+          5908346,
+          13684346,
+          6434667,
+          14210667,
+          6960988,
+          14736988,
+          15263309,
+          7487309,
+          15789630,
+          237630,
+          8013630,
+          16315951,
+          763951,
+          8539951,
+          16842272,
+          1290272,
+          9066272,
+          17368593,
+          1816593,
+          9592593,
+          17894914,
+          10118914,
+          2342914,
+          2869235,
+          18421235,
+          10645235,
+          11171556,
+          18947556,
+          3395556,
+          11697877,
+          19473877,
+          3921877,
+          4448198
+        ],
+        "negative_control": "same-length content mutation rejected"
+      },
+      "lake_zstd": {
+        "status": "PASS",
+        "seconds": 194.3817830691114,
+        "full_sample_fetch_seconds": 193.2981653381139,
+        "sample_rows": 1743,
+        "complete_result_sha256": "b5f349b5031930a57a7990922474f9507e357afcfe3934fad64c5855d8cdd50e",
+        "aggregate_expected": [
+          20000000,
+          20000000,
+          199999990000000,
+          20000000,
+          0,
+          19999999
+        ],
+        "chronological_ordinals": [
+          8302321,
+          16078321,
+          526321,
+          16604642,
+          8828642,
+          1052642,
+          1578963,
+          17130963,
+          9354963,
+          17657284,
+          9881284,
+          2105284,
+          2631605,
+          10407605,
+          18183605,
+          18709926,
+          10933926,
+          3157926,
+          19236247,
+          11460247,
+          3684247,
+          11986568,
+          4210568,
+          19762568,
+          12512889,
+          4736889,
+          13039210,
+          5263210,
+          5789531,
+          13565531,
+          14091852,
+          6315852,
+          6842173,
+          14618173,
+          7368494,
+          15144494,
+          15670815,
+          118815,
+          7894815,
+          8421136,
+          645136,
+          16197136,
+          8947457,
+          16723457,
+          1171457,
+          17249778,
+          1697778,
+          9473778,
+          2224099,
+          10000099,
+          17776099,
+          10526420,
+          18302420,
+          2750420,
+          3276741,
+          18828741,
+          11052741,
+          11579062,
+          3803062,
+          19355062,
+          19881383,
+          12105383,
+          4329383,
+          4855704,
+          12631704,
+          13158025,
+          5382025,
+          5908346,
+          13684346,
+          6434667,
+          14210667,
+          6960988,
+          14736988,
+          15263309,
+          7487309,
+          15789630,
+          237630,
+          8013630,
+          16315951,
+          763951,
+          8539951,
+          16842272,
+          1290272,
+          9066272,
+          17368593,
+          1816593,
+          9592593,
+          17894914,
+          10118914,
+          2342914,
+          2869235,
+          18421235,
+          10645235,
+          11171556,
+          18947556,
+          3395556,
+          11697877,
+          19473877,
+          3921877,
+          4448198
+        ],
+        "negative_control": "same-length content mutation rejected"
+      }
+    },
+    "input_hash_seconds": 103.38948147278279,
+    "input_hash_timing": "post-load identity capture; initial generator manifest had sizes only",
+    "source_files": 308
+  },
+  "layout": {
+    "status": "PASS_effective_layout_inspection",
+    "scope": "post-load effective options, sampled file footers and explain plans; not full query-path/cold-cache qualification",
+    "archive": {
+      "aged_lake": {
+        "file": "data/main/aged_lake/ducklake-01a0af83-d332-75a1-b1d3-acd76505e1ed.parquet",
+        "sample_rows": 131072,
+        "row_groups": [
+          65536,
+          65536
+        ],
+        "codecs": [
+          "SNAPPY"
+        ],
+        "receipt_files": [
+          77,
+          59748
+        ],
+        "receipt_rows": 77
+      },
+      "aged_lake_zstd": {
+        "file": "data/main/aged_lake_zstd/ducklake-01a0afa1-4f2c-7931-870e-cf3311476309.parquet",
+        "sample_rows": 65536,
+        "row_groups": [
+          8192,
+          8192,
+          8192,
+          8192,
+          8192,
+          8192,
+          8192,
+          8192
+        ],
+        "codecs": [
+          "ZSTD"
+        ],
+        "receipt_files": [
+          0,
+          0
+        ],
+        "receipt_rows": 77
+      }
+    },
+    "clickhouse": {
+      "aged_id": {
+        "id": "Expression ((Project names + Projection))\n  Expression ((WHERE + Change column names to column identifiers))\n    ReadFromMergeTree (default.aged_id)\n    Indexes:\n      PrimaryKey\n        Keys:\n          id\n        Condition: (id in [\\'\ufffdTT\ufffd\ufffd\ufffd\ufffdHs\u0015\\\\nV\u001d<80\u0006\ufffd\u001c^\ufffd\\\\0jl\ufffd\ufffd\u000e\\\\n$^\ufffd\ufffd\\', \\'\ufffdTT\ufffd\ufffd\ufffd\ufffdHs\u0015\\\\nV\u001d<80\u0006\ufffd\u001c^\ufffd\\\\0jl\ufffd\ufffd\u000e\\\\n$^\ufffd\ufffd\\'])\n        Parts: 9/9\n        Granules: 9/16331\n        Search Algorithm: binary search\n      Ranges: 9\n",
+        "chronological100": "Expression (Project names)\n  Expression\n    JoinLazyColumnsStep\n      Limit (preliminary LIMIT)\n        Sorting (Sorting for ORDER BY)\n          Expression\n            Expression\n              ReadFromMergeTree (default.aged_id)\n              Indexes:\n                PrimaryKey\n                  Condition: true\n                  Parts: 9/9\n                  Granules: 16331/16331\n                Ranges: 9\n      LazilyReadFromMergeTree\n"
+      },
+      "aged_time": {
+        "id": "Expression ((Project names + Projection))\n  Expression ((WHERE + Change column names to column identifiers))\n    ReadFromMergeTree (default.aged_time)\n    Indexes:\n      PrimaryKey\n        Keys:\n          id\n        Condition: (id in [\\'\ufffdTT\ufffd\ufffd\ufffd\ufffdHs\u0015\\\\nV\u001d<80\u0006\ufffd\u001c^\ufffd\\\\0jl\ufffd\ufffd\u000e\\\\n$^\ufffd\ufffd\\', \\'\ufffdTT\ufffd\ufffd\ufffd\ufffdHs\u0015\\\\nV\u001d<80\u0006\ufffd\u001c^\ufffd\\\\0jl\ufffd\ufffd\u000e\\\\n$^\ufffd\ufffd\\'])\n        Parts: 4/4\n        Granules: 16328/16328\n        Search Algorithm: generic exclusion search\n      Ranges: 4\n    Projections:\n      Name: alternate\n        Description: Projection has been analyzed and will be applied during reading\n        Condition: (id in [\\'\ufffdTT\ufffd\ufffd\ufffd\ufffdHs\u0015\\\\nV\u001d<80\u0006\ufffd\u001c^\ufffd\\\\0jl\ufffd\ufffd\u000e\\\\n$^\ufffd\ufffd\\', \\'\ufffdTT\ufffd\ufffd\ufffd\ufffdHs\u0015\\\\nV\u001d<80\u0006\ufffd\u001c^\ufffd\\\\0jl\ufffd\ufffd\u000e\\\\n$^\ufffd\ufffd\\'])\n        Search Algorithm: binary search\n        Parts: 4\n        Marks: 4\n        Ranges: 4\n        Rows: 32768\n        Filtered Parts: 0\n",
+        "chronological100": "Expression (Project names)\n  Limit (preliminary LIMIT)\n    Sorting (Sorting for ORDER BY)\n      Expression ((Before ORDER BY + (Projection + Change column names to column identifiers)))\n        ReadFromMergeTree (default.aged_time)\n        Indexes:\n          PrimaryKey\n            Condition: true\n            Parts: 4/4\n            Granules: 16328/16328\n          Ranges: 4\n"
+      }
+    },
+    "effective_archive_options": [
+      [
+        "created_by",
+        "DuckDB d8cdaa33fd",
+        "GLOBAL",
+        null
+      ],
+      [
+        "data_inlining_row_limit",
+        "10",
+        "TABLE",
+        "main.calibration_lake_zstd_receipts"
+      ],
+      [
+        "data_inlining_row_limit",
+        "10",
+        "TABLE",
+        "main.aged_lake_zstd_receipts"
+      ],
+      [
+        "data_path",
+        "/lab/data/",
+        "GLOBAL",
+        null
+      ],
+      [
+        "encrypted",
+        "false",
+        "GLOBAL",
+        null
+      ],
+      [
+        "parquet_compression",
+        "zstd",
+        "TABLE",
+        "main.calibration_lake_zstd"
+      ],
+      [
+        "parquet_compression",
+        "zstd",
+        "TABLE",
+        "main.aged_lake_zstd"
+      ],
+      [
+        "parquet_compression_level",
+        "3",
+        "TABLE",
+        "main.calibration_lake_zstd"
+      ],
+      [
+        "parquet_compression_level",
+        "3",
+        "TABLE",
+        "main.aged_lake_zstd"
+      ],
+      [
+        "parquet_row_group_size",
+        "8192",
+        "TABLE",
+        "main.calibration_lake_zstd"
+      ],
+      [
+        "parquet_row_group_size",
+        "8192",
+        "TABLE",
+        "main.aged_lake_zstd"
+      ],
+      [
+        "target_file_size",
+        "256000000",
+        "TABLE",
+        "main.calibration_lake_zstd"
+      ],
+      [
+        "target_file_size",
+        "256000000",
+        "TABLE",
+        "main.aged_lake_zstd"
+      ],
+      [
+        "version",
+        "1.0",
+        "GLOBAL",
+        null
+      ]
+    ]
+  },
+  "backup-restore-archive02": {
+    "status": "PASS_quiescent_archive_copy_restore",
+    "scope": "quiescent local archive copy and fresh catalog restore; no host loss or product causal-backup claim",
+    "source_snapshot": "164",
+    "source_files": 557,
+    "source_bytes": 215866532029,
+    "copy_and_hash_seconds": 538.0746881775558,
+    "catalog_sha256": "773e71a076cdb697dcce34e18fb3941f872c9f0e54fe63ac9bf5b892b0e527d4",
+    "restored_evidence": "restored-preservation-archive02.json"
+  },
+  "restored-preservation-archive02": {
+    "status": "PASS_restored_archive_samples_and_population",
+    "tables": {
+      "calibration_lake": {
+        "rows": 100000,
+        "files": 1,
+        "sample_rows": 261,
+        "seconds": 0.559386698063463,
+        "signed_sample_sha256": "87912cec5eeb40cc2fa738dfb4e02f6d5f70c7564f0f498ae8bf5f847e97adbd"
+      },
+      "calibration_lake_zstd": {
+        "rows": 100000,
+        "files": 2,
+        "sample_rows": 261,
+        "seconds": 0.40881547098979354,
+        "signed_sample_sha256": "87912cec5eeb40cc2fa738dfb4e02f6d5f70c7564f0f498ae8bf5f847e97adbd"
+      },
+      "aged_lake": {
+        "rows": 20000000,
+        "files": 150,
+        "sample_rows": 261,
+        "seconds": 169.61713989032432,
+        "signed_sample_sha256": "df243451e438df60c05324656d0b7898f157db851312ce1c09f18672a526bbc6"
+      },
+      "aged_lake_zstd": {
+        "rows": 20000000,
+        "files": 326,
+        "sample_rows": 261,
+        "seconds": 106.6849244791083,
+        "signed_sample_sha256": "df243451e438df60c05324656d0b7898f157db851312ce1c09f18672a526bbc6"
+      }
+    },
+    "scope": "full ordinal coverage/ID uniqueness and regenerated complete signed samples; not full-corpus crypto proof"
+  },
+  "ch-backup-restore": {
+    "status": "PASS_native_CH_backup_restore",
+    "scope": "100k-row native backup to a fresh table; full population and sampled signed values; same-server/same-device, no disaster recovery claim",
+    "backup": {
+      "seconds": 0.16176485223695636,
+      "query_id": "qualification-b2388fc5-e985-424f-b56d-60aada1e7fdf",
+      "summary": {
+        "read_rows": "1",
+        "read_bytes": "45",
+        "written_rows": "0",
+        "written_bytes": "0",
+        "total_rows_to_read": "0",
+        "result_rows": "1",
+        "result_bytes": "8448",
+        "elapsed_ns": "160566064",
+        "memory_usage": "4930076"
+      },
+      "id": "133a292a-a101-4c44-b9dd-a6081db0a82b",
+      "status": "BACKUP_CREATED"
+    },
+    "restore": {
+      "seconds": 0.07024142099544406,
+      "query_id": "qualification-7e537f81-514d-44ba-bb28-cf05b226dea9",
+      "summary": {
+        "read_rows": "1",
+        "read_bytes": "45",
+        "written_rows": "0",
+        "written_bytes": "0",
+        "total_rows_to_read": "0",
+        "result_rows": "1",
+        "result_bytes": "8448",
+        "elapsed_ns": "69129854",
+        "memory_usage": "4282924"
+      },
+      "id": "b8fd7c55-19fa-440e-ac27-1973491e712e",
+      "status": "RESTORED"
+    },
+    "tables": {
+      "calibration_id": {
+        "rows": 100000,
+        "sample_rows": 259,
+        "sample_sha256": "e3824e52d85f7252bfd0cee3b824f69120ae2d95ef6885f015630ab0ee7ab041"
+      },
+      "calibration_id_restored": {
+        "rows": 100000,
+        "sample_rows": 259,
+        "sample_sha256": "e3824e52d85f7252bfd0cee3b824f69120ae2d95ef6885f015630ab0ee7ab041"
+      }
+    }
+  },
+  "aged-after-ch-restart-02": {
+    "status": "PASS_sampled_signed_preservation_and_population_oracles",
+    "rows": 20000000,
+    "sample_rows": 1743,
+    "sample_authors": 988,
+    "engines": {
+      "id": {
+        "status": "PASS",
+        "seconds": 5.212505810894072,
+        "full_sample_fetch_seconds": 3.6185948718339205,
+        "sample_rows": 1743,
+        "complete_result_sha256": "b5f349b5031930a57a7990922474f9507e357afcfe3934fad64c5855d8cdd50e",
+        "aggregate_expected": [
+          20000000,
+          20000000,
+          199999990000000,
+          20000000,
+          0,
+          19999999
+        ],
+        "chronological_ordinals": [
+          8302321,
+          16078321,
+          526321,
+          16604642,
+          8828642,
+          1052642,
+          1578963,
+          17130963,
+          9354963,
+          17657284,
+          9881284,
+          2105284,
+          2631605,
+          10407605,
+          18183605,
+          18709926,
+          10933926,
+          3157926,
+          19236247,
+          11460247,
+          3684247,
+          11986568,
+          4210568,
+          19762568,
+          12512889,
+          4736889,
+          13039210,
+          5263210,
+          5789531,
+          13565531,
+          14091852,
+          6315852,
+          6842173,
+          14618173,
+          7368494,
+          15144494,
+          15670815,
+          118815,
+          7894815,
+          8421136,
+          645136,
+          16197136,
+          8947457,
+          16723457,
+          1171457,
+          17249778,
+          1697778,
+          9473778,
+          2224099,
+          10000099,
+          17776099,
+          10526420,
+          18302420,
+          2750420,
+          3276741,
+          18828741,
+          11052741,
+          11579062,
+          3803062,
+          19355062,
+          19881383,
+          12105383,
+          4329383,
+          4855704,
+          12631704,
+          13158025,
+          5382025,
+          5908346,
+          13684346,
+          6434667,
+          14210667,
+          6960988,
+          14736988,
+          15263309,
+          7487309,
+          15789630,
+          237630,
+          8013630,
+          16315951,
+          763951,
+          8539951,
+          16842272,
+          1290272,
+          9066272,
+          17368593,
+          1816593,
+          9592593,
+          17894914,
+          10118914,
+          2342914,
+          2869235,
+          18421235,
+          10645235,
+          11171556,
+          18947556,
+          3395556,
+          11697877,
+          19473877,
+          3921877,
+          4448198
+        ],
+        "negative_control": "same-length content mutation rejected"
+      },
+      "time": {
+        "status": "PASS",
+        "seconds": 5.114845670294017,
+        "full_sample_fetch_seconds": 3.546000520233065,
+        "sample_rows": 1743,
+        "complete_result_sha256": "b5f349b5031930a57a7990922474f9507e357afcfe3934fad64c5855d8cdd50e",
+        "aggregate_expected": [
+          20000000,
+          20000000,
+          199999990000000,
+          20000000,
+          0,
+          19999999
+        ],
+        "chronological_ordinals": [
+          8302321,
+          16078321,
+          526321,
+          16604642,
+          8828642,
+          1052642,
+          1578963,
+          17130963,
+          9354963,
+          17657284,
+          9881284,
+          2105284,
+          2631605,
+          10407605,
+          18183605,
+          18709926,
+          10933926,
+          3157926,
+          19236247,
+          11460247,
+          3684247,
+          11986568,
+          4210568,
+          19762568,
+          12512889,
+          4736889,
+          13039210,
+          5263210,
+          5789531,
+          13565531,
+          14091852,
+          6315852,
+          6842173,
+          14618173,
+          7368494,
+          15144494,
+          15670815,
+          118815,
+          7894815,
+          8421136,
+          645136,
+          16197136,
+          8947457,
+          16723457,
+          1171457,
+          17249778,
+          1697778,
+          9473778,
+          2224099,
+          10000099,
+          17776099,
+          10526420,
+          18302420,
+          2750420,
+          3276741,
+          18828741,
+          11052741,
+          11579062,
+          3803062,
+          19355062,
+          19881383,
+          12105383,
+          4329383,
+          4855704,
+          12631704,
+          13158025,
+          5382025,
+          5908346,
+          13684346,
+          6434667,
+          14210667,
+          6960988,
+          14736988,
+          15263309,
+          7487309,
+          15789630,
+          237630,
+          8013630,
+          16315951,
+          763951,
+          8539951,
+          16842272,
+          1290272,
+          9066272,
+          17368593,
+          1816593,
+          9592593,
+          17894914,
+          10118914,
+          2342914,
+          2869235,
+          18421235,
+          10645235,
+          11171556,
+          18947556,
+          3395556,
+          11697877,
+          19473877,
+          3921877,
+          4448198
+        ],
+        "negative_control": "same-length content mutation rejected"
+      }
+    },
+    "source_sha256": "d9a342bb249817227f999b4131d422f80d3de31af0248d69d0e0c8a867fad6eb",
+    "scope": "sampled complete signed fields; full row/distinct-ID/count/sum and independent chronological oracle; no full-corpus signature or durability proof"
+  },
+  "bounded_recovery_runs": {
+    "recmixed01": {
+      "status": "FAILED",
+      "namespace": "qualification_recovery_recmixed01",
+      "source": "events-000000000000.parquet",
+      "started_at_utc": "2026-09-17T14:19:35.157773+00:00",
+      "source_script_sha256": "66e462881cc947ffe212f8149eec9e23753a03a561a46a23b10f925730209884",
+      "manifest_sha256": "e591413aac4304a0bb9f24fdcd11aa6980a1c9389357f1a6c18a24530e2edf70",
+      "cases": {
+        "lake-kill-before-commit": {
+          "boundary": "lake-before-commit",
+          "pid": 1605,
+          "pg_backend_pids_before_kill": [
+            368
+          ],
+          "exitcode": -9,
+          "old_pg_sessions": 0,
+          "oracle": {
+            "bodies": {
+              "logical": 0,
+              "physical": 0
+            },
+            "tags": {
+              "logical": 0,
+              "physical": 0
+            },
+            "receipt_count": 0
+          }
+        },
+        "lake-kill-after-commit-before-caller-ack": {
+          "boundary": "lake-after-commit",
+          "pid": 1767,
+          "pg_backend_pids_before_kill": [
+            373
+          ],
+          "exitcode": -9,
+          "old_pg_sessions": 0,
+          "oracle": {
+            "bodies": {
+              "logical": 25000,
+              "physical": 25000
+            },
+            "tags": {
+              "logical": 75000,
+              "physical": 75000
+            },
+            "receipt_count": 1
+          }
+        },
+        "ch-partial-family": {
+          "old_frontier": 0,
+          "missing-family-detected": true,
+          "complete_oracle": {
+            "bodies": {
+              "logical": 25000,
+              "physical": 25000
+            },
+            "tags": {
+              "logical": 75000,
+              "physical": 75000
+            }
+          }
+        },
+        "ch-dedup-disabled-replay": {
+          "bodies": {
+            "logical": 25000,
+            "physical": 50000
+          },
+          "tags": {
+            "logical": 75000,
+            "physical": 150000
+          }
+        },
+        "pg-activation-response-lost": {
+          "boundary": "pg-after-commit",
+          "pid": 1929,
+          "pg_backend_pids_before_kill": [
+            379
+          ],
+          "exitcode": -9,
+          "old_pg_sessions": 0
+        },
+        "same-length-corruption-negative": {
+          "detected": true
+        },
+        "mixed-lake": {
+          "duration_seconds": 600,
+          "workers": [
+            {
+              "role": "writer",
+              "engine": "lake",
+              "memory_limit": 3000000000,
+              "threads": 2,
+              "offered": 600,
+              "started": 600,
+              "completed": 600,
+              "not_started": 0,
+              "errors": [],
+              "latency_summary_seconds": {
+                "count": 600,
+                "min": 0.018947203177958727,
+                "median": 0.040219909977167845,
+                "p95_nearest_rank": 0.055849713273346424,
+                "max": 0.06146528711542487
+              },
+              "queue_summary_seconds": {
+                "count": 600,
+                "min": 4.5855995267629623e-05,
+                "median": 0.00011536362580955029,
+                "p95_nearest_rank": 0.00043082423508167267,
+                "max": 0.0005551241338253021
+              },
+              "written_rows": 24600
+            },
+            {
+              "role": "reader-a",
+              "engine": "lake",
+              "memory_limit": 1500000000,
+              "threads": 1,
+              "offered": 600,
+              "started": 600,
+              "completed": 600,
+              "not_started": 0,
+              "errors": [],
+              "latency_summary_seconds": {
+                "count": 600,
+                "min": 0.07299292087554932,
+                "median": 0.1284811885561794,
+                "p95_nearest_rank": 0.16460467455908656,
+                "max": 0.1815908462740481
+              },
+              "queue_summary_seconds": {
+                "count": 600,
+                "min": 4.39411960542202e-05,
+                "median": 0.00011284998618066311,
+                "p95_nearest_rank": 0.00044378917664289474,
+                "max": 0.0005963719449937344
+              },
+              "written_rows": 0
+            },
+            {
+              "role": "reader-b",
+              "engine": "lake",
+              "memory_limit": 1500000000,
+              "threads": 1,
+              "offered": 600,
+              "started": 600,
+              "completed": 600,
+              "not_started": 0,
+              "errors": [],
+              "latency_summary_seconds": {
+                "count": 600,
+                "min": 0.07280195411294699,
+                "median": 0.1307085209991783,
+                "p95_nearest_rank": 0.16350896982476115,
+                "max": 0.18053898261860013
+              },
+              "queue_summary_seconds": {
+                "count": 600,
+                "min": 4.582991823554039e-05,
+                "median": 0.00011237268336117268,
+                "p95_nearest_rank": 0.0004435991868376732,
+                "max": 0.0006484771147370338
+              },
+              "written_rows": 0
+            }
+          ],
+          "final_body_oracle": {
+            "logical": 25000,
+            "physical": 49600
+          },
+          "scope": "fixed offered one operation/worker/second; no capacity/SLO claim; cache uncontrolled"
+        }
+      },
+      "scope": "real client/worker process kill, transaction/partial-family/replay slice; no server kill, power/host loss, fencing or production adapter proof",
+      "resource_settings": {
+        "writer_memory_bytes": 3000000000,
+        "reader_memory_bytes": 1500000000,
+        "mixed_concurrency": "one writer and two readers, one engine at a time",
+        "mixed_engine_total_bytes": 6000000000
+      },
+      "source_identity": {
+        "file_sha256": "f92897c0fa804b7a457bbe173b571358fc8dd6ec246bf046178c69fec3a02682",
+        "source_digest": "7e21be3063622a1ff1523829f8e7aad735507a2e7dfaee0fe4b80228ade11784",
+        "rows": 25000
+      },
+      "duckdb_version": "1.5.5",
+      "extension_versions": [
+        [
+          "ducklake",
+          "d8a1881e"
+        ],
+        [
+          "postgres_scanner",
+          "41223e5"
+        ]
+      ],
+      "clickhouse_version": "26.5.1.882",
+      "completed_at_utc": "2026-09-17T14:33:18.393108+00:00",
+      "mixed_failure": {
+        "engine": "ch",
+        "duration_seconds": 600,
+        "workers": [
+          {
+            "role": "writer",
+            "engine": "ch",
+            "memory_limit": 3000000000,
+            "threads": 2,
+            "offered": 600,
+            "started": 176,
+            "completed": 176,
+            "not_started": 0,
+            "errors": [],
+            "latency_summary_seconds": {
+              "count": 176,
+              "min": 0.04852495063096285,
+              "median": 0.05999354529194534,
+              "p95_nearest_rank": 0.06707408186048269,
+              "max": 0.07863557990640402
+            },
+            "queue_summary_seconds": {
+              "count": 176,
+              "min": 4.948023706674576e-05,
+              "median": 0.00010828860104084015,
+              "p95_nearest_rank": 0.0004725242033600807,
+              "max": 0.0005426979623734951
+            },
+            "written_rows": 7216
+          },
+          {
+            "role": "reader-a",
+            "engine": "ch",
+            "memory_limit": 1500000000,
+            "threads": 1,
+            "offered": 600,
+            "started": 1,
+            "completed": 0,
+            "not_started": 599,
+            "errors": [
+              {
+                "type": "AssertionError",
+                "message": "missing body identities"
+              }
+            ],
+            "latency_summary_seconds": {
+              "count": 0
+            },
+            "queue_summary_seconds": {
+              "count": 1,
+              "min": 9.323609992861748e-05,
+              "median": 9.323609992861748e-05,
+              "p95_nearest_rank": 9.323609992861748e-05,
+              "max": 9.323609992861748e-05
+            },
+            "written_rows": 0
+          },
+          {
+            "role": "reader-b",
+            "engine": "ch",
+            "memory_limit": 1500000000,
+            "threads": 1,
+            "offered": 600,
+            "started": 1,
+            "completed": 0,
+            "not_started": 599,
+            "errors": [
+              {
+                "type": "AssertionError",
+                "message": "missing body identities"
+              }
+            ],
+            "latency_summary_seconds": {
+              "count": 0
+            },
+            "queue_summary_seconds": {
+              "count": 1,
+              "min": 9.793508797883987e-05,
+              "median": 9.793508797883987e-05,
+              "p95_nearest_rank": 9.793508797883987e-05,
+              "max": 9.793508797883987e-05
+            },
+            "written_rows": 0
+          }
+        ]
+      },
+      "failure": {
+        "type": "RuntimeError",
+        "message": "mixed worker process failed",
+        "traceback": "Traceback (most recent call last):\n  File \"/lab/src/storage-qualification/recovery.py\", line 566, in main\n    report[\"cases\"][\"mixed-\" + engine] = run_mixed(config, oracle, engine, args.mixed_duration)\n                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lab/src/storage-qualification/recovery.py\", line 393, in run_mixed\n    raise RuntimeError(\"mixed worker process failed\")\nRuntimeError: mixed worker process failed\n"
+      }
+    },
+    "recmixed02ch": {
+      "status": "PASS_bounded_ch_mixed_slice",
+      "namespace": "qualification_recovery_recmixed02ch",
+      "source": "events-000000000000.parquet",
+      "started_at_utc": "2026-09-17T14:36:10.561386+00:00",
+      "source_script_sha256": "fdd964ca224596adf588032bcc9ad96c52d106087d58c5c0861f4a703c598e1b",
+      "manifest_sha256": "e591413aac4304a0bb9f24fdcd11aa6980a1c9389357f1a6c18a24530e2edf70",
+      "cases": {
+        "mixed-ch": {
+          "duration_seconds": 600,
+          "workers": [
+            {
+              "role": "writer",
+              "engine": "ch",
+              "memory_limit": 3000000000,
+              "threads": 2,
+              "offered": 600,
+              "started": 600,
+              "completed": 600,
+              "not_started": 0,
+              "errors": [],
+              "latency_summary_seconds": {
+                "count": 600,
+                "min": 0.04589865915477276,
+                "median": 0.060442153830081224,
+                "p95_nearest_rank": 0.06605437397956848,
+                "max": 0.07908953307196498
+              },
+              "queue_summary_seconds": {
+                "count": 600,
+                "min": 4.364596679806709e-05,
+                "median": 0.00010495423339307308,
+                "p95_nearest_rank": 0.00043460214510560036,
+                "max": 0.0009164530783891678
+              },
+              "written_rows": 24600
+            },
+            {
+              "role": "reader-a",
+              "engine": "ch",
+              "memory_limit": 1500000000,
+              "threads": 1,
+              "offered": 600,
+              "started": 600,
+              "completed": 600,
+              "not_started": 0,
+              "errors": [],
+              "latency_summary_seconds": {
+                "count": 600,
+                "min": 0.006243323907256126,
+                "median": 0.016620224807411432,
+                "p95_nearest_rank": 0.022472546435892582,
+                "max": 0.029582353308796883
+              },
+              "queue_summary_seconds": {
+                "count": 600,
+                "min": 3.6424025893211365e-05,
+                "median": 0.00010440428741276264,
+                "p95_nearest_rank": 0.00043493323028087616,
+                "max": 0.0006735571660101414
+              },
+              "written_rows": 0
+            },
+            {
+              "role": "reader-b",
+              "engine": "ch",
+              "memory_limit": 1500000000,
+              "threads": 1,
+              "offered": 600,
+              "started": 600,
+              "completed": 600,
+              "not_started": 0,
+              "errors": [],
+              "latency_summary_seconds": {
+                "count": 600,
+                "min": 0.005971862003207207,
+                "median": 0.016845275182276964,
+                "p95_nearest_rank": 0.02286574523895979,
+                "max": 0.02972621424123645
+              },
+              "queue_summary_seconds": {
+                "count": 600,
+                "min": 4.3536070734262466e-05,
+                "median": 0.00010376423597335815,
+                "p95_nearest_rank": 0.00043362006545066833,
+                "max": 0.0006741383112967014
+              },
+              "written_rows": 0
+            }
+          ],
+          "final_body_oracle": {
+            "logical": 25000,
+            "physical": 49600
+          },
+          "scope": "fixed offered one operation/worker/second; no capacity/SLO claim; cache uncontrolled"
+        }
+      },
+      "scope": "fresh CH namespace, bounded mixed correctness slice only; no archive/crash cases or capacity/SLO qualification",
+      "resource_settings": {
+        "writer_memory_bytes": 3000000000,
+        "reader_memory_bytes": 1500000000,
+        "mixed_concurrency": "one writer and two readers, one engine at a time",
+        "mixed_engine_total_bytes": 6000000000
+      },
+      "source_identity": {
+        "file_sha256": "f92897c0fa804b7a457bbe173b571358fc8dd6ec246bf046178c69fec3a02682",
+        "source_digest": "7e21be3063622a1ff1523829f8e7aad735507a2e7dfaee0fe4b80228ade11784",
+        "rows": 25000
+      },
+      "clickhouse_version": "26.5.1.882",
+      "completed_at_utc": "2026-09-17T14:46:29.742375+00:00",
+      "retained_resources": {
+        "clickhouse_database": "qualification_recovery_recmixed02ch",
+        "cleanup": "None automatic"
+      }
+    },
+    "interpretation": "Original composite run FAILED in CH mixed readers (SQL alias collision). Completed crash/replay/DuckLake cases remain separately identified. Corrected CH-only run does not rewrite the original as PASS. Original interrupted writer raw not_started=0 is a harness accounting bug: 600 scheduled minus 176 started leaves 424 never-started slots."
+  },
+  "inventory-qualification-live": {
+    "captured_utc": "2026-09-17T13:53:03.521750+00:00",
+    "capture_scope": "after workload creation; not a reconstructed pre-run measurement",
+    "uname": "Linux tux 6.12.101+deb13-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.12.101-1 (2026-08-05) x86_64 GNU/Linux",
+    "cpu": {
+      "lscpu": [
+        {
+          "field": "Architecture:",
+          "data": "x86_64"
+        },
+        {
+          "field": "CPU op-mode(s):",
+          "data": "32-bit, 64-bit"
+        },
+        {
+          "field": "Address sizes:",
+          "data": "48 bits physical, 48 bits virtual"
+        },
+        {
+          "field": "Byte Order:",
+          "data": "Little Endian"
+        },
+        {
+          "field": "CPU(s):",
+          "data": "32"
+        },
+        {
+          "field": "On-line CPU(s) list:",
+          "data": "0-31"
+        },
+        {
+          "field": "Vendor ID:",
+          "data": "AuthenticAMD"
+        },
+        {
+          "field": "Model name:",
+          "data": "AMD Ryzen 9 7950X 16-Core Processor"
+        },
+        {
+          "field": "CPU family:",
+          "data": "25"
+        },
+        {
+          "field": "Model:",
+          "data": "97"
+        },
+        {
+          "field": "Thread(s) per core:",
+          "data": "2"
+        },
+        {
+          "field": "Core(s) per socket:",
+          "data": "16"
+        },
+        {
+          "field": "Socket(s):",
+          "data": "1"
+        },
+        {
+          "field": "Stepping:",
+          "data": "2"
+        },
+        {
+          "field": "Frequency boost:",
+          "data": "enabled"
+        },
+        {
+          "field": "CPU(s) scaling MHz:",
+          "data": "58%"
+        },
+        {
+          "field": "CPU max MHz:",
+          "data": "5881.0000"
+        },
+        {
+          "field": "CPU min MHz:",
+          "data": "545.0000"
+        },
+        {
+          "field": "BogoMIPS:",
+          "data": "8982.52"
+        },
+        {
+          "field": "Flags:",
+          "data": "fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good amd_lbr_v2 nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf rapl pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw ibs skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpb cat_l3 cdp_l3 hw_pstate ssbd mba perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase bmi1 avx2 smep bmi2 erms invpcid cqm rdt_a avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves cqm_llc cqm_occup_llc cqm_mbm_total cqm_mbm_local user_shstk avx512_bf16 clzero irperf xsaveerptr rdpru wbnoinvd cppc arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold avic vgif x2avic v_spec_ctrl vnmi avx512vbmi umip pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid overflow_recov succor smca fsrm flush_l1d amd_lbr_pmc_freeze"
+        },
+        {
+          "field": "Virtualization:",
+          "data": "AMD-V"
+        },
+        {
+          "field": "L1d cache:",
+          "data": "512 KiB (16 instances)"
+        },
+        {
+          "field": "L1i cache:",
+          "data": "512 KiB (16 instances)"
+        },
+        {
+          "field": "L2 cache:",
+          "data": "16 MiB (16 instances)"
+        },
+        {
+          "field": "L3 cache:",
+          "data": "64 MiB (2 instances)"
+        },
+        {
+          "field": "NUMA node(s):",
+          "data": "1"
+        },
+        {
+          "field": "NUMA node0 CPU(s):",
+          "data": "0-31"
+        },
+        {
+          "field": "Vulnerability Gather data sampling:",
+          "data": "Not affected"
+        },
+        {
+          "field": "Vulnerability Indirect target selection:",
+          "data": "Not affected"
+        },
+        {
+          "field": "Vulnerability Itlb multihit:",
+          "data": "Not affected"
+        },
+        {
+          "field": "Vulnerability L1tf:",
+          "data": "Not affected"
+        },
+        {
+          "field": "Vulnerability Mds:",
+          "data": "Not affected"
+        },
+        {
+          "field": "Vulnerability Meltdown:",
+          "data": "Not affected"
+        },
+        {
+          "field": "Vulnerability Mmio stale data:",
+          "data": "Not affected"
+        },
+        {
+          "field": "Vulnerability Reg file data sampling:",
+          "data": "Not affected"
+        },
+        {
+          "field": "Vulnerability Retbleed:",
+          "data": "Not affected"
+        },
+        {
+          "field": "Vulnerability Spec rstack overflow:",
+          "data": "Mitigation; Safe RET"
+        },
+        {
+          "field": "Vulnerability Spec store bypass:",
+          "data": "Mitigation; Speculative Store Bypass disabled via prctl"
+        },
+        {
+          "field": "Vulnerability Spectre v1:",
+          "data": "Mitigation; usercopy/swapgs barriers and __user pointer sanitization"
+        },
+        {
+          "field": "Vulnerability Spectre v2:",
+          "data": "Mitigation; Enhanced / Automatic IBRS; IBPB conditional; STIBP always-on; PBRSB-eIBRS Not affected; BHI Not affected"
+        },
+        {
+          "field": "Vulnerability Srbds:",
+          "data": "Not affected"
+        },
+        {
+          "field": "Vulnerability Tsa:",
+          "data": "Vulnerable: Clear CPU buffers attempted, no microcode"
+        },
+        {
+          "field": "Vulnerability Tsx async abort:",
+          "data": "Not affected"
+        },
+        {
+          "field": "Vulnerability Vmscape:",
+          "data": "Mitigation; IBPB before exit to userspace"
+        }
+      ]
+    },
+    "meminfo": "MemTotal:       64954160 kB\nMemFree:         1212080 kB\nMemAvailable:   55733156 kB\nBuffers:         1178524 kB\nCached:         53220088 kB\nSwapCached:       232700 kB\nActive:         12620448 kB\nInactive:       46481416 kB\nActive(anon):    5120836 kB\nInactive(anon):  1818640 kB\nActive(file):    7499612 kB\nInactive(file): 44662776 kB\nUnevictable:           0 kB\nMlocked:               0 kB\nSwapTotal:      66206716 kB\nSwapFree:       48242656 kB\nZswap:                 0 kB\nZswapped:              0 kB\nDirty:           1432448 kB\nWriteback:         24244 kB\nAnonPages:       4216492 kB\nMapped:           931400 kB\nShmem:           2545220 kB\nKReclaimable:    3083720 kB\nSlab:            3803904 kB\nSReclaimable:    3083720 kB\nSUnreclaim:       720184 kB\nKernelStack:       29136 kB\nPageTables:        95332 kB\nSecPageTables:      7184 kB\nNFS_Unstable:          0 kB\nBounce:                0 kB\nWritebackTmp:          0 kB\nCommitLimit:    98683796 kB\nCommitted_AS:   30494244 kB\nVmallocTotal:   34359738367 kB\nVmallocUsed:      188904 kB\nVmallocChunk:          0 kB\nPercpu:            66432 kB\nHardwareCorrupted:     0 kB\nAnonHugePages:   1456128 kB\nShmemHugePages:        0 kB\nShmemPmdMapped:        0 kB\nFileHugePages:         0 kB\nFilePmdMapped:         0 kB\nUnaccepted:            0 kB\nHugePages_Total:       0\nHugePages_Free:        0\nHugePages_Rsvd:        0\nHugePages_Surp:        0\nHugepagesize:       2048 kB\nHugetlb:               0 kB\nDirectMap4k:     1426664 kB\nDirectMap2M:    46954496 kB\nDirectMap1G:    18874368 kB\n",
+    "filesystem": "{\n   \"filesystems\": [\n      {\n         \"target\": \"/\",\n         \"source\": \"/dev/nvme0n1p2\",\n         \"fstype\": \"ext4\",\n         \"options\": \"rw,relatime,errors=remount-ro\"\n      }\n   ]\n}",
+    "disk_bytes": {
+      "total": 1900107571200,
+      "used": 1300629598208,
+      "free": 502882263040
+    },
+    "containers": [
+      {
+        "name": "bigbrotr-qualification-worker-20260917",
+        "id": "ab22c8e54325aab3a7f9ae433eb93c67c5980abe01fb63d8f4a0f93642d7bd7d",
+        "image_id": "sha256:1042b61448fef4ba92d16a8c7eb4996d027568ce64792a7877fd88511e0af7c6",
+        "repo_digests": [
+          "python@sha256:1042b61448fef4ba92d16a8c7eb4996d027568ce64792a7877fd88511e0af7c6"
+        ],
+        "state": {
+          "Status": "running",
+          "Running": true,
+          "OOMKilled": false,
+          "ExitCode": 0,
+          "StartedAt": "2026-09-17T12:58:48.015248298Z",
+          "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "limits": {
+          "Memory": 21474836480,
+          "MemorySwap": 21474836480,
+          "NanoCpus": 8000000000,
+          "Ulimits": [],
+          "NetworkMode": "host",
+          "PortBindings": {}
+        },
+        "mounts": [
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-qualification-20260917",
+            "Destination": "/lab",
+            "RW": true
+          }
+        ],
+        "memory.peak": "21474836480\n",
+        "memory.events": "low 0\nhigh 0\nmax 79319\noom 0\noom_kill 0\noom_group_kill 0\n",
+        "cpu.stat": "usage_usec 4240219312\nuser_usec 3621898907\nsystem_usec 618320404\nnice_usec 0\nnr_periods 11624\nnr_throttled 24\nthrottled_usec 1452335\nnr_bursts 0\nburst_usec 0\n"
+      },
+      {
+        "name": "bigbrotr-qualification-pg-20260917",
+        "id": "95514cdc7bc054273805e9ab61dc6fa2f51f8403b77cd7bf1bf68028beb2fcca",
+        "image_id": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "repo_digests": [
+          "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94"
+        ],
+        "state": {
+          "Status": "running",
+          "Running": true,
+          "OOMKilled": false,
+          "ExitCode": 0,
+          "StartedAt": "2026-09-17T12:58:47.571751366Z",
+          "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "limits": {
+          "Memory": 1073741824,
+          "MemorySwap": 1073741824,
+          "NanoCpus": 1000000000,
+          "Ulimits": [],
+          "NetworkMode": "bridge",
+          "PortBindings": {
+            "5432/tcp": [
+              {
+                "HostIp": "127.0.0.1",
+                "HostPort": "48632"
+              }
+            ]
+          }
+        },
+        "mounts": [
+          {
+            "Type": "volume",
+            "Source": "/var/lib/docker/volumes/141213c13f332ba42881d0deec30fbe7e6c3394ed8d06cb87020ef6207d0ead4/_data",
+            "Destination": "/var/lib/postgresql/data",
+            "RW": true
+          }
+        ],
+        "memory.peak": "128430080\n",
+        "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\n",
+        "cpu.stat": "usage_usec 1619853\nuser_usec 841736\nsystem_usec 778117\nnice_usec 0\nnr_periods 890\nnr_throttled 1\nthrottled_usec 126\nnr_bursts 0\nburst_usec 0\n"
+      },
+      {
+        "name": "bigbrotr-qualification-ch-20260917",
+        "id": "9f33018bdfcac22a7417c7504355c8b4aaa5cd13fbbdb3b15e648934d9c2c0c9",
+        "image_id": "sha256:07afc18d8a9706eb9d85c5c5d2752e5270f91bbc2894caeaecb73e4d0f603bf5",
+        "repo_digests": [
+          "clickhouse/clickhouse-server@sha256:07afc18d8a9706eb9d85c5c5d2752e5270f91bbc2894caeaecb73e4d0f603bf5"
+        ],
+        "state": {
+          "Status": "running",
+          "Running": true,
+          "OOMKilled": false,
+          "ExitCode": 0,
+          "StartedAt": "2026-09-17T13:06:17.884189575Z",
+          "FinishedAt": "2026-09-17T13:06:17.518168517Z"
+        },
+        "limits": {
+          "Memory": 12884901888,
+          "MemorySwap": 12884901888,
+          "NanoCpus": 8000000000,
+          "Ulimits": [
+            {
+              "Name": "nofile",
+              "Hard": 131072,
+              "Soft": 131072
+            }
+          ],
+          "NetworkMode": "bridge",
+          "PortBindings": {
+            "8123/tcp": [
+              {
+                "HostIp": "127.0.0.1",
+                "HostPort": "48623"
+              }
+            ]
+          }
+        },
+        "mounts": [
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-qualification-20260917/ch-data",
+            "Destination": "/var/lib/clickhouse",
+            "RW": true
+          },
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-qualification-20260917/ch-logs",
+            "Destination": "/var/log/clickhouse-server",
+            "RW": true
+          },
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-qualification-20260917/config/ch.xml",
+            "Destination": "/etc/clickhouse-server/config.d/qualification.xml",
+            "RW": false
+          },
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-qualification-20260917/input",
+            "Destination": "/var/lib/clickhouse/user_files/input",
+            "RW": false
+          },
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-qualification-20260917/backups",
+            "Destination": "/backups",
+            "RW": true
+          }
+        ],
+        "memory.peak": "12884901888\n",
+        "memory.events": "low 0\nhigh 0\nmax 429592\noom 0\noom_kill 0\noom_group_kill 0\n",
+        "cpu.stat": "usage_usec 6679768490\nuser_usec 5868044393\nsystem_usec 811724096\nnice_usec 0\nnr_periods 27753\nnr_throttled 228\nthrottled_usec 16172043\nnr_bursts 0\nburst_usec 0\n"
+      }
+    ],
+    "file_identities": [
+      {
+        "path": "extensions/v1.5.5/linux_amd64/ducklake.duckdb_extension",
+        "bytes": 36436086,
+        "sha256": "e51bf9e8d933d0e83780ae096455501b542cf962569a2ce5613532d702c08302"
+      },
+      {
+        "path": "extensions/v1.5.5/linux_amd64/ducklake.duckdb_extension.info",
+        "bytes": 165,
+        "sha256": "dffc854eed550be75001befb149bf7ecba144e4b813cdc443a88ec58f47b5f01"
+      },
+      {
+        "path": "extensions/v1.5.5/linux_amd64/postgres_scanner.duckdb_extension",
+        "bytes": 41696558,
+        "sha256": "b1ced4cfc6311313e117c2afb3eac76508718778dde0716421503c7dbfb5605c"
+      },
+      {
+        "path": "extensions/v1.5.5/linux_amd64/postgres_scanner.duckdb_extension.info",
+        "bytes": 172,
+        "sha256": "6b17a4fa1e359e4051c14fe75d747fefef83f559dbb7d21dbe2eef6145e7bb76"
+      },
+      {
+        "path": "config/ch.xml",
+        "bytes": 525,
+        "sha256": "f68cff3d4096205e41f50cbdb7eba9546ab02091097894c0492156612abde84e"
+      },
+      {
+        "path": "src/storage-qualification/README-recovery.md",
+        "bytes": 6476,
+        "sha256": "1e814a77bddc9cbdea6f496e1f27fc51135ffa10c39a400ddb8edb1cc1164c05"
+      },
+      {
+        "path": "src/storage-qualification/backup.py",
+        "bytes": 4527,
+        "sha256": "a9326162f0fbb1c6db7f32a8bd8ed36a37007bfdb8a23593dd4bd8f4260e00f9"
+      },
+      {
+        "path": "src/storage-qualification/engines.py",
+        "bytes": 9950,
+        "sha256": "7f09915f757b6948a321fb7156e2b3f029bc5e1a5b5c9452c21708db877e9f20"
+      },
+      {
+        "path": "src/storage-qualification/fixture/Cargo.lock",
+        "bytes": 11805,
+        "sha256": "6b872de38ee07d55187a1488e7a48f9d314dc9901ba61252ec324c548fed5f63"
+      },
+      {
+        "path": "src/storage-qualification/fixture/Cargo.toml",
+        "bytes": 208,
+        "sha256": "ce84a434ec2130f1205e335f6a0459ed8fc6eaf798c27e837d47a1f7d26e4ec9"
+      },
+      {
+        "path": "src/storage-qualification/fixture/src/main.rs",
+        "bytes": 4455,
+        "sha256": "82092a9ed23a324f259870adfb3233f4385668985aaaccd5a8ab770c180a7aac"
+      },
+      {
+        "path": "src/storage-qualification/generate.py",
+        "bytes": 5622,
+        "sha256": "6193aadc9b67746c575ead7ce51d946d1cc41be2b36e420c9f0a05405f11b95a"
+      },
+      {
+        "path": "src/storage-qualification/inventory.py",
+        "bytes": 3289,
+        "sha256": "689a6053c753093086ee806514ed3ad0bf0c243f3d04fe771bcfc9874c866935"
+      },
+      {
+        "path": "src/storage-qualification/recovery.py",
+        "bytes": 30027,
+        "sha256": "66e462881cc947ffe212f8149eec9e23753a03a561a46a23b10f925730209884"
+      },
+      {
+        "path": "src/storage-qualification/requirements.txt",
+        "bytes": 126,
+        "sha256": "76355d3fb70cbf02a843d68a58f5b034429d7bb6d3cb927419bcc07c2f50d550"
+      },
+      {
+        "path": "src/storage-qualification/restored_verify.py",
+        "bytes": 4017,
+        "sha256": "82ffbc50d2a8bcedabe6af06ed16f40f56e4be4244ca41a66b45ae307c1bb28f"
+      },
+      {
+        "path": "src/storage-qualification/verify.py",
+        "bytes": 7597,
+        "sha256": "a006d46840ad168a4e5fde72c72119bb764ad5caa1516bf23f67d42db5361bea"
+      }
+    ],
+    "total_running_containers": 11,
+    "worker_packages": [
+      {
+        "name": "certifi",
+        "version": "2026.7.22"
+      },
+      {
+        "name": "charset-normalizer",
+        "version": "3.5.1"
+      },
+      {
+        "name": "coincurve",
+        "version": "21.0.0"
+      },
+      {
+        "name": "duckdb",
+        "version": "1.5.5"
+      },
+      {
+        "name": "idna",
+        "version": "3.19"
+      },
+      {
+        "name": "pip",
+        "version": "24.0"
+      },
+      {
+        "name": "psycopg2-binary",
+        "version": "2.9.10"
+      },
+      {
+        "name": "pyarrow",
+        "version": "21.0.0"
+      },
+      {
+        "name": "requests",
+        "version": "2.32.5"
+      },
+      {
+        "name": "rocksdict",
+        "version": "0.3.29"
+      },
+      {
+        "name": "setuptools",
+        "version": "79.0.1"
+      },
+      {
+        "name": "urllib3",
+        "version": "2.8.0"
+      },
+      {
+        "name": "websockets",
+        "version": "15.0.1"
+      }
+    ],
+    "rustc": "rustc 1.96.1 (31fca3adb 2026-06-26)"
+  },
+  "inventory-before-stop": {
+    "captured_utc": "2026-09-17T14:47:35.053415+00:00",
+    "capture_scope": "after workload creation; not a reconstructed pre-run measurement",
+    "uname": "Linux tux 6.12.101+deb13-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.12.101-1 (2026-08-05) x86_64 GNU/Linux",
+    "cpu": {
+      "lscpu": [
+        {
+          "field": "Architecture:",
+          "data": "x86_64"
+        },
+        {
+          "field": "CPU op-mode(s):",
+          "data": "32-bit, 64-bit"
+        },
+        {
+          "field": "Address sizes:",
+          "data": "48 bits physical, 48 bits virtual"
+        },
+        {
+          "field": "Byte Order:",
+          "data": "Little Endian"
+        },
+        {
+          "field": "CPU(s):",
+          "data": "32"
+        },
+        {
+          "field": "On-line CPU(s) list:",
+          "data": "0-31"
+        },
+        {
+          "field": "Vendor ID:",
+          "data": "AuthenticAMD"
+        },
+        {
+          "field": "Model name:",
+          "data": "AMD Ryzen 9 7950X 16-Core Processor"
+        },
+        {
+          "field": "CPU family:",
+          "data": "25"
+        },
+        {
+          "field": "Model:",
+          "data": "97"
+        },
+        {
+          "field": "Thread(s) per core:",
+          "data": "2"
+        },
+        {
+          "field": "Core(s) per socket:",
+          "data": "16"
+        },
+        {
+          "field": "Socket(s):",
+          "data": "1"
+        },
+        {
+          "field": "Stepping:",
+          "data": "2"
+        },
+        {
+          "field": "Frequency boost:",
+          "data": "enabled"
+        },
+        {
+          "field": "CPU(s) scaling MHz:",
+          "data": "28%"
+        },
+        {
+          "field": "CPU max MHz:",
+          "data": "5881.0000"
+        },
+        {
+          "field": "CPU min MHz:",
+          "data": "545.0000"
+        },
+        {
+          "field": "BogoMIPS:",
+          "data": "8982.52"
+        },
+        {
+          "field": "Flags:",
+          "data": "fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good amd_lbr_v2 nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf rapl pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw ibs skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpb cat_l3 cdp_l3 hw_pstate ssbd mba perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase bmi1 avx2 smep bmi2 erms invpcid cqm rdt_a avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves cqm_llc cqm_occup_llc cqm_mbm_total cqm_mbm_local user_shstk avx512_bf16 clzero irperf xsaveerptr rdpru wbnoinvd cppc arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold avic vgif x2avic v_spec_ctrl vnmi avx512vbmi umip pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid overflow_recov succor smca fsrm flush_l1d amd_lbr_pmc_freeze"
+        },
+        {
+          "field": "Virtualization:",
+          "data": "AMD-V"
+        },
+        {
+          "field": "L1d cache:",
+          "data": "512 KiB (16 instances)"
+        },
+        {
+          "field": "L1i cache:",
+          "data": "512 KiB (16 instances)"
+        },
+        {
+          "field": "L2 cache:",
+          "data": "16 MiB (16 instances)"
+        },
+        {
+          "field": "L3 cache:",
+          "data": "64 MiB (2 instances)"
+        },
+        {
+          "field": "NUMA node(s):",
+          "data": "1"
+        },
+        {
+          "field": "NUMA node0 CPU(s):",
+          "data": "0-31"
+        },
+        {
+          "field": "Vulnerability Gather data sampling:",
+          "data": "Not affected"
+        },
+        {
+          "field": "Vulnerability Indirect target selection:",
+          "data": "Not affected"
+        },
+        {
+          "field": "Vulnerability Itlb multihit:",
+          "data": "Not affected"
+        },
+        {
+          "field": "Vulnerability L1tf:",
+          "data": "Not affected"
+        },
+        {
+          "field": "Vulnerability Mds:",
+          "data": "Not affected"
+        },
+        {
+          "field": "Vulnerability Meltdown:",
+          "data": "Not affected"
+        },
+        {
+          "field": "Vulnerability Mmio stale data:",
+          "data": "Not affected"
+        },
+        {
+          "field": "Vulnerability Reg file data sampling:",
+          "data": "Not affected"
+        },
+        {
+          "field": "Vulnerability Retbleed:",
+          "data": "Not affected"
+        },
+        {
+          "field": "Vulnerability Spec rstack overflow:",
+          "data": "Mitigation; Safe RET"
+        },
+        {
+          "field": "Vulnerability Spec store bypass:",
+          "data": "Mitigation; Speculative Store Bypass disabled via prctl"
+        },
+        {
+          "field": "Vulnerability Spectre v1:",
+          "data": "Mitigation; usercopy/swapgs barriers and __user pointer sanitization"
+        },
+        {
+          "field": "Vulnerability Spectre v2:",
+          "data": "Mitigation; Enhanced / Automatic IBRS; IBPB conditional; STIBP always-on; PBRSB-eIBRS Not affected; BHI Not affected"
+        },
+        {
+          "field": "Vulnerability Srbds:",
+          "data": "Not affected"
+        },
+        {
+          "field": "Vulnerability Tsa:",
+          "data": "Vulnerable: Clear CPU buffers attempted, no microcode"
+        },
+        {
+          "field": "Vulnerability Tsx async abort:",
+          "data": "Not affected"
+        },
+        {
+          "field": "Vulnerability Vmscape:",
+          "data": "Mitigation; IBPB before exit to userspace"
+        }
+      ]
+    },
+    "meminfo": "MemTotal:       64954160 kB\nMemFree:         1146072 kB\nMemAvailable:   57851068 kB\nBuffers:         1001884 kB\nCached:         55096852 kB\nSwapCached:       233472 kB\nActive:          5495088 kB\nInactive:       53660944 kB\nActive(anon):    3411236 kB\nInactive(anon):  1552308 kB\nActive(file):    2083852 kB\nInactive(file): 52108636 kB\nUnevictable:           0 kB\nMlocked:               0 kB\nSwapTotal:      66206716 kB\nSwapFree:       47586784 kB\nZswap:                 0 kB\nZswapped:              0 kB\nDirty:           1022572 kB\nWriteback:             0 kB\nAnonPages:       2495260 kB\nMapped:           883308 kB\nShmem:           1906332 kB\nKReclaimable:    3237540 kB\nSlab:            3957608 kB\nSReclaimable:    3237540 kB\nSUnreclaim:       720068 kB\nKernelStack:       28976 kB\nPageTables:        90660 kB\nSecPageTables:      7184 kB\nNFS_Unstable:          0 kB\nBounce:                0 kB\nWritebackTmp:          0 kB\nCommitLimit:    98683796 kB\nCommitted_AS:   30368336 kB\nVmallocTotal:   34359738367 kB\nVmallocUsed:      188888 kB\nVmallocChunk:          0 kB\nPercpu:            66432 kB\nHardwareCorrupted:     0 kB\nAnonHugePages:   1509376 kB\nShmemHugePages:        0 kB\nShmemPmdMapped:        0 kB\nFileHugePages:         0 kB\nFilePmdMapped:         0 kB\nUnaccepted:            0 kB\nHugePages_Total:       0\nHugePages_Free:        0\nHugePages_Rsvd:        0\nHugePages_Surp:        0\nHugepagesize:       2048 kB\nHugetlb:               0 kB\nDirectMap4k:     1426664 kB\nDirectMap2M:    46954496 kB\nDirectMap1G:    18874368 kB\n",
+    "filesystem": "{\n   \"filesystems\": [\n      {\n         \"target\": \"/\",\n         \"source\": \"/dev/nvme0n1p2\",\n         \"fstype\": \"ext4\",\n         \"options\": \"rw,relatime,errors=remount-ro\"\n      }\n   ]\n}",
+    "disk_bytes": {
+      "total": 1900107571200,
+      "used": 1398472642560,
+      "free": 405039218688
+    },
+    "containers": [
+      {
+        "name": "bigbrotr-qualification-worker-20260917",
+        "id": "ab22c8e54325aab3a7f9ae433eb93c67c5980abe01fb63d8f4a0f93642d7bd7d",
+        "image_id": "sha256:1042b61448fef4ba92d16a8c7eb4996d027568ce64792a7877fd88511e0af7c6",
+        "repo_digests": [
+          "python@sha256:1042b61448fef4ba92d16a8c7eb4996d027568ce64792a7877fd88511e0af7c6"
+        ],
+        "state": {
+          "Status": "running",
+          "Running": true,
+          "OOMKilled": false,
+          "ExitCode": 0,
+          "StartedAt": "2026-09-17T12:58:48.015248298Z",
+          "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "limits": {
+          "Memory": 21474836480,
+          "MemorySwap": 21474836480,
+          "NanoCpus": 8000000000,
+          "Ulimits": [],
+          "NetworkMode": "host",
+          "PortBindings": {}
+        },
+        "mounts": [
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-qualification-20260917",
+            "Destination": "/lab",
+            "RW": true
+          }
+        ],
+        "memory.peak": "21474836480\n",
+        "memory.events": "low 0\nhigh 0\nmax 186487\noom 0\noom_kill 0\noom_group_kill 0\n",
+        "cpu.stat": "usage_usec 5536804947\nuser_usec 4508942356\nsystem_usec 1027862591\nnice_usec 0\nnr_periods 25427\nnr_throttled 24\nthrottled_usec 1452335\nnr_bursts 0\nburst_usec 0\n"
+      },
+      {
+        "name": "bigbrotr-qualification-pg-20260917",
+        "id": "95514cdc7bc054273805e9ab61dc6fa2f51f8403b77cd7bf1bf68028beb2fcca",
+        "image_id": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "repo_digests": [
+          "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94"
+        ],
+        "state": {
+          "Status": "running",
+          "Running": true,
+          "OOMKilled": false,
+          "ExitCode": 0,
+          "StartedAt": "2026-09-17T12:58:47.571751366Z",
+          "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "limits": {
+          "Memory": 1073741824,
+          "MemorySwap": 1073741824,
+          "NanoCpus": 1000000000,
+          "Ulimits": [],
+          "NetworkMode": "bridge",
+          "PortBindings": {
+            "5432/tcp": [
+              {
+                "HostIp": "127.0.0.1",
+                "HostPort": "48632"
+              }
+            ]
+          }
+        },
+        "mounts": [
+          {
+            "Type": "volume",
+            "Source": "/var/lib/docker/volumes/141213c13f332ba42881d0deec30fbe7e6c3394ed8d06cb87020ef6207d0ead4/_data",
+            "Destination": "/var/lib/postgresql/data",
+            "RW": true
+          }
+        ],
+        "memory.peak": "177696768\n",
+        "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\n",
+        "cpu.stat": "usage_usec 6832739\nuser_usec 4979324\nsystem_usec 1853415\nnice_usec 0\nnr_periods 3175\nnr_throttled 1\nthrottled_usec 126\nnr_bursts 0\nburst_usec 0\n"
+      },
+      {
+        "name": "bigbrotr-qualification-ch-20260917",
+        "id": "9f33018bdfcac22a7417c7504355c8b4aaa5cd13fbbdb3b15e648934d9c2c0c9",
+        "image_id": "sha256:07afc18d8a9706eb9d85c5c5d2752e5270f91bbc2894caeaecb73e4d0f603bf5",
+        "repo_digests": [
+          "clickhouse/clickhouse-server@sha256:07afc18d8a9706eb9d85c5c5d2752e5270f91bbc2894caeaecb73e4d0f603bf5"
+        ],
+        "state": {
+          "Status": "running",
+          "Running": true,
+          "OOMKilled": false,
+          "ExitCode": 0,
+          "StartedAt": "2026-09-17T13:06:17.884189575Z",
+          "FinishedAt": "2026-09-17T13:06:17.518168517Z"
+        },
+        "limits": {
+          "Memory": 12884901888,
+          "MemorySwap": 12884901888,
+          "NanoCpus": 8000000000,
+          "Ulimits": [
+            {
+              "Name": "nofile",
+              "Hard": 131072,
+              "Soft": 131072
+            }
+          ],
+          "NetworkMode": "bridge",
+          "PortBindings": {
+            "8123/tcp": [
+              {
+                "HostIp": "127.0.0.1",
+                "HostPort": "48623"
+              }
+            ]
+          }
+        },
+        "mounts": [
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-qualification-20260917/backups",
+            "Destination": "/backups",
+            "RW": true
+          },
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-qualification-20260917/ch-data",
+            "Destination": "/var/lib/clickhouse",
+            "RW": true
+          },
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-qualification-20260917/ch-logs",
+            "Destination": "/var/log/clickhouse-server",
+            "RW": true
+          },
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-qualification-20260917/config/ch.xml",
+            "Destination": "/etc/clickhouse-server/config.d/qualification.xml",
+            "RW": false
+          },
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-qualification-20260917/input",
+            "Destination": "/var/lib/clickhouse/user_files/input",
+            "RW": false
+          }
+        ],
+        "memory.peak": "12884901888\n",
+        "memory.events": "low 0\nhigh 0\nmax 440633\noom 0\noom_kill 0\noom_group_kill 0\n",
+        "cpu.stat": "usage_usec 7123940070\nuser_usec 6200973616\nsystem_usec 922966453\nnice_usec 0\nnr_periods 60317\nnr_throttled 229\nthrottled_usec 16618761\nnr_bursts 0\nburst_usec 0\n"
+      }
+    ],
+    "file_identities": [
+      {
+        "path": "extensions/v1.5.5/linux_amd64/ducklake.duckdb_extension",
+        "bytes": 36436086,
+        "sha256": "e51bf9e8d933d0e83780ae096455501b542cf962569a2ce5613532d702c08302"
+      },
+      {
+        "path": "extensions/v1.5.5/linux_amd64/ducklake.duckdb_extension.info",
+        "bytes": 165,
+        "sha256": "dffc854eed550be75001befb149bf7ecba144e4b813cdc443a88ec58f47b5f01"
+      },
+      {
+        "path": "extensions/v1.5.5/linux_amd64/postgres_scanner.duckdb_extension",
+        "bytes": 41696558,
+        "sha256": "b1ced4cfc6311313e117c2afb3eac76508718778dde0716421503c7dbfb5605c"
+      },
+      {
+        "path": "extensions/v1.5.5/linux_amd64/postgres_scanner.duckdb_extension.info",
+        "bytes": 172,
+        "sha256": "6b17a4fa1e359e4051c14fe75d747fefef83f559dbb7d21dbe2eef6145e7bb76"
+      },
+      {
+        "path": "config/ch.xml",
+        "bytes": 525,
+        "sha256": "f68cff3d4096205e41f50cbdb7eba9546ab02091097894c0492156612abde84e"
+      },
+      {
+        "path": "src/storage-qualification/README-recovery.md",
+        "bytes": 6476,
+        "sha256": "1e814a77bddc9cbdea6f496e1f27fc51135ffa10c39a400ddb8edb1cc1164c05"
+      },
+      {
+        "path": "src/storage-qualification/backup.py",
+        "bytes": 4861,
+        "sha256": "05df7db595bfc3ded04a4fb6e1fcf03c043ad05a78fb60e79b5d3f19279b28d5"
+      },
+      {
+        "path": "src/storage-qualification/ch_backup.py",
+        "bytes": 4591,
+        "sha256": "638b7b58fd7cdb131f37c5589a49880ddcac1a95e37b81d90f692e49ba581c0d"
+      },
+      {
+        "path": "src/storage-qualification/engines.py",
+        "bytes": 9950,
+        "sha256": "7f09915f757b6948a321fb7156e2b3f029bc5e1a5b5c9452c21708db877e9f20"
+      },
+      {
+        "path": "src/storage-qualification/fixture/Cargo.lock",
+        "bytes": 11805,
+        "sha256": "6b872de38ee07d55187a1488e7a48f9d314dc9901ba61252ec324c548fed5f63"
+      },
+      {
+        "path": "src/storage-qualification/fixture/Cargo.toml",
+        "bytes": 208,
+        "sha256": "ce84a434ec2130f1205e335f6a0459ed8fc6eaf798c27e837d47a1f7d26e4ec9"
+      },
+      {
+        "path": "src/storage-qualification/fixture/src/main.rs",
+        "bytes": 4455,
+        "sha256": "82092a9ed23a324f259870adfb3233f4385668985aaaccd5a8ab770c180a7aac"
+      },
+      {
+        "path": "src/storage-qualification/generate.py",
+        "bytes": 5612,
+        "sha256": "4a69f662a289c6279f9264432ae29374326cf16b54ac37ded2dd03c225735760"
+      },
+      {
+        "path": "src/storage-qualification/inventory.py",
+        "bytes": 4652,
+        "sha256": "c67924d3f415ba349d4b3f8168a009ebe2a3700790a859822dfc23f721dc6b17"
+      },
+      {
+        "path": "src/storage-qualification/layout_inspection.py",
+        "bytes": 2995,
+        "sha256": "9273c18d66d29e11680bdeba30015436b26eba74a2e5d5f08dabc3414eb948ff"
+      },
+      {
+        "path": "src/storage-qualification/recovery.py",
+        "bytes": 31598,
+        "sha256": "fdd964ca224596adf588032bcc9ad96c52d106087d58c5c0861f4a703c598e1b"
+      },
+      {
+        "path": "src/storage-qualification/requirements.txt",
+        "bytes": 126,
+        "sha256": "76355d3fb70cbf02a843d68a58f5b034429d7bb6d3cb927419bcc07c2f50d550"
+      },
+      {
+        "path": "src/storage-qualification/restart.py",
+        "bytes": 4798,
+        "sha256": "13d7979bf8ced181a4781a37a5d3c7e89c6dfc37665db79f2250bf5b8324119a"
+      },
+      {
+        "path": "src/storage-qualification/restored_verify.py",
+        "bytes": 5922,
+        "sha256": "c47a53c91b4f1e773dcce7c8666da0283bfdee41405b6eaa70934546291ee927"
+      },
+      {
+        "path": "src/storage-qualification/summarize.py",
+        "bytes": 9041,
+        "sha256": "e5d54a8447e5af27be929e9780bf53e762ed4fc8632452eae2d71554b32dcea0"
+      },
+      {
+        "path": "src/storage-qualification/verify.py",
+        "bytes": 7903,
+        "sha256": "d9a342bb249817227f999b4131d422f80d3de31af0248d69d0e0c8a867fad6eb"
+      }
+    ],
+    "total_running_containers": 11,
+    "worker_packages": [
+      {
+        "name": "certifi",
+        "version": "2026.7.22"
+      },
+      {
+        "name": "charset-normalizer",
+        "version": "3.5.1"
+      },
+      {
+        "name": "coincurve",
+        "version": "21.0.0"
+      },
+      {
+        "name": "duckdb",
+        "version": "1.5.5"
+      },
+      {
+        "name": "idna",
+        "version": "3.19"
+      },
+      {
+        "name": "pip",
+        "version": "24.0"
+      },
+      {
+        "name": "psycopg2-binary",
+        "version": "2.9.10"
+      },
+      {
+        "name": "pyarrow",
+        "version": "21.0.0"
+      },
+      {
+        "name": "requests",
+        "version": "2.32.5"
+      },
+      {
+        "name": "rocksdict",
+        "version": "0.3.29"
+      },
+      {
+        "name": "setuptools",
+        "version": "79.0.1"
+      },
+      {
+        "name": "urllib3",
+        "version": "2.8.0"
+      },
+      {
+        "name": "websockets",
+        "version": "15.0.1"
+      }
+    ],
+    "rustc": "rustc 1.96.1 (31fca3adb 2026-06-26)"
+  },
+  "inventory-final": {
+    "captured_utc": "2026-09-17T14:50:20.945949+00:00",
+    "capture_scope": "after workload creation; not a reconstructed pre-run measurement",
+    "uname": "Linux tux 6.12.101+deb13-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.12.101-1 (2026-08-05) x86_64 GNU/Linux",
+    "cpu": {
+      "lscpu": [
+        {
+          "field": "Architecture:",
+          "data": "x86_64"
+        },
+        {
+          "field": "CPU op-mode(s):",
+          "data": "32-bit, 64-bit"
+        },
+        {
+          "field": "Address sizes:",
+          "data": "48 bits physical, 48 bits virtual"
+        },
+        {
+          "field": "Byte Order:",
+          "data": "Little Endian"
+        },
+        {
+          "field": "CPU(s):",
+          "data": "32"
+        },
+        {
+          "field": "On-line CPU(s) list:",
+          "data": "0-31"
+        },
+        {
+          "field": "Vendor ID:",
+          "data": "AuthenticAMD"
+        },
+        {
+          "field": "Model name:",
+          "data": "AMD Ryzen 9 7950X 16-Core Processor"
+        },
+        {
+          "field": "CPU family:",
+          "data": "25"
+        },
+        {
+          "field": "Model:",
+          "data": "97"
+        },
+        {
+          "field": "Thread(s) per core:",
+          "data": "2"
+        },
+        {
+          "field": "Core(s) per socket:",
+          "data": "16"
+        },
+        {
+          "field": "Socket(s):",
+          "data": "1"
+        },
+        {
+          "field": "Stepping:",
+          "data": "2"
+        },
+        {
+          "field": "Frequency boost:",
+          "data": "enabled"
+        },
+        {
+          "field": "CPU(s) scaling MHz:",
+          "data": "39%"
+        },
+        {
+          "field": "CPU max MHz:",
+          "data": "5881.0000"
+        },
+        {
+          "field": "CPU min MHz:",
+          "data": "545.0000"
+        },
+        {
+          "field": "BogoMIPS:",
+          "data": "8982.52"
+        },
+        {
+          "field": "Flags:",
+          "data": "fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good amd_lbr_v2 nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf rapl pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw ibs skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpb cat_l3 cdp_l3 hw_pstate ssbd mba perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase bmi1 avx2 smep bmi2 erms invpcid cqm rdt_a avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves cqm_llc cqm_occup_llc cqm_mbm_total cqm_mbm_local user_shstk avx512_bf16 clzero irperf xsaveerptr rdpru wbnoinvd cppc arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold avic vgif x2avic v_spec_ctrl vnmi avx512vbmi umip pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid overflow_recov succor smca fsrm flush_l1d amd_lbr_pmc_freeze"
+        },
+        {
+          "field": "Virtualization:",
+          "data": "AMD-V"
+        },
+        {
+          "field": "L1d cache:",
+          "data": "512 KiB (16 instances)"
+        },
+        {
+          "field": "L1i cache:",
+          "data": "512 KiB (16 instances)"
+        },
+        {
+          "field": "L2 cache:",
+          "data": "16 MiB (16 instances)"
+        },
+        {
+          "field": "L3 cache:",
+          "data": "64 MiB (2 instances)"
+        },
+        {
+          "field": "NUMA node(s):",
+          "data": "1"
+        },
+        {
+          "field": "NUMA node0 CPU(s):",
+          "data": "0-31"
+        },
+        {
+          "field": "Vulnerability Gather data sampling:",
+          "data": "Not affected"
+        },
+        {
+          "field": "Vulnerability Indirect target selection:",
+          "data": "Not affected"
+        },
+        {
+          "field": "Vulnerability Itlb multihit:",
+          "data": "Not affected"
+        },
+        {
+          "field": "Vulnerability L1tf:",
+          "data": "Not affected"
+        },
+        {
+          "field": "Vulnerability Mds:",
+          "data": "Not affected"
+        },
+        {
+          "field": "Vulnerability Meltdown:",
+          "data": "Not affected"
+        },
+        {
+          "field": "Vulnerability Mmio stale data:",
+          "data": "Not affected"
+        },
+        {
+          "field": "Vulnerability Reg file data sampling:",
+          "data": "Not affected"
+        },
+        {
+          "field": "Vulnerability Retbleed:",
+          "data": "Not affected"
+        },
+        {
+          "field": "Vulnerability Spec rstack overflow:",
+          "data": "Mitigation; Safe RET"
+        },
+        {
+          "field": "Vulnerability Spec store bypass:",
+          "data": "Mitigation; Speculative Store Bypass disabled via prctl"
+        },
+        {
+          "field": "Vulnerability Spectre v1:",
+          "data": "Mitigation; usercopy/swapgs barriers and __user pointer sanitization"
+        },
+        {
+          "field": "Vulnerability Spectre v2:",
+          "data": "Mitigation; Enhanced / Automatic IBRS; IBPB conditional; STIBP always-on; PBRSB-eIBRS Not affected; BHI Not affected"
+        },
+        {
+          "field": "Vulnerability Srbds:",
+          "data": "Not affected"
+        },
+        {
+          "field": "Vulnerability Tsa:",
+          "data": "Vulnerable: Clear CPU buffers attempted, no microcode"
+        },
+        {
+          "field": "Vulnerability Tsx async abort:",
+          "data": "Not affected"
+        },
+        {
+          "field": "Vulnerability Vmscape:",
+          "data": "Mitigation; IBPB before exit to userspace"
+        }
+      ]
+    },
+    "meminfo": "MemTotal:       64954160 kB\nMemFree:         1859300 kB\nMemAvailable:   59252924 kB\nBuffers:         1000800 kB\nCached:         55797324 kB\nSwapCached:       233476 kB\nActive:          4145564 kB\nInactive:       54441932 kB\nActive(anon):    2107668 kB\nInactive(anon):  1551256 kB\nActive(file):    2037896 kB\nInactive(file): 52890676 kB\nUnevictable:           0 kB\nMlocked:               0 kB\nSwapTotal:      66206716 kB\nSwapFree:       47586784 kB\nZswap:                 0 kB\nZswapped:              0 kB\nDirty:               836 kB\nWriteback:             0 kB\nAnonPages:       1693992 kB\nMapped:           293440 kB\nShmem:           1869612 kB\nKReclaimable:    3190084 kB\nSlab:            3908316 kB\nSReclaimable:    3190084 kB\nSUnreclaim:       718232 kB\nKernelStack:       23744 kB\nPageTables:        35768 kB\nSecPageTables:      7184 kB\nNFS_Unstable:          0 kB\nBounce:                0 kB\nWritebackTmp:          0 kB\nCommitLimit:    98683796 kB\nCommitted_AS:   27475488 kB\nVmallocTotal:   34359738367 kB\nVmallocUsed:      183616 kB\nVmallocChunk:          0 kB\nPercpu:            66432 kB\nHardwareCorrupted:     0 kB\nAnonHugePages:   1296384 kB\nShmemHugePages:        0 kB\nShmemPmdMapped:        0 kB\nFileHugePages:         0 kB\nFilePmdMapped:         0 kB\nUnaccepted:            0 kB\nHugePages_Total:       0\nHugePages_Free:        0\nHugePages_Rsvd:        0\nHugePages_Surp:        0\nHugepagesize:       2048 kB\nHugetlb:               0 kB\nDirectMap4k:     1426664 kB\nDirectMap2M:    46954496 kB\nDirectMap1G:    18874368 kB\n",
+    "filesystem": "{\n   \"filesystems\": [\n      {\n         \"target\": \"/\",\n         \"source\": \"/dev/nvme0n1p2\",\n         \"fstype\": \"ext4\",\n         \"options\": \"rw,relatime,errors=remount-ro\"\n      }\n   ]\n}",
+    "disk_bytes": {
+      "total": 1900107571200,
+      "used": 1398176735232,
+      "free": 405335126016
+    },
+    "containers": [
+      {
+        "name": "bigbrotr-qualification-worker-20260917",
+        "id": "ab22c8e54325aab3a7f9ae433eb93c67c5980abe01fb63d8f4a0f93642d7bd7d",
+        "image_id": "sha256:1042b61448fef4ba92d16a8c7eb4996d027568ce64792a7877fd88511e0af7c6",
+        "repo_digests": [
+          "python@sha256:1042b61448fef4ba92d16a8c7eb4996d027568ce64792a7877fd88511e0af7c6"
+        ],
+        "state": {
+          "Status": "exited",
+          "Running": false,
+          "OOMKilled": false,
+          "ExitCode": 137,
+          "StartedAt": "2026-09-17T12:58:48.015248298Z",
+          "FinishedAt": "2026-09-17T14:50:17.964622348Z"
+        },
+        "limits": {
+          "Memory": 21474836480,
+          "MemorySwap": 21474836480,
+          "NanoCpus": 8000000000,
+          "Ulimits": [],
+          "NetworkMode": "host",
+          "PortBindings": {}
+        },
+        "mounts": [
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-qualification-20260917",
+            "Destination": "/lab",
+            "RW": true
+          }
+        ]
+      },
+      {
+        "name": "bigbrotr-qualification-pg-20260917",
+        "id": "95514cdc7bc054273805e9ab61dc6fa2f51f8403b77cd7bf1bf68028beb2fcca",
+        "image_id": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "repo_digests": [
+          "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94"
+        ],
+        "state": {
+          "Status": "exited",
+          "Running": false,
+          "OOMKilled": false,
+          "ExitCode": 0,
+          "StartedAt": "2026-09-17T12:58:47.571751366Z",
+          "FinishedAt": "2026-09-17T14:49:47.995416847Z"
+        },
+        "limits": {
+          "Memory": 1073741824,
+          "MemorySwap": 1073741824,
+          "NanoCpus": 1000000000,
+          "Ulimits": [],
+          "NetworkMode": "bridge",
+          "PortBindings": {
+            "5432/tcp": [
+              {
+                "HostIp": "127.0.0.1",
+                "HostPort": "48632"
+              }
+            ]
+          }
+        },
+        "mounts": [
+          {
+            "Type": "volume",
+            "Source": "/var/lib/docker/volumes/141213c13f332ba42881d0deec30fbe7e6c3394ed8d06cb87020ef6207d0ead4/_data",
+            "Destination": "/var/lib/postgresql/data",
+            "RW": true
+          }
+        ]
+      },
+      {
+        "name": "bigbrotr-qualification-ch-20260917",
+        "id": "9f33018bdfcac22a7417c7504355c8b4aaa5cd13fbbdb3b15e648934d9c2c0c9",
+        "image_id": "sha256:07afc18d8a9706eb9d85c5c5d2752e5270f91bbc2894caeaecb73e4d0f603bf5",
+        "repo_digests": [
+          "clickhouse/clickhouse-server@sha256:07afc18d8a9706eb9d85c5c5d2752e5270f91bbc2894caeaecb73e4d0f603bf5"
+        ],
+        "state": {
+          "Status": "exited",
+          "Running": false,
+          "OOMKilled": false,
+          "ExitCode": 0,
+          "StartedAt": "2026-09-17T14:49:05.698877821Z",
+          "FinishedAt": "2026-09-17T14:49:50.608119693Z"
+        },
+        "limits": {
+          "Memory": 12884901888,
+          "MemorySwap": 12884901888,
+          "NanoCpus": 8000000000,
+          "Ulimits": [
+            {
+              "Name": "nofile",
+              "Hard": 131072,
+              "Soft": 131072
+            }
+          ],
+          "NetworkMode": "bridge",
+          "PortBindings": {
+            "8123/tcp": [
+              {
+                "HostIp": "127.0.0.1",
+                "HostPort": "48623"
+              }
+            ]
+          }
+        },
+        "mounts": [
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-qualification-20260917/config/ch.xml",
+            "Destination": "/etc/clickhouse-server/config.d/qualification.xml",
+            "RW": false
+          },
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-qualification-20260917/input",
+            "Destination": "/var/lib/clickhouse/user_files/input",
+            "RW": false
+          },
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-qualification-20260917/backups",
+            "Destination": "/backups",
+            "RW": true
+          },
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-qualification-20260917/ch-data",
+            "Destination": "/var/lib/clickhouse",
+            "RW": true
+          },
+          {
+            "Type": "bind",
+            "Source": "/home/tux/bigbrotr-qualification-20260917/ch-logs",
+            "Destination": "/var/log/clickhouse-server",
+            "RW": true
+          }
+        ]
+      }
+    ],
+    "file_identities": [
+      {
+        "path": "extensions/v1.5.5/linux_amd64/ducklake.duckdb_extension",
+        "bytes": 36436086,
+        "sha256": "e51bf9e8d933d0e83780ae096455501b542cf962569a2ce5613532d702c08302"
+      },
+      {
+        "path": "extensions/v1.5.5/linux_amd64/ducklake.duckdb_extension.info",
+        "bytes": 165,
+        "sha256": "dffc854eed550be75001befb149bf7ecba144e4b813cdc443a88ec58f47b5f01"
+      },
+      {
+        "path": "extensions/v1.5.5/linux_amd64/postgres_scanner.duckdb_extension",
+        "bytes": 41696558,
+        "sha256": "b1ced4cfc6311313e117c2afb3eac76508718778dde0716421503c7dbfb5605c"
+      },
+      {
+        "path": "extensions/v1.5.5/linux_amd64/postgres_scanner.duckdb_extension.info",
+        "bytes": 172,
+        "sha256": "6b17a4fa1e359e4051c14fe75d747fefef83f559dbb7d21dbe2eef6145e7bb76"
+      },
+      {
+        "path": "config/ch.xml",
+        "bytes": 525,
+        "sha256": "f68cff3d4096205e41f50cbdb7eba9546ab02091097894c0492156612abde84e"
+      },
+      {
+        "path": "src/storage-qualification/README-recovery.md",
+        "bytes": 10160,
+        "sha256": "d2041a2dbbdacef68f4546c24584446d2d82a940e0046f4e21b133b36d97adb3"
+      },
+      {
+        "path": "src/storage-qualification/README.md",
+        "bytes": 11754,
+        "sha256": "b250c19f33c16426b5baa6ca55b16f9af0a13b080fe571ae05309d592484f7a0"
+      },
+      {
+        "path": "src/storage-qualification/backup.py",
+        "bytes": 4861,
+        "sha256": "05df7db595bfc3ded04a4fb6e1fcf03c043ad05a78fb60e79b5d3f19279b28d5"
+      },
+      {
+        "path": "src/storage-qualification/ch_backup.py",
+        "bytes": 4591,
+        "sha256": "638b7b58fd7cdb131f37c5589a49880ddcac1a95e37b81d90f692e49ba581c0d"
+      },
+      {
+        "path": "src/storage-qualification/engines.py",
+        "bytes": 9950,
+        "sha256": "7f09915f757b6948a321fb7156e2b3f029bc5e1a5b5c9452c21708db877e9f20"
+      },
+      {
+        "path": "src/storage-qualification/fixture/Cargo.lock",
+        "bytes": 11805,
+        "sha256": "6b872de38ee07d55187a1488e7a48f9d314dc9901ba61252ec324c548fed5f63"
+      },
+      {
+        "path": "src/storage-qualification/fixture/Cargo.toml",
+        "bytes": 208,
+        "sha256": "ce84a434ec2130f1205e335f6a0459ed8fc6eaf798c27e837d47a1f7d26e4ec9"
+      },
+      {
+        "path": "src/storage-qualification/fixture/src/main.rs",
+        "bytes": 4455,
+        "sha256": "82092a9ed23a324f259870adfb3233f4385668985aaaccd5a8ab770c180a7aac"
+      },
+      {
+        "path": "src/storage-qualification/generate.py",
+        "bytes": 5612,
+        "sha256": "4a69f662a289c6279f9264432ae29374326cf16b54ac37ded2dd03c225735760"
+      },
+      {
+        "path": "src/storage-qualification/inventory.py",
+        "bytes": 4652,
+        "sha256": "c67924d3f415ba349d4b3f8168a009ebe2a3700790a859822dfc23f721dc6b17"
+      },
+      {
+        "path": "src/storage-qualification/layout_inspection.py",
+        "bytes": 2995,
+        "sha256": "9273c18d66d29e11680bdeba30015436b26eba74a2e5d5f08dabc3414eb948ff"
+      },
+      {
+        "path": "src/storage-qualification/recovery.py",
+        "bytes": 31598,
+        "sha256": "fdd964ca224596adf588032bcc9ad96c52d106087d58c5c0861f4a703c598e1b"
+      },
+      {
+        "path": "src/storage-qualification/requirements.txt",
+        "bytes": 126,
+        "sha256": "76355d3fb70cbf02a843d68a58f5b034429d7bb6d3cb927419bcc07c2f50d550"
+      },
+      {
+        "path": "src/storage-qualification/restart.py",
+        "bytes": 5270,
+        "sha256": "acccf920d933a994433e2e4a19be888fd604216dd7557f8827085c2b580f75fe"
+      },
+      {
+        "path": "src/storage-qualification/restored_verify.py",
+        "bytes": 5922,
+        "sha256": "c47a53c91b4f1e773dcce7c8666da0283bfdee41405b6eaa70934546291ee927"
+      },
+      {
+        "path": "src/storage-qualification/summarize.py",
+        "bytes": 9074,
+        "sha256": "cca2a4e72424f100cda4249475a30f1cecc7eed8f738d923f42c2008b2c77434"
+      },
+      {
+        "path": "src/storage-qualification/verify.py",
+        "bytes": 7903,
+        "sha256": "d9a342bb249817227f999b4131d422f80d3de31af0248d69d0e0c8a867fad6eb"
+      }
+    ],
+    "total_running_containers": 8,
+    "worker_packages_status": "Not re-read: owned worker stopped; see preceding live capture. Inventory does not restart containers.",
+    "rustc": "rustc 1.96.1 (31fca3adb 2026-06-26)"
+  },
+  "ch-process-restart-02": {
+    "status": "PASS_graceful_CH_process_restart",
+    "started_utc": "2026-09-17T14:49:04.150232+00:00",
+    "scope": "graceful owned CH process stop/start plus large-table population and signed sample rechecks; no power/host/device failure",
+    "before": {
+      "id": "9f33018bdfcac22a7417c7504355c8b4aaa5cd13fbbdb3b15e648934d9c2c0c9",
+      "image": "sha256:07afc18d8a9706eb9d85c5c5d2752e5270f91bbc2894caeaecb73e4d0f603bf5",
+      "state": {
+        "Running": true,
+        "OOMKilled": false,
+        "ExitCode": 0,
+        "StartedAt": "2026-09-17T14:47:51.395013431Z",
+        "FinishedAt": "2026-09-17T14:47:50.838867025Z"
+      },
+      "mounts": [
+        {
+          "Source": "/home/tux/bigbrotr-qualification-20260917/backups",
+          "Destination": "/backups",
+          "RW": true
+        },
+        {
+          "Source": "/home/tux/bigbrotr-qualification-20260917/config/ch.xml",
+          "Destination": "/etc/clickhouse-server/config.d/qualification.xml",
+          "RW": false
+        },
+        {
+          "Source": "/home/tux/bigbrotr-qualification-20260917/ch-data",
+          "Destination": "/var/lib/clickhouse",
+          "RW": true
+        },
+        {
+          "Source": "/home/tux/bigbrotr-qualification-20260917/input",
+          "Destination": "/var/lib/clickhouse/user_files/input",
+          "RW": false
+        },
+        {
+          "Source": "/home/tux/bigbrotr-qualification-20260917/ch-logs",
+          "Destination": "/var/log/clickhouse-server",
+          "RW": true
+        }
+      ]
+    },
+    "source_sha256": "acccf920d933a994433e2e4a19be888fd604216dd7557f8827085c2b580f75fe",
+    "stopped": {
+      "id": "9f33018bdfcac22a7417c7504355c8b4aaa5cd13fbbdb3b15e648934d9c2c0c9",
+      "image": "sha256:07afc18d8a9706eb9d85c5c5d2752e5270f91bbc2894caeaecb73e4d0f603bf5",
+      "state": {
+        "Running": false,
+        "OOMKilled": false,
+        "ExitCode": 0,
+        "StartedAt": "2026-09-17T14:47:51.395013431Z",
+        "FinishedAt": "2026-09-17T14:49:05.322961034Z"
+      },
+      "mounts": [
+        {
+          "Source": "/home/tux/bigbrotr-qualification-20260917/backups",
+          "Destination": "/backups",
+          "RW": true
+        },
+        {
+          "Source": "/home/tux/bigbrotr-qualification-20260917/config/ch.xml",
+          "Destination": "/etc/clickhouse-server/config.d/qualification.xml",
+          "RW": false
+        },
+        {
+          "Source": "/home/tux/bigbrotr-qualification-20260917/ch-data",
+          "Destination": "/var/lib/clickhouse",
+          "RW": true
+        },
+        {
+          "Source": "/home/tux/bigbrotr-qualification-20260917/input",
+          "Destination": "/var/lib/clickhouse/user_files/input",
+          "RW": false
+        },
+        {
+          "Source": "/home/tux/bigbrotr-qualification-20260917/ch-logs",
+          "Destination": "/var/log/clickhouse-server",
+          "RW": true
+        }
+      ]
+    },
+    "seconds_until_healthy": 2.6942647248506546,
+    "after": {
+      "id": "9f33018bdfcac22a7417c7504355c8b4aaa5cd13fbbdb3b15e648934d9c2c0c9",
+      "image": "sha256:07afc18d8a9706eb9d85c5c5d2752e5270f91bbc2894caeaecb73e4d0f603bf5",
+      "state": {
+        "Running": true,
+        "OOMKilled": false,
+        "ExitCode": 0,
+        "StartedAt": "2026-09-17T14:49:05.698877821Z",
+        "FinishedAt": "2026-09-17T14:49:05.322961034Z"
+      },
+      "mounts": [
+        {
+          "Source": "/home/tux/bigbrotr-qualification-20260917/backups",
+          "Destination": "/backups",
+          "RW": true
+        },
+        {
+          "Source": "/home/tux/bigbrotr-qualification-20260917/config/ch.xml",
+          "Destination": "/etc/clickhouse-server/config.d/qualification.xml",
+          "RW": false
+        },
+        {
+          "Source": "/home/tux/bigbrotr-qualification-20260917/ch-data",
+          "Destination": "/var/lib/clickhouse",
+          "RW": true
+        },
+        {
+          "Source": "/home/tux/bigbrotr-qualification-20260917/input",
+          "Destination": "/var/lib/clickhouse/user_files/input",
+          "RW": false
+        },
+        {
+          "Source": "/home/tux/bigbrotr-qualification-20260917/ch-logs",
+          "Destination": "/var/log/clickhouse-server",
+          "RW": true
+        }
+      ]
+    },
+    "verification": {
+      "file": "aged-after-ch-restart-02.json",
+      "sha256": "14f8d15ff0421e78e1beb01f4c77c4f1a127d040bed6716b955f7e5134567c53",
+      "status": "PASS_sampled_signed_preservation_and_population_oracles"
+    },
+    "elapsed_seconds": 14.017165597062558,
+    "finished_utc": "2026-09-17T14:49:18.167515+00:00"
+  },
+  "failed_or_superseded_reports": [
+    {
+      "name": "backup-restore.json",
+      "status": "FAILED",
+      "error": "CalledProcessError(1, ('docker', 'top', 'bigbrotr-qualification-worker-20260917', '-eo', 'args'))"
+    },
+    {
+      "name": "ch-process-restart.json",
+      "status": "FAILED",
+      "error": "AssertionError()"
+    },
+    {
+      "name": "qualification_recovery_recmixed01.json",
+      "status": "FAILED",
+      "error": {
+        "type": "RuntimeError",
+        "message": "mixed worker process failed",
+        "traceback": "Traceback (most recent call last):\n  File \"/lab/src/storage-qualification/recovery.py\", line 566, in main\n    report[\"cases\"][\"mixed-\" + engine] = run_mixed(config, oracle, engine, args.mixed_duration)\n                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lab/src/storage-qualification/recovery.py\", line 393, in run_mixed\n    raise RuntimeError(\"mixed worker process failed\")\nRuntimeError: mixed worker process failed\n"
+      }
+    }
+  ],
+  "not_qualified": [
+    "full-corpus cryptographic verification",
+    "power/host/disk loss",
+    "production causal backup/fencing",
+    "Rust adapters/native release tuple",
+    "aged provenance/search/graph workload",
+    "real 5k/10k/50k/100k busy relay fleet",
+    "cold cache or equal-durable-ACK comparison",
+    "global optimality or release readiness"
+  ]
+}

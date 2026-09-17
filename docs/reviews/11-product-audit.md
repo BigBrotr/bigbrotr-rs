@@ -94,7 +94,7 @@ are proposed names, not claims that routes already exist:
 | Reauthenticate | `POST /management/v1/sessions/current/reauthenticate`; produce an expiring session/principal/action-bound proof for sensitive commands; do not infer recent authentication merely from an unexpired session |
 | Discover tokens | `GET /management/v1/tokens`; bounded authorized metadata with the existing listing rules, never raw credentials or password/token hashes |
 | Register a secret reference | `PUT /management/v1/secret-references/{reference_id}`; accept a configured provider and allowed opaque handle/reference, with permission and revision checks; no raw secret-value upload, arbitrary filesystem browser or provider activation |
-| Saved queries | Include the existing `GET|POST /management/v1/saved-views` and `PUT|DELETE /management/v1/saved-views/{view_id}` in the route catalog |
+| Saved queries | Include the existing `GET`/`POST /management/v1/saved-views` and `PUT`/`DELETE /management/v1/saved-views/{view_id}` in the route catalog |
 | Configure publishing, routes and exposure | Use the existing configuration preview/revision transaction and explicit signer/security grants; do not invent competing setters that bypass the activation barrier |
 
 The default secret-value provisioning path can remain the local deployment/CLI

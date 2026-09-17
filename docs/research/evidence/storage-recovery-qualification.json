@@ -1,0 +1,510 @@
+{
+  "kind": "bounded-real-engine-recovery-and-mixed-slices",
+  "status": "PASS_selected_bounded_checks",
+  "captured_at_utc": "2026-09-17T14:48:19.459162+00:00",
+  "run_statuses": {
+    "recmixed01": "FAILED",
+    "recmixed02ch": "PASS_bounded_ch_mixed_slice"
+  },
+  "assessment": "Selected recovery cuts and one 600-second mixed slice per engine passed across the explicitly named runs. First composite attempt remains FAILED; this is not a capacity/SLO or product-recovery pass.",
+  "lab": {
+    "ssh_host": "tux",
+    "host_root": "/home/tux/bigbrotr-qualification-20260917",
+    "worker": "bigbrotr-qualification-worker-20260917",
+    "postgres": "bigbrotr-qualification-pg-20260917",
+    "clickhouse": "bigbrotr-qualification-ch-20260917",
+    "backup_gate": {
+      "checked_at_utc": "2026-09-17T14:19:34.897690+00:00",
+      "backup_report": "backup-restore-archive02.json",
+      "backup_status": "PASS_quiescent_archive_copy_restore",
+      "backup_processes": [],
+      "run_id": "recmixed01"
+    },
+    "worker_cgroup_memory_bytes": 21474836480,
+    "clickhouse_cgroup_memory_bytes": 12884901888
+  },
+  "versions": {
+    "duckdb_version": "1.5.5",
+    "extension_versions": [
+      [
+        "ducklake",
+        "d8a1881e"
+      ],
+      [
+        "postgres_scanner",
+        "41223e5"
+      ]
+    ],
+    "clickhouse_version": "26.5.1.882"
+  },
+  "source": {
+    "corpus": "calibration",
+    "file": "events-000000000000.parquet",
+    "file_bytes": 98994244,
+    "manifest_sha256": "e591413aac4304a0bb9f24fdcd11aa6980a1c9389357f1a6c18a24530e2edf70",
+    "file_sha256": "f92897c0fa804b7a457bbe173b571358fc8dd6ec246bf046178c69fec3a02682",
+    "source_digest": "7e21be3063622a1ff1523829f8e7aad735507a2e7dfaee0fe4b80228ade11784",
+    "rows": 25000,
+    "scope": "Every selected-file row canonical-ID/signature verified before each run; complete body and ordered-tag digest oracle. One selected file, not full 20M-corpus crypto verification."
+  },
+  "script_sha256_by_run": {
+    "recmixed01": "66e462881cc947ffe212f8149eec9e23753a03a561a46a23b10f925730209884",
+    "recmixed02ch": "fdd964ca224596adf588032bcc9ad96c52d106087d58c5c0861f4a703c598e1b"
+  },
+  "repository_recovery_source_sha256": "fdd964ca224596adf588032bcc9ad96c52d106087d58c5c0861f4a703c598e1b",
+  "successful_recovery_cases_from_failed_composite": {
+    "lake-kill-before-commit": {
+      "boundary": "lake-before-commit",
+      "pid": 1605,
+      "pg_backend_pids_before_kill": [
+        368
+      ],
+      "exitcode": -9,
+      "old_pg_sessions": 0,
+      "oracle": {
+        "bodies": {
+          "logical": 0,
+          "physical": 0
+        },
+        "tags": {
+          "logical": 0,
+          "physical": 0
+        },
+        "receipt_count": 0
+      }
+    },
+    "lake-kill-after-commit-before-caller-ack": {
+      "boundary": "lake-after-commit",
+      "pid": 1767,
+      "pg_backend_pids_before_kill": [
+        373
+      ],
+      "exitcode": -9,
+      "old_pg_sessions": 0,
+      "oracle": {
+        "bodies": {
+          "logical": 25000,
+          "physical": 25000
+        },
+        "tags": {
+          "logical": 75000,
+          "physical": 75000
+        },
+        "receipt_count": 1
+      }
+    },
+    "ch-partial-family": {
+      "old_frontier": 0,
+      "missing-family-detected": true,
+      "complete_oracle": {
+        "bodies": {
+          "logical": 25000,
+          "physical": 25000
+        },
+        "tags": {
+          "logical": 75000,
+          "physical": 75000
+        }
+      }
+    },
+    "ch-dedup-disabled-replay": {
+      "bodies": {
+        "logical": 25000,
+        "physical": 50000
+      },
+      "tags": {
+        "logical": 75000,
+        "physical": 150000
+      }
+    },
+    "pg-activation-response-lost": {
+      "boundary": "pg-after-commit",
+      "pid": 1929,
+      "pg_backend_pids_before_kill": [
+        379
+      ],
+      "exitcode": -9,
+      "old_pg_sessions": 0
+    },
+    "same-length-corruption-negative": {
+      "detected": true
+    }
+  },
+  "mixed_slices": {
+    "lake": {
+      "run_id": "recmixed01",
+      "scheduled_duration_seconds": 600,
+      "offered_metric_meaning": "600 scheduled one-per-second slots per role; successful phase completed every slot",
+      "aggregate_completed": 1800,
+      "final_body_oracle": {
+        "logical": 25000,
+        "physical": 49600
+      },
+      "workers": [
+        {
+          "role": "writer",
+          "engine": "lake",
+          "memory_limit": 3000000000,
+          "threads": 2,
+          "offered": 600,
+          "started": 600,
+          "completed": 600,
+          "not_started": 0,
+          "errors": [],
+          "written_rows": 24600,
+          "latency_seconds_summary": {
+            "count": 600,
+            "p50": 0.040195690002292395,
+            "p95": 0.055849713273346424,
+            "p99": 0.05889101279899478,
+            "max": 0.06146528711542487,
+            "percentile_method": "nearest rank"
+          },
+          "queue_seconds_summary": {
+            "count": 600,
+            "p50": 0.00011486420407891273,
+            "p95": 0.00043082423508167267,
+            "p99": 0.0005062269046902657,
+            "max": 0.0005551241338253021,
+            "percentile_method": "nearest rank"
+          }
+        },
+        {
+          "role": "reader-a",
+          "engine": "lake",
+          "memory_limit": 1500000000,
+          "threads": 1,
+          "offered": 600,
+          "started": 600,
+          "completed": 600,
+          "not_started": 0,
+          "errors": [],
+          "written_rows": 0,
+          "latency_seconds_summary": {
+            "count": 600,
+            "p50": 0.1284036091528833,
+            "p95": 0.16460467455908656,
+            "p99": 0.17063686111941934,
+            "max": 0.1815908462740481,
+            "percentile_method": "nearest rank"
+          },
+          "queue_seconds_summary": {
+            "count": 600,
+            "p50": 0.0001126360148191452,
+            "p95": 0.00044378917664289474,
+            "p99": 0.0005377712659537792,
+            "max": 0.0005963719449937344,
+            "percentile_method": "nearest rank"
+          }
+        },
+        {
+          "role": "reader-b",
+          "engine": "lake",
+          "memory_limit": 1500000000,
+          "threads": 1,
+          "offered": 600,
+          "started": 600,
+          "completed": 600,
+          "not_started": 0,
+          "errors": [],
+          "written_rows": 0,
+          "latency_seconds_summary": {
+            "count": 600,
+            "p50": 0.13066876726225019,
+            "p95": 0.16350896982476115,
+            "p99": 0.17308852402493358,
+            "max": 0.18053898261860013,
+            "percentile_method": "nearest rank"
+          },
+          "queue_seconds_summary": {
+            "count": 600,
+            "p50": 0.00011192914098501205,
+            "p95": 0.0004435991868376732,
+            "p99": 0.0005323858931660652,
+            "max": 0.0006484771147370338,
+            "percentile_method": "nearest rank"
+          }
+        }
+      ]
+    },
+    "ch": {
+      "run_id": "recmixed02ch",
+      "scheduled_duration_seconds": 600,
+      "offered_metric_meaning": "600 scheduled one-per-second slots per role; successful phase completed every slot",
+      "aggregate_completed": 1800,
+      "final_body_oracle": {
+        "logical": 25000,
+        "physical": 49600
+      },
+      "workers": [
+        {
+          "role": "writer",
+          "engine": "ch",
+          "memory_limit": 3000000000,
+          "threads": 2,
+          "offered": 600,
+          "started": 600,
+          "completed": 600,
+          "not_started": 0,
+          "errors": [],
+          "written_rows": 24600,
+          "latency_seconds_summary": {
+            "count": 600,
+            "p50": 0.060438118409365416,
+            "p95": 0.06605437397956848,
+            "p99": 0.07086020801216364,
+            "max": 0.07908953307196498,
+            "percentile_method": "nearest rank"
+          },
+          "queue_seconds_summary": {
+            "count": 600,
+            "p50": 0.00010493816807866096,
+            "p95": 0.00043460214510560036,
+            "p99": 0.0005438113585114479,
+            "max": 0.0009164530783891678,
+            "percentile_method": "nearest rank"
+          }
+        },
+        {
+          "role": "reader-a",
+          "engine": "ch",
+          "memory_limit": 1500000000,
+          "threads": 1,
+          "offered": 600,
+          "started": 600,
+          "completed": 600,
+          "not_started": 0,
+          "errors": [],
+          "written_rows": 0,
+          "latency_seconds_summary": {
+            "count": 600,
+            "p50": 0.01661733677610755,
+            "p95": 0.022472546435892582,
+            "p99": 0.025675763841718435,
+            "max": 0.029582353308796883,
+            "percentile_method": "nearest rank"
+          },
+          "queue_seconds_summary": {
+            "count": 600,
+            "p50": 0.00010439334437251091,
+            "p95": 0.00043493323028087616,
+            "p99": 0.0005208500660955906,
+            "max": 0.0006735571660101414,
+            "percentile_method": "nearest rank"
+          }
+        },
+        {
+          "role": "reader-b",
+          "engine": "ch",
+          "memory_limit": 1500000000,
+          "threads": 1,
+          "offered": 600,
+          "started": 600,
+          "completed": 600,
+          "not_started": 0,
+          "errors": [],
+          "written_rows": 0,
+          "latency_seconds_summary": {
+            "count": 600,
+            "p50": 0.01683003641664982,
+            "p95": 0.02286574523895979,
+            "p99": 0.024229752831161022,
+            "max": 0.02972621424123645,
+            "percentile_method": "nearest rank"
+          },
+          "queue_seconds_summary": {
+            "count": 600,
+            "p50": 0.00010368227958679199,
+            "p95": 0.00043362006545066833,
+            "p99": 0.0005207601934671402,
+            "max": 0.0006741383112967014,
+            "percentile_method": "nearest rank"
+          }
+        }
+      ]
+    }
+  },
+  "failed_ch_slice": {
+    "run_id": "recmixed01",
+    "scheduled_slots_per_role": 600,
+    "scheduled_window_seconds": 600,
+    "interrupted_before_deadline": true,
+    "raw_failure": {
+      "type": "RuntimeError",
+      "message": "mixed worker process failed",
+      "traceback": "Traceback (most recent call last):\n  File \"/lab/src/storage-qualification/recovery.py\", line 566, in main\n    report[\"cases\"][\"mixed-\" + engine] = run_mixed(config, oracle, engine, args.mixed_duration)\n                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/lab/src/storage-qualification/recovery.py\", line 393, in run_mixed\n    raise RuntimeError(\"mixed worker process failed\")\nRuntimeError: mixed worker process failed\n"
+    },
+    "workers": [
+      {
+        "role": "writer",
+        "engine": "ch",
+        "memory_limit": 3000000000,
+        "threads": 2,
+        "offered": 600,
+        "started": 176,
+        "completed": 176,
+        "not_started": 0,
+        "errors": [],
+        "written_rows": 7216,
+        "derived_slots_not_started": 424,
+        "derived_accounting_note": "424 scheduled slots not reached because parent-authorized SIGINT stopped the writer before the 600-second deadline. Raw not_started=0 is retained; old harness bypassed its Exception handler on KeyboardInterrupt."
+      },
+      {
+        "role": "reader-a",
+        "engine": "ch",
+        "memory_limit": 1500000000,
+        "threads": 1,
+        "offered": 600,
+        "started": 1,
+        "completed": 0,
+        "not_started": 599,
+        "errors": [
+          {
+            "type": "AssertionError",
+            "message": "missing body identities"
+          }
+        ],
+        "written_rows": 0
+      },
+      {
+        "role": "reader-b",
+        "engine": "ch",
+        "memory_limit": 1500000000,
+        "threads": 1,
+        "offered": 600,
+        "started": 1,
+        "completed": 0,
+        "not_started": 599,
+        "errors": [
+          {
+            "type": "AssertionError",
+            "message": "missing body identities"
+          }
+        ],
+        "written_rows": 0
+      }
+    ],
+    "root_cause": "ClickHouse substituted SELECT lower(hex(id)) AS id into unqualified WHERE id=unhex(...), returning no matches. Qualify the stored binary source column as stored.id.",
+    "alias_regression_countercheck": {
+      "status": "PASS_real_CH_alias_regression_countercheck",
+      "at_utc": "2026-09-17T14:35:35.529962+00:00",
+      "namespace": "qualification_recovery_recmixed01",
+      "query_memory_bytes": 64000000,
+      "query_threads": 1,
+      "wrong_query": "SELECT DISTINCT ordinal,lower(hex(id)) AS id,lower(hex(pubkey)) AS pubkey,created_at,kind,tags,content,lower(hex(sig)) AS sig FROM qualification_recovery_recmixed01.mixed_body WHERE id=unhex('d45454f08284e04873150a561d3c383006e11c5eee006a6cf8ad0e0a245eb698')",
+      "corrected_query": "SELECT DISTINCT ordinal,lower(hex(id)) AS id,lower(hex(pubkey)) AS pubkey,created_at,kind,tags,content,lower(hex(sig)) AS sig FROM qualification_recovery_recmixed01.mixed_body AS stored WHERE stored.id=unhex('d45454f08284e04873150a561d3c383006e11c5eee006a6cf8ad0e0a245eb698')",
+      "wrong_query_negative_control": "missing body identities",
+      "corrected_full_body_oracle": {
+        "logical": 1,
+        "physical": 1
+      },
+      "source_event_ordinal": 0,
+      "source_event_digest": "aed89253726e7b0dc89022b4a58c97ab4b71a6b275f9d5518f0e952293a9ecb4",
+      "fixed_source_sha256": "fdd964ca224596adf588032bcc9ad96c52d106087d58c5c0861f4a703c598e1b"
+    },
+    "interruption_regression_countercheck": {
+      "status": "PASS_interruption_accounting_regression",
+      "scope": "no engine calls; injected KeyboardInterrupt in actual worker wait path",
+      "old_source_negative_control": {
+        "offered": 600,
+        "started": 0,
+        "completed": 0,
+        "not_started": 0
+      },
+      "fixed_source": {
+        "offered": 600,
+        "started": 0,
+        "completed": 0,
+        "not_started": 600
+      }
+    }
+  },
+  "resource_settings": {
+    "writer_memory_bytes": 3000000000,
+    "reader_memory_bytes": 1500000000,
+    "mixed_concurrency": "one writer and two readers, one engine at a time",
+    "mixed_engine_total_bytes": 6000000000
+  },
+  "finished_process_boundary": {
+    "observed_at_utc": "2026-09-17T14:46:35.996110+00:00",
+    "new_run_exit_code": 0,
+    "worker_docker_top_remaining": [
+      {
+        "pid": 1133004,
+        "command": "sleep infinity"
+      }
+    ],
+    "recovery_or_multiprocessing_workers_remaining": 0,
+    "server_restart_performed_by_this_experiment": false
+  },
+  "slo_and_scope_limits": [
+    "One writer offers one subset of 41 rows/sec; each of two readers offers one lookup/sec, cycling 16 known bodies. This is a bounded correctness slice, not mixed-v1 fleet load.",
+    "Each successful mixed phase lasts 600 scheduled seconds. Across that phase writer inserts 24,600 extra rows; exact final physical count 49,600 and logical count 25,000.",
+    "6,000,000,000 bytes aggregate configured active query memory and 4 query threads per engine; server baseline/native memory/OS cache remain subject to separately recorded cgroups.",
+    "Fresh dedicated tables, uncontrolled cache, no concurrent aged baselines, no cold-cache claim, no broad query/job/graph/replay fairness or production SLO qualification.",
+    "Killed client/worker processes only. No server/power/host-loss injection, host fencing, production causal-backup/restore closure, producer GC, production family/frontier schema, or projection-fsync qualification.",
+    "No table/database DROP/DELETE, engine restart or modification of existing 20M tables. All created namespaces and raw evidence retained."
+  ],
+  "raw_artifacts": [
+    {
+      "path": ".research/storage-recovery-qualification/finished-process-boundary.json",
+      "bytes": 304,
+      "sha256": "eee621c67c4f43912db7015ab3edfafd651ccc4909114eac4f86a0b98d66f567"
+    },
+    {
+      "path": ".research/storage-recovery-qualification/interruption-countercheck.json",
+      "bytes": 368,
+      "sha256": "91f055f932429de76636e9b9f2bcf075622f400750a9460b47daa22550d4fcde"
+    },
+    {
+      "path": ".research/storage-recovery-qualification/recmixed01/qualification_recovery_recmixed01.json",
+      "bytes": 140566,
+      "sha256": "f9d5da779964c9eea52f5e00f3ef5ab443245ed53bcb6d62c6cc478733c72996"
+    },
+    {
+      "path": ".research/storage-recovery-qualification/recmixed01/recovery-alias-countercheck.json",
+      "bytes": 1146,
+      "sha256": "ef86296ec95d98c6704ba913174bf07f1afdf86ad7adf95a507f5ccfb5c13e81"
+    },
+    {
+      "path": ".research/storage-recovery-qualification/recmixed01/recovery-gate-recmixed01.json",
+      "bytes": 220,
+      "sha256": "d11c712878acc13d3ac20a1359eb09fab494dca5f30e9713d0af71858d57c5b0"
+    },
+    {
+      "path": ".research/storage-recovery-qualification/recmixed01/recovery-interruption-recmixed01.json",
+      "bytes": 321,
+      "sha256": "71b7d5376393f5c3f6e6dd66491f2e5739724487001aded0bfa930855d4b044b"
+    },
+    {
+      "path": ".research/storage-recovery-qualification/recmixed01/recovery-recmixed01.log",
+      "bytes": 979,
+      "sha256": "9806463a3a933c7383b6101c92326bb3582b6814ee939cccd7456c97f6597ee8"
+    },
+    {
+      "path": ".research/storage-recovery-qualification/recmixed01/recovery-source-recmixed01.py",
+      "bytes": 30027,
+      "sha256": "66e462881cc947ffe212f8149eec9e23753a03a561a46a23b10f925730209884"
+    },
+    {
+      "path": ".research/storage-recovery-qualification/recmixed02ch/qualification_recovery_recmixed02ch.json",
+      "bytes": 126483,
+      "sha256": "0ef7826ffe1024f345979d57c1218cacc1fb6847dc2eacc518af65e8fc9685c4"
+    },
+    {
+      "path": ".research/storage-recovery-qualification/recmixed02ch/recovery-gate-recmixed02ch.json",
+      "bytes": 607,
+      "sha256": "e9dfcbaee3187a563c07211996c5cdb715776bff5f464e258877ba4966f60b8e"
+    },
+    {
+      "path": ".research/storage-recovery-qualification/recmixed02ch/recovery-recmixed02ch.log",
+      "bytes": 161,
+      "sha256": "9ca62fdfa979ce1e881be815f2045d7862bb669cb3548846dc04ece2a22768b3"
+    },
+    {
+      "path": ".research/storage-recovery-qualification/recmixed02ch/recovery-source-recmixed02ch.py",
+      "bytes": 31598,
+      "sha256": "fdd964ca224596adf588032bcc9ad96c52d106087d58c5c0861f4a703c598e1b"
+    }
+  ]
+}

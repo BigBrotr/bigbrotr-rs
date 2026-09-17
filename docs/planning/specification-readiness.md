@@ -11,6 +11,9 @@ only after the owner's separate start instruction. The task checkboxes and
 [closure review](../reviews/14-independent-closure-review.md) and
 [operational countercheck](../reviews/14-handoff-countercheck.md) record actual work;
 historical reviews do not override current specifications.
+The [large-storage and final handoff check](../reviews/15-large-storage-and-final-handoff.md)
+adds acquisition proof/visibility corrections and actual larger engine evidence.
+It does not close the unimplemented product gates below.
 
 ## Disposition of the eight paper gaps
 

@@ -30,6 +30,15 @@ must not be promised as currently retrievable. New reproducible probes live unde
 `experiments/`. The old remote environments were subsequently
 [retired at the owner's request](../research/tux-retirement-20260917.md).
 
+The fresh [September 17 storage lab](../research/tux-storage-qualification-20260917.md)
+loads 20 million unique signed events (79.168 GB of source Parquet) into four
+representations, compares population oracles and 1,743 full signed samples, and
+restores a hash-verified 215.867 GB archive copy through a separate catalog.
+It also exercises selected actual-engine transaction/replay boundaries. The
+report discloses cgroup ceilings, synthetic content, uncontrolled cache and CH
+default-fsync load timing. These are useful larger component results, not a
+maintenance-aged, equal-durability or whole-fleet qualification.
+
 Five thousand connections are plausible in both Go and Rust. Whether BigBrotr can
 continuously synchronize those relays on Tux depends primarily on received bytes,
 duplicate factor, signature work, relay behavior, historical backlog, indexes,

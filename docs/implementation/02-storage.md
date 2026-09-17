@@ -101,6 +101,9 @@ One owner serializes exact identity decisions for each writable directory.
   intent, complete dependencies and existing retention/protection. Return
   NeedsAdmission for any missing effect; checkpoint/cut compaction and mixed-backup
   rejection preserve proof closure without a second per-delivery proof ledger.
+  Producer handoff accepts Receipt/ExistingProof bases; proof-only classified
+  prefixes/pages need no request sequence or ingest ACK. Resolve ambiguous Admit
+  requests before choosing a new certification path, and ACK only mutation slots.
 - [ ] **Step 6:** Use bounded positive cache with full equality; account for pending/flushing
   maps, native caches, memtables and compaction alongside the cache's own slab.
 - [ ] **Step 7:** **Practical P02-T02:** use the actual Rust binding, kill before/after synced
@@ -215,8 +218,12 @@ identified serving incarnation. Logical correction history survives merges.
   base plan or explicit unavailability, never certify incomplete required data.
   Qualify exact release behavior against upstream projection-fsync issue #111318;
   INSERT settings alone cannot establish projection persistence.
-- [ ] **Step 5:** Resolve body candidates and correction minima only after the pinned cut;
-  deduplicate identical retry rows before logical counts and limits.
+- [ ] **Step 5:** Apply the required source cuts and permitted eligibility/evidence
+  scopes before resolving signed representatives and correction minima; deduplicate
+  identical retry rows before logical counts and limits. Bind query values and
+  qualify stored-column references independently of output aliases. Exercise a
+  binary-ID versus hex-output alias collision against the actual engine and an
+  independent full-row oracle; an empty successful query is not proof of absence.
 - [ ] **Step 6:** Treat table replacement, restore or unclean loss as a new invalidated
   serving incarnation until revalidated/rebuilt. A PG receipt cannot certify
   missing CH parts.

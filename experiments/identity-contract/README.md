@@ -47,6 +47,17 @@ signed tags, wrong endian, null/empty conflation and digest-domain aliasing.
 Separate checks exercise qualified-dictionary aliasing, restore counters, whole
 batch overflow refusal, topology handoff and incompatible peers before writes.
 
+The acquisition slice compares scoped reconciliation membership with a separate
+encounter-history oracle at every prefix, in both arrival orders and provenance
+modes. Public import eligibility cannot launder a private witness in the same
+endpoint/access context. Two eight-delivery duplicate pages (mutation window two)
+checkpoint one deduplicated dependency set each without new mutation requests or
+facts; restore needs those facts but no old request-receipt cache. Six additional
+wrong-path controls detect cross-scope suppression, receipt-only checkpoint
+blocking, synthetic per-duplicate mutation writes, lost dependencies and revoked
+checkpoint authority. These are logical model transitions, not durable engine
+commits or executed reconciliation exchanges.
+
 Signatures/event IDs in these model/vector fixtures are **synthetic format
 values**, not cryptographically valid Nostr examples. A validity flag models the
 already-independent verifier's result. The test does not prove Schnorr security,

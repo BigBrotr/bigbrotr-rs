@@ -182,6 +182,13 @@ receipt space; bounded retained detail does not eliminate per-Admit delivery wor
 CertifyExisting avoids that mutation protocol only for its explicitly proven
 already-retained effects. Its bounded producer checkpoint still carries source
 dependencies and causal backup obligations; it does not certify relay coverage.
+Producer checkpoints accept `EventEffectBasis = Receipt | ExistingProof` and
+deduplicate proof dependencies within bounded classified prefixes/pages. A
+proof-only prefix allocates no ProducerRequestId and sends no ingest ACK; mixed
+prefixes ACK only their contiguous resolved mutation requests. Missing/revoked
+proof authority prevents new progress, while restore must validate the retained
+basis of already committed checkpoints. Lost proof responses are read again;
+an ambiguous Admit remains subject to original-request resolution.
 
 ## Online indexer
 

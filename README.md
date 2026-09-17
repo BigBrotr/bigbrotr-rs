@@ -47,3 +47,7 @@ historical advice; adopted changes now live in the current contracts. The
 [independent closure review](docs/reviews/14-independent-closure-review.md)
 records concrete cross-document corrections. Optional MCP and experimental
 ContextVM are specified alongside HTTP, ArchiveRelay and DVM through one read core.
+
+The [large Tux storage and recovery report](docs/research/tux-storage-qualification-20260917.md)
+adds 20-million-event engine experiments, signed readback and actual restore
+evidence. It states their limits explicitly; it is not fleet or product acceptance.

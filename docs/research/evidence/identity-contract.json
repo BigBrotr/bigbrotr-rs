@@ -1,4 +1,37 @@
 {
+  "acquisition_progress": {
+    "inventory_history_comparisons": 44,
+    "limits": "Symbolic signatures, in-memory facts and logical checkpoint assertions; no NIP-77 exchange, PG transaction, fsync, ACK adapter or physical restart executed.",
+    "negative_control_count": 6,
+    "negative_controls": {
+      "checkpoint_restore_missing_scope_dependency": true,
+      "private_witness_or_payload_suppresses_other_scope": true,
+      "public_eligibility_launders_private_witness": true,
+      "receipt_only_checkpoint_blocks_certified_page": true,
+      "revoked_authority_advances_new_checkpoint": true,
+      "synthetic_mutation_fallback_writes_per_duplicate": true
+    },
+    "proof_only_checkpoints": [
+      {
+        "delivered": 8,
+        "logical_checkpoint_commits": 1,
+        "mutation_window": 2,
+        "new_facts": 0,
+        "new_mutation_requests": 0,
+        "provenance": false,
+        "retained_dependencies": 3
+      },
+      {
+        "delivered": 8,
+        "logical_checkpoint_commits": 1,
+        "mutation_window": 2,
+        "new_facts": 0,
+        "new_mutation_requests": 0,
+        "provenance": true,
+        "retained_dependencies": 4
+      }
+    ]
+  },
   "command": "python3 experiments/identity-contract/probe.py --evidence docs/research/evidence/identity-contract.json",
   "cryptographic_event_verification_test": false,
   "engine_or_crash_test": false,
@@ -39,7 +72,7 @@
   "scope": "isolated encoding/reference-model evidence only",
   "sources": {
     "experiments/identity-contract/golden-vectors.json": "a81a3015cf2c60ecd0fcc5d576e8a6d68b66e01396a39a28a802595d159e9dc6",
-    "experiments/identity-contract/probe.py": "d8ec5d4ee6b9316920fa3cf1df095ae9048c854adcc5450ac21cf381d3abc5de",
+    "experiments/identity-contract/probe.py": "43a068e282e0071c3826702bda5aa90dcf3593905a77c790614c7e1c1bcc33e5",
     "experiments/identity-contract/reference.mjs": "45f90159b49bd9a24e27b8f3c1809baadf060ffb4e0353f94f07bb2d0c70ad07",
     "experiments/identity-contract/write_vectors.py": "5cfe7b247303ce0a6ec2f07732dbaea7754425af8162fc028c3faccc5a0672db"
   },

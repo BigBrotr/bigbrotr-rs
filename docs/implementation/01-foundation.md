@@ -72,6 +72,8 @@ typed errors; SourceRecordId and SourceCut have exactly one shared meaning.
   absent value, empty string, duplicate tag and missing optional measurement.
 - [ ] **Step 3:** Define four-part source identities, contiguous atomic-batch receipts and
   topology-aware cuts; reject incompatible namespaces and arithmetic overflow.
+  Define ExistingProof and acquisition's `EventEffectBasis = Receipt | ExistingProof`
+  with retained source dependency closure; a read proof is not a mutation receipt.
 - [ ] **Step 4:** Separate signed originals, first observation/correction, imported claim,
   executed measurement and private operational state using closed typed variants.
 - [ ] **Step 5:** Specify JSON/protobuf/columnar mapping and fidelity labels; public metadata

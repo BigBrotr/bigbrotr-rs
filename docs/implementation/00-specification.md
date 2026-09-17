@@ -200,7 +200,7 @@ justified empirical and private implementation choices remaining.
   upgrade and standalone export using only written contracts; repair missing steps.
 - [x] **Step 4:** Reread the final diffs and examples, run artifact/reference checks,
   and record remaining empirical conditions without claiming runtime validation.
-- [ ] **Step 5:** Commit/push a coherent paper baseline and explain readiness/limits
+- [x] **Step 5:** Commit/push a coherent paper baseline and explain readiness/limits
   in Italian. Product implementation still requires its separate start instruction.
 
 P00-T06–T09 closure is supported by the identity/operations/workload/gateway
@@ -210,3 +210,9 @@ corrected configuration dependency cycle, single-shard fixture, scoped workload
 quotas and catalog/file capture barrier. Structural checks cover links, actual
 GitHub fragments and task references; semantic review and engine evidence have
 their separate stated scopes. All P01–P10 implementation steps remain unchecked.
+
+The semantic handoff was committed as `78db8d8` and pushed to private
+`BigBrotr/bigbrotr-rs/main`. The owner was informed in Italian that these are
+closed paper contracts and an execution pipeline, not implemented services or
+whole-product performance proof. The separate large-engine research remains
+reported according to its own executed evidence and limitations.

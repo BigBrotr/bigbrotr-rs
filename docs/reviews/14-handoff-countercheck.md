@@ -13,6 +13,8 @@ coverage ledger and backup/data catalog paragraphs. No engine, Tux process,
 network workload or legacy repository was changed. The initial review wrote only
 this report. The root agent then authorized the minimal repairs recorded below;
 findings describe the pre-repair state.
+The final acquisition pass also read acquisition architecture and P03/P04 task
+contracts against the adopted identity and operational boundaries.
 
 ## 1. P01-T04's new durable configuration work creates a task dependency cycle
 
@@ -104,6 +106,48 @@ Geo/download job artifacts on their existing independent artifact contract.
 Selecting a future chunked scientific object format would require its own
 explicit schema/recovery decision, which this closure does not need.
 
+## 5. Receipt-only acquisition progress excludes the adopted certification path
+
+**Priority: P1 — forces unnecessary mutation writes or blocks certified progress.**
+
+[Acquisition admission](../architecture/acquisition-services.md#durable-ingest-contract)
+(lines 47–60 before repair), P03's shared PageOutcome, T01 step 3, T02 steps 3–4,
+T05 step 2 and T10 steps 3–4 require receipts/request identities for every event
+basis and checkpoint. The adopted CertifyExisting operation explicitly allocates
+neither. A page of valid known events must otherwise issue strict Admit calls and
+their durable request outcomes solely to obtain the old task's required receipt,
+or remain unable to checkpoint despite sufficient retained source dependencies.
+
+**Applied repair:** `EventEffectBasis = Receipt | ExistingProof` is the acquisition
+basis, without modifying AdmissionResult or strict Admit conflict/retirement rules.
+The producer checkpoints bounded classified prefixes/pages with deduplicated
+dependency closure, compacts only through retained complete source-cut manifests,
+and ACKs only contiguous mutation requests. Proof-only processing creates no
+request sequence, ingest ACK or synthetic receipt. New effects/NeedsAdmission and
+separate sidecar/measurement effects retain their mutation paths. A lost proof
+reply is read again; an unresolved Admit must resolve its original request first.
+Updated the architecture, component/operations/storage checkpoint boundaries,
+P01 model ownership, P02 admission handoff and P03/P04 practical requirements.
+
+## 6. Acquisition witness and reconciliation keys omit target visibility
+
+**Priority: P1 — private history can suppress required public acquisition.**
+
+[Witness compaction](../architecture/acquisition-services.md#shared-records-and-invariants)
+(line 43 before repair), historical Negentropy (lines 286–288), P03's acquisition
+scope and T06 step 1 name endpoint/observer/access but omit visibility. A private
+witness can therefore enter a public request's local set, removing E from its
+need list before certification could demand public eligibility/first provenance.
+Even public import eligibility cannot turn that private witness into a public
+network observation. This conflicts with the canonical visibility-qualified key.
+
+**Applied repair:** acquisition scope carries target visibility separately from
+access scope. Witness minima and local-set membership use that exact dimension;
+current authorized archive eligibility and scoped witnesses are selected before
+set construction. Provenance-off body acquisition still requires target-scope
+eligibility, without retaining an endpoint pair. Added P03/P04 acceptance cases
+for both arrival orders, imported eligibility, restricted scopes and earlier cuts.
+
 ## Scope of the conclusion
 
 The protection classes, provisional workload targets and distinction between
@@ -114,7 +158,7 @@ expiry and scoped export answers; the topology finding does not invalidate those
 cryptographic or logical checks.
 
 The agent guide is useful and does not require arbitrary repeat-review counts or
-premature scaffolding. The four findings required small contract/task repairs
+premature scaffolding. The initial four findings and final two acquisition findings required small contract/task repairs
 before the blanket “closed semantic specifications” disposition was final. They do not
 justify changing the storage stack, adding a service, inventing a generic
 framework, running a large benchmark, or postponing ordinary semantics until
@@ -129,6 +173,8 @@ progress remain required adapter qualifications already owned by P02/P08.
 | Fixture topology | Bootstrap dictionary identities and subsequent event batches now share shard0/epoch1. Frozen cuts end at 63/86, including 18/24 bootstrap facts; all event IDs/signatures/read/graph/export answers are unchanged. |
 | C/S workload categories | S comes from known-body/new-edge deliveries and is included in P; C comes from existing-edge deliveries. They are disjoint for one delivery; provenance-off behavior remains explicit. |
 | Unspecified chunk protocol | Initial scientific document admission has no chunk/assembly path; D plus envelope/required metadata must fit F or be refused before admission. Large job artifacts keep their existing separate contract. |
+| Receipt-only acquisition progress | Page/import event bases accept Receipt or ExistingProof with bounded retained closure. Only mutations allocate requests/ACKs; separate executed evidence still has receipts. |
+| Visibility missing from local inventory | Acquisition scopes/witness minima include target visibility. Local-set construction selects authorized eligibility and exact-scope witnesses before suppressing retrieval. |
 
 The backup follow-up found the invariant already specified: all catalog-referenced
 objects must be in closure (security/recovery and P08-T05). Operations step 2 now
@@ -146,5 +192,15 @@ The encoding/history probe still passes 14 golden vectors, 52 scenario runs and
 2,018 independent history comparisons. The existing operations model passes its
 120 admission orderings and seven wrong-state controls; it does not execute the
 new catalog barrier against real engines. The workload owner adds the arithmetic
-counterexample to the workload probe and records its own evidence. Final repository
-artifact checks remain the integrating agent's pre-commit responsibility.
+counterexample to the workload probe and records its own evidence (completed:
+D=2000/U=200/P=1000/C=2/S=1, four negative controls). The final
+acquisition probe adds 44 independent encounter-history inventory comparisons,
+two logical eight-delivery proof-only checkpoints with zero new requests/facts,
+and six wrong-path controls. They catch receipt-only blocking, synthetic duplicate
+mutations, private-witness/payload suppression, import-eligibility laundering,
+missing restored scope dependencies and revoked new-checkpoint authority. These
+logical assertions execute no NIP-77 exchange, PG transaction, fsync or ACK adapter.
+The unchanged real signed fixture was reverified successfully after these repairs.
+The local artifact checker also passed (105 Markdown files, 58 JSON files,
+four JSON examples, no errors), and `git diff --check` passed. The integrating
+agent retains responsibility for final shared-tree/pre-commit verification.
