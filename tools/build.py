@@ -5,6 +5,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import platform
 import shutil
 import subprocess
 import sys
@@ -21,6 +22,93 @@ def file_hash(path):
         for block in iter(lambda: source.read(1024 * 1024), b""):
             digest.update(block)
     return digest.hexdigest()
+
+
+def clean_environment():
+    # Native overrides (including target-qualified cc variables), wrappers,
+    # prebuilt libraries and user Cargo configuration are not build inputs.
+    return {key: os.environ[key] for key in
+            ("PATH", "HOME", "USER", "TMPDIR", "SystemRoot", "RUSTUP_HOME") if key in os.environ}
+
+
+def positive_jobs(value):
+    jobs = int(value)
+    if jobs < 1:
+        raise ValueError("build jobs must be positive")
+    return jobs
+
+
+def command_output(command, env):
+    return subprocess.check_output(command, env=env, text=True,
+                                   stderr=subprocess.STDOUT, timeout=30).strip()
+
+
+def native_toolchain(env, jobs):
+    """Select one installed native toolchain, then bind its actual Cargo inputs."""
+    jobs = positive_jobs(jobs)
+    system = platform.system()
+    discovery_name = {"Darwin": "xcrun", "Linux": "llvm-config"}.get(system)
+    discovery = shutil.which(discovery_name, path=env.get("PATH", "")) if discovery_name else None
+    if discovery is None:
+        raise ValueError("native build requires xcrun on macOS or llvm-config on Linux")
+    discovery = str(Path(discovery).resolve(strict=True))
+    sdk = None
+    if system == "Darwin":
+        paths = {name: Path(command_output([discovery, "--find", tool], env))
+                 for name, tool in (("CC", "clang"), ("CXX", "clang++"), ("AR", "ar"))}
+        libclang = paths["CC"].parent.parent / "lib/libclang.dylib"
+        sdk_path = Path(command_output([discovery, "--sdk", "macosx", "--show-sdk-path"], env)).resolve(strict=True)
+        sdk = {"path": str(sdk_path),
+               "version": command_output([discovery, "--sdk", "macosx", "--show-sdk-version"], env),
+               "settings_sha256": file_hash(sdk_path / "SDKSettings.json")}
+    else:
+        bindir = Path(command_output([discovery, "--bindir"], env))
+        paths = {name: bindir / tool for name, tool in
+                 (("CC", "clang"), ("CXX", "clang++"), ("AR", "llvm-ar"))}
+        libclang = Path(command_output([discovery, "--libdir"], env)) / "libclang.so"
+    # Preserve the clang++ invocation name: resolving its final symlink to clang
+    # changes driver mode. Record both the invocation and the resolved file.
+    paths = {name: path.parent.resolve(strict=True) / path.name for name, path in paths.items()}
+    for path in paths.values():
+        if not path.is_file() or not os.access(path, os.X_OK):
+            raise ValueError("selected native tool is not executable: " + str(path))
+    paths["LIBCLANG_PATH"] = libclang.resolve(strict=True)
+    selected = {name: str(path) for name, path in paths.items()}
+    selected.update({"CLANG_PATH": selected["CC"], "CARGO_BUILD_JOBS": str(jobs)})
+    if sdk:
+        selected["SDKROOT"] = sdk["path"]
+    else:
+        selected["LLVM_CONFIG_PATH"] = discovery
+    native_env = dict(env, **selected)
+    # Query the selected library in a fresh process with the same sanitized
+    # environment as Cargo, rather than loading through ambient loader settings.
+    clang_version = command_output([sys.executable, "-c", """
+import ctypes, sys
+class CXString(ctypes.Structure):
+    _fields_ = [("data", ctypes.c_void_p), ("private_flags", ctypes.c_uint)]
+lib = ctypes.CDLL(sys.argv[1])
+lib.clang_getClangVersion.argtypes = []
+lib.clang_getClangVersion.restype = CXString
+lib.clang_getCString.argtypes = [CXString]
+lib.clang_getCString.restype = ctypes.c_char_p
+lib.clang_disposeString.argtypes = [CXString]
+lib.clang_disposeString.restype = None
+value = lib.clang_getClangVersion()
+try:
+    print(lib.clang_getCString(value).decode("utf-8"))
+finally:
+    lib.clang_disposeString(value)
+""", selected["LIBCLANG_PATH"]], native_env)
+    tools = {}
+    for name, path in dict(paths, discovery=Path(discovery)).items():
+        version = clang_version if name == "LIBCLANG_PATH" else (
+            None if name == "AR" and system == "Darwin" else
+            command_output([str(path), "--version"], native_env))
+        tools[name] = {"path": str(path), "realpath": str(path.resolve(strict=True)),
+                       "sha256": file_hash(path), "version": version}
+    return selected, {"os": system, "architecture": platform.machine(),
+                      "discovery": discovery_name, "environment": selected,
+                      "tools": tools, "sdk": sdk}
 
 
 def build(args):
@@ -56,11 +144,18 @@ def build(args):
     # compiler wrappers, Cargo feature settings and source-identity overrides
     # cannot become unrecorded build inputs. Cargo caches remain dependencies,
     # verified by the lock; they never provide workspace sources.
-    env = {key: os.environ[key] for key in ("PATH", "HOME", "USER", "TMPDIR", "SystemRoot", "RUSTUP_HOME") if key in os.environ}
+    env = clean_environment()
+    native_env, native = native_toolchain(env, args.jobs)
+    env.update(native_env)
     env.update({"CARGO_TARGET_DIR": str(output / "target"), "CARGO_HOME": str(output / "cargo-home"),
                 "BIGBROTR_SOURCE_REVISION": revision, "BIGBROTR_SOURCE_TREE": tree,
                 "BIGBROTR_SOURCE_MANIFEST_SHA256": manifest_hash, "BIGBROTR_BUILD_PROFILE": "release"})
     subprocess.run(["cargo", "build", "--locked", "--release", "--workspace"], cwd=source, env=env, check=True)
+    for tool in native["tools"].values():
+        if file_hash(Path(tool["path"])) != tool["sha256"]:
+            raise ValueError("native tool changed during build: " + tool["path"])
+    if native["sdk"] and file_hash(Path(native["sdk"]["path"]) / "SDKSettings.json") != native["sdk"]["settings_sha256"]:
+        raise ValueError("SDK metadata changed during build")
     after = {str(path.relative_to(source)): file_hash(path)
              for path in sorted(source.rglob("*")) if path.is_file()}
     if members != after:
@@ -77,6 +172,7 @@ def build(args):
     (output / "build-result.json").write_text(json.dumps({
         "format": "bigbrotr-build-result/1", "binary_sha256": file_hash(binary),
         "source_manifest_sha256": manifest_hash, "helper_sha256": helper_hash, "build_info": info,
+        "native_toolchain": native,
     }, indent=2) + "\n")
     print(binary)
 
@@ -85,10 +181,12 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--revision", default="HEAD", help="committed source revision (default: HEAD)")
     parser.add_argument("--output", required=True, type=Path, help="new build directory; never overwritten")
+    parser.add_argument("--jobs", type=positive_jobs, default=2,
+                        help="positive Cargo/native compilation job limit (default: 2)")
     args = parser.parse_args()
     try:
         build(args)
-    except (ValueError, OSError, subprocess.CalledProcessError) as error:
+    except (ValueError, OSError, subprocess.SubprocessError) as error:
         print("build failed: " + str(error), file=sys.stderr)
         return 1
     return 0

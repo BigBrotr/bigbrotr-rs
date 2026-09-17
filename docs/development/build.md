@@ -8,13 +8,20 @@ does not collect, persist or serve events. Build information names the currently
 advertised bounded capabilities and their pinned protocol/parser versions;
 experimental command availability is not complete product qualification.
 
-Install Rust through rustup, a native C compiler, Python 3.9 or later, OpenSSL
+Install Rust through rustup, a native C/C++20 compiler and libclang, Python 3.9 or later, OpenSSL
 (for ephemeral TLS test certificates) and Git. The repository pins
 Rust 1.98.1 with Rustfmt and Clippy; this is also the initially tested minimum.
 The compiler selection incorporates upstream fixes documented in
 [Rust 1.96.1](https://blog.rust-lang.org/2026/06/30/Rust-1.96.1/) and the
 [1.98.1 release notes](https://doc.rust-lang.org/releases.html#version-1981-2026-09-03).
 Do not substitute the older research solver's toolchain for a qualified build.
+
+On Debian/Ubuntu, install `clang llvm libclang-dev g++`; the clean builder uses
+the single LLVM installation selected by `llvm-config` on PATH, including its
+`clang`, `clang++`, `llvm-ar` and `libclang.so`. On macOS, install Apple's Command
+Line Tools or Xcode and select it with `xcode-select`. The builder uses `xcrun`
+to find that installation's compilers, archiver, SDK and libclang; Homebrew LLVM
+and inherited `LIBCLANG_PATH` are not required. Missing tools fail explicitly.
 
 From the repository root:
 
@@ -57,12 +64,32 @@ otherwise use a checkout of that revision. Build tools may need
 network access to download locked dependencies/toolchains; the runtime diagnostics
 do not. Artifacts are native to the executing build host.
 
+Native compilation defaults to two Cargo jobs, including the `cc` crate's shared
+jobserver. This is the initial setting for the isolated 2-CPU/6-GiB builder,
+not a memory guarantee. `--jobs N` selects another positive job count explicitly;
+the caller must provide a suitable resource envelope. Ambient job counts,
+compiler wrappers/flags, target-specific compiler overrides, `ROCKSDB_LIB_DIR`,
+header overrides and loader search overrides are excluded from the child
+environment. Vendored RocksDB is compiled from its locked crate sources; the
+helper never copies a prebuilt RocksDB archive into its fresh target directory.
+
 `source-manifest.json` records Git SHA-1 commit/tree identities, the archive SHA-256
 and SHA-256 for every extracted source file. `build-result.json` binds the executable
 SHA-256, source manifest, executing helper and embedded build information. The binary contains actual
 `rustc -vV`, Cargo target, optimization/debug settings, and lock/toolchain/dependency
 inventory hashes. It also binds the source-manifest SHA-256 and the builder's
 clean-source/profile assertions. It does not contain hostnames, build time or checkout paths.
+
+The receipt's additive `native_toolchain` field records the exact `CC`, `CXX`,
+`AR`, `CLANG_PATH`, `LIBCLANG_PATH`, SDK and job settings passed to Cargo.
+It includes compiler/discovery/library versions, invocation and resolved paths,
+tool/library SHA-256 values, and macOS SDK version/metadata hash. The `clang++`
+invocation name is retained even when it points to the same binary as `clang`:
+that name selects C++ driver behavior. Apple `ar` has no version-query flag, so
+its version is null and its executable hash supplies the identity. The selected
+tools and SDK metadata are checked again after compilation. This receipt remains
+builder-supplied evidence; it does not inventory every system header/library or
+establish a reproducible, authenticated release toolchain by itself.
 
 Ordinary Cargo builds report source `unrecorded`, with unknown (`null`) dirty state
 and profile assertion. The clean helper supplies `BIGBROTR_SOURCE_REVISION`,
@@ -109,8 +136,16 @@ dependency notices. This is not yet a complete persistent CBOR reader/writer.
 The initial PostgreSQL consumer uses tokio-postgres 0.7.18,
 tokio-postgres-rustls 0.14.0 and rustls 0.23.45 with the explicit ring provider,
 configured CA roots and expected server identity. No implicit system/web CA store
-or connection pool is enabled. Remaining native storage bindings and their
-C/C++/libclang/protoc requirements and offline DuckDB/extensions remain gates in the
+or connection pool is enabled. The selected RocksDB adapter uses `rocksdb` 0.25.0
+with default features disabled and only `zstd`/`bindgen-runtime`, backed by
+`librocksdb-sys` 0.19.0+11.8.1. Its native build requires C++20 and a runtime-loadable
+libclang. The inspected `clang-sys` 1.9.1
+[search implementation](https://docs.rs/crate/clang-sys/1.9.1/source/build/common.rs)
+accepts an exact `LIBCLANG_PATH` file, preventing a later search from selecting
+another installed library. Bindgen 0.72.1 uses that library and `CLANG_PATH` for
+include discovery; the locked `cc` 1.4.6 build honors the explicit compiler and
+archiver paths and Cargo jobserver. These are build inputs, not storage durability
+qualification. Remaining native bindings, protoc and offline DuckDB/extensions remain gates in the
 [dependency selection](../research/dependency-selections.md). Add each dependency
 with its first real adapter and update
 [the release inventory](../../contracts/release/dependencies.json), lock and tests.

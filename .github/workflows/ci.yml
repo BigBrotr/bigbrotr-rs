@@ -26,13 +26,32 @@ jobs:
       matrix:
         runner: [ubuntu-24.04, ubuntu-24.04-arm, macos-15]
     runs-on: ${{ matrix.runner }}
-    timeout-minutes: 25
+    # The workspace checks and isolated release build each compile vendored C++.
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           persist-credentials: false
       - name: Install pinned toolchain
         run: rustup show
+      - name: Install Linux native build tools and syscall observer
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y clang llvm libclang-dev g++ strace
+      - name: Select and record native build inputs
+        run: |
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          from tools.build import clean_environment, native_toolchain
+          selected, receipt = native_toolchain(clean_environment(), 2)
+          Path('.research').mkdir(exist_ok=True)
+          Path('.research/ci-native-toolchain.json').write_text(json.dumps(receipt, indent=2) + '\n')
+          with open(os.environ['GITHUB_ENV'], 'a') as output:
+              for name, value in selected.items():
+                  output.write(name + '=' + value + '\n')
+          PY
       - name: Rust checks
         run: |
           cargo fmt --all --check
@@ -41,11 +60,6 @@ jobs:
           cargo doc --locked --workspace --no-deps
         env:
           RUSTDOCFLAGS: -D warnings
-      - name: Prepare native syscall observer
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt-get update
-          sudo apt-get install --no-install-recommends -y strace
       - name: Acceptance negative controls
         run: python3 -m unittest discover -s tests/acceptance -p 'test_*.py'
       - name: Planning artifacts and documentation links
@@ -85,6 +99,7 @@ jobs:
         with:
           name: foundation-${{ matrix.runner }}
           path: |
+            .research/ci-native-toolchain.json
             .research/ci-build/build-result.json
             .research/ci-build/source-manifest.json
             .research/ci-acceptance/
