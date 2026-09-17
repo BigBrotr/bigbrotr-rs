@@ -1,0 +1,64 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-18",
+  "scope": "P02-T02 retained batch boundary and bounded actual native pending feed on Mac arm64; structural independently populated fixture, not signed-event admission",
+  "status": "PASS",
+  "source": {
+    "base_revision": "a842b939df46d12ae36708d9ff735c0f47e1b9b9",
+    "state": "Root dirty candidate tested with ordinary Cargo, no clean-builder receipt",
+    "sha256": {
+      "apps/bigbrotr/src/storage/rocks/keys.rs": "87cffea9353b001f9114f30ee0408275ed8c258e09754cfb1a1a6fe722eee013",
+      "apps/bigbrotr/src/storage/rocks/store.rs": "bc14649ac6221fc25904c39dca282ef4bc77debdcbcbb1381e09623f5b7b762a",
+      "apps/bigbrotr/src/storage/rocks/pending.rs": "1465399f8d3743513f398e29f151431c8bc25a0f7fc3cb1fecb4f1b83f1475bb",
+      "apps/bigbrotr/tests/rocks_keys.rs": "dc8301f0afedbf86dbe746633cb6dee24415eb9d69cdc363100e1c5047dd5620",
+      "apps/bigbrotr/tests/rocks_pending.rs": "cd3137135ac4ae78ea9f23824d84d13af53e738692242229442ad20f489823ad"
+    }
+  },
+  "environment": {
+    "target": "aarch64-apple-darwin",
+    "rustc": "1.98.1",
+    "rocksdb": "0.25.0",
+    "librocksdb-sys": "0.19.0+11.8.1",
+    "target_cache": ".research/worktrees/rocks-store/.research/implementation/rocks-store/target",
+    "build_jobs": 2,
+    "native_build": "Reused the previously completed and inventoried native archive; no fresh C++ build claimed"
+  },
+  "checks": {
+    "key_tests": 9,
+    "pending_tests": 5,
+    "FAIL": 0,
+    "IGNORED": 0,
+    "clippy": "PASS package bigbrotr all-targets -Dwarnings",
+    "fmt": "PASS"
+  },
+  "observed": [
+    "Literal 42-byte marker and full source key, all header truncations/extensions and invalid versions/ranges refused.",
+    "Actual native reopen yields the complete original two-record encoded batch and independent literal batch digest without any request details; native sequence number unchanged by reads.",
+    "Owned data permit retained with result and released on drop/error; bounded count/bytes/decode work, foreign dataset and pre-read cancellation refused.",
+    "Missing/mis-keyed/corrupt facts, insufficient/missing source watermark, wrong batch digest and huge range refuse entire result.",
+    "Future scientific preimage returns IncompatibleSchema; valid facts exceeding allocation/tag/string budgets return Limit."
+  ],
+  "independent_AI_review": {
+    "report": ".research/implementation/rocks-product-design/pending-review/review.json",
+    "sha256": "e61b5397ce8c36a658a6f467cfc088609a25c93d17d300b4a324ee4fea21bdc4",
+    "finding": "PEND-01: decode limit/allocation/incompatibility failures were mislabeled corrupt; independently reproduced and corrected, no residual concrete finding in reviewed scope.",
+    "scope": "Full source/contracts and exact upstream snapshot review; independent Python reconstruction of fixture. Reviewer read root test logs without rerunning the native cases."
+  },
+  "test_history": "Missing key/reader and wrong limit classification each observed RED before implementation/fix. One new future-version fixture initially addressed slash instead of version byte; assertion exposed the fixture error, corrected offset48, final native case PASS. This was not a product defect.",
+  "not_run": [
+    "Atomic admission, real producer request/ACK/receipt GC or producer authority. Test starts without request details; it does not execute the retirement protocol.",
+    "Native mutation during snapshot read, mid-read cancellation, injected allocation/engine-read failure.",
+    "Linux for this pending-reader candidate, process crash, ENOSPC, fsync failure, power loss, archive/read/export and restart handoff.",
+    "Signature/dictionary dependency/protection/visibility qualification or capacity envelope."
+  ],
+  "raw_root": ".research/implementation/rocks-product-design",
+  "logs_sha256": {
+    "pending-key-red.log": "f3a7d6cd268a5a7b96992d4b3187e7818465d464164db0932f71a3b3e58637f8",
+    "pending-reader-red.log": "4a59371526f800fc172865b1118390fb7738e48a5d90b7eb7fe7eb51b2482acb",
+    "pending-limits-red.log": "1feb014623159c95a117de9aa4343846141623f7912275f7efdac26b45acd1a4",
+    "pending-green.log": "e56c5bf2891d7c83d26abb5312d4713fb4557d231e24d9e584ddc76ad56ec8ee",
+    "pending-final.log": "853c85295a8afcb450a8452db5847d4944c7a0a42a2064766092b222a0c01c97",
+    "pending-final-clippy.log": "1ceea9b6ad8b1ad45047f1e7b5ee912a11ebbffd71fc3cdaa889ab661f2f5349",
+    "pending-fixture-offset-failed.log": "2681c33a1396738a5ac8f06a94f6df0b6762c93b757ab194246154c6763443d4"
+  }
+}

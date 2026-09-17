@@ -31,6 +31,14 @@ metadata, not manufacture new records with a new ingestion time. Event-level
 first-admission and first-receive fields/corrections follow the explicit
 [data contract](data-and-durability.md), including when provenance is disabled.
 
+Pending storage retains each complete admission batch's first/last source identity
+and semantic digest separately from request receipts. Producer ACK/receipt GC
+cannot erase the boundaries needed for archive consumption. The marker and its
+source facts share the admission transaction and pending reclamation conditions;
+it is compact technical metadata, not a new scientific fact. The
+[pending format](../reference/ingest-pending-format.md) defines the first native
+reader and its limits; it does not establish admission authority or archive safety.
+
 The [identity contract](../specification/identity-and-encoding.md) defines full
 signed-body factoring, scope-local representatives and fingerprint bytes. A new
 eligible scope is NewFacts even for a known event and with provenance disabled;

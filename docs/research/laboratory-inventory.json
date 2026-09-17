@@ -563,7 +563,9 @@
       "store_review": ".research/implementation/rocks-product-design/store-review/review.json",
       "store_review_sha256": "da40c55b34725d80b4f4ebeb2837a153c482ff95b44cd7825252ad408dfec62e",
       "native_target_reuse": "Root integrated tests reused the completed agent Cargo target; native archive unchanged, previous app/test executable hashes are historical cache identities.",
-      "pending_reader": "Root-owned current candidate; source batch markers and bounded native feed, independent review at .research/implementation/rocks-product-design/pending-review. Initial native fixture checks PASS; final review/fix verification pending."
+      "pending_reader": "Integrated native complete-batch reader with retained marker, data grant and snapshot; five Mac pending tests plus nine key tests and Clippy PASS. No admission/GC or Linux pending-reader qualification.",
+      "pending_evidence": "docs/implementation/evidence/p02-ingest-pending-mac-20260918.json",
+      "pending_review_sha256": "e61b5397ce8c36a658a6f467cfc088609a25c93d17d300b4a324ee4fea21bdc4"
     },
     "ingest_control_review": {
       "root": ".research/implementation/postgres/ingest-review",

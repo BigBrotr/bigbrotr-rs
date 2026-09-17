@@ -1,8 +1,9 @@
 # Ingest store initialization and reopening
 
 `IngestStore` owns the first private native RocksDB handle for P02-T02. It exposes
-explicit `initialize` and `reopen` operations, the bound manifest and read-only
-native counters. There is no generic put/delete, exported DB/CF handle, admission,
+explicit `initialize` and `reopen` operations, the bound manifest, read-only native
+counters and a [bounded complete pending-batch feed](ingest-pending-format.md).
+There is no generic put/delete, exported DB/CF handle, admission,
 receipt or policy grant. Opening a compatible directory is not proof of current
 control authority or permission to accept events.
 

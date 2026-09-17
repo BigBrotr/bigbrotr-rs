@@ -94,6 +94,8 @@ One owner serializes exact identity decisions for each writable directory.
   representative per eligible scope, scoped first-receive/earlier corrections,
   optional witness facts, dictionary dependencies, pending records, strict
   request digest/result and contiguous sequence allocation in one synced batch.
+  Retain complete pending-batch boundaries independently of request-detail GC;
+  the archive consumer must still recover their exact membership after an ACK.
   A known payload in a new scope is NewFacts even with provenance off; no private
   original signature/envelope/time is copied into its public representative.
 - [ ] **Step 3:** Verify outside expensive critical sections where safe, then serialize the

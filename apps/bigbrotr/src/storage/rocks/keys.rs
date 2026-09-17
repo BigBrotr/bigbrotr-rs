@@ -39,6 +39,7 @@ pub enum KeyDomain {
     EventReceive = 0x08,
     Provenance = 0x09,
     Fact = 0x20,
+    PendingBatch = 0x21,
     Request = 0x30,
     ProducerState = 0x31,
 }
@@ -59,7 +60,7 @@ impl KeyDomain {
             | Self::EventEligibility
             | Self::EventReceive
             | Self::Provenance => ColumnFamily::Default,
-            Self::Fact => ColumnFamily::Facts,
+            Self::Fact | Self::PendingBatch => ColumnFamily::Facts,
             Self::Request | Self::ProducerState => ColumnFamily::Receipts,
         }
     }
@@ -74,7 +75,7 @@ impl KeyDomain {
             Self::EventPayload => 2 + 16 + 32,
             Self::EventEligibility | Self::EventReceive => 2 + 16 + 32 + 42,
             Self::Provenance => 2 + 16 + 32 + 4 * 42,
-            Self::Fact => 2 + 16 + 4 + 8 + 8,
+            Self::Fact | Self::PendingBatch => 2 + 16 + 4 + 8 + 8,
             Self::Request => 2 + 16 + 8 + 8,
             Self::ProducerState => 2 + 16 + 8,
         }
@@ -92,6 +93,7 @@ impl KeyDomain {
             0x08 => Ok(Self::EventReceive),
             0x09 => Ok(Self::Provenance),
             0x20 => Ok(Self::Fact),
+            0x21 => Ok(Self::PendingBatch),
             0x30 => Ok(Self::Request),
             0x31 => Ok(Self::ProducerState),
             _ => Err(KeyError::UnknownDomain),
@@ -146,6 +148,9 @@ pub enum IngestKey {
     Fact {
         source_record_id: SourceRecordId,
     },
+    PendingBatch {
+        first: SourceRecordId,
+    },
     Request {
         request_id: ProducerRequestId,
     },
@@ -168,6 +173,7 @@ impl IngestKey {
             Self::EventReceive { .. } => KeyDomain::EventReceive,
             Self::Provenance { .. } => KeyDomain::Provenance,
             Self::Fact { .. } => KeyDomain::Fact,
+            Self::PendingBatch { .. } => KeyDomain::PendingBatch,
             Self::Request { .. } => KeyDomain::Request,
             Self::ProducerState { .. } => KeyDomain::ProducerState,
         }
@@ -246,7 +252,10 @@ impl IngestKey {
                 writer.reference(access_scope_id);
                 writer.reference(visibility_scope_id);
             }
-            Self::Fact { source_record_id } => writer.source(source_record_id),
+            Self::Fact { source_record_id }
+            | Self::PendingBatch {
+                first: source_record_id,
+            } => writer.source(source_record_id),
             Self::Request { request_id } => writer.request(request_id),
             Self::ProducerState {
                 producer_slot_id,
@@ -430,6 +439,9 @@ pub fn decode_key(column_family: ColumnFamily, bytes: &[u8]) -> Result<IngestKey
         },
         KeyDomain::Fact => IngestKey::Fact {
             source_record_id: reader.source()?,
+        },
+        KeyDomain::PendingBatch => IngestKey::PendingBatch {
+            first: reader.source()?,
         },
         KeyDomain::Request => IngestKey::Request {
             request_id: reader.request()?,

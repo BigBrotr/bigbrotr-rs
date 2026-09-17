@@ -460,6 +460,23 @@ fn column_family_names_match_the_persistent_store_contract() {
 }
 
 #[test]
+fn pending_batch_boundary_has_an_independent_key_after_receipt_gc() {
+    let bytes = literal_bytes(concat!(
+        "0121",
+        "11111111111111111111111111111111",
+        "89abcdef",
+        "ffffffffffffffff",
+        "f1f2f3f4f5f6f7f8"
+    ));
+    let key = decode_key(ColumnFamily::Facts, &bytes);
+    assert!(
+        key.is_ok(),
+        "a batch boundary must have its own retained key: {key:?}"
+    );
+    assert_eq!(key.unwrap().encode().unwrap().as_bytes(), bytes);
+}
+
+#[test]
 fn maximum_key_is_bounded_and_corrupt_embedded_references_are_rejected() {
     let dataset_id = DatasetId::try_from([0x11; 16]).unwrap();
     let event_id = EventId::from_bytes([0x33; 32]);

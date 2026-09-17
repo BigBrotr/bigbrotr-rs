@@ -18,6 +18,10 @@ use std::{
     sync::Mutex,
 };
 
+#[path = "pending.rs"]
+mod pending;
+pub use pending::{PendingBatch, PendingBatchHeader, PendingError, PendingReadLimits};
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum StoreError {
     InsufficientNativeReservation,

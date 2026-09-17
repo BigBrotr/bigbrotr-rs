@@ -180,7 +180,8 @@ later graph/cursor consumers do not force early storage tasks to depend on P05/P
 Each writable directory has one owner. The ingest owner's versioned domains are event
 identity/admission metadata, exact event/visibility eligibility and receive minima,
 event ordinals and dictionaries, optional exact scope-qualified provenance minima,
-content-object identity, ordered pending source facts, producer
+content-object identity, ordered pending source facts and complete admission-batch
+boundaries retained independently of request-detail GC, producer
 request digest/outcome and retirement watermarks, and owner/schema metadata.
 
 The exact [identity and encoding contract](identity-and-encoding.md) owns field

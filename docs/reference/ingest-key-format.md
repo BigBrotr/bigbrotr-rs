@@ -61,6 +61,7 @@ Lengths include the two-byte version/domain prefix.
 | `default` | `0x08` | event receive minimum | 92 | dataset16, event ID32, full visibility `QualifiedRef` |
 | `default` | `0x09` | provenance minimum | 218 | dataset16, event ID32, full endpoint, observer, access-scope and visibility `QualifiedRef`s |
 | `facts` | `0x20` | immutable fact | 38 | full `SourceRecordId` |
+| `facts` | `0x21` | pending admission batch | 38 | full first `SourceRecordId` |
 | `receipts` | `0x30` | request detail | 34 | full `ProducerRequestId` |
 | `receipts` | `0x31` | producer state | 26 | producer-slot16, producer epoch BE64 |
 
@@ -90,6 +91,11 @@ fact key's big-endian source suffix orders records by dataset, shard, epoch and
 sequence. Request detail and producer state remain operational identities, not
 scientific fact identities.
 
+The pending batch marker preserves its complete range and semantic digest even
+after producer receipt-detail GC. Its [value format and bounded native reader](ingest-pending-format.md)
+are independent of the request ledger. It is retained with pending source facts
+until their archive protection and replay obligations permit reclamation.
+
 ## Compatibility boundary
 
 These bytes are persistent. Changing field order, width, meaning or a domain tag
@@ -103,5 +109,5 @@ the directory is exclusively owned, or that a batch was synchronized. The Rocks
 adapter must separately require the exact column-family set and compatible
 manifest, while the ingest owner must establish authority and put effects,
 counters and request outcome in one WAL-enabled synchronized batch. This format
-does not define value bytes, dictionary descriptors, receipt outcomes, ACK/GC,
+does not itself define dictionary descriptors, receipt outcomes, ACK/GC,
 `CertifyExisting`, engine durability or process fencing.
