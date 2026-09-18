@@ -1,0 +1,364 @@
+{
+  "format": "bigbrotr-event-admission-native/1",
+  "observed_date": "2026-09-18",
+  "status": "PASS",
+  "scope": "Initial-owner signed-event/native Control slice and bootstrap regression; not full P02-T02, M1 or release acceptance",
+  "source": {
+    "revision": "12f936d637b0c07ba1a123273ce7093e4027d85a",
+    "tree": "dcde3bc8c0a3f3623f3349e8b3cb15b9f711e908",
+    "source_files": 536,
+    "local_base": "99320108d4c2a9a676af71ef8ebec7a4464ba406",
+    "transfer": "Git bundle to a fresh clean detached Tux clone; read-only source mounts; all source archive/file hashes compared independently with local Git"
+  },
+  "inputs": {
+    "Cargo.lock": "ea27c2b367846c4718a6d76fbd1a8340558299ccf9f22c76ed3f30c4b8025b47",
+    "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167",
+    "tests/fixtures/ingest/signed-event-admission.json": "c6334e8ecb4544e476fafcfaff4ee4472267b43597a6f1fb28ffe5ea59f75fef",
+    "tests/fixtures/ingest/import-event.jsonl": "c30658a75b2b913e509b7618f36ebae75fa1d5680dc8fe4e322aae638d8affae",
+    "tests/fixtures/ingest/rejected-request.json": "75f31e6d4930db6c57a1bd60e11f4ef27125a85617c2eb0e8e1f30f2dec6649e",
+    "experiments/identity-contract/signed-fixture.json": "4c931ab34cb7adeb707fc2866f4a50b3ec8b694cbb2d4fb5e335f8f37a2d8875",
+    "experiments/configuration-inspection/policy.json": "15c470b515b014e9c7bb20a73b5e0eb2506a13f8581fe3c9d7140e363ae4f678",
+    "experiments/ingest-bootstrap/run.py": "d11b562ff15279859ca5850d03c482448593fd0d98f00c9d3a24c20c09b3cc0e",
+    "experiments/ingest-bootstrap/oracle.py": "cf82b95a5f7baf952ae62b5b17be2784ccb4aa7088a7accaf74b94a4e49c7cda",
+    "experiments/ingest-bootstrap/event_oracle.py": "8c3409b1168ec3ce41fa8e5133527ebb717ef0def01789876de0858a5f497795",
+    "tools/build.py": "a8895a7f9459e52a2c0562edb59e580dc15edb98c17f5d51e25a078bf346cf09",
+    "tools/ci.py": "4b3483eca3708e8e5a6dcda755c40adbe5f34de9db5481aa7e84ef69b0b64fbc"
+  },
+  "host": {
+    "os": "Linux",
+    "architecture": "x86_64",
+    "name": "Tux",
+    "tool_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "client_image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "postgres": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    },
+    "rocks_binding": "rocksdb 0.25.0 / librocksdb-sys 0.19.0+11.8.1 / RocksDB 11.8.1"
+  },
+  "artifacts": {
+    "cli_sha256": "142b53a1d8ab6ea719d78521cfba56760938b56e1b20342e593c469649e3c407",
+    "probe_sha256": "104742626ac4fe6307fad9649d3917ce3d10566698de89c249283f584592af12",
+    "test_executables": {
+      "bigbrotr-4138cbc2bd3edc89": {
+        "sha256": "d7d3253c12dfd8f7e93b4f1d234c05aeaf8d2e9f23f06adfc4a32b073cb6751b",
+        "bytes": 14492176
+      }
+    },
+    "native_tools_sha256": {
+      "CC": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+      "CXX": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+      "AR": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+      "LIBCLANG_PATH": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+      "discovery": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e"
+    }
+  },
+  "checks": {
+    "native_tests": {
+      "status": "PASS",
+      "source": "12f936d637b0c07ba1a123273ce7093e4027d85a",
+      "native_tests": 11,
+      "checks": [
+        {
+          "name": "native-bootstrap",
+          "command": [
+            "cargo",
+            "test",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr",
+            "--lib",
+            "bootstrap_tests"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 7.376242275349796
+        },
+        {
+          "name": "native-admission",
+          "command": [
+            "cargo",
+            "test",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr",
+            "--lib",
+            "admission_tests"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 0.16413464909419417
+        }
+      ],
+      "test_artifacts": {
+        "bigbrotr-4138cbc2bd3edc89": {
+          "sha256": "d7d3253c12dfd8f7e93b4f1d234c05aeaf8d2e9f23f06adfc4a32b073cb6751b",
+          "bytes": 14492176
+        }
+      }
+    },
+    "event_matrix": {
+      "status": "PASS",
+      "source": "12f936d637b0c07ba1a123273ce7093e4027d85a",
+      "cases": 7,
+      "control_relations": 210,
+      "complete_native_rows": 132,
+      "cases_checked": {
+        "write": {
+          "native_rows": 26,
+          "control_relations": 30
+        },
+        "cancelled": {
+          "native_rows": 16,
+          "control_relations": 30
+        },
+        "expired": {
+          "native_rows": 16,
+          "control_relations": 30
+        },
+        "retired": {
+          "native_rows": 16,
+          "control_relations": 30
+        },
+        "wrong-root": {
+          "native_rows": 16,
+          "control_relations": 30
+        },
+        "before": {
+          "native_rows": 16,
+          "control_relations": 30
+        },
+        "after": {
+          "native_rows": 26,
+          "control_relations": 30
+        }
+      },
+      "scope": "Exact native bytes and retained Control relationships; the retired-named case exercises closing, not complete producer retirement."
+    },
+    "bootstrap_matrix": {
+      "status": "PASS",
+      "source": "12f936d637b0c07ba1a123273ce7093e4027d85a",
+      "cases": 8,
+      "control_relations": 240,
+      "complete_native_rows": 30,
+      "cases_checked": {
+        "write": {
+          "native_rows": 12,
+          "control_relations": 30
+        },
+        "cancelled": {
+          "native_rows": 1,
+          "control_relations": 30
+        },
+        "expired": {
+          "native_rows": 1,
+          "control_relations": 30
+        },
+        "retired": {
+          "native_rows": 1,
+          "control_relations": 30
+        },
+        "wrong-manifest": {
+          "native_rows": 1,
+          "control_relations": 30
+        },
+        "wrong-root": {
+          "native_rows": 1,
+          "control_relations": 30
+        },
+        "before": {
+          "native_rows": 1,
+          "control_relations": 30
+        },
+        "after": {
+          "native_rows": 12,
+          "control_relations": 30
+        }
+      },
+      "scope": "Exact native bytes and retained Control relationships; the retired-named case exercises closing, not complete producer retirement."
+    },
+    "independent_signature_corpus": {
+      "actions": 20,
+      "command": "python3 experiments/identity-contract/signed_fixture.py",
+      "cut_interpretation": "dataset 11*16,topology1,one shard0/epoch1 stream: bootstrap dictionaries first (18 off,24 on), then atomic event-fact batches. Final complete sequence63(off)/86(on); no storage adapter executed.",
+      "fixture_schema": "bigbrotr-signed-acceptance-fixture/1",
+      "fixture_sha256": "4c931ab34cb7adeb707fc2866f4a50b3ec8b694cbb2d4fb5e335f8f37a2d8875",
+      "measured_not_claimed": [
+        "No product admission/serialization/parser execution",
+        "No engine durability, network or restore execution",
+        "Research equation checker is neither constant-time nor proposed for production"
+      ],
+      "negative_controls": {
+        "changed_signed_content_rejected": true,
+        "corrupted_actual_signature_rejected": true,
+        "empty_follow_winner_has_no_old_edges": true,
+        "expired_winner_does_not_resurrect_old": true,
+        "private_delete_cannot_suppress_public": true,
+        "private_signature_not_selected": true
+      },
+      "public_and_private_export_roundtrips": 4,
+      "public_query_and_graph_cases": 30,
+      "python_secp256k1": "0.14.0",
+      "script_sha256": "22a980753e3b41864f9d0d775a2ec20c6bbadcaee6d09738a2a4c4cbaf8735fc",
+      "signed_variants": 15,
+      "status": "PASS",
+      "unique_event_ids": 14,
+      "valid_same_id_signatures": 2,
+      "verification": [
+        "python-secp256k1/libsecp256k1",
+        "independent BIP340 group equation research checker",
+        "official BIP340 vector 0 and corrupted-message negative control",
+        "Node.js JSON.stringify/SHA-256 canonical ID cross-check"
+      ]
+    },
+    "remaining_product_pg_backends": 0
+  },
+  "observed_behavior": [
+    "All fifteen independently signed fixture operations pass on the actual native binding: private/public representatives, alternate valid signatures, earlier receive/witness corrections, import followed by network, provenance disabled, strict replay and conflict.",
+    "Independent rejection bytes match; reopen replay and six malformed retained-value controls preserve state on refusal. Source-counter, missing scoped inventory/receipt/dependency, last-check authority and outstanding-window controls pass.",
+    "Actual Control native import commits exactly 26 rows (three new scientific/dictionary facts after bootstrap), original receipt and preimages. Cancellation, expired lease, closing producer, wrong configured root and before-dispatch SIGKILL leave exactly the 16 bootstrap rows. After-commit/before-delivery SIGKILL leaves the complete 26-row state, inspected in a separate native process.",
+    "Eight bootstrap regression cases retain their independently expected complete values. Combined matrices inspect all 162 native rows and 450 Control table observations/relationships.",
+    "Four exact-owned crash containers exited 137 without OOM; build/test containers exited zero. No product PG backend remained before stopping the lab."
+  ],
+  "resources": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/bootstrap-12f936d",
+    "build_limits": {
+      "cpu": 2,
+      "memory_bytes": 6442450944,
+      "pids": 512
+    },
+    "crash_limits": {
+      "cpu": 2,
+      "memory_bytes": 536870912,
+      "pids": 128
+    },
+    "network": "bigbrotr-implementation-pg-20260917-event_admission",
+    "runtime_owner": "8f5d92cb4f3a7463334a3ce4bd269416",
+    "state": "Eight containers, network and all data stopped-retained; no deletion",
+    "unrelated_running_unchanged": 8,
+    "bigbrotr_running": 0,
+    "inventory": "docs/research/laboratory-inventory.json"
+  },
+  "evidence": [
+    {
+      "path": ".research/implementation/event-admission/native-12f936d/build-audit.json",
+      "sha256": "8599cf5ebcb45d4eca1cf198fcf8f8889e1599d6640fef24b9badc18414f39e6"
+    },
+    {
+      "path": ".research/implementation/event-admission/native-12f936d/source-manifest.json",
+      "sha256": "eaf9befc2cc7f152dca15cba23ecd8a02e50e678775afdf799837e0fdc28a2c1"
+    },
+    {
+      "path": ".research/implementation/event-admission/native-12f936d/source.tar",
+      "sha256": "a57ab78a732a2cd0b53a153f6f3f303171d96f2ba03dca3add228306c9b12337"
+    },
+    {
+      "path": ".research/implementation/event-admission/native-12f936d/build-result.json",
+      "sha256": "dd215620d83b7db2684a5ca5866d4ad530856f1704c1bb008ca415e431395379"
+    },
+    {
+      "path": ".research/implementation/event-admission/native-12f936d/ingest-bootstrap-probe-build.json",
+      "sha256": "f0a832c010002154ce46a3fbb11beec8de0329d98859a599eaa4b1abc2266ac6"
+    },
+    {
+      "path": ".research/implementation/event-admission/native-12f936d/observation.json",
+      "sha256": "4a12bc321c03f69c8797887c1135ab47c8338fb9ee42efa18617c5ed0966f212"
+    },
+    {
+      "path": ".research/implementation/event-admission/native-12f936d/tests/result.json",
+      "sha256": "d8d26d5fd3562d02160821ff0877f91ded0bcdd9a050eed0c9f6676d6782f54d"
+    },
+    {
+      "path": ".research/implementation/event-admission/native-12f936d/tests/artifacts.json",
+      "sha256": "0c69ad0482a70a41b592eca4fcd23b8edb6c649afb8a82b16f6c388f4cacf5af"
+    },
+    {
+      "path": ".research/implementation/event-admission/native-12f936d/tests/native-bootstrap.log",
+      "sha256": "b7d721b2183f4e2473cac4d877d2365c013fbb674fcbb94735575cceb943f4de"
+    },
+    {
+      "path": ".research/implementation/event-admission/native-12f936d/tests/native-admission.log",
+      "sha256": "9725ec1e24e05e4b8c02a951bf107ccf4baeb17260b35f3f1858ad13dd08fa33"
+    },
+    {
+      "path": ".research/implementation/event-admission/native-12f936d/tests/local-audit.json",
+      "sha256": "b99a6f2efc8a30d0d5218f4dea6902514b9975cf1f2eca97499ee57daeab42fe"
+    },
+    {
+      "path": ".research/implementation/event-admission/native-12f936d/ingest-event.json",
+      "sha256": "1eacc92ad307bad65f23409ed43be1a6c8cbb24976e522305abe72f1f1b34f4d"
+    },
+    {
+      "path": ".research/implementation/event-admission/native-12f936d/event-runtime-audit.json",
+      "sha256": "0ced40f2dfbbee6de029452dc66f7997ec0274c991885bae3d01afd5d330bc2f"
+    },
+    {
+      "path": ".research/implementation/event-admission/native-12f936d/ingest-bootstrap.json",
+      "sha256": "2b56ec66da7a2c7f3098d696d9847c07d2e7bf92f78def364ec90d535987c503"
+    },
+    {
+      "path": ".research/implementation/event-admission/native-12f936d/runtime-audit.json",
+      "sha256": "188e5e9a437fe738d570bf7618a7070a483f5d67c8e93dbfc9b251fca962cf31"
+    },
+    {
+      "path": ".research/implementation/event-admission/runtime-terminal.json",
+      "sha256": "2560bf7c32876cce0df42f2bc2b1a7582ab0341d4e525ab88cee8f8fe789815f"
+    },
+    {
+      "path": ".research/implementation/event-admission/preflight.json",
+      "sha256": "e9a1b3b2d0bf1558141ea79c2725595bc14b72f4f41d9a08940ab29af6b30e1b"
+    },
+    {
+      "path": ".research/implementation/event-admission/final-preflight.json",
+      "sha256": "37a546cccb0b0322bdf2b30fa3bb514cfe35e07284eeaf514f06a410e3ab3883"
+    },
+    {
+      "path": ".research/implementation/event-admission/cleanup-audit.json",
+      "sha256": "b5b4c6bc6e6d7ad5fbc9e8020e0461c5390a4362d81302bb0884a4585930ee1e"
+    },
+    {
+      "path": ".research/implementation/event-admission/independent-signatures.json",
+      "sha256": "c20cf25bdb251a575af11121b732570ae38dbdc5a27639fcdc59093ac44aa8cd"
+    },
+    {
+      "path": ".research/implementation/event-admission/audit-event.py",
+      "sha256": "d4952837f3d90fd2ca82e8bb4eff070489ac71cea41a0cf5c97519697a260353"
+    },
+    {
+      "path": ".research/implementation/event-admission/audit-bootstrap.py",
+      "sha256": "63d5db9952628ed3844c1ad92c9c198e2e65404ba07a2b8e0b0a260bec435b0a"
+    },
+    {
+      "path": ".research/implementation/event-admission/terminal-observer.py",
+      "sha256": "e90201c7b03e327adac083ae0e1492d9217eb6f35674652e727d39714d6ad74e"
+    },
+    {
+      "path": ".research/implementation/event-admission/native-tests-12f936d.py",
+      "sha256": "e4adf736f4c8e72b96ee335c378ba3b5f7a5331449b17eb10346fa20b2ee4694"
+    }
+  ],
+  "review": "Integrating owner reviewed the complete source changes, contract/value-format boundaries, native test/probe/oracle and complete qualification diff. No independent agent review. Clean source and original executable identity checked before and after native execution. Mac source/log evidence independently checked against the native candidate.",
+  "operational_notes": [
+    "One ad hoc docker inspect template failed because SSH removed argument quoting. No mutation or test occurred; Python subprocess inspection then verified exact identities.",
+    "Cleanup comparison omits only volatile rolling health logs and sorts complete mount records. All unrelated container identities, start/PID, state/health, mounts, labels and ports remain unchanged."
+  ],
+  "not_run": [
+    "ACK/retirement, a two-request window progressing across a longer page, interrupted receipt GC or mixed-cut restore",
+    "Concurrent producer/late-commit closing races",
+    "Power/host loss, ENOSPC, errors inside FFI or ambiguous native write failure",
+    "Maximum/aged-state mixed workloads and resource capacity qualification",
+    "Installed source-policy evaluator and owner worker/runtime",
+    "Successor-owner recovery and archive-backed dependency resolution",
+    "Actual archive publication/read/export/restart milestone",
+    "Packaged installation/release/upgrade journeys",
+    "Linux arm64",
+    "Hosted GitHub Actions (billing unavailable)"
+  ]
+}

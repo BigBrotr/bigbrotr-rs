@@ -107,7 +107,10 @@ One owner serializes exact identity decisions for each writable directory.
   mid-FFI errors and successor recovery remain unqualified.
   The [initial-owner event writer](../reference/ingest-admission.md) adds owned
   verification, atomic event/scope/receive/witness effects and strict replay. Its
-  signed fixture passes locally; connected native qualification remains pending.
+  signed fixture passes on Mac and native Linux amd64.
+  [Native evidence](evidence/p02-event-admission-native-20260918.json) records eleven
+  writer tests and fifteen connected event/bootstrap cases, including independent
+  complete-byte comparison and before/after-commit process kills.
   ACK/retirement, archive resolution and installed source-policy/runtime remain
   required before this step or the first end-to-end milestone is complete.
 - [ ] **Step 3:** Verify outside expensive critical sections where safe, then serialize the
@@ -117,7 +120,10 @@ One owner serializes exact identity decisions for each writable directory.
   the existing JSON consumer without reparsing buffers;
   [Mac](evidence/p02-owned-event-mac-20260918.json) and
   [native evidence](evidence/p02-owned-event-native-20260918.json) record its scope.
-  Serialized native admission and same-ID concurrency remain unimplemented.
+  The initial writer now serializes native decisions and moves verified owned
+  input through the connected Control bridge. Concurrent producer dispatch and
+  the installed owner worker remain unimplemented; sequential fixtures do not
+  qualify that concurrency boundary.
 - [ ] **Step 4:** Implement NewFacts/AlreadyDurable/Excluded/Invalid/Retryable,
   RequestConflict and IncompatibleSchema outcomes and
   ambiguous receipt resolution plus RetiredRequest. Same ProducerRequestId with

@@ -131,11 +131,20 @@ that state only on successful synchronized completion. Native write failure is
 CommitUnknown. None of cancellation, I/O failure, a missing store or an expired
 lease proves rollback.
 
-Current Mac checks exercise the actual engine with the independently signed
+[Mac checks](../implementation/evidence/p02-event-admission-mac-20260918.json)
+exercise the actual engine with the independently signed
 [fifteen-operation fixture](../../tests/fixtures/ingest/README.md), exact reopen
 replay, rejection detail, missing receipt/dependency, inconsistent inventory,
 last-check cancellation and a full outstanding window. The counter-corruption
 test first reproduced an accepted inconsistent counter and then passed after the
-writer verified its retained last fact. These checks do not qualify native Linux,
-Control integration, crash schedules, ENOSPC or release behavior. Native execution
-and exact artifact evidence must be recorded before those claims are made.
+writer verified its retained last fact.
+
+[Native Linux amd64 evidence](../implementation/evidence/p02-event-admission-native-20260918.json)
+qualifies candidate `12f936d`: eleven actual writer tests, seven connected signed
+import cases and eight bootstrap regression cases. Exact Git/source/tool/ELF
+identities, all native bytes and Control relationships were independently audited.
+Before-dispatch SIGKILL retains bootstrap only; after-commit/before-delivery
+SIGKILL retains the complete event batch. These are process crashes around
+dispatch, not power loss or faults inside FFI. Complete retirement, concurrent
+closing races, ENOSPC, archive-backed recovery, aged-state capacity and installed
+release behavior remain required.

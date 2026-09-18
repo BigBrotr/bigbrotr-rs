@@ -1,6 +1,6 @@
 {
   "format": "bigbrotr-dependencies/1",
-  "status": "Foundation, model, static configuration, PostgreSQL migration and initial native Ingest store candidates; no qualified product release",
+  "status": "Foundation, model, static configuration, PostgreSQL and initial native Ingest admission candidates; no qualified product release",
   "rust": {
     "toolchain": "1.98.1",
     "msrv": "1.98.1",
@@ -138,7 +138,7 @@
     {
       "name": "rocksdb",
       "version": "0.25.0",
-      "purpose": "Private initial Ingest store initialization, exact manifest/column-family reopening and owned native resources; no event admission API",
+      "purpose": "Private initial Ingest store, bounded receipt/pending readers, synchronized dictionary and signed event admission under connected Control authority; complete runtime and recovery remain unqualified",
       "default_features": false,
       "features": [
         "zstd",
