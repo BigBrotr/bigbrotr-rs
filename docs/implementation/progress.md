@@ -19,14 +19,16 @@ product schema or publisher exists yet. Pending must not be acknowledged/reclaim
 
 ## Git and integrating ownership
 
-Mac main; root is the sole writer/integrator. Current product candidate HEAD is
+Mac main; root is the sole writer/integrator. Product candidate
 `d2b260925b2b1d5d46275c53f4f04d4b05631b25`, tree
-`df6436e455aea3dd708ed8ae0f3d307fe41d05d7`. It was committed from locally checked
-work and transferred to a fresh Tux checkout through Git. Last observed origin/main
-is `d54a5f928f301f4628d51a950257e59e655707c0`; candidate/evidence push remains next.
-Current root-owned dirty work is evidence/contract/task/README/inventory/checkpoint
-updates for that candidate; no product source edits followed its native execution.
-Independent agents were read-only. No concurrent writer or active experiment.
+`df6436e455aea3dd708ed8ae0f3d307fe41d05d7`, and its evidence/documentation commit
+`d1882ec3b7cf15866839ef9e0783ebc2d0375dcb` are pushed. Last freshly verified HEAD,
+origin/main and remote refs/heads/main equal `d1882ec3b7cf15866839ef9e0783ebc2d0375dcb`
+with a clean tree. This checkpoint refresh follows that observation. GitHub API
+confirms BigBrotr/bigbrotr-rs remains PRIVATE and not archived. No product source
+changed after native execution. Independent agents were read-only; final evidence
+review matched raw cases/hashes and found no further issue. No concurrent writer
+or active experiment. Push/remote-verification session51887 is terminal.
 
 ## Latest qualified slice
 
@@ -169,13 +171,19 @@ restart retired-network containers. Native amd64 does not qualify arm64.
 
 ## Next bounded action
 
-Finish the evidence/contract/checkpoint review and normal private push, then wire
-the first real scientific catalog schema and atomic semantic receipt under
+Wire the first real scientific catalog schema and atomic semantic receipt under
 P02-T03/T04. Read complete owning initialization/migration, archive format,
 publication/protection and receipt contracts plus actual callers. Resolve the
 initialization order explicitly: today's finite bootstrap/guard fixture contains
 no scientific tables, and ordinary publishers must not silently migrate/adopt an
-unfamiliar catalog. Reuse the fresh credential and supervised worker paths; retain
+unfamiliar catalog. Initial navigation confirms `fresh()` currently insists on
+snapshot0/schema0 and zero scientific tables, while `archive.archive_commits` is a
+technical receipt outside the source-envelope rule. No initialization design
+change has been chosen yet. The next storage-catalog read was truncated: reread
+its complete owning scientific/receipt sections plus component-contract callers
+before editing. Native sources live under `apps/bigbrotr-archive-worker/src`, not
+under the packaging documentation directory. Reuse the fresh credential and
+supervised worker paths; retain
 one consumed credential per new lifetime and recovery obligations after ambiguity.
 
 Connect all five families and receipt/protection to signed M1 read/export/restart,
