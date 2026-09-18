@@ -1,6 +1,5 @@
 -- Run only against the owned, populated lifecycle fixture; all changes roll back.
 BEGIN;
-SET LOCAL ROLE bigbrotr_control;
 SELECT pg_advisory_lock(1111651442,1129599564);
 DO $$
 DECLARE d bytea; r bytea; n integer := 0;

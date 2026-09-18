@@ -14,7 +14,9 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--root', type=Path, required=True)
     parser.add_argument('--source', type=Path, required=True)
+    parser.add_argument('--report-name', default='control-sql-schedules.json')
     args = parser.parse_args()
+    if Path(args.report_name).name != args.report_name or not args.report_name.endswith('.json'): raise ValueError('invalid report name')
     source = args.source.resolve(strict=True)
     sys.path.insert(0, str(source / 'experiments/control-migrations'))
     import lab
@@ -24,14 +26,19 @@ def main():
     if lab.command(['git','-C',str(source),'status','--porcelain','--untracked-files=all']).stdout: raise RuntimeError('dirty product source')
     if lab.command(['git','-C',str(source),'rev-parse','HEAD']).stdout.strip() != state['build']['build_info']['source']['revision']: raise RuntimeError('artifact source mismatch')
     report = {'format':'bigbrotr-control-sql-schedules/1','status':'RUNNING','cases':[], 'helper_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest()}
-    output = root / 'control-sql-schedules.json'
+    output = root / args.report_name
     if output.exists(): raise RuntimeError('existing evidence')
     database = 'bb_owner_lifecycle'
     before = lab.schema_digest(state, database)
     try:
         fixture = Path(__file__).with_name('schema_cases.sql')
         report['fixture_sha256'] = hashlib.sha256(fixture.read_bytes()).hexdigest()
-        lab.sql(state, database, fixture.read_text())
+        # Connect as the application role itself. SET ROLE on a superuser login
+        # hides that login's backend_start from the assumed role in pg_stat_activity.
+        result = lab.docker('exec','-i',state['postgres'],'psql','-X','-A','-t','-q','--no-password','-v','ON_ERROR_STOP=1','-U','bigbrotr_control','-d',database,data=fixture.read_text(),check=False)
+        (root / (args.report_name + '.stdout')).write_text(result.stdout)
+        (root / (args.report_name + '.stderr')).write_text(result.stderr)
+        if result.returncode: raise RuntimeError('SQL fixture failed; inspect retained output')
         if lab.schema_digest(state, database) != before: raise RuntimeError('SQL negative mutation')
         report['cases'].append({'name':'six-SQL-negatives','result':'PASS','sqlstate':'23514','schema_unchanged':True})
         for guarded in [True,False]:
