@@ -131,9 +131,11 @@ The returned initial revision is not the current applied/security revision.
 
 P08-T02 still owns the separate random, short-lived single-use owner enrollment,
 local credentials, sessions, grants, rejected-request audit and local recovery.
-Only installation principals and their initialization audit records have their
-first consumer here. Subsequent immutable migrations extend those relations;
-existing synthetic actors are not silently promoted into authenticated accounts.
+The initializer's 0801 consumer creates only installation principals and their
+initialization audit records. The subsequent 0805
+[local enrollment consumer](../product/private-administration.md#local-first-owner-transition)
+extends those relations with real human accounts and credentials; an existing
+installation actor is never promoted into an authenticated account.
 
 ## Shared budget allocator
 

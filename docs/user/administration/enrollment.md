@@ -62,3 +62,8 @@ A successful status identifies the original principal and enrollment audit ID.
 Once an owner exists these commands cannot issue another owner token or reset
 its password. Account recovery, login/sessions, remote management, grant changes
 and full private-panel acceptance remain implementation work.
+
+The [native enrollment evidence](../../implementation/evidence/p08-owner-enrollment-native-20260918.json)
+records the tested Linux amd64 revision, actual expiry and concurrent/recovery
+cases, populated migration and process-crash checks. It does not qualify a
+packaged installation, Linux arm64 or the remaining administration surfaces.

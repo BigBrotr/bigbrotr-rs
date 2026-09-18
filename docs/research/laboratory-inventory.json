@@ -1032,6 +1032,175 @@
       "owned_containers_stopped_retained": 40,
       "unrelated_running_preserved": 8
     },
-    "native_status": "NOT_STARTED; next transfer clean candidate through Git and create a new isolated build/runtime lab"
+    "native_status": "PASS69 harness/15SQL negatives; independent257-relation audit, six C-oracle hashes, populated upgrade and ten-database PG crash/restart. All owned resources stopped-retained.",
+    "native_build": {
+      "source": "992f0dca6ca66af1eab5be27ff5e0f03391c2d12",
+      "tree": "44a4e7692f942361b385184551e7901428d8b055",
+      "owner": "3ee9651ee54fc2edd4ab1322656130b6",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/configuration-992f0dc",
+      "container": "bigbrotr-implementation-configuration-992f0dc-build",
+      "container_id": "8e247ef720d494a4ce0df9b20f5adfc6b4e379fe28616629118582ad0f4f4208",
+      "image": "sha256:8d906f267439748924d6a9de9cab47855279cc196a7397d9cb7a690c77fddfe3",
+      "state": "completed-retained",
+      "started_at": "2026-09-18T02:42:05.879144+00:00",
+      "finished_at": "2026-09-18T02:48:08.009859033Z",
+      "exit_code": 0,
+      "oom_killed": false
+    },
+    "runtime": {
+      "owner": "8ff3fd9ddc7c624683f942cbb8b86acd",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/configuration-992f0dc/runtime",
+      "postgres": "bigbrotr-implementation-pg-20260917-ownerone",
+      "client": "bigbrotr-implementation-pg-20260917-ownerone-client",
+      "network": "bigbrotr-implementation-pg-20260917-ownerone",
+      "state": "stopped-retained",
+      "binary_sha256": "e4d81f348369207a02befa6ce6134eea5357984a6cd4bb08e9541838862733d6",
+      "databases": [
+        "bb_owner_basic",
+        "bb_owner_expired",
+        "bb_owner_old",
+        "bb_owner_denied",
+        "bb_owner_exhausted",
+        "bb_owner_before",
+        "bb_owner_after",
+        "bb_owner_race",
+        "bb_owner_killed",
+        "bb_owner_upgrade"
+      ],
+      "containers": [
+        {
+          "name": "bigbrotr-implementation-pg-20260917-ownerone",
+          "id": "e78c91a5c8bf8a56cf0f2f596ac7e742a72b7d9d0d2ce604e2d1f7099e49b8ec",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-18T02:56:37.045967884Z",
+            "FinishedAt": "2026-09-18T03:02:29.297903815Z"
+          }
+        },
+        {
+          "name": "bigbrotr-implementation-pg-20260917-ownerone-client",
+          "id": "475beed6fb101210713623babded0f75611ebc384ce8874eaada27aefefd7178",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-18T02:50:02.256332996Z",
+            "FinishedAt": "2026-09-18T03:02:28.924457023Z"
+          }
+        },
+        {
+          "name": "bigbrotr-implementation-pg-20260917-ownerone-client-before",
+          "id": "1438d1d9f4eda51c92ff2c0ecf56ac01827d37da0797232b944b0005064392fa",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-18T02:50:49.289899376Z",
+            "FinishedAt": "2026-09-18T02:50:51.968820483Z"
+          }
+        },
+        {
+          "name": "bigbrotr-implementation-pg-20260917-ownerone-client-after",
+          "id": "b05c9843cb193d78d8b33dc3f1a62c2f9cf9eb8304f34283cb4ebc96fdeac656",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-18T02:50:53.342634603Z",
+            "FinishedAt": "2026-09-18T02:50:56.10165845Z"
+          }
+        },
+        {
+          "name": "bigbrotr-implementation-pg-20260917-ownerone-client-race",
+          "id": "20b48c322e5356bc94bb3a1959df6ceeb5f0674447bf8f20954c6d7d8d797026",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-18T02:50:57.547598693Z",
+            "FinishedAt": "2026-09-18T02:51:02.476112795Z"
+          }
+        },
+        {
+          "name": "bigbrotr-implementation-pg-20260917-ownerone-client-killed",
+          "id": "405191a8eaff4565b4537e4e4c0d138ef327813c81adb655b6f32aeb2b999804",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 137,
+            "Error": "",
+            "StartedAt": "2026-09-18T02:51:03.918597571Z",
+            "FinishedAt": "2026-09-18T02:51:05.919107318Z"
+          }
+        }
+      ]
+    },
+    "followups": {
+      "populated_upgrade": "PASS bb_owner_upgrade; preserves all25 old relations with additive NULL audit fields, four new empty tables, stable initialization receipt and downgrade refusal",
+      "engine_crash": "PASS actual PostgreSQL SIGKILL/137, restart and all10 complete database dumps unchanged; not host power loss",
+      "hash_measurement": "PASS ten serial OwnerExists refusals after full hashing; peak70316KiB process RSS, wall0.0866364562\u20130.0930477711s; not mixed workload or cgroup peak",
+      "credential_oracle": "PASS six observed native password hashes against pinned PHC C oracle on Mac"
+    },
+    "native_evidence": "docs/implementation/evidence/p08-owner-enrollment-native-20260918.json",
+    "build_audit": {
+      "status": "PASS",
+      "source": "992f0dca6ca66af1eab5be27ff5e0f03391c2d12",
+      "tree": "44a4e7692f942361b385184551e7901428d8b055",
+      "exact_source_files": 467,
+      "binary_sha256": "e4d81f348369207a02befa6ce6134eea5357984a6cd4bb08e9541838862733d6",
+      "binary_bytes": 7423888,
+      "architecture": "ELF64 amd64",
+      "native_tools_independently_hashed": {
+        "CC": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+        "CXX": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+        "AR": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+        "LIBCLANG_PATH": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+        "discovery": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e"
+      },
+      "inputs": {
+        "source-manifest.json": "11043ac883c118b86e91b1cc8741cdef5cbc41c6e26fb50c00a9756d279e2169",
+        "build-result.json": "0cbea0839c6804f212b7596cc68140adb676eaaeab15023c5050a4ae76138284",
+        "observation.json": "5f7a49807d1037e273540a201fd586b26adf7bbadf7e000c3deb88602c6a8f8f",
+        "source.tar": "1a464a953d308018d5dec0fec2bf3e8c643b97b8c0d5c4f8d6891dcdb5a3a28d"
+      },
+      "scope": "Git/archive/actual extracted sources and downloaded executable identity; not engine runtime acceptance"
+    }
   }
 }

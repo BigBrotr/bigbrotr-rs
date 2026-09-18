@@ -1,7 +1,8 @@
 # Control schema migrations
 
 Status: initial P02-T01 foundation. The checked-in catalog contains
-`0001_control.sql`, `0002_ingest.sql` and `0801_management_identity.sql`. The executable includes explicit inspection, planning and
+`0001_control.sql`, `0002_ingest.sql`, `0801_management_identity.sql` and
+the `0805_owner_enrollment.sql` candidate. The executable includes explicit inspection, planning and
 application using the selected PostgreSQL driver. Its local planner, preparation
 and entrypoint tests pass. Native Linux amd64 PostgreSQL execution now covers
 the actual CLI, 104 independent SQL constraint cases, initial read-only runtime
@@ -39,7 +40,7 @@ require PostgreSQL 16.15, `fsync=on` and `full_page_writes=on`; apply forces
 transaction-local `synchronous_commit=on`. They do not initialize a dataset or
 qualify a complete installation or release upgrade.
 
-An omitted target selects the latest embedded migration, currently 801. An explicit
+An omitted target selects the latest embedded migration, currently 805. An explicit
 target 1 preserves the initial control-only boundary for its historical fixtures.
 Migration 2 refuses existing topology members with SQLSTATE `55000`: migration 1
 had no source registry, so their exact source authority cannot be inferred.

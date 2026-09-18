@@ -31,3 +31,13 @@ memory measurements remain separate required cases. The protected
 from the shareable report. Run the pinned C oracle with each observed salt as its
 single hex argument to independently compare the complete stored hash; record
 that additional execution before claiming credential-value verification.
+
+The dated `upgrade.py`, `crash.py` and `hash_process.py` follow-ups operate on the
+inventoried ownerone lab and exact 992f0dc executable. They are concrete research
+reproductions, not generic installation helpers: preserve their recorded ownership
+checks when adapting them to another newly inventoried lab. Upgrade compares all
+existing 801 content against additive 805 and refuses downgrade; crash checks ten
+complete database dumps around actual PostgreSQL SIGKILL. The hash probe measures
+ten finite rejected attempts that still perform the selected hash, separately from
+successful enrollment or mixed-workload capacity. Their execution source hashes
+are retained with the native evidence; no product source is edited on Tux.

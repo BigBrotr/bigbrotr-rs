@@ -1,0 +1,86 @@
+{
+  "format": "bigbrotr-ci-observation/1",
+  "date": "2026-09-18",
+  "status": "NOT_RUN",
+  "provider_conclusion": "failure",
+  "run_id": 35300115641,
+  "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/35300115641",
+  "source": "d0014d745f0b26429511f7d3b32cf0adbccc4403",
+  "reason": "GitHub reports failed recent payments or a spending limit requiring increase; no runner/jobs steps started.",
+  "jobs": [
+    {
+      "id": 105460798326,
+      "name": "foundation (ubuntu-24.04)",
+      "started_at": "2026-09-18T02:38:05Z",
+      "completed_at": "2026-09-18T02:38:07Z",
+      "runner_name": "",
+      "steps": [],
+      "annotations": [
+        {
+          "path": ".github",
+          "blob_href": "https://github.com/BigBrotr/bigbrotr-rs/blob/d0014d745f0b26429511f7d3b32cf0adbccc4403/.github",
+          "start_line": 1,
+          "start_column": null,
+          "end_line": 1,
+          "end_column": null,
+          "annotation_level": "failure",
+          "title": "",
+          "message": "The job was not started because recent account payments have failed or your spending limit needs to be increased. Please check the 'Billing & plans' section in your settings",
+          "raw_details": ""
+        }
+      ]
+    },
+    {
+      "id": 105460798520,
+      "name": "foundation (macos-15)",
+      "started_at": "2026-09-18T02:38:05Z",
+      "completed_at": "2026-09-18T02:38:13Z",
+      "runner_name": "",
+      "steps": [],
+      "annotations": [
+        {
+          "path": ".github",
+          "blob_href": "https://github.com/BigBrotr/bigbrotr-rs/blob/d0014d745f0b26429511f7d3b32cf0adbccc4403/.github",
+          "start_line": 1,
+          "start_column": null,
+          "end_line": 1,
+          "end_column": null,
+          "annotation_level": "failure",
+          "title": "",
+          "message": "The job was not started because recent account payments have failed or your spending limit needs to be increased. Please check the 'Billing & plans' section in your settings",
+          "raw_details": ""
+        }
+      ]
+    },
+    {
+      "id": 105460798574,
+      "name": "foundation (ubuntu-24.04-arm)",
+      "started_at": "2026-09-18T02:38:05Z",
+      "completed_at": "2026-09-18T02:38:10Z",
+      "runner_name": "",
+      "steps": [],
+      "annotations": [
+        {
+          "path": ".github",
+          "blob_href": "https://github.com/BigBrotr/bigbrotr-rs/blob/d0014d745f0b26429511f7d3b32cf0adbccc4403/.github",
+          "start_line": 1,
+          "start_column": null,
+          "end_line": 1,
+          "end_column": null,
+          "annotation_level": "failure",
+          "title": "",
+          "message": "The job was not started because recent account payments have failed or your spending limit needs to be increased. Please check the 'Billing & plans' section in your settings",
+          "raw_details": ""
+        }
+      ]
+    }
+  ],
+  "owner_action": "Owner notified asynchronously to inspect Billing & plans; no billing or spending settings changed by agent.",
+  "continuation": "Local and isolated trusted Tux development/validation continue. This is not a CI PASS, and Tux is not substituted for untrusted PR runners.",
+  "previous_run": {
+    "id": 35297117157,
+    "source": "28211f85e4b77ef59e9b63a5ecc854b2079db38e",
+    "conclusion": "success",
+    "artifact_content_audit": "NOT_RUN"
+  }
+}

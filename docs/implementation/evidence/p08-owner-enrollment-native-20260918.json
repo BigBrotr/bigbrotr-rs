@@ -1,0 +1,618 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-18",
+  "status": "PASS",
+  "scope": "Native Linux amd64 first-owner CLI/storage slice, independent password oracle and scoped process measurements; not full P08-T02 or release qualification",
+  "source": "992f0dca6ca66af1eab5be27ff5e0f03391c2d12",
+  "tree": "44a4e7692f942361b385184551e7901428d8b055",
+  "binary_sha256": "e4d81f348369207a02befa6ce6134eea5357984a6cd4bb08e9541838862733d6",
+  "binary_bytes": 7423888,
+  "exact_source_files": 467,
+  "build_inputs": {
+    "source-manifest.json": "11043ac883c118b86e91b1cc8741cdef5cbc41c6e26fb50c00a9756d279e2169",
+    "build-result.json": "0cbea0839c6804f212b7596cc68140adb676eaaeab15023c5050a4ae76138284",
+    "observation.json": "5f7a49807d1037e273540a201fd586b26adf7bbadf7e000c3deb88602c6a8f8f",
+    "source.tar": "1a464a953d308018d5dec0fec2bf3e8c643b97b8c0d5c4f8d6891dcdb5a3a28d"
+  },
+  "native_tool_hashes": {
+    "CC": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+    "CXX": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+    "AR": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+    "LIBCLANG_PATH": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+    "discovery": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e"
+  },
+  "environment": {
+    "engine": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    },
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "client_image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+    "runtime_owner": "8ff3fd9ddc7c624683f942cbb8b86acd",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/configuration-992f0dc/runtime",
+    "containers": [
+      {
+        "name": "bigbrotr-implementation-pg-20260917-ownerone",
+        "id": "e78c91a5c8bf8a56cf0f2f596ac7e742a72b7d9d0d2ce604e2d1f7099e49b8ec",
+        "image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "labels": {
+          "org.bigbrotr.control-migration-lab": "8ff3fd9ddc7c624683f942cbb8b86acd"
+        },
+        "ports": {},
+        "limits": {
+          "Memory": 1610612736,
+          "MemorySwap": 1610612736,
+          "NanoCpus": 2000000000,
+          "PidsLimit": 256,
+          "ReadonlyRootfs": true,
+          "CapDrop": [
+            "ALL"
+          ],
+          "SecurityOpt": [
+            "no-new-privileges"
+          ]
+        }
+      },
+      {
+        "name": "bigbrotr-implementation-pg-20260917-ownerone-client",
+        "id": "475beed6fb101210713623babded0f75611ebc384ce8874eaada27aefefd7178",
+        "image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+        "labels": {
+          "org.bigbrotr.control-migration-lab": "8ff3fd9ddc7c624683f942cbb8b86acd",
+          "org.bigbrotr.purpose": "isolated-foundation-acceptance",
+          "org.opencontainers.image.source": "https://github.com/rust-lang/docker-rust"
+        },
+        "ports": {},
+        "limits": {
+          "Memory": 4294967296,
+          "MemorySwap": 4294967296,
+          "NanoCpus": 2000000000,
+          "PidsLimit": 256,
+          "ReadonlyRootfs": true,
+          "CapDrop": [
+            "ALL"
+          ],
+          "SecurityOpt": [
+            "no-new-privileges"
+          ]
+        }
+      },
+      {
+        "name": "bigbrotr-implementation-pg-20260917-ownerone-client-before",
+        "id": "1438d1d9f4eda51c92ff2c0ecf56ac01827d37da0797232b944b0005064392fa",
+        "image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+        "labels": {
+          "org.bigbrotr.enrollment-fault": "8ff3fd9ddc7c624683f942cbb8b86acd",
+          "org.bigbrotr.purpose": "isolated-foundation-acceptance",
+          "org.opencontainers.image.source": "https://github.com/rust-lang/docker-rust"
+        },
+        "ports": {},
+        "limits": {
+          "Memory": 1073741824,
+          "MemorySwap": 1073741824,
+          "NanoCpus": 2000000000,
+          "PidsLimit": 128,
+          "ReadonlyRootfs": true,
+          "CapDrop": [
+            "ALL"
+          ],
+          "SecurityOpt": [
+            "no-new-privileges"
+          ]
+        }
+      },
+      {
+        "name": "bigbrotr-implementation-pg-20260917-ownerone-client-after",
+        "id": "b05c9843cb193d78d8b33dc3f1a62c2f9cf9eb8304f34283cb4ebc96fdeac656",
+        "image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+        "labels": {
+          "org.bigbrotr.enrollment-fault": "8ff3fd9ddc7c624683f942cbb8b86acd",
+          "org.bigbrotr.purpose": "isolated-foundation-acceptance",
+          "org.opencontainers.image.source": "https://github.com/rust-lang/docker-rust"
+        },
+        "ports": {},
+        "limits": {
+          "Memory": 1073741824,
+          "MemorySwap": 1073741824,
+          "NanoCpus": 2000000000,
+          "PidsLimit": 128,
+          "ReadonlyRootfs": true,
+          "CapDrop": [
+            "ALL"
+          ],
+          "SecurityOpt": [
+            "no-new-privileges"
+          ]
+        }
+      },
+      {
+        "name": "bigbrotr-implementation-pg-20260917-ownerone-client-race",
+        "id": "20b48c322e5356bc94bb3a1959df6ceeb5f0674447bf8f20954c6d7d8d797026",
+        "image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+        "labels": {
+          "org.bigbrotr.enrollment-fault": "8ff3fd9ddc7c624683f942cbb8b86acd",
+          "org.bigbrotr.purpose": "isolated-foundation-acceptance",
+          "org.opencontainers.image.source": "https://github.com/rust-lang/docker-rust"
+        },
+        "ports": {},
+        "limits": {
+          "Memory": 1073741824,
+          "MemorySwap": 1073741824,
+          "NanoCpus": 2000000000,
+          "PidsLimit": 128,
+          "ReadonlyRootfs": true,
+          "CapDrop": [
+            "ALL"
+          ],
+          "SecurityOpt": [
+            "no-new-privileges"
+          ]
+        }
+      },
+      {
+        "name": "bigbrotr-implementation-pg-20260917-ownerone-client-killed",
+        "id": "405191a8eaff4565b4537e4e4c0d138ef327813c81adb655b6f32aeb2b999804",
+        "image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+        "labels": {
+          "org.bigbrotr.enrollment-fault": "8ff3fd9ddc7c624683f942cbb8b86acd",
+          "org.bigbrotr.purpose": "isolated-foundation-acceptance",
+          "org.opencontainers.image.source": "https://github.com/rust-lang/docker-rust"
+        },
+        "ports": {},
+        "limits": {
+          "Memory": 1073741824,
+          "MemorySwap": 1073741824,
+          "NanoCpus": 2000000000,
+          "PidsLimit": 128,
+          "ReadonlyRootfs": true,
+          "CapDrop": [
+            "ALL"
+          ],
+          "SecurityOpt": [
+            "no-new-privileges"
+          ]
+        }
+      }
+    ],
+    "terminal_states": [
+      {
+        "name": "bigbrotr-implementation-pg-20260917-ownerone",
+        "id": "e78c91a5c8bf8a56cf0f2f596ac7e742a72b7d9d0d2ce604e2d1f7099e49b8ec",
+        "state": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-18T02:56:37.045967884Z",
+          "FinishedAt": "2026-09-18T03:02:29.297903815Z"
+        }
+      },
+      {
+        "name": "bigbrotr-implementation-pg-20260917-ownerone-client",
+        "id": "475beed6fb101210713623babded0f75611ebc384ce8874eaada27aefefd7178",
+        "state": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 143,
+          "Error": "",
+          "StartedAt": "2026-09-18T02:50:02.256332996Z",
+          "FinishedAt": "2026-09-18T03:02:28.924457023Z"
+        }
+      },
+      {
+        "name": "bigbrotr-implementation-pg-20260917-ownerone-client-before",
+        "id": "1438d1d9f4eda51c92ff2c0ecf56ac01827d37da0797232b944b0005064392fa",
+        "state": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 143,
+          "Error": "",
+          "StartedAt": "2026-09-18T02:50:49.289899376Z",
+          "FinishedAt": "2026-09-18T02:50:51.968820483Z"
+        }
+      },
+      {
+        "name": "bigbrotr-implementation-pg-20260917-ownerone-client-after",
+        "id": "b05c9843cb193d78d8b33dc3f1a62c2f9cf9eb8304f34283cb4ebc96fdeac656",
+        "state": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 143,
+          "Error": "",
+          "StartedAt": "2026-09-18T02:50:53.342634603Z",
+          "FinishedAt": "2026-09-18T02:50:56.10165845Z"
+        }
+      },
+      {
+        "name": "bigbrotr-implementation-pg-20260917-ownerone-client-race",
+        "id": "20b48c322e5356bc94bb3a1959df6ceeb5f0674447bf8f20954c6d7d8d797026",
+        "state": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 143,
+          "Error": "",
+          "StartedAt": "2026-09-18T02:50:57.547598693Z",
+          "FinishedAt": "2026-09-18T02:51:02.476112795Z"
+        }
+      },
+      {
+        "name": "bigbrotr-implementation-pg-20260917-ownerone-client-killed",
+        "id": "405191a8eaff4565b4537e4e4c0d138ef327813c81adb655b6f32aeb2b999804",
+        "state": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 137,
+          "Error": "",
+          "StartedAt": "2026-09-18T02:51:03.918597571Z",
+          "FinishedAt": "2026-09-18T02:51:05.919107318Z"
+        }
+      }
+    ]
+  },
+  "executed": {
+    "harness_cases": 69,
+    "case_results": [
+      {
+        "name": "expiry-token",
+        "status": "PASS",
+        "exit": 0
+      },
+      {
+        "name": "initial-token",
+        "status": "PASS",
+        "exit": 0
+      },
+      {
+        "name": "same-issuance",
+        "status": "PASS",
+        "exit": 0
+      },
+      {
+        "name": "changed-name",
+        "status": "PASS",
+        "exit": 3
+      },
+      {
+        "name": "pending-replacement",
+        "status": "PASS",
+        "exit": 3
+      },
+      {
+        "name": "revoke",
+        "status": "PASS",
+        "exit": 0
+      },
+      {
+        "name": "revoke-retry",
+        "status": "PASS",
+        "exit": 0
+      },
+      {
+        "name": "revoked-token",
+        "status": "PASS",
+        "exit": 3
+      },
+      {
+        "name": "replacement-token",
+        "status": "PASS",
+        "exit": 0
+      },
+      {
+        "name": "wrong-token",
+        "status": "PASS",
+        "exit": 3
+      },
+      {
+        "name": "enroll",
+        "status": "PASS",
+        "exit": 0
+      },
+      {
+        "name": "schema-negatives",
+        "status": "PASS",
+        "cases": 15,
+        "sqlstate": "23514"
+      },
+      {
+        "name": "replay",
+        "status": "PASS",
+        "exit": 3
+      },
+      {
+        "name": "replacement-after-owner",
+        "status": "PASS",
+        "exit": 3
+      },
+      {
+        "name": "status",
+        "status": "PASS",
+        "exit": 0
+      },
+      {
+        "name": "restart",
+        "status": "PASS",
+        "exit": 0
+      },
+      {
+        "name": "denied-token",
+        "status": "PASS",
+        "exit": 0
+      },
+      {
+        "name": "grant-insert-rollback",
+        "status": "PASS",
+        "exit": 1
+      },
+      {
+        "name": "grant-insert-recovery",
+        "status": "PASS",
+        "exit": 0
+      },
+      {
+        "name": "old-schema",
+        "status": "PASS",
+        "exit": 3
+      },
+      {
+        "name": "exhaust-token",
+        "status": "PASS",
+        "exit": 0
+      },
+      {
+        "name": "exhausted",
+        "status": "PASS",
+        "exit": 3
+      },
+      {
+        "name": "before-token",
+        "status": "PASS",
+        "exit": 0
+      },
+      {
+        "name": "commit-before",
+        "status": "PASS",
+        "exit": 4
+      },
+      {
+        "name": "resolve-before",
+        "status": "PASS",
+        "exit": 0
+      },
+      {
+        "name": "retry-before",
+        "status": "PASS",
+        "exit": 0
+      },
+      {
+        "name": "after-token",
+        "status": "PASS",
+        "exit": 0
+      },
+      {
+        "name": "commit-after",
+        "status": "PASS",
+        "exit": 4
+      },
+      {
+        "name": "resolve-after",
+        "status": "PASS",
+        "exit": 0
+      },
+      {
+        "name": "race-token",
+        "status": "PASS",
+        "exit": 0
+      },
+      {
+        "name": "commit-race",
+        "status": "PASS",
+        "exit": 0
+      },
+      {
+        "name": "resolve-race",
+        "status": "PASS",
+        "exit": 0
+      },
+      {
+        "name": "killed-token",
+        "status": "PASS",
+        "exit": 0
+      },
+      {
+        "name": "commit-killed",
+        "status": "PASS",
+        "exit": 137
+      },
+      {
+        "name": "resolve-killed",
+        "status": "PASS",
+        "exit": 0
+      },
+      {
+        "name": "retry-killed",
+        "status": "PASS",
+        "exit": 0
+      },
+      {
+        "name": "expired-token",
+        "status": "PASS",
+        "exit": 3
+      },
+      {
+        "name": "wrong-token attempts1\u201332",
+        "cases": 32,
+        "status": "PASS",
+        "exit": 3,
+        "observed_counter": "1 through32, then exhausted on next attempt"
+      }
+    ],
+    "independent_audit": {
+      "status": "PASS",
+      "source": "992f0dca6ca66af1eab5be27ff5e0f03391c2d12",
+      "cases": 69,
+      "sql_negatives": 15,
+      "databases": 9,
+      "relations": 257,
+      "counts": {
+        "principals": 15,
+        "local_accounts": 6,
+        "local_credentials": 6,
+        "principal_grants": 42,
+        "owner_challenges": 9,
+        "management_audit": 61
+      },
+      "password_hashes_independently_verified_with_phc_c": 6,
+      "remaining_backends": 0,
+      "scope": "Fresh external SQL, literal account/grant/challenge/state/metadata expectations and C password oracle; no login or runtime authorization claim."
+    },
+    "credential_oracle": {
+      "status": "PASS",
+      "credentials": 6,
+      "source": "992f0dca6ca66af1eab5be27ff5e0f03391c2d12",
+      "oracle_sha256": "b49258f07b46d182856f48ded6bb1da1c834edb02b2f47dad0578ff536b29bbc",
+      "observations_sha256": "d2df3d36c15bf88b19d2ddb1fa8596f98b428f1a28d0b80d311780f4fa3a929b",
+      "scope": "All six actual Linux-created stored password hashes compared to the independent PHC C implementation with observed salts and the literal test password."
+    },
+    "populated_upgrade": {
+      "status": "PASS",
+      "source": "992f0dca6ca66af1eab5be27ff5e0f03391c2d12",
+      "runner_sha256": "c26dce50a29d52f33f5501998fb59cdc38a5eb83cd0da88a78253710d08b6bbb",
+      "binary_sha256": "e4d81f348369207a02befa6ce6134eea5357984a6cd4bb08e9541838862733d6",
+      "database": "bb_owner_upgrade",
+      "old_relations": 25,
+      "new_relations": 4,
+      "old_payload_rows_preserved": true,
+      "old_audit_columns_preserved": true,
+      "no_synthetic_accounts": true,
+      "bootstrap_receipt_unchanged": true,
+      "downgrade_refused": true,
+      "before_sha256": "600560965c471d284315a86f7944c281da6941a5b636d9b3de9b9c055a499e20",
+      "after_sha256": "63a1f48c13b243f1b4e62e34127839cc3b426a12956d66c14b8f90842560e398"
+    },
+    "engine_crash": {
+      "status": "PASS",
+      "source": "992f0dca6ca66af1eab5be27ff5e0f03391c2d12",
+      "binary_sha256": "e4d81f348369207a02befa6ce6134eea5357984a6cd4bb08e9541838862733d6",
+      "runner_sha256": "b0489c2b5991d07e4b7b2bae1e7b59b9e9cd10cbdf4c0490166c490039897771",
+      "container_id": "e78c91a5c8bf8a56cf0f2f596ac7e742a72b7d9d0d2ce604e2d1f7099e49b8ec",
+      "killed_state": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 137,
+        "Error": "",
+        "StartedAt": "2026-09-18T02:50:27.857283364Z",
+        "FinishedAt": "2026-09-18T02:56:36.805865651Z"
+      },
+      "before": {
+        "bb_owner_basic": "787a57068c85316d1d1bb961307d43c30c53d0d655211ee4c015a2c0f3b1f097",
+        "bb_owner_expired": "f775613560864f979f0c5a845ffc51de9e36debd97ca6d423b9347064fa18ac0",
+        "bb_owner_old": "29558b6c2582e4476658f713353b2db8e1f76653997543161be8f6b4b7674adc",
+        "bb_owner_denied": "c92ae5d78323bc2fbe878f7a27d931f7b074b8d0542716273f09f41e5eb6c6d1",
+        "bb_owner_exhausted": "4468c46147cf1b798121d6fc7ab83cea3aca64a07c8a4fbe284f5f97175050fd",
+        "bb_owner_before": "68e289a5ffbb742134c74d389289c12d9e966e88987c770cb7e444a1794e1d91",
+        "bb_owner_after": "1c64284b4ee8ed092e3f8f9a726394d0c6a82cdbaa336731610e6857139e06f9",
+        "bb_owner_race": "a5012e2f14a6f61bf33ac46c4dc12bffeb422dc82ca9927663f1ef01e2b59e16",
+        "bb_owner_killed": "2eb2b6c9eb457d3398bf6b7d8784460e6e19f1daef00765e2ed3cfaf6b8a3088",
+        "bb_owner_upgrade": "b964bfee40137452939eef2185bfbedd7be1c5158f2afc160613a564b3bff178"
+      },
+      "after": {
+        "bb_owner_basic": "787a57068c85316d1d1bb961307d43c30c53d0d655211ee4c015a2c0f3b1f097",
+        "bb_owner_expired": "f775613560864f979f0c5a845ffc51de9e36debd97ca6d423b9347064fa18ac0",
+        "bb_owner_old": "29558b6c2582e4476658f713353b2db8e1f76653997543161be8f6b4b7674adc",
+        "bb_owner_denied": "c92ae5d78323bc2fbe878f7a27d931f7b074b8d0542716273f09f41e5eb6c6d1",
+        "bb_owner_exhausted": "4468c46147cf1b798121d6fc7ab83cea3aca64a07c8a4fbe284f5f97175050fd",
+        "bb_owner_before": "68e289a5ffbb742134c74d389289c12d9e966e88987c770cb7e444a1794e1d91",
+        "bb_owner_after": "1c64284b4ee8ed092e3f8f9a726394d0c6a82cdbaa336731610e6857139e06f9",
+        "bb_owner_race": "a5012e2f14a6f61bf33ac46c4dc12bffeb422dc82ca9927663f1ef01e2b59e16",
+        "bb_owner_killed": "2eb2b6c9eb457d3398bf6b7d8784460e6e19f1daef00765e2ed3cfaf6b8a3088",
+        "bb_owner_upgrade": "b964bfee40137452939eef2185bfbedd7be1c5158f2afc160613a564b3bff178"
+      },
+      "scope": "Actual PostgreSQL container/process SIGKILL and recovery with ten complete Control schema dumps unchanged. Not a host power loss or filesystem fsync fault."
+    },
+    "hash_measurement": {
+      "offered": 10,
+      "refused": 10,
+      "successful_enrollments": 0,
+      "maximum_process_rss_kib": 70316,
+      "wall_seconds_range": [
+        0.08663645619526505,
+        0.09304777113720775
+      ],
+      "scope": "Ten serial actual executable attempts; every attempt computes the full password hash before observing OwnerExists. Per-child Linux getrusage peak RSS/CPU and process wall time, not cgroup peak or mixed workload capacity."
+    }
+  },
+  "findings": [
+    "All six real salted password hashes produced by Linux Rust match the separate pinned PHC C implementation on Mac. Test credential salts/hashes remain protected raw observations; no generated token is copied into reports.",
+    "Before/after COMMIT response loss, observed held/waiting owner locks and an actual killed client resolve one owner or one pending challenge, with no partial account/credential/grant/audit writes.",
+    "Actual ten-minute expiry rejects enrollment and records a rejection timestamp at/after expiry.32 wrong guesses exhaust the pending token; no cheaper hash fallback.",
+    "The populated801-to805 upgrade preserves all prior data, adds NULL audit metadata without backfill/promoting an actor, and leaves four new tables empty.",
+    "Actual PostgreSQL SIGKILL/restart preserves full dumps across10 owned databases. This is process-crash evidence, not host/disk/power-loss qualification."
+  ],
+  "review": "Root inspected complete implementation/DDL/CLI/contracts and executable harness, then independently audited fresh external SQL with literal field/row/grant/state expectations and the C oracle. AI root review only; no independent agent available. Full native source/ELF/tool identity audited before execution.",
+  "not_run": [
+    "Private HTTP enrollment/login/session/CSRF/origin, public/private listener separation, API tokens, account lifecycle and last-owner recovery.",
+    "Action enforcement from authenticated credentials, restrictive policy activation/leases, visibility grants, service identity/native writer fencing and signed-event admission/archive/read/export/restart.",
+    "Actual lost issuance COMMIT response (same-ID secret-unavailable retry is exercised), token lifetime configuration, sustained/parallel authentication load, peer/account rate limits and cgroup peak-memory qualification.",
+    "Power loss, filesystem resource exhaustion, Linux arm64 owner path, packaged Compose installation, full upgrades/recovery/release and remaining selected product."
+  ],
+  "raw_root": ".research/implementation/owner-enrollment/native-992f0dc",
+  "raw_sha256": {
+    "runtime-owner-enrollment.json": "6f17fb912fcf2061791d7475c09c4bd84b8834bb02d7a349a64afce5575a068c",
+    "audit.json": "52ed7df9064c284b32637533277f76958f00f48e998cf9d2be8b5d300b3d6950",
+    "runtime-engine-crash.json": "c2590758a0ff00668d856c52c9ce63e1615d505029b9687d969096081b765500",
+    "runtime-stopped.json": "3604bcdda188686241bf453b378795066b5e9da5622324a57d9dd7b6c4517ddb",
+    "runtime-populated-upgrade.json": "a59de091126caaa63c2b0c929e096ba18c6c24ca66f170aeba546a42dbb1a940",
+    "runtime-final-observation.json": "54f8d455999876b2f248de183496a1645e8570e4e44954d7b1dc0422412d3df5",
+    "resources.json": "92364d05f6fff3f0427ffd439b1aa78f957aa9da04d0fc2412c6d7d857c22363",
+    "runtime-resources.json": "a93cfcbb23f5026d21743e55db5d18841aa95e05d081544f7ec98ab60d589618",
+    "runtime-hash-process-measurement.json": "b09d765020333e0d93c08cb237b0bba2a84256984cdc884e0e70a591734b4ad4",
+    "credential-audit.json": "af3c48cb476e5354179e44429b1a0839ed07cde5fbfb7c36f2f93fbe84c8c096",
+    "root-audit.json": "2e6f5052410b661c991ac2f6dcb11475a83ae6ca8d913b74291b2d6118203d25",
+    "build-result.json": "0cbea0839c6804f212b7596cc68140adb676eaaeab15023c5050a4ae76138284"
+  },
+  "inspection_source_sha256": {
+    ".research/implementation/owner-enrollment/final-observation.py": "62e6a84cf4b54fd6c16ef593af629829f6bc5172eb12850dff180623384b1fa9",
+    ".research/implementation/owner-enrollment/audit-runtime.py": "0774764f010db40903ba37977f0fe298af113c2c113812723eec65af10c0b8dd",
+    "experiments/local-enrollment/upgrade.py": "c26dce50a29d52f33f5501998fb59cdc38a5eb83cd0da88a78253710d08b6bbb",
+    "experiments/local-enrollment/crash.py": "b0489c2b5991d07e4b7b2bae1e7b59b9e9cd10cbdf4c0490166c490039897771",
+    "experiments/local-enrollment/hash_process.py": "888504104ea72fac411f48956a8ca6cb93e6a46d895f41053b8d5420c771642c"
+  },
+  "orchestration": "Product source and binary transferred through Git bundle and built from clean archive. Independent post-build observation/upgrade/crash/measurement commands were executed from the primary workspace without editing remote product source; their exact helper hashes and separate input identities are recorded."
+}
