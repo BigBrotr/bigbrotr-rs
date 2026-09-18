@@ -21,6 +21,10 @@
     {
       "version": 802,
       "name": "0802_management_commands.sql"
+    },
+    {
+      "version": 7,
+      "name": "0007_control_owner.sql"
     }
   ],
   "reserved": [

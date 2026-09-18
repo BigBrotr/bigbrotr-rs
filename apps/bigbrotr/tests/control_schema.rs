@@ -26,6 +26,16 @@ fn an_absent_ledger_plans_one_atomic_initial_migration() {
 }
 
 #[test]
+fn control_backend_fencing_is_an_additive_explicit_migration() {
+    let plan = plan(&[], 7).unwrap();
+    assert_eq!(
+        plan.pending.iter().map(|m| m.version).collect::<Vec<_>>(),
+        [1, 2, 801, 805, 802, 7]
+    );
+    assert_eq!(plan.pending.last().unwrap().name, "0007_control_owner.sql");
+}
+
+#[test]
 fn an_exact_existing_receipt_does_not_reapply_ddl() {
     let plan = plan(&[initial_receipt()], 1).unwrap();
     assert_eq!(plan.from, Some(1));

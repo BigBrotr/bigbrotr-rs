@@ -136,6 +136,19 @@ Neither future drop nor a pool health query proves no durable effect.
 states the limitation; its [transaction source](https://github.com/rust-postgres/rust-postgres/blob/f1cb6ec0d5766b136cbd68f3010d64142a5daa66/tokio-postgres/src/transaction.rs)
 queues rollback on drop rather than producing a caller-observed rollback receipt.
 
+The Control owner uses a dedicated unpooled connection and database-local
+session lock, retaining the same lock at transaction scope through each guarded
+commit. PostgreSQL 16's [advisory-lock semantics](https://www.postgresql.org/docs/16/explicit-locking.html#ADVISORY-LOCKS)
+and exact [REL_16_15 lock functions](https://github.com/postgres/postgres/blob/REL_16_15/src/backend/utils/adt/lockfuncs.c)
+establish shared exclusion between session/transaction holders and transaction
+retention after session unlock. The [pg_locks representation](https://www.postgresql.org/docs/16/view-pg-locks.html)
+uses database identity, two int keys and objsubid 2. SQL guards check that tuple
+and the actual backend attribution; PID or a stored epoch alone is insufficient.
+The opaque Rust owner has no automatic reconnect or raw-client escape. Native
+kill/commit/old-connection acceptance is a separate gate; this does not fence
+another engine. Lock-view scans occur on Control operations, not per event, and
+must be included in later mixed-workload measurements.
+
 Use the rustls connector with explicit CA/server-name policy and the same selected
 crypto provider as the other clients. The candidate supports rustls 0.23 and
 TLS channel binding; its [published connector source](https://github.com/jbg/tokio-postgres-rustls/blob/0dd60da1804e6146633e5b87199a00db890b7ef5/src/lib.rs)

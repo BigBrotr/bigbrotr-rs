@@ -177,6 +177,14 @@ impl RegistrationAttempt {
             if !state.can_register {
                 return Err(RegistryError::HeadsChanged);
             }
+            migrations::require_applied(&migration_runner::read_ledger(&tx).await
+                .map_err(|_| RegistryError::IncompatibleSchema)?, 7)
+                .map_err(|_| RegistryError::IncompatibleSchema)?;
+            let owner = self.specification.control;
+            tx.query_one("SELECT control.require_control_owner($1::bytea, $2::bytea, $3::text::numeric, $4::bytea)",
+                &[&&self.specification.dataset_id.as_bytes()[..], &&owner.resource_id.as_bytes()[..],
+                  &owner.epoch.get().to_string(), &&owner.process_incarnation.as_bytes()[..]])
+                .await.map_err(|_| RegistryError::ControlMismatch)?;
             insert(&tx, &self.specification).await?;
             Ok(RegistrationObservation::Matching { current: true })
         }

@@ -449,6 +449,44 @@ shutdown, storage detach/revoke enforced at commit, or a future fencing storage
 service). TTL, hostname/PID, inaccessible health port or operator assertion alone
 is insufficient. Resume an old paused owner during the acceptance drill.
 
+### PostgreSQL Control commit exclusion
+
+The Control adapter exclusively owns one unpooled PostgreSQL connection. It
+acquires the database-local two-int session advisory lock `(0x42427472,
+0x4354524c)` once. Every admitted Control transaction also retains that same
+exclusive lock at transaction scope through COMMIT/ROLLBACK. PostgreSQL backend
+termination or lock transfer excludes the old backend's subsequent guarded
+mutations; lease expiry never transfers this lock. No client or pool reconnect
+inherits authority. The opaque Rust owner exposes typed operations, not its
+connection, and its transport owner retains the driver/resource reservation
+until actual termination.
+
+Migration 0007 appends after 0802 and binds each Control owner epoch to its actual
+backend PID/start time under fence protocol 1. These are attribution, not an
+exclusion mechanism by themselves. A dataset has one stable Control resource
+and at most one unreleased Control epoch. Acquisition validates current complete
+configuration/security documents against deployment roots before registering a
+fresh role instance/incarnation. The successor holding the lock releases the
+prior qualified epoch with `storage_fenced` evidence, retires its role and advances
+the epoch atomically. An ambiguous acquisition closes its connection; a fresh
+incarnation can resolve/replace it only after acquiring the same lock. It cannot
+report that the earlier transaction rolled back merely because the response was
+lost. Normal close also retains the lock through its release transaction.
+
+This initial migration refuses any pre-existing Control owner history atomically:
+earlier metadata-only owners did not participate in this fencing protocol. It
+does not infer their exclusion, rewrite their identity, or erase their history.
+Such research deployments remain on their old schema pending a separately
+qualified recovery/import path. Initialized deployments without runtime Control
+history upgrade normally. Ingest registration now requires this connected Control
+backend for writes; observation/resolution remain non-authorizing reads.
+
+The boundary fences only typed PostgreSQL Control mutations. It neither grants
+human permissions nor proves termination of an old process/native worker; RocksDB,
+archive publication and remote output retain their own exclusion and short
+policy-lease contracts. Policy refresh, native handoff and public service startup
+must be qualified separately before advertising operational readiness.
+
 ### Backup and restore
 
 Initial receipt class is `local-synced`: process restart after successful WAL sync

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the actual registry acceptance example from one verified source archive."""
+"""Build a selected actual PostgreSQL acceptance example from one verified source archive."""
 import argparse
 import importlib.util
 import json
@@ -15,7 +15,9 @@ sys.dont_write_bytecode = True
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--build", type=Path, required=True)
+    parser.add_argument("--example", choices=["ingest_registry_probe", "control_owner_probe"], default="ingest_registry_probe")
     args = parser.parse_args()
+    kind = "registry" if args.example == "ingest_registry_probe" else "control-owner"
     build = args.build.resolve(strict=True)
     source = build / "source"
     spec = importlib.util.spec_from_file_location("exact_build", source / "tools/build.py")
@@ -34,8 +36,8 @@ def main():
         if actual != manifest["files_sha256"]:
             raise ValueError("source archive changed")
     check_source()
-    output = build / "ingest_registry_probe"
-    output_receipt = build / "registry-probe-build.json"
+    output = build / args.example
+    output_receipt = build / f"{kind}-probe-build.json"
     if output.exists() or output_receipt.exists():
         raise ValueError("probe artifacts already exist")
     env = helper.clean_environment()
@@ -47,14 +49,14 @@ def main():
                 "BIGBROTR_SOURCE_REVISION": manifest["revision"], "BIGBROTR_SOURCE_TREE": manifest["tree"],
                 "BIGBROTR_SOURCE_MANIFEST_SHA256": receipt["source_manifest_sha256"],
                 "BIGBROTR_BUILD_PROFILE": "release"})
-    command = ["cargo", "build", "--locked", "--release", "-p", "bigbrotr", "--example", "ingest_registry_probe"]
+    command = ["cargo", "build", "--locked", "--release", "-p", "bigbrotr", "--example", args.example]
     subprocess.run(command, cwd=source, env=env, check=True)
     check_source()
     for tool in native["tools"].values():
         if helper.file_hash(Path(tool["path"])) != tool["sha256"]:
             raise ValueError("native tool changed")
-    shutil.copy2(build / "target/release/examples/ingest_registry_probe", output)
-    output_receipt.write_text(json.dumps({"format": "bigbrotr-registry-probe-build/1",
+    shutil.copy2(build / "target/release/examples" / args.example, output)
+    output_receipt.write_text(json.dumps({"format": f"bigbrotr-{kind}-probe-build/1",
         "source_revision": manifest["revision"], "source_tree": manifest["tree"],
         "source_manifest_sha256": receipt["source_manifest_sha256"],
         "parent_build_receipt_sha256": helper.file_hash(build / "build-result.json"),

@@ -1,0 +1,41 @@
+{
+  "format": "bigbrotr-control-owner-mac/1",
+  "date": "2026-09-18",
+  "base_revision": "3081f216b0b3f740df9a3cc0e8ff08a39f0bfa08",
+  "scope": "P01-T06/P02-T02 dedicated PostgreSQL Control adapter and migration candidate; no runtime service claim",
+  "source_sha256": {
+    "apps/bigbrotr/src/storage/postgres/control_owner.rs": "7e41ff800dbcd251cd4a9ef102ef5cded7d607113d83721a38843e6813f2dcba",
+    "apps/bigbrotr/src/storage/postgres/ingest_registry.rs": "a2a16e5788ab0c4deff42a7cc2d7184ee27d13ba4d969e64cc42bb34a9f8cea2",
+    "migrations/postgres/0007_control_owner.sql": "31e399a9bbaca5f13c60f65a10b3c3b872de14f62f2b2597632a480b956300fd",
+    "apps/bigbrotr/examples/control_owner_probe.rs": "bdcbdf058b62dd9fad24356da2b47fdcc5dfa7d3bae438a9e2bdc237d973219c"
+  },
+  "checks": {
+    "migration_catalog_red": "UnknownTarget(7), actual failing test before implementation",
+    "migration_catalog_green": "10 passed, 0 failed/ignored",
+    "workspace": "198 passed, 0 failed/ignored",
+    "clippy": "workspace all targets -D warnings PASS",
+    "fmt": "PASS",
+    "artifact_structure": "152 Markdown, 117 JSON, no errors; structural only"
+  },
+  "raw_log": {
+    "path": ".research/implementation/control-owner/workspace.log",
+    "sha256": "4ad525bd55c11e10cef989f9e689a2a4d0197c1462fb9d6c7f2d6ba19877bb41"
+  },
+  "review": {
+    "owner": "root, AI implementation and complete boundary review; independent agents unavailable",
+    "dependencies": "PostgreSQL REL_16_15 lockfuncs.c and PG16 lock documentation; tokio-postgres 0.7.18 unchanged",
+    "finding": "Cast probe domain identities to bytea explicitly rather than rely on driver domain conversion; no product behavior change; rustfmt detected the resulting call wrapping and was applied/rechecked."
+  },
+  "not_run": [
+    "native PG SQL/adapter acceptance",
+    "COMMIT fault schedules",
+    "paused owner past TTL",
+    "PG crash/restart",
+    "native writer handoff",
+    "runtime root-policy consumer",
+    "mixed load",
+    "arm64",
+    "release journeys"
+  ],
+  "status": "PASS_SCOPED_MAC_ONLY"
+}

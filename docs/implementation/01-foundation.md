@@ -297,6 +297,12 @@ operation; scheduling lease is separate from positive writer exclusion.
 - [ ] **Step 8:** Document durability/failover classes and the limits of local disk under
   host loss; no distributed availability claim from a successful lock test.
 
+The P01-T06/P02-T02 Control backend slice implements the
+[PostgreSQL exclusion contract](../specification/operations-contract.md#postgresql-control-commit-exclusion)
+with explicit migration 0007, an opaque dedicated connection owner and the first
+Ingest registration consumer. Its [acceptance cases](../../experiments/control-owner/cases.md)
+remain required; this does not finish runtime policy grants or native handoff.
+
 ## P01-T07 — Same-process and remote component adapters
 
 **Depends on:** P01-T02/T05/T06. **Files:** `contracts/rpc/v1/*.proto`,
