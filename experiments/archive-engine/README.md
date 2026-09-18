@@ -135,7 +135,8 @@ records independent source/artifact checks, packet ordering, positive reap and
 replacement membership, the first failure and four stopped retained containers.
 Both empty owned networks were retired. Persistent product recovery remains open.
 
-`catalog_fence.py --case-set guard` is a new, **NOT_RUN** alternative experiment:
+`catalog_fence.py --case-set guard` is an alternative experiment, two scoped native cases
+PASS at `694be48`:
 `catalog_commit_guard.sql` adds a PostgreSQL BEFORE STATEMENT guard on all28
 catalog relations created by the pinned DuckLake initializer. Its dedicated
 row-lock-protected login must match `session_user` for every metadata mutation;
@@ -148,3 +149,11 @@ mutation/rollback, isolation, privilege/DDL escape, full metadata coverage,
 maintenance/migration compatibility and practical cost still need qualification.
 Native metadata values are never manually edited. Production adoption would
 require an explicit update to the archive ownership contract and migration path.
+
+`--case-set guard-races` adds four **NOT_RUN** native transaction schedules:
+writer versus takeover obtains the guard row first, followed by holder commit or
+rollback. A lab-only later snapshot trigger can hold a native commit behind an
+advisory barrier; it does not supply the candidate fence. Fresh pg_blocking_pids,
+pg_locks and backend incarnations prove actual blocking. `catalog_pg_session.py`
+owns bounded interactive psql controls and exact backend termination on cleanup.
+Literal independent counts distinguish committed old work from permitted replay.

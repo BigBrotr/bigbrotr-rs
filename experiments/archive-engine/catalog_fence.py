@@ -22,7 +22,7 @@ sys.path.insert(0, '/source')
 from tools.archive_bundle import build_environment, native_target, verify_bundle
 
 parser = argparse.ArgumentParser(description=__doc__)
-parser.add_argument('--case-set', choices=['baseline', 'startup', 'guard'], default='baseline')
+parser.add_argument('--case-set', choices=['baseline', 'startup', 'guard', 'guard-races'], default='baseline')
 parser.add_argument('--probe', type=Path, required=True)
 parser.add_argument('--probe-sha256', required=True)
 parser.add_argument('--bundle', type=Path, required=True)
@@ -50,6 +50,7 @@ worker_env = {'LC_ALL': 'C', **build_environment(args.bundle)}
 children = []
 roles = []
 relays = []
+sessions = []
 cases = []
 report = {'status': 'RUNNING', 'probe_sha256': args.probe_sha256,
           'scope': 'Synthetic real Rust DuckLake/PG fencing investigation only',
@@ -350,6 +351,111 @@ def guard_cases(admin):
         save()
 
 
+def guard_races(admin):
+    from catalog_pg_session import PgSession
+    sql(Path(__file__).with_name('catalog_commit_guard.sql').read_text())
+    sql("""CREATE TABLE bb_fence_guard.pause(login name);
+    CREATE FUNCTION bb_fence_guard.pause_commit() RETURNS trigger LANGUAGE plpgsql
+    SECURITY DEFINER SET search_path=pg_catalog AS $$ BEGIN
+      IF EXISTS(SELECT 1 FROM bb_fence_guard.pause WHERE login=session_user) THEN
+        PERFORM pg_advisory_xact_lock(73117, 19);
+      END IF; RETURN NULL; END; $$;
+    REVOKE ALL ON FUNCTION bb_fence_guard.pause_commit() FROM PUBLIC;
+    CREATE TRIGGER zz_lab_pause BEFORE INSERT ON public.ducklake_snapshot
+      FOR EACH STATEMENT EXECUTE FUNCTION bb_fence_guard.pause_commit();""")
+
+    def session():
+        env = dict(pg_env, PGOPTIONS='-c statement_timeout=20000 -c lock_timeout=15000')
+        value = PgSession(env, children)
+        sessions.append(value)
+        return value
+
+    def blocked(waiter, holder):
+        until = time.monotonic() + 5
+        while True:
+            row = sql("SELECT count(*) FROM pg_stat_activity WHERE "
+                      f"pid={waiter['pid']} AND backend_start::text='{waiter['start']}' "
+                      f"AND {holder['pid']} = ANY(pg_blocking_pids(pid)) AND wait_event_type='Lock' "
+                      f"AND EXISTS(SELECT 1 FROM pg_stat_activity h WHERE h.pid={holder['pid']} "
+                      f"AND h.backend_start::text='{holder['start']}')")
+            if row == '1':
+                locks = json.loads(sql("SELECT json_agg(json_build_object('pid',pid,'type',locktype,"
+                                       "'mode',mode,'granted',granted,'relation',relation::regclass::text)) "
+                                       f"FROM pg_locks WHERE pid IN ({waiter['pid']},{holder['pid']})"))
+                return {'waiter': waiter, 'holder': holder, 'locks': locks}
+            assert time.monotonic() < until, 'expected lock schedule absent'
+            time.sleep(.01)
+
+    for batch, writer_first, rollback in [(9, True, False), (10, True, True),
+                                           (11, False, False), (12, False, True)]:
+        name = f"guard-race-{'writer' if writer_first else 'takeover'}-first-{'rollback' if rollback else 'commit'}"
+        report['active_case'] = name
+        role, path = job_role()
+        successor_role, successor = job_role()
+        sql(f"UPDATE bb_fence_guard.owner SET login='{role}' WHERE singleton;")
+        if writer_first:
+            # Visible even in the native client's already-open fixed snapshot.
+            sql(f"INSERT INTO bb_fence_guard.pause VALUES ('{role}');")
+        a = writer(path, batch)
+        [backend] = backends(role)
+        takeover = session()
+        takeover.execute('BEGIN;')
+        replacement = f"UPDATE bb_fence_guard.owner SET login='{successor_role}' WHERE singleton;"
+        schedule = []
+        if writer_first:
+            barrier = session()
+            barrier.execute('BEGIN; SELECT pg_advisory_xact_lock(73117,19);')
+            a.send(b'publish\n')
+            schedule.append(blocked(backend, barrier.backend))
+            takeover.start(replacement)
+            schedule.append(blocked(takeover.backend, backend))
+            if rollback:
+                a.process.kill()
+                assert a.process.wait(timeout=5) == -signal.SIGKILL
+                assert sql("SELECT pg_terminate_backend(pid,5000) FROM pg_stat_activity "
+                           f"WHERE pid={backend['pid']} AND backend_start::text='{backend['start']}' "
+                           f"AND usename='{role}'") == 't'
+                assert backends(role) == []
+                old_result = {'exit': -signal.SIGKILL, 'backend_terminated': True}
+                barrier.execute('COMMIT;')
+            else:
+                barrier.execute('COMMIT;')
+                assert a.message() == {'stage': 'committed'}
+                old_result = a.finish()
+            takeover.finish()
+            takeover.execute('COMMIT;')
+            expected_before = [0, 0, 0] if rollback else [1, 1, 1]
+            observed_before = read(batch, admin)
+            assert observed_before == expected_before
+            if rollback:
+                commit(writer(successor, batch))
+        else:
+            takeover.execute(replacement)
+            a.send(b'publish\n')
+            schedule.append(blocked(backend, takeover.backend))
+            takeover.execute('ROLLBACK;' if rollback else 'COMMIT;')
+            if rollback:
+                assert a.message() == {'stage': 'committed'}
+                old_result = a.finish()
+            else:
+                old_result = a.finish(False)
+                assert old_result['phase'] == 'commit'
+            expected_before = [1, 1, 1] if rollback else [0, 0, 0]
+            observed_before = read(batch, admin)
+            assert observed_before == expected_before
+            if not rollback:
+                commit(writer(successor, batch))
+        assert read(batch, admin) == [1, 1, 1]
+        assert backends(role) == []
+        while sessions:
+            sessions.pop().close(sql)
+        sql('DELETE FROM bb_fence_guard.pause;')
+        cases.append({'case': name, 'status': 'PASS', 'schedule': schedule,
+                      'old_result': old_result, 'before_replay': observed_before,
+                      'final_counts': [1, 1, 1]})
+        save()
+
+
 try:
     report['active_case'] = 'initialization'
     assert sql('SHOW cluster_name') == args.cluster, 'unowned PostgreSQL cluster'
@@ -368,13 +474,17 @@ try:
         baseline_cases(admin)
     elif args.case_set == 'startup':
         startup_cases(admin)
-    else:
+    elif args.case_set == 'guard':
         guard_cases(admin)
+    else:
+        guard_races(admin)
     report['status'] = 'PASS'
 except BaseException as error:
     report.update(status='FAIL', failure=type(error).__name__)
     raise
 finally:
+    for session in sessions:
+        session.close(sql)
     for child in children:
         if child.poll() is None:
             child.kill()

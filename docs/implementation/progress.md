@@ -17,7 +17,9 @@ complete. Pending must not be reclaimed. Whole selected product remains required
 
 Mac main, integrating root only. Last freshly verified HEAD
 `e20198fd8a099493198a26e643e9200d79264865`, equal to freshly queried origin/main.
-All startup results/contracts and earlier monitor fixes are pushed. Root now owns
+All startup results/contracts and earlier monitor fixes are pushed. Current HEAD
+is unpublished native-test candidate `694be481d80433fc1b9f97d1a0edd44bb14de324`.
+Root now owns
 a bounded alternative commit-guard experiment and its README/inventory/checkpoint;
 no other writer or conflict. Git transfers, readonly Tux source, root review only.
 
@@ -179,8 +181,12 @@ Before building a process-only recovery registry, qualify the bounded alternativ
 `catalog_fence.py --case-set guard`: a PG BEFORE STATEMENT trigger on the exact28
 native metadata relations locks a separate owner row FOR SHARE and compares
 session_user; takeover updates that row. Keep old credentials/processes alive so
-only actual catalog enforcement can reject their native COMMIT. Two prepared
-cases cover ready and invisible startup clients; NOT_RUN. This is isolated
+only actual catalog enforcement can reject their native COMMIT. Two actual
+cases at694be48 now PASS: ready and invisible-startup old clients stay alive and
+LOGIN, replacement commits, old native COMMIT fails and independent read sees
+[1,1,1]. PG logs contain the exact guard refusal for both. Both new containers
+are stopped-retained, no remaining job backends, empty owned network retired.
+Raw root: catalog-fence/commit-guard; remote runs/catalog-guard-694be48. This is isolated
 research, not selected product SQL. It may avoid relying on remote process death
 for commit safety, but cleanup/resource grants still need positive termination.
 
@@ -194,6 +200,9 @@ requires an explicit owning-contract exception for versioned metadata triggers,
 compatible initialization/migration and full closure checks; no native table data
 rewrites. If it fails, retain the result and use qualified process exclusion.
 
-Next: review/commit the isolated guard candidate, transfer its exact Git revision
-to a new Tux lab and execute its two discriminating native cases with the retained
-verified a531ea3 probe/bundle. Keep all previous labs retired. No pending reclaim.
+Next: commit the expanded `guard-races` fixture and execute four actual native
+write/takeover schedules: writer first and takeover first, each commit/rollback.
+A lab-only advisory barrier after the real guard establishes the first order;
+pg_blocking_pids/pg_locks and both backend incarnations establish each wait.
+No sleeping interval substitutes for a lock observation. New cases are NOT_RUN;
+reuse only the verified a531ea3 probe/bundle and create a new fresh laboratory. Keep all previous labs retired. No pending reclaim.

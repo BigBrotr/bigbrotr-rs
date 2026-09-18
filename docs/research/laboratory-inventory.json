@@ -6241,7 +6241,7 @@
       }
     },
     "catalog_commit_guard_probe": {
-      "status": "two-case native experiment prepared, NOT_RUN; no product selection",
+      "status": "initial two native cases PASS at694be48; guard-races four cases NOT_RUN; product fence still unselected",
       "native_source": "d8a1881e22516ea3d186d73e83c65fe5bd1a1dc4",
       "source_files_sha256": {
         "src/metadata_manager/postgres_metadata_manager.cpp": "c5783bf61ff1999565046de62a6b4c27f4ca6145dba7e39a609f282cab45879c",
@@ -6256,7 +6256,18 @@
         "https://www.postgresql.org/docs/16/transaction-iso.html"
       ],
       "purpose": "Qualify metadata statement guard on transaction-held owner row; stale ready/invisible clients kept alive to discriminate actual storage exclusion. Requires later concurrency/privilege/migration tests before product selection.",
-      "resources": "none yet; previous laboratories stay retired"
+      "resources": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-guard-694be48/lab",
+        "source": "694be481d80433fc1b9f97d1a0edd44bb14de324",
+        "owner": "b5a827b440c750637af0279d477c4b29",
+        "containers": {
+          "bigbrotr-implementation-catalog-guard-694be48-runner": "dc672f56eef554bd4b2385d672e4077a2ceef0de598ab2485e44cc59f3639106",
+          "bigbrotr-implementation-catalog-guard-694be48-pg": "42d881c668f1037e34f55f8f5a1dd75fed2f8c9e6ccee86c3b2eda10d964c9ca"
+        },
+        "state": "all stopped-retained; zero job backends; empty network retired",
+        "retired_network": "3cf697fbd73206a1654841cdb4d42bf7d863dfe5a12f9c8321fcb8a6737f8409",
+        "raw_result": ".research/implementation/archive-worker/catalog-fence/commit-guard/result.json"
+      }
     }
   },
   "implementation_monitor_corrections_20260918": {
