@@ -5,9 +5,17 @@ use duckdb::{Config, Connection};
 use std::{collections::BTreeMap, fs};
 fn main() {
     let args: Vec<_> = std::env::args().collect();
-    assert_eq!(args.len(), 2);
+    assert!(matches!(args.len(), 2 | 3));
     let mode = &args[1];
-    assert!(matches!(mode.as_str(), "normal" | "before" | "after"));
+    assert!(matches!(
+        mode.as_str(),
+        "normal" | "before" | "after" | "owner_first" | "held_commit" | "held_rollback"
+    ));
+    let bootstrap_only = args.len() == 3;
+    if bootstrap_only {
+        assert_eq!(args[2], "bootstrap");
+        assert!(matches!(mode.as_str(), "owner_first" | "held_rollback"));
+    }
     let temp = tempfile::tempdir_in("/out").unwrap();
     let config = Config::default()
         .enable_autoload_extension(false)
@@ -81,7 +89,7 @@ fn main() {
     let event_count: u64 = c
         .query_row("SELECT count(*) FROM archive.events", [], |r| r.get(0))
         .unwrap();
-    let event = if mode == "before" {
+    let event = if mode == "before" || bootstrap_only {
         assert_eq!(event_count, 0);
         None
     } else {

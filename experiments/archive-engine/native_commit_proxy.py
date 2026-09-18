@@ -22,11 +22,28 @@ class Proxy:
         self.mode = mode
         self.writers = []
         self.tasks = []
+        self.held = False
+        self.action = None
+        self.release = asyncio.Event()
         self.report = dict(connections=0, bytes=0, frames=0, data_queries=0,
-                           data_commits=0, server_complete=0, client_complete=0, faults=0)
+                           data_commits=0, server_complete=0, client_complete=0, faults=0,
+                           guard_rejections=0, serialization_rejections=0, rejection_sequence=[])
 
     def emit(self, event, **extra):
         print(json.dumps(dict(event=event, mode=self.mode, **self.report, **extra)), flush=True)
+
+    async def hold(self, stage, backend_pid):
+        if self.mode != 'hold-' + stage or self.held:
+            return True
+        assert backend_pid is not None
+        self.held = True
+        self.emit('held', stage=stage, backend_pid=backend_pid)
+        await self.release.wait()
+        if self.action == 'close':
+            self.report['faults'] += 1
+            return False
+        assert self.action == 'release'
+        return True
 
     async def frame(self, reader):
         tag = await reader.read(1)
@@ -59,7 +76,7 @@ class Proxy:
         self.writers.append(upstream_writer)
         upstream_writer.write(header + startup)
         await upstream_writer.drain()
-        state = dict(data=False, commit=False)
+        state = dict(data=False, commit=False, backend_pid=None)
 
         async def pump(source, destination, frontend):
             while True:
@@ -72,13 +89,33 @@ class Proxy:
                     if b'INSERT INTO' in query and b'DUCKLAKE_DATA_FILE' in query:
                         state['data'] = True
                         self.report['data_queries'] += 1
+                        if not await self.hold('data', state['backend_pid']):
+                            return
                     if query.rstrip(b'\0; \r\n') == b'COMMIT' and state['data']:
                         state['commit'] = True
                         self.report['data_commits'] += 1
+                        if not await self.hold('commit', state['backend_pid']):
+                            return
                         if self.mode == 'before-forward' and not self.report['faults']:
                             self.report['faults'] += 1
                             self.emit('fault')
                             return
+                if not frontend and tag == b'K':
+                    assert len(body) == 8
+                    # Retain the public backend PID only, never the cancel key.
+                    state['backend_pid'] = struct.unpack('!I', body[:4])[0]
+                if not frontend and tag == b'E' and state['data']:
+                    fields = body.split(b'\0')
+                    if b'C55000' in fields and b'Marchive catalog writer excluded' in fields:
+                        self.report['guard_rejections'] += 1
+                        self.report['rejection_sequence'].append('guard')
+                    elif b'C40001' in fields and b'Mcould not serialize access due to concurrent update' in fields:
+                        self.report['serialization_rejections'] += 1
+                        self.report['rejection_sequence'].append('serialization')
+                    else:
+                        self.report['rejection_sequence'].append('other')
+                    if len(self.report['rejection_sequence']) > 16:
+                        raise ValueError('rejection-budget')
                 if not frontend and tag == b'C' and body == b'COMMIT\0' and state['commit']:
                     self.report['server_complete'] += 1
                     state['commit'] = False
@@ -88,6 +125,11 @@ class Proxy:
                         self.emit('fault')
                         return
                     self.report['client_complete'] += 1
+                if not frontend and tag == b'Z' and body == b'I':
+                    # A failed native attempt can roll back and reuse this
+                    # connection. Its later transactions need fresh classification.
+                    state['commit'] = False
+                    state['data'] = False
                 destination.write(tag + header + body)
                 await destination.drain()
 
@@ -115,7 +157,17 @@ class Proxy:
         transport, _ = await asyncio.get_running_loop().connect_read_pipe(
             lambda: asyncio.StreamReaderProtocol(control), sys.stdin.buffer)
         try:
-            assert await asyncio.wait_for(control.readline(), 120) == b'stop\n'
+            async with asyncio.timeout(120):
+                for _ in range(3):
+                    action = await control.readline()
+                    if action == b'stop\n':
+                        break
+                    assert action in (b'release\n', b'close\n') and self.held and self.action is None
+                    self.action = action.decode().strip()
+                    self.release.set()
+                    self.emit('released', action=self.action)
+                else:
+                    raise ValueError('control-budget')
         finally:
             server.close()
             await server.wait_closed()
@@ -136,7 +188,7 @@ class Proxy:
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--mode', choices=['pass', 'before-forward', 'after-complete'], required=True)
+    parser.add_argument('--mode', choices=['pass', 'before-forward', 'after-complete', 'hold-data', 'hold-commit'], required=True)
     try:
         sys.exit(asyncio.run(Proxy(parser.parse_args().mode).run()))
     except Exception:

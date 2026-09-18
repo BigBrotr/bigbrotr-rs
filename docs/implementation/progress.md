@@ -22,6 +22,19 @@ be acknowledged/reclaimed.
 
 ## Git and integrating ownership
 
+Current continuation: main HEAD/origin last verified at
+`db3507aa7a86f57fe73ee2b191a2af6ca5afb933`. Root owns dirty publication/read
+examples and native_commit_proxy, signed_publication_cases/oracle fixtures, plus
+this checkpoint. No product/schema change or new lab yet. The scoped parent
+check passed (terminal14082, publication/race-parent-check.log). Scoped parent/
+reader Clippy, Python parsing/corpus checks, format and document checks passed;
+logs are publication/race-*. Read-only AI review publication_review finished:
+pinned REPEATABLE READ retry and rollback proxy state are now explicit; reader
+barrier budget and failure-state diagnostics are corrected. Root inspected the
+complete changed fixtures and pinned source, then reviewed the diff. The new
+three scientific races remain NOT_RUN. Previous labs below are freshly verified terminal;
+no active experiment or cleanup is being interrupted.
+
 Mac main; root is sole writer/integrator. Product and evidence delivery
 `8eaa449674d80971a41f7fbcb367b9875257278b` is pushed to private origin/main and was
 independently read back from the remote. Tested product/fixture source remains
@@ -384,12 +397,17 @@ checks passed. No product/dependency/schema/applied SQL changed after3c380fe.
 
 ## Next bounded action
 
-Source/evidence review, document checks and private delivery passed. Continue
-P02-T04 steps4/5: qualify
+Finish scoped fixture checks/review, then commit and transfer an exact new source
+revision for P02-T04 steps4/5: qualify
 actual scientific publisher fencing with a live stale worker and both transaction
 lock orders, preserving prepared files and retained signed pending. Reuse the
 signed corpus and full row oracle in a new exact-source lab; do not substitute
 synthetic guard receipts or generic error status for the actual native refusal.
+New cases are owner-first (expect40001 then55000), old-COMMIT-first and
+old-ROLLBACK-first. Observe actual PG blocker pairs, positively reap old worker,
+preserve successor on historical seal, and independently read full rows/receipts
+before opening the next-launch barrier. Expected physical files14/8/14 retain
+old orphans. Rerun the three original schedules because their proxy changed.
 Introduce the product's bounded fresh receipt-resolution/read consumer as its
 contract becomes available, then persistent lifetime recovery and protection.
 No installed Archive role, task or M1 gate is complete; all selected product scope

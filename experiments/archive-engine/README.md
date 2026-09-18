@@ -290,3 +290,24 @@ rows and files. Complete raw Rocks key/value hashes must remain unchanged.
 This is a private risk fixture, not installed recovery, product Read/export,
 protection or resource/load qualification. Candidate execution outcomes are
 recorded separately; the existence of the harness is not a passing result.
+
+The same signed harness adds three actual native fencing schedules: successor
+activation obtains the owner lock before old metadata DML, or old metadata DML
+holds it through COMMIT/ROLLBACK. A temporary scientific_schema table lock gates
+manager inspection without changing guard/native SQL. Fresh PG blocker pairs
+and backend identities establish the actual order. The old child must be reaped,
+historical sealing must preserve the successor, and a separate native reader must
+match every committed field before the next worker may launch. Committed old
+work refuses duplicate replay; absent old work permits one new lifetime.
+
+Pinned postgres defaults to REPEATABLE READ (41223e5 postgres_storage.cpp), and
+pinned DuckLake retries concurrent-update errors (d8a1881
+DuckLakeTransaction::RetryOnError/RunCommitLoop). The owner-first fixture therefore
+expects exactly40001 followed by the specific55000 writer-guard refusal, two
+metadata batches and no data COMMIT. The proxy classifies only fixed error
+messages, never emits native SQL/credentials, and clears per-transaction state on
+ReadyForQuery idle, including after rollback. The two other schedules hold actual
+COMMIT and either forward it or close without forwarding. Expected final physical
+files are14/8/14, including six retained old orphans in each rollback case; eight
+files are catalog references in all three. These are planned assertions until
+their exact-source execution is recorded, not installed recovery or orphan cleanup.

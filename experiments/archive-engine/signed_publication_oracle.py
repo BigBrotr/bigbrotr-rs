@@ -14,6 +14,7 @@ sys.path.insert(0, str(ROOT / 'experiments/ingest-bootstrap'))
 from oracle import cbor
 
 DATASET = bytes([1]) * 16
+MODES = ('normal', 'before', 'after', 'owner_first', 'held_commit', 'held_rollback')
 EVENT = json.loads((ROOT / 'experiments/identity-contract/signed-fixture.json').read_text())['events']['E_public']
 TABLES = ('dictionaries', 'events', 'event_eligibility_facts', 'event_receive_facts', 'provenance_facts', 'archive_commits')
 DESCRIPTOR_FIELDS = ('event_id class url clock vantage software method_id public_key route_class '
@@ -112,34 +113,44 @@ def corpus():
     return batches, tables
 
 
-def expected(mode):
-    assert mode in ('normal', 'before', 'after')
+def expected(mode, bootstrap_only=False):
+    assert mode in MODES
     batches, tables = corpus()
-    if mode == 'before':
+    empty_event = mode == 'before' or bootstrap_only
+    if empty_event:
         for name in tables:
             tables[name] = [r for r in tables[name] if r['source_record_id']['sequence'] <= 5]
-    for ordinal, batch in enumerate(batches[:1 if mode == 'before' else 2], 2):
-        n = 180 + ('normal', 'before', 'after').index(mode) * 8 + ordinal
+    for index, batch in enumerate(batches[:1 if empty_event else 2]):
+        ordinal = 2 if index == 0 else 4 if mode in ('owner_first', 'held_rollback') else 3
+        n = 180 + MODES.index(mode) * 8 + ordinal
         tables['archive_commits'].append(dict(dataset_id=DATASET.hex().upper(), schema_version=1,
             topology_generation=0, batch_digest=batch['archive_digest'].upper(), record_count=5,
             input_ranges=[dict(shard_id=0, owner_epoch=1, first_sequence=batch['first'], last_sequence=batch['last'])],
             attempt_id=(bytes([n]) * 16).hex().upper(), publication_ordinal=ordinal))
-    return dict(event='readback', mode=mode, tables=tables, signed_event=None if mode == 'before' else EVENT)
+    return dict(event='readback', mode=mode, tables=tables, signed_event=None if empty_event else EVENT)
 
 
 def check(mode, parent, reader):
-    assert [r['event'] for r in parent] == ['signed-reopened', 'retained-inputs', 'terminal']
-    before, pending, terminal = parent
+    stages = ['signed-reopened', 'retained-inputs']
+    if MODES.index(mode) >= 3:
+        stages += ['activation-begin', 'activation-complete', 'old-excluded']
+        assert parent[2]['backend_pid'] > 0
+        assert parent[3] == dict(event='activation-complete', ordinal=4)
+        assert parent[4] == dict(event='old-excluded', worker_active_permits=0)
+    assert [r['event'] for r in parent] == stages + ['terminal']
+    before, pending, terminal = parent[0], parent[1], parent[-1]
     assert before['exact_admission_retry'] and before['rejections'] == ['Signature', 'EventId']
     assert before['rocks_rows'] > 10 and before['rocks_rows'] == terminal['rocks_rows']
     assert before['rocks_digest'] == terminal['rocks_digest'] and len(before['rocks_digest']) == 64
     assert pending['batches'] == corpus()[0], 'independent retained fact/admission/archive identities'
     assert terminal['worker_active_permits'] == 0 and terminal['mode'] == mode
     outcomes = []
-    for ordinal, first in [(1, 6), (2, 1), (3, 6), (4, 6)][:4 if mode == 'normal' else 3]:
-        n = 180 + ('normal', 'before', 'after').index(mode) * 8 + ordinal
-        snapshots, files = (2, 0) if ordinal == 1 else (3, 2) if ordinal == 2 or mode == 'before' else (4, 8)
-        outcomes.append(dict(ordinal=ordinal, first=first, success=ordinal == 2 or ordinal == 3 and mode == 'normal',
+    for ordinal, first in [(1, 6), (2, 1), (3, 6), (4, 6)][:3 if mode in ('before', 'after') else 4]:
+        n = 180 + MODES.index(mode) * 8 + ordinal
+        snapshots, files = ((2, 0) if ordinal == 1 else (3, 2) if ordinal == 2 or
+                            ordinal == 3 and mode in ('before', 'owner_first', 'held_rollback') else (4, 8))
+        success = ordinal == 2 or ordinal == 3 and mode in ('normal', 'held_commit') or ordinal == 4 and mode in ('owner_first', 'held_rollback')
+        outcomes.append(dict(ordinal=ordinal, first=first, success=success,
             snapshots=snapshots, files=files, attempt_id=(bytes([n]) * 16).hex()))
     assert terminal['outcomes'] == outcomes, 'publication outcomes'
     assert reader == expected(mode), 'complete scientific rows and signed event'

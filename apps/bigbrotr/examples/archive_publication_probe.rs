@@ -166,6 +166,13 @@ fn directory(path: PathBuf) -> PathBuf {
     fs::set_permissions(&path, fs::Permissions::from_mode(0o700)).unwrap();
     path
 }
+async fn barrier(path: &Path, seconds: u64) {
+    let end = Instant::now() + Duration::from_secs(seconds);
+    while !path.try_exists().unwrap() {
+        assert!(Instant::now() < end, "fixture barrier deadline");
+        tokio::time::sleep(Duration::from_millis(10)).await;
+    }
+}
 async fn native_state(client: &Client) -> (i64, i64) {
     let row=client.query_one("SELECT (SELECT count(*) FROM public.ducklake_snapshot),(SELECT count(*) FROM public.ducklake_data_file)",&[]).await.unwrap();
     (row.get(0), row.get(1))
@@ -175,6 +182,9 @@ async fn run(mode: &str, port: u16) {
         "normal" => 0u8,
         "before" => 1,
         "after" => 2,
+        "owner_first" => 3,
+        "held_commit" => 4,
+        "held_rollback" => 5,
         _ => panic!("closed case"),
     };
     let database = format!("bbpub_{mode}");
@@ -258,8 +268,12 @@ async fn run(mode: &str, port: u16) {
     }
     emit(serde_json::json!({"event":"retained-inputs","batches":expected_pending}));
     let mut outcomes = Vec::new();
+    let mut successor: Option<(
+        bigbrotr::storage::postgres::archive_attempt::ArchiveAttemptReceipt,
+        catalog_guard::FreshWriter,
+    )> = None;
     for (ordinal, first) in [(1u8, 6), (2, 1), (3, 6), (4, 6)] {
-        if ordinal == 4 && mode != "normal" {
+        if ordinal == 4 && matches!(mode, "before" | "after") {
             break;
         }
         owner.refresh(validate).await.unwrap();
@@ -270,6 +284,7 @@ async fn run(mode: &str, port: u16) {
             std::slice::from_ref(pending.batch()),
         )
         .unwrap();
+        let expected_digest = archive.digest();
         let n = 180 + index * 8 + ordinal;
         let request = ArchiveAttemptRequest::new(
             [n; 16],
@@ -280,19 +295,26 @@ async fn run(mode: &str, port: u16) {
             &archive,
         )
         .unwrap();
-        let receipt = owner
-            .register_archive_attempt(&request, &Cell::new(false))
+        let (receipt, writer) = if let Some((receipt, writer)) = successor.take() {
+            assert_eq!(ordinal, 4);
+            assert_eq!(receipt.request(), &request);
+            (receipt, writer)
+        } else {
+            let receipt = owner
+                .register_archive_attempt(&request, &Cell::new(false))
+                .await
+                .unwrap();
+            let writer = catalog_guard::provision_and_activate(
+                &mut admin,
+                &identity,
+                &receipt,
+                &Cell::new(false),
+            )
             .await
             .unwrap();
+            (receipt, writer)
+        };
         assert!(receipt.created);
-        let writer = catalog_guard::provision_and_activate(
-            &mut admin,
-            &identity,
-            &receipt,
-            &Cell::new(false),
-        )
-        .await
-        .unwrap();
         let before = native_state(&admin).await;
         let route = CatalogRoute {
             address: "127.0.0.1".parse().unwrap(),
@@ -300,15 +322,72 @@ async fn run(mode: &str, port: u16) {
             database: &database,
             tls: CatalogTls::LocalPlaintext(PlaintextBoundary::Loopback),
         };
-        let result = preparation(
-            &installation,
-            &directory(home.join(format!("publish-{ordinal}-temp"))),
-            &cancel,
-        )
-        .publish_pending(&pending, writer, &route, &worker_budget);
-        let success = ordinal == 2 || (ordinal == 3 && mode == "normal");
+        let temp = directory(home.join(format!("publish-{ordinal}-temp")));
+        let result = if ordinal == 3 && index >= 3 {
+            let next = ArchiveAttemptRequest::new(
+                [n + 1; 16],
+                catalog,
+                [80; 16].try_into().unwrap(),
+                [n + 2; 16].try_into().unwrap(),
+                3,
+                &archive,
+            )
+            .unwrap();
+            let next_receipt = owner
+                .register_archive_attempt(&next, &Cell::new(false))
+                .await
+                .unwrap();
+            assert!(next_receipt.created);
+            let copied_installation = WorkerInstallation {
+                root: installation.root.clone(),
+                executable: installation.executable,
+            };
+            let copied_budget = worker_budget.clone();
+            let copied_database = database.clone();
+            // Keep the actual spawning thread alive through positive child reap.
+            // Control's connection driver remains runnable during native work.
+            let child =
+                tokio::task::spawn_blocking(move || {
+                    let route = CatalogRoute {
+                        address: "127.0.0.1".parse().unwrap(),
+                        port,
+                        database: &copied_database,
+                        tls: CatalogTls::LocalPlaintext(PlaintextBoundary::Loopback),
+                    };
+                    preparation(&copied_installation, &temp, &AtomicBool::new(false))
+                        .publish_pending(&pending, writer, &route, &copied_budget)
+                });
+            barrier(&home.join("activate"), 15).await;
+            let pid: i32 = admin
+                .query_one("SELECT pg_backend_pid()", &[])
+                .await
+                .unwrap()
+                .get(0);
+            emit(serde_json::json!({"event":"activation-begin","backend_pid":pid}));
+            let next_writer = catalog_guard::provision_and_activate(
+                &mut admin,
+                &identity,
+                &next_receipt,
+                &Cell::new(false),
+            )
+            .await
+            .unwrap();
+            successor = Some((next_receipt, next_writer));
+            emit(serde_json::json!({"event":"activation-complete","ordinal":4}));
+            child.await.unwrap()
+        } else {
+            preparation(&installation, &temp, &cancel).publish_pending(
+                &pending,
+                writer,
+                &route,
+                &worker_budget,
+            )
+        };
+        let success = ordinal == 2
+            || (ordinal == 3 && matches!(mode, "normal" | "held_commit"))
+            || (ordinal == 4 && matches!(mode, "owner_first" | "held_rollback"));
         if success {
-            assert_eq!(result.unwrap().batch_digest, archive.digest());
+            assert_eq!(result.unwrap().batch_digest, expected_digest);
         } else {
             assert!(
                 matches!(result, Err(PublicationError::OutcomeUnknown)),
@@ -317,24 +396,31 @@ async fn run(mode: &str, port: u16) {
         }
         assert_eq!(worker_budget.snapshot().active_permits(), 0);
         // Sealing and fresh inspection are separate from positive child reap.
-        // The fixture never retries an ambiguous third publication or deletes files.
-        assert!(
+        // A historical seal must preserve the already active successor. The
+        // harness independently reads the receipt before permitting its launch.
+        assert_eq!(
             catalog_guard::seal(&mut admin, &identity, &receipt, &Cell::new(false))
                 .await
-                .unwrap()
+                .unwrap(),
+            !(ordinal == 3 && index >= 3)
         );
         catalog_guard::inspect(&mut admin, &identity).await.unwrap();
         let after = native_state(&admin).await;
         let expected = match ordinal {
             1 => before,
             2 => (3, 2),
-            3 if mode == "before" => (3, 2),
+            3 if matches!(mode, "before" | "owner_first" | "held_rollback") => (3, 2),
             3 => (4, 8),
+            4 if success => (4, 8),
             4 => before,
             _ => unreachable!(),
         };
         assert_eq!(after, expected);
         outcomes.push(serde_json::json!({"ordinal":ordinal,"first":first,"success":success,"snapshots":after.0,"files":after.1,"attempt_id":format!("{n:02x}").repeat(16)}));
+        if ordinal == 3 && index >= 3 {
+            emit(serde_json::json!({"event":"old-excluded","worker_active_permits":0}));
+            barrier(&home.join("readback-complete"), 60).await;
+        }
     }
     drop(store);
     let after = ingest::logical_state(&path);
