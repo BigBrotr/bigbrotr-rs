@@ -231,8 +231,11 @@ actual role OID, removes its password/LOGIN, and disables it only if still curre
 Repeated/historical sealing never disables a successor. It retains role/history;
 role garbage collection requires its own lifecycle authority and bounded policy.
 
-These new credential paths await their actual-PG qualification. The selected root
-is still explicitly local. Installed initialization, S3 integration and persistent
+The [credential qualification](../implementation/evidence/p02-catalog-credentials-native-20260918.json)
+at `d2b2609` passes 8 actual-PG sequences and 16 native Rust cases, including actual
+SCRAM login/native attach, password/membership refusal, seal, lost COMMIT response
+and same-intent races. The selected root is still explicitly local. Installed
+initialization, S3 integration and persistent
 launch/recovery remain required. Never launch a
 second native client under the same attempt merely because activation is observed.
 Replacement requires a new retained intent, unique worker and credential lifetime.
@@ -248,8 +251,9 @@ qualifies14 actual PG cases at `55dba36`: install/activation lost COMMIT respons
 both activation lock orders, identical retries and cancellation while the original
 transaction still blocks resolution. Independent observations check complete
 identity/privilege effects. These are manager operations with synthetic input;
-native scientific publication, credential custody and installed recovery remain
-open. A matching observation still grants no second native client lifetime.
+native scientific publication, persistent credential/worker recovery and installed
+recovery remain open. A matching observation still grants no second native client
+lifetime.
 
 PostgreSQL documents [session identity and privilege checks](https://www.postgresql.org/docs/16/functions-info.html)
 and [actual trigger metadata](https://www.postgresql.org/docs/16/catalog-pg-trigger.html).

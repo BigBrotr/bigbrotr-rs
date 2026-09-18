@@ -6568,7 +6568,7 @@
       "audit": ".research/implementation/archive-worker/catalog-recovery/55dba36/audit.json"
     },
     "catalog_credentials": {
-      "status": "local implementation and scoped checks; exact-revision native qualification NOT_RUN",
+      "status": "d2b2609 scoped native PASS; source/artifact/state audited; resources stopped-retained and network retired",
       "raw_root": ".research/implementation/archive-worker/catalog-credentials",
       "owner": "root sole writer/integrator",
       "upstream": {
@@ -6594,7 +6594,58 @@
         "clippy": "scoped lib and both catalog examples PASS",
         "independent_review": "read-only AI; OID JSON typing, pre-retry seal oracle and held-race overhead corrected"
       },
-      "native_resources": null
+      "resources": {
+        "source": "d2b260925b2b1d5d46275c53f4f04d4b05631b25",
+        "tree": "df6436e455aea3dd708ed8ae0f3d307fe41d05d7",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-credentials-d2b2609",
+        "owner": "283b16f0bb55f05232390af3d3172359",
+        "container": "bigbrotr-implementation-catalog-credentials-d2b2609",
+        "postgres": "bigbrotr-implementation-catalog-credentials-d2b2609-pg",
+        "network": "bigbrotr-implementation-catalog-credentials-d2b2609",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "state": "stopped-retained",
+        "source_files": 648,
+        "started_at": "2026-09-18T19:17:17.023091+00:00",
+        "network_id": "ec3feec8d475c46683240861717bfa17ec04e9e5743c11ee995ba9541bb7ba61",
+        "postgres_id": "9bdbbd3acba29711811ec999f2283f5636b098cc5d8d8995ce3914629a993b53",
+        "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+        "container_id": "0736621ec76a2a0e92f5ccc4f01f86bf9edcc392712de4697a6ae985ff456fe6",
+        "network_state": "retired",
+        "terminal": {
+          "runner": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-18T19:17:19.39571754Z",
+            "FinishedAt": "2026-09-18T19:20:01.021136638Z"
+          },
+          "postgres": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-18T19:17:17.590915767Z",
+            "FinishedAt": "2026-09-18T19:20:02.003648938Z"
+          }
+        },
+        "finished_at": "2026-09-18T19:20:02.560543+00:00"
+      },
+      "native_root": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-credentials-d2b2609",
+      "report": "docs/implementation/evidence/p02-catalog-credentials-native-20260918.json",
+      "independent_audit": ".research/implementation/archive-worker/catalog-credentials/d2b2609/independent-audit.json",
+      "audit": ".research/implementation/archive-worker/catalog-credentials/d2b2609/audit.json"
     }
   },
   "implementation_monitor_corrections_20260918": {

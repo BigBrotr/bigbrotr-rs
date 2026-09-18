@@ -137,7 +137,7 @@ Both empty owned networks were retired. Persistent product recovery remains open
 
 `catalog_fence.py --case-set guard` is an alternative experiment, two scoped native cases
 PASS at `694be48`:
-`catalog_commit_guard.sql` adds a PostgreSQL BEFORE STATEMENT guard on all28
+`catalog_commit_guard.sql` adds a PostgreSQL BEFORE STATEMENT guard on all 28
 catalog relations created by the pinned DuckLake initializer. Its dedicated
 row-lock-protected login must match `session_user` for every metadata mutation;
 ordinary writers lose DDL privileges. Takeover updates that same row. The two
@@ -235,3 +235,24 @@ audits and terminal cleanup. The temporary initdb readiness race was resolved
 before any application role/database existed; it is retained as a setup failure.
 No scientific publication, worker launch, persistent service recovery or process/
 power-loss durability is implied by an activation receipt.
+
+
+`native_catalog_credentials.py` builds/checks the credential adapter and finite
+supervised bootstrap parent. `catalog_credentials_cases.py <owned-root>` requires
+an exact clean checkout, a fresh inventoried runner/PG namespace, SCRAM host auth
+and the actual Control fixture. Explicit native bootstrap/guard installation uses
+CatalogManager with temporary SUPERUSER for ownership transfer; the controller
+then removes it before actual CREATEROLE-only provisioning. Never infer that an
+ordinary non-superuser manager can take ownership of the bootstrap role's tables.
+
+The [d2b2609 report](../../docs/implementation/evidence/p02-catalog-credentials-native-20260918.json)
+records 8 actual-PG sequences: generated-password authentication/wrong password,
+four membership controls, live-backend and future-login seal refusal, repeated/
+historical seal and fresh native attach; before/after COMMIT loss for provision
+and seal; same-intent commit/rollback races; pre-existing-role refusal. Independent
+state checks precede recovery where necessary, so a retry cannot hide incomplete
+initial sealing. The 16 native Rust cases include signed private preparation after
+the shared parent refactor. All 648 source files/four actual ELF hashes and terminal
+state are independently checked. Owned resources are stopped-retained; network
+retired. No science, source ACK, unique persistent launch or installed recovery is
+qualified by these scoped prerequisites.

@@ -196,6 +196,8 @@ success. Initial creation and attach to an existing native catalog can both
 succeed; neither is proof of freshness, guard installation, an archive receipt or
 launch authorization. The privileged installer independently inspects the resulting
 catalog after the child is joined. Cancellation/unknown completion must preserve
-the prior credential/transaction recovery obligations. This parent path is being
-qualified with real PG and generated credentials; no scientific publisher is
-advertised from a successful bootstrap.
+the prior credential/transaction recovery obligations. The [credential report](../implementation/evidence/p02-catalog-credentials-native-20260918.json)
+at `d2b2609` qualifies actual PG/native bootstrap and fresh-login attach through
+this parent, with positive reap and permit return. The 16 native Rust cases also
+exercise the existing signed Rocks-to-private-worker path after the shared launch
+refactor. No scientific publisher is advertised from a successful bootstrap.

@@ -487,9 +487,9 @@ Sources: [toml DeTable](https://docs.rs/toml/1.1.6+spec-1.1.0/toml/de/struct.DeT
 ## Catalog writer credential material
 
 P02-T04 adds direct edges to already locked `ring` 0.17.14 and `base64` 0.22.1;
-`serde` is also used directly for the borrowed private bootstrap wire.
-no resolved package/version changes. Both disable default features and select
-`alloc`. Fixed 256-bit random ASCII-hex passwords avoid normalization ambiguity.
+`serde` is also used directly for the borrowed private bootstrap wire. There are
+no resolved package/version changes. Ring and base64 disable default features and
+select `alloc`. Fixed 256-bit random ASCII-hex passwords avoid normalization ambiguity.
 The implementation uses ring PBKDF2-HMAC-SHA256 (4096 iterations), HMAC Client/Server
 Key, existing sha2 SHA256 StoredKey, and standard padded base64 in PG's verifier
 format. This is infrastructure credential provisioning, not a general SCRAM client
@@ -516,5 +516,7 @@ Sources/URLs remain under the inventoried ignored credential-work root. Scoped
 ring source inspection covers pbkdf2.rs90–255 and hmac.rs150–300,385–400; the
 [versioned derive API](https://docs.rs/ring/0.17.14/ring/pbkdf2/fn.derive.html)
 owns output/iteration semantics. An independent Python hashlib/hmac vector and
-three Rust material cases pass locally; real PG/native authentication remains
-NOT_RUN for the new product API until the credential report records it.
+three Rust material cases pass locally. The [native credential report](../implementation/evidence/p02-catalog-credentials-native-20260918.json)
+at `d2b2609` qualifies actual PG16.15 SCRAM login, wrong-password refusal,
+non-superuser provisioning/membership, sealing, commit ambiguity and finite native
+handoff. Persistent service recovery and scientific publication remain separate.
