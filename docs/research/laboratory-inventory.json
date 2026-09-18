@@ -1668,7 +1668,7 @@
     "owner": "24373528e10936f41d0c8209ad2280c4",
     "container": "bigbrotr-implementation-ci-0dabfaa",
     "image_tag": "bigbrotr-implementation-ci-0dabfaa:lab",
-    "state": "running",
+    "state": "completed-retained",
     "started_at": "2026-09-18T05:26:42.567748+00:00",
     "image": "sha256:71b2d400bee63fee747e810719c6c50832c68cec76c0b4fb2078df438c68c476",
     "image_created": "2026-09-18T07:27:08.273339172+02:00",
@@ -1686,6 +1686,58 @@
       "pids": 512,
       "published_ports": []
     },
-    "scope": "Foundation Linux amd64 only; no hosted runner, arm64, macOS or release qualification"
+    "scope": "Foundation Linux amd64 only; no hosted runner, arm64, macOS or release qualification",
+    "terminal": {
+      "Status": "exited",
+      "Running": false,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 0,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-09-18T05:27:08.507966573Z",
+      "FinishedAt": "2026-09-18T05:44:55.164029595Z"
+    },
+    "evidence": "docs/implementation/evidence/p01-trusted-ci-tux-20260918.json",
+    "source_and_artifact_audit": "PASS",
+    "practical_output_and_syscall_audit": "PASS",
+    "local_auditors": [
+      ".research/implementation/ci/audit-practical.py",
+      ".research/implementation/ci/observe.py",
+      ".research/implementation/ci/download.py"
+    ]
+  },
+  "implementation_trusted_ci_controls_20260918": {
+    "source": "95ac5c972a3f0c3cbb6da5fc3c5201f7ca86763e",
+    "tree": "669e6de3728a8f400d9aac6779ad42c11455621b",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/ci-controls-95ac5c9",
+    "owner": "9409f20bf28cf1677ee7d4270aa0077d",
+    "container": "bigbrotr-implementation-ci-controls-95ac5c9",
+    "image": "sha256:71b2d400bee63fee747e810719c6c50832c68cec76c0b4fb2078df438c68c476",
+    "status": "PASS",
+    "container_id": "16e5b8f984e79d7efdf49aed797c34b6dc5fdd7121d03480f4b0cc70591af345",
+    "terminal": {
+      "Status": "exited",
+      "Running": false,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 0,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-09-18T05:33:58.543569669Z",
+      "FinishedAt": "2026-09-18T05:33:59.183384745Z"
+    },
+    "local_root": ".research/implementation/ci",
+    "limits": {
+      "cpu": 2,
+      "memory_bytes": 1073741824,
+      "pids": 128,
+      "network": "none"
+    },
+    "scope": "Four real subprocess CI negative controls, including missing tool and killed descendant; no full foundation rerun at this revision"
   }
 }

@@ -303,7 +303,11 @@ with explicit migration 0007, an opaque dedicated connection owner and the first
 Ingest registration consumer. Its [acceptance cases](../../experiments/control-owner/cases.md)
 remain required; [scoped native evidence](evidence/p01-control-owner-native-20260918.json)
 now covers seven adapter scenarios, six SQL negatives and the transaction-lock
-control. This does not finish runtime policy grants, COMMIT faults or native handoff.
+control. [Extended native evidence](evidence/p01-control-owner-faults-native-20260918.json)
+adds acquisition COMMIT ambiguity/cancellation, actual pauses beyond scheduling TTL
+and PostgreSQL crash/restart, with 390 final relations checked independently.
+Release-COMMIT faults, refresh cancellation, runtime policy grants and native
+handoff remain open.
 
 ## P01-T07 — Same-process and remote component adapters
 

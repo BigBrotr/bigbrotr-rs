@@ -75,8 +75,8 @@
       ]
     }
   ],
-  "owner_action": "Owner notified asynchronously to inspect Billing & plans; no billing or spending settings changed by agent.",
-  "continuation": "Local and isolated trusted Tux development/validation continue. This is not a CI PASS, and Tux is not substituted for untrusted PR runners.",
+  "owner_action": "Owner explicitly directed continuation on Tux, including the Actions checks without depending on GitHub execution (Q33). No billing or spending settings changed.",
+  "continuation": "Shared foundation command executed on trusted native Tux at exact revision 0dabfaa; see p01-trusted-ci-tux-20260918.json. Hosted runner status remains NOT_RUN; no untrusted PR runner or release qualification.",
   "previous_run": {
     "id": 35297117157,
     "source": "28211f85e4b77ef59e9b63a5ecc854b2079db38e",

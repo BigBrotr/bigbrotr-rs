@@ -1,0 +1,215 @@
+{
+  "format": "bigbrotr-trusted-foundation-ci-evidence/1",
+  "date": "2026-09-18",
+  "status": "PASS",
+  "scope": "Shared foundation commands executed deliberately on trusted native Tux Linux amd64; not GitHub-hosted runner availability or complete product qualification.",
+  "source": {
+    "revision": "0dabfaa15bfa2dbe816525dc7c675074e897cfa5",
+    "tree": "e99f90be336643005fd062046f76155c40e2a6b6",
+    "dirty": false
+  },
+  "command": "python3 tools/ci.py --output .research/ci",
+  "identity_audit": {
+    "status": "PASS",
+    "source": "0dabfaa15bfa2dbe816525dc7c675074e897cfa5",
+    "tree": "e99f90be336643005fd062046f76155c40e2a6b6",
+    "exact_source_files": 503,
+    "binary_sha256": "8163423abee9e79be365da0c63a47a88e54c372a6504d00a306ec87173dd83b0",
+    "binary_bytes": 7591368,
+    "architecture": "ELF64 amd64",
+    "native_tools_independently_hashed": {
+      "CC": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+      "CXX": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+      "AR": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+      "LIBCLANG_PATH": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+      "discovery": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e"
+    },
+    "inputs": {
+      "source-manifest.json": "196ffe74da875ef9b4d7b404069a1902fff85abd9c3faa073b20c0f2d707e8c9",
+      "build-result.json": "7cc4d307e02061831a2954f3baad66364104c4aa71adb94d9e6a7b26c6fbfa15",
+      "observation.json": "fc56dc2047bf86c443160eb5a83db32bb63b9c0941525deb8156437314fd4eba",
+      "source.tar": "eb72eac1a7cb45ace62c19867a08a184005602734115b7a7b6e282e5b4161743"
+    },
+    "scope": "Git/archive/actual extracted sources and downloaded executable identity; not engine runtime acceptance"
+  },
+  "checks": {
+    "status": "PASS",
+    "source": "0dabfaa15bfa2dbe816525dc7c675074e897cfa5",
+    "container_state": {
+      "Status": "exited",
+      "Running": false,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 0,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-09-18T05:27:08.507966573Z",
+      "FinishedAt": "2026-09-18T05:44:55.164029595Z"
+    },
+    "limits_verified": true,
+    "checks": {
+      "collected": 14,
+      "executed": 14,
+      "failed": 0,
+      "not_run": 0
+    },
+    "rust_test_counts": {
+      "passed": 197,
+      "failed": 0,
+      "ignored": 0
+    },
+    "python_control_tests": 20,
+    "practical": {
+      "p01-event-cli": {
+        "counts": {
+          "collected": 40,
+          "executed": 40,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        "report_sha256": "a00ac2427f619cf027f3ea0e43734d3ffcf1e0c08d96f0e426448e5055f0314e"
+      },
+      "p01-config-static": {
+        "counts": {
+          "collected": 64,
+          "executed": 64,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        "report_sha256": "6eba0d5e1c55fb73e0afea1e563dcf4b82d8fbef33ec361694f580a787597659"
+      }
+    },
+    "system_packages": {
+      "clang": "1:14.0-55.7~deb12u1",
+      "g++": "4:12.2.0-3",
+      "libc6": "2.36-9+deb12u14",
+      "libclang-dev": "1:14.0-55.7~deb12u1",
+      "llvm": "1:14.0-55.7~deb12u1",
+      "nodejs": "18.20.4+dfsg-1~deb12u2",
+      "openssl": "3.0.20-1~deb12u2",
+      "strace": "6.1-0.1"
+    },
+    "advisory_database_revision": "f58ccfe51a5954186716998f01360d1079a8a3a5",
+    "logs_sha256": {
+      "acceptance-controls.log": "166a77038b3ffad11cfdb4fb10cc45e23a515ed7d7c2ace81ffec7445e35c03b",
+      "clippy.log": "35048cb8df817f4b08facf8b9f93c18fcaba93826239627a8c6e43cedaa18644",
+      "dependency-policy.log": "245deecd3483cc5322ad2199ecc5c9421e832e3f1e6d2f8419170f3c74bccf46",
+      "documentation-links.log": "8b5e273c311d91efa7a2ec6e451d66620eb32c233faa45dc764c1572b34ee38c",
+      "exact-source-build.log": "df83d2a0c6621f0e88ecd11f70b3b84240caa5b1862432b4ffbee0e2671ea116",
+      "format.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "install-deny.log": "19489c251735ddc5ec85a1a7919a0f641b10769568d97d3c6ac1fdaf6817cddf",
+      "p01-config-static.log": "2f7361e5758c1dd01b4f61d4fef174295eb9675af82c7cfe8451ab1565550c6b",
+      "p01-event-cli.log": "d687edba24442d07d0658e36f2db56661e953851eaedf01170d3532ae8d7512d",
+      "planning-artifacts.log": "50959314fb7f62e7f2d73f29e58a0cdebd92df82408e1b401696274b27b5d035",
+      "prepare-links.log": "8b5e273c311d91efa7a2ec6e451d66620eb32c233faa45dc764c1572b34ee38c",
+      "rust-doc.log": "a3488b4819c9e205a7f62b4cc55ba0d75d6b88b1c8ae1cae94d744e9f934652c",
+      "rust-tests.log": "9a8cf231b5c3053454b04508b3ed4291199151c1caf5fc1c0e21bbb8ce0e985c",
+      "toolchain.log": "95a31610aa632f702b70d2d5705dbde9a26b2766dfb72ec7e3a04b1000c61eaf"
+    }
+  },
+  "practical_audit": {
+    "status": "PASS",
+    "source": "0dabfaa15bfa2dbe816525dc7c675074e897cfa5",
+    "signed_events_compared": 17,
+    "signed_negative_controls": 5,
+    "recipe_documents": 6,
+    "recipe_reports": 12,
+    "generated_documents": 2,
+    "initialization_distinct_ids": 4,
+    "complete_traces": 77,
+    "scope": "Independent frozen-output and actual syscall audit; temporary filesystem state otherwise remains harness-observed."
+  },
+  "resources": {
+    "format": "bigbrotr-trusted-ci-lab/1",
+    "source": "0dabfaa15bfa2dbe816525dc7c675074e897cfa5",
+    "tree": "e99f90be336643005fd062046f76155c40e2a6b6",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/ci-0dabfaa",
+    "owner": "24373528e10936f41d0c8209ad2280c4",
+    "container": "bigbrotr-implementation-ci-0dabfaa",
+    "image_tag": "bigbrotr-implementation-ci-0dabfaa:lab",
+    "state": "completed-retained",
+    "started_at": "2026-09-18T05:26:42.567748+00:00",
+    "image": "sha256:71b2d400bee63fee747e810719c6c50832c68cec76c0b4fb2078df438c68c476",
+    "image_created": "2026-09-18T07:27:08.273339172+02:00",
+    "container_id": "d09ed9e1815eaeda6010011301143b6e3cdd419decc73b85be886da407407dd4",
+    "terminal": {
+      "Status": "exited",
+      "Running": false,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 0,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-09-18T05:27:08.507966573Z",
+      "FinishedAt": "2026-09-18T05:44:55.164029595Z"
+    }
+  },
+  "limits": {
+    "cpus": 2,
+    "memory_bytes": 6442450944,
+    "swap_extra_bytes": 0,
+    "pids": 512,
+    "published_ports": [],
+    "source_and_root_read_only": true,
+    "privileged": false,
+    "native_architecture": "x86_64",
+    "peak_rss": "NOT_MEASURED"
+  },
+  "runner_correction": {
+    "revision": "95ac5c972a3f0c3cbb6da5fc3c5201f7ca86763e",
+    "finding": "A command unavailable before Popen returned was incorrectly counted as executed failure. Reproduced by a missing-tool negative control, then corrected to NOT_RUN while retaining overall pipeline failure.",
+    "validation": "Four real subprocess controls PASS on Mac and native Tux; Linux container exit 0, OOM false. Full foundation was not repeated: Rust, SQL, lockfile, clean builder and practical runners are unchanged from 0dabfaa. Every command actually started in that full CI run.",
+    "native_resources": {
+      "source": "95ac5c972a3f0c3cbb6da5fc3c5201f7ca86763e",
+      "tree": "669e6de3728a8f400d9aac6779ad42c11455621b",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ci-controls-95ac5c9",
+      "owner": "9409f20bf28cf1677ee7d4270aa0077d",
+      "container": "bigbrotr-implementation-ci-controls-95ac5c9",
+      "image": "sha256:71b2d400bee63fee747e810719c6c50832c68cec76c0b4fb2078df438c68c476",
+      "status": "PASS",
+      "container_id": "16e5b8f984e79d7efdf49aed797c34b6dc5fdd7121d03480f4b0cc70591af345",
+      "terminal": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-09-18T05:33:58.543569669Z",
+        "FinishedAt": "2026-09-18T05:33:59.183384745Z"
+      }
+    }
+  },
+  "retained_evidence": {
+    "root": ".research/implementation/ci",
+    "files_sha256": {
+      "native-0dabfaa/audit.json": "2a46750bc7f3ac4c0eb6a720e0fbef9139640564991787f4e8cea79ce5964383",
+      "native-0dabfaa/ci-audit.json": "68855a402a6c6d7175edd1d63aeabbef618d1018dabdf8821aaa5774a87ee739",
+      "native-0dabfaa/ci-result.json": "f3601bf69b46c048ac3035f84336f7aa202b63e4a913922cb35b4831227887e1",
+      "native-0dabfaa/practical-audit.json": "4e8bb442ed1247efb0be04d33419c087211d231a75c0da27ae1544923e159131",
+      "audit-practical.py": "6407fab398079cf261126dee12ae1bde6d4a0f9842d88a474b3a3249cbb9dbe3",
+      "observe.py": "f2ab19700e41cd25c177cf16a438d84d66faf95a7ceafc4d2d6aee7e93131dd3",
+      "download.py": "cd02121eb47a73a2ff978f453eb1977b352fe1f5fd12c9336e0fecb90a2a877a",
+      "launch.py": "26cea280f8398d6b193df1aec6c86d9c7aaa192e52e42783cfd04a78ae652740",
+      "control_check.py": "411ea03f2d7e799da36c583e7d994afd2e69a31c72b8b8c2e55165eeedab9a64",
+      "controls-linux-final.log": "555720c41e9c69c8e7a57d44542d07c6edf0fa96c0768b539d511ac21ba51d8e",
+      "controls-mac-final.log": "29fcc4cceb68c620f15640c89e2b3a683d66e931f3413419405c7cc5ca05c6a6",
+      "missing-tool-red.log": "db7d36fbae1e35b3acbd2a25cca945ea26255d3419c14202a753233c003c7e3b"
+    }
+  },
+  "not_run": [
+    "GitHub-hosted jobs: billing blocked; no runner execution claimed.",
+    "Native Linux arm64 and macOS full CI for these revisions.",
+    "Full product: durable signed event admission/archive/read/export/restart, live runtime, load, browser, Compose and release journeys.",
+    "Release publication, authentication and Docker Hub promotion."
+  ]
+}
