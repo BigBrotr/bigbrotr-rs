@@ -36,3 +36,15 @@ dumps. Process crash recovery is not a power-loss qualification.
 Rows and successful commands do not prove live leases, native fencing, running
 role revocation, disk exhaustion, maximum-size resource behavior, arm64 or release
 installation. No such claim is made. A planned scenario is not executed evidence.
+
+Additional bounded native checks use `fk_races.py --root LAB --source SOURCE`
+and `enrollment_after.py --root LAB --source SOURCE`. Execute them from real
+files: they bind their own file SHA-256, the clean product source and the mounted
+executable. A helper-only revision can be extracted separately from Git without
+switching an actively consumed product checkout; record both identities.
+The FK runner holds a real child insert open while the CLI waits, tests commit
+and rollback, and includes a weaker `NO KEY UPDATE` negative control. The owner
+consumer runner enrolls/inspects a real account after activation and confirms the
+initial receipt is unchanged. Run `schema_cases.sql` only in the populated owned
+lab and compare the entire Control dump before/after; six expected SQLSTATE
+refusals must leave no mutation. These additions remain proposed until executed.
