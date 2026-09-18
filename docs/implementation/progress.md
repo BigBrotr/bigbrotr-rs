@@ -22,16 +22,20 @@ be acknowledged/reclaimed.
 
 ## Git and integrating ownership
 
-Mac main; root is sole writer/integrator. Latest tested source
+Mac main; root is sole writer/integrator. Product and evidence delivery
+`8eaa449674d80971a41f7fbcb367b9875257278b` is pushed to private origin/main and was
+independently read back from the remote. Tested product/fixture source remains
 `2075a393a4385b519375a6947e05719c4baf4c7e`, tree
-`df1adef57e70fd5a8b5f65352f2123c5aeb89d6a`, has seven unpublished commits after
-observed origin/main `4db603b0dc09ae1c65c9bb301af33a60f7939854`. No merge/rebase or
-remote editing. The pending evidence commit changes only documentation/inventory;
-its product/fixture source remains identical to tested2075a39. Resolve the actual
-containing commit and fetch/inspect origin before pushing the verified outcome.
-All compilers/lab sessions are terminal; no unfinished cleanup. Read-only AI source
-and final recorded-evidence reviews finished without further findings; root owns
-integration. Fetch completed89606; origin/main is unchanged at4db603b.
+`df1adef57e70fd5a8b5f65352f2123c5aeb89d6a`; the2075a39→8eaa449 diff is documentation
+and evidence only. The containing checkpoint-only commit follows8eaa449; resolve
+actual HEAD/origin on resumption. There is no merge/rebase, alternate writer or
+remote source editing. Before this checkpoint refresh the worktree was clean.
+Push15224 is terminal. Repository remains private, named bigbrotr-rs, not archived.
+
+All compilers/lab sessions are terminal; no unfinished cleanup. Root freshly
+rechecked the final owned Tux IDs: stopped143/0, no OOM, network absent. Read-only
+AI source and recorded-evidence reviews finished without further findings. Root
+performed actual native execution, independent source/artifact checks and cleanup.
 
 ## Active publication risk slice
 
@@ -380,8 +384,8 @@ checks passed. No product/dependency/schema/applied SQL changed after3c380fe.
 
 ## Next bounded action
 
-Source/evidence review and document checks passed. Commit/push the verified private
-outcome against inspected origin, then continue P02-T04 steps4/5: qualify
+Source/evidence review, document checks and private delivery passed. Continue
+P02-T04 steps4/5: qualify
 actual scientific publisher fencing with a live stale worker and both transaction
 lock orders, preserving prepared files and retained signed pending. Reuse the
 signed corpus and full row oracle in a new exact-source lab; do not substitute
