@@ -105,7 +105,9 @@ class Probe:
             if timeout <= 0 or not select.select([self.process.stdout], [], [], timeout)[0]:
                 raise AssertionError('native barrier deadline')
             data = os.read(self.process.stdout.fileno(), 4096 - len(self.buffer))
-            assert data, 'native process exited before its barrier'
+            if not data:
+                report['unexpected_child_exit'] = self.finish(False)
+                raise AssertionError('native process exited before its barrier')
             self.buffer.extend(data)
         line, _, remaining = self.buffer.partition(b'\n')
         self.buffer = remaining
