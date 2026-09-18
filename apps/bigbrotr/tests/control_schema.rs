@@ -189,3 +189,12 @@ fn compiled_migrations_match_the_central_application_order() {
         assert_eq!(entry["name"], compiled.name);
     }
 }
+
+#[test]
+fn first_activation_appends_reserved_management_commands_after_enrollment() {
+    let plan = plan(&[], 802).unwrap();
+    assert_eq!(
+        plan.pending.iter().map(|m| m.version).collect::<Vec<_>>(),
+        [1, 2, 801, 805, 802]
+    );
+}

@@ -142,6 +142,12 @@ independent vectors; changing lane/memory/time settings is a versioned policy.
 - [ ] **Step 4:** propose `cargo test -p bigbrotr --test management_transactions` with two editors, duplicate command/different digest, lost reply, service restart mid-apply, failed role, rollback after provenance-off interval, lost revocation notice and PG outage. Negative control: kill an affected role before acknowledgment; the controller must show pending/failed until its authority expires, even though the config row committed successfully.
 - [ ] **Step 5:** run proposed `management-transactions` acceptance via CLI and HTTP using the same command key. Pause Indexer during collection, observe archived progress and explicitly stale serving, resume, restart the UI/client, and verify the same durable job/revision receipts. Retain independent read-frontier and archive-membership evidence.
 
+The first 0802 consumer is the protected deployment-only
+[initial security activation](../specification/operations-contract.md#explicit-first-security-revision).
+It persists the first real typed command receipt without creating empty job or
+application tables. This does not close any general-edit, running-role barrier,
+HTTP or durable-job step above.
+
 **Failure contract:** no automatic destructive compensation for partial apply. Report the affected roles and recovery action; security restrictions fail closed. A cancelled import retains committed events; a rollback cannot invent omitted provenance, retract delivered data or recall publication.
 
 **Commit and disconnect boundary:** persist command idempotency record, accepted job and its authorization/source pins in the same transaction before replying. A lost response is resolved using the same command key; it does not create another job. Before commit, request cancellation may abort acceptance; after commit, the worker is owned by the durable scheduler rather than the HTTP request context. Recovery tests kill the controller before commit, after commit/before reply and after worker admission/before progress update, then compare one logical job and stable output receipts. Operator cancellation is a separate authenticated command and is reauthorized when processed.

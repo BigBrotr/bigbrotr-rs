@@ -166,6 +166,14 @@ P05-to-P08 implementation cycle. Public discovery requires its separate verified
 export manifest and publication grant/state. Duplicate metadata cannot authorize
 one owner to reclaim a file still pinned by another consumer.
 
+The first implemented 0802 consumer appends after 0805 and supplies only
+`management_commands` for explicit first security activation. Its bytes16 request
+key binds the installation actor, expected configuration/digest and immutable
+policy/audit receipt. These bootstrap obligations are retained beyond ordinary
+audit TTL. Existing initialization and enrollment rows keep their meanings;
+per-role applications, general command kinds and job dependencies remain later
+additive migrations under this responsibility, not empty early tables.
+
 Shared finite-job rows are created by P02-T01 in migration 0001 for the first
 P03/P04 consumers. The 0802 entry above adds management commands, grants and
 dependency/application fields over that existing job authority; it does not

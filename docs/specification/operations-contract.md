@@ -340,6 +340,51 @@ policy revision is not fully applied until all affected work has acknowledged or
 lost its <=5 s authority and bounded in-flight drain is excluded. A document edit
 alone is not a security activation receipt in either mode.
 
+### Explicit first security revision
+
+After explicit configuration initialization, `config activate-initial --file
+CONFIG --request-id HEX32 --expected-revision N` accepts security revision 1.
+This finite local deployment command requires the protected non-migrator Control
+credential. It is independent of human enrollment; the immutable installation
+principal attributes the transition and is never authenticated as a human.
+The complete accepted product-policy document is restored against current roots
+and snapshotted without changing its closed `bigbrotr-product-policy/1` encoding
+or domain-separated digest. The security snapshot references the exact accepted
+configuration revision. It creates no new defaults, action permissions or session.
+Service consumers still validate roots, configured role/action scope and current
+leases; management consumers still authenticate and check current stored grants.
+
+Managed mode ignores changed file policy seeds. Declarative mode requires the
+normalized file policy digest to equal the accepted one; drift needs the later
+configuration-change transaction and cannot be smuggled through first activation.
+Authority mode, dataset and instance must match. The expected revision is a
+positive canonical decimal u64; the request ID is nonzero lowercase bytes16 hex.
+
+Under the shared migration lock and an exclusive deployment-row lock, acceptance
+requires no previous policy, topology, role instance, owner epoch or job. Retired
+runtime history also refuses first activation. The dataset lock excludes inserts
+that acquire its foreign-key reference until the check/commit completes. With no
+runtime ever admitted, there are no old authorizations or streams to drain; this
+is the sole zero-participant activation barrier. It does not stand in for the
+required restrictive-change acknowledgements/expiry for a running deployment.
+
+Migration 0802 appends the first typed management-command receipt after 0805 in
+the central application order. The policy snapshot, dataset head, accepted audit
+and command receipt commit atomically. The receipt binds actor, request ID,
+expected configuration revision, authority mode, configuration digest and the
+resulting security revision. Reusing the ID with different content fails. The
+request digest is SHA-256 of ASCII `bigbrotr/activate-initial/1` followed by NUL,
+dataset bytes16, instance bytes16, expected revision as unsigned big-endian
+bytes8, one mode byte (0 managed, 1 declarative) and the policy digest bytes32.
+The actor/request key scopes this content digest in the command primary key.
+
+A lost COMMIT returns outcome-unknown (exit 4); retrying the same request under
+the same serialization resolves the immutable receipt without another write,
+even after runtime begins. A new ID after activation fails. The response records
+the historical zero-participant barrier and explicitly grants no runtime lease.
+No automatic startup mutation or populated-deployment backfill is allowed.
+Existing published migrations and credential/grant rows retain their meanings.
+
 Schema is the one key/default/range owner. Existing service tables keep their
 keys; new composition keys below belong to P01-T04, emitted in generated reference
 and effective-config diagnostics. Explicit missing, unknown, duplicate, inert and

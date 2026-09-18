@@ -223,6 +223,12 @@ now has a deployment-only atomic writer and installation attribution; [25 native
 passed on Linux amd64. Management CAS, application plans, mode switching and
 authentication remain step 6 work; an
 inspection result is neither an applied-policy receipt nor a writer grant.
+The explicit first-security-revision slice adds `config activate-initial` and the
+0802 command receipt under the [owning transition](../specification/operations-contract.md#explicit-first-security-revision).
+Its zero-participant barrier is limited to a deployment with no runtime history;
+actual grants, policy leases, populated-deployment changes and native-owner
+integration remain P01-T06/P08-T03 acceptance work. Native qualification must be
+recorded separately before this path is claimed exercised.
 
 ## P01-T05 — Shared resource budget, scheduling and lifecycle
 

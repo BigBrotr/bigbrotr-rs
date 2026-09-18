@@ -137,6 +137,15 @@ initialization audit records. The subsequent 0805
 extends those relations with real human accounts and credentials; an existing
 installation actor is never promoted into an authenticated account.
 
+The separate `config activate-initial --file PATH --request-id HEX32
+--expected-revision 1` command requires migration 0802 and the same protected
+application credential. It snapshots accepted configuration into the first
+security revision only before any runtime activity, atomically with its command
+and audit receipts. It does not enroll a human or grant a writer lease. See the
+[owning transition](../specification/operations-contract.md#explicit-first-security-revision)
+for managed/declarative drift and unknown-COMMIT recovery. Runtime activation,
+subsequent edits and revocation remain distinct responsibilities.
+
 ## Shared budget allocator
 
 Treat the host envelope as the upper bound. Component limits cannot all claim the

@@ -17,13 +17,13 @@
     {
       "version": 805,
       "name": "0805_owner_enrollment.sql"
-    }
-  ],
-  "reserved": [
+    },
     {
       "version": 802,
       "name": "0802_management_commands.sql"
-    },
+    }
+  ],
+  "reserved": [
     {
       "version": 803,
       "name": "0803_saved_views.sql"

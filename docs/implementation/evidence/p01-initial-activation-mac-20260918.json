@@ -1,0 +1,56 @@
+{
+  "format": "bigbrotr-scoped-evidence/1",
+  "date": "2026-09-18",
+  "task_ids": [
+    "P01-T04",
+    "P01-T06",
+    "P08-T03"
+  ],
+  "scope": "Explicit zero-participant first security snapshot; no runtime grant",
+  "source_base": "e6f480223cf44a9955b799620a1394ef28be6859",
+  "environment": {
+    "host": "Mac",
+    "target": "aarch64-apple-darwin"
+  },
+  "tests": {
+    "red": "actual CLI returned unsupported command exit2 before implementation; catalog target802 returned UnknownTarget",
+    "workspace": {
+      "status": "PASS",
+      "passed": 197,
+      "failed": 0,
+      "ignored": 0
+    },
+    "clippy": "PASS --workspace --all-targets -- -D warnings",
+    "format": "PASS",
+    "structural_artifacts": "PASS; not semantic product evidence"
+  },
+  "raw": {
+    ".research/implementation/initial-activation/workspace.log": "a67770310c23580a0e73514c81ac1f248e18d9308851c0bf2e89159148d70bad",
+    ".research/implementation/initial-activation/clippy.log": "2d838581b6722c0aaf0f22ad0f1eecb7890e433f635fc86efb50d60929d738f0",
+    ".research/implementation/initial-activation/tux-preflight.json": "6fd41dcd9ec3ca1eb52bf0490fc1e8702c6c179cc92a71d8efc36a35a39e5e6a"
+  },
+  "dependency_inspection": [
+    {
+      "url": "https://www.postgresql.org/docs/16/explicit-locking.html",
+      "scope": "FOR UPDATE conflicts with KEY SHARE; NO KEY UPDATE does not"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/postgres/postgres/REL_16_15/src/backend/utils/adt/ri_triggers.c",
+      "scope": "RI_FKey_check lines337-382 selects referenced row FOR KEY SHARE"
+    },
+    {
+      "url": "https://www.postgresql.org/docs/16/transaction-iso.html",
+      "scope": "Read Committed obtains a new snapshot for each statement; subsequent activity check follows lock grant"
+    }
+  ],
+  "review": "Root reviewed Rust callback/root validation, shared migration lock, deployment row lock, immutable configuration snapshot, complete bounded receipt resolution, DDL and native harness; no independent agent available",
+  "native_acceptance": "NOT_RUN for this candidate; planned harness does not count as engine evidence",
+  "remaining": [
+    "native PG transaction and FK races",
+    "active runtime policy leases and native-owner exclusion",
+    "running-role restrictive barrier",
+    "maximum-size resource limits",
+    "first durable signed event through archive/read/export/restart",
+    "complete selected product"
+  ]
+}
