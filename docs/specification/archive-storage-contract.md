@@ -114,6 +114,35 @@ until an enforced exclusion is established; do not substitute a timeout or treat
 new local process capacity as old-host termination. Changing the native connection
 protocol, pool/credential ownership or process containment requires requalification.
 
+### Retained publication intent issuance
+
+Migration 0009 adds `control.archive_attempts` as the first persistent publisher
+prerequisite. An immutable attempt binds dataset, stable catalog identity,
+strictly increasing issuance ordinal, expected predecessor, schema1 semantic
+input digest, retained sealed topology, coordinator and unique worker incarnation.
+The attempt ID is globally unique within this control database and must never
+name a second credential lifetime. The intended batch remains retained by ingest;
+this row is not a second admission log, a source-cut validation or archive receipt.
+
+Only the actual fenced Control backend may issue the next ordinal. A caller must
+supply its expected predecessor; stale/new requests cannot silently supersede
+another intent. An identical request resolves its original immutable row even
+under a successor Control epoch. Changed input, catalog, process lifetime or
+predecessor under the same ID is refused. A historical replay reports whether it
+is still the latest issued intent; it never reactivates an old catalog login.
+Cancellation or failed/unknown COMMIT poisons the issuing connection. Resolve the
+same request under a freshly acquired Control session, preserving its ID/input.
+
+Issuance is deliberately distinct from `owner_epochs` active/excluded state:
+allocating a successor intent does not prove exclusion of the previous native
+writer or release its resource grant. Before exposing catalog credentials, the
+catalog adapter must durably import this exact intent and enforce monotonic
+activation at its own write boundary, refusing late lower ordinals and mismatched
+same-ordinal attempts. That adapter and its guarded initialization remain pending;
+Control issuance alone cannot authorize publication, cleanup or pending ACK.
+Pre-protocol archive owner rows cause migration 0009 to refuse atomically rather
+than invent exclusion or adopt unknown credentials. Existing SQL stays immutable.
+
 Infrastructure endpoints are operator-supplied trusted routes, distinct from
 untrusted relay/discovery URLs. Private PG/CH/S3/RPC endpoints are valid; keep
 their destination allowlist, DNS/TLS rules and credential scope explicit. A

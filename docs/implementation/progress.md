@@ -19,10 +19,11 @@ not be acknowledged/reclaimed. Do not mistake private preparation for publicatio
 ## Git and integrating ownership
 
 Mac main; root is the only writer/integrator. Last verified HEAD
-`8d1289de414119754b07487396c4b7e2285ae3e8`, origin/main
-`b6889008291e073c019472a250f51590ebb42847`. The exact native-test candidate is not
-yet pushed. Only its report/task/README/inventory/checkpoint updates are expected
-dirty. Review and commit those, push normally, then verify local/remote state.
+`f678a38` equals origin/main; the identity slice/report are pushed. Root now owns
+the dirty additive0009 archive intent migration, ControlSession adapter/request,
+planner/request tests, actual PG acceptance example/harness and owning docs.
+Mac13 selected tests and scoped Clippy pass; native issuance checks NOT_RUN.
+The next commit is an unpublished exact-source candidate for that native run.
 No force push, independent Tux product edits or concurrent writer.
 
 ## Implemented prerequisites and retained evidence
@@ -156,10 +157,15 @@ not used or freshly requalified here.
 
 ## Next bounded action
 
-Finish report/checkpoint review, artifact/link checks, coherent evidence commit
-and push the verified identity slice. Then implement persistent publisher
-ownership/attempt identity and the actual catalog guard with a first real
-initialization consumer. Bind monotonic allocated ownership and immutable attempt
+Qualify the new immutable archive intent issuance on fresh isolated Tux PG16.15.
+The migration preserves previous checksums, refuses pre-protocol archive owners,
+requires the actual Control backend, stable catalog, expected predecessor and
+sealed topology. The typed request binds schema1 input and unique worker lifetime;
+replay under a successor preserves the original issuer. Test real migration
+fresh/upgrade/refusal, CAS/replay/conflicts, copied issuer, retained history and
+cancellation. Local assertion RED was UnknownTarget(9); API RED was missing module.
+Raw local root `.research/implementation/archive-worker/archive-attempts`.
+Then implement the actual catalog guard with a first real initialization consumer. Bind monotonic allocated ownership and immutable attempt
 identity so a late old coordinator cannot reactivate an excluded login; a Control
 check before an independent remote write alone cannot provide this ordering.
 Qualify the product's checksum/version/layout/trigger inspection, fresh init,

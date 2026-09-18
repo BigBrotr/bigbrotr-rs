@@ -218,3 +218,16 @@ fn authoritative_job_bounds_append_without_rewriting_prior_receipts() {
     );
     assert_eq!(plan.pending.last().unwrap().name, "0008_job_bounds.sql");
 }
+
+#[test]
+fn archive_attempts_append_without_rewriting_applied_sql() {
+    let plan = plan(&[], 9).expect("archive attempt migration must be selected");
+    assert_eq!(
+        plan.pending.iter().map(|m| m.version).collect::<Vec<_>>(),
+        [1, 2, 801, 805, 802, 7, 8, 9]
+    );
+    assert_eq!(
+        plan.pending.last().unwrap().name,
+        "0009_archive_attempts.sql"
+    );
+}

@@ -218,6 +218,36 @@ impl ControlSession {
         }
         result
     }
+    /// Issue or resolve the same immutable publication intent. The caller owns
+    /// the operation deadline/driver; cancellation poisons this session. A lost
+    /// COMMIT is resolved by the same request on a freshly acquired Control owner.
+    pub async fn register_archive_attempt(
+        &mut self,
+        request: &super::archive_attempt::ArchiveAttemptRequest,
+        commit_started: &Cell<bool>,
+    ) -> Result<
+        super::archive_attempt::ArchiveAttemptReceipt,
+        super::archive_attempt::ArchiveAttemptError,
+    > {
+        use super::archive_attempt::{self, ArchiveAttemptError};
+        if request.dataset() != self.request.dataset
+            || request.catalog() == self.identity.resource_id
+        {
+            return Err(ArchiveAttemptError::InvalidInput);
+        }
+        self.begin_operation()
+            .map_err(|_| ArchiveAttemptError::Unavailable)?;
+        let tx = application_transaction(&mut self.client, 9)
+            .await
+            .map_err(|_| ArchiveAttemptError::Prerequisite)?;
+        require(&tx, self.request.dataset, self.identity)
+            .await
+            .map_err(|_| ArchiveAttemptError::Unavailable)?;
+        let receipt = archive_attempt::register(tx, request, self.identity, commit_started).await?;
+        self.available = true;
+        Ok(receipt)
+    }
+
     pub async fn release(mut self) -> Result<(), OwnerError> {
         self.begin_operation()?;
         let tx = application_transaction(&mut self.client, 7)

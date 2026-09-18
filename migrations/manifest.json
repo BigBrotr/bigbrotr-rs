@@ -29,6 +29,10 @@
     {
       "version": 8,
       "name": "0008_job_bounds.sql"
+    },
+    {
+      "version": 9,
+      "name": "0009_archive_attempts.sql"
     }
   ],
   "reserved": [

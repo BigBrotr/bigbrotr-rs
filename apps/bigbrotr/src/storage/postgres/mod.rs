@@ -1,4 +1,5 @@
 pub mod activation;
+pub mod archive_attempt;
 pub mod authentication;
 pub mod configuration;
 pub mod connection_settings;

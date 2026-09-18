@@ -6344,6 +6344,11 @@
       "audit": ".research/implementation/archive-worker/archive-identity/audit.json",
       "source_audit": ".research/implementation/archive-worker/archive-identity/independent-source-audit.json",
       "report": "docs/implementation/evidence/p02-archive-identity-native-20260918.json"
+    },
+    "archive_attempts": {
+      "status": "Mac13 request/planner cases and scoped Clippy PASS; native issuance NOT_RUN",
+      "local_root": ".research/implementation/archive-worker/archive-attempts",
+      "purpose": "Immutable Control-issued intent prerequisite; no catalog activation/publication/ACK/reclaim"
     }
   },
   "implementation_monitor_corrections_20260918": {

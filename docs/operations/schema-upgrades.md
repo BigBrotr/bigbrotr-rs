@@ -3,7 +3,7 @@
 Status: initial P02-T01 foundation. The checked-in catalog contains
 `0001_control.sql`, `0002_ingest.sql`, `0801_management_identity.sql`,
 `0805_owner_enrollment.sql`, `0802_management_commands.sql`,
-`0007_control_owner.sql` and `0008_job_bounds.sql`. The executable includes explicit inspection, planning and
+`0007_control_owner.sql`, `0008_job_bounds.sql` and `0009_archive_attempts.sql`. The executable includes explicit inspection, planning and
 application using the selected PostgreSQL driver. Its local planner, preparation
 and entrypoint tests pass. Native Linux amd64 PostgreSQL execution now covers
 the actual CLI, 104 independent SQL constraint cases, initial read-only runtime
@@ -41,7 +41,7 @@ require PostgreSQL 16.15, `fsync=on` and `full_page_writes=on`; apply forces
 transaction-local `synchronous_commit=on`. They do not initialize a dataset or
 qualify a complete installation or release upgrade.
 
-An omitted target selects the latest embedded migration, currently 8. An explicit
+An omitted target selects the latest embedded migration, currently 9. An explicit
 target 1 preserves the initial control-only boundary for its historical fixtures.
 Migration 2 refuses existing topology members with SQLSTATE `55000`: migration 1
 had no source registry, so their exact source authority cannot be inferred.
@@ -305,3 +305,12 @@ explicit reconciliation of post-backup data and external effects. Before any
 writer-floor increase or irreversible change, implement and exercise the owning
 upgrade plan, backup closure and old/new compatibility journey. A failed or
 unexecuted scenario remains a release gate.
+
+Migration 0009 supplies [retained archive intent issuance](../specification/archive-storage-contract.md#retained-publication-intent-issuance).
+It refuses pre-protocol `owner_epochs` rows with role `archive` (SQLSTATE55000),
+without changing history or assuming old processes stopped. The runtime Control
+role needs SELECT/INSERT on `control.archive_attempts` and EXECUTE on its guard;
+it needs no UPDATE/DELETE/TRUNCATE. Issue/resolve uses the existing owned Control
+connection and requires an explicit sealed topology. The guarded catalog and
+actual publication remain separate unimplemented boundaries; this migration
+cannot authorize an archive worker by itself. Native qualification is pending.

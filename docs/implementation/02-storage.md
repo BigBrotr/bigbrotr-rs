@@ -264,6 +264,11 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   passes seven scoped cases plus Clippy at `8d1289d`. This input identity is not a
   persisted attempt or commit receipt;
   those consumers and actual ambiguous recovery remain required.
+  Additive0009 and `ControlSession::register_archive_attempt` now implement
+  immutable CAS issuance, binding this input identity and coordinator/worker
+  lifetime under the actual Control backend. Native qualification is pending;
+  the catalog must still import and enforce monotonic authority before any
+  credential exposure/publication. No active archive owner or ACK is created.
 - [ ] **Step 5:** Enforce a single positively fenced publisher and bounded native worker
   ownership. An unrelated advisory lock cannot certify catalog commit authority.
   The [PG startup counterexample](evidence/p02-postgres-startup-native-20260918.json)
