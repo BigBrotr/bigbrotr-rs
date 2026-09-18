@@ -70,3 +70,28 @@ cases, the connected signed case, actual packaged stopped-worker parent death an
 affected application/worker Clippy. The [report](../../docs/implementation/evidence/p02-parent-binding-native-20260918.json)
 retains distinct Cargo and packaged executable hashes, source/native tool audits
 and positive process cleanup. No kernel-task, host-loss or PG fence is inferred.
+
+`catalog_fence.rs` starts the next bounded **unexecuted PostgreSQL** experiment.
+It is an explicit Cargo example of the private worker package, using the same
+locked Rust/native tuple; it is not copied into the packaged installation.
+Build with `cargo build --locked -p bigbrotr-archive-worker --example catalog-fence-probe`
+under the verified bundle environment. A lab must verify immutable assets before
+exec, supply a new isolated catalog/data/temp root and protected DSN file, bound
+resources/output/time, and retain ownership through positive kill/reap. Native
+errors expose fixed phases only because driver errors can embed credentials.
+
+Its modes `init`, `read`, `write` and `lost-ack` operate on three constant canary
+relations, without Nostr/scientific authority. Arguments after mode are the
+absolute bundle, empty private temporary directory, data directory, DSN-file path
+and a case batch number1–16. `write` reports a read-transaction barrier and waits
+for `publish` on stdin; `lost-ack` additionally waits after COMMIT and before its
+result. The planned controls compare concurrent absent-receipt writers, sealed
+per-job login, positive backend termination and lost acknowledgement. No role
+revocation/fencing design is selected or qualified merely by compiling this probe.
+
+`catalog_fence.py` owns the four actual-process cases inside a fresh isolated
+runner with `psql`, no Docker socket and an outer finite deadline. It checks the
+cluster identity before mutation and positively reaps its children. The matching
+`catalog-fence.Dockerfile` pins the lab client package; record its actual image
+and executable identities. These cases remain NOT_RUN until recorded native
+evidence exists.

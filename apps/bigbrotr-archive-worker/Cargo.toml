@@ -8,6 +8,10 @@ license.workspace = true
 repository.workspace = true
 publish = false
 
+[[example]]
+name = "catalog-fence-probe"
+path = "../../experiments/archive-engine/catalog_fence.rs"
+
 [dependencies]
 bigbrotr-model.workspace = true
 bigbrotr-protocol.workspace = true

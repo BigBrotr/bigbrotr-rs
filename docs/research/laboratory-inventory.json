@@ -5670,6 +5670,30 @@
         "Connection Reset runs DISCARD ALL, or PQreset on failure; pool reuse can clear session state or reconnect. A health-check/session lock assumption requires proof for every acquisition/reset and cannot fence by configuration name alone.",
         "PostgresCatalog constructor opens a pooled connection for server-version lookup. RegisterSecretStorage can probe/load an existing PG secret table; explicit SECRET_STORAGE_TABLE='' bypasses this optional storage path. No configured catalog attach has been implemented or exercised yet."
       ]
+    },
+    "catalog_fence_probe": {
+      "root": ".research/implementation/archive-worker/catalog-fence",
+      "base": "c6fface491bffe3d774d77c5debe0d337b762ce9",
+      "dirty": true,
+      "purpose": "Bounded real Rust DuckLake/PG catalog-fence prerequisite; no selected product fence",
+      "sources": {
+        "apps/bigbrotr-archive-worker/Cargo.toml": "14a9001ec97c594d3ed8266d92db95a6dc5bb93aa2792d48059617b363afb219",
+        "experiments/archive-engine/catalog_fence.rs": "ac4fef0649862fdfa5016447c694e360da055a4a1cfd7184e44369aacac71032",
+        "experiments/archive-engine/catalog_fence.py": "dafdcf2df5bf98fb66bb19abe4c23154406f63c6ec5f4ba991450d1e9f5772e5",
+        "experiments/archive-engine/catalog-fence.Dockerfile": "e5ce140c784b15145a5b5228b91322ba6606b36b6124775fbeccdfef721fc288"
+      },
+      "mac_build": "Completed exit0; no PostgreSQL case executed",
+      "mac_build_log_sha256": "786c516705e22ad8c8e626ba4791305fb5bd78d353dba72f8a0848cae9c23d9e",
+      "mac_clippy_log": ".research/implementation/archive-worker/catalog-fence/mac-clippy.log",
+      "remote_resources": [],
+      "status": "Native PostgreSQL experiment NOT_RUN; finite orchestration and pinned lab image source reviewed",
+      "mac_clippy": "Completed exit0; no PostgreSQL case executed",
+      "preflight": {
+        "path": ".research/implementation/archive-worker/catalog-fence/preflight.json",
+        "running_bigbrotr_containers": 0,
+        "unrelated_containers": 20,
+        "shared_source_clean": true
+      }
     }
   },
   "implementation_monitor_corrections_20260918": {

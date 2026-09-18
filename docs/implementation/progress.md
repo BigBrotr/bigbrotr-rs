@@ -15,13 +15,13 @@ task checkbox or M1 gate is complete; pending must not be reclaimed.
 
 ## Verified Git and ownership
 
-Mac primary workspace, main. Unpublished candidate HEAD
-`e4e2a30160a5119195e7ba5b31b82b1482a5c432`, tree
-`84b42797b86a1a49a5edc9c61e0ca635d5bdf0da`; origin/main last freshly verified at
-`3063d12e8d39195b031e767b1ef7a76a86b78276`, including qualified `c365053`.
-The parent-death binding is committed and scoped Mac/Linux qualification passed.
-Root owns only its new native harness and checkpoint/inventory/evidence updates. Source was clean at Git
-bundle creation. No contributor conflict or remote independent source editing.
+Mac primary workspace, main. HEAD and origin/main freshly verified after ordinary
+push at `c6fface491bffe3d774d77c5debe0d337b762ce9`, including native-qualified
+`e4e2a30160a5119195e7ba5b31b82b1482a5c432`. Root owns the bounded catalog-fence prerequisite: an explicit research example
+target in the worker manifest, `experiments/archive-engine/catalog_fence.rs`,
+`catalog_fence.py`, the research runner Dockerfile, README and inventory/checkpoint. No other writer or contributor conflict. Tux has no active BigBrotr job after the
+fresh terminal audit; historical isolated sources remain retained, not writable
+product copies.
 
 ## Qualified evidence
 
@@ -154,8 +154,30 @@ and no new PG runtime experiment ran. Ordinary catalog attach must also disable
 optional PG secret storage explicitly; do not assume native persistent-secret
 settings alone cover the extension's separate registration path.
 
-Next: commit/push the reviewed `e4e2a30` qualification, then resolve the concrete
-catalog-fence prerequisite through actual pinned Rust/DuckLake/PostgreSQL behavior.
+The uncommitted `catalog_fence.rs` probe is an explicit Cargo example of the
+private worker package (not an installed product command). Three constant canary
+relations, init/read/write/lost-ack modes and stdin barriers expose the exact
+native transaction boundary. No scientific data, archive acknowledgement or
+selected fencing authority. Mac build session1114 completed exit0; Clippy30464
+completed exit0. Actual PG cases are NOT_RUN and no new remote resource exists.
+Raw local logs under `.research/implementation/archive-worker/catalog-fence`,
+with identities in `catalog_fence_probe`. Source reading additionally covered
+DuckLake storage option handling and initializer completely: ordinary attach
+uses CREATE_IF_NOT_EXISTS=false, AUTOMATIC_MIGRATION=false and explicit
+META_SECRET_STORAGE_TABLE=''. No runtime behavior is inferred from these names.
+
+The finite native lab orchestrator and pinned research runner Dockerfile are now
+written and reviewed inline. Diagnostics retain only fixed phases; all actual
+PG cases remain NOT_RUN. Fresh Tux preflight confirms the shared source unchanged,
+zero running BigBrotr containers, twenty unrelated containers and306GiB free.
+
+Next: commit a clean candidate and transfer it via Git. Freshly inventory
+Tux, build the explicit example against verified immutable native assets and
+create separately owned PG/catalog/data resources. Exercise the real absent-
+receipt race, new-login refusal while existing session remains live, positive
+old-backend termination/retry and lost COMMIT acknowledgement. Record source,
+dependency/tool/artifact/workload identities and cleanup; do not count compilation
+or a model as PG PASS.
 Read the remaining owning catalog/identity/operations dependencies before editing.
 A possible investigation is a dedicated per-job PG role with native connection
 setup quiesced, new logins revoked before write authorization, and positive
