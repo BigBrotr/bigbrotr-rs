@@ -177,6 +177,9 @@ resolvable namespaced references and unchanged original bytes.
 
 - [ ] **Step 1:** Implement dataset/event/endpoint/observer/access/method dictionaries with
   immutable canonical values, normalization versions and overflow rejection.
+  Typed row conversion now covers the seven admission descriptor schemas;
+  actual publication/closure remain required. Include sparse nullable references
+  in real Parquet readback: the pinned binding needs parent/child null masks.
 - [ ] **Step 2:** Create A06 objects keyed by visibility namespace and digest; verify bytes
   on first creation and reject conflicting bytes under the same identity.
 - [ ] **Step 3:** Separate document object bytes from each fetched/type/method occurrence;

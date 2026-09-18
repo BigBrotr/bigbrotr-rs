@@ -4,6 +4,7 @@ use arrow::{
         Array, ArrayRef, FixedSizeBinaryBuilder, Int64Array, ListBuilder, StringBuilder,
         StructArray, UInt16Array, UInt32Array, UInt64Array,
     },
+    buffer::NullBuffer,
     datatypes::{DataType, Field, Schema},
     record_batch::RecordBatch,
 };
@@ -14,7 +15,8 @@ use std::{fmt, sync::Arc};
 // children, avoiding repeated conversion of children retained by a parent slice.
 pub const MAX_ROWS: usize = 1024;
 
-/// Independent bounds on rows, UTF-8 payload bytes and tag containers/strings.
+/// Independent bounds on rows, event content/tag or dictionary text bytes, and
+/// tag containers/strings. Closed schema/enum text has a fixed per-row bound.
 /// Native conversion, allocator overhead and engine memory need a separate grant.
 #[derive(Debug, Clone, Copy)]
 pub struct RowLimits {
@@ -41,11 +43,11 @@ impl fmt::Display for RowError {
 }
 impl std::error::Error for RowError {}
 
-pub struct EventRows {
+pub struct Rows {
     batch: RecordBatch,
 }
-impl EventRows {
-    pub fn encode(facts: &[&Fact], limits: RowLimits) -> Result<Self, RowError> {
+impl Rows {
+    pub fn events(facts: &[&Fact], limits: RowLimits) -> Result<Self, RowError> {
         let totals = preflight(facts, limits)?;
         let mut values = Vec::new();
         values
@@ -103,7 +105,10 @@ impl EventRows {
                 qualified(values.iter().map(|v| v.event_ordinal))?,
             ),
         ]);
-        let (fields, arrays) = fields_and_arrays(columns);
+        Self::finish(columns, &[])
+    }
+    fn finish(columns: Columns, nullable: &[&str]) -> Result<Self, RowError> {
+        let (fields, arrays) = fields_and_arrays(columns, nullable);
         let batch = RecordBatch::try_new(Arc::new(Schema::new(fields)), arrays)
             .map_err(|_| RowError::Arrow)?;
         Ok(Self { batch })
@@ -132,16 +137,7 @@ struct Totals {
 }
 
 fn preflight(facts: &[&Fact], limits: RowLimits) -> Result<Totals, RowError> {
-    if limits.max_rows == 0
-        || limits.max_rows > MAX_ROWS
-        || limits.max_text_bytes > i32::MAX as usize
-        || limits.max_tag_nodes > i32::MAX as usize
-    {
-        return Err(RowError::InvalidLimits);
-    }
-    if facts.is_empty() || facts.len() > limits.max_rows {
-        return Err(RowError::RowLimit);
-    }
+    validate_rows(facts, limits)?;
     let mut total = Totals::default();
     // No output allocation until the entire slice has passed these checks.
     let mut text_left = limits.max_text_bytes;
@@ -173,87 +169,148 @@ fn preflight(facts: &[&Fact], limits: RowLimits) -> Result<Totals, RowError> {
     }
     Ok(total)
 }
+fn validate_rows(facts: &[&Fact], limits: RowLimits) -> Result<(), RowError> {
+    if limits.max_rows == 0
+        || limits.max_rows > MAX_ROWS
+        || limits.max_text_bytes > i32::MAX as usize
+        || limits.max_tag_nodes > i32::MAX as usize
+    {
+        return Err(RowError::InvalidLimits);
+    }
+    if facts.is_empty() || facts.len() > limits.max_rows {
+        return Err(RowError::RowLimit);
+    }
+    Ok(())
+}
 
 type Columns = Vec<(&'static str, ArrayRef)>;
 
-fn fields_and_arrays(columns: Columns) -> (Vec<Field>, Vec<ArrayRef>) {
+fn fields_and_arrays(columns: Columns, nullable: &[&str]) -> (Vec<Field>, Vec<ArrayRef>) {
     columns
         .into_iter()
-        .map(|(name, array)| (Field::new(name, array.data_type().clone(), false), array))
+        .map(|(name, array)| {
+            (
+                Field::new(name, array.data_type().clone(), nullable.contains(&name)),
+                array,
+            )
+        })
         .unzip()
 }
-fn structure(columns: Columns) -> Result<ArrayRef, RowError> {
-    let (fields, arrays) = fields_and_arrays(columns);
-    StructArray::try_new(fields.into(), arrays, None)
+fn nullable_structure(
+    columns: Columns,
+    nullable: &[&str],
+    validity: Option<NullBuffer>,
+) -> Result<ArrayRef, RowError> {
+    let (fields, arrays) = fields_and_arrays(columns, nullable);
+    StructArray::try_new(fields.into(), arrays, validity)
         .map(|v| Arc::new(v) as ArrayRef)
         .map_err(|_| RowError::Arrow)
 }
 fn fixed<const N: usize>(
     values: impl ExactSizeIterator<Item = [u8; N]>,
 ) -> Result<ArrayRef, RowError> {
+    fixed_options(values.map(Some))
+}
+fn fixed_options<const N: usize>(
+    values: impl ExactSizeIterator<Item = Option<[u8; N]>>,
+) -> Result<ArrayRef, RowError> {
     let width = i32::try_from(N).map_err(|_| RowError::Arrow)?;
     let mut builder = FixedSizeBinaryBuilder::with_capacity(values.len(), width);
     for value in values {
-        builder.append_value(value).map_err(|_| RowError::Arrow)?;
+        if let Some(value) = value {
+            builder.append_value(value).map_err(|_| RowError::Arrow)?;
+        } else {
+            builder.append_null();
+        }
     }
     Ok(Arc::new(builder.finish()))
 }
 fn source(
     values: impl ExactSizeIterator<Item = SourceRecordId> + Clone,
 ) -> Result<ArrayRef, RowError> {
-    structure(vec![
-        (
-            "dataset_id",
-            fixed(values.clone().map(|v| *v.dataset_id.as_bytes()))?,
-        ),
-        (
-            "shard_id",
-            Arc::new(UInt32Array::from_iter_values(
-                values.clone().map(|v| v.shard_id),
-            )),
-        ),
-        (
-            "owner_epoch",
-            Arc::new(UInt64Array::from_iter_values(
-                values.clone().map(|v| v.owner_epoch.get()),
-            )),
-        ),
-        (
-            "sequence",
-            Arc::new(UInt64Array::from_iter_values(
-                values.map(|v| v.sequence.get()),
-            )),
-        ),
-    ])
+    optional_source(values.map(Some))
+}
+fn optional_source(
+    values: impl ExactSizeIterator<Item = Option<SourceRecordId>> + Clone,
+) -> Result<ArrayRef, RowError> {
+    let validity = values.clone().map(|v| v.is_some()).collect();
+    // Mask every scalar child as well as its parent. The pinned native Arrow
+    // appender does not propagate struct nulls; valid child placeholders can
+    // otherwise become shifted values after Parquet publication.
+    nullable_structure(
+        vec![
+            (
+                "dataset_id",
+                fixed_options(values.clone().map(|v| v.map(|v| *v.dataset_id.as_bytes())))?,
+            ),
+            (
+                "shard_id",
+                Arc::new(UInt32Array::from_iter(
+                    values.clone().map(|v| v.map(|v| v.shard_id)),
+                )),
+            ),
+            (
+                "owner_epoch",
+                Arc::new(UInt64Array::from_iter(
+                    values.clone().map(|v| v.map(|v| v.owner_epoch.get())),
+                )),
+            ),
+            (
+                "sequence",
+                Arc::new(UInt64Array::from_iter(
+                    values.map(|v| v.map(|v| v.sequence.get())),
+                )),
+            ),
+        ],
+        &[],
+        Some(validity),
+    )
 }
 fn qualified(
     values: impl ExactSizeIterator<Item = QualifiedRef> + Clone,
 ) -> Result<ArrayRef, RowError> {
-    structure(vec![
-        (
-            "dataset_id",
-            fixed(values.clone().map(|v| *v.dataset_id.as_bytes()))?,
-        ),
-        (
-            "dictionary_kind",
-            Arc::new(UInt16Array::from_iter_values(
-                values.clone().map(|v| v.dictionary_kind as u16),
-            )),
-        ),
-        (
-            "allocation_domain",
-            fixed(values.clone().map(|v| *v.allocation_domain.as_bytes()))?,
-        ),
-        (
-            "ordinal",
-            Arc::new(UInt64Array::from_iter_values(
-                values.map(|v| v.ordinal.get()),
-            )),
-        ),
-    ])
+    optional_qualified(values.map(Some))
+}
+fn optional_qualified(
+    values: impl ExactSizeIterator<Item = Option<QualifiedRef>> + Clone,
+) -> Result<ArrayRef, RowError> {
+    let validity = values.clone().map(|v| v.is_some()).collect();
+    nullable_structure(
+        vec![
+            (
+                "dataset_id",
+                fixed_options(values.clone().map(|v| v.map(|v| *v.dataset_id.as_bytes())))?,
+            ),
+            (
+                "dictionary_kind",
+                Arc::new(UInt16Array::from_iter(
+                    values.clone().map(|v| v.map(|v| v.dictionary_kind as u16)),
+                )),
+            ),
+            (
+                "allocation_domain",
+                fixed_options(
+                    values
+                        .clone()
+                        .map(|v| v.map(|v| *v.allocation_domain.as_bytes())),
+                )?,
+            ),
+            (
+                "ordinal",
+                Arc::new(UInt64Array::from_iter(
+                    values.map(|v| v.map(|v| v.ordinal.get())),
+                )),
+            ),
+        ],
+        &[],
+        Some(validity),
+    )
 }
 fn envelope(facts: &[&Fact]) -> Result<Columns, RowError> {
-    let mut kind = StringBuilder::with_capacity(facts.len(), facts.len() * "event-payload".len());
+    let mut kind = StringBuilder::with_capacity(
+        facts.len(),
+        facts.iter().map(|f| f.record_kind().len()).sum(),
+    );
     for fact in facts {
         kind.append_value(fact.record_kind());
     }
@@ -286,5 +343,12 @@ fn envelope(facts: &[&Fact]) -> Result<Columns, RowError> {
     ])
 }
 
+mod dictionary;
+mod metadata;
+
+#[cfg(test)]
+mod dictionary_tests;
+#[cfg(test)]
+mod metadata_tests;
 #[cfg(test)]
 mod tests;

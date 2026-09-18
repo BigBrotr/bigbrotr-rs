@@ -344,6 +344,31 @@ executed adapter qualification.
 Nested conversion, huge rows, allocation/flush errors and readback remain P02-T04
 acceptance work.
 
+The first typed dictionary test found a second native compatibility requirement:
+mask scalar children when a containing qualified-reference/source-ID struct is
+null. Arrow permits valid placeholder children beneath a null struct, but the
+pinned binding writes children and then marks only the parent invalid
+(`struct_array_to_vector`, `StructVector::set_null`). DuckDB's Parquet definition
+levels account for parent nulls while `StandardColumnWriter::WriteVector` filters
+values using the child validity mask. A sparse nullable method reference was
+correct in Arrow and native table SQL, yet returned zeroed fields after Parquet.
+A SQL-created null-struct control passed. The adapter now supplies matching
+parent/child validity; the same complete dictionary oracle passes. A minimal
+paired negative control preserves the unmasked loss (73 becomes 0) and masked
+readback (73 stays 73). This is measured on Mac arm64; native Linux validation
+of the new dictionary adapter is still required.
+
+The scoped native sources are
+[`StructColumnWriter`](https://github.com/duckdb/duckdb/blob/d8cdaa33fda8df955cc76ef58a280f68f4cd43fa/extension/parquet/writer/struct_column_writer.cpp),
+[`HandleDefineLevels`](https://github.com/duckdb/duckdb/blob/d8cdaa33fda8df955cc76ef58a280f68f4cd43fa/extension/parquet/column_writer.cpp)
+and [`StandardColumnWriter`](https://github.com/duckdb/duckdb/blob/d8cdaa33fda8df955cc76ef58a280f68f4cd43fa/extension/parquet/include/writer/templated_column_writer.hpp).
+Their retained hashes and failed/intermediate/fixed observations are inventoried.
+This normalization preserves logical nullability and canonical fact identities;
+it adds no nullable identity fields to a present reference and requires no
+migration of qualified archive data. The failing dictionary path was never
+qualified or used for publication. Do not replace the failed oracle with a count
+or accept metadata-only SQL checks as Parquet fidelity evidence.
+
 Arrow is the in-process columnar interchange representation; Rust Parquet handles
 ordinary research/import/export artifacts, independent fidelity checks and bounded
 file readers/writers. DuckLake/DuckDB owns its transactional archive catalog and

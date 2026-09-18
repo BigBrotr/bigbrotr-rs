@@ -1,0 +1,135 @@
+{
+  "format": "bigbrotr-event-rows-native-qualification/1",
+  "observed_date": "2026-09-18",
+  "status": "PASS",
+  "scope": "Initial event-only typed Arrow/native appender prerequisite; no P02 task or M1 completion",
+  "source": {
+    "dirty": false,
+    "manifest_sha256": "b4ae7718328d151594826f50cb00d0e212b0d5effecd6d4a2f379c5ae5905a1e",
+    "revision": "2f4dd9266d1f8fd22287f87232d43a75d7327e45",
+    "state": "builder-supplied",
+    "tree": "4a416f86b8c38106bf5e5e8e862775048846b488"
+  },
+  "build_audit": {
+    "status": "PASS",
+    "source": "2f4dd9266d1f8fd22287f87232d43a75d7327e45",
+    "tree": "4a416f86b8c38106bf5e5e8e862775048846b488",
+    "source_files": 568,
+    "cli_sha256": "58abe9c79b9f78ff523d03100041fbf99fb934ae0c93196b5449985f05a21af2",
+    "worker_sha256": "16ea2d88aef09d236cb3d7fe0f6e7017c2f525f508b90844a0efdd364ff7ed8b",
+    "native_assets_checked": true,
+    "native_tools": {
+      "CC": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+      "CXX": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+      "AR": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+      "LIBCLANG_PATH": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+      "discovery": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e"
+    },
+    "terminal": {
+      "Status": "exited",
+      "Running": false,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 0,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-09-18T11:54:32.610992442Z",
+      "FinishedAt": "2026-09-18T12:01:27.65791863Z"
+    }
+  },
+  "environment": {
+    "host": "Tux Linux x86_64",
+    "build_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "test_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "cpus": 2,
+    "memory_bytes": 6442450944,
+    "pids": 512,
+    "user": "1000:1000",
+    "source_readonly": true,
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8"
+  },
+  "tests": {
+    "executed": 11,
+    "failed": 0,
+    "ignored": 0,
+    "new_event_cases": 5,
+    "prior_engine_cases": 6,
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--release",
+      "-p",
+      "bigbrotr-archive-worker",
+      "--lib",
+      "--",
+      "--test-threads=1"
+    ],
+    "artifact": {
+      "bigbrotr_archive_worker-de1f058f6db78191": {
+        "sha256": "9b904684765291e89c281bc9d51d5c2c0757f5307cc01f13a113338224a722de",
+        "bytes": 13908352
+      }
+    },
+    "native_vector_size": {
+      "actual_vector_size": 2048,
+      "library_sha256": "fc23f12e376c47be520f75221288281906e7942e8fd6f6ce4849198ba60d0405"
+    }
+  },
+  "cases": [
+    "Independently signed unsigned-maximum/timestamp-zero bodies through actual append, ZSTD3 Parquet, fresh native reader and re-verification with retained fixture signature",
+    "All body/envelope fields, duplicate/empty/Unicode/NUL content and full references preserved",
+    "1024 rows with 24576 nested strings; exact 24576 text-byte and 32768 tag-node caps; cap-1 refuses",
+    "1 MiB content with 10000 empty-valued tags",
+    "Wrong family/mixed rows, empty/excess rows, invalid/zero caps refuse conversion",
+    "Actual native CHECK constraint failure propagates from explicit flush; no inserted row"
+  ],
+  "fixtures": {
+    "tests/fixtures/protocol/signed-extremes.json": "dfe738600b4b6df4bce59c7a44cfdfc9222c618d518301d8b7fab589d3ac7ec7"
+  },
+  "harness": {
+    "path": "experiments/archive-engine/native_event_rows.py",
+    "sha256": "81043806422d34ef9976f7574f65a7f25e78a70b5515ad4b216a1442b6a1a8f7"
+  },
+  "evidence_root": ".research/implementation/archive-worker/rows-2f4dd92",
+  "evidence_files": {
+    "native-2f4dd92/build-result.json": "38529cc0c4ccdfb398336a9ccbe7a10127469ae7e1d13e6ab48c3996c7a0d274",
+    "native-2f4dd92/build-audit.json": "46072d2110aff921585b8951fedef3758b5a7ec86a328a5ef05d3e6a8689509e",
+    "native-test-evidence/result.json": "28080fae6e8b81299025fba1e405ff8bb34809b3d92e08546d7d503667b341c9",
+    "native-test-evidence/binary.log": "0c2dbabcd2ae9ba073978fefdbb092d0357d07679d84f3ea444f61317a363793",
+    "native-test-evidence/artifacts.json": "4cdd987fb32047ae0492c43113e4a414a80ee33016e3466e496b2b0f38155ed0",
+    "native-test-evidence/observation.json": "ac3fa4c8006ffc936078c1c1287e7f71c5ecd2abbec2bd674533dcec39e4d374",
+    "cleanup-audit.json": "354bc834c3dc7b7e01f7c3de9c3ee8b4979bd399e78518b4d6718768cc025a7e"
+  },
+  "cleanup": {
+    "status": "PASS",
+    "owned": [
+      {
+        "container": "/bigbrotr-implementation-archive-2f4dd92-build",
+        "id": "eb0b83dc75daf3adfd61ee5cbd66db96bb3ea9026ef695eded81fa1d1393f8b8",
+        "exit": 0,
+        "oom": false
+      },
+      {
+        "container": "/bigbrotr-implementation-archive-2f4dd92-tests",
+        "id": "a120421f0aac36b5bead2ff9c7ebb94b7c899e32788a2d94b9bb2e5ce5f528a6",
+        "exit": 0,
+        "oom": false
+      }
+    ],
+    "running_bigbrotr": 0,
+    "unrelated_unchanged": 8,
+    "shared_source": "6be851580ba415eed5ff0979ee7072480f9ee3ab",
+    "lifecycle": "Both containers stopped-retained; earlier six archive-engine containers remain stopped; no deletion or shared-checkout reset"
+  },
+  "not_run": [
+    "Subsequent metadata/dictionary factories and null-child normalization on native Linux",
+    "Production worker protocol, parent grants/cancellation and pre-exec verification",
+    "Real pending admission consumption, DuckLake PG transactions, positive fencing and receipt recovery",
+    "Full signed-event eligibility join, scoped read/export/restart and standalone export manifest",
+    "Independent Parquet implementation, peak memory, mixed/aged workload and native power-loss protection",
+    "Linux arm64 and hosted GitHub Actions"
+  ]
+}

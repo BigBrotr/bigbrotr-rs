@@ -15,14 +15,14 @@ const TABLE: &str = "CREATE TABLE events (
  event_ordinal STRUCT(dataset_id BLOB, dictionary_kind USMALLINT, allocation_domain BLOB, ordinal UBIGINT) NOT NULL
 )";
 
-fn limits() -> RowLimits {
+pub(super) fn limits() -> RowLimits {
     RowLimits {
         max_rows: 1024,
         max_text_bytes: 4 * 1024 * 1024,
         max_tag_nodes: 100_000,
     }
 }
-fn engine(path: &std::path::Path) -> Engine {
+pub(super) fn engine(path: &std::path::Path) -> Engine {
     Engine::open(
         &path.canonicalize().unwrap(),
         EngineLimits {
@@ -80,7 +80,7 @@ fn signed_extremes_survive_native_append_parquet_and_independent_readback() {
         .enumerate()
         .map(|(i, e)| fact(e, i as u64 + 1))
         .collect();
-    let rows = EventRows::encode(&facts.iter().collect::<Vec<_>>(), limits()).unwrap();
+    let rows = Rows::events(&facts.iter().collect::<Vec<_>>(), limits()).unwrap();
     let temp = tempfile::tempdir().unwrap();
     let writer = engine(temp.path());
     writer.connection.execute_batch(TABLE).unwrap();
@@ -202,14 +202,14 @@ fn refusal_happens_before_native_mutation() {
             RowError::InvalidLimits,
         ),
     ] {
-        assert!(matches!(EventRows::encode(&facts, limit), Err(e) if e == expected));
+        assert!(matches!(Rows::events(&facts, limit), Err(e) if e == expected));
     }
     assert!(matches!(
-        EventRows::encode(&[], limits()),
+        Rows::events(&[], limits()),
         Err(RowError::RowLimit)
     ));
     assert!(matches!(
-        EventRows::encode(
+        Rows::events(
             &[&value, &value],
             RowLimits {
                 max_rows: 1,
@@ -223,7 +223,7 @@ fn refusal_happens_before_native_mutation() {
 #[test]
 fn flush_failure_is_not_silently_discarded() {
     let value = fact(fixture_events().remove(0), 1);
-    let rows = EventRows::encode(&[&value], limits()).unwrap();
+    let rows = Rows::events(&[&value], limits()).unwrap();
     let temp = tempfile::tempdir().unwrap();
     let writer = engine(temp.path());
     writer
@@ -258,10 +258,10 @@ fn fresh_batches_preserve_large_nested_children_and_bound_empty_nodes() {
         max_text_bytes: 24 * 1024,
         max_tag_nodes: 32 * 1024,
     };
-    let rows = EventRows::encode(&facts, exact).unwrap();
+    let rows = Rows::events(&facts, exact).unwrap();
     assert!(rows.array_memory_bytes() > 24 * 1024);
     assert!(matches!(
-        EventRows::encode(
+        Rows::events(
             &facts,
             RowLimits {
                 max_text_bytes: exact.max_text_bytes - 1,
@@ -271,7 +271,7 @@ fn fresh_batches_preserve_large_nested_children_and_bound_empty_nodes() {
         Err(RowError::TextLimit)
     ));
     assert!(matches!(
-        EventRows::encode(
+        Rows::events(
             &facts,
             RowLimits {
                 max_tag_nodes: exact.max_tag_nodes - 1,
@@ -296,7 +296,7 @@ fn fresh_batches_preserve_large_nested_children_and_bound_empty_nodes() {
         max_text_bytes: 1024 * 1024,
         max_tag_nodes: 20_000,
     };
-    let rows = EventRows::encode(&[&wide], wide_limits).unwrap();
+    let rows = Rows::events(&[&wide], wide_limits).unwrap();
     writer
         .connection
         .execute_batch("DELETE FROM events")
@@ -338,7 +338,7 @@ fn other_families_and_mixed_rows_cannot_enter_the_event_relation() {
     .unwrap();
     for facts in [vec![&eligibility], vec![&value, &eligibility]] {
         assert!(matches!(
-            EventRows::encode(&facts, limits()),
+            Rows::events(&facts, limits()),
             Err(RowError::WrongFamily)
         ));
     }

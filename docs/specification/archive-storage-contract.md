@@ -113,6 +113,15 @@ not invent a second JSON manifest as the engine's transaction authority or edit
 its PG metadata tables. [DuckLake connecting](https://ducklake.select/docs/stable/duckdb/usage/connecting)
 documents the separate catalog and data path; the exact bundled version is tested.
 
+The typed Arrow/native adapter must preserve nullable compound values through
+actual Parquet, including null entries before and between present references.
+For the pinned binding, mask scalar children as well as a null reference's parent;
+valid child placeholders can otherwise shift persisted values. Present references
+still require every qualified identity field. This is a physical compatibility
+normalization, not a new canonical identity recipe or permission to fill unknown
+values with zero; [the row format](../reference/archive-format.md) and dependency
+record own the mapping and executed counterexample.
+
 File preparation and integrity checks must describe their actual implementation.
 Native `INSERT` does not supply an application SHA-256 of every generated file.
 The protected archive cut requires the matching semantic receipt, complete file/

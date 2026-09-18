@@ -1,9 +1,9 @@
 # Archive row format
 
-Status: implementation in progress under P02-T03/T04. The initial `EventRows`
-adapter converts existing immutable EventPayloadV1 facts to bounded Arrow batches
+Status: implementation in progress under P02-T03/T04. The private `Rows` adapter
+converts the five existing immutable fact families to bounded Arrow batches
 and explicitly flushes a native appender. It grants no admission, scope, catalog
-publication, protection or export authority. Other families, dictionary closure,
+publication, protection or export authority. Later fact families, dictionary closure,
 transaction receipts, production parent supervision and standalone export
 manifests are still required. A diagnostic Parquet file is not a published archive.
 
@@ -34,11 +34,49 @@ invariant. A shared event row intentionally has no signature: the permitted
 eligibility fact owns the scope's original representative signature. Rejoining
 an arbitrary global representative would violate that boundary.
 
+All families begin with the same six envelope columns. Their following columns,
+in order, are:
+
+| Relation / constructor | Payload columns |
+|---|---|
+| `archive.events` / `Rows::events` | The event fields above |
+| `archive.event_eligibility_facts` / `Rows::eligibility` | `event_id` binary32, `body_digest` binary32, `sig` binary64, `first_eligible_at` i64, `origin` closed text, `import_lineage` qualified reference or null |
+| `archive.event_receive_facts` / `Rows::receive` | `event_id` binary32, `received_at` i64, `observer_id` qualified reference, `clock_quality` struct, `corrects` source identity or null |
+| `archive.provenance_facts` / `Rows::provenance` | `event_id` binary32, `endpoint_id`, `observer_id`, `access_scope_id` qualified references, `received_at` i64, `clock_quality`, `verification_method_id` qualified reference, `corrects` source identity or null |
+| `archive.dictionaries` / `Rows::dictionaries` | `reference` qualified reference, `normalization_version` u16, `descriptor_schema` closed text, `descriptor_version` u16, `descriptor_value` typed struct |
+
+Clock quality contains `clock_id` qualified reference, `resolution_us` u64,
+`uncertainty_us` u64 or null and `anomaly_flags` u32. Unknown uncertainty stays null;
+measured zero stays zero. Corrections preserve the entire source identity.
+
+`descriptor_value` is a closed wide struct for the seven
+[descriptor schemas](../specification/dictionary-descriptors.md). Its fields in
+order are `event_id` binary32; `class`, `url`, `clock`, `vantage`, `software` text;
+`method_id` qualified reference; `public_key` binary32; `route_class`,
+`software_version`, `label` text; `visibility_scope_id` qualified reference;
+`input`, `algorithm`, `capability`, `output_unit`, `failure_taxonomy` text;
+`algorithm_version` u16; `protocol_revision`, `format` text; `format_version` u16;
+`source_dataset_id` binary16; `source_artifact_digest` binary32. These children
+are nullable: the schema distinguishes an inactive variant field from unknown
+attribution within the selected variant. No arbitrary JSON extension is accepted.
+Source lineage can name a foreign dataset; local qualified references cannot.
+
+Nullable references/source identities mask their scalar children as well as their
+parent before native conversion. The pinned binding otherwise leaves valid
+placeholder values beneath a null struct, which can shift values during Parquet
+writing even when ordinary table SQL is correct. The dictionary readback test
+reproduced a known method reference becoming zeroed fields; the matching masks
+restore it. Child fields remain required when the parent is present. Canonical
+fact/dictionary bytes and identities do not change, and no previously qualified
+archive files require migration from this never-published failing path.
+
 Conversion first checks the entire input slice without allocating output. Rows
 must be nonempty, one family and at most the caller's limit, capped at 1024.
-Separate limits count UTF-8 content/tag bytes and tag containers plus string
-nodes, including empty ones. They cannot exceed i32::MAX because Arrow offsets
-are signed 32-bit. Fixed envelope/column buffers scale with the bounded row count.
+Separate limits count event UTF-8 content/tag bytes or dictionary descriptor text,
+and tag containers plus string nodes, including empty ones. Fixed closed enum and
+schema text in other columns has a bounded per-row cost. Limits cannot exceed
+i32::MAX because Arrow offsets are signed 32-bit. Fixed envelope/column buffers
+scale with the bounded row count.
 Builders reserve measured string/node capacities and produce fresh complete child
 arrays; callers cannot supply sliced Arrow arrays that retain unrelated children.
 This avoids the pinned binding's repeated full-child conversion across row slices.
@@ -59,3 +97,9 @@ a 1 MiB content row with 10,000 empty-valued tags, exact byte/node bounds and
 constraint failure during flush. Modified wide inputs test conversion only and
 are not claimed signed. Native Linux, production publication and cross-reader
 qualification must be recorded separately before those guarantees are claimed.
+The initial event-only candidate has
+[native Linux adapter evidence](../implementation/evidence/p02-event-rows-native-20260918.json).
+The subsequent Mac checks also exercise all ten independent dictionary fixtures,
+network/import eligibility, receive/correction/null distinctions and provenance
+reference positions. These are field conversion scenarios; conflicting fixture
+mappings are not admitted as a real dataset and do not qualify allocation authority.

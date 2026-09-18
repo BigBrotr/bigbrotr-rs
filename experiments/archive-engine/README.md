@@ -30,6 +30,13 @@ native build image. It expects `/source`, the original `/out/build` with its
 read-only source archive, and a fresh `/out/native-tests`. It rechecks source and
 tool identities before execution and retains the actual ELF test executable.
 
+`native_event_rows.py` is the exact subsequent harness for candidate `2f4dd92`.
+It executes eleven Rust cases, including native Arrow/event/Parquet readback, and
+checks the actual pinned C API vector size (2048). Its two separately owned
+containers are also stopped-retained; see the
+[event-row report](../../docs/implementation/evidence/p02-event-rows-native-20260918.json).
+It does not qualify later metadata/dictionary changes or a publisher.
+
 Before reproducing, inventory the host, verify ownership of inputs and create new
 resources. The original six containers are stopped and retained under
 `/home/tux/bigbrotr-implementation-20260917/runs/archive-d459fcd`; do not restart

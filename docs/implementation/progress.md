@@ -18,11 +18,13 @@ including parent ownership. No storage task checkbox or M1 gate is complete.
 
 ## Verified Git and ownership
 
-Local main and private origin/main are at qualification commit `dcc514e` (normal
-push observed). The engine candidate `d459fcd` is pushed. Root now owns the event
-row adapter, its tests, two local package edges in Cargo, archive-format/task
-documentation, inventory and this checkpoint; these changes are not yet committed.
-No contributor conflict or history rewrite. Verify actual status before resuming.
+Private origin/main is at `dcc514e` (engine qualification push observed). Local
+main has unpublished event-row candidate `2f4dd9266d1f8fd22287f87232d43a75d7327e45`,
+tree `4a416f86b8c38106bf5e5e8e862775048846b488`. Its native qualification is complete
+for the event-only scope. Root owns the subsequent dirty five-family row adapter,
+new metadata/dictionary tests, event native report/harness, dependency/archive/task
+and row-format documentation, laboratory inventory and this checkpoint. No
+contributor conflict or history rewrite. Verify status before continuing.
 
 The candidate adds unpublished `apps/bigbrotr-archive-worker/`, exact native
 registry/bundle/build/CI integration and scoped controls. Only the worker links
@@ -89,25 +91,55 @@ retains its [initial-owner scope](evidence/p02-event-admission-native-20260918.j
 No full P01/P02 or M1 completion follows. Do not repeat unrelated suites without
 new changes or findings.
 
-## Resources and next bounded action
+## Current typed-row slice and native state
 
-Fresh `terminal-six-preflight.json` / `cleanup-six-audit.json` verify all six
-archive containers stopped-retained, no OOM, zero running BigBrotr containers and
-all eight unrelated workloads unchanged. The low-PID container exit0 belongs to
-its observation harness; its worker exited SIGABRT. Exact names/IDs/owners and
-commands are in the inventory. Native root:
-`/home/tux/bigbrotr-implementation-20260917/runs/archive-d459fcd`.
-No resources were deleted. Shared checkout remains clean/detached at
-`6be851580ba415eed5ff0979ee7072480f9ee3ab`, zero consumers; do not reset it.
-Older monitor, JSONB, admission and bootstrap labs remain separately retained.
-All earlier build/test/collection sessions finished; there is no pending build.
+The event-only candidate `2f4dd92` built on Tux, with all 568 source entries and
+actual tools/artifacts independently audited. Native test ELF SHA-256
+`9b904684765291e89c281bc9d51d5c2c0757f5307cc01f13a113338224a722de` executed all
+11 cases (five new row cases, six engine cases), no failures/ignored tests.
+The actual pinned C API vector size is 2048. Raw results and fresh cleanup audit
+are in `.research/implementation/archive-worker/rows-2f4dd92/`; the concise
+[event report](evidence/p02-event-rows-native-20260918.json) and exact
+`experiments/archive-engine/native_event_rows.py` are currently dirty, not pushed.
 
-Next: commit the reviewed initial event-row adapter as an unpublished native
-candidate and transfer it through Git for native Rust tests on Tux. Mac Clippy and
-all eleven worker cases pass in `rows-mac.log`: signed u64 extrema/Unicode/NUL
-through native append and reopened Parquet, 1024 rows/24,576 nested strings,
-1 MiB content/10,000 tags, exact bounds and actual flush refusal. Original RED/API
-fixture-error logs are retained. This is event conversion, not publication. While
-that isolated test runs, implement the remaining eligibility/receive/provenance/
-dictionary typed rows; then connect the pending feed and parent/publisher. All
-complete-event, catalog and recovery gates remain open.
+The next uncommitted adapter now covers events, eligibility, receive, provenance
+and all seven closed dictionary descriptor schemas through `Rows` constructors.
+Mac scoped Clippy and all 12 row cases pass (`all-rows-mac-corrected.log`); six
+unchanged engine cases were deliberately filtered in that last run. New metadata
+and dictionaries have NOT_RUN native Linux qualification. A CREATE VIEW parameter
+fixture failure and a fixture-only Clippy diagnostic were corrected; original
+logs remain, and earlier RED outcomes are retained.
+
+A real failure was found: nullable structs with valid placeholder children are
+accepted by Arrow/native table SQL but can shift persisted values in Parquet.
+The known observer method reference returned zeros after Parquet. Exact-source
+inspection shows the pinned Rust binding only invalidates the struct parent,
+while Parquet value writing uses child validity. The adapter now masks children
+too, preserving the original logical nullability and required fields of present
+references. Full ten-descriptor readback passes; the minimal paired raw-binding
+control reproduces 73 becoming 0 without child masks and 73 with masks. A native
+SQL-created null-struct control passes. This was never a qualified/published data
+path. Raw failing/boundary/fixed logs and exact upstream sources are inventoried
+under `nullable_struct_investigation`. No semantic hash or migration change.
+
+All eight archive containers (six initial engine probes, two event-row build/test
+containers) are stopped-retained. The latest event-row `terminal-preflight.json`
+and `cleanup-audit.json` verify zero running BigBrotr containers, eight unrelated
+workloads unchanged and the shared checkout clean/detached at
+`6be851580ba415eed5ff0979ee7072480f9ee3ab`, with zero consumers. Do not reset it.
+Latest native root is
+`/home/tux/bigbrotr-implementation-20260917/runs/archive-2f4dd92`.
+Build owner `0d56e74dab700b9c562cb4abc82328a5`; test owner
+`bd273ab81927594e348f3cf26b8fb85d`. Full IDs/commands/exit observations are in the
+inventory. No resources deleted; all earlier monitor/JSONB/admission labs remain
+separately retained. Build collector 68799 and test collector 40443 completed;
+there is no pending native job. Mac scoped session 43573 completed exit0.
+
+Next: finish reviewing the five-family conversion/null-normalization diff, commit
+it as a new unpublished exact-revision candidate, then run its actual native
+adapter tests on Tux. Preserve the unmasked counterexample and fixed full-content
+oracle, record exact identities and terminal resource state, then normally push
+verified commits plus evidence. Continue directly with the real pending-batch
+consumer, explicit archive schema/init, parent protocol/grants and positively
+fenced PG DuckLake publisher. No publisher/receipt/protection/read/export/restart
+or M1 gate is complete; do not stop at row conversion or reclaim pending facts.
