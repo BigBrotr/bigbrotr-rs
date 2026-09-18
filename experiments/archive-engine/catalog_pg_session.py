@@ -19,8 +19,9 @@ class PgSession:
         self.sequence = 0
         self.total_bytes = 0
         self.backend = json.loads(self.execute(
-            "SELECT json_build_object('pid',pid,'start',backend_start::text) "
+            "SELECT json_build_object('pid',pid,'start',backend_start::text,'user',usename) "
             "FROM pg_stat_activity WHERE pid=pg_backend_pid();")[0])
+        assert self.backend['user'] == environment['PGUSER']
 
     def start(self, query):
         assert self.pending is None
@@ -59,7 +60,8 @@ class PgSession:
         # Match the live backend incarnation before signaling. Client EOF alone
         # is not a rollback acknowledgement for a waiting server transaction.
         predicate = (f"pid={self.backend['pid']} AND "
-                     f"backend_start::text='{self.backend['start']}' AND usename='postgres'")
+                     f"backend_start::text='{self.backend['start']}' AND "
+                     f"usename='{self.backend['user']}'")
         assert sql('SELECT pg_terminate_backend(pid,5000) FROM pg_stat_activity WHERE ' + predicate) in ('', 't')
         assert sql('SELECT count(*) FROM pg_stat_activity WHERE ' + predicate) == '0'
         if self.process.poll() is None:

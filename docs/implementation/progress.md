@@ -15,13 +15,11 @@ complete. Pending must not be reclaimed. Whole selected product remains required
 
 ## Git and ownership
 
-Mac main, integrating root only. Last observed HEAD
-`df2a0dbb30a7fed7495633bce7e5850ef2341b5e`; freshly verified origin/main at the start
-of this slice was `e20198fd8a099493198a26e643e9200d79264865`. Two unpublished
-exact-test candidates694be48/df2a0db implement the guard investigation. All prior
-startup results and MON fixes are pushed. Root owns final guard report/task/
-README/inventory/checkpoint updates; no other writer. Git transfers, readonly Tux
-source, root review only. Commit/push and observe remote/clean state.
+Mac main, integrating root only. Freshly verified HEAD and origin/main both
+`8d8cdf58af95262d713876a5be97ab0a1b513f63`, clean before current work. All earlier
+MON/startup/guard evidence is pushed. Root owns the guard-privileges extension of
+the existing lab, PgSession helper and README/checkpoint updates; no other writer.
+Source transfers through Git, readonly Tux source, root review only.
 
 ## Qualified product prerequisites
 
@@ -201,9 +199,12 @@ zero BigBrotr running;20 unrelated identities/processes/mounts/networks unchange
 terminal. Inventory key: `implementation_archive_worker_20260918.catalog_commit_guard_probe`.
 No active experiment; do not restart retired-network containers.
 
-The candidate remains UNSELECTED as a product fence. Next after final report
-commit/push: execute actual privilege/DDL/replication-role/session-user escape
-refusals and audit native mutation coverage with inlining disabled/no runtime DDL.
+The candidate remains UNSELECTED as a product fence. The prepared next bounded
+`guard-privileges` run has44 NOT_RUN cases: limited-role ownership/DDL/session/
+replication escape refusals, all28 zero-row table guards, role/search-path shadow
+and positive native publication. Commit the reviewed harness, transfer exact Git
+source to a fresh Tux lab and run it. Then audit native mutation coverage with
+inlining disabled/no runtime DDL.
 Check all owned schema/trigger identities, altered/missing guard refusal, fixed
 snapshots and exact fresh setup/upgrade behavior before adopting it. Production
 adoption needs an explicit owning-contract exception for versioned metadata

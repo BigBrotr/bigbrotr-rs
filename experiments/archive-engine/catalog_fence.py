@@ -22,7 +22,7 @@ sys.path.insert(0, '/source')
 from tools.archive_bundle import build_environment, native_target, verify_bundle
 
 parser = argparse.ArgumentParser(description=__doc__)
-parser.add_argument('--case-set', choices=['baseline', 'startup', 'guard', 'guard-races'], default='baseline')
+parser.add_argument('--case-set', choices=['baseline', 'startup', 'guard', 'guard-races', 'guard-privileges'], default='baseline')
 parser.add_argument('--probe', type=Path, required=True)
 parser.add_argument('--probe-sha256', required=True)
 parser.add_argument('--bundle', type=Path, required=True)
@@ -456,6 +456,67 @@ def guard_races(admin):
         save()
 
 
+def guard_privileges(admin):
+    from catalog_pg_session import PgSession
+    sql(Path(__file__).with_name('catalog_commit_guard.sql').read_text())
+    role, path = job_role()
+    successor_role, successor = job_role()
+    sql(f"UPDATE bb_fence_guard.owner SET login='{successor_role}' WHERE singleton;")
+    secret = next(part[9:] for part in path.read_text().split() if part.startswith('password='))
+    passfile = root / (role + '.pgpass')
+    with os.fdopen(os.open(passfile, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600), 'w') as stream:
+        stream.write(f'pg:5432:catalog_fence:{role}:{secret}\n')
+    session = PgSession(dict(pg_env, PGUSER=role, PGPASSFILE=str(passfile)), children)
+    sessions.append(session)
+    refusals = [
+        ('write-owner', 'UPDATE bb_fence_guard.owner SET login=session_user;'),
+        ('delete-owner', 'DELETE FROM bb_fence_guard.owner;'),
+        ('call-guard', 'SELECT bb_fence_guard.require_owner();'),
+        ('disable-trigger', 'ALTER TABLE public.ducklake_snapshot DISABLE TRIGGER bigbrotr_writer_guard;'),
+        ('drop-trigger', 'DROP TRIGGER bigbrotr_writer_guard ON public.ducklake_snapshot;'),
+        ('drop-table', 'DROP TABLE public.ducklake_snapshot;'),
+        ('truncate-table', 'TRUNCATE public.ducklake_snapshot;'),
+        ('create-table', 'CREATE TABLE public.unguarded(i integer);'),
+        ('create-schema', 'CREATE SCHEMA unguarded;'),
+        ('replication-role', 'SET session_replication_role=replica;'),
+        ('session-authorization', 'SET SESSION AUTHORIZATION postgres;'),
+        ('set-admin-role', 'SET ROLE postgres;'),
+        ('set-current-writer-role', f'SET ROLE {successor_role};'),
+        ('escalate-role', f'ALTER ROLE {role} SUPERUSER;'),
+    ]
+    for name, query in refusals:
+        report['active_case'] = 'guard-privilege-' + name
+        session.execute(query, '42501')
+        cases.append({'case': report['active_case'], 'status': 'PASS', 'sqlstate': '42501'})
+    names = json.loads(sql("SELECT json_agg(tablename ORDER BY tablename) FROM pg_tables WHERE schemaname='public'"))
+    assert len(names) == 28
+    for name in names:
+        assert re.fullmatch('ducklake_[a-z_]+', name)
+        # A zero-row DML still has to invoke a STATEMENT guard on every table.
+        session.execute(f'DELETE FROM public.{name} WHERE false;', '55000')
+        cases.append({'case': 'guard-coverage-' + name, 'status': 'PASS', 'sqlstate': '55000'})
+    session.execute('SET ROLE bb_fence_writer;')
+    assert session.execute('SELECT current_user,session_user;') == [f'bb_fence_writer|{role}']
+    session.execute('DELETE FROM public.ducklake_metadata WHERE false;', '55000')
+    session.execute('RESET ROLE;')
+    session.execute('CREATE TEMP TABLE owner(singleton boolean, login name);')
+    session.execute(f"INSERT INTO owner VALUES(true,'{role}');")
+    session.execute('SET search_path=pg_temp,public,bb_fence_guard;')
+    session.execute('DELETE FROM public.ducklake_metadata WHERE false;', '55000')
+    cases.append({'case': 'guard-role-and-search-path-shadow', 'status': 'PASS', 'sqlstate': '55000'})
+    # Native publication with the authorized role is a positive control after
+    # every refusal; missing broad permissions must not explain the stale result.
+    commit(writer(successor, 13))
+    assert read(13, admin) == [1, 1, 1]
+    assert sql("SELECT count(*) FROM pg_trigger WHERE tgname='bigbrotr_writer_guard' AND tgenabled='O'") == '28'
+    assert sql("SELECT count(*) FROM pg_tables WHERE schemaname='public'") == '28'
+    assert sql(f"SELECT login::text FROM bb_fence_guard.owner WHERE singleton") == successor_role
+    cases.append({'case': 'guard-authorized-native-control-after-refusals', 'status': 'PASS', 'counts': [1, 1, 1]})
+    session.close(sql)
+    sessions.clear()
+    save()
+
+
 try:
     report['active_case'] = 'initialization'
     assert sql('SHOW cluster_name') == args.cluster, 'unowned PostgreSQL cluster'
@@ -476,8 +537,10 @@ try:
         startup_cases(admin)
     elif args.case_set == 'guard':
         guard_cases(admin)
-    else:
+    elif args.case_set == 'guard-races':
         guard_races(admin)
+    else:
+        guard_privileges(admin)
     report['status'] = 'PASS'
 except BaseException as error:
     report.update(status='FAIL', failure=type(error).__name__)

@@ -163,3 +163,11 @@ records source/artifact verification and the initial two cases separately. All
 four guard containers are stopped-retained, with no job backends; both empty
 networks were retired. This remains a candidate with explicit privilege,
 mutation-coverage and migration gates, not a product guarantee or full P02 step.
+
+`--case-set guard-privileges` prepares44 **NOT_RUN** cases: real limited-role
+attempts to alter ownership/triggers/schema, escalate session/role privileges or
+bypass with replication mode; zero-row DELETE on each of the28 guarded tables;
+role/search-path shadowing; and an authorized native publication positive control.
+It checks exact PostgreSQL SQLSTATEs and final guard/table/owner identities. This
+is an actual permission boundary probe, not a replacement for product schema
+inspection, epoch/CAS or migration implementation.
