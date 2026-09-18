@@ -18,7 +18,71 @@ read/export/restart. The private publisher now has scoped signed native COMMIT-l
 and concurrency qualification. Pending must not be acknowledged/reclaimed. The
 finite fixtures do not implement persistent service lifecycle or installed recovery.
 
-## Git and integrating ownership
+## Receipt reader candidate ready for exact-source qualification
+
+Current main starts at d4f489548713ef06e39af8249f442522b1d322f1, matching
+origin/main at resumption. Root owns all current dirty receipt code, tests,
+qualification fixtures and contract/checkpoint edits. No migration/dependency
+change. The containing candidate commit will be the source for the next new lab;
+resolve its actual SHA after commit. Do not push until its native result is audited.
+
+P02-T04 step4 now has a real parent/worker consumer: <=32KiB closed input with
+complete schema1 retained batch/attempt expectation, immutable dataset/catalog/
+root/scientific binding check, fresh READ_ONLY PG/DuckLake attachments with secret
+storage disabled, and bounded unfiltered full-field receipt scan through EOF.
+All decoded receipts must be valid schema1 for the dataset, including unrelated
+rows. Matching any digest/attempt/ordinal requires complete exact equality and
+uniqueness. No receipt observation grants replay/ACK/protection. Full privileged
+guard compatibility and prior old-lifetime exclusion remain caller obligations.
+
+Mac raw evidence is .research/implementation/archive-worker/receipts. Executed:
+protocol-final.log3 PASS; command-final.log1 real CLI case PASS; limits-green.log6 library matches (4 receipt plus2 old
+publication) and1 real CLI input case PASS; review-native-green.log5 receipt
+cases PASS; review-parent-green.log2 parent cases PASS; final-clippy.log PASS
+for parent/worker/protocol libraries/tests and both parent examples. Local native
+uses the pinned candidate-bundle and actual embedded DuckLake, not PostgreSQL.
+Document/artifact checks PASS. Exact local executable/PID binding uses the existing
+supervisor; no new Tux or mount result is inferred from these checks.
+
+Discriminating failures retained: limits-command-red.log oversized input
+InvalidInput; limits-native-red.log persisted range overflow Mismatch;
+parent-limit-red.log scan-cap arithmetic overflow misclassified; all corrected.
+Read-only AI publication_review found malformed nonmatching receipts could yield
+Absent and duplicate JSON output keys could overwrite status. Root reproduced
+both in unrelated-review-red.log and response-review-red.log before fixing typed
+row validation and closed response decoding; affected tests now PASS. First native
+test compile and first integrated example Clippy failed on fixture syntax/field
+access, then corrected; keep those logs rather than claiming first-run success.
+
+The signed publication fixture now queries this actual reader after positive reap,
+seal and privileged inspection; independent full scientific readback still gates
+successor launch. New receipt_cases.py plans18 finite SELECT-only/readonly-mount
+cases, including identity conflict, denied/unavailable dependency, scan/allocation
+refusal, observed real PG lock waits followed by deadline/cancellation, missing/
+corrupt receipt objects for an unrelated target, and identical restored retry.
+These native scenarios are NOT_RUN. Read-only AI review rechecked both product
+corrections and the complete harness/probe integration. It found a cancellation
+false-pass (same deadline), overbroad secret mount, omitted artifact audit and
+missing failure logs. Root corrected all: separate15s cancellation deadline with
+<2s observed-cancel window, selected credential file only, all5 executables/new
+test ELFs in retirement audit and bounded logs retained during terminal cleanup.
+Documentation now precisely limits duplicate detection to target identities.
+No further product counterexample was found in that source-only review.
+
+Tux freshly inspected: previous b12c902 runner/PG IDs below are stopped, no OOM,
+retired network absent,8 unrelated containers running and0 BigBrotr containers
+running. No new resources created. Launch helper now copies the retained b12c902
+build cache and provisions separate read-only/denied fixture roles from private
+secret files. Source stays an exact clean Git export, caches separate writable
+copies. All other earlier labs stay retired.
+
+Next bounded action: form unpublished coherent candidate,
+transfer its exact Git SHA to a separately inventoried lab, then run native build,
+all6 signed schedules and the receipt-only faults. Record source/artifact/workload
+identities, actual durable before/after state and terminal ownership/cleanup before
+pushing qualified work. No P02 task or M1 acceptance is complete.
+
+## Prior delivered Git and integrating ownership
 
 Mac main delivery `8e122279b72cfe046e6525577e8e44fb9cdee00b` is pushed to
 private origin/main and independently read back. Tested source remains
@@ -179,11 +243,6 @@ HTTPS retry/concurrency on Mac/Linux. Do not mechanically rerun unrelated suites
 
 ## Next bounded action
 
-Source/evidence review, document checks, final diff/remote verification and
-private delivery passed. Continue P02-T04 step4 with the product's bounded fresh receipt
-resolution/read consumer, using the actual private worker and complete retained
-expected identity. Inspect its contracts and minimum reader authority before
-implementation. Preserve OutcomeUnknown until fresh exact observation; absence
-alone never grants replay without the separate old-lifetime exclusion ordering.
-Then integrate persistent unique lifetime recovery and qualified protection toward
-M1 signed read/export/restart. No installed Archive role or release is complete.
+Follow the current receipt candidate section above. After native qualification,
+continue persistent unique lifetime recovery and qualified protection toward M1
+signed read/export/restart. No installed Archive role or release is complete.

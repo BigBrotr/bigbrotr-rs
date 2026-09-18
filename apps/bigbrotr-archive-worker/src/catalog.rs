@@ -90,7 +90,7 @@ impl Engine {
         self.close_catalog()
     }
 
-    fn configure_catalog(&self, request: &BootstrapRequest) -> Result<(), CatalogError> {
+    pub(crate) fn configure_catalog(&self, request: &BootstrapRequest) -> Result<(), CatalogError> {
         self.connection.execute_batch("SET pg_pool_enable_reaper_thread=false; SET pg_use_ctid_scan=false; SET pg_pool_max_connections=8; SET pg_pool_acquire_mode='try'")
             .map_err(|_|CatalogError::Configuration)?;
         self.connection

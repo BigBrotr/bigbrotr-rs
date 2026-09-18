@@ -387,6 +387,17 @@ enter private discardable staging only. Complete framing/digest verification is
 required before publication; preparation cannot acknowledge or reclaim pending.
 Its transport framing and diagnostics are not an archive-batch receipt or export.
 
+Fresh receipt resolution compares the complete retained batch and original
+attempt identity. The [private reader candidate](../reference/archive-handoff.md#fresh-receipt-observation-candidate)
+opens a new readonly native client/transaction and reads actual receipt fields
+through successful EOF. A metadata count or filtered existence query does not
+establish absence when unreadable receipt objects could be pruned. The initial
+bounded full scan has linear cost and refuses exhaustion; it does not qualify
+unbounded recovery workloads. A reader uses separate SELECT-only catalog
+credentials and readonly data access. Its immutable binding check does not
+replace privileged guard compatibility inspection. Neither Present nor Absent
+grants source protection or relaxes the old-lifetime exclusion order.
+
 File preparation and integrity checks must describe their actual implementation.
 Native `INSERT` does not supply an application SHA-256 of every generated file.
 The protected archive cut requires the matching semantic receipt, complete file/

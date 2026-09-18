@@ -53,7 +53,12 @@ fn literal(value: &str) -> String {
     format!("'{}'", value.replace('\\', "\\\\").replace('\'', "\\'"))
 }
 impl CatalogRoute<'_> {
-    fn dsn(&self, login: &str, password: &str) -> Result<Zeroizing<String>, PublicationError> {
+    pub(super) fn dsn(
+        &self,
+        login: &str,
+        password: &str,
+        application_name: &str,
+    ) -> Result<Zeroizing<String>, PublicationError> {
         let valid = |s: &str| !s.is_empty() && s.len() <= 4096 && !s.chars().any(char::is_control);
         if self.port == 0 || !valid(self.database) {
             return Err(PublicationError::InvalidInput);
@@ -92,12 +97,13 @@ impl CatalogRoute<'_> {
             }
         };
         Ok(Zeroizing::new(format!(
-            "hostaddr={} port={} dbname={} user={} password={} connect_timeout=5 application_name=bigbrotr-archive-publisher {tls}",
+            "hostaddr={} port={} dbname={} user={} password={} connect_timeout=5 application_name={} {tls}",
             address,
             self.port,
             literal(self.database),
             literal(login),
-            literal(password)
+            literal(password),
+            literal(application_name)
         )))
     }
 }
@@ -168,7 +174,7 @@ impl Preparation<'_> {
             return Err(PublicationError::InvalidInput);
         }
         writer.with_login(|login, password| {
-            let dsn = route.dsn(login, password)?;
+            let dsn = route.dsn(login, password, "bigbrotr-archive-publisher")?;
             let input = Input {
                 catalog: super::bootstrap::Input {
                     dsn: &dsn,

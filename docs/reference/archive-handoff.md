@@ -255,3 +255,67 @@ work refuses duplicate replay and absent work publishes once. All pending and
 orphan files remain retained. Full schema variants, installed source policy,
 product receipt/read services and persistent lifecycle recovery remain P02-T04
 acceptance; no public command advertises this candidate.
+
+## Fresh receipt observation candidate
+
+`Preparation::inspect_receipt` consumes one bounded job and the complete retained
+schema1 `ReceiptExpectation`: dataset, schema, topology, semantic batch digest,
+record count, maximal input ranges, original attempt ID and publication ordinal.
+It observes that original identity, never a newly invented retry attempt. The
+operator supplies a separate SELECT-only catalog login and validated pinned route.
+No credential enters argv/environment. Parent and child use a closed private JSON
+request of at most32KiB, with at most1024 ranges. These are implementation resource
+bounds; a larger valid batch is refused, not reclassified as corrupt.
+
+```text
+bigbrotr-archive-worker inspect-receipt BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_RECEIPTS
+```
+
+Each invocation opens a new native engine. It checks the immutable installation
+and scientific binding against the retained dataset/catalog/root and compiled
+checksums through a READ_ONLY PostgreSQL attachment, then opens the existing
+DuckLake catalog READ_ONLY and begins a new transaction without a historical
+snapshot override. Both attachments disable native secret-storage tables; automatic
+creation, migration, extension installation and persistent secrets stay disabled.
+The caller still owns full privileged guard inspection and the operation's
+compatibility boundary. This narrow reader does not perform an owner-row lock or
+acquire publication authority. SELECT-only grants and a read-only data mount are
+separate practical qualification requirements, not consequences of this API type.
+
+The initial implementation reads **every receipt's actual fields** up to the
+configured `PreparationLimits.max_records` scan bound plus one detection row.
+It deliberately uses no target filter/count: native metadata statistics can
+otherwise skip an unreadable receipt object and falsely suggest absence. Every
+decoded row must be a well-formed schema1 receipt for the expected dataset. A row
+matching any of digest, attempt or ordinal must match every field exactly; a
+second matching row refuses. Present and Absent require successful stream EOF,
+read-transaction completion, native client closure, successful child exit and
+positive reap. Missing/corrupt objects, late fetch panic, incompatible rows,
+target-identity duplicates, cancellation and truncation cannot become Absent.
+This is not a global uniqueness audit of unrelated receipt identities. The worker uses a
+fixed panic diagnostic because the pinned binding can panic on late native fetch.
+
+The normalized row is bounded at256KiB. Parent admission reserves an additional
+16MiB plus three bounded row representations per native vector (at most2048 rows
+for the pinned engine, further limited by the scan cap plus one). This is a
+conservative allocation floor, not an RSS guarantee; native metadata loading,
+startup, disk and deadline remain separately bounded/qualified. Work is linear
+in retained receipt rows/files. This first consumer is not qualified for an
+unbounded or aged archive; a cap refusal requires more budget or a separately
+qualified query design, never a partial result.
+
+The successful reply has exactly five fields: format
+`bigbrotr-native-receipt/1`, `status` (`present` or `absent`), `batch_digest`,
+original `attempt_id` and `publication_ordinal`. The parent uses closed typed
+decoding, rejecting duplicate/unknown fields and trailing JSON. Any launched
+failure remains ObservationUnknown; TerminationUnknown takes precedence and
+retains prior capacity/cleanup obligations. Pre-launch identity and resource
+refusals remain distinct.
+
+Neither observation grants replay, protection, source ACK or reclamation. Before
+interpreting absence for replay, the caller must positively exclude old lifetimes
+and resolve their catalog transactions in the owning order. Presence verifies the
+receipt, not full scientific file membership or a durability class. The signed
+publication fixture now wires this actual parent after positive reap and sealing;
+its independent full-body reader remains a separate oracle. PostgreSQL privilege,
+read-only mount, fault and recovery qualification for this candidate is pending.

@@ -6,8 +6,9 @@ use bigbrotr::{
     },
     storage::{
         archive::{
-            ArtifactIdentity, CatalogRoute, CatalogTls, Preparation, PreparationLimits,
-            PublicationError, WorkerInstallation,
+            ArtifactIdentity, CatalogReaderCredentials, CatalogRoute, CatalogTls, Preparation,
+            PreparationLimits, PublicationError, ReceiptError, ReceiptObservation,
+            WorkerInstallation,
         },
         postgres::{
             activation::{ActivationRequest, activate_initial},
@@ -23,6 +24,7 @@ use bigbrotr::{
 use bigbrotr_model::{
     ArchiveBatch, DatasetId, OwnerResourceId, ProcessIncarnation, TopologyGeneration,
 };
+use bigbrotr_protocol::archive_receipt::ReceiptExpectation;
 use sha2::{Digest, Sha256};
 use std::{
     cell::Cell,
@@ -241,6 +243,11 @@ async fn run(mode: &str, port: u16) {
             .unwrap()
     );
     assert_eq!(native_state(&admin).await, (2, 0));
+    // Qualification-only reader role is independent of every writer lifetime.
+    // No catalog mutations, schema creation, TEMP or privileged guard inspection.
+    admin.batch_execute(&format!("REVOKE TEMP ON DATABASE {database} FROM PUBLIC; GRANT CONNECT ON DATABASE {database} TO bigbrotr_receipt_reader; GRANT USAGE ON SCHEMA public,bigbrotr_archive TO bigbrotr_receipt_reader; GRANT SELECT ON ALL TABLES IN SCHEMA public TO bigbrotr_receipt_reader; GRANT SELECT ON bigbrotr_archive.installation,bigbrotr_archive.scientific_schema TO bigbrotr_receipt_reader;")).await.unwrap();
+    let reader_password =
+        Zeroizing::new(fs::read_to_string("/secrets/bigbrotr_receipt_reader").unwrap());
     initialize_control(&control).await;
     let (client, driver) = connect(&control, "bigbrotr_control").await;
     let (mut owner, policy) = ControlSession::acquire(
@@ -315,6 +322,9 @@ async fn run(mode: &str, port: u16) {
             (receipt, writer)
         };
         assert!(receipt.created);
+        let expected_receipt =
+            ReceiptExpectation::from_archive(&archive, *request.attempt_id(), receipt.ordinal)
+                .unwrap();
         let before = native_state(&admin).await;
         let route = CatalogRoute {
             address: "127.0.0.1".parse().unwrap(),
@@ -405,6 +415,38 @@ async fn run(mode: &str, port: u16) {
             !(ordinal == 3 && index >= 3)
         );
         catalog_guard::inspect(&mut admin, &identity).await.unwrap();
+        let reader_route = CatalogRoute {
+            address: "127.0.0.1".parse().unwrap(),
+            port: 5432,
+            database: &database,
+            tls: CatalogTls::LocalPlaintext(PlaintextBoundary::Loopback),
+        };
+        let observed = preparation(
+            &installation,
+            &directory(home.join(format!("receipt-{ordinal}-temp"))),
+            &cancel,
+        )
+        .inspect_receipt(
+            &expected_receipt,
+            &identity,
+            &reader_route,
+            CatalogReaderCredentials {
+                login: "bigbrotr_receipt_reader",
+                password: &reader_password,
+            },
+            &worker_budget,
+        );
+        let receipt_state = if ordinal == 4 && !success {
+            assert_eq!(observed, Err(ReceiptError::ObservationUnknown));
+            "conflict"
+        } else if success || ordinal == 3 && mode == "after" {
+            assert_eq!(observed, Ok(ReceiptObservation::Present));
+            "present"
+        } else {
+            assert_eq!(observed, Ok(ReceiptObservation::Absent));
+            "absent"
+        };
+        assert_eq!(worker_budget.snapshot().active_permits(), 0);
         let after = native_state(&admin).await;
         let expected = match ordinal {
             1 => before,
@@ -416,7 +458,7 @@ async fn run(mode: &str, port: u16) {
             _ => unreachable!(),
         };
         assert_eq!(after, expected);
-        outcomes.push(serde_json::json!({"ordinal":ordinal,"first":first,"success":success,"snapshots":after.0,"files":after.1,"attempt_id":format!("{n:02x}").repeat(16)}));
+        outcomes.push(serde_json::json!({"ordinal":ordinal,"first":first,"success":success,"snapshots":after.0,"files":after.1,"attempt_id":format!("{n:02x}").repeat(16),"receipt":receipt_state}));
         if ordinal == 3 && index >= 3 {
             emit(serde_json::json!({"event":"old-excluded","worker_active_permits":0}));
             barrier(&home.join("readback-complete"), 60).await;

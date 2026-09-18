@@ -292,8 +292,15 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   existence and full body/receipt reads; a kill after COMMIT returned and metadata
   counts do not cover this boundary. The original normal-INSERT case fails;
   caller-owned scientific registration now passes the scoped native schedules
-  linked above. Resolution uses a fresh lab reader; the product recovery consumer
-  remains required. Pending stays retained in every case.
+  linked above. The new [private receipt consumer](../reference/archive-handoff.md#fresh-receipt-observation-candidate)
+  uses the actual supervised worker, complete retained batch/attempt identity,
+  readonly binding/attach and a bounded full-field scan through EOF. It refuses
+  malformed receipts (including unrelated rows), target-identity conflicts and
+  duplicates, unreadable files and
+  truncated work. Mac embedded native and parent regressions are scoped evidence;
+  SELECT-only PG, readonly mount and integrated COMMIT/race qualification remain
+  pending. Persistent lifecycle recovery and protection remain required. Pending
+  stays retained in every case.
   The borrowed model archive identity and pending-preparation consumer bind schema,
   explicit topology, maximal ranges and complete source/digest membership. Frozen
   single/multiple-range and signed pending fixtures have independent expected

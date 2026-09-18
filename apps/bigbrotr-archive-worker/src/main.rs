@@ -41,13 +41,15 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
     let initialize_catalog = arguments.len() == 7 && arguments[1] == "initialize-catalog";
     let inspect_batch = arguments.len() == 9 && arguments[1] == "inspect-batch";
     let publish_batch = arguments.len() == 9 && arguments[1] == "publish-batch";
+    let inspect_receipt = arguments.len() == 8 && arguments[1] == "inspect-receipt";
     if !inspect_engine
         && !inspect_batch
         && !bootstrap_catalog
         && !initialize_catalog
         && !publish_batch
+        && !inspect_receipt
     {
-        return Err("usage: bigbrotr-archive-worker {initialize-catalog BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | bootstrap-catalog BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | inspect-engine BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | inspect-batch BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_RECORDS MAX_ENCODED_BYTES | publish-batch BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_RECORDS MAX_ENCODED_BYTES}".into());
+        return Err("usage: bigbrotr-archive-worker {inspect-receipt BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_RECEIPTS | initialize-catalog BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | bootstrap-catalog BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | inspect-engine BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | inspect-batch BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_RECORDS MAX_ENCODED_BYTES | publish-batch BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_RECORDS MAX_ENCODED_BYTES}".into());
     }
     let number = |i: usize| -> Result<u64, Box<dyn std::error::Error>> {
         Ok(arguments[i].to_str().ok_or("invalid limit")?.parse()?)
@@ -59,7 +61,18 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
     };
     let engine = Engine::open(Path::new(&arguments[3]), limits)?;
     engine.load_bundle(Path::new(&arguments[2]))?;
-    let inspection = if initialize_catalog {
+    let inspection = if inspect_receipt {
+        let request =
+            bigbrotr_archive_worker::receipt::ReceiptRequest::read(std::io::stdin().lock())?;
+        let observation = engine.inspect_receipt(&request, usize::try_from(number(7)?)?)?;
+        let status = match observation {
+            bigbrotr_archive_worker::receipt::ReceiptObservation::Absent => "absent",
+            bigbrotr_archive_worker::receipt::ReceiptObservation::Present => "present",
+        };
+        serde_json::json!({"format":"bigbrotr-native-receipt/1", "status":status,
+            "batch_digest":request.expected().batch_digest,"attempt_id":request.expected().attempt_id,
+            "publication_ordinal":request.expected().publication_ordinal})
+    } else if initialize_catalog {
         let request =
             bigbrotr_archive_worker::catalog::BootstrapRequest::read(std::io::stdin().lock())?;
         engine.initialize_catalog(request)?;
@@ -103,6 +116,11 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 fn main() -> ExitCode {
+    // The pinned streaming binding panics on a late native fetch failure. Never
+    // expose its driver/SQL/path diagnostic; failed exit cannot become a receipt.
+    std::panic::set_hook(Box::new(|_| {
+        let _ = writeln!(std::io::stderr().lock(), "private archive worker panicked");
+    }));
     match run() {
         Ok(()) => ExitCode::SUCCESS,
         Err(error) => {

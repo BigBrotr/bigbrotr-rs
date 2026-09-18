@@ -30,9 +30,13 @@ env.update(CARGO_HOME=str(build/'cargo-home'), CARGO_TARGET_DIR=str(build/'targe
            BIGBROTR_BUILD_PROFILE='release')
 checks = [
     ('build', ['cargo','build','--locked','--offline','--release','-p','bigbrotr-archive-worker','--bin','bigbrotr-archive-worker','--example','catalog-fence-probe']),
-    ('signed-fixtures', ['cargo','build','--locked','--offline','--release','-p','bigbrotr','-p','bigbrotr-archive-worker','--example','archive_publication_probe','--example','archive_read_probe']),
+    ('signed-fixtures', ['cargo','build','--locked','--offline','--release','-p','bigbrotr','-p','bigbrotr-archive-worker','--example','archive_publication_probe','--example','archive_read_probe','--example','archive_receipt_probe']),
     ('embedded', ['cargo','test','--locked','--offline','--release','-p','bigbrotr-archive-worker','--lib','publication']),
     ('input', ['cargo','test','--locked','--offline','--release','-p','bigbrotr-archive-worker','--test','publication']),
+    ('receipts', ['cargo','test','--locked','--offline','--release','-p','bigbrotr-archive-worker','--lib','receipt::']),
+    ('receipt-input', ['cargo','test','--locked','--offline','--release','-p','bigbrotr-archive-worker','--test','receipt']),
+    ('receipt-parent', ['cargo','test','--locked','--offline','--release','-p','bigbrotr','--lib','storage::archive::receipts']),
+    ('receipt-protocol', ['cargo','test','--locked','--offline','--release','-p','bigbrotr-protocol','--test','archive_receipt']),
 ]
 assert execute(checks,out,SOURCE,env,{'source':manifest['revision'],'native_toolchain':native},1800)['status']=='PASS'
 identity = dict(source=manifest['revision'], native_toolchain=native)
@@ -40,7 +44,8 @@ for source, destination, label in [
         (build/'target/release/bigbrotr-archive-worker',bundle/'bigbrotr-archive-worker','worker'),
         (build/'target/release/examples/catalog-fence-probe',out/'catalog-fence-probe','probe'),
         (build/'target/release/examples/archive_publication_probe',out/'archive-publication-probe','publisher'),
-        (build/'target/release/examples/archive_read_probe',out/'archive-read-probe','reader')]:
+        (build/'target/release/examples/archive_read_probe',out/'archive-read-probe','reader'),
+        (build/'target/release/examples/archive_receipt_probe',out/'archive-receipt-probe','receipt_reader')]:
     shutil.copy2(source,destination)
     destination.chmod(0o500)
     identity[label] = file_hash(destination)

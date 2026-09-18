@@ -1,0 +1,163 @@
+//! Exact fresh receipt observation, without granting replay or source protection.
+use super::{CatalogRoute, Preparation, PreparationError, ProcessError};
+use crate::{runtime::ResourceBudget, storage::postgres::catalog_guard::CatalogIdentity};
+use bigbrotr_protocol::archive_receipt::{
+    ExpectationError, MAX_CHUNK_ROWS, MAX_INPUT_BYTES, MAX_ROW_BYTES, ReceiptExpectation,
+};
+use serde::{Deserialize, Serialize};
+use std::io::{self, Write};
+
+/// Operator-provisioned SELECT-only catalog login. Never put this in diagnostics.
+pub struct CatalogReaderCredentials<'a> {
+    pub login: &'a str,
+    pub password: &'a str,
+}
+
+#[cfg(test)]
+#[path = "receipts_tests.rs"]
+mod tests;
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum ReceiptObservation {
+    Absent,
+    Present,
+}
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ReceiptError {
+    InvalidInput,
+    ResourceLimit,
+    Preparation(PreparationError),
+    ObservationUnknown,
+    TerminationUnknown,
+}
+#[derive(Serialize)]
+struct Input<'a> {
+    catalog: super::bootstrap::Input<'a>,
+    catalog_id: bigbrotr_model::OwnerResourceId,
+    expected: &'a ReceiptExpectation,
+}
+struct Size(usize);
+impl Write for Size {
+    fn write(&mut self, bytes: &[u8]) -> io::Result<usize> {
+        self.0 = self
+            .0
+            .checked_add(bytes.len())
+            .filter(|v| *v <= MAX_INPUT_BYTES)
+            .ok_or_else(|| io::Error::other("receipt input limit"))?;
+        Ok(bytes.len())
+    }
+    fn flush(&mut self) -> io::Result<()> {
+        Ok(())
+    }
+}
+impl Preparation<'_> {
+    /// A new native process/transaction observes the original retained attempt.
+    /// Absence is not exclusion: callers must separately fence every old writer
+    /// and resolve its transactions before interpreting this as replay evidence.
+    /// Present verifies the receipt only, not all scientific objects or durability.
+    pub fn inspect_receipt(
+        self,
+        expected: &ReceiptExpectation,
+        identity: &CatalogIdentity,
+        route: &CatalogRoute<'_>,
+        credential: CatalogReaderCredentials<'_>,
+        budget: &ResourceBudget,
+    ) -> Result<ReceiptObservation, ReceiptError> {
+        expected.validate().map_err(|error| match error {
+            ExpectationError::InvalidIdentity => ReceiptError::InvalidInput,
+            ExpectationError::ResourceLimit => ReceiptError::ResourceLimit,
+        })?;
+        let scientific =
+            CatalogIdentity::local(expected.dataset_id, identity.catalog(), identity.root())
+                .map_err(|_| ReceiptError::InvalidInput)?;
+        if identity != &scientific
+            || self.limits.max_records == 0
+            || self.limits.max_records.checked_add(1).is_none()
+        {
+            return Err(ReceiptError::InvalidInput);
+        }
+        // One native vector plus Arrow/string conversion can coexist. This is
+        // an application allocation floor, not an engine/whole-process RSS cap.
+        let rows = self
+            .limits
+            .max_records
+            .saturating_add(1)
+            .min(MAX_CHUNK_ROWS) as u64;
+        let floor = 16 * 1024 * 1024 + rows * 3 * (MAX_ROW_BYTES as u64 + 128);
+        if self.limits.native_reserve_bytes < floor {
+            return Err(ReceiptError::ResourceLimit);
+        }
+        if [credential.login, credential.password]
+            .iter()
+            .any(|s| s.is_empty() || s.len() > 4096 || s.chars().any(char::is_control))
+        {
+            return Err(ReceiptError::InvalidInput);
+        }
+        let mut dsn = route
+            .dsn(
+                credential.login,
+                credential.password,
+                "bigbrotr-archive-receipt",
+            )
+            .map_err(|_| ReceiptError::InvalidInput)?;
+        // libpq applies this to every connection, including native attach work.
+        // Explicit READ_ONLY attachments and SELECT-only grants are separate.
+        dsn.push_str(" options='-c default_transaction_read_only=on'");
+        let input = Input {
+            catalog: super::bootstrap::Input {
+                dsn: &dsn,
+                data_root: identity.root(),
+            },
+            catalog_id: identity.catalog(),
+            expected,
+        };
+        input
+            .catalog
+            .validate()
+            .map_err(ReceiptError::Preparation)?;
+        serde_json::to_writer(&mut Size(0), &input).map_err(|_| ReceiptError::ResourceLimit)?;
+        let mut process = self
+            .start(
+                "inspect-receipt",
+                &[self.limits.max_records.to_string()],
+                budget,
+            )
+            .map_err(ReceiptError::Preparation)?;
+        let transfer = serde_json::to_writer(&mut process, &input);
+        let output = process.finish();
+        if matches!(output, Err(ProcessError::TerminationUnknown)) {
+            return Err(ReceiptError::TerminationUnknown);
+        }
+        if transfer.is_err() {
+            return Err(ReceiptError::ObservationUnknown);
+        }
+        decode_response(
+            output.map_err(|_| ReceiptError::ObservationUnknown)?,
+            expected,
+        )
+    }
+}
+fn decode_response(
+    output: &[u8],
+    expected: &ReceiptExpectation,
+) -> Result<ReceiptObservation, ReceiptError> {
+    #[derive(Deserialize)]
+    #[serde(deny_unknown_fields)]
+    struct Response {
+        format: String,
+        status: ReceiptObservation,
+        batch_digest: bigbrotr_model::Digest256,
+        attempt_id: [u8; 16],
+        publication_ordinal: u64,
+    }
+    let value: Response =
+        serde_json::from_slice(output).map_err(|_| ReceiptError::ObservationUnknown)?;
+    if value.format != "bigbrotr-native-receipt/1"
+        || value.batch_digest != expected.batch_digest
+        || value.attempt_id != expected.attempt_id
+        || value.publication_ordinal != expected.publication_ordinal
+    {
+        return Err(ReceiptError::ObservationUnknown);
+    }
+    Ok(value.status)
+}

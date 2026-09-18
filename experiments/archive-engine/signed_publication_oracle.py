@@ -150,7 +150,9 @@ def check(mode, parent, reader):
         snapshots, files = ((2, 0) if ordinal == 1 else (3, 2) if ordinal == 2 or
                             ordinal == 3 and mode in ('before', 'owner_first', 'held_rollback') else (4, 8))
         success = ordinal == 2 or ordinal == 3 and mode in ('normal', 'held_commit') or ordinal == 4 and mode in ('owner_first', 'held_rollback')
+        receipt = ('conflict' if ordinal == 4 and not success else
+                   'present' if success or ordinal == 3 and mode == 'after' else 'absent')
         outcomes.append(dict(ordinal=ordinal, first=first, success=success,
-            snapshots=snapshots, files=files, attempt_id=(bytes([n]) * 16).hex()))
+            snapshots=snapshots, files=files, attempt_id=(bytes([n]) * 16).hex(), receipt=receipt))
     assert terminal['outcomes'] == outcomes, 'publication outcomes'
     assert reader == expected(mode), 'complete scientific rows and signed event'
