@@ -876,6 +876,145 @@
       "exit_code": 0,
       "oom_killed": false,
       "qualification": "Build completed exit0/OOMfalse, envelope verified. No PG scenarios run: float parser and private-route fixture corrected after this source. Retained; not native acceptance."
+    },
+    "control_bootstrap_native": {
+      "format": "bigbrotr-configuration-build-lab/1",
+      "source": "aad4ddce32afdd255921e53d3da951aa5c61bd0f",
+      "tree": "a85f0e066bed1db8fee8940d9f7080aca70364aa",
+      "owner": "d4e356ad753df765264d75a1d62e12aa",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/configuration-aad4ddc",
+      "container": "bigbrotr-implementation-configuration-aad4ddc-build",
+      "image": "sha256:8d906f267439748924d6a9de9cab47855279cc196a7397d9cb7a690c77fddfe3",
+      "state": "completed-retained",
+      "command": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "bigbrotr-implementation-configuration-aad4ddc-build",
+        "--label",
+        "org.bigbrotr.implementation=20260917",
+        "--label",
+        "org.bigbrotr.configuration-build=d4e356ad753df765264d75a1d62e12aa",
+        "--label",
+        "org.bigbrotr.source=aad4ddce32afdd255921e53d3da951aa5c61bd0f",
+        "--user",
+        "1000:1000",
+        "--cpus",
+        "2",
+        "--memory",
+        "6g",
+        "--memory-swap",
+        "6g",
+        "--pids-limit",
+        "512",
+        "--read-only",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges",
+        "--tmpfs",
+        "/tmp:rw,exec,nosuid,nodev,size=512m",
+        "--mount",
+        "type=bind,src=/home/tux/bigbrotr-implementation-20260917/checkout,dst=/source,readonly",
+        "--mount",
+        "type=bind,src=/home/tux/bigbrotr-implementation-20260917/runs/configuration-aad4ddc,dst=/out",
+        "--workdir",
+        "/source",
+        "sha256:8d906f267439748924d6a9de9cab47855279cc196a7397d9cb7a690c77fddfe3",
+        "python3",
+        "tools/build.py",
+        "--output",
+        "/out/build",
+        "--jobs",
+        "2"
+      ],
+      "preflight": {
+        "active_source_consumers": 0,
+        "available_disk_bytes": 383658680320
+      },
+      "started_at": "2026-09-18T01:52:23.669414+00:00",
+      "container_id": "fa216df01321efe638b918033498fa7e6704f68fc4980afc7c4beb66fa61e100",
+      "exit_code": 0,
+      "oom_killed": false,
+      "finished_at": "2026-09-18T01:58:23.61915368Z",
+      "runtime": {
+        "format": "bigbrotr-pg-lab/1",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/configuration-aad4ddc/runtime",
+        "owner": "40ba64495ca7b9f600f083331a1379d9",
+        "postgres": "bigbrotr-implementation-pg-20260917-initone",
+        "client": "bigbrotr-implementation-pg-20260917-initone-client",
+        "network": "bigbrotr-implementation-pg-20260917-initone",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "client_image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+        "binary_sha256": "5c9316ab0e0b8adcecc0e106ca148de3e33984888636f6eb1c0a9a68192eaf96",
+        "source": "/home/tux/bigbrotr-implementation-20260917/checkout",
+        "state": "stopped-retained",
+        "published_ports": [],
+        "harness_revision": "aad4ddce32afdd255921e53d3da951aa5c61bd0f",
+        "harness_sha256": "6df5afbd10a1edc1b049b09a527179b1485bc3ff18903b275f38e0529df64d0b",
+        "server": {
+          "version": "160015",
+          "fsync": "on",
+          "full_page_writes": "on",
+          "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+        },
+        "build_receipt_sha256": "700411f1b694bf7f9692728ce60d45f4ef2b92dc934063fe048b9434d6ee4911"
+      },
+      "local_root": ".research/implementation/control-bootstrap/native-aad4ddc",
+      "qualification": "25 actual native PG/CLI cases PASS at aad4ddc. Exact453 source files/archive/extracted sources and binary5c9316ab... verified. Independent all223 relation observations/6 complete policies checked; zero backends; all six runtime/fault containers stopped-retained/OOMfalse.",
+      "runtime_terminal": [
+        {
+          "name": "bigbrotr-implementation-pg-20260917-initone",
+          "id": "dbdfbf7094cc6984738dfddde3dcde0b23739c27f184d3519c6bbe503f07d265",
+          "exit": 0,
+          "oom": false,
+          "running": false
+        },
+        {
+          "name": "bigbrotr-implementation-pg-20260917-initone-client",
+          "id": "44d990f298b3176bf10f4ebaa1e9eacb5004e2490768bcdb3e680eb4dd5dcf5a",
+          "exit": 143,
+          "oom": false,
+          "running": false
+        },
+        {
+          "name": "bigbrotr-implementation-pg-20260917-initone-client-before",
+          "id": "7d0b1df696597cadc16c81620782cc0b8cd3abcdaf707c56576a19dfb777ec46",
+          "exit": 143,
+          "oom": false,
+          "running": false
+        },
+        {
+          "name": "bigbrotr-implementation-pg-20260917-initone-client-after",
+          "id": "e1394a56a757d0d03dee763c2847ef8a5e2609eaa7b261037753594feeca98a3",
+          "exit": 143,
+          "oom": false,
+          "running": false
+        },
+        {
+          "name": "bigbrotr-implementation-pg-20260917-initone-client-race",
+          "id": "ef0b3edc17fed1e4a2dd0146b93b674fcb185374a708a6931f1a60919fdc8dbe",
+          "exit": 143,
+          "oom": false,
+          "running": false
+        },
+        {
+          "name": "bigbrotr-implementation-pg-20260917-initone-client-killed",
+          "id": "61414259ef08f8ef8d15790e9c389898162410b8a15017e849e7fddf88cd74fa",
+          "exit": 137,
+          "oom": false,
+          "running": false
+        }
+      ],
+      "evidence": "docs/implementation/evidence/p01-control-bootstrap-native-20260918.json"
+    },
+    "ci_35293792908": {
+      "source": "4f2ad35c70b65673f3e84e46ecf0d1b60c82fba9",
+      "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/35293792908",
+      "status": "completed",
+      "conclusion": "success",
+      "scope": "GitHub job/step scheduling observed; all three foundation jobs succeeded, optional native-rocks arm64 job skipped by trigger. New artifact content/trace audit NOT_RUN; no bootstrap/runtime or release qualification inferred."
     }
   }
 }

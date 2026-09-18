@@ -10,7 +10,9 @@ website/documentation/blog.
 The current CLI provides help/version/build identity, bounded independent
 [signed-event verification](docs/reference/protocols.md),
 [static configuration](docs/reference/configuration.md) and explicit initial
-[PostgreSQL control migrations](docs/operations/schema-upgrades.md).
+[PostgreSQL control migrations](docs/operations/schema-upgrades.md), with
+[one-time Control initialization](docs/operations/control-initialization.md) and
+accepted-configuration inspection.
 Durable event admission, archive and product services remain implementation work.
 This is not an installable release.
 The repository remains private and

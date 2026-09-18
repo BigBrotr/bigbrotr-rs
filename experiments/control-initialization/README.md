@@ -21,3 +21,5 @@ are compared, and no other data may appear. This qualifies configuration
 initialization only. Human enrollment, credential issuance, active security policy,
 writer ownership, signed-event admission and complete installation remain later
 work. A committed harness or planned invocation is not executed native evidence.
+
+Executed evidence at `aad4ddc`: [25 native Linux amd64/PG cases](../../docs/implementation/evidence/p01-control-bootstrap-native-20260918.json), including their exact scope and exclusions.

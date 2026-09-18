@@ -1,0 +1,277 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-18",
+  "status": "PASS",
+  "scope": "P01-T04 explicit initial Control acceptance and P08-T02 installation attribution foundation; no human enrollment/runtime grant",
+  "source": {
+    "revision": "aad4ddce32afdd255921e53d3da951aa5c61bd0f",
+    "tree": "a85f0e066bed1db8fee8940d9f7080aca70364aa",
+    "exact_source_files": 453,
+    "build_source_inputs": {
+      "source-manifest.json": "aac5dd44778bb6f0593a78862f34a817497eee4f161062ac9cad7e6622769748",
+      "build-result.json": "700411f1b694bf7f9692728ce60d45f4ef2b92dc934063fe048b9434d6ee4911",
+      "observation.json": "14930401758c52ff7eabf3a2a4f39fdf660f2923b10ad1b0aacc861c1590787b",
+      "source.tar": "8fe5741c4bdca70c37ba184ebe922f12d7d9757e6066eede18704280553d9f4e"
+    }
+  },
+  "artifact": {
+    "sha256": "5c9316ab0e0b8adcecc0e106ca148de3e33984888636f6eb1c0a9a68192eaf96",
+    "bytes": 7259064,
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "1.98.1",
+    "native_tools_independently_rehashed": {
+      "CC": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+      "CXX": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+      "AR": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+      "LIBCLANG_PATH": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+      "discovery": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e"
+    }
+  },
+  "environment": {
+    "postgres": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    },
+    "build_image": "sha256:8d906f267439748924d6a9de9cab47855279cc196a7397d9cb7a690c77fddfe3",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "client_image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+    "limits": "Build2CPU6GiB512PIDs; PG2CPU1536MiB256PIDs; client2CPU4GiB256PIDs; fault clients2CPU1GiB128PIDs. Memory=swap, read-only roots, capabilities dropped, no-new-privileges, no published ports."
+  },
+  "checks": {
+    "native_cases": 25,
+    "failed": 0,
+    "skipped": 0,
+    "final_observation": {
+      "status": "PASS",
+      "source": "aad4ddce32afdd255921e53d3da951aa5c61bd0f",
+      "native_cases": 25,
+      "final_databases": 9,
+      "final_relations": 223,
+      "all_final_columns_and_values_verified": true,
+      "complete_policy_documents_verified": 6,
+      "policy_fields_per_document": 215,
+      "backends": 0,
+      "scope": "Independent root audit of fresh SQL observations, closed expected rows, entire policy literal, dump invariance, fault counts and actual owned container limits. No enrollment/security/admission claim."
+    },
+    "mac_regression": "187 workspace tests and Clippy PASS before exact-source build; separate Mac evidence."
+  },
+  "cases": [
+    {
+      "name": "initial",
+      "status": "PASS",
+      "exit": 0
+    },
+    {
+      "name": "retry",
+      "status": "PASS",
+      "exit": 0
+    },
+    {
+      "name": "comment",
+      "status": "PASS",
+      "exit": 0
+    },
+    {
+      "name": "policy",
+      "status": "PASS",
+      "exit": 0
+    },
+    {
+      "name": "wrong-dataset_id",
+      "status": "PASS",
+      "exit": 1
+    },
+    {
+      "name": "wrong-instance_id",
+      "status": "PASS",
+      "exit": 1
+    },
+    {
+      "name": "mode-mismatch",
+      "status": "PASS",
+      "exit": 1
+    },
+    {
+      "name": "migration-privileges",
+      "status": "PASS",
+      "exit": 1
+    },
+    {
+      "name": "principals-update",
+      "status": "PASS",
+      "sqlstate": "23514"
+    },
+    {
+      "name": "principals-delete",
+      "status": "PASS",
+      "sqlstate": "23514"
+    },
+    {
+      "name": "management_audit-update",
+      "status": "PASS",
+      "sqlstate": "23514"
+    },
+    {
+      "name": "management_audit-delete",
+      "status": "PASS",
+      "sqlstate": "23514"
+    },
+    {
+      "name": "restart",
+      "status": "PASS",
+      "exit": 0
+    },
+    {
+      "name": "declarative",
+      "status": "PASS",
+      "exit": 0
+    },
+    {
+      "name": "missing-migration",
+      "status": "PASS",
+      "exit": 1
+    },
+    {
+      "name": "denied-audit-insert",
+      "status": "PASS",
+      "exit": 1
+    },
+    {
+      "name": "partial-existing",
+      "status": "PASS",
+      "exit": 1
+    },
+    {
+      "name": "before",
+      "status": "PASS",
+      "exit": 4
+    },
+    {
+      "name": "resolve-before",
+      "status": "PASS",
+      "exit": 0
+    },
+    {
+      "name": "after",
+      "status": "PASS",
+      "exit": 4
+    },
+    {
+      "name": "resolve-after",
+      "status": "PASS",
+      "exit": 0
+    },
+    {
+      "name": "race",
+      "status": "PASS",
+      "exit": 0
+    },
+    {
+      "name": "resolve-race",
+      "status": "PASS",
+      "exit": 0
+    },
+    {
+      "name": "killed",
+      "status": "PASS",
+      "exit": 137
+    },
+    {
+      "name": "resolve-killed",
+      "status": "PASS",
+      "exit": 0
+    }
+  ],
+  "durable_outcomes": [
+    "Atomic revision1/dataset/installation actor/audit observed, with215 exact normalized settings and independently frozen policy digest. No security or topology head, owner, producer or job created.",
+    "Repeated/comment/policy-change initialization preserved complete Control dump and original receipt; wrong roots/mode and existing incomplete state refused.",
+    "Application SQL role without migration privileges succeeded; migrator credentials refused. Revoked audit INSERT failed after earlier statements and left complete dump unchanged.",
+    "Four real SQL update/delete controls on actors/audit raised23514 without mutation.",
+    "Graceful PostgreSQL restart preserved exact initial table rows.",
+    "Proxy cut before COMMIT forwarding: CLI4 unknown, serialized retry initialized exactly once. After server COMMIT complete but before reply: CLI4 unknown, retry returned original receipt without writes.",
+    "Held COMMIT exposed one granted and one waiting initialization advisory lock; concurrent initializer returned the same audit ID without reseeding.",
+    "SIGKILL of owned client container with COMMIT held produced137, OOMfalse; serialized retry created one initialization, with no partial actor/config/audit.",
+    "Independent final read inspected223 relations across9 databases, checked every populated column/value, all expected empty tables and zero application/migrator backends."
+  ],
+  "lifecycle": {
+    "build_root": "/home/tux/bigbrotr-implementation-20260917/runs/configuration-aad4ddc",
+    "build_owner": "d4e356ad753df765264d75a1d62e12aa",
+    "build_container_id": "fa216df01321efe638b918033498fa7e6704f68fc4980afc7c4beb66fa61e100",
+    "build_terminal": "exit0/OOMfalse; stopped-retained",
+    "runtime_root": "/home/tux/bigbrotr-implementation-20260917/runs/configuration-aad4ddc/runtime",
+    "runtime_owner": "40ba64495ca7b9f600f083331a1379d9",
+    "network": "bigbrotr-implementation-pg-20260917-initone",
+    "containers": [
+      {
+        "name": "bigbrotr-implementation-pg-20260917-initone",
+        "id": "dbdfbf7094cc6984738dfddde3dcde0b23739c27f184d3519c6bbe503f07d265",
+        "exit": 0,
+        "oom": false,
+        "running": false
+      },
+      {
+        "name": "bigbrotr-implementation-pg-20260917-initone-client",
+        "id": "44d990f298b3176bf10f4ebaa1e9eacb5004e2490768bcdb3e680eb4dd5dcf5a",
+        "exit": 143,
+        "oom": false,
+        "running": false
+      },
+      {
+        "name": "bigbrotr-implementation-pg-20260917-initone-client-before",
+        "id": "7d0b1df696597cadc16c81620782cc0b8cd3abcdaf707c56576a19dfb777ec46",
+        "exit": 143,
+        "oom": false,
+        "running": false
+      },
+      {
+        "name": "bigbrotr-implementation-pg-20260917-initone-client-after",
+        "id": "e1394a56a757d0d03dee763c2847ef8a5e2609eaa7b261037753594feeca98a3",
+        "exit": 143,
+        "oom": false,
+        "running": false
+      },
+      {
+        "name": "bigbrotr-implementation-pg-20260917-initone-client-race",
+        "id": "ef0b3edc17fed1e4a2dd0146b93b674fcb185374a708a6931f1a60919fdc8dbe",
+        "exit": 143,
+        "oom": false,
+        "running": false
+      },
+      {
+        "name": "bigbrotr-implementation-pg-20260917-initone-client-killed",
+        "id": "61414259ef08f8ef8d15790e9c389898162410b8a15017e849e7fddf88cd74fa",
+        "exit": 137,
+        "oom": false,
+        "running": false
+      }
+    ],
+    "state": "All six runtime/fault containers stopped-retained; network/data preserved."
+  },
+  "not_run": [
+    "Human owner challenge/enrollment, password/session/token grants, restrictive security activation and local owner recovery.",
+    "Native writer ownership/admission, actual signed-event archive/read/export/restart or a packaged installation.",
+    "Maximum document load/RSS/aged state, local disk or host power loss, initializer TLS/mTLS and native Linux arm64 bootstrap.",
+    "This audit verifies an exact private candidate; no release signature, promotion or public distribution claimed."
+  ],
+  "raw_root": ".research/implementation/control-bootstrap/native-aad4ddc",
+  "raw_sha256": {
+    "audit.json": "a577c9b269c5e670c5d62980766a7dc08b9b692dca740034006894beb7d395fc",
+    "build-result.json": "700411f1b694bf7f9692728ce60d45f4ef2b92dc934063fe048b9434d6ee4911",
+    "build.log": "caee9f4999b771ecc3581ec5e603505cd7e9c73ac0152327d2972ff8bc89067a",
+    "observation.json": "14930401758c52ff7eabf3a2a4f39fdf660f2923b10ad1b0aacc861c1590787b",
+    "resources.json": "41a93b7266d3be6de2e70683f1c8990dba8a7f1cf704255bf8c1637f14070c40",
+    "root-audit.json": "18e3a75df065400dc8830f092ffc6376469603ffc614dc6d9fcc839ce78846bc",
+    "runtime-control-initialization.json": "a27a8f3a0cae4352c4397bd331adc2f94698909f63846e7db4aab4de551b4e95",
+    "runtime-final-observation.json": "1b096a441a1f09d4aa1b1e9b3ac2168f52869031c0559dc8cd03c60f3d7f40da",
+    "runtime-resources.json": "894ee83c45d18a026eeeecb134b6fd76086707a7330898949d3b06cad798a118",
+    "runtime-stopped.json": "f698234fc6b81f5760d6733ad970d12b71d4f7b23fe7d64599bddd179181d02d",
+    "runtime.log": "287d8fa271ad819251a888219aa94276f1b43e5f0975cd21381a14f1ff227f08",
+    "source-manifest.json": "aac5dd44778bb6f0593a78862f34a817497eee4f161062ac9cad7e6622769748"
+  },
+  "root_helper_sha256": {
+    "final-observation.py": "5c4920c8d79d0655d1367d3b6875dbac807fdb86cbe02c84afe66d8f72073fac",
+    "audit-runtime.py": "ba463feed028716c943e6bedc58985e8d39675542d51764de450d0c9589bba63"
+  }
+}

@@ -1,7 +1,7 @@
 # Control schema migrations
 
 Status: initial P02-T01 foundation. The checked-in catalog contains
-`0001_control.sql` and `0002_ingest.sql`. The executable includes explicit inspection, planning and
+`0001_control.sql`, `0002_ingest.sql` and `0801_management_identity.sql`. The executable includes explicit inspection, planning and
 application using the selected PostgreSQL driver. Its local planner, preparation
 and entrypoint tests pass. Native Linux amd64 PostgreSQL execution now covers
 the actual CLI, 104 independent SQL constraint cases, initial read-only runtime
@@ -39,7 +39,7 @@ require PostgreSQL 16.15, `fsync=on` and `full_page_writes=on`; apply forces
 transaction-local `synchronous_commit=on`. They do not initialize a dataset or
 qualify a complete installation or release upgrade.
 
-An omitted target selects the latest embedded migration, currently 2. An explicit
+An omitted target selects the latest embedded migration, currently 801. An explicit
 target 1 preserves the initial control-only boundary for its historical fixtures.
 Migration 2 refuses existing topology members with SQLSTATE `55000`: migration 1
 had no source registry, so their exact source authority cannot be inferred.
@@ -97,7 +97,13 @@ engine is exactly `postgres-control`. Each receipt stores the migration filename
 32-byte SQL checksum, `reader_min`, `reader_max`, `writer_floor`, signed UTC
 microsecond `applied_at_us`, and bounded non-secret `applied_by` identity. Initial
 compatibility values are all 1. Migration IDs are positive u32 values: reserved
-number ranges do not require nonexistent intervening migrations.
+number ranges do not require nonexistent intervening migrations. The
+[manifest](../../migrations/manifest.json) records append-only application order,
+which may differ from numeric order as cross-phase consumers arrive. The compiled
+catalog is checked against that sequence; existing history is never reordered.
+Current readers validate the full known prefix while requiring their actual
+prerequisite migration. Older binaries refuse unknown 0801; there is no implicit
+binary rollback after this schema extension.
 
 The planner requires an exact ordered catalog prefix, including name, checksum
 and compatibility metadata. It rejects duplicate, missing, unknown or changed
@@ -157,8 +163,10 @@ not just a row update, elapsed TTL, controller restart or healthy cockpit.
 The application database owns one local instance/dataset. Imported dataset
 identities stay in their source lineage; they do not initialize another local
 writer authority in this database. Dataset creation begins with NULL authority
-heads. The bootstrap transaction inserts the initial config/policy revisions and
-topology, then advances their heads to 1, 1 and 0 respectively.
+heads. [Explicit initialization](control-initialization.md) accepts config revision
+1 with its installation actor/audit. Security policy and topology remain absent
+until their own authorized, atomic transitions exist; initialization alone cannot
+start an ingest owner or create a runtime grant.
 
 | Relation | Initial responsibility |
 |---|---|

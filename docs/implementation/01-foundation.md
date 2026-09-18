@@ -219,8 +219,8 @@ on Linux amd64/arm64; live dependency/authority checks remain NOT_RUN. Pure endp
 normalization does not establish DNS/route authorization.
 The closed initial policy candidate and read-only `config inspect` consumer now
 validate stored configuration against current roots. Explicit `config initialize`
-now has a deployment-only atomic writer and installation attribution; native
-qualification is pending. Management CAS, application plans, mode switching and
+now has a deployment-only atomic writer and installation attribution; [25 native PG cases](evidence/p01-control-bootstrap-native-20260918.json)
+passed on Linux amd64. Management CAS, application plans, mode switching and
 authentication remain step 6 work; an
 inspection result is neither an applied-policy receipt nor a writer grant.
 
