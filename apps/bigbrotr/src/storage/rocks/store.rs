@@ -22,6 +22,10 @@ use std::{
 mod pending;
 pub use pending::{PendingBatch, PendingBatchHeader, PendingError, PendingReadLimits};
 
+#[path = "receipts.rs"]
+mod receipts;
+pub use receipts::{ReceiptReadError, StoredReceipt, required_receipt_data_bytes};
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum StoreError {
     InsufficientNativeReservation,

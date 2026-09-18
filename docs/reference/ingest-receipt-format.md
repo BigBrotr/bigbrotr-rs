@@ -97,6 +97,39 @@ different canonical value can still be structurally valid, so callers must bind
 the decoded request identity to the lookup key and compare it with the owner
 state they intended to resolve.
 
+## Native detail inspection
+
+`IngestStore::read_receipt` reads one exact request key with RocksDB checksums
+enabled and cache filling disabled. It checks the complete decoded request ID,
+dataset and expected request digest. A digest mismatch is `RequestConflict`;
+malformed, incompatible, mis-keyed or foreign data is an error, never absence.
+The reader retains the original policy, topology and recovery coordinates rather
+than relabeling the result with the store's current manifest. Inspecting an old
+context does not authorize its use under current policy.
+
+The caller supplies positive finite codec limits and a data/item permit for
+`max_allocation_bytes + sizeof(Receipt)`. The native pin remains local to the
+call; decoding checks its encoded length before allocating Rust vectors, and
+`StoredReceipt` retains the data permit until its decoded buffers drop. Native
+I/O/pin cost uses the store's separate allowance. These requested allocation
+bounds exclude allocator overhead and are not an RSS guarantee. Cancellation is
+checked before I/O, before decoding and before returning the decoded result;
+it cannot interrupt the native read, so the caller must retain/join its worker.
+
+`None` means only that the detail key is absent. The owning producer watermark,
+closing barrier and transaction recovery protocol must still distinguish a
+retired request, a safely retryable request and an unresolved write. This reader
+does not implement those decisions, check retained scientific dependencies, or
+write a proof, acknowledgement, cursor or replacement result.
+
+Native tests install unchanged independent receipt literals, close and reopen
+the actual engine, compare every returned byte and inspect the engine sequence
+number to exclude writes. They cover both result codes, original contexts,
+request/dataset binding, strict digest conflict, corruption, unknown version,
+bounded decoding, cancellation before I/O and permit retention. They do not
+qualify admission writes, ambiguous commit recovery, concurrent retirement,
+mid-I/O cancellation, crash durability or dependency protection.
+
 ## Ownership and reclamation
 
 The receipt stores exact request identity/digest, protection context, complete

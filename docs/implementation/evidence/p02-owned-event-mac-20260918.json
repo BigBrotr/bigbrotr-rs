@@ -47,6 +47,20 @@
       ],
       "exit_code": 0,
       "log": "check-2.log"
+    },
+    {
+      "command": [
+        "cargo",
+        "clippy",
+        "--workspace",
+        "--all-targets",
+        "--locked",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit_code": 0,
+      "log": "check-3.log"
     }
   ],
   "red_observation": {
@@ -84,8 +98,7 @@
     "unique_event_ids": 14
   },
   "open_checks": [
-    "Mac actual CLI integration and workspace Clippy still running",
-    "Exact-revision native Tux CI not yet launched"
+    "Exact-revision d0644ac native Tux CI running"
   ],
   "not_qualified": [
     "Native event admission or receipt persistence",
@@ -94,5 +107,12 @@
     "Performance under mixed workloads",
     "Linux arm64",
     "Complete product or release"
-  ]
+  ],
+  "actual_cli_integration": {
+    "tests_passed": 5,
+    "failed": 0,
+    "ignored": 0,
+    "log_sha256": "a5de0ebfcb33ef5933f9051f1497cc5b8e6157bd628ea117b4fcda44c997366d"
+  },
+  "clippy_note": "Initial Clippy passed while later receipt-reader inputs were introduced; do not use it to assert an exact d0644ac complete workspace. Stable final combined Clippy is recorded in the receipt-reader evidence."
 }

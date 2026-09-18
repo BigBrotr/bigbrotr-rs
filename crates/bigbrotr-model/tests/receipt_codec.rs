@@ -11,8 +11,14 @@ use minicbor::Encoder;
 use std::{convert::Infallible, mem::size_of};
 
 const PREFIX: &[u8] = b"bigbrotr/receipt/1\0";
-const NEW_FACTS_HEX: &str = "62696762726f74722f726563656970742f310086018350040404040404040404040404040404041bffffffffffffffff1818582008080808080808080808080808080808080808080808080808080808080808088550010101010101010101010101010101011bffffffffffffffff0150030303030303030303030303030303030082828450010101010101010101010101010101010102175820bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb82845001010101010101010101010101010101010218185820cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc848284500101010101010101010101010101010100011bffffffffffffffff5820aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa828450010101010101010101010101010101010102175820bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb82845001010101010101010101010101010101010218185820cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc8284500101010101010101010101010101010102011bffffffffffffffff5820dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd";
-const ALREADY_DURABLE_HEX: &str = "62696762726f74722f726563656970742f31008602835005050505050505050505050505050505010158200909090909090909090909090909090909090909090909090909090909090909855001010101010101010101010101010101000150000000000000000000000000000000001bfffffffffffffffff681828450010101010101010101010101010101011affffffff1bffffffffffffffff1bffffffffffffffff5820eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";
+
+fn fixture(name: &str) -> Vec<u8> {
+    let fixture: serde_json::Value = serde_json::from_str(include_str!(
+        "../../../tests/fixtures/model/receipts-v1.json"
+    ))
+    .unwrap();
+    bytes(fixture["vectors"][name].as_str().unwrap())
+}
 
 fn bytes(hex: &str) -> Vec<u8> {
     hex.as_bytes()
@@ -87,8 +93,8 @@ fn already_durable() -> Receipt {
 #[test]
 fn frozen_operational_receipts_round_trip_exactly() {
     let cases = [
-        (new_facts(), bytes(NEW_FACTS_HEX)),
-        (already_durable(), bytes(ALREADY_DURABLE_HEX)),
+        (new_facts(), fixture("new_facts")),
+        (already_durable(), fixture("already_durable")),
     ];
     for (receipt, expected) in cases {
         assert_eq!(receipt.encode_persistent(expected.len()).unwrap(), expected);
@@ -194,8 +200,8 @@ fn decode(input: &[u8]) -> Result<Receipt, ReceiptCodecError> {
 
 #[test]
 fn variant_version_protection_and_framing_are_closed() {
-    let new = bytes(NEW_FACTS_HEX);
-    let already = bytes(ALREADY_DURABLE_HEX);
+    let new = fixture("new_facts");
+    let already = fixture("already_durable");
     for length in 0..new.len() {
         assert!(decode(&new[..length]).is_err(), "truncated at {length}");
     }
@@ -297,7 +303,7 @@ fn heads(bytes: &[u8], position: &mut usize, found: &mut Vec<(usize, usize, u8, 
 #[test]
 fn all_equivalent_wider_heads_are_noncanonical() {
     let mut checked = 0;
-    for input in [bytes(NEW_FACTS_HEX), bytes(ALREADY_DURABLE_HEX)] {
+    for input in [fixture("new_facts"), fixture("already_durable")] {
         let mut position = PREFIX.len();
         let mut found = Vec::new();
         heads(&input, &mut position, &mut found);
@@ -404,7 +410,7 @@ fn constructors_reject_corrupt_namespaces_order_and_closure() {
 
 #[test]
 fn byte_allocation_and_record_counts_are_bounded_before_reserve() {
-    let input = bytes(NEW_FACTS_HEX);
+    let input = fixture("new_facts");
     let mut limits = ReceiptDecodeLimits {
         max_encoded_bytes: input.len() - 1,
         ..Default::default()
@@ -457,7 +463,7 @@ fn byte_allocation_and_record_counts_are_bounded_before_reserve() {
         Err(ReceiptCodecError::BatchRecordLimit)
     );
 
-    let mut huge_dependencies = bytes(ALREADY_DURABLE_HEX);
+    let mut huge_dependencies = fixture("already_durable");
     let marker = bytes(&format!("f681828450{}", "01".repeat(16)));
     let position = huge_dependencies
         .windows(marker.len())

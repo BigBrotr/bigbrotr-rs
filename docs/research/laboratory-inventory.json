@@ -2066,5 +2066,35 @@
       "unrelated_running_unchanged": 8,
       "evidence": "docs/implementation/evidence/p01-control-runtime-native-20260918.json"
     }
+  },
+  "implementation_owned_event_20260918": {
+    "format": "bigbrotr-trusted-ci-lab/1",
+    "source": "d0644ace5b479462f9249e71ae1f89026062b661",
+    "tree": "abddc133b4fc152c014f7a3d2b7555cba310ad0e",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/ci-d0644ac",
+    "owner": "5eac340e8bea599cefb97ee0516b61fa",
+    "container": "bigbrotr-implementation-ci-d0644ac",
+    "state": "running",
+    "started_at": "2026-09-18T07:03:38.400085+00:00",
+    "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "image_created": "2026-09-18T08:13:59.317882824+02:00",
+    "reused_image_source": "6314639149035258a6b578e16c285fa489219b6a",
+    "container_id": "8c00542b34ab40c228356ad41056aaa7391d9be3eb8db454c2fea55e10f237f1",
+    "local_root": ".research/implementation/owned-event",
+    "scope": "Trusted exact-revision foundation CI; native Linux amd64 only",
+    "preflight": {
+      "path": ".research/implementation/owned-event/preflight.json",
+      "sha256": "20444eee7ea3008433d4af9ee5cc619001aca62dd390d5d649791178cbf29515",
+      "unrelated_running_containers": 8,
+      "running_bigbrotr_containers": 0,
+      "shared_source_consumers": 0
+    },
+    "limits": {
+      "cpu": 2,
+      "memory_bytes": 6442450944,
+      "swap_extra_bytes": 0,
+      "pids": 512,
+      "published_ports": []
+    }
   }
 }

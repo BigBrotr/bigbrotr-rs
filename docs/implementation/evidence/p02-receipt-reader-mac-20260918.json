@@ -1,0 +1,145 @@
+{
+  "format": "bigbrotr-native-receipt-reader/1",
+  "observed_date": "2026-09-18",
+  "source_base": "d0644ace5b479462f9249e71ae1f89026062b661",
+  "source_sha256": {
+    "apps/bigbrotr/src/storage/rocks/store.rs": "af572d5f796a5f48c341266457e30126eadd6590aa8de7e3c177c57b499b4a1f",
+    "apps/bigbrotr/src/storage/rocks/receipts.rs": "5f6fba77382fa4690a26d287748656ff5acb55b05234d6cb8984e30aac2c8125",
+    "apps/bigbrotr/tests/rocks_receipts.rs": "436f61fd3d52314f6db359176aee8a468889a1c1ff32c7d5c4cedd4069e6bff6",
+    "crates/bigbrotr-model/tests/receipt_codec.rs": "3e945cc92ee8dd04833c08ff4f95c65ad5027e8dc5f4799ede3e6becbaadd4e7",
+    "tests/fixtures/model/receipts-v1.json": "beb39031284fc7c453eff573295af39b740edec54c6b50614ae9601f147280c4",
+    "docs/reference/ingest-receipt-format.md": "b38672aa0964d3cd76e2ca49096fc51e8965e9e629b8d3391dbbbcadb4eb54ed"
+  },
+  "host": {
+    "os": "Darwin",
+    "architecture": "arm64"
+  },
+  "dependency_lock_sha256": "ea27c2b367846c4718a6d76fbd1a8340558299ccf9f22c76ed3f30c4b8025b47",
+  "upstream_review": [
+    {
+      "path": "rocksdb-0.25.0/src/db.rs",
+      "sha256": "424ba7e973ac8f2a9faf075e7fda32fc1b2567398ab958f050a1bb69e3694c91",
+      "intervals": [
+        [
+          1110,
+          1140
+        ]
+      ]
+    },
+    {
+      "path": "rocksdb-0.25.0/src/db_pinnable_slice.rs",
+      "sha256": "784c0dd16f667fd3f46853f6ceb44e0610e6b49ca846577713a96d1bffbeaf00",
+      "intervals": [
+        [
+          1,
+          75
+        ]
+      ]
+    },
+    {
+      "path": "librocksdb-sys-0.19.0+11.8.1/rocksdb/db/c.cc",
+      "sha256": "f2d55e08fed8f9502271a555aabb937a18786acc12384337e5f076b64f3a592a",
+      "intervals": [
+        [
+          13313,
+          13339
+        ]
+      ]
+    }
+  ],
+  "upstream_findings": [
+    "Native NotFound becomes None; all other native Get errors propagate",
+    "Rust borrows the pin without copying and destroys it on Drop",
+    "One point read supplies one value; no snapshot or iterator is needed for a single key"
+  ],
+  "red_observation": {
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "-p",
+      "bigbrotr",
+      "--test",
+      "rocks_receipts"
+    ],
+    "exit_code": 101,
+    "outcome": "Missing receipt reader API; compile failure, not behavioral regression evidence"
+  },
+  "commands": [
+    {
+      "command": [
+        "cargo",
+        "fmt",
+        "--all"
+      ],
+      "exit_code": 0,
+      "log": "check-0.log"
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "bigbrotr-model",
+        "--test",
+        "receipt_codec"
+      ],
+      "exit_code": 0,
+      "log": "check-1.log"
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "bigbrotr",
+        "--test",
+        "rocks_receipts"
+      ],
+      "exit_code": 0,
+      "log": "check-2.log"
+    },
+    {
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "--workspace",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit_code": 0,
+      "log": "check-3.log"
+    }
+  ],
+  "tests": {
+    "native_mac_cases": 5,
+    "codec_cases": 6,
+    "failures": 0,
+    "ignored": 0
+  },
+  "log_sha256": {
+    "check-1.log": "a8b197736ec4683022e0077bf755b3e94b58b24d305bea66ce30ee55432cf02b",
+    "check-0.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "check-2.log": "34e8ae2c9126b42b57c45f9503f52732f13f942bdcea48d71c332e347b408a6b",
+    "check-3.log": "d9354f4c28e56ad9fe542ccc2899482e9440e218eef7af4a38c9596bd71c9bcc"
+  },
+  "fixture": {
+    "path": "tests/fixtures/model/receipts-v1.json",
+    "sha256": "beb39031284fc7c453eff573295af39b740edec54c6b50614ae9601f147280c4",
+    "unchanged_original_literals_verified": true
+  },
+  "review": "Integrating owner read complete implementation, tests, model codec, owning format and upstream get/pin boundaries. No independent agent review for this slice.",
+  "not_qualified": [
+    "Linux execution pending",
+    "Native admission write or commit ambiguity",
+    "Producer ACK, retirement and dependency protection",
+    "Crash/power-loss durability",
+    "Concurrent writes and mid-I/O cancellation",
+    "Complete product or release"
+  ]
+}
