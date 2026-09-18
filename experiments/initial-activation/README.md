@@ -47,4 +47,6 @@ and rollback, and includes a weaker `NO KEY UPDATE` negative control. The owner
 consumer runner enrolls/inspects a real account after activation and confirms the
 initial receipt is unchanged. Run `schema_cases.sql` only in the populated owned
 lab and compare the entire Control dump before/after; six expected SQLSTATE
-refusals must leave no mutation. These additions remain proposed until executed.
+refusals must leave no mutation. Execution at fe63862 with helper revision e9b9127 is recorded in the
+[native evidence](../../docs/implementation/evidence/p01-initial-activation-native-20260918.json),
+including the initial stdin-invocation failure and subsequent file execution.

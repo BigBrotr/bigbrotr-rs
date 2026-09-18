@@ -227,8 +227,8 @@ The explicit first-security-revision slice adds `config activate-initial` and th
 0802 command receipt under the [owning transition](../specification/operations-contract.md#explicit-first-security-revision).
 Its zero-participant barrier is limited to a deployment with no runtime history;
 actual grants, policy leases, populated-deployment changes and native-owner
-integration remain P01-T06/P08-T03 acceptance work. Native qualification must be
-recorded separately before this path is claimed exercised.
+integration remain P01-T06/P08-T03 acceptance work. The [native activation evidence](evidence/p01-initial-activation-native-20260918.json)
+records 30 main scenarios, three FK schedules and actual crash/recovery at fe63862.
 
 ## P01-T05 — Shared resource budget, scheduling and lifecycle
 

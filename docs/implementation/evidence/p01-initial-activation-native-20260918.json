@@ -1,0 +1,374 @@
+{
+  "format": "bigbrotr-scoped-evidence/1",
+  "date": "2026-09-18",
+  "status": "PASS",
+  "task_ids": [
+    "P01-T04",
+    "P01-T06",
+    "P08-T03"
+  ],
+  "scope": "Native explicit initial security snapshot, receipts, empty-runtime serialization and existing credential consumers; not live runtime authorization",
+  "source": {
+    "revision": "fe63862ddc58bb2bb2a10218afd62ce49ed2bf8e",
+    "tree": "a61e5b591d721387bbea2a29fdeaebc04d44fcad",
+    "clean": true,
+    "helper_revision": "e9b9127c55f683fda667fc2822fba0963682746e",
+    "helper_files_sha256": {
+      "fk_races.py": "8016fde21a553c0c44555646fdc4c4882cc1f9f30f8d3c8f9f25be84e675f6d2",
+      "enrollment_after.py": "e12e02ff98e3656c5cb9898b7adff25031faca4f7d8029dda542f8e45bcb23e6",
+      "schema_cases.sql": "d68cc0e183f9fe3ae963d4cf78cd46b4b3f6ab499f00fb11180d88e6572cdd3c"
+    },
+    "exact_source_files": 485,
+    "verification": "Git blobs equal manifest, archive and actual extracted source; five native tool files independently hashed from stopped builder"
+  },
+  "artifact": {
+    "binary_sha256": "fa65a89a4e492a04947f3744ec5ce3950253c9262fd7653cafd36f4bf07907ee",
+    "binary_bytes": 7580616,
+    "architecture": "ELF64 amd64",
+    "build_inputs": {
+      "Cargo.lock": "99fe76478639485b19e93b4cbcbb788153b187947c19ebff3973d0a03212302e",
+      "contracts/protocol/nip01-event.json": "b830d5ab8651f5a763ebcffdc0eb1737ba70f4602c93fc714c892865ffca2db8",
+      "contracts/protocol/versions.json": "37c76706c5a2aa4fc72a40aeed908f104620eafcee1118b7cee8baf133546c95",
+      "contracts/release/dependencies.json": "899fde9ab0e17db32609a94bb9eee2f3609e0c7b81c22b5caa4b76a6f4006c1c",
+      "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167"
+    },
+    "native_tools": {
+      "CC": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+      "CXX": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+      "AR": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+      "LIBCLANG_PATH": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+      "discovery": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e"
+    }
+  },
+  "environment": {
+    "host": "Tux",
+    "target": "x86_64-unknown-linux-gnu",
+    "server": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    },
+    "build_image": "sha256:8d906f267439748924d6a9de9cab47855279cc196a7397d9cb7a690c77fddfe3",
+    "runtime_owner": "260a6103f7ca9b5f8da0da906a080c52",
+    "limits": "Builder 2 CPU/6GiB/512 PIDs; PG 2 CPU/1536MiB/256 PIDs; client 2 CPU/4GiB/256 PIDs; fault clients 2 CPU/1GiB/128 PIDs. Equal memory/swap; read-only root, cap-drop ALL, no-new-privileges, no published ports.",
+    "preflight": "50 owned containers stopped; no active source consumer; eight unrelated workloads preserved; 380725190656 bytes available"
+  },
+  "cases": [
+    {
+      "name": "uninitialized",
+      "status": "PASS",
+      "exit": 3
+    },
+    {
+      "name": "missing-migration",
+      "status": "PASS",
+      "exit": 3
+    },
+    {
+      "name": "upgraded-activation",
+      "status": "PASS",
+      "exit": 0
+    },
+    {
+      "name": "wrong-revision",
+      "status": "PASS",
+      "exit": 3
+    },
+    {
+      "name": "managed-unused-seed",
+      "status": "PASS",
+      "exit": 0
+    },
+    {
+      "name": "same-request",
+      "status": "PASS",
+      "exit": 0
+    },
+    {
+      "name": "new-request-after-activation",
+      "status": "PASS",
+      "exit": 3
+    },
+    {
+      "name": "wrong-dataset_id",
+      "status": "PASS",
+      "exit": 3
+    },
+    {
+      "name": "wrong-instance_id",
+      "status": "PASS",
+      "exit": 3
+    },
+    {
+      "name": "wrong-mode",
+      "status": "PASS",
+      "exit": 3
+    },
+    {
+      "name": "changed-content-same-key",
+      "status": "PASS",
+      "exit": 3
+    },
+    {
+      "name": "historical-receipt-after-config-advance",
+      "status": "PASS",
+      "exit": 0
+    },
+    {
+      "name": "declarative-drift",
+      "status": "PASS",
+      "exit": 3
+    },
+    {
+      "name": "declarative-equivalent",
+      "status": "PASS",
+      "exit": 0
+    },
+    {
+      "name": "retired-role-refuses-first-activation",
+      "status": "PASS",
+      "exit": 3
+    },
+    {
+      "name": "receipt-insert-rollback",
+      "status": "PASS",
+      "exit": 1
+    },
+    {
+      "name": "privilege-recovery",
+      "status": "PASS",
+      "exit": 0
+    },
+    {
+      "name": "digest-corruption",
+      "status": "PASS",
+      "exit": 3
+    },
+    {
+      "name": "restored-policy",
+      "status": "PASS",
+      "exit": 0
+    },
+    {
+      "name": "commit-before",
+      "status": "PASS",
+      "exit": 4
+    },
+    {
+      "name": "resolve-before",
+      "status": "PASS",
+      "exit": 0
+    },
+    {
+      "name": "commit-after",
+      "status": "PASS",
+      "exit": 4
+    },
+    {
+      "name": "resolve-after",
+      "status": "PASS",
+      "exit": 0
+    },
+    {
+      "name": "commit-same",
+      "status": "PASS",
+      "exit": 0
+    },
+    {
+      "name": "resolve-same",
+      "status": "PASS",
+      "exit": 0
+    },
+    {
+      "name": "commit-different",
+      "status": "PASS",
+      "exit": 0
+    },
+    {
+      "name": "resolve-different",
+      "status": "PASS",
+      "exit": 0
+    },
+    {
+      "name": "commit-killed",
+      "status": "PASS",
+      "exit": 137
+    },
+    {
+      "name": "resolve-killed",
+      "status": "PASS",
+      "exit": 0
+    },
+    {
+      "name": "postgres-sigkill-recovery",
+      "status": "PASS"
+    }
+  ],
+  "commit_observations": {
+    "commit-before": {
+      "mode": "before-forward",
+      "commits_seen": 1,
+      "commits_forwarded": 0,
+      "server_commit_complete": 0,
+      "client_commit_complete": 0,
+      "faults": 1
+    },
+    "commit-after": {
+      "mode": "after-complete",
+      "commits_seen": 1,
+      "commits_forwarded": 1,
+      "server_commit_complete": 1,
+      "client_commit_complete": 0,
+      "faults": 1
+    },
+    "commit-same": {
+      "mode": "hold",
+      "commits_seen": 1,
+      "commits_forwarded": 1,
+      "server_commit_complete": 1,
+      "client_commit_complete": 1,
+      "faults": 1
+    },
+    "commit-different": {
+      "mode": "hold",
+      "commits_seen": 1,
+      "commits_forwarded": 1,
+      "server_commit_complete": 1,
+      "client_commit_complete": 1,
+      "faults": 1
+    }
+  },
+  "additional_cases": {
+    "foreign_key_schedules": [
+      {
+        "name": "prior-fk-commit",
+        "status": "PASS",
+        "final": {
+          "roles": 1,
+          "policies": 0,
+          "commands": 0,
+          "audits": 1,
+          "head": null
+        }
+      },
+      {
+        "name": "prior-fk-rollback",
+        "status": "PASS",
+        "final": {
+          "roles": 0,
+          "policies": 1,
+          "commands": 1,
+          "audits": 2,
+          "head": 1
+        }
+      },
+      {
+        "name": "no-key-update-negative-control",
+        "status": "PASS",
+        "weaker_lock_allowed_child_commit": true
+      }
+    ],
+    "schema_negatives": {
+      "cases": 6,
+      "unchanged_schema_sha256": "780c0d9225397fd3abd18cb1ec40b5a78fc1b03bf112f59b350e47727bc9868a"
+    },
+    "post_activation_enrollment": {
+      "status": "PASS",
+      "counts": {
+        "principals": 2,
+        "accounts": 1,
+        "credentials": 1,
+        "grants": 7,
+        "challenges": 1,
+        "audits": 4,
+        "policies": 1,
+        "commands": 1
+      },
+      "security_revision": "1",
+      "initial_receipt_unchanged": true,
+      "self_inspection_unchanged_dump": "e266a3a38e84786353c23ac3bca16a021602ab9afee41601af54b3c2e7c9e606",
+      "no_session_or_runtime_grant": true
+    }
+  },
+  "independent_checks": {
+    "final_databases": 15,
+    "final_relations": 450,
+    "remaining_backends": 0,
+    "oracle": "Frozen complete 215-field policy with documented default-origin limit; independent Python canonical encoding and SHA-256; exact whole policy rows, all table cardinalities, audit/request links and original receipts; before/after full Control dumps for replays, refusals and twelve-database PG SIGKILL/restart. Fresh root audit after the three FK databases and owner enrollment covers fifteen databases.",
+    "schema_failure_codes": "Five 23514 checks: immutable command update/delete, policy/audit mutation, cleared head; one 23505 duplicate command; populated precondition enforced."
+  },
+  "resource_lifecycle": {
+    "build": "completed exit 0, OOM false; stopped-retained",
+    "runtime": "all seven exact owned IDs/labels verified stopped and OOM false; deliberate fault container exit 137, PG 0 and normal clients 143; internal network and data retained",
+    "containers": [
+      {
+        "name": "bigbrotr-implementation-pg-20260917-activationone",
+        "id": "ef571d4e26c39ae0a4389ff4ea881a9d7f67a2d465b39470fc2fa0444698a855",
+        "exit": 0
+      },
+      {
+        "name": "bigbrotr-implementation-pg-20260917-activationone-client",
+        "id": "8904129d8134f8c6f1bfd7f8f3ea755e7627355e39da0cb0ab90fc328305c3a3",
+        "exit": 143
+      },
+      {
+        "name": "bigbrotr-implementation-pg-20260917-activationone-client-before",
+        "id": "606c0e9e3c612b6c6f69634d079f807c5f4676d0c780aae803b5223abf3b1534",
+        "exit": 143
+      },
+      {
+        "name": "bigbrotr-implementation-pg-20260917-activationone-client-after",
+        "id": "bc7bc184779eeaab9df08041446c761ff26d891bc1eb12ac940c86978f89a31f",
+        "exit": 143
+      },
+      {
+        "name": "bigbrotr-implementation-pg-20260917-activationone-client-same",
+        "id": "5cc3a7803eeed29787415947e73ff027bd37ef87459254deefbe480504733023",
+        "exit": 143
+      },
+      {
+        "name": "bigbrotr-implementation-pg-20260917-activationone-client-different",
+        "id": "b986612e1e32f796a3ab60beea1a3d953c58b1c1225acbce83deb0cfd63e7a28",
+        "exit": 143
+      },
+      {
+        "name": "bigbrotr-implementation-pg-20260917-activationone-client-killed",
+        "id": "744f7b167d8194ff83029a30660893bcac62f5e545cad9e6d81369082b7a6608",
+        "exit": 137
+      }
+    ],
+    "active_source_consumers": 0
+  },
+  "execution_issue": {
+    "outcome": "resolved orchestration failure; no product failure",
+    "detail": "The first supplemental FK helper invocation used stdin, so __file__ was <stdin> and its source-hash read failed before database creation. No receipt was written. Helpers were committed, transferred by Git bundle and extracted from e9b9127 without switching the mounted clean fe63862 product checkout, then executed successfully from files."
+  },
+  "raw": {
+    ".research/implementation/initial-activation/native-fe63862/audit.json": "db041f12aca66914e579b0f85adaaa3cd9f491e5993d843e0164e390418f1b11",
+    ".research/implementation/initial-activation/native-fe63862/build-result.json": "f9549729c678d0c29972487bdae8232546c5eb1402085147b10579b7ba32fe15",
+    ".research/implementation/initial-activation/native-fe63862/build.log": "1675071fb8d2f69cbc83d927bbd4317ed19d66b9f09ede65ff0c66dc724932fb",
+    ".research/implementation/initial-activation/native-fe63862/helpers-source.json": "75d52a2f3112ac715ed0b49b6cad0a885bd1cebf1a7265e8de9fd5029eac996d",
+    ".research/implementation/initial-activation/native-fe63862/observation.json": "395017c87726f7e1057cf96d041b23db740c9de320f02561c43f9c50bd65cd08",
+    ".research/implementation/initial-activation/native-fe63862/resources.json": "fa02cab1f0163c9113a355bd104c18c4ebb446fcbab279f54679373e3de488cb",
+    ".research/implementation/initial-activation/native-fe63862/runtime-enrollment-after.json": "ea9cb32243d46f03160734da39ca146268442e32bcf16fc0bc805b199b3a0dd8",
+    ".research/implementation/initial-activation/native-fe63862/runtime-final-observation.json": "d9222c472cb11af0c2eafcc31770beb4c50ea6a50722c254ea281be887f105bc",
+    ".research/implementation/initial-activation/native-fe63862/runtime-fk-races.json": "6bb571d13ddae3328fb8324b7ff593c3c934f127a5c5bf861812b0b470a34a11",
+    ".research/implementation/initial-activation/native-fe63862/runtime-initial-activation.json": "b47708cf890fc94e97b11a1481cd3f35d799d08b4f20f5b6cf3767d5a935fe62",
+    ".research/implementation/initial-activation/native-fe63862/runtime-resources.json": "1b2612c82505e083ec4436ebd2de8d1f54c931e4bd06b20ba4ab3e8c8aef856f",
+    ".research/implementation/initial-activation/native-fe63862/source-manifest.json": "b6644489285c16aedb5b5485a148959529e9123d91a1fd0eb209709085a83cc6"
+  },
+  "local_helpers": {
+    ".research/implementation/initial-activation/final_observation.py": "464ba64045f908b957f9f79798f81d54dfda270051fa4864cb94644c85d4ae8e",
+    ".research/implementation/initial-activation/stopped.json": "09d771d80990fdf914a62ead321329359036f5c918588d334a33f804a61f4e1b"
+  },
+  "not_run": [
+    "live service policy refresh/action grants and output revocation",
+    "native writer fencing and storage admission",
+    "power loss or host failure",
+    "disk exhaustion, maximum-size input or mixed/aged performance",
+    "Linux arm64 qualification for this revision",
+    "Compose/release installation",
+    "complete selected product"
+  ]
+}

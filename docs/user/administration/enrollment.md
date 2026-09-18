@@ -4,8 +4,10 @@ The development executable supports local enrollment through the protected
 Control database credential. Start with [Control initialization](../../operations/control-initialization.md).
 This command does not start a private web listener or create a browser session.
 
-Apply migration 805 with the separate migrator, then have the provisioning owner
-grant the application role its new table permissions:
+If migration 805 has not yet been applied, apply it with the separate migrator.
+First activation already applies 805 as a prerequisite of 802; in that case skip
+the migration command below, since targeting 805 would be a downgrade. Then have
+the provisioning owner grant the application role its new table permissions:
 
 ```sh
 bigbrotr migrate apply --file instance.toml --user bigbrotr_migrator --password-ref file:/run/secrets/bigbrotr-migrator --target 805
@@ -73,7 +75,9 @@ This local command uses the protected Control connection and makes no durable
 changes. Its output contains identity and revision metadata, never a password,
 hash or session credential. Stored actions describe configuration at inspection
 time; the command issues no runtime authorization. A null `security_revision`
-means no security policy has been activated. A wrong password, unknown account
+means no security policy has been activated. The separate
+[first activation command](../../operations/initial-activation.md) prepares that
+revision without issuing a session or runtime lease. A wrong password, unknown account
 or disabled account returns the same `Denied` refusal (exit 3).
 The [native self-inspection evidence](../../implementation/evidence/p08-local-authentication-native-20260918.json)
 records the exact tested revision and its credential, grant and restart cases.

@@ -1302,5 +1302,149 @@
       ]
     },
     "native_evidence": "docs/implementation/evidence/p08-local-authentication-native-20260918.json"
+  },
+  "implementation_initial_activation_20260918": {
+    "local_root": ".research/implementation/initial-activation",
+    "source_revision": "fe63862ddc58bb2bb2a10218afd62ce49ed2bf8e",
+    "tux_build": {
+      "format": "bigbrotr-configuration-build-lab/1",
+      "source": "fe63862ddc58bb2bb2a10218afd62ce49ed2bf8e",
+      "tree": "a61e5b591d721387bbea2a29fdeaebc04d44fcad",
+      "owner": "1b726b82aaefca88b65e1ebd34d8cecf",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/configuration-fe63862",
+      "container": "bigbrotr-implementation-configuration-fe63862-build",
+      "image": "sha256:8d906f267439748924d6a9de9cab47855279cc196a7397d9cb7a690c77fddfe3",
+      "state": "completed-retained",
+      "command": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "bigbrotr-implementation-configuration-fe63862-build",
+        "--label",
+        "org.bigbrotr.implementation=20260917",
+        "--label",
+        "org.bigbrotr.configuration-build=1b726b82aaefca88b65e1ebd34d8cecf",
+        "--label",
+        "org.bigbrotr.source=fe63862ddc58bb2bb2a10218afd62ce49ed2bf8e",
+        "--user",
+        "1000:1000",
+        "--cpus",
+        "2",
+        "--memory",
+        "6g",
+        "--memory-swap",
+        "6g",
+        "--pids-limit",
+        "512",
+        "--read-only",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges",
+        "--tmpfs",
+        "/tmp:rw,exec,nosuid,nodev,size=512m",
+        "--mount",
+        "type=bind,src=/home/tux/bigbrotr-implementation-20260917/checkout,dst=/source,readonly",
+        "--mount",
+        "type=bind,src=/home/tux/bigbrotr-implementation-20260917/runs/configuration-fe63862,dst=/out",
+        "--workdir",
+        "/source",
+        "sha256:8d906f267439748924d6a9de9cab47855279cc196a7397d9cb7a690c77fddfe3",
+        "python3",
+        "tools/build.py",
+        "--output",
+        "/out/build",
+        "--jobs",
+        "2"
+      ],
+      "preflight": {
+        "active_source_consumers": 0,
+        "available_disk_bytes": 380725129216
+      },
+      "started_at": "2026-09-18T03:50:42.660427+00:00",
+      "container_id": "c4547faab5cb02411f0925d35f7abc7ed4d9db7d119db5addb3faf3faa4f77bf",
+      "exit_code": 0,
+      "oom_killed": false,
+      "finished_at": "2026-09-18T03:56:45.639608144Z"
+    },
+    "runtime": {
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/configuration-fe63862/runtime",
+      "owner": "260a6103f7ca9b5f8da0da906a080c52",
+      "postgres": "bigbrotr-implementation-pg-20260917-activationone",
+      "client": "bigbrotr-implementation-pg-20260917-activationone-client",
+      "network": "bigbrotr-implementation-pg-20260917-activationone",
+      "state": "stopped-retained",
+      "published_ports": [],
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "client_image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+      "containers": [
+        {
+          "name": "bigbrotr-implementation-pg-20260917-activationone",
+          "id": "ef571d4e26c39ae0a4389ff4ea881a9d7f67a2d465b39470fc2fa0444698a855",
+          "exit": 0
+        },
+        {
+          "name": "bigbrotr-implementation-pg-20260917-activationone-client",
+          "id": "8904129d8134f8c6f1bfd7f8f3ea755e7627355e39da0cb0ab90fc328305c3a3",
+          "exit": 143
+        },
+        {
+          "name": "bigbrotr-implementation-pg-20260917-activationone-client-before",
+          "id": "606c0e9e3c612b6c6f69634d079f807c5f4676d0c780aae803b5223abf3b1534",
+          "exit": 143
+        },
+        {
+          "name": "bigbrotr-implementation-pg-20260917-activationone-client-after",
+          "id": "bc7bc184779eeaab9df08041446c761ff26d891bc1eb12ac940c86978f89a31f",
+          "exit": 143
+        },
+        {
+          "name": "bigbrotr-implementation-pg-20260917-activationone-client-same",
+          "id": "5cc3a7803eeed29787415947e73ff027bd37ef87459254deefbe480504733023",
+          "exit": 143
+        },
+        {
+          "name": "bigbrotr-implementation-pg-20260917-activationone-client-different",
+          "id": "b986612e1e32f796a3ab60beea1a3d953c58b1c1225acbce83deb0cfd63e7a28",
+          "exit": 143
+        },
+        {
+          "name": "bigbrotr-implementation-pg-20260917-activationone-client-killed",
+          "id": "744f7b167d8194ff83029a30660893bcac62f5e545cad9e6d81369082b7a6608",
+          "exit": 137
+        }
+      ],
+      "databases": 15,
+      "helper_revision": "e9b9127c55f683fda667fc2822fba0963682746e",
+      "active_source_consumers": 0
+    },
+    "raw_source_transfer": "Git bundle from clean f246faf base; Mac remains sole editing/Git workspace",
+    "status": "qualified scoped native activation; all owned resources stopped-retained",
+    "audit": {
+      "status": "PASS",
+      "source": "fe63862ddc58bb2bb2a10218afd62ce49ed2bf8e",
+      "tree": "a61e5b591d721387bbea2a29fdeaebc04d44fcad",
+      "exact_source_files": 485,
+      "binary_sha256": "fa65a89a4e492a04947f3744ec5ce3950253c9262fd7653cafd36f4bf07907ee",
+      "binary_bytes": 7580616,
+      "architecture": "ELF64 amd64",
+      "native_tools_independently_hashed": {
+        "CC": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+        "CXX": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+        "AR": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+        "LIBCLANG_PATH": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+        "discovery": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e"
+      },
+      "inputs": {
+        "source-manifest.json": "b6644489285c16aedb5b5485a148959529e9123d91a1fd0eb209709085a83cc6",
+        "build-result.json": "f9549729c678d0c29972487bdae8232546c5eb1402085147b10579b7ba32fe15",
+        "observation.json": "395017c87726f7e1057cf96d041b23db740c9de320f02561c43f9c50bd65cd08",
+        "source.tar": "33ed62025dd46e5fedab8c9cb67719a42f78a9069d656d277c3946ad64100562"
+      },
+      "scope": "Git/archive/actual extracted sources and downloaded executable identity; not engine runtime acceptance"
+    },
+    "evidence": "docs/implementation/evidence/p01-initial-activation-native-20260918.json",
+    "retention": "Evidence and fifteen databases retained; no retired historical environment reused"
   }
 }

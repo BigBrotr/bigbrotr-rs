@@ -75,3 +75,6 @@ Executed evidence at `aad4ddc`: [25 native Linux amd64/PG cases](../implementati
 The next explicit development operation is [local first-owner enrollment](../user/administration/enrollment.md)
 after migration 805. Its separate evidence does not expand the older bootstrap
 qualification above.
+
+[First security activation](initial-activation.md) is separately explicit after
+migration 802. It may precede or follow owner enrollment; it does not start roles.
