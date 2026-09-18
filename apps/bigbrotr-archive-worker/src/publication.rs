@@ -133,8 +133,9 @@ impl PreparedBatch {
 fn dictionary_closure(c: &Connection) -> Result<(), PublicationError> {
     // Restrict historical work to references required/defined by this bounded
     // stage. Equal mappings may recur as distinct immutable source facts; a
-    // changed descriptor or visibility for the same qualified name is refused.
-    c.execute_batch("CREATE TEMP VIEW publication_dictionaries AS SELECT reference,normalization_version,descriptor_schema,descriptor_version,descriptor_value,visibility_scope_id FROM stage.dictionaries UNION ALL SELECT reference,normalization_version,descriptor_schema,descriptor_version,descriptor_value,visibility_scope_id FROM archive.main.dictionaries WHERE reference IN (SELECT struct_pack(dataset_id := dataset_id,dictionary_kind := dictionary_kind,allocation_domain := allocation_domain,ordinal := ordinal) FROM stage.required_refs UNION SELECT reference FROM stage.dictionaries)").map_err(|_| PublicationError::Native)?;
+    // changed descriptor for the same qualified name is refused. Fact visibility
+    // remains in its envelope and is not part of dictionary mapping equality.
+    c.execute_batch("CREATE TEMP VIEW publication_dictionaries AS SELECT reference,normalization_version,descriptor_schema,descriptor_version,descriptor_value FROM stage.dictionaries UNION ALL SELECT reference,normalization_version,descriptor_schema,descriptor_version,descriptor_value FROM archive.main.dictionaries WHERE reference IN (SELECT struct_pack(dataset_id := dataset_id,dictionary_kind := dictionary_kind,allocation_domain := allocation_domain,ordinal := ordinal) FROM stage.required_refs UNION SELECT reference FROM stage.dictionaries)").map_err(|_| PublicationError::Native)?;
     let missing: bool = c.query_row("SELECT EXISTS(SELECT 1 FROM stage.required_refs r WHERE NOT EXISTS(SELECT 1 FROM publication_dictionaries d WHERE d.reference=struct_pack(dataset_id := r.dataset_id,dictionary_kind := r.dictionary_kind,allocation_domain := r.allocation_domain,ordinal := r.ordinal)))", [], |r|r.get(0)).map_err(|_| PublicationError::Native)?;
     if missing {
         return Err(PublicationError::MissingDictionary);

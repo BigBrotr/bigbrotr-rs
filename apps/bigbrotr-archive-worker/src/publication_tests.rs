@@ -206,3 +206,106 @@ fn incorrect_semantic_identity_refuses_before_catalog_attachment() {
     request.batch_digest = Digest256::from_bytes([0; 32]);
     assert_eq!(prepared.publish(request), Err(PublicationError::Identity));
 }
+
+#[test]
+fn identical_dictionary_mapping_preserves_each_fact_scope_in_batch_and_history() {
+    use bigbrotr_model::{
+        DescriptorLabel, DictionaryDescriptor, DictionaryEntry, FactPayload, Ordinal,
+    };
+    for historical in [false, true] {
+        let home = tempfile::tempdir().unwrap();
+        let temp = tempfile::tempdir().unwrap();
+        let catalog = home.path().join("catalog.ducklake");
+        let data = home.path().join("objects");
+        let engine = open(temp.path(), &catalog, &data);
+        schema::initialize(&engine.connection).unwrap();
+        let mut all = facts();
+        let scope = bigbrotr_model::QualifiedRef {
+            ordinal: Ordinal::new(2).unwrap(),
+            ..all[0].visibility_scope_id()
+        };
+        let source = all[0].source_record_id();
+        all.push(
+            Fact::new(
+                bigbrotr_model::SourceRecordId {
+                    sequence: Sequence::new(4).unwrap(),
+                    ..source
+                },
+                all[0].visibility_scope_id(),
+                all[0].recorded_at(),
+                FactPayload::Dictionary(
+                    DictionaryEntry::new(
+                        scope,
+                        DictionaryDescriptor::Visibility {
+                            class: DescriptorLabel::new("private".into()).unwrap(),
+                        },
+                    )
+                    .unwrap(),
+                ),
+            )
+            .unwrap(),
+        );
+        all.push(
+            Fact::new(
+                bigbrotr_model::SourceRecordId {
+                    sequence: Sequence::new(5).unwrap(),
+                    ..source
+                },
+                scope,
+                all[1].recorded_at(),
+                all[1].payload().clone(),
+            )
+            .unwrap(),
+        );
+        let engine = if historical {
+            let (prepared, mut request) = prepare(engine, &all[..3]);
+            request.publication_ordinal = 1;
+            prepared.publish_attached(&request).unwrap();
+            drop(prepared);
+            let temp = tempfile::tempdir().unwrap();
+            open(temp.path(), &catalog, &data)
+        } else {
+            engine
+        };
+        let (prepared, mut request) = prepare(engine, if historical { &all[3..] } else { &all });
+        request.publication_ordinal = 2;
+        request.attempt_id = [10; 16];
+        prepared.publish_attached(&request).unwrap();
+        let scopes:String=prepared.engine.connection.query_row("SELECT string_agg(visibility_scope_id.ordinal::VARCHAR,',' ORDER BY visibility_scope_id.ordinal) FROM archive.dictionaries WHERE descriptor_schema='event'",[],|r|r.get(0)).unwrap();
+        assert_eq!(scopes, "1,2");
+    }
+}
+
+#[test]
+fn changed_dictionary_descriptor_is_still_refused() {
+    use bigbrotr_model::{DictionaryDescriptor, DictionaryEntry, EventId, FactPayload};
+    let home = tempfile::tempdir().unwrap();
+    let temp = tempfile::tempdir().unwrap();
+    let engine = open(
+        temp.path(),
+        &home.path().join("catalog.ducklake"),
+        &home.path().join("objects"),
+    );
+    schema::initialize(&engine.connection).unwrap();
+    let mut all = facts();
+    let FactPayload::Dictionary(entry) = all[1].payload() else {
+        panic!("dictionary fixture")
+    };
+    let conflict = DictionaryEntry::new(
+        entry.reference(),
+        DictionaryDescriptor::Event(EventId::from_bytes([0; 32])),
+    )
+    .unwrap();
+    all[2] = Fact::new(
+        all[2].source_record_id(),
+        all[2].visibility_scope_id(),
+        all[2].recorded_at(),
+        FactPayload::Dictionary(conflict),
+    )
+    .unwrap();
+    let (prepared, request) = prepare(engine, &all);
+    assert_eq!(
+        prepared.publish_attached(&request),
+        Err(PublicationError::ConflictingDictionary)
+    );
+}
