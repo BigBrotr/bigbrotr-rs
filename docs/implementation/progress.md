@@ -15,14 +15,14 @@ task checkbox or M1 gate is complete; pending must not be reclaimed.
 
 ## Verified Git and ownership
 
-Mac primary workspace, main. HEAD and origin/main were both freshly verified at
-`c20e2ca86f19ddd3ad03a49dd645132ff1d2852f` after ordinary push, including the
-qualified implementation `0cdd80fd0fa6991ee0b7957b9e65103a7b3e9fc1`.
-Root owns uncommitted archive parent implementation/tests, target-specific asset
-profile generation, the connected signed Rocks/native test, shared CI test-worker
-binding and affected owning docs/inventory. Scoped Mac checks passed; a clean
-unpublished candidate is next for native Linux qualification. No contributor
-conflict or history rewrite.
+Mac primary workspace, main. Current HEAD candidate
+`c365053afae92eb2cf8b10760e0d8bec2f42a897`, tree
+`035261992c90f86c539a64d603ec23ee686d0520`; origin/main last verified at
+`c20e2ca86f19ddd3ad03a49dd645132ff1d2852f`. Exact-source native qualification
+has completed. Root owns its harness/report/inventory/checkpoint update plus the
+next, separate dirty parent-death binding: Cargo.lock, worker manifest/main/tests,
+parent installation and affected contracts/packaging docs. No contributor conflict.
+The dirty binding is NOT part of the qualified revision.
 
 ## Qualified evidence
 
@@ -58,6 +58,16 @@ Raw root `.research/implementation/archive-worker/`; detailed ownership in
   `642952149ddef947370d04f20811e59f43f4f7ee054b7d03f3eea235635a9995`.
   Preparation fixture is synthetic; Rocks and executable boundaries are tested
   separately, not a complete signed pending-to-worker journey.
+
+- [Private parent supervision](evidence/p02-private-supervision-native-20260918.json)
+  at `c365053`: all591 source entries/tools/assets audited; fourteen Rust cases
+  (ten archive, one signed connected Rocks/worker case, three CLI), five CI
+  controls and application all-target Clippy pass. The shared CI helper validates
+  the actual packaged worker. Both output pipes are proven full at65,536bytes;
+  positive termination takes stdout2089/stderr2073 microseconds without draining.
+  Signed pending reaches the exact package twice with counts[1,1,1,1,0] and
+  unchanged complete Rocks KV state. Refusal controls retain state/grants.
+  This qualifies private inspection while the parent lives, not publication.
 
 Only the private worker links DuckDB. `inspect-engine` and `inspect-batch` grant no
 publication authority. The new application parent implements bounded nonblocking
@@ -101,41 +111,48 @@ ambiguous-commit tests remain required; no speculative fence is selected.
 ## Lab resources and next bounded action
 
 Latest native root:
-`/home/tux/bigbrotr-implementation-20260917/runs/archive-0cdd80f`.
-Local `.research/implementation/archive-worker/handoff-0cdd80f` owns raw build/test
-receipts, audit/collector scripts, terminal preflight and cleanup audit. Build
-owner `fb482a2e1f447c67a5031d4ec510bf9d`, container ID
-`e8c5dbc8fe33ac633ece8d8bca1e8cdb26a288e914c955750113e7d61eb48de4`;
-test owner `328a7081471b221be868fca195659326`, ID
-`b230cf87271dca06e81c0bff50c81561c474a6d9ae39c48259466c6da7a41266`.
-Both exited0/no OOM, stopped-retained. Collectors50502/52076 completed exit0.
-Fresh terminal audit: all ten earlier archive containers still stopped; zero
-running BigBrotr containers. Twenty unrelated containers (eight running) unchanged.
-Shared source clean/detached at `6be851580ba415eed5ff0979ee7072480f9ee3ab`, zero
-consumers. Do not reset it or delete retained experiments without lifecycle review.
+`/home/tux/bigbrotr-implementation-20260917/runs/archive-c365053`, local
+`.research/implementation/archive-worker/supervision-c365053`. All three owned
+containers completed exit0/no OOM and are stopped-retained:
 
-Parent Mac source/log identities are recorded in `parent_supervision_mac` and
-`.research/implementation/archive-worker/parent-mac/identity.json`. Seven real
-process and two file-verification tests pass; the signed event admission/reopen/
-pending-to-worker test passes twice with counts[1,1,1,1,0] and unchanged complete
-Rocks KV state. Reduced transfer cap, wrong executable, cancellation, nonempty
-root and unavailable capacity leave state intact. Three CLI and five CI controls
-pass. Final all-target application Clippy passes (session75584 exit0); earlier
-native rebuild/check session56698 and final Mac test session65242 completed exit0.
-Initial REDs and the incorrectly imported non-executed attempt are retained. The
-reduced transfer cap originally surfaced Process(Exit); its regression now returns
-Transfer(Limit), with TerminationUnknown retaining precedence. Linux-only full
-pipe capacity assertions and their timing diagnostics are NOT_RUN.
+- Build owner `b8c4e91f5225198ffcd13804bcf4330a`, ID
+  `153750054b9c73c5741ee921dc4029f37d26ba55c5a247e31e38a201ce3c828e`.
+- Tests owner `09047a050b7b692edc70d23926ec997f`, ID
+  `4da509c0963c125f99bed820a668fde9bf60bec13c2ccb17d7584e432c9dd628`.
+- `orphan-baseline` owner `e9fba895100e2fa24e5015cf7c7a661b`, ID
+  `fdde43718199b3970b9739f8bf207e1c060981e49b4924ee5d87301f9ec3fdc3`.
 
-Shared CI now makes the exact-source package before workspace tests and supplies
-the verified packaged worker through `--rust-tests-from-build`. Its positive
-native build-receipt helper path still needs qualification; no complete CI PASS.
-No new remote resource was started during this local slice.
+Collectors99084/71791 completed exit0. Terminal preflight/cleanup audit confirms
+zero running BigBrotr containers, twelve earlier archive containers stopped and
+all twenty unrelated containers unchanged (eight running). Shared source remains
+clean/detached `6be851580ba415eed5ff0979ee7072480f9ee3ab`, zero consumers.
+Do not reset it or delete retained resources without lifecycle review.
 
-Next: commit the reviewed Mac-checked parent slice as an unpublished candidate,
-freshly inventory Tux, transfer a clean Git bundle and build its exact source in a
-new isolated root. Run native archive/process tests (ten on Linux including truly
-full stdout/stderr), the connected signed test, affected CLI and CI controls;
-verify artifacts/cleanup before pushing. Then address parent-death/orphan
-exclusion and full native grants/measurements before real PG-fenced publication.
+The orphan negative control verified actual engine startup/read(0), stopped the
+packaged worker and killed its parent: the worker survived the full one-second
+observation. The harness then killed/reaped that exact worker using pidfd/subreaper
+and reaped the parent. This proves the missing guarantee, not a product PASS.
+
+Mac parent-supervision source/log identities remain under `parent_supervision_mac`
+and `.research/implementation/archive-worker/parent-mac/identity.json`. Original
+REDs, mistaken-import non-execution and Transfer(Limit) regression are retained.
+Native qualification now includes the formerly unexecuted full-pipe/CI-helper cases.
+No full CI, release authentication, peak-memory or PG fence PASS.
+
+The next dirty implementation supplies/checks expected parent PID before engine
+work and arms Linux SIGKILL on spawning-thread death, with a post-registration
+parent check. Mac checks startup parentage only. Exact rustix1.1.5 source and Linux
+manual were inspected; negative PID must be checked before Pid::from_raw. Actual
+Mac RED showed missing parent accepted; another RED showed negative PID panic.
+Corrected missing/malformed/foreign parent refusal, complete/truncated handoff,
+worker Clippy and signed supervised handoff passed. Session91281 completed exit0.
+Logs `parent-binding-{red,green,negative-red,final-mac}.log` and
+`parent-death-connected-mac.log`; new Mac package/environment under
+`.research/implementation/archive-worker/parent-death-mac`. Positive Linux
+parent-death, persisted recovery and PG exclusion remain NOT_RUN.
+
+Next: commit/push the scoped `c365053` qualification after final report/diff review.
+Then commit the reviewed Mac-checked parent-death implementation as a separate
+candidate and qualify it through exact Git on Tux, including the stopped-worker
+positive case. Full native grants and persistent/PG exclusion still gate publication.
 Receipt/protection/read/export/restart and the complete product remain unfinished.

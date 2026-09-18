@@ -1,0 +1,182 @@
+{
+  "format": "bigbrotr-private-supervision-native-qualification/1",
+  "observed_date": "2026-09-18",
+  "status": "PASS",
+  "scope": "Private preparation and process supervision while parent lives; prerequisite only, not complete P02 or M1",
+  "source": {
+    "revision": "c365053afae92eb2cf8b10760e0d8bec2f42a897",
+    "tree": "035261992c90f86c539a64d603ec23ee686d0520",
+    "dirty": false
+  },
+  "build_audit": {
+    "status": "PASS",
+    "source": "c365053afae92eb2cf8b10760e0d8bec2f42a897",
+    "tree": "035261992c90f86c539a64d603ec23ee686d0520",
+    "source_files": 591,
+    "cli_sha256": "bfe50d0004c37a196740045c7fc2da8dec4a67658b86f6fd330ec84f8b0924f4",
+    "worker_sha256": "642952149ddef947370d04f20811e59f43f4f7ee054b7d03f3eea235635a9995",
+    "native_assets_checked": true,
+    "native_tools": {
+      "CC": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+      "CXX": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+      "AR": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+      "LIBCLANG_PATH": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+      "discovery": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e"
+    },
+    "terminal": {
+      "Status": "exited",
+      "Running": false,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 0,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-09-18T13:40:15.58725462Z",
+      "FinishedAt": "2026-09-18T13:47:25.853576597Z"
+    }
+  },
+  "environment": {
+    "host": "Tux Linux x86_64",
+    "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "cpus": 2,
+    "memory_bytes": 6442450944,
+    "pids": 512,
+    "source_readonly": true
+  },
+  "tests": {
+    "rust_executed": 14,
+    "archive": 10,
+    "signed_connected": 1,
+    "cli": 3,
+    "python_ci_controls": 5,
+    "failed": 0,
+    "ignored": 0,
+    "all_target_clippy": "PASS",
+    "artifacts": {
+      "bigbrotr-9fc5bd17a96fa33d": {
+        "sha256": "33865e5d2c16a596e9c6aef51204f75630be509362c0283d1562fb5ba9316d03",
+        "bytes": 14709056
+      },
+      "cli_contract-64740b600a0531cb": {
+        "sha256": "7679c2463e2afb55c331d1fbd855d737151e0c8ab75e1536fa46f22e18490fa6",
+        "bytes": 1240776
+      }
+    },
+    "terminal": {
+      "Status": "exited",
+      "Running": false,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 0,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-09-18T13:47:56.101097336Z",
+      "FinishedAt": "2026-09-18T13:53:39.583110405Z"
+    },
+    "packaged_worker": {
+      "DUCKDB_LIB_DIR": "/out/build/archive-worker/lib",
+      "DUCKDB_INCLUDE_DIR": "/out/build/archive-worker/lib",
+      "LD_LIBRARY_PATH": "/out/build/archive-worker/lib",
+      "BIGBROTR_ARCHIVE_TEST_BUNDLE": "/out/build/archive-worker",
+      "BIGBROTR_ARCHIVE_TEST_INSTALLATION": "/out/build/archive-worker",
+      "BIGBROTR_ARCHIVE_TEST_WORKER_SHA256": "642952149ddef947370d04f20811e59f43f4f7ee054b7d03f3eea235635a9995",
+      "BIGBROTR_ARCHIVE_TEST_WORKER_BYTES": "12234816"
+    },
+    "full_output_pipes": [
+      {
+        "stderr": false,
+        "capacity_bytes": 65536,
+        "termination_us": 2089
+      },
+      {
+        "stderr": true,
+        "capacity_bytes": 65536,
+        "termination_us": 2073
+      }
+    ]
+  },
+  "cases": [
+    "Actual file hash/size/symlink and cancelled/expired verification refusal",
+    "Actual child receives exactly 1MiB; grants retained through reap and then released",
+    "Full stdin, stdout/stderr floods, output cap4096/excess4097, cancellation, Drop, crashed/stopped child; finite kill and positive reap",
+    "Actual stdout and stderr each proven full at65536bytes before cancellation; no output drain needed for positive termination",
+    "Real signed private event admitted to Rocks, reopened and its complete pending batch sent twice to the exact packaged worker; each counts[1,1,1,1,0], full Rocks KV state unchanged",
+    "Reduced record cap retains Transfer(Limit); wrong executable identity, cancellation, nonempty root and missing capacity refuse without Rocks/temp mutation or leaked process grants",
+    "CI positive build-receipt/bundle helper supplies the exact packaged worker; changed worker bytes are refused; empty/failure/absent-tool/timeout controls retain honest status"
+  ],
+  "parent_death_negative_control": {
+    "status": "PASS",
+    "negative_control": true,
+    "worker_sha256": "642952149ddef947370d04f20811e59f43f4f7ee054b7d03f3eea235635a9995",
+    "identity": {
+      "pid": 9,
+      "parent": 8
+    },
+    "ready_syscall": "0 0x0 0x55811886b2d0 0x2000 0x0 0x0 0xffffffff00200000 0x7ffcbcf597f0 0x7f6efad162ec",
+    "stopped_before_parent_kill": true,
+    "exited_after_parent_kill": false,
+    "observation_seconds": 1.0021135527640581,
+    "meaning": "Expected old-worker survival was observed after parent SIGKILL; harness separately kills and reaps both. The corrected binding is a later revision, NOT_RUN here.",
+    "cleanup": {
+      "parent_reaped": true,
+      "worker_reaped": true
+    },
+    "limits": {
+      "cpus": 1,
+      "memory_bytes": 1073741824,
+      "pids": 128,
+      "network": "none"
+    }
+  },
+  "limitations": [
+    "Parent-death correction is not part of this revision; no persisted job recovery, remote PG exclusion or uninterruptible kernel-task qualification",
+    "Prepared counts do not prove full signed body read/export or dictionary reference closure; no permanent catalog, receipt, protection, reclaim or M1",
+    "Memory grants check declared capacity and decoding floor; no native peak RSS, whole-role CPU/PID/disk admission, maximum-unit or mixed/aged workload qualification",
+    "Verified installation must remain immutable to the runtime identity; no authenticated release distribution qualification",
+    "Linux arm64, hosted Actions and complete CI/release journey NOT_RUN"
+  ],
+  "evidence_root": ".research/implementation/archive-worker/supervision-c365053",
+  "cleanup": {
+    "status": "PASS",
+    "owned_ids": [
+      "153750054b9c73c5741ee921dc4029f37d26ba55c5a247e31e38a201ce3c828e",
+      "4da509c0963c125f99bed820a668fde9bf60bec13c2ccb17d7584e432c9dd628",
+      "fdde43718199b3970b9739f8bf207e1c060981e49b4924ee5d87301f9ec3fdc3"
+    ],
+    "owned_stopped_retained": 3,
+    "earlier_archive_stopped_retained": 12,
+    "running_bigbrotr": 0,
+    "unrelated_unchanged": 20,
+    "unrelated_running": 8,
+    "shared_source": "6be851580ba415eed5ff0979ee7072480f9ee3ab"
+  },
+  "harnesses": {
+    "experiments/archive-engine/native_supervision.py": "640dc20ab40ce7b9e7493dd5ef56c86854a3ee164a412af19ecf461dd38873a5",
+    "experiments/archive-engine/parent_death.py": "cf1867da6fbafe9f4c479e63c8d2ede34f70a4c305faf06dfb9336e470a7d46d"
+  },
+  "fixtures": {
+    "experiments/identity-contract/signed-fixture.json": "4c931ab34cb7adeb707fc2866f4a50b3ec8b694cbb2d4fb5e335f8f37a2d8875",
+    "apps/bigbrotr/src/storage/rocks/admission_tests.rs": "0cbc551b6afa62d7ae1d5075cd71ac4eabeec2ad071fc17a308aea7f9d98d381",
+    "apps/bigbrotr/src/storage/archive/process/tests.rs": "bb068e9c36d94e96ac013bb7f7f67aa987217aaeb197d0f701fe1b6f3d374d42"
+  },
+  "evidence_files": {
+    "native-c365053/build-audit.json": "da01ca0629f3f14b489bf642c461a841138750cccdc0531f481ada66d667a31c",
+    "native-c365053/source-manifest.json": "6e111d834ef17d4762827814e9607e162c9c5589af8f23811d581ec9fbc639c6",
+    "native-test-evidence/result.json": "39e320c131cadec52dff2fb70a0d3112250ec980cc85c2b58f06fd6cde6e6882",
+    "native-test-evidence/artifacts.json": "b18863679ec2c96b248e73234802a112adfc80044b1ea6b95dd1dddd9779eefd",
+    "native-test-evidence/observation.json": "3c140f1bcbc4e8cb0bf52130e728050048e0f1cfdd6b9a00bd0d341ba006b60d",
+    "native-test-evidence/full-pipes.json": "517823d9f72a966ebc766e0522fb4bb18c24595c9bf067ce3541962859393031",
+    "orphan-result.json": "3fd37339bf403708bf58d8d3b68d5fc1a754f4ea06538e857f66b4f216f6a779",
+    "orphan-cleanup.json": "3057a8e0f193f5aa086f9406923291b1a0517b4047891420305e3d1e85a3b81a",
+    "cleanup-audit.json": "c3908ae86d71703b0a4d1e8bdd483ea621ddb5b19c80c380076e370af39467fe",
+    "native-test-evidence/archive.log": "0b24aed9369f5ff1e41adde872f0f8b4e3f43a29289d9dde182ee0f7bcc07810",
+    "native-test-evidence/signed.log": "d4f4e3ae4af0ca16bc59e1875805d405abe4eea989e9a6136886e50b14db201b",
+    "native-test-evidence/cli.log": "260ee2f3cc2c3d9c891dcde4974421d71f1a8b4bfa09d36a952e98dc09491d8a",
+    "native-test-evidence/ci-controls.log": "8ee5df7a48a84045f58f650d734a0dc2de053b6bf74c4f93f1b7e996d16e9eca",
+    "native-test-evidence/clippy.log": "76caead9b4c033a6d75bd7c7e87536c526638f82bb8393472e08b887947fcf99"
+  }
+}

@@ -51,3 +51,16 @@ engine/row cases, including all five families and the raw-binding null-struct
 negative control. Its separate build/test containers are stopped-retained;
 [the report](../../docs/implementation/evidence/p02-five-family-rows-native-20260918.json)
 records identities, scope and cleanup. This does not exercise later handoff code.
+
+`native_handoff.py` qualifies the bounded wire/private preparation at `0cdd80f`.
+`native_supervision.py` is the exact `c365053` harness: fourteen Rust cases,
+five CI controls and affected Clippy, with the trusted build's actual packaged
+worker supplied through the shared CI helper. It asserts nonempty case counts
+and records positive termination with proven-full output pipes. See the
+[supervision report](../../docs/implementation/evidence/p02-private-supervision-native-20260918.json).
+
+`parent_death.py` exercises a packaged worker after engine startup, stops it and
+kills its actual parent. Its `--expect-survival` mode records the missing safeguard
+in the old worker; success in that mode means the negative control survived.
+pidfds and a subreaper bind cleanup/reap to the owned processes. Positive corrected
+worker qualification is separate. No process experiment grants catalog authority.
