@@ -1,0 +1,460 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P02-T03/T04 steps3/4/5; partial M1 integration",
+  "date": "2026-09-19 Europe/Rome",
+  "status": "PASS scoped actual connected signed admission and five-family guarded local publication across native COMMIT-response loss; full product acceptance remains open",
+  "source": "2075a393a4385b519375a6947e05719c4baf4c7e",
+  "tree": "df1adef57e70fd5a8b5f65352f2123c5aeb89d6a",
+  "source_files": 680,
+  "archive_sha256": "08ec58c1664d409ef60b73e2ea3f5e3008f536bc18c4cfdda56168241bef4d0f",
+  "manifest_sha256": "6598e5f3621e8d1b594e23205f8960427b46046da21fb8beb31327ef02726411",
+  "environment": {
+    "host": "Tux native Linux x86_64",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "native": "DuckDB1.5.5 / DuckLake1.0 signed offline extensions / Rust bindings from Cargo.lock",
+    "compiler": {
+      "os": "Linux",
+      "architecture": "x86_64",
+      "discovery": "llvm-config",
+      "environment": {
+        "CC": "/usr/lib/llvm-14/bin/clang",
+        "CXX": "/usr/lib/llvm-14/bin/clang++",
+        "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+        "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+        "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+      },
+      "tools": {
+        "CC": {
+          "path": "/usr/lib/llvm-14/bin/clang",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "CXX": {
+          "path": "/usr/lib/llvm-14/bin/clang++",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "AR": {
+          "path": "/usr/lib/llvm-14/bin/llvm-ar",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+          "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+          "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+        },
+        "LIBCLANG_PATH": {
+          "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+          "version": "Debian clang version 14.0.6"
+        },
+        "discovery": {
+          "path": "/usr/lib/llvm-14/bin/llvm-config",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+          "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+          "version": "14.0.6"
+        }
+      },
+      "sdk": null
+    },
+    "limits": {
+      "runner_cpus": 2,
+      "runner_memory_bytes": 6442450944,
+      "runner_pids": 512,
+      "postgres_cpus": 1,
+      "postgres_memory_bytes": 1073741824,
+      "postgres_pids": 128
+    },
+    "network": "separate internal network; runner shares only owned PG namespace; no host ports; plaintext loopback with SCRAM authentication"
+  },
+  "identities_sha256": {
+    "Cargo.lock": "6b2f28dea860e31616009929eb25b8add92159c03d4857d3836dfe52bd047190",
+    "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167",
+    "contracts/release/archive-engine.json": "ae0069565ab9411928df0cf067822630c4f3a912919e61633b952f8077a5e2c1",
+    "experiments/identity-contract/signed-fixture.json": "4c931ab34cb7adeb707fc2866f4a50b3ec8b694cbb2d4fb5e335f8f37a2d8875",
+    "experiments/configuration-inspection/policy.json": "15c470b515b014e9c7bb20a73b5e0eb2506a13f8581fe3c9d7140e363ae4f678",
+    "experiments/archive-engine/signed_publication_oracle.py": "fe4e47e9ee4a0cbbbbe06825ed266f959acfc6411795bd066c76fc471f11d2de",
+    "experiments/archive-engine/native_commit_proxy.py": "e87c01fe8b53fe25f85e08df66ac6bbcdc2ff34de5e53698d120b5c40e995a2f"
+  },
+  "artifacts_sha256": {
+    "worker": "17b055a76e6e6680b769c0fa2462face82fb1a8a6f010c84a4ea31ad5d641013",
+    "probe": "19140060aaa1504d6c1b390f93e20a23cd843b3e9fe124403f0640a0454d3615",
+    "publisher": "6b9cbcff6aa60e388f0698e3ff9893a58b11113f7bf5c478a860eb71007e477e",
+    "reader": "2e2ef58697c8298f3e3d41894854d2a16e111f76eb105030c6dcc4379bbfcad5",
+    "publication-unit-0": "ccb26c48190adfe83b564bb2e7568fd6c82599632ec71def16ef9c9430b3bdc4"
+  },
+  "commands": {
+    "build": "python3 -B /source/experiments/archive-engine/native_publication.py via shared tools.ci.execute; clean environment, offline locked dependencies, exact read-only Git export",
+    "cases": "python3 -B <exact-checkout>/experiments/archive-engine/signed_publication_cases.py <owned-root>",
+    "native_checks": [
+      {
+        "name": "build",
+        "command": [
+          "cargo",
+          "build",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr-archive-worker",
+          "--bin",
+          "bigbrotr-archive-worker",
+          "--example",
+          "catalog-fence-probe"
+        ],
+        "status": "PASS",
+        "exit_code": 0
+      },
+      {
+        "name": "signed-fixtures",
+        "command": [
+          "cargo",
+          "build",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "-p",
+          "bigbrotr-archive-worker",
+          "--example",
+          "archive_publication_probe",
+          "--example",
+          "archive_read_probe"
+        ],
+        "status": "PASS",
+        "exit_code": 0
+      },
+      {
+        "name": "embedded",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr-archive-worker",
+          "--lib",
+          "publication"
+        ],
+        "status": "PASS",
+        "exit_code": 0
+      },
+      {
+        "name": "input",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr-archive-worker",
+          "--test",
+          "publication"
+        ],
+        "status": "PASS",
+        "exit_code": 0
+      }
+    ]
+  },
+  "executed": {
+    "native_embedded_cases": 7,
+    "native_private_input_cases": 1,
+    "actual_signed_schedules": 3,
+    "mac": "Both new Rust examples passed scoped Clippy; corrected reader passed Clippy; document/format checks passed. Three real local child processes verify normal/timeout/output-limit diagnostic retention; no engine simulation."
+  },
+  "workload": {
+    "dataset": "01010101010101010101010101010101",
+    "topology": 0,
+    "source_stream": {
+      "shard_id": 0,
+      "owner_epoch": 1
+    },
+    "bootstrap": "facts1..5: visibility, endpoint, observer, access scope, event-verification method",
+    "event": "Frozen E_public; facts6..10: event dictionary, payload, signed eligibility, receive, provenance",
+    "controls": "Actual invalid-signature and invalid-ID connected admissions produce retained rejections; valid exact retry returns byte-identical receipt despite changed supplied recorded_at. Attempt1 event before closure refuses; normal attempt4 duplicate publication refuses. Neither creates Parquet files.",
+    "authority": "Actual migrated/initialized/activated Control, source registration and attempt CAS. Fixture-specific exact network-source policy; catalog provisioning/install/seal uses privileged postgres lab manager; minimum runtime manager privileges are separate previously qualified scope.",
+    "oracle": "Independent literal Python CBOR authors every fact preimage/digest, both admission and archive digests, every normalized column and exact receipt. Fresh native READ_ONLY reader reconstructs all seven signed event fields and invokes the real protocol verifier."
+  },
+  "cases": [
+    {
+      "mode": "normal",
+      "status": "PASS",
+      "parent_exit": 0,
+      "reader_exit": 0,
+      "publication_outcomes": [
+        {
+          "attempt_id": "b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5",
+          "files": 0,
+          "first": 6,
+          "ordinal": 1,
+          "snapshots": 2,
+          "success": false
+        },
+        {
+          "attempt_id": "b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6",
+          "files": 2,
+          "first": 1,
+          "ordinal": 2,
+          "snapshots": 3,
+          "success": true
+        },
+        {
+          "attempt_id": "b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7",
+          "files": 8,
+          "first": 6,
+          "ordinal": 3,
+          "snapshots": 4,
+          "success": true
+        },
+        {
+          "attempt_id": "b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8b8",
+          "files": 8,
+          "first": 6,
+          "ordinal": 4,
+          "snapshots": 4,
+          "success": false
+        }
+      ],
+      "native_rows": {
+        "archive_commits": 2,
+        "dictionaries": 6,
+        "event_eligibility_facts": 1,
+        "event_receive_facts": 1,
+        "events": 1,
+        "provenance_facts": 1
+      },
+      "catalog_files": 8,
+      "physical_files": 8,
+      "proxy": null
+    },
+    {
+      "mode": "before",
+      "status": "PASS",
+      "parent_exit": 0,
+      "reader_exit": 0,
+      "publication_outcomes": [
+        {
+          "attempt_id": "bdbdbdbdbdbdbdbdbdbdbdbdbdbdbdbd",
+          "files": 0,
+          "first": 6,
+          "ordinal": 1,
+          "snapshots": 2,
+          "success": false
+        },
+        {
+          "attempt_id": "bebebebebebebebebebebebebebebebe",
+          "files": 2,
+          "first": 1,
+          "ordinal": 2,
+          "snapshots": 3,
+          "success": true
+        },
+        {
+          "attempt_id": "bfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbf",
+          "files": 2,
+          "first": 6,
+          "ordinal": 3,
+          "snapshots": 3,
+          "success": false
+        }
+      ],
+      "native_rows": {
+        "archive_commits": 1,
+        "dictionaries": 5,
+        "event_eligibility_facts": 0,
+        "event_receive_facts": 0,
+        "events": 0,
+        "provenance_facts": 0
+      },
+      "catalog_files": 2,
+      "physical_files": 8,
+      "proxy": {
+        "event": "terminal",
+        "mode": "before-forward",
+        "connections": 1,
+        "bytes": 625405,
+        "frames": 5938,
+        "data_queries": 1,
+        "data_commits": 1,
+        "server_complete": 0,
+        "client_complete": 0,
+        "faults": 1,
+        "unexpected": 0
+      }
+    },
+    {
+      "mode": "after",
+      "status": "PASS",
+      "parent_exit": 0,
+      "reader_exit": 0,
+      "publication_outcomes": [
+        {
+          "attempt_id": "c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5",
+          "files": 0,
+          "first": 6,
+          "ordinal": 1,
+          "snapshots": 2,
+          "success": false
+        },
+        {
+          "attempt_id": "c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6",
+          "files": 2,
+          "first": 1,
+          "ordinal": 2,
+          "snapshots": 3,
+          "success": true
+        },
+        {
+          "attempt_id": "c7c7c7c7c7c7c7c7c7c7c7c7c7c7c7c7",
+          "files": 8,
+          "first": 6,
+          "ordinal": 3,
+          "snapshots": 4,
+          "success": false
+        }
+      ],
+      "native_rows": {
+        "archive_commits": 2,
+        "dictionaries": 6,
+        "event_eligibility_facts": 1,
+        "event_receive_facts": 1,
+        "events": 1,
+        "provenance_facts": 1
+      },
+      "catalog_files": 8,
+      "physical_files": 8,
+      "proxy": {
+        "event": "terminal",
+        "mode": "after-complete",
+        "connections": 1,
+        "bytes": 625416,
+        "frames": 5939,
+        "data_queries": 1,
+        "data_commits": 1,
+        "server_complete": 1,
+        "client_complete": 0,
+        "faults": 1,
+        "unexpected": 0
+      }
+    }
+  ],
+  "physical_evidence": {
+    "files_per_schedule": 8,
+    "physical_bytes_per_schedule": 40597,
+    "scientific_files": 6,
+    "scientific_hash_comparison": "Per-table file size/SHA-256 identical across all3 schedules, including retained unregistered event files before COMMIT. Two technical receipt files have attempt-specific contents and are excluded from cross-mode hash equality.",
+    "placement": "All committed metadata paths are relative below main/<table>/prepared-<attempt>/data.parquet. Exactly bootstrap/event attempt directories contain files. Root kind=7 preserves signed event kind1."
+  },
+  "terminal": {
+    "owners": "normal ordinal4, before/after ordinal3; all disabled",
+    "credentials": "all10 imported lifetime roles NOLOGIN, passwords removed",
+    "catalog_backends": "fresh independent terminal queries find no other backend in each catalog; this observation alone is not exclusion",
+    "rocks": "41 raw key/value records, including rejection/acceptance receipts, retained unchanged in every schedule; logical digest da535e9d1edcdce8bf09033bb1d2b48ee10941c34f47b0b3db228f6285128c61",
+    "worker_permits": 0,
+    "resource_audit": {
+      "source": "2075a393a4385b519375a6947e05719c4baf4c7e",
+      "tree": "df1adef57e70fd5a8b5f65352f2123c5aeb89d6a",
+      "source_files": 680,
+      "manifest_sha256": "6598e5f3621e8d1b594e23205f8960427b46046da21fb8beb31327ef02726411",
+      "cleanup": "owned containers stopped, network retired, no OOM",
+      "unrelated_unchanged": 20,
+      "unrelated_running": 8,
+      "running_bigbrotr": 0
+    },
+    "resources": {
+      "source": "2075a393a4385b519375a6947e05719c4baf4c7e",
+      "tree": "df1adef57e70fd5a8b5f65352f2123c5aeb89d6a",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/publication-2075a39",
+      "owner": "7a62dd55a880822cd8298bf7c3a323e9",
+      "container": "bigbrotr-implementation-publication-2075a39",
+      "postgres": "bigbrotr-implementation-publication-2075a39-pg",
+      "network": "bigbrotr-implementation-publication-2075a39",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "state": "stopped-retained",
+      "source_files": 680,
+      "started_at": "2026-09-18T22:28:14.890733+00:00",
+      "network_id": "983c501e839c203ba6aebe99034b0e3499fee7f740cc648dc8ffd261c506b83c",
+      "postgres_id": "ee489e860e96777c0284ada3d8f6beb38b2b009d3e4142f7a7fe9492a276d3cb",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "7201bb3030160aff7a3cbcf2e29a602949b37dde6957c69005848449192e4d03",
+      "network_state": "retired",
+      "terminal": {
+        "runner": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 143,
+          "Error": "",
+          "StartedAt": "2026-09-18T22:28:17.32452139Z",
+          "FinishedAt": "2026-09-18T22:32:11.043209469Z"
+        },
+        "postgres": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-18T22:28:15.513288744Z",
+          "FinishedAt": "2026-09-18T22:32:12.849548432Z"
+        }
+      },
+      "finished_at": "2026-09-18T22:32:13.481983+00:00"
+    }
+  },
+  "retained_failure": {
+    "source": "7ff0691a9572e0bb55f692bb973d59c8b9743ddb",
+    "raw_root": ".research/implementation/archive-worker/publication/7ff0691",
+    "outcome": "Normal parent completed; actual reader exit101 InvalidHex because native hex() was uppercase while model wire identities require lowercase. Full row oracle and fault modes NOT_RUN. Extra read-only audit retained8 catalog/physical files; complete source/ELF/terminal audits passed. Corrected only fixture reconstruction and diagnostic retention before fresh2075a39 lab."
+  },
+  "review": "Root reviewed source/diff and independently repeated all literal row/digest comparisons against copied native results. Read-only AI review traced new Rust fixtures/callers and Python oracle/harness/proxy; found failure-diagnostic retention gaps, corrected before final run. No AI reviewer edited source or operated Tux. Final independent AI evidence audit recomputed both Git archives/manifests and checked all3 raw row/digest/fault/file results, terminal records and retained failure against this scoped report. That review used recorded local evidence and audit source, without new live Tux operations.",
+  "limits": [
+    "One small signed network event and one complete bootstrap admission per isolated catalog, with provenance and selected nullable fields. Not all null/present/schema variants; no load/aged-state or capacity result.",
+    "Known finite child completion/positive reap, exact seal and fresh catalog inspection are exercised sequentially. No native scientific competing-writer race, parent/host loss, persistent unique launch or installed restart/repair qualification.",
+    "OutcomeUnknown remains unknown at parent boundary; the lab resolves by fresh privileged read-only observation. Product receipt-resolution/read/export service is not implemented by these fixtures. No source ACK, protection, reclamation or orphan deletion.",
+    "No file/directory power-loss persistence, S3, relocation, complete backup or cross-host failure-domain qualification. File SHA checks here are lab readback evidence, not new production protection receipts.",
+    "No256MiB/multi-batch/timer file formation, measured worker peak/RSS, installed Compose or release journey; no hosted Actions or Linux arm64 result.",
+    "No applied migration/schema/dependency changes. Product source is unchanged since3c380fe; later exact candidate changes are fixtures and documentation."
+  ],
+  "raw_root": ".research/implementation/archive-worker/publication/2075a39",
+  "raw_sha256": {
+    "artifact-audit.json": "2c466e1daf51afd3cc9bfc0f6648c85ec3a5b6a594df907091ba577ccf5f0a91",
+    "audit.json": "ea4417e180f491f93d901aa736160be735117e25c3b8ae5dd1a941f74536a158",
+    "build.log": "4015e7b1e16a91e815bcdb3b68a0d32dfaa5097d6d0c36a091f621d991c03bd5",
+    "cases-execution.log": "f46180549c422e3fb7e656094500049bc9e465ef7eed7807ad7a769a4f8a16cb",
+    "cross-case-scientific-hashes.json": "665d28a6c3951da50a1eb21af4d772b19ac787ff45163b88e658aca5ac913175",
+    "embedded.log": "ed70db5301d13998d0fa68f92147dca340fb4b03e436aac63a76411184e60449",
+    "input.log": "12ac9f74b7ad5d7cf3a687e2cffbaaed4f9cb73010d0309cf21622ea578b49a6",
+    "mac-source-audit.json": "bef7e25c6e01d1383c0035917892dd06c698cc92b1f7e910a509fd7e80fb6ab7",
+    "ready.json": "4ae1158805558d790bdf122f7c79aa6865da97030b548d284b2b816cbea3ccf5",
+    "result.json": "f315852282c2407f1cc52847fec35475ceedea6bfa50cfae001f32e1d7c2f5dd",
+    "retirement-execution.log": "0ed22682c5a92b9fb161ca815eceb525564b1690484843e579a3c2e74eaa467c",
+    "signed-cases.json": "0bd7baeadf542bc238cb0421aa4131734e22507c744a15b51fc908a571599464",
+    "signed-fixtures.log": "26f32f7320afb3a7307969556442c135683288c159a275d191d1eb335fe75630",
+    "source-manifest.json": "6598e5f3621e8d1b594e23205f8960427b46046da21fb8beb31327ef02726411",
+    "terminal-observation.json": "467dd333537d31249232ff1791c981aba68a4632047be242a3d7cb85481630f9"
+  },
+  "mac_raw_root": ".research/implementation/archive-worker/publication",
+  "mac_logs_sha256": {
+    "signed-fixture-clippy.log": "4a6c884d77a0332259d2b2d2e2ea19d07195b157b54f9b1f05cdf7eb4fd7419e",
+    "signed-reader-canonical-clippy.log": "ddc1490e447fcb2a60a665e116e44e08f791c8e6955017b6a79f639a586c8831",
+    "harness-failure-retention.log": "172aa5eee13d245d58f9fe328cbc3575bc5cfe5aec95df61591ccee1591072f4",
+    "signed-final-artifacts.log": "8651ae2ccb637d3eb9733b681a44af7e4701527c66326f228094f3920c1db1fe",
+    "signed-final-handoff.log": "0b195dd97b9a5937d6ccb5f27b07dc73f0f7664a0b994a046353f3ce0dd9005f"
+  }
+}

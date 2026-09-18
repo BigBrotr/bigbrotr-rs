@@ -330,6 +330,16 @@ including the technical receipt. The [native registration experiment](../impleme
 at `ea270ac` retains all three synthetic files and reads their full bodies after
 the same lost COMMIT response; a pre-forward rollback leaves three unregistered
 orphans. This qualifies the scoped dependency behavior, not scientific publication.
+The later [signed scientific qualification](../implementation/evidence/p02-signed-publication-native-20260919.json)
+at `2075a39` connects actual signed admission/reopen to the guarded publisher and
+compares all current family fields, receipt and signature through a fresh native
+reader. Normal and completed-but-lost native COMMIT retain8 committed files;
+pre-forward rollback retains2 bootstrap references and all8 physical files.
+Six scientific file hashes match across schedules; receipt files carry their
+distinct attempt identities. All pending Rocks bytes remain unchanged. The lab's
+privileged reader is a separate observer, not product recovery or a protection
+grant. Source authorization is fixture-specific; full native fence races,
+relocation, persistent lifecycle, durability and S3 remain qualification gates.
 Qualify complete nested mappings, immutable placement, transaction ambiguity,
 positive ownership and orphan recovery together before enabling the adapter.
 Keep one engine path; do not retain a silently weaker normal-INSERT fallback.

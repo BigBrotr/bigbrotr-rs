@@ -258,9 +258,16 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   nested mappings, immutable file ownership and recovery; no normal-INSERT fallback.
   The [registration experiment](evidence/p02-native-registration-20260918.json)
   at `ea270ac` preserves all3 synthetic files/full reads after completed-but-lost
-  native COMMIT and retains unregistered rollback files. Scientific nested PG
-  mappings, guarded parent integration, relative placement/relocation, positive
-  exclusion, orphan recovery and protection remain open.
+  native COMMIT and retains unregistered rollback files. The
+  [signed guarded publication qualification](evidence/p02-signed-publication-native-20260919.json)
+  at `2075a39` now connects actual Control/source registration, signed Rocks
+  admission/reopen and FreshWriter supervision to all five current families and
+  receipt. Three native schedules compare complete literal rows/signatures,
+  retained source bytes and relative file membership; completed-but-lost COMMIT
+  preserves all files, while pre-forward rollback retains unregistered files.
+  The source policy and reader are explicit lab fixtures. Product receipt/read
+  services, native scientific fence races, relocation, orphan recovery and
+  protection remain open.
   The first finite fresh-only initializer and shared schema declaration now create
   the five existing families plus an empty technical receipt relation;
   [native qualification](evidence/p02-scientific-schema-native-20260918.json) covers
@@ -277,7 +284,10 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   repeat while receipt state is unknown. Reject mismatched batch digest.
   Include loss of the actual native PostgreSQL COMMIT response, plus physical file
   existence and full body/receipt reads; a kill after COMMIT returned and metadata
-  counts do not cover this boundary. The first actual case fails; pending stays retained.
+  counts do not cover this boundary. The original normal-INSERT case fails;
+  caller-owned scientific registration now passes the scoped native schedules
+  linked above. Resolution uses a fresh lab reader; the product recovery consumer
+  remains required. Pending stays retained in every case.
   The borrowed model archive identity and pending-preparation consumer bind schema,
   explicit topology, maximal ranges and complete source/digest membership. Frozen
   single/multiple-range and signed pending fixtures have independent expected

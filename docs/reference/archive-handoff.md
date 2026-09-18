@@ -211,7 +211,7 @@ complete retained admission batch. It verifies the scientific catalog identity,
 explicit topology and schema1 archive digest before spawning the finite worker.
 The selected route is a pinned IP plus validated local-plaintext boundary or
 verify-full server name/CA; the libpq DSN goes only through the private input pipe.
-This unpublished candidate is not yet a qualified Archive role or recovery path.
+This private candidate is not yet a qualified Archive role or recovery path.
 
 The private `publish-batch` command takes the same limits as `inspect-batch`.
 Its stdin begins with a big-endian u32 JSON length (1..32768), then closed JSON
@@ -236,6 +236,16 @@ positive reap. Any launched failure or malformed response is outcome-unknown;
 unknown termination takes precedence and retains capacity/cleanup obligations.
 Even success does not authorize protection, a source ACK, retry or reclamation.
 The caller must retain the durable attempt and pending source through fresh
-receipt/file resolution and positive exclusion. Scientific signed PG publication,
-all nested references, native fence races and persistent lifecycle recovery remain
+receipt/file resolution and positive exclusion. The
+[signed native qualification](../implementation/evidence/p02-signed-publication-native-20260919.json)
+at `2075a39` exercises this actual parent against guarded PG after connected signed
+Rocks admission/reopen. All five current families and exact receipt survive fresh
+full readback, including a completed native COMMIT whose response was lost. A
+pre-forward disconnect leaves only bootstrap visible and retains the event's
+prepared files. Both fault outcomes stay unknown at the parent boundary; the lab
+reader separately observes the committed state. No source ACK occurs and all41
+Rocks key/value records remain identical. The literal corpus includes one public
+network arrival with provenance, invalid ID/signature, missing closure and duplicate
+publication controls. Full schema variants, native fence races, installed source
+policy, product receipt/read services and persistent lifecycle recovery remain
 P02-T04 acceptance; no public command advertises this candidate.

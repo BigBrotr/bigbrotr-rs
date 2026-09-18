@@ -16,22 +16,22 @@ positive fencing, receipts/protection, then M1 read/export/restart. No P02 task 
 M1 gate is complete. Catalog guard, credential provisioning/sealing and finite
 private supervision prerequisites now have scoped native evidence. The first
 scientific schema declaration and fresh-only initializer have scoped qualification;
-scientific guard binding/live inspection now have scoped qualification. An unpublished
-private publisher candidate is now under risk qualification. Pending must not
+scientific guard binding/live inspection now have scoped qualification. The private publisher
+candidate now has scoped signed native qualification. Pending must not
 be acknowledged/reclaimed.
 
 ## Git and integrating ownership
 
-Mac main; root is sole writer/integrator. This correction is based on candidate
-`7ff0691a9572e0bb55f692bb973d59c8b9743ddb`, tree
-`24e10c9fb1ed2715732801d8dc7aef5c90811dcc`; six unpublished commits follow observed
-origin/main `4db603b0dc09ae1c65c9bb301af33a60f7939854`. No merge/rebase or remote edits.
-The containing commit corrects the lab reader's canonical hex reconstruction and
-harness failure-evidence retention, and records the failed candidate's terminal
-lab audit. Resolve its actual commit before a new exact-source transfer. No product
-implementation, dependencies, schema or applied migration changes in this correction.
-All compilers/lab sessions are terminal. Read-only AI review covered the three
-Rust fixtures, Python oracle/harness and relevant callers; root owns integration.
+Mac main; root is sole writer/integrator. Latest tested source
+`2075a393a4385b519375a6947e05719c4baf4c7e`, tree
+`df1adef57e70fd5a8b5f65352f2123c5aeb89d6a`, has seven unpublished commits after
+observed origin/main `4db603b0dc09ae1c65c9bb301af33a60f7939854`. No merge/rebase or
+remote editing. The pending evidence commit changes only documentation/inventory;
+its product/fixture source remains identical to tested2075a39. Resolve the actual
+containing commit and fetch/inspect origin before pushing the verified outcome.
+All compilers/lab sessions are terminal; no unfinished cleanup. Read-only AI source
+and final recorded-evidence reviews finished without further findings; root owns
+integration. Fetch completed89606; origin/main is unchanged at4db603b.
 
 ## Active publication risk slice
 
@@ -331,43 +331,63 @@ Earlier164a9bc/27ab36c/2e15f8c labs likewise stopped-retained with networks reti
 all outcomes and audits retained. No unfinished cleanup; never restart these
 retired-network containers. amd64 does not qualify arm64 or hosted Actions.
 
-## Latest signed publication lab and next bounded action
+## Latest signed publication qualification
 
-Candidate `7ff0691a9572e0bb55f692bb973d59c8b9743ddb`, tree
-`24e10c9fb1ed2715732801d8dc7aef5c90811dcc`, has680 independently matched clean source
-files. Native build,7 embedded publication cases and1 closed input case PASS.
-The normal actual Control/registration/signed Rocks/FreshWriter publication parent
-exited0: missing closure refused, bootstrap and all five event families published,
-duplicate refused, sealed credentials inspected and child permits returned. Root's
-independent Python oracle matches all ten fact bytes/digests and both batch digests;
-all41 raw Rocks rows have the same before/after digest. This is partial evidence.
+[Actual signed publication report](evidence/p02-signed-publication-native-20260919.json),
+`2075a39`: native build,7 embedded cases,1 closed-input case and3 actual signed
+schedules PASS. Actual Control initialization/source registration and signed Rocks
+admission/reopen feed FreshWriter and the supervised publisher. Independent literal
+oracles match all ten fact bytes/digests, both admission/archive identities, every
+scientific/receipt field and a reconstructed verified signature. The invalid ID and
+signature produce rejections; exact admission retry retains its receipt. Missing
+closure and normal duplicate publication refuse without new files.
 
-The actual native reader FAILED exit101 during signed-event reconstruction because
-DuckDB hex() returns uppercase and fixed model identities require canonical lowercase.
-No complete row comparison or fault schedule passed at this revision. Extra read-only
-observations retain8 catalog references and8 physical files. Failure logs are kept;
-this is a fixture defect, not a measured missing-file defect. Mac changes normalize
-only the reader's reconstructed-event hex, preserve timeout/overflow output/reasons,
-and observe catalog/files before asserting reader success. Three actual local child
-process cases (normal/timeout/overflow) PASS for retained diagnostics; reader Clippy
-PASS. AI review found these diagnostic gaps; no product implementation changed.
+Normal and completed-but-lost PG COMMIT retain8 catalog/physical files and complete
+rows. Before-forward rollback leaves2 bootstrap references and all8 physical files,
+including6 retained event orphans. Both faults return OutcomeUnknown to the parent;
+the fixture's fresh reader independently observes actual state. Exactly one targeted
+data COMMIT and one injected fault occur per fault schedule. Six scientific file
+size/SHA maps match across all3 schedules; attempt-specific receipts differ. Each
+schedule retains40597 physical bytes. All41 Rocks key/value records stay unchanged;
+all worker grants return. No ACK/reclaim, protection or throughput claim.
 
-Lab root `/home/tux/bigbrotr-implementation-20260917/runs/publication-7ff0691`, owner
-101d35c08c39dad862f52e3a099a550b. Runner3702e16e87b6b188ee960895970065bf40a978c66f4910957bbe545fbcd4fa3c;
-PG6c13737e054b9b857ad90fa3855e3844552aff69580462b27769caaf425987f2;
-networka1453d72cfa4b0f496f4e33d2b68c6240e0361ea052cd2b7f9e025583835a43c retired.
-Terminal audit records stopped143/0, no OOM,20 unrelated identities unchanged,
-8 unrelated running and0 BigBrotr running. Transfer57239, cases37496, cleanup41074,
-evidence copy92268, local checks70108/71186 are terminal. No unfinished cleanup.
-Raw root publication/7ff0691; inventory signed_publication. Source/ELF identities
-and exact Mac Git archive match retained audits. Never restart this retired lab.
+Final independent PG observation finds owner ordinals4/3/3 disabled, all10 lifetime
+roles NOLOGIN with passwords removed, and no other catalog backend. Privileged lab
+manager/reader and fixture-specific source authorization do not implement installed
+source policy, minimum reader privileges or the product Read/recovery service.
+The report lists native scientific race, persistent lifecycle, relocation/S3,
+file/directory persistence and complete M1/release boundaries still open.
 
-Primary HEAD7ff0691 has six unpublished commits; root-owned reader/harness and
-checkpoint/inventory updates are dirty. Commit that correction, then transfer to
-a new exact-source lab using the verified stopped7ff0691 build cache. Repeat all
-three actual schedules and require independent complete rows/signature, native
-fault counters, retained files and unchanged Rocks. Unknowns stay retained without
-ACK. Source authorization and reader remain explicit lab fixtures. Afterwards
-record scoped evidence, audit terminal resources, and continue scientific fence
-races, relocation/recovery, persistent lifecycle and protection. M1 and the complete
-selected product remain open; no task completion or reclamation claim.
+Exact680-file Mac Git archive equals Tux checkout/export. Source2075a393a4385b519375a6947e05719c4baf4c7e,
+treedf1adef57e70fd5a8b5f65352f2123c5aeb89d6a. Raw root publication/2075a39;
+native root `/home/tux/bigbrotr-implementation-20260917/runs/publication-2075a39`.
+Owner7a62dd55a880822cd8298bf7c3a323e9;
+runner7201bb3030160aff7a3cbcf2e29a602949b37dde6957c69005848449192e4d03;
+PGee489e860e96777c0284ada3d8f6beb38b2b009d3e4142f7a7fe9492a276d3cb;
+network983c501e839c203ba6aebe99034b0e3499fee7f740cc648dc8ffd261c506b83c retired.
+Audit: stopped143/0, no OOM,20 unrelated identities unchanged/8 running/0 BigBrotr
+running. Transfer24866, cases53833, copy96984/34953 and retirement29615 terminal.
+Inventory signed_publication owns retained data/cache. Never restart retired runners.
+
+Failed7ff0691 is preserved separately in signed_publication_failed_7ff0691 and raw
+publication/7ff0691. Normal parent completed but reader exit101 InvalidHex prevented
+full comparison and fault execution: native hex() uppercase violated model lowercase
+wire spelling. Only fixture reconstruction/diagnostic retention changed before the
+fresh successful2075a39 run. Failure source/ELF/terminal audits passed; its containers
+are stopped and network retired. Three local actual-process checks qualify bounded
+normal/timeout/overflow diagnostic retention. Mac fixture/reader Clippy and document
+checks passed. No product/dependency/schema/applied SQL changed after3c380fe.
+
+## Next bounded action
+
+Source/evidence review and document checks passed. Commit/push the verified private
+outcome against inspected origin, then continue P02-T04 steps4/5: qualify
+actual scientific publisher fencing with a live stale worker and both transaction
+lock orders, preserving prepared files and retained signed pending. Reuse the
+signed corpus and full row oracle in a new exact-source lab; do not substitute
+synthetic guard receipts or generic error status for the actual native refusal.
+Introduce the product's bounded fresh receipt-resolution/read consumer as its
+contract becomes available, then persistent lifetime recovery and protection.
+No installed Archive role, task or M1 gate is complete; all selected product scope
+remains required. The verified2075a39 build cache may be copied into a new owned
+lab after inventory; no independently edited Tux source.

@@ -7093,7 +7093,7 @@
       "report": "docs/implementation/evidence/p02-native-registration-20260918.json",
       "mac_product_report": "docs/implementation/evidence/p02-staged-publication-mac-20260918.json"
     },
-    "signed_publication": {
+    "signed_publication_failed_7ff0691": {
       "status": "FAILED reader fixture canonical-hex reconstruction; actual parent normal journey completed; fault cases NOT_RUN; terminal audited cleanup",
       "purpose": "Actual connected signed Rocks admission, all-five-family guarded PG publication and native COMMIT response loss; no ACK or protection",
       "base_source": "3c380fe48331cdb3b0fce60926c2e8e47db3bb5b",
@@ -7150,6 +7150,62 @@
       "audit": ".research/implementation/archive-worker/publication/7ff0691/audit.json",
       "raw_root": ".research/implementation/archive-worker/publication/7ff0691",
       "next": "New exact-source lab with canonical reader and diagnostic-retention fixes"
+    },
+    "signed_publication": {
+      "status": "PASS3 actual signed schedules; terminal audited cleanup; product gates remain open",
+      "resources": {
+        "source": "2075a393a4385b519375a6947e05719c4baf4c7e",
+        "tree": "df1adef57e70fd5a8b5f65352f2123c5aeb89d6a",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/publication-2075a39",
+        "owner": "7a62dd55a880822cd8298bf7c3a323e9",
+        "container": "bigbrotr-implementation-publication-2075a39",
+        "postgres": "bigbrotr-implementation-publication-2075a39-pg",
+        "network": "bigbrotr-implementation-publication-2075a39",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "state": "stopped-retained",
+        "source_files": 680,
+        "started_at": "2026-09-18T22:28:14.890733+00:00",
+        "network_id": "983c501e839c203ba6aebe99034b0e3499fee7f740cc648dc8ffd261c506b83c",
+        "postgres_id": "ee489e860e96777c0284ada3d8f6beb38b2b009d3e4142f7a7fe9492a276d3cb",
+        "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+        "container_id": "7201bb3030160aff7a3cbcf2e29a602949b37dde6957c69005848449192e4d03",
+        "network_state": "retired",
+        "terminal": {
+          "runner": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-18T22:28:17.32452139Z",
+            "FinishedAt": "2026-09-18T22:32:11.043209469Z"
+          },
+          "postgres": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-18T22:28:15.513288744Z",
+            "FinishedAt": "2026-09-18T22:32:12.849548432Z"
+          }
+        },
+        "finished_at": "2026-09-18T22:32:13.481983+00:00"
+      },
+      "raw_root": ".research/implementation/archive-worker/publication/2075a39",
+      "previous_failure": "signed_publication_failed_7ff0691",
+      "scope": "Three actual signed publication/COMMIT-loss schedules; not protection, source ACK, installed recovery or complete M1",
+      "audit": ".research/implementation/archive-worker/publication/2075a39/audit.json",
+      "report": "docs/implementation/evidence/p02-signed-publication-native-20260919.json"
     }
   },
   "implementation_monitor_corrections_20260918": {
