@@ -27,7 +27,7 @@ result=execute([('control',[str(build/'target/release/examples/archive_attempt_p
 archive=Path('/out/archive');archive.mkdir();temp=Path('/out/bootstrap-temp');temp.mkdir()
 def dsn(role):return 'host=postgres port=5432 dbname=catalog user='+role+' password='+Path('/secrets',role).read_text()+' sslmode=disable connect_timeout=5'
 worker_env=env.copy();worker_env['BIGBROTR_ARCHIVE_PARENT_PID']=str(os.getpid())
-bootstrap=subprocess.run([str(worker),'bootstrap-catalog',str(bundle),str(temp),str(128*1024**2),str(64*1024**2),'1'],input=json.dumps({'dsn':dsn('bootstrap'),'data_root':'/out/archive/'}),text=True,env=worker_env,capture_output=True,timeout=60)
+bootstrap=subprocess.run([str(worker),'bootstrap-catalog',str(bundle),str(temp),str(128*1024**2),str(64*1024**2),'1'],input=json.dumps({'dsn':dsn('BootstrapMixed'),'data_root':'/out/archive/'}),text=True,env=worker_env,capture_output=True,timeout=60)
 (out/'bootstrap.json').write_text(json.dumps({'exit':bootstrap.returncode,'stdout':bootstrap.stdout,'stderr':bootstrap.stderr},indent=2)+'\n')
 assert bootstrap.returncode==0
 assert json.loads(bootstrap.stdout)=={'format':'bigbrotr-native-bootstrap/1','status':'initialized'}

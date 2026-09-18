@@ -50,7 +50,7 @@ pub(super) async fn native(tx: &Transaction<'_>) -> Result<Vec<String>, GuardErr
         }
         // PostgreSQL names/type strings are bounded; no default expression or
         // arbitrary native metadata value is decoded by this shape inspection.
-        let actual = tx.query("SELECT a.attname::text, format_type(a.atttypid,a.atttypmod), a.attnotnull, EXISTS(SELECT 1 FROM pg_constraint p WHERE p.conrelid=a.attrelid AND p.contype='p' AND a.attnum=ANY(p.conkey)), a.atthasdef OR a.attisdropped OR a.attidentity<>'' OR a.attgenerated<>'' FROM pg_attribute a WHERE a.attrelid=('public.'||$1::text)::regclass AND a.attnum>0 ORDER BY a.attnum LIMIT 33", &[&name]).await.map_err(backend)?;
+        let actual = tx.query("SELECT a.attname::text, format_type(a.atttypid,a.atttypmod), a.attnotnull, EXISTS(SELECT 1 FROM pg_constraint p WHERE p.conrelid=a.attrelid AND p.contype='p' AND a.attnum=ANY(p.conkey)), a.atthasdef OR a.attisdropped OR a.attidentity<>'' OR a.attgenerated<>'' OR a.attcollation<>(SELECT typcollation FROM pg_type WHERE oid=a.atttypid) FROM pg_attribute a WHERE a.attrelid=('public.'||$1::text)::regclass AND a.attnum>0 ORDER BY a.attnum LIMIT 33", &[&name]).await.map_err(backend)?;
         let mut found = Vec::with_capacity(actual.len());
         for column in actual {
             if column.try_get::<_, bool>(4).map_err(backend)? {
@@ -110,8 +110,11 @@ pub(super) async fn fresh(
     require(tx, "SELECT NOT EXISTS(SELECT 1 FROM pg_trigger t JOIN pg_class c ON c.oid=t.tgrelid JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public') AND NOT EXISTS(SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='public')", &[], GuardError::IncompatibleLayout).await
 }
 
+// NOLOGIN reduces future connection authority but does not exclude an existing
+// backend. It must not block inspection or successor activation. Launch readiness
+// and credential exposure remain the separate parent/provisioning boundary.
 async fn restricted(tx: &Transaction<'_>, login: &str) -> Result<(), GuardError> {
-    require(tx, "SELECT rolcanlogin AND NOT rolsuper AND NOT rolcreaterole AND NOT rolcreatedb AND NOT rolreplication AND NOT rolbypassrls AND rolname<>current_user AND NOT EXISTS(SELECT 1 FROM pg_auth_members WHERE member=r.oid OR roleid=r.oid) AND NOT has_parameter_privilege(r.oid,'session_replication_role','SET') AND NOT has_database_privilege(r.oid,current_database(),'CREATE') FROM pg_roles r WHERE rolname=$1::name", &[&login], GuardError::UnsafeRole).await
+    require(tx, "SELECT NOT rolsuper AND NOT rolcreaterole AND NOT rolcreatedb AND NOT rolreplication AND NOT rolbypassrls AND rolname<>current_user AND NOT EXISTS(SELECT 1 FROM pg_auth_members WHERE member=r.oid OR roleid=r.oid) AND NOT has_parameter_privilege(r.oid,'session_replication_role','SET') AND NOT has_database_privilege(r.oid,current_database(),'CREATE') FROM pg_roles r WHERE rolname=$1::name", &[&login], GuardError::UnsafeRole).await
 }
 pub(super) async fn bootstrap(tx: &Transaction<'_>, login: &str) -> Result<(), GuardError> {
     restricted(tx, login).await?;
@@ -133,7 +136,7 @@ pub(super) async fn writer(tx: &Transaction<'_>, login: &str) -> Result<(), Guar
 pub(super) async fn layout(tx: &Transaction<'_>) -> Result<[u8; 32], GuardError> {
     let sql = r#"WITH objects(kind,ns,name,definition) AS (
 SELECT 'table',n.nspname::text,c.relname::text,ROW(c.relkind,c.relpersistence,c.relrowsecurity,c.relforcerowsecurity,c.relispartition,c.reloptions)::text FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE c.relkind<>'i'
-UNION ALL SELECT 'column',n.nspname,c.relname||'.'||a.attnum,ROW(a.attname,format_type(a.atttypid,a.atttypmod),a.attnotnull,a.attisdropped,a.attidentity,a.attgenerated,pg_get_expr(d.adbin,d.adrelid))::text FROM pg_attribute a JOIN pg_class c ON c.oid=a.attrelid JOIN pg_namespace n ON n.oid=c.relnamespace LEFT JOIN pg_attrdef d ON d.adrelid=a.attrelid AND d.adnum=a.attnum WHERE a.attnum>0
+UNION ALL SELECT 'column',n.nspname,c.relname||'.'||a.attnum,ROW(a.attname,format_type(a.atttypid,a.atttypmod),a.attnotnull,a.attisdropped,a.attidentity,a.attgenerated,a.attcollation::regcollation::text,a.attstorage,a.attcompression,pg_get_expr(d.adbin,d.adrelid))::text FROM pg_attribute a JOIN pg_class c ON c.oid=a.attrelid JOIN pg_namespace n ON n.oid=c.relnamespace LEFT JOIN pg_attrdef d ON d.adrelid=a.attrelid AND d.adnum=a.attnum WHERE a.attnum>0
 UNION ALL SELECT 'constraint',n.nspname,c.relname||'.'||p.conname,pg_get_constraintdef(p.oid,false) FROM pg_constraint p JOIN pg_class c ON c.oid=p.conrelid JOIN pg_namespace n ON n.oid=c.relnamespace
 UNION ALL SELECT 'index',n.nspname,c.relname,ROW(pg_get_indexdef(i.indexrelid),i.indisvalid,i.indisready,i.indislive)::text FROM pg_index i JOIN pg_class c ON c.oid=i.indexrelid JOIN pg_namespace n ON n.oid=c.relnamespace
 UNION ALL SELECT 'trigger',n.nspname,c.relname||'.'||t.tgname,ROW(pg_get_triggerdef(t.oid,false),t.tgenabled,t.tgisinternal)::text FROM pg_trigger t JOIN pg_class c ON c.oid=t.tgrelid JOIN pg_namespace n ON n.oid=c.relnamespace

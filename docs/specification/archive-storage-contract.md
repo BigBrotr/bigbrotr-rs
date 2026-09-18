@@ -174,7 +174,7 @@ metadata layout. `migrations/catalog/0001_writer_guard.sql` belongs to the separ
 catalog database; it is not an application-Control migration. Native bootstrap
 alone creates the28 metadata tables. After that finite worker has exited and been
 positively reaped, the installer requires the exact empty initial native snapshot,
-metadata version/root/encryption, column/key layout and a restricted bootstrap
+metadata version/root/encryption, column/key/collation layout and a restricted bootstrap
 login. In one transaction it transfers native table ownership to the catalog
 manager, revokes bootstrap DDL/DML and PUBLIC native privileges, attaches all28
 statement guards, and records dataset/catalog/root, SQL and live-layout hashes.
@@ -194,6 +194,9 @@ and its PG role OID bind each imported lifetime. The SECURITY DEFINER trigger us
 `session_user`, qualified objects and a fixed search path; SET ROLE cannot change
 its credential attribution. Runtime logins have native DML only, no metadata DDL,
 trigger, guard-schema, role-administration or replication-bypass authority.
+NOLOGIN is accepted for inspection and replacement: it reduces future connection
+authority but does not exclude an existing backend. Inspection/activation never
+re-enable an old login; credential exposure and launch readiness remain separate.
 
 Compatibility inspection checks actual native columns/keys, table ownership,
 function bodies/security settings, enabled statement triggers, stored installation

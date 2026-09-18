@@ -61,15 +61,49 @@ async fn run() {
     let commit = Cell::new(false);
     match mode.as_str() {
         "install" => {
+            for (change, restore, expected) in [
+                (
+                    "ALTER TABLE public.ducklake_metadata ALTER COLUMN key TYPE varchar COLLATE \"C\"",
+                    "ALTER TABLE public.ducklake_metadata ALTER COLUMN key TYPE varchar COLLATE \"default\"",
+                    GuardError::IncompatibleLayout,
+                ),
+                (
+                    "ALTER ROLE \"BootstrapMixed\" CREATEROLE",
+                    "ALTER ROLE \"BootstrapMixed\" NOCREATEROLE",
+                    GuardError::UnsafeRole,
+                ),
+                (
+                    "UPDATE public.ducklake_snapshot SET next_catalog_id=2",
+                    "UPDATE public.ducklake_snapshot SET next_catalog_id=1",
+                    GuardError::ExistingData,
+                ),
+            ] {
+                admin.batch_execute(change).await.unwrap();
+                assert_eq!(
+                    catalog_guard::install(&mut admin, &identity, "BootstrapMixed", &commit)
+                        .await
+                        .unwrap_err(),
+                    expected
+                );
+                assert!(!commit.get());
+                assert!(
+                    admin
+                        .query_one("SELECT to_regnamespace('bigbrotr_archive') IS NULL", &[])
+                        .await
+                        .unwrap()
+                        .get::<_, bool>(0)
+                );
+                admin.batch_execute(restore).await.unwrap();
+            }
             assert!(
-                catalog_guard::install(&mut admin, &identity, "bootstrap", &commit)
+                catalog_guard::install(&mut admin, &identity, "BootstrapMixed", &commit)
                     .await
                     .unwrap()
             );
             assert!(commit.get());
             commit.set(false);
             assert!(
-                !catalog_guard::install(&mut admin, &identity, "bootstrap", &commit)
+                !catalog_guard::install(&mut admin, &identity, "BootstrapMixed", &commit)
                     .await
                     .unwrap()
             );
@@ -92,7 +126,7 @@ async fn run() {
             ] {
                 assert!(catalog_guard::inspect(&mut admin, &wrong).await.is_err());
             }
-            let (old, d) = connect("catalog", "bootstrap").await;
+            let (old, d) = connect("catalog", "BootstrapMixed").await;
             for sql in [
                 "CREATE TABLE public.forbidden(v int)",
                 "DELETE FROM public.ducklake_metadata WHERE false",
@@ -112,6 +146,10 @@ async fn run() {
             d.await.unwrap();
             // Structural corruption is detected without silently repairing it.
             for (change, restore) in [
+                (
+                    "ALTER FUNCTION bigbrotr_archive.require_writer() SECURITY INVOKER",
+                    "ALTER FUNCTION bigbrotr_archive.require_writer() SECURITY DEFINER",
+                ),
                 (
                     "ALTER TABLE public.ducklake_metadata DISABLE TRIGGER bigbrotr_writer_guard",
                     "ALTER TABLE public.ducklake_metadata ENABLE TRIGGER bigbrotr_writer_guard",
@@ -171,6 +209,56 @@ async fn run() {
             // tuple used for authority. The adapter must ignore these changes.
             receipt.ordinal = 999;
             receipt.latest_issued = true;
+            if mode == "activate-first" {
+                let login = catalog_guard::writer_login(&receipt);
+                for (grant, revoke) in [
+                    (
+                        format!("ALTER ROLE {login} SUPERUSER"),
+                        format!("ALTER ROLE {login} NOSUPERUSER"),
+                    ),
+                    (
+                        format!("ALTER ROLE {login} CREATEROLE"),
+                        format!("ALTER ROLE {login} NOCREATEROLE"),
+                    ),
+                    (
+                        format!("GRANT CREATE ON SCHEMA public TO {login}"),
+                        format!("REVOKE CREATE ON SCHEMA public FROM {login}"),
+                    ),
+                    (
+                        format!("GRANT USAGE ON SCHEMA bigbrotr_archive TO {login}"),
+                        format!("REVOKE USAGE ON SCHEMA bigbrotr_archive FROM {login}"),
+                    ),
+                    (
+                        format!("GRANT SET ON PARAMETER session_replication_role TO {login}"),
+                        format!("REVOKE SET ON PARAMETER session_replication_role FROM {login}"),
+                    ),
+                ] {
+                    admin.batch_execute(&grant).await.unwrap();
+                    assert_eq!(
+                        catalog_guard::activate(&mut admin, &identity, &receipt, &commit)
+                            .await
+                            .unwrap_err(),
+                        GuardError::UnsafeRole
+                    );
+                    assert!(!commit.get());
+                    admin.batch_execute(&revoke).await.unwrap();
+                    assert_eq!(
+                        admin
+                            .query_one("SELECT count(*) FROM bigbrotr_archive.attempts", &[])
+                            .await
+                            .unwrap()
+                            .get::<_, i64>(0),
+                        0
+                    );
+                }
+            }
+            let old = "bb_archive_".to_string() + &"14".repeat(16);
+            if second {
+                admin
+                    .batch_execute(&format!("ALTER ROLE {old} NOLOGIN"))
+                    .await
+                    .unwrap();
+            }
             let expected = if mode == "replay-first" {
                 Activation::Observed {
                     current: false,
@@ -198,6 +286,19 @@ async fn run() {
             );
             assert!(!commit.get());
             catalog_guard::inspect(&mut admin, &identity).await.unwrap();
+            if second {
+                assert!(
+                    !admin
+                        .query_one(
+                            "SELECT rolcanlogin FROM pg_roles WHERE rolname=$1::name",
+                            &[&old]
+                        )
+                        .await
+                        .unwrap()
+                        .get::<_, bool>(0),
+                    "activation must not re-enable the old login"
+                );
+            }
             control.release().await.unwrap();
             control_driver.await.unwrap();
         }

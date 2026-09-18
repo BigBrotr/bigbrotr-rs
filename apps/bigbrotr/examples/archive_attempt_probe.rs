@@ -293,7 +293,7 @@ async fn run() {
         let error = admin.batch_execute(sql).await.unwrap_err();
         assert_eq!(error.code().unwrap().code(), "23514");
     }
-    let rows=admin.query("SELECT ordinal::text, expected_predecessor::text, encode(attempt_id,'hex'), encode(worker_incarnation,'hex'), issuer_epoch::text FROM control.archive_attempts ORDER BY ordinal",&[]).await.unwrap();
+    let rows=admin.query("SELECT ordinal::text, expected_predecessor::text, encode(attempt_id,'hex'), encode(worker_incarnation,'hex'), issuer_epoch::text FROM control.archive_attempts ORDER BY control.archive_attempts.ordinal",&[]).await.unwrap();
     assert_eq!(rows.len(), 2);
     for (row, n, ordinal) in [(&rows[0], 20u8, 1u64), (&rows[1], 22, 2)] {
         assert_eq!(row.get::<_, String>(0), ordinal.to_string());

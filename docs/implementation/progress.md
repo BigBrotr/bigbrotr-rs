@@ -18,12 +18,9 @@ not be acknowledged/reclaimed. Do not mistake private preparation for publicatio
 
 ## Git and integrating ownership
 
-Mac main; root is the only writer/integrator. Last verified HEAD and origin/main
-`d24cd876d6d9f97d7e3bdf6e12d64b76b634de24` are equal after ordinary push.
-Resumption verified that revision. The working tree now contains uncommitted
-catalog guard code/SQL/native-layout fixture/test and a private retained-request
-field on the Control receipt. Inspection and native bootstrap consumer now compile; native qualification
-is still pending; this work is not a passing boundary. Product candidate `b245644`
+Mac main; root is the only writer/integrator. Last published origin/main is
+`d24cd876d6d9f97d7e3bdf6e12d64b76b634de24`. Current local candidate/evidence and
+dirty work are recorded below; unpublished native candidates are not releases. Product candidate `b245644`
 and its evidence are pushed. Mac 13 selected tests and scoped Clippy pass; exact
 native 13 tests, Clippy and one actual PG adapter journey PASS. No force push,
 independent Tux product edits or concurrent writer.
@@ -170,90 +167,49 @@ MON resources remain stopped as inventoried; never restart retired-network
 containers. Shared checkout last observed detached6be8515 in an earlier slice;
 not used or freshly requalified here.
 
-## Current uncommitted implementation
+## Current catalog product candidate
 
-Root is completing `storage/postgres/catalog_guard`: fresh native-catalog-only
-installation, version/checksum/layout inspection, restricted per-attempt roles
-and monotonic import of the private Control-retained request. New catalog SQL is
-separate from the applied Control migrations. Local-only placement is an explicit
-prerequisite; S3 remains selected unfinished work. No catalog code is qualified.
-The initial missing-module compiler RED is retained under ignored
-`.research/implementation/archive-worker/catalog-product/red.log`. New exact-source lab is running at
-`/home/tux/bigbrotr-implementation-20260917/runs/catalog-product-652e043`,
-owner `c7696e777d65906c08793a8239537fdc`, runner
-`bigbrotr-implementation-catalog-product-652e043` and its `-pg` container.
-Its owned internal network and full IDs/preflight are recorded in the inventory.
-Do not stop it merely on resumption; inspect current results. Source candidate
-652e043 is a local unpublished commit, origin/main remains d24cd87. Outcome unknown.
+Mac main is now local candidate2e732f6; origin/main remains d24cd87. Root is the
+only writer. Dirty work adds the confirmed collation/NOLOGIN fixes, stronger
+native privilege/freshness cases and a mixed-case bootstrap login. Three clean
+exact-source native runs are retained under `catalog-product` in the laboratory
+inventory; none is an overall PASS yet:
 
-Read-only independent review of b245644 and retained issuance evidence found no
-correctness defect. It identified a test limitation: the copied-issuer negative
-control used a released epoch. Change that probe to copy the final active owner
-before the next native run, so backend identity is independently discriminated.
-The earlier evidence remains scoped to what actually ran.
+-652e043: native bootstrap/tests/Clippy/Control passed; fresh guard install failed
+ on String→REGROLE binding. Fixed by exact pg_roles name→OID lookup.
+-dbc5211: guarded install, activation1/2, live stale native writer rejection and
+ independent read[1,1,1] passed; Control epoch11 acquisition failed because its
+ epoch::text alias sorted lexically (9 above10). Fixed with qualified numeric sort.
+ One extra helper container never started (permission denied under image uid);
+ its proposed negatives are NOT_RUN, not product failures.
+-2e732f6: explicit Control epochs9/10/11/12 and full guard journey passed; new
+ collation and NOLOGIN regressions failed as expected. The changed collation was
+ accepted, and sealed login inspection returned UnsafeRole. Both fixes are now
+ local, not yet qualified. Dropped-column refusal passed.
+
+All three labs are terminal: two main containers each stopped-retained, internal
+networks retired; the dbc5211 helper remains never-started/retained.20 unrelated
+identities unchanged,8 running,zero BigBrotr running. Exact IDs/owners and audits
+are retained in the inventory and `.research/implementation/archive-worker/catalog-product`.
+No active experiment at this checkpoint.
+
+Independent read-only review identified the role-bind and collation issues and
+confirmed the numeric epoch fix and NOLOGIN recovery semantics. Root also fixed
+the copied-issuer probe to use the actual active issuer; actual PG rejects it for
+missing backend commit exclusion. Old reports retain their original scope.
 
 ## Next bounded action
 
-Mac14 application tests, one private bootstrap-wire test and scoped Clippy pass.
-Run the new exact-source native bootstrap/guard/activation journey on Tux.
-Independent read-only catalog-guard review is in progress; root remains sole writer.
-Update the owning compatibility contract with the narrow ownership/trigger
-exception together with its consumer and evidence. Current dirty work must be
-reviewed before any candidate commit.
+Run the corrected exact-source candidate: native bootstrap with mixed-case role,
+pre-install collation/unsafe-role/nonempty refusal, enabled function/trigger shape,
+five unsafe writer privilege cases, successor while old login NOLOGIN, no implicit
+re-enable, historical replay, old live native rejection and independent read.
+Preserve both failed regression logs. Complete diff review, independent source/
+artifact/state observations and resource cleanup before pushing verified work.
+The catalog SQL remains separate from applied Control migrations; no old SQL was
+rewritten. Inspection rejects prior incompatible candidate layouts rather than
+silently adopting them. No scientific product schema/publisher/ACK exists yet.
 
-
-Implement guarded catalog initialization and the monotonic import/activation of
-Control-issued publication intents, using a real native initialization consumer.
-The [intent issuance evidence](evidence/p02-archive-attempts-native-20260918.json)
-is committed and pushed. Additive0009/ControlSession now retain
-immutable schema1 intended input and coordinator/unique-worker lifetime with CAS,
-sealed topology and actual Control-backend checks. Replay preserves the original
-issuer. Native fresh/upgrade/refusal, replay/conflicts, copied issuer, immutable
-history and real-lock cancellation pass. The native input is synthetic and the
-fixture topology empty: issuance is not source-cut or body validation. Wire-level
-lost-COMMIT/post-COMMIT cancellation/server restart remain unexecuted for this new
-boundary. Mac schema assertion RED was UnknownTarget(9); API RED missing module.
-Bind monotonic allocated ownership and immutable attempt identity so a late old coordinator cannot reactivate an excluded login; a Control
-check before an independent remote write alone cannot provide this ordering.
-Qualify the product's checksum/version/layout/trigger inspection, fresh init,
-eligible/refused upgrade, CAS/lost takeover response and fresh receipt resolution.
-Use the guard candidate's scoped evidence; add the explicit versioned
-metadata-trigger/ownership exception to the owning archive/storage contracts with
-the real initialization/inspection consumer, not by copying experimental SQL alone.
-A receipt replay cannot authorize relaunching a second native client under the
-same attempt: preserve unique worker/credential lifetimes and resolve existing
-activation before replacement. Do not restart architecture research without a
-new failure. Keep resource/orphan cleanup separate from catalog commit safety.
-
-Then connect scientific schema/all families/atomic semantic receipt and protection
-to signed M1 read/export/restart. Shared finite user jobs are not internal archive
-attempts. No pending reclaim or P02/M1 completion before those actual boundaries.
-
-Current native boundary: candidate652e043 finished FAIL at fresh guard install
-(Backend); native bootstrap,15 Rust tests, scoped Clippy and improved active-issuer
-Control probe passed. The pinned driver refuses String→REGROLE binding. Both
-containers stopped, owned network retired,20 unrelated workloads unchanged.
-Raw failure/audit are under `catalog-product/652e043`. Next candidate resolves
-role OIDs by exact name and adds a discriminating collation mutation check from
-the independent review. No archive publication qualification is claimed.
-
-Follow-up candidate `dbc5211847647956ebd02f7122eece23092c24e6` is local/unpublished;
-origin remains d24cd87. Its exact-source Tux run is active under
-`/home/tux/bigbrotr-implementation-20260917/runs/catalog-product-dbc5211`, owner
-`676ff0c8482012900cffec4fcd11ee40`, runner name
-`bigbrotr-implementation-catalog-product-dbc5211`, PG suffix `-pg`.
-The source is clean and read-only; Mac inventory/checkpoint updates are dirty.
-Do not interfere with this run. Native result is still unknown. Review identified
-missing collation inspection; this candidate first adds its negative regression
-without the fix to preserve executed discrimination.
-
-Run dbc5211 is terminal FAIL after successful native bootstrap, guard install,
-activation1/2, live old commit refusal and independent read counts[1,1,1]. Replay
-could not acquire Control epoch11: the adapter sorted the epoch::text output alias
-lexically, choosing9 over10. PG trigger preserved the invariant; no new epoch row
-committed. Actual read-only queries observed9 versus correct numeric10. Fix the
-qualified numeric ORDER BY and add explicit9/10/11/12 reacquisition assertions.
-One extra negative-control container never started (executable permission denied);
-its proposed collation/sealed-login cases are NOT_RUN. All owned resources are
-terminal, network retired,20 unrelated unchanged; inventory retains exact IDs.
-Next candidate keeps collation/sealed-login regressions before their fixes.
+Then complete catalog activation ambiguity/concurrency/credential custody and
+connect scientific schema/all families/atomic semantic receipt/protection to
+signed M1 read/export/restart. P02/M1 and every selected later phase remain open.
