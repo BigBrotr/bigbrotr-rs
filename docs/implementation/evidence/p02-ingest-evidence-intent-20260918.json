@@ -1,0 +1,45 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-18",
+  "scope": "Dictionary-only EvidenceIntent shape and exact request fingerprint; native admission remains unimplemented",
+  "status": "PASS",
+  "base_revision": "1af66d3",
+  "candidate_revision": "b8a55e3fcaa5f5c2ef905dee7b44eed6647e3aef",
+  "source_state": "Integrated dirty Mac tree, ordinary Cargo; root also retains independent fixture generator with path relative to its own file",
+  "source_sha256": {
+    "crates/bigbrotr-model/src/evidence_intent.rs": "ba3c0f456db1f4ab73ed3e9d7ce1681c6dde164e03e4c1cfc32565a69633ac0f",
+    "crates/bigbrotr-model/src/fingerprint.rs": "e3b6f547a1e06b8d750c390d41ddc0de66198b894a80dbeae32cff2c4cf19bd3",
+    "crates/bigbrotr-model/src/lib.rs": "e8edba6118517c03c24ba0d9045896ff089008f91c63a02aa1d243365f532fad",
+    "crates/bigbrotr-model/tests/evidence_intent.rs": "6af4bed86f84d094b49b11761fbff41c412989370e7083b979ab3386efe46590",
+    "crates/bigbrotr-model/tests/fixtures/evidence-intent-v1.json": "06409a02e2f1039fc4ddf7acff2283ea511b611cc385823f4b1edf3b5b6c7fde",
+    "docs/reference/data-model.md": "421659a93c31305c5f67a8d7c7553a5020880425586f8270cdb4334ba02222d4",
+    "docs/specification/identity-and-encoding.md": "4bedc6e50c9ee1aac24df20deb9d108f382f3cc7fb1600c3beae2df684d49340",
+    "crates/bigbrotr-model/tests/fixtures/write_evidence_intent_vectors.py": "cf1e7e9444e675b36c18534007b1dd0ad9b668cd7e2a4ff7e9c40956ac57f7ed"
+  },
+  "checks": {
+    "model_tests": 47,
+    "new_intent_tests": 5,
+    "failed": 0,
+    "ignored": 0,
+    "filtered_out": 0,
+    "clippy": "PASS --locked -p bigbrotr-model --all-targets -- -D warnings; observed exit0",
+    "literal_recipe": "Four independent CBOR reconstructions and hashlib/OpenSSL SHA256 match; retained generator reproduces fixture exactly"
+  },
+  "logs_sha256": {
+    "evidence-intent-integrated-tests.log": "2b3ad2c96b3a671e04cce67067117f2827a39825b97becb3b45c4b9afda9c7c0",
+    "evidence-intent-integrated-clippy.log": "ce5a23d7fd6b097f5645a8edb153457b92e46d92deaaecac0e20c1ad252b165f",
+    "evidence-intent-vector-reproduction.log": "f0827e576c3ba51125d2b809b7abd062da8405ffd5e0961c964fa0ab71581a15",
+    "evidence-intent-vector-review.log": "c90c5e1e14b4d86eb230749363c487490737e3072ab6acc92702f26c5401904e"
+  },
+  "review": {
+    "root": "Complete new type/tests/literals and fingerprint/reference/contract delta read; existing owning model/identity/descriptor files read for preceding dictionary integration. No concrete open finding.",
+    "independent_AI": "Reviewer read complete affected source/contracts and produced independent vector check; turn stopped on service usage limit before final review report. Do not treat this as a completed independent source review.",
+    "vector_check": ".research/implementation/rocks-product-design/evidence-intent-review/vector-check.json",
+    "vector_check_sha256": "c90c5e1e14b4d86eb230749363c487490737e3072ab6acc92702f26c5401904e",
+    "vector_checker_sha256": "6dbab9ae898e6fc0b8312f4c7e7fe6af28f44633a27ae46ac799b026207fb33b"
+  },
+  "not_run": [
+    "Native allocation/evidence admission, registered policy/producer authority, receipt replay, closing/ACK/GC, crash/restart and archive journey.",
+    "Linux execution of this addition, native memory envelope, fuzz engine or release qualification."
+  ]
+}

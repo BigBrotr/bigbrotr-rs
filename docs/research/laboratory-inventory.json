@@ -587,6 +587,13 @@
         "root": ".research/implementation/rocks-product-design/fixture-review",
         "evidence": "docs/implementation/evidence/p02-ingest-signed-fixture-20260918.json",
         "scope": "Retained complete signed input and independent expected states; actual Rust crypto/URL checks only, native admission remains work."
+      },
+      "evidence_intent": {
+        "worktree": ".research/worktrees/evidence-intent",
+        "candidate": "b8a55e3fcaa5f5c2ef905dee7b44eed6647e3aef",
+        "evidence": "docs/implementation/evidence/p02-ingest-evidence-intent-20260918.json",
+        "author_inventory_sha256": "c0a9abcb8593d3b3628afd8c1c43119a2e040bc2205c187858aa3435eb9ac8ed",
+        "scope": "Integrated Mac model47 tests, Clippy and independent vector checks PASS. Independent source-review turn interrupted by service usage limit; root source review completed. No native admission."
       }
     },
     "ingest_control_review": {
@@ -646,6 +653,14 @@
       "audit_sha256": "c8742fa973e68d272f25f5351553e7f03db8d3da02064c857faef87b323fe8b0",
       "summary_sha256": "7c1068177a19cf8a02f032c87fd8e1552cdc6246a30c07ace28c74e8141c2a70",
       "scope": "Independent AI audit:399 exact source entries and three ZIPs; native Rust144/144/145 tests and208 Linux practical checks PASS. Mac practical SKIP, executables not retained. Initial Rocks store/profile only; no later pending/receipt/dictionary or admission/release qualification. Root reviewed concise report, not every raw log."
+    },
+    "ingest_registry_draft": {
+      "worktree": ".research/worktrees/ingest-registry",
+      "branch": "impl/ingest-registry",
+      "base": "a14aa95dd3c1d5d7b0b1a3616a7f849177baa433",
+      "status": "Interrupted agent draft preserved: module export, ingest_registry.rs and tests/ingest_registry.rs dirty/untracked. Four new pure tests and two existing planner tests ran in isolated module harness; actual PG NOT_RUN. Root is reviewing and taking over integration.",
+      "raw_root": ".research/worktrees/ingest-registry/.research/implementation/ingest-registry",
+      "target": ".research/worktrees/ingest-registry/.research/targets/product"
     }
   }
 }

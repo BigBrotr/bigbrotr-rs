@@ -2,8 +2,9 @@
 //! fields can reach the codec; no generic values, floats or extension bags.
 use crate::{
     AdmissionBatch, ClockQuality, DictionaryDescriptor, DictionaryEntry, Digest256, EventBody,
-    EventId, EventIntent, EventOrigin, ExistingProof, Fact, FactPayload, NostrTime,
-    ProducerRequestId, PublicKey, QualifiedRef, SignedEvent, SourceRecordId,
+    EventId, EventIntent, EventOrigin, EvidenceIntent, EvidenceIntentError, ExistingProof, Fact,
+    FactPayload, NostrTime, ProducerRequestId, PublicKey, QualifiedRef, SignedEvent,
+    SourceRecordId,
 };
 use minicbor::{
     Encoder,
@@ -17,6 +18,22 @@ impl Write for HashWriter {
     type Error = Infallible;
     fn write_all(&mut self, bytes: &[u8]) -> Result<(), Self::Error> {
         self.0.update(bytes);
+        Ok(())
+    }
+}
+
+struct CountWriter {
+    count: usize,
+    limit: usize,
+}
+impl Write for CountWriter {
+    type Error = EvidenceIntentError;
+    fn write_all(&mut self, bytes: &[u8]) -> Result<(), Self::Error> {
+        self.count = self
+            .count
+            .checked_add(bytes.len())
+            .filter(|count| *count <= self.limit)
+            .ok_or(EvidenceIntentError::EncodedIntentLimit)?;
         Ok(())
     }
 }
@@ -364,6 +381,52 @@ fn event_intent<W: Write>(
     }
     Ok(())
 }
+
+fn evidence_intent<W: Write>(
+    value: &EvidenceIntent,
+    encoder: &mut Encoder<W>,
+) -> Result<(), Error<W::Error>> {
+    encoder.array(3)?.u16(value.admission_policy_version())?;
+    reference(value.visibility_scope_id(), encoder)?;
+    encoder.array(value.dictionaries().len() as u64)?;
+    for dictionary in value.dictionaries() {
+        encoder.array(3)?.str("dictionary")?.u16(1)?;
+        dictionary_payload(dictionary, encoder)?;
+    }
+    Ok(())
+}
+
+pub(crate) fn evidence_intent_encoded_len(
+    value: &EvidenceIntent,
+    max_encoded_bytes: usize,
+) -> Result<usize, EvidenceIntentError> {
+    let mut encoder = Encoder::new(CountWriter {
+        count: 0,
+        limit: max_encoded_bytes,
+    });
+    evidence_intent(value, &mut encoder).map_err(|_| EvidenceIntentError::EncodedIntentLimit)?;
+    Ok(encoder.into_writer().count)
+}
+
+fn evidence_request<W: Write>(
+    id: ProducerRequestId,
+    intent: &EvidenceIntent,
+    encoder: &mut Encoder<W>,
+) -> Result<(), Error<W::Error>> {
+    encoder
+        .writer_mut()
+        .write_all(b"bigbrotr/producer-request/1\0")
+        .map_err(Error::write)?;
+    encoder
+        .array(4)?
+        .array(3)?
+        .bytes(id.producer_slot_id.as_bytes())?
+        .u64(id.producer_epoch.get())?
+        .u64(id.request_sequence.get())?
+        .str("admit-evidence")?
+        .u16(1)?;
+    evidence_intent(intent, encoder)
+}
 fn request<W: Write>(
     id: Option<ProducerRequestId>,
     intent: &EventIntent,
@@ -445,6 +508,41 @@ impl EventIntent {
     }
     pub fn certification_digest(&self) -> Digest256 {
         hash(|encoder| request(None, self, encoder))
+    }
+}
+impl EvidenceIntent {
+    /// Digest of the exact strict mutation request. This is an integrity key,
+    /// not proof of producer authority, allocation, policy or durable admission.
+    pub fn request_digest(&self, id: ProducerRequestId) -> Digest256 {
+        hash(|encoder| evidence_request(id, self, encoder))
+    }
+
+    /// Encode the same preimage consumed by `request_digest`. The caller's
+    /// full-request limit is checked before fallible output allocation.
+    pub fn encode_request_preimage(
+        &self,
+        id: ProducerRequestId,
+        max_encoded_bytes: usize,
+    ) -> Result<Vec<u8>, EvidenceIntentError> {
+        let mut count = Encoder::new(CountWriter {
+            count: 0,
+            limit: max_encoded_bytes,
+        });
+        evidence_request(id, self, &mut count)
+            .map_err(|_| EvidenceIntentError::EncodedRequestLimit)?;
+        let size = count.into_writer().count;
+        let mut bytes = Vec::new();
+        bytes
+            .try_reserve_exact(size)
+            .map_err(|_| EvidenceIntentError::AllocationFailed)?;
+        bytes.resize(size, 0);
+        let mut encoder = Encoder::new(bytes.as_mut_slice());
+        evidence_request(id, self, &mut encoder)
+            .map_err(|_| EvidenceIntentError::EncodingFailure)?;
+        if !encoder.into_writer().is_empty() {
+            return Err(EvidenceIntentError::EncodingFailure);
+        }
+        Ok(bytes)
     }
 }
 impl AdmissionBatch {

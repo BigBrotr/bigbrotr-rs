@@ -5,6 +5,7 @@ pub mod dictionary;
 pub mod effect;
 pub mod event;
 pub mod evidence;
+pub mod evidence_intent;
 pub mod fact;
 mod fingerprint;
 pub mod identity;
@@ -23,6 +24,7 @@ pub use effect::{
 };
 pub use event::{EventBody, NostrTime, SignedEvent};
 pub use evidence::ClockQuality;
+pub use evidence_intent::{EvidenceIntent, EvidenceIntentError, EvidenceIntentLimits};
 pub use fact::{
     EventEligibility, EventOrigin, EventPayload, EventReceive, Fact, FactPayload, Provenance,
 };

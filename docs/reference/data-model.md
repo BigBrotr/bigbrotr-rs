@@ -61,6 +61,19 @@ when effects would deduplicate. `ProducerRequestId` cannot contain the zero valu
 reserved solely for the read-only certification fingerprint. These values grant
 no current policy, producer authority, durable outcome or existing-effect proof.
 
+`EvidenceIntent` is the initial dictionary-only `admit-evidence` operation. It
+moves a nonempty caller-ordered vector of closed `DictionaryEntry` values, requires
+one dataset and a visibility-scope reference, and refuses a repeated QualifiedRef
+without sorting or deduplicating the intent. Separate qualified references remain
+distinct even when descriptors are equal. Callers supply entry, encoded-intent
+and validation-scratch limits; scratch accounting is requested reference-vector
+storage rather than allocator overhead or an RSS ceiling. `request_digest` streams
+the exact producer-request recipe, while `encode_request_preimage` additionally
+checks the caller's full-output limit before allocation. The initial value has no
+event/signature/generic payload variant. Prepared allocation references, current
+policy, producer authority, shared runtime grants, retained dependencies and the
+atomic durable result remain admission-owner checks.
+
 `SourceDependencies` moves a nonempty, strictly source-ID-ordered vector of
 `FactRef` values; it refuses duplicates (including conflicting digests) and
 foreign datasets without silently sorting or deduplicating. `Receipt` binds the
