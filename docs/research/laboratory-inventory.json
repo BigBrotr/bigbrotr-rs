@@ -6859,6 +6859,67 @@
           "unrelated_running": 8,
           "running_bigbrotr": 0
         }
+      },
+      "failed_2e15f8c": {
+        "reason": "fixture attempted NULL in physically NOT NULL metadata.value;14 completed sequences before fixture failure; no qualification PASS",
+        "resources": {
+          "source": "2e15f8c0fefa833f99ce7e9f2566949beb39857e",
+          "tree": "1e59550ba2572e55ac0de0d6377d6dab890f9a5c",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/scientific-guard-2e15f8c",
+          "owner": "719c15362f4ccabca54177b0bfe1d294",
+          "container": "bigbrotr-implementation-scientific-guard-2e15f8c",
+          "postgres": "bigbrotr-implementation-scientific-guard-2e15f8c-pg",
+          "network": "bigbrotr-implementation-scientific-guard-2e15f8c",
+          "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+          "state": "stopped-retained",
+          "source_files": 664,
+          "started_at": "2026-09-18T20:36:09.834862+00:00",
+          "network_id": "d8bd1601c68704a64598edfeefa51944b772cd74bf399af74129a3b10b2eed9a",
+          "postgres_id": "42db7f1a2eb262585abdf7940f823b0eabe2b9285331cc52804d930ecde2a5f1",
+          "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+          "container_id": "d899eeed3b4b6ada2b736f64549a5d4ecdf0b1f070421953388e9d98b89efc24",
+          "network_state": "retired",
+          "terminal": {
+            "runner": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 143,
+              "Error": "",
+              "StartedAt": "2026-09-18T20:36:12.202483281Z",
+              "FinishedAt": "2026-09-18T20:38:54.072291437Z"
+            },
+            "postgres": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-09-18T20:36:10.418561072Z",
+              "FinishedAt": "2026-09-18T20:38:55.787830713Z"
+            }
+          },
+          "finished_at": "2026-09-18T20:38:56.415827+00:00"
+        },
+        "audit": {
+          "source": "2e15f8c0fefa833f99ce7e9f2566949beb39857e",
+          "tree": "1e59550ba2572e55ac0de0d6377d6dab890f9a5c",
+          "source_files": 664,
+          "manifest_sha256": "eb2310a14e28319679c88e8f8741434b9b65ecb90d80a6b03b86013645c2736c",
+          "cleanup": "owned containers stopped, network retired, no OOM",
+          "unrelated_unchanged": 20,
+          "unrelated_running": 8,
+          "running_bigbrotr": 0
+        }
       }
     }
   },

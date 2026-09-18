@@ -45,7 +45,7 @@ def probe(mode,db,expected,port=5432):
 def native(db,mode):
     assert json.loads(cmd('docker','exec','-e','LD_LIBRARY_PATH=/out/archive-worker/lib',runner,'/out/native-tests/scientific-ddl-probe',db,mode))=={'status':'PASS','case':mode}
 def snapshot(db):
-    dump=cmd('docker','exec',pg,'pg_dump','--no-owner','--no-privileges','--no-comments','-U','postgres',db)
+    dump=cmd('docker','exec',pg,'pg_dump','-U','postgres',db)
     # Heap row order changes after UPDATE/restore. COPY ordering is not logical
     # identity; sort within each relation, preserving duplicate rows and all bytes.
     lines=[]; copying=None
@@ -63,6 +63,12 @@ def snapshot(db):
 def damage(db,sql_text):
     # Explicit isolated privileged corruption, never an application repair path.
     sql(db,'BEGIN; SET LOCAL session_replication_role=replica; '+sql_text+'; COMMIT;')
+def installed_effects(db):
+    # Independent observer includes privileges/ownership that a version marker
+    # and the adapter's own compatibility result cannot establish by themselves.
+    actual=json.loads(sql(db,"SELECT json_build_object('native_tables',(SELECT count(*) FROM pg_tables WHERE schemaname='public' AND tableowner='postgres'),'native_guards',(SELECT count(*) FROM pg_trigger t JOIN pg_class c ON c.oid=t.tgrelid JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND tgname='bigbrotr_writer_guard' AND tgenabled='O'),'bootstrap_writable',(SELECT count(*) FROM pg_tables WHERE schemaname='public' AND (has_table_privilege('BootstrapMixed',quote_ident(schemaname)||'.'||quote_ident(tablename),'INSERT,UPDATE,DELETE,TRIGGER,TRUNCATE') OR has_any_column_privilege('BootstrapMixed',quote_ident(schemaname)||'.'||quote_ident(tablename),'INSERT,UPDATE'))),'bootstrap_create',has_schema_privilege('BootstrapMixed','public','CREATE'),'guard_owner',(SELECT pg_get_userbyid(nspowner) FROM pg_namespace WHERE nspname='bigbrotr_archive'),'binding_rows',(SELECT count(*) FROM bigbrotr_archive.scientific_schema),'attempts',(SELECT count(*) FROM bigbrotr_archive.attempts),'owner',(SELECT row_to_json(o) FROM bigbrotr_archive.owner o))"))
+    assert actual=={'native_tables':28,'native_guards':28,'bootstrap_writable':0,'bootstrap_create':False,'guard_owner':'postgres','binding_rows':1,'attempts':0,'owner':{'singleton':True,'ordinal':0,'enabled':False}},actual
+    return actual
 children=[]
 try:
     save()
@@ -98,7 +104,12 @@ try:
     row=json.loads(sql(db,"SELECT json_build_object('version',format_version,'declaration',encode(declaration_checksum,'hex'),'layout',encode(native_layout_checksum,'hex'),'sql',encode(sql_checksum,'hex'),'snapshot',initialization_snapshot) FROM bigbrotr_archive.scientific_schema"))
     assert row=={'version':1,'declaration':hashlib.sha256((SOURCE/'contracts/archive/v1/schema.json').read_bytes()).hexdigest(),'layout':hashlib.sha256((SOURCE/'contracts/archive/v1/native-layout.json').read_bytes()).hexdigest(),'sql':hashlib.sha256((SOURCE/'migrations/catalog/0002_scientific_schema.sql').read_bytes()).hexdigest(),'snapshot':1}
     probe('native-inspect',db,'IncompatibleLayout');probe('native-install',db,'IncompatibleLayout')
-    record('install-binding-retry-and-fresh-inspection',binding=row)
+    record('install-binding-retry-and-fresh-inspection',binding=row,effects=installed_effects(db))
+    before=snapshot(db)
+    refused=subprocess.run(['docker','exec','-i',pg,'psql','-XAtq','-v','ON_ERROR_STOP=1','-v','VERBOSITY=verbose','-U','postgres','-d',db],input="BEGIN; SET LOCAL session_replication_role=replica; INSERT INTO public.ducklake_metadata VALUES('data_inlining_row_limit',NULL,NULL,NULL); COMMIT;",text=True,capture_output=True,timeout=15)
+    assert refused.returncode==3 and '23502' in refused.stderr and 'ducklake_metadata' in refused.stderr
+    assert snapshot(db)==before
+    record('native-metadata-value-not-null',sqlstate='23502',owner='PostgreSQL physical constraint')
     target="table_id=(SELECT table_id FROM public.ducklake_table WHERE table_name='events') AND column_name='created_at'"
     controls=[('type',"UPDATE public.ducklake_column SET column_type='int64' WHERE "+target,"UPDATE public.ducklake_column SET column_type='uint64' WHERE "+target),
         ('parent',"UPDATE public.ducklake_column SET parent_column=1 WHERE "+target,"UPDATE public.ducklake_column SET parent_column=NULL WHERE "+target),
@@ -108,7 +119,6 @@ try:
         ('oversized-name',"UPDATE public.ducklake_column SET column_name=repeat('x',1000000) WHERE "+target,"UPDATE public.ducklake_column SET column_name='created_at' WHERE length(column_name)=1000000"),
         ('missing-table',"UPDATE public.ducklake_table SET table_name='absent' WHERE table_name='events'","UPDATE public.ducklake_table SET table_name='events' WHERE table_name='absent'"),
         ('unknown-metadata-scope',"INSERT INTO public.ducklake_metadata VALUES('probe','x','unexpected',NULL)","DELETE FROM public.ducklake_metadata WHERE key='probe'"),
-        ('null-inlining',"INSERT INTO public.ducklake_metadata VALUES('data_inlining_row_limit',NULL,NULL,NULL)","DELETE FROM public.ducklake_metadata WHERE key='data_inlining_row_limit'"),
         ('null-scope-id',"INSERT INTO public.ducklake_metadata VALUES('data_inlining_row_limit','0','table',NULL)","DELETE FROM public.ducklake_metadata WHERE key='data_inlining_row_limit'"),
         ('unknown-scope-id',"INSERT INTO public.ducklake_metadata VALUES('data_inlining_row_limit','0','table',99)","DELETE FROM public.ducklake_metadata WHERE key='data_inlining_row_limit'"),
         ('duplicate-settings',"INSERT INTO public.ducklake_metadata VALUES('data_inlining_row_limit','0',NULL,NULL),('data_inlining_row_limit','0',NULL,NULL)","DELETE FROM public.ducklake_metadata WHERE key='data_inlining_row_limit'"),
@@ -137,15 +147,17 @@ try:
     record('all-zero-inlining-scopes')
     # Actual wire ambiguity: companion marker and guards must all commit or none.
     for mode,counts in [('before-forward',[1,0,0,0,1]),('after-complete',[1,1,1,0,1])]:
-        name=create('lost_'+('before' if mode=='before-forward' else 'after'));initialize(name)
+        name=create('lost_'+('before' if mode=='before-forward' else 'after'));initialize(name);before=snapshot(name)
         proxy=Process(['docker','exec','-i',runner,'python3','-B','/source/experiments/control-migrations/fault_proxy.py','--upstream-port','5432','--mode',mode,'--deadline-seconds','60'],input_pipe=True);children.append(proxy)
         r=proxy.event('ready',10);assert r['proxy_sha256']==hashlib.sha256((SOURCE/'experiments/control-migrations/fault_proxy.py').read_bytes()).hexdigest()
         assert probe('install',name,'CommitUnknown',r['listen_port'])['commit_started']
         receipt=proxy.event('receipt',10);assert proxy.wait(5)==0 and not proxy.stderr
         assert [receipt[k] for k in ['commits_seen','commits_forwarded','server_commit_complete','client_commit_complete','faults']]==counts
         assert sql(name,"SELECT to_regnamespace('bigbrotr_archive') IS NOT NULL")==('f' if mode=='before-forward' else 't')
+        if mode=='before-forward': assert snapshot(name)==before
+        else: installed_effects(name)
         probe('install',name,'installed' if mode=='before-forward' else 'existing');probe('inspect',name,'inspected')
-        record('lost-install-'+mode,wire=receipt)
+        record('lost-install-'+mode,wire=receipt,effects=installed_effects(name))
     # Only after all negative activation controls, obtain one real retained intent.
     assert probe('activate',db,'provisioned-discarded')['commit_started']
     probe('inspect',db,'inspected')

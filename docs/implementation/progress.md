@@ -207,6 +207,15 @@ The independent203-column oracle verifies restored native rows. Normalize COPY
 row order within each relation, preserving duplicates/bytes/DDL, and re-execute
 from a new exact revision. The old lab is stopped-retained, its network retired, with20 unrelated identities unchanged and no BigBrotr running.
 
+Candidate `2e15f8c` reached14 completed PG sequences before another fixture
+failure: metadata.value is physically NOT NULL, so inserting NULL fails23502
+before inspection. Keep that physical refusal as a separate case; nullable native
+column controls remain. Independent review also required full owner/ACL evidence:
+new snapshots include pg_dump ownership/privileges and an independent installed
+footprint checks all28 owners/guards and bootstrap revocation. Product code has
+not changed after27ab36c. The2e15f8c lab is stopped/network retired; no BigBrotr
+running,20 unrelated identities unchanged. Both failed runs remain retained.
+
 The next clean exact-Git candidate will execute native ALTER/DROP/rollback,
 shape/NULL/metadata controls, failed activation effects, installation rollback,
 lost COMMIT in both directions and both owner/native lock orders. Review must
