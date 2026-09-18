@@ -18,14 +18,12 @@ not be acknowledged/reclaimed. Do not mistake private preparation for publicatio
 
 ## Git and integrating ownership
 
-Mac main; root is the only writer/integrator. Last verified
-HEAD `b245644a2c0f985de7843fefdcf5f3b03311e76f`, origin/main `f678a38`.
-The identity slice/report are pushed. The additive0009 intent/Control adapter,
-tests and exact-source native harness are an unpublished tested candidate. Mac 13
-selected tests and scoped Clippy pass; exact native 13 tests, Clippy and one actual
-PG adapter journey PASS. Root owns only evidence/docs/checkpoint/inventory updates
-since that candidate. Review these, commit and push normally.
-No force push, independent Tux product edits or concurrent writer.
+Mac main; root is the only writer/integrator. Last verified HEAD and origin/main
+`b42016b5dd9e1236515445b337b25e998eaf988c` are equal and clean after ordinary push.
+This checkpoint refresh follows that observation. Product candidate `b245644`
+and its evidence are pushed. Mac 13 selected tests and scoped Clippy pass; exact
+native 13 tests, Clippy and one actual PG adapter journey PASS. No force push,
+independent Tux product edits or concurrent writer.
 
 ## Implemented prerequisites and retained evidence
 
@@ -171,8 +169,10 @@ not used or freshly requalified here.
 
 ## Next bounded action
 
-Review and commit the [intent issuance evidence](evidence/p02-archive-attempts-native-20260918.json),
-then push the tested candidate and report. Additive0009/ControlSession now retain
+Implement guarded catalog initialization and the monotonic import/activation of
+Control-issued publication intents, using a real native initialization consumer.
+The [intent issuance evidence](evidence/p02-archive-attempts-native-20260918.json)
+is committed and pushed. Additive0009/ControlSession now retain
 immutable schema1 intended input and coordinator/unique-worker lifetime with CAS,
 sealed topology and actual Control-backend checks. Replay preserves the original
 issuer. Native fresh/upgrade/refusal, replay/conflicts, copied issuer, immutable
@@ -180,13 +180,16 @@ history and real-lock cancellation pass. The native input is synthetic and the
 fixture topology empty: issuance is not source-cut or body validation. Wire-level
 lost-COMMIT/post-COMMIT cancellation/server restart remain unexecuted for this new
 boundary. Mac schema assertion RED was UnknownTarget(9); API RED missing module.
-Then implement the actual catalog guard with a first real initialization consumer.
-Bind monotonic allocated ownership and immutable attempt
-identity so a late old coordinator cannot reactivate an excluded login; a Control
+Bind monotonic allocated ownership and immutable attempt identity so a late old coordinator cannot reactivate an excluded login; a Control
 check before an independent remote write alone cannot provide this ordering.
 Qualify the product's checksum/version/layout/trigger inspection, fresh init,
 eligible/refused upgrade, CAS/lost takeover response and fresh receipt resolution.
-Use the selected guard evidence; do not restart architecture research without a
+Use the guard candidate's scoped evidence; add the explicit versioned
+metadata-trigger/ownership exception to the owning archive/storage contracts with
+the real initialization/inspection consumer, not by copying experimental SQL alone.
+A receipt replay cannot authorize relaunching a second native client under the
+same attempt: preserve unique worker/credential lifetimes and resolve existing
+activation before replacement. Do not restart architecture research without a
 new failure. Keep resource/orphan cleanup separate from catalog commit safety.
 
 Then connect scientific schema/all families/atomic semantic receipt and protection
