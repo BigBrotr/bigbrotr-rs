@@ -573,12 +573,12 @@ impl Resolved {
             let prefix = format!("postgres.{pg}");
             if let Some(raw) = self.text(&format!("{prefix}.endpoint")) {
                 let url = pg_endpoint(raw)?;
-                self.tls(&prefix, &url)?;
+                self.tls(&prefix, &url, false)?;
             }
         }
         if let Some(raw) = self.text("clickhouse.endpoint") {
             let url = endpoint(raw, false)?;
-            self.tls("clickhouse", &url)?;
+            self.tls("clickhouse", &url, false)?;
             if self.text("clickhouse.tls.mode") == Some("verify-full") && url.scheme() != "https" {
                 return Err("clickhouse verify-full requires HTTPS".into());
             }
@@ -787,7 +787,7 @@ impl Resolved {
         for field in ["database", "user", "password_ref"] {
             self.present(&format!("{prefix}.{field}"))?;
         }
-        self.tls(&prefix, &url)?;
+        self.tls(&prefix, &url, true)?;
         self.dependencies
             .push(json!({"name":prefix,"owner":"engine","runtime_identity":"not-checked"}));
         Ok(())
@@ -804,7 +804,7 @@ impl Resolved {
             );
         }
         self.present(&format!("clickhouse.{credential}_password_ref"))?;
-        self.tls("clickhouse", &url)?;
+        self.tls("clickhouse", &url, true)?;
         if self.text("clickhouse.tls.mode") == Some("verify-full") && url.scheme() != "https" {
             return Err("clickhouse verify-full requires HTTPS".into());
         }
@@ -815,7 +815,7 @@ impl Resolved {
         }
         Ok(())
     }
-    fn tls(&self, prefix: &str, url: &url::Url) -> Result<(), String> {
+    fn tls(&self, prefix: &str, url: &url::Url, selected: bool) -> Result<(), String> {
         let mode = self.text(&format!("{prefix}.tls.mode")).unwrap();
         let cert = self
             .value(&format!("{prefix}.tls.client_cert_ref"))
@@ -871,6 +871,12 @@ impl Resolved {
             return Err(format!(
                 "{prefix}: local boundary is ineffective under verify-full"
             ));
+        }
+        if selected && mode == "verify-full" {
+            // Presence only: certificate loading and peer identity verification
+            // belong to the actual connection, never offline configuration.
+            self.present(&format!("{prefix}.tls.ca_file"))?;
+            self.present(&format!("{prefix}.tls.server_name"))?;
         }
         Ok(())
     }

@@ -159,6 +159,18 @@ and record counterevidence if a finding is invalid or already fixed.
   verified assets; isolate/clean owned temporary files without deleting another
   invocation's work. Add discriminating practical regression and exact evidence.
 
-These three are open. Passing previous suites does not close them. Preserve the
+MON-010 has scoped Mac execution evidence in
+[evidence/p01-tls-presence-20260918.json](evidence/p01-tls-presence-20260918.json):
+old binary accepts missing fields; corrected24 configuration tests and24 new
+matrix combinations pass. Clippy session85606 still runs; no Clippy PASS yet.
+MON-007 reproduced with actual HTTPS truncation then poisoned retry, plus concurrent
+downloads. Candidate unique temporary publication passes5 local Python tests;
+code/docs/evidence remain owned dirty work awaiting their separate commit.
+MON-009 exact02d2a9b native build succeeded (binary65cb511e...), collector60668
+complete. Corrected24-case execution session74814 is active on fresh owned PG/client
+`archive-02d2a9b/runtime`; do not stop it. Original negative laboratory remains
+running and retained. Update terminal results before closure.
+
+MON-009 remains open pending these native results. Passing previous suites does not close new findings. Preserve the
 completed five earlier findings and catalog investigation; do not conflate them
 with these new triggers.

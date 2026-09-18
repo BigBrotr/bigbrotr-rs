@@ -173,6 +173,11 @@ finish after P02-T01 supplies migration 0001 and transactional CAS. An early
 offline config command may validate/stage or report authority unavailable; it
 cannot stand in for completed persistent configuration application.
 
+MON-010 offline TLS presence parity is covered by the
+[Mac entrypoint regression](evidence/p01-tls-presence-20260918.json): selected
+verify-full dependencies require CA and server name, without accessing files or
+servers. Staged unselected dependencies retain syntax-only validation.
+
 - [ ] **Step 1:** Encode all current service key tables with units/ranges/secret references;
   include operational composition/maximum-unit constraints and reject unknown,
   duplicate, unsafe and ineffective options. Do not retain a six-layer policy

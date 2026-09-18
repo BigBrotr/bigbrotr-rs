@@ -865,3 +865,70 @@ fn secret_references_require_a_filename_without_reading_it() {
         "staged-unselected"
     );
 }
+
+#[test]
+fn selected_verify_full_requires_ca_and_server_name_without_opening_paths() {
+    let directory = tempfile::tempdir().unwrap();
+    let path = directory.path();
+    for (recipe, prefix, selected) in [
+        ("serve-existing", "postgres.control", true),
+        ("full", "postgres.catalog", true),
+        ("serve-existing", "clickhouse", true),
+        ("split-role", "postgres.control", false),
+        ("serve-existing", "postgres.catalog", false),
+        ("archive-only", "clickhouse", false),
+    ] {
+        let base = example(path, recipe).parse::<toml::Table>().unwrap();
+        for (ca, server) in [(false, false), (false, true), (true, false), (true, true)] {
+            let mut document = base.clone();
+            let connection = if let Some(kind) = prefix.strip_prefix("postgres.") {
+                &mut document["postgres"][kind]
+            } else {
+                &mut document["clickhouse"]
+            };
+            if prefix == "clickhouse" {
+                connection["endpoint"] = "https://unresolved.invalid:8443".into();
+            }
+            let tls = connection["tls"].as_table_mut().unwrap();
+            tls.remove("local_boundary");
+            tls.insert("mode".into(), "verify-full".into());
+            if ca {
+                let nonexistent = path.join("missing-ca.pem");
+                assert!(!nonexistent.exists());
+                tls.insert("ca_file".into(), nonexistent.to_str().unwrap().into());
+            }
+            if server {
+                tls.insert("server_name".into(), "unresolved.invalid".into());
+            }
+            // Paired but nonexistent secret files must not be opened offline.
+            for key in ["client_cert_ref", "client_key_ref"] {
+                tls.insert(
+                    key.into(),
+                    format!("file:{}", path.join(key).display()).into(),
+                );
+                assert!(!path.join(key).exists());
+            }
+            let input = toml::to_string(&document).unwrap();
+            if selected && (!ca || !server) {
+                let missing = if ca { "server_name" } else { "ca_file" };
+                assert!(
+                    invalid_error(path, &input)
+                        .contains(&format!("{prefix}.tls.{missing} is required"))
+                );
+            } else {
+                fs::write(path.join("tls.toml"), input).unwrap();
+                let result = success(run(path, &["config", "validate", "--file", "tls.toml"]));
+                assert_eq!(result["status"], "valid-static");
+                let show = success(run(path, &["config", "show", "--file", "tls.toml"]));
+                assert_eq!(
+                    show["settings"][format!("{prefix}.tls.ca_file")]["applicability"],
+                    if selected {
+                        "selected"
+                    } else {
+                        "staged-unselected"
+                    }
+                );
+            }
+        }
+    }
+}

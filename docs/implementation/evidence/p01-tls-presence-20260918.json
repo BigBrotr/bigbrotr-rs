@@ -1,0 +1,94 @@
+{
+  "finding": "MON-010",
+  "status": "PASS for offline presence contract on Mac; native Linux rerun not yet executed",
+  "base_revision": "02d2a9b71c64c1a080288d7ca499e1449543c05a",
+  "tested_source_kind": "owned worktree diff; ordinary Cargo binary has unrecorded source metadata",
+  "files_sha256": {
+    "apps/bigbrotr/src/config/resolve.rs": "3ddab1880c94c0b306f025313775ce0be7a765e87f8e68340043cd332c852ede",
+    "apps/bigbrotr/src/config/mod.rs": "49de8b79d229814643477bf1ea19104d9874cddcbd186be517b8503f60820999",
+    "apps/bigbrotr/tests/config_entrypoint.rs": "ca6ccfcf7ae6c1564baf3701f4868af3b9ba0ef63518a56429acd95a465df2ee",
+    "docs/reference/configuration.md": "04370d48b6b1b56967b3e7a99cde176f719a2fbc1b8ad1036071f8a949e27812"
+  },
+  "environment": {
+    "platform": "macOS-26.5.2-arm64-arm-64bit",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)"
+  },
+  "negative_control": {
+    "status": "COUNTEREXAMPLE_REPRODUCED",
+    "binary_sha256": "0c5d84903067dd3ec6e20d41304561b9d8fff8b88f0a99ed9df807680e26f9ae",
+    "source_identity": "unrecorded development artifact; not exact revision qualification",
+    "input_sha256": "85856a2c9883c29104a9d2beb5716f6f2d45ece26f784f9dfa24eaefdf09d5ac",
+    "exit": 0,
+    "stdout": {
+      "authority": {
+        "activation": "not-performed",
+        "applied_revision": null,
+        "desired_revision": null,
+        "mode": "managed",
+        "status": "unavailable-offline"
+      },
+      "directory_discovery": false,
+      "document_sha256": "85856a2c9883c29104a9d2beb5716f6f2d45ece26f784f9dfa24eaefdf09d5ac",
+      "fixed_endpoint_counts": {
+        "monitor": 0,
+        "sync": 0
+      },
+      "format": "bigbrotr-config-static/1",
+      "full_signed_events": true,
+      "initial_policy": {
+        "encoded_bytes": "7470",
+        "format": "bigbrotr-product-policy/1",
+        "settings": "215",
+        "sha256": "95ba652b4eeb794c41ad081148b4d878e3f7c9d7e46f8bfc9a951ee16d7edc0b",
+        "status": "candidate-only"
+      },
+      "limitations": [
+        "Static desired configuration only; no roles, stores, authority or listeners are started.",
+        "Engine identity/schema/grants, filesystem aliases and accepted-work drain capacity require owning runtime adapters."
+      ],
+      "listeners": {
+        "public": false
+      },
+      "local_roles": [
+        "control",
+        "read"
+      ],
+      "required_dependencies": [
+        {
+          "name": "postgres.control",
+          "owner": "engine",
+          "runtime_identity": "not-checked"
+        },
+        {
+          "name": "clickhouse",
+          "owner": "engine",
+          "runtime_identity": "not-checked"
+        }
+      ],
+      "signing": false,
+      "status": "valid-static",
+      "sync_inventory": "unavailable; auto uses linear fallback"
+    },
+    "stderr": ""
+  },
+  "positive": {
+    "command": "cargo test --locked -p bigbrotr --test config_entrypoint",
+    "tests_passed": 24,
+    "tests_failed": 0,
+    "new_matrix_combinations": 24,
+    "cases": [
+      "selected Control PG, catalog PG and ClickHouse: missing CA, missing server name, missing both refuse exact field",
+      "complete selected settings with nonexistent CA/client secret paths accepted offline",
+      "unselected Control PG, catalog PG and ClickHouse allow incomplete but syntactically valid settings",
+      "generated reference and all recipe output remain in parity"
+    ],
+    "log_sha256": "292bcb5ba101974a8f6639a5eaea7fe8eaef6aa43569d825088f16c7edafa182",
+    "binary_sha256": "8e55d6b6ec0572e00675956f3b769f3a27670ad77bcb3b1dd616c811d4b0f8e8"
+  },
+  "review": "Root read full resolver, configuration dispatcher/reference producer, actual Control connection preparation and configuration entrypoint tests; no independent agent review. Presence-only change; transport cryptography unchanged.",
+  "limitations": [
+    "Does not qualify a live TLS peer or certify CA contents, credentials or server availability.",
+    "Clippy still running when this report was written; no Clippy PASS claimed."
+  ],
+  "raw_root": ".research/implementation/tls-static"
+}
