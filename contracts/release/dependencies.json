@@ -23,9 +23,13 @@
     {
       "name": "serde_json",
       "version": "1.0.151",
-      "purpose": "Bounded typed Nostr JSON parsing, canonical serialization, build metadata and independent test decoding",
+      "purpose": "Bounded typed Nostr JSON parsing, canonical serialization, exact finite-float policy decoding, build metadata and independent test decoding",
       "license": "MIT OR Apache-2.0",
-      "source": "https://docs.rs/serde_json/1.0.151/serde_json/"
+      "source": "https://docs.rs/serde_json/1.0.151/serde_json/",
+      "features": [
+        "std",
+        "float_roundtrip"
+      ]
     },
     {
       "name": "sha2",

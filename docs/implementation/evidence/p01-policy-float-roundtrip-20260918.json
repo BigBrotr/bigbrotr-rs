@@ -1,0 +1,59 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-18",
+  "scope": "Exact persisted finite fractions and workspace regression after serde_json feature correction",
+  "status": "PASS",
+  "source": {
+    "base_revision": "665a477f62266e0901fd49fb0b18310eaf1cb3ad",
+    "state": "Mac dirty candidate; normal Cargo, no clean archive receipt",
+    "sha256": {
+      "Cargo.toml": "0f0c458d20b52d4cd6de151f71f53748e86442bdbfd76c1f3e652f646f16587e",
+      "Cargo.lock": "bff3ccfcaf614d60e9db4a300560190db5fcd9e635d6ac30f1d4b3af6d5e573d",
+      "apps/bigbrotr/src/config/policy.rs": "60799504b54d934a61a8e103447f0f70b0751bd944ac41e15bcec7141f2ee38a"
+    }
+  },
+  "failure": {
+    "input": "monitor.schedule_jitter=2.0030397744267762e-253",
+    "observed": "Default serde_json decoder changed the value and produced stored policy digest mismatch; failing product regression captured before fix."
+  },
+  "correction": "Enable float_roundtrip on pinned serde_json1.0.151. Exact binary value/digest preserved; serializer, stored format and lockfile packages unchanged. No new dependency.",
+  "dependency": {
+    "version": "1.0.151",
+    "source_commit": "de8500740cdcabffb9734f503e4889def823cf10",
+    "features": [
+      "std",
+      "float_roundtrip"
+    ],
+    "inspected": [
+      "src/de.rs f64_from_parts, decimal/integer overflow and lexical exact parsing; tests/test.rs test_roundtrip_f64; Cargo.toml features"
+    ],
+    "sha256": {
+      "src/de.rs": "4998d7e252eb513be85b298e287048b4fb283882e9ba7df905f572f07200f3f3",
+      "tests/test.rs": "bfb44a3ff847299e7ae7b1801a47c273c7ae897f746d2bf2ac0a8d543143c494",
+      "Cargo.toml": "00b920255c320a278bf25b962b491263a19d8c90e12e4a91c1d823db71eabb2f"
+    }
+  },
+  "checks": {
+    "workspace_tests_passed": 183,
+    "failed": 0,
+    "ignored": 0,
+    "clippy": "PASS workspace all-targets -D warnings",
+    "fmt": "PASS"
+  },
+  "environment": {
+    "target": "aarch64-apple-darwin",
+    "rustc": "1.98.1",
+    "jobs": 2,
+    "native_archive": "Reused inventoried RocksDB cache; no new native build claimed"
+  },
+  "not_run": [
+    "New20-case native PG harness including expanded JSONB fractional representation; prior665a477 build excludes this fix.",
+    "Worst-case memory/performance envelope; full bootstrap/activation/admission product."
+  ],
+  "raw_root": ".research/implementation/configuration-policy",
+  "logs_sha256": {
+    "fraction-red.log": "d227b39576034b98475d152c81510f09cfb756908468969ecd4712baa1e7b7b8",
+    "fraction-workspace.log": "2dbc7b15be11c9b2d69c698b0fcf259f209c64b394e50053aaefcbbbc621244c",
+    "fraction-clippy.log": "d60f6c05c67897188d504b1c53f1b06594c67bc606135efe19d1433c099f1254"
+  }
+}

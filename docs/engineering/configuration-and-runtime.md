@@ -71,7 +71,11 @@ in lexical key order. Values are the schema's normalized booleans, full-domain
 unsigned numbers, finite fractions, text and structured values; bytes and durations
 use bytes and microseconds. Negative zero fractions normalize to positive zero.
 No root, secret reference or diagnostic attribution
-enters this document. Encoding uses the pinned serde_json serializer, bounded to
+enters this document. Encoding uses the pinned serde_json serializer; stored parsing enables its
+`float_roundtrip` feature so every legal finite fraction retains the same binary
+value and digest. The default fast float parser failed the reproduced fraction
+`2.0030397744267762e-253`; this change corrects decoding without changing emitted
+policy bytes or the format version. Encoding is bounded to
 10 MiB with a counting pass before allocating the output. The candidate digest is
 SHA-256 over `bigbrotr/product-policy/1\0` followed by those exact document bytes.
 Source-file digest remains separate: comments, equivalent units and deployment

@@ -10,8 +10,8 @@ The runner refuses dirty/mismatched source and existing output.
 python3 experiments/configuration-inspection/run.py --root /absolute/owned/lab
 ```
 
-The 19 cases cover absent dataset/configuration, accepted managed values, comment
-and policy drift, mode mismatch, declarative staging, JSONB u64 preservation,
+The 20 cases cover absent dataset/configuration, accepted managed values, comment
+and policy drift, mode mismatch, declarative staging, JSONB u64 and exact finite-fraction preservation,
 private endpoint redaction, missing/root/invalid/future policy fields, root budget
 revalidation, digest corruption, wrong dataset/instance, denied SELECT and recovery.
 Each compares the complete Control SQL dump before/after the CLI; a nonzero exit

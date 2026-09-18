@@ -16,7 +16,7 @@ bigbrotr-protocol = { path = "crates/bigbrotr-protocol" }
 clap = { version = "=4.6.7", default-features = false, features = ["std", "help", "usage", "error-context", "suggestions"] }
 minicbor = { version = "=2.3.0", default-features = false }
 serde = { version = "=1.0.229", features = ["derive"] }
-serde_json = "=1.0.151"
+serde_json = { version = "=1.0.151", features = ["float_roundtrip"] }
 secp256k1 = { version = "=0.33.1", default-features = false, features = ["std"] }
 sha2 = { version = "=0.11.0", default-features = false }
 tempfile = "=3.27.0"

@@ -58,6 +58,21 @@ Sources: [secp256k1 0.33.1 verification](https://docs.rs/secp256k1/0.33.1/secp25
 [nostr 0.45.5 Event](https://docs.rs/nostr/0.45.5/nostr/struct.Event.html), and
 [pinned NIP-01](https://github.com/nostr-protocol/nips/blob/a2494f4f81d46684e5814a9bf35e2b1df978f955/01.md).
 
+## Exact persisted-policy fractions
+
+The same pinned serde_json 1.0.151 now enables `float_roundtrip` in addition to
+`std`. The actual default decoder changed the legal configuration fraction
+`2.0030397744267762e-253`, reproduced as a stored-policy digest mismatch. The
+upstream regression is in `tests/test.rs::test_roundtrip_f64`; `src/de.rs` selects
+the lexical exact parser under this feature instead of arithmetic scaling of a
+rounded significand. Published source commit:
+`de8500740cdcabffb9734f503e4889def823cf10`.
+The [feature inventory](https://docs.rs/crate/serde_json/1.0.151/features)
+adds no dependency or persistent-format change. The locked version and serializer
+stay unchanged. Stored decoder regression checks exact f64 bits and policy digest;
+the native fixture also reads PostgreSQL's expanded numeric JSONB representation.
+This is a concrete decoding correction, not a new JSON document authority.
+
 ## Implemented fingerprint codec slice
 
 P01-T02 selects `minicbor` 2.3.0 with default features disabled and no optional

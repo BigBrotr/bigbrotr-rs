@@ -206,4 +206,30 @@ mod tests {
             .remove("ranker.enabled");
         assert!(PolicySeed::restore(&incomplete.to_string(), seed.digest, root()).is_err());
     }
+
+    #[test]
+    fn persisted_finite_fraction_keeps_exact_binary_value_and_digest() {
+        // Upstream serde_json's f64 round-trip regression, also a legal fraction.
+        let input = include_str!("../../../../config/recipes/archive-only.toml").replace(
+            "[monitor]\n",
+            "[monitor]\nschedule_jitter=2.0030397744267762e-253\n",
+        );
+        let candidate = super::super::resolve::parse(&input).unwrap();
+        let bits = candidate
+            .value("monitor.schedule_jitter")
+            .as_f64()
+            .unwrap()
+            .to_bits();
+        let seed = PolicySeed::from_resolved(&candidate).unwrap();
+        let document = std::str::from_utf8(&seed.document).unwrap();
+        let restored = PolicySeed::restore(document, seed.digest, root()).unwrap();
+        assert_eq!(
+            restored
+                .value("monitor.schedule_jitter")
+                .as_f64()
+                .unwrap()
+                .to_bits(),
+            bits
+        );
+    }
 }

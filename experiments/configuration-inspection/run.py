@@ -118,7 +118,10 @@ def main():
         maximum = copy.deepcopy(policy); maximum['settings']['sync.history_since'] = 18446744073709551615
         write_policy(database, maximum)
         run('full-u64-jsonb', database, path, 0, lambda v,e: accepted(v,e) and v['settings']['sync.history_since']['value'] == '18446744073709551615')
-        private = copy.deepcopy(policy); private['settings']['sync.endpoints.urls'] = ['wss://fixture.example/PRIVATE_POLICY_CANARY?secret=fixture']
+        fraction = copy.deepcopy(policy); fraction['settings']['monitor.schedule_jitter'] = 2.0030397744267762e-253
+        write_policy(database, fraction)
+        run('exact-fraction-jsonb', database, path, 0, lambda v,e: accepted(v,e) and v['settings']['monitor.schedule_jitter']['value'] == 2.0030397744267762e-253)
+        private = copy.deepcopy(policy); private['settings']['sync.endpoints.mode'] = 'fixed'; private['settings']['sync.endpoints.urls'] = ['wss://fixture.example/PRIVATE_POLICY_CANARY?secret=fixture']
         write_policy(database, private)
         run('private-redaction', database, path, 0, lambda v,e: accepted(v,e) and 'PRIVATE_POLICY_CANARY' not in json.dumps(v)+e and v['settings']['sync.endpoints.urls']['value'] == '[redacted]')
         variants = {}
@@ -142,7 +145,7 @@ def main():
         lab.sql(state, database, 'GRANT SELECT ON control.config_revisions TO bigbrotr_control;')
         run('recovered-read', database, path, 0, accepted)
         require(int(lab.sql(state, database, "SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND usename='bigbrotr_control';")) == 0, 'client-backends-remain')
-        require(len(report['cases']) == 19, 'incomplete-scenario-set')
+        require(len(report['cases']) == 20, 'incomplete-scenario-set')
         report['status'] = 'PASS'
     except Exception as error:
         report['status'] = 'FAIL'; report['failure'] = str(error)
