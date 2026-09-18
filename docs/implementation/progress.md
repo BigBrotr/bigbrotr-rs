@@ -15,12 +15,12 @@ complete. Pending must not be reclaimed. Whole selected product remains required
 
 ## Git and ownership
 
-Mac main. Last observed HEAD `a531ea3ce345f4008a05bbf1696fd1e1f9827872`, with
-unpublished catalog experiment candidates since origin/main
-`c6fface491bffe3d774d77c5debe0d337b762ce9`. Root owns current qualification report,
-README/dependency/task documentation and this checkpoint/inventory. No other
-writer/conflict. Exact clean candidate inputs traveled through Git bundles;
-Tux sources are immutable inputs, not separately edited product workspaces.
+Mac main. HEAD and origin/main freshly verified at
+`0bef27c1ca8abcc9ad3b62b4623d0f9efb8b85c3`, including qualified `a531ea3`.
+Root owns the new uncommitted `experiments/archive-engine/catalog_startup.py` and
+this checkpoint. No active experiment or contributor conflict. The startup
+counterexample is written/reviewed but NOT_RUN. Exact candidate inputs continue
+through Git; Tux is not a separately edited product workspace.
 
 ## Qualified boundaries
 
@@ -105,11 +105,39 @@ containers unchanged, eight running. Shared checkout remains clean/detached
 network, path and owner identities are in `catalog_fence_probe.runs` and raw
 resource receipts; do not reuse a prior catalog as a fresh experiment.
 
-Next: finish review/commit/push of this bounded qualification, then reproduce the
-PG startup window in a new isolated lab using actual PG16.15 post_auth_delay and
-a real client. Show whether an initially invisible connection can complete a
-write after NOLOGIN plus an empty activity observation; preserve negative controls
-and cleanup. Use the result to select a complete fencing/recovery protocol before
-product publication. Positive old-process exclusion and credential handoff/startup
-ordering remain required; do not substitute a guessed wait interval or weaker
-contract. Continue into actual product publication and the signed M1 journey.
+Next: commit/transfer the bounded `catalog_startup.py` and reproduce the PG16.15
+post_auth_delay window with a real client in a fresh isolated lab. Show whether
+an invisible connection can write after NOLOGIN plus empty activity; finish
+cleanup and record the actual result. Then prioritize MON-009 below before any
+new product consumer of job limits, followed by MON-010/MON-007. Return to full
+publisher fencing/recovery and the signed M1 journey after those corrections.
+
+## Newly forwarded independent review
+
+Owner forwarded three static findings after monitor review through `a531ea3`.
+Taken in charge at this safe boundary; no claimed reproductions or accepted fixes
+yet. Use existing owning tasks, not another plan. Verify current code/contracts
+and record counterevidence if a finding is invalid or already fixed.
+
+- **MON-009, medium, P02-T01 ingest/job authority:** inspect complete owning
+  0001/0002 migrations and later replacements/callers. Reproduce on isolated PG
+  old topology with NULL handoff followed by authoritative closure N: job bound N
+  must pass, N+1 must fail. Check job-first closure, both concurrent lock orders,
+  multiple streams, zero prefixes and rollback. Published checksummed migrations
+  stay immutable; use an additive migration with explicit incompatible-row
+  handling and coherent locking of both operation directions. Resolve before
+  consolidating dependent job-limit components. No data loss was observed.
+- **MON-010, low, P01-T04 static configuration:** compare `resolve::tls` against
+  real connection preparation. Offline verify-full must enforce the selected
+  dependencies' required CA/server-name fields without opening files or connecting.
+  Regress missing each/both, complete syntactically valid nonexistent paths, and
+  unselected dependencies. Runtime currently refuses rather than falling back.
+- **MON-007, low, P01-T03/P02-T04 archive bundle tooling:** inspect deterministic
+  exclusive partial-file lifecycle in obtain/copy_verified. Reproduce failed
+  download then success in the same cache and concurrent downloads. Publish only
+  verified assets; isolate/clean owned temporary files without deleting another
+  invocation's work. Add discriminating practical regression and exact evidence.
+
+These three are open. Passing previous suites does not close them. Preserve the
+completed five earlier findings and catalog investigation; do not conflate them
+with these new triggers.
