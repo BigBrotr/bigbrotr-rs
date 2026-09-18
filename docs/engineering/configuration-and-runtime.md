@@ -154,7 +154,9 @@ half the authorization TTL, bounded by the ownership heartbeat interval, and
 renews the scheduling row only at that heartbeat. Acquisition, polling, release
 and cancellation keep one connection/driver and its conservative 512 MiB policy
 preparation grant until terminal join. Managed or declarative file drift is not
-activation. All other selected roles refuse before credential I/O.
+activation. All other selected roles refuse before credential I/O. Accepted
+`administration.enabled=true` is refused: the missing Control administration
+listener cannot be silently ignored.
 
 Its first failure policy is fail-closed process exit and explicit supervised
 restart; automatic reconnect/backoff remains a required later lifecycle slice.

@@ -8,7 +8,11 @@ bigbrotr serve --file /etc/bigbrotr/root.toml --roles control
 
 Use an existing validated root with Control assigned locally, protected application
 credentials, migration 0007, accepted initial configuration and the explicitly
-activated first security revision. Follow the explicit migration/initialization
+activated first security revision with `administration.enabled=false`. For this
+initial backend-only slice, set that value in a fresh candidate **before**
+initialization/activation; the default recipes enable administration and must be
+refused until its listener is implemented. Editing an already accepted managed
+seed does not disable administration. Follow the explicit migration/initialization
 commands in [development build](../development/build.md) and the separate
 [owner enrollment guide](administration/enrollment.md). `serve` does not initialize,
 migrate or enroll. The process emits an `idle` JSON lifecycle record after it has

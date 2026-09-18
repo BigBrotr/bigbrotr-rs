@@ -42,6 +42,7 @@ def main():
         db='bb_runtime_'+name;lab.sql(state,'postgres',f'CREATE DATABASE {db} OWNER bigbrotr_migrator;')
         path=lab.config(root,state,db);local=root/Path(path).name
         local.write_text(lab.change(local.read_text(),'postgres.control','password_ref','file:/lab/secrets/application'))
+        if name!='enabled_administration':local.write_text(lab.change(local.read_text(),'administration','enabled',False))
         require(lab.migrate(state,'apply',path,target=7).returncode==0,'migration')
         lab.sql(state,db,'GRANT USAGE ON SCHEMA control TO bigbrotr_control; GRANT SELECT, INSERT, UPDATE ON ALL TABLES IN SCHEMA control TO bigbrotr_control; GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA control TO bigbrotr_control;')
         require(lab.cli(state,'config','initialize','--file',path).returncode==0,'initialize')
@@ -93,7 +94,7 @@ def main():
         return observed
     save()
     try:
-        for case in ['no_policy','wrong_dataset','wrong_instance','wrong_mode','invalid_config','invalid_policy']:
+        for case in ['no_policy','wrong_dataset','wrong_instance','wrong_mode','invalid_config','invalid_policy','enabled_administration']:
             db,path,local=prepare(case,active=case!='no_policy')
             if case.startswith('wrong_'):
                 section,key,value={'wrong_dataset':('topology','dataset_id','61'*16),'wrong_instance':('topology','instance_id','62'*16),'wrong_mode':('config','authority_mode','declarative')}[case]

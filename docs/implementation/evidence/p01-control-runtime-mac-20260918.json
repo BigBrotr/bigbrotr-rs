@@ -1,0 +1,115 @@
+{
+  "format": "bigbrotr-control-runtime-mac/1",
+  "date": "2026-09-18",
+  "status": "PASS_SCOPED_MAC_ONLY",
+  "source_revision": "6314639149035258a6b578e16c285fa489219b6a",
+  "source_state": "Mac tests ran against the root-owned candidate diff before commit. Rust, Cargo and test inputs match this commit; this is not an exact-source release build.",
+  "source_sha256": {
+    "Cargo.toml": "c6a8ec7c2a234c911d57849b5b9c55ccac2ea724b0fb757c905c4d579aec1ef6",
+    "Cargo.lock": "ea27c2b367846c4718a6d76fbd1a8340558299ccf9f22c76ed3f30c4b8025b47",
+    "apps/bigbrotr/src/interfaces/serve.rs": "22031693e9b2ffc5609070ebd8f5d0300bfd4e9944d8da7e67e30e7ef86fd6e0",
+    "apps/bigbrotr/src/interfaces/postgres_command.rs": "952c175f7402aaf7158225af3f1274fad3bd67ff51ec0be2db3d0f0e5295c112",
+    "apps/bigbrotr/src/config/resolve.rs": "042179e3bea452431623212f9d45fdae2485f54450cd95fd2edbfd9ec6098f75",
+    "apps/bigbrotr/src/storage/postgres/control_owner.rs": "ad8e25615932d53c17a950682b008bc489246df89a57f3d7d6c347898a6307e8",
+    "apps/bigbrotr/tests/control_runtime_entrypoint.rs": "ab97e5e536e7886846334b4c4d49be1446d39855982f4d9b457277d9384bc1cb"
+  },
+  "checks": {
+    "actual_cli_refusal_test": {
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0
+    },
+    "workspace": {
+      "passed": 199,
+      "failed": 0,
+      "ignored": 0
+    },
+    "clippy": "workspace all targets -D warnings PASS",
+    "format": "PASS",
+    "cargo_deny": "licenses, sources, advisories PASS",
+    "artifact_and_links": "PASS, structural scope only"
+  },
+  "logs": {
+    ".research/implementation/control-runtime/entrypoint-green.log": "10a2bad8cc26789a73ea18a1b07186262f2986fe2b0f5254e381e3ba2e4e4766",
+    ".research/implementation/control-runtime/workspace.log": "8aee03a339fa5181b7545d364c89761c9a317039819c048f481b579bb4f34e59",
+    ".research/implementation/control-runtime/clippy.log": "55ab95dcef1582b608b3bbc552f2e1a300f10265619a400e33186f83d9cd0558",
+    ".research/implementation/control-runtime/dependency-policy.log": "245deecd3483cc5322ad2199ecc5c9421e832e3f1e6d2f8419170f3c74bccf46",
+    ".research/implementation/control-runtime/prebuilt-entrypoint-red.log": "ea1a52dc975b1b734b661f4ea65208949baaab0c830de72e33ee8499ccacdd9f",
+    ".research/implementation/control-runtime/entrypoint-red.log": "e7138750e5e8059e00a536f0cac4fa4a11cf4298ee6c76ade125c7efdf4d85d7",
+    ".research/implementation/control-runtime/entrypoint-red-qualified.log": "85019594a82ff1cae8fc05c85a0ce41bcf883f0d269dfc3a573dc67d637e73c2",
+    ".research/implementation/control-runtime/native-toolchain-mac.json": "5bbfbe8a350616e9446eb3795076ba2495b9eaa77094fecbc634c828777b8e13"
+  },
+  "upstream_review": {
+    "status": "Candidate now enables signal/macros and has actual Control CLI consumer; native runtime validation pending",
+    "dependency": "tokio 1.53.1",
+    "source": "/Users/vincenzo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/tokio-1.53.1",
+    "files_sha256": {
+      "Cargo.toml": "e0194904acf8d55946b949cacca2b266051bb2a99844c606829fb0159c39cfb1",
+      "src/signal/unix.rs": "ffe31869c89ba038896b9e4a39af7f6c6f79687f64c897637f47356a123a4257",
+      "src/macros/select.rs": "a1f6cb8d20a378653f2dda59d7137567b07896d76051c19e471812aab86e5229"
+    },
+    "official_documentation": "https://docs.rs/tokio/1.53.1/tokio/macro.select.html",
+    "findings": [
+      "Signal::recv is cancellation safe; notifications may coalesce; installing a handler changes process behavior even after dropping Signal.",
+      "Register signal handlers inside the actual runtime before the first connection/claim; leave handlers active until process exit.",
+      "select cancels losing futures. A Control acquire/release COMMIT can remain unknown; driver/resource ownership must survive to terminal join.",
+      "At initial inspection the workspace enabled rt/net/time/sync only. The implemented signal/macros consumer explicitly updates features, lockfile and dependency inventory.",
+      "signal-hook-registry uses SA_RESTART/SA_SIGINFO on Linux/macOS; runtime handlers are owned through process exit. No raw signal handler is added by application code."
+    ],
+    "review_boundary": "Tokio feature definitions; unix signal source 1-160 and 295-465 plus official select semantics. Not a complete upstream crate review.",
+    "added_transitives": {
+      "signal-hook-registry": {
+        "version": "1.4.8",
+        "license": "MIT OR Apache-2.0",
+        "Cargo.toml.sha256": "54bcf376404635b6cfc7e20474cc84a756ef5c8b54e2954d3186e44b68854fac"
+      },
+      "tokio-macros": {
+        "version": "2.7.2",
+        "license": "MIT",
+        "Cargo.toml.sha256": "45090e160854dda1c61bc9d39f62a869be6ede2a9b3554e63917788349193d7c"
+      }
+    }
+  },
+  "review": {
+    "owner": "root, AI complete new runtime/harness and affected diff review; independent agent unavailable",
+    "findings": [
+      "Use infallible PolicyEpoch constructor, unlike nonzero OwnerEpoch; actual compile failure corrected.",
+      "Preserve Backend classification from application_transaction rather than misreport dependency I/O as incompatible deployment.",
+      "Policy-only reads share the fenced transaction and poisoning logic but do not renew scheduling metadata.",
+      "Initial native build was deliberately stopped to enforce explicit toolchain/two-job limits. The subsequent early compile read the old Tokio feature graph before edits; that mixed-time invocation is retained as failure, not valid final evidence. Final tests ran after feature resolution."
+    ],
+    "remaining_boundaries": [
+      "Native PG runtime matrix",
+      "Actual cancellation, SIGINT/SIGTERM and paused process",
+      "Worst-case documents, slow lifecycle output, native arm64",
+      "Native writer handoff, public/remote grants, complete product"
+    ]
+  },
+  "administration_gate_correction": {
+    "status": "PASS_SCOPED_MAC_ONLY",
+    "base_revision": "6314639149035258a6b578e16c285fa489219b6a",
+    "source_state": "Root-owned uncommitted correction; the earlier 199-test workspace run does not cover this correction.",
+    "finding": "The initial Control backend accepted administration.enabled=true while its listener was unimplemented. This prevents runtime qualification at the base revision.",
+    "behavior": "Reject enabled administration in each accepted policy document, including refresh; seed drift does not override an accepted disabled gate.",
+    "source_sha256": {
+      "apps/bigbrotr/src/interfaces/serve.rs": "33ab93c000720363991a5e2567bdb8218ebb0a507272bff9a8d8ca787a5948a1",
+      "experiments/control-runtime/run.py": "028f9190131c41175274b4ef06f5d2a936edea4073a37c2b175b9431a5120d17"
+    },
+    "checks": {
+      "discriminating_red": "FAIL as expected: actual Ok versus expected InvalidPolicy",
+      "final_targeted_tests": {
+        "passed": 9,
+        "failed": 0,
+        "ignored": 0
+      },
+      "workspace_all_target_clippy": "PASS"
+    },
+    "logs": {
+      ".research/implementation/control-runtime/admin-gate-red.log": "87f648e839097192d6995d7ee4d6f52afe7d6a34bc5d040e4ec390efb525b9e5",
+      ".research/implementation/control-runtime/admin-gate-green.log": "45287bac414c963300e37849a4912346376c4b513ff52664833444f6d9b1f122",
+      ".research/implementation/control-runtime/final-controls.log": "9613eb6504e25bcd99d3e8df3f65022ae6d1ad4a16008462ede89cff5bd6e02f",
+      ".research/implementation/control-runtime/final-clippy.log": "13cffe6b1f81f7bf39ff1b4307df8fbcdaff92d968cb2d9927079c0c34f92c69"
+    },
+    "native_corrected_consumer": "NOT_RUN"
+  }
+}

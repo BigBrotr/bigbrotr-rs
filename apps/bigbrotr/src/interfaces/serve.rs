@@ -26,7 +26,7 @@ pub(crate) fn command() -> Command {
         .about("Run explicitly assigned roles; the initial runtime implements Control only")
         .arg(Arg::new("file").long("file").required(true).value_name("PATH"))
         .arg(Arg::new("roles").long("roles").value_delimiter(',').num_args(1..).value_name("ROLE,..."))
-        .after_help("Requires explicit initialization, migrations and initial policy activation. SIGINT/SIGTERM stop the owner. No listeners or native stores are started by the Control-only slice. Exit: 0 stopped, 1 unavailable/I/O, 2 usage, 3 invalid configuration/policy, 4 cancelled or unknown durable outcome.")
+        .after_help("Requires explicit initialization, migrations and initial policy activation with administration.enabled=false. SIGINT/SIGTERM stop the owner. No listeners or native stores are started by the Control-only slice. Exit: 0 stopped, 1 unavailable/I/O, 2 usage, 3 invalid configuration/policy, 4 cancelled or unknown durable outcome.")
 }
 
 pub(crate) fn execute(args: &ArgMatches) -> ExitCode {
@@ -156,11 +156,7 @@ async fn supervise(
         PolicyLeaseTtl::new(ttl).map_err(|e| (3, e.to_string()))?,
     )
     .map_err(|e| (1, e.to_string()))?;
-    let validate = |document: &str, digest| {
-        PolicySeed::restore(document, digest, root.clone())
-            .map(|_| ())
-            .map_err(|_| OwnerError::InvalidPolicy)
-    };
+    let validate = |document: &str, digest| validate_policy(root, document, digest);
     let ticket = lease.begin_refresh().map_err(|e| (1, e.to_string()))?;
     let commit = Cell::new(false);
     let acquired = tokio::select! {
@@ -259,4 +255,51 @@ fn emit(value: Value) -> Result<()> {
     writeln!(out, "{value}")
         .and_then(|()| out.flush())
         .map_err(|_| (1, "cannot write Control lifecycle output".into()))
+}
+
+fn validate_policy(
+    root: &Resolved,
+    document: &str,
+    digest: [u8; 32],
+) -> std::result::Result<(), OwnerError> {
+    let accepted = PolicySeed::restore(document, digest, root.clone())
+        .map_err(|_| OwnerError::InvalidPolicy)?;
+    // The administration listener belongs to Control. Until it is implemented,
+    // an accepted enablement cannot be silently replaced with an idle backend.
+    if accepted.flag("administration.enabled") {
+        return Err(OwnerError::InvalidPolicy);
+    }
+    Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn accepted_administration_gate_cannot_be_silently_ignored() {
+        let directory = tempfile::tempdir().unwrap();
+        let path = directory.path().join("root.toml");
+        let enabled = include_str!("../../../../config/recipes/archive-only.toml");
+        std::fs::write(&path, enabled).unwrap();
+        let root = crate::config::load(&path).unwrap();
+        let seed = PolicySeed::from_resolved(&root).unwrap();
+        assert_eq!(
+            validate_policy(&root, seed.document(), seed.digest()),
+            Err(OwnerError::InvalidPolicy)
+        );
+        let disabled = enabled.replace(
+            "[administration]\nenabled = true",
+            "[administration]\nenabled = false",
+        );
+        assert_ne!(enabled, disabled);
+        std::fs::write(&path, &disabled).unwrap();
+        let candidate = crate::config::load(&path).unwrap();
+        let accepted = PolicySeed::from_resolved(&candidate).unwrap();
+        // Managed file drift must not substitute the file gate for accepted policy.
+        assert_eq!(
+            validate_policy(&root, accepted.document(), accepted.digest()),
+            Ok(())
+        );
+    }
 }

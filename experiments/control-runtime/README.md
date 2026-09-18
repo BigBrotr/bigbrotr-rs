@@ -15,7 +15,8 @@ python3 experiments/control-migrations/lab.py stop --root /owned/runtime
 
 Required scenarios use the real `serve --roles control` executable: no activated
 policy; mismatched dataset, instance and authority mode; correctly hashed but
-semantically invalid configuration/security documents; concurrent owner refusal;
+semantically invalid configuration/security documents; enabled but unimplemented
+administration refusal; concurrent owner refusal;
 policy polling without scheduling-row writes; actual heartbeat renewal; SIGINT
 and SIGTERM release with exact owner/role history; managed file drift; pause
 past policy TTL with refusal to renew on resume; interrupted policy query;

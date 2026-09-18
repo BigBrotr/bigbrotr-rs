@@ -1741,10 +1741,25 @@
     "scope": "Four real subprocess CI negative controls, including missing tool and killed descendant; no full foundation rerun at this revision"
   },
   "implementation_control_runtime_20260918": {
-    "stage": "candidate; native execution not started",
+    "stage": "exact-revision native CI running; runtime matrix not started",
     "source_base": "c37a22169373130f034e9cd1b481084e62e36e16",
     "local_root": ".research/implementation/control-runtime",
-    "owned_remote_resources": [],
+    "owned_remote_resources": [
+      {
+        "format": "bigbrotr-trusted-ci-lab/1",
+        "source": "6314639149035258a6b578e16c285fa489219b6a",
+        "tree": "e57faf5c42e802d1f7f377bea4f43c9ac9d3bcbe",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/ci-6314639",
+        "owner": "0e2488b6bdd4390e817746122a6ab7b4",
+        "container": "bigbrotr-implementation-ci-6314639",
+        "image_tag": "bigbrotr-implementation-ci-6314639:lab",
+        "state": "running",
+        "started_at": "2026-09-18T06:13:56.844851+00:00",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "image_created": "2026-09-18T08:13:59.317882824+02:00",
+        "container_id": "09d66d747c91042e956f3d5d31e3e36b43cbea75675c8bc176d3ed80b7dab758"
+      }
+    ],
     "scope": "P01-T04/T06 actual Control runtime integration; first signed-event admission and later product remain",
     "local_checks": {
       "workspace": {
@@ -1752,8 +1767,13 @@
         "failed": 0,
         "ignored": 0
       },
-      "clippy": "RUNNING; no result yet",
+      "clippy": "PASS",
       "native": "NOT_RUN"
-    }
+    },
+    "source": "6314639149035258a6b578e16c285fa489219b6a",
+    "tree": "e57faf5c42e802d1f7f377bea4f43c9ac9d3bcbe",
+    "inventory_timing": "Initial path error was followed by an unintended launch; complete read-only inventory reconciled after launch. See ignored preflight-failure.json; do not claim preflight preceded this build.",
+    "host_inventory": ".research/implementation/control-runtime/preflight-after-launch-6314639.json",
+    "mac_evidence": "docs/implementation/evidence/p01-control-runtime-mac-20260918.json"
   }
 }
