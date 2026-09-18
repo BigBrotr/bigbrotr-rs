@@ -64,6 +64,23 @@ is separate from safe generic settings. A max_connections value of 128 in a host
 route domain does not mean the product supports only 128 endpoints; the recipe, memory
 envelope and measured workload determine active-session capacity.
 
+The initial closed policy seed uses `bigbrotr-product-policy/1`: a compact UTF-8
+JSON object with `format` and `settings`. Settings contain every registered
+non-deployment-locked key, including explicit null and staged disabled values,
+in lexical key order. Values are the schema's normalized booleans, full-domain
+unsigned numbers, finite fractions, text and structured values; bytes and durations
+use bytes and microseconds. Negative zero fractions normalize to positive zero.
+No root, secret reference or diagnostic attribution
+enters this document. Encoding uses the pinned serde_json serializer, bounded to
+10 MiB with a counting pass before allocating the output. The candidate digest is
+SHA-256 over `bigbrotr/product-policy/1\0` followed by those exact document bytes.
+Source-file digest remains separate: comments, equivalent units and deployment
+root edits do not change the policy seed. The seed is candidate data, not accepted
+configuration, an applied security revision or a principal/action grant. Existing
+durable authority must win at restart. Adding settings requires an explicit
+document-version migration before persisted seeds can be reused; this initial
+encoding does not fill in the remaining unimplemented service policy families.
+
 ## Shared budget allocator
 
 Treat the host envelope as the upper bound. Component limits cannot all claim the

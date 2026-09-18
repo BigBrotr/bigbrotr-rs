@@ -723,6 +723,12 @@
         ]
       },
       "evidence": "docs/implementation/evidence/p02-ingest-registry-native-20260918.json"
+    },
+    "configuration_policy": {
+      "owner": "root",
+      "local_root": ".research/implementation/configuration-policy",
+      "status": "Mac CLI/codec tests and Clippy completed; no live process or remote lab created for this slice",
+      "evidence": "docs/implementation/evidence/p01-policy-seed-mac-20260918.json"
     }
   }
 }

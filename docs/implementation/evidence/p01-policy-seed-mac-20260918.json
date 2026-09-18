@@ -1,0 +1,65 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-18",
+  "scope": "P01-T04 closed initial policy candidate encoding and actual offline CLI; no durable authority",
+  "status": "PASS",
+  "source": {
+    "base_revision": "85e5247c45f3a4e12534a7e7a51226755c479d7c",
+    "state": "Root dirty candidate; ordinary Mac Cargo build, no clean archive receipt",
+    "sha256": {
+      "apps/bigbrotr/src/config/mod.rs": "ff53056eb607173bc89f20ea2048b896ec25b1f66755592916c63c44a3fb3e25",
+      "apps/bigbrotr/src/config/resolve.rs": "e4baf3c765be344348a1bb9fe5fba9c429fd9118092634be8bc1a5916d58360c",
+      "apps/bigbrotr/src/config/policy.rs": "b7c8e7a1077c9d7ab539407f07e5cce63192f60197d9b8e196c4228928e1eaf4",
+      "apps/bigbrotr/src/config/registry.rs": "37c102ba86d1aaca3dc6a3071923855a48c1c6b77bf24171a8853e5d14c870d6",
+      "apps/bigbrotr/tests/policy_seed.rs": "901f27579709b1661a63093e6628bf52b8176b160ed0d4a2bdff4ea02f5c59a0",
+      "Cargo.lock": "bff3ccfcaf614d60e9db4a300560190db5fcd9e635d6ac30f1d4b3af6d5e573d"
+    }
+  },
+  "environment": {
+    "target": "aarch64-apple-darwin",
+    "rustc": "1.98.1",
+    "serde_json": "1.0.151 default/std; no preserve_order",
+    "sha2": "0.11.0",
+    "target_cache": ".research/worktrees/rocks-store/.research/implementation/rocks-store/target",
+    "build_jobs": 2
+  },
+  "checks": {
+    "actual_cli_existing_tests": 23,
+    "actual_cli_policy_tests": 4,
+    "literal_codec_tests": 1,
+    "codec_filter_exclusions": 1,
+    "failed": 0,
+    "ignored": 0,
+    "clippy": "PASS workspace all-targets -D warnings",
+    "fmt": "PASS",
+    "artifact_checks": "PASS structural only"
+  },
+  "observed": [
+    "Source/deployment-root and protected secret-reference changes leave the candidate digest unchanged; no secret path canary in output.",
+    "Comments and equivalent units preserve identity; effective policy changes and adjacent u64 maximum values remain distinct.",
+    "Unselected staged settings remain in the seed. Negative zero and positive zero fractions normalize identically.",
+    "Literal UTF-8 bytes, lexically sorted keys, escaped text, null and u64 maximum match independent encoding; exact output limit succeeds and one byte less refuses."
+  ],
+  "independent_oracle": {
+    "method": "Python stdlib json.dumps ensure_ascii=False, sort_keys=True, compact separators and hashlib SHA256 over the literal domain and document; frozen literal Rust expected bytes/digest",
+    "encoded_bytes": 98,
+    "sha256": "1c8054d6d7d21473b7588e39dfbea8f2cabbd58987763c1a022cb7a6ca101a7a"
+  },
+  "dependency_inspection": "Exact serde_json1.0.151 map.rs default BTreeMap, ser.rs integer/finite float/to_writer behavior and actual Cargo feature tree. Focused source inspection, not full crate review.",
+  "test_history": "Corrected initial invalid shared/import limit fixture before three missing-feature RED cases. Signed-zero RED reproduced distinct digests, then normalized in resolver. Generated-reference drift detected and regenerated through actual CLI before final 27 process tests.",
+  "not_run": [
+    "Persisted-policy decoder, Control bootstrap/CAS, grants, policy activation and restart authority.",
+    "Linux practical syscall trace for this candidate; current earlier CI does not qualify these changes.",
+    "Complete P01-T04 service configuration, native signed-event admission/archive/read/export/restart, release or capacity acceptance."
+  ],
+  "raw_root": ".research/implementation/configuration-policy",
+  "logs_sha256": {
+    "clippy.log": "944b0dff42db7842b5e62b377c912dad29198b83305a96bf623ce68ab095a6c2",
+    "codec-tests.log": "4885e2ef4af524e0cc2da67b8e987af96d764b68533b824bdb5a9263781bf8b6",
+    "green.log": "cc71837c302c9db27eff5cc9d79a07750525129db6fe52d62524c80a3f634387",
+    "initial-invalid-test-input.log": "388439213c7dd057c1b97c485744ea0c0790e5e3ca8ddffd672eedd0a1d69013",
+    "integrated-tests.log": "08b0055357cffa67c336b2cd1090eef6373be8fe16ec9f93d58a57bfcd900248",
+    "red.log": "9b4036624cffde5f8ce668985d8d6260bb7b48d3fd066b3420951e3004433058",
+    "zero-red.log": "e9977c0bb135dd7d2eaa96b465466fd4a3e71005284320acb1bb27a79cebf139"
+  }
+}

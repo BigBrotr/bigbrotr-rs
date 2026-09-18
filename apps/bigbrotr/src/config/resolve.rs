@@ -263,7 +263,8 @@ fn normalize(key: &Key, value: &Value) -> Result<Value, &'static str> {
         Ratio => value
             .as_f64()
             .filter(|n| n.is_finite() && (0.0..=1.0).contains(n))
-            .map(Value::from)
+            // Signed zero has one effective fraction and one policy identity.
+            .map(|n| Value::from(if n == 0.0 { 0.0 } else { n }))
             .ok_or("expected finite fraction in [0,1]"),
         Enum(allowed) => value
             .as_str()
@@ -1064,9 +1065,10 @@ impl Resolved {
         }
         self.local(key.owner) || key.owner == "runtime"
     }
-    pub fn report(&self, show: bool) -> Value {
+    pub fn report(&self, show: bool) -> Result<Value, String> {
         let mut report = json!({"format":"bigbrotr-config-static/1","status":"valid-static","document_sha256":self.document_sha256,"authority":{"mode":self.text("config.authority_mode"),"status":"unavailable-offline","desired_revision":null,"applied_revision":null,"activation":"not-performed"},"local_roles":self.local_roles,"required_dependencies":self.dependencies,"full_signed_events":true,"listeners":{"public":false},"signing":false,"directory_discovery":false,"sync_inventory":if self.text("topology.ordered_set_reader")==Some("absent") {"unavailable; auto uses linear fallback"}else{"declared; readiness not checked"},"limitations":["Static desired configuration only; no roles, stores, authority or listeners are started.","Engine identity/schema/grants, filesystem aliases and accepted-work drain capacity require owning runtime adapters."]});
         report["fixed_endpoint_counts"] = json!({"sync":self.value("sync.endpoints.urls").as_array().unwrap().len(),"monitor":self.value("monitor.endpoints.urls").as_array().unwrap().len()});
+        report["initial_policy"] = super::policy::PolicySeed::from_resolved(self)?.report();
         if show {
             let mut fields = serde_json::Map::new();
             for key in &self.keys {
@@ -1080,7 +1082,7 @@ impl Resolved {
             }
             report["settings"] = Value::Object(fields);
         }
-        report
+        Ok(report)
     }
 }
 
