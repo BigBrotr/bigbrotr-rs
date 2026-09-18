@@ -15,6 +15,8 @@ def head(major, value):
 
 
 def cbor(value):
+    if value is None:
+        return b"\xf6"
     if isinstance(value, int):
         assert value >= 0
         return head(0, value)

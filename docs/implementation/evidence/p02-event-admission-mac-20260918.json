@@ -1,0 +1,118 @@
+{
+  "format": "bigbrotr-event-admission-mac/1",
+  "observed_date": "2026-09-18",
+  "source_base": "99320108d4c2a9a676af71ef8ebec7a4464ba406",
+  "source_sha256": {
+    "apps/bigbrotr/examples/ingest_bootstrap_probe.rs": "2fb256614620a72188a56b30484c17f509e61ec489addd8f21e68b407e72c70d",
+    "apps/bigbrotr/examples/support/ingest_event.rs": "55278d586ac386f06ed8d1c7b4b742d7f6ec4e5fda2b50fe909d0610de9cd0a2",
+    "apps/bigbrotr/src/storage/postgres/control_owner.rs": "8696613815e8bdc81218e8bc685b6a7b0c0bb1ff7b56701eba3b7e1c893580a6",
+    "apps/bigbrotr/src/storage/postgres/initial_batch.rs": "350989e954127828603e27947ae129ababa944fb9bd34f92fbf8c673af2d60e0",
+    "apps/bigbrotr/src/storage/rocks/admission.rs": "c4c5afafb762aa2f78229360545e916724190c270beb7b6644a7105a4fc4be8e",
+    "apps/bigbrotr/src/storage/rocks/admission_tests.rs": "a664ecb1c338f8b68f43c3fe3bd77a42f6c236535fec99cb5db939088c3cfaea",
+    "apps/bigbrotr/src/storage/rocks/bootstrap.rs": "ab3fdf030d1328b062b4cece31bc27c158116056e8c31770acd5b4c6237b61eb",
+    "apps/bigbrotr/src/storage/rocks/store.rs": "8c483b9f88ffa9b69f7a3892fad506d0506925f11a9c9f8a0678becfaac28c72",
+    "crates/bigbrotr-model/src/admission.rs": "02a7a0889c1fd7a6ada72bba36e4aa9e48235e7e054bc6b54638d74396d818cd",
+    "experiments/ingest-bootstrap/README.md": "3f36ad309c768dc057587a80bcaf56f5711b33b98e4de154fc5a780d87c8ac66",
+    "experiments/ingest-bootstrap/event_oracle.py": "8c3409b1168ec3ce41fa8e5133527ebb717ef0def01789876de0858a5f497795",
+    "experiments/ingest-bootstrap/oracle.py": "cf82b95a5f7baf952ae62b5b17be2784ccb4aa7088a7accaf74b94a4e49c7cda",
+    "experiments/ingest-bootstrap/run.py": "d11b562ff15279859ca5850d03c482448593fd0d98f00c9d3a24c20c09b3cc0e",
+    "tests/fixtures/ingest/README.md": "2cb7490cd6c3ea00381020cbeb508d1a4596bb9f9ca7c2c1e58549576ae0bf11",
+    "tests/fixtures/ingest/rejected-request.json": "75f31e6d4930db6c57a1bd60e11f4ef27125a85617c2eb0e8e1f30f2dec6649e"
+  },
+  "dependency_lock_sha256": "ea27c2b367846c4718a6d76fbd1a8340558299ccf9f22c76ed3f30c4b8025b47",
+  "host": {
+    "os": "Darwin",
+    "architecture": "arm64"
+  },
+  "checks": [
+    {
+      "command": "cargo test --locked -p bigbrotr --lib",
+      "status": "PASS",
+      "exit_code": 0,
+      "log": ".research/implementation/event-admission/mac-native-final.log",
+      "sha256": "685bba3cddb6240d5e6a1ce646c06182b03ef46b78883689485adb7b2bccafd7",
+      "scope": "40 tests passed; before the later rejection golden/negative additions and probe extension."
+    },
+    {
+      "command": "cargo test --locked -p bigbrotr --lib invalid_signature_has_only_strict_operational_detail_and_replays_after_reopen",
+      "status": "PASS",
+      "exit_code": 0,
+      "log": ".research/implementation/event-admission/rejection-corruption.log",
+      "sha256": "8c34f2cdcbe226cc9bcbde5dc30c29c1d4d2b01efba47b1883c39e87e0f97f08",
+      "scope": "One focused case passed with literal independent bytes, reopen and six malformed retained-value controls."
+    },
+    {
+      "command": "cargo clippy --locked -p bigbrotr --all-targets -- -D warnings",
+      "status": "PASS",
+      "exit_code": 0,
+      "log": ".research/implementation/event-admission/final-clippy.log",
+      "sha256": "b5fce3269814b3a9fc4901423b492d76df12262fa9474be5f1acdbc20e5e5331",
+      "scope": "Includes the complete connected probe."
+    },
+    {
+      "command": "cargo fmt --all -- --check",
+      "status": "PASS",
+      "exit_code": 0,
+      "log": ".research/implementation/event-admission/final-format.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "scope": ""
+    },
+    {
+      "command": "python3 experiments/verify_artifacts.py",
+      "status": "PASS",
+      "exit_code": 0,
+      "log": ".research/implementation/event-admission/final-artifacts.log",
+      "sha256": "892052de7db4f9f99646d7341e5b05e433daaf4f5a8cc91dee31e313270fa9c0",
+      "scope": ""
+    }
+  ],
+  "intermediate_failures": [
+    {
+      "log": ".research/implementation/event-admission/initial-red.log",
+      "sha256": "82a059cacabc28b56f1fcfb2d2008b9c68e5a5a6a73d09811d2a6de5aa0d1e8e",
+      "finding": "Missing API compile failure; not behavioral RED."
+    },
+    {
+      "log": ".research/implementation/event-admission/initial-green.log",
+      "sha256": "f62e14441ec100326773cabddc02d8ac49555b12a1e7209c3675bc55b24d2fb8",
+      "finding": "Borrow compile failure during shared commit extraction."
+    },
+    {
+      "log": ".research/implementation/event-admission/second-green.log",
+      "sha256": "21317d80de76dcdaac597c5456f3fa883702fc1a7bbccc6ebfb0aa77bf093e55",
+      "finding": "Test setup used unsorted namespace list; no product behavior exercised."
+    },
+    {
+      "log": ".research/implementation/event-admission/fixture-first.log",
+      "sha256": "e0371bc8a047c211cf4b7407382a5a87ed21f6abf3619aa0361880d39fc01e63",
+      "finding": "Fixture adapter confused numeric JSON fixture counters with model decimal-string serialization."
+    },
+    {
+      "log": ".research/implementation/event-admission/inventory-red.log",
+      "sha256": "c3e21a40a6fb3b79917664a8ff05d4d096f719a378ec35789c2a00d466f5cb99",
+      "finding": "Behavioral RED: corrupted source counter was accepted. Writer now verifies its actual retained last fact; assertions unchanged."
+    },
+    {
+      "log": ".research/implementation/event-admission/clippy-first.log",
+      "sha256": "607d08febd6b81f647c3b8ea0725c4d097708c0f534d361c1d1b04d110e8a034",
+      "finding": "Compile failure: mutable lease required."
+    },
+    {
+      "log": ".research/implementation/event-admission/clippy-second.log",
+      "sha256": "599ee3925c8330421e4322aba824601b18844c2ff68bdf860cab1a14ab1ebe8f",
+      "finding": "Clippy rejected cloning a Copy manifest."
+    }
+  ],
+  "semantics": "Actual RocksDB, actual ID/BIP340 verification, all 15 frozen semantic operations and independent rejection bytes. Tests inspect scientific facts, scoped inventory, exact strict replay and no-mutation refusals.",
+  "review": "Integrating owner read the complete writer, connected Control bridge, native tests, probe, independent oracle and changed harness with their existing owning contracts. No independent agent review.",
+  "not_run": [
+    "Connected PostgreSQL event admission on Linux",
+    "Native process-kill schedules for this revision",
+    "ENOSPC or write-error ambiguity",
+    "Maximum/aged-state mixed load",
+    "ACK/retirement and successor recovery",
+    "Archive/read/export milestone",
+    "Installed runtime and release journeys",
+    "Linux arm64"
+  ]
+}

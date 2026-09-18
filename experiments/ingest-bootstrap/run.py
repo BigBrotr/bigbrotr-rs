@@ -12,6 +12,7 @@ SOURCE = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(SOURCE / 'experiments/control-migrations'))
 import lab
 from oracle import expected
+from event_oracle import expected_event
 
 
 def require(value, reason):
@@ -22,6 +23,7 @@ def require(value, reason):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--root', type=Path, required=True)
+    parser.add_argument('--suite', choices=['bootstrap', 'event'], default='bootstrap')
     args = parser.parse_args()
     root = args.root.resolve(strict=True)
     state = lab.load(root)
@@ -32,9 +34,10 @@ def main():
     build = Path(next(m['Source'] for m in mounts if m['Destination'] == '/build' and not m['RW']))
     probe = json.loads((build / 'ingest-bootstrap-probe-build.json').read_text())
     require(probe['source_revision'] == revision and lab.docker('exec', state['client'], 'sha256sum', '/build/ingest_bootstrap_probe').stdout.split()[0] == probe['binary_sha256'], 'probe-identity')
-    output = root / 'ingest-bootstrap.json'
+    event_suite = args.suite == 'event'
+    output = root / ('ingest-event.json' if event_suite else 'ingest-bootstrap.json')
     require(not output.exists(), 'existing-report')
-    report = {'format': 'bigbrotr-ingest-bootstrap-native/1', 'source': revision, 'probe': probe,
+    report = {'format': 'bigbrotr-ingest-event-native/1' if event_suite else 'bigbrotr-ingest-bootstrap-native/1', 'source': revision, 'probe': probe,
         'status': 'RUNNING', 'cases': [], 'containers': [], 'server': state['server']}
     def save(): lab.write_json(output, report)
     def rows(database):
@@ -43,7 +46,9 @@ def main():
         return {n: json.loads(lab.sql(state, database, f"SELECT coalesce(json_agg(t),'[]') FROM control.{n} t;")) for n in names}
     save()
     try:
-        for mode in ['write', 'cancelled', 'expired', 'retired', 'wrong-manifest', 'wrong-root', 'before', 'after']:
+        modes = ['write', 'cancelled', 'expired', 'retired', 'wrong-root', 'before', 'after'] if event_suite else ['write', 'cancelled', 'expired', 'retired', 'wrong-manifest', 'wrong-root', 'before', 'after']
+        for case in modes:
+            mode = 'event-' + case if event_suite else case
             db = 'bb_bootstrap_' + mode.replace('-', '_')
             lab.sql(state, 'postgres', f'CREATE DATABASE {db} OWNER bigbrotr_migrator;')
             path = lab.config(root, state, db)
@@ -56,7 +61,7 @@ def main():
             before = rows(db)
             dataset = bytes.fromhex(before['datasets'][0]['dataset_id'][2:])
             command = ['/build/ingest_bootstrap_probe', mode, db, '/lab/secrets/application', '/lab/store_' + mode]
-            if mode in ['before', 'after']:
+            if case in ['before', 'after']:
                 name = state['client'] + '-' + mode
                 require(lab.docker('inspect', name, check=False).returncode != 0, 'existing-container')
                 record = {'name': name, 'state': 'creating'}
@@ -66,7 +71,7 @@ def main():
                     '--read-only', '--cap-drop', 'ALL', '--security-opt', 'no-new-privileges',
                     '--mount', f'type=bind,src={root},dst=/lab', '--mount', f'type=bind,src={build},dst=/build,readonly', state['client_image'], *command).stdout.strip()
                 record['state'] = 'running'; save()
-                marker = 'before-native' if mode == 'before' else 'after-native-before-receipt'
+                marker = 'before-native' if case == 'before' else 'after-native-before-receipt'
                 deadline = time.monotonic() + 20
                 while time.monotonic() < deadline:
                     result = lab.docker('logs', name)
@@ -94,24 +99,24 @@ def main():
             dumped = lab.docker('exec', state['client'], '/build/ingest_bootstrap_probe', 'dump', '/lab/store_' + mode)
             (root / (mode + '.rocks.json')).write_text(dumped.stdout)
             actual = json.loads(dumped.stdout)
-            wanted, receipt, facts = expected(dataset, mode in ['write', 'after'], policy=2 if mode == 'wrong-manifest' else 1)
+            wanted, receipt, facts = expected_event(dataset, case in ['write', 'after']) if event_suite else expected(dataset, case in ['write', 'after'], policy=2 if case == 'wrong-manifest' else 1)
             tuples = [(r['cf'], bytes.fromhex(r['key']), bytes.fromhex(r['value'])) for r in actual['rows']]
             require(actual['event'] == 'dump' and tuples == wanted, 'independent-complete-native-state-' + mode)
-            if mode == 'write':
+            if case == 'write':
                 require(messages[-1] == {'event':'receipt', 'bytes':receipt.hex(), 'facts':[f.hex() for f in facts], 'replay_exact':True}, 'external-receipt-and-facts')
-            elif mode not in ['before', 'after']:
+            elif case not in ['before', 'after']:
                 require(messages[-1]['event'] == 'refused', 'missing-refusal')
             else:
                 require(all(m['event'] != 'receipt' for m in messages), 'crash-delivered-receipt')
             after = rows(db)
             changed = {n for n in before if before[n] != after[n]}
             require(changed == {'datasets','owner_epochs','role_instances','topology_generations','topology_streams','source_streams','producer_slots','producer_epochs','allocation_domains'}, 'unexpected-pg-effects')
-            require(len(after['owner_epochs']) == 2 and len(after['producer_epochs']) == 1 and len(after['allocation_domains']) == 1, 'pg-cardinality')
+            require(len(after['owner_epochs']) == 2 and len(after['producer_epochs']) == 1 and len(after['allocation_domains']) == (3 if event_suite else 1), 'pg-cardinality')
             (root / (mode + '.control.json')).write_text(json.dumps(after, indent=2) + '\n')
             report['cases'].append({'name':mode, 'result':'PASS', 'native_rows':len(tuples), 'native_sha256':hashlib.sha256(dumped.stdout.encode()).hexdigest(), 'control_tables':len(after)})
             save()
         report['status'] = 'PASS'
-        report['not_run'] = ['power-loss','ENOSPC','write-error-ambiguity','mid-FFI-kill','producer-closing-concurrent-with-FFI','maximum-batch-load','general-event-admission','installed-runtime','successor-recovery-authority','arm64']
+        report['not_run'] = ['power-loss','ENOSPC','write-error-ambiguity','mid-FFI-kill','producer-closing-concurrent-with-FFI','maximum-batch-load','complete-event-admission-and-retirement','installed-runtime','successor-recovery-authority','arm64']
     except BaseException as error:
         report['status'] = 'FAIL'; report['failure'] = str(error); raise
     finally: save()

@@ -14,7 +14,10 @@ use tokio_postgres::{Client, Row, Transaction};
 
 #[path = "initial_batch.rs"]
 mod initial_batch;
-pub use initial_batch::{InitialBatchError, InitialBatchRequest};
+pub use initial_batch::{
+    InitialBatchError, InitialBatchRequest, InitialEventError, InitialEventRequest,
+    InitialOperationError,
+};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum OwnerError {

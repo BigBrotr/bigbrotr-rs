@@ -34,6 +34,17 @@ pub use bootstrap::{BootstrapError, BootstrapLimits};
 #[path = "bootstrap_tests.rs"]
 mod bootstrap_tests;
 
+#[path = "admission.rs"]
+mod admission;
+pub use admission::{
+    AdmissionError, AdmissionLimits, AdmissionOutcome, PreparedEvent, RejectionReason,
+    StoredOutcome,
+};
+
+#[cfg(test)]
+#[path = "admission_tests.rs"]
+mod admission_tests;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum StoreError {
     InsufficientNativeReservation,

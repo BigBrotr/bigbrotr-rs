@@ -105,6 +105,11 @@ One owner serializes exact identity decisions for each writable directory.
   and process kills before write / after commit before receipt delivery. This
   prerequisite does not complete event admission or this step; power loss, ENOSPC,
   mid-FFI errors and successor recovery remain unqualified.
+  The [initial-owner event writer](../reference/ingest-admission.md) adds owned
+  verification, atomic event/scope/receive/witness effects and strict replay. Its
+  signed fixture passes locally; connected native qualification remains pending.
+  ACK/retirement, archive resolution and installed source-policy/runtime remain
+  required before this step or the first end-to-end milestone is complete.
 - [ ] **Step 3:** Verify outside expensive critical sections where safe, then serialize the
   final exact admission check/commit. Same-ID concurrency cannot overwrite first
   admission or suppress a distinct permitted provenance edge.

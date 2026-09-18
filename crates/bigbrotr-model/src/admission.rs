@@ -135,6 +135,10 @@ impl EventIntent {
     pub const fn event(&self) -> &SignedEvent {
         &self.event
     }
+    /// Transfer the original buffers after recording the bounded intent and attribution.
+    pub fn into_event(self) -> SignedEvent {
+        self.event
+    }
     pub const fn origin(&self) -> EventOrigin {
         match self.arrival {
             Arrival::Network(_) => EventOrigin::Network,

@@ -25,6 +25,9 @@ use bigbrotr_model::{
 use std::{cell::Cell, io::Write, path::Path, sync::atomic::AtomicBool, time::Duration};
 use tokio_postgres::{Config, NoTls};
 
+#[path = "support/ingest_event.rs"]
+mod ingest_event;
+
 const MIB: u64 = 1024 * 1024;
 fn emit(value: serde_json::Value) {
     println!("{value}");
@@ -112,6 +115,7 @@ async fn run(config: Config, mode: &str, path: &Path) {
     )
     .await
     .unwrap();
+    let event_mode = mode.starts_with("event-");
     let spec = InitialRegistration {
         dataset_id: dataset,
         instance_id: *instance.as_bytes(),
@@ -125,10 +129,21 @@ async fn run(config: Config, mode: &str, path: &Path) {
         config_digest: Digest256::from_bytes(policy.config_digest),
         policy_digest: Digest256::from_bytes(policy.policy_digest),
         previous_topology: None,
-        allocation_domains: vec![(
-            DictionaryKind::VisibilityScope,
-            [64; 16].try_into().unwrap(),
-        )],
+        allocation_domains: if event_mode {
+            vec![
+                (
+                    DictionaryKind::VisibilityScope,
+                    [64; 16].try_into().unwrap(),
+                ),
+                (DictionaryKind::Event, [68; 16].try_into().unwrap()),
+                (DictionaryKind::DatasetLineage, [69; 16].try_into().unwrap()),
+            ]
+        } else {
+            vec![(
+                DictionaryKind::VisibilityScope,
+                [64; 16].try_into().unwrap(),
+            )]
+        },
         producer_slot_id: [66; 16].try_into().unwrap(),
         outstanding_request_limit: 2,
         created_at_us: now,
@@ -158,27 +173,50 @@ async fn run(config: Config, mode: &str, path: &Path) {
         allocation_domain: [64; 16].try_into().unwrap(),
         ordinal: Ordinal::new(1).unwrap(),
     };
+    let mut dictionaries: Vec<_> = ["public", "private"]
+        .into_iter()
+        .enumerate()
+        .map(|(i, class)| {
+            DictionaryEntry::new(
+                QualifiedRef {
+                    ordinal: Ordinal::new(i as u64 + 1).unwrap(),
+                    ..scope
+                },
+                DictionaryDescriptor::Visibility {
+                    class: DescriptorLabel::new(class.into()).unwrap(),
+                },
+            )
+            .unwrap()
+        })
+        .collect();
+    if event_mode {
+        dictionaries.push(
+            DictionaryEntry::new(
+                QualifiedRef {
+                    dictionary_kind: DictionaryKind::DatasetLineage,
+                    allocation_domain: [69; 16].try_into().unwrap(),
+                    ordinal: Ordinal::new(1).unwrap(),
+                    ..scope
+                },
+                DictionaryDescriptor::DatasetLineage(bigbrotr_model::DatasetLineageDescriptor {
+                    format: DescriptorLabel::new("nostr-jsonl".into()).unwrap(),
+                    format_version: 1,
+                    source_dataset_id: None,
+                    source_artifact_digest:
+                        "c30658a75b2b913e509b7618f36ebae75fa1d5680dc8fe4e322aae638d8affae"
+                            .parse()
+                            .unwrap(),
+                }),
+            )
+            .unwrap(),
+        );
+    }
     let intent = EvidenceIntent::new(
         1,
         scope,
-        ["public", "private"]
-            .into_iter()
-            .enumerate()
-            .map(|(i, class)| {
-                DictionaryEntry::new(
-                    QualifiedRef {
-                        ordinal: Ordinal::new(i as u64 + 1).unwrap(),
-                        ..scope
-                    },
-                    DictionaryDescriptor::Visibility {
-                        class: DescriptorLabel::new(class.into()).unwrap(),
-                    },
-                )
-                .unwrap()
-            })
-            .collect(),
+        dictionaries,
         EvidenceIntentLimits {
-            max_entries: 2,
+            max_entries: 3,
             max_encoded_intent_bytes: 8192,
             max_validation_scratch_bytes: 1024,
         },
@@ -186,9 +224,9 @@ async fn run(config: Config, mode: &str, path: &Path) {
     .unwrap();
     let budget = ResourceBudget::new(
         ProcessEnvelope::new(
-            193 * MIB,
+            241 * MIB,
             0,
-            ResourceLimits::new(48 * MIB, 8, 144 * MIB, MIB),
+            ResourceLimits::new(96 * MIB, 8, 144 * MIB, MIB),
             WaiterLimits::new(1, 1),
         )
         .unwrap(),
@@ -242,7 +280,15 @@ async fn run(config: Config, mode: &str, path: &Path) {
             },
         )
         .await;
-    if matches!(mode, "write" | "after") {
+    if event_mode {
+        let bootstrap = result.unwrap();
+        assert_eq!(bootstrap.receipt().batch().unwrap().records().len(), 3);
+        drop(bootstrap);
+        ingest_event::run(
+            owner, &observer, &mut store, &spec, path, &budget, mode, scope,
+        )
+        .await;
+    } else if matches!(mode, "write" | "after") {
         let receipt = result.unwrap();
         assert_eq!(validated, 2);
         let bytes = receipt.receipt().encode_persistent(8192).unwrap();

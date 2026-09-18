@@ -94,3 +94,11 @@ events, and at most four scientific facts per operation. The referenced corpus
 must be no larger than the declared byte bound and match its SHA-256 before use.
 The admission test should add its ordinary wire, intent, batch, and resource
 limits; these fixture bounds are not deployment limits.
+
+`rejected-request.json` freezes the complete profile-1 request preimage, digest
+and native rejection value for the invalid-signature operation with provenance
+disabled and the literal bindings recorded in that file. Its bytes were encoded
+independently in Python from the format recipe, without the Rust writer. The
+native test compares the entire stored value and checks replay after reopen,
+changed-intent conflict, and refusal of malformed length, version, request ID,
+dataset and reason code without further durable effects.

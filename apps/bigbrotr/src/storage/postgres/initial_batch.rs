@@ -7,7 +7,10 @@ use crate::{
     },
     storage::rocks::{
         manifest::AllocationNamespaces,
-        store::{BootstrapError, BootstrapLimits, IngestStore, StoredReceipt},
+        store::{
+            AdmissionError, AdmissionLimits, BootstrapError, BootstrapLimits, IngestStore,
+            PreparedEvent, StoredOutcome, StoredReceipt,
+        },
     },
 };
 use bigbrotr_model::{
@@ -16,24 +19,45 @@ use bigbrotr_model::{
 use std::sync::atomic::{AtomicBool, Ordering};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum InitialBatchError {
+pub enum InitialOperationError<E> {
     Control(OwnerError),
     Registry(ingest_registry::RegistryError),
-    Native(BootstrapError),
+    Native(E),
     /// Native work was dispatched. Its retained request must be resolved even
     /// when later coordination cleanup or output authorization is unavailable.
     DeliveryUnknown,
 }
-impl fmt::Display for InitialBatchError {
+impl<E: fmt::Debug> fmt::Display for InitialOperationError<E> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "initial native batch unavailable: {self:?}")
     }
 }
-impl std::error::Error for InitialBatchError {}
-impl From<OwnerError> for InitialBatchError {
+impl<E: fmt::Debug> std::error::Error for InitialOperationError<E> {}
+impl<E> From<OwnerError> for InitialOperationError<E> {
     fn from(value: OwnerError) -> Self {
         Self::Control(value)
     }
+}
+
+pub type InitialBatchError = InitialOperationError<BootstrapError>;
+pub type InitialEventError = InitialOperationError<AdmissionError>;
+
+/// Static factory coordinates, not request-supplied authority.
+struct InitialIngestContext<'a> {
+    ingest_root: &'a std::path::Path,
+    registration: &'a ingest_registry::InitialRegistration,
+    policy_ttl: Duration,
+}
+
+pub struct InitialEventRequest<'a> {
+    pub ingest_root: &'a std::path::Path,
+    pub registration: &'a ingest_registry::InitialRegistration,
+    pub event: PreparedEvent,
+    pub provenance_enabled: bool,
+    pub recorded_at: ObservedTime,
+    pub limits: AdmissionLimits,
+    pub policy_ttl: Duration,
+    pub cancelled: &'a AtomicBool,
 }
 
 /// Expected data, not a grant. Both original input and whole PG document buffers
@@ -65,69 +89,17 @@ impl ControlSession {
     ) -> Result<StoredReceipt, InitialBatchError> {
         let spec = input.registration;
         let identity = *store.manifest().identity();
-        let domains = AllocationNamespaces::from_entries(&spec.allocation_domains)
-            .map_err(|_| OwnerError::InvalidInput)?;
-        if !store.matches_configured_root(input.ingest_root)
-            || spec.dataset_id != self.request.dataset
-            || spec.instance_id != *self.request.instance.as_bytes()
-            || spec.control != self.identity
-            || identity.dataset_id != spec.dataset_id
-            || identity.owner_resource_id != spec.ingest_resource_id
-            || identity.shard_id != spec.shard_id
-            || identity.owner_epoch.get() != 1
-            || identity.process_incarnation != spec.process_incarnation
-            || identity.topology_generation
-                != spec
-                    .target_topology()
-                    .map_err(InitialBatchError::Registry)?
-            || identity.policy_epoch.get() != spec.policy_revision
-            || store.manifest().allocation_namespaces() != &domains
-        {
-            return Err(OwnerError::InvalidInput.into());
-        }
-        let mut lease = PolicyLeaseTracker::new(
-            spec.dataset_id,
-            spec.process_incarnation,
-            identity.policy_epoch,
-            PolicyLeaseTtl::new(input.policy_ttl).map_err(|_| OwnerError::InvalidInput)?,
-        )
-        .map_err(|_| OwnerError::Unavailable)?;
-        let ticket = lease.begin_refresh().map_err(|_| OwnerError::Unavailable)?;
-        self.begin_operation()?;
-        let tx = application_transaction(&mut self.client, 7)
-            .await
-            .map_err(transaction_error)?;
-        require(&tx, self.request.dataset, self.identity).await?;
-        let policy = snapshot(&tx, &self.request, &mut validate).await?;
-        if policy.config_revision != spec.config_revision
-            || policy.policy_revision != spec.policy_revision
-            || policy.config_digest != *spec.config_digest.as_bytes()
-            || policy.policy_digest != *spec.policy_digest.as_bytes()
-        {
-            return Err(OwnerError::InvalidPolicy.into());
-        }
-        ingest_registry::require_initial_registration(&tx, spec)
-            .await
-            .map_err(InitialBatchError::Registry)?;
-        // observe() already holds row locks through native completion, including
-        // the producer closing barrier. A scheduling TTL alone is no exclusion.
-        let remaining:i64 = tx.query_one("SELECT LEAST(c.lease_expires_at_us, i.lease_expires_at_us) - (EXTRACT(EPOCH FROM pg_catalog.clock_timestamp()) * 1000000)::bigint FROM control.owner_epochs c CROSS JOIN control.owner_epochs i WHERE c.resource_id = $1::bytea AND c.epoch = $2::text::numeric AND i.resource_id = $3::bytea AND i.epoch = 1", &[&&spec.control.resource_id.as_bytes()[..],&spec.control.epoch.get().to_string(),&&spec.ingest_resource_id.as_bytes()[..]])
-            .await.map_err(backend)?.try_get(0).map_err(backend)?;
-        let remaining = u64::try_from(remaining)
-            .ok()
-            .filter(|v| *v > 0)
-            .ok_or(OwnerError::Unavailable)?;
-        lease
-            .complete_refresh(
-                &ticket,
-                LeaseResponse {
-                    dataset: spec.dataset_id,
-                    process_incarnation: spec.process_incarnation,
-                    policy_epoch: PolicyEpoch::new(policy.policy_revision),
-                    ttl: input.policy_ttl.min(Duration::from_micros(remaining)),
+        let (tx, mut lease) = self
+            .begin_initial_native_operation(
+                store,
+                InitialIngestContext {
+                    ingest_root: input.ingest_root,
+                    registration: spec,
+                    policy_ttl: input.policy_ttl,
                 },
+                &mut validate,
             )
-            .map_err(|_| OwnerError::Unavailable)?;
+            .await?;
         let result = store.bootstrap_dictionaries(
             ProducerRequestId {
                 producer_slot_id: spec.producer_slot_id,
@@ -161,5 +133,137 @@ impl ControlSession {
         }
         self.available = true;
         Ok(receipt)
+    }
+    /// The trusted validator must authorize this exact source, scope, origin and
+    /// provenance choice against both complete current documents and static roots.
+    /// This is not a remote caller callback or an installed policy implementation.
+    /// The prepared verifier result alone grants no admission or visibility.
+    pub async fn admit_initial_event(
+        &mut self,
+        store: &mut IngestStore,
+        input: InitialEventRequest<'_>,
+        permit: OwnedPermit,
+        mut validate: impl FnMut(&str, [u8; 32], &PreparedEvent) -> Result<(), OwnerError>,
+    ) -> Result<StoredOutcome, InitialEventError> {
+        let spec = input.registration;
+        if input.event.request_id().producer_slot_id != spec.producer_slot_id
+            || input.event.request_id().producer_epoch.get() != 1
+            || input.limits.max_outstanding_requests > u64::from(spec.outstanding_request_limit)
+        {
+            return Err(OwnerError::InvalidInput.into());
+        }
+        let identity = *store.manifest().identity();
+        let (tx, mut lease) = self
+            .begin_initial_native_operation(
+                store,
+                InitialIngestContext {
+                    ingest_root: input.ingest_root,
+                    registration: spec,
+                    policy_ttl: input.policy_ttl,
+                },
+                |document, digest| validate(document, digest, &input.event),
+            )
+            .await?;
+        let result = store.admit_event(
+            input.event,
+            input.recorded_at,
+            input.provenance_enabled,
+            input.limits,
+            permit,
+            || {
+                if input.cancelled.load(Ordering::Relaxed) {
+                    return Err(AdmissionError::AuthorityUnavailable);
+                }
+                lease
+                    .check_delivery(identity.policy_epoch)
+                    .map_err(|_| AdmissionError::AuthorityUnavailable)
+            },
+        );
+        tx.rollback()
+            .await
+            .map_err(|_| InitialEventError::DeliveryUnknown)?;
+        let outcome = result.map_err(InitialEventError::Native)?;
+        if input.cancelled.load(Ordering::Relaxed)
+            || self.client.is_closed()
+            || lease.check_delivery(identity.policy_epoch).is_err()
+        {
+            return Err(InitialEventError::DeliveryUnknown);
+        }
+        self.available = true;
+        Ok(outcome)
+    }
+
+    async fn begin_initial_native_operation<'a, E>(
+        &'a mut self,
+        store: &IngestStore,
+        input: InitialIngestContext<'_>,
+        mut validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<(Transaction<'a>, PolicyLeaseTracker), InitialOperationError<E>> {
+        let spec = input.registration;
+        let identity = *store.manifest().identity();
+        let domains = AllocationNamespaces::from_entries(&spec.allocation_domains)
+            .map_err(|_| OwnerError::InvalidInput)?;
+        if !store.matches_configured_root(input.ingest_root)
+            || spec.dataset_id != self.request.dataset
+            || spec.instance_id != *self.request.instance.as_bytes()
+            || spec.control != self.identity
+            || identity.dataset_id != spec.dataset_id
+            || identity.owner_resource_id != spec.ingest_resource_id
+            || identity.shard_id != spec.shard_id
+            || identity.owner_epoch.get() != 1
+            || identity.process_incarnation != spec.process_incarnation
+            || identity.topology_generation
+                != spec
+                    .target_topology()
+                    .map_err(InitialOperationError::Registry)?
+            || identity.policy_epoch.get() != spec.policy_revision
+            || store.manifest().allocation_namespaces() != &domains
+        {
+            return Err(OwnerError::InvalidInput.into());
+        }
+        let mut lease = PolicyLeaseTracker::new(
+            spec.dataset_id,
+            spec.process_incarnation,
+            identity.policy_epoch,
+            PolicyLeaseTtl::new(input.policy_ttl).map_err(|_| OwnerError::InvalidInput)?,
+        )
+        .map_err(|_| OwnerError::Unavailable)?;
+        let ticket = lease.begin_refresh().map_err(|_| OwnerError::Unavailable)?;
+        self.begin_operation()?;
+        let tx = application_transaction(&mut self.client, 7)
+            .await
+            .map_err(transaction_error)?;
+        require(&tx, self.request.dataset, self.identity).await?;
+        let policy = snapshot(&tx, &self.request, &mut validate).await?;
+        if policy.config_revision != spec.config_revision
+            || policy.policy_revision != spec.policy_revision
+            || policy.config_digest != *spec.config_digest.as_bytes()
+            || policy.policy_digest != *spec.policy_digest.as_bytes()
+        {
+            return Err(OwnerError::InvalidPolicy.into());
+        }
+        ingest_registry::require_initial_registration(&tx, spec)
+            .await
+            .map_err(InitialOperationError::Registry)?;
+        // observe() already holds row locks through native completion, including
+        // the producer closing barrier. A scheduling TTL alone is no exclusion.
+        let remaining:i64 = tx.query_one("SELECT LEAST(c.lease_expires_at_us, i.lease_expires_at_us) - (EXTRACT(EPOCH FROM pg_catalog.clock_timestamp()) * 1000000)::bigint FROM control.owner_epochs c CROSS JOIN control.owner_epochs i WHERE c.resource_id = $1::bytea AND c.epoch = $2::text::numeric AND i.resource_id = $3::bytea AND i.epoch = 1", &[&&spec.control.resource_id.as_bytes()[..],&spec.control.epoch.get().to_string(),&&spec.ingest_resource_id.as_bytes()[..]])
+            .await.map_err(backend)?.try_get(0).map_err(backend)?;
+        let remaining = u64::try_from(remaining)
+            .ok()
+            .filter(|v| *v > 0)
+            .ok_or(OwnerError::Unavailable)?;
+        lease
+            .complete_refresh(
+                &ticket,
+                LeaseResponse {
+                    dataset: spec.dataset_id,
+                    process_incarnation: spec.process_incarnation,
+                    policy_epoch: PolicyEpoch::new(policy.policy_revision),
+                    ttl: input.policy_ttl.min(Duration::from_micros(remaining)),
+                },
+            )
+            .map_err(|_| OwnerError::Unavailable)?;
+        Ok((tx, lease))
     }
 }

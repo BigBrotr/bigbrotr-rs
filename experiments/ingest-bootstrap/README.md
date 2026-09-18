@@ -26,3 +26,23 @@ These are process crash experiments, not power-loss/host-failure evidence. They
 do not inject errors inside FFI, exercise ENOSPC or prove a successor can resume
 the old owner's authority. The report lists these and other unexecuted cases.
 Missing infrastructure, an empty dump or a failed harness is not PASS.
+
+## Connected signed import
+
+`run.py --suite event --root LAB` exercises seven separately initialized native
+cases through `ControlSession::admit_initial_event`. The source is the exact
+independently signed `tests/fixtures/ingest/import-event.jsonl` artifact. The
+registered initial producer first bootstraps visibility and lineage dictionaries,
+then admits the import at request sequence two. The finite workload fits its
+two-request window; it does not implement or qualify ACK/window progress.
+
+`event_oracle.py` independently assembles all sixteen bootstrap rows or all
+twenty-six committed rows, including exact event/payload/eligibility, request and
+batch bytes. A normal case retries under the same owner; a separate read-only
+native process reopens the directory for complete inspection. The before/after
+process kills occur around event dispatch and external receipt delivery, after
+bootstrap. Source-close, cancellation, expired lease and configured-root controls
+must leave exactly the bootstrap state. The application validator checks the
+complete frozen policy plus this exact source, scope, lineage and verification
+limit; it is not an installed source-policy evaluator. The full signed semantic
+fixture is separately exercised by the native Rust writer tests.

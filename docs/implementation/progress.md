@@ -7,129 +7,99 @@ verify actual Git, evidence and owned resources before continuing.
 ## Mandate and current task
 
 Owner-authorized implementation is active ([Q30](../planning/questions.md),
-[mandate](../planning/mandate.md)). The objective remains the complete selected
-product, not this milestone. The session goal was freshly read as `active`.
-GitHub billing remains external NOT_RUN; use the shared trusted CI/build tooling
-on Tux. No public release, repository rename or Linux arm64 qualification exists.
+[mandate](../planning/mandate.md)); the complete selected product remains the goal.
+The owner explicitly directed continuing trusted native work on Tux despite
+GitHub Actions billing. Hosted runners remain NOT_RUN. No public release,
+repository rename or Linux arm64 qualification exists.
 
-P02-T02 initial dictionary bootstrap now connects the actual Control session to
-one synchronized native RocksDB batch, including facts, exact inventory,
-allocation/source counters, producer state, request receipt and pending marker.
-The existing receipt and pending readers consume it. Full retained replay checks
-the entire bounded initial state. No P02-T02 checkbox was advanced: general signed
-event admission, producer retirement, archive/read/export/restart and all later
-product responsibilities remain required.
-
-The latest local correction requires canonical endpoint bytes through the existing
-protocol normalizer and explicitly compares the locked directory with the trusted
-factory's configured root. The native probe now includes wrong-root refusal. This
-is still a connected backend slice; installed Ingest startup, full action grants,
-successor/recovery authority and event admission are not implemented.
+P02-T02 steps 2–5: the initial event writer now verifies owned signed input and
+atomically writes event dictionaries, shared payload, scoped eligibility,
+receive/witness corrections, exact dependencies, pending batch and strict request
+detail. Invalid signatures retain bounded operational rejection only. The actual
+Control session checks current registration/root/policy and retains PG row locks
+through synchronized native dispatch. The isolated signed-import client consumes
+this API; installed source-policy evaluation and Ingest startup are still missing.
+No checkbox was advanced. ACK/retirement, archive resolution, successor recovery,
+first archive/read/export/restart and every later product milestone remain required.
 
 ## Git and local ownership
 
-Starting main/origin/main were clean at
-`4a927bacac89096f7c08446921c7d3ea06f4a0ea`. Candidate
-`524e38cc7bd0c4f003d78e0cb40018bdcc3eb874` is committed locally, not pushed.
-Correction `31bac4a22a3102e99be49b0c90799542adb12cee` is also committed locally
-and not pushed. Root now owns only current checkpoint/inventory/evidence updates.
-Resolve actual HEAD and dirty/remote state on resumption; no other contributor
-writes were found. Published history was not rewritten. The Go neighbor is untouched.
+Main and origin/main were clean at `99320108d4c2a9a676af71ef8ebec7a4464ba406`.
+Root owns all current event-admission changes: model ownership accessor; native
+writer/tests/shared commit; Control bridge; finite probe/oracle; rejection golden;
+contracts/task links and evidence. No contributor conflict or Go-neighbor edit
+was found. Candidate commit and exact-revision Tux execution are next; resolve
+actual HEAD/status/remote rather than assuming this pre-commit value remains HEAD.
+Normal private pushes are authorized; published history must not be rewritten.
 
-Mac checks: 48 model tests and four initial actual native tests passed. The added
-endpoint test first reproduced an incorrectly accepted noncanonical URL; after
-fixing the writer, all five bootstrap tests pass. Workspace Clippy and the final
-probe check pass. See [Mac evidence](evidence/p02-ingest-bootstrap-mac-20260918.json)
-for exact source/log hashes and the intermediate missing-module compile error.
+## Local findings and evidence
 
-## Native results and corrections
+[Mac evidence](evidence/p02-event-admission-mac-20260918.json) records exact source,
+lockfile and log hashes. Forty actual library tests passed, including five
+bootstrap and six event cases. All fifteen frozen signed semantic operations
+check actual inventory/history and ID/BIP340 verification. The later focused
+rejection test also passes: independent literal stored bytes, reopen, changed
+intent and six malformed framing/key/dataset/code controls, with unchanged
+native state on refusal. Final application all-target Clippy, formatting and
+artifact checks pass. The test corpus and engine are real, not mocks.
 
-Candidate 524e38c built on Tux Linux amd64 from a new clean Git-bundle clone.
-All 528 archived and actual source files, source manifest, native tools and both
-downloaded ELF files were independently checked against Git:
+A behavioral RED found that a corrupt future source counter was accepted. The
+writer now verifies its retained last fact before allocation. Setup/compile
+failures (including fixture numeric counter adaptation) remain recorded, not PASS.
+The new persistent index/rejection formats and bounds are documented in
+[initial event admission](../reference/ingest-admission.md). Review covered the
+complete new writer, native tests, shared Control bridge, finite probe and Python
+oracle/harness plus their existing owning contracts. No independent agent review.
+Later archive/read/UI responsibilities remain outside this inspected slice.
 
-- CLI SHA-256 `9894ba33eb4bc773a69c73334d4a789bbf7b9c575a6350d6a504f7d088ff75b3`.
-- Probe SHA-256 `4aace7d0886d813abb305fdd794166f9824bb2e08144271778feb7c124a5aaae`.
-- Native release tests: 48 model and four bootstrap cases PASS; eleven downloaded
-  test executables independently hashed. These precede the endpoint/root correction.
-
-The first native runtime matrix is **FAIL**, after the first actual write/replay.
-Its independent Python oracle incorrectly used dictionary kind 1 for visibility;
-the pre-existing identity and descriptor contracts assign kind 4. Correcting that
-constant compares all twelve unchanged native rows, exact receipt and both fact
-preimages successfully. This local re-audit does not turn unexecuted crash/negative
-cases into PASS. The initial report and bytes are retained unchanged.
-
-The first native test launcher also failed before any test command: it precreated
-the output directory that shared CI `execute` requires to be absent. A corrected
-launcher ran all 52 tests in a separate retained container. The initial attempt
-remains NOT_RUN. An initial lab name was rejected before resource creation, and
-SFTP did not expand a brace expression; explicit artifact paths then downloaded
-and audited successfully. None of these errors was recorded as product PASS.
-
-Raw records, observers, failed and successful attempts:
-`.research/implementation/ingest-bootstrap/`. The exact build, original runtime
-report/dump, corrected-oracle audit and test artifacts are in `native-524e38c/`.
-Reproducible runtime/oracle sources are in `experiments/ingest-bootstrap/`.
+Raw logs and scripts: `.research/implementation/event-admission/`.
+The native harness is `experiments/ingest-bootstrap/run.py --suite event`: seven
+cases compare all sixteen bootstrap or twenty-six committed rows against the
+independent Python oracle. It has not yet executed. The existing eight-case
+bootstrap suite must also run because commit/authority code was shared.
+Process kills do not qualify host/power loss, ENOSPC, mid-FFI errors or successor
+fencing. Small fixtures do not qualify maximum or aged-state capacity.
 
 ## Owned Tux state
 
-Latest complete inventory: `.research/implementation/ingest-bootstrap/final-preflight.json`.
-Zero running BigBrotr containers; the same eight unrelated workloads remain
-running. Shared checkout remains clean detached `6be8515` with zero consumers.
-No unrelated or retained experimental resource was removed.
+Fresh inventory: `.research/implementation/event-admission/preflight.json`.
+Zero running BigBrotr containers; the same eight unrelated workloads are running.
+The shared checkout is clean detached
+`6be851580ba415eed5ff0979ee7072480f9ee3ab`, with zero consumers. Free disk was
+345129488384 bytes. Inspect actual resource identities before each lifecycle action.
+No new event lab exists yet. All prior labs are stopped/retained, including
+`/home/tux/bigbrotr-implementation-20260917/runs/bootstrap-524e38c` and
+`runs/bootstrap-31bac4a`. Their exact IDs/labels/limits are in the
+[laboratory inventory](../research/laboratory-inventory.json). Do not reuse or
+delete their source/data and do not reset the shared checkout.
 
-Candidate root: `/home/tux/bigbrotr-implementation-20260917/runs/bootstrap-524e38c`.
-Its `source` checkout is immutable input, with separate writable `out` and retained
-`runtime` lab. Build container `bigbrotr-implementation-bootstrap-524e38c-build`
-(`09ad7c9f...`, owner `5bdbb89a14feeebb1af26fa10a2042c7`) stopped, exit0/OOMfalse.
-Initial test container stopped exit1 with no tests; retry stopped exit0/OOMfalse.
-The PG16.15 laboratory and idle client were explicitly stopped after their ownership
-labels were verified. Its first test database and native directory are retained.
-Full IDs, labels, limits, launch receipts and terminal records are in the
-[laboratory inventory](../research/laboratory-inventory.json). Build/test limits
-were 2CPU/6GiB/512PIDs; no ports, Docker socket or release credentials were exposed.
+The earlier bootstrap candidate `31bac4a22a3102e99be49b0c90799542adb12cee`
+(tree `aa5fac0fc727f98b66311fb00e7d85df05af5b3d`) passed five native tests and eight
+connected cases: 528 source files, downloaded ELF identities, 240 Control table
+observations and all thirty native rows independently audited. Its qualification
+was normally pushed in `9932010`; see [native evidence](evidence/p02-ingest-bootstrap-native-20260918.json).
+The original `524e38c` runtime matrix remains FAIL due to its independent oracle's
+wrong visibility-kind constant; unexecuted cases were never relabeled PASS.
+Corrected final cleanup compared unrelated full state except volatile rolling
+health logs and mount ordering. No unrelated resources were changed.
 
-## Reading and next bounded action
+## Next bounded action
 
-Root reviewed the complete new writer, Control bridge, tests, probe and oracle;
-existing store/manifest/readers, model codecs and typed facts/effects; initial
-registry and Control owner; affected identity, dictionary, operations, storage
-and delivery contracts; and exact pinned RocksDB write/pin APIs. This slice has
-no independent agent review. Later archive/read/UI boundaries remain incompletely
-inspected and unimplemented. An actual engine test is evidence for its exercised
-behavior, not a complete release qualification.
+Commit the reviewed local slice as an unpublished candidate, transfer its exact
+Git bundle to a fresh Tux run root, and use the existing trusted `tools/build.py`
+and `tools/ci.py` machinery. Inventory/register the new resources immediately.
+Audit complete source/tool/artifact identities, run native affected tests plus
+both connected matrices, inspect full durable rows and terminal states, then
+stop only owned resources and record concise native evidence before normal push.
+If a run fails, retain its original report and diagnose against contracts without
+weakening independent expectations. Continue P02-T02 and the complete product.
 
-The corrected exact source `31bac4a22a3102e99be49b0c90799542adb12cee`
-(tree `aa5fac0fc727f98b66311fb00e7d85df05af5b3d`) completed its native build,
-five writer tests and eight connected cases. Independent local audits checked
-528 source files, downloaded CLI/probe/test ELF bytes, all thirty Control tables
-per case (240 relations), all thirty native rows across the eight databases,
-exact receipt/fact bytes and terminal container identities. See the
-[native evidence](evidence/p02-ingest-bootstrap-native-20260918.json).
-The before/after SIGKILL workers exited 137 without OOM. No product PostgreSQL
-backends remained before the owned lab was stopped. Six corrected containers,
-its network and all data are stopped/retained under `runs/bootstrap-31bac4a`.
-Zero BigBrotr containers now run; the same eight unrelated containers retain
-identities, process/start state, mounts, ports, labels and healthy status. The
-first final-inventory comparison included volatile rolling health logs and mount
-ordering; the corrected audit excludes only health logs and sorts complete mounts.
-
-Current dirty files belong to root: checkpoint, laboratory inventory, scoped native
-evidence and its task/contract links. Review this documentation diff, run affected
-artifact checks and make a qualification commit, then normally push verified work
-(the two candidate commits are still unpublished at this observation). Advance
-next to the existing signed-event oracle and complete atomic event write set;
-do not substitute further read helpers for admission.
-
-Earlier qualified prerequisites remain recorded in their individual evidence:
-[Control runtime](evidence/p01-control-runtime-native-20260918.json),
-[owned event verification](evidence/p02-owned-event-native-20260918.json),
-[native receipts](evidence/p02-receipt-reader-native-20260918.json),
+Earlier scoped evidence: [Control runtime](evidence/p01-control-runtime-native-20260918.json),
+[owned verification](evidence/p02-owned-event-native-20260918.json),
+[receipt readers](evidence/p02-receipt-reader-native-20260918.json),
 [initial registry](evidence/p02-ingest-registry-native-20260918.json),
-[storage](evidence/p02-ingest-store-linux-20260918.json),
+[store](evidence/p02-ingest-store-linux-20260918.json),
 [configuration](evidence/p01-config-inspection-native-20260918.json),
 [enrollment](evidence/p08-owner-enrollment-native-20260918.json), and
 [trusted shared CI](evidence/p01-trusted-ci-tux-20260918.json).
-Their scoped results do not qualify the current correction, complete product,
-release, host/power loss, ENOSPC or maximum/aged-state load.
+None qualifies the current unexecuted candidate or the complete product.

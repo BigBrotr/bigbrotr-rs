@@ -87,13 +87,16 @@ struct Entry {
     cf: ColumnFamily,
     value: Vec<u8>,
 }
-struct Prepared {
+pub(super) struct Prepared {
     entries: Vec<Entry>,
     serialized_bound: usize,
     limit: usize,
 }
 impl Prepared {
-    fn new(limits: BootstrapLimits) -> Result<Self, BootstrapError> {
+    pub(super) fn entry_allocation_bytes(max_mappings: usize) -> usize {
+        (4 * max_mappings + 5) * size_of::<Entry>()
+    }
+    pub(super) fn new(limits: BootstrapLimits) -> Result<Self, BootstrapError> {
         let mut entries = Vec::new();
         entries
             .try_reserve_exact(4 * limits.max_mappings + 5)
@@ -104,7 +107,7 @@ impl Prepared {
             limit: limits.max_batch_bytes,
         })
     }
-    fn put(&mut self, key: IngestKey, value: Vec<u8>) -> Result<(), BootstrapError> {
+    pub(super) fn put(&mut self, key: IngestKey, value: Vec<u8>) -> Result<(), BootstrapError> {
         let cf = key.domain().column_family();
         let key = key.encode().map_err(|_| BootstrapError::InvalidIntent)?;
         // Native tag + CF varint32 + two length varint32s need <= 16 bytes;
@@ -159,54 +162,56 @@ impl IngestStore {
         }
         .encode()
         .map_err(|_| BootstrapError::InvalidIntent)?;
-        let retained = self
-            .db
-            .get_pinned_cf_opt(receipts, request_key.as_bytes(), &read_options())
-            .map_err(|_| BootstrapError::EngineRead)?;
-        let retry_time = if let Some(value) = retained {
-            let receipt = Receipt::decode_persistent(&value, limits.receipt_limits())
-                .map_err(|_| BootstrapError::StateMismatch)?;
-            if receipt.request_id() != request {
-                return Err(BootstrapError::StateMismatch);
-            }
-            if receipt.request_digest() != digest {
-                return Err(BootstrapError::RequestConflict);
-            }
-            drop(value);
-            let first = receipt
-                .batch()
-                .ok_or(BootstrapError::StateMismatch)?
-                .first();
-            let facts = self
+        let retry_time = {
+            let retained = self
                 .db
-                .cf_handle("facts")
-                .ok_or(BootstrapError::EngineRead)?;
-            let key = IngestKey::Fact {
-                source_record_id: first,
-            }
-            .encode()
-            .map_err(|_| BootstrapError::StateMismatch)?;
-            let value = self
-                .db
-                .get_pinned_cf_opt(facts, key.as_bytes(), &read_options())
-                .map_err(|_| BootstrapError::EngineRead)?
-                .ok_or(BootstrapError::StateMismatch)?;
-            if value.len() < 34 || value[..2] != [1, 0x20] {
-                return Err(BootstrapError::StateMismatch);
-            }
-            let fact = Fact::decode_preimage(
-                &value[34..],
-                receipt
+                .get_pinned_cf_opt(receipts, request_key.as_bytes(), &read_options())
+                .map_err(|_| BootstrapError::EngineRead)?;
+            if let Some(value) = retained {
+                let receipt = Receipt::decode_persistent(&value, limits.receipt_limits())
+                    .map_err(|_| BootstrapError::StateMismatch)?;
+                if receipt.request_id() != request {
+                    return Err(BootstrapError::StateMismatch);
+                }
+                if receipt.request_digest() != digest {
+                    return Err(BootstrapError::RequestConflict);
+                }
+                drop(value);
+                let first = receipt
                     .batch()
                     .ok_or(BootstrapError::StateMismatch)?
-                    .records()[0]
-                    .payload_digest,
-                limits.fact_limits(),
-            )
-            .map_err(|_| BootstrapError::StateMismatch)?;
-            Some(fact.recorded_at())
-        } else {
-            None
+                    .first();
+                let facts = self
+                    .db
+                    .cf_handle("facts")
+                    .ok_or(BootstrapError::EngineRead)?;
+                let key = IngestKey::Fact {
+                    source_record_id: first,
+                }
+                .encode()
+                .map_err(|_| BootstrapError::StateMismatch)?;
+                let value = self
+                    .db
+                    .get_pinned_cf_opt(facts, key.as_bytes(), &read_options())
+                    .map_err(|_| BootstrapError::EngineRead)?
+                    .ok_or(BootstrapError::StateMismatch)?;
+                if value.len() < 34 || value[..2] != [1, 0x20] {
+                    return Err(BootstrapError::StateMismatch);
+                }
+                let fact = Fact::decode_preimage(
+                    &value[34..],
+                    receipt
+                        .batch()
+                        .ok_or(BootstrapError::StateMismatch)?
+                        .records()[0]
+                        .payload_digest,
+                    limits.fact_limits(),
+                )
+                .map_err(|_| BootstrapError::StateMismatch)?;
+                Some(fact.recorded_at())
+            } else {
+                None
+            }
         };
         let (mut prepared, receipt) =
             self.prepare_bootstrap(request, intent, retry_time.unwrap_or(recorded_at), limits)?;
@@ -226,6 +231,15 @@ impl IngestStore {
             value: self.manifest.encode().as_bytes().to_vec(),
         };
         self.require_exact_state(&[manifest])?;
+        self.commit_prepared(prepared, &mut require_authority)?;
+        Ok(StoredReceipt::new(receipt, permit))
+    }
+
+    pub(super) fn commit_prepared(
+        &mut self,
+        prepared: Prepared,
+        mut require_authority: impl FnMut() -> Result<(), BootstrapError>,
+    ) -> Result<(), BootstrapError> {
         let mut batch = WriteBatch::with_capacity_bytes(prepared.serialized_bound);
         for entry in &prepared.entries {
             let cf = self
@@ -249,7 +263,7 @@ impl IngestStore {
             .write_opt(batch, &options)
             .map_err(|_| BootstrapError::CommitUnknown)?;
         self.write_uncertain = false;
-        Ok(StoredReceipt::new(receipt, permit))
+        Ok(())
     }
 
     fn validate_bootstrap(
@@ -488,7 +502,7 @@ impl IngestStore {
     }
 }
 
-fn frame(prefix: &[u8], parts: &[&[u8]]) -> Result<Vec<u8>, BootstrapError> {
+pub(super) fn frame(prefix: &[u8], parts: &[&[u8]]) -> Result<Vec<u8>, BootstrapError> {
     let length = parts
         .iter()
         .try_fold(prefix.len(), |n, p| n.checked_add(p.len()))
@@ -503,7 +517,7 @@ fn frame(prefix: &[u8], parts: &[&[u8]]) -> Result<Vec<u8>, BootstrapError> {
     }
     Ok(result)
 }
-fn read_options() -> ReadOptions {
+pub(super) fn read_options() -> ReadOptions {
     let mut options = ReadOptions::default();
     options.set_verify_checksums(true);
     options.fill_cache(false);

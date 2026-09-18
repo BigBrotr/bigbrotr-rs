@@ -4,7 +4,10 @@ This document fixes version 1 of BigBrotr's persistent operational mutation
 receipt encoding. It covers the two receipt values represented by the shared
 model: `NewFacts` and `AlreadyDurable`. Invalid, excluded, retryable, conflicting,
 incompatible and retired outcomes are separate operational results and do not
-gain receipt semantics from this format.
+gain receipt semantics from this format. The event owner stores its bounded
+invalid/excluded decisions under a distinct
+[rejection detail prefix](ingest-admission.md#new-persistent-values); receipt-only
+inspection refuses that prefix rather than treating it as missing detail.
 
 Decoding proves that bytes reproduce a structurally valid `Receipt`. It does not
 prove that a write committed, that its producer or policy is current, that its
