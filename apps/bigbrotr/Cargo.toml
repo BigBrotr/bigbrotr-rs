@@ -9,6 +9,8 @@ repository.workspace = true
 publish = false
 
 [dependencies]
+base64.workspace = true
+ring.workspace = true
 argon2.workspace = true
 subtle.workspace = true
 zeroize.workspace = true
@@ -19,6 +21,7 @@ getrandom.workspace = true
 rocksdb.workspace = true
 rustix = { workspace = true, features = ["time"] }
 rustls.workspace = true
+serde.workspace = true
 serde_json.workspace = true
 sha2.workspace = true
 tokio.workspace = true

@@ -19,14 +19,15 @@ not be acknowledged/reclaimed. Do not mistake private preparation for publicatio
 
 ## Git and integrating ownership
 
-Mac main; root is the only writer/integrator. Last freshly verified HEAD,
-origin/main and remote refs/heads/main are equal at
-`8f50911538ef75e050709176e255f5ea19f39c28`, with a clean working tree after ordinary
-push. This checkpoint update follows that observation. Native source candidate
-`55dba36` and its scoped recovery evidence are pushed; no public release or force
-push. Mac scoped Clippy/format/Python checks and14 actual Tux PG cases passed;
-full CI/product acceptance is not claimed. Independent review was read-only;
-there is no concurrent writer or active experiment.
+Mac main; root is the only writer/integrator. HEAD and origin/main were verified
+at `d54a5f928f301f4628d51a950257e59e655707c0` on resumption. Current root-owned dirty
+work is credential provisioning/sealing in `catalog_guard.rs`, membership
+inspection, new `catalog_guard/credentials.rs`, and the workspace/application
+Cargo manifests plus lockfile (three direct edges to already pinned base64/ring/serde).
+No published history was changed. Independent read-only review found no blocking
+code finding; real PostgreSQL credential qualification is still NOT_RUN. No active
+native experiment: fresh Tux read-only check finds the same eight unrelated running
+containers and no running BigBrotr container.
 
 ## Implemented prerequisites and retained evidence
 
@@ -250,18 +251,41 @@ edits on Tux. Sessions33868(Mac),64193(initial setup failure),52156(resumed setu
 
 ## Next bounded action
 
-Wire actual credential custody/unique native worker launch and recovery under
-P02-T04. A matching observed attempt never permits a second client; replacement
-gets a new retained lifetime. Initial scope reading covered `docs/security/credentials.md`,
-`docs/security/authority.md`, the catalog credential roots in `config/registry.rs`,
-the archive authority contract and current worker/bootstrap code. No new credential
-implementation has begun. Complete the deployment/connection/process caller reads
-and verify the pinned PostgreSQL credential-creation/logging guarantees before
-choosing its bounded provisioning/one-use handoff. Avoid adding a framework or
-persisting plaintext credentials merely to connect this consumer. The current finite bootstrap
-and PG adapter require an external bounded owner; installed initialization and
-provisioning remain unfinished. Product native writer-versus-activation races and
-server/process restart orchestration still require integrated qualification.
+P02-T04 steps4/5 credential custody is in progress. Current dirty implementation
+creates a fresh restricted role, imports its retained intent and activates it in
+one transaction; only successful new activation returns a consuming private
+credential handoff. Existing/unknown outcomes cannot return another credential.
+Sealing removes login/password and fences the matching active owner, but does not
+prove backend/process termination. Plaintext never appears in CREATE ROLE SQL:
+a locally generated fixed-format SCRAM verifier uses the already pinned ring
+0.17.14/base64 0.22.1. Three cryptographic/material unit cases pass. Initial compiler
+REDs are retained as compiler evidence, not behavioral failures; scoped Clippy
+found a redundant formatting borrow, corrected and scoped application/lib/example Clippy passes. Raw work is in
+`.research/implementation/archive-worker/catalog-credentials`, including exact
+PostgreSQL16.15 source hashes and independent Python vector.
+
+Pinned PG16 source shows a non-superuser CREATEROLE creator receives an implicit
+ADMIN-only membership in its new role. Inspection now permits only that catalog
+manager link with INHERIT=false and SET=false; all other memberships remain refused.
+Actual non-superuser provisioning, SCRAM login/wrong password, permission negatives,
+sealing, lost response and native handoff qualification remain to execute.
+
+The finite bootstrap parent now uses the existing private supervisor and validates
+an exact32KiB maximum serialized request without retaining plaintext JSON. Its
+boundary test failed as an actual assertion with validation absent, then both
+bootstrap tests passed. New actual-PG fixture and independent fault controller are
+written but NOT_RUN; the shared original recovery intent fixture was extracted.
+Scoped Clippy passes for both examples. Independent review confirmed the parent
+boundary and identified PG OID JSON string typing in the new controller; corrected.
+
+Next bounded action: commit a reviewed private source candidate, then exercise fresh
+credentials against real PostgreSQL and an actual packaged native child on a new
+exact-revision Tux lab. Keep role
+provisioning and unique persistent process recovery distinct: the consuming Rust
+callback alone cannot prevent a trusted caller from copying a password. Installed
+initialization, persistent launch/recovery, receipt reconciliation and full native
+writer-versus-activation qualification remain unfinished. Update the owning contract
+and dependency record with this boundary and actual evidence before qualification.
 
 Connect scientific schema/all families/atomic semantic receipt and local protection
 to signed M1 read/export/restart. No pending ACK/reclaim, task completion or P02/M1

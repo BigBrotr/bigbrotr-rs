@@ -6566,6 +6566,35 @@
       "report": "docs/implementation/evidence/p02-catalog-recovery-native-20260918.json",
       "independent_audit": ".research/implementation/archive-worker/catalog-recovery/55dba36/independent-audit.json",
       "audit": ".research/implementation/archive-worker/catalog-recovery/55dba36/audit.json"
+    },
+    "catalog_credentials": {
+      "status": "local implementation and scoped checks; exact-revision native qualification NOT_RUN",
+      "raw_root": ".research/implementation/archive-worker/catalog-credentials",
+      "owner": "root sole writer/integrator",
+      "upstream": {
+        "src/backend/commands/user.c": {
+          "url": "https://raw.githubusercontent.com/postgres/postgres/REL_16_15/src/backend/commands/user.c",
+          "sha256": "082713e0ba52a4a6896e9be4beba0d7258030b2b02291d3e8551619509845574",
+          "bytes": 79712
+        },
+        "src/common/scram-common.c": {
+          "url": "https://raw.githubusercontent.com/postgres/postgres/REL_16_15/src/common/scram-common.c",
+          "sha256": "804383b3882f5574b81b23c03933ea9e4557fa25ea0038d02a6f33addf43baee",
+          "bytes": 8028
+        },
+        "src/include/common/scram-common.h": {
+          "url": "https://raw.githubusercontent.com/postgres/postgres/REL_16_15/src/include/common/scram-common.h",
+          "sha256": "c97092c9bb334fcbbf7ff1199c6e0f0c43a0428d008c38a03f7f64129d965e98",
+          "bytes": 2487
+        }
+      },
+      "checks": {
+        "material_unit": "3 PASS",
+        "bootstrap_wire": "assertion RED without validation;2 PASS with validation",
+        "clippy": "scoped lib and both catalog examples PASS",
+        "independent_review": "read-only AI; OID JSON typing, pre-retry seal oracle and held-race overhead corrected"
+      },
+      "native_resources": null
     }
   },
   "implementation_monitor_corrections_20260918": {

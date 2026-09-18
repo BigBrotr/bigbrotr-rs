@@ -1,3 +1,4 @@
+mod bootstrap;
 mod installation;
 mod process;
 mod worker;

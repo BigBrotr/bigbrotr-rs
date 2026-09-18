@@ -482,3 +482,39 @@ Sources: [toml DeTable](https://docs.rs/toml/1.1.6+spec-1.1.0/toml/de/struct.DeT
 [url host parser](https://github.com/servo/rust-url/blob/d6ea13c5f8e7e6e627f6390161b3e185bda5e5ce/url/src/host.rs),
 [getrandom fill](https://docs.rs/getrandom/0.4.3/getrandom/fn.fill.html), and
 [rustix open](https://docs.rs/rustix/1.1.5/rustix/fs/fn.open.html).
+
+
+## Catalog writer credential material
+
+P02-T04 adds direct edges to already locked `ring` 0.17.14 and `base64` 0.22.1;
+`serde` is also used directly for the borrowed private bootstrap wire.
+no resolved package/version changes. Both disable default features and select
+`alloc`. Fixed 256-bit random ASCII-hex passwords avoid normalization ambiguity.
+The implementation uses ring PBKDF2-HMAC-SHA256 (4096 iterations), HMAC Client/Server
+Key, existing sha2 SHA256 StoredKey, and standard padded base64 in PG's verifier
+format. This is infrastructure credential provisioning, not a general SCRAM client
+or human-password policy. Owned secret buffers use existing zeroize; compiler,
+cryptographic and downstream driver copies prevent a process-wide erasure claim.
+
+[PG16 CREATE ROLE](https://www.postgresql.org/docs/16/sql-createrole.html) accepts a
+pre-encrypted SCRAM verifier as-is and warns that plaintext SQL passwords can reach
+logs. The verifier itself is sensitive and must not be logged as evidence.
+[PG16 role membership](https://www.postgresql.org/docs/16/role-membership.html)
+distinguishes ADMIN, INHERIT and SET. Exact REL_16_15 source inspection of
+`src/backend/commands/user.c` lines532–590 and765–815 establishes implicit creator
+ADMIN-only membership and ALTER ROLE requirements. Explicitly clearing the local
+createrole_self_grant GUC prevents additional inherited/SET authority. The default
+connection limit is an approximate guard, not a hard native concurrency bound.
+
+Exact source SHA256: user.c
+`082713e0ba52a4a6896e9be4beba0d7258030b2b02291d3e8551619509845574`;
+complete `src/common/scram-common.c`
+`804383b3882f5574b81b23c03933ea9e4557fa25ea0038d02a6f33addf43baee`;
+complete `src/include/common/scram-common.h`
+`c97092c9bb334fcbbf7ff1199c6e0f0c43a0428d008c38a03f7f64129d965e98`.
+Sources/URLs remain under the inventoried ignored credential-work root. Scoped
+ring source inspection covers pbkdf2.rs90–255 and hmac.rs150–300,385–400; the
+[versioned derive API](https://docs.rs/ring/0.17.14/ring/pbkdf2/fn.derive.html)
+owns output/iteration semantics. An independent Python hashlib/hmac vector and
+three Rust material cases pass locally; real PG/native authentication remains
+NOT_RUN for the new product API until the credential report records it.

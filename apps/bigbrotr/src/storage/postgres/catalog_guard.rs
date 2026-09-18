@@ -1,11 +1,13 @@
 //! Versioned PostgreSQL commit guard around native DuckLake metadata. These
 //! privileged finite operations never expose the connection to a native worker.
 //! The caller retains its driver and operation budget through join/cancellation.
-use super::archive_attempt::ArchiveAttemptReceipt;
+use super::archive_attempt::{ArchiveAttemptReceipt, ArchiveAttemptRequest};
 use bigbrotr_model::{DatasetId, OwnerResourceId};
 use sha2::{Digest, Sha256};
 use std::{cell::Cell, fmt};
 use tokio_postgres::{Client, IsolationLevel, Transaction};
+use zeroize::Zeroizing;
+mod credentials;
 mod inspection;
 const SQL: &str = include_str!("../../../../../migrations/catalog/0001_writer_guard.sql");
 const WRITER_BODY: &str = "writer";
@@ -22,6 +24,7 @@ pub enum GuardError {
     Conflict,
     CommitUnknown,
     ResourceLimit,
+    Entropy,
 }
 impl fmt::Display for GuardError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -76,6 +79,35 @@ impl CatalogIdentity {
 pub enum Activation {
     Activated,
     Observed { current: bool, enabled: bool },
+}
+
+/// One newly committed credential lifetime. Observation/recovery never constructs
+/// this value. It is move-only and has no serialization or plaintext getter.
+/// The consuming callback must transfer it only to its one privately supervised
+/// native child; this value alone does not prove process launch or termination.
+pub struct FreshWriter {
+    receipt: ArchiveAttemptReceipt,
+    identity: CatalogIdentity,
+    password: Zeroizing<String>,
+}
+impl fmt::Debug for FreshWriter {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str("FreshWriter([redacted])")
+    }
+}
+impl FreshWriter {
+    pub fn request(&self) -> &ArchiveAttemptRequest {
+        self.receipt.request()
+    }
+    pub fn identity(&self) -> &CatalogIdentity {
+        &self.identity
+    }
+    /// Consume the local handoff once. The callback owns any downstream copies
+    /// and must retain their grant/lifecycle; there is no process-wide memory
+    /// erasure promise. Never put these values in argv, environment or logs.
+    pub fn with_login<T>(self, handoff: impl FnOnce(&str, &str) -> T) -> T {
+        handoff(&writer_login(&self.receipt), &self.password)
+    }
 }
 
 fn body(delimiter: &str) -> &str {
@@ -203,6 +235,50 @@ pub async fn activate(
     receipt: &ArchiveAttemptReceipt,
     commit_started: &Cell<bool>,
 ) -> Result<Activation, GuardError> {
+    activate_inner(client, identity, receipt, None, commit_started).await
+}
+
+/// Atomically create a new restricted login and activate its retained intent.
+/// Plaintext remains local; CREATE ROLE receives a precomputed SCRAM verifier.
+/// Existing roles/attempts are refused, never adopted, reset or re-enabled.
+/// Unknown commit/cancellation returns no credential. Resolve under a fresh
+/// connection; an already committed lifetime requires a new retained intent.
+pub async fn provision_and_activate(
+    client: &mut Client,
+    identity: &CatalogIdentity,
+    receipt: &ArchiveAttemptReceipt,
+    commit_started: &Cell<bool>,
+) -> Result<FreshWriter, GuardError> {
+    let material = credentials::Material::generate()?;
+    match activate_inner(client, identity, receipt, Some(&material), commit_started).await? {
+        Activation::Activated => Ok(FreshWriter {
+            receipt: receipt.clone(),
+            identity: identity.clone(),
+            password: material.password,
+        }),
+        Activation::Observed { .. } => Err(GuardError::Conflict),
+    }
+}
+
+async fn matches_attempt(
+    tx: &Transaction<'_>,
+    request: &ArchiveAttemptRequest,
+    login: &str,
+) -> Result<Option<bool>, GuardError> {
+    let ordinal = request.ordinal().to_string();
+    let topology = request.topology_generation().get().to_string();
+    let row=tx.query_opt("SELECT attempt_id=$2::bytea AND coordinator_incarnation=$3::bytea AND worker_incarnation=$4::bytea AND topology_generation=$5::text::numeric AND batch_digest=$6::bytea AND login_name=$7::name AND login_oid=(SELECT oid FROM pg_roles WHERE rolname=$7::name) FROM bigbrotr_archive.attempts WHERE ordinal=$1::text::numeric", &[&ordinal,&&request.attempt_id()[..],&&request.coordinator().as_bytes()[..],&&request.worker().as_bytes()[..],&topology,&&request.batch_digest().as_bytes()[..],&login]).await.map_err(backend)?;
+    row.map(|row| Ok(row.try_get::<_, Option<bool>>(0).map_err(backend)? == Some(true)))
+        .transpose()
+}
+
+async fn activate_inner(
+    client: &mut Client,
+    identity: &CatalogIdentity,
+    receipt: &ArchiveAttemptReceipt,
+    material: Option<&credentials::Material>,
+    commit_started: &Cell<bool>,
+) -> Result<Activation, GuardError> {
     let request = receipt.request();
     if request.dataset() != identity.dataset || request.catalog() != identity.catalog {
         return Err(GuardError::WrongCatalog);
@@ -226,9 +302,8 @@ pub async fn activate(
     let enabled: bool = state.try_get(1).map_err(backend)?;
     let ordinal = request.ordinal().to_string();
     let topology = request.topology_generation().get().to_string();
-    let row=tx.query_opt("SELECT attempt_id=$2::bytea AND coordinator_incarnation=$3::bytea AND worker_incarnation=$4::bytea AND topology_generation=$5::text::numeric AND batch_digest=$6::bytea AND login_name=$7::name AND login_oid=(SELECT oid FROM pg_roles WHERE rolname=$7::name) FROM bigbrotr_archive.attempts WHERE ordinal=$1::text::numeric", &[&ordinal,&&request.attempt_id()[..],&&request.coordinator().as_bytes()[..],&&request.worker().as_bytes()[..],&topology,&&request.batch_digest().as_bytes()[..],&login]).await.map_err(backend)?;
-    if let Some(row) = row {
-        if row.try_get::<_, Option<bool>>(0).map_err(backend)? != Some(true) {
+    if let Some(matches) = matches_attempt(&tx, request, &login).await? {
+        if !matches || material.is_some() {
             return Err(GuardError::Conflict);
         }
         tx.rollback().await.map_err(backend)?;
@@ -239,6 +314,26 @@ pub async fn activate(
     }
     if request.ordinal() <= current {
         return Err(GuardError::Conflict);
+    }
+    if let Some(material) = material {
+        let exists: bool = tx
+            .query_one(
+                "SELECT EXISTS(SELECT 1 FROM pg_roles WHERE rolname=$1::name)",
+                &[&login],
+            )
+            .await
+            .map_err(backend)?
+            .try_get(0)
+            .map_err(backend)?;
+        if exists {
+            return Err(GuardError::Conflict);
+        }
+        // PG16 otherwise permits creator-selected inherited/SET memberships.
+        // Only its implicit non-inheriting ADMIN link to the manager is allowed.
+        tx.batch_execute("SET LOCAL createrole_self_grant=''")
+            .await
+            .map_err(backend)?;
+        tx.batch_execute(&format!("CREATE ROLE {quoted} LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOREPLICATION NOBYPASSRLS CONNECTION LIMIT 8 PASSWORD '{}'", material.verifier.as_str())).await.map_err(backend)?;
     }
     inspection::writer(&tx, &login).await?;
     tx.execute("INSERT INTO bigbrotr_archive.attempts SELECT $1::text::numeric,$2::bytea,$3::bytea,$4::bytea,$5::text::numeric,$6::bytea,$7::name,oid FROM pg_roles WHERE rolname=$7::name", &[&ordinal,&&request.attempt_id()[..],&&request.coordinator().as_bytes()[..],&&request.worker().as_bytes()[..],&topology,&&request.batch_digest().as_bytes()[..],&login]).await.map_err(backend)?;
@@ -257,4 +352,42 @@ pub async fn activate(
     commit_started.set(true);
     tx.commit().await.map_err(|_| GuardError::CommitUnknown)?;
     Ok(Activation::Activated)
+}
+
+/// Seal only the exact imported role lifetime, and disable it if still current.
+/// The owner lock serializes this with native commits. NOLOGIN/password removal
+/// alone is not backend exclusion, worker death, receipt resolution or cleanup.
+pub async fn seal(
+    client: &mut Client,
+    identity: &CatalogIdentity,
+    receipt: &ArchiveAttemptReceipt,
+    commit_started: &Cell<bool>,
+) -> Result<bool, GuardError> {
+    let request = receipt.request();
+    if request.dataset() != identity.dataset || request.catalog() != identity.catalog {
+        return Err(GuardError::WrongCatalog);
+    }
+    let login = writer_login(receipt);
+    let tx = begin(client, false).await?;
+    tx.query_one(
+        "SELECT ordinal FROM bigbrotr_archive.owner WHERE singleton FOR UPDATE",
+        &[],
+    )
+    .await
+    .map_err(backend)?;
+    inspection::installed(&tx, identity).await?;
+    if matches_attempt(&tx, request, &login).await? != Some(true) {
+        return Err(GuardError::Conflict);
+    }
+    inspection::writer(&tx, &login).await?;
+    tx.batch_execute(&format!(
+        "ALTER ROLE {} NOLOGIN PASSWORD NULL",
+        identifier(&login)?
+    ))
+    .await
+    .map_err(backend)?;
+    let disabled = tx.execute("UPDATE bigbrotr_archive.owner SET enabled=false WHERE singleton AND ordinal=$1::text::numeric AND enabled", &[&request.ordinal().to_string()]).await.map_err(backend)?;
+    commit_started.set(true);
+    tx.commit().await.map_err(|_| GuardError::CommitUnknown)?;
+    Ok(disabled == 1)
 }

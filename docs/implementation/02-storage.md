@@ -298,6 +298,13 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   recovery remain gates. It can
   enforce commit exclusion without inferring remote process death; resource and
   orphan cleanup still require their separate positive lifecycle evidence.
+  Credential provisioning/sealing and the finite supervised bootstrap parent are
+  now implemented pending actual-PG qualification. New creation uses a local
+  SCRAM verifier and atomically imports/activates the retained intent; observed
+  attempts cannot issue another credential. The consuming handoff remains distinct
+  from persistent unique-process recovery. Tests target non-superuser manager
+  membership, real authentication, sealing and commit ambiguity before integrating
+  scientific publication. No step is complete from these prerequisites.
 - [ ] **Step 6:** Handle empty and one-small-event timer batches; publish useful progress
   without waiting for a size threshold that may never be reached.
 - [ ] **Step 7:** **Practical P02-T04:** run real PG/DuckLake transactions; kill preparation,

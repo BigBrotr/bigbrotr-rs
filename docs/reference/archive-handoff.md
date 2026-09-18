@@ -177,3 +177,25 @@ remote PG backend termination still require their own exclusion. In particular,
 child process exit alone cannot resolve a catalog commit. The worker has no catalog
 credentials in this inspection path and leaves pending untouched. No P02 task or
 M1 gate is completed by this slice.
+
+
+## Finite supervised catalog bootstrap
+
+`Preparation::bootstrap_catalog` uses the same verified installation, empty private
+temporary root, whole-job grants and nonblocking supervised process. It streams a
+closed `{dsn,data_root}` JSON value directly onto private stdin, without a retained
+plaintext JSON buffer. Counting the exact escaped representation before spawn
+rejects more than32KiB; individual DSN/root limits are16KiB/4KiB with no NUL/CR/LF
+and a canonical lexical absolute local root. This boundary performs no network
+policy discovery: the operator caller must already validate the trusted endpoint,
+TLS identity and credential authority. Credentials never enter argv/environment.
+
+The child uses the existing finite `bootstrap-catalog` command. Only its exact
+`bigbrotr-native-bootstrap/1` initialized response plus successful exit/EOF permits
+success. Initial creation and attach to an existing native catalog can both
+succeed; neither is proof of freshness, guard installation, an archive receipt or
+launch authorization. The privileged installer independently inspects the resulting
+catalog after the child is joined. Cancellation/unknown completion must preserve
+the prior credential/transaction recovery obligations. This parent path is being
+qualified with real PG and generated credentials; no scientific publisher is
+advertised from a successful bootstrap.

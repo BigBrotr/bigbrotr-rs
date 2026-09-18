@@ -11,6 +11,8 @@ repository = "https://github.com/BigBrotr/bigbrotr-rs"
 publish = false
 
 [workspace.dependencies]
+base64 = { version = "=0.22.1", default-features = false, features = ["alloc"] }
+ring = { version = "=0.17.14", default-features = false, features = ["alloc"] }
 argon2 = { version = "=0.6.0", default-features = false, features = ["zeroize"] }
 duckdb = { version = "=1.10505.0", default-features = false, features = ["appender-arrow"] }
 arrow = { version = "=58.4.0", default-features = false }

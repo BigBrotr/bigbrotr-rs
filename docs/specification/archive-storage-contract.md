@@ -210,9 +210,30 @@ manager is a privileged operator boundary: direct privileged DDL, role changes o
 catalog restore require quiescence and explicit reinspection. Checks do not make
 an arbitrary administrator adversary safe.
 
-The first implementation consumes separately provisioned restricted logins and
-an explicitly local root; provisioning/secret custody, installed initialization,
-S3 integration and persistent launch/recovery remain required. Never launch a
+The adapter accepts separately provisioned restricted logins or atomically creates
+a fresh login with the retained intent and owner activation. New provisioning uses
+256 random password bits and a locally derived PostgreSQL SCRAM verifier; plaintext
+is never present in CREATE ROLE SQL. Only a known successful new commit returns a
+move-only local credential handoff. An existing role or imported attempt refuses
+provisioning without resetting its password or re-enabling it. Unknown completion
+returns no credential: inspect from a fresh connection. A committed abandoned
+lifetime requires a new retained intent; a proven rollback left no usable role.
+The consuming callback still owns downstream copies and the one supervised child;
+the Rust value alone is not proof of process uniqueness or memory erasure.
+
+The PG16 catalog manager needs CREATEROLE and its implicit ADMIN-only membership
+in roles it creates. Provisioning locally clears createrole_self_grant; inspection
+allows only the guard-schema owner's ADMIN=true, INHERIT=false, SET=false link.
+All other memberships involving the writer remain refused. Privileged initial
+ownership transfer is separate from this non-superuser runtime manager authority.
+Explicit sealing locks the owner, verifies the complete immutable lifetime and
+actual role OID, removes its password/LOGIN, and disables it only if still current.
+Repeated/historical sealing never disables a successor. It retains role/history;
+role garbage collection requires its own lifecycle authority and bounded policy.
+
+These new credential paths await their actual-PG qualification. The selected root
+is still explicitly local. Installed initialization, S3 integration and persistent
+launch/recovery remain required. Never launch a
 second native client under the same attempt merely because activation is observed.
 Replacement requires a new retained intent, unique worker and credential lifetime.
 Catalog exclusion does not prove old process death or authorize orphan file/object

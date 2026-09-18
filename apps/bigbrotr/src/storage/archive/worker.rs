@@ -29,6 +29,7 @@ pub struct PreparationLimits {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum PreparationError {
     InvalidLimits,
+    InvalidBootstrap,
     InvalidTemporaryRoot,
     Unavailable,
     Installation(InstallationError),
@@ -50,7 +51,44 @@ pub struct Preparation<'a> {
     pub deadline: Instant,
     pub cancelled: &'a AtomicBool,
 }
-impl Preparation<'_> {
+impl<'a> Preparation<'a> {
+    /// Explicit finite native catalog initialization/attach. The caller supplies
+    /// a trusted, already validated infrastructure route/TLS policy and keeps
+    /// credentials out of argv/environment/logs. This success proves joined
+    /// native completion only: installation must still inspect freshness and
+    /// ownership, and an ambiguous result must not authorize another lifetime.
+    pub fn bootstrap_catalog(
+        self,
+        dsn: &str,
+        data_root: &str,
+        budget: &ResourceBudget,
+    ) -> Result<(), PreparationError> {
+        let input = super::bootstrap::Input { dsn, data_root };
+        input.validate()?;
+        let mut process = self.start("bootstrap-catalog", &[], budget)?;
+        let transfer = serde_json::to_writer(&mut process, &input);
+        let transport_error = process.failure();
+        let output = process.finish();
+        if matches!(output, Err(ProcessError::TerminationUnknown)) {
+            return Err(PreparationError::Process(ProcessError::TerminationUnknown));
+        }
+        transfer.map_err(|_| {
+            transport_error
+                .map(PreparationError::Process)
+                .unwrap_or(PreparationError::InvalidBootstrap)
+        })?;
+        let value: serde_json::Value =
+            serde_json::from_slice(output.map_err(PreparationError::Process)?)
+                .map_err(|_| PreparationError::InvalidResult)?;
+        if value.as_object().map(|v| v.len()) != Some(2)
+            || value["format"] != "bigbrotr-native-bootstrap/1"
+            || value["status"] != "initialized"
+        {
+            return Err(PreparationError::InvalidResult);
+        }
+        Ok(())
+    }
+
     /// Private discardable staging only. No archive acknowledgement or reclaim.
     /// The caller owns the private temporary root and filesystem reservation.
     /// TerminationUnknown forbids root cleanup/retry until positive exclusion.
@@ -70,6 +108,40 @@ impl Preparation<'_> {
         let reader_bytes = transfer
             .required_data_bytes()
             .map_err(|_| PreparationError::InvalidLimits)?;
+        if self.limits.native_reserve_bytes <= reader_bytes as u64 {
+            return Err(PreparationError::InvalidLimits);
+        }
+        let mut process = self.start(
+            "inspect-batch",
+            &[
+                self.limits.max_records.to_string(),
+                self.limits.max_encoded_bytes.to_string(),
+            ],
+            budget,
+        )?;
+        let transfer_result = pending.write_archive_batch(&mut process, transfer, self.cancelled);
+        let transport_error = process.failure();
+        // Always finish/reap even after a failed write. A transport error cannot
+        // release the native grant while the reader is still alive.
+        let output = process.finish();
+        if matches!(output, Err(ProcessError::TerminationUnknown)) {
+            return Err(PreparationError::Process(ProcessError::TerminationUnknown));
+        }
+        transfer_result.map_err(|error| {
+            transport_error
+                .map(PreparationError::Process)
+                .unwrap_or(PreparationError::Transfer(error))
+        })?;
+        let output = output.map_err(PreparationError::Process)?;
+        self.inspect_result(output, pending, topology_generation)
+    }
+
+    fn start(
+        &self,
+        mode: &str,
+        extra: &[String],
+        budget: &ResourceBudget,
+    ) -> Result<super::process::Process<'a>, PreparationError> {
         let native_bytes = self
             .limits
             .memory_bytes
@@ -78,7 +150,7 @@ impl Preparation<'_> {
         if self.limits.memory_bytes == 0
             || self.limits.temp_bytes == 0
             || self.limits.threads == 0
-            || self.limits.native_reserve_bytes <= reader_bytes as u64
+            || self.limits.native_reserve_bytes == 0
         {
             return Err(PreparationError::InvalidLimits);
         }
@@ -105,38 +177,24 @@ impl Preparation<'_> {
             .map_err(PreparationError::Installation)?;
         command
             .current_dir(self.temp_root)
-            .arg("inspect-batch")
+            .arg(mode)
             .arg(&self.installation.root)
             .arg(self.temp_root)
             .args([
                 self.limits.memory_bytes.to_string(),
                 self.limits.temp_bytes.to_string(),
                 self.limits.threads.to_string(),
-                self.limits.max_records.to_string(),
-                self.limits.max_encoded_bytes.to_string(),
-            ]);
-        let mut process = super::process::Process::spawn(
-            &mut command,
-            native,
-            control,
-            self.deadline,
-            self.cancelled,
-        )
-        .map_err(PreparationError::Process)?;
-        let transfer_result = pending.write_archive_batch(&mut process, transfer, self.cancelled);
-        let transport_error = process.failure();
-        // Always finish/reap even after a failed write. A transport error cannot
-        // release the native grant while the reader is still alive.
-        let output = process.finish();
-        if matches!(output, Err(ProcessError::TerminationUnknown)) {
-            return Err(PreparationError::Process(ProcessError::TerminationUnknown));
-        }
-        transfer_result.map_err(|error| {
-            transport_error
-                .map(PreparationError::Process)
-                .unwrap_or(PreparationError::Transfer(error))
-        })?;
-        let output = output.map_err(PreparationError::Process)?;
+            ])
+            .args(extra);
+        super::process::Process::spawn(&mut command, native, control, self.deadline, self.cancelled)
+            .map_err(PreparationError::Process)
+    }
+    fn inspect_result(
+        &self,
+        output: &[u8],
+        pending: &PendingBatch,
+        topology_generation: TopologyGeneration,
+    ) -> Result<PreparationInspection, PreparationError> {
         let value: serde_json::Value =
             serde_json::from_slice(output).map_err(|_| PreparationError::InvalidResult)?;
         let field = |name: &str| {
