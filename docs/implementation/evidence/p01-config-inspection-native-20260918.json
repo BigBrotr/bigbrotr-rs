@@ -1,0 +1,235 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-18",
+  "scope": "P01-T04 accepted configuration observation through actual native CLI/PostgreSQL; fixture writes are independent setup, not bootstrap or activation",
+  "status": "PASS",
+  "source": {
+    "revision": "5dc6a7f5e8ecc0f93a0cbea12025970b2e295387",
+    "tree": "335add24e4d88e8310ccbceb14684862cacbac42",
+    "exact_git_archive_and_extracted_files": 446,
+    "source_manifest_sha256": "0c839bba1ee09c020be61041a397ed047121285c7ec676401a4fb7a4c86d0e72"
+  },
+  "artifact": {
+    "binary_sha256": "c79c4c42007597f8a445a64a7aa90be9ec1d3ab6c073523792d5e952a246baf8",
+    "bytes": 7187848,
+    "build_receipt_sha256": "17ae63208e3d7930fffc18983ee8d340fe9c1ed46ec380940b79867f1fcc379a",
+    "mounted_binary": "Independently hashed inside runtime client and matched downloaded artifact before execution"
+  },
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "1.98.1",
+    "postgres": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    },
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "client_image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+    "build_image": "sha256:8d906f267439748924d6a9de9cab47855279cc196a7397d9cb7a690c77fddfe3",
+    "native_toolchain": {
+      "os": "Linux",
+      "architecture": "x86_64",
+      "discovery": "llvm-config",
+      "environment": {
+        "CC": "/usr/lib/llvm-14/bin/clang",
+        "CXX": "/usr/lib/llvm-14/bin/clang++",
+        "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+        "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+        "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+      },
+      "tools": {
+        "CC": {
+          "path": "/usr/lib/llvm-14/bin/clang",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "CXX": {
+          "path": "/usr/lib/llvm-14/bin/clang++",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "AR": {
+          "path": "/usr/lib/llvm-14/bin/llvm-ar",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+          "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+          "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+        },
+        "LIBCLANG_PATH": {
+          "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+          "version": "Debian clang version 14.0.6"
+        },
+        "discovery": {
+          "path": "/usr/lib/llvm-14/bin/llvm-config",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+          "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+          "version": "14.0.6"
+        }
+      },
+      "sdk": null
+    },
+    "serde_json": "1.0.151 std/float_roundtrip; locked packages unchanged"
+  },
+  "checks": {
+    "native_cases": 20,
+    "failed": 0,
+    "skipped": 0,
+    "independent_complete_settings_comparisons": "215 non-root fields in each of8 accepted CLI documents",
+    "durable_effect_check": "Complete Control pg_dump unchanged across each of20 CLI calls; fresh final all23-table inspection matches exact fixture and no application backends remain",
+    "source_and_artifact_audit": "PASS;446 Git blobs/archive/extracted source files; downloaded ELF amd64; native compiler/tool/library bytes independently rehashed from stopped build container"
+  },
+  "cases": [
+    {
+      "name": "empty-dataset",
+      "exit": 4,
+      "status": "PASS"
+    },
+    {
+      "name": "empty-configuration",
+      "exit": 4,
+      "status": "PASS"
+    },
+    {
+      "name": "managed-accepted",
+      "exit": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "comments-only",
+      "exit": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "managed-seed-drift",
+      "exit": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "mode-mismatch",
+      "exit": 3,
+      "status": "PASS"
+    },
+    {
+      "name": "declarative-staged",
+      "exit": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "full-u64-jsonb",
+      "exit": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "exact-fraction-jsonb",
+      "exit": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "private-redaction",
+      "exit": 0,
+      "status": "PASS"
+    },
+    {
+      "name": "missing-key",
+      "exit": 3,
+      "status": "PASS"
+    },
+    {
+      "name": "root-injection",
+      "exit": 3,
+      "status": "PASS"
+    },
+    {
+      "name": "required-null",
+      "exit": 3,
+      "status": "PASS"
+    },
+    {
+      "name": "root-budget-overflow",
+      "exit": 3,
+      "status": "PASS"
+    },
+    {
+      "name": "future-format",
+      "exit": 3,
+      "status": "PASS"
+    },
+    {
+      "name": "digest-corruption",
+      "exit": 3,
+      "status": "PASS"
+    },
+    {
+      "name": "wrong-dataset_id",
+      "exit": 1,
+      "status": "PASS"
+    },
+    {
+      "name": "wrong-instance_id",
+      "exit": 1,
+      "status": "PASS"
+    },
+    {
+      "name": "denied-read",
+      "exit": 1,
+      "status": "PASS"
+    },
+    {
+      "name": "recovered-read",
+      "exit": 0,
+      "status": "PASS"
+    }
+  ],
+  "lifecycle": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/configuration-5dc6a7f/runtime",
+    "owner": "ee88fcabb175072d7e74d8c5ec30983d",
+    "postgres": "bigbrotr-implementation-pg-20260917-configread",
+    "client": "bigbrotr-implementation-pg-20260917-configread-client",
+    "network": "bigbrotr-implementation-pg-20260917-configread",
+    "published_ports": [],
+    "limits": "Build2CPU6GiB512PIDs; PG2CPU1536MiB256PIDs; client2CPU4GiB256PIDs; memory=swap, readonly roots, all capabilities dropped, no-new-privileges",
+    "terminal": "Both runtime containers stopped-retained; PGexit0,clientexit143,OOMfalse. Builds665a477/5dc6a7f stopped-retained."
+  },
+  "observed_limits": [
+    "Returned document bounded to10MiB; singleton excess discriminator; bounded transport/SQL deadlines are implemented, not maximum-load qualification.",
+    "Initial536870912-byte parse/diagnostic allowance plus connection preparation is conservative; no peak-RSS measurement claimed.",
+    "App read grant revoked then restored; denied read is explicit failure and recovery returns the original accepted configuration.",
+    "Bad schema values, root injection, mode/identity mismatch and wrong digest fail without changing Control state.",
+    "No security revision, owner epochs, producer source or runtime authority was created. Fixture has one config row and synthetic actor03; this is deliberately not enrollment."
+  ],
+  "test_history": [
+    "665a477 built successfully but its19-case harness was not executed: review found a legal finite fraction that the default decoder changed, and a private-route fixture needed fixed mode.",
+    "5dc6a7f adds exact float decoding and corrected20-case fixture. Mac183 workspace tests and Clippy passed before this native build; every native case then passed."
+  ],
+  "not_run": [
+    "Product bootstrap, authenticated principals, management CAS/mode activation, applied-role/security grants, native writer admission/archive/read/export/restart.",
+    "Concurrent accepted-revision publication, blocked SQL cancellation/deadline injection, engine outage/restart for this reader, maximum document memory/performance.",
+    "New reader TLS/mTLS, native arm64 PG runtime and product release/install qualification. Existing migration TLS evidence retains its prior exact-source scope."
+  ],
+  "raw_root": ".research/implementation/configuration-policy/native-5dc6a7f",
+  "raw_sha256": {
+    "audit.json": "8925244ef305af1e5cd6de0147a5fd3269db7e5ed8788bf3e81c9cdbb19f7a64",
+    "build-result.json": "17ae63208e3d7930fffc18983ee8d340fe9c1ed46ec380940b79867f1fcc379a",
+    "build.log": "213aa84634a598f74720ab793361eec3f6225f7689fbc3f8c0f6bb89f9f357b4",
+    "observation.json": "94c2267afbad788e788fa7106c255ea5142f8236fd7bfd8036f43ac54c94c7fb",
+    "resources.json": "b5a813c9f9fbd5b462226c45757427a404548ddb280c51e832e1b3b9de1062ca",
+    "root-case-audit.json": "0972893fd0e0fa57630c1eeb86d31a81d2787c835de44c0ba3267fda31c6be56",
+    "runtime-configuration-inspection.json": "314f493e2975c91d3b5ca373e93f5ca31dae752c5808889615ccd60f4ce62f2e",
+    "runtime-final-observation.json": "f5d36e6f57727a9cd4c5aba93deee86d460b77dee09d1c2a0b0ff563c672d0ec",
+    "runtime-preflight.json": "750b3bf24d16a8cfec6faff97d7a9a7c5c9b636a413b0ebca8af12623a8cecc3",
+    "runtime-resources.json": "4ee321dfbd8010e3ff79a112c9f547df8197afd28afbe1dc1557818f1d35bc24",
+    "runtime-stopped.json": "ea6beae9bef389d48926bf6b27ec191986a89b8bc285e6ffcff56163f0c085fb",
+    "source-manifest.json": "0c839bba1ee09c020be61041a397ed047121285c7ec676401a4fb7a4c86d0e72"
+  },
+  "audit_helper_sha256": {
+    "launch-build.py": "8704f30f808b255080567846c542bfa4aff6c6a00b968adc6fbae39cab8c8c2d",
+    "observe-build.py": "13887923ffeb10a164ba57e43203f0a6b1f8c48176b2ad5c2e68b9f4637574b4",
+    "audit-build.py": "9b8f01d26e7a0623f2d0813a593241421edc7b154c4e90553fa6a27352edd68b"
+  }
+}

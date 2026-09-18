@@ -34,3 +34,7 @@ native writer ownership, concurrent revision publication, cancellation during a
 blocked SQL read, unavailable-engine recovery, maximum-size memory, capacity,
 arm64 or release installation. A source candidate and planned cases are not
 executed evidence; a completed report must identify its exact artifact and run.
+
+Executed native Linux amd64 evidence at source `5dc6a7f`:
+[20 actual PG cases](../../docs/implementation/evidence/p01-config-inspection-native-20260918.json).
+The linked report retains exact source/artifact identities and exclusions.
