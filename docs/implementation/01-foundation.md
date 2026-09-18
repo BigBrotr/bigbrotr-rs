@@ -233,8 +233,11 @@ records 30 main scenarios, three FK schedules and actual crash/recovery at fe638
 The owner-supplied monitor findings now have [exact-revision native evidence](evidence/p01-monitor-corrections-native-20260918.json):
 MON-002 explicit PostgreSQL port parity, MON-004 residual lease scheduling and
 MON-001 genuinely blocked lifecycle/error output have scoped regression results.
-MON-005 is confirmed open: the real 200,000-entry candidate passes compact JSON
-validation but fails the existing JSONB storage cap. Step 7 maximum-document
+MON-005 was reproduced at `2c0dfc1`: the real 200,000-entry candidate passed compact
+JSON validation but failed the existing JSONB storage cap. The corrected candidate
+counts both encodings before acceptance, preserving SQL/read caps and identities.
+Its [size harness](../../experiments/configuration-inspection/README.md#jsonb-document-size-acceptance)
+remains NOT_RUN on native PostgreSQL until recorded otherwise. Step 7 maximum-document
 acceptance must include bounded pre-acceptance refusal, near-limit successful
 initialization, inspection and activation, with numerical rendering controls.
 Do not alter an applied migration or label the failed initialization PASS.

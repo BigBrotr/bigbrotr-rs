@@ -38,3 +38,20 @@ executed evidence; a completed report must identify its exact artifact and run.
 Executed native Linux amd64 evidence at source `5dc6a7f`:
 [20 actual PG cases](../../docs/implementation/evidence/p01-config-inspection-native-20260918.json).
 The linked report retains exact source/artifact identities and exclusions.
+
+## JSONB document-size acceptance
+
+`python3 experiments/configuration-inspection/size_limits.py --root /absolute/owned/lab`
+uses a fresh lab to exercise MON-005 through static validation, initialization,
+inspection and initial activation. The historical reproduction at `2c0dfc1` remains
+in `experiments/control-runtime/monitor_regressions.py`; do not relabel that failure.
+The new harness checks frozen independent numeric/structural vectors against PG16,
+then constructs policies at 10 MiB minus one byte, exactly 10 MiB and one byte over
+in JSONB text. Each has 200,000 fixed endpoints plus nested records, escaped Unicode,
+u64 max and two tiny finite fractions. The original 49-byte endpoint counterexample
+is retained as a separate refusal. Python Decimal and literal punctuation provide
+independent sizes; actual CLI digests must match independently encoded compact JSON.
+Accepted cases execute retry/read/activation/read/retry and compare both complete
+stored documents; rejected cases require unchanged entire Control dump digests.
+No peak RSS, mixed-load capacity, full task completion or release is established.
+`jsonb-cases.json` also supplies the Rust counter's exact-boundary tests.

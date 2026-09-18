@@ -76,7 +76,20 @@ enters this document. Encoding uses the pinned serde_json serializer; stored par
 value and digest. The default fast float parser failed the reproduced fraction
 `2.0030397744267762e-253`; this change corrects decoding without changing emitted
 policy bytes or the format version. Encoding is bounded to
-10 MiB with a counting pass before allocating the output. The candidate digest is
+10 MiB with a counting pass before allocating the output. A separate bounded
+count also requires its PostgreSQL 16.15 JSONB text rendering to fit 10 MiB,
+before acceptance: JSONB adds separators and expands exponent-form numbers.
+Both bounds are inclusive. Source input, compact identity bytes and persisted
+JSONB text are separate representations; equal numeric limits do not make their
+lengths interchangeable. The size-only counter follows the pinned engine's
+[JSONB renderer](https://github.com/postgres/postgres/blob/REL_16_15/src/backend/utils/adt/jsonb.c)
+and [numeric input/output](https://github.com/postgres/postgres/blob/REL_16_15/src/backend/utils/adt/numeric.c),
+including fractional scale. It neither allocates a second rendered document nor
+changes canonical bytes/digests. Normalization already excludes NUL/control text
+and collapses negative zero. Engine/serializer upgrades must requalify these
+renderings against the real engine. Existing SQL constraints and reader caps stay
+unchanged; this refusal needs no migration and preserves already valid policy
+identities. The candidate digest is
 SHA-256 over `bigbrotr/product-policy/1\0` followed by those exact document bytes.
 Source-file digest remains separate: comments, equivalent units and deployment
 root edits do not change the policy seed. The seed is candidate data, not accepted

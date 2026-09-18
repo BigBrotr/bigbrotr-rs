@@ -67,7 +67,11 @@ The operation has a 30-second transaction deadline, 20-second SQL statement,
 5-second lock and 10-second idle-transaction limits. Its conservative 512 MiB
 allowance plus connection preparation is retained through driver shutdown and
 output; it is not a measured peak-memory bound. The source and stored-document
-limits remain 10 MiB. This stage provides no release installation, Linux arm64
+limits remain 10 MiB. Static candidate validation also counts the database's
+JSONB rendering, including added spaces and expanded numeric exponents. A candidate
+whose compact encoding fits but whose persisted text exceeds 10 MiB is refused
+before acceptance; reduce its policy document rather than changing SQL limits.
+This stage provides no release installation, Linux arm64
 bootstrap, owner enrollment or signed-event admission qualification.
 
 Executed evidence at `aad4ddc`: [25 native Linux amd64/PG cases](../implementation/evidence/p01-control-bootstrap-native-20260918.json), including their exact scope and exclusions.

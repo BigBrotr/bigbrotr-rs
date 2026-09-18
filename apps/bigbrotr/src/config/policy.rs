@@ -14,13 +14,19 @@ struct Count {
     bytes: usize,
     maximum: usize,
 }
-impl Write for Count {
-    fn write(&mut self, bytes: &[u8]) -> io::Result<usize> {
+impl Count {
+    fn add(&mut self, bytes: usize) -> io::Result<()> {
         self.bytes = self
             .bytes
-            .checked_add(bytes.len())
+            .checked_add(bytes)
             .filter(|&count| count <= self.maximum)
             .ok_or_else(|| io::Error::other("policy seed exceeds encoded limit"))?;
+        Ok(())
+    }
+}
+impl Write for Count {
+    fn write(&mut self, bytes: &[u8]) -> io::Result<usize> {
+        self.add(bytes.len())?;
         Ok(bytes.len())
     }
     fn flush(&mut self) -> io::Result<()> {
@@ -59,6 +65,10 @@ impl PolicySeed {
         }
         let mut count = Count { bytes: 0, maximum };
         write(settings, &mut count).map_err(|_| "policy seed exceeds 10MiB encoded limit")?;
+        // The SQL CHECK and every accepted-document reader bound JSONB text,
+        // whose separators and decimal numbers differ from our digest bytes.
+        jsonb_policy_bytes(settings, super::resolve::MAX_CONFIG_BYTES)
+            .map_err(|_| "policy seed exceeds 10MiB persisted JSONB limit")?;
         let mut document = Vec::new();
         document
             .try_reserve_exact(count.bytes)
@@ -138,9 +148,109 @@ impl PolicySeed {
     }
 }
 
+/// Size only, never an alternative serializer or policy identity. Pinned PG16
+/// JsonbToCStringWorker adds spaces after commas/colons; numeric_out expands
+/// exponent-form finite numbers. Key ordering does not affect the byte count.
+fn jsonb_policy_bytes(settings: &BTreeMap<&str, &Value>, maximum: usize) -> io::Result<usize> {
+    let mut count = Count { bytes: 0, maximum };
+    count.write_all(b"{\"format\": ")?;
+    serde_json::to_writer(&mut count, FORMAT).map_err(io::Error::other)?;
+    count.write_all(b", \"settings\": {")?;
+    for (index, (key, value)) in settings.iter().enumerate() {
+        if index > 0 {
+            count.add(2)?;
+        }
+        serde_json::to_writer(&mut count, key).map_err(io::Error::other)?;
+        count.add(2)?;
+        jsonb_value_bytes(value, &mut count)?;
+    }
+    count.add(2)?; // close settings and document
+    Ok(count.bytes)
+}
+
+fn jsonb_value_bytes(value: &Value, count: &mut Count) -> io::Result<()> {
+    match value {
+        Value::Array(values) => {
+            count.add(2)?;
+            for (index, value) in values.iter().enumerate() {
+                if index > 0 {
+                    count.add(2)?;
+                }
+                jsonb_value_bytes(value, count)?;
+            }
+            Ok(())
+        }
+        Value::Object(values) => {
+            count.add(2)?;
+            for (index, (key, value)) in values.iter().enumerate() {
+                if index > 0 {
+                    count.add(2)?;
+                }
+                serde_json::to_writer(&mut *count, key).map_err(io::Error::other)?;
+                count.add(2)?;
+                jsonb_value_bytes(value, count)?;
+            }
+            Ok(())
+        }
+        Value::Number(number) if number.is_f64() => {
+            // Number::Display and Serialize use the same pinned zmij formatting.
+            // This string is one finite f64, never an arbitrary policy string.
+            count.add(jsonb_number_bytes(&number.to_string())?)
+        }
+        _ => serde_json::to_writer(count, value).map_err(io::Error::other),
+    }
+}
+
+fn jsonb_number_bytes(text: &str) -> io::Result<usize> {
+    let Some((coefficient, exponent)) = text.split_once('e') else {
+        return Ok(text.len());
+    };
+    let exponent = i64::from(exponent.parse::<i32>().map_err(io::Error::other)?);
+    let sign = usize::from(coefficient.starts_with('-'));
+    let coefficient = coefficient.strip_prefix('-').unwrap_or(coefficient);
+    let (integer, fraction) = coefficient.split_once('.').unwrap_or((coefficient, ""));
+    let integer = (integer.len() as i64 + exponent).max(1);
+    let fraction = (fraction.len() as i64 - exponent).max(0);
+    usize::try_from(integer + fraction + i64::from(fraction > 0))
+        .ok()
+        .and_then(|n| n.checked_add(sign))
+        .ok_or_else(|| io::Error::other("policy numeric rendering exceeds range"))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn jsonb_size_matches_independent_renderings_at_exact_boundaries() {
+        let fixture: Value = serde_json::from_str(include_str!(
+            "../../../../experiments/configuration-inspection/jsonb-cases.json"
+        ))
+        .unwrap();
+        for case in fixture["cases"].as_array().unwrap() {
+            let value: Value = serde_json::from_str(case["compact"].as_str().unwrap()).unwrap();
+            let rendered = case["rendered"].as_str().unwrap();
+            let mut count = Count {
+                bytes: 0,
+                maximum: rendered.len(),
+            };
+            jsonb_value_bytes(&value, &mut count).unwrap();
+            assert_eq!(count.bytes, rendered.len(), "{case}");
+            count.bytes = 0;
+            count.maximum -= 1;
+            assert!(jsonb_value_bytes(&value, &mut count).is_err(), "{case}");
+
+            let settings = BTreeMap::from([("x", &value)]);
+            let expected = format!(
+                "{{\"format\": \"bigbrotr-product-policy/1\", \"settings\": {{\"x\": {rendered}}}}}"
+            );
+            assert_eq!(
+                jsonb_policy_bytes(&settings, expected.len()).unwrap(),
+                expected.len()
+            );
+            assert!(jsonb_policy_bytes(&settings, expected.len() - 1).is_err());
+        }
+    }
 
     #[test]
     fn literal_encoding_preserves_order_unsigned_values_and_null_with_exact_limit() {
@@ -163,6 +273,25 @@ mod tests {
     fn root() -> Resolved {
         super::super::resolve::parse(include_str!("../../../../config/recipes/archive-only.toml"))
             .unwrap()
+    }
+
+    #[test]
+    fn compact_candidate_cannot_exceed_persisted_jsonb_limit() {
+        let mut root = root();
+        for role in ["sync", "monitor"] {
+            root.values
+                .insert(format!("{role}.endpoints.mode"), json!("fixed"));
+            root.values.insert(
+                format!("{role}.endpoints.urls"),
+                Value::Array(
+                    (0..100_000)
+                        .map(|n| json!(format!("wss://relay.example/{n:06}/{}", "x".repeat(22))))
+                        .collect(),
+                ),
+            );
+        }
+        root.validate().unwrap();
+        assert!(PolicySeed::from_resolved(&root).is_err());
     }
 
     #[test]

@@ -18,21 +18,33 @@ reviewed at `12f936d`. It was taken in charge after event qualification/cleanup
 and the archive dependency preparation checkpoint. No competing plan was created.
 P01-T04/T06 and P02-T02 now have scoped MON-001/002/004/006 corrections and
 [Mac](evidence/p01-monitor-corrections-mac-20260918.json)/[native](evidence/p01-monitor-corrections-native-20260918.json)
-evidence. No task checkbox advanced. MON-005 is confirmed and still unfixed.
+evidence. No task checkbox advanced. MON-005 is confirmed; its correction is in
+progress and native acceptance remains NOT_RUN.
 
 ## Git and local ownership
 
-Private origin/main was last observed at
-`1129a9bfcbc1c0d7cb02c90f197f1ba531ec2926`. Local main contains:
+Main and private origin/main now match
+`67f6c6f998fc8d5bd70a2286049402f7c3bf211f` after normal push of the reviewed
+qualification. Its preceding implementation commits are:
 
 - `77f3d98`: retained exact archive dependency inputs, no product dependency change.
 - `2c0dfc116daf1a397f06bad71ce7013864bacd01`, tree
   `7015e92a3fed9fe9b99dc415019aa5cf8587aa90`: monitor product corrections and harness.
 
-Both are unpublished candidates at this observation. Native source/artifact
-qualification below uses exactly `2c0dfc1`. Root owns current uncommitted
-qualification evidence, laboratory inventory, task/user/harness documentation
-and this checkpoint. Product code is unchanged since the qualified candidate.
+Those commits are published. Native source/artifact qualification below uses
+exactly `2c0dfc1`. Root has started the MON-005 regression in
+`apps/bigbrotr/src/config/policy.rs` and updated this checkpoint; those are the
+initial owned dirty files. The size-only JSONB guard and all seven binary tests
+now pass on Mac (five scoped policy tests); the original behavioral RED and
+independent decimal/structural vectors are retained. Clippy, formatting and
+artifact checks pass. The new `configuration-inspection/size_limits.py` is an
+unexecuted native acceptance harness; owning configuration docs are updated.
+Current additional root-owned dirty files are that harness, its frozen vectors,
+its README, generated configuration reference/generator, P01-T04 task note, and
+the configuration/runtime and initialization contracts. Raw local results and
+fresh Tux preflight are in `.research/implementation/jsonb-limit/`; preflight
+observed no active BigBrotr containers, eight unrelated workloads, unchanged
+shared source, no consumers and about 342 GB free. No new remote resource yet.
 No contributor conflict, force-push, history rewrite or Go-neighbor edit exists.
 Check actual status/HEAD/remote before the next action; never guess a future
 qualification commit hash.
@@ -105,18 +117,21 @@ and bootstrap laboratories remain separately retained and stopped.
 
 ## Next bounded action
 
-Commit/review the qualification documentation and normally push verified work to
-the private repository. Then correct MON-005 in P01-T04/P02-T01: preserve the
+Qualification documentation and verified work are normally pushed. Correct
+MON-005 in P01-T04/P02-T01: preserve the
 existing 10 MiB input/storage/read limits and reject a normalized policy before
 acceptance when its JSONB rendering exceeds that cap. PostgreSQL 16.15 source
 inspection confirms added separators and decimal expansion of exponent-form
 numbers; counting compact JSON alone is insufficient. No applied migration has
-been edited. Before coding, finish exact serde_json 1.0.151 number serialization
-inspection and preserve this distinction in the owning contract and regression.
+been edited. Exact serde_json 1.0.151 Number::Display/Serialize and PostgreSQL
+16.15 numeric
+input/output inspection is complete; the size guard counts separators and scale
+without creating a second rendered document or changing digest bytes.
 Execute real rejected/near-limit accepted initialization, inspection and initial
 activation, including tiny finite fractions and Unicode/escape controls. The
-new harness currently reproduces the defect; it is not the corrected acceptance
-matrix yet. Avoid changing an expected failure into green without those cases.
+historical monitor harness still reproduces the old defect at its pinned
+source. The new size harness must pass on a clean exact candidate before closing
+MON-005. Avoid changing an expected failure into green without those cases.
 
 After this boundary, resume M1's archive risk slice (P02-T03/T04): portable typed
 records and isolated native DuckDB/DuckLake worker consuming actual pending
