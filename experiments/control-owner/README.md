@@ -16,6 +16,7 @@ python3 experiments/ingest-registry/build_probe.py --build /owned/build \
 python3 experiments/control-migrations/lab.py setup \
   --root /owned/runtime --build /owned/build --source "$PWD" --run-name controlowner
 python3 experiments/control-owner/run.py --root /owned/runtime
+python3 experiments/control-owner/sql_schedules.py --root /owned/runtime --source "$PWD"
 python3 experiments/control-migrations/lab.py stop --root /owned/runtime
 ```
 
@@ -31,6 +32,8 @@ independent exclusion-digest calculation. The probe's complete frozen 215-settin
 policy validator is an independent fixture oracle; it does not qualify the later
 runtime integration with the actual root-configuration validator.
 
+The supplemental SQL runner tests six attributed-owner refusals and compares
+transaction-held exclusion with the session-unlock negative control.
 [Additional required cases](cases.md) remain separate gates. A successful run is
 not evidence for unexecuted COMMIT fault schedules, paused clients past TTL,
 PostgreSQL restart, native handoff, load, arm64 or release journeys.
