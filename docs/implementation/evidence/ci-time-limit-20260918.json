@@ -1,0 +1,16 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-18",
+  "scope": "CI35289122591 native foundation job time limit",
+  "status": "INCOMPLETE",
+  "source_revision": "1af66d3527e08486c2757ce3343c8feafaa49919",
+  "run": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/35289122591",
+  "observed": {
+    "amd64": "cancelled after 60m; Rust checks succeeded, clean Git archive release build unfinished; practical cases not executed",
+    "annotation": "The job has exceeded the maximum execution time of 1h0m0s",
+    "macos": "job reported success; artifacts not audited here",
+    "linux_arm64": "job reported success; artifacts not audited here",
+    "optional_binding": "skipped"
+  },
+  "change": "Increase finite foundation job limit to120min for both full native compilations; no check is removed or weakened. Next run remains required."
+}
