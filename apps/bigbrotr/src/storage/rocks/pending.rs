@@ -137,6 +137,23 @@ impl PendingBatch {
     pub fn records(&self) -> &[Vec<u8>] {
         &self.records
     }
+    /// The existing pending-data permit stays owned for the complete write.
+    /// This only transfers prepared input; never acknowledges or reclaims it.
+    /// The caller must supervise the blocking transport independently.
+    pub fn write_archive_batch(
+        &self,
+        output: &mut impl std::io::Write,
+        limits: bigbrotr_protocol::archive_batch::Limits,
+        cancelled: &AtomicBool,
+    ) -> Result<(), bigbrotr_protocol::archive_batch::Error> {
+        bigbrotr_protocol::archive_batch::write_batch(
+            &self.batch,
+            &self.records,
+            output,
+            limits,
+            cancelled,
+        )
+    }
 }
 
 impl IngestStore {

@@ -122,6 +122,12 @@ normalization, not a new canonical identity recipe or permission to fill unknown
 values with zero; [the row format](../reference/archive-format.md) and dependency
 record own the mapping and executed counterexample.
 
+The private [pending handoff](../reference/archive-handoff.md) preserves complete
+admission-batch membership and canonical fact bytes. A bounded decoded prefix may
+enter private discardable staging only. Complete framing/digest verification is
+required before publication; preparation cannot acknowledge or reclaim pending.
+Its transport framing and diagnostics are not an archive-batch receipt or export.
+
 File preparation and integrity checks must describe their actual implementation.
 Native `INSERT` does not supply an application SHA-256 of every generated file.
 The protected archive cut requires the matching semantic receipt, complete file/

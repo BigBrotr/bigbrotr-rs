@@ -8,9 +8,11 @@ published plugin API.
 
 The current executable implements the finite `inspect-engine` diagnostic. It
 loads the pinned offline bundle and reports actual engine/source identity,
-extension versions and effective settings. Publication, typed scientific rows,
-parent supervision/grants, receipt recovery, export and storage protection remain
-P02-T03/T04 work. Do not use this diagnostic as an archive commit or a readiness
+extension versions and effective settings. The new private `inspect-batch`
+[handoff diagnostic](../../docs/reference/archive-handoff.md) additionally checks
+complete pending membership and stages the five implemented typed fact families.
+Publication, parent supervision/grants, receipt recovery, export and storage
+protection remain P02-T03/T04 work. Do not use a diagnostic as an archive commit or a readiness
 certificate. No step or release target is qualified by an asset download.
 
 ## Build inputs and installation shape

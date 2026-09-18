@@ -4889,6 +4889,37 @@
         }
       },
       "report": "docs/implementation/evidence/p02-five-family-rows-native-20260918.json"
+    },
+    "handoff_preparation_mac": {
+      "base": "e6f6a6980f9c0325343ff06ed65f8450204d9ced",
+      "dirty": true,
+      "files_sha256": {
+        "crates/bigbrotr-protocol/src/archive_batch.rs": "783b585191b2b9df9690256ab997937738917b3dfe5945c25f6c63c50879fdbf",
+        "crates/bigbrotr-protocol/tests/archive_batch.rs": "0cee5d82e79b4a5c8a17ea30a6bfc729c8023fc0ae58b2e4e300f42aa18fc07e",
+        "crates/bigbrotr-protocol/tests/fixtures/archive/write_fixture.py": "6fa9cc07886d8d9ce4adce243ac9f10af545602eac537d2c98f18ebbfabf8e51",
+        "crates/bigbrotr-protocol/tests/fixtures/archive/single.json": "b24858a2a07142987968bff090239e6b4052d30ca55cdc2abc7558a7bc0f2b69",
+        "apps/bigbrotr-archive-worker/src/prepare.rs": "d03466afe4498424f4fa720f06bf36e75d4febfeb64c6e14b7e0205cfce0810a",
+        "apps/bigbrotr-archive-worker/src/prepare/schema.rs": "b433dc8bfc635d759986eed82740674de9285565f351d3f293be4c85b508247a",
+        "apps/bigbrotr-archive-worker/src/main.rs": "6565b899f87010c5c5d86c6604fe8c4cc543a57427aedc25a5ca2dd0e949bc3e",
+        "apps/bigbrotr-archive-worker/tests/handoff.rs": "384ac1cd7c37b09cd092bcc7c2055dc42fe2d5baf885b4a78b9242c318a4f621",
+        "apps/bigbrotr/src/storage/rocks/pending.rs": "21831c08937e3de93f3f9dcecb35d8d1d6f1896d666867cd3fadb126423ee88f",
+        "apps/bigbrotr/src/storage/rocks/bootstrap_tests.rs": "effbbc50d60a5959d29ce708d9bcc47d398c8ce4c3195d08f391cd7808600eb7"
+      },
+      "logs": [
+        "handoff-red.log",
+        "handoff-first-green.log",
+        "handoff-bounds.log",
+        "prepare-red.log",
+        "handoff-prepare-first-green.log",
+        "handoff-executable-red.log",
+        "handoff-connected-mac.log",
+        "handoff-connected-mac-corrected.log",
+        "handoff-mixed-mac.log",
+        "handoff-final-clippy.log"
+      ],
+      "observed": "PASS: five framing cases, three native staging cases (including14 mixed facts/all five families), actual worker valid/truncated case and real Rocks bootstrap/reopen/transfer with unchanged sequence. Earlier scoped worker/protocol Clippy passed; combined final Clippy currently rebuilding native Rocks in session2090. Linux NOT_RUN.",
+      "failures": "Original stub REDs retained; byte130 changes fact profile (IncompatibleSchema); JSON source sequence is decimal string, not number. Corrected fixture expectations preserve both contracts.",
+      "boundaries": "PreparedBatch is private ephemeral staging only; no PG catalog, parent supervisor/grants, signed admission path or archive receipt/reclamation."
     }
   },
   "implementation_monitor_corrections_20260918": {

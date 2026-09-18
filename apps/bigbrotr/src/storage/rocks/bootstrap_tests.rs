@@ -161,6 +161,40 @@ fn synchronized_bootstrap_reopens_as_one_complete_pending_batch_and_exact_receip
         record.payload(),
         &bigbrotr_model::FactPayload::Dictionary(original.dictionaries()[0].clone())
     );
+    let sequence_before_transfer = store.db.latest_sequence_number();
+    let mut wire = Vec::new();
+    let transfer_limits = bigbrotr_protocol::archive_batch::Limits {
+        max_records: 8,
+        max_encoded_bytes: 8192,
+        fact: bigbrotr_model::codec::FactDecodeLimits::default(),
+    };
+    pending
+        .write_archive_batch(&mut wire, transfer_limits, &AtomicBool::new(false))
+        .unwrap();
+    let mut transferred = bigbrotr_protocol::archive_batch::BatchReader::new(
+        wire.as_slice(),
+        transfer_limits,
+        &AtomicBool::new(false),
+    )
+    .unwrap();
+    assert_eq!(
+        transferred
+            .next_fact(&AtomicBool::new(false))
+            .unwrap()
+            .unwrap(),
+        record
+    );
+    assert!(
+        transferred
+            .next_fact(&AtomicBool::new(false))
+            .unwrap()
+            .is_none()
+    );
+    assert_eq!(
+        &transferred.finish(&AtomicBool::new(false)).unwrap(),
+        pending.batch()
+    );
+    assert_eq!(store.db.latest_sequence_number(), sequence_before_transfer);
     drop(pending);
     let sequence_before = store.db.latest_sequence_number();
     let reduced = store.bootstrap_dictionaries(

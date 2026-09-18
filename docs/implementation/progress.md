@@ -15,16 +15,16 @@ task checkbox or M1 gate is complete; pending must not be reclaimed.
 
 ## Verified Git and ownership
 
-Mac primary workspace, main. Private origin/main was freshly observed at
-`dcc514ede737cbc6004c5e69a6cc00b6a86a97cc`. Local HEAD is unpublished candidate
-`5c3a8dd8edc74a44df61455b8999fb338da55eee`, tree
-`78af0ac18bfb8e0dda8b29d1068f3cfeebf926b7`, after event candidate `2f4dd92`.
-Both native scopes now qualify; evidence/documentation push is pending.
-Root owns dirty inventory/checkpoint/native five-family report/harness and
-archive/dependency documentation. Separate root-owned next-slice dirty files:
+Mac primary workspace, main. Private origin/main and local HEAD are now
+`e6f6a6980f9c0325343ff06ed65f8450204d9ced`; ordinary push and remote SHA were
+verified. It records native candidate `5c3a8dd8edc74a44df61455b8999fb338da55eee`,
+tree `78af0ac18bfb8e0dda8b29d1068f3cfeebf926b7`, and earlier event candidate
+`2f4dd92`. Both qualification scopes and documentation are pushed.
+Root owns the current next-slice dirty files:
 protocol archive_batch module/export, independent fixture/generator/tests,
-worker prepare module/schema, worker manifest/lib, and Rocks pending/bootstrap
-consumer changes. They are not part of the qualified native candidate.
+worker prepare module/schema, worker manifest/lib/main and executable handoff
+test, Rocks pending/bootstrap consumer changes, archive-handoff reference,
+archive contract/task/bundle documentation, inventory and this checkpoint. They are not part of the qualified native candidate.
 No contributor conflict, remote history rewrite or shared checkout mutation.
 
 ## Qualified evidence
@@ -81,7 +81,8 @@ and source identity, then complete batch digest/EOF; errors poison the reader.
 One decoded fact at a time can enter private native staging. The Rocks pending
 producer retains its existing permit during the write; no ACK/reclamation.
 Current worker `PreparedBatch` consumes its engine and drops partial staging on
-failure. It is not yet connected to the executable or production parent.
+failure. The private `inspect-batch` command now consumes framed stdin and emits
+bounded diagnostic counts after full validation. The production parent is absent.
 
 `handoff-red.log` records two expected stub failures, then the independent golden
 wire passed. `handoff-bounds.log` preserves a fixture expectation failure: byte130
@@ -89,8 +90,19 @@ changes the canonical profile and correctly returns IncompatibleSchema, not
 Integrity. The updated test preserves that case separately and corrupts byte260
 for the body-digest control. `prepare-red.log` records the expected missing-stage
 failure. Scoped run session80225/log `handoff-prepare-first-green.log` completed exit0:
-five protocol cases and two actual native staging cases pass on Mac arm64. Native qualification of this new
-slice is NOT_RUN. No permanent archive schema or publisher is implemented.
+five protocol cases and two actual native staging cases pass on Mac arm64. The actual worker valid/truncated executable case and scoped Clippy also pass.
+A first executable expectation failure (sequence is decimal string "2", not JSON
+number2) is retained in `handoff-connected-mac.log`; the corrected worker case
+and actual Rocks bootstrap/reopen/transfer both pass in
+`handoff-connected-mac-corrected.log` (session69148 completed exit0). The native
+Rocks sequence is unchanged by transfer. `handoff-mixed-mac.log` records all
+three preparation cases passing, including14 mixed synthetic facts/all five
+families (session49342 completed exit0). Final combined Clippy session2090 is
+still rebuilding native Rocks; `handoff-final-clippy.log` owns its outcome.
+Do not assume that command passed. Current Rust-source/log identities are in
+the inventory and `handoff-dirty-identity.json` (refresh its snapshot after edits).
+An unpublished candidate may run native exact-source qualification while this
+scoped lint finishes. Native qualification of the new slice is NOT_RUN. No permanent archive schema or publisher is implemented.
 
 Scoped source inspection additionally confirmed pinned DuckLake
 `d8a1881e22516ea3d186d73e83c65fe5bd1a1dc4` constructs its own internal connection
@@ -115,9 +127,10 @@ BigBrotr containers. Shared source clean/detached at
 `6be851580ba415eed5ff0979ee7072480f9ee3ab`, zero consumers. Do not reset it.
 Build collector96927 and test collector34412 both completed exit0. No remote build/test remains running.
 
-Next: inspect scoped handoff/preparation outcome, finish its actual executable and
-pending-store consumer checks; independently commit/push the already qualified
-five-family evidence without folding unqualified product changes into that claim.
-Then qualify the connected private preparation and implement parent supervision,
+Next: collect the two Mac runs, review the complete handoff/preparation diff,
+commit an unpublished exact-revision candidate and qualify its scoped real
+protocol/worker/Rocks consumer cases on Tux. The full Rocks-to-worker process
+journey and signed admission linkage are still required; the current tests
+exercise those consumer boundaries separately. Then implement parent supervision,
 archive init and positively fenced publication. Continue toward M1 and the whole
 selected product; no receipt/protection/read/export/restart gate is complete.
