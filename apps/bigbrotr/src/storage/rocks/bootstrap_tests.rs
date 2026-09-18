@@ -162,6 +162,20 @@ fn synchronized_bootstrap_reopens_as_one_complete_pending_batch_and_exact_receip
         &bigbrotr_model::FactPayload::Dictionary(original.dictionaries()[0].clone())
     );
     drop(pending);
+    let sequence_before = store.db.latest_sequence_number();
+    let reduced = store.bootstrap_dictionaries(
+        request(),
+        &original,
+        ObservedTime::new(456),
+        BootstrapLimits {
+            max_mappings: 8,
+            max_batch_bytes: 128,
+        },
+        grant(&b, 8 * MIB, 4 * MIB),
+        || Ok(()),
+    );
+    assert_eq!(reduced.err(), Some(BootstrapError::Limit));
+    assert_eq!(store.db.latest_sequence_number(), sequence_before);
     let replay = store
         .bootstrap_dictionaries(
             request(),

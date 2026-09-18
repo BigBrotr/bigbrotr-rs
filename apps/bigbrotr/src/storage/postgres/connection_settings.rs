@@ -343,7 +343,12 @@ fn parse_endpoint(raw: &str) -> Result<Endpoint, ConnectionError> {
     }
     let parsed = Url::parse(&format!("https://{raw}")).map_err(|_| ConnectionError::Endpoint)?;
     let host = parsed.host_str().ok_or(ConnectionError::Endpoint)?;
-    let port = parsed.port().ok_or(ConnectionError::Endpoint)?;
+    // HTTPS supplies authority parsing only. Its default-port normalization must
+    // neither discard PostgreSQL's explicit 443 nor invent a missing port.
+    let port = raw
+        .rsplit_once(':')
+        .and_then(|(_, port)| port.parse::<u16>().ok())
+        .ok_or(ConnectionError::Endpoint)?;
     if parsed.path() != "/" || port == 0 {
         return Err(ConnectionError::Endpoint);
     }

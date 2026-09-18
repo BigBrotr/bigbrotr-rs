@@ -376,3 +376,66 @@ fn empty_password_zero_timeout_and_redacted_errors_fail_before_connection() {
         ConnectionError::ConnectTimeout
     );
 }
+
+#[test]
+fn explicit_port_parity_between_static_configuration_and_connection_preparation() {
+    let directory = tempfile::tempdir().unwrap();
+    let password_path = password_file(directory.path(), b"secret");
+    let password = secret_reference(&password_path);
+    for (endpoint, expected) in [
+        ("127.0.0.1:443", Some(443)),
+        ("127.0.0.1:5432", Some(5432)),
+        ("[::1]:443", Some(443)),
+        ("[::1]:65535", Some(65535)),
+        ("localhost", None),
+        ("[::1]", None),
+        ("localhost:", None),
+        ("localhost:0", None),
+        ("[::1]:0", None),
+        ("localhost:65536", None),
+        ("[::1]:65536", None),
+        ("::1:5432", None),
+    ] {
+        let path = directory.path().join("root.toml");
+        fs::write(
+            &path,
+            include_str!("../../../config/recipes/archive-only.toml")
+                .replace("127.0.0.1:5432", endpoint),
+        )
+        .unwrap();
+        let static_result = Command::new(env!("CARGO_BIN_EXE_bigbrotr"))
+            .args(["config", "validate", "--file"])
+            .arg(&path)
+            .env_clear()
+            .output()
+            .unwrap();
+        assert_eq!(
+            static_result.status.success(),
+            expected.is_some(),
+            "static: {endpoint}"
+        );
+        let prepared = ConnectionSettings {
+            endpoint,
+            database: "bigbrotr",
+            user: "application_user",
+            password: SecretFile::parse(&password).unwrap(),
+            connect_timeout: Duration::from_secs(3),
+            tls: TlsSettings::LocalPlaintext {
+                boundary: PlaintextBoundary::Loopback,
+            },
+        }
+        .prepare();
+        if let Some(port) = expected {
+            let (config, _) = prepared
+                .unwrap_or_else(|error| panic!("{endpoint}: {error}"))
+                .into_parts();
+            assert_eq!(config.get_ports(), &[port]);
+        } else {
+            assert_eq!(
+                prepared.unwrap_err(),
+                ConnectionError::Endpoint,
+                "{endpoint}"
+            );
+        }
+    }
+}

@@ -4,6 +4,11 @@ This is the bounded initial write slice of P02-T02. The selected event admission
 producer retirement, archive, handoff and installed runtime remain separate work.
 No public endpoint or `serve` role exposes this operation yet.
 
+A retained receipt or fact that exceeds a reduced accepted local decode limit
+returns `Limit`; allocation failure returns `Allocation`. Neither is diagnosed
+as inconsistent retained state. Malformed records still return `StateMismatch`,
+and every refused replay leaves native state unchanged.
+
 `ControlSession::bootstrap_initial_dictionaries` connects the actual dedicated
 Control backend to an exclusively open `IngestStore`. The actual locked directory
 must match the trusted factory's selected absolute static root; canonical aliases

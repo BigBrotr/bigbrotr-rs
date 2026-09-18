@@ -30,7 +30,9 @@ changes to a managed seed or staged declarative file do not activate themselves.
 Every poll checks both complete documents against the immutable startup roots.
 Policy authority lasts at most `runtime.authorization_ttl` (five seconds by
 default), measured from request start with the suspend-aware clock. Polling runs
-at half that TTL or the ownership heartbeat, whichever is shorter. Only the
+at half the remaining validity or the next ownership heartbeat, whichever is
+sooner. Time spent waiting for a response consumes validity; it never extends
+the request-start expiry. Only the
 separate `runtime.heartbeat_interval` renews the scheduling row. A paused process
 checks expiry before attempting another operation.
 
@@ -47,6 +49,12 @@ Exit codes: 1 unavailable/I/O, 2 usage, 3 invalid role/configuration/policy or
 concurrent owner, 4 cancelled/unavailable ownership or unknown durable outcome.
 Messages omit credential paths and database error details. Runtime records are
 private operational output; do not publish them as a public health API.
+Lifecycle and error output cannot hold up supervision: a bounded diagnostic
+queue writes independently. Shutdown waits at most 200 ms for output after
+backend cleanup, then terminates the process and its diagnostic writer. A
+blocked or failed destination may lose records and changes an otherwise
+successful exit to 1, even when the owner release committed. Inspect durable
+owner state to resolve that distinction; missing output is not a rollback.
 
 The [native acceptance evidence](../implementation/evidence/p01-control-runtime-native-20260918.json)
 records 16 actual executable/PostgreSQL scenarios at `6be8515`, with independent

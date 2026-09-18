@@ -1,0 +1,166 @@
+{
+  "format": "bigbrotr-monitor-corrections-mac/1",
+  "status": "SCOPED_PASS_NATIVE_REQUIRED",
+  "baseline_product_revision": "1129a9bfcbc1c0d7cb02c90f197f1ba531ec2926",
+  "source_state": "Root-owned uncommitted candidate; exact changed source hashes below",
+  "host": {
+    "os": "Darwin",
+    "architecture": "arm64",
+    "version": "26.5.2"
+  },
+  "source_sha256": {
+    "apps/bigbrotr/src/interfaces/mod.rs": "3012f9f7fc447057fced1ae891b37f810ef9103cf3040aa80f65e2366bbe8958",
+    "apps/bigbrotr/src/interfaces/serve.rs": "fb679ea2eb04d0ad05e93446be00c0b813a9480277176a17d7774e3e85e6d27a",
+    "apps/bigbrotr/src/runtime/policy_authority.rs": "faca76953bf02a1a90464333b53abf2dead85313e99cfbd6a6929b6908933bea",
+    "apps/bigbrotr/src/storage/postgres/connection_settings.rs": "e1e5f03569a77244ccb8649632c8b24d2747de4f2d2bcc97613f9bb942047ea4",
+    "apps/bigbrotr/src/storage/rocks/admission.rs": "4f639fd2134a8f005cc7d658b6a32f6db883940e202bb6dfcd4e6c5eef0c11e7",
+    "apps/bigbrotr/src/storage/rocks/admission_tests.rs": "1059b638a8e673485549cbe5d5127f6590383b0aabce62dd9bb03d38d237621e",
+    "apps/bigbrotr/src/storage/rocks/bootstrap.rs": "f143007f7b1fcca8b02ba96103c0f94241eaa92319f3dbb0caa629f7577641c3",
+    "apps/bigbrotr/src/storage/rocks/bootstrap_tests.rs": "b09f8bcb135082410d2a87d807533f01955791fec17d35c17f492cee65e8d466",
+    "apps/bigbrotr/tests/policy_lifetime/cases.rs": "d4c67b2b758c0b26bfae8e2bc6f95dc5380fb20b4ac9a9632bd5636442ad1e39",
+    "apps/bigbrotr/tests/postgres_connection_settings.rs": "356f4bddcf4684697f0629ef7e50b52a22815d4945a8a517c32dd17b3ddde6fa",
+    "experiments/control-runtime/README.md": "49c5d2eae452d8d089e90cf619632bbc10b11ac98051c28d54f3431b451d1c4e",
+    "apps/bigbrotr/src/interfaces/lifecycle_output.rs": "4d2f06a6b567fa17ab9c80738c8aeb5d951db2f276b6dcc9d36823ead17ceee1",
+    "experiments/control-runtime/blocked_output.py": "851c4645b32313560429f622e39365196c447a759d1caf88096fcd6101d01729",
+    "experiments/control-runtime/monitor_regressions.py": "678e90b802146b5711053f563991da1ed424dbc702b19c02ec7ea62c17dc8523",
+    "Cargo.lock": "ea27c2b367846c4718a6d76fbd1a8340558299ccf9f22c76ed3f30c4b8025b47",
+    "Cargo.toml": "c6a8ec7c2a234c911d57849b5b9c55ccac2ea724b0fb757c905c4d579aec1ef6",
+    "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167"
+  },
+  "binary_sha256": "eedcf31bd401aab60a8e2ceeac8841f749f6049d57fc079768a3d9a6ae821673",
+  "build_info": {
+    "capabilities": [
+      "event-verification",
+      "config-static"
+    ],
+    "capability_scope": "Strict bounded event JSON and independent ID/BIP340 verification; offline static configuration candidates and incomplete read-only doctor diagnostics; no storage, durable configuration authority, source policy, wire transport, filter, or general NIP conformance claim",
+    "debug_info": "true",
+    "format": "bigbrotr-build/1",
+    "inputs_sha256": {
+      "Cargo.lock": "ea27c2b367846c4718a6d76fbd1a8340558299ccf9f22c76ed3f30c4b8025b47",
+      "contracts/protocol/nip01-event.json": "b830d5ab8651f5a763ebcffdc0eb1737ba70f4602c93fc714c892865ffca2db8",
+      "contracts/protocol/versions.json": "37c76706c5a2aa4fc72a40aeed908f104620eafcee1118b7cee8baf133546c95",
+      "contracts/release/dependencies.json": "57acf8ea3b24e25ca458a295346e2b2d4500a12d61a3eb02f46e4ef3d2556abf",
+      "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167"
+    },
+    "optimization": "0",
+    "product": "BigBrotr",
+    "profile_assertion": null,
+    "protocol_registry_format": "bigbrotr-protocol-versions/1",
+    "protocols": {
+      "event_verifier": "bigbrotr-nip01-verifier/1",
+      "nostr_nips": "a2494f4f81d46684e5814a9bf35e2b1df978f955"
+    },
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: aarch64-apple-darwin\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "schemas": {
+      "build_info": "bigbrotr-build/1",
+      "config_static": "bigbrotr-config-static/1",
+      "doctor": "bigbrotr-doctor/1",
+      "signed_event": "nip01-event/1"
+    },
+    "source": {
+      "dirty": null,
+      "manifest_sha256": null,
+      "revision": null,
+      "state": "unrecorded",
+      "tree": null
+    },
+    "target": "aarch64-apple-darwin",
+    "version": "0.1.0-dev"
+  },
+  "checks": [
+    {
+      "command": "cargo test --locked -p bigbrotr --lib",
+      "tests": 42,
+      "result": "PASS"
+    },
+    {
+      "command": "cargo test --locked -p bigbrotr --bin bigbrotr",
+      "tests": 5,
+      "result": "PASS"
+    },
+    {
+      "command": "cargo test --locked -p bigbrotr --test postgres_connection_settings",
+      "tests": 7,
+      "result": "PASS"
+    },
+    {
+      "command": "cargo clippy --locked -p bigbrotr --all-targets -- -D warnings",
+      "result": "PASS"
+    },
+    {
+      "command": "cargo fmt --all --check; python3 experiments/verify_artifacts.py; git diff --check",
+      "result": "PASS"
+    }
+  ],
+  "findings": {
+    "MON-001": {
+      "red": {
+        "case": "MON-001 real full stderr pipe missing configuration",
+        "filled_bytes": 65536,
+        "blocked_past_seconds": 2,
+        "elapsed": 2.007658208,
+        "exit": -9,
+        "status": "REPRODUCED"
+      },
+      "green": {
+        "status": "TERMINAL",
+        "stream": "stderr",
+        "filled_bytes": 65536,
+        "blocking": true,
+        "pid": 96665,
+        "exit": 1,
+        "elapsed_seconds": 1.6543909170000002,
+        "retained_bytes": 65536,
+        "unchanged": true,
+        "eof_after_child_exit": true
+      },
+      "remaining": "Actual stdout block while supervising PostgreSQL and bounded SIGTERM on Linux NOT_RUN"
+    },
+    "MON-002": {
+      "status": "PASS",
+      "red": "Actual connection preparation rejects explicit 443 after actual static CLI accepts it",
+      "green": "12 IPv4/IPv6 explicit/missing/zero/overflow parity cases; actual prepared driver port checked. No network port-443 server claimed"
+    },
+    "MON-004": {
+      "status": "UNIT_PASS_PROCESS_REQUIRED",
+      "remaining": "Actual slow acquisition/poll followed by healthy backend NOT_RUN; request-start expiry and suspend refusal retained"
+    },
+    "MON-005": {
+      "status": "NOT_RUN",
+      "remaining": "Real maximum CLI/PostgreSQL initialization/inspection/activation; new harness is proposal only"
+    },
+    "MON-006": {
+      "status": "PASS",
+      "red": "Actual native identical event retry with 11 retained dependencies and limit 8 returns StateMismatch; bootstrap reduced 128-byte decode cap also fails expected Limit",
+      "green": "Both return Limit without writes; adequate retry preserves original bytes; existing malformed-state and full signed corpus pass"
+    }
+  },
+  "logs": {
+    "lib-green.log": "a5ac5ae62b467e480d7a051559291221929ea6e59f6bb365af11c7438ab71a37",
+    "artifacts.log": "c019136352c5001ba31e99fe5ada5056f1595b74bdfdd1b1e18ec81369b76ef2",
+    "clippy.log": "0c772189f7d40e600c56e82bc832b01b743e3928ca45f600ba2e9af6562bd7fe",
+    "lease-green.log": "1f20ca53343f47acebfb6834ef10b221449e75ca485de71689cadc6b58a1d315",
+    "port-red.log": "86ec548d2e76bd70ea4a0627d0396bbfff8fe497c65817b4cf13935b002ab302",
+    "lease-red.log": "a6d924cb5ff9b9741862309fc744fc39e31846b7b724b7a2fbea29cbf35fe884",
+    "bin-green.log": "2cebe7e513c16d972c135a48c837dbcca2a15dff6891a9b993d771e328436928",
+    "replay-red-confirmed.log": "c3d069125a34d84f0b16969be1595e8423760276b98f1a2f7a596ec5ed344cf3",
+    "replay-red.log": "b0394a19226a483ade93fa71cc4ab463ab7e84764ea7c171b8cd33dd5d14702c",
+    "cli-build.log": "a21c50f8f0de5b371463ca177bd03ebd80c977d0454105fe821dfd70d2b383c9",
+    "bootstrap-red.log": "fdd20ab1442aa268a2fce63bfa0665cfb26cef59d0f23cd2128d7e95581a47dd",
+    "port-green.log": "1bb9f9a24caad772cbec765368491619bbd57293507d912164670f8c3bd6704e"
+  },
+  "review": {
+    "kind": "Integrating owner source/diff review using owner-supplied independent static findings",
+    "independent_agent_run": false,
+    "boundaries": "serve/lease/driver cleanup, connection/static parser callers, native retained receipt/fact decoders and tests, bounded diagnostics and new process harness",
+    "not_reviewed": "Complete future archive/read/UI implementation"
+  },
+  "limits": [
+    "No Linux execution of this candidate yet",
+    "No pipeline/release or Linux arm64 qualification",
+    "No change to persistent formats or applied migrations",
+    "Missing API compile failure for remaining_validity is not a behavioral RED",
+    "The blocked stderr script predates final one-byte fill/EOF nonblocking harness refinements; native run must exercise final helper"
+  ]
+}

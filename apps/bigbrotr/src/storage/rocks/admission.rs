@@ -328,7 +328,7 @@ impl IngestStore {
                 read_rejection(&value, &input, identity.dataset_id)?
             } else {
                 let receipt = Receipt::decode_persistent(&value, limits.receipts())
-                    .map_err(|_| AdmissionError::StateMismatch)?;
+                    .map_err(BootstrapError::from)?;
                 if receipt.request_id() != input.request
                     || receipt.protection_context().dataset_id != identity.dataset_id
                 {
@@ -468,7 +468,7 @@ impl IngestStore {
             return Err(AdmissionError::StateMismatch);
         }
         let fact = Fact::decode_preimage(&value[34..], r.payload_digest, limits.facts())
-            .map_err(|_| AdmissionError::StateMismatch)?;
+            .map_err(BootstrapError::from)?;
         if fact.source_record_id() != r.source_record_id {
             return Err(AdmissionError::StateMismatch);
         }
@@ -633,7 +633,7 @@ impl IngestStore {
                 .map_err(|_| AdmissionError::StateMismatch)?,
         );
         let last_fact = Fact::decode_preimage(&last_value[34..], last_digest, limits.facts())
-            .map_err(|_| AdmissionError::StateMismatch)?;
+            .map_err(BootstrapError::from)?;
         if last_fact.source_record_id() != last_id {
             return Err(AdmissionError::StateMismatch);
         }

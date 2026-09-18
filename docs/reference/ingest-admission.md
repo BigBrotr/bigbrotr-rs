@@ -5,6 +5,12 @@ and dedicated Control backend. It is not an installed Ingest runtime, network
 service, complete retirement protocol or release capability. The first archive,
 read/export and successor recovery journeys remain required.
 
+Retained replay preserves decoder error classes: configured byte, allocation,
+tag/string and dependency-count limits return `Limit`, failed allocation returns
+`Allocation`, and malformed or inconsistent retained evidence returns
+`StateMismatch`. A refusal does not change stored state; retrying with adequate
+limits must still return the original receipt.
+
 `PreparedEvent::new` consumes the exact `EventIntent` and its data/item grant.
 It counts retained buffer capacities, including empty tag vectors, before
 hashing the bound request. Input storage is capped at 16 MiB. The existing

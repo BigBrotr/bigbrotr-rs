@@ -1,5 +1,5 @@
 //! First persistent role consumer. Every exit owns transport termination.
-use super::postgres_command;
+use super::{lifecycle_output::LifecycleOutput, postgres_command};
 use crate::config::{Resolved, policy::PolicySeed};
 use bigbrotr::{
     runtime::{
@@ -11,9 +11,7 @@ use bigbrotr::{
 use bigbrotr_model::{DatasetId, PolicyEpoch, ProcessIncarnation};
 use clap::{Arg, ArgMatches, Command};
 use serde_json::{Value, json};
-use std::{
-    cell::Cell, collections::BTreeSet, io::Write, path::Path, process::ExitCode, time::Duration,
-};
+use std::{cell::Cell, collections::BTreeSet, path::Path, time::Duration};
 use tokio::{
     signal::unix::{Signal, SignalKind, signal},
     time::Instant,
@@ -29,7 +27,10 @@ pub(crate) fn command() -> Command {
         .after_help("Requires explicit initialization, migrations and initial policy activation with administration.enabled=false. SIGINT/SIGTERM stop the owner. No listeners or native stores are started by the Control-only slice. Exit: 0 stopped, 1 unavailable/I/O, 2 usage, 3 invalid configuration/policy, 4 cancelled or unknown durable outcome.")
 }
 
-pub(crate) fn execute(args: &ArgMatches) -> ExitCode {
+pub(crate) fn execute(args: &ArgMatches) -> ! {
+    let Ok(mut output) = LifecycleOutput::start() else {
+        std::process::exit(1);
+    };
     let outcome = (|| {
         let root = crate::config::load(Path::new(args.get_one::<String>("file").unwrap()))?;
         let requested: Vec<&str> = args
@@ -54,15 +55,21 @@ pub(crate) fn execute(args: &ArgMatches) -> ExitCode {
                     .into(),
             ));
         }
-        run(root)
+        run(root, &mut output)
     })();
-    match outcome {
-        Ok(()) => ExitCode::SUCCESS,
+    let mut code = match outcome {
+        Ok(()) => 0,
         Err((code, message)) => {
-            eprintln!("error: {message}");
-            ExitCode::from(code)
+            output.emit(format_args!("error: {message}"), true);
+            code
         }
+    };
+    if !output.finish() && code == 0 {
+        code = 1;
     }
+    // run() already closed/joined every backend and released its grants. Exit
+    // also terminates a blocked diagnostics-only thread; it cannot outlive us.
+    std::process::exit(i32::from(code));
 }
 
 struct Stop {
@@ -88,7 +95,7 @@ impl Stop {
     }
 }
 
-fn run(root: Resolved) -> Result<()> {
+fn run(root: Resolved, output: &mut LifecycleOutput) -> Result<()> {
     let required = |name| {
         root.text(name)
             .ok_or_else(|| (3, "missing Control deployment root".into()))
@@ -128,14 +135,14 @@ fn run(root: Resolved) -> Result<()> {
             _ = stop.requested() => return Err((4, "Control startup cancelled before connection".into())),
             result = postgres_command::connect(prepared) => result.map_err(|e| (1, e.to_string()))?,
         };
-        let outcome = supervise(client, request, &root, &mut stop).await;
+        let outcome = supervise(client, request, &root, &mut stop, output).await;
         // No error, cancellation, output failure or unknown COMMIT can bypass
         // the join. Dropping the request/session alone does not free its grant.
         postgres_command::join(driver).await;
         outcome
     });
     runtime.shutdown_timeout(postgres_command::DRIVER_DRAIN);
-    let result = result.and_then(emit);
+    let result = result.map(|value| output.emit(value, false));
     drop(grant);
     result
 }
@@ -145,6 +152,7 @@ async fn supervise(
     request: ClaimRequest,
     root: &Resolved,
     stop: &mut Stop,
+    output: &mut LifecycleOutput,
 ) -> Result<Value> {
     let dataset = request.dataset;
     let incarnation = request.incarnation;
@@ -158,6 +166,7 @@ async fn supervise(
     .map_err(|e| (1, e.to_string()))?;
     let validate = |document: &str, digest| validate_policy(root, document, digest);
     let ticket = lease.begin_refresh().map_err(|e| (1, e.to_string()))?;
+    let mut renewed = Instant::now();
     let commit = Cell::new(false);
     let acquired = tokio::select! {
         biased;
@@ -173,17 +182,20 @@ async fn supervise(
         .check_delivery(lease.known_epoch())
         .map_err(|e| (1, e.to_string()))?;
     let identity = owner.identity();
-    emit(
+    output.emit(
         json!({"format":"bigbrotr-control-runtime/1", "state":"idle", "role":"control",
         "dataset_id":dataset, "process_incarnation":incarnation,
         "owner_resource_id":identity.resource_id, "owner_epoch":identity.epoch.get().to_string(),
         "config_revision":snapshot.config_revision.to_string(), "policy_revision":snapshot.policy_revision.to_string(),
         "listeners":[], "native_stores":[], "authority_scope":"local Control only; no principal/action grant"}),
-    )?;
+        false,
+    );
     let heartbeat = duration(root, "heartbeat_interval");
-    let period = (ttl / 2).min(heartbeat);
-    let mut renewed = Instant::now();
     loop {
+        let remaining = lease.remaining_validity().map_err(|e| (1, e.to_string()))?;
+        // A slow successful response already consumed part of the request-start
+        // lifetime. Neither that delay nor output handling may extend authority.
+        let period = (remaining / 2).min(heartbeat.saturating_sub(renewed.elapsed()));
         tokio::select! {
             biased;
             _ = stop.requested() => {
@@ -203,6 +215,7 @@ async fn supervise(
             .map_err(|e| (1, e.to_string()))?;
         let ticket = lease.begin_refresh().map_err(|e| (1, e.to_string()))?;
         let renew = renewed.elapsed() >= heartbeat;
+        let refresh_started = Instant::now();
         let operation = async {
             if renew {
                 owner.refresh(validate).await
@@ -221,7 +234,7 @@ async fn supervise(
             .complete_refresh(&ticket, response(dataset, incarnation, snapshot, ttl))
             .map_err(|e| (1, e.to_string()))?;
         if renew {
-            renewed = Instant::now();
+            renewed = refresh_started;
         }
     }
 }
@@ -250,13 +263,6 @@ fn owner_error(error: OwnerError) -> (u8, String) {
     };
     (code, error.to_string())
 }
-fn emit(value: Value) -> Result<()> {
-    let mut out = std::io::stdout().lock();
-    writeln!(out, "{value}")
-        .and_then(|()| out.flush())
-        .map_err(|_| (1, "cannot write Control lifecycle output".into()))
-}
-
 fn validate_policy(
     root: &Resolved,
     document: &str,

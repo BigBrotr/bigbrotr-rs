@@ -150,13 +150,28 @@ subsequent edits and revocation remain distinct responsibilities.
 
 The [Control-only executable candidate](../user/control-runtime.md) consumes the
 accepted documents through the same strict root validator. It polls policy at
-half the authorization TTL, bounded by the ownership heartbeat interval, and
+half the remaining authorization lifetime, bounded by the next ownership
+heartbeat deadline, and
 renews the scheduling row only at that heartbeat. Acquisition, polling, release
 and cancellation keep one connection/driver and its conservative 512 MiB policy
 preparation grant until terminal join. Managed or declarative file drift is not
 activation. All other selected roles refuse before credential I/O. Accepted
 `administration.enabled=true` is refused: the missing Control administration
 listener cannot be silently ignored.
+
+Control lifecycle output is advisory. A process-owned diagnostic thread writes
+directly to duplicated stdout/stderr descriptors without acquiring Rust stdio
+locks or changing the parent's descriptor flags. Its queue holds at most two
+4 KiB lines, with one additional line in the writer and one during serialization;
+its 128 KiB stack and bookkeeping belong to the application baseline. Queueing
+never waits on the sink. After backend work and its driver are terminal, the CLI
+allows 200 ms for diagnostics and then exits the process, terminating a blocked
+diagnostic thread too. This thread owns no data grants, authority or backend.
+An unsuccessful drain changes an otherwise successful exit to I/O failure (1);
+it does not reverse an already committed release. Error output uses the same
+bounded path. This process-exit mechanism is not reusable as cancellation for a
+worker in a process that continues running. Actual blocked sinks and backend
+cleanup require the process regression scenario, not a timeout-only unit test.
 
 Its first failure policy is fail-closed process exit and explicit supervised
 restart; automatic reconnect/backoff remains a required later lifecycle slice.

@@ -35,6 +35,40 @@ impl fmt::Display for BootstrapError {
 }
 impl std::error::Error for BootstrapError {}
 
+impl From<bigbrotr_model::codec::CodecError> for BootstrapError {
+    fn from(error: bigbrotr_model::codec::CodecError) -> Self {
+        use bigbrotr_model::codec::CodecError as E;
+        match error {
+            E::InputLimit | E::AllocationLimit | E::TagLimit | E::StringLimit => Self::Limit,
+            E::AllocationFailed => Self::Allocation,
+            E::Malformed
+            | E::InvalidValue
+            | E::IncompatibleSchema
+            | E::NonCanonical
+            | E::DigestMismatch
+            | E::InvalidFact(_)
+            | E::InvalidDictionary(_) => Self::StateMismatch,
+        }
+    }
+}
+impl From<bigbrotr_model::receipt_codec::ReceiptCodecError> for BootstrapError {
+    fn from(error: bigbrotr_model::receipt_codec::ReceiptCodecError) -> Self {
+        use bigbrotr_model::receipt_codec::ReceiptCodecError as E;
+        match error {
+            E::InputLimit | E::AllocationLimit | E::BatchRecordLimit | E::DependencyLimit => {
+                Self::Limit
+            }
+            E::AllocationFailed => Self::Allocation,
+            E::Malformed
+            | E::InvalidValue
+            | E::IncompatibleSchema
+            | E::NonCanonical
+            | E::InvalidBatch(_)
+            | E::InvalidReceipt(_) => Self::StateMismatch,
+        }
+    }
+}
+
 #[derive(Debug, Clone, Copy)]
 pub struct BootstrapLimits {
     pub max_mappings: usize,
@@ -168,8 +202,7 @@ impl IngestStore {
                 .get_pinned_cf_opt(receipts, request_key.as_bytes(), &read_options())
                 .map_err(|_| BootstrapError::EngineRead)?;
             if let Some(value) = retained {
-                let receipt = Receipt::decode_persistent(&value, limits.receipt_limits())
-                    .map_err(|_| BootstrapError::StateMismatch)?;
+                let receipt = Receipt::decode_persistent(&value, limits.receipt_limits())?;
                 if receipt.request_id() != request {
                     return Err(BootstrapError::StateMismatch);
                 }
@@ -206,8 +239,7 @@ impl IngestStore {
                         .records()[0]
                         .payload_digest,
                     limits.fact_limits(),
-                )
-                .map_err(|_| BootstrapError::StateMismatch)?;
+                )?;
                 Some(fact.recorded_at())
             } else {
                 None

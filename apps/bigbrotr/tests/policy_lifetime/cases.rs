@@ -119,6 +119,37 @@ fn delayed_reply_consumes_request_start_ttl_including_exact_expiry() {
 }
 
 #[test]
+fn remaining_validity_accounts_for_each_response_without_extending_expiry() {
+    let start = AuthorityTick(seconds(100));
+    let mut tracker = tracker(start);
+    assert_eq!(tracker.remaining_validity(), Err(LeaseError::Unavailable));
+    let acquired = tracker.begin_refresh().unwrap();
+    at!(
+        tracker,
+        start + seconds(3),
+        complete_refresh(&acquired, response(1))
+    )
+    .unwrap();
+    assert_eq!(tracker.remaining_validity(), Ok(seconds(2)));
+    let poll = at!(tracker, start + seconds(4), begin_refresh()).unwrap();
+    at!(
+        tracker,
+        start + seconds(7),
+        complete_refresh(&poll, response(1))
+    )
+    .unwrap();
+    assert_eq!(tracker.remaining_validity(), Ok(seconds(2)));
+    assert_eq!(
+        at!(tracker, start + seconds(9), remaining_validity()),
+        Err(LeaseError::Expired)
+    );
+    assert_eq!(
+        at!(tracker, start + seconds(30), remaining_validity()),
+        Err(LeaseError::Expired)
+    );
+}
+
+#[test]
 fn foreign_identity_and_oversized_lease_never_install() {
     let now = AuthorityTick(seconds(100));
     let mut foreign_dataset = response(1);

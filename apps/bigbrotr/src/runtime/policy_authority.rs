@@ -295,6 +295,16 @@ impl<C: AuthorityClock> PolicyLeaseTracker<C> {
     /// Checks the epoch under which the queued output was admitted. A new lease
     /// never relabels old output as authorized under a different policy.
     pub fn check_delivery(&mut self, admitted_epoch: PolicyEpoch) -> Result<(), LeaseError> {
+        self.remaining_for(admitted_epoch).map(|_| ())
+    }
+
+    /// Scheduling hint measured with the same suspend-aware clock as delivery.
+    /// This duration is not authority: dispatch must still recheck the lease.
+    pub fn remaining_validity(&mut self) -> Result<Duration, LeaseError> {
+        self.remaining_for(self.known_epoch)
+    }
+
+    fn remaining_for(&mut self, admitted_epoch: PolicyEpoch) -> Result<Duration, LeaseError> {
         let now = self.sample()?;
         if admitted_epoch != self.known_epoch {
             return Err(LeaseError::StalePolicy);
@@ -306,7 +316,7 @@ impl<C: AuthorityClock> PolicyLeaseTracker<C> {
         if now >= lease.deadline {
             return Err(LeaseError::Expired);
         }
-        Ok(())
+        Ok(lease.deadline.0 - now.0)
     }
 
     fn advance_epoch(&mut self, epoch: PolicyEpoch) {

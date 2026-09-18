@@ -31,6 +31,16 @@ Full native Ingest writer handoff, principals/action grants, public stream
 revocation, automatic service recovery, maximum document load, slow lifecycle
 output, arm64 and complete product/release journeys remain separate gates.
 
+`monitor_regressions.py --root /owned/runtime` uses a fresh lab to hold actual
+PostgreSQL locks across slow successful acquisition/poll responses, then observes
+continued healthy supervision. It fills a real stdout pipe, observes a database
+heartbeat without draining it, sends SIGTERM and checks release, backend closure,
+process exit and pipe EOF. A separately full stderr pipe exercises error exit.
+It also investigates MON-005 using 200,000 configured endpoint entries, matching
+the actual CLI policy digest to independent bytes and measuring their PostgreSQL
+JSONB rendering. Its initial counterexample result is `CONFIRMED_UNFIXED`, not
+configuration acceptance. Native execution of this new matrix is still required.
+
 [Executed native evidence](../../docs/implementation/evidence/p01-control-runtime-native-20260918.json)
 records the 16-case Linux amd64/PG16.15 run at `6be8515`, exact source/artifact
 audits, all seven product process exits, 240 independently inspected relations

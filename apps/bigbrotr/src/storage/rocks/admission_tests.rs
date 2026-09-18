@@ -778,6 +778,68 @@ fn admit(
         || Ok(()),
     )
 }
+
+#[test]
+fn retained_replay_with_reduced_dependency_limit_is_not_corrupt_state() {
+    let fixture: serde_json::Value = serde_json::from_str(include_str!(
+        "../../../../../tests/fixtures/ingest/signed-event-admission.json"
+    ))
+    .unwrap();
+    let operation = fixture["scenarios"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .flat_map(|s| s["operations"].as_array().unwrap())
+        .find(|op| op["name"] == "private_first_signature_a")
+        .unwrap();
+    let (_root, mut store, budget, _manifest, _native) = setup(true);
+    let input = &operation["input"];
+    let request = ProducerRequestId {
+        producer_slot_id: input["request_id"]["producer_slot_id"]
+            .as_str()
+            .unwrap()
+            .parse()
+            .unwrap(),
+        producer_epoch: ProducerEpoch::new(1).unwrap(),
+        request_sequence: RequestSequence::new(1).unwrap(),
+    };
+    let replay = |store: &mut IngestStore, max_dependencies| {
+        let prepared = PreparedEvent::new(
+            request,
+            fixture_intent(input),
+            256 * 1024,
+            grant(&budget, MIB, 0),
+        )
+        .unwrap();
+        store.admit_event(
+            prepared,
+            ObservedTime::new(10_000_000),
+            true,
+            AdmissionLimits {
+                max_dependencies,
+                ..AdmissionLimits::default()
+            },
+            grant(&budget, 40 * MIB, 10 * MIB),
+            || Ok(()),
+        )
+    };
+    let original = replay(&mut store, 64).unwrap();
+    let AdmissionOutcome::Durable(receipt) = original.outcome() else {
+        panic!("valid signed fixture")
+    };
+    assert_eq!(receipt.dependencies().records().len(), 11);
+    let encoded = receipt.encode_persistent(8192).unwrap();
+    drop(original);
+    let before = kv(&store);
+    assert_eq!(replay(&mut store, 8).err(), Some(AdmissionError::Limit));
+    assert_eq!(kv(&store), before);
+    let again = replay(&mut store, 64).unwrap();
+    let AdmissionOutcome::Durable(receipt) = again.outcome() else {
+        panic!("retained result")
+    };
+    assert_eq!(receipt.encode_persistent(8192).unwrap(), encoded);
+    assert_eq!(kv(&store), before);
+}
 #[test]
 fn inconsistent_counter_or_scope_inventory_cannot_recreate_scientific_state() {
     use crate::storage::rocks::keys::IngestKey;
