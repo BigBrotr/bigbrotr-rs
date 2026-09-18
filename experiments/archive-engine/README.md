@@ -212,3 +212,23 @@ alone could also describe authentication failure and is insufficient evidence.
 The report preserves 3 failed candidates, the corrected numeric epoch transition,
 source/artifact/state audits and owned-resource cleanup. Scientific publication,
 activation concurrency/ambiguity, credential provisioning and M1 remain open.
+
+`native_catalog_recovery.py` builds the exact-source recovery probe and packaged
+bootstrap worker. `catalog_recovery_cases.py <owned-root>` then uses the lab's
+already inventoried runner sharing only its PostgreSQL network namespace. It
+requires protected credentials, immutable source/assets, separate writable caches,
+SCRAM host authentication (including loopback), and the retained Control fixture
+created by `archive_attempt_probe`. It never creates or retires host containers.
+The integrating owner must stop the identified runner and PostgreSQL and audit
+resources even if a wrapper fails; terminating `docker exec` is not exclusion.
+
+Fourteen proposed actual-PG cases cover install/activation pass, pre-forward and
+post-completion COMMIT loss; lower/higher/same-attempt races with release/rollback;
+and cancellation at held COMMIT followed by either server outcome. A separate psql
+observer checks backend incarnations, actual transaction-ID lock waits, all 28
+table privilege sets, installation identity/checksum and immutable attempt values.
+The fixture digest is independently frozen, not calculated by the adapter under
+test. Failed/unknown execution stops later cases and retains partial results.
+These cases are NOT_RUN until revision-bound evidence records actual outcomes.
+No scientific publication, worker launch, persistent service recovery or process/
+power-loss durability is implied by an activation receipt.

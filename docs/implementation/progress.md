@@ -215,6 +215,17 @@ Session43878(cleanup) and97954(copy) are terminal. No active experiment/cleanup.
 
 ## Next bounded action
 
+The next exact-source candidate adds an actual-PG recovery probe plus14 proposed
+install/activation fault/race/cancellation cases. Initial independent review found
+two incomplete observation oracles; they now check every native DML grant and
+prohibited table right, bootstrap revocation/ownership, complete installation
+identity and attempt topology/login/OID as well as the frozen input digest.
+Mac compilation/Clippy is running (session33868); no new Tux run is active yet.
+Local raw root `.research/implementation/archive-worker/catalog-recovery` contains
+the candidate-only transfer/launch helpers. Existing labs remain terminal.
+These scenarios are not yet executed evidence. Transfer a clean committed
+candidate, inventory a fresh lab and run them before recording PASS.
+
 Qualify the product adapter's activation ambiguity/concurrency and wire
 actual credential custody/unique worker launch and recovery. A matching observed
 attempt never permits a second native client; replacement gets a new lifetime.
