@@ -4,412 +4,182 @@ Observed 2026-09-19. Navigation only; follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 Verify Git, dirty work, evidence and resource claims before continuing.
 
-## Mandate and active boundary
+## Mandate and current boundary
 
 Owner-authorized complete implementation remains active. Mac is the editing/Git
 workspace; use trusted exact-source Tux execution despite unavailable hosted
-Actions. No public release/rename, Linux arm64 qualification or changes to the
-read-only Go neighbor. All selected product work remains required.
+Actions. Preserve private bigbrotr-rs, unpublished Cargo packages and read-only Go
+neighbor. No public release/rename or Linux arm64 qualification. All selected
+product work remains required; no P02 task or M1 gate is complete.
 
-Active P02-T03/T04: signed durable pending → actual PG DuckLake publication,
-positive fencing, receipts/protection, then M1 read/export/restart. No P02 task or
-M1 gate is complete. Catalog guard, credential provisioning/sealing and finite
-private supervision prerequisites now have scoped native evidence. The first
-scientific schema declaration and fresh-only initializer have scoped qualification;
-scientific guard binding/live inspection now have scoped qualification. The private publisher
-candidate now has scoped signed native qualification. Pending must not
-be acknowledged/reclaimed.
+Active P02-T03/T04 steps3/4/5: signed durable pending → actual PG DuckLake
+publication, positive fencing, fresh receipt resolution/protection, then M1
+read/export/restart. The private publisher now has scoped signed native COMMIT-loss
+and concurrency qualification. Pending must not be acknowledged/reclaimed. The
+finite fixtures do not implement persistent service lifecycle or installed recovery.
 
 ## Git and integrating ownership
 
-Current continuation: main HEAD/origin last verified at
-`db3507aa7a86f57fe73ee2b191a2af6ca5afb933`. Root owns dirty publication/read
-examples and native_commit_proxy, signed_publication_cases/oracle fixtures, plus
-this checkpoint. No product/schema change or new lab yet. The scoped parent
-check passed (terminal14082, publication/race-parent-check.log). Scoped parent/
-reader Clippy, Python parsing/corpus checks, format and document checks passed;
-logs are publication/race-*. Read-only AI review publication_review finished:
-pinned REPEATABLE READ retry and rollback proxy state are now explicit; reader
-barrier budget and failure-state diagnostics are corrected. Root inspected the
-complete changed fixtures and pinned source, then reviewed the diff. The new
-three scientific races remain NOT_RUN. Previous labs below are freshly verified terminal;
-no active experiment or cleanup is being interrupted.
+Mac main HEAD candidate `b12c90286c2a730e1d99238a95c134cc3ffe3f36`, tree
+`1891f59a6385b6e832de4c38f1962c674ed3a096`. Last verified private origin/main is
+`db3507aa7a86f57fe73ee2b191a2af6ca5afb933`; candidate is not yet pushed. Root is sole
+writer/integrator. Dirty work is the new scoped fencing report and updates to this
+checkpoint, laboratory inventory, storage task, archive contract/handoff and
+experiment README. No merge/rebase or remote source editing. Resolve actual
+HEAD/origin/dirty paths on resumption rather than assuming this record is current.
 
-Mac main; root is sole writer/integrator. Product and evidence delivery
-`8eaa449674d80971a41f7fbcb367b9875257278b` is pushed to private origin/main and was
-independently read back from the remote. Tested product/fixture source remains
-`2075a393a4385b519375a6947e05719c4baf4c7e`, tree
-`df1adef57e70fd5a8b5f65352f2123c5aeb89d6a`; the2075a39→8eaa449 diff is documentation
-and evidence only. The containing checkpoint-only commit follows8eaa449; resolve
-actual HEAD/origin on resumption. There is no merge/rebase, alternate writer or
-remote source editing. Before this checkpoint refresh the worktree was clean.
-Push15224 is terminal. Repository remains private, named bigbrotr-rs, not archived.
+All local compilers and lab sessions are terminal. Transfer89653, native
+cases67470, terminal audit93009, retirement80493 and copies31036/20901 completed.
+No unfinished resource cleanup. Read-only AI source review publication_review
+finished; final recorded-evidence review found no discrepancy and independently
+recomputed source/full-row/file/counter identities. Final document checks pass.
+Root already reviewed
+complete changed fixtures, pinned source, actual results and source/artifact audits.
 
-All compilers/lab sessions are terminal; no unfinished cleanup. Root freshly
-rechecked the final owned Tux IDs: stopped143/0, no OOM, network absent. Read-only
-AI source and recorded-evidence reviews finished without further findings. Root
-performed actual native execution, independent source/artifact checks and cleanup.
+## Latest actual signed fencing qualification
 
-## Active publication risk slice
+[Signed fencing report](evidence/p02-signed-fencing-native-20260919.json), source
+`b12c902`: native build,7 embedded publication cases,1 private-input case and6
+actual signed schedules PASS. The first3 rerun normal/before-forward/after-complete
+COMMIT behavior because the proxy changed. The new3 use actual supervised
+scientific publication and actual catalog provisioning, with retained Control
+intents and signed Rocks input. No product/schema/applied SQL/dependency changed;
+the worker ELF is identical to the previous2075a39 qualified worker.
 
-P02-T04 steps3/4/5. The private candidate verifies complete input and schema1
-semantic digest, refuses existing receipts/source overlap, resolves dictionary
-references, and uses one native transaction for five families plus receipt. The
-parent consumes FreshWriter, checks scientific identity/input and supervises one
-child with a pinned route and private credential pipe. Any launched failure stays
-unknown; no source ACK/reclaim exists. COPY uses explicit compression/row-group
-settings without adding global catalog options. Persistent lifecycle/recovery and
-resource/file-formation acceptance remain unfinished. This candidate is not advertised.
+- Owner-first: manager locks owner FOR UPDATE and waits on the fixture's
+  scientific_schema table lock; old native DML then waits on manager. Fresh
+  pg_blocking_pids/backend incarnations prove both edges. Pinned REPEATABLE READ
+  raises40001 concurrent update; native DuckLake retries once, then the actual
+  guard raises55000 writer excluded. Exactly2 metadata batches, no data COMMIT.
+- Old-COMMIT-first: old native DML holds owner SHARE through held real COMMIT;
+  manager waits. Releasing COMMIT makes old work visible; successor4 activates.
+  Fresh full readback finds the old receipt; duplicate publication creates no files.
+- Old-ROLLBACK-first: the same actual lock wait precedes disconnect without COMMIT
+  forwarding. Old outcome remains unknown at the parent; a fresh reader finds
+  only bootstrap after positive old-child reap and successor fencing. One new
+  lifetime publishes the retained event. Old prepared files remain untouched.
 
-[Actual native COMMIT-loss report](evidence/p02-native-commit-file-loss-20260918.json):
-normal INSERT guarantee **FAIL**, sourcec9a29e0, Tux amd64/PG16.15/pinned native
-engines. Three complete synthetic cases discriminate the fault: normal commit
-retains three files/full bodies; pre-forward disconnect leaves no committed files;
-after PostgreSQL COMMIT completes but its response is withheld, all three catalog
-references survive and all three files disappear. Fresh counts still return1 per
-family while body read fails. These are actual native relations, not signed product
-publication. The previous lost-ack probe killed after native COMMIT returned and
-did not qualify this connection fault. Owning contract/dependency record/task gates
-now reflect this contrary evidence. Pending stays retained.
+Each race positively reaps the old child, verifies historical sealing preserves
+active successor4, then waits for an independent full native read before successor
+launch. The privileged lab reader is not the product receipt/read service.
+All current fact fields, literal canonical preimages/digests, admission/archive
+identities, exact receipts and reconstructed verified signatures match. Invalid
+signature/ID and missing-closure controls remain discriminating. No source ACK.
 
-Pinned native exception cleanup unlinks files created by INSERT before Rust sees
-CommitUnknown. No disable-cleanup option was found. Supported add_data_files marks
-files caller-owned and skips this unlink branch in source. Qualify that one native
-path, including receipt files, complete mappings, immutable placement and orphan
-recovery, before enabling ordinary product publication. The replacement candidate
-now has scoped Mac checks and synthetic native PG dependency evidence below. No
-fallback or weaker ACK.
+Final race catalog references8 each; physical files14/8/14, bytes68637/40597/68637.
+Six old event files remain orphaned in each rollback race. Scientific file size/SHA
+sets match all6 schedules, including orphan copies; attempt-specific receipts are
+excluded from cross-mode hash equality. All41 raw Rocks records remain unchanged,
+logical digest `da535e9d1edcdce8bf09033bb1d2b48ee10941c34f47b0b3db228f6285128c61`.
+Final owners4/3/3/4/4/4 are disabled, all22 lifetime logins NOLOGIN/password removed,
+and fresh terminal queries find no other catalog backend. Worker permits return0.
+Empty activity alone is not claimed as exclusion.
 
-The AI review also reproduced incorrect mapping equality across fact visibility.
-The new Mac regression fails with ConflictingDictionary before correction and
-passes for equal mappings in one batch and against history afterward. Equality
-now excludes the containing scope; each fact retains its actual envelope. Five
-embedded publication cases pass locally after that change, including a changed-
-descriptor negative control. All5 cases subsequently passed on Tux at ea270ac,
-with1 actual binary closed-input case and build. The replacement candidate now
-passes7 publication cases inside30 Mac worker cases; see its scoped report below.
-The original command test failed before implementation. All raw logs/failures are
-retained under the publication root.
+Read-only AI source review found four fixture issues before execution: native
+serialization retry, proxy transaction flags surviving rollback, reader barrier
+shorter than allowed read, and absent file/catalog diagnostics on race failure.
+All corrected before b12c902. Root inspected exact upstream paths: postgres
+41223e51559cd581f1c06e170b71c71df25bbaac and DuckLake
+d8a1881e22516ea3d186d73e83c65fe5bd1a1dc4. Scoped Mac parent/reader Clippy, Python
+syntax/literal corpus, format and document checks pass (publication/race-* logs).
+No actual Mac race, hosted CI, arm64, load or power-loss result is claimed.
 
-## Latest publication lab closure
+## Owned lab and reproducibility
 
-Inventory implementation_archive_worker_20260918.publication_commit_loss. Raw root
-`.research/implementation/archive-worker/publication/c9a29e0`; native root
-`/home/tux/bigbrotr-implementation-20260917/runs/publication-c9a29e0`.
-All671 source files match exact Mac Git archive/Tux checkout/export; archive SHA
-`36d9598a6f53d6565efc29d7c46b1d834ad47354d15108447a83d4a1cc0683a6`.
-Actual worker ELF SHA77baadb312f4dac5d5df3e8f983327dbd9d5f3b614c44a6bbd791dce8b24d9ba;
-probe SHAeff95df92c0d4206b621b07f29c9592c8438c968c5d5e881245a1836820ebda2.
-Dependencies unchanged. Native build/test/ELF/source audits and terminal cleanup
-are recorded; no hosted CI/arm64, protection, scientific PG publication or ACK claim.
+Inventory `implementation_archive_worker_20260918.signed_publication_races` in
+[the laboratory inventory](../research/laboratory-inventory.json). Raw root
+`.research/implementation/archive-worker/publication/b12c902`; native root
+`/home/tux/bigbrotr-implementation-20260917/runs/publication-b12c902`.
 
-Owner fefde287eff3467d9100751d8262661f; runner
-bigbrotr-implementation-publication-c9a29e0, ID
-32b64eb1daa0c02419365530e96a542ccdd983a95b49faec1a27a79e1177fcf2;
-PG suffix-pg ID427714df1e550f42e32dff61da5eed9a3a05c5158aa4990b867924e00d7bf6ba;
-network6ac4849c079a165e2dda0524d8d81bae10795366fd2d2bb527f716f8bd301398 retired.
-Both containers stopped-retained (runner143, PG0), no OOM. Fresh final writer
-backend count0;20 unrelated identities unchanged,8 running,0 BigBrotr running.
-Transfer28866, fault cases57771, audit/cleanup47092 and evidence copies88924/66699
-are terminal. No unfinished cleanup. Do not restart retired-network resources.
-Ignored launch/transfer/retire helpers remain in publication/; latest build cache
-is now publication-ea270ac/out/build. The next experiment needs a new exact-Git lab.
+Owner `ae769bb7d23a3625472861559a449662`;
+runner `56e6cf2ec5295983ead20e133ead512b8c79bf7cf8494a9c4cd2b38856fe65af`;
+PG `bcb1f531dbc65d3818a44a95daacf7b3585de498c3e8939a2f087d4226222480`;
+network `0eaf5e329a632d0443ea4810316f59bdce91d7742166b43d1c9ccb374bd67bed` retired.
+Containers are stopped-retained (runner143, PG0), no OOM. Terminal audit verifies
+20 unrelated identities unchanged,8 running,0 BigBrotr running. Never restart
+retired-network resources. New work needs a separately inventoried exact-Git lab.
 
-## Registration experiment and product replacement
+All681 Mac Git archive files equal native checkout/export. Manifest SHA
+`69b3cb3df793bcb7736952955872c1993cc0abc3b0a8e3b0bcf2b45fd7c6e42b`.
+Worker SHA `17b055a76e6e6680b769c0fa2462face82fb1a8a6f010c84a4ea31ad5d641013`;
+parent SHA `8f0a593d2ada078cdee43937c2738a9367237fad6204649ceda1185f2a71038c`;
+reader SHA `e6a1103a6d07b718d2f05acc5c4c90bf8423c4f45e0f6f8ace1dfa39eae80fb4`.
+Actual ELF/source/native dependency identities and raw digests are in the report.
+Cargo.lock SHA `6b2f28dea860e31616009929eb25b8add92159c03d4857d3836dfe52bd047190`.
 
-[Exact-source ea270ac registration report](evidence/p02-native-registration-20260918.json).
-The lab is terminal. Raw root
-`.research/implementation/archive-worker/publication/ea270ac`; native root
-`/home/tux/bigbrotr-implementation-20260917/runs/publication-ea270ac`.
-Three actual PG/native schedules PASS for synthetic fact/witness/receipt files:
-normal retains3 catalog/physical files and full bodies; pre-forward rollback leaves
-0 catalog references and3 retained orphans; completed-but-lost COMMIT retains3
-catalog/physical files and fresh full bodies despite native error. File size/SHA
-maps match across all schedules. Native build,5 embedded cases and1 actual binary
-input case PASS. These are not scientific signed publication/protection evidence.
-Root-level probe placement stores absolute paths; product must use relative
-schema/table placement and qualify relocation separately.
+Ignored transfer/launch/retire helpers remain under publication/. Launch currently
+copies the verified2075a39 build cache; latest retained build is b12c902/out/build.
+Source exports/assets are readonly; writable caches are separate copies. Native
+builds use tools.ci.execute with locked offline dependencies, PG16.15 and signed
+DuckDB1.5.5/DuckLake1.0 assets. Linux amd64 does not qualify other targets.
 
-Owner d8b10a894c5361b65f03b0d5ac0b6e3d; runner
-64c0bd7f54ad7acc8e521f2e0ff7e1473154091c666f6a7a277d0ea51020f479,
-PG193fd0167057ee34666225e734ef51ea0fb2c113d187ced8e14c9eb34500a7e6,
-networke29b66bee67d08bf28e1c3907f4c56c6ba916ec41a85685ab3a748269b3e2449.
-Audit records exact673 source files/ELFs, stopped retained containers (143/0),
-retired network/no OOM;20 unrelated unchanged/8 running/0 BigBrotr running.
-Transfer90613, cases42111 and evidence copy26474 are terminal. Do not restart.
-All673 Mac Git archive hashes match the audited Tux export/checkout. Report is
-recorded. Fresh read-only Tux inspection confirms stopped IDs143/0 and retired
-network. No unfinished lab cleanup.
+## Prior evidence and findings still governing implementation
 
-[Product Mac candidate evidence](evidence/p02-staged-publication-mac-20260918.json):
-receipt staging precedes archive BEGIN; explicit COPY writes populated families
-and receipt into exclusive0700 attempt directories below canonical main/table
-paths, then registration commits all in one native transaction. No worker unlink,
-including rollback; no global option additions. Resource/file formation remains
-unfinished. No schema or applied SQL changed.
+[Signed publication2075a39](evidence/p02-signed-publication-native-20260919.json)
+first connected real Control/source registration and signed Rocks reopen to full
+scientific publication/readback through native COMMIT-response loss. Failed7ff0691
+is retained separately: reader reconstruction used uppercase native hex where the
+model requires lowercase; parent completed but full comparison/fault cases were
+NOT_RUN. Corrected fixture passed on a fresh lab. Both labs are terminal; inventory
+owns their exact IDs and evidence. No product change after3c380fe in these runs.
 
-Mac final30 worker library cases PASS, including7 publication cases;2 worker
-private-input cases,2 parent identity cases and2 parent bootstrap cases PASS.
-Affected Clippy/format/document checks PASS. Glob validator regressions failed
-before the fix; actual native singleton registration reads sibling x instead of
-literal [x]. Root validators now refuse *,?,[. Hive is explicitly disabled and
-kind=7 root preserves actual kind1. Actual metadata paths are table-relative.
-Existing attempt bytes stay intact. Sequential directory create/check fixes the
-reproduced schema-parent symlink side effect; outside directory stays empty.
-Independent read-only AI review corroborated source hazards; root integrated/tested
-all changes. Initial Mac alias/missing-root fixture failures and one incorrect
-include-directory build command are retained separately from product outcomes.
+[Native normal-INSERT failure](evidence/p02-native-commit-file-loss-20260918.json)
+at c9a29e0 remains a rejected path: after PG COMMIT completed but its reply was lost,
+DuckLake error cleanup deleted all3 committed files. Metadata counts did not expose
+that loss. [Caller-owned registration](evidence/p02-native-registration-20260918.json)
+at ea270ac preserved all files/full bodies. Product COPY now writes explicit
+PARQUET/ZSTD3/ROW_GROUP_SIZE64000 into exclusive0700 prepared-attempt directories
+under canonical main/table paths, then uses ducklake_add_data_files with Hive off
+and strict columns. No worker unlink even after rollback. Glob characters *,?,[
+are refused; schema-parent symlink side effects and dictionary equality across
+visibility scopes have discriminating regressions. Protection/orphan cleanup is
+separate authority. Keep one selected engine path and no weaker fallback.
 
-All local sessions are terminal, including82085/3502/36218/61026/23448/49947 and
-5161/17968/80177/7353. No running lab or compiler is claimed. Private-input results
-still do not qualify integrated signed scientific PG publication. Current catalog
-publication fixture covers dictionary/event/receipt; other families' native row
-round-trips are separately tested, not equivalent to registered catalog readback.
+[Scientific guard a91ae01](evidence/p02-scientific-guard-native-20260918.json)
+qualifies37 actual-PG sequences and live six-table/203-column immutable binding.
+Applied0001 stays unchanged;0002 selects scientific identity. Inspection locks
+owner FOR UPDATE, then compatible AccessShare reads; never SHARE table locks after
+owner, which would invert native DML/trigger ordering. Native metadata remains
+untouched. Initializer/guard unfamiliar-state and ambiguity gates remain explicit.
 
-## Latest qualified scientific guard slice
+[Scientific initialization0e2ca43](evidence/p02-scientific-schema-native-20260918.json),
+[credentials d2b2609](evidence/p02-catalog-credentials-native-20260918.json),
+[activation recovery55dba36](evidence/p02-catalog-recovery-native-20260918.json),
+[product guard944f3e6](evidence/p02-catalog-product-native-20260918.json),
+[Control issuance b245644](evidence/p02-archive-attempts-native-20260918.json),
+[archive identity8d1289d](evidence/p02-archive-identity-native-20260918.json),
+[parent lifecycle](evidence/p02-parent-binding-native-20260918.json) and
+[supervision](evidence/p02-private-supervision-native-20260918.json) retain scoped
+prerequisites and failures. All earlier owned labs are terminal and inventoried;
+use their reports, not unverified remembered commands or another session plan.
 
-[Scientific guard report](evidence/p02-scientific-guard-native-20260918.json),
-`a91ae01`: 37 actual-PG sequences and two native Rust identity cases PASS, plus
-scoped build/Clippy and the real Control issuance fixture. Mac scoped Clippy/two
-identity cases and document checks PASS. Source/artifact/terminal audits PASS.
-No dependency changes; all initial packages remain unpublished.
-
-Scientific `CatalogIdentity::local` requires immutable0002 schema/declaration/
-native-layout/SQL binding installed atomically with0001 ownership/guards. Applied
-0001 and native initializer/declaration are unchanged. Explicit native-only
-fixtures cannot inspect scientific binding and cannot be silently adopted.
-All six tables/203 columns (nested parent/order/type/default/nullability), schema
-versions and declared placement/settings are checked live. Installed inspection
-locks owner FOR UPDATE then only compatible AccessShare reads. It never takes
-SHARE table locks after owner, avoiding inversion with native statement triggers.
-
-Independent DDL parsing matches all203 actual PG column rows. STRUCT/LIST default
-kind is empty, scalar kind is literal; nested children are native nullable while
-model/readback enforces required children. Schema1 permits four globals plus zero
-inlining at known scopes, refusing malformed/duplicate/unknown settings. File/name
-mappings and file contents remain separate publication closure, not inspected here.
-
-Actual native ALTER/DROP/rollback, shape/NULL/metadata refusals with no role/attempt,
-full owner/ACL/data rollback, lost guard COMMIT before forwarding/after completion,
-and both directly observed SQL lock orders passed. Lock cases use direct PG
-statements under writer identity, not native DuckLake commit races. Control inputs
-are synthetic. Final state: two snapshots, six empty tables, no data files, exact
-attempt1/current restricted SCRAM role, owner1 enabled, no fixture/control/bootstrap
-backends. No scientific worker was launched under that discarded credential.
-
-Retained failures:164a9bc expected old-installer ExistingData/exit101;27ab36c FAIL
-at physical heap COPY-order oracle after six sequences;2e15f8c FAIL at fixture
-metadata.value NULL (native NOT NULL) after14. Corrected oracles preserve all rows/
-duplicates/owners/ACLs, and separately attribute physical23502. Independent AI review
-found malformed metadata-scope acceptance and those evidence gaps; all corrections
-are covered by the final run. No task, M1, publication, ACK or reclaim is complete.
-
-## Previous scientific initialization slice
-
-[Scientific initialization report](evidence/p02-scientific-schema-native-20260918.json),
-candidate `0e2ca43`: 12 actual-PG cases and 39 native Rust cases PASS. Mac 23 worker
-unit + 4 executable cases PASS; affected Clippy/format/document checks PASS. Initial
-new-command test failed an assertion against old usage output before implementation.
-All Cargo dependencies are unchanged. Source/artifacts and cleanup are audited.
-Final independent evidence review matched raw cases, counts, hashes and scope; no
-further discrepancy was found.
-
-The shared schema1 declaration creates the five current fact families and empty
-technical `archive_commits` in one native transaction. A separate READ_ONLY PG
-preflight refuses existing user schema dependencies, extra namespaces and selected
-nonnamespace objects before native ATTACH; both attachments explicitly disable
-PG secret storage. The operator must exclusively reserve the new DB and canonical
-empty local root. Existing/native-only/completed catalogs refuse, never auto-resume.
-The actual parent verifies artifacts, streams bounded private input, waits for
-exit/EOF/positive reap and returns all permits. No scientific guard/readiness,
-source ACK, receipt insertion or persistence beyond the tested scope is claimed.
-
-Independent PG observations find 6 tables, 203 native column rows, 6 schema-version
-rows, snapshots0/1 with schema versions0/1, next catalog ID7/file ID0, and no data
-files or inlined tables. Snapshot1 contains the declaration SHA-256. Full native
-metadata is retained and re-read unchanged at terminal audit, but only selected
-structural invariants were independently validated in this slice. Table IDs were
-assigned in reverse declaration order; paths are `table_name/`, not UUID names.
-The future inspector must validate relationships rather than guess assignment order.
-Nested children are native nullable; typed model/readback owns required-child rules.
-
-Exact child errors plus normalized complete pg_dump hashes discriminate refusals
-for completed/native-only catalogs, existing table+canary, enum, schema, function,
-collation, text-search configuration, large object, nonempty root and missing
-CREATE privilege. Catalog retries use a separately empty root. The Mac/Linux
-late-DDL rollback tests use actual embedded DuckLake, **not a PG failure experiment**.
-Scientific binding, PG interrupted/lost-COMMIT initialization and installed recovery
-remain required. Review found and corrected secret-table registration, incomplete
-object inspection and weak negative attribution before the native candidate.
-
-## Previous qualified credential slice
-
-[Credential report](evidence/p02-catalog-credentials-native-20260918.json), `d2b2609`:
-8 actual-PG sequences and 16 native Rust cases passed. Random 256-bit passwords,
-local SCRAM verifiers and atomic role/intent/grant/owner provisioning return a
-consuming handoff only on known new COMMIT. Existing attempts/roles never reset
-credentials or authorize another launch. PG16 implicit creator ADMIN membership
-is permitted only for the guard owner with INHERIT=false/SET=false. Ordinary
-manager is NOSUPERUSER CREATEROLE; explicit initial ownership transfer is privileged.
-Seal binds the complete lifetime/OID, removes LOGIN/password, and preserves a
-successor on historical retry. Actual old backend mutation then fails 55000;
-new login fails 28P01. Unknown commit resolves through fresh connections.
-Wire faults cover pre-forward and completed-but-lost COMMIT for provisioning/seal;
-held-lock races cover commit/rollback. These are synthetic retained intents,
-separate from signed Rocks preparation. A consuming callback can still copy its
-secret and does not enforce persistent process uniqueness. See the report for
-exact final state, source, upstream, ELF, oracle and retired resource identities.
-
-## Earlier prerequisites and constraints
-
-- [Rows/Parquet](evidence/p02-five-family-rows-native-20260918.json): nullable
-  compound references require matching parent/child masks for actual native
-  Parquet fidelity. Signature-hash startup threads are separate from query
-  threads; PID cap8 aborts the pinned worker. Budget native startup independently.
-- [Private supervision](evidence/p02-private-supervision-native-20260918.json) and
-  [parent binding](evidence/p02-parent-binding-native-20260918.json): bounded
-  nonblocking pipes, verified artifacts, positive reap and Linux parent-death
-  behavior. Unknown termination retains grants/root cleanup obligations. A signal
-  or dropped handle is not remote catalog exclusion.
-- [Input identity](evidence/p02-archive-identity-native-20260918.json), `8d1289d`:
-  borrowed archive membership, explicit topology, maximal source ranges and
-  independent literal/signed digests. Rocks creation topology is not current
-  publication authority. [Control issuance](evidence/p02-archive-attempts-native-20260918.json),
-  `b245644`, retains immutable CAS intents; its synthetic empty topology does not
-  qualify source completeness or signed publication.
-- [Native catalog](evidence/p02-catalog-fence-native-20260918.json), `a531ea3`:
-  unfenced duplicates, live old writer after NOLOGIN, positive exclusion and caller-facing acknowledgement loss after COMMIT returned. Pinned extension requires explicit TEMPORARY memory postgres
-  secret via META_SECRET and META_SECRET_STORAGE_TABLE=''. Keep persistent
-  secrets/autoload/community extensions disabled. Native ForceAcquire can exceed
-  nominal pool size; PG connection limits are approximate.
-- [PG startup](evidence/p02-postgres-startup-native-20260918.json) and
-  [native startup](evidence/p02-native-startup-exclusion-20260918.json): a live
-  invisible old connection can commit after NOLOGIN/empty activity. Fresh PG stats
-  snapshots are necessary. Positive client/process exclusion or the enforced
-  storage fence, resolution of old transactions and fresh receipt inspection are
-  separate requirements. Unknown process state never grants cleanup authority.
-- [Guard experiment](evidence/p02-catalog-guard-native-20260918.json) covers six
-  native schedules and 44 privilege cases. The selected [product guard](evidence/p02-catalog-product-native-20260918.json),
-  `944f3e6`, inspects actual28-table layout/keys/collation/ownership/trigger/function
-  hashes, imports immutable intents and rejects live stale native commits. Prior
-  String→REGROLE, numeric Control epoch ordering, collation and NOLOGIN defects
-  retain failed candidates and corrected evidence. Applied guard SQL is unchanged.
-- [Activation recovery](evidence/p02-catalog-recovery-native-20260918.json),
-  `55dba36`, covers 14 actual install/activation faults/races/cancellations and
-  full independent privileges/identity. Cancelled operations can remain server
-  blockers until explicit resolution. Matching observation never authorizes a
-  second native client under the same lifetime.
-
-The guard owner row is locked FOR SHARE through real native COMMIT/ROLLBACK;
-manager activation/sealing locks it FOR UPDATE. session_user plus role OID binds
-writer identity; native values/columns are never manually rewritten. Runtime
-metadata DDL is refused and inlining must remain zero at every scope. Full ordinary
-mutation/maintenance coverage still gates production enablement. Manager role/DDL
-changes and restore are privileged operator boundaries requiring quiescence and
-reinspection. Catalog fencing does not prove old process death, release resource
-grants or authorize orphan cleanup. A consuming callback can still copy secrets;
-persistent one-worker lifecycle enforcement remains required.
+NOLOGIN/empty pg_stat_activity is not exclusion: actual
+[startup counterexamples](evidence/p02-native-startup-exclusion-20260918.json) keep
+an invisible native writer alive. Guard owner SHARE survives through native
+COMMIT/ROLLBACK; activation/sealing uses UPDATE. Unique persistent worker/credential
+lifecycle, process/resource exclusion and fresh receipt resolution remain separate.
+A consuming Rust credential can be copied inside its callback; it alone does not
+prove process uniqueness. Unknown termination retains grants/cleanup obligations.
 
 ## Independent monitor findings
 
-Scoped corrections remain closed within their actual evidence:
+Scoped corrections are closed with their actual evidence:
 [MON-001/002/004/006](evidence/p01-monitor-corrections-native-20260918.json),
 [MON-005](evidence/p01-jsonb-limit-native-20260918.json),
 [MON-009](evidence/p02-job-bounds-native-20260918.json),
 [MON-010](evidence/p01-tls-presence-20260918.json),
 [MON-007](evidence/p01-archive-cache-retry-20260918.json).
 MON-009 uses additive0008, authoritative caps, sorted SHARE locks, inverse checks,
-READ COMMITTED and incompatible-history refusal; 24 actual PG cases passed.
-MON-010 preserves offline selected/unselected TLS validation; MON-007 uses private
-unique attempts and exclusive verified cache publication with actual HTTPS retry/
-concurrency on Mac/Linux. Do not mechanically rerun unrelated suites.
-
-## Verified resources and continuity
-
-Inventory `implementation_archive_worker_20260918.scientific_guard` in
-[the laboratory inventory](../research/laboratory-inventory.json). Raw root
-`.research/implementation/archive-worker/scientific-guard/a91ae01`; native root
-`/home/tux/bigbrotr-implementation-20260917/runs/scientific-guard-a91ae01`.
-All664 source files and exact Git archive match Mac/Tux; six actual ELF hashes
-are recorded. Guard probe SHA
-`b0585b0090bf91e70cb9f2d9eca42d2a9d3a836926031346f526f685981d573c`.
-Cargo.lock SHA `6b2f28dea860e31616009929eb25b8add92159c03d4857d3836dfe52bd047190`.
-Writable build/cache copies are separate; source export/assets read-only.
-
-Owner `fc9e93fc6463b06ba4ed9abb91054be8`; runner
-`bigbrotr-implementation-scientific-guard-a91ae01`, ID
-`0d2ddf93fa25f0827ba518583476ff5fe8539e97d29d87e1d5b7f39ab1700baa`;
-PG suffix-pg ID `c9ae33944e40c645f92ae842433b52e518e94c4e876e22e95cb9b1b97774ee9e`;
-network `d3542582553d1bb8128be80b6ea5ed66ff525c602d34a85172c1bdf600ba81b1` retired.
-Runner deliberately stopped143 after successful cases, PG0, no OOM.20 unrelated
-identities unchanged,8 running,zero BigBrotr running. Sessions81905 transfer,
-88852 cases,17285 audit/cleanup/transfer and47423 compiler-info retrieval terminal.
-Earlier164a9bc/27ab36c/2e15f8c labs likewise stopped-retained with networks retired;
-all outcomes and audits retained. No unfinished cleanup; never restart these
-retired-network containers. amd64 does not qualify arm64 or hosted Actions.
-
-## Latest signed publication qualification
-
-[Actual signed publication report](evidence/p02-signed-publication-native-20260919.json),
-`2075a39`: native build,7 embedded cases,1 closed-input case and3 actual signed
-schedules PASS. Actual Control initialization/source registration and signed Rocks
-admission/reopen feed FreshWriter and the supervised publisher. Independent literal
-oracles match all ten fact bytes/digests, both admission/archive identities, every
-scientific/receipt field and a reconstructed verified signature. The invalid ID and
-signature produce rejections; exact admission retry retains its receipt. Missing
-closure and normal duplicate publication refuse without new files.
-
-Normal and completed-but-lost PG COMMIT retain8 catalog/physical files and complete
-rows. Before-forward rollback leaves2 bootstrap references and all8 physical files,
-including6 retained event orphans. Both faults return OutcomeUnknown to the parent;
-the fixture's fresh reader independently observes actual state. Exactly one targeted
-data COMMIT and one injected fault occur per fault schedule. Six scientific file
-size/SHA maps match across all3 schedules; attempt-specific receipts differ. Each
-schedule retains40597 physical bytes. All41 Rocks key/value records stay unchanged;
-all worker grants return. No ACK/reclaim, protection or throughput claim.
-
-Final independent PG observation finds owner ordinals4/3/3 disabled, all10 lifetime
-roles NOLOGIN with passwords removed, and no other catalog backend. Privileged lab
-manager/reader and fixture-specific source authorization do not implement installed
-source policy, minimum reader privileges or the product Read/recovery service.
-The report lists native scientific race, persistent lifecycle, relocation/S3,
-file/directory persistence and complete M1/release boundaries still open.
-
-Exact680-file Mac Git archive equals Tux checkout/export. Source2075a393a4385b519375a6947e05719c4baf4c7e,
-treedf1adef57e70fd5a8b5f65352f2123c5aeb89d6a. Raw root publication/2075a39;
-native root `/home/tux/bigbrotr-implementation-20260917/runs/publication-2075a39`.
-Owner7a62dd55a880822cd8298bf7c3a323e9;
-runner7201bb3030160aff7a3cbcf2e29a602949b37dde6957c69005848449192e4d03;
-PGee489e860e96777c0284ada3d8f6beb38b2b009d3e4142f7a7fe9492a276d3cb;
-network983c501e839c203ba6aebe99034b0e3499fee7f740cc648dc8ffd261c506b83c retired.
-Audit: stopped143/0, no OOM,20 unrelated identities unchanged/8 running/0 BigBrotr
-running. Transfer24866, cases53833, copy96984/34953 and retirement29615 terminal.
-Inventory signed_publication owns retained data/cache. Never restart retired runners.
-
-Failed7ff0691 is preserved separately in signed_publication_failed_7ff0691 and raw
-publication/7ff0691. Normal parent completed but reader exit101 InvalidHex prevented
-full comparison and fault execution: native hex() uppercase violated model lowercase
-wire spelling. Only fixture reconstruction/diagnostic retention changed before the
-fresh successful2075a39 run. Failure source/ELF/terminal audits passed; its containers
-are stopped and network retired. Three local actual-process checks qualify bounded
-normal/timeout/overflow diagnostic retention. Mac fixture/reader Clippy and document
-checks passed. No product/dependency/schema/applied SQL changed after3c380fe.
+READ COMMITTED and incompatible-history refusal;24 actual PG cases pass.
+MON-010 preserves offline selected/unselected TLS validation. MON-007 has actual
+HTTPS retry/concurrency on Mac/Linux. Do not mechanically rerun unrelated suites.
 
 ## Next bounded action
 
-Finish scoped fixture checks/review, then commit and transfer an exact new source
-revision for P02-T04 steps4/5: qualify
-actual scientific publisher fencing with a live stale worker and both transaction
-lock orders, preserving prepared files and retained signed pending. Reuse the
-signed corpus and full row oracle in a new exact-source lab; do not substitute
-synthetic guard receipts or generic error status for the actual native refusal.
-New cases are owner-first (expect40001 then55000), old-COMMIT-first and
-old-ROLLBACK-first. Observe actual PG blocker pairs, positively reap old worker,
-preserve successor on historical seal, and independently read full rows/receipts
-before opening the next-launch barrier. Expected physical files14/8/14 retain
-old orphans. Rerun the three original schedules because their proxy changed.
-Introduce the product's bounded fresh receipt-resolution/read consumer as its
-contract becomes available, then persistent lifetime recovery and protection.
-No installed Archive role, task or M1 gate is complete; all selected product scope
-remains required. The verified2075a39 build cache may be copied into a new owned
-lab after inventory; no independently edited Tux source.
+After final diff/remote-state verification and private delivery, continue P02-T04 step4 with the product's bounded fresh receipt
+resolution/read consumer, using the actual private worker and complete retained
+expected identity. Inspect its contracts and minimum reader authority before
+implementation. Preserve OutcomeUnknown until fresh exact observation; absence
+alone never grants replay without the separate old-lifetime exclusion ordering.
+Then integrate persistent unique lifetime recovery and qualified protection toward
+M1 signed read/export/restart. No installed Archive role or release is complete.

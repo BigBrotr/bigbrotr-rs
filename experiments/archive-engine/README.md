@@ -309,5 +309,8 @@ messages, never emits native SQL/credentials, and clears per-transaction state o
 ReadyForQuery idle, including after rollback. The two other schedules hold actual
 COMMIT and either forward it or close without forwarding. Expected final physical
 files are14/8/14, including six retained old orphans in each rollback case; eight
-files are catalog references in all three. These are planned assertions until
-their exact-source execution is recorded, not installed recovery or orphan cleanup.
+files are catalog references in all three. [Exact-source b12c902 qualification](../../docs/implementation/evidence/p02-signed-fencing-native-20260919.json)
+passes all six schedules, including the original three after proxy changes.
+Source/artifact/terminal audits pass; owned containers are stopped and network
+retired. This is finite native fencing evidence, not installed recovery or orphan
+cleanup.

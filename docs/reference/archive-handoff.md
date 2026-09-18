@@ -246,6 +246,12 @@ prepared files. Both fault outcomes stay unknown at the parent boundary; the lab
 reader separately observes the committed state. No source ACK occurs and all41
 Rocks key/value records remain identical. The literal corpus includes one public
 network arrival with provenance, invalid ID/signature, missing closure and duplicate
-publication controls. Full schema variants, native fence races, installed source
-policy, product receipt/read services and persistent lifecycle recovery remain
-P02-T04 acceptance; no public command advertises this candidate.
+publication controls. [Later signed native fencing](../implementation/evidence/p02-signed-fencing-native-20260919.json)
+at `b12c902` qualifies three actual publisher/activation races: owner-first and
+old-native-transaction-first with COMMIT/ROLLBACK. Direct PG blocker chains and
+exact40001→55000 attribution discriminate the old writer refusal. Positive reap,
+historical sealing and separate full readback precede successor launch; committed
+work refuses duplicate replay and absent work publishes once. All pending and
+orphan files remain retained. Full schema variants, installed source policy,
+product receipt/read services and persistent lifecycle recovery remain P02-T04
+acceptance; no public command advertises this candidate.

@@ -338,8 +338,17 @@ pre-forward rollback retains2 bootstrap references and all8 physical files.
 Six scientific file hashes match across schedules; receipt files carry their
 distinct attempt identities. All pending Rocks bytes remain unchanged. The lab's
 privileged reader is a separate observer, not product recovery or a protection
-grant. Source authorization is fixture-specific; full native fence races,
-relocation, persistent lifecycle, durability and S3 remain qualification gates.
+grant. Source authorization is fixture-specific; relocation, persistent lifecycle,
+durability and S3 remain qualification gates.
+The [signed native fencing report](../implementation/evidence/p02-signed-fencing-native-20260919.json)
+at `b12c902` adds actual scientific publisher races in both owner-lock orders,
+including old COMMIT and ROLLBACK. Pinned REPEATABLE READ first rejects the old
+snapshot with40001; DuckLake retries, then the actual guard rejects with55000.
+That bounded observed sequence is distinct from a generic native failure.
+Positive old-child reap, historical seal and complete fresh native readback precede
+successor launch. Committed work refuses duplicate replay; absent work publishes
+once under a new lifetime. All pending and orphan files remain retained. This is
+finite fixture qualification, not persistent lifecycle or installed recovery.
 Qualify complete nested mappings, immutable placement, transaction ambiguity,
 positive ownership and orphan recovery together before enabling the adapter.
 Keep one engine path; do not retain a silently weaker normal-INSERT fallback.

@@ -266,8 +266,14 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   retained source bytes and relative file membership; completed-but-lost COMMIT
   preserves all files, while pre-forward rollback retains unregistered files.
   The source policy and reader are explicit lab fixtures. Product receipt/read
-  services, native scientific fence races, relocation, orphan recovery and
+  services, relocation, orphan recovery and
   protection remain open.
+  [Signed native fencing](evidence/p02-signed-fencing-native-20260919.json) at
+  `b12c902` adds three actual publisher/activation races, with directly observed
+  blocker chains, exact serialization/guard refusals, positive old-child reap and
+  fresh complete readback before successor launch. Both old commit and rollback
+  preserve the expected files/rows; all six signed schedules pass. This does not
+  implement persistent lifecycle recovery or the product receipt reader.
   The first finite fresh-only initializer and shared schema declaration now create
   the five existing families plus an empty technical receipt relation;
   [native qualification](evidence/p02-scientific-schema-native-20260918.json) covers
@@ -336,8 +342,10 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   attempts cannot issue another credential. The consuming handoff remains distinct
   from persistent unique-process recovery. Executed cases check non-superuser
   manager membership, real authentication, sealing, both COMMIT ambiguity branches
-  and same-intent races. Scientific publication and installed recovery remain
-  required. No step is complete from these prerequisites.
+  and same-intent races. The signed native races linked above additionally qualify
+  finite scientific publication versus activation in both lock orders. Persistent
+  lifecycle and installed recovery remain required. No step is complete from these
+  prerequisites.
 - [ ] **Step 6:** Handle empty and one-small-event timer batches; publish useful progress
   without waiting for a size threshold that may never be reached.
 - [ ] **Step 7:** **Practical P02-T04:** run real PG/DuckLake transactions; kill preparation,

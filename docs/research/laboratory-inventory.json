@@ -7206,6 +7206,61 @@
       "scope": "Three actual signed publication/COMMIT-loss schedules; not protection, source ACK, installed recovery or complete M1",
       "audit": ".research/implementation/archive-worker/publication/2075a39/audit.json",
       "report": "docs/implementation/evidence/p02-signed-publication-native-20260919.json"
+    },
+    "signed_publication_races": {
+      "status": "PASS6 signed schedules, including3 actual native races; terminal audited cleanup",
+      "resources": {
+        "source": "b12c90286c2a730e1d99238a95c134cc3ffe3f36",
+        "tree": "1891f59a6385b6e832de4c38f1962c674ed3a096",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/publication-b12c902",
+        "owner": "ae769bb7d23a3625472861559a449662",
+        "container": "bigbrotr-implementation-publication-b12c902",
+        "postgres": "bigbrotr-implementation-publication-b12c902-pg",
+        "network": "bigbrotr-implementation-publication-b12c902",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "state": "stopped-retained",
+        "source_files": 681,
+        "started_at": "2026-09-18T22:57:16.494351+00:00",
+        "network_id": "0eaf5e329a632d0443ea4810316f59bdce91d7742166b43d1c9ccb374bd67bed",
+        "postgres_id": "bcb1f531dbc65d3818a44a95daacf7b3585de498c3e8939a2f087d4226222480",
+        "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+        "container_id": "56e6cf2ec5295983ead20e133ead512b8c79bf7cf8494a9c4cd2b38856fe65af",
+        "network_state": "retired",
+        "terminal": {
+          "runner": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-18T22:57:18.956830749Z",
+            "FinishedAt": "2026-09-18T23:00:12.199356345Z"
+          },
+          "postgres": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-18T22:57:17.127849023Z",
+            "FinishedAt": "2026-09-18T23:00:15.209976789Z"
+          }
+        },
+        "finished_at": "2026-09-18T23:00:15.839357+00:00"
+      },
+      "raw_root": ".research/implementation/archive-worker/publication/b12c902",
+      "scope": "P02-T04 actual signed native publisher fencing; no ACK, protection or cleanup authority",
+      "audit": ".research/implementation/archive-worker/publication/b12c902/audit.json",
+      "report": "docs/implementation/evidence/p02-signed-fencing-native-20260919.json"
     }
   },
   "implementation_monitor_corrections_20260918": {
