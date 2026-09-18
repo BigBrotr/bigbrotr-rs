@@ -199,3 +199,21 @@ and its memory before allocation, uses a fallible fixed-size block allocation,
 and retains its permit through block wiping and completion. Cancellation cannot
 free capacity while hashing continues. The local finite CLI runs one hash; a
 future listener must additionally bound peer/account attempts and worker joins.
+
+### Local account inspection
+
+`access me --username NAME --password-ref file:/absolute/path --file CONFIG`
+is the first credential verification consumer. It requires the same protected
+deployment connection and returns only that account's identity, credential/grant
+revisions and stored dataset actions. One bounded database snapshot binds those
+fields to the exact `argon2id-v1` credential; a disabled account, wrong password
+or absent name has no successful account response. Unknown names still incur
+one baseline hash. Password bytes are neither trimmed nor normalized.
+
+This finite, read-only local inspection does not return a session or a reusable
+authorization proof. Its result is explicitly an observation; another action must
+authenticate and authorize again. A null security revision is reported as null,
+without activating policy or turning stored actions into live authority. It
+creates no audit row or login attempt state. Remote login, rate limits, session
+transactions, rejected-request audit and the restrictive activation barrier remain
+required separate consumers; this command must not be exposed as a remote route.

@@ -1,3 +1,4 @@
+pub mod authentication;
 pub mod configuration;
 pub mod connection_settings;
 pub mod enrollment;

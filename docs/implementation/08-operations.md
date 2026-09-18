@@ -116,6 +116,11 @@ enrollment with the fixed password baseline and explicit initial dataset grants.
 separately; private HTTP, sessions, account lifecycle, grant activation and full
 T02 acceptance remain required before completing these steps.
 
+The next finite CLI consumer, `access me`, verifies the actual stored credential
+and inspects only that account's stored grants from one bounded snapshot. It
+does not create a session or reusable action authority; its read-only local
+scope does not satisfy remote login/rate-limit/audit or permission-matrix acceptance.
+
 **Failure states:** unavailable policy authority causes expiry/fail-closed, not anonymous fallback. Last-owner recovery is an explicit local, positively authorized CLI operation with an audit record; it cannot be triggered through an unauthenticated HTTP request. Enrollment output is never copied into CI evidence.
 
 The selected Argon2id parameters are an application baseline to benchmark under

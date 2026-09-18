@@ -41,3 +41,11 @@ complete database dumps around actual PostgreSQL SIGKILL. The hash probe measure
 ten finite rejected attempts that still perform the selected hash, separately from
 successful enrollment or mixed-workload capacity. Their execution source hashes
 are retained with the native evidence; no product source is edited on Tux.
+
+`self_inspection.py --root LAB` exercises `access me` in a new owned database
+on a clean matching artifact. It verifies the whole account report against
+literal expected actions, actual enrollment and a separately computed PHC C
+credential; wrong/disabled/missing identities, revision mismatch, changed/empty
+grants and protected-file/deployment/SQL privilege refusals must leave the complete
+schema dump unchanged. PostgreSQL restart must preserve the final state. This
+runner does not qualify remote authentication, sessions or action enforcement.

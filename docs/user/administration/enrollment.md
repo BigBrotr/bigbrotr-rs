@@ -63,6 +63,19 @@ Once an owner exists these commands cannot issue another owner token or reset
 its password. Account recovery, login/sessions, remote management, grant changes
 and full private-panel acceptance remain implementation work.
 
+To check the enrolled password and inspect that account's current stored grants:
+
+```sh
+bigbrotr access me --file instance.toml --username alice --password-ref file:/run/secrets/bigbrotr-owner-password
+```
+
+This local command uses the protected Control connection and makes no durable
+changes. Its output contains identity and revision metadata, never a password,
+hash or session credential. Stored actions describe configuration at inspection
+time; the command issues no runtime authorization. A null `security_revision`
+means no security policy has been activated. A wrong password, unknown account
+or disabled account returns the same `Denied` refusal (exit 3).
+
 The [native enrollment evidence](../../implementation/evidence/p08-owner-enrollment-native-20260918.json)
 records the tested Linux amd64 revision, actual expiry and concurrent/recovery
 cases, populated migration and process-crash checks. It does not qualify a

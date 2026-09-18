@@ -1202,5 +1202,21 @@
       },
       "scope": "Git/archive/actual extracted sources and downloaded executable identity; not engine runtime acceptance"
     }
+  },
+  "local_authentication_20260918": {
+    "purpose": "P08-T02 finite local credential verification and self-inspection; no remote login/session/action grant",
+    "local_root": ".research/implementation/local-authentication",
+    "owner": "root integrating agent",
+    "evidence": "docs/implementation/evidence/p08-local-authentication-mac-20260918.json",
+    "preflight": {
+      "source": "992f0dca6ca66af1eab5be27ff5e0f03391c2d12",
+      "source_clean": true,
+      "active_source_consumers": 0,
+      "owned_containers_stopped_retained": 47,
+      "unrelated_running_preserved": 8,
+      "available_disk_bytes": 381613207552,
+      "raw_sha256": "abee66a9458737a0543e49188dbef0b2c8c0014ab175dc52efba3cfd79fbd7d8"
+    },
+    "native_status": "NOT_STARTED; next exact committed source build in a new inventoried isolated lab"
   }
 }

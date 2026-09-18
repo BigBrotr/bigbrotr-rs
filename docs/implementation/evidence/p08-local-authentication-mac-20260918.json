@@ -1,0 +1,45 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-18",
+  "status": "PASS",
+  "scope": "Mac bounded password verification and actual CLI prerequisite; native self-inspection NOT_RUN",
+  "base_revision": "a264dda2264aa5a53e15d83262ce9e91306cd435",
+  "source_state": "root dirty candidate, not clean-source native qualification",
+  "source_sha256": {
+    "apps/bigbrotr/src/management/credentials.rs": "21e7df3f19edfb130219798d1f107ffe7898c5cc856bc6a635cc0a1231fd5cd5",
+    "apps/bigbrotr/src/storage/postgres/authentication.rs": "9d69a46669851b0d1c20c9c60264ccf11f2be6729492d30ead899db40c3570eb",
+    "apps/bigbrotr/src/storage/postgres/mod.rs": "979edb107633dc719f8fcebaaa8092c66940128ecad10d44eb371cd738500bda",
+    "apps/bigbrotr/src/interfaces/self_inspection.rs": "99c987a4ce703f82a92c8fd4bc1a1e8d25ef790b60b9b9e70b797bfb5fbd536b",
+    "apps/bigbrotr/src/interfaces/access.rs": "080781d9df7a261ca90e6164139b77161a54baea1247eebc3939f14e4450bc9a",
+    "apps/bigbrotr/src/interfaces/mod.rs": "3e40a2600ca239f9035cf4cf71e1d5d612f493d97518c6317257a97b41604518",
+    "apps/bigbrotr/tests/management_auth.rs": "ed79e500f3cf6a9bd8df46d0731828734cb999adebef33c3d4b78d7b71505283",
+    "experiments/local-enrollment/self_inspection.py": "df4eb8f9cc69227c41ce362ca1a84bfadd4a1c530522ad6988d77e2f768987b5"
+  },
+  "environment": {
+    "target": "aarch64-apple-darwin",
+    "rustc": "1.98.1",
+    "cargo_lock_sha256": "99fe76478639485b19e93b4cbcbb788153b187947c19ebff3973d0a03212302e"
+  },
+  "checks": {
+    "workspace": {
+      "passed": 194,
+      "failed": 0,
+      "ignored": 0
+    },
+    "clippy": "PASS --locked --workspace --all-targets -- -D warnings",
+    "fmt": "PASS",
+    "artifacts": "PASS structural scope only",
+    "cli_red": "Before implementation: actual access me exited2 (unsupported), expected protected-credential refusal3. After implementation actual CLI test passes."
+  },
+  "independent_oracle": "Literal PHC C password/hash/salt tuple from the previously executed pinned reference_vector.c; trailing space and changed final hash byte refused, insufficient memory reservation refused. See p08-owner-enrollment-mac-20260918.json for exact upstream/source identity.",
+  "review": "Root reviewed complete new primitive/adapter/CLI/test/harness and affected contracts. Account/credential/grants are one bounded snapshot; rollback precedes hashing; unknown accounts incur baseline hash. Only observational data is returned. No independent agent available.",
+  "not_run": [
+    "Native PostgreSQL self-inspection and restart; newly added runner is still proposed at this checkpoint.",
+    "Remote login, sessions, per-account/peer rate limits, login audit, revocation/action enforcement, policy authority and full P08-T02 acceptance.",
+    "Linux arm64, packaged installation and complete product journeys."
+  ],
+  "raw_root": ".research/implementation/local-authentication",
+  "logs_sha256": {
+    "workspace.log": "65fde9b59c9e2b435b5bf530f8b4dd924f1958625137469f8c31c031f44ae438"
+  }
+}

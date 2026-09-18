@@ -19,9 +19,10 @@ pub fn command() -> Command {
     };
     let id = |name: &'static str| Arg::new(name).long(name).required(true).value_name("HEX32");
     Command::new("access")
-        .about("Explicit local owner enrollment through protected Control credentials")
+        .about("Local account enrollment and inspection through protected Control credentials")
         .subcommand_required(true)
         .disable_help_subcommand(true)
+        .subcommand(super::self_inspection::command())
         .subcommand(
             Command::new("owner-token")
                 .subcommand_required(true)
@@ -66,6 +67,9 @@ pub fn command() -> Command {
 }
 type Result<T> = std::result::Result<T, (u8, String)>;
 pub fn execute(matches: &ArgMatches) -> ExitCode {
+    if let Some(args) = matches.subcommand_matches("me") {
+        return super::self_inspection::execute(args);
+    }
     match run(matches) {
         Ok((report, code, _permit)) => {
             let mut stdout = std::io::stdout().lock();

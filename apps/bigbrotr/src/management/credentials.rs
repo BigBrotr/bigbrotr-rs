@@ -64,6 +64,19 @@ fn validate_password(password: &[u8]) -> Result<(), CredentialError> {
     Ok(())
 }
 
+/// The storage adapter must first validate the closed, versioned parameter tuple.
+/// Matching a password alone supplies neither account state nor action authority.
+pub(crate) fn verify_password(
+    password: &[u8],
+    salt: &[u8; 16],
+    expected: &[u8; 32],
+    grant: &mut OwnedPermit,
+) -> Result<bool, CredentialError> {
+    validate_password(password)?;
+    let actual = hash(password, salt, grant)?;
+    Ok(bool::from(actual.as_ref().ct_eq(expected)))
+}
+
 fn hash(
     password: &[u8],
     salt: &[u8; 16],
@@ -188,6 +201,53 @@ mod tests {
             )
             .unwrap_err(),
             CredentialError::Capacity
+        );
+    }
+    #[test]
+    fn verification_uses_complete_independent_hash_and_exact_password() {
+        let expected = [
+            0xa9, 0xf1, 0x6b, 0x27, 0xee, 0x41, 0x88, 0xb4, 0x89, 0x54, 0xee, 0x89, 0x6c, 0xa0,
+            0x43, 0x20, 0xbd, 0xbe, 0x34, 0xf4, 0xc2, 0xc0, 0xb9, 0xf4, 0xf3, 0x32, 0xd9, 0xda,
+            0xff, 0xc8, 0x92, 0xff,
+        ];
+        let mut grant = permit(HASH_RESERVATION);
+        assert!(
+            verify_password(
+                b"Independent owner password 2026",
+                &[2; 16],
+                &expected,
+                &mut grant
+            )
+            .unwrap()
+        );
+        assert!(
+            !verify_password(
+                b"Independent owner password 2026 ",
+                &[2; 16],
+                &expected,
+                &mut grant
+            )
+            .unwrap()
+        );
+        let mut changed = expected;
+        changed[31] ^= 1;
+        assert!(
+            !verify_password(
+                b"Independent owner password 2026",
+                &[2; 16],
+                &changed,
+                &mut grant
+            )
+            .unwrap()
+        );
+        assert_eq!(
+            verify_password(
+                b"Independent owner password 2026",
+                &[2; 16],
+                &expected,
+                &mut permit(HASH_RESERVATION - 1)
+            ),
+            Err(CredentialError::Capacity)
         );
     }
     #[test]
