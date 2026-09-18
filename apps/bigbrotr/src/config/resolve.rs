@@ -25,6 +25,7 @@ pub const ROLES: &[&str] = &[
     "read",
 ];
 
+#[derive(Clone)]
 pub struct Resolved {
     pub keys: Vec<Key>,
     pub values: BTreeMap<String, Value>,

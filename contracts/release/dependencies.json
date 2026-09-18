@@ -98,10 +98,18 @@
     {
       "name": "tokio",
       "version": "1.53.1",
-      "purpose": "Finite PostgreSQL connection-task runtime primitives; directly requests rt, net, time and sync, while tokio-postgres also enables required I/O features",
+      "purpose": "Owned PostgreSQL connection tasks and persistent Control lifecycle; explicit rt/net/time/sync/signal/macros, plus tokio-postgres required I/O features",
       "license": "MIT",
       "license_notice": "https://github.com/tokio-rs/tokio/blob/75fef53d0a8590c2d1dbb63672aa7b7d1ef51155/LICENSE",
-      "source": "https://docs.rs/tokio/1.53.1/tokio/"
+      "source": "https://docs.rs/tokio/1.53.1/tokio/",
+      "features": [
+        "rt",
+        "net",
+        "time",
+        "sync",
+        "signal",
+        "macros"
+      ]
     },
     {
       "name": "tokio-postgres",

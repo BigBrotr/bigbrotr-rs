@@ -150,8 +150,14 @@ pub(super) async fn connect(
     Ok((client, tokio::spawn(driver)))
 }
 
-pub(super) async fn close(client: Client, mut driver: DriverHandle) {
+pub(super) async fn close(client: Client, driver: DriverHandle) {
     drop(client);
+    join(driver).await;
+}
+
+/// The opaque Control owner has already dropped its client. Retain the caller's
+/// resource grant through this terminal join, including timeout cancellation.
+pub(super) async fn join(mut driver: DriverHandle) {
     if tokio::time::timeout(DRIVER_DRAIN, &mut driver)
         .await
         .is_err()

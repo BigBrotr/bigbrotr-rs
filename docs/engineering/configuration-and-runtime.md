@@ -146,6 +146,22 @@ and audit receipts. It does not enroll a human or grant a writer lease. See the
 for managed/declarative drift and unknown-COMMIT recovery. Runtime activation,
 subsequent edits and revocation remain distinct responsibilities.
 
+## Initial persistent Control consumer
+
+The [Control-only executable candidate](../user/control-runtime.md) consumes the
+accepted documents through the same strict root validator. It polls policy at
+half the authorization TTL, bounded by the ownership heartbeat interval, and
+renews the scheduling row only at that heartbeat. Acquisition, polling, release
+and cancellation keep one connection/driver and its conservative 512 MiB policy
+preparation grant until terminal join. Managed or declarative file drift is not
+activation. All other selected roles refuse before credential I/O.
+
+Its first failure policy is fail-closed process exit and explicit supervised
+restart; automatic reconnect/backoff remains a required later lifecycle slice.
+The [native process matrix](../../experiments/control-runtime/README.md) qualifies
+this consumer separately from earlier adapter probes. No native Ingest handoff,
+remote output authorization or complete product readiness follows from it.
+
 ## Shared budget allocator
 
 Treat the host envelope as the upper bound. Component limits cannot all claim the

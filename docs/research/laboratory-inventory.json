@@ -1739,5 +1739,21 @@
       "network": "none"
     },
     "scope": "Four real subprocess CI negative controls, including missing tool and killed descendant; no full foundation rerun at this revision"
+  },
+  "implementation_control_runtime_20260918": {
+    "stage": "candidate; native execution not started",
+    "source_base": "c37a22169373130f034e9cd1b481084e62e36e16",
+    "local_root": ".research/implementation/control-runtime",
+    "owned_remote_resources": [],
+    "scope": "P01-T04/T06 actual Control runtime integration; first signed-event admission and later product remain",
+    "local_checks": {
+      "workspace": {
+        "passed": 199,
+        "failed": 0,
+        "ignored": 0
+      },
+      "clippy": "RUNNING; no result yet",
+      "native": "NOT_RUN"
+    }
   }
 }

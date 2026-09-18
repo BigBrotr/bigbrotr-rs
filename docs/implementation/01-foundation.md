@@ -306,8 +306,10 @@ now covers seven adapter scenarios, six SQL negatives and the transaction-lock
 control. [Extended native evidence](evidence/p01-control-owner-faults-native-20260918.json)
 adds acquisition COMMIT ambiguity/cancellation, actual pauses beyond scheduling TTL
 and PostgreSQL crash/restart, with 390 final relations checked independently.
-Release-COMMIT faults, refresh cancellation, runtime policy grants and native
-handoff remain open.
+Release-COMMIT faults, public/remote runtime grants and native handoff remain
+open. The [Control process candidate](../../experiments/control-runtime/README.md)
+adds the actual startup-root validator, separate policy/ownership polling and
+owned signal/driver shutdown; its native execution evidence remains required.
 
 ## P01-T07 — Same-process and remote component adapters
 

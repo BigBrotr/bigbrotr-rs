@@ -89,3 +89,8 @@ wrong output/manifest and timeout
 must FAIL, and the descendant must no longer be running.
 These controls are separate from the product and never alter the product to make
 an oracle pass. The Rust process tests compare SHA-256 against the actual inputs.
+
+The [Control runtime matrix](../../experiments/control-runtime/README.md) runs
+the actual persistent executable against an isolated PostgreSQL engine, with
+external row/lock observations and process signals. It is separate from the
+foundation runner and does not qualify the remaining data path or release.

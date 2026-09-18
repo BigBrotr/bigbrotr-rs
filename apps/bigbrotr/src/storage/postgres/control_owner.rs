@@ -3,7 +3,10 @@
 //! The transport owner retains its driver and resource reservation until joined.
 //! Acquisition consumes the connection even on failure/cancellation; reconnecting
 //! always requires a fresh claim. No method exposes or lends the raw client.
-use super::{ingest_registry, initialization::application_transaction};
+use super::{
+    ingest_registry,
+    initialization::{InitializeError, application_transaction},
+};
 use bigbrotr_model::{DatasetId, OwnerEpoch, OwnerResourceId, ProcessIncarnation};
 use sha2::{Digest, Sha256};
 use std::{cell::Cell, fmt, time::Duration};
@@ -30,6 +33,12 @@ impl fmt::Display for OwnerError {
 impl std::error::Error for OwnerError {}
 fn backend(_: tokio_postgres::Error) -> OwnerError {
     OwnerError::Backend
+}
+fn transaction_error(error: InitializeError) -> OwnerError {
+    match error {
+        InitializeError::Backend => OwnerError::Backend,
+        _ => OwnerError::IncompatibleDeployment,
+    }
 }
 
 pub struct ClaimRequest {
@@ -80,7 +89,7 @@ impl ControlSession {
         let lease_us = request.lease_us()?;
         let tx = application_transaction(&mut client, 7)
             .await
-            .map_err(|_| OwnerError::IncompatibleDeployment)?;
+            .map_err(transaction_error)?;
         let locked: bool = tx
             .query_one(
                 "SELECT pg_catalog.pg_try_advisory_lock($1, $2)",
@@ -148,17 +157,36 @@ impl ControlSession {
 
     pub async fn refresh(
         &mut self,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<PolicySnapshot, OwnerError> {
+        self.read_policy(validate, true).await
+    }
+
+    /// Validate current policy under the owner fence without renewing the
+    /// scheduling lease. Authorization polling has its own shorter cadence.
+    pub async fn poll_policy(
+        &mut self,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<PolicySnapshot, OwnerError> {
+        self.read_policy(validate, false).await
+    }
+
+    async fn read_policy(
+        &mut self,
         mut validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+        renew: bool,
     ) -> Result<PolicySnapshot, OwnerError> {
         self.begin_operation()?;
         let tx = application_transaction(&mut self.client, 7)
             .await
-            .map_err(|_| OwnerError::IncompatibleDeployment)?;
+            .map_err(transaction_error)?;
         require(&tx, self.request.dataset, self.identity).await?;
         let policy = snapshot(&tx, &self.request, &mut validate).await?;
-        let changed = tx.execute("UPDATE control.owner_epochs SET lease_expires_at_us = (EXTRACT(EPOCH FROM pg_catalog.clock_timestamp()) * 1000000)::bigint + $4::bigint WHERE resource_id = $1::bytea AND epoch = $2::text::numeric AND process_incarnation = $3::bytea AND state = 'active'", &[&&self.identity.resource_id.as_bytes()[..], &self.identity.epoch.get().to_string(), &&self.identity.process_incarnation.as_bytes()[..], &self.request.lease_us()?]).await.map_err(backend)?;
-        if changed != 1 {
-            return Err(OwnerError::Unavailable);
+        if renew {
+            let changed = tx.execute("UPDATE control.owner_epochs SET lease_expires_at_us = (EXTRACT(EPOCH FROM pg_catalog.clock_timestamp()) * 1000000)::bigint + $4::bigint WHERE resource_id = $1::bytea AND epoch = $2::text::numeric AND process_incarnation = $3::bytea AND state = 'active'", &[&&self.identity.resource_id.as_bytes()[..], &self.identity.epoch.get().to_string(), &&self.identity.process_incarnation.as_bytes()[..], &self.request.lease_us()?]).await.map_err(backend)?;
+            if changed != 1 {
+                return Err(OwnerError::Unavailable);
+            }
         }
         tx.commit().await.map_err(|_| OwnerError::CommitUnknown)?;
         self.available = true;
@@ -187,7 +215,7 @@ impl ControlSession {
         self.begin_operation()?;
         let tx = application_transaction(&mut self.client, 7)
             .await
-            .map_err(|_| OwnerError::IncompatibleDeployment)?;
+            .map_err(transaction_error)?;
         require(&tx, self.request.dataset, self.identity).await?;
         release_epoch(
             &tx,

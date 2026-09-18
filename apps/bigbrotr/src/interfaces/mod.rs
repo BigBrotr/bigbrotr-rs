@@ -4,3 +4,4 @@ pub(crate) mod initial_activation;
 pub mod migrations;
 mod postgres_command;
 mod self_inspection;
+pub(crate) mod serve;

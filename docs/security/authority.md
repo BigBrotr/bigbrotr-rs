@@ -6,9 +6,11 @@ The [operations contract](../specification/operations-contract.md#postgresql-con
 owns its commit exclusion and migration compatibility. The adapter consumes one
 connection and exposes typed operations; copied owner metadata grants nothing.
 Acquisition/refresh require a caller that validates both complete policy documents
-against deployment roots. Runtime lease issuance and native handoff remain
-unimplemented. Finite [owner enrollment](../user/administration/enrollment.md) and
-local credential inspection are separate capabilities, not runtime grants.
+against deployment roots. The candidate [Control process](../user/control-runtime.md)
+now supplies that validator and a local restrictive lease. Remote lease issuance,
+principal/action grants and native handoff remain unimplemented. Finite
+[owner enrollment](../user/administration/enrollment.md) and local credential
+inspection are separate capabilities, not runtime grants.
 
 The [restrictive activation barrier](../product/private-administration.md#restrictive-change-activation-barrier)
 remains required. Public stream revocation, native stale-writer exclusion and the
@@ -120,9 +122,9 @@ incorrectly keep a lease alive; they are not host-clock mutation experiments.
 The executable's offline configuration resolver uses
 `OwnershipTiming::new(Duration::from_micros(...))` for the five named settings,
 plus `PolicyLeaseTtl::new` for `runtime.authorization_ttl`, and preserves the
-smaller read-authorization ceiling check. The lease tracker still needs actual
-Control and output consumers;
-no currently shipped command advertises live authority from this core.
+smaller read-authorization ceiling check. The candidate Control runtime is the
+first local consumer. Public output and authenticated remote consumers remain
+required; its local lifetime check is not a principal/action grant.
 
 Manual failover still requires stopping or positively excluding the old owner,
 recovering and verifying its data, advancing the persisted epoch under fenced
