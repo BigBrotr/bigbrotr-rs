@@ -140,3 +140,7 @@ resolution and the installed CLI journey remain required before using the new
 schema for ordinary publication. Applied guard SQL is unchanged. A failed or lost
 initialization response must be resolved by a fresh privileged catalog inspection;
 never delete data or repeat initialization merely because the response was absent.
+
+The [scoped native qualification](../implementation/evidence/p02-scientific-schema-native-20260918.json)
+at `0e2ca43` passes twelve real-PG initialization/refusal cases and 39 native Rust
+cases. It does not close the scientific guard, publication or recovery gates above.

@@ -6646,6 +6646,96 @@
       "report": "docs/implementation/evidence/p02-catalog-credentials-native-20260918.json",
       "independent_audit": ".research/implementation/archive-worker/catalog-credentials/d2b2609/independent-audit.json",
       "audit": ".research/implementation/archive-worker/catalog-credentials/d2b2609/audit.json"
+    },
+    "scientific_schema": {
+      "status": "0e2ca43 scoped native PASS; resources stopped-retained, network retired",
+      "raw_root": ".research/implementation/archive-worker/scientific-schema",
+      "native_root": "/home/tux/bigbrotr-implementation-20260917/runs/scientific-schema-0e2ca43",
+      "owner": "root sole writer/integrator",
+      "upstream": [
+        {
+          "revision": "d8a1881e22516ea3d186d73e83c65fe5bd1a1dc4",
+          "path": "src/storage/ducklake_metadata_manager.cpp",
+          "sha256": "92586c88a5b26fb8a2d4caddaa4ad0385f49866f7f13a283e298868ac7f054b8"
+        },
+        {
+          "revision": "d8a1881e22516ea3d186d73e83c65fe5bd1a1dc4",
+          "path": "src/common/ducklake_types.cpp",
+          "sha256": "8687dbf82dd830a1135255bcdedf15b0478f62cf6bf999f4623b7c6ed2d6ddbf"
+        },
+        {
+          "revision": "d8a1881e22516ea3d186d73e83c65fe5bd1a1dc4",
+          "path": "src/functions/ducklake_set_commit_message.cpp",
+          "sha256": "0b1f22791581d5041a065d0ea8b89a3217d20bf594ca7ed8aae2d0c5b8b8ba85"
+        },
+        {
+          "revision": "d8a1881e22516ea3d186d73e83c65fe5bd1a1dc4",
+          "path": "src/storage/ducklake_initializer.cpp",
+          "sha256": "3546cc159fda22abf9e5ac6549f583902b77ebb86fddab4c6f14503153361b92"
+        },
+        {
+          "revision": "41223e51559cd581f1c06e170b71c71df25bbaac",
+          "path": "src/storage/postgres_catalog.cpp",
+          "sha256": "d4fab4b727f892dcfdc7f828d16c00a30950dcd3196b729df13f84a13d43c102"
+        },
+        {
+          "revision": "41223e51559cd581f1c06e170b71c71df25bbaac",
+          "path": "src/storage/postgres_transaction.cpp",
+          "sha256": "80d614d4aba2a06e6f6d2ba4bfa26c0c6a963e99db9a2960a59e53aa49fa18a8"
+        }
+      ],
+      "resources": {
+        "source": "0e2ca435b94da5da49eee69905fa5670716ff48d",
+        "tree": "cfde988f055c30180b82d9bfdec7017bc67b11b2",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/scientific-schema-0e2ca43",
+        "owner": "2b447d5c50842036e5a4907f7a486e29",
+        "container": "bigbrotr-implementation-scientific-schema-0e2ca43",
+        "postgres": "bigbrotr-implementation-scientific-schema-0e2ca43-pg",
+        "network": "bigbrotr-implementation-scientific-schema-0e2ca43",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "state": "stopped-retained",
+        "source_files": 655,
+        "started_at": "2026-09-18T19:57:09.088730+00:00",
+        "network_id": "d479757ce1b89a4f958c92b1dafb2accffd144448ac91ddf00e8e424269a2634",
+        "postgres_id": "1b2c7b2c001f7baf407bd149626eff5ed5ba459f350c9f882ecffe1b44524001",
+        "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+        "container_id": "e8b081a7dc0608d949e2d670ecbdd53ea96cba82c10d1b7c1ea188d6a02ca197",
+        "network_state": "retired",
+        "terminal": {
+          "runner": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-18T19:57:11.22036057Z",
+            "FinishedAt": "2026-09-18T20:00:45.83200794Z"
+          },
+          "postgres": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-18T19:57:09.645460597Z",
+            "FinishedAt": "2026-09-18T20:00:47.627989111Z"
+          }
+        },
+        "finished_at": "2026-09-18T20:00:48.234727+00:00"
+      },
+      "report": "docs/implementation/evidence/p02-scientific-schema-native-20260918.json",
+      "audit": ".research/implementation/archive-worker/scientific-schema/0e2ca43/audit.json",
+      "independent_audit": ".research/implementation/archive-worker/scientific-schema/0e2ca43/independent-audit.json",
+      "remaining": "scientific guard binding, full nested metadata validation, actual PG init recovery and publisher remain required"
     }
   },
   "implementation_monitor_corrections_20260918": {

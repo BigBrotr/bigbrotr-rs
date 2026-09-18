@@ -14,69 +14,77 @@ read-only Go neighbor. All selected product work remains required.
 Active P02-T03/T04: signed durable pending → actual PG DuckLake publication,
 positive fencing, receipts/protection, then M1 read/export/restart. No P02 task or
 M1 gate is complete. Catalog guard, credential provisioning/sealing and finite
-private supervision prerequisites now have scoped native evidence. The first scientific schema declaration and fresh-only initializer exist locally;
-scientific guard binding and the publisher are not implemented yet. Pending must not be acknowledged/reclaimed.
+private supervision prerequisites now have scoped native evidence. The first
+scientific schema declaration and fresh-only initializer have scoped qualification;
+scientific guard binding and the publisher remain unimplemented. Pending must not
+be acknowledged/reclaimed.
 
 ## Git and integrating ownership
 
-Mac main at clean f0f12524c8ab9da41447769de3d5d1234e4882fd on resumption; root is the sole writer/integrator. Product candidate
-`d2b260925b2b1d5d46275c53f4f04d4b05631b25`, tree
-`df6436e455aea3dd708ed8ae0f3d307fe41d05d7`, and its evidence/documentation commit
-`d1882ec3b7cf15866839ef9e0783ebc2d0375dcb` are pushed. Last freshly verified HEAD,
-origin/main and remote refs/heads/main equal `d1882ec3b7cf15866839ef9e0783ebc2d0375dcb`
-with a clean tree. This checkpoint refresh follows that observation. GitHub API
-confirms BigBrotr/bigbrotr-rs remains PRIVATE and not archived. No product source
-changed after native execution. Independent agents were read-only; final evidence
-review matched raw cases/hashes and found no further issue. No concurrent writer
-or active experiment. Push/remote-verification session51887 is terminal.
+Mac main; root is the sole writer/integrator. Fresh scientific candidate
+`0e2ca435b94da5da49eee69905fa5670716ff48d`, tree
+`cfde988f055c30180b82d9bfdec7017bc67b11b2`, is committed and qualified on Tux but
+not yet pushed at this checkpoint edit. Previous remote HEAD was `f0f1252`.
+Only evidence/documentation/checkpoint edits follow qualification; no product
+source changed after the native run. Independent review was read-only. No
+concurrent writer or active experiment remains. The ordinary private push and
+fresh remote verification are the next Git actions after evidence checks.
 
 ## Latest qualified slice
 
-[Credential report](evidence/p02-catalog-credentials-native-20260918.json), candidate
-`d2b2609`: 8 actual-PG sequences and 16 native Rust cases PASS. Mac 3 material tests,
-2 bootstrap-wire tests, scoped lib/both-example Clippy, format and Python syntax
-PASS. Bootstrap validation failed an actual assertion before implementation;
-earlier missing-dependency compiler REDs are separately retained. Resolved Cargo
-packages/versions are unchanged; only direct base64/ring/serde edges were added.
+[Scientific initialization report](evidence/p02-scientific-schema-native-20260918.json),
+candidate `0e2ca43`: 12 actual-PG cases and 39 native Rust cases PASS. Mac 23 worker
+unit + 4 executable cases PASS; affected Clippy/format/document checks PASS. Initial
+new-command test failed an assertion against old usage output before implementation.
+All Cargo dependencies are unchanged. Source/artifacts and cleanup are audited.
+Final independent evidence review matched raw cases, counts, hashes and scope; no
+further discrepancy was found.
 
-Implemented boundaries:
+The shared schema1 declaration creates the five current fact families and empty
+technical `archive_commits` in one native transaction. A separate READ_ONLY PG
+preflight refuses existing user schema dependencies, extra namespaces and selected
+nonnamespace objects before native ATTACH; both attachments explicitly disable
+PG secret storage. The operator must exclusively reserve the new DB and canonical
+empty local root. Existing/native-only/completed catalogs refuse, never auto-resume.
+The actual parent verifies artifacts, streams bounded private input, waits for
+exit/EOF/positive reap and returns all permits. No scientific guard/readiness,
+source ACK, receipt insertion or persistence beyond the tested scope is claimed.
 
-- New random 256-bit password, local PG16 SCRAM verifier, atomic role creation +
-  retained Control-intent import + DML grants + owner activation. Only a known
-  new commit returns a consuming private credential handoff. Existing roles or
-  attempts never reset credentials or produce another handoff. Unknown completion
-  returns no credential; resolve from a fresh connection before deciding recovery.
-- PG16 implicit creator ADMIN-only membership is permitted only for the guard
-  schema owner, with INHERIT=false/SET=false. Provisioning clears the local
-  createrole_self_grant setting. The actual non-superuser manager passes; four
-  membership modifications are refused and restored. Explicit initial ownership
-  transfer used temporary SUPERUSER, removed before ordinary provisioning.
-- Seal verifies the exact retained lifetime/current role OID under the owner lock,
-  removes LOGIN/password and disables only the matching current owner. Repeated/
-  historical seal preserves a successor. Real wrong password fails 28P01; after
-  seal, a new login fails 28P01 and an existing backend mutation fails 55000.
-- Finite bootstrap now uses the existing verified-artifact private supervisor.
-  Closed JSON is counted before spawn (32KiB total,16KiB DSN/4KiB root), then
-  streamed to stdin without a retained plaintext JSON buffer. Actual bootstrap
-  and a fresh writer's native attach succeed only after exit/EOF and positive reap.
-  This is not scientific publication, identity adoption or persistent uniqueness.
+Independent PG observations find 6 tables, 203 native column rows, 6 schema-version
+rows, snapshots0/1 with schema versions0/1, next catalog ID7/file ID0, and no data
+files or inlined tables. Snapshot1 contains the declaration SHA-256. Full native
+metadata is retained and re-read unchanged at terminal audit, but only selected
+structural invariants were independently validated in this slice. Table IDs were
+assigned in reverse declaration order; paths are `table_name/`, not UUID names.
+The future inspector must validate relationships rather than guess assignment order.
+Nested children are native nullable; typed model/readback owns required-child rules.
 
-Four wire-fault sequences distinguish pre-forward rollback from completed COMMIT
-with lost reply for provisioning/sealing. Complete independent state is checked
-before retry, preventing retry from hiding an incomplete seal. Two same-intent
-races observe actual backend incarnations/pg_blocking_pids: commit permits only one
-fresh credential; rollback permits exactly one replacement. Existing-role collision
-refuses without adoption/reset. The only dropped role was the exact new, never
-used collision fixture. All 8 final lifetimes retain history but have no password
-or LOGIN. Catalog owner 8 is disabled; Control has 9 intents, 33 epochs, 0 active owners.
-Native scientific tables/data files remain 0. Signed Rocks-to-worker preparation
-was separately re-executed without ACK after the shared parent refactor.
+Exact child errors plus normalized complete pg_dump hashes discriminate refusals
+for completed/native-only catalogs, existing table+canary, enum, schema, function,
+collation, text-search configuration, large object, nonempty root and missing
+CREATE privilege. Catalog retries use a separately empty root. The Mac/Linux
+late-DDL rollback tests use actual embedded DuckLake, **not a PG failure experiment**.
+Scientific binding, PG interrupted/lost-COMMIT initialization and installed recovery
+remain required. Review found and corrected secret-table registration, incomplete
+object inspection and weak negative attribution before the native candidate.
 
-Exact PG16.15 upstream source hashes/inspection ranges and pinned ring derivation
-are in the dependency record/inventory. AI review caught PG OID JSON typing,
-missing pre-retry sealing oracle and too many checks inside the timed lock window;
-all corrected before native execution. Root verified source/artifact/state audits.
-No full-product review, full CI, RSS/throughput or installed recovery claim.
+## Previous qualified credential slice
+
+[Credential report](evidence/p02-catalog-credentials-native-20260918.json), `d2b2609`:
+8 actual-PG sequences and 16 native Rust cases passed. Random 256-bit passwords,
+local SCRAM verifiers and atomic role/intent/grant/owner provisioning return a
+consuming handoff only on known new COMMIT. Existing attempts/roles never reset
+credentials or authorize another launch. PG16 implicit creator ADMIN membership
+is permitted only for the guard owner with INHERIT=false/SET=false. Ordinary
+manager is NOSUPERUSER CREATEROLE; explicit initial ownership transfer is privileged.
+Seal binds the complete lifetime/OID, removes LOGIN/password, and preserves a
+successor on historical retry. Actual old backend mutation then fails 55000;
+new login fails 28P01. Unknown commit resolves through fresh connections.
+Wire faults cover pre-forward and completed-but-lost COMMIT for provisioning/seal;
+held-lock races cover commit/rollback. These are synthetic retained intents,
+separate from signed Rocks preparation. A consuming callback can still copy its
+secret and does not enforce persistent process uniqueness. See the report for
+exact final state, source, upstream, ELF, oracle and retired resource identities.
 
 ## Earlier prerequisites and constraints
 
@@ -145,53 +153,48 @@ concurrency on Mac/Linux. Do not mechanically rerun unrelated suites.
 
 ## Verified resources and continuity
 
-Inventory `implementation_archive_worker_20260918.catalog_credentials` in
+Inventory `implementation_archive_worker_20260918.scientific_schema` in
 [the laboratory inventory](../research/laboratory-inventory.json).
-Raw root `.research/implementation/archive-worker/catalog-credentials/d2b2609`;
-native root `/home/tux/bigbrotr-implementation-20260917/runs/catalog-credentials-d2b2609`.
-All 648 source files and the exact Git archive independently match Mac/Tux.
-All four actual ELF identities are in the report; worker SHA
-`41361bd4ca3354947dbfc49166afb34297705e8c40506f04fbb66864d22078ee`.
-Writable Cargo/target caches were separate copies of retained catalog-recovery
-build outputs; retained assets were mounted read-only. No independently edited
-source copy exists on Tux.
+Raw root `.research/implementation/archive-worker/scientific-schema/0e2ca43`;
+native root `/home/tux/bigbrotr-implementation-20260917/runs/scientific-schema-0e2ca43`.
+All 655 exact source files and Git archive independently match Mac/Tux. The report
+contains 9 actual ELF identities; worker SHA
+`ec97a23806ea23215fc7d9c6996fcb7b168064af2092ad74d983c0583f8700b3`.
+Writable Cargo/target caches are separate copies of retained credentials outputs;
+assets and source export are read-only. No independently edited Tux source exists.
 
-Owner `283b16f0bb55f05232390af3d3172359`; runner
-`bigbrotr-implementation-catalog-credentials-d2b2609`, ID
-`0736621ec76a2a0e92f5ccc4f01f86bf9edcc392712de4697a6ae985ff456fe6`;
+Owner `2b447d5c50842036e5a4907f7a486e29`; runner
+`bigbrotr-implementation-scientific-schema-0e2ca43`, ID
+`e8b081a7dc0608d949e2d670ecbdd53ea96cba82c10d1b7c1ea188d6a02ca197`;
 PG suffix `-pg`, ID
-`9bdbbd3acba29711811ec999f2283f5636b098cc5d8d8995ce3914629a993b53`.
+`1b2c7b2c001f7baf407bd149626eff5ed5ba459f350c9f882ecffe1b44524001`.
 Runner deliberately stopped143 after successful cases; PG stopped0; no OOM.
-Owned network `ec3feec8d475c46683240861717bfa17ec04e9e5743c11ee995ba9541bb7ba61`
+Owned network `d479757ce1b89a4f958c92b1dafb2accffd144448ac91ddf00e8e424269a2634`
 retired, no new volume. 20 unrelated identities/processes/mounts/networks unchanged,
-8 running; zero BigBrotr running. Sessions89477(transfer),91027(cases),36361(audit/
-cleanup),60917(copy) are terminal. No unfinished cleanup or active native run.
-Previous catalog/recovery/startup/MON resources stay stopped as inventoried; never
-restart retired-network containers. Native amd64 does not qualify arm64.
+8 running; zero BigBrotr running. Sessions41380(transfer),23250(cases),87324(audit/
+cleanup) are terminal. Evidence transfer completed; a local Python3.9 tar API
+mismatch was corrected with validated member extraction and independent hash checks.
+No unfinished cleanup. Credentials/recovery/startup/MON labs remain stopped and
+inventoried; never restart retired-network containers. amd64 does not qualify arm64.
 
 ## Next bounded action
 
-A finite fresh-only scientific initializer and shared schema1 declaration are now
-implemented locally, pending exact-source Tux qualification. It creates five fact
-relations and an empty technical receipt relation in one native transaction,
-refuses existing DBs before ATTACH, and shares the verified private parent. Mac
-23 worker unit cases plus4 executable integration cases passed, including native
-embedded-DuckLake reopen/late-DDL rollback. Independent review identified and fixed
-preflight secret-storage registration, incomplete user-object inspection and weak
-negative test attribution. The new PG harness requires exact redacted refusal,
-a separately empty root, and unchanged complete database dump.
+Finish evidence documentation and private push for `0e2ca43`, then integrate
+scientific schema identity with the actual PG guard under P02-T04. The current
+`fresh()` still insists on snapshot0 and no scientific tables; it deliberately
+cannot certify the newly initialized schema. Add an immutable application-owned
+schema-version/manifest binding in the same guard installation transaction,
+preserving applied0001. Reuse the existing guard-only path only as an explicitly
+distinct prerequisite. Validate complete live table/column/type/default/parent/
+nullability metadata, including NULL-negative controls and altered/partial state;
+PG structural hashes cover object definitions, not these native metadata rows.
+Use the retained 203-column observation to verify exact upstream representation,
+not as an unchecked self-generated oracle. Scientific activation/publication must
+require the binding and live compatibility check. Resolve interrupted initialization
+without synthetic admission batches, blind re-creation or accepting an absent reply.
 
-Next commit this bounded candidate and run `native_catalog_schema.py` plus
-`catalog_schema_cases.py` in new owned Tux resources. No native lab has started
-for this slice yet. Retain source/artifacts/full native metadata and record actual
-outcomes; do not claim PG failure/recovery from embedded tests. Then integrate a
-new immutable scientific schema binding and complete nested metadata inspection
-with the guard, preserving applied0001 and the explicit distinction from its
-original empty-catalog fixture. Ordinary publication remains disabled by that
-missing integration, not authorized by a successful initializer response.
-
-Connect all five families and atomic receipts/protection to signed M1 read/export/
-restart with independent full content/reference readback. No pending ACK/reclaim
-or task/M1 completion before actual guarantees exist. Full persistent worker
-recovery, S3, aged mixed load/RSS, Linux arm64, acquisition/analytics/read surfaces/
-admin/website and full Compose/CI/release journeys remain selected required work.
+Then connect all five families and atomic receipts/protection to signed M1 read/
+export/restart with independent full content/reference readback. No pending ACK/
+reclaim or task/M1 completion before actual guarantees exist. Full persistent
+worker recovery, S3, aged mixed load/RSS, Linux arm64, acquisition/analytics/read
+surfaces/admin/website and full Compose/CI/release remain selected required work.

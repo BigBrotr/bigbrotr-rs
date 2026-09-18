@@ -1,0 +1,418 @@
+{
+  "task": "P02-T03/T04 explicit scientific schema initialization prerequisite",
+  "date": "2026-09-18",
+  "status": "PASS within 12 real-PG cases and 39 native Rust cases; scientific guard binding/publication/recovery remain incomplete",
+  "source": {
+    "revision": "0e2ca435b94da5da49eee69905fa5670716ff48d",
+    "tree": "cfde988f055c30180b82d9bfdec7017bc67b11b2",
+    "source_files": 655,
+    "git_archive_sha256": "0169c616196a7f2f021b29a7645aa55bfdf460dcba6aff189c9d35359084150e",
+    "source_manifest_sha256": "8446eb15faa053fa021f552061df6a3199cc865797d30f872d96e33551d8189f",
+    "cargo_lock_sha256": "6b2f28dea860e31616009929eb25b8add92159c03d4857d3836dfe52bd047190",
+    "verification": "Mac Git archive and every source hash match clean Tux checkout/readonly export; native ELF identities independently inspected"
+  },
+  "implementation": [
+    "Closed schema1 declaration shared by actual private staging and fresh initialization: five fact relations plus empty technical archive_commits.",
+    "Existing canonical empty local root and exclusively reserved new PostgreSQL database required. READ_ONLY preflight rejects user schema dependencies, extra namespaces and selected nonnamespace objects before native ATTACH. Both attachments disable PostgreSQL secret storage.",
+    "Actual native CREATE TABLE statements share one transaction; native snapshot message includes declaration SHA-256. No native metadata rows/columns are manually changed.",
+    "Finite private command reuses verified-artifact parent supervision and bounded streaming stdin. Success proves joined initialization only; existing databases refuse, including pristine native-only and completed scientific catalogs."
+  ],
+  "mac": {
+    "worker_unit_cases": 23,
+    "executable_integration_cases": 4,
+    "scope": "actual pinned DuckDB/embedded DuckLake, row/Parquet fidelity, stage, closed initializer input, parent binding; no PG server on Mac",
+    "red": "new initializer dispatch test failed an assertion against old usage response before implementation; compiler LowerHex correction and invalid initial Clippy CLI invocation retained separately",
+    "clippy": "PASS affected app/worker libraries, worker binary and schema probe",
+    "format_document_links_python": "PASS"
+  },
+  "native": {
+    "host": "Tux Linux amd64",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "artifacts_sha256": {
+      "worker": "ec97a23806ea23215fc7d9c6996fcb7b168064af2092ad74d983c0583f8700b3",
+      "probe": "a1f7d7f51a39b55f5fa328c16435c80833b4092c97493c7f233c53f374bd3cbb",
+      "parent-test-0": "bceb4aba214848ea30a6a0473377ea2324ae19cafc6c4a4bfed6c033d5adf7eb",
+      "schema-and-rows-test-0": "e1a36215fede1c1d15e1cb0f4ca1520641f33a4d713929f23dbb6b9ff6b29146",
+      "schema-and-rows-test-1": "4c0c0c9a5423b5217afa89c3977759b36af893400e0eecd9b38bb5ca5836f50a",
+      "schema-and-rows-test-2": "f4a024dcf8be1294428351ad47e243124aeef1b2c70630debd3d9a7efa37c854",
+      "schema-and-rows-test-3": "73934de3de2c736e579a209426841a2e529138946c681ce6a8b841025b46d236",
+      "schema-and-rows-test-4": "4412c6a6bc4b98ad913179da69138a18eb428f7b8047363bd96ed04b2d8d08d8",
+      "schema-and-rows-test-5": "e98c17e0502325c82013205d05ac349bf5be97fb90fca0c58711f21ec39b6796"
+    },
+    "toolchain": {
+      "os": "Linux",
+      "architecture": "x86_64",
+      "discovery": "llvm-config",
+      "environment": {
+        "CC": "/usr/lib/llvm-14/bin/clang",
+        "CXX": "/usr/lib/llvm-14/bin/clang++",
+        "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+        "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+        "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+      },
+      "tools": {
+        "CC": {
+          "path": "/usr/lib/llvm-14/bin/clang",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "CXX": {
+          "path": "/usr/lib/llvm-14/bin/clang++",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "AR": {
+          "path": "/usr/lib/llvm-14/bin/llvm-ar",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+          "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+          "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+        },
+        "LIBCLANG_PATH": {
+          "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+          "version": "Debian clang version 14.0.6"
+        },
+        "discovery": {
+          "path": "/usr/lib/llvm-14/bin/llvm-config",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+          "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+          "version": "14.0.6"
+        }
+      },
+      "sdk": null
+    },
+    "build_checks": [
+      {
+        "name": "build",
+        "command": [
+          "cargo",
+          "build",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--example",
+          "catalog_schema_probe"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 5.321301616728306
+      },
+      {
+        "name": "worker",
+        "command": [
+          "cargo",
+          "build",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr-archive-worker",
+          "--bin",
+          "bigbrotr-archive-worker"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 24.449717332143337
+      },
+      {
+        "name": "clippy",
+        "command": [
+          "cargo",
+          "clippy",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "-p",
+          "bigbrotr-archive-worker",
+          "--lib",
+          "--example",
+          "catalog_schema_probe",
+          "--bin",
+          "bigbrotr-archive-worker",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 1.9172746492549777
+      }
+    ],
+    "rust_checks": [
+      {
+        "name": "schema-and-rows",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr-archive-worker",
+          "--lib",
+          "--tests",
+          "--",
+          "--test-threads=1"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 64.65757185220718
+      },
+      {
+        "name": "parent",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--lib",
+          "storage::archive",
+          "--",
+          "--test-threads=1"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 8.580308486707509
+      }
+    ],
+    "rust_case_counts": {
+      "worker_unit": 23,
+      "executable_integration": 4,
+      "parent_supervision": 12
+    },
+    "network": "owned internal bridge, runner shares only owned PG namespace; no host ports; trusted fixture uses loopback SCRAM with sslmode=disable",
+    "limits": {
+      "runner_cpus": 2,
+      "runner_memory_bytes": 6442450944,
+      "runner_pids": 512,
+      "postgres_cpus": 1,
+      "postgres_memory_bytes": 1073741824,
+      "postgres_pids": 128,
+      "engine_memory_bytes": 134217728,
+      "extra_native_reserve_bytes": 402653184,
+      "worker_temp_bytes": 67108864,
+      "worker_threads": 1,
+      "worker_deadline_seconds": 30
+    }
+  },
+  "postgres_cases": [
+    {
+      "case": "supervised-fresh-initialization",
+      "parent": {
+        "active_permits": 0,
+        "outcome": "Ok(())",
+        "success": true
+      },
+      "tables": [
+        "archive_commits",
+        "dictionaries",
+        "event_eligibility_facts",
+        "event_receive_facts",
+        "events",
+        "provenance_facts"
+      ],
+      "snapshots": [
+        {
+          "snapshot_id": 0,
+          "schema_version": 0,
+          "next_catalog_id": 1,
+          "next_file_id": 0
+        },
+        {
+          "snapshot_id": 1,
+          "schema_version": 1,
+          "next_catalog_id": 7,
+          "next_file_id": 0
+        }
+      ],
+      "schema_sha256": "29025d8409a038a34adca7411c8799b5f39c53b11b70a04bdf0980dcc949e451",
+      "native_column_rows": 203
+    },
+    {
+      "case": "completed-initialization-refuses-repeat",
+      "outcome": {
+        "exit": 1,
+        "stdout": "",
+        "stderr": "archive catalog bootstrap failed: ExistingCatalog\n"
+      },
+      "database_unchanged_sha256": "35e8a29edac929a282813543e2c22c411d24d0691fd870627f3e9f4ba063dcc1"
+    },
+    {
+      "case": "unfamiliar-table",
+      "outcome": {
+        "exit": 1,
+        "stdout": "",
+        "stderr": "archive catalog bootstrap failed: ExistingCatalog\n"
+      },
+      "database_unchanged_sha256": "1b336baeced75bcfe1a5569e968b1c82111785d3f72fcf68a6ef0dbddc0183a9"
+    },
+    {
+      "case": "unfamiliar-type",
+      "outcome": {
+        "exit": 1,
+        "stdout": "",
+        "stderr": "archive catalog bootstrap failed: ExistingCatalog\n"
+      },
+      "database_unchanged_sha256": "b9fb47629e60e3964613bd8e74645ef8115a9ef0978b459ef9a0086b50f53574"
+    },
+    {
+      "case": "unfamiliar-schema",
+      "outcome": {
+        "exit": 1,
+        "stdout": "",
+        "stderr": "archive catalog bootstrap failed: ExistingCatalog\n"
+      },
+      "database_unchanged_sha256": "86f6b3272d3b1d6231ac6eae5849639901085a9c58fee2e642b28d5b298f26d9"
+    },
+    {
+      "case": "unfamiliar-function",
+      "outcome": {
+        "exit": 1,
+        "stdout": "",
+        "stderr": "archive catalog bootstrap failed: ExistingCatalog\n"
+      },
+      "database_unchanged_sha256": "25d5b89df31bcd8d302160e0ef6abd6203837d3ccad6f616a23725786fd5bc3b"
+    },
+    {
+      "case": "unfamiliar-collation",
+      "outcome": {
+        "exit": 1,
+        "stdout": "",
+        "stderr": "archive catalog bootstrap failed: ExistingCatalog\n"
+      },
+      "database_unchanged_sha256": "88964cbf7d522d58fb3e13caea53e9d6197ed65120ffc50730405a02ce1ef614"
+    },
+    {
+      "case": "unfamiliar-text_search",
+      "outcome": {
+        "exit": 1,
+        "stdout": "",
+        "stderr": "archive catalog bootstrap failed: ExistingCatalog\n"
+      },
+      "database_unchanged_sha256": "3f9778ff4928f4d02fa719d4530d49344476c26de123a518769b750430703250"
+    },
+    {
+      "case": "unfamiliar-large_object",
+      "outcome": {
+        "exit": 1,
+        "stdout": "",
+        "stderr": "archive catalog bootstrap failed: ExistingCatalog\n"
+      },
+      "database_unchanged_sha256": "61d735e2baa56719b4b3d3e11dada6c8e1e7d0b5d4934340890ab5e415ee7f40"
+    },
+    {
+      "case": "nonempty-root",
+      "outcome": {
+        "exit": 1,
+        "stdout": "",
+        "stderr": "archive catalog bootstrap failed: InvalidDataRoot\n"
+      },
+      "database_unchanged_sha256": "e1df90f4ba64332181798ba8b51fa7e4a716265d804727210f393529ae8bc43e"
+    },
+    {
+      "case": "bootstrap-without-create",
+      "outcome": {
+        "exit": 1,
+        "stdout": "",
+        "stderr": "archive catalog bootstrap failed: Bootstrap\n"
+      },
+      "database_unchanged_sha256": "e1df90f4ba64332181798ba8b51fa7e4a716265d804727210f393529ae8bc43e"
+    },
+    {
+      "case": "native-only-catalog-requires-explicit-recovery",
+      "outcome": {
+        "exit": 1,
+        "stdout": "",
+        "stderr": "archive catalog bootstrap failed: ExistingCatalog\n"
+      },
+      "database_unchanged_sha256": "095d6f1e40e0657d621685336077fd260d3229f196bc7fb8d816129d53daf62f"
+    }
+  ],
+  "oracles": [
+    "Actual product parent checks worker identity, streams input, positively reaps and returns all permits. Fresh PG observers see precisely six logical tables, snapshots0/1 with schema versions0/1, next_catalog_id7, next_file_id0, and matching initialization message/digest.",
+    "Negative cases require the exact fixed error and empty stdout, not any failure. Completed/native-only catalog cases use a separate verified empty root so filesystem refusal cannot satisfy database refusal.",
+    "Normalized full pg_dump SHA-256 is unchanged before/after every refusal, including relation+canary data, enum, schema, function, collation, text-search config and large object. Nonempty local canary bytes remain intact.",
+    "All28 native relations are recorded and independently re-read unchanged at terminal audit. This is retained metadata and selected structural checks, not yet full semantic/nested-schema validation.",
+    "On Mac and Linux actual embedded DuckLake reopens six tables after one DDL snapshot; an existing final table forces late failure and all preceding five CREATE statements roll back. These rollback cases use the embedded catalog, not PostgreSQL."
+  ],
+  "observed": {
+    "logical_tables": 6,
+    "native_columns": 203,
+    "schema_versions": 6,
+    "native_snapshots": 2,
+    "data_files": 0,
+    "inlined_tables": 0,
+    "metadata_sha256": "8d6eec75b836f9be92c1a62fdbcb20634fa5c026b745f4bc86b149ff8c87499c",
+    "cases_sha256": "83173468e25b89c735d9fbd7af348856cda2e3f315440221fd833145c260af99"
+  },
+  "review": "Independent read-only AI review confirmed pinned attach semantics and found preflight secret registration, incomplete object inspection and weak refusal attribution; all corrected before native candidate. Root reviewed code/source/artifact/state evidence. No full-product or full nested-schema review claim. Final independent evidence audit matched all12 raw PG cases,39 native Rust cases,27 Mac cases,655 source files,9 recorded ELF hashes and cleanup records; no discrepancy found.",
+  "cleanup": {
+    "owner": "2b447d5c50842036e5a4907f7a486e29",
+    "container": "bigbrotr-implementation-scientific-schema-0e2ca43",
+    "container_id": "e8b081a7dc0608d949e2d670ecbdd53ea96cba82c10d1b7c1ea188d6a02ca197",
+    "postgres": "bigbrotr-implementation-scientific-schema-0e2ca43-pg",
+    "postgres_id": "1b2c7b2c001f7baf407bd149626eff5ed5ba459f350c9f882ecffe1b44524001",
+    "network_id": "d479757ce1b89a4f958c92b1dafb2accffd144448ac91ddf00e8e424269a2634",
+    "state": "stopped-retained",
+    "network_state": "retired",
+    "terminal": {
+      "runner": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 143,
+        "Error": "",
+        "StartedAt": "2026-09-18T19:57:11.22036057Z",
+        "FinishedAt": "2026-09-18T20:00:45.83200794Z"
+      },
+      "postgres": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-09-18T19:57:09.645460597Z",
+        "FinishedAt": "2026-09-18T20:00:47.627989111Z"
+      }
+    },
+    "cleanup": "owned idle runner deliberately SIGTERM-stopped143 after12 cases, PG stopped0, no OOM, network retired, no new volume",
+    "unrelated_unchanged": 20,
+    "unrelated_running": 8,
+    "running_bigbrotr": 0
+  },
+  "remaining": [
+    "Guard-only install still requires snapshot0 and cannot adopt this schema. Add immutable application-owned schema binding and full live table/column/default/parent/nullability validation; preserve applied guard0001. Ordinary publication remains gated.",
+    "Actual PG interrupted initialization, lost COMMIT response, retry/resumption and installed migration/recovery remain unqualified; empty native bootstrap may remain after failure. No automatic cleanup/retry authority.",
+    "No scientific rows or transactional batch receipts are inserted by initialization. Signed publication/protection/read/export/restart and pending ACK/reclaim remain required.",
+    "No S3, power-loss/host-loss, mixed aged load/RSS, capacity, Linux arm64, hosted Actions or complete Compose/release claim."
+  ],
+  "raw_root": ".research/implementation/archive-worker/scientific-schema/0e2ca43",
+  "native_root": "/home/tux/bigbrotr-implementation-20260917/runs/scientific-schema-0e2ca43"
+}
