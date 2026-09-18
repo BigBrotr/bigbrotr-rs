@@ -1,0 +1,558 @@
+{
+  "format": "bigbrotr-control-owner-failure-qualification/1",
+  "date": "2026-09-18",
+  "status": "PASS",
+  "scope": "P01-T06/P02-T02 actual PostgreSQL Control adapter acquisition/refresh/exclusion and recovery; not complete tasks or native Ingest fencing",
+  "source": "1e87ce3e4b2a7b65498c6072eb86eec4252803ad",
+  "tree": "a3fcb3c2b57a00f1d60a34cc6d26b8d9c67b616a",
+  "unchanged_product_since": "7c0c94f057de9c1974ee22dfbbccb9922501e5d1",
+  "identity_audit": {
+    "status": "PASS",
+    "source": "1e87ce3e4b2a7b65498c6072eb86eec4252803ad",
+    "tree": "a3fcb3c2b57a00f1d60a34cc6d26b8d9c67b616a",
+    "exact_source_files": 501,
+    "binary_sha256": "f884f6e0a3a83e36fef982aa77138bd3344b27eed242dd6c6ede01f38c07eddd",
+    "binary_bytes": 7587368,
+    "architecture": "ELF64 amd64",
+    "native_tools_independently_hashed": {
+      "CC": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+      "CXX": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+      "AR": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+      "LIBCLANG_PATH": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+      "discovery": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e"
+    },
+    "inputs": {
+      "source-manifest.json": "80dc12e1a8b849f71e70cd75d79cb525c12e9a4cd176f4d4e9f0dc33677d330f",
+      "build-result.json": "c2e5c3184dc3837faf891fd72beaffe72f6d8e00d401a8629618bd1d6cbab3a3",
+      "observation.json": "138dbf2483846a68c863b86cc344603c91c6cfc3c28bf6d885f0452a4ceaaccb",
+      "source.tar": "d2aeb102c3d9d1ba47fc513abec108062ca4e4a0b3bd29918edfff845f659515"
+    },
+    "scope": "Git/archive/actual extracted sources and downloaded executable identity; not engine runtime acceptance"
+  },
+  "probe": {
+    "format": "bigbrotr-control-owner-probe-build/1",
+    "source_revision": "1e87ce3e4b2a7b65498c6072eb86eec4252803ad",
+    "source_tree": "a3fcb3c2b57a00f1d60a34cc6d26b8d9c67b616a",
+    "source_manifest_sha256": "80dc12e1a8b849f71e70cd75d79cb525c12e9a4cd176f4d4e9f0dc33677d330f",
+    "parent_build_receipt_sha256": "c2e5c3184dc3837faf891fd72beaffe72f6d8e00d401a8629618bd1d6cbab3a3",
+    "binary_sha256": "230ec81a2b8bfcb3fa71fbf406b36b04225dcc937f9d518bd92d0ce32beefc9d",
+    "native_toolchain": {
+      "os": "Linux",
+      "architecture": "x86_64",
+      "discovery": "llvm-config",
+      "environment": {
+        "CC": "/usr/lib/llvm-14/bin/clang",
+        "CXX": "/usr/lib/llvm-14/bin/clang++",
+        "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+        "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+        "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+      },
+      "tools": {
+        "CC": {
+          "path": "/usr/lib/llvm-14/bin/clang",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "CXX": {
+          "path": "/usr/lib/llvm-14/bin/clang++",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "AR": {
+          "path": "/usr/lib/llvm-14/bin/llvm-ar",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+          "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+          "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+        },
+        "LIBCLANG_PATH": {
+          "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+          "version": "Debian clang version 14.0.6"
+        },
+        "discovery": {
+          "path": "/usr/lib/llvm-14/bin/llvm-config",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+          "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+          "version": "14.0.6"
+        }
+      },
+      "sdk": null
+    },
+    "command": [
+      "cargo",
+      "build",
+      "--locked",
+      "--release",
+      "-p",
+      "bigbrotr",
+      "--example",
+      "control_owner_probe"
+    ],
+    "profile": "release"
+  },
+  "server": {
+    "version": "160015",
+    "fsync": "on",
+    "full_page_writes": "on",
+    "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+  },
+  "cases": [
+    {
+      "name": "unqualified-legacy-history",
+      "result": "PASS",
+      "exit_code": 1
+    },
+    {
+      "name": "no-policy",
+      "result": "PASS",
+      "output": {
+        "mode": "no-policy",
+        "reason": "InvalidPolicy",
+        "result": "refused"
+      }
+    },
+    {
+      "name": "wrong-dataset",
+      "result": "PASS",
+      "output": {
+        "mode": "wrong-dataset",
+        "reason": "IncompatibleDeployment",
+        "result": "refused"
+      }
+    },
+    {
+      "name": "wrong-instance",
+      "result": "PASS",
+      "output": {
+        "mode": "wrong-instance",
+        "reason": "IncompatibleDeployment",
+        "result": "refused"
+      }
+    },
+    {
+      "name": "wrong-mode",
+      "result": "PASS",
+      "output": {
+        "mode": "wrong-mode",
+        "reason": "InvalidPolicy",
+        "result": "refused"
+      }
+    },
+    {
+      "name": "invalid-policy",
+      "result": "PASS",
+      "output": {
+        "mode": "invalid-policy",
+        "reason": "InvalidPolicy",
+        "result": "refused"
+      }
+    },
+    {
+      "name": "lifecycle",
+      "result": "PASS",
+      "output": {
+        "control_epochs": 3,
+        "copied_backend_refused": true,
+        "ingest_registered": true,
+        "mode": "lifecycle",
+        "result": "pass",
+        "stale_backend_refused": true
+      }
+    },
+    {
+      "name": "owner-COMMIT-before",
+      "result": "PASS",
+      "proxy": {
+        "client_commit_complete": 0,
+        "commits_forwarded": 0,
+        "commits_seen": 1,
+        "declared_wire_bytes": 24731,
+        "elapsed_ns": 80438186,
+        "event": "receipt",
+        "faults": 1,
+        "format": "bigbrotr-pg-fault-proxy/1",
+        "held": false,
+        "hold_action": null,
+        "mode": "before-forward",
+        "reason": "before-forward",
+        "server_commit_complete": 0
+      },
+      "recovery": {
+        "epoch": 1,
+        "event": "complete",
+        "mode": "recover"
+      }
+    },
+    {
+      "name": "owner-COMMIT-after",
+      "result": "PASS",
+      "proxy": {
+        "client_commit_complete": 0,
+        "commits_forwarded": 1,
+        "commits_seen": 1,
+        "declared_wire_bytes": 24753,
+        "elapsed_ns": 44005282,
+        "event": "receipt",
+        "faults": 1,
+        "format": "bigbrotr-pg-fault-proxy/1",
+        "held": false,
+        "hold_action": null,
+        "mode": "after-complete",
+        "reason": "after-complete",
+        "server_commit_complete": 1
+      },
+      "recovery": {
+        "epoch": 2,
+        "event": "complete",
+        "mode": "recover"
+      }
+    },
+    {
+      "name": "owner-COMMIT-cancel",
+      "result": "PASS",
+      "proxy": {
+        "client_commit_complete": 1,
+        "commits_forwarded": 1,
+        "commits_seen": 1,
+        "declared_wire_bytes": 24765,
+        "elapsed_ns": 2387539352,
+        "event": "receipt",
+        "faults": 1,
+        "format": "bigbrotr-pg-fault-proxy/1",
+        "held": false,
+        "hold_action": "release",
+        "mode": "hold",
+        "reason": "frontend-eof",
+        "server_commit_complete": 1
+      },
+      "recovery": {
+        "epoch": 2,
+        "event": "complete",
+        "mode": "recover"
+      }
+    },
+    {
+      "name": "paused-beyond-TTL-live",
+      "result": "PASS",
+      "old_backend": {
+        "pid": 9647,
+        "start": "2026-09-18T05:21:27.308584+00:00"
+      },
+      "lease_expires_at_us": 1789708947316487,
+      "successor_while_paused": false,
+      "paused_seconds": 63.72760128136724
+    },
+    {
+      "name": "paused-beyond-TTL-killed",
+      "result": "PASS",
+      "old_backend": {
+        "pid": 11514,
+        "start": "2026-09-18T05:22:44.460203+00:00"
+      },
+      "lease_expires_at_us": 1789709024467120,
+      "successor_while_paused": true,
+      "paused_seconds": 63.69844914134592
+    },
+    {
+      "name": "PostgreSQL-crash-and-successor",
+      "result": "PASS",
+      "preserved_dumps": {
+        "bb_owner_crash": "715463028c7b2b1e2569201d30827239801f1d07bf7826b2f561cc5a32b034ef",
+        "bb_owner_fault_after": "c8ec49caa66b86f8147d1f671937561a052f67c777ea162e83f8670e4674932c",
+        "bb_owner_fault_before": "3e0546c8652994856c0e5a464047863ce9fae07b60328a4bc09a57bfef6476dd",
+        "bb_owner_fault_cancel": "af0ae4df22fe47bef519a7ec7dca0ec9ecc5ec1ed37f92ad574873824ce8bf91",
+        "bb_owner_invalid_policy": "6e3e03c7393a179fae593a342af115b5b50f7661c2283095082fc31554f07923",
+        "bb_owner_legacy": "d248a11100437d45e9e4d3fb271de23f0c61a5901e0092c90f7191d74597308f",
+        "bb_owner_lifecycle": "eb7c86bf5bbfc53a7ebc84d6543846c58acadf29088a95524676f44397926a52",
+        "bb_owner_no_policy": "e97f0d68a634edc92370d26523139797aa47f17e99308b24722df4d92e850d6e",
+        "bb_owner_paused_killed": "97fa307ee3bcaf27d3d993fa2fef0c11d91cc8dcaf751566b8b70113698471fa",
+        "bb_owner_paused_live": "b65dece449caf8b840ad5a0e3bddb2cd004f2a33e7e6871bd88327252452a398",
+        "bb_owner_wrong_dataset": "4817f40377197d0ffa5cbbcf8cc08f21755edbd79f944c35a97129e9ca52b406",
+        "bb_owner_wrong_instance": "02229c1a2a60986fd8b450d5de70cc7e1e277a9fd201c978913c37eacac2d793",
+        "bb_owner_wrong_mode": "50c2e4da2ed043d52c4fc8bec2cad95672221affc292155c2d3413558e60c852"
+      }
+    }
+  ],
+  "sql_schedules": {
+    "format": "bigbrotr-control-sql-schedules/1",
+    "status": "PASS",
+    "cases": [
+      {
+        "name": "six-SQL-negatives",
+        "result": "PASS",
+        "sqlstate": "23514",
+        "schema_unchanged": true
+      },
+      {
+        "name": "bb-control-retain",
+        "result": "PASS",
+        "blocked_successor": true,
+        "active_backend": [
+          {
+            "pid": 644,
+            "backend_start": "2026-09-18T05:24:37.797683+00:00",
+            "state": "active",
+            "wait_event": "PgSleep"
+          }
+        ]
+      },
+      {
+        "name": "bb-control-negative",
+        "result": "PASS",
+        "blocked_successor": false,
+        "active_backend": [
+          {
+            "pid": 678,
+            "backend_start": "2026-09-18T05:24:42.037725+00:00",
+            "state": "active",
+            "wait_event": "PgSleep"
+          }
+        ]
+      }
+    ],
+    "helper_sha256": "4f43c0a124a0c220bc20f97a7315102561f56ef9386f2234be398811a36dc88e",
+    "fixture_sha256": "a82f92bfe5c84becc560fdbf4fabb9c72a86b7b64cdf9ab392a6021fa7d3d8b5",
+    "schema_sha256": "eb7c86bf5bbfc53a7ebc84d6543846c58acadf29088a95524676f44397926a52"
+  },
+  "external_observation": {
+    "relations_checked": 390,
+    "databases": 13,
+    "complete_expected_counts": {
+      "bb_owner_legacy": {
+        "config_revisions": 1,
+        "datasets": 1,
+        "management_audit": 2,
+        "management_commands": 1,
+        "owner_epochs": 1,
+        "policy_revisions": 1,
+        "principals": 1,
+        "role_instances": 1,
+        "schema_versions": 5
+      },
+      "bb_owner_no_policy": {
+        "config_revisions": 1,
+        "datasets": 1,
+        "management_audit": 1,
+        "principals": 1,
+        "schema_versions": 6
+      },
+      "bb_owner_wrong_dataset": {
+        "config_revisions": 1,
+        "datasets": 1,
+        "management_audit": 2,
+        "management_commands": 1,
+        "policy_revisions": 1,
+        "principals": 1,
+        "schema_versions": 6
+      },
+      "bb_owner_wrong_instance": {
+        "config_revisions": 1,
+        "datasets": 1,
+        "management_audit": 2,
+        "management_commands": 1,
+        "policy_revisions": 1,
+        "principals": 1,
+        "schema_versions": 6
+      },
+      "bb_owner_wrong_mode": {
+        "config_revisions": 1,
+        "datasets": 1,
+        "management_audit": 2,
+        "management_commands": 1,
+        "policy_revisions": 1,
+        "principals": 1,
+        "schema_versions": 6
+      },
+      "bb_owner_invalid_policy": {
+        "config_revisions": 1,
+        "datasets": 1,
+        "management_audit": 2,
+        "management_commands": 1,
+        "policy_revisions": 1,
+        "principals": 1,
+        "schema_versions": 6
+      },
+      "bb_owner_lifecycle": {
+        "allocation_domains": 2,
+        "config_revisions": 1,
+        "datasets": 1,
+        "management_audit": 2,
+        "management_commands": 1,
+        "owner_epochs": 4,
+        "policy_revisions": 1,
+        "principals": 1,
+        "producer_epochs": 1,
+        "producer_slots": 1,
+        "role_instances": 4,
+        "schema_versions": 6,
+        "source_streams": 1,
+        "topology_generations": 1,
+        "topology_streams": 1
+      },
+      "bb_owner_fault_before": {
+        "config_revisions": 1,
+        "datasets": 1,
+        "management_audit": 2,
+        "management_commands": 1,
+        "owner_epochs": 1,
+        "policy_revisions": 1,
+        "principals": 1,
+        "role_instances": 1,
+        "schema_versions": 6
+      },
+      "bb_owner_fault_after": {
+        "config_revisions": 1,
+        "datasets": 1,
+        "management_audit": 2,
+        "management_commands": 1,
+        "owner_epochs": 2,
+        "policy_revisions": 1,
+        "principals": 1,
+        "role_instances": 2,
+        "schema_versions": 6
+      },
+      "bb_owner_fault_cancel": {
+        "config_revisions": 1,
+        "datasets": 1,
+        "management_audit": 2,
+        "management_commands": 1,
+        "owner_epochs": 2,
+        "policy_revisions": 1,
+        "principals": 1,
+        "role_instances": 2,
+        "schema_versions": 6
+      },
+      "bb_owner_paused_live": {
+        "config_revisions": 1,
+        "datasets": 1,
+        "management_audit": 2,
+        "management_commands": 1,
+        "owner_epochs": 1,
+        "policy_revisions": 1,
+        "principals": 1,
+        "role_instances": 1,
+        "schema_versions": 6
+      },
+      "bb_owner_paused_killed": {
+        "config_revisions": 1,
+        "datasets": 1,
+        "management_audit": 2,
+        "management_commands": 1,
+        "owner_epochs": 2,
+        "policy_revisions": 1,
+        "principals": 1,
+        "role_instances": 2,
+        "schema_versions": 6
+      },
+      "bb_owner_crash": {
+        "config_revisions": 1,
+        "datasets": 1,
+        "management_audit": 2,
+        "management_commands": 1,
+        "owner_epochs": 2,
+        "policy_revisions": 1,
+        "principals": 1,
+        "role_instances": 2,
+        "schema_versions": 6
+      }
+    },
+    "checks": [
+      "Complete table inventory and expected cardinalities, including zero rows in every other relation",
+      "Stable Control resources, consecutive epochs and literal role/incarnation identities",
+      "Independent SHA-256 exclusion digests and complete role retirement",
+      "Existing Ingest registry attribution preserved",
+      "No application or migration backend remaining"
+    ],
+    "script": ".research/implementation/control-owner/final_observation_extended.py",
+    "script_sha256": "97f3fe92aef2680a808d111c1aee1a18155e593ffee7c3133101a474a33615b6",
+    "report_sha256": "2f7293c4f0c523e471f00a581252fd942ebc19391d9ed37b9fed9c4b90529200"
+  },
+  "orchestration_failure": {
+    "status": "FAIL",
+    "action": "Supplemental SQL runner invoked before extended runner reached terminal status",
+    "observation": "Initial read-only pg_dump exited 1 before fixture execution; extended runner was still RUNNING near its PG restart schedule. This timing is the likely cause, not a separately captured engine error diagnosis.",
+    "log": ".research/implementation/control-owner/sql-schedules-1e87ce3.log",
+    "sha256": "5416f982597f148fc556cb2ae672a497be17db23f21402eb4a156f09b98be7ef",
+    "resolution": "Waited for all 13 cases PASS, then executed the same unchanged SQL runner successfully; failed log retained."
+  },
+  "resources": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/configuration-1e87ce3/runtime",
+    "owner": "7aa94e50612c8b04e5887b3acd44fed8",
+    "network": "bigbrotr-implementation-pg-20260917-controlownertwo",
+    "published_ports": [],
+    "state": "all seven runtime containers stopped-retained",
+    "terminal": [
+      {
+        "name": "bigbrotr-implementation-pg-20260917-controlownertwo",
+        "id": "37c881440e91b710d7b8d9ba2f70b9fa241c28d9e92e0d59055121d766c563ba",
+        "exit_code": 0,
+        "finished_at": "2026-09-18T05:25:43.041120256Z",
+        "oom_killed": false
+      },
+      {
+        "name": "bigbrotr-implementation-pg-20260917-controlownertwo-client",
+        "id": "280ce4e11d24ab437f852cfc936d93462528562379eef82ef06487d6fd18e3b2",
+        "exit_code": 143,
+        "finished_at": "2026-09-18T05:25:42.543929467Z",
+        "oom_killed": false
+      },
+      {
+        "name": "bigbrotr-implementation-pg-20260917-controlownertwo-client-fault-before",
+        "id": "9353a41e10b6344112fd1a1a18b9c30ba120dd57de3639c3feea9701754a131b",
+        "exit_code": 143,
+        "finished_at": "2026-09-18T05:20:54.671931885Z",
+        "oom_killed": false
+      },
+      {
+        "name": "bigbrotr-implementation-pg-20260917-controlownertwo-client-fault-after",
+        "id": "bcf5dde78310a29acd8c36501c46873e85393bf42df3695384381012bfab66ee",
+        "exit_code": 143,
+        "finished_at": "2026-09-18T05:21:06.679444617Z",
+        "oom_killed": false
+      },
+      {
+        "name": "bigbrotr-implementation-pg-20260917-controlownertwo-client-fault-cancel",
+        "id": "7cf71f3da464d38df9110a02af4499e858b7333ac4300bc7cb09bb0f6a4d136e",
+        "exit_code": 143,
+        "finished_at": "2026-09-18T05:21:21.081637228Z",
+        "oom_killed": false
+      },
+      {
+        "name": "bigbrotr-implementation-pg-20260917-controlownertwo-client-paused-live",
+        "id": "48f5d8574c9cc8f2c1893f6980c08685814c34f5e071560b301c512ed878e78c",
+        "exit_code": 143,
+        "finished_at": "2026-09-18T05:22:39.117378822Z",
+        "oom_killed": false
+      },
+      {
+        "name": "bigbrotr-implementation-pg-20260917-controlownertwo-client-paused-killed",
+        "id": "4e90fb0bb8c23a2907e6201533cafb827e08c24ad6f330fe5d7d892553ca98b1",
+        "exit_code": 143,
+        "finished_at": "2026-09-18T05:23:56.633772196Z",
+        "oom_killed": false
+      }
+    ],
+    "active_source_consumers_at_stop": 0
+  },
+  "inputs": {
+    "control-owner.json": "3539e3b284a1912d3f67ba7eb79903393ba484fa985fe683602c597708ff2ef7",
+    "control-sql-schedules.json": "edd9eabcfc46e84718da78e244481d419e1ec6dea4b7cad38429a1f5f35083c4",
+    "final-observation.json": "2f7293c4f0c523e471f00a581252fd942ebc19391d9ed37b9fed9c4b90529200",
+    "runtime-stopped.json": "a8e847b74de200f9706d7418f100456c18658e399d2c6d9ec47e109468e096da",
+    "control-owner-probe-build.json": "957f7ec19dc62b613ee9e2d668914c3d50d7cafeccab336b484437d602e6c4af"
+  },
+  "not_run": [
+    "release-COMMIT faults",
+    "refresh cancellation",
+    "native Rocks writer exclusion",
+    "actual production runtime root validator and policy lease consumer",
+    "mixed load or power/disk faults",
+    "Linux arm64",
+    "signed-event archive/read/export journey and packaged release"
+  ]
+}

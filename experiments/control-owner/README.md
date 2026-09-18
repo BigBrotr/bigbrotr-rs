@@ -45,3 +45,8 @@ and PostgreSQL SIGKILL/restart with a same-resource successor. These remain
 proposed until the exact revision's native report records each result. Five
 separately labeled clients are stopped-retained in finally blocks; no host ports
 are published. Release-COMMIT and refresh cancellation remain separate cases.
+
+[Executed native qualification](../../docs/implementation/evidence/p01-control-owner-faults-native-20260918.json) records all 13 extended cases at `1e87ce3`,
+supplemental SQL schedules and the independent 390-relation final audit. It also
+records the initial overlapping read-only SQL invocation failure. Remaining gates
+above stay separate; this result does not qualify the future product runtime.

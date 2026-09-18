@@ -1549,5 +1549,143 @@
     },
     "probe_sha256": "93917e60072fc8c8adcdaf1dba6df67be44282c65ea6324088983d816759da8c",
     "evidence": "docs/implementation/evidence/p01-control-owner-native-20260918.json"
+  },
+  "implementation_control_owner_faults_20260918": {
+    "source": "1e87ce3e4b2a7b65498c6072eb86eec4252803ad",
+    "tree": "a3fcb3c2b57a00f1d60a34cc6d26b8d9c67b616a",
+    "local_root": ".research/implementation/control-owner/native-1e87ce3",
+    "remote_root": "/home/tux/bigbrotr-implementation-20260917/runs/configuration-1e87ce3",
+    "build": {
+      "owner": "5a1212017b93a5276747706eb25212d7",
+      "container": "bigbrotr-implementation-configuration-1e87ce3-build",
+      "container_id": "213398a57fce44b1778ee20cac13c41988ca329802cfd89af2d1e5b235c72227",
+      "image": "sha256:8d906f267439748924d6a9de9cab47855279cc196a7397d9cb7a690c77fddfe3",
+      "state": "completed-retained",
+      "started_at": "2026-09-18T04:52:23.643488+00:00",
+      "finished_at": "2026-09-18T04:58:31.019457334Z",
+      "exit_code": 0,
+      "oom_killed": false
+    },
+    "audit": {
+      "status": "PASS",
+      "source": "1e87ce3e4b2a7b65498c6072eb86eec4252803ad",
+      "tree": "a3fcb3c2b57a00f1d60a34cc6d26b8d9c67b616a",
+      "exact_source_files": 501,
+      "binary_sha256": "f884f6e0a3a83e36fef982aa77138bd3344b27eed242dd6c6ede01f38c07eddd",
+      "binary_bytes": 7587368,
+      "architecture": "ELF64 amd64",
+      "native_tools_independently_hashed": {
+        "CC": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+        "CXX": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+        "AR": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+        "LIBCLANG_PATH": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+        "discovery": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e"
+      },
+      "inputs": {
+        "source-manifest.json": "80dc12e1a8b849f71e70cd75d79cb525c12e9a4cd176f4d4e9f0dc33677d330f",
+        "build-result.json": "c2e5c3184dc3837faf891fd72beaffe72f6d8e00d401a8629618bd1d6cbab3a3",
+        "observation.json": "138dbf2483846a68c863b86cc344603c91c6cfc3c28bf6d885f0452a4ceaaccb",
+        "source.tar": "d2aeb102c3d9d1ba47fc513abec108062ca4e4a0b3bd29918edfff845f659515"
+      },
+      "scope": "Git/archive/actual extracted sources and downloaded executable identity; not engine runtime acceptance"
+    },
+    "runtime": {
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/configuration-1e87ce3/runtime",
+      "owner": "7aa94e50612c8b04e5887b3acd44fed8",
+      "postgres": "bigbrotr-implementation-pg-20260917-controlownertwo",
+      "client": "bigbrotr-implementation-pg-20260917-controlownertwo-client",
+      "network": "bigbrotr-implementation-pg-20260917-controlownertwo",
+      "published_ports": [],
+      "state": "stopped-retained",
+      "server": {
+        "version": "160015",
+        "fsync": "on",
+        "full_page_writes": "on",
+        "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+      },
+      "terminal": [
+        {
+          "name": "bigbrotr-implementation-pg-20260917-controlownertwo",
+          "id": "37c881440e91b710d7b8d9ba2f70b9fa241c28d9e92e0d59055121d766c563ba",
+          "exit_code": 0,
+          "finished_at": "2026-09-18T05:25:43.041120256Z",
+          "oom_killed": false
+        },
+        {
+          "name": "bigbrotr-implementation-pg-20260917-controlownertwo-client",
+          "id": "280ce4e11d24ab437f852cfc936d93462528562379eef82ef06487d6fd18e3b2",
+          "exit_code": 143,
+          "finished_at": "2026-09-18T05:25:42.543929467Z",
+          "oom_killed": false
+        },
+        {
+          "name": "bigbrotr-implementation-pg-20260917-controlownertwo-client-fault-before",
+          "id": "9353a41e10b6344112fd1a1a18b9c30ba120dd57de3639c3feea9701754a131b",
+          "exit_code": 143,
+          "finished_at": "2026-09-18T05:20:54.671931885Z",
+          "oom_killed": false
+        },
+        {
+          "name": "bigbrotr-implementation-pg-20260917-controlownertwo-client-fault-after",
+          "id": "bcf5dde78310a29acd8c36501c46873e85393bf42df3695384381012bfab66ee",
+          "exit_code": 143,
+          "finished_at": "2026-09-18T05:21:06.679444617Z",
+          "oom_killed": false
+        },
+        {
+          "name": "bigbrotr-implementation-pg-20260917-controlownertwo-client-fault-cancel",
+          "id": "7cf71f3da464d38df9110a02af4499e858b7333ac4300bc7cb09bb0f6a4d136e",
+          "exit_code": 143,
+          "finished_at": "2026-09-18T05:21:21.081637228Z",
+          "oom_killed": false
+        },
+        {
+          "name": "bigbrotr-implementation-pg-20260917-controlownertwo-client-paused-live",
+          "id": "48f5d8574c9cc8f2c1893f6980c08685814c34f5e071560b301c512ed878e78c",
+          "exit_code": 143,
+          "finished_at": "2026-09-18T05:22:39.117378822Z",
+          "oom_killed": false
+        },
+        {
+          "name": "bigbrotr-implementation-pg-20260917-controlownertwo-client-paused-killed",
+          "id": "4e90fb0bb8c23a2907e6201533cafb827e08c24ad6f330fe5d7d892553ca98b1",
+          "exit_code": 143,
+          "finished_at": "2026-09-18T05:23:56.633772196Z",
+          "oom_killed": false
+        }
+      ],
+      "databases": 13
+    },
+    "status": "13 actual failure/recovery cases, six SQL refusals, two exclusion schedules and 390-relation external audit PASS",
+    "retention": "Preserve owned data and unrelated workloads; verify labels before cleanup",
+    "evidence": "docs/implementation/evidence/p01-control-owner-faults-native-20260918.json"
+  },
+  "implementation_trusted_ci_20260918": {
+    "format": "bigbrotr-trusted-ci-lab/1",
+    "source": "0dabfaa15bfa2dbe816525dc7c675074e897cfa5",
+    "tree": "e99f90be336643005fd062046f76155c40e2a6b6",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/ci-0dabfaa",
+    "owner": "24373528e10936f41d0c8209ad2280c4",
+    "container": "bigbrotr-implementation-ci-0dabfaa",
+    "image_tag": "bigbrotr-implementation-ci-0dabfaa:lab",
+    "state": "running",
+    "started_at": "2026-09-18T05:26:42.567748+00:00",
+    "image": "sha256:71b2d400bee63fee747e810719c6c50832c68cec76c0b4fb2078df438c68c476",
+    "image_created": "2026-09-18T07:27:08.273339172+02:00",
+    "container_id": "d09ed9e1815eaeda6010011301143b6e3cdd419decc73b85be886da407407dd4",
+    "local_root": ".research/implementation/ci",
+    "preflight": {
+      "available_disk_bytes": 377529049088,
+      "unrelated_running_containers": 8,
+      "stopped_owned_containers": 77
+    },
+    "limits": {
+      "cpu": 2,
+      "memory_bytes": 6442450944,
+      "swap_extra_bytes": 0,
+      "pids": 512,
+      "published_ports": []
+    },
+    "scope": "Foundation Linux amd64 only; no hosted runner, arm64, macOS or release qualification"
   }
 }
