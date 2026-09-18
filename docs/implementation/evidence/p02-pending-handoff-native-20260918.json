@@ -1,0 +1,207 @@
+{
+  "format": "bigbrotr-pending-handoff-native-qualification/1",
+  "observed_date": "2026-09-18",
+  "status": "PASS",
+  "scope": "Private bounded handoff/preparation prerequisite only; no complete P02 task or M1",
+  "source": {
+    "revision": "0cdd80fd0fa6991ee0b7957b9e65103a7b3e9fc1",
+    "tree": "01974974508f1b4c3380abef946665d864569135",
+    "dirty": false
+  },
+  "build_audit": {
+    "status": "PASS",
+    "source": "0cdd80fd0fa6991ee0b7957b9e65103a7b3e9fc1",
+    "tree": "01974974508f1b4c3380abef946665d864569135",
+    "source_files": 584,
+    "cli_sha256": "de0080b8c60c79520cbce33849ca530c7da5803ae16761d54c52fd8bd31ca072",
+    "worker_sha256": "642952149ddef947370d04f20811e59f43f4f7ee054b7d03f3eea235635a9995",
+    "native_assets_checked": true,
+    "native_tools": {
+      "CC": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+      "CXX": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+      "AR": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+      "LIBCLANG_PATH": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+      "discovery": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e"
+    },
+    "terminal": {
+      "Status": "exited",
+      "Running": false,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 0,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-09-18T12:51:52.833093076Z",
+      "FinishedAt": "2026-09-18T12:59:03.915206627Z"
+    }
+  },
+  "environment": {
+    "host": "Tux Linux x86_64",
+    "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "cpus": 2,
+    "memory_bytes": 6442450944,
+    "pids": 512,
+    "source_readonly": true
+  },
+  "tests": {
+    "executed": 10,
+    "failed": 0,
+    "ignored": 0,
+    "protocol": 5,
+    "preparation": 3,
+    "executable": 1,
+    "pending": 1,
+    "artifacts": {
+      "bigbrotr_archive_worker-de1f058f6db78191": {
+        "sha256": "9538a8548f1cf0e2529013ede09a3c091d80c572234510d3c3cc8b3885fbe2f0",
+        "bytes": 14634128
+      },
+      "handoff-96fc57d92160c8f2": {
+        "sha256": "ef043d295f0ceb2daa969c0608730199e4696398cc3b413ba4b86b4be262fdf1",
+        "bytes": 1247632
+      },
+      "archive_batch-21862d7eb1855af4": {
+        "sha256": "17e540853c2d4c87ed83d295fe57b14780d611f864d688db37e459fa7f0cf828",
+        "bytes": 1322344
+      },
+      "bigbrotr-4138cbc2bd3edc89": {
+        "sha256": "2510a9159bb465258e0f75b4743c13357ac8d22914a75badec6c74dfac7585a4",
+        "bytes": 14527296
+      }
+    },
+    "vector_size": {
+      "actual_vector_size": 2048,
+      "library_sha256": "fc23f12e376c47be520f75221288281906e7942e8fd6f6ce4849198ba60d0405"
+    },
+    "cargo_executed_worker": {
+      "path": "/out/build/target/release/bigbrotr-archive-worker",
+      "sha256": "c6b40ca88219f6450408607de9d817dd913e6ffd511da193f0e82d48978dffce",
+      "packaged_sha256": "642952149ddef947370d04f20811e59f43f4f7ee054b7d03f3eea235635a9995",
+      "matches_packaged": false
+    }
+  },
+  "packaged_runtime": {
+    "status": "PASS",
+    "worker_sha256": "642952149ddef947370d04f20811e59f43f4f7ee054b7d03f3eea235635a9995",
+    "cases": [
+      {
+        "case": "complete",
+        "command": [
+          "/out/build/archive-worker/bigbrotr-archive-worker",
+          "inspect-batch",
+          "/out/build/archive-worker",
+          "/out/native-tests/runtime/complete",
+          "134217728",
+          "67108864",
+          "1",
+          "16",
+          "1048576"
+        ],
+        "input_sha256": "84d2f70e1ff86f8f7abd0f118e7d3e2d857c541a1e4b0315749bb67ef89b3c32",
+        "exit": 0,
+        "seconds": 0.2862293911166489,
+        "stdout_sha256": "2bd8e0fdf0d0904b6df0666351c76c6f3a2824d666aa41b857159a3127521913",
+        "stderr": "",
+        "inspection": {
+          "batch_digest": "93e93e6a9b96159b4c3a82387014e1a375dd693f26113a3451248f661d7af0ea",
+          "facts": 1,
+          "first": {
+            "dataset_id": "01010101010101010101010101010101",
+            "owner_epoch": "1",
+            "sequence": "2",
+            "shard_id": 0
+          },
+          "format": "bigbrotr-private-preparation/1",
+          "last": {
+            "dataset_id": "01010101010101010101010101010101",
+            "owner_epoch": "1",
+            "sequence": "2",
+            "shard_id": 0
+          },
+          "staged_counts": [
+            0,
+            1,
+            0,
+            0,
+            0
+          ]
+        },
+        "status": "PASS"
+      },
+      {
+        "case": "truncated",
+        "command": [
+          "/out/build/archive-worker/bigbrotr-archive-worker",
+          "inspect-batch",
+          "/out/build/archive-worker",
+          "/out/native-tests/runtime/truncated",
+          "134217728",
+          "67108864",
+          "1",
+          "16",
+          "1048576"
+        ],
+        "input_sha256": "85afe664b797d45d22806b189c7129747907acd01b78523fe405bfa3d07b91cb",
+        "exit": 1,
+        "seconds": 0.20904809888452291,
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr": "private archive preparation failed: Transfer(Incomplete)\n",
+        "status": "PASS"
+      }
+    ]
+  },
+  "cases": [
+    "Independent golden wire and all 347 truncation positions; altered digest/source/profile/version/trailing bytes and zero/overflow count refusal",
+    "Exact/reduced allocation and encoded byte caps; failure poisons reader; encoder refuses changed/missing data before output",
+    "Actual native staging retains unsigned maximum timestamp, nested empty/Unicode tags and content",
+    "Fourteen synthetic mixed facts reach all five typed staging tables, including method ordinal and import lineage fields",
+    "Real Rocks synchronized bootstrap, reopen, complete pending read and framed transfer leave native sequence unchanged",
+    "Actual Cargo worker accepts complete input and refuses truncation without stdout",
+    "Exact packaged worker separately accepts the frozen complete wire and refuses truncation without stdout"
+  ],
+  "limitations": [
+    "Rocks pending and executable boundaries are exercised separately; no connected signed pending-to-worker process journey yet",
+    "Synthetic fixture/mixed dictionary mappings qualify framing/conversion only, not cryptographic/allocation authority",
+    "No production parent pre-exec verification, grants, timeout/cancellation or native worker supervision",
+    "No PG DuckLake publisher, positive catalog fence, archive receipt/protection/read/export/restart or M1",
+    "No peak RSS, mixed/aged workload or throughput qualification",
+    "Linux arm64 and hosted Actions NOT_RUN"
+  ],
+  "evidence_root": ".research/implementation/archive-worker/handoff-0cdd80f",
+  "harness": {
+    "path": "experiments/archive-engine/native_handoff.py",
+    "sha256": "7b3442de84bcc0be078538cd76e2e8b9a14dbdc78f1f3f98989d10521a73f26d"
+  },
+  "cleanup": {
+    "status": "PASS",
+    "owned_ids": [
+      "e8c5dbc8fe33ac633ece8d8bca1e8cdb26a288e914c955750113e7d61eb48de4",
+      "b230cf87271dca06e81c0bff50c81561c474a6d9ae39c48259466c6da7a41266"
+    ],
+    "running_bigbrotr": 0,
+    "unrelated_unchanged": 20,
+    "shared_source": "6be851580ba415eed5ff0979ee7072480f9ee3ab"
+  },
+  "evidence_files": {
+    "native-0cdd80f/build-audit.json": "44c198fb006deca9dcb4f3ca85dcfe723a1e87a4d5a2f70ce737129fca5987e9",
+    "native-0cdd80f/source-manifest.json": "90ce920e0de34aaba4468da84f7b908c9d033c7299d7bdad5b35c0eb6fc9e92f",
+    "native-test-evidence/result.json": "831014f569a7f12ffa7925735338d84633f66594f28612388e3a623a39767880",
+    "native-test-evidence/protocol.log": "bb48362b19b7624c7c399c712486a34e6b4c21968bdb9aed5ac9699a8371984f",
+    "native-test-evidence/prepare.log": "17d7c1df3b50551d0fb387bc6c55fa959548687f83d417f4dd3bbb85f563034d",
+    "native-test-evidence/executable.log": "9ec1972155e89bb9e072ee216dfea143f609e513a223cee634d527139fdbd04a",
+    "native-test-evidence/pending.log": "604bd5c9374d0d00aa012e388b1a735b7d2ff6ee50305c8dab80387e1e4c62b4",
+    "native-test-evidence/artifacts.json": "f94ae09e26f619741869a96bd944cf53bb752f837e1d87c2d32a4ae551349ec5",
+    "native-test-evidence/executed-worker.json": "b91394661af4ce6a04fcdb6642291b60fe72be157f8a61c93180c354863da1e7",
+    "native-test-evidence/packaged-runtime.json": "4decefbd93e692c358fbef2d3e990be4a776d538c4f38255d26b67a9a9d17ce1",
+    "native-test-evidence/observation.json": "70e044bf7fc88878d2d077ae6c465a6beb5541a50f9f7e607078c0f93d1491f1",
+    "cleanup-audit.json": "e49efea154b56beb60c53d1766670fb0e523a3006d73a6147caa7fbeb6e8fc77"
+  },
+  "fixtures": {
+    "crates/bigbrotr-protocol/tests/fixtures/archive/single.json": "b24858a2a07142987968bff090239e6b4052d30ca55cdc2abc7558a7bc0f2b69",
+    "crates/bigbrotr-protocol/tests/fixtures/archive/write_fixture.py": "6fa9cc07886d8d9ce4adce243ac9f10af545602eac537d2c98f18ebbfabf8e51",
+    "crates/bigbrotr-model/tests/fixtures/dictionary-v1.json": "dbeabe7bc317d823c57f409e8e2f89abb4a4a0545ba32e20142d51a02a5286a9",
+    "tests/fixtures/model/core-fingerprints.json": "17aeb4833e650138150edf94dfc948fa39279f70fd9822d36a727b2e5d9d8e4b"
+  }
+}

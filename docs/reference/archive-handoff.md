@@ -94,3 +94,9 @@ native staging and executable tests use a synthetic unsigned-extreme model fact;
 they do not claim new signed admission or publication evidence. The Rocks test
 checks a real synchronized bootstrap/reopen/transfer with unchanged native
 sequence. Full signed pending-to-process/catalog readback remains required.
+
+The [native qualification at `0cdd80f`](../implementation/evidence/p02-pending-handoff-native-20260918.json)
+records ten scoped Rust cases and two separately executed packaged-binary cases
+on Tux Linux amd64. It checks every frozen-wire truncation, typed staging and real
+Rocks reopen/transfer. These exercise adjacent boundaries separately; production
+supervision and the complete signed pending-to-worker/archive journey remain open.

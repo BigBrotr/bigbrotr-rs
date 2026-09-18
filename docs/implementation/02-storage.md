@@ -231,7 +231,9 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   The private [pending handoff/preparation](../reference/archive-handoff.md)
   connects canonical complete batches to typed native staging. It uses per-fact
   appends initially; production parent grants, batching and actual catalog/file
-  publication still gate this step.
+  publication still gate this step. The [native handoff evidence](evidence/p02-pending-handoff-native-20260918.json)
+  qualifies ten scoped Rust and two packaged cases, with Rocks and executable
+  boundaries still exercised separately.
 - [ ] **Step 3:** Use the PG-backed DuckLake catalog; publish events/evidence/dictionaries/
   document references and deterministic batch receipt in one transaction.
   Use the native writer on either local files or the configured S3 destination;
