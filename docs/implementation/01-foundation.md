@@ -230,6 +230,15 @@ actual grants, policy leases, populated-deployment changes and native-owner
 integration remain P01-T06/P08-T03 acceptance work. The [native activation evidence](evidence/p01-initial-activation-native-20260918.json)
 records 30 main scenarios, three FK schedules and actual crash/recovery at fe63862.
 
+The owner-supplied monitor findings now have [exact-revision native evidence](evidence/p01-monitor-corrections-native-20260918.json):
+MON-002 explicit PostgreSQL port parity, MON-004 residual lease scheduling and
+MON-001 genuinely blocked lifecycle/error output have scoped regression results.
+MON-005 is confirmed open: the real 200,000-entry candidate passes compact JSON
+validation but fails the existing JSONB storage cap. Step 7 maximum-document
+acceptance must include bounded pre-acceptance refusal, near-limit successful
+initialization, inspection and activation, with numerical rendering controls.
+Do not alter an applied migration or label the failed initialization PASS.
+
 ## P01-T05 — Shared resource budget, scheduling and lifecycle
 
 **Depends on:** P01-T04 static configuration core (steps 1–5), not its later

@@ -1,0 +1,214 @@
+{
+  "format": "bigbrotr-monitor-corrections-native/1",
+  "status": "SCOPED_PASS_MON_005_CONFIRMED_OPEN",
+  "source": "2c0dfc116daf1a397f06bad71ce7013864bacd01",
+  "tree": "7015e92a3fed9fe9b99dc415019aa5cf8587aa90",
+  "environment": "Native Linux amd64 on isolated Tux, Rust 1.98.1, PostgreSQL 16.15, actual RocksDB 11.8.1",
+  "build": {
+    "status": "PASS",
+    "source": "2c0dfc116daf1a397f06bad71ce7013864bacd01",
+    "tree": "7015e92a3fed9fe9b99dc415019aa5cf8587aa90",
+    "source_files": 541,
+    "cli_sha256": "360a71585e203f663731459e4711b3590e90d255db17bcb599bc9a644e5a0da8",
+    "native_tools": {
+      "CC": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+      "CXX": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+      "AR": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+      "LIBCLANG_PATH": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+      "discovery": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e"
+    },
+    "terminal": {
+      "Status": "exited",
+      "Running": false,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 0,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-09-18T09:47:00.760118394Z",
+      "FinishedAt": "2026-09-18T09:52:58.896312358Z"
+    }
+  },
+  "tests": {
+    "result": "PASS",
+    "library": 42,
+    "binary": 5,
+    "connection": 7,
+    "artifacts": {
+      "bigbrotr-4138cbc2bd3edc89": {
+        "sha256": "99be4108735797d86dca29c4393d37d4aa4de2c156bb82d17495aec0b1e06cb0",
+        "bytes": 14520048
+      },
+      "postgres_connection_settings-16663905831a7642": {
+        "sha256": "ee302cf1731190792076c2d02a5e792507d87123fc1379cad5451aa717632856",
+        "bytes": 2474520
+      },
+      "bigbrotr-ce8ef292b0e60376": {
+        "sha256": "765befa4044d5c3654ddb0f5da67bfa9349e8d88ff2f2e9f1e78ce0d1926bf9f",
+        "bytes": 2186104
+      }
+    },
+    "runner": "tools.ci.execute with tools.build clean environment and exact native toolchain; no hosted Actions runner"
+  },
+  "process_cases": [
+    {
+      "name": "MON-004-acquisition",
+      "result": "PASS",
+      "delay_seconds": 3.2,
+      "observed_seconds": 9.41301499074325,
+      "shutdown_seconds": 2.2020047050900757
+    },
+    {
+      "name": "MON-004-poll",
+      "result": "PASS",
+      "delay_seconds": 3.2,
+      "observed_seconds": 9.388130934908986,
+      "shutdown_seconds": 1.7531544803641737
+    },
+    {
+      "name": "MON-001-blocked-stdout",
+      "result": "PASS",
+      "shutdown_seconds": 2.2571870521642268,
+      "heartbeat_observed": true,
+      "status": "TERMINAL",
+      "stream": "stdout",
+      "filled_bytes": 65536,
+      "blocking": true,
+      "pid": 89,
+      "exit": 1,
+      "elapsed_seconds": 20.4655919438228,
+      "retained_bytes": 65536,
+      "unchanged": true,
+      "eof_after_child_exit": true
+    },
+    {
+      "name": "MON-001-blocked-stderr",
+      "result": "PASS",
+      "status": "TERMINAL",
+      "stream": "stderr",
+      "filled_bytes": 65536,
+      "blocking": true,
+      "pid": 104,
+      "exit": 1,
+      "elapsed_seconds": 0.21577923698350787,
+      "retained_bytes": 65536,
+      "unchanged": true,
+      "eof_after_child_exit": true
+    }
+  ],
+  "prior_process_regressions": {
+    "result": "PASS",
+    "cases": 16,
+    "relations_audited": 240,
+    "outputs_audited": 7,
+    "includes": [
+      "true policy expiry after process pause",
+      "concurrent owner refusal",
+      "policy interruption with transport cleanup",
+      "database crash and explicit restart",
+      "SIGINT and SIGTERM release"
+    ]
+  },
+  "new_relation_audit": {
+    "status": "PASS_WITH_CONFIRMED_OPEN_MON_005",
+    "source": "2c0dfc116daf1a397f06bad71ce7013864bacd01",
+    "relations_checked": 90,
+    "cases": {
+      "acquisition": {
+        "tables": 30,
+        "owner_epoch": 1,
+        "state": "released",
+        "lease_expires_after_acquired_us": 60000000,
+        "rows_sha256": "a3a67656462d29a2ec98cb762fc6016c2fa94f8ad660aa2dfc64751c6721a5aa"
+      },
+      "poll": {
+        "tables": 30,
+        "owner_epoch": 1,
+        "state": "released",
+        "lease_expires_after_acquired_us": 60000000,
+        "rows_sha256": "29eeae0964012098b352aaef9357b52ba83affb0b101586ee89368348e11706a"
+      },
+      "blocked_stdout": {
+        "tables": 30,
+        "owner_epoch": 1,
+        "state": "released",
+        "lease_expires_after_acquired_us": 79998392,
+        "rows_sha256": "4557e0819bb27818071a81dbe00768b3258c1a2bbf6c29c360316804fc053bd5"
+      }
+    },
+    "open_document_finding": {
+      "finding": "MON-005",
+      "status": "CONFIRMED_UNFIXED",
+      "source_bytes": 10402821,
+      "compact_bytes": 10407457,
+      "jsonb_rendered_bytes": 10607924,
+      "policy_sha256": "55e8e662742cc09b4dde97aae1e06f169d372d0852f111ae2b2fcbf5753637e2",
+      "static_exit": 0,
+      "initialize_exit": 1,
+      "unchanged_database": true,
+      "inspection_activation": "NOT_RUN: initialization refused; required after correction"
+    }
+  },
+  "findings": {
+    "MON-001": "Qualified for actual full stdout and stderr pipes. stdout remains unread while database scheduling heartbeat renews; SIGTERM releases the owner and closes backend. Both blocked child processes exit 1 and leave EOF after parent closes its own write end. No remaining diagnostic writer. The stderr error exits in 0.216 seconds. Reported stdout shutdown bound includes subsequent table audit, not just child termination.",
+    "MON-002": "Twelve explicit/missing/zero/overflow port cases pass through actual static CLI and prepared driver on Mac and Linux. No live server on port 443 claimed.",
+    "MON-004": "Actual acquisition and later poll each wait at least 3.2 seconds on PostgreSQL, then resume healthy supervision past the former expiry failure. Request-start TTL and actual paused-process refusal remain intact.",
+    "MON-005": {
+      "finding": "MON-005",
+      "status": "CONFIRMED_UNFIXED",
+      "source_bytes": 10402821,
+      "compact_bytes": 10407457,
+      "jsonb_rendered_bytes": 10607924,
+      "policy_sha256": "55e8e662742cc09b4dde97aae1e06f169d372d0852f111ae2b2fcbf5753637e2",
+      "static_exit": 0,
+      "initialize_exit": 1,
+      "unchanged_database": true,
+      "inspection_activation": "NOT_RUN: initialization refused; required after correction"
+    },
+    "MON-006": "Actual native retained event replay at max_dependencies=8 returns Limit for the original 11-dependency request; adequate retry preserves exact receipt and all KV rows. Bootstrap reduced 128-byte replay cap returns Limit with unchanged engine sequence and original adequate replay. Malformed-state controls and all fifteen signed semantic operations remain passing."
+  },
+  "cleanup": {
+    "status": "PASS",
+    "owned_containers_stopped": 13,
+    "unrelated_running_unchanged": 8,
+    "retained_shared_source": "6be851580ba415eed5ff0979ee7072480f9ee3ab",
+    "exclusions": [
+      "rolling Health.Log entries only; mount ordering normalized"
+    ],
+    "resources_deleted": 0
+  },
+  "evidence": {
+    ".research/implementation/monitor-corrections/build-preflight.json": "fc0e2ba72fd0549e10dd64262d6a3d74e05c0ba47d09d8c05a2b3f691475f8dd",
+    ".research/implementation/monitor-corrections/cleanup-audit.json": "57f6464fb51f4a718ac58ed72c00ad0eec924015ff4d4624e70176aeadc22ccf",
+    ".research/implementation/monitor-corrections/final-preflight.json": "8a2c09f1de8ad5a92d5b19fe13aeb6d6429b20093bf0d8040251f9282ace1b62",
+    ".research/implementation/monitor-corrections/native-2c0dfc1/build-audit.json": "96bbd215615c7313f7ed88e4734fb57e1822bdea784d34b995cc72818c7d3516",
+    ".research/implementation/monitor-corrections/native-tests/artifacts.json": "9ceb6f1db1f97d550dd3a7183582e0c9140e39cc6166bc40d03579f1064e7081",
+    ".research/implementation/monitor-corrections/native-tests/local-audit.json": "532afbf5be4049e95a8021a41c61b166714d4e9df297cfcd0bb0da9c85e62d07",
+    ".research/implementation/monitor-corrections/native-tests/result.json": "c4939a6fb7aa24aa95e32c679de301ca7a21ff90d54fde13c561c65b01d2c64a",
+    ".research/implementation/monitor-corrections/runtime-evidence/control-runtime.json": "0bc3b6a17c2216b34e22120e39b25bbf2c112395444f230859487bbe8b22c152",
+    ".research/implementation/monitor-corrections/runtime-evidence/final-rows.json": "2594f52b25b05320d19cd6296cf4eba9dfdd3d664a325e6fb9d8d672f77fd4a3",
+    ".research/implementation/monitor-corrections/runtime-evidence/monitor-audit.json": "47061244eead5bab8f8d308166e67664ced0bde0a895131b370997a33aeac418",
+    ".research/implementation/monitor-corrections/runtime-evidence/monitor-regressions.json": "4505d8b9a8bf926f774c3c9b0d0e009cdbf1a4bbcbd0220c324cba4072be424d",
+    ".research/implementation/monitor-corrections/runtime-evidence/runtime-audit.json": "44521eb9ea7404e831e87ba1734967e101a14fd3182e1bb2163cb3148487bdfe",
+    ".research/implementation/monitor-corrections/terminal-audit.json": "2886c6698f2c1b7a0c90eaf57157b76de73469ec68b877ccd245f0d2f582fc98"
+  },
+  "scope_limits": [
+    "Initial Control/runtime and retained-replay slices only; P01/P02 tasks and M1 not complete",
+    "MON-005 correction plus near-limit initialization/inspection/activation and numeric expansion controls still required",
+    "No GitHub hosted runner, Linux arm64 or release qualification",
+    "No uninterruptible filesystem/device fault qualification for diagnostics",
+    "No claim of peak memory/capacity or complete installed product",
+    "Independent static monitor input plus integrating-owner review/audits; no new independent agent review"
+  ],
+  "review_input": {
+    "path": "/Users/vincenzo/.codex/reviews/bigbrotr-rs-monitor/implementer-feedback.md",
+    "reviewed_revision": "12f936d637b0c07ba1a123273ce7093e4027d85a"
+  },
+  "failures": [
+    "Mac pre-fix explicit port 443, retained replay limits and actually full stderr pipe reproduce the reported failures; retained in Mac evidence",
+    "Missing remaining_validity API produced a compile failure before implementation, not a behavioral RED",
+    "MON-005 static validation succeeds but actual initialization fails with unchanged database; this remains a product failure, not a passing acceptance"
+  ]
+}

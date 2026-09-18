@@ -39,7 +39,11 @@ process exit and pipe EOF. A separately full stderr pipe exercises error exit.
 It also investigates MON-005 using 200,000 configured endpoint entries, matching
 the actual CLI policy digest to independent bytes and measuring their PostgreSQL
 JSONB rendering. Its initial counterexample result is `CONFIRMED_UNFIXED`, not
-configuration acceptance. Native execution of this new matrix is still required.
+configuration acceptance. [Native execution at 2c0dfc1](../../docs/implementation/evidence/p01-monitor-corrections-native-20260918.json)
+passes the four process regressions and the earlier sixteen scenarios. The
+200,000-entry candidate confirms MON-005: 10,407,457 compact bytes become
+10,607,924 JSONB text bytes; initialization fails without changing the database.
+That finding remains open pending bounded refusal and near-limit acceptance.
 
 [Executed native evidence](../../docs/implementation/evidence/p01-control-runtime-native-20260918.json)
 records the 16-case Linux amd64/PG16.15 run at `6be8515`, exact source/artifact

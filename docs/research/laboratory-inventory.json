@@ -3615,5 +3615,909 @@
       "Python 3.9 tarfile does not accept filter keyword; retried with explicit path/type validation"
     ],
     "status": "Retained local dependency inputs only; no archive product code, new Cargo dependency, Tux resources, signature/ABI/runtime qualification"
+  },
+  "implementation_monitor_corrections_20260918": {
+    "local_root": ".research/implementation/monitor-corrections",
+    "purpose": "P01-T04/T06 and P02-T02 owner-supplied MON-001/002/004/005/006 review qualification",
+    "preflight": ".research/implementation/monitor-corrections/build-preflight.json",
+    "build": {
+      "format": "bigbrotr-monitor-build-lab/1",
+      "source": "2c0dfc116daf1a397f06bad71ce7013864bacd01",
+      "tree": "7015e92a3fed9fe9b99dc415019aa5cf8587aa90",
+      "owner": "2f29439d9430a0c9fea71a64d05bef04",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/monitor-2c0dfc1",
+      "container": "bigbrotr-implementation-monitor-2c0dfc1-build",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "state": "running",
+      "command": [
+        "docker",
+        "run",
+        "-d",
+        "--init",
+        "--name",
+        "bigbrotr-implementation-monitor-2c0dfc1-build",
+        "--label",
+        "org.bigbrotr.implementation=20260917",
+        "--label",
+        "org.bigbrotr.monitor-build=2f29439d9430a0c9fea71a64d05bef04",
+        "--label",
+        "org.bigbrotr.source=2c0dfc116daf1a397f06bad71ce7013864bacd01",
+        "--user",
+        "1000:1000",
+        "--cpus",
+        "2",
+        "--memory",
+        "6g",
+        "--memory-swap",
+        "6g",
+        "--pids-limit",
+        "512",
+        "--read-only",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges",
+        "--tmpfs",
+        "/tmp:rw,exec,nosuid,nodev,size=512m",
+        "--mount",
+        "type=bind,src=/home/tux/bigbrotr-implementation-20260917/runs/monitor-2c0dfc1/source,dst=/source,readonly",
+        "--mount",
+        "type=bind,src=/home/tux/bigbrotr-implementation-20260917/runs/monitor-2c0dfc1/out,dst=/out",
+        "--workdir",
+        "/source",
+        "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "python3",
+        "-c",
+        "import subprocess; subprocess.run(['python3','tools/build.py','--output','/out/build','--jobs','2'],check=True)"
+      ],
+      "preflight": {
+        "active_source_consumers": 0,
+        "available_disk_bytes": 343899373568
+      },
+      "started_at": "2026-09-18T09:47:00.671231+00:00",
+      "container_id": "944cc049ff3eb5c4e4581e65abc3a7bc1f033e1722d8d3beafb3203dfec0b34e"
+    },
+    "scope": "Trusted exact-Git Linux amd64 only; Actions billing and Linux arm64 remain unqualified",
+    "lifecycle": "All 13 containers stopped-retained; networks/data retained; zero BigBrotr running; same eight unrelated workloads unchanged",
+    "build_audit": {
+      "status": "PASS",
+      "source": "2c0dfc116daf1a397f06bad71ce7013864bacd01",
+      "tree": "7015e92a3fed9fe9b99dc415019aa5cf8587aa90",
+      "source_files": 541,
+      "cli_sha256": "360a71585e203f663731459e4711b3590e90d255db17bcb599bc9a644e5a0da8",
+      "native_tools": {
+        "CC": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+        "CXX": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+        "AR": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+        "LIBCLANG_PATH": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+        "discovery": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e"
+      },
+      "terminal": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-09-18T09:47:00.760118394Z",
+        "FinishedAt": "2026-09-18T09:52:58.896312358Z"
+      }
+    },
+    "tests": {
+      "source": "2c0dfc116daf1a397f06bad71ce7013864bacd01",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/monitor-2c0dfc1",
+      "container": "bigbrotr-implementation-monitor-2c0dfc1-tests",
+      "owner": "18bebe3a488ef24745292f465c09e737",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "state": "running",
+      "command": [
+        "docker",
+        "run",
+        "-d",
+        "--init",
+        "--name",
+        "bigbrotr-implementation-monitor-2c0dfc1-tests",
+        "--label",
+        "org.bigbrotr.monitor-tests=18bebe3a488ef24745292f465c09e737",
+        "--label",
+        "org.bigbrotr.source=2c0dfc116daf1a397f06bad71ce7013864bacd01",
+        "--user",
+        "1000:1000",
+        "--cpus",
+        "2",
+        "--memory",
+        "6g",
+        "--memory-swap",
+        "6g",
+        "--pids-limit",
+        "512",
+        "--read-only",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges",
+        "--tmpfs",
+        "/tmp:rw,exec,nosuid,nodev,size=512m",
+        "--mount",
+        "type=bind,src=/home/tux/bigbrotr-implementation-20260917/runs/monitor-2c0dfc1/source,dst=/source,readonly",
+        "--mount",
+        "type=bind,src=/home/tux/bigbrotr-implementation-20260917/runs/monitor-2c0dfc1/out,dst=/out",
+        "--mount",
+        "type=bind,src=/home/tux/bigbrotr-implementation-20260917/runs/monitor-2c0dfc1/out/build/source,dst=/out/build/source,readonly",
+        "--workdir",
+        "/source",
+        "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "python3",
+        "-c",
+        "import hashlib,json,os,platform,re,shutil,sys\nfrom pathlib import Path\nsys.dont_write_bytecode=True\nsys.path.insert(0,'/source')\nfrom tools.build import clean_environment,native_toolchain,file_hash\nfrom tools.ci import execute\nbuild=Path('/out/build');source=build/'source';out=Path('/out/native-tests')\nmanifest=json.loads((build/'source-manifest.json').read_text());receipt=json.loads((build/'build-result.json').read_text())\nassert manifest['revision']=='2c0dfc116daf1a397f06bad71ce7013864bacd01'\nassert file_hash(build/'source-manifest.json')==receipt['source_manifest_sha256']\ndef inventory():return {str(p.relative_to(source)):file_hash(p) for p in sorted(source.rglob('*')) if p.is_file()}\nassert inventory()==manifest['files_sha256']\nenv=clean_environment();selected,native=native_toolchain(env,2);assert native==receipt['native_toolchain'];env.update(selected)\nenv.update(CARGO_TARGET_DIR=str(build/'target'),CARGO_HOME=str(build/'cargo-home'),BIGBROTR_SOURCE_REVISION=manifest['revision'],BIGBROTR_SOURCE_TREE=manifest['tree'],BIGBROTR_SOURCE_MANIFEST_SHA256=receipt['source_manifest_sha256'],BIGBROTR_BUILD_PROFILE='release')\nchecks=[('library',['cargo','test','--locked','--release','-p','bigbrotr','--lib']),('binary',['cargo','test','--locked','--release','-p','bigbrotr','--bin','bigbrotr']),('connection',['cargo','test','--locked','--release','-p','bigbrotr','--test','postgres_connection_settings'])]\nresult=execute(checks,out,source,env,{'source':manifest['revision'],'native_toolchain':native,'host':{'os':platform.system(),'architecture':platform.machine()}},900)\nassert inventory()==manifest['files_sha256']\nif result['status']!='PASS':raise SystemExit(1)\nartifacts={};(out/'artifacts').mkdir()\nfor path in out.glob('*.log'):\n for relative in re.findall(r'Running [^\\n]+ \\(([^\\n]+)\\)',path.read_text()):\n  executable=Path(relative)\n  if not executable.is_absolute():executable=source/executable\n  assert executable.is_file()\n  with executable.open('rb') as stream:header=stream.read(20)\n  assert header[:5]==b'\\x7fELF\\x02' and int.from_bytes(header[18:20],'little')==62\n  name=executable.name;shutil.copy2(executable,out/'artifacts'/name)\n  artifacts[name]={'sha256':file_hash(executable),'bytes':executable.stat().st_size}\nassert len(artifacts)==3\n(out/'artifacts.json').write_text(json.dumps(artifacts,indent=2)+'\\n')\nprint(json.dumps({'status':'PASS','source':manifest['revision'],'artifacts':artifacts}))\n"
+      ],
+      "started_at": "2026-09-18T09:54:26.621458+00:00",
+      "container_id": "dfa7ad663ba1cf0973a177396e77022acdc0c9869aaa0b5b897015516f59a26f"
+    },
+    "runtime": {
+      "format": "bigbrotr-pg-lab/1",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/monitor-2c0dfc1/runtime",
+      "owner": "cd35c516d7be99b8933712ff1e02cd9d",
+      "postgres": "bigbrotr-implementation-pg-20260917-monitor_review",
+      "client": "bigbrotr-implementation-pg-20260917-monitor_review-client",
+      "network": "bigbrotr-implementation-pg-20260917-monitor_review",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "client_image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+      "binary_sha256": "360a71585e203f663731459e4711b3590e90d255db17bcb599bc9a644e5a0da8",
+      "build": {
+        "format": "bigbrotr-build-result/1",
+        "binary_sha256": "360a71585e203f663731459e4711b3590e90d255db17bcb599bc9a644e5a0da8",
+        "source_manifest_sha256": "dbebe7cf95b9fcac6b22d5fc33b1ed679f280ed5065d6f473ea60b893df8d1d6",
+        "helper_sha256": "a8895a7f9459e52a2c0562edb59e580dc15edb98c17f5d51e25a078bf346cf09",
+        "build_info": {
+          "capabilities": [
+            "event-verification",
+            "config-static"
+          ],
+          "capability_scope": "Strict bounded event JSON and independent ID/BIP340 verification; offline static configuration candidates and incomplete read-only doctor diagnostics; no storage, durable configuration authority, source policy, wire transport, filter, or general NIP conformance claim",
+          "debug_info": "false",
+          "format": "bigbrotr-build/1",
+          "inputs_sha256": {
+            "Cargo.lock": "ea27c2b367846c4718a6d76fbd1a8340558299ccf9f22c76ed3f30c4b8025b47",
+            "contracts/protocol/nip01-event.json": "b830d5ab8651f5a763ebcffdc0eb1737ba70f4602c93fc714c892865ffca2db8",
+            "contracts/protocol/versions.json": "37c76706c5a2aa4fc72a40aeed908f104620eafcee1118b7cee8baf133546c95",
+            "contracts/release/dependencies.json": "57acf8ea3b24e25ca458a295346e2b2d4500a12d61a3eb02f46e4ef3d2556abf",
+            "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167"
+          },
+          "optimization": "3",
+          "product": "BigBrotr",
+          "profile_assertion": "release",
+          "protocol_registry_format": "bigbrotr-protocol-versions/1",
+          "protocols": {
+            "event_verifier": "bigbrotr-nip01-verifier/1",
+            "nostr_nips": "a2494f4f81d46684e5814a9bf35e2b1df978f955"
+          },
+          "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+          "schemas": {
+            "build_info": "bigbrotr-build/1",
+            "config_static": "bigbrotr-config-static/1",
+            "doctor": "bigbrotr-doctor/1",
+            "signed_event": "nip01-event/1"
+          },
+          "source": {
+            "dirty": false,
+            "manifest_sha256": "dbebe7cf95b9fcac6b22d5fc33b1ed679f280ed5065d6f473ea60b893df8d1d6",
+            "revision": "2c0dfc116daf1a397f06bad71ce7013864bacd01",
+            "state": "builder-supplied",
+            "tree": "7015e92a3fed9fe9b99dc415019aa5cf8587aa90"
+          },
+          "target": "x86_64-unknown-linux-gnu",
+          "version": "0.1.0-dev"
+        },
+        "native_toolchain": {
+          "os": "Linux",
+          "architecture": "x86_64",
+          "discovery": "llvm-config",
+          "environment": {
+            "CC": "/usr/lib/llvm-14/bin/clang",
+            "CXX": "/usr/lib/llvm-14/bin/clang++",
+            "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+            "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+            "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+            "CARGO_BUILD_JOBS": "2",
+            "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+          },
+          "tools": {
+            "CC": {
+              "path": "/usr/lib/llvm-14/bin/clang",
+              "realpath": "/usr/lib/llvm-14/bin/clang",
+              "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+              "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+            },
+            "CXX": {
+              "path": "/usr/lib/llvm-14/bin/clang++",
+              "realpath": "/usr/lib/llvm-14/bin/clang",
+              "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+              "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+            },
+            "AR": {
+              "path": "/usr/lib/llvm-14/bin/llvm-ar",
+              "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+              "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+              "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+            },
+            "LIBCLANG_PATH": {
+              "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+              "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+              "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+              "version": "Debian clang version 14.0.6"
+            },
+            "discovery": {
+              "path": "/usr/lib/llvm-14/bin/llvm-config",
+              "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+              "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+              "version": "14.0.6"
+            }
+          },
+          "sdk": null
+        }
+      },
+      "source": "/home/tux/bigbrotr-implementation-20260917/runs/monitor-2c0dfc1/source",
+      "state": "stopped-retained",
+      "published_ports": [],
+      "harness_revision": "2c0dfc116daf1a397f06bad71ce7013864bacd01",
+      "harness_sha256": "6df5afbd10a1edc1b049b09a527179b1485bc3ff18903b275f38e0529df64d0b",
+      "server": {
+        "version": "160015",
+        "fsync": "on",
+        "full_page_writes": "on",
+        "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+      }
+    },
+    "terminal": {
+      "status": "PASS",
+      "source_clean": true,
+      "containers": [
+        {
+          "id": "944cc049ff3eb5c4e4581e65abc3a7bc1f033e1722d8d3beafb3203dfec0b34e",
+          "name": "/bigbrotr-implementation-monitor-2c0dfc1-build",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-18T09:47:00.760118394Z",
+            "FinishedAt": "2026-09-18T09:52:58.896312358Z"
+          },
+          "labels": {
+            "org.bigbrotr.implementation": "20260917",
+            "org.bigbrotr.monitor-build": "2f29439d9430a0c9fea71a64d05bef04",
+            "org.bigbrotr.purpose": "isolated-foundation-acceptance",
+            "org.bigbrotr.source": "2c0dfc116daf1a397f06bad71ce7013864bacd01",
+            "org.bigbrotr.trusted-ci": "0e2488b6bdd4390e817746122a6ab7b4",
+            "org.opencontainers.image.source": "https://github.com/rust-lang/docker-rust"
+          },
+          "mounts": [
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/monitor-2c0dfc1/source",
+              "Destination": "/source",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/monitor-2c0dfc1/out",
+              "Destination": "/out",
+              "Mode": "",
+              "RW": true,
+              "Propagation": "rprivate"
+            }
+          ],
+          "ports": {},
+          "limits": {
+            "Memory": 6442450944,
+            "MemorySwap": 6442450944,
+            "NanoCpus": 2000000000,
+            "PidsLimit": 512
+          }
+        },
+        {
+          "id": "dfa7ad663ba1cf0973a177396e77022acdc0c9869aaa0b5b897015516f59a26f",
+          "name": "/bigbrotr-implementation-monitor-2c0dfc1-tests",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-18T09:54:26.710018602Z",
+            "FinishedAt": "2026-09-18T09:54:47.594770063Z"
+          },
+          "labels": {
+            "org.bigbrotr.monitor-tests": "18bebe3a488ef24745292f465c09e737",
+            "org.bigbrotr.purpose": "isolated-foundation-acceptance",
+            "org.bigbrotr.source": "2c0dfc116daf1a397f06bad71ce7013864bacd01",
+            "org.bigbrotr.trusted-ci": "0e2488b6bdd4390e817746122a6ab7b4",
+            "org.opencontainers.image.source": "https://github.com/rust-lang/docker-rust"
+          },
+          "mounts": [
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/monitor-2c0dfc1/out/build/source",
+              "Destination": "/out/build/source",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/monitor-2c0dfc1/source",
+              "Destination": "/source",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/monitor-2c0dfc1/out",
+              "Destination": "/out",
+              "Mode": "",
+              "RW": true,
+              "Propagation": "rprivate"
+            }
+          ],
+          "ports": {},
+          "limits": {
+            "Memory": 6442450944,
+            "MemorySwap": 6442450944,
+            "NanoCpus": 2000000000,
+            "PidsLimit": 512
+          }
+        },
+        {
+          "id": "0aa923ce7e7b5880ff96f6ddf2336ae2ca96970ba44c5d4607c3e8f11c3c5849",
+          "name": "/bigbrotr-implementation-pg-20260917-monitor_review",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-18T09:56:25.072712366Z",
+            "FinishedAt": "2026-09-18T09:56:52.176130695Z"
+          },
+          "labels": {
+            "org.bigbrotr.control-migration-lab": "cd35c516d7be99b8933712ff1e02cd9d"
+          },
+          "mounts": [
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/monitor-2c0dfc1/runtime/data",
+              "Destination": "/var/lib/postgresql/data",
+              "Mode": "",
+              "RW": true,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/monitor-2c0dfc1/runtime/secrets",
+              "Destination": "/run/secrets",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            }
+          ],
+          "ports": {},
+          "limits": {
+            "Memory": 1610612736,
+            "MemorySwap": 1610612736,
+            "NanoCpus": 2000000000,
+            "PidsLimit": 256
+          }
+        },
+        {
+          "id": "3f7dfa8c6a79498b2ab76adaf507b061ea09d3013ec9e26e97f42d68b39f86c8",
+          "name": "/bigbrotr-implementation-pg-20260917-monitor_review-client",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-18T09:54:29.200574495Z",
+            "FinishedAt": "2026-09-18T09:56:51.793172929Z"
+          },
+          "labels": {
+            "org.bigbrotr.control-migration-lab": "cd35c516d7be99b8933712ff1e02cd9d",
+            "org.bigbrotr.purpose": "isolated-foundation-acceptance",
+            "org.opencontainers.image.source": "https://github.com/rust-lang/docker-rust"
+          },
+          "mounts": [
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/monitor-2c0dfc1/out/build",
+              "Destination": "/build",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/monitor-2c0dfc1/source",
+              "Destination": "/source",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/monitor-2c0dfc1/runtime",
+              "Destination": "/lab",
+              "Mode": "",
+              "RW": true,
+              "Propagation": "rprivate"
+            }
+          ],
+          "ports": {},
+          "limits": {
+            "Memory": 4294967296,
+            "MemorySwap": 4294967296,
+            "NanoCpus": 2000000000,
+            "PidsLimit": 256
+          }
+        },
+        {
+          "id": "06d2e7b7d8da7e1030a47a3bba6cc266742a52f0d52d2e1400334be5f1a39a30",
+          "name": "/bigbrotr-implementation-pg-20260917-monitor_review-client-mon-acquisition",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-18T09:54:30.904525992Z",
+            "FinishedAt": "2026-09-18T09:54:40.570228005Z"
+          },
+          "labels": {
+            "org.bigbrotr.monitor-regression": "cd35c516d7be99b8933712ff1e02cd9d",
+            "org.bigbrotr.purpose": "isolated-foundation-acceptance",
+            "org.opencontainers.image.source": "https://github.com/rust-lang/docker-rust"
+          },
+          "mounts": [
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/monitor-2c0dfc1/runtime",
+              "Destination": "/lab",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/monitor-2c0dfc1/out/build",
+              "Destination": "/build",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            }
+          ],
+          "ports": {},
+          "limits": {
+            "Memory": 1073741824,
+            "MemorySwap": 1073741824,
+            "NanoCpus": 2000000000,
+            "PidsLimit": 128
+          }
+        },
+        {
+          "id": "91912943c5b0ea931e3200230a0def1d90aab31ac72fff9d81fa26f5f86b6606",
+          "name": "/bigbrotr-implementation-pg-20260917-monitor_review-client-mon-poll",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-18T09:54:43.778376671Z",
+            "FinishedAt": "2026-09-18T09:54:55.867943205Z"
+          },
+          "labels": {
+            "org.bigbrotr.monitor-regression": "cd35c516d7be99b8933712ff1e02cd9d",
+            "org.bigbrotr.purpose": "isolated-foundation-acceptance",
+            "org.opencontainers.image.source": "https://github.com/rust-lang/docker-rust"
+          },
+          "mounts": [
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/monitor-2c0dfc1/runtime",
+              "Destination": "/lab",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/monitor-2c0dfc1/out/build",
+              "Destination": "/build",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            }
+          ],
+          "ports": {},
+          "limits": {
+            "Memory": 1073741824,
+            "MemorySwap": 1073741824,
+            "NanoCpus": 2000000000,
+            "PidsLimit": 128
+          }
+        },
+        {
+          "id": "17a10a2c7bfd29bdebce7969d331e45ec6c4c027fd25427c947b78b42c1df63d",
+          "name": "/bigbrotr-implementation-pg-20260917-monitor_review-client-lifecycle",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-18T09:55:35.221943092Z",
+            "FinishedAt": "2026-09-18T09:55:57.431575478Z"
+          },
+          "labels": {
+            "org.bigbrotr.control-runtime": "cd35c516d7be99b8933712ff1e02cd9d",
+            "org.bigbrotr.purpose": "isolated-foundation-acceptance",
+            "org.opencontainers.image.source": "https://github.com/rust-lang/docker-rust"
+          },
+          "mounts": [
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/monitor-2c0dfc1/runtime",
+              "Destination": "/lab",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/monitor-2c0dfc1/out/build",
+              "Destination": "/build",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            }
+          ],
+          "ports": {},
+          "limits": {
+            "Memory": 1073741824,
+            "MemorySwap": 1073741824,
+            "NanoCpus": 2000000000,
+            "PidsLimit": 128
+          }
+        },
+        {
+          "id": "b32b3d196cfbfc59f964bac324bacb626f36705e0a456d95e15ab79327b359e5",
+          "name": "/bigbrotr-implementation-pg-20260917-monitor_review-client-restart",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-18T09:55:59.411439094Z",
+            "FinishedAt": "2026-09-18T09:55:59.540974112Z"
+          },
+          "labels": {
+            "org.bigbrotr.control-runtime": "cd35c516d7be99b8933712ff1e02cd9d",
+            "org.bigbrotr.purpose": "isolated-foundation-acceptance",
+            "org.opencontainers.image.source": "https://github.com/rust-lang/docker-rust"
+          },
+          "mounts": [
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/monitor-2c0dfc1/runtime",
+              "Destination": "/lab",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/monitor-2c0dfc1/out/build",
+              "Destination": "/build",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            }
+          ],
+          "ports": {},
+          "limits": {
+            "Memory": 1073741824,
+            "MemorySwap": 1073741824,
+            "NanoCpus": 2000000000,
+            "PidsLimit": 128
+          }
+        },
+        {
+          "id": "8e7490fd4a0c5cad50b3e38c59361110aab22232cfb9eb266b20a9db75b28c3b",
+          "name": "/bigbrotr-implementation-pg-20260917-monitor_review-client-paused",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 1,
+            "Error": "",
+            "StartedAt": "2026-09-18T09:56:02.109266268Z",
+            "FinishedAt": "2026-09-18T09:56:11.949487643Z"
+          },
+          "labels": {
+            "org.bigbrotr.control-runtime": "cd35c516d7be99b8933712ff1e02cd9d",
+            "org.bigbrotr.purpose": "isolated-foundation-acceptance",
+            "org.opencontainers.image.source": "https://github.com/rust-lang/docker-rust"
+          },
+          "mounts": [
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/monitor-2c0dfc1/runtime",
+              "Destination": "/lab",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/monitor-2c0dfc1/out/build",
+              "Destination": "/build",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            }
+          ],
+          "ports": {},
+          "limits": {
+            "Memory": 1073741824,
+            "MemorySwap": 1073741824,
+            "NanoCpus": 2000000000,
+            "PidsLimit": 128
+          }
+        },
+        {
+          "id": "9d897583a4eb45f337c10c7378c1ffdcf44f1d7ab1e9753d8ad18679ea5e2ece",
+          "name": "/bigbrotr-implementation-pg-20260917-monitor_review-client-successor",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-18T09:56:14.202820074Z",
+            "FinishedAt": "2026-09-18T09:56:14.362843687Z"
+          },
+          "labels": {
+            "org.bigbrotr.control-runtime": "cd35c516d7be99b8933712ff1e02cd9d",
+            "org.bigbrotr.purpose": "isolated-foundation-acceptance",
+            "org.opencontainers.image.source": "https://github.com/rust-lang/docker-rust"
+          },
+          "mounts": [
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/monitor-2c0dfc1/runtime",
+              "Destination": "/lab",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/monitor-2c0dfc1/out/build",
+              "Destination": "/build",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            }
+          ],
+          "ports": {},
+          "limits": {
+            "Memory": 1073741824,
+            "MemorySwap": 1073741824,
+            "NanoCpus": 2000000000,
+            "PidsLimit": 128
+          }
+        },
+        {
+          "id": "6ef7e68f958ae7b858f75213cc0ab7db98b451de6ede26dbcb90932b33b135fc",
+          "name": "/bigbrotr-implementation-pg-20260917-monitor_review-client-cancelled",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 4,
+            "Error": "",
+            "StartedAt": "2026-09-18T09:56:17.032725379Z",
+            "FinishedAt": "2026-09-18T09:56:21.68534509Z"
+          },
+          "labels": {
+            "org.bigbrotr.control-runtime": "cd35c516d7be99b8933712ff1e02cd9d",
+            "org.bigbrotr.purpose": "isolated-foundation-acceptance",
+            "org.opencontainers.image.source": "https://github.com/rust-lang/docker-rust"
+          },
+          "mounts": [
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/monitor-2c0dfc1/runtime",
+              "Destination": "/lab",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/monitor-2c0dfc1/out/build",
+              "Destination": "/build",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            }
+          ],
+          "ports": {},
+          "limits": {
+            "Memory": 1073741824,
+            "MemorySwap": 1073741824,
+            "NanoCpus": 2000000000,
+            "PidsLimit": 128
+          }
+        },
+        {
+          "id": "1760c70c2a5407aa6acd18a48df3375c81eff499519ba2897490b0d1fa54b71b",
+          "name": "/bigbrotr-implementation-pg-20260917-monitor_review-client-database-loss",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 1,
+            "Error": "",
+            "StartedAt": "2026-09-18T09:56:22.259088377Z",
+            "FinishedAt": "2026-09-18T09:56:24.873603064Z"
+          },
+          "labels": {
+            "org.bigbrotr.control-runtime": "cd35c516d7be99b8933712ff1e02cd9d",
+            "org.bigbrotr.purpose": "isolated-foundation-acceptance",
+            "org.opencontainers.image.source": "https://github.com/rust-lang/docker-rust"
+          },
+          "mounts": [
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/monitor-2c0dfc1/runtime",
+              "Destination": "/lab",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/monitor-2c0dfc1/out/build",
+              "Destination": "/build",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            }
+          ],
+          "ports": {},
+          "limits": {
+            "Memory": 1073741824,
+            "MemorySwap": 1073741824,
+            "NanoCpus": 2000000000,
+            "PidsLimit": 128
+          }
+        },
+        {
+          "id": "f1d7dc86c74084d9675e267ac49b08683c3f705c952619c67cea4474eedbfa9f",
+          "name": "/bigbrotr-implementation-pg-20260917-monitor_review-client-recovered",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-18T09:56:33.985507609Z",
+            "FinishedAt": "2026-09-18T09:56:34.098095134Z"
+          },
+          "labels": {
+            "org.bigbrotr.control-runtime": "cd35c516d7be99b8933712ff1e02cd9d",
+            "org.bigbrotr.purpose": "isolated-foundation-acceptance",
+            "org.opencontainers.image.source": "https://github.com/rust-lang/docker-rust"
+          },
+          "mounts": [
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/monitor-2c0dfc1/runtime",
+              "Destination": "/lab",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/monitor-2c0dfc1/out/build",
+              "Destination": "/build",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            }
+          ],
+          "ports": {},
+          "limits": {
+            "Memory": 1073741824,
+            "MemorySwap": 1073741824,
+            "NanoCpus": 2000000000,
+            "PidsLimit": 128
+          }
+        }
+      ]
+    },
+    "cleanup": {
+      "status": "PASS",
+      "owned_containers_stopped": 13,
+      "unrelated_running_unchanged": 8,
+      "retained_shared_source": "6be851580ba415eed5ff0979ee7072480f9ee3ab",
+      "exclusions": [
+        "rolling Health.Log entries only; mount ordering normalized"
+      ],
+      "resources_deleted": 0
+    },
+    "qualification": "20 process scenarios and 54 native tests PASS; MON-005 confirmed open, no release qualification"
   }
 }

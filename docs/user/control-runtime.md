@@ -62,3 +62,9 @@ inspection of 240 relations and all seven process outputs. The
 [reproducible matrix](../../experiments/control-runtime/README.md) defines that
 scope. Public grants/revocation, native writer handoff, maximum-document/resource
 behavior and the complete installed journey remain separate requirements.
+
+The [monitor regression evidence](../implementation/evidence/p01-monitor-corrections-native-20260918.json)
+adds delayed successful acquisition/polls, actual full output pipes and bounded
+process termination at `2c0dfc1`, plus all sixteen prior process cases. It also
+confirms an open maximum-policy defect: a candidate can fit compact JSON while
+exceeding PostgreSQL's JSONB text limit. Maximum-document acceptance is incomplete.
