@@ -4,10 +4,12 @@ import argparse
 import gzip
 import hashlib
 import json
+import os
 from pathlib import Path
 import platform
 import shutil
 import stat
+import tempfile
 import urllib.request
 import zipfile
 
@@ -26,16 +28,22 @@ def native_target():
 def copy_verified(source, destination, expected):
     """Bound decompressed/downloaded work by the pinned size, then check all bytes."""
     digest, size = hashlib.sha256(), 0
-    with destination.open('xb') as output:
-        while block := source.read(min(65536, expected['bytes'] - size + 1)):
-            size += len(block)
-            if size > expected['bytes']:
-                raise ValueError('asset exceeds pinned size')
-            digest.update(block)
-            output.write(block)
-    if size != expected['bytes'] or digest.hexdigest() != expected['sha256']:
-        raise ValueError('asset size/hash mismatch')
-    destination.chmod(0o444)
+    # A failed exclusive open confers no ownership: never unlink that path.
+    output = destination.open('xb')
+    try:
+        with output:
+            while block := source.read(min(65536, expected['bytes'] - size + 1)):
+                size += len(block)
+                if size > expected['bytes']:
+                    raise ValueError('asset exceeds pinned size')
+                digest.update(block)
+                output.write(block)
+        if size != expected['bytes'] or digest.hexdigest() != expected['sha256']:
+            raise ValueError('asset size/hash mismatch')
+        destination.chmod(0o444)
+    except BaseException:
+        destination.unlink()
+        raise
 
 
 def verify_file(path, expected):
@@ -58,13 +66,21 @@ def obtain(asset, cache, download):
     if not destination.exists():
         if not download:
             raise ValueError('pinned asset missing from offline cache: ' + asset['sha256'])
-        temporary = destination.with_suffix('.partial')
         request = urllib.request.Request(asset['url'], headers={'User-Agent': 'BigBrotr-native-bundle/1'})
-        with urllib.request.urlopen(request, timeout=45) as source:
-            if not source.url.startswith('https://'):
-                raise ValueError('asset redirect is not HTTPS')
-            copy_verified(source, temporary, asset)
-        temporary.rename(destination)
+        # Private per-attempt names cannot poison retries after process death.
+        # Keep the temporary on the cache filesystem for atomic publication.
+        with tempfile.TemporaryDirectory(prefix=asset['sha256'] + '-', suffix='.partial', dir=cache) as directory:
+            temporary = Path(directory) / 'asset'
+            with urllib.request.urlopen(request, timeout=45) as source:
+                if not source.url.startswith('https://'):
+                    raise ValueError('asset redirect is not HTTPS')
+                copy_verified(source, temporary, asset)
+            try:
+                os.link(temporary, destination)
+            except FileExistsError:
+                # Another downloader may have won. Do not replace its path;
+                # the same mandatory verification below decides whether to use it.
+                pass
     verify_file(destination, asset)
     return destination
 

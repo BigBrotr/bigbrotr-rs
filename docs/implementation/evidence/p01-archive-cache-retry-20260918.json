@@ -1,0 +1,44 @@
+{
+  "finding": "MON-007",
+  "status": "PASS for Mac filesystem and actual HTTPS cases; native Linux rerun pending",
+  "base_revision": "3897cf8",
+  "tested_source_kind": "owned worktree files listed below",
+  "files_sha256": {
+    "tools/archive_bundle.py": "ffbe8de58b7a53ff24c57d1e4694041eb269bee3473b579cc798e63ee3cf49d7",
+    "tests/acceptance/test_archive_bundle.py": "3224c2b0c8c3aafcfdc5407f72485fe57a975062406b848b0a979868acb13a48",
+    "docs/development/build.md": "eb7e2c5bf85dc98b7212f59f673aedb37fc7d051d25309fbfb7f09de3806e497"
+  },
+  "environment": {
+    "platform": "macOS-26.5.2-arm64-arm-64bit",
+    "python": "3.9.6 (default, May 22 2026, 11:13:45) \n[Clang 21.0.0 (clang-2100.1.1.101)]",
+    "ssl": "LibreSSL 2.8.3",
+    "certificate_generator": "LibreSSL 3.3.6"
+  },
+  "negative_control": {
+    "implementation_revision": "02d2a9b71c64c1a080288d7ca499e1449543c05a",
+    "implementation_sha256": "1515fdbb3d4c90a686816694dd1923a2f9d9ae36e192167f449a3f6a1c3c6b06",
+    "result": "FAIL as required: failed copy leaves file; truncated HTTPS then retry raises FileExistsError; concurrent HTTPS with retained old partial raises FileExistsError",
+    "harness_scope": "Initial new regression draft, before adding source.read OSError and final readonly-mode assertions",
+    "log_sha256": "c8f2b34f8906d157035845606df90d7bf83aaf0ceee586e40fa0998613f9e857"
+  },
+  "corrected": {
+    "command": "python3 -m unittest discover -s tests/acceptance -p test_archive_bundle.py",
+    "tests_passed": 5,
+    "tests_failed": 0,
+    "log_sha256": "a7c2ec6db13c5a3fa58f95923b020f720025f4a7f85428f55692583bceadd485",
+    "cases": [
+      "same-length hash mismatch, truncation and excess refuse; failed owned output removed",
+      "source.read OSError cleans owned output; exclusive-open failure preserves existing destination bytes",
+      "actual loopback HTTPS truncation then successful retry on same cache; two requests observed; offline reuse checks verified bytes",
+      "two concurrent HTTPS requests coordinated by server barrier; same verified readonly abc asset; old partial retained unchanged; no new temporary remains",
+      "selected ZIP extraction and symlink refusal remain intact"
+    ]
+  },
+  "review": "Root inspected complete archive bundle helper, build/install callers and test module. Unique private attempt directories, same-filesystem exclusive link publication, final hash check; no unverified cache publication or removal of another attempt. No independent agent review.",
+  "limitations": [
+    "Cache requires hard-link-capable local filesystem; no power-loss durability claim.",
+    "SIGKILL may leave a unique temporary directory; lifecycle-confirmed cleanup is separate.",
+    "Test CA injection uses the actual TLS/HTTP/socket implementation; no live upstream release download or engine behavior is qualified."
+  ],
+  "raw_root": ".research/implementation/archive-cache"
+}

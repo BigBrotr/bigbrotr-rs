@@ -163,12 +163,13 @@ MON-010 has scoped Mac execution evidence in
 [evidence/p01-tls-presence-20260918.json](evidence/p01-tls-presence-20260918.json):
 old binary accepts missing fields; corrected24 configuration tests and24 new
 matrix combinations pass. Clippy session85606 still runs; no Clippy PASS yet.
-MON-007 reproduced with actual HTTPS truncation then poisoned retry, plus concurrent
-downloads. Candidate unique temporary publication passes5 local Python tests;
-code/docs/evidence remain owned dirty work awaiting their separate commit.
+MON-007 has scoped Mac evidence in
+[evidence/p01-archive-cache-retry-20260918.json](evidence/p01-archive-cache-retry-20260918.json).
+Actual HTTPS red/green, concurrent requests and owned cleanup pass5 tests.
+Native Linux Python rerun remains next.
 MON-009 exact02d2a9b native build succeeded (binary65cb511e...), collector60668
-complete. Corrected24-case execution session74814 is active on fresh owned PG/client
-`archive-02d2a9b/runtime`; do not stop it. Original negative laboratory remains
+complete. Corrected24-case execution session74814 completed PASS, cleanup PASS, on owned
+PG/client `archive-02d2a9b/runtime`; final audit/stop/retirement still pending. Original negative laboratory remains
 running and retained. Update terminal results before closure.
 
 MON-009 remains open pending these native results. Passing previous suites does not close new findings. Preserve the

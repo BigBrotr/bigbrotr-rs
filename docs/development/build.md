@@ -64,6 +64,16 @@ otherwise use a checkout of that revision. Build tools may need
 network access to download locked dependencies/toolchains; the runtime diagnostics
 do not. Artifacts are native to the executing build host.
 
+Native asset downloads use a checksum-addressed cache. Each attempt writes inside
+its own private temporary directory, checks pinned length and SHA-256, then
+atomically links the verified file into the cache without replacing another
+attempt's result. The cache filesystem must support hard links. Every reuse is
+verified; this cache does not promise power-loss durability. Ordinary errors clean
+only the current attempt. A killed process may leave its unique temporary root;
+it cannot block a later attempt and is removed only after ownership/lifecycle
+inspection. Historical deterministic `.partial` files are likewise not reused
+or deleted opportunistically. Bundle output roots still require a fresh path.
+
 Native compilation defaults to two Cargo jobs, including the `cc` crate's shared
 jobserver. This is the initial setting for the isolated 2-CPU/6-GiB builder,
 not a memory guarantee. `--jobs N` selects another positive job count explicitly;
