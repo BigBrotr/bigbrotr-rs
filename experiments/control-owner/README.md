@@ -15,7 +15,7 @@ python3 experiments/ingest-registry/build_probe.py --build /owned/build \
   --example control_owner_probe
 python3 experiments/control-migrations/lab.py setup \
   --root /owned/runtime --build /owned/build --source "$PWD" --run-name controlowner
-python3 experiments/control-owner/run.py --root /owned/runtime
+python3 experiments/control-owner/run.py --root /owned/runtime --extended
 python3 experiments/control-owner/sql_schedules.py --root /owned/runtime --source "$PWD"
 python3 experiments/control-migrations/lab.py stop --root /owned/runtime
 ```
@@ -37,3 +37,11 @@ transaction-held exclusion with the session-unlock negative control.
 [Additional required cases](cases.md) remain separate gates. A successful run is
 not evidence for unexecuted COMMIT fault schedules, paused clients past TTL,
 PostgreSQL restart, native handoff, load, arm64 or release journeys.
+
+The extended matrix adds three acquisition COMMIT boundaries (before forwarding,
+after server completion and cancellation while held), fresh-incarnation recovery,
+two actual container pause/resume cases exceeding the persisted 60-second TTL,
+and PostgreSQL SIGKILL/restart with a same-resource successor. These remain
+proposed until the exact revision's native report records each result. Five
+separately labeled clients are stopped-retained in finally blocks; no host ports
+are published. Release-COMMIT and refresh cancellation remain separate cases.

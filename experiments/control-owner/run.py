@@ -18,7 +18,9 @@ def require(value, reason):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--root', type=Path, required=True)
-    root = parser.parse_args().root.resolve(strict=True)
+    parser.add_argument('--extended', action='store_true')
+    args = parser.parse_args()
+    root = args.root.resolve(strict=True)
     state = lab.load(root)
     require(not lab.command(['git', '-C', str(SOURCE), 'status', '--porcelain', '--untracked-files=all']).stdout, 'dirty-source')
     revision = lab.command(['git', '-C', str(SOURCE), 'rev-parse', 'HEAD']).stdout.strip()
@@ -93,8 +95,12 @@ def main():
             report['observations'][database] = {n:{'rows':len(v),'sha256':hashlib.sha256(json.dumps(v,sort_keys=True).encode()).hexdigest()} for n,v in after.items()}
             report['cases'].append({'name':mode, 'result':'PASS', 'output':value})
             save()
+        if args.extended:
+            import faults
+            faults.run(root, state, build, SOURCE, report, prepare, rows, save)
         report['status']='PASS'
-        report['not_run']=['transaction-lock-after-session-unlock','SQL-attribution-negative-matrix','COMMIT-response-faults','PG-crash-restart','paused-client-beyond-TTL','native-writer-exclusion','production-runtime-root-validator','load','arm64']
+        report['not_run']=['transaction-lock-after-session-unlock','SQL-attribution-negative-matrix','owner-release-COMMIT-faults','refresh-cancellation','native-writer-exclusion','production-runtime-root-validator','load','arm64']
+        if not args.extended: report['not_run'] += ['acquisition-COMMIT-response-faults','PG-crash-restart','paused-client-beyond-TTL']
     except BaseException as error:
         report['status']='FAIL'; report['failure']=str(error); raise
     finally: save()

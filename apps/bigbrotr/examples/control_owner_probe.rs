@@ -9,7 +9,7 @@ use bigbrotr_model::{
     AllocationDomainId, DatasetId, DictionaryKind, Digest256, OwnerResourceId, ProcessIncarnation,
     ProducerSlotId,
 };
-use std::{cell::Cell, time::Duration};
+use std::{cell::Cell, io::Write, time::Duration};
 use tokio::task::JoinHandle;
 use tokio_postgres::{Client, Config, NoTls};
 
@@ -57,6 +57,83 @@ fn request(dataset: DatasetId, instance: DatasetId, n: u8) -> ClaimRequest {
         lease_ttl: Duration::from_secs(60),
     }
 }
+fn emit(value: serde_json::Value) {
+    println!("{value}");
+    std::io::stdout().flush().expect("bounded probe output");
+}
+
+async fn failure_boundary(config: Config, mode: &str) {
+    let (client, driver) = connect(&config).await;
+    let row = client
+        .query_one(
+            "SELECT dataset_id::bytea, instance_id::bytea FROM control.datasets",
+            &[],
+        )
+        .await
+        .unwrap();
+    let dataset =
+        DatasetId::try_from(<[u8; 16]>::try_from(row.get::<_, &[u8]>(0)).unwrap()).unwrap();
+    let instance =
+        DatasetId::try_from(<[u8; 16]>::try_from(row.get::<_, &[u8]>(1)).unwrap()).unwrap();
+    let n = if mode == "recover" { 32 } else { 31 };
+    let started = Cell::new(false);
+    let acquisition =
+        ControlSession::acquire(client, request(dataset, instance, n), validate, &started);
+    if mode == "cancel-held" {
+        assert!(
+            tokio::time::timeout(Duration::from_millis(1500), acquisition)
+                .await
+                .is_err()
+        );
+        assert!(started.get());
+        emit(serde_json::json!({"event":"cancelled","commit_started":true}));
+        join(driver).await;
+        return;
+    }
+    let result = acquisition.await;
+    if mode == "busy" {
+        assert!(matches!(result, Err(OwnerError::Busy)));
+        assert!(!started.get());
+        join(driver).await;
+        emit(serde_json::json!({"event":"busy","commit_started":false}));
+        return;
+    }
+    if matches!(mode, "lost-before" | "lost-after") {
+        assert!(matches!(result, Err(OwnerError::CommitUnknown)));
+        assert!(started.get());
+        join(driver).await;
+        emit(serde_json::json!({"event":"unknown","commit_started":true}));
+        return;
+    }
+    let (mut owner, _) = result.unwrap();
+    let epoch = owner.identity().epoch.get();
+    if matches!(mode, "hold-live" | "hold-killed") {
+        assert_eq!(epoch, 1);
+        emit(serde_json::json!({"event":"holding","epoch":epoch,"ttl_seconds":60}));
+        // The external driver freezes this actual process beyond its persisted
+        // TTL, attempts takeover, and optionally excludes its PG backend.
+        tokio::time::sleep(Duration::from_secs(70)).await;
+        if mode == "hold-killed" {
+            assert!(owner.refresh(validate).await.is_err());
+            assert_eq!(owner.refresh(validate).await, Err(OwnerError::Unavailable));
+            drop(owner);
+        } else {
+            owner.refresh(validate).await.unwrap();
+            owner.release().await.unwrap();
+        }
+    } else if mode == "recover" {
+        owner.refresh(validate).await.unwrap();
+        owner.release().await.unwrap();
+    } else {
+        assert_eq!(mode, "claim");
+        // Intentional abrupt client lifetime: history remains active so another
+        // process must establish exclusion and advance the epoch on recovery.
+        drop(owner);
+    }
+    join(driver).await;
+    emit(serde_json::json!({"event":"complete","mode":mode,"epoch":epoch}));
+}
+
 async fn run(config: Config, mode: &str) {
     let (observer, observer_driver) = connect(&config).await;
     let row = observer
@@ -222,22 +299,46 @@ async fn run(config: Config, mode: &str) {
 }
 fn main() {
     let args: Vec<_> = std::env::args().collect();
-    assert_eq!(args.len(), 4);
+    assert!((4..=5).contains(&args.len()));
     let mut config = Config::new();
     config
-        .host("postgres")
+        .host(if args.len() == 5 {
+            "127.0.0.1"
+        } else {
+            "postgres"
+        })
         .dbname(&args[2])
         .user("bigbrotr_control")
         .password(std::fs::read(&args[3]).expect("protected lab credential"))
         .connect_timeout(Duration::from_secs(5))
         .application_name("bigbrotr-control-owner-probe");
+    if let Some(port) = args.get(4) {
+        config.port(port.parse().expect("isolated proxy port"));
+    }
+    let boundary = matches!(
+        args[1].as_str(),
+        "claim"
+            | "recover"
+            | "busy"
+            | "lost-before"
+            | "lost-after"
+            | "cancel-held"
+            | "hold-live"
+            | "hold-killed"
+    );
     tokio::runtime::Builder::new_current_thread()
         .enable_all()
         .build()
         .unwrap()
         .block_on(async {
-            tokio::time::timeout(Duration::from_secs(45), run(config, &args[1]))
-                .await
-                .expect("finite probe deadline")
+            tokio::time::timeout(Duration::from_secs(180), async {
+                if boundary {
+                    failure_boundary(config, &args[1]).await;
+                } else {
+                    run(config, &args[1]).await;
+                }
+            })
+            .await
+            .expect("finite probe deadline")
         });
 }
