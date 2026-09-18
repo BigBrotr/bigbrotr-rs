@@ -1,0 +1,38 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-18",
+  "scope": "Initial PG registry adapter and prepared native-engine acceptance probe",
+  "status": "PREPARED_NOT_ENGINE_QUALIFIED",
+  "base_revision": "a221b8c",
+  "source_sha256": {
+    "apps/bigbrotr/src/storage/postgres/ingest_registry.rs": "f74321c327883e88999d95c3b43adea86040dd542a3d04fbf24b75849fec854d",
+    "apps/bigbrotr/src/storage/postgres/mod.rs": "b84c837fc7cf16588d1abd1533123fc715d2264e9b412d2db7d3daaa94933b02",
+    "apps/bigbrotr/tests/ingest_registry.rs": "7cf8b17755e9c7efe05a20cfe3d8b59b7573733418beccb2e84395adf9100dbc",
+    "apps/bigbrotr/examples/ingest_registry_probe.rs": "84ba34a3c052aacdfee4f127a8caef06c6a5d5599eeedf5a2afa7c16616f8ccf",
+    "docs/reference/ingest-registration.md": "ec17c26fdfa4709b6b4158427646154302f4718d86a4e361204d0fbb514121cb",
+    "experiments/ingest-registry/README.md": "27e138818d6d36828f833eaf8d9791539a9f44cc0e831aa333623f2fbd26d1a8",
+    "experiments/ingest-registry/build_probe.py": "b344b32454405af9112f59455f806803e943a646252f16acdba1192dc3890f29",
+    "experiments/ingest-registry/run.py": "bc4010cf6a89acfc2d54afe0ee9753b3d8f249c34709cbad091a0b1620b8cbf0",
+    "experiments/ingest-registry/seed.sql": "b38bd04846108c6b8055ee724bd57882d0b9348e4500d38bca67dd530f0d014f"
+  },
+  "mac_checks": {
+    "new_input_tests": 3,
+    "new_scalar_test": 1,
+    "filtered_existing_unit_tests": 26,
+    "failed": 0,
+    "probe": "Actual application example compiled",
+    "clippy": "PASS workspace all-targets -D warnings",
+    "artifact_checks": "PASS scoped structural checks"
+  },
+  "logs_sha256": {
+    "ingest-registry-integrated-tests.log": "e6ef245fa5db4f4992b484f9ee0f4dce87916e74b64a1929963da0f9b90705e0",
+    "ingest-registry-unit.log": "79df58d1a35060f518224b23c601abb0c8dbdb1972010d448fcbcf0eb4164b57",
+    "ingest-registry-probe-build.log": "57741961e809b8292f02fb17133675360fc3de6cc9018b8d059992107aecde6f",
+    "ingest-registry-clippy.log": "0bfbad51a9c66eb2ed99155a96365f16c5ea53d9b7c1928e77b234119bab8f10"
+  },
+  "review": "Root took over the interrupted isolated agent draft, read the complete registry module/tests and relevant owning schema/transaction/locking boundaries, authored independent complete-row oracle and actual client/proxy probe. No completed independent AI review of the registry implementation.",
+  "not_run": [
+    "Five actual native PostgreSQL registry scenarios, privilege/SQL compatibility, commit loss, cancelled COMMIT and concurrent registration.",
+    "Validated product Control policy/bootstrap, native owner activation, signed admission, closing/ACK/GC, restart takeover and release qualification."
+  ]
+}

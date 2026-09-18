@@ -658,9 +658,11 @@
       "worktree": ".research/worktrees/ingest-registry",
       "branch": "impl/ingest-registry",
       "base": "a14aa95dd3c1d5d7b0b1a3616a7f849177baa433",
-      "status": "Interrupted agent draft preserved: module export, ingest_registry.rs and tests/ingest_registry.rs dirty/untracked. Four new pure tests and two existing planner tests ran in isolated module harness; actual PG NOT_RUN. Root is reviewing and taking over integration.",
+      "status": "Interrupted agent worktree remains preserved; root integrated complete module/tests and added actual application example plus independent native PG experiment. Mac four targeted tests and Clippy PASS; engine scenarios NOT_RUN until separate exact-source execution.",
       "raw_root": ".research/worktrees/ingest-registry/.research/implementation/ingest-registry",
-      "target": ".research/worktrees/ingest-registry/.research/targets/product"
+      "target": ".research/worktrees/ingest-registry/.research/targets/product",
+      "evidence": "docs/implementation/evidence/p02-ingest-registry-preparation-20260918.json",
+      "root_integrated_source_sha256": "f74321c327883e88999d95c3b43adea86040dd542a3d04fbf24b75849fec854d"
     }
   }
 }
