@@ -218,8 +218,10 @@ remain open. Native CI covers the implemented Rust process tests and the dedicat
 on Linux amd64/arm64; live dependency/authority checks remain NOT_RUN. Pure endpoint identity
 normalization does not establish DNS/route authorization.
 The closed initial policy candidate and read-only `config inspect` consumer now
-validate stored configuration against current roots. Durable bootstrap, management
-CAS, application plans, mode switching and authentication remain step 6 work; an
+validate stored configuration against current roots. Explicit `config initialize`
+now has a deployment-only atomic writer and installation attribution; native
+qualification is pending. Management CAS, application plans, mode switching and
+authentication remain step 6 work; an
 inspection result is neither an applied-policy receipt nor a writer grant.
 
 ## P01-T05 — Shared resource budget, scheduling and lifecycle

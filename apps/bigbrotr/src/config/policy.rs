@@ -119,6 +119,10 @@ impl PolicySeed {
         Ok(root)
     }
 
+    pub(crate) fn document(&self) -> &str {
+        std::str::from_utf8(&self.document).expect("JSON writer emits UTF-8")
+    }
+
     pub(crate) fn digest(&self) -> [u8; 32] {
         self.digest
     }

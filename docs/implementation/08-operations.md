@@ -1,6 +1,6 @@
 # Phase 08 — Operations and distribution implementation specification
 
-Status: planning only. Every code path, file, command and test below is **proposed, not implemented or executed**. The owner must start implementation before these steps run. Read [PLAN](../../PLAN.md), [configuration/runtime](../engineering/configuration-and-runtime.md), [security/recovery](../engineering/security-recovery-and-validation.md), [repository organization](../engineering/rust-and-repository.md) and [private administration](../product/private-administration.md) first. Current Go code and THE PLAN are reference evidence, not immutable promises or files to mutate.
+Status: implementation authorized by the owner. Unchecked steps and scenario commands below remain proposed unless linked to executed evidence. Read [PLAN](../../PLAN.md), [configuration/runtime](../engineering/configuration-and-runtime.md), [security/recovery](../engineering/security-recovery-and-validation.md), [repository organization](../engineering/rust-and-repository.md) and [private administration](../product/private-administration.md) first. Current Go code and THE PLAN are reference evidence, not immutable promises or files to mutate.
 
 **Goal:** install, operate, diagnose, upgrade and recover the complete product through the delivered binary/image, documented CLI and authenticated management API.
 
@@ -102,6 +102,13 @@ dataset/frontier separately from a mere unavailable socket.
 - [ ] **Step 3:** implement action/resource authorization at the command handler, protected secret-reference write, and attributable append-only audit entries for accepted/rejected requests. Securely open supported regular secret files and reject pipe/device/disallowed symlink substitutions; enforce owner/mode/size on the opened descriptor. Never return stored secrets or permit arbitrary path browsing.
 - [ ] **Step 4:** propose `cargo test -p bigbrotr --test management_auth`: wrong/expired/replayed bootstrap, concurrent enrollment, session fixation, CSRF/origin failure, viewer POST, operator private export, privilege escalation through configuration, revoked key during active work and malicious secret file. Negative control: an administrator-approved ordinary status action succeeds while the same principal without a private-export grant still fails that export; authentication alone cannot satisfy the oracle.
 - [ ] **Step 5:** propose acceptance scenario `management-auth` against both actual private listener and public reverse-proxy route. Verify private routes cannot be reached publicly even with guessed URLs, compare permission matrix to server responses, and retain safe audit IDs plus network traces with credentials removed.
+
+The first 0801 slice supplies immutable installation principals and the accepted
+initialization audit receipt consumed by `config initialize`. These are attribution,
+not enrolled users or grants. Complete human accounts/challenges/sessions and
+ordinary audit in subsequent immutable migrations, allocated through the central
+manifest; do not modify published 0801 or backfill synthetic actors as owners.
+No T02 step is complete from this foundation alone.
 
 **Failure states:** unavailable policy authority causes expiry/fail-closed, not anonymous fallback. Last-owner recovery is an explicit local, positively authorized CLI operation with an audit record; it cannot be triggered through an unauthenticated HTTP request. Enrollment output is never copied into CI evidence.
 

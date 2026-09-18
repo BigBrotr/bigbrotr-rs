@@ -90,3 +90,88 @@ fn report(root: Resolved, observation: ConfigurationObservation) -> CliResult<(V
         0,
     ))
 }
+
+pub(crate) fn initialize(root: Resolved) -> CliResult<(Value, u8, OwnedPermit)> {
+    use bigbrotr::storage::postgres::initialization::{
+        self, InitialConfiguration, InitializeError,
+    };
+    use bigbrotr_model::Digest256;
+    use std::cell::Cell;
+
+    let required = |key: &str| {
+        root.text(key)
+            .ok_or_else(|| (3, format!("{key}: required for Control initialization")))
+    };
+    let dataset: DatasetId = required("topology.dataset_id")?
+        .parse()
+        .map_err(|_| (3, "invalid dataset identity".into()))?;
+    let instance: DatasetId = required("topology.instance_id")?
+        .parse()
+        .map_err(|_| (3, "invalid instance identity".into()))?;
+    let source: Digest256 = root
+        .document_sha256
+        .parse()
+        .map_err(|_| (3, "invalid source digest".into()))?;
+    let (prepared, grant) = postgres_command::prepare(
+        &root,
+        required("postgres.control.user")?,
+        required("postgres.control.password_ref")?,
+        512 * 1024 * 1024,
+    )?;
+    let seed = PolicySeed::from_resolved(&root).map_err(|error| (3, error))?;
+    let input = InitialConfiguration {
+        dataset,
+        instance,
+        authority_mode: required("config.authority_mode")?,
+        document: seed.document(),
+        document_digest: seed.digest(),
+        source_digest: *source.as_bytes(),
+    };
+    let runtime = tokio::runtime::Builder::new_current_thread()
+        .enable_all()
+        .build()
+        .map_err(|_| (1, "cannot start finite Control executor".into()))?;
+    let result = runtime.block_on(async {
+        let (mut client, driver) = postgres_command::connect(prepared)
+            .await
+            .map_err(|_| InitializeError::Backend)?;
+        let commit_started = Cell::new(false);
+        let result = match tokio::time::timeout(
+            Duration::from_secs(30),
+            initialization::initialize(&mut client, input, &commit_started),
+        )
+        .await
+        {
+            Ok(result) => result,
+            Err(_) if commit_started.get() => Err(InitializeError::CommitUnknown),
+            Err(_) => Err(InitializeError::Backend),
+        };
+        postgres_command::close(client, driver).await;
+        result
+    });
+    runtime.shutdown_timeout(postgres_command::DRIVER_DRAIN);
+    let (report, code) = match result {
+        Ok(receipt) => (
+            json!({"format":"bigbrotr-control-initialization/1",
+            "status":if receipt.created {"initialized"} else {"already-initialized"},
+            "dataset_id":dataset,"instance_id":instance,"initial_revision":"1",
+            "installation_actor":receipt.actor,
+            "audit_id":receipt.audit_id.iter().map(|b|format!("{b:02x}")).collect::<String>(),
+            "initial_policy_sha256":receipt.document_digest.iter().map(|b|format!("{b:02x}")).collect::<String>(),
+            "candidate_policy_differs":receipt.document_digest != seed.digest(),
+            "source_file_differs":receipt.source_digest != *source.as_bytes(),
+            "owner_enrollment":"not-performed","runtime_authorization":"not-granted",
+            "applied_revision":null,"security_revision":null}),
+            0,
+        ),
+        Err(InitializeError::CommitUnknown) => (
+            json!({"format":"bigbrotr-control-initialization/1",
+            "status":"outcome-unknown","dataset_id":dataset,"instance_id":instance,
+            "resolution":"retry initialize with the same dataset/instance; serialized observation resolves the original receipt without reseeding",
+            "runtime_authorization":"not-granted"}),
+            4,
+        ),
+        Err(error) => return Err((1, error.to_string())),
+    };
+    Ok((report, code, grant))
+}

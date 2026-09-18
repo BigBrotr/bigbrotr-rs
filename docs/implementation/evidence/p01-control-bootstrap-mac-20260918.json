@@ -1,0 +1,64 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-18",
+  "status": "PASS",
+  "scope": "Mac compilation, CLI refusal, catalog compatibility and existing workspace regression; native initialization NOT_RUN",
+  "base_revision": "28211f85e4b77ef59e9b63a5ecc854b2079db38e",
+  "source_state": "root dirty candidate; not a clean archive qualification",
+  "source_sha256": {
+    "apps/bigbrotr/src/config/mod.rs": "2c6158641537e5cdddf064b57cc69219bdfb4bc72c86e2803d21aaa55a726881",
+    "apps/bigbrotr/src/config/policy.rs": "ec060881abac25614bcefa01d99ceb4caf0a2408d73b813c7866aa5c94d56342",
+    "apps/bigbrotr/src/interfaces/configuration.rs": "d6811b7db6c4a2365049fcf0c98ed2f68542c44b8eee9d8453364ba52ca591d6",
+    "apps/bigbrotr/src/storage/postgres/configuration.rs": "7ebf2b84d58268ba39ee7ae0219f11b65c72286dfd79018fc647d3b8398f37fa",
+    "apps/bigbrotr/src/storage/postgres/ingest_registry.rs": "8932f096fd9ee7342087fa3fd9919a83606113fff8e47f63a3ee4b24841ddffa",
+    "apps/bigbrotr/src/storage/postgres/initialization.rs": "a3744bcd9fdcb1f2eb6010d6876d4c2d2e979c93c8a608c3812bb297f7797c97",
+    "apps/bigbrotr/src/storage/postgres/migration_runner.rs": "ac66ea75ea510b3250039f336b37a8528f1afc9e080919fea871650f0b9e5037",
+    "apps/bigbrotr/src/storage/postgres/migrations.rs": "2b5873207462135dc16cf7124585e0c5497c716033f3665365563c5cdd22a63a",
+    "apps/bigbrotr/src/storage/postgres/mod.rs": "b78f163e780d5813ff7797e553caf4f50c8e5bab28a7771487091338c50b7f21",
+    "apps/bigbrotr/tests/control_schema.rs": "ebdb773353ca44069ff006ada1f9fb8456bdf6c32bc3a16ce905bba08f791c2e",
+    "apps/bigbrotr/tests/policy_seed.rs": "611a3ac22e22297ffbec2dd5c525a98cdc57eca2b10e5e0b6639e68ae49e44af",
+    "crates/bigbrotr-model/src/identity.rs": "5a4971abe6d837ad3530f11f682a0149c141c76f98f2e1abc6f885b59c09c255",
+    "crates/bigbrotr-model/src/lib.rs": "c116aea45b6fb957d89a76f586dce4a9f3c1fa6104b9f5ab0d6ac43dab1ba6d2",
+    "migrations/postgres/0801_management_identity.sql": "ff834dc640ae9a26ca69a0aa6d5b5c849a7bb3e6df8c3aeee304d2df6cec66bf"
+  },
+  "environment": {
+    "target": "aarch64-apple-darwin",
+    "rustc": "1.98.1",
+    "cargo_lock_sha256": "bff3ccfcaf614d60e9db4a300560190db5fcd9e635d6ac30f1d4b3af6d5e573d",
+    "target_cache": ".research/worktrees/rocks-store/.research/implementation/rocks-store/target"
+  },
+  "checks": {
+    "workspace": {
+      "passed": 187,
+      "failed": 0,
+      "ignored": 0
+    },
+    "clippy": "PASS workspace all-targets -D warnings",
+    "fmt": "PASS",
+    "artifacts": "PASS structural links/JSON/Python syntax only"
+  },
+  "test_history": "Actual initialize CLI RED: unsupported command exit2; implemented live credential path produces required redacted exit3. Local initial17 targeted tests and later full187-test workspace passed. No local PostgreSQL bootstrap assertion was executed.",
+  "upstream": [
+    "https://www.postgresql.org/docs/16/functions-info.html",
+    "https://www.postgresql.org/docs/16/transaction-iso.html"
+  ],
+  "decisions": [
+    "Protected application credential plus narrow SQL privileges authorizes the explicit deployment initializer; installation actor records SESSION_USER/local UID, with no login/grants. UID is attribution, not remote identity proof.",
+    "0801 first responsibility is installation attribution and immutable bootstrap audit. Human identity/session/grant tables remain required future consumers in new immutable migrations.",
+    "Central migration application order is append-only; reserved IDs do not impose phase barriers. Shared bounded reader validates that order; known additive migrations do not break older consumers."
+  ],
+  "review": "Root reviewed complete changed Rust/DDL/callers, generated prose and native harness; no independent agent available. Harness review corrected unavailable build_path metadata to actual read-only /build mount, and SQL parameters use explicit base-type casts for domains.",
+  "not_run": [
+    "25 actual native PG/CLI/fault scenarios in experiments/control-initialization/run.py.",
+    "Human enrollment, credentials, sessions, active security policy, first native writer and signed-event journey.",
+    "Maximum configuration load/memory, initializer TLS/mTLS, engine power-loss, Linux arm64/bootstrap and packaged release qualification."
+  ],
+  "raw_root": ".research/implementation/control-bootstrap",
+  "logs_sha256": {
+    "build.log": "526abf9dfac6899a27820364f1109fa57470550f68e9ac0fcb004b53d462c8c9",
+    "clippy.log": "bb55a986cfef38002476576de7053cccc94bb3bc238f9b27c48f29f254c0b06e",
+    "entrypoint-red.log": "503069186c7a5a8eae8c72c26d06c066b06ca45f3b564e1cbb7c779f227c9a6b",
+    "initial-green.log": "e97e019344e0772809ad0de3b4bddb683a140f035988d5129f813950c2096b4a",
+    "workspace.log": "51727fbb758659b4b0b0157248f84a3d02857a2be7930786b294ba69dc4dd5d1"
+  }
+}

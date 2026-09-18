@@ -24,7 +24,8 @@ impl Migration {
     }
 }
 
-static MIGRATIONS: [Migration; 2] = [
+// Application order matches migrations/manifest.json, independent of reserved ID order.
+static MIGRATIONS: [Migration; 3] = [
     Migration {
         version: 1,
         name: "0001_control.sql",
@@ -37,6 +38,14 @@ static MIGRATIONS: [Migration; 2] = [
         version: 2,
         name: "0002_ingest.sql",
         sql: include_str!("../../../../../migrations/postgres/0002_ingest.sql"),
+        reader_min: 1,
+        reader_max: 1,
+        writer_floor: 1,
+    },
+    Migration {
+        version: 801,
+        name: "0801_management_identity.sql",
+        sql: include_str!("../../../../../migrations/postgres/0801_management_identity.sql"),
         reader_min: 1,
         reader_max: 1,
         writer_floor: 1,
@@ -74,6 +83,7 @@ pub enum MigrationError {
     IncompatibleReader,
     IncompatibleWriter,
     Downgrade,
+    MissingPrerequisite(u32),
 }
 impl fmt::Display for MigrationError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -99,6 +109,9 @@ impl fmt::Display for MigrationError {
                 f.write_str("control schema is outside this reader's compatibility range")
             }
             Self::IncompatibleWriter => f.write_str("control writer floor excludes this binary"),
+            Self::MissingPrerequisite(version) => {
+                write!(f, "control migration {version} must be applied explicitly")
+            }
             Self::Downgrade => {
                 f.write_str("control migration downgrade is unsupported; use qualified recovery")
             }
@@ -109,6 +122,17 @@ impl std::error::Error for MigrationError {}
 
 pub fn plan(applied: &[AppliedMigration], target: u32) -> Result<MigrationPlan, MigrationError> {
     plan_catalog(catalog(), applied, target, READER_VERSION, WRITER_VERSION)
+}
+
+/// Validate the whole known history while allowing an older consumer to operate
+/// after additive migrations. IDs are reservations, not application chronology.
+pub fn require_applied(applied: &[AppliedMigration], required: u32) -> Result<(), MigrationError> {
+    let latest = catalog().last().expect("nonempty catalog").version;
+    plan(applied, latest)?;
+    if !applied.iter().any(|entry| entry.version == required) {
+        return Err(MigrationError::MissingPrerequisite(required));
+    }
+    Ok(())
 }
 
 fn plan_catalog(
@@ -208,6 +232,40 @@ mod compatibility_tests {
         assert!(matches!(
             plan_catalog(&TWO, &[receipt(&TWO[1])], 501, 2, 2),
             Err(MigrationError::HistoryNotPrefix)
+        ));
+    }
+    #[test]
+    fn later_application_can_use_a_lower_reserved_id() {
+        static ORDERED: [Migration; 2] = [
+            Migration {
+                version: 801,
+                name: "0801_identity.sql",
+                sql: "first",
+                reader_min: 1,
+                reader_max: 1,
+                writer_floor: 1,
+            },
+            Migration {
+                version: 501,
+                name: "0501_analytics.sql",
+                sql: "next",
+                reader_min: 1,
+                reader_max: 1,
+                writer_floor: 1,
+            },
+        ];
+        let result = plan_catalog(&ORDERED, &[receipt(&ORDERED[0])], 501, 1, 1).unwrap();
+        assert_eq!(result.from, Some(801));
+        assert_eq!(result.pending[0].version, 501);
+        assert!(matches!(
+            plan_catalog(
+                &ORDERED,
+                &[receipt(&ORDERED[0]), receipt(&ORDERED[1])],
+                801,
+                1,
+                1
+            ),
+            Err(MigrationError::Downgrade)
         ));
     }
     #[test]

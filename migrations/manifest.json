@@ -1,0 +1,29 @@
+{
+  "format": "bigbrotr-migration-catalog/1",
+  "engine": "postgres-control",
+  "application_order": [
+    {
+      "version": 1,
+      "name": "0001_control.sql"
+    },
+    {
+      "version": 2,
+      "name": "0002_ingest.sql"
+    },
+    {
+      "version": 801,
+      "name": "0801_management_identity.sql"
+    }
+  ],
+  "reserved": [
+    {
+      "version": 802,
+      "name": "0802_management_commands.sql"
+    },
+    {
+      "version": 803,
+      "name": "0803_saved_views.sql"
+    }
+  ],
+  "rule": "Append in implementation order; never reorder or change published SQL. Numeric reservations do not impose phase barriers."
+}

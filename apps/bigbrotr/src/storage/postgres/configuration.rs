@@ -76,10 +76,7 @@ pub async fn inspect(
     let ledger = migration_runner::read_ledger(&tx)
         .await
         .map_err(|_| InspectError::IncompatibleSchema)?;
-    let plan = migrations::plan(&ledger, 2).map_err(|_| InspectError::IncompatibleSchema)?;
-    if !plan.pending.is_empty() {
-        return Err(InspectError::IncompatibleSchema);
-    }
+    migrations::require_applied(&ledger, 2).map_err(|_| InspectError::IncompatibleSchema)?;
     let rows = tx.query("SELECT substring(d.dataset_id FROM 1 FOR 17), substring(d.instance_id FROM 1 FOR 17), left(d.config_revision::text,21), left(d.policy_revision::text,21), c.schema_version, left(c.authority_mode,12), CASE WHEN octet_length(c.document::text) <= $1 THEN c.document::text ELSE NULL END, substring(c.document_digest FROM 1 FOR 33), substring(c.accepted_source_digest FROM 1 FOR 33) FROM control.datasets d LEFT JOIN control.config_revisions c ON c.dataset_id = d.dataset_id AND c.revision = d.config_revision LIMIT 2", &[&DOCUMENT_LIMIT]).await.map_err(backend)?;
     let result = match rows.as_slice() {
         [] => ConfigurationObservation::NoDataset,

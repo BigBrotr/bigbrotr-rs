@@ -106,6 +106,35 @@ allowance plus protected-connection preparation, retained through output. This
 allowance is not measured peak RSS or an engine query-cost guarantee. Physical
 SQL scan/MVCC cost and peak memory remain workload qualification work.
 
+## Explicit initial Control acceptance
+
+`config initialize --file PATH` is the finite deployment command that accepts a
+validated candidate into genuinely uninitialized Control. It requires the
+protected configured PostgreSQL application credential and migration 0801; it
+never migrates, opens native stores, enrolls a human, starts roles or returns a
+runtime authorization grant. The provisioning operator controls that credential
+and its narrow SQL grants. An installation actor records the database session
+role and effective local OS UID; the UID is local command attribution, not a
+remote authentication proof. That actor has no password, session or action
+grants and cannot become the first owner through an HTTP request.
+
+The transaction acquires the shared migration lock, then the database-local
+initialization lock, before observing state with Read Committed. On a truly empty
+dataset it creates the dataset identity, installation principal, config revision
+1 and an immutable initialization audit receipt together, using synchronous
+commit. Existing matching initialization is reported without reseeding policy;
+different identities, incomplete existing state and unattributed historical rows
+are refused. A lost COMMIT response remains unknown until a retry obtains the
+same initialization lock and observes the same dataset/instance and receipt.
+Changed managed or declarative candidate policy never overwrites existing state.
+The returned initial revision is not the current applied/security revision.
+
+P08-T02 still owns the separate random, short-lived single-use owner enrollment,
+local credentials, sessions, grants, rejected-request audit and local recovery.
+Only installation principals and their initialization audit records have their
+first consumer here. Subsequent immutable migrations extend those relations;
+existing synthetic actors are not silently promoted into authenticated accounts.
+
 ## Shared budget allocator
 
 Treat the host envelope as the upper bound. Component limits cannot all claim the

@@ -301,3 +301,24 @@ faults and P05/P06/P08 real producer-to-query/export journeys. Compare declared
 tables, columns, row units, ownership and dependencies against actual engine
 introspection; then query them through independent readers. A name inventory
 alone cannot certify the layout or the correctness of its joins.
+
+### Initial installation attribution and application order
+
+The [central migration manifest](../../migrations/manifest.json) records actual
+application order separately from reserved numeric IDs. The compiled catalog is
+checked against it. Append a migration when its first responsibility exists;
+never insert it before already published entries, even if its reserved ID is
+lower. Ledger readers validate and order known receipts by catalog position.
+Unknown, reordered, missing or changed history is still refused. Old binaries
+that do not know 0801 refuse that schema; binary rollback therefore requires an
+explicit compatible artifact, not a guessed numeric version comparison.
+
+0801 initially implements only `principals` of kind `installation` and
+`management_audit` for accepted `dataset.initialize`. This actor records the
+PG session role and local effective UID and is incapable of login or grants.
+The initializer atomically binds dataset/config revision 1, actor and audit ID.
+The initialization audit is a permanent bootstrap/replay obligation, excluded
+from ordinary audit TTL. Existing unattributed config rows remain untouched and
+cannot be adopted by bootstrap. P08-T02 extends the schema with real credential,
+session, grant and ordinary audit consumers using newly allocated immutable
+migrations; its full relation inventory above remains required.

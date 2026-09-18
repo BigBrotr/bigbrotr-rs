@@ -180,6 +180,13 @@ pub(super) async fn read_ledger(tx: &Transaction<'_>) -> Result<Vec<AppliedMigra
     }
     // Never sort an arbitrarily damaged database table. Only this bounded,
     // validated result is ordered; physical MVCC scan cost is not a hard cap.
-    result.sort_unstable_by_key(|row| row.version);
+    // The central catalog is append-only in implementation order. Reserved
+    // phase IDs can be implemented out of numerical order.
+    result.sort_unstable_by_key(|row| {
+        migrations::catalog()
+            .iter()
+            .position(|entry| entry.version == row.version)
+            .unwrap_or(usize::MAX)
+    });
     Ok(result)
 }

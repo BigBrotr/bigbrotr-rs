@@ -4,7 +4,7 @@
 //! The caller owns the configured application connection, driver, deadline and
 //! resource charges. After cancellation, discard that connection and resolve the
 //! same owned attempt through a fresh connection; never infer rollback from Drop.
-use super::migrations::{self, AppliedMigration};
+use super::{migration_runner, migrations};
 use bigbrotr_model::{
     AllocationDomainId, DatasetId, DictionaryKind, Digest256, OwnerEpoch, OwnerResourceId,
     ProcessIncarnation, ProducerSlotId, TopologyGeneration,
@@ -280,34 +280,10 @@ async fn validate_backend(tx: &Transaction<'_>) -> Result<(), RegistryError> {
     if boolean(&row, 0)? {
         return Err(RegistryError::MigrationPrivileges);
     }
-    let rows = tx.query("SELECT left(engine,129), migration::bigint, left(name,129), substring(checksum FROM 1 FOR 33), reader_min::bigint, reader_max::bigint, writer_floor::bigint FROM control.schema_versions LIMIT 3", &[])
-        .await.map_err(backend)?;
-    if rows.len() != 2 {
-        return Err(RegistryError::IncompatibleSchema);
-    }
-    let mut applied = Vec::with_capacity(2);
-    for row in rows {
-        if row.try_get::<_, &str>(0).map_err(backend)? != migrations::ENGINE {
-            return Err(RegistryError::IncompatibleSchema);
-        }
-        let number = |column| -> Result<u32, RegistryError> {
-            u32::try_from(row.try_get::<_, i64>(column).map_err(backend)?)
-                .map_err(|_| RegistryError::InvalidMetadata)
-        };
-        applied.push(AppliedMigration {
-            version: number(1)?,
-            name: row.try_get::<_, String>(2).map_err(backend)?,
-            checksum: fixed_bytes(row.try_get::<_, &[u8]>(3).map_err(backend)?)?,
-            reader_min: number(4)?,
-            reader_max: number(5)?,
-            writer_floor: number(6)?,
-        });
-    }
-    applied.sort_unstable_by_key(|entry| entry.version);
-    let plan = migrations::plan(&applied, 2).map_err(|_| RegistryError::IncompatibleSchema)?;
-    if !plan.pending.is_empty() {
-        return Err(RegistryError::IncompatibleSchema);
-    }
+    let applied = migration_runner::read_ledger(tx)
+        .await
+        .map_err(|_| RegistryError::IncompatibleSchema)?;
+    migrations::require_applied(&applied, 2).map_err(|_| RegistryError::IncompatibleSchema)?;
     Ok(())
 }
 

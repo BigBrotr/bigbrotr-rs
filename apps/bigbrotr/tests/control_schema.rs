@@ -148,3 +148,44 @@ fn checksum_covers_exact_sql_bytes_without_newline_normalization() {
     migration.sql = "abc\n";
     assert_ne!(migration.checksum(), abc_digest);
 }
+
+#[test]
+fn initialization_migration_has_an_exact_known_prefix_and_older_consumers_remain_usable() {
+    let initial = plan(&[], 801).unwrap();
+    assert_eq!(
+        initial
+            .pending
+            .iter()
+            .map(|m| m.version)
+            .collect::<Vec<_>>(),
+        [1, 2, 801]
+    );
+    let applied: Vec<_> = initial
+        .pending
+        .iter()
+        .map(|m| AppliedMigration {
+            version: m.version,
+            name: m.name.into(),
+            checksum: m.checksum(),
+            reader_min: m.reader_min,
+            reader_max: m.reader_max,
+            writer_floor: m.writer_floor,
+        })
+        .collect();
+    assert!(migrations::require_applied(&applied, 2).is_ok());
+    assert!(migrations::require_applied(&applied[..2], 801).is_err());
+    assert!(migrations::require_applied(&applied[..2], 2).is_ok());
+    assert!(plan(&applied, 801).unwrap().pending.is_empty());
+}
+
+#[test]
+fn compiled_migrations_match_the_central_application_order() {
+    let manifest: serde_json::Value =
+        serde_json::from_str(include_str!("../../../migrations/manifest.json")).unwrap();
+    let entries = manifest["application_order"].as_array().unwrap();
+    assert_eq!(entries.len(), catalog().len());
+    for (entry, compiled) in entries.iter().zip(catalog()) {
+        assert_eq!(entry["version"], compiled.version);
+        assert_eq!(entry["name"], compiled.name);
+    }
+}

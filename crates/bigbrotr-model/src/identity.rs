@@ -128,6 +128,8 @@ fixed_hex!(PublicKey, 32);
 fixed_hex!(Signature, 64);
 fixed_hex!(Digest256, 32);
 fixed_hex!(DatasetId, 16, nonzero);
+// Attribution identity only; parsing never authenticates a principal.
+fixed_hex!(PrincipalId, 16, nonzero);
 // Names control.owner_epochs.resource_id and its synchronized ingest manifest.
 // A resource name is not an ownership grant.
 fixed_hex!(OwnerResourceId, 16, nonzero);
