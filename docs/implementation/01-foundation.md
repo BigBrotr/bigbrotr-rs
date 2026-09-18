@@ -233,14 +233,14 @@ records 30 main scenarios, three FK schedules and actual crash/recovery at fe638
 The owner-supplied monitor findings now have [exact-revision native evidence](evidence/p01-monitor-corrections-native-20260918.json):
 MON-002 explicit PostgreSQL port parity, MON-004 residual lease scheduling and
 MON-001 genuinely blocked lifecycle/error output have scoped regression results.
-MON-005 was reproduced at `2c0dfc1`: the real 200,000-entry candidate passed compact
-JSON validation but failed the existing JSONB storage cap. The corrected candidate
-counts both encodings before acceptance, preserving SQL/read caps and identities.
-Its [size harness](../../experiments/configuration-inspection/README.md#jsonb-document-size-acceptance)
-remains NOT_RUN on native PostgreSQL until recorded otherwise. Step 7 maximum-document
-acceptance must include bounded pre-acceptance refusal, near-limit successful
-initialization, inspection and activation, with numerical rendering controls.
-Do not alter an applied migration or label the failed initialization PASS.
+MON-005 was reproduced at `2c0dfc1`: compact validation accepted a policy exceeding
+the JSONB storage cap. The corrected encoder counts both representations before
+acceptance, preserving SQL/read caps and identities. Its [native size evidence](evidence/p01-jsonb-limit-native-20260918.json)
+at `c7e0c09` includes initialization/inspection/activation/retries at cap-1 and cap,
+pre-acceptance refusal at cap+1 and the original 200,000-entry counterexample,
+tiny finite fractions and Unicode/escape controls. The first harness failure is
+retained separately. These scoped Step 7 cases pass; peak memory, complete role
+configuration, managed updates and the full task remain open.
 
 ## P01-T05 — Shared resource budget, scheduling and lifecycle
 

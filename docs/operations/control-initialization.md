@@ -82,3 +82,8 @@ qualification above.
 
 [First security activation](initial-activation.md) is separately explicit after
 migration 802. It may precede or follow owner enrollment; it does not start roles.
+
+[Maximum policy-size evidence](../implementation/evidence/p01-jsonb-limit-native-20260918.json)
+separately qualifies `c7e0c09`: a 10 MiB JSONB policy survives initialization,
+inspection, first activation and identical retries; larger persisted renderings
+are refused before acceptance. This does not measure peak memory or fleet capacity.

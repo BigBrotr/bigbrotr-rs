@@ -312,6 +312,25 @@ its grant until joined/positively terminated. These limitations are explicit in
 [statement.rs](https://github.com/duckdb/duckdb-rs/blob/88f673c5cdf09e287c010a910db53b97e523a9fa/crates/duckdb/src/statement.rs)
 and [arrow_batch.rs](https://github.com/duckdb/duckdb-rs/blob/88f673c5cdf09e287c010a910db53b97e523a9fa/crates/duckdb/src/arrow_batch.rs).
 
+The same pinned binding rejects nested List/Array/Struct/Map/Union values through
+`ToSql`; its `Value` enum is not evidence that those parameters can be bound.
+Ordered nested tags therefore need the already selected Arrow path rather than
+scalar parameter conversion. The `appender-arrow` feature accepts a RecordBatch,
+slices it to the native vector size and converts one DataChunk per slice. Include
+both Arrow buffers and the native converted chunk in the grant. Its list
+conversion passes the entire `values()` child array to the native child vector;
+an Arrow slice can retain child values outside its visible rows. Do not infer a
+small byte bound from the sliced parent row count, and avoid repeatedly converting
+a large shared child buffer across small parent slices. Qualify bounded record
+batches and actual nested allocation/amplification at this boundary. Explicitly flush
+and check every appender before commit: Drop discards flush errors. These are
+scoped source observations from `src/types/to_sql.rs`, `src/appender/arrow.rs`,
+`src/appender/mod.rs` and `src/arrow_interop/to_duckdb.rs` at the pinned revision,
+plus checksum-verified arrow-array 58.4.0 `GenericListArray::slice`; they are not
+executed adapter qualification.
+Nested conversion, huge rows, allocation/flush errors and readback remain P02-T04
+acceptance work.
+
 Arrow is the in-process columnar interchange representation; Rust Parquet handles
 ordinary research/import/export artifacts, independent fidelity checks and bounded
 file readers/writers. DuckLake/DuckDB owns its transactional archive catalog and

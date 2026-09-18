@@ -55,3 +55,9 @@ Accepted cases execute retry/read/activation/read/retry and compare both complet
 stored documents; rejected cases require unchanged entire Control dump digests.
 No peak RSS, mixed-load capacity, full task completion or release is established.
 `jsonb-cases.json` also supplies the Rust counter's exact-boundary tests.
+
+[Executed native size evidence](../../docs/implementation/evidence/p01-jsonb-limit-native-20260918.json)
+qualifies `c7e0c09` on Linux amd64/PG16.15, including both complete stored documents
+at the exact cap. The first `de49f18` harness incorrectly selected an unimplemented
+source-setting field and failed before large admission. Its 22 passed rendering
+vectors and failed case remain recorded; the corrected fixture uses `seed.file`.

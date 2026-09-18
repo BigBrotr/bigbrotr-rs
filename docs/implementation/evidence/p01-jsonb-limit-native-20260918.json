@@ -1,0 +1,280 @@
+{
+  "format": "bigbrotr-jsonb-limit-qualification/1",
+  "observed_date": "2026-09-18",
+  "status": "PASS",
+  "finding": "MON-005",
+  "scope": "P01-T04/P02-T01 normalized candidate and persisted JSONB size compatibility; no complete task or release qualification",
+  "implementation": {
+    "revision": "de49f18972a9cbe3e014c3b4e830e20a91841558",
+    "qualified_revision": "c7e0c093a7666c9b66ed1c3950ed7a8886ee8fe3",
+    "qualified_tree": "64cd79637c7ae3551394843f7d30bb4d5b531a3c",
+    "harness_correction_only": [
+      "docs/implementation/progress.md",
+      "docs/research/laboratory-inventory.json",
+      "experiments/configuration-inspection/size_limits.py"
+    ],
+    "compatibility": "No policy bytes/domain/version, Cargo dependency, SQL CHECK, applied migration or reader cap changed. Compact JSON and pinned JSONB rendering are separately bounded to 10 MiB before acceptance."
+  },
+  "engine": {
+    "version": "160015",
+    "fsync": "on",
+    "full_page_writes": "on",
+    "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+  },
+  "artifact": {
+    "cli_sha256": "8087b78df1fd55451e5865588854230750839fea834cd1ab70d65513497bf67d",
+    "architecture": "native Linux amd64",
+    "source_entries_verified": 544,
+    "build_audit": {
+      "status": "PASS",
+      "source": "c7e0c093a7666c9b66ed1c3950ed7a8886ee8fe3",
+      "tree": "64cd79637c7ae3551394843f7d30bb4d5b531a3c",
+      "source_files": 544,
+      "cli_sha256": "8087b78df1fd55451e5865588854230750839fea834cd1ab70d65513497bf67d",
+      "native_tools": {
+        "CC": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+        "CXX": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+        "AR": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+        "LIBCLANG_PATH": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+        "discovery": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e"
+      },
+      "terminal": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-09-18T10:28:34.731823237Z",
+        "FinishedAt": "2026-09-18T10:34:34.735796541Z"
+      }
+    }
+  },
+  "source_inspection": {
+    "postgres": {
+      "tag": "REL_16_15",
+      "commit": "7d3e000c5961a544302072058a1184e9a588837b",
+      "files": {
+        "jsonb.c": {
+          "url": "https://raw.githubusercontent.com/postgres/postgres/7d3e000c5961a544302072058a1184e9a588837b/src/backend/utils/adt/jsonb.c",
+          "sha256": "d359e1bd6bbfab80ec57a2c4e080ebc616541e180aee997fa5675bef83d9efce"
+        },
+        "json.c": {
+          "url": "https://raw.githubusercontent.com/postgres/postgres/7d3e000c5961a544302072058a1184e9a588837b/src/backend/utils/adt/json.c",
+          "sha256": "821912ea516ba6f12b47783bbdf1943f9c06e144b74abad4c3f79c1ad8697037"
+        },
+        "numeric.c": {
+          "url": "https://raw.githubusercontent.com/postgres/postgres/7d3e000c5961a544302072058a1184e9a588837b/src/backend/utils/adt/numeric.c",
+          "sha256": "c453e583776bd88c301197d6b8190cfba1491132f34fb1b2b30bd7f40f00a49b"
+        }
+      }
+    },
+    "serde_json": "1.0.151 Number::Display and Serialize both use pinned zmij finite-number formatting; float_roundtrip remains enabled",
+    "boundaries": "JSONB JsonbToCStringWorker/jsonb_put_escaped_value, escape_json, numeric set_var_from_str/get_str_from_var; normalized schema excludes NUL/control text and negative zero."
+  },
+  "native_cases": [
+    {
+      "name": "frozen-renderings",
+      "status": "PASS",
+      "count": 22
+    },
+    {
+      "name": "below",
+      "status": "PASS",
+      "compact_bytes": 10284724,
+      "jsonb_bytes": 10485759,
+      "policy_sha256": "b21fccbce7b36dcdb99e8b06ac8c7c8edce154fba7f8b4ee7e3fb1a4d8b94646",
+      "initialized_dump_sha256": "1533fc05d822baf24a7c4e29beb4310d45eba8f94ca6a18e61f249b99a7eaac4",
+      "activated_dump_sha256": "92bf15f32fbdc82ead34c1ca6381a4775e32f32bbefa8785213933d56b3f730b",
+      "source_bytes": 10280176
+    },
+    {
+      "name": "exact",
+      "status": "PASS",
+      "compact_bytes": 10284725,
+      "jsonb_bytes": 10485760,
+      "policy_sha256": "ae257282a71b2c7f3c7e39f505bbe0678585a71a2887fb59483d48f03d08ec42",
+      "initialized_dump_sha256": "33e5b3416cae03d8a456bf06f023c13c6c184e035645e09372e42e2924a1e585",
+      "activated_dump_sha256": "53bfbd83b41c615bc2c7db5bb9e89161ee4058697cb5fc606d012e3ade2a9e26",
+      "source_bytes": 10280177
+    },
+    {
+      "name": "above",
+      "status": "PASS",
+      "compact_bytes": 10284726,
+      "jsonb_bytes": 10485761,
+      "policy_sha256": "bff830158fe2fca4cb1b73aa18f4792e8855f2bada84da236ecccc69698035b0",
+      "unchanged_dump_sha256": "0436189965cfb2132e2ddd96574583963904d53a007944593aa3f6d58f5422b9",
+      "source_bytes": 10280178
+    },
+    {
+      "name": "original",
+      "status": "PASS",
+      "compact_bytes": 10407457,
+      "jsonb_bytes": 10607924,
+      "policy_sha256": "55e8e662742cc09b4dde97aae1e06f169d372d0852f111ae2b2fcbf5753637e2",
+      "unchanged_dump_sha256": "aea9d833079486d965ce52872b80d6ad20e57c389de2385ee131ebea8dca3531",
+      "source_bytes": 10402818
+    }
+  ],
+  "independent_audit": {
+    "status": "PASS",
+    "source": "c7e0c093a7666c9b66ed1c3950ed7a8886ee8fe3",
+    "cli_sha256": "8087b78df1fd55451e5865588854230750839fea834cd1ab70d65513497bf67d",
+    "accepted_documents": [
+      {
+        "name": "below",
+        "settings": 215,
+        "endpoint_values": 200000,
+        "digest": "b21fccbce7b36dcdb99e8b06ac8c7c8edce154fba7f8b4ee7e3fb1a4d8b94646",
+        "complete_config_and_policy_equal": true
+      },
+      {
+        "name": "exact",
+        "settings": 215,
+        "endpoint_values": 200000,
+        "digest": "ae257282a71b2c7f3c7e39f505bbe0678585a71a2887fb59483d48f03d08ec42",
+        "complete_config_and_policy_equal": true
+      }
+    ],
+    "refused_commands": 6,
+    "frozen_engine_vectors": 22,
+    "independent_oracle": "Frozen 215-setting policy, explicit mutations, Python Decimal fixed expansion and hashlib; complete stored values and real CLI outputs checked. Historical default fixture is product-derived, not an oracle for defaults."
+  },
+  "mac": {
+    "os": "Darwin",
+    "version": "26.5.2",
+    "architecture": "arm64",
+    "mode": "Workspace development Cargo; not a clean release build",
+    "binary_tests": 7,
+    "checks": [
+      "cargo test --locked -p bigbrotr --bin bigbrotr",
+      "cargo clippy --locked -p bigbrotr --all-targets -- -D warnings",
+      "cargo fmt --all --check",
+      "python3 experiments/verify_artifacts.py"
+    ],
+    "recipes": [
+      "archive-only",
+      "full",
+      "monitor-only",
+      "serve-existing",
+      "split-role",
+      "sync-only"
+    ],
+    "static_corrected_fixture": {
+      "jsonb_oracle_bytes": 10485759,
+      "compact_bytes": 10284724,
+      "sha256": "a88e5613bb746ad0b766a0a4a886bab06aff69b349444c2db1d25efca85e2fe6",
+      "scope": "Actual CLI validation; independently redistributed padding, distinct from the native accepted fixture"
+    }
+  },
+  "native_unit_tests": {
+    "revision": "de49f18972a9cbe3e014c3b4e830e20a91841558",
+    "executor": "tools.ci.execute with tools.build.clean_environment/native_toolchain",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--release",
+      "-p",
+      "bigbrotr",
+      "--bin",
+      "bigbrotr"
+    ],
+    "tests": 7,
+    "status": "PASS",
+    "artifact": {
+      "bigbrotr-ce8ef292b0e60376": {
+        "sha256": "2aaa0934f26426ce57f0bca7ed806b4e1d4f5d95ca58af3221454caec9a4588d",
+        "bytes": 2218296
+      }
+    },
+    "code_unchanged_at_qualified_revision": true
+  },
+  "retained_failures": [
+    {
+      "revision": "2c0dfc116daf1a397f06bad71ce7013864bacd01",
+      "status": "CONFIRMED_UNFIXED",
+      "evidence": "docs/implementation/evidence/p01-monitor-corrections-native-20260918.json",
+      "meaning": "Original static pass followed by actual PG storage refusal; historical report remains unchanged."
+    },
+    {
+      "scope": "Mac original guard regression",
+      "status": "FAIL_BEFORE_FIX",
+      "raw": ".research/implementation/monitor-corrections/jsonb-red.log",
+      "meaning": "Valid 200,000-entry resolved candidate was incorrectly accepted by compact-only encoding."
+    },
+    {
+      "revision": "de49f18972a9cbe3e014c3b4e830e20a91841558",
+      "status": "HARNESS_FAIL",
+      "engine_vectors_passed": 22,
+      "failure": "Unsupported discoverer.api.sources fixture refused before first large admission; later cases NOT_RUN. Corrected to supported seed.file, not a weakened invariant.",
+      "raw": ".research/implementation/jsonb-limit/first-run",
+      "superseded_by": "c7e0c093a7666c9b66ed1c3950ed7a8886ee8fe3"
+    }
+  ],
+  "resources": {
+    "inventory": "docs/research/laboratory-inventory.json#implementation_jsonb_limit_20260918",
+    "first_candidate": "Four containers stopped-retained",
+    "qualified_candidate": [
+      {
+        "name": "/bigbrotr-implementation-jsonb-c7e0c09-build",
+        "id": "fbd7a67e91b31d09cea6ebfe3167549b9177cdba47e76e131c246d60eea5d50f",
+        "state": "exited",
+        "exit": 0
+      },
+      {
+        "name": "/bigbrotr-implementation-pg-20260917-jsonb_verified",
+        "id": "b442315698a0ceae5091d80d25f2f7c6d43978e91a3a5973f0145a0182bb4be1",
+        "state": "exited",
+        "exit": 0
+      },
+      {
+        "name": "/bigbrotr-implementation-pg-20260917-jsonb_verified-client",
+        "id": "5a33a9c3083afcd8dda18af36384cd182de17ee4a8406e058ae7b614a43be98c",
+        "state": "exited",
+        "exit": 143
+      }
+    ],
+    "cleanup": "No running BigBrotr containers; same eight unrelated workloads unchanged, no removal; shared source clean and unchanged, no consumers."
+  },
+  "reproduction": {
+    "harness": "experiments/configuration-inspection/size_limits.py",
+    "vectors": "experiments/configuration-inspection/jsonb-cases.json",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/jsonb-c7e0c09",
+    "native_steps": [
+      {
+        "name": "runtime-setup",
+        "exit": 0
+      },
+      {
+        "name": "configuration-size",
+        "exit": 0
+      },
+      {
+        "name": "runtime-stop",
+        "exit": 0
+      }
+    ],
+    "raw": ".research/implementation/jsonb-limit/retry-c7e0c09",
+    "collection_files": 53,
+    "collection_manifest_sha256": "71e3d52f9f16667cb13185e04cb6697536497204f8bffe16620b1d533fc51eb4",
+    "workload": "Two accepted and two rejected 200,000-endpoint policies. Accepted cases include tiny fractions 2.0030397744267762e-253 and 5e-324, u64 max, escaped Unicode path, nested default revisit records. Complete 215-setting config/security documents and digests are checked."
+  },
+  "review": {
+    "kind": "Integrating owner plus earlier independent monitor finding; no new subagent review was available",
+    "result": "Changed code, caller preparation/restore boundaries, pinned serializer/engine functions, contracts, complete durable policy values and actual CLI outputs reviewed. Required size cases passed without raising limits."
+  },
+  "not_qualified": [
+    "Peak RSS/allocator or native-memory bound",
+    "Aged-state mixed workload/throughput/capacity",
+    "Uninterruptible I/O or host power loss",
+    "Complete configuration authority/CAS, source-policy activation and role lifecycle tasks",
+    "Native Linux arm64 or release installation",
+    "GitHub-hosted Actions runners (billing unavailable)",
+    "Complete M1 archive/read/export/restart or complete selected product"
+  ]
+}
