@@ -269,6 +269,13 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   recovery remain required; neither this probe nor parent-death signaling is that
   implementation. Apply the [complete exclusion ordering](../specification/archive-storage-contract.md#configuration-and-authority)
   to all credential holders and use fresh backend observations.
+  A bounded [PG metadata-trigger alternative](evidence/p02-catalog-guard-native-20260918.json)
+  now passes six actual native cases with live stale clients and both transaction
+  lock orders/commit/rollback. It remains an isolated candidate: qualify privilege
+  escapes, full mutation coverage and versioned initialization/migration before
+  selecting a product exception for guarded native metadata tables. This may
+  enforce commit exclusion without inferring remote process death; resource and
+  orphan cleanup still require their separate positive lifecycle evidence.
 - [ ] **Step 6:** Handle empty and one-small-event timer batches; publish useful progress
   without waiting for a size threshold that may never be reached.
 - [ ] **Step 7:** **Practical P02-T04:** run real PG/DuckLake transactions; kill preparation,

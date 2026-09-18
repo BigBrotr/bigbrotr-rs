@@ -6241,7 +6241,7 @@
       }
     },
     "catalog_commit_guard_probe": {
-      "status": "initial two native cases PASS at694be48; guard-races four cases NOT_RUN; product fence still unselected",
+      "status": "six native cases PASS; product candidate remains unselected pending privilege/full metadata coverage/migration gates",
       "native_source": "d8a1881e22516ea3d186d73e83c65fe5bd1a1dc4",
       "source_files_sha256": {
         "src/metadata_manager/postgres_metadata_manager.cpp": "c5783bf61ff1999565046de62a6b4c27f4ca6145dba7e39a609f282cab45879c",
@@ -6267,6 +6267,25 @@
         "state": "all stopped-retained; zero job backends; empty network retired",
         "retired_network": "3cf697fbd73206a1654841cdb4d42bf7d863dfe5a12f9c8321fcb8a6737f8409",
         "raw_result": ".research/implementation/archive-worker/catalog-fence/commit-guard/result.json"
+      },
+      "races": {
+        "source": "df2a0dbb30a7fed7495633bce7e5850ef2341b5e",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-guard-df2a0db/lab",
+        "owner": "0c0df18878a22c7cb25e80e331fdd3b0",
+        "containers": {
+          "bigbrotr-implementation-catalog-guard-df2a0db-runner": "3d749cbae4fd39acbd5a01996a623768aed8788d32db06c03a24a31b426b2438",
+          "bigbrotr-implementation-catalog-guard-df2a0db-pg": "cb01612bc8c2ec2873e25a821d5e94bf8ee22e9f383a3d8fda9fef6c4c20e206"
+        },
+        "state": "all stopped-retained; zero job backends; empty network retired",
+        "retired_network": "7ac86696277dc96ac7b85db34b5281d252bde49a866283dab66a91ec4961b9ba",
+        "raw_result": ".research/implementation/archive-worker/catalog-fence/commit-guard/races-result.json"
+      },
+      "audit": ".research/implementation/archive-worker/catalog-fence/commit-guard/audit.json",
+      "report": "docs/implementation/evidence/p02-catalog-guard-native-20260918.json",
+      "additional_source_read": {
+        "ducklake_initializer_sha256": "3546cc159fda22abf9e5ac6549f583902b77ebb86fddab4c6f14503153361b92",
+        "postgres_storage_sha256": "34afb7b369498b3b794d5cdd632a9f3072a20320e931c31e132aa2ccd3c35cff",
+        "scope": "Both files read completely; default PG isolation REPEATABLE READ and DuckLake metadata-option forwarding/migration behavior"
       }
     }
   },

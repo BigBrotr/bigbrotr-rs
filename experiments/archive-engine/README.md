@@ -150,10 +150,16 @@ maintenance/migration compatibility and practical cost still need qualification.
 Native metadata values are never manually edited. Production adoption would
 require an explicit update to the archive ownership contract and migration path.
 
-`--case-set guard-races` adds four **NOT_RUN** native transaction schedules:
+`--case-set guard-races` passes four native transaction schedules at `df2a0db`:
 writer versus takeover obtains the guard row first, followed by holder commit or
 rollback. A lab-only later snapshot trigger can hold a native commit behind an
 advisory barrier; it does not supply the candidate fence. Fresh pg_blocking_pids,
 pg_locks and backend incarnations prove actual blocking. `catalog_pg_session.py`
 owns bounded interactive psql controls and exact backend termination on cleanup.
 Literal independent counts distinguish committed old work from permitted replay.
+
+[The six-case report](../../docs/implementation/evidence/p02-catalog-guard-native-20260918.json)
+records source/artifact verification and the initial two cases separately. All
+four guard containers are stopped-retained, with no job backends; both empty
+networks were retired. This remains a candidate with explicit privilege,
+mutation-coverage and migration gates, not a product guarantee or full P02 step.

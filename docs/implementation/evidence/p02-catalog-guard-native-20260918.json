@@ -1,0 +1,333 @@
+{
+  "task": "P02-T04 step5 actual catalog commit-boundary alternative",
+  "date": "2026-09-18",
+  "status": "six native cases PASS; candidate not yet selected/implemented as product",
+  "purpose": "Replace inference from process/lease/login status with a possible actual PG metadata-write boundary. The already executed live-startup counterexample motivates this bounded alternative.",
+  "sources": [
+    {
+      "revision": "694be481d80433fc1b9f97d1a0edd44bb14de324",
+      "tree": "c0f93ccc15d2f18931207608b7da8e880d7c6409",
+      "source_files": 612,
+      "cases": 2,
+      "raw_result_sha256": "e5a7ea1177fae27751d924aa92b20a5ae2d5c99f0537452585ae368f19a28180"
+    },
+    {
+      "revision": "df2a0dbb30a7fed7495633bce7e5850ef2341b5e",
+      "tree": "47960922a234f4d1e10eaed8b8970a5435c6f22b",
+      "source_files": 613,
+      "cases": 4,
+      "raw_result_sha256": "e7f4a19a826dc7f9f16ad09b3ab77b3701dad4dbc3910f64cfd98f380d3f6f79"
+    }
+  ],
+  "native_probe_source": "a531ea3ce345f4008a05bbf1696fd1e1f9827872",
+  "probe_sha256": "793bd08ce5f99b32941da8485c0080c4656ed807ded41a7623b326a37b85e12d",
+  "native_tuple_reference": "p02-catalog-fence-native-20260918.json; exact a531ea3 unchanged probe/bundle",
+  "environment": {
+    "host": "Tux native Linux amd64",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "runner_image": "sha256:9d30ac361d158c281070d274427241bee955ead10904d6dbe4ff866200548f3d",
+    "server": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "cluster": "bigbrotr-fence-b5a827b440c750637af0279d477c4b29",
+      "host_scram": true
+    },
+    "runner_limits": {
+      "cpus": 2,
+      "memory_bytes": 2147483648,
+      "pids": 256
+    },
+    "postgres_limits": {
+      "cpus": 2,
+      "memory_bytes": 1610612736,
+      "pids": 256
+    },
+    "isolation": "separate new clusters/internal networks, no published ports or Docker socket in runner; source/native artifacts readonly; no release keys"
+  },
+  "candidate": {
+    "source": "experiments/archive-engine/catalog_commit_guard.sql",
+    "sha256": "640a450e327af43f65f96fe9053fa9dcb8c2b3bb26b134ffb1b44b2b8aaf0866",
+    "mechanism": "BEFORE STATEMENT INSERT/UPDATE/DELETE/TRUNCATE trigger on all28 frozen initialized native catalog tables. SECURITY DEFINER function locks separate owner singleton FOR SHARE and compares session_user; owner UPDATE waits for that transaction or makes a later old role fail. Ordinary role group loses catalog DDL/trigger privileges.",
+    "identity_scope": "Synthetic login identity only. Product epoch/token/CAS, precise least-privilege issuance/transition, ledger/checksum and initialization are not implemented by this SQL.",
+    "row_data": "No application rewriting of native metadata values/columns. The experiment adds triggers, which would require explicit versioned compatibility ownership before production adoption."
+  },
+  "cases": [
+    {
+      "case": "guard-ready-live-client",
+      "status": "PASS",
+      "stale_result": {
+        "exit": 1,
+        "phase": "commit"
+      },
+      "old_login_retained": true,
+      "old_client_killed": false,
+      "counts": [
+        1,
+        1,
+        1
+      ],
+      "wire": null
+    },
+    {
+      "case": "guard-invisible-live-client",
+      "status": "PASS",
+      "stale_result": {
+        "exit": 1,
+        "phase": "commit"
+      },
+      "old_login_retained": true,
+      "old_client_killed": false,
+      "counts": [
+        1,
+        1,
+        1
+      ],
+      "wire": {
+        "queries_before_ready": 0,
+        "queries_after_ready": 76,
+        "proof_sent_seconds": 0.21300652297213674,
+        "authenticated_seconds": 6.214182389900088,
+        "ready_seconds": 6.214415857102722,
+        "client_eof_seconds": 10.00762534327805,
+        "server_eof_seconds": 10.009363771881908
+      }
+    },
+    {
+      "case": "guard-race-writer-first-commit",
+      "status": "PASS",
+      "schedule": [
+        {
+          "waiter": {
+            "pid": 115,
+            "start": "2026-09-18 16:18:37.622045+00"
+          },
+          "holder": {
+            "pid": 118,
+            "start": "2026-09-18 16:18:37.725196+00"
+          },
+          "observed_blocking": true,
+          "ungranted_modes": [
+            "advisory:ExclusiveLock"
+          ]
+        },
+        {
+          "waiter": {
+            "pid": 117,
+            "start": "2026-09-18 16:18:37.70527+00"
+          },
+          "holder": {
+            "pid": 115,
+            "start": "2026-09-18 16:18:37.622045+00"
+          },
+          "observed_blocking": true,
+          "ungranted_modes": [
+            "advisory:ExclusiveLock",
+            "transactionid:ShareLock"
+          ]
+        }
+      ],
+      "old_result": {
+        "exit": 0,
+        "phase": null
+      },
+      "before_replay": [
+        1,
+        1,
+        1
+      ],
+      "final_counts": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "case": "guard-race-writer-first-rollback",
+      "status": "PASS",
+      "schedule": [
+        {
+          "waiter": {
+            "pid": 135,
+            "start": "2026-09-18 16:18:38.821263+00"
+          },
+          "holder": {
+            "pid": 138,
+            "start": "2026-09-18 16:18:38.902836+00"
+          },
+          "observed_blocking": true,
+          "ungranted_modes": [
+            "advisory:ExclusiveLock"
+          ]
+        },
+        {
+          "waiter": {
+            "pid": 137,
+            "start": "2026-09-18 16:18:38.8835+00"
+          },
+          "holder": {
+            "pid": 135,
+            "start": "2026-09-18 16:18:38.821263+00"
+          },
+          "observed_blocking": true,
+          "ungranted_modes": [
+            "advisory:ExclusiveLock",
+            "transactionid:ShareLock"
+          ]
+        }
+      ],
+      "old_result": {
+        "exit": -9,
+        "backend_terminated": true
+      },
+      "before_replay": [
+        0,
+        0,
+        0
+      ],
+      "final_counts": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "case": "guard-race-takeover-first-commit",
+      "status": "PASS",
+      "schedule": [
+        {
+          "waiter": {
+            "pid": 157,
+            "start": "2026-09-18 16:18:40.323053+00"
+          },
+          "holder": {
+            "pid": 159,
+            "start": "2026-09-18 16:18:40.384282+00"
+          },
+          "observed_blocking": true,
+          "ungranted_modes": [
+            "transactionid:ShareLock"
+          ]
+        }
+      ],
+      "old_result": {
+        "exit": 1,
+        "phase": "commit"
+      },
+      "before_replay": [
+        0,
+        0,
+        0
+      ],
+      "final_counts": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "case": "guard-race-takeover-first-rollback",
+      "status": "PASS",
+      "schedule": [
+        {
+          "waiter": {
+            "pid": 172,
+            "start": "2026-09-18 16:18:41.440985+00"
+          },
+          "holder": {
+            "pid": 174,
+            "start": "2026-09-18 16:18:41.5618+00"
+          },
+          "observed_blocking": true,
+          "ungranted_modes": [
+            "transactionid:ShareLock"
+          ]
+        }
+      ],
+      "old_result": {
+        "exit": 0,
+        "phase": null
+      },
+      "before_replay": [
+        1,
+        1,
+        1
+      ],
+      "final_counts": [
+        1,
+        1,
+        1
+      ]
+    }
+  ],
+  "independent_expected_results": [
+    "With old ready or invisible-startup clients and login retained, successor publishes one triple; old native COMMIT fails and reopened independent read sees[1,1,1]. PG logs contain exact catalog-writer exclusion error. Prior unguarded actual native control produced duplicates.",
+    "Writer first: takeover is observed blocked by the old native backend after the real guard has acquired its row lock. After native commit, fresh independent native reader resolves[1,1,1] and does not reinsert; after client kill/reap plus exact backend termination, fresh independent native reader resolves[0,0,0] and publishes once.",
+    "Takeover first: native commit is observed blocked by the controlling PG backend. Takeover COMMIT causes old native failure and absent old rows; takeover ROLLBACK lets old native commit. Final independent counts[1,1,1] in both.",
+    "pg_blocking_pids, pg_locks and both live PID/start-time incarnations establish each schedule. A lab-only later snapshot trigger waits on an advisory barrier in the writer-first cases; that barrier is not the candidate fence.",
+    "Each interactive control backend is terminated by exact incarnation then verified absent. Children positively reaped and relay threads joined. Zero job backends before cluster stop."
+  ],
+  "inspection": {
+    "ducklake": "d8a1881e22516ea3d186d73e83c65fe5bd1a1dc4: full PostgresMetadataManager cpp/hpp and DuckLakeInitializer; InitializeDuckLake; transaction Commit/rollback/RunCommitLoop relevant branches.",
+    "postgres_extension": "41223e51559cd581f1c06e170b71c71df25bbaac: full PostgresTransaction and PostgresStorage. Attach default is REPEATABLE READ, metadata options pass through. No direct runtime transaction-isolation query recorded in this experiment.",
+    "official_sources": [
+      "https://www.postgresql.org/docs/16/sql-createtrigger.html",
+      "https://www.postgresql.org/docs/16/explicit-locking.html",
+      "https://www.postgresql.org/docs/16/transaction-iso.html"
+    ],
+    "boundary": "Not a complete DuckLake mutation/maintenance audit or all-isolation matrix."
+  },
+  "audit": {
+    "method": "Every tracked native checkout file SHA256 equals independent Mac git archive manifest for its revision. Clean Git before/after, exact reused probe SHA, immutable bundle verification. Explicit PG guard errors2+1.",
+    "path": ".research/implementation/archive-worker/catalog-fence/commit-guard/audit.json"
+  },
+  "cleanup": {
+    "containers": [
+      {
+        "name": "bigbrotr-implementation-catalog-guard-694be48-runner",
+        "id": "dc672f56eef554bd4b2385d672e4077a2ceef0de598ab2485e44cc59f3639106",
+        "exit": 0,
+        "oom": false
+      },
+      {
+        "name": "bigbrotr-implementation-catalog-guard-694be48-pg",
+        "id": "42d881c668f1037e34f55f8f5a1dd75fed2f8c9e6ccee86c3b2eda10d964c9ca",
+        "exit": 0,
+        "oom": false
+      },
+      {
+        "name": "bigbrotr-implementation-catalog-guard-df2a0db-runner",
+        "id": "3d749cbae4fd39acbd5a01996a623768aed8788d32db06c03a24a31b426b2438",
+        "exit": 0,
+        "oom": false
+      },
+      {
+        "name": "bigbrotr-implementation-catalog-guard-df2a0db-pg",
+        "id": "cb01612bc8c2ec2873e25a821d5e94bf8ee22e9f383a3d8fda9fef6c4c20e206",
+        "exit": 0,
+        "oom": false
+      }
+    ],
+    "retired_networks": [
+      "3cf697fbd73206a1654841cdb4d42bf7d863dfe5a12f9c8321fcb8a6737f8409",
+      "7ac86696277dc96ac7b85db34b5281d252bde49a866283dab66a91ec4961b9ba"
+    ],
+    "data": "all retained; no old environment restarted",
+    "running_bigbrotr": 0,
+    "unrelated_unchanged": 20,
+    "unrelated_running": 8,
+    "comparison": "container IDs, process incarnation/state excluding dynamic health log, mounts sorted by destination, networks"
+  },
+  "remaining": [
+    "Actual privilege/DDL/replication-role/session-user escape refusals; complete mutation coverage with inlining disabled and no runtime catalog DDL; schema/trigger tampering detection.",
+    "Versioned product initialization/upgrade, ownership/CAS/attempt identity and receipt-recovery API; catalog unavailable or takeover COMMIT acknowledgement lost.",
+    "Separate maintenance/migration/reader privilege compositions and restore compatibility; broader fixed-snapshot/isolation refusal behavior.",
+    "Full scientific schema/body/reference receipts/protection and signed M1 journey; no reclaim or durability class follows from these canary rows.",
+    "Resource peaks, mixed/aged workload cost, host failure, actual product restart, arm64, hosted CI or release support."
+  ],
+  "raw_root": ".research/implementation/archive-worker/catalog-fence/commit-guard",
+  "native_roots": [
+    "/home/tux/bigbrotr-implementation-20260917/runs/catalog-guard-694be48/lab",
+    "/home/tux/bigbrotr-implementation-20260917/runs/catalog-guard-df2a0db/lab"
+  ]
+}

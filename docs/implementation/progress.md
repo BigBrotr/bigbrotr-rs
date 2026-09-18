@@ -15,13 +15,13 @@ complete. Pending must not be reclaimed. Whole selected product remains required
 
 ## Git and ownership
 
-Mac main, integrating root only. Last freshly verified HEAD
-`e20198fd8a099493198a26e643e9200d79264865`, equal to freshly queried origin/main.
-All startup results/contracts and earlier monitor fixes are pushed. Current HEAD
-is unpublished native-test candidate `694be481d80433fc1b9f97d1a0edd44bb14de324`.
-Root now owns
-a bounded alternative commit-guard experiment and its README/inventory/checkpoint;
-no other writer or conflict. Git transfers, readonly Tux source, root review only.
+Mac main, integrating root only. Last observed HEAD
+`df2a0dbb30a7fed7495633bce7e5850ef2341b5e`; freshly verified origin/main at the start
+of this slice was `e20198fd8a099493198a26e643e9200d79264865`. Two unpublished
+exact-test candidates694be48/df2a0db implement the guard investigation. All prior
+startup results and MON fixes are pushed. Root owns final guard report/task/
+README/inventory/checkpoint updates; no other writer. Git transfers, readonly Tux
+source, root review only. Commit/push and observe remote/clean state.
 
 ## Qualified product prerequisites
 
@@ -169,40 +169,53 @@ exact upstream under sibling `libpq-18.3`/`pg-source`. Native roots beneath
 do not restart containers whose networks were retired. Earlier laboratories and
 MON qualification resources remain stopped as inventoried. No active experiment.
 
-## Next bounded action
+## Current catalog guard alternative and next bounded action
 
-The next owning-code review read all ControlSession/runtime ownership and shared
-0001 job SQL, plus actual private worker/Process/PreparedBatch and pending feed.
-Shared finite user jobs do not include internal archive attempts; do not silently
-shoehorn publication into export/import or treat their Control fence as native
-authority. No persistent native attempt/recovery implementation exists yet.
+[Six native guard cases](evidence/p02-catalog-guard-native-20260918.json) PASS:
+-694be48: ready and invisible-startup old native clients remain alive and LOGIN;
+ replacement publishes; old COMMIT fails with actual PG guard refusal; counts[1,1,1].
+-df2a0db: actual native writer versus takeover in both lock orders, each holder
+ commit/rollback. pg_blocking_pids/pg_locks and both backend incarnations establish
+ blocking. Writer-first commit resolves present receipt; writer rollback resolves
+ absence. Takeover-first commit rejects old writer; takeover rollback permits it.
+ Independent reopened reads match literal expected before-replay and final counts.
 
-Before building a process-only recovery registry, qualify the bounded alternative
-`catalog_fence.py --case-set guard`: a PG BEFORE STATEMENT trigger on the exact28
-native metadata relations locks a separate owner row FOR SHARE and compares
-session_user; takeover updates that row. Keep old credentials/processes alive so
-only actual catalog enforcement can reject their native COMMIT. Two actual
-cases at694be48 now PASS: ready and invisible-startup old clients stay alive and
-LOGIN, replacement commits, old native COMMIT fails and independent read sees
-[1,1,1]. PG logs contain the exact guard refusal for both. Both new containers
-are stopped-retained, no remaining job backends, empty owned network retired.
-Raw root: catalog-fence/commit-guard; remote runs/catalog-guard-694be48. This is isolated
-research, not selected product SQL. It may avoid relying on remote process death
-for commit safety, but cleanup/resource grants still need positive termination.
+The isolated SQL guards all28 exact initialized native metadata relations with
+BEFORE STATEMENT triggers. SECURITY DEFINER uses session_user and FOR SHARE on a
+separate owner singleton; takeover updates that row. No native values/columns are
+rewritten. Ordinary writer loses DDL/trigger privileges. The lab-only later
+snapshot/advisory pause trigger establishes race order, never the candidate fence.
+Full PostgresMetadataManager cpp/hpp, DuckLakeInitializer, PostgresTransaction and
+PostgresStorage read; relevant InitializeDuckLake/Commit/RunCommitLoop branches
+read. Default native PG isolation is REPEATABLE READ by source, not a directly
+queried runtime setting. No full DuckLake mutation/maintenance audit is claimed.
 
-Source inspected at DuckLake d8a1881: complete PostgresMetadataManager cpp/hpp,
-InitializeDuckLake, transaction Commit/rollback/RunCommitLoop relevant branches;
-PG extension41223e5 complete PostgresTransaction. Official PG16 trigger/row-lock/
-isolation docs consulted. Not a full metadata/mutation audit. If initial actual
-native cases pass, test in-flight mutation versus takeover in both lock orders,
-rollback/fixed snapshots and privilege/DDL escape before choosing it. Adoption
-requires an explicit owning-contract exception for versioned metadata triggers,
-compatible initialization/migration and full closure checks; no native table data
-rewrites. If it fails, retain the result and use qualified process exclusion.
+Source audits independently match612/613 files to Mac Git archives and clean
+readonly Tux checkouts. Reused native probe remains a531ea3/SHA793bd08ce5f99b32941da8485c0080c4656ed807ded41a7623b326a37b85e12d.
+Current raw root `.research/implementation/archive-worker/catalog-fence/commit-guard`;
+native roots `runs/catalog-guard-694be48` and `runs/catalog-guard-df2a0db` under the
+same inventoried implementation root. Four additional owned containers stopped,
+no OOM, no job backends; two exact-label/ID empty networks retired. Fresh audit
+zero BigBrotr running;20 unrelated identities/processes/mounts/networks unchanged,
+8 running. Source transfers18138/40940, runs36205/86873, copies22627/69729 all
+terminal. Inventory key: `implementation_archive_worker_20260918.catalog_commit_guard_probe`.
+No active experiment; do not restart retired-network containers.
 
-Next: commit the expanded `guard-races` fixture and execute four actual native
-write/takeover schedules: writer first and takeover first, each commit/rollback.
-A lab-only advisory barrier after the real guard establishes the first order;
-pg_blocking_pids/pg_locks and both backend incarnations establish each wait.
-No sleeping interval substitutes for a lock observation. New cases are NOT_RUN;
-reuse only the verified a531ea3 probe/bundle and create a new fresh laboratory. Keep all previous labs retired. No pending reclaim.
+The candidate remains UNSELECTED as a product fence. Next after final report
+commit/push: execute actual privilege/DDL/replication-role/session-user escape
+refusals and audit native mutation coverage with inlining disabled/no runtime DDL.
+Check all owned schema/trigger identities, altered/missing guard refusal, fixed
+snapshots and exact fresh setup/upgrade behavior before adopting it. Production
+adoption needs an explicit owning-contract exception for versioned metadata
+triggers, typed epoch/token/CAS and initialization/migration; the experimental
+login singleton is not that implementation. Keep resource/orphan cleanup separate
+from catalog commit safety. If it fails, retained positive client/process exclusion
+is the fallback, not NOLOGIN/empty activity.
+
+Then implement persistent publisher attempt identity, scientific catalog/schema
+and atomic receipt-backed signed publication. Shared finite user jobs do not
+include internal archive attempts; do not shoehorn these into export/import or
+mistake the existing Control session fence for native authority. Existing pending
+and PreparedBatch are real consumers, but have no archive semantic batch type yet.
+No pending reclamation, full P02 checkbox or M1 completion before actual protection,
+read/export/restart acceptance. Do not reopen architecture without a new failure.
