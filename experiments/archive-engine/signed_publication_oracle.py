@@ -1,0 +1,145 @@
+"""Independent literal signed corpus; no product codecs, Arrow or observed templates.
+
+CBOR comes from the existing separately authored bootstrap oracle. Scientific
+fields and descriptor constants come from the closed v1 contracts. This is a
+fixed experiment, not a generic native reader or a new product export format.
+"""
+import hashlib
+import json
+from pathlib import Path
+import sys
+
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / 'experiments/ingest-bootstrap'))
+from oracle import cbor
+
+DATASET = bytes([1]) * 16
+EVENT = json.loads((ROOT / 'experiments/identity-contract/signed-fixture.json').read_text())['events']['E_public']
+TABLES = ('dictionaries', 'events', 'event_eligibility_facts', 'event_receive_facts', 'provenance_facts', 'archive_commits')
+DESCRIPTOR_FIELDS = ('event_id class url clock vantage software method_id public_key route_class '
+                     'software_version label visibility_scope_id input algorithm capability output_unit '
+                     'failure_taxonomy algorithm_version protocol_revision format format_version '
+                     'source_dataset_id source_artifact_digest').split()
+
+
+def digest(prefix, value):
+    return hashlib.sha256(prefix + cbor(value)).digest()
+
+
+def reference(kind):
+    return [DATASET, kind, bytes([kind]) * 16, 1]
+
+
+def ref_row(kind):
+    return dict(zip(('dataset_id', 'dictionary_kind', 'allocation_domain', 'ordinal'),
+                    (DATASET.hex().upper(), kind, (bytes([kind]) * 16).hex().upper(), 1)))
+
+
+def source(sequence):
+    return [DATASET, 0, 1, sequence]
+
+
+def corpus():
+    event = EVENT
+    body = [bytes.fromhex(event['id']), bytes.fromhex(event['pubkey']), event['created_at'],
+            event['kind'], event['tags'], event['content']]
+    body_digest = digest(b'bigbrotr/body/1\0', body)
+    clock = [reference(2), 1, None, 0]
+    descriptors = [
+        (4, 'visibility', {'class': 'public'}),
+        (1, 'endpoint', {'url': 'wss://public.example/'}),
+        (2, 'observer', dict(clock='system-utc', vantage='fixture-vantage', software=None,
+                             method_id=None, public_key=None, route_class=None, software_version=None)),
+        (3, 'access-scope', dict(class_='public', label=None, visibility_scope_id=reference(4))),
+        (5, 'event-verification', dict(input='nip01-event/1', algorithm='sha256-bip340',
+            capability='event-id-and-signature', output_unit='verification-result',
+            failure_taxonomy='bigbrotr-nip01-verifier/1', algorithm_version=1,
+            protocol_revision='a2494f4f81d46684e5814a9bf35e2b1df978f955')),
+        (8, 'event', {'event_id': body[0]}),
+    ]
+    descriptors[3][2]['class'] = descriptors[3][2].pop('class_')
+    payloads = [('dictionary', [reference(k), 1, schema, 1, value]) for k, schema, value in descriptors]
+    payloads += [
+        ('event-payload', [*body, reference(8)]),
+        ('event-eligibility', [body[0], body_digest, bytes.fromhex(event['sig']), 10_000_000, 'network', None]),
+        ('event-receive', [body[0], 10_000_000, reference(2), clock, None]),
+        ('provenance', [body[0], reference(1), reference(2), reference(3), 10_000_000, clock, reference(5), None]),
+    ]
+    records, tables = [], {name: [] for name in TABLES}
+    clock_row = dict(clock_id=ref_row(2), resolution_us=1, uncertainty_us=None, anomaly_flags=0)
+    for sequence, (kind, payload) in enumerate(payloads, 1):
+        time = 0 if sequence <= 5 else 10_000_000
+        preimage = b'bigbrotr/fact/1\0' + cbor([source(sequence), kind, 1, reference(4), time, payload])
+        fact_digest = hashlib.sha256(preimage).digest()
+        records.append(dict(sequence=sequence, digest=fact_digest.hex(), preimage_hex=preimage.hex()))
+        row = dict(source_record_id=dict(dataset_id=DATASET.hex().upper(), shard_id=0, owner_epoch=1, sequence=sequence),
+                   record_schema_version=1, record_kind=kind, visibility_scope_id=ref_row(4),
+                   payload_digest=fact_digest.hex().upper(), recorded_at=time)
+        if kind == 'dictionary':
+            k, schema, value = descriptors[sequence - 1]
+            descriptor = dict.fromkeys(DESCRIPTOR_FIELDS)
+            descriptor.update(value)
+            if k == 3:
+                descriptor['visibility_scope_id'] = ref_row(4)
+            if k == 8:
+                descriptor['event_id'] = event['id'].upper()
+            row.update(reference=ref_row(k), normalization_version=1, descriptor_schema=schema,
+                       descriptor_version=1, descriptor_value=descriptor)
+            table = 'dictionaries'
+        elif kind == 'event-payload':
+            row.update(event_id=event['id'].upper(), pubkey=event['pubkey'].upper(), created_at=event['created_at'],
+                       kind=event['kind'], tags=event['tags'], content=event['content'], event_ordinal=ref_row(8))
+            table = 'events'
+        elif kind == 'event-eligibility':
+            row.update(event_id=event['id'].upper(), body_digest=body_digest.hex().upper(), sig=event['sig'].upper(),
+                       first_eligible_at=10_000_000, origin='network', import_lineage=None)
+            table = 'event_eligibility_facts'
+        else:
+            row.update(event_id=event['id'].upper(), received_at=10_000_000, observer_id=ref_row(2),
+                       clock_quality=clock_row, corrects=None)
+            table = 'event_receive_facts'
+            if kind == 'provenance':
+                row.update(endpoint_id=ref_row(1), access_scope_id=ref_row(3), verification_method_id=ref_row(5))
+                table = 'provenance_facts'
+        tables[table].append(row)
+    batches = []
+    for first, last in [(1, 5), (6, 10)]:
+        facts = records[first - 1:last]
+        references = [[source(r['sequence']), bytes.fromhex(r['digest'])] for r in facts]
+        batches.append(dict(first=first, last=last, facts=facts,
+            admission_digest=digest(b'bigbrotr/admission-batch/1\0', [DATASET, 0, 1, first, last, references]).hex(),
+            archive_digest=digest(b'bigbrotr/archive-batch/1\0', [DATASET, 1, 0, [[0, 1, first, last]], references]).hex()))
+    return batches, tables
+
+
+def expected(mode):
+    assert mode in ('normal', 'before', 'after')
+    batches, tables = corpus()
+    if mode == 'before':
+        for name in tables:
+            tables[name] = [r for r in tables[name] if r['source_record_id']['sequence'] <= 5]
+    for ordinal, batch in enumerate(batches[:1 if mode == 'before' else 2], 2):
+        n = 180 + ('normal', 'before', 'after').index(mode) * 8 + ordinal
+        tables['archive_commits'].append(dict(dataset_id=DATASET.hex().upper(), schema_version=1,
+            topology_generation=0, batch_digest=batch['archive_digest'].upper(), record_count=5,
+            input_ranges=[dict(shard_id=0, owner_epoch=1, first_sequence=batch['first'], last_sequence=batch['last'])],
+            attempt_id=(bytes([n]) * 16).hex().upper(), publication_ordinal=ordinal))
+    return dict(event='readback', mode=mode, tables=tables, signed_event=None if mode == 'before' else EVENT)
+
+
+def check(mode, parent, reader):
+    assert [r['event'] for r in parent] == ['signed-reopened', 'retained-inputs', 'terminal']
+    before, pending, terminal = parent
+    assert before['exact_admission_retry'] and before['rejections'] == ['Signature', 'EventId']
+    assert before['rocks_rows'] > 10 and before['rocks_rows'] == terminal['rocks_rows']
+    assert before['rocks_digest'] == terminal['rocks_digest'] and len(before['rocks_digest']) == 64
+    assert pending['batches'] == corpus()[0], 'independent retained fact/admission/archive identities'
+    assert terminal['worker_active_permits'] == 0 and terminal['mode'] == mode
+    outcomes = []
+    for ordinal, first in [(1, 6), (2, 1), (3, 6), (4, 6)][:4 if mode == 'normal' else 3]:
+        n = 180 + ('normal', 'before', 'after').index(mode) * 8 + ordinal
+        snapshots, files = (2, 0) if ordinal == 1 else (3, 2) if ordinal == 2 or mode == 'before' else (4, 8)
+        outcomes.append(dict(ordinal=ordinal, first=first, success=ordinal == 2 or ordinal == 3 and mode == 'normal',
+            snapshots=snapshots, files=files, attempt_id=(bytes([n]) * 16).hex()))
+    assert terminal['outcomes'] == outcomes, 'publication outcomes'
+    assert reader == expected(mode), 'complete scientific rows and signed event'

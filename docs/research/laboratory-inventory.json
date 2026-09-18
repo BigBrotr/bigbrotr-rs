@@ -7092,6 +7092,14 @@
       "next": "qualify scientific caller-owned publication in new exact-source lab",
       "report": "docs/implementation/evidence/p02-native-registration-20260918.json",
       "mac_product_report": "docs/implementation/evidence/p02-staged-publication-mac-20260918.json"
+    },
+    "signed_publication": {
+      "status": "NOT_RUN; preparing an exact-source candidate",
+      "purpose": "Actual connected signed Rocks admission, all-five-family guarded PG publication and native COMMIT response loss; no ACK or protection",
+      "base_source": "3c380fe48331cdb3b0fce60926c2e8e47db3bb5b",
+      "local_root": ".research/implementation/archive-worker/publication",
+      "resource_policy": "New uniquely inventoried publication-<revision> lab; owner-verified stopped caches may be copied; retired runners remain stopped",
+      "owned_live_resources": []
     }
   },
   "implementation_monitor_corrections_20260918": {

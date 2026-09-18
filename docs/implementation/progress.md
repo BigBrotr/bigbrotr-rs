@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-09-18. Navigation only; follow the
+Observed 2026-09-19. Navigation only; follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 Verify Git, dirty work, evidence and resource claims before continuing.
 
@@ -22,19 +22,23 @@ be acknowledged/reclaimed.
 
 ## Git and integrating ownership
 
-Mac main; root is sole writer/integrator. This candidate checkpoint was written
-against parent `ea270aca3ef3915120182c67ca69976d00b51afe`, tree
-`e37de0963682c9edf633772965db8f16b3e91ae5`; that parent has four unpublished commits after observed
-origin/main `4db603b0dc09ae1c65c9bb301af33a60f7939854`. No merge/rebase.
-The containing candidate commit changes worker publication/schema/tests and three
-root validators to replace
-unsafe INSERT with caller-owned COPY/registration. Task/contract/private-reference
-docs, two evidence reports, checkpoint/inventory accompany this candidate. Resolve
-the containing commit before transfer; this revision records the observed base.
-Read-only AI publication_review finished its source review. It confirmed native
-relative path conversion/ownership and found glob expansion; explicitly disable
-hive partition discovery and reject native glob metacharacters in local roots.
-No other writer or remote editing.
+Mac main; root is sole writer/integrator. Current fixture candidate is based on
+`3c380fe48331cdb3b0fce60926c2e8e47db3bb5b`, tree
+`f54c3e8d015bb6729a2318853590de593ae322fb`; five unpublished commits follow freshly
+verified origin/main `4db603b0dc09ae1c65c9bb301af33a60f7939854`. No merge/rebase or
+remote editing. Resolve the containing commit before transferring exact source.
+This candidate adds actual signed publication/admission/readback Rust examples,
+an independent literal Python oracle and owned-lab orchestration; native build
+entrypoint and experiment documentation are updated. No production implementation,
+lockfile, schema or applied migration is changed by this fixture candidate.
+Read-only AI publication_review traced the new fixtures and relevant callers; no
+new concrete defect reported. Root corrected dictionary bootstrap ordering from
+its dependency inspection: visibility must precede its consumers. Full actual
+execution is still NOT_RUN. Mac scoped Clippy of both new examples and Python
+syntax/corpus checks PASS; initial parent compiler errors are retained in
+publication/signed-parent-check*.log, corrected check and signed-fixture-clippy.log
+are terminal. No local compiler or lab is running. Fresh Tux inspection confirms
+the prior ea270ac containers stopped143/0 and only8 unrelated workloads running.
 
 ## Active publication risk slice
 
@@ -336,17 +340,20 @@ retired-network containers. amd64 does not qualify arm64 or hosted Actions.
 
 ## Next bounded action
 
-The next source candidate must integrate the real consumers. Build an isolated
-actual integration fixture using
-existing signed admission/bootstrap/pending APIs and Control attempt issuance:
-publish bootstrap dictionaries, then the signed pending event through the real
-Preparation::publish_pending/FreshWriter path into initialized guarded PG. Reuse
-existing literal signed fixtures and separately inspect full native bodies,
-signatures, all required references, receipt and unchanged Rocks state. Include
-provenance and negative controls. The reference signed Rocks fixture is
-apps/bigbrotr/src/storage/rocks/admission_tests.rs; native initializer/guard/Control
-probes and orchestration are in apps/bigbrotr/examples and experiments/archive-engine.
-Use a new clean exact-Git Tux lab, no independently edited source or retired runner.
-Then qualify product-native COMMIT loss, fence races, relocation/recovery and
-protection. Persistent lifecycle, installed init/recovery, M1 and all remaining
-selected product scope stay required. No ACK/reclaim or task completion claim.
+Commit this reviewed fixture candidate, transfer the exact clean Git revision to
+a new separately inventoried publication lab, build actual Linux executables and
+run signed_publication_cases.py. Require complete independent facts/digests and
+native rows/signatures, actual fault-proxy COMMIT counters, all physical caller-
+owned files and unchanged complete Rocks key/value digest. The three schedules
+are normal, before-forward and completed-but-lost native PG COMMIT; unknown outcomes
+must remain retained and never ACKed. Actual Control registration/admission uses a
+closed fixture source authorization, not installed source policy. The reader is
+an administrative read-only lab consumer, not the product Read role.
+
+Existing launch/transfer/retire helpers under ignored publication/ now select the
+retained ea270ac cache, new publisher/reader ELF identities and7 embedded cases.
+Before use, verify the new lab's ownership, exact source, processes and artifacts;
+never restart retired runners. Record raw outcomes, audit terminal resources and
+then update the existing evidence/task contracts. Native scientific fence races,
+relocation/recovery, persistent lifecycle, protection, M1 and all remaining selected
+product work stay required. No task-completion, source ACK or reclamation claim.

@@ -268,3 +268,25 @@ filesystem refusal. The embedded-native Rust cases cover six-table atomic DDL an
 late-statement rollback; do not report them as actual PostgreSQL failure/recovery.
 No scientific guard binding, receipt insertion, source ACK or installed recovery
 is qualified by this prerequisite alone. Native results are recorded separately.
+
+
+`native_publication.py` also builds the actual signed publication and readback
+fixtures. `signed_publication_cases.py <owned-root>` requires a fresh exact-Git
+publication lab and runs real Control initialization/registration, signed Rocks
+admission/reopen, guarded FreshWriter handoff and the supervised native publisher.
+The fixture authorizes one literal network source with provenance. Invalid ID and
+signature are rejected; the valid request's exact retry retains the same receipt.
+Missing dictionaries precede successful bootstrap/event publication; normal mode
+also refuses a duplicate publication. No pending source record is acknowledged.
+
+The independent `signed_publication_oracle.py` authors all ten canonical fact
+preimages, both admission/archive digests and every declared scientific/receipt
+column from literal v1 fields and the frozen E_public event. Actual native readback
+also reconstructs and verifies the signed event. Fault modes interrupt only the
+event transaction's actual PostgreSQL COMMIT, with required proxy counters and
+full catalog/physical-file inspection. A pre-forward rollback must leave its six
+caller-owned files retained; a lost completed reply must preserve all committed
+rows and files. Complete raw Rocks key/value hashes must remain unchanged.
+This is a private risk fixture, not installed recovery, product Read/export,
+protection or resource/load qualification. Candidate execution outcomes are
+recorded separately; the existence of the harness is not a passing result.
