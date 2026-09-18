@@ -16,22 +16,58 @@ positive fencing, receipts/protection, then M1 read/export/restart. No P02 task 
 M1 gate is complete. Catalog guard, credential provisioning/sealing and finite
 private supervision prerequisites now have scoped native evidence. The first
 scientific schema declaration and fresh-only initializer have scoped qualification;
-scientific guard binding/live inspection now have scoped qualification; the publisher remains unimplemented. Pending must not
+scientific guard binding/live inspection now have scoped qualification. An unpublished
+private publisher candidate is now under risk qualification. Pending must not
 be acknowledged/reclaimed.
 
 ## Git and integrating ownership
 
-Mac main; root is sole writer/integrator. Tested candidate
-`a91ae01a76b38902420e87af0a3e23fd575b6981`, tree
-`a642d19826eeb0ae65efaa3d611c6eb5a3542e5c`, and evidence/documentation commit
-`1cf420dc65b4c817c96c46d634cb3927c5c92f6d` are pushed. Fresh HEAD, origin/main and
-remote refs/heads/main equal `1cf420d`, with a clean tree. This checkpoint refresh
-follows that observation. GitHub confirms PRIVATE/not archived. Product sources
-are unchanged after27ab36c; later candidates corrected fixture oracles and the
-final candidate fully re-executed their selected boundaries. Final independent
-evidence review matched cases, source hashes, recorded artifacts and scope.
-All reviewers were read-only. No concurrent writer, active lab or unfinished
-cleanup. Push10361 and remote/terminal verification29618 are terminal.
+Mac main; root is sole writer/integrator. Starting HEAD/origin/main were clean at
+`4db603b0dc09ae1c65c9bb301af33a60f7939854`. Current root-owned edits add a private
+worker/parent publication candidate, closed prelude, dictionary dependency staging,
+embedded transaction cases and an exact native COMMIT-response fault experiment.
+They are not a qualified publisher. No concurrent writer. The read-only AI
+`publication_review` completed; its findings below are unresolved.
+Fresh Tux inspection finds eight unrelated running containers and no BigBrotr
+container. The previous scientific-guard labs remain stopped/retained; their
+networks are retired. A separate exact-Git publication lab is next.
+
+## Active publication risk slice
+
+P02-T04 steps3/4/5. The private candidate verifies complete input and schema1
+semantic digest, refuses existing receipts/source overlap, resolves dictionary
+references, and uses one native transaction for five families plus receipt. The
+parent consumes FreshWriter, checks scientific identity/input and supervises one
+child with a pinned route and private credential pipe. Any launched failure stays
+unknown; no source ACK/reclaim exists. Catalog option compatibility and persistent
+lifecycle/recovery remain unfinished. This candidate is not advertised.
+
+Mac actual binary input test first failed on the missing command. The corrected
+closed-prelude case and three embedded DuckLake cases passed (real fresh body/
+receipt read, duplicate refusal, missing dictionary, late receipt rollback,
+identity mismatch). Scoped Clippy passed. Raw logs are under
+`.research/implementation/archive-worker/publication/`. These are dirty-source
+checks, not PG qualification; a fixture macro typo was corrected before execution.
+
+Read-only AI review found two concrete source concerns to resolve:
+
+- Pinned DuckLake normal INSERT commit error handling calls CleanupFiles even
+  after PostgreSQL may have committed but lost its response; it may unlink both
+  body and receipt Parquet files before the Rust caller sees CommitUnknown.
+  Reproduce this on actual isolated PG/native engines before selecting a fix.
+  The old lost-ack probe kills after native COMMIT returns, so it does not qualify
+  this boundary. No cleanup-disable setting was found. Native staged-file
+  registration marks files caller-owned and is a candidate only if justified by
+  the measured failure and fully qualified, including technical receipts.
+- Dictionary mapping equality currently includes containing-fact visibility,
+  contrary to the descriptor contract. Add same-mapping/different-scope controls
+  within the batch and against history, then correct equality while retaining
+  each fact's actual scope.
+
+No product guarantee is closed by these preliminary tests. The new multiple-session
+loopback proxy targets the actual native INSERT/data-file COMMIT, allowing earlier
+attach/read commits through. Its own fault attribution must be verified against
+actual PG metadata and physical files, with independent full body reads.
 
 ## Latest qualified scientific guard slice
 
@@ -218,16 +254,12 @@ retired-network containers. amd64 does not qualify arm64 or hosted Actions.
 
 ## Next bounded action
 
-Implement the first native scientific publisher under P02-T04 steps3/4/5. Consume
-one freshly provisioned, scientifically bound writer lifetime and a complete
-retained pending batch; stage all five families, verify the exact archive input
-identity and commit rows plus the technical receipt in one native transaction.
-Exercise actual signed dictionary/event batches through the parent, positive fence,
-fresh ambiguous-receipt resolution and independent full body/reference readback.
-Protection, read/export/restart and source ACK/reclaim gates remain explicit.
-
-Do not make empty initialization depend on synthetic admission. Snapshot0/partial
-init recovery and installed init/migration UX remain selected work, alongside
-persistent unique worker/recovery, S3, aged mixed load/RSS and Linux arm64.
-Acquisition, analytics/ranking, public/private surfaces, website/blog and complete
-Compose/CI/private release journeys remain required for the full objective.
+Commit the current unpublished candidate for exact-source transfer to a separately
+inventoried Tux lab. Execute actual normal, pre-forward and completed-but-lost native
+COMMIT cases; inspect PG file references, physical existence and fresh full body/
+receipt reads. If cleanup loss reproduces, update the owning contract and qualify
+one safe selected path before consolidating publication. Preserve all raw failures.
+Then resolve dictionary mapping equality, finish the signed Rocks→parent→PG slice,
+scientific option compatibility, ambiguity recovery and protection. Persistent
+unique worker recovery, installed init/recovery, M1 and the remaining complete
+product scope remain required; no selected capability is removed.

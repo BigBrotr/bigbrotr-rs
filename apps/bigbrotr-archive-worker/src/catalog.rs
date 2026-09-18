@@ -41,22 +41,23 @@ impl BootstrapRequest {
         }
         let request: Self =
             serde_json::from_slice(&bytes).map_err(|_| CatalogError::InvalidInput)?;
-        if request.dsn.is_empty()
-            || request.dsn.len() > 16384
-            || request.dsn.contains(['\0', '\n', '\r'])
-            || !(2..=4096).contains(&request.data_root.len())
-            || !request.data_root.starts_with('/')
-            || !request.data_root.ends_with('/')
-            || request.data_root.contains(['\0', '\n', '\r'])
-            || request.data_root.contains("//")
-            || request
-                .data_root
-                .split('/')
-                .any(|p| matches!(p, "." | ".."))
+        request.validate()?;
+        Ok(request)
+    }
+    pub(crate) fn validate(&self) -> Result<(), CatalogError> {
+        if self.dsn.is_empty()
+            || self.dsn.len() > 16384
+            || self.dsn.contains(['\0', '\n', '\r'])
+            || !(2..=4096).contains(&self.data_root.len())
+            || !self.data_root.starts_with('/')
+            || !self.data_root.ends_with('/')
+            || self.data_root.contains(['\0', '\n', '\r'])
+            || self.data_root.contains("//")
+            || self.data_root.split('/').any(|p| matches!(p, "." | ".."))
         {
             return Err(CatalogError::InvalidInput);
         }
-        Ok(request)
+        Ok(())
     }
     pub fn data_root(&self) -> &str {
         &self.data_root
@@ -66,6 +67,18 @@ fn literal(value: &str) -> String {
     format!("'{}'", value.replace('\'', "''"))
 }
 impl Engine {
+    pub(crate) fn attach_existing_catalog(
+        &self,
+        request: &BootstrapRequest,
+    ) -> Result<(), CatalogError> {
+        let root = std::path::Path::new(request.data_root());
+        if root.canonicalize().ok().as_deref() != Some(root) || !root.is_dir() {
+            return Err(CatalogError::InvalidDataRoot);
+        }
+        self.configure_catalog(request)?;
+        self.connection.execute_batch(&format!("ATTACH 'ducklake:postgres:' AS archive (DATA_PATH {}, DATA_INLINING_ROW_LIMIT 0, AUTOMATIC_MIGRATION false, CREATE_IF_NOT_EXISTS false, META_SECRET_STORAGE_TABLE '', META_SECRET 'bigbrotr_bootstrap')",literal(request.data_root())))
+            .map_err(|_| CatalogError::Bootstrap)
+    }
     /// Native initialization only. Existing catalog identity/freshness and
     /// privileges are checked by the separate PG guard installer; this response
     /// alone cannot authorize publication or adoption of an existing catalog.

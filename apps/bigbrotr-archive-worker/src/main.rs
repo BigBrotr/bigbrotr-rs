@@ -40,7 +40,13 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
     let bootstrap_catalog = arguments.len() == 7 && arguments[1] == "bootstrap-catalog";
     let initialize_catalog = arguments.len() == 7 && arguments[1] == "initialize-catalog";
     let inspect_batch = arguments.len() == 9 && arguments[1] == "inspect-batch";
-    if !inspect_engine && !inspect_batch && !bootstrap_catalog && !initialize_catalog {
+    let publish_batch = arguments.len() == 9 && arguments[1] == "publish-batch";
+    if !inspect_engine
+        && !inspect_batch
+        && !bootstrap_catalog
+        && !initialize_catalog
+        && !publish_batch
+    {
         return Err("usage: bigbrotr-archive-worker {initialize-catalog BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | bootstrap-catalog BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | inspect-engine BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | inspect-batch BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_RECORDS MAX_ENCODED_BYTES}".into());
     }
     let number = |i: usize| -> Result<u64, Box<dyn std::error::Error>> {
@@ -63,22 +69,28 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
             bigbrotr_archive_worker::catalog::BootstrapRequest::read(std::io::stdin().lock())?;
         engine.bootstrap_catalog(request)?;
         serde_json::json!({"format":"bigbrotr-native-bootstrap/1","status":"initialized"})
-    } else if inspect_batch {
+    } else if inspect_batch || publish_batch {
         let limits = Limits {
             max_records: usize::try_from(number(7)?)?,
             max_encoded_bytes: usize::try_from(number(8)?)?,
             fact: FactDecodeLimits::default(),
         };
-        let prepared = PreparedBatch::prepare(
-            engine,
-            std::io::stdin().lock(),
-            limits,
-            &AtomicBool::new(false),
-        )?;
-        serde_json::json!({"format":"bigbrotr-private-preparation/1",
+        let mut input = std::io::stdin().lock();
+        let publication = if publish_batch {
+            Some(bigbrotr_archive_worker::publication::PublicationRequest::read(&mut input)?)
+        } else {
+            None
+        };
+        let prepared = PreparedBatch::prepare(engine, input, limits, &AtomicBool::new(false))?;
+        if let Some(request) = publication {
+            let digest = prepared.publish(request)?;
+            serde_json::json!({"format":"bigbrotr-native-publication/1", "batch_digest":digest})
+        } else {
+            serde_json::json!({"format":"bigbrotr-private-preparation/1",
             "first":prepared.batch().first(), "last":prepared.batch().last(),
             "batch_digest":prepared.batch().digest(), "facts":prepared.batch().records().len(),
             "staged_counts":prepared.counts()?})
+        }
     } else {
         engine.inspection()?
     };

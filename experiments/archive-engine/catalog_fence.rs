@@ -49,7 +49,12 @@ fn counts(connection: &Connection, batch: u64) -> Result<[u64; 3], &'static str>
 
 fn run() -> Result<(), &'static str> {
     let args: Vec<_> = std::env::args().take(8).collect();
-    if args.len() != 7 || !matches!(args[1].as_str(), "init" | "write" | "read" | "lost-ack") {
+    if args.len() != 7
+        || !matches!(
+            args[1].as_str(),
+            "init" | "write" | "read" | "read-body" | "lost-ack"
+        )
+    {
         return Err("arguments");
     }
     let mode = &args[1];
@@ -135,7 +140,11 @@ fn run() -> Result<(), &'static str> {
         "DATA_PATH {}, DATA_INLINING_ROW_LIMIT 0, AUTOMATIC_MIGRATION false, CREATE_IF_NOT_EXISTS {}, META_SECRET_STORAGE_TABLE '', META_SECRET 'catalog_fence_pg'{}",
         literal(&args[4]),
         mode == "init",
-        if mode == "read" { ", READ_ONLY" } else { "" }
+        if matches!(mode.as_str(), "read" | "read-body") {
+            ", READ_ONLY"
+        } else {
+            ""
+        }
     );
     connection
         .execute_batch(&format!(
@@ -170,6 +179,33 @@ fn run() -> Result<(), &'static str> {
     }
     connection.execute_batch("BEGIN").map_err(|_| "begin")?;
     let before = counts(&connection, batch)?;
+    if mode == "read-body" {
+        let body: String = connection
+            .query_row("SELECT body FROM lake.facts WHERE batch=?", [batch], |r| {
+                r.get(0)
+            })
+            .map_err(|_| "body-read")?;
+        let endpoint: String = connection
+            .query_row(
+                "SELECT endpoint FROM lake.witnesses WHERE batch=?",
+                [batch],
+                |r| r.get(0),
+            )
+            .map_err(|_| "witness-read")?;
+        let digest: Vec<u8> = connection
+            .query_row(
+                "SELECT digest FROM lake.receipts WHERE batch=?",
+                [batch],
+                |r| r.get(0),
+            )
+            .map_err(|_| "receipt-read")?;
+        connection
+            .execute_batch("COMMIT")
+            .map_err(|_| "read-commit")?;
+        return emit(
+            serde_json::json!({"stage":"read-body","counts":before,"body":body,"endpoint":endpoint,"digest":digest}),
+        );
+    }
     if mode == "read" {
         connection
             .execute_batch("COMMIT")

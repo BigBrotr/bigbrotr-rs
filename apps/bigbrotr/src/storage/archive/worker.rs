@@ -172,7 +172,7 @@ impl<'a> Preparation<'a> {
         self.inspect_result(output, pending, topology_generation)
     }
 
-    fn start(
+    pub(super) fn start(
         &self,
         mode: &str,
         extra: &[String],

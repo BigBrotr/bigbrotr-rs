@@ -31,8 +31,8 @@ impl From<RowError> for PrepareError {
 }
 
 pub struct PreparedBatch {
-    engine: Engine,
-    batch: AdmissionBatch,
+    pub(crate) engine: Engine,
+    pub(crate) batch: AdmissionBatch,
 }
 impl PreparedBatch {
     /// Consumes the engine. Failure drops all partial private staging; even a
@@ -55,7 +55,26 @@ impl PreparedBatch {
         }
         let mut input = archive_batch::BatchReader::new(input, limits, cancelled)?;
         schema::create_stage(&engine.connection).map_err(|_| PrepareError::NativeStage)?;
+        engine.connection.execute_batch("CREATE TABLE stage.required_refs (dataset_id BLOB, dictionary_kind USMALLINT, allocation_domain BLOB, ordinal UBIGINT)").map_err(|_| PrepareError::NativeStage)?;
         while let Some(fact) = input.next_fact(cancelled)? {
+            let mut dependencies = engine
+                .connection
+                .appender_to_db("required_refs", "stage")
+                .map_err(|_| PrepareError::NativeStage)?;
+            for reference in fact.dictionary_refs() {
+                dependencies
+                    .append_row(duckdb::params![
+                        reference.dataset_id.as_bytes().as_slice(),
+                        reference.dictionary_kind as u16,
+                        reference.allocation_domain.as_bytes().as_slice(),
+                        reference.ordinal.get()
+                    ])
+                    .map_err(|_| PrepareError::NativeStage)?;
+            }
+            dependencies
+                .flush()
+                .map_err(|_| PrepareError::NativeStage)?;
+            drop(dependencies);
             let facts = [&fact];
             let (name, converted) = match fact.payload() {
                 FactPayload::Dictionary(_) => ("dictionaries", Rows::dictionaries(&facts, rows)),

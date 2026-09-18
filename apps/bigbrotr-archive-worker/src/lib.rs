@@ -3,5 +3,6 @@ pub mod bundle;
 pub mod catalog;
 pub mod engine;
 pub mod prepare;
+pub mod publication;
 pub mod rows;
 mod schema;
