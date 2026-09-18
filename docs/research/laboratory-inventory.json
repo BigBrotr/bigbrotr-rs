@@ -3480,5 +3480,140 @@
         ]
       }
     }
+  },
+  "implementation_archive_worker_20260918": {
+    "local_root": ".research/implementation/archive-worker",
+    "state": "Dependency preparation only; no new product code, crate resolution or native execution",
+    "native_assets": {
+      "engine_version": "1.5.5",
+      "source_commit": "d8cdaa33fda8df955cc76ef58a280f68f4cd43fa",
+      "assets": [
+        {
+          "name": "libduckdb-linux-amd64.zip",
+          "url": "https://github.com/duckdb/duckdb/releases/download/v1.5.5/libduckdb-linux-amd64.zip",
+          "bytes": 41300590,
+          "sha256": "1fb8ce388157d84a25abe685a8a2520bf00c00321821968e4bb398fd766e7abb",
+          "members": [
+            {
+              "name": "libduckdb.so",
+              "bytes": 70529912
+            },
+            {
+              "name": "libduckdb_static.a",
+              "bytes": 80627400
+            },
+            {
+              "name": "duckdb.hpp",
+              "bytes": 2044553
+            },
+            {
+              "name": "duckdb.h",
+              "bytes": 244057
+            },
+            {
+              "name": "duckdb_extension.h",
+              "bytes": 115073
+            }
+          ]
+        },
+        {
+          "name": "libduckdb-osx-universal.zip",
+          "url": "https://github.com/duckdb/duckdb/releases/download/v1.5.5/libduckdb-osx-universal.zip",
+          "bytes": 36178910,
+          "sha256": "7b5b8915cc382d0708636fe6385c0cdad5a61c9ff8ba2638b3e2141640783155",
+          "members": [
+            {
+              "name": "libduckdb.dylib",
+              "bytes": 117005184
+            },
+            {
+              "name": "duckdb.hpp",
+              "bytes": 2044553
+            },
+            {
+              "name": "duckdb.h",
+              "bytes": 244057
+            },
+            {
+              "name": "duckdb_extension.h",
+              "bytes": 115073
+            }
+          ]
+        }
+      ],
+      "status": "Downloaded and upstream-digest verified; not executed or packaged"
+    },
+    "asset_inventory_sha256": "47b43adaafb10a7d076bfa399b21aa05428c1637b71b09c7cbd0cdc13de3a5a2",
+    "upstream_release_metadata": ".research/implementation/archive-worker/upstream-release.json",
+    "remote_resources": [],
+    "extensions": {
+      "status": "Downloaded candidate hashes only; signatures/ABI/runtime NOT_RUN",
+      "assets": [
+        {
+          "platform": "linux_amd64",
+          "name": "ducklake",
+          "url": "https://extensions.duckdb.org/v1.5.5/linux_amd64/ducklake.duckdb_extension.gz",
+          "compressed_bytes": 12655412,
+          "compressed_sha256": "733ccf19fedcfd5e0bfaf85993219145181099cc411076cabf14933ea16ab452",
+          "bytes": 36436086,
+          "sha256": "e51bf9e8d933d0e83780ae096455501b542cf962569a2ce5613532d702c08302"
+        },
+        {
+          "platform": "linux_amd64",
+          "name": "postgres_scanner",
+          "url": "https://extensions.duckdb.org/v1.5.5/linux_amd64/postgres_scanner.duckdb_extension.gz",
+          "compressed_bytes": 14583967,
+          "compressed_sha256": "e0f631a5535f165468bc8a20501f8bc1490adbc877d38fcdff2f8d05531e1e5b",
+          "bytes": 41696558,
+          "sha256": "b1ced4cfc6311313e117c2afb3eac76508718778dde0716421503c7dbfb5605c"
+        },
+        {
+          "platform": "linux_amd64",
+          "name": "httpfs",
+          "url": "https://extensions.duckdb.org/v1.5.5/linux_amd64/httpfs.duckdb_extension.gz",
+          "compressed_bytes": 7416043,
+          "compressed_sha256": "7cdd52a3135388718884a9b71e3987ba723002121e8e9de399c4ed619d824a05",
+          "bytes": 21570542,
+          "sha256": "887c392b1e49128d11667c81e3698d8b00dfdeb456771acf66d05a0f74f7b7d8"
+        },
+        {
+          "platform": "osx_arm64",
+          "name": "ducklake",
+          "url": "https://extensions.duckdb.org/v1.5.5/osx_arm64/ducklake.duckdb_extension.gz",
+          "compressed_bytes": 8416561,
+          "compressed_sha256": "d89175054de53a830e9b2682655b640d29c9a74120f28a310fccc4bef981a0bd",
+          "bytes": 27580398,
+          "sha256": "1b72fc42164dbf21948e5a912cefc383b24071852f9e70209874ebd0a73b7caa"
+        },
+        {
+          "platform": "osx_arm64",
+          "name": "postgres_scanner",
+          "url": "https://extensions.duckdb.org/v1.5.5/osx_arm64/postgres_scanner.duckdb_extension.gz",
+          "compressed_bytes": 10229655,
+          "compressed_sha256": "4fb5079e67b00e6643e6ee91545a355010004d1dad50b43f1c060de0cb789c8e",
+          "bytes": 30945398,
+          "sha256": "f39dd59bf57679d0242e19e180d90b4222e5cdb691ab67c7506658f3548c0e05"
+        },
+        {
+          "platform": "osx_arm64",
+          "name": "httpfs",
+          "url": "https://extensions.duckdb.org/v1.5.5/osx_arm64/httpfs.duckdb_extension.gz",
+          "compressed_bytes": 5567359,
+          "compressed_sha256": "758acc0b0c4fbf09506f387ff6f52826b1038b7b6849ded39928d2f992945230",
+          "bytes": 16010974,
+          "sha256": "10514b4ef19f80bf4ec4bf90c124f5d34625f2606263b40ae8ec7979905bb779"
+        }
+      ]
+    },
+    "binding_source": {
+      "version": "1.10505.0",
+      "sha256": "6cb514dab5e271e849235c1cb98bd65a2ae107fbd619a6740219319c54a71d95",
+      "extracted_files_match_crate": true
+    },
+    "preparation_failures": [
+      "Python urllib extension request: HTTP 403 Cloudflare; standard HTTPS curl succeeded without relaxing TLS",
+      "Python 3.9 tarfile does not accept filter keyword; retried with explicit path/type validation"
+    ],
+    "status": "Retained local dependency inputs only; no archive product code, new Cargo dependency, Tux resources, signature/ABI/runtime qualification"
   }
 }
