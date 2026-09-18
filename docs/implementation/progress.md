@@ -20,17 +20,20 @@ finite fixtures do not implement persistent service lifecycle or installed recov
 
 ## Git and integrating ownership
 
-Mac main HEAD candidate `b12c90286c2a730e1d99238a95c134cc3ffe3f36`, tree
-`1891f59a6385b6e832de4c38f1962c674ed3a096`. Last verified private origin/main is
-`db3507aa7a86f57fe73ee2b191a2af6ca5afb933`; candidate is not yet pushed. Root is sole
-writer/integrator. Dirty work is the new scoped fencing report and updates to this
-checkpoint, laboratory inventory, storage task, archive contract/handoff and
-experiment README. No merge/rebase or remote source editing. Resolve actual
-HEAD/origin/dirty paths on resumption rather than assuming this record is current.
+Mac main delivery `8e122279b72cfe046e6525577e8e44fb9cdee00b` is pushed to
+private origin/main and independently read back. Tested source remains
+`b12c90286c2a730e1d99238a95c134cc3ffe3f36`, tree
+`1891f59a6385b6e832de4c38f1962c674ed3a096`; b12c902→8e12227 changes only
+reviewed documentation/evidence. The containing checkpoint-only commit follows
+8e12227; resolve actual HEAD/origin on resumption. Root is sole writer/integrator.
+Before this checkpoint refresh the worktree was clean. No merge/rebase or remote
+source editing. Push55316 is terminal; repository freshly verified private,
+named bigbrotr-rs and not archived.
 
 All local compilers and lab sessions are terminal. Transfer89653, native
 cases67470, terminal audit93009, retirement80493 and copies31036/20901 completed.
-No unfinished resource cleanup. Read-only AI source review publication_review
+No unfinished resource cleanup; final fresh Tux inspection confirms stopped
+owned IDs/no OOM and absent retired network. Read-only AI source review publication_review
 finished; final recorded-evidence review found no discrepancy and independently
 recomputed source/full-row/file/counter identities. Final document checks pass.
 Root already reviewed
@@ -176,7 +179,8 @@ HTTPS retry/concurrency on Mac/Linux. Do not mechanically rerun unrelated suites
 
 ## Next bounded action
 
-After final diff/remote-state verification and private delivery, continue P02-T04 step4 with the product's bounded fresh receipt
+Source/evidence review, document checks, final diff/remote verification and
+private delivery passed. Continue P02-T04 step4 with the product's bounded fresh receipt
 resolution/read consumer, using the actual private worker and complete retained
 expected identity. Inspect its contracts and minimum reader authority before
 implementation. Preserve OutcomeUnknown until fresh exact observation; absence
