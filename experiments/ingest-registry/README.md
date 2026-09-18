@@ -6,9 +6,12 @@ product installation, policy initializer, admission service or authority grant.
 `seed.sql` deliberately supplies **synthetic coordination-only** configuration
 and policy documents/digests. These must never become product bootstrap values.
 
-Initial status: **NOT_RUN**. Building this harness or passing its pure input tests
-does not execute the engine scenarios. Record subsequent revision-bound results
-in implementation evidence; do not reinterpret this initial status as a run.
+The [2032042 native run](../../docs/implementation/evidence/p02-ingest-registry-native-20260918.json)
+passed all five scenarios on Linux amd64/PostgreSQL 16.15. It binds both actual
+executables, complete source inputs, external rows, wire boundaries and cleanup.
+The earlier c2a952f build failed before probe execution because Python generated
+bytecode inside its source archive; that outcome remains recorded separately.
+These results qualify the stated registry boundary, not later product authority.
 
 On Tux, use a clean exact Git candidate and a newly inventoried run directory.
 Build the actual CLI with `tools/build.py`, then `build_probe.py` builds the actual

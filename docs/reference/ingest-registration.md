@@ -51,7 +51,8 @@ establish all of those through its real configured factory and commit boundary.
 
 The [registry experiment](../../experiments/ingest-registry/README.md) exercises
 this adapter against actual PostgreSQL with synthetic coordination prerequisites.
-Its prepared commands are not execution evidence; revision-bound outcomes belong
-in implementation evidence. Product Control bootstrap, durable policy projection,
+The [2032042 native evidence](../implementation/evidence/p02-ingest-registry-native-20260918.json)
+records five executed Linux amd64/PostgreSQL 16.15 scenarios, complete external
+rows and actual COMMIT/lock schedules. Product Control bootstrap, durable policy projection,
 native activation, successor/recovery registration and first signed-event
 admission remain separate work.

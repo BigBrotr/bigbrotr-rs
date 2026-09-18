@@ -214,6 +214,7 @@ def main():
             if not report['stopped'] or report['oom_killed']: report['status'] = 'FAIL'
         save()
     print(json.dumps({'status':report['status'],'cases':len(report['cases']),'report':str(output / 'report.json')}))
+    require(report['status'] == 'PASS', 'registry-run-incomplete')
 
 
 if __name__ == '__main__':

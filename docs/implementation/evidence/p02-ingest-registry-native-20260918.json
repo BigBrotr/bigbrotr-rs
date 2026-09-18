@@ -1,0 +1,234 @@
+{
+  "format": "bigbrotr-ingest-registry-native-evidence/1",
+  "status": "PASS",
+  "source": {
+    "revision": "20320423d5d6a19ad380c553234940178a633f46",
+    "tree": "a6cf59d6aa6d6e7b88a093da6964b0a5b82701d1",
+    "files": 433,
+    "all_git_blobs_archive_and_actual_remote_sources_equal": true
+  },
+  "artifacts": {
+    "bigbrotr": {
+      "sha256": "f51c4d7977575680b3652741f29b7439a1bd4bf1d48d746c07be763008df874a",
+      "bytes": 6997040,
+      "elf_machine": 62
+    },
+    "ingest_registry_probe": {
+      "sha256": "b6e1a98e714e572d73e9432a81dbe41e2898e055002028a864607d5321c363e6",
+      "bytes": 2001928,
+      "elf_machine": 62
+    }
+  },
+  "environment": {
+    "host": "Tux",
+    "os": "Linux",
+    "architecture": "amd64",
+    "postgres": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    },
+    "image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "build_resources": "2CPU/6GiB memory+swap/512PIDs/two compiler jobs; read-only source/root, fresh output",
+    "runtime_resources": "PG2CPU/1536MiB, parent/client2CPU/4GiB,256PIDs each; private internal network, no host ports; probe shares PG network namespace",
+    "build_info": {
+      "capabilities": [
+        "event-verification",
+        "config-static"
+      ],
+      "capability_scope": "Strict bounded event JSON and independent ID/BIP340 verification; offline static configuration candidates and incomplete read-only doctor diagnostics; no storage, durable configuration authority, source policy, wire transport, filter, or general NIP conformance claim",
+      "debug_info": "false",
+      "format": "bigbrotr-build/1",
+      "inputs_sha256": {
+        "Cargo.lock": "bff3ccfcaf614d60e9db4a300560190db5fcd9e635d6ac30f1d4b3af6d5e573d",
+        "contracts/protocol/nip01-event.json": "b830d5ab8651f5a763ebcffdc0eb1737ba70f4602c93fc714c892865ffca2db8",
+        "contracts/protocol/versions.json": "37c76706c5a2aa4fc72a40aeed908f104620eafcee1118b7cee8baf133546c95",
+        "contracts/release/dependencies.json": "3a3f139c9f667e3bbe09589c20dc7333f4ece9f89967bc301215e009cc96ee5f",
+        "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167"
+      },
+      "optimization": "3",
+      "product": "BigBrotr",
+      "profile_assertion": "release",
+      "protocol_registry_format": "bigbrotr-protocol-versions/1",
+      "protocols": {
+        "event_verifier": "bigbrotr-nip01-verifier/1",
+        "nostr_nips": "a2494f4f81d46684e5814a9bf35e2b1df978f955"
+      },
+      "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+      "schemas": {
+        "build_info": "bigbrotr-build/1",
+        "config_static": "bigbrotr-config-static/1",
+        "doctor": "bigbrotr-doctor/1",
+        "signed_event": "nip01-event/1"
+      },
+      "source": {
+        "dirty": false,
+        "manifest_sha256": "f49780279210237781790f2df873e189651377bc7d954dc7681b25a25c067ce9",
+        "revision": "20320423d5d6a19ad380c553234940178a633f46",
+        "state": "builder-supplied",
+        "tree": "a6cf59d6aa6d6e7b88a093da6964b0a5b82701d1"
+      },
+      "target": "x86_64-unknown-linux-gnu",
+      "version": "0.1.0-dev"
+    }
+  },
+  "cases": [
+    {
+      "name": "direct",
+      "status": "PASS",
+      "complete_table_families": 23,
+      "successful_probe_invocations": 7
+    },
+    {
+      "name": "before",
+      "status": "PASS",
+      "complete_table_families": 23,
+      "successful_probe_invocations": 7,
+      "commit_boundary": {
+        "commits_seen": 1,
+        "commits_forwarded": 0,
+        "server_commit_complete": 0,
+        "client_commit_complete": 0,
+        "faults": 1
+      }
+    },
+    {
+      "name": "after",
+      "status": "PASS",
+      "complete_table_families": 23,
+      "successful_probe_invocations": 7,
+      "commit_boundary": {
+        "commits_seen": 1,
+        "commits_forwarded": 1,
+        "server_commit_complete": 1,
+        "client_commit_complete": 0,
+        "faults": 1
+      }
+    },
+    {
+      "name": "cancel",
+      "status": "PASS",
+      "complete_table_families": 23,
+      "successful_probe_invocations": 7,
+      "commit_boundary": {
+        "commits_seen": 1,
+        "commits_forwarded": 1,
+        "server_commit_complete": 1,
+        "client_commit_complete": 1,
+        "faults": 1
+      },
+      "actual_lock_wait": [
+        {
+          "pid": 475,
+          "backend_start": "2026-09-18T00:34:44.368042+00:00",
+          "wait_event_type": "Client",
+          "wait_event": "ClientRead",
+          "blocking": [],
+          "granted": true,
+          "mode": "ExclusiveLock"
+        },
+        {
+          "pid": 561,
+          "backend_start": "2026-09-18T00:34:45.872368+00:00",
+          "wait_event_type": "Lock",
+          "wait_event": "advisory",
+          "blocking": [
+            475
+          ],
+          "granted": false,
+          "mode": "ExclusiveLock"
+        }
+      ]
+    },
+    {
+      "name": "race",
+      "status": "PASS",
+      "complete_table_families": 23,
+      "successful_probe_invocations": 8,
+      "commit_boundary": {
+        "commits_seen": 1,
+        "commits_forwarded": 1,
+        "server_commit_complete": 1,
+        "client_commit_complete": 1,
+        "faults": 1
+      },
+      "actual_lock_wait": [
+        {
+          "pid": 687,
+          "backend_start": "2026-09-18T00:34:47.99723+00:00",
+          "wait_event_type": "Client",
+          "wait_event": "ClientRead",
+          "blocking": [],
+          "granted": true,
+          "mode": "ExclusiveLock"
+        },
+        {
+          "pid": 694,
+          "backend_start": "2026-09-18T00:34:48.04013+00:00",
+          "wait_event_type": "Lock",
+          "wait_event": "advisory",
+          "blocking": [
+            687
+          ],
+          "granted": false,
+          "mode": "ExclusiveLock"
+        }
+      ]
+    }
+  ],
+  "checks": [
+    "Exact immutable tuple, absence and initial atomic registration through actual Rust adapter and PostgreSQL; same identity retry and changed count conflict leave complete rows unchanged.",
+    "Wrong dataset instance, maximum-u64 Control epoch, changed policy digest and migration-role refusals; full-u64 parameter round-trip.",
+    "COMMIT before forwarding resolves absent under the same lock, then retries identical identity; suppressed server-complete response resolves committed rows.",
+    "Cancelled commit and second concurrent registration visibly wait on the actual previous backend advisory lock; uncommitted rows are absent externally.",
+    "All columns of all23 control table families match independent literal expected rows; first registration changes nine families only. Producer closing subsequently yields current=false.",
+    "Root separately reread all23 final table families in each of five databases and confirmed zero remaining probe backends.",
+    "Actual downloaded CLI and probe ELF machine62 and SHA256 verified. All433 Git blobs, archive/manifest and remote archive files match. Native tool binaries independently rehashed via read-only docker cp."
+  ],
+  "review": "Root read complete registry source, tests, probe, harness, seed, build helper and affected contracts; independent reviewer unavailable after agent service usage limit. No native-owner authority is inferred from registry observations.",
+  "lifecycle": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-registry-2032042/runtime",
+    "owner": "eb67a093790165c223cb3d3d7e077f5b",
+    "probe_owner": "71c60826ed11dcf689d5877e2da7c69e",
+    "state": "stopped-retained",
+    "containers": [
+      {
+        "name": "bigbrotr-implementation-pg-20260917-registry",
+        "exit": 0,
+        "oom": false
+      },
+      {
+        "name": "bigbrotr-implementation-pg-20260917-registry-client",
+        "exit": 143,
+        "oom": false
+      },
+      {
+        "name": "bigbrotr-implementation-pg-20260917-registry-client-registry",
+        "exit": 143,
+        "oom": false
+      }
+    ]
+  },
+  "limitations": [
+    "Synthetic coordination-only config/policy documents; no product Control bootstrap, policy projection/lease, native activation or fencing qualification.",
+    "Only initial absent topology tested; sealed-empty predecessor advance, source successor/recovery registration, schema corruption and all partial-row conflicts remain unqualified paths.",
+    "No durable event admission, archive/read/export/restart journey, receipt/ACK/GC, ENOSPC, engine crash/power-loss or mixed/aged load qualification.",
+    "Loopback plaintext SCRAM within isolated PG network namespace; production TLS/connection adapter is not requalified by this probe.",
+    "Native Linux amd64 only; no arm64, packaged installation or release qualification.",
+    "No new workspace test run or resource-capacity claim: these are five bounded actual engine scenarios, not a throughput benchmark."
+  ],
+  "raw_evidence": {
+    ".research/implementation/ingest-registry/native-2032042/audit-build.json": "ecdf7b595f25e27be46825172b8c637dd18cc0ec0f9767a738c0b8a5ad577be1",
+    ".research/implementation/ingest-registry/native-2032042/registry-report.json": "eed1894af026e1c416ccafded849d1fcd077b23b7ee743f5c38d15f17cbdd7a6",
+    ".research/implementation/ingest-registry/native-2032042/root-observation.json": "0fd92b0bd270ec8e5bd4ea1b4b18f4ba36f1f1e15ffa2e57fa66aad26f3ea6b1",
+    ".research/implementation/ingest-registry/native-2032042/stopped.json": "3f37523e25c7c73441f0c320ce6d406c474b4a8880228a48260c09d5097eb6aa",
+    ".research/implementation/ingest-registry/native-2032042/build.log": "82a920163f256c9b578998c6f208dc35c241291030645dae182ddcf14c5d0496",
+    ".research/implementation/ingest-registry/native-2032042/build-result.json": "378a35774f42f042fad74ccf6346a66a0ed62600d4c47705d18e347aa435477b",
+    ".research/implementation/ingest-registry/native-2032042/registry-probe-build.json": "62d76b6c4145a81721c8aec404aeff1ca0218b5b3a1b64854dd0fe14a7e16313",
+    ".research/implementation/ingest-registry/native-2032042/source-manifest.json": "f49780279210237781790f2df873e189651377bc7d954dc7681b25a25c067ce9",
+    ".research/implementation/ingest-registry/audit_build.py": "ef5e1f330a83ced10514b365ae40b77fa9e5971b168b033e50b7f92fcbbe2822",
+    ".research/implementation/ingest-registry/observe_build_remote.py": "786057a84ba6f85069a8f1315428faab236f7fa219de7906b38bb61f694893ed"
+  },
+  "post_run_review": "After the exact2032042 run, root added a fail-closed runner exit check: a cleanup-detected OOM/incomplete stop must exit nonzero as well as record FAIL. The executed run independently verified stopped=true/OOM=false; this post-run guard is source-reviewed/Python-syntax-checked, not an injected OOM test."
+}
