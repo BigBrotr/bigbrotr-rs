@@ -13,8 +13,10 @@ extension versions and effective settings. The new private `inspect-batch`
 complete pending membership and stages the five implemented typed fact families.
 The application now has a bounded parent for that private inspection, including
 pre-exec verification, sanitized loader environment and retained memory/control
-grants. Publication, whole-role resource/crash supervision, receipt recovery,
-export and storage protection remain P02-T03/T04 work. Do not use a diagnostic as an archive commit or a readiness
+grants. Finite scientific initialization, publication and fresh receipt observation
+are now private consumers under the same handoff contract. Installed lifecycle
+recovery, whole-role resource/crash supervision, export and storage protection
+remain P02-T03/T04 work. Do not use a diagnostic as an archive commit or a readiness
 certificate. No step or release target is qualified by an asset download.
 
 ## Build inputs and installation shape
@@ -68,7 +70,7 @@ progress bar are disabled. All bundle hashes are checked before loading any
 extension; DuckDB additionally verifies signed extension metadata. Failed native
 operations produce redacted error categories. The worker accepts no arbitrary SQL.
 
-The process creating either private command must set
+The process creating any private command must set
 `BIGBROTR_ARCHIVE_PARENT_PID` to its own positive PID. The product parent does
 this in its cleared child environment. Missing or different parentage fails
 before engine/job-root effects. Linux binds SIGKILL to the lifetime of the
@@ -132,3 +134,14 @@ operator command or support claim. The
 [native guard prerequisite report](../../docs/implementation/evidence/p02-catalog-product-native-20260918.json)
 qualifies this finite packaged consumer on Linux amd64 at `944f3e6`; installed
 initialization and persistent recovery remain unfinished.
+
+The scientific consumers `initialize-catalog`, `publish-batch` and
+`inspect-receipt` use the same supervised finite process. Their exact input,
+limits and authority are documented in the
+[private handoff contract](../../docs/reference/archive-handoff.md#private-scientific-publication-candidate).
+The new [receipt reader](../../docs/reference/archive-handoff.md#fresh-receipt-observation-candidate)
+uses a separate SELECT-only credential and fresh readonly catalog/data access.
+[Native receipt qualification](../../docs/implementation/evidence/p02-archive-receipts-native-20260919.json)
+exercises six signed recovery schedules and eighteen isolated reader cases;
+neither Present nor Absent is a protection or replay grant. These remain private
+application interfaces, not an installed Archive role or new public command.

@@ -317,5 +317,11 @@ interpreting absence for replay, the caller must positively exclude old lifetime
 and resolve their catalog transactions in the owning order. Presence verifies the
 receipt, not full scientific file membership or a durability class. The signed
 publication fixture now wires this actual parent after positive reap and sealing;
-its independent full-body reader remains a separate oracle. PostgreSQL privilege,
-read-only mount, fault and recovery qualification for this candidate is pending.
+its independent full-body reader remains a separate oracle. The
+[Linux amd64 qualification at 0b3a427](../implementation/evidence/p02-archive-receipts-native-20260919.json)
+passes all six signed schedules and eighteen separate receipt cases using the
+actual parent/worker, SELECT-only PG role and readonly data mount. Real PG lock
+waits precede deadline/cancellation; missing or corrupt receipt files cannot become
+absence for an unrelated target. Same-input retry succeeds after exact restoration.
+All source bytes remain retained. The two-receipt workload and bounded full scan
+do not establish aged capacity, persistent lifetime recovery or protection.

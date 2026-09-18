@@ -7261,6 +7261,93 @@
       "scope": "P02-T04 actual signed native publisher fencing; no ACK, protection or cleanup authority",
       "audit": ".research/implementation/archive-worker/publication/b12c902/audit.json",
       "report": "docs/implementation/evidence/p02-signed-fencing-native-20260919.json"
+    },
+    "fresh_receipt_reader": {
+      "status": "PASS6 integrated signed schedules and18 finite reader cases; terminal audited cleanup",
+      "purpose": "P02-T04 actual bounded receipt consumer, six signed recovery schedules and SELECT-only readonly-container faults; no ACK/protection",
+      "resources": {
+        "source": "0b3a427de97d07bb092a7d0a69375a1d9eeb662b",
+        "tree": "f6535fed61a4af06a4279728d6dfc45369687a88",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/publication-0b3a427",
+        "owner": "384866455249d978f243904acee47944",
+        "container": "bigbrotr-implementation-publication-0b3a427",
+        "postgres": "bigbrotr-implementation-publication-0b3a427-pg",
+        "network": "bigbrotr-implementation-publication-0b3a427",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "state": "stopped-retained",
+        "source_files": 691,
+        "started_at": "2026-09-18T23:44:38.033296+00:00",
+        "network_id": "4563c2e4347c928201056ef10140d319990979a0a536625b7ea2b663a4f680ec",
+        "postgres_id": "722654fb30ae2a766c881bcaffa5f49f83ce4baf10b5edd04f52de1ca2c54f62",
+        "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+        "container_id": "b4678a5babed47c64170d97532b38b2d2f9846bf8bbc88411ecf54ceb3363a27",
+        "network_state": "retired",
+        "terminal": {
+          "runner": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-18T23:44:40.642940992Z",
+            "FinishedAt": "2026-09-18T23:49:43.413947249Z"
+          },
+          "postgres": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-18T23:44:38.617259747Z",
+            "FinishedAt": "2026-09-18T23:49:46.289324308Z"
+          }
+        },
+        "finished_at": "2026-09-18T23:49:46.897287+00:00"
+      },
+      "raw_root": ".research/implementation/archive-worker/receipts/0b3a427",
+      "local_mac_logs": ".research/implementation/archive-worker/receipts",
+      "resource_policy": "New lab; no host ports; source/export/assets readonly; separate copied writable caches; all reader containers individually recorded under same owner in receipt-cases.json",
+      "next": "Persistent unique lifecycle/recovery and protection; any new native run needs a new exact-source lab",
+      "audit": {
+        "source": "0b3a427de97d07bb092a7d0a69375a1d9eeb662b",
+        "tree": "f6535fed61a4af06a4279728d6dfc45369687a88",
+        "source_files": 691,
+        "manifest_sha256": "caf1bb72d73eafbcbbffc62eec48a9e848c7879d9397a1aa9ea4dfcb4b4f14e4",
+        "cleanup": "owned containers stopped, network retired, no OOM",
+        "unrelated_unchanged": 20,
+        "unrelated_running": 8,
+        "running_bigbrotr": 0
+      },
+      "reader_container_ids": [
+        "ba0102be7d549edbf6a70014ace4ae67174f41acfa0c86c865006cb89d1bf342",
+        "4809aa2f58833409cb4e6e642d58bf9d982ab015e47b549af26451f92319cff5",
+        "6d47fcfe4b7ddf68faf140575d898fa566b7ef031458226bfb799f2aade61d2c",
+        "eb4942c1b3b2e8926dd37c9b46d6e8bc2202ba4188e22bf73f3797f086b2367c",
+        "0c6e92a9852bfbb9784575bca5a54ed44e1ffd21ec8b25ec3aa496551440b550",
+        "b79d7d0881299a53ffcb93be0ba624b3aa1ed5a14f2862ce0dee8e72df54f434",
+        "f72ec38707ba78968508b64f48452c1106e9b4d4ec669e458cdc0d510bd541da",
+        "dd51f40991cc5829a0e0ee63390c262160a910c08283ee9a20e2790891440620",
+        "8afa4a4566ce01fed3c1627ae61e5c9a989ca7564cf70faf72bbcb21c07ea1e3",
+        "e61c6d616e0fbd1c26b02f57cda71bfde6f18bda4600f7cf7898045c94fad8cd",
+        "41897e9b35bc68c5d35f4d1ceccfec8085a26d2dbb823becbbd6e32785529dcd",
+        "85a741185dc0b62af6042bfb43f1b62c60e21d26ee9a5c3533abd25f07eee44e",
+        "161f319f47fb1f5bf5eabb8466dc39dd87d803db5a4c2b24b006c0f9cd3b39a3",
+        "ada6693d59d8385b026bd0b62e54eb71d7b8f6ec28006b697557fed75066ab0c",
+        "d5beba10b7a6aeeef3f0521bfc7f6fa123800fc3fc069062e9d116f64d4de39e",
+        "58dfc51f16d1c6da788d0189e8c421e0d43a54742adcf825db617df70508ef7b",
+        "23604e59d9e65d076ab1f4c66fb8e911991401d239739e2f7fd672bd6daf02b5",
+        "125ea8f257bc52523aa5c68bbbc4f413df5d70ec67c8cbbc4dbccc2835a6cac5"
+      ],
+      "report": "docs/implementation/evidence/p02-archive-receipts-native-20260919.json"
     }
   },
   "implementation_monitor_corrections_20260918": {

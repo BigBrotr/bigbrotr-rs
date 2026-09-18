@@ -1,0 +1,810 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P02-T04 step4; finite fresh receipt observation prerequisite",
+  "date": "2026-09-19 Europe/Rome",
+  "status": "PASS scoped product reader qualification; persistent lifecycle recovery, protection and full product acceptance remain open",
+  "source": "0b3a427de97d07bb092a7d0a69375a1d9eeb662b",
+  "tree": "f6535fed61a4af06a4279728d6dfc45369687a88",
+  "source_files": 691,
+  "archive_sha256": "bbc9c8b58ea441e4b7e35ed3620725f8b42acc1047cf388499d999811ef2feee",
+  "manifest_sha256": "caf1bb72d73eafbcbbffc62eec48a9e848c7879d9397a1aa9ea4dfcb4b4f14e4",
+  "environment": {
+    "host": "Tux native Linux x86_64",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "native": "DuckDB1.5.5, DuckLake1.0, signed offline postgres_scanner; unchanged locked dependencies",
+    "toolchain": {
+      "os": "Linux",
+      "architecture": "x86_64",
+      "discovery": "llvm-config",
+      "environment": {
+        "CC": "/usr/lib/llvm-14/bin/clang",
+        "CXX": "/usr/lib/llvm-14/bin/clang++",
+        "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+        "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+        "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+      },
+      "tools": {
+        "CC": {
+          "path": "/usr/lib/llvm-14/bin/clang",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "CXX": {
+          "path": "/usr/lib/llvm-14/bin/clang++",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "AR": {
+          "path": "/usr/lib/llvm-14/bin/llvm-ar",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+          "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+          "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+        },
+        "LIBCLANG_PATH": {
+          "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+          "version": "Debian clang version 14.0.6"
+        },
+        "discovery": {
+          "path": "/usr/lib/llvm-14/bin/llvm-config",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+          "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+          "version": "14.0.6"
+        }
+      },
+      "sdk": null
+    },
+    "limits": {
+      "runner_cpus": 2,
+      "runner_memory_bytes": 6442450944,
+      "runner_pids": 512,
+      "postgres_cpus": 1,
+      "postgres_memory_bytes": 1073741824,
+      "postgres_pids": 128,
+      "finite_reader_cpus": 1,
+      "finite_reader_memory_bytes": 805306368,
+      "finite_reader_pids": 256,
+      "worker_engine_memory_bytes": 134217728,
+      "worker_native_reserve_bytes": 402653184,
+      "worker_temp_bytes": 67108864,
+      "worker_threads": 1,
+      "maximum_scanned_receipts": 16
+    },
+    "network": "owned internal network, no host ports, plaintext loopback SCRAM inside owned PG namespace"
+  },
+  "identities_sha256": {
+    "Cargo.lock": "6b2f28dea860e31616009929eb25b8add92159c03d4857d3836dfe52bd047190",
+    "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167",
+    "contracts/release/archive-engine.json": "ae0069565ab9411928df0cf067822630c4f3a912919e61633b952f8077a5e2c1",
+    "experiments/identity-contract/signed-fixture.json": "4c931ab34cb7adeb707fc2866f4a50b3ec8b694cbb2d4fb5e335f8f37a2d8875",
+    "experiments/configuration-inspection/policy.json": "15c470b515b014e9c7bb20a73b5e0eb2506a13f8581fe3c9d7140e363ae4f678",
+    "experiments/archive-engine/signed_publication_oracle.py": "e056d511862e2f1659ffffdddbeab3702ef91079b5a9052cc82b8acf845d6a83",
+    "experiments/archive-engine/native_commit_proxy.py": "88d39b91915e9ddd5a35bff13cbeae0010b932731b7079233a6dec9a0da75ae5",
+    "experiments/archive-engine/signed_publication_cases.py": "b188c7ecc0580abf7b7ee9603a153c1fdb601b138250456c8dc50132355c0556",
+    "experiments/archive-engine/receipt_cases.py": "c74d11aff85afa3a37e3079d5d6c6918798aad68434729b5cab5b5c4e6dfb196"
+  },
+  "artifacts_sha256": {
+    "worker": "526943396db4bb140d7ab2c5f3b64dc83d0378d3efaa0f21f0a5b91cb8e7cd86",
+    "probe": "19140060aaa1504d6c1b390f93e20a23cd843b3e9fe124403f0640a0454d3615",
+    "publisher": "04e37033a7eed12d1cf17c52e6367417d8fbaa47a96d76ee5e7c2ade48809230",
+    "reader": "70f642b4a3a9f1f4fbb64562b3c4889ed0150a74b6f3bdcb176fed1413295d4e",
+    "receipt_reader": "cbdb70eff4c95badfc3fb7f573c292dc904903c25f1c642d251964bc4145e6bd",
+    "embedded-test-0": "3ecb88f23b1ecc6fb7d0d9cf062ecbd86071f391b74dece1b60e7e541752faf2",
+    "input-test-0": "5f490d3996786f68d989ce205d1969afe19a771a5b174c858d323eebbca25064",
+    "receipts-test-0": "3ecb88f23b1ecc6fb7d0d9cf062ecbd86071f391b74dece1b60e7e541752faf2",
+    "receipt-input-test-0": "4e478890f2a60b49aced4316644c1d10524e1545e2bd42fa0e5981b8dd8c457d",
+    "receipt-parent-test-0": "a85a00d40bb3dda46ed72e6cc473cfb02f2f4ee70bdada10ccaf2c5937beb4c8",
+    "receipt-protocol-test-0": "17d77918d68b128a076be1d98aa1953f0d84cad960cfb5fc9779ed83e7ac4773"
+  },
+  "commands": {
+    "build": "python3 -B /source/experiments/archive-engine/native_publication.py; exact readonly Git export, shared tools.ci.execute, locked offline release build",
+    "signed": "python3 -B <exact-checkout>/experiments/archive-engine/signed_publication_cases.py <owned-root>",
+    "receipts": "python3 -B <exact-checkout>/experiments/archive-engine/receipt_cases.py <owned-root>",
+    "checks": [
+      {
+        "name": "build",
+        "command": [
+          "cargo",
+          "build",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr-archive-worker",
+          "--bin",
+          "bigbrotr-archive-worker",
+          "--example",
+          "catalog-fence-probe"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 30.21866274997592
+      },
+      {
+        "name": "signed-fixtures",
+        "command": [
+          "cargo",
+          "build",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "-p",
+          "bigbrotr-archive-worker",
+          "--example",
+          "archive_publication_probe",
+          "--example",
+          "archive_read_probe",
+          "--example",
+          "archive_receipt_probe"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 22.102418234106153
+      },
+      {
+        "name": "embedded",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr-archive-worker",
+          "--lib",
+          "publication"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 30.035374637227505
+      },
+      {
+        "name": "input",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr-archive-worker",
+          "--test",
+          "publication"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 3.3491763290949166
+      },
+      {
+        "name": "receipts",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr-archive-worker",
+          "--lib",
+          "receipt::"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 9.90350252436474
+      },
+      {
+        "name": "receipt-input",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr-archive-worker",
+          "--test",
+          "receipt"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 3.2977723353542387
+      },
+      {
+        "name": "receipt-parent",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--lib",
+          "storage::archive::receipts"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 8.927296149078757
+      },
+      {
+        "name": "receipt-protocol",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr-protocol",
+          "--test",
+          "archive_receipt"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 3.119493088684976
+      }
+    ],
+    "counts": {
+      "collected": 8,
+      "executed": 8,
+      "failed": 0,
+      "not_run": 0
+    },
+    "rust_test_counts": {
+      "embedded": 7,
+      "input": 1,
+      "receipts": 5,
+      "receipt-input": 1,
+      "receipt-parent": 2,
+      "receipt-protocol": 3
+    }
+  },
+  "signed_recovery": [
+    {
+      "mode": "normal",
+      "status": "PASS",
+      "receipt_observations": [
+        {
+          "ordinal": 1,
+          "publication_success": false,
+          "receipt": "absent"
+        },
+        {
+          "ordinal": 2,
+          "publication_success": true,
+          "receipt": "present"
+        },
+        {
+          "ordinal": 3,
+          "publication_success": true,
+          "receipt": "present"
+        },
+        {
+          "ordinal": 4,
+          "publication_success": false,
+          "receipt": "conflict"
+        }
+      ],
+      "catalog_files": 8,
+      "physical_files": 8,
+      "rocks_rows": 41,
+      "rocks_digest": "da535e9d1edcdce8bf09033bb1d2b48ee10941c34f47b0b3db228f6285128c61",
+      "worker_active_permits": 0
+    },
+    {
+      "mode": "before",
+      "status": "PASS",
+      "receipt_observations": [
+        {
+          "ordinal": 1,
+          "publication_success": false,
+          "receipt": "absent"
+        },
+        {
+          "ordinal": 2,
+          "publication_success": true,
+          "receipt": "present"
+        },
+        {
+          "ordinal": 3,
+          "publication_success": false,
+          "receipt": "absent"
+        }
+      ],
+      "catalog_files": 2,
+      "physical_files": 8,
+      "rocks_rows": 41,
+      "rocks_digest": "da535e9d1edcdce8bf09033bb1d2b48ee10941c34f47b0b3db228f6285128c61",
+      "worker_active_permits": 0
+    },
+    {
+      "mode": "after",
+      "status": "PASS",
+      "receipt_observations": [
+        {
+          "ordinal": 1,
+          "publication_success": false,
+          "receipt": "absent"
+        },
+        {
+          "ordinal": 2,
+          "publication_success": true,
+          "receipt": "present"
+        },
+        {
+          "ordinal": 3,
+          "publication_success": false,
+          "receipt": "present"
+        }
+      ],
+      "catalog_files": 8,
+      "physical_files": 8,
+      "rocks_rows": 41,
+      "rocks_digest": "da535e9d1edcdce8bf09033bb1d2b48ee10941c34f47b0b3db228f6285128c61",
+      "worker_active_permits": 0
+    },
+    {
+      "mode": "owner_first",
+      "status": "PASS",
+      "receipt_observations": [
+        {
+          "ordinal": 1,
+          "publication_success": false,
+          "receipt": "absent"
+        },
+        {
+          "ordinal": 2,
+          "publication_success": true,
+          "receipt": "present"
+        },
+        {
+          "ordinal": 3,
+          "publication_success": false,
+          "receipt": "absent"
+        },
+        {
+          "ordinal": 4,
+          "publication_success": true,
+          "receipt": "present"
+        }
+      ],
+      "catalog_files": 8,
+      "physical_files": 14,
+      "rocks_rows": 41,
+      "rocks_digest": "da535e9d1edcdce8bf09033bb1d2b48ee10941c34f47b0b3db228f6285128c61",
+      "worker_active_permits": 0
+    },
+    {
+      "mode": "held_commit",
+      "status": "PASS",
+      "receipt_observations": [
+        {
+          "ordinal": 1,
+          "publication_success": false,
+          "receipt": "absent"
+        },
+        {
+          "ordinal": 2,
+          "publication_success": true,
+          "receipt": "present"
+        },
+        {
+          "ordinal": 3,
+          "publication_success": true,
+          "receipt": "present"
+        },
+        {
+          "ordinal": 4,
+          "publication_success": false,
+          "receipt": "conflict"
+        }
+      ],
+      "catalog_files": 8,
+      "physical_files": 8,
+      "rocks_rows": 41,
+      "rocks_digest": "da535e9d1edcdce8bf09033bb1d2b48ee10941c34f47b0b3db228f6285128c61",
+      "worker_active_permits": 0
+    },
+    {
+      "mode": "held_rollback",
+      "status": "PASS",
+      "receipt_observations": [
+        {
+          "ordinal": 1,
+          "publication_success": false,
+          "receipt": "absent"
+        },
+        {
+          "ordinal": 2,
+          "publication_success": true,
+          "receipt": "present"
+        },
+        {
+          "ordinal": 3,
+          "publication_success": false,
+          "receipt": "absent"
+        },
+        {
+          "ordinal": 4,
+          "publication_success": true,
+          "receipt": "present"
+        }
+      ],
+      "catalog_files": 8,
+      "physical_files": 14,
+      "rocks_rows": 41,
+      "rocks_digest": "da535e9d1edcdce8bf09033bb1d2b48ee10941c34f47b0b3db228f6285128c61",
+      "worker_active_permits": 0
+    }
+  ],
+  "receipt_cases": [
+    {
+      "name": "present",
+      "status": "PASS",
+      "active_permits": 0,
+      "cancelled": false,
+      "elapsed_ms": 582,
+      "outcome": "Ok(Present)"
+    },
+    {
+      "name": "absent",
+      "status": "PASS",
+      "active_permits": 0,
+      "cancelled": false,
+      "elapsed_ms": 628,
+      "outcome": "Ok(Absent)"
+    },
+    {
+      "name": "digest",
+      "status": "PASS",
+      "active_permits": 0,
+      "cancelled": false,
+      "elapsed_ms": 587,
+      "outcome": "Err(ObservationUnknown)"
+    },
+    {
+      "name": "attempt",
+      "status": "PASS",
+      "active_permits": 0,
+      "cancelled": false,
+      "elapsed_ms": 567,
+      "outcome": "Err(ObservationUnknown)"
+    },
+    {
+      "name": "ordinal",
+      "status": "PASS",
+      "active_permits": 0,
+      "cancelled": false,
+      "elapsed_ms": 576,
+      "outcome": "Err(ObservationUnknown)"
+    },
+    {
+      "name": "dataset",
+      "status": "PASS",
+      "active_permits": 0,
+      "cancelled": false,
+      "elapsed_ms": 567,
+      "outcome": "Err(ObservationUnknown)"
+    },
+    {
+      "name": "topology",
+      "status": "PASS",
+      "active_permits": 0,
+      "cancelled": false,
+      "elapsed_ms": 551,
+      "outcome": "Err(ObservationUnknown)"
+    },
+    {
+      "name": "catalog",
+      "status": "PASS",
+      "active_permits": 0,
+      "cancelled": false,
+      "elapsed_ms": 511,
+      "outcome": "Err(ObservationUnknown)"
+    },
+    {
+      "name": "root",
+      "status": "PASS",
+      "active_permits": 0,
+      "cancelled": false,
+      "elapsed_ms": 525,
+      "outcome": "Err(ObservationUnknown)"
+    },
+    {
+      "name": "denied",
+      "status": "PASS",
+      "active_permits": 0,
+      "cancelled": false,
+      "elapsed_ms": 576,
+      "outcome": "Err(ObservationUnknown)"
+    },
+    {
+      "name": "unavailable",
+      "status": "PASS",
+      "active_permits": 0,
+      "cancelled": false,
+      "elapsed_ms": 541,
+      "outcome": "Err(ObservationUnknown)"
+    },
+    {
+      "name": "scan-limit",
+      "status": "PASS",
+      "active_permits": 0,
+      "cancelled": false,
+      "elapsed_ms": 580,
+      "outcome": "Err(ObservationUnknown)"
+    },
+    {
+      "name": "allocation",
+      "status": "PASS",
+      "active_permits": 0,
+      "cancelled": false,
+      "elapsed_ms": 0,
+      "outcome": "Err(ResourceLimit)"
+    },
+    {
+      "name": "deadline",
+      "status": "PASS",
+      "active_permits": 0,
+      "cancelled": false,
+      "elapsed_ms": 5005,
+      "outcome": "Err(ObservationUnknown)",
+      "blocked_backend": {
+        "pid": 662,
+        "backend_start": "2026-09-18T23:48:03.664527+00:00",
+        "wait_event_type": "Lock",
+        "wait_event": "relation"
+      }
+    },
+    {
+      "name": "cancel",
+      "status": "PASS",
+      "active_permits": 0,
+      "cancelled": true,
+      "elapsed_ms": 629,
+      "outcome": "Err(ObservationUnknown)",
+      "blocked_backend": {
+        "pid": 720,
+        "backend_start": "2026-09-18T23:48:09.1465+00:00",
+        "wait_event_type": "Lock",
+        "wait_event": "relation"
+      },
+      "cancel_to_exit_ms": 32.23330108448863
+    },
+    {
+      "name": "missing-unrelated",
+      "status": "PASS",
+      "active_permits": 0,
+      "cancelled": false,
+      "elapsed_ms": 584,
+      "outcome": "Err(ObservationUnknown)"
+    },
+    {
+      "name": "corrupt-unrelated",
+      "status": "PASS",
+      "active_permits": 0,
+      "cancelled": false,
+      "elapsed_ms": 575,
+      "outcome": "Err(ObservationUnknown)"
+    },
+    {
+      "name": "restored",
+      "status": "PASS",
+      "active_permits": 0,
+      "cancelled": false,
+      "elapsed_ms": 578,
+      "outcome": "Ok(Present)"
+    }
+  ],
+  "authority": {
+    "actual_reader_privileges": {
+      "superuser": false,
+      "createdb": false,
+      "createrole": false,
+      "replication": false,
+      "bypassrls": false,
+      "memberships": 0,
+      "connect": true,
+      "create": false,
+      "temp": false,
+      "native_tables": 28,
+      "native_select": true,
+      "native_write": false,
+      "owner_select": false
+    },
+    "mounts": "All18 finite reader containers had readonly root/out/fixture and only the selected reader or denied credential file; /job alone writable. The connected signed fixture remains a privileged lab coordinator.",
+    "process_boundary": "Actual parent verifies worker/assets, sends credential only on private stdin, supervises finite child and returns capacity only after positive reap. Standalone successful container exits and terminal backend checks independently recorded.",
+    "binding": "Exact dataset/catalog/root/schema checksums, new PG and DuckLake READ_ONLY attachments with secret storage disabled; prior full privileged guard inspection and exclusion remain caller obligations."
+  },
+  "durable_effects": {
+    "catalog_before_equals_after": true,
+    "catalog_scope": "full ducklake_data_file rows, snapshot count and owner; SELECT-only role separately denies native writes",
+    "fault_object": {
+      "path": "out/signed_normal/kind=7/main/archive_commits/prepared-b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7b7/data.parquet",
+      "sha256": "0e955af076156af4a6a6168823bd7ef876a9e7a8ca666a13021865d0902ccc70",
+      "bytes": 1902
+    },
+    "restoration": "Same bytes/SHA and file mode restored before identical successful Present retry; backup retained under owned receipt-cases root",
+    "pending": "All41 Rocks rows and logical digest identical across all6 signed journeys; no ACK or reclamation",
+    "full_scientific_read": "Independent literal row and signature oracle passes all6 schedules, including before successor launch in races; receipt observation alone is not full-body verification"
+  },
+  "measured_bounds": {
+    "healthy_present_ms": [
+      582,
+      578
+    ],
+    "healthy_absent_ms": 628,
+    "deadline_elapsed_ms": 5005,
+    "cancel_signal_to_container_exit_ms": 32.23330108448863,
+    "workload": "Two actual retained receipts for ten signed/bootstrap facts; no load/aged-state/throughput or peak RSS claim. Full scan cost is linear, capped16 here; allocation-refusal and scan-exhaustion cannot yield Absent.",
+    "cancellation_discriminator": "Direct pg_blocking_pids proves live reader wait before signal; blocker remains held until reader exit. Cancellation deadline15s is distinct from required <2s signal-to-exit. Deadline case requires5000..7000ms."
+  },
+  "review_and_regressions": {
+    "mac": "Precommit dirty candidate on d4f4895:5 embedded native receipt cases,2 parent cases,3 protocol cases and1 actual CLI input case PASS; scoped Clippy/format/docs PASS. These are development evidence, not exact release artifacts.",
+    "red_before_green": [
+      "Oversized input InvalidInput versus ResourceLimit",
+      "Persisted range overflow Mismatch versus ResourceLimit",
+      "Overflowed scan cap misclassified as ResourceLimit",
+      "Malformed nonmatching schema2 receipt incorrectly returned Absent",
+      "Duplicate response status incorrectly overwrote Present with Absent"
+    ],
+    "ai_source_review": "publication_review read product/protocol/binding and complete qualification paths, no edits or native execution. Both product findings reproduced and corrected. Harness cancellation false-pass, excessive credential mount, missing failure logs/artifact audit and broad duplicate wording corrected before0b3a427.",
+    "root_review": "Complete candidate diff/contracts, executed outputs, all691 Mac Git archive source hashes, native ELFs/test counts, authority and terminal ownership audited. No new applied SQL/schema/dependency format.",
+    "ai_recorded_evidence_review": "Read-only AI publication_review independently recomputed all26 raw hashes,691 exact-source file hashes, artifact/test identities, six full scientific oracles and three pre-successor reads, receipt matrices, pending/file identities,18 reader outputs, terminal roles/mounts and cleanup. One blanket error-classification sentence corrected to preserve TerminationUnknown precedence; no further discrepancy. No reviewer native execution or Tux mutation."
+  },
+  "cleanup": {
+    "resources": {
+      "source": "0b3a427de97d07bb092a7d0a69375a1d9eeb662b",
+      "tree": "f6535fed61a4af06a4279728d6dfc45369687a88",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/publication-0b3a427",
+      "owner": "384866455249d978f243904acee47944",
+      "container": "bigbrotr-implementation-publication-0b3a427",
+      "postgres": "bigbrotr-implementation-publication-0b3a427-pg",
+      "network": "bigbrotr-implementation-publication-0b3a427",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "state": "stopped-retained",
+      "source_files": 691,
+      "started_at": "2026-09-18T23:44:38.033296+00:00",
+      "network_id": "4563c2e4347c928201056ef10140d319990979a0a536625b7ea2b663a4f680ec",
+      "postgres_id": "722654fb30ae2a766c881bcaffa5f49f83ce4baf10b5edd04f52de1ca2c54f62",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "b4678a5babed47c64170d97532b38b2d2f9846bf8bbc88411ecf54ceb3363a27",
+      "network_state": "retired",
+      "terminal": {
+        "runner": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 143,
+          "Error": "",
+          "StartedAt": "2026-09-18T23:44:40.642940992Z",
+          "FinishedAt": "2026-09-18T23:49:43.413947249Z"
+        },
+        "postgres": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-18T23:44:38.617259747Z",
+          "FinishedAt": "2026-09-18T23:49:46.289324308Z"
+        }
+      },
+      "finished_at": "2026-09-18T23:49:46.897287+00:00"
+    },
+    "audit": {
+      "source": "0b3a427de97d07bb092a7d0a69375a1d9eeb662b",
+      "tree": "f6535fed61a4af06a4279728d6dfc45369687a88",
+      "source_files": 691,
+      "manifest_sha256": "caf1bb72d73eafbcbbffc62eec48a9e848c7879d9397a1aa9ea4dfcb4b4f14e4",
+      "cleanup": "owned containers stopped, network retired, no OOM",
+      "unrelated_unchanged": 20,
+      "unrelated_running": 8,
+      "running_bigbrotr": 0
+    },
+    "finite_reader_ids": [
+      "ba0102be7d549edbf6a70014ace4ae67174f41acfa0c86c865006cb89d1bf342",
+      "4809aa2f58833409cb4e6e642d58bf9d982ab015e47b549af26451f92319cff5",
+      "6d47fcfe4b7ddf68faf140575d898fa566b7ef031458226bfb799f2aade61d2c",
+      "eb4942c1b3b2e8926dd37c9b46d6e8bc2202ba4188e22bf73f3797f086b2367c",
+      "0c6e92a9852bfbb9784575bca5a54ed44e1ffd21ec8b25ec3aa496551440b550",
+      "b79d7d0881299a53ffcb93be0ba624b3aa1ed5a14f2862ce0dee8e72df54f434",
+      "f72ec38707ba78968508b64f48452c1106e9b4d4ec669e458cdc0d510bd541da",
+      "dd51f40991cc5829a0e0ee63390c262160a910c08283ee9a20e2790891440620",
+      "8afa4a4566ce01fed3c1627ae61e5c9a989ca7564cf70faf72bbcb21c07ea1e3",
+      "e61c6d616e0fbd1c26b02f57cda71bfde6f18bda4600f7cf7898045c94fad8cd",
+      "41897e9b35bc68c5d35f4d1ceccfec8085a26d2dbb823becbbd6e32785529dcd",
+      "85a741185dc0b62af6042bfb43f1b62c60e21d26ee9a5c3533abd25f07eee44e",
+      "161f319f47fb1f5bf5eabb8466dc39dd87d803db5a4c2b24b006c0f9cd3b39a3",
+      "ada6693d59d8385b026bd0b62e54eb71d7b8f6ec28006b697557fed75066ab0c",
+      "d5beba10b7a6aeeef3f0521bfc7f6fa123800fc3fc069062e9d116f64d4de39e",
+      "58dfc51f16d1c6da788d0189e8c421e0d43a54742adcf825db617df70508ef7b",
+      "23604e59d9e65d076ab1f4c66fb8e911991401d239739e2f7fd672bd6daf02b5",
+      "125ea8f257bc52523aa5c68bbbc4f413df5d70ec67c8cbbc4dbccc2835a6cac5"
+    ],
+    "finite_reader_count": 18,
+    "reader_credentials": [
+      {
+        "rolname": "bigbrotr_receipt_denied",
+        "rolcanlogin": false,
+        "password_present": false
+      },
+      {
+        "rolname": "bigbrotr_receipt_reader",
+        "rolcanlogin": false,
+        "password_present": false
+      }
+    ],
+    "writer_credentials": "All22 writer lifetimes NOLOGIN with password removed; owners4/3/3/4/4/4 disabled; fresh terminal queries show no other backend"
+  },
+  "raw_root": ".research/implementation/archive-worker/receipts/0b3a427",
+  "raw_sha256": {
+    "artifact-audit.json": "5756b5f17b6846260375fb141ffcb1e0718a570f81220d2502d4d3240bff147b",
+    "audit.json": "355c9dfe0d6675ef8436bba0e800e32ad326f24f3390b41f236ce317a5f6e2ac",
+    "launch.py": "457d6d4ef63c262016d5e567414b2e19942022d4ed5352af83bf473cd4e81bf5",
+    "native-tests/build.log": "b7b88a0f84ae8f6509c903f77ff9dc3ac1a0e95d4aba63091e83094a58d63fa4",
+    "native-tests/embedded.log": "a6365ff08972cf3f83809502ed80a1176ec9df67a3e8c2a8aaf9c6e0d350727a",
+    "native-tests/input.log": "78fdebc9025d646910fdebdfe1ae2ee8f9d85c0d7fed9e334bf28d2ba8fb30e7",
+    "native-tests/ready.json": "45514f755d0725594904fbf0ba4e44d4c6a5230bebda8f063a954cfc1523f98e",
+    "native-tests/receipt-input.log": "83e807f748b81e6a797bb196cb08c13675916e2b614f07b9a5bb46a0bdef79df",
+    "native-tests/receipt-parent.log": "89d3221f65d2d0df9226cc92c98edd8d7b3afaa126b62e0027e6fee9f45195c1",
+    "native-tests/receipt-protocol.log": "ba14f5ae01f01d1bf0dc6525dc9ae2470ae8050d48d2f2b671251514d63cd522",
+    "native-tests/receipts.log": "2bcbe2b65b32d881982980849be8a90053ee736c8f472a99330b6bd42aaabe7c",
+    "native-tests/result.json": "b04d094edc1e4867e28ba7c55315bca63a8f104fcf5dcce4a7e3f4aacda91b5d",
+    "native-tests/signed-fixtures.log": "1923350a9869f621e900b141d27aeeb1eccab38baee987688cf5a7bb827d1b50",
+    "preflight.json": "a2911bc2267cc7737bc96c1faa245b164ee314a33e0103ef1d57e69c8f24facd",
+    "reader-terminal-audit.json": "27f20d3b0970b6c5c44bf6a49d787c786b565a5ace496cd4973b2b7656eb3df1",
+    "receipt-cases.json": "0d6372d8ba71ef8f45f06420f618a93eed4df150c28a7406a21eaefa10b6045e",
+    "receipt-run.log": "cae6da0eb2d7f188484d7507357896aaf4cec215ab9f8324549ce6e7d33c86c9",
+    "resources.json": "95f9646c0ff0528a00d5b1436cf72d2d31b8b07378c53d7105e6b38d79820bdc",
+    "retire-run.log": "754ff4915c0e73c3b938eab06e86e21b85c026bc8f6f4b8c8d132e3942a0b4d0",
+    "retire.py": "596249536963467117f05da0ddd62acf5674eaa2ed74f71a7f32ffd0ac1d1472",
+    "signed-cases.json": "d761772da16389634347991bec2d2d0978142dd0497a66a95f0fc2269624e7e5",
+    "signed-run.log": "116c0565c9bb7ee83bcc33baae6f4a24a4ad2192121e4c71c504149965967930",
+    "source-manifest.json": "caf1bb72d73eafbcbbffc62eec48a9e848c7879d9397a1aa9ea4dfcb4b4f14e4",
+    "terminal-observation.json": "cc7544b21f986742e5cc698502cc02f9372e3669dc2dc16c1fc05ab2b55c22f1",
+    "terminal-races.py": "30b025b6237228eaedcf24f4636a0e4150faea43023d6b6ac5840d834643de94",
+    "terminal-run.log": "cc7544b21f986742e5cc698502cc02f9372e3669dc2dc16c1fc05ab2b55c22f1"
+  },
+  "remaining_gates": [
+    "Persistent unique worker/process/credential lifecycle and installed recovery",
+    "Qualified protection and source acknowledgement/reclamation",
+    "Full product read/export/restart M1 and remaining scientific schema variants",
+    "File formation, multi-batch input, aged mixed workloads and resource/capacity qualification",
+    "S3 placement and declared durability/power-loss classes",
+    "Installed Compose/release journeys, native Linux arm64 and hosted Actions availability"
+  ],
+  "limits": [
+    "Receipt Present is exact receipt observation, not complete scientific file closure or protection",
+    "Absent requires prior positive old-lifetime exclusion before replay",
+    "Matching-identity duplicates/conflicts are refused; unrelated well-formed duplicate identities are not globally audited",
+    "Native/transfer/response failures map to ObservationUnknown; TerminationUnknown takes precedence and retains capacity/exclusion obligations. Resource versus malformed errors remain distinct before launch and inside the worker.",
+    "Tests do not qualify unbounded or aged receipt scans"
+  ]
+}

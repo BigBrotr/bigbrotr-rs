@@ -296,11 +296,12 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   uses the actual supervised worker, complete retained batch/attempt identity,
   readonly binding/attach and a bounded full-field scan through EOF. It refuses
   malformed receipts (including unrelated rows), target-identity conflicts and
-  duplicates, unreadable files and
-  truncated work. Mac embedded native and parent regressions are scoped evidence;
-  SELECT-only PG, readonly mount and integrated COMMIT/race qualification remain
-  pending. Persistent lifecycle recovery and protection remain required. Pending
-  stays retained in every case.
+  duplicates, unreadable files and truncated work. [Native receipt qualification](evidence/p02-archive-receipts-native-20260919.json)
+  at `0b3a427` passes six integrated signed recovery schedules and eighteen SELECT-only PG/
+  readonly-mount cases, including real blocked cancellation/deadline, missing/
+  corrupt objects, identity conflicts, limits and identical restored retry.
+  All 19 scoped native Rust cases pass. Persistent lifecycle recovery, aged scan
+  capacity and protection remain required; pending stays retained in every case.
   The borrowed model archive identity and pending-preparation consumer bind schema,
   explicit topology, maximal ranges and complete source/digest membership. Frozen
   single/multiple-range and signed pending fixtures have independent expected
