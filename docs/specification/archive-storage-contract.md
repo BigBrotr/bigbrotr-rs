@@ -325,18 +325,33 @@ INSERT as the selected safe path until that ownership/cleanup boundary is resolv
 The earlier lost-ack fixture killed a worker after COMMIT returned; it did not
 exercise this native connection fault. Pending must remain retained.
 
-The next bounded qualification uses the engine's supported registration of
-caller-owned staged files, including the technical receipt. Its native ownership
-flag avoids this specific cleanup path in inspected source; that is not yet
-executed qualification or permission to enable publication. Qualify prepared-file
-identity, complete nested mappings, immutable placement, transaction ambiguity,
-positive ownership and orphan recovery together before selecting the adapter.
+The selected candidate uses supported registration of caller-owned staged files,
+including the technical receipt. The [native registration experiment](../implementation/evidence/p02-native-registration-20260918.json)
+at `ea270ac` retains all three synthetic files and reads their full bodies after
+the same lost COMMIT response; a pre-forward rollback leaves three unregistered
+orphans. This qualifies the scoped dependency behavior, not scientific publication.
+Qualify complete nested mappings, immutable placement, transaction ambiguity,
+positive ownership and orphan recovery together before enabling the adapter.
 Keep one engine path; do not retain a silently weaker normal-INSERT fallback.
 All required families and the deterministic semantic batch receipt must still
 enter one fenced native catalog transaction. No second JSON manifest becomes
 transaction authority and no PG metadata values/columns may be edited. The versioned guard exception
 changes ownership/privileges and attaches statement triggers. [DuckLake connecting](https://ducklake.select/docs/stable/duckdb/usage/connecting)
 documents the separate catalog and data path; the exact bundled version is tested.
+
+For local placement, prepare files below canonical `main/<table>/` in exclusively
+created mode0700 `prepared-<attempt-id>/` directories. Never overwrite or reuse an
+attempt directory and never unlink its files in worker error cleanup. Native
+registration must store paths relative to the guarded table root; relocation and
+recovery must preserve their complete membership. Explicitly disable Hive path
+partition discovery and refuse missing/extra columns: directory names cannot
+replace actual scientific values. Local roots containing `*`, `?` or `[` are
+refused consistently by the private parent, worker and catalog identity because
+the pinned engine treats singleton registration paths as globs. SQL quoting does
+not make them literal. Existing such experimental roots require a separately
+qualified operator relocation, never silent path rewriting. Applied catalog SQL,
+scientific schema and canonical identities are unchanged. Initial static candidate
+configuration does not yet qualify these archive placement settings.
 
 The typed Arrow/native adapter must preserve nullable compound values through
 actual Parquet, including null entries before and between present references.

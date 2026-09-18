@@ -7036,6 +7036,62 @@
       },
       "report": "docs/implementation/evidence/p02-native-commit-file-loss-20260918.json",
       "next": "new exact-Git lab for caller-owned staged-file registration; never restart retired network"
+    },
+    "publication_registration": {
+      "status": "PASS scoped synthetic native registration fault cases; terminal audited cleanup; product qualification remains open",
+      "resources": {
+        "source": "ea270aca3ef3915120182c67ca69976d00b51afe",
+        "tree": "e37de0963682c9edf633772965db8f16b3e91ae5",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/publication-ea270ac",
+        "owner": "d8b10a894c5361b65f03b0d5ac0b6e3d",
+        "container": "bigbrotr-implementation-publication-ea270ac",
+        "postgres": "bigbrotr-implementation-publication-ea270ac-pg",
+        "network": "bigbrotr-implementation-publication-ea270ac",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "state": "stopped-retained",
+        "source_files": 673,
+        "started_at": "2026-09-18T21:31:23.506836+00:00",
+        "network_id": "e29b66bee67d08bf28e1c3907f4c56c6ba916ec41a85685ab3a748269b3e2449",
+        "postgres_id": "193fd0167057ee34666225e734ef51ea0fb2c113d187ced8e14c9eb34500a7e6",
+        "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+        "container_id": "64c0bd7f54ad7acc8e521f2e0ff7e1473154091c666f6a7a277d0ea51020f479",
+        "network_state": "retired",
+        "terminal": {
+          "runner": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-18T21:31:25.990046952Z",
+            "FinishedAt": "2026-09-18T21:36:15.540736683Z"
+          },
+          "postgres": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-18T21:31:24.141730063Z",
+            "FinishedAt": "2026-09-18T21:36:16.650826942Z"
+          }
+        },
+        "finished_at": "2026-09-18T21:36:17.251067+00:00"
+      },
+      "raw_root": ".research/implementation/archive-worker/publication/ea270ac",
+      "audit": ".research/implementation/archive-worker/publication/ea270ac/audit.json",
+      "next": "qualify scientific caller-owned publication in new exact-source lab",
+      "report": "docs/implementation/evidence/p02-native-registration-20260918.json",
+      "mac_product_report": "docs/implementation/evidence/p02-staged-publication-mac-20260918.json"
     }
   },
   "implementation_monitor_corrections_20260918": {

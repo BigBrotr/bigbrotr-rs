@@ -51,6 +51,8 @@ fn facts() -> Vec<Fact> {
     .collect()
 }
 fn open(temp: &Path, catalog: &Path, data: &Path) -> Engine {
+    // Ordinary attachment requires the operator's existing canonical data root.
+    fs::create_dir_all(data).unwrap();
     let engine = Engine::open(
         &temp.canonicalize().unwrap(),
         EngineLimits {
@@ -75,7 +77,7 @@ fn open(temp: &Path, catalog: &Path, data: &Path) -> Engine {
         .unwrap();
     engine
 }
-fn prepare(engine: Engine, facts: &[Fact]) -> (PreparedBatch, PublicationRequest) {
+fn prepare(engine: Engine, facts: &[Fact], data: &Path) -> (PreparedBatch, PublicationRequest) {
     let batch = AdmissionBatch::new(facts.iter().map(Fact::fact_ref).collect()).unwrap();
     let records: Vec<_> = facts
         .iter()
@@ -96,7 +98,7 @@ fn prepare(engine: Engine, facts: &[Fact]) -> (PreparedBatch, PublicationRequest
     )
     .unwrap()
     .digest();
-    let request=serde_json::from_value(serde_json::json!({"catalog":{"dsn":"unused","data_root":"/unused/"},"topology_generation":u64::MAX.to_string(),"batch_digest":digest,"attempt_id":([9;16]),"publication_ordinal":u64::MAX})).unwrap();
+    let request=serde_json::from_value(serde_json::json!({"catalog":{"dsn":"unused","data_root":format!("{}/",data.display())},"topology_generation":u64::MAX.to_string(),"batch_digest":digest,"attempt_id":([9;16]),"publication_ordinal":u64::MAX})).unwrap();
     (
         PreparedBatch::prepare(engine, wire.as_slice(), limits, &cancel).unwrap(),
         request,
@@ -105,13 +107,13 @@ fn prepare(engine: Engine, facts: &[Fact]) -> (PreparedBatch, PublicationRequest
 
 #[test]
 fn complete_rows_and_receipt_survive_fresh_native_read_and_duplicate_refuses() {
-    let home = tempfile::tempdir().unwrap();
+    let home = tempfile::tempdir_in(std::env::temp_dir().canonicalize().unwrap()).unwrap();
     let temp = tempfile::tempdir().unwrap();
     let catalog = home.path().join("catalog.ducklake");
-    let data = home.path().join("objects");
+    let data = home.path().join("kind=7");
     let engine = open(temp.path(), &catalog, &data);
     schema::initialize(&engine.connection).unwrap();
-    let (prepared, request) = prepare(engine, &facts());
+    let (prepared, request) = prepare(engine, &facts(), &home.path().join("kind=7"));
     prepared.publish_attached(&request).unwrap();
     drop(prepared);
     let temp = tempfile::tempdir().unwrap();
@@ -139,7 +141,25 @@ fn complete_rows_and_receipt_survive_fresh_native_read_and_duplicate_refuses() {
     );
     let counts:(u64,u64,u64)=engine.connection.query_row("SELECT (SELECT count(*) FROM archive.dictionaries),(SELECT count(*) FROM archive.archive_commits),(SELECT count(*) FROM ducklake_snapshots('archive'))",[],|r|Ok((r.get(0)?,r.get(1)?,r.get(2)?))).unwrap();
     assert_eq!(counts, (2, 1, 3));
-    let (prepared, request) = prepare(engine, &facts());
+    // Inspect actual native metadata independently of the DuckLake reader.
+    let metadata = duckdb::Connection::open(&catalog).unwrap();
+    let paths: String = metadata.query_row("SELECT string_agg(path, ',' ORDER BY path) FROM ducklake_data_file WHERE path_is_relative", [], |r| r.get(0)).unwrap();
+    assert_eq!(
+        paths,
+        std::iter::repeat_n(format!("prepared-{}/data.parquet", "09".repeat(16)), 3)
+            .collect::<Vec<_>>()
+            .join(",")
+    );
+    let absolute: u64 = metadata
+        .query_row(
+            "SELECT count(*) FROM ducklake_data_file WHERE NOT path_is_relative",
+            [],
+            |r| r.get(0),
+        )
+        .unwrap();
+    assert_eq!(absolute, 0);
+    drop(metadata);
+    let (prepared, request) = prepare(engine, &facts(), &home.path().join("kind=7"));
     assert_eq!(
         prepared.publish_attached(&request),
         Err(PublicationError::ExistingData)
@@ -149,7 +169,7 @@ fn complete_rows_and_receipt_survive_fresh_native_read_and_duplicate_refuses() {
 #[test]
 fn missing_dictionary_and_late_receipt_failure_leave_no_committed_rows() {
     for missing in [true, false] {
-        let home = tempfile::tempdir().unwrap();
+        let home = tempfile::tempdir_in(std::env::temp_dir().canonicalize().unwrap()).unwrap();
         let temp = tempfile::tempdir().unwrap();
         let catalog = home.path().join("catalog.ducklake");
         let data = home.path().join("objects");
@@ -157,10 +177,10 @@ fn missing_dictionary_and_late_receipt_failure_leave_no_committed_rows() {
         schema::initialize(&engine.connection).unwrap();
         let all = facts();
         let selected = if missing { &all[2..] } else { &all[..] };
-        let (prepared, request) = prepare(engine, selected);
+        let (prepared, request) = prepare(engine, selected, &data);
         if !missing {
             // An intentionally incompatible native receipt layout makes the final
-            // INSERT fail after scientific INSERTs. This bypasses the PG guard
+            // registration fail after scientific registrations. This bypasses the PG guard
             // only in this embedded rollback fixture.
             prepared
                 .engine
@@ -177,6 +197,15 @@ fn missing_dictionary_and_late_receipt_failure_leave_no_committed_rows() {
             })
         );
         drop(prepared);
+        if !missing {
+            assert!(
+                data.join("main/dictionaries")
+                    .join(format!("prepared-{}", "09".repeat(16)))
+                    .join("data.parquet")
+                    .is_file(),
+                "failed publication retains caller-owned prepared files until fenced recovery"
+            );
+        }
         let temp = tempfile::tempdir().unwrap();
         let engine = open(temp.path(), &catalog, &data);
         for table in schema::TABLES.into_iter().chain(["archive_commits"]) {
@@ -195,14 +224,14 @@ fn missing_dictionary_and_late_receipt_failure_leave_no_committed_rows() {
 
 #[test]
 fn incorrect_semantic_identity_refuses_before_catalog_attachment() {
-    let home = tempfile::tempdir().unwrap();
+    let home = tempfile::tempdir_in(std::env::temp_dir().canonicalize().unwrap()).unwrap();
     let temp = tempfile::tempdir().unwrap();
     let engine = open(
         temp.path(),
         &home.path().join("catalog.ducklake"),
         &home.path().join("objects"),
     );
-    let (prepared, mut request) = prepare(engine, &facts());
+    let (prepared, mut request) = prepare(engine, &facts(), &home.path().join("objects"));
     request.batch_digest = Digest256::from_bytes([0; 32]);
     assert_eq!(prepared.publish(request), Err(PublicationError::Identity));
 }
@@ -213,7 +242,7 @@ fn identical_dictionary_mapping_preserves_each_fact_scope_in_batch_and_history()
         DescriptorLabel, DictionaryDescriptor, DictionaryEntry, FactPayload, Ordinal,
     };
     for historical in [false, true] {
-        let home = tempfile::tempdir().unwrap();
+        let home = tempfile::tempdir_in(std::env::temp_dir().canonicalize().unwrap()).unwrap();
         let temp = tempfile::tempdir().unwrap();
         let catalog = home.path().join("catalog.ducklake");
         let data = home.path().join("objects");
@@ -257,17 +286,18 @@ fn identical_dictionary_mapping_preserves_each_fact_scope_in_batch_and_history()
             )
             .unwrap(),
         );
+        let history_temp = tempfile::tempdir().unwrap();
         let engine = if historical {
-            let (prepared, mut request) = prepare(engine, &all[..3]);
+            let (prepared, mut request) = prepare(engine, &all[..3], &data);
             request.publication_ordinal = 1;
             prepared.publish_attached(&request).unwrap();
             drop(prepared);
-            let temp = tempfile::tempdir().unwrap();
-            open(temp.path(), &catalog, &data)
+            open(history_temp.path(), &catalog, &data)
         } else {
             engine
         };
-        let (prepared, mut request) = prepare(engine, if historical { &all[3..] } else { &all });
+        let (prepared, mut request) =
+            prepare(engine, if historical { &all[3..] } else { &all }, &data);
         request.publication_ordinal = 2;
         request.attempt_id = [10; 16];
         prepared.publish_attached(&request).unwrap();
@@ -279,7 +309,7 @@ fn identical_dictionary_mapping_preserves_each_fact_scope_in_batch_and_history()
 #[test]
 fn changed_dictionary_descriptor_is_still_refused() {
     use bigbrotr_model::{DictionaryDescriptor, DictionaryEntry, EventId, FactPayload};
-    let home = tempfile::tempdir().unwrap();
+    let home = tempfile::tempdir_in(std::env::temp_dir().canonicalize().unwrap()).unwrap();
     let temp = tempfile::tempdir().unwrap();
     let engine = open(
         temp.path(),
@@ -303,9 +333,90 @@ fn changed_dictionary_descriptor_is_still_refused() {
         FactPayload::Dictionary(conflict),
     )
     .unwrap();
-    let (prepared, request) = prepare(engine, &all);
+    let (prepared, request) = prepare(engine, &all, &home.path().join("objects"));
     assert_eq!(
         prepared.publish_attached(&request),
         Err(PublicationError::ConflictingDictionary)
     );
+}
+
+#[test]
+fn native_singleton_registration_expands_globs_but_private_input_refuses_them() {
+    let home = tempfile::tempdir_in(std::env::temp_dir().canonicalize().unwrap()).unwrap();
+    let temp = tempfile::tempdir().unwrap();
+    let engine = open(
+        temp.path(),
+        &home.path().join("catalog.ducklake"),
+        &home.path().join("objects"),
+    );
+    let literal = home.path().join("[x]");
+    let sibling = home.path().join("x");
+    fs::create_dir(&literal).unwrap();
+    fs::create_dir(&sibling).unwrap();
+    engine.connection.execute_batch(&format!(
+        "CREATE TABLE archive.canary (n UINTEGER); COPY (SELECT 11::UINTEGER AS n) TO '{}/file.parquet' (FORMAT PARQUET); COPY (SELECT 22::UINTEGER AS n) TO '{}/file.parquet' (FORMAT PARQUET); CALL ducklake_add_data_files('archive','canary',['{}/file.parquet'],hive_partitioning=>false,allow_missing=>false,ignore_extra_columns=>false)",
+        literal.display(), sibling.display(), literal.display()
+    )).unwrap();
+    let actual: u32 = engine
+        .connection
+        .query_row("SELECT n FROM archive.canary", [], |r| r.get(0))
+        .unwrap();
+    assert_eq!(
+        actual, 22,
+        "native registration selected the glob match, not literal file11"
+    );
+    let wire = serde_json::to_vec(
+        &serde_json::json!({"dsn":"unused","data_root":format!("{}/",literal.display())}),
+    )
+    .unwrap();
+    assert!(matches!(
+        BootstrapRequest::read(wire.as_slice()),
+        Err(crate::catalog::CatalogError::InvalidInput)
+    ));
+}
+
+#[test]
+fn existing_attempt_files_and_symlinked_table_parent_are_never_reused() {
+    for symlink in [0, 1, 2] {
+        let home = tempfile::tempdir_in(std::env::temp_dir().canonicalize().unwrap()).unwrap();
+        let temp = tempfile::tempdir().unwrap();
+        let data = home.path().join("objects");
+        let engine = open(temp.path(), &home.path().join("catalog.ducklake"), &data);
+        schema::initialize(&engine.connection).unwrap();
+        let parent = data.join("main/dictionaries");
+        let outside = home.path().join("outside");
+        fs::create_dir_all(&outside).unwrap();
+        if symlink == 2 {
+            fs::create_dir_all(&data).unwrap();
+            std::os::unix::fs::symlink(&outside, data.join("main")).unwrap();
+        } else if symlink == 1 {
+            fs::create_dir_all(data.join("main")).unwrap();
+            std::os::unix::fs::symlink(&outside, &parent).unwrap();
+        } else {
+            let attempt = parent.join(format!("prepared-{}", "09".repeat(16)));
+            fs::create_dir_all(&attempt).unwrap();
+            fs::write(attempt.join("data.parquet"), b"existing-attempt-canary").unwrap();
+        }
+        let (prepared, request) = prepare(engine, &facts(), &data);
+        assert_eq!(
+            prepared.publish_attached(&request),
+            Err(PublicationError::PreparedFiles)
+        );
+        let count: u64 = prepared
+            .engine
+            .connection
+            .query_row("SELECT count(*) FROM archive.archive_commits", [], |r| {
+                r.get(0)
+            })
+            .unwrap();
+        assert_eq!(count, 0);
+        assert_eq!(fs::read_dir(&outside).unwrap().count(), 0);
+        if symlink == 0 {
+            assert_eq!(
+                fs::read(parent.join(format!("prepared-{}/data.parquet", "09".repeat(16))))
+                    .unwrap(),
+                b"existing-attempt-canary"
+            );
+        }
+    }
 }

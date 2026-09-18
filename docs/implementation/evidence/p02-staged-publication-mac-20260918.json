@@ -1,0 +1,104 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P02-T04 steps3/4/5",
+  "date": "2026-09-18",
+  "status": "PASS scoped Mac native embedded staged publication and private path regressions; scientific guarded PG integration NOT_RUN",
+  "base_source": "ea270aca3ef3915120182c67ca69976d00b51afe",
+  "source_files_sha256": {
+    "apps/bigbrotr-archive-worker/src/catalog.rs": "73a6998f25e402eba603206b272d2e065fc567c23663f210bf4139d08cef56c8",
+    "apps/bigbrotr-archive-worker/src/main.rs": "2f7ff548d279bf342b94813b79968c7388d8b35a2ef2ffde7c800929c1bba6cb",
+    "apps/bigbrotr-archive-worker/src/publication.rs": "fcb25a8e6cdb21088486210794c10fa300ddba2475a5cd604d27566286082c2e",
+    "apps/bigbrotr-archive-worker/src/publication_tests.rs": "6ad2dd8b49225b011829e4e95fd2565fd509b4ce6dbb7675cab2dd0b9c2bbe52",
+    "apps/bigbrotr-archive-worker/src/schema.rs": "2d475d84a380ae2e697259d93f26c3b2f340e650b8a376544d52c4d32b0d9794",
+    "apps/bigbrotr-archive-worker/tests/catalog_bootstrap.rs": "ee759ff60e90d7e679ce8dcf82af47a9a386f1156178399f50d6e68604c62303",
+    "apps/bigbrotr/src/storage/archive/bootstrap.rs": "01da0c131c19cef55cc0d968f0efb959f715a0b0c56ccf53211266ba1c9a20df",
+    "apps/bigbrotr/src/storage/postgres/catalog_guard.rs": "c808159389bb19d4b2c827c5ce6c078078f5fbefbeeb6559b61799ff8090d72e",
+    "apps/bigbrotr/tests/catalog_guard.rs": "a5fdca66e7fcc09013350d0565281395cdc3d9bba89a3fa8b33a8d6d8a03ef10"
+  },
+  "rust_diff_sha256": "efa25501992227c35fcca68983307db06790aaab7a06fffe4e9771b3cab892c8",
+  "cargo_lock_sha256": "6b2f28dea860e31616009929eb25b8add92159c03d4857d3836dfe52bd047190",
+  "environment": {
+    "host": "aarch64-apple-darwin",
+    "rustc": "1.98.1 (48a229cea 2026-09-01)",
+    "bundle_root": ".research/implementation/archive-worker/candidate-bundle",
+    "native_versions": "DuckDB1.5.5, DuckLake1.0; embedded DuckDB metadata catalog, no PostgreSQL in these Mac tests",
+    "bundle_sha256": {
+      "extensions/ducklake.duckdb_extension": "1b72fc42164dbf21948e5a912cefc383b24071852f9e70209874ebd0a73b7caa",
+      "extensions/httpfs.duckdb_extension": "10514b4ef19f80bf4ec4bf90c124f5d34625f2606263b40ae8ec7979905bb779",
+      "extensions/postgres_scanner.duckdb_extension": "f39dd59bf57679d0242e19e180d90b4222e5cdb691ab67c7506658f3548c0e05",
+      "lib/libduckdb.dylib": "b9027d18ef3e8d960568f77e946a83ca68009cb22d71cf7f94de842afdd094d8"
+    }
+  },
+  "executed": [
+    {
+      "command": "cargo test --locked --offline -p bigbrotr-archive-worker --lib",
+      "cases": 30,
+      "status": "PASS",
+      "log": "staged-worker-lib.log"
+    },
+    {
+      "command": "cargo test --locked --offline -p bigbrotr-archive-worker --test catalog_bootstrap --test publication",
+      "cases": 2,
+      "status": "PASS",
+      "log": "path-wire-final.log"
+    },
+    {
+      "command": "cargo test --locked --offline -p bigbrotr --test catalog_guard",
+      "cases": 2,
+      "status": "PASS",
+      "log": "path-parent-green.log"
+    },
+    {
+      "command": "cargo test --locked --offline -p bigbrotr --lib storage::archive::bootstrap",
+      "cases": 2,
+      "status": "PASS",
+      "log": "path-parent-bootstrap-green.log"
+    },
+    {
+      "command": "cargo clippy --locked --offline -p bigbrotr -p bigbrotr-archive-worker --lib --tests -- -D warnings",
+      "status": "PASS",
+      "log": "staged-product-clippy.log"
+    }
+  ],
+  "environment_arguments": "Native commands use DUCKDB_LIB_DIR=DUCKDB_INCLUDE_DIR=DYLD_LIBRARY_PATH=$PWD/<bundle_root>/lib and BIGBROTR_ARCHIVE_TEST_BUNDLE=$PWD/<bundle_root>; Clippy does not require runtime search/bundle variables. Parent-only commands use no native-worker environment.",
+  "publication_cases": [
+    "Complete unsigned-extreme event/tags/content and receipt survive fresh native read; actual metadata contains only relative prepared-attempt paths; duplicate source/receipt refuses. Root kind=7 preserves actual event kind1 with explicit Hive disable.",
+    "Missing dictionary refuses without committed rows. Late incompatible receipt registration rolls back prior scientific registration while caller-owned files remain.",
+    "Semantic identity mismatch refuses before attachment.",
+    "Equal dictionary mappings retain distinct visibility envelopes within one batch and against history; changed descriptors refuse.",
+    "Actual native singleton registration chooses sibling x/file.parquet value22 instead of literal [x]/file.parquet value11; private root validation rejects that path.",
+    "Existing attempt bytes remain unchanged. Table-parent and schema-parent symlinks refuse without writes to the outside directory or a committed receipt."
+  ],
+  "red_green": [
+    "New retained-orphan regression fails on the normal INSERT candidate before replacement.",
+    "Glob root regressions fail in the prior worker and parent identity validators, then pass after rejecting the exact native HasGlob set.",
+    "Schema-parent symlink regression fails because create_dir_all creates one outside directory; sequential create/check fixes it.",
+    "Initial Mac fixture used noncanonical /var aliases; tests now use canonical /private/var and explicitly precreate the operator-owned data root required by ordinary attachment. Product checks were preserved.",
+    "One recorded command supplied a nonexistent include directory; that build failure is not a product-test outcome. All failed logs are retained."
+  ],
+  "review": "Root reviewed the full diff. Read-only AI publication_review inspected complete publication/schema/tests, worker catalog/preparation, parent bootstrap/publisher, guard identity file, entrypoint, declaration and relevant source/contracts. It found glob expansion and schema-parent creation side effects; both have discriminating actual-engine/filesystem regressions. It executed no tests or remote operations.",
+  "scope": [
+    "One bounded admission, one file per populated table, ZSTD3 and row groups64000; target file size/multi-batch/timer formation remains unimplemented.",
+    "The seven publication tests are part of the30 native worker library cases. Existing typed-row tests cover all five families, but staged catalog publication currently exercises dictionary/event/receipt only.",
+    "No complete signed parent-to-guarded-PG journey, PG scientific mapping, native fence race, product COMMIT-loss recovery, relocation, protection, resource/load/aged performance, ACK or reclaim qualification.",
+    "No dependency, applied SQL or scientific declaration changes; no hosted Actions or Linux arm64 evidence."
+  ],
+  "raw_root": ".research/implementation/archive-worker/publication",
+  "logs_sha256": {
+    "staged-product-red.log": "87cb729db185400e364c9f1b84e0996e4e1f5d5a90a1e0131312f9f354ff577b",
+    "staged-product-first.log": "f6e05f37022d76cc294b5e0a7e6291c3340e8bcc2f436ceec08e030a5c4902cb",
+    "staged-product-canonical.log": "a350f645293d6b3ab42c2168100220e9e93e5d38d5444580a498471255bb281a",
+    "staged-product-canonical-correct-env.log": "4fcbf0248abf105c6407a6d8fded09daa8eaebda44a36fb8ee9d0576d90fd0c9",
+    "glob-worker-red.log": "dffe8ed1cbc31cfad188e97e82861e650e63b14cdd6bef3a77c65440fbcbd750",
+    "glob-parent-red.log": "15e0cd56cb1a6b9daf3df82462e5daa362a6471cda6c742eebbd0f0cebdc6d64",
+    "ancestor-symlink-red.log": "52e9dd2415d8b27bc9f0751e3904258699061b9ebbdf24733d3e144afa5f103e",
+    "staged-product-final.log": "711059a1d6c444fc1b817f755b036c8227ad9588276b8c35ca8526e56aa01bd2",
+    "staged-product-final-existing-root.log": "e685749b49fae8ce2231c2af633c5bcc36bf2bb6c62c2da2520cac6394241f64",
+    "staged-worker-lib.log": "eb8d4e0abff36533830408723b2d22690b8af12bb43fc84103cc87cbec7f05da",
+    "path-wire-green.log": "0cefcd041a1c0427384dcf49de1ee3662e7cbb04e9ddc1190ca32554329d9ecc",
+    "path-parent-green.log": "6611e568dcc6f6dd6e0398d098c840a9c3e0ec6d492935fbc6d19d9ec69a4c12",
+    "path-parent-bootstrap-green.log": "37b28847e75c2b5c8a183bdde2703e39e96c3283e36fb429dad08cef34a21b58",
+    "staged-product-clippy.log": "e8d6984d1d73017291f8ef2da389107c0fbe6faa4c951c756b0a925163609b8d",
+    "path-wire-final.log": "8b628ec092afe02744acfd8848d523f1149a49b04968bb3b909734c921a92fad"
+  }
+}

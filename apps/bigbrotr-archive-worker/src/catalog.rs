@@ -52,6 +52,8 @@ impl BootstrapRequest {
             || !self.data_root.starts_with('/')
             || !self.data_root.ends_with('/')
             || self.data_root.contains(['\0', '\n', '\r'])
+            // A singleton add_data_files argument still expands native globs.
+            || self.data_root.contains(['*', '?', '['])
             || self.data_root.contains("//")
             || self.data_root.split('/').any(|p| matches!(p, "." | ".."))
         {

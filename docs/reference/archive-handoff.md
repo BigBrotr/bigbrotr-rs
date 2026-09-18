@@ -56,8 +56,9 @@ is not termination.
 
 ## Private native preparation
 
-`PreparedBatch` consumes an isolated `Engine`. It creates five private staging
-tables with explicit typed schemas and feeds each decoded fact through the
+`PreparedBatch` consumes an isolated `Engine`. It creates five private scientific
+staging tables plus an empty technical receipt table with explicit typed schemas
+and feeds each decoded fact through the
 [row adapter](archive-format.md), checking native append and flush results.
 Only after complete frame validation does it return prepared input. Any failure
 drops the engine and partial in-memory staging; job-owned spill cleanup still
@@ -186,7 +187,8 @@ temporary root, whole-job grants and nonblocking supervised process. It streams 
 closed `{dsn,data_root}` JSON value directly onto private stdin, without a retained
 plaintext JSON buffer. Counting the exact escaped representation before spawn
 rejects more than32KiB; individual DSN/root limits are16KiB/4KiB with no NUL/CR/LF
-and a canonical lexical absolute local root. This boundary performs no network
+and a canonical lexical absolute local root without native glob characters `*`,
+`?`, `[`. This boundary performs no network
 policy discovery: the operator caller must already validate the trusted endpoint,
 TLS identity and credential authority. Credentials never enter argv/environment.
 
@@ -201,3 +203,39 @@ at `d2b2609` qualifies actual PG/native bootstrap and fresh-login attach through
 this parent, with positive reap and permit return. The 16 native Rust cases also
 exercise the existing signed Rocks-to-private-worker path after the shared launch
 refactor. No scientific publisher is advertised from a successful bootstrap.
+
+## Private scientific publication candidate
+
+`Preparation::publish_pending` consumes one fresh guarded credential and one
+complete retained admission batch. It verifies the scientific catalog identity,
+explicit topology and schema1 archive digest before spawning the finite worker.
+The selected route is a pinned IP plus validated local-plaintext boundary or
+verify-full server name/CA; the libpq DSN goes only through the private input pipe.
+This unpublished candidate is not yet a qualified Archive role or recovery path.
+
+The private `publish-batch` command takes the same limits as `inspect-batch`.
+Its stdin begins with a big-endian u32 JSON length (1..32768), then closed JSON
+containing `catalog:{dsn,data_root}`, `topology_generation`, `batch_digest`, a
+nonzero 16-byte `attempt_id` array and positive `publication_ordinal`; exactly one
+existing admission frame follows. Strong topology/digest wrappers preserve their
+existing JSON representation. Full framing and semantic identity verification
+precede catalog attachment. No partial input grants publication authority.
+
+The worker stages the technical receipt, then checks existing receipt/source
+membership and dictionary closure. It COPYs each populated family and receipt to
+caller-owned Parquet below an exclusive attempt directory and registers all files
+in one native transaction. The [archive contract](../specification/archive-storage-contract.md#actual-publication-and-protection-boundaries)
+owns placement, cleanup and ambiguity guarantees. Current preparation is one
+bounded admission/one file per populated table; 256MiB file formation, multi-batch
+membership, timer behavior, disk accounting and aged costs remain qualification
+work. This candidate does not claim those settings are implemented.
+
+A successful child emits exactly `bigbrotr-native-publication/1` and its
+`batch_digest`. The parent also requires successful exit, bounded output, EOF and
+positive reap. Any launched failure or malformed response is outcome-unknown;
+unknown termination takes precedence and retains capacity/cleanup obligations.
+Even success does not authorize protection, a source ACK, retry or reclamation.
+The caller must retain the durable attempt and pending source through fresh
+receipt/file resolution and positive exclusion. Scientific signed PG publication,
+all nested references, native fence races and persistent lifecycle recovery remain
+P02-T04 acceptance; no public command advertises this candidate.

@@ -22,18 +22,19 @@ be acknowledged/reclaimed.
 
 ## Git and integrating ownership
 
-Mac main; root is sole writer/integrator. Starting HEAD/origin/main were clean at
-`4db603b0dc09ae1c65c9bb301af33a60f7939854`. Tested unpublished candidate is
-`c9a29e0684d06a7d4d0419ed802a0263bd452978`, tree
-`037370f537eb6ad7e01b2ad38957090bf694f235`. It adds the private publisher/parent
-candidate and exact native COMMIT-loss experiment. Native qualification found a
-real dependency failure, so publication is not enabled or qualified. HEAD is67e8973 (Mac-qualified scope correction); origin is
-still4db603b. Current root-owned changes retain the reproducible workload and
-add evidence/contracts/inventory updates.
-No concurrent writer; read-only AI publication_review is complete. Its evidence
-follow-up independently matched all671 source hashes, actual fault attribution,
-recorded artifact/retirement receipts and the five-case Mac scope correction.
-It did not reinspect the remote host or rehash remote ELFs.
+Mac main; root is sole writer/integrator. This candidate checkpoint was written
+against parent `ea270aca3ef3915120182c67ca69976d00b51afe`, tree
+`e37de0963682c9edf633772965db8f16b3e91ae5`; that parent has four unpublished commits after observed
+origin/main `4db603b0dc09ae1c65c9bb301af33a60f7939854`. No merge/rebase.
+The containing candidate commit changes worker publication/schema/tests and three
+root validators to replace
+unsafe INSERT with caller-owned COPY/registration. Task/contract/private-reference
+docs, two evidence reports, checkpoint/inventory accompany this candidate. Resolve
+the containing commit before transfer; this revision records the observed base.
+Read-only AI publication_review finished its source review. It confirmed native
+relative path conversion/ownership and found glob expansion; explicitly disable
+hive partition discovery and reject native glob metacharacters in local roots.
+No other writer or remote editing.
 
 ## Active publication risk slice
 
@@ -42,8 +43,9 @@ semantic digest, refuses existing receipts/source overlap, resolves dictionary
 references, and uses one native transaction for five families plus receipt. The
 parent consumes FreshWriter, checks scientific identity/input and supervises one
 child with a pinned route and private credential pipe. Any launched failure stays
-unknown; no source ACK/reclaim exists. Catalog option compatibility and persistent
-lifecycle/recovery remain unfinished. This candidate is not advertised.
+unknown; no source ACK/reclaim exists. COPY uses explicit compression/row-group
+settings without adding global catalog options. Persistent lifecycle/recovery and
+resource/file-formation acceptance remain unfinished. This candidate is not advertised.
 
 [Actual native COMMIT-loss report](evidence/p02-native-commit-file-loss-20260918.json):
 normal INSERT guarantee **FAIL**, sourcec9a29e0, Tux amd64/PG16.15/pinned native
@@ -60,17 +62,20 @@ Pinned native exception cleanup unlinks files created by INSERT before Rust sees
 CommitUnknown. No disable-cleanup option was found. Supported add_data_files marks
 files caller-owned and skips this unlink branch in source. Qualify that one native
 path, including receipt files, complete mappings, immutable placement and orphan
-recovery, before changing ordinary product publication. No fallback or weaker ACK.
+recovery, before enabling ordinary product publication. The replacement candidate
+now has scoped Mac checks and synthetic native PG dependency evidence below. No
+fallback or weaker ACK.
 
 The AI review also reproduced incorrect mapping equality across fact visibility.
 The new Mac regression fails with ConflictingDictionary before correction and
 passes for equal mappings in one batch and against history afterward. Equality
 now excludes the containing scope; each fact retains its actual envelope. Five
 embedded publication cases pass locally after that change, including a changed-
-descriptor negative control. This change has not
-yet run on Tux. Native candidate passes3 embedded cases and1 actual executable
-closed-input case plus build. Final Mac scoped Clippy/format and documentation checks pass. The original command test failed before
-implementation. All raw logs/failures are retained under the publication root.
+descriptor negative control. All5 cases subsequently passed on Tux at ea270ac,
+with1 actual binary closed-input case and build. The replacement candidate now
+passes7 publication cases inside30 Mac worker cases; see its scoped report below.
+The original command test failed before implementation. All raw logs/failures are
+retained under the publication root.
 
 ## Latest publication lab closure
 
@@ -94,7 +99,58 @@ backend count0;20 unrelated identities unchanged,8 running,0 BigBrotr running.
 Transfer28866, fault cases57771, audit/cleanup47092 and evidence copies88924/66699
 are terminal. No unfinished cleanup. Do not restart retired-network resources.
 Ignored launch/transfer/retire helpers remain in publication/; latest build cache
-is publication-c9a29e0/out/build. The next experiment needs a new exact-Git lab.
+is now publication-ea270ac/out/build. The next experiment needs a new exact-Git lab.
+
+## Registration experiment and product replacement
+
+[Exact-source ea270ac registration report](evidence/p02-native-registration-20260918.json).
+The lab is terminal. Raw root
+`.research/implementation/archive-worker/publication/ea270ac`; native root
+`/home/tux/bigbrotr-implementation-20260917/runs/publication-ea270ac`.
+Three actual PG/native schedules PASS for synthetic fact/witness/receipt files:
+normal retains3 catalog/physical files and full bodies; pre-forward rollback leaves
+0 catalog references and3 retained orphans; completed-but-lost COMMIT retains3
+catalog/physical files and fresh full bodies despite native error. File size/SHA
+maps match across all schedules. Native build,5 embedded cases and1 actual binary
+input case PASS. These are not scientific signed publication/protection evidence.
+Root-level probe placement stores absolute paths; product must use relative
+schema/table placement and qualify relocation separately.
+
+Owner d8b10a894c5361b65f03b0d5ac0b6e3d; runner
+64c0bd7f54ad7acc8e521f2e0ff7e1473154091c666f6a7a277d0ea51020f479,
+PG193fd0167057ee34666225e734ef51ea0fb2c113d187ced8e14c9eb34500a7e6,
+networke29b66bee67d08bf28e1c3907f4c56c6ba916ec41a85685ab3a748269b3e2449.
+Audit records exact673 source files/ELFs, stopped retained containers (143/0),
+retired network/no OOM;20 unrelated unchanged/8 running/0 BigBrotr running.
+Transfer90613, cases42111 and evidence copy26474 are terminal. Do not restart.
+All673 Mac Git archive hashes match the audited Tux export/checkout. Report is
+recorded. Fresh read-only Tux inspection confirms stopped IDs143/0 and retired
+network. No unfinished lab cleanup.
+
+[Product Mac candidate evidence](evidence/p02-staged-publication-mac-20260918.json):
+receipt staging precedes archive BEGIN; explicit COPY writes populated families
+and receipt into exclusive0700 attempt directories below canonical main/table
+paths, then registration commits all in one native transaction. No worker unlink,
+including rollback; no global option additions. Resource/file formation remains
+unfinished. No schema or applied SQL changed.
+
+Mac final30 worker library cases PASS, including7 publication cases;2 worker
+private-input cases,2 parent identity cases and2 parent bootstrap cases PASS.
+Affected Clippy/format/document checks PASS. Glob validator regressions failed
+before the fix; actual native singleton registration reads sibling x instead of
+literal [x]. Root validators now refuse *,?,[. Hive is explicitly disabled and
+kind=7 root preserves actual kind1. Actual metadata paths are table-relative.
+Existing attempt bytes stay intact. Sequential directory create/check fixes the
+reproduced schema-parent symlink side effect; outside directory stays empty.
+Independent read-only AI review corroborated source hazards; root integrated/tested
+all changes. Initial Mac alias/missing-root fixture failures and one incorrect
+include-directory build command are retained separately from product outcomes.
+
+All local sessions are terminal, including82085/3502/36218/61026/23448/49947 and
+5161/17968/80177/7353. No running lab or compiler is claimed. Private-input results
+still do not qualify integrated signed scientific PG publication. Current catalog
+publication fixture covers dictionary/event/receipt; other families' native row
+round-trips are separately tested, not equivalent to registered catalog readback.
 
 ## Latest qualified scientific guard slice
 
@@ -280,13 +336,17 @@ retired-network containers. amd64 does not qualify arm64 or hosted Actions.
 
 ## Next bounded action
 
-Finish affected checks and coherently retain the measured native failure plus
-scope correction. Then extend the same native probe with caller-owned Parquet COPY
-and ducklake_add_data_files for **all** three synthetic families. Run paired normal,
-pre-forward and completed-but-lost COMMIT cases in a new exact-Git lab. Require
-fresh full bodies/receipt, exact PG/file membership and retained orphan ownership;
-no normal-INSERT fallback. If qualified, replace the unsafe product candidate with
-one staged registration path and qualify all scientific nested mappings/signed
-Rocks→parent→PG publication and ambiguity recovery. Protection, persistent unique
-worker lifecycle, installed init/recovery, M1 and the full remaining selected
-product scope remain required. No capability has been removed.
+The next source candidate must integrate the real consumers. Build an isolated
+actual integration fixture using
+existing signed admission/bootstrap/pending APIs and Control attempt issuance:
+publish bootstrap dictionaries, then the signed pending event through the real
+Preparation::publish_pending/FreshWriter path into initialized guarded PG. Reuse
+existing literal signed fixtures and separately inspect full native bodies,
+signatures, all required references, receipt and unchanged Rocks state. Include
+provenance and negative controls. The reference signed Rocks fixture is
+apps/bigbrotr/src/storage/rocks/admission_tests.rs; native initializer/guard/Control
+probes and orchestration are in apps/bigbrotr/examples and experiments/archive-engine.
+Use a new clean exact-Git Tux lab, no independently edited source or retired runner.
+Then qualify product-native COMMIT loss, fence races, relocation/recovery and
+protection. Persistent lifecycle, installed init/recovery, M1 and all remaining
+selected product scope stay required. No ACK/reclaim or task completion claim.

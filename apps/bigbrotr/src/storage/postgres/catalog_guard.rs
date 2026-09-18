@@ -56,6 +56,8 @@ impl CatalogIdentity {
             || !root.starts_with('/')
             || !root.ends_with('/')
             || root.contains(['\0', '\n', '\r'])
+            // These legal Unix names become patterns in native registration.
+            || root.contains(['*', '?', '['])
             || root.contains("//")
             || root.split('/').any(|part| matches!(part, "." | ".."))
         {

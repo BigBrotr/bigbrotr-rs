@@ -394,10 +394,25 @@ killed after native COMMIT returned, a different boundary.
 
 No cleanup-disable setting was found in the inspected pinned option paths.
 Supported `ducklake_add_data_files` marks registered files `created_by_ducklake=false`,
-which skips that unlink branch. This is the next bounded risk qualification,
-covering receipt files too, not a qualified replacement or a reason to weaken ACK.
+which skips that unlink branch. The [registration experiment](../implementation/evidence/p02-native-registration-20260918.json)
+at `ea270ac` confirms retained files/full bodies after the actual lost native COMMIT
+response, including receipt, and retained unregistered files after pre-forward
+rollback. This is scoped synthetic evidence, not signed scientific publication or
+a reason to weaken ACK.
 The source revisions and hashes are retained in the report. No native dependency
 version or scientific schema has changed from this finding.
+
+Pinned registration calls `parquet_full_metadata` with globs even for singleton
+lists; DuckDB `FileSystem::HasGlob` recognizes `*`, `?`, `[`. An actual embedded
+counterexample registers sibling `/x/file.parquet` instead of the existing literal
+`/[x]/file.parquet`. Local root validation therefore refuses these characters.
+Explicit `hive_partitioning=false` prevents a path such as `kind=7` from replacing
+the file's actual kind. Native `GetRelativePath` is lexical: canonical checked
+schema/table parents and exclusive attempt directories own filesystem placement.
+Registration preserves nested field mappings recursively and commits them with
+the file rows; full scientific PG readback and relocation remain acceptance work.
+The narrow independent AI source review inspected these paths at the pinned
+DuckLake revision and bundled DuckDB1.5.5 sources; it performed no remote test.
 
 The same pinned binding rejects nested List/Array/Struct/Map/Union values through
 `ToSql`; its `Value` enum is not evidence that those parameters can be bound.

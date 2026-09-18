@@ -10,6 +10,9 @@ fn bootstrap_wire_is_bounded_closed_and_keeps_credentials_out_of_errors() {
         br#"{"dsn":"password=canary","data_root":"s3://bucket/root/"}"#.as_slice(),
         br#"{"dsn":"password=canary\n","data_root":"/archive/"}"#.as_slice(),
         br#"{"dsn":"password=canary","data_root":"/archive/../other/"}"#.as_slice(),
+        br#"{"dsn":"password=canary","data_root":"/archive/*/"}"#.as_slice(),
+        br#"{"dsn":"password=canary","data_root":"/archive/?/"}"#.as_slice(),
+        br#"{"dsn":"password=canary","data_root":"/archive/[x]/"}"#.as_slice(),
     ] {
         let error = BootstrapRequest::read(input).err().unwrap();
         assert_eq!(error, CatalogError::InvalidInput);

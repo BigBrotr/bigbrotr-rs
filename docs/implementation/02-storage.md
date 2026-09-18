@@ -256,6 +256,11 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   Qualify caller-owned native file registration for every family and the receipt
   before enabling the publisher. Preserve complete transactional membership,
   nested mappings, immutable file ownership and recovery; no normal-INSERT fallback.
+  The [registration experiment](evidence/p02-native-registration-20260918.json)
+  at `ea270ac` preserves all3 synthetic files/full reads after completed-but-lost
+  native COMMIT and retains unregistered rollback files. Scientific nested PG
+  mappings, guarded parent integration, relative placement/relocation, positive
+  exclusion, orphan recovery and protection remain open.
   The first finite fresh-only initializer and shared schema declaration now create
   the five existing families plus an empty technical receipt relation;
   [native qualification](evidence/p02-scientific-schema-native-20260918.json) covers

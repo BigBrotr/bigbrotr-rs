@@ -13,6 +13,9 @@ fn catalog_identity_requires_an_explicit_bounded_canonical_root() {
         "/archive//",
         "/archive/./",
         "/archive/\0/",
+        "/archive/*/",
+        "/archive/?/",
+        "/archive/[x]/",
         "s3://bucket/archive/",
     ] {
         assert_eq!(

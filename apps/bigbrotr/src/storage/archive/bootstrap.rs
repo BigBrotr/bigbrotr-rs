@@ -18,6 +18,8 @@ impl Input<'_> {
             || !self.data_root.starts_with('/')
             || !self.data_root.ends_with('/')
             || self.data_root.contains(['\0', '\n', '\r'])
+            // Native file registration treats even a singleton path as a glob.
+            || self.data_root.contains(['*', '?', '['])
             || self.data_root.contains("//")
             || self
                 .data_root
@@ -80,6 +82,9 @@ mod tests {
             "/data/./",
             "/data/../",
             "/data\n/",
+            "/data/*/",
+            "/data/?/",
+            "/data/[x]/",
         ] {
             assert!(
                 Input {

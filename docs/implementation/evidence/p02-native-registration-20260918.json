@@ -1,0 +1,276 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P02-T04 steps3/4/5",
+  "date": "2026-09-18",
+  "status": "PASS scoped native caller-owned registration under actual PostgreSQL COMMIT response loss; integrated scientific publication remains NOT_RUN",
+  "source": "ea270aca3ef3915120182c67ca69976d00b51afe",
+  "tree": "e37de0963682c9edf633772965db8f16b3e91ae5",
+  "source_archive_sha256": "5c439ad6797cdebf648f169d0929d962dd3ecbfc1fb6b16c8d15eb50a1c8c126",
+  "source_files": 673,
+  "source_manifest_sha256": "13e5ff3ed7bc1f29b6b448306c1f5b53b6deebcc4cc0a90ea81722bcbd8dd0d1",
+  "cargo_lock_sha256": "6b2f28dea860e31616009929eb25b8add92159c03d4857d3836dfe52bd047190",
+  "environment": "Tux Linux x86_64, pinned DuckDB1.5.5/DuckLake1.0/PostgreSQL16.15; isolated loopback lab",
+  "native_artifacts": {
+    "worker": "fefa84e0e9309501a5328e850706ea9a28b53cf5468896b3c1db945ca36c8e85",
+    "probe": "19140060aaa1504d6c1b390f93e20a23cd843b3e9fe124403f0640a0454d3615",
+    "publication-unit-0": "69078f3531ad292a7648c564fcca9a60f4fc578e04f744216fd861d7839c2682"
+  },
+  "native_checks": [
+    {
+      "name": "build",
+      "command": [
+        "cargo",
+        "build",
+        "--locked",
+        "--offline",
+        "--release",
+        "-p",
+        "bigbrotr-archive-worker",
+        "--bin",
+        "bigbrotr-archive-worker",
+        "--example",
+        "catalog-fence-probe"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 29.964295454323292
+    },
+    {
+      "name": "embedded",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--release",
+        "-p",
+        "bigbrotr-archive-worker",
+        "--lib",
+        "publication"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 28.542361952830106
+    },
+    {
+      "name": "input",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--release",
+        "-p",
+        "bigbrotr-archive-worker",
+        "--test",
+        "publication"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 3.35078238369897
+    }
+  ],
+  "workload": {
+    "relations": "Three synthetic native tables: facts(batch UBIGINT, body VARCHAR), witnesses(batch UBIGINT, endpoint VARCHAR), receipts(batch UBIGINT, digest BLOB)",
+    "rows_per_table": 1,
+    "expected_body": "canary-ß",
+    "expected_endpoint": "wss://example.invalid",
+    "expected_receipt_bytes": [
+      0,
+      255
+    ],
+    "preparation": "COPY each relation to caller-owned Parquet (ZSTD3, ROW_GROUP_SIZE64000), then register all3 using ducklake_add_data_files in one native transaction",
+    "file_map": {
+      "caller-1-facts.parquet": [
+        347,
+        "c876290b0616e1648c863af3ebc682794b0189f8786aac0849e09e834f2ffb46"
+      ],
+      "caller-1-receipts.parquet": [
+        313,
+        "c18b1a29a404c778455cd23ff425f4fd900c287d38523114793eeafe1fc4240a"
+      ],
+      "caller-1-witnesses.parquet": [
+        415,
+        "9856dfc938bcedc5ab3411c4e92cb7bd478b48314b35a615458f2694c5039d1d"
+      ]
+    }
+  },
+  "cases": [
+    {
+      "mode": "pass",
+      "write_exit": 0,
+      "proxy_terminal": {
+        "event": "terminal",
+        "mode": "pass",
+        "connections": 1,
+        "bytes": 536532,
+        "frames": 5539,
+        "data_queries": 1,
+        "data_commits": 1,
+        "server_complete": 1,
+        "client_complete": 1,
+        "faults": 0,
+        "unexpected": 0
+      },
+      "catalog_files": 3,
+      "physical_files": 3,
+      "count": {
+        "exit": 0,
+        "stdout": "{\"counts\":[1,1,1],\"stage\":\"read\"}\n",
+        "stderr": ""
+      },
+      "body": {
+        "exit": 0,
+        "stdout": "{\"body\":\"canary-ß\",\"counts\":[1,1,1],\"digest\":[0,255],\"endpoint\":\"wss://example.invalid\",\"stage\":\"read-body\"}\n",
+        "stderr": ""
+      },
+      "outcome": "committed readable files"
+    },
+    {
+      "mode": "before-forward",
+      "write_exit": 1,
+      "proxy_terminal": {
+        "event": "terminal",
+        "mode": "before-forward",
+        "connections": 1,
+        "bytes": 536429,
+        "frames": 5528,
+        "data_queries": 1,
+        "data_commits": 1,
+        "server_complete": 0,
+        "client_complete": 0,
+        "faults": 1,
+        "unexpected": 0
+      },
+      "catalog_files": 0,
+      "physical_files": 3,
+      "count": {
+        "exit": 0,
+        "stdout": "{\"counts\":[0,0,0],\"stage\":\"read\"}\n",
+        "stderr": ""
+      },
+      "body": {
+        "exit": 1,
+        "stdout": "",
+        "stderr": "catalog fence experiment failed: body-read\n"
+      },
+      "outcome": "no catalog rows;3 retained unregistered files"
+    },
+    {
+      "mode": "after-complete",
+      "write_exit": 1,
+      "proxy_terminal": {
+        "event": "terminal",
+        "mode": "after-complete",
+        "connections": 1,
+        "bytes": 536441,
+        "frames": 5529,
+        "data_queries": 1,
+        "data_commits": 1,
+        "server_complete": 1,
+        "client_complete": 0,
+        "faults": 1,
+        "unexpected": 0
+      },
+      "catalog_files": 3,
+      "physical_files": 3,
+      "count": {
+        "exit": 0,
+        "stdout": "{\"counts\":[1,1,1],\"stage\":\"read\"}\n",
+        "stderr": ""
+      },
+      "body": {
+        "exit": 0,
+        "stdout": "{\"body\":\"canary-ß\",\"counts\":[1,1,1],\"digest\":[0,255],\"endpoint\":\"wss://example.invalid\",\"stage\":\"read-body\"}\n",
+        "stderr": ""
+      },
+      "outcome": "committed readable files"
+    }
+  ],
+  "raw_root": ".research/implementation/archive-worker/publication/ea270ac",
+  "raw_files_sha256": {
+    "cases.json": "cebd9f947f0a8aedea09857c38fa5c266da3047a805a68690afb0d64814725df",
+    "ready.json": "4acd85929e0683223fd46c9a0e0d98051a0ce2686c5119bf89e75a1a2c5e1e67",
+    "result.json": "db61e1f7fa170670bb13b52606713972f3fd6b87cb273814fa3b8d061e74cfab",
+    "embedded.log": "be854fe467e71b7cc5e099b8920d0cbae3af65fd5c99b1892f2af166e0455fdb",
+    "input.log": "8855a60f503f6f642745ff3220ad32ac2eeea8560d06e763171cabfa92e863db",
+    "resources.json": "8acdb410ea67cfd52ab0f40d6516f6efc75121fb0d682afcfd45b9c108a87499",
+    "audit.json": "e26f474ca8438b9d4148a76f577da7cda53f23108b097d180a67d53affb428d7",
+    "artifact-audit.json": "c62c47e1fb9ca7ed50030b34c944356fdac38304644374572b19087fe0208b3d",
+    "source-manifest.json": "13e5ff3ed7bc1f29b6b448306c1f5b53b6deebcc4cc0a90ea81722bcbd8dd0d1",
+    "mac-source-audit.json": "2079829a036fc7ae48455d3ca7bd22477024cdc553dfe657ccb59ea6371b3ae2"
+  },
+  "executed_harness": "experiments/archive-engine/native_commit_cases.py --evidence .research/implementation/archive-worker/publication --revision ea270aca3ef3915120182c67ca69976d00b51afe --writer-mode register",
+  "executed_harness_sha256": "0cfdaf3b225f85726b28071884c44d227b141b6b421e995e5d25ad37fcd04a77",
+  "resources": {
+    "source": "ea270aca3ef3915120182c67ca69976d00b51afe",
+    "tree": "e37de0963682c9edf633772965db8f16b3e91ae5",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/publication-ea270ac",
+    "owner": "d8b10a894c5361b65f03b0d5ac0b6e3d",
+    "container": "bigbrotr-implementation-publication-ea270ac",
+    "postgres": "bigbrotr-implementation-publication-ea270ac-pg",
+    "network": "bigbrotr-implementation-publication-ea270ac",
+    "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "state": "stopped-retained",
+    "source_files": 673,
+    "started_at": "2026-09-18T21:31:23.506836+00:00",
+    "network_id": "e29b66bee67d08bf28e1c3907f4c56c6ba916ec41a85685ab3a748269b3e2449",
+    "postgres_id": "193fd0167057ee34666225e734ef51ea0fb2c113d187ced8e14c9eb34500a7e6",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "container_id": "64c0bd7f54ad7acc8e521f2e0ff7e1473154091c666f6a7a277d0ea51020f479",
+    "network_state": "retired",
+    "terminal": {
+      "runner": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 143,
+        "Error": "",
+        "StartedAt": "2026-09-18T21:31:25.990046952Z",
+        "FinishedAt": "2026-09-18T21:36:15.540736683Z"
+      },
+      "postgres": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-09-18T21:31:24.141730063Z",
+        "FinishedAt": "2026-09-18T21:36:16.650826942Z"
+      }
+    },
+    "finished_at": "2026-09-18T21:36:17.251067+00:00"
+  },
+  "terminal_audit": {
+    "source": "ea270aca3ef3915120182c67ca69976d00b51afe",
+    "tree": "e37de0963682c9edf633772965db8f16b3e91ae5",
+    "source_files": 673,
+    "manifest_sha256": "13e5ff3ed7bc1f29b6b448306c1f5b53b6deebcc4cc0a90ea81722bcbd8dd0d1",
+    "cleanup": "owned containers stopped, network retired, no OOM",
+    "unrelated_unchanged": 20,
+    "unrelated_running": 8,
+    "running_bigbrotr": 0
+  },
+  "scope": [
+    "The proxy attributes the data transaction by actual native ducklake_data_file insertion, then targets its COMMIT. Attach/read transactions proceed. Every schedule used one connection; no pool-saturation claim.",
+    "Native build, five embedded worker publication cases and one actual executable closed-prelude case passed. Those embedded cases still use the prior normal INSERT product candidate; the synthetic register mode is the path qualified here.",
+    "All3 physical file names/sizes/SHA values match across normal, pre-forward orphan and completed-but-lost schedules. Full content/receipt reads use a new native connection and literal independent expected values, not metadata counts.",
+    "Probe files at dataset root were stored as absolute catalog paths. This report does not qualify root relocation or the later product schema/table-relative placement.",
+    "No signed admission, scientific nested PG mapping, product parent/FreshWriter integration, storage fence race, protection, ACK, reclaim, orphan deletion, throughput, aged workload, arm64 or hosted Actions qualification."
+  ],
+  "interpretation": "Supported native registration retains caller-owned Parquet after the measured exception cleanup. Select this one path for the scientific candidate, including receipt, then qualify its complete dependent boundaries. Retained rollback files are owned orphans; this result grants no cleanup authority.",
+  "compatibility": "No native version, dependency lock or scientific declaration changes. Applied SQL unchanged. Normal INSERT has no fallback role.",
+  "next": "Qualify scientific caller-owned publication with immutable relative paths, full signed bodies/nested references, guarded native transaction, ambiguity resolution and positive exclusion before protection or ACK."
+}

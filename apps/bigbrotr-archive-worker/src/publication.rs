@@ -4,7 +4,7 @@ use crate::{catalog::BootstrapRequest, prepare::PreparedBatch, schema};
 use bigbrotr_model::{ArchiveBatch, Digest256, TopologyGeneration};
 use duckdb::{Connection, params};
 use serde::Deserialize;
-use std::{fmt, io::Read};
+use std::{fmt, fs, io::Read, os::unix::fs::DirBuilderExt, path::Path};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum PublicationError {
@@ -14,6 +14,7 @@ pub enum PublicationError {
     ExistingData,
     MissingDictionary,
     ConflictingDictionary,
+    PreparedFiles,
     Native,
     CommitUnknown,
 }
@@ -94,9 +95,15 @@ impl PreparedBatch {
     ) -> Result<Digest256, PublicationError> {
         self.validate_publication(request)?;
         let c = &self.engine.connection;
+        let first = self.batch.first();
+        // Private receipt staging precedes the archive transaction. DuckDB may
+        // not modify two attached databases in one transaction. This in-memory
+        // row is neither visible catalog state nor an acknowledgement.
+        c.execute("INSERT INTO stage.archive_commits VALUES (?,1,?,?,?,[struct_pack(shard_id := ?::UINTEGER, owner_epoch := ?::UBIGINT, first_sequence := ?::UBIGINT, last_sequence := ?::UBIGINT)],?,?)",
+            params![first.dataset_id.as_bytes().as_slice(), request.topology_generation.get(), request.batch_digest.as_bytes().as_slice(), self.batch.records().len() as u64, first.shard_id, first.owner_epoch.get(), first.sequence.get(), self.batch.last().sequence.get(), request.attempt_id.as_slice(), request.publication_ordinal])
+            .map_err(|_| PublicationError::Native)?;
         c.execute_batch("BEGIN TRANSACTION")
             .map_err(|_| PublicationError::Native)?;
-        let first = self.batch.first();
         let exists: bool = c.query_row("SELECT EXISTS(SELECT 1 FROM archive.main.archive_commits WHERE batch_digest=? OR attempt_id=? OR publication_ordinal=?)",
             params![request.batch_digest.as_bytes().as_slice(), request.attempt_id.as_slice(), request.publication_ordinal], |r|r.get(0)).map_err(|_| PublicationError::Native)?;
         if exists {
@@ -110,24 +117,68 @@ impl PreparedBatch {
             }
         }
         dictionary_closure(c)?;
-        // These are native catalog options, part of this same fenced transaction.
-        // The pinned implementation updates its in-memory options immediately.
-        c.execute_batch("CALL ducklake_set_option('archive','parquet_compression','zstd'); CALL ducklake_set_option('archive','parquet_compression_level',3); CALL ducklake_set_option('archive','parquet_row_group_size',64000); CALL ducklake_set_option('archive','target_file_size','256MiB')").map_err(|_| PublicationError::Native)?;
-        for table in schema::TABLES {
-            c.execute_batch(&format!(
-                "INSERT INTO archive.main.{table} SELECT * FROM stage.{table}"
-            ))
-            .map_err(|_| PublicationError::Native)?;
+        let counts = self.counts().map_err(|_| PublicationError::Native)?;
+        for (table, count) in schema::TABLES
+            .into_iter()
+            .zip(counts)
+            .chain([("archive_commits", 1)])
+        {
+            if count != 0 {
+                prepare_and_register(c, request, table)?;
+            }
         }
-        // A single complete admission currently has one canonical range. Scalar
-        // parameters build the nested native value; no interpolated input SQL.
-        c.execute("INSERT INTO archive.main.archive_commits VALUES (?,1,?,?,?,[struct_pack(shard_id := ?::UINTEGER, owner_epoch := ?::UBIGINT, first_sequence := ?::UBIGINT, last_sequence := ?::UBIGINT)],?,?)",
-            params![first.dataset_id.as_bytes().as_slice(), request.topology_generation.get(), request.batch_digest.as_bytes().as_slice(), self.batch.records().len() as u64, first.shard_id, first.owner_epoch.get(), first.sequence.get(), self.batch.last().sequence.get(), request.attempt_id.as_slice(), request.publication_ordinal])
-            .map_err(|_| PublicationError::Native)?;
         c.execute_batch("COMMIT")
             .map_err(|_| PublicationError::CommitUnknown)?;
         Ok(request.batch_digest)
     }
+}
+
+fn prepare_and_register(
+    c: &Connection,
+    request: &PublicationRequest,
+    table: &str,
+) -> Result<(), PublicationError> {
+    use fmt::Write;
+    let mut attempt = String::with_capacity(32);
+    for byte in request.attempt_id {
+        write!(attempt, "{byte:02x}").expect("String write");
+    }
+    // The scientific guard binds exactly these schema/table paths. Native path
+    // relativization is lexical, so canonicalize the actual parent first. The
+    // installation remains an operator-owned boundary against privileged races.
+    let mut table_root = Path::new(request.catalog.data_root()).to_path_buf();
+    for component in ["main", table] {
+        table_root.push(component);
+        match fs::create_dir(&table_root) {
+            Ok(()) => (),
+            Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => (),
+            Err(_) => return Err(PublicationError::PreparedFiles),
+        }
+        // Check each existing component before creating any descendant; a
+        // symlinked schema directory must not cause writes outside the root.
+        if table_root.canonicalize().ok().as_deref() != Some(table_root.as_path())
+            || !table_root.is_dir()
+        {
+            return Err(PublicationError::PreparedFiles);
+        }
+    }
+    let directory = table_root.join(format!("prepared-{attempt}"));
+    // Exclusive creation refuses reuse after partial/ambiguous work. Nothing in
+    // this worker unlinks caller-owned files, including after known rollback.
+    // Positive fencing and fresh receipt/file closure own later orphan cleanup.
+    fs::DirBuilder::new()
+        .mode(0o700)
+        .create(&directory)
+        .map_err(|_| PublicationError::PreparedFiles)?;
+    let file = directory.join("data.parquet");
+    let text = file.to_str().ok_or(PublicationError::PreparedFiles)?;
+    let literal = format!("'{}'", text.replace('\'', "''"));
+    c.execute_batch(&format!("COPY (SELECT * FROM stage.{table}) TO {literal} (FORMAT PARQUET, COMPRESSION ZSTD, COMPRESSION_LEVEL 3, ROW_GROUP_SIZE 64000)"))
+        .map_err(|_| PublicationError::Native)?;
+    // Both scientific and receipt files are registered as caller-owned. Normal
+    // INSERT's native error cleanup can delete files after a lost PG COMMIT reply.
+    c.execute_batch(&format!("CALL ducklake_add_data_files('archive','{table}',[{literal}],schema=>'main',hive_partitioning=>false,allow_missing=>false,ignore_extra_columns=>false)"))
+        .map_err(|_| PublicationError::Native)
 }
 
 fn dictionary_closure(c: &Connection) -> Result<(), PublicationError> {

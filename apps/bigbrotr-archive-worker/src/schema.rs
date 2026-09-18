@@ -42,7 +42,7 @@ static SCHEMA: LazyLock<Schema> = LazyLock::new(|| {
 
 pub(crate) fn create_stage(connection: &Connection) -> duckdb::Result<()> {
     connection.execute_batch("CREATE SCHEMA stage")?;
-    for table in &SCHEMA.tables[..TABLES.len()] {
+    for table in &SCHEMA.tables {
         connection.execute_batch(&format!(
             "CREATE TABLE stage.{} ({})",
             table.name, table.columns
