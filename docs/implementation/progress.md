@@ -23,13 +23,15 @@ be acknowledged/reclaimed.
 
 Mac main; root is sole writer/integrator. Tested candidate
 `a91ae01a76b38902420e87af0a3e23fd575b6981`, tree
-`a642d19826eeb0ae65efaa3d611c6eb5a3542e5c`. It is four unpublished coherent
-commits after pushed `9b607db99cdfc612e394f47dfd58881c0012399d`; fresh fetch found
-no remote divergence. Only root-owned evidence/docs/checkpoint changes are dirty.
-Product sources are unchanged after `27ab36c`; later candidates fixed fixture
-oracles. Final independent evidence review matched raw cases, hashes and scope. The evidence
-commit follows this observation and will be pushed normally.
-All reviewers are read-only; no concurrent writer/active lab or unfinished cleanup.
+`a642d19826eeb0ae65efaa3d611c6eb5a3542e5c`, and evidence/documentation commit
+`1cf420dc65b4c817c96c46d634cb3927c5c92f6d` are pushed. Fresh HEAD, origin/main and
+remote refs/heads/main equal `1cf420d`, with a clean tree. This checkpoint refresh
+follows that observation. GitHub confirms PRIVATE/not archived. Product sources
+are unchanged after27ab36c; later candidates corrected fixture oracles and the
+final candidate fully re-executed their selected boundaries. Final independent
+evidence review matched cases, source hashes, recorded artifacts and scope.
+All reviewers were read-only. No concurrent writer, active lab or unfinished
+cleanup. Push10361 and remote/terminal verification29618 are terminal.
 
 ## Latest qualified scientific guard slice
 
