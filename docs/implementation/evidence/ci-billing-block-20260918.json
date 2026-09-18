@@ -82,5 +82,35 @@
     "source": "28211f85e4b77ef59e9b63a5ecc854b2079db38e",
     "conclusion": "success",
     "artifact_content_audit": "NOT_RUN"
+  },
+  "subsequent_observation": {
+    "run_id": 35302252766,
+    "source": "a264dda2264aa5a53e15d83262ce9e91306cd435",
+    "url": "https://github.com/BigBrotr/bigbrotr-rs/actions/runs/35302252766",
+    "status": "NOT_RUN",
+    "provider_conclusion": "failure",
+    "jobs": [
+      {
+        "id": 105467143072,
+        "name": "foundation (ubuntu-24.04-arm)",
+        "steps": [],
+        "runner_name": "",
+        "message": "The job was not started because recent account payments have failed or your spending limit needs to be increased. Please check the 'Billing & plans' section in your settings"
+      },
+      {
+        "id": 105467143274,
+        "name": "foundation (macos-15)",
+        "steps": [],
+        "runner_name": "",
+        "message": "The job was not started because recent account payments have failed or your spending limit needs to be increased. Please check the 'Billing & plans' section in your settings"
+      },
+      {
+        "id": 105467143279,
+        "name": "foundation (ubuntu-24.04)",
+        "steps": [],
+        "runner_name": "",
+        "message": "The job was not started because recent account payments have failed or your spending limit needs to be increased. Please check the 'Billing & plans' section in your settings"
+      }
+    ]
   }
 }

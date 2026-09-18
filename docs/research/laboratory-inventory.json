@@ -1217,6 +1217,90 @@
       "available_disk_bytes": 381613207552,
       "raw_sha256": "abee66a9458737a0543e49188dbef0b2c8c0014ab175dc52efba3cfd79fbd7d8"
     },
-    "native_status": "NOT_STARTED; next exact committed source build in a new inventoried isolated lab"
+    "native_status": "PASS16 actual CLI/PG cases and independent29-table final audit; all owned containers stopped-retained",
+    "native_build": {
+      "source": "f246faff09c4b820bba244454c6366e2e74d3bb7",
+      "tree": "6a25ac824fedbe314e069006664f80dc868cc429",
+      "owner": "bd586a5878e57dc6d27dc55cb49ef5a1",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/configuration-f246faf",
+      "container": "bigbrotr-implementation-configuration-f246faf-build",
+      "container_id": "5c20cb75fda5213731dcf9f7bc8eb191fdb0ff75ef35789a368bcc13fc1a9334",
+      "image": "sha256:8d906f267439748924d6a9de9cab47855279cc196a7397d9cb7a690c77fddfe3",
+      "state": "completed-retained",
+      "started_at": "2026-09-18T03:20:35.452592+00:00",
+      "finished_at": "2026-09-18T03:26:34.754316547Z",
+      "exit_code": 0,
+      "oom_killed": false
+    },
+    "build_audit": {
+      "status": "PASS",
+      "source": "f246faff09c4b820bba244454c6366e2e74d3bb7",
+      "tree": "6a25ac824fedbe314e069006664f80dc868cc429",
+      "exact_source_files": 477,
+      "binary_sha256": "1c7113665631888e685132dda02490d4add17fe36f34b6f0dc632786e4cf11af",
+      "binary_bytes": 7511776,
+      "architecture": "ELF64 amd64",
+      "native_tools_independently_hashed": {
+        "CC": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+        "CXX": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+        "AR": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+        "LIBCLANG_PATH": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+        "discovery": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e"
+      },
+      "inputs": {
+        "source-manifest.json": "705c5f2aef58b6a2631df037c605b7fd2aa16becbe068f1fc4a0102f722ca67d",
+        "build-result.json": "1d4ba90670d540b8e80be84363606313343ee4089b5ff2913e35f93a2f4a4b63",
+        "observation.json": "dbfb44d87f4893a34f0eb32e32b03086d48821ada60fc95c73fd92138a0d3fff",
+        "source.tar": "2bd4d058a7a38ea649df4c7442cd76392d2fbb6c0de0502f6ae335b10ec2906e"
+      },
+      "scope": "Git/archive/actual extracted sources and downloaded executable identity; not engine runtime acceptance"
+    },
+    "runtime": {
+      "owner": "fd29eeedc0c855420701b8bb19e45f49",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/configuration-f246faf/runtime",
+      "postgres": "bigbrotr-implementation-pg-20260917-authself",
+      "client": "bigbrotr-implementation-pg-20260917-authself-client",
+      "network": "bigbrotr-implementation-pg-20260917-authself",
+      "state": "stopped-retained",
+      "binary_sha256": "1c7113665631888e685132dda02490d4add17fe36f34b6f0dc632786e4cf11af",
+      "database": "bb_auth_self",
+      "containers": [
+        {
+          "name": "/bigbrotr-implementation-pg-20260917-authself",
+          "id": "d8ce7f63a549c372c2f04752a947617f23838beaae6c03dcba1c8f16264bbf96",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-18T03:27:43.985088591Z",
+            "FinishedAt": "2026-09-18T03:28:48.411520881Z"
+          }
+        },
+        {
+          "name": "/bigbrotr-implementation-pg-20260917-authself-client",
+          "id": "3c85a61a91ce4675b2e6c739dab39b64820e053735952bc2e7672785ea1cbce1",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-18T03:27:34.915823707Z",
+            "FinishedAt": "2026-09-18T03:28:48.125961824Z"
+          }
+        }
+      ]
+    },
+    "native_evidence": "docs/implementation/evidence/p08-local-authentication-native-20260918.json"
   }
 }

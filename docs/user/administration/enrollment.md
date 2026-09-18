@@ -75,6 +75,8 @@ hash or session credential. Stored actions describe configuration at inspection
 time; the command issues no runtime authorization. A null `security_revision`
 means no security policy has been activated. A wrong password, unknown account
 or disabled account returns the same `Denied` refusal (exit 3).
+The [native self-inspection evidence](../../implementation/evidence/p08-local-authentication-native-20260918.json)
+records the exact tested revision and its credential, grant and restart cases.
 
 The [native enrollment evidence](../../implementation/evidence/p08-owner-enrollment-native-20260918.json)
 records the tested Linux amd64 revision, actual expiry and concurrent/recovery
