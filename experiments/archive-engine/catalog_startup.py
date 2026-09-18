@@ -55,10 +55,12 @@ try:
     assert sql("SELECT count(*) FROM pg_tables WHERE schemaname='public'") == '0'
     role = 'bb_fence_' + secrets.token_hex(8)
     secret = secrets.token_hex(32)
-    sql(f"CREATE ROLE {role} LOGIN PASSWORD '{secret}'; ALTER ROLE {role} SET post_auth_delay=6; "
+    sql(f"CREATE ROLE {role} LOGIN PASSWORD '{secret}'; "
         f'CREATE TABLE startup_commits(marker integer); GRANT USAGE ON SCHEMA public TO {role}; '
-        f'GRANT INSERT ON startup_commits TO {role};')
+        f'GRANT INSERT,SELECT ON startup_commits TO {role};')
     worker = environment(role, secret)
+    # PGC_BACKEND: inject in the startup packet, not ALTER ROLE after connect.
+    worker['PGOPTIONS'] += ' -c post_auth_delay=6'
     started = time.monotonic()
     child = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE, text=True, env=worker)
