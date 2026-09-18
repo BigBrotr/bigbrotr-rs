@@ -222,13 +222,16 @@ created by `archive_attempt_probe`. It never creates or retires host containers.
 The integrating owner must stop the identified runner and PostgreSQL and audit
 resources even if a wrapper fails; terminating `docker exec` is not exclusion.
 
-Fourteen proposed actual-PG cases cover install/activation pass, pre-forward and
+Fourteen actual-PG cases cover install/activation pass, pre-forward and
 post-completion COMMIT loss; lower/higher/same-attempt races with release/rollback;
 and cancellation at held COMMIT followed by either server outcome. A separate psql
 observer checks backend incarnations, actual transaction-ID lock waits, all 28
 table privilege sets, installation identity/checksum and immutable attempt values.
 The fixture digest is independently frozen, not calculated by the adapter under
 test. Failed/unknown execution stops later cases and retains partial results.
-These cases are NOT_RUN until revision-bound evidence records actual outcomes.
+The [55dba36 report](../../docs/implementation/evidence/p02-catalog-recovery-native-20260918.json)
+records all14 PASS on native Linux amd64/PG16.15, complete source/artifact/state
+audits and terminal cleanup. The temporary initdb readiness race was resolved
+before any application role/database existed; it is retained as a setup failure.
 No scientific publication, worker launch, persistent service recovery or process/
 power-loss durability is implied by an activation receipt.

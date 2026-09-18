@@ -6509,6 +6509,63 @@
       "report": "docs/implementation/evidence/p02-catalog-product-native-20260918.json",
       "independent_audit": ".research/implementation/archive-worker/catalog-product/944f3e6/independent-audit.json",
       "audit": ".research/implementation/archive-worker/catalog-product/944f3e6/audit.json"
+    },
+    "catalog_recovery": {
+      "status": "55dba36 scoped14-case native PASS;source/artifact/terminal-state audited;resources stopped-retained and network retired",
+      "native_root": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-recovery-55dba36",
+      "raw_root": ".research/implementation/archive-worker/catalog-recovery",
+      "resources": {
+        "source": "55dba3699faefe8b50234c696a85f31e60fd238c",
+        "tree": "de31ef3bf1fc4b58afb8955bd97c3fc173ea7d38",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-recovery-55dba36",
+        "owner": "8b806759314e6d4f8c090045f710ebd4",
+        "container": "bigbrotr-implementation-catalog-recovery-55dba36",
+        "postgres": "bigbrotr-implementation-catalog-recovery-55dba36-pg",
+        "network": "bigbrotr-implementation-catalog-recovery-55dba36",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "state": "stopped-retained",
+        "source_files": 641,
+        "started_at": "2026-09-18T18:31:45.495427+00:00",
+        "network_id": "21bb765cc5b4994d48e8cfe49541a31c11b5906bf1bceecbb397f71db44015d5",
+        "postgres_id": "cf303ea390d7f3c7df3176a1c65547ca8a3a3fdb2da9826a1935c3aa209e3cb6",
+        "setup_recovery": "Initial unix-socket pg_isready raced the temporary initdb server shutdown; no application role/database existed. Final TCP server independently ready before resumed setup.",
+        "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+        "container_id": "99f4a6681ef573b251c28ac6ff2cbcc208727de63bd69168eda4b37d0e8c001e",
+        "network_state": "retired",
+        "terminal": {
+          "runner": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-18T18:32:51.912782979Z",
+            "FinishedAt": "2026-09-18T18:36:31.665665234Z"
+          },
+          "postgres": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-18T18:31:46.046259126Z",
+            "FinishedAt": "2026-09-18T18:36:35.221255677Z"
+          }
+        },
+        "finished_at": "2026-09-18T18:36:35.815568+00:00"
+      },
+      "report": "docs/implementation/evidence/p02-catalog-recovery-native-20260918.json",
+      "independent_audit": ".research/implementation/archive-worker/catalog-recovery/55dba36/independent-audit.json",
+      "audit": ".research/implementation/archive-worker/catalog-recovery/55dba36/audit.json"
     }
   },
   "implementation_monitor_corrections_20260918": {

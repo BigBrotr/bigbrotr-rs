@@ -290,9 +290,12 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   qualifies native bootstrap, versioned fresh install/inspection, immutable
   Control-intent activation and live stale native rejection at `944f3e6`. It also
   records the confirmed role-bind, collation, NOLOGIN and Control numeric-epoch
-  corrections with their failed candidates. Full ordinary mutation coverage,
-  simultaneous product activation, unknown responses, credential custody and
-  installed recovery remain gates. It can
+  corrections with their failed candidates. [Actual activation recovery](evidence/p02-catalog-recovery-native-20260918.json)
+  at `55dba36` now qualifies14 install/activation fault, race and cancellation
+  cases with independent identity/privilege/lock observations. Scientific input
+  is synthetic; no worker is launched from an observed activation. Full ordinary
+  mutation coverage, native publication/recovery, credential custody and installed
+  recovery remain gates. It can
   enforce commit exclusion without inferring remote process death; resource and
   orphan cleanup still require their separate positive lifecycle evidence.
 - [ ] **Step 6:** Handle empty and one-small-event timer batches; publish useful progress

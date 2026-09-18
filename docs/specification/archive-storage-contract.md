@@ -222,7 +222,13 @@ complete product publisher/recovery implementation. The
 [product guard prerequisite report](../implementation/evidence/p02-catalog-product-native-20260918.json)
 qualifies bootstrap/installation/inspection/activation and a live stale native
 writer at `944f3e6`, including independently attributed PG guard rejection.
-Concurrent activation, ambiguous responses and installed recovery remain open.
+The [activation recovery report](../implementation/evidence/p02-catalog-recovery-native-20260918.json)
+qualifies14 actual PG cases at `55dba36`: install/activation lost COMMIT responses,
+both activation lock orders, identical retries and cancellation while the original
+transaction still blocks resolution. Independent observations check complete
+identity/privilege effects. These are manager operations with synthetic input;
+native scientific publication, credential custody and installed recovery remain
+open. A matching observation still grants no second native client lifetime.
 
 PostgreSQL documents [session identity and privilege checks](https://www.postgresql.org/docs/16/functions-info.html)
 and [actual trigger metadata](https://www.postgresql.org/docs/16/catalog-pg-trigger.html).

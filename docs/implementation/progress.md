@@ -213,24 +213,50 @@ Full IDs/source/artifact hashes and raw paths are under `catalog_product` in the
 laboratory inventory and `.research/implementation/archive-worker/catalog-product`.
 Session43878(cleanup) and97954(copy) are terminal. No active experiment/cleanup.
 
+## Catalog activation recovery qualification
+
+Candidate `55dba3699faefe8b50234c696a85f31e60fd238c` (tree
+`de31ef3bf1fc4b58afb8955bd97c3fc173ea7d38`) qualifies14 actual PG cases in the
+[recovery report](evidence/p02-catalog-recovery-native-20260918.json). No product
+SQL/adapter behavior changed in this qualification slice. Actual packaged native
+bootstrap ran separately for14 catalogs; Control retains two synthetic intents.
+Pass/pre-forward/post-completion COMMIT branches cover install and activation.
+Six activation races cover both ordinal orders/same request and commit/rollback.
+Two cancelled operations remain server-side blockers until explicit resolution;
+matching retries then observe the committed attempt or activate once after rollback.
+Eight backend-incarnation/transaction-lock observations prove actual blocking.
+
+Independent oracles check all28 native owners/guards,all112 required DML rights per
+imported role,forbidden rights/bootstrap revocation,header identity/checksum and
+full attempt/topology/login/OID plus frozen literal-CBOR digest. Independent review
+found incomplete grant/identity observations and OID JSON typing; corrected before
+native execution. Mac scoped Clippy/format/Python parsing and native3 build/Clippy
+checks PASS. This is not full CI, scientific publication or installed recovery.
+
+All641 exact Git source files and3 actual ELFs are independently matched. Terminal
+psql audit checks14 catalogs,12 imported attempt rows,zero scientific data files,
+zero active Control owners and zero probe backends. Raw evidence under
+`.research/implementation/archive-worker/catalog-recovery/55dba36`; native root
+`/home/tux/bigbrotr-implementation-20260917/runs/catalog-recovery-55dba36`.
+Owner `8b806759314e6d4f8c090045f710ebd4`; runner
+`bigbrotr-implementation-catalog-recovery-55dba36`, PG suffix `-pg`.
+Runner deliberately SIGTERM-stopped143 after successful cases; PG stopped0;
+no OOM. Internal network retired, no new volume.20 unrelated unchanged/8 running;
+zero BigBrotr containers running. Full IDs/hashes in the inventory/report.
+An initial readiness check raced initdb's temporary server shutdown; no application
+state existed, final TCP readiness was verified and setup resumed. No exact-source
+edits on Tux. Sessions33868(Mac),64193(initial setup failure),52156(resumed setup),
+3188(cases),8258(audit/cleanup) are terminal. No active experiment or cleanup.
+
 ## Next bounded action
 
-The next exact-source candidate adds an actual-PG recovery probe plus14 proposed
-install/activation fault/race/cancellation cases. Initial independent review found
-two incomplete observation oracles; they now check every native DML grant and
-prohibited table right, bootstrap revocation/ownership, complete installation
-identity and attempt topology/login/OID as well as the frozen input digest.
-Mac compilation/Clippy is running (session33868); no new Tux run is active yet.
-Local raw root `.research/implementation/archive-worker/catalog-recovery` contains
-the candidate-only transfer/launch helpers. Existing labs remain terminal.
-These scenarios are not yet executed evidence. Transfer a clean committed
-candidate, inventory a fresh lab and run them before recording PASS.
-
-Qualify the product adapter's activation ambiguity/concurrency and wire
-actual credential custody/unique worker launch and recovery. A matching observed
-attempt never permits a second native client; replacement gets a new lifetime.
-The current finite bootstrap and PG adapter require an external bounded owner;
-the installed initialization command/provisioner remains unfinished.
+Wire actual credential custody/unique native worker launch and recovery under
+P02-T04. A matching observed attempt never permits a second client; replacement
+gets a new retained lifetime. Study the selected credential/configuration and
+worker contracts before adding that responsibility. The current finite bootstrap
+and PG adapter require an external bounded owner; installed initialization and
+provisioning remain unfinished. Product native writer-versus-activation races and
+server/process restart orchestration still require integrated qualification.
 
 Connect scientific schema/all families/atomic semantic receipt and local protection
 to signed M1 read/export/restart. No pending ACK/reclaim, task completion or P02/M1

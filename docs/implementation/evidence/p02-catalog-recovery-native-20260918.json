@@ -1,0 +1,858 @@
+{
+  "task": "P02-T04 steps4/5 catalog guard activation recovery prerequisite",
+  "date": "2026-09-18",
+  "status": "PASS within14 executed cases; scientific publication and installed recovery remain open",
+  "source": {
+    "status": "PASS",
+    "source_files": 641,
+    "source": "55dba3699faefe8b50234c696a85f31e60fd238c",
+    "tree": "de31ef3bf1fc4b58afb8955bd97c3fc173ea7d38",
+    "manifest_sha256": "d66aa97238f0c06924f759f73f1ad24b0c164c084a930d129bad0f76b0aca117",
+    "archive_sha256": "2290c18c073af855f2fe5aa14f91456c49c1de05fe7ee36cab0921629ff8ddb4",
+    "input_digest": "6617e55295d367ffc9453a93ceb054623a952d289dcbf8e6ad5f5332db9134d0",
+    "input_preimage_hex": "62696762726f74722f617263686976652d62617463682f31008550010101010101010101010101010101010100818400010101818284500101010101010101010101010101010100010158200707070707070707070707070707070707070707070707070707070707070707",
+    "oracle": "Frozen literal CBOR fixture, independently rehashed by Mac OpenSSL; all641 exact Git archive files match native checkout/export manifest."
+  },
+  "implementation": "Added real product-adapter probe and exact-source native qualification driver. Product guard SQL/adapter behavior is unchanged from the previously qualified944f3e6 implementation. No publisher, credential provisioner or ACK is introduced.",
+  "mac": {
+    "format": "PASS",
+    "python_parsing": "PASS",
+    "scoped_clippy": "PASS bigbrotr example catalog_recovery_probe, actual Rust1.98.1/macOS arm64",
+    "unit_suites": "Not mechanically repeated: no product implementation changed in this qualification slice."
+  },
+  "native": {
+    "host": "Tux Linux amd64",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "artifacts_sha256": {
+      "worker": "41361bd4ca3354947dbfc49166afb34297705e8c40506f04fbb66864d22078ee",
+      "probe": "43edf088babe58e39db67b7aa1bb7d26757b51cbc8c1973d5da183acb57f823a",
+      "control_probe": "da4613b86da1d74c2e01f234ed7a5f63a09ab80cbf906361b46c4905f68d7e94"
+    },
+    "toolchain": {
+      "os": "Linux",
+      "architecture": "x86_64",
+      "discovery": "llvm-config",
+      "environment": {
+        "CC": "/usr/lib/llvm-14/bin/clang",
+        "CXX": "/usr/lib/llvm-14/bin/clang++",
+        "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+        "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+        "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+      },
+      "tools": {
+        "CC": {
+          "path": "/usr/lib/llvm-14/bin/clang",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "CXX": {
+          "path": "/usr/lib/llvm-14/bin/clang++",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "AR": {
+          "path": "/usr/lib/llvm-14/bin/llvm-ar",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+          "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+          "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+        },
+        "LIBCLANG_PATH": {
+          "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+          "version": "Debian clang version 14.0.6"
+        },
+        "discovery": {
+          "path": "/usr/lib/llvm-14/bin/llvm-config",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+          "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+          "version": "14.0.6"
+        }
+      },
+      "sdk": null
+    },
+    "build_checks": [
+      {
+        "name": "build",
+        "command": [
+          "cargo",
+          "build",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--example",
+          "archive_attempt_probe",
+          "--example",
+          "catalog_recovery_probe"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 13.285559365991503
+      },
+      {
+        "name": "worker",
+        "command": [
+          "cargo",
+          "build",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr-archive-worker",
+          "--bin",
+          "bigbrotr-archive-worker"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 48.24478971771896
+      },
+      {
+        "name": "clippy",
+        "command": [
+          "cargo",
+          "clippy",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--example",
+          "catalog_recovery_probe",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 1.2659860379062593
+      }
+    ],
+    "control_fixture": "Actual prior issuance probe applied Control migrations, initialized the synthetic empty-topology dataset and retained exactly2 intents. Every activation resolves that immutable request under a new actual Control session, then releases it before catalog contention.",
+    "bootstrap": "14 separate actual packaged-worker native catalog bootstraps, each positively exited before the actual Rust guard installer.",
+    "network": "Runner shares only owned PG namespace; new internal bridge, no published ports. Host authentication including loopback is independently verified SCRAM-SHA-256; local psql observer uses the isolated Unix socket.",
+    "limits": {
+      "runner_cpus": 2,
+      "runner_memory_bytes": 6442450944,
+      "runner_pids": 512,
+      "postgres_cpus": 1,
+      "postgres_memory_bytes": 1073741824,
+      "postgres_pids": 128,
+      "worker_engine_memory_bytes": 134217728,
+      "worker_engine_temp_bytes": 67108864,
+      "worker_query_threads": 1
+    }
+  },
+  "cases": [
+    {
+      "name": "install_pass",
+      "status": "PASS",
+      "proxy": {
+        "mode": "pass",
+        "reason": "frontend-eof",
+        "commits_seen": 1,
+        "commits_forwarded": 1,
+        "server_commit_complete": 1,
+        "client_commit_complete": 1,
+        "faults": 0
+      },
+      "retained_ordinals": [],
+      "owner_ordinal": 0,
+      "required_native_privileges": [
+        0,
+        0
+      ],
+      "before_resolution": {
+        "guard_present": true,
+        "retained_ordinals": []
+      }
+    },
+    {
+      "name": "install_before",
+      "status": "PASS",
+      "proxy": {
+        "mode": "before-forward",
+        "reason": "before-forward",
+        "commits_seen": 1,
+        "commits_forwarded": 0,
+        "server_commit_complete": 0,
+        "client_commit_complete": 0,
+        "faults": 1
+      },
+      "retained_ordinals": [],
+      "owner_ordinal": 0,
+      "required_native_privileges": [
+        0,
+        0
+      ],
+      "before_resolution": {
+        "guard_present": false,
+        "retained_ordinals": []
+      }
+    },
+    {
+      "name": "install_after",
+      "status": "PASS",
+      "proxy": {
+        "mode": "after-complete",
+        "reason": "after-complete",
+        "commits_seen": 1,
+        "commits_forwarded": 1,
+        "server_commit_complete": 1,
+        "client_commit_complete": 0,
+        "faults": 1
+      },
+      "retained_ordinals": [],
+      "owner_ordinal": 0,
+      "required_native_privileges": [
+        0,
+        0
+      ],
+      "before_resolution": {
+        "guard_present": true,
+        "retained_ordinals": []
+      }
+    },
+    {
+      "name": "activate_pass",
+      "status": "PASS",
+      "proxy": {
+        "mode": "pass",
+        "reason": "frontend-eof",
+        "commits_seen": 1,
+        "commits_forwarded": 1,
+        "server_commit_complete": 1,
+        "client_commit_complete": 1,
+        "faults": 0
+      },
+      "retained_ordinals": [
+        1
+      ],
+      "owner_ordinal": 1,
+      "required_native_privileges": [
+        112,
+        0
+      ],
+      "before_resolution": {
+        "guard_present": true,
+        "retained_ordinals": [
+          1
+        ]
+      }
+    },
+    {
+      "name": "activate_before",
+      "status": "PASS",
+      "proxy": {
+        "mode": "before-forward",
+        "reason": "before-forward",
+        "commits_seen": 1,
+        "commits_forwarded": 0,
+        "server_commit_complete": 0,
+        "client_commit_complete": 0,
+        "faults": 1
+      },
+      "retained_ordinals": [
+        1
+      ],
+      "owner_ordinal": 1,
+      "required_native_privileges": [
+        112,
+        0
+      ],
+      "before_resolution": {
+        "guard_present": true,
+        "retained_ordinals": []
+      }
+    },
+    {
+      "name": "activate_after",
+      "status": "PASS",
+      "proxy": {
+        "mode": "after-complete",
+        "reason": "after-complete",
+        "commits_seen": 1,
+        "commits_forwarded": 1,
+        "server_commit_complete": 1,
+        "client_commit_complete": 0,
+        "faults": 1
+      },
+      "retained_ordinals": [
+        1
+      ],
+      "owner_ordinal": 1,
+      "required_native_privileges": [
+        112,
+        0
+      ],
+      "before_resolution": {
+        "guard_present": true,
+        "retained_ordinals": [
+          1
+        ]
+      }
+    },
+    {
+      "name": "race_1_2_release",
+      "status": "PASS",
+      "proxy": {
+        "mode": "hold",
+        "reason": "frontend-eof",
+        "commits_seen": 1,
+        "commits_forwarded": 1,
+        "server_commit_complete": 1,
+        "client_commit_complete": 1,
+        "faults": 1
+      },
+      "retained_ordinals": [
+        1,
+        2
+      ],
+      "owner_ordinal": 2,
+      "required_native_privileges": [
+        112,
+        112
+      ],
+      "blocking": {
+        "activity": [
+          {
+            "pid": 2149,
+            "backend_start": "2026-09-18 18:34:39.993102+00",
+            "state": "idle in transaction",
+            "wait_event_type": "Client",
+            "wait_event": "ClientRead",
+            "blockers": []
+          },
+          {
+            "pid": 2151,
+            "backend_start": "2026-09-18 18:34:40.151216+00",
+            "state": "active",
+            "wait_event_type": "Lock",
+            "wait_event": "transactionid",
+            "blockers": [
+              2149
+            ]
+          }
+        ],
+        "locks": [
+          {
+            "pid": 2149,
+            "locktype": "transactionid",
+            "mode": "ExclusiveLock",
+            "granted": true,
+            "transactionid": "884"
+          },
+          {
+            "pid": 2151,
+            "locktype": "transactionid",
+            "mode": "ShareLock",
+            "granted": false,
+            "transactionid": "884"
+          }
+        ]
+      },
+      "contender_outcome": "activated"
+    },
+    {
+      "name": "race_1_2_close",
+      "status": "PASS",
+      "proxy": {
+        "mode": "hold",
+        "reason": "held-close",
+        "commits_seen": 1,
+        "commits_forwarded": 0,
+        "server_commit_complete": 0,
+        "client_commit_complete": 0,
+        "faults": 1
+      },
+      "retained_ordinals": [
+        2
+      ],
+      "owner_ordinal": 2,
+      "required_native_privileges": [
+        0,
+        112
+      ],
+      "blocking": {
+        "activity": [
+          {
+            "pid": 2410,
+            "backend_start": "2026-09-18 18:34:44.481229+00",
+            "state": "idle in transaction",
+            "wait_event_type": "Client",
+            "wait_event": "ClientRead",
+            "blockers": []
+          },
+          {
+            "pid": 2412,
+            "backend_start": "2026-09-18 18:34:44.644414+00",
+            "state": "active",
+            "wait_event_type": "Lock",
+            "wait_event": "transactionid",
+            "blockers": [
+              2410
+            ]
+          }
+        ],
+        "locks": [
+          {
+            "pid": 2410,
+            "locktype": "transactionid",
+            "mode": "ExclusiveLock",
+            "granted": true,
+            "transactionid": "900"
+          },
+          {
+            "pid": 2412,
+            "locktype": "transactionid",
+            "mode": "ShareLock",
+            "granted": false,
+            "transactionid": "900"
+          }
+        ]
+      },
+      "contender_outcome": "activated"
+    },
+    {
+      "name": "race_2_1_release",
+      "status": "PASS",
+      "proxy": {
+        "mode": "hold",
+        "reason": "frontend-eof",
+        "commits_seen": 1,
+        "commits_forwarded": 1,
+        "server_commit_complete": 1,
+        "client_commit_complete": 1,
+        "faults": 1
+      },
+      "retained_ordinals": [
+        2
+      ],
+      "owner_ordinal": 2,
+      "required_native_privileges": [
+        0,
+        112
+      ],
+      "blocking": {
+        "activity": [
+          {
+            "pid": 2665,
+            "backend_start": "2026-09-18 18:34:48.30048+00",
+            "state": "idle in transaction",
+            "wait_event_type": "Client",
+            "wait_event": "ClientRead",
+            "blockers": []
+          },
+          {
+            "pid": 2667,
+            "backend_start": "2026-09-18 18:34:48.442524+00",
+            "state": "active",
+            "wait_event_type": "Lock",
+            "wait_event": "transactionid",
+            "blockers": [
+              2665
+            ]
+          }
+        ],
+        "locks": [
+          {
+            "pid": 2665,
+            "locktype": "transactionid",
+            "mode": "ExclusiveLock",
+            "granted": true,
+            "transactionid": "921"
+          },
+          {
+            "pid": 2667,
+            "locktype": "transactionid",
+            "mode": "ShareLock",
+            "granted": false,
+            "transactionid": "921"
+          }
+        ]
+      },
+      "contender_outcome": "conflict"
+    },
+    {
+      "name": "race_2_1_close",
+      "status": "PASS",
+      "proxy": {
+        "mode": "hold",
+        "reason": "held-close",
+        "commits_seen": 1,
+        "commits_forwarded": 0,
+        "server_commit_complete": 0,
+        "client_commit_complete": 0,
+        "faults": 1
+      },
+      "retained_ordinals": [
+        1
+      ],
+      "owner_ordinal": 1,
+      "required_native_privileges": [
+        112,
+        0
+      ],
+      "blocking": {
+        "activity": [
+          {
+            "pid": 2919,
+            "backend_start": "2026-09-18 18:34:52.588683+00",
+            "state": "idle in transaction",
+            "wait_event_type": "Client",
+            "wait_event": "ClientRead",
+            "blockers": []
+          },
+          {
+            "pid": 2921,
+            "backend_start": "2026-09-18 18:34:52.75843+00",
+            "state": "active",
+            "wait_event_type": "Lock",
+            "wait_event": "transactionid",
+            "blockers": [
+              2919
+            ]
+          }
+        ],
+        "locks": [
+          {
+            "pid": 2919,
+            "locktype": "transactionid",
+            "mode": "ExclusiveLock",
+            "granted": true,
+            "transactionid": "942"
+          },
+          {
+            "pid": 2921,
+            "locktype": "transactionid",
+            "mode": "ShareLock",
+            "granted": false,
+            "transactionid": "942"
+          }
+        ]
+      },
+      "contender_outcome": "activated"
+    },
+    {
+      "name": "race_1_1_release",
+      "status": "PASS",
+      "proxy": {
+        "mode": "hold",
+        "reason": "frontend-eof",
+        "commits_seen": 1,
+        "commits_forwarded": 1,
+        "server_commit_complete": 1,
+        "client_commit_complete": 1,
+        "faults": 1
+      },
+      "retained_ordinals": [
+        1
+      ],
+      "owner_ordinal": 1,
+      "required_native_privileges": [
+        112,
+        0
+      ],
+      "blocking": {
+        "activity": [
+          {
+            "pid": 3171,
+            "backend_start": "2026-09-18 18:34:56.957469+00",
+            "state": "idle in transaction",
+            "wait_event_type": "Client",
+            "wait_event": "ClientRead",
+            "blockers": []
+          },
+          {
+            "pid": 3173,
+            "backend_start": "2026-09-18 18:34:57.110802+00",
+            "state": "active",
+            "wait_event_type": "Lock",
+            "wait_event": "transactionid",
+            "blockers": [
+              3171
+            ]
+          }
+        ],
+        "locks": [
+          {
+            "pid": 3171,
+            "locktype": "transactionid",
+            "mode": "ExclusiveLock",
+            "granted": true,
+            "transactionid": "959"
+          },
+          {
+            "pid": 3173,
+            "locktype": "transactionid",
+            "mode": "ShareLock",
+            "granted": false,
+            "transactionid": "959"
+          }
+        ]
+      },
+      "contender_outcome": "current"
+    },
+    {
+      "name": "race_1_1_close",
+      "status": "PASS",
+      "proxy": {
+        "mode": "hold",
+        "reason": "held-close",
+        "commits_seen": 1,
+        "commits_forwarded": 0,
+        "server_commit_complete": 0,
+        "client_commit_complete": 0,
+        "faults": 1
+      },
+      "retained_ordinals": [
+        1
+      ],
+      "owner_ordinal": 1,
+      "required_native_privileges": [
+        112,
+        0
+      ],
+      "blocking": {
+        "activity": [
+          {
+            "pid": 3425,
+            "backend_start": "2026-09-18 18:35:01.115571+00",
+            "state": "idle in transaction",
+            "wait_event_type": "Client",
+            "wait_event": "ClientRead",
+            "blockers": []
+          },
+          {
+            "pid": 3427,
+            "backend_start": "2026-09-18 18:35:01.291507+00",
+            "state": "active",
+            "wait_event_type": "Lock",
+            "wait_event": "transactionid",
+            "blockers": [
+              3425
+            ]
+          }
+        ],
+        "locks": [
+          {
+            "pid": 3425,
+            "locktype": "transactionid",
+            "mode": "ExclusiveLock",
+            "granted": true,
+            "transactionid": "980"
+          },
+          {
+            "pid": 3427,
+            "locktype": "transactionid",
+            "mode": "ShareLock",
+            "granted": false,
+            "transactionid": "980"
+          }
+        ]
+      },
+      "contender_outcome": "activated"
+    },
+    {
+      "name": "cancel_release",
+      "status": "PASS",
+      "proxy": {
+        "mode": "hold",
+        "reason": "frontend-eof",
+        "commits_seen": 1,
+        "commits_forwarded": 1,
+        "server_commit_complete": 1,
+        "client_commit_complete": 1,
+        "faults": 1
+      },
+      "retained_ordinals": [
+        1
+      ],
+      "owner_ordinal": 1,
+      "required_native_privileges": [
+        112,
+        0
+      ],
+      "blocking_after_cancellation": {
+        "activity": [
+          {
+            "pid": 3679,
+            "backend_start": "2026-09-18 18:35:04.571275+00",
+            "state": "idle in transaction",
+            "wait_event_type": "Client",
+            "wait_event": "ClientRead",
+            "blockers": []
+          },
+          {
+            "pid": 3681,
+            "backend_start": "2026-09-18 18:35:06.684707+00",
+            "state": "active",
+            "wait_event_type": "Lock",
+            "wait_event": "transactionid",
+            "blockers": [
+              3679
+            ]
+          }
+        ],
+        "locks": [
+          {
+            "pid": 3679,
+            "locktype": "transactionid",
+            "mode": "ExclusiveLock",
+            "granted": true,
+            "transactionid": "1001"
+          },
+          {
+            "pid": 3681,
+            "locktype": "transactionid",
+            "mode": "ShareLock",
+            "granted": false,
+            "transactionid": "1001"
+          }
+        ]
+      }
+    },
+    {
+      "name": "cancel_close",
+      "status": "PASS",
+      "proxy": {
+        "mode": "hold",
+        "reason": "held-close",
+        "commits_seen": 1,
+        "commits_forwarded": 0,
+        "server_commit_complete": 0,
+        "client_commit_complete": 0,
+        "faults": 1
+      },
+      "retained_ordinals": [
+        1
+      ],
+      "owner_ordinal": 1,
+      "required_native_privileges": [
+        112,
+        0
+      ],
+      "blocking_after_cancellation": {
+        "activity": [
+          {
+            "pid": 3932,
+            "backend_start": "2026-09-18 18:35:09.833405+00",
+            "state": "idle in transaction",
+            "wait_event_type": "Client",
+            "wait_event": "ClientRead",
+            "blockers": []
+          },
+          {
+            "pid": 3935,
+            "backend_start": "2026-09-18 18:35:11.911168+00",
+            "state": "active",
+            "wait_event_type": "Lock",
+            "wait_event": "transactionid",
+            "blockers": [
+              3932
+            ]
+          }
+        ],
+        "locks": [
+          {
+            "pid": 3932,
+            "locktype": "transactionid",
+            "mode": "ExclusiveLock",
+            "granted": true,
+            "transactionid": "1018"
+          },
+          {
+            "pid": 3935,
+            "locktype": "transactionid",
+            "mode": "ShareLock",
+            "granted": false,
+            "transactionid": "1018"
+          }
+        ]
+      }
+    }
+  ],
+  "oracles": [
+    "Proxy COMMIT counters distinguish transparent pass, suppressed send, server completion with lost reply, held release and held close. Success/error text alone is insufficient.",
+    "Fresh independent psql observes installed header, immutable attempt values and owner. Missing pre-forward COMMIT preserves the complete observed initial state; matching committed retry preserves header/attempts/owner/privileges.",
+    "Every case checks all28 native table owners and guards,112 required table rights per imported role (28\u00d7SELECT/INSERT/UPDATE/DELETE),zero forbidden table rights,all196 bootstrap table rights revoked,bootstrap CREATE revoked and writer USAGE/no CREATE.",
+    "Dataset/catalog/local-root/protocol/SQL checksum,topology0,exact attempt/coordinator/worker identities,dedicated login/current role OID and independent literal-CBOR semantic digest are checked. PostgreSQL JSON OIDs are strings and normalized explicitly.",
+    "Eight contention observations show matching holder/waiter backend incarnations,pg_blocking_pids,Lock waits and ungranted ShareLock on the actual holder transaction ID. All races occur at held product COMMIT.",
+    "Cancelled operations can retain a live server transaction and lock. A retry remains blocked until explicit release/close; release resolves current observation,close permits exactly one actual activation. Dropped operation/client alone never establishes exclusion.",
+    "An additional independent terminal psql audit checks all14 databases and compares retained installation/attempt/owner values to the case observations. Three actual ELF artifacts and all641 source files are independently hashed."
+  ],
+  "final_observations": {
+    "catalog_databases": 14,
+    "retained_catalog_attempts": 12,
+    "native_data_files": 0,
+    "control": {
+      "attempts": 2,
+      "active": 0,
+      "epochs": 39
+    },
+    "remaining_probe_backends": 0,
+    "source_manifest_sha256": "d66aa97238f0c06924f759f73f1ad24b0c164c084a930d129bad0f76b0aca117",
+    "observations_sha256": "b091e834af9b31618fb9a9fef2ecc5846f0b8e76cc39f3071584828be5a650d6",
+    "raw_case_report_sha256": "161a98ceb98bde4b47c1c8dcedd42576e6e219c827d547433f3d4879f757e063"
+  },
+  "review": "Independent read-only review identified incomplete grant/identity oracles and PostgreSQL OID JSON typing before native execution. Corrected observations were reviewed; root reviewed source and the terminal actual-state/source/artifact audits. No full-product review claimed.",
+  "setup_issue": "Initial unix-socket pg_isready raced the temporary initdb server shutdown; no application role/database existed. Final TCP server independently ready before resumed setup.",
+  "cleanup": {
+    "owner": "8b806759314e6d4f8c090045f710ebd4",
+    "runner": "bigbrotr-implementation-catalog-recovery-55dba36",
+    "runner_id": "99f4a6681ef573b251c28ac6ff2cbcc208727de63bd69168eda4b37d0e8c001e",
+    "postgres": "bigbrotr-implementation-catalog-recovery-55dba36-pg",
+    "postgres_id": "cf303ea390d7f3c7df3176a1c65547ca8a3a3fdb2da9826a1935c3aa209e3cb6",
+    "network_id": "21bb765cc5b4994d48e8cfe49541a31c11b5906bf1bceecbb397f71db44015d5",
+    "terminal": {
+      "runner": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 143,
+        "Error": "",
+        "StartedAt": "2026-09-18T18:32:51.912782979Z",
+        "FinishedAt": "2026-09-18T18:36:31.665665234Z"
+      },
+      "postgres": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-09-18T18:31:46.046259126Z",
+        "FinishedAt": "2026-09-18T18:36:35.221255677Z"
+      }
+    },
+    "state": "owned idle runner deliberately SIGTERM-stopped143 after14 cases, PG stopped0, no OOM, network retired, no new volume",
+    "unrelated_unchanged": 20,
+    "unrelated_running": 8,
+    "running_bigbrotr": 0
+  },
+  "remaining": [
+    "Dedicated credential provisioning/custody and persistent unique worker launch/recovery; observed activation must never authorize a second client under that lifetime.",
+    "Actual scientific schema/all families,atomic semantic publication receipts,local file persistence/protection,signed M1 read/export/restart; no pending ACK/reclaim.",
+    "Product native writer-versus-activation concurrency and server/process restart orchestration remain separate from the14 manager activation cases; earlier experimental native lock schedules are prerequisites.",
+    "S3 remains selected;no Linux arm64/full CI/release/Compose qualification,throughput/RSS or power-loss claim."
+  ],
+  "raw_root": ".research/implementation/archive-worker/catalog-recovery/55dba36",
+  "native_root": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-recovery-55dba36"
+}
