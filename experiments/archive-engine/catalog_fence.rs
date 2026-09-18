@@ -5,6 +5,7 @@ use duckdb::{Config, Connection};
 use std::{
     fs,
     io::{self, Read, Write},
+    os::unix::fs::OpenOptionsExt,
     path::Path,
     process::ExitCode,
 };
@@ -122,7 +123,26 @@ fn run() -> Result<(), &'static str> {
             "ATTACH {} AS lake ({options})",
             literal(&format!("ducklake:postgres:{dsn}"))
         ))
-        .map_err(|_| "attach")?;
+        .map_err(|error| {
+            // The isolated lab needs the native cause, but native diagnostics
+            // may repeat connection secrets. Never put it on either pipe.
+            let mut diagnostic = error.to_string().replace(&dsn, "<lab-connection>");
+            for secret in dsn
+                .split_whitespace()
+                .filter_map(|s| s.strip_prefix("password="))
+            {
+                diagnostic = diagnostic.replace(secret, "<redacted>");
+            }
+            if let Ok(mut file) = fs::OpenOptions::new()
+                .write(true)
+                .create_new(true)
+                .mode(0o600)
+                .open(temp.join("attach-error.private"))
+            {
+                let _ = file.write_all(diagnostic.as_bytes());
+            }
+            "attach"
+        })?;
     if mode == "init" {
         connection.execute_batch(
             "BEGIN; CREATE TABLE lake.facts(batch UBIGINT, body VARCHAR); CREATE TABLE lake.witnesses(batch UBIGINT, endpoint VARCHAR); CREATE TABLE lake.receipts(batch UBIGINT, digest BLOB); COMMIT",
