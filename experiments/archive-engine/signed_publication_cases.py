@@ -16,7 +16,7 @@ import time
 sys.dont_write_bytecode = True
 SOURCE = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(SOURCE / 'experiments/control-migrations'))
-from fault_cases import Process
+from fault_cases import Incomplete, Process
 from signed_publication_oracle import check
 
 
@@ -30,13 +30,25 @@ def command(*args, input=None, timeout=30):
     return r.stdout.strip()
 
 
-def execute(args, timeout):
+def execute(args, timeout, observation):
     process = Process(args, limit=256 * 1024)
+    observation.update(exit=None, remote_exclusion='UNKNOWN')
     try:
-        code = process.wait(timeout)
-        return dict(exit=code, stdout=process.stdout.decode(), stderr=process.stderr.decode())
+        observation['exit'] = process.wait(timeout)
+    except BaseException as error:
+        observation['failure'] = str(error) if isinstance(error, Incomplete) else type(error).__name__
+        raise
     finally:
         process.stop()
+        observation.update(stdout=process.stdout.decode(errors='replace'),
+                           stderr=process.stderr.decode(errors='replace'), overflow=process.overflow)
+
+
+def proxy_observation(proxy):
+    # This proxy emits only allowlisted counters, never SQL or credentials.
+    return dict(exit=proxy.process.poll(), stdout=proxy.stdout.decode(errors='replace'),
+                stderr=proxy.stderr.decode(errors='replace'), overflow=proxy.overflow,
+                remote_exclusion='UNKNOWN')
 
 
 def main(root):
@@ -93,7 +105,8 @@ def main(root):
                 assert hello['event'] == 'ready'
                 assert hello['source_sha256'] == sha(SOURCE / 'experiments/archive-engine/native_commit_proxy.py')
                 port = hello['port']
-            case['parent'] = execute(binary + ['/out/native-tests/archive-publication-probe', mode, str(port)], 180)
+            case['parent'] = {}
+            execute(binary + ['/out/native-tests/archive-publication-probe', mode, str(port)], 180, case['parent'])
             save()
             if proxy:
                 proxy.process.stdin.write(b'stop\n')
@@ -107,18 +120,21 @@ def main(root):
                 assert terminal['event'] == 'terminal' and terminal['unexpected'] == 0
                 assert terminal['data_queries'] == terminal['data_commits'] == terminal['faults'] == 1
                 assert terminal['client_complete'] == 0 and terminal['server_complete'] == int(mode == 'after')
-            assert case['parent']['exit'] == 0 and not case['parent']['stderr'], 'actual parent failed'
-            case['reader'] = execute(binary + ['/out/native-tests/archive-read-probe', mode], 45)
-            save()
-            assert case['reader']['exit'] == 0 and not case['reader']['stderr'], 'actual native readback failed'
-            check(mode, [json.loads(line) for line in case['parent']['stdout'].splitlines()],
-                  json.loads(case['reader']['stdout']))
+            # Observe durable references/bytes before trusting parent or reader
+            # outcomes. In particular a failed body read must not hide file loss.
             case['catalog_files'] = json.loads(sql(db, "SELECT coalesce(json_agg(row_to_json(t)),'[]'::json) FROM (SELECT d.data_file_id,d.path,d.path_is_relative,d.file_size_bytes,d.record_count,t.table_name,t.path AS table_path,s.path AS schema_path FROM ducklake_data_file d JOIN ducklake_table t ON t.table_id=d.table_id JOIN ducklake_schema s ON s.schema_id=t.schema_id ORDER BY t.table_name,d.data_file_id)t;"))
             data = root / f'out/signed_{mode}/kind=7'
             case['physical_files'] = [dict(path=str(p.relative_to(data)), bytes=p.stat().st_size, sha256=sha(p))
                                       for p in sorted(data.rglob('*.parquet'))]
             case['active_writers'] = int(sql(db, "SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND left(usename,11)='bb_archive_';"))
             save()
+            assert case['parent']['exit'] == 0 and not case['parent']['stderr'], 'actual parent failed'
+            case['reader'] = {}
+            execute(binary + ['/out/native-tests/archive-read-probe', mode], 45, case['reader'])
+            save()
+            assert case['reader']['exit'] == 0 and not case['reader']['stderr'], 'actual native readback failed'
+            check(mode, [json.loads(line) for line in case['parent']['stdout'].splitlines()],
+                  json.loads(case['reader']['stdout']))
             assert case['active_writers'] == 0
             assert len(case['physical_files']) == 8
             physical = {row['path']: row for row in case['physical_files']}
@@ -141,9 +157,17 @@ def main(root):
             save()
             print(json.dumps(dict(mode=mode, status='PASS', catalog_files=len(case['catalog_files']),
                                   physical_files=len(physical))), flush=True)
+        except BaseException as error:
+            case['status'] = ('INCOMPLETE' if isinstance(error, (Incomplete, subprocess.TimeoutExpired, KeyboardInterrupt))
+                              else 'FAIL')
+            case['failure'] = str(error) if isinstance(error, (Incomplete, AssertionError)) else type(error).__name__
+            result['status'] = case['status']
+            raise
         finally:
             if proxy:
                 proxy.stop()
+                case['proxy_observation'] = proxy_observation(proxy)
+            save()
     result['status'] = 'PASS'
     save()
 

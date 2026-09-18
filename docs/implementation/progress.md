@@ -22,23 +22,16 @@ be acknowledged/reclaimed.
 
 ## Git and integrating ownership
 
-Mac main; root is sole writer/integrator. Current fixture candidate is based on
-`3c380fe48331cdb3b0fce60926c2e8e47db3bb5b`, tree
-`f54c3e8d015bb6729a2318853590de593ae322fb`; five unpublished commits follow freshly
-verified origin/main `4db603b0dc09ae1c65c9bb301af33a60f7939854`. No merge/rebase or
-remote editing. Resolve the containing commit before transferring exact source.
-This candidate adds actual signed publication/admission/readback Rust examples,
-an independent literal Python oracle and owned-lab orchestration; native build
-entrypoint and experiment documentation are updated. No production implementation,
-lockfile, schema or applied migration is changed by this fixture candidate.
-Read-only AI publication_review traced the new fixtures and relevant callers; no
-new concrete defect reported. Root corrected dictionary bootstrap ordering from
-its dependency inspection: visibility must precede its consumers. Full actual
-execution is still NOT_RUN. Mac scoped Clippy of both new examples and Python
-syntax/corpus checks PASS; initial parent compiler errors are retained in
-publication/signed-parent-check*.log, corrected check and signed-fixture-clippy.log
-are terminal. No local compiler or lab is running. Fresh Tux inspection confirms
-the prior ea270ac containers stopped143/0 and only8 unrelated workloads running.
+Mac main; root is sole writer/integrator. This correction is based on candidate
+`7ff0691a9572e0bb55f692bb973d59c8b9743ddb`, tree
+`24e10c9fb1ed2715732801d8dc7aef5c90811dcc`; six unpublished commits follow observed
+origin/main `4db603b0dc09ae1c65c9bb301af33a60f7939854`. No merge/rebase or remote edits.
+The containing commit corrects the lab reader's canonical hex reconstruction and
+harness failure-evidence retention, and records the failed candidate's terminal
+lab audit. Resolve its actual commit before a new exact-source transfer. No product
+implementation, dependencies, schema or applied migration changes in this correction.
+All compilers/lab sessions are terminal. Read-only AI review covered the three
+Rust fixtures, Python oracle/harness and relevant callers; root owns integration.
 
 ## Active publication risk slice
 
@@ -338,22 +331,43 @@ Earlier164a9bc/27ab36c/2e15f8c labs likewise stopped-retained with networks reti
 all outcomes and audits retained. No unfinished cleanup; never restart these
 retired-network containers. amd64 does not qualify arm64 or hosted Actions.
 
-## Next bounded action
+## Latest signed publication lab and next bounded action
 
-Commit this reviewed fixture candidate, transfer the exact clean Git revision to
-a new separately inventoried publication lab, build actual Linux executables and
-run signed_publication_cases.py. Require complete independent facts/digests and
-native rows/signatures, actual fault-proxy COMMIT counters, all physical caller-
-owned files and unchanged complete Rocks key/value digest. The three schedules
-are normal, before-forward and completed-but-lost native PG COMMIT; unknown outcomes
-must remain retained and never ACKed. Actual Control registration/admission uses a
-closed fixture source authorization, not installed source policy. The reader is
-an administrative read-only lab consumer, not the product Read role.
+Candidate `7ff0691a9572e0bb55f692bb973d59c8b9743ddb`, tree
+`24e10c9fb1ed2715732801d8dc7aef5c90811dcc`, has680 independently matched clean source
+files. Native build,7 embedded publication cases and1 closed input case PASS.
+The normal actual Control/registration/signed Rocks/FreshWriter publication parent
+exited0: missing closure refused, bootstrap and all five event families published,
+duplicate refused, sealed credentials inspected and child permits returned. Root's
+independent Python oracle matches all ten fact bytes/digests and both batch digests;
+all41 raw Rocks rows have the same before/after digest. This is partial evidence.
 
-Existing launch/transfer/retire helpers under ignored publication/ now select the
-retained ea270ac cache, new publisher/reader ELF identities and7 embedded cases.
-Before use, verify the new lab's ownership, exact source, processes and artifacts;
-never restart retired runners. Record raw outcomes, audit terminal resources and
-then update the existing evidence/task contracts. Native scientific fence races,
-relocation/recovery, persistent lifecycle, protection, M1 and all remaining selected
-product work stay required. No task-completion, source ACK or reclamation claim.
+The actual native reader FAILED exit101 during signed-event reconstruction because
+DuckDB hex() returns uppercase and fixed model identities require canonical lowercase.
+No complete row comparison or fault schedule passed at this revision. Extra read-only
+observations retain8 catalog references and8 physical files. Failure logs are kept;
+this is a fixture defect, not a measured missing-file defect. Mac changes normalize
+only the reader's reconstructed-event hex, preserve timeout/overflow output/reasons,
+and observe catalog/files before asserting reader success. Three actual local child
+process cases (normal/timeout/overflow) PASS for retained diagnostics; reader Clippy
+PASS. AI review found these diagnostic gaps; no product implementation changed.
+
+Lab root `/home/tux/bigbrotr-implementation-20260917/runs/publication-7ff0691`, owner
+101d35c08c39dad862f52e3a099a550b. Runner3702e16e87b6b188ee960895970065bf40a978c66f4910957bbe545fbcd4fa3c;
+PG6c13737e054b9b857ad90fa3855e3844552aff69580462b27769caaf425987f2;
+networka1453d72cfa4b0f496f4e33d2b68c6240e0361ea052cd2b7f9e025583835a43c retired.
+Terminal audit records stopped143/0, no OOM,20 unrelated identities unchanged,
+8 unrelated running and0 BigBrotr running. Transfer57239, cases37496, cleanup41074,
+evidence copy92268, local checks70108/71186 are terminal. No unfinished cleanup.
+Raw root publication/7ff0691; inventory signed_publication. Source/ELF identities
+and exact Mac Git archive match retained audits. Never restart this retired lab.
+
+Primary HEAD7ff0691 has six unpublished commits; root-owned reader/harness and
+checkpoint/inventory updates are dirty. Commit that correction, then transfer to
+a new exact-source lab using the verified stopped7ff0691 build cache. Repeat all
+three actual schedules and require independent complete rows/signature, native
+fault counters, retained files and unchanged Rocks. Unknowns stay retained without
+ACK. Source authorization and reader remain explicit lab fixtures. Afterwards
+record scoped evidence, audit terminal resources, and continue scientific fence
+races, relocation/recovery, persistent lifecycle and protection. M1 and the complete
+selected product remain open; no task completion or reclamation claim.

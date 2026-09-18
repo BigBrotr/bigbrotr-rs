@@ -7094,12 +7094,62 @@
       "mac_product_report": "docs/implementation/evidence/p02-staged-publication-mac-20260918.json"
     },
     "signed_publication": {
-      "status": "NOT_RUN; preparing an exact-source candidate",
+      "status": "FAILED reader fixture canonical-hex reconstruction; actual parent normal journey completed; fault cases NOT_RUN; terminal audited cleanup",
       "purpose": "Actual connected signed Rocks admission, all-five-family guarded PG publication and native COMMIT response loss; no ACK or protection",
       "base_source": "3c380fe48331cdb3b0fce60926c2e8e47db3bb5b",
       "local_root": ".research/implementation/archive-worker/publication",
       "resource_policy": "New uniquely inventoried publication-<revision> lab; owner-verified stopped caches may be copied; retired runners remain stopped",
-      "owned_live_resources": []
+      "resources": {
+        "source": "7ff0691a9572e0bb55f692bb973d59c8b9743ddb",
+        "tree": "24e10c9fb1ed2715732801d8dc7aef5c90811dcc",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/publication-7ff0691",
+        "owner": "101d35c08c39dad862f52e3a099a550b",
+        "container": "bigbrotr-implementation-publication-7ff0691",
+        "postgres": "bigbrotr-implementation-publication-7ff0691-pg",
+        "network": "bigbrotr-implementation-publication-7ff0691",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "state": "stopped-retained",
+        "source_files": 680,
+        "started_at": "2026-09-18T22:22:05.331706+00:00",
+        "network_id": "a1453d72cfa4b0f496f4e33d2b68c6240e0361ea052cd2b7f9e025583835a43c",
+        "postgres_id": "6c13737e054b9b857ad90fa3855e3844552aff69580462b27769caaf425987f2",
+        "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+        "container_id": "3702e16e87b6b188ee960895970065bf40a978c66f4910957bbe545fbcd4fa3c",
+        "network_state": "retired",
+        "terminal": {
+          "runner": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-18T22:22:07.756809484Z",
+            "FinishedAt": "2026-09-18T22:25:36.533470102Z"
+          },
+          "postgres": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-18T22:22:05.969248609Z",
+            "FinishedAt": "2026-09-18T22:25:37.513292683Z"
+          }
+        },
+        "finished_at": "2026-09-18T22:25:38.106335+00:00"
+      },
+      "audit": ".research/implementation/archive-worker/publication/7ff0691/audit.json",
+      "raw_root": ".research/implementation/archive-worker/publication/7ff0691",
+      "next": "New exact-source lab with canonical reader and diagnostic-retention fixes"
     }
   },
   "implementation_monitor_corrections_20260918": {

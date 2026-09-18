@@ -86,7 +86,7 @@ fn main() {
         None
     } else {
         assert_eq!(event_count, 1);
-        let actual=c.query_row("SELECT hex(e.event_id),hex(e.pubkey),e.created_at,e.kind,to_json(e.tags),e.content,hex(v.sig) FROM archive.events e JOIN archive.event_eligibility_facts v ON e.event_id=v.event_id AND e.visibility_scope_id=v.visibility_scope_id",[],|r|Ok(SignedEvent {id:r.get::<_,String>(0)?.parse().unwrap(),pubkey:r.get::<_,String>(1)?.parse().unwrap(),created_at:NostrTime(r.get(2)?),kind:r.get(3)?,tags:serde_json::from_str(&r.get::<_,String>(4)?).unwrap(),content:r.get(5)?,sig:r.get::<_,String>(6)?.parse().unwrap()})).unwrap();
+        let actual=c.query_row("SELECT lower(hex(e.event_id)),lower(hex(e.pubkey)),e.created_at,e.kind,to_json(e.tags),e.content,lower(hex(v.sig)) FROM archive.events e JOIN archive.event_eligibility_facts v ON e.event_id=v.event_id AND e.visibility_scope_id=v.visibility_scope_id",[],|r|Ok(SignedEvent {id:r.get::<_,String>(0)?.parse().unwrap(),pubkey:r.get::<_,String>(1)?.parse().unwrap(),created_at:NostrTime(r.get(2)?),kind:r.get(3)?,tags:serde_json::from_str(&r.get::<_,String>(4)?).unwrap(),content:r.get(5)?,sig:r.get::<_,String>(6)?.parse().unwrap()})).unwrap();
         let fixture: serde_json::Value = serde_json::from_str(include_str!(
             "../../../experiments/identity-contract/signed-fixture.json"
         ))
