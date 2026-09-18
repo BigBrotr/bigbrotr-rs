@@ -1,0 +1,190 @@
+{
+  "format": "bigbrotr-archive-engine/1",
+  "engine_version": "v1.5.5",
+  "engine_source_id": "d8cdaa33fd",
+  "binding_version": "1.10505.0",
+  "arrow_version": "58.4.0",
+  "status": "Pinned build inputs; native worker and release qualification remain task-specific. Missing platforms are not qualified.",
+  "platforms": {
+    "x86_64-unknown-linux-gnu": {
+      "extension_platform": "linux_amd64",
+      "archive": {
+        "name": "libduckdb-linux-amd64.zip",
+        "url": "https://github.com/duckdb/duckdb/releases/download/v1.5.5/libduckdb-linux-amd64.zip",
+        "bytes": 41300590,
+        "sha256": "1fb8ce388157d84a25abe685a8a2520bf00c00321821968e4bb398fd766e7abb"
+      },
+      "library": {
+        "name": "libduckdb.so",
+        "bytes": 70529912,
+        "sha256": "fc23f12e376c47be520f75221288281906e7942e8fd6f6ce4849198ba60d0405"
+      },
+      "header": {
+        "name": "duckdb.h",
+        "bytes": 244057,
+        "sha256": "48e716b9ce96ca8fead9cb35693fdc0343ac0fc1f6e7db5561fa0f44b674153d"
+      },
+      "extensions": [
+        {
+          "name": "ducklake",
+          "url": "https://extensions.duckdb.org/v1.5.5/linux_amd64/ducklake.duckdb_extension.gz",
+          "compressed_bytes": 12655412,
+          "compressed_sha256": "733ccf19fedcfd5e0bfaf85993219145181099cc411076cabf14933ea16ab452",
+          "bytes": 36436086,
+          "sha256": "e51bf9e8d933d0e83780ae096455501b542cf962569a2ce5613532d702c08302"
+        },
+        {
+          "name": "postgres_scanner",
+          "url": "https://extensions.duckdb.org/v1.5.5/linux_amd64/postgres_scanner.duckdb_extension.gz",
+          "compressed_bytes": 14583967,
+          "compressed_sha256": "e0f631a5535f165468bc8a20501f8bc1490adbc877d38fcdff2f8d05531e1e5b",
+          "bytes": 41696558,
+          "sha256": "b1ced4cfc6311313e117c2afb3eac76508718778dde0716421503c7dbfb5605c"
+        },
+        {
+          "name": "httpfs",
+          "url": "https://extensions.duckdb.org/v1.5.5/linux_amd64/httpfs.duckdb_extension.gz",
+          "compressed_bytes": 7416043,
+          "compressed_sha256": "7cdd52a3135388718884a9b71e3987ba723002121e8e9de399c4ed619d824a05",
+          "bytes": 21570542,
+          "sha256": "887c392b1e49128d11667c81e3698d8b00dfdeb456771acf66d05a0f74f7b7d8"
+        }
+      ]
+    },
+    "aarch64-apple-darwin": {
+      "extension_platform": "osx_arm64",
+      "archive": {
+        "name": "libduckdb-osx-universal.zip",
+        "url": "https://github.com/duckdb/duckdb/releases/download/v1.5.5/libduckdb-osx-universal.zip",
+        "bytes": 36178910,
+        "sha256": "7b5b8915cc382d0708636fe6385c0cdad5a61c9ff8ba2638b3e2141640783155"
+      },
+      "library": {
+        "name": "libduckdb.dylib",
+        "bytes": 117005184,
+        "sha256": "b9027d18ef3e8d960568f77e946a83ca68009cb22d71cf7f94de842afdd094d8"
+      },
+      "header": {
+        "name": "duckdb.h",
+        "bytes": 244057,
+        "sha256": "48e716b9ce96ca8fead9cb35693fdc0343ac0fc1f6e7db5561fa0f44b674153d"
+      },
+      "extensions": [
+        {
+          "name": "ducklake",
+          "url": "https://extensions.duckdb.org/v1.5.5/osx_arm64/ducklake.duckdb_extension.gz",
+          "compressed_bytes": 8416561,
+          "compressed_sha256": "d89175054de53a830e9b2682655b640d29c9a74120f28a310fccc4bef981a0bd",
+          "bytes": 27580398,
+          "sha256": "1b72fc42164dbf21948e5a912cefc383b24071852f9e70209874ebd0a73b7caa"
+        },
+        {
+          "name": "postgres_scanner",
+          "url": "https://extensions.duckdb.org/v1.5.5/osx_arm64/postgres_scanner.duckdb_extension.gz",
+          "compressed_bytes": 10229655,
+          "compressed_sha256": "4fb5079e67b00e6643e6ee91545a355010004d1dad50b43f1c060de0cb789c8e",
+          "bytes": 30945398,
+          "sha256": "f39dd59bf57679d0242e19e180d90b4222e5cdb691ab67c7506658f3548c0e05"
+        },
+        {
+          "name": "httpfs",
+          "url": "https://extensions.duckdb.org/v1.5.5/osx_arm64/httpfs.duckdb_extension.gz",
+          "compressed_bytes": 5567359,
+          "compressed_sha256": "758acc0b0c4fbf09506f387ff6f52826b1038b7b6849ded39928d2f992945230",
+          "bytes": 16010974,
+          "sha256": "10514b4ef19f80bf4ec4bf90c124f5d34625f2606263b40ae8ec7979905bb779"
+        }
+      ]
+    },
+    "aarch64-unknown-linux-gnu": {
+      "extension_platform": "linux_arm64",
+      "archive": {
+        "name": "libduckdb-linux-arm64.zip",
+        "url": "https://github.com/duckdb/duckdb/releases/download/v1.5.5/libduckdb-linux-arm64.zip",
+        "bytes": 37694966,
+        "sha256": "abe4f6f005ee0b448a058322f4263584b4bd1b6faf7ab4637b79eeaf978f8e9c"
+      },
+      "library": {
+        "name": "libduckdb.so",
+        "bytes": 62963152,
+        "sha256": "d00d007f3f7ca1f2896a5e4b89c2ce141bf0508506a9d6d56f9598b8e59d074e"
+      },
+      "header": {
+        "name": "duckdb.h",
+        "bytes": 244057,
+        "sha256": "48e716b9ce96ca8fead9cb35693fdc0343ac0fc1f6e7db5561fa0f44b674153d"
+      },
+      "extensions": [
+        {
+          "name": "ducklake",
+          "url": "https://extensions.duckdb.org/v1.5.5/linux_arm64/ducklake.duckdb_extension.gz",
+          "compressed_bytes": 11104947,
+          "compressed_sha256": "1813f74b24060d6ae97187b87d221c7ecbae67e5321929bc543bc5fdb1dc95b4",
+          "bytes": 32143862,
+          "sha256": "d0b57c8e261b89a1ae367c7224f0857cfde72ab6cf2609f188e0de9b897b1088"
+        },
+        {
+          "name": "postgres_scanner",
+          "url": "https://extensions.duckdb.org/v1.5.5/linux_arm64/postgres_scanner.duckdb_extension.gz",
+          "compressed_bytes": 13518921,
+          "compressed_sha256": "59849e8a4be00fa0ec8c4db0d26707999061d103b902bf32322fa5cde1fc393d",
+          "bytes": 37305766,
+          "sha256": "e2469cce1e855e8c842a1487dd8168cf27904c03baaf1f2c227529403315d819"
+        },
+        {
+          "name": "httpfs",
+          "url": "https://extensions.duckdb.org/v1.5.5/linux_arm64/httpfs.duckdb_extension.gz",
+          "compressed_bytes": 7260305,
+          "compressed_sha256": "0820e0b5b74efaa23608c239df8e744a68943318d530b483a529eace19cb5475",
+          "bytes": 19861758,
+          "sha256": "eba6e263e395a83966090f1f11ade63630b1b21422f0f2813858d179d42ea1e9"
+        }
+      ]
+    },
+    "x86_64-apple-darwin": {
+      "extension_platform": "osx_amd64",
+      "archive": {
+        "name": "libduckdb-osx-universal.zip",
+        "url": "https://github.com/duckdb/duckdb/releases/download/v1.5.5/libduckdb-osx-universal.zip",
+        "bytes": 36178910,
+        "sha256": "7b5b8915cc382d0708636fe6385c0cdad5a61c9ff8ba2638b3e2141640783155"
+      },
+      "library": {
+        "name": "libduckdb.dylib",
+        "bytes": 117005184,
+        "sha256": "b9027d18ef3e8d960568f77e946a83ca68009cb22d71cf7f94de842afdd094d8"
+      },
+      "header": {
+        "name": "duckdb.h",
+        "bytes": 244057,
+        "sha256": "48e716b9ce96ca8fead9cb35693fdc0343ac0fc1f6e7db5561fa0f44b674153d"
+      },
+      "extensions": [
+        {
+          "name": "ducklake",
+          "url": "https://extensions.duckdb.org/v1.5.5/osx_amd64/ducklake.duckdb_extension.gz",
+          "compressed_bytes": 9551641,
+          "compressed_sha256": "e178ff08ee75079c912225e8de0af8587d11e4e3ad317a4459b9e11772f8b00e",
+          "bytes": 30396022,
+          "sha256": "c7baf45b87f19cb3191c228b820857d573761d344c7855570dcc7eb3b8f1ff9e"
+        },
+        {
+          "name": "postgres_scanner",
+          "url": "https://extensions.duckdb.org/v1.5.5/osx_amd64/postgres_scanner.duckdb_extension.gz",
+          "compressed_bytes": 11011300,
+          "compressed_sha256": "b8764ed496be635fbac3e5e6a6c8e3e3c2dbfcaa862ce0422c21cad6fcc6c353",
+          "bytes": 34052022,
+          "sha256": "0df780444ce04a75c5a4e7b89896eab5cebe1ca21163fc6c267f3365ffe4a3c1"
+        },
+        {
+          "name": "httpfs",
+          "url": "https://extensions.duckdb.org/v1.5.5/osx_amd64/httpfs.duckdb_extension.gz",
+          "compressed_bytes": 5700565,
+          "compressed_sha256": "f445c2692f863bff82609c7061e6e273a4d9fd3b6695e56a6ebc18bd502ed464",
+          "bytes": 17543806,
+          "sha256": "a2f48ae06834c165ae73db71f2320360a4b30e7acf4c87187b2241caa48a990d"
+        }
+      ]
+    }
+  }
+}

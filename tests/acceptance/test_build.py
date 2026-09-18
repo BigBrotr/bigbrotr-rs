@@ -30,6 +30,9 @@ class NativeBuildControls(unittest.TestCase):
             "RUSTFLAGS": "--cfg secp256k1_fuzz", "RUSTC_WRAPPER": "/untrusted/wrapper",
             "CARGO_BUILD_JOBS": "999", "CARGO_ENCODED_RUSTFLAGS": "evil",
             "CARGO_HOME": "/untrusted/cargo", "CARGO_MAKEFLAGS": "evil", "NUM_JOBS": "999",
+            "DUCKDB_LIB_DIR": "/untrusted/duckdb", "DUCKDB_INCLUDE_DIR": "/untrusted/duckdb-header",
+            "DUCKDB_DOWNLOAD_LIB": "1", "DUCKDB_STATIC": "1", "LD_LIBRARY_PATH": "/untrusted/so",
+            "BIGBROTR_ARCHIVE_TEST_BUNDLE": "/untrusted/archive-bundle",
         }
         with patch.dict(os.environ, overrides):
             env = builder.clean_environment()

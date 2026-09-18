@@ -14,6 +14,7 @@ sys.dont_write_bytecode = True
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from tools.build import clean_environment, file_hash, git, native_toolchain, positive_jobs
+from tools.archive_bundle import build_environment, native_target, prepare_bundle
 
 
 def write_report(output, report):
@@ -89,7 +90,8 @@ def commands(output, system, architecture, jobs):
                    ('install-deny', ['cargo', 'install', 'cargo-deny', '--version', '0.20.2', '--locked', '--root', str(output/'tools')]),
                    ('dependency-policy', ['cargo', 'deny', 'check', 'licenses', 'sources', 'advisories'])]
     build = output / 'build'
-    checks += [('exact-source-build', [python, 'tools/build.py', '--output', str(build), '--jobs', str(jobs)])]
+    checks += [('exact-source-build', [python, 'tools/build.py', '--output', str(build), '--jobs', str(jobs),
+                                      '--archive-bundle', str(output.with_name(output.name+'-native-inputs')/'archive-bundle')])]
     if system == 'Linux':
         for scenario in ['p01-event-cli', 'p01-config-static']:
             checks += [(scenario, [python, 'tests/acceptance/run.py', scenario,
@@ -108,18 +110,27 @@ def main():
     if git(ROOT, 'status', '--porcelain', '--untracked-files=all'):
         raise ValueError('CI requires a clean committed source checkout')
     output = args.output.resolve()
+    if output.exists():
+        raise ValueError('CI requires a new output directory')
     system, architecture = platform.system(), platform.machine()
     if (system, architecture) not in [('Linux', 'x86_64'), ('Linux', 'aarch64'), ('Darwin', 'arm64'), ('Darwin', 'x86_64')]:
         raise ValueError('unsupported native CI host')
     env = clean_environment()
     selected, native = native_toolchain(env, args.jobs)
     env.update(selected)
+    # Prepare once for this CI run and share the exact hashed input with the
+    # second clean build. No library from an ambient workstation is substituted.
+    native_inputs = output.with_name(output.name+'-native-inputs')
+    native_inputs.mkdir(parents=True, exist_ok=False)
+    archive = prepare_bundle(native_inputs/'archive-bundle', native_target(), native_inputs/'downloads', download=True)
+    env.update(build_environment(native_inputs/'archive-bundle'))
     env.update(CARGO_HOME=str(output/'cargo-home'), CARGO_TARGET_DIR=str(output/'target'),
                RUSTDOCFLAGS='-D warnings', PYTHONDONTWRITEBYTECODE='1',
                PATH=str(output/'tools/bin') + os.pathsep + env['PATH'])
     identity = {'source': {'revision': git(ROOT, 'rev-parse', 'HEAD'), 'tree': git(ROOT, 'rev-parse', 'HEAD^{tree}'), 'dirty': False},
                 'host': {'os': system, 'architecture': architecture}, 'native_toolchain': native,
                 'helper_sha256': file_hash(Path(__file__)), 'lockfile_sha256': file_hash(ROOT/'Cargo.lock'),
+                'archive_bundle': archive,
                 'deadline_seconds': 7200,
                 'scope': 'Foundation CI commands only; not a release, engine matrix or other native target qualification'}
     report = execute(commands(output, system, architecture, args.jobs), output, ROOT, env, identity, 7200)

@@ -11,6 +11,11 @@ import subprocess
 import sys
 import tarfile
 
+sys.dont_write_bytecode = True
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from tools.archive_bundle import (build_environment, install_bundle, native_target,
+                                  prepare_bundle, verify_bundle)
+
 
 def git(root, *arguments):
     return subprocess.check_output(["git", "-C", str(root), *arguments], text=True).strip()
@@ -134,6 +139,9 @@ def build(args):
     helper_hash = file_hash(Path(__file__).resolve())
     if file_hash(source / "tools/build.py") != helper_hash:
         raise ValueError("selected revision has a different build helper; execute that revision in its own checkout")
+    for helper in ['tools/archive_bundle.py', 'contracts/release/archive-engine.json']:
+        if file_hash(root/helper) != file_hash(source/helper):
+            raise ValueError('selected revision has different archive build inputs; execute that revision in its own checkout')
     members = {str(path.relative_to(source)): file_hash(path)
                for path in sorted(source.rglob("*")) if path.is_file()}
     manifest = {"format": "bigbrotr-source/1", "revision": revision, "tree": tree,
@@ -147,10 +155,21 @@ def build(args):
     env = clean_environment()
     native_env, native = native_toolchain(env, args.jobs)
     env.update(native_env)
+    archive_root = output / 'archive-worker'
+    target = native_target()
+    if args.archive_bundle:
+        archive_root.mkdir()
+        install_bundle(args.archive_bundle.resolve(strict=True), archive_root, target)
+    else:
+        prepare_bundle(archive_root, target, output / 'native-downloads', download=True)
+    archive_assets = verify_bundle(archive_root, target)
+    archive_environment = build_environment(archive_root)
+    env.update(archive_environment)
     env.update({"CARGO_TARGET_DIR": str(output / "target"), "CARGO_HOME": str(output / "cargo-home"),
                 "BIGBROTR_SOURCE_REVISION": revision, "BIGBROTR_SOURCE_TREE": tree,
                 "BIGBROTR_SOURCE_MANIFEST_SHA256": manifest_hash, "BIGBROTR_BUILD_PROFILE": "release"})
     subprocess.run(["cargo", "build", "--locked", "--release", "--workspace"], cwd=source, env=env, check=True)
+    verify_bundle(archive_root, target)
     for tool in native["tools"].values():
         if file_hash(Path(tool["path"])) != tool["sha256"]:
             raise ValueError("native tool changed during build: " + tool["path"])
@@ -162,6 +181,8 @@ def build(args):
         raise ValueError("build changed its declared source inputs")
     binary = output / "bigbrotr"
     shutil.copy2(output / "target/release/bigbrotr", binary)
+    worker = archive_root / 'bigbrotr-archive-worker'
+    shutil.copy2(output / 'target/release/bigbrotr-archive-worker', worker)
     info = json.loads(subprocess.check_output([str(binary), "build-info"], cwd=output, env=env))
     if info["source"] != {"state": "builder-supplied", "revision": revision, "tree": tree,
                           "dirty": False, "manifest_sha256": manifest_hash}:
@@ -173,6 +194,9 @@ def build(args):
         "format": "bigbrotr-build-result/1", "binary_sha256": file_hash(binary),
         "source_manifest_sha256": manifest_hash, "helper_sha256": helper_hash, "build_info": info,
         "native_toolchain": native,
+        "archive_worker": {"path": str(worker), "sha256": file_hash(worker),
+                           "registry_sha256": members['contracts/release/archive-engine.json'],
+                           "assets": archive_assets, "build_environment": archive_environment},
     }, indent=2) + "\n")
     print(binary)
 
@@ -183,6 +207,8 @@ def main():
     parser.add_argument("--output", required=True, type=Path, help="new build directory; never overwritten")
     parser.add_argument("--jobs", type=positive_jobs, default=2,
                         help="positive Cargo/native compilation job limit (default: 2)")
+    parser.add_argument('--archive-bundle', type=Path,
+                        help='explicit existing pinned archive bundle; otherwise prepare it over HTTPS at build time')
     args = parser.parse_args()
     try:
         build(args)

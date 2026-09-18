@@ -8,6 +8,14 @@ Each new run needs a fresh output directory. The JSON receipt distinguishes
 failed and unexecuted checks, and logs retain the underlying test counts.
 Native practical cases below still require Linux and strace.
 
+The native archive worker additionally needs the exact
+[engine bundle](../../packaging/archive-worker/README.md). Shared CI prepares it
+in a fresh sibling `<output>-native-inputs` directory; retain/inventory that root
+with the run. Both Cargo checks and the second clean build use these pinned
+inputs. Manual Cargo development commands must supply the documented explicit
+library/test-bundle environment. An unavailable asset is a missing prerequisite,
+not a skipped passing engine test.
+
 The shared runner implements P01-T01's executable boundary and the bounded
 `p01-event-cli` signed-event diagnostic slice of P01-T02/T03, plus
 `p01-config-static` for P01-T04's implemented offline configuration commands.

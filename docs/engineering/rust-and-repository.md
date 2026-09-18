@@ -18,6 +18,7 @@ apps/
       network/             guarded DNS/TLS/WebSocket and configured overlay routes
       publication/         signed outbox, NIP-66/85 and query-result delivery
       interfaces/          HTTP, ArchiveRelay, DVM, MCP/ContextVM, internal RPC and management adapters
+  bigbrotr-archive-worker/  private finite native worker; DuckDB link isolation
   dashboard/               SvelteKit/TypeScript static client
   admin/                   separate private SvelteKit/TypeScript static bundle
   site/                    Astro/Starlight product pages, documentation and blog
@@ -40,6 +41,12 @@ storage-independent boundaries. They are introduced when their first real use
 exists, not scaffolded empty to satisfy this drawing. Split further when build
 isolation, independent reuse or deployment requires it; merge a proposed library
 back into the application if it has no coherent external contract.
+
+The first DuckDB boundary uses the separate private `bigbrotr-archive-worker`
+application package so ordinary CLI/Control/Ingest linkage does not require the
+archive native engine. Its [bundle contract](../../packaging/archive-worker/README.md)
+describes the finite executable within the same eventual product image. It does
+not move general storage ownership into an exported engine library.
 
 Avoid a generic `utils` crate, one crate per service/struct, public traits for every
 function, a universal key/value checkpoint API for unrelated state machines, and

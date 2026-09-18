@@ -208,6 +208,10 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
 
 - [ ] **Step 1:** Package a pinned DuckDB engine and compatible verified extensions in an
   isolated worker; disable uncontrolled extension/network installation at runtime.
+  The initial [private engine diagnostic and build bundle](../../packaging/archive-worker/README.md)
+  implements pinned linking/loading and resource settings. Parent supervision,
+  grants, native failure isolation and the actual archive consumer still gate
+  this step; downloading another target's assets does not qualify that target.
 - [ ] **Step 2:** Encode rows with the selected soft starting targets: 256 MiB files,
   64,000 rows per group, Zstd level 3, a 30-second batch-formation/dispatch timer
   while resources/authority are available (not a commit-latency SLA), and two

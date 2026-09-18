@@ -1,2 +1,4 @@
 # Unified patches require a space on blank context lines.
 *.patch whitespace=-blank-at-eol
+# Preserve the exact upstream license notice, including its copyright-line space.
+packaging/archive-worker/notices/zlib-rs-0.6.8.txt whitespace=-blank-at-eol

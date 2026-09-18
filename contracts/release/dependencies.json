@@ -1,6 +1,6 @@
 {
   "format": "bigbrotr-dependencies/1",
-  "status": "Foundation, model, static configuration, PostgreSQL and initial native Ingest admission candidates; no qualified product release",
+  "status": "Foundation, admission and initial isolated archive-engine candidates; no qualified product release",
   "rust": {
     "toolchain": "1.98.1",
     "msrv": "1.98.1",
@@ -178,6 +178,24 @@
       "features": [
         "alloc"
       ]
+    },
+    {
+      "name": "duckdb",
+      "version": "1.10505.0",
+      "purpose": "Private native archive worker; pinned DuckDB 1.5.5 and bounded engine configuration/inspection; default features off",
+      "features": [
+        "appender-arrow"
+      ],
+      "license": "MIT",
+      "source": "https://docs.rs/duckdb/1.10505.0/duckdb/"
+    },
+    {
+      "name": "arrow",
+      "version": "58.4.0",
+      "purpose": "Pin the native binding-compatible columnar interchange family for the archive worker",
+      "default_features": false,
+      "license": "Apache-2.0",
+      "source": "https://docs.rs/arrow/58.4.0/arrow/"
     }
   ],
   "lock": "Cargo.lock",
@@ -283,6 +301,34 @@
         "https://docs.rs/crate/zstd-sys/2.1.0+zstd.1.5.7/source/zstd/LICENSE"
       ],
       "qualification_scope": "Exact source/license and active feature-graph inspection only in this inventory update. Candidate Mac engine tests and historical isolated binding experiments retain their own evidence. Native Linux product builds, failure/recovery workloads, admission/replay, cross-store authority and full release qualification are not established by this record."
+    },
+    "archive": {
+      "crate": "libduckdb-sys",
+      "version": "1.10505.0",
+      "engine": "DuckDB 1.5.5",
+      "binding_source_commit": "88f673c5cdf09e287c010a910db53b97e523a9fa",
+      "engine_source_commit": "d8cdaa33fda8df955cc76ef58a280f68f4cd43fa",
+      "asset_registry": "contracts/release/archive-engine.json",
+      "build": "Exact hashed official library and header via explicit DUCKDB_LIB_DIR/DUCKDB_INCLUDE_DIR; no bundled C++ compilation, implicit system library or upstream downloader selected. The upstream crate still compiles its unconditional downloader/decompression build dependencies.",
+      "runtime": "Separate unpublished finite worker executable; signed checksum-pinned ducklake, postgres_scanner and httpfs assets; autoload/autoinstall/unsigned/community extension options disabled. Ordinary application does not depend on this package.",
+      "qualification_scope": "Initial Mac diagnostic and six scoped native unit cases only; exact-revision Linux worker, parent supervision, typed scientific rows, PostgreSQL catalog persistence, S3, full release and native Linux arm64 remain unqualified.",
+      "license_additions": [
+        {
+          "crate": "foldhash-0.1.5",
+          "license": "Zlib",
+          "notice": "packaging/archive-worker/notices/foldhash-0.1.5.txt"
+        },
+        {
+          "crate": "zlib-rs-0.6.8",
+          "license": "Zlib",
+          "notice": "packaging/archive-worker/notices/zlib-rs-0.6.8.txt"
+        },
+        {
+          "crate": "webpki-roots-1.0.9",
+          "license": "CDLA-Permissive-2.0",
+          "notice": "packaging/archive-worker/notices/webpki-roots-1.0.9.txt"
+        }
+      ]
     }
   },
   "license_policy": "New project code is MIT. Preserve upstream notices and qualify the complete release SBOM/licenses when dependencies and assets are added. This inventory is not a complete release license audit."

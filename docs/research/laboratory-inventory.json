@@ -3483,7 +3483,7 @@
   },
   "implementation_archive_worker_20260918": {
     "local_root": ".research/implementation/archive-worker",
-    "state": "Dependency preparation only; no new product code, crate resolution or native execution",
+    "state": "Active local native worker implementation; no Tux archive resources yet",
     "native_assets": {
       "engine_version": "1.5.5",
       "source_commit": "d8cdaa33fda8df955cc76ef58a280f68f4cd43fa",
@@ -3612,9 +3612,10 @@
     },
     "preparation_failures": [
       "Python urllib extension request: HTTP 403 Cloudflare; standard HTTPS curl succeeded without relaxing TLS",
-      "Python 3.9 tarfile does not accept filter keyword; retried with explicit path/type validation"
+      "Python 3.9 tarfile does not accept filter keyword; retried with explicit path/type validation",
+      "Additional Python urllib default user-agent extension request got Cloudflare HTTP403; explicit BigBrotr-native-bundle/1 user-agent succeeds with verified TLS. Original failure retained in matrix-download.log."
     ],
-    "status": "Retained local dependency inputs only; no archive product code, new Cargo dependency, Tux resources, signature/ABI/runtime qualification",
+    "status": "Mac native engine tests executed against dirty candidate; build packaging integration in progress. No typed archive/publisher/worker-supervisor or native Linux qualification yet.",
     "arrow_list_slice_inspection": {
       "crate": "arrow-array 58.4.0",
       "root": ".research/implementation/archive-worker/binding-source",
@@ -3622,6 +3623,54 @@
       "source_file": "arrow-array-58.4.0-list_array.rs",
       "source_sha256": "87a46a159f0b6476c65a03ba8f73f0d5005d240733530b628e97565fc3c2f689",
       "evidence": "Exact crate checksum matches pinned duckdb-rs lock; GenericListArray::slice retains the full child array and slices only offsets/nulls. Actual allocation/amplification NOT_RUN."
+    },
+    "extracted_native_libraries": {
+      "version": "1.5.5",
+      "files": [
+        {
+          "path": ".research/implementation/archive-worker/native-libraries/linux-amd64/libduckdb.so",
+          "bytes": 70529912,
+          "sha256": "fc23f12e376c47be520f75221288281906e7942e8fd6f6ce4849198ba60d0405",
+          "archive_sha256": "1fb8ce388157d84a25abe685a8a2520bf00c00321821968e4bb398fd766e7abb"
+        },
+        {
+          "path": ".research/implementation/archive-worker/native-libraries/linux-amd64/duckdb.h",
+          "bytes": 244057,
+          "sha256": "48e716b9ce96ca8fead9cb35693fdc0343ac0fc1f6e7db5561fa0f44b674153d",
+          "archive_sha256": "1fb8ce388157d84a25abe685a8a2520bf00c00321821968e4bb398fd766e7abb"
+        },
+        {
+          "path": ".research/implementation/archive-worker/native-libraries/darwin-universal/libduckdb.dylib",
+          "bytes": 117005184,
+          "sha256": "b9027d18ef3e8d960568f77e946a83ca68009cb22d71cf7f94de842afdd094d8",
+          "archive_sha256": "7b5b8915cc382d0708636fe6385c0cdad5a61c9ff8ba2638b3e2141640783155"
+        },
+        {
+          "path": ".research/implementation/archive-worker/native-libraries/darwin-universal/duckdb.h",
+          "bytes": 244057,
+          "sha256": "48e716b9ce96ca8fead9cb35693fdc0343ac0fc1f6e7db5561fa0f44b674153d",
+          "archive_sha256": "7b5b8915cc382d0708636fe6385c0cdad5a61c9ff8ba2638b3e2141640783155"
+        }
+      ],
+      "status": "Extracted exact official members; runtime/ABI/extension qualification NOT_RUN"
+    },
+    "matrix_asset_inventory": {
+      "path": ".research/implementation/archive-worker/matrix-assets/inventory.json",
+      "sha256": "8beac5babd380b8dfc38266587ee7d8317369d7bde0b8d38d2d6cbe32c8f7aa7",
+      "scope": "Official Linux arm64 engine archive verified against GitHub digest; six additional signed-extension candidates pinned by bytes/hash. Linux arm64 and Mac x86_64 loading NOT_RUN."
+    },
+    "bundle_roots": [
+      ".research/implementation/archive-worker/candidate-bundle",
+      ".research/implementation/archive-worker/packaged-mac",
+      ".research/implementation/archive-worker/packaged-linux",
+      ".research/implementation/archive-worker/asset-cache"
+    ],
+    "local_implementation_evidence": {
+      "root": ".research/implementation/archive-worker",
+      "red": "engine-red.log",
+      "actual_initial_inspection": "inspect-mac.json",
+      "current_tests": "engine-private-home-tests.log",
+      "scope": "Six native tests and ten build/CI-control tests; initial configuration-local setting refusal and read-only copied negative-fixture failure preserved separately. No stale failed file rewritten as passing."
     }
   },
   "implementation_monitor_corrections_20260918": {
