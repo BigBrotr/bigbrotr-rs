@@ -141,7 +141,7 @@ scientific compatibility; the explicitly named native-only foundation path canno
 adopt a scientific installation. Every inspection/activation checks live nested
 metadata under the owner lock, independently of PG structural hashes. The
 [independent oracle](../../experiments/archive-engine/scientific_layout_oracle.py)
-derives all203 expected native column rows from the closed declaration and can
+derives all 203 expected native column rows from the closed declaration and can
 compare separately collected PG rows.
 
 Installed recovery, publication and the CLI journey remain required. A failed or
@@ -153,3 +153,10 @@ partial/native-only state is refused.
 The [scoped native qualification](../implementation/evidence/p02-scientific-schema-native-20260918.json)
 at `0e2ca43` passes twelve real-PG initialization/refusal cases and 39 native Rust
 cases. It does not close the scientific guard, publication or recovery gates above.
+
+The [scientific guard qualification](../implementation/evidence/p02-scientific-guard-native-20260918.json)
+at `a91ae01` covers 37 actual-PG sequences and two Rust identity cases. It includes
+native ALTER/DROP/rollback, all selected schema/NULL/metadata refusals, installation
+rollback, lost guard COMMIT and two directly observed SQL lock orders. Those lock
+cases use PG statements; no scientific native publisher or batch receipt is
+qualified. Two fixture failures and their corrected independent oracles are retained.

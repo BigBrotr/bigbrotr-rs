@@ -16,22 +16,60 @@ positive fencing, receipts/protection, then M1 read/export/restart. No P02 task 
 M1 gate is complete. Catalog guard, credential provisioning/sealing and finite
 private supervision prerequisites now have scoped native evidence. The first
 scientific schema declaration and fresh-only initializer have scoped qualification;
-scientific guard binding is being qualified and the publisher remains unimplemented. Pending must not
+scientific guard binding/live inspection now have scoped qualification; the publisher remains unimplemented. Pending must not
 be acknowledged/reclaimed.
 
 ## Git and integrating ownership
 
-Mac main; root is the sole writer/integrator. Scientific product candidate
-`0e2ca435b94da5da49eee69905fa5670716ff48d`, tree
-`cfde988f055c30180b82d9bfdec7017bc67b11b2`, and evidence/documentation commit
-`9c1d8b520e8ad4bb4b2f09ca6c44c276146de4f7` are pushed. Freshly verified HEAD,
-origin/main and remote refs/heads/main equal `9c1d8b5` with a clean tree. This
-checkpoint refresh follows that observation. GitHub confirms the repository is
-PRIVATE and not archived. No product source changed after native qualification.
-Independent reviewers were read-only; no concurrent writer or active experiment
-remains. Push/remote-verification session25129 is terminal.
+Mac main; root is sole writer/integrator. Tested candidate
+`a91ae01a76b38902420e87af0a3e23fd575b6981`, tree
+`a642d19826eeb0ae65efaa3d611c6eb5a3542e5c`. It is four unpublished coherent
+commits after pushed `9b607db99cdfc612e394f47dfd58881c0012399d`; fresh fetch found
+no remote divergence. Only root-owned evidence/docs/checkpoint changes are dirty.
+Product sources are unchanged after `27ab36c`; later candidates fixed fixture
+oracles. Final independent evidence review matched raw cases, hashes and scope. The evidence
+commit follows this observation and will be pushed normally.
+All reviewers are read-only; no concurrent writer/active lab or unfinished cleanup.
 
-## Latest qualified slice
+## Latest qualified scientific guard slice
+
+[Scientific guard report](evidence/p02-scientific-guard-native-20260918.json),
+`a91ae01`: 37 actual-PG sequences and two native Rust identity cases PASS, plus
+scoped build/Clippy and the real Control issuance fixture. Mac scoped Clippy/two
+identity cases and document checks PASS. Source/artifact/terminal audits PASS.
+No dependency changes; all initial packages remain unpublished.
+
+Scientific `CatalogIdentity::local` requires immutable0002 schema/declaration/
+native-layout/SQL binding installed atomically with0001 ownership/guards. Applied
+0001 and native initializer/declaration are unchanged. Explicit native-only
+fixtures cannot inspect scientific binding and cannot be silently adopted.
+All six tables/203 columns (nested parent/order/type/default/nullability), schema
+versions and declared placement/settings are checked live. Installed inspection
+locks owner FOR UPDATE then only compatible AccessShare reads. It never takes
+SHARE table locks after owner, avoiding inversion with native statement triggers.
+
+Independent DDL parsing matches all203 actual PG column rows. STRUCT/LIST default
+kind is empty, scalar kind is literal; nested children are native nullable while
+model/readback enforces required children. Schema1 permits four globals plus zero
+inlining at known scopes, refusing malformed/duplicate/unknown settings. File/name
+mappings and file contents remain separate publication closure, not inspected here.
+
+Actual native ALTER/DROP/rollback, shape/NULL/metadata refusals with no role/attempt,
+full owner/ACL/data rollback, lost guard COMMIT before forwarding/after completion,
+and both directly observed SQL lock orders passed. Lock cases use direct PG
+statements under writer identity, not native DuckLake commit races. Control inputs
+are synthetic. Final state: two snapshots, six empty tables, no data files, exact
+attempt1/current restricted SCRAM role, owner1 enabled, no fixture/control/bootstrap
+backends. No scientific worker was launched under that discarded credential.
+
+Retained failures:164a9bc expected old-installer ExistingData/exit101;27ab36c FAIL
+at physical heap COPY-order oracle after six sequences;2e15f8c FAIL at fixture
+metadata.value NULL (native NOT NULL) after14. Corrected oracles preserve all rows/
+duplicates/owners/ACLs, and separately attribute physical23502. Independent AI review
+found malformed metadata-scope acceptance and those evidence gaps; all corrections
+are covered by the final run. No task, M1, publication, ACK or reclaim is complete.
+
+## Previous scientific initialization slice
 
 [Scientific initialization report](evidence/p02-scientific-schema-native-20260918.json),
 candidate `0e2ca43`: 12 actual-PG cases and 39 native Rust cases PASS. Mac 23 worker
@@ -154,85 +192,40 @@ concurrency on Mac/Linux. Do not mechanically rerun unrelated suites.
 
 ## Verified resources and continuity
 
-Inventory `implementation_archive_worker_20260918.scientific_schema` in
-[the laboratory inventory](../research/laboratory-inventory.json).
-Raw root `.research/implementation/archive-worker/scientific-schema/0e2ca43`;
-native root `/home/tux/bigbrotr-implementation-20260917/runs/scientific-schema-0e2ca43`.
-All 655 exact source files and Git archive independently match Mac/Tux. The report
-contains 9 actual ELF identities; worker SHA
-`ec97a23806ea23215fc7d9c6996fcb7b168064af2092ad74d983c0583f8700b3`.
-Writable Cargo/target caches are separate copies of retained credentials outputs;
-assets and source export are read-only. No independently edited Tux source exists.
+Inventory `implementation_archive_worker_20260918.scientific_guard` in
+[the laboratory inventory](../research/laboratory-inventory.json). Raw root
+`.research/implementation/archive-worker/scientific-guard/a91ae01`; native root
+`/home/tux/bigbrotr-implementation-20260917/runs/scientific-guard-a91ae01`.
+All664 source files and exact Git archive match Mac/Tux; six actual ELF hashes
+are recorded. Guard probe SHA
+`b0585b0090bf91e70cb9f2d9eca42d2a9d3a836926031346f526f685981d573c`.
+Cargo.lock SHA `6b2f28dea860e31616009929eb25b8add92159c03d4857d3836dfe52bd047190`.
+Writable build/cache copies are separate; source export/assets read-only.
 
-Owner `2b447d5c50842036e5a4907f7a486e29`; runner
-`bigbrotr-implementation-scientific-schema-0e2ca43`, ID
-`e8b081a7dc0608d949e2d670ecbdd53ea96cba82c10d1b7c1ea188d6a02ca197`;
-PG suffix `-pg`, ID
-`1b2c7b2c001f7baf407bd149626eff5ed5ba459f350c9f882ecffe1b44524001`.
-Runner deliberately stopped143 after successful cases; PG stopped0; no OOM.
-Owned network `d479757ce1b89a4f958c92b1dafb2accffd144448ac91ddf00e8e424269a2634`
-retired, no new volume. 20 unrelated identities/processes/mounts/networks unchanged,
-8 running; zero BigBrotr running. Sessions41380(transfer),23250(cases),87324(audit/
-cleanup) are terminal. Evidence transfer completed; a local Python3.9 tar API
-mismatch was corrected with validated member extraction and independent hash checks.
-No unfinished cleanup. Credentials/recovery/startup/MON labs remain stopped and
-inventoried; never restart retired-network containers. amd64 does not qualify arm64.
-
-## Active scientific guard candidate
-
-Root is implementing scientific binding/inspection under P02-T04. Baseline was
-clean pushed `9b607db`. Fixture-only candidate `164a9bc` is unpublished; actual
-Tux PG reproduced the old installer returning ExistingData for initialized schema1
-(expected failing assertion, exit101). Its owner94e5c542adc5eb1f497d677604da780e
-resources are stopped, network retired; 20 unrelated identities unchanged and
-zero BigBrotr running. See scientific_guard in the existing lab inventory and
-`.research/implementation/archive-worker/scientific-guard/{red,red-audit}.json`.
-
-Current root-owned candidate adds immutable migration0002, all203 logical-column
-inspection and explicit scientific/native-only identity distinction. Existing0001
-and the native initializer/declaration remain unchanged. Installed inspection now
-holds owner FOR UPDATE, avoiding SHARE table-lock inversion. Independent AI review
-found an extra malformed metadata scope could pass reused checks but fail pinned
-native attach; bounded science-only metadata validation now closes that source
-counterexample, awaiting actual-PG controls. Name/file mappings remain separate
-publication closure, not inferred from shape. The independent declaration parser
-matches all203 retained PG rows; STRUCT/LIST default_value_type is empty, unlike
-scalar literal defaults. Mac scoped Clippy, two identity cases and docs checks
-passed. No new scientific PG qualification is claimed yet.
-
-Candidate `27ab36c` passed native build/Clippy/Control and its first six PG
-sequences, then the restore oracle failed because pg_dump preserves physical heap
-row order after UPDATE. This is a retained FAIL, not complete qualification.
-The independent203-column oracle verifies restored native rows. Normalize COPY
-row order within each relation, preserving duplicates/bytes/DDL, and re-execute
-from a new exact revision. The old lab is stopped-retained, its network retired, with20 unrelated identities unchanged and no BigBrotr running.
-
-Candidate `2e15f8c` reached14 completed PG sequences before another fixture
-failure: metadata.value is physically NOT NULL, so inserting NULL fails23502
-before inspection. Keep that physical refusal as a separate case; nullable native
-column controls remain. Independent review also required full owner/ACL evidence:
-new snapshots include pg_dump ownership/privileges and an independent installed
-footprint checks all28 owners/guards and bootstrap revocation. Product code has
-not changed after27ab36c. The2e15f8c lab is stopped/network retired; no BigBrotr
-running,20 unrelated identities unchanged. Both failed runs remain retained.
-
-The next clean exact-Git candidate will execute native ALTER/DROP/rollback,
-shape/NULL/metadata controls, failed activation effects, installation rollback,
-lost COMMIT in both directions and both owner/native lock orders. Review must
-consume actual outcomes before push. No source ACK/reclaim, publication or M1.
+Owner `fc9e93fc6463b06ba4ed9abb91054be8`; runner
+`bigbrotr-implementation-scientific-guard-a91ae01`, ID
+`0d2ddf93fa25f0827ba518583476ff5fe8539e97d29d87e1d5b7f39ab1700baa`;
+PG suffix-pg ID `c9ae33944e40c645f92ae842433b52e518e94c4e876e22e95cb9b1b97774ee9e`;
+network `d3542582553d1bb8128be80b6ea5ed66ff525c602d34a85172c1bdf600ba81b1` retired.
+Runner deliberately stopped143 after successful cases, PG0, no OOM.20 unrelated
+identities unchanged,8 running,zero BigBrotr running. Sessions81905 transfer,
+88852 cases,17285 audit/cleanup/transfer and47423 compiler-info retrieval terminal.
+Earlier164a9bc/27ab36c/2e15f8c labs likewise stopped-retained with networks retired;
+all outcomes and audits retained. No unfinished cleanup; never restart these
+retired-network containers. amd64 does not qualify arm64 or hosted Actions.
 
 ## Next bounded action
 
-Qualify the clean scientific guard candidate on a separately inventoried Tux PG
-lab using `native_scientific_guard.py` and `scientific_guard_cases.py`. Preserve
-actual failure outputs, reconcile any counterexample, verify exact source/ELFs,
-retire only owned resources and record the result before pushing. Complete
-interrupted snapshot0 initialization recovery remains separate work; the new
-installer accepts only the exact complete empty snapshot1 state. No prior lab
-needs cleanup or restart.
+Implement the first native scientific publisher under P02-T04 steps3/4/5. Consume
+one freshly provisioned, scientifically bound writer lifetime and a complete
+retained pending batch; stage all five families, verify the exact archive input
+identity and commit rows plus the technical receipt in one native transaction.
+Exercise actual signed dictionary/event batches through the parent, positive fence,
+fresh ambiguous-receipt resolution and independent full body/reference readback.
+Protection, read/export/restart and source ACK/reclaim gates remain explicit.
 
-Then connect all five families and atomic receipts/protection to signed M1 read/
-export/restart with independent full content/reference readback. No pending ACK/
-reclaim or task/M1 completion before actual guarantees exist. Full persistent
-worker recovery, S3, aged mixed load/RSS, Linux arm64, acquisition/analytics/read
-surfaces/admin/website and full Compose/CI/release remain selected required work.
+Do not make empty initialization depend on synthetic admission. Snapshot0/partial
+init recovery and installed init/migration UX remain selected work, alongside
+persistent unique worker/recovery, S3, aged mixed load/RSS and Linux arm64.
+Acquisition, analytics/ranking, public/private surfaces, website/blog and complete
+Compose/CI/private release journeys remain required for the full objective.

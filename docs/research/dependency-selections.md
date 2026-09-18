@@ -369,8 +369,18 @@ scientific schema. The initializer uses native CREATE TABLE statements in one
 transaction and annotates the initialization snapshot using
 `ducklake_set_commit_message`; it never writes native metadata itself.
 The [versioned row declaration](../reference/archive-format.md#explicit-initial-scientific-schema)
-records the current implementation scope. Scientific binding, actual PG ambiguous
-initialization and installed recovery remain separate qualification gates.
+records the current implementation scope. The schema1 inspection fixture derives
+all 203 columns independently from that declaration, then compares actual native
+PG metadata. Pinned `ConvertColumn` and `ColumnToSQLRecursive` retain empty
+`default_value_type` for STRUCT/LIST and `literal` for scalars; child nullability
+is native schema representation, not permission to lose required model children.
+`LoadDuckLake` rejects unknown setting scopes; logical inspection must reject
+malformed/duplicate/unknown persisted settings before granting a scientific lifetime.
+The [scientific guard qualification](../implementation/evidence/p02-scientific-guard-native-20260918.json)
+records 37 actual-PG cases at `a91ae01`, including that malformed-scope control.
+File/name mappings are a separate data-file interpretation boundary and allocate
+from next_file_id, not next_catalog_id. They remain publication/readback work.
+Actual PG ambiguous initialization and installed recovery remain qualification gates.
 
 The same pinned binding rejects nested List/Array/Struct/Map/Union values through
 `ToSql`; its `Value` enum is not evidence that those parameters can be bound.

@@ -1,0 +1,560 @@
+{
+  "task": "P02-T04 scientific guard binding and live schema inspection prerequisite",
+  "date": "2026-09-18",
+  "status": "PASS within 37 actual-PG sequences; publication and installed recovery remain incomplete",
+  "source": {
+    "revision": "a91ae01a76b38902420e87af0a3e23fd575b6981",
+    "tree": "a642d19826eeb0ae65efaa3d611c6eb5a3542e5c",
+    "source_files": 664,
+    "git_archive_sha256": "b4a44e40b4b2c4cf59e654f5e9824d1733c1df062e3376353ea5135bbd57f20b",
+    "manifest_sha256": "e62261f050a70a8ee5b541b22ffadc7bd8305043e793d28b22c521fc83eb1513",
+    "cargo_lock_sha256": "6b2f28dea860e31616009929eb25b8add92159c03d4857d3836dfe52bd047190",
+    "product_unchanged_since": "27ab36c477b1431972364addeea90afc56e7cc3b",
+    "verification": "All664 Git archive/export hashes independently match Mac/Tux; later candidates changed fixture/docs only"
+  },
+  "implementation": [
+    "CatalogIdentity::local selects scientific schema1; native_only_local explicitly preserves foundation fixtures. Neither mode can inspect the other binding, and native-only guards cannot be silently upgraded.",
+    "Additive catalog0002 creates immutable schema/declaration/native-layout/SQL binding in the same transaction as0001 ownership transfer and all28 statement guards. Applied0001 and native schema declaration are unchanged.",
+    "Full6-table/203-column relationships, exact nested types/parents/order/defaults/nullability/snapshots and declared metadata are checked before scientific installation, retry, inspection and activation. SQL NULL cannot disappear through bool_and.",
+    "Installed inspection takes owner FOR UPDATE and only compatible AccessShare reads afterwards; no SHARE-table lock inversion. Initial installation still takes all native tables exclusively.",
+    "Schema1 metadata permits four exact globals plus zero-inlining at known global/schema/table scopes; malformed/unknown/duplicate settings refuse. Returned column strings/counts remain bounded; file mappings and contents are separate publication closure."
+  ],
+  "environment": {
+    "host": "Tux Linux amd64",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "native_toolchain": {
+      "os": "Linux",
+      "architecture": "x86_64",
+      "discovery": "llvm-config",
+      "environment": {
+        "CC": "/usr/lib/llvm-14/bin/clang",
+        "CXX": "/usr/lib/llvm-14/bin/clang++",
+        "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+        "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+        "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+      },
+      "tools": {
+        "CC": {
+          "path": "/usr/lib/llvm-14/bin/clang",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "CXX": {
+          "path": "/usr/lib/llvm-14/bin/clang++",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "AR": {
+          "path": "/usr/lib/llvm-14/bin/llvm-ar",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+          "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+          "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+        },
+        "LIBCLANG_PATH": {
+          "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+          "version": "Debian clang version 14.0.6"
+        },
+        "discovery": {
+          "path": "/usr/lib/llvm-14/bin/llvm-config",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+          "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+          "version": "14.0.6"
+        }
+      },
+      "sdk": null
+    },
+    "resources": {
+      "runner_cpus": 2,
+      "runner_memory_bytes": 6442450944,
+      "runner_pids": 512,
+      "postgres_cpus": 1,
+      "postgres_memory_bytes": 1073741824,
+      "postgres_pids": 128,
+      "max_connections": 24,
+      "shared_buffers": "128MiB",
+      "network": "internal dedicated network, runner shares owned PG namespace, no host ports"
+    },
+    "asset_registry_sha256": "ae0069565ab9411928df0cf067822630c4f3a912919e61633b952f8077a5e2c1",
+    "artifacts_sha256": {
+      "worker": "b6bf2cda5ffa2ffb44251f8077bc4f1baad310ada7994990d8b5366df929c341",
+      "probe": "ddab69868434ac8f7ea5d74c64b654eb701bdbcdcc5b448cef00d3e777aaf176",
+      "guard": "b0585b0090bf91e70cb9f2d9eca42d2a9d3a836926031346f526f685981d573c",
+      "ddl": "737e76e86cf6857b7edae8b1105c1d0fa80d0b8403070fd46a66d1165eb07601",
+      "control": "fa8bc62e1f9fe6b7569ad7286b908c90dc108567afce02d0aabe21121f0d0255",
+      "guard-unit-0": "b280ac1864b7a65d421dcab75dd59bee7238420827b6b23529978f1597484c9d"
+    },
+    "rustc_cached_probe": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8\n",
+    "rustc_probe_source": "Cargo target/.rustc_info.json retained from actual native build"
+  },
+  "checks": {
+    "build_and_clippy": [
+      {
+        "name": "build",
+        "command": [
+          "cargo",
+          "build",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--example",
+          "catalog_schema_probe"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 5.522185254842043
+      },
+      {
+        "name": "guard",
+        "command": [
+          "cargo",
+          "build",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--example",
+          "scientific_guard_probe",
+          "--example",
+          "archive_attempt_probe"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 11.482913350686431
+      },
+      {
+        "name": "worker",
+        "command": [
+          "cargo",
+          "build",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr-archive-worker",
+          "--bin",
+          "bigbrotr-archive-worker",
+          "--example",
+          "scientific_ddl_probe"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 27.76017501903698
+      },
+      {
+        "name": "clippy",
+        "command": [
+          "cargo",
+          "clippy",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "-p",
+          "bigbrotr-archive-worker",
+          "--lib",
+          "--example",
+          "catalog_schema_probe",
+          "--example",
+          "scientific_guard_probe",
+          "--example",
+          "scientific_ddl_probe",
+          "--bin",
+          "bigbrotr-archive-worker",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 1.9172433097846806
+      }
+    ],
+    "native_control_and_identity": [
+      {
+        "name": "control",
+        "command": [
+          "/out/build/target/release/examples/archive_attempt_probe"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 2.216556497849524
+      },
+      {
+        "name": "guard-unit",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--test",
+          "catalog_guard"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 17.7930169259198
+      }
+    ],
+    "rust_identity_cases": 2,
+    "pg_sequences": 37,
+    "mac": "Scoped app/worker Clippy and two catalog-identity tests PASS; format/Python/docs checks PASS. No Mac PG claim."
+  },
+  "pg_cases": [
+    {
+      "case": "native-ddl-add"
+    },
+    {
+      "case": "native-ddl-drop"
+    },
+    {
+      "case": "native-ddl-rollback"
+    },
+    {
+      "case": "explicit-native-only-mode-cannot-be-adopted"
+    },
+    {
+      "case": "late-install-failure-rolls-back-all-guard-ddl"
+    },
+    {
+      "case": "install-binding-retry-and-fresh-inspection",
+      "binding": {
+        "version": 1,
+        "declaration": "29025d8409a038a34adca7411c8799b5f39c53b11b70a04bdf0980dcc949e451",
+        "layout": "b708c09f5aa0d1bc276380d99ca6a8ca15e49dfaf0f24503a64b120d2fe39210",
+        "sql": "bfff29bc12fea6fbbc09b59a092cbdffa2b3b7e940f0676eacbff18c9c851397",
+        "snapshot": 1
+      },
+      "effects": {
+        "native_tables": 28,
+        "native_guards": 28,
+        "bootstrap_writable": 0,
+        "bootstrap_create": false,
+        "guard_owner": "postgres",
+        "binding_rows": 1,
+        "attempts": 0,
+        "owner": {
+          "singleton": true,
+          "ordinal": 0,
+          "enabled": false
+        }
+      }
+    },
+    {
+      "case": "native-metadata-value-not-null",
+      "sqlstate": "23502",
+      "owner": "PostgreSQL physical constraint"
+    },
+    {
+      "case": "refuse-type"
+    },
+    {
+      "case": "refuse-parent"
+    },
+    {
+      "case": "refuse-nullable"
+    },
+    {
+      "case": "refuse-default"
+    },
+    {
+      "case": "refuse-order"
+    },
+    {
+      "case": "refuse-oversized-name"
+    },
+    {
+      "case": "refuse-missing-table"
+    },
+    {
+      "case": "refuse-unknown-metadata-scope"
+    },
+    {
+      "case": "refuse-null-scope-id"
+    },
+    {
+      "case": "refuse-unknown-scope-id"
+    },
+    {
+      "case": "refuse-duplicate-settings"
+    },
+    {
+      "case": "refuse-binding-hash"
+    },
+    {
+      "case": "refuse-missing-column"
+    },
+    {
+      "case": "refuse-duplicate-column"
+    },
+    {
+      "case": "refuse-initial-default"
+    },
+    {
+      "case": "refuse-null-table-path"
+    },
+    {
+      "case": "refuse-null-column_name"
+    },
+    {
+      "case": "refuse-null-column_type"
+    },
+    {
+      "case": "refuse-null-column_order"
+    },
+    {
+      "case": "refuse-null-begin_snapshot"
+    },
+    {
+      "case": "refuse-null-nulls_allowed"
+    },
+    {
+      "case": "refuse-null-default_value"
+    },
+    {
+      "case": "refuse-null-default_value_type"
+    },
+    {
+      "case": "refuse-null-default_value_dialect"
+    },
+    {
+      "case": "all-zero-inlining-scopes"
+    },
+    {
+      "case": "lost-install-before-forward",
+      "wire": {
+        "client_commit_complete": 0,
+        "commits_forwarded": 0,
+        "commits_seen": 1,
+        "declared_wire_bytes": 311984,
+        "elapsed_ns": 275745512,
+        "event": "receipt",
+        "faults": 1,
+        "format": "bigbrotr-pg-fault-proxy/1",
+        "frames": {
+          "backend": 4289,
+          "frontend": 2025
+        },
+        "held": false,
+        "hold_action": null,
+        "mode": "before-forward",
+        "reason": "before-forward",
+        "server_commit_complete": 0,
+        "tags": {
+          "backend": {
+            "31": 252,
+            "32": 252,
+            "33": 251,
+            "43": 361,
+            "44": 1888,
+            "4b": 1,
+            "52": 4,
+            "53": 14,
+            "54": 250,
+            "5a": 762,
+            "6e": 2,
+            "74": 252
+          },
+          "frontend": {
+            "42": 252,
+            "43": 252,
+            "44": 252,
+            "45": 252,
+            "50": 252,
+            "51": 7,
+            "53": 756,
+            "70": 2
+          }
+        }
+      },
+      "effects": {
+        "native_tables": 28,
+        "native_guards": 28,
+        "bootstrap_writable": 0,
+        "bootstrap_create": false,
+        "guard_owner": "postgres",
+        "binding_rows": 1,
+        "attempts": 0,
+        "owner": {
+          "singleton": true,
+          "ordinal": 0,
+          "enabled": false
+        }
+      }
+    },
+    {
+      "case": "lost-install-after-complete",
+      "wire": {
+        "client_commit_complete": 0,
+        "commits_forwarded": 1,
+        "commits_seen": 1,
+        "declared_wire_bytes": 312002,
+        "elapsed_ns": 266422272,
+        "event": "receipt",
+        "faults": 1,
+        "format": "bigbrotr-pg-fault-proxy/1",
+        "frames": {
+          "backend": 4292,
+          "frontend": 2025
+        },
+        "held": false,
+        "hold_action": null,
+        "mode": "after-complete",
+        "reason": "after-complete",
+        "server_commit_complete": 1,
+        "tags": {
+          "backend": {
+            "31": 252,
+            "32": 252,
+            "33": 252,
+            "43": 362,
+            "44": 1888,
+            "4b": 1,
+            "52": 4,
+            "53": 14,
+            "54": 250,
+            "5a": 763,
+            "6e": 2,
+            "74": 252
+          },
+          "frontend": {
+            "42": 252,
+            "43": 252,
+            "44": 252,
+            "45": 252,
+            "50": 252,
+            "51": 7,
+            "53": 756,
+            "70": 2
+          }
+        }
+      },
+      "effects": {
+        "native_tables": 28,
+        "native_guards": 28,
+        "bootstrap_writable": 0,
+        "bootstrap_create": false,
+        "guard_owner": "postgres",
+        "binding_rows": 1,
+        "attempts": 0,
+        "owner": {
+          "singleton": true,
+          "ordinal": 0,
+          "enabled": false
+        }
+      }
+    },
+    {
+      "case": "scientific-activation"
+    },
+    {
+      "case": "native-statement-share-lock-before-inspector"
+    },
+    {
+      "case": "inspector-owner-lock-before-native-table-lock"
+    }
+  ],
+  "oracles": [
+    "Closed-DDL independent Python parser derives all203 column rows without production Rust schema/inspection code; matched retained original and final actual PG rows. STRUCT/LIST default_value_type is empty; scalar default type is literal.",
+    "Native DuckDB/DuckLake ALTER ADD nested column and DROP table are refused; native rollback preserves the original complete catalog. Private product parent performs each initialization and positively reaps with no active permits.",
+    "Malformed logical metadata causes exact IncompatibleLayout for both inspect and provision; complete normalized dump remains unchanged and no writer role/attempt appears. Physical metadata.value NULL is separately refused by PG23502, not misattributed to inspector.",
+    "Full pg_dump comparison retains definitions, owners, ACLs, row values and duplicate multiplicity, sorting only each COPY relation and removing generated restrict tokens. An independent PG observer verifies all28 transferred owners/guards, bootstrap revocation, marker and initial disabled owner.",
+    "Actual fault proxy pins its source and observes COMMIT before forwarding versus server-complete/client-lost. Fresh connections establish rollback or the complete installed binding; retry never rewrites history.",
+    "Two directly observed PG blocking schedules exercise native statement-trigger SHARE before inspector UPDATE, and inspector UPDATE before native table RowExclusive. These are direct PG statements under the writer session identity, not native DuckLake client commit races.",
+    "Final fresh native/guard observation verifies six tables,203 columns,two snapshots,no data/inlining files, exact synthetic Control attempt1, its restricted SCRAM role/OID, active owner1 and no remaining fixture/control/bootstrap backends."
+  ],
+  "retained_failures": [
+    {
+      "revision": "164a9bce8b7799471648b66b012f6026102bbf23",
+      "outcome": "EXPECTED_FAILURE: old native-only installer returned ExistingData instead of scientific installation; assertion exit101"
+    },
+    {
+      "revision": "27ab36c477b1431972364addeea90afc56e7cc3b",
+      "outcome": "FAIL after6 complete sequences: restore comparison assumed stable heap COPY row order. Independent restored203-column comparison passed; fixture corrected without weakening row-set identity."
+    },
+    {
+      "revision": "2e15f8c0fefa833f99ce7e9f2566949beb39857e",
+      "outcome": "FAIL after14 complete sequences: fixture attempted a physically forbidden metadata.value NULL. Separate physical23502 test added; nullable native-column controls retained."
+    }
+  ],
+  "review": "Independent read-only AI review found pre-existing malformed metadata-scope acceptance, a fixture NOT NULL mistake and omitted owner/ACL evidence. Root verified/corrected each; final37-case run covers their selected controls. Root reviewed implementation, complete diff, sources and actual retained state; no whole-product review claim. Final independent local evidence audit matched37 case records,two Rust cases,664 source files,recorded six ELF hashes,final state/identities and cleanup. Remote ELF bytes were rehashed by root at terminal audit; the reviewer corroborated retained hashes only.",
+  "observed": {
+    "logical_tables": 6,
+    "native_column_rows": 203,
+    "data_files": 0,
+    "snapshots": 2,
+    "guard_owner_ordinal": 1,
+    "guard_owner_enabled": true,
+    "credential": "one synthetic lifetime provisioned then discarded locally; no scientific worker launched",
+    "native_rows_sha256": "d1797247e1c0e1676688c669cb3894a6a6e831bb54d431f1112bf4dd0e4dd8fb",
+    "guard_rows_sha256": "fa3f7f25c21607ef655c9c0106bc1bffa4619024a4207cc07fbe38ca7e1898f6",
+    "cases_sha256": "bce3d57e1eddc07ca9baa9e1589034f4402004945e87b1ce1467187a0be8364f"
+  },
+  "cleanup": {
+    "owner": "fc9e93fc6463b06ba4ed9abb91054be8",
+    "runner": "0d2ddf93fa25f0827ba518583476ff5fe8539e97d29d87e1d5b7f39ab1700baa",
+    "postgres": "c9ae33944e40c645f92ae842433b52e518e94c4e876e22e95cb9b1b97774ee9e",
+    "network": "d3542582553d1bb8128be80b6ea5ed66ff525c602d34a85172c1bdf600ba81b1",
+    "state": "stopped-retained",
+    "network_state": "retired",
+    "terminal": {
+      "runner": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 143,
+        "Error": "",
+        "StartedAt": "2026-09-18T20:40:47.049220693Z",
+        "FinishedAt": "2026-09-18T20:43:30.083022824Z"
+      },
+      "postgres": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-09-18T20:40:45.250881816Z",
+        "FinishedAt": "2026-09-18T20:43:32.208421263Z"
+      }
+    },
+    "unrelated_unchanged": 20,
+    "unrelated_running": 8,
+    "running_bigbrotr": 0,
+    "notes": "Owned idle runner deliberately stopped143 after cases, PG0, no OOM; empty owned network retired. Earlier three owned labs likewise stopped/retired; no unrelated workload altered."
+  },
+  "remaining": [
+    "No scientific publication, batch receipt, protection, read/export/restart or pending ACK/reclaim. Control inputs in guard activation are synthetic, not signed source completeness evidence.",
+    "Snapshot0/partial initialization recovery and installed init/migration/upgrade UX remain required. Lost guard-install COMMIT qualification is not a lost native-initialization COMMIT test.",
+    "No full native publication/maintenance DML coverage, file/name mapping/content integrity, persistent unique worker recovery, S3, power/host-loss, aged mixed load/RSS or capacity claim.",
+    "No Linux arm64, hosted GitHub Actions, complete Compose installation or release qualification. Only scoped CI commands executed on trusted Tux sources."
+  ],
+  "raw_root": ".research/implementation/archive-worker/scientific-guard/a91ae01",
+  "native_root": "/home/tux/bigbrotr-implementation-20260917/runs/scientific-guard-a91ae01"
+}

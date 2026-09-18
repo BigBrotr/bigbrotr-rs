@@ -6738,7 +6738,7 @@
       "remaining": "scientific guard binding, full nested metadata validation, actual PG init recovery and publisher remain required"
     },
     "scientific_guard": {
-      "status": "164a9bc expected regression failure; red resources stopped-retained; implementation candidate not yet qualified",
+      "status": "a91ae01 scoped37-case native PASS; all owned resources stopped-retained, networks retired",
       "raw_root": ".research/implementation/archive-worker/scientific-guard",
       "resources_red": {
         "source": "164a9bce8b7799471648b66b012f6026102bbf23",
@@ -6798,7 +6798,7 @@
         "unrelated_running": 8,
         "running_bigbrotr": 0
       },
-      "next": "separate clean-source native candidate for scientific binding/inspection; no retired lab restart",
+      "next": "actual signed publication/receipt/protection plus init recovery; no existing lab cleanup",
       "failed_27ab36c": {
         "reason": "physical heap COPY row order changed after restored UPDATE; complete run FAIL; independent restored203-column comparison PASS",
         "resources": {
@@ -6920,7 +6920,58 @@
           "unrelated_running": 8,
           "running_bigbrotr": 0
         }
-      }
+      },
+      "resources": {
+        "source": "a91ae01a76b38902420e87af0a3e23fd575b6981",
+        "tree": "a642d19826eeb0ae65efaa3d611c6eb5a3542e5c",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/scientific-guard-a91ae01",
+        "owner": "fc9e93fc6463b06ba4ed9abb91054be8",
+        "container": "bigbrotr-implementation-scientific-guard-a91ae01",
+        "postgres": "bigbrotr-implementation-scientific-guard-a91ae01-pg",
+        "network": "bigbrotr-implementation-scientific-guard-a91ae01",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "state": "stopped-retained",
+        "source_files": 664,
+        "started_at": "2026-09-18T20:40:44.606147+00:00",
+        "network_id": "d3542582553d1bb8128be80b6ea5ed66ff525c602d34a85172c1bdf600ba81b1",
+        "postgres_id": "c9ae33944e40c645f92ae842433b52e518e94c4e876e22e95cb9b1b97774ee9e",
+        "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+        "container_id": "0d2ddf93fa25f0827ba518583476ff5fe8539e97d29d87e1d5b7f39ab1700baa",
+        "network_state": "retired",
+        "terminal": {
+          "runner": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-18T20:40:47.049220693Z",
+            "FinishedAt": "2026-09-18T20:43:30.083022824Z"
+          },
+          "postgres": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-18T20:40:45.250881816Z",
+            "FinishedAt": "2026-09-18T20:43:32.208421263Z"
+          }
+        },
+        "finished_at": "2026-09-18T20:43:32.821244+00:00"
+      },
+      "report": "docs/implementation/evidence/p02-scientific-guard-native-20260918.json",
+      "audit": ".research/implementation/archive-worker/scientific-guard/a91ae01/audit.json",
+      "independent_audit": ".research/implementation/archive-worker/scientific-guard/a91ae01/independent-audit.json"
     }
   },
   "implementation_monitor_corrections_20260918": {

@@ -282,7 +282,7 @@ The binding is immutable under the existing history trigger and contributes its
 actual PG object shape to the installation checksum.
 
 Installation, retry, inspection and activation validate all six live table
-relationships, all203 columns (including nested parents, order, exact types,
+relationships, all 203 columns (including nested parents, order, exact types,
 nullability and defaults), schema versions and declared schema/placement metadata.
 The declaration-derived fixture is independently compared with actual pinned
 native metadata. STRUCT/LIST default types are empty; scalar default types are
@@ -300,6 +300,12 @@ are compatible with that waiting DML. First installation instead locks all nativ
 tables before any guard exists. Runtime metadata DML can encode logical DuckLake
 DDL; this inspection does not constrain arbitrary SQL within a lifetime. The
 closed publisher and future schema transitions remain required.
+
+The [scientific guard report](../implementation/evidence/p02-scientific-guard-native-20260918.json)
+at `a91ae01` qualifies 37 actual-PG sequences, including complete installation
+rollback/ambiguity, schema refusals with no imported attempt/role, and both SQL
+lock orders. The actual native DDL controls and direct PG concurrency fixtures
+have separate scopes. It does not qualify scientific publication or file closure.
 
 An absent initializer response can be resolved only by a fresh privileged
 inspection of the exact complete empty state. Guard installation then establishes

@@ -254,8 +254,11 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   The first finite fresh-only initializer and shared schema declaration now create
   the five existing families plus an empty technical receipt relation;
   [native qualification](evidence/p02-scientific-schema-native-20260918.json) covers
-  initialization/refusal only. Scientific guard binding, init recovery and actual
-  publisher integration remain required.
+  initialization/refusal only. The [scientific guard binding](evidence/p02-scientific-guard-native-20260918.json)
+  at `a91ae01` qualifies 37 PG sequences for immutable schema binding, full 203-column
+  inspection, failed activation effects, atomic install ambiguity and both SQL lock
+  orders. Applied0001 is unchanged. Init recovery, native publication and full
+  signed body/reference readback remain required.
   The [actual native catalog investigation](evidence/p02-catalog-fence-native-20260918.json)
   qualifies four synthetic cases and explicit memory-secret attach after a real
   dependency failure. It is not the product schema/publisher. Connection-startup
