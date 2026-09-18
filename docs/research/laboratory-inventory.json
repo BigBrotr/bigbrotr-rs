@@ -4519,5 +4519,459 @@
       "resources_deleted": 0
     },
     "qualification": "20 process scenarios and 54 native tests PASS; MON-005 confirmed open, no release qualification"
+  },
+  "implementation_jsonb_limit_20260918": {
+    "local_root": ".research/implementation/jsonb-limit",
+    "purpose": "P01-T04/P02-T01 MON-005 exact persisted policy size acceptance",
+    "preflight": ".research/implementation/jsonb-limit/build-preflight.json",
+    "build": {
+      "format": "bigbrotr-jsonb-build-lab/1",
+      "source": "de49f18972a9cbe3e014c3b4e830e20a91841558",
+      "tree": "8708c62a0512a7f89b5c06a7afa83eb36bc7cdec",
+      "owner": "a6f441775e1e4ad79e8c8dd83899bf43",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/jsonb-de49f18",
+      "container": "bigbrotr-implementation-jsonb-de49f18-build",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "state": "running",
+      "command": [
+        "docker",
+        "run",
+        "-d",
+        "--init",
+        "--name",
+        "bigbrotr-implementation-jsonb-de49f18-build",
+        "--label",
+        "org.bigbrotr.implementation=20260917",
+        "--label",
+        "org.bigbrotr.jsonb-build=a6f441775e1e4ad79e8c8dd83899bf43",
+        "--label",
+        "org.bigbrotr.source=de49f18972a9cbe3e014c3b4e830e20a91841558",
+        "--user",
+        "1000:1000",
+        "--cpus",
+        "2",
+        "--memory",
+        "6g",
+        "--memory-swap",
+        "6g",
+        "--pids-limit",
+        "512",
+        "--read-only",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges",
+        "--tmpfs",
+        "/tmp:rw,exec,nosuid,nodev,size=512m",
+        "--mount",
+        "type=bind,src=/home/tux/bigbrotr-implementation-20260917/runs/jsonb-de49f18/source,dst=/source,readonly",
+        "--mount",
+        "type=bind,src=/home/tux/bigbrotr-implementation-20260917/runs/jsonb-de49f18/out,dst=/out",
+        "--workdir",
+        "/source",
+        "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "python3",
+        "-c",
+        "import subprocess; subprocess.run(['python3','tools/build.py','--output','/out/build','--jobs','2'],check=True)"
+      ],
+      "preflight": {
+        "active_source_consumers": 0,
+        "available_disk_bytes": 342743314432
+      },
+      "started_at": "2026-09-18T10:16:58.063776+00:00",
+      "container_id": "cf6d3baae27f783a8aae8732f57dcd5817ff54f75342607a919a93457cf0afba"
+    },
+    "scope": "Trusted native Linux amd64 only; no hosted Actions or arm64 qualification",
+    "lifecycle": "All four first-candidate containers stopped-retained; eight unrelated workloads unchanged; no deletion",
+    "source_transfer": {
+      "method": "full HEAD Git bundle",
+      "path": ".research/implementation/jsonb-limit/source-de49f18.bundle",
+      "sha256": "045a343b34ccf288d505c4094afc0291fb4dc4c5fbe1d3e0230781d258d77e14"
+    },
+    "qualification": "Seven native binary tests and 22 PG rendering vectors PASS; near-limit harness FAIL because it used unimplemented discoverer.api.sources. Corrected seed.file fixture independently passes actual Mac validation; corrected native acceptance NOT_RUN.",
+    "build_audit": {
+      "status": "PASS",
+      "source": "de49f18972a9cbe3e014c3b4e830e20a91841558",
+      "tree": "8708c62a0512a7f89b5c06a7afa83eb36bc7cdec",
+      "source_files": 544,
+      "cli_sha256": "772530122087225cf87426418dde5927b73d4e08cca12d32f25dfda2ab4fc2b0",
+      "native_tools": {
+        "CC": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+        "CXX": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+        "AR": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+        "LIBCLANG_PATH": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+        "discovery": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e"
+      },
+      "terminal": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-09-18T10:16:58.155222432Z",
+        "FinishedAt": "2026-09-18T10:23:00.633543299Z"
+      }
+    },
+    "tests": {
+      "source": "de49f18972a9cbe3e014c3b4e830e20a91841558",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/jsonb-de49f18",
+      "container": "bigbrotr-implementation-jsonb-de49f18-tests",
+      "owner": "93465c3b679e7d4c072435bebf631470",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "state": "running",
+      "command": [
+        "docker",
+        "run",
+        "-d",
+        "--init",
+        "--name",
+        "bigbrotr-implementation-jsonb-de49f18-tests",
+        "--label",
+        "org.bigbrotr.jsonb-tests=93465c3b679e7d4c072435bebf631470",
+        "--label",
+        "org.bigbrotr.source=de49f18972a9cbe3e014c3b4e830e20a91841558",
+        "--user",
+        "1000:1000",
+        "--cpus",
+        "2",
+        "--memory",
+        "6g",
+        "--memory-swap",
+        "6g",
+        "--pids-limit",
+        "512",
+        "--read-only",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges",
+        "--tmpfs",
+        "/tmp:rw,exec,nosuid,nodev,size=512m",
+        "--mount",
+        "type=bind,src=/home/tux/bigbrotr-implementation-20260917/runs/jsonb-de49f18/source,dst=/source,readonly",
+        "--mount",
+        "type=bind,src=/home/tux/bigbrotr-implementation-20260917/runs/jsonb-de49f18/out,dst=/out",
+        "--mount",
+        "type=bind,src=/home/tux/bigbrotr-implementation-20260917/runs/jsonb-de49f18/out/build/source,dst=/out/build/source,readonly",
+        "--workdir",
+        "/source",
+        "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "python3",
+        "-c",
+        "import hashlib,json,os,platform,re,shutil,sys\nfrom pathlib import Path\nsys.dont_write_bytecode=True\nsys.path.insert(0,'/source')\nfrom tools.build import clean_environment,native_toolchain,file_hash\nfrom tools.ci import execute\nbuild=Path('/out/build');source=build/'source';out=Path('/out/native-tests')\nmanifest=json.loads((build/'source-manifest.json').read_text());receipt=json.loads((build/'build-result.json').read_text())\nassert manifest['revision']=='de49f18972a9cbe3e014c3b4e830e20a91841558'\nassert file_hash(build/'source-manifest.json')==receipt['source_manifest_sha256']\ndef inventory():return {str(p.relative_to(source)):file_hash(p) for p in sorted(source.rglob('*')) if p.is_file()}\nassert inventory()==manifest['files_sha256']\nenv=clean_environment();selected,native=native_toolchain(env,2);assert native==receipt['native_toolchain'];env.update(selected)\nenv.update(CARGO_TARGET_DIR=str(build/'target'),CARGO_HOME=str(build/'cargo-home'),BIGBROTR_SOURCE_REVISION=manifest['revision'],BIGBROTR_SOURCE_TREE=manifest['tree'],BIGBROTR_SOURCE_MANIFEST_SHA256=receipt['source_manifest_sha256'],BIGBROTR_BUILD_PROFILE='release')\nchecks=[('binary',['cargo','test','--locked','--release','-p','bigbrotr','--bin','bigbrotr'])]\nresult=execute(checks,out,source,env,{'source':manifest['revision'],'native_toolchain':native,'host':{'os':platform.system(),'architecture':platform.machine()}},900)\nassert inventory()==manifest['files_sha256']\nif result['status']!='PASS':raise SystemExit(1)\nartifacts={};(out/'artifacts').mkdir()\nfor path in out.glob('*.log'):\n for relative in re.findall(r'Running [^\\n]+ \\(([^\\n]+)\\)',path.read_text()):\n  executable=Path(relative)\n  if not executable.is_absolute():executable=source/executable\n  assert executable.is_file()\n  with executable.open('rb') as stream:header=stream.read(20)\n  assert header[:5]==b'\\x7fELF\\x02' and int.from_bytes(header[18:20],'little')==62\n  name=executable.name;shutil.copy2(executable,out/'artifacts'/name)\n  artifacts[name]={'sha256':file_hash(executable),'bytes':executable.stat().st_size}\nassert len(artifacts)==1\n(out/'artifacts.json').write_text(json.dumps(artifacts,indent=2)+'\\n')\nprint(json.dumps({'status':'PASS','source':manifest['revision'],'artifacts':artifacts}))\n"
+      ],
+      "started_at": "2026-09-18T10:23:39.419529+00:00",
+      "container_id": "f1c251202ed86e1f28c066050bd97b71edbb0cb19512c7f5cb2db852fbb9969f"
+    },
+    "runtime": {
+      "format": "bigbrotr-pg-lab/1",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/jsonb-de49f18/runtime",
+      "owner": "3f1b4f7b7a8a9d3c803ab714cf3dd5e5",
+      "postgres": "bigbrotr-implementation-pg-20260917-jsonb_limit",
+      "client": "bigbrotr-implementation-pg-20260917-jsonb_limit-client",
+      "network": "bigbrotr-implementation-pg-20260917-jsonb_limit",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "client_image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+      "binary_sha256": "772530122087225cf87426418dde5927b73d4e08cca12d32f25dfda2ab4fc2b0",
+      "build": {
+        "format": "bigbrotr-build-result/1",
+        "binary_sha256": "772530122087225cf87426418dde5927b73d4e08cca12d32f25dfda2ab4fc2b0",
+        "source_manifest_sha256": "2d9bbeb3ecde3902b8963a69a3c2bb0778c2b614f39ed98388916f3bcc15a5b3",
+        "helper_sha256": "a8895a7f9459e52a2c0562edb59e580dc15edb98c17f5d51e25a078bf346cf09",
+        "build_info": {
+          "capabilities": [
+            "event-verification",
+            "config-static"
+          ],
+          "capability_scope": "Strict bounded event JSON and independent ID/BIP340 verification; offline static configuration candidates and incomplete read-only doctor diagnostics; no storage, durable configuration authority, source policy, wire transport, filter, or general NIP conformance claim",
+          "debug_info": "false",
+          "format": "bigbrotr-build/1",
+          "inputs_sha256": {
+            "Cargo.lock": "ea27c2b367846c4718a6d76fbd1a8340558299ccf9f22c76ed3f30c4b8025b47",
+            "contracts/protocol/nip01-event.json": "b830d5ab8651f5a763ebcffdc0eb1737ba70f4602c93fc714c892865ffca2db8",
+            "contracts/protocol/versions.json": "37c76706c5a2aa4fc72a40aeed908f104620eafcee1118b7cee8baf133546c95",
+            "contracts/release/dependencies.json": "57acf8ea3b24e25ca458a295346e2b2d4500a12d61a3eb02f46e4ef3d2556abf",
+            "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167"
+          },
+          "optimization": "3",
+          "product": "BigBrotr",
+          "profile_assertion": "release",
+          "protocol_registry_format": "bigbrotr-protocol-versions/1",
+          "protocols": {
+            "event_verifier": "bigbrotr-nip01-verifier/1",
+            "nostr_nips": "a2494f4f81d46684e5814a9bf35e2b1df978f955"
+          },
+          "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+          "schemas": {
+            "build_info": "bigbrotr-build/1",
+            "config_static": "bigbrotr-config-static/1",
+            "doctor": "bigbrotr-doctor/1",
+            "signed_event": "nip01-event/1"
+          },
+          "source": {
+            "dirty": false,
+            "manifest_sha256": "2d9bbeb3ecde3902b8963a69a3c2bb0778c2b614f39ed98388916f3bcc15a5b3",
+            "revision": "de49f18972a9cbe3e014c3b4e830e20a91841558",
+            "state": "builder-supplied",
+            "tree": "8708c62a0512a7f89b5c06a7afa83eb36bc7cdec"
+          },
+          "target": "x86_64-unknown-linux-gnu",
+          "version": "0.1.0-dev"
+        },
+        "native_toolchain": {
+          "os": "Linux",
+          "architecture": "x86_64",
+          "discovery": "llvm-config",
+          "environment": {
+            "CC": "/usr/lib/llvm-14/bin/clang",
+            "CXX": "/usr/lib/llvm-14/bin/clang++",
+            "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+            "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+            "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+            "CARGO_BUILD_JOBS": "2",
+            "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+          },
+          "tools": {
+            "CC": {
+              "path": "/usr/lib/llvm-14/bin/clang",
+              "realpath": "/usr/lib/llvm-14/bin/clang",
+              "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+              "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+            },
+            "CXX": {
+              "path": "/usr/lib/llvm-14/bin/clang++",
+              "realpath": "/usr/lib/llvm-14/bin/clang",
+              "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+              "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+            },
+            "AR": {
+              "path": "/usr/lib/llvm-14/bin/llvm-ar",
+              "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+              "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+              "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+            },
+            "LIBCLANG_PATH": {
+              "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+              "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+              "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+              "version": "Debian clang version 14.0.6"
+            },
+            "discovery": {
+              "path": "/usr/lib/llvm-14/bin/llvm-config",
+              "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+              "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+              "version": "14.0.6"
+            }
+          },
+          "sdk": null
+        }
+      },
+      "source": "/home/tux/bigbrotr-implementation-20260917/runs/jsonb-de49f18/source",
+      "state": "stopped-retained",
+      "published_ports": [],
+      "harness_revision": "de49f18972a9cbe3e014c3b4e830e20a91841558",
+      "harness_sha256": "6df5afbd10a1edc1b049b09a527179b1485bc3ff18903b275f38e0529df64d0b",
+      "server": {
+        "version": "160015",
+        "fsync": "on",
+        "full_page_writes": "on",
+        "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+      }
+    },
+    "cleanup": {
+      "status": "PASS",
+      "owned_terminal": [
+        {
+          "id": "cf6d3baae27f783a8aae8732f57dcd5817ff54f75342607a919a93457cf0afba",
+          "name": "/bigbrotr-implementation-jsonb-de49f18-build",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-18T10:16:58.155222432Z",
+            "FinishedAt": "2026-09-18T10:23:00.633543299Z"
+          },
+          "labels": {
+            "org.bigbrotr.implementation": "20260917",
+            "org.bigbrotr.jsonb-build": "a6f441775e1e4ad79e8c8dd83899bf43",
+            "org.bigbrotr.purpose": "isolated-foundation-acceptance",
+            "org.bigbrotr.source": "de49f18972a9cbe3e014c3b4e830e20a91841558",
+            "org.bigbrotr.trusted-ci": "0e2488b6bdd4390e817746122a6ab7b4",
+            "org.opencontainers.image.source": "https://github.com/rust-lang/docker-rust"
+          },
+          "ports": {},
+          "mounts": [
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/jsonb-de49f18/source",
+              "Destination": "/source",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/jsonb-de49f18/out",
+              "Destination": "/out",
+              "Mode": "",
+              "RW": true,
+              "Propagation": "rprivate"
+            }
+          ]
+        },
+        {
+          "id": "f1c251202ed86e1f28c066050bd97b71edbb0cb19512c7f5cb2db852fbb9969f",
+          "name": "/bigbrotr-implementation-jsonb-de49f18-tests",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-18T10:23:39.503375188Z",
+            "FinishedAt": "2026-09-18T10:23:46.366219051Z"
+          },
+          "labels": {
+            "org.bigbrotr.jsonb-tests": "93465c3b679e7d4c072435bebf631470",
+            "org.bigbrotr.purpose": "isolated-foundation-acceptance",
+            "org.bigbrotr.source": "de49f18972a9cbe3e014c3b4e830e20a91841558",
+            "org.bigbrotr.trusted-ci": "0e2488b6bdd4390e817746122a6ab7b4",
+            "org.opencontainers.image.source": "https://github.com/rust-lang/docker-rust"
+          },
+          "ports": {},
+          "mounts": [
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/jsonb-de49f18/out",
+              "Destination": "/out",
+              "Mode": "",
+              "RW": true,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/jsonb-de49f18/out/build/source",
+              "Destination": "/out/build/source",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/jsonb-de49f18/source",
+              "Destination": "/source",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            }
+          ]
+        },
+        {
+          "id": "198e567efd7515123eccf1e696e7ef940f3a78b1a8de55317354fd691b2e3a53",
+          "name": "/bigbrotr-implementation-pg-20260917-jsonb_limit",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-18T10:23:40.398908259Z",
+            "FinishedAt": "2026-09-18T10:23:47.286113765Z"
+          },
+          "labels": {
+            "org.bigbrotr.control-migration-lab": "3f1b4f7b7a8a9d3c803ab714cf3dd5e5"
+          },
+          "ports": {},
+          "mounts": [
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/jsonb-de49f18/runtime/data",
+              "Destination": "/var/lib/postgresql/data",
+              "Mode": "",
+              "RW": true,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/jsonb-de49f18/runtime/secrets",
+              "Destination": "/run/secrets",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            }
+          ]
+        },
+        {
+          "id": "aa46c18dbf4f5c214f100847831ece77ab2ff38da11f73d7b124a09fe9c97521",
+          "name": "/bigbrotr-implementation-pg-20260917-jsonb_limit-client",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-18T10:23:41.994933886Z",
+            "FinishedAt": "2026-09-18T10:23:46.410271444Z"
+          },
+          "labels": {
+            "org.bigbrotr.control-migration-lab": "3f1b4f7b7a8a9d3c803ab714cf3dd5e5",
+            "org.bigbrotr.purpose": "isolated-foundation-acceptance",
+            "org.opencontainers.image.source": "https://github.com/rust-lang/docker-rust"
+          },
+          "ports": {},
+          "mounts": [
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/jsonb-de49f18/runtime",
+              "Destination": "/lab",
+              "Mode": "",
+              "RW": true,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/jsonb-de49f18/out/build",
+              "Destination": "/build",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/jsonb-de49f18/source",
+              "Destination": "/source",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            }
+          ]
+        }
+      ],
+      "unrelated_unchanged": 8,
+      "running_bigbrotr": 0,
+      "shared_source": "6be851580ba415eed5ff0979ee7072480f9ee3ab"
+    }
   }
 }

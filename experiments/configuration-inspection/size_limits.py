@@ -149,7 +149,7 @@ def main():
         policy['settings']['monitor.schedule_jitter'] = 2.0030397744267762e-253
         policy['settings']['deriver.overlap.jaccard_min'] = 5e-324
         policy['settings']['deriver.genesis_floor'] = 18446744073709551615
-        policy['settings']['discoverer.api.sources'] = ['https://example/é雪"\\a']
+        policy['settings']['seed.file'] = '/fixtures/é雪"\\a'
         for role in ['sync', 'monitor']:
             policy['settings'][role + '.endpoints.mode'] = 'fixed'
             policy['settings'][role + '.endpoints.urls'] = [f'wss://relay.example/{n:06}/' + 'x' * 21 for n in range(100000)]
@@ -175,7 +175,7 @@ def main():
             if offset is not None:
                 text = text.replace('[monitor]\n', '[monitor]\nschedule_jitter=2.0030397744267762e-253\n')
                 text = text.replace('[deriver]\n', '[deriver]\ngenesis_floor="18446744073709551615"\n')
-                text += '\n[deriver.overlap]\njaccard_min=5e-324\n[discoverer.api]\nsources=["https://example/é雪\\\"\\\\a"]\n'
+                text += '\n[deriver.overlap]\njaccard_min=5e-324\n[seed]\nfile="/fixtures/é雪\\\"\\\\a"\n'
             for role in ['sync', 'monitor']:
                 text += '\n[' + role + '.endpoints]\nmode="fixed"\nurls=' + compact(current['settings'][role + '.endpoints.urls']) + '\n'
             local.write_text(text)
