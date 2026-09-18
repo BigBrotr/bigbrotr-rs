@@ -1,0 +1,106 @@
+{
+  "format": "bigbrotr-postgres-startup-counterexample/1",
+  "observed_date": "2026-09-18",
+  "status": "PASS",
+  "scope": "Executed negative control disproves NOLOGIN plus empty activity as general exclusion; no product fencing qualification",
+  "source": {
+    "source": "de1d40278ff806cb86da44325460980e6c7f4d22",
+    "tree": "3a2f669b0a039ef86d3db0a8f99685e5b92ec639",
+    "harness_sha256": "f4d63cea23b5fbbf04da32b3fca4920a9e6c7228647124d4e1f8c064efe679ac",
+    "dirty": false
+  },
+  "environment": {
+    "host": "Tux Linux x86_64",
+    "runner_image": "sha256:9d30ac361d158c281070d274427241bee955ead10904d6dbe4ff866200548f3d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "postgres_version": "160015",
+    "psql": {
+      "psql_sha256": "b6917af4a4c78ffd554b12e8fd9a6f4ac6590719373b45b15a10f7dec99af009",
+      "packages": "libpq5:amd64\t15.19-0+deb12u1\npostgresql-client-15\t15.19-0+deb12u1\n"
+    },
+    "network": "Fresh internal bridge with SCRAM host authentication and no published ports",
+    "runner_cpus": 2,
+    "runner_memory_bytes": 2147483648,
+    "runner_pids": 256
+  },
+  "result": {
+    "status": "PASS",
+    "scope": "PG startup negative control; no product fence",
+    "invisible_after_revocation": true,
+    "new_connection_refused": true,
+    "counterexample": true,
+    "late_connection_exit": 0,
+    "committed_rows_after_empty_activity": 1,
+    "elapsed_seconds": 6.0334114213474095,
+    "owned_child_reaped": true
+  },
+  "method": "PG startup packet requests post_auth_delay=6. One existing real psql connection remains invisible; admin observes zero role backends, commits NOLOGIN, observes zero again and verifies rolcanlogin=false. Fresh same-credential client exits nonzero. Old client then commits literal marker73; independent admin sees exactly one row. Child reaped. The one-second observation delay is a counterexample trigger, not a fencing timeout.",
+  "source_inspection": {
+    "tag": "REL_16_15",
+    "ordering": [
+      "InitializeSessionUserId checks rolcanlogin",
+      "process_startup_options and PostAuthDelay",
+      "pgstat_bestart publishes backend status"
+    ],
+    "paths": [
+      "src/backend/utils/init/miscinit.c",
+      "src/backend/utils/init/postinit.c",
+      "src/backend/utils/activity/backend_status.c",
+      "src/backend/utils/misc/guc_tables.c"
+    ]
+  },
+  "prior_failures": [
+    {
+      "source": "527d958a14677e3053124e5114ca77fe39c11083",
+      "result": "Initial lab did not create its network: Docker default address pools exhausted. Four verified terminal empty networks retired; no unrelated resource changed."
+    },
+    {
+      "source": "527d958a14677e3053124e5114ca77fe39c11083",
+      "result": "Fresh retry failed setup: post_auth_delay cannot be set by ALTER ROLE after connection start. No counterexample executed; corrected to startup packet at de1d402."
+    }
+  ],
+  "consequence": "Do not infer old-owner exclusion from login revocation plus pg_stat_activity alone. Qualify actual client/process termination and startup/credential ordering before selecting a product publisher protocol. A guessed wait does not close the race.",
+  "limitations": [
+    "Synthetic PostgreSQL client/table, not a DuckLake worker publication or product recovery path",
+    "No host-loss, uninterruptible task, native resource peak, arm64, full CI or M1 qualification"
+  ],
+  "cleanup": {
+    "status": "PASS",
+    "owned_containers_stopped_retained": 4,
+    "owned_ids": [
+      "8e69e07f08607f4a139a391a95da08c715e181caa1382cec62c84bf471a2822c",
+      "0bd0f3cad247a7cac7f31c3c958350a59fef8515047f8eac9968f4c6945ee303",
+      "6850ae1eb3d067f0c7495ac8007f8d25bc1386a8be72ebf5cc3e20601eb1016e",
+      "2c5a43856652d1d06ca88e7fe147b61207d803fc39081f2d0b4e8e12c294fb43"
+    ],
+    "terminal_networks_retired": 6,
+    "retired_network_ids": [
+      "8fd9b8601925dad179bcbcc1c4f2ec9238a6f514c756e626f4d8f98f2216c2ee",
+      "039dc5cfdef5469a87b71469cb10f9a51e6c910a30ef0cd14f0d7e354360c3f1",
+      "94bf6a5d24c7bc4cdb72363fa64ce5c78f494ce05ab1d3cdcb814bfa0cd3e1a4",
+      "0997b55e3b8fc45d968ac80f575ec15a6263d494c47cdbbf2a55138cd83997f0",
+      "ed8c32cd4f9633820626741834d9f5ac23de6e9b0ffc2810c8378496551216b5",
+      "c2363c4187bf2bec50526568d20e19ba19404bd5ec9ba13ccccf53986b043eb9"
+    ],
+    "running_bigbrotr": 0,
+    "unrelated_unchanged": 20,
+    "unrelated_running": 8,
+    "shared_source": "6be851580ba415eed5ff0979ee7072480f9ee3ab"
+  },
+  "evidence_root": ".research/implementation/archive-worker/catalog-fence",
+  "evidence_files": {
+    "startup-source-audit.json": "d9eb96ebc49cba80f4dd5520192f5fd5a39e22dde0a15e31cf96e26f6a395b5d",
+    "startup-pass/result.json": "c1d8dd0520ed37e8a6391c8ffffef75988c82086e4941b97e2fdacc0911ec232",
+    "startup-pass/resources.json": "0464e7ebe6d97c90a3cc8c8362b2b093af7833a4b2068e36356d2fd37bcfc0f1",
+    "startup-pass/tools.json": "af589b23a82b65129081a4db33f6556b7ef33264727cd33d839111a318457382",
+    "startup-failed/result.json": "1083c7ec6347da7eb1fb10038505976905fec6bf179e96072dfa32bb00ccbe2e",
+    "startup-failed/resources.json": "f6b292c698955e6f67cf96d598f387381e0f00f8859fb789e4de0e08a7f52be4",
+    "startup-network-failure.json": "4be60e007c2a08ec6aeee24e9e1935c3e7dd9310bcc97328d6b9a0617e13b937",
+    "network-retirement.json": "c5a7f21b9221286cfed555ee7359aaad3d4f127e071aec83ef1e628a43ad2cdf",
+    "startup-network-retirement.json": "a524ae30300c8c0795adef64fbb84217e979e1cbd4f9f4e3b48110471b852429",
+    "startup-audit.json": "c5a522f0530d56152800c4b0019bd170dc965d47ac2c84d850dd1c05040be3af"
+  },
+  "harnesses": {
+    "experiments/archive-engine/catalog_startup.py": "f4d63cea23b5fbbf04da32b3fca4920a9e6c7228647124d4e1f8c064efe679ac"
+  }
+}

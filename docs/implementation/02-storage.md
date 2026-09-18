@@ -253,6 +253,10 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   repeat while receipt state is unknown. Reject mismatched batch digest.
 - [ ] **Step 5:** Enforce a single positively fenced publisher and bounded native worker
   ownership. An unrelated advisory lock cannot certify catalog commit authority.
+  The [PG startup counterexample](evidence/p02-postgres-startup-native-20260918.json)
+  also disproves NOLOGIN plus empty activity as general exclusion: an invisible
+  old connection later commits. Qualify actual process/client exclusion and
+  credential/startup ordering before selecting the product protocol.
 - [ ] **Step 6:** Handle empty and one-small-event timer batches; publish useful progress
   without waiting for a size threshold that may never be reached.
 - [ ] **Step 7:** **Practical P02-T04:** run real PG/DuckLake transactions; kill preparation,

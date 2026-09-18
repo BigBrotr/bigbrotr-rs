@@ -350,8 +350,11 @@ enabling persistent secrets. The [native four-case investigation](../implementat
 records the failed attach and successful corrected tuple, unfenced duplicates,
 live sessions after NOLOGIN, terminated old backends and lost COMMIT response.
 It does not select a production fence: PostgreSQL16.15 checks login permission
-before publishing backend activity, and in-flight connection startup remains an
-explicit recovery gate. This research adds no archive schema or migration.
+before publishing backend activity. A [real PG16.15 startup counterexample](../implementation/evidence/p02-postgres-startup-native-20260918.json)
+then committed from an initially invisible client after NOLOGIN and an empty
+activity observation. Login revocation plus enumeration alone is insufficient;
+actual client/process exclusion and startup ordering remain recovery gates.
+This research adds no archive schema or migration.
 
 The same pinned binding rejects nested List/Array/Struct/Map/Union values through
 `ToSql`; its `Value` enum is not evidence that those parameters can be bound.

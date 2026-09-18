@@ -5778,6 +5778,7 @@
       "lab_scripts": {
         ".research/implementation/archive-worker/catalog-fence/audit-build.py": "fc0f75cc429c4e6c32ce021bb3e3b8045a44890c99da4f2b63bffe0dafb79e1b",
         ".research/implementation/archive-worker/catalog-fence/audit-final.py": "f5d76c7dd8addc9d5ae6abce73e06f51edfe63b2b012e4d005862bbe63867b50",
+        ".research/implementation/archive-worker/catalog-fence/audit-startup.py": "d1b11c2073bbabb4ffdddf8c03e06dbd03ac7b1f50a9acbe41ae2e161ed2ab84",
         ".research/implementation/archive-worker/catalog-fence/build-image.py": "da7782a8698f4acb91d197d70afadabe82a3625aec9846ad486b66bb8a55d1bd",
         ".research/implementation/archive-worker/catalog-fence/build-probe.py": "9b19635630501fac40ff43bbf74e462882d962e1df12508456078e1318ce4ade",
         ".research/implementation/archive-worker/catalog-fence/collect-build.py": "bbdc1b766bb5d32d758ae88ed9baaaef6b02ab85f549d8ad382857a8ded9a60e",
@@ -5788,9 +5789,14 @@
         ".research/implementation/archive-worker/catalog-fence/launch-phase.py": "d93c4a5f9149897e9ef09465b4909a2810d11d7551428c3c7333154ebe4dd022",
         ".research/implementation/archive-worker/catalog-fence/launch-probe-build.py": "5d8ed4c4264a75340932923b25bbb9af1c839f2d3fec9ed53d0587aefb8aeba5",
         ".research/implementation/archive-worker/catalog-fence/launch-rebuild.py": "c5674341205ecece5e98379b27fbfe5b0ae0326af3e4bb5e1eebd2401bba829b",
+        ".research/implementation/archive-worker/catalog-fence/launch-startup-options.py": "2e1928314837a87901cc0cb03274a786ed7e451b70e85950c03e80d3d4c1afde",
+        ".research/implementation/archive-worker/catalog-fence/launch-startup-retry.py": "61c5660c3bbdbf1a0cc7079a2964a3b59fde430dd9bc55b277d8d057d3c8ccda",
+        ".research/implementation/archive-worker/catalog-fence/launch-startup.py": "d990f1acfa7aa96e5feb5e96c489ca5d84913c5956281f6bace4e1a44c3ec2d4",
         ".research/implementation/archive-worker/catalog-fence/observe-build.py": "50b5aa88d1a58e152ce72313bcbd142f8dd498918618abc2a181460fba6e3456",
         ".research/implementation/archive-worker/catalog-fence/rebuild-memory.py": "640d3b2a1786d049cd4de563b1941b4cebe331cad8886efb2a5d0bb544bf6152",
         ".research/implementation/archive-worker/catalog-fence/rebuild-probe.py": "81ca2f1bdc024504b0c867abf9916ed764f75195ede2fd5b6d7ea0161974bac8",
+        ".research/implementation/archive-worker/catalog-fence/retire-networks.py": "f23d8827550de1dab462e544ef9ee9a4736b8c108de9bdbfc7cd163629ab8d34",
+        ".research/implementation/archive-worker/catalog-fence/retire-startup-networks.py": "c918827690bc781f52dd4cfdc8557eab44d08af01e1a5d3928b7dac28dee681a",
         ".research/implementation/archive-worker/catalog-fence/run-memory-build.py": "87dcf15598ffd8f5abbff33076c7fdba25e4eaa730115e9ebdf854e8cf37a70e",
         ".research/implementation/archive-worker/catalog-fence/run-probe.py": "1f414b993b8e8ae373ec13a931802317d65a4c6c958737755732a59f2325a3e0",
         ".research/implementation/archive-worker/catalog-fence/run-rebuild.py": "5dabfa65e555ab14c13461034f0577d3d2f6e6fb4143cd6133061c7427fd28a4",
@@ -5801,11 +5807,12 @@
         "origin": "https://github.com/postgres/postgres",
         "files": {
           ".research/implementation/archive-worker/catalog-fence/pg-source/backend_status.c": "349e47e29e314b6949e6c86ee4f7c190f839b99a4da48eed559ea507e240e3c4",
+          ".research/implementation/archive-worker/catalog-fence/pg-source/guc_tables.c": "2e3efa81095d9fbc77afe7c3c0960f3440f33be768a1ac02461596161cf95468",
           ".research/implementation/archive-worker/catalog-fence/pg-source/miscinit.c": "556e72104ec6b03446e4c333c0c89f005b7138c59430763ea3a2e993339b0588",
           ".research/implementation/archive-worker/catalog-fence/pg-source/postinit.c": "7678b03e29c142a67b89e64b83a84237831886926ac0769a922494ea5651f228"
         },
         "read_boundary": "Complete InitializeSessionUserId; scoped InitPostgres ordering through PostAuthDelay/pgstat_bestart; pgstat_beinit and backend status initialization, not entire PG files",
-        "finding": "rolcanlogin is checked before backend status publication. A startup race remains untested; NOLOGIN plus empty pg_stat_activity alone cannot be assumed sufficient."
+        "finding": "Source ordering reproduced with a real PG16.15 client: invisible old connection commits after NOLOGIN plus empty activity; general exclusion inference disproved."
       },
       "build_audit": {
         "status": "PASS",
@@ -6052,6 +6059,133 @@
         "source": "a531ea3ce345f4008a05bbf1696fd1e1f9827872",
         "artifact_sha256": "793bd08ce5f99b32941da8485c0080c4656ed807ded41a7623b326a37b85e12d",
         "receipt": ".research/implementation/archive-worker/catalog-fence/probe-a531ea3-artifact/build-result.json"
+      },
+      "startup_counterexample": {
+        "source": {
+          "source": "de1d40278ff806cb86da44325460980e6c7f4d22",
+          "tree": "3a2f669b0a039ef86d3db0a8f99685e5b92ec639",
+          "harness_sha256": "f4d63cea23b5fbbf04da32b3fca4920a9e6c7228647124d4e1f8c064efe679ac",
+          "dirty": false
+        },
+        "result": {
+          "status": "PASS",
+          "scope": "PG startup negative control; no product fence",
+          "invisible_after_revocation": true,
+          "new_connection_refused": true,
+          "counterexample": true,
+          "late_connection_exit": 0,
+          "committed_rows_after_empty_activity": 1,
+          "elapsed_seconds": 6.0334114213474095,
+          "owned_child_reaped": true
+        },
+        "report": "docs/implementation/evidence/p02-postgres-startup-native-20260918.json",
+        "cleanup": {
+          "status": "PASS",
+          "owned_containers_stopped_retained": 4,
+          "owned_ids": [
+            "8e69e07f08607f4a139a391a95da08c715e181caa1382cec62c84bf471a2822c",
+            "0bd0f3cad247a7cac7f31c3c958350a59fef8515047f8eac9968f4c6945ee303",
+            "6850ae1eb3d067f0c7495ac8007f8d25bc1386a8be72ebf5cc3e20601eb1016e",
+            "2c5a43856652d1d06ca88e7fe147b61207d803fc39081f2d0b4e8e12c294fb43"
+          ],
+          "terminal_networks_retired": 6,
+          "retired_network_ids": [
+            "8fd9b8601925dad179bcbcc1c4f2ec9238a6f514c756e626f4d8f98f2216c2ee",
+            "039dc5cfdef5469a87b71469cb10f9a51e6c910a30ef0cd14f0d7e354360c3f1",
+            "94bf6a5d24c7bc4cdb72363fa64ce5c78f494ce05ab1d3cdcb814bfa0cd3e1a4",
+            "0997b55e3b8fc45d968ac80f575ec15a6263d494c47cdbbf2a55138cd83997f0",
+            "ed8c32cd4f9633820626741834d9f5ac23de6e9b0ffc2810c8378496551216b5",
+            "c2363c4187bf2bec50526568d20e19ba19404bd5ec9ba13ccccf53986b043eb9"
+          ],
+          "running_bigbrotr": 0,
+          "unrelated_unchanged": 20,
+          "unrelated_running": 8,
+          "shared_source": "6be851580ba415eed5ff0979ee7072480f9ee3ab"
+        }
+      },
+      "network_retirement": [
+        {
+          "scope": "Only four terminal catalog-fence lab networks; containers and data retained",
+          "networks": [
+            {
+              "root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-afc70f3/catalog-lab",
+              "network": "bigbrotr-implementation-fence-afc70f3",
+              "network_id": "8fd9b8601925dad179bcbcc1c4f2ec9238a6f514c756e626f4d8f98f2216c2ee",
+              "owner": "e7273cdb9270874f87f750a668acc664",
+              "state": "removed-after-terminal-qualification"
+            },
+            {
+              "root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-afc70f3/catalog-lab-phase",
+              "network": "bigbrotr-implementation-fence-afc70f3-phase",
+              "network_id": "039dc5cfdef5469a87b71469cb10f9a51e6c910a30ef0cd14f0d7e354360c3f1",
+              "owner": "c4584187112e66c78801588e68d1b71a",
+              "state": "removed-after-terminal-qualification"
+            },
+            {
+              "root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-afc70f3/catalog-lab-diagnostic",
+              "network": "bigbrotr-implementation-fence-449e63f",
+              "network_id": "94bf6a5d24c7bc4cdb72363fa64ce5c78f494ce05ab1d3cdcb814bfa0cd3e1a4",
+              "owner": "14a18a8431b2b62b568bf456b317e306",
+              "state": "removed-after-terminal-qualification"
+            },
+            {
+              "root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-afc70f3/catalog-lab-memory",
+              "network": "bigbrotr-implementation-fence-a531ea3",
+              "network_id": "0997b55e3b8fc45d968ac80f575ec15a6263d494c47cdbbf2a55138cd83997f0",
+              "owner": "7b0e779c570428e465265eafbce36816",
+              "state": "removed-after-terminal-qualification"
+            }
+          ],
+          "observed_at": "2026-09-18T15:03:30.138207+00:00"
+        },
+        {
+          "scope": "Only two terminal PostgreSQL startup lab networks; containers and data retained",
+          "networks": [
+            {
+              "root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-afc70f3/catalog-lab-startup-retry",
+              "network": "bigbrotr-implementation-fence-startup-527d958-retry",
+              "network_id": "ed8c32cd4f9633820626741834d9f5ac23de6e9b0ffc2810c8378496551216b5",
+              "owner": "0c510656208b2748f658061c06850c6b",
+              "state": "removed-after-terminal-qualification"
+            },
+            {
+              "root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-afc70f3/catalog-lab-startup-options",
+              "network": "bigbrotr-implementation-fence-startup-de1d402",
+              "network_id": "c2363c4187bf2bec50526568d20e19ba19404bd5ec9ba13ccccf53986b043eb9",
+              "owner": "449dae90211cb8262909620e259c71a2",
+              "state": "removed-after-terminal-qualification"
+            }
+          ],
+          "observed_at": "2026-09-18T15:07:12.743413+00:00"
+        }
+      ],
+      "startup_runs": {
+        "failed": {
+          "source": "527d958a14677e3053124e5114ca77fe39c11083",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-afc70f3/catalog-lab-startup-retry",
+          "owner": "0c510656208b2748f658061c06850c6b",
+          "postgres": "bigbrotr-implementation-fence-startup-527d958-retry-pg",
+          "postgres_id": "8e69e07f08607f4a139a391a95da08c715e181caa1382cec62c84bf471a2822c",
+          "runner": "bigbrotr-implementation-fence-startup-527d958-retry-runner",
+          "runner_id": "0bd0f3cad247a7cac7f31c3c958350a59fef8515047f8eac9968f4c6945ee303",
+          "network": "bigbrotr-implementation-fence-startup-527d958-retry",
+          "network_id": "ed8c32cd4f9633820626741834d9f5ac23de6e9b0ffc2810c8378496551216b5",
+          "state": "failed",
+          "cleanup": "owned containers stopped-retained"
+        },
+        "pass": {
+          "source": "de1d40278ff806cb86da44325460980e6c7f4d22",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-afc70f3/catalog-lab-startup-options",
+          "owner": "449dae90211cb8262909620e259c71a2",
+          "postgres": "bigbrotr-implementation-fence-startup-de1d402-pg",
+          "postgres_id": "6850ae1eb3d067f0c7495ac8007f8d25bc1386a8be72ebf5cc3e20601eb1016e",
+          "runner": "bigbrotr-implementation-fence-startup-de1d402-runner",
+          "runner_id": "2c5a43856652d1d06ca88e7fe147b61207d803fc39081f2d0b4e8e12c294fb43",
+          "network": "bigbrotr-implementation-fence-startup-de1d402",
+          "network_id": "c2363c4187bf2bec50526568d20e19ba19404bd5ec9ba13ccccf53986b043eb9",
+          "state": "completed",
+          "cleanup": "owned containers stopped-retained"
+        }
       }
     }
   },

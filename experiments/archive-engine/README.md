@@ -94,8 +94,7 @@ revocation/fencing design is selected or qualified merely by compiling this prob
 runner with `psql`, no Docker socket and an outer finite deadline. It checks the
 cluster identity before mutation and positively reaps its children. The matching
 `catalog-fence.Dockerfile` pins the lab client package; record its actual image
-and executable identities. Four synthetic cases pass; an in-flight PostgreSQL
-startup race remains untested, so this is not a selected production fence.
+and executable identities. Four synthetic cases pass; this is not a selected production fence.
 
 Three earlier fresh catalogs failed before the cases: the pinned PG extension
 looks for unavailable `local_file` secret storage when no secret is found. An
@@ -103,3 +102,13 @@ explicit TEMPORARY memory secret avoids that fallback while persistent secrets
 remain disabled; PG secret storage is disabled separately. Redacted native attach
 diagnostics stay in a0600 file inside the private lab root, never either pipe.
 The first failed image build and all failed runs remain recorded.
+
+`catalog_startup.py` is the separately executed PG16.15 startup negative control
+at `de1d402`. It requires a fresh owned cluster, psql15.19 and the same protected
+credential setup. Startup-packet post_auth_delay exposes an invisible connection
+that commits after NOLOGIN plus empty activity. PASS means that inference was
+**disproved**, not a product fence passed. The [report](../../docs/implementation/evidence/p02-postgres-startup-native-20260918.json)
+retains the first failed setup, source/image/tool identity and cleanup. Six empty
+networks from these completed owned labs were retired after Docker address-pool
+exhaustion; stopped containers, data and evidence remain retained. Never treat a
+sleep interval as an exclusion guarantee.

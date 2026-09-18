@@ -15,12 +15,12 @@ complete. Pending must not be reclaimed. Whole selected product remains required
 
 ## Git and ownership
 
-Mac main. HEAD and origin/main freshly verified at
-`0bef27c1ca8abcc9ad3b62b4623d0f9efb8b85c3`, including qualified `a531ea3`.
-Root owns the new uncommitted `experiments/archive-engine/catalog_startup.py` and
-this checkpoint. No active experiment or contributor conflict. The startup
-counterexample is written/reviewed but NOT_RUN. Exact candidate inputs continue
-through Git; Tux is not a separately edited product workspace.
+Mac main. Last observed HEAD `de1d40278ff806cb86da44325460980e6c7f4d22`,
+with unpublished startup probe commits527d958/de1d402. Origin/main last freshly
+verified at `0bef27c1ca8abcc9ad3b62b4623d0f9efb8b85c3` including qualified a531ea3.
+Root owns startup evidence/dependency/task/README/inventory/checkpoint updates.
+No active experiment or other writer/conflict. Exact inputs travel through Git;
+Tux is not a separately edited product workspace.
 
 ## Qualified boundaries
 
@@ -51,6 +51,12 @@ and [the inventory](../research/laboratory-inventory.json), key
   [1,1,1]; lost COMMIT acknowledgement leaves exactly one committed triple.
   Counts do not establish body fidelity or physical durability. No product fence
   is selected, no production catalog/schema or publisher exists.
+- [PG startup counterexample](evidence/p02-postgres-startup-native-20260918.json)
+  at `de1d402`: real psql15.19/PG16.15 with startup-packet post_auth_delay proves
+  an invisible old connection commits one marker73 row after NOLOGIN and empty
+  activity. A fresh same-credential connection refuses; old client exits0 after
+  6.03s and is reaped. This disproves a general exclusion inference, not a product
+  safeguard. The one-second observation delay is not a fencing timeout.
 
 All five forwarded monitor findings have scoped closure, confirmed by rereading
 `/Users/vincenzo/.codex/reviews/bigbrotr-rs-monitor/implementer-feedback.md`:
@@ -83,8 +89,8 @@ psql15.19. This is not a BigBrotr distribution image or hosted CI success.
 Exact PG16.15 source inspection found InitializeSessionUserId checks rolcanlogin
 before pgstat_bestart publishes backend status; PostAuthDelay lies between them.
 Reference files/hashes and scoped read boundary are inventoried under
-`catalog_fence_probe.pg_startup_source`. In-flight startup is still NOT_RUN.
-NOLOGIN plus an empty activity query is not established as a general fence.
+`catalog_fence_probe.pg_startup_source`. The startup window is now reproduced with a real client; NOLOGIN plus empty
+activity alone is demonstrably insufficient as a general fence.
 Pinned postgres pool can ForceAcquire beyond its limit and Reset uses DISCARD ALL
 or reconnect; an unrelated advisory lock cannot fence native DuckLake COMMIT.
 
@@ -95,22 +101,32 @@ review. No native peak, mixed/aged workload, full CI or arm64 runtime claim.
 
 ## Resource state and next bounded action
 
-Collectors32410/34762/70858/56792 completed. Case launchers98951/21713/15247
-completed exit1 for initialization failures; launcher3923 completed exit0.
-Terminal audit confirms all12 newly owned containers stopped-retained, every
-probe child reaped, zero remaining job backends and zero running BigBrotr
-containers. All148 prior BigBrotr containers remain stopped; twenty unrelated
-containers unchanged, eight running. Shared checkout remains clean/detached
-`6be851580ba415eed5ff0979ee7072480f9ee3ab`, zero source consumers. Exact container,
-network, path and owner identities are in `catalog_fence_probe.runs` and raw
-resource receipts; do not reuse a prior catalog as a fresh experiment.
+All catalog and startup collectors/launchers completed. Startup setup first
+failed before creating a Docker network because default address pools were full.
+After verified retirement of four empty terminal owned networks, first PG setup
+failed because post_auth_delay cannot be set by ALTER ROLE; corrected startup
+packet at de1d402 passed. Both failures are retained, not counted as test success.
 
-Next: commit/transfer the bounded `catalog_startup.py` and reproduce the PG16.15
-post_auth_delay window with a real client in a fresh isolated lab. Show whether
-an invisible connection can write after NOLOGIN plus empty activity; finish
-cleanup and record the actual result. Then prioritize MON-009 below before any
-new product consumer of job limits, followed by MON-010/MON-007. Return to full
-publisher fencing/recovery and the signed M1 journey after those corrections.
+Fresh terminal audit: all16 containers from this catalog/startup slice are
+stopped-retained; owned children reaped and zero job backends. Zero running
+BigBrotr containers; twenty unrelated containers unchanged, eight running.
+Six terminal empty owned networks were removed after exact ID/label/endpoint
+checks. Containers, catalogs and evidence remain retained. Detailed records are
+`catalog_fence_probe.runs`, `startup_runs`, `network_retirement`; no prior unrelated
+network was removed. Shared checkout remains clean/detached
+`6be851580ba415eed5ff0979ee7072480f9ee3ab`, zero consumers. Sessions87744/49089
+completed; no current experiment/process needs joining.
+
+Next: finish review/commit/push of startup evidence, then actively reproduce and
+correct MON-009 below before new job-bound consumers. Complete migrations0001,
+0002 and0007 have been read; current require_complete_job_input still consults
+only topology handoff, and source closure omits jobs. Static finding is confirmed,
+but live reproduction is NOT_RUN. Read current migration runner/catalog and
+existing schema/concurrency fixture callers, then exercise a fresh isolated PG
+negative control and additive migration. Preserve published SQL checksums. Review
+both lock acquisition orders and transaction snapshot assumptions; do not assume
+row-lock names alone establish visibility. Follow with MON-010/MON-007, then
+return to product publisher fencing/recovery and signed M1.
 
 ## Newly forwarded independent review
 
