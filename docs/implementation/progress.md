@@ -21,14 +21,15 @@ be acknowledged/reclaimed.
 
 ## Git and integrating ownership
 
-Mac main; root is the sole writer/integrator. Fresh scientific candidate
+Mac main; root is the sole writer/integrator. Scientific product candidate
 `0e2ca435b94da5da49eee69905fa5670716ff48d`, tree
-`cfde988f055c30180b82d9bfdec7017bc67b11b2`, is committed and qualified on Tux but
-not yet pushed at this checkpoint edit. Previous remote HEAD was `f0f1252`.
-Only evidence/documentation/checkpoint edits follow qualification; no product
-source changed after the native run. Independent review was read-only. No
-concurrent writer or active experiment remains. The ordinary private push and
-fresh remote verification are the next Git actions after evidence checks.
+`cfde988f055c30180b82d9bfdec7017bc67b11b2`, and evidence/documentation commit
+`9c1d8b520e8ad4bb4b2f09ca6c44c276146de4f7` are pushed. Freshly verified HEAD,
+origin/main and remote refs/heads/main equal `9c1d8b5` with a clean tree. This
+checkpoint refresh follows that observation. GitHub confirms the repository is
+PRIVATE and not archived. No product source changed after native qualification.
+Independent reviewers were read-only; no concurrent writer or active experiment
+remains. Push/remote-verification session25129 is terminal.
 
 ## Latest qualified slice
 
@@ -179,8 +180,8 @@ inventoried; never restart retired-network containers. amd64 does not qualify ar
 
 ## Next bounded action
 
-Finish evidence documentation and private push for `0e2ca43`, then integrate
-scientific schema identity with the actual PG guard under P02-T04. The current
+Integrate scientific schema identity with the actual PG guard under P02-T04.
+The qualified `0e2ca43` product/evidence are pushed; no prior lab needs cleanup. The current
 `fresh()` still insists on snapshot0 and no scientific tables; it deliberately
 cannot certify the newly initialized schema. Add an immutable application-owned
 schema-version/manifest binding in the same guard installation transaction,
