@@ -138,7 +138,8 @@ allocating a successor intent does not prove exclusion of the previous native
 writer or release its resource grant. Before exposing catalog credentials, the
 catalog adapter must durably import this exact intent and enforce monotonic
 activation at its own write boundary, refusing late lower ordinals and mismatched
-same-ordinal attempts. That adapter and its guarded initialization remain pending;
+same-ordinal attempts. Guard initialization/activation is being implemented under
+the versioned compatibility exception below; its practical qualification remains pending;
 Control issuance alone cannot authorize publication, cleanup or pending ACK.
 Pre-protocol archive owner rows cause migration 0009 to refuse atomically rather
 than invent exclusion or adopt unknown credentials. Existing SQL stays immutable.
@@ -166,6 +167,59 @@ overwrite authority. The product never claims a permission split its provider
 cannot enforce. Administrative raw-object/catalog access is not the scoped public
 read core and can expose all data in that authority's dataset.
 
+### Versioned catalog commit guard
+
+P02-T04 selects the tested PG statement-trigger fence for the pinned DuckLake1.0
+metadata layout. `migrations/catalog/0001_writer_guard.sql` belongs to the separate
+catalog database; it is not an application-Control migration. Native bootstrap
+alone creates the28 metadata tables. After that finite worker has exited and been
+positively reaped, the installer requires the exact empty initial native snapshot,
+metadata version/root/encryption, column/key layout and a restricted bootstrap
+login. In one transaction it transfers native table ownership to the catalog
+manager, revokes bootstrap DDL/DML and PUBLIC native privileges, attaches all28
+statement guards, and records dataset/catalog/root, SQL and live-layout hashes.
+No native metadata values/columns are rewritten. Nonempty or unfamiliar history
+is refused; there is no automatic adoption or native migration. Repeated install
+inspects the existing guard without modifying it. Unknown COMMIT requires a fresh
+connection and inspection, not an assumption that initialization failed.
+
+The application-owned `bigbrotr_archive` schema contains immutable installation
+and attempt records plus one mutable owner row. Every native metadata mutation
+locks that row FOR SHARE through the actual native transaction. Activation locks
+it FOR UPDATE before compatibility inspection and imports the exact immutable
+Control receipt with a strictly greater ordinal. A late lower ordinal cannot
+reactivate an old writer; matching historical/current retries report observations
+without creating another lifetime. A dedicated `bb_archive_<attempt-id>` login
+and its PG role OID bind each imported lifetime. The SECURITY DEFINER trigger uses
+`session_user`, qualified objects and a fixed search path; SET ROLE cannot change
+its credential attribution. Runtime logins have native DML only, no metadata DDL,
+trigger, guard-schema, role-administration or replication-bypass authority.
+
+Compatibility inspection checks actual native columns/keys, table ownership,
+function bodies/security settings, enabled statement triggers, stored installation
+identity/checksums and live structural hash. It refuses scoped nonzero inlining
+and extra inlined metadata tables. Returned definitions/counts are bounded; the
+caller retains a64MiB inspection grant, transaction driver and total deadline.
+Server statement/lock/idle-transaction timeouts are additional bounds. The guard
+manager is a privileged operator boundary: direct privileged DDL, role changes or
+catalog restore require quiescence and explicit reinspection. Checks do not make
+an arbitrary administrator adversary safe.
+
+The first implementation consumes separately provisioned restricted logins and
+an explicitly local root; provisioning/secret custody, installed initialization,
+S3 integration and persistent launch/recovery remain required. Never launch a
+second native client under the same attempt merely because activation is observed.
+Replacement requires a new retained intent, unique worker and credential lifetime.
+Catalog exclusion does not prove old process death or authorize orphan file/object
+cleanup or resource-grant release. Existing six native fence schedules and44
+permission/coverage cases motivate this exception; they do not qualify the new
+product installer/activation implementation. P02 keeps those gates open.
+
+PostgreSQL documents [session identity and privilege checks](https://www.postgresql.org/docs/16/functions-info.html)
+and [actual trigger metadata](https://www.postgresql.org/docs/16/catalog-pg-trigger.html).
+The exact upstream native-layout fixture records source revision/path/hash and is
+used only for inspection, never as a replacement metadata creator.
+
 ## Actual publication and protection boundaries
 
 The initial adapter uses the pinned DuckLake engine's normal transactional write
@@ -173,7 +227,8 @@ path. It prepares bounded typed batches, then one fenced publisher writes all
 required families and the deterministic semantic batch receipt in one catalog
 transaction. DuckLake manages Parquet paths and metadata; the application does
 not invent a second JSON manifest as the engine's transaction authority or edit
-its PG metadata tables. [DuckLake connecting](https://ducklake.select/docs/stable/duckdb/usage/connecting)
+its PG metadata values or column definitions. The narrowly scoped guard exception
+below changes ownership/privileges and attaches statement triggers. [DuckLake connecting](https://ducklake.select/docs/stable/duckdb/usage/connecting)
 documents the separate catalog and data path; the exact bundled version is tested.
 
 The typed Arrow/native adapter must preserve nullable compound values through

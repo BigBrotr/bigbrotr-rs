@@ -6396,6 +6396,13 @@
       "audit": ".research/implementation/archive-worker/archive-attempts/audit.json",
       "source_audit": ".research/implementation/archive-worker/archive-attempts/independent-audit.json",
       "report": "docs/implementation/evidence/p02-archive-attempts-native-20260918.json"
+    },
+    "catalog_product": {
+      "status": "Implementation candidate preparation; native execution not yet started",
+      "local_root": ".research/implementation/archive-worker/catalog-product",
+      "source": "current uncommitted candidate after d24cd87",
+      "resources": "No new remote resources; last archive-attempts lab terminal. New exact-source isolated lab required.",
+      "scope": "Native bootstrap, guarded install/inspection, Control intent import and live stale writer refusal; synthetic facts only."
     }
   },
   "implementation_monitor_corrections_20260918": {

@@ -96,11 +96,20 @@ impl ArchiveAttemptRequest {
 
 /// A historical observation, never a bearer capability. A newer issued intent
 /// does not by itself prove that an earlier catalog writer has been fenced.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ArchiveAttemptReceipt {
+    request: ArchiveAttemptRequest,
     pub ordinal: u64,
     pub latest_issued: bool,
     pub created: bool,
+}
+
+impl ArchiveAttemptReceipt {
+    /// Committed intended input, not a catalog write capability. Only the Control
+    /// adapter constructs this receipt; catalog activation still has its own CAS.
+    pub fn request(&self) -> &ArchiveAttemptRequest {
+        &self.request
+    }
 }
 
 pub(super) async fn register(
@@ -129,6 +138,7 @@ pub(super) async fn register(
         let latest = tx.query_one("SELECT NOT EXISTS (SELECT 1 FROM control.archive_attempts WHERE dataset_id=$1::bytea AND ordinal>$2::text::numeric)", &[&dataset,&ordinal]).await.map_err(backend)?.try_get(0).map_err(backend)?;
         tx.rollback().await.map_err(backend)?;
         return Ok(ArchiveAttemptReceipt {
+            request: request.clone(),
             ordinal: request.ordinal,
             latest_issued: latest,
             created: false,
@@ -144,6 +154,7 @@ pub(super) async fn register(
         .await
         .map_err(|_| ArchiveAttemptError::CommitUnknown)?;
     Ok(ArchiveAttemptReceipt {
+        request: request.clone(),
         ordinal: request.ordinal,
         latest_issued: true,
         created: true,

@@ -280,7 +280,8 @@ async fn run() {
     );
     // Raw SQL by another application backend cannot borrow copied issuer fields.
     let (forger, forger_driver) = connect("bigbrotr_control").await;
-    let error=forger.execute("INSERT INTO control.archive_attempts SELECT decode(repeat('31',16),'hex'),dataset_id,catalog_id,3,2,schema_version,topology_generation,batch_digest,coordinator_incarnation,decode(repeat('32',16),'hex'),issuer_resource,issuer_epoch,issuer_role,issuer_incarnation,issued_at_us FROM control.archive_attempts WHERE ordinal=2",&[]).await.unwrap_err();
+    let active = final_owner.identity();
+    let error=forger.execute("INSERT INTO control.archive_attempts SELECT decode(repeat('31',16),'hex'),dataset_id,catalog_id,3,2,schema_version,topology_generation,batch_digest,coordinator_incarnation,decode(repeat('32',16),'hex'),$1::bytea,$2::text::numeric,issuer_role,$3::bytea,issued_at_us FROM control.archive_attempts WHERE ordinal=2",&[&&active.resource_id.as_bytes()[..],&active.epoch.get().to_string(),&&active.process_incarnation.as_bytes()[..]]).await.unwrap_err();
     assert_eq!(error.code().unwrap().code(), "23514");
     drop(forger);
     join(forger_driver).await;

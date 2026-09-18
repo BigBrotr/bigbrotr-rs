@@ -11,7 +11,14 @@ P02-T09 with equivalent semantics and actual engine evidence.
 Adapters record the exact database/schema/table mapping in their versioned
 manifest. DuckLake's own catalog tables belong to DuckLake under separate PG
 ownership; they are not BigBrotr scientific relations or public APIs. Do not
-manually duplicate or edit the extension's metadata schema.
+manually duplicate or edit the extension's metadata values/columns. The
+[versioned commit-guard exception](archive-storage-contract.md#versioned-catalog-commit-guard)
+permits ownership/privilege changes and statement triggers around the28 pinned
+native tables. Separate `migrations/catalog/0001_writer_guard.sql` owns
+`bigbrotr_archive.installation(singleton)`, immutable `attempts(ordinal)` and
+`owner(singleton)` in the catalog database. These bind retained Control intents
+to actual native commits; they are not scientific receipts or another admission
+authority. No applied Control SQL changes for this separate catalog protocol.
 
 ## Common row rules
 

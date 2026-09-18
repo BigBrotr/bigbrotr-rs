@@ -285,9 +285,10 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   A bounded [PG metadata-trigger alternative](evidence/p02-catalog-guard-native-20260918.json)
   now passes six actual native cases with live stale clients and both transaction
   lock orders/commit/rollback, plus 44 actual privilege/coverage cases at `d4f43af`.
-  It remains an isolated candidate: qualify full ordinary mutation coverage and
-  versioned initialization/migration before
-  selecting a product exception for guarded native metadata tables. This may
+  The [narrow compatibility exception](../specification/archive-storage-contract.md#versioned-catalog-commit-guard)
+  now selects this fence; versioned product initialization/inspection/activation
+  and a private native bootstrap consumer are in implementation, with actual
+  qualification still pending. Full ordinary mutation coverage remains a gate. It can
   enforce commit exclusion without inferring remote process death; resource and
   orphan cleanup still require their separate positive lifecycle evidence.
 - [ ] **Step 6:** Handle empty and one-small-event timer batches; publish useful progress

@@ -111,3 +111,21 @@ in `notices/`. The selected build does not invoke that upstream downloader.
 This narrow notice set is not the complete native engine/extension release SBOM;
 P01/P08 still require all native and transitive distribution notices and release
 authentication. No public distribution is authorized by this prerequisite.
+
+## Private native catalog bootstrap prerequisite
+
+`bootstrap-catalog BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS`
+uses the same expected-parent binding and verified native bundle. Bounded stdin
+JSON contains only `dsn` and canonical local `data_root`; no secret goes on argv
+or either output pipe. The parent must validate the trusted route/TLS policy and
+supply a dedicated restricted bootstrap login, never the catalog manager. The
+worker creates only native DuckLake metadata through ordinary attach, using an
+explicit temporary memory secret, inlining0 and automatic migration disabled.
+It detaches/closes the native engine before returning a fixed diagnostic.
+
+Positive exit/reap is required before the separate privileged PG guard installer
+transfers ownership/revokes bootstrap privileges and checks the pristine catalog.
+Bootstrap success alone cannot adopt an existing catalog or grant publication.
+The installed initialization command, credential provisioning and persistent
+recovery remain P02/P08 work; this finite private consumer is not a new public
+operator command or support claim. Actual native qualification is pending.

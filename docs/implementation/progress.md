@@ -19,8 +19,11 @@ not be acknowledged/reclaimed. Do not mistake private preparation for publicatio
 ## Git and integrating ownership
 
 Mac main; root is the only writer/integrator. Last verified HEAD and origin/main
-`b42016b5dd9e1236515445b337b25e998eaf988c` are equal and clean after ordinary push.
-This checkpoint refresh follows that observation. Product candidate `b245644`
+`d24cd876d6d9f97d7e3bdf6e12d64b76b634de24` are equal after ordinary push.
+Resumption verified that revision. The working tree now contains uncommitted
+catalog guard code/SQL/native-layout fixture/test and a private retained-request
+field on the Control receipt. Inspection and native bootstrap consumer now compile; native qualification
+is still pending; this work is not a passing boundary. Product candidate `b245644`
 and its evidence are pushed. Mac 13 selected tests and scoped Clippy pass; exact
 native 13 tests, Clippy and one actual PG adapter journey PASS. No force push,
 independent Tux product edits or concurrent writer.
@@ -167,7 +170,32 @@ MON resources remain stopped as inventoried; never restart retired-network
 containers. Shared checkout last observed detached6be8515 in an earlier slice;
 not used or freshly requalified here.
 
+## Current uncommitted implementation
+
+Root is completing `storage/postgres/catalog_guard`: fresh native-catalog-only
+installation, version/checksum/layout inspection, restricted per-attempt roles
+and monotonic import of the private Control-retained request. New catalog SQL is
+separate from the applied Control migrations. Local-only placement is an explicit
+prerequisite; S3 remains selected unfinished work. No catalog code is qualified.
+The initial missing-module compiler RED is retained under ignored
+`.research/implementation/archive-worker/catalog-product/red.log`. No new lab
+has been launched; the last terminal resource inventory above remains current.
+
+Read-only independent review of b245644 and retained issuance evidence found no
+correctness defect. It identified a test limitation: the copied-issuer negative
+control used a released epoch. Change that probe to copy the final active owner
+before the next native run, so backend identity is independently discriminated.
+The earlier evidence remains scoped to what actually ran.
+
 ## Next bounded action
+
+Mac14 application tests, one private bootstrap-wire test and scoped Clippy pass.
+Run the new exact-source native bootstrap/guard/activation journey on Tux.
+Independent read-only catalog-guard review is in progress; root remains sole writer.
+Update the owning compatibility contract with the narrow ownership/trigger
+exception together with its consumer and evidence. Current dirty work must be
+reviewed before any candidate commit.
+
 
 Implement guarded catalog initialization and the monotonic import/activation of
 Control-issued publication intents, using a real native initialization consumer.

@@ -1,6 +1,7 @@
 pub mod activation;
 pub mod archive_attempt;
 pub mod authentication;
+pub mod catalog_guard;
 pub mod configuration;
 pub mod connection_settings;
 pub mod control_owner;
