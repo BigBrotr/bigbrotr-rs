@@ -135,11 +135,11 @@
   },
   "review": "Integrating owner read complete implementation, tests, model codec, owning format and upstream get/pin boundaries. No independent agent review for this slice.",
   "not_qualified": [
-    "Linux execution pending",
     "Native admission write or commit ambiguity",
     "Producer ACK, retirement and dependency protection",
     "Crash/power-loss durability",
     "Concurrent writes and mid-I/O cancellation",
     "Complete product or release"
-  ]
+  ],
+  "native_followup": "docs/implementation/evidence/p02-receipt-reader-native-20260918.json"
 }

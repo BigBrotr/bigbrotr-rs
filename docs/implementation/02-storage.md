@@ -101,6 +101,11 @@ One owner serializes exact identity decisions for each writable directory.
 - [ ] **Step 3:** Verify outside expensive critical sections where safe, then serialize the
   final exact admission check/commit. Same-ID concurrency cannot overwrite first
   admission or suppress a distinct permitted provenance edge.
+  The initial `verify_owned` prerequisite shares actual ID/BIP340 checks with
+  the existing JSON consumer without reparsing buffers;
+  [Mac](evidence/p02-owned-event-mac-20260918.json) and
+  [native evidence](evidence/p02-owned-event-native-20260918.json) record its scope.
+  Serialized native admission and same-ID concurrency remain unimplemented.
 - [ ] **Step 4:** Implement NewFacts/AlreadyDurable/Excluded/Invalid/Retryable,
   RequestConflict and IncompatibleSchema outcomes and
   ambiguous receipt resolution plus RetiredRequest. Same ProducerRequestId with
@@ -109,6 +114,11 @@ One owner serializes exact identity decisions for each writable directory.
   producer epoch, bounded outstanding window, contiguous acknowledgement and
   fenced retirement/GC contract; restart
   cannot reuse a request identity or forget unresolved effects.
+  Initial [native detail inspection](../reference/ingest-receipt-format.md#native-detail-inspection)
+  binds a stored receipt to its exact request, dataset and digest with retained
+  resource ownership; see [Mac](evidence/p02-receipt-reader-mac-20260918.json) and
+  [native evidence](evidence/p02-receipt-reader-native-20260918.json).
+  It does not resolve missing detail, grant authority or implement retirement.
 - [ ] **Step 5:** Make provenance-off allocate no P inventory or event/endpoint side channel;
   retain scope eligibility and scoped first local receive/earlier corrections.
   Implement CertifyExisting against one committed inventory view, exact verified

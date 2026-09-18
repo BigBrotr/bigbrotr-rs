@@ -97,9 +97,7 @@
     "signed_variants": 15,
     "unique_event_ids": 14
   },
-  "open_checks": [
-    "Exact-revision d0644ac native Tux CI running"
-  ],
+  "open_checks": [],
   "not_qualified": [
     "Native event admission or receipt persistence",
     "Authority or ownership fencing",
@@ -114,5 +112,6 @@
     "ignored": 0,
     "log_sha256": "a5de0ebfcb33ef5933f9051f1497cc5b8e6157bd628ea117b4fcda44c997366d"
   },
-  "clippy_note": "Initial Clippy passed while later receipt-reader inputs were introduced; do not use it to assert an exact d0644ac complete workspace. Stable final combined Clippy is recorded in the receipt-reader evidence."
+  "clippy_note": "Initial Clippy passed while later receipt-reader inputs were introduced; do not use it to assert an exact d0644ac complete workspace. Stable final combined Clippy is recorded in the receipt-reader evidence.",
+  "native_followup": "docs/implementation/evidence/p02-owned-event-native-20260918.json"
 }

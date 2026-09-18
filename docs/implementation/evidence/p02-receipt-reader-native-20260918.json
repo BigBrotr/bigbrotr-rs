@@ -1,0 +1,157 @@
+{
+  "observed_date": "2026-09-18",
+  "environment": {
+    "host": "Tux isolated Docker lab",
+    "os": "Linux",
+    "architecture": "x86_64",
+    "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "rust": "1.98.1",
+    "clang": "14.0.6",
+    "rocksdb_binding": "0.25.0",
+    "native_rocksdb": "11.8.1"
+  },
+  "limits": {
+    "cpu": 2,
+    "memory_bytes": 6442450944,
+    "swap_extra_bytes": 0,
+    "pids": 512,
+    "published_ports": [],
+    "source_read_only": true,
+    "root_read_only": true,
+    "uid_gid": "1000:1000",
+    "release_credentials": false
+  },
+  "dependency_lock_sha256": "ea27c2b367846c4718a6d76fbd1a8340558299ccf9f22c76ed3f30c4b8025b47",
+  "format": "bigbrotr-receipt-reader-native/1",
+  "source": "41fff54e26e28b596b78c24199db860accd9fa81",
+  "tree": "ced0b502215129131f8605331ef2bb3ccd36e2b3",
+  "source_files": 517,
+  "test_artifacts": {
+    "receipt_codec": {
+      "sha256": "36ff5b658ce8f1d5451d5cc622e1e1abe4fa55d7da8d9fdad5e367297a2d16c6",
+      "bytes": 13694080,
+      "format": "ELF64 amd64"
+    },
+    "rocks_receipts": {
+      "sha256": "ecd97496d6d59eea7fb9a27f1a382592e06d19f47c756269a73884d388b262f4",
+      "bytes": 174799672,
+      "format": "ELF64 amd64"
+    }
+  },
+  "container": {
+    "id": "2ac31a2f76fc46d56f68136906f33f243eb2852aaabcf30a3f67d62eb75efb10",
+    "name": "bigbrotr-implementation-receipts-41fff54",
+    "owner": "3f610d43b3f9881ec93199bb7f8215cb",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/receipts-41fff54",
+    "terminal": {
+      "Status": "exited",
+      "Running": false,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 0,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-09-18T07:14:36.467832901Z",
+      "FinishedAt": "2026-09-18T07:19:54.348594321Z"
+    }
+  },
+  "commands": [
+    [
+      "cargo",
+      "test",
+      "--locked",
+      "-p",
+      "bigbrotr-model",
+      "--test",
+      "receipt_codec"
+    ],
+    [
+      "cargo",
+      "test",
+      "--locked",
+      "-p",
+      "bigbrotr",
+      "--test",
+      "rocks_receipts"
+    ]
+  ],
+  "results": {
+    "receipt-codec": {
+      "passed": 6,
+      "failed": 0,
+      "ignored": 0,
+      "names": [
+        "byte_allocation_and_record_counts_are_bounded_before_reserve",
+        "constructors_reject_corrupt_namespaces_order_and_closure",
+        "frozen_operational_receipts_round_trip_exactly",
+        "scalar_domains_and_fixed_identity_widths_are_enforced",
+        "variant_version_protection_and_framing_are_closed",
+        "all_equivalent_wider_heads_are_noncanonical"
+      ],
+      "log_sha256": "8eba52516b80141faf16b88200e9376c1a96718452a243e40918fa7327480ada"
+    },
+    "rocks-receipts": {
+      "passed": 5,
+      "failed": 0,
+      "ignored": 0,
+      "names": [
+        "already_durable_detail_preserves_null_batch_and_its_retained_dependencies",
+        "actual_receipt_read_keeps_original_context_and_complete_bytes_without_writes",
+        "read_budget_and_cancellation_fail_without_claiming_an_outcome",
+        "valid_detail_from_another_dataset_is_not_a_local_result",
+        "conflict_key_binding_corruption_and_future_schema_never_become_absence"
+      ],
+      "log_sha256": "69f64d3434d87c3aef553de9f509fdbaac5d9d7c7183695ea273a1575fc8a2e0"
+    }
+  },
+  "rust_toolchain": {
+    "rustc": {
+      "path": "/usr/local/rustup/toolchains/1.98.1-x86_64-unknown-linux-gnu/bin/rustc",
+      "sha256": "859254978c0a0402c32f949f6de0d99aee73be8d15f45aac00ae1448aac51e74",
+      "version": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8\n"
+    },
+    "cargo": {
+      "path": "/usr/local/rustup/toolchains/1.98.1-x86_64-unknown-linux-gnu/bin/cargo",
+      "sha256": "da77c8b33849312255ccde3179198ada4c8deb370488d050286146b1d1b27e14",
+      "version": "cargo 1.98.1 (797e8a9bc 2026-08-05)\nrelease: 1.98.1\ncommit-hash: 797e8a9bca276c1c9f9f738d2a20f484fa4eea9d\ncommit-date: 2026-08-05\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.4 (sys:0.21.0 vendored)\nlibcurl: 8.21.0-DEV (sys:0.4.90+curl-8.21.0 vendored ssl:OpenSSL/3.6.3)\nssl: OpenSSL 3.6.3 9 Jun 2026\nos: Debian 12.0.0 (bookworm) [64-bit]\n"
+    }
+  },
+  "native_tool_hashes": {
+    "CC": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+    "CXX": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+    "AR": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+    "LIBCLANG_PATH": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+    "discovery": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e"
+  },
+  "evidence": {
+    ".research/implementation/receipt-reader/native-41fff54/source-files.json": "8f95af5e8267475964f00e8450cfb63e2f2148090f3154fbe6a3be9e5d885212",
+    ".research/implementation/receipt-reader/native-41fff54/source.tar": "22bdb26fa02142cf02825b73f9da3d90be25ab330f9538007d904ad5ce756707",
+    ".research/implementation/receipt-reader/native-41fff54/observation.json": "93f56ed8e503b30a4a3b658434636ac721bff9ad85a13a1012fd07ef45d452b9",
+    ".research/implementation/receipt-reader/native-41fff54/local-audit.json": "c6da389b3c8aafc4ffd7a426d79cfd9c1aadaa65c28103d2c0f27e85d711681a",
+    ".research/implementation/receipt-reader/native-41fff54/checks/result.json": "40ec5a1512fa6f3e2198bda35c7a0186d7f268a2f8b1b169ca713c69dce6e259",
+    ".research/implementation/receipt-reader/native-41fff54/artifacts.json": "ca30575cd44389ffa45f00cfac3769b077f7df4aee78137e965c505cdc5f8636",
+    ".research/implementation/receipt-reader/native-41fff54/native-check.py": "e44a95e1c6a5d7dd714c0b00b0de0fa9e21ae4e4008118bfb00c4e4da7c86a0b"
+  },
+  "audit_boundaries": [
+    "Independent resource/input/artifact/log audit. Actual native read/byte assertions remain test-harness observed; no external post-test DB inspection.",
+    "Mac independently compared actual Linux source hashes against exact Git archive and downloaded test executable bytes; no release artifact"
+  ],
+  "runner_sha256": "e44a95e1c6a5d7dd714c0b00b0de0fa9e21ae4e4008118bfb00c4e4da7c86a0b",
+  "observer_sha256": "774c5b972b03566320615409e71e0231adb9e0bd212c9a9eeaab701d16fd9674",
+  "local_observer_sha256": "a8d8a4cb1e0f803afecec39726022a782a8674ccbd0ff3ff2b627b95f0ca78fb",
+  "observer_finding": {
+    "initial_outcome": "FAIL observer only",
+    "reason": "Local Python lacks hashlib.file_digest; downloads and source comparison had completed before AttributeError",
+    "correction": "Use bounded 1 MiB streaming SHA-256 reads on the same downloaded binaries; no test, expected hash or native result changed"
+  },
+  "not_qualified": [
+    "Full shared CI at 41fff54; d0644ac has its separate full run",
+    "Native admission write or commit ambiguity",
+    "Producer ACK, retirement and retained dependency protection",
+    "Crash/power-loss durability",
+    "Concurrent mutation, mid-I/O cancellation, native I/O-error injection or damaged oversized physical values",
+    "Complete product, release installation or Linux arm64"
+  ]
+}

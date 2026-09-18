@@ -2074,7 +2074,7 @@
     "root": "/home/tux/bigbrotr-implementation-20260917/runs/ci-d0644ac",
     "owner": "5eac340e8bea599cefb97ee0516b61fa",
     "container": "bigbrotr-implementation-ci-d0644ac",
-    "state": "running",
+    "state": "completed-retained",
     "started_at": "2026-09-18T07:03:38.400085+00:00",
     "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
     "image_created": "2026-09-18T08:13:59.317882824+02:00",
@@ -2095,6 +2095,74 @@
       "swap_extra_bytes": 0,
       "pids": 512,
       "published_ports": []
+    },
+    "terminal": {
+      "Status": "exited",
+      "Running": false,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 0,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-09-18T07:03:38.611812322Z",
+      "FinishedAt": "2026-09-18T07:21:29.576297453Z"
+    },
+    "evidence": "docs/implementation/evidence/p02-owned-event-native-20260918.json",
+    "source_and_artifact_audit": "PASS"
+  },
+  "implementation_receipt_reader_20260918": {
+    "format": "bigbrotr-native-receipt-test-lab/1",
+    "source": "41fff54e26e28b596b78c24199db860accd9fa81",
+    "tree": "ced0b502215129131f8605331ef2bb3ccd36e2b3",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/receipts-41fff54",
+    "owner": "3f610d43b3f9881ec93199bb7f8215cb",
+    "container": "bigbrotr-implementation-receipts-41fff54",
+    "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "state": "completed-retained",
+    "started_at": "2026-09-18T07:14:36.189102+00:00",
+    "container_id": "2ac31a2f76fc46d56f68136906f33f243eb2852aaabcf30a3f67d62eb75efb10",
+    "local_root": ".research/implementation/receipt-reader",
+    "scope": "Two selected native Linux amd64 receipt suites; not full CI or release",
+    "preflight": {
+      "path": ".research/implementation/receipt-reader/preflight.json",
+      "sha256": "23172d143323131ec9ad23a6886dcb72efbeac6876896ed50bd4d62a84d99f4c",
+      "unrelated_running_containers": 8,
+      "running_bigbrotr_containers": [
+        "bigbrotr-implementation-ci-d0644ac"
+      ]
+    },
+    "limits": {
+      "cpu": 2,
+      "memory_bytes": 6442450944,
+      "swap_extra_bytes": 0,
+      "pids": 512,
+      "published_ports": []
+    },
+    "runner_sha256": "e44a95e1c6a5d7dd714c0b00b0de0fa9e21ae4e4008118bfb00c4e4da7c86a0b",
+    "terminal": {
+      "Status": "exited",
+      "Running": false,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 0,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-09-18T07:14:36.467832901Z",
+      "FinishedAt": "2026-09-18T07:19:54.348594321Z"
+    },
+    "evidence": "docs/implementation/evidence/p02-receipt-reader-native-20260918.json",
+    "source_and_artifact_audit": "PASS",
+    "final_inventory": {
+      "path": ".research/implementation/receipt-reader/final-inventory.json",
+      "sha256": "91717d01f8a9f570a80cbffad45b5b558e1f63e89d10c5b6977564cb72ee0b20",
+      "running_bigbrotr": 0,
+      "unrelated_running_unchanged": 8,
+      "shared_source": "6be851580ba415eed5ff0979ee7072480f9ee3ab",
+      "shared_source_consumers": 0
     }
   }
 }

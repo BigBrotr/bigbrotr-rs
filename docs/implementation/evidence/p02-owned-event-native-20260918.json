@@ -1,0 +1,134 @@
+{
+  "observed_date": "2026-09-18",
+  "environment": {
+    "host": "Tux isolated Docker lab",
+    "os": "Linux",
+    "architecture": "x86_64",
+    "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "rust": "1.98.1",
+    "clang": "14.0.6",
+    "rocksdb_binding": "0.25.0",
+    "native_rocksdb": "11.8.1"
+  },
+  "limits": {
+    "cpu": 2,
+    "memory_bytes": 6442450944,
+    "swap_extra_bytes": 0,
+    "pids": 512,
+    "published_ports": [],
+    "source_read_only": true,
+    "root_read_only": true,
+    "uid_gid": "1000:1000",
+    "release_credentials": false
+  },
+  "dependency_lock_sha256": "ea27c2b367846c4718a6d76fbd1a8340558299ccf9f22c76ed3f30c4b8025b47",
+  "format": "bigbrotr-owned-event-native/1",
+  "source": "d0644ace5b479462f9249e71ae1f89026062b661",
+  "tree": "abddc133b4fc152c014f7a3d2b7555cba310ad0e",
+  "source_files": 513,
+  "binary": {
+    "sha256": "000451d95977a80b4759c969f9a83454815148f26dce7f36895e92f3952c4266",
+    "bytes": 7835048,
+    "format": "ELF64 amd64"
+  },
+  "container": {
+    "id": "8c00542b34ab40c228356ad41056aaa7391d9be3eb8db454c2fea55e10f237f1",
+    "name": "bigbrotr-implementation-ci-d0644ac",
+    "owner": "5eac340e8bea599cefb97ee0516b61fa",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/ci-d0644ac",
+    "terminal": {
+      "Status": "exited",
+      "Running": false,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 0,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-09-18T07:03:38.611812322Z",
+      "FinishedAt": "2026-09-18T07:21:29.576297453Z"
+    }
+  },
+  "command": [
+    "python3",
+    "tools/ci.py",
+    "--output",
+    ".research/ci"
+  ],
+  "results": {
+    "shared_ci": {
+      "collected": 14,
+      "executed": 14,
+      "failed": 0,
+      "not_run": 0
+    },
+    "rust_tests": {
+      "passed": 202,
+      "failed": 0,
+      "ignored": 0
+    },
+    "python_controls": 21,
+    "practical": {
+      "p01-event-cli": {
+        "counts": {
+          "collected": 40,
+          "executed": 40,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        "report_sha256": "30836445d05ea1ebf17dc669cd86bde2ffce68deb143b4cf2e94f324f06e54cc"
+      },
+      "p01-config-static": {
+        "counts": {
+          "collected": 64,
+          "executed": 64,
+          "failed": 0,
+          "skipped": 0,
+          "not_run": 0
+        },
+        "report_sha256": "acc1881b2514897d7e142a357544dcc1cb8986c0868838d7059e7f74aa923627"
+      }
+    },
+    "independent_practical_audit": {
+      "status": "PASS",
+      "source": "d0644ace5b479462f9249e71ae1f89026062b661",
+      "signed_events_compared": 17,
+      "signed_negative_controls": 5,
+      "recipe_documents": 6,
+      "recipe_reports": 12,
+      "generated_documents": 2,
+      "initialization_distinct_ids": 4,
+      "complete_traces": 77,
+      "scope": "Independent frozen-output and actual syscall audit; temporary filesystem state otherwise remains harness-observed."
+    }
+  },
+  "native_tool_hashes": {
+    "CC": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+    "CXX": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+    "AR": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+    "LIBCLANG_PATH": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+    "discovery": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e"
+  },
+  "advisory_database_revision": "0765f6f611cb93c5ab2681b9c97fb06e5df9e1d1",
+  "evidence": {
+    ".research/implementation/ci/native-d0644ac/audit.json": "736f9583cdce247749e216c8fa00e6e18471d0be169e6ac76c17c0a51ba05aab",
+    ".research/implementation/ci/native-d0644ac/ci-audit.json": "4cbde4b968440b6d200ca2ecebe66133b1e396fd6e48a8b6f854e374704d1299",
+    ".research/implementation/ci/native-d0644ac/practical-audit.json": "a542482527b8168da83395a7bbe96bd96b0e86536b488c778073321def2f5cb8",
+    ".research/implementation/ci/native-d0644ac/source-manifest.json": "30d45a46e84809efa9cbbff1f88817b3c4b20634a68f48e014292f6083c2a7cb",
+    ".research/implementation/ci/native-d0644ac/build-result.json": "dbfc30c1198c37cccfc172f898659ec40eddd7328b00464b8aaca26d269148a8",
+    ".research/implementation/ci/native-d0644ac/ci-result.json": "deb55ab3252c97c257aafb380038dc97a4db39201597b7f343a7f4b11368bae7",
+    ".research/implementation/ci/native-d0644ac/source.tar": "bbf127c9cd8cc91197dbb6dbbbe25c051ff4ca0c9f67b25969bf00fe6bf5a42b",
+    ".research/implementation/ci/native-d0644ac/observation.json": "d01284b7e0ec8d445048d320357a4e74c28c730a61fadfc2f08b4f62a5405923"
+  },
+  "review": "Integrating owner reviewed the verifier/tests and independent frozen-output/77-complete-syscall-trace audit. No separate agent review.",
+  "not_qualified": [
+    "Native event admission and receipt persistence",
+    "Current caller authority or policy",
+    "Archive/read/export/restart",
+    "Full Control process matrix at this revision",
+    "Linux arm64 or release installation",
+    "Complete selected product"
+  ]
+}

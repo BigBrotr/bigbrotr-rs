@@ -124,7 +124,8 @@ write a proof, acknowledgement, cursor or replacement result.
 
 Native tests install unchanged independent receipt literals, close and reopen
 the actual engine, compare every returned byte and inspect the engine sequence
-number to exclude writes. They cover both result codes, original contexts,
+number to exclude key/value mutations; engine file maintenance remains possible.
+They cover both result codes, original contexts,
 request/dataset binding, strict digest conflict, corruption, unknown version,
 bounded decoding, cancellation before I/O and permit retention. They do not
 qualify admission writes, ambiguous commit recovery, concurrent retirement,

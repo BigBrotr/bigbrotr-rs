@@ -7,8 +7,8 @@ and verify Git, artifacts and owned process state before trusting it.
 | Field | Last observed state |
 |---|---|
 | Stage | Owner-started product implementation, authorized 2026-09-17; [Q30](../planning/questions.md) and [mandate](../planning/mandate.md). The complete selected product remains the objective. |
-| Active slice | P02-T02 admission prerequisite: bounded verification of an already owned signed event, shared with the existing JSON consumer. Atomic native admission and native-owner authority remain next; no admission implementation yet. First durable signed event/archive/read/export/restart and the complete selected product remain required. |
-| Repository state | Mac main HEAD d0644ace5b479462f9249e71ae1f89026062b661, unpublished candidate above origin/main c584f22443e55576a92d3b6e58a91b973902de84. Root owns receipt reader/tests/shared golden fixture, receipt reference and evidence/checkpoint/inventory edits. Tested Control runtime source remains 6be8515/tree bbf3329b938b355447912492fa3b5d6490d1cb85. Resolve the containing checkpoint commit from Git. |
+| Active slice | P02-T02 admission prerequisites: owned-event verification and bounded native receipt inspection implemented and qualified within their recorded Mac/Linux scope. Atomic native admission and native-owner authority remain next; no admission implementation yet. First durable signed event/archive/read/export/restart and the complete selected product remain required. |
+| Repository state | Mac main product source is 41fff54e26e28b596b78c24199db860accd9fa81 after d0644ac. The containing checkpoint commit adds only reviewed qualification documentation/evidence. Last fetched origin/main before publication was c584f22443e55576a92d3b6e58a91b973902de84, with no competing changes. Root owned only those documentation edits at authoring; resolve containing HEAD, clean state and normal push from Git on resumption. Tested Control runtime source remains 6be8515. |
 | Reading | Root read complete store/options/tests, model core codecs and effect/source types, identity/data/storage/operations/component contracts and affected key format. Pending read uses the exact pinned native snapshot API; independent reviewer found one decoder-error classification bug, reproduced and fixed. P08-T02/T03 authority and initial credential contracts inspected. Argon2 0.6.0 selected with explicit memory; scoped upstream review and independent C baseline recorded in owner-enrollment Mac evidence. Later archive/read/UI boundaries remain incompletely inspected and unimplemented. |
 | Integrated checks | Actual binary 9cd823a on native Tux Linux amd64/PG16.15: 14 CLI/harness cases and 74 SQL cases PASS, including 56 exact SQLSTATE negatives, external exact rows for all 13 added tables, eligible upgrade preservation and atomic populated-topology refusal. Corrected harness 145eb7c checks mounted artifact identity and complete CLI output. [Evidence](evidence/p02-ingest-control-engine-20260918.json). All 386 clean Git source entries/archive and downloaded executable SHA 4b36ae76... independently verified. Nine targeted Mac migration tests and Clippy PASS. |
 | Prior evidence | Initial 0001 native CLI/schema/privilege, COMMIT ambiguity/two-apply, TLS/mTLS and seven relational races retain their recorded scope: [engine](evidence/p02-control-engine-20260917.json), [fault/TLS](evidence/p02-control-faults-tls-20260917.json), [races](evidence/p02-control-races-20260917.json). CI 35284179910 at 8d1db2b audited: three ZIPs, 391 exact source entries, native toolchain receipts, 208 Linux practical cases and 154 complete traces verified. Pre-Rocks source, Mac practical cases skipped, binaries not retained; no storage/PG/release qualification. Audit path/hash in inventory. |
@@ -22,7 +22,7 @@ and verify Git, artifacts and owned process state before trusting it.
 | Resources | All 1e87ce3 build/runtime clients stopped-retained, IDs/labels verified; 13 databases/internal network retained. Exact 501-file input, CLI f884f6e0... and probe 230ec81a... audited. At that earlier observation the shared checkout was1e87ce3; current resource state is below. Separate fresh CI source at runs/ci-0dabfaa/source is clean and mounted read-only; bigbrotr-implementation-ci-0dabfaa stopped-retained (exit 0, OOM false), owner 24373528e10936f41d0c8209ad2280c4, image sha256:71b2d400...; 2CPU/6GiB/512PIDs, no ports. See laboratory inventory for full IDs. |
 | Registry engine | [Native registry evidence](evidence/p02-ingest-registry-native-20260918.json):2032042 Linux amd64/PG16.15, five scenarios PASS. All433 exact source files and downloaded CLI/probe bytes verified. Before/after COMMIT loss, actual cancelled/concurrent lock schedules, complete rows across23 tables, refusals and stale state inspected. Scope excludes product policy/bootstrap/native authority. |
 | Findings/gates | 0002 refuses pre-existing unregistered topology atomically; no inferred source authority. Review fixed five schema cases and two acceptance oracle flaws. Eight actual lock schedules at 15c14ed plus final 23-relation inspection and backend cleanup PASS; [race evidence](evidence/p02-ingest-control-races-20260918.json). All 389 source files/archive and downloaded executable a3345bf7... verified. Native owner fencing, typed runtime coordination, real external receipts, retention/reclamation, durable signed-event/archive/read/export/restart and later product work remain. |
-| Next bounded action | Implement P02-T02 step2 through the actual native store with the existing signed-event oracle and pending-feed consumer. Complete the remaining actual native-authority/write call-chain inspection, add a discriminating native test, then implement its atomic dictionary/event/receipt write set. RegistrationObservation and format values cannot grant authority. Control qualification commits and normal push are complete. Qualify the new owned-event verifier on Tux before its push. |
+| Next bounded action | After verifying the containing qualification commit/push, implement P02-T02 step 2's first actual synchronized write: dictionary bootstrap through EvidenceIntent with contiguous source/allocation state, request detail and pending marker in the same batch, consumed by the existing native readers. Establish the real Control/native authority call chain before exposing it as admission; a RegistrationObservation, manifest or caller-constructed value cannot grant authority. Proceed to the existing signed-event oracle and full event write set; do not stop at additional read helpers. |
 
 Local authentication Mac checks: [evidence](evidence/p08-local-authentication-mac-20260918.json), 194 workspace tests, Clippy/fmt/structural checks PASS. Native Linux/PG: [evidence](evidence/p08-local-authentication-native-20260918.json), 16 CLI cases and independent 29-table audit PASS; owned runtime stopped-retained.
 
@@ -58,15 +58,30 @@ build/matrix and targeted Mac checks supply its scope. GitHub billing remains
 external NOT_RUN; trusted Tux runs use the shared CI entrypoint without release
 credentials or untrusted PR execution.
 
-Current resources: shared Tux checkout clean detached `6be8515`, no consumers.
-CI `6314639` and build `6be8515` containers exited0/OOMfalse, stopped-retained.
-Runtime root `runs/configuration-6be8515/runtime`, owner
-`e88b35230a31ad4b7d0cb633072341b6`, eight databases/private bridge retained; all
-seven product processes and PG/client stopped. Idle Python helper exits143 on
-SIGTERM; PostgreSQL exits0. Final inventory found zero running BigBrotr containers
-and eight unrelated running containers unchanged. Full IDs and evidence hashes
-are in the laboratory inventory; raw records under
-`.research/implementation/control-runtime/` and `.research/implementation/ci/native-6314639`.
+Current resources: shared Tux checkout remains clean detached `6be8515`, no
+consumers. Both new native jobs are stopped-retained, exit0/OOMfalse; final full
+inventory found zero running BigBrotr containers and the same eight unrelated
+running containers as both preflights. No resource was deleted:
+
+- `runs/ci-d0644ac`, container `8c00542b34ab40c228356ad41056aaa7391d9be3eb8db454c2fea55e10f237f1`,
+  owner `5eac340e8bea599cefb97ee0516b61fa`: all 14 shared CI steps, 202 Rust tests,
+  21 Python controls and 104 practical checks PASS. Independent audit compared
+  513 exact source files, ELF `000451d95977a80b4759c969f9a83454815148f26dce7f36895e92f3952c4266`,
+  17 complete signed outputs and 77 full syscall traces.
+- `runs/receipts-41fff54`, container `2ac31a2f76fc46d56f68136906f33f243eb2852aaabcf30a3f67d62eb75efb10`,
+  owner `3f610d43b3f9881ec93199bb7f8215cb`: six codec and five actual native
+  receipt tests PASS. All 517 actual source files compared against Git archive;
+  both test executables downloaded/hashed, Rust/Cargo/native tools independently
+  checked. Native read assertions are test-harness observed; no post-test external
+  DB inspection, admission or crash qualification is claimed.
+
+Raw records/observers are under `.research/implementation/owned-event/`,
+`.research/implementation/ci/native-d0644ac/` and
+`.research/implementation/receipt-reader/`. The local receipt artifact observer
+initially failed because Python lacks `hashlib.file_digest`; its corrected bounded
+streaming SHA-256 audit passed on the same downloaded binaries without changing
+expected results. Full IDs, resource limits and terminal records are in the
+laboratory inventory and linked native evidence.
 
 Orchestration findings remain explicit in native evidence: original `6314639`
 preflight used the wrong source path and its shell continued launching; inventory
@@ -88,11 +103,22 @@ options and WriteBatch interfaces inspected; scoped source hashes/intervals at
 WriteBatch capacity is not a maximum; bound/account values before FFI insertion.
 No admission code changed or new admission experiment executed yet.
 
-Automatic objective state was read from the session service after qualification:
-`usageLimited`, objective still the complete selected product, not complete.
-No limit was reset and no replacement agents were spawned. The next manual or
-automatic continuation must verify this checkpoint and proceed with P02-T02.
+Automatic objective state was freshly read from the session service after the
+new candidate work: `active`, objective still the complete selected product.
+The earlier `usageLimited` observation is superseded; no limit was reset and no
+replacement agents were spawned. Preserve the objective across continuations.
 
-Owned-event verification prerequisite: `verify_owned` now moves existing SignedEvent buffers through the same size/ID/BIP340 checks as the JSON entrypoint. The new API was initially absent (compile failure); three new tests then pass for buffer identity, exact normalized size, actual alternate signatures/tampering and bounded typed containers/strings. The independent signed corpus checker passed for all 15 variants/14 IDs. Raw Mac checks at `.research/implementation/owned-event/`; CLI integration/Clippy were still running at this checkpoint write. No native qualification of this change is claimed yet. Fresh read-only Tux inventory found zero BigBrotr containers running, eight unrelated containers unchanged, no shared-checkout consumers and clean detached 6be8515.
+Owned-event verifier: ten protocol tests (three new), five real CLI cases and the
+independent 15-variant/14-ID checker pass on Mac. See
+[Mac evidence](evidence/p02-owned-event-mac-20260918.json) and
+[native evidence](evidence/p02-owned-event-native-20260918.json).
+The initial missing-API compile failure is not a behavioral regression failure.
 
-Receipt inspection prerequisite is implemented: actual bounded RocksDB point lookup binds the full request, dataset and expected digest, preserves original context and retains its allocation permit. An absent detail never resolves a write or retirement. Five native Mac cases, six unchanged golden codec cases and final stable workspace Clippy pass; see [Mac evidence](evidence/p02-receipt-reader-mac-20260918.json). No admission writer or producer retirement was added. Tux CI d0644ac (owner 5eac340e8bea599cefb97ee0516b61fa, container 8c00542b34ab40c228356ad41056aaa7391d9be3eb8db454c2fea55e10f237f1) is running with its own read-only source under runs/ci-d0644ac; shared checkout remains untouched. Qualify the new receipt reader separately at its containing candidate revision.
+Receipt reader: five actual engine cases, six unchanged golden codec cases and
+stable combined workspace Clippy pass on Mac; both suites pass on native Tux.
+See [Mac](evidence/p02-receipt-reader-mac-20260918.json) and
+[native evidence](evidence/p02-receipt-reader-native-20260918.json).
+Full request/dataset/digest binding, retained permits, original context and
+key/value non-mutation are checked. Inspection does not resolve missing detail,
+retire producers, authorize progress or implement admission writes. Full CI was
+not repeated at 41fff54; that revision received the selected native suites.
