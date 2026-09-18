@@ -10,7 +10,8 @@ use std::{cell::Cell, time::Duration};
 
 async fn run() {
     let args: Vec<_> = std::env::args().skip(1).collect();
-    assert_eq!(args.len(), 3);
+    assert!((3..=4).contains(&args.len()));
+    let port = args.get(3).map_or(5432, |s| s.parse().unwrap());
     let (mode, database, expected) = (&args[0], &args[1], &args[2]);
     assert!(
         database.starts_with("bbcat_")
@@ -30,20 +31,26 @@ async fn run() {
     let grant = budget
         .try_acquire(ResourceRequest::data(64 * 1024 * 1024, 1, 0).unwrap())
         .unwrap();
-    let identity = CatalogIdentity::local(
+    let constructor = if mode.starts_with("native-") {
+        CatalogIdentity::native_only_local
+    } else {
+        CatalogIdentity::local
+    };
+    let identity = constructor(
         fixture::dataset(),
         fixture::catalog(),
         &format!("/out/schema_{database}/"),
     )
     .unwrap();
+    let mode = mode.strip_prefix("native-").unwrap_or(mode);
     let receipt = if mode == "activate" {
         Some(fixture::intent(1).await)
     } else {
         None
     };
-    let (mut client, driver) = fixture::connect(database, "postgres", 5432).await;
+    let (mut client, driver) = fixture::connect(database, "postgres", port).await;
     let commit = Cell::new(false);
-    let result = match mode.as_str() {
+    let result = match mode {
         "install" => catalog_guard::install(&mut client, &identity, "BootstrapMixed", &commit)
             .await
             .map(|v| if v { "installed" } else { "existing" }),

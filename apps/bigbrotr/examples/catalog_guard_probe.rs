@@ -57,7 +57,8 @@ fn request(n: u8, predecessor: u64) -> ArchiveAttemptRequest {
 async fn run() {
     let mode = std::env::args().nth(1).unwrap();
     let (mut admin, driver) = connect("catalog", "postgres").await;
-    let identity = CatalogIdentity::local(dataset(), catalog(), "/out/archive/").unwrap();
+    let identity =
+        CatalogIdentity::native_only_local(dataset(), catalog(), "/out/archive/").unwrap();
     let commit = Cell::new(false);
     match mode.as_str() {
         "install" => {
@@ -110,19 +111,19 @@ async fn run() {
             assert!(!commit.get());
             catalog_guard::inspect(&mut admin, &identity).await.unwrap();
             for wrong in [
-                CatalogIdentity::local(
+                CatalogIdentity::native_only_local(
                     DatasetId::try_from([3; 16]).unwrap(),
                     catalog(),
                     "/out/archive/",
                 )
                 .unwrap(),
-                CatalogIdentity::local(
+                CatalogIdentity::native_only_local(
                     dataset(),
                     OwnerResourceId::try_from([4; 16]).unwrap(),
                     "/out/archive/",
                 )
                 .unwrap(),
-                CatalogIdentity::local(dataset(), catalog(), "/out/other/").unwrap(),
+                CatalogIdentity::native_only_local(dataset(), catalog(), "/out/other/").unwrap(),
             ] {
                 assert!(catalog_guard::inspect(&mut admin, &wrong).await.is_err());
             }

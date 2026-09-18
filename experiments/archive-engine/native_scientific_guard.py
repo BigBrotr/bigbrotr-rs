@@ -30,9 +30,9 @@ env.update(CARGO_HOME=str(build / 'cargo-home'), CARGO_TARGET_DIR=str(build / 't
     BIGBROTR_SOURCE_MANIFEST_SHA256=file_hash(build / 'source-manifest.json'), BIGBROTR_BUILD_PROFILE='release')
 checks = [
     ('build', ['cargo','build','--locked','--offline','--release','-p','bigbrotr','--example','catalog_schema_probe']),
-    ('guard', ['cargo','build','--locked','--offline','--release','-p','bigbrotr','--example','scientific_guard_probe']),
-    ('worker', ['cargo','build','--locked','--offline','--release','-p','bigbrotr-archive-worker','--bin','bigbrotr-archive-worker']),
-    ('clippy', ['cargo','clippy','--locked','--offline','--release','-p','bigbrotr','-p','bigbrotr-archive-worker','--lib','--example','catalog_schema_probe','--example','scientific_guard_probe','--bin','bigbrotr-archive-worker','--','-D','warnings']),
+    ('guard', ['cargo','build','--locked','--offline','--release','-p','bigbrotr','--example','scientific_guard_probe','--example','archive_attempt_probe']),
+    ('worker', ['cargo','build','--locked','--offline','--release','-p','bigbrotr-archive-worker','--bin','bigbrotr-archive-worker','--example','scientific_ddl_probe']),
+    ('clippy', ['cargo','clippy','--locked','--offline','--release','-p','bigbrotr','-p','bigbrotr-archive-worker','--lib','--example','catalog_schema_probe','--example','scientific_guard_probe','--example','scientific_ddl_probe','--bin','bigbrotr-archive-worker','--','-D','warnings']),
 ]
 assert execute(checks,out,SOURCE,env,{'source':manifest['revision'],'native_toolchain':native},1800)['status']=='PASS'
 worker = bundle/'bigbrotr-archive-worker'
@@ -46,5 +46,11 @@ guard = out/'scientific-guard-probe'
 shutil.copy2(build/'target/release/examples/scientific_guard_probe',guard)
 guard.chmod(0o500)
 identity['guard']=file_hash(guard)
+ddl = out/'scientific-ddl-probe'
+shutil.copy2(build/'target/release/examples/scientific_ddl_probe',ddl)
+ddl.chmod(0o500)
+identity['ddl']=file_hash(ddl)
+assert execute([('control',[str(build/'target/release/examples/archive_attempt_probe')]),('guard-unit',['cargo','test','--locked','--offline','--release','-p','bigbrotr','--test','catalog_guard'])],out/'checks',SOURCE,env,identity,1800)['status']=='PASS'
+identity['control']=file_hash(build/'target/release/examples/archive_attempt_probe')
 (out/'ready.json').write_text(json.dumps(identity,indent=2)+'\n')
 print(json.dumps({'status':'READY',**identity}),flush=True)

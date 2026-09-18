@@ -16,7 +16,7 @@ positive fencing, receipts/protection, then M1 read/export/restart. No P02 task 
 M1 gate is complete. Catalog guard, credential provisioning/sealing and finite
 private supervision prerequisites now have scoped native evidence. The first
 scientific schema declaration and fresh-only initializer have scoped qualification;
-scientific guard binding and the publisher remain unimplemented. Pending must not
+scientific guard binding is being qualified and the publisher remains unimplemented. Pending must not
 be acknowledged/reclaimed.
 
 ## Git and integrating ownership
@@ -178,30 +178,42 @@ mismatch was corrected with validated member extraction and independent hash che
 No unfinished cleanup. Credentials/recovery/startup/MON labs remain stopped and
 inventoried; never restart retired-network containers. amd64 does not qualify arm64.
 
-## Active scientific guard regression
+## Active scientific guard candidate
 
-Root is adding an actual-PG scientific guard probe under P02-T04. Baseline
-HEAD/origin was `9b607db` and clean. The new regression expects installation after
-the qualified finite initializer; the old installer is expected to refuse its
-snapshot1. Mac example compilation passed; no PG result is claimed yet. The
-next candidate contains the fixture only, for exact-Git native red evidence.
-No existing lab is restarted. New resources will be inventoried separately.
+Root is implementing scientific binding/inspection under P02-T04. Baseline was
+clean pushed `9b607db`. Fixture-only candidate `164a9bc` is unpublished; actual
+Tux PG reproduced the old installer returning ExistingData for initialized schema1
+(expected failing assertion, exit101). Its owner94e5c542adc5eb1f497d677604da780e
+resources are stopped, network retired; 20 unrelated identities unchanged and
+zero BigBrotr running. See scientific_guard in the existing lab inventory and
+`.research/implementation/archive-worker/scientific-guard/{red,red-audit}.json`.
+
+Current root-owned candidate adds immutable migration0002, all203 logical-column
+inspection and explicit scientific/native-only identity distinction. Existing0001
+and the native initializer/declaration remain unchanged. Installed inspection now
+holds owner FOR UPDATE, avoiding SHARE table-lock inversion. Independent AI review
+found an extra malformed metadata scope could pass reused checks but fail pinned
+native attach; bounded science-only metadata validation now closes that source
+counterexample, awaiting actual-PG controls. Name/file mappings remain separate
+publication closure, not inferred from shape. The independent declaration parser
+matches all203 retained PG rows; STRUCT/LIST default_value_type is empty, unlike
+scalar literal defaults. Mac scoped Clippy, two identity cases and docs checks
+passed. No new scientific PG qualification is claimed yet.
+
+The next clean exact-Git candidate will execute native ALTER/DROP/rollback,
+shape/NULL/metadata controls, failed activation effects, installation rollback,
+lost COMMIT in both directions and both owner/native lock orders. Review must
+consume actual outcomes before push. No source ACK/reclaim, publication or M1.
 
 ## Next bounded action
 
-Integrate scientific schema identity with the actual PG guard under P02-T04.
-The qualified `0e2ca43` product/evidence are pushed; no prior lab needs cleanup. The current
-`fresh()` still insists on snapshot0 and no scientific tables; it deliberately
-cannot certify the newly initialized schema. Add an immutable application-owned
-schema-version/manifest binding in the same guard installation transaction,
-preserving applied0001. Reuse the existing guard-only path only as an explicitly
-distinct prerequisite. Validate complete live table/column/type/default/parent/
-nullability metadata, including NULL-negative controls and altered/partial state;
-PG structural hashes cover object definitions, not these native metadata rows.
-Use the retained 203-column observation to verify exact upstream representation,
-not as an unchecked self-generated oracle. Scientific activation/publication must
-require the binding and live compatibility check. Resolve interrupted initialization
-without synthetic admission batches, blind re-creation or accepting an absent reply.
+Qualify the clean scientific guard candidate on a separately inventoried Tux PG
+lab using `native_scientific_guard.py` and `scientific_guard_cases.py`. Preserve
+actual failure outputs, reconcile any counterexample, verify exact source/ELFs,
+retire only owned resources and record the result before pushing. Complete
+interrupted snapshot0 initialization recovery remains separate work; the new
+installer accepts only the exact complete empty snapshot1 state. No prior lab
+needs cleanup or restart.
 
 Then connect all five families and atomic receipts/protection to signed M1 read/
 export/restart with independent full content/reference readback. No pending ACK/

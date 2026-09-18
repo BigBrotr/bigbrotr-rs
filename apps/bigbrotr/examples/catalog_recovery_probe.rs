@@ -37,8 +37,12 @@ async fn run() {
         serde_json::json!({"event":"connected", "pid":backend.get::<_,i32>(0),
         "start":backend.get::<_,String>(1)}),
     );
-    let identity =
-        CatalogIdentity::local(dataset(), catalog(), &format!("/out/archive_{database}/")).unwrap();
+    let identity = CatalogIdentity::native_only_local(
+        dataset(),
+        catalog(),
+        &format!("/out/archive_{database}/"),
+    )
+    .unwrap();
     let commit = Cell::new(false);
     let operation = async {
         match mode.as_str() {

@@ -9,7 +9,7 @@ const NATIVE: &str = include_str!("../../../../../../contracts/archive/catalog-n
 const MAX_DEFINITION: usize = 8192;
 const MAX_OBJECTS: usize = 1024;
 
-async fn require(
+pub(super) async fn require(
     tx: &Transaction<'_>,
     sql: &str,
     params: &[&(dyn ToSql + Sync)],
@@ -72,8 +72,11 @@ pub(super) async fn native(tx: &Transaction<'_>) -> Result<Vec<String>, GuardErr
     Ok(tables)
 }
 
-async fn metadata(tx: &Transaction<'_>, identity: &CatalogIdentity) -> Result<(), GuardError> {
-    require(tx, "SELECT (SELECT count(*)=1 FROM public.ducklake_metadata WHERE key='version' AND value='1.0' AND scope IS NULL AND scope_id IS NULL) AND (SELECT count(*)=1 FROM public.ducklake_metadata WHERE key='data_path' AND value=$1::text AND scope IS NULL AND scope_id IS NULL) AND (SELECT count(*)=1 FROM public.ducklake_metadata WHERE key='encrypted' AND value='false' AND scope IS NULL AND scope_id IS NULL) AND NOT EXISTS(SELECT 1 FROM public.ducklake_metadata WHERE (key IN ('version','data_path','encrypted') AND (scope IS NOT NULL OR scope_id IS NOT NULL)) OR (key='data_inlining_row_limit' AND value<>'0')) AND (SELECT count(*)=3 FROM public.ducklake_metadata WHERE key IN ('version','data_path','encrypted')) AND NOT EXISTS(SELECT 1 FROM public.ducklake_inlined_data_tables)", &[&identity.root], GuardError::IncompatibleLayout).await
+pub(super) async fn metadata(
+    tx: &Transaction<'_>,
+    identity: &CatalogIdentity,
+) -> Result<(), GuardError> {
+    require(tx, "SELECT (SELECT count(*)=1 FROM public.ducklake_metadata WHERE key='version' AND value='1.0' AND scope IS NULL AND scope_id IS NULL) AND (SELECT count(*)=1 FROM public.ducklake_metadata WHERE key='data_path' AND value=$1::text AND scope IS NULL AND scope_id IS NULL) AND (SELECT count(*)=1 FROM public.ducklake_metadata WHERE key='encrypted' AND value='false' AND scope IS NULL AND scope_id IS NULL) AND NOT EXISTS(SELECT 1 FROM public.ducklake_metadata WHERE (key IN ('version','data_path','encrypted') AND (scope IS NOT NULL OR scope_id IS NOT NULL)) OR (key='data_inlining_row_limit' AND (value='0') IS NOT TRUE)) AND (SELECT count(*)=3 FROM public.ducklake_metadata WHERE key IN ('version','data_path','encrypted')) AND NOT EXISTS(SELECT 1 FROM public.ducklake_inlined_data_tables)", &[&identity.root], GuardError::IncompatibleLayout).await
 }
 
 pub(super) async fn fresh(
@@ -172,6 +175,7 @@ pub(super) async fn installed(
 ) -> Result<(), GuardError> {
     native(tx).await?;
     metadata(tx, identity).await?;
+    super::scientific::installed(tx, identity).await?;
     let actual = layout(tx).await?;
     require(tx, "SELECT count(*)=1 AND bool_and(singleton AND dataset_id=$1::bytea AND catalog_id=$2::bytea AND data_root=$3::text AND protocol=1 AND sql_checksum=$4::bytea AND layout_checksum=$5::bytea) FROM bigbrotr_archive.installation", &[&&identity.dataset.as_bytes()[..], &&identity.catalog.as_bytes()[..], &identity.root, &&checksum()[..], &&actual[..]], GuardError::WrongCatalog).await?;
     // Independent semantic checks: a stored checksum alone does not establish

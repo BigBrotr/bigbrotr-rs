@@ -258,8 +258,12 @@ async fn run() {
     );
     let ordinal: u8 = args[2].parse().unwrap();
     let port: u16 = args[3].parse().unwrap();
-    let identity =
-        CatalogIdentity::local(dataset(), catalog(), &format!("/out/archive_{database}/")).unwrap();
+    let identity = CatalogIdentity::native_only_local(
+        dataset(),
+        catalog(),
+        &format!("/out/archive_{database}/"),
+    )
+    .unwrap();
     match mode.as_str() {
         "bootstrap" => {
             native(

@@ -9,6 +9,7 @@ use tokio_postgres::{Client, IsolationLevel, Transaction};
 use zeroize::Zeroizing;
 mod credentials;
 mod inspection;
+mod scientific;
 const SQL: &str = include_str!("../../../../../migrations/catalog/0001_writer_guard.sql");
 const WRITER_BODY: &str = "writer";
 
@@ -40,9 +41,10 @@ pub struct CatalogIdentity {
     dataset: DatasetId,
     catalog: OwnerResourceId,
     root: String,
+    scientific: bool,
 }
 impl CatalogIdentity {
-    /// Local placement only. S3 selection requires its separate qualified adapter;
+    /// Scientific schema1 on local placement. S3 selection requires its separate qualified adapter;
     /// no fallback or filesystem probing occurs in this PostgreSQL value type.
     pub fn local(
         dataset: DatasetId,
@@ -63,7 +65,19 @@ impl CatalogIdentity {
             dataset,
             catalog,
             root: root.into(),
+            scientific: true,
         })
+    }
+    /// Explicit native-only foundation fixture. This cannot inspect or activate
+    /// a scientific installation, and is not ordinary publication readiness.
+    pub fn native_only_local(
+        dataset: DatasetId,
+        catalog: OwnerResourceId,
+        root: &str,
+    ) -> Result<Self, GuardError> {
+        let mut value = Self::local(dataset, catalog, root)?;
+        value.scientific = false;
+        Ok(value)
     }
     pub const fn dataset(&self) -> DatasetId {
         self.dataset
@@ -146,8 +160,8 @@ async fn begin(client: &mut Client, exclusive: bool) -> Result<Transaction<'_>, 
     Ok(tx)
 }
 
-/// Explicit fresh installation after the isolated native bootstrap is joined.
-/// The bootstrap login must have created this empty pinned native catalog without
+/// Explicit fresh installation after the isolated native initializer is joined.
+/// The bootstrap login must have created this pinned, empty scientific catalog without
 /// role membership or administrative privilege. Transfer ownership and revoke
 /// its DDL/DML in the same transaction as all statement guards. No native metadata
 /// values/columns are rewritten. A pre-existing guarded catalog is inspected only.
@@ -170,6 +184,7 @@ pub async fn install(
         .try_get(0)
         .map_err(backend)?;
     if exists {
+        lock_inspection(&tx).await?;
         inspection::installed(&tx, identity).await?;
         tx.rollback().await.map_err(backend)?;
         return Ok(false);
@@ -185,9 +200,16 @@ pub async fn install(
     ))
     .await
     .map_err(backend)?;
-    inspection::fresh(&tx, identity).await?;
+    if identity.scientific {
+        scientific::fresh(&tx, identity).await?;
+    } else {
+        inspection::fresh(&tx, identity).await?;
+    }
     inspection::bootstrap(&tx, bootstrap_login).await?;
     tx.batch_execute(SQL).await.map_err(backend)?;
+    if identity.scientific {
+        tx.batch_execute(scientific::SQL).await.map_err(backend)?;
+    }
     let mut edits = format!(
         "REVOKE ALL ON SCHEMA public FROM {bootstrap}; REVOKE CREATE ON SCHEMA public FROM PUBLIC; REVOKE ALL ON ALL TABLES IN SCHEMA public FROM PUBLIC;"
     );
@@ -198,16 +220,33 @@ pub async fn install(
     inspection::revoked(&tx, bootstrap_login).await?;
     let layout = inspection::layout(&tx).await?;
     tx.execute("INSERT INTO bigbrotr_archive.installation VALUES(true,$1::bytea,$2::bytea,$3::text,1,$4::bytea,$5::bytea)", &[&&identity.dataset.as_bytes()[..],&&identity.catalog.as_bytes()[..],&identity.root,&&checksum()[..],&&layout[..]]).await.map_err(backend)?;
+    if identity.scientific {
+        scientific::bind(&tx).await?;
+    }
     inspection::installed(&tx, identity).await?;
     commit_started.set(true);
     tx.commit().await.map_err(|_| GuardError::CommitUnknown)?;
     Ok(true)
 }
 
-/// Read-only verification, including actual trigger/function/schema state. This
+async fn lock_inspection(tx: &Transaction<'_>) -> Result<(), GuardError> {
+    // Native DML already obtains a table lock before its trigger locks this row.
+    // Do not request SHARE table locks after this: that would reverse lock order.
+    tx.query_one(
+        "SELECT ordinal FROM bigbrotr_archive.owner WHERE singleton FOR UPDATE",
+        &[],
+    )
+    .await
+    .map_err(backend)?;
+    Ok(())
+}
+
+/// Verification without durable mutation, including actual logical/native shape.
+/// The owner lock briefly excludes native commits for a coherent inspection. This
 /// is not a receipt lookup and grants no native write authority.
 pub async fn inspect(client: &mut Client, identity: &CatalogIdentity) -> Result<(), GuardError> {
     let tx = begin(client, false).await?;
+    lock_inspection(&tx).await?;
     inspection::installed(&tx, identity).await?;
     tx.rollback().await.map_err(backend)
 }

@@ -6736,6 +6736,69 @@
       "audit": ".research/implementation/archive-worker/scientific-schema/0e2ca43/audit.json",
       "independent_audit": ".research/implementation/archive-worker/scientific-schema/0e2ca43/independent-audit.json",
       "remaining": "scientific guard binding, full nested metadata validation, actual PG init recovery and publisher remain required"
+    },
+    "scientific_guard": {
+      "status": "164a9bc expected regression failure; red resources stopped-retained; implementation candidate not yet qualified",
+      "raw_root": ".research/implementation/archive-worker/scientific-guard",
+      "resources_red": {
+        "source": "164a9bce8b7799471648b66b012f6026102bbf23",
+        "tree": "5ca61d8dd30c8a9eef11df635020f0440055cb50",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/scientific-guard-164a9bc",
+        "owner": "94e5c542adc5eb1f497d677604da780e",
+        "container": "bigbrotr-implementation-scientific-guard-164a9bc",
+        "postgres": "bigbrotr-implementation-scientific-guard-164a9bc-pg",
+        "network": "bigbrotr-implementation-scientific-guard-164a9bc",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "state": "stopped-retained",
+        "source_files": 658,
+        "started_at": "2026-09-18T20:18:41.621226+00:00",
+        "network_id": "c698ac0c6763444edf1a1ed23329f4a464ff7515cd2d50a416206d5880e4f552",
+        "postgres_id": "e80ea514791e091d9e6f288bec6e695085637d44c95d666cecb035808edde045",
+        "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+        "container_id": "42127405cb00b57708e548dceabf0731143b7e1265bf18c60fc121065718502b",
+        "network_state": "retired",
+        "terminal": {
+          "runner": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-18T20:18:43.665919879Z",
+            "FinishedAt": "2026-09-18T20:23:51.530855884Z"
+          },
+          "postgres": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-18T20:18:42.17486794Z",
+            "FinishedAt": "2026-09-18T20:23:51.828041717Z"
+          }
+        },
+        "finished_at": "2026-09-18T20:23:52.400443+00:00"
+      },
+      "audit_red": {
+        "source": "164a9bce8b7799471648b66b012f6026102bbf23",
+        "tree": "5ca61d8dd30c8a9eef11df635020f0440055cb50",
+        "source_files": 658,
+        "manifest_sha256": "816eb647f36a909bde7f167db3ebfc0a9c82cb06c19c0c5dc801e6be23d362a2",
+        "cleanup": "owned containers stopped, network retired, no OOM",
+        "unrelated_unchanged": 20,
+        "unrelated_running": 8,
+        "running_bigbrotr": 0
+      },
+      "next": "separate clean-source native candidate for scientific binding/inspection; no retired lab restart"
     }
   },
   "implementation_monitor_corrections_20260918": {

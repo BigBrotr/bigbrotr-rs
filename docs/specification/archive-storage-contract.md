@@ -174,14 +174,16 @@ read core and can expose all data in that authority's dataset.
 P02-T04 selects the tested PG statement-trigger fence for the pinned DuckLake1.0
 metadata layout. `migrations/catalog/0001_writer_guard.sql` belongs to the separate
 catalog database; it is not an application-Control migration. Native bootstrap
-alone creates the 28 metadata tables. After that finite worker has exited and been
-positively reaped, the installer requires the exact empty initial native snapshot,
+alone creates the 28 metadata tables. The scientific initializer additionally
+creates the six declared logical tables at snapshot1. After the finite worker has
+exited and been positively reaped, the installer requires that exact empty state,
 metadata version/root/encryption, column/key/collation layout and a restricted bootstrap
 login. In one transaction it transfers native table ownership to the catalog
 manager, revokes bootstrap DDL/DML and PUBLIC native privileges, attaches all 28
 statement guards, and records dataset/catalog/root, SQL and live-layout hashes.
 No native metadata values/columns are rewritten. Nonempty or unfamiliar history
-is refused; there is no automatic adoption or native migration. Repeated install
+is refused; the explicitly named `native_only_local` foundation fixture retains
+the original empty snapshot0 path and cannot inspect a scientific binding; there is no automatic adoption or native migration. Repeated install
 inspects the existing guard without modifying it. Unknown COMMIT requires a fresh
 connection and inspection, not an assumption that initialization failed.
 
@@ -271,13 +273,40 @@ privileged inspection. The operation shares the private supervisor and returns
 only after exit/EOF and positive reap. It does not install the guard or certify a
 schema ready for publication.
 
-The original guard-only fixture remains distinct. Scientific initialization must
-be followed by an immutable application-owned schema-version/checksum binding and
-complete live nested native metadata inspection in the guard's installation
-transaction. The existing PG structural checksum does not cover scientific
-metadata rows. These integration/recovery checks remain P02-T04 work; ordinary
-publication must not silently initialize, migrate or adopt a catalog. Initializing
-an empty installation requires no synthetic admission batch or archive attempt.
+`CatalogIdentity::local` selects scientific schema1. The additive catalog
+migration0002 binds version, initialization snapshot and declaration/native-layout/
+SQL checksums in the same transaction as guard installation and ownership transfer.
+Applied0001 is unchanged. An existing native-only guard cannot be silently upgraded
+or adopted; the explicit foundation constructor cannot inspect a scientific guard.
+The binding is immutable under the existing history trigger and contributes its
+actual PG object shape to the installation checksum.
+
+Installation, retry, inspection and activation validate all six live table
+relationships, all203 columns (including nested parents, order, exact types,
+nullability and defaults), schema versions and declared schema/placement metadata.
+The declaration-derived fixture is independently compared with actual pinned
+native metadata. STRUCT/LIST default types are empty; scalar default types are
+`literal`. SQL NULL fails required predicates. Returned column strings/counts are
+bounded. Current schema1 permits only its four global metadata values and optional
+zero-inlining at global/main-schema/six-table scopes; unknown, duplicate or malformed
+settings refuse. New persistent options require explicit compatibility qualification.
+File/name mappings, file contents and protection are separate publication/recovery
+checks, not certified by logical schema inspection.
+
+Installed inspection holds the owner row FOR UPDATE against guarded native DML.
+It must not subsequently acquire SHARE table locks: native DML holds its table
+lock before its statement trigger waits for the owner. Ordinary AccessShare reads
+are compatible with that waiting DML. First installation instead locks all native
+tables before any guard exists. Runtime metadata DML can encode logical DuckLake
+DDL; this inspection does not constrain arbitrary SQL within a lifetime. The
+closed publisher and future schema transitions remain required.
+
+An absent initializer response can be resolved only by a fresh privileged
+inspection of the exact complete empty state. Guard installation then establishes
+its binding; snapshot0/partial/unfamiliar initialization is refused. Explicit
+interrupted-initialization recovery and the installed CLI journey remain P02-T04
+work. No synthetic admission batch or archive attempt is needed to initialize an
+empty installation. Ordinary publication never silently initializes or migrates.
 
 ## Actual publication and protection boundaries
 

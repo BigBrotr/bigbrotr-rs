@@ -134,12 +134,21 @@ claim. Model validation must enforce lengths, nonzero identities, nested require
 children and complete canonical ranges; DuckLake does not enforce primary/foreign
 keys or these semantic constraints.
 
-The original guard-only installer still accepts only the pristine native bootstrap.
-Scientific guard binding, complete live nested-schema validation, interrupted-init
-resolution and the installed CLI journey remain required before using the new
-schema for ordinary publication. Applied guard SQL is unchanged. A failed or lost
-initialization response must be resolved by a fresh privileged catalog inspection;
+The scientific guard installer validates the complete empty snapshot1 state and
+atomically binds the declaration and [native layout](../../contracts/archive/v1/native-layout.json)
+through additive migration0002. Applied0001 remains unchanged. `local()` selects
+scientific compatibility; the explicitly named native-only foundation path cannot
+adopt a scientific installation. Every inspection/activation checks live nested
+metadata under the owner lock, independently of PG structural hashes. The
+[independent oracle](../../experiments/archive-engine/scientific_layout_oracle.py)
+derives all203 expected native column rows from the closed declaration and can
+compare separately collected PG rows.
+
+Installed recovery, publication and the CLI journey remain required. A failed or
+lost initialization response must be resolved by fresh privileged inspection;
 never delete data or repeat initialization merely because the response was absent.
+Only the exact complete empty scientific state can proceed to guard installation;
+partial/native-only state is refused.
 
 The [scoped native qualification](../implementation/evidence/p02-scientific-schema-native-20260918.json)
 at `0e2ca43` passes twelve real-PG initialization/refusal cases and 39 native Rust

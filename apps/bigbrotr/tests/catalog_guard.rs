@@ -29,3 +29,13 @@ fn catalog_identity_requires_an_explicit_bounded_canonical_root() {
         GuardError::InvalidInput
     );
 }
+
+#[test]
+fn scientific_identity_cannot_equal_native_only_foundation_identity() {
+    let dataset = DatasetId::try_from([1; 16]).unwrap();
+    let catalog = OwnerResourceId::try_from([2; 16]).unwrap();
+    assert_ne!(
+        CatalogIdentity::local(dataset, catalog, "/archive/").unwrap(),
+        CatalogIdentity::native_only_local(dataset, catalog, "/archive/").unwrap()
+    );
+}
