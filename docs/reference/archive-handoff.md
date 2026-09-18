@@ -147,6 +147,16 @@ An input limit remains a resource refusal, even when the child subsequently
 rejects the incomplete input. Diagnostics are private preparation results only;
 counts are not a full content-read oracle or durable publication receipt.
 
+After those checks, the parent also returns the schema-1 semantic archive input
+digest for the explicitly supplied topology generation. It borrows the retained
+complete admission membership, without copying references or fact bodies. This
+uses the separate `bigbrotr/archive-batch/1` domain and maximal source ranges; it
+does not reuse the transport/admission digest. The caller must resolve the actual
+retained topology and complete admission authority before future publication;
+the Rocks creation manifest is not an implicit current-topology source. The
+private child framing/result remain version 1 and contain no topology authority.
+This input digest is not a stage-content readback, commit or protection receipt.
+
 On error/drop, the parent sends SIGKILL and polls for reaping for 300 ms. Native
 and control grants remain owned until exit is observed. If the OS cannot establish
 exit, `TerminationUnknown` takes precedence: preserve the job root and exclude

@@ -15,12 +15,17 @@ complete. Pending must not be reclaimed. Whole selected product remains required
 
 ## Git and ownership
 
-Mac main, integrating root only. Freshly verified HEAD
-`d4f43af4f2f264886053338cffa664611065569c`, origin/main
-`8d8cdf58af95262d713876a5be97ab0a1b513f63`, clean before evidence updates.
-The unpublished HEAD is the exact native44-case candidate; earlier MON/startup/guard
-evidence is pushed. Root owns report/inventory/README/checkpoint updates. No other writer.
-Source transfers through Git, readonly Tux source, root review only.
+Mac main, integrating root only. Verified HEAD and origin/main both
+`b6889008291e073c019472a250f51590ebb42847`, clean before the current identity slice.
+The 44-case guard qualification is committed/pushed. Root now owns the borrowed
+archive batch model/fingerprint, independent fixtures, actual pending preparation
+consumer and related contract/task/evidence updates; no other writer. Tux source
+transfers remain exact Git revisions and readonly. No active Tux experiment.
+Mac sessions61656 (expected missing-API RED) and38700 (signed connection PASS)
+are terminal. All54 model tests PASS; Clippy session33138 is still running.
+Tux preflight is saved under `.research/implementation/archive-worker/archive-identity`;
+no new native job has started. The next candidate will run the seven scoped Rust
+cases with readonly qualified worker and copied writable dependency caches.
 
 ## Qualified product prerequisites
 
@@ -209,8 +214,15 @@ errors. Two new containers stopped-retained, no OOM/backends, empty network reti
 86579/native run27074 terminal. Raw privileges-result/resources/log and
 audit-privileges.json retained under the same raw root; native root
 `runs/catalog-guard-d4f43af`. Inventory has the exact container/network identities.
-Next: review/commit/push this qualification, then audit native ordinary mutation
-coverage with inlining disabled/no runtime DDL.
+Qualification is now pushed. Exact source inspection finds per-table/schema
+inlining precedence and dynamic inlined data/delete table DDL: ordinary publication
+must reject scoped nonzero settings and an unexpected metadata relation set.
+Read scoped catalog options/insert planning/inlined-metadata writers; full native
+mutation/maintenance audit remains open. Next bounded product prerequisite is the
+semantic archive batch identity consumed by retained pending preparation before
+persisting publication attempts. Six new model cases PASS against literal independent vectors (54 total model
+cases); actual signed Rocks reopen/worker passes on Mac with two independent
+topology digests and unchanged KV state. New Linux native qualification NOT_RUN.
 Check all owned schema/trigger identities, altered/missing guard refusal, fixed
 snapshots and exact fresh setup/upgrade behavior before adopting it. Production
 adoption needs an explicit owning-contract exception for versioned metadata

@@ -1178,7 +1178,19 @@ fn signed_pending_reopens_and_reaches_the_supervised_native_worker_without_ackno
         )
         .unwrap(),
     );
-    for _ in 0..2 {
+    let vectors: serde_json::Value = serde_json::from_str(include_str!(
+        "../../../../../tests/fixtures/model/archive-signed-pending.json"
+    ))
+    .unwrap();
+    assert_eq!(vectors["vectors"].as_array().unwrap().len(), 2);
+    for vector in vectors["vectors"].as_array().unwrap() {
+        let topology = TopologyGeneration::new(
+            vector["topology_generation"]
+                .as_str()
+                .unwrap()
+                .parse()
+                .unwrap(),
+        );
         use std::os::unix::fs::PermissionsExt;
         let directory = tempfile::Builder::new()
             .permissions(std::fs::Permissions::from_mode(0o700))
@@ -1199,9 +1211,13 @@ fn signed_pending_reopens_and_reaches_the_supervised_native_worker_without_ackno
             deadline: Instant::now() + Duration::from_secs(15),
             cancelled: &cancel,
         }
-        .inspect_pending(&pending, &worker_budget)
+        .inspect_pending(&pending, topology, &worker_budget)
         .unwrap();
         assert_eq!(result.staged_counts, [1, 1, 1, 1, 0]);
+        assert_eq!(
+            result.archive_batch_digest.to_string(),
+            vector["sha256"].as_str().unwrap()
+        );
         assert_eq!(worker_budget.snapshot().active_permits(), 0);
         assert_eq!(kv(&store), before);
         assert_eq!(pending.batch(), &expected);
@@ -1230,7 +1246,7 @@ fn signed_pending_reopens_and_reaches_the_supervised_native_worker_without_ackno
         deadline: Instant::now() + Duration::from_secs(15),
         cancelled: &cancel,
     }
-    .inspect_pending(&pending, &worker_budget);
+    .inspect_pending(&pending, TopologyGeneration::new(1), &worker_budget);
     assert_eq!(
         result.err(),
         Some(PreparationError::Transfer(
@@ -1282,7 +1298,7 @@ fn signed_pending_reopens_and_reaches_the_supervised_native_worker_without_ackno
             deadline: Instant::now() + Duration::from_secs(15),
             cancelled: &cancel,
         }
-        .inspect_pending(&pending, &worker_budget);
+        .inspect_pending(&pending, TopologyGeneration::new(1), &worker_budget);
         assert_eq!(result.err(), Some(expected_error), "{case}");
         assert_eq!(worker_budget.snapshot().active_permits(), 0);
         assert_eq!(kv(&store), before);

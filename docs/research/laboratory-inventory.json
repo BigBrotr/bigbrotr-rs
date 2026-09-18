@@ -6300,7 +6300,39 @@
         "raw_result": ".research/implementation/archive-worker/catalog-fence/commit-guard/privileges-result.json",
         "source_files": 614,
         "cases": 44
+      },
+      "ordinary_insert_source_scope": {
+        "source": "d8a1881e22516ea3d186d73e83c65fe5bd1a1dc4",
+        "read_ranges": {
+          "src/storage/ducklake_catalog.cpp": "929-1043: scoped/global option precedence and inlining-limit methods",
+          "src/storage/ducklake_insert.cpp": "700-859: PlanInsert/PlanCreateTableAs and related methods",
+          "src/storage/ducklake_metadata_manager.cpp": "2471-2597 and2687-2873: new/inlined tables/data/deletions writers"
+        },
+        "sha256": {
+          "src/storage/ducklake_catalog.cpp": "e3129e9257962b5039229398b25a55d4d0b48ff8af9959af1c36b39776eea193",
+          "src/storage/ducklake_insert.cpp": "34e025c3378fbf2bbfdfe9baff0bd3b0359a28fe483f61101b5db8a982ace73f",
+          "src/storage/ducklake_metadata_manager.cpp": "92586c88a5b26fb8a2d4caddaa4ad0385f49866f7f13a283e298868ac7f054b8"
+        },
+        "finding": "Scoped table/schema options precede catalog/global default; nonzero inlining and inlined deletes can create dynamic PG relations. Ordinary initialization/attach must reject incompatible settings/layout; writer has no DDL privilege. Not a full mutation/maintenance closure audit."
       }
+    },
+    "archive_identity": {
+      "status": "Mac54 model cases and actual signed Rocks reopen/private worker PASS; scoped Clippy running; new native Linux qualification NOT_RUN",
+      "local_root": ".research/implementation/archive-worker/archive-identity",
+      "local_logs": [
+        "archive-identity-red.log",
+        "archive-connected-red.log",
+        "archive-identity-model.log",
+        "archive-connected-green.log",
+        "archive-identity-clippy.log"
+      ],
+      "mac_worker": {
+        "BIGBROTR_ARCHIVE_TEST_INSTALLATION": "/Users/vincenzo/Documents/GitHub/BigBrotr/bigbrotr-rs/.research/implementation/archive-worker/parent-death-mac/installation",
+        "BIGBROTR_ARCHIVE_TEST_WORKER_SHA256": "40473ab5486318a3944200f2b59eb9f5f6958c3cd4fc7f7f8e4819d0d72b79a7",
+        "BIGBROTR_ARCHIVE_TEST_WORKER_BYTES": "39641992"
+      },
+      "purpose": "Semantic schema/topology/range/source membership before persistent publisher attempt identity; no catalog receipt, ACK, reclaim or protection claim",
+      "native_preflight": ".research/implementation/archive-worker/archive-identity/preflight.json"
     }
   },
   "implementation_monitor_corrections_20260918": {

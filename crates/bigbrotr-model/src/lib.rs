@@ -1,5 +1,6 @@
 //! Lossless signed fields. Deserialization does not establish cryptographic validity.
 pub mod admission;
+pub mod archive;
 pub mod codec;
 pub mod dictionary;
 pub mod effect;
@@ -14,6 +15,7 @@ pub mod scalar;
 pub mod source;
 
 pub use admission::{EventIntent, LocalObservation, ProducerRequestId, WitnessContext};
+pub use archive::{ArchiveBatch, ArchiveRange};
 pub use dictionary::{
     AccessClass, AccessScopeDescriptor, ClockSource, DatasetLineageDescriptor, DescriptorLabel,
     DictionaryDescriptor, DictionaryEntry, EndpointDescriptor, ObserverDescriptor, RouteClass,

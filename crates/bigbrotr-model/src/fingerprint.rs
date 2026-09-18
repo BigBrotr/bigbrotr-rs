@@ -1,10 +1,10 @@
 //! Closed profile-1 recipes, not a general CBOR serializer. Only named typed
 //! fields can reach the codec; no generic values, floats or extension bags.
 use crate::{
-    AdmissionBatch, ClockQuality, DictionaryDescriptor, DictionaryEntry, Digest256, EventBody,
-    EventId, EventIntent, EventOrigin, EvidenceIntent, EvidenceIntentError, ExistingProof, Fact,
-    FactPayload, NostrTime, ProducerRequestId, PublicKey, QualifiedRef, SignedEvent,
-    SourceRecordId,
+    AdmissionBatch, ArchiveBatch, ClockQuality, DictionaryDescriptor, DictionaryEntry, Digest256,
+    EventBody, EventId, EventIntent, EventOrigin, EvidenceIntent, EvidenceIntentError,
+    ExistingProof, Fact, FactPayload, NostrTime, ProducerRequestId, PublicKey, QualifiedRef,
+    SignedEvent, SourceRecordId,
 };
 use minicbor::{
     Encoder,
@@ -568,6 +568,44 @@ impl AdmissionBatch {
     }
 }
 
+fn archive<W: Write>(
+    batch: &ArchiveBatch<'_>,
+    encoder: &mut Encoder<W>,
+) -> Result<(), Error<W::Error>> {
+    encoder
+        .writer_mut()
+        .write_all(b"bigbrotr/archive-batch/1\0")
+        .map_err(Error::write)?;
+    encoder
+        .array(5)?
+        .bytes(batch.dataset_id().as_bytes())?
+        .u16(batch.schema_version())?
+        .u64(batch.topology_generation().get())?
+        .array(batch.range_count())?;
+    for range in batch.ranges() {
+        encoder
+            .array(4)?
+            .u32(range.stream.shard_id)?
+            .u64(range.stream.owner_epoch.get())?
+            .u64(range.first.get())?
+            .u64(range.last.get())?;
+    }
+    encoder.array(batch.record_count())?;
+    for record in batch.records() {
+        encoder.array(2)?;
+        source(record.source_record_id, encoder)?;
+        encoder.bytes(record.payload_digest.as_bytes())?;
+    }
+    Ok(())
+}
+impl ArchiveBatch<'_> {
+    /// Stream canonical semantic membership directly into SHA-256; no allocation,
+    /// file identity, credential, process attempt or self-digest is included.
+    pub fn digest(&self) -> Digest256 {
+        hash(|encoder| archive(self, encoder))
+    }
+}
+
 fn existing_proof<W: Write>(
     proof: &ExistingProof,
     encoder: &mut Encoder<W>,
@@ -615,6 +653,39 @@ mod tests {
     }
     fn hex(bytes: &[u8]) -> String {
         bytes.iter().map(|b| format!("{b:02x}")).collect()
+    }
+
+    #[test]
+    fn archive_bytes_match_literal_multi_range_vector() {
+        let batches: Vec<_> = [
+            (0, 1, 23, 0x11),
+            (0, 1, 24, 0x22),
+            (0, 1, 30, 0x33),
+            (u32::MAX, u64::MAX, u64::MAX, 0x44),
+        ]
+        .into_iter()
+        .map(|(shard_id, epoch, sequence, byte)| {
+            AdmissionBatch::new(vec![FactRef {
+                source_record_id: SourceRecordId {
+                    dataset_id: DatasetId::try_from([1; 16]).unwrap(),
+                    shard_id,
+                    owner_epoch: OwnerEpoch::new(epoch).unwrap(),
+                    sequence: Sequence::new(sequence).unwrap(),
+                },
+                payload_digest: Digest256::from_bytes([byte; 32]),
+            }])
+            .unwrap()
+        })
+        .collect();
+        let batch = ArchiveBatch::new(u16::MAX, crate::TopologyGeneration::new(u64::MAX), &batches)
+            .unwrap();
+        let mut encoder = Encoder::new(Bytes(Vec::new()));
+        archive(&batch, &mut encoder).unwrap();
+        let vector: serde_json::Value = serde_json::from_str(include_str!(
+            "../../../tests/fixtures/model/archive-multiple-ranges.json"
+        ))
+        .unwrap();
+        assert_eq!(hex(&encoder.into_writer().0), vector["preimage_hex"]);
     }
 
     #[test]

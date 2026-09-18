@@ -176,3 +176,11 @@ The 44 cases comprise 14 permission refusals, 28 guarded-table refusals, one com
 role/search-path case and one native positive control. They are not 44 native
 publication schedules. Source audit independently matches 614 tracked files to
 Mac Git archive; actual PG logs contain 30 explicit guard refusals.
+
+`native_archive_identity.py` is the next scoped exact-revision harness (not yet
+executed). It checks the borrowed multi-range fingerprint/literal bytes and the
+actual signed Rocks reopen-to-worker path at two explicitly supplied topology
+values. The worker bundle is the retained immutable qualified artifact; it is
+verified separately from the new parent/model source. Writable dependency caches
+must be fresh copies, never edited retained build outputs. No catalog receipt,
+publication, ACK, reclaim or new worker lifecycle qualification is claimed.

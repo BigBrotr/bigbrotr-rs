@@ -272,9 +272,20 @@ source IDs and cuts use the arrays above. No self-digest is included in itself.
 | `bigbrotr/fact/1\0` | `[SourceRecordId,record_kind:text,record_schema_version:u16,visibility QualifiedRef,recorded_at:i64,payload]`. Binds complete envelope, including identity/scope/time; `payload_digest` is this digest despite its historical name. Core payload arrays are listed below. Other fact payloads are closed field maps of their named A03–A09 schema, with keys/nullability as declared by that schema; never raw user JSON. |
 | `bigbrotr/producer-request/1\0` | `[ProducerRequestId,operation:text,operation_schema_version:u16,intent]`. ProducerRequestId is `[producer_slot_id:bytes16,producer_epoch:u64,request_sequence:u64]`. Event intent array is below. Evidence uses operation `"admit-evidence"`, operation schema 1, and intent `[admission_policy_version:u16,visibility QualifiedRef,[[record_kind,record_schema_version,payload],...]]` in caller-declared order. The initial implemented intent accepts only `record_kind="dictionary"`, record schema 1 and the complete closed `dictionary/1` payload; it cannot carry a signed event, signature or generic JSON. Future evidence payloads include their full occurrence/clock/source attribution. No owner-assigned fact IDs/time are in intent. |
 | `bigbrotr/admission-batch/1\0` | `[dataset_id,shard_id,owner_epoch,first_sequence,last_sequence,[[SourceRecordId,payload_digest],...]]`; records strictly ascending sequence, contiguous, nonempty and exactly covering endpoints. Dependencies added in the same transaction appear as ordinary facts. This binds semantic facts, not Rocks WriteBatch bytes. |
-| `bigbrotr/archive-batch/1\0` | `[dataset_id,archive_schema_version:u16,topology_generation:u64,[[shard_id,owner_epoch,first_sequence,last_sequence],...],[[SourceRecordId,payload_digest],...]]`. Ranges sort by `(shard,epoch,first)`, are disjoint and cover exactly records sorted by full source ID. Only complete admission batches; no empty archive batch. |
+| `bigbrotr/archive-batch/1\0` | `[dataset_id,archive_schema_version:u16,topology_generation:u64,[[shard_id,owner_epoch,first_sequence,last_sequence],...],[[SourceRecordId,payload_digest],...]]`. Ranges sort by `(shard,epoch,first)`, are maximal within each stream (adjacent ranges merge), are disjoint and cover exactly records sorted by full source ID. Only complete admission batches; no empty archive batch. |
 | `bigbrotr/projection-chunk/1\0` | `[projection_generation:bytes16,target:text,target_schema_version:u16,SourceCut,chunk_ordinal:u64,[[SourceRecordId,child_discriminator,row_value],...]]`. Rows sort by `(SourceRecordId,C(child_discriminator))`; ties forbidden. Child discriminator is `[relation:text,ordinal:u64]` (zero-based tag/child position, 0 for a singleton). Row value is the target's closed typed map/array; includes every materialized field. One engine-owned base/projection family counts as one target only after engine qualification. |
 | `bigbrotr/existing-proof/1\0` | `[dataset_id,topology_generation,protection_class:text,recovery_generation:bytes16,policy_epoch:u64,intent_digest,[[SourceRecordId,payload_digest],...]]`. Dependencies sort by full source ID, no duplicates. Operational integrity key, not a signature or independently portable authorization. |
+
+Archive range maximality makes the same complete source membership independent
+of how adjacent admission batches were grouped for transfer. This clarifies the
+initial recipe before any product archive receipt exists; the existing one-range
+golden vector is unchanged. No archived product bytes require migration. The
+borrowed `ArchiveBatch` validates ordered, disjoint, same-dataset admission values
+and streams this recipe without copying their references. It does not establish
+that supplied batches match retained admission boundaries or that a topology is
+current: the publisher must verify those authorities separately. A full-snapshot
+`SourceCut` includes required zero prefixes; an archive batch contains only its
+nonempty transferred ranges and is not a substitute for that cut.
 
 Core fact payload field order:
 

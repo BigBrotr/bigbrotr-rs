@@ -3,7 +3,9 @@ use crate::{
     runtime::{ResourceBudget, ResourceRequest},
     storage::rocks::store::PendingBatch,
 };
-use bigbrotr_model::{Digest256, SourceRecordId, codec::FactDecodeLimits};
+use bigbrotr_model::{
+    ArchiveBatch, Digest256, SourceRecordId, TopologyGeneration, codec::FactDecodeLimits,
+};
 use bigbrotr_protocol::archive_batch::Limits;
 use std::{
     fs,
@@ -37,6 +39,8 @@ pub enum PreparationError {
 #[derive(Debug)]
 pub struct PreparationInspection {
     pub staged_counts: [u64; 5],
+    /// Schema-1 semantic input identity, never a durable publication receipt.
+    pub archive_batch_digest: Digest256,
 }
 
 pub struct Preparation<'a> {
@@ -50,9 +54,12 @@ impl Preparation<'_> {
     /// Private discardable staging only. No archive acknowledgement or reclaim.
     /// The caller owns the private temporary root and filesystem reservation.
     /// TerminationUnknown forbids root cleanup/retry until positive exclusion.
+    /// Topology is supplied explicitly: the store's creation manifest cannot
+    /// establish the publisher's current topology or grant publication authority.
     pub fn inspect_pending(
         self,
         pending: &PendingBatch,
+        topology_generation: TopologyGeneration,
         budget: &ResourceBudget,
     ) -> Result<PreparationInspection, PreparationError> {
         let transfer = Limits {
@@ -159,7 +166,16 @@ impl Preparation<'_> {
         {
             return Err(PreparationError::InvalidResult);
         }
-        Ok(PreparationInspection { staged_counts })
+        let archive = ArchiveBatch::new(
+            1,
+            topology_generation,
+            std::slice::from_ref(pending.batch()),
+        )
+        .map_err(|_| PreparationError::InvalidResult)?;
+        Ok(PreparationInspection {
+            staged_counts,
+            archive_batch_digest: archive.digest(),
+        })
     }
     fn check_temporary_root(&self) -> Result<(), PreparationError> {
         let root = self.temp_root;

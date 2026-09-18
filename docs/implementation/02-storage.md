@@ -257,6 +257,11 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   exclusion, persisted recovery and full signed membership remain gates.
 - [ ] **Step 4:** After an ambiguous commit, query the receipt in a new transaction; do not
   repeat while receipt state is unknown. Reject mismatched batch digest.
+  The borrowed model archive identity and pending-preparation consumer bind schema,
+  explicit topology, maximal ranges and complete source/digest membership. Frozen
+  single/multiple-range and signed pending fixtures have independent expected
+  bytes/digests. This input identity is not a persisted attempt or commit receipt;
+  those consumers and actual ambiguous recovery remain required.
 - [ ] **Step 5:** Enforce a single positively fenced publisher and bounded native worker
   ownership. An unrelated advisory lock cannot certify catalog commit authority.
   The [PG startup counterexample](evidence/p02-postgres-startup-native-20260918.json)
