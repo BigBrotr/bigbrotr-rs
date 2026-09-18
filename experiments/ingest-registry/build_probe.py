@@ -6,6 +6,10 @@ import json
 from pathlib import Path
 import shutil
 import subprocess
+import sys
+
+# Loading the selected helper must not add bytecode to the immutable archive.
+sys.dont_write_bytecode = True
 
 
 def main():

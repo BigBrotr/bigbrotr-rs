@@ -10,6 +10,8 @@ import secrets
 import sys
 import time
 
+# Imported laboratory helpers are also part of the exact source input.
+sys.dont_write_bytecode = True
 SOURCE = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(SOURCE / "experiments/control-migrations"))
 import lab

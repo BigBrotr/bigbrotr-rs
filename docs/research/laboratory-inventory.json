@@ -663,6 +663,20 @@
       "target": ".research/worktrees/ingest-registry/.research/targets/product",
       "evidence": "docs/implementation/evidence/p02-ingest-registry-preparation-20260918.json",
       "root_integrated_source_sha256": "f74321c327883e88999d95c3b43adea86040dd542a3d04fbf24b75849fec854d"
+    },
+    "ingest_registry_native": {
+      "source": "c2a952f78ac3675d45dcf3412a0dcc828830709c",
+      "tree": "76f5a31b4c62e9dac20018084a3078f3c616efe0",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/ingest-registry-c2a952f",
+      "local_root": ".research/implementation/ingest-registry",
+      "container": "bigbrotr-implementation-ingest-registry-c2a952f-build",
+      "container_id": "5379a6e792ce6469afd56cf829d176ee9f88680b1d6ec76fb0fc155c3d463c98",
+      "owner_label": "org.bigbrotr.registry-build=d4e106d9516606120e2af7a60ff3cc68",
+      "image": "sha256:8d906f267439748924d6a9de9cab47855279cc196a7397d9cb7a690c77fddfe3",
+      "status": "Failed and retained: terminal exit1/OOMfalse. CLI build completed, probe import wrote Python bytecode into archive; engine NOT_RUN. Fix validated with isolated Mac import reproduction; next exact-source build needed.",
+      "limits": "2 CPU/6 GiB memory+swap/512 PIDs/two compiler jobs; read-only source/root, owned output, tmp512MiB, UID1000, no capabilities or host ports",
+      "started_at": "2026-09-18T00:17:53.514901+00:00",
+      "remote_resources": "resources.json contains exact launch command and owner identity"
     }
   }
 }

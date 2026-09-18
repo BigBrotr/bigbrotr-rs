@@ -1,0 +1,14 @@
+{
+  "format": "bigbrotr-ingest-registry-build-failure/1",
+  "status": "FAIL",
+  "source": "c2a952f78ac3675d45dcf3412a0dcc828830709c",
+  "boundary": "Actual CLI release build completed; acceptance probe rejected mutated source before compiling. All registry engine scenarios NOT_RUN.",
+  "cause": "Python 3.11 import of tools/build.py wrote tools/__pycache__/build.cpython-311.pyc inside the archive. No tracked source changed or disappeared. Mac Python3.9 ambient pycache_prefix redirects bytecode outside the source and masked this difference.",
+  "fix": "Both registry runners disable Python bytecode before importing source helpers. Strict whole-source comparison remains unchanged.",
+  "verification": "Isolated Python3.9 exact helper import reproduces additional bytecode with original setting and zero additions with the fix. Linux clean-source rebuild still required.",
+  "artifacts": {
+    ".research/implementation/ingest-registry/resources-c2a952f.json": "e2688099763056b89fe0078f48d4a3687008d6893d8815ee3f071205a2dcdb7d",
+    ".research/implementation/ingest-registry/build-c2a952f.log": "caf7630514da260f33392d9b940ebe91d87aff69169d51abf1e74f79c7c4950b",
+    ".research/implementation/ingest-registry/bytecode-regression.json": "7b7247244f4e9c32fcbd179138299292e5a0feacc2bed6178d0a096e3c60c94a"
+  }
+}
