@@ -217,9 +217,9 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   The initial [private engine diagnostic and build bundle](../../packaging/archive-worker/README.md)
   implements pinned linking/loading and resource settings. The private inspection
   parent now owns nonblocking pipes, pre-exec checks and retained memory/control
-  grants. Linux expected-parent/death-signal binding is implemented but its native
-  positive case remains unqualified; an actual stopped old worker survives parent
-  SIGKILL in the retained negative control. Positive recovery/exclusion, full
+  grants. [Linux amd64 expected-parent/death-signal qualification](evidence/p02-parent-binding-native-20260918.json)
+  proves exit/reap of an initialized stopped worker after parent SIGKILL; the old
+  worker survives in the retained negative control. Persisted recovery/exclusion, full
   host/disk admission, native peak measurements and the actual publisher still gate
   this step; downloading
   another target's assets does not qualify that target.

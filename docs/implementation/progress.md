@@ -15,13 +15,13 @@ task checkbox or M1 gate is complete; pending must not be reclaimed.
 
 ## Verified Git and ownership
 
-Mac primary workspace, main. HEAD and origin/main freshly verified after ordinary
-push at `3063d12e8d39195b031e767b1ef7a76a86b78276`, including qualified source
-`c365053afae92eb2cf8b10760e0d8bec2f42a897`. Root owns the next parent-death binding:
-Cargo.lock, worker manifest/main/tests, parent installation and owning contracts,
-packaging docs, inventory/checkpoint. Mac source/log/package identities are under
-`parent_death_mac` in the inventory. No contributor conflict. This next binding
-is Mac-checked but not yet a native-qualified revision; prepare a clean candidate.
+Mac primary workspace, main. Unpublished candidate HEAD
+`e4e2a30160a5119195e7ba5b31b82b1482a5c432`, tree
+`84b42797b86a1a49a5edc9c61e0ca635d5bdf0da`; origin/main last freshly verified at
+`3063d12e8d39195b031e767b1ef7a76a86b78276`, including qualified `c365053`.
+The parent-death binding is committed and scoped Mac/Linux qualification passed.
+Root owns only its new native harness and checkpoint/inventory/evidence updates. Source was clean at Git
+bundle creation. No contributor conflict or remote independent source editing.
 
 ## Qualified evidence
 
@@ -32,8 +32,8 @@ Raw root `.research/implementation/archive-worker/`; detailed ownership in
 - [Initial engine qualification](evidence/p02-archive-engine-native-20260918.json)
   at `d459fcd`: exact source/tool/binary/native asset audit, six native tests,
   seven actual packaged runtime cases and offline signed load. External harness
-  terminates a worker blocked on a full output pipe; production supervisor is
-  still absent. Signature hashing creates transient threads independent of query
+  terminates a worker blocked on a full output pipe; production supervision
+  was absent at that revision. Signature hashing creates transient threads independent of query
   threads (35+40+21 sequential extension loads); PID cap8 aborts the worker.
   Preserve signatures and separately budget startup threads/stacks. Peak RSS,
   production recovery and arm64 runtime remain unqualified.
@@ -68,11 +68,19 @@ Raw root `.research/implementation/archive-worker/`; detailed ownership in
   unchanged complete Rocks KV state. Refusal controls retain state/grants.
   This qualifies private inspection while the parent lives, not publication.
 
+- [Parent binding](evidence/p02-parent-binding-native-20260918.json) at `e4e2a30`:
+  all595 source entries/tools/assets audited. Two worker integration cases,
+  signed connected case and application/worker Clippy pass. Exact packaged SHA
+  `3133542df86c6d2992911434aff6292b232c6ea1f06235ed8e0d437765e3c136`
+  reaches real read(0), is proven stopped, then exits on parent SIGKILL in2.99ms;
+  pidfd and waitpid establish positive reap. Cargo-relinked binary has a different
+  retained hash. No persisted job recovery or PG/backend fence is inferred.
+
 Only the private worker links DuckDB. `inspect-engine` and `inspect-batch` grant no
 publication authority. The new application parent implements bounded nonblocking
 pipes, pre-exec hash checks, sanitized child environment and retained grants for
-private inspection. Native/role resource qualification and parent-crash/backend
-exclusion remain required. No hosted Actions or arm64 runtime PASS.
+private inspection. Native/role resource qualification, persisted recovery and
+backend exclusion remain required. No hosted Actions or arm64 runtime PASS.
 
 ## Independent monitor review
 
@@ -95,11 +103,12 @@ No archive ACK, permanent catalog schema, publication or pending reclamation.
 
 Read complete owning protocol, preparation/schema, executable, pending producer,
 resource budget, build/bundle, CI and affected test helpers; reviewed the complete
-new parent source and contracts inline. No independent agent review in this slice.
+new parent source and contracts inline. No independent agent review in these slices.
 The parent retains memory/control capacity until positive reap. On unresolved
 termination it fails closed and preserves charges; job-root cleanup/retry is
-forbidden. Parent SIGKILL/orphan exclusion is a separate next gate before a
-publisher can be admitted. No permanent catalog/schema or publication exists.
+forbidden. The Linux parent-death case is qualified; persisted job recovery and
+positive PG/backend exclusion remain gates before a publisher can be admitted.
+No permanent catalog/schema or publication exists.
 
 Pinned DuckLake `d8a1881e22516ea3d186d73e83c65fe5bd1a1dc4` constructs its own
 internal connection for PG metadata transactions (`DuckLakeTransaction::GetConnection`/
@@ -110,49 +119,49 @@ ambiguous-commit tests remain required; no speculative fence is selected.
 ## Lab resources and next bounded action
 
 Latest native root:
-`/home/tux/bigbrotr-implementation-20260917/runs/archive-c365053`, local
-`.research/implementation/archive-worker/supervision-c365053`. All three owned
+`/home/tux/bigbrotr-implementation-20260917/runs/archive-e4e2a30`, local
+`.research/implementation/archive-worker/parent-death-e4e2a30`. Both owned
 containers completed exit0/no OOM and are stopped-retained:
 
-- Build owner `b8c4e91f5225198ffcd13804bcf4330a`, ID
-  `153750054b9c73c5741ee921dc4029f37d26ba55c5a247e31e38a201ce3c828e`.
-- Tests owner `09047a050b7b692edc70d23926ec997f`, ID
-  `4da509c0963c125f99bed820a668fde9bf60bec13c2ccb17d7584e432c9dd628`.
-- `orphan-baseline` owner `e9fba895100e2fa24e5015cf7c7a661b`, ID
-  `fdde43718199b3970b9739f8bf207e1c060981e49b4924ee5d87301f9ec3fdc3`.
+- Build owner `233ad227d3bdd5b8bb3e26b21e5f3974`, ID
+  `3a2dcd1945acd801a90baad31733819969732871ac767b5f6c5b81ea87e95bde`.
+- Tests owner `9294675fc34813f3818f8966b954bf58`, ID
+  `9a3cbe025727fd56eb66d14678a85feb4657fc97fcbd85b742030e93ed06f49f`.
 
-Collectors99084/71791 completed exit0. Terminal preflight/cleanup audit confirms
-zero running BigBrotr containers, twelve earlier archive containers stopped and
-all twenty unrelated containers unchanged (eight running). Shared source remains
-clean/detached `6be851580ba415eed5ff0979ee7072480f9ee3ab`, zero consumers.
-Do not reset it or delete retained resources without lifecycle review.
+Collectors83989/34981 completed exit0. Fresh terminal preflight/cleanup audit
+confirms zero running BigBrotr containers, fifteen earlier archive containers
+stopped and twenty unrelated containers unchanged (eight running). Shared source
+remains clean/detached `6be851580ba415eed5ff0979ee7072480f9ee3ab`, zero consumers.
+The earlier `archive-c365053` root retains build, supervision and orphan negative
+control; its three containers remain stopped. Do not reset/delete these inputs.
 
-The orphan negative control verified actual engine startup/read(0), stopped the
-packaged worker and killed its parent: the worker survived the full one-second
-observation. The harness then killed/reaped that exact worker using pidfd/subreaper
-and reaped the parent. This proves the missing guarantee, not a product PASS.
+Mac source/log/package identities are under `parent_supervision_mac` and
+`parent_death_mac`. Original stub REDs, mistaken-import non-execution, corrected
+Transfer(Limit), missing-parent acceptance and negative-PID panic are retained.
+Corrected Mac worker cases/Clippy and signed connected case passed; session91281
+completed. Linux refusal/transfer, signed connection and stopped-parent case are
+now qualified. No full CI, release auth, native peak memory or PG fence PASS.
 
-Mac parent-supervision source/log identities remain under `parent_supervision_mac`
-and `.research/implementation/archive-worker/parent-mac/identity.json`. Original
-REDs, mistaken-import non-execution and Transfer(Limit) regression are retained.
-Native qualification now includes the formerly unexecuted full-pipe/CI-helper cases.
-No full CI, release authentication, peak-memory or PG fence PASS.
+Focused next-fence source inspection is inventoried under
+`postgres_fence_source_inspection`: read-only reference checkout
+`.research/checkouts/postgres-archive-fence` at
+`41223e51559cd581f1c06e170b71c71df25bbaac`. Pool/header, transaction, connection and
+catalog implementations read completely; scanner forced-acquisition and setting
+boundaries only partially read. ForceAcquire can exceed the pool limit. Reset
+uses DISCARD ALL or PQreset, clearing session state/reconnecting. A health-check
+name or pool limit is not a commit fence. No catalog fencing design is selected
+and no new PG runtime experiment ran. Ordinary catalog attach must also disable
+optional PG secret storage explicitly; do not assume native persistent-secret
+settings alone cover the extension's separate registration path.
 
-The next dirty implementation supplies/checks expected parent PID before engine
-work and arms Linux SIGKILL on spawning-thread death, with a post-registration
-parent check. Mac checks startup parentage only. Exact rustix1.1.5 source and Linux
-manual were inspected; negative PID must be checked before Pid::from_raw. Actual
-Mac RED showed missing parent accepted; another RED showed negative PID panic.
-Corrected missing/malformed/foreign parent refusal, complete/truncated handoff,
-worker Clippy and signed supervised handoff passed. Session91281 completed exit0.
-Logs `parent-binding-{red,green,negative-red,final-mac}.log` and
-`parent-death-connected-mac.log`; new Mac package/environment under
-`.research/implementation/archive-worker/parent-death-mac`. Positive Linux
-parent-death, persisted recovery and PG exclusion remain NOT_RUN.
-
-Next: commit the reviewed Mac-checked parent-death implementation as a separate
-unpublished candidate; freshly inventory Tux and qualify it through an exact Git
-bundle/new isolated root, including the stopped-worker positive case. Run both
-worker integration cases and the signed supervised case plus affected Clippy.
-Preserve the successful old-worker negative control and all stopped resources. Full native grants and persistent/PG exclusion still gate publication.
-Receipt/protection/read/export/restart and the complete product remain unfinished.
+Next: commit/push the reviewed `e4e2a30` qualification, then resolve the concrete
+catalog-fence prerequisite through actual pinned Rust/DuckLake/PostgreSQL behavior.
+Read the remaining owning catalog/identity/operations dependencies before editing.
+A possible investigation is a dedicated per-job PG role with native connection
+setup quiesced, new logins revoked before write authorization, and positive
+exclusion of every established backend on recovery. This is an unselected
+hypothesis: test late connection/reset, paused old owner and ambiguous commits;
+NOLOGIN or an unrelated advisory lock alone cannot certify exclusion.
+Persisted job recovery and complete native resource admission/measurements remain
+production gates. Keep P02-T04 foundation versus acceptance splits explicit;
+receipt/protection/read/export/restart and the complete product remain unfinished.

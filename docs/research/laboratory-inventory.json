@@ -5494,6 +5494,182 @@
         "Mac only initial parentage, no death-signal guarantee",
         "Private process binding; no persisted job recovery, native peak accounting or PG backend exclusion"
       ]
+    },
+    "parent_death_native": {
+      "format": "bigbrotr-archive-build-lab/1",
+      "source": "e4e2a30160a5119195e7ba5b31b82b1482a5c432",
+      "tree": "84b42797b86a1a49a5edc9c61e0ca635d5bdf0da",
+      "owner": "233ad227d3bdd5b8bb3e26b21e5f3974",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-e4e2a30",
+      "container": "bigbrotr-implementation-archive-e4e2a30-build",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "state": "completed-retained",
+      "command": [
+        "docker",
+        "run",
+        "-d",
+        "--init",
+        "--name",
+        "bigbrotr-implementation-archive-e4e2a30-build",
+        "--label",
+        "org.bigbrotr.implementation=20260917",
+        "--label",
+        "org.bigbrotr.archive-build=233ad227d3bdd5b8bb3e26b21e5f3974",
+        "--label",
+        "org.bigbrotr.source=e4e2a30160a5119195e7ba5b31b82b1482a5c432",
+        "--user",
+        "1000:1000",
+        "--cpus",
+        "2",
+        "--memory",
+        "6g",
+        "--memory-swap",
+        "6g",
+        "--pids-limit",
+        "512",
+        "--read-only",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges",
+        "--tmpfs",
+        "/tmp:rw,exec,nosuid,nodev,size=512m",
+        "--mount",
+        "type=bind,src=/home/tux/bigbrotr-implementation-20260917/runs/archive-e4e2a30/source,dst=/source,readonly",
+        "--mount",
+        "type=bind,src=/home/tux/bigbrotr-implementation-20260917/runs/archive-e4e2a30/out,dst=/out",
+        "--workdir",
+        "/source",
+        "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "python3",
+        "-c",
+        "import subprocess; subprocess.run(['python3','tools/build.py','--output','/out/build','--jobs','2'],check=True)"
+      ],
+      "preflight": {
+        "active_source_consumers": 0,
+        "available_disk_bytes": 330899320832
+      },
+      "started_at": "2026-09-18T14:00:07.402991+00:00",
+      "container_id": "3a2dcd1945acd801a90baad31733819969732871ac767b5f6c5b81ea87e95bde",
+      "local_root": ".research/implementation/archive-worker/parent-death-e4e2a30",
+      "status": "Scoped native parent binding PASS; stopped-retained",
+      "collector_session": 34981,
+      "build_audit": {
+        "status": "PASS",
+        "source": "e4e2a30160a5119195e7ba5b31b82b1482a5c432",
+        "tree": "84b42797b86a1a49a5edc9c61e0ca635d5bdf0da",
+        "source_files": 595,
+        "cli_sha256": "730e34ee09dc0579467e542105c3b9651b7cff352be436c07f8d469238f8923e",
+        "worker_sha256": "3133542df86c6d2992911434aff6292b232c6ea1f06235ed8e0d437765e3c136",
+        "native_assets_checked": true,
+        "native_tools": {
+          "CC": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "CXX": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "AR": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+          "LIBCLANG_PATH": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+          "discovery": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e"
+        },
+        "terminal": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-18T14:00:07.491537949Z",
+          "FinishedAt": "2026-09-18T14:07:15.555091912Z"
+        }
+      },
+      "tests": {
+        "source": "e4e2a30160a5119195e7ba5b31b82b1482a5c432",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-e4e2a30",
+        "container": "bigbrotr-implementation-archive-e4e2a30-tests",
+        "owner": "9294675fc34813f3818f8966b954bf58",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "state": "completed-retained",
+        "started_at": "2026-09-18T14:07:32.578789+00:00",
+        "container_id": "9a3cbe025727fd56eb66d14678a85feb4657fc97fcbd85b742030e93ed06f49f",
+        "terminal": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-18T14:07:32.666951159Z",
+          "FinishedAt": "2026-09-18T14:14:06.375008717Z"
+        }
+      },
+      "collector_exit": 0,
+      "report": "docs/implementation/evidence/p02-parent-binding-native-20260918.json",
+      "terminal": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-09-18T14:00:07.491537949Z",
+        "FinishedAt": "2026-09-18T14:07:15.555091912Z"
+      },
+      "parent_death": {
+        "status": "PASS",
+        "negative_control": false,
+        "worker_sha256": "3133542df86c6d2992911434aff6292b232c6ea1f06235ed8e0d437765e3c136",
+        "identity": {
+          "pid": 3403,
+          "parent": 3402
+        },
+        "ready_syscall": "0 0x0 0x55b4ffc28890 0x2000 0x0 0x0 0xffffffff00200000 0x7fffcca69bb0 0x7f9cf0c362ec",
+        "stopped_before_parent_kill": true,
+        "exited_after_parent_kill": true,
+        "observation_seconds": 0.0029924651607871056
+      },
+      "cleanup": {
+        "status": "PASS",
+        "owned_ids": [
+          "3a2dcd1945acd801a90baad31733819969732871ac767b5f6c5b81ea87e95bde",
+          "9a3cbe025727fd56eb66d14678a85feb4657fc97fcbd85b742030e93ed06f49f"
+        ],
+        "owned_stopped_retained": 2,
+        "earlier_archive_stopped_retained": 15,
+        "running_bigbrotr": 0,
+        "unrelated_unchanged": 20,
+        "unrelated_running": 8,
+        "shared_source": "6be851580ba415eed5ff0979ee7072480f9ee3ab"
+      }
+    },
+    "postgres_fence_source_inspection": {
+      "root": ".research/checkouts/postgres-archive-fence",
+      "upstream": "https://github.com/duckdb/duckdb-postgres.git",
+      "revision": "41223e51559cd581f1c06e170b71c71df25bbaac",
+      "dirty": false,
+      "files_sha256": {
+        "src/storage/postgres_connection_pool.cpp": "cb2e9e623f8def5c1c0cd9d1eb7bb4d6dfe17c699897b0777a58a64b8bfa6a5f",
+        "src/storage/postgres_transaction.cpp": "80d614d4aba2a06e6f6d2ba4bfa26c0c6a963e99db9a2960a59e53aa49fa18a8",
+        "src/include/storage/postgres_connection_pool.hpp": "62f50f93794fe24d2b3fd9cc08ce3aa5260ce8ace55388deb93d4aa25900eab7",
+        "src/postgres_scanner.cpp": "fed5de7c03f3596314f884f4eb128d7a37ee8aa363542a817e099e76d5bc63ec",
+        "src/postgres_extension.cpp": "cc445fac332fb22308da2ab1edc91faa2264d9d5ed33e9f8d2d817af958de1d6",
+        "src/postgres_connection.cpp": "301f6901fdc00b955fdc76525796c207ba097ec8d91afbf2b9740545973a0a05",
+        "src/storage/postgres_catalog.cpp": "d4fab4b727f892dcfdc7f828d16c00a30950dcd3196b729df13f84a13d43c102"
+      },
+      "scope": "Pool/header, transaction, connection and catalog implementations read completely; scanner TryOpenNewConnection and SetPostgresConnectionLimit boundaries only. No runtime experiment or fencing design selected.",
+      "findings": [
+        "DuckLake internal connection starts its own transaction; PostgreSQL transaction owns pooled connection until destruction",
+        "PostgresPoolConnection ForceGetConnection explicitly bypasses slot exhaustion; scanner can force a connection even on its first scan. A pool limit alone cannot establish exactly one backend or a catalog fence.",
+        "Next design must positively exclude every real native catalog backend and prevent later reconnects before retry; an unrelated Control advisory lock is insufficient.",
+        "Connection Reset runs DISCARD ALL, or PQreset on failure; pool reuse can clear session state or reconnect. A health-check/session lock assumption requires proof for every acquisition/reset and cannot fence by configuration name alone.",
+        "PostgresCatalog constructor opens a pooled connection for server-version lookup. RegisterSecretStorage can probe/load an existing PG secret table; explicit SECRET_STORAGE_TABLE='' bypasses this optional storage path. No configured catalog attach has been implemented or exercised yet."
+      ]
     }
   },
   "implementation_monitor_corrections_20260918": {

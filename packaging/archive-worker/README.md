@@ -78,6 +78,10 @@ without Linux's parent-death signal; it does not qualify production crash recove
 This private invocation change requires a matching parent and worker build, not
 a persistent-format migration. Historical experiment scripts remain bound to
 their recorded revisions and are not launchers for the new worker.
+The [Linux amd64 parent-binding report](../../docs/implementation/evidence/p02-parent-binding-native-20260918.json)
+records positive exit/reap of the stopped packaged worker after parent SIGKILL,
+with the old-worker survival control retained. This does not certify persisted
+job recovery or exclusion of a remote catalog transaction.
 
 The parent must verify the executable and library **before exec**, control the
 loader environment and keep the bundle immutable. The worker's own library hash

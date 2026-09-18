@@ -1,0 +1,165 @@
+{
+  "format": "bigbrotr-parent-binding-native-qualification/1",
+  "observed_date": "2026-09-18",
+  "status": "PASS",
+  "scope": "Private Linux parent binding and stopped-worker death only; not persisted recovery, catalog fencing, complete P02 or M1",
+  "source": {
+    "revision": "e4e2a30160a5119195e7ba5b31b82b1482a5c432",
+    "tree": "84b42797b86a1a49a5edc9c61e0ca635d5bdf0da",
+    "dirty": false
+  },
+  "build_audit": {
+    "status": "PASS",
+    "source": "e4e2a30160a5119195e7ba5b31b82b1482a5c432",
+    "tree": "84b42797b86a1a49a5edc9c61e0ca635d5bdf0da",
+    "source_files": 595,
+    "cli_sha256": "730e34ee09dc0579467e542105c3b9651b7cff352be436c07f8d469238f8923e",
+    "worker_sha256": "3133542df86c6d2992911434aff6292b232c6ea1f06235ed8e0d437765e3c136",
+    "native_assets_checked": true,
+    "native_tools": {
+      "CC": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+      "CXX": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+      "AR": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+      "LIBCLANG_PATH": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+      "discovery": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e"
+    },
+    "terminal": {
+      "Status": "exited",
+      "Running": false,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 0,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-09-18T14:00:07.491537949Z",
+      "FinishedAt": "2026-09-18T14:07:15.555091912Z"
+    }
+  },
+  "environment": {
+    "host": "Tux Linux x86_64",
+    "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "cpus": 2,
+    "memory_bytes": 6442450944,
+    "pids": 512,
+    "source_readonly": true
+  },
+  "tests": {
+    "rust_executed": 3,
+    "worker_integration": 2,
+    "signed_connected": 1,
+    "failed": 0,
+    "ignored": 0,
+    "all_target_clippy": "Application and worker PASS",
+    "artifacts": {
+      "handoff-5c084f4b65acc742": {
+        "sha256": "4412c6a6bc4b98ad913179da69138a18eb428f7b8047363bd96ed04b2d8d08d8",
+        "bytes": 1247512
+      },
+      "parent_binding-f7ca91dca16c48d1": {
+        "sha256": "e98c17e0502325c82013205d05ac349bf5be97fb90fca0c58711f21ec39b6796",
+        "bytes": 1098728
+      },
+      "bigbrotr-9fc5bd17a96fa33d": {
+        "sha256": "ac7d27b561e6cb99b31545e4eb6909d397adf642d12a9f5c5e3dc3a2e2818090",
+        "bytes": 14710000
+      }
+    },
+    "terminal": {
+      "Status": "exited",
+      "Running": false,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 0,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-09-18T14:07:32.666951159Z",
+      "FinishedAt": "2026-09-18T14:14:06.375008717Z"
+    },
+    "packaged_worker": {
+      "DUCKDB_LIB_DIR": "/out/build/archive-worker/lib",
+      "DUCKDB_INCLUDE_DIR": "/out/build/archive-worker/lib",
+      "LD_LIBRARY_PATH": "/out/build/archive-worker/lib",
+      "BIGBROTR_ARCHIVE_TEST_BUNDLE": "/out/build/archive-worker",
+      "BIGBROTR_ARCHIVE_TEST_INSTALLATION": "/out/build/archive-worker",
+      "BIGBROTR_ARCHIVE_TEST_WORKER_SHA256": "3133542df86c6d2992911434aff6292b232c6ea1f06235ed8e0d437765e3c136",
+      "BIGBROTR_ARCHIVE_TEST_WORKER_BYTES": "12237744"
+    },
+    "cargo_executed_worker": {
+      "sha256": "fd1022b849bc9471ee75b8b3d703194f8cb05ca9ee6cb95c9951f3ec18db598b",
+      "packaged_sha256": "3133542df86c6d2992911434aff6292b232c6ea1f06235ed8e0d437765e3c136"
+    }
+  },
+  "packaged_parent_death": {
+    "status": "PASS",
+    "negative_control": false,
+    "worker_sha256": "3133542df86c6d2992911434aff6292b232c6ea1f06235ed8e0d437765e3c136",
+    "identity": {
+      "pid": 3403,
+      "parent": 3402
+    },
+    "ready_syscall": "0 0x0 0x55b4ffc28890 0x2000 0x0 0x0 0xffffffff00200000 0x7fffcca69bb0 0x7f9cf0c362ec",
+    "stopped_before_parent_kill": true,
+    "exited_after_parent_kill": true,
+    "observation_seconds": 0.0029924651607871056
+  },
+  "parent_death_cleanup": {
+    "parent_reaped": true,
+    "worker_reaped": true
+  },
+  "negative_control": {
+    "report": "docs/implementation/evidence/p02-private-supervision-native-20260918.json",
+    "source": "c365053afae92eb2cf8b10760e0d8bec2f42a897",
+    "old_worker_sha256": "642952149ddef947370d04f20811e59f43f4f7ee054b7d03f3eea235635a9995",
+    "result": "Actual initialized stopped old worker survived parent SIGKILL for the complete one-second observation; harness then killed/reaped it"
+  },
+  "cases": [
+    "Missing, zero, negative, overflowing, malformed or foreign parent refuses before engine effects, no stdout and exact redacted error",
+    "Actual Cargo worker accepts complete frozen wire and refuses truncation",
+    "Actual signed Rocks admission/reopen retains unchanged full KV state through repeated packaged-worker handoff and refusal controls",
+    "Exact packaged Linux worker reaches real read(0) after offline engine startup, is proven stopped, then receives SIGKILL following parent death; pidfd exit and waitpid status establish positive reap independently of stdin EOF or cooperative code"
+  ],
+  "limitations": [
+    "Linux arm64 and Mac parent-death behavior NOT_RUN; Mac implements initial parent check only",
+    "No deterministic fault injection inside prctl registration race, uninterruptible kernel-task or host-loss test",
+    "Trusted worker must not fork descendants, exec or change credentials after binding; synchronous spawning thread retains ownership through reap",
+    "No persisted job recovery, native peak/mixed/aged workload qualification, whole-role disk/CPU/PID grants, PG backend exclusion, catalog receipts or read/export/restart",
+    "No hosted Actions, complete CI/release journey or release authentication"
+  ],
+  "evidence_root": ".research/implementation/archive-worker/parent-death-e4e2a30",
+  "cleanup": {
+    "status": "PASS",
+    "owned_ids": [
+      "3a2dcd1945acd801a90baad31733819969732871ac767b5f6c5b81ea87e95bde",
+      "9a3cbe025727fd56eb66d14678a85feb4657fc97fcbd85b742030e93ed06f49f"
+    ],
+    "owned_stopped_retained": 2,
+    "earlier_archive_stopped_retained": 15,
+    "running_bigbrotr": 0,
+    "unrelated_unchanged": 20,
+    "unrelated_running": 8,
+    "shared_source": "6be851580ba415eed5ff0979ee7072480f9ee3ab"
+  },
+  "harnesses": {
+    "experiments/archive-engine/native_parent_binding.py": "3fdce8ee8b8807cc30c174d5095624ff5503af1d74b26b372e42d3bf88bae760",
+    "experiments/archive-engine/parent_death.py": "cf1867da6fbafe9f4c479e63c8d2ede34f70a4c305faf06dfb9336e470a7d46d"
+  },
+  "evidence_files": {
+    "native-e4e2a30/build-audit.json": "a8a0818f3d8182ed99fcea555802b2055240c26540a6371c6a917ef0f85965d2",
+    "native-e4e2a30/source-manifest.json": "43552ae9858c57c80fb0aa316c7ee6f3555b2ab34de4d8b6797a1df10d12f62e",
+    "native-test-evidence/result.json": "7829cf097e377e020290ee4e00bc92e2ed690a326aba6c1cdc2589b7ca5a8e4d",
+    "native-test-evidence/artifacts.json": "daa8d9e284fa46392eff6511ed0e95d67603959c8a6b40db29a6dd99f243004e",
+    "native-test-evidence/observation.json": "3a9623ac13171244432f58f6524d438825415c4bc2de3a931c557fa568042062",
+    "native-test-evidence/executed-worker.json": "6db8dd50666f452aa7eec06dea8cef499d4900c86436426dbb95ccbcf2473a1f",
+    "native-test-evidence/parent-death-result.json": "e796cdd3a23fc2e1361b554425ffa0c39b8cd0d950b41daa802e8d6766e8c5bd",
+    "native-test-evidence/parent-death-cleanup.json": "3057a8e0f193f5aa086f9406923291b1a0517b4047891420305e3d1e85a3b81a",
+    "cleanup-audit.json": "b5f1ae6ee9373d338c7d09b76dfe58ee91209f479e34e8680c210a46a5c9da2f",
+    "native-test-evidence/worker.log": "25968ff6a73197d3ff5ca576c40fecc2079a03d33c2cbb2f4be6cce525e56b4e",
+    "native-test-evidence/signed.log": "11c280b41d6f43cdd5d0f0fb5a2be8f90126262b36c61ed5e45fad6cbe1609bf",
+    "native-test-evidence/parent-death.log": "c32536159b51f16aa8394bb132bd313c6f7c984266c5f22469287a3c56edb023",
+    "native-test-evidence/clippy.log": "05e3a725500b76369bb2dc46b90fe93f15c050975bad10e5d9714c23cfc2267a"
+  }
+}

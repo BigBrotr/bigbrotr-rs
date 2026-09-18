@@ -87,7 +87,7 @@ owner keeps that thread alive through reap. Signal registration/delivery alone
 does not certify exit, filesystem cleanup or exclusion of a remote catalog
 transaction; a successor must still resolve old activity positively. The private
 [handoff contract](../reference/archive-handoff.md#supervised-private-inspection)
-owns the implementation and pending native qualification. Mac development does
+owns the implementation and scoped Linux amd64 qualification. Mac development does
 not inherit Linux process-lifecycle guarantees.
 
 Infrastructure endpoints are operator-supplied trusted routes, distinct from

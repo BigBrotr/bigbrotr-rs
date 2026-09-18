@@ -157,9 +157,10 @@ is killable on a wall-clock deadline. File verification and process creation use
 trusted local filesystem/OS calls, not an interruptible filesystem sandbox.
 
 This transport is restricted to the trusted worker, which must not fork child
-processes. Linux parent-death registration is implemented; native qualification
-of the corrected worker remains pending. The retained old-worker negative control
-stops the initialized worker before killing its parent; that worker survives
+processes. [Linux amd64 qualification](../implementation/evidence/p02-parent-binding-native-20260918.json)
+at `e4e2a30` verifies positive exit and reap after killing the actual parent of an
+initialized SIGSTOPped packaged worker (2.99 ms in this case). The retained
+old-worker negative control stops the initialized worker before killing its parent; that worker survives
 until the harness separately kills and reaps it. A signal does not prove positive
 exit or allow immediate cleanup/retry. Host loss, persisted job recovery and
 remote PG backend termination still require their own exclusion. In particular,

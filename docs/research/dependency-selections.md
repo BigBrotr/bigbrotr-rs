@@ -334,8 +334,9 @@ the creating thread's; no later fork/exec/credential transition is permitted to
 clear the setting. `Pid::from_raw` does not validate negative numbers in release
 builds and asserts in debug, so the private PID parser checks positivity before
 calling it. The old actual-worker stopped-orphan control reproduced survival;
-corrected native qualification remains pending. This is neither a PostgreSQL
-backend fence nor evidence that uninterruptible kernel work has ceased.
+the [corrected Linux amd64 package](../implementation/evidence/p02-parent-binding-native-20260918.json)
+exits and is positively reaped after parent SIGKILL while stopped. This is neither
+a PostgreSQL backend fence nor evidence that uninterruptible kernel work has ceased.
 
 The same pinned binding rejects nested List/Array/Struct/Map/Union values through
 `ToSql`; its `Value` enum is not evidence that those parameters can be bound.

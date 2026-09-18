@@ -64,3 +64,9 @@ kills its actual parent. Its `--expect-survival` mode records the missing safegu
 in the old worker; success in that mode means the negative control survived.
 pidfds and a subreaper bind cleanup/reap to the owned processes. Positive corrected
 worker qualification is separate. No process experiment grants catalog authority.
+
+`native_parent_binding.py` is the exact `e4e2a30` harness for two worker integration
+cases, the connected signed case, actual packaged stopped-worker parent death and
+affected application/worker Clippy. The [report](../../docs/implementation/evidence/p02-parent-binding-native-20260918.json)
+retains distinct Cargo and packaged executable hashes, source/native tool audits
+and positive process cleanup. No kernel-task, host-loss or PG fence is inferred.
