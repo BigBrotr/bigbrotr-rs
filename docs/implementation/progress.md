@@ -21,12 +21,12 @@ not be acknowledged/reclaimed. Do not mistake private preparation for publicatio
 
 Mac main; root is the only writer/integrator. Last freshly verified HEAD,
 origin/main and remote refs/heads/main are equal at
-`2ab50cf9522234678dcfc872483e4cb22495191e`, with a clean working tree after ordinary
-push. This checkpoint update follows that observation. All catalog candidates and
-the final evidence are pushed; none is a public release. Product candidate `b245644`
-and its evidence are pushed. Mac 13 selected tests and scoped Clippy pass; exact
-native 13 tests, Clippy and one actual PG adapter journey PASS. No force push,
-independent Tux product edits or concurrent writer.
+`8f50911538ef75e050709176e255f5ea19f39c28`, with a clean working tree after ordinary
+push. This checkpoint update follows that observation. Native source candidate
+`55dba36` and its scoped recovery evidence are pushed; no public release or force
+push. Mac scoped Clippy/format/Python checks and14 actual Tux PG cases passed;
+full CI/product acceptance is not claimed. Independent review was read-only;
+there is no concurrent writer or active experiment.
 
 ## Implemented prerequisites and retained evidence
 
@@ -252,8 +252,13 @@ edits on Tux. Sessions33868(Mac),64193(initial setup failure),52156(resumed setu
 
 Wire actual credential custody/unique native worker launch and recovery under
 P02-T04. A matching observed attempt never permits a second client; replacement
-gets a new retained lifetime. Study the selected credential/configuration and
-worker contracts before adding that responsibility. The current finite bootstrap
+gets a new retained lifetime. Initial scope reading covered `docs/security/credentials.md`,
+`docs/security/authority.md`, the catalog credential roots in `config/registry.rs`,
+the archive authority contract and current worker/bootstrap code. No new credential
+implementation has begun. Complete the deployment/connection/process caller reads
+and verify the pinned PostgreSQL credential-creation/logging guarantees before
+choosing its bounded provisioning/one-use handoff. Avoid adding a framework or
+persisting plaintext credentials merely to connect this consumer. The current finite bootstrap
 and PG adapter require an external bounded owner; installed initialization and
 provisioning remain unfinished. Product native writer-versus-activation races and
 server/process restart orchestration still require integrated qualification.
