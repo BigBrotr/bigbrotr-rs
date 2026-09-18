@@ -5463,6 +5463,37 @@
         "observation_seconds": 1.0021135527640581
       },
       "cleanup": "Both processes positively reaped; container terminal exit0/no OOM"
+    },
+    "parent_death_mac": {
+      "root": ".research/implementation/archive-worker/parent-death-mac",
+      "base": "3063d12e8d39195b031e767b1ef7a76a86b78276",
+      "dirty": true,
+      "files_sha256": {
+        "Cargo.lock": "3fb55b632b1a70d9deaafdf243730f23f43dc66ffecca99f8c3ffb482455809c",
+        "apps/bigbrotr-archive-worker/Cargo.toml": "780813d8e091b874ded2c586ebf736137ab64886972e29858f21cc00301c0126",
+        "apps/bigbrotr-archive-worker/src/main.rs": "44c8969afd19c59d62a415c404156fc9639de938cf8229fd92ca5e7ed5623668",
+        "apps/bigbrotr-archive-worker/tests/handoff.rs": "9d645d0be2831e86832cf90e71f7b25d974961d765bbc2daa442e4416456d066",
+        "apps/bigbrotr-archive-worker/tests/parent_binding.rs": "8d6f0b6d562c2cacae7b36f24896b12f9e321fb53c936960feb1b7f5cf396a75",
+        "apps/bigbrotr/src/storage/archive/installation.rs": "75763563d9e4846dfbee0ebb36a13f51e141bec141f575571e0a8dac16945778"
+      },
+      "logs_sha256": {
+        "parent-binding-red.log": "2a2896621aec4536d8111f7c76a6781f9783799eaac6ede2d9f546215e564399",
+        "parent-binding-green.log": "56e9aefad35501447238f305e934a943c40dce403a6e116a8e276bcc078721d4",
+        "parent-binding-negative-red.log": "5311e4617d142bebf0e11ad40118685b0a57b0dce9711ae7d5ef9610a581d115",
+        "parent-binding-final-mac.log": "3d84e62221049a426ca6a097ec621032501faaded464930efc9a81caf9019309",
+        "parent-death-connected-mac.log": "3f9cfb2f2d3c3fb108872c70fd5fdc04a5975ca956189bfea74449531061be3a"
+      },
+      "worker": {
+        "BIGBROTR_ARCHIVE_TEST_INSTALLATION": "/Users/vincenzo/Documents/GitHub/BigBrotr/bigbrotr-rs/.research/implementation/archive-worker/parent-death-mac/installation",
+        "BIGBROTR_ARCHIVE_TEST_WORKER_SHA256": "40473ab5486318a3944200f2b59eb9f5f6958c3cd4fc7f7f8e4819d0d72b79a7",
+        "BIGBROTR_ARCHIVE_TEST_WORKER_BYTES": "39641992"
+      },
+      "status": "Mac two worker integration cases, signed connected case and worker all-target Clippy PASS; Linux death-signal branch NOT_RUN",
+      "review": "Root reviewed full affected source/callers/contracts and rustix1.1.5 prctl/getppid/Pid constructor; no independent agent review",
+      "limitations": [
+        "Mac only initial parentage, no death-signal guarantee",
+        "Private process binding; no persisted job recovery, native peak accounting or PG backend exclusion"
+      ]
     }
   },
   "implementation_monitor_corrections_20260918": {

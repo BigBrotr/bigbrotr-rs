@@ -81,7 +81,10 @@ impl WorkerInstallation {
             )?;
         }
         let mut command = Command::new(executable);
-        command.env_clear().env("LC_ALL", "C");
+        command.env_clear().env("LC_ALL", "C").env(
+            "BIGBROTR_ARCHIVE_PARENT_PID",
+            std::process::id().to_string(),
+        );
         // Explicitly select the verified local library; inherit no injection,
         // fallback search path, credentials, HOME or engine configuration.
         command.env(

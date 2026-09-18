@@ -217,8 +217,11 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   The initial [private engine diagnostic and build bundle](../../packaging/archive-worker/README.md)
   implements pinned linking/loading and resource settings. The private inspection
   parent now owns nonblocking pipes, pre-exec checks and retained memory/control
-  grants. Parent-crash/orphan exclusion, full host/disk admission, native peak
-  measurements and the actual publisher still gate this step; downloading
+  grants. Linux expected-parent/death-signal binding is implemented but its native
+  positive case remains unqualified; an actual stopped old worker survives parent
+  SIGKILL in the retained negative control. Positive recovery/exclusion, full
+  host/disk admission, native peak measurements and the actual publisher still gate
+  this step; downloading
   another target's assets does not qualify that target.
   The [native prerequisite evidence](evidence/p02-archive-engine-native-20260918.json)
   includes signed-startup PID exhaustion; budget this separately from query
@@ -235,7 +238,9 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   appends initially; production parent grants, batching and actual catalog/file
   publication still gate this step. The [native handoff evidence](evidence/p02-pending-handoff-native-20260918.json)
   qualifies ten scoped Rust and two packaged cases, with Rocks and executable
-  boundaries still exercised separately.
+  boundaries exercised separately. Later [private supervision evidence](evidence/p02-private-supervision-native-20260918.json)
+  connects actual signed admission/reopen/pending to the packaged worker twice
+  with unchanged Rocks state. Full catalog/body/reference readback remains open.
 - [ ] **Step 3:** Use the PG-backed DuckLake catalog; publish events/evidence/dictionaries/
   document references and deterministic batch receipt in one transaction.
   Use the native writer on either local files or the configured S3 destination;

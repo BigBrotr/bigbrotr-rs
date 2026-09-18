@@ -7,7 +7,34 @@ use bigbrotr_model::codec::FactDecodeLimits;
 use bigbrotr_protocol::archive_batch::Limits;
 use std::{io::Write, path::Path, process::ExitCode, sync::atomic::AtomicBool};
 
+/// The synchronous spawning thread retains the worker until positive reap.
+/// Install before opening the engine or touching a job root. No subsequent
+/// fork, exec or credential change may clear the Linux parent-death setting.
+fn bind_parent() -> Result<(), &'static str> {
+    const ERROR: &str = "private archive parent unavailable";
+    let expected = std::env::var("BIGBROTR_ARCHIVE_PARENT_PID")
+        .ok()
+        .and_then(|value| value.parse::<i32>().ok())
+        .filter(|value| *value > 0)
+        .and_then(rustix::process::Pid::from_raw)
+        .ok_or(ERROR)?;
+    if rustix::process::getppid() != Some(expected) {
+        return Err(ERROR);
+    }
+    #[cfg(target_os = "linux")]
+    rustix::process::set_parent_process_death_signal(Some(rustix::process::Signal::KILL))
+        .map_err(|_| ERROR)?;
+    // Death before prctl is not retroactively signalled. The expected PID comes
+    // from the spawning process, so reparenting cannot silently adopt a new
+    // owner. Mac checks initial parentage only; it has no Linux death signal.
+    if rustix::process::getppid() != Some(expected) {
+        return Err(ERROR);
+    }
+    Ok(())
+}
+
 fn run() -> Result<(), Box<dyn std::error::Error>> {
+    bind_parent()?;
     let arguments: Vec<_> = std::env::args_os().take(10).collect();
     let inspect_engine = arguments.len() == 7 && arguments[1] == "inspect-engine";
     let inspect_batch = arguments.len() == 9 && arguments[1] == "inspect-batch";

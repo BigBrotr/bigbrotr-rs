@@ -95,13 +95,16 @@ version/trailing-byte controls, exact limits and poisoned-reader behavior. The
 native staging and executable tests use a synthetic unsigned-extreme model fact;
 they do not claim new signed admission or publication evidence. The Rocks test
 checks a real synchronized bootstrap/reopen/transfer with unchanged native
-sequence. Full signed pending-to-process/catalog readback remains required.
+sequence. Full signed catalog/body/reference readback remains required.
 
 The [native qualification at `0cdd80f`](../implementation/evidence/p02-pending-handoff-native-20260918.json)
 records ten scoped Rust cases and two separately executed packaged-binary cases
 on Tux Linux amd64. It checks every frozen-wire truncation, typed staging and real
-Rocks reopen/transfer. These exercise adjacent boundaries separately; production
-supervision and the complete signed pending-to-worker/archive journey remain open.
+Rocks reopen/transfer. Those adjacent boundaries were exercised separately. The
+later [supervision qualification at `c365053`](../implementation/evidence/p02-private-supervision-native-20260918.json)
+connects actual signed admission/reopen/pending to the exact packaged worker twice,
+with unchanged full Rocks state and bounded failure controls. It does not qualify
+publication or full archive content/reference readback.
 
 ## Supervised private inspection
 
@@ -125,8 +128,18 @@ Canonical absolute paths reject symlink substitution. The job root is separate,
 empty, owned by the effective user and inaccessible to group/others.
 
 The child receives an absolute executable path and a cleared environment, with
-only the verified library search path and fixed locale. The parent sets its three
-pipe ends nonblocking, drains at most 4 KiB from each output, and checks a shared
+the verified library search path, fixed locale and `BIGBROTR_ARCHIVE_PARENT_PID`
+set to the spawning process's positive PID. Before opening the engine, the
+worker refuses missing, malformed or foreign parent identity. On Linux it sets
+`PR_SET_PDEATHSIG` to SIGKILL and checks parentage again, closing the race where
+the parent dies before signal registration. The synchronous spawning thread must
+retain ownership through reap: Linux associates this signal with that thread,
+not the lifetime of its entire thread group. The worker must not fork, exec or
+change credentials after registration. Mac development checks initial parentage
+only and does not claim this Linux termination guarantee.
+
+The parent sets its three pipe ends nonblocking, drains at most 4 KiB from each
+output, and checks a shared
 cancellation flag/deadline between bounded I/O operations. Output floods fail;
 complete-looking stdout followed by a failed exit or stderr is not success.
 The parent checks returned membership/digest/counts against its retained batch.
@@ -144,8 +157,12 @@ is killable on a wall-clock deadline. File verification and process creation use
 trusted local filesystem/OS calls, not an interruptible filesystem sandbox.
 
 This transport is restricted to the trusted worker, which must not fork child
-processes. Parent SIGKILL/host loss, orphan exclusion, persisted job recovery and
-remote PG backend termination are not yet qualified by it. In particular, child
-process exit alone cannot resolve a catalog commit. The worker has no catalog
+processes. Linux parent-death registration is implemented; native qualification
+of the corrected worker remains pending. The retained old-worker negative control
+stops the initialized worker before killing its parent; that worker survives
+until the harness separately kills and reaps it. A signal does not prove positive
+exit or allow immediate cleanup/retry. Host loss, persisted job recovery and
+remote PG backend termination still require their own exclusion. In particular,
+child process exit alone cannot resolve a catalog commit. The worker has no catalog
 credentials in this inspection path and leaves pending untouched. No P02 task or
 M1 gate is completed by this slice.

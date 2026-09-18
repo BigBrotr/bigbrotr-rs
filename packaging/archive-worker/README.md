@@ -68,6 +68,17 @@ progress bar are disabled. All bundle hashes are checked before loading any
 extension; DuckDB additionally verifies signed extension metadata. Failed native
 operations produce redacted error categories. The worker accepts no arbitrary SQL.
 
+The process creating either private command must set
+`BIGBROTR_ARCHIVE_PARENT_PID` to its own positive PID. The product parent does
+this in its cleared child environment. Missing or different parentage fails
+before engine/job-root effects. Linux binds SIGKILL to the lifetime of the
+spawning thread and rechecks parentage after registration. A caller must retain
+that thread through worker reap. Mac development validates initial parentage
+without Linux's parent-death signal; it does not qualify production crash recovery.
+This private invocation change requires a matching parent and worker build, not
+a persistent-format migration. Historical experiment scripts remain bound to
+their recorded revisions and are not launchers for the new worker.
+
 The parent must verify the executable and library **before exec**, control the
 loader environment and keep the bundle immutable. The worker's own library hash
 check occurs after the dynamic loader ran and is not protection against a replaced

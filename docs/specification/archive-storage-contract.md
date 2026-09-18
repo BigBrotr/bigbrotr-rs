@@ -80,6 +80,16 @@ other native worker failures. Never bypass signature checks to fit a smaller
 grant. [The dependency record](../research/dependency-selections.md#duckdb-worker-and-arrowparquet-responsibilities)
 owns the exact-version finding and its measured scope.
 
+Bind a Linux private worker to its actual spawning thread before opening the
+engine. Parent-death SIGKILL with expected-parent checks prevents cooperative
+shutdown or pipe draining from being the only orphan safeguard. The synchronous
+owner keeps that thread alive through reap. Signal registration/delivery alone
+does not certify exit, filesystem cleanup or exclusion of a remote catalog
+transaction; a successor must still resolve old activity positively. The private
+[handoff contract](../reference/archive-handoff.md#supervised-private-inspection)
+owns the implementation and pending native qualification. Mac development does
+not inherit Linux process-lifecycle guarantees.
+
 Infrastructure endpoints are operator-supplied trusted routes, distinct from
 untrusted relay/discovery URLs. Private PG/CH/S3/RPC endpoints are valid; keep
 their destination allowlist, DNS/TLS rules and credential scope explicit. A

@@ -15,14 +15,13 @@ task checkbox or M1 gate is complete; pending must not be reclaimed.
 
 ## Verified Git and ownership
 
-Mac primary workspace, main. Current HEAD candidate
-`c365053afae92eb2cf8b10760e0d8bec2f42a897`, tree
-`035261992c90f86c539a64d603ec23ee686d0520`; origin/main last verified at
-`c20e2ca86f19ddd3ad03a49dd645132ff1d2852f`. Exact-source native qualification
-has completed. Root owns its harness/report/inventory/checkpoint update plus the
-next, separate dirty parent-death binding: Cargo.lock, worker manifest/main/tests,
-parent installation and affected contracts/packaging docs. No contributor conflict.
-The dirty binding is NOT part of the qualified revision.
+Mac primary workspace, main. HEAD and origin/main freshly verified after ordinary
+push at `3063d12e8d39195b031e767b1ef7a76a86b78276`, including qualified source
+`c365053afae92eb2cf8b10760e0d8bec2f42a897`. Root owns the next parent-death binding:
+Cargo.lock, worker manifest/main/tests, parent installation and owning contracts,
+packaging docs, inventory/checkpoint. Mac source/log/package identities are under
+`parent_death_mac` in the inventory. No contributor conflict. This next binding
+is Mac-checked but not yet a native-qualified revision; prepare a clean candidate.
 
 ## Qualified evidence
 
@@ -151,8 +150,9 @@ Logs `parent-binding-{red,green,negative-red,final-mac}.log` and
 `.research/implementation/archive-worker/parent-death-mac`. Positive Linux
 parent-death, persisted recovery and PG exclusion remain NOT_RUN.
 
-Next: commit/push the scoped `c365053` qualification after final report/diff review.
-Then commit the reviewed Mac-checked parent-death implementation as a separate
-candidate and qualify it through exact Git on Tux, including the stopped-worker
-positive case. Full native grants and persistent/PG exclusion still gate publication.
+Next: commit the reviewed Mac-checked parent-death implementation as a separate
+unpublished candidate; freshly inventory Tux and qualify it through an exact Git
+bundle/new isolated root, including the stopped-worker positive case. Run both
+worker integration cases and the signed supervised case plus affected Clippy.
+Preserve the successful old-worker negative control and all stopped resources. Full native grants and persistent/PG exclusion still gate publication.
 Receipt/protection/read/export/restart and the complete product remain unfinished.

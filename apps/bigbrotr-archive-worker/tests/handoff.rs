@@ -22,6 +22,10 @@ fn run(bytes: &[u8]) -> std::process::Output {
     let temp = tempfile::tempdir().unwrap();
     let bundle = std::env::var_os("BIGBROTR_ARCHIVE_TEST_BUNDLE").expect("required pinned bundle");
     let mut child = Command::new(env!("CARGO_BIN_EXE_bigbrotr-archive-worker"))
+        .env(
+            "BIGBROTR_ARCHIVE_PARENT_PID",
+            std::process::id().to_string(),
+        )
         .arg("inspect-batch")
         .arg(bundle)
         .arg(temp.path().canonicalize().unwrap())

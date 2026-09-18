@@ -306,6 +306,7 @@ dependencies = [
  "bigbrotr-model",
  "bigbrotr-protocol",
  "duckdb",
+ "rustix 1.1.5",
  "serde",
  "serde_json",
  "sha2",

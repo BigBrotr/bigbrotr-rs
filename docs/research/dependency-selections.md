@@ -325,6 +325,18 @@ retain the native grant until positive process termination. Actual peak RSS,
 thread overlap and production parent recovery remain acceptance gates. See the
 [native prerequisite qualification](../implementation/evidence/p02-archive-engine-native-20260918.json).
 
+The private worker also uses the already pinned rustix 1.1.5 safe process API
+(`src/process/prctl.rs` and `src/process/id.rs`). Linux
+[`PR_SET_PDEATHSIG`](https://man7.org/linux/man-pages/man2/PR_SET_PDEATHSIG.2const.html)
+can deliver SIGKILL even to a stopped worker, but registration is not retroactive.
+Check the expected spawning PID before and after registration. Its lifetime is
+the creating thread's; no later fork/exec/credential transition is permitted to
+clear the setting. `Pid::from_raw` does not validate negative numbers in release
+builds and asserts in debug, so the private PID parser checks positivity before
+calling it. The old actual-worker stopped-orphan control reproduced survival;
+corrected native qualification remains pending. This is neither a PostgreSQL
+backend fence nor evidence that uninterruptible kernel work has ceased.
+
 The same pinned binding rejects nested List/Array/Struct/Map/Union values through
 `ToSql`; its `Value` enum is not evidence that those parameters can be bound.
 Ordered nested tags therefore need the already selected Arrow path rather than
