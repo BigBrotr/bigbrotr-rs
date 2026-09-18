@@ -727,8 +727,10 @@
     "configuration_policy": {
       "owner": "root",
       "local_root": ".research/implementation/configuration-policy",
-      "status": "Mac CLI/codec tests and Clippy completed; no live process or remote lab created for this slice",
-      "evidence": "docs/implementation/evidence/p01-policy-seed-mac-20260918.json"
+      "status": "Mac34 inspection/transport tests, generated-reference check, Clippy/fmt complete. Tux inspection fixture prepared, native outcome NOT_RUN.",
+      "evidence": "docs/implementation/evidence/p01-policy-seed-mac-20260918.json",
+      "inspection_evidence": "docs/implementation/evidence/p01-config-inspection-mac-20260918.json",
+      "preflight": "2026-09-18 root observed clean Tux checkout2032042;29 owned containers stopped,8 unrelated active preserved; networks/volumes/listening ports inventoried read-only. No existing run will be reused."
     }
   }
 }

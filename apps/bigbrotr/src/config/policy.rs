@@ -1,4 +1,4 @@
-//! Closed normalized initialization data; never accepted policy or authority.
+//! Closed normalized product-policy encoding; a document never grants authority.
 use super::{registry::Kind, resolve::Resolved};
 use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
@@ -28,13 +28,13 @@ impl Write for Count {
     }
 }
 
-pub(super) struct PolicySeed {
+pub(crate) struct PolicySeed {
     document: Vec<u8>,
     digest: [u8; 32],
     settings: usize,
 }
 impl PolicySeed {
-    pub(super) fn from_resolved(value: &Resolved) -> Result<Self, String> {
+    pub(crate) fn from_resolved(value: &Resolved) -> Result<Self, String> {
         let mut settings = BTreeMap::new();
         for key in &value.keys {
             if !key.root {
@@ -74,7 +74,56 @@ impl PolicySeed {
         })
     }
 
-    pub(super) fn report(&self) -> Value {
+    /// Rebind exact accepted policy to current deployment roots. No recipe/default
+    /// fills a missing stored field, and the input digest never authorizes work.
+    pub(crate) fn restore(
+        document: &str,
+        digest: [u8; 32],
+        mut root: Resolved,
+    ) -> Result<Resolved, String> {
+        if document.len() > super::resolve::MAX_CONFIG_BYTES {
+            return Err("stored policy exceeds encoded limit".into());
+        }
+        let mut value: Value = serde_json::from_str(document)
+            .map_err(|_| "invalid stored policy encoding (values withheld)")?;
+        let object = value
+            .as_object_mut()
+            .ok_or("stored policy must be an object")?;
+        if object.len() != 2 || object.get("format").and_then(Value::as_str) != Some(FORMAT) {
+            return Err("incompatible stored policy format".into());
+        }
+        let settings = object
+            .get_mut("settings")
+            .and_then(Value::as_object_mut)
+            .ok_or("stored policy settings must be an object")?;
+        if settings.len() != root.keys.iter().filter(|key| !key.root).count() {
+            return Err("stored policy has missing or unknown settings".into());
+        }
+        for key in &root.keys {
+            if !key.root {
+                let value = settings
+                    .remove(&key.name)
+                    .ok_or("stored policy has missing or unknown settings")?;
+                let normalized = super::resolve::stored_value(key, &value)
+                    .map_err(|_| "stored policy has an invalid normalized value")?;
+                root.values.insert(key.name.clone(), normalized);
+                root.sources.insert(key.name.clone(), "accepted-policy");
+            }
+        }
+        root.dependencies.clear();
+        root.validate()?;
+        let encoded = Self::from_resolved(&root)?;
+        if encoded.digest != digest {
+            return Err("stored policy digest mismatch".into());
+        }
+        Ok(root)
+    }
+
+    pub(crate) fn digest(&self) -> [u8; 32] {
+        self.digest
+    }
+
+    pub(crate) fn report(&self) -> Value {
         let digest: String = self
             .digest
             .iter()
@@ -105,5 +154,56 @@ mod tests {
         );
         assert!(PolicySeed::encode(&settings, expected.len() - 1).is_err());
         assert!(PolicySeed::encode(&settings, 0).is_err());
+    }
+
+    fn root() -> Resolved {
+        super::super::resolve::parse(include_str!("../../../../config/recipes/archive-only.toml"))
+            .unwrap()
+    }
+
+    #[test]
+    fn persisted_policy_uses_accepted_values_and_revalidates_current_roots() {
+        let seed = PolicySeed::from_resolved(&root()).unwrap();
+        let document = String::from_utf8(seed.document.clone()).unwrap();
+        let changed = super::super::resolve::parse(&format!(
+            "{}\n[ingest]\nmax_event_bytes='512KiB'\n",
+            include_str!("../../../../config/recipes/archive-only.toml")
+        ))
+        .unwrap();
+        let effective = PolicySeed::restore(&document, seed.digest, changed).unwrap();
+        assert_eq!(effective.number("ingest.max_event_bytes"), 262144);
+        assert_eq!(
+            effective.sources["ingest.max_event_bytes"],
+            "accepted-policy"
+        );
+        assert_eq!(
+            PolicySeed::from_resolved(&effective).unwrap().digest,
+            seed.digest
+        );
+        assert!(PolicySeed::restore(&document, [0; 32], root()).is_err());
+        for (name, value) in [
+            ("ingest.max_event_bytes", json!(0)),
+            ("ingest.max_event_bytes", Value::Null),
+            (
+                "topology.dataset_id",
+                json!("11111111111111111111111111111111"),
+            ),
+        ] {
+            let mut invalid: Value = serde_json::from_str(&document).unwrap();
+            invalid["settings"][name] = value;
+            let bytes = invalid.to_string();
+            let digest: [u8; 32] = Sha256::new()
+                .chain_update(DOMAIN)
+                .chain_update(bytes.as_bytes())
+                .finalize()
+                .into();
+            assert!(PolicySeed::restore(&bytes, digest, root()).is_err());
+        }
+        let mut incomplete: Value = serde_json::from_str(&document).unwrap();
+        incomplete["settings"]
+            .as_object_mut()
+            .unwrap()
+            .remove("ranker.enabled");
+        assert!(PolicySeed::restore(&incomplete.to_string(), seed.digest, root()).is_err());
     }
 }

@@ -1,0 +1,63 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-18",
+  "status": "PASS",
+  "scope": "Mac CLI/policy decoder and migration transport regression; native PG inspection not yet run",
+  "source": {
+    "base_revision": "4f2ad35c70b65673f3e84e46ecf0d1b60c82fba9",
+    "state": "Root dirty candidate; ordinary Cargo, not clean archive qualification",
+    "sha256": {
+      "apps/bigbrotr/src/config/mod.rs": "5323a34bb4fcaaee465a30d3c8641992e8ca7a7a405c30ebd19353bbaf479b56",
+      "apps/bigbrotr/src/config/policy.rs": "51c0436730aa3fea830d80c6b1cdb78f57b832dea955ad6c36df8af02f1baaa9",
+      "apps/bigbrotr/src/config/resolve.rs": "f50ee693f59e3c356cfead1bab739f0d87639003bc1de066082f5cd775251e55",
+      "apps/bigbrotr/src/interfaces/configuration.rs": "2ec9e94b066bb5dc37f8d93a0512a93f7448475ae308d8ee9f620c8f418d564e",
+      "apps/bigbrotr/src/interfaces/postgres_command.rs": "cffec172c181ac16a1b316f7cc36b1244d1c59b77fefd4a56ade8174f4874cd0",
+      "apps/bigbrotr/src/interfaces/migrations.rs": "ebd996efd460c5225d2b162ad8213beade1b7ab20c50f5477e5e765a3de4eb19",
+      "apps/bigbrotr/src/storage/postgres/configuration.rs": "0ac312ccac6cefeee219d752673dc942342ea70d7c9581b7259dd28b5b964fcb",
+      "apps/bigbrotr/src/storage/postgres/migration_runner.rs": "bba75ef7f5fbcf0cbd5dd70ad1b69d462dd7b27c65fbdf41c9ffa993c2c771e4",
+      "apps/bigbrotr/tests/policy_seed.rs": "21457e4d914a031d995c61aacb0f2a4bc7a5392a1fad1bfdcb8aab71bbe2b8ba",
+      "Cargo.lock": "bff3ccfcaf614d60e9db4a300560190db5fcd9e635d6ac30f1d4b3af6d5e573d"
+    }
+  },
+  "environment": {
+    "target": "aarch64-apple-darwin",
+    "rustc": "1.98.1",
+    "target_cache": ".research/worktrees/rocks-store/.research/implementation/rocks-store/target",
+    "jobs": 2
+  },
+  "checks": {
+    "binary_unit_tests": 3,
+    "existing_config_process_tests": 23,
+    "migration_process_tests": 3,
+    "policy_process_tests": 5,
+    "failed": 0,
+    "ignored": 0,
+    "generated_reference_recheck": "1 PASS,22 filtered after generated-document change",
+    "clippy": "PASS workspace all-targets -D warnings",
+    "fmt": "PASS",
+    "artifacts": "PASS structural checks only"
+  },
+  "observed": [
+    "Persisted normalized values replace candidate policy without reseeding defaults; root keys stay separate; exact digest rechecked.",
+    "Invalid normalized zero/null/root-injection and missing fields refused; a wrong digest fails.",
+    "Actual config inspect enters protected Control credential preparation; missing credentials cannot become offline success.",
+    "Existing migration CLI and all plaintext address boundary controls retained after moving the common owned transport."
+  ],
+  "test_history": "Missing inspect command RED (exit2 versus required credential refusal3); stub stored policy RED. First live-path assertion expected word credential but actual protected adapter reports password; assertion corrected to exact existing adapter error. A mistyped test target migration_entrypoint executed no tests; corrected to migrate_entrypoint before complete34-test run.",
+  "review": "Root reviewed current owning config/operations/private-admin contracts, full new source and changed consumers. No independent agent review available; prior agents stopped on service usage limit.",
+  "not_run": [
+    "Native PostgreSQL reader and19 fixture scenarios: harness committed for exact-source testing, not PASS.",
+    "Bootstrap/CAS/activation/authentication/grants/native writer admission.",
+    "Maximum-size memory, concurrent accepted revisions and blocked-read cancellation."
+  ],
+  "raw_root": ".research/implementation/configuration-policy",
+  "logs_sha256": {
+    "inspect-red.log": "735cf21edc667699723b93f0833cbbba8e0be315a5883f33fd02b134e8c1607f",
+    "restore-red.log": "5214569c9a0f9fa3c0b5e8e9878c48973fe4886e9b62e2d18a49894993cada77",
+    "inspect-green.log": "d7964f59ac6b561df63a25ee10ca306cf40b232b9925bf7694c9eaad2fa045a4",
+    "inspect-tests.log": "9093730834aef0afcf25f380d5cbd142629b561984b1e301714b7856ca2be3c4",
+    "inspect-reference.log": "4bc97d8be7aa946cb0056458079f2518c7e8036578392db3e128280a1c95aebe",
+    "inspect-clippy.log": "cf65771a640717698334701bb75b486c10e22a5929af744fbefc8e402a3bfcf8",
+    "inspect-build.log": "419ad96aac6f5b34fcec7d1b745c4d9be78bb09f1764329434f9c08a82fd63d4"
+  }
+}

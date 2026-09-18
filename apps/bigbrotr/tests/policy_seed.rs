@@ -93,3 +93,30 @@ fn policy_seed_normalizes_zero_fractions_and_retains_unselected_settings() {
         "staged-unselected"
     );
 }
+
+#[test]
+fn durable_inspection_is_explicit_and_cannot_succeed_without_control() {
+    let directory = tempfile::tempdir().unwrap();
+    let file = directory.path().join("instance.toml");
+    // Keep a valid candidate but point its protected credential at an absent file.
+    // Offline show still succeeds; inspect must execute its live dependency path.
+    fs::write(
+        &file,
+        ROOT.replace(
+            "file:/run/secrets/bigbrotr-control",
+            "file:/absent/BIGBROTR_TEST_MISSING_SECRET",
+        ),
+    )
+    .unwrap();
+    let output = Command::new(env!("CARGO_BIN_EXE_bigbrotr"))
+        .args(["config", "inspect", "--file"])
+        .arg(file)
+        .env_clear()
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code(), Some(3));
+    assert!(output.stdout.is_empty());
+    let error = String::from_utf8(output.stderr).unwrap();
+    assert!(error.contains("protected PostgreSQL password"), "{error}");
+    assert!(!error.contains("BIGBROTR_TEST_MISSING_SECRET"));
+}

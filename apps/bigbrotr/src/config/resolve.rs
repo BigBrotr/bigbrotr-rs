@@ -366,6 +366,55 @@ fn normalize(key: &Key, value: &Value) -> Result<Value, &'static str> {
     }
 }
 
+// Stored values have already resolved units and defaults. Validate them with
+// the same registry rules, but require the closed normalized representation.
+pub(super) fn stored_value(key: &Key, value: &Value) -> Result<Value, &'static str> {
+    use Kind::*;
+    if value.is_null() {
+        return if key.default.is_null() && key.default_from.is_none() {
+            Ok(Value::Null)
+        } else {
+            Err("required stored value is absent")
+        };
+    }
+    let wire = match key.kind {
+        Bytes => json!(format!(
+            "{}B",
+            value.as_u64().ok_or("stored bytes must be u64")?
+        )),
+        Duration | DurationZero => json!(format!(
+            "{}us",
+            value.as_u64().ok_or("stored duration must be u64")?
+        )),
+        RevisitBands => {
+            let mut wire = value.clone();
+            for band in wire
+                .as_array_mut()
+                .ok_or("stored revisit bands must be an array")?
+            {
+                let fields = band
+                    .as_object_mut()
+                    .ok_or("stored band must be an object")?;
+                for key in ["start_age", "end_age", "cadence"] {
+                    let n = fields
+                        .get(key)
+                        .and_then(Value::as_u64)
+                        .ok_or("stored band duration must be u64")?;
+                    fields.insert(key.into(), json!(format!("{n}us")));
+                }
+            }
+            wire
+        }
+        Secret => return Err("credentials cannot be stored policy"),
+        _ => value.clone(),
+    };
+    let normalized = normalize(key, &wire)?;
+    if !matches!(key.kind, Ratio) && &normalized != value {
+        return Err("stored value is not normalized");
+    }
+    Ok(normalized)
+}
+
 fn duration(value: &Value, allow_zero: bool) -> Result<u64, &'static str> {
     units(
         value,
@@ -516,7 +565,7 @@ impl Resolved {
         self.text(key)
             .ok_or_else(|| format!("{key} is required by a selected role"))
     }
-    fn validate(&mut self) -> Result<(), String> {
+    pub(super) fn validate(&mut self) -> Result<(), String> {
         // Disabled dependencies still have closed syntax. Only actual consumers
         // require complete credentials and contribute live dependency checks.
         for pg in ["control", "catalog"] {

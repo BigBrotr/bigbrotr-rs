@@ -118,7 +118,7 @@ pub async fn run(
     })
 }
 
-async fn read_ledger(tx: &Transaction<'_>) -> Result<Vec<AppliedMigration>, RunError> {
+pub(super) async fn read_ledger(tx: &Transaction<'_>) -> Result<Vec<AppliedMigration>, RunError> {
     let namespace: bool = tx
         .query_one(
             "SELECT EXISTS (SELECT 1 FROM pg_catalog.pg_namespace WHERE nspname = 'control')",

@@ -81,6 +81,27 @@ durable authority must win at restart. Adding settings requires an explicit
 document-version migration before persisted seeds can be reused; this initial
 encoding does not fill in the remaining unimplemented service policy families.
 
+The finite `config inspect --file PATH` command reads the accepted configuration
+head and document in one PostgreSQL statement, under a read-only transaction and
+shared migration lock. It checks the exact schema ledger and dataset/instance,
+then validates all stored fields without filling defaults or admitting root keys.
+It re-encodes and checks the policy digest before reporting accepted values, with
+current deployment roots and `accepted-policy` attribution. Managed file changes
+are unused initialization input; declarative changes are staged. Mode disagreement,
+corruption and root-budget incompatibility fail. Missing dataset and missing
+configuration are separate incomplete observations, never implicit bootstrap.
+The current command requires a statically valid candidate root, reads only the
+Control credential/TLS inputs, and grants no authority or applied revision.
+
+The adapter bounds returned document text to 10 MiB and returns at most two
+singleton rows (the second detects corruption). It holds the migration lock
+before ledger inspection and uses one statement snapshot for configuration/head
+consistency; ordinary reads do not row-lock the head. The caller owns a 30-second
+operation deadline, transport cleanup and a conservative 512 MiB parse/diagnostic
+allowance plus protected-connection preparation, retained through output. This
+allowance is not measured peak RSS or an engine query-cost guarantee. Physical
+SQL scan/MVCC cost and peak memory remain workload qualification work.
+
 ## Shared budget allocator
 
 Treat the host envelope as the upper bound. Component limits cannot all claim the
