@@ -72,6 +72,17 @@ do not bound total RSS or Arrow/extension allocations. Parent resource ownership
 blocked-output termination, native cancellation/kill and process/backend exclusion
 must be implemented and tested before a publication worker is admitted.
 
+The [Linux amd64 prerequisite qualification](../../docs/implementation/evidence/p02-archive-engine-native-20260918.json)
+exercises the real packaged engine, offline signed load, refusal cases and a
+blocked output pipe. Its external harness kills the blocked worker; this does
+not implement a production supervisor. DuckDB's query `threads` setting also
+does not bound signature-verification threads: the three pinned amd64 extensions
+created 35 + 40 + 21 temporary hash threads across sequential loads. With a
+container PID cap of 8 the worker aborted, emitted no result and exited. Parent
+admission must budget this startup allowance and keep the reservation until
+termination; an abort never becomes a publication receipt. Native peak RSS/stack
+usage, production recovery and Linux arm64 execution remain unqualified.
+
 The new binding's Cargo graph introduces Zlib-licensed `foldhash`/`zlib-rs` and
 CDLA-Permissive-2.0 `webpki-roots` (the latter through its build-only downloader).
 Their exact-version license allowances follow inspected source notices retained

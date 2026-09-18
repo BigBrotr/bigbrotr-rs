@@ -1,0 +1,274 @@
+{
+  "format": "bigbrotr-archive-engine-qualification/1",
+  "observed_date": "2026-09-18",
+  "status": "PASS_WITH_EXPLICIT_UNQUALIFIED_BOUNDARIES",
+  "scope": "P02-T04 step1 engine/bundle prerequisite only; task remains incomplete",
+  "source": {
+    "dirty": false,
+    "manifest_sha256": "f8606feef2b3dd34775e3d29062b311cbfd33c69f75bf0a39ee6d7eebacb157f",
+    "revision": "d459fcdc357ddb3b68d9ac89e044b22156cf72b0",
+    "state": "builder-supplied",
+    "tree": "d949d497d883639cc47ccf52886caf25da58d712"
+  },
+  "build_audit": {
+    "status": "PASS",
+    "source": "d459fcdc357ddb3b68d9ac89e044b22156cf72b0",
+    "tree": "d949d497d883639cc47ccf52886caf25da58d712",
+    "source_files": 558,
+    "cli_sha256": "6db13c0b97bc06c0643ac7f00c8c546ecbc635287f606a5a2a8a1b709c357b22",
+    "worker_sha256": "ada9b22386d14f71c79eb54ea5fcbb8093eb8dda1d16a826d60b19fbc8f27ec7",
+    "native_assets_checked": true,
+    "native_tools": {
+      "CC": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+      "CXX": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+      "AR": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+      "LIBCLANG_PATH": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+      "discovery": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e"
+    },
+    "terminal": {
+      "Status": "exited",
+      "Running": false,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 0,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-09-18T11:14:32.996487277Z",
+      "FinishedAt": "2026-09-18T11:21:23.197184563Z"
+    }
+  },
+  "environment": {
+    "native_host": "Tux Linux x86_64",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "build_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "runtime_image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+    "runtime_limits": {
+      "cpus": 2,
+      "memory_bytes": 1073741824,
+      "pids": 128,
+      "network": "none",
+      "user": "1000:1000",
+      "root_readonly": true,
+      "capabilities": "ALL dropped"
+    }
+  },
+  "native_registry": {
+    "path": "contracts/release/archive-engine.json",
+    "sha256": "ae0069565ab9411928df0cf067822630c4f3a912919e61633b952f8077a5e2c1",
+    "target": "x86_64-unknown-linux-gnu"
+  },
+  "native_tests": {
+    "status": "PASS",
+    "executed": 6,
+    "ignored": 0,
+    "artifact": {
+      "bigbrotr_archive_worker-ef975fe10da83341": {
+        "sha256": "cdd450abdcc048610ce36b4f080adc8239b2225191f8e522be2bc2913bfa1619",
+        "bytes": 2814944
+      }
+    },
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--release",
+      "-p",
+      "bigbrotr-archive-worker",
+      "--lib",
+      "--",
+      "--test-threads=1"
+    ]
+  },
+  "packaged_cases": [
+    {
+      "name": "offline-load",
+      "exit_code": 0,
+      "seconds": 0.3089063251391053,
+      "status": "PASS",
+      "network_syscalls": 0
+    },
+    {
+      "name": "ordinary-cli-without-assets",
+      "exit_code": 0,
+      "seconds": 0.0007715718820691109,
+      "status": "PASS"
+    },
+    {
+      "name": "zero-memory-refused",
+      "exit_code": 1,
+      "seconds": 0.006451670080423355,
+      "status": "PASS"
+    },
+    {
+      "name": "nonempty-temp-refused",
+      "exit_code": 1,
+      "seconds": 0.006638810969889164,
+      "status": "PASS"
+    },
+    {
+      "name": "missing-extension-refused",
+      "exit_code": 1,
+      "seconds": 0.08515647100284696,
+      "status": "PASS"
+    },
+    {
+      "name": "altered-extension-refused",
+      "exit_code": 1,
+      "seconds": 0.0925800078548491,
+      "status": "PASS"
+    },
+    {
+      "name": "harness-kill-blocked-worker",
+      "status": "PASS",
+      "pipe_bytes": 65536,
+      "seconds_until_reaped": 0.003483080305159092,
+      "scope": "Harness-owned kill and EOF; application supervisor/grants remain unimplemented"
+    }
+  ],
+  "startup_signature_threads": {
+    "observed_successful_clones": 96,
+    "query_threads": 1,
+    "sequential_extension_hash_threads": [
+      35,
+      40,
+      21
+    ],
+    "interpretation": "Transient verification, not 96 concurrent or persistent query workers; overlap/peak not measured",
+    "source_url": "https://github.com/duckdb/duckdb/blob/d8cdaa33fda8df955cc76ef58a280f68f4cd43fa/src/main/extension/extension_load.cpp",
+    "source_sha256": "9e1bee29744b811aa83cd7a78aca87cdb8c054ec662154c43bc99ee857c261a5",
+    "functions": [
+      "IntializeAncillaryData",
+      "ComputeHashesOnSegments",
+      "CheckExtensionSignature"
+    ],
+    "stack_trace_limit": "Only libc frames resolved; cause established by exact source and file/thread traces"
+  },
+  "pid_exhaustion": {
+    "source": {
+      "dirty": false,
+      "manifest_sha256": "f8606feef2b3dd34775e3d29062b311cbfd33c69f75bf0a39ee6d7eebacb157f",
+      "revision": "d459fcdc357ddb3b68d9ac89e044b22156cf72b0",
+      "state": "builder-supplied",
+      "tree": "d949d497d883639cc47ccf52886caf25da58d712"
+    },
+    "worker_sha256": "ada9b22386d14f71c79eb54ea5fcbb8093eb8dda1d16a826d60b19fbc8f27ec7",
+    "harness_sha256": "28cfd141b07a827c1606db6960252709e72c060484127a11086d4140625b665d",
+    "command": [
+      "strace",
+      "-f",
+      "-ttt",
+      "-o",
+      "/lab/threads.log",
+      "-e",
+      "trace=clone,clone3",
+      "/build/archive-worker/bigbrotr-archive-worker",
+      "inspect-engine",
+      "/build/archive-worker",
+      "/lab/temp",
+      "268435456",
+      "134217728",
+      "1"
+    ],
+    "before": {
+      "pids.max": "8",
+      "pids.current": "2",
+      "pids.events": "max 0"
+    },
+    "after": {
+      "pids.max": "8",
+      "pids.current": "2",
+      "pids.events": "max 1"
+    },
+    "exit_code": -6,
+    "timed_out": false,
+    "seconds": 0.16458944184705615,
+    "stdout_bytes": 0,
+    "stderr_bytes": 45,
+    "scope": "Observation only; engine failure remains failure, parent not implemented",
+    "classification": "Observed native worker failure; external observation harness completed"
+  },
+  "mac_development": {
+    "architecture": "arm64",
+    "scope": "Incremental development build, not clean native release qualification",
+    "tests": 6,
+    "workspace_build_exit": 0,
+    "worker_sha256": "7ecd4c6c41123d99b5d59fa1dcb77c677ef154199caf07be78321f4112fdcd4d",
+    "loader_env_override": false,
+    "ordinary_cli_links_duckdb": false
+  },
+  "cleanup": {
+    "status": "PASS",
+    "owned": [
+      {
+        "name": "/bigbrotr-implementation-archive-d459fcd-build",
+        "id": "978b901eab59b355d478484cb0270c549274251871b2ad202733857f7d9cfdfb",
+        "exit_code": 0,
+        "oom_killed": false
+      },
+      {
+        "name": "/bigbrotr-implementation-archive-d459fcd-runtime",
+        "id": "c15336544a0a328b4af2f2995b75ae3b9f2cc388945b8709efb73b2242cd1055",
+        "exit_code": 0,
+        "oom_killed": false
+      },
+      {
+        "name": "/bigbrotr-implementation-archive-d459fcd-tests",
+        "id": "e2cc730fe2fbd38b16a12169ad67689d640212459372d72cd5c2642df8b09bed",
+        "exit_code": 0,
+        "oom_killed": false
+      },
+      {
+        "name": "/bigbrotr-implementation-archive-d459fcd-threads",
+        "id": "c8d3785cc2d37b22400de059f448e1e5b7677683de5d2bb9caa8c0a1df626be2",
+        "exit_code": 0,
+        "oom_killed": false
+      },
+      {
+        "name": "/bigbrotr-implementation-archive-d459fcd-thread-files",
+        "id": "0dec15e2414731607988b1c17ca80557a2f27ce9a82c7e6e5a54818587aab954",
+        "exit_code": 0,
+        "oom_killed": false
+      },
+      {
+        "name": "/bigbrotr-implementation-archive-d459fcd-pid-limit",
+        "id": "fd761bdbf28e95e124107c6cff474d0f2d98f035038a5e0199d54ae276793b91",
+        "exit_code": 0,
+        "oom_killed": false
+      }
+    ],
+    "unrelated_unchanged": 8,
+    "running_bigbrotr": 0,
+    "shared_source": "6be851580ba415eed5ff0979ee7072480f9ee3ab",
+    "lifecycle": "All six containers stopped-retained; no deletion or shared source reset; PID probe exit0 records worker SIGABRT, not engine success"
+  },
+  "harnesses": {
+    "experiments/archive-engine/native_tests.py": "7f26ebbc77fcd9857b360d25121a0628a1cfaac136685b3d70983db834e511f8",
+    "experiments/archive-engine/pid_exhaustion.py": "28cfd141b07a827c1606db6960252709e72c060484127a11086d4140625b665d",
+    "experiments/archive-engine/runtime.py": "f128f69bcb8936355547c362084cca9968e022ca8dcc4956da5bf1773f80a179",
+    "experiments/archive-engine/thread_files.py": "93cd616bb8d95bf2698a79884668f7eb283d4a294aad6d4863457072042766cf",
+    "experiments/archive-engine/thread_probe.py": "7719ad7dc5f48251908e21639168c55e23aaf9da218e0853cb77849b9a24ee39"
+  },
+  "evidence_root": ".research/implementation/archive-worker",
+  "evidence_files": {
+    "native-d459fcd/build-result.json": "a205dce737e313da9fe7e7c9b0a22e5477e2b4daa5cf903d2e5c83c4f3f887de",
+    "native-d459fcd/build-audit.json": "f830cf4c983b1dc1c31a59bc6c145d6e7b6ad1bbbd691089d08ed01255213152",
+    "native-test-evidence/result.json": "d1cd0e2f746f70dc6d56ed6a444868198c3fec9db0e9a65291f295c10bb135b7",
+    "runtime-evidence/result.json": "26f7ac26340534ae7afc38b2e93ac208b3852b10cc7ebe4cb102f461867f710b",
+    "thread-probe-evidence/threads.log": "3376a589e571e2b6b61f38b872fefa924c5faa93fbee8f3040ea8fb1840a8ed2",
+    "thread-files-evidence/threads.log": "c2c818a8d6825f65b055432a2a9d7fbd49baf1a1eb33ac1d09de7b4157caca63",
+    "pid-limit-evidence/result.json": "804c98f94b58ae9f2e4cc19ff7f3470712c6c5999dd765562edf8516057eccc9",
+    "pid-limit-evidence/threads.log": "dec88fae631b295010fe4d5308c93c42b6d6e11848ea8c283390613f60f96cef",
+    "cleanup-six-audit.json": "3cf71653c0649991c0bd4bc2b05e4b2376941354c527d0bd73f448f67e838717"
+  },
+  "not_run": [
+    "Production parent pre-exec verification/sanitization, bounded output/cancellation and grant ownership",
+    "Typed scientific rows, nested allocation/flush failure and independent Parquet readback",
+    "PG DuckLake transactions, positive fencing and ambiguous receipt recovery",
+    "Archive protection/reclamation, complete signed event read/export/restart",
+    "Mixed workload, aged state, native RSS/stack peaks and power-loss durability",
+    "Linux arm64 and Mac x86_64 runtime",
+    "Full native distribution SBOM, authenticated release and hosted GitHub Actions"
+  ]
+}

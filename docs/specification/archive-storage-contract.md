@@ -71,6 +71,15 @@ private memory/provider, redact driver errors and disable uncontrolled extension
 installation. P01's verified offline engine bundle includes the required remote
 filesystem extension; a dashboard request cannot install one.
 
+The worker grant covers startup as well as queries. Budget signed-extension
+verification threads/stacks separately from the engine's query thread setting;
+the pinned engine does not use that query limit for signature hashing. Exhausted
+native thread resources can abort the worker. Keep the grant until positive
+termination and resolve any ambiguous catalog outcome before replay, as for
+other native worker failures. Never bypass signature checks to fit a smaller
+grant. [The dependency record](../research/dependency-selections.md#duckdb-worker-and-arrowparquet-responsibilities)
+owns the exact-version finding and its measured scope.
+
 Infrastructure endpoints are operator-supplied trusted routes, distinct from
 untrusted relay/discovery URLs. Private PG/CH/S3/RPC endpoints are valid; keep
 their destination allowlist, DNS/TLS rules and credential scope explicit. A

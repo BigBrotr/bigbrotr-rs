@@ -312,6 +312,19 @@ its grant until joined/positively terminated. These limitations are explicit in
 [statement.rs](https://github.com/duckdb/duckdb-rs/blob/88f673c5cdf09e287c010a910db53b97e523a9fa/crates/duckdb/src/statement.rs)
 and [arrow_batch.rs](https://github.com/duckdb/duckdb-rs/blob/88f673c5cdf09e287c010a910db53b97e523a9fa/crates/duckdb/src/arrow_batch.rs).
 
+Query `threads` does not limit signed-extension startup. DuckDB 1.5.5's
+[`ComputeHashesOnSegments`](https://github.com/duckdb/duckdb/blob/d8cdaa33fda8df955cc76ef58a280f68f4cd43fa/src/main/extension/extension_load.cpp)
+creates one native thread per 1 MiB signature-hash segment and joins them before
+loading the extension. The pinned Linux amd64 assets require 35, 40 and 21 hash
+threads across three sequential loads. Native tracing observed 96 successful
+clones with query `threads=1`; this is not 96 simultaneous or persistent workers.
+An isolated PID cap of 8 produced `clone` EAGAIN, then worker SIGABRT, no successful
+result and no remaining worker process. Keep signed verification enabled. Include
+startup thread/stack allowance separately in parent admission and OS limits;
+retain the native grant until positive process termination. Actual peak RSS,
+thread overlap and production parent recovery remain acceptance gates. See the
+[native prerequisite qualification](../implementation/evidence/p02-archive-engine-native-20260918.json).
+
 The same pinned binding rejects nested List/Array/Struct/Map/Union values through
 `ToSql`; its `Value` enum is not evidence that those parameters can be bound.
 Ordered nested tags therefore need the already selected Arrow path rather than

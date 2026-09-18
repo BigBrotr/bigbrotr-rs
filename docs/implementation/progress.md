@@ -1,116 +1,110 @@
 # Current execution checkpoint
 
 Observed 2026-09-18. Navigation only; follow the
-[resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint) and
-verify Git, evidence and owned resources before continuing.
+[resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint), then
+verify Git, actual evidence and resource ownership before continuing.
 
 ## Mandate and active boundary
 
 Owner-authorized implementation remains active ([Q30](../planning/questions.md),
-[mandate](../planning/mandate.md)). Implement the complete selected product.
-Continue trusted native qualification on Tux despite unavailable hosted Actions.
-No public release, repository rename or Linux arm64 qualification is implied.
+[mandate](../planning/mandate.md)): complete the selected product. Continue trusted
+native work on Tux despite unavailable hosted Actions. No public release, rename
+or Linux arm64 qualification is implied. Go neighbor stays read-only.
 
-Active responsibility: P02-T04 step 1's first native engine/bundle boundary, then
-P02-T03/T04 typed archive publication consuming real pending batches. The initial
-private worker now executes engine inspection; it does not yet publish scientific
-rows or implement parent grants/supervision. No storage task checkbox or M1 gate
-has been completed by this prerequisite.
+Active tasks: P02-T03/T04. The initial private native engine/bundle prerequisite
+is qualified for the [recorded scope](evidence/p02-archive-engine-native-20260918.json).
+Next implement typed scientific rows and the real pending-batch publication path,
+including parent ownership. No storage task checkbox or M1 gate is complete.
 
-## Git and local ownership
+## Verified Git and ownership
 
-Local main starts from normally pushed
-`a745f7f1406952f808cbe40d85e687b92cdfde84`. Root owns the current candidate changes:
-Cargo manifests/lock, new `apps/bigbrotr-archive-worker/`, the native asset registry,
-release dependency/license records and notices, bundle/build/CI helpers and their
-controls, task/development documentation, laboratory inventory and this checkpoint.
-No contributor conflict, history rewrite, public release or Go-neighbor edit.
-Verify actual status and HEAD before committing; no future commit hash is assumed.
+Local main HEAD `d459fcdc357ddb3b68d9ac89e044b22156cf72b0`, tree
+`d949d497d883639cc47ccf52886caf25da58d712`; private origin/main last observed at
+`a745f7f1406952f808cbe40d85e687b92cdfde84`. The candidate is not yet pushed.
+Root owns the dirty qualification report, `experiments/archive-engine/`, archive
+contract/dependency/task/packaging documentation, inventory and this checkpoint.
+No contributor conflict or history rewrite. Verify actual status before resuming.
 
-The new private Cargo package isolates native linkage from ordinary CLI/Control/
-Ingest. `tools/build.py` prepares/copies the pinned bundle at build time, binds
-explicit library/header paths, records the worker/artifact identities and checks
-helper/source equality. Shared CI uses a fresh sibling `<output>-native-inputs`
-root. [Bundle usage and limitations](../../packaging/archive-worker/README.md)
-are the current interface consumer; parent exec verification and supervision are
-still required before any publisher can acquire authority.
+The candidate adds unpublished `apps/bigbrotr-archive-worker/`, exact native
+registry/bundle/build/CI integration and scoped controls. Only the worker links
+DuckDB. Current private command `inspect-engine` loads the offline signed bundle;
+it does not publish rows, supervise a child, acquire a grant or certify readiness.
+[Bundle documentation](../../packaging/archive-worker/README.md) describes the
+required future parent pre-exec verification and sanitized loader environment.
 
-## Evidence and findings
+## Actual evidence and findings
 
-Raw local root: `.research/implementation/archive-worker/`; inventory entry
+Raw root `.research/implementation/archive-worker/`; inventory entry
 `implementation_archive_worker_20260918` in the
 [laboratory inventory](../research/laboratory-inventory.json).
 
-- Actual DuckDB 1.5.5 / source `d8cdaa33fd` loads on Mac arm64 with the exact
-  `duckdb`/`libduckdb-sys` 1.10505.0 binding and Arrow 58.4.0. The diagnostic loads
-  all three pinned signed extensions: DuckLake `d8a1881e`, postgres scanner
-  `41223e5`, httpfs `827222f`; see `inspect-mac.json`.
-- The first RED test reproduced default automatic extension installation.
-  The implementation disables autoload/autoinstall, unsigned/community extensions,
-  persistent secret creation and progress output. Engine home/secret/temp paths
-  point to the caller's empty canonical private directory. Native limits do not
-  establish an RSS ceiling or a process reservation.
-- Six native tests pass after the final private-home change: exact limits,
-  invalid roots/zero limits, actual signed bundle load, altered native signature
-  refusal and byte/hash/symlink controls. `final-mac-checks.log` also records
-  successful worker Clippy. Ten build/CI process controls pass in
-  `build-controls.log`; intentional negative CI subcases retain FAIL/NOT_RUN.
-- Native negative-fixture setup initially failed because Rust copied readonly
-  permissions. The retry changes only its owned copy to 0600 before corrupting
-  the signature; original log `engine-tests.log` remains failed. An earlier
-  `enable_progress_bar` startup option failed because it is connection-local;
-  setting it on the connection is verified. No failure is relabeled PASS.
-- All 207 preceding lock packages/checksums remain; the worker adds 87 packages.
-  Dependency policy initially refused three new license instances. Exact source
-  notices were read/copied and exact-version allowances added for foldhash 0.1.5,
-  zlib-rs 0.6.8 and build-only webpki-roots 1.0.9. Advisories/licenses/sources now
-  pass (`dependency-policy-reviewed.log`). This is not the full native release SBOM.
-- Official Linux amd64/arm64 and Mac universal engine ZIPs and all four target
-  extension sets are pinned in `contracts/release/archive-engine.json`. Additional
-  target assets are downloaded inputs, not executed target evidence. A default
-  Python user-agent got HTTP403; the explicit build client user-agent succeeds
-  with ordinary verified HTTPS. Original failure remains `matrix-download.log`.
-- Mac whole-workspace build was launched with explicit native/compiler inputs,
-  log `mac-workspace-build.log`; its terminal outcome must be checked before any
-  claim. Initial artifact checks pass. Exact-revision native worker build, actual
-  no-network packaged execution, source/artifact audit and cleanup are next.
+- Exact-source native Linux amd64 build of `d459fcd` completed exit0/no OOM.
+  All 558 source entries, actual compiler tools, both ELF executables and native
+  assets were independently compared to receipts. CLI SHA-256
+  `6db13c0b97bc06c0643ac7f00c8c546ecbc635287f606a5a2a8a1b709c357b22`;
+  worker SHA-256 `ada9b22386d14f71c79eb54ea5fcbb8093eb8dda1d16a826d60b19fbc8f27ec7`.
+  `native-d459fcd/build-audit.json` owns details.
+- Six actual native Rust tests and seven packaged runtime cases pass. The runtime
+  runs with no network; strace observes zero network calls. Exact signed versions
+  load; zero memory, nonempty temp and missing/altered assets refuse. Ordinary CLI
+  works without DuckDB. A full unread 65,536-byte pipe blocks the worker; the
+  external harness kills/reaps it in 0.0035s and observes EOF. This is not an
+  implemented application supervisor. Results are in `native-test-evidence/`
+  and `runtime-evidence/`; exact scenario sources are now in `experiments/`.
+- Two thread probes observed 96 successful clones with query `threads=1`.
+  Exact DuckDB source explains transient signature hashing: one thread per 1 MiB
+  segment, 35 + 40 + 21 across sequential extension loads. A separate PID cap8
+  case produced clone EAGAIN, worker SIGABRT in 0.165s, no output and restored
+  baseline PID count. Observation harness success is not engine success. Preserve
+  signed checking and account startup threads/stacks separately. Parent recovery,
+  native peak RSS/stack usage and simultaneous thread peak remain unqualified.
+- Mac arm64 incremental workspace build, worker Clippy/six tests and packaged
+  executable-relative loading pass; ordinary CLI has no DuckDB linkage. This is
+  development evidence, not a clean release build. Initial RED/default-autoload,
+  invalid config-option and readonly corruption-fixture failures remain in logs.
+- Build/CI controls: ten pass; intentional inner FAIL/NOT_RUN cases are negative
+  controls. All 207 previous dependency versions/checksums remain, with 87 added
+  packages. Exact-version license allowances/notices were reviewed and dependency
+  policy passes. Full native distribution SBOM remains required.
+- Four target asset sets are pinned, but Linux arm64 and Mac x86_64 runtime are
+  NOT_RUN. Hosted Actions remain unavailable. No asset download qualifies a target.
 
-Typed scientific schemas, Arrow conversion/allocation, complete dictionary closure,
-PG DuckLake catalog transactions, positive publisher fencing, ambiguous receipt
-recovery, protection/reclamation, archive read/export/restart and later product
-milestones remain required. Pending data must not be reclaimed. The previous
-binding caveat remains: Arrow list slices retain complete child arrays, so row
-count alone is not an allocation bound; explicitly check appender flush outcomes.
+Scientific rows/Arrow conversion, dictionary closure, PG DuckLake transactions,
+positive fencing, ambiguous receipt recovery, protection/reclamation and complete
+signed read/export/restart remain required. Pending data must not be reclaimed.
+Binding caveat: Arrow list slices retain complete child arrays and native conversion
+copies them; row count alone is not an allocation bound. Check appender flush
+before commit. The previous reading covered the storage tasks/contracts, five
+implemented fact families, dictionary descriptors, pending feed and exact binding
+sources; reread changed boundaries as needed, not the entire repository.
 
-## Monitor review and prior completed qualification
+## Independent monitor review
 
-The owner-supplied independent monitor review was handled at the preceding natural
-boundary. All five findings have scoped corrections and practical evidence:
+All five owner-supplied findings have scoped corrections and practical evidence:
 [MON-001/002/004/006](evidence/p01-monitor-corrections-native-20260918.json) at
-`2c0dfc1`, and [MON-005](evidence/p01-jsonb-limit-native-20260918.json) at
-`c7e0c09`. The qualification is normally pushed in `a745f7f`. JSONB cap-1 and exact
-10 MiB initialize/inspect/activate/retry; cap+1 and the original compact-only
-counterexample refuse without Control mutation. Original failures remain in their
-historical reports. Signed admission remains qualified only for its recorded
-[initial-owner scope](evidence/p02-event-admission-native-20260918.json) at `12f936d`.
-No complete P01/P02, M1, peak capacity, power-loss or release qualification follows.
+`2c0dfc1`, [MON-005](evidence/p01-jsonb-limit-native-20260918.json) at `c7e0c09`;
+qualification pushed in `a745f7f`. JSONB cap-1/exact10MiB work and replay; cap+1
+and original compact-only counterexample refuse without Control mutation.
+Historical failures remain unchanged. Signed admission qualification at `12f936d`
+retains its [initial-owner scope](evidence/p02-event-admission-native-20260918.json).
+No full P01/P02 or M1 completion follows. Do not repeat unrelated suites without
+new changes or findings.
 
-## Owned native resources
+## Resources and next bounded action
 
-Fresh read-only Tux inventory is `native-preflight.json`: zero running BigBrotr
-containers; eight unrelated workloads continue; 151 total retained containers;
-340,682,608,640 free disk bytes. Shared checkout is clean/detached at
-`6be851580ba415eed5ff0979ee7072480f9ee3ab`, with zero active consumers. Do not reset it.
-No archive native lab exists yet. Older monitor, both JSONB, admission and bootstrap
-labs remain separately stopped-retained with exact IDs/owners in the inventory.
-No resource was deleted or reused. Retired environments stay retired.
+Fresh `terminal-six-preflight.json` / `cleanup-six-audit.json` verify all six
+archive containers stopped-retained, no OOM, zero running BigBrotr containers and
+all eight unrelated workloads unchanged. The low-PID container exit0 belongs to
+its observation harness; its worker exited SIGABRT. Exact names/IDs/owners and
+commands are in the inventory. Native root:
+`/home/tux/bigbrotr-implementation-20260917/runs/archive-d459fcd`.
+No resources were deleted. Shared checkout remains clean/detached at
+`6be851580ba415eed5ff0979ee7072480f9ee3ab`, zero consumers; do not reset it.
+Older monitor, JSONB, admission and bootstrap labs remain separately retained.
+All earlier build/test/collection sessions finished; there is no pending build.
 
-## Next bounded action
-
-Review the complete candidate diff and terminal Mac checks, commit the unpublished
-native-worker candidate, transfer its exact source via Git bundle, and build/run it
-in a fresh labeled native Linux amd64 lab. Record source, compiler, both executable
-and native asset identities; test offline signed loading, tampered/missing assets,
-loader independence of the ordinary CLI and refusal paths. Preserve all unrelated
-resources. Qualify this prerequisite honestly, then implement the portable typed
-record/publisher consumer; do not stop at an engine diagnostic or mark T04 complete.
+Next: review and check the qualification/documentation diff, commit coherently and
+normally push candidate plus evidence. Then implement the bounded typed record
+consumer for real pending facts, using independent signed/nested/extreme fixtures
+and actual DuckDB/Parquet readback. Continue through parent/publication and M1;
+do not stop at the engine diagnostic or weaken authority/persistence requirements.
