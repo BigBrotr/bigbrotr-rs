@@ -183,6 +183,9 @@ resolvable namespaced references and unchanged original bytes.
   unchanged documents reuse payload while actual measurements retain their times.
 - [ ] **Step 4:** Preserve canonical event arrays/content and unsigned timestamp domain in
   the chosen Arrow/Parquet mappings; do not parse content as arbitrary JSON.
+  The initial [event row adapter](../reference/archive-format.md) covers typed
+  conversion/native appending; full archive publication, independent native
+  qualification and portable export remain required.
 - [ ] **Step 5:** Define unknown/null/empty/value variants for measurements and structured
   failures; credentials/raw exception payloads are excluded from retained fields.
 - [ ] **Step 6:** Include required dictionary/object additions before or with references;

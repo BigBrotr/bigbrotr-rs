@@ -4332,6 +4332,19 @@
       "running_bigbrotr": 0,
       "shared_source": "6be851580ba415eed5ff0979ee7072480f9ee3ab",
       "lifecycle": "All six containers stopped-retained; no deletion or shared source reset; PID probe exit0 records worker SIGABRT, not engine success"
+    },
+    "event_rows_local": {
+      "source_base": "dcc514e",
+      "scope": "Uncommitted event-row adapter, Mac arm64 development only",
+      "evidence": [
+        "rows-red.log",
+        "rows-red-corrected.log",
+        "rows-first-green.log",
+        "rows-mac.log"
+      ],
+      "outcomes": "Initial test API mismatch corrected; three tests observed RED at missing converter, then five new row tests plus six prior worker cases and scoped Clippy PASS",
+      "native_linux": "NOT_RUN; next exact-revision candidate",
+      "limitations": "No publisher/parent/receipt, other four fact families remain to implement"
     }
   },
   "implementation_monitor_corrections_20260918": {

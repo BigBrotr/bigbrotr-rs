@@ -18,11 +18,10 @@ including parent ownership. No storage task checkbox or M1 gate is complete.
 
 ## Verified Git and ownership
 
-Local main HEAD `d459fcdc357ddb3b68d9ac89e044b22156cf72b0`, tree
-`d949d497d883639cc47ccf52886caf25da58d712`; private origin/main last observed at
-`a745f7f1406952f808cbe40d85e687b92cdfde84`. The candidate is not yet pushed.
-Root owns the dirty qualification report, `experiments/archive-engine/`, archive
-contract/dependency/task/packaging documentation, inventory and this checkpoint.
+Local main and private origin/main are at qualification commit `dcc514e` (normal
+push observed). The engine candidate `d459fcd` is pushed. Root now owns the event
+row adapter, its tests, two local package edges in Cargo, archive-format/task
+documentation, inventory and this checkpoint; these changes are not yet committed.
 No contributor conflict or history rewrite. Verify actual status before resuming.
 
 The candidate adds unpublished `apps/bigbrotr-archive-worker/`, exact native
@@ -103,8 +102,12 @@ No resources were deleted. Shared checkout remains clean/detached at
 Older monitor, JSONB, admission and bootstrap labs remain separately retained.
 All earlier build/test/collection sessions finished; there is no pending build.
 
-Next: review and check the qualification/documentation diff, commit coherently and
-normally push candidate plus evidence. Then implement the bounded typed record
-consumer for real pending facts, using independent signed/nested/extreme fixtures
-and actual DuckDB/Parquet readback. Continue through parent/publication and M1;
-do not stop at the engine diagnostic or weaken authority/persistence requirements.
+Next: commit the reviewed initial event-row adapter as an unpublished native
+candidate and transfer it through Git for native Rust tests on Tux. Mac Clippy and
+all eleven worker cases pass in `rows-mac.log`: signed u64 extrema/Unicode/NUL
+through native append and reopened Parquet, 1024 rows/24,576 nested strings,
+1 MiB content/10,000 tags, exact bounds and actual flush refusal. Original RED/API
+fixture-error logs are retained. This is event conversion, not publication. While
+that isolated test runs, implement the remaining eligibility/receive/provenance/
+dictionary typed rows; then connect the pending feed and parent/publisher. All
+complete-event, catalog and recovery gates remain open.

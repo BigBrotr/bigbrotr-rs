@@ -303,6 +303,8 @@ name = "bigbrotr-archive-worker"
 version = "0.1.0-dev"
 dependencies = [
  "arrow",
+ "bigbrotr-model",
+ "bigbrotr-protocol",
  "duckdb",
  "serde",
  "serde_json",

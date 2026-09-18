@@ -9,6 +9,7 @@ repository.workspace = true
 publish = false
 
 [dependencies]
+bigbrotr-model.workspace = true
 duckdb.workspace = true
 arrow.workspace = true
 serde_json.workspace = true
@@ -20,6 +21,7 @@ serde_json.workspace = true
 sha2.workspace = true
 
 [dev-dependencies]
+bigbrotr-protocol.workspace = true
 tempfile.workspace = true
 
 [lints]
