@@ -6398,11 +6398,77 @@
       "report": "docs/implementation/evidence/p02-archive-attempts-native-20260918.json"
     },
     "catalog_product": {
-      "status": "Implementation candidate preparation; native execution not yet started",
+      "status": "652e043 native candidate FAIL at fresh install Backend; bootstrap passed. Role REGROLE bind defect confirmed by pinned driver source. Next candidate fixes OID lookup and adds collation regression.",
       "local_root": ".research/implementation/archive-worker/catalog-product",
-      "source": "current uncommitted candidate after d24cd87",
-      "resources": "No new remote resources; last archive-attempts lab terminal. New exact-source isolated lab required.",
-      "scope": "Native bootstrap, guarded install/inspection, Control intent import and live stale writer refusal; synthetic facts only."
+      "source": "652e043596220f1d66cb644aa06fcff3f922b6fb",
+      "resources": {
+        "source": "652e043596220f1d66cb644aa06fcff3f922b6fb",
+        "tree": "e8ce51af37d2cd298a83eacfcc9c695c162e7dcd",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-product-652e043",
+        "owner": "c7696e777d65906c08793a8239537fdc",
+        "container": "bigbrotr-implementation-catalog-product-652e043",
+        "postgres": "bigbrotr-implementation-catalog-product-652e043-pg",
+        "network": "bigbrotr-implementation-catalog-product-652e043",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "state": "stopped-retained",
+        "source_files": 637,
+        "started_at": "2026-09-18T17:51:48.186413+00:00",
+        "network_id": "1c10550550ed8390a847a117c6f4d551c00c1dd838e60e7b0288f434d555a568",
+        "postgres_id": "7a58e1ebf713ae8a35703effc434366e00b49a7470d4384e0e67307ef52bca44",
+        "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+        "container_id": "cf9c871220d7d584246cc3d88f0d6c1928051f0109e27f01578ff075a410bec6",
+        "network_state": "retired",
+        "terminal": {
+          "runner": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 1,
+            "Error": "",
+            "StartedAt": "2026-09-18T17:51:50.595282459Z",
+            "FinishedAt": "2026-09-18T17:53:14.854349325Z"
+          },
+          "postgres": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-18T17:51:48.775199877Z",
+            "FinishedAt": "2026-09-18T17:54:28.321127784Z"
+          }
+        },
+        "finished_at": "2026-09-18T17:54:28.878936+00:00"
+      },
+      "scope": "Native bootstrap, guarded install/inspection, Control intent import and live stale writer refusal; synthetic facts only.",
+      "native_root": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-product-652e043",
+      "failed_runs": [
+        {
+          "revision": "652e043596220f1d66cb644aa06fcff3f922b6fb",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-product-652e043",
+          "audit": {
+            "source": "652e043596220f1d66cb644aa06fcff3f922b6fb",
+            "tree": "e8ce51af37d2cd298a83eacfcc9c695c162e7dcd",
+            "result": "FAIL",
+            "source_files": 637,
+            "manifest_sha256": "8b154b5d309b3ce10dc5fb363f8a8d8be0474a18e69c7de2b7d57a45c7891160",
+            "observations_sha256": "45a387082fe848304c38e0654a75f3e522813e3c7d42f681cf8a796c1f77d271",
+            "cleanup": "two owned containers stopped-retained, internal network retired, no new volume",
+            "unrelated_unchanged": 20,
+            "unrelated_running": 8,
+            "running_bigbrotr": 0
+          }
+        }
+      ]
     }
   },
   "implementation_monitor_corrections_20260918": {

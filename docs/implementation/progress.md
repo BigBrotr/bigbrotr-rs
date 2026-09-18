@@ -178,8 +178,13 @@ and monotonic import of the private Control-retained request. New catalog SQL is
 separate from the applied Control migrations. Local-only placement is an explicit
 prerequisite; S3 remains selected unfinished work. No catalog code is qualified.
 The initial missing-module compiler RED is retained under ignored
-`.research/implementation/archive-worker/catalog-product/red.log`. No new lab
-has been launched; the last terminal resource inventory above remains current.
+`.research/implementation/archive-worker/catalog-product/red.log`. New exact-source lab is running at
+`/home/tux/bigbrotr-implementation-20260917/runs/catalog-product-652e043`,
+owner `c7696e777d65906c08793a8239537fdc`, runner
+`bigbrotr-implementation-catalog-product-652e043` and its `-pg` container.
+Its owned internal network and full IDs/preflight are recorded in the inventory.
+Do not stop it merely on resumption; inspect current results. Source candidate
+652e043 is a local unpublished commit, origin/main remains d24cd87. Outcome unknown.
 
 Read-only independent review of b245644 and retained issuance evidence found no
 correctness defect. It identified a test limitation: the copied-issuer negative
@@ -223,3 +228,11 @@ new failure. Keep resource/orphan cleanup separate from catalog commit safety.
 Then connect scientific schema/all families/atomic semantic receipt and protection
 to signed M1 read/export/restart. Shared finite user jobs are not internal archive
 attempts. No pending reclaim or P02/M1 completion before those actual boundaries.
+
+Current native boundary: candidate652e043 finished FAIL at fresh guard install
+(Backend); native bootstrap,15 Rust tests, scoped Clippy and improved active-issuer
+Control probe passed. The pinned driver refuses String→REGROLE binding. Both
+containers stopped, owned network retired,20 unrelated workloads unchanged.
+Raw failure/audit are under `catalog-product/652e043`. Next candidate resolves
+role OIDs by exact name and adds a discriminating collation mutation check from
+the independent review. No archive publication qualification is claimed.

@@ -204,6 +204,13 @@ async fn run() {
         "inspect" => {
             catalog_guard::inspect(&mut admin, &identity).await.unwrap();
         }
+        "refuse-collation" => {
+            admin.batch_execute("ALTER TABLE public.ducklake_metadata ALTER COLUMN key TYPE varchar COLLATE \"C\"").await.unwrap();
+            assert!(
+                catalog_guard::inspect(&mut admin, &identity).await.is_err(),
+                "collation mutation must invalidate compatibility"
+            );
+        }
         "refuse-damaged" => {
             admin.batch_execute("ALTER TABLE public.ducklake_metadata ADD COLUMN unexpected bigint; ALTER TABLE public.ducklake_metadata DROP COLUMN unexpected").await.unwrap();
             assert_eq!(

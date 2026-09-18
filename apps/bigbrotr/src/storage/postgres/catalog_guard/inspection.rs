@@ -115,7 +115,7 @@ async fn restricted(tx: &Transaction<'_>, login: &str) -> Result<(), GuardError>
 }
 pub(super) async fn bootstrap(tx: &Transaction<'_>, login: &str) -> Result<(), GuardError> {
     restricted(tx, login).await?;
-    require(tx, "SELECT NOT EXISTS(SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND c.relowner<>$1::regrole) AND NOT EXISTS(SELECT 1 FROM pg_namespace WHERE nspowner=$1::regrole) AND NOT EXISTS(SELECT 1 FROM pg_database WHERE datdba=$1::regrole)", &[&login], GuardError::UnsafeRole).await
+    require(tx, "SELECT NOT EXISTS(SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND c.relowner<>(SELECT oid FROM pg_roles WHERE rolname=$1::name)) AND NOT EXISTS(SELECT 1 FROM pg_namespace WHERE nspowner=(SELECT oid FROM pg_roles WHERE rolname=$1::name)) AND NOT EXISTS(SELECT 1 FROM pg_database WHERE datdba=(SELECT oid FROM pg_roles WHERE rolname=$1::name))", &[&login], GuardError::UnsafeRole).await
 }
 pub(super) async fn revoked(tx: &Transaction<'_>, login: &str) -> Result<(), GuardError> {
     writer(tx, login).await?;
@@ -123,7 +123,7 @@ pub(super) async fn revoked(tx: &Transaction<'_>, login: &str) -> Result<(), Gua
 }
 pub(super) async fn writer(tx: &Transaction<'_>, login: &str) -> Result<(), GuardError> {
     restricted(tx, login).await?;
-    require(tx, "SELECT NOT has_schema_privilege($1::name,'public','CREATE') AND NOT has_schema_privilege($1::name,'bigbrotr_archive','USAGE,CREATE') AND NOT EXISTS(SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname IN ('public','bigbrotr_archive') AND (c.relowner=$1::regrole OR has_table_privilege($1::name,c.oid,'TRIGGER,TRUNCATE') OR (n.nspname='bigbrotr_archive' AND has_table_privilege($1::name,c.oid,'SELECT,INSERT,UPDATE,DELETE')))) AND NOT EXISTS(SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname IN ('public','bigbrotr_archive') AND p.proowner=$1::regrole) AND NOT EXISTS(SELECT 1 FROM pg_namespace WHERE nspowner=$1::regrole) AND NOT EXISTS(SELECT 1 FROM pg_database WHERE datdba=$1::regrole)", &[&login], GuardError::UnsafeRole).await
+    require(tx, "SELECT NOT has_schema_privilege($1::name,'public','CREATE') AND NOT has_schema_privilege($1::name,'bigbrotr_archive','USAGE,CREATE') AND NOT EXISTS(SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname IN ('public','bigbrotr_archive') AND (c.relowner=(SELECT oid FROM pg_roles WHERE rolname=$1::name) OR has_table_privilege($1::name,c.oid,'TRIGGER,TRUNCATE') OR (n.nspname='bigbrotr_archive' AND has_table_privilege($1::name,c.oid,'SELECT,INSERT,UPDATE,DELETE')))) AND NOT EXISTS(SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname IN ('public','bigbrotr_archive') AND p.proowner=(SELECT oid FROM pg_roles WHERE rolname=$1::name)) AND NOT EXISTS(SELECT 1 FROM pg_namespace WHERE nspowner=(SELECT oid FROM pg_roles WHERE rolname=$1::name)) AND NOT EXISTS(SELECT 1 FROM pg_database WHERE datdba=(SELECT oid FROM pg_roles WHERE rolname=$1::name))", &[&login], GuardError::UnsafeRole).await
 }
 
 /// Hash length-framed, ordered structural definitions. Each SQL arm returns a

@@ -59,6 +59,6 @@ r=subprocess.run(native_command('write',Path('/out/native-new'),1),input='publis
 r=subprocess.run(native_command('read',Path('/out/native-read'),1),capture_output=True,text=True,env=env,timeout=60)
 assert r.returncode==0 and json.loads(r.stdout)['counts']==[1,1,1]
 (out/'native-read.json').write_text(r.stdout)
-guard('replay-first');guard('inspect');guard('refuse-damaged')
+guard('replay-first');guard('inspect');guard('refuse-collation');guard('refuse-damaged')
 assert inventory()==manifest['files_sha256']
 print(json.dumps({'status':'PASS',**identity}))
