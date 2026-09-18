@@ -22,6 +22,7 @@ sys.path.insert(0, '/source')
 from tools.archive_bundle import build_environment, native_target, verify_bundle
 
 parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('--case-set', choices=['baseline', 'startup'], default='baseline')
 parser.add_argument('--probe', type=Path, required=True)
 parser.add_argument('--probe-sha256', required=True)
 parser.add_argument('--bundle', type=Path, required=True)
@@ -48,9 +49,11 @@ pg_env.pop('PGPASSWORD', None)
 worker_env = {'LC_ALL': 'C', **build_environment(args.bundle)}
 children = []
 roles = []
+relays = []
 cases = []
 report = {'status': 'RUNNING', 'probe_sha256': args.probe_sha256,
-          'scope': 'Synthetic real Rust DuckLake/PG fencing investigation only', 'cases': cases}
+          'scope': 'Synthetic real Rust DuckLake/PG fencing investigation only',
+          'case_set': args.case_set, 'cases': cases}
 
 
 def save():
@@ -154,20 +157,7 @@ def commit(probe):
     return probe.finish()
 
 
-try:
-    report['active_case'] = 'initialization'
-    assert sql('SHOW cluster_name') == args.cluster, 'unowned PostgreSQL cluster'
-    assert sql("SELECT count(*) FROM pg_tables WHERE schemaname='public'") == '0'
-    report['postgres_version'] = sql('SHOW server_version')
-    report['psql_version'] = subprocess.check_output(['psql', '--version'], text=True).strip()
-    admin = dsn_file('admin', 'postgres', password)
-    init = Probe('init', admin, 1)
-    assert init.message() == {'stage': 'initialized', 'version': 'v1.5.5'}
-    init.finish()
-    sql('CREATE ROLE bb_fence_writer NOLOGIN; GRANT USAGE,CREATE ON SCHEMA public TO bb_fence_writer; '
-        'GRANT ALL ON ALL TABLES IN SCHEMA public TO bb_fence_writer; '
-        'GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO bb_fence_writer;')
-
+def baseline_cases(admin):
     report['active_case'] = 'unfenced-duplicate-negative-control'
     # Independent negative control: both read absent before either appends.
     _, a_dsn = job_role()
@@ -239,6 +229,98 @@ try:
         time.sleep(.02)
     assert read(4, admin) == [1, 1, 1]
     cases.append({'case': 'committed-acknowledgement-lost', 'counts': [1, 1, 1], 'status': 'PASS'})
+
+
+def startup_cases(admin):
+    from catalog_startup_relay import StartupRelay
+
+    for batch, kill in [(5, False), (6, True)]:
+        name = "startup-reaped-client" if kill else "startup-live-native-negative-control"
+        report["active_case"] = name
+        role, path = job_role()
+        relay = StartupRelay()
+        relays.append(relay)
+        dsn = path.read_text().replace("host=pg port=5432", f"host=127.0.0.1 port={relay.port}")
+        path.write_text(dsn.replace("connect_timeout=5", "connect_timeout=15") +
+                        " gssencmode=disable options='-c post_auth_delay=6'")
+        a = Probe("write", path, batch)
+        # Queue publication in the parent pipe before the native connection is
+        # ready. Only the real native client may turn it into catalog SQL.
+        a.send(b"publish\n")
+        assert relay.authenticated.wait(15), "actual SCRAM authentication deadline"
+        # Trigger the inspected post-auth gap. This wait is never a fence or an
+        # assumption about completion: activity, native result and wire ordering
+        # are measured independently below.
+        time.sleep(.5)
+        assert a.process.poll() is None and not relay.done.is_set()
+        assert backends(role) == []
+        sql(f"ALTER ROLE {role} NOLOGIN;")
+        assert sql(f"SELECT rolcanlogin FROM pg_roles WHERE rolname='{role}'") == "f"
+        assert backends(role) == []
+        direct = root / (role + '-direct.dsn')
+        direct.write_text(dsn.replace(f'host=127.0.0.1 port={relay.port}', 'host=pg port=5432'))
+        direct.chmod(0o600)
+        denied = Probe('read', direct, batch)
+        refusal = denied.finish(False)
+        assert refusal['phase'] == 'attach'
+        if kill:
+            killed_at = time.monotonic()
+            a.process.kill()
+            assert a.process.wait(timeout=5) == -signal.SIGKILL
+            reaped_seconds = time.monotonic() - killed_at
+            assert not a.process.stdout.read() and not a.process.stderr.read()
+            a.process.stdin.close()
+            a.process.stdout.close()
+            a.process.stderr.close()
+            # Every activity query gets a fresh psql connection/transaction.
+            observed = backends(role)
+            for backend in observed:
+                assert sql("SELECT pg_terminate_backend(pid,5000) FROM pg_stat_activity "
+                           f"WHERE pid={backend['pid']} AND backend_start::text='{backend['start']}' "
+                           f"AND usename='{role}'") == 't'
+            assert backends(role) == []
+            # Replacement can commit before the old server finishes startup.
+            _, replacement = job_role()
+            commit(writer(replacement, batch))
+            assert not relay.done.is_set(), 'fault window did not overlap replacement'
+            outcome = {'exit': -signal.SIGKILL, 'reaped_seconds': reaped_seconds,
+                       'backends_at_exclusion': observed}
+        else:
+            assert a.message() == {'stage': 'ready', 'counts': [0, 0, 0]}
+            assert a.message() == {'stage': 'committed'}
+            outcome = a.finish()
+        wire = relay.finish()
+        assert wire['queries_before_ready'] == 0
+        if kill:
+            assert wire['queries_after_ready'] == 0
+            assert wire['client_eof_seconds'] < wire['ready_seconds']
+        else:
+            assert wire['queries_after_ready'] > 0
+        assert backends(role) == []
+        assert read(batch, admin) == [1, 1, 1]
+        cases.append({'case': name, 'status': 'PASS', 'new_connection': refusal,
+                      'old_client': outcome, 'wire': wire, 'counts': [1, 1, 1]})
+        save()
+
+
+try:
+    report['active_case'] = 'initialization'
+    assert sql('SHOW cluster_name') == args.cluster, 'unowned PostgreSQL cluster'
+    assert sql("SELECT count(*) FROM pg_tables WHERE schemaname='public'") == '0'
+    report['postgres_version'] = sql('SHOW server_version')
+    report['psql_version'] = subprocess.check_output(['psql', '--version'], text=True).strip()
+    admin = dsn_file('admin', 'postgres', password)
+    init = Probe('init', admin, 1)
+    assert init.message() == {'stage': 'initialized', 'version': 'v1.5.5'}
+    init.finish()
+    sql('CREATE ROLE bb_fence_writer NOLOGIN; GRANT USAGE,CREATE ON SCHEMA public TO bb_fence_writer; '
+        'GRANT ALL ON ALL TABLES IN SCHEMA public TO bb_fence_writer; '
+        'GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO bb_fence_writer;')
+
+    if args.case_set == 'baseline':
+        baseline_cases(admin)
+    else:
+        startup_cases(admin)
     report['status'] = 'PASS'
 except BaseException as error:
     report.update(status='FAIL', failure=type(error).__name__)
@@ -248,6 +330,10 @@ finally:
         if child.poll() is None:
             child.kill()
         child.wait(timeout=5)
-    report['child_cleanup'] = 'all owned children reaped'
+    for relay in relays:
+        relay.thread.join(timeout=35)
+        assert not relay.thread.is_alive()
+    report['relay_observations'] = [dict(relay.result) for relay in relays]
+    report['child_cleanup'] = 'all owned children reaped; relay threads joined'
     save()
 print(json.dumps({'status': report['status'], 'cases': len(cases)}))

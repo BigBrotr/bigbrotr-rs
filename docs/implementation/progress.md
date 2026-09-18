@@ -15,14 +15,12 @@ complete. Pending must not be reclaimed. Whole selected product remains required
 
 ## Git and ownership
 
-Mac main, integrating root only. Last observed HEAD
-`303763d621d9da960a8d22670abe512e8d001e79`; origin/main last freshly verified at
-`03819daa517024ce4f08d7e2cdbc48d0e47f4baa`. Unpublished commits 6a6f796/02d2a9b,
-3897cf8 and 303763d contain the three monitor corrections and their regressions.
-Root owns pending qualification report/task/README/inventory/checkpoint updates;
-no other writer/conflict. Exact inputs travel through Git; Tux is never an
-independently edited product workspace. Next commit/push must be observed, not
-inferred from this note. Independent agents unavailable; root review only.
+Mac main, integrating root only. Freshly verified HEAD and origin/main both
+`33267d018e6ee4e37db5e7a92d2e37c97acbf4e4`, clean before this slice. The three
+monitor fixes and final reports are pushed. Root now owns the native startup
+qualification harness/README and this checkpoint/inventory; no other writer.
+Exact inputs travel through Git; Tux is never an independently edited product
+workspace. Independent agents unavailable; root review only.
 
 ## Qualified product prerequisites
 
@@ -143,12 +141,23 @@ Native exact runs: `runs/job-bounds-6a6f796`, `runs/archive-02d2a9b`,
 `runs/archive-cache-303763d` below the inventoried implementation root.
 No active experiment or unfinished mutation needs joining.
 
-Next: review/commit/push these final qualification documents, verify origin and
-clean tree, then resume P02-T03/T04. The bounded next technical question is whether
-positive native-worker/client termination plus catalog backend exclusion closes
-the demonstrated startup gap for the exact libpq/extension protocol. Inspect the
-actual connection startup/query ordering and persistent job recovery callers;
-exercise a stopped/in-startup old native client, not just the ready-transaction
-case already qualified. Select/update the product fence only with that evidence,
-then implement scientific catalog initialization and receipt-backed publication
-from the signed pending handoff. No pending reclamation before qualified protection.
+Next: commit the reviewed startup harness as an unpublished test candidate,
+transfer it through Git into a new clean Tux checkout and run its two cases with
+the already qualified a531ea3 native probe/bundle (record both identities). New
+`catalog_fence.py --case-set startup` uses a bounded loopback protocol observer,
+real SCRAM and startup-packet post_auth_delay: compare an invisible live native
+writer with positive SIGKILL/reap before a replacement commit. This is NOT_RUN.
+The observer records frame counts/order, never credential/SQL payloads; startup
+sleep is fault injection, not an exclusion timeout. All previous labs stay retired.
+
+The exact PostgreSQL extension embeds libpq18.3 (actual PQlibVersion machine code
+returns180003), despite server16.15. The upstream18.3 source tar matches the SHA512
+pinned by extension41223e5. Read scope: PQconnectdb/pqConnectDBComplete, connection
+AUTH_OK branch, PQsendQueryStart/PQexecStart and ReadyForQuery parser branch;
+PG16.15 InitPostgres end/PostgresMain initialization/query-loop ordering and
+backend-status snapshot cache. Blocking connect waits for ReadyForQuery; status
+publication precedes that message. Activity reads must use fresh transactions.
+These source findings support the proposed client-reap plus backend-exclusion
+protocol, not a completed persistent product recovery implementation. Raw hashes,
+read scope and files are under catalog-fence/libpq-18.3 and pg-source; inventory
+tracks the narrowly added upstream sources. No pending reclamation.

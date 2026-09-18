@@ -6187,6 +6187,31 @@
           "cleanup": "owned containers stopped-retained"
         }
       }
+    },
+    "native_startup_exclusion": {
+      "status": "harness prepared; native cases NOT_RUN",
+      "local_root": ".research/implementation/archive-worker/catalog-fence/libpq-18.3",
+      "postgres_extension_commit": "41223e51559cd581f1c06e170b71c71df25bbaac",
+      "libpq_source": {
+        "url": "https://ftp.postgresql.org/pub/source/v18.3/postgresql-18.3.tar.bz2",
+        "tar_sha512": "fdbe6d726f46738cf14acab96e5c05f7d65aefe78563281b416bb14a27c7c42e4df921e26b32816a5030ddbe506b95767e2c74a35afc589916504df38d1cb11c",
+        "bytes": 22497924,
+        "files_sha256": {
+          "fe-connect.c": "44a6e386cbfd67ebe768d6ef5493098119c2e6b4796239d53e5ed7b122b206a5",
+          "fe-exec.c": "277f3c9607bc9e18e7081533015eac3a35109c4bc89aebca1d68a8f4fc1dae95",
+          "libpq-fe.h": "499d984421f5490be016f7d49a8599e7f8be120f0cf80c200e872265064be7c0",
+          "fe-protocol3.c": "ae7f7c2b6d0a42c98e6c6b5b73c66f2262cb7b1ff3343facd840a8b2aeb273fa"
+        },
+        "selection": "18.3 exact pinned extension overlay; connection/query/ReadyForQuery source branches inspected; not whole libpq"
+      },
+      "binary_version_evidence": ".research/implementation/archive-worker/catalog-fence/libpq-18.3/native-version.json",
+      "pg_server_additional_source": {
+        "url": "https://raw.githubusercontent.com/postgres/postgres/REL_16_15/src/backend/tcop/postgres.c",
+        "sha256": "23efe26ad87264cb1d9356b19dff084161f9990d5555c9943bfc042689e0857a",
+        "read_scope": "PostgresMain InitPostgres call and query-loop ReadyForQuery/ReadCommand ordering; not entire file"
+      },
+      "remote_preflight": "/tmp/bigbrotr-native-startup-preflight.json; 190 containers, 8 unrelated running, zero BigBrotr running; no new resources yet",
+      "source_scope": "PQconnectdb/pqConnectDBComplete; AUTH_OK branch; PQsendQueryStart/PQexecStart; ReadyForQuery parser; PG16.15 relevant InitPostgres/PostgresMain/backend-status branches"
     }
   },
   "implementation_monitor_corrections_20260918": {
