@@ -336,6 +336,14 @@ async fn run() {
             .get::<_, i64>(0),
         2
     );
+    // Epoch is numeric even though the bounded wire representation is text.
+    // Reacquisition must cross 9 -> 10 -> 11 without choosing the lexical max.
+    for (n, expected_epoch) in [(56, 9), (58, 10), (60, 11), (62, 12)] {
+        let (next, d) = owner(n).await;
+        assert_eq!(next.identity().epoch.get(), expected_epoch);
+        next.release().await.unwrap();
+        join(d).await;
+    }
     drop(admin);
     join(admin_driver).await;
     println!(

@@ -236,3 +236,24 @@ containers stopped, owned network retired,20 unrelated workloads unchanged.
 Raw failure/audit are under `catalog-product/652e043`. Next candidate resolves
 role OIDs by exact name and adds a discriminating collation mutation check from
 the independent review. No archive publication qualification is claimed.
+
+Follow-up candidate `dbc5211847647956ebd02f7122eece23092c24e6` is local/unpublished;
+origin remains d24cd87. Its exact-source Tux run is active under
+`/home/tux/bigbrotr-implementation-20260917/runs/catalog-product-dbc5211`, owner
+`676ff0c8482012900cffec4fcd11ee40`, runner name
+`bigbrotr-implementation-catalog-product-dbc5211`, PG suffix `-pg`.
+The source is clean and read-only; Mac inventory/checkpoint updates are dirty.
+Do not interfere with this run. Native result is still unknown. Review identified
+missing collation inspection; this candidate first adds its negative regression
+without the fix to preserve executed discrimination.
+
+Run dbc5211 is terminal FAIL after successful native bootstrap, guard install,
+activation1/2, live old commit refusal and independent read counts[1,1,1]. Replay
+could not acquire Control epoch11: the adapter sorted the epoch::text output alias
+lexically, choosing9 over10. PG trigger preserved the invariant; no new epoch row
+committed. Actual read-only queries observed9 versus correct numeric10. Fix the
+qualified numeric ORDER BY and add explicit9/10/11/12 reacquisition assertions.
+One extra negative-control container never started (executable permission denied);
+its proposed collation/sealed-login cases are NOT_RUN. All owned resources are
+terminal, network retired,20 unrelated unchanged; inventory retains exact IDs.
+Next candidate keeps collation/sealed-login regressions before their fixes.

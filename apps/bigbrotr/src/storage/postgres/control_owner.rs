@@ -113,7 +113,7 @@ impl ControlSession {
             .await
             .map_err(backend)?;
         let policy = snapshot(&tx, &request, &mut validate).await?;
-        let previous = tx.query_opt("SELECT substring(resource_id FROM 1 FOR 17), epoch::text, substring(process_incarnation FROM 1 FOR 17), substring(role_instance_id FROM 1 FOR 17), state = 'released' FROM control.owner_epochs WHERE dataset_id = $1::bytea AND role = 'control' ORDER BY epoch DESC LIMIT 1 FOR UPDATE", &[&&request.dataset.as_bytes()[..]]).await.map_err(backend)?;
+        let previous = tx.query_opt("SELECT substring(resource_id FROM 1 FOR 17), epoch::text, substring(process_incarnation FROM 1 FOR 17), substring(role_instance_id FROM 1 FOR 17), state = 'released' FROM control.owner_epochs WHERE dataset_id = $1::bytea AND role = 'control' ORDER BY control.owner_epochs.epoch DESC LIMIT 1 FOR UPDATE", &[&&request.dataset.as_bytes()[..]]).await.map_err(backend)?;
         let (resource, epoch) = if let Some(row) = previous {
             let resource = fixed::<16>(&row, 0)?;
             let previous_epoch = number(&row, 1)?;

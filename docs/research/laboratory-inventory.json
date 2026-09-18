@@ -6398,26 +6398,46 @@
       "report": "docs/implementation/evidence/p02-archive-attempts-native-20260918.json"
     },
     "catalog_product": {
-      "status": "652e043 native candidate FAIL at fresh install Backend; bootstrap passed. Role REGROLE bind defect confirmed by pinned driver source. Next candidate fixes OID lookup and adds collation regression.",
+      "status": "dbc5211 native install/activation/live stale writer passed, journey FAIL at Control epoch11 acquisition; new numeric-order fix pending",
       "local_root": ".research/implementation/archive-worker/catalog-product",
-      "source": "652e043596220f1d66cb644aa06fcff3f922b6fb",
+      "source": "dbc5211847647956ebd02f7122eece23092c24e6",
       "resources": {
-        "source": "652e043596220f1d66cb644aa06fcff3f922b6fb",
-        "tree": "e8ce51af37d2cd298a83eacfcc9c695c162e7dcd",
-        "root": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-product-652e043",
-        "owner": "c7696e777d65906c08793a8239537fdc",
-        "container": "bigbrotr-implementation-catalog-product-652e043",
-        "postgres": "bigbrotr-implementation-catalog-product-652e043-pg",
-        "network": "bigbrotr-implementation-catalog-product-652e043",
+        "source": "dbc5211847647956ebd02f7122eece23092c24e6",
+        "tree": "21c1ed86d541b44416ecfe9125cec4bcb3b01b1e",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-product-dbc5211",
+        "owner": "676ff0c8482012900cffec4fcd11ee40",
+        "container": "bigbrotr-implementation-catalog-product-dbc5211",
+        "postgres": "bigbrotr-implementation-catalog-product-dbc5211-pg",
+        "network": "bigbrotr-implementation-catalog-product-dbc5211",
         "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
         "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
         "state": "stopped-retained",
         "source_files": 637,
-        "started_at": "2026-09-18T17:51:48.186413+00:00",
-        "network_id": "1c10550550ed8390a847a117c6f4d551c00c1dd838e60e7b0288f434d555a568",
-        "postgres_id": "7a58e1ebf713ae8a35703effc434366e00b49a7470d4384e0e67307ef52bca44",
+        "started_at": "2026-09-18T17:56:01.127439+00:00",
+        "network_id": "77ee429ad758c29e6076dc551d9c6acc793e831465e10dfb22d24c389cc31144",
+        "postgres_id": "04cbc0ded997c6098c3f134e9606ff4cde8e731dc77ea886d9457bac9e4b7a34",
         "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
-        "container_id": "cf9c871220d7d584246cc3d88f0d6c1928051f0109e27f01578ff075a410bec6",
+        "container_id": "db82dbefdd403db4a86bc492e6db8977eb18c2771ef3b71e668aa941f444a041",
+        "inspection_controls": [
+          {
+            "name": "bigbrotr-implementation-catalog-product-dbc5211-baseline",
+            "id": "f96a41041c64a5f8a1a4ac756868a1f24832e68dfe92313c3d677d509e43208d",
+            "case": "baseline",
+            "state": {
+              "Status": "created",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 126,
+              "Error": "failed to create task for container: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: error during container init: exec: \"/probe/catalog-guard-probe\": permission denied",
+              "StartedAt": "0001-01-01T00:00:00Z",
+              "FinishedAt": "0001-01-01T00:00:00Z"
+            }
+          }
+        ],
         "network_state": "retired",
         "terminal": {
           "runner": {
@@ -6430,8 +6450,8 @@
             "Pid": 0,
             "ExitCode": 1,
             "Error": "",
-            "StartedAt": "2026-09-18T17:51:50.595282459Z",
-            "FinishedAt": "2026-09-18T17:53:14.854349325Z"
+            "StartedAt": "2026-09-18T17:56:03.548033565Z",
+            "FinishedAt": "2026-09-18T17:57:22.576166871Z"
           },
           "postgres": {
             "Status": "exited",
@@ -6443,14 +6463,14 @@
             "Pid": 0,
             "ExitCode": 0,
             "Error": "",
-            "StartedAt": "2026-09-18T17:51:48.775199877Z",
-            "FinishedAt": "2026-09-18T17:54:28.321127784Z"
+            "StartedAt": "2026-09-18T17:56:01.687412254Z",
+            "FinishedAt": "2026-09-18T17:59:58.573945195Z"
           }
         },
-        "finished_at": "2026-09-18T17:54:28.878936+00:00"
+        "finished_at": "2026-09-18T17:59:59.159889+00:00"
       },
       "scope": "Native bootstrap, guarded install/inspection, Control intent import and live stale writer refusal; synthetic facts only.",
-      "native_root": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-product-652e043",
+      "native_root": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-product-dbc5211",
       "failed_runs": [
         {
           "revision": "652e043596220f1d66cb644aa06fcff3f922b6fb",
@@ -6467,6 +6487,23 @@
             "unrelated_running": 8,
             "running_bigbrotr": 0
           }
+        },
+        {
+          "revision": "dbc5211847647956ebd02f7122eece23092c24e6",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-product-dbc5211",
+          "audit": {
+            "source": "dbc5211847647956ebd02f7122eece23092c24e6",
+            "tree": "21c1ed86d541b44416ecfe9125cec4bcb3b01b1e",
+            "result": "FAIL",
+            "source_files": 637,
+            "manifest_sha256": "fa000a9da298f13e59b7f1cb409e7c970873f15cdf8d6b92159e948be97b5ac6",
+            "observations_sha256": "022986c9dc6d300a1435c7ad2737b4b077826ee084a364adb44e17fd5019d667",
+            "cleanup": "two owned containers stopped-retained, internal network retired, no new volume",
+            "unrelated_unchanged": 20,
+            "unrelated_running": 8,
+            "running_bigbrotr": 0
+          },
+          "extra_negative_control": "NOT_RUN: helper executable permission denied (image default uid differs from probe owner); no collation or NOLOGIN mutation ran."
         }
       ]
     }

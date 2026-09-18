@@ -206,10 +206,22 @@ async fn run() {
         }
         "refuse-collation" => {
             admin.batch_execute("ALTER TABLE public.ducklake_metadata ALTER COLUMN key TYPE varchar COLLATE \"C\"").await.unwrap();
-            assert!(
-                catalog_guard::inspect(&mut admin, &identity).await.is_err(),
-                "collation mutation must invalidate compatibility"
-            );
+            let refused = catalog_guard::inspect(&mut admin, &identity).await.is_err();
+            admin.batch_execute("ALTER TABLE public.ducklake_metadata ALTER COLUMN key TYPE varchar COLLATE \"default\"").await.unwrap();
+            assert!(refused, "collation mutation must invalidate compatibility");
+        }
+        "inspect-sealed" => {
+            let login = "bb_archive_".to_string() + &"16".repeat(16);
+            admin
+                .batch_execute(&format!("ALTER ROLE {login} NOLOGIN"))
+                .await
+                .unwrap();
+            let result = catalog_guard::inspect(&mut admin, &identity).await;
+            admin
+                .batch_execute(&format!("ALTER ROLE {login} LOGIN"))
+                .await
+                .unwrap();
+            result.expect("sealing login must not prevent inspection or successor activation");
         }
         "refuse-damaged" => {
             admin.batch_execute("ALTER TABLE public.ducklake_metadata ADD COLUMN unexpected bigint; ALTER TABLE public.ducklake_metadata DROP COLUMN unexpected").await.unwrap();
