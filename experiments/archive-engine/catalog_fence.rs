@@ -112,8 +112,27 @@ fn run() -> Result<(), &'static str> {
     if version != "v1.5.5" {
         return Err("version");
     }
+    // The pinned PG extension falls back to missing local_file storage if its
+    // default secret is absent. Supply an explicit memory secret instead of
+    // enabling persistent secrets to work around that dependency behavior.
+    connection
+        .execute_batch(&format!(
+            "CREATE TEMPORARY SECRET catalog_fence_pg (TYPE postgres, URI {})",
+            literal(&dsn)
+        ))
+        .map_err(|_| "credential-install")?;
+    let memory_secrets: u64 = connection
+        .query_row(
+            "SELECT count(*)::UBIGINT FROM duckdb_secrets() WHERE name='catalog_fence_pg' AND NOT persistent AND storage='memory'",
+            [],
+            |row| row.get(0),
+        )
+        .map_err(|_| "credential-check")?;
+    if memory_secrets != 1 {
+        return Err("credential-check");
+    }
     let options = format!(
-        "DATA_PATH {}, DATA_INLINING_ROW_LIMIT 0, AUTOMATIC_MIGRATION false, CREATE_IF_NOT_EXISTS {}, META_SECRET_STORAGE_TABLE ''{}",
+        "DATA_PATH {}, DATA_INLINING_ROW_LIMIT 0, AUTOMATIC_MIGRATION false, CREATE_IF_NOT_EXISTS {}, META_SECRET_STORAGE_TABLE '', META_SECRET 'catalog_fence_pg'{}",
         literal(&args[4]),
         mode == "init",
         if mode == "read" { ", READ_ONLY" } else { "" }
@@ -121,7 +140,7 @@ fn run() -> Result<(), &'static str> {
     connection
         .execute_batch(&format!(
             "ATTACH {} AS lake ({options})",
-            literal(&format!("ducklake:postgres:{dsn}"))
+            literal("ducklake:postgres:")
         ))
         .map_err(|error| {
             // The isolated lab needs the native cause, but native diagnostics
