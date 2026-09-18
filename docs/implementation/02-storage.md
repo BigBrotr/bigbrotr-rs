@@ -251,6 +251,9 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   document references and deterministic batch receipt in one transaction.
   Use the native writer on either local files or the configured S3 destination;
   validate catalog/root identity and disable automatic migration at ordinary attach.
+  The first finite fresh-only initializer and shared schema declaration now create
+  the five existing families plus an empty technical receipt relation; scientific
+  guard binding, init recovery and actual publisher integration remain required.
   The [actual native catalog investigation](evidence/p02-catalog-fence-native-20260918.json)
   qualifies four synthetic cases and explicit memory-secret attach after a real
   dependency failure. It is not the product schema/publisher. Connection-startup

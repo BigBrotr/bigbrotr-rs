@@ -14,12 +14,12 @@ read-only Go neighbor. All selected product work remains required.
 Active P02-T03/T04: signed durable pending → actual PG DuckLake publication,
 positive fencing, receipts/protection, then M1 read/export/restart. No P02 task or
 M1 gate is complete. Catalog guard, credential provisioning/sealing and finite
-private supervision prerequisites now have scoped native evidence. No scientific
-product schema or publisher exists yet. Pending must not be acknowledged/reclaimed.
+private supervision prerequisites now have scoped native evidence. The first scientific schema declaration and fresh-only initializer exist locally;
+scientific guard binding and the publisher are not implemented yet. Pending must not be acknowledged/reclaimed.
 
 ## Git and integrating ownership
 
-Mac main; root is the sole writer/integrator. Product candidate
+Mac main at clean f0f12524c8ab9da41447769de3d5d1234e4882fd on resumption; root is the sole writer/integrator. Product candidate
 `d2b260925b2b1d5d46275c53f4f04d4b05631b25`, tree
 `df6436e455aea3dd708ed8ae0f3d307fe41d05d7`, and its evidence/documentation commit
 `d1882ec3b7cf15866839ef9e0783ebc2d0375dcb` are pushed. Last freshly verified HEAD,
@@ -171,23 +171,27 @@ restart retired-network containers. Native amd64 does not qualify arm64.
 
 ## Next bounded action
 
-Wire the first real scientific catalog schema and atomic semantic receipt under
-P02-T03/T04. Read complete owning initialization/migration, archive format,
-publication/protection and receipt contracts plus actual callers. Resolve the
-initialization order explicitly: today's finite bootstrap/guard fixture contains
-no scientific tables, and ordinary publishers must not silently migrate/adopt an
-unfamiliar catalog. Initial navigation confirms `fresh()` currently insists on
-snapshot0/schema0 and zero scientific tables, while `archive.archive_commits` is a
-technical receipt outside the source-envelope rule. No initialization design
-change has been chosen yet. The next storage-catalog read was truncated: reread
-its complete owning scientific/receipt sections plus component-contract callers
-before editing. Native sources live under `apps/bigbrotr-archive-worker/src`, not
-under the packaging documentation directory. Reuse the fresh credential and
-supervised worker paths; retain
-one consumed credential per new lifetime and recovery obligations after ambiguity.
+A finite fresh-only scientific initializer and shared schema1 declaration are now
+implemented locally, pending exact-source Tux qualification. It creates five fact
+relations and an empty technical receipt relation in one native transaction,
+refuses existing DBs before ATTACH, and shares the verified private parent. Mac
+23 worker unit cases plus4 executable integration cases passed, including native
+embedded-DuckLake reopen/late-DDL rollback. Independent review identified and fixed
+preflight secret-storage registration, incomplete user-object inspection and weak
+negative test attribution. The new PG harness requires exact redacted refusal,
+a separately empty root, and unchanged complete database dump.
 
-Connect all five families and receipt/protection to signed M1 read/export/restart,
-with independent full content/reference readback. No pending ACK/reclaim or task/
-M1 completion before actual guarantees exist. Full persistent worker recovery,
-S3,aged mixed load/RSS,Linux arm64,acquisition/analytics/read surfaces/admin/website,
-and full Compose/CI/release journeys remain selected required work.
+Next commit this bounded candidate and run `native_catalog_schema.py` plus
+`catalog_schema_cases.py` in new owned Tux resources. No native lab has started
+for this slice yet. Retain source/artifacts/full native metadata and record actual
+outcomes; do not claim PG failure/recovery from embedded tests. Then integrate a
+new immutable scientific schema binding and complete nested metadata inspection
+with the guard, preserving applied0001 and the explicit distinction from its
+original empty-catalog fixture. Ordinary publication remains disabled by that
+missing integration, not authorized by a successful initializer response.
+
+Connect all five families and atomic receipts/protection to signed M1 read/export/
+restart with independent full content/reference readback. No pending ACK/reclaim
+or task/M1 completion before actual guarantees exist. Full persistent worker
+recovery, S3, aged mixed load/RSS, Linux arm64, acquisition/analytics/read surfaces/
+admin/website and full Compose/CI/release journeys remain selected required work.

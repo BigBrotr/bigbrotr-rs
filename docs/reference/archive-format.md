@@ -108,3 +108,35 @@ The five-family adapter at `5c3a8dd` also has
 [native Linux evidence](../implementation/evidence/p02-five-family-rows-native-20260918.json),
 including the sparse-null counterexample and fixed full-field readback. Later
 handoff/staging changes require their own validation.
+
+
+## Explicit initial scientific schema
+
+The compiled [schema-1 declaration](../../contracts/archive/v1/schema.json) owns
+native SQL types for the five existing families and `archive_commits`. Private
+staging consumes the same five scientific definitions. The finite private
+`initialize-catalog` operation requires an exclusively reserved, empty PostgreSQL
+database and an existing canonical empty local data directory. It checks the
+catalog before DuckLake ATTACH, disables native automatic migration and persistent
+secret storage, and creates all six relations in one native transaction. It does
+not adopt or retry an existing catalog. Snapshot author/message plus the declaration
+SHA-256 aid inspection; they are not an archive receipt or scientific readiness.
+
+`archive_commits` has no source envelope. Its required columns, in order, are
+`dataset_id` (binary16), `schema_version` (u16 semantic batch schema),
+`topology_generation` (u64), `batch_digest` (binary32), `record_count` (u64),
+`input_ranges` (ordered list of `shard_id` u32, `owner_epoch` u64,
+`first_sequence` u64, `last_sequence` u64), `attempt_id` (binary16) and
+`publication_ordinal` (u64). The dataset applies to every range. These will bind
+the retained complete input and fenced credential lifetime in the publication
+transaction. Initialization inserts no receipt and makes no publication/protection
+claim. Model validation must enforce lengths, nonzero identities, nested required
+children and complete canonical ranges; DuckLake does not enforce primary/foreign
+keys or these semantic constraints.
+
+The original guard-only installer still accepts only the pristine native bootstrap.
+Scientific guard binding, complete live nested-schema validation, interrupted-init
+resolution and the installed CLI journey remain required before using the new
+schema for ordinary publication. Applied guard SQL is unchanged. A failed or lost
+initialization response must be resolved by a fresh privileged catalog inspection;
+never delete data or repeat initialization merely because the response was absent.

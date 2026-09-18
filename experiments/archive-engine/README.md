@@ -256,3 +256,15 @@ the shared parent refactor. All 648 source files/four actual ELF hashes and term
 state are independently checked. Owned resources are stopped-retained; network
 retired. No science, source ACK, unique persistent launch or installed recovery is
 qualified by these scoped prerequisites.
+
+
+`native_catalog_schema.py` builds the finite scientific initializer, shared staging
+schema and supervised parent probe from a clean Git export. `catalog_schema_cases.py`
+runs the parent against an exclusively owned empty PG database, records all native
+metadata rows, and checks exact redacted refusals plus unchanged database dumps for
+existing/unfamiliar catalogs. `catalog_schema_child.py` supplies fixture credentials
+only on the private input pipe. A new canonical empty root isolates DB refusal from
+filesystem refusal. The embedded-native Rust cases cover six-table atomic DDL and
+late-statement rollback; do not report them as actual PostgreSQL failure/recovery.
+No scientific guard binding, receipt insertion, source ACK or installed recovery
+is qualified by this prerequisite alone. Native results are recorded separately.

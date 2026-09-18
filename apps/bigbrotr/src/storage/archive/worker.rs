@@ -63,9 +63,45 @@ impl<'a> Preparation<'a> {
         data_root: &str,
         budget: &ResourceBudget,
     ) -> Result<(), PreparationError> {
+        self.catalog_operation(
+            "bootstrap-catalog",
+            "bigbrotr-native-bootstrap/1",
+            dsn,
+            data_root,
+            budget,
+        )
+    }
+
+    /// Explicit fresh scientific schema creation. The operator must exclusively
+    /// reserve an empty database/root first. Existing databases refuse; resolve
+    /// ambiguity through a fresh privileged inspection instead of blind retry.
+    /// Joined DDL completion is not a schema binding, guard or archive receipt.
+    pub fn initialize_catalog(
+        self,
+        dsn: &str,
+        data_root: &str,
+        budget: &ResourceBudget,
+    ) -> Result<(), PreparationError> {
+        self.catalog_operation(
+            "initialize-catalog",
+            "bigbrotr-native-initialize/1",
+            dsn,
+            data_root,
+            budget,
+        )
+    }
+
+    fn catalog_operation(
+        self,
+        mode: &str,
+        result_format: &str,
+        dsn: &str,
+        data_root: &str,
+        budget: &ResourceBudget,
+    ) -> Result<(), PreparationError> {
         let input = super::bootstrap::Input { dsn, data_root };
         input.validate()?;
-        let mut process = self.start("bootstrap-catalog", &[], budget)?;
+        let mut process = self.start(mode, &[], budget)?;
         let transfer = serde_json::to_writer(&mut process, &input);
         let transport_error = process.failure();
         let output = process.finish();
@@ -81,7 +117,7 @@ impl<'a> Preparation<'a> {
             serde_json::from_slice(output.map_err(PreparationError::Process)?)
                 .map_err(|_| PreparationError::InvalidResult)?;
         if value.as_object().map(|v| v.len()) != Some(2)
-            || value["format"] != "bigbrotr-native-bootstrap/1"
+            || value["format"] != result_format
             || value["status"] != "initialized"
         {
             return Err(PreparationError::InvalidResult);

@@ -38,9 +38,10 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
     let arguments: Vec<_> = std::env::args_os().take(10).collect();
     let inspect_engine = arguments.len() == 7 && arguments[1] == "inspect-engine";
     let bootstrap_catalog = arguments.len() == 7 && arguments[1] == "bootstrap-catalog";
+    let initialize_catalog = arguments.len() == 7 && arguments[1] == "initialize-catalog";
     let inspect_batch = arguments.len() == 9 && arguments[1] == "inspect-batch";
-    if !inspect_engine && !inspect_batch && !bootstrap_catalog {
-        return Err("usage: bigbrotr-archive-worker {bootstrap-catalog BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | inspect-engine BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | inspect-batch BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_RECORDS MAX_ENCODED_BYTES}".into());
+    if !inspect_engine && !inspect_batch && !bootstrap_catalog && !initialize_catalog {
+        return Err("usage: bigbrotr-archive-worker {initialize-catalog BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | bootstrap-catalog BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | inspect-engine BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | inspect-batch BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_RECORDS MAX_ENCODED_BYTES}".into());
     }
     let number = |i: usize| -> Result<u64, Box<dyn std::error::Error>> {
         Ok(arguments[i].to_str().ok_or("invalid limit")?.parse()?)
@@ -52,7 +53,12 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
     };
     let engine = Engine::open(Path::new(&arguments[3]), limits)?;
     engine.load_bundle(Path::new(&arguments[2]))?;
-    let inspection = if bootstrap_catalog {
+    let inspection = if initialize_catalog {
+        let request =
+            bigbrotr_archive_worker::catalog::BootstrapRequest::read(std::io::stdin().lock())?;
+        engine.initialize_catalog(request)?;
+        serde_json::json!({"format":"bigbrotr-native-initialize/1","status":"initialized"})
+    } else if bootstrap_catalog {
         let request =
             bigbrotr_archive_worker::catalog::BootstrapRequest::read(std::io::stdin().lock())?;
         engine.bootstrap_catalog(request)?;

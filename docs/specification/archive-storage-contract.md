@@ -260,6 +260,25 @@ and [actual trigger metadata](https://www.postgresql.org/docs/16/catalog-pg-trig
 The exact upstream native-layout fixture records source revision/path/hash and is
 used only for inspection, never as a replacement metadata creator.
 
+### Explicit scientific initialization
+
+A separate finite initializer creates the first five fact relations and empty
+technical receipt relation from the versioned declaration. It requires an
+exclusively reserved new PostgreSQL database and canonical empty local directory,
+checks for unfamiliar objects before native ATTACH, and uses one native DDL
+transaction. Repeated/existing catalogs refuse; uncertain results require fresh
+privileged inspection. The operation shares the private supervisor and returns
+only after exit/EOF and positive reap. It does not install the guard or certify a
+schema ready for publication.
+
+The original guard-only fixture remains distinct. Scientific initialization must
+be followed by an immutable application-owned schema-version/checksum binding and
+complete live nested native metadata inspection in the guard's installation
+transaction. The existing PG structural checksum does not cover scientific
+metadata rows. These integration/recovery checks remain P02-T04 work; ordinary
+publication must not silently initialize, migrate or adopt a catalog. Initializing
+an empty installation requires no synthetic admission batch or archive attempt.
+
 ## Actual publication and protection boundaries
 
 The initial adapter uses the pinned DuckLake engine's normal transactional write

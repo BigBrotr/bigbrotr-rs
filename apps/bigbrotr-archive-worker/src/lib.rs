@@ -4,3 +4,4 @@ pub mod catalog;
 pub mod engine;
 pub mod prepare;
 pub mod rows;
+mod schema;

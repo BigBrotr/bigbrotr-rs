@@ -356,6 +356,22 @@ activity observation. Login revocation plus enumeration alone is insufficient;
 actual client/process exclusion and startup ordering remain recovery gates.
 This research adds no archive schema or migration.
 
+Scientific schema initialization also uses an explicit memory secret on its
+separate READ_ONLY PostgreSQL preflight attachment, with `SECRET_STORAGE_TABLE=''`.
+Pinned `PostgresCatalog::Initialize` registers secret storage regardless of read-only
+access; excluding it on DuckLake's later attachment alone is insufficient.
+`postgres_query` uses its transaction connection by default; READ_ONLY is an actual
+PG transaction access mode. The selected DuckLake revision
+`d8a1881e22516ea3d186d73e83c65fe5bd1a1dc4` writes every nested field to
+`ducklake_column`, with parent field IDs and native scalar type names. Schema
+metadata is row data, so a checksum of PG table definitions cannot validate the
+scientific schema. The initializer uses native CREATE TABLE statements in one
+transaction and annotates the initialization snapshot using
+`ducklake_set_commit_message`; it never writes native metadata itself.
+The [versioned row declaration](../reference/archive-format.md#explicit-initial-scientific-schema)
+records the current implementation scope. Scientific binding, actual PG ambiguous
+initialization and installed recovery remain separate qualification gates.
+
 The same pinned binding rejects nested List/Array/Struct/Map/Union values through
 `ToSql`; its `Value` enum is not evidence that those parameters can be bound.
 Ordered nested tags therefore need the already selected Arrow path rather than

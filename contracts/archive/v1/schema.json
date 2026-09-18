@@ -1,0 +1,29 @@
+{
+  "format": "bigbrotr-archive-schema/1",
+  "tables": [
+    {
+      "name": "dictionaries",
+      "columns": "source_record_id STRUCT(dataset_id BLOB, shard_id UINTEGER, owner_epoch UBIGINT, sequence UBIGINT) NOT NULL,\nrecord_schema_version USMALLINT NOT NULL, record_kind VARCHAR NOT NULL,\nvisibility_scope_id STRUCT(dataset_id BLOB, dictionary_kind USMALLINT, allocation_domain BLOB, ordinal UBIGINT) NOT NULL,\npayload_digest BLOB NOT NULL, recorded_at BIGINT NOT NULL,\nreference STRUCT(dataset_id BLOB, dictionary_kind USMALLINT, allocation_domain BLOB, ordinal UBIGINT) NOT NULL, normalization_version USMALLINT NOT NULL, descriptor_schema VARCHAR NOT NULL, descriptor_version USMALLINT NOT NULL,\ndescriptor_value STRUCT(event_id BLOB, class VARCHAR, url VARCHAR, clock VARCHAR, vantage VARCHAR, software VARCHAR,\nmethod_id STRUCT(dataset_id BLOB, dictionary_kind USMALLINT, allocation_domain BLOB, ordinal UBIGINT), public_key BLOB, route_class VARCHAR, software_version VARCHAR, label VARCHAR, visibility_scope_id STRUCT(dataset_id BLOB, dictionary_kind USMALLINT, allocation_domain BLOB, ordinal UBIGINT),\ninput VARCHAR, algorithm VARCHAR, capability VARCHAR, output_unit VARCHAR, failure_taxonomy VARCHAR, algorithm_version USMALLINT,\nprotocol_revision VARCHAR, format VARCHAR, format_version USMALLINT, source_dataset_id BLOB, source_artifact_digest BLOB) NOT NULL"
+    },
+    {
+      "name": "events",
+      "columns": "source_record_id STRUCT(dataset_id BLOB, shard_id UINTEGER, owner_epoch UBIGINT, sequence UBIGINT) NOT NULL,\nrecord_schema_version USMALLINT NOT NULL, record_kind VARCHAR NOT NULL,\nvisibility_scope_id STRUCT(dataset_id BLOB, dictionary_kind USMALLINT, allocation_domain BLOB, ordinal UBIGINT) NOT NULL,\npayload_digest BLOB NOT NULL, recorded_at BIGINT NOT NULL,\nevent_id BLOB NOT NULL, pubkey BLOB NOT NULL, created_at UBIGINT NOT NULL, kind USMALLINT NOT NULL, tags VARCHAR[][] NOT NULL, content VARCHAR NOT NULL, event_ordinal STRUCT(dataset_id BLOB, dictionary_kind USMALLINT, allocation_domain BLOB, ordinal UBIGINT) NOT NULL"
+    },
+    {
+      "name": "event_eligibility_facts",
+      "columns": "source_record_id STRUCT(dataset_id BLOB, shard_id UINTEGER, owner_epoch UBIGINT, sequence UBIGINT) NOT NULL,\nrecord_schema_version USMALLINT NOT NULL, record_kind VARCHAR NOT NULL,\nvisibility_scope_id STRUCT(dataset_id BLOB, dictionary_kind USMALLINT, allocation_domain BLOB, ordinal UBIGINT) NOT NULL,\npayload_digest BLOB NOT NULL, recorded_at BIGINT NOT NULL,\nevent_id BLOB NOT NULL, body_digest BLOB NOT NULL, sig BLOB NOT NULL, first_eligible_at BIGINT NOT NULL, origin VARCHAR NOT NULL, import_lineage STRUCT(dataset_id BLOB, dictionary_kind USMALLINT, allocation_domain BLOB, ordinal UBIGINT)"
+    },
+    {
+      "name": "event_receive_facts",
+      "columns": "source_record_id STRUCT(dataset_id BLOB, shard_id UINTEGER, owner_epoch UBIGINT, sequence UBIGINT) NOT NULL,\nrecord_schema_version USMALLINT NOT NULL, record_kind VARCHAR NOT NULL,\nvisibility_scope_id STRUCT(dataset_id BLOB, dictionary_kind USMALLINT, allocation_domain BLOB, ordinal UBIGINT) NOT NULL,\npayload_digest BLOB NOT NULL, recorded_at BIGINT NOT NULL,\nevent_id BLOB NOT NULL, received_at BIGINT NOT NULL, observer_id STRUCT(dataset_id BLOB, dictionary_kind USMALLINT, allocation_domain BLOB, ordinal UBIGINT) NOT NULL, clock_quality STRUCT(clock_id STRUCT(dataset_id BLOB, dictionary_kind USMALLINT, allocation_domain BLOB, ordinal UBIGINT), resolution_us UBIGINT, uncertainty_us UBIGINT, anomaly_flags UINTEGER) NOT NULL, corrects STRUCT(dataset_id BLOB, shard_id UINTEGER, owner_epoch UBIGINT, sequence UBIGINT)"
+    },
+    {
+      "name": "provenance_facts",
+      "columns": "source_record_id STRUCT(dataset_id BLOB, shard_id UINTEGER, owner_epoch UBIGINT, sequence UBIGINT) NOT NULL,\nrecord_schema_version USMALLINT NOT NULL, record_kind VARCHAR NOT NULL,\nvisibility_scope_id STRUCT(dataset_id BLOB, dictionary_kind USMALLINT, allocation_domain BLOB, ordinal UBIGINT) NOT NULL,\npayload_digest BLOB NOT NULL, recorded_at BIGINT NOT NULL,\nevent_id BLOB NOT NULL, endpoint_id STRUCT(dataset_id BLOB, dictionary_kind USMALLINT, allocation_domain BLOB, ordinal UBIGINT) NOT NULL, observer_id STRUCT(dataset_id BLOB, dictionary_kind USMALLINT, allocation_domain BLOB, ordinal UBIGINT) NOT NULL, access_scope_id STRUCT(dataset_id BLOB, dictionary_kind USMALLINT, allocation_domain BLOB, ordinal UBIGINT) NOT NULL, received_at BIGINT NOT NULL, clock_quality STRUCT(clock_id STRUCT(dataset_id BLOB, dictionary_kind USMALLINT, allocation_domain BLOB, ordinal UBIGINT), resolution_us UBIGINT, uncertainty_us UBIGINT, anomaly_flags UINTEGER) NOT NULL, verification_method_id STRUCT(dataset_id BLOB, dictionary_kind USMALLINT, allocation_domain BLOB, ordinal UBIGINT) NOT NULL, corrects STRUCT(dataset_id BLOB, shard_id UINTEGER, owner_epoch UBIGINT, sequence UBIGINT)"
+    },
+    {
+      "name": "archive_commits",
+      "columns": "dataset_id BLOB NOT NULL, schema_version USMALLINT NOT NULL, topology_generation UBIGINT NOT NULL, batch_digest BLOB NOT NULL, record_count UBIGINT NOT NULL, input_ranges STRUCT(shard_id UINTEGER, owner_epoch UBIGINT, first_sequence UBIGINT, last_sequence UBIGINT)[] NOT NULL, attempt_id BLOB NOT NULL, publication_ordinal UBIGINT NOT NULL"
+    }
+  ]
+}

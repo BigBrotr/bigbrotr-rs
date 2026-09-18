@@ -5,7 +5,7 @@ use bigbrotr_model::{AdmissionBatch, FactPayload};
 use bigbrotr_protocol::archive_batch::{self, Limits};
 use std::{fmt, io::Read, sync::atomic::AtomicBool};
 
-mod schema;
+use crate::schema;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum PrepareError {
@@ -54,7 +54,7 @@ impl PreparedBatch {
             return Err(archive_batch::Error::InvalidLimits.into());
         }
         let mut input = archive_batch::BatchReader::new(input, limits, cancelled)?;
-        schema::create(&engine).map_err(|_| PrepareError::NativeStage)?;
+        schema::create_stage(&engine.connection).map_err(|_| PrepareError::NativeStage)?;
         while let Some(fact) = input.next_fact(cancelled)? {
             let facts = [&fact];
             let (name, converted) = match fact.payload() {
