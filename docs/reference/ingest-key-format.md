@@ -80,9 +80,11 @@ the model invariant.
 
 Dictionary mappings retain a full `QualifiedRef`. Reverse lookup uses the
 descriptor digest only to find candidates: the candidate key also retains the
-full reference, and its future value must retain complete canonical descriptor
+full reference, and its value retains complete canonical descriptor
 bytes for equality. Hash equality alone never selects or merges a mapping. An
-ordinal without dataset, kind and allocation domain is never a key.
+ordinal without dataset, kind and allocation domain is never a key. The
+[initial bootstrap](ingest-bootstrap.md) fixes descriptor and inventory value
+bytes for the first native dictionary write.
 
 Event payload, eligibility, receive and provenance keys implement the exact
 logical identities in the identity contract. Provenance disabled means no

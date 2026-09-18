@@ -50,6 +50,40 @@ fn reference(kind: DictionaryKind) -> QualifiedRef {
 fn label(value: &str) -> DescriptorLabel {
     DescriptorLabel::new(value.into()).unwrap()
 }
+
+#[test]
+fn descriptor_equality_bytes_exclude_only_the_allocated_reference() {
+    // Independently written deterministic CBOR: [1, "visibility", 1,
+    // {"class":"public"}]. No mapping prefix or qualified reference occurs.
+    let literal = bytes("84016a7669736962696c69747901a165636c617373667075626c6963");
+    let descriptor = DictionaryDescriptor::Visibility {
+        class: label("public"),
+    };
+    let first = DictionaryEntry::new(
+        reference(DictionaryKind::VisibilityScope),
+        descriptor.clone(),
+    )
+    .unwrap();
+    let mut other = first.reference();
+    other.allocation_domain = [3; 16].try_into().unwrap();
+    other.ordinal = Ordinal::new(u64::MAX).unwrap();
+    let second = DictionaryEntry::new(other, descriptor).unwrap();
+    assert_eq!(first.encode_descriptor(literal.len()).unwrap(), literal);
+    assert_eq!(second.encode_descriptor(literal.len()).unwrap(), literal);
+    assert_ne!(first.digest(), second.digest());
+    assert_eq!(
+        first.encode_descriptor(literal.len() - 1),
+        Err(CodecError::InputLimit)
+    );
+    let private = DictionaryEntry::new(
+        first.reference(),
+        DictionaryDescriptor::Visibility {
+            class: label("private"),
+        },
+    )
+    .unwrap();
+    assert_ne!(private.encode_descriptor(128).unwrap(), literal);
+}
 fn descriptor(name: &str) -> DictionaryDescriptor {
     match name {
         "visibility-public" => DictionaryDescriptor::Visibility {

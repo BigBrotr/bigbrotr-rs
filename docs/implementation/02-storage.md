@@ -98,6 +98,10 @@ One owner serializes exact identity decisions for each writable directory.
   the archive consumer must still recover their exact membership after an ACK.
   A known payload in a new scope is NewFacts even with provenance off; no private
   original signature/envelope/time is copied into its public representative.
+  The initial [dictionary batch](../reference/ingest-bootstrap.md) connects the
+  Control backend to one synchronized native bootstrap and exact retained replay.
+  This prerequisite does not complete event admission or this step. Its native
+  process qualification is pending until recorded evidence exists.
 - [ ] **Step 3:** Verify outside expensive critical sections where safe, then serialize the
   final exact admission check/commit. Same-ID concurrency cannot overwrite first
   admission or suppress a distinct permitted provenance edge.

@@ -1,0 +1,101 @@
+{
+  "format": "bigbrotr-initial-native-batch-mac/1",
+  "observed_date": "2026-09-18",
+  "source_base": "4a927bacac89096f7c08446921c7d3ea06f4a0ea",
+  "source_sha256": {
+    "apps/bigbrotr/src/storage/rocks/bootstrap.rs": "7da906744d871c1c36b697832a93ab2be368bf8aed0d2edded29a9393d7bc391",
+    "apps/bigbrotr/src/storage/rocks/bootstrap_tests.rs": "66e0d9fe805d65429b508da3774035691da16b51f782d01dee5d0c307ee72537",
+    "apps/bigbrotr/src/storage/rocks/store.rs": "93459d3a3e0078866afe18373dbb3d39f3a8518a6a4b47e5c4b68b009cac8f41",
+    "apps/bigbrotr/src/storage/rocks/receipts.rs": "a9c7aebafb3f07d2afb18ca71a326b99a78d9197e730f9680ee32e1899786a9f",
+    "apps/bigbrotr/src/storage/postgres/initial_batch.rs": "2686be05d517211eb6fdc4da231d6f3b99ffb1c6568bbe354696998021e8633b",
+    "apps/bigbrotr/src/storage/postgres/control_owner.rs": "d0f3bed9d7d2add5fcfc85e783c1ccbcd7570243dd5b1f983f90a1bde9e2bdb9",
+    "apps/bigbrotr/src/storage/postgres/ingest_registry.rs": "cdf9b3d248934e8f4d421975b2ba78e5b56a94e30ddcf6697317122973b4fb91",
+    "crates/bigbrotr-model/src/codec.rs": "210683ef81a0c488326da1246156695b2019db43c4888f4a2c99d084f115bb9e",
+    "crates/bigbrotr-model/src/fingerprint.rs": "aa6b2b8e2535523e58a7c2e5eab9f6ee381bc444a8be9775681f9a9580a2c96a",
+    "crates/bigbrotr-model/tests/dictionary_codec.rs": "e05d040601bb3deb4aad0e20a30a7c94a98577db5f628195becc5b65098591ea",
+    "apps/bigbrotr/examples/ingest_bootstrap_probe.rs": "93a3a60217c57cd2047f8a468ed9cb07f4aaa81073c5657b875035d297a4fc01"
+  },
+  "host": {
+    "os": "Darwin",
+    "architecture": "arm64"
+  },
+  "dependency_lock_sha256": "ea27c2b367846c4718a6d76fbd1a8340558299ccf9f22c76ed3f30c4b8025b47",
+  "checks": [
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "bigbrotr",
+        "--lib",
+        "bootstrap_tests"
+      ],
+      "exit_code": 0,
+      "log": ".research/implementation/ingest-bootstrap/final-0.log",
+      "sha256": "52303b0f15e987b459dff43088ad51aa4509b194ec20d2e8eaa32263d5d39d94"
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "bigbrotr-model"
+      ],
+      "exit_code": 0,
+      "log": ".research/implementation/ingest-bootstrap/final-1.log",
+      "sha256": "ef732902ebb5ffa02e7abfeb2b443f884937c6e0c61ef2ddc3cea70759f998b5"
+    },
+    {
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "--workspace",
+        "--all-targets",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "exit_code": 0,
+      "log": ".research/implementation/ingest-bootstrap/final-2.log",
+      "sha256": "f9cee14201fe01995c9af63acdabc46f08a996891ab9961e412daeac01104f2f"
+    },
+    {
+      "command": [
+        "cargo",
+        "fmt",
+        "--all",
+        "--",
+        "--check"
+      ],
+      "exit_code": 0,
+      "log": ".research/implementation/ingest-bootstrap/final-3.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "native_storage_tests": 4,
+  "model_tests": 48,
+  "negative_controls": {
+    "each_of_9_initial_members_removed_then_changed": "18 refusals with no native key/value mutation",
+    "last_authority_check": "refused before native write",
+    "insufficient_reservation_wrong_epoch_ordinal_hole_batch_limit": "refused before native write"
+  },
+  "findings": [
+    "Initial missing bootstrap API caused a compile failure; not a behavioral RED.",
+    "Batch size exceeding the configured limit was initially misclassified InvalidIntent. The new negative test failed; implementation now reports Limit without weakening the assertion.",
+    "Native WriteBatch capacity is not a hard maximum; complete staged key/value framing is bounded before native insertion."
+  ],
+  "upstream_review": ".research/implementation/control-runtime/admission-source-review.json",
+  "review": "Integrating owner reviewed the complete new writer/Control bridge, native tests and probe, changed model encoder, and linked storage/identity/authority contracts. No independent agent review in this slice.",
+  "not_run": [
+    "Actual connected PostgreSQL/native bootstrap",
+    "Process crash schedules",
+    "Write-error ambiguity and ENOSPC",
+    "Maximum batch and aged-state load",
+    "General event admission",
+    "Installed runtime and release",
+    "Linux arm64"
+  ]
+}

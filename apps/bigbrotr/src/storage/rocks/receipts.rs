@@ -58,6 +58,12 @@ pub struct StoredReceipt {
     _permit: OwnedPermit,
 }
 impl StoredReceipt {
+    pub(super) fn new(receipt: Receipt, permit: OwnedPermit) -> Self {
+        Self {
+            receipt,
+            _permit: permit,
+        }
+    }
     pub fn receipt(&self) -> &Receipt {
         &self.receipt
     }

@@ -26,6 +26,14 @@ pub use pending::{PendingBatch, PendingBatchHeader, PendingError, PendingReadLim
 mod receipts;
 pub use receipts::{ReceiptReadError, StoredReceipt, required_receipt_data_bytes};
 
+#[path = "bootstrap.rs"]
+mod bootstrap;
+pub use bootstrap::{BootstrapError, BootstrapLimits};
+
+#[cfg(test)]
+#[path = "bootstrap_tests.rs"]
+mod bootstrap_tests;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum StoreError {
     InsufficientNativeReservation,
@@ -82,7 +90,8 @@ impl fmt::Display for StoreError {
 }
 impl std::error::Error for StoreError {}
 
-/// A native directory owner, without admission or ownership-grant operations.
+/// A native directory owner. Only the connected Control backend may dispatch
+/// its internal initial batch; opening alone supplies no authority grant.
 ///
 /// Open/close are synchronous. The caller must retain and join its bounded worker;
 /// an async timeout cannot cancel FFI or authorize a replacement writer.
@@ -93,6 +102,7 @@ pub struct IngestStore {
     resources: RocksNativeResources,
     _reservation: StoreReservation,
     manifest: IngestManifest,
+    write_uncertain: bool,
 }
 impl IngestStore {
     /// Creates only an absent target under an existing parent, then synchronizes
@@ -229,6 +239,7 @@ impl IngestStore {
             resources: profile.resources,
             _reservation: reservation,
             manifest,
+            write_uncertain: false,
         })
     }
 

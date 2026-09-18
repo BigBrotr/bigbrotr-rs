@@ -15,9 +15,9 @@ sys.dont_write_bytecode = True
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--build", type=Path, required=True)
-    parser.add_argument("--example", choices=["ingest_registry_probe", "control_owner_probe"], default="ingest_registry_probe")
+    parser.add_argument("--example", choices=["ingest_registry_probe", "control_owner_probe", "ingest_bootstrap_probe"], default="ingest_registry_probe")
     args = parser.parse_args()
-    kind = "registry" if args.example == "ingest_registry_probe" else "control-owner"
+    kind = {"ingest_registry_probe": "registry", "control_owner_probe": "control-owner", "ingest_bootstrap_probe": "ingest-bootstrap"}[args.example]
     build = args.build.resolve(strict=True)
     source = build / "source"
     spec = importlib.util.spec_from_file_location("exact_build", source / "tools/build.py")

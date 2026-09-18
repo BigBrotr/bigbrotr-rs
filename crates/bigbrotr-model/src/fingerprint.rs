@@ -181,6 +181,22 @@ pub(crate) fn dictionary_payload<W: Write>(
 ) -> Result<(), Error<W::Error>> {
     encoder.array(5)?;
     reference(value.reference(), encoder)?;
+    dictionary_descriptor_fields(value, encoder)
+}
+
+/// Operational descriptor equality bytes, excluding the allocated reference.
+pub(crate) fn dictionary_descriptor<W: Write>(
+    value: &DictionaryEntry,
+    encoder: &mut Encoder<W>,
+) -> Result<(), Error<W::Error>> {
+    encoder.array(4)?;
+    dictionary_descriptor_fields(value, encoder)
+}
+
+fn dictionary_descriptor_fields<W: Write>(
+    value: &DictionaryEntry,
+    encoder: &mut Encoder<W>,
+) -> Result<(), Error<W::Error>> {
     encoder
         .u16(value.normalization_version())?
         .str(value.descriptor_schema())?

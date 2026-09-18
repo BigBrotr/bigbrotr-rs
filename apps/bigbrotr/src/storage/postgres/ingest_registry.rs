@@ -475,6 +475,21 @@ async fn observe(tx: &Transaction<'_>, s: &InitialRegistration) -> Result<Observ
     })
 }
 
+/// Used only by the real Control session while it retains this transaction.
+/// An inspection result outside this lock scope must never activate RocksDB.
+pub(super) async fn require_initial_registration(
+    tx: &Transaction<'_>,
+    specification: &InitialRegistration,
+) -> Result<(), RegistryError> {
+    specification.validate()?;
+    if observe(tx, specification).await?.observation
+        != (RegistrationObservation::Matching { current: true })
+    {
+        return Err(RegistryError::InvalidMetadata);
+    }
+    Ok(())
+}
+
 async fn insert(tx: &Transaction<'_>, s: &InitialRegistration) -> Result<(), RegistryError> {
     // Dataset/Control rows were locked by observe. Upgrade dataset before any
     // new rows: the final CAS and all registrations share this transaction.

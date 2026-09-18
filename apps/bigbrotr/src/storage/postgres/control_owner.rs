@@ -12,6 +12,10 @@ use sha2::{Digest, Sha256};
 use std::{cell::Cell, fmt, time::Duration};
 use tokio_postgres::{Client, Row, Transaction};
 
+#[path = "initial_batch.rs"]
+mod initial_batch;
+pub use initial_batch::{InitialBatchError, InitialBatchRequest};
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum OwnerError {
     InvalidInput,

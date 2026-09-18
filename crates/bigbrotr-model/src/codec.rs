@@ -182,6 +182,30 @@ impl Fact {
 }
 
 impl DictionaryEntry {
+    /// Canonical descriptor equality bytes without the allocated reference.
+    /// Operational reverse lookup candidates must compare these complete bytes;
+    /// their hash is an accelerator, never a scientific identity or authority.
+    pub fn encode_descriptor(&self, max_encoded_bytes: usize) -> Result<Vec<u8>, CodecError> {
+        let mut count = Encoder::new(CountWriter {
+            count: 0,
+            limit: max_encoded_bytes,
+        });
+        fingerprint::dictionary_descriptor(self, &mut count).map_err(|_| CodecError::InputLimit)?;
+        let size = count.into_writer().count;
+        let mut bytes = Vec::new();
+        bytes
+            .try_reserve_exact(size)
+            .map_err(|_| CodecError::AllocationFailed)?;
+        bytes.resize(size, 0);
+        let mut encoder = Encoder::new(bytes.as_mut_slice());
+        fingerprint::dictionary_descriptor(self, &mut encoder)
+            .map_err(|_| CodecError::Malformed)?;
+        if !encoder.into_writer().is_empty() {
+            return Err(CodecError::Malformed);
+        }
+        Ok(bytes)
+    }
+
     /// Encode the standalone dictionary-domain preimage, distinct from the fact
     /// envelope containing the same mapping. Count before output reservation.
     pub fn encode_preimage(&self, max_encoded_bytes: usize) -> Result<Vec<u8>, CodecError> {

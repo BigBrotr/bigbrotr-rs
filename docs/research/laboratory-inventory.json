@@ -2164,5 +2164,18 @@
       "shared_source": "6be851580ba415eed5ff0979ee7072480f9ee3ab",
       "shared_source_consumers": 0
     }
+  },
+  "implementation_ingest_bootstrap_20260918": {
+    "local_root": ".research/implementation/ingest-bootstrap",
+    "state": "Mac checked; fresh native lab not launched",
+    "preflight": {
+      "path": ".research/implementation/ingest-bootstrap/preflight.json",
+      "sha256": "fca69f7c4c15c7a70916c5c32dc75abecfff74c25cf09fcb37b398a7bee086ca",
+      "running_bigbrotr": 0,
+      "unrelated_running": 8,
+      "shared_checkout": "6be851580ba415eed5ff0979ee7072480f9ee3ab",
+      "shared_checkout_consumers": 0
+    },
+    "evidence": "docs/implementation/evidence/p02-ingest-bootstrap-mac-20260918.json"
   }
 }
