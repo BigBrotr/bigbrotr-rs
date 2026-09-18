@@ -46,8 +46,20 @@ def native(db,mode):
     assert json.loads(cmd('docker','exec','-e','LD_LIBRARY_PATH=/out/archive-worker/lib',runner,'/out/native-tests/scientific-ddl-probe',db,mode))=={'status':'PASS','case':mode}
 def snapshot(db):
     dump=cmd('docker','exec',pg,'pg_dump','--no-owner','--no-privileges','--no-comments','-U','postgres',db)
-    stable='\n'.join(l for l in dump.splitlines() if not l.startswith(('\\restrict ','\\unrestrict ')))
-    return hashlib.sha256(stable.encode()).hexdigest()
+    # Heap row order changes after UPDATE/restore. COPY ordering is not logical
+    # identity; sort within each relation, preserving duplicate rows and all bytes.
+    lines=[]; copying=None
+    for line in dump.splitlines():
+        if line.startswith(('\\restrict ','\\unrestrict ')): continue
+        if copying is not None:
+            if line=='\\.':
+                lines.extend(sorted(copying));lines.append(line);copying=None
+            else: copying.append(line)
+        else:
+            lines.append(line)
+            if line.startswith('COPY ') and line.endswith(' FROM stdin;'): copying=[]
+    assert copying is None
+    return hashlib.sha256('\n'.join(lines).encode()).hexdigest()
 def damage(db,sql_text):
     # Explicit isolated privileged corruption, never an application repair path.
     sql(db,'BEGIN; SET LOCAL session_replication_role=replica; '+sql_text+'; COMMIT;')

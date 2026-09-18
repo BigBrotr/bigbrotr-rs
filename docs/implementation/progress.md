@@ -200,6 +200,13 @@ matches all203 retained PG rows; STRUCT/LIST default_value_type is empty, unlike
 scalar literal defaults. Mac scoped Clippy, two identity cases and docs checks
 passed. No new scientific PG qualification is claimed yet.
 
+Candidate `27ab36c` passed native build/Clippy/Control and its first six PG
+sequences, then the restore oracle failed because pg_dump preserves physical heap
+row order after UPDATE. This is a retained FAIL, not complete qualification.
+The independent203-column oracle verifies restored native rows. Normalize COPY
+row order within each relation, preserving duplicates/bytes/DDL, and re-execute
+from a new exact revision. The old lab is stopped-retained, its network retired, with20 unrelated identities unchanged and no BigBrotr running.
+
 The next clean exact-Git candidate will execute native ALTER/DROP/rollback,
 shape/NULL/metadata controls, failed activation effects, installation rollback,
 lost COMMIT in both directions and both owner/native lock orders. Review must
