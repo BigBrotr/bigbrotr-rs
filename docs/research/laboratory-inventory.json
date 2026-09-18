@@ -7930,5 +7930,23 @@
         "lifecycle": "Stopped-retained; no removal or reset"
       }
     }
+  },
+  "implementation_job_bounds_20260918": {
+    "owner": "root MON-009 P02-T01",
+    "source": "6a6f796",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/job-bounds-6a6f796",
+    "resources": {
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/job-bounds-6a6f796/runtime",
+      "owner": "33ad5450f722dee397bbb300007d93bb",
+      "postgres": "bigbrotr-implementation-pg-20260917-job_bounds",
+      "client": "bigbrotr-implementation-pg-20260917-job_bounds-client",
+      "network": "bigbrotr-implementation-pg-20260917-job_bounds",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "client_image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+      "binary_sha256": "c008a1fdacc6acf6d9fbd0727313a17da835d096428546ddf8f367a78b5056ad",
+      "state": "running"
+    },
+    "local_evidence": ".research/implementation/job-bounds",
+    "observation": "Both negative controls reproduced; two owned containers running for continuation; all test sessions reaped. No changes to unrelated workloads."
   }
 }

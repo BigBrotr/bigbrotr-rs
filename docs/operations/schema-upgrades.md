@@ -1,8 +1,9 @@
 # Control schema migrations
 
 Status: initial P02-T01 foundation. The checked-in catalog contains
-`0001_control.sql`, `0002_ingest.sql`, `0801_management_identity.sql` and
-the `0805_owner_enrollment.sql` candidate. The executable includes explicit inspection, planning and
+`0001_control.sql`, `0002_ingest.sql`, `0801_management_identity.sql`,
+`0805_owner_enrollment.sql`, `0802_management_commands.sql`,
+`0007_control_owner.sql` and `0008_job_bounds.sql`. The executable includes explicit inspection, planning and
 application using the selected PostgreSQL driver. Its local planner, preparation
 and entrypoint tests pass. Native Linux amd64 PostgreSQL execution now covers
 the actual CLI, 104 independent SQL constraint cases, initial read-only runtime
@@ -40,7 +41,7 @@ require PostgreSQL 16.15, `fsync=on` and `full_page_writes=on`; apply forces
 transaction-local `synchronous_commit=on`. They do not initialize a dataset or
 qualify a complete installation or release upgrade.
 
-An omitted target selects the latest embedded migration, currently 805. An explicit
+An omitted target selects the latest embedded migration, currently 8. An explicit
 target 1 preserves the initial control-only boundary for its historical fixtures.
 Migration 2 refuses existing topology members with SQLSTATE `55000`: migration 1
 had no source registry, so their exact source authority cannot be inferred.
@@ -212,8 +213,32 @@ Deferred checks reject an incomplete parent at commit. A cut includes exactly th
 required topology streams, including explicit sequence 0 for known empty streams.
 A NULL job topology means no source cut, whereas generation 0 is a present topology;
 a present empty topology remains different from absence. A cut cannot exceed a
-closed stream's handoff bound. Live bounds still require the owner's committed
+closed stream's authoritative `source_streams.last_complete_sequence`, even when
+its older topology retains a NULL handoff. A non-NULL topology handoff remains an
+additional upper bound. Live bounds still require the owner's committed
 receipt proof; this foundation does not create a second PG admission authority.
+
+Migration 0008 locks jobs, their bounds and source rows against concurrent writes,
+then refuses SQLSTATE `55000` if any existing job cut exceeds an authoritative
+closed bound. The CLI identifies this refusal and the whole migration transaction,
+including earlier pending entries, rolls back. It never lowers a job's immutable
+input or raises a closed source's claimed receipt. Preserve the incompatible
+history for explicit reconciliation/reconstruction from verified source receipts;
+there is no automatic repair or qualified data-loss-free reconstruction command.
+Existing valid cuts and original migration checksums remain unchanged.
+
+Job cuts with a topology and source closure require **READ COMMITTED**, selected
+explicitly by typed adapters. Other isolation levels refuse with `25001`; a fixed
+older snapshot cannot safely observe a job committed while closure waited. The
+volatile job check takes `FOR SHARE` on every source in dataset/shard/epoch order,
+then reads authoritative bounds with a fresh snapshot. The closure UPDATE locks
+the same row before checking all recorded job, consumer and committed projection
+bounds. These locks last to commit/rollback, including deferred job validation.
+Multiple source closures should acquire rows in that same order. Deadlock or lock
+timeout aborts the transaction; retry the entire authorized operation, never a
+partially accepted cut. Explicit zero and complete topology requirements remain.
+See PostgreSQL 16's [snapshots](https://www.postgresql.org/docs/16/transaction-iso.html)
+and [volatile queries](https://www.postgresql.org/docs/16/xfunc-volatility.html).
 
 Job insertion starts at `accepted`, job revision 1 and checkpoint revision 0.
 The initial cut and request identity never change on completion. The request key

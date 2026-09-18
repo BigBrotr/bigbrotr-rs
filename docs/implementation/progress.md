@@ -15,12 +15,10 @@ complete. Pending must not be reclaimed. Whole selected product remains required
 
 ## Git and ownership
 
-Mac main. Last observed HEAD `de1d40278ff806cb86da44325460980e6c7f4d22`,
-with unpublished startup probe commits527d958/de1d402. Origin/main last freshly
-verified at `0bef27c1ca8abcc9ad3b62b4623d0f9efb8b85c3` including qualified a531ea3.
-Root owns startup evidence/dependency/task/README/inventory/checkpoint updates.
-No active experiment or other writer/conflict. Exact inputs travel through Git;
-Tux is not a separately edited product workspace.
+Mac main. Last observed HEAD `6a6f796` (unpublished negative-control harness);
+origin/main verified at `03819daa517024ce4f08d7e2cdbc48d0e47f4baa`.
+Root owns MON-009 additive migration, fixture, contracts and evidence. No other
+writer/conflict. Tux receives clean exact Git inputs, never independent edits.
 
 ## Qualified boundaries
 
@@ -117,16 +115,23 @@ network was removed. Shared checkout remains clean/detached
 `6be851580ba415eed5ff0979ee7072480f9ee3ab`, zero consumers. Sessions87744/49089
 completed; no current experiment/process needs joining.
 
-Next: finish review/commit/push of startup evidence, then actively reproduce and
-correct MON-009 below before new job-bound consumers. Complete migrations0001,
-0002 and0007 have been read; current require_complete_job_input still consults
-only topology handoff, and source closure omits jobs. Static finding is confirmed,
-but live reproduction is NOT_RUN. Read current migration runner/catalog and
-existing schema/concurrency fixture callers, then exercise a fresh isolated PG
-negative control and additive migration. Preserve published SQL checksums. Review
-both lock acquisition orders and transaction snapshot assumptions; do not assume
-row-lock names alone establish visibility. Follow with MON-010/MON-007, then
-return to product publisher fencing/recovery and signed M1.
+MON-009 negative controls at clean harness `6a6f796` reproduced both orders on
+actual PG16.15, actual CLI `afc70f3` SHA c008a1fdacc6acf6d9fbd0727313a17da835d096428546ddf8f367a78b5056ad.
+Old topology handoff NULL: closure5 then job6 commits; job6 then closure5 commits.
+Independent literal rows/old SQL checksums match. Sessions reaped. Raw evidence:
+`.research/implementation/job-bounds/negative-result.json`. New owned PG/client
+remain RUNNING for follow-up under
+`/home/tux/bigbrotr-implementation-20260917/runs/job-bounds-6a6f796/runtime`;
+resource identities in local `job-bounds/resources.json` and laboratory inventory.
+No active case; previous catalog resources remain terminal as above.
+
+Candidate migration0008 and24 corrected-case scenarios are authored. Formatting,
+Python parsing and original SQL immutability checks pass; Mac control_schema test
+build is still running (session58123), native corrected execution NOT_RUN.
+Next: commit the candidate for exact-source native build, then actual CLI
+upgrade/concurrency/rollback qualification. Existing application transactions select READ COMMITTED; explicitly
+address stale snapshots in stronger isolation, rather than assume locks refresh
+them. Then MON-010/MON-007 and return to publisher/M1. Earlier SQL stays immutable.
 
 ## Newly forwarded independent review
 

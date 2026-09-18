@@ -208,3 +208,13 @@ fn first_activation_appends_reserved_management_commands_after_enrollment() {
         [1, 2, 801, 805, 802]
     );
 }
+
+#[test]
+fn authoritative_job_bounds_append_without_rewriting_prior_receipts() {
+    let plan = plan(&[], 8).unwrap();
+    assert_eq!(
+        plan.pending.iter().map(|m| m.version).collect::<Vec<_>>(),
+        [1, 2, 801, 805, 802, 7, 8]
+    );
+    assert_eq!(plan.pending.last().unwrap().name, "0008_job_bounds.sql");
+}

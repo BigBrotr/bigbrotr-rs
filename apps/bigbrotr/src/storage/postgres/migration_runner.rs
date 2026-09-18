@@ -17,6 +17,7 @@ pub enum RunError {
     IncompatibleEngine,
     PlaintextRoute,
     SourceRegistrationRequired,
+    IncompatibleJobBounds,
     Plan(migrations::MigrationError),
     CommitUnknown,
 }
@@ -29,6 +30,7 @@ impl fmt::Display for RunError {
             Self::IncompatibleEngine => f.write_str("control migrations require PostgreSQL 16.15 with fsync and full_page_writes enabled"),
             Self::PlaintextRoute => f.write_str("resolved PostgreSQL plaintext route is outside its declared local boundary or exceeds the address limit"),
             Self::SourceRegistrationRequired => f.write_str("control migration 2 requires explicit verified source registration for existing topology streams; no authority is inferred"),
+            Self::IncompatibleJobBounds => f.write_str("control migration 8 refuses job cuts beyond authoritative source closure; explicit reconciliation required; no history was rewritten"),
             Self::Plan(error) => error.fmt(f),
             Self::CommitUnknown => f.write_str("migration COMMIT outcome unknown; resolve the same catalog target under migration serialization before retry"),
         }
@@ -97,6 +99,10 @@ pub async fn run(
             // without source authority. Keep arbitrary server detail redacted.
             if migration.version == 2 && error.code().is_some_and(|code| code.code() == "55000") {
                 RunError::SourceRegistrationRequired
+            } else if migration.version == 8
+                && error.code().is_some_and(|code| code.code() == "55000")
+            {
+                RunError::IncompatibleJobBounds
             } else {
                 backend(error)
             }

@@ -43,6 +43,11 @@ P02-T07's `snapshot_leases` and `retention_claims`; P06 migration 0603 extends t
 references with cursor pins. This prevents later UI/read phases from becoming
 prerequisites for early durable jobs, exports or reclamation.
 
+MON-009 extends this task with migration0008: authoritative closed-source bounds
+for jobs in both operation orders, sorted source locks, explicit isolation and
+incompatible-row refusal. Preserve earlier checksums. Native negative controls
+reproduced both missing guards; corrected upgrade/race/rollback evidence is pending.
+
 - [ ] **Step 1:** Define database owners and roles for configuration/policy, lease epochs,
   source ranges, projection frontiers, jobs, snapshot pins, publication references
   and endpoint enrollment; body/measurement payloads stay outside control rows.

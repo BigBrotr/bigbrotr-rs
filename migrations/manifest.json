@@ -25,6 +25,10 @@
     {
       "version": 7,
       "name": "0007_control_owner.sql"
+    },
+    {
+      "version": 8,
+      "name": "0008_job_bounds.sql"
     }
   ],
   "reserved": [
