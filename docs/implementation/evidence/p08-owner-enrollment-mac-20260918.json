@@ -1,0 +1,94 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-18",
+  "status": "PASS",
+  "scope": "Mac compilation, pure credential primitive/format/budget and actual CLI refusal; native enrollment NOT_RUN",
+  "base_revision": "d0014d745f0b26429511f7d3b32cf0adbccc4403",
+  "source_state": "root dirty candidate; not clean archive qualification",
+  "source_sha256": {
+    "Cargo.toml": "931cb3aa30044ddfe9f1bdae213ab5710733c67e8bd445f84dea60e769e4499c",
+    "Cargo.lock": "99fe76478639485b19e93b4cbcbb788153b187947c19ebff3973d0a03212302e",
+    "apps/bigbrotr/Cargo.toml": "29cb47bae555aec1d47d4171fb6a8f7492f4370741c8f102a52ca17f8bec8907",
+    "apps/bigbrotr/src/management/credentials.rs": "78aa6bfdfa8eab2f57257460612254b8e055da4981c5583e648baf787abe7411",
+    "apps/bigbrotr/src/interfaces/access.rs": "f9827a9ba6a3a54f812a95fb407fbdbc24edd6fb19127602e35e43a61aa8d38c",
+    "apps/bigbrotr/src/storage/postgres/enrollment.rs": "8a62533b3333a617dfa2f637338f99c541358ff31895e7e14d9f3f2a1930136c",
+    "apps/bigbrotr/src/storage/postgres/initialization.rs": "51eb21b5e70a0386dc0fd6a0d33dce157a7b94186e60c06f7f8961eec9a311c1",
+    "apps/bigbrotr/src/storage/postgres/migrations.rs": "1acc3493386c7b17ba016c059852b1caaa85dd9c1ab66fddf1cbdfccda892fdc",
+    "migrations/postgres/0805_owner_enrollment.sql": "aef8356fad6f4439b84e4a98c551c9febb6ab1b12d2d5523c35a3f5cc2bf7e7b",
+    "migrations/manifest.json": "85dda43412a2c8855c00708419afe5c52656120a295bfc7cd6d11ee8639a3c0c",
+    "experiments/local-enrollment/run.py": "d69368433dc52cb14d47add641dbf1edfb2d4a851535021a2033b1576c16caad",
+    "experiments/local-enrollment/schema_cases.sql": "a832e6a5f45744ce028e630a4fc704e5edec532371135807ef1c83e7747d3895",
+    "experiments/local-enrollment/reference_vector.c": "c5a5a5e0698a6908fa525bc6e9a961db2fb58a7fb754e7638316ad534dfeb6cf",
+    "apps/bigbrotr/tests/owner_enrollment.rs": "eb9af1b10787377887e45ae714518eb12a6107a2e85a9393cbab16c79168dc0e"
+  },
+  "environment": {
+    "target": "aarch64-apple-darwin",
+    "rustc": "1.98.1",
+    "target_cache": ".research/worktrees/rocks-store/.research/implementation/rocks-store/target",
+    "cargo_lock_sha256": "99fe76478639485b19e93b4cbcbb788153b187947c19ebff3973d0a03212302e"
+  },
+  "checks": {
+    "workspace": {
+      "passed": 192,
+      "failed": 0,
+      "ignored": 0,
+      "scope": "before final exclusive-borrow/consume-time refinements"
+    },
+    "final_targeted": "33 lib/CLI tests after exclusive-borrow change; 9 owner-CLI/catalog tests after consume-time guard (see raw logs)",
+    "clippy": "PASS workspace all-targets -D warnings",
+    "fmt": "PASS",
+    "artifacts": "PASS structural links/JSON/Python syntax only",
+    "cargo_deny": "PASS advisories/bans/licenses/sources; duplicate-version warnings retained in log"
+  },
+  "independent_oracle": {
+    "upstream": "https://github.com/P-H-C/phc-winner-argon2",
+    "revision": "f57e61e19229e23c4445b85494dbf7c07de721cb",
+    "checkout": ".research/checkouts/argon2-enrollment-20260918/reference",
+    "source": "experiments/local-enrollment/reference_vector.c",
+    "mode": "Argon2id version19,65536KiB,3passes,1lane,16-byte salt02,32-byte hash",
+    "password": "public synthetic fixture in source",
+    "result": "a9f16b27ee4188b48954ee896ca04320bdbe34f4c2c0b9f4f332d9daffc892ff",
+    "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)",
+    "binary_sha256": "b49258f07b46d182856f48ded6bb1da1c834edb02b2f47dad0578ff536b29bbc",
+    "reference_output_sha256": "f62d5bf9330b7b1dab526087870c3247b00ba54804aec3660bcebbc4d63df9d6"
+  },
+  "dependency_inspection": {
+    "argon2": "0.6.0 at b1e0ad6fe229b1ba74e4696c7359ab45d7e931f0; Cargo.toml, constructors, explicit-memory hash and beginning fill_blocks, full Block implementation, Params::new. Not full primitive audit.",
+    "subtle": "2.6.1 fixed-size slice/integer ct_eq path; not timing proof",
+    "zeroize": "1.9.0 Vec and Zeroizing Drop; owned backing buffers wipe, no whole-process/driver-copy claim",
+    "source_sha256": {
+      "argon2-0.6.0/src/lib.rs": "9ac55c0154746bc2b3216d79d99b4ffa60e8b39efc74ed7475c5d9d1c4f957b5",
+      "argon2-0.6.0/src/block.rs": "4694ec1e93b9af6841b7608d51b1a0efdf7a73214ac69450dfc5c6c8f0b0e6a0",
+      "argon2-0.6.0/src/params.rs": "9dc498ff47fc7c47003eff0ab86f45301e78a24808e84c45fbb362be94efca9d",
+      "subtle-2.6.1/src/lib.rs": "ced6ebd3622af527cbbbb09feb57a2894751ff07e7ca8f97f22bad89401e5c8d",
+      "zeroize-1.9.0/src/lib.rs": "61012679ef3d0cc4e29b6f9c9d6c572c4ba8110e70a1e1c527da6bfaf77494ef"
+    },
+    "sources": [
+      "https://docs.rs/argon2/0.6.0/argon2/struct.Argon2.html#method.hash_password_into_with_memory",
+      "https://www.rfc-editor.org/rfc/rfc9106.html#section-5.3"
+    ]
+  },
+  "review": "Root read new Rust/DDL/CLI and affected shared transaction guard/contracts. Review changed hashing to exclusive permit borrowing and rechecked database clock at actual consumption. Native harness still unexecuted; no independent agent available.",
+  "history": [
+    "Actual CLI RED unsupported access exit2 versus required redacted prerequisite exit3.",
+    "Clippy constant-size chunks warning corrected with as_chunks; final Clippy passed.",
+    "Two initial local compile attempts used another cache and were interrupted; no completed test result claimed for them."
+  ],
+  "not_run": [
+    "Actual migration805 and owner CLI transitions on PG, real expiry, COMMIT failures, concurrent consume and restart.",
+    "Issuance COMMIT response-loss, complete persisted credential-value oracle and memory/load measurements.",
+    "Sessions/login, HTTP/public route separation, account lifecycle/recovery/last-owner protection, grant enforcement and restrictive policy integration.",
+    "Native Linux arm64, power loss, release/Compose and first signed-event durable journey."
+  ],
+  "raw_root": ".research/implementation/owner-enrollment",
+  "logs_sha256": {
+    "final-targeted.log": "074818ae351e956e291cc87b3b02a6fbdcad020810d534581b1019918107981e",
+    "artifacts.log": "4143c9811f26061d491b5adc06a580d295d85dbe23928791f79ded55ce27bab0",
+    "clippy.log": "7a7a380b2579dc7033b4799cb3ed87c8166e710770741df875d1d0f14758d61a",
+    "workspace.log": "1ca44d50158a3c91e59a6194c218f2d4c68371dece1f2181d7e444153f87dc22",
+    "final-consumers.log": "dcdc458b7b549dc8d6ea8754a3771d3d98265e9114ffcc560f0ab7e28c41858b",
+    "initial-check.log": "844732020e166415d6bc5f7e06d064312544b1e284b8bfc5268f6cd4c8cc4d2b",
+    "cli-red.log": "31ff0bcb57e9a209bd1480c9878a50f41b30a773b05c67d0edeb4c945b7f13c2",
+    "deny.log": "0d9416298d69f012c4f844864e4cab476172e993480380f1d832de907701dff3"
+  }
+}

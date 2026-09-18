@@ -322,3 +322,15 @@ from ordinary audit TTL. Existing unattributed config rows remain untouched and
 cannot be adopted by bootstrap. P08-T02 extends the schema with real credential,
 session, grant and ordinary audit consumers using newly allocated immutable
 migrations; its full relation inventory above remains required.
+
+0805 adds the first human consumer: `local_accounts`, `local_credentials`,
+`principal_grants` and `owner_challenges`. Principal attribution stays immutable;
+installation rows cannot back local accounts. Challenges bind one intended name
+and principal, keep terminal history, permit one pending token per dataset and
+only one initial owner. Token digests and versioned password hashes are private
+credential material, never diagnostic output. Owner transition audit rows extend
+0801 without rewriting it. Enrollment receipt and challenge rows remain required
+for replay resolution after ordinary audit TTL. This does not implement sessions,
+API tokens, account lifecycle or active policy leases. The
+[local enrollment contract](../product/private-administration.md#local-first-owner-transition)
+owns its command and failure semantics.

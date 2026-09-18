@@ -139,6 +139,37 @@
       "license": "Apache-2.0",
       "license_notice": "https://github.com/rust-rocksdb/rust-rocksdb/blob/e4aac69f55021e619566b6ca5902665e0ea2af4e/LICENSE",
       "source": "https://docs.rs/rocksdb/0.25.0/rocksdb/"
+    },
+    {
+      "name": "argon2",
+      "version": "0.6.0",
+      "purpose": "Closed argon2id-v1 local credential hashing with caller-owned fallible memory",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://docs.rs/argon2/0.6.0/argon2/",
+      "default_features": false,
+      "features": [
+        "zeroize"
+      ]
+    },
+    {
+      "name": "subtle",
+      "version": "2.6.1",
+      "purpose": "Fixed-size owner token digest equality",
+      "license": "BSD-3-Clause",
+      "source": "https://docs.rs/subtle/2.6.1/subtle/",
+      "default_features": false,
+      "features": []
+    },
+    {
+      "name": "zeroize",
+      "version": "1.9.0",
+      "purpose": "Wipe owned Argon2 blocks, hash output and token buffers at destruction",
+      "license": "MIT OR Apache-2.0",
+      "source": "https://docs.rs/zeroize/1.9.0/zeroize/",
+      "default_features": false,
+      "features": [
+        "alloc"
+      ]
     }
   ],
   "lock": "Cargo.lock",

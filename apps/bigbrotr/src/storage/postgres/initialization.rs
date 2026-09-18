@@ -69,39 +69,7 @@ pub async fn initialize(
     {
         return Err(InitializeError::InvalidInput);
     }
-    let tx = client
-        .build_transaction()
-        .isolation_level(IsolationLevel::ReadCommitted)
-        .start()
-        .await
-        .map_err(backend)?;
-    tx.batch_execute("SET LOCAL search_path = pg_catalog; SET LOCAL statement_timeout = '20s'; SET LOCAL lock_timeout = '5s'; SET LOCAL idle_in_transaction_session_timeout = '10s'; SET LOCAL synchronous_commit = on")
-        .await.map_err(backend)?;
-    tx.query_one(
-        "SELECT pg_catalog.pg_advisory_xact_lock_shared($1, $2)",
-        &[&0x4242_7472_i32, &0x4d49_4752_i32],
-    )
-    .await
-    .map_err(backend)?;
-    let row = tx.query_one("SELECT pg_catalog.current_setting('server_version_num')::integer, pg_catalog.current_setting('fsync') = 'on', pg_catalog.current_setting('full_page_writes') = 'on'", &[])
-        .await.map_err(backend)?;
-    if row.try_get::<_, i32>(0).map_err(backend)? != 160015
-        || !row.try_get::<_, bool>(1).map_err(backend)?
-        || !row.try_get::<_, bool>(2).map_err(backend)?
-    {
-        return Err(InitializeError::IncompatibleEngine);
-    }
-    let applied = migration_runner::read_ledger(&tx)
-        .await
-        .map_err(|_| InitializeError::IncompatibleSchema)?;
-    migrations::require_applied(&applied, 801).map_err(|_| InitializeError::IncompatibleSchema)?;
-    // Provision a narrow application role. Schema ownership or inherited owner
-    // privileges would let this command bypass the invariants it relies upon.
-    let row = tx.query_one("SELECT EXISTS (SELECT 1 FROM pg_catalog.pg_roles WHERE rolname = CURRENT_USER AND rolsuper) OR pg_catalog.has_schema_privilege(CURRENT_USER, 'control', 'CREATE') OR EXISTS (SELECT 1 FROM pg_catalog.pg_namespace WHERE nspname = 'control' AND pg_catalog.pg_has_role(CURRENT_USER, nspowner, 'USAGE')) OR EXISTS (SELECT 1 FROM pg_catalog.pg_class c JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace WHERE n.nspname = 'control' AND c.relkind IN ('r', 'p') AND pg_catalog.pg_has_role(CURRENT_USER, c.relowner, 'USAGE'))", &[])
-        .await.map_err(backend)?;
-    if row.try_get::<_, bool>(0).map_err(backend)? {
-        return Err(InitializeError::MigrationPrivileges);
-    }
+    let tx = application_transaction(client, 801).await?;
     tx.query_one(
         "SELECT pg_catalog.pg_advisory_xact_lock($1, $2)",
         &[&0x4242_7472_i32, &0x494e_4954_i32],
@@ -205,4 +173,46 @@ fn fresh_id() -> Result<[u8; 16], InitializeError> {
         return Err(InitializeError::EntropyUnavailable);
     }
     Ok(bytes)
+}
+
+/// Engine/schema/least-privilege guard, not principal authentication or a grant.
+pub(super) async fn application_transaction(
+    client: &mut Client,
+    required: u32,
+) -> Result<tokio_postgres::Transaction<'_>, InitializeError> {
+    let tx = client
+        .build_transaction()
+        .isolation_level(IsolationLevel::ReadCommitted)
+        .start()
+        .await
+        .map_err(backend)?;
+    tx.batch_execute("SET LOCAL search_path = pg_catalog; SET LOCAL statement_timeout = '20s'; SET LOCAL lock_timeout = '5s'; SET LOCAL idle_in_transaction_session_timeout = '10s'; SET LOCAL synchronous_commit = on")
+        .await.map_err(backend)?;
+    tx.query_one(
+        "SELECT pg_catalog.pg_advisory_xact_lock_shared($1, $2)",
+        &[&0x4242_7472_i32, &0x4d49_4752_i32],
+    )
+    .await
+    .map_err(backend)?;
+    let row = tx.query_one("SELECT pg_catalog.current_setting('server_version_num')::integer, pg_catalog.current_setting('fsync') = 'on', pg_catalog.current_setting('full_page_writes') = 'on'", &[])
+        .await.map_err(backend)?;
+    if row.try_get::<_, i32>(0).map_err(backend)? != 160015
+        || !row.try_get::<_, bool>(1).map_err(backend)?
+        || !row.try_get::<_, bool>(2).map_err(backend)?
+    {
+        return Err(InitializeError::IncompatibleEngine);
+    }
+    let applied = migration_runner::read_ledger(&tx)
+        .await
+        .map_err(|_| InitializeError::IncompatibleSchema)?;
+    migrations::require_applied(&applied, required)
+        .map_err(|_| InitializeError::IncompatibleSchema)?;
+    // Provision a narrow application role. Schema ownership or inherited owner
+    // privileges would let this command bypass the invariants it relies upon.
+    let row = tx.query_one("SELECT EXISTS (SELECT 1 FROM pg_catalog.pg_roles WHERE rolname = CURRENT_USER AND rolsuper) OR pg_catalog.has_schema_privilege(CURRENT_USER, 'control', 'CREATE') OR EXISTS (SELECT 1 FROM pg_catalog.pg_namespace WHERE nspname = 'control' AND pg_catalog.pg_has_role(CURRENT_USER, nspowner, 'USAGE')) OR EXISTS (SELECT 1 FROM pg_catalog.pg_class c JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace WHERE n.nspname = 'control' AND c.relkind IN ('r', 'p') AND pg_catalog.pg_has_role(CURRENT_USER, c.relowner, 'USAGE'))", &[])
+        .await.map_err(backend)?;
+    if row.try_get::<_, bool>(0).map_err(backend)? {
+        return Err(InitializeError::MigrationPrivileges);
+    }
+    Ok(tx)
 }

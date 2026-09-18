@@ -71,3 +71,7 @@ limits remain 10 MiB. This stage provides no release installation, Linux arm64
 bootstrap, owner enrollment or signed-event admission qualification.
 
 Executed evidence at `aad4ddc`: [25 native Linux amd64/PG cases](../implementation/evidence/p01-control-bootstrap-native-20260918.json), including their exact scope and exclusions.
+
+The next explicit development operation is [local first-owner enrollment](../user/administration/enrollment.md)
+after migration 805. Its separate evidence does not expand the older bootstrap
+qualification above.

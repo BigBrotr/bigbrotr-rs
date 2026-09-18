@@ -151,3 +151,51 @@ Default import/export filesystem access stays under configured data roots; objec
 storage credentials and allowed buckets/prefixes are explicit. Browser jobs never
 accept an arbitrary shell command, secret file path or unsigned executable plugin.
 A role's ability to start a job is distinct from authority over the job's data.
+
+## Local first-owner transition
+
+The first CLI consumer is `access owner-token issue --username NAME --request-id
+HEX --file CONFIG`, `access owner-token status --file CONFIG`,
+`access owner-token revoke --challenge-id HEX --file CONFIG`, and
+`access enroll-owner --challenge-id HEX --token-ref file:/absolute/path
+--password-ref file:/absolute/path --file CONFIG`. These finite deployment
+commands use the protected, non-migrator Control credential. They are not remote
+owner recovery and cannot replace an enrolled owner. The private HTTP consumer
+remains separate acceptance work.
+
+Issue binds the intended lowercase ASCII account name (1–64 letters, digits,
+dot, underscore or hyphen) and caller-supplied nonzero bytes16 request ID. It
+returns one random bytes32 token as lowercase hex through explicit output.
+Only its domain-separated SHA-256 is stored. Repeating that ID resolves metadata
+with `secret-unavailable`; it cannot return or mint another secret. A different
+ID requires explicit revocation of any pending challenge, including expired
+ones. A consumed or revoked challenge remains terminal. One pending challenge
+and one initial owner are allowed per dataset. Unknown COMMIT is resolved by
+the same request ID/status under the same database lock before any replacement.
+
+Enrollment reads exact token/password bytes from protected regular files;
+neither is a command-line value. Passwords contain 12 or more Unicode scalar
+values, at most 1024 UTF-8 bytes, and no control characters; do not trim or
+normalize them. The token file contains exactly 64 lowercase hex bytes.
+Enrollment atomically checks the challenge, ten-minute expiry and attempt bound,
+creates the immutable human principal, local credential and explicit dataset
+administrator action rows, consumes the challenge and appends its audit receipt.
+Thirty-two wrong-token attempts exhaust a challenge. Concurrent or repeated
+consumption cannot replace a password or create another owner. Local status
+resolves a lost successful enrollment response; retrying enrollment is refused.
+
+The initial administrator bundle contains `data.read`, `status.read`,
+`roles.control`, `budgets.change`, `policy.change`, `principals.manage` and
+`audit.read`, each scoped to this dataset. It excludes import, export,
+private-export, artifact publication and signing administration. Stored grants
+are policy input, never a reusable authorization capability: command/output
+consumers still require authenticated identity and current restrictive authority.
+Enrollment does not activate a dataset security revision, start collection,
+create a session, enable publication or issue a runtime lease.
+
+The first credential format is `argon2id-v1`: Argon2 version 0x13, 65536 KiB,
+three passes, one lane, 16-byte salt, 32-byte result. A hash admits one CPU item
+and its memory before allocation, uses a fallible fixed-size block allocation,
+and retains its permit through block wiping and completion. Cancellation cannot
+free capacity while hashing continues. The local finite CLI runs one hash; a
+future listener must additionally bound peer/account attempts and worker joins.

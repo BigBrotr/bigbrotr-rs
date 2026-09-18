@@ -13,6 +13,10 @@
     {
       "version": 801,
       "name": "0801_management_identity.sql"
+    },
+    {
+      "version": 805,
+      "name": "0805_owner_enrollment.sql"
     }
   ],
   "reserved": [
@@ -23,6 +27,10 @@
     {
       "version": 803,
       "name": "0803_saved_views.sql"
+    },
+    {
+      "version": 804,
+      "name": "0804_artifact_publication.sql"
     }
   ],
   "rule": "Append in implementation order; never reorder or change published SQL. Numeric reservations do not impose phase barriers."

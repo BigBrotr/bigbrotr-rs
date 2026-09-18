@@ -110,6 +110,12 @@ ordinary audit in subsequent immutable migrations, allocated through the central
 manifest; do not modify published 0801 or backfill synthetic actors as owners.
 No T02 step is complete from this foundation alone.
 
+The subsequent 0805 consumer implements local first-owner issue/status/revoke and
+enrollment with the fixed password baseline and explicit initial dataset grants.
+0804 remains reserved for artifact publication. CLI/native evidence is recorded
+separately; private HTTP, sessions, account lifecycle, grant activation and full
+T02 acceptance remain required before completing these steps.
+
 **Failure states:** unavailable policy authority causes expiry/fail-closed, not anonymous fallback. Last-owner recovery is an explicit local, positively authorized CLI operation with an audit record; it cannot be triggered through an unauthenticated HTTP request. Enrollment output is never copied into CI evidence.
 
 The selected Argon2id parameters are an application baseline to benchmark under

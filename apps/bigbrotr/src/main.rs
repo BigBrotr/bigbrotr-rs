@@ -14,6 +14,9 @@ fn main() -> ExitCode {
         Some("config") => config::execute(matches.subcommand_matches("config").unwrap(), false),
         Some("doctor") => config::execute(matches.subcommand_matches("doctor").unwrap(), true),
         Some("event") => event::verify_stdin(),
+        Some("access") => {
+            interfaces::access::execute(matches.subcommand_matches("access").unwrap())
+        }
         Some("migrate") => {
             interfaces::migrations::execute(matches.subcommand_matches("migrate").unwrap())
         }

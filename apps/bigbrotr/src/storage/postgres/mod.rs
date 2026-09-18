@@ -1,5 +1,6 @@
 pub mod configuration;
 pub mod connection_settings;
+pub mod enrollment;
 pub mod ingest_registry;
 pub mod initialization;
 pub mod migration_runner;

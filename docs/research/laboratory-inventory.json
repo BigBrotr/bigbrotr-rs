@@ -1016,5 +1016,22 @@
       "conclusion": "success",
       "scope": "GitHub job/step scheduling observed; all three foundation jobs succeeded, optional native-rocks arm64 job skipped by trigger. New artifact content/trace audit NOT_RUN; no bootstrap/runtime or release qualification inferred."
     }
+  },
+  "owner_enrollment_20260918": {
+    "local_root": ".research/implementation/owner-enrollment",
+    "upstream_checkout": ".research/checkouts/argon2-enrollment-20260918/reference",
+    "upstream_revision": "f57e61e19229e23c4445b85494dbf7c07de721cb",
+    "reference_build": "completed, no background process; C reference wrapper compiled directly with -O2 -std=c99 -DARGON2_NO_THREADS and src/ref.c",
+    "mac_evidence": "docs/implementation/evidence/p08-owner-enrollment-mac-20260918.json",
+    "preflight": {
+      "path": ".research/implementation/owner-enrollment/tux-preflight.json",
+      "sha256": "60102e94f1c36b08491d069daef4c9fbc49f2217b6668fd66edbd24764655676",
+      "source": "aad4ddce32afdd255921e53d3da951aa5c61bd0f",
+      "source_clean": true,
+      "active_source_consumers": 0,
+      "owned_containers_stopped_retained": 40,
+      "unrelated_running_preserved": 8
+    },
+    "native_status": "NOT_STARTED; next transfer clean candidate through Git and create a new isolated build/runtime lab"
   }
 }

@@ -11,6 +11,7 @@ pub fn command() -> clap::Command {
         .subcommand(crate::config::command())
         .subcommand(crate::config::doctor_command())
         .subcommand(crate::interfaces::migrations::command())
+        .subcommand(crate::interfaces::access::command())
         .subcommand(clap::Command::new("event")
             .about("Inspect a signed event without admitting it to storage")
             .subcommand_required(true)
