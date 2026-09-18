@@ -1,0 +1,438 @@
+{
+  "format": "bigbrotr-control-runtime-native/1",
+  "date": "2026-09-18",
+  "status": "PASS_SCOPED_LINUX_AMD64",
+  "scope": "Actual Control-only executable startup, bounded policy lifetime, independent ownership heartbeat, driver cancellation, SIGINT/SIGTERM, PG crash/restart. Not complete P01-T04/T06, native Ingest admission or release qualification.",
+  "source": "6be851580ba415eed5ff0979ee7072480f9ee3ab",
+  "source_tree": "bbf3329b938b355447912492fa3b5d6490d1cb85",
+  "binary_sha256": "0ee6429ca32df6232a177d867fe3113327dd83110c046101a75a59670e9e64e1",
+  "binary_bytes": 7830864,
+  "exact_source_files": 511,
+  "source_and_artifact_audit": "PASS; clean Git candidate, exact archive and extracted files, downloaded ELF64 amd64, native tool bytes and embedded identities compared independently",
+  "inputs_sha256": {
+    "Cargo.lock": "ea27c2b367846c4718a6d76fbd1a8340558299ccf9f22c76ed3f30c4b8025b47",
+    "contracts/protocol/nip01-event.json": "b830d5ab8651f5a763ebcffdc0eb1737ba70f4602c93fc714c892865ffca2db8",
+    "contracts/protocol/versions.json": "37c76706c5a2aa4fc72a40aeed908f104620eafcee1118b7cee8baf133546c95",
+    "contracts/release/dependencies.json": "29f6f0a08b8647946e2dfeb1012ffb86ea8cb0ba474bcefa69da58f823a2097d",
+    "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167"
+  },
+  "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+  "native_toolchain": {
+    "os": "Linux",
+    "architecture": "x86_64",
+    "discovery": "llvm-config",
+    "environment": {
+      "CC": "/usr/lib/llvm-14/bin/clang",
+      "CXX": "/usr/lib/llvm-14/bin/clang++",
+      "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+      "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+      "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+      "CARGO_BUILD_JOBS": "2",
+      "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+    },
+    "tools": {
+      "CC": {
+        "path": "/usr/lib/llvm-14/bin/clang",
+        "realpath": "/usr/lib/llvm-14/bin/clang",
+        "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+        "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+      },
+      "CXX": {
+        "path": "/usr/lib/llvm-14/bin/clang++",
+        "realpath": "/usr/lib/llvm-14/bin/clang",
+        "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+        "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+      },
+      "AR": {
+        "path": "/usr/lib/llvm-14/bin/llvm-ar",
+        "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+        "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+        "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+      },
+      "LIBCLANG_PATH": {
+        "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+        "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+        "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+        "version": "Debian clang version 14.0.6"
+      },
+      "discovery": {
+        "path": "/usr/lib/llvm-14/bin/llvm-config",
+        "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+        "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+        "version": "14.0.6"
+      }
+    },
+    "sdk": null
+  },
+  "environment": {
+    "host": "trusted native Tux Linux amd64",
+    "server": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    },
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "runtime_image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+    "limits": {
+      "build": {
+        "cpu": 2,
+        "memory_bytes": 6442450944,
+        "pids": 512
+      },
+      "each_product_process": {
+        "cpu": 2,
+        "memory_bytes": 1073741824,
+        "pids": 128,
+        "read_only_root_and_mounts": true
+      },
+      "postgres": {
+        "cpu": 2,
+        "memory_bytes": 1610612736,
+        "pids": 256
+      },
+      "published_ports": []
+    },
+    "resource_limit_scope": "Applied containment limits, not measured capacity or maximum RSS; maximum-document and mixed-load qualification remains NOT_RUN."
+  },
+  "runtime": {
+    "cases": [
+      {
+        "name": "no_policy",
+        "result": "PASS",
+        "exit_code": 3
+      },
+      {
+        "name": "wrong_dataset",
+        "result": "PASS",
+        "exit_code": 3
+      },
+      {
+        "name": "wrong_instance",
+        "result": "PASS",
+        "exit_code": 3
+      },
+      {
+        "name": "wrong_mode",
+        "result": "PASS",
+        "exit_code": 3
+      },
+      {
+        "name": "invalid_config",
+        "result": "PASS",
+        "exit_code": 3
+      },
+      {
+        "name": "invalid_policy",
+        "result": "PASS",
+        "exit_code": 3
+      },
+      {
+        "name": "enabled_administration",
+        "result": "PASS",
+        "exit_code": 3
+      },
+      {
+        "name": "concurrent-owner-refused",
+        "result": "PASS"
+      },
+      {
+        "name": "policy-poll-without-owner-renewal",
+        "result": "PASS"
+      },
+      {
+        "name": "managed-drift-heartbeat-sigterm",
+        "result": "PASS",
+        "initial": {
+          "authority_scope": "local Control only; no principal/action grant",
+          "config_revision": "1",
+          "dataset_id": "606fb4ebf8142d9289c5e7477fe4fb29",
+          "format": "bigbrotr-control-runtime/1",
+          "listeners": [],
+          "native_stores": [],
+          "owner_epoch": "1",
+          "owner_resource_id": "cbe598596283bd82a6a84f3b5926b4c2",
+          "policy_revision": "1",
+          "process_incarnation": "c9794b3160541be9f193d6fbc581f1e5",
+          "role": "control",
+          "state": "idle"
+        }
+      },
+      {
+        "name": "restart-sigint",
+        "result": "PASS",
+        "initial": {
+          "authority_scope": "local Control only; no principal/action grant",
+          "config_revision": "1",
+          "dataset_id": "606fb4ebf8142d9289c5e7477fe4fb29",
+          "format": "bigbrotr-control-runtime/1",
+          "listeners": [],
+          "native_stores": [],
+          "owner_epoch": "2",
+          "owner_resource_id": "cbe598596283bd82a6a84f3b5926b4c2",
+          "policy_revision": "1",
+          "process_incarnation": "54fcdf26a8c654f29198cdb2f8ed38f5",
+          "role": "control",
+          "state": "idle"
+        }
+      },
+      {
+        "name": "paused-past-policy-ttl",
+        "result": "PASS"
+      },
+      {
+        "name": "paused-owner-successor",
+        "result": "PASS"
+      },
+      {
+        "name": "cancelled-policy-refresh",
+        "result": "PASS"
+      },
+      {
+        "name": "database-crash-fail-closed",
+        "result": "PASS"
+      },
+      {
+        "name": "database-recovery-explicit-restart",
+        "result": "PASS"
+      }
+    ],
+    "processes": [
+      {
+        "name": "bigbrotr-implementation-pg-20260917-runtime_a-client-lifecycle",
+        "id": "060c24c96a441eac009327b399d91ff42d2253c099757e31b91bbba332feac9f",
+        "state": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-18T06:37:36.73664819Z",
+          "FinishedAt": "2026-09-18T06:38:00.429312715Z"
+        },
+        "limits_checked": true
+      },
+      {
+        "name": "bigbrotr-implementation-pg-20260917-runtime_a-client-restart",
+        "id": "7fbd43061b72f6e551cdbcb028e7357635e8bc51e645bea75c6ca8a101e0b066",
+        "state": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-18T06:38:02.482714739Z",
+          "FinishedAt": "2026-09-18T06:38:02.638261239Z"
+        },
+        "limits_checked": true
+      },
+      {
+        "name": "bigbrotr-implementation-pg-20260917-runtime_a-client-paused",
+        "id": "71f65fa6b9ce6020eae23387e36a67f7b65ee5d4c24e72816f012803c3f18f89",
+        "state": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 1,
+          "Error": "",
+          "StartedAt": "2026-09-18T06:38:04.640914242Z",
+          "FinishedAt": "2026-09-18T06:38:14.023896613Z"
+        },
+        "limits_checked": true
+      },
+      {
+        "name": "bigbrotr-implementation-pg-20260917-runtime_a-client-successor",
+        "id": "6a17405df8f9101e36aab7abae7c51ed1301bfcf1dd9ff1aba0b702ca597df92",
+        "state": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-18T06:38:16.170491379Z",
+          "FinishedAt": "2026-09-18T06:38:16.342818995Z"
+        },
+        "limits_checked": true
+      },
+      {
+        "name": "bigbrotr-implementation-pg-20260917-runtime_a-client-cancelled",
+        "id": "2523f510f9c30674841f5167c887a9f974a96d0ee765e069896ece09fdad2e76",
+        "state": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 4,
+          "Error": "",
+          "StartedAt": "2026-09-18T06:38:18.789010013Z",
+          "FinishedAt": "2026-09-18T06:38:23.536422124Z"
+        },
+        "limits_checked": true
+      },
+      {
+        "name": "bigbrotr-implementation-pg-20260917-runtime_a-client-database-loss",
+        "id": "f4542477652af850caa1c4e87289e794da64e7bf93acaa3a658ee5c70a619b80",
+        "state": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 1,
+          "Error": "",
+          "StartedAt": "2026-09-18T06:38:24.112956113Z",
+          "FinishedAt": "2026-09-18T06:38:26.739755008Z"
+        },
+        "limits_checked": true
+      },
+      {
+        "name": "bigbrotr-implementation-pg-20260917-runtime_a-client-recovered",
+        "id": "07d34ee6d18fd19398cf535437e9292be58c250fc8777b8dcefc8c56f9abf1aa",
+        "state": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-18T06:38:33.442721398Z",
+          "FinishedAt": "2026-09-18T06:38:33.576810648Z"
+        },
+        "limits_checked": true
+      }
+    ],
+    "final_audit": {
+      "status": "PASS",
+      "source": "6be851580ba415eed5ff0979ee7072480f9ee3ab",
+      "binary_sha256": "0ee6429ca32df6232a177d867fe3113327dd83110c046101a75a59670e9e64e1",
+      "cases": 16,
+      "databases": 8,
+      "relations_checked": 240,
+      "owner_history_rows": 7,
+      "complete_lifecycle_outputs": 7,
+      "scope": "Independent full relation counts, accepted document integrity/gates and exact owner/output identities; engine schedules separately observed by the harness. Not a load, arm64 or release qualification."
+    },
+    "remaining_application_or_blocker_backends": 0,
+    "retained_relations": 240,
+    "maximum_owned_history_epochs": 7,
+    "negative_controls": "No activation; wrong dataset/instance/mode; valid-hash invalid configuration/security document; enabled unimplemented administration. Refused actual CLI exit 3 with unchanged complete Control dump.",
+    "failure_schedules": "Actual Docker pause for a requested six seconds exceeds five-second policy TTL (not the sixty-second scheduling TTL); resumed process refuses before renewal. Interrupted locked policy query exits 4; actual PostgreSQL SIGKILL causes exit 1 and preserves complete rows after engine recovery. Explicit fresh process restarts and release digests checked.",
+    "policy_document_setting_count": 215
+  },
+  "common_foundation_ci": {
+    "source": "6314639149035258a6b578e16c285fa489219b6a",
+    "source_tree": "e57faf5c42e802d1f7f377bea4f43c9ac9d3bcbe",
+    "status": "PASS_SCOPED_FOUNDATION",
+    "checks": {
+      "collected": 14,
+      "executed": 14,
+      "failed": 0,
+      "not_run": 0
+    },
+    "rust_tests": {
+      "passed": 198,
+      "failed": 0,
+      "ignored": 0
+    },
+    "python_control_tests": 21,
+    "practical_checks": 104,
+    "source_files": 510,
+    "binary_sha256": "5bc9a7593fd71a8d00358eff1d5b0cc87bf234512fd7c33f5e5fda7ec6146f91",
+    "independent_output_audit": {
+      "status": "PASS",
+      "source": "6314639149035258a6b578e16c285fa489219b6a",
+      "signed_events_compared": 17,
+      "signed_negative_controls": 5,
+      "recipe_documents": 6,
+      "recipe_reports": 12,
+      "generated_documents": 2,
+      "initialization_distinct_ids": 4,
+      "complete_traces": 77,
+      "scope": "Independent frozen-output and actual syscall audit; temporary filesystem state otherwise remains harness-observed."
+    },
+    "terminal": {
+      "Status": "exited",
+      "Running": false,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 0,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-09-18T06:13:59.551691037Z",
+      "FinishedAt": "2026-09-18T06:31:44.729109939Z"
+    },
+    "advisory_database_revision": "f58ccfe51a5954186716998f01360d1079a8a3a5",
+    "qualification_boundary": "Older runtime did not refuse enabled administration. Correction is tested by the exact 6be8515 engine matrix, nine targeted final Mac tests and Clippy; the full common CI was not rerun at 6be8515. Linux lacks one macOS-only path-alias test."
+  },
+  "orchestration_findings": [
+    "The 6314639 initial inventory failed on an incorrect checkout path and its shell continued to launch; full inventory was reconciled afterward. Never claim a successful prelaunch preflight for that CI container. Corrected build and PG runtime each followed separate successful preflight calls.",
+    "The reused independent CI observer expected twenty Python controls; source comparison confirmed 95ac5c9 added a twenty-first missing-tool case. Corrected the observer only and retained its initial failure.",
+    "The idle laboratory helper exits 143 on SIGTERM; an initial cleanup observer incorrectly required zero. PostgreSQL exits zero and all actual product processes retain their separately asserted exact exits."
+  ],
+  "retained_resources": {
+    "inventory": "docs/research/laboratory-inventory.json",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/configuration-6be8515/runtime",
+    "owner": "e88b35230a31ad4b7d0cb633072341b6",
+    "network": "bigbrotr-implementation-pg-20260917-runtime_a",
+    "state": "All product, helper, database and build containers stopped-retained. Eight isolated databases and network retained; no BigBrotr container running at final inspection.",
+    "unrelated_running_unchanged": 8
+  },
+  "evidence_files_sha256": {
+    ".research/implementation/control-runtime/native-6be8515/build-result.json": "e27a9a03f804011af5b3204dbd5fa6c2a1882969d866eae9c550334d90b26fe9",
+    ".research/implementation/control-runtime/native-6be8515/source-manifest.json": "f40904296d41ba669d32cbda22eed910c1a17bb8b4e3c1ce92dcd769a3d17807",
+    ".research/implementation/control-runtime/native-6be8515/source.tar": "8aa0c556883c422b0c2532d965b19f2e148d10d5cbeb1fc84394ec86a8017c55",
+    ".research/implementation/control-runtime/native-6be8515/audit.json": "9150e97db7d710cbfb0f7bc469cd2bd0d4198f47ddafac422a500d739efca382",
+    ".research/implementation/control-runtime/native-6be8515/control-runtime.json": "cf89975a2f9def73a08f77e9a312c161e8eb0cc35aab5482685ae71af9ad737e",
+    ".research/implementation/control-runtime/native-6be8515/runtime-audit.json": "5bc75a1aaaad0fbf2cd799bf44f7f4f30a87ad1e387de8cf90cebecc38fd9558",
+    ".research/implementation/control-runtime/native-6be8515/final-rows.json": "9868f523b1cf470b4cb1ff08176f9c277d1cae20aef07be502f54ee4ccbbbba5",
+    ".research/implementation/control-runtime/native-6be8515/terminal-observation.json": "aca9d50a6c0a9a3fab13ec2d0c23ff697ff0967f01f800fe0db8e7ececfc921a",
+    ".research/implementation/control-runtime/native-6be8515/runtime-stopped.json": "0568bd53daba758bce5ee20c50978ec17760ef89272244e64e79888f7bac8785",
+    ".research/implementation/ci/native-6314639/ci-result.json": "aadb4c9de7d65932e295cd6f20e19a754edd01604a83bf89c3bda8131ce1fdb8",
+    ".research/implementation/ci/native-6314639/ci-audit.json": "a8b30e05407dc2694d5fa3f0c07a1f659277c657f575c2c4ccbb4da64790583b",
+    ".research/implementation/ci/native-6314639/audit.json": "d152118c229aceb40f0fcf5c1cf6fa3236cda7ff109e74b655e2dcb9a22d9dee",
+    ".research/implementation/ci/native-6314639/practical-audit.json": "28ba8b561a196bef01bed1f86edb9f1d66bb17121a1fefc782c6a7d2ef19a587",
+    ".research/implementation/control-runtime/audit-runtime.py": "6857c434e00710d2b6ecb7db4507701d613a388b57e0d60ad18c01ee82ac7b98",
+    ".research/implementation/control-runtime/observe-build.py": "3f45b2a1288abfffa9f6550968a96f2dc77bb8034ea90aebf2c97897d0848781",
+    ".research/implementation/control-runtime/ci-observe.py": "d1964d1c18e497bf9968c1445f4f33357eeccf059b912f7b8bb6ef95bbec3241",
+    ".research/implementation/control-runtime/ci-audit-practical.py": "544d0d34c66b7c51b1031edca12298be85ce0c58a4f562d3f73ff98f94d8e2d0",
+    ".research/implementation/control-runtime/preflight-runtime.json": "1efca9dbfb98c98a8f0ff7061457f6467b1ea4b8a13a79f67b43e43086c5438f",
+    ".research/implementation/control-runtime/final-inventory.json": "6b71b20603b917f416ebbc64d8a0f085d3bc235c8a6d59ee9de28869fc467149",
+    ".research/implementation/control-runtime/ci-observe-initial-failure.log": "f72b5dc3df5e7d755fb257bbb3d786eeccf3cc2f0bba2cbfe4423a5b58908f63",
+    ".research/implementation/control-runtime/runtime-stopped-observation.json": "0ad253a3e522b07124efd599b934d702742dd155d8767bcd956339ceea85f534"
+  },
+  "remaining_gates": [
+    "Maximum documents, slow lifecycle output, mixed/aged load and native memory measurements",
+    "Automatic reconnect/backoff and complete dependency lifecycle",
+    "Release-COMMIT faults and bounded cancellation of later admitted native work",
+    "Principal/action grants, private administration listener and public stream revocation",
+    "Native writer handoff, atomic signed-event admission/archive/read/export/restart",
+    "Native Linux arm64, ordinary Compose installation and full product/release journeys",
+    "GitHub-hosted runner availability; billing unchanged and external NOT_RUN"
+  ]
+}

@@ -309,7 +309,11 @@ and PostgreSQL crash/restart, with 390 final relations checked independently.
 Release-COMMIT faults, public/remote runtime grants and native handoff remain
 open. The [Control process candidate](../../experiments/control-runtime/README.md)
 adds the actual startup-root validator, separate policy/ownership polling and
-owned signal/driver shutdown; its native execution evidence remains required.
+owned signal/driver shutdown. Its [native process evidence](evidence/p01-control-runtime-native-20260918.json)
+covers 16 actual executable/PG cases, all seven process outputs and 240 relations
+at corrected source `6be8515`. Maximum-load/slow-output, complete service recovery
+and broader authority acceptance remain open; these scoped runs do not complete
+the task.
 
 ## P01-T07 — Same-process and remote component adapters
 

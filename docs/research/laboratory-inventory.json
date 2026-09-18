@@ -1741,7 +1741,7 @@
     "scope": "Four real subprocess CI negative controls, including missing tool and killed descendant; no full foundation rerun at this revision"
   },
   "implementation_control_runtime_20260918": {
-    "stage": "exact-revision native CI running; runtime matrix not started",
+    "stage": "scoped native runtime and independent audits PASS; all owned runtime/build containers stopped-retained",
     "source_base": "c37a22169373130f034e9cd1b481084e62e36e16",
     "local_root": ".research/implementation/control-runtime",
     "owned_remote_resources": [
@@ -1753,11 +1753,53 @@
         "owner": "0e2488b6bdd4390e817746122a6ab7b4",
         "container": "bigbrotr-implementation-ci-6314639",
         "image_tag": "bigbrotr-implementation-ci-6314639:lab",
-        "state": "running",
+        "state": "completed-retained",
         "started_at": "2026-09-18T06:13:56.844851+00:00",
         "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
         "image_created": "2026-09-18T08:13:59.317882824+02:00",
-        "container_id": "09d66d747c91042e956f3d5d31e3e36b43cbea75675c8bc176d3ed80b7dab758"
+        "container_id": "09d66d747c91042e956f3d5d31e3e36b43cbea75675c8bc176d3ed80b7dab758",
+        "terminal": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-18T06:13:59.551691037Z",
+          "FinishedAt": "2026-09-18T06:31:44.729109939Z"
+        }
+      },
+      {
+        "format": "bigbrotr-configuration-build-lab/1",
+        "source": "6be851580ba415eed5ff0979ee7072480f9ee3ab",
+        "tree": "bbf3329b938b355447912492fa3b5d6490d1cb85",
+        "owner": "873f80c9631d1006e6e9fef71cb5f6f0",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/configuration-6be8515",
+        "container": "bigbrotr-implementation-configuration-6be8515-build",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "state": "completed-retained",
+        "preflight": {
+          "active_source_consumers": 0,
+          "available_disk_bytes": 360066248704
+        },
+        "started_at": "2026-09-18T06:29:03.634912+00:00",
+        "container_id": "1a830f776d089f780cf47d4496a815974d04075559ddfdddf331b6b54b6af760",
+        "terminal": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-18T06:29:03.71808637Z",
+          "FinishedAt": "2026-09-18T06:35:09.134418832Z"
+        }
       }
     ],
     "scope": "P01-T04/T06 actual Control runtime integration; first signed-event admission and later product remain",
@@ -1768,12 +1810,261 @@
         "ignored": 0
       },
       "clippy": "PASS",
-      "native": "NOT_RUN"
+      "administration_gate_final_targeted": {
+        "passed": 9,
+        "failed": 0,
+        "ignored": 0,
+        "clippy": "PASS"
+      },
+      "mac_runtime_engine": "NOT_RUN"
     },
     "source": "6314639149035258a6b578e16c285fa489219b6a",
     "tree": "e57faf5c42e802d1f7f377bea4f43c9ac9d3bcbe",
     "inventory_timing": "Initial path error was followed by an unintended launch; complete read-only inventory reconciled after launch. See ignored preflight-failure.json; do not claim preflight preceded this build.",
     "host_inventory": ".research/implementation/control-runtime/preflight-after-launch-6314639.json",
-    "mac_evidence": "docs/implementation/evidence/p01-control-runtime-mac-20260918.json"
+    "mac_evidence": "docs/implementation/evidence/p01-control-runtime-mac-20260918.json",
+    "corrected_source": "6be851580ba415eed5ff0979ee7072480f9ee3ab",
+    "corrected_tree": "bbf3329b938b355447912492fa3b5d6490d1cb85",
+    "corrected_preflight": {
+      "status": "PASS_BEFORE_LAUNCH",
+      "inventory": ".research/implementation/control-runtime/preflight-corrected-build.json",
+      "source_consumers": 0,
+      "unrelated_running_containers": 8,
+      "memory_available_kib": 58580528
+    },
+    "common_ci": {
+      "source": "6314639149035258a6b578e16c285fa489219b6a",
+      "status": "PASS_SCOPED_FOUNDATION",
+      "checks": {
+        "collected": 14,
+        "executed": 14,
+        "failed": 0,
+        "not_run": 0
+      },
+      "rust_tests": {
+        "passed": 198,
+        "failed": 0,
+        "ignored": 0
+      },
+      "python_controls": 21,
+      "practical_checks": 104,
+      "exact_source_files": 510,
+      "binary_sha256": "5bc9a7593fd71a8d00358eff1d5b0cc87bf234512fd7c33f5e5fda7ec6146f91",
+      "complete_traces": 77,
+      "local_root": ".research/implementation/ci/native-6314639",
+      "known_runtime_defect": "Accepted enabled administration was not refused until 6be8515; this foundation run does not qualify that runtime boundary.",
+      "audit_correction": "Initial audit retained the old expectation of 20 controls; 95ac5c9 added the missing-tool test. Compared source test set (21) and actual terminal log, then corrected the audit only; no test altered."
+    },
+    "runtime": {
+      "owner": "e88b35230a31ad4b7d0cb633072341b6",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/configuration-6be8515/runtime",
+      "network": "bigbrotr-implementation-pg-20260917-runtime_a",
+      "source": "6be851580ba415eed5ff0979ee7072480f9ee3ab",
+      "binary_sha256": "0ee6429ca32df6232a177d867fe3113327dd83110c046101a75a59670e9e64e1",
+      "containers": [
+        {
+          "name": "bigbrotr-implementation-pg-20260917-runtime_a",
+          "id": "374dc00de660f8d97c20fcba9ef3c507720600ac377430a59d23be791f684a92",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-18T06:38:26.990938179Z",
+            "FinishedAt": "2026-09-18T06:39:54.081910981Z"
+          },
+          "image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+          "limits": {
+            "Memory": 1610612736,
+            "MemorySwap": 1610612736,
+            "NanoCpus": 2000000000,
+            "PidsLimit": 256,
+            "ReadonlyRootfs": true,
+            "PortBindings": {},
+            "CapDrop": [
+              "ALL"
+            ],
+            "SecurityOpt": [
+              "no-new-privileges"
+            ]
+          }
+        },
+        {
+          "name": "bigbrotr-implementation-pg-20260917-runtime_a-client",
+          "id": "34051c4bc3170bdf90c1a4b460bbe40fd960901e5db372bbb33b6a371413480c",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-18T06:36:59.063999048Z",
+            "FinishedAt": "2026-09-18T06:39:53.723515216Z"
+          },
+          "image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+          "limits": {
+            "Memory": 4294967296,
+            "MemorySwap": 4294967296,
+            "NanoCpus": 2000000000,
+            "PidsLimit": 256,
+            "ReadonlyRootfs": true,
+            "PortBindings": {},
+            "CapDrop": [
+              "ALL"
+            ],
+            "SecurityOpt": [
+              "no-new-privileges"
+            ]
+          }
+        }
+      ],
+      "server": {
+        "version": "160015",
+        "fsync": "on",
+        "full_page_writes": "on",
+        "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+      },
+      "cleanup_observation": "PostgreSQL stopped with exit 0; idle Python laboratory client received SIGTERM and exited 143. This is separate from all seven tested product-process exits. An initial observer incorrectly required exit 0 for the idle helper; raw state establishes the correction.",
+      "product_containers": [
+        {
+          "name": "bigbrotr-implementation-pg-20260917-runtime_a-client-lifecycle",
+          "id": "060c24c96a441eac009327b399d91ff42d2253c099757e31b91bbba332feac9f",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-18T06:37:36.73664819Z",
+            "FinishedAt": "2026-09-18T06:38:00.429312715Z"
+          },
+          "limits_checked": true
+        },
+        {
+          "name": "bigbrotr-implementation-pg-20260917-runtime_a-client-restart",
+          "id": "7fbd43061b72f6e551cdbcb028e7357635e8bc51e645bea75c6ca8a101e0b066",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-18T06:38:02.482714739Z",
+            "FinishedAt": "2026-09-18T06:38:02.638261239Z"
+          },
+          "limits_checked": true
+        },
+        {
+          "name": "bigbrotr-implementation-pg-20260917-runtime_a-client-paused",
+          "id": "71f65fa6b9ce6020eae23387e36a67f7b65ee5d4c24e72816f012803c3f18f89",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 1,
+            "Error": "",
+            "StartedAt": "2026-09-18T06:38:04.640914242Z",
+            "FinishedAt": "2026-09-18T06:38:14.023896613Z"
+          },
+          "limits_checked": true
+        },
+        {
+          "name": "bigbrotr-implementation-pg-20260917-runtime_a-client-successor",
+          "id": "6a17405df8f9101e36aab7abae7c51ed1301bfcf1dd9ff1aba0b702ca597df92",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-18T06:38:16.170491379Z",
+            "FinishedAt": "2026-09-18T06:38:16.342818995Z"
+          },
+          "limits_checked": true
+        },
+        {
+          "name": "bigbrotr-implementation-pg-20260917-runtime_a-client-cancelled",
+          "id": "2523f510f9c30674841f5167c887a9f974a96d0ee765e069896ece09fdad2e76",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 4,
+            "Error": "",
+            "StartedAt": "2026-09-18T06:38:18.789010013Z",
+            "FinishedAt": "2026-09-18T06:38:23.536422124Z"
+          },
+          "limits_checked": true
+        },
+        {
+          "name": "bigbrotr-implementation-pg-20260917-runtime_a-client-database-loss",
+          "id": "f4542477652af850caa1c4e87289e794da64e7bf93acaa3a658ee5c70a619b80",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 1,
+            "Error": "",
+            "StartedAt": "2026-09-18T06:38:24.112956113Z",
+            "FinishedAt": "2026-09-18T06:38:26.739755008Z"
+          },
+          "limits_checked": true
+        },
+        {
+          "name": "bigbrotr-implementation-pg-20260917-runtime_a-client-recovered",
+          "id": "07d34ee6d18fd19398cf535437e9292be58c250fc8777b8dcefc8c56f9abf1aa",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-18T06:38:33.442721398Z",
+            "FinishedAt": "2026-09-18T06:38:33.576810648Z"
+          },
+          "limits_checked": true
+        }
+      ],
+      "final_inventory": ".research/implementation/control-runtime/final-inventory.json",
+      "unrelated_running_unchanged": 8,
+      "evidence": "docs/implementation/evidence/p01-control-runtime-native-20260918.json"
+    }
   }
 }

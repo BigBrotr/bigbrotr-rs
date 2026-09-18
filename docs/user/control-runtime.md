@@ -1,6 +1,6 @@
 # Initial Control runtime
 
-The implementation candidate adds the persistent PostgreSQL Control owner:
+The initial implementation runs the persistent PostgreSQL Control owner:
 
 ```sh
 bigbrotr serve --file /etc/bigbrotr/root.toml --roles control
@@ -48,8 +48,9 @@ concurrent owner, 4 cancelled/unavailable ownership or unknown durable outcome.
 Messages omit credential paths and database error details. Runtime records are
 private operational output; do not publish them as a public health API.
 
-The [native acceptance matrix](../../experiments/control-runtime/README.md) is a
-required gate. Tests described there are not executed evidence until a report
-records their exact revision and outcome. Public grants/revocation, native writer
-handoff, maximum-document/resource behavior and the complete installed journey
-remain separate requirements.
+The [native acceptance evidence](../implementation/evidence/p01-control-runtime-native-20260918.json)
+records 16 actual executable/PostgreSQL scenarios at `6be8515`, with independent
+inspection of 240 relations and all seven process outputs. The
+[reproducible matrix](../../experiments/control-runtime/README.md) defines that
+scope. Public grants/revocation, native writer handoff, maximum-document/resource
+behavior and the complete installed journey remain separate requirements.

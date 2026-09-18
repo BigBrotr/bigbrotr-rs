@@ -30,3 +30,10 @@ identities and owned resource records. A proposal here is not a PASS.
 Full native Ingest writer handoff, principals/action grants, public stream
 revocation, automatic service recovery, maximum document load, slow lifecycle
 output, arm64 and complete product/release journeys remain separate gates.
+
+[Executed native evidence](../../docs/implementation/evidence/p01-control-runtime-native-20260918.json)
+records the 16-case Linux amd64/PG16.15 run at `6be8515`, exact source/artifact
+audits, all seven product process exits, 240 independently inspected relations
+and retained isolated resources. The same record separately qualifies the common
+foundation CI at `6314639`; that earlier source lacked the administration gate
+correction and is not the qualified runtime artifact.
