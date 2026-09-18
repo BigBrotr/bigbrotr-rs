@@ -1,145 +1,123 @@
 # Current execution checkpoint
 
 Observed 2026-09-18. Navigation only; follow the
-[resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint), then
-verify Git, actual evidence and resource ownership before continuing.
+[resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint) and
+verify actual Git, evidence and owned resources before continuing.
 
 ## Mandate and active boundary
 
-Owner-authorized implementation remains active ([Q30](../planning/questions.md),
-[mandate](../planning/mandate.md)): complete the selected product. Continue trusted
-native work on Tux despite unavailable hosted Actions. No public release, rename
-or Linux arm64 qualification is implied. Go neighbor stays read-only.
-
-Active tasks: P02-T03/T04. The initial private native engine/bundle prerequisite
-is qualified for the [recorded scope](evidence/p02-archive-engine-native-20260918.json).
-Next implement typed scientific rows and the real pending-batch publication path,
-including parent ownership. No storage task checkbox or M1 gate is complete.
+Owner-authorized complete implementation remains active. Continue trusted native
+work on Tux despite unavailable hosted Actions. No public release/rename or Linux
+arm64 qualification. Go neighbor remains read-only. Active P02-T03/T04: bounded
+typed rows and pending-to-worker preparation, then real PG DuckLake publication,
+positive fencing, receipts/protection and M1 signed read/export/restart. No P02
+task checkbox or M1 gate is complete; pending must not be reclaimed.
 
 ## Verified Git and ownership
 
-Private origin/main is at `dcc514e` (engine qualification push observed). Local
-main has unpublished event-row candidate `2f4dd9266d1f8fd22287f87232d43a75d7327e45`,
-tree `4a416f86b8c38106bf5e5e8e862775048846b488`. Its native qualification is complete
-for the event-only scope. Root owns the subsequent dirty five-family row adapter,
-new metadata/dictionary tests, event native report/harness, dependency/archive/task
-and row-format documentation, laboratory inventory and this checkpoint. No
-contributor conflict or history rewrite. Verify status before continuing.
+Mac primary workspace, main. Private origin/main was freshly observed at
+`dcc514ede737cbc6004c5e69a6cc00b6a86a97cc`. Local HEAD is unpublished candidate
+`5c3a8dd8edc74a44df61455b8999fb338da55eee`, tree
+`78af0ac18bfb8e0dda8b29d1068f3cfeebf926b7`, after event candidate `2f4dd92`.
+Both native scopes now qualify; evidence/documentation push is pending.
+Root owns dirty inventory/checkpoint/native five-family report/harness and
+archive/dependency documentation. Separate root-owned next-slice dirty files:
+protocol archive_batch module/export, independent fixture/generator/tests,
+worker prepare module/schema, worker manifest/lib, and Rocks pending/bootstrap
+consumer changes. They are not part of the qualified native candidate.
+No contributor conflict, remote history rewrite or shared checkout mutation.
 
-The candidate adds unpublished `apps/bigbrotr-archive-worker/`, exact native
-registry/bundle/build/CI integration and scoped controls. Only the worker links
-DuckDB. Current private command `inspect-engine` loads the offline signed bundle;
-it does not publish rows, supervise a child, acquire a grant or certify readiness.
-[Bundle documentation](../../packaging/archive-worker/README.md) describes the
-required future parent pre-exec verification and sanitized loader environment.
+## Qualified evidence
 
-## Actual evidence and findings
-
-Raw root `.research/implementation/archive-worker/`; inventory entry
+Raw root `.research/implementation/archive-worker/`; detailed ownership in
 `implementation_archive_worker_20260918` in the
 [laboratory inventory](../research/laboratory-inventory.json).
 
-- Exact-source native Linux amd64 build of `d459fcd` completed exit0/no OOM.
-  All 558 source entries, actual compiler tools, both ELF executables and native
-  assets were independently compared to receipts. CLI SHA-256
-  `6db13c0b97bc06c0643ac7f00c8c546ecbc635287f606a5a2a8a1b709c357b22`;
-  worker SHA-256 `ada9b22386d14f71c79eb54ea5fcbb8093eb8dda1d16a826d60b19fbc8f27ec7`.
-  `native-d459fcd/build-audit.json` owns details.
-- Six actual native Rust tests and seven packaged runtime cases pass. The runtime
-  runs with no network; strace observes zero network calls. Exact signed versions
-  load; zero memory, nonempty temp and missing/altered assets refuse. Ordinary CLI
-  works without DuckDB. A full unread 65,536-byte pipe blocks the worker; the
-  external harness kills/reaps it in 0.0035s and observes EOF. This is not an
-  implemented application supervisor. Results are in `native-test-evidence/`
-  and `runtime-evidence/`; exact scenario sources are now in `experiments/`.
-- Two thread probes observed 96 successful clones with query `threads=1`.
-  Exact DuckDB source explains transient signature hashing: one thread per 1 MiB
-  segment, 35 + 40 + 21 across sequential extension loads. A separate PID cap8
-  case produced clone EAGAIN, worker SIGABRT in 0.165s, no output and restored
-  baseline PID count. Observation harness success is not engine success. Preserve
-  signed checking and account startup threads/stacks separately. Parent recovery,
-  native peak RSS/stack usage and simultaneous thread peak remain unqualified.
-- Mac arm64 incremental workspace build, worker Clippy/six tests and packaged
-  executable-relative loading pass; ordinary CLI has no DuckDB linkage. This is
-  development evidence, not a clean release build. Initial RED/default-autoload,
-  invalid config-option and readonly corruption-fixture failures remain in logs.
-- Build/CI controls: ten pass; intentional inner FAIL/NOT_RUN cases are negative
-  controls. All 207 previous dependency versions/checksums remain, with 87 added
-  packages. Exact-version license allowances/notices were reviewed and dependency
-  policy passes. Full native distribution SBOM remains required.
-- Four target asset sets are pinned, but Linux arm64 and Mac x86_64 runtime are
-  NOT_RUN. Hosted Actions remain unavailable. No asset download qualifies a target.
+- [Initial engine qualification](evidence/p02-archive-engine-native-20260918.json)
+  at `d459fcd`: exact source/tool/binary/native asset audit, six native tests,
+  seven actual packaged runtime cases and offline signed load. External harness
+  terminates a worker blocked on a full output pipe; production supervisor is
+  still absent. Signature hashing creates transient threads independent of query
+  threads (35+40+21 sequential extension loads); PID cap8 aborts the worker.
+  Preserve signatures and separately budget startup threads/stacks. Peak RSS,
+  production recovery and arm64 runtime remain unqualified.
+- [Event-only native rows](evidence/p02-event-rows-native-20260918.json) at
+  `2f4dd92`: all 568 source entries audited; eleven tests pass, vector size2048.
+  Signed extreme bodies survive native append/Parquet/fresh reader and fixture
+  signature re-verification. Wide synthetic bodies are conversion evidence only.
+- [Five-family native rows](evidence/p02-five-family-rows-native-20260918.json)
+  at `5c3a8dd`: all 574 source entries/tools/assets audited; eighteen tests pass,
+  zero ignored/failed. Native test ELF SHA-256
+  `1f5fb7b9f8697a3a2143be60b6b4e1f0d0e505b98c35ccd494b77cf6a0f1d388`.
+  Ten independent dictionaries cover all seven closed schemas; eligibility,
+  receive, provenance and every descriptor field survive actual Parquet.
+- Real pinned-binding finding: valid placeholder children below null structs
+  retain values in Arrow/table SQL but shift Parquet output. Paired raw control
+  loses73 to0; matching child+parent masks retain73. Full dictionary readback now
+  passes on Mac arm64/Linux amd64. Exact upstream source paths/hashes and failed
+  intermediate logs are inventoried. Canonical identity/logical required fields
+  are unchanged; the failing path was never published and needs no migration.
 
-Scientific rows/Arrow conversion, dictionary closure, PG DuckLake transactions,
-positive fencing, ambiguous receipt recovery, protection/reclamation and complete
-signed read/export/restart remain required. Pending data must not be reclaimed.
-Binding caveat: Arrow list slices retain complete child arrays and native conversion
-copies them; row count alone is not an allocation bound. Check appender flush
-before commit. The previous reading covered the storage tasks/contracts, five
-implemented fact families, dictionary descriptors, pending feed and exact binding
-sources; reread changed boundaries as needed, not the entire repository.
+Only the private worker links DuckDB. Its current committed executable supports
+`inspect-engine`; typed constructors and tests do not grant publication authority.
+Parent pre-exec executable/library verification, sanitized loader environment,
+whole-process grants and bounded termination remain required. Native asset sets
+for other targets are not runtime qualification. No hosted Actions PASS.
 
 ## Independent monitor review
 
-All five owner-supplied findings have scoped corrections and practical evidence:
-[MON-001/002/004/006](evidence/p01-monitor-corrections-native-20260918.json) at
-`2c0dfc1`, [MON-005](evidence/p01-jsonb-limit-native-20260918.json) at `c7e0c09`;
-qualification pushed in `a745f7f`. JSONB cap-1/exact10MiB work and replay; cap+1
-and original compact-only counterexample refuse without Control mutation.
-Historical failures remain unchanged. Signed admission qualification at `12f936d`
-retains its [initial-owner scope](evidence/p02-event-admission-native-20260918.json).
-No full P01/P02 or M1 completion follows. Do not repeat unrelated suites without
-new changes or findings.
+All five forwarded findings have scoped closure, also confirmed by rereading the
+external implementer-feedback note: [MON-001/002/004/006](evidence/p01-monitor-corrections-native-20260918.json)
+at `2c0dfc1`, [MON-005](evidence/p01-jsonb-limit-native-20260918.json) at `c7e0c09`;
+qualification pushed in `a745f7f`. Signed admission at `12f936d` retains its
+[initial-owner scope](evidence/p02-event-admission-native-20260918.json).
+Do not rerun unrelated suites or infer whole-task completion.
 
-## Current typed-row slice and native state
+## Current next slice
 
-The event-only candidate `2f4dd92` built on Tux, with all 568 source entries and
-actual tools/artifacts independently audited. Native test ELF SHA-256
-`9b904684765291e89c281bc9d51d5c2c0757f5307cc01f13a113338224a722de` executed all
-11 cases (five new row cases, six engine cases), no failures/ignored tests.
-The actual pinned C API vector size is 2048. Raw results and fresh cleanup audit
-are in `.research/implementation/archive-worker/rows-2f4dd92/`; the concise
-[event report](evidence/p02-event-rows-native-20260918.json) and exact
-`experiments/archive-engine/native_event_rows.py` are currently dirty, not pushed.
+The new private wire framing reuses canonical fact preimages and binds a complete
+contiguous admission batch. It checks sizes before allocation, each fact digest
+and source identity, then complete batch digest/EOF; errors poison the reader.
+One decoded fact at a time can enter private native staging. The Rocks pending
+producer retains its existing permit during the write; no ACK/reclamation.
+Current worker `PreparedBatch` consumes its engine and drops partial staging on
+failure. It is not yet connected to the executable or production parent.
 
-The next uncommitted adapter now covers events, eligibility, receive, provenance
-and all seven closed dictionary descriptor schemas through `Rows` constructors.
-Mac scoped Clippy and all 12 row cases pass (`all-rows-mac-corrected.log`); six
-unchanged engine cases were deliberately filtered in that last run. New metadata
-and dictionaries have NOT_RUN native Linux qualification. A CREATE VIEW parameter
-fixture failure and a fixture-only Clippy diagnostic were corrected; original
-logs remain, and earlier RED outcomes are retained.
+`handoff-red.log` records two expected stub failures, then the independent golden
+wire passed. `handoff-bounds.log` preserves a fixture expectation failure: byte130
+changes the canonical profile and correctly returns IncompatibleSchema, not
+Integrity. The updated test preserves that case separately and corrupts byte260
+for the body-digest control. `prepare-red.log` records the expected missing-stage
+failure. Scoped run session80225/log `handoff-prepare-first-green.log` completed exit0:
+five protocol cases and two actual native staging cases pass on Mac arm64. Native qualification of this new
+slice is NOT_RUN. No permanent archive schema or publisher is implemented.
 
-A real failure was found: nullable structs with valid placeholder children are
-accepted by Arrow/native table SQL but can shift persisted values in Parquet.
-The known observer method reference returned zeros after Parquet. Exact-source
-inspection shows the pinned Rust binding only invalidates the struct parent,
-while Parquet value writing uses child validity. The adapter now masks children
-too, preserving the original logical nullability and required fields of present
-references. Full ten-descriptor readback passes; the minimal paired raw-binding
-control reproduces 73 becoming 0 without child masks and 73 with masks. A native
-SQL-created null-struct control passes. This was never a qualified/published data
-path. Raw failing/boundary/fixed logs and exact upstream sources are inventoried
-under `nullable_struct_investigation`. No semantic hash or migration change.
+Scoped source inspection additionally confirmed pinned DuckLake
+`d8a1881e22516ea3d186d73e83c65fe5bd1a1dc4` constructs its own internal connection
+for PG metadata transactions (`DuckLakeTransaction::GetConnection`/Commit and
+PostgresMetadataManager::ExecuteQuery). A lock in another connection cannot fence
+those commits. The required positive exclusion still needs implementation and
+actual paused-owner/ambiguous-commit tests; no speculative fence is claimed.
 
-All eight archive containers (six initial engine probes, two event-row build/test
-containers) are stopped-retained. The latest event-row `terminal-preflight.json`
-and `cleanup-audit.json` verify zero running BigBrotr containers, eight unrelated
-workloads unchanged and the shared checkout clean/detached at
-`6be851580ba415eed5ff0979ee7072480f9ee3ab`, with zero consumers. Do not reset it.
-Latest native root is
-`/home/tux/bigbrotr-implementation-20260917/runs/archive-2f4dd92`.
-Build owner `0d56e74dab700b9c562cb4abc82328a5`; test owner
-`bd273ab81927594e348f3cf26b8fb85d`. Full IDs/commands/exit observations are in the
-inventory. No resources deleted; all earlier monitor/JSONB/admission labs remain
-separately retained. Build collector 68799 and test collector 40443 completed;
-there is no pending native job. Mac scoped session 43573 completed exit0.
+## Lab resources and next action
 
-Next: finish reviewing the five-family conversion/null-normalization diff, commit
-it as a new unpublished exact-revision candidate, then run its actual native
-adapter tests on Tux. Preserve the unmasked counterexample and fixed full-content
-oracle, record exact identities and terminal resource state, then normally push
-verified commits plus evidence. Continue directly with the real pending-batch
-consumer, explicit archive schema/init, parent protocol/grants and positively
-fenced PG DuckLake publisher. No publisher/receipt/protection/read/export/restart
-or M1 gate is complete; do not stop at row conversion or reclaim pending facts.
+Latest native root:
+`/home/tux/bigbrotr-implementation-20260917/runs/archive-5c3a8dd`.
+Local `.research/implementation/archive-worker/all-rows-5c3a8dd` owns raw receipts,
+both audit scripts and terminal preflight/cleanup. Build owner
+`152b9971cd875962f6ed91bfc9015e19`, ID
+`49d4c32e9ecd8682ecd9516f1caef00b7030544420643c3d932be1c2838c1d3a`;
+test owner `2ee9544e1ff27e457640112f34802ab9`, ID
+`5753110f11a4517760c074e34fddff09fff5fb09b0be6ab7c0ed5e3a3830815e`.
+Both exited0/no OOM, stopped-retained; all eight earlier archive containers remain
+stopped. Twenty unrelated containers (eight running) unchanged; zero running
+BigBrotr containers. Shared source clean/detached at
+`6be851580ba415eed5ff0979ee7072480f9ee3ab`, zero consumers. Do not reset it.
+Build collector96927 and test collector34412 both completed exit0. No remote build/test remains running.
+
+Next: inspect scoped handoff/preparation outcome, finish its actual executable and
+pending-store consumer checks; independently commit/push the already qualified
+five-family evidence without folding unqualified product changes into that claim.
+Then qualify the connected private preparation and implement parent supervision,
+archive init and positively fenced publication. Continue toward M1 and the whole
+selected product; no receipt/protection/read/export/restart gate is complete.

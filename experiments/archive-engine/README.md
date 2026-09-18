@@ -42,5 +42,12 @@ resources. The original six containers are stopped and retained under
 `/home/tux/bigbrotr-implementation-20260917/runs/archive-d459fcd`; do not restart
 or overwrite them. Exact creation commands/owners are in the laboratory inventory.
 No script authorizes network installation, release, pending acknowledgement or
-resource deletion. These cases do not qualify catalog transactions, scientific
-row fidelity, native memory peaks, power-loss durability or Linux arm64.
+resource deletion. The runtime/thread probes do not qualify scientific row
+fidelity. None of these cases qualifies catalog transactions, native memory
+peaks, power-loss durability or Linux arm64.
+
+`native_all_rows.py` is the exact harness for `5c3a8dd`. It executes all 18
+engine/row cases, including all five families and the raw-binding null-struct
+negative control. Its separate build/test containers are stopped-retained;
+[the report](../../docs/implementation/evidence/p02-five-family-rows-native-20260918.json)
+records identities, scope and cleanup. This does not exercise later handoff code.

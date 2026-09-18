@@ -4635,8 +4635,260 @@
         "all-rows-mac-corrected.log"
       ],
       "finding": "Arrow and table SQL retain known method reference, unmasked null-struct child placeholders shift values after Parquet. Native SQL-created null-struct control passes. Child+parent validity masks restore complete readback; retain signed/native qualification gates.",
-      "native_linux": "NOT_RUN for new dictionary/metadata adapter",
+      "native_linux": "All 18 cases pass at5c3a8dd, including paired counterexample and fixed complete dictionary readback",
       "result": "Scoped Clippy and twelve row cases pass on Mac arm64 after child masks; paired raw binding control loses73 to0 while masked control preserves73. Native Linux still NOT_RUN for this adapter."
+    },
+    "all_rows_native": {
+      "local_root": ".research/implementation/archive-worker/all-rows-5c3a8dd",
+      "build": {
+        "format": "bigbrotr-archive-build-lab/1",
+        "source": "5c3a8dd8edc74a44df61455b8999fb338da55eee",
+        "tree": "78af0ac18bfb8e0dda8b29d1068f3cfeebf926b7",
+        "owner": "152b9971cd875962f6ed91bfc9015e19",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-5c3a8dd",
+        "container": "bigbrotr-implementation-archive-5c3a8dd-build",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "state": "running",
+        "command": [
+          "docker",
+          "run",
+          "-d",
+          "--init",
+          "--name",
+          "bigbrotr-implementation-archive-5c3a8dd-build",
+          "--label",
+          "org.bigbrotr.implementation=20260917",
+          "--label",
+          "org.bigbrotr.archive-build=152b9971cd875962f6ed91bfc9015e19",
+          "--label",
+          "org.bigbrotr.source=5c3a8dd8edc74a44df61455b8999fb338da55eee",
+          "--user",
+          "1000:1000",
+          "--cpus",
+          "2",
+          "--memory",
+          "6g",
+          "--memory-swap",
+          "6g",
+          "--pids-limit",
+          "512",
+          "--read-only",
+          "--cap-drop",
+          "ALL",
+          "--security-opt",
+          "no-new-privileges",
+          "--tmpfs",
+          "/tmp:rw,exec,nosuid,nodev,size=512m",
+          "--mount",
+          "type=bind,src=/home/tux/bigbrotr-implementation-20260917/runs/archive-5c3a8dd/source,dst=/source,readonly",
+          "--mount",
+          "type=bind,src=/home/tux/bigbrotr-implementation-20260917/runs/archive-5c3a8dd/out,dst=/out",
+          "--workdir",
+          "/source",
+          "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "python3",
+          "-c",
+          "import subprocess; subprocess.run(['python3','tools/build.py','--output','/out/build','--jobs','2'],check=True)"
+        ],
+        "preflight": {
+          "active_source_consumers": 0,
+          "available_disk_bytes": 336822558720
+        },
+        "started_at": "2026-09-18T12:24:21.345559+00:00",
+        "container_id": "49d4c32e9ecd8682ecd9516f1caef00b7030544420643c3d932be1c2838c1d3a"
+      },
+      "state": "Build/tests audited PASS, stopped-retained exit0/no OOM",
+      "build_audit": {
+        "status": "PASS",
+        "source": "5c3a8dd8edc74a44df61455b8999fb338da55eee",
+        "tree": "78af0ac18bfb8e0dda8b29d1068f3cfeebf926b7",
+        "source_files": 574,
+        "cli_sha256": "eba8199e53d6b9183e53862cf86905170042abd063b8e0aeaea4181d33b9314a",
+        "worker_sha256": "040f8ae1cd7bb60c059050e1e97a82eaab515a77d2874781cdc29789d5fbda1c",
+        "native_assets_checked": true,
+        "native_tools": {
+          "CC": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "CXX": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "AR": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+          "LIBCLANG_PATH": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+          "discovery": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e"
+        },
+        "terminal": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-18T12:24:21.436653277Z",
+          "FinishedAt": "2026-09-18T12:31:17.731162092Z"
+        }
+      },
+      "tests": {
+        "source": "5c3a8dd8edc74a44df61455b8999fb338da55eee",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-5c3a8dd",
+        "container": "bigbrotr-implementation-archive-5c3a8dd-tests",
+        "owner": "2ee9544e1ff27e457640112f34802ab9",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "state": "running",
+        "command": [
+          "docker",
+          "run",
+          "-d",
+          "--init",
+          "--name",
+          "bigbrotr-implementation-archive-5c3a8dd-tests",
+          "--label",
+          "org.bigbrotr.archive-tests=2ee9544e1ff27e457640112f34802ab9",
+          "--label",
+          "org.bigbrotr.source=5c3a8dd8edc74a44df61455b8999fb338da55eee",
+          "--user",
+          "1000:1000",
+          "--cpus",
+          "2",
+          "--memory",
+          "6g",
+          "--memory-swap",
+          "6g",
+          "--pids-limit",
+          "512",
+          "--read-only",
+          "--cap-drop",
+          "ALL",
+          "--security-opt",
+          "no-new-privileges",
+          "--tmpfs",
+          "/tmp:rw,exec,nosuid,nodev,size=512m",
+          "--mount",
+          "type=bind,src=/home/tux/bigbrotr-implementation-20260917/runs/archive-5c3a8dd/source,dst=/source,readonly",
+          "--mount",
+          "type=bind,src=/home/tux/bigbrotr-implementation-20260917/runs/archive-5c3a8dd/out,dst=/out",
+          "--mount",
+          "type=bind,src=/home/tux/bigbrotr-implementation-20260917/runs/archive-5c3a8dd/out/build/source,dst=/out/build/source,readonly",
+          "--workdir",
+          "/source",
+          "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "python3",
+          "-c",
+          "import hashlib,json,os,platform,re,shutil,sys\nfrom pathlib import Path\nsys.dont_write_bytecode=True\nsys.path.insert(0,'/source')\nfrom tools.build import clean_environment,native_toolchain,file_hash\nfrom tools.ci import execute\nfrom tools.archive_bundle import build_environment\nbuild=Path('/out/build');source=build/'source';out=Path('/out/native-tests')\nmanifest=json.loads((build/'source-manifest.json').read_text());receipt=json.loads((build/'build-result.json').read_text())\nassert manifest['revision']=='5c3a8dd8edc74a44df61455b8999fb338da55eee'\nassert file_hash(build/'source-manifest.json')==receipt['source_manifest_sha256']\ndef inventory():return {str(p.relative_to(source)):file_hash(p) for p in sorted(source.rglob('*')) if p.is_file()}\nassert inventory()==manifest['files_sha256']\nenv=clean_environment();selected,native=native_toolchain(env,2);assert native==receipt['native_toolchain'];env.update(selected)\nenv.update(build_environment(build/'archive-worker'))\nenv.update(CARGO_TARGET_DIR=str(build/'target'),CARGO_HOME=str(build/'cargo-home'),BIGBROTR_SOURCE_REVISION=manifest['revision'],BIGBROTR_SOURCE_TREE=manifest['tree'],BIGBROTR_SOURCE_MANIFEST_SHA256=receipt['source_manifest_sha256'],BIGBROTR_BUILD_PROFILE='release')\nchecks=[('binary',['cargo','test','--locked','--release','-p','bigbrotr-archive-worker','--lib','--','--test-threads=1'])]\nimport ctypes\nengine=ctypes.CDLL(str(build/'archive-worker/lib/libduckdb.so'));engine.duckdb_vector_size.restype=ctypes.c_uint64\nvector_size=engine.duckdb_vector_size();assert vector_size==2048\nresult=execute(checks,out,source,env,{'source':manifest['revision'],'native_toolchain':native,'host':{'os':platform.system(),'architecture':platform.machine()}},900)\nassert inventory()==manifest['files_sha256']\nif result['status']!='PASS':raise SystemExit(1)\nartifacts={};(out/'artifacts').mkdir()\nfor path in out.glob('*.log'):\n for relative in re.findall(r'Running [^\\n]+ \\(([^\\n]+)\\)',path.read_text()):\n  executable=Path(relative)\n  if not executable.is_absolute():executable=source/executable\n  assert executable.is_file()\n  with executable.open('rb') as stream:header=stream.read(20)\n  assert header[:5]==b'\\x7fELF\\x02' and int.from_bytes(header[18:20],'little')==62\n  name=executable.name;shutil.copy2(executable,out/'artifacts'/name)\n  artifacts[name]={'sha256':file_hash(executable),'bytes':executable.stat().st_size}\nassert len(artifacts)==1\n(out/'artifacts.json').write_text(json.dumps(artifacts,indent=2)+'\\n')\nprint(json.dumps({'status':'PASS','source':manifest['revision'],'artifacts':artifacts}))\n(out/'native-vector-size.json').write_text(json.dumps({'actual_vector_size':vector_size,'library_sha256':file_hash(build/'archive-worker/lib/libduckdb.so')})+'\\n')\n"
+        ],
+        "started_at": "2026-09-18T12:32:02.068238+00:00",
+        "container_id": "5753110f11a4517760c074e34fddff09fff5fb09b0be6ab7c0ed5e3a3830815e"
+      },
+      "cleanup": {
+        "status": "PASS",
+        "owned_terminal": [
+          {
+            "id": "5753110f11a4517760c074e34fddff09fff5fb09b0be6ab7c0ed5e3a3830815e",
+            "name": "/bigbrotr-implementation-archive-5c3a8dd-tests",
+            "state": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-09-18T12:32:02.149974452Z",
+              "FinishedAt": "2026-09-18T12:33:05.699372646Z"
+            },
+            "labels": {
+              "org.bigbrotr.archive-tests": "2ee9544e1ff27e457640112f34802ab9",
+              "org.bigbrotr.purpose": "isolated-foundation-acceptance",
+              "org.bigbrotr.source": "5c3a8dd8edc74a44df61455b8999fb338da55eee",
+              "org.bigbrotr.trusted-ci": "0e2488b6bdd4390e817746122a6ab7b4",
+              "org.opencontainers.image.source": "https://github.com/rust-lang/docker-rust"
+            },
+            "ports": {},
+            "mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/archive-5c3a8dd/source",
+                "Destination": "/source",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/archive-5c3a8dd/out",
+                "Destination": "/out",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/archive-5c3a8dd/out/build/source",
+                "Destination": "/out/build/source",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              }
+            ]
+          },
+          {
+            "id": "49d4c32e9ecd8682ecd9516f1caef00b7030544420643c3d932be1c2838c1d3a",
+            "name": "/bigbrotr-implementation-archive-5c3a8dd-build",
+            "state": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-09-18T12:24:21.436653277Z",
+              "FinishedAt": "2026-09-18T12:31:17.731162092Z"
+            },
+            "labels": {
+              "org.bigbrotr.archive-build": "152b9971cd875962f6ed91bfc9015e19",
+              "org.bigbrotr.implementation": "20260917",
+              "org.bigbrotr.purpose": "isolated-foundation-acceptance",
+              "org.bigbrotr.source": "5c3a8dd8edc74a44df61455b8999fb338da55eee",
+              "org.bigbrotr.trusted-ci": "0e2488b6bdd4390e817746122a6ab7b4",
+              "org.opencontainers.image.source": "https://github.com/rust-lang/docker-rust"
+            },
+            "ports": {},
+            "mounts": [
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/archive-5c3a8dd/source",
+                "Destination": "/source",
+                "Mode": "",
+                "RW": false,
+                "Propagation": "rprivate"
+              },
+              {
+                "Type": "bind",
+                "Source": "/home/tux/bigbrotr-implementation-20260917/runs/archive-5c3a8dd/out",
+                "Destination": "/out",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+              }
+            ]
+          }
+        ],
+        "unrelated_unchanged": 20,
+        "running_bigbrotr": 0,
+        "shared_source": "6be851580ba415eed5ff0979ee7072480f9ee3ab",
+        "lifecycle": "Both containers stopped-retained; all eight earlier archive containers still stopped; no deletion or shared-checkout reset"
+      },
+      "test_artifacts": {
+        "bigbrotr_archive_worker-de1f058f6db78191": {
+          "sha256": "1f5fb7b9f8697a3a2143be60b6b4e1f0d0e505b98c35ccd494b77cf6a0f1d388",
+          "bytes": 14515744
+        }
+      },
+      "report": "docs/implementation/evidence/p02-five-family-rows-native-20260918.json"
     }
   },
   "implementation_monitor_corrections_20260918": {

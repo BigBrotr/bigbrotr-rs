@@ -103,3 +103,8 @@ The subsequent Mac checks also exercise all ten independent dictionary fixtures,
 network/import eligibility, receive/correction/null distinctions and provenance
 reference positions. These are field conversion scenarios; conflicting fixture
 mappings are not admitted as a real dataset and do not qualify allocation authority.
+
+The five-family adapter at `5c3a8dd` also has
+[native Linux evidence](../implementation/evidence/p02-five-family-rows-native-20260918.json),
+including the sparse-null counterexample and fixed full-field readback. Later
+handoff/staging changes require their own validation.

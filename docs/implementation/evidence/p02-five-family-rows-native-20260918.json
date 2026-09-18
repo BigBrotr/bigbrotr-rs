@@ -1,0 +1,112 @@
+{
+  "format": "bigbrotr-five-family-rows-native-qualification/1",
+  "observed_date": "2026-09-18",
+  "status": "PASS",
+  "scope": "Typed five-family adapter prerequisite only; no complete P02 task or M1",
+  "source": {
+    "revision": "5c3a8dd8edc74a44df61455b8999fb338da55eee",
+    "tree": "78af0ac18bfb8e0dda8b29d1068f3cfeebf926b7",
+    "dirty": false
+  },
+  "build_audit": {
+    "status": "PASS",
+    "source": "5c3a8dd8edc74a44df61455b8999fb338da55eee",
+    "tree": "78af0ac18bfb8e0dda8b29d1068f3cfeebf926b7",
+    "source_files": 574,
+    "cli_sha256": "eba8199e53d6b9183e53862cf86905170042abd063b8e0aeaea4181d33b9314a",
+    "worker_sha256": "040f8ae1cd7bb60c059050e1e97a82eaab515a77d2874781cdc29789d5fbda1c",
+    "native_assets_checked": true,
+    "native_tools": {
+      "CC": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+      "CXX": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+      "AR": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+      "LIBCLANG_PATH": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+      "discovery": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e"
+    },
+    "terminal": {
+      "Status": "exited",
+      "Running": false,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 0,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-09-18T12:24:21.436653277Z",
+      "FinishedAt": "2026-09-18T12:31:17.731162092Z"
+    }
+  },
+  "environment": {
+    "host": "Tux Linux x86_64",
+    "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "cpus": 2,
+    "memory_bytes": 6442450944,
+    "pids": 512,
+    "source_readonly": true
+  },
+  "tests": {
+    "executed": 18,
+    "failed": 0,
+    "ignored": 0,
+    "row_cases": 12,
+    "engine_cases": 6,
+    "artifact": {
+      "bigbrotr_archive_worker-de1f058f6db78191": {
+        "sha256": "1f5fb7b9f8697a3a2143be60b6b4e1f0d0e505b98c35ccd494b77cf6a0f1d388",
+        "bytes": 14515744
+      }
+    },
+    "vector_size": {
+      "actual_vector_size": 2048,
+      "library_sha256": "fc23f12e376c47be520f75221288281906e7942e8fd6f6ce4849198ba60d0405"
+    }
+  },
+  "cases": [
+    "Five existing event-row cases plus six prior engine cases",
+    "All ten frozen dictionary fixtures, every descriptor/envelope field and null through real Parquet and fresh native reader",
+    "Network/import eligibility including sparse null import lineage",
+    "Receive correction identity, unknown versus zero uncertainty, maximum resolution and signed time",
+    "Distinct provenance endpoint/observer/access/method reference positions",
+    "Exact descriptor text/row caps and wrong-family refusal",
+    "Raw Arrow binding negative control: table SQL retains73, Parquet returns0 beneath unmasked struct; matching child mask preserves73",
+    "Native SQL-created sparse null-struct control preserves73"
+  ],
+  "limitations": [
+    "Fixtures with synthetic signatures/conflicting dictionary mappings qualify conversion only, not cryptographic or allocation authority",
+    "New pending handoff/private staging changes after this revision are NOT_RUN on Linux",
+    "No production worker protocol/supervisor/grants, DuckLake PG publisher/fence/receipts/protection or M1",
+    "No independent Parquet implementation or mixed/aged/RSS/performance qualification",
+    "Linux arm64 and hosted Actions NOT_RUN"
+  ],
+  "evidence_root": ".research/implementation/archive-worker/all-rows-5c3a8dd",
+  "harness": {
+    "path": "experiments/archive-engine/native_all_rows.py",
+    "sha256": "25d8444c294554ff79e94b0125eadc47b256f380d0851d001a72ba1f4da1dd73"
+  },
+  "cleanup": {
+    "status": "PASS",
+    "owned_ids": [
+      "5753110f11a4517760c074e34fddff09fff5fb09b0be6ab7c0ed5e3a3830815e",
+      "49d4c32e9ecd8682ecd9516f1caef00b7030544420643c3d932be1c2838c1d3a"
+    ],
+    "running_bigbrotr": 0,
+    "unrelated_unchanged": 20,
+    "shared_source": "6be851580ba415eed5ff0979ee7072480f9ee3ab"
+  },
+  "evidence_files": {
+    "native-5c3a8dd/build-audit.json": "8dbe5590f8ea45465f8d16fb8769aa80affb4a49361a429f760beb51166b2ea6",
+    "native-5c3a8dd/source-manifest.json": "792ce3e905a7a2358631fb05468d2b077bca6b79d779a44f1775f2c997d31a22",
+    "native-test-evidence/result.json": "dd5bc85ffe73fda76e2d7f241039407b78a13e31e5f558d1a86e98fb0d431843",
+    "native-test-evidence/binary.log": "4102449225c935448384d2df7998173c0fc0a777cc9deed469b77d873f6729de",
+    "native-test-evidence/artifacts.json": "7c91aa488278e74659647fa47cda301b6f17c9c0de16fa68635291d88ef9f723",
+    "native-test-evidence/observation.json": "9366bfd605e499199b806e399e2f299900a02846912de095c98a2d70dc950f16",
+    "cleanup-audit.json": "59a8cb9168447d1a344a069c1890342b4bf7241966d63b63dc0e1e4cd8520c88"
+  },
+  "fixtures": {
+    "crates/bigbrotr-model/tests/fixtures/dictionary-v1.json": "dbeabe7bc317d823c57f409e8e2f89abb4a4a0545ba32e20142d51a02a5286a9",
+    "tests/fixtures/model/core-fingerprints.json": "17aeb4833e650138150edf94dfc948fa39279f70fd9822d36a727b2e5d9d8e4b",
+    "experiments/identity-contract/golden-vectors.json": "a81a3015cf2c60ecd0fcc5d576e8a6d68b66e01396a39a28a802595d159e9dc6",
+    "tests/fixtures/protocol/signed-extremes.json": "dfe738600b4b6df4bce59c7a44cfdfc9222c618d518301d8b7fab589d3ac7ec7"
+  }
+}

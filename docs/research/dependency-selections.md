@@ -355,8 +355,10 @@ correct in Arrow and native table SQL, yet returned zeroed fields after Parquet.
 A SQL-created null-struct control passed. The adapter now supplies matching
 parent/child validity; the same complete dictionary oracle passes. A minimal
 paired negative control preserves the unmasked loss (73 becomes 0) and masked
-readback (73 stays 73). This is measured on Mac arm64; native Linux validation
-of the new dictionary adapter is still required.
+readback (73 stays 73). Mac arm64 and the exact native Linux amd64 candidate
+`5c3a8dd` reproduce both cases; [the native report](../implementation/evidence/p02-five-family-rows-native-20260918.json)
+records all 18 executed adapter/engine cases. This does not qualify the future
+DuckLake publisher or another Parquet implementation.
 
 The scoped native sources are
 [`StructColumnWriter`](https://github.com/duckdb/duckdb/blob/d8cdaa33fda8df955cc76ef58a280f68f4cd43fa/extension/parquet/writer/struct_column_writer.cpp),
