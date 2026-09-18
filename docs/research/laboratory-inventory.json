@@ -6241,7 +6241,7 @@
       }
     },
     "catalog_commit_guard_probe": {
-      "status": "six native cases PASS; product candidate remains unselected pending privilege/full metadata coverage/migration gates",
+      "status": "six native schedules plus44 actual privilege/coverage cases PASS; product selection/initialization still pending",
       "native_source": "d8a1881e22516ea3d186d73e83c65fe5bd1a1dc4",
       "source_files_sha256": {
         "src/metadata_manager/postgres_metadata_manager.cpp": "c5783bf61ff1999565046de62a6b4c27f4ca6145dba7e39a609f282cab45879c",
@@ -6255,7 +6255,7 @@
         "https://www.postgresql.org/docs/16/explicit-locking.html",
         "https://www.postgresql.org/docs/16/transaction-iso.html"
       ],
-      "purpose": "Qualify metadata statement guard on transaction-held owner row; stale ready/invisible clients kept alive to discriminate actual storage exclusion. Requires later concurrency/privilege/migration tests before product selection.",
+      "purpose": "Qualify metadata statement guard on transaction-held owner row; stale ready/invisible clients remain alive; native lock schedules and limited-role boundary exercised. Product mutation/initialization/migration gates remain.",
       "resources": {
         "root": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-guard-694be48/lab",
         "source": "694be481d80433fc1b9f97d1a0edd44bb14de324",
@@ -6280,12 +6280,26 @@
         "retired_network": "7ac86696277dc96ac7b85db34b5281d252bde49a866283dab66a91ec4961b9ba",
         "raw_result": ".research/implementation/archive-worker/catalog-fence/commit-guard/races-result.json"
       },
-      "audit": ".research/implementation/archive-worker/catalog-fence/commit-guard/audit.json",
+      "audit": ".research/implementation/archive-worker/catalog-fence/commit-guard/audit-privileges.json",
       "report": "docs/implementation/evidence/p02-catalog-guard-native-20260918.json",
       "additional_source_read": {
         "ducklake_initializer_sha256": "3546cc159fda22abf9e5ac6549f583902b77ebb86fddab4c6f14503153361b92",
         "postgres_storage_sha256": "34afb7b369498b3b794d5cdd632a9f3072a20320e931c31e132aa2ccd3c35cff",
         "scope": "Both files read completely; default PG isolation REPEATABLE READ and DuckLake metadata-option forwarding/migration behavior"
+      },
+      "privileges": {
+        "source": "d4f43af4f2f264886053338cffa664611065569c",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-guard-d4f43af/lab",
+        "owner": "889f826f583efaceed402e157b7397ea",
+        "containers": {
+          "bigbrotr-implementation-catalog-guard-d4f43af-runner": "56543844dfae3288acca89700e6d33c60064713b3ff734a228d024113599f630",
+          "bigbrotr-implementation-catalog-guard-d4f43af-pg": "5d4b396dd4937a6b7a4aaf27f9e5af977365de27b32ed45f07caaa6ec8fe07ef"
+        },
+        "state": "all stopped-retained; zero job backends; no OOM; empty network retired",
+        "retired_network": "ca8a308f0f5763d22b6b3d913e182a73afec7d4f6ad33f129790b08b4a72d45b",
+        "raw_result": ".research/implementation/archive-worker/catalog-fence/commit-guard/privileges-result.json",
+        "source_files": 614,
+        "cases": 44
       }
     }
   },

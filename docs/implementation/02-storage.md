@@ -271,8 +271,9 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   to all credential holders and use fresh backend observations.
   A bounded [PG metadata-trigger alternative](evidence/p02-catalog-guard-native-20260918.json)
   now passes six actual native cases with live stale clients and both transaction
-  lock orders/commit/rollback. It remains an isolated candidate: qualify privilege
-  escapes, full mutation coverage and versioned initialization/migration before
+  lock orders/commit/rollback, plus 44 actual privilege/coverage cases at `d4f43af`.
+  It remains an isolated candidate: qualify full ordinary mutation coverage and
+  versioned initialization/migration before
   selecting a product exception for guarded native metadata tables. This may
   enforce commit exclusion without inferring remote process death; resource and
   orphan cleanup still require their separate positive lifecycle evidence.

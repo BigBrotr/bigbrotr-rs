@@ -144,9 +144,9 @@ ordinary writers lose DDL privileges. Takeover updates that same row. The two
 initial cases keep old clients/logins alive (ready and invisible-startup) and
 require their native COMMIT to fail after replacement publication. This proposes
 an actual storage boundary instead of inferring one from client coordination.
-It is not a product migration or selected replacement: concurrent in-flight
-mutation/rollback, isolation, privilege/DDL escape, full metadata coverage,
-maintenance/migration compatibility and practical cost still need qualification.
+It is not a product migration or selected replacement. The subsequent runs below
+exercise concurrent mutation/rollback and privilege escapes. Full mutation
+coverage, maintenance/migration compatibility and practical cost remain open.
 Native metadata values are never manually edited. Production adoption would
 require an explicit update to the archive ownership contract and migration path.
 
@@ -158,16 +158,21 @@ pg_locks and backend incarnations prove actual blocking. `catalog_pg_session.py`
 owns bounded interactive psql controls and exact backend termination on cleanup.
 Literal independent counts distinguish committed old work from permitted replay.
 
-[The six-case report](../../docs/implementation/evidence/p02-catalog-guard-native-20260918.json)
+[The guard qualification report](../../docs/implementation/evidence/p02-catalog-guard-native-20260918.json)
 records source/artifact verification and the initial two cases separately. All
-four guard containers are stopped-retained, with no job backends; both empty
-networks were retired. This remains a candidate with explicit privilege,
-mutation-coverage and migration gates, not a product guarantee or full P02 step.
+six guard containers are stopped-retained, with no job backends; three empty
+networks were retired. This remains a candidate with explicit mutation-coverage
+and migration gates, not a product guarantee or full P02 step.
 
-`--case-set guard-privileges` prepares44 **NOT_RUN** cases: real limited-role
+`--case-set guard-privileges` passes 44 cases at `d4f43af`: real limited-role
 attempts to alter ownership/triggers/schema, escalate session/role privileges or
-bypass with replication mode; zero-row DELETE on each of the28 guarded tables;
+bypass with replication mode; zero-row DELETE on each of the 28 guarded tables;
 role/search-path shadowing; and an authorized native publication positive control.
 It checks exact PostgreSQL SQLSTATEs and final guard/table/owner identities. This
 is an actual permission boundary probe, not a replacement for product schema
 inspection, epoch/CAS or migration implementation.
+
+The 44 cases comprise 14 permission refusals, 28 guarded-table refusals, one combined
+role/search-path case and one native positive control. They are not 44 native
+publication schedules. Source audit independently matches 614 tracked files to
+Mac Git archive; actual PG logs contain 30 explicit guard refusals.

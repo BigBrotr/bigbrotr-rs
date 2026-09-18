@@ -1,7 +1,7 @@
 {
   "task": "P02-T04 step5 actual catalog commit-boundary alternative",
   "date": "2026-09-18",
-  "status": "six native cases PASS; candidate not yet selected/implemented as product",
+  "status": "six native schedules plus44 privilege/coverage cases PASS; candidate not yet selected/implemented as product",
   "purpose": "Replace inference from process/lease/login status with a possible actual PG metadata-write boundary. The already executed live-startup counterexample motivates this bounded alternative.",
   "sources": [
     {
@@ -17,6 +17,14 @@
       "source_files": 613,
       "cases": 4,
       "raw_result_sha256": "e7f4a19a826dc7f9f16ad09b3ab77b3701dad4dbc3910f64cfd98f380d3f6f79"
+    },
+    {
+      "revision": "d4f43af4f2f264886053338cffa664611065569c",
+      "tree": "34ff59b22c58b378a247a343aa0c5fa2a7c96761",
+      "source_files": 614,
+      "cases": 44,
+      "case_scope": "14 limited-role privilege refusals,28 metadata table guards, combined role/search-path shadow case, one authorized native positive control",
+      "raw_result_sha256": "69f427291bb76ad979208e656cea47d6b520a2b7aaec477e827ac97ffa6972f6"
     }
   ],
   "native_probe_source": "a531ea3ce345f4008a05bbf1696fd1e1f9827872",
@@ -258,6 +266,230 @@
         1,
         1
       ]
+    },
+    {
+      "case": "guard-privilege-write-owner",
+      "status": "PASS",
+      "sqlstate": "42501"
+    },
+    {
+      "case": "guard-privilege-delete-owner",
+      "status": "PASS",
+      "sqlstate": "42501"
+    },
+    {
+      "case": "guard-privilege-call-guard",
+      "status": "PASS",
+      "sqlstate": "42501"
+    },
+    {
+      "case": "guard-privilege-disable-trigger",
+      "status": "PASS",
+      "sqlstate": "42501"
+    },
+    {
+      "case": "guard-privilege-drop-trigger",
+      "status": "PASS",
+      "sqlstate": "42501"
+    },
+    {
+      "case": "guard-privilege-drop-table",
+      "status": "PASS",
+      "sqlstate": "42501"
+    },
+    {
+      "case": "guard-privilege-truncate-table",
+      "status": "PASS",
+      "sqlstate": "42501"
+    },
+    {
+      "case": "guard-privilege-create-table",
+      "status": "PASS",
+      "sqlstate": "42501"
+    },
+    {
+      "case": "guard-privilege-create-schema",
+      "status": "PASS",
+      "sqlstate": "42501"
+    },
+    {
+      "case": "guard-privilege-replication-role",
+      "status": "PASS",
+      "sqlstate": "42501"
+    },
+    {
+      "case": "guard-privilege-session-authorization",
+      "status": "PASS",
+      "sqlstate": "42501"
+    },
+    {
+      "case": "guard-privilege-set-admin-role",
+      "status": "PASS",
+      "sqlstate": "42501"
+    },
+    {
+      "case": "guard-privilege-set-current-writer-role",
+      "status": "PASS",
+      "sqlstate": "42501"
+    },
+    {
+      "case": "guard-privilege-escalate-role",
+      "status": "PASS",
+      "sqlstate": "42501"
+    },
+    {
+      "case": "guard-coverage-ducklake_column",
+      "status": "PASS",
+      "sqlstate": "55000"
+    },
+    {
+      "case": "guard-coverage-ducklake_column_mapping",
+      "status": "PASS",
+      "sqlstate": "55000"
+    },
+    {
+      "case": "guard-coverage-ducklake_column_tag",
+      "status": "PASS",
+      "sqlstate": "55000"
+    },
+    {
+      "case": "guard-coverage-ducklake_data_file",
+      "status": "PASS",
+      "sqlstate": "55000"
+    },
+    {
+      "case": "guard-coverage-ducklake_delete_file",
+      "status": "PASS",
+      "sqlstate": "55000"
+    },
+    {
+      "case": "guard-coverage-ducklake_file_column_stats",
+      "status": "PASS",
+      "sqlstate": "55000"
+    },
+    {
+      "case": "guard-coverage-ducklake_file_partition_value",
+      "status": "PASS",
+      "sqlstate": "55000"
+    },
+    {
+      "case": "guard-coverage-ducklake_file_variant_stats",
+      "status": "PASS",
+      "sqlstate": "55000"
+    },
+    {
+      "case": "guard-coverage-ducklake_files_scheduled_for_deletion",
+      "status": "PASS",
+      "sqlstate": "55000"
+    },
+    {
+      "case": "guard-coverage-ducklake_inlined_data_tables",
+      "status": "PASS",
+      "sqlstate": "55000"
+    },
+    {
+      "case": "guard-coverage-ducklake_macro",
+      "status": "PASS",
+      "sqlstate": "55000"
+    },
+    {
+      "case": "guard-coverage-ducklake_macro_impl",
+      "status": "PASS",
+      "sqlstate": "55000"
+    },
+    {
+      "case": "guard-coverage-ducklake_macro_parameters",
+      "status": "PASS",
+      "sqlstate": "55000"
+    },
+    {
+      "case": "guard-coverage-ducklake_metadata",
+      "status": "PASS",
+      "sqlstate": "55000"
+    },
+    {
+      "case": "guard-coverage-ducklake_name_mapping",
+      "status": "PASS",
+      "sqlstate": "55000"
+    },
+    {
+      "case": "guard-coverage-ducklake_partition_column",
+      "status": "PASS",
+      "sqlstate": "55000"
+    },
+    {
+      "case": "guard-coverage-ducklake_partition_info",
+      "status": "PASS",
+      "sqlstate": "55000"
+    },
+    {
+      "case": "guard-coverage-ducklake_schema",
+      "status": "PASS",
+      "sqlstate": "55000"
+    },
+    {
+      "case": "guard-coverage-ducklake_schema_versions",
+      "status": "PASS",
+      "sqlstate": "55000"
+    },
+    {
+      "case": "guard-coverage-ducklake_snapshot",
+      "status": "PASS",
+      "sqlstate": "55000"
+    },
+    {
+      "case": "guard-coverage-ducklake_snapshot_changes",
+      "status": "PASS",
+      "sqlstate": "55000"
+    },
+    {
+      "case": "guard-coverage-ducklake_sort_expression",
+      "status": "PASS",
+      "sqlstate": "55000"
+    },
+    {
+      "case": "guard-coverage-ducklake_sort_info",
+      "status": "PASS",
+      "sqlstate": "55000"
+    },
+    {
+      "case": "guard-coverage-ducklake_table",
+      "status": "PASS",
+      "sqlstate": "55000"
+    },
+    {
+      "case": "guard-coverage-ducklake_table_column_stats",
+      "status": "PASS",
+      "sqlstate": "55000"
+    },
+    {
+      "case": "guard-coverage-ducklake_table_stats",
+      "status": "PASS",
+      "sqlstate": "55000"
+    },
+    {
+      "case": "guard-coverage-ducklake_tag",
+      "status": "PASS",
+      "sqlstate": "55000"
+    },
+    {
+      "case": "guard-coverage-ducklake_view",
+      "status": "PASS",
+      "sqlstate": "55000"
+    },
+    {
+      "case": "guard-role-and-search-path-shadow",
+      "status": "PASS",
+      "sqlstate": "55000"
+    },
+    {
+      "case": "guard-authorized-native-control-after-refusals",
+      "status": "PASS",
+      "counts": [
+        1,
+        1,
+        1
+      ]
     }
   ],
   "independent_expected_results": [
@@ -265,7 +497,8 @@
     "Writer first: takeover is observed blocked by the old native backend after the real guard has acquired its row lock. After native commit, fresh independent native reader resolves[1,1,1] and does not reinsert; after client kill/reap plus exact backend termination, fresh independent native reader resolves[0,0,0] and publishes once.",
     "Takeover first: native commit is observed blocked by the controlling PG backend. Takeover COMMIT causes old native failure and absent old rows; takeover ROLLBACK lets old native commit. Final independent counts[1,1,1] in both.",
     "pg_blocking_pids, pg_locks and both live PID/start-time incarnations establish each schedule. A lab-only later snapshot trigger waits on an advisory barrier in the writer-first cases; that barrier is not the candidate fence.",
-    "Each interactive control backend is terminated by exact incarnation then verified absent. Children positively reaped and relay threads joined. Zero job backends before cluster stop."
+    "Each interactive control backend is terminated by exact incarnation then verified absent. Children positively reaped and relay threads joined. Zero job backends before cluster stop.",
+    "Limited-role actual PG connections refuse14 privilege escapes with42501. Each of28 guarded tables refuses a zero-row DELETE with55000. SET ROLE to inherited writer group and temp/search_path shadowing still refuse via session_user and qualified authority table. Authorized native publication remains[1,1,1], with all28 guards enabled and unchanged authority."
   ],
   "inspection": {
     "ducklake": "d8a1881e22516ea3d186d73e83c65fe5bd1a1dc4: full PostgresMetadataManager cpp/hpp and DuckLakeInitializer; InitializeDuckLake; transaction Commit/rollback/RunCommitLoop relevant branches.",
@@ -278,8 +511,8 @@
     "boundary": "Not a complete DuckLake mutation/maintenance audit or all-isolation matrix."
   },
   "audit": {
-    "method": "Every tracked native checkout file SHA256 equals independent Mac git archive manifest for its revision. Clean Git before/after, exact reused probe SHA, immutable bundle verification. Explicit PG guard errors2+1.",
-    "path": ".research/implementation/archive-worker/catalog-fence/commit-guard/audit.json"
+    "method": "Every tracked native checkout file SHA256 equals independent Mac git archive manifest for its revision. Clean Git before/after, exact reused probe SHA, immutable bundle verification. Explicit PG guard errors2+1. New44-case source independently matches614 files; PG logs contain30 additional explicit guard refusals.",
+    "path": ".research/implementation/archive-worker/catalog-fence/commit-guard/audit-privileges.json"
   },
   "cleanup": {
     "containers": [
@@ -306,11 +539,24 @@
         "id": "cb01612bc8c2ec2873e25a821d5e94bf8ee22e9f383a3d8fda9fef6c4c20e206",
         "exit": 0,
         "oom": false
+      },
+      {
+        "name": "bigbrotr-implementation-catalog-guard-d4f43af-runner",
+        "id": "56543844dfae3288acca89700e6d33c60064713b3ff734a228d024113599f630",
+        "exit": 0,
+        "oom": false
+      },
+      {
+        "name": "bigbrotr-implementation-catalog-guard-d4f43af-pg",
+        "id": "5d4b396dd4937a6b7a4aaf27f9e5af977365de27b32ed45f07caaa6ec8fe07ef",
+        "exit": 0,
+        "oom": false
       }
     ],
     "retired_networks": [
       "3cf697fbd73206a1654841cdb4d42bf7d863dfe5a12f9c8321fcb8a6737f8409",
-      "7ac86696277dc96ac7b85db34b5281d252bde49a866283dab66a91ec4961b9ba"
+      "7ac86696277dc96ac7b85db34b5281d252bde49a866283dab66a91ec4961b9ba",
+      "ca8a308f0f5763d22b6b3d913e182a73afec7d4f6ad33f129790b08b4a72d45b"
     ],
     "data": "all retained; no old environment restarted",
     "running_bigbrotr": 0,
@@ -319,7 +565,7 @@
     "comparison": "container IDs, process incarnation/state excluding dynamic health log, mounts sorted by destination, networks"
   },
   "remaining": [
-    "Actual privilege/DDL/replication-role/session-user escape refusals; complete mutation coverage with inlining disabled and no runtime catalog DDL; schema/trigger tampering detection.",
+    "Complete ordinary mutation coverage with inlining disabled and no runtime catalog DDL; product schema/trigger tampering detection.",
     "Versioned product initialization/upgrade, ownership/CAS/attempt identity and receipt-recovery API; catalog unavailable or takeover COMMIT acknowledgement lost.",
     "Separate maintenance/migration/reader privilege compositions and restore compatibility; broader fixed-snapshot/isolation refusal behavior.",
     "Full scientific schema/body/reference receipts/protection and signed M1 journey; no reclaim or durability class follows from these canary rows.",
@@ -328,6 +574,7 @@
   "raw_root": ".research/implementation/archive-worker/catalog-fence/commit-guard",
   "native_roots": [
     "/home/tux/bigbrotr-implementation-20260917/runs/catalog-guard-694be48/lab",
-    "/home/tux/bigbrotr-implementation-20260917/runs/catalog-guard-df2a0db/lab"
+    "/home/tux/bigbrotr-implementation-20260917/runs/catalog-guard-df2a0db/lab",
+    "/home/tux/bigbrotr-implementation-20260917/runs/catalog-guard-d4f43af/lab"
   ]
 }

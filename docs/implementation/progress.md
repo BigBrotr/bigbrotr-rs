@@ -15,10 +15,11 @@ complete. Pending must not be reclaimed. Whole selected product remains required
 
 ## Git and ownership
 
-Mac main, integrating root only. Freshly verified HEAD and origin/main both
-`8d8cdf58af95262d713876a5be97ab0a1b513f63`, clean before current work. All earlier
-MON/startup/guard evidence is pushed. Root owns the guard-privileges extension of
-the existing lab, PgSession helper and README/checkpoint updates; no other writer.
+Mac main, integrating root only. Freshly verified HEAD
+`d4f43af4f2f264886053338cffa664611065569c`, origin/main
+`8d8cdf58af95262d713876a5be97ab0a1b513f63`, clean before evidence updates.
+The unpublished HEAD is the exact native44-case candidate; earlier MON/startup/guard
+evidence is pushed. Root owns report/inventory/README/checkpoint updates. No other writer.
 Source transfers through Git, readonly Tux source, root review only.
 
 ## Qualified product prerequisites
@@ -199,12 +200,17 @@ zero BigBrotr running;20 unrelated identities/processes/mounts/networks unchange
 terminal. Inventory key: `implementation_archive_worker_20260918.catalog_commit_guard_probe`.
 No active experiment; do not restart retired-network containers.
 
-The candidate remains UNSELECTED as a product fence. The prepared next bounded
-`guard-privileges` run has44 NOT_RUN cases: limited-role ownership/DDL/session/
-replication escape refusals, all28 zero-row table guards, role/search-path shadow
-and positive native publication. Commit the reviewed harness, transfer exact Git
-source to a fresh Tux lab and run it. Then audit native mutation coverage with
-inlining disabled/no runtime DDL.
+The candidate remains UNSELECTED as a product fence. `guard-privileges` at
+`d4f43af` passes44 cases:14 actual limited-role permission refusals, all28 zero-row
+table guards, one role/search-path shadow case and one native positive publication.
+Independent source audit matches614 files to Mac Git archive;30 actual PG guard
+errors. Two new containers stopped-retained, no OOM/backends, empty network retired;
+20 unrelated containers unchanged,8 running, zero BigBrotr running. Source transfer
+86579/native run27074 terminal. Raw privileges-result/resources/log and
+audit-privileges.json retained under the same raw root; native root
+`runs/catalog-guard-d4f43af`. Inventory has the exact container/network identities.
+Next: review/commit/push this qualification, then audit native ordinary mutation
+coverage with inlining disabled/no runtime DDL.
 Check all owned schema/trigger identities, altered/missing guard refusal, fixed
 snapshots and exact fresh setup/upgrade behavior before adopting it. Production
 adoption needs an explicit owning-contract exception for versioned metadata
