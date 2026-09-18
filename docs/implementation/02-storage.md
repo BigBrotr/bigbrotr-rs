@@ -286,9 +286,13 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   now passes six actual native cases with live stale clients and both transaction
   lock orders/commit/rollback, plus 44 actual privilege/coverage cases at `d4f43af`.
   The [narrow compatibility exception](../specification/archive-storage-contract.md#versioned-catalog-commit-guard)
-  now selects this fence; versioned product initialization/inspection/activation
-  and a private native bootstrap consumer are in implementation, with actual
-  qualification still pending. Full ordinary mutation coverage remains a gate. It can
+  now selects this fence. [Product guard prerequisite evidence](evidence/p02-catalog-product-native-20260918.json)
+  qualifies native bootstrap, versioned fresh install/inspection, immutable
+  Control-intent activation and live stale native rejection at `944f3e6`. It also
+  records the confirmed role-bind, collation, NOLOGIN and Control numeric-epoch
+  corrections with their failed candidates. Full ordinary mutation coverage,
+  simultaneous product activation, unknown responses, credential custody and
+  installed recovery remain gates. It can
   enforce commit exclusion without inferring remote process death; resource and
   orphan cleanup still require their separate positive lifecycle evidence.
 - [ ] **Step 6:** Handle empty and one-small-event timer batches; publish useful progress

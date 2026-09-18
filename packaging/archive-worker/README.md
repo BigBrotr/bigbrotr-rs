@@ -128,4 +128,7 @@ transfers ownership/revokes bootstrap privileges and checks the pristine catalog
 Bootstrap success alone cannot adopt an existing catalog or grant publication.
 The installed initialization command, credential provisioning and persistent
 recovery remain P02/P08 work; this finite private consumer is not a new public
-operator command or support claim. Actual native qualification is pending.
+operator command or support claim. The
+[native guard prerequisite report](../../docs/implementation/evidence/p02-catalog-product-native-20260918.json)
+qualifies this finite packaged consumer on Linux amd64 at `944f3e6`; installed
+initialization and persistent recovery remain unfinished.

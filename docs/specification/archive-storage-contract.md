@@ -138,8 +138,10 @@ allocating a successor intent does not prove exclusion of the previous native
 writer or release its resource grant. Before exposing catalog credentials, the
 catalog adapter must durably import this exact intent and enforce monotonic
 activation at its own write boundary, refusing late lower ordinals and mismatched
-same-ordinal attempts. Guard initialization/activation is being implemented under
-the versioned compatibility exception below; its practical qualification remains pending;
+same-ordinal attempts. Guard initialization/activation follows
+the versioned compatibility exception below; its
+[scoped native qualification](../implementation/evidence/p02-catalog-product-native-20260918.json)
+passes at `944f3e6`, while persisted recovery remains pending.
 Control issuance alone cannot authorize publication, cleanup or pending ACK.
 Pre-protocol archive owner rows cause migration 0009 to refuse atomically rather
 than invent exclusion or adopt unknown credentials. Existing SQL stays immutable.
@@ -172,11 +174,11 @@ read core and can expose all data in that authority's dataset.
 P02-T04 selects the tested PG statement-trigger fence for the pinned DuckLake1.0
 metadata layout. `migrations/catalog/0001_writer_guard.sql` belongs to the separate
 catalog database; it is not an application-Control migration. Native bootstrap
-alone creates the28 metadata tables. After that finite worker has exited and been
+alone creates the 28 metadata tables. After that finite worker has exited and been
 positively reaped, the installer requires the exact empty initial native snapshot,
 metadata version/root/encryption, column/key/collation layout and a restricted bootstrap
 login. In one transaction it transfers native table ownership to the catalog
-manager, revokes bootstrap DDL/DML and PUBLIC native privileges, attaches all28
+manager, revokes bootstrap DDL/DML and PUBLIC native privileges, attaches all 28
 statement guards, and records dataset/catalog/root, SQL and live-layout hashes.
 No native metadata values/columns are rewritten. Nonempty or unfamiliar history
 is refused; there is no automatic adoption or native migration. Repeated install
@@ -202,7 +204,7 @@ Compatibility inspection checks actual native columns/keys, table ownership,
 function bodies/security settings, enabled statement triggers, stored installation
 identity/checksums and live structural hash. It refuses scoped nonzero inlining
 and extra inlined metadata tables. Returned definitions/counts are bounded; the
-caller retains a64MiB inspection grant, transaction driver and total deadline.
+caller retains a 64 MiB inspection grant, transaction driver and total deadline.
 Server statement/lock/idle-transaction timeouts are additional bounds. The guard
 manager is a privileged operator boundary: direct privileged DDL, role changes or
 catalog restore require quiescence and explicit reinspection. Checks do not make
@@ -214,9 +216,13 @@ S3 integration and persistent launch/recovery remain required. Never launch a
 second native client under the same attempt merely because activation is observed.
 Replacement requires a new retained intent, unique worker and credential lifetime.
 Catalog exclusion does not prove old process death or authorize orphan file/object
-cleanup or resource-grant release. Existing six native fence schedules and44
+cleanup or resource-grant release. Existing six native fence schedules and 44
 permission/coverage cases motivate this exception; they do not qualify the new
-product installer/activation implementation. P02 keeps those gates open.
+complete product publisher/recovery implementation. The
+[product guard prerequisite report](../implementation/evidence/p02-catalog-product-native-20260918.json)
+qualifies bootstrap/installation/inspection/activation and a live stale native
+writer at `944f3e6`, including independently attributed PG guard rejection.
+Concurrent activation, ambiguous responses and installed recovery remain open.
 
 PostgreSQL documents [session identity and privilege checks](https://www.postgresql.org/docs/16/functions-info.html)
 and [actual trigger metadata](https://www.postgresql.org/docs/16/catalog-pg-trigger.html).

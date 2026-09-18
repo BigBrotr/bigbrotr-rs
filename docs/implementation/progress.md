@@ -13,7 +13,8 @@ read-only Go neighbor. All selected product work remains required.
 
 Active P02-T03/T04: signed durable pending → actual PG DuckLake publication,
 positive fencing, receipts/protection, then M1 read/export/restart. No P02 task or
-M1 gate is complete. No product catalog/schema/publisher exists yet. Pending must
+M1 gate is complete. The catalog guard prerequisite is implemented; no scientific product schema or
+publisher exists yet. Pending must
 not be acknowledged/reclaimed. Do not mistake private preparation for publication.
 
 ## Git and integrating ownership
@@ -167,49 +168,61 @@ MON resources remain stopped as inventoried; never restart retired-network
 containers. Shared checkout last observed detached6be8515 in an earlier slice;
 not used or freshly requalified here.
 
-## Current catalog product candidate
+## Qualified catalog guard prerequisite
 
-Mac main is now local candidate2e732f6; origin/main remains d24cd87. Root is the
-only writer. Dirty work adds the confirmed collation/NOLOGIN fixes, stronger
-native privilege/freshness cases and a mixed-case bootstrap login. Three clean
-exact-source native runs are retained under `catalog-product` in the laboratory
-inventory; none is an overall PASS yet:
+Mac main product candidate `944f3e6ee5898747d5ecce5278bc3acfdb38a06d` is qualified
+within [the native report](evidence/p02-catalog-product-native-20260918.json).
+Origin/main remains d24cd87 until the ordinary push after this evidence review.
+Root is sole writer; current dirty files are evidence/inventory/documentation.
+Mac14 application tests plus1 bootstrap-wire test and scoped Clippy passed.
+Exact native15 Rust cases,5 build/test checks,9 adapter stages and actual packaged
+bootstrap/native writer/read processes passed. No full CI/product gate is claimed.
 
--652e043: native bootstrap/tests/Clippy/Control passed; fresh guard install failed
- on String→REGROLE binding. Fixed by exact pg_roles name→OID lookup.
--dbc5211: guarded install, activation1/2, live stale native writer rejection and
- independent read[1,1,1] passed; Control epoch11 acquisition failed because its
- epoch::text alias sorted lexically (9 above10). Fixed with qualified numeric sort.
- One extra helper container never started (permission denied under image uid);
- its proposed negatives are NOT_RUN, not product failures.
--2e732f6: explicit Control epochs9/10/11/12 and full guard journey passed; new
- collation and NOLOGIN regressions failed as expected. The changed collation was
- accepted, and sealed login inspection returned UnsafeRole. Both fixes are now
- local, not yet qualified. Dropped-column refusal passed.
+Implemented: separate catalog SQL; pristine native bootstrap; actual column/key/
+collation/ownership/function/trigger/hash inspection; restricted dedicated roles;
+monotonic import of privately retained Control intents; no automatic re-enable of
+sealed logins. The improved issuer test copies the active issuer and is rejected
+for missing backend exclusion. Numeric Control reacquisition crosses9/10/11/12;
+actual retained epochs are1..15. Applied Control SQL is unchanged.
 
-All three labs are terminal: two main containers each stopped-retained, internal
-networks retired; the dbc5211 helper remains never-started/retained.20 unrelated
-identities unchanged,8 running,zero BigBrotr running. Exact IDs/owners and audits
-are retained in the inventory and `.research/implementation/archive-worker/catalog-product`.
-No active experiment at this checkpoint.
+Independent audits match all637 Mac/Tux source files and all4 executed ELF hashes.
+Actual metadata has28 manager-owned tables, attempts[1,2], owner2, old login still
+NOLOGIN, three data files each with1 record, native read counts[1,1,1]. Frozen
+literal CBOR/OpenSSL matches both intended-input digests. PG backend156 first
+fails serialization then raises the exact require_writer exclusion: the generic
+native COMMIT marker alone was deliberately insufficient. Input and science are
+synthetic; this is not signed publication/protection or an archive ACK.
 
-Independent read-only review identified the role-bind and collation issues and
-confirmed the numeric epoch fix and NOLOGIN recovery semantics. Root also fixed
-the copied-issuer probe to use the actual active issuer; actual PG rejects it for
-missing backend commit exclusion. Old reports retain their original scope.
+Three failed candidates remain recorded:652e043 String→REGROLE bind;dbc5211
+lexical epoch ordering at11;2e732f6 accepted collation change and rejected sealed
+login inspection. The latter two regressions now pass. One dbc5211 extra helper
+never started due to executable uid permissions; its proposed cases are NOT_RUN.
+Independent review found/confirmed these defects and reviewed the corrective diff;
+root verified actual state/logs. Prior candidate layouts are not silently adopted.
+
+Final native root:
+`/home/tux/bigbrotr-implementation-20260917/runs/catalog-product-944f3e6`.
+Owner `bf1b832499f02415b2f391c65b5f1244`; runner
+`bigbrotr-implementation-catalog-product-944f3e6`, PG suffix `-pg`.
+Both stopped-retained exit0/no OOM; owned network retired. All3 earlier runs are
+terminal too; their data/caches and the never-started helper remain inventoried.
+Final audit:20 unrelated identities unchanged,8 running,zero BigBrotr running.
+Full IDs/source/artifact hashes and raw paths are under `catalog_product` in the
+laboratory inventory and `.research/implementation/archive-worker/catalog-product`.
+Session43878(cleanup) and97954(copy) are terminal. No active experiment/cleanup.
 
 ## Next bounded action
 
-Run the corrected exact-source candidate: native bootstrap with mixed-case role,
-pre-install collation/unsafe-role/nonempty refusal, enabled function/trigger shape,
-five unsafe writer privilege cases, successor while old login NOLOGIN, no implicit
-re-enable, historical replay, old live native rejection and independent read.
-Preserve both failed regression logs. Complete diff review, independent source/
-artifact/state observations and resource cleanup before pushing verified work.
-The catalog SQL remains separate from applied Control migrations; no old SQL was
-rewritten. Inspection rejects prior incompatible candidate layouts rather than
-silently adopting them. No scientific product schema/publisher/ACK exists yet.
+Review/commit this evidence and documentation, then push the verified linear
+history normally and confirm Mac/remote equality. Keep product work active.
+Then qualify the product adapter's activation ambiguity/concurrency and wire
+actual credential custody/unique worker launch and recovery. A matching observed
+attempt never permits a second native client; replacement gets a new lifetime.
+The current finite bootstrap and PG adapter require an external bounded owner;
+the installed initialization command/provisioner remains unfinished.
 
-Then complete catalog activation ambiguity/concurrency/credential custody and
-connect scientific schema/all families/atomic semantic receipt/protection to
-signed M1 read/export/restart. P02/M1 and every selected later phase remain open.
+Connect scientific schema/all families/atomic semantic receipt and local protection
+to signed M1 read/export/restart. No pending ACK/reclaim, task completion or P02/M1
+closure before those actual boundaries. S3, full native mutation/maintenance
+coverage, aged mixed load/RSS, Linux arm64 and full Compose/release journeys remain
+selected work. Keep file/orphan cleanup authority separate from catalog fencing.

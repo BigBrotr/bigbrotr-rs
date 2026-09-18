@@ -1,0 +1,430 @@
+{
+  "task": "P02-T04 steps3/4/5 guarded catalog prerequisite; numeric Control reacquisition correction",
+  "date": "2026-09-18",
+  "status": "PASS within executed scope; complete product publication/recovery remains open",
+  "source": {
+    "revision": "944f3e6ee5898747d5ecce5278bc3acfdb38a06d",
+    "tree": "e7a371e2fb3e868cc93426311c75030aa6edfd19",
+    "source_files": 637,
+    "archive_sha256": "2a61b4d6429db1a4adfdc5dd083c13e8012a39715676765f775f8443e2e1e48e",
+    "manifest_sha256": "ffab0f7790fadfee46e7ecdc06ebc2d7b8ddd575b9b96fd0ba49867d26a19981",
+    "verification": "Every clean read-only Tux checkout/export file independently matches the Mac exact Git archive"
+  },
+  "implementation": [
+    "Finite private bootstrap-catalog consumer uses the verified native worker, temporary memory secret, local root, inlining0 and automatic migration disabled; process exits before installation.",
+    "Separate versioned catalog SQL and Rust guard installer require pristine native metadata, transfer ownership/revoke bootstrap authority and attach all28 commit guards atomically. No native values/columns are manually created or rewritten by the adapter.",
+    "Actual version/root/native columns/keys/collations/ownership and live function/trigger/structural checksum inspection; explicit incompatible-history refusal.",
+    "Control receipt privately retains its exact committed request. Catalog activation imports that tuple and monotonically updates the row locked by native commits; public receipt observations cannot alter authority.",
+    "Dedicated attempt role name plus OID; no role creation or credential exposure in this adapter. Historical/current observations do not authorize another worker launch. NOLOGIN does not obstruct inspection or successor takeover and is never automatically reversed.",
+    "Control reacquisition now orders numeric epochs explicitly rather than the text wire alias. Applied Control migration SQL remains unchanged."
+  ],
+  "mac": {
+    "selected_application_tests": 14,
+    "worker_wire_tests": 1,
+    "scoped_clippy": "PASS for both application/worker lib, tests, examples and worker binary",
+    "document_checks": "Links/fragments/task references/artifacts passed before initial candidate; final documentation checks recorded at evidence commit",
+    "red": "Initial catalog/worker API compiler failures retained; not claimed as assertion RED. Real collation/sealed-login and epoch failures below are executed regressions."
+  },
+  "native": {
+    "host": "Tux Linux amd64",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "rust": "1.98.1",
+    "toolchain": {
+      "os": "Linux",
+      "architecture": "x86_64",
+      "discovery": "llvm-config",
+      "environment": {
+        "CC": "/usr/lib/llvm-14/bin/clang",
+        "CXX": "/usr/lib/llvm-14/bin/clang++",
+        "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+        "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+        "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+      },
+      "tools": {
+        "CC": {
+          "path": "/usr/lib/llvm-14/bin/clang",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "CXX": {
+          "path": "/usr/lib/llvm-14/bin/clang++",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "AR": {
+          "path": "/usr/lib/llvm-14/bin/llvm-ar",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+          "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+          "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+        },
+        "LIBCLANG_PATH": {
+          "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+          "version": "Debian clang version 14.0.6"
+        },
+        "discovery": {
+          "path": "/usr/lib/llvm-14/bin/llvm-config",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+          "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+          "version": "14.0.6"
+        }
+      },
+      "sdk": null
+    },
+    "artifacts_sha256": {
+      "worker": "a2c65fe38e9afac98f003798afe01a053169fe98f5215eb6bb0dab38a7145927",
+      "guard_probe": "63f5a739802e339af9111e3514ef79993110160a76b623ea7c8b34218531295e",
+      "native_writer": "793bd08ce5f99b32941da8485c0080c4656ed807ded41a7623b326a37b85e12d",
+      "control_probe": "da4613b86da1d74c2e01f234ed7a5f63a09ab80cbf906361b46c4905f68d7e94"
+    },
+    "artifact_audit": "All four actual executable files independently hashed and identified as ELF",
+    "limits": {
+      "runner_cpus": 2,
+      "runner_memory_bytes": 6442450944,
+      "runner_pids": 512,
+      "postgres_cpus": 1,
+      "postgres_memory_bytes": 1073741824,
+      "postgres_pids": 128,
+      "worker_engine_memory_bytes": 134217728,
+      "worker_engine_temp_bytes": 67108864,
+      "worker_query_threads": 1,
+      "network": "new internal bridge, no published ports"
+    },
+    "rust_cases": 15,
+    "build_and_test_checks": [
+      {
+        "name": "tests",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--test",
+          "archive_attempt",
+          "--test",
+          "catalog_guard",
+          "--test",
+          "control_schema"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 25.85995301930234
+      },
+      {
+        "name": "worker-tests",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr-archive-worker",
+          "--test",
+          "catalog_bootstrap"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 28.562687180005014
+      },
+      {
+        "name": "build",
+        "command": [
+          "cargo",
+          "build",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--example",
+          "archive_attempt_probe",
+          "--example",
+          "catalog_guard_probe"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 10.832612258847803
+      },
+      {
+        "name": "worker-build",
+        "command": [
+          "cargo",
+          "build",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr-archive-worker",
+          "--bin",
+          "bigbrotr-archive-worker",
+          "--example",
+          "catalog-fence-probe"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 5.574570056051016
+      },
+      {
+        "name": "clippy",
+        "command": [
+          "cargo",
+          "clippy",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "-p",
+          "bigbrotr-archive-worker",
+          "--lib",
+          "--tests",
+          "--examples",
+          "--bins",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 3.6203153850510716
+      }
+    ],
+    "adapter_stages": [
+      {
+        "name": "control",
+        "command": [
+          "/out/build/target/release/examples/archive_attempt_probe"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 2.3186069559305906
+      },
+      {
+        "name": "install",
+        "command": [
+          "/out/native-tests/catalog-guard-probe",
+          "install"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 0.5147277172654867
+      },
+      {
+        "name": "activate-first",
+        "command": [
+          "/out/native-tests/catalog-guard-probe",
+          "activate-first"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 0.31419659685343504
+      },
+      {
+        "name": "activate-second",
+        "command": [
+          "/out/native-tests/catalog-guard-probe",
+          "activate-second"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 0.16395217506214976
+      },
+      {
+        "name": "replay-first",
+        "command": [
+          "/out/native-tests/catalog-guard-probe",
+          "replay-first"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 0.16452146880328655
+      },
+      {
+        "name": "inspect",
+        "command": [
+          "/out/native-tests/catalog-guard-probe",
+          "inspect"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 0.06387336412444711
+      },
+      {
+        "name": "refuse-collation",
+        "command": [
+          "/out/native-tests/catalog-guard-probe",
+          "refuse-collation"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 0.015628802124410868
+      },
+      {
+        "name": "inspect-sealed",
+        "command": [
+          "/out/native-tests/catalog-guard-probe",
+          "inspect-sealed"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 0.06374418223276734
+      },
+      {
+        "name": "refuse-damaged",
+        "command": [
+          "/out/native-tests/catalog-guard-probe",
+          "refuse-damaged"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 0.015601511113345623
+      }
+    ],
+    "bootstrap": "Actual packaged worker completed; fixed response inspected after positive process exit",
+    "native_processes": "Separate native initialization, old ready writer, successor writer and fresh read process; synthetic facts/witnesses/receipts"
+  },
+  "executed_cases": [
+    "Actual PG native bootstrap with mixed-case dedicated role; fresh guarded install and idempotent reinspection.",
+    "Before install: altered collation, privileged bootstrap and non-pristine snapshot refuse with expected categories, no COMMIT or guard namespace; explicit lab restoration preserves the positive control.",
+    "Wrong dataset/catalog/root refuse; bootstrap CREATE/DML/ALTER denied42501 after ownership transfer.",
+    "Disabled trigger, SECURITY INVOKER replacement and extra native-schema table refuse; explicit lab restoration returns inspection to PASS.",
+    "Five separately granted unsafe writer privileges refuse activation and leave zero attempt rows: SUPERUSER, CREATEROLE, public CREATE, guard USAGE and SET session_replication_role.",
+    "First and successor activation persist ordinals1/2. Matching retries return observations without a new COMMIT. Mutable public receipt fields are ignored in favor of the private Control-retained tuple.",
+    "Old ready native client remains alive; old login set NOLOGIN before successor activation and remains NOLOGIN afterward. Existing native COMMIT is rejected by require_writer; successor commits once.",
+    "Historical first-attempt replay remains historical/disabled without reactivation; fresh compatible inspection passes.",
+    "Post-install collation change refuses. A sealed current login remains inspectable. Dropped-column physical history refuses. The final isolated catalog is intentionally left with that incompatible column history.",
+    "Control probe copies the actual active issuer, and PG rejects it for absent backend commit exclusion. Explicit9/10/11/12 acquisitions pass; final independent catalog journey leaves Control epochs1..15."
+  ],
+  "independent_observations": {
+    "native_table_owners": "28 postgres-owned native tables",
+    "catalog_ordinals": [
+      1,
+      2
+    ],
+    "owner": [
+      {
+        "singleton": true,
+        "ordinal": 2,
+        "enabled": true
+      }
+    ],
+    "role_login": [
+      {
+        "rolname": "bb_archive_14141414141414141414141414141414",
+        "rolcanlogin": false
+      },
+      {
+        "rolname": "bb_archive_16161616161616161616161616161616",
+        "rolcanlogin": true
+      }
+    ],
+    "semantic_input_sha256": "6617e55295d367ffc9453a93ceb054623a952d289dcbf8e6ad5f5332db9134d0",
+    "semantic_input_preimage_hex": "62696762726f74722f617263686976652d62617463682f31008550010101010101010101010101010101010100818400010101818284500101010101010101010101010101010100010158200707070707070707070707070707070707070707070707070707070707070707",
+    "input_oracle": "Frozen independently derived literal CBOR rehashed with OpenSSL; both actual catalog intents match. Input/topology are synthetic, not signed membership qualification.",
+    "read_counts": [
+      1,
+      1,
+      1
+    ],
+    "catalog_data_files": 3,
+    "record_count_per_file": 1,
+    "fence_backend": {
+      "pid": 156,
+      "cause": "actual require_writer RAISE after prior serialization refusal; not authentication failure"
+    },
+    "fence_evidence": "PG backend156 first failed row serialization, then emitted archive catalog writer excluded at require_writer line14 for native snapshot insertion. No login-authentication refusal occurred. The generic native commit marker alone was not accepted as proof.",
+    "observations_sha256": "9644b51697aa1621a7d7f4a178a41850b4b012a5f4fb9da0cbb72c60d788d8b0",
+    "sql_sha256": "055deb8b354b0e2b3e361102cc7e1999bb0849966c3dfae93fddc5d2e5c3840f"
+  },
+  "failed_candidates": [
+    {
+      "source": "652e043596220f1d66cb644aa06fcff3f922b6fb",
+      "outcome": "FAIL: fresh install Backend from unsupported String\u2192REGROLE binding; bootstrap passed; no guard namespace survived."
+    },
+    {
+      "source": "dbc5211847647956ebd02f7122eece23092c24e6",
+      "outcome": "FAIL: Control epoch11 chose9 above10 by lexical alias sorting. Guard install/activation/live stale rejection/fresh read passed. Additional helper never started (uid/executable permission); proposed helper negatives NOT_RUN."
+    },
+    {
+      "source": "2e732f62c20a5d74a63b09685d99eb48bceaf1f5",
+      "outcome": "FAIL: changed collation accepted and sealed-login inspect UnsafeRole. Numeric Control transitions, guarded native journey and dropped-column refusal passed."
+    }
+  ],
+  "compatibility": "Catalog SQL unchanged after first candidate. New stricter live-layout fingerprint refuses earlier candidate catalogs; only separately inventoried disposable qualification catalogs used those drafts. No implicit migration/adoption or native schema repair was added.",
+  "review": "Independent read-only review found role bind/collation issues, confirmed numeric ordering fix and NOLOGIN recovery issue, and identified the generic COMMIT-marker limitation. Root inspected code/contracts and independently attributed the actual native refusal through PG logs. No full-product review claimed.",
+  "cleanup": {
+    "owner": "bf1b832499f02415b2f391c65b5f1244",
+    "container": "bigbrotr-implementation-catalog-product-944f3e6",
+    "container_id": "ac73e603c9cfb6b3de69702a3a4f06d6cc8e260db2ae8c3bc43abd97a5cf9bf4",
+    "postgres": "bigbrotr-implementation-catalog-product-944f3e6-pg",
+    "postgres_id": "b7be32e4ff166102f80457089840a35186d83755793d1d52b4370278979b22b9",
+    "terminal": {
+      "runner": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-09-18T18:07:24.414861045Z",
+        "FinishedAt": "2026-09-18T18:08:44.346365369Z"
+      },
+      "postgres": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-09-18T18:07:22.544198998Z",
+        "FinishedAt": "2026-09-18T18:10:13.86473977Z"
+      }
+    },
+    "network_id": "0eecafe61f1b57de4e539a1500b8601e07c5be1dcd1827f905ca3a5cffd89d21",
+    "state": "two owned containers stopped-retained, internal network retired, no new volume",
+    "unrelated_unchanged": 20,
+    "unrelated_running": 8,
+    "running_bigbrotr": 0,
+    "earlier_runs": "All3 failed runs stopped-retained with networks retired; one dbc5211 helper never-started/retained. Artifacts/data/caches preserved, no unrelated cleanup."
+  },
+  "remaining": [
+    "Catalog activation lost-COMMIT/post-COMMIT cancellation, simultaneous product activation/native lock schedules, server restart and persisted takeover/recovery orchestration. Prior isolated guard schedules are dependency evidence only.",
+    "Dedicated login provisioning/secret custody, unique native launch lifetime, installed initialization/migration CLI, bounded parent driver/grant ownership for privileged operations.",
+    "Scientific schema/full families/atomic semantic publication receipt, local persistence/protection, signed M1 read/export/restart; no ingest ACK/reclaim is authorized.",
+    "S3 remains selected and incomplete in this adapter; no local fallback, provider support or Linux arm64 qualification.",
+    "Full ordinary/maintenance mutation coverage, aged mixed workload/RSS/throughput measurements, release/Compose journeys and hosted Actions remain unqualified."
+  ],
+  "raw_root": ".research/implementation/archive-worker/catalog-product",
+  "native_root": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-product-944f3e6"
+}

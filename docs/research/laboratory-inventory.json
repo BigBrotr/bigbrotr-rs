@@ -6398,26 +6398,26 @@
       "report": "docs/implementation/evidence/p02-archive-attempts-native-20260918.json"
     },
     "catalog_product": {
-      "status": "2e732f6 passed numeric Control transition and real native guard journey; collation and sealed-login regressions reproduced failures. Corrected candidate pending.",
+      "status": "944f3e6 scoped native PASS with independent source/artifact/state/fence audits; product publication/recovery still incomplete",
       "local_root": ".research/implementation/archive-worker/catalog-product",
-      "source": "2e732f62c20a5d74a63b09685d99eb48bceaf1f5",
+      "source": "944f3e6ee5898747d5ecce5278bc3acfdb38a06d",
       "resources": {
-        "source": "2e732f62c20a5d74a63b09685d99eb48bceaf1f5",
-        "tree": "208928b7182b82a7aa12d3abcef6954a9ec66b05",
-        "root": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-product-2e732f6",
-        "owner": "89fb6588160d60c622fe31b0dd462c5d",
-        "container": "bigbrotr-implementation-catalog-product-2e732f6",
-        "postgres": "bigbrotr-implementation-catalog-product-2e732f6-pg",
-        "network": "bigbrotr-implementation-catalog-product-2e732f6",
+        "source": "944f3e6ee5898747d5ecce5278bc3acfdb38a06d",
+        "tree": "e7a371e2fb3e868cc93426311c75030aa6edfd19",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-product-944f3e6",
+        "owner": "bf1b832499f02415b2f391c65b5f1244",
+        "container": "bigbrotr-implementation-catalog-product-944f3e6",
+        "postgres": "bigbrotr-implementation-catalog-product-944f3e6-pg",
+        "network": "bigbrotr-implementation-catalog-product-944f3e6",
         "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
         "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
         "state": "stopped-retained",
         "source_files": 637,
-        "started_at": "2026-09-18T18:02:06.359672+00:00",
-        "network_id": "4da7782c7eaa19a9c7bdb97ab3e706d67aa14231cfbbb195f0497cc5cb9fffc9",
-        "postgres_id": "5368665a1f287186b4c247784d8d3456fdf2d65d957969496fc1605bb17ed1dd",
+        "started_at": "2026-09-18T18:07:21.999365+00:00",
+        "network_id": "0eecafe61f1b57de4e539a1500b8601e07c5be1dcd1827f905ca3a5cffd89d21",
+        "postgres_id": "b7be32e4ff166102f80457089840a35186d83755793d1d52b4370278979b22b9",
         "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
-        "container_id": "fec2c17255a7d72d4ce64f8bf1f2427f50ea0dcf94a15a0976c6509c45c4f877",
+        "container_id": "ac73e603c9cfb6b3de69702a3a4f06d6cc8e260db2ae8c3bc43abd97a5cf9bf4",
         "network_state": "retired",
         "terminal": {
           "runner": {
@@ -6428,10 +6428,10 @@
             "OOMKilled": false,
             "Dead": false,
             "Pid": 0,
-            "ExitCode": 1,
+            "ExitCode": 0,
             "Error": "",
-            "StartedAt": "2026-09-18T18:02:08.789707581Z",
-            "FinishedAt": "2026-09-18T18:03:28.835336632Z"
+            "StartedAt": "2026-09-18T18:07:24.414861045Z",
+            "FinishedAt": "2026-09-18T18:08:44.346365369Z"
           },
           "postgres": {
             "Status": "exited",
@@ -6443,14 +6443,14 @@
             "Pid": 0,
             "ExitCode": 0,
             "Error": "",
-            "StartedAt": "2026-09-18T18:02:06.907752801Z",
-            "FinishedAt": "2026-09-18T18:04:23.185907514Z"
+            "StartedAt": "2026-09-18T18:07:22.544198998Z",
+            "FinishedAt": "2026-09-18T18:10:13.86473977Z"
           }
         },
-        "finished_at": "2026-09-18T18:04:23.747258+00:00"
+        "finished_at": "2026-09-18T18:10:14.457542+00:00"
       },
       "scope": "Native bootstrap, guarded install/inspection, Control intent import and live stale writer refusal; synthetic facts only.",
-      "native_root": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-product-2e732f6",
+      "native_root": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-product-944f3e6",
       "failed_runs": [
         {
           "revision": "652e043596220f1d66cb644aa06fcff3f922b6fb",
@@ -6505,7 +6505,10 @@
             "NOLOGIN inspection incorrectly UnsafeRole"
           ]
         }
-      ]
+      ],
+      "report": "docs/implementation/evidence/p02-catalog-product-native-20260918.json",
+      "independent_audit": ".research/implementation/archive-worker/catalog-product/944f3e6/independent-audit.json",
+      "audit": ".research/implementation/archive-worker/catalog-product/944f3e6/audit.json"
     }
   },
   "implementation_monitor_corrections_20260918": {

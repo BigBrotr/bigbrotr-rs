@@ -199,3 +199,16 @@ records independent retained-row/digest/checksum inspection and resource cleanup
 The input is synthetic and the topology fixture empty; this checks intended-input
 identity, not source membership validity or signed archive publication. Lost wire
 COMMIT responses and the catalog activation consumer remain separate work.
+
+`native_catalog_product.py` exercises the actual private native bootstrap and
+Rust PG catalog guard/activation adapter. The
+[944f3e6 report](../../docs/implementation/evidence/p02-catalog-product-native-20260918.json)
+records 15 Rust cases, scoped Clippy, 9 actual adapter stages, mixed-case bootstrap,
+unsafe privilege and schema negatives, immutable Control intent replay, and a
+live stale native writer after a sealed-login successor. A separate fresh native
+reader finds one synthetic facts/witnesses/receipts triple. Independent PG logs
+must show the exact `require_writer` rejection; the generic worker COMMIT error
+alone could also describe authentication failure and is insufficient evidence.
+The report preserves 3 failed candidates, the corrected numeric epoch transition,
+source/artifact/state audits and owned-resource cleanup. Scientific publication,
+activation concurrency/ambiguity, credential provisioning and M1 remain open.
