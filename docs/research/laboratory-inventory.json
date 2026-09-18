@@ -1446,5 +1446,108 @@
     },
     "evidence": "docs/implementation/evidence/p01-initial-activation-native-20260918.json",
     "retention": "Evidence and fifteen databases retained; no retired historical environment reused"
+  },
+  "implementation_control_owner_20260918": {
+    "source": "7c0c94f057de9c1974ee22dfbbccb9922501e5d1",
+    "tree": "3cf001c8a14687520a499a01fbb9592736e9090b",
+    "local_root": ".research/implementation/control-owner",
+    "remote_root": "/home/tux/bigbrotr-implementation-20260917/runs/configuration-7c0c94f",
+    "build": {
+      "owner": "2bfcad1017f1623e0d7edcd9863b31ce",
+      "container": "bigbrotr-implementation-configuration-7c0c94f-build",
+      "container_id": "f7916776a7a212e103761e241dabc7ffdb76b8f7efd14964a477f8a04c846f97",
+      "image": "sha256:8d906f267439748924d6a9de9cab47855279cc196a7397d9cb7a690c77fddfe3",
+      "started_at": "2026-09-18T04:27:27.146881+00:00",
+      "state": "completed exit0/OOMfalse; 497 source files and both executables audited"
+    },
+    "status": "Scoped native qualification complete; all owned containers stopped-retained",
+    "preflight": {
+      "active_source_consumers": 0,
+      "retained_stopped_bigbrotr_containers": 66,
+      "unrelated_running_containers": 8,
+      "available_disk_bytes": 379628933120
+    },
+    "retention": "Owned candidate build retained; preserve other workloads. Verify live state and labels before further actions.",
+    "runtime": {
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/configuration-7c0c94f/runtime",
+      "owner": "2534cf334bb6bad74e958d27300c28d0",
+      "postgres": "bigbrotr-implementation-pg-20260917-controlownerone",
+      "client": "bigbrotr-implementation-pg-20260917-controlownerone-client",
+      "network": "bigbrotr-implementation-pg-20260917-controlownerone",
+      "published_ports": [],
+      "server": {
+        "version": "160015",
+        "fsync": "on",
+        "full_page_writes": "on",
+        "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+      },
+      "terminal": {
+        "containers": [
+          {
+            "name": "bigbrotr-implementation-pg-20260917-controlownerone",
+            "id": "59735454655d6eaf02acf253d5ab0ed721944b51d7b3f4db4c21a22fb54d1d33",
+            "state": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-09-18T04:34:53.276260701Z",
+              "FinishedAt": "2026-09-18T04:41:23.351752419Z"
+            },
+            "owner": "2534cf334bb6bad74e958d27300c28d0"
+          },
+          {
+            "name": "bigbrotr-implementation-pg-20260917-controlownerone-client",
+            "id": "571d85adecc83a305d7e95f5fd85db71917b7f6839ec48df3e9908b2d56e5a23",
+            "state": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 143,
+              "Error": "",
+              "StartedAt": "2026-09-18T04:34:54.928042902Z",
+              "FinishedAt": "2026-09-18T04:41:21.539522159Z"
+            },
+            "owner": "2534cf334bb6bad74e958d27300c28d0"
+          }
+        ],
+        "active_source_consumers": 0
+      },
+      "databases": 7
+    },
+    "audit": {
+      "status": "PASS",
+      "source": "7c0c94f057de9c1974ee22dfbbccb9922501e5d1",
+      "tree": "3cf001c8a14687520a499a01fbb9592736e9090b",
+      "exact_source_files": 497,
+      "binary_sha256": "0a8c367b6dc70397f0a591e06a2db7fc54548a981c2a5f27af83918f6422dbe6",
+      "binary_bytes": 7587320,
+      "architecture": "ELF64 amd64",
+      "native_tools_independently_hashed": {
+        "CC": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+        "CXX": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+        "AR": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+        "LIBCLANG_PATH": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+        "discovery": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e"
+      },
+      "inputs": {
+        "source-manifest.json": "57025a8ae8a75a5a63081b6485d9318f5178981a85fa9bed8fbb97432af9e575",
+        "build-result.json": "9646e965d0b7e934e9f10ebd0eaa9acf75b4c0b4cf8d5bcf9ad8bbe7c1f13f31",
+        "observation.json": "188085f54eaab6460ee3dbd8b63bc1f22a1242bfd03fd11460f2eb083c2a37cb",
+        "source.tar": "d42c83b5c74470bfb3a9bf1747fcc394f64f54c3731b27fc84128acac8b4dfdc"
+      },
+      "scope": "Git/archive/actual extracted sources and downloaded executable identity; not engine runtime acceptance"
+    },
+    "probe_sha256": "93917e60072fc8c8adcdaf1dba6df67be44282c65ea6324088983d816759da8c",
+    "evidence": "docs/implementation/evidence/p01-control-owner-native-20260918.json"
   }
 }

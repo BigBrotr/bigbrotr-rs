@@ -1,11 +1,18 @@
 # Authority identity and lifetime
 
-P01-T06 currently provides a local identity/timing and policy-lease core. It does
-not authenticate principals, persist owner epochs, acquire engine locks, fence
-commits, or authorize takeover. The [operations contract](../specification/operations-contract.md#dependency-recovery-lifecycle-and-operator-procedure)
-and [restrictive activation barrier](../product/private-administration.md#restrictive-change-activation-barrier)
-remain the owning product contracts. Real storage, stream delivery, grant and
-old-owner exclusion acceptance is still NOT_RUN.
+P01-T06 provides a local identity/timing and policy-lease core, plus the dedicated
+PostgreSQL [Control backend adapter](../../apps/bigbrotr/src/storage/postgres/control_owner.rs).
+The [operations contract](../specification/operations-contract.md#postgresql-control-commit-exclusion)
+owns its commit exclusion and migration compatibility. The adapter consumes one
+connection and exposes typed operations; copied owner metadata grants nothing.
+Acquisition/refresh require a caller that validates both complete policy documents
+against deployment roots. Runtime lease issuance and native handoff remain
+unimplemented. Finite [owner enrollment](../user/administration/enrollment.md) and
+local credential inspection are separate capabilities, not runtime grants.
+
+The [restrictive activation barrier](../product/private-administration.md#restrictive-change-activation-barrier)
+remains required. Public stream revocation, native stale-writer exclusion and the
+complete service journey still need their actual practical acceptance.
 
 ## Writer identity
 

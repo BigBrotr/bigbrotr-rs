@@ -1,0 +1,377 @@
+{
+  "format": "bigbrotr-control-owner-native-qualification/1",
+  "date": "2026-09-18",
+  "status": "PASS_SCOPED",
+  "tasks": [
+    "P01-T06 steps 2/3/5/6 boundary slice",
+    "P02-T02 Control registry consumer"
+  ],
+  "source": {
+    "product_revision": "7c0c94f057de9c1974ee22dfbbccb9922501e5d1",
+    "tree": "3cf001c8a14687520a499a01fbb9592736e9090b",
+    "exact_source_files": 497,
+    "transfer": "Git bundle; clean detached source checkout, Mac is sole editing workspace",
+    "helper_revisions": [
+      "8c1dd8672ea4612cceff7225780508b62d615879",
+      "739f7f6e05c6116a09e5dfcaa929114597c8006b"
+    ]
+  },
+  "artifacts": {
+    "application_sha256": "0a8c367b6dc70397f0a591e06a2db7fc54548a981c2a5f27af83918f6422dbe6",
+    "application_bytes": 7587320,
+    "probe_sha256": "93917e60072fc8c8adcdaf1dba6df67be44282c65ea6324088983d816759da8c",
+    "probe_bytes": 2215568,
+    "probe_profile": "release; same native toolchain/source manifest as application",
+    "native_tools": {
+      "CC": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+      "CXX": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+      "AR": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+      "LIBCLANG_PATH": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+      "discovery": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e"
+    }
+  },
+  "environment": {
+    "host": "Tux",
+    "target": "x86_64-unknown-linux-gnu",
+    "postgres": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    },
+    "runtime": "2534cf334bb6bad74e958d27300c28d0",
+    "container_limits": [
+      {
+        "name": "bigbrotr-implementation-pg-20260917-controlownerone",
+        "id": "59735454655d6eaf02acf253d5ab0ed721944b51d7b3f4db4c21a22fb54d1d33",
+        "limits": {
+          "memory": 1610612736,
+          "memory_swap": 1610612736,
+          "cpus": 2000000000,
+          "pids": 256
+        }
+      },
+      {
+        "name": "bigbrotr-implementation-pg-20260917-controlownerone-client",
+        "id": "571d85adecc83a305d7e95f5fd85db71917b7f6839ec48df3e9908b2d56e5a23",
+        "limits": {
+          "memory": 4294967296,
+          "memory_swap": 4294967296,
+          "cpus": 2000000000,
+          "pids": 256
+        }
+      }
+    ],
+    "placement": "internal network; no published ports; read-only/cap-drop-all/no-new-privileges; synthetic credentials outside Git",
+    "build_launch": {
+      "format": "bigbrotr-configuration-build-lab/1",
+      "source": "7c0c94f057de9c1974ee22dfbbccb9922501e5d1",
+      "tree": "3cf001c8a14687520a499a01fbb9592736e9090b",
+      "owner": "2bfcad1017f1623e0d7edcd9863b31ce",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/configuration-7c0c94f",
+      "container": "bigbrotr-implementation-configuration-7c0c94f-build",
+      "image": "sha256:8d906f267439748924d6a9de9cab47855279cc196a7397d9cb7a690c77fddfe3",
+      "state": "running",
+      "command": [
+        "docker",
+        "run",
+        "-d",
+        "--name",
+        "bigbrotr-implementation-configuration-7c0c94f-build",
+        "--label",
+        "org.bigbrotr.implementation=20260917",
+        "--label",
+        "org.bigbrotr.configuration-build=2bfcad1017f1623e0d7edcd9863b31ce",
+        "--label",
+        "org.bigbrotr.source=7c0c94f057de9c1974ee22dfbbccb9922501e5d1",
+        "--user",
+        "1000:1000",
+        "--cpus",
+        "2",
+        "--memory",
+        "6g",
+        "--memory-swap",
+        "6g",
+        "--pids-limit",
+        "512",
+        "--read-only",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges",
+        "--tmpfs",
+        "/tmp:rw,exec,nosuid,nodev,size=512m",
+        "--mount",
+        "type=bind,src=/home/tux/bigbrotr-implementation-20260917/checkout,dst=/source,readonly",
+        "--mount",
+        "type=bind,src=/home/tux/bigbrotr-implementation-20260917/runs/configuration-7c0c94f,dst=/out",
+        "--workdir",
+        "/source",
+        "sha256:8d906f267439748924d6a9de9cab47855279cc196a7397d9cb7a690c77fddfe3",
+        "python3",
+        "-c",
+        "import subprocess; subprocess.run(['python3','tools/build.py','--output','/out/build','--jobs','2'],check=True); subprocess.run(['python3','experiments/ingest-registry/build_probe.py','--build','/out/build','--example','control_owner_probe'],check=True)"
+      ],
+      "preflight": {
+        "active_source_consumers": 0,
+        "available_disk_bytes": 379628933120
+      },
+      "started_at": "2026-09-18T04:27:27.146881+00:00",
+      "container_id": "f7916776a7a212e103761e241dabc7ffdb76b8f7efd14964a477f8a04c846f97"
+    },
+    "build_terminal": {
+      "Status": "exited",
+      "Running": false,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 0,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-09-18T04:27:27.232830743Z",
+      "FinishedAt": "2026-09-18T04:33:34.347796274Z"
+    }
+  },
+  "executed": {
+    "main_cases": [
+      {
+        "name": "unqualified-legacy-history",
+        "result": "PASS",
+        "exit_code": 1
+      },
+      {
+        "name": "no-policy",
+        "result": "PASS",
+        "output": {
+          "mode": "no-policy",
+          "reason": "InvalidPolicy",
+          "result": "refused"
+        }
+      },
+      {
+        "name": "wrong-dataset",
+        "result": "PASS",
+        "output": {
+          "mode": "wrong-dataset",
+          "reason": "IncompatibleDeployment",
+          "result": "refused"
+        }
+      },
+      {
+        "name": "wrong-instance",
+        "result": "PASS",
+        "output": {
+          "mode": "wrong-instance",
+          "reason": "IncompatibleDeployment",
+          "result": "refused"
+        }
+      },
+      {
+        "name": "wrong-mode",
+        "result": "PASS",
+        "output": {
+          "mode": "wrong-mode",
+          "reason": "InvalidPolicy",
+          "result": "refused"
+        }
+      },
+      {
+        "name": "invalid-policy",
+        "result": "PASS",
+        "output": {
+          "mode": "invalid-policy",
+          "reason": "InvalidPolicy",
+          "result": "refused"
+        }
+      },
+      {
+        "name": "lifecycle",
+        "result": "PASS",
+        "output": {
+          "control_epochs": 3,
+          "copied_backend_refused": true,
+          "ingest_registered": true,
+          "mode": "lifecycle",
+          "result": "pass",
+          "stale_backend_refused": true
+        }
+      }
+    ],
+    "SQL_cases": [
+      {
+        "name": "six-SQL-negatives",
+        "result": "PASS",
+        "sqlstate": "23514",
+        "schema_unchanged": true
+      },
+      {
+        "name": "bb-control-retain",
+        "result": "PASS",
+        "blocked_successor": true,
+        "active_backend": [
+          {
+            "pid": 5689,
+            "backend_start": "2026-09-18T04:38:02.545421+00:00",
+            "state": "active",
+            "wait_event": "PgSleep"
+          }
+        ]
+      },
+      {
+        "name": "bb-control-negative",
+        "result": "PASS",
+        "blocked_successor": false,
+        "active_backend": [
+          {
+            "pid": 5726,
+            "backend_start": "2026-09-18T04:38:06.7695+00:00",
+            "state": "active",
+            "wait_event": "PgSleep"
+          }
+        ]
+      }
+    ],
+    "external_audit": {
+      "relations_checked": 210,
+      "databases": 7,
+      "all_relation_cardinalities_checked": true,
+      "scope": "Independent populated rows, owner identity/digests and complete counts; no crash or load inference",
+      "checks": [
+        "All initialized configurations and activation heads preserved on eligible upgrade",
+        "Legacy unqualified owner migration refused with full Control schema unchanged",
+        "All failed acquisition commands leave full Control dump unchanged",
+        "Three Control epochs share one resource; distinct actual backends and process/role identities",
+        "Terminated backend cannot refresh; second use of poisoned owner is unavailable",
+        "Successor exclusion digests independently recomputed from contract bytes",
+        "Three retired Control roles and one active coordination-only Ingest role",
+        "Copied connection cannot create registry rows; actual owning session registers complete initial topology and producer",
+        "Exactly nine changed relation families on lifecycle; all other rows unchanged",
+        "No remaining application or migrator backends before shutdown"
+      ]
+    },
+    "SQL_dump_unchanged_sha256": "c3f6458202690d0a68a8901e30485047ed52fb373441a5019663b8b8f2fb2486"
+  },
+  "failure_and_correction": {
+    "original_report": {
+      "format": "bigbrotr-control-sql-schedules/1",
+      "status": "FAIL",
+      "cases": [],
+      "helper_sha256": "838d0d97b752a74ca81947229fb55ceeea60548da66ec31e54c4e65756ced2b6",
+      "fixture_sha256": "2ff9c83a59090751b0360a50602c995d245fbffe87be3e1c0b77616df8116bcd",
+      "failure": "laboratory command failed: docker (exit 3)"
+    },
+    "reason": "SQL fixture used SET LOCAL ROLE on a postgres login. pg_stat_activity hid that login backend_start from the assumed application role, so the valid-insertion fixture correctly failed the backend binding CHECK. The product adapter used a real application login and its native cases passed.",
+    "correction": "Connect SQL fixture directly as bigbrotr_control, preserve failing evidence, and rerun six negatives plus both lock schedules with a new report name. No invariant or expected refusal was weakened.",
+    "diagnostic": "Native stderr identifies control_backend_shape with NULL backend_start; transaction rolled back."
+  },
+  "review": {
+    "owner": "root AI implementation/boundary review and independent external row audit; no independent agent available",
+    "dependency_basis": [
+      "PostgreSQL REL_16_15 lockfuncs.c two-int database-local advisory locks",
+      "PostgreSQL16 explicit-locking and pg_locks documentation",
+      "tokio-postgres0.7.18 dedicated connection and transaction lifetime; unchanged dependency tuple"
+    ],
+    "scope": "Actual Rust adapter and SQL guards through acceptance executable. No product serve command or short runtime lease is advertised."
+  },
+  "resources": {
+    "remote_root": "/home/tux/bigbrotr-implementation-20260917/runs/configuration-7c0c94f",
+    "local_root": ".research/implementation/control-owner",
+    "state": "all owned build/runtime containers stopped-retained; 7 databases retained",
+    "terminal": {
+      "containers": [
+        {
+          "name": "bigbrotr-implementation-pg-20260917-controlownerone",
+          "id": "59735454655d6eaf02acf253d5ab0ed721944b51d7b3f4db4c21a22fb54d1d33",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-18T04:34:53.276260701Z",
+            "FinishedAt": "2026-09-18T04:41:23.351752419Z"
+          },
+          "owner": "2534cf334bb6bad74e958d27300c28d0"
+        },
+        {
+          "name": "bigbrotr-implementation-pg-20260917-controlownerone-client",
+          "id": "571d85adecc83a305d7e95f5fd85db71917b7f6839ec48df3e9908b2d56e5a23",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-18T04:34:54.928042902Z",
+            "FinishedAt": "2026-09-18T04:41:21.539522159Z"
+          },
+          "owner": "2534cf334bb6bad74e958d27300c28d0"
+        }
+      ],
+      "active_source_consumers": 0
+    }
+  },
+  "evidence_inputs": {
+    "native-7c0c94f/source-manifest.json": {
+      "sha256": "57025a8ae8a75a5a63081b6485d9318f5178981a85fa9bed8fbb97432af9e575"
+    },
+    "native-7c0c94f/build-result.json": {
+      "sha256": "9646e965d0b7e934e9f10ebd0eaa9acf75b4c0b4cf8d5bcf9ad8bbe7c1f13f31"
+    },
+    "native-7c0c94f/control-owner-probe-build.json": {
+      "sha256": "5817c998f94260118c75da8cb58be3266779072a6cebc22f4cb4a725f491d008"
+    },
+    "native-7c0c94f/audit.json": {
+      "sha256": "29fc13e43322624061b6a5a6ff5509d9e3f12186ffaacfc108a5c2bcaebb1cfe"
+    },
+    "native-7c0c94f/control-owner.json": {
+      "sha256": "e778056cfa4e42dacb62c2f2070b893ddee98f7f8277ceaebfe2fe8da7854897"
+    },
+    "native-7c0c94f/control-sql-schedules.json": {
+      "sha256": "35f56aef12acfa059c83974668828b7ea5a53e58c393bf25677ac851200cb3d0"
+    },
+    "native-7c0c94f/control-sql-schedules-v2.json": {
+      "sha256": "4935a4e7981ff6d353ad417362c78d9572496c0bfbf950e93f98e993087bc8f3"
+    },
+    "native-7c0c94f/helpers-source.json": {
+      "sha256": "38d8bf3f3e592b576af75d1e74ec20a4d80ddf17b739101cea544d17de94c329"
+    },
+    "native-7c0c94f/helpers-fixed-source.json": {
+      "sha256": "e9210e6ccd6afe9aace8fbbfb61171bc5c28bb00662d21e9714384177c0e383f"
+    },
+    "native-7c0c94f/final-observation.json": {
+      "sha256": "1f1359122118b8f11313f07fa6e4933c87cc31e5046b5d27d8c84ca2a173b76a"
+    },
+    "final_observation.py": {
+      "sha256": "7328cf8bc1da367579e5a7d9cd5e55d1a85de76f74c9981b2c7e1dd9d5f6c89b"
+    },
+    "stopped.json": {
+      "sha256": "9befb20ef98305d8ef94881348989593a3658e868861bddf7373686dd13feedf"
+    },
+    "native-7c0c94f/observation.json": {
+      "sha256": "188085f54eaab6460ee3dbd8b63bc1f22a1242bfd03fd11460f2eb083c2a37cb"
+    }
+  },
+  "not_run": [
+    "COMMIT lost response before/after server completion for owner acquisition/release",
+    "Acquisition/refresh cancellation under held protocol reply",
+    "Paused Control client beyond scheduling TTL",
+    "PostgreSQL crash/restart and successor claim",
+    "Native Rocks/archive writer exclusion or process fencing",
+    "Production Control service with actual root-policy validator and short runtime lease consumer",
+    "Mixed/aged workload and maximum document/resource measurements",
+    "Linux arm64 qualification",
+    "Signed event admission/archive/read/export/restart",
+    "Packaged Compose/browser/release journeys"
+  ],
+  "completion": "This boundary does not complete P01-T06, P02-T02 or the selected product."
+}

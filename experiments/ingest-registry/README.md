@@ -7,11 +7,17 @@ product installation, policy initializer, admission service or authority grant.
 and policy documents/digests. These must never become product bootstrap values.
 
 The [2032042 native run](../../docs/implementation/evidence/p02-ingest-registry-native-20260918.json)
-passed all five scenarios on Linux amd64/PostgreSQL 16.15. It binds both actual
-executables, complete source inputs, external rows, wire boundaries and cleanup.
+passed all five scenarios on Linux amd64/PostgreSQL 16.15 at that historical
+revision. That report binds both actual executables, complete source inputs,
+external rows, wire boundaries and cleanup.
 The earlier c2a952f build failed before probe execution because Python generated
 bytecode inside its source archive; that outcome remains recorded separately.
 These results qualify the stated registry boundary, not later product authority.
+
+Current mutation adapters additionally require migration 0007 and the owning
+Control backend; reproduce this old synthetic-owner matrix from its recorded
+revision. Use the [Control-owner harness](../control-owner/README.md) for the
+current connected registration consumer and its separately stated evidence.
 
 On Tux, use a clean exact Git candidate and a newly inventoried run directory.
 Build the actual CLI with `tools/build.py`, then `build_probe.py` builds the actual

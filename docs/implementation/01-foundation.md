@@ -301,7 +301,9 @@ The P01-T06/P02-T02 Control backend slice implements the
 [PostgreSQL exclusion contract](../specification/operations-contract.md#postgresql-control-commit-exclusion)
 with explicit migration 0007, an opaque dedicated connection owner and the first
 Ingest registration consumer. Its [acceptance cases](../../experiments/control-owner/cases.md)
-remain required; this does not finish runtime policy grants or native handoff.
+remain required; [scoped native evidence](evidence/p01-control-owner-native-20260918.json)
+now covers seven adapter scenarios, six SQL negatives and the transaction-lock
+control. This does not finish runtime policy grants, COMMIT faults or native handoff.
 
 ## P01-T07 — Same-process and remote component adapters
 
