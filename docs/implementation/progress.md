@@ -19,9 +19,11 @@ not be acknowledged/reclaimed. Do not mistake private preparation for publicatio
 
 ## Git and integrating ownership
 
-Mac main; root is the only writer/integrator. Last published origin/main is
-`d24cd876d6d9f97d7e3bdf6e12d64b76b634de24`. Current local candidate/evidence and
-dirty work are recorded below; unpublished native candidates are not releases. Product candidate `b245644`
+Mac main; root is the only writer/integrator. Last freshly verified HEAD,
+origin/main and remote refs/heads/main are equal at
+`2ab50cf9522234678dcfc872483e4cb22495191e`, with a clean working tree after ordinary
+push. This checkpoint update follows that observation. All catalog candidates and
+the final evidence are pushed; none is a public release. Product candidate `b245644`
 and its evidence are pushed. Mac 13 selected tests and scoped Clippy pass; exact
 native 13 tests, Clippy and one actual PG adapter journey PASS. No force push,
 independent Tux product edits or concurrent writer.
@@ -172,8 +174,8 @@ not used or freshly requalified here.
 
 Mac main product candidate `944f3e6ee5898747d5ecce5278bc3acfdb38a06d` is qualified
 within [the native report](evidence/p02-catalog-product-native-20260918.json).
-Origin/main remains d24cd87 until the ordinary push after this evidence review.
-Root is sole writer; current dirty files are evidence/inventory/documentation.
+The source and evidence are committed and pushed through2ab50cf.
+Root is sole writer; this checkpoint refresh is the only subsequent edit.
 Mac14 application tests plus1 bootstrap-wire test and scoped Clippy passed.
 Exact native15 Rust cases,5 build/test checks,9 adapter stages and actual packaged
 bootstrap/native writer/read processes passed. No full CI/product gate is claimed.
@@ -213,9 +215,7 @@ Session43878(cleanup) and97954(copy) are terminal. No active experiment/cleanup.
 
 ## Next bounded action
 
-Review/commit this evidence and documentation, then push the verified linear
-history normally and confirm Mac/remote equality. Keep product work active.
-Then qualify the product adapter's activation ambiguity/concurrency and wire
+Qualify the product adapter's activation ambiguity/concurrency and wire
 actual credential custody/unique worker launch and recovery. A matching observed
 attempt never permits a second native client; replacement gets a new lifetime.
 The current finite bootstrap and PG adapter require an external bounded owner;
