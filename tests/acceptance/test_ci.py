@@ -65,6 +65,20 @@ class CiControls(unittest.TestCase):
             with self.assertRaises(ValueError):
                 ci.execute([], Path(directory)/'receipt', ROOT, os.environ.copy(), {}, 20)
 
+    def test_changed_packaged_worker_is_refused_before_workspace_tests(self):
+        ci = self.load()
+        with tempfile.TemporaryDirectory() as directory:
+            build = Path(directory)
+            worker = build/'archive-worker'/'bigbrotr-archive-worker'
+            worker.parent.mkdir()
+            worker.write_bytes(b'abd')
+            (build/'build-result.json').write_text(json.dumps({
+                'format': 'bigbrotr-build-result/1',
+                'archive_worker': {'sha256': 'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad'}
+            }))
+            with self.assertRaisesRegex(ValueError, 'worker hash'):
+                ci.workspace_test_environment(build)
+
 
 if __name__ == '__main__':
     unittest.main()

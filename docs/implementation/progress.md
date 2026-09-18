@@ -15,14 +15,14 @@ task checkbox or M1 gate is complete; pending must not be reclaimed.
 
 ## Verified Git and ownership
 
-Mac primary workspace, main. Origin/main was freshly verified at
-`e6f6a6980f9c0325343ff06ed65f8450204d9ced`. HEAD is qualified candidate
-`0cdd80fd0fa6991ee0b7957b9e65103a7b3e9fc1`, tree
-`01974974508f1b4c3380abef946665d864569135`. It was clean when bundled/transferred.
-Only root-owned qualification report/harness, inventory, checkpoint and affected
-documentation are dirty, ready for a coherent qualification commit and ordinary
-push. No contributor conflict or history rewrite. Verify subsequent HEAD/remote
-instead of treating this precommit observation as their final state.
+Mac primary workspace, main. HEAD and origin/main were both freshly verified at
+`c20e2ca86f19ddd3ad03a49dd645132ff1d2852f` after ordinary push, including the
+qualified implementation `0cdd80fd0fa6991ee0b7957b9e65103a7b3e9fc1`.
+Root owns uncommitted archive parent implementation/tests, target-specific asset
+profile generation, the connected signed Rocks/native test, shared CI test-worker
+binding and affected owning docs/inventory. Scoped Mac checks passed; a clean
+unpublished candidate is next for native Linux qualification. No contributor
+conflict or history rewrite.
 
 ## Qualified evidence
 
@@ -59,12 +59,11 @@ Raw root `.research/implementation/archive-worker/`; detailed ownership in
   Preparation fixture is synthetic; Rocks and executable boundaries are tested
   separately, not a complete signed pending-to-worker journey.
 
-Only the private worker links DuckDB. It implements `inspect-engine` and
-`inspect-batch`; neither grants publication authority. Parent pre-exec executable/
-library verification, sanitized loader environment, whole-process grants and
-bounded termination remain required. Native assets are not runtime qualification.
-No hosted Actions PASS. Earlier scoped Mac tests, all-target Clippy and failures
-are retained in the inventory; no Mac or native job remains running.
+Only the private worker links DuckDB. `inspect-engine` and `inspect-batch` grant no
+publication authority. The new application parent implements bounded nonblocking
+pipes, pre-exec hash checks, sanitized child environment and retained grants for
+private inspection. Native/role resource qualification and parent-crash/backend
+exclusion remain required. No hosted Actions or arm64 runtime PASS.
 
 ## Independent monitor review
 
@@ -86,10 +85,12 @@ time. The Rocks producer keeps its pending-data permit during the write.
 No archive ACK, permanent catalog schema, publication or pending reclamation.
 
 Read complete owning protocol, preparation/schema, executable, pending producer,
-resource budget, build/bundle and tests; reviewed the qualification harness and
-actual outputs. The next parent must own blocked I/O and termination, retaining
-capacity until exit is positively observed. General worker supervision cannot
-reuse the process-exit-only lifecycle diagnostic thread as a transport.
+resource budget, build/bundle, CI and affected test helpers; reviewed the complete
+new parent source and contracts inline. No independent agent review in this slice.
+The parent retains memory/control capacity until positive reap. On unresolved
+termination it fails closed and preserves charges; job-root cleanup/retry is
+forbidden. Parent SIGKILL/orphan exclusion is a separate next gate before a
+publisher can be admitted. No permanent catalog/schema or publication exists.
 
 Pinned DuckLake `d8a1881e22516ea3d186d73e83c65fe5bd1a1dc4` constructs its own
 internal connection for PG metadata transactions (`DuckLakeTransaction::GetConnection`/
@@ -113,9 +114,28 @@ running BigBrotr containers. Twenty unrelated containers (eight running) unchang
 Shared source clean/detached at `6be851580ba415eed5ff0979ee7072480f9ee3ab`, zero
 consumers. Do not reset it or delete retained experiments without lifecycle review.
 
-Next: verify qualification documentation/artifact checks, commit and push. Then
-implement the parent pre-exec verification and nonblocking supervised process
-handoff with real blocked stdin/stdout/stderr, timeout/cancellation/crash and grant
-retention tests. Connect actual signed Rocks pending to that process. Continue
-with explicit archive init and positively fenced publication; receipt/protection/
-read/export/restart and the complete selected product remain unfinished.
+Parent Mac source/log identities are recorded in `parent_supervision_mac` and
+`.research/implementation/archive-worker/parent-mac/identity.json`. Seven real
+process and two file-verification tests pass; the signed event admission/reopen/
+pending-to-worker test passes twice with counts[1,1,1,1,0] and unchanged complete
+Rocks KV state. Reduced transfer cap, wrong executable, cancellation, nonempty
+root and unavailable capacity leave state intact. Three CLI and five CI controls
+pass. Final all-target application Clippy passes (session75584 exit0); earlier
+native rebuild/check session56698 and final Mac test session65242 completed exit0.
+Initial REDs and the incorrectly imported non-executed attempt are retained. The
+reduced transfer cap originally surfaced Process(Exit); its regression now returns
+Transfer(Limit), with TerminationUnknown retaining precedence. Linux-only full
+pipe capacity assertions and their timing diagnostics are NOT_RUN.
+
+Shared CI now makes the exact-source package before workspace tests and supplies
+the verified packaged worker through `--rust-tests-from-build`. Its positive
+native build-receipt helper path still needs qualification; no complete CI PASS.
+No new remote resource was started during this local slice.
+
+Next: commit the reviewed Mac-checked parent slice as an unpublished candidate,
+freshly inventory Tux, transfer a clean Git bundle and build its exact source in a
+new isolated root. Run native archive/process tests (ten on Linux including truly
+full stdout/stderr), the connected signed test, affected CLI and CI controls;
+verify artifacts/cleanup before pushing. Then address parent-death/orphan
+exclusion and full native grants/measurements before real PG-fenced publication.
+Receipt/protection/read/export/restart and the complete product remain unfinished.

@@ -98,6 +98,20 @@ fn main() -> Result<(), Box<dyn Error>> {
         "protocols": versions["protocols"]
     });
     let output = PathBuf::from(env::var_os("OUT_DIR").ok_or("missing build output path")?);
+    let archive_registry = root.join("contracts/release/archive-engine.json");
+    println!("cargo::rerun-if-changed={}", archive_registry.display());
+    let archive: serde_json::Value = serde_json::from_slice(&fs::read(archive_registry)?)?;
+    let archive_target = archive["platforms"]
+        .get(&target)
+        .ok_or("no pinned native archive assets for this target")?;
+    // The parent needs only its own bounded asset profile, without linking the
+    // native engine or allocating every other target's registry at runtime.
+    fs::write(
+        output.join("archive-bundle.json"),
+        serde_json::to_vec(&json!({
+            "library": archive_target["library"], "extensions": archive_target["extensions"]
+        }))?,
+    )?;
     fs::write(
         output.join("build-info.json"),
         serde_json::to_vec_pretty(&info)?,

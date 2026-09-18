@@ -1112,3 +1112,187 @@ fn last_authority_check_and_bounded_outstanding_window_leave_no_partial_effects(
     assert!(matches!(result, Err(AdmissionError::WindowFull)));
     assert_eq!(kv(&store), before);
 }
+
+#[test]
+fn signed_pending_reopens_and_reaches_the_supervised_native_worker_without_acknowledgement() {
+    use crate::storage::archive::{
+        ArtifactIdentity, Preparation, PreparationLimits, WorkerInstallation,
+    };
+    use std::{
+        sync::atomic::AtomicBool,
+        time::{Duration, Instant},
+    };
+    let installation = WorkerInstallation {
+        root: std::env::var_os("BIGBROTR_ARCHIVE_TEST_INSTALLATION")
+            .expect("required packaged native worker")
+            .into(),
+        executable: ArtifactIdentity {
+            bytes: std::env::var("BIGBROTR_ARCHIVE_TEST_WORKER_BYTES")
+                .unwrap()
+                .parse()
+                .unwrap(),
+            sha256: std::env::var("BIGBROTR_ARCHIVE_TEST_WORKER_SHA256")
+                .unwrap()
+                .parse()
+                .unwrap(),
+        },
+    };
+    let (root, mut store, budget, manifest, native) = setup(false);
+    let result = admit(&mut store, &budget, 1).unwrap();
+    let AdmissionOutcome::Durable(receipt) = result.outcome() else {
+        panic!("signed fixture must commit");
+    };
+    let first = receipt.batch().unwrap().first();
+    let expected = receipt.batch().unwrap().clone();
+    drop(result);
+    drop(store);
+    let store = IngestStore::reopen(
+        &root.path().join("db"),
+        manifest,
+        native,
+        grant(&budget, 0, 128 * MIB),
+    )
+    .unwrap();
+    let before = kv(&store);
+    let cancel = AtomicBool::new(false);
+    let pending = store
+        .read_pending_batch(
+            first,
+            PendingReadLimits {
+                max_records: 16,
+                max_encoded_bytes: MIB as usize,
+                fact: bigbrotr_model::codec::FactDecodeLimits::default(),
+            },
+            grant(&budget, 16 * MIB, 0),
+            &cancel,
+        )
+        .unwrap()
+        .unwrap();
+    assert_eq!(pending.batch(), &expected);
+    let worker_budget = ResourceBudget::new(
+        ProcessEnvelope::new(
+            513 * MIB,
+            0,
+            ResourceLimits::new(0, 1, 512 * MIB, MIB),
+            WaiterLimits::new(0, 0),
+        )
+        .unwrap(),
+    );
+    for _ in 0..2 {
+        use std::os::unix::fs::PermissionsExt;
+        let directory = tempfile::Builder::new()
+            .permissions(std::fs::Permissions::from_mode(0o700))
+            .tempdir()
+            .unwrap();
+        let temp = directory.path().canonicalize().unwrap();
+        let result = Preparation {
+            installation: &installation,
+            temp_root: &temp,
+            limits: PreparationLimits {
+                memory_bytes: 128 * MIB,
+                temp_bytes: 64 * MIB,
+                threads: 1,
+                max_records: 16,
+                max_encoded_bytes: MIB as usize,
+                native_reserve_bytes: 384 * MIB,
+            },
+            deadline: Instant::now() + Duration::from_secs(15),
+            cancelled: &cancel,
+        }
+        .inspect_pending(&pending, &worker_budget)
+        .unwrap();
+        assert_eq!(result.staged_counts, [1, 1, 1, 1, 0]);
+        assert_eq!(worker_budget.snapshot().active_permits(), 0);
+        assert_eq!(kv(&store), before);
+        assert_eq!(pending.batch(), &expected);
+    }
+    // Reduced transfer bounds must remain a resource refusal, even though the
+    // worker would separately reject the resulting empty/truncated transport.
+    use crate::storage::archive::PreparationError;
+    use std::os::unix::fs::PermissionsExt;
+    let directory = tempfile::Builder::new()
+        .permissions(std::fs::Permissions::from_mode(0o700))
+        .tempdir()
+        .unwrap();
+    let temp = directory.path().canonicalize().unwrap();
+    let limits = PreparationLimits {
+        memory_bytes: 128 * MIB,
+        temp_bytes: 64 * MIB,
+        threads: 1,
+        max_records: 1,
+        max_encoded_bytes: MIB as usize,
+        native_reserve_bytes: 384 * MIB,
+    };
+    let result = Preparation {
+        installation: &installation,
+        temp_root: &temp,
+        limits,
+        deadline: Instant::now() + Duration::from_secs(15),
+        cancelled: &cancel,
+    }
+    .inspect_pending(&pending, &worker_budget);
+    assert_eq!(
+        result.err(),
+        Some(PreparationError::Transfer(
+            bigbrotr_protocol::archive_batch::Error::Limit
+        ))
+    );
+    assert_eq!(worker_budget.snapshot().active_permits(), 0);
+    assert_eq!(kv(&store), before);
+    for case in [
+        "wrong-executable",
+        "cancelled",
+        "nonempty-root",
+        "no-capacity",
+    ] {
+        use crate::storage::archive::InstallationError;
+        let directory = tempfile::Builder::new()
+            .permissions(std::fs::Permissions::from_mode(0o700))
+            .tempdir()
+            .unwrap();
+        let temp = directory.path().canonicalize().unwrap();
+        let mut selected = WorkerInstallation {
+            root: installation.root.clone(),
+            executable: installation.executable,
+        };
+        let cancel = AtomicBool::new(case == "cancelled");
+        let expected_error = match case {
+            "wrong-executable" => {
+                selected.executable.sha256 = Digest256::from_bytes([0; 32]);
+                PreparationError::Installation(InstallationError::HashMismatch)
+            }
+            "cancelled" => PreparationError::Installation(InstallationError::Cancelled),
+            "nonempty-root" => {
+                std::fs::write(temp.join("retained"), b"do not overwrite").unwrap();
+                PreparationError::InvalidTemporaryRoot
+            }
+            "no-capacity" => {
+                worker_budget.close();
+                PreparationError::Unavailable
+            }
+            _ => unreachable!(),
+        };
+        let result = Preparation {
+            installation: &selected,
+            temp_root: &temp,
+            limits: PreparationLimits {
+                max_records: 16,
+                ..limits
+            },
+            deadline: Instant::now() + Duration::from_secs(15),
+            cancelled: &cancel,
+        }
+        .inspect_pending(&pending, &worker_budget);
+        assert_eq!(result.err(), Some(expected_error), "{case}");
+        assert_eq!(worker_budget.snapshot().active_permits(), 0);
+        assert_eq!(kv(&store), before);
+        if case == "nonempty-root" {
+            assert_eq!(
+                std::fs::read(temp.join("retained")).unwrap(),
+                b"do not overwrite"
+            );
+        } else {
+            assert!(std::fs::read_dir(temp).unwrap().next().is_none());
+        }
+    }
+}

@@ -50,8 +50,9 @@ drop each fact after staging to preserve the one-fact allocation bound. A missin
 altered, foreign, reordered, truncated or extra frame cannot complete. Resource
 limits remain distinguishable from integrity and compatibility failures.
 Cancellation is checked between bounded records; synchronous I/O itself can
-block. The production parent must own a deadline and positive worker termination.
-That supervisor is still required; a dropped future is not termination.
+block. The private application parent described below owns the pipes and positive
+worker termination. Whole-role crash/recovery remains required; a dropped future
+is not termination.
 
 ## Private native preparation
 
@@ -83,8 +84,9 @@ tag nodes and 256 KiB per retained string. Staged counts are ordered dictionary,
 event, eligibility, receive, provenance. Source u64 wrappers retain their existing
 decimal-string JSON representation. The result is explicitly
 `bigbrotr-private-preparation/1`, never an archive receipt. No partial stdout
-result is emitted for invalid input. Blocking input/output, pre-exec asset checks
-and worker grants still require the production parent.
+result is emitted for invalid input. The application parent now supervises this
+command; full publisher admission, process-crash exclusion and catalog recovery
+remain separate required work.
 
 The independent [fixture author](../../crates/bigbrotr-protocol/tests/fixtures/archive/write_fixture.py)
 uses literal canonical CBOR membership and standard SHA-256/struct encoding,
@@ -100,3 +102,50 @@ records ten scoped Rust cases and two separately executed packaged-binary cases
 on Tux Linux amd64. It checks every frozen-wire truncation, typed staging and real
 Rocks reopen/transfer. These exercise adjacent boundaries separately; production
 supervision and the complete signed pending-to-worker/archive journey remain open.
+
+## Supervised private inspection
+
+`storage::archive::Preparation::inspect_pending` connects a retained Rocks batch
+to the actual worker. It admits one complete native-memory/item grant plus a
+128 KiB control grant without waiting while holding another scarce grant. The
+pending owner retains its existing data credit. The configured engine memory and
+explicit extra native reserve fit the admitted total; the extra reserve must
+cover decoding, Arrow, extension startup/threads, stacks and allocator cost.
+Validation checks the decoder floor, not a measured process RSS ceiling. CPU/PID
+composition, filesystem reservations and maximum-unit memory qualification still
+gate the deployed worker role. The caller owns its temporary-disk reservation.
+
+Before exec, the parent hashes the expected executable and the compiled target's
+library/extensions. The expected executable identity must come from an
+authenticated release or a trusted exact-source build; the API never reads its
+expected hash from an untrusted adjacent file. Runtime release authentication is
+still a P01/P08 gate. The installation must remain immutable to the runtime
+identity; hashing cannot exclude a concurrent privileged filesystem writer.
+Canonical absolute paths reject symlink substitution. The job root is separate,
+empty, owned by the effective user and inaccessible to group/others.
+
+The child receives an absolute executable path and a cleared environment, with
+only the verified library search path and fixed locale. The parent sets its three
+pipe ends nonblocking, drains at most 4 KiB from each output, and checks a shared
+cancellation flag/deadline between bounded I/O operations. Output floods fail;
+complete-looking stdout followed by a failed exit or stderr is not success.
+The parent checks returned membership/digest/counts against its retained batch.
+An input limit remains a resource refusal, even when the child subsequently
+rejects the incomplete input. Diagnostics are private preparation results only;
+counts are not a full content-read oracle or durable publication receipt.
+
+On error/drop, the parent sends SIGKILL and polls for reaping for 300 ms. Native
+and control grants remain owned until exit is observed. If the OS cannot establish
+exit, `TerminationUnknown` takes precedence: preserve the job root and exclude
+old activity before retry. Dropping an unresolved handle permanently charges its
+capacity in that parent process, preventing timeout from freeing possibly live
+native work. This is fail-closed accounting, not a claim that every kernel task
+is killable on a wall-clock deadline. File verification and process creation use
+trusted local filesystem/OS calls, not an interruptible filesystem sandbox.
+
+This transport is restricted to the trusted worker, which must not fork child
+processes. Parent SIGKILL/host loss, orphan exclusion, persisted job recovery and
+remote PG backend termination are not yet qualified by it. In particular, child
+process exit alone cannot resolve a catalog commit. The worker has no catalog
+credentials in this inspection path and leaves pending untouched. No P02 task or
+M1 gate is completed by this slice.

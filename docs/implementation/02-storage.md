@@ -215,9 +215,11 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
 - [ ] **Step 1:** Package a pinned DuckDB engine and compatible verified extensions in an
   isolated worker; disable uncontrolled extension/network installation at runtime.
   The initial [private engine diagnostic and build bundle](../../packaging/archive-worker/README.md)
-  implements pinned linking/loading and resource settings. Parent supervision,
-  grants, native failure isolation and the actual archive consumer still gate
-  this step; downloading another target's assets does not qualify that target.
+  implements pinned linking/loading and resource settings. The private inspection
+  parent now owns nonblocking pipes, pre-exec checks and retained memory/control
+  grants. Parent-crash/orphan exclusion, full host/disk admission, native peak
+  measurements and the actual publisher still gate this step; downloading
+  another target's assets does not qualify that target.
   The [native prerequisite evidence](evidence/p02-archive-engine-native-20260918.json)
   includes signed-startup PID exhaustion; budget this separately from query
   threads and qualify parent termination/recovery without disabling signatures.

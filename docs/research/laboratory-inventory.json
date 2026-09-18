@@ -5192,6 +5192,64 @@
         "shared_source": "6be851580ba415eed5ff0979ee7072480f9ee3ab",
         "lifecycle": "Both containers stopped-retained; all ten earlier archive containers still stopped; no deletion or shared-checkout reset"
       }
+    },
+    "parent_supervision_mac": {
+      "root": ".research/implementation/archive-worker/parent-mac",
+      "identity": ".research/implementation/archive-worker/parent-mac/identity.json",
+      "base": "c20e2ca86f19ddd3ad03a49dd645132ff1d2852f",
+      "dirty": true,
+      "files_sha256": {
+        "apps/bigbrotr/Cargo.toml": "6b04e140725608c809fb83efac502c9447dc4b99d8a222c0b2a9b1fb319644fe",
+        "apps/bigbrotr/build.rs": "aa05c102a99673eeeff26b97b314c84af34ce8838ce81e27e9f078c22d53ce9a",
+        "apps/bigbrotr/src/storage/mod.rs": "893d5b72b79d6e9a22a7fc4aa31d6301a3d8158315d56e0cf93d3daeeef08981",
+        "apps/bigbrotr/src/storage/rocks/admission_tests.rs": "0cbc551b6afa62d7ae1d5075cd71ac4eabeec2ad071fc17a308aea7f9d98d381",
+        "tools/ci.py": "1f77066f233c926d04650e5c7dd20809988461884d4640e77f9382e47e3deb68",
+        "tests/acceptance/test_ci.py": "d7abb273303f5b75206eabac2a1516e453e51a927f2c8ec86d6cd7620fc4db44",
+        "apps/bigbrotr/src/storage/archive/installation.rs": "fce7c39a081290098c2cb6e66f57367627fa63ef9a82a6dee10f2421783c0fcd",
+        "apps/bigbrotr/src/storage/archive/mod.rs": "964dcc599ad0d24a6e279dac837e4dca83a61251d0809eb7d229cf949d670572",
+        "apps/bigbrotr/src/storage/archive/process/tests.rs": "bb068e9c36d94e96ac013bb7f7f67aa987217aaeb197d0f701fe1b6f3d374d42",
+        "apps/bigbrotr/src/storage/archive/process.rs": "114cd7501c20c7b5d717588f73551e1096fc081f89c82887d7910042926268f4",
+        "apps/bigbrotr/src/storage/archive/worker.rs": "dd29a9f08863cd0a62fe784d6f23fa9ea7d400e4b460bb2722550aabed4cb815"
+      },
+      "status": "Scoped Mac checks PASS; Linux-only full-pipe case NOT_RUN",
+      "cases": {
+        "archive": 9,
+        "signed_pending_to_process": 1,
+        "cli": 3,
+        "ci_controls": 5
+      },
+      "logs": [
+        "parent-process-red.log",
+        "parent-installation-red.log",
+        "parent-first-green.log",
+        "parent-connected-red.log",
+        "parent-connected-red-corrected.log",
+        "parent-connected-first-green.log",
+        "parent-connected-limit-red.log",
+        "parent-connected-limit-green.log",
+        "parent-final-mac.log",
+        "parent-clippy.log",
+        "parent-final-clippy.log",
+        "parent-ci-red.log",
+        "parent-ci-green.log",
+        "parent-ci-final.log"
+      ],
+      "worker": {
+        "BIGBROTR_ARCHIVE_TEST_INSTALLATION": "/Users/vincenzo/Documents/GitHub/BigBrotr/bigbrotr-rs/.research/implementation/archive-worker/parent-mac/installation",
+        "BIGBROTR_ARCHIVE_TEST_WORKER_SHA256": "6f9f81b627e214add4898b21c4c338109dd95711f18b5ff1cfdc3d1a0c94fc4c",
+        "BIGBROTR_ARCHIVE_TEST_WORKER_BYTES": "39644344"
+      },
+      "findings": [
+        "Expected stub REDs; first connected attempt had incorrect module imports and did not execute tests; corrected import reached intended InvalidResult RED",
+        "Reduced transfer record cap originally became Process(Exit); preserved original Transfer(Limit) unless termination is unknown",
+        "tempfile default directory permissions are not private; connected fixture explicitly selects mode0700"
+      ],
+      "limits": [
+        "Private inspection and adjacent process ownership only; no archive receipt or pending reclaim",
+        "Linux-only full-pipe capacity test NOT_RUN; no parent death/orphan exclusion or uninterruptible-kernel-task test",
+        "No deployed CPU/PID/filesystem grants, peak-memory/maximum-unit qualification or PG backend fencing",
+        "Shared complete CI and authenticated release journey NOT_RUN; Python controls cover failure handling/tampered executable"
+      ]
     }
   },
   "implementation_monitor_corrections_20260918": {

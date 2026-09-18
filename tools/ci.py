@@ -14,7 +14,7 @@ sys.dont_write_bytecode = True
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from tools.build import clean_environment, file_hash, git, native_toolchain, positive_jobs
-from tools.archive_bundle import build_environment, native_target, prepare_bundle
+from tools.archive_bundle import build_environment, native_target, prepare_bundle, verify_bundle
 
 
 def write_report(output, report):
@@ -77,10 +77,13 @@ def execute(checks, output, root, env, identity, seconds):
 
 def commands(output, system, architecture, jobs):
     python = sys.executable
+    build = output / 'build'
     checks = [('toolchain', ['rustup', 'show']),
               ('format', ['cargo', 'fmt', '--all', '--check']),
               ('clippy', ['cargo', 'clippy', '--locked', '--workspace', '--all-targets', '--', '-D', 'warnings']),
-              ('rust-tests', ['cargo', 'test', '--locked', '--workspace']),
+              ('exact-source-build', [python, 'tools/build.py', '--output', str(build), '--jobs', str(jobs),
+                                      '--archive-bundle', str(output.with_name(output.name+'-native-inputs')/'archive-bundle')]),
+              ('rust-tests', [python, 'tools/ci.py', '--rust-tests-from-build', str(build)]),
               ('rust-doc', ['cargo', 'doc', '--locked', '--workspace', '--no-deps']),
               ('acceptance-controls', [python, '-m', 'unittest', 'discover', '-s', 'tests/acceptance', '-p', 'test_*.py'])]
     if system == 'Linux' and architecture == 'x86_64':
@@ -89,9 +92,6 @@ def commands(output, system, architecture, jobs):
                    ('documentation-links', [python, 'experiments/verify_handoff.py', '--output', str(output/'handoff.json')]),
                    ('install-deny', ['cargo', 'install', 'cargo-deny', '--version', '0.20.2', '--locked', '--root', str(output/'tools')]),
                    ('dependency-policy', ['cargo', 'deny', 'check', 'licenses', 'sources', 'advisories'])]
-    build = output / 'build'
-    checks += [('exact-source-build', [python, 'tools/build.py', '--output', str(build), '--jobs', str(jobs),
-                                      '--archive-bundle', str(output.with_name(output.name+'-native-inputs')/'archive-bundle')])]
     if system == 'Linux':
         for scenario in ['p01-event-cli', 'p01-config-static']:
             checks += [(scenario, [python, 'tests/acceptance/run.py', scenario,
@@ -102,11 +102,40 @@ def commands(output, system, architecture, jobs):
     return checks
 
 
+def workspace_test_environment(build):
+    """Bind process tests to the packaged worker from the preceding trusted build."""
+    build = build.resolve(strict=True)
+    receipt = json.loads((build/'build-result.json').read_text())
+    worker = build/'archive-worker'/'bigbrotr-archive-worker'
+    if receipt['format'] != 'bigbrotr-build-result/1' or worker.is_symlink() or not worker.is_file():
+        raise ValueError('invalid packaged worker receipt/file')
+    if file_hash(worker) != receipt['archive_worker']['sha256']:
+        raise ValueError('packaged worker hash does not match build receipt')
+    if receipt['build_info']['target'] != native_target():
+        raise ValueError('packaged worker build target does not match the native test host')
+    verify_bundle(worker.parent, native_target())
+    env = build_environment(worker.parent)
+    env.update(BIGBROTR_ARCHIVE_TEST_INSTALLATION=str(worker.parent),
+               BIGBROTR_ARCHIVE_TEST_WORKER_SHA256=receipt['archive_worker']['sha256'],
+               BIGBROTR_ARCHIVE_TEST_WORKER_BYTES=str(worker.stat().st_size))
+    return env
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--output', required=True, type=Path, help='new ignored evidence directory')
+    parser.add_argument('--output', type=Path, help='new ignored evidence directory')
     parser.add_argument('--jobs', type=positive_jobs, default=2)
+    parser.add_argument('--rust-tests-from-build', type=Path,
+                        help='run workspace tests with the verified worker from an existing trusted build')
     args = parser.parse_args()
+    if args.rust_tests_from_build:
+        if args.output:
+            parser.error('--rust-tests-from-build and --output are separate operations')
+        env = os.environ.copy()
+        env.update(workspace_test_environment(args.rust_tests_from_build))
+        return subprocess.run(['cargo', 'test', '--locked', '--workspace'], cwd=ROOT, env=env).returncode
+    if not args.output:
+        parser.error('--output is required for a complete CI run')
     if git(ROOT, 'status', '--porcelain', '--untracked-files=all'):
         raise ValueError('CI requires a clean committed source checkout')
     output = args.output.resolve()

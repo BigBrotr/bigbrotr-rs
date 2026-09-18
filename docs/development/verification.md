@@ -13,7 +13,15 @@ The native archive worker additionally needs the exact
 in a fresh sibling `<output>-native-inputs` directory; retain/inventory that root
 with the run. Both Cargo checks and the second clean build use these pinned
 inputs. Manual Cargo development commands must supply the documented explicit
-library/test-bundle environment. An unavailable asset is a missing prerequisite,
+library/test-bundle environment. The shared run builds the exact-source package
+before workspace tests, then invokes
+`python3 tools/ci.py --rust-tests-from-build <build-directory>`. This verifies the
+packaged worker against the trusted build receipt and native bundle, supplies its
+path/size/hash to the connected signed-pending test, and runs `cargo test --locked
+--workspace`. The receipt is a trusted local build input here, not independent
+release authentication. Manual scoped process tests need the same
+`BIGBROTR_ARCHIVE_TEST_INSTALLATION`, `BIGBROTR_ARCHIVE_TEST_WORKER_BYTES` and
+`BIGBROTR_ARCHIVE_TEST_WORKER_SHA256` identity. An unavailable asset is a missing prerequisite,
 not a skipped passing engine test.
 
 The shared runner implements P01-T01's executable boundary and the bounded

@@ -11,8 +11,10 @@ loads the pinned offline bundle and reports actual engine/source identity,
 extension versions and effective settings. The new private `inspect-batch`
 [handoff diagnostic](../../docs/reference/archive-handoff.md) additionally checks
 complete pending membership and stages the five implemented typed fact families.
-Publication, parent supervision/grants, receipt recovery, export and storage
-protection remain P02-T03/T04 work. Do not use a diagnostic as an archive commit or a readiness
+The application now has a bounded parent for that private inspection, including
+pre-exec verification, sanitized loader environment and retained memory/control
+grants. Publication, whole-role resource/crash supervision, receipt recovery,
+export and storage protection remain P02-T03/T04 work. Do not use a diagnostic as an archive commit or a readiness
 certificate. No step or release target is qualified by an asset download.
 
 ## Build inputs and installation shape
@@ -69,10 +71,12 @@ operations produce redacted error categories. The worker accepts no arbitrary SQ
 The parent must verify the executable and library **before exec**, control the
 loader environment and keep the bundle immutable. The worker's own library hash
 check occurs after the dynamic loader ran and is not protection against a replaced
-library. This diagnostic does not yet implement that parent. Native memory limits
-do not bound total RSS or Arrow/extension allocations. Parent resource ownership,
-blocked-output termination, native cancellation/kill and process/backend exclusion
-must be implemented and tested before a publication worker is admitted.
+library. The private inspection parent implements these checks under an immutable
+installation precondition, with the expected executable identity supplied by the
+trusted builder/release authority. Native memory limits do not bound total RSS or
+Arrow/extension allocations. The [handoff contract](../../docs/reference/archive-handoff.md#supervised-private-inspection)
+owns bounded pipe supervision and its remaining parent-crash, disk/CPU/PID and
+backend exclusion gates before a publication worker is admitted.
 
 The [Linux amd64 prerequisite qualification](../../docs/implementation/evidence/p02-archive-engine-native-20260918.json)
 exercises the real packaged engine, offline signed load, refusal cases and a
