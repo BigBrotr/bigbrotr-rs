@@ -6189,7 +6189,7 @@
       }
     },
     "native_startup_exclusion": {
-      "status": "harness prepared; native cases NOT_RUN",
+      "status": "first native run FAIL; corrected SCRAM-proof trigger NOT_RUN",
       "local_root": ".research/implementation/archive-worker/catalog-fence/libpq-18.3",
       "postgres_extension_commit": "41223e51559cd581f1c06e170b71c71df25bbaac",
       "libpq_source": {
@@ -6211,7 +6211,20 @@
         "read_scope": "PostgresMain InitPostgres call and query-loop ReadyForQuery/ReadCommand ordering; not entire file"
       },
       "remote_preflight": "/tmp/bigbrotr-native-startup-preflight.json; 190 containers, 8 unrelated running, zero BigBrotr running; no new resources yet",
-      "source_scope": "PQconnectdb/pqConnectDBComplete; AUTH_OK branch; PQsendQueryStart/PQexecStart; ReadyForQuery parser; PG16.15 relevant InitPostgres/PostgresMain/backend-status branches"
+      "source_scope": "PQconnectdb/pqConnectDBComplete; AUTH_OK branch; PQsendQueryStart/PQexecStart; ReadyForQuery parser; PG16.15 relevant InitPostgres/PostgresMain/backend-status branches",
+      "first_run": {
+        "source": "1b6c3116f118a51fe441460b90180c15e5600d69",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/native-startup-1b6c311/lab",
+        "owner": "aa751eb49f61f824d3cd30d2a6e4b240",
+        "containers": {
+          "bigbrotr-implementation-native-startup-1b6c311-runner": "c8fa56d9340bf1d5ad5c21ffd54ea23103502ae71ec2ee362af12e6954c1daf5",
+          "bigbrotr-implementation-native-startup-1b6c311-pg": "996882404e3019b4de00d87e3f79ce272de909861d7a0e13ebe2f9688579309d"
+        },
+        "state": "all stopped-retained; no job backends; empty network retired",
+        "retired_network": "90d50c482d0e95acee408e2a2c3dd7d698384b2a0e1bb9ae1fc9c0ee3b53c93d",
+        "result": ".research/implementation/archive-worker/catalog-fence/native-startup/failed-result.json",
+        "failure": "AuthenticationOk buffered until after injected delay; empty-activity assertion refused; zero cases completed"
+      }
     }
   },
   "implementation_monitor_corrections_20260918": {

@@ -247,7 +247,7 @@ def startup_cases(admin):
         # Queue publication in the parent pipe before the native connection is
         # ready. Only the real native client may turn it into catalog SQL.
         a.send(b"publish\n")
-        assert relay.authenticated.wait(15), "actual SCRAM authentication deadline"
+        assert relay.proof_sent.wait(15), "actual SCRAM proof deadline"
         # Trigger the inspected post-auth gap. This wait is never a fence or an
         # assumption about completion: activity, native result and wire ordering
         # are measured independently below.

@@ -30,6 +30,7 @@ class StartupRelay:
         self.listener.settimeout(15)
         self.port = self.listener.getsockname()[1]
         self.authenticated = threading.Event()
+        self.proof_sent = threading.Event()
         self.done = threading.Event()
         self.started = time.monotonic()
         self.result = {'queries_before_ready': 0, 'queries_after_ready': 0}
@@ -50,6 +51,7 @@ class StartupRelay:
                 server.sendall(header + payload)
                 readable = [client, server]
                 ready = False
+                challenge_seen = False
                 client_alive = True
                 while readable:
                     assert time.monotonic() - self.started < 30, 'relay deadline'
@@ -76,6 +78,8 @@ class StartupRelay:
                         assert 4 <= size <= 1024 * 1024
                         payload = exact(source, size - 4)
                         if source is server:
+                            if tag == b'R' and payload[:4] == b'\0\0\0\x0b':
+                                challenge_seen = True
                             if tag == b'R' and payload == b'\0\0\0\0':
                                 self.result['authenticated_seconds'] = time.monotonic() - self.started
                                 self.authenticated.set()
@@ -91,6 +95,12 @@ class StartupRelay:
                                 key = 'queries_after_ready' if ready else 'queries_before_ready'
                                 self.result[key] += 1
                             server.sendall(tag + header + payload)
+                            if tag == b'p' and challenge_seen:
+                                # AuthenticationOk is buffered until startup is
+                                # complete on this server. Trigger the injected
+                                # delay after the actual SCRAM proof instead.
+                                self.result['proof_sent_seconds'] = time.monotonic() - self.started
+                                self.proof_sent.set()
         except BaseException as error:
             # Protocol/authentication payloads and diagnostics are never logged.
             self.result['failure'] = type(error).__name__

@@ -141,7 +141,14 @@ Native exact runs: `runs/job-bounds-6a6f796`, `runs/archive-02d2a9b`,
 `runs/archive-cache-303763d` below the inventoried implementation root.
 No active experiment or unfinished mutation needs joining.
 
-Next: commit the reviewed startup harness as an unpublished test candidate,
+Startup harness candidate `1b6c3116f118a51fe441460b90180c15e5600d69` ran and
+FAILED its first case: AuthenticationOk arrived only after the injected six-second
+delay, so waiting for it missed the invisible gap. No completed case is claimed.
+Both owned containers stopped, zero remaining job backends, empty network retired.
+Raw `native-startup/failed-result.json` retains the packet timings. The corrected
+trigger observes the client SCRAM proof, then measures actual ReadyForQuery/SQL.
+
+Next: commit the corrected startup harness as an unpublished test candidate,
 transfer it through Git into a new clean Tux checkout and run its two cases with
 the already qualified a531ea3 native probe/bundle (record both identities). New
 `catalog_fence.py --case-set startup` uses a bounded loopback protocol observer,

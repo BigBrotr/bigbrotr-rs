@@ -113,7 +113,7 @@ networks from these completed owned labs were retired after Docker address-pool
 exhaustion; stopped containers, data and evidence remain retained. Never treat a
 sleep interval as an exclusion guarantee.
 
-`catalog_fence.py --case-set startup` adds two **not yet executed** native-client
+`catalog_fence.py --case-set startup` adds two native-client
 startup cases. It reuses the verified `catalog-fence-probe`; record that artifact's
 source identity separately from the newer Python harness revision. The bounded
 `catalog_startup_relay.py` observes one actual SCRAM connection on runner loopback,
@@ -123,3 +123,9 @@ SIGKILL/reap and a replacement commit before late server startup completes.
 The observer must see no native query before ReadyForQuery and must drain actual
 server EOF; a sleeping interval does not establish exclusion. This is dependency
 qualification, not production authority, a general proxy or portable export.
+
+The first startup run at `1b6c311` **failed before completing a case**: server
+AuthenticationOk was buffered until after the injected delay, so using that as
+the barrier missed the gap. The corrected trigger observes the actual client
+SCRAM proof; successful late ReadyForQuery still has to establish accepted login.
+That corrected run is NOT_RUN. Preserve the first run and its packet timings.
