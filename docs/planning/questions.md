@@ -216,3 +216,13 @@ persistent decoding, bounded shape checks plus canonical-byte comparison.
 This does not change profile-1 bytes or reopen storage selection. The
 [selection record](../research/dependency-selections.md#implemented-fingerprint-codec-slice)
 records the BlueOak license notice and implemented versus future boundaries.
+
+Q33 (2026-09-18): Hosted GitHub Actions jobs cannot start because of the account's
+billing/spending restriction. The owner explicitly directs continued work and CI
+checks on Tux without depending on GitHub's runner engine. Use the same checked-in
+commands for Actions and deliberately invoked isolated Tux runs of trusted exact
+Git revisions. Record native Linux amd64 results independently; do not relabel
+them as GitHub job success or native arm64/macOS evidence. This does not authorize
+untrusted PR execution on the shared host, billing changes, added spending,
+release credentials or publication. Docker Hub and private candidate/release
+boundaries remain unchanged.

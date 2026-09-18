@@ -22,6 +22,12 @@ Use the [execution guide](../implementation/agent-handoff.md),
 Routine decisions are autonomous; material evidence-driven design changes update
 their contracts, tasks, compatibility consequences and tests together.
 
+On 2026-09-18 the owner explicitly directs continued implementation and CI checks
+on isolated Tux resources while GitHub-hosted runners are blocked by billing.
+[Q33](questions.md) preserves exact-source, runner-trust and native-target
+boundaries. Share the checked-in CI commands; a Tux report is separate evidence,
+not a fabricated successful GitHub job.
+
 ## Historical planning mandate
 
 The objective is a complete, implementable design for BigBrotr, reconsidered

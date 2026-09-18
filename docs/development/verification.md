@@ -1,5 +1,13 @@
 # Practical implementation verification
 
+Run the shared foundation CI commands on a clean committed checkout with
+`python3 tools/ci.py --output .research/ci`. GitHub Actions invokes the same
+entrypoint. A deliberately provisioned trusted Tux container can execute it
+without hosted runners; see [the runner boundary](../engineering/development-and-delivery.md#trusted-tux-execution-when-hosted-runners-are-unavailable).
+Each new run needs a fresh output directory. The JSON receipt distinguishes
+failed and unexecuted checks, and logs retain the underlying test counts.
+Native practical cases below still require Linux and strace.
+
 The shared runner implements P01-T01's executable boundary and the bounded
 `p01-event-cli` signed-event diagnostic slice of P01-T02/T03, plus
 `p01-config-static` for P01-T04's implemented offline configuration commands.

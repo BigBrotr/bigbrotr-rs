@@ -155,6 +155,33 @@ revision. A future automated large-test runner needs its own disposable isolatio
 and narrowly scoped credentials; Docker access on a shared host is not that
 isolation. CI availability does not authorize deleting other host resources.
 
+### Trusted Tux execution when hosted runners are unavailable
+
+The owner's [Q33](../planning/questions.md) explicitly authorizes continued native
+Tux checks during the hosted-runner billing block. Both Actions and the trusted
+lab invoke `python3 tools/ci.py --output .research/ci` from a clean Git checkout.
+The shared entrypoint selects the installed native compiler, runs the existing
+foundation checks and records exact source, tool hashes, commands, per-step logs,
+failures and unexecuted steps. It refuses an existing result directory. A timeout
+or failed prerequisite cannot produce PASS; the command group is killed/joined.
+The 120-minute command deadline fits the existing bounded CI track.
+
+On Tux, use a fresh clone of the reviewed exact Git revision inside an inventoried
+run directory, not a second edited source tree. Run as an unprivileged user in a
+container pinned by image digest, with bounded CPU/RAM/PIDs, a read-only root,
+no host ports, no Docker socket and no signing/publishing credentials. The
+[development laboratory image](../../tests/acceptance/linux/Dockerfile) supplies
+native build tools, Node and strace. Git/registry network access is only for
+locked dependencies and the existing checksum-pinned link checker. Inventory
+before launch; retain and inspect the receipt, actual artifacts and resource
+termination. Do not register a persistent Actions runner to bypass this boundary.
+
+These are native Linux amd64 command results, not GitHub job status. Hosted
+Actions remain blocked until the account issue is resolved. Linux arm64 and
+macOS retain their own native evidence requirements; no emulation or AMD64
+result satisfies them. Candidate/release authentication, build-once promotion
+and Docker Hub publication rules below remain unchanged.
+
 ## Build once and deliver verifiable artifacts
 
 P08 owns three workflows: CI (initially created by P01), trusted candidate build,
