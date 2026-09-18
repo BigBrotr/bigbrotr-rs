@@ -382,6 +382,23 @@ File/name mappings are a separate data-file interpretation boundary and allocate
 from next_file_id, not next_catalog_id. They remain publication/readback work.
 Actual PG ambiguous initialization and installed recovery remain qualification gates.
 
+The [actual native COMMIT-loss case](../implementation/evidence/p02-native-commit-file-loss-20260918.json)
+at `c9a29e0` invalidates ordinary INSERT cleanup for ambiguous commits. PG committed
+all three synthetic file references, then the proxy withheld COMMIT completion;
+DuckLake removed all body/witness/receipt files. Fresh counts still returned1,
+while an actual body read failed. Pinned `DuckLakeTransactionState::Commit` catches
+the native commit error and invokes `CleanupFiles`; the PG extension marks its
+transaction finished before sending COMMIT. Returning Rust CommitUnknown happens
+after native cleanup and cannot prevent it. The previous lost-ack experiment
+killed after native COMMIT returned, a different boundary.
+
+No cleanup-disable setting was found in the inspected pinned option paths.
+Supported `ducklake_add_data_files` marks registered files `created_by_ducklake=false`,
+which skips that unlink branch. This is the next bounded risk qualification,
+covering receipt files too, not a qualified replacement or a reason to weaken ACK.
+The source revisions and hashes are retained in the report. No native dependency
+version or scientific schema has changed from this finding.
+
 The same pinned binding rejects nested List/Array/Struct/Map/Union values through
 `ToSql`; its `Value` enum is not evidence that those parameters can be bound.
 Ordered nested tags therefore need the already selected Arrow path rather than

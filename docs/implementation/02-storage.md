@@ -251,6 +251,11 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   document references and deterministic batch receipt in one transaction.
   Use the native writer on either local files or the configured S3 destination;
   validate catalog/root identity and disable automatic migration at ordinary attach.
+  The [native COMMIT-response loss](evidence/p02-native-commit-file-loss-20260918.json)
+  at `c9a29e0` exposes deletion of committed files by normal INSERT error cleanup.
+  Qualify caller-owned native file registration for every family and the receipt
+  before enabling the publisher. Preserve complete transactional membership,
+  nested mappings, immutable file ownership and recovery; no normal-INSERT fallback.
   The first finite fresh-only initializer and shared schema declaration now create
   the five existing families plus an empty technical receipt relation;
   [native qualification](evidence/p02-scientific-schema-native-20260918.json) covers
@@ -265,6 +270,9 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   exclusion, persisted recovery and full signed membership remain gates.
 - [ ] **Step 4:** After an ambiguous commit, query the receipt in a new transaction; do not
   repeat while receipt state is unknown. Reject mismatched batch digest.
+  Include loss of the actual native PostgreSQL COMMIT response, plus physical file
+  existence and full body/receipt reads; a kill after COMMIT returned and metadata
+  counts do not cover this boundary. The first actual case fails; pending stays retained.
   The borrowed model archive identity and pending-preparation consumer bind schema,
   explicit topology, maximal ranges and complete source/digest membership. Frozen
   single/multiple-range and signed pending fixtures have independent expected

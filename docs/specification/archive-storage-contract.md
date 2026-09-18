@@ -316,13 +316,26 @@ empty installation. Ordinary publication never silently initializes or migrates.
 
 ## Actual publication and protection boundaries
 
-The initial adapter uses the pinned DuckLake engine's normal transactional write
-path. It prepares bounded typed batches, then one fenced publisher writes all
-required families and the deterministic semantic batch receipt in one catalog
-transaction. DuckLake manages Parquet paths and metadata; the application does
-not invent a second JSON manifest as the engine's transaction authority or edit
-its PG metadata values or column definitions. The narrowly scoped guard exception
-below changes ownership/privileges and attaches statement triggers. [DuckLake connecting](https://ducklake.select/docs/stable/duckdb/usage/connecting)
+The pinned normal `INSERT` path is **not qualified** for publication. The actual
+[native COMMIT-loss experiment](../implementation/evidence/p02-native-commit-file-loss-20260918.json)
+at `c9a29e0` shows PostgreSQL retaining three committed file references while
+DuckLake deletes all three corresponding files after the COMMIT response is lost.
+Fresh metadata counts succeed, but full body reads fail. This invalidates normal
+INSERT as the selected safe path until that ownership/cleanup boundary is resolved.
+The earlier lost-ack fixture killed a worker after COMMIT returned; it did not
+exercise this native connection fault. Pending must remain retained.
+
+The next bounded qualification uses the engine's supported registration of
+caller-owned staged files, including the technical receipt. Its native ownership
+flag avoids this specific cleanup path in inspected source; that is not yet
+executed qualification or permission to enable publication. Qualify prepared-file
+identity, complete nested mappings, immutable placement, transaction ambiguity,
+positive ownership and orphan recovery together before selecting the adapter.
+Keep one engine path; do not retain a silently weaker normal-INSERT fallback.
+All required families and the deterministic semantic batch receipt must still
+enter one fenced native catalog transaction. No second JSON manifest becomes
+transaction authority and no PG metadata values/columns may be edited. The versioned guard exception
+changes ownership/privileges and attaches statement triggers. [DuckLake connecting](https://ducklake.select/docs/stable/duckdb/usage/connecting)
 documents the separate catalog and data path; the exact bundled version is tested.
 
 The typed Arrow/native adapter must preserve nullable compound values through

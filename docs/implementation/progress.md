@@ -23,14 +23,17 @@ be acknowledged/reclaimed.
 ## Git and integrating ownership
 
 Mac main; root is sole writer/integrator. Starting HEAD/origin/main were clean at
-`4db603b0dc09ae1c65c9bb301af33a60f7939854`. Current root-owned edits add a private
-worker/parent publication candidate, closed prelude, dictionary dependency staging,
-embedded transaction cases and an exact native COMMIT-response fault experiment.
-They are not a qualified publisher. No concurrent writer. The read-only AI
-`publication_review` completed; its findings below are unresolved.
-Fresh Tux inspection finds eight unrelated running containers and no BigBrotr
-container. The previous scientific-guard labs remain stopped/retained; their
-networks are retired. A separate exact-Git publication lab is next.
+`4db603b0dc09ae1c65c9bb301af33a60f7939854`. Tested unpublished candidate is
+`c9a29e0684d06a7d4d0419ed802a0263bd452978`, tree
+`037370f537eb6ad7e01b2ad38957090bf694f235`. It adds the private publisher/parent
+candidate and exact native COMMIT-loss experiment. Native qualification found a
+real dependency failure, so publication is not enabled or qualified. HEAD is67e8973 (Mac-qualified scope correction); origin is
+still4db603b. Current root-owned changes retain the reproducible workload and
+add evidence/contracts/inventory updates.
+No concurrent writer; read-only AI publication_review is complete. Its evidence
+follow-up independently matched all671 source hashes, actual fault attribution,
+recorded artifact/retirement receipts and the five-case Mac scope correction.
+It did not reinspect the remote host or rehash remote ELFs.
 
 ## Active publication risk slice
 
@@ -42,32 +45,56 @@ child with a pinned route and private credential pipe. Any launched failure stay
 unknown; no source ACK/reclaim exists. Catalog option compatibility and persistent
 lifecycle/recovery remain unfinished. This candidate is not advertised.
 
-Mac actual binary input test first failed on the missing command. The corrected
-closed-prelude case and three embedded DuckLake cases passed (real fresh body/
-receipt read, duplicate refusal, missing dictionary, late receipt rollback,
-identity mismatch). Scoped Clippy passed. Raw logs are under
-`.research/implementation/archive-worker/publication/`. These are dirty-source
-checks, not PG qualification; a fixture macro typo was corrected before execution.
+[Actual native COMMIT-loss report](evidence/p02-native-commit-file-loss-20260918.json):
+normal INSERT guarantee **FAIL**, sourcec9a29e0, Tux amd64/PG16.15/pinned native
+engines. Three complete synthetic cases discriminate the fault: normal commit
+retains three files/full bodies; pre-forward disconnect leaves no committed files;
+after PostgreSQL COMMIT completes but its response is withheld, all three catalog
+references survive and all three files disappear. Fresh counts still return1 per
+family while body read fails. These are actual native relations, not signed product
+publication. The previous lost-ack probe killed after native COMMIT returned and
+did not qualify this connection fault. Owning contract/dependency record/task gates
+now reflect this contrary evidence. Pending stays retained.
 
-Read-only AI review found two concrete source concerns to resolve:
+Pinned native exception cleanup unlinks files created by INSERT before Rust sees
+CommitUnknown. No disable-cleanup option was found. Supported add_data_files marks
+files caller-owned and skips this unlink branch in source. Qualify that one native
+path, including receipt files, complete mappings, immutable placement and orphan
+recovery, before changing ordinary product publication. No fallback or weaker ACK.
 
-- Pinned DuckLake normal INSERT commit error handling calls CleanupFiles even
-  after PostgreSQL may have committed but lost its response; it may unlink both
-  body and receipt Parquet files before the Rust caller sees CommitUnknown.
-  Reproduce this on actual isolated PG/native engines before selecting a fix.
-  The old lost-ack probe kills after native COMMIT returns, so it does not qualify
-  this boundary. No cleanup-disable setting was found. Native staged-file
-  registration marks files caller-owned and is a candidate only if justified by
-  the measured failure and fully qualified, including technical receipts.
-- Dictionary mapping equality currently includes containing-fact visibility,
-  contrary to the descriptor contract. Add same-mapping/different-scope controls
-  within the batch and against history, then correct equality while retaining
-  each fact's actual scope.
+The AI review also reproduced incorrect mapping equality across fact visibility.
+The new Mac regression fails with ConflictingDictionary before correction and
+passes for equal mappings in one batch and against history afterward. Equality
+now excludes the containing scope; each fact retains its actual envelope. Five
+embedded publication cases pass locally after that change, including a changed-
+descriptor negative control. This change has not
+yet run on Tux. Native candidate passes3 embedded cases and1 actual executable
+closed-input case plus build. Final Mac scoped Clippy/format and documentation checks pass. The original command test failed before
+implementation. All raw logs/failures are retained under the publication root.
 
-No product guarantee is closed by these preliminary tests. The new multiple-session
-loopback proxy targets the actual native INSERT/data-file COMMIT, allowing earlier
-attach/read commits through. Its own fault attribution must be verified against
-actual PG metadata and physical files, with independent full body reads.
+## Latest publication lab closure
+
+Inventory implementation_archive_worker_20260918.publication_commit_loss. Raw root
+`.research/implementation/archive-worker/publication/c9a29e0`; native root
+`/home/tux/bigbrotr-implementation-20260917/runs/publication-c9a29e0`.
+All671 source files match exact Mac Git archive/Tux checkout/export; archive SHA
+`36d9598a6f53d6565efc29d7c46b1d834ad47354d15108447a83d4a1cc0683a6`.
+Actual worker ELF SHA77baadb312f4dac5d5df3e8f983327dbd9d5f3b614c44a6bbd791dce8b24d9ba;
+probe SHAeff95df92c0d4206b621b07f29c9592c8438c968c5d5e881245a1836820ebda2.
+Dependencies unchanged. Native build/test/ELF/source audits and terminal cleanup
+are recorded; no hosted CI/arm64, protection, scientific PG publication or ACK claim.
+
+Owner fefde287eff3467d9100751d8262661f; runner
+bigbrotr-implementation-publication-c9a29e0, ID
+32b64eb1daa0c02419365530e96a542ccdd983a95b49faec1a27a79e1177fcf2;
+PG suffix-pg ID427714df1e550f42e32dff61da5eed9a3a05c5158aa4990b867924e00d7bf6ba;
+network6ac4849c079a165e2dda0524d8d81bae10795366fd2d2bb527f716f8bd301398 retired.
+Both containers stopped-retained (runner143, PG0), no OOM. Fresh final writer
+backend count0;20 unrelated identities unchanged,8 running,0 BigBrotr running.
+Transfer28866, fault cases57771, audit/cleanup47092 and evidence copies88924/66699
+are terminal. No unfinished cleanup. Do not restart retired-network resources.
+Ignored launch/transfer/retire helpers remain in publication/; latest build cache
+is publication-c9a29e0/out/build. The next experiment needs a new exact-Git lab.
 
 ## Latest qualified scientific guard slice
 
@@ -181,8 +208,7 @@ exact final state, source, upstream, ELF, oracle and retired resource identities
   `b245644`, retains immutable CAS intents; its synthetic empty topology does not
   qualify source completeness or signed publication.
 - [Native catalog](evidence/p02-catalog-fence-native-20260918.json), `a531ea3`:
-  unfenced duplicates, live old writer after NOLOGIN, positive exclusion and lost
-  COMMIT response. Pinned extension requires explicit TEMPORARY memory postgres
+  unfenced duplicates, live old writer after NOLOGIN, positive exclusion and caller-facing acknowledgement loss after COMMIT returned. Pinned extension requires explicit TEMPORARY memory postgres
   secret via META_SECRET and META_SECRET_STORAGE_TABLE=''. Keep persistent
   secrets/autoload/community extensions disabled. Native ForceAcquire can exceed
   nominal pool size; PG connection limits are approximate.
@@ -254,12 +280,13 @@ retired-network containers. amd64 does not qualify arm64 or hosted Actions.
 
 ## Next bounded action
 
-Commit the current unpublished candidate for exact-source transfer to a separately
-inventoried Tux lab. Execute actual normal, pre-forward and completed-but-lost native
-COMMIT cases; inspect PG file references, physical existence and fresh full body/
-receipt reads. If cleanup loss reproduces, update the owning contract and qualify
-one safe selected path before consolidating publication. Preserve all raw failures.
-Then resolve dictionary mapping equality, finish the signed Rocks→parent→PG slice,
-scientific option compatibility, ambiguity recovery and protection. Persistent
-unique worker recovery, installed init/recovery, M1 and the remaining complete
-product scope remain required; no selected capability is removed.
+Finish affected checks and coherently retain the measured native failure plus
+scope correction. Then extend the same native probe with caller-owned Parquet COPY
+and ducklake_add_data_files for **all** three synthetic families. Run paired normal,
+pre-forward and completed-but-lost COMMIT cases in a new exact-Git lab. Require
+fresh full bodies/receipt, exact PG/file membership and retained orphan ownership;
+no normal-INSERT fallback. If qualified, replace the unsafe product candidate with
+one staged registration path and qualify all scientific nested mappings/signed
+Rocks→parent→PG publication and ambiguity recovery. Protection, persistent unique
+worker lifecycle, installed init/recovery, M1 and the full remaining selected
+product scope remain required. No capability has been removed.

@@ -6972,6 +6972,70 @@
       "report": "docs/implementation/evidence/p02-scientific-guard-native-20260918.json",
       "audit": ".research/implementation/archive-worker/scientific-guard/a91ae01/audit.json",
       "independent_audit": ".research/implementation/archive-worker/scientific-guard/a91ae01/independent-audit.json"
+    },
+    "publication_commit_loss": {
+      "status": "Native normal INSERT guarantee FAIL; three dependency fault cases complete; stopped-retained/network retired",
+      "raw_root": ".research/implementation/archive-worker/publication/c9a29e0",
+      "resources": {
+        "source": "c9a29e0684d06a7d4d0419ed802a0263bd452978",
+        "tree": "037370f537eb6ad7e01b2ad38957090bf694f235",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/publication-c9a29e0",
+        "owner": "fefde287eff3467d9100751d8262661f",
+        "container": "bigbrotr-implementation-publication-c9a29e0",
+        "postgres": "bigbrotr-implementation-publication-c9a29e0-pg",
+        "network": "bigbrotr-implementation-publication-c9a29e0",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "state": "stopped-retained",
+        "source_files": 671,
+        "started_at": "2026-09-18T21:11:31.286905+00:00",
+        "network_id": "6ac4849c079a165e2dda0524d8d81bae10795366fd2d2bb527f716f8bd301398",
+        "postgres_id": "427714df1e550f42e32dff61da5eed9a3a05c5158aa4990b867924e00d7bf6ba",
+        "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+        "container_id": "32b64eb1daa0c02419365530e96a542ccdd983a95b49faec1a27a79e1177fcf2",
+        "network_state": "retired",
+        "terminal": {
+          "runner": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-18T21:11:33.700745686Z",
+            "FinishedAt": "2026-09-18T21:14:52.295031233Z"
+          },
+          "postgres": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-18T21:11:31.83624209Z",
+            "FinishedAt": "2026-09-18T21:14:53.389570022Z"
+          }
+        },
+        "finished_at": "2026-09-18T21:14:54.000549+00:00"
+      },
+      "audit": {
+        "source": "c9a29e0684d06a7d4d0419ed802a0263bd452978",
+        "tree": "037370f537eb6ad7e01b2ad38957090bf694f235",
+        "source_files": 671,
+        "manifest_sha256": "6012197bf79e325cd086c53ee93879cb1804e63d4fd8b8179621ecfb22ad1d23",
+        "cleanup": "owned containers stopped, network retired, no OOM",
+        "unrelated_unchanged": 20,
+        "unrelated_running": 8,
+        "running_bigbrotr": 0
+      },
+      "report": "docs/implementation/evidence/p02-native-commit-file-loss-20260918.json",
+      "next": "new exact-Git lab for caller-owned staged-file registration; never restart retired network"
     }
   },
   "implementation_monitor_corrections_20260918": {
