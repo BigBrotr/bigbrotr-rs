@@ -2,239 +2,171 @@
 
 Observed 2026-09-18. Navigation only; follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
-Verify Git, dirty work, evidence and resources before continuing.
+Verify Git, dirty work, evidence and resource claims before continuing.
 
 ## Mandate and active boundary
 
-Owner-authorized complete implementation remains active. Continue trusted native
-work on Tux despite unavailable hosted Actions. No public release/rename, Linux
-arm64 qualification or changes to the read-only Go neighbor. Active P02-T03/T04:
-real PG DuckLake publication after private pending preparation, positive fencing,
-receipts/protection and M1 signed read/export/restart. No P02 task or M1 gate is
-complete. Pending must not be reclaimed. Whole selected product remains required.
+Owner-authorized complete implementation remains active. Mac is the editing/Git
+workspace; use trusted exact-source Tux execution despite unavailable hosted
+Actions. No public release/rename, Linux arm64 qualification or changes to the
+read-only Go neighbor. All selected product work remains required.
 
-## Git and ownership
+Active P02-T03/T04: signed durable pending → actual PG DuckLake publication,
+positive fencing, receipts/protection, then M1 read/export/restart. No P02 task or
+M1 gate is complete. No product catalog/schema/publisher exists yet. Pending must
+not be acknowledged/reclaimed. Do not mistake private preparation for publication.
 
-Mac main, integrating root only. Verified HEAD and origin/main both
-`b6889008291e073c019472a250f51590ebb42847`, clean before the current identity slice.
-The 44-case guard qualification is committed/pushed. Root now owns the borrowed
-archive batch model/fingerprint, independent fixtures, actual pending preparation
-consumer and related contract/task/evidence updates; no other writer. Tux source
-transfers remain exact Git revisions and readonly. No active Tux experiment.
-Mac sessions61656 (expected missing-API RED) and38700 (signed connection PASS)
-are terminal. All54 model tests PASS; Clippy session33138 is still running.
-Tux preflight is saved under `.research/implementation/archive-worker/archive-identity`;
-no new native job has started. The next candidate will run the seven scoped Rust
-cases with readonly qualified worker and copied writable dependency caches.
+## Git and integrating ownership
 
-## Qualified product prerequisites
+Mac main; root is the only writer/integrator. Last verified HEAD
+`8d1289de414119754b07487396c4b7e2285ae3e8`, origin/main
+`b6889008291e073c019472a250f51590ebb42847`. The exact native-test candidate is not
+yet pushed. Only its report/task/README/inventory/checkpoint updates are expected
+dirty. Review and commit those, push normally, then verify local/remote state.
+No force push, independent Tux product edits or concurrent writer.
 
-Earlier evidence remains retained under `.research/implementation/archive-worker/`
-and [the inventory](../research/laboratory-inventory.json), key
-`implementation_archive_worker_20260918`:
+## Implemented prerequisites and retained evidence
 
-- [Engine](evidence/p02-archive-engine-native-20260918.json), [event rows](evidence/p02-event-rows-native-20260918.json),
-  [five families](evidence/p02-five-family-rows-native-20260918.json) and
-  [handoff](evidence/p02-pending-handoff-native-20260918.json): pinned native tuple,
-  actual Parquet fidelity and private framing within their stated scopes.
-  Nullable compound children need matching masks. Extension startup creates
-  threads independently of query threads; PID cap 8 aborts the worker.
+- P02 engine/Arrow prerequisites: [engine](evidence/p02-archive-engine-native-20260918.json),
+  [event rows](evidence/p02-event-rows-native-20260918.json),
+  [five families](evidence/p02-five-family-rows-native-20260918.json),
+  [private handoff](evidence/p02-pending-handoff-native-20260918.json).
+  Nullable compound children require matching validity masks; unmasked actual
+  Parquet readback loses values. Signature-hash startup threads are independent
+  of query threads; PID cap8 aborts the pinned worker. No RSS/throughput claim.
 - [Private supervision](evidence/p02-private-supervision-native-20260918.json)
-  at `c365053`: bounded nonblocking pipes/hash checks/retained grants; full stdout/
-  stderr termination; signed Rocks pending reaches the package twice with all KV
-  state unchanged. No archive ACK. Unknown termination cannot release grants.
-- [Parent binding](evidence/p02-parent-binding-native-20260918.json) at `e4e2a30`:
-  Linux expected-parent checks/death SIGKILL positively reap an initialized stopped
-  child in 2.99 ms. Old native worker survives the negative control. Neither
-  persisted recovery nor PG exclusion follows from parent-death registration alone.
+  at `c365053`: bounded nonblocking pipes/verified artifacts/retained grants,
+  full-output termination and signed Rocks pending → packaged worker with unchanged
+  state. [Parent binding](evidence/p02-parent-binding-native-20260918.json) at
+  `e4e2a30`: expected parent plus Linux death SIGKILL, positive reap of a stopped
+  initialized worker. Unknown termination retains grants and cleanup obligations;
+  a signal or dropped handle is not remote catalog exclusion.
+- **Current identity slice:** [native report](evidence/p02-archive-identity-native-20260918.json)
+  at `8d1289d`, tree `a311b3e28bdd43fecdb4cf9478d8341e72fbe475`.
+  Borrowed `bigbrotr_model::ArchiveBatch` validates nonempty ordered disjoint
+  same-dataset complete admission values, coalesces adjacent stream ranges and
+  hashes the selected canonical recipe without copying references/bodies.
+  `Preparation::inspect_pending` now accepts explicit topology and returns schema1
+  semantic input digest after checking actual worker membership. The worker wire
+  remains version1. Never infer current topology from the Rocks creation manifest.
+  The [identity contract](../specification/identity-and-encoding.md#exact-domains-and-field-order)
+  clarifies maximal ranges before any product archive receipt exists; the old
+  golden vector is unchanged and no archived product bytes require migration.
+  This type establishes structure, not retained topology or publication authority.
 
-## Catalog findings to carry into the publisher
+Mac54 model tests, actual signed Rocks reopen/private worker and scoped
+model/application Clippy PASS. Exact Linux candidate passes five membership cases,
+one literal-byte case, one signed connected case and scoped Clippy. Signed case
+uses independent Python/OpenSSL expectations at topology0/u64max, counts[1,1,1,1,0],
+unchanged complete KV state and existing refusal controls. Its5-minute check
+includes native compilation; this is not a publication throughput measurement.
+Initial missing-type/API/field compiler REDs are retained and labeled, not claimed
+as executed assertion failures. Root reviewed complete changed code/callers and
+owning contracts; no independent agent or full-CI review is claimed.
+
+## Catalog findings that constrain the next implementation
 
 [Native catalog investigation](evidence/p02-catalog-fence-native-20260918.json)
-at `a531ea3` verifies 600 source entries/tools/assets and probe SHA
-793bd08ce5f99b32941da8485c0080c4656ed807ded41a7623b326a37b85e12d.
-Four real Rust DuckLake/PG 16.15 synthetic cases: unfenced writers produce [2,2,2];
-NOLOGIN rejects fresh attach but an existing writer commits [1,1,1]; after backend
-termination the paused old writer fails at COMMIT and replacement leaves [1,1,1];
-lost COMMIT acknowledgement leaves exactly one triple. Counts do not prove body
-fidelity or physical durability. There is no product catalog/schema/publisher yet.
+at `a531ea3`: unfenced publishers duplicate[2,2,2]; NOLOGIN does not stop an existing
+writer; positive backend exclusion rejects old COMMIT; a lost COMMIT response
+leaves one committed triple. Synthetic receipts/counts are not scientific fidelity
+or physical durability. An unrelated Control lock cannot fence native COMMIT.
 
-Three original initialization FAILs remain retained. Pinned PG extension falls
-back to unavailable local_file secret storage when no explicit memory secret is
-provided. Qualified fix uses a TEMPORARY memory postgres secret via META_SECRET,
-checks nonpersistent memory storage and retains META_SECRET_STORAGE_TABLE=''.
-Persistent secrets/autoload/community extensions remain disabled. Exact upstream
-pool can ForceAcquire beyond its nominal limit and Reset DISCARD ALL/reconnect;
-an unrelated Control advisory lock cannot fence native DuckLake COMMIT.
+The pinned native extension needs an explicit TEMPORARY memory postgres secret
+through META_SECRET, plus META_SECRET_STORAGE_TABLE=''. The original absent-secret
+attach failures are retained. Keep persistent secrets/autoload/community extensions
+disabled. Native pool ForceAcquire can exceed the nominal connection-pool limit.
 
-[PG startup counterexample](evidence/p02-postgres-startup-native-20260918.json)
-at `de1d402`: real psql 15.19/PG 16.15 with startup-packet post_auth_delay proves an
-invisible old connection writes marker 73 after NOLOGIN and empty activity. A
-fresh same-credential connection refuses. The old client remained alive, then
-exited/reaped after 6.03 s. A one-second observation delay is not a fencing timeout.
-Exact REL_16_15 source places rolcanlogin checking before PostAuthDelay and
-pgstat_bestart. NOLOGIN plus an empty activity scan is not a general exclusion
-proof. Product recovery must positively exclude old clients/processes as well as
-resolve old backend transactions; this stronger protocol is still unselected.
+[PG startup](evidence/p02-postgres-startup-native-20260918.json) and
+[native libpq startup](evidence/p02-native-startup-exclusion-20260918.json) establish
+that a live invisible old connection can commit after NOLOGIN/empty activity.
+Actual embedded libpq is18.3, server16.15. Positive native kill/reap plus late
+server EOF prevents later SQL in the scoped blocking-client case. Initial1b6c311
+harness FAIL and corrected56ef588 PASS remain retained. Fresh PG stats snapshots
+are necessary. Unknown old host/process state cannot authorize cleanup or release
+its resources. The [authority contract](../specification/archive-storage-contract.md#configuration-and-authority)
+requires exclusion of all old credential holders or an equivalent enforced
+storage fence, resolution of old transactions, then fresh receipt inspection.
 
-Read scope/hashes and original failed roots are inventoried under
-`catalog_fence_probe`, with raw local root
-`.research/implementation/archive-worker/catalog-fence` and native root
-`/home/tux/bigbrotr-implementation-20260917/runs/archive-afc70f3`.
-No native peak/mixed/aged workload, full CI, product fence or ARM claim.
+[Catalog guard candidate](evidence/p02-catalog-guard-native-20260918.json):
+- `694be48`: two live stale native clients (ready/invisible startup) fail COMMIT
+  after successor publication; login/client kept alive to discriminate the fence.
+- `df2a0db`: four real native lock schedules, writer/takeover first with holder
+  commit/rollback; actual blocking and backend incarnations observed. Fresh
+  independent read determines presence or permitted replay; final counts[1,1,1].
+- `d4f43af`:44 cases—14 limited-role permission refusals,28 guarded-table refusals,
+  combined role/search-path shadow case, one authorized native positive control.
+  Exact PG SQLSTATEs and30 guard errors;614 independently matched source files.
 
-## Independent monitor corrections
+The experimental SQL guards all28 pinned metadata tables with BEFORE STATEMENT
+triggers, SECURITY DEFINER/qualified search path, session_user comparison and an
+owner singleton locked FOR SHARE through native COMMIT/ROLLBACK. Takeover updates
+that same row. Runtime writer loses DDL/trigger privileges. Native values/columns
+are never manually rewritten. The singleton login is NOT a product epoch/CAS/
+attempt protocol; adoption still needs an explicit owning-contract compatibility
+exception and actual initialization/migration/inspection implementation.
 
-Earlier five findings remain scoped closed:
-[MON-001/002/004/006](evidence/p01-monitor-corrections-native-20260918.json) at `2c0dfc1`,
-[MON-005](evidence/p01-jsonb-limit-native-20260918.json) at `c7e0c09`. Signed admission
-at `12f936d` keeps its initial-owner scope. Do not rerun unrelated suites or infer
-full lifecycle/recovery completion.
+Scoped exact-source inspection: full PostgresMetadataManager cpp/hpp,
+DuckLakeInitializer, PG extension PostgresTransaction/PostgresStorage; selected
+Commit/RunCommitLoop, catalog option/insert planning and inlined metadata writer
+methods. Default native PG isolation is REPEATABLE READ by source, not a directly
+queried runtime result. Table/schema inlining overrides take precedence and
+inlined data/deletes may create extra PG tables. Ordinary publication must reject
+incompatible settings/layout and keep runtime DDL refused. No complete native
+mutation/maintenance audit or broader isolation matrix is claimed. Source hashes,
+read ranges and official links are in the inventory/report.
 
-The three newly forwarded findings have now been independently reproduced and
-corrected, without interrupting the preceding catalog laboratory:
+## Independent monitor findings
 
-- **MON-009 / P02-T01:** [native report](evidence/p02-job-bounds-native-20260918.json).
-  Old migrations 1/2 accept job 6/closure 5 in both orders with NULL old handoff.
-  Additive 0008 preserves earlier SQL and uses authoritative source caps, sorted
-  SHARE source locks for jobs and reverse closure checks with an indexed lookup.
-  Explicit READ COMMITTED is required; fixed-snapshot isolation refuses 25001.
-  Incompatible existing rows refuse 55000 with a specific CLI error and unchanged
-  whole schema/data/ledger. Exact02d2a9b binary SHA
-  65cb511e0d016436b1d6df90103f04b5820a9ae7ea471824429c7a5431a9c7d2
-  passes 24 actual PG 16.15 cases: eligible/refused upgrade, N/N+1, inverse order,
-  eight observed lock schedules with commit/rollback, multiple streams/zero/
-  omissions and isolation refusals.606 source files independently match Git
-  archive/manifest/artifact. Mac 11 planner tests and scoped Clippy pass. No job
-  dispatch, source receipt, production load or full upgrade claim.
-- **MON-010 / P01-T04:** [offline report](evidence/p01-tls-presence-20260918.json).
-  Missing CA/server name independently reproduces on the old Mac executable.
-  Selected PG Control/catalog and ClickHouse now require both; unselected
-  dependencies permit incomplete staged declarations with syntax checks.
-  Actual CLI 24 configuration tests, including 24 new combinations and nonexistent
-  certificate/secret paths, plus scoped Clippy pass on Mac. Generated reference
-  remains in parity. No new native Linux TLS/runtime qualification claimed.
-- **MON-007 / P01-T03/P02-T04:** [cache report](evidence/p01-archive-cache-retry-20260918.json).
-  Real HTTPS truncation poisons old deterministic partial; new private attempts
-  publish only verified assets via an exclusive atomic hard link. Owned failures
-  clean up; another attempt/historical partial stays intact. Five tests pass on
-  Mac and exact `303763d` Linux amd64, including actual HTTPS retry and concurrent
-  downloads, size/hash/read failures, preexisting-path preservation and ZIP checks.
-  Cache requires hard links; SIGKILL can leave unique harmless staging residue;
-  no cache power-loss durability is claimed.
+Scoped corrections are pushed and remain closed within their actual evidence:
+[MON-001/002/004/006](evidence/p01-monitor-corrections-native-20260918.json),
+[MON-005](evidence/p01-jsonb-limit-native-20260918.json),
+[MON-009](evidence/p02-job-bounds-native-20260918.json),
+[MON-010](evidence/p01-tls-presence-20260918.json),
+[MON-007](evidence/p01-archive-cache-retry-20260918.json).
+MON-009 uses additive0008, authoritative caps, sorted SHARE locks, inverse checks,
+READ COMMITTED and incompatible-history refusal;24 actual PG cases passed.
+MON-010 keeps selected/unselected TLS validation distinct and offline.
+MON-007 uses unique private download attempts and exclusive verified publication;
+actual HTTPS retry/concurrent cases passed Mac/Linux. Do not rerun unrelated
+suites mechanically or infer whole lifecycle/release acceptance from these cases.
 
-No invariant or expectation was weakened. Root reviewed all changed source and
-relevant callers/contracts. Artifact/handoff checks report no errors; their three
-historical dependency-cycle candidates remain unchanged navigation warnings,
-not product tests. No full CI or independent agent review is claimed.
+## Verified current resources and continuity
 
-## Current qualification and resources
+Inventory key `implementation_archive_worker_20260918.archive_identity` in
+[the laboratory inventory](../research/laboratory-inventory.json).
+Local raw root `.research/implementation/archive-worker/archive-identity`;
+native root `/home/tux/bigbrotr-implementation-20260917/runs/archive-identity-8d1289d`.
+All621 source files and exact Git archive independently match Mac/Tux. Native
+artifact identities and tools are retained. The readonly reused worker SHA is
+`3133542df86c6d2992911434aff6292b232c6ea1f06235ed8e0d437765e3c136`, from retained
+`archive-afc70f3/out/build` (same worker previously qualified at e4e2a30).
+Writable Cargo/target caches are separate copies; retained builds were not edited.
 
-[Native startup exclusion](evidence/p02-native-startup-exclusion-20260918.json)
-now passes two cases at harness56ef588 with exact a531ea3 Rust probe SHA
-793bd08ce5f99b32941da8485c0080c4656ed807ded41a7623b326a37b85e12d.
-610 source files independently match Mac Git archive and clean Linux readonly
-checkout. Actual PG extension binary embeds libpq18.3 (PQlibVersion180003);
-matching source tar verifies against the extension overlay SHA512.
+Container `bigbrotr-implementation-archive-identity-8d1289d`, ID
+`d879db9a3fdb957b3b42da490db447016c8ab7b164786e21739e0696a2493531`, owner
+`b4ddb738209962f7a8cf08cb887fd686`, is stopped-retained, exit0/no OOM.
+Network none; no new job network/volume. Fresh terminal audit: zero BigBrotr
+containers running;20 unrelated identities/processes/mounts/networks unchanged,
+8 running. Sessions15902(source/launch),80286(observer),45483(copy),67812(final Mac)
+are terminal. No active experiment or unresolved cleanup. Earlier guard/startup/
+MON resources remain stopped as inventoried; never restart retired-network
+containers. Shared checkout last observed detached6be8515 in an earlier slice;
+not used or freshly requalified here.
 
-The actual live native negative control publishes after NOLOGIN/empty activity.
-The positive case reaps the old client in3.16ms, commits its replacement before old
-server EOF, then observes late ReadyForQuery/server EOF with
-zero old SQL and final counts[1,1,1]. A bounded loopback relay observes message
-order/counts, never payloads. Startup delay triggers the case; it is not a fence.
-Initial1b6c311 attempt FAILED before completing a case because AuthenticationOk
-was buffered until startup completion; corrected trigger observes the actual
-SCRAM proof. Both results retained. No production schema/receipt/protection claim.
+## Next bounded action
 
-The [archive authority contract](../specification/archive-storage-contract.md#configuration-and-authority)
-now explicitly requires exclusion of all old credential holders, then resolution
-of remaining backends and a fresh receipt transaction. Unknown old host/process
-state cannot authorize replacement. P02-T04 still needs persisted ownership before
-credential handoff and actual successor recovery; this is not finished by the probe.
-Source read scope: blocking connect/connection AUTH_OK/query-start/ReadyForQuery
-branches in exact libpq18.3; PG16.15 relevant InitPostgres/PostgresMain/status-cache
-branches; native extension connection wrapper and existing private Process/worker.
-Not a complete libpq/server review. Persistent product recovery callers do not yet
-exist. Scope, source URLs/hashes and exclusions are in the report/inventory.
+Finish report/checkpoint review, artifact/link checks, coherent evidence commit
+and push the verified identity slice. Then implement persistent publisher
+ownership/attempt identity and the actual catalog guard with a first real
+initialization consumer. Bind monotonic allocated ownership and immutable attempt
+identity so a late old coordinator cannot reactivate an excluded login; a Control
+check before an independent remote write alone cannot provide this ordering.
+Qualify the product's checksum/version/layout/trigger inspection, fresh init,
+eligible/refused upgrade, CAS/lost takeover response and fresh receipt resolution.
+Use the selected guard evidence; do not restart architecture research without a
+new failure. Keep resource/orphan cleanup separate from catalog commit safety.
 
-All sessions terminal: source transfers68652/72187, native launch5731(FAIL)/36184
-(PASS), result transfer9386. Four new owned containers are stopped-retained with
-no OOM; zero job backends before PG stop. Both exact-label/ID empty networks retired.
-Fresh independent audit: zero BigBrotr containers running;20 unrelated identities,
-process incarnations, mounts and networks unchanged,8 running. Dynamic healthcheck
-logs and nondeterministic mount ordering are not identity changes. Shared checkout
-last observed clean/detached6be8515 in the prior slice; never used here.
-
-Inventory entry: `implementation_archive_worker_20260918.native_startup_exclusion`.
-Local raw root `.research/implementation/archive-worker/catalog-fence/native-startup`;
-exact upstream under sibling `libpq-18.3`/`pg-source`. Native roots beneath
-`/home/tux/bigbrotr-implementation-20260917/runs/`:
-`native-startup-1b6c311` and `native-startup-56ef588`. Retain source, data and reports;
-do not restart containers whose networks were retired. Earlier laboratories and
-MON qualification resources remain stopped as inventoried. No active experiment.
-
-## Current catalog guard alternative and next bounded action
-
-[Six native guard cases](evidence/p02-catalog-guard-native-20260918.json) PASS:
--694be48: ready and invisible-startup old native clients remain alive and LOGIN;
- replacement publishes; old COMMIT fails with actual PG guard refusal; counts[1,1,1].
--df2a0db: actual native writer versus takeover in both lock orders, each holder
- commit/rollback. pg_blocking_pids/pg_locks and both backend incarnations establish
- blocking. Writer-first commit resolves present receipt; writer rollback resolves
- absence. Takeover-first commit rejects old writer; takeover rollback permits it.
- Independent reopened reads match literal expected before-replay and final counts.
-
-The isolated SQL guards all28 exact initialized native metadata relations with
-BEFORE STATEMENT triggers. SECURITY DEFINER uses session_user and FOR SHARE on a
-separate owner singleton; takeover updates that row. No native values/columns are
-rewritten. Ordinary writer loses DDL/trigger privileges. The lab-only later
-snapshot/advisory pause trigger establishes race order, never the candidate fence.
-Full PostgresMetadataManager cpp/hpp, DuckLakeInitializer, PostgresTransaction and
-PostgresStorage read; relevant InitializeDuckLake/Commit/RunCommitLoop branches
-read. Default native PG isolation is REPEATABLE READ by source, not a directly
-queried runtime setting. No full DuckLake mutation/maintenance audit is claimed.
-
-Source audits independently match612/613 files to Mac Git archives and clean
-readonly Tux checkouts. Reused native probe remains a531ea3/SHA793bd08ce5f99b32941da8485c0080c4656ed807ded41a7623b326a37b85e12d.
-Current raw root `.research/implementation/archive-worker/catalog-fence/commit-guard`;
-native roots `runs/catalog-guard-694be48` and `runs/catalog-guard-df2a0db` under the
-same inventoried implementation root. Four additional owned containers stopped,
-no OOM, no job backends; two exact-label/ID empty networks retired. Fresh audit
-zero BigBrotr running;20 unrelated identities/processes/mounts/networks unchanged,
-8 running. Source transfers18138/40940, runs36205/86873, copies22627/69729 all
-terminal. Inventory key: `implementation_archive_worker_20260918.catalog_commit_guard_probe`.
-No active experiment; do not restart retired-network containers.
-
-The candidate remains UNSELECTED as a product fence. `guard-privileges` at
-`d4f43af` passes44 cases:14 actual limited-role permission refusals, all28 zero-row
-table guards, one role/search-path shadow case and one native positive publication.
-Independent source audit matches614 files to Mac Git archive;30 actual PG guard
-errors. Two new containers stopped-retained, no OOM/backends, empty network retired;
-20 unrelated containers unchanged,8 running, zero BigBrotr running. Source transfer
-86579/native run27074 terminal. Raw privileges-result/resources/log and
-audit-privileges.json retained under the same raw root; native root
-`runs/catalog-guard-d4f43af`. Inventory has the exact container/network identities.
-Qualification is now pushed. Exact source inspection finds per-table/schema
-inlining precedence and dynamic inlined data/delete table DDL: ordinary publication
-must reject scoped nonzero settings and an unexpected metadata relation set.
-Read scoped catalog options/insert planning/inlined-metadata writers; full native
-mutation/maintenance audit remains open. Next bounded product prerequisite is the
-semantic archive batch identity consumed by retained pending preparation before
-persisting publication attempts. Six new model cases PASS against literal independent vectors (54 total model
-cases); actual signed Rocks reopen/worker passes on Mac with two independent
-topology digests and unchanged KV state. New Linux native qualification NOT_RUN.
-Check all owned schema/trigger identities, altered/missing guard refusal, fixed
-snapshots and exact fresh setup/upgrade behavior before adopting it. Production
-adoption needs an explicit owning-contract exception for versioned metadata
-triggers, typed epoch/token/CAS and initialization/migration; the experimental
-login singleton is not that implementation. Keep resource/orphan cleanup separate
-from catalog commit safety. If it fails, retained positive client/process exclusion
-is the fallback, not NOLOGIN/empty activity.
-
-Then implement persistent publisher attempt identity, scientific catalog/schema
-and atomic receipt-backed signed publication. Shared finite user jobs do not
-include internal archive attempts; do not shoehorn these into export/import or
-mistake the existing Control session fence for native authority. Existing pending
-and PreparedBatch are real consumers, but have no archive semantic batch type yet.
-No pending reclamation, full P02 checkbox or M1 completion before actual protection,
-read/export/restart acceptance. Do not reopen architecture without a new failure.
+Then connect scientific schema/all families/atomic semantic receipt and protection
+to signed M1 read/export/restart. Shared finite user jobs are not internal archive
+attempts. No pending reclaim or P02/M1 completion before those actual boundaries.

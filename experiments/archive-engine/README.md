@@ -177,10 +177,15 @@ role/search-path case and one native positive control. They are not 44 native
 publication schedules. Source audit independently matches 614 tracked files to
 Mac Git archive; actual PG logs contain 30 explicit guard refusals.
 
-`native_archive_identity.py` is the next scoped exact-revision harness (not yet
-executed). It checks the borrowed multi-range fingerprint/literal bytes and the
+`native_archive_identity.py` passes seven scoped cases plus Clippy at `8d1289d`
+on Tux Linux amd64. It checks the borrowed multi-range fingerprint/literal bytes and the
 actual signed Rocks reopen-to-worker path at two explicitly supplied topology
 values. The worker bundle is the retained immutable qualified artifact; it is
 verified separately from the new parent/model source. Writable dependency caches
 must be fresh copies, never edited retained build outputs. No catalog receipt,
 publication, ACK, reclaim or new worker lifecycle qualification is claimed.
+
+The [archive identity report](../../docs/implementation/evidence/p02-archive-identity-native-20260918.json)
+records 621 independently matched source files and the stopped-retained container.
+The five-minute signed check includes native compilation; it is not a publication
+throughput result.

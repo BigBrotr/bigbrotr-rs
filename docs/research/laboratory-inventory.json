@@ -6317,7 +6317,7 @@
       }
     },
     "archive_identity": {
-      "status": "Mac54 model cases and actual signed Rocks reopen/private worker PASS; scoped Clippy running; new native Linux qualification NOT_RUN",
+      "status": "Mac54 model cases and actual signed preparation PASS; exact8d1289d Linux7 cases plus scoped Clippy PASS",
       "local_root": ".research/implementation/archive-worker/archive-identity",
       "local_logs": [
         "archive-identity-red.log",
@@ -6332,7 +6332,18 @@
         "BIGBROTR_ARCHIVE_TEST_WORKER_BYTES": "39641992"
       },
       "purpose": "Semantic schema/topology/range/source membership before persistent publisher attempt identity; no catalog receipt, ACK, reclaim or protection claim",
-      "native_preflight": ".research/implementation/archive-worker/archive-identity/preflight.json"
+      "native_preflight": ".research/implementation/archive-worker/archive-identity/preflight.json",
+      "source": "8d1289de414119754b07487396c4b7e2285ae3e8",
+      "native_root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-identity-8d1289d",
+      "resources": {
+        "container": "bigbrotr-implementation-archive-identity-8d1289d",
+        "id": "d879db9a3fdb957b3b42da490db447016c8ab7b164786e21739e0696a2493531",
+        "owner": "b4ddb738209962f7a8cf08cb887fd686",
+        "state": "stopped-retained; exit0; no OOM; no network or volume created"
+      },
+      "audit": ".research/implementation/archive-worker/archive-identity/audit.json",
+      "source_audit": ".research/implementation/archive-worker/archive-identity/independent-source-audit.json",
+      "report": "docs/implementation/evidence/p02-archive-identity-native-20260918.json"
     }
   },
   "implementation_monitor_corrections_20260918": {

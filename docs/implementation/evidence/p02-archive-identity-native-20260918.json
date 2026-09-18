@@ -1,0 +1,241 @@
+{
+  "task": "P02-T04 step4 semantic input identity prerequisite",
+  "date": "2026-09-18",
+  "status": "PASS within stated scope; archive publication/recovery not implemented",
+  "source": {
+    "revision": "8d1289de414119754b07487396c4b7e2285ae3e8",
+    "tree": "a311b3e28bdd43fecdb4cf9478d8341e72fbe475",
+    "native_source_files": 621,
+    "archive_sha256": "c52964538d12b5998899f2edac24b6651bb8c671d868d946586678f35745603b",
+    "manifest_sha256": "6956223e807a412f85ccf0bf30bc7943c8febb90c5d9007604ab25851e716dd2",
+    "method": "Every tracked Tux checkout/export file matches independently generated Mac Git archive; source clean and mounted readonly."
+  },
+  "implementation": {
+    "model": "Borrowed ArchiveBatch over ordered complete AdmissionBatch values; no reference/body copy. Same-dataset disjoint order, nonempty membership and checked counts; maximal contiguous ranges within each stream; streamed canonical fingerprint.",
+    "consumer": "Preparation::inspect_pending checks actual worker admission membership/counts and returns schema1 archive input digest for explicitly supplied topology; unchanged private protocol1. No topology inferred from Rocks creation manifest.",
+    "compatibility": "Maximality clarifies initial archive recipe before any product archive receipt exists; old golden vector unchanged. No product archive data migration. Internal Rust inspection API requires explicit topology and adds semantic input digest."
+  },
+  "native": {
+    "host": "Tux Linux amd64",
+    "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "limits": {
+      "cpus": 2,
+      "memory_bytes": 6442450944,
+      "pids": 512,
+      "network": "none"
+    },
+    "checks": [
+      {
+        "name": "membership",
+        "status": "PASS",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr-model",
+          "--test",
+          "archive_batch"
+        ],
+        "seconds_including_build": 5.622
+      },
+      {
+        "name": "bytes",
+        "status": "PASS",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr-model",
+          "--lib",
+          "fingerprint::tests::archive_bytes_match_literal_multi_range_vector",
+          "--",
+          "--exact"
+        ],
+        "seconds_including_build": 3.269
+      },
+      {
+        "name": "signed",
+        "status": "PASS",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--lib",
+          "storage::rocks::store::admission_tests::signed_pending_reopens_and_reaches_the_supervised_native_worker_without_acknowledgement",
+          "--",
+          "--exact",
+          "--test-threads=1"
+        ],
+        "seconds_including_build": 312.972
+      },
+      {
+        "name": "clippy",
+        "status": "PASS",
+        "command": [
+          "cargo",
+          "clippy",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr-model",
+          "-p",
+          "bigbrotr",
+          "--lib",
+          "--tests",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "seconds_including_build": 10.885
+      }
+    ],
+    "executed_cases": 7,
+    "artifacts": [
+      {
+        "case": "membership",
+        "path": "/out/native-tests/membership-test-executable",
+        "sha256": "ffa3e857e2f2f1a2e1606ea37307bf62ca1020d615ea950ff262cf05d74c1779"
+      },
+      {
+        "case": "bytes",
+        "path": "/out/native-tests/bytes-test-executable",
+        "sha256": "503051f57aa6a77d11571ede862912454eda353de69f1350d9ed204c08713688"
+      },
+      {
+        "case": "signed",
+        "path": "/out/native-tests/signed-test-executable",
+        "sha256": "d5cf148d265cea2354b7daeb710bf2e441cf6c7058e909916318a9897a3de716"
+      }
+    ],
+    "dependencies": {
+      "arrow-array": "58.4.0",
+      "duckdb": "1.10505.0",
+      "libduckdb-sys": "1.10505.0",
+      "librocksdb-sys": "0.19.0+11.8.1",
+      "minicbor": "2.3.0",
+      "rocksdb": "0.25.0",
+      "sha2": "0.11.0"
+    },
+    "worker_sha256": "3133542df86c6d2992911434aff6292b232c6ea1f06235ed8e0d437765e3c136",
+    "worker_build_source": {
+      "dirty": false,
+      "manifest_sha256": "f9e193d53e8ab4ac247a6e53d14f3f084f4929896bdbe68f63b7d90dbff0f768",
+      "revision": "afc70f37626a94750df5933a345839e3ffb03fac",
+      "state": "builder-supplied",
+      "tree": "b40ef6afc283ecb8ffcb3c2c2985384f8793886b"
+    },
+    "worker_reuse": "Retained qualified immutable package, independently hash/tuple verified before and after; parent/model/test source is the new revision. Writable dependency caches copied, retained build never edited.",
+    "toolchain": {
+      "os": "Linux",
+      "architecture": "x86_64",
+      "discovery": "llvm-config",
+      "environment": {
+        "CC": "/usr/lib/llvm-14/bin/clang",
+        "CXX": "/usr/lib/llvm-14/bin/clang++",
+        "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+        "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+        "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+      },
+      "tools": {
+        "CC": {
+          "path": "/usr/lib/llvm-14/bin/clang",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "CXX": {
+          "path": "/usr/lib/llvm-14/bin/clang++",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "AR": {
+          "path": "/usr/lib/llvm-14/bin/llvm-ar",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+          "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+          "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+        },
+        "LIBCLANG_PATH": {
+          "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+          "version": "Debian clang version 14.0.6"
+        },
+        "discovery": {
+          "path": "/usr/lib/llvm-14/bin/llvm-config",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+          "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+          "version": "14.0.6"
+        }
+      },
+      "sdk": null
+    }
+  },
+  "independent_oracles": [
+    {
+      "case": "historical one-range fingerprint",
+      "expected_sha256": "93773dc6bf483182cce7f955a91ca8f5571bdf074da2f7105f6ca9aa985b333c",
+      "expected": "unchanged and different from admission digest"
+    },
+    {
+      "case": "multiple maximal ranges / u64 extremes",
+      "fixture": "tests/fixtures/model/archive-multiple-ranges.json",
+      "expected": "exact literal preimage and OpenSSL SHA256; three ranges, four references; gap preserved and adjacent batches merged"
+    },
+    {
+      "case": "membership rejection and field binding",
+      "expected": "empty, foreign, reversed, duplicate and overlap rejected; schema/topology/source/payload changes alter identity; alternate complete grouping retains identity"
+    },
+    {
+      "case": "actual signed Rocks reopen/private worker",
+      "fixture": "tests/fixtures/model/archive-signed-pending.json",
+      "expected": "frozen E_private independently reconstructed from literal envelope via Python CBOR/OpenSSL; topology0/u64max; counts[1,1,1,1,0], exact semantic digests, unchanged complete KV state and retained membership; resource/refusal controls still exercised"
+    }
+  ],
+  "mac": {
+    "host": "Mac arm64 development; no Linux arm64 qualification",
+    "model_cases": 54,
+    "signed_connected_cases": 1,
+    "signed_connected_topology_variants": 2,
+    "clippy": "PASS for model/application lib/tests",
+    "worker": {
+      "BIGBROTR_ARCHIVE_TEST_INSTALLATION": "/Users/vincenzo/Documents/GitHub/BigBrotr/bigbrotr-rs/.research/implementation/archive-worker/parent-death-mac/installation",
+      "BIGBROTR_ARCHIVE_TEST_WORKER_SHA256": "40473ab5486318a3944200f2b59eb9f5f6958c3cd4fc7f7f8e4819d0d72b79a7",
+      "BIGBROTR_ARCHIVE_TEST_WORKER_BYTES": "39641992"
+    },
+    "source_scope": "Changes prepared on b688900; final connected case re-executed on candidate8d1289d with only checkpoint dirty. Not a release build.",
+    "red": "Initial model/consumer tests fail at compile for missing type/API/field, not executed assertion failures; logs retained."
+  },
+  "cleanup": {
+    "container": "bigbrotr-implementation-archive-identity-8d1289d",
+    "id": "d879db9a3fdb957b3b42da490db447016c8ab7b164786e21739e0696a2493531",
+    "owner": "b4ddb738209962f7a8cf08cb887fd686",
+    "state": "stopped-retained; exit0; no OOM",
+    "network_or_volume_created": false,
+    "running_bigbrotr": 0,
+    "unrelated_unchanged": 20,
+    "unrelated_running": 8,
+    "retained": "exact source, archive/manifest, logs, copied caches and three executed test artifacts"
+  },
+  "remaining": [
+    "Persisted owner/attempt/CAS and guarded catalog initialization/upgrade/receipt resolution.",
+    "Full scientific schema publication/body/reference verification, protection, source cuts and no-reclaim obligations.",
+    "Signed M1 read/export/restart and complete product; preparation checks do not certify archive contents.",
+    "Mixed/aged workloads, throughput/RSS limits, full hosted CI, Linux arm64 and authenticated release journeys."
+  ],
+  "raw_root": ".research/implementation/archive-worker/archive-identity",
+  "native_root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-identity-8d1289d"
+}

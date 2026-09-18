@@ -260,7 +260,9 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   The borrowed model archive identity and pending-preparation consumer bind schema,
   explicit topology, maximal ranges and complete source/digest membership. Frozen
   single/multiple-range and signed pending fixtures have independent expected
-  bytes/digests. This input identity is not a persisted attempt or commit receipt;
+  bytes/digests. [Exact native qualification](evidence/p02-archive-identity-native-20260918.json)
+  passes seven scoped cases plus Clippy at `8d1289d`. This input identity is not a
+  persisted attempt or commit receipt;
   those consumers and actual ambiguous recovery remain required.
 - [ ] **Step 5:** Enforce a single positively fenced publisher and bounded native worker
   ownership. An unrelated advisory lock cannot certify catalog commit authority.
