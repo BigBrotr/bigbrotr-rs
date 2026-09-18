@@ -218,6 +218,8 @@ its older topology retains a NULL handoff. A non-NULL topology handoff remains a
 additional upper bound. Live bounds still require the owner's committed
 receipt proof; this foundation does not create a second PG admission authority.
 
+[Migration 0008 native evidence](../implementation/evidence/p02-job-bounds-native-20260918.json)
+covers 24 corrected cases, including both concurrent lock orders and rollback.
 Migration 0008 locks jobs, their bounds and source rows against concurrent writes,
 then refuses SQLSTATE `55000` if any existing job cut exceeds an authoritative
 closed bound. The CLI identifies this refusal and the whole migration transaction,

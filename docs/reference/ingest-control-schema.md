@@ -21,7 +21,7 @@ records its final complete sequence and closure digest. The final sequence may b
 zero: zero means that this registered stream committed no facts, rather than
 missing, unknown or a sentinel. A closed bound cannot be lower than an already
 published consumer cut, committed projection cut or recorded job input cut.
-Migration0008 closes the job/closure race in both directions, including old
+Migration 0008 closes the job/closure race in both directions, including old
 topologies with NULL handoffs; its [migration contract](../operations/schema-upgrades.md)
 specifies READ COMMITTED, lock ordering and incompatible-history refusal. Each shard has at most one
 unclosed stream; a successor uses the exact next epoch only after its predecessor

@@ -7933,7 +7933,7 @@
   },
   "implementation_job_bounds_20260918": {
     "owner": "root MON-009 P02-T01",
-    "source": "6a6f796",
+    "source": "02d2a9b71c64c1a080288d7ca499e1449543c05a",
     "root": "/home/tux/bigbrotr-implementation-20260917/runs/job-bounds-6a6f796",
     "resources": {
       "root": "/home/tux/bigbrotr-implementation-20260917/runs/job-bounds-6a6f796/runtime",
@@ -7944,9 +7944,151 @@
       "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
       "client_image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
       "binary_sha256": "c008a1fdacc6acf6d9fbd0727313a17da835d096428546ddf8f367a78b5056ad",
-      "state": "running"
+      "state": "stopped-retained; network retired"
     },
     "local_evidence": ".research/implementation/job-bounds",
-    "observation": "Both negative controls reproduced; two owned containers running for continuation; all test sessions reaped. No changes to unrelated workloads."
+    "observation": "Both negative controls reproduced;24 corrected cases PASS with cleanup PASS. Four PG/client containers stopped-retained; both empty owned networks retired; data retained. All unrelated workloads unchanged.",
+    "state": "completed-retained",
+    "qualification": "docs/implementation/evidence/p02-job-bounds-native-20260918.json",
+    "audit": {
+      "source": "02d2a9b71c64c1a080288d7ca499e1449543c05a",
+      "tree": "47338428af5c649c1e1135d4c74d2058e229d9fc",
+      "source_files": 606,
+      "source_manifest_sha256": "d1f5edc44ea40f285ab5799b6b79e3155c5705f3de669c77cc30ad284f4f362c",
+      "binary_sha256": "65cb511e0d016436b1d6df90103f04b5820a9ae7ea471824429c7a5431a9c7d2",
+      "corrected_report_sha256": "51f9cf13bad53289526c5d53972ce8696f108ec2079ad6bb726f7175d998e99a",
+      "observed_at": "2026-09-18T15:36:05.207475+00:00",
+      "retirement": [
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/job-bounds-6a6f796/runtime",
+          "owner": "33ad5450f722dee397bbb300007d93bb",
+          "containers": {
+            "postgres": {
+              "id": "397e97102eaa648b3d0598b2b9860e6ac6674e73645ec17e2dd43f75ea3c0d31",
+              "name": "bigbrotr-implementation-pg-20260917-job_bounds",
+              "image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+              "state": "stopped-retained"
+            },
+            "client": {
+              "id": "15ba64deef1883768ad2dab92421a59c115d2923ed9e9784286f97a9f041f4da",
+              "name": "bigbrotr-implementation-pg-20260917-job_bounds-client",
+              "image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+              "state": "stopped-retained"
+            }
+          },
+          "backend_count_before_stop": 0,
+          "network": {
+            "id": "33fce1119a5cd8c8f1d3ab725554789840b87720d4923ac98a310ddf6ffee0ba",
+            "name": "bigbrotr-implementation-pg-20260917-job_bounds",
+            "state": "removed after terminal ownership and empty endpoint checks"
+          },
+          "data": "retained"
+        },
+        {
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-02d2a9b/runtime",
+          "owner": "aac96fb28f83e0ea5fc3ece8815c7558",
+          "containers": {
+            "postgres": {
+              "id": "38e744912f04b0ded21eeef97fc8e8ec633bfe76c1238934c5a9321644474b6d",
+              "name": "bigbrotr-implementation-pg-20260917-job_bounds_fixed",
+              "image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+              "state": "stopped-retained"
+            },
+            "client": {
+              "id": "e14f6d557b1bd60316e6fb11bab0346c5b686230d59bb2d6460e50535dd90527",
+              "name": "bigbrotr-implementation-pg-20260917-job_bounds_fixed-client",
+              "image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+              "state": "stopped-retained"
+            }
+          },
+          "backend_count_before_stop": 0,
+          "network": {
+            "id": "7ecc5cf357b85f46480f0266df82f04301b39b17893c2c3561c12f566d1af93f",
+            "name": "bigbrotr-implementation-pg-20260917-job_bounds_fixed",
+            "state": "removed after terminal ownership and empty endpoint checks"
+          },
+          "data": "retained"
+        }
+      ]
+    },
+    "build": {
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-02d2a9b",
+      "container_id": "8a19643a3e7c279bde84ac11a5c4482ef37c57dd3859d0130e73d6923e31d648",
+      "state": "completed-retained"
+    }
+  },
+  "implementation_archive_cache_20260918": {
+    "owner": "root MON-007",
+    "source": "303763d621d9da960a8d22670abe512e8d001e79",
+    "resources": {
+      "owner": "2c8b87f1b8a71ca66a53302016029a61",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-cache-303763d",
+      "source": "303763d621d9da960a8d22670abe512e8d001e79",
+      "tree": "cf911583753f4be934fcabbf229605a43e76b997",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "name": "bigbrotr-implementation-archive-cache-303763d",
+      "command": [
+        "docker",
+        "run",
+        "-d",
+        "--init",
+        "--name",
+        "bigbrotr-implementation-archive-cache-303763d",
+        "--label",
+        "org.bigbrotr.cache-regression=2c8b87f1b8a71ca66a53302016029a61",
+        "--user",
+        "1000:1000",
+        "--network",
+        "none",
+        "--cpus",
+        "2",
+        "--memory",
+        "512m",
+        "--memory-swap",
+        "512m",
+        "--pids-limit",
+        "64",
+        "--read-only",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges",
+        "--tmpfs",
+        "/tmp:rw,nosuid,nodev,size=64m",
+        "--mount",
+        "type=bind,src=/home/tux/bigbrotr-implementation-20260917/runs/archive-cache-303763d/source,dst=/source,readonly",
+        "--workdir",
+        "/source",
+        "--env",
+        "PYTHONDONTWRITEBYTECODE=1",
+        "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests/acceptance",
+        "-p",
+        "test_archive_bundle.py",
+        "-v"
+      ],
+      "state": "completed-retained",
+      "id": "671b7e24d79dbd79301ec021c1ce61da3d113d593efd1e096f9e429edffa6f5f",
+      "terminal": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-09-18T15:35:19.232115336Z",
+        "FinishedAt": "2026-09-18T15:35:20.767540514Z"
+      }
+    },
+    "local_evidence": ".research/implementation/archive-cache",
+    "observation": "Five real HTTPS/filesystem tests PASS; clean exact source before/after; container stopped-retained, no network allocation or published port."
   }
 }

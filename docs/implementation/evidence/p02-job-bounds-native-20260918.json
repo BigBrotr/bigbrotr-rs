@@ -1,0 +1,416 @@
+{
+  "finding": "MON-009",
+  "status": "PASS for the recorded relational and migration boundary",
+  "tested_revision": "02d2a9b71c64c1a080288d7ca499e1449543c05a",
+  "tree": "47338428af5c649c1e1135d4c74d2058e229d9fc",
+  "native": {
+    "architecture": "Linux amd64 on isolated trusted Tux",
+    "binary_sha256": "65cb511e0d016436b1d6df90103f04b5820a9ae7ea471824429c7a5431a9c7d2",
+    "build_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "server": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    },
+    "source_entries_verified": 606,
+    "source_manifest_sha256": "d1f5edc44ea40f285ab5799b6b79e3155c5705f3de669c77cc30ad284f4f362c",
+    "build_receipt_sha256": "22233b3957509a235ffed2876c60d374bd7a3bb5c41dfb44001aac3c0c1182c5",
+    "audit_sha256": "8101c16d83db5562f56c8940133e4bdd0f279c7f78ac1df632b53620f6c826ed",
+    "limits": "Build: 2CPU/6GiB/512PIDs with build-time dependency downloads; PG: 2CPU/1536MiB/256PIDs; client: 2CPU/4GiB/256PIDs. Readonly roots, no published ports; PG/client use dedicated internal networks."
+  },
+  "negative_control": {
+    "harness_revision": "6a6f7966a1e8f8d43328b56aa5691d857bde23c6",
+    "application_source": {
+      "dirty": false,
+      "manifest_sha256": "f9e193d53e8ab4ac247a6e53d14f3f084f4929896bdbe68f63b7d90dbff0f768",
+      "revision": "afc70f37626a94750df5933a345839e3ffb03fac",
+      "state": "builder-supplied",
+      "tree": "b40ef6afc283ecb8ffcb3c2c2985384f8793886b"
+    },
+    "binary_sha256": "c008a1fdacc6acf6d9fbd0727313a17da835d096428546ddf8f367a78b5056ad",
+    "result": "COUNTEREXAMPLES_REPRODUCED",
+    "cases": [
+      {
+        "name": "closure_then_job",
+        "status": "COUNTEREXAMPLE_REPRODUCED",
+        "rows": {
+          "streams": [
+            [
+              1,
+              "closed",
+              5
+            ],
+            [
+              2,
+              "closing",
+              null
+            ]
+          ],
+          "topology": [
+            [
+              1,
+              null
+            ],
+            [
+              2,
+              null
+            ]
+          ],
+          "jobs": [
+            [
+              "00000000000000000000000000000028",
+              "accepted",
+              true
+            ]
+          ],
+          "bounds": [
+            [
+              "00000000000000000000000000000028",
+              1,
+              6
+            ],
+            [
+              "00000000000000000000000000000028",
+              2,
+              0
+            ]
+          ]
+        },
+        "receipts": [
+          [
+            1,
+            "f59a155b5533c1674d5e381f6b55a7954b3b5fb550668b942f00efdf3677d5be"
+          ],
+          [
+            2,
+            "6a355b4d0066c60397bc09c7aa1f5d8d27722fbfbf9e9b859f02d55217f80202"
+          ]
+        ]
+      },
+      {
+        "name": "job_then_closure",
+        "status": "COUNTEREXAMPLE_REPRODUCED",
+        "rows": {
+          "streams": [
+            [
+              1,
+              "closed",
+              5
+            ],
+            [
+              2,
+              "closing",
+              null
+            ]
+          ],
+          "topology": [
+            [
+              1,
+              null
+            ],
+            [
+              2,
+              null
+            ]
+          ],
+          "jobs": [
+            [
+              "00000000000000000000000000000028",
+              "accepted",
+              true
+            ]
+          ],
+          "bounds": [
+            [
+              "00000000000000000000000000000028",
+              1,
+              6
+            ],
+            [
+              "00000000000000000000000000000028",
+              2,
+              0
+            ]
+          ]
+        },
+        "receipts": [
+          [
+            1,
+            "f59a155b5533c1674d5e381f6b55a7954b3b5fb550668b942f00efdf3677d5be"
+          ],
+          [
+            2,
+            "6a355b4d0066c60397bc09c7aa1f5d8d27722fbfbf9e9b859f02d55217f80202"
+          ]
+        ]
+      }
+    ],
+    "raw_sha256": "5783088f8fb3194e01261d1386b4b7349c594deb673b600451ff91c0913d0dbb"
+  },
+  "change": {
+    "migration": "0008_job_bounds.sql",
+    "sql_sha256": "f6f33183926b73fa90a0730c86f22b70621247d198f5547e82454fce7762ac40",
+    "authority": "source_streams closed cap plus immutable topology handoff; jobs acquire sorted SHARE source locks through COMMIT; closure UPDATE reads recorded job bounds after its source lock",
+    "isolation": "READ COMMITTED required for source cuts and closure; unsupported modes refuse25001 instead of trusting fixed snapshots",
+    "upgrade": "Existing incompatible job/closed-source pairs refuse55000; runner emits a bounded specific reason; whole schema/data/ledger unchanged, including earlier pending entries. No historical cut rewrite.",
+    "access_path": "Index(dataset_id, shard_id, owner_epoch, last_complete_sequence) over existing job bounds; no duplicate watermark."
+  },
+  "qualification": {
+    "command": "python3 experiments/control-migrations/job_bounds_cases.py --root OWNED_RUNTIME --run-name corrected --mode qualify",
+    "harness_sha256": "bf911024c08a8037896658fb17f700f3abbadc09ef59209bc9b0342fba9cadac",
+    "cases": [
+      {
+        "name": "upgrade_valid",
+        "status": "PASS",
+        "before_sha256": "3273cccf9054aff4649bfc43135f79e2f48d19ac56ffa26c90be09b0f8d6dc4d",
+        "after_sha256": "0515a44dedf46e3756d9cfe29a221f69cc7ef6c4a6dcec143ed21a617e73f238"
+      },
+      {
+        "name": "upgrade_invalid",
+        "status": "PASS",
+        "before_sha256": "6076a4860a2364a2a6293848c0ceadfddf92fcf5e526f382d3f536a2398d8d1d",
+        "after_sha256": "6076a4860a2364a2a6293848c0ceadfddf92fcf5e526f382d3f536a2398d8d1d"
+      },
+      {
+        "name": "closed_then_job_0",
+        "status": "PASS"
+      },
+      {
+        "name": "closed_then_job_5",
+        "status": "PASS"
+      },
+      {
+        "name": "closed_then_job_6",
+        "status": "PASS"
+      },
+      {
+        "name": "job_then_close_4",
+        "status": "PASS"
+      },
+      {
+        "name": "job_then_close_5",
+        "status": "PASS"
+      },
+      {
+        "name": "job_then_close_6",
+        "status": "PASS"
+      },
+      {
+        "name": "job_first_commit_5",
+        "status": "PASS"
+      },
+      {
+        "name": "job_first_commit_6",
+        "status": "PASS"
+      },
+      {
+        "name": "job_first_rollback_5",
+        "status": "PASS"
+      },
+      {
+        "name": "job_first_rollback_6",
+        "status": "PASS"
+      },
+      {
+        "name": "close_first_commit_5",
+        "status": "PASS"
+      },
+      {
+        "name": "close_first_commit_6",
+        "status": "PASS"
+      },
+      {
+        "name": "close_first_rollback_5",
+        "status": "PASS"
+      },
+      {
+        "name": "close_first_rollback_6",
+        "status": "PASS"
+      },
+      {
+        "name": "multiple_streams",
+        "status": "PASS"
+      },
+      {
+        "name": "rollback_both",
+        "status": "PASS"
+      },
+      {
+        "name": "repeatable_read_job",
+        "status": "PASS"
+      },
+      {
+        "name": "repeatable_read_close",
+        "status": "PASS"
+      },
+      {
+        "name": "serializable_job",
+        "status": "PASS"
+      },
+      {
+        "name": "serializable_close",
+        "status": "PASS"
+      },
+      {
+        "name": "read_uncommitted_job",
+        "status": "PASS"
+      },
+      {
+        "name": "read_uncommitted_close",
+        "status": "PASS"
+      }
+    ],
+    "lock_barriers": [
+      {
+        "case": "job_first_commit_5",
+        "waiter_pid": 680,
+        "holder_pids": [
+          666
+        ],
+        "wait_event": "transactionid",
+        "waiter_sqlstate": "00000"
+      },
+      {
+        "case": "job_first_commit_6",
+        "waiter_pid": 766,
+        "holder_pids": [
+          752
+        ],
+        "wait_event": "transactionid",
+        "waiter_sqlstate": "23514"
+      },
+      {
+        "case": "job_first_rollback_5",
+        "waiter_pid": 852,
+        "holder_pids": [
+          838
+        ],
+        "wait_event": "transactionid",
+        "waiter_sqlstate": "00000"
+      },
+      {
+        "case": "job_first_rollback_6",
+        "waiter_pid": 937,
+        "holder_pids": [
+          923
+        ],
+        "wait_event": "transactionid",
+        "waiter_sqlstate": "00000"
+      },
+      {
+        "case": "close_first_commit_5",
+        "waiter_pid": 1022,
+        "holder_pids": [
+          1008
+        ],
+        "wait_event": "transactionid",
+        "waiter_sqlstate": "00000"
+      },
+      {
+        "case": "close_first_commit_6",
+        "waiter_pid": 1107,
+        "holder_pids": [
+          1093
+        ],
+        "wait_event": "transactionid",
+        "waiter_sqlstate": "23514"
+      },
+      {
+        "case": "close_first_rollback_5",
+        "waiter_pid": 1192,
+        "holder_pids": [
+          1178
+        ],
+        "wait_event": "transactionid",
+        "waiter_sqlstate": "00000"
+      },
+      {
+        "case": "close_first_rollback_6",
+        "waiter_pid": 1277,
+        "holder_pids": [
+          1263
+        ],
+        "wait_event": "transactionid",
+        "waiter_sqlstate": "00000"
+      }
+    ],
+    "result_sha256": "51f9cf13bad53289526c5d53972ce8696f108ec2079ad6bb726f7175d998e99a",
+    "oracle": "Independent literal topology/source/job/bound rows; exact migration hashes. All-table/schema dumps unchanged for negative and rollback cases. Actual server lock waits attributed to both backend incarnations; no timing-only barriers.",
+    "cleanup": "PASS"
+  },
+  "local": {
+    "control_schema_tests_passed": 11,
+    "log_sha256": "3e560e1287c684d9b91041c6468e7d9eab7253b4be543e03d18fd5d060ebea90",
+    "original_sql_unchanged": "git diff --exit-code03819da over0001/0002/0007 passed; catalog receipts independently hashed in native cases",
+    "clippy": {
+      "command": "cargo clippy --locked -p bigbrotr --bin bigbrotr --test config_entrypoint --test control_schema -- -D warnings",
+      "status": "PASS",
+      "log_sha256": "856574d4fd1c2d6471fbda8fc10b525570e27c7bbf3f1081729dc6e318d28489"
+    }
+  },
+  "review": "Root read complete0001/0002/0007 SQL, migration catalog/runner, fixture/helper boundaries and relevant contracts; full new SQL/harness/diff reviewed. Earlier closure consumer/projection predicates retained. Independent agents unavailable; no independent review claimed.",
+  "resources": [
+    {
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/job-bounds-6a6f796/runtime",
+      "owner": "33ad5450f722dee397bbb300007d93bb",
+      "containers": {
+        "postgres": {
+          "id": "397e97102eaa648b3d0598b2b9860e6ac6674e73645ec17e2dd43f75ea3c0d31",
+          "name": "bigbrotr-implementation-pg-20260917-job_bounds",
+          "image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+          "state": "stopped-retained"
+        },
+        "client": {
+          "id": "15ba64deef1883768ad2dab92421a59c115d2923ed9e9784286f97a9f041f4da",
+          "name": "bigbrotr-implementation-pg-20260917-job_bounds-client",
+          "image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+          "state": "stopped-retained"
+        }
+      },
+      "backend_count_before_stop": 0,
+      "network": {
+        "id": "33fce1119a5cd8c8f1d3ab725554789840b87720d4923ac98a310ddf6ffee0ba",
+        "name": "bigbrotr-implementation-pg-20260917-job_bounds",
+        "state": "removed after terminal ownership and empty endpoint checks"
+      },
+      "data": "retained"
+    },
+    {
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-02d2a9b/runtime",
+      "owner": "aac96fb28f83e0ea5fc3ece8815c7558",
+      "containers": {
+        "postgres": {
+          "id": "38e744912f04b0ded21eeef97fc8e8ec633bfe76c1238934c5a9321644474b6d",
+          "name": "bigbrotr-implementation-pg-20260917-job_bounds_fixed",
+          "image": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+          "state": "stopped-retained"
+        },
+        "client": {
+          "id": "e14f6d557b1bd60316e6fb11bab0346c5b686230d59bb2d6460e50535dd90527",
+          "name": "bigbrotr-implementation-pg-20260917-job_bounds_fixed-client",
+          "image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2",
+          "state": "stopped-retained"
+        }
+      },
+      "backend_count_before_stop": 0,
+      "network": {
+        "id": "7ecc5cf357b85f46480f0266df82f04301b39b17893c2c3561c12f566d1af93f",
+        "name": "bigbrotr-implementation-pg-20260917-job_bounds_fixed",
+        "state": "removed after terminal ownership and empty endpoint checks"
+      },
+      "data": "retained"
+    }
+  ],
+  "raw_roots": [
+    ".research/implementation/job-bounds",
+    "/home/tux/bigbrotr-implementation-20260917/runs/job-bounds-6a6f796",
+    "/home/tux/bigbrotr-implementation-20260917/runs/archive-02d2a9b"
+  ],
+  "limitations": [
+    "Synthetic cuts and digests; no actual job dispatch or Rocks source receipt qualification.",
+    "This does not complete P02-T01, M1, physical durability, full release upgrade, native ARM or production load acceptance.",
+    "No arbitrary isolation support: other isolation levels are refused. Deadlock/timeout requires whole-transaction rollback and authorized retry."
+  ]
+}

@@ -87,8 +87,12 @@
   },
   "review": "Root read full resolver, configuration dispatcher/reference producer, actual Control connection preparation and configuration entrypoint tests; no independent agent review. Presence-only change; transport cryptography unchanged.",
   "limitations": [
-    "Does not qualify a live TLS peer or certify CA contents, credentials or server availability.",
-    "Clippy still running when this report was written; no Clippy PASS claimed."
+    "Does not qualify a live TLS peer or certify CA contents, credentials or server availability."
   ],
-  "raw_root": ".research/implementation/tls-static"
+  "raw_root": ".research/implementation/tls-static",
+  "clippy": {
+    "command": "cargo clippy --locked -p bigbrotr --bin bigbrotr --test config_entrypoint --test control_schema -- -D warnings",
+    "status": "PASS",
+    "log_sha256": "856574d4fd1c2d6471fbda8fc10b525570e27c7bbf3f1081729dc6e318d28489"
+  }
 }

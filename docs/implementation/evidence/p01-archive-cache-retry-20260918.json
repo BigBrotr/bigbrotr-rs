@@ -1,6 +1,6 @@
 {
   "finding": "MON-007",
-  "status": "PASS for Mac filesystem and actual HTTPS cases; native Linux rerun pending",
+  "status": "PASS for recorded Mac and Linux amd64 filesystem/actual HTTPS cases",
   "base_revision": "3897cf8",
   "tested_source_kind": "owned worktree files listed below",
   "files_sha256": {
@@ -40,5 +40,29 @@
     "SIGKILL may leave a unique temporary directory; lifecycle-confirmed cleanup is separate.",
     "Test CA injection uses the actual TLS/HTTP/socket implementation; no live upstream release download or engine behavior is qualified."
   ],
-  "raw_root": ".research/implementation/archive-cache"
+  "raw_root": ".research/implementation/archive-cache",
+  "native": {
+    "revision": "303763d621d9da960a8d22670abe512e8d001e79",
+    "tree": "cf911583753f4be934fcabbf229605a43e76b997",
+    "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "container_id": "671b7e24d79dbd79301ec021c1ce61da3d113d593efd1e096f9e429edffa6f5f",
+    "terminal": {
+      "Status": "exited",
+      "Running": false,
+      "Paused": false,
+      "Restarting": false,
+      "OOMKilled": false,
+      "Dead": false,
+      "Pid": 0,
+      "ExitCode": 0,
+      "Error": "",
+      "StartedAt": "2026-09-18T15:35:19.232115336Z",
+      "FinishedAt": "2026-09-18T15:35:20.767540514Z"
+    },
+    "tests_passed": 5,
+    "log_sha256": "d40e22e2c42e2020409bb1d94a359963451c523b67f20065a2695af88ff0ddc5",
+    "network": "none; only container-local HTTPS loopback",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-cache-303763d",
+    "source": "Clean Git bundle checkout, readonly mounted, clean after execution"
+  }
 }
