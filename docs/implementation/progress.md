@@ -178,6 +178,15 @@ mismatch was corrected with validated member extraction and independent hash che
 No unfinished cleanup. Credentials/recovery/startup/MON labs remain stopped and
 inventoried; never restart retired-network containers. amd64 does not qualify arm64.
 
+## Active scientific guard regression
+
+Root is adding an actual-PG scientific guard probe under P02-T04. Baseline
+HEAD/origin was `9b607db` and clean. The new regression expects installation after
+the qualified finite initializer; the old installer is expected to refuse its
+snapshot1. Mac example compilation passed; no PG result is claimed yet. The
+next candidate contains the fixture only, for exact-Git native red evidence.
+No existing lab is restarted. New resources will be inventoried separately.
+
 ## Next bounded action
 
 Integrate scientific schema identity with the actual PG guard under P02-T04.
