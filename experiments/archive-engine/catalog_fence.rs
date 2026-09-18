@@ -52,7 +52,7 @@ fn run() -> Result<(), &'static str> {
     if args.len() != 7
         || !matches!(
             args[1].as_str(),
-            "init" | "write" | "read" | "read-body" | "lost-ack"
+            "init" | "write" | "register" | "read" | "read-body" | "lost-ack"
         )
     {
         return Err("arguments");
@@ -214,21 +214,42 @@ fn run() -> Result<(), &'static str> {
     }
     emit(serde_json::json!({"stage":"ready","counts":before}))?;
     barrier(b"publish\n")?;
-    connection
-        .execute("INSERT INTO lake.facts VALUES (?, 'canary-ß')", [batch])
-        .map_err(|_| "fact")?;
-    connection
-        .execute(
-            "INSERT INTO lake.witnesses VALUES (?, 'wss://example.invalid')",
-            [batch],
-        )
-        .map_err(|_| "witness")?;
-    connection
-        .execute(
-            "INSERT INTO lake.receipts VALUES (?, from_hex('00ff'))",
-            [batch],
-        )
-        .map_err(|_| "receipt")?;
+    if mode == "register" {
+        // Dependency qualification only: three caller-owned immutable files,
+        // including the receipt. Never mix an INSERT-owned receipt into this
+        // candidate or native error cleanup can still remove that receipt.
+        for (table, value) in [
+            ("facts", "'canary-ß'::VARCHAR AS body"),
+            ("witnesses", "'wss://example.invalid'::VARCHAR AS endpoint"),
+            ("receipts", "from_hex('00ff') AS digest"),
+        ] {
+            let path = data.join(format!("caller-{batch}-{table}.parquet"));
+            if path.exists() {
+                return Err("existing-prepared-file");
+            }
+            let file = literal(path.to_str().ok_or("path")?);
+            connection.execute_batch(&format!("COPY (SELECT {batch}::UBIGINT AS batch,{value}) TO {file} (FORMAT PARQUET, COMPRESSION ZSTD, COMPRESSION_LEVEL 3, ROW_GROUP_SIZE 64000)"))
+                .map_err(|_| "prepare-file")?;
+            connection.execute_batch(&format!("CALL ducklake_add_data_files('lake','{table}',[{file}],schema=>'main',hive_partitioning=>false,allow_missing=>false,ignore_extra_columns=>false)"))
+                .map_err(|_| "register-file")?;
+        }
+    } else {
+        connection
+            .execute("INSERT INTO lake.facts VALUES (?, 'canary-ß')", [batch])
+            .map_err(|_| "fact")?;
+        connection
+            .execute(
+                "INSERT INTO lake.witnesses VALUES (?, 'wss://example.invalid')",
+                [batch],
+            )
+            .map_err(|_| "witness")?;
+        connection
+            .execute(
+                "INSERT INTO lake.receipts VALUES (?, from_hex('00ff'))",
+                [batch],
+            )
+            .map_err(|_| "receipt")?;
+    }
     connection.execute_batch("COMMIT").map_err(|_| "commit")?;
     if mode == "lost-ack" {
         // Test-only observation, deliberately before the caller-facing result.

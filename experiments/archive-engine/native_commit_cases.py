@@ -6,6 +6,7 @@ import argparse,re
 parser=argparse.ArgumentParser(description='Mac-owned actual native PostgreSQL COMMIT-loss cases on an inventoried Tux lab.')
 parser.add_argument('--evidence',type=Path,required=True)
 parser.add_argument('--revision',required=True)
+parser.add_argument('--writer-mode',choices=['write','register'],default='write')
 args=parser.parse_args();ROOT=args.evidence;REV=args.revision
 assert re.fullmatch('[0-9a-f]{40}',REV)
 ROOT.mkdir(parents=True,exist_ok=True)
@@ -22,7 +23,7 @@ def python(code):return checked('docker','exec','-i',NAME,'python3','-c',code)
 def probe(mode,db,credential,tag):
  temp='/out/commit-temp-'+db+'-'+tag
  python(f"from pathlib import Path; Path({temp!r}).mkdir(mode=0o700)")
- return command('docker','exec','-i','--env','LD_LIBRARY_PATH=/out/archive-worker/lib',NAME,'/out/native-tests/catalog-fence-probe',mode,'/out/archive-worker',temp,'/out/data-'+db,credential,'1',input='publish\n' if mode=='write' else '',timeout=45)
+ return command('docker','exec','-i','--env','LD_LIBRARY_PATH=/out/archive-worker/lib',NAME,'/out/native-tests/catalog-fence-probe',mode,'/out/archive-worker',temp,'/out/data-'+db,credential,'1',input='publish\n' if mode in ['write','register'] else '',timeout=45)
 for _ in range(100):
  r=command('docker','exec',NAME,'test','-f','/out/native-tests/ready.json')
  if r.returncode==0:break
@@ -45,14 +46,14 @@ for mode in ['pass','before-forward','after-complete']:
  assert select.select([proxy.stdout],[],[],10)[0],'proxy not ready'
  proxy_ready=json.loads(proxy.stdout.readline());assert proxy_ready['event']=='ready'
  assert proxy_ready['source_sha256']==hashlib.sha256(Path('experiments/archive-engine/native_commit_proxy.py').read_bytes()).hexdigest()
- via=credentials(proxy_ready['port'],'proxy');written=probe('write',db,via,'write')
+ via=credentials(proxy_ready['port'],'proxy');written=probe(args.writer_mode,db,via,'write')
  out,err=proxy.communicate('stop\n',timeout=10);assert proxy.returncode==0 and not err,(out,err)
  events=[proxy_ready]+[json.loads(line) for line in out.splitlines()];terminal=events[-1];assert terminal['event']=='terminal'
  snapshot=sql(db,'SELECT coalesce(json_agg(row_to_json(t)),\'[]\'::json) FROM (SELECT snapshot_id,schema_version,next_file_id FROM ducklake_snapshot ORDER BY snapshot_id)t;')
  files=json.loads(sql(db,"SELECT coalesce(json_agg(row_to_json(t)),'[]'::json) FROM (SELECT d.data_file_id,d.path,d.path_is_relative,d.file_size_bytes,d.record_count,t.table_name,t.path AS table_path,s.path AS schema_path FROM ducklake_data_file d JOIN ducklake_table t ON t.table_id=d.table_id JOIN ducklake_schema s ON s.schema_id=t.schema_id ORDER BY t.table_name)t;"))
  physical=json.loads(python(f"import json,hashlib; from pathlib import Path; p=Path({data!r}); print(json.dumps([{{'path':str(f.relative_to(p)),'bytes':f.stat().st_size,'sha256':hashlib.sha256(f.read_bytes()).hexdigest()}} for f in sorted(p.rglob('*.parquet'))]))"))
  count=probe('read',db,direct,'count');body=probe('read-body',db,direct,'body')
- record=dict(mode=mode,write=dict(exit=written.returncode,stdout=written.stdout,stderr=written.stderr),proxy=events,snapshots=json.loads(snapshot),catalog_files=files,physical_files=physical,count=dict(exit=count.returncode,stdout=count.stdout,stderr=count.stderr),body=dict(exit=body.returncode,stdout=body.stdout,stderr=body.stderr))
+ record=dict(mode=mode,writer_mode=args.writer_mode,write=dict(exit=written.returncode,stdout=written.stdout,stderr=written.stderr),proxy=events,snapshots=json.loads(snapshot),catalog_files=files,physical_files=physical,count=dict(exit=count.returncode,stdout=count.stdout,stderr=count.stderr),body=dict(exit=body.returncode,stdout=body.stdout,stderr=body.stderr))
  records.append(record);(OUT/'cases.json').write_text(json.dumps(dict(source=REV,harness_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),cases=records),indent=2)+'\n')
  assert terminal['data_queries']==terminal['data_commits']==1,record
  if mode=='pass':
@@ -61,9 +62,14 @@ for mode in ['pass','before-forward','after-complete']:
   assert json.loads(body.stdout)=={'stage':'read-body','counts':[1,1,1],'body':'canary-ß','endpoint':'wss://example.invalid','digest':[0,255]},record
  elif mode=='before-forward':
   assert terminal['faults']==1 and terminal['server_complete']==terminal['client_complete']==0
-  assert written.returncode==1 and not files and not physical and json.loads(count.stdout)['counts']==[0,0,0],record
+  assert written.returncode==1 and not files and len(physical)==(3 if args.writer_mode=='register' else 0) and json.loads(count.stdout)['counts']==[0,0,0],record
  else:
   assert terminal['faults']==1 and terminal['server_complete']==1 and terminal['client_complete']==0
-  assert written.returncode==1 and len(files)==3 and len(physical)==0 and body.returncode==1,record
+  assert written.returncode==1 and len(files)==3,record
+  if args.writer_mode=='register':
+   assert len(physical)==3 and body.returncode==0,record
+   assert json.loads(body.stdout)=={'stage':'read-body','counts':[1,1,1],'body':'canary-ß','endpoint':'wss://example.invalid','digest':[0,255]},record
+  else:
+   assert len(physical)==0 and body.returncode==1,record
  print(json.dumps({'mode':mode,'catalog_files':len(files),'physical_files':len(physical),'body_exit':body.returncode,'status':'observed'}),flush=True)
-print('COMPLETE: actual native committed-file deletion reproduced',flush=True)
+print('COMPLETE: actual native commit cases for '+args.writer_mode,flush=True)
