@@ -15,13 +15,12 @@ task checkbox or M1 gate is complete; pending must not be reclaimed.
 
 ## Verified Git and ownership
 
-Mac primary workspace, main. HEAD and origin/main freshly verified after ordinary
-push at `c6fface491bffe3d774d77c5debe0d337b762ce9`, including native-qualified
-`e4e2a30160a5119195e7ba5b31b82b1482a5c432`. Root owns the bounded catalog-fence prerequisite: an explicit research example
-target in the worker manifest, `experiments/archive-engine/catalog_fence.rs`,
-`catalog_fence.py`, the research runner Dockerfile, README and inventory/checkpoint. No other writer or contributor conflict. Tux has no active BigBrotr job after the
-fresh terminal audit; historical isolated sources remain retained, not writable
-product copies.
+Mac primary workspace, main. HEAD `913c6ccffca14d2217b961327a439128e672afde`
+contains candidate `afc70f37626a94750df5933a345839e3ffb03fac` plus the isolated
+runner Dockerfile and early-exit diagnostic corrections. All unpublished. Origin/main last freshly verified
+at `c6fface491bffe3d774d77c5debe0d337b762ce9`. Candidate sources were clean at Git
+bundle creation. Root owns only checkpoint/inventory/evidence updates. No other
+writer or contributor conflict; Tux source copies are immutable Git inputs.
 
 ## Qualified evidence
 
@@ -154,30 +153,45 @@ and no new PG runtime experiment ran. Ordinary catalog attach must also disable
 optional PG secret storage explicitly; do not assume native persistent-secret
 settings alone cover the extension's separate registration path.
 
-The uncommitted `catalog_fence.rs` probe is an explicit Cargo example of the
-private worker package (not an installed product command). Three constant canary
-relations, init/read/write/lost-ack modes and stdin barriers expose the exact
-native transaction boundary. No scientific data, archive acknowledgement or
-selected fencing authority. Mac build session1114 completed exit0; Clippy30464
-completed exit0. Actual PG cases are NOT_RUN and no new remote resource exists.
-Raw local logs under `.research/implementation/archive-worker/catalog-fence`,
-with identities in `catalog_fence_probe`. Source reading additionally covered
-DuckLake storage option handling and initializer completely: ordinary attach
-uses CREATE_IF_NOT_EXISTS=false, AUTOMATIC_MIGRATION=false and explicit
-META_SECRET_STORAGE_TABLE=''. No runtime behavior is inferred from these names.
+The candidate `catalog_fence.rs` probe is an explicit Cargo example of the
+private worker package (not an installed product command). Three canary relations,
+init/read/write/lost-ack modes and stdin barriers expose actual native transaction
+boundaries. Mac build/Clippy passed; actual PostgreSQL cases remain NOT_RUN.
+The finite orchestrator validates cluster identity, bounds cases and reaps children.
+No scientific data, archive ACK or selected fencing authority is inferred.
 
-The finite native lab orchestrator and pinned research runner Dockerfile are now
-written and reviewed inline. Diagnostics retain only fixed phases; all actual
-PG cases remain NOT_RUN. Fresh Tux preflight confirms the shared source unchanged,
-zero running BigBrotr containers, twenty unrelated containers and306GiB free.
+Native build completed exit0 with600 source entries/tools/assets audited at `/home/tux/bigbrotr-implementation-20260917/runs/archive-afc70f3`:
+owner `0d4ac95f90da6fec55afba6709b662cb`, container ID
+`a3fa76ce33e3f9edfdf18b8c510b5bb53895df66d28fd6fafc78dbe195fc4aa2`.
+Collector32410 completed. Explicit native probe build/collector34762 also passed;
+artifact SHA `a35342747758e5f06422c0efb671e01ec2c3f4afc2f546d8372d9be353d0f26a`.
+The first fresh PG16.15 run failed during initialization before all four cases.
+Its harness omitted the child's fixed failure phase on early EOF; the current
+correction records that phase. Raw `cases-first` evidence retains this FAIL.
+Launcher98951 completed exit1; both PG and runner stopped-retained, every child
+reaped, zero remaining job backends. Do not reuse this catalog as a fresh run.
+Initial image build failed because BuildKit resolved a local config digest via
+Docker Hub. Candidate `1fbddcb` corrects the local tag with pre/post image-ID
+checks. The retry built image
+`sha256:9d30ac361d158c281070d274427241bee955ead10904d6dbe4ff866200548f3d`
+with psql15.19; logs/source/launcher are retained locally under
+`.research/implementation/archive-worker/catalog-fence`. No hosted CI claim.
+Fresh preflight: shared checkout unchanged/clean, zero source consumers, zero
+previously running BigBrotr containers, twenty unrelated containers,306GiB free.
 
-Next: commit a clean candidate and transfer it via Git. Freshly inventory
-Tux, build the explicit example against verified immutable native assets and
-create separately owned PG/catalog/data resources. Exercise the real absent-
-receipt race, new-login refusal while existing session remains live, positive
-old-backend termination/retry and lost COMMIT acknowledgement. Record source,
-dependency/tool/artifact/workload identities and cleanup; do not count compilation
-or a model as PG PASS.
+Next: commit/transfer the diagnostic correction, repeat against a separately
+owned fresh PG16.15 lab with the same exact probe binary, and diagnose the phase.
+Its four native cases exercise unfenced duplicates, sealed login with a live
+transaction, terminated backends with paused old client, and lost COMMIT ACK.
+Record exact artifacts and terminal resource state even on failure.
+
+Additional PG16.15 source inspection found `InitializeSessionUserId` checks
+rolcanlogin before `pgstat_bestart` publishes backend status; `PostAuthDelay`
+lies between them. This identifies an untested startup race for any protocol
+that assumes NOLOGIN plus an empty activity query is sufficient in isolation.
+Downloaded exact-tag reference files are under the same ignored root in
+`pg-source`; they are reference material, not an edited PostgreSQL build.
+Do not infer production exclusion from the four quiesced-client cases.
 Read the remaining owning catalog/identity/operations dependencies before editing.
 A possible investigation is a dedicated per-job PG role with native connection
 setup quiesced, new logins revoked before write authorization, and positive
