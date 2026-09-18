@@ -5,9 +5,9 @@ use crate::{
     storage::rocks::keys::{ColumnFamily, EncodedKey, IngestKey},
 };
 use bigbrotr_model::{
-    AdmissionBatch, DictionaryKind, Digest256, EvidenceIntent, Fact, FactPayload, FactRef,
-    ObservedTime, ProducerRequestId, ProtectionClass, ProtectionContext, Receipt, Sequence,
-    SourceDependencies, SourceRecordId, codec::FactDecodeLimits,
+    AdmissionBatch, DictionaryDescriptor, DictionaryKind, Digest256, EvidenceIntent, Fact,
+    FactPayload, FactRef, ObservedTime, ProducerRequestId, ProtectionClass, ProtectionContext,
+    Receipt, Sequence, SourceDependencies, SourceRecordId, codec::FactDecodeLimits,
     receipt_codec::ReceiptDecodeLimits,
 };
 use rocksdb::{ReadOptions, WriteBatch, WriteOptions};
@@ -274,6 +274,13 @@ impl IngestStore {
         }
         let mut through = [0u64; 9];
         for (index, entry) in intent.dictionaries().iter().enumerate() {
+            if let DictionaryDescriptor::Endpoint(endpoint) = entry.descriptor() {
+                let normalized = bigbrotr_protocol::endpoint::Endpoint::parse(endpoint.url())
+                    .map_err(|_| BootstrapError::InvalidIntent)?;
+                if normalized.as_str() != endpoint.url() {
+                    return Err(BootstrapError::InvalidIntent);
+                }
+            }
             let r = entry.reference();
             let counter = &mut through[r.dictionary_kind as usize - 1];
             if r.dictionary_kind == DictionaryKind::Event

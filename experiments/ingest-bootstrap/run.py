@@ -43,7 +43,7 @@ def main():
         return {n: json.loads(lab.sql(state, database, f"SELECT coalesce(json_agg(t),'[]') FROM control.{n} t;")) for n in names}
     save()
     try:
-        for mode in ['write', 'cancelled', 'expired', 'retired', 'wrong-manifest', 'before', 'after']:
+        for mode in ['write', 'cancelled', 'expired', 'retired', 'wrong-manifest', 'wrong-root', 'before', 'after']:
             db = 'bb_bootstrap_' + mode.replace('-', '_')
             lab.sql(state, 'postgres', f'CREATE DATABASE {db} OWNER bigbrotr_migrator;')
             path = lab.config(root, state, db)
@@ -85,9 +85,9 @@ def main():
                 result = lab.docker('logs', name)
             else:
                 result = lab.docker('exec', state['client'], *command, check=False)
-                require(result.returncode == 0, 'probe-' + mode)
             (root / (mode + '.stdout')).write_text(result.stdout)
             (root / (mode + '.stderr')).write_text(result.stderr)
+            require(result.returncode == 0, 'probe-' + mode)
             require(not result.stderr, 'probe-stderr')
             messages = [json.loads(line) for line in result.stdout.splitlines()]
             require(messages and messages[0]['event'] == 'initialized', 'empty-workload')

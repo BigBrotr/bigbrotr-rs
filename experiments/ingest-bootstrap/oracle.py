@@ -1,6 +1,9 @@
 """Independent fixed bootstrap corpus; no Rust codecs or observed value templates."""
 import hashlib
 
+# identity-and-encoding.md and dictionary-descriptors.md assign visibility=4.
+VISIBILITY_KIND = 4
+
 
 def head(major, value):
     if value < 24:
@@ -35,11 +38,11 @@ def expected(dataset, committed, policy=1):
     slot = bytes([66]) * 16
     source = lambda n: [dataset, 0, 1, n]
     source_key = lambda n: dataset + be(0, 4) + be(1) + be(n)
-    reference = lambda n: [dataset, 1, domain, n]
-    ref_key = lambda n: dataset + be(1, 2) + domain + be(n)
+    reference = lambda n: [dataset, VISIBILITY_KIND, domain, n]
+    ref_key = lambda n: dataset + be(VISIBILITY_KIND, 2) + domain + be(n)
     manifest = (bytes.fromhex("01010001000100010001") + dataset + be(0)
                 + bytes([61]) * 16 + be(0, 4) + be(1) + bytes([63]) * 16
-                + bytes([67]) * 16 + be(policy) + bytes([1, 1]) + be(1, 2) + domain)
+                + bytes([67]) * 16 + be(policy) + bytes([1, 1]) + be(VISIBILITY_KIND, 2) + domain)
     rows = [("default", b"\x01\x01", manifest)]
     if not committed:
         return rows, None, []
@@ -57,7 +60,7 @@ def expected(dataset, committed, policy=1):
         rows.extend([
             ("facts", b"\x01\x20" + source_key(n), b"\x01\x20" + digest + fact),
             ("default", b"\x01\x04" + ref_key(n), b"\x01\x04" + source_key(n) + digest),
-            ("default", b"\x01\x05" + dataset + be(1, 2) + hashlib.sha256(canonical).digest() + ref_key(n), b"\x01\x05" + canonical),
+            ("default", b"\x01\x05" + dataset + be(VISIBILITY_KIND, 2) + hashlib.sha256(canonical).digest() + ref_key(n), b"\x01\x05" + canonical),
         ])
     request_id = [slot, 1, 1]
     request = b"bigbrotr/producer-request/1\0" + cbor([request_id, "admit-evidence", 1, [1, reference(1), entries]])
@@ -66,7 +69,7 @@ def expected(dataset, committed, policy=1):
     batch_digest = hashlib.sha256(b"bigbrotr/admission-batch/1\0" + cbor([dataset, 0, 1, 1, 2, refs])).digest()
     rows.extend([
         ("default", b"\x01\x02" + dataset + be(0, 4) + be(1), b"\x01\x02" + be(2)),
-        ("default", b"\x01\x03" + dataset + be(1, 2) + domain, b"\x01\x03" + be(2)),
+        ("default", b"\x01\x03" + dataset + be(VISIBILITY_KIND, 2) + domain, b"\x01\x03" + be(2)),
         ("facts", b"\x01\x21" + source_key(1), b"\x01\x21" + be(2) + batch_digest),
         ("receipts", b"\x01\x30" + slot + be(1) + be(1), receipt),
         ("receipts", b"\x01\x31" + slot + be(1), b"\x01\x31" + be(1) + be(0) + be(0)),

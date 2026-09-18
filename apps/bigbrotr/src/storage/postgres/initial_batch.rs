@@ -39,6 +39,8 @@ impl From<OwnerError> for InitialBatchError {
 /// Expected data, not a grant. Both original input and whole PG document buffers
 /// require caller reservations, in addition to the transferred batch permit.
 pub struct InitialBatchRequest<'a> {
+    /// Selected by the trusted static-root validator, never a remote request.
+    pub ingest_root: &'a std::path::Path,
     pub registration: &'a ingest_registry::InitialRegistration,
     pub intent: &'a EvidenceIntent,
     pub recorded_at: ObservedTime,
@@ -65,7 +67,8 @@ impl ControlSession {
         let identity = *store.manifest().identity();
         let domains = AllocationNamespaces::from_entries(&spec.allocation_domains)
             .map_err(|_| OwnerError::InvalidInput)?;
-        if spec.dataset_id != self.request.dataset
+        if !store.matches_configured_root(input.ingest_root)
+            || spec.dataset_id != self.request.dataset
             || spec.instance_id != *self.request.instance.as_bytes()
             || spec.control != self.identity
             || identity.dataset_id != spec.dataset_id

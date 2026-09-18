@@ -405,3 +405,72 @@ fn bounds_wrong_epoch_and_unallocated_ordinals_leave_the_initial_directory_uncha
     assert_eq!(store.db.latest_sequence_number(), before);
     assert_eq!(b.snapshot().used().data_bytes(), 0);
 }
+
+#[test]
+fn noncanonical_endpoint_is_not_a_durable_dictionary_identity() {
+    let root = tempfile::tempdir().unwrap();
+    let b = budget();
+    let namespaces = AllocationNamespaces::from_entries(&[
+        (DictionaryKind::Endpoint, [7; 16].try_into().unwrap()),
+        (DictionaryKind::VisibilityScope, scope().allocation_domain),
+    ])
+    .unwrap();
+    let mut store = IngestStore::initialize(
+        &root.path().join("db"),
+        IngestManifest::new(*manifest().identity(), namespaces),
+        native(),
+        grant(&b, 0, 128 * MIB),
+    )
+    .unwrap();
+    let reference = QualifiedRef {
+        dictionary_kind: DictionaryKind::Endpoint,
+        allocation_domain: [7; 16].try_into().unwrap(),
+        ..scope()
+    };
+    for (url, accepted) in [
+        ("wss://RELAY.example:443/", false),
+        ("wss://relay.example/", true),
+    ] {
+        let original = intent("public");
+        let (_, scope, dictionaries) = original.into_parts();
+        let mut dictionaries = dictionaries;
+        dictionaries.push(
+            DictionaryEntry::new(
+                reference,
+                DictionaryDescriptor::Endpoint(
+                    bigbrotr_model::EndpointDescriptor::new(url.into()).unwrap(),
+                ),
+            )
+            .unwrap(),
+        );
+        let intent = EvidenceIntent::new(
+            1,
+            scope,
+            dictionaries,
+            EvidenceIntentLimits {
+                max_entries: 2,
+                max_encoded_intent_bytes: 8192,
+                max_validation_scratch_bytes: 1024,
+            },
+        )
+        .unwrap();
+        let before = store.db.latest_sequence_number();
+        let result = store.bootstrap_dictionaries(
+            request(),
+            &intent,
+            ObservedTime::new(123),
+            BootstrapLimits {
+                max_mappings: 8,
+                max_batch_bytes: MIB as usize,
+            },
+            grant(&b, 8 * MIB, 4 * MIB),
+            || Ok(()),
+        );
+        if accepted {
+            assert!(result.is_ok());
+        } else {
+            assert!(matches!(result, Err(BootstrapError::InvalidIntent)));
+            assert_eq!(store.db.latest_sequence_number(), before);
+        }
+    }
+}

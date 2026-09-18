@@ -5,7 +5,10 @@ producer retirement, archive, handoff and installed runtime remain separate work
 No public endpoint or `serve` role exposes this operation yet.
 
 `ControlSession::bootstrap_initial_dictionaries` connects the actual dedicated
-Control backend to an exclusively open `IngestStore`. It checks the complete
+Control backend to an exclusively open `IngestStore`. The actual locked directory
+must match the trusted factory's selected absolute static root; canonical aliases
+are compared after filesystem resolution. Roots must remain operator-controlled
+and stable while open. It checks the complete
 initial registration against the native manifest, including dataset, resource,
 incarnation, owner epoch, shard, topology, policy and allocation domains. It
 validates both complete current policy documents through the trusted caller's
@@ -34,6 +37,8 @@ The first visibility mapping may reference itself. Every other envelope or
 descriptor dependency must precede its consumer in the batch. Duplicate complete
 descriptors and event dictionaries are refused; event identity must be admitted
 with its verified payload by the later event operation.
+Endpoint descriptors must exactly equal the existing protocol normalizer's output;
+the storage owner rejects structurally valid but noncanonical URL identities.
 
 One WAL-enabled `WriteBatch`, with synchronous commit and missing-CF refusal,
 contains every dictionary fact, mapping, reverse candidate, allocation/source
@@ -93,7 +98,7 @@ The permit remains retained by the returned receipt. Native read pins and raw
 iterators never escape the call. An engine write error poisons further writes on
 that handle and returns CommitUnknown. Failure/cancellation after dispatch or
 during PostgreSQL cleanup never becomes a negative durability result. A failed
-operation poisons the Control session; a fresh runtime owner/recovery operation
+operation after coordination begins poisons the Control session; a fresh runtime owner/recovery operation
 must establish its own authority. Durable initial replay alone does not supply
 that successor protocol.
 

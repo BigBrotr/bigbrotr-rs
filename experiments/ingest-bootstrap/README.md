@@ -9,8 +9,8 @@ and run `python3 experiments/ingest-bootstrap/run.py --root LAB`.
 The actual client invokes the real Control session, initial registry and native
 RocksDB writer. Its policy validator compares the entire frozen configuration
 fixture. This is adapter qualification, not the installed root validator.
-Seven finite cases cover a two-mapping write, close/reopen/exact replay, cancelled
-authority, expired policy deadline, closing producer, mismatched manifest and
+Eight finite cases cover a two-mapping write, close/reopen/exact replay, cancelled
+authority, expired policy deadline, closing producer, mismatched manifest/root and
 actual SIGKILL before native work / after commit before receipt delivery. Each
 case has its own database and native directory. Owned crash containers and data
 remain retained. The harness never removes an unrelated resource.

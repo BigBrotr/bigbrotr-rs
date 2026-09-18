@@ -246,6 +246,12 @@ impl IngestStore {
     pub const fn manifest(&self) -> &IngestManifest {
         &self.manifest
     }
+    /// Static-root comparison for the trusted configured factory. Paths are not
+    /// capabilities; operator-controlled roots must remain stable while open.
+    pub(in crate::storage) fn matches_configured_root(&self, expected: &Path) -> bool {
+        expected.is_absolute()
+            && fs::canonicalize(expected).is_ok_and(|path| path == self._reservation.path.0)
+    }
     pub const fn native_limits(&self) -> RocksNativeLimits {
         self.resources.limits()
     }

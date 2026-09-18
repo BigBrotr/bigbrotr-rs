@@ -200,7 +200,13 @@ async fn run(config: Config, mode: &str, path: &Path) {
         observer.execute("UPDATE control.producer_epochs SET state='closing' WHERE producer_slot_id=$1::bytea AND producer_epoch=1", &[&&spec.producer_slot_id.as_bytes()[..]]).await.unwrap();
     }
     let cancelled = AtomicBool::new(mode == "cancelled");
+    let wrong_root = path.parent().expect("absolute lab directory");
     let request = || InitialBatchRequest {
+        ingest_root: if mode == "wrong-root" {
+            wrong_root
+        } else {
+            path
+        },
         registration: &spec,
         intent: &intent,
         recorded_at: ObservedTime::new(123),
@@ -307,7 +313,7 @@ async fn run(config: Config, mode: &str, path: &Path) {
                     bigbrotr::storage::postgres::ingest_registry::RegistryError::InvalidMetadata
                 )
             ),
-            "wrong-manifest" => {
+            "wrong-manifest" | "wrong-root" => {
                 assert_eq!(error, InitialBatchError::Control(OwnerError::InvalidInput))
             }
             _ => panic!("unknown mode"),

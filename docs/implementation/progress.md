@@ -1,124 +1,120 @@
 # Current execution checkpoint
 
-Observed 2026-09-18. Replace this record as work advances; it is navigation,
-not another plan. Follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint)
-and verify Git, artifacts and owned process state before trusting it.
+Observed 2026-09-18. This is navigation, not a second plan. Follow the
+[resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint) and
+verify actual Git, evidence and owned resources before continuing.
 
-| Field | Last observed state |
-|---|---|
-| Stage | Owner-started product implementation, authorized 2026-09-17; [Q30](../planning/questions.md) and [mandate](../planning/mandate.md). The complete selected product remains the objective. |
-| Active slice | P02-T02 initial atomic dictionary batch implemented locally: connected Control backend, complete initial-state comparison/replay, native synchronized facts/inventory/counters/producer/receipt/pending. Four native Mac tests and ten dictionary tests pass; native Control/process/crash qualification is pending. General signed-event admission, archive/read/export/restart and the complete selected product remain required. |
-| Repository state | Starting main and origin/main were clean at 4a927bacac89096f7c08446921c7d3ea06f4a0ea. Root owns the new native/bootstrap, Control bridge, independent descriptor test, probe and related contract edits. The containing candidate is intended for exact-revision Tux qualification before publication. Resolve actual HEAD, dirty files and remote on resumption. Tested installed Control runtime remains 6be8515. |
-| Reading | Root read complete store/options/tests, model core codecs and effect/source types, identity/data/storage/operations/component contracts and affected key format. Pending read uses the exact pinned native snapshot API; independent reviewer found one decoder-error classification bug, reproduced and fixed. P08-T02/T03 authority and initial credential contracts inspected. Argon2 0.6.0 selected with explicit memory; scoped upstream review and independent C baseline recorded in owner-enrollment Mac evidence. Later archive/read/UI boundaries remain incompletely inspected and unimplemented. |
-| Integrated checks | Actual binary 9cd823a on native Tux Linux amd64/PG16.15: 14 CLI/harness cases and 74 SQL cases PASS, including 56 exact SQLSTATE negatives, external exact rows for all 13 added tables, eligible upgrade preservation and atomic populated-topology refusal. Corrected harness 145eb7c checks mounted artifact identity and complete CLI output. [Evidence](evidence/p02-ingest-control-engine-20260918.json). All 386 clean Git source entries/archive and downloaded executable SHA 4b36ae76... independently verified. Nine targeted Mac migration tests and Clippy PASS. |
-| Prior evidence | Initial 0001 native CLI/schema/privilege, COMMIT ambiguity/two-apply, TLS/mTLS and seven relational races retain their recorded scope: [engine](evidence/p02-control-engine-20260917.json), [fault/TLS](evidence/p02-control-faults-tls-20260917.json), [races](evidence/p02-control-races-20260917.json). CI 35284179910 at 8d1db2b audited: three ZIPs, 391 exact source entries, native toolchain receipts, 208 Linux practical cases and 154 complete traces verified. Pre-Rocks source, Mac practical cases skipped, binaries not retained; no storage/PG/release qualification. Audit path/hash in inventory. |
-| Native storage | [Mac evidence](evidence/p02-ingest-store-mac-20260918.json): 145 workspace tests at 94a40de and Clippy/fmt PASS. [Linux evidence](evidence/p02-ingest-store-linux-20260918.json): fresh source release build, 144 workspace tests, 398 source entries/archive and downloaded ELF verified. Ten Linux store tests plus three actual native profile and two static profile tests; Mac-only alias case absent on Linux. [Pending reader evidence](evidence/p02-ingest-pending-mac-20260918.json): five Mac native/codec and nine key tests PASS; Clippy PASS. PEND-01 classification bug fixed; independent review completed without residual concrete findings. The later full native CI at6314639 also executes the Linux pending reader tests (scoped test result, not admission/crash qualification). [Receipt codec evidence](evidence/p02-ingest-receipt-codec-20260918.json): 33 integrated Mac model tests (six receipt cases) and Clippy PASS; native receipt persistence remains unimplemented. [Dictionary evidence](evidence/p02-ingest-dictionary-codec-20260918.json): 166 integrated Mac workspace tests (nine dictionary tests), fmt and Clippy PASS; native library rebuilt for this feature tuple. No native dictionary allocation/admission claim. |
-| Policy candidate | [Mac evidence](evidence/p01-policy-seed-mac-20260918.json): 23 existing and four new actual CLI tests, one literal encoding test, Clippy/fmt PASS. Independently frozen bytes/digest; signed-zero defect reproduced and fixed. No durable policy write, activation or P01-T04 completion claimed. |
-| CI limit | [Recorded cancellation](evidence/ci-time-limit-20260918.json): amd64 exceeded the60min job bound during its second native compilation. The workflow now allows120min; subsequent run35293792908 at4f2ad35 completed success for the three foundation jobs (new artifact audit not yet executed). |
-| Float correction | [Mac evidence](evidence/p01-policy-float-roundtrip-20260918.json): upstream regression reproduced at the actual stored-policy boundary, then fixed by exact float decoding.183 workspace tests and Clippy PASS; the native JSONB fractional case also PASS at5dc6a7f (configuration engine evidence below). |
-| Bootstrap candidate | [Mac evidence](evidence/p01-control-bootstrap-mac-20260918.json):187 tests/Clippy/fmt PASS. [Native evidence](evidence/p01-control-bootstrap-native-20260918.json):25 actual PG cases PASS; all223 final relations across9 databases and6 complete215-field policies independently checked. Bootstrap remains separate from enrollment/grants. |
-| Configuration engine | [Native evidence](evidence/p01-config-inspection-native-20260918.json): source5dc6a7f,20 real Linux amd64/PG16.15 cases PASS. All215 non-root settings compared in8 accepted reports; each invocation left the full Control dump unchanged. Exact446 source files, downloaded executable c79c4c42... and native tool hashes verified. That earlier run did not qualify bootstrap, authentication, activation or maximum load. |
-| Enrollment candidate | [Mac evidence](evidence/p08-owner-enrollment-mac-20260918.json):192 workspace tests before final refinements; affected final checks/Clippy/fmt/deny passed. [Native evidence](evidence/p08-owner-enrollment-native-20260918.json):69 harness cases,15 SQL negatives,257 relations across9 primary databases and6 actual password hashes independently checked; populated upgrade and ten-database PG crash/restart passed. No session, live policy or writer lease is implied. |
-| Resources | All 1e87ce3 build/runtime clients stopped-retained, IDs/labels verified; 13 databases/internal network retained. Exact 501-file input, CLI f884f6e0... and probe 230ec81a... audited. At that earlier observation the shared checkout was1e87ce3; current resource state is below. Separate fresh CI source at runs/ci-0dabfaa/source is clean and mounted read-only; bigbrotr-implementation-ci-0dabfaa stopped-retained (exit 0, OOM false), owner 24373528e10936f41d0c8209ad2280c4, image sha256:71b2d400...; 2CPU/6GiB/512PIDs, no ports. See laboratory inventory for full IDs. |
-| Registry engine | [Native registry evidence](evidence/p02-ingest-registry-native-20260918.json):2032042 Linux amd64/PG16.15, five scenarios PASS. All433 exact source files and downloaded CLI/probe bytes verified. Before/after COMMIT loss, actual cancelled/concurrent lock schedules, complete rows across23 tables, refusals and stale state inspected. Scope excludes product policy/bootstrap/native authority. |
-| Findings/gates | 0002 refuses pre-existing unregistered topology atomically; no inferred source authority. Review fixed five schema cases and two acceptance oracle flaws. Eight actual lock schedules at 15c14ed plus final 23-relation inspection and backend cleanup PASS; [race evidence](evidence/p02-ingest-control-races-20260918.json). All 389 source files/archive and downloaded executable a3345bf7... verified. Native owner fencing, typed runtime coordination, real external receipts, retention/reclamation, durable signed-event/archive/read/export/restart and later product work remain. |
-| Next bounded action | Qualify the connected initial dictionary batch on a fresh exact-revision Tux source/lab with actual PG16.15 and RocksDB, independently compare all persisted bytes, and execute before/after process-kill cases. Then advance to the existing signed-event oracle and full event write set. No task step is completed by the bootstrap prerequisite alone. |
+## Mandate and current task
 
-Local authentication Mac checks: [evidence](evidence/p08-local-authentication-mac-20260918.json), 194 workspace tests, Clippy/fmt/structural checks PASS. Native Linux/PG: [evidence](evidence/p08-local-authentication-native-20260918.json), 16 CLI cases and independent 29-table audit PASS; owned runtime stopped-retained.
+Owner-authorized implementation is active ([Q30](../planning/questions.md),
+[mandate](../planning/mandate.md)). The objective remains the complete selected
+product, not this milestone. The session goal was freshly read as `active`.
+GitHub billing remains external NOT_RUN; use the shared trusted CI/build tooling
+on Tux. No public release, repository rename or Linux arm64 qualification exists.
 
-Keep secrets and raw logs outside this checkpoint. Unknown writes remain unknown
-until their owning recovery protocol resolves them. Resolve the containing commit
-and current remote state from Git; this note is not push evidence.
+P02-T02 initial dictionary bootstrap now connects the actual Control session to
+one synchronized native RocksDB batch, including facts, exact inventory,
+allocation/source counters, producer state, request receipt and pending marker.
+The existing receipt and pending readers consume it. Full retained replay checks
+the entire bounded initial state. No P02-T02 checkbox was advanced: general signed
+event admission, producer retirement, archive/read/export/restart and all later
+product responsibilities remain required.
 
-Initial activation: [Mac](evidence/p01-initial-activation-mac-20260918.json) 197 workspace tests and [native](evidence/p01-initial-activation-native-20260918.json) scoped qualification. These do not complete P01-T04/T06 or P08-T03.
+The latest local correction requires canonical endpoint bytes through the existing
+protocol normalizer and explicitly compares the locked directory with the trusted
+factory's configured root. The native probe now includes wrong-root refusal. This
+is still a connected backend slice; installed Ingest startup, full action grants,
+successor/recovery authority and event admission are not implemented.
 
-Control backend: [Mac](evidence/p01-control-owner-mac-20260918.json) 198 workspace tests; [native](evidence/p01-control-owner-native-20260918.json) scoped owner/registry qualification. The earlier 7c0c94f lab remains stopped-retained; current run is recorded above. Source/helper commits and native qualification are pushed in 38ccd0b; verify live Git before resuming.
+## Git and local ownership
 
-Control failure/recovery: [native evidence](evidence/p01-control-owner-faults-native-20260918.json). Actual freezes measured 63.73s and 63.70s against 60s scheduling TTL; 13 full Control dumps survived PG SIGKILL/restart. An early supplemental SQL invocation failed its read-only dump while the main harness was still running; the retained completed rerun passed. Release-COMMIT remains NOT_RUN; the later Control process matrix below exercises actual policy-refresh cancellation.
+Starting main/origin/main were clean at
+`4a927bacac89096f7c08446921c7d3ea06f4a0ea`. Candidate
+`524e38cc7bd0c4f003d78e0cb40018bdcc3eb874` is committed locally, not pushed.
+Root owns only the subsequent endpoint/root checks, corrected oracle/log retention,
+probe and relevant documentation/evidence/inventory changes. Resolve the containing
+correction commit and actual dirty/remote state on resumption; no other contributor
+writes were found. Published history was not rewritten. The Go neighbor is untouched.
 
-Trusted Tux CI: [native evidence](evidence/p01-trusted-ci-tux-20260918.json), full foundation at 0dabfaa: 197 Rust tests, 20 Python controls, 104 practical checks, 503 exact source files and downloaded ELF 8163423a... verified. Four corrected CI subprocess controls separately PASS on Mac and native Tux at 95ac5c9. Both containers freshly verified stopped-retained, full IDs/labels in inventory. Missing executable accounting was reproduced and fixed; the complete suite was not rerun for this runner-only correction. GitHub billing remains an external NOT_RUN, not product failure.
+Mac checks: 48 model tests and four initial actual native tests passed. The added
+endpoint test first reproduced an incorrectly accepted noncanonical URL; after
+fixing the writer, all five bootstrap tests pass. Workspace Clippy and the final
+probe check pass. See [Mac evidence](evidence/p02-ingest-bootstrap-mac-20260918.json)
+for exact source/log hashes and the intermediate missing-module compile error.
 
-Control process: [Mac evidence](evidence/p01-control-runtime-mac-20260918.json) records
-199 tests at the initial candidate; the final administration-gate correction has
-nine targeted tests and Clippy PASS. [Native evidence](evidence/p01-control-runtime-native-20260918.json)
-qualifies actual executable `6be8515`, SHA `0ee6429c...`, with 16 PG16.15 cases,
-511 exact source files, full 240-relation audit and seven complete lifecycle
-outputs/owner exclusion digests. Real SIGINT/SIGTERM, policy-expiry pause,
-cancelled lock wait and PG SIGKILL/restart executed. No application/blocker backend
-remained. Maximum documents/slow output, automatic reconnect, broader grants,
-native handoff and complete installed journeys remain NOT_RUN.
+## Native results and corrections
 
-New common foundation CI at `6314639`: all 14 steps, 198 Linux Rust tests, 21
-Python controls and 104 practical checks PASS. Independently audited 510 source
-files, downloaded ELF `5bc9a759...`, 17 signed outputs and 77 complete syscall
-traces. One macOS-only alias case explains the platform test count difference.
-That source lacked the enabled-administration refusal and does not qualify the
-corrected runtime. Full CI was not repeated at `6be8515`; actual corrected native
-build/matrix and targeted Mac checks supply its scope. GitHub billing remains
-external NOT_RUN; trusted Tux runs use the shared CI entrypoint without release
-credentials or untrusted PR execution.
+Candidate 524e38c built on Tux Linux amd64 from a new clean Git-bundle clone.
+All 528 archived and actual source files, source manifest, native tools and both
+downloaded ELF files were independently checked against Git:
 
-Current resources: shared Tux checkout remains clean detached `6be8515`, no
-consumers. Both new native jobs are stopped-retained, exit0/OOMfalse; final full
-inventory found zero running BigBrotr containers and the same eight unrelated
-running containers as both preflights. No resource was deleted:
+- CLI SHA-256 `9894ba33eb4bc773a69c73334d4a789bbf7b9c575a6350d6a504f7d088ff75b3`.
+- Probe SHA-256 `4aace7d0886d813abb305fdd794166f9824bb2e08144271778feb7c124a5aaae`.
+- Native release tests: 48 model and four bootstrap cases PASS; eleven downloaded
+  test executables independently hashed. These precede the endpoint/root correction.
 
-- `runs/ci-d0644ac`, container `8c00542b34ab40c228356ad41056aaa7391d9be3eb8db454c2fea55e10f237f1`,
-  owner `5eac340e8bea599cefb97ee0516b61fa`: all 14 shared CI steps, 202 Rust tests,
-  21 Python controls and 104 practical checks PASS. Independent audit compared
-  513 exact source files, ELF `000451d95977a80b4759c969f9a83454815148f26dce7f36895e92f3952c4266`,
-  17 complete signed outputs and 77 full syscall traces.
-- `runs/receipts-41fff54`, container `2ac31a2f76fc46d56f68136906f33f243eb2852aaabcf30a3f67d62eb75efb10`,
-  owner `3f610d43b3f9881ec93199bb7f8215cb`: six codec and five actual native
-  receipt tests PASS. All 517 actual source files compared against Git archive;
-  both test executables downloaded/hashed, Rust/Cargo/native tools independently
-  checked. Native read assertions are test-harness observed; no post-test external
-  DB inspection, admission or crash qualification is claimed.
+The first native runtime matrix is **FAIL**, after the first actual write/replay.
+Its independent Python oracle incorrectly used dictionary kind 1 for visibility;
+the pre-existing identity and descriptor contracts assign kind 4. Correcting that
+constant compares all twelve unchanged native rows, exact receipt and both fact
+preimages successfully. This local re-audit does not turn unexecuted crash/negative
+cases into PASS. The initial report and bytes are retained unchanged.
 
-Raw records/observers are under `.research/implementation/owned-event/`,
-`.research/implementation/ci/native-d0644ac/` and
-`.research/implementation/receipt-reader/`. The local receipt artifact observer
-initially failed because Python lacks `hashlib.file_digest`; its corrected bounded
-streaming SHA-256 audit passed on the same downloaded binaries without changing
-expected results. Full IDs, resource limits and terminal records are in the
-laboratory inventory and linked native evidence.
+The first native test launcher also failed before any test command: it precreated
+the output directory that shared CI `execute` requires to be absent. A corrected
+launcher ran all 52 tests in a separate retained container. The initial attempt
+remains NOT_RUN. An initial lab name was rejected before resource creation, and
+SFTP did not expand a brace expression; explicit artifact paths then downloaded
+and audited successfully. None of these errors was recorded as product PASS.
 
-Orchestration findings remain explicit in native evidence: original `6314639`
-preflight used the wrong source path and its shell continued launching; inventory
-was reconciled afterward. Corrected build and runtime each followed a separate
-successful preflight. The reused CI auditor expected20 controls instead of21;
-source inspection confirmed the added missing-tool test before correcting only
-the observer. The cleanup observer initially mistook the idle helper's SIGTERM143
-for a required zero exit; actual product exits were independently checked.
+Raw records, observers, failed and successful attempts:
+`.research/implementation/ingest-bootstrap/`. The exact build, original runtime
+report/dump, corrected-oracle audit and test artifacts are in `native-524e38c/`.
+Reproducible runtime/oracle sources are in `experiments/ingest-bootstrap/`.
 
-Next-slice reading completed: P02-T02 and key/pending formats; full identity/encoding,
-dictionary descriptors, model admission/dictionary/effect, store/pending/manifest,
-current Control owner/runtime and affected policy lifecycle. Signed admission
-fixture now read completely through lossless compact per-section output after
-the earlier truncated dump. Ingest registry adapter and its tests are fully
-read. EvidenceIntent already supplies the closed bounded dictionary bootstrap
-intent. Exact rocksdb0.25.0/librocksdb-sys0.19.0+11.8.1 write entrypoints, native
-options and WriteBatch interfaces inspected; scoped source hashes/intervals at
-`.research/implementation/control-runtime/admission-source-review.json`. Native
-WriteBatch capacity is not a maximum; bound/account values before FFI insertion.
-No admission code changed or new admission experiment executed yet.
+## Owned Tux state
 
-Automatic objective state was freshly read from the session service after the
-new candidate work: `active`, objective still the complete selected product.
-The earlier `usageLimited` observation is superseded; no limit was reset and no
-replacement agents were spawned. Preserve the objective across continuations.
+Latest complete inventory: `.research/implementation/ingest-bootstrap/correction-preflight.json`.
+Zero running BigBrotr containers; the same eight unrelated workloads remain
+running. Shared checkout remains clean detached `6be8515` with zero consumers.
+No unrelated or retained experimental resource was removed.
 
-Owned-event verifier: ten protocol tests (three new), five real CLI cases and the
-independent 15-variant/14-ID checker pass on Mac. See
-[Mac evidence](evidence/p02-owned-event-mac-20260918.json) and
-[native evidence](evidence/p02-owned-event-native-20260918.json).
-The initial missing-API compile failure is not a behavioral regression failure.
+Candidate root: `/home/tux/bigbrotr-implementation-20260917/runs/bootstrap-524e38c`.
+Its `source` checkout is immutable input, with separate writable `out` and retained
+`runtime` lab. Build container `bigbrotr-implementation-bootstrap-524e38c-build`
+(`09ad7c9f...`, owner `5bdbb89a14feeebb1af26fa10a2042c7`) stopped, exit0/OOMfalse.
+Initial test container stopped exit1 with no tests; retry stopped exit0/OOMfalse.
+The PG16.15 laboratory and idle client were explicitly stopped after their ownership
+labels were verified. Its first test database and native directory are retained.
+Full IDs, labels, limits, launch receipts and terminal records are in the
+[laboratory inventory](../research/laboratory-inventory.json). Build/test limits
+were 2CPU/6GiB/512PIDs; no ports, Docker socket or release credentials were exposed.
 
-Receipt reader: five actual engine cases, six unchanged golden codec cases and
-stable combined workspace Clippy pass on Mac; both suites pass on native Tux.
-See [Mac](evidence/p02-receipt-reader-mac-20260918.json) and
-[native evidence](evidence/p02-receipt-reader-native-20260918.json).
-Full request/dataset/digest binding, retained permits, original context and
-key/value non-mutation are checked. Inspection does not resolve missing detail,
-retire producers, authorize progress or implement admission writes. Full CI was
-not repeated at 41fff54; that revision received the selected native suites.
+## Reading and next bounded action
+
+Root reviewed the complete new writer, Control bridge, tests, probe and oracle;
+existing store/manifest/readers, model codecs and typed facts/effects; initial
+registry and Control owner; affected identity, dictionary, operations, storage
+and delivery contracts; and exact pinned RocksDB write/pin APIs. This slice has
+no independent agent review. Later archive/read/UI boundaries remain incompletely
+inspected and unimplemented. An actual engine test is evidence for its exercised
+behavior, not a complete release qualification.
+
+Commit the reviewed endpoint/root/oracle correction, transfer that exact revision
+through Git and run the corrected eight-case matrix in a fresh separately owned
+Tux lab. Preserve the failed initial lab. Independently audit all native bytes and
+Control relations, including actual before/after SIGKILL, then document and normally
+push verified work. Advance next to the existing signed-event oracle and complete
+atomic event write set; do not substitute further read helpers for admission.
+
+Earlier qualified prerequisites remain recorded in their individual evidence:
+[Control runtime](evidence/p01-control-runtime-native-20260918.json),
+[owned event verification](evidence/p02-owned-event-native-20260918.json),
+[native receipts](evidence/p02-receipt-reader-native-20260918.json),
+[initial registry](evidence/p02-ingest-registry-native-20260918.json),
+[storage](evidence/p02-ingest-store-linux-20260918.json),
+[configuration](evidence/p01-config-inspection-native-20260918.json),
+[enrollment](evidence/p08-owner-enrollment-native-20260918.json), and
+[trusted shared CI](evidence/p01-trusted-ci-tux-20260918.json).
+Their scoped results do not qualify the current correction, complete product,
+release, host/power loss, ENOSPC or maximum/aged-state load.

@@ -97,5 +97,44 @@
     "General event admission",
     "Installed runtime and release",
     "Linux arm64"
-  ]
+  ],
+  "boundary_correction": {
+    "source_base": "524e38cc7bd0c4f003d78e0cb40018bdcc3eb874",
+    "source_sha256": {
+      "apps/bigbrotr/src/storage/rocks/bootstrap.rs": "3da203a02ca935ab9dbddfa380e85982359c3da6da8b44cf33f2322bfe52a0b9",
+      "apps/bigbrotr/src/storage/rocks/store.rs": "cb13773f5fd8c693fa9ec6bf2b5ed0e97911b66be8661f2de828cf7f23be611e",
+      "apps/bigbrotr/src/storage/postgres/initial_batch.rs": "fe5eb87c887a7d7b231344254cf1ef9dd400ab7205a7ea4723e8fabf23be7e0b",
+      "apps/bigbrotr/src/storage/rocks/bootstrap_tests.rs": "fd5db92f384b64cca28842f3f27fb678418045fa5cacd4b545958f3bdc577c37",
+      "apps/bigbrotr/examples/ingest_bootstrap_probe.rs": "9fb37527e30e190d2421a6a21a670c87e36287a6f56956e5f168ea75bd4d10b4"
+    },
+    "findings": [
+      "A structurally valid noncanonical endpoint was admitted. The new actual-engine test reproduced the error before the writer called the existing protocol normalizer and required exact bytes.",
+      "The Control bridge now also compares the locked directory with the trusted static root; actual wrong-root refusal remains pending native execution.",
+      "Initial independent oracle used dictionary kind 1 for visibility. Existing identity and descriptor contracts assign kind 4; corrected oracle compares all 12 unchanged native rows and exact receipt/facts. The original runtime report remains FAIL."
+    ],
+    "red": {
+      "exit_code": 101,
+      "log": ".research/implementation/ingest-bootstrap/endpoint-red.log",
+      "sha256": "ddb1ca02f702ffaa95299127506b0e64607c8e0cc09eeeedfac0dc59ef0d737d"
+    },
+    "final_native_mac_tests": 5,
+    "checks": {
+      "endpoint-green-final.log": {
+        "path": ".research/implementation/ingest-bootstrap/endpoint-green-final.log",
+        "sha256": "4ad41a0e4d779dae9a436bf0ea82ba4bea28ebc94abcba1eedc25c206c563d08",
+        "exit_code": 0
+      },
+      "endpoint-clippy.log": {
+        "path": ".research/implementation/ingest-bootstrap/endpoint-clippy.log",
+        "sha256": "be2b54c52ca5171e6077fcf1129cba7229f0239379277fad81e6a5c1f35264ac",
+        "exit_code": 0
+      },
+      "probe-root-clippy.log": {
+        "path": ".research/implementation/ingest-bootstrap/probe-root-clippy.log",
+        "sha256": "d8430e684d1e8906aefea8832351ff21b0cd7fe25c192f7a10dc8fbefd773709",
+        "exit_code": 0
+      }
+    },
+    "intermediate_compile_error": "First fix referenced Endpoint at the crate root; corrected to its existing public endpoint module. No passing result was recorded for that build."
+  }
 }
