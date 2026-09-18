@@ -90,6 +90,30 @@ transaction; a successor must still resolve old activity positively. The private
 owns the implementation and scoped Linux amd64 qualification. Mac development does
 not inherit Linux process-lifecycle guarantees.
 
+Catalog recovery must exclude **every** old credential-holding coordinator and
+native client before treating an absent receipt as permission to publish again.
+Seal the attempt's login, positively establish client/process termination or an
+equivalent enforced storage fence, terminate/resolve its remaining catalog backend
+transactions, then inspect receipts in a new healthy transaction. Enumerating
+`pg_stat_activity` requires fresh statistics snapshots/transactions. A PID string,
+successful signal delivery, expired lease, NOLOGIN or an empty activity result
+alone is insufficient. Unknown termination or catalog state retains the job and
+source obligation; it does not authorize replacement publication or cleanup.
+
+The [exact native startup qualification](../implementation/evidence/p02-native-startup-exclusion-20260918.json)
+supports this ordering for the pinned trusted blocking libpq18.3 client and
+PG16.15 server: the server publishes backend status before ReadyForQuery, and
+the native client waits for readiness before sending catalog SQL. A terminated
+client cannot later issue SQL through an invisible startup connection; SQL already
+submitted remains a separate backend/receipt obligation. The real negative control
+keeps that client alive and commits after login revocation and empty activity.
+This is a dependency prerequisite, not implemented persistent product recovery.
+P02-T04 must persist attempt/process/credential ownership before exposing write
+authority and qualify successor recovery. An unreachable old host is unknown
+until an enforced exclusion is established; do not substitute a timeout or treat
+new local process capacity as old-host termination. Changing the native connection
+protocol, pool/credential ownership or process containment requires requalification.
+
 Infrastructure endpoints are operator-supplied trusted routes, distinct from
 untrusted relay/discovery URLs. Private PG/CH/S3/RPC endpoints are valid; keep
 their destination allowlist, DNS/TLS rules and credential scope explicit. A

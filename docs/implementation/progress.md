@@ -15,12 +15,13 @@ complete. Pending must not be reclaimed. Whole selected product remains required
 
 ## Git and ownership
 
-Mac main, integrating root only. Freshly verified HEAD and origin/main both
-`33267d018e6ee4e37db5e7a92d2e37c97acbf4e4`, clean before this slice. The three
-monitor fixes and final reports are pushed. Root now owns the native startup
-qualification harness/README and this checkpoint/inventory; no other writer.
-Exact inputs travel through Git; Tux is never an independently edited product
-workspace. Independent agents unavailable; root review only.
+Mac main, integrating root only. Last freshly verified HEAD
+`56ef588df56695abe90f6a57e133d56c46f00cc6`; origin/main remains
+`33267d018e6ee4e37db5e7a92d2e37c97acbf4e4`. Two unpublished exact-test candidates
+1b6c311/56ef588 add the native startup harness and corrected SCRAM trigger.
+Root owns its final report/contracts/README/inventory/checkpoint updates. No other
+writer or conflict. Source transfers through Git, readonly on Tux. Independent
+agents unavailable; root review only. Commit/push and verify actual remote state.
 
 ## Qualified product prerequisites
 
@@ -123,48 +124,59 @@ relevant callers/contracts. Artifact/handoff checks report no errors; their thre
 historical dependency-cycle candidates remain unchanged navigation warnings,
 not product tests. No full CI or independent agent review is claimed.
 
-## Resources and next bounded action
+## Current qualification and resources
 
-All sessions from this slice completed: native build 60668, SQL 74814, retirement 5765,
-Linux cache 34139, Mac tests 58123/24489 and Clippy 85606. All owned SQL sessions were
-positively removed before stop. Four new PG/client containers, the native builder
-and cache test container are stopped-retained. The two empty owned SQL networks
-were retired by exact ID/label/endpoint checks; catalogs/data/reports remain.
-Previous sixteen catalog/startup containers remain stopped; their six retired
-networks remain retired. Zero BigBrotr containers run. Twenty unrelated containers
-are unchanged, eight running. Shared Tux checkout remains clean/detached `6be851580ba415eed5ff0979ee7072480f9ee3ab` with zero consumers.
+[Native startup exclusion](evidence/p02-native-startup-exclusion-20260918.json)
+now passes two cases at harness56ef588 with exact a531ea3 Rust probe SHA
+793bd08ce5f99b32941da8485c0080c4656ed807ded41a7623b326a37b85e12d.
+610 source files independently match Mac Git archive and clean Linux readonly
+checkout. Actual PG extension binary embeds libpq18.3 (PQlibVersion180003);
+matching source tar verifies against the extension overlay SHA512.
 
-Detailed inventories: `implementation_job_bounds_20260918` and
-`implementation_archive_cache_20260918`. Raw local roots:
-`.research/implementation/job-bounds`, `tls-static`, `archive-cache`.
-Native exact runs: `runs/job-bounds-6a6f796`, `runs/archive-02d2a9b`,
-`runs/archive-cache-303763d` below the inventoried implementation root.
-No active experiment or unfinished mutation needs joining.
+The actual live native negative control publishes after NOLOGIN/empty activity.
+The positive case reaps the old client in3.16ms, commits its replacement before old
+server EOF, then observes late ReadyForQuery/server EOF with
+zero old SQL and final counts[1,1,1]. A bounded loopback relay observes message
+order/counts, never payloads. Startup delay triggers the case; it is not a fence.
+Initial1b6c311 attempt FAILED before completing a case because AuthenticationOk
+was buffered until startup completion; corrected trigger observes the actual
+SCRAM proof. Both results retained. No production schema/receipt/protection claim.
 
-Startup harness candidate `1b6c3116f118a51fe441460b90180c15e5600d69` ran and
-FAILED its first case: AuthenticationOk arrived only after the injected six-second
-delay, so waiting for it missed the invisible gap. No completed case is claimed.
-Both owned containers stopped, zero remaining job backends, empty network retired.
-Raw `native-startup/failed-result.json` retains the packet timings. The corrected
-trigger observes the client SCRAM proof, then measures actual ReadyForQuery/SQL.
+The [archive authority contract](../specification/archive-storage-contract.md#configuration-and-authority)
+now explicitly requires exclusion of all old credential holders, then resolution
+of remaining backends and a fresh receipt transaction. Unknown old host/process
+state cannot authorize replacement. P02-T04 still needs persisted ownership before
+credential handoff and actual successor recovery; this is not finished by the probe.
+Source read scope: blocking connect/connection AUTH_OK/query-start/ReadyForQuery
+branches in exact libpq18.3; PG16.15 relevant InitPostgres/PostgresMain/status-cache
+branches; native extension connection wrapper and existing private Process/worker.
+Not a complete libpq/server review. Persistent product recovery callers do not yet
+exist. Scope, source URLs/hashes and exclusions are in the report/inventory.
 
-Next: commit the corrected startup harness as an unpublished test candidate,
-transfer it through Git into a new clean Tux checkout and run its two cases with
-the already qualified a531ea3 native probe/bundle (record both identities). New
-`catalog_fence.py --case-set startup` uses a bounded loopback protocol observer,
-real SCRAM and startup-packet post_auth_delay: compare an invisible live native
-writer with positive SIGKILL/reap before a replacement commit. This is NOT_RUN.
-The observer records frame counts/order, never credential/SQL payloads; startup
-sleep is fault injection, not an exclusion timeout. All previous labs stay retired.
+All sessions terminal: source transfers68652/72187, native launch5731(FAIL)/36184
+(PASS), result transfer9386. Four new owned containers are stopped-retained with
+no OOM; zero job backends before PG stop. Both exact-label/ID empty networks retired.
+Fresh independent audit: zero BigBrotr containers running;20 unrelated identities,
+process incarnations, mounts and networks unchanged,8 running. Dynamic healthcheck
+logs and nondeterministic mount ordering are not identity changes. Shared checkout
+last observed clean/detached6be8515 in the prior slice; never used here.
 
-The exact PostgreSQL extension embeds libpq18.3 (actual PQlibVersion machine code
-returns180003), despite server16.15. The upstream18.3 source tar matches the SHA512
-pinned by extension41223e5. Read scope: PQconnectdb/pqConnectDBComplete, connection
-AUTH_OK branch, PQsendQueryStart/PQexecStart and ReadyForQuery parser branch;
-PG16.15 InitPostgres end/PostgresMain initialization/query-loop ordering and
-backend-status snapshot cache. Blocking connect waits for ReadyForQuery; status
-publication precedes that message. Activity reads must use fresh transactions.
-These source findings support the proposed client-reap plus backend-exclusion
-protocol, not a completed persistent product recovery implementation. Raw hashes,
-read scope and files are under catalog-fence/libpq-18.3 and pg-source; inventory
-tracks the narrowly added upstream sources. No pending reclamation.
+Inventory entry: `implementation_archive_worker_20260918.native_startup_exclusion`.
+Local raw root `.research/implementation/archive-worker/catalog-fence/native-startup`;
+exact upstream under sibling `libpq-18.3`/`pg-source`. Native roots beneath
+`/home/tux/bigbrotr-implementation-20260917/runs/`:
+`native-startup-1b6c311` and `native-startup-56ef588`. Retain source, data and reports;
+do not restart containers whose networks were retired. Earlier laboratories and
+MON qualification resources remain stopped as inventoried. No active experiment.
+
+## Next bounded action
+
+Review/commit/push this final qualification slice, verify origin/clean tree, then
+implement P02-T04 persisted publisher attempt/process/credential ownership and
+successor exclusion with real callers. Inspect existing Control owner/recovery,
+shared job schema and archive grant/process lifetimes before choosing the smallest
+persistent boundary. Bind authority before credential delivery; never use numeric
+PID existence, a lease or a timeout as termination evidence. Qualify parent death,
+restart and stale holder exclusion with the native worker/PG before relying on the
+protocol for scientific catalog initialization and signed publication. No pending
+reclamation before protection/readback/recovery acceptance.

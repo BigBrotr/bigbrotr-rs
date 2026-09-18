@@ -119,7 +119,8 @@ source identity separately from the newer Python harness revision. The bounded
 `catalog_startup_relay.py` observes one actual SCRAM connection on runner loopback,
 forwarding packets to the owned PG16.15 cluster without recording payloads. It
 compares NOLOGIN/empty activity with an alive client against positive client
-SIGKILL/reap and a replacement commit before late server startup completes.
+SIGKILL/reap and a replacement commit before late server EOF. The exact ordering
+between replacement COMMIT and ReadyForQuery was not timed.
 The observer must see no native query before ReadyForQuery and must drain actual
 server EOF; a sleeping interval does not establish exclusion. This is dependency
 qualification, not production authority, a general proxy or portable export.
@@ -128,4 +129,8 @@ The first startup run at `1b6c311` **failed before completing a case**: server
 AuthenticationOk was buffered until after the injected delay, so using that as
 the barrier missed the gap. The corrected trigger observes the actual client
 SCRAM proof; successful late ReadyForQuery still has to establish accepted login.
-That corrected run is NOT_RUN. Preserve the first run and its packet timings.
+The corrected run at `56ef588` passes both cases with the exact `a531ea3` native
+probe. [The report](../../docs/implementation/evidence/p02-native-startup-exclusion-20260918.json)
+records independent source/artifact checks, packet ordering, positive reap and
+replacement membership, the first failure and four stopped retained containers.
+Both empty owned networks were retired. Persistent product recovery remains open.

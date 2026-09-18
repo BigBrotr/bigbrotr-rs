@@ -6189,7 +6189,7 @@
       }
     },
     "native_startup_exclusion": {
-      "status": "first native run FAIL; corrected SCRAM-proof trigger NOT_RUN",
+      "status": "two native corrected cases PASS; first failed run retained; all four containers stopped; both empty networks retired",
       "local_root": ".research/implementation/archive-worker/catalog-fence/libpq-18.3",
       "postgres_extension_commit": "41223e51559cd581f1c06e170b71c71df25bbaac",
       "libpq_source": {
@@ -6224,6 +6224,20 @@
         "retired_network": "90d50c482d0e95acee408e2a2c3dd7d698384b2a0e1bb9ae1fc9c0ee3b53c93d",
         "result": ".research/implementation/archive-worker/catalog-fence/native-startup/failed-result.json",
         "failure": "AuthenticationOk buffered until after injected delay; empty-activity assertion refused; zero cases completed"
+      },
+      "corrected_run": {
+        "source": "56ef588df56695abe90f6a57e133d56c46f00cc6",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/native-startup-56ef588/lab",
+        "owner": "5a4c3d8fbc33af2fe397157acf839fea",
+        "containers": {
+          "bigbrotr-implementation-native-startup-56ef588-runner": "2f053b7aaae0c4ee61503cf7240c802c3b742ab06d09e55d396c03e68609201d",
+          "bigbrotr-implementation-native-startup-56ef588-pg": "56fb94be35197ac1f04cbf9f96c1cc591646d28ad5ca522cbf3e1f820f0f97c7"
+        },
+        "state": "all stopped-retained; no job backends; empty network retired",
+        "retired_network": "fd35c087dd4e74b891ca0ca5d88da3c7a042e6d255b8d1a5f69f58bfb9c3997d",
+        "result": ".research/implementation/archive-worker/catalog-fence/native-startup/result.json",
+        "audit": ".research/implementation/archive-worker/catalog-fence/native-startup/audit.json",
+        "report": "docs/implementation/evidence/p02-native-startup-exclusion-20260918.json"
       }
     }
   },

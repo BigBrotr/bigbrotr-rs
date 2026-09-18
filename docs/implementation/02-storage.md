@@ -263,6 +263,12 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   also disproves NOLOGIN plus empty activity as general exclusion: an invisible
   old connection later commits. Qualify actual process/client exclusion and
   credential/startup ordering before selecting the product protocol.
+  The [native libpq18.3/PG16.15 startup cases](evidence/p02-native-startup-exclusion-20260918.json)
+  now exercise both an invisible live native writer and positive kill/reap before
+  replacement. Persisted attempt/credential/process ownership and successor
+  recovery remain required; neither this probe nor parent-death signaling is that
+  implementation. Apply the [complete exclusion ordering](../specification/archive-storage-contract.md#configuration-and-authority)
+  to all credential holders and use fresh backend observations.
 - [ ] **Step 6:** Handle empty and one-small-event timer batches; publish useful progress
   without waiting for a size threshold that may never be reached.
 - [ ] **Step 7:** **Practical P02-T04:** run real PG/DuckLake transactions; kill preparation,

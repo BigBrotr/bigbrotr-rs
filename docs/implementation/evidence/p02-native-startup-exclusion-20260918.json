@@ -1,0 +1,185 @@
+{
+  "task": "P02-T04 steps3\u20135; native catalog startup exclusion prerequisite",
+  "status": "PASS within stated dependency/process scope",
+  "date": "2026-09-18",
+  "harness_source": "56ef588df56695abe90f6a57e133d56c46f00cc6",
+  "harness_source_tree": "1680e9d7f5e700c6e6086a8104467733e331e0ec",
+  "native_probe_source": "a531ea3ce345f4008a05bbf1696fd1e1f9827872",
+  "native_probe_sha256": "793bd08ce5f99b32941da8485c0080c4656ed807ded41a7623b326a37b85e12d",
+  "environment": {
+    "host": "Tux native Linux amd64",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "runner_image": "sha256:9d30ac361d158c281070d274427241bee955ead10904d6dbe4ff866200548f3d",
+    "server": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "cluster": "bigbrotr-fence-5a4c3d8fbc33af2fe397157acf839fea",
+      "host_scram": true
+    },
+    "observer_tools": {
+      "psql_sha256": "b6917af4a4c78ffd554b12e8fd9a6f4ac6590719373b45b15a10f7dec99af009",
+      "packages": "libpq5:amd64\t15.19-0+deb12u1\npostgresql-client-15\t15.19-0+deb12u1\n"
+    },
+    "runner_limits": {
+      "cpus": 2,
+      "memory_bytes": 2147483648,
+      "pids": 256
+    },
+    "postgres_limits": {
+      "cpus": 2,
+      "memory_bytes": 1610612736,
+      "pids": 256
+    },
+    "network": "fresh internal Docker network, no published ports; plaintext/SCRAM inside isolated lab; no release keys"
+  },
+  "actual_native_client": {
+    "duckdb": "1.5.5",
+    "binding": "1.10505.0",
+    "postgres_extension_commit": "41223e51559cd581f1c06e170b71c71df25bbaac",
+    "postgres_extension_sha256": "b1ced4cfc6311313e117c2afb3eac76508718778dde0716421503c7dbfb5605c",
+    "libpq": "18.3",
+    "binary_evidence": ".research/implementation/archive-worker/catalog-fence/libpq-18.3/native-version.json",
+    "binary_method": "nm locates hidden PQlibVersion; objdump body returns immediate180003; extension SHA matches qualified bundle",
+    "source_receipt": {
+      "url": "https://ftp.postgresql.org/pub/source/v18.3/postgresql-18.3.tar.bz2",
+      "tar_sha512": "fdbe6d726f46738cf14acab96e5c05f7d65aefe78563281b416bb14a27c7c42e4df921e26b32816a5030ddbe506b95767e2c74a35afc589916504df38d1cb11c",
+      "bytes": 22497924,
+      "files_sha256": {
+        "fe-connect.c": "44a6e386cbfd67ebe768d6ef5493098119c2e6b4796239d53e5ed7b122b206a5",
+        "fe-exec.c": "277f3c9607bc9e18e7081533015eac3a35109c4bc89aebca1d68a8f4fc1dae95",
+        "libpq-fe.h": "499d984421f5490be016f7d49a8599e7f8be120f0cf80c200e872265064be7c0",
+        "fe-protocol3.c": "ae7f7c2b6d0a42c98e6c6b5b73c66f2262cb7b1ff3343facd840a8b2aeb273fa"
+      },
+      "selection": "18.3 exact pinned extension overlay; connection/query/ReadyForQuery source branches inspected; not whole libpq"
+    }
+  },
+  "oracle_and_execution": [
+    "Fresh actual DuckLake catalog initialized through the already qualified Rust probe; one native writer per observed connection, no production archive schema.",
+    "Queue publish in the native process stdin before connection startup. Actual SCRAM proof triggers a half-second observation within injected post_auth_delay6. The interval is a trigger, never exclusion evidence.",
+    "Observe no role activity before and after NOLOGIN in independent fresh psql connections/transactions; verify login flag false and fresh real native attach refusal.",
+    "Negative: old native client remains alive, receives ReadyForQuery late and commits all three constant canary relations despite NOLOGIN/empty prior activity.",
+    "Positive: SIGKILL and wait/reap old native client; fresh activity exclusion; replacement reads all three families absent and commits before the relay observes old server EOF. Exact replacement-commit versus ReadyForQuery timing was not recorded. Observer drains the late real ReadyForQuery and server EOF with zero SQL from killed client. Independent new native read sees exactly[1,1,1].",
+    "Record only message types/counts/timings, never authentication or query payloads. Single-connection observer bounds startup/frame bytes, sockets, threads and elapsed work. All children reaped/observer threads joined."
+  ],
+  "cases": [
+    {
+      "case": "startup-live-native-negative-control",
+      "status": "PASS",
+      "new_connection": {
+        "exit": 1,
+        "phase": "attach"
+      },
+      "old_client": {
+        "exit": 0,
+        "phase": null
+      },
+      "wire": {
+        "queries_before_ready": 0,
+        "queries_after_ready": 133,
+        "proof_sent_seconds": 0.1533433240838349,
+        "authenticated_seconds": 6.154469192028046,
+        "ready_seconds": 6.154637346975505,
+        "client_eof_seconds": 12.719071339815855,
+        "server_eof_seconds": 12.720795473083854
+      },
+      "counts": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "case": "startup-reaped-client",
+      "status": "PASS",
+      "new_connection": {
+        "exit": 1,
+        "phase": "attach"
+      },
+      "old_client": {
+        "exit": -9,
+        "reaped_seconds": 0.0031628329306840897,
+        "backends_at_exclusion": []
+      },
+      "wire": {
+        "queries_before_ready": 0,
+        "queries_after_ready": 0,
+        "proof_sent_seconds": 0.150777876842767,
+        "client_eof_seconds": 0.9451165259815753,
+        "authenticated_seconds": 6.151934243738651,
+        "ready_seconds": 6.152074025012553,
+        "server_eof_seconds": 6.152963717933744
+      },
+      "counts": [
+        1,
+        1,
+        1
+      ]
+    }
+  ],
+  "initial_failure": {
+    "source": "1b6c3116f118a51fe441460b90180c15e5600d69",
+    "status": "FAIL",
+    "completed_cases": 0,
+    "cause": "AuthenticationOk was buffered until delayed startup completion; first empty-activity assertion failed. Corrected fault trigger observes client SCRAM proof; expectations unchanged.",
+    "result_path": ".research/implementation/archive-worker/catalog-fence/native-startup/failed-result.json",
+    "retained_root": "/home/tux/bigbrotr-implementation-20260917/runs/native-startup-1b6c311/lab"
+  },
+  "source_inspection": {
+    "client": "PG18.3 PQconnectdb/pqConnectDBComplete; AUTH_OK connection branch; PQsendQueryStart/PQexecStart; ReadyForQuery parser branch. PostgresUtils::PGConnect blocking connect and PostgresConnection wrapper. Not entire libpq.",
+    "server": "PG16.15 InitPostgres role validation/post_auth_delay/pgstat_bestart ordering; PostgresMain InitPostgres call then ReadyForQuery/ReadCommand; backend-status per-transaction snapshot caching. Not entire server.",
+    "inference": "For this trusted blocking native client, a positively terminated sole credential holder cannot send future SQL. Already-submitted transactions still require fresh backend exclusion/receipt resolution; login revocation alone cannot replace process exclusion."
+  },
+  "audit": {
+    "source_files": 610,
+    "source_method": "Mac git archive56ef588 SHA256 manifest equals every tracked file of clean exact Linux checkout; readonly source mount; clean before/after. Probe and bundle independently hash checked.",
+    "raw_result_sha256": "ee9d267cddefdf2d3bccfd3799e05363062fb7296c5f1631bd0ddc774fd3d324",
+    "audit_path": ".research/implementation/archive-worker/catalog-fence/native-startup/audit.json"
+  },
+  "cleanup": {
+    "owned_containers": [
+      {
+        "name": "bigbrotr-implementation-native-startup-1b6c311-runner",
+        "id": "c8fa56d9340bf1d5ad5c21ffd54ea23103502ae71ec2ee362af12e6954c1daf5",
+        "exit": 1,
+        "oom": false
+      },
+      {
+        "name": "bigbrotr-implementation-native-startup-1b6c311-pg",
+        "id": "996882404e3019b4de00d87e3f79ce272de909861d7a0e13ebe2f9688579309d",
+        "exit": 0,
+        "oom": false
+      },
+      {
+        "name": "bigbrotr-implementation-native-startup-56ef588-runner",
+        "id": "2f053b7aaae0c4ee61503cf7240c802c3b742ab06d09e55d396c03e68609201d",
+        "exit": 0,
+        "oom": false
+      },
+      {
+        "name": "bigbrotr-implementation-native-startup-56ef588-pg",
+        "id": "56fb94be35197ac1f04cbf9f96c1cc591646d28ad5ca522cbf3e1f820f0f97c7",
+        "exit": 0,
+        "oom": false
+      }
+    ],
+    "networks_removed": [
+      "90d50c482d0e95acee408e2a2c3dd7d698384b2a0e1bb9ae1fc9c0ee3b53c93d",
+      "fd35c087dd4e74b891ca0ca5d88da3c7a042e6d255b8d1a5f69f58bfb9c3997d"
+    ],
+    "method": "Exact IDs/owner labels, terminal containers, zero job backends and empty network endpoint checks; retained data/source/artifacts/results.",
+    "unrelated_unchanged": 20,
+    "unrelated_running": 8,
+    "running_bigbrotr": 0,
+    "comparison": "identities, process state/incarnation, mounts sorted by destination and networks; mutable healthcheck log excluded"
+  },
+  "not_qualified": [
+    "Persistent publisher intent and recovery authority across parent/process/container/host replacement. PID strings, signal delivery, leases and empty activity alone are insufficient.",
+    "Production role issuance/revocation and privilege split; all credential-holding coordinators/clients must be excluded, not only a convenient child.",
+    "Native pool concurrency/reconnection stress; already-ready backend/ambiguous COMMIT cases are separate a531ea3 evidence, not rerun here.",
+    "Full signed scientific row/reference fidelity, catalog schema, archive receipt, protection/reclaim, export/restart or M1.",
+    "Kernel uninterruptible task/host loss, power failure, memory peaks, mixed/aged workloads, latency SLA, native Linux arm64, hosted CI or release authentication."
+  ],
+  "raw_root": ".research/implementation/archive-worker/catalog-fence/native-startup",
+  "remote_root": "/home/tux/bigbrotr-implementation-20260917/runs/native-startup-56ef588/lab"
+}
