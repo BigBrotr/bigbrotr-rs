@@ -16,12 +16,10 @@ complete. Pending must not be reclaimed. Whole selected product remains required
 ## Git and ownership
 
 Mac main, integrating root only. Last freshly verified HEAD
-`56ef588df56695abe90f6a57e133d56c46f00cc6`; origin/main remains
-`33267d018e6ee4e37db5e7a92d2e37c97acbf4e4`. Two unpublished exact-test candidates
-1b6c311/56ef588 add the native startup harness and corrected SCRAM trigger.
-Root owns its final report/contracts/README/inventory/checkpoint updates. No other
-writer or conflict. Source transfers through Git, readonly on Tux. Independent
-agents unavailable; root review only. Commit/push and verify actual remote state.
+`e20198fd8a099493198a26e643e9200d79264865`, equal to freshly queried origin/main.
+All startup results/contracts and earlier monitor fixes are pushed. Root now owns
+a bounded alternative commit-guard experiment and its README/inventory/checkpoint;
+no other writer or conflict. Git transfers, readonly Tux source, root review only.
 
 ## Qualified product prerequisites
 
@@ -171,12 +169,31 @@ MON qualification resources remain stopped as inventoried. No active experiment.
 
 ## Next bounded action
 
-Review/commit/push this final qualification slice, verify origin/clean tree, then
-implement P02-T04 persisted publisher attempt/process/credential ownership and
-successor exclusion with real callers. Inspect existing Control owner/recovery,
-shared job schema and archive grant/process lifetimes before choosing the smallest
-persistent boundary. Bind authority before credential delivery; never use numeric
-PID existence, a lease or a timeout as termination evidence. Qualify parent death,
-restart and stale holder exclusion with the native worker/PG before relying on the
-protocol for scientific catalog initialization and signed publication. No pending
-reclamation before protection/readback/recovery acceptance.
+The next owning-code review read all ControlSession/runtime ownership and shared
+0001 job SQL, plus actual private worker/Process/PreparedBatch and pending feed.
+Shared finite user jobs do not include internal archive attempts; do not silently
+shoehorn publication into export/import or treat their Control fence as native
+authority. No persistent native attempt/recovery implementation exists yet.
+
+Before building a process-only recovery registry, qualify the bounded alternative
+`catalog_fence.py --case-set guard`: a PG BEFORE STATEMENT trigger on the exact28
+native metadata relations locks a separate owner row FOR SHARE and compares
+session_user; takeover updates that row. Keep old credentials/processes alive so
+only actual catalog enforcement can reject their native COMMIT. Two prepared
+cases cover ready and invisible startup clients; NOT_RUN. This is isolated
+research, not selected product SQL. It may avoid relying on remote process death
+for commit safety, but cleanup/resource grants still need positive termination.
+
+Source inspected at DuckLake d8a1881: complete PostgresMetadataManager cpp/hpp,
+InitializeDuckLake, transaction Commit/rollback/RunCommitLoop relevant branches;
+PG extension41223e5 complete PostgresTransaction. Official PG16 trigger/row-lock/
+isolation docs consulted. Not a full metadata/mutation audit. If initial actual
+native cases pass, test in-flight mutation versus takeover in both lock orders,
+rollback/fixed snapshots and privilege/DDL escape before choosing it. Adoption
+requires an explicit owning-contract exception for versioned metadata triggers,
+compatible initialization/migration and full closure checks; no native table data
+rewrites. If it fails, retain the result and use qualified process exclusion.
+
+Next: review/commit the isolated guard candidate, transfer its exact Git revision
+to a new Tux lab and execute its two discriminating native cases with the retained
+verified a531ea3 probe/bundle. Keep all previous labs retired. No pending reclaim.

@@ -22,7 +22,7 @@ sys.path.insert(0, '/source')
 from tools.archive_bundle import build_environment, native_target, verify_bundle
 
 parser = argparse.ArgumentParser(description=__doc__)
-parser.add_argument('--case-set', choices=['baseline', 'startup'], default='baseline')
+parser.add_argument('--case-set', choices=['baseline', 'startup', 'guard'], default='baseline')
 parser.add_argument('--probe', type=Path, required=True)
 parser.add_argument('--probe-sha256', required=True)
 parser.add_argument('--bundle', type=Path, required=True)
@@ -303,6 +303,53 @@ def startup_cases(admin):
         save()
 
 
+def guard_cases(admin):
+    # Candidate PG commit-boundary enforcement; no product selection is implied.
+    sql(Path(__file__).with_name('catalog_commit_guard.sql').read_text())
+    assert sql("SELECT count(*) FROM pg_trigger WHERE tgname='bigbrotr_writer_guard' AND tgenabled='O'") == '28'
+    for batch, startup in [(7, False), (8, True)]:
+        name = 'guard-invisible-live-client' if startup else 'guard-ready-live-client'
+        report['active_case'] = name
+        role, path = job_role()
+        sql(f"UPDATE bb_fence_guard.owner SET login='{role}' WHERE singleton")
+        relay = None
+        if startup:
+            from catalog_startup_relay import StartupRelay
+            relay = StartupRelay()
+            relays.append(relay)
+            dsn = path.read_text().replace('host=pg port=5432', f'host=127.0.0.1 port={relay.port}')
+            path.write_text(dsn.replace('connect_timeout=5', 'connect_timeout=15') +
+                            " gssencmode=disable options='-c post_auth_delay=6'")
+            a = Probe('write', path, batch)
+            assert relay.proof_sent.wait(15)
+            time.sleep(.5)  # Inject the gap; never used as exclusion evidence.
+            assert backends(role) == [] and a.process.poll() is None
+        else:
+            a = writer(path, batch)
+            assert backends(role) and a.process.poll() is None
+        replacement_role, replacement = job_role()
+        sql(f"UPDATE bb_fence_guard.owner SET login='{replacement_role}' WHERE singleton")
+        # Keep the old login/client/backend alive: only the actual metadata guard
+        # can prevent the old native transaction from committing after takeover.
+        assert sql(f"SELECT rolcanlogin FROM pg_roles WHERE rolname='{role}'") == 't'
+        commit(writer(replacement, batch))
+        if startup:
+            ready = a.message()
+            assert ready == {'stage': 'ready', 'counts': [1, 1, 1]}
+        a.send(b'publish\n')
+        stale = a.finish(False)
+        assert stale['phase'] == 'commit'
+        wire = relay.finish() if relay else None
+        if wire:
+            assert wire['queries_before_ready'] == 0 and wire['queries_after_ready'] > 0
+        assert read(batch, admin) == [1, 1, 1]
+        assert backends(role) == []
+        cases.append({'case': name, 'status': 'PASS', 'stale_result': stale,
+                      'old_login_retained': True, 'old_client_killed': False,
+                      'counts': [1, 1, 1], 'wire': wire})
+        save()
+
+
 try:
     report['active_case'] = 'initialization'
     assert sql('SHOW cluster_name') == args.cluster, 'unowned PostgreSQL cluster'
@@ -319,8 +366,10 @@ try:
 
     if args.case_set == 'baseline':
         baseline_cases(admin)
-    else:
+    elif args.case_set == 'startup':
         startup_cases(admin)
+    else:
+        guard_cases(admin)
     report['status'] = 'PASS'
 except BaseException as error:
     report.update(status='FAIL', failure=type(error).__name__)

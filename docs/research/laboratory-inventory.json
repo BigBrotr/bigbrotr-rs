@@ -6239,6 +6239,24 @@
         "audit": ".research/implementation/archive-worker/catalog-fence/native-startup/audit.json",
         "report": "docs/implementation/evidence/p02-native-startup-exclusion-20260918.json"
       }
+    },
+    "catalog_commit_guard_probe": {
+      "status": "two-case native experiment prepared, NOT_RUN; no product selection",
+      "native_source": "d8a1881e22516ea3d186d73e83c65fe5bd1a1dc4",
+      "source_files_sha256": {
+        "src/metadata_manager/postgres_metadata_manager.cpp": "c5783bf61ff1999565046de62a6b4c27f4ca6145dba7e39a609f282cab45879c",
+        "src/include/metadata_manager/postgres_metadata_manager.hpp": "b9e44f4ff0f3a95cfb40222fbecb06c87804e8bec544a5c673a3e627b262c9f3",
+        "src/storage/ducklake_metadata_manager.cpp": "92586c88a5b26fb8a2d4caddaa4ad0385f49866f7f13a283e298868ac7f054b8",
+        "src/storage/ducklake_transaction.cpp": "813005692d8b4bc72747e51085de2b7337dd9c035ae410eae8dba74942b2a37e"
+      },
+      "read_scope": "complete PostgresMetadataManager cpp/hpp; InitializeDuckLake; Commit/rollback/RunCommitLoop relevant branches; postgres extension41223e5 complete PostgresTransaction. Not full mutation audit.",
+      "official_sources": [
+        "https://www.postgresql.org/docs/16/sql-createtrigger.html",
+        "https://www.postgresql.org/docs/16/explicit-locking.html",
+        "https://www.postgresql.org/docs/16/transaction-iso.html"
+      ],
+      "purpose": "Qualify metadata statement guard on transaction-held owner row; stale ready/invisible clients kept alive to discriminate actual storage exclusion. Requires later concurrency/privilege/migration tests before product selection.",
+      "resources": "none yet; previous laboratories stay retired"
     }
   },
   "implementation_monitor_corrections_20260918": {

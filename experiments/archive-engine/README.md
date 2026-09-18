@@ -134,3 +134,17 @@ probe. [The report](../../docs/implementation/evidence/p02-native-startup-exclus
 records independent source/artifact checks, packet ordering, positive reap and
 replacement membership, the first failure and four stopped retained containers.
 Both empty owned networks were retired. Persistent product recovery remains open.
+
+`catalog_fence.py --case-set guard` is a new, **NOT_RUN** alternative experiment:
+`catalog_commit_guard.sql` adds a PostgreSQL BEFORE STATEMENT guard on all28
+catalog relations created by the pinned DuckLake initializer. Its dedicated
+row-lock-protected login must match `session_user` for every metadata mutation;
+ordinary writers lose DDL privileges. Takeover updates that same row. The two
+initial cases keep old clients/logins alive (ready and invisible-startup) and
+require their native COMMIT to fail after replacement publication. This proposes
+an actual storage boundary instead of inferring one from client coordination.
+It is not a product migration or selected replacement: concurrent in-flight
+mutation/rollback, isolation, privilege/DDL escape, full metadata coverage,
+maintenance/migration compatibility and practical cost still need qualification.
+Native metadata values are never manually edited. Production adoption would
+require an explicit update to the archive ownership contract and migration path.
