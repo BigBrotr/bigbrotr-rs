@@ -31,9 +31,9 @@ successor/recovery authority and event admission are not implemented.
 Starting main/origin/main were clean at
 `4a927bacac89096f7c08446921c7d3ea06f4a0ea`. Candidate
 `524e38cc7bd0c4f003d78e0cb40018bdcc3eb874` is committed locally, not pushed.
-Root owns only the subsequent endpoint/root checks, corrected oracle/log retention,
-probe and relevant documentation/evidence/inventory changes. Resolve the containing
-correction commit and actual dirty/remote state on resumption; no other contributor
+Correction `31bac4a22a3102e99be49b0c90799542adb12cee` is also committed locally
+and not pushed. Root now owns only current checkpoint/inventory/evidence updates.
+Resolve actual HEAD and dirty/remote state on resumption; no other contributor
 writes were found. Published history was not rewritten. The Go neighbor is untouched.
 
 Mac checks: 48 model tests and four initial actual native tests passed. The added
@@ -74,7 +74,7 @@ Reproducible runtime/oracle sources are in `experiments/ingest-bootstrap/`.
 
 ## Owned Tux state
 
-Latest complete inventory: `.research/implementation/ingest-bootstrap/correction-preflight.json`.
+Latest complete inventory: `.research/implementation/ingest-bootstrap/final-preflight.json`.
 Zero running BigBrotr containers; the same eight unrelated workloads remain
 running. Shared checkout remains clean detached `6be8515` with zero consumers.
 No unrelated or retained experimental resource was removed.
@@ -100,12 +100,27 @@ no independent agent review. Later archive/read/UI boundaries remain incompletel
 inspected and unimplemented. An actual engine test is evidence for its exercised
 behavior, not a complete release qualification.
 
-Commit the reviewed endpoint/root/oracle correction, transfer that exact revision
-through Git and run the corrected eight-case matrix in a fresh separately owned
-Tux lab. Preserve the failed initial lab. Independently audit all native bytes and
-Control relations, including actual before/after SIGKILL, then document and normally
-push verified work. Advance next to the existing signed-event oracle and complete
-atomic event write set; do not substitute further read helpers for admission.
+The corrected exact source `31bac4a22a3102e99be49b0c90799542adb12cee`
+(tree `aa5fac0fc727f98b66311fb00e7d85df05af5b3d`) completed its native build,
+five writer tests and eight connected cases. Independent local audits checked
+528 source files, downloaded CLI/probe/test ELF bytes, all thirty Control tables
+per case (240 relations), all thirty native rows across the eight databases,
+exact receipt/fact bytes and terminal container identities. See the
+[native evidence](evidence/p02-ingest-bootstrap-native-20260918.json).
+The before/after SIGKILL workers exited 137 without OOM. No product PostgreSQL
+backends remained before the owned lab was stopped. Six corrected containers,
+its network and all data are stopped/retained under `runs/bootstrap-31bac4a`.
+Zero BigBrotr containers now run; the same eight unrelated containers retain
+identities, process/start state, mounts, ports, labels and healthy status. The
+first final-inventory comparison included volatile rolling health logs and mount
+ordering; the corrected audit excludes only health logs and sorts complete mounts.
+
+Current dirty files belong to root: checkpoint, laboratory inventory, scoped native
+evidence and its task/contract links. Review this documentation diff, run affected
+artifact checks and make a qualification commit, then normally push verified work
+(the two candidate commits are still unpublished at this observation). Advance
+next to the existing signed-event oracle and complete atomic event write set;
+do not substitute further read helpers for admission.
 
 Earlier qualified prerequisites remain recorded in their individual evidence:
 [Control runtime](evidence/p01-control-runtime-native-20260918.json),

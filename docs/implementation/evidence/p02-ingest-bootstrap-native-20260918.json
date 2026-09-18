@@ -1,0 +1,322 @@
+{
+  "format": "bigbrotr-initial-native-batch/1",
+  "observed_date": "2026-09-18",
+  "source": "31bac4a22a3102e99be49b0c90799542adb12cee",
+  "tree": "aa5fac0fc727f98b66311fb00e7d85df05af5b3d",
+  "environment": {
+    "host": "Tux isolated Docker lab",
+    "os": "Linux",
+    "architecture": "x86_64",
+    "rust": "1.98.1",
+    "clang": "14.0.6",
+    "rocksdb_binding": "0.25.0",
+    "native_rocksdb": "11.8.1",
+    "postgres": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
+    },
+    "build_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "client_image": "sha256:beb1b1d81ab841af53b71bf545d4184f37ce3e20fd7505eaf1f7f16a74469dd2"
+  },
+  "dependency_lock_sha256": "ea27c2b367846c4718a6d76fbd1a8340558299ccf9f22c76ed3f30c4b8025b47",
+  "source_files": 528,
+  "artifacts": {
+    "cli_sha256": "517e3ab1030465b42cd26304497165c407fe67c217b0aafc2823abf8b57ced77",
+    "probe_sha256": "6deeba758f1a825555b05dd4d091400a9f95d3038aa858e99d636311cff0f5cf",
+    "tests": {
+      "bigbrotr-4138cbc2bd3edc89": {
+        "sha256": "a4460f021c80188db5d940f27d1c85361358112010657b5ae74f6d2cc7af2396",
+        "bytes": 12591936
+      }
+    }
+  },
+  "native_tools": {
+    "CC": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+    "CXX": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+    "AR": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+    "LIBCLANG_PATH": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+    "discovery": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e"
+  },
+  "runtime_cases": [
+    {
+      "name": "write",
+      "result": "PASS",
+      "native_rows": 12,
+      "native_sha256": "09689724adbb930e981fe4643f2a8c121b3d83c3b9ce92cb7a596551c2fdc06d",
+      "control_tables": 30
+    },
+    {
+      "name": "cancelled",
+      "result": "PASS",
+      "native_rows": 1,
+      "native_sha256": "0e86c8e6121b9c999e5d5ccd027e4cd3b4608e5501a7f652ba32c378ef08bb39",
+      "control_tables": 30
+    },
+    {
+      "name": "expired",
+      "result": "PASS",
+      "native_rows": 1,
+      "native_sha256": "0e86c8e6121b9c999e5d5ccd027e4cd3b4608e5501a7f652ba32c378ef08bb39",
+      "control_tables": 30
+    },
+    {
+      "name": "retired",
+      "result": "PASS",
+      "native_rows": 1,
+      "native_sha256": "0e86c8e6121b9c999e5d5ccd027e4cd3b4608e5501a7f652ba32c378ef08bb39",
+      "control_tables": 30
+    },
+    {
+      "name": "wrong-manifest",
+      "result": "PASS",
+      "native_rows": 1,
+      "native_sha256": "19a43121feab9c8cb4465a51a962a7afc5f6a7db77f2d3abbc180aa309107820",
+      "control_tables": 30
+    },
+    {
+      "name": "wrong-root",
+      "result": "PASS",
+      "native_rows": 1,
+      "native_sha256": "0e86c8e6121b9c999e5d5ccd027e4cd3b4608e5501a7f652ba32c378ef08bb39",
+      "control_tables": 30
+    },
+    {
+      "name": "before",
+      "result": "PASS",
+      "native_rows": 1,
+      "native_sha256": "0e86c8e6121b9c999e5d5ccd027e4cd3b4608e5501a7f652ba32c378ef08bb39",
+      "control_tables": 30
+    },
+    {
+      "name": "after",
+      "result": "PASS",
+      "native_rows": 12,
+      "native_sha256": "09689724adbb930e981fe4643f2a8c121b3d83c3b9ce92cb7a596551c2fdc06d",
+      "control_tables": 30
+    }
+  ],
+  "independent_audit": {
+    "status": "PASS",
+    "source": "31bac4a22a3102e99be49b0c90799542adb12cee",
+    "cases": 8,
+    "control_relations": 240,
+    "complete_native_rows": 30,
+    "cases_checked": {
+      "write": {
+        "native_rows": 12,
+        "control_relations": 30
+      },
+      "cancelled": {
+        "native_rows": 1,
+        "control_relations": 30
+      },
+      "expired": {
+        "native_rows": 1,
+        "control_relations": 30
+      },
+      "retired": {
+        "native_rows": 1,
+        "control_relations": 30
+      },
+      "wrong-manifest": {
+        "native_rows": 1,
+        "control_relations": 30
+      },
+      "wrong-root": {
+        "native_rows": 1,
+        "control_relations": 30
+      },
+      "before": {
+        "native_rows": 1,
+        "control_relations": 30
+      },
+      "after": {
+        "native_rows": 12,
+        "control_relations": 30
+      }
+    },
+    "scope": "Exact native bytes and retained Control relationships; the retired-named case exercises closing, not complete producer retirement."
+  },
+  "native_tests": {
+    "status": "PASS",
+    "source": "31bac4a22a3102e99be49b0c90799542adb12cee",
+    "tests": 5,
+    "artifacts": {
+      "bigbrotr-4138cbc2bd3edc89": {
+        "sha256": "a4460f021c80188db5d940f27d1c85361358112010657b5ae74f6d2cc7af2396",
+        "bytes": 12591936
+      }
+    },
+    "log_sha256": "43b9d8060bd70a4a229a12c266609eea3f48302d613fb7db20ef3efa8809e9f4"
+  },
+  "crash_containers": [
+    {
+      "name": "bigbrotr-implementation-pg-20260917-bootstrap_fixed-client-before",
+      "state": "stopped-retained",
+      "id": "b765ef3a54b2babea2fd1a86af7c869f99f18b43de908a22760a0b5f09aa5185",
+      "terminal": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 137,
+        "Error": "",
+        "StartedAt": "2026-09-18T08:25:13.198143642Z",
+        "FinishedAt": "2026-09-18T08:25:13.467112445Z"
+      }
+    },
+    {
+      "name": "bigbrotr-implementation-pg-20260917-bootstrap_fixed-client-after",
+      "state": "stopped-retained",
+      "id": "50ec25975111f729f7eae30c5f622f9f4b156d37ae2002a7df5ec344f3d558f0",
+      "terminal": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 137,
+        "Error": "",
+        "StartedAt": "2026-09-18T08:25:18.083435087Z",
+        "FinishedAt": "2026-09-18T08:25:18.380492249Z"
+      }
+    }
+  ],
+  "resource_limits": {
+    "build_and_tests": {
+      "cpus": 2,
+      "memory_bytes": 6442450944,
+      "pids": 512
+    },
+    "postgres": {
+      "cpus": 2,
+      "memory_bytes": 1610612736,
+      "pids": 256
+    },
+    "client": {
+      "cpus": 2,
+      "memory_bytes": 4294967296,
+      "pids": 256
+    },
+    "crash_workers": {
+      "cpus": 2,
+      "memory_bytes": 536870912,
+      "pids": 128
+    },
+    "all": {
+      "published_ports": [],
+      "uid_gid": "1000:1000",
+      "read_only_root": true,
+      "capabilities_dropped": "ALL",
+      "release_credentials": false
+    }
+  },
+  "lifecycle": {
+    "runtime_root": "/home/tux/bigbrotr-implementation-20260917/runs/bootstrap-31bac4a/runtime",
+    "runtime_owner": "7c365861d73178149d5ab6b6c98c7bab",
+    "state": "stopped-retained",
+    "active_product_backends_before_stop": 0,
+    "cleanup_audit": {
+      "status": "PASS",
+      "unrelated_running_unchanged": 8,
+      "bigbrotr_running": 0,
+      "shared_source": "6be851580ba415eed5ff0979ee7072480f9ee3ab",
+      "excluded_volatile_fields": [
+        "Docker Health.Log rolling timestamps/output"
+      ],
+      "mounts_compared": "complete values sorted by destination",
+      "initial_observer_failure": "Comparing complete Docker inspect included rolling health logs and unordered mounts; stable health status, container identities, start/PID, labels, ports and every mount compared unchanged."
+    }
+  },
+  "previous_attempts": [
+    {
+      "source": "524e38cc7bd0c4f003d78e0cb40018bdcc3eb874",
+      "build": "PASS, exact source and two ELF artifacts independently audited",
+      "native_tests": "48 model and 4 bootstrap PASS in corrected launcher; first launcher NOT_RUN because output directory preexisted",
+      "runtime": "FAIL after actual first write/replay: oracle used visibility kind 1, existing contracts specify 4. Corrected local oracle validates unchanged 12 native rows; other original matrix cases remain NOT_RUN."
+    }
+  ],
+  "review_boundaries": [
+    "Integrating owner reviewed writer, Control bridge, tests, probe, oracle and harness; no independent agent review.",
+    "Actual frozen complete policy fixture validator, not installed runtime root/action authority.",
+    "Retired-named case exercises a producer in closing state, not complete epoch retirement.",
+    "SIGKILL before native dispatch and after commit before external receipt; no mid-FFI injection.",
+    "Independent Python checks full native keys/values, receipt/fact bytes, all 30 Control tables per case and complete registry/authority relationships.",
+    "All source files compared against exact Git archive; downloaded executable and native tool bytes independently hashed."
+  ],
+  "not_run": [
+    "power-loss",
+    "ENOSPC",
+    "write-error-ambiguity",
+    "mid-FFI-kill",
+    "producer-closing-concurrent-with-FFI",
+    "maximum-batch-load",
+    "general-event-admission",
+    "installed-runtime",
+    "successor-recovery-authority",
+    "arm64",
+    "complete-product",
+    "release-installation",
+    "aged-state-load",
+    "full-shared-CI-at-31bac4a"
+  ],
+  "evidence_sha256": {
+    ".research/implementation/ingest-bootstrap/native-31bac4a/build-audit.json": "162606fe756c275fdb098f586410a89173077849a4ed2cb0f1eb560bb6a2563c",
+    ".research/implementation/ingest-bootstrap/native-31bac4a/source-manifest.json": "dfe35562caa2bbfe13509bd8b80d6b88491b437a1a09d50e2968c75fdd02e28c",
+    ".research/implementation/ingest-bootstrap/native-31bac4a/source.tar": "63c2cf6166ad57e495ac4c1458a376bbb67c8e6dc1af22b6008b4b826508fe33",
+    ".research/implementation/ingest-bootstrap/native-31bac4a/build-result.json": "d24e80107e7b468a4d18655b581a08a123ac8865d59d5173f9bbd03d9fd6be16",
+    ".research/implementation/ingest-bootstrap/native-31bac4a/ingest-bootstrap-probe-build.json": "6d7b106ad1136e780fbd749c833a32b3d8ecb0e452ac326154de47284e197945",
+    ".research/implementation/ingest-bootstrap/native-31bac4a/observation.json": "765dd1de59fcda7a305978bd25077cbf4a1b84be1d6337b17d3f0ce2fa44cca3",
+    ".research/implementation/ingest-bootstrap/native-31bac4a/ingest-bootstrap.json": "877584eebaa51988de448dd66cc25cc4822b60a3a502bd33965a53bcfd504a52",
+    ".research/implementation/ingest-bootstrap/native-31bac4a/runtime-audit.json": "e4f45b24b0dc9415e0228296607e5aeeb66792c60e6ac061c8ecf817dcf84242",
+    ".research/implementation/ingest-bootstrap/native-31bac4a/tests/result.json": "07ea4fc71abc0af91bfebab98eb1e9dcb68452094c4f2f03ba98926a69e0fc5e",
+    ".research/implementation/ingest-bootstrap/native-31bac4a/tests/artifacts.json": "5fc361bad46b73b762c03ad6e336ac17fea1dd2e8dcae21029c01bc9a3462d93",
+    ".research/implementation/ingest-bootstrap/native-31bac4a/tests/local-audit.json": "f639a737fa0bbb49ca180b533f4d8cb8159929364d3ee9c427e01d6944eb8077",
+    ".research/implementation/ingest-bootstrap/native-31bac4a/tests/native-bootstrap.log": "43b9d8060bd70a4a229a12c266609eea3f48302d613fb7db20ef3efa8809e9f4",
+    ".research/implementation/ingest-bootstrap/runtime-terminal-31bac4a.json": "cd7cdd1c1b5d6bed757dcca1a8bfa1b52c511d05fa0e6f575944e76e9356f9b5",
+    ".research/implementation/ingest-bootstrap/cleanup-audit.json": "ee42380140022edf26ed47168dde9d6aa4cc6aeef13488b0c83ae6081f213f8f",
+    ".research/implementation/ingest-bootstrap/final-preflight.json": "76151170709d8f2849b9c8d728e9b55b3ae6594270a1597ed280ec212e3b2359",
+    ".research/implementation/ingest-bootstrap/audit-runtime-31bac4a.py": "764a907721ed04847aa88ca10c3c603a7b3f38dd28a89149426fae797d6984a2",
+    ".research/implementation/ingest-bootstrap/native-524e38c/oracle-correction.json": "7fe0752f2467cb0467fe27500dbfd6f305548d7b01eaf9f8ae65b71979dcd2a8",
+    ".research/implementation/ingest-bootstrap/native-31bac4a/write.stdout": "f056a1d3e92e0ef2304a8f8cfa2f486d63df3330de4df226689dc61f4eb209a3",
+    ".research/implementation/ingest-bootstrap/native-31bac4a/write.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".research/implementation/ingest-bootstrap/native-31bac4a/write.rocks.json": "09689724adbb930e981fe4643f2a8c121b3d83c3b9ce92cb7a596551c2fdc06d",
+    ".research/implementation/ingest-bootstrap/native-31bac4a/write.control.json": "f96e191359a1cf6a5c337b3ca7bad31a68879b957a00a98742354fc3d7910e17",
+    ".research/implementation/ingest-bootstrap/native-31bac4a/cancelled.stdout": "4c330161f2a4e1af60a00c1f0b12d59391fe23c24e3926fbad38e7284180875f",
+    ".research/implementation/ingest-bootstrap/native-31bac4a/cancelled.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".research/implementation/ingest-bootstrap/native-31bac4a/cancelled.rocks.json": "0e86c8e6121b9c999e5d5ccd027e4cd3b4608e5501a7f652ba32c378ef08bb39",
+    ".research/implementation/ingest-bootstrap/native-31bac4a/cancelled.control.json": "562a8c04eb3d5cdcfcfbef207c9d0dfc3f48890312f594a7487cc48729191389",
+    ".research/implementation/ingest-bootstrap/native-31bac4a/expired.stdout": "97a6e28e6020a400f1001e487f61a479972793b2f539c1b472e7479287ba77e6",
+    ".research/implementation/ingest-bootstrap/native-31bac4a/expired.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".research/implementation/ingest-bootstrap/native-31bac4a/expired.rocks.json": "0e86c8e6121b9c999e5d5ccd027e4cd3b4608e5501a7f652ba32c378ef08bb39",
+    ".research/implementation/ingest-bootstrap/native-31bac4a/expired.control.json": "ca48af12a49da2a27495c257976e150b27c72910c7ed61bd8418ba915d2daf83",
+    ".research/implementation/ingest-bootstrap/native-31bac4a/retired.stdout": "34832d2d46b7d576459d85634e90a35a74b00b7a07fe99a07c70c6a0b7eb835a",
+    ".research/implementation/ingest-bootstrap/native-31bac4a/retired.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".research/implementation/ingest-bootstrap/native-31bac4a/retired.rocks.json": "0e86c8e6121b9c999e5d5ccd027e4cd3b4608e5501a7f652ba32c378ef08bb39",
+    ".research/implementation/ingest-bootstrap/native-31bac4a/retired.control.json": "e47d7c6c65d290c7c4cad084a0ace9b89e93920e0673ea394ce056e14b48340e",
+    ".research/implementation/ingest-bootstrap/native-31bac4a/wrong-manifest.stdout": "10155c4c010da6b6f7bbfbe40627f12dab6c30ddf4877b980869fe15b72c25e2",
+    ".research/implementation/ingest-bootstrap/native-31bac4a/wrong-manifest.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".research/implementation/ingest-bootstrap/native-31bac4a/wrong-manifest.rocks.json": "19a43121feab9c8cb4465a51a962a7afc5f6a7db77f2d3abbc180aa309107820",
+    ".research/implementation/ingest-bootstrap/native-31bac4a/wrong-manifest.control.json": "0cb077c94860cf5a34c0bd723d26ec5f7abda752715bee6ee352b274b9a59991",
+    ".research/implementation/ingest-bootstrap/native-31bac4a/wrong-root.stdout": "75a8a4240f6698b7f5772abdc0087d1663fafad5281f12035ee48b72ea15b604",
+    ".research/implementation/ingest-bootstrap/native-31bac4a/wrong-root.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".research/implementation/ingest-bootstrap/native-31bac4a/wrong-root.rocks.json": "0e86c8e6121b9c999e5d5ccd027e4cd3b4608e5501a7f652ba32c378ef08bb39",
+    ".research/implementation/ingest-bootstrap/native-31bac4a/wrong-root.control.json": "639eccb4c093e5d08d02dc0763cfb7a349833d7c7075b5b65adb1eb7e54f1bf6",
+    ".research/implementation/ingest-bootstrap/native-31bac4a/before.stdout": "2bb6be0b54f6fcb85ef86c270be2afca94648eb1773a21ef693af7f5a8277b6c",
+    ".research/implementation/ingest-bootstrap/native-31bac4a/before.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".research/implementation/ingest-bootstrap/native-31bac4a/before.rocks.json": "0e86c8e6121b9c999e5d5ccd027e4cd3b4608e5501a7f652ba32c378ef08bb39",
+    ".research/implementation/ingest-bootstrap/native-31bac4a/before.control.json": "0d438a8554f418428c8df7adc35b4444d75317c56cdc2c78e5f5dbfdb267bcc2",
+    ".research/implementation/ingest-bootstrap/native-31bac4a/after.stdout": "98474c5b830372776159ef761bcd9dc2ee40b771953a9be5bef01f247e2c55f5",
+    ".research/implementation/ingest-bootstrap/native-31bac4a/after.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".research/implementation/ingest-bootstrap/native-31bac4a/after.rocks.json": "09689724adbb930e981fe4643f2a8c121b3d83c3b9ce92cb7a596551c2fdc06d",
+    ".research/implementation/ingest-bootstrap/native-31bac4a/after.control.json": "f9b5767f6d4507e7517227344739c7b688721b01551d0d6871fe7fd603163517"
+  }
+}

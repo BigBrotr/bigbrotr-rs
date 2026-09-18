@@ -2495,6 +2495,362 @@
         "architecture": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit"
       }
     },
-    "runtime_status": "Original matrix FAIL on oracle namespace, after first write/replay; later cases NOT_RUN. Owned runtime stop completed. Corrected oracle checks same dump locally."
+    "runtime_status": "Original matrix FAIL on oracle namespace, after first write/replay; later cases NOT_RUN. Owned runtime stop completed. Corrected oracle checks same dump locally.",
+    "correction_build": {
+      "format": "bigbrotr-bootstrap-build-lab/1",
+      "source": "31bac4a22a3102e99be49b0c90799542adb12cee",
+      "tree": "aa5fac0fc727f98b66311fb00e7d85df05af5b3d",
+      "owner": "6d026278e299feecaf4ac7a269fe23c1",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/bootstrap-31bac4a",
+      "container": "bigbrotr-implementation-bootstrap-31bac4a-build",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "state": "stopped-retained",
+      "command": [
+        "docker",
+        "run",
+        "-d",
+        "--init",
+        "--name",
+        "bigbrotr-implementation-bootstrap-31bac4a-build",
+        "--label",
+        "org.bigbrotr.implementation=20260917",
+        "--label",
+        "org.bigbrotr.bootstrap-build=6d026278e299feecaf4ac7a269fe23c1",
+        "--label",
+        "org.bigbrotr.source=31bac4a22a3102e99be49b0c90799542adb12cee",
+        "--user",
+        "1000:1000",
+        "--cpus",
+        "2",
+        "--memory",
+        "6g",
+        "--memory-swap",
+        "6g",
+        "--pids-limit",
+        "512",
+        "--read-only",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges",
+        "--tmpfs",
+        "/tmp:rw,exec,nosuid,nodev,size=512m",
+        "--mount",
+        "type=bind,src=/home/tux/bigbrotr-implementation-20260917/runs/bootstrap-31bac4a/source,dst=/source,readonly",
+        "--mount",
+        "type=bind,src=/home/tux/bigbrotr-implementation-20260917/runs/bootstrap-31bac4a/out,dst=/out",
+        "--workdir",
+        "/source",
+        "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "python3",
+        "-c",
+        "import subprocess; subprocess.run(['python3','tools/build.py','--output','/out/build','--jobs','2'],check=True); subprocess.run(['python3','experiments/ingest-registry/build_probe.py','--build','/out/build','--example','ingest_bootstrap_probe'],check=True)"
+      ],
+      "preflight": {
+        "active_source_consumers": 0,
+        "available_disk_bytes": 346236710912
+      },
+      "started_at": "2026-09-18T08:16:40.077307+00:00",
+      "container_id": "5fa3a439ffaa9a7e91ed749386a640c3034d27d486c44c256fbffb950eb414a1",
+      "terminal": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-09-18T08:16:40.167079056Z",
+        "FinishedAt": "2026-09-18T08:22:51.613086373Z"
+      }
+    },
+    "correction_qualification": {
+      "evidence": "docs/implementation/evidence/p02-ingest-bootstrap-native-20260918.json",
+      "runtime_root": "/home/tux/bigbrotr-implementation-20260917/runs/bootstrap-31bac4a/runtime",
+      "runtime_owner": "7c365861d73178149d5ab6b6c98c7bab",
+      "network": "bigbrotr-implementation-pg-20260917-bootstrap_fixed",
+      "containers": [
+        {
+          "id": "50ec25975111f729f7eae30c5f622f9f4b156d37ae2002a7df5ec344f3d558f0",
+          "name": "/bigbrotr-implementation-pg-20260917-bootstrap_fixed-client-after",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 137,
+            "Error": "",
+            "StartedAt": "2026-09-18T08:25:18.083435087Z",
+            "FinishedAt": "2026-09-18T08:25:18.380492249Z"
+          },
+          "labels": {
+            "org.bigbrotr.bootstrap": "7c365861d73178149d5ab6b6c98c7bab",
+            "org.bigbrotr.purpose": "isolated-foundation-acceptance",
+            "org.opencontainers.image.source": "https://github.com/rust-lang/docker-rust"
+          },
+          "ports": {},
+          "mounts": [
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/bootstrap-31bac4a/runtime",
+              "Destination": "/lab",
+              "Mode": "",
+              "RW": true,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/bootstrap-31bac4a/out/build",
+              "Destination": "/build",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            }
+          ]
+        },
+        {
+          "id": "b765ef3a54b2babea2fd1a86af7c869f99f18b43de908a22760a0b5f09aa5185",
+          "name": "/bigbrotr-implementation-pg-20260917-bootstrap_fixed-client-before",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 137,
+            "Error": "",
+            "StartedAt": "2026-09-18T08:25:13.198143642Z",
+            "FinishedAt": "2026-09-18T08:25:13.467112445Z"
+          },
+          "labels": {
+            "org.bigbrotr.bootstrap": "7c365861d73178149d5ab6b6c98c7bab",
+            "org.bigbrotr.purpose": "isolated-foundation-acceptance",
+            "org.opencontainers.image.source": "https://github.com/rust-lang/docker-rust"
+          },
+          "ports": {},
+          "mounts": [
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/bootstrap-31bac4a/runtime",
+              "Destination": "/lab",
+              "Mode": "",
+              "RW": true,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/bootstrap-31bac4a/out/build",
+              "Destination": "/build",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            }
+          ]
+        },
+        {
+          "id": "66bf8c60539f9db3cafca2c12a72686a2f8a11b0b2cc0d2cc2a9c3866a8c1eaf",
+          "name": "/bigbrotr-implementation-pg-20260917-bootstrap_fixed-client",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-18T08:24:07.596734504Z",
+            "FinishedAt": "2026-09-18T08:31:07.9713933Z"
+          },
+          "labels": {
+            "org.bigbrotr.control-migration-lab": "7c365861d73178149d5ab6b6c98c7bab",
+            "org.bigbrotr.purpose": "isolated-foundation-acceptance",
+            "org.opencontainers.image.source": "https://github.com/rust-lang/docker-rust"
+          },
+          "ports": {},
+          "mounts": [
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/bootstrap-31bac4a/runtime",
+              "Destination": "/lab",
+              "Mode": "",
+              "RW": true,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/bootstrap-31bac4a/out/build",
+              "Destination": "/build",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/bootstrap-31bac4a/source",
+              "Destination": "/source",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            }
+          ]
+        },
+        {
+          "id": "3ecf74dd91d6bad469c8260e347f307d26d592b9362207d42a4c4f17d88d559e",
+          "name": "/bigbrotr-implementation-pg-20260917-bootstrap_fixed",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-18T08:24:05.99083997Z",
+            "FinishedAt": "2026-09-18T08:31:09.982432187Z"
+          },
+          "labels": {
+            "org.bigbrotr.control-migration-lab": "7c365861d73178149d5ab6b6c98c7bab"
+          },
+          "ports": {},
+          "mounts": [
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/bootstrap-31bac4a/runtime/data",
+              "Destination": "/var/lib/postgresql/data",
+              "Mode": "",
+              "RW": true,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/bootstrap-31bac4a/runtime/secrets",
+              "Destination": "/run/secrets",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            }
+          ]
+        },
+        {
+          "id": "3abb6297a66dbc3aae028cfbea1b2abfc8d2416873cd8198aecf926a9e3f94bb",
+          "name": "/bigbrotr-implementation-bootstrap-31bac4a-tests",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-18T08:24:05.151479319Z",
+            "FinishedAt": "2026-09-18T08:24:11.223358384Z"
+          },
+          "labels": {
+            "org.bigbrotr.bootstrap-tests": "159b4de85e9ff433cfce8ac68bc30b06",
+            "org.bigbrotr.purpose": "isolated-foundation-acceptance",
+            "org.bigbrotr.source": "31bac4a22a3102e99be49b0c90799542adb12cee",
+            "org.bigbrotr.trusted-ci": "0e2488b6bdd4390e817746122a6ab7b4",
+            "org.opencontainers.image.source": "https://github.com/rust-lang/docker-rust"
+          },
+          "ports": {},
+          "mounts": [
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/bootstrap-31bac4a/out",
+              "Destination": "/out",
+              "Mode": "",
+              "RW": true,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/bootstrap-31bac4a/out/build/source",
+              "Destination": "/out/build/source",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/bootstrap-31bac4a/source",
+              "Destination": "/source",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            }
+          ]
+        },
+        {
+          "id": "5fa3a439ffaa9a7e91ed749386a640c3034d27d486c44c256fbffb950eb414a1",
+          "name": "/bigbrotr-implementation-bootstrap-31bac4a-build",
+          "state": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-18T08:16:40.167079056Z",
+            "FinishedAt": "2026-09-18T08:22:51.613086373Z"
+          },
+          "labels": {
+            "org.bigbrotr.bootstrap-build": "6d026278e299feecaf4ac7a269fe23c1",
+            "org.bigbrotr.implementation": "20260917",
+            "org.bigbrotr.purpose": "isolated-foundation-acceptance",
+            "org.bigbrotr.source": "31bac4a22a3102e99be49b0c90799542adb12cee",
+            "org.bigbrotr.trusted-ci": "0e2488b6bdd4390e817746122a6ab7b4",
+            "org.opencontainers.image.source": "https://github.com/rust-lang/docker-rust"
+          },
+          "ports": {},
+          "mounts": [
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/bootstrap-31bac4a/source",
+              "Destination": "/source",
+              "Mode": "",
+              "RW": false,
+              "Propagation": "rprivate"
+            },
+            {
+              "Type": "bind",
+              "Source": "/home/tux/bigbrotr-implementation-20260917/runs/bootstrap-31bac4a/out",
+              "Destination": "/out",
+              "Mode": "",
+              "RW": true,
+              "Propagation": "rprivate"
+            }
+          ]
+        }
+      ],
+      "final_inventory": ".research/implementation/ingest-bootstrap/final-preflight.json",
+      "cleanup": {
+        "status": "PASS",
+        "unrelated_running_unchanged": 8,
+        "bigbrotr_running": 0,
+        "shared_source": "6be851580ba415eed5ff0979ee7072480f9ee3ab",
+        "excluded_volatile_fields": [
+          "Docker Health.Log rolling timestamps/output"
+        ],
+        "mounts_compared": "complete values sorted by destination",
+        "initial_observer_failure": "Comparing complete Docker inspect included rolling health logs and unordered mounts; stable health status, container identities, start/PID, labels, ports and every mount compared unchanged."
+      },
+      "scope": "Five native bootstrap tests and eight connected cases PASS. Data, network and stopped containers retained; no release or event admission qualification."
+    }
   }
 }

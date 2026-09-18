@@ -100,8 +100,11 @@ One owner serializes exact identity decisions for each writable directory.
   original signature/envelope/time is copied into its public representative.
   The initial [dictionary batch](../reference/ingest-bootstrap.md) connects the
   Control backend to one synchronized native bootstrap and exact retained replay.
-  This prerequisite does not complete event admission or this step. Its native
-  process qualification is pending until recorded evidence exists.
+  [Native evidence](evidence/p02-ingest-bootstrap-native-20260918.json) records five
+  writer tests and eight connected cases, including external full-byte inspection
+  and process kills before write / after commit before receipt delivery. This
+  prerequisite does not complete event admission or this step; power loss, ENOSPC,
+  mid-FFI errors and successor recovery remain unqualified.
 - [ ] **Step 3:** Verify outside expensive critical sections where safe, then serialize the
   final exact admission check/commit. Same-ID concurrency cannot overwrite first
   admission or suppress a distinct permitted provenance edge.

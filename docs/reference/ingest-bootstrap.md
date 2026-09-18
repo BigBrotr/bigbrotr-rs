@@ -108,3 +108,11 @@ not the installed root validator or a product startup entrypoint. Executed
 evidence must separately qualify this client, actual engines, crash schedules
 and external byte oracle. Compilation or Mac unit tests do not qualify those
 native scenarios, power loss, disk exhaustion, maximum load or Linux arm64.
+
+[Native execution on 31bac4a](../implementation/evidence/p02-ingest-bootstrap-native-20260918.json)
+records five writer tests and eight connected Linux amd64 cases. Independent
+inspection compares all native bytes and all thirty Control tables per case.
+The two process kills occur before native dispatch and after commit before
+external receipt delivery; neither is a mid-FFI failure. The case named `retired`
+checks closing-state refusal, not completed producer retirement. The original
+524e38c run remains a failed oracle attempt with later scenarios unexecuted.
