@@ -313,4 +313,5 @@ role needs SELECT/INSERT on `control.archive_attempts` and EXECUTE on its guard;
 it needs no UPDATE/DELETE/TRUNCATE. Issue/resolve uses the existing owned Control
 connection and requires an explicit sealed topology. The guarded catalog and
 actual publication remain separate unimplemented boundaries; this migration
-cannot authorize an archive worker by itself. Native qualification is pending.
+cannot authorize an archive worker by itself. The [native issuance evidence](../implementation/evidence/p02-archive-attempts-native-20260918.json)
+records the scoped PG16.15/Linux amd64 cases; wire COMMIT faults remain unexecuted.

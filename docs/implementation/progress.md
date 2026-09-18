@@ -18,12 +18,13 @@ not be acknowledged/reclaimed. Do not mistake private preparation for publicatio
 
 ## Git and integrating ownership
 
-Mac main; root is the only writer/integrator. Last verified HEAD
-`f678a38` equals origin/main; the identity slice/report are pushed. Root now owns
-the dirty additive0009 archive intent migration, ControlSession adapter/request,
-planner/request tests, actual PG acceptance example/harness and owning docs.
-Mac13 selected tests and scoped Clippy pass; native issuance checks NOT_RUN.
-The next commit is an unpublished exact-source candidate for that native run.
+Mac main; root is the only writer/integrator. Last verified
+HEAD `b245644a2c0f985de7843fefdcf5f3b03311e76f`, origin/main `f678a38`.
+The identity slice/report are pushed. The additive0009 intent/Control adapter,
+tests and exact-source native harness are an unpublished tested candidate. Mac 13
+selected tests and scoped Clippy pass; exact native 13 tests, Clippy and one actual
+PG adapter journey PASS. Root owns only evidence/docs/checkpoint/inventory updates
+since that candidate. Review these, commit and push normally.
 No force push, independent Tux product edits or concurrent writer.
 
 ## Implemented prerequisites and retained evidence
@@ -150,22 +151,37 @@ Container `bigbrotr-implementation-archive-identity-8d1289d`, ID
 Network none; no new job network/volume. Fresh terminal audit: zero BigBrotr
 containers running;20 unrelated identities/processes/mounts/networks unchanged,
 8 running. Sessions15902(source/launch),80286(observer),45483(copy),67812(final Mac)
-are terminal. No active experiment or unresolved cleanup. Earlier guard/startup/
+are terminal. The identity experiment is terminal. The new issuance lab is also terminal:
+`/home/tux/bigbrotr-implementation-20260917/runs/archive-attempts-b245644`;
+owner `0f4f43dd37438ce31fbf33efee4d55ab`, runner
+`bigbrotr-implementation-archive-attempts-b245644`, PG suffix `-pg`. Both stopped
+exit0/no OOM; owned internal network retired, data/artifacts/caches retained.
+627-file readonly source independently matches Mac Git archive. The executed ELF
+probe SHA is `863cecfe98f3f27abfbe1eb308cec648e9095cce5af7e882bf845e7e4a22569b`.
+Full IDs/preflight/resources/audits are under `archive_attempts` in the inventory
+and `.research/implementation/archive-worker/archive-attempts`. Sessions90183 and
+26070 are terminal. Independent actual PG inspection finds exactly 2 immutable
+rows, ordinals[1,2], predecessor[0,1], issuer_epochs[1,1]; literal CBOR/OpenSSL
+matches both retained batch digests. All 3 databases have expected migration
+checksums. Final audit: 20 unrelated unchanged, 8 running,zero BigBrotr running.
+No active experiment or unresolved cleanup. Earlier guard/startup/
 MON resources remain stopped as inventoried; never restart retired-network
 containers. Shared checkout last observed detached6be8515 in an earlier slice;
 not used or freshly requalified here.
 
 ## Next bounded action
 
-Qualify the new immutable archive intent issuance on fresh isolated Tux PG16.15.
-The migration preserves previous checksums, refuses pre-protocol archive owners,
-requires the actual Control backend, stable catalog, expected predecessor and
-sealed topology. The typed request binds schema1 input and unique worker lifetime;
-replay under a successor preserves the original issuer. Test real migration
-fresh/upgrade/refusal, CAS/replay/conflicts, copied issuer, retained history and
-cancellation. Local assertion RED was UnknownTarget(9); API RED was missing module.
-Raw local root `.research/implementation/archive-worker/archive-attempts`.
-Then implement the actual catalog guard with a first real initialization consumer. Bind monotonic allocated ownership and immutable attempt
+Review and commit the [intent issuance evidence](evidence/p02-archive-attempts-native-20260918.json),
+then push the tested candidate and report. Additive0009/ControlSession now retain
+immutable schema1 intended input and coordinator/unique-worker lifetime with CAS,
+sealed topology and actual Control-backend checks. Replay preserves the original
+issuer. Native fresh/upgrade/refusal, replay/conflicts, copied issuer, immutable
+history and real-lock cancellation pass. The native input is synthetic and the
+fixture topology empty: issuance is not source-cut or body validation. Wire-level
+lost-COMMIT/post-COMMIT cancellation/server restart remain unexecuted for this new
+boundary. Mac schema assertion RED was UnknownTarget(9); API RED missing module.
+Then implement the actual catalog guard with a first real initialization consumer.
+Bind monotonic allocated ownership and immutable attempt
 identity so a late old coordinator cannot reactivate an excluded login; a Control
 check before an independent remote write alone cannot provide this ordering.
 Qualify the product's checksum/version/layout/trigger inspection, fresh init,

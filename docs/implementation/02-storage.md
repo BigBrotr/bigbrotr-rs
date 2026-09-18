@@ -266,7 +266,8 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   those consumers and actual ambiguous recovery remain required.
   Additive0009 and `ControlSession::register_archive_attempt` now implement
   immutable CAS issuance, binding this input identity and coordinator/worker
-  lifetime under the actual Control backend. Native qualification is pending;
+  lifetime under the actual Control backend. [Native qualification](evidence/p02-archive-attempts-native-20260918.json)
+  at `b245644` passes 13 Rust cases plus actual PG issuance/replay/refusal/cancellation;
   the catalog must still import and enforce monotonic authority before any
   credential exposure/publication. No active archive owner or ACK is created.
 - [ ] **Step 5:** Enforce a single positively fenced publisher and bounded native worker

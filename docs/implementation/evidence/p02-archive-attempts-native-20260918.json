@@ -1,0 +1,243 @@
+{
+  "task": "P02-T04 steps4/5 persistent Control intent issuance prerequisite",
+  "date": "2026-09-18",
+  "status": "PASS within stated scope; catalog authority/publication not implemented",
+  "source": {
+    "revision": "b245644a2c0f985de7843fefdcf5f3b03311e76f",
+    "tree": "b78432696d69e0df54172c10fc0581eb8a54170b",
+    "files": 627,
+    "archive_sha256": "d4b0325962912e8990452af305deb39373265e8809b0d814a691de4f4889031a",
+    "manifest_sha256": "1f8e133b2f36b14651a3fdb8f45140960a1459ffe63fb0af1880fca589b5b9d4",
+    "verification": "Mac Git archive independently matches every readonly Tux checkout/export file; clean exact revision"
+  },
+  "implementation": {
+    "migration": "0009_archive_attempts.sql appended after0008; old SQL/checksums untouched; atomic refusal of pre-protocol archive owner history",
+    "adapter": "ControlSession::register_archive_attempt binds immutable intended batch and process lifetimes, expected predecessor/stable catalog, actual Control backend, idempotent historical replay and poisoned failed/cancelled sessions",
+    "boundary": "Intent issuance does not validate complete retained source membership, fence native writes, issue credentials, certify publication/protection or authorize cleanup/ACK"
+  },
+  "mac": {
+    "request_and_planner_cases": 13,
+    "clippy": "PASS for application lib/tests/examples",
+    "red": "Actual schema assertion fails UnknownTarget(9); API test compiler failure is missing module, not an executed assertion failure"
+  },
+  "native": {
+    "host": "Tux Linux amd64",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "rust_toolchain_pin": "1.98.1",
+    "toolchain": {
+      "os": "Linux",
+      "architecture": "x86_64",
+      "discovery": "llvm-config",
+      "environment": {
+        "CC": "/usr/lib/llvm-14/bin/clang",
+        "CXX": "/usr/lib/llvm-14/bin/clang++",
+        "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+        "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+        "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+      },
+      "tools": {
+        "CC": {
+          "path": "/usr/lib/llvm-14/bin/clang",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "CXX": {
+          "path": "/usr/lib/llvm-14/bin/clang++",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "AR": {
+          "path": "/usr/lib/llvm-14/bin/llvm-ar",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+          "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+          "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+        },
+        "LIBCLANG_PATH": {
+          "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+          "version": "Debian clang version 14.0.6"
+        },
+        "discovery": {
+          "path": "/usr/lib/llvm-14/bin/llvm-config",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+          "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+          "version": "14.0.6"
+        }
+      },
+      "sdk": null
+    },
+    "driver_version": "0.7.18",
+    "probe_sha256": "863cecfe98f3f27abfbe1eb308cec648e9095cce5af7e882bf845e7e4a22569b",
+    "artifact": "ELF executable out/native-tests/archive-attempt-probe",
+    "limits": {
+      "runner_cpus": 2,
+      "runner_memory_bytes": 6442450944,
+      "runner_pids": 512,
+      "postgres_cpus": 1,
+      "postgres_memory_bytes": 1073741824,
+      "postgres_pids": 128,
+      "network": "new internal bridge; no published ports"
+    },
+    "checks": [
+      {
+        "name": "tests",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--test",
+          "archive_attempt",
+          "--test",
+          "control_schema"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 23.300765260122716
+      },
+      {
+        "name": "build",
+        "command": [
+          "cargo",
+          "build",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--example",
+          "archive_attempt_probe"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 5.72298467811197
+      },
+      {
+        "name": "clippy",
+        "command": [
+          "cargo",
+          "clippy",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--lib",
+          "--tests",
+          "--examples",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 2.067401264794171
+      },
+      {
+        "name": "adapter",
+        "command": [
+          "/out/native-tests/archive-attempt-probe"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 2.268422899302095
+      }
+    ],
+    "unit_integration_test_cases": 13,
+    "real_adapter_journeys": 1
+  },
+  "executed_assertions": [
+    "Fresh application of all8 migrations; eligible8-to9 upgrade, plan, idempotent replay and unchanged previous checksums.",
+    "Pre-protocol archive owner refuses9 specifically; no COMMIT initiated, no new attempt relation/ledger entry, old active history remains.",
+    "Actual application-role initialization/security activation and sealed empty-topology fixture; actual Control session issues ordinals1/2.",
+    "Exact same-ID retry retains ordinal; historical retry reports latest_issued=false; a successor Control epoch resolves the original issuer row.",
+    "Changed payload, stale predecessor, changed catalog and same-ID changed predecessor refuse; every resulting failed session stays unavailable.",
+    "Another application backend cannot borrow copied issuer attribution (23514).",
+    "Privileged UPDATE/DELETE/TRUNCATE exercise immutable history guards (23514); two rows remain.",
+    "Real exclusive table lock blocks issuance; 250ms caller timeout poisons Control before COMMIT; release/driver join leaves no new row."
+  ],
+  "independent_observations": {
+    "rows": 2,
+    "ordinals": [
+      1,
+      2
+    ],
+    "predecessors": [
+      0,
+      1
+    ],
+    "issuer_epochs": [
+      1,
+      1
+    ],
+    "expected_batch_preimage_hex": "62696762726f74722f617263686976652d62617463682f31008550010101010101010101010101010101010100818400010101818284500101010101010101010101010101010100010158200707070707070707070707070707070707070707070707070707070707070707",
+    "expected_batch_sha256": "6617e55295d367ffc9453a93ceb054623a952d289dcbf8e6ad5f5332db9134d0",
+    "method": "Literal CBOR/OpenSSL oracle versus both actual PG batch digests; independently inspect all3 databases and every migration checksum",
+    "observations_sha256": "93e8fe5b121f26f0324860f88a4070f5356eb9d52ac0e9c018e68b3e88b79a84"
+  },
+  "cleanup": {
+    "owner": "0f4f43dd37438ce31fbf33efee4d55ab",
+    "containers": {
+      "container": "bigbrotr-implementation-archive-attempts-b245644",
+      "container_id": "91f96fb0194bf26098ec86f692bfbb57751c721f5d38e7f38c5afab5a1bff043",
+      "postgres": "bigbrotr-implementation-archive-attempts-b245644-pg",
+      "postgres_id": "58207b0db2327df7674cd0a10ec665aa4d00631a5bfe8b14bfd2474230e549aa"
+    },
+    "terminal": {
+      "runner": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-09-18T17:17:49.806949063Z",
+        "FinishedAt": "2026-09-18T17:18:23.446210623Z"
+      },
+      "postgres": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-09-18T17:17:48.123379523Z",
+        "FinishedAt": "2026-09-18T17:19:53.927556482Z"
+      }
+    },
+    "network_id": "71b0f9b0b804be8e5f3f2a1b0748bda0292fece8744001b84f59fc4621c9bf65",
+    "state": "two owned containers stopped-retained, internal network retired, no new volume",
+    "unrelated_unchanged": 20,
+    "unrelated_running": 8,
+    "running_bigbrotr": 0
+  },
+  "remaining": [
+    "Wire-level lost issuance COMMIT response, post-COMMIT cancellation, concurrent migration/issuance and server crash/restart specific to this new boundary.",
+    "Actual catalog guarded initialization/version inspection/import and monotonic activation; same-attempt credential exposure/relaunch recovery.",
+    "Complete retained input/source-cut validation, scientific schema/content publication, receipt/protection and M1 read/export/restart.",
+    "Aged/mixed loads, resource/throughput qualification, hosted CI, native Linux arm64 and full release/product acceptance."
+  ],
+  "review": "Root read the changed implementation, SQL, callers and owning contracts; no independent-agent or full-product review claimed.",
+  "raw_root": ".research/implementation/archive-worker/archive-attempts",
+  "native_root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-attempts-b245644"
+}

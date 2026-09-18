@@ -6346,9 +6346,56 @@
       "report": "docs/implementation/evidence/p02-archive-identity-native-20260918.json"
     },
     "archive_attempts": {
-      "status": "Mac13 request/planner cases and scoped Clippy PASS; native issuance NOT_RUN",
+      "status": "Exact b245644 native13 tests, Clippy and actual PG adapter journey PASS; publication not implemented",
       "local_root": ".research/implementation/archive-worker/archive-attempts",
-      "purpose": "Immutable Control-issued intent prerequisite; no catalog activation/publication/ACK/reclaim"
+      "purpose": "Immutable Control-issued intent prerequisite; no catalog activation/publication/ACK/reclaim",
+      "source": "b245644a2c0f985de7843fefdcf5f3b03311e76f",
+      "native_root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-attempts-b245644",
+      "resources": {
+        "owner": "0f4f43dd37438ce31fbf33efee4d55ab",
+        "containers": {
+          "container": "bigbrotr-implementation-archive-attempts-b245644",
+          "container_id": "91f96fb0194bf26098ec86f692bfbb57751c721f5d38e7f38c5afab5a1bff043",
+          "postgres": "bigbrotr-implementation-archive-attempts-b245644-pg",
+          "postgres_id": "58207b0db2327df7674cd0a10ec665aa4d00631a5bfe8b14bfd2474230e549aa"
+        },
+        "terminal": {
+          "runner": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-18T17:17:49.806949063Z",
+            "FinishedAt": "2026-09-18T17:18:23.446210623Z"
+          },
+          "postgres": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-18T17:17:48.123379523Z",
+            "FinishedAt": "2026-09-18T17:19:53.927556482Z"
+          }
+        },
+        "network_id": "71b0f9b0b804be8e5f3f2a1b0748bda0292fece8744001b84f59fc4621c9bf65",
+        "state": "two owned containers stopped-retained, internal network retired, no new volume",
+        "unrelated_unchanged": 20,
+        "unrelated_running": 8,
+        "running_bigbrotr": 0
+      },
+      "audit": ".research/implementation/archive-worker/archive-attempts/audit.json",
+      "source_audit": ".research/implementation/archive-worker/archive-attempts/independent-audit.json",
+      "report": "docs/implementation/evidence/p02-archive-attempts-native-20260918.json"
     }
   },
   "implementation_monitor_corrections_20260918": {

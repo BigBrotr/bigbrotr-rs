@@ -189,3 +189,13 @@ The [archive identity report](../../docs/implementation/evidence/p02-archive-ide
 records 621 independently matched source files and the stopped-retained container.
 The five-minute signed check includes native compilation; it is not a publication
 throughput result.
+
+`native_archive_attempts.py` qualifies the Control intent prerequisite at `b245644`:
+13 Rust cases, scoped Clippy and one actual PG16.15 adapter journey cover migration
+fresh/upgrade/refusal, issuance/replay/CAS, copied issuer refusal, immutable history
+and cancellation behind a real table lock. The
+[report](../../docs/implementation/evidence/p02-archive-attempts-native-20260918.json)
+records independent retained-row/digest/checksum inspection and resource cleanup.
+The input is synthetic and the topology fixture empty; this checks intended-input
+identity, not source membership validity or signed archive publication. Lost wire
+COMMIT responses and the catalog activation consumer remain separate work.
