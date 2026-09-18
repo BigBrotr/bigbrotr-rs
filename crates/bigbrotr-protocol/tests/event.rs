@@ -1,3 +1,5 @@
+use bigbrotr_model::{Signature, SignedEvent};
+use bigbrotr_protocol::verify_owned;
 use bigbrotr_protocol::{EventError, EventLimits, event::write_canonical, verify_json};
 use serde_json::{Value, json};
 
@@ -143,5 +145,92 @@ fn strict_text_and_known_keys_refuse_ambiguous_or_non_json_input() {
     assert_eq!(
         verify_json(b"{\"content\":\"\xff\"}", EventLimits::default()).unwrap_err(),
         EventError::InvalidJson
+    );
+}
+
+#[test]
+fn owned_verification_preserves_buffers_and_checks_exact_size() {
+    for row in fixture()["events"].as_object().unwrap().values() {
+        let event: SignedEvent = serde_json::from_value(row["event"].clone()).unwrap();
+        let original = event.clone();
+        let content = event.content.as_ptr();
+        let tags = event.tags.as_ptr();
+        let normalized_len = serde_json::to_vec(&event).unwrap().len();
+        let verified = verify_owned(event, normalized_len).unwrap();
+        assert_eq!(verified.event(), &original);
+        assert_eq!(verified.event().content.as_ptr(), content);
+        assert_eq!(verified.event().tags.as_ptr(), tags);
+        assert_eq!(verified.normalized_bytes(), normalized_len);
+        assert_eq!(
+            verify_owned(original, normalized_len - 1).unwrap_err(),
+            EventError::EventSizeLimit
+        );
+    }
+}
+
+#[test]
+fn owned_verification_never_reuses_an_event_id_as_signature_proof() {
+    let corpus: Value = serde_json::from_str(include_str!(
+        "../../../experiments/identity-contract/signed-fixture.json"
+    ))
+    .unwrap();
+    let rows = corpus["events"].as_object().unwrap();
+    for name in ["E_private", "E_public", "I"] {
+        let event: SignedEvent = serde_json::from_value(rows[name].clone()).unwrap();
+        assert!(verify_owned(event.clone(), 256 * 1024).is_ok());
+        let mut changed = event.clone();
+        let mut signature = *changed.sig.as_bytes();
+        signature[0] ^= 1;
+        changed.sig = Signature::from_bytes(signature);
+        assert_eq!(
+            verify_owned(changed, 256 * 1024).unwrap_err(),
+            EventError::InvalidSignature
+        );
+        let mut changed = event;
+        changed.content.push('x');
+        assert_eq!(
+            verify_owned(changed, 256 * 1024).unwrap_err(),
+            EventError::EventIdMismatch
+        );
+    }
+}
+
+#[test]
+fn owned_verification_bounds_work_before_hashing_or_crypto() {
+    let event: SignedEvent =
+        serde_json::from_value(fixture()["events"]["timestamp-zero"]["event"].clone()).unwrap();
+    assert_eq!(
+        verify_owned(event.clone(), 0).unwrap_err(),
+        EventError::InvalidLimits
+    );
+    let mut changed = event.clone();
+    changed.content = "x".repeat(2048);
+    assert_eq!(
+        verify_owned(changed, 1024).unwrap_err(),
+        EventError::EventSizeLimit
+    );
+    let mut changed = event.clone();
+    changed.tags = vec![vec![String::new()]; 1025];
+    assert_eq!(
+        verify_owned(changed, 1024).unwrap_err(),
+        EventError::EventSizeLimit
+    );
+    let mut changed = event.clone();
+    changed.tags = vec![vec![String::new(); 1025]];
+    assert_eq!(
+        verify_owned(changed, 1024).unwrap_err(),
+        EventError::EventSizeLimit
+    );
+    let mut changed = event.clone();
+    changed.tags = vec![vec!["x".repeat(2048)]];
+    assert_eq!(
+        verify_owned(changed, 1024).unwrap_err(),
+        EventError::EventSizeLimit
+    );
+    let mut changed = event;
+    changed.tags = vec![vec![]];
+    assert_eq!(
+        verify_owned(changed, 1024).unwrap_err(),
+        EventError::EmptyTag
     );
 }

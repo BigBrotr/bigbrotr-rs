@@ -134,12 +134,48 @@ pub fn verify_json(bytes: &[u8], limits: EventLimits) -> Result<VerifiedEvent, E
     // Derive rejects duplicate/missing known fields. Unknown top-level keys are
     // bounded above and ignored, as NIP-01 excludes them from signed content.
     let event: SignedEvent = serde_json::from_slice(bytes).map_err(|_| EventError::InvalidJson)?;
+    // Keep the wire path's structural error ordering after bounded parsing.
     if event.tags.iter().any(Vec::is_empty) {
         return Err(EventError::EmptyTag);
     }
+    verify_owned(event, limits.event_bytes)
+}
+
+/// Verify an already owned event without serializing and parsing another buffer.
+/// The positive limit bounds normalized JSON bytes and verification work. It is
+/// not a wire/parser limit or a memory grant: the caller must already own and
+/// account for the event's buffers (including spare capacity) until this returns.
+/// A typed value, or a previously seen event ID, never bypasses ID/signature checks.
+pub fn verify_owned(
+    event: SignedEvent,
+    max_event_bytes: usize,
+) -> Result<VerifiedEvent, EventError> {
+    if max_event_bytes == 0 {
+        return Err(EventError::InvalidLimits);
+    }
+    // Before walking or escaping strings, reject an allocation-free lower bound
+    // on their encoded size. Count even empty arrays/strings: a byte limit alone
+    // on content cannot bound a typed input containing millions of empty tags.
+    let mut remaining = max_event_bytes
+        .checked_sub(event.content.len())
+        .and_then(|n| n.checked_sub(event.tags.len()))
+        .ok_or(EventError::EventSizeLimit)?;
+    for tag in &event.tags {
+        remaining = remaining
+            .checked_sub(tag.len())
+            .ok_or(EventError::EventSizeLimit)?;
+        if tag.is_empty() {
+            return Err(EventError::EmptyTag);
+        }
+        for value in tag {
+            remaining = remaining
+                .checked_sub(value.len())
+                .ok_or(EventError::EventSizeLimit)?;
+        }
+    }
     let mut size = SizeCounter {
         bytes: 0,
-        maximum: limits.event_bytes,
+        maximum: max_event_bytes,
     };
     serde_json::to_writer(&mut size, &event).map_err(|_| EventError::EventSizeLimit)?;
     let mut hash = HashWriter(Sha256::new());

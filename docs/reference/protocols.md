@@ -55,6 +55,17 @@ signatures over the same payload both verify; later admission owns scope-specifi
 representative selection. Expiry, replacement and deletion do not reject retained
 historical originals at this boundary.
 
+Internal consumers that already own a `SignedEvent` can call
+`verify_owned(event, max_event_bytes)`. It moves the existing buffers into the
+verified result and uses the same normalized-size, ID and signature checks as
+the JSON entrypoint. A checked lower bound on content, tag containers and strings
+precedes JSON escaping and hashing; even empty elements consume the work bound.
+The positive byte limit applies to normalized event JSON, including escaping.
+This interface does not parse a wire message or reserve memory for an input that
+already exists. Its caller retains the resource grant for all owned capacities,
+including excess Vec/String capacity, through verification and downstream work.
+It creates no source, visibility or admission authority.
+
 The [frozen historical corpus](../../experiments/identity-contract/signed-fixture.json)
 provides 15 variants/14 IDs, including two valid signatures for one ID. The
 [extreme fixtures](../../tests/fixtures/protocol/signed-extremes.json) add timestamp

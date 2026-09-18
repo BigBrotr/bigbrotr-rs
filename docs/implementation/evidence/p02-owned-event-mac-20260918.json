@@ -1,0 +1,98 @@
+{
+  "format": "bigbrotr-owned-event-verification/1",
+  "observed_date": "2026-09-18",
+  "base_revision": "c584f22443e55576a92d3b6e58a91b973902de84",
+  "scope": "Owned-event verification prerequisite for P02-T02; not native admission or authority",
+  "host": {
+    "os": "Darwin",
+    "architecture": "arm64"
+  },
+  "source_sha256": {
+    "crates/bigbrotr-protocol/src/event.rs": "4dde91ff827ad2757cb05f4facb0824845c6efdcbca3b9c37a875998e0423170",
+    "crates/bigbrotr-protocol/src/lib.rs": "95eaa3c749038a70f7fdc21fb4d33ff88d3a35d837694be40e418a1bd395a300",
+    "crates/bigbrotr-protocol/tests/event.rs": "4eb86b90a8e998a453436bde734c3315cbd283085d619cb1b8bde8b6e88ecd2f",
+    "docs/reference/protocols.md": "a38745ca24759ed813b2ea4c9737dc3d34a0ad42d31385cb783737836b1f24f2"
+  },
+  "dependency_lock_sha256": "ea27c2b367846c4718a6d76fbd1a8340558299ccf9f22c76ed3f30c4b8025b47",
+  "commands": [
+    {
+      "command": [
+        "cargo",
+        "fmt",
+        "--all"
+      ],
+      "exit_code": 0,
+      "log": "check-0.log"
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "bigbrotr-protocol"
+      ],
+      "exit_code": 0,
+      "log": "check-1.log"
+    },
+    {
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "bigbrotr",
+        "--test",
+        "protocol_boundary"
+      ],
+      "exit_code": 0,
+      "log": "check-2.log"
+    }
+  ],
+  "red_observation": {
+    "command": [
+      "cargo",
+      "test",
+      "-p",
+      "bigbrotr-protocol",
+      "--test",
+      "event",
+      "owned_verification"
+    ],
+    "exit_code": 101,
+    "outcome": "Expected missing verify_owned API compilation error; not a behavioral regression failure"
+  },
+  "green_observation": {
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "-p",
+      "bigbrotr-protocol"
+    ],
+    "tests_passed": 10,
+    "failed": 0,
+    "ignored": 0,
+    "new_cases": 3,
+    "log_sha256": "3ba5bcc32076cbe611200cd4248e872c716025dc64cde54cdec9304c46cc5de3"
+  },
+  "independent_fixture": {
+    "result": "PASS",
+    "report_path": ".research/implementation/owned-event/fixture-check.json",
+    "report_sha256": "85203c305fa90f6f8cff036be0eb25601271dc2936dd14ad49d1e39f9058ed92",
+    "signed_variants": 15,
+    "unique_event_ids": 14
+  },
+  "open_checks": [
+    "Mac actual CLI integration and workspace Clippy still running",
+    "Exact-revision native Tux CI not yet launched"
+  ],
+  "not_qualified": [
+    "Native event admission or receipt persistence",
+    "Authority or ownership fencing",
+    "Archive/read/export/restart",
+    "Performance under mixed workloads",
+    "Linux arm64",
+    "Complete product or release"
+  ]
+}
