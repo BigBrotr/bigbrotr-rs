@@ -50,6 +50,15 @@ class CiControls(unittest.TestCase):
             state = subprocess.run(['ps', '-o', 'stat=', '-p', str(pid)], capture_output=True, text=True).stdout.strip()
             self.assertTrue(not state or state.startswith('Z'), state)
 
+    def test_missing_tool_is_not_executed(self):
+        ci = self.load()
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            report = ci.execute([('missing', [str(root/'absent')])], root/'receipt', ROOT, os.environ.copy(), {}, 20)
+            self.assertEqual(report['status'], 'FAIL')
+            self.assertEqual(report['checks'][0]['status'], 'NOT_RUN')
+            self.assertEqual(report['counts'], {'collected': 1, 'executed': 0, 'failed': 0, 'not_run': 1})
+
     def test_empty_execution_cannot_pass(self):
         ci = self.load()
         with tempfile.TemporaryDirectory() as directory:

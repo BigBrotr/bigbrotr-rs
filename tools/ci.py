@@ -44,10 +44,11 @@ def execute(checks, output, root, env, identity, seconds):
                 process = subprocess.Popen(check['command'], cwd=root, env=env,
                                            stdout=log, stderr=subprocess.STDOUT,
                                            start_new_session=True)
+                check['executed'] = True
                 check['exit_code'] = process.wait(timeout=max(.001, deadline-time.monotonic()))
             check['status'] = 'PASS' if check['exit_code'] == 0 else 'FAIL'
         except (OSError, subprocess.TimeoutExpired, KeyboardInterrupt) as error:
-            check['status'] = 'FAIL'
+            check['status'] = 'FAIL' if process is not None else 'NOT_RUN'
             check['failure'] = ('deadline' if isinstance(error, subprocess.TimeoutExpired)
                                 else 'interrupted' if isinstance(error, KeyboardInterrupt)
                                 else type(error).__name__)
@@ -65,7 +66,7 @@ def execute(checks, output, root, env, identity, seconds):
         if check['status'] != 'PASS':
             break
     report['counts'] = {'collected': len(checks),
-                        'executed': sum('exit_code' in c or 'failure' in c for c in report['checks']),
+                        'executed': sum(c.get('executed', False) for c in report['checks']),
                         'failed': sum(c['status'] == 'FAIL' for c in report['checks']),
                         'not_run': sum(c['status'] == 'NOT_RUN' for c in report['checks'])}
     report['status'] = 'PASS' if all(c['status'] == 'PASS' for c in report['checks']) else 'FAIL'
