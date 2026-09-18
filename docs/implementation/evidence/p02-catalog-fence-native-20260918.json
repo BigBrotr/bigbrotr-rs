@@ -1,0 +1,311 @@
+{
+  "format": "bigbrotr-catalog-fence-investigation/1",
+  "observed_date": "2026-09-18",
+  "status": "PASS",
+  "scope": "Four synthetic actual Rust DuckLake/PostgreSQL cases; not a selected production fence or signed archive qualification",
+  "source": {
+    "revision": "a531ea3ce345f4008a05bbf1696fd1e1f9827872",
+    "tree": "27a56ac3a86bb59849d29bf8e38d475e28d0f323",
+    "dirty": false,
+    "files_verified": 600,
+    "source_manifest_sha256": "d4626f20ffbfa8479d4d5f5445232e7bc30dfb4de11dcbb5cc1b2fa5b0e88065",
+    "lock_sha256": "3fb55b632b1a70d9deaafdf243730f23f43dc66ffecca99f8c3ffb482455809c"
+  },
+  "artifact": {
+    "probe_sha256": "793bd08ce5f99b32941da8485c0080c4656ed807ded41a7623b326a37b85e12d",
+    "bytes": 2034136,
+    "kind": "Private explicit Cargo research example; not installed product executable"
+  },
+  "environment": {
+    "host": "Tux Linux x86_64",
+    "build_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "runner_image": "sha256:9d30ac361d158c281070d274427241bee955ead10904d6dbe4ff866200548f3d",
+    "runner_image_source": "1fbddcbcd2061987e4d578692117de1fc85ea656",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "postgres_version": "16.15 (Debian 16.15-1.pgdg13+2)",
+    "psql": {
+      "psql_sha256": "b6917af4a4c78ffd554b12e8fd9a6f4ac6590719373b45b15a10f7dec99af009",
+      "packages": "libpq5:amd64\t15.19-0+deb12u1\npostgresql-client-15\t15.19-0+deb12u1\n"
+    },
+    "server": {
+      "version": "160015",
+      "fsync": "on",
+      "full_page_writes": "on",
+      "host_scram": true
+    },
+    "runner_limits": {
+      "cpus": 2,
+      "memory_bytes": 2147483648,
+      "pids": 256,
+      "read_only_root": true,
+      "capabilities_dropped": "ALL",
+      "network": "new internal bridge; no published ports or Docker socket",
+      "deadline_seconds": 240
+    },
+    "postgres_limits": {
+      "cpus": 2,
+      "memory_bytes": 1610612736,
+      "pids": 256
+    },
+    "native_toolchain": {
+      "os": "Linux",
+      "architecture": "x86_64",
+      "discovery": "llvm-config",
+      "environment": {
+        "CC": "/usr/lib/llvm-14/bin/clang",
+        "CXX": "/usr/lib/llvm-14/bin/clang++",
+        "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+        "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+        "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+      },
+      "tools": {
+        "CC": {
+          "path": "/usr/lib/llvm-14/bin/clang",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "CXX": {
+          "path": "/usr/lib/llvm-14/bin/clang++",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "AR": {
+          "path": "/usr/lib/llvm-14/bin/llvm-ar",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+          "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+          "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+        },
+        "LIBCLANG_PATH": {
+          "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+          "version": "Debian clang version 14.0.6"
+        },
+        "discovery": {
+          "path": "/usr/lib/llvm-14/bin/llvm-config",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+          "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+          "version": "14.0.6"
+        }
+      },
+      "sdk": null
+    },
+    "native_assets": {
+      "extension_platform": "linux_amd64",
+      "archive": {
+        "name": "libduckdb-linux-amd64.zip",
+        "url": "https://github.com/duckdb/duckdb/releases/download/v1.5.5/libduckdb-linux-amd64.zip",
+        "bytes": 41300590,
+        "sha256": "1fb8ce388157d84a25abe685a8a2520bf00c00321821968e4bb398fd766e7abb"
+      },
+      "library": {
+        "name": "libduckdb.so",
+        "bytes": 70529912,
+        "sha256": "fc23f12e376c47be520f75221288281906e7942e8fd6f6ce4849198ba60d0405"
+      },
+      "header": {
+        "name": "duckdb.h",
+        "bytes": 244057,
+        "sha256": "48e716b9ce96ca8fead9cb35693fdc0343ac0fc1f6e7db5561fa0f44b674153d"
+      },
+      "extensions": [
+        {
+          "name": "ducklake",
+          "url": "https://extensions.duckdb.org/v1.5.5/linux_amd64/ducklake.duckdb_extension.gz",
+          "compressed_bytes": 12655412,
+          "compressed_sha256": "733ccf19fedcfd5e0bfaf85993219145181099cc411076cabf14933ea16ab452",
+          "bytes": 36436086,
+          "sha256": "e51bf9e8d933d0e83780ae096455501b542cf962569a2ce5613532d702c08302"
+        },
+        {
+          "name": "postgres_scanner",
+          "url": "https://extensions.duckdb.org/v1.5.5/linux_amd64/postgres_scanner.duckdb_extension.gz",
+          "compressed_bytes": 14583967,
+          "compressed_sha256": "e0f631a5535f165468bc8a20501f8bc1490adbc877d38fcdff2f8d05531e1e5b",
+          "bytes": 41696558,
+          "sha256": "b1ced4cfc6311313e117c2afb3eac76508718778dde0716421503c7dbfb5605c"
+        },
+        {
+          "name": "httpfs",
+          "url": "https://extensions.duckdb.org/v1.5.5/linux_amd64/httpfs.duckdb_extension.gz",
+          "compressed_bytes": 7416043,
+          "compressed_sha256": "7cdd52a3135388718884a9b71e3987ba723002121e8e9de399c4ed619d824a05",
+          "bytes": 21570542,
+          "sha256": "887c392b1e49128d11667c81e3698d8b00dfdeb456771acf66d05a0f74f7b7d8"
+        }
+      ]
+    }
+  },
+  "workload": {
+    "relations": [
+      "facts",
+      "witnesses",
+      "receipts"
+    ],
+    "batch_ids": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "body": "canary-ß",
+    "witness": "wss://example.invalid",
+    "receipt_hex": "00ff",
+    "oracle": "Literal per-batch counts of all three relations through fresh native read transactions. Each writer first proves all three absent. Synthetic, not signed or scientific."
+  },
+  "cases": [
+    {
+      "case": "unfenced-duplicate-negative-control",
+      "counts": [
+        2,
+        2,
+        2
+      ],
+      "status": "PASS"
+    },
+    {
+      "case": "sealed-login-live-transaction",
+      "backends_before": [
+        {
+          "pid": 114,
+          "start": "2026-09-18 14:54:47.443957+00",
+          "state": "idle in transaction"
+        }
+      ],
+      "new_connection": {
+        "exit": 1,
+        "phase": "attach"
+      },
+      "counts": [
+        1,
+        1,
+        1
+      ],
+      "status": "PASS"
+    },
+    {
+      "case": "terminated-backends-paused-old-writer",
+      "backends": [
+        {
+          "pid": 121,
+          "start": "2026-09-18 14:54:48.14497+00",
+          "state": "idle in transaction"
+        }
+      ],
+      "stale_result": {
+        "exit": 1,
+        "phase": "commit"
+      },
+      "counts": [
+        1,
+        1,
+        1
+      ],
+      "status": "PASS"
+    },
+    {
+      "case": "committed-acknowledgement-lost",
+      "counts": [
+        1,
+        1,
+        1
+      ],
+      "status": "PASS"
+    }
+  ],
+  "prior_failures": [
+    {
+      "source": "afc70f37626a94750df5933a345839e3ffb03fac",
+      "outcome": "Failed before native initialization; harness omitted child phase. Fixed diagnostic at913c6cc."
+    },
+    {
+      "harness_source": "cb75896304fce1799580bd7e451041c5bae1938a",
+      "probe_source": "afc70f37626a94750df5933a345839e3ffb03fac",
+      "outcome": "Failed at attach; no cases executed."
+    },
+    {
+      "source": "449e63ffe05f5b953f62e11796cfe6bd9998b02a",
+      "outcome": "Protected redacted diagnostic identified missing local_file secret storage. Explicit TEMPORARY postgres secret at a531ea3 fixes attach while persistent secrets remain disabled."
+    },
+    {
+      "source": "afc70f37626a94750df5933a345839e3ffb03fac",
+      "outcome": "Initial lab image build failed resolving local config digest at Docker Hub; corrected verified local tag at1fbddcb. No test PASS inferred."
+    }
+  ],
+  "source_findings": {
+    "postgres_extension": {
+      "revision": "41223e51559cd581f1c06e170b71c71df25bbaac",
+      "paths": [
+        "src/storage/postgres_catalog.cpp",
+        "src/postgres_secrets.cpp"
+      ],
+      "finding": "GetSecret falls back to local_file after absent memory/default secret. Explicit memory secret with URI and META_SECRET avoids this; SECRET_STORAGE_TABLE empty separately disables PG secret storage registration."
+    },
+    "postgres_startup": {
+      "tag": "REL_16_15",
+      "paths": [
+        "src/backend/utils/init/miscinit.c",
+        "src/backend/utils/init/postinit.c",
+        "src/backend/utils/activity/backend_status.c"
+      ],
+      "finding": "Login permission check precedes backend status publication, with PostAuthDelay between. In-flight startup remains untested; the four quiesced-client cases cannot certify NOLOGIN plus empty activity as a general fence."
+    }
+  },
+  "limitations": [
+    "No selected product publisher, persisted job/credential recovery, startup-race qualification or repeated reconnect fault campaign",
+    "Counts can use catalog metadata; this report does not establish body/reference Parquet fidelity, file durability, native peak memory, mixed or aged workload behavior",
+    "No scientific archive receipt, pending acknowledgement/reclamation, read/export/restart M1, S3 or backup/restore qualification",
+    "Linux arm64, complete CI/release journeys and hosted Actions NOT_RUN"
+  ],
+  "cleanup": {
+    "status": "PASS",
+    "source": "a531ea3ce345f4008a05bbf1696fd1e1f9827872",
+    "source_files": 600,
+    "probe_sha256": "793bd08ce5f99b32941da8485c0080c4656ed807ded41a7623b326a37b85e12d",
+    "cases": 4,
+    "owned_stopped_retained": 12,
+    "owned_ids": [
+      "a3fa76ce33e3f9edfdf18b8c510b5bb53895df66d28fd6fafc78dbe195fc4aa2",
+      "5896421a8ded09211ffb79ce8032523d9b710a3d2b5d9b3c08372b07991c9ae8",
+      "2503244c6458f84d44749bb6b6d523eff5e7f91fef2d99e34a7c823da50269b3",
+      "656f384cfbc1dd21882cda474c249c78b21feb62a2c6058daebcd8acd12a7147",
+      "1a28d33f0a689abd8b32a8924175dfb0038209e99c3cae6de5ec837b177a8d4f",
+      "5507fbfb28c53ec75396b9c09281774a65c629c238563ac3c9dd8bd8b978f032",
+      "8a5d7480b2025756658f9e7f28dba0462a2b970cff0751431d5cb58eb63de2f1",
+      "c1007d5d30645ccb95d02e3068f51497ca4e58f1acc2976e48fcfe1739505610",
+      "669400d01f27276fe419a2a2fb1511cd57df504e99853ff11a7411f3b5654519",
+      "47a60abc3dfd351768d323f3af1f5ce058dd052629e7fd01bdf5a8398dddb733",
+      "bd4f8d426fe5c84db22dea34052e1eb27eb5c6075e6597684e9e3852189f6b0f",
+      "3b3d00b039cdeac50e56883e04504f38c8cad60d97bf167baaa24ee1d1d74bc0"
+    ],
+    "running_bigbrotr": 0,
+    "unrelated_unchanged": 20,
+    "unrelated_running": 8,
+    "shared_source": "6be851580ba415eed5ff0979ee7072480f9ee3ab"
+  },
+  "evidence_root": ".research/implementation/archive-worker/catalog-fence",
+  "evidence_files": {
+    "probe-a531ea3-artifact/build-result.json": "927906ede462b0a7cbdc53396086792a4affaa104ac239ee73c7257c9d0ac4b1",
+    "probe-a531ea3-artifact/source-manifest.json": "d4626f20ffbfa8479d4d5f5445232e7bc30dfb4de11dcbb5cc1b2fa5b0e88065",
+    "probe-a531ea3-build.log": "48f6b5816aef76bc6fa268f3aa7a94e453ae7c044dbc055a742c87e65529bb6c",
+    "cases-first/result.json": "970703c9996fa5496e4ccee657f2ab2f9a3e54415717b0b3f54b760858f01706",
+    "cases-phase/result.json": "7d97562b87cc4cbaadd87011d2bfada8184bad75a2bd4775933b48b82a8f5e18",
+    "cases-diagnostic/result.json": "a481bed99d984ef7559c433f324361d386d3453d0745e189d7197947ddb72b43",
+    "cases-memory/result.json": "0685255241548c83ee3b1d5823eb968ee08de15cb2bac8a50f7153229c2593ca",
+    "cases-memory/resources.json": "8c36d19ae8dde5ac5961b9e993b93b6c59c48274939c655bbfe91dbbdd2941b3",
+    "cases-memory/tools.json": "af589b23a82b65129081a4db33f6556b7ef33264727cd33d839111a318457382",
+    "final-audit.json": "60debae3d90b8b0a416e691db8358227a5e14b6555cd408fad9dac3bfa96e987",
+    "image-build.log": "b89661607313770c12a5e1b83ee2556473ee87d0699c7e6621971ff39fb50a67",
+    "image-build-retry.log": "e09905c989c9e8572a83d52d54ce479b843fc74f039bb6cac5c327ee3e431bb1"
+  },
+  "harnesses": {
+    "experiments/archive-engine/catalog_fence.rs": "f688d057c9fb43ad6c3d4016ac6ca82208f56703e641b3d6d16ba2720fe32579",
+    "experiments/archive-engine/catalog_fence.py": "b241259d8b0cb10c2eabb46dd96acfd889885226457f43aaf2feda8ed69b36ee",
+    "experiments/archive-engine/catalog-fence.Dockerfile": "9c6e577096f15a0e54b6052aca665dcfbf50f69cb31f083291721d8f27b03141"
+  },
+  "review": "Root inline complete probe/orchestrator and changed-source review; no independent agent review"
+}

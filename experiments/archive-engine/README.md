@@ -41,8 +41,8 @@ Before reproducing, inventory the host, verify ownership of inputs and create ne
 resources. The original six containers are stopped and retained under
 `/home/tux/bigbrotr-implementation-20260917/runs/archive-d459fcd`; do not restart
 or overwrite them. Exact creation commands/owners are in the laboratory inventory.
-No script authorizes network installation, release, pending acknowledgement or
-resource deletion. The runtime/thread probes do not qualify scientific row
+The runtime probes do not authorize network installation, release, pending
+acknowledgement or resource deletion. The runtime/thread probes do not qualify scientific row
 fidelity. None of these cases qualifies catalog transactions, native memory
 peaks, power-loss durability or Linux arm64.
 
@@ -71,7 +71,8 @@ affected application/worker Clippy. The [report](../../docs/implementation/evide
 retains distinct Cargo and packaged executable hashes, source/native tool audits
 and positive process cleanup. No kernel-task, host-loss or PG fence is inferred.
 
-`catalog_fence.rs` starts the next bounded **unexecuted PostgreSQL** experiment.
+`catalog_fence.rs` is the bounded PostgreSQL dependency experiment qualified at
+`a531ea3`; see the [four-case report](../../docs/implementation/evidence/p02-catalog-fence-native-20260918.json).
 It is an explicit Cargo example of the private worker package, using the same
 locked Rust/native tuple; it is not copied into the packaged installation.
 Build with `cargo build --locked -p bigbrotr-archive-worker --example catalog-fence-probe`
@@ -85,7 +86,7 @@ relations, without Nostr/scientific authority. Arguments after mode are the
 absolute bundle, empty private temporary directory, data directory, DSN-file path
 and a case batch number1–16. `write` reports a read-transaction barrier and waits
 for `publish` on stdin; `lost-ack` additionally waits after COMMIT and before its
-result. The planned controls compare concurrent absent-receipt writers, sealed
+result. The executed controls compare concurrent absent-receipt writers, sealed
 per-job login, positive backend termination and lost acknowledgement. No role
 revocation/fencing design is selected or qualified merely by compiling this probe.
 
@@ -93,5 +94,12 @@ revocation/fencing design is selected or qualified merely by compiling this prob
 runner with `psql`, no Docker socket and an outer finite deadline. It checks the
 cluster identity before mutation and positively reaps its children. The matching
 `catalog-fence.Dockerfile` pins the lab client package; record its actual image
-and executable identities. These cases remain NOT_RUN until recorded native
-evidence exists.
+and executable identities. Four synthetic cases pass; an in-flight PostgreSQL
+startup race remains untested, so this is not a selected production fence.
+
+Three earlier fresh catalogs failed before the cases: the pinned PG extension
+looks for unavailable `local_file` secret storage when no secret is found. An
+explicit TEMPORARY memory secret avoids that fallback while persistent secrets
+remain disabled; PG secret storage is disabled separately. Redacted native attach
+diagnostics stay in a0600 file inside the private lab root, never either pipe.
+The first failed image build and all failed runs remain recorded.

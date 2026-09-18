@@ -245,6 +245,10 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   document references and deterministic batch receipt in one transaction.
   Use the native writer on either local files or the configured S3 destination;
   validate catalog/root identity and disable automatic migration at ordinary attach.
+  The [actual native catalog investigation](evidence/p02-catalog-fence-native-20260918.json)
+  qualifies four synthetic cases and explicit memory-secret attach after a real
+  dependency failure. It is not the product schema/publisher. Connection-startup
+  exclusion, persisted recovery and full signed membership remain gates.
 - [ ] **Step 4:** After an ambiguous commit, query the receipt in a new transaction; do not
   repeat while receipt state is unknown. Reject mismatched batch digest.
 - [ ] **Step 5:** Enforce a single positively fenced publisher and bounded native worker

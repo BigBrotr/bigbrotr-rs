@@ -338,6 +338,21 @@ the [corrected Linux amd64 package](../implementation/evidence/p02-parent-bindin
 exits and is positively reaped after parent SIGKILL while stopped. This is neither
 a PostgreSQL backend fence nor evidence that uninterruptible kernel work has ceased.
 
+The pinned PostgreSQL extension has a concrete credential-lookup edge: with
+`allow_persistent_secrets=false`, an absent default secret makes `GetSecret` in
+[`postgres_catalog.cpp`](https://github.com/duckdb/duckdb-postgres/blob/41223e51559cd581f1c06e170b71c71df25bbaac/src/storage/postgres_catalog.cpp)
+fall back to unavailable `local_file` storage. Real Rust catalog attach failed.
+Provide an explicit TEMPORARY PostgreSQL memory secret and pass its name through
+DuckLake `META_SECRET`; the actual probe verifies the secret is nonpersistent and
+in memory. Keep `META_SECRET_STORAGE_TABLE=''` as a separate exclusion of optional
+PG secret-table registration. This preserves the credential boundary without
+enabling persistent secrets. The [native four-case investigation](../implementation/evidence/p02-catalog-fence-native-20260918.json)
+records the failed attach and successful corrected tuple, unfenced duplicates,
+live sessions after NOLOGIN, terminated old backends and lost COMMIT response.
+It does not select a production fence: PostgreSQL16.15 checks login permission
+before publishing backend activity, and in-flight connection startup remains an
+explicit recovery gate. This research adds no archive schema or migration.
+
 The same pinned binding rejects nested List/Array/Struct/Map/Union values through
 `ToSql`; its `Value` enum is not evidence that those parameters can be bound.
 Ordered nested tags therefore need the already selected Arrow path rather than

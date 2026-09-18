@@ -5694,7 +5694,7 @@
           "root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-afc70f3",
           "container": "bigbrotr-implementation-archive-afc70f3-build",
           "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
-          "state": "running",
+          "state": "completed-retained",
           "command": [
             "docker",
             "run",
@@ -5741,10 +5741,23 @@
             "available_disk_bytes": 328633155584
           },
           "started_at": "2026-09-18T14:37:05.700076+00:00",
-          "container_id": "a3fa76ce33e3f9edfdf18b8c510b5bb53895df66d28fd6fafc78dbe195fc4aa2"
+          "container_id": "a3fa76ce33e3f9edfdf18b8c510b5bb53895df66d28fd6fafc78dbe195fc4aa2",
+          "terminal": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-18T14:37:05.786492643Z",
+            "FinishedAt": "2026-09-18T14:44:19.540751904Z"
+          }
         }
       ],
-      "status": "Native build/probe PASS; first fresh PG16.15 run FAIL at initialization; four cases NOT_RUN",
+      "status": "Four scoped native cases PASS at a531ea3; production fencing remains unselected",
       "mac_clippy": "Completed exit0; no PostgreSQL case executed",
       "preflight": {
         "path": ".research/implementation/archive-worker/catalog-fence/preflight.json",
@@ -5764,13 +5777,24 @@
       "runner_dockerfile_sha256": "9c6e577096f15a0e54b6052aca665dcfbf50f69cb31f083291721d8f27b03141",
       "lab_scripts": {
         ".research/implementation/archive-worker/catalog-fence/audit-build.py": "fc0f75cc429c4e6c32ce021bb3e3b8045a44890c99da4f2b63bffe0dafb79e1b",
+        ".research/implementation/archive-worker/catalog-fence/audit-final.py": "f5d76c7dd8addc9d5ae6abce73e06f51edfe63b2b012e4d005862bbe63867b50",
         ".research/implementation/archive-worker/catalog-fence/build-image.py": "da7782a8698f4acb91d197d70afadabe82a3625aec9846ad486b66bb8a55d1bd",
         ".research/implementation/archive-worker/catalog-fence/build-probe.py": "9b19635630501fac40ff43bbf74e462882d962e1df12508456078e1318ce4ade",
         ".research/implementation/archive-worker/catalog-fence/collect-build.py": "bbdc1b766bb5d32d758ae88ed9baaaef6b02ab85f549d8ad382857a8ded9a60e",
         ".research/implementation/archive-worker/catalog-fence/launch-cases.py": "5789366987e08bb42799860ed6cf511630c6c450dce52c323bbf76bf32388b03",
+        ".research/implementation/archive-worker/catalog-fence/launch-diagnostic.py": "1ca3ac5d38c2fd5875c759bae42e437febcf9c724953f907b4995db936e5b0be",
+        ".research/implementation/archive-worker/catalog-fence/launch-memory-build.py": "e460ddf29ab1f9fd161b2ebaa7d0c88c093a225dab89f7cbdeb7b8898ded92f2",
+        ".research/implementation/archive-worker/catalog-fence/launch-memory.py": "3f71ee530fbd68d52ec0c386909fdc0341d3de02014a17cf95506bd40c4ad221",
+        ".research/implementation/archive-worker/catalog-fence/launch-phase.py": "d93c4a5f9149897e9ef09465b4909a2810d11d7551428c3c7333154ebe4dd022",
         ".research/implementation/archive-worker/catalog-fence/launch-probe-build.py": "5d8ed4c4264a75340932923b25bbb9af1c839f2d3fec9ed53d0587aefb8aeba5",
+        ".research/implementation/archive-worker/catalog-fence/launch-rebuild.py": "c5674341205ecece5e98379b27fbfe5b0ae0326af3e4bb5e1eebd2401bba829b",
         ".research/implementation/archive-worker/catalog-fence/observe-build.py": "50b5aa88d1a58e152ce72313bcbd142f8dd498918618abc2a181460fba6e3456",
-        ".research/implementation/archive-worker/catalog-fence/run-probe.py": "1f414b993b8e8ae373ec13a931802317d65a4c6c958737755732a59f2325a3e0"
+        ".research/implementation/archive-worker/catalog-fence/rebuild-memory.py": "640d3b2a1786d049cd4de563b1941b4cebe331cad8886efb2a5d0bb544bf6152",
+        ".research/implementation/archive-worker/catalog-fence/rebuild-probe.py": "81ca2f1bdc024504b0c867abf9916ed764f75195ede2fd5b6d7ea0161974bac8",
+        ".research/implementation/archive-worker/catalog-fence/run-memory-build.py": "87dcf15598ffd8f5abbff33076c7fdba25e4eaa730115e9ebdf854e8cf37a70e",
+        ".research/implementation/archive-worker/catalog-fence/run-probe.py": "1f414b993b8e8ae373ec13a931802317d65a4c6c958737755732a59f2325a3e0",
+        ".research/implementation/archive-worker/catalog-fence/run-rebuild.py": "5dabfa65e555ab14c13461034f0577d3d2f6e6fb4143cd6133061c7427fd28a4",
+        ".research/implementation/archive-worker/catalog-fence/write-report.py": "1e6b418d91e2daa83db5bb319f9fa9f4c3b5ee304730150b5c5e8b4cd59273d5"
       },
       "pg_startup_source": {
         "tag": "REL_16_15",
@@ -5917,359 +5941,7 @@
         "scope": "Explicit research example only; no catalog case executed"
       },
       "first_cases": {
-        "resources": {
-          "source": "afc70f37626a94750df5933a345839e3ffb03fac",
-          "root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-afc70f3/catalog-lab",
-          "owner": "e7273cdb9270874f87f750a668acc664",
-          "network": "bigbrotr-implementation-fence-afc70f3",
-          "postgres": "bigbrotr-implementation-fence-afc70f3-pg",
-          "runner": "bigbrotr-implementation-fence-afc70f3-runner",
-          "image": "sha256:9d30ac361d158c281070d274427241bee955ead10904d6dbe4ff866200548f3d",
-          "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
-          "cluster": "bigbrotr-fence-e7273cdb9270874f87f750a668acc664",
-          "state": "failed",
-          "started_at": "2026-09-18T14:46:00.117543+00:00",
-          "commands": [
-            [
-              "docker",
-              "network",
-              "create",
-              "--internal",
-              "--label",
-              "org.bigbrotr.catalog-fence=e7273cdb9270874f87f750a668acc664",
-              "bigbrotr-implementation-fence-afc70f3"
-            ],
-            [
-              "docker",
-              "run",
-              "-d",
-              "--name",
-              "bigbrotr-implementation-fence-afc70f3-pg",
-              "--label",
-              "org.bigbrotr.catalog-fence=e7273cdb9270874f87f750a668acc664",
-              "--user",
-              "1000:1000",
-              "--cpus",
-              "2",
-              "--pids-limit",
-              "256",
-              "--read-only",
-              "--cap-drop",
-              "ALL",
-              "--security-opt",
-              "no-new-privileges",
-              "--tmpfs",
-              "/tmp:rw,exec,nosuid,nodev,size=128m",
-              "--memory",
-              "1536m",
-              "--memory-swap",
-              "1536m",
-              "--network",
-              "bigbrotr-implementation-fence-afc70f3",
-              "--network-alias",
-              "pg",
-              "--tmpfs",
-              "/var/run/postgresql:rw,nosuid,nodev,size=16m,mode=0777",
-              "--mount",
-              "type=bind,src=/home/tux/bigbrotr-implementation-20260917/runs/archive-afc70f3/catalog-lab/pgdata,dst=/var/lib/postgresql/data",
-              "--mount",
-              "type=bind,src=/home/tux/bigbrotr-implementation-20260917/runs/archive-afc70f3/catalog-lab/secrets,dst=/secrets,readonly",
-              "--env",
-              "POSTGRES_PASSWORD_FILE=/secrets/admin",
-              "--env",
-              "POSTGRES_DB=catalog_fence",
-              "--env",
-              "POSTGRES_INITDB_ARGS=--auth-local=trust --auth-host=scram-sha-256",
-              "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
-              "postgres",
-              "-c",
-              "cluster_name=bigbrotr-fence-e7273cdb9270874f87f750a668acc664",
-              "-c",
-              "max_connections=40",
-              "-c",
-              "shared_buffers=128MB",
-              "-c",
-              "work_mem=4MB",
-              "-c",
-              "log_statement=none",
-              "-c",
-              "log_min_error_statement=panic",
-              "-c",
-              "log_parameter_max_length_on_error=0"
-            ],
-            [
-              "docker",
-              "run",
-              "-d",
-              "--init",
-              "--name",
-              "bigbrotr-implementation-fence-afc70f3-runner",
-              "--label",
-              "org.bigbrotr.catalog-fence=e7273cdb9270874f87f750a668acc664",
-              "--user",
-              "1000:1000",
-              "--cpus",
-              "2",
-              "--pids-limit",
-              "256",
-              "--read-only",
-              "--cap-drop",
-              "ALL",
-              "--security-opt",
-              "no-new-privileges",
-              "--tmpfs",
-              "/tmp:rw,exec,nosuid,nodev,size=128m",
-              "--memory",
-              "2g",
-              "--memory-swap",
-              "2g",
-              "--network",
-              "bigbrotr-implementation-fence-afc70f3",
-              "--mount",
-              "type=bind,src=/home/tux/bigbrotr-implementation-20260917/runs/archive-afc70f3/source,dst=/source,readonly",
-              "--mount",
-              "type=bind,src=/home/tux/bigbrotr-implementation-20260917/runs/archive-afc70f3/out,dst=/out,readonly",
-              "--mount",
-              "type=bind,src=/home/tux/bigbrotr-implementation-20260917/runs/archive-afc70f3/catalog-lab/output,dst=/lab",
-              "--mount",
-              "type=bind,src=/home/tux/bigbrotr-implementation-20260917/runs/archive-afc70f3/catalog-lab/secrets,dst=/secrets,readonly",
-              "sha256:9d30ac361d158c281070d274427241bee955ead10904d6dbe4ff866200548f3d",
-              "python3",
-              "-c",
-              "import hashlib,json,subprocess\nfrom pathlib import Path\nclient=Path('/usr/lib/postgresql/15/bin/psql')\nPath('/lab/tools.json').write_text(json.dumps({'psql_sha256':hashlib.sha256(client.read_bytes()).hexdigest(),'packages':subprocess.check_output(['dpkg-query','-W','postgresql-client-15','libpq5'],text=True)},indent=2)+'\\n')\ncommand=['python3', '/source/experiments/archive-engine/catalog_fence.py', '--probe', '/out/probe/catalog-fence-probe', '--probe-sha256', 'a35342747758e5f06422c0efb671e01ec2c3f4afc2f546d8372d9be353d0f26a', '--bundle', '/out/build/archive-worker', '--root', '/lab/cases', '--admin-password-file', '/secrets/admin', '--cluster', 'bigbrotr-fence-e7273cdb9270874f87f750a668acc664']\nsubprocess.run(command,check=True,timeout=240)\n"
-            ]
-          ],
-          "images": {
-            "postgres": {
-              "Id": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
-              "RepoTags": [
-                "postgres:16"
-              ],
-              "RepoDigests": [
-                "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94"
-              ],
-              "Comment": "buildkit.dockerfile.v0",
-              "Created": "2026-08-25T00:42:01.8414474Z",
-              "Config": {
-                "ExposedPorts": {
-                  "5432/tcp": {}
-                },
-                "Env": [
-                  "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/lib/postgresql/16/bin",
-                  "GOSU_VERSION=1.19",
-                  "LANG=en_US.utf8",
-                  "PG_MAJOR=16",
-                  "PG_VERSION=16.15-1.pgdg13+2",
-                  "PGDATA=/var/lib/postgresql/data"
-                ],
-                "Entrypoint": [
-                  "docker-entrypoint.sh"
-                ],
-                "Cmd": [
-                  "postgres"
-                ],
-                "Volumes": {
-                  "/var/lib/postgresql/data": {}
-                },
-                "StopSignal": "SIGINT"
-              },
-              "Architecture": "amd64",
-              "Os": "linux",
-              "Size": 160260290,
-              "RootFS": {
-                "Type": "layers",
-                "Layers": [
-                  "sha256:411a86676185cb54d695a805b238194a64e9b77e0c723f3802fbb87d333ea0b3",
-                  "sha256:ce64abdeb50944e6e83f7faf990b6eed9c129749449f87539793147c31d4e9ce",
-                  "sha256:c15f2fa7db9ddc77c53342510d9bbc50e152d2457bfd2e58a8e56d1182e02dcb",
-                  "sha256:bfc029f993579926b0d9b5e0671964c28049754a8b2417f9d5caf4618fdea53c",
-                  "sha256:35ca1da0f80201e75018e68e8858209444732619bf5d2885edc1fe50069ffb1f",
-                  "sha256:a819e544c5840e7d3ede68c97dea4ad2ca0cf73e34aac441aa4d4d847c217fb7",
-                  "sha256:d5d48c1b5dc044dc042dd873f981f34ed323d483effdac20c4beb8197f81f87b",
-                  "sha256:be06f1185adeaf2e6fee72380aaafea24493aa4a471099160b9d1608dee52235",
-                  "sha256:2e41e533f833ab138a68dbddc39bd5964f64b663ec94eec9799c7eeb1a0e5209",
-                  "sha256:428818b3d4fc4a3e4ca1be4f71a5a96c31b1a8ee8cf6797b31e09d82b143107f",
-                  "sha256:2c92e8a51f70b3049e1131c27758a306b32f6fa6ada92b583876c66e06538a2d",
-                  "sha256:7b14170befc9d17bf003f9dd0c309b702751d0bef0bc50c206dcb8d9de1eea95",
-                  "sha256:9a9fdfc02039f2abad9446217d482f6fe3da4d94b5ba94ab58485bf27fec0b72",
-                  "sha256:940d64be9c239fb6290b57e50d24c0b29de9187b6023285436dd9c6ba18177de"
-                ]
-              },
-              "Metadata": {
-                "LastTagTime": "2026-08-30T05:38:04.93326229Z"
-              },
-              "Descriptor": {
-                "mediaType": "application/vnd.oci.image.index.v1+json",
-                "digest": "sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
-                "size": 10237
-              },
-              "Identity": {
-                "Pull": [
-                  {
-                    "Repository": "docker.io/library/postgres"
-                  }
-                ]
-              }
-            },
-            "runner": {
-              "Id": "sha256:9d30ac361d158c281070d274427241bee955ead10904d6dbe4ff866200548f3d",
-              "RepoTags": [],
-              "RepoDigests": [],
-              "Comment": "buildkit.dockerfile.v0",
-              "Created": "2026-09-18T16:38:38.794936748+02:00",
-              "Config": {
-                "Env": [
-                  "PATH=/usr/local/cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
-                  "RUSTUP_HOME=/usr/local/rustup",
-                  "CARGO_HOME=/usr/local/cargo",
-                  "RUST_VERSION=1.98.1"
-                ],
-                "Cmd": [
-                  "bash"
-                ],
-                "Labels": {
-                  "org.bigbrotr.purpose": "isolated-catalog-fence-research",
-                  "org.bigbrotr.source": "6314639149035258a6b578e16c285fa489219b6a",
-                  "org.bigbrotr.trusted-ci": "0e2488b6bdd4390e817746122a6ab7b4",
-                  "org.opencontainers.image.source": "https://github.com/rust-lang/docker-rust"
-                }
-              },
-              "Architecture": "amd64",
-              "Os": "linux",
-              "Size": 738895728,
-              "RootFS": {
-                "Type": "layers",
-                "Layers": [
-                  "sha256:cd482426e5675a31e31f2bddad58815b83b309a587bf56b46a308586d9fd6eb5",
-                  "sha256:ffc8aa3c6d1eee538ec70f1c9d749b8bebe8f016bfd4b16ee45c623c9cffa402",
-                  "sha256:74a032b83597c9456f0d3bc320e33b56a52127ce0027d313a80e31a32ab99a42",
-                  "sha256:3ae67b6c3bdf10cd6600d5cf69601a33d304b74372b690fd736562f67d3a5f41",
-                  "sha256:8946861ff50555f6167be17b9c81dd7ca416f320b81e80ae1603484c2590bb3e",
-                  "sha256:0bd82f295245cb26cb4542f9b7c7912b5f5b2f53dfe5ba649ce31b99180004e0",
-                  "sha256:68844f3b6348c3aa2f93cfeacd465e321967392dbdf6aa2bb8b470ff3a032137"
-                ]
-              },
-              "Metadata": {
-                "LastTagTime": "2026-09-18T14:38:39.287410201Z"
-              },
-              "Descriptor": {
-                "mediaType": "application/vnd.oci.image.index.v1+json",
-                "digest": "sha256:9d30ac361d158c281070d274427241bee955ead10904d6dbe4ff866200548f3d",
-                "size": 856
-              },
-              "Identity": {
-                "Build": [
-                  {
-                    "Ref": "urtvghbu2c26v6pzeyz32fn8x",
-                    "CreatedAt": "2026-09-18T16:38:39.362795834+02:00"
-                  }
-                ]
-              }
-            }
-          },
-          "network_id": "8fd9b8601925dad179bcbcc1c4f2ec9238a6f514c756e626f4d8f98f2216c2ee",
-          "postgres_id": "1a28d33f0a689abd8b32a8924175dfb0038209e99c3cae6de5ec837b177a8d4f",
-          "server": {
-            "version": "160015",
-            "fsync": "on",
-            "full_page_writes": "on",
-            "cluster": "bigbrotr-fence-e7273cdb9270874f87f750a668acc664",
-            "host_scram": true
-          },
-          "runner_id": "5507fbfb28c53ec75396b9c09281774a65c629c238563ac3c9dd8bd8b978f032",
-          "runner_wait": "1",
-          "remaining_job_backends": "0",
-          "failure": "AssertionError",
-          "terminal": {
-            "bigbrotr-implementation-fence-afc70f3-runner": {
-              "id": "5507fbfb28c53ec75396b9c09281774a65c629c238563ac3c9dd8bd8b978f032",
-              "state": {
-                "Status": "exited",
-                "Running": false,
-                "Paused": false,
-                "Restarting": false,
-                "OOMKilled": false,
-                "Dead": false,
-                "Pid": 0,
-                "ExitCode": 1,
-                "Error": "",
-                "StartedAt": "2026-09-18T14:46:01.820808373Z",
-                "FinishedAt": "2026-09-18T14:46:02.383637508Z"
-              },
-              "mounts": [
-                {
-                  "Type": "bind",
-                  "Source": "/home/tux/bigbrotr-implementation-20260917/runs/archive-afc70f3/catalog-lab/secrets",
-                  "Destination": "/secrets",
-                  "Mode": "",
-                  "RW": false,
-                  "Propagation": "rprivate"
-                },
-                {
-                  "Type": "bind",
-                  "Source": "/home/tux/bigbrotr-implementation-20260917/runs/archive-afc70f3/source",
-                  "Destination": "/source",
-                  "Mode": "",
-                  "RW": false,
-                  "Propagation": "rprivate"
-                },
-                {
-                  "Type": "bind",
-                  "Source": "/home/tux/bigbrotr-implementation-20260917/runs/archive-afc70f3/out",
-                  "Destination": "/out",
-                  "Mode": "",
-                  "RW": false,
-                  "Propagation": "rprivate"
-                },
-                {
-                  "Type": "bind",
-                  "Source": "/home/tux/bigbrotr-implementation-20260917/runs/archive-afc70f3/catalog-lab/output",
-                  "Destination": "/lab",
-                  "Mode": "",
-                  "RW": true,
-                  "Propagation": "rprivate"
-                }
-              ],
-              "ports": {}
-            },
-            "bigbrotr-implementation-fence-afc70f3-pg": {
-              "id": "1a28d33f0a689abd8b32a8924175dfb0038209e99c3cae6de5ec837b177a8d4f",
-              "state": {
-                "Status": "exited",
-                "Running": false,
-                "Paused": false,
-                "Restarting": false,
-                "OOMKilled": false,
-                "Dead": false,
-                "Pid": 0,
-                "ExitCode": 0,
-                "Error": "",
-                "StartedAt": "2026-09-18T14:46:00.30041406Z",
-                "FinishedAt": "2026-09-18T14:46:02.723202789Z"
-              },
-              "mounts": [
-                {
-                  "Type": "bind",
-                  "Source": "/home/tux/bigbrotr-implementation-20260917/runs/archive-afc70f3/catalog-lab/pgdata",
-                  "Destination": "/var/lib/postgresql/data",
-                  "Mode": "",
-                  "RW": true,
-                  "Propagation": "rprivate"
-                },
-                {
-                  "Type": "bind",
-                  "Source": "/home/tux/bigbrotr-implementation-20260917/runs/archive-afc70f3/catalog-lab/secrets",
-                  "Destination": "/secrets",
-                  "Mode": "",
-                  "RW": false,
-                  "Propagation": "rprivate"
-                }
-              ],
-              "ports": {}
-            }
-          },
-          "cleanup": "owned containers stopped-retained"
-        },
+        "path": ".research/implementation/archive-worker/catalog-fence/cases-first",
         "result": {
           "status": "FAIL",
           "probe_sha256": "a35342747758e5f06422c0efb671e01ec2c3f4afc2f546d8372d9be353d0f26a",
@@ -6280,8 +5952,106 @@
           "psql_version": "psql (PostgreSQL) 15.19 (Debian 15.19-0+deb12u1)",
           "failure": "AssertionError",
           "child_cleanup": "all owned children reaped"
+        }
+      },
+      "qualified_report": "docs/implementation/evidence/p02-catalog-fence-native-20260918.json",
+      "qualified_source": "a531ea3ce345f4008a05bbf1696fd1e1f9827872",
+      "cleanup": {
+        "status": "PASS",
+        "source": "a531ea3ce345f4008a05bbf1696fd1e1f9827872",
+        "source_files": 600,
+        "probe_sha256": "793bd08ce5f99b32941da8485c0080c4656ed807ded41a7623b326a37b85e12d",
+        "cases": 4,
+        "owned_stopped_retained": 12,
+        "owned_ids": [
+          "a3fa76ce33e3f9edfdf18b8c510b5bb53895df66d28fd6fafc78dbe195fc4aa2",
+          "5896421a8ded09211ffb79ce8032523d9b710a3d2b5d9b3c08372b07991c9ae8",
+          "2503244c6458f84d44749bb6b6d523eff5e7f91fef2d99e34a7c823da50269b3",
+          "656f384cfbc1dd21882cda474c249c78b21feb62a2c6058daebcd8acd12a7147",
+          "1a28d33f0a689abd8b32a8924175dfb0038209e99c3cae6de5ec837b177a8d4f",
+          "5507fbfb28c53ec75396b9c09281774a65c629c238563ac3c9dd8bd8b978f032",
+          "8a5d7480b2025756658f9e7f28dba0462a2b970cff0751431d5cb58eb63de2f1",
+          "c1007d5d30645ccb95d02e3068f51497ca4e58f1acc2976e48fcfe1739505610",
+          "669400d01f27276fe419a2a2fb1511cd57df504e99853ff11a7411f3b5654519",
+          "47a60abc3dfd351768d323f3af1f5ce058dd052629e7fd01bdf5a8398dddb733",
+          "bd4f8d426fe5c84db22dea34052e1eb27eb5c6075e6597684e9e3852189f6b0f",
+          "3b3d00b039cdeac50e56883e04504f38c8cad60d97bf167baaa24ee1d1d74bc0"
+        ],
+        "running_bigbrotr": 0,
+        "unrelated_unchanged": 20,
+        "unrelated_running": 8,
+        "shared_source": "6be851580ba415eed5ff0979ee7072480f9ee3ab"
+      },
+      "runs": {
+        "first": {
+          "source": "afc70f37626a94750df5933a345839e3ffb03fac",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-afc70f3/catalog-lab",
+          "owner": "e7273cdb9270874f87f750a668acc664",
+          "network": "bigbrotr-implementation-fence-afc70f3",
+          "network_id": "8fd9b8601925dad179bcbcc1c4f2ec9238a6f514c756e626f4d8f98f2216c2ee",
+          "postgres": "bigbrotr-implementation-fence-afc70f3-pg",
+          "postgres_id": "1a28d33f0a689abd8b32a8924175dfb0038209e99c3cae6de5ec837b177a8d4f",
+          "runner": "bigbrotr-implementation-fence-afc70f3-runner",
+          "runner_id": "5507fbfb28c53ec75396b9c09281774a65c629c238563ac3c9dd8bd8b978f032",
+          "state": "failed",
+          "cleanup": "owned containers stopped-retained",
+          "remaining_job_backends": "0",
+          "resources_sha256": "4dca09f2869c792497e3244c5de618ac64c1ceecc7448f3e40ac970843de7d3f"
         },
-        "path": ".research/implementation/archive-worker/catalog-fence/cases-first"
+        "phase": {
+          "source": "cb75896304fce1799580bd7e451041c5bae1938a",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-afc70f3/catalog-lab-phase",
+          "owner": "c4584187112e66c78801588e68d1b71a",
+          "network": "bigbrotr-implementation-fence-afc70f3-phase",
+          "network_id": "039dc5cfdef5469a87b71469cb10f9a51e6c910a30ef0cd14f0d7e354360c3f1",
+          "postgres": "bigbrotr-implementation-fence-afc70f3-phase-pg",
+          "postgres_id": "8a5d7480b2025756658f9e7f28dba0462a2b970cff0751431d5cb58eb63de2f1",
+          "runner": "bigbrotr-implementation-fence-afc70f3-phase-runner",
+          "runner_id": "c1007d5d30645ccb95d02e3068f51497ca4e58f1acc2976e48fcfe1739505610",
+          "state": "failed",
+          "cleanup": "owned containers stopped-retained",
+          "remaining_job_backends": "0",
+          "resources_sha256": "bd47bb7337f548ce1d3f59b1ebac3886ae71cca774a3e961ec450878a57066a9"
+        },
+        "diagnostic": {
+          "source": "449e63ffe05f5b953f62e11796cfe6bd9998b02a",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-afc70f3/catalog-lab-diagnostic",
+          "owner": "14a18a8431b2b62b568bf456b317e306",
+          "network": "bigbrotr-implementation-fence-449e63f",
+          "network_id": "94bf6a5d24c7bc4cdb72363fa64ce5c78f494ce05ab1d3cdcb814bfa0cd3e1a4",
+          "postgres": "bigbrotr-implementation-fence-449e63f-pg",
+          "postgres_id": "669400d01f27276fe419a2a2fb1511cd57df504e99853ff11a7411f3b5654519",
+          "runner": "bigbrotr-implementation-fence-449e63f-runner",
+          "runner_id": "47a60abc3dfd351768d323f3af1f5ce058dd052629e7fd01bdf5a8398dddb733",
+          "state": "failed",
+          "cleanup": "owned containers stopped-retained",
+          "remaining_job_backends": "0",
+          "resources_sha256": "a54b2434db9cee8ebc948ffb3b0612e8c26d0522885b3cb47f2d2bccc472b430"
+        },
+        "memory": {
+          "source": "a531ea3ce345f4008a05bbf1696fd1e1f9827872",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-afc70f3/catalog-lab-memory",
+          "owner": "7b0e779c570428e465265eafbce36816",
+          "network": "bigbrotr-implementation-fence-a531ea3",
+          "network_id": "0997b55e3b8fc45d968ac80f575ec15a6263d494c47cdbbf2a55138cd83997f0",
+          "postgres": "bigbrotr-implementation-fence-a531ea3-pg",
+          "postgres_id": "bd4f8d426fe5c84db22dea34052e1eb27eb5c6075e6597684e9e3852189f6b0f",
+          "runner": "bigbrotr-implementation-fence-a531ea3-runner",
+          "runner_id": "3b3d00b039cdeac50e56883e04504f38c8cad60d97bf167baaa24ee1d1d74bc0",
+          "state": "completed",
+          "cleanup": "owned containers stopped-retained",
+          "remaining_job_backends": "0",
+          "resources_sha256": "8c36d19ae8dde5ac5961b9e993b93b6c59c48274939c655bbfe91dbbdd2941b3"
+        }
+      },
+      "upstream_secret_sources": {
+        ".research/checkouts/postgres-archive-fence/src/postgres_secrets.cpp": "381c5731b5ea04abca0d139cd2886142704d9c0178c57513689977414dab010b",
+        ".research/checkouts/postgres-archive-fence/src/storage/postgres_catalog.cpp": "d4fab4b727f892dcfdc7f828d16c00a30950dcd3196b729df13f84a13d43c102"
+      },
+      "qualified_probe_build": {
+        "source": "a531ea3ce345f4008a05bbf1696fd1e1f9827872",
+        "artifact_sha256": "793bd08ce5f99b32941da8485c0080c4656ed807ded41a7623b326a37b85e12d",
+        "receipt": ".research/implementation/archive-worker/catalog-fence/probe-a531ea3-artifact/build-result.json"
       }
     }
   },
