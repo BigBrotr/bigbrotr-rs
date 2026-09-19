@@ -8238,11 +8238,50 @@
     },
     "initialization_custody": {
       "local_root": ".research/implementation/archive-worker/initialization-custody",
-      "status": "Candidate prepared; no native run yet",
+      "status": "105a543 build/31 archive tests/scoped Clippy and22 cases PASS with fixture limits; stopped-retained, first evidence verified; corrected qualification pending",
       "scope": "P02-T04 steps3/4/5 permanent local reservation and real native consumer; DB reservation/full initializer pending",
       "planned_run": "Fresh exact-source initialization-custody lab; copied df4a598 cache and read-only pinned assets; no retained lab restart",
       "mac": "31 archive tests and scoped Clippy PASS; transient concurrent fork custody tests now require bounded actual reacquisition; native check NOT_RUN without verified Mac bundle",
-      "review": "Read-only AI review found no blocking defect within trusted typed parent boundary; same-inode reopened descriptor acceptance explicitly documented and included as a native observation."
+      "review": "Read-only AI review found no blocking defect within trusted typed parent boundary; same-inode reopened descriptor acceptance explicitly documented and included as a native observation.",
+      "native_run": {
+        "source": "105a54323e92d259200205d20585c2278ab1a9d9",
+        "tree": "53e3d8c431c7564182357ec099d3cb1f9c79e4c8",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/initialization-custody-105a543",
+        "owner": "04619b09bb655690931953003d96b769",
+        "container": "bigbrotr-implementation-initialization-custody-105a543",
+        "postgres": "bigbrotr-implementation-initialization-custody-105a543-pg",
+        "network": "bigbrotr-implementation-initialization-custody-105a543",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "state": "stopped-retained",
+        "source_files": 728,
+        "started_at": "2026-09-19T06:36:06.916814+00:00",
+        "network_id": "3289b4cba3db26a626aaa7f7f406cf23c62c8ea1a92909e96d4ceedd2d199ef0",
+        "postgres_id": "65ce35914d70eddb32f0a5442186b388aa25fdadef7348d905813cc2746494b3",
+        "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+        "container_id": "566d10ad7c47efb5882411b2037c304bdf24361d4e7b0b0e2b7d58e3ff8395e9",
+        "completed_at": "2026-09-19T06:39:33.187952+00:00"
+      },
+      "first_audit": ".research/implementation/archive-worker/initialization-custody/first/audit.json",
+      "first_tar_sha256": "d58779e39e11d2156ec09623c2cc08d228af17da1b7c1de5aaaa0d0335afeb5e",
+      "fixture_findings": [
+        "symlink target inside root refused too early",
+        "wrong fd and replaced lock conflated file-shape checks",
+        "reopened FD case also inherited original lock",
+        "temporary directory cleanup could run after unknown child termination",
+        "initial dump excluded ownership/ACLs/comments"
+      ],
+      "network_retirement": [
+        {
+          "root": "initialization-custody-105a543",
+          "network": "3289b4cba3db26a626aaa7f7f406cf23c62c8ea1a92909e96d4ceedd2d199ef0",
+          "owner": "04619b09bb655690931953003d96b769",
+          "status": "removed",
+          "containers": "retained-stopped",
+          "data": "retained",
+          "observed_at": "2026-09-19T06:39:54.666420+00:00"
+        }
+      ]
     }
   },
   "implementation_monitor_corrections_20260918": {

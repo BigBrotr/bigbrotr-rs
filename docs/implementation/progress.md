@@ -21,17 +21,12 @@ installed service readiness.
 
 ## Actual Git and ownership
 
-Mac main HEAD and freshly verified remote main are both
-52ab36631f49d59bfad5ac7ad210d04e04efdbf2. All five ownership/qualification commits
-were pushed normally to the verified private repository. Push5252 terminal0;
-remote refs/heads/main matches. Root is sole writer, no merge/rebase. Working tree
-was clean after push. Current root-owned dirty work adds permanent local
-initialization custody and the real reserved native initialization consumer:
-parent archive initialization/{tests}, lifetime/bootstrap/worker/mod, native
-initialization_custody/catalog/main/lib and archive-storage-contract. No applied
-SQL or dependencies changed. These changes are not yet native-qualified.
-The previous ownership source remains qualified at df4a598. Its complete source
-diff, affected contracts and recorded effects were reviewed.
+Mac main HEAD is candidate 105a54323e92d259200205d20585c2278ab1a9d9,
+origin/main freshly verified at 52ab36631f49d59bfad5ac7ad210d04e04efdbf2.
+Root sole writer; no merge/rebase. Candidate clean before Git bundle transfer;
+only checkpoint/inventory updated after launch. New local custody and actual
+native consumer are awaiting qualification. Previous ownership source remains
+qualified at df4a598; no applied SQL or dependency changes in the candidate.
 Read-only AI evidence review verified all 61 raw files, four archives and 2885
 source files, outcomes/COPY/roles/faults/locks without discrepancy. It did not run
 native cases or inspect retained ELF/full host inventories independently.
@@ -84,8 +79,18 @@ administrator isolation, performance, resource exhaustion or full initializer cl
 
 ## Owned resources
 
-No active experiment. Native 48435 terminal0; audit 53037 terminal0; collection 94384
-terminal0. All catalog-install labs are stopped-retained; never restart them.
+No active experiment. initialization-custody-105a543 completed ordered build,
+31 parent archive tests and scoped native Clippy; 22 practical cases PASS with
+known fixture discrimination limits (see below). Native50139/audit98011 and
+collection97363 terminal0. Fourteen raw files and728 exact source files verified;
+first tar d58779e39e11d2156ec09623c2cc08d228af17da1b7c1de5aaaa0d0335afeb5e.
+Runner566d10ad7c47efb5882411b2037c304bdf24361d4e7b0b0e2b7d58e3ff8395e9
+stopped143; PG65ce35914d70eddb32f0a5442186b388aa25fdadef7348d905813cc2746494b3
+stopped0; noOOM. All298 preexisting containers unchanged; eight unrelated running.
+The owned empty network3289b4cba3db26a626aaa7f7f406cf23c62c8ea1a92909e96d4ceedd2d199ef0
+was verified and removed at06:39:54Z; containers/data remain retained, no restart.
+Local raw/helpers: .research/implementation/archive-worker/initialization-custody.
+Next lab copies105a543/out/build and mounts105a543/out/archive-worker read-only.
 [Inventory](../research/laboratory-inventory.json), catalog_installed_ownership,
 owns complete resource identities, preflights, earlier failures and network retirement.
 
@@ -160,12 +165,17 @@ serial execution passed, and the same bounded actual-acquire helper used by
 LocalAttempt now handles concurrent test fork holders without inferring release.
 Formatting, diff and artifact checks PASS. Independent AI source review found no
 blocking in-contract defect; native FD identity is not independent flock proof.
-Mac native check 7885 terminal101: verified DUCKDB_LIB_DIR bundle absent; native
-Rust compilation and actual PostgreSQL cases remain NOT_RUN. No active local
-test or Tux experiment. The real parent/native/PG fixture now plans 22 cases,
-including unchanged DB on refusal and actual driver/child custody; still NOT_RUN.
-Next: commit the candidate and execute native_initialization.py followed by
-initialization_cases.py in a fresh inventoried exact-source Tux lab.
+Mac native check 7885 terminal101: verified DUCKDB_LIB_DIR bundle absent.
+The first exact Tux build and22 practical cases PASS, with fixture limitations. The first real parent/native/PG run exercised22 cases. AI review found symlink
+refusal happened too early, wrong-fd/replaced-lock cases conflated file-shape
+checks, and raw reopened-fd inherited the original lock too. TemporaryDirectory
+could clean while termination unknown. The local fixture now retains scratch,
+isolates these controls, verifies actual absent custody for the raw reopened-fd
+observation, compares full PG dumps (only random restrict tokens normalized) and
+captures unchanged filesystem fingerprints on refusals. No production change.
+Next: commit corrected fixture/docs and qualify the exact revision in a fresh
+lab using native_initialization.py then initialization_cases.py; audit, collect,
+review and record its actual scope before private push.
 Atomic manager installation is now available; it does not
 provision bootstrap credentials, establish native exclusion or reserve roots.
 

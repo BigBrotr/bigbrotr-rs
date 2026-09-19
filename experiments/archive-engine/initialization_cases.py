@@ -15,6 +15,17 @@ def digest(value):
     return hashlib.sha256(value).hexdigest()
 
 
+def filesystem(root):
+    rows = []
+    for path in [root, *sorted(root.rglob('*'))]:
+        m = path.lstat()
+        rows.append(dict(path=str(path.relative_to(root)), mode=m.st_mode, uid=m.st_uid,
+                         device=m.st_dev, inode=m.st_ino, links=m.st_nlink,
+                         target=os.readlink(path) if path.is_symlink() else None,
+                         sha256=digest(path.read_bytes()) if path.is_file() and not path.is_symlink() else None))
+    return digest(json.dumps(rows, sort_keys=True).encode())
+
+
 def fixture_child(database, label):
     assert database.startswith('bbinit_') and all(c in 'abcdefghijklmnopqrstuvwxyz_' for c in database)
     root = Path('/out/schema_' + database)
@@ -44,12 +55,13 @@ def fixture_child(database, label):
     elif label == 'empty-journal': journal.write_bytes(b'')
     elif label == 'oversized-journal': journal.write_bytes(b'x'*32769)
     elif label == 'replaced-lock':
-        lock.rename(marker/'retained-lock')
+        lock.rename(root.with_name(root.name+'-retained-lock'))
         lock.touch(mode=0o600)
-        (marker/'retained-lock').unlink()  # Test-owned open original retained by fd.
     elif label == 'missing-fd': proof['custody_fd'] = 2147483647
     elif label == 'wrong-fd':
-        other = os.open('/dev/null', os.O_RDONLY)
+        other_path = root.with_name(root.name+'-other-lock')
+        other_path.touch(mode=0o600)
+        other = os.open(other_path, os.O_RDONLY | os.O_CLOEXEC)
         extras.append(other)
         proof['custody_fd'] = other
     elif label == 'reopened-unlocked-fd':
@@ -60,8 +72,9 @@ def fixture_child(database, label):
     elif label == 'marker-mode': marker.chmod(0o755)
     elif label == 'journal-mode': journal.chmod(0o644)
     elif label == 'symlink-journal':
-        journal.rename(root/'retained-journal')
-        journal.symlink_to(root/'retained-journal')
+        target = root.with_name(root.name+'-retained-journal')
+        journal.rename(target)
+        journal.symlink_to(target)
     elif label == 'extra-root': (root/'canary').write_bytes(b'preserve')
     elif label == 'extra-marker': (marker/'canary').write_bytes(b'preserve')
     elif label == 'wrong-root-inode': proof['root_inode'] += 1
@@ -71,43 +84,55 @@ def fixture_child(database, label):
     elif label == 'trailing-value': wire += '{}'
     elif label == 'oversized-wire': wire = ' '*32769
     before = journal.read_bytes()
-    with tempfile.TemporaryDirectory(prefix='initialization-child-', dir='/out') as temp:
-        args = ['/out/archive-worker/bigbrotr-archive-worker', 'initialize-reserved-catalog',
-                '/out/archive-worker', temp, '134217728', '67108864', '1']
-        env = {'BIGBROTR_ARCHIVE_PARENT_PID':str(os.getpid()), 'LD_LIBRARY_PATH':'/out/archive-worker/lib'}
-        child = subprocess.Popen(args, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                                 env=env, pass_fds=(fd, *extras))
-        try:
-            if label == 'killed-child-custody':
-                # Popen has completed exec; the actual verified native image now
-                # owns this inherited descriptor even before receiving credentials.
-                observed = os.stat(f'/proc/{child.pid}/fd/{fd}')
-                assert (observed.st_dev, observed.st_ino) == (lm.st_dev, lm.st_ino)
-                os.close(fd)
-                fd = None
-                retry = os.open(lock, os.O_RDONLY)
-                try:
-                    try: fcntl.flock(retry, fcntl.LOCK_EX | fcntl.LOCK_NB)
-                    except BlockingIOError: pass
-                    else: raise AssertionError('actual native child did not retain custody')
-                    child.kill()
-                    stdout, stderr = child.communicate(timeout=5)
-                    assert child.returncode == -9
-                    fcntl.flock(retry, fcntl.LOCK_EX | fcntl.LOCK_NB)
-                finally: os.close(retry)
-                result = dict(exit=child.returncode, held='occupied', joined='reacquired')
-            else:
-                stdout, stderr = child.communicate(wire.encode(), timeout=30)
-                assert len(stdout)+len(stderr) < 4096 and password.encode() not in stdout+stderr
-                result = dict(exit=child.returncode, stdout=stdout.decode(), stderr=stderr.decode())
-        finally:
-            if child.poll() is None:
+    files_before = filesystem(root)
+    # Retain fixture scratch even on unknown termination; final owned lab audit
+    # records lifecycle. An exception must not unlink a live child's files.
+    temp = tempfile.mkdtemp(prefix='initialization-child-', dir='/out')
+    args = ['/out/archive-worker/bigbrotr-archive-worker', 'initialize-reserved-catalog',
+            '/out/archive-worker', temp, '134217728', '67108864', '1']
+    env = {'BIGBROTR_ARCHIVE_PARENT_PID':str(os.getpid()), 'LD_LIBRARY_PATH':'/out/archive-worker/lib'}
+    child = subprocess.Popen(args, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                             env=env, pass_fds=tuple(extras) if label == 'reopened-unlocked-fd' else (fd, *extras))
+    try:
+        if label == 'reopened-unlocked-fd':
+            os.close(fd)
+            fd = None
+            retry = os.open(lock, os.O_RDONLY)
+            try:
+                fcntl.flock(retry, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            finally: os.close(retry)
+        if label == 'killed-child-custody':
+            # Popen has completed exec; the actual verified native image now
+            # owns this inherited descriptor even before receiving credentials.
+            observed = os.stat(f'/proc/{child.pid}/fd/{fd}')
+            assert (observed.st_dev, observed.st_ino) == (lm.st_dev, lm.st_ino)
+            os.close(fd)
+            fd = None
+            retry = os.open(lock, os.O_RDONLY)
+            try:
+                try: fcntl.flock(retry, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                except BlockingIOError: pass
+                else: raise AssertionError('actual native child did not retain custody')
                 child.kill()
-                child.wait(timeout=5)
-            if fd is not None: os.close(fd)
-            for other in extras: os.close(other)
+                stdout, stderr = child.communicate(timeout=5)
+                assert child.returncode == -9
+                fcntl.flock(retry, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            finally: os.close(retry)
+            result = dict(exit=child.returncode, held='occupied', joined='reacquired')
+        else:
+            stdout, stderr = child.communicate(wire.encode(), timeout=30)
+            assert len(stdout)+len(stderr) < 4096 and password.encode() not in stdout+stderr
+            result = dict(exit=child.returncode, stdout=stdout.decode(), stderr=stderr.decode())
+    finally:
+        if child.poll() is None:
+            child.kill()
+            child.wait(timeout=5)
+        if fd is not None: os.close(fd)
+        for other in extras: os.close(other)
     assert journal.read_bytes() == before
     result['journal_sha256'] = digest(before)
+    result['filesystem_before_sha256'] = files_before
+    result['filesystem_after_sha256'] = filesystem(root)
     print(json.dumps(result))
 
 
@@ -144,7 +169,7 @@ def main(run):
         (run/'out'/('schema_'+db)).mkdir(mode=0o700)
         return db
     def snapshot(db):
-        value = cmd('docker', 'exec', pg, 'pg_dump', '--no-owner', '--no-privileges', '--no-comments', '-U', 'postgres', db)
+        value = cmd('docker', 'exec', pg, 'pg_dump', '-U', 'postgres', db)
         stable = '\n'.join(l for l in value.splitlines() if not l.startswith(('\\restrict ', '\\unrestrict ')))
         return digest(stable.encode())
     def drain():
@@ -205,9 +230,10 @@ def main(run):
                 assert json.loads(actual['stdout'])==dict(format='bigbrotr-native-reserved-initialize/1', status='initialized')
                 entry['effects'] = scientific(db)
                 if label == 'reopened-unlocked-fd':
-                    entry['limitation'] = 'Identity check accepts a reopened same-inode FD; only the typed trusted parent establishes locked-OFD custody.'
+                    entry['limitation'] = 'Raw fixture passed only a reopened same-inode FD; actual flock reacquired while worker waited for input, then native initialize accepted. Only the typed trusted parent establishes locked-OFD custody.'
             else:
                 assert snapshot(db)==before
+                assert actual['filesystem_before_sha256']==actual['filesystem_after_sha256']
                 entry['database_unchanged_sha256'] = before
                 if label == 'killed-child-custody':
                     assert actual['exit']==-9 and actual['held']=='occupied' and actual['joined']=='reacquired'
