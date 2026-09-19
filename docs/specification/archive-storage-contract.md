@@ -240,8 +240,11 @@ Refuse this as unsafe role state before a generic SQL permission failure.
 Manager membership must not create another ordinary owner principal. Superusers,
 database/public-schema administrators and privileged cluster-wide roles remain
 the trusted infrastructure boundary; object ACL inspection does not isolate them.
-These are installed-initializer requirements under P02-T04, not a claim that the
-current foundation install/inspection adapter already enforces all of them.
+The finite `install_for_manager` operation and shared guard inspection now enforce
+this ownership/ACL boundary with [56 native cases](../implementation/evidence/p02-catalog-ownership-native-20260919.json)
+at df4a598. Existing incompatible grants are refused, not silently repaired.
+The complete reserved initializer, its CLI and fresh runtime-manager publication
+still require implementation/qualification under P02-T04.
 
 The application-owned `bigbrotr_archive` schema contains immutable installation
 and attempt records plus one mutable owner row. Every native metadata mutation

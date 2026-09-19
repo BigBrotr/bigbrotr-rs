@@ -300,6 +300,12 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   required manager privileges and existing wrong-owner refusal. Qualify actual
   non-owner writes, positive runtime manager use, rollback and ambiguous install;
   a structural checksum alone does not prove those authority properties.
+  [Native ownership qualification](evidence/p02-catalog-ownership-native-20260919.json)
+  records two baseline counterexamples, both intervening failures and 56 passing
+  cases at df4a598. The configured non-superuser manager can inspect; missing
+  rights/default ACLs refuse, both COMMIT-loss directions resolve, and concurrent
+  installers produce one install and one existing observation. Complete reserved
+  initialization and fresh publication under that manager remain required.
 - [ ] **Step 4:** After an ambiguous commit, query the receipt in a new transaction; do not
   repeat while receipt state is unknown. Reject mismatched batch digest.
   Include loss of the actual native PostgreSQL COMMIT response, plus physical file

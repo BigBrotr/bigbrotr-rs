@@ -21,189 +21,115 @@ installed service readiness.
 
 ## Actual Git and ownership
 
-Mac main HEAD 9f02f437678a5ffaff9e2bc9c3f5ec7ffb7fc14e, three unpublished
-fixture/implementation commits ahead of verified origin/main ac13f11e150b6b845d798c3e13a51aeecbff11e5.
-All three authentication commits were pushed normally; repository remains private.
-Root is sole writer. Dirty catalog_guard/checkpoint/inventory add semantic privilege
-validation before dependent scientific-binding INSERT. Native9f02f43:22 cases PASS,
-then FAIL at default-owner_select: actual Backend instead of UnsafeRole, with
-complete catalog/roles unchanged. PG diagnostic and exact16.15 ri_PlanCheck/
-ri_PerformCheck confirm foreign-key SQL executes as the owner and fails before
-the previous final privilege check. Corrected ordering preserves typed refusal;
-no SQL migration/worker change. Mac scoped Clippy/format PASS; corrected native
-qualification NOT_RUN. Previous4404a16 fixture comparison FAIL also retained.
+Last observed Mac main HEAD df4a598bd457fb4670d41f7db719e733aace7a7f,
+four unpublished commits after verified origin/main
+ac13f11e150b6b845d798c3e13a51aeecbff11e5. Root is sole writer, no merge/rebase.
+Dirty work now: qualification report, owning archive contract/task, inventory and
+this checkpoint. Production code is committed and native-qualified at df4a598;
+no post-test production change. Complete source diff reviewed by integrating owner;
+recorded-evidence AI review verified all 61 raw files, four archives and 2885
+source files, outcomes/COPY/roles/faults/locks without discrepancy. It did not run
+native cases or inspect retained ELF/full host inventories independently. Private
+remote refreshed at ac13f11; normal evidence commit/push is the next Git action.
 
-## Installed catalog inspection qualified within its scope
+## Current ownership/ACL qualification
 
-[Native report](evidence/p02-catalog-cli-native-20260919.json) owns both exact
-source/dependency/artifact/workload/raw sets. Explicit archive.catalog_id is now
-a deployment root; generated init/example/schema/reference and selected Archive
-validation share it. Actual archive inspect uses the protected catalog connection
-and expected dataset/catalog/root to verify guard/scientific metadata. It grants
-no runtime authority, launches no worker and checks no data-file contents.
-No applied SQL checksum, policy encoding, scientific schema or journal change.
+[Native report](evidence/p02-catalog-ownership-native-20260919.json) owns four exact
+sources, artifacts, workload, failures and 61 verified raw files. All 2885 exported
+source-file comparisons and four archives match independent Mac Git input.
 
-Read-only AI source review found unbounded discarded ordinal bytes before shape
-validation; all guard entrypoints now lock fixed scalars with LIMIT2, and activation
-reads owner values after installed validation. Documentation now distinguishes
-5s socket timeout,10s transport deadline,30s inspection and2s driver drain.
-A CLI-harness cleanup omission was corrected on Mac before that suite executed.
-Its cleanup attempts each resource independently and retains INCOMPLETE on error.
+The finite install_for_manager transaction validates exact manager/bootstrap
+names/OIDs, transfers 28 native tables, 4 guard tables, guard schema and 2 functions
+to the non-superuser runtime manager, and preserves database/public-schema owners.
+Shared guard inspection verifies default/actual table,column,function/schema ACLs,
+PUBLIC, onward delegation, required ordinary manager rights and membership closure.
+No applied SQL checksum, native worker bytes or scientific schema changes.
+Incompatible persisted grants refuse; no implicit repair/adoption.
 
-At5262c84:38 real scientific cases PASS (native schema/guard/refusal/ambiguity,
-both SQL lock orders, activation, seal and repeated current seal), plus six
-shared Control CLI cases PASS (TLS/signals/blocked cancellation/restart).
-Repeated seal is the same disabled current ordinal, despite its fixture label
-sealed-history. It does not qualify a predecessor after successor activation.
-At3e87a53:18 actual catalog CLI cases PASS, including wrong identities/credentials,
-TLS, empty/unbound/native-only state, lock deadline/retry and malformed owner.
-256MiB text ordinal refuses IncompatibleLayout without OOM in192MiB cgroup;
-independent length/MD5 unchanged.5.036s row-lock refusal, subsequent retry succeeds.
-Logical dumps remain equal; no inspected client backends remain. PG TLS settings
-restored. Mac39 Rust cases; each native candidate37 plus Clippy/Control fixture.
-Earlier commentary called native count39; logs/report correct it (two identity
-cases were local only). Native source/archive equality verified for all713 files
-per revision; production input files are identical between the two candidates.
+At d21eacc: two real counterexamples REPRODUCED. Generic foundation install leaves
+postgres owner; initializer defaults allow a named reader to UPDATE guard.owner
+and old inspection accepts. Test mutation rolled back.
+At 4404a16: first install succeeds, suite FAIL because data-only pg_dump comments
+contain the intentionally changed owner. Retained 28 COPY blocks / 224 metadata rows
+are identical; changed-table/missing-block negative controls discriminate the fix.
+At 9f02f43: 22 cases PASS, then FAIL: missing owner SELECT returns Backend before
+final semantic validation. Full catalog and role fingerprints unchanged. PG error
+and exact 16.15 ri_PlanCheck/ri_PerformCheck confirm owner-authorized FK execution.
+df4a598 validates privileges before binding INSERT, retaining final full inspection.
 
-First main3c3333e02e90d662e5f237fd0e538c1eaa4a32a41e1f430560a7a11ae88dd429
-(8,230,496 bytes); second057f06f2271212379e307f5c7711f699ca4a51c87fc4ca30c4cab44e9f908694
-(8,230,440 bytes). Worker unchanged4e754f7f525f484df96920b9c7a73f5ddb40762b6e5051a459f45d41c60deac9.
-Raw .research/implementation/archive-worker/catalog-cli/{guard-transport,inspection},
-19 verified files each. Tars f602cb9708c01f1ba642806c29790a31aba27150c0293d4c2476590cc8341373
-and71abad6178574a2d8d4b1d4afacd4391f64c84d9cfaed2d1f1dc39cbba95db20.
-First local extraction failed on Python3.9's unsupported filter keyword after
-hash checks, before extraction. Bounded exclusive extraction reverified the same
-members and succeeded. The shell had continued with the reviewed cleanup commit
-and transfer while its checkpoint refresh failed; current state was reconciled.
-No product/test assertion changed. Full details and exclusions stay in the report.
+At df4a598: 56 actual PG cases PASS. Includes real non-superuser manager inspection,
+wrong OIDs/owner/unretired bootstrap, permitted named readers, incompatible defaults,
+column/table/function/schema/PUBLIC/delegation/membership grants, missing manager
+rights, mid-DDL rollback, both actual lost-COMMIT directions and two real concurrent
+installers. Fresh observations resolve installed versus absent states; no automatic
+ambiguous initializer retry is inferred. Two waiter PID/blocker/classid/objid sets
+and holder PID retained; exactly one installed and one existing. Normal fixture
+calls return permits and drain target backends to zero; role fingerprints unchanged.
+Raw full-dump hashes cover refusals; before/after snapshots append one LF, and
+installed snapshot includes reader grants. This is empty scientific initialization
+with nonempty native metadata, not a signed-event/publication workload.
 
-## Native authentication qualified within its scope
-
-[Native report](evidence/p02-native-catalog-auth-20260919.json) owns source,
-artifacts, workloads, failures, exclusions and raw identities. At e98f484,16 actual
-PG/native receipt cases PASS. Unchanged original0ca4fff accepts trust and an
-omitted real SCRAM server-final; new code refuses both, with zero SQL messages
-versus125 from the old client in the incomplete-exchange case. SCRAM positive,
-wrong password, cleartext challenge, verify-full TLS and wrong CA/name/password
-cases pass. All full catalog dumps unchanged, permits returned, target backends
-zero, HBA/config restored. No TLS version/cipher, RSS or performance claim.
-
-The closed bootstrap/initialize decoder rejects duplicate/unknown/trailing fields;
-all native route private strings are bounded before allocation. Three new tests
-were observed red before fixes, then green. Mac25 archive tests/Clippy PASS.
-Both native builds26 PASS,1 unrelated custody test ignored,Clippy PASS. The ignored
-case remains separately qualified earlier, not executed here. Candidate567c2e6
-failed baseline extraction before READY on Python3.11's unsupported filter keyword;
-auth cases NOT_RUN. Corrected e98f484 uses the shared builder's validated extraction
-policy, with production inputs byte-identical. No SQL checksum, schema, credential
-representation or worker bytes changed. Configured native mutual TLS remains a gate.
-
-Source archives and all2146 files across567/e98/original0ca4 verified against Git.
-Raw .research/implementation/archive-worker/catalog-initialization/{failed-build,qualified},
-11 and19 verified files, tar hashes ababfdfa1818eda035e9976b9e7ee18143e36f2654f337a9c952aecf460968ab
-and1600c55da1376435a0ef0a9646e9623bfa27487e7be4465cbb45ff1289d55b45.
-Exact libpq18.3 parser/auth completion/server-final branches inspected; source
-hashes in inventory. Read-only AI source review found a proxy cleanup gap, fixed
-before execution with independent finally cleanup and bounded terminal capture.
-Forced cleanup failure not exercised; unresolved state remains INCOMPLETE.
-Recorded-evidence AI review verified all30 raw hashes, both archives,2146 source
-hashes,16 outcomes/proxy vectors and test counts. Its wording finding was corrected:
-receipt observation checks immutable bindings, not full live guard compatibility.
-No further discrepancy; reviewer did not execute native work or inspect retained
-ELF bytes/full host inventory locally. Root reviewed the complete change diff.
+Mac formatting/scoped Clippy/Python-artifact/diff checks PASS. All four native
+builds and scoped Clippy PASS; each native unit selection runs three credential/
+SCRAM cases, not ACL unit coverage. The 56 practical cases own ACL evidence.
+Read-only AI review found missing ordinary rights, membership/PUBLIC/default/delegation
+checks, late failure-output capture and incomplete lock evidence; corrected before
+qualification. It also confirmed early privilege validation uses only catalogs/ACLs
+and preserves one transaction. Reviewer ran no native tests. No adversarial cluster
+administrator isolation, performance, resource exhaustion or full initializer claim.
 
 ## Owned resources
 
-Stopped-retained catalog-install-9f02f43 ownerd8b7192cd764f58b56ddc49690c36c0e:
-runnerdb24674400d539af10b74a44b2b037ce5002e0b708ffa5a50ce7ca0382e4968c,
-PGb38c00e53f220a6432c5b7f5ee60a3b8aac82565997c6d93ee09e9b434192ac8,
-network475fdc395c19cef344561137deef3000c5e9aae31f4cfac9eb2892a63899ea75.
-Clean tree754efdcdb1ef103478067b1611a9a8ac8ad034a8,722 files. Native31735 terminal1,
-audit95437 terminal0,collection23240 terminal0.16 raw files/all722 source files
-verified; tarcf9fe66a27e786e6d094ff2b74fd5875698f865e1461743edfe7b2670c1eb694.
-Raw catalog-ownership/failed-owner-privilege; owner-privilege-diagnosis.json binds
-PG error and exact upstream source digest. Runner143,PG0,no OOM,294 preexisting
-containers unchanged,8 unrelated running,zero BigBrotr. Network empty-retained.
-No active experiment. Next candidate copies9f02f43 build cache/assets read-only.
+No active experiment. Native 48435 terminal0; audit 53037 terminal0; collection 94384
+terminal0. All catalog-install labs are stopped-retained; never restart them.
+[Inventory](../research/laboratory-inventory.json), catalog_installed_ownership,
+owns complete resource identities, preflights, earlier failures and network retirement.
 
-Stopped-retained catalog-install-4404a16 owner2b037967476967d24ea43e7c9860b770:
-runnerfba591746d3e1721daf77e84b06a59ea4a908a51a484a58a646c58a5238b1986,
-PG2ed4c54bf3ca7232c7b2d70498d4bc4cf817cfc3b5662699f5334baec70948e4.
-Source tree47aa62bb0c76de6095c322ab9d5b831355106ec9,722 files. Native99281 terminal1;
-audit55319 terminal0,collection28487 terminal0.15 raw files and all722 source files
-verified. Tar2e3ed2a2d4d5b94156f16f40776a6e723dafecadabf6fa3b02ee7dec846c329c;
-raw catalog-ownership/failed-owner-comments; diagnosis in failure-diagnostics.
-Runner stopped143,PG0,no OOM,292 preexisting containers unchanged,8 unrelated
-running,zero BigBrotr. Verified empty retired networks for4404a16 andd21eacc were
-removed to release Docker address pools; all containers/data retained. Inventory
-records exact IDs/times. No active experiment. Next source copies4404a16 build cache
-and mounts its native assets read-only; no retired lab restart.
+Latest catalog-install-df4a598 under /home/tux/bigbrotr-implementation-20260917/runs/:
+owner ae618964fe0d75e57cf5fa544f0194d9;
+runner 00c4459223e84481b0d86f9baaa5af3d6737b48c6ee62dbb20184ca172529b19 stopped 143;
+PG c3eaeded17c4e01bbce3ab00249d1bb225123b36fad615800f75a9ca96f3d0e5 stopped 0;
+network 71739e209d37eefeca4df25d4e86c13fb85803ad35fb8aa9d38626a81f73d94c empty-retained.
+No OOM; all 296 preexisting containers, full mounts/networks/lifecycle unchanged;
+eight unrelated running, zero BigBrotr at 2026-09-19T06:02:06.620144Z.
+Latest reusable cache/assets: df4a598/out/{build,archive-worker}; copy/read-only
+only, always rebuild from new exact source. Runner image/limits and actualPG16.15
+fsync/full_page_writes identities are in report/inventory. No host ports.
 
-Both catalog-auth labs under /home/tux/bigbrotr-implementation-20260917/runs/
-are stopped-retained. Inventory catalog_native_authentication owns full identities.
-That terminal audit predates the new active catalog-install-d21eacc lab below.
+Raw root .research/implementation/archive-worker/catalog-ownership:
+baseline 14 files;failed-owner-comments 15;failed-owner-privilege 16;qualified 16.
+Qualified tar a87663f43a81e07ccfd0f423f3116f3edc69c1b6b3034967627e5790d465a0b2.
+Main 0e83b95ed456afb4088ac2df710cb7efa259fb72de5d231d2c984c73cba3744b,8,231,632 bytes;
+worker 4e754f7f525f484df96920b9c7a73f5ddb40762b6e5051a459f45d41c60deac9,12,571,504 bytes.
+Initial d21eacc launch exhausted Docker address pools. Only verified empty retired
+auth 567/e98 and install d21/4404 networks were removed; all containers/data retained.
+9f02f43 and df4a598 networks remain empty-retained. Record ownership/lifecycle before
+future cleanup; source/credentials/data are never blanket-pruned.
 
-Stopped-retained catalog-install-d21eacc owner6fc1dd36ee346693233e9d01d7402d8d:
-runnerbf059f87813aefaefdc88f55c439adf70ed0e4f4856b7ce5c51fd549a3658b0c,
-PG752b95efa020dc3ce16f8d092a87bc2bb128f9fae0ce5049c7a01aadeb65c40e,
-network5feece189775bb4c9466f9bb7bfc64ab41088b5179af2212c004703c0a0635c9.
-Clean719-file source and Git archive verified against native manifest. Two actual
-counterexamples REPRODUCED: generic install assigns postgres ownership; creator
-default grants let a reader UPDATE owner after normal schema USAGE, then generic
-inspection still accepts. Test mutation rolled back. No production fix was in this
-baseline revision. Mac correction now transfers expected manager ownership in one
-transaction and checks ACLs/manager rights; its practical qualification is NOT_RUN.
-Raw root .research/implementation/archive-worker/catalog-ownership; inventory
-catalog_installed_ownership. Audit26208 terminal0,collection1832 terminal0;14 raw
-files verified, tar19951df7132b7bc83c47ee23cfa39cc8ed638e42dc79b9f788340c81e2122ae6.
-All290 preexisting containers unchanged; eight unrelated running, zero BigBrotr.
-Runner stopped143,PG stopped0,no OOM, network empty-retained. Both installation labs are stopped-retained.
-Latest cache/assets: catalog-install-d21eacc/out/{build,archive-worker}, copy/RO only.
-Initial launch83125 failed before network creation because Docker address pools
-were exhausted. Verified and removed only the two empty retired auth networks
-below, retaining all containers/data. Resume preflights refused mount ordering and
-periodic unrelated Health changes; complete sorted mounts and other lifecycle
-fields matched. Resume5285 completed; native reproduction97474 and terminal audit succeeded. No
-Tux source edit.
-Network retirement identities and times are in inventory/network-retirement.json.
+## Earlier qualified prerequisites and exclusions
 
-catalog-auth-e98f484 owner10e073fec5db6973e49633d7b63b4fea:
-runner5a80bcfa5c64b2216c47fd3a771adc1692922321859e2518c4cbf2f8d47cf3ba
-stopped143 after READY and16 PASS;PGabb9fa5718986b13943e548ea3fa35b124b073a86402c8aaf0fa9c8fc590d991
-stopped0, no OOM. Both baseline auxiliary containers stopped0. Internal network
-54e0540c140612cb4ac990b4ab628a9ed132e801f02cffa211abcec7149ce432 was empty,
-then removed after verified retirement to release its Docker address pool.
-Audit45843/collection32699 terminal0;286 preexisting containers and complete
-mounts/networks/states unchanged, eight unrelated running, zero BigBrotr.
-Latest retained cache catalog-auth-e98f484/out/build, native assets out/archive-worker;
-copy/read-only reuse only. Cached target last built the baseline: always rebuild
-from the next exact source; cached executable identity is not new source evidence.
-
-catalog-auth-567c2e6 ownera6c7996617616a11af9af2f1d60c20cf:
-runner1df0f4ba8b759122e9138bee3e328d1c723d6036ef55b1fd29e813468fa00578
-exited1;PG8f0bf2ffbfe8c06892392fbaa2417341a662762852ac41c7f2b1df017799ed5d
-stopped0, no OOM. Networkc05139b273b5794651b211175935ec384387a47a4e58826f022d9e97852910dc
-was empty, then removed after verified retirement. Audit82666/collection33704 terminal0;284 preexisting containers unchanged,
-eight unrelated running. Failed build is retained, not auth evidence.
-Do not restart retired labs. No arm64 or hosted Actions claim.
-
-## Earlier evidence and constraints
-
-[Shared PG transport6606103](evidence/p02-shared-postgres-transport-native-20260919.json)
-qualifies actual CLI TLS/signal/restart, custody and signed publication/receipt
-paths. Attach custody before polling its actual unpolled driver; Control's current
-budget wrapper remains per-command, not process-shared.
-[Retained Control read d86e147](evidence/p02-retained-attempt-read-native-20260919.json)
-returns original intent after rollback without re-registering it; baseline
-fcd63ac FAIL retained. Malformed metadata/extremes not native tested.
-[Missing import770c485](evidence/p02-missing-import-native-20260919.json) retains
-seal-only e571002 FAIL and actual delayed owner/late-query discriminator.
-[Custody5ad77af](evidence/p02-local-custody-native-20260919.json) owns actual driver/
-worker descriptors; local reap is not remote rollback/cross-boot recovery.
-[Receipts0b3a427](evidence/p02-archive-receipts-native-20260919.json) requires complete
-bounded EOF for Present/Absent; unknown termination retains capacity.
-[Signed fencingb12c902](evidence/p02-signed-fencing-native-20260919.json) qualifies both
-lock orders and40001→55000. [Normal INSERT failure](evidence/p02-native-commit-file-loss-20260918.json)
+[Installed catalog CLI](evidence/p02-catalog-cli-native-20260919.json): explicit
+archive.catalog_id, protected actual archive inspect and bounded malformed-owner
+refusal.38 scientific guard cases and18 CLI cases; it checks guard/scientific
+metadata, not archive file content or startup authority.
+[Native authentication](evidence/p02-native-catalog-auth-20260919.json):16 old/new
+real PG/native receipt cases; mandatory complete SCRAM refuses trust and omitted
+server-final before SQL. Closed completion decoder rejects duplicate fields.
+Actual verify-full positives/wrong CA/name/password; no configured mutual TLS claim.
+[Shared PG transport](evidence/p02-shared-postgres-transport-native-20260919.json):
+actual CLI TLS/signals/restart,custody,signed publication/receipt paths. Attach
+custody before polling actual driver; Control budget remains per-command.
+[Retained Control intent](evidence/p02-retained-attempt-read-native-20260919.json):
+original request returned after rollback without re-registration; malformed metadata
+and extremes not native-qualified.
+[Missing import](evidence/p02-missing-import-native-20260919.json) and
+[local custody](evidence/p02-local-custody-native-20260919.json): real delayed
+query/owner schedules, actual driver and worker descriptors; local reap is not
+remote rollback or cross-boot/host recovery.
+[Fresh receipts](evidence/p02-archive-receipts-native-20260919.json): bounded complete
+EOF required; uncertain termination retains capacity.
+[Signed fencing](evidence/p02-signed-fencing-native-20260919.json): both lock orders,
+40001→55000. [Normal INSERT failure](evidence/p02-native-commit-file-loss-20260918.json)
 remains rejected: lost native COMMIT response deleted committed files. Selected
 caller-owned COPY/registration retains uncertain files; no INSERT fallback/unlink.
 NOLOGIN, empty activity, PID or lease expiry is not old-client exclusion.
@@ -218,41 +144,30 @@ Do not mechanically rerun unrelated suites.
 
 ## Next bounded action
 
-Implement the explicit fresh initializer under P02-T04 steps3/4/5, starting with
-one atomic install_for_manager operation: configured manager OID, exact object
-ownership transfer, retired bootstrap OID and privilege closure. Baseline counterexamples and4404a16 fixture FAIL are collected. Commit/transfer
-the early privilege-check correction, then run the same actual PG cases, including
-expected role OIDs, named-reader compatibility, invalid defaults/columns/PUBLIC,
-missing manager rights, rollback, COMMIT ambiguity and concurrent installers.
-Native mutual TLS and complete reserved initializer/CLI remain required.
-No task checkbox closes from authentication alone.
+Finish recorded-evidence review, affected document checks and coherent private
+push of ownership qualification, then implement explicit reserved initialization
+under P02-T04 steps3/4/5. Atomic manager installation is now available; it does not
+provision bootstrap credentials, establish native exclusion or reserve roots.
 
-Initializer design review is complete, but not an implemented/qualified protocol:
-it needs a distinct permanent reservation anchored inside the actual data root,
-with inherited close-only custody; LocalAttempt requires a real ArchiveAttempt
-and cannot be reused. Native initialize currently requires an empty root, so a
-reservation must be explicitly validated, never temporarily removed. The same DB
-with another root also needs a durable reservation; a session advisory lock is
-insufficient. A fresh restricted DB-specific role tombstone is the smallest
-reviewed candidate, with lifecycle/backup/OID consequences still to finalize in
-the owning contract. Fresh generated bootstrap credentials are exposed only
-once after known COMMIT. Positive native join, exact role retirement/backend
-resolution, guard installation and final inspection remain required. Unknown
-provision/native/retirement/install outcome preserves state for explicit recovery.
-Pre-provisioned operator credentials cannot establish sole-holder exclusion.
+The reviewed initializer design needs a distinct permanent reservation inside the
+actual data root, with inherited close-only custody. LocalAttempt requires a real
+ArchiveAttempt and cannot be reused or forged. Native initialize currently requires
+an empty root: explicitly validate its reservation, never temporarily remove it.
+The same DB with another root needs a durable reservation; a session advisory lock
+is insufficient. Fresh restricted DB-OID-specific role tombstone is the reviewed
+candidate; finalize lifecycle/backup/OID consequences in the owning contract.
 
-Native catalog/schema/bootstrap, actual worker/preparation, LocalAttempt,
-manager credential/guard installation and shared connection preparation/transport
-were read at their affected boundaries. TLS credentials and one pinned manager/
-native destination still need an installed adapter; do not infer one from the
-lab. Read-only AI design review requires a narrow install_for_manager transaction:
-explicit privileged initializer, non-superuser configured runtime manager, exact
-native/guard object ownership transfer and final manager-OID/ACL closure. Existing
-installed() only proves consistent ownership; initializer default ACLs may leave
-third-party privileges after ALTER OWNER. Do not use temporary manager superuser,
-REASSIGN OWNED, or mutate applied migration checksums. Resolve the exact bootstrap
-creator membership and retirement ordering. The narrow ownership/ACL operation is now implemented on Mac and awaits native
-qualification; durable initializer reservations/CLI are still design only. No implicit init on serve, synthetic ArchiveAttempt, automatic partial retry
-or permission from matching observations. Separate SELECT-only reader credentials,
-retained batch count/ranges, whole-role resource reconciliation, cross-boot recovery,
-protection and complete M1 remain required. Current service remains Control-only.
+Generate fresh bootstrap credentials, expose once only after known provisioning
+COMMIT, and keep all secret-bearing drivers/native children under positive custody.
+Use one pinned manager/native destination and protected configured TLS inputs;
+configured native mutual TLS remains a gate. Positive native join, exact bootstrap
+retirement/backend resolution, atomic install and fresh inspection are required.
+Unknown provisioning/native/retirement/install outcomes preserve reservations for
+explicit recovery. Pre-provisioned credentials cannot establish sole-holder custody.
+No runtime superuser promotion, REASSIGN OWNED, implicit serve initialization,
+automatic partial retry or permission from matching observations.
+
+Actual fresh publication/seal under the configured non-superuser manager, separate
+SELECT-only readers, retained batch count/ranges, whole-role resource reconciliation,
+cross-boot recovery, protection and complete M1 remain required. The current service
+is Control-only. Full initializer/reservation/CLI remains implementation work.

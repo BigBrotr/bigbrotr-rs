@@ -8101,11 +8101,11 @@
       "report": "docs/implementation/evidence/p02-native-catalog-auth-20260919.json"
     },
     "catalog_installed_ownership": {
-      "status": "9f02f43 native22 PASS then wrong refusal classification Backend for missing owner SELECT; catalog/roles unchanged, lab stopped and16 files verified; early semantic check corrected on Mac, rerun pending",
+      "status": "df4a598 56 actual ownership/ACL cases PASS; all four labs stopped-retained;61 raw files and2885 source-file comparisons verified; full initializer remains pending",
       "local_root": ".research/implementation/archive-worker/catalog-ownership",
       "base_source": "ac13f11e150b6b845d798c3e13a51aeecbff11e5",
       "scope": "P02-T04 step3 atomic target ownership and guard ACL closure prerequisite",
-      "planned_run": "4404a16 exact source; copied stopped d21eacc cache, native assets read-only; no retained lab restart",
+      "planned_run": "None active; latest stopped df4a598 cache/assets may be copied/read-only for next exact source; no retained lab restart",
       "native_run": {
         "source": "d21eaccba745490fd6211fab61a718d2653fe450",
         "tree": "a31fd383b3f3702c5cb904339718991aa37b7864",
@@ -8168,6 +8168,42 @@
       "baseline_tar_sha256": "19951df7132b7bc83c47ee23cfa39cc8ed638e42dc79b9f788340c81e2122ae6",
       "baseline_source_verification": ".research/implementation/archive-worker/catalog-ownership/baseline-source-verification.json",
       "candidate_run": {
+        "source": "df4a598bd457fb4670d41f7db719e733aace7a7f",
+        "tree": "fbce08a57e64795ccf9fb6d829ba1c749e82335f",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-install-df4a598",
+        "owner": "ae618964fe0d75e57cf5fa544f0194d9",
+        "container": "bigbrotr-implementation-catalog-install-df4a598",
+        "postgres": "bigbrotr-implementation-catalog-install-df4a598-pg",
+        "network": "bigbrotr-implementation-catalog-install-df4a598",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "state": "stopped-retained",
+        "source_files": 722,
+        "started_at": "2026-09-19T05:59:01.294643+00:00",
+        "network_id": "71739e209d37eefeca4df25d4e86c13fb85803ad35fb8aa9d38626a81f73d94c",
+        "postgres_id": "c3eaeded17c4e01bbce3ab00249d1bb225123b36fad615800f75a9ca96f3d0e5",
+        "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+        "container_id": "00c4459223e84481b0d86f9baaa5af3d6737b48c6ee62dbb20184ca172529b19",
+        "completed_at": "2026-09-19T06:02:06.620144+00:00"
+      },
+      "failed_candidate": {
+        "raw": ".research/implementation/archive-worker/catalog-ownership/failed-owner-comments",
+        "diagnostics": ".research/implementation/archive-worker/catalog-ownership/failure-diagnostics/copy-comparison.json",
+        "tar_sha256": "2e3ed2a2d4d5b94156f16f40776a6e723dafecadabf6fa3b02ee7dec846c329c",
+        "cause": "data-only pg_dump includes owner comments that must change; independent 28 COPY blocks and224 rows equal"
+      },
+      "failed_owner_privilege": {
+        "raw": ".research/implementation/archive-worker/catalog-ownership/failed-owner-privilege",
+        "diagnosis": ".research/implementation/archive-worker/catalog-ownership/owner-privilege-diagnosis.json",
+        "tar_sha256": "cf9fe66a27e786e6d094ff2b74fd5875698f865e1461743edfe7b2670c1eb694",
+        "source_inspection": {
+          "url": "https://raw.githubusercontent.com/postgres/postgres/REL_16_15/src/backend/utils/adt/ri_triggers.c",
+          "path": ".research/implementation/archive-worker/catalog-ownership/postgres-REL_16_15-ri_triggers.c",
+          "sha256": "321bb4362931d64d59d4491485c50a290b5ec7a50f076eaa93d1febc63d303c1",
+          "read_scope": "ri_PlanCheck and ri_PerformCheck, owner identity switching for actual foreign-key SQL"
+        }
+      },
+      "previous_candidate_run": {
         "source": "9f02f437678a5ffaff9e2bc9c3f5ec7ffb7fc14e",
         "tree": "754efdcdb1ef103478067b1611a9a8ac8ad034a8",
         "root": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-install-9f02f43",
@@ -8186,23 +8222,10 @@
         "container_id": "db24674400d539af10b74a44b2b037ce5002e0b708ffa5a50ce7ca0382e4968c",
         "completed_at": "2026-09-19T05:57:04.708305+00:00"
       },
-      "failed_candidate": {
-        "raw": ".research/implementation/archive-worker/catalog-ownership/failed-owner-comments",
-        "diagnostics": ".research/implementation/archive-worker/catalog-ownership/failure-diagnostics/copy-comparison.json",
-        "tar_sha256": "2e3ed2a2d4d5b94156f16f40776a6e723dafecadabf6fa3b02ee7dec846c329c",
-        "cause": "data-only pg_dump includes owner comments that must change; independent 28 COPY blocks and224 rows equal"
-      },
-      "failed_owner_privilege": {
-        "raw": ".research/implementation/archive-worker/catalog-ownership/failed-owner-privilege",
-        "diagnosis": ".research/implementation/archive-worker/catalog-ownership/owner-privilege-diagnosis.json",
-        "tar_sha256": "cf9fe66a27e786e6d094ff2b74fd5875698f865e1461743edfe7b2670c1eb694",
-        "source_inspection": {
-          "url": "https://raw.githubusercontent.com/postgres/postgres/REL_16_15/src/backend/utils/adt/ri_triggers.c",
-          "path": ".research/implementation/archive-worker/catalog-ownership/postgres-REL_16_15-ri_triggers.c",
-          "sha256": "321bb4362931d64d59d4491485c50a290b5ec7a50f076eaa93d1febc63d303c1",
-          "read_scope": "ri_PlanCheck and ri_PerformCheck, owner identity switching for actual foreign-key SQL"
-        }
-      }
+      "qualified_report": "docs/implementation/evidence/p02-catalog-ownership-native-20260919.json",
+      "qualified_audit": ".research/implementation/archive-worker/catalog-ownership/qualified/audit.json",
+      "qualified_tar_sha256": "a87663f43a81e07ccfd0f423f3116f3edc69c1b6b3034967627e5790d465a0b2",
+      "review": "Read-only AI source review findings corrected; final recorded-evidence AI review verified61 raw hashes, four archives and2885 source files, baseline/failure/56 qualified outcomes and COPY/role/lock/fault assertions with no discrepancy. No native execution or independent ELF/full host inventory review."
     }
   },
   "implementation_monitor_corrections_20260918": {

@@ -1,0 +1,1244 @@
+{
+  "format": "bigbrotr-catalog-ownership-evidence/1",
+  "observed_date": "2026-09-19",
+  "status": "PASS",
+  "scope": "P02-T04 step3 atomic configured-manager ownership and semantic ACL closure; no complete initializer, reserved-root recovery or M1 claim",
+  "sources": {
+    "baseline": {
+      "revision": "d21eaccba745490fd6211fab61a718d2653fe450",
+      "tree": "a31fd383b3f3702c5cb904339718991aa37b7864",
+      "files": 719,
+      "archive_sha256": "09391607503e158bbd6dc6dcd59fb06571b682cbfb2c50da6032396a06fbae50",
+      "manifest_sha256": "6bb0e3b6422047fe141037c52c73b73e5b07fdd352f6f7b23bd484bd010fc40d"
+    },
+    "failed-owner-comments": {
+      "revision": "4404a1630300a75453280744cefa9f7cf0973ebe",
+      "tree": "47aa62bb0c76de6095c322ab9d5b831355106ec9",
+      "files": 722,
+      "archive_sha256": "3d6a38367c2bbc7001fb25b20593d4f1149d8619381dbfaa8d499c18e577e52d",
+      "manifest_sha256": "b8e29e676e9028fe02ec8b3ab01340ea7e62258c737849d940d33649ed4552c6"
+    },
+    "failed-owner-privilege": {
+      "revision": "9f02f437678a5ffaff9e2bc9c3f5ec7ffb7fc14e",
+      "tree": "754efdcdb1ef103478067b1611a9a8ac8ad034a8",
+      "files": 722,
+      "archive_sha256": "b1e075ad541fa2c1dfdc6d00e6ff22acb2d3735556df53881d3c02ad68dc914e",
+      "manifest_sha256": "aad76e2c14a4da603393eb520b300aff99c2cc0ac7c613b8bed0cde6b5a13100"
+    },
+    "qualified": {
+      "revision": "df4a598bd457fb4670d41f7db719e733aace7a7f",
+      "tree": "fbce08a57e64795ccf9fb6d829ba1c749e82335f",
+      "files": 722,
+      "archive_sha256": "5da446651fcc1acc896aeb71bd708c866daeaf5da4357dbe5396ef712dbf5cd9",
+      "manifest_sha256": "50ef98525437a248c94d6ea21a51778716b0f1e1ce60d513501e7eb19910f9c5"
+    }
+  },
+  "source_verification": {
+    "status": "PASS",
+    "method": "Clean Git bundle and archive; every exported file checked before/after native execution and against independent Mac Git archive",
+    "production_equivalence": "4404a16 to9f02f43 changes fixture and continuity metadata only; df4a598 additionally checks semantic privileges before binding INSERT; worker/migration/contract encoding unchanged"
+  },
+  "environment": {
+    "host": "Tux",
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "native_toolchain": {
+      "os": "Linux",
+      "architecture": "x86_64",
+      "discovery": "llvm-config",
+      "environment": {
+        "CC": "/usr/lib/llvm-14/bin/clang",
+        "CXX": "/usr/lib/llvm-14/bin/clang++",
+        "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+        "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+        "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+      },
+      "tools": {
+        "CC": {
+          "path": "/usr/lib/llvm-14/bin/clang",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "CXX": {
+          "path": "/usr/lib/llvm-14/bin/clang++",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "AR": {
+          "path": "/usr/lib/llvm-14/bin/llvm-ar",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+          "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+          "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+        },
+        "LIBCLANG_PATH": {
+          "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+          "version": "Debian clang version 14.0.6"
+        },
+        "discovery": {
+          "path": "/usr/lib/llvm-14/bin/llvm-config",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+          "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+          "version": "14.0.6"
+        }
+      },
+      "sdk": null
+    },
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "runner_limits": {
+      "cpu": 2,
+      "memory_bytes": 6442450944,
+      "pids": 512
+    },
+    "postgres_limits": {
+      "cpu": 1,
+      "memory_bytes": 1073741824,
+      "pids": 128
+    },
+    "network": "Internal Docker network; no published host ports; sole Mac edits and trusted source, no hosted Actions claim"
+  },
+  "dependencies": {
+    "cargo_lock_sha256": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215",
+    "archive_registry": "contracts/release/archive-engine.json",
+    "archive_registry_sha256": "ae0069565ab9411928df0cf067822630c4f3a912919e61633b952f8077a5e2c1",
+    "duckdb": "1.5.5",
+    "duckdb_rust": "1.10505.0",
+    "arrow": "58.4.0",
+    "ducklake": "1.0",
+    "libpq": "18.3",
+    "postgres_scanner_source": "41223e51559cd581f1c06e170b71c71df25bbaac"
+  },
+  "artifacts": {
+    "baseline": {
+      "main": {
+        "sha256": "ecaf629f666107246deac0f8f30883761aeb9389735993f4d063c6fa9a52e806",
+        "bytes": 8231280,
+        "elf_machine": 62
+      },
+      "worker": {
+        "sha256": "4e754f7f525f484df96920b9c7a73f5ddb40762b6e5051a459f45d41c60deac9",
+        "bytes": 12571504,
+        "elf_machine": 62
+      },
+      "schema_probe": "0d7217a06eadf075bb142ab112d6933288d6accdc50f518847cee0f42c7d5811",
+      "guard_probe": "d4588c6ca65f0ca08b685fc8b4ac3e089f1bdf5aa51729eb9fed6cc1dd21e447",
+      "installer_probe": null
+    },
+    "failed-owner-comments": {
+      "main": {
+        "sha256": "9daae7f218f76badeb59041336aab31b98b205970cb4fcd2992909d42e02d19e",
+        "bytes": 8231528,
+        "elf_machine": 62
+      },
+      "worker": {
+        "sha256": "4e754f7f525f484df96920b9c7a73f5ddb40762b6e5051a459f45d41c60deac9",
+        "bytes": 12571504,
+        "elf_machine": 62
+      },
+      "schema_probe": "99169ca7ba239fdfdbfcc652db483af925b1667f636a13cc73fe6cf45d9ea730",
+      "guard_probe": "f5e3bf5e0aa461482c75c3c963ec339d257a993651b343544b5334852a80e9ed",
+      "installer_probe": "bc96268161902ed3d978ddc0cfbe43337147f909be0481679d37449bee16d3f2"
+    },
+    "failed-owner-privilege": {
+      "main": {
+        "sha256": "6e3830a2c3270937245255a3f86d5a1d234653dac56cfc1c928f83d8b1df186c",
+        "bytes": 8231528,
+        "elf_machine": 62
+      },
+      "worker": {
+        "sha256": "4e754f7f525f484df96920b9c7a73f5ddb40762b6e5051a459f45d41c60deac9",
+        "bytes": 12571504,
+        "elf_machine": 62
+      },
+      "schema_probe": "99169ca7ba239fdfdbfcc652db483af925b1667f636a13cc73fe6cf45d9ea730",
+      "guard_probe": "f5e3bf5e0aa461482c75c3c963ec339d257a993651b343544b5334852a80e9ed",
+      "installer_probe": "bc96268161902ed3d978ddc0cfbe43337147f909be0481679d37449bee16d3f2"
+    },
+    "qualified": {
+      "main": {
+        "sha256": "0e83b95ed456afb4088ac2df710cb7efa259fb72de5d231d2c984c73cba3744b",
+        "bytes": 8231632,
+        "elf_machine": 62
+      },
+      "worker": {
+        "sha256": "4e754f7f525f484df96920b9c7a73f5ddb40762b6e5051a459f45d41c60deac9",
+        "bytes": 12571504,
+        "elf_machine": 62
+      },
+      "schema_probe": "db54696a50ae8784d29c155db50c0d273f7ddcdec1093e4a9c060b14393ef9d4",
+      "guard_probe": "7f723465af927f7369f6a591f730708e391c49b3aca788a9a6b10c819b42d296",
+      "installer_probe": "97158b3339cdb4d038118f1dbff4fbfcd413b7a1d8867da4da5c2e05f3e61ca5"
+    }
+  },
+  "commands": {
+    "builder": "python3 /source/experiments/archive-engine/native_catalog_install.py",
+    "native": "python3 -B <root>/source/experiments/archive-engine/catalog_install_cases.py --root <root>",
+    "mac": [
+      "cargo fmt --all -- --check",
+      "cargo clippy --locked -p bigbrotr --lib --example catalog_install_probe -- -D warnings",
+      "python3 experiments/verify_artifacts.py",
+      "git diff --check"
+    ]
+  },
+  "checks": {
+    "native_each_revision": "Ordered production build, three credential/SCRAM unit tests and scoped Clippy PASS; the three tests do not cover ownership/ACL semantics",
+    "practical": "2 baseline counterexamples REPRODUCED; 4404a16 FAIL after one successful install on fixture owner comments;9f02f43 FAIL after22 successful cases on late privilege-check classification; qualifying suite56 PASS",
+    "empty_workload": "Each initialized native catalog contains28 COPY blocks and224 metadata rows; scientific tables empty, no signed event publication in this suite"
+  },
+  "counterexamples": [
+    {
+      "name": "configured-manager-ownership",
+      "expected_manager_ownership": true,
+      "actual_manager_ownership": false,
+      "installed_outcome": "installed",
+      "reproduced": true,
+      "database_and_public_owner_unchanged": true
+    },
+    {
+      "name": "initializer-default-acl",
+      "expected_manager_ownership": true,
+      "actual_manager_ownership": false,
+      "installed_outcome": "installed",
+      "reproduced": true,
+      "expected_reader_guard_write": false,
+      "actual_reader_guard_write": true,
+      "non_owner_mutation_executed": true,
+      "mutation_rolled_back": true,
+      "existing_inspection": "inspected",
+      "database_and_public_owner_unchanged": true
+    }
+  ],
+  "failed_candidate": {
+    "source": "4404a1630300a75453280744cefa9f7cf0973ebe",
+    "status": "FAIL",
+    "boundary": "After first successful manager installation, data-only pg_dump comparison included owner comments that must change",
+    "diagnosis": {
+      "status": "PASS",
+      "scope": "retained real native COPY data versus expected owner-comment change; altered table and missing table negative controls",
+      "blocks": 28,
+      "rows": 224,
+      "before_sha256": "0c52aa319c5115bfd34d03933981fb455656a2bf630de13e7e73f5384f6d1c85",
+      "after_sha256": "e1df17268058a0f39259126aec509946b7c4db97f67e0e469023214b39280409"
+    },
+    "correction": "Compare all COPY headers and rows, requiring28 complete blocks and nonempty metadata; full dumps remain required for refused/no-mutation cases; no production changes"
+  },
+  "failed_privilege_candidate": {
+    "source": "9f02f437678a5ffaff9e2bc9c3f5ec7ffb7fc14e",
+    "status": "FAIL",
+    "completed": 22,
+    "actual": {
+      "name": "default-owner_select",
+      "status": "INCOMPLETE",
+      "expected": "UnsafeRole",
+      "mode": "install",
+      "exit_code": 101,
+      "stdout_bytes": 89,
+      "stderr_bytes": 238,
+      "stdout_sha256": "02307d6e6ffc62feeddca75ca8fbeb07f60af92cfc09f759df9a24152fa27ff2",
+      "stderr_sha256": "3be8b2134d108090724f24442c62f4f9b69a9fcb6c93f715e10844f5dee0f808",
+      "observed": {
+        "active_permits": 0,
+        "commit_started": false,
+        "outcome": "Backend",
+        "session_superuser": true
+      },
+      "catalog_before_sha256": "f64b1f5274f96b06a8ed5f722949f988c6287e9d84e26a35897798e860a1c1e2",
+      "catalog_after_sha256": "f64b1f5274f96b06a8ed5f722949f988c6287e9d84e26a35897798e860a1c1e2",
+      "roles_before_fingerprint": "c73e2770e81d55c2166e2e9282c0f841",
+      "roles_after_fingerprint": "c73e2770e81d55c2166e2e9282c0f841"
+    },
+    "diagnosis": {
+      "source": "9f02f437678a5ffaff9e2bc9c3f5ec7ffb7fc14e",
+      "server_diagnostic": [
+        "2026-09-19 05:56:19.607 UTC [1514] ERROR:  permission denied for table installation",
+        "2026-09-19 05:56:19.607 UTC [1514] CONTEXT:  SQL statement \"SELECT 1 FROM ONLY \"bigbrotr_archive\".\"installation\" x WHERE \"singleton\" OPERATOR(pg_catalog.=) $1 FOR KEY SHARE OF x\"",
+        "2026-09-19 05:56:19.607 UTC [1514] STATEMENT:  INSERT INTO bigbrotr_archive.scientific_schema VALUES(true,1,$1::bytea,$2::bytea,$3::bytea,1)"
+      ],
+      "upstream": {
+        "url": "https://raw.githubusercontent.com/postgres/postgres/REL_16_15/src/backend/utils/adt/ri_triggers.c",
+        "path": ".research/implementation/archive-worker/catalog-ownership/postgres-REL_16_15-ri_triggers.c",
+        "sha256": "321bb4362931d64d59d4491485c50a290b5ec7a50f076eaa93d1febc63d303c1",
+        "read_scope": "ri_PlanCheck and ri_PerformCheck, owner identity switching for actual foreign-key SQL"
+      },
+      "consequence": "Check semantic owner privileges before inserting scientific binding; full transaction remains unchanged on baseline refusal"
+    },
+    "correction": "Check existing semantic ACL/owner rights before scientific-binding INSERT; same UnsafeRole expectation; rollback and roles remain unchanged"
+  },
+  "ownership": {
+    "native_tables": 28,
+    "guard_tables": 4,
+    "functions": 2,
+    "manager_superuser": false,
+    "database_and_public_owner_unchanged": true,
+    "native_data_unchanged": true
+  },
+  "cases": [
+    {
+      "name": "manager-install",
+      "status": "PASS",
+      "mode": "install",
+      "expected": "installed",
+      "actual": "installed"
+    },
+    {
+      "name": "manager-inspection",
+      "status": "PASS",
+      "mode": "inspect-manager",
+      "expected": "inspected",
+      "actual": "inspected"
+    },
+    {
+      "name": "existing-manager",
+      "status": "PASS",
+      "mode": "install",
+      "expected": "existing",
+      "actual": "existing"
+    },
+    {
+      "name": "runtime-manager-cannot-initialize",
+      "status": "PASS",
+      "mode": "install-manager",
+      "expected": "UnsafeRole",
+      "actual": "UnsafeRole"
+    },
+    {
+      "name": "named-reader-grants",
+      "status": "PASS",
+      "mode": "inspect-manager",
+      "expected": "inspected",
+      "actual": "inspected"
+    },
+    {
+      "name": "existing-with-reader",
+      "status": "PASS",
+      "mode": "install",
+      "expected": "existing",
+      "actual": "existing"
+    },
+    {
+      "name": "wrong-manager-oid",
+      "status": "PASS",
+      "mode": "install",
+      "expected": "UnsafeRole",
+      "actual": "UnsafeRole"
+    },
+    {
+      "name": "wrong-bootstrap-oid",
+      "status": "PASS",
+      "mode": "install",
+      "expected": "UnsafeRole",
+      "actual": "UnsafeRole"
+    },
+    {
+      "name": "bootstrap-not-retired",
+      "status": "PASS",
+      "mode": "install",
+      "expected": "UnsafeRole",
+      "actual": "UnsafeRole"
+    },
+    {
+      "name": "superuser-runtime-manager",
+      "status": "PASS",
+      "mode": "install",
+      "expected": "UnsafeRole",
+      "actual": "UnsafeRole"
+    },
+    {
+      "name": "roles-after-refusals",
+      "status": "PASS",
+      "mode": "install",
+      "expected": "installed",
+      "actual": "installed"
+    },
+    {
+      "name": "existing-wrong-owner",
+      "status": "PASS",
+      "mode": "install",
+      "expected": "UnsafeRole",
+      "actual": "UnsafeRole"
+    },
+    {
+      "name": "default-table",
+      "status": "PASS",
+      "mode": "install",
+      "expected": "UnsafeRole",
+      "actual": "UnsafeRole"
+    },
+    {
+      "name": "default-table-known-rollback-retry",
+      "status": "PASS",
+      "mode": "install",
+      "expected": "installed",
+      "actual": "installed"
+    },
+    {
+      "name": "default-function",
+      "status": "PASS",
+      "mode": "install",
+      "expected": "UnsafeRole",
+      "actual": "UnsafeRole"
+    },
+    {
+      "name": "default-function-known-rollback-retry",
+      "status": "PASS",
+      "mode": "install",
+      "expected": "installed",
+      "actual": "installed"
+    },
+    {
+      "name": "default-schema",
+      "status": "PASS",
+      "mode": "install",
+      "expected": "UnsafeRole",
+      "actual": "UnsafeRole"
+    },
+    {
+      "name": "default-schema-known-rollback-retry",
+      "status": "PASS",
+      "mode": "install",
+      "expected": "installed",
+      "actual": "installed"
+    },
+    {
+      "name": "default-public_table",
+      "status": "PASS",
+      "mode": "install",
+      "expected": "UnsafeRole",
+      "actual": "UnsafeRole"
+    },
+    {
+      "name": "default-public_table-known-rollback-retry",
+      "status": "PASS",
+      "mode": "install",
+      "expected": "installed",
+      "actual": "installed"
+    },
+    {
+      "name": "default-public_schema",
+      "status": "PASS",
+      "mode": "install",
+      "expected": "UnsafeRole",
+      "actual": "UnsafeRole"
+    },
+    {
+      "name": "default-public_schema-known-rollback-retry",
+      "status": "PASS",
+      "mode": "install",
+      "expected": "installed",
+      "actual": "installed"
+    },
+    {
+      "name": "default-owner_select",
+      "status": "PASS",
+      "mode": "install",
+      "expected": "UnsafeRole",
+      "actual": "UnsafeRole"
+    },
+    {
+      "name": "default-owner_select-known-rollback-retry",
+      "status": "PASS",
+      "mode": "install",
+      "expected": "installed",
+      "actual": "installed"
+    },
+    {
+      "name": "native_table",
+      "status": "PASS",
+      "mode": "install",
+      "expected": "UnsafeRole",
+      "actual": "UnsafeRole"
+    },
+    {
+      "name": "native_table-known-rollback-retry",
+      "status": "PASS",
+      "mode": "install",
+      "expected": "installed",
+      "actual": "installed"
+    },
+    {
+      "name": "native_column",
+      "status": "PASS",
+      "mode": "install",
+      "expected": "UnsafeRole",
+      "actual": "UnsafeRole"
+    },
+    {
+      "name": "native_column-known-rollback-retry",
+      "status": "PASS",
+      "mode": "install",
+      "expected": "installed",
+      "actual": "installed"
+    },
+    {
+      "name": "guard_table_write",
+      "status": "PASS",
+      "mode": "inspect-manager",
+      "expected": "UnsafeRole",
+      "actual": "UnsafeRole"
+    },
+    {
+      "name": "guard_column_write",
+      "status": "PASS",
+      "mode": "inspect-manager",
+      "expected": "UnsafeRole",
+      "actual": "UnsafeRole"
+    },
+    {
+      "name": "binding_grant_option",
+      "status": "PASS",
+      "mode": "inspect-manager",
+      "expected": "UnsafeRole",
+      "actual": "UnsafeRole"
+    },
+    {
+      "name": "native_grant_option",
+      "status": "PASS",
+      "mode": "inspect-manager",
+      "expected": "UnsafeRole",
+      "actual": "UnsafeRole"
+    },
+    {
+      "name": "native_reference",
+      "status": "PASS",
+      "mode": "inspect-manager",
+      "expected": "UnsafeRole",
+      "actual": "UnsafeRole"
+    },
+    {
+      "name": "native_column_reference",
+      "status": "PASS",
+      "mode": "inspect-manager",
+      "expected": "UnsafeRole",
+      "actual": "UnsafeRole"
+    },
+    {
+      "name": "public_function",
+      "status": "PASS",
+      "mode": "inspect-manager",
+      "expected": "UnsafeRole",
+      "actual": "UnsafeRole"
+    },
+    {
+      "name": "public_binding",
+      "status": "PASS",
+      "mode": "inspect-manager",
+      "expected": "UnsafeRole",
+      "actual": "UnsafeRole"
+    },
+    {
+      "name": "public_guard_usage",
+      "status": "PASS",
+      "mode": "inspect-manager",
+      "expected": "UnsafeRole",
+      "actual": "UnsafeRole"
+    },
+    {
+      "name": "public_native",
+      "status": "PASS",
+      "mode": "inspect-manager",
+      "expected": "UnsafeRole",
+      "actual": "UnsafeRole"
+    },
+    {
+      "name": "public_usage_delegation",
+      "status": "PASS",
+      "mode": "inspect-manager",
+      "expected": "UnsafeRole",
+      "actual": "UnsafeRole"
+    },
+    {
+      "name": "guard_create",
+      "status": "PASS",
+      "mode": "inspect-manager",
+      "expected": "UnsafeRole",
+      "actual": "UnsafeRole"
+    },
+    {
+      "name": "public_create",
+      "status": "PASS",
+      "mode": "inspect-manager",
+      "expected": "UnsafeRole",
+      "actual": "UnsafeRole"
+    },
+    {
+      "name": "owner_missing_update",
+      "status": "PASS",
+      "mode": "install",
+      "expected": "UnsafeRole",
+      "actual": "UnsafeRole"
+    },
+    {
+      "name": "member_inherit",
+      "status": "PASS",
+      "mode": "inspect-manager",
+      "expected": "UnsafeRole",
+      "actual": "UnsafeRole"
+    },
+    {
+      "name": "member_set",
+      "status": "PASS",
+      "mode": "inspect-manager",
+      "expected": "UnsafeRole",
+      "actual": "UnsafeRole"
+    },
+    {
+      "name": "member_admin",
+      "status": "PASS",
+      "mode": "inspect-manager",
+      "expected": "UnsafeRole",
+      "actual": "UnsafeRole"
+    },
+    {
+      "name": "manager-after-acl-refusals",
+      "status": "PASS",
+      "mode": "inspect-manager",
+      "expected": "inspected",
+      "actual": "inspected"
+    },
+    {
+      "name": "failure-after-table-ownership-transfer",
+      "status": "PASS",
+      "mode": "install",
+      "expected": "Backend",
+      "actual": "Backend"
+    },
+    {
+      "name": "atomic-failure-known-rollback-retry",
+      "status": "PASS",
+      "mode": "install",
+      "expected": "installed",
+      "actual": "installed"
+    },
+    {
+      "name": "lost-before-forward",
+      "status": "PASS",
+      "mode": "install",
+      "expected": "CommitUnknown",
+      "actual": "CommitUnknown",
+      "wire": {
+        "client_commit_complete": 0,
+        "commits_forwarded": 0,
+        "commits_seen": 1,
+        "declared_wire_bytes": 322931,
+        "elapsed_ns": 470876594,
+        "event": "receipt",
+        "faults": 1,
+        "format": "bigbrotr-pg-fault-proxy/1",
+        "frames": {
+          "backend": 4399,
+          "frontend": 2106
+        },
+        "held": false,
+        "hold_action": null,
+        "mode": "before-forward",
+        "reason": "before-forward",
+        "server_commit_complete": 0,
+        "tags": {
+          "backend": {
+            "31": 262,
+            "32": 262,
+            "33": 261,
+            "43": 380,
+            "44": 1898,
+            "4b": 1,
+            "52": 4,
+            "53": 14,
+            "54": 260,
+            "5a": 793,
+            "6e": 2,
+            "74": 262
+          },
+          "frontend": {
+            "42": 262,
+            "43": 262,
+            "44": 262,
+            "45": 262,
+            "50": 262,
+            "51": 8,
+            "53": 786,
+            "70": 2
+          }
+        }
+      }
+    },
+    {
+      "name": "lost-before-forward-fresh-resolution",
+      "status": "PASS",
+      "mode": "install",
+      "expected": "installed",
+      "actual": "installed"
+    },
+    {
+      "name": "lost-before-forward-manager",
+      "status": "PASS",
+      "mode": "inspect-manager",
+      "expected": "inspected",
+      "actual": "inspected"
+    },
+    {
+      "name": "lost-after-complete",
+      "status": "PASS",
+      "mode": "install",
+      "expected": "CommitUnknown",
+      "actual": "CommitUnknown",
+      "wire": {
+        "client_commit_complete": 0,
+        "commits_forwarded": 1,
+        "commits_seen": 1,
+        "declared_wire_bytes": 322947,
+        "elapsed_ns": 450147885,
+        "event": "receipt",
+        "faults": 1,
+        "format": "bigbrotr-pg-fault-proxy/1",
+        "frames": {
+          "backend": 4402,
+          "frontend": 2106
+        },
+        "held": false,
+        "hold_action": null,
+        "mode": "after-complete",
+        "reason": "after-complete",
+        "server_commit_complete": 1,
+        "tags": {
+          "backend": {
+            "31": 262,
+            "32": 262,
+            "33": 262,
+            "43": 381,
+            "44": 1898,
+            "4b": 1,
+            "52": 4,
+            "53": 14,
+            "54": 260,
+            "5a": 794,
+            "6e": 2,
+            "74": 262
+          },
+          "frontend": {
+            "42": 262,
+            "43": 262,
+            "44": 262,
+            "45": 262,
+            "50": 262,
+            "51": 8,
+            "53": 786,
+            "70": 2
+          }
+        }
+      }
+    },
+    {
+      "name": "lost-after-complete-fresh-resolution",
+      "status": "PASS",
+      "mode": "install",
+      "expected": "existing",
+      "actual": "existing"
+    },
+    {
+      "name": "lost-after-complete-manager",
+      "status": "PASS",
+      "mode": "inspect-manager",
+      "expected": "inspected",
+      "actual": "inspected"
+    },
+    {
+      "name": "concurrent-installers",
+      "status": "PASS",
+      "advisory_waiters": [
+        {
+          "pid": 3239,
+          "blocking_pids": [
+            3232
+          ],
+          "classid": "1111651442",
+          "objid": "1128354865"
+        },
+        {
+          "pid": 3240,
+          "blocking_pids": [
+            3232,
+            3239
+          ],
+          "classid": "1111651442",
+          "objid": "1128354865"
+        }
+      ],
+      "holder_pid": 3232,
+      "outcomes": [
+        "existing",
+        "installed"
+      ]
+    },
+    {
+      "name": "concurrent-manager-inspection",
+      "status": "PASS",
+      "mode": "inspect-manager",
+      "expected": "inspected",
+      "actual": "inspected"
+    }
+  ],
+  "evidence_semantics": {
+    "catalog": "Per-call full normalized pg_dump before/after SHA256 in raw report; refused calls preserve exact full dump including ACLs. Initial/installed snapshots append one LF relative to hashed bytes; after.sql includes named-reader grants.",
+    "roles": "Server-side fingerprint of all pg_authid rows excluding plaintext verifier, with verifier digest/xmin, all membership rows/xmin and database role settings digests/xmin; no raw credentials exported",
+    "concurrency": "Actual two waiting advisory locks, PID/blocking_pids/classid/objid and holder PID recorded before release; exactly one installed and one existing. No complete pg_locks row claim.",
+    "faults": "Before-forward and after-complete real protocol COMMIT faults; independent guard presence, full dump rollback and fresh resolution; sessions drain to zero and resource permits return",
+    "fixture": "Fixed lab bootstrap secret reused only for separate fresh databases. This does not implement or qualify one-time production credential custody/reservation."
+  },
+  "raw": {
+    "baseline": {
+      "root": ".research/implementation/archive-worker/catalog-ownership/baseline",
+      "tar_sha256": "19951df7132b7bc83c47ee23cfa39cc8ed638e42dc79b9f788340c81e2122ae6",
+      "files": {
+        "resources.json": {
+          "bytes": 1209,
+          "sha256": "67458fded2ab354249e675e6a584f6a4d5bbc2de4ceae94b075f7697f47f2184"
+        },
+        "audit.json": {
+          "bytes": 1858,
+          "sha256": "4fb59539adda74ef569ab2cc1c6a83c7cf051952db4e979f5bdabd104a52f094"
+        },
+        "container.log": {
+          "bytes": 230,
+          "sha256": "a9199b0f10e162982d7aa240d4e200c49b7af88ec614251b23b62f98db21e6f5"
+        },
+        "out/build/source-manifest.json": {
+          "bytes": 87850,
+          "sha256": "6bb0e3b6422047fe141037c52c73b73e5b07fdd352f6f7b23bd484bd010fc40d"
+        },
+        "out/native-tests/checks/clippy.log": {
+          "bytes": 297,
+          "sha256": "83813f25794dfced0edc2a3fe1e7c6e602a3de5c31b203e16edf051d6ba48688"
+        },
+        "out/native-tests/checks/fixtures.log": {
+          "bytes": 130,
+          "sha256": "d79412d27410897af1212e1c9b4486dfc401fb9050f6d6a33b801a0b85e30e6e"
+        },
+        "out/native-tests/checks/result.json": {
+          "bytes": 3715,
+          "sha256": "1c353d8965f2352b21535d20d20880e203b67c74f14eb9d8785af8d0789f3f53"
+        },
+        "out/native-tests/checks/tests.log": {
+          "bytes": 686,
+          "sha256": "4684541ab88ccdc519e76c6ea6b61b3b4d48fbe25bc164f4812755dd30ee7b71"
+        },
+        "out/native-tests/ordered-build.log": {
+          "bytes": 626,
+          "sha256": "cb5e76bcf108b9051cd5c765285a614b55f47509e826d5759d1d4b4961cd03a4"
+        },
+        "out/native-tests/ready.json": {
+          "bytes": 4907,
+          "sha256": "debe26a0090ee6cf0fdfd236f3ef5dac7d807c6043121ee3ab197fcd64dfca8b"
+        },
+        "out/native-tests/result.json": {
+          "bytes": 2803,
+          "sha256": "7b454a0d8967db068e199314351cfd24141d09e9944128df9a0997a4c5ff26a5"
+        },
+        "out/native-tests/worker-identity.json": {
+          "bytes": 104,
+          "sha256": "e574d8382b617d1b1d46b7c7eba21ff72b5b71205f72a6a25bd08a08e1279dc8"
+        },
+        "catalog-install.json": {
+          "bytes": 5983,
+          "sha256": "9d51b23692e5c3493bd759e42283e4e71d212aa3ea353f66da784d4557ec28e3"
+        },
+        "catalog-install.log": {
+          "bytes": 37,
+          "sha256": "f00c190938073ddb84d7adff5141ddda8fc6245d8446944b6ac1c5c8c30fe404"
+        }
+      }
+    },
+    "failed-owner-comments": {
+      "root": ".research/implementation/archive-worker/catalog-ownership/failed-owner-comments",
+      "tar_sha256": "2e3ed2a2d4d5b94156f16f40776a6e723dafecadabf6fa3b02ee7dec846c329c",
+      "files": {
+        "resources.json": {
+          "bytes": 1209,
+          "sha256": "8fc83b56d63aa6d20f9f80ed4a12ce596022e55a0088bc3a098f1be771e263a8"
+        },
+        "audit.json": {
+          "bytes": 1850,
+          "sha256": "803739b6703d64667a2a020ff707b73c7fe0d77c6ebd5aae2bfe0983b1be68b0"
+        },
+        "container.log": {
+          "bytes": 230,
+          "sha256": "932819c913d07cf0c3c2d406e2fb84a31e2f6005aa464985da68e516be058c87"
+        },
+        "out/build/source-manifest.json": {
+          "bytes": 88251,
+          "sha256": "b8e29e676e9028fe02ec8b3ab01340ea7e62258c737849d940d33649ed4552c6"
+        },
+        "out/native-tests/checks/clippy.log": {
+          "bytes": 297,
+          "sha256": "62e8292e002953f12ee703393e09d236ec68ff8d5a66a407415a6d04eb7d6e8c"
+        },
+        "out/native-tests/checks/fixtures.log": {
+          "bytes": 130,
+          "sha256": "eebb318e5cf6141fa36cbf75c8cf353fea20d91c0c2752cd18ce6fa3a539bf40"
+        },
+        "out/native-tests/checks/result.json": {
+          "bytes": 3823,
+          "sha256": "a9bb7b0ab41361fec198cb8731ca98c8d672f91869dd651918efd226090535b9"
+        },
+        "out/native-tests/checks/tests.log": {
+          "bytes": 686,
+          "sha256": "b7daf7409a485c9509e451961a52366c237dacbff5f75b7f59e33ad4a039d1a9"
+        },
+        "out/native-tests/ordered-build.log": {
+          "bytes": 626,
+          "sha256": "9c30f7736ffffc9c8b79c21d71a0ceaa94f3aefa89e4d237cdb25ccc01bf2e80"
+        },
+        "out/native-tests/ready.json": {
+          "bytes": 4990,
+          "sha256": "a522f60949b13ec66b869cecdfed4098606c97d26c09b67e65877904fe8d29b3"
+        },
+        "out/native-tests/result.json": {
+          "bytes": 2803,
+          "sha256": "a7ac100204a13b286e387b3484814c014ed16e607ac98183954d1770ad28a946"
+        },
+        "out/native-tests/worker-identity.json": {
+          "bytes": 104,
+          "sha256": "e574d8382b617d1b1d46b7c7eba21ff72b5b71205f72a6a25bd08a08e1279dc8"
+        },
+        "catalog-install.json": {
+          "bytes": 6335,
+          "sha256": "abe5f2d9271f70be49fbf28b6a20b74ecea97bac2634e3d2b92079bfad96ff0d"
+        },
+        "catalog-install.log": {
+          "bytes": 574,
+          "sha256": "8218a9755b85fff20005533fb207c8d9007f71e32785d1db078bc040060e9989"
+        },
+        "out/catalog-install/before.sql": {
+          "bytes": 32650,
+          "sha256": "0c52aa319c5115bfd34d03933981fb455656a2bf630de13e7e73f5384f6d1c85"
+        }
+      }
+    },
+    "failed-owner-privilege": {
+      "root": ".research/implementation/archive-worker/catalog-ownership/failed-owner-privilege",
+      "tar_sha256": "cf9fe66a27e786e6d094ff2b74fd5875698f865e1461743edfe7b2670c1eb694",
+      "files": {
+        "resources.json": {
+          "bytes": 1209,
+          "sha256": "96e0f9459b659e6cc47e7f3d012b2aadfd1cf2f3db5e8e7fd1c85245962dacdb"
+        },
+        "audit.json": {
+          "bytes": 1852,
+          "sha256": "f597121d59c9abb8aba9688906ecec0ec493b031ca9a69fe35d2223177f376bf"
+        },
+        "container.log": {
+          "bytes": 230,
+          "sha256": "b60fff86f305f5877a8d24094e817dd105dda15172f746c68fb432fc4ce22ede"
+        },
+        "out/build/source-manifest.json": {
+          "bytes": 88251,
+          "sha256": "aad76e2c14a4da603393eb520b300aff99c2cc0ac7c613b8bed0cde6b5a13100"
+        },
+        "out/native-tests/checks/clippy.log": {
+          "bytes": 297,
+          "sha256": "d6adf5907c58de6fc53b69b44d5843e561ee32e8b9dca6dcf1592a5ec22c3d5e"
+        },
+        "out/native-tests/checks/fixtures.log": {
+          "bytes": 130,
+          "sha256": "7a222f7c90ad8a06c1855f8c1c166e52d2d820c51c97f08ad610d2de273e5066"
+        },
+        "out/native-tests/checks/result.json": {
+          "bytes": 3824,
+          "sha256": "f6a125a1e191a4eeaf8376eedf7d27d06b81889228508b32a6e8099ea03dc834"
+        },
+        "out/native-tests/checks/tests.log": {
+          "bytes": 686,
+          "sha256": "b7daf7409a485c9509e451961a52366c237dacbff5f75b7f59e33ad4a039d1a9"
+        },
+        "out/native-tests/ordered-build.log": {
+          "bytes": 626,
+          "sha256": "bb4c5d914ebac739cd669a9b4ddeecfa9e9cf704fa26f8dd186bb6ef9774763f"
+        },
+        "out/native-tests/ready.json": {
+          "bytes": 4990,
+          "sha256": "81932b249372ce820be7eac78d43e7b94e579037a29e93c6224e0762c4956ce4"
+        },
+        "out/native-tests/result.json": {
+          "bytes": 2804,
+          "sha256": "89e87356635ae93f66aba36ffac394b2d9dac6688a5b92051604bf0ff8b955d8"
+        },
+        "out/native-tests/worker-identity.json": {
+          "bytes": 104,
+          "sha256": "e574d8382b617d1b1d46b7c7eba21ff72b5b71205f72a6a25bd08a08e1279dc8"
+        },
+        "catalog-install.json": {
+          "bytes": 28496,
+          "sha256": "f85282c6966723533830c4c704ac776eb902453095066eceaae63259ae76ed54"
+        },
+        "catalog-install.log": {
+          "bytes": 855,
+          "sha256": "0ef825bcee88b2ac2d305960750f6726b4017d2b3d92cdc43308efc8100d143e"
+        },
+        "out/catalog-install/before.sql": {
+          "bytes": 32651,
+          "sha256": "e259383fcb2783928d605f54500bbf240f7f70ee8affd9818d045664fb31213e"
+        },
+        "out/catalog-install/after.sql": {
+          "bytes": 57012,
+          "sha256": "f95296d344c93f7d013c765d08afd746af67471d7872a4ba4d46d88e31364fde"
+        }
+      }
+    },
+    "qualified": {
+      "root": ".research/implementation/archive-worker/catalog-ownership/qualified",
+      "tar_sha256": "a87663f43a81e07ccfd0f423f3116f3edc69c1b6b3034967627e5790d465a0b2",
+      "files": {
+        "resources.json": {
+          "bytes": 1209,
+          "sha256": "4ed55444d6fd1fe3338f05db6fd08f3540e73f344efecc99f23e9b0700a5f92d"
+        },
+        "audit.json": {
+          "bytes": 1853,
+          "sha256": "6c9243b3debe3b79a57e7ce7ad2340e9cc51d243c3176aa70d293fa2d46de4b9"
+        },
+        "container.log": {
+          "bytes": 230,
+          "sha256": "f6e545068e6812be3a08636a5499a29f7e2f167dc4634238ab76d0c4c83186ab"
+        },
+        "out/build/source-manifest.json": {
+          "bytes": 88251,
+          "sha256": "50ef98525437a248c94d6ea21a51778716b0f1e1ce60d513501e7eb19910f9c5"
+        },
+        "out/native-tests/checks/clippy.log": {
+          "bytes": 297,
+          "sha256": "dd15c73f296544c713fade254e0cfb2c8b84d36dec37fb54c4a24a853a7bffbd"
+        },
+        "out/native-tests/checks/fixtures.log": {
+          "bytes": 130,
+          "sha256": "7a222f7c90ad8a06c1855f8c1c166e52d2d820c51c97f08ad610d2de273e5066"
+        },
+        "out/native-tests/checks/result.json": {
+          "bytes": 3823,
+          "sha256": "65feb72da04877bf5977e490e423708fce6a8b0314759937fa93c9a4a6fee789"
+        },
+        "out/native-tests/checks/tests.log": {
+          "bytes": 686,
+          "sha256": "aeb9b716e73b19470ac72597e241789103896a5ae2dc287d5a416385dd15782b"
+        },
+        "out/native-tests/ordered-build.log": {
+          "bytes": 626,
+          "sha256": "7ac25b06920bdd6b17f964e1123bf8c379320bca8d2b3296d0ed776d7c588646"
+        },
+        "out/native-tests/ready.json": {
+          "bytes": 4990,
+          "sha256": "da377b94c91a0d7253261ee0968bf4856055224019df64eaf7c60972ab60061e"
+        },
+        "out/native-tests/result.json": {
+          "bytes": 2804,
+          "sha256": "9089d3ca10f64f3ee234e07d21b6de6c87f4a61d3377e62b9d67f94481755d63"
+        },
+        "out/native-tests/worker-identity.json": {
+          "bytes": 104,
+          "sha256": "e574d8382b617d1b1d46b7c7eba21ff72b5b71205f72a6a25bd08a08e1279dc8"
+        },
+        "catalog-install.json": {
+          "bytes": 63928,
+          "sha256": "b130d071a9d7f10f71df3ede64f2fecd27a34daa4d1a6a12aaa30905195af3b1"
+        },
+        "catalog-install.log": {
+          "bytes": 32,
+          "sha256": "09f251434063a878f3d1d33ea7639e8461d0a1f30d00eac1a277a9a3bd4fdb97"
+        },
+        "out/catalog-install/before.sql": {
+          "bytes": 32651,
+          "sha256": "72758d8d7495f1e27110d67458ae694224c618bab736ffd1ba78002f261fd122"
+        },
+        "out/catalog-install/after.sql": {
+          "bytes": 57012,
+          "sha256": "35c94eb0d1101e5cbfd8381499720e2f3d465cac2e476a15ee385b936d5790e6"
+        }
+      }
+    }
+  },
+  "resources": {
+    "baseline": {
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-install-d21eacc",
+      "owner": "6fc1dd36ee346693233e9d01d7402d8d",
+      "containers": [
+        "bf059f87813aefaefdc88f55c439adf70ed0e4f4856b7ce5c51fd549a3658b0c",
+        "752b95efa020dc3ce16f8d092a87bc2bb128f9fae0ce5049c7a01aadeb65c40e"
+      ],
+      "terminal": {
+        "container_id": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 143,
+          "Error": "",
+          "StartedAt": "2026-09-19T05:24:23.409685496Z",
+          "FinishedAt": "2026-09-19T05:26:50.780136193Z"
+        },
+        "postgres_id": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-19T05:24:21.471533294Z",
+          "FinishedAt": "2026-09-19T05:26:51.721394933Z"
+        }
+      },
+      "existing_containers_unchanged": 290,
+      "unrelated_running": 8,
+      "observed_at": "2026-09-19T05:26:52.148764+00:00"
+    },
+    "failed-owner-comments": {
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-install-4404a16",
+      "owner": "2b037967476967d24ea43e7c9860b770",
+      "containers": [
+        "fba591746d3e1721daf77e84b06a59ea4a908a51a484a58a646c58a5238b1986",
+        "2ed4c54bf3ca7232c7b2d70498d4bc4cf817cfc3b5662699f5334baec70948e4"
+      ],
+      "terminal": {
+        "container_id": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 143,
+          "Error": "",
+          "StartedAt": "2026-09-19T05:48:41.22933047Z",
+          "FinishedAt": "2026-09-19T05:51:31.057709902Z"
+        },
+        "postgres_id": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-19T05:48:39.33275956Z",
+          "FinishedAt": "2026-09-19T05:51:31.819064787Z"
+        }
+      },
+      "existing_containers_unchanged": 292,
+      "unrelated_running": 8,
+      "observed_at": "2026-09-19T05:51:32.226887+00:00"
+    },
+    "failed-owner-privilege": {
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-install-9f02f43",
+      "owner": "d8b7192cd764f58b56ddc49690c36c0e",
+      "containers": [
+        "db24674400d539af10b74a44b2b037ce5002e0b708ffa5a50ce7ca0382e4968c",
+        "b38c00e53f220a6432c5b7f5ee60a3b8aac82565997c6d93ee09e9b434192ac8"
+      ],
+      "terminal": {
+        "container_id": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 143,
+          "Error": "",
+          "StartedAt": "2026-09-19T05:53:49.358157095Z",
+          "FinishedAt": "2026-09-19T05:57:02.02337206Z"
+        },
+        "postgres_id": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-19T05:53:47.513973094Z",
+          "FinishedAt": "2026-09-19T05:57:04.264254835Z"
+        }
+      },
+      "existing_containers_unchanged": 294,
+      "unrelated_running": 8,
+      "observed_at": "2026-09-19T05:57:04.708305+00:00"
+    },
+    "qualified": {
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-install-df4a598",
+      "owner": "ae618964fe0d75e57cf5fa544f0194d9",
+      "containers": [
+        "00c4459223e84481b0d86f9baaa5af3d6737b48c6ee62dbb20184ca172529b19",
+        "c3eaeded17c4e01bbce3ab00249d1bb225123b36fad615800f75a9ca96f3d0e5"
+      ],
+      "terminal": {
+        "container_id": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 143,
+          "Error": "",
+          "StartedAt": "2026-09-19T05:59:03.961299131Z",
+          "FinishedAt": "2026-09-19T06:02:02.837435822Z"
+        },
+        "postgres_id": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-19T05:59:02.004973445Z",
+          "FinishedAt": "2026-09-19T06:02:06.171473454Z"
+        }
+      },
+      "existing_containers_unchanged": 296,
+      "unrelated_running": 8,
+      "observed_at": "2026-09-19T06:02:06.620144+00:00"
+    }
+  },
+  "review": {
+    "kind": "Read-only AI source review plus integrating-owner full diff and raw/effect review",
+    "findings": [
+      "Required owner ordinary rights and manager membership closure",
+      "PUBLIC/default ACL and delegation refusals",
+      "Actual probe failure observation before audit queries, role fingerprints and bounded backend drain",
+      "Record lock blocker metadata and distinguish raw dump LF/reader-grant state"
+    ],
+    "disposition": "Corrected before qualifying candidate; reviewer executed no native cases",
+    "boundary": "No full upstream PostgreSQL source audit, hostile administrator isolation or complete initializer review implied",
+    "recorded_evidence": "Independent read-only AI review verified61 raw files, four archives and2885 source files, baseline/failure/56 qualified outcomes, role/dump/fault/lock records and28 COPY blocks/224 rows; no discrepancy. No native execution; retained ELF/full prior-container inventory and intermediate transaction objects were not independently available locally."
+  },
+  "compatibility": "No applied SQL migration/checksum, structural layout identity, native worker or scientific schema change. Existing semantic privilege violations now refuse rather than silently modify them; explicit operator repair remains required.",
+  "not_run": [
+    "Complete installed initialization CLI and durable database/data-root reservation",
+    "Native configured mutual TLS and pinned startup route adapter",
+    "Fresh configured-manager publication/seal lifecycle after this ownership transfer",
+    "Crash at all complete initializer boundaries; cross-boot/host recovery",
+    "M1 signed admission/archive/read/export/restart",
+    "Compose installation/upgrade/release, Linux arm64, hosted Actions",
+    "Performance, aged/mixed load, resource exhaustion or adversarial infrastructure administrator qualification"
+  ]
+}
