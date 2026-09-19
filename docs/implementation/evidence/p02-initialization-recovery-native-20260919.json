@@ -1,0 +1,1579 @@
+{
+  "format": "bigbrotr-initialization-recovery-qualification/1",
+  "date": "2026-09-19",
+  "task": "P02-T04 steps3/4/5 reserved initializer prerequisites",
+  "status": "PASS within stated scope",
+  "scope": "Actual bounded recovered reservation observation and exact idempotent bootstrap retirement. Not server-backend exclusion, complete installed initializer/recovery CLI, persistent Archive service or M1.",
+  "design": [
+    "Immutable actual-reacquisition flag distinguishes recovered custody from consumed provisioning/native launch flags; neither recovery operation grants a new credential or native launch.",
+    "The same exclusive catalog transaction advisory lock serializes old provisioning/retirement and fresh observation. Observation returns only fixed OIDs/names/nonce plus retired state and requires successful ROLLBACK.",
+    "Canonical global comment comparison happens on the server. Comments above128 bytes return ResourceLimit; missing/noncanonical values and partial role pairs return Conflict. No verifier/password/arbitrary comment crosses observation.",
+    "Both reserved names absent means current absence only and also requires pristine database. It does not prove provisioning never committed or permit reuse/relaunch.",
+    "Retirement revalidates every Reservation field and current comment/role restrictions before either ALTER ROLE or idempotent return; only the exact bootstrap changes to NOLOGIN PASSWORD NULL. Permanent reservation and role names remain.",
+    "First observation reads the current reservation OID; comment v1 binds bootstrap/manager OIDs, not its own OID. Known retirement refuses replaced reservation OID; privileged forgery/replacement of all retained metadata remains outside ordinary trusted administrator failures.",
+    "Observer accepts active LOGIN/nonnull password or retired NOLOGIN/NULL only and permits manager ownership of already installed native tables. Mixed credential states and unsafe attributes/memberships/effective PUBLIC privileges refuse."
+  ],
+  "methods": [
+    "Mac is the sole editing/Git workspace. Each unpublished clean candidate was transferred by Git bundle and exported to read-only native build inputs. Three independently regenerated Mac git archives are compared with every native source hash.",
+    "Trusted Tux uses tools.build and tools.ci.execute for actual main/worker ordered builds, actual probe build, storage::archive parent tests and scoped parent/worker Clippy. Hosted Actions billing remains unavailable.",
+    "Fresh owned internal PostgreSQL16.15/SCRAM labs, no host ports. Runner2CPU/6GiB/512PIDs and PG1CPU/1GiB/128PIDs. Same Linux boot/ext4 only. No release keys or untrusted PR code.",
+    "Independent psql derives expected OIDs; expected field dictionaries do not reuse Rust observation. Full pg_dump comparisons strip only random restrict/unrestrict tokens. Whole role/membership/comment hashes include row xmin and secret hashes without transferring verifiers.",
+    "Known retirement and strengthened ambiguous cases verify the exact role LOGIN/password state independently, unchanged DB and all unrelated role attributes/memberships/comments. Idempotent/refusal cases require whole-state equality including xmin.",
+    "Actual generated bootstrap password initializes the six scientific relations. Separate exact retirement and guarded manager installation precede recovered observation; actual table owners are independently checked. This is a fixture composition, not installed CLI.",
+    "Fault proxy drops COMMIT before forwarding or after server completion, yielding CommitUnknown in both cases. Fresh actual observer under recovered custody resolves state; retry retires once or returns unchanged.",
+    "Cancellation times out the real retirement future with COMMIT held remotely, aborts and positively joins the actual custody-bearing driver, then exits. A new observer reacquires actual local custody and is independently observed waiting on the authoritative advisory lock. Closing/releasing the intermediary resolves rollback/late commit. Timing only triggers the fault; lock and durable SQL establish outcome."
+  ],
+  "local_checks": [
+    {
+      "session": 55046,
+      "status": "expected FAIL",
+      "case": "deliberately false recovered-state getter"
+    },
+    {
+      "session": 61090,
+      "status": "PASS",
+      "case": "eight local initialization tests; fmt and scoped Clippy"
+    },
+    {
+      "session": 38696,
+      "status": "PASS",
+      "case": "implemented parent/example Clippy"
+    },
+    {
+      "session": "AST/fmt/diff checks",
+      "status": "PASS",
+      "case": "changed harness syntax and repository formatting"
+    }
+  ],
+  "candidates": [
+    {
+      "label": "baseline",
+      "source": "2bd2bdb8f11395a0c1c329912961bea4b6af6dbc",
+      "tree": "95f64b1c64d84b9e224f4c4ccab9644c2c585347",
+      "status": "FAIL",
+      "error": "core recovery assertions failed; later cases not run",
+      "source_verification": {
+        "revision": "2bd2bdb8f11395a0c1c329912961bea4b6af6dbc",
+        "tree": "95f64b1c64d84b9e224f4c4ccab9644c2c585347",
+        "files": 735,
+        "archive_sha256": "1c3dd1296dc433f901ebe46946f9b94a102ebfaacb11c1b1e4d9d8b4733e0a2a",
+        "manifest_sha256": "1c1d074f4aa1eabac8eee3b07b92f0cf3170afda0cf4d78f34604db9559f27fd"
+      },
+      "artifact": {
+        "main": {
+          "sha256": "63d0b031fb4a6352628cea7a656925319829b1ba6fa9ace223c0816e83f9e56f",
+          "bytes": 8224816,
+          "elf_machine": 62
+        },
+        "worker": {
+          "sha256": "c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227",
+          "bytes": 12608608,
+          "elf_machine": 62
+        }
+      },
+      "probe_sha256": "1b0c6902847d3efe0cf4939691a9799182d7652380d058cca846af5e2c9d63c9",
+      "build_info": {
+        "archive_worker": {
+          "bytes": 12608608,
+          "sha256": "c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227"
+        },
+        "capabilities": [
+          "event-verification",
+          "config-static"
+        ],
+        "capability_scope": "Strict bounded event JSON and independent ID/BIP340 verification; offline static configuration candidates and incomplete read-only doctor diagnostics; no storage, durable configuration authority, source policy, wire transport, filter, or general NIP conformance claim",
+        "debug_info": "false",
+        "format": "bigbrotr-build/1",
+        "inputs_sha256": {
+          "Cargo.lock": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215",
+          "contracts/protocol/nip01-event.json": "b830d5ab8651f5a763ebcffdc0eb1737ba70f4602c93fc714c892865ffca2db8",
+          "contracts/protocol/versions.json": "37c76706c5a2aa4fc72a40aeed908f104620eafcee1118b7cee8baf133546c95",
+          "contracts/release/dependencies.json": "4f73cd0a81916b7d203556ff9ad1d8efd97dfe95b2b2305c35468747e8669132",
+          "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167"
+        },
+        "optimization": "3",
+        "product": "BigBrotr",
+        "profile_assertion": "release",
+        "protocol_registry_format": "bigbrotr-protocol-versions/1",
+        "protocols": {
+          "event_verifier": "bigbrotr-nip01-verifier/1",
+          "nostr_nips": "a2494f4f81d46684e5814a9bf35e2b1df978f955"
+        },
+        "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+        "schemas": {
+          "build_info": "bigbrotr-build/1",
+          "config_static": "bigbrotr-config-static/1",
+          "doctor": "bigbrotr-doctor/1",
+          "signed_event": "nip01-event/1"
+        },
+        "source": {
+          "dirty": false,
+          "manifest_sha256": "1c1d074f4aa1eabac8eee3b07b92f0cf3170afda0cf4d78f34604db9559f27fd",
+          "revision": "2bd2bdb8f11395a0c1c329912961bea4b6af6dbc",
+          "state": "builder-supplied",
+          "tree": "95f64b1c64d84b9e224f4c4ccab9644c2c585347"
+        },
+        "target": "x86_64-unknown-linux-gnu",
+        "version": "0.1.0-dev"
+      },
+      "build_checks": {
+        "ordered": "PASS",
+        "fixture": "PASS",
+        "archive_parent": "34PASS/1ignored",
+        "clippy": "PASS"
+      },
+      "harness_sha256": "bfd783994004556038a22b3b14d6944daaa976a0ec2a0588134307a551dc8090",
+      "implementation_sha256": "dee180b5c9fbaae9132109d483aa81b30f35abcd7eb35ac7436d23696467dc91",
+      "raw_evidence": {
+        "root": ".research/implementation/archive-worker/initialization-recovery/baseline",
+        "tar_bytes": 153600,
+        "tar_sha256": "192e888690ce160c8aba61ab94a1d43997d023717aaa03f8be4e268d1bcce7a4",
+        "files": {
+          "resources.json": {
+            "bytes": 1241,
+            "sha256": "e01e7b41f5d0a904fb2f5437cfa3fb186bb4a7b308df25c9b75a763cd6833bb2"
+          },
+          "audit.json": {
+            "bytes": 1867,
+            "sha256": "c57636b177cf9235b28b8588f38d0aa9629e62a7f2fdac590afe9243a738c302"
+          },
+          "container.log": {
+            "bytes": 242,
+            "sha256": "6317cd11a450d9fde03f20599d206a0d83f79a78af95dd7c3ce0d1ff117e4272"
+          },
+          "out/build/source-manifest.json": {
+            "bytes": 90003,
+            "sha256": "1c1d074f4aa1eabac8eee3b07b92f0cf3170afda0cf4d78f34604db9559f27fd"
+          },
+          "out/native-tests/checks/clippy.log": {
+            "bytes": 394,
+            "sha256": "0bf199c6e885192b336271018d5e241a5ea0794fdf42d292ba6f0d40556add66"
+          },
+          "out/native-tests/checks/fixture.log": {
+            "bytes": 130,
+            "sha256": "a0fac7fee4ecb5de16c5b8d2fce3b68cac0801f2e28c817978dc6a2289208855"
+          },
+          "out/native-tests/checks/parent-tests.log": {
+            "bytes": 4562,
+            "sha256": "172c196f39227cc2f587eda52dc6f8bf46ea37909fdfed79b9ba6bd9bf22a610"
+          },
+          "out/native-tests/checks/result.json": {
+            "bytes": 3816,
+            "sha256": "35cd70675facf53630e2cbadb7ac8e0a41c9dd29aa5243b65b1b6ff1b40a7314"
+          },
+          "out/native-tests/ordered-build.log": {
+            "bytes": 626,
+            "sha256": "0b2fa8fb46b04473e74c86aa75c6c3e8c8f861379eef6eaf93d2178803d4d4d7"
+          },
+          "out/native-tests/ready.json": {
+            "bytes": 4911,
+            "sha256": "d1859b0f73027f3ac88a1f4173d8d6cb04fa9087772b3a3a07ff3124bb019129"
+          },
+          "out/native-tests/result.json": {
+            "bytes": 2800,
+            "sha256": "29a35a29cf214740acde3130517031a3f86970e8c95aff7f86fa92b4f913821c"
+          },
+          "out/native-tests/worker-identity.json": {
+            "bytes": 104,
+            "sha256": "c76d6822c6cff10729edc0d68f41196558b6cdedee0779cbf55ce624e1e80878"
+          },
+          "initialization-recovery.json": {
+            "bytes": 8619,
+            "sha256": "a976211caa4b7dcd410c11bb5ece84619b9d15f02dbe357ffa36acff7c83dbec"
+          },
+          "initialization-recovery.log": {
+            "bytes": 389,
+            "sha256": "d132f4bd6ecf54e62c01c28f2cc9d4305e9fa27f191d43e30bc0c0891f947e0a"
+          }
+        }
+      },
+      "resources": {
+        "source": "2bd2bdb8f11395a0c1c329912961bea4b6af6dbc",
+        "tree": "95f64b1c64d84b9e224f4c4ccab9644c2c585347",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/initialization-recovery-2bd2bdb",
+        "owner": "5c4ceb14f36bec4b46cebf3fe6b98d25",
+        "container": "bigbrotr-implementation-initialization-recovery-2bd2bdb",
+        "postgres": "bigbrotr-implementation-initialization-recovery-2bd2bdb-pg",
+        "network": "bigbrotr-implementation-initialization-recovery-2bd2bdb",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "state": "stopped-retained",
+        "source_files": 735,
+        "started_at": "2026-09-19T07:50:27.093478+00:00",
+        "network_id": "07fd7603f63339c81eeddb5455ad401cdd5cd5c1d1e8be7aadc90210be84bd27",
+        "postgres_id": "c2cf727aed6614213851544e13c88551ff1ed08a753007478dcff140fd5592e8",
+        "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+        "container_id": "f7a68db90d85aa6d0c4e984262a65b1b6f966dc58afc9a80b7455d7a922d3f54",
+        "completed_at": "2026-09-19T07:55:04.495970+00:00"
+      },
+      "audit": {
+        "status": "PASS",
+        "source": "2bd2bdb8f11395a0c1c329912961bea4b6af6dbc",
+        "tree": "95f64b1c64d84b9e224f4c4ccab9644c2c585347",
+        "source_files": 735,
+        "source_archive_sha256": "1c3dd1296dc433f901ebe46946f9b94a102ebfaacb11c1b1e4d9d8b4733e0a2a",
+        "source_manifest_sha256": "1c1d074f4aa1eabac8eee3b07b92f0cf3170afda0cf4d78f34604db9559f27fd",
+        "artifacts": {
+          "main": {
+            "sha256": "63d0b031fb4a6352628cea7a656925319829b1ba6fa9ace223c0816e83f9e56f",
+            "bytes": 8224816,
+            "elf_machine": 62
+          },
+          "worker": {
+            "sha256": "c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227",
+            "bytes": 12608608,
+            "elf_machine": 62
+          }
+        },
+        "qualification": {
+          "initialization-recovery": "FAIL"
+        },
+        "cases": {
+          "initialization-recovery": 4
+        },
+        "build_ready": true,
+        "terminal": {
+          "container_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-19T07:50:29.725385941Z",
+            "FinishedAt": "2026-09-19T07:55:03.181391657Z"
+          },
+          "postgres_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-19T07:50:27.76167474Z",
+            "FinishedAt": "2026-09-19T07:55:04.044857309Z"
+          }
+        },
+        "owned_containers": [
+          "f7a68db90d85aa6d0c4e984262a65b1b6f966dc58afc9a80b7455d7a922d3f54",
+          "c2cf727aed6614213851544e13c88551ff1ed08a753007478dcff140fd5592e8"
+        ],
+        "existing_containers_unchanged": 310,
+        "unrelated_containers_unchanged": 20,
+        "unrelated_running": 8,
+        "bigbrotr_running": 0,
+        "observed_at": "2026-09-19T07:55:04.495970+00:00"
+      },
+      "cases": [
+        {
+          "name": "observe-active",
+          "status": "FAIL",
+          "observed": "refused",
+          "reason": "Conflict",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "retire-exact",
+          "status": "FAIL",
+          "observed": "refused",
+          "reason": "Conflict",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "fresh-custody-is-not-recovery",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "InvalidInput",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "observe-absent-pristine",
+          "status": "FAIL",
+          "observed": "refused",
+          "reason": "Conflict",
+          "whole_state_unchanged": true
+        }
+      ]
+    },
+    {
+      "label": "first",
+      "source": "decf4a9aea687a8ee658aed4002b1c52ba584048",
+      "tree": "91628d79e765b5016f9bff4e7bf4297a458a315f",
+      "status": "PASS",
+      "error": null,
+      "source_verification": {
+        "revision": "decf4a9aea687a8ee658aed4002b1c52ba584048",
+        "tree": "91628d79e765b5016f9bff4e7bf4297a458a315f",
+        "files": 735,
+        "archive_sha256": "93a614e6b28bb356bae2363fe789762d30c730448398e14af0b81744fdd5ee39",
+        "manifest_sha256": "697d25b423bfebfc90c5836696620d66c1c3a2d6b4f38542d3692f29cac89152"
+      },
+      "artifact": {
+        "main": {
+          "sha256": "d6b820bf2655f2b42ce03dd571d32b22a3e931e60e7d00efa54a007403a7ae07",
+          "bytes": 8225568,
+          "elf_machine": 62
+        },
+        "worker": {
+          "sha256": "c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227",
+          "bytes": 12608608,
+          "elf_machine": 62
+        }
+      },
+      "probe_sha256": "44548932961ebd9d2de7d8d11be369c6421a5466feed68a3fd3f88b153bfb81a",
+      "build_info": {
+        "archive_worker": {
+          "bytes": 12608608,
+          "sha256": "c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227"
+        },
+        "capabilities": [
+          "event-verification",
+          "config-static"
+        ],
+        "capability_scope": "Strict bounded event JSON and independent ID/BIP340 verification; offline static configuration candidates and incomplete read-only doctor diagnostics; no storage, durable configuration authority, source policy, wire transport, filter, or general NIP conformance claim",
+        "debug_info": "false",
+        "format": "bigbrotr-build/1",
+        "inputs_sha256": {
+          "Cargo.lock": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215",
+          "contracts/protocol/nip01-event.json": "b830d5ab8651f5a763ebcffdc0eb1737ba70f4602c93fc714c892865ffca2db8",
+          "contracts/protocol/versions.json": "37c76706c5a2aa4fc72a40aeed908f104620eafcee1118b7cee8baf133546c95",
+          "contracts/release/dependencies.json": "4f73cd0a81916b7d203556ff9ad1d8efd97dfe95b2b2305c35468747e8669132",
+          "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167"
+        },
+        "optimization": "3",
+        "product": "BigBrotr",
+        "profile_assertion": "release",
+        "protocol_registry_format": "bigbrotr-protocol-versions/1",
+        "protocols": {
+          "event_verifier": "bigbrotr-nip01-verifier/1",
+          "nostr_nips": "a2494f4f81d46684e5814a9bf35e2b1df978f955"
+        },
+        "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+        "schemas": {
+          "build_info": "bigbrotr-build/1",
+          "config_static": "bigbrotr-config-static/1",
+          "doctor": "bigbrotr-doctor/1",
+          "signed_event": "nip01-event/1"
+        },
+        "source": {
+          "dirty": false,
+          "manifest_sha256": "697d25b423bfebfc90c5836696620d66c1c3a2d6b4f38542d3692f29cac89152",
+          "revision": "decf4a9aea687a8ee658aed4002b1c52ba584048",
+          "state": "builder-supplied",
+          "tree": "91628d79e765b5016f9bff4e7bf4297a458a315f"
+        },
+        "target": "x86_64-unknown-linux-gnu",
+        "version": "0.1.0-dev"
+      },
+      "build_checks": {
+        "ordered": "PASS",
+        "fixture": "PASS",
+        "archive_parent": "34PASS/1ignored",
+        "clippy": "PASS"
+      },
+      "harness_sha256": "7c2fa8ec06e629c9349a4fa6f98b7fcdbf459acb9bc2205ec408fb784ee0cc32",
+      "implementation_sha256": "7b71967e77ea0216e056225d0f58c0b47ee7c63df17ee1fdb8e8f68c93214083",
+      "raw_evidence": {
+        "root": ".research/implementation/archive-worker/initialization-recovery/first",
+        "tar_bytes": 184320,
+        "tar_sha256": "4d2bc5316276f0b2347d018f69a74e29eb885a409a0c2f713b52fdc2458b6229",
+        "files": {
+          "resources.json": {
+            "bytes": 1241,
+            "sha256": "de632b403ce2e8faf017fb4943196073d20e9fd47b5987a6fd2f35b64f57e72e"
+          },
+          "audit.json": {
+            "bytes": 1867,
+            "sha256": "22255dc323fb193bfe47d663554d9390e6a2be65c608bcdabf87e294663f4895"
+          },
+          "container.log": {
+            "bytes": 242,
+            "sha256": "94f4469dbee219ad4e0408181b537263f07fff5903614e52125982d3f9e8835e"
+          },
+          "out/build/source-manifest.json": {
+            "bytes": 90003,
+            "sha256": "697d25b423bfebfc90c5836696620d66c1c3a2d6b4f38542d3692f29cac89152"
+          },
+          "out/native-tests/checks/clippy.log": {
+            "bytes": 394,
+            "sha256": "dd01d44737d1fd3edb9fab4df6d549b9c7543092f8457b29fefb6af8f19f10a9"
+          },
+          "out/native-tests/checks/fixture.log": {
+            "bytes": 130,
+            "sha256": "6a2bbff89a97db383bff96ea89d0c103d77ad4ede249d59e6a04dde24b7d3272"
+          },
+          "out/native-tests/checks/parent-tests.log": {
+            "bytes": 4562,
+            "sha256": "786175f8eca1cdf30f53bc315ff9d258c3e1f079a9f6e01d7dc04e6a82a3afe6"
+          },
+          "out/native-tests/checks/result.json": {
+            "bytes": 3816,
+            "sha256": "88d9c713f5872d3d2f2b8dba7c58e9298b0dd2d32f1479414dacfae6e8fe6525"
+          },
+          "out/native-tests/ordered-build.log": {
+            "bytes": 626,
+            "sha256": "bf9065e1cb0783f8c7b8daa1b9fb241e886345232c25761b75491039bda7c3f9"
+          },
+          "out/native-tests/ready.json": {
+            "bytes": 4911,
+            "sha256": "d5695e7c64bd3abf9007b22fa0c05c5365a40b73c3509a78925c5b8ea4c69894"
+          },
+          "out/native-tests/result.json": {
+            "bytes": 2800,
+            "sha256": "2b13648ba82f41a237173f7fc5624672bbeda3e119995b4891da8ce44a2c996b"
+          },
+          "out/native-tests/worker-identity.json": {
+            "bytes": 104,
+            "sha256": "c76d6822c6cff10729edc0d68f41196558b6cdedee0779cbf55ce624e1e80878"
+          },
+          "initialization-recovery.json": {
+            "bytes": 45130,
+            "sha256": "0dc78a0b243ec9973e098498704e89671aafe65b3663fc957d2da3ad3d022f19"
+          },
+          "initialization-recovery.log": {
+            "bytes": 32,
+            "sha256": "69fc9379989e893b08fe5733689f647391d76487414783de4612dd9e841c7327"
+          }
+        }
+      },
+      "resources": {
+        "source": "decf4a9aea687a8ee658aed4002b1c52ba584048",
+        "tree": "91628d79e765b5016f9bff4e7bf4297a458a315f",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/initialization-recovery-decf4a9",
+        "owner": "84b70957934e6c3bccd8457a7d064122",
+        "container": "bigbrotr-implementation-initialization-recovery-decf4a9",
+        "postgres": "bigbrotr-implementation-initialization-recovery-decf4a9-pg",
+        "network": "bigbrotr-implementation-initialization-recovery-decf4a9",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "state": "stopped-retained",
+        "source_files": 735,
+        "started_at": "2026-09-19T07:57:16.014579+00:00",
+        "network_id": "4d9e80c8af83d24bda2eed4785f2e5ccb5e90cc00f68a32f34ab987bbcf4a557",
+        "postgres_id": "beb7258f7d668da60453033dc5c5db583ccd2bc3424ff7a42886634fa830d218",
+        "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+        "container_id": "9fda887f85af56ba49901760a59e2063a463a572c864b71598b45f26792a401d",
+        "completed_at": "2026-09-19T08:00:33.129362+00:00"
+      },
+      "audit": {
+        "status": "PASS",
+        "source": "decf4a9aea687a8ee658aed4002b1c52ba584048",
+        "tree": "91628d79e765b5016f9bff4e7bf4297a458a315f",
+        "source_files": 735,
+        "source_archive_sha256": "93a614e6b28bb356bae2363fe789762d30c730448398e14af0b81744fdd5ee39",
+        "source_manifest_sha256": "697d25b423bfebfc90c5836696620d66c1c3a2d6b4f38542d3692f29cac89152",
+        "artifacts": {
+          "main": {
+            "sha256": "d6b820bf2655f2b42ce03dd571d32b22a3e931e60e7d00efa54a007403a7ae07",
+            "bytes": 8225568,
+            "elf_machine": 62
+          },
+          "worker": {
+            "sha256": "c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227",
+            "bytes": 12608608,
+            "elf_machine": 62
+          }
+        },
+        "qualification": {
+          "initialization-recovery": "PASS"
+        },
+        "cases": {
+          "initialization-recovery": 39
+        },
+        "build_ready": true,
+        "terminal": {
+          "container_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-19T07:57:18.786591814Z",
+            "FinishedAt": "2026-09-19T08:00:30.753419059Z"
+          },
+          "postgres_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-19T07:57:16.6966697Z",
+            "FinishedAt": "2026-09-19T08:00:32.682193112Z"
+          }
+        },
+        "owned_containers": [
+          "9fda887f85af56ba49901760a59e2063a463a572c864b71598b45f26792a401d",
+          "beb7258f7d668da60453033dc5c5db583ccd2bc3424ff7a42886634fa830d218"
+        ],
+        "existing_containers_unchanged": 312,
+        "unrelated_containers_unchanged": 20,
+        "unrelated_running": 8,
+        "bigbrotr_running": 0,
+        "observed_at": "2026-09-19T08:00:33.129362+00:00"
+      },
+      "cases": [
+        {
+          "name": "observe-active",
+          "status": "PASS",
+          "observed": "observed",
+          "bootstrap_retired": false,
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "retire-exact",
+          "status": "PASS",
+          "observed": "retired",
+          "changed": true,
+          "whole_state_unchanged": false,
+          "exact_bootstrap_retired": true,
+          "unrelated_role_attributes_and_database_unchanged": true
+        },
+        {
+          "name": "fresh-custody-is-not-recovery",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "InvalidInput",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "observe-absent-pristine",
+          "status": "PASS",
+          "observed": "absent",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "observe-retired",
+          "status": "PASS",
+          "observed": "observed",
+          "bootstrap_retired": true,
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "retire-idempotent-no-row-change",
+          "status": "PASS",
+          "observed": "retired",
+          "changed": false,
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "recovered-reserve-refused",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "InvalidInput",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "absent-nonpristine-refused",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "ExistingData",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "changed-database_oid",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "Conflict",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "changed-reservation_oid",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "Conflict",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "changed-bootstrap_oid",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "Conflict",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "changed-manager_oid",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "Conflict",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "missing-comment",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "Conflict",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "missing-comment-retire",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "Conflict",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "malformed-comment",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "Conflict",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "malformed-comment-retire",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "Conflict",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "oversize-comment",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "ResourceLimit",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "oversize-comment-retire",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "ResourceLimit",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "reservation-login",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "UnsafeRole",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "bootstrap-inherit",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "UnsafeRole",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "bootstrap-login-without-password",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "UnsafeRole",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "bootstrap-member",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "UnsafeRole",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "public-bypass",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "UnsafeRole",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "replaced-manager",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "Conflict",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "replaced-bootstrap",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "Conflict",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "replaced-reservation-known-oid",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "Conflict",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "first-observation-current-reservation-oid",
+          "status": "PASS",
+          "observed": "observed",
+          "bootstrap_retired": true,
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "missing_reservation",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "Conflict",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "missing_bootstrap",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "Conflict",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "native-retire",
+          "status": "PASS",
+          "observed": "retired",
+          "changed": true,
+          "whole_state_unchanged": false,
+          "exact_bootstrap_retired": true,
+          "unrelated_role_attributes_and_database_unchanged": true
+        },
+        {
+          "name": "install-for-manager",
+          "status": "PASS",
+          "observed": "installed",
+          "changed": true,
+          "whole_state_unchanged": false
+        },
+        {
+          "name": "observe-after-manager-install",
+          "status": "PASS",
+          "observed": "observed",
+          "bootstrap_retired": true,
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "retire-after-manager-install-no-change",
+          "status": "PASS",
+          "observed": "retired",
+          "changed": false,
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "resolve-retirement-before-forward",
+          "status": "PASS",
+          "observed": "observed",
+          "bootstrap_retired": false,
+          "whole_state_unchanged": true,
+          "ambiguous": {
+            "commit_started": true,
+            "driver_ok": false,
+            "result": {
+              "reason": "CommitUnknown",
+              "status": "refused"
+            }
+          },
+          "wire": {
+            "commits_seen": 1,
+            "commits_forwarded": 0,
+            "server_commit_complete": 0,
+            "client_commit_complete": 0,
+            "reason": "before-forward",
+            "elapsed_ns": 100222515
+          }
+        },
+        {
+          "name": "repeat-retirement-before-forward",
+          "status": "PASS",
+          "observed": "retired",
+          "changed": true,
+          "whole_state_unchanged": false,
+          "exact_bootstrap_retired": true,
+          "unrelated_role_attributes_and_database_unchanged": true
+        },
+        {
+          "name": "resolve-retirement-after-complete",
+          "status": "PASS",
+          "observed": "observed",
+          "bootstrap_retired": true,
+          "whole_state_unchanged": true,
+          "ambiguous": {
+            "commit_started": true,
+            "driver_ok": false,
+            "result": {
+              "reason": "CommitUnknown",
+              "status": "refused"
+            }
+          },
+          "wire": {
+            "commits_seen": 1,
+            "commits_forwarded": 1,
+            "server_commit_complete": 1,
+            "client_commit_complete": 0,
+            "reason": "after-complete",
+            "elapsed_ns": 75273818
+          }
+        },
+        {
+          "name": "repeat-retirement-after-complete",
+          "status": "PASS",
+          "observed": "retired",
+          "changed": false,
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "cancelled-driver-close",
+          "status": "PASS",
+          "observed": "observed",
+          "bootstrap_retired": false,
+          "journal_unchanged": true,
+          "cancelled": {
+            "commit_started": true,
+            "driver_ok": false,
+            "result": {
+              "status": "cancelled"
+            }
+          },
+          "proxy_exit": 0,
+          "waiters": [
+            {
+              "pid": 1774,
+              "blockers": [
+                1766
+              ]
+            }
+          ],
+          "wire": {
+            "commits_seen": 1,
+            "commits_forwarded": 0,
+            "server_commit_complete": 0,
+            "client_commit_complete": 0,
+            "reason": "held-close",
+            "elapsed_ns": 2181750144
+          }
+        },
+        {
+          "name": "cancelled-driver-release",
+          "status": "PASS",
+          "observed": "observed",
+          "bootstrap_retired": true,
+          "journal_unchanged": true,
+          "cancelled": {
+            "commit_started": true,
+            "driver_ok": false,
+            "result": {
+              "status": "cancelled"
+            }
+          },
+          "proxy_exit": 0,
+          "waiters": [
+            {
+              "pid": 1812,
+              "blockers": [
+                1805
+              ]
+            }
+          ],
+          "wire": {
+            "commits_seen": 1,
+            "commits_forwarded": 1,
+            "server_commit_complete": 0,
+            "client_commit_complete": 0,
+            "reason": "frontend-eof",
+            "elapsed_ns": 2140304814
+          }
+        }
+      ]
+    },
+    {
+      "label": "qualified",
+      "source": "660df73aa24c63122054c00750fdc62486d38e12",
+      "tree": "eedec28a6bf56740f0c31830c553b8835785e7cb",
+      "status": "PASS",
+      "error": null,
+      "source_verification": {
+        "revision": "660df73aa24c63122054c00750fdc62486d38e12",
+        "tree": "eedec28a6bf56740f0c31830c553b8835785e7cb",
+        "files": 735,
+        "archive_sha256": "aab336f49ea535bd353193a5a70e0f3111bae28edc83a20bb7c244c1c3a30310",
+        "manifest_sha256": "b0d526dc42d7cd2a05b7b80d6a972d02d3b7622ca79243ef849d3a65185de647"
+      },
+      "artifact": {
+        "main": {
+          "sha256": "64383588096f86031bc7af8468075172b5ea057b41698d61e230632613f6246c",
+          "bytes": 8225624,
+          "elf_machine": 62
+        },
+        "worker": {
+          "sha256": "c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227",
+          "bytes": 12608608,
+          "elf_machine": 62
+        }
+      },
+      "probe_sha256": "44548932961ebd9d2de7d8d11be369c6421a5466feed68a3fd3f88b153bfb81a",
+      "build_info": {
+        "archive_worker": {
+          "bytes": 12608608,
+          "sha256": "c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227"
+        },
+        "capabilities": [
+          "event-verification",
+          "config-static"
+        ],
+        "capability_scope": "Strict bounded event JSON and independent ID/BIP340 verification; offline static configuration candidates and incomplete read-only doctor diagnostics; no storage, durable configuration authority, source policy, wire transport, filter, or general NIP conformance claim",
+        "debug_info": "false",
+        "format": "bigbrotr-build/1",
+        "inputs_sha256": {
+          "Cargo.lock": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215",
+          "contracts/protocol/nip01-event.json": "b830d5ab8651f5a763ebcffdc0eb1737ba70f4602c93fc714c892865ffca2db8",
+          "contracts/protocol/versions.json": "37c76706c5a2aa4fc72a40aeed908f104620eafcee1118b7cee8baf133546c95",
+          "contracts/release/dependencies.json": "4f73cd0a81916b7d203556ff9ad1d8efd97dfe95b2b2305c35468747e8669132",
+          "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167"
+        },
+        "optimization": "3",
+        "product": "BigBrotr",
+        "profile_assertion": "release",
+        "protocol_registry_format": "bigbrotr-protocol-versions/1",
+        "protocols": {
+          "event_verifier": "bigbrotr-nip01-verifier/1",
+          "nostr_nips": "a2494f4f81d46684e5814a9bf35e2b1df978f955"
+        },
+        "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+        "schemas": {
+          "build_info": "bigbrotr-build/1",
+          "config_static": "bigbrotr-config-static/1",
+          "doctor": "bigbrotr-doctor/1",
+          "signed_event": "nip01-event/1"
+        },
+        "source": {
+          "dirty": false,
+          "manifest_sha256": "b0d526dc42d7cd2a05b7b80d6a972d02d3b7622ca79243ef849d3a65185de647",
+          "revision": "660df73aa24c63122054c00750fdc62486d38e12",
+          "state": "builder-supplied",
+          "tree": "eedec28a6bf56740f0c31830c553b8835785e7cb"
+        },
+        "target": "x86_64-unknown-linux-gnu",
+        "version": "0.1.0-dev"
+      },
+      "build_checks": {
+        "ordered": "PASS",
+        "fixture": "PASS",
+        "archive_parent": "34PASS/1ignored",
+        "clippy": "PASS"
+      },
+      "harness_sha256": "b6a15d54d7ece407662a7634d1f7c9f26aa25c576dc35128b509027b52d9a4b3",
+      "implementation_sha256": "7b71967e77ea0216e056225d0f58c0b47ee7c63df17ee1fdb8e8f68c93214083",
+      "raw_evidence": {
+        "root": ".research/implementation/archive-worker/initialization-recovery/qualified",
+        "tar_bytes": 184320,
+        "tar_sha256": "d5c71b2c93d8d818053b13843b6d81f1395b5a6f0b09fa0ae1afcc4ec84c0895",
+        "files": {
+          "resources.json": {
+            "bytes": 1241,
+            "sha256": "6ad0c161d9fd26a4c3074fe6fd022b72b7b257903f67701d5bcc76c398cea380"
+          },
+          "audit.json": {
+            "bytes": 1868,
+            "sha256": "49cff22487ce6a8897baf6d0d116559011389eac51a96f032e2fe6079c54732a"
+          },
+          "container.log": {
+            "bytes": 242,
+            "sha256": "f31e7094ecc5f91db0716213f25a0e9a1e79250b9abb775e59511355fb888047"
+          },
+          "out/build/source-manifest.json": {
+            "bytes": 90003,
+            "sha256": "b0d526dc42d7cd2a05b7b80d6a972d02d3b7622ca79243ef849d3a65185de647"
+          },
+          "out/native-tests/checks/clippy.log": {
+            "bytes": 394,
+            "sha256": "db933e50ec15d68bc6bba7d4c6922a9430acf2fd33d495c08e5a026dd177400c"
+          },
+          "out/native-tests/checks/fixture.log": {
+            "bytes": 130,
+            "sha256": "2b68ae5b63b6a9a514d3b52322bcfb5d50c6ed116d78217ffb68dd66764ecc08"
+          },
+          "out/native-tests/checks/parent-tests.log": {
+            "bytes": 4562,
+            "sha256": "d2f1e864b64d8b356ed8673264cbe36af485c6fc0912009e3efd631eb29e056a"
+          },
+          "out/native-tests/checks/result.json": {
+            "bytes": 3817,
+            "sha256": "7ec7eff92771503c7552129f3a5c2cd48c57ec3f88cef11e63faacf527947592"
+          },
+          "out/native-tests/ordered-build.log": {
+            "bytes": 626,
+            "sha256": "20ac6c5151065447a278535e51769a15a89b485fdacc096922f51cd2d3157dac"
+          },
+          "out/native-tests/ready.json": {
+            "bytes": 4911,
+            "sha256": "ef0b183e6de48ebc51f01736da9c0e4ed7aac1607687b017a6455b7638a9c9ad"
+          },
+          "out/native-tests/result.json": {
+            "bytes": 2800,
+            "sha256": "37de4411f3916b9372a07a416d9000e0221e3f15de65de5b1b3561b8396bfa04"
+          },
+          "out/native-tests/worker-identity.json": {
+            "bytes": 104,
+            "sha256": "c76d6822c6cff10729edc0d68f41196558b6cdedee0779cbf55ce624e1e80878"
+          },
+          "initialization-recovery.json": {
+            "bytes": 47419,
+            "sha256": "a51230cc28550ef1fc250040a9f2b52cf5339c3e5a89bb6a7551e89c3290f8c8"
+          },
+          "initialization-recovery.log": {
+            "bytes": 32,
+            "sha256": "69fc9379989e893b08fe5733689f647391d76487414783de4612dd9e841c7327"
+          }
+        }
+      },
+      "resources": {
+        "source": "660df73aa24c63122054c00750fdc62486d38e12",
+        "tree": "eedec28a6bf56740f0c31830c553b8835785e7cb",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/initialization-recovery-660df73",
+        "owner": "66c9b8e62ed364937966eafdf91c1dbb",
+        "container": "bigbrotr-implementation-initialization-recovery-660df73",
+        "postgres": "bigbrotr-implementation-initialization-recovery-660df73-pg",
+        "network": "bigbrotr-implementation-initialization-recovery-660df73",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "state": "stopped-retained",
+        "source_files": 735,
+        "started_at": "2026-09-19T08:02:02.081321+00:00",
+        "network_id": "66d99379f9fac486a54a150cbd286b2a917073e4ef41370bb95dacc6be44e82c",
+        "postgres_id": "05e7205060b20b63685c46b6fa33817c19bc4ea4c1d25834193ad10e91a6e81f",
+        "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+        "container_id": "d5616898fdfe88d444fad2d05bcaa75290fe209f33b2d0007461d467ea540143",
+        "completed_at": "2026-09-19T08:04:51.673061+00:00"
+      },
+      "audit": {
+        "status": "PASS",
+        "source": "660df73aa24c63122054c00750fdc62486d38e12",
+        "tree": "eedec28a6bf56740f0c31830c553b8835785e7cb",
+        "source_files": 735,
+        "source_archive_sha256": "aab336f49ea535bd353193a5a70e0f3111bae28edc83a20bb7c244c1c3a30310",
+        "source_manifest_sha256": "b0d526dc42d7cd2a05b7b80d6a972d02d3b7622ca79243ef849d3a65185de647",
+        "artifacts": {
+          "main": {
+            "sha256": "64383588096f86031bc7af8468075172b5ea057b41698d61e230632613f6246c",
+            "bytes": 8225624,
+            "elf_machine": 62
+          },
+          "worker": {
+            "sha256": "c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227",
+            "bytes": 12608608,
+            "elf_machine": 62
+          }
+        },
+        "qualification": {
+          "initialization-recovery": "PASS"
+        },
+        "cases": {
+          "initialization-recovery": 39
+        },
+        "build_ready": true,
+        "terminal": {
+          "container_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-19T08:02:04.799759987Z",
+            "FinishedAt": "2026-09-19T08:04:49.321976258Z"
+          },
+          "postgres_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-19T08:02:02.82626619Z",
+            "FinishedAt": "2026-09-19T08:04:51.239110863Z"
+          }
+        },
+        "owned_containers": [
+          "d5616898fdfe88d444fad2d05bcaa75290fe209f33b2d0007461d467ea540143",
+          "05e7205060b20b63685c46b6fa33817c19bc4ea4c1d25834193ad10e91a6e81f"
+        ],
+        "existing_containers_unchanged": 314,
+        "unrelated_containers_unchanged": 20,
+        "unrelated_running": 8,
+        "bigbrotr_running": 0,
+        "observed_at": "2026-09-19T08:04:51.673061+00:00"
+      },
+      "cases": [
+        {
+          "name": "observe-active",
+          "status": "PASS",
+          "observed": "observed",
+          "bootstrap_retired": false,
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "retire-exact",
+          "status": "PASS",
+          "observed": "retired",
+          "changed": true,
+          "whole_state_unchanged": false,
+          "exact_bootstrap_retired": true,
+          "unrelated_role_attributes_and_database_unchanged": true
+        },
+        {
+          "name": "fresh-custody-is-not-recovery",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "InvalidInput",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "observe-absent-pristine",
+          "status": "PASS",
+          "observed": "absent",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "observe-retired",
+          "status": "PASS",
+          "observed": "observed",
+          "bootstrap_retired": true,
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "retire-idempotent-no-row-change",
+          "status": "PASS",
+          "observed": "retired",
+          "changed": false,
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "recovered-reserve-refused",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "InvalidInput",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "absent-nonpristine-refused",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "ExistingData",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "changed-database_oid",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "Conflict",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "changed-reservation_oid",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "Conflict",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "changed-bootstrap_oid",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "Conflict",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "changed-manager_oid",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "Conflict",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "missing-comment",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "Conflict",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "missing-comment-retire",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "Conflict",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "malformed-comment",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "Conflict",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "malformed-comment-retire",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "Conflict",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "oversize-comment",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "ResourceLimit",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "oversize-comment-retire",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "ResourceLimit",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "reservation-login",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "UnsafeRole",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "bootstrap-inherit",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "UnsafeRole",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "bootstrap-login-without-password",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "UnsafeRole",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "bootstrap-member",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "UnsafeRole",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "public-bypass",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "UnsafeRole",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "replaced-manager",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "Conflict",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "replaced-bootstrap",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "Conflict",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "replaced-reservation-known-oid",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "Conflict",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "first-observation-current-reservation-oid",
+          "status": "PASS",
+          "observed": "observed",
+          "bootstrap_retired": true,
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "missing_reservation",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "Conflict",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "missing_bootstrap",
+          "status": "PASS",
+          "observed": "refused",
+          "reason": "Conflict",
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "native-retire",
+          "status": "PASS",
+          "observed": "retired",
+          "changed": true,
+          "whole_state_unchanged": false,
+          "exact_bootstrap_retired": true,
+          "unrelated_role_attributes_and_database_unchanged": true
+        },
+        {
+          "name": "install-for-manager",
+          "status": "PASS",
+          "observed": "installed",
+          "changed": true,
+          "whole_state_unchanged": false
+        },
+        {
+          "name": "observe-after-manager-install",
+          "status": "PASS",
+          "observed": "observed",
+          "bootstrap_retired": true,
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "retire-after-manager-install-no-change",
+          "status": "PASS",
+          "observed": "retired",
+          "changed": false,
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "resolve-retirement-before-forward",
+          "status": "PASS",
+          "observed": "observed",
+          "bootstrap_retired": false,
+          "whole_state_unchanged": true,
+          "resolved_durable": {
+            "before": {
+              "database_sha256": "ee69684f050eda0cc11e890a583f87b51ca96da4acfd241adb5edbb2aec6fb28",
+              "global_roles_md5": "e1ab568d708be2803ee6d8a19488d161"
+            },
+            "after": {
+              "database_sha256": "ee69684f050eda0cc11e890a583f87b51ca96da4acfd241adb5edbb2aec6fb28",
+              "global_roles_md5": "e1ab568d708be2803ee6d8a19488d161"
+            },
+            "exact_identity": true,
+            "bootstrap_retired": false,
+            "other_roles_attributes_memberships_comments_and_database_unchanged": true
+          },
+          "ambiguous": {
+            "commit_started": true,
+            "driver_ok": false,
+            "result": {
+              "reason": "CommitUnknown",
+              "status": "refused"
+            }
+          },
+          "wire": {
+            "commits_seen": 1,
+            "commits_forwarded": 0,
+            "server_commit_complete": 0,
+            "client_commit_complete": 0,
+            "reason": "before-forward",
+            "elapsed_ns": 36713468
+          }
+        },
+        {
+          "name": "repeat-retirement-before-forward",
+          "status": "PASS",
+          "observed": "retired",
+          "changed": true,
+          "whole_state_unchanged": false,
+          "exact_bootstrap_retired": true,
+          "unrelated_role_attributes_and_database_unchanged": true
+        },
+        {
+          "name": "resolve-retirement-after-complete",
+          "status": "PASS",
+          "observed": "observed",
+          "bootstrap_retired": true,
+          "whole_state_unchanged": true,
+          "resolved_durable": {
+            "before": {
+              "database_sha256": "e094303dcc50b7f2462fff3ee14f247dae6f460af35d51318feff2aa0487c614",
+              "global_roles_md5": "ac5ba54626b58b769fd0ab29f5fe5e3c"
+            },
+            "after": {
+              "database_sha256": "e094303dcc50b7f2462fff3ee14f247dae6f460af35d51318feff2aa0487c614",
+              "global_roles_md5": "2a62089994b418cfff2cbd6f907352e9"
+            },
+            "exact_identity": true,
+            "bootstrap_retired": true,
+            "other_roles_attributes_memberships_comments_and_database_unchanged": true
+          },
+          "ambiguous": {
+            "commit_started": true,
+            "driver_ok": false,
+            "result": {
+              "reason": "CommitUnknown",
+              "status": "refused"
+            }
+          },
+          "wire": {
+            "commits_seen": 1,
+            "commits_forwarded": 1,
+            "server_commit_complete": 1,
+            "client_commit_complete": 0,
+            "reason": "after-complete",
+            "elapsed_ns": 83119895
+          }
+        },
+        {
+          "name": "repeat-retirement-after-complete",
+          "status": "PASS",
+          "observed": "retired",
+          "changed": false,
+          "whole_state_unchanged": true
+        },
+        {
+          "name": "cancelled-driver-close",
+          "status": "PASS",
+          "observed": "observed",
+          "bootstrap_retired": false,
+          "resolved_durable": {
+            "before": {
+              "database_sha256": "ea3d704527c9dd54a78aac8367f59bd6b8fff7b86927a26878be916cb63fb9fe",
+              "global_roles_md5": "95fed23a8b0eb7da10a71374b1754bed"
+            },
+            "after": {
+              "database_sha256": "ea3d704527c9dd54a78aac8367f59bd6b8fff7b86927a26878be916cb63fb9fe",
+              "global_roles_md5": "95fed23a8b0eb7da10a71374b1754bed"
+            },
+            "exact_identity": true,
+            "bootstrap_retired": false,
+            "other_roles_attributes_memberships_comments_and_database_unchanged": true
+          },
+          "journal_unchanged": true,
+          "cancelled": {
+            "commit_started": true,
+            "driver_ok": false,
+            "result": {
+              "status": "cancelled"
+            }
+          },
+          "proxy_exit": 0,
+          "waiters": [
+            {
+              "pid": 1897,
+              "blockers": [
+                1889
+              ]
+            }
+          ],
+          "wire": {
+            "commits_seen": 1,
+            "commits_forwarded": 0,
+            "server_commit_complete": 0,
+            "client_commit_complete": 0,
+            "reason": "held-close",
+            "elapsed_ns": 2185807454
+          }
+        },
+        {
+          "name": "cancelled-driver-release",
+          "status": "PASS",
+          "observed": "observed",
+          "bootstrap_retired": true,
+          "resolved_durable": {
+            "before": {
+              "database_sha256": "54408e55b9cd3aaf85019eae0cd9f7e941741cd5e8a0354a9cca4e46eb18dd9d",
+              "global_roles_md5": "ab593f53aabb5177f546bcdab8ac5ea9"
+            },
+            "after": {
+              "database_sha256": "54408e55b9cd3aaf85019eae0cd9f7e941741cd5e8a0354a9cca4e46eb18dd9d",
+              "global_roles_md5": "248deca0edba2f33042202f47082558a"
+            },
+            "exact_identity": true,
+            "bootstrap_retired": true,
+            "other_roles_attributes_memberships_comments_and_database_unchanged": true
+          },
+          "journal_unchanged": true,
+          "cancelled": {
+            "commit_started": true,
+            "driver_ok": false,
+            "result": {
+              "status": "cancelled"
+            }
+          },
+          "proxy_exit": 0,
+          "waiters": [
+            {
+              "pid": 1998,
+              "blockers": [
+                1991
+              ]
+            }
+          ],
+          "wire": {
+            "commits_seen": 1,
+            "commits_forwarded": 1,
+            "server_commit_complete": 0,
+            "client_commit_complete": 0,
+            "reason": "frontend-eof",
+            "elapsed_ns": 2178486935
+          }
+        }
+      ]
+    }
+  ],
+  "failures_and_review": [
+    "2bd2bdb baseline has real expected failures for active observation, exact retirement and pristine absence; fresh-custody gate passes. Dependent later cases were NOT_RUN at baseline.",
+    "decf4a9 implementation39casesPASS. Independent read-only AI source review found no product counterexample; it identified missing full effect fingerprints in ambiguous cases. 660df73 strengthens those four cases without changing Rust implementation and reruns39cases.",
+    "No applied SQL, canonical comment format, local journal format or dependencies changed. No step/task/M1 completion is inferred from helper qualification."
+  ],
+  "not_qualified": [
+    "Full initializer/recovery CLI, configured privileged initializer transport, native mutual TLS, fresh configured-manager publication/SELECT-only read journeys and installed Control+Archive lifecycle.",
+    "Server SQL-capable backend exclusion/drain. Existing de1d402/56ef588 native startup evidence and read-only exact source audit remain separate prerequisites; NOLOGIN or empty activity alone is insufficient.",
+    "New signed event admission/publication/read/export/restart workload. Native initializer here creates six empty scientific relations, snapshots0/1, no signed event throughput or performance limit.",
+    "Cross-boot, restored-root/cluster/role-identity mapping, host loss, uninterruptible kernel tasks, power failure, aged/mixed load, peak native/process RSS, production capacity, Linux arm64, hosted CI, package/release journeys.",
+    "The ignored older native-holder regression is not rerun in these builds; it was executed separately at3efde78 in p02-initialization-custody-native-20260919.json."
+  ],
+  "retired_networks": [
+    [
+      {
+        "root": "database-reservation-bb8be6d",
+        "network": "a498d0455f9cf71caa3b478cf7688f9f28c21f02203dad86ef758746fa26c57d",
+        "owner": "1656dcad7189d17f2c9ede14964348fb",
+        "status": "removed",
+        "containers": "retained-stopped",
+        "data": "retained",
+        "observed_at": "2026-09-19T07:49:51.135216+00:00"
+      }
+    ],
+    [
+      {
+        "root": "initialization-recovery-2bd2bdb",
+        "network": "07fd7603f63339c81eeddb5455ad401cdd5cd5c1d1e8be7aadc90210be84bd27",
+        "owner": "5c4ceb14f36bec4b46cebf3fe6b98d25",
+        "status": "removed",
+        "containers": "retained-stopped",
+        "data": "retained",
+        "observed_at": "2026-09-19T07:56:21.002946+00:00"
+      }
+    ],
+    [
+      {
+        "root": "initialization-recovery-decf4a9",
+        "network": "4d9e80c8af83d24bda2eed4785f2e5ccb5e90cc00f68a32f34ab987bbcf4a557",
+        "owner": "84b70957934e6c3bccd8457a7d064122",
+        "status": "removed",
+        "containers": "retained-stopped",
+        "data": "retained",
+        "observed_at": "2026-09-19T08:01:15.806368+00:00"
+      }
+    ]
+  ],
+  "review": {
+    "status": "independent source and recorded-evidence review complete; no material discrepancy",
+    "verified": "42 raw files and all three evidence archives; three regenerated Git archives/2205 source hashes; revision/artifact/check/case/resource mapping; four strengthened ambiguous durable-effect assertions",
+    "boundaries": "Read-only AI source/evidence review. No test/Tux execution or independent ELF/database/current host inspection; Mac sessions without logs in these evidence archives were not replayed."
+  }
+}

@@ -9009,7 +9009,7 @@
     },
     "initialization_recovery": {
       "local_root": ".research/implementation/archive-worker/initialization-recovery",
-      "state": "first39cases-passed-stopped-retained-strengthened-oracle-awaiting-native-run",
+      "state": "qualified39cases-all-three-labs-stopped-retained",
       "previous_network_retirement": [
         {
           "root": "database-reservation-bb8be6d",
@@ -9021,7 +9021,7 @@
           "observed_at": "2026-09-19T07:49:51.135216+00:00"
         }
       ],
-      "scope": "Recovered local custody gate, bounded observation and exact bootstrap retirement. PostgreSQL functions are explicit unimplemented TDD stubs pending real baseline.",
+      "scope": "Same-boot Linux ext4 recovered reservation observation and exact bootstrap retirement, including ambiguous COMMIT/graceful cancellation and post-installation observation. No backend exclusion, complete initializer CLI, persistent service or M1.",
       "baseline": {
         "resources": {
           "source": "2bd2bdb8f11395a0c1c329912961bea4b6af6dbc",
@@ -9351,7 +9351,162 @@
           "data": "retained",
           "observed_at": "2026-09-19T08:01:15.806368+00:00"
         }
-      ]
+      ],
+      "report": "docs/implementation/evidence/p02-initialization-recovery-native-20260919.json",
+      "qualified": {
+        "resources": {
+          "source": "660df73aa24c63122054c00750fdc62486d38e12",
+          "tree": "eedec28a6bf56740f0c31830c553b8835785e7cb",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initialization-recovery-660df73",
+          "owner": "66c9b8e62ed364937966eafdf91c1dbb",
+          "container": "bigbrotr-implementation-initialization-recovery-660df73",
+          "postgres": "bigbrotr-implementation-initialization-recovery-660df73-pg",
+          "network": "bigbrotr-implementation-initialization-recovery-660df73",
+          "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+          "state": "stopped-retained",
+          "source_files": 735,
+          "started_at": "2026-09-19T08:02:02.081321+00:00",
+          "network_id": "66d99379f9fac486a54a150cbd286b2a917073e4ef41370bb95dacc6be44e82c",
+          "postgres_id": "05e7205060b20b63685c46b6fa33817c19bc4ea4c1d25834193ad10e91a6e81f",
+          "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+          "container_id": "d5616898fdfe88d444fad2d05bcaa75290fe209f33b2d0007461d467ea540143",
+          "completed_at": "2026-09-19T08:04:51.673061+00:00"
+        },
+        "audit": {
+          "status": "PASS",
+          "source": "660df73aa24c63122054c00750fdc62486d38e12",
+          "tree": "eedec28a6bf56740f0c31830c553b8835785e7cb",
+          "source_files": 735,
+          "source_archive_sha256": "aab336f49ea535bd353193a5a70e0f3111bae28edc83a20bb7c244c1c3a30310",
+          "source_manifest_sha256": "b0d526dc42d7cd2a05b7b80d6a972d02d3b7622ca79243ef849d3a65185de647",
+          "artifacts": {
+            "main": {
+              "sha256": "64383588096f86031bc7af8468075172b5ea057b41698d61e230632613f6246c",
+              "bytes": 8225624,
+              "elf_machine": 62
+            },
+            "worker": {
+              "sha256": "c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227",
+              "bytes": 12608608,
+              "elf_machine": 62
+            }
+          },
+          "qualification": {
+            "initialization-recovery": "PASS"
+          },
+          "cases": {
+            "initialization-recovery": 39
+          },
+          "build_ready": true,
+          "terminal": {
+            "container_id": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 143,
+              "Error": "",
+              "StartedAt": "2026-09-19T08:02:04.799759987Z",
+              "FinishedAt": "2026-09-19T08:04:49.321976258Z"
+            },
+            "postgres_id": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-09-19T08:02:02.82626619Z",
+              "FinishedAt": "2026-09-19T08:04:51.239110863Z"
+            }
+          },
+          "owned_containers": [
+            "d5616898fdfe88d444fad2d05bcaa75290fe209f33b2d0007461d467ea540143",
+            "05e7205060b20b63685c46b6fa33817c19bc4ea4c1d25834193ad10e91a6e81f"
+          ],
+          "existing_containers_unchanged": 314,
+          "unrelated_containers_unchanged": 20,
+          "unrelated_running": 8,
+          "bigbrotr_running": 0,
+          "observed_at": "2026-09-19T08:04:51.673061+00:00"
+        },
+        "source_verification": {
+          "revision": "660df73aa24c63122054c00750fdc62486d38e12",
+          "tree": "eedec28a6bf56740f0c31830c553b8835785e7cb",
+          "files": 735,
+          "archive_sha256": "aab336f49ea535bd353193a5a70e0f3111bae28edc83a20bb7c244c1c3a30310",
+          "manifest_sha256": "b0d526dc42d7cd2a05b7b80d6a972d02d3b7622ca79243ef849d3a65185de647"
+        },
+        "evidence_identity": {
+          "tar_bytes": 184320,
+          "tar_sha256": "d5c71b2c93d8d818053b13843b6d81f1395b5a6f0b09fa0ae1afcc4ec84c0895",
+          "files": {
+            "resources.json": {
+              "bytes": 1241,
+              "sha256": "6ad0c161d9fd26a4c3074fe6fd022b72b7b257903f67701d5bcc76c398cea380"
+            },
+            "audit.json": {
+              "bytes": 1868,
+              "sha256": "49cff22487ce6a8897baf6d0d116559011389eac51a96f032e2fe6079c54732a"
+            },
+            "container.log": {
+              "bytes": 242,
+              "sha256": "f31e7094ecc5f91db0716213f25a0e9a1e79250b9abb775e59511355fb888047"
+            },
+            "out/build/source-manifest.json": {
+              "bytes": 90003,
+              "sha256": "b0d526dc42d7cd2a05b7b80d6a972d02d3b7622ca79243ef849d3a65185de647"
+            },
+            "out/native-tests/checks/clippy.log": {
+              "bytes": 394,
+              "sha256": "db933e50ec15d68bc6bba7d4c6922a9430acf2fd33d495c08e5a026dd177400c"
+            },
+            "out/native-tests/checks/fixture.log": {
+              "bytes": 130,
+              "sha256": "2b68ae5b63b6a9a514d3b52322bcfb5d50c6ed116d78217ffb68dd66764ecc08"
+            },
+            "out/native-tests/checks/parent-tests.log": {
+              "bytes": 4562,
+              "sha256": "d2f1e864b64d8b356ed8673264cbe36af485c6fc0912009e3efd631eb29e056a"
+            },
+            "out/native-tests/checks/result.json": {
+              "bytes": 3817,
+              "sha256": "7ec7eff92771503c7552129f3a5c2cd48c57ec3f88cef11e63faacf527947592"
+            },
+            "out/native-tests/ordered-build.log": {
+              "bytes": 626,
+              "sha256": "20ac6c5151065447a278535e51769a15a89b485fdacc096922f51cd2d3157dac"
+            },
+            "out/native-tests/ready.json": {
+              "bytes": 4911,
+              "sha256": "ef0b183e6de48ebc51f01736da9c0e4ed7aac1607687b017a6455b7638a9c9ad"
+            },
+            "out/native-tests/result.json": {
+              "bytes": 2800,
+              "sha256": "37de4411f3916b9372a07a416d9000e0221e3f15de65de5b1b3561b8396bfa04"
+            },
+            "out/native-tests/worker-identity.json": {
+              "bytes": 104,
+              "sha256": "c76d6822c6cff10729edc0d68f41196558b6cdedee0779cbf55ce624e1e80878"
+            },
+            "initialization-recovery.json": {
+              "bytes": 47419,
+              "sha256": "a51230cc28550ef1fc250040a9f2b52cf5339c3e5a89bb6a7551e89c3290f8c8"
+            },
+            "initialization-recovery.log": {
+              "bytes": 32,
+              "sha256": "69fc9379989e893b08fe5733689f647391d76487414783de4612dd9e841c7327"
+            }
+          }
+        }
+      }
     }
   },
   "implementation_monitor_corrections_20260918": {

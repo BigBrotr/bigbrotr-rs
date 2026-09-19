@@ -21,133 +21,114 @@ readiness. Root remains the sole writer/integrator.
 
 ## Actual Git and review
 
-Mac main HEAD:decf4a9aea687a8ee658aed4002b1c52ba584048 (unpublished exact-source
-implementation candidate). origin/main:f3e3302512213ccebb95ee78bb67fc38f44bd082 from prior
-verified normal private push. Root-owned changes strengthen the independent durable-effect oracle for both
-lost-COMMIT directions and cancelled-driver resolution. Product Rust is unchanged
-since the39-case actual PASS atdecf4a9. No merge/rebase/other writer edits.
+Mac main HEAD:660df73aa24c63122054c00750fdc62486d38e12, three unpublished coherent
+candidates ahead of the previously verified private origin/main f3e3302512213ccebb95ee78bb67fc38f44bd082.
+2bd2bdb is the deliberate practical baseline; decf4a9 implements recovery; 660df73
+strengthens four ambiguous-effect oracles with identical Rust/probe sources.
+Current root-owned dirty work is owning docs, inventory, this checkpoint and the
+new native evidence report. No merge/rebase, other contributor edits or active
+local process. Artifact/handoff/diff checks passed; repository rechecked private.
+Evidence commit/private push still pending.
 
-Actual40803 terminal0:39 casesPASS including actual native initialization → exact
-retirement → manager installation → recovered observation; both lost COMMITs and
-both graceful-cancel outcomes with real advisory waiters. Review found no product
-counterexample but full independent effect fingerprints only covered known retire;
-the next harness applies them to ambiguity too. Audit56453/collection85546 terminal0,
-14raw files/735source hashes, tar4d2bc5316276f0b2347d018f69a74e29eb885a409a0c2f713b52fdc2458b6229.
-Runner9fda887f/PGbeb7258f stopped-retained,312preexisting containers unchanged,
-8unrelated running. Empty owned network4d9e80c8 retired after checks. No active lab.
-Exact IDs are under inventory.initialization_recovery.first; copied-cache/assets
-now come from initialization-recovery-decf4a9/out/{build,archive-worker}.
+Independent read-only AI review read complete affected implementation, actual
+probe/harness and reused custody/installation/Process/proxy boundaries. No product
+counterexample found. It identified weaker effects checks in ambiguous cases;
+660df73 closes that gap. No extra edits or Tux access by reviewer. Recorded-evidence
+review independently verified all 42 raw files, three evidence/Git archives and
+2,205 source hashes with matching outcomes/artifacts/checks; no discrepancy. It did
+not execute Tux/tests or independently inspect ELF, database, current host state or
+Mac sessions without logs in these archives.
+Root reviewed changed code, complete case outcomes and source/artifact mappings.
 
-Mac55046 failed the deliberately false recovered-state gate;61090 passed all eight
-initialization tests. Latest38696 scoped parent/example Clippy PASS; fmt/AST/diff
-checks pass. Actual baseline83166 at2bd2bdb FAILED as intended: active observation,
-exact retirement and pristine absence returned Conflict; fresh custody refused with
-InvalidInput. All native builds,34 archive parent tests/one ignored and scoped
-Clippy PASS. Baseline audit81590/collection82044 terminal0:14 raw files,735 Mac-Git
-source hashes, tar192e888690ce160c8aba61ab94a1d43997d023717aaa03f8be4e268d1bcce7a4.
-Baseline runner/PG stopped-retained, no OOM,310 preexisting containers unchanged,
-8 unrelated running; verified empty network07fd7603 retired. No active experiment.
-Inventory.initialization_recovery owns exact IDs and evidence. The first implementation result above is separate from this deliberate baseline.
+## Current initialization recovery qualification
 
-Root reviewed the complete changed production/probe/harness files. Independent
-read-only custody reviewer completed those changes/contracts and Process/proxy
-boundaries, finding no product counterexample; root is strengthening its sole
-remaining oracle limitation before final qualification. No extra edits.
-Its completed upstream audit confirmed the previously recorded ready-before-query
-and shutdown ordering for PG16.15/tokio-postgres0.7.18/libpq18.3. Existing de1d402/
-56ef588 reports reused, no new startup experiment or VXID barrier.24 source-audit
-files/1416434 bytes verified against four manifests and inventoried. Future bounded
-natural drain must retain unknown on timeout; observation/retirement is not exclusion.
+[Native report](evidence/p02-initialization-recovery-native-20260919.json) owns three
+sources, exact artifacts/workloads, outcomes and 42 raw files. Three regenerated
+Mac Git archives and 2205 source-file hashes match native exports.
 
-## Current database reservation qualification
+Implemented immutable actual-reacquisition state in LocalInitialization; a consumed
+provision/launch flag is not recovery. Bounded observe_after_local_custody and
+retire_after_local_custody use the same authoritative exclusive transaction lock.
+They compare local nonce, exact role/database identities and canonical server-side
+comment, validate restricted roles, distinguish current pristine absence from
+partial state, and never return credentials. Oversized comments return ResourceLimit;
+noncanonical/missing comments return Conflict. Idempotent retirement changes no row;
+a new retirement changes only the exact bootstrap to NOLOGIN PASSWORD NULL.
+Post-manager-installation observation permits transferred native table ownership.
+Neither operation establishes server-backend exclusion or new launch authority.
+No applied migration, dependency or journal/comment format changed.
 
-[Native report](evidence/p02-database-reservation-native-20260919.json) owns four
-sources, artifact/dependency/workload identities, every outcome and53 verified raw
-files. Four regenerated Mac Git archives and2931 source-file comparisons match.
+Mac session 55046 expected RED for the false recovered-state getter;session 61090 passed all 8 local
+initialization cases. Scoped fmt/Clippy/AST/diff checks pass. All three native ordered
+builds, fixture builds, 34 archive-parent tests / 1 ignored and scoped parent/worker
+Clippy pass. The ignored native-holder case was executed separately at 3efde78 under
+the earlier custody report, not rerun here.
 
-Implemented permanent bb_init_database_<database OID> NOLOGIN reservation and fresh
-restricted bb_init_<nonce> bootstrap in one explicit privileged transaction. The
-canonical global comment binds nonce/bootstrap/manager OIDs. Shared native/parent
-pristine SQL, restricted manager validation and effective PUBLIC privilege checks
-precede handoff. Existing names refuse. Fresh256-bit material uses the existing
-SCRAM helper; only verifier enters SQL, password is move-only after known COMMIT.
-Local custody permits one provisioning attempt and recovered custody permits none.
-No applied migration, dependency or local-journal format changes.
+2bd2bdb (session 83166) failed three core assertions as intended: active observation, exact
+retirement and pristine absence returned Conflict; fresh custody refused with
+InvalidInput. Later cases NOT_RUN. decf4a9 (session 40803) passed 39 cases, with the review-found
+ambiguous-effect oracle gap retained. 660df73 (session 99519), exit 0, passed the same 39 cases
+with independent exact-role state, identity, DB and all unrelated role attributes/
+memberships/comments verified in both lost-COMMIT and both cancelled-driver outcomes.
+Known retirements and unchanged/idempotent/refusal cases also compare durable state.
+Actual native initialization → retirement → manager install → recovered observation
+passes; this fixture composition is not the installed CLI or a signed-data workload.
 
-Mac45862 observed the deliberately always-allow provisioning gate fail;4428/97305
-passed all7 custody cases after the fix. Scoped parent/example Clippy/fmt PASS.
-All four native ordered builds,33 parent tests and scoped parent/worker Clippy PASS.
-One preexisting native-holder case remains ignored in these runs; it was executed
-separately at3efde78 under the prior custody report, not claimed rerun here.
-
-cfadb48 actual baseline32283 FAILED as intended: Conflict, commit_started=false,
-no roles.7139911 actual24cases PASS, with two review-found oracle gaps: returned
-identities were unchecked and losing same-DB bootstrap absence was unchecked.
-543fafd35519 FAILED at the first new identity equality because row_to_json(oid)
-returns strings; direct server diagnosis confirmed the same numeric values as Rust.
-Corrected SQL cast, distinct authenticated non-superuser caller and bounded PID
-collector wait; SIGKILL cases were NOT_RUN at that failed revision.
-
-bb8be6d86246:29 actual cases PASS, including exact returned identities, schema/data
-and role/comment preservation on refusals, PUBLIC-derived privilege rollback,
-real generated-password native initialization, both lost-COMMIT outcomes,
-actual advisory/transactionid blockers for same-DB roots and cross-DB nonce races,
-and both coordinator SIGKILL outcomes. Native positive has six logical tables,
-snapshots0/1 and zero data files, not signed event throughput.
-
-Killed coordinator exit137 and actual local custody reacquisition occur while the
-old remote transaction is still idle. Closing the intermediary rolls back; release
-commits the reservation after the coordinator died. In the latter actual run,
-proxy server/client COMMIT counters both remain0 after frontend EOF; authoritative
-transaction-lock acquisition and independent durable SQL establish commit. No
-reprovision/native relaunch occurs. This is process-death qualification, not
-successful graceful async cancellation or a product recovery observer.
+In cancellation cases, the actual retirement future times out, its custody-bearing
+driver is aborted and positively joined, and a fresh process reacquires the real
+local lock. Independent PG observations show its advisory-lock waiter before the
+proxy closes/releases the pending COMMIT. Release observes durable retirement even
+with server/client COMMIT counters 0 after frontend EOF; lock ordering and SQL, not
+wire ACK, establish the outcome. Local journal remains unchanged.
 
 ## Owned resources
 
-No active experiment. Qualified audit45027 and collection21335 terminal0.
-All four reservation labs stopped-retained, never restart. No OOM; all308 preexisting
-containers/mounts/networks/lifecycle unchanged,8 unrelated running, zero BigBrotr.
-Latest audit:2026-09-19T07:27:56.333010+00:00.
-Root:/home/tux/bigbrotr-implementation-20260917/runs/database-reservation-bb8be6d.
-Owner:1656dcad7189d17f2c9ede14964348fb.
-Runner:820c89b26b053bcc9e1ee104c9086cda5156ab087cb617f1839ebaebd239ab93 stopped143.
-PG:af9d65fced82f856b6a5e96688498bc33d97a8a9183fdad5a8e550cd77010335 stopped0.
-Network:a498d0455f9cf71caa3b478cf7688f9f28c21f02203dad86ef758746fa26c57d removed after fresh ownership/terminal/empty checks; containers/data retained.
-Runner2CPU/6GiB/512PIDs, PG1CPU/1GiB/128PIDs, internal/no host ports.
-Latest reusable copied-cache/read-only-assets inputs:bb8be6d/out/{build,archive-worker}.
-Main:e6372d10b7feb1dae30d9ab99e6c05fdbaec8ed0d18d1ea0f6059083c824a037,8224696bytes.
-Worker:c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227,12608608bytes.
+No active experiment. Final audit 23898 and collection 65936 exited 0. All three
+recovery labs stopped-retained, no OOM. 314 preexisting container/mount/network/
+lifecycle states unchanged, 8 unrelated running, zero BigBrotr.
+Latest audit: 2026-09-19T08:04:51.673061+00:00.
+Root: /home/tux/bigbrotr-implementation-20260917/runs/initialization-recovery-660df73.
+Owner: 66c9b8e62ed364937966eafdf91c1dbb.
+Runner: d5616898fdfe88d444fad2d05bcaa75290fe209f33b2d0007461d467ea540143 stopped (exit 143).
+PG: 05e7205060b20b63685c46b6fa33817c19bc4ea4c1d25834193ad10e91a6e81f stopped (exit 0).
+Network: 66d99379f9fac486a54a150cbd286b2a917073e4ef41370bb95dacc6be44e82c empty-retained.
+Runner 2 CPU / 6 GiB / 512 PIDs, PG 1 CPU / 1 GiB / 128 PIDs, internal/no host ports.
+Latest reusable copied-cache/read-only-assets: 660df73/out/{build,archive-worker}.
+Main: 64383588096f86031bc7af8468075172b5ea057b41698d61e230632613f6246c, 8225624 bytes.
+Worker: c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227, 12608608 bytes.
 
-Raw root:.research/implementation/archive-worker/database-reservation.
-qualified tar:d8aadff775147bd4b8ec13af3eb3697fcab652e15ff94a75ce836f1591180352.
-[Inventory](../research/laboratory-inventory.json), database_reservation, owns full
-resource identities/audits and verified removal of four empty retired networks
-(3efde78,cfadb48,7139911,543fafd); all containers/data retained. Its ignored
-transfer/launch/audit/collect helpers are reusable after reviewing their current
-prefix/cache/asset paths. Address pools may need another verified owned empty
-network retirement before launch. Preserve unrelated workloads; never blanket-prune.
+Raw root: .research/implementation/archive-worker/initialization-recovery.
+Qualified tar: d5c71b2c93d8d818053b13843b6d81f1395b5a6f0b09fa0ae1afcc4ec84c0895.
+[Inventory](../research/laboratory-inventory.json), initialization_recovery, owns
+all IDs/audits and verified removal of three empty retired networks (reservation
+bb8be6d, recovery 2bd2bdb, decf4a9); all containers/data retained. Ignored transfer/
+launch/audit/collect helpers need reviewed prefix/cache/asset paths before reuse;
+launch currently copies decf4a9 assets/cache. Address pools may need another verified
+owned empty-network retirement before launch; never blanket-prune/restart retired labs.
 
 ## Earlier qualified boundaries and monitor findings
 
+[Database reservation](evidence/p02-database-reservation-native-20260919.json): 29 cases
+at bb8be6d, permanent DB/global nonce roles, sole generated native credential, both
+lost COMMITs, actual competing roots/nonces and coordinator SIGKILL/late commit.
 [Local initialization custody](evidence/p02-initialization-custody-native-20260919.json):
-permanent root marker/journal, actual PG driver/native child descriptor custody,
-22cases at3efde78 and separately executed actual native-holder test. Native checks
-FD identity; typed trusted parent establishes flock ownership. Raw reopened FD
-case explicitly documents that boundary, not adversarial same-UID isolation.
-[Ownership/ACL](evidence/p02-catalog-ownership-native-20260919.json):56cases atdf4a598,
-exact manager/bootstrap OIDs, atomic28native+4guard ownership, defaults/columns/
-PUBLIC/memberships, rollback/COMMIT ambiguity and manager inspection.
-[Catalog CLI](evidence/p02-catalog-cli-native-20260919.json),
-[native auth](evidence/p02-native-catalog-auth-20260919.json),
-[transport](evidence/p02-shared-postgres-transport-native-20260919.json),
-[retained intent](evidence/p02-retained-attempt-read-native-20260919.json),
-[missing import](evidence/p02-missing-import-native-20260919.json),
-[local custody](evidence/p02-local-custody-native-20260919.json),
-[fresh receipts](evidence/p02-archive-receipts-native-20260919.json),
-[signed fencing](evidence/p02-signed-fencing-native-20260919.json) retain their own
-scope/exclusions. Caller-owned COPY/registration remains selected after real
-normal-INSERT COMMIT-loss deleted committed files. No unlink/fallback.
+22 cases at 3efde78 plus actual native-holder regression. Native validates FD identity;
+trusted typed parent establishes flock, not hostile same-UID isolation.
+[Ownership/ACL](evidence/p02-catalog-ownership-native-20260919.json): 56 cases at df4a598,
+atomic 28 native + 4 guard ownership, exact role OIDs, defaults/columns/PUBLIC/memberships,
+rollback/ambiguity and manager inspection. Other catalog CLI/auth/transport/retained
+intent/missing-import/receipt/signed-fencing reports retain their recorded scope.
+Caller-owned COPY/registration remains selected after normal INSERT COMMIT-loss
+actually deleted committed files. No unlink/fallback.
+
+Exact source-only backend audit is inventoried under bootstrap_backend_source_audit:
+24 files / 1416434 bytes and four verified manifests. PG 16.15 publishes activity before
+ReadyForQuery; tokio-postgres 0.7.18 and pinned blocking libpq 18.3 wait before sending
+SQL. Existing de1d402/56ef588 startup evidence already demonstrated late visibility;
+no new startup experiment or VXID barrier was selected. Positive destruction of all
+actual clients, exact retirement and fresh bounded natural drain can exclude remaining
+SQL-capable backends in that trusted scope. Timeout stays unknown. This is a future
+consumer prerequisite, not an implemented drain; NOLOGIN/empty activity alone fails.
 
 Scoped monitor corrections remain closed with executed evidence:
 [MON-001/002/004/006](evidence/p01-monitor-corrections-native-20260918.json),
@@ -159,24 +140,19 @@ Do not mechanically rerun unrelated suites.
 
 ## Next bounded action
 
-Implement bounded reservation observation and exact bootstrap retirement
-under recovered local custody/actual retained driver and the same authoritative
-transaction lock. Compare retained canonical comment and exact live role OIDs;
-never transfer an unbounded comment, reset passwords, adopt partial state or grant
-new native launch. Discriminate replacement roles/comments and absent/stranded state
-on actual PG; qualify graceful cancellation and both commit outcomes. Metadata
-observation cannot establish exclusion; retain the local journal and reservations.
+Commit/push this reviewed qualified slice normally to the private repository,
+then wire the real explicit
+initializer/recovery CLI: separate privileged initializer credential from configured
+runtime manager, shared pinned transport/native route, positive native/driver join,
+actual custody reacquisition, exact observation/retirement, bounded natural backend
+drain, install_for_manager and fresh runtime-manager inspection. Exercise the actual
+executable's clean/partial/ambiguous/restart journeys; no further standalone helper
+qualification substitutes for that consumer. Configured native mutual TLS remains a
+gate before advertising that capability; implement/qualify it rather than dropping it.
 
-Wire explicit initializer credential separately from configured runtime manager
-through shared pinned transport/native route. Positive native/driver join, exact
-retirement/backend resolution, install_for_manager and fresh manager inspection
-must form one actual consumer before the initializer CLI is complete. Configured
-native mutual TLS remains a gate. A committed pristine reservation whose password
-was lost requires explicit retirement/abandonment and a new database/root pair,
-until a separately qualified recovery mapping exists. No runtime superuser promotion,
-REASSIGN OWNED or implicit serve initialization.
-
-Full CLI/recovery, fresh manager publication/seal, SELECT-only readers, whole-role
-budget reconciliation/protection, cross-boot/restore/resource/power-failure evidence,
-M1 and the rest of the selected product remain required. No task checkbox closes
-from this prerequisite qualification.
+A committed pristine reservation whose password was lost still requires explicit
+retirement/abandonment and a new database/root pair until a separately qualified
+recovery mapping exists. No runtime superuser promotion, REASSIGN OWNED or implicit
+serve initialization. Fresh manager publication/seal, SELECT-only readers, whole-role
+budgets/protection, cross-boot/restore/resource/power-failure evidence, M1 and the rest
+of the selected product remain required. No task checkbox closes from these helpers.

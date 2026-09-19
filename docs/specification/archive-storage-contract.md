@@ -331,9 +331,9 @@ refusals, native scientific initialization with the generated password, competin
 roots/nonces, both lost-COMMIT outcomes and coordinator SIGKILL with late commit or
 rollback. The killed coordinator's local custody can be reacquired while its
 remote transaction remains open; fresh serialized SQL establishes the eventual
-outcome. This is no authority to reprovision or relaunch. A product reservation
-observer, exact retirement, graceful cancellation and full initializer/recovery
-consumer remain required; fixture SQL observations do not implement those services.
+outcome. This grants no authority to reprovision or relaunch. That provisioning
+qualification does not implement the observer or full initializer/recovery
+consumer; the separate recovery boundary follows below.
 
 Reservation recovery must require an actually reacquired local holder, not merely
 a consumed launch flag. The successful fresh path also joins its driver and native
@@ -343,7 +343,7 @@ nonce and current bootstrap/manager OIDs to the canonical server-side comment,
 validate restricted roles without assuming bootstrap ownership of already-installed
 tables, and return fixed identity fields plus whether the bootstrap is retired.
 No password/verifier or arbitrary comment crosses this observation boundary.
-Comments above128 bytes refuse as a resource limit; bounded noncanonical/missing
+Comments above 128 bytes refuse as a resource limit; bounded noncanonical/missing
 comments refuse as conflict. A bootstrap is either LOGIN with a nonnull password
 or NOLOGIN with no password; mixed partial states refuse as unsafe role state.
 An absent reservation is reported only when both reserved role names are absent
@@ -361,6 +361,17 @@ The comment binds the original bootstrap/manager OIDs; first recovery observes t
 reservation role's current OID, while retries with a known Reservation compare that
 OID too. Privileged replacement/forgery of all retained metadata is outside the
 ordinary trusted-administrator failure model.
+
+The bounded observer and exact retirement now have
+[native qualification](../implementation/evidence/p02-initialization-recovery-native-20260919.json)
+at `660df73`: 39 actual cases, independently checked identities and durable effects,
+partial/altered-role refusals, post-manager-installation observation, both lost
+COMMIT outcomes and both graceful-cancel outcomes. The new observer actually waits
+on the old transaction's advisory lock after reacquiring local custody. The
+baseline failed its three missing operations as intended; the first 39-case pass
+had weaker ambiguous-effect oracles, strengthened and rerun without changing Rust.
+No applied SQL, comment/journal format or dependency changed. Full initializer CLI,
+SQL-capable backend drain, native mutual TLS and service ownership remain required.
 
 The application-owned `bigbrotr_archive` schema contains immutable installation
 and attempt records plus one mutable owner row. Every native metadata mutation

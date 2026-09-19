@@ -318,8 +318,13 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   exact returned identities, unsafe privilege rollback, competing roots and global
   nonce collisions, both lost-COMMIT outcomes and coordinator SIGKILL before remote
   rollback/late commit. Failed baseline/oracle candidates and review corrections
-  are retained. Bounded reservation observation, exact retirement/backend resolution,
-  graceful cancellation and the complete initialization/recovery CLI remain open.
+  are retained. Bounded reservation observation and exact retirement now have
+  [39 native recovery cases](evidence/p02-initialization-recovery-native-20260919.json)
+  at `660df73`, including actual post-manager-installation observation, both lost
+  COMMITs and graceful cancellation with real advisory waiters. Independent durable
+  effect checks cover ambiguous outcomes too; the failed baseline and weaker first
+  oracle remain recorded. SQL-capable backend drain, the complete initialization/
+  recovery CLI and configured native mutual TLS remain open.
 - [ ] **Step 4:** After an ambiguous commit, query the receipt in a new transaction; do not
   repeat while receipt state is unknown. Reject mismatched batch digest.
   Include loss of the actual native PostgreSQL COMMIT response, plus physical file
