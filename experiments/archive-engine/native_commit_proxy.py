@@ -29,6 +29,7 @@ class Proxy:
                            data_commits=0, server_complete=0, client_complete=0, faults=0,
                            owner_requests=0, owner_forwarded=0, owner_complete=0,
                            guard_rejections=0, serialization_rejections=0, rejection_sequence=[])
+        self.report.update(auth_finals_omitted=0, frontend_queries=0)
 
     def emit(self, event, **extra):
         print(json.dumps(dict(event=event, mode=self.mode, **self.report, **extra)), flush=True)
@@ -96,6 +97,15 @@ class Proxy:
                         await asyncio.Future()
                     return
                 tag, header, body = frame
+                if not frontend and self.mode == 'omit-auth-final' and tag == b'R' and body[:4] == struct.pack('!I', 12):
+                    # Real server authentication succeeds, but the client must
+                    # refuse the following AuthenticationOk without its verifier.
+                    # Never retain the SCRAM payload or a cancel secret.
+                    self.report['auth_finals_omitted'] += 1
+                    self.emit('auth-final-omitted')
+                    continue
+                if frontend and tag in (b'Q', b'P'):
+                    self.report['frontend_queries'] += 1
                 if frontend and self.mode == 'hold-manager-owner':
                     if tag == b'P':
                         statement, query, _ = body.split(b'\0', 2)
@@ -241,7 +251,7 @@ class Proxy:
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--mode', choices=['pass', 'before-forward', 'after-complete', 'hold-data', 'hold-commit', 'hold-manager-commit', 'hold-manager-owner'], required=True)
+    parser.add_argument('--mode', choices=['pass', 'before-forward', 'after-complete', 'hold-data', 'hold-commit', 'hold-manager-commit', 'hold-manager-owner', 'omit-auth-final'], required=True)
     try:
         sys.exit(asyncio.run(Proxy(parser.parse_args().mode).run()))
     except Exception:

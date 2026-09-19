@@ -194,7 +194,9 @@ TLS identity and credential authority. Credentials never enter argv/environment.
 
 The child uses the existing finite `bootstrap-catalog` command. Only its exact
 `bigbrotr-native-bootstrap/1` initialized response plus successful exit/EOF permits
-success. Initial creation and attach to an existing native catalog can both
+success. Direct closed-object decoding rejects duplicate/unknown fields and
+trailing JSON; the same rule applies to `bigbrotr-native-initialize/1`.
+Initial creation and attach to an existing native catalog can both
 succeed; neither is proof of freshness, guard installation, an archive receipt or
 launch authorization. The privileged installer independently inspects the resulting
 catalog after the child is joined. Cancellation/unknown completion must preserve
@@ -211,6 +213,12 @@ complete retained admission batch. It verifies the scientific catalog identity,
 explicit topology and schema1 archive digest before spawning the finite worker.
 The selected route is a pinned IP plus validated local-plaintext boundary or
 verify-full server name/CA; the libpq DSN goes only through the private input pipe.
+The shared publisher/receipt DSN requires a completed SCRAM-SHA-256 exchange and
+disables ambient client certificates and GSS transport. All database/login/password/
+application-name strings are bounded before DSN allocation. The raw operator
+bootstrap DSN remains a separately validated caller responsibility. This route
+does not yet consume configured protected client certificates for native mutual
+TLS; that capability remains required before advertising it.
 This private candidate is not yet a qualified Archive role or recovery path.
 
 The private `publish-batch` command takes the same limits as `inspect-batch`.

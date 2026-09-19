@@ -256,6 +256,22 @@ lifetime requires a new retained intent; a proven rollback left no usable role.
 The consuming callback still owns downstream copies and the one supervised child;
 the Rust value alone is not proof of process uniqueness or memory erasure.
 
+The application-generated native publisher/receipt route now explicitly selects
+libpq18.3 `require_auth=scram-sha-256`, `gssencmode=disable` and
+`sslcertmode=disable`. Plaintext stays within its declared local boundary; TLS
+still requires the configured CA and server name. A passwordless or incomplete
+authentication exchange must refuse before native SQL. This does not audit all
+server HBA rules: the dedicated roles must also require password authentication
+from every reachable client under the trusted infrastructure contract. Enabling
+trust elsewhere would invalidate sole-credential-holder exclusion even if this
+client refuses it. Native mutual TLS needs an explicit protected credential
+consumer and its own qualification; no ambient client certificate is selected.
+This tightens native compatibility: deployments accepting only trust, certificate,
+GSS, cleartext-password or MD5 authentication refuse. Existing SCRAM credentials,
+catalog migrations and persisted identities remain unchanged. Actual native
+positive/refusal and incomplete-exchange qualification is pending in P02-T04;
+source inspection and unit tests alone are not that evidence.
+
 The PG16 catalog manager needs CREATEROLE and its implicit ADMIN-only membership
 in roles it creates. Provisioning locally clears createrole_self_grant; inspection
 allows only the guard-schema owner's ADMIN=true, INHERIT=false, SET=false link.
@@ -305,6 +321,9 @@ transaction. Repeated/existing catalogs refuse; uncertain results require fresh
 privileged inspection. The operation shares the private supervisor and returns
 only after exit/EOF and positive reap. It does not install the guard or certify a
 schema ready for publication.
+The parent decodes the closed completion object directly, refusing duplicate
+fields (including identical duplicates), unknown fields and trailing JSON values.
+The pinned worker's valid wire output does not change.
 
 `CatalogIdentity::local` selects scientific schema1. The additive catalog
 migration0002 binds version, initialization snapshot and declaration/native-layout/

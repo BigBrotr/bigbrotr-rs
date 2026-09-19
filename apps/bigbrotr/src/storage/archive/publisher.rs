@@ -60,7 +60,11 @@ impl CatalogRoute<'_> {
         application_name: &str,
     ) -> Result<Zeroizing<String>, PublicationError> {
         let valid = |s: &str| !s.is_empty() && s.len() <= 4096 && !s.chars().any(char::is_control);
-        if self.port == 0 || !valid(self.database) {
+        if self.port == 0
+            || ![self.database, login, password, application_name]
+                .into_iter()
+                .all(valid)
+        {
             return Err(PublicationError::InvalidInput);
         }
         let address = self.address.to_canonical();
@@ -97,7 +101,11 @@ impl CatalogRoute<'_> {
             }
         };
         Ok(Zeroizing::new(format!(
-            "hostaddr={} port={} dbname={} user={} password={} connect_timeout=5 application_name={} {tls}",
+            // Fresh password distribution is meaningful only with actual
+            // password authentication. libpq must refuse trust/cert-only or an
+            // incomplete SCRAM exchange before native SQL. Disable ambient
+            // client certificates and GSS transport outside this declared route.
+            "hostaddr={} port={} dbname={} user={} password={} connect_timeout=5 application_name={} require_auth=scram-sha-256 sslcertmode=disable gssencmode=disable {tls}",
             address,
             self.port,
             literal(self.database),
@@ -234,5 +242,60 @@ impl Preparation<'_> {
                 batch_digest: request.batch_digest(),
             })
         })
+    }
+}
+
+#[cfg(test)]
+mod route_tests {
+    use super::*;
+
+    #[test]
+    fn native_route_requires_password_authentication_with_explicit_transport() {
+        for tls in [
+            CatalogTls::LocalPlaintext(PlaintextBoundary::Loopback),
+            CatalogTls::VerifyFull {
+                server_name: "catalog.example",
+                ca_file: Path::new("/ca/roots.pem"),
+            },
+        ] {
+            let route = CatalogRoute {
+                address: "127.0.0.1".parse().unwrap(),
+                port: 443,
+                database: "catalog",
+                tls,
+            };
+            let dsn = route.dsn("worker", "password", "bigbrotr-test").unwrap();
+            assert!(dsn.contains("require_auth=scram-sha-256"));
+            assert!(dsn.contains("sslcertmode=disable"));
+            assert!(dsn.contains("gssencmode=disable"));
+            assert!(dsn.contains("hostaddr=127.0.0.1 port=443"));
+            assert!(!dsn.contains("sslmode=prefer"));
+        }
+    }
+
+    #[test]
+    fn native_route_validates_every_private_value_and_quotes_libpq_literals() {
+        let route = CatalogRoute {
+            address: "127.0.0.1".parse().unwrap(),
+            port: 5432,
+            database: "a ' \\ db",
+            tls: CatalogTls::LocalPlaintext(PlaintextBoundary::Loopback),
+        };
+        for invalid in ["".to_owned(), "line\nbreak".to_owned(), "x".repeat(4097)] {
+            for (login, password, name) in [
+                (invalid.as_str(), "password", "application"),
+                ("worker", invalid.as_str(), "application"),
+                ("worker", "password", invalid.as_str()),
+            ] {
+                assert_eq!(
+                    route.dsn(login, password, name),
+                    Err(PublicationError::InvalidInput)
+                );
+            }
+        }
+        let dsn = route
+            .dsn("O'Neil", "quote' slash\\", "bigbrotr-test")
+            .unwrap();
+        assert!(dsn.contains(r"dbname='a \' \\ db' user='O\'Neil' password='quote\' slash\\'"));
     }
 }

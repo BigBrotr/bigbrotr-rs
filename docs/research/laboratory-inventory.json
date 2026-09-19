@@ -8020,6 +8020,31 @@
       "retirement": "verified stopped;281 preexisting containers unchanged, eight unrelated running",
       "raw_tar_sha256": "71abad6178574a2d8d4b1d4afacd4391f64c84d9cfaed2d1f1dc39cbba95db20",
       "report": "docs/implementation/evidence/p02-catalog-cli-native-20260919.json"
+    },
+    "catalog_native_authentication": {
+      "status": "local regressions PASS; native qualification NOT_RUN; no new remote resources yet",
+      "local_root": ".research/implementation/archive-worker/catalog-initialization",
+      "base_source": "0ca4fffa9c5f1bf5b1c447907dc2c3cc2fa2b1eb",
+      "source_inspection": {
+        "root": ".research/implementation/archive-worker/catalog-fence/libpq-18.3",
+        "version": "18.3",
+        "files_sha256": {
+          "fe-connect.c": "44a6e386cbfd67ebe768d6ef5493098119c2e6b4796239d53e5ed7b122b206a5",
+          "fe-auth.c": "4e06c94ec49258fe6fc1c208091d777df9afb2d840e21518b42698de615f24ba",
+          "fe-auth-scram.c": "c9fa308f717cb9cbe85190a39833a5989e7ed59e8aeb3850f8fbdd12f8ce40cd"
+        },
+        "read_scope": "pqConnectOptions2 require_auth parsing; check_expected_areq; pg_fe_sendauth check call; SCRAM FE_SCRAM_PROOF_SENT server signature/completion. Not whole libpq.",
+        "upstream_document": "https://www.postgresql.org/docs/18/libpq-connect.html#LIBPQ-CONNECT-REQUIRE-AUTH"
+      },
+      "local_evidence": [
+        "response-red.txt",
+        "response-green.txt",
+        "route-red.txt",
+        "route-green.txt",
+        "archive-tests.txt"
+      ],
+      "native_work": "separate exact-source lab via reviewed launch/transfer; previous3e87 cache read/copy only; no old lab restart",
+      "scope": "mandatory SCRAM on shared native publisher/receipt routes; strict bootstrap/initialize reply; complete initializer remains required"
     }
   },
   "implementation_monitor_corrections_20260918": {

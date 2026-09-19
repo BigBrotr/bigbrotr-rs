@@ -37,6 +37,23 @@ impl Input<'_> {
 }
 
 struct WireLimit(usize);
+
+pub(super) fn decode_response(output: &[u8], format: &str) -> Result<(), PreparationError> {
+    // Decode the closed object directly. A map would collapse duplicate keys
+    // before validation and could hide an earlier conflicting completion.
+    #[derive(serde::Deserialize)]
+    #[serde(deny_unknown_fields)]
+    struct Response<'a> {
+        format: &'a str,
+        status: &'a str,
+    }
+    let value: Response<'_> =
+        serde_json::from_slice(output).map_err(|_| PreparationError::InvalidResult)?;
+    if value.format != format || value.status != "initialized" {
+        return Err(PreparationError::InvalidResult);
+    }
+    Ok(())
+}
 impl Write for WireLimit {
     fn write(&mut self, bytes: &[u8]) -> io::Result<usize> {
         self.0 = self
@@ -54,6 +71,42 @@ impl Write for WireLimit {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn catalog_completion_refuses_duplicate_fields_even_when_the_last_value_matches() {
+        for format in [
+            "bigbrotr-native-bootstrap/1",
+            "bigbrotr-native-initialize/1",
+        ] {
+            let valid = format!(r#"{{"format":"{format}","status":"initialized"}}"#);
+            assert_eq!(decode_response(valid.as_bytes(), format), Ok(()));
+            for extra in [
+                r#""status":"failed""#.to_owned(),
+                r#""status":"initialized""#.to_owned(),
+                r#""format":"unknown""#.to_owned(),
+                format!(r#""format":"{format}""#),
+                r#""unknown":null"#.to_owned(),
+            ] {
+                let invalid = format!("{{{extra},{}", &valid[1..]);
+                assert_eq!(
+                    decode_response(invalid.as_bytes(), format),
+                    Err(PreparationError::InvalidResult),
+                    "{invalid}"
+                );
+            }
+            for invalid in [
+                format!("{valid}{{}}"),
+                format!(r#"{{"format":"{format}"}}"#),
+                format!(r#"{{"format":"{format}","status":null}}"#),
+                format!(r#"{{"format":"{format}","status":"failed"}}"#),
+            ] {
+                assert_eq!(
+                    decode_response(invalid.as_bytes(), format),
+                    Err(PreparationError::InvalidResult)
+                );
+            }
+        }
+    }
 
     #[test]
     fn bootstrap_rejects_unbounded_or_noncanonical_input_before_spawn() {

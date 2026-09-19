@@ -356,6 +356,19 @@ activity observation. Login revocation plus enumeration alone is insufficient;
 actual client/process exclusion and startup ordering remain recovery gates.
 This research adds no archive schema or migration.
 
+The same selected libpq18.3 source makes authentication policy explicit.
+`fe-connect.c`'s `pqConnectOptions2` maps `require_auth=scram-sha-256` to required
+authentication and only the SCRAM SASL mechanism. `fe-auth.c`'s
+`check_expected_areq` rejects AuthenticationOk until `client_finished_auth`;
+`fe-auth-scram.c` sets it only after checking the server-final signature, returning
+failure for a mismatch. The [official connection contract](https://www.postgresql.org/docs/18/libpq-connect.html#LIBPQ-CONNECT-REQUIRE-AUTH)
+also requires completed authentication. The shared native route selects this
+policy plus disabled GSS transport/ambient client certificates. That client
+requirement does not audit all server HBA routes or authorize arbitrary clients.
+Exact source hashes and planned native old/new controls belong to the existing
+archive-worker inventory; actual qualification is pending, not inferred from
+this narrow source inspection.
+
 Scientific schema initialization also uses an explicit memory secret on its
 separate READ_ONLY PostgreSQL preflight attachment, with `SECRET_STORAGE_TABLE=''`.
 Pinned `PostgresCatalog::Initialize` registers secret storage regardless of read-only

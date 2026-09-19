@@ -21,12 +21,15 @@ installed service readiness.
 
 ## Actual Git and ownership
 
-Mac main HEAD is unpublished source candidate
-3e87a53087a445141e9079f40cdc902dd5add322, tree9400af8a01139e27747595ee7c65b0fafdaec7c1,
-two commits ahead of origin/main b6894cc. Root owns only qualification report,
-contracts/task notes, laboratory inventory and this checkpoint. Sole writer; no
-merge/rebase. Product inputs unchanged since5262c84;3e87a53 changes only the CLI
-laboratory cleanup and continuity metadata. No new product source since candidate.
+Mac main HEAD and freshly verified remote main remain
+0ca4fffa9c5f1bf5b1c447907dc2c3cc2fa2b1eb. Root is sole writer. Current dirty
+work is the native SCRAM/completion slice: archive bootstrap.rs/worker.rs/
+publisher.rs, archive_receipt_probe.rs, native_commit_proxy.py, new
+native_catalog_auth.py/catalog_auth_cases.py, owning archive-storage contract,
+archive-handoff, dependency selection, P02 task, inventory and this checkpoint.
+No new initializer reservation source, merge/rebase or remote experiment yet.
+Prior qualification source3e87a53087a445141e9079f40cdc902dd5add322 remains valid
+within its reported scope. New source is not native-qualified or pushed.
 
 ## Installed catalog inspection qualified within its scope
 
@@ -119,29 +122,49 @@ Do not mechanically rerun unrelated suites.
 
 ## Next bounded action
 
-Recorded-evidence AI review found no discrepancy in38 raw identities, two713-file
-source archives, literal outcomes/counts and full logical dumps. Reviewer did no
-Tux execution; ELF and full host records rely on the retained native audit. Final
-documentation diff reviewed; artifact check and436 local link fragments pass with
-no errors. Commit/push this qualification follow-up and verify private remote/main
-state; repository remains private, nonarchived, bigbrotr-rs. The next product consumer is explicit fresh
-catalog initialization using configured identity and the installed native worker.
-Read its existing native initializer, catalog credential/provisioning boundary and
-bootstrap exclusion contract before implementing. No implicit initialization on
-serve, synthetic ArchiveAttempt or automatic reuse of partial/existing catalogs.
-Installed initialization must preserve exact expected identity, finite grants,
-positive native child ownership and explicit ambiguous-result refusal/recovery.
-Separate reader credentials, retained-batch count/ranges, whole-role resource
-reconciliation, cross-boot recovery, protection and complete M1 remain required.
+Finish review and native qualification of the concrete authentication prerequisite
+for installed initialization, then resume the explicit fresh initializer under
+P02-T04 steps3/4/5. Shared CatalogRoute DSNs now require completed SCRAM and disable
+ambient client certificates/GSS. Every private string is bounded before encoding.
+The previous Value decoder accepted conflicting duplicate completion fields;
+closed borrowed decoding now refuses them. Red cases were executed before fixes;
+Mac25 archive tests plus scoped Clippy PASS. Raw local logs live under
+.research/implementation/archive-worker/catalog-initialization. No applied SQL,
+credential format, schema or native worker change. Authentication compatibility
+now refuses non-SCRAM routes; native mutual TLS remains an explicit required gate.
 
-Registry/resolver, budget/ownership/serve, PG preparation, native installation/
-process/lifetime and publication/custody sources were read completely. Integration
-review also identified separate SELECT-only reader credentials and authoritative
-retained-batch count/ranges before exact installed receipt recovery. The native
-initializer is fresh-only. Lost-reply recovery requires positive initializer/
-bootstrap exclusion then privileged inspection of the complete empty schema;
-snapshot0/partial is not a retry target. No implicit init on serve, fixture IDs,
-fabricated ArchiveAttempt or release/reacquire-Control loop. Keep Control refresh/
-expiry/stop live while retained blocking native/catalog work waits. Installed
-resource reconciliation, incomplete/cross-boot recovery, protection, full M1 and
-the remaining selected product remain required.
+Exact libpq18.3 tar verified against recorded SHA512. Read require_auth parser,
+check_expected_areq and SCRAM final verification branches; added source hashes to
+inventory. No whole-libpq review claim. Read-only AI review publication_review found a proxy cleanup omission; independent
+finally cleanup and bounded terminal capture now keep unresolved remote state
+INCOMPLETE. Final scoped source review found no further blocking finding. Proposed native cases use actual
+PG/native receipt reads, a rebuilt unchanged0ca4fff parent as negative control,
+trust and omitted server-final authentication, TLS wrong CA/name/password, and
+independent unchanged catalog/driver observations. Native cases are NOT_RUN.
+Launch/transfer helpers are prepared locally; create a new catalog-auth-<revision>
+lab only from a clean committed candidate. Reuse latest3e87 build cache/assets by
+copy/read-only mount, never restart retired resources. Fresh read-only Tux query
+again found the eight unrelated running containers and no BigBrotr running.
+
+Initializer design review is complete, but not an implemented/qualified protocol:
+it needs a distinct permanent reservation anchored inside the actual data root,
+with inherited close-only custody; LocalAttempt requires a real ArchiveAttempt
+and cannot be reused. Native initialize currently requires an empty root, so a
+reservation must be explicitly validated, never temporarily removed. The same DB
+with another root also needs a durable reservation; a session advisory lock is
+insufficient. A fresh restricted DB-specific role tombstone is the smallest
+reviewed candidate, with lifecycle/backup/OID consequences still to finalize in
+the owning contract. Fresh generated bootstrap credentials are exposed only
+once after known COMMIT. Positive native join, exact role retirement/backend
+resolution, guard installation and final inspection remain required. Unknown
+provision/native/retirement/install outcome preserves state for explicit recovery.
+Pre-provisioned operator credentials cannot establish sole-holder exclusion.
+
+Native catalog/schema/bootstrap, actual worker/preparation, LocalAttempt,
+manager credential/guard installation and shared connection preparation/transport
+were read at their affected boundaries. TLS credentials and one pinned manager/
+native destination still need an installed adapter; do not infer one from the
+lab. No implicit init on serve, synthetic ArchiveAttempt, automatic partial retry
+or permission from matching observations. Separate SELECT-only reader credentials,
+retained batch count/ranges, whole-role resource reconciliation, cross-boot recovery,
+protection and complete M1 remain required. Current service remains Control-only.

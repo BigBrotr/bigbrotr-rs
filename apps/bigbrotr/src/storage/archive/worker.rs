@@ -114,16 +114,7 @@ impl<'a> Preparation<'a> {
                 .map(PreparationError::Process)
                 .unwrap_or(PreparationError::InvalidBootstrap)
         })?;
-        let value: serde_json::Value =
-            serde_json::from_slice(output.map_err(PreparationError::Process)?)
-                .map_err(|_| PreparationError::InvalidResult)?;
-        if value.as_object().map(|v| v.len()) != Some(2)
-            || value["format"] != result_format
-            || value["status"] != "initialized"
-        {
-            return Err(PreparationError::InvalidResult);
-        }
-        Ok(())
+        super::bootstrap::decode_response(output.map_err(PreparationError::Process)?, result_format)
     }
 
     /// Private discardable staging only. No archive acknowledgement or reclaim.

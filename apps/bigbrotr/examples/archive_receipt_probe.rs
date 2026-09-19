@@ -14,7 +14,7 @@ use bigbrotr_protocol::archive_receipt::ReceiptExpectation;
 use serde::Deserialize;
 use std::{
     fs,
-    path::Path,
+    path::{Path, PathBuf},
     sync::atomic::{AtomicBool, Ordering},
     time::{Duration, Instant},
 };
@@ -33,9 +33,22 @@ struct Input {
     reserve_bytes: u64,
     deadline_ms: u64,
     cancel_when_blocked: bool,
+    #[serde(default)]
+    tls_server_name: Option<String>,
+    #[serde(default)]
+    tls_ca_file: Option<PathBuf>,
+    #[serde(default)]
+    wrong_password: bool,
 }
 fn main() {
-    let input: Input = serde_json::from_slice(&fs::read("/fixture/input.json").unwrap()).unwrap();
+    let arguments: Vec<_> = std::env::args_os().collect();
+    assert!(arguments.len() == 1 || arguments.len() == 3);
+    let input_path = arguments
+        .get(1)
+        .map(Path::new)
+        .unwrap_or(Path::new("/fixture/input.json"));
+    let job = arguments.get(2).map(Path::new).unwrap_or(Path::new("/job"));
+    let input: Input = serde_json::from_slice(&fs::read(input_path).unwrap()).unwrap();
     assert!(matches!(
         input.role.as_str(),
         "bigbrotr_receipt_reader" | "bigbrotr_receipt_denied"
@@ -57,7 +70,19 @@ fn main() {
         &input.data_root,
     )
     .unwrap();
-    let password = Zeroizing::new(fs::read_to_string(format!("/secrets/{}", input.role)).unwrap());
+    let password = if input.wrong_password {
+        Zeroizing::new("deliberately-incorrect-lab-password".to_owned())
+    } else {
+        Zeroizing::new(fs::read_to_string(format!("/secrets/{}", input.role)).unwrap())
+    };
+    let tls = match (&input.tls_server_name, &input.tls_ca_file) {
+        (None, None) => CatalogTls::LocalPlaintext(PlaintextBoundary::Loopback),
+        (Some(server_name), Some(ca_file)) => CatalogTls::VerifyFull {
+            server_name,
+            ca_file,
+        },
+        _ => panic!("incomplete lab TLS fixture"),
+    };
     let budget = ResourceBudget::new(
         ProcessEnvelope::new(
             513 << 20,
@@ -84,7 +109,7 @@ fn main() {
         }
         let result = Preparation {
             installation: &installation,
-            temp_root: Path::new("/job"),
+            temp_root: job,
             limits: PreparationLimits {
                 memory_bytes: 128 << 20,
                 temp_bytes: 64 << 20,
@@ -103,7 +128,7 @@ fn main() {
                 address: "127.0.0.1".parse().unwrap(),
                 port: input.port,
                 database: &input.database,
-                tls: CatalogTls::LocalPlaintext(PlaintextBoundary::Loopback),
+                tls,
             },
             CatalogReaderCredentials {
                 login: &input.role,

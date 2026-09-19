@@ -286,6 +286,13 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   qualifies four synthetic cases and explicit memory-secret attach after a real
   dependency failure. It is not the product schema/publisher. Connection-startup
   exclusion, persisted recovery and full signed membership remain gates.
+  Installed initializer work additionally requires durable database/root
+  reservations, one newly generated bootstrap credential, positive native/driver
+  completion and explicit refusal of partial/ambiguous state. Before that handoff,
+  the shared native route now requires a completed SCRAM exchange; existing trust
+  or other non-SCRAM-only routes refuse. The closed bootstrap/initialize response
+  now rejects duplicate fields. Discriminating local regressions pass; actual
+  old/new native authentication and TLS qualification remains pending.
 - [ ] **Step 4:** After an ambiguous commit, query the receipt in a new transaction; do not
   repeat while receipt state is unknown. Reject mismatched batch digest.
   Include loss of the actual native PostgreSQL COMMIT response, plus physical file
