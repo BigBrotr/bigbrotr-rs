@@ -19,10 +19,11 @@ if sys.argv[1:] == ['--build-binaries']:
     identity = build_binaries(SOURCE, os.environ)
     (out / 'worker-identity.json').write_text(json.dumps(identity, indent=2) + '\n')
     sys.exit(0)
-assert sys.argv[1:] in ([], ['--tls'], ['--publication'], ['--producer-inputs'], ['--producer-ledger'])
+assert sys.argv[1:] in ([], ['--tls'], ['--publication'], ['--producer-inputs'], ['--producer-ledger'], ['--producer-ledger-fixture'])
 tls = sys.argv[1:] == ['--tls']
-producer_inputs = sys.argv[1:] in (['--producer-inputs'], ['--producer-ledger'])
-producer_ledger = sys.argv[1:] == ['--producer-ledger']
+fixture_only = sys.argv[1:] == ['--producer-ledger-fixture']
+producer_inputs = sys.argv[1:] in (['--producer-inputs'], ['--producer-ledger'], ['--producer-ledger-fixture'])
+producer_ledger = sys.argv[1:] in (['--producer-ledger'], ['--producer-ledger-fixture'])
 publication = producer_inputs or sys.argv[1:] == ['--publication']
 manifest = json.loads((build / 'source-manifest.json').read_text())
 
@@ -32,6 +33,20 @@ def source_files():
 
 
 assert source_files() == manifest['files_sha256']
+if fixture_only:
+    # Qualification-only corrections need the changed actual client, not a
+    # mechanical rerun of unrelated suites. Refuse this mode if any product,
+    # dependency or build-tool input differs from the retained tested baseline.
+    baseline = json.loads((build / 'baseline-source-manifest.json').read_text())
+    def fixture_input(name):
+        return (name.startswith('experiments/producer-requests/') or name in {
+            'apps/bigbrotr/examples/ingest_bootstrap_probe.rs',
+            'experiments/archive-engine/native_initialization.py',
+            'docs/implementation/progress.md',
+            'docs/research/laboratory-inventory.json',
+        })
+    assert {k: v for k, v in manifest['files_sha256'].items() if not fixture_input(k)} == {
+        k: v for k, v in baseline['files_sha256'].items() if not fixture_input(k)}
 bundle.mkdir()
 install_bundle(Path('/assets'), bundle, 'x86_64-unknown-linux-gnu')
 env = clean_environment()
@@ -51,13 +66,20 @@ env.update(BIGBROTR_ARCHIVE_WORKER_BYTES=str(worker['bytes']), BIGBROTR_ARCHIVE_
 tls_fixture = ['--example', 'archive_receipt_probe'] if tls or publication else []
 if producer_ledger: tls_fixture += ['--example', 'ingest_bootstrap_probe']
 publication_fixture = ['-p', 'bigbrotr-archive-worker', '--example', 'archive_publication_probe', '--example', 'archive_read_probe', '--example', 'archive_coordinator_probe', '--example', 'archive_attempt_probe'] if publication else []
-assert execute([
+checks = [
     ('fixture', ['cargo', 'build', '--locked', '--release', '-p', 'bigbrotr', '--example', 'catalog_schema_probe', '--example', 'catalog_initialization_probe', *tls_fixture, *publication_fixture]),
     ('schema-tests', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr', '--test', 'control_schema']),
     ('parent-tests', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr', '--lib', 'storage::archive', '--', '--nocapture']),
     ('cli-tests', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr', '--bin', 'bigbrotr', '--test', 'catalog_entrypoint', '--test', 'control_runtime_entrypoint']),
     ('clippy', ['cargo', 'clippy', '--locked', '--release', '-p', 'bigbrotr', '-p', 'bigbrotr-archive-worker', '--lib', '--example', 'catalog_schema_probe', '--example', 'catalog_initialization_probe', *tls_fixture, *publication_fixture[2:], '--bin', 'bigbrotr', '--bin', 'bigbrotr-archive-worker', '--', '-D', 'warnings']),
-], out / 'checks', SOURCE, env, identity, 1800)['status'] == 'PASS'
+]
+if fixture_only:
+    identity.update(scope='producer reservation fixture corrections; unchanged product inputs',
+                    baseline_source=baseline['revision'])
+    checks = [checks[0],
+        ('fixture-policy', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr', '--example', 'ingest_bootstrap_probe']),
+        ('fixture-clippy', ['cargo', 'clippy', '--locked', '--release', '-p', 'bigbrotr', '--example', 'ingest_bootstrap_probe', '--', '-D', 'warnings'])]
+assert execute(checks, out / 'checks', SOURCE, env, identity, 1800)['status'] == 'PASS'
 for src, dst in [*([('examples/ingest_bootstrap_probe', out / 'ingest-bootstrap-probe')] if producer_ledger else []), ('bigbrotr', out / 'bigbrotr'), ('bigbrotr-archive-worker', bundle / 'bigbrotr-archive-worker'),
                  ('examples/catalog_schema_probe', out / 'catalog-schema-probe'),
                  ('examples/catalog_initialization_probe', out / 'catalog-initialization-probe'),
@@ -68,7 +90,7 @@ for src, dst in [*([('examples/ingest_bootstrap_probe', out / 'ingest-bootstrap-
                     ('examples/archive_attempt_probe', out / 'archive-attempt-probe')] if publication else [])]:
     shutil.copy2(build / 'target/release' / src, dst)
     dst.chmod(0o500)
-if producer_inputs:
+if producer_inputs and not fixture_only:
     # The actual same-source packaged worker is required by the native pending
     # consumer test; library-only success cannot substitute for that process.
     assert file_hash(bundle / 'bigbrotr-archive-worker') == worker['sha256']

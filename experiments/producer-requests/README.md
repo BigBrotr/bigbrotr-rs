@@ -21,3 +21,21 @@ actual successful bootstrap dataset, including the documented bulk refusal and
 empty versus unresolved epoch retirement. SQL concurrency and fresh-only migration
 compatibility still require their own practical schedules before qualification. The progress checkpoint and evidence
 report record actual execution; the presence of this harness is not a PASS claim.
+
+`concurrency.py --root <owned-lab>` follows successful reservation/schema cases.
+It clones the quiescent disposable SQL fixture, without native copies, and uses
+actual independently connected PostgreSQL sessions. Reservation-first and
+closing-first schedules observe `pg_blocking_pids` before explicit COMMIT/ROLLBACK;
+older RC/RR snapshots independently require preserved counters or SQLSTATE40001.
+Every case checks retained rows, counter, state and zero remaining fixture backends.
+These synthetic SQL schedules do not authorize native handoff or qualify restore.
+Two additional harness controls inject a second-client readiness timeout and a
+waiter blocked behind a running holder. Cleanup must collect both clients and
+terminate only observed backends in the newly created fixture database, within
+eight seconds. PID/start-time checks guard against terminating a reused PID.
+
+After a fixture-only correction, `--producer-ledger-fixture` requires a retained
+baseline source manifest. It permits differences only in explicitly named fixture
+and checkpoint/inventory files, then builds exact-source binaries and executes the
+changed fixture test and Clippy. Broader unchanged suites retain their earlier
+source-bound evidence; this mode does not relabel them as newly executed tests.

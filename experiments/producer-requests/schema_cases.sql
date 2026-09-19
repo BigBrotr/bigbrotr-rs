@@ -100,17 +100,18 @@ SELECT pg_temp.refuse('manifest_context_change','23514',$q$SELECT pg_temp.reserv
 SELECT pg_temp.reserve(1002,2,16777216);
 SELECT pg_temp.refuse('retained_byte_limit','23514','SELECT pg_temp.reserve(1002,3,1)');
 UPDATE control.producer_epochs SET state='closing' WHERE producer_slot_id=pg_temp.id(1002);
-SELECT pg_temp.refuse('closing_epoch_refuses_reservation','23514','SELECT pg_temp.reserve(1002,3,1)');
 SELECT pg_temp.refuse('unresolved_reservations_refuse_retirement','55000',$q$
  UPDATE control.producer_epochs SET state='retired',retired_at_us=opened_at_us,
  closure_digest=decode(repeat('04',32),'hex') WHERE producer_slot_id=pg_temp.id(1002)$q$);
 SELECT pg_temp.producer(1003,64);
 UPDATE control.producer_epochs SET state='closing' WHERE producer_slot_id=pg_temp.id(1003);
+-- Empty and below every quota: only the closed state can reject this request.
+SELECT pg_temp.refuse('closing_epoch_refuses_reservation','23514','SELECT pg_temp.reserve(1003,1,1)');
 UPDATE control.producer_epochs SET state='retired',retired_at_us=opened_at_us,
  closure_digest=decode(repeat('04',32),'hex') WHERE producer_slot_id=pg_temp.id(1003);
 SELECT pg_temp.check('empty_epoch_can_retire',(SELECT state='retired' AND reserved_through_request=0 FROM control.producer_epochs WHERE producer_slot_id=pg_temp.id(1003)));
 SELECT pg_temp.check('all_cases_executed',(SELECT count(*)=18 FROM results));
-SELECT json_build_object('status','PASS','cases',(SELECT json_agg(t ORDER BY label) FROM results t));
+SELECT jsonb_build_object('status','PASS','cases',(SELECT jsonb_agg(to_jsonb(t) ORDER BY label) FROM results t));
 -- End the actual session owner; this fixture grants no native successor.
 UPDATE control.owner_epochs SET state='released',released_at_us=(extract(epoch FROM clock_timestamp())*1000000)::bigint,
  exclusion_method='storage_fenced',exclusion_digest=decode(repeat('09',32),'hex') WHERE role='control' AND state='active';

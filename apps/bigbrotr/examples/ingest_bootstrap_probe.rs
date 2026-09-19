@@ -186,7 +186,8 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
         .unwrap();
     let now: i64 = row.get(2);
     if mode == "reservation-commit-lost" {
-        config.port(6543);
+        // The fault proxy accepts only loopback in the shared PG namespace.
+        config.hostaddr("127.0.0.1".parse().unwrap()).port(6543);
     }
     let (client, driver) = config.connect(NoTls).await.unwrap();
     let driver = tokio::spawn(driver);

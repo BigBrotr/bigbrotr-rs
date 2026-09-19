@@ -19,13 +19,14 @@ Archive receipt consumer is qualified separately. All later selected work remain
 
 ## Git and current work
 
-Mac main is unpublished candidate `57cce756a4ad47199d862c8e47fd345fd5eee9c3`,
-tree `6a12d601c0698be27859ed373cdc4ef614b698b1`. Private origin/main remains
+Mac main is unpublished candidate `4296320d0e5e42ebe6c428bea918b80936eac7eb`,
+tree `13f6d27094ee6d1ce5e7c6a1330361985e7781c0`, following unpublished57cce75. Private origin/main remains
 `d98c96577ff0b850775b2494fa9e93db7b0bc64f`, freshly verified at resumption.
 The earlier a1da96a executable and d98c965 evidence are both published privately.
-No other contributor edits were incorporated. Root owns current dirty work:
-bootstrap-probe setup correction, the new SQL constraint fixture, storage-catalog
-0011 entry, lab inventory and this checkpoint. No other implementation worktree
+No other contributor edits were incorporated. The setup correction, SQL fixture and storage-catalog0011 entry are committed in
+4296320. Root owns current dirty work: fault-proxy route correction in the bootstrap
+example, SQL/harness output decoding, new concurrency harness, narrow native
+fixture-only mode, lab inventory and this checkpoint. No other implementation worktree
 is being integrated. Existing review agents were read-only.
 
 ## Producer reservation prerequisite
@@ -71,7 +72,7 @@ The first dedicated reservation case failed during setup, before reservation or
 admission: fixture setup hashed the pretty policy JSON (d87bfdf9...), while the
 unchanged frozen expected digest names compact JSON (da36c9bd...). Root verified
 both hashes and corrected only setup serialization locally. Its new Mac fixture
-test passes (87779); corrected source is not yet committed or run on Linux.
+test passes (87779); corrected source is committed in4296320 and that setup now passes on Linux.
 The raw report remains INCOMPLETE with setup exit101/PolicyInvalid, not PASS.
 The six fault cases were therefore not executed. Preserve this failure.
 
@@ -86,14 +87,54 @@ rather than Control database and failed without writes. Both were corrected.
 
 ## Owned resources and evidence
 
-No active lab remains. Latest producer-ledger lab stopped-retained at
+No active lab remains. Corrected candidate4296320 lab is stopped-retained:
+`/home/tux/bigbrotr-implementation-20260917/runs/producer-ledger-4296320`,
+owner `0983b714a9c7e2a596238cd6b87044a6`, runner
+`debd57a9f60b6d3ea44c861cd32c115dd26e2bf0ba304a717063aa2babb6b969`, PG
+`b014da2ee7bd5b9ab87d35707a561f7bb83e7ac108a9dbcc83c7e4f88c7d66e5`, empty network
+`79dacdecd18f95c5445b94bb23932f8fdcaa2a8e0fccc55a5c68230cd9dbdee9`.
+792 clean Git source files. Raw `corrected-setup` has27 verified files, tar
+`e17776c33a299d1542a12031081ae90cb0f780fa2ad2fa27c7278b75770a3e34`.
+Terminal audit:358 preexisting containers unchanged,8 unrelated running,zero
+BigBrotr running/owned SQL before stop/no OOM. Latest reusable copied cache is
+this lab/out/build. The verified empty57cce75 network was removed; its data remain.
+
+All build/checks passed at4296320. Four dedicated cases PASS: write/exact retry
+(including unchanged PG row/xmin), policy refusal after reservation, full SQL
+rollback, and actual SIGKILL/reap after reservation before native. Each compares
+all native rows, exact262-byte input and PG metadata/counter; a fresh Control epoch2
+observes the same original reservation or absence. The fifth before-forward case
+failed to connect before ownership: fixture selected the container DNS address
+while the fault proxy listens only on127.0.0.1. Root fixed the fixture with explicit
+hostaddr locally; Clippy17864 passed. COMMIT-loss cases remain NOT_RUN.
+
+A supplemental execution of schema_cases.sql reached the expected final rows,
+but its ad-hoc collector tried to parse multiline JSON before saving stdout and
+lost that transcript. Outcome is UNKNOWN, not19 PASS. Its observed post-state and
+zero active SQL clients are retained in producer-schema-observation.json. The
+committed harness already saves raw SQL stdout before parsing; root now also uses
+JSONB output plus a complete JSON decoder. These fixture corrections and a new
+six-schedule concurrency harness are uncommitted. No product SQL/Rust library code
+changed after57cce75. A narrow native fixture-only build mode requires identical
+product/dependency/build-tool hashes to the previous tested manifest, to avoid
+mechanical repetition of unrelated suites. It is not yet executed.
+
+Read-only AI review found missing stdin piping and incomplete exception cleanup in
+the new concurrency harness, plus a closed-epoch negative control masked by a full
+byte quota. Root corrected these before execution. Six SQL schedules now include
+two additional harness failure controls (second READY timeout and a blocked waiter)
+with bounded backend termination and client collection. The closed-state SQL case
+now uses an empty epoch below all quotas. These corrections remain unexecuted.
+
+Previous producer-ledger lab stopped-retained at
 `2026-09-19T16:22:18.616934+00:00`:
 `/home/tux/bigbrotr-implementation-20260917/runs/producer-ledger-57cce75`.
 Owner `836e9f794619ab56854d10ab6ad07144`, runner
 `2dff621b1ecfddf54fab10b9b36ff84031dc2c58507b3a17444a14f620244910`, PG
 `657eeb657c72c69c0d9a84490498920a967eee730d28453825b4616b9f323dbb`, empty internal
 network `2e4c666a993c0548f03434b61174b736bf17bf3632c188145865f20edc76bfd0`.
-Inventory `implementation_archive_worker_20260918.producer_ledger` in
+Historical inventory `implementation_archive_worker_20260918.producer_ledger_initial`;
+active lab `producer_ledger` in
 [the laboratory inventory](../research/laboratory-inventory.json).
 
 Runner2CPU/6GiB/512PIDs; PG1CPU/1GiB/128PIDs; no published ports. Zero owned SQL
@@ -108,10 +149,10 @@ hashes and791 Git source hashes verified. Tar
 Main `0a99b62873a48e1986d9fa9162a14e2dfd08d8246f1566791957c36a1df75f0c`,
 worker `4a8f8f37ec6dbf7b6e6def033966d21d116f027699cfd4c96ae6ff852f298f3c`.
 The terminal audit PASS covers preservation/cleanup, not the failed fault suite.
-Latest reusable copied cache is this lab/out/build; verify Cargo.lock before reuse.
+This older cache is superseded by4296320/out/build; verify Cargo.lock before reuse.
 Readonly native assets remain the installed-publication-61271e2 bundle. Existing
 ignored transfer/launch/run/audit/collect helpers must be adapted to the next lab;
-launch currently names the already retired a1da96a network, so do not rerun blindly.
+launch currently names the already retired57cce75 network (next use4296320), so do not rerun blindly.
 
 ## Prior relevant qualifications
 
@@ -157,9 +198,11 @@ These findings do not imply broader task completion.
 
 ## Next bounded action
 
-Review/commit the canonical fixture correction and new SQL cases with docs, transfer
-that exact candidate to a fresh inventoried lab, then run all six reservation
-cases. The new `schema_cases.sql` is unexecuted: exercise its actual engine checks,
+Review/commit the fixture route/output corrections and concurrency harness.
+Transfer a fresh exact revision, using the narrow fixture-only build after verifying
+all product inputs match4296320. Execute all six fault cases,19 SQL observations
+and six concurrency schedules plus two harness cleanup controls; preserve both prior
+failed/unknown runs. The new `schema_cases.sql` is unexecuted: exercise its actual engine checks,
 then add/execute RC/RR snapshot races, reservation/closing in both lock orders and
 fresh-only migration compatibility (including old artifact and backend loss).
 Retain exact failed runs and update evidence before pushing verified private main.

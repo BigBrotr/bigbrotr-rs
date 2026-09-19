@@ -134,8 +134,8 @@ def main(root):
         'fixture_sha256':hashlib.sha256(fixture.read_bytes()).hexdigest()}
     save()
     assert completed.returncode==0, 'schema fixture failed; inspect retained transcript'
-    results=[json.loads(line) for line in completed.stdout.splitlines() if line.startswith('{')]
-    assert len(results)==1 and results[0]['status']=='PASS' and len(results[0]['cases'])==19
+    result, _ = json.JSONDecoder().raw_decode(completed.stdout[completed.stdout.index('{'):])
+    assert result['status']=='PASS' and len(result['cases'])==19
     report['status']='PASS';save()
     print(json.dumps({'status':'PASS','cases':len(report['cases'])}))
 
