@@ -399,8 +399,18 @@ scientific state proceeds through `install_for_manager` and a fresh connection
 using the configured manager to inspect the installed identity/schema/guards.
 Signals cancel SQL, then join its driver; native cancellation must set the child's
 flag and await its blocking supervisor, never abandon a running blocking task.
-Output delivery has a bounded drain after data owners terminate. These are consumer
-acceptance requirements, not executed CLI evidence yet.
+Output delivery has a bounded drain after coordinator clients/supervisors terminate;
+an unknown child termination preserves custody and permits no further operation.
+The [installed CLI core matrix](../implementation/evidence/p02-initialization-cli-native-20260919.json)
+now records 17 passing scenarios with actual binaries at `6265286` and the separately
+identified harness at `3335e06`; production inputs are identical. It includes clean
+initialization with a 128 MiB parent payload grant, fresh manager inspection,
+idempotent recovery, retained partial/stranded refusals, both lost reservation
+COMMITs, two actual-driver cancellations with waiting recovery and native libpq
+startup cancellation/reap. A proven full stdout pipe exits with I/O failure in
+0.317s in this isolated run. The first malformed fixture remains a recorded failure.
+This does not qualify nonempty/timeout backend drain, the new CLI TLS matrix,
+native mutual TLS or the complete installed service/M1 acceptance.
 
 The application-owned `bigbrotr_archive` schema contains immutable installation
 and attempt records plus one mutable owner row. Every native metadata mutation

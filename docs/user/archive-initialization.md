@@ -85,3 +85,7 @@ after a successful durable installation; run recovery to establish its result.
 See the [owning archive contract](../specification/archive-storage-contract.md)
 and [current implementation checkpoint](../implementation/progress.md) for the
 revision-specific validation boundary and outstanding service/release work.
+The [native core evidence](../implementation/evidence/p02-initialization-cli-native-20260919.json)
+records 17 executed scenarios and preserves the failed first fixture. TLS of this
+new command, nonempty/timeout backend drain and remaining full acceptance cases
+are explicitly open; the guide does not advertise complete installation support.

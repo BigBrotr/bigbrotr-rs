@@ -1,0 +1,1399 @@
+{
+  "format": "bigbrotr-initialization-cli-evidence/1",
+  "observed_date": "2026-09-19",
+  "status": "PARTIAL",
+  "scope": "Installed archive initialize/recover core and cancellation journeys; remaining acceptance explicitly listed",
+  "product_source": "a1c0921382faaa4252ca7eefd3aefbce3dc626bd",
+  "tested_artifact_source": "6265286954aeebc17b415b5d5fecb7c6a5119768",
+  "workload": {
+    "source": "3335e06e86eec01171ae1f2ecb2d8f75488ea2d0",
+    "tree": "3b4815cd10d50e96fd66926de4b4d06a7cc84802",
+    "script_sha256": "cb284d4d59f8b6f717ef2dbba3b3e4f4c7a8224ef8d7163b3d49bf88c73ae2f0",
+    "changed_paths": [
+      "docs/implementation/progress.md",
+      "docs/research/laboratory-inventory.json",
+      "docs/user/archive-initialization.md",
+      "experiments/archive-engine/initialization_cli_cases.py"
+    ],
+    "production_inputs_unchanged": true,
+    "verified_on": "Mac using exact Git objects",
+    "production_difference": []
+  },
+  "implementation": [
+    "Explicit initializer credential remains separate from configured runtime manager.",
+    "Preflight bundle, credentials, names, bounded grants, private disjoint scratch and one pinned endpoint precede permanent database reservation.",
+    "One fresh native credential/child; actual driver custody before polling; native blocking supervisor always joined, including cancellation.",
+    "Recovered local custody, exact bootstrap observation/retirement, bounded natural session polling, install_for_manager and fresh runtime-manager inspection.",
+    "Pristine stranded/absent/partial state remains retained; recovery never launches a worker or creates another credential.",
+    "Bounded lifecycle output exits after coordinator tasks terminate; no implicit serve initialization."
+  ],
+  "local": {
+    "red_session": 34372,
+    "red_reason": "new actual executable regression failed: initialize subcommand absent",
+    "passed": [
+      "2 route tests (22301)",
+      "8 binary tests and 9 CLI cases (10720)",
+      "additional long-manager/native-mTLS preflight regression (28469)",
+      "scoped Clippy, rustfmt, Python/embedded-script AST and diff checks"
+    ],
+    "scope": "Mac source tests only; not native release evidence"
+  },
+  "review": {
+    "mode": "independent AI read-only source/harness review plus root integration/effects review",
+    "corrected_before_artifact": [
+      "Simultaneous initializer/manager preparation overcharged a valid128MiB parent payload.",
+      "New pinning accidentally changed legacy TLS address selection.",
+      "Oversized runtime-manager name refused only after local reservation."
+    ],
+    "corrected_harness": [
+      "Required explicit topology.local_roles missing from first generated fixture.",
+      "Count-only table oracle replaced by exact schema/name/owner comparison against pinned native contract and four guard tables.",
+      "Lost-COMMIT recovery now independently checks exact bootstrap NOLOGIN/password NULL.",
+      "Cancellation uses pidfd plus exact start/executable/argv; native worker must have current coordinator PPid."
+    ],
+    "limits": [
+      "Reviewer did not execute Tux or independently measure artifacts/processes.",
+      "Recorded evidence audit is separate from source review."
+    ],
+    "recorded_evidence_audit": {
+      "result": "no discrepancy found",
+      "verified": "31 raw files and two evidence archives; two regenerated Git archives/1479 file hashes; separate workload Git/hash and unchanged production; outcomes, identities, tests and explicit limitations",
+      "boundary": "Read-only local records/Git audit; no new Tux execution or direct independent ELF/database/current-process observation, and no test rerun."
+    }
+  },
+  "runs": {
+    "first": {
+      "resources": {
+        "source": "a1c0921382faaa4252ca7eefd3aefbce3dc626bd",
+        "tree": "36cebbeb2a56b6d5fc4a7283a347cd9771f2c63d",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/initialization-cli-a1c0921",
+        "owner": "36bf5098807966e90503f29e86788b68",
+        "container": "bigbrotr-implementation-initialization-cli-a1c0921",
+        "postgres": "bigbrotr-implementation-initialization-cli-a1c0921-pg",
+        "network": "bigbrotr-implementation-initialization-cli-a1c0921",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "state": "stopped-retained",
+        "source_files": 739,
+        "started_at": "2026-09-19T08:33:11.992866+00:00",
+        "network_id": "32fe4864e687757e7a508d8617d9174f7c42cbe3eefa34277635d7b8c0e1791d",
+        "postgres_id": "80ecad6fb09b31207702007b1091714e15dcbfde127a0fb2fb1f74c2fce898f9",
+        "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+        "container_id": "8484a9dcd3468979effa89b03651f85aa4836da68c2612ac2ff79357a3bbf889",
+        "completed_at": "2026-09-19T08:39:12.029511+00:00"
+      },
+      "audit": {
+        "status": "PASS",
+        "source": "a1c0921382faaa4252ca7eefd3aefbce3dc626bd",
+        "tree": "36cebbeb2a56b6d5fc4a7283a347cd9771f2c63d",
+        "source_files": 739,
+        "source_archive_sha256": "241b7101fb48244884aac17493ffce288aa58b0a8834317c124a86b51cca46c4",
+        "source_manifest_sha256": "fd712f5bed160364ed53df0cdfcae448f163c61242dd96b83823a802a075f40e",
+        "artifacts": {
+          "main": {
+            "sha256": "4554dd595191cbb5db1239c74d8bf2578d5c1676e4df8cb913dd28c46f6be708",
+            "bytes": 8791920,
+            "elf_machine": 62
+          },
+          "worker": {
+            "sha256": "c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227",
+            "bytes": 12608608,
+            "elf_machine": 62
+          }
+        },
+        "qualification": {
+          "initialization-cli": "FAIL"
+        },
+        "cases": {
+          "initialization-cli": 1
+        },
+        "build_ready": true,
+        "terminal": {
+          "container_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-19T08:33:14.67012286Z",
+            "FinishedAt": "2026-09-19T08:39:10.839652828Z"
+          },
+          "postgres_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-19T08:33:12.664077335Z",
+            "FinishedAt": "2026-09-19T08:39:11.593470225Z"
+          }
+        },
+        "owned_containers": [
+          "8484a9dcd3468979effa89b03651f85aa4836da68c2612ac2ff79357a3bbf889",
+          "80ecad6fb09b31207702007b1091714e15dcbfde127a0fb2fb1f74c2fce898f9"
+        ],
+        "existing_containers_unchanged": 316,
+        "unrelated_containers_unchanged": 20,
+        "unrelated_running": 8,
+        "bigbrotr_running": 0,
+        "observed_at": "2026-09-19T08:39:12.029511+00:00"
+      },
+      "build": {
+        "source": "a1c0921382faaa4252ca7eefd3aefbce3dc626bd",
+        "source_manifest_sha256": "fd712f5bed160364ed53df0cdfcae448f163c61242dd96b83823a802a075f40e",
+        "native_toolchain": {
+          "os": "Linux",
+          "architecture": "x86_64",
+          "discovery": "llvm-config",
+          "environment": {
+            "CC": "/usr/lib/llvm-14/bin/clang",
+            "CXX": "/usr/lib/llvm-14/bin/clang++",
+            "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+            "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+            "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+            "CARGO_BUILD_JOBS": "2",
+            "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+          },
+          "tools": {
+            "CC": {
+              "path": "/usr/lib/llvm-14/bin/clang",
+              "realpath": "/usr/lib/llvm-14/bin/clang",
+              "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+              "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+            },
+            "CXX": {
+              "path": "/usr/lib/llvm-14/bin/clang++",
+              "realpath": "/usr/lib/llvm-14/bin/clang",
+              "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+              "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+            },
+            "AR": {
+              "path": "/usr/lib/llvm-14/bin/llvm-ar",
+              "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+              "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+              "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+            },
+            "LIBCLANG_PATH": {
+              "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+              "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+              "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+              "version": "Debian clang version 14.0.6"
+            },
+            "discovery": {
+              "path": "/usr/lib/llvm-14/bin/llvm-config",
+              "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+              "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+              "version": "14.0.6"
+            }
+          },
+          "sdk": null
+        },
+        "scope": "permanent local reservation and actual native initializer",
+        "status": "READY",
+        "control": "4554dd595191cbb5db1239c74d8bf2578d5c1676e4df8cb913dd28c46f6be708",
+        "worker": "c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227",
+        "probe": "210be5b56954b003f26282da89c4fe48531e3aa8ebd525ae12dc1c4e1497804b",
+        "initializer": "65bce8a30bd278f8744018239aed5b0fed3af959dd0c884cd392aa5b113e1168",
+        "build_info": {
+          "archive_worker": {
+            "bytes": 12608608,
+            "sha256": "c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227"
+          },
+          "capabilities": [
+            "event-verification",
+            "config-static"
+          ],
+          "capability_scope": "Strict bounded event JSON and independent ID/BIP340 verification; offline static configuration candidates and incomplete read-only doctor diagnostics; no storage, durable configuration authority, source policy, wire transport, filter, or general NIP conformance claim",
+          "debug_info": "false",
+          "format": "bigbrotr-build/1",
+          "inputs_sha256": {
+            "Cargo.lock": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215",
+            "contracts/protocol/nip01-event.json": "b830d5ab8651f5a763ebcffdc0eb1737ba70f4602c93fc714c892865ffca2db8",
+            "contracts/protocol/versions.json": "37c76706c5a2aa4fc72a40aeed908f104620eafcee1118b7cee8baf133546c95",
+            "contracts/release/dependencies.json": "4f73cd0a81916b7d203556ff9ad1d8efd97dfe95b2b2305c35468747e8669132",
+            "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167"
+          },
+          "optimization": "3",
+          "product": "BigBrotr",
+          "profile_assertion": "release",
+          "protocol_registry_format": "bigbrotr-protocol-versions/1",
+          "protocols": {
+            "event_verifier": "bigbrotr-nip01-verifier/1",
+            "nostr_nips": "a2494f4f81d46684e5814a9bf35e2b1df978f955"
+          },
+          "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+          "schemas": {
+            "build_info": "bigbrotr-build/1",
+            "config_static": "bigbrotr-config-static/1",
+            "doctor": "bigbrotr-doctor/1",
+            "signed_event": "nip01-event/1"
+          },
+          "source": {
+            "dirty": false,
+            "manifest_sha256": "fd712f5bed160364ed53df0cdfcae448f163c61242dd96b83823a802a075f40e",
+            "revision": "a1c0921382faaa4252ca7eefd3aefbce3dc626bd",
+            "state": "builder-supplied",
+            "tree": "36cebbeb2a56b6d5fc4a7283a347cd9771f2c63d"
+          },
+          "target": "x86_64-unknown-linux-gnu",
+          "version": "0.1.0-dev"
+        },
+        "source_unchanged": true
+      },
+      "checks": {
+        "source": "a1c0921382faaa4252ca7eefd3aefbce3dc626bd",
+        "source_manifest_sha256": "fd712f5bed160364ed53df0cdfcae448f163c61242dd96b83823a802a075f40e",
+        "native_toolchain": {
+          "os": "Linux",
+          "architecture": "x86_64",
+          "discovery": "llvm-config",
+          "environment": {
+            "CC": "/usr/lib/llvm-14/bin/clang",
+            "CXX": "/usr/lib/llvm-14/bin/clang++",
+            "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+            "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+            "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+            "CARGO_BUILD_JOBS": "2",
+            "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+          },
+          "tools": {
+            "CC": {
+              "path": "/usr/lib/llvm-14/bin/clang",
+              "realpath": "/usr/lib/llvm-14/bin/clang",
+              "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+              "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+            },
+            "CXX": {
+              "path": "/usr/lib/llvm-14/bin/clang++",
+              "realpath": "/usr/lib/llvm-14/bin/clang",
+              "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+              "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+            },
+            "AR": {
+              "path": "/usr/lib/llvm-14/bin/llvm-ar",
+              "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+              "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+              "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+            },
+            "LIBCLANG_PATH": {
+              "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+              "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+              "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+              "version": "Debian clang version 14.0.6"
+            },
+            "discovery": {
+              "path": "/usr/lib/llvm-14/bin/llvm-config",
+              "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+              "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+              "version": "14.0.6"
+            }
+          },
+          "sdk": null
+        },
+        "scope": "permanent local reservation and actual native initializer",
+        "format": "bigbrotr-foundation-ci/1",
+        "status": "PASS",
+        "checks": [
+          {
+            "name": "fixture",
+            "command": [
+              "cargo",
+              "build",
+              "--locked",
+              "--release",
+              "-p",
+              "bigbrotr",
+              "--example",
+              "catalog_schema_probe",
+              "--example",
+              "catalog_initialization_probe"
+            ],
+            "status": "PASS",
+            "executed": true,
+            "exit_code": 0,
+            "seconds": 15.290881963912398
+          },
+          {
+            "name": "parent-tests",
+            "command": [
+              "cargo",
+              "test",
+              "--locked",
+              "--release",
+              "-p",
+              "bigbrotr",
+              "--lib",
+              "storage::archive",
+              "--",
+              "--nocapture"
+            ],
+            "status": "PASS",
+            "executed": true,
+            "exit_code": 0,
+            "seconds": 11.133860827889293
+          },
+          {
+            "name": "cli-tests",
+            "command": [
+              "cargo",
+              "test",
+              "--locked",
+              "--release",
+              "-p",
+              "bigbrotr",
+              "--bin",
+              "bigbrotr",
+              "--test",
+              "catalog_entrypoint"
+            ],
+            "status": "PASS",
+            "executed": true,
+            "exit_code": 0,
+            "seconds": 26.56151429703459
+          },
+          {
+            "name": "clippy",
+            "command": [
+              "cargo",
+              "clippy",
+              "--locked",
+              "--release",
+              "-p",
+              "bigbrotr",
+              "-p",
+              "bigbrotr-archive-worker",
+              "--lib",
+              "--example",
+              "catalog_schema_probe",
+              "--example",
+              "catalog_initialization_probe",
+              "--bin",
+              "bigbrotr",
+              "--bin",
+              "bigbrotr-archive-worker",
+              "--",
+              "-D",
+              "warnings"
+            ],
+            "status": "PASS",
+            "executed": true,
+            "exit_code": 0,
+            "seconds": 2.018268614076078
+          }
+        ],
+        "counts": {
+          "collected": 4,
+          "executed": 4,
+          "failed": 0,
+          "not_run": 0
+        }
+      },
+      "raw_identity": {
+        "tar_bytes": 153600,
+        "tar_sha256": "33d49f7a17374ad4651584518ab9aeb4ec99beb46fb87118ad535fc4691574cb",
+        "files": {
+          "resources.json": {
+            "bytes": 1221,
+            "sha256": "ffee83501275db0598c616d548331e2167b280d80638faa87420b0083cef978d"
+          },
+          "audit.json": {
+            "bytes": 1857,
+            "sha256": "395b948cfa590d5d93479b8884eba179394e396b8f09372eab750c03c5460892"
+          },
+          "container.log": {
+            "bytes": 283,
+            "sha256": "7206fd1bd31c7912e6c8dde4d0c6421b25e355e869ed91a361ebfe391986028d"
+          },
+          "out/build/source-manifest.json": {
+            "bytes": 90556,
+            "sha256": "fd712f5bed160364ed53df0cdfcae448f163c61242dd96b83823a802a075f40e"
+          },
+          "out/native-tests/checks/cli-tests.log": {
+            "bytes": 2167,
+            "sha256": "9c61eb711b54e84843f2a93d56c7f7baaecbe80e98c4264910e792a88729eb90"
+          },
+          "out/native-tests/checks/clippy.log": {
+            "bytes": 394,
+            "sha256": "a6fc3d15b95fad2f34557482c1471949a4fc9de49982e2be9cb6b51221415e01"
+          },
+          "out/native-tests/checks/fixture.log": {
+            "bytes": 130,
+            "sha256": "de6e9bdf8623ca846b678be75645780e537573a84b654f4b5d2eb91a58a6ed44"
+          },
+          "out/native-tests/checks/parent-tests.log": {
+            "bytes": 4562,
+            "sha256": "139698937f4f0c64d412dd42063e00bc7b4052f61548661f5e8771112945ab91"
+          },
+          "out/native-tests/checks/result.json": {
+            "bytes": 4218,
+            "sha256": "24c4dd60393a1c127f1430a7b25bb7a60bfa090be175e0e7b2e39069e4e6b182"
+          },
+          "out/native-tests/ordered-build.log": {
+            "bytes": 626,
+            "sha256": "c2dc77a458d95d8e8022e9dd56fb87822d5b393a3ff85ca107e150425d635383"
+          },
+          "out/native-tests/ready.json": {
+            "bytes": 4911,
+            "sha256": "c1b0c7257f7b01c30c5e152ba8091ffbfbef065d25378d2008b2c0954a15d5d5"
+          },
+          "out/native-tests/result.json": {
+            "bytes": 2800,
+            "sha256": "15dd2a7eadba44d99a6e9c99cb37e8a0847dda157dbdccb12b236e7ab5471103"
+          },
+          "out/native-tests/worker-identity.json": {
+            "bytes": 104,
+            "sha256": "c76d6822c6cff10729edc0d68f41196558b6cdedee0779cbf55ce624e1e80878"
+          },
+          "fixture-diagnosis.json": {
+            "bytes": 2434,
+            "sha256": "72310e61a2c983b58a7fa652b3a14752b11bbc356151fa5b4dce960859b4badd"
+          },
+          "initialization-cli.json": {
+            "bytes": 5514,
+            "sha256": "0738073f395c1afdb94cedd07706cda880c454707ef5a58f617e2a388918fbf9"
+          },
+          "initialization-cli.log": {
+            "bytes": 896,
+            "sha256": "86afc34a20de7ac17f822deff00c19139a778102b3d5cb593513918c843ccf54"
+          }
+        }
+      },
+      "source_verification": {
+        "revision": "a1c0921382faaa4252ca7eefd3aefbce3dc626bd",
+        "tree": "36cebbeb2a56b6d5fc4a7283a347cd9771f2c63d",
+        "files": 739,
+        "archive_sha256": "241b7101fb48244884aac17493ffce288aa58b0a8834317c124a86b51cca46c4",
+        "manifest_sha256": "fd712f5bed160364ed53df0cdfcae448f163c61242dd96b83823a802a075f40e"
+      },
+      "matrix_status": "FAIL",
+      "cases": [
+        {
+          "name": "initialize-real-worker-with-128mib-parent-payload",
+          "status": "INCOMPLETE",
+          "observed": {
+            "exit": 3,
+            "output": null,
+            "stderr_nonempty": true,
+            "seconds": 0.07724197721108794
+          }
+        }
+      ],
+      "reason": "Fixture missing explicit local_roles; case1 refused before marker; remaining matrix NOT_RUN.",
+      "diagnosis": {
+        "status": "DIAGNOSTIC_PASS",
+        "scope": "corrected static fixture only; first harness outcome remains FAIL",
+        "source": "a1c0921382faaa4252ca7eefd3aefbce3dc626bd",
+        "configuration_sha256": "36f7ba87baeb74e1f90109a4f74aed98b5f3c7b3d2027d9b69f2e7a5a6301507",
+        "missing_root_field": "topology.local_roles",
+        "initialization_session": 75568,
+        "recovery_exit": 0,
+        "recovery": {
+          "bootstrap": "retired",
+          "catalog_id": "02020202020202020202020202020202",
+          "dataset_id": "01010101010101010101010101010101",
+          "format": "bigbrotr-catalog-initialization/1",
+          "manager_inspection": "verified",
+          "new_installation": false,
+          "ready": false,
+          "runtime_authorization": "not-granted",
+          "status": "installed"
+        },
+        "tables": [
+          "bigbrotr_archive|attempts|CatalogManager",
+          "bigbrotr_archive|installation|CatalogManager",
+          "bigbrotr_archive|owner|CatalogManager",
+          "bigbrotr_archive|scientific_schema|CatalogManager",
+          "public|ducklake_column|CatalogManager",
+          "public|ducklake_column_mapping|CatalogManager",
+          "public|ducklake_column_tag|CatalogManager",
+          "public|ducklake_data_file|CatalogManager",
+          "public|ducklake_delete_file|CatalogManager",
+          "public|ducklake_file_column_stats|CatalogManager",
+          "public|ducklake_file_partition_value|CatalogManager",
+          "public|ducklake_file_variant_stats|CatalogManager",
+          "public|ducklake_files_scheduled_for_deletion|CatalogManager",
+          "public|ducklake_inlined_data_tables|CatalogManager",
+          "public|ducklake_macro|CatalogManager",
+          "public|ducklake_macro_impl|CatalogManager",
+          "public|ducklake_macro_parameters|CatalogManager",
+          "public|ducklake_metadata|CatalogManager",
+          "public|ducklake_name_mapping|CatalogManager",
+          "public|ducklake_partition_column|CatalogManager",
+          "public|ducklake_partition_info|CatalogManager",
+          "public|ducklake_schema|CatalogManager",
+          "public|ducklake_schema_versions|CatalogManager",
+          "public|ducklake_snapshot|CatalogManager",
+          "public|ducklake_snapshot_changes|CatalogManager",
+          "public|ducklake_sort_expression|CatalogManager",
+          "public|ducklake_sort_info|CatalogManager",
+          "public|ducklake_table|CatalogManager",
+          "public|ducklake_table_column_stats|CatalogManager",
+          "public|ducklake_table_stats|CatalogManager",
+          "public|ducklake_tag|CatalogManager",
+          "public|ducklake_view|CatalogManager"
+        ],
+        "bootstrap_retired_and_backends": "t|0"
+      }
+    },
+    "qualified": {
+      "resources": {
+        "source": "6265286954aeebc17b415b5d5fecb7c6a5119768",
+        "tree": "fc66839584da2151dfa44edf0a35932d641bf081",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/initialization-cli-6265286",
+        "owner": "8d2a1a9a8f6d99343e83f3fccb223e7c",
+        "container": "bigbrotr-implementation-initialization-cli-6265286",
+        "postgres": "bigbrotr-implementation-initialization-cli-6265286-pg",
+        "network": "bigbrotr-implementation-initialization-cli-6265286",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "state": "stopped-retained",
+        "source_files": 740,
+        "started_at": "2026-09-19T08:42:59.448710+00:00",
+        "network_id": "c025c4bbe030d4e4e874b580baab674d26ce733d8d4c08bca907057033338254",
+        "postgres_id": "ddb10491246fdf3739b5573c18a29476a01b46085469ffbf9c39cff46e8f81d9",
+        "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+        "container_id": "a1e67224833e97f4d05af1d1f6cd232dbb649fc27cda3c59225421d6b8d197af",
+        "completed_at": "2026-09-19T08:49:20.214389+00:00"
+      },
+      "audit": {
+        "status": "PASS",
+        "source": "6265286954aeebc17b415b5d5fecb7c6a5119768",
+        "tree": "fc66839584da2151dfa44edf0a35932d641bf081",
+        "source_files": 740,
+        "source_archive_sha256": "18730e49603a15ab63ce512d9b77d9bdcd955d4feb38a3e3ad5f1ee2e276315b",
+        "source_manifest_sha256": "111d17cb215fd746a9a4e43800b44c38faa35dec1f0cf4a1074a7a7192a035e5",
+        "artifacts": {
+          "main": {
+            "sha256": "18e762557fd1fa45f3e89eb07ec4d982c0af50637e5ddb95205c0a1c7a47c3d3",
+            "bytes": 8791880,
+            "elf_machine": 62
+          },
+          "worker": {
+            "sha256": "c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227",
+            "bytes": 12608608,
+            "elf_machine": 62
+          }
+        },
+        "qualification": {
+          "initialization-cli": "PASS"
+        },
+        "cases": {
+          "initialization-cli": 17
+        },
+        "build_ready": true,
+        "terminal": {
+          "container_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-19T08:43:02.156214814Z",
+            "FinishedAt": "2026-09-19T08:49:17.77600344Z"
+          },
+          "postgres_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-19T08:43:00.124625851Z",
+            "FinishedAt": "2026-09-19T08:49:19.773452316Z"
+          }
+        },
+        "owned_containers": [
+          "a1e67224833e97f4d05af1d1f6cd232dbb649fc27cda3c59225421d6b8d197af",
+          "ddb10491246fdf3739b5573c18a29476a01b46085469ffbf9c39cff46e8f81d9"
+        ],
+        "existing_containers_unchanged": 318,
+        "unrelated_containers_unchanged": 20,
+        "unrelated_running": 8,
+        "bigbrotr_running": 0,
+        "observed_at": "2026-09-19T08:49:20.214389+00:00",
+        "harness": {
+          "source": "3335e06e86eec01171ae1f2ecb2d8f75488ea2d0",
+          "tree": "3b4815cd10d50e96fd66926de4b4d06a7cc84802",
+          "script_sha256": "cb284d4d59f8b6f717ef2dbba3b3e4f4c7a8224ef8d7163b3d49bf88c73ae2f0",
+          "changed_paths": [
+            "docs/implementation/progress.md",
+            "docs/research/laboratory-inventory.json",
+            "docs/user/archive-initialization.md",
+            "experiments/archive-engine/initialization_cli_cases.py"
+          ],
+          "production_inputs_unchanged": true
+        }
+      },
+      "build": {
+        "source": "6265286954aeebc17b415b5d5fecb7c6a5119768",
+        "source_manifest_sha256": "111d17cb215fd746a9a4e43800b44c38faa35dec1f0cf4a1074a7a7192a035e5",
+        "native_toolchain": {
+          "os": "Linux",
+          "architecture": "x86_64",
+          "discovery": "llvm-config",
+          "environment": {
+            "CC": "/usr/lib/llvm-14/bin/clang",
+            "CXX": "/usr/lib/llvm-14/bin/clang++",
+            "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+            "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+            "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+            "CARGO_BUILD_JOBS": "2",
+            "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+          },
+          "tools": {
+            "CC": {
+              "path": "/usr/lib/llvm-14/bin/clang",
+              "realpath": "/usr/lib/llvm-14/bin/clang",
+              "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+              "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+            },
+            "CXX": {
+              "path": "/usr/lib/llvm-14/bin/clang++",
+              "realpath": "/usr/lib/llvm-14/bin/clang",
+              "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+              "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+            },
+            "AR": {
+              "path": "/usr/lib/llvm-14/bin/llvm-ar",
+              "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+              "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+              "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+            },
+            "LIBCLANG_PATH": {
+              "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+              "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+              "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+              "version": "Debian clang version 14.0.6"
+            },
+            "discovery": {
+              "path": "/usr/lib/llvm-14/bin/llvm-config",
+              "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+              "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+              "version": "14.0.6"
+            }
+          },
+          "sdk": null
+        },
+        "scope": "permanent local reservation and actual native initializer",
+        "status": "READY",
+        "control": "18e762557fd1fa45f3e89eb07ec4d982c0af50637e5ddb95205c0a1c7a47c3d3",
+        "worker": "c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227",
+        "probe": "210be5b56954b003f26282da89c4fe48531e3aa8ebd525ae12dc1c4e1497804b",
+        "initializer": "65bce8a30bd278f8744018239aed5b0fed3af959dd0c884cd392aa5b113e1168",
+        "build_info": {
+          "archive_worker": {
+            "bytes": 12608608,
+            "sha256": "c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227"
+          },
+          "capabilities": [
+            "event-verification",
+            "config-static"
+          ],
+          "capability_scope": "Strict bounded event JSON and independent ID/BIP340 verification; offline static configuration candidates and incomplete read-only doctor diagnostics; no storage, durable configuration authority, source policy, wire transport, filter, or general NIP conformance claim",
+          "debug_info": "false",
+          "format": "bigbrotr-build/1",
+          "inputs_sha256": {
+            "Cargo.lock": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215",
+            "contracts/protocol/nip01-event.json": "b830d5ab8651f5a763ebcffdc0eb1737ba70f4602c93fc714c892865ffca2db8",
+            "contracts/protocol/versions.json": "37c76706c5a2aa4fc72a40aeed908f104620eafcee1118b7cee8baf133546c95",
+            "contracts/release/dependencies.json": "4f73cd0a81916b7d203556ff9ad1d8efd97dfe95b2b2305c35468747e8669132",
+            "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167"
+          },
+          "optimization": "3",
+          "product": "BigBrotr",
+          "profile_assertion": "release",
+          "protocol_registry_format": "bigbrotr-protocol-versions/1",
+          "protocols": {
+            "event_verifier": "bigbrotr-nip01-verifier/1",
+            "nostr_nips": "a2494f4f81d46684e5814a9bf35e2b1df978f955"
+          },
+          "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+          "schemas": {
+            "build_info": "bigbrotr-build/1",
+            "config_static": "bigbrotr-config-static/1",
+            "doctor": "bigbrotr-doctor/1",
+            "signed_event": "nip01-event/1"
+          },
+          "source": {
+            "dirty": false,
+            "manifest_sha256": "111d17cb215fd746a9a4e43800b44c38faa35dec1f0cf4a1074a7a7192a035e5",
+            "revision": "6265286954aeebc17b415b5d5fecb7c6a5119768",
+            "state": "builder-supplied",
+            "tree": "fc66839584da2151dfa44edf0a35932d641bf081"
+          },
+          "target": "x86_64-unknown-linux-gnu",
+          "version": "0.1.0-dev"
+        },
+        "source_unchanged": true
+      },
+      "checks": {
+        "source": "6265286954aeebc17b415b5d5fecb7c6a5119768",
+        "source_manifest_sha256": "111d17cb215fd746a9a4e43800b44c38faa35dec1f0cf4a1074a7a7192a035e5",
+        "native_toolchain": {
+          "os": "Linux",
+          "architecture": "x86_64",
+          "discovery": "llvm-config",
+          "environment": {
+            "CC": "/usr/lib/llvm-14/bin/clang",
+            "CXX": "/usr/lib/llvm-14/bin/clang++",
+            "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+            "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+            "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+            "CARGO_BUILD_JOBS": "2",
+            "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+          },
+          "tools": {
+            "CC": {
+              "path": "/usr/lib/llvm-14/bin/clang",
+              "realpath": "/usr/lib/llvm-14/bin/clang",
+              "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+              "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+            },
+            "CXX": {
+              "path": "/usr/lib/llvm-14/bin/clang++",
+              "realpath": "/usr/lib/llvm-14/bin/clang",
+              "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+              "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+            },
+            "AR": {
+              "path": "/usr/lib/llvm-14/bin/llvm-ar",
+              "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+              "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+              "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+            },
+            "LIBCLANG_PATH": {
+              "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+              "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+              "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+              "version": "Debian clang version 14.0.6"
+            },
+            "discovery": {
+              "path": "/usr/lib/llvm-14/bin/llvm-config",
+              "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+              "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+              "version": "14.0.6"
+            }
+          },
+          "sdk": null
+        },
+        "scope": "permanent local reservation and actual native initializer",
+        "format": "bigbrotr-foundation-ci/1",
+        "status": "PASS",
+        "checks": [
+          {
+            "name": "fixture",
+            "command": [
+              "cargo",
+              "build",
+              "--locked",
+              "--release",
+              "-p",
+              "bigbrotr",
+              "--example",
+              "catalog_schema_probe",
+              "--example",
+              "catalog_initialization_probe"
+            ],
+            "status": "PASS",
+            "executed": true,
+            "exit_code": 0,
+            "seconds": 15.337843478191644
+          },
+          {
+            "name": "parent-tests",
+            "command": [
+              "cargo",
+              "test",
+              "--locked",
+              "--release",
+              "-p",
+              "bigbrotr",
+              "--lib",
+              "storage::archive",
+              "--",
+              "--nocapture"
+            ],
+            "status": "PASS",
+            "executed": true,
+            "exit_code": 0,
+            "seconds": 11.180094683077186
+          },
+          {
+            "name": "cli-tests",
+            "command": [
+              "cargo",
+              "test",
+              "--locked",
+              "--release",
+              "-p",
+              "bigbrotr",
+              "--bin",
+              "bigbrotr",
+              "--test",
+              "catalog_entrypoint"
+            ],
+            "status": "PASS",
+            "executed": true,
+            "exit_code": 0,
+            "seconds": 26.55985241010785
+          },
+          {
+            "name": "clippy",
+            "command": [
+              "cargo",
+              "clippy",
+              "--locked",
+              "--release",
+              "-p",
+              "bigbrotr",
+              "-p",
+              "bigbrotr-archive-worker",
+              "--lib",
+              "--example",
+              "catalog_schema_probe",
+              "--example",
+              "catalog_initialization_probe",
+              "--bin",
+              "bigbrotr",
+              "--bin",
+              "bigbrotr-archive-worker",
+              "--",
+              "-D",
+              "warnings"
+            ],
+            "status": "PASS",
+            "executed": true,
+            "exit_code": 0,
+            "seconds": 2.0673209470696747
+          }
+        ],
+        "counts": {
+          "collected": 4,
+          "executed": 4,
+          "failed": 0,
+          "not_run": 0
+        }
+      },
+      "raw_identity": {
+        "tar_bytes": 174080,
+        "tar_sha256": "3271b6f508bc3f87353981d87ad4819805c5d14bd3e4315d484c41a2be955db0",
+        "files": {
+          "resources.json": {
+            "bytes": 1221,
+            "sha256": "b0d93957ca2bed6cd7412cc40181b6b4745fef37885b1b85722bebe0eda99353"
+          },
+          "audit.json": {
+            "bytes": 2349,
+            "sha256": "38e0205f7784062e267acecce1c15c8a6d3fe44c245da86da06e91e5ce4d30db"
+          },
+          "container.log": {
+            "bytes": 283,
+            "sha256": "36685d571b25e27a011cc2f9f212427014d030d1d75f96b0b226a71c8264ab83"
+          },
+          "out/build/source-manifest.json": {
+            "bytes": 90667,
+            "sha256": "111d17cb215fd746a9a4e43800b44c38faa35dec1f0cf4a1074a7a7192a035e5"
+          },
+          "out/native-tests/checks/cli-tests.log": {
+            "bytes": 2167,
+            "sha256": "92fd9567b24aa339167bdc3547f88c6d040877b5ddcb25813e8ce765f0b504fc"
+          },
+          "out/native-tests/checks/clippy.log": {
+            "bytes": 394,
+            "sha256": "1fd4b3907b89f5d06012f7f44ac2720eb59b533c5eadb9a1498c5f4f5b70e0a5"
+          },
+          "out/native-tests/checks/fixture.log": {
+            "bytes": 130,
+            "sha256": "e8f614a8d3dee96b5b7b42a69541183363328dd9acd50efb660cfc0da81b43a7"
+          },
+          "out/native-tests/checks/parent-tests.log": {
+            "bytes": 4562,
+            "sha256": "81e5dafb620b442ef0ac727ac969c34ad0e9f64ffb3b9b7eadb8e6027e528918"
+          },
+          "out/native-tests/checks/result.json": {
+            "bytes": 4219,
+            "sha256": "e4a6bfa00f53d599020ec4bd81bdfd069341273ebaf34af55f072d61ebf4ff16"
+          },
+          "out/native-tests/ordered-build.log": {
+            "bytes": 626,
+            "sha256": "76148e54758780b654dcd4d606a0a9b4692ff616dbf019c22cddb5f9771e87ee"
+          },
+          "out/native-tests/ready.json": {
+            "bytes": 4911,
+            "sha256": "46bc7d379130675b6d388f775b68e1338d17a70f10e53c6a59d9bfdd88cd8d6f"
+          },
+          "out/native-tests/result.json": {
+            "bytes": 2800,
+            "sha256": "2fe1af4d87e6856b4a1d709de67a6316112ab74356ab2b43104681ab65b703e6"
+          },
+          "out/native-tests/worker-identity.json": {
+            "bytes": 104,
+            "sha256": "c76d6822c6cff10729edc0d68f41196558b6cdedee0779cbf55ce624e1e80878"
+          },
+          "initialization-cli.json": {
+            "bytes": 21748,
+            "sha256": "3e722625037417a0983096f0b1e84ded523134811294d2106a80ba5eb935d8ab"
+          },
+          "initialization-cli.log": {
+            "bytes": 86,
+            "sha256": "b7d0f4037d9481eefdad8644e9d6c8022f8d7398e89be26053e9ce8b1f34fae8"
+          }
+        }
+      },
+      "source_verification": {
+        "revision": "6265286954aeebc17b415b5d5fecb7c6a5119768",
+        "tree": "fc66839584da2151dfa44edf0a35932d641bf081",
+        "files": 740,
+        "archive_sha256": "18730e49603a15ab63ce512d9b77d9bdcd955d4feb38a3e3ad5f1ee2e276315b",
+        "manifest_sha256": "111d17cb215fd746a9a4e43800b44c38faa35dec1f0cf4a1074a7a7192a035e5"
+      },
+      "matrix_status": "PASS",
+      "cases": [
+        {
+          "name": "initialize-real-worker-with-128mib-parent-payload",
+          "status": "PASS",
+          "observed": {
+            "exit": 0,
+            "output": {
+              "bootstrap": "retired",
+              "catalog_id": "02020202020202020202020202020202",
+              "dataset_id": "01010101010101010101010101010101",
+              "format": "bigbrotr-catalog-initialization/1",
+              "manager_inspection": "verified",
+              "new_installation": true,
+              "ready": false,
+              "runtime_authorization": "not-granted",
+              "status": "installed"
+            },
+            "stderr_nonempty": false,
+            "seconds": 0.9601028827019036
+          },
+          "independent": {
+            "bootstrap_oid": 16398,
+            "bootstrap_retired": true,
+            "native_tables": 28,
+            "guard_tables": 4,
+            "attempts": 0
+          }
+        },
+        {
+          "name": "fresh-manager-inspect",
+          "status": "PASS",
+          "observed": {
+            "exit": 0,
+            "output": {
+              "catalog_id": "02020202020202020202020202020202",
+              "data_root": "/out/initialization-cli/clean-data/",
+              "dataset_id": "01010101010101010101010101010101",
+              "file_contents": "not-checked",
+              "format": "bigbrotr-catalog-inspection/1",
+              "ready": false,
+              "runtime_authorization": "not-granted",
+              "scientific_schema_version": 1,
+              "scope": "catalog identity, commit guard and logical schema metadata",
+              "status": "verified"
+            },
+            "stderr_nonempty": false,
+            "seconds": 0.08519519492983818
+          },
+          "before": {
+            "database_sha256": "a3e64bfa9b60c67ce881709484b1d1fdcbcb0332433fdd038621863420418d46",
+            "global_roles_md5": "8c126d95ceffe9a83a5614699736827a"
+          },
+          "after": {
+            "database_sha256": "a3e64bfa9b60c67ce881709484b1d1fdcbcb0332433fdd038621863420418d46",
+            "global_roles_md5": "8c126d95ceffe9a83a5614699736827a"
+          }
+        },
+        {
+          "name": "restart-recover-idempotent",
+          "status": "PASS",
+          "observed": {
+            "exit": 0,
+            "output": {
+              "bootstrap": "retired",
+              "catalog_id": "02020202020202020202020202020202",
+              "dataset_id": "01010101010101010101010101010101",
+              "format": "bigbrotr-catalog-initialization/1",
+              "manager_inspection": "verified",
+              "new_installation": false,
+              "ready": false,
+              "runtime_authorization": "not-granted",
+              "status": "installed"
+            },
+            "stderr_nonempty": false,
+            "seconds": 0.18387730792164803
+          },
+          "before": {
+            "database_sha256": "a3e64bfa9b60c67ce881709484b1d1fdcbcb0332433fdd038621863420418d46",
+            "global_roles_md5": "8c126d95ceffe9a83a5614699736827a"
+          },
+          "after": {
+            "database_sha256": "a3e64bfa9b60c67ce881709484b1d1fdcbcb0332433fdd038621863420418d46",
+            "global_roles_md5": "8c126d95ceffe9a83a5614699736827a"
+          }
+        },
+        {
+          "name": "fresh-initialize-retry-refuses-no-row-change",
+          "status": "PASS",
+          "observed": {
+            "exit": 4,
+            "output": null,
+            "stderr_nonempty": true,
+            "seconds": 0.17140137683600187
+          },
+          "before": {
+            "database_sha256": "a3e64bfa9b60c67ce881709484b1d1fdcbcb0332433fdd038621863420418d46",
+            "global_roles_md5": "8c126d95ceffe9a83a5614699736827a"
+          },
+          "after": {
+            "database_sha256": "a3e64bfa9b60c67ce881709484b1d1fdcbcb0332433fdd038621863420418d46",
+            "global_roles_md5": "8c126d95ceffe9a83a5614699736827a"
+          }
+        },
+        {
+          "name": "wrong-dataset-recovery-refuses",
+          "status": "PASS",
+          "observed": {
+            "exit": 4,
+            "output": null,
+            "stderr_nonempty": true,
+            "seconds": 0.0840097670443356
+          },
+          "before": {
+            "database_sha256": "a3e64bfa9b60c67ce881709484b1d1fdcbcb0332433fdd038621863420418d46",
+            "global_roles_md5": "8c126d95ceffe9a83a5614699736827a"
+          },
+          "after": {
+            "database_sha256": "a3e64bfa9b60c67ce881709484b1d1fdcbcb0332433fdd038621863420418d46",
+            "global_roles_md5": "8c126d95ceffe9a83a5614699736827a"
+          }
+        },
+        {
+          "name": "actual-full-output-pipe-bounded-exit",
+          "status": "PASS",
+          "observed": {
+            "exit": 1,
+            "seconds": 0.31702613132074475,
+            "stderr_nonempty": false
+          },
+          "before": {
+            "database_sha256": "a3e64bfa9b60c67ce881709484b1d1fdcbcb0332433fdd038621863420418d46",
+            "global_roles_md5": "8c126d95ceffe9a83a5614699736827a"
+          },
+          "after": {
+            "database_sha256": "a3e64bfa9b60c67ce881709484b1d1fdcbcb0332433fdd038621863420418d46",
+            "global_roles_md5": "8c126d95ceffe9a83a5614699736827a"
+          }
+        },
+        {
+          "name": "recover-stranded",
+          "status": "PASS",
+          "observed": {
+            "exit": 4,
+            "output": null,
+            "stderr_nonempty": true,
+            "seconds": 0.04481235705316067
+          },
+          "before": {
+            "database_sha256": "63840072e4140707cdd45a24eb71bb5c620e582e2b8ddf21000acdac544cc9b4",
+            "global_roles_md5": "0a670d86c580b51f760041dfb88cf2d5"
+          },
+          "after": {
+            "database_sha256": "63840072e4140707cdd45a24eb71bb5c620e582e2b8ddf21000acdac544cc9b4",
+            "global_roles_md5": "04ee611ce76b4e140e10149a4aee1b72"
+          }
+        },
+        {
+          "name": "recover-stranded-repeat",
+          "status": "PASS",
+          "observed": {
+            "exit": 4,
+            "output": null,
+            "stderr_nonempty": true,
+            "seconds": 0.04057780094444752
+          },
+          "before": {
+            "database_sha256": "63840072e4140707cdd45a24eb71bb5c620e582e2b8ddf21000acdac544cc9b4",
+            "global_roles_md5": "04ee611ce76b4e140e10149a4aee1b72"
+          },
+          "after": {
+            "database_sha256": "63840072e4140707cdd45a24eb71bb5c620e582e2b8ddf21000acdac544cc9b4",
+            "global_roles_md5": "04ee611ce76b4e140e10149a4aee1b72"
+          }
+        },
+        {
+          "name": "recover-complete",
+          "status": "PASS",
+          "observed": {
+            "exit": 0,
+            "output": {
+              "bootstrap": "retired",
+              "catalog_id": "02020202020202020202020202020202",
+              "dataset_id": "01010101010101010101010101010101",
+              "format": "bigbrotr-catalog-initialization/1",
+              "manager_inspection": "verified",
+              "new_installation": true,
+              "ready": false,
+              "runtime_authorization": "not-granted",
+              "status": "installed"
+            },
+            "stderr_nonempty": false,
+            "seconds": 0.30304733105003834
+          },
+          "before": {
+            "database_sha256": "78d81226126f516b4bfe4f1e074bf6c62eeb73c00bffc348fde849112e3d4012",
+            "global_roles_md5": "58c8280d4f12f1e4ad3050a0f62c8342"
+          },
+          "after": {
+            "database_sha256": "41186611d7745c6a8798476037c8ef2ea271b1fc2e6e20b50f47de419f8abd4c",
+            "global_roles_md5": "8805c1c43df1cee1a51fef6172b92647"
+          },
+          "independent": {
+            "bootstrap_oid": 16639,
+            "bootstrap_retired": true,
+            "native_tables": 28,
+            "guard_tables": 4,
+            "attempts": 0
+          }
+        },
+        {
+          "name": "recover-complete-repeat",
+          "status": "PASS",
+          "observed": {
+            "exit": 0,
+            "output": {
+              "bootstrap": "retired",
+              "catalog_id": "02020202020202020202020202020202",
+              "dataset_id": "01010101010101010101010101010101",
+              "format": "bigbrotr-catalog-initialization/1",
+              "manager_inspection": "verified",
+              "new_installation": false,
+              "ready": false,
+              "runtime_authorization": "not-granted",
+              "status": "installed"
+            },
+            "stderr_nonempty": false,
+            "seconds": 0.14614607812836766
+          },
+          "before": {
+            "database_sha256": "41186611d7745c6a8798476037c8ef2ea271b1fc2e6e20b50f47de419f8abd4c",
+            "global_roles_md5": "8805c1c43df1cee1a51fef6172b92647"
+          },
+          "after": {
+            "database_sha256": "41186611d7745c6a8798476037c8ef2ea271b1fc2e6e20b50f47de419f8abd4c",
+            "global_roles_md5": "8805c1c43df1cee1a51fef6172b92647"
+          }
+        },
+        {
+          "name": "recover-partial",
+          "status": "PASS",
+          "observed": {
+            "exit": 4,
+            "output": null,
+            "stderr_nonempty": true,
+            "seconds": 0.08928622119128704
+          },
+          "before": {
+            "database_sha256": "192f0fdca4496a1303940d98c6dded85a2651c83c50f526758368710bc002ded",
+            "global_roles_md5": "cde762fb08e535863657dc84040bf1fc"
+          },
+          "after": {
+            "database_sha256": "192f0fdca4496a1303940d98c6dded85a2651c83c50f526758368710bc002ded",
+            "global_roles_md5": "372168952cb3523abbe4cb3c0d325f6b"
+          }
+        },
+        {
+          "name": "recover-partial-repeat",
+          "status": "PASS",
+          "observed": {
+            "exit": 4,
+            "output": null,
+            "stderr_nonempty": true,
+            "seconds": 0.08518668822944164
+          },
+          "before": {
+            "database_sha256": "192f0fdca4496a1303940d98c6dded85a2651c83c50f526758368710bc002ded",
+            "global_roles_md5": "372168952cb3523abbe4cb3c0d325f6b"
+          },
+          "after": {
+            "database_sha256": "192f0fdca4496a1303940d98c6dded85a2651c83c50f526758368710bc002ded",
+            "global_roles_md5": "372168952cb3523abbe4cb3c0d325f6b"
+          }
+        },
+        {
+          "name": "lost-reservation-commit-before",
+          "status": "PASS",
+          "observed": {
+            "exit": 4,
+            "output": null,
+            "stderr_nonempty": true,
+            "seconds": 0.1969183050096035
+          },
+          "recovered": {
+            "exit": 4,
+            "output": null,
+            "stderr_nonempty": true,
+            "seconds": 0.07352299522608519
+          },
+          "reservation_present": false,
+          "native_tables": 0,
+          "durable": {
+            "database_sha256": "e1df90f4ba64332181798ba8b51fa7e4a716265d804727210f393529ae8bc43e",
+            "global_roles_md5": "372168952cb3523abbe4cb3c0d325f6b"
+          },
+          "proxy": {
+            "mode": "before-forward",
+            "reason": "before-forward",
+            "commits_seen": 1,
+            "commits_forwarded": 0,
+            "server_commit_complete": 0,
+            "client_commit_complete": 0,
+            "hold_action": null
+          }
+        },
+        {
+          "name": "lost-reservation-commit-after",
+          "status": "PASS",
+          "observed": {
+            "exit": 4,
+            "output": null,
+            "stderr_nonempty": true,
+            "seconds": 0.19217361602932215
+          },
+          "recovered": {
+            "exit": 4,
+            "output": null,
+            "stderr_nonempty": true,
+            "seconds": 0.09998873807489872
+          },
+          "reservation_present": true,
+          "native_tables": 0,
+          "durable": {
+            "database_sha256": "eee498c1377b7988db82a218c1a1ad660457bf3db44007d80fb6240616fe420e",
+            "global_roles_md5": "5efce997fa000d16393f5a92ce14d0fc"
+          },
+          "proxy": {
+            "mode": "after-complete",
+            "reason": "after-complete",
+            "commits_seen": 1,
+            "commits_forwarded": 1,
+            "server_commit_complete": 1,
+            "client_commit_complete": 0,
+            "hold_action": null
+          }
+        },
+        {
+          "name": "cancel-actual-driver-held-commit-close",
+          "status": "PASS",
+          "observed": {
+            "exit": 143,
+            "output": null,
+            "stderr_nonempty": true
+          },
+          "stop_seconds": 2.108096999116242,
+          "actual_recovery_lock_wait": true,
+          "recovered": {
+            "exit": 4,
+            "output": null,
+            "stderr_nonempty": true
+          },
+          "reservation_present": false,
+          "native_tables": 0,
+          "proxy": {
+            "mode": "hold",
+            "reason": "held-close",
+            "commits_seen": 1,
+            "commits_forwarded": 0,
+            "server_commit_complete": 0,
+            "client_commit_complete": 0,
+            "hold_action": "close"
+          }
+        },
+        {
+          "name": "cancel-actual-driver-held-commit-release",
+          "status": "PASS",
+          "observed": {
+            "exit": 143,
+            "output": null,
+            "stderr_nonempty": true
+          },
+          "stop_seconds": 2.0823947740718722,
+          "actual_recovery_lock_wait": true,
+          "recovered": {
+            "exit": 4,
+            "output": null,
+            "stderr_nonempty": true
+          },
+          "reservation_present": true,
+          "native_tables": 0,
+          "proxy": {
+            "mode": "hold",
+            "reason": "frontend-eof",
+            "commits_seen": 1,
+            "commits_forwarded": 1,
+            "server_commit_complete": 0,
+            "client_commit_complete": 0,
+            "hold_action": "release"
+          }
+        },
+        {
+          "name": "cancel-real-native-libpq-startup-and-recover",
+          "status": "PASS",
+          "observed": {
+            "exit": 143,
+            "output": null,
+            "stderr_nonempty": true
+          },
+          "worker": {
+            "pid": 4013,
+            "established": true
+          },
+          "stop_seconds": 0.08889579121023417,
+          "native_process_reaped": true,
+          "recovered": {
+            "exit": 4,
+            "output": null,
+            "stderr_nonempty": true,
+            "seconds": 0.08704454125836492
+          },
+          "bootstrap_retired": true,
+          "native_tables": 0
+        }
+      ]
+    }
+  },
+  "not_run_or_not_qualified": [
+    "New initializer/recovery CLI TLS matrix and native mutual TLS (explicit pre-reservation gate; selected capability remains required).",
+    "Natural drain with nonempty SQL-capable backends, bounded timeout and exhaustion cases.",
+    "CLI lost native/installation acknowledgement, coordinator SIGKILL and concurrent initializer races (prior helper evidence does not close new consumer acceptance).",
+    "New CLI actual filesystem alias/corrupt-bundle/credential refusal matrix beyond exercised local gates.",
+    "Cross-boot/restore mappings, filesystem/disk exhaustion, power failure, mixed/aged workloads, RSS limits.",
+    "Installed Control+Archive service, signed-event M1 read/export/restart, release/Compose/arm64/hosted Actions qualification."
+  ],
+  "claims": [
+    "17 qualified core cases PASS is scoped evidence, not completion of the full initializer contract, P02 or M1.",
+    "Native cancellation observes an established libpq socket and positively reaped child. PostgreSQL delay reset occurs before recovery, so this does not exercise a nonempty backend drain.",
+    "Release after frontend EOF has no server COMMIT ACK in the proxy; advisory-lock ordering and independent durable reservation/retirement SQL establish the committed outcome.",
+    "One clean initialization took0.960s, held-driver SIGTERM2.108/2.082s, native SIGTERM0.089s, full-output-pipe exit0.317s. These isolated timings are not performance/capacity guarantees."
+  ],
+  "native_check_scope": {
+    "each_artifact_source": "ordered main/worker builds, fixture builds,34 archive-parent tests passed/1 ignored,8 binary tests and10 CLI tests passed,scoped Clippy passed",
+    "ignored": "native_worker_alone_retains_custody_after_coordinator_descriptors_close requires its dedicated harness; not rerun here. Earlier3efde78 custody evidence retains its own scope; ignored is not PASS."
+  }
+}

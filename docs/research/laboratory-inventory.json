@@ -9520,12 +9520,12 @@
       ]
     },
     "initialization_cli": {
-      "status": "second-native-build-running",
+      "status": "core-cli-matrix-pass-full-acceptance-open",
       "local_raw_root": ".research/implementation/archive-worker/initialization-cli",
       "source_parent": "8f79a5621a9f76071b0c17d435494e3427920c10",
       "scope": "actual installed archive initialize and recover commands",
       "cache_source": "initialization-recovery-660df73",
-      "resources": "second lab running",
+      "resources": "both labs stopped-retained; no active experiment",
       "not_qualified": [
         "native CLI journeys",
         "cancellation/drain/TLS",
@@ -9789,14 +9789,179 @@
           "network": "bigbrotr-implementation-initialization-cli-6265286",
           "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
           "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
-          "state": "running",
+          "state": "stopped-retained",
           "source_files": 740,
           "started_at": "2026-09-19T08:42:59.448710+00:00",
           "network_id": "c025c4bbe030d4e4e874b580baab674d26ce733d8d4c08bca907057033338254",
           "postgres_id": "ddb10491246fdf3739b5573c18a29476a01b46085469ffbf9c39cff46e8f81d9",
           "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
-          "container_id": "a1e67224833e97f4d05af1d1f6cd232dbb649fc27cda3c59225421d6b8d197af"
+          "container_id": "a1e67224833e97f4d05af1d1f6cd232dbb649fc27cda3c59225421d6b8d197af",
+          "completed_at": "2026-09-19T08:49:20.214389+00:00"
+        },
+        "audit": {
+          "status": "PASS",
+          "source": "6265286954aeebc17b415b5d5fecb7c6a5119768",
+          "tree": "fc66839584da2151dfa44edf0a35932d641bf081",
+          "source_files": 740,
+          "source_archive_sha256": "18730e49603a15ab63ce512d9b77d9bdcd955d4feb38a3e3ad5f1ee2e276315b",
+          "source_manifest_sha256": "111d17cb215fd746a9a4e43800b44c38faa35dec1f0cf4a1074a7a7192a035e5",
+          "artifacts": {
+            "main": {
+              "sha256": "18e762557fd1fa45f3e89eb07ec4d982c0af50637e5ddb95205c0a1c7a47c3d3",
+              "bytes": 8791880,
+              "elf_machine": 62
+            },
+            "worker": {
+              "sha256": "c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227",
+              "bytes": 12608608,
+              "elf_machine": 62
+            }
+          },
+          "qualification": {
+            "initialization-cli": "PASS"
+          },
+          "cases": {
+            "initialization-cli": 17
+          },
+          "build_ready": true,
+          "terminal": {
+            "container_id": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 143,
+              "Error": "",
+              "StartedAt": "2026-09-19T08:43:02.156214814Z",
+              "FinishedAt": "2026-09-19T08:49:17.77600344Z"
+            },
+            "postgres_id": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-09-19T08:43:00.124625851Z",
+              "FinishedAt": "2026-09-19T08:49:19.773452316Z"
+            }
+          },
+          "owned_containers": [
+            "a1e67224833e97f4d05af1d1f6cd232dbb649fc27cda3c59225421d6b8d197af",
+            "ddb10491246fdf3739b5573c18a29476a01b46085469ffbf9c39cff46e8f81d9"
+          ],
+          "existing_containers_unchanged": 318,
+          "unrelated_containers_unchanged": 20,
+          "unrelated_running": 8,
+          "bigbrotr_running": 0,
+          "observed_at": "2026-09-19T08:49:20.214389+00:00",
+          "harness": {
+            "source": "3335e06e86eec01171ae1f2ecb2d8f75488ea2d0",
+            "tree": "3b4815cd10d50e96fd66926de4b4d06a7cc84802",
+            "script_sha256": "cb284d4d59f8b6f717ef2dbba3b3e4f4c7a8224ef8d7163b3d49bf88c73ae2f0",
+            "changed_paths": [
+              "docs/implementation/progress.md",
+              "docs/research/laboratory-inventory.json",
+              "docs/user/archive-initialization.md",
+              "experiments/archive-engine/initialization_cli_cases.py"
+            ],
+            "production_inputs_unchanged": true
+          }
+        },
+        "evidence_identity": {
+          "tar_bytes": 174080,
+          "tar_sha256": "3271b6f508bc3f87353981d87ad4819805c5d14bd3e4315d484c41a2be955db0",
+          "files": {
+            "resources.json": {
+              "bytes": 1221,
+              "sha256": "b0d93957ca2bed6cd7412cc40181b6b4745fef37885b1b85722bebe0eda99353"
+            },
+            "audit.json": {
+              "bytes": 2349,
+              "sha256": "38e0205f7784062e267acecce1c15c8a6d3fe44c245da86da06e91e5ce4d30db"
+            },
+            "container.log": {
+              "bytes": 283,
+              "sha256": "36685d571b25e27a011cc2f9f212427014d030d1d75f96b0b226a71c8264ab83"
+            },
+            "out/build/source-manifest.json": {
+              "bytes": 90667,
+              "sha256": "111d17cb215fd746a9a4e43800b44c38faa35dec1f0cf4a1074a7a7192a035e5"
+            },
+            "out/native-tests/checks/cli-tests.log": {
+              "bytes": 2167,
+              "sha256": "92fd9567b24aa339167bdc3547f88c6d040877b5ddcb25813e8ce765f0b504fc"
+            },
+            "out/native-tests/checks/clippy.log": {
+              "bytes": 394,
+              "sha256": "1fd4b3907b89f5d06012f7f44ac2720eb59b533c5eadb9a1498c5f4f5b70e0a5"
+            },
+            "out/native-tests/checks/fixture.log": {
+              "bytes": 130,
+              "sha256": "e8f614a8d3dee96b5b7b42a69541183363328dd9acd50efb660cfc0da81b43a7"
+            },
+            "out/native-tests/checks/parent-tests.log": {
+              "bytes": 4562,
+              "sha256": "81e5dafb620b442ef0ac727ac969c34ad0e9f64ffb3b9b7eadb8e6027e528918"
+            },
+            "out/native-tests/checks/result.json": {
+              "bytes": 4219,
+              "sha256": "e4a6bfa00f53d599020ec4bd81bdfd069341273ebaf34af55f072d61ebf4ff16"
+            },
+            "out/native-tests/ordered-build.log": {
+              "bytes": 626,
+              "sha256": "76148e54758780b654dcd4d606a0a9b4692ff616dbf019c22cddb5f9771e87ee"
+            },
+            "out/native-tests/ready.json": {
+              "bytes": 4911,
+              "sha256": "46bc7d379130675b6d388f775b68e1338d17a70f10e53c6a59d9bfdd88cd8d6f"
+            },
+            "out/native-tests/result.json": {
+              "bytes": 2800,
+              "sha256": "2fe1af4d87e6856b4a1d709de67a6316112ab74356ab2b43104681ab65b703e6"
+            },
+            "out/native-tests/worker-identity.json": {
+              "bytes": 104,
+              "sha256": "c76d6822c6cff10729edc0d68f41196558b6cdedee0779cbf55ce624e1e80878"
+            },
+            "initialization-cli.json": {
+              "bytes": 21748,
+              "sha256": "3e722625037417a0983096f0b1e84ded523134811294d2106a80ba5eb935d8ab"
+            },
+            "initialization-cli.log": {
+              "bytes": 86,
+              "sha256": "b7d0f4037d9481eefdad8644e9d6c8022f8d7398e89be26053e9ce8b1f34fae8"
+            }
+          }
         }
+      },
+      "report": "docs/implementation/evidence/p02-initialization-cli-native-20260919.json",
+      "workload_source_verification": {
+        "source": "3335e06e86eec01171ae1f2ecb2d8f75488ea2d0",
+        "tree": "3b4815cd10d50e96fd66926de4b4d06a7cc84802",
+        "script_sha256": "cb284d4d59f8b6f717ef2dbba3b3e4f4c7a8224ef8d7163b3d49bf88c73ae2f0",
+        "changed_paths": [
+          "docs/implementation/progress.md",
+          "docs/research/laboratory-inventory.json",
+          "docs/user/archive-initialization.md",
+          "experiments/archive-engine/initialization_cli_cases.py"
+        ],
+        "production_inputs_unchanged": true,
+        "verified_on": "Mac using exact Git objects",
+        "production_difference": []
+      },
+      "second_source_verification": {
+        "revision": "6265286954aeebc17b415b5d5fecb7c6a5119768",
+        "tree": "fc66839584da2151dfa44edf0a35932d641bf081",
+        "files": 740,
+        "archive_sha256": "18730e49603a15ab63ce512d9b77d9bdcd955d4feb38a3e3ad5f1ee2e276315b",
+        "manifest_sha256": "111d17cb215fd746a9a4e43800b44c38faa35dec1f0cf4a1074a7a7192a035e5"
       }
     }
   },

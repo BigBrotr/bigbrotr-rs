@@ -325,6 +325,14 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   effect checks cover ambiguous outcomes too; the failed baseline and weaker first
   oracle remain recorded. SQL-capable backend drain, the complete initialization/
   recovery CLI and configured native mutual TLS remain open.
+  The real [initializer/recovery CLI](../user/archive-initialization.md) now has
+  [17 scoped native scenarios](evidence/p02-initialization-cli-native-20260919.json)
+  with binaries at `6265286` and separately pinned harness `3335e06` (unchanged production).
+  It connects reservation, native initialization/join, recovery, exact retirement,
+  manager installation and fresh inspection. Actual driver/native cancellation and
+  a full output pipe are exercised. The malformed first fixture remains recorded.
+  Nonempty/timeout drain, new-CLI TLS/mTLS, remaining crash/acknowledgement paths and
+  the installed service still gate complete acceptance; this step remains open.
 - [ ] **Step 4:** After an ambiguous commit, query the receipt in a new transaction; do not
   repeat while receipt state is unknown. Reject mismatched batch digest.
   Include loss of the actual native PostgreSQL COMMIT response, plus physical file
