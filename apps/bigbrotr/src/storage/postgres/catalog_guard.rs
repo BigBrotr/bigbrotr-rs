@@ -257,6 +257,9 @@ async fn install_inner(
         installation::expected_owner(&tx, roles).await?;
     }
     inspection::revoked(&tx, bootstrap_login).await?;
+    // Foreign-key checks use the table owner's rights, even for a superuser
+    // initializer. Refuse missing manager privileges before inserting bindings.
+    privileges::installed(&tx).await?;
     let layout = inspection::layout(&tx).await?;
     tx.execute("INSERT INTO bigbrotr_archive.installation VALUES(true,$1::bytea,$2::bytea,$3::text,1,$4::bytea,$5::bytea)", &[&&identity.dataset.as_bytes()[..],&&identity.catalog.as_bytes()[..],&identity.root,&&checksum()[..],&&layout[..]]).await.map_err(backend)?;
     if identity.scientific {

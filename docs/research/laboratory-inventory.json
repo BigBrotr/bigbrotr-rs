@@ -8101,7 +8101,7 @@
       "report": "docs/implementation/evidence/p02-native-catalog-auth-20260919.json"
     },
     "catalog_installed_ownership": {
-      "status": "d21eacc counterexamples reproduced; 4404a16 one install case then FAIL on pg_dump owner-comment comparison; retired and15 raw files verified; harness correction pending exact-source rerun",
+      "status": "9f02f43 native22 PASS then wrong refusal classification Backend for missing owner SELECT; catalog/roles unchanged, lab stopped and16 files verified; early semantic check corrected on Mac, rerun pending",
       "local_root": ".research/implementation/archive-worker/catalog-ownership",
       "base_source": "ac13f11e150b6b845d798c3e13a51aeecbff11e5",
       "scope": "P02-T04 step3 atomic target ownership and guard ACL closure prerequisite",
@@ -8168,29 +8168,40 @@
       "baseline_tar_sha256": "19951df7132b7bc83c47ee23cfa39cc8ed638e42dc79b9f788340c81e2122ae6",
       "baseline_source_verification": ".research/implementation/archive-worker/catalog-ownership/baseline-source-verification.json",
       "candidate_run": {
-        "source": "4404a1630300a75453280744cefa9f7cf0973ebe",
-        "tree": "47aa62bb0c76de6095c322ab9d5b831355106ec9",
-        "root": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-install-4404a16",
-        "owner": "2b037967476967d24ea43e7c9860b770",
-        "container": "bigbrotr-implementation-catalog-install-4404a16",
-        "postgres": "bigbrotr-implementation-catalog-install-4404a16-pg",
-        "network": "bigbrotr-implementation-catalog-install-4404a16",
+        "source": "9f02f437678a5ffaff9e2bc9c3f5ec7ffb7fc14e",
+        "tree": "754efdcdb1ef103478067b1611a9a8ac8ad034a8",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-install-9f02f43",
+        "owner": "d8b7192cd764f58b56ddc49690c36c0e",
+        "container": "bigbrotr-implementation-catalog-install-9f02f43",
+        "postgres": "bigbrotr-implementation-catalog-install-9f02f43-pg",
+        "network": "bigbrotr-implementation-catalog-install-9f02f43",
         "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
         "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
         "state": "stopped-retained",
         "source_files": 722,
-        "started_at": "2026-09-19T05:48:38.686465+00:00",
-        "network_id": "bed47389ea1180b124f1e405552f109f81538c4f0652f849f06bdc418ad04155",
-        "postgres_id": "2ed4c54bf3ca7232c7b2d70498d4bc4cf817cfc3b5662699f5334baec70948e4",
+        "started_at": "2026-09-19T05:53:46.881573+00:00",
+        "network_id": "475fdc395c19cef344561137deef3000c5e9aae31f4cfac9eb2892a63899ea75",
+        "postgres_id": "b38c00e53f220a6432c5b7f5ee60a3b8aac82565997c6d93ee09e9b434192ac8",
         "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
-        "container_id": "fba591746d3e1721daf77e84b06a59ea4a908a51a484a58a646c58a5238b1986",
-        "completed_at": "2026-09-19T05:51:32.226887+00:00"
+        "container_id": "db24674400d539af10b74a44b2b037ce5002e0b708ffa5a50ce7ca0382e4968c",
+        "completed_at": "2026-09-19T05:57:04.708305+00:00"
       },
       "failed_candidate": {
         "raw": ".research/implementation/archive-worker/catalog-ownership/failed-owner-comments",
         "diagnostics": ".research/implementation/archive-worker/catalog-ownership/failure-diagnostics/copy-comparison.json",
         "tar_sha256": "2e3ed2a2d4d5b94156f16f40776a6e723dafecadabf6fa3b02ee7dec846c329c",
         "cause": "data-only pg_dump includes owner comments that must change; independent 28 COPY blocks and224 rows equal"
+      },
+      "failed_owner_privilege": {
+        "raw": ".research/implementation/archive-worker/catalog-ownership/failed-owner-privilege",
+        "diagnosis": ".research/implementation/archive-worker/catalog-ownership/owner-privilege-diagnosis.json",
+        "tar_sha256": "cf9fe66a27e786e6d094ff2b74fd5875698f865e1461743edfe7b2670c1eb694",
+        "source_inspection": {
+          "url": "https://raw.githubusercontent.com/postgres/postgres/REL_16_15/src/backend/utils/adt/ri_triggers.c",
+          "path": ".research/implementation/archive-worker/catalog-ownership/postgres-REL_16_15-ri_triggers.c",
+          "sha256": "321bb4362931d64d59d4491485c50a290b5ec7a50f076eaa93d1febc63d303c1",
+          "read_scope": "ri_PlanCheck and ri_PerformCheck, owner identity switching for actual foreign-key SQL"
+        }
       }
     }
   },

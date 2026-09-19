@@ -21,18 +21,17 @@ installed service readiness.
 
 ## Actual Git and ownership
 
-Mac main HEAD 4404a1630300a75453280744cefa9f7cf0973ebe, two unpublished
+Mac main HEAD 9f02f437678a5ffaff9e2bc9c3f5ec7ffb7fc14e, three unpublished
 fixture/implementation commits ahead of verified origin/main ac13f11e150b6b845d798c3e13a51aeecbff11e5.
 All three authentication commits were pushed normally; repository remains private.
-Root is sole writer. Dirty harness/checkpoint/inventory correct the first native
-fixture failure. Candidate4404a16 build/three credential tests/Clippy PASS; native
-suite FAIL after its first install because data-only pg_dump owner comments change
-with intended ownership. Independent retained COPY comparison:28 blocks,224 rows
-identical; changed-table and missing-block negative controls refuse. No product
-change. Corrected harness compares complete COPY headers/rows with nonempty/table
-preconditions; full catalog dumps still guard refusal/no-mutation cases. It also
-persists observed probe JSON before any subsequent audit I/O (AI review finding).
-Mac source row comparison and Python checks PASS; corrected native suite NOT_RUN.
+Root is sole writer. Dirty catalog_guard/checkpoint/inventory add semantic privilege
+validation before dependent scientific-binding INSERT. Native9f02f43:22 cases PASS,
+then FAIL at default-owner_select: actual Backend instead of UnsafeRole, with
+complete catalog/roles unchanged. PG diagnostic and exact16.15 ri_PlanCheck/
+ri_PerformCheck confirm foreign-key SQL executes as the owner and fails before
+the previous final privilege check. Corrected ordering preserves typed refusal;
+no SQL migration/worker change. Mac scoped Clippy/format PASS; corrected native
+qualification NOT_RUN. Previous4404a16 fixture comparison FAIL also retained.
 
 ## Installed catalog inspection qualified within its scope
 
@@ -114,6 +113,18 @@ No further discrepancy; reviewer did not execute native work or inspect retained
 ELF bytes/full host inventory locally. Root reviewed the complete change diff.
 
 ## Owned resources
+
+Stopped-retained catalog-install-9f02f43 ownerd8b7192cd764f58b56ddc49690c36c0e:
+runnerdb24674400d539af10b74a44b2b037ce5002e0b708ffa5a50ce7ca0382e4968c,
+PGb38c00e53f220a6432c5b7f5ee60a3b8aac82565997c6d93ee09e9b434192ac8,
+network475fdc395c19cef344561137deef3000c5e9aae31f4cfac9eb2892a63899ea75.
+Clean tree754efdcdb1ef103478067b1611a9a8ac8ad034a8,722 files. Native31735 terminal1,
+audit95437 terminal0,collection23240 terminal0.16 raw files/all722 source files
+verified; tarcf9fe66a27e786e6d094ff2b74fd5875698f865e1461743edfe7b2670c1eb694.
+Raw catalog-ownership/failed-owner-privilege; owner-privilege-diagnosis.json binds
+PG error and exact upstream source digest. Runner143,PG0,no OOM,294 preexisting
+containers unchanged,8 unrelated running,zero BigBrotr. Network empty-retained.
+No active experiment. Next candidate copies9f02f43 build cache/assets read-only.
 
 Stopped-retained catalog-install-4404a16 owner2b037967476967d24ea43e7c9860b770:
 runnerfba591746d3e1721daf77e84b06a59ea4a908a51a484a58a646c58a5238b1986,
@@ -210,7 +221,7 @@ Do not mechanically rerun unrelated suites.
 Implement the explicit fresh initializer under P02-T04 steps3/4/5, starting with
 one atomic install_for_manager operation: configured manager OID, exact object
 ownership transfer, retired bootstrap OID and privilege closure. Baseline counterexamples and4404a16 fixture FAIL are collected. Commit/transfer
-the corrected harness (production inputs unchanged), then run its real PG cases, including
+the early privilege-check correction, then run the same actual PG cases, including
 expected role OIDs, named-reader compatibility, invalid defaults/columns/PUBLIC,
 missing manager rights, rollback, COMMIT ambiguity and concurrent installers.
 Native mutual TLS and complete reserved initializer/CLI remain required.

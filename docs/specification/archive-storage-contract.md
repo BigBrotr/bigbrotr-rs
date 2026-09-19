@@ -234,7 +234,9 @@ including PUBLIC and built-in defaults for NULL ACLs. Ordinary readers may recei
 SELECT on installation/scientific_schema and native tables; no non-owner grant may
 authorize owner/attempt mutation, guard function execution, guard schema CREATE,
 native REFERENCES/TRIGGER/TRUNCATE or onward delegation. Runtime manager rights
-must also be present: owners can revoke their ordinary privileges from themselves.
+must also be present before dependent binding INSERTs: owners can revoke their
+ordinary privileges from themselves, and foreign-key checks use that owner.
+Refuse this as unsafe role state before a generic SQL permission failure.
 Manager membership must not create another ordinary owner principal. Superusers,
 database/public-schema administrators and privileged cluster-wide roles remain
 the trusted infrastructure boundary; object ACL inspection does not isolate them.
