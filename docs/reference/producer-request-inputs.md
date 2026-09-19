@@ -242,3 +242,54 @@ preserves the original PG row/xmin, and all27 native rows match the independent
 oracle. No logical position, producer checkpoint, ACK or GC is inferred from these
 results. The report preserves the initial SQL expectation failure, later observer
 correction and terminal audit recovery rather than relabeling them as first-run success.
+
+## Positive original-request resolution
+
+The current P02-T02 step 4 candidate adds a bounded positive-only resolver after
+the [native producer barrier](ingest-bootstrap.md). Qualification is in progress;
+the [execution checkpoint](../implementation/progress.md) separates actual native
+results from unexecuted PostgreSQL, process and failure scenarios. It does not
+complete the drain/handoff protocol or grant successor authority.
+
+`ControlSession::resolve_initial_producer_request` takes an exclusively open
+`IngestRecovery` and the complete original registration. Its shared closing
+preflight validates current Control, the full current policy, historical native
+identity and registration, then retains Ingest/role SHARE and producer UPDATE
+locks. Both PostgreSQL closing and the actual native closing marker are required.
+The original expired Ingest scheduling lease is not renewed or impersonated.
+The short current-Control lease starts before coordination I/O and is checked
+before/after bounded native reads, before COMMIT and before delivery.
+
+The immutable reservation supplies request digest, input byte length and native
+manifest identity. The native reader binds the exact retained canonical input to
+that request and dataset. Bootstrap reconstructs and compares its complete
+original first batch. Event replay verifies the signed original for a positive
+receipt and checks its own historical body, scoped eligibility, sufficient
+receive/witness effects and complete dictionary closure, plus the original pending
+marker for NewFacts. It does not consult newer minima to replace historical facts.
+The original receipt/rejection bytes and policy remain the historical decision.
+Foreign receipt topology/recovery generations are unsupported by this initial
+path; all facts and original input must still be locally retained. ACK and retired
+watermarks must be zero and owner/producer epochs must be one.
+
+Only that internal native witness can enter the existing outcome-copy adapter.
+Before SQL insertion, it compares request, digest, manifest and the actual encoded
+input length with the locked reservation. Identical copies retain every original
+row field, including recorder, timestamp and xmin; new copies attribute the
+current Control recorder separately from the original issuer. No migration or
+backfill is needed: migration0012 already supports that distinction. Native state,
+input files, producer reservations, logical checkpoints and ACK remain unchanged.
+
+Missing original input, missing request detail at or below issued, or a request
+above issued never establishes noncommit. The latter two remain Unresolved, with
+no negative outcome, cancellation marker or identity reuse. Reduced resource
+limits can be retried against identical bytes. Any error after the connected
+operation starts leaves its Control session unavailable; a fresh claim resolves
+the same request. Lost COMMIT is CommitUnknown, including when the exact outcome
+row was committed; never undo native effects or insert under a replacement ID.
+
+Separate transferred grants cover input decoding and native outcome/dependency
+inspection plus PostgreSQL handoff. Dictionary closure keeps two bounded vectors
+of fixed-size references and decodes one fact at a time. This is not a whole-store
+scrub, an archive fallback, causal backup validation, contiguous resolved prefix,
+input repair, ACK/GC or logical import completion. Those remain required tasks.

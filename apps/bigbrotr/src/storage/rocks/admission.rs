@@ -76,6 +76,17 @@ pub struct StoredOutcome {
     _permit: OwnedPermit,
 }
 impl StoredOutcome {
+    pub(super) fn new(
+        outcome: AdmissionOutcome,
+        native_outcome: super::NativeOutcomeCopy,
+        permit: OwnedPermit,
+    ) -> Self {
+        Self {
+            outcome,
+            native_outcome,
+            _permit: permit,
+        }
+    }
     pub fn outcome(&self) -> &AdmissionOutcome {
         &self.outcome
     }
@@ -278,7 +289,7 @@ impl AdmissionLimits {
         Ok((8 * self.max_batch_bytes
             + super::outcome_copy::HANDOFF_DATA_BYTES
             + super::request_inputs::STAGING_OVERHEAD_BYTES
-            + self.max_dependencies * (size_of::<FactRef>() + size_of::<QualifiedRef>())
+            + self.max_dependencies * (size_of::<FactRef>() + 2 * size_of::<QualifiedRef>())
             + Prepared::entry_allocation_bytes(16)
             + 4 * size_of::<Fact>()
             + size_of::<Receipt>()) as u64)
@@ -382,57 +393,34 @@ impl IngestStore {
         if sequence <= retired {
             return Err(AdmissionError::RetiredRequest);
         }
-        if let Some(value) =
-            self.admission_value(request_key, limits.max_batch_bytes, &mut reads)?
-        {
+        if let Some((outcome, native_outcome)) = self.replay_event(
+            input.request,
+            input.digest,
+            input
+                .verified_event()
+                .map(|event| super::receipt_effects::ReplayEventIntent {
+                    event: event.event(),
+                    scope: input.scope,
+                    origin: input.origin,
+                    observation: input.observation,
+                }),
+            matches!(input.event, Some(Err(RejectionReason::EventSize))).then(|| {
+                // Verification discarded the original owned body. Reuse that
+                // still-retained input grant; do not charge its reconstruction
+                // to the concurrent fact/receipt operation grant.
+                (
+                    input.request_preimage.as_slice(),
+                    input_capacity(&input._permit).saturating_sub(
+                        input.request_preimage.capacity() + size_of::<PreparedEvent>(),
+                    ),
+                )
+            }),
+            limits,
+            &mut reads,
+        )? {
             if sequence > issued {
                 return Err(AdmissionError::StateMismatch);
             }
-            let (outcome, native_outcome) = if value.starts_with(REJECTION_PREFIX) {
-                let (outcome, policy) = read_rejection(&value, &input, identity.dataset_id)?;
-                (
-                    outcome,
-                    super::NativeOutcomeCopy::rejection(
-                        input.request,
-                        input.digest,
-                        policy,
-                        &self.manifest,
-                        value,
-                    ),
-                )
-            } else {
-                let receipt = Receipt::decode_persistent(&value, limits.receipts())
-                    .map_err(BootstrapError::from)?;
-                if receipt.request_id() != input.request
-                    || receipt.protection_context().dataset_id != identity.dataset_id
-                {
-                    return Err(AdmissionError::StateMismatch);
-                }
-                if receipt.request_digest() != input.digest {
-                    return Err(AdmissionError::RequestConflict);
-                }
-                // Immutable receipt dependencies may precede today's selected
-                // minima. Never replace an old result with a freshly reduced one.
-                for dependency in receipt.dependencies().records() {
-                    self.admission_fact(*dependency, limits, &mut reads)?;
-                }
-                if let Some(batch) = receipt.batch() {
-                    let value = self
-                        .admission_value(
-                            IngestKey::PendingBatch {
-                                first: batch.first(),
-                            },
-                            128,
-                            &mut reads,
-                        )?
-                        .ok_or(AdmissionError::StateMismatch)?;
-                    if value != PendingBatchHeader::from_batch(batch).encode() {
-                        return Err(AdmissionError::StateMismatch);
-                    }
-                }
-                let copy = super::NativeOutcomeCopy::receipt(&receipt, &self.manifest)?;
-                (AdmissionOutcome::Durable(receipt), copy)
-            };
             authority()?;
             return Ok(StoredOutcome {
                 outcome,
@@ -509,6 +497,119 @@ impl IngestStore {
             native_outcome,
             _permit: permit,
         })
+    }
+
+    /// Reads the original committed result; current minima never replace it.
+    pub(super) fn replay_event(
+        &self,
+        request: ProducerRequestId,
+        digest: Digest256,
+        input: Option<super::receipt_effects::ReplayEventIntent<'_>>,
+        size_limited_input: Option<(&[u8], usize)>,
+        limits: AdmissionLimits,
+        reads: &mut ReadBudget,
+    ) -> Result<Option<(AdmissionOutcome, super::NativeOutcomeCopy)>, AdmissionError> {
+        let identity = *self.manifest.identity();
+        let Some(value) = self.admission_value(
+            IngestKey::Request {
+                request_id: request,
+            },
+            limits.max_batch_bytes,
+            reads,
+        )?
+        else {
+            return Ok(None);
+        };
+        let (outcome, native_outcome) = if value.starts_with(REJECTION_PREFIX) {
+            let (outcome, policy) = read_rejection(&value, request, digest, identity.dataset_id)?;
+            (
+                outcome,
+                super::NativeOutcomeCopy::rejection(request, digest, policy, &self.manifest, value),
+            )
+        } else {
+            let receipt = Receipt::decode_persistent(&value, limits.receipts())
+                .map_err(BootstrapError::from)?;
+            if receipt.request_id() != request
+                || receipt.protection_context().dataset_id != identity.dataset_id
+            {
+                return Err(AdmissionError::StateMismatch);
+            }
+            if receipt.request_digest() != digest {
+                return Err(AdmissionError::RequestConflict);
+            }
+            if let Some(input) = input {
+                self.require_receipt_effects(&receipt, input, limits, reads)?;
+            } else {
+                use bigbrotr_model::codec::request::{
+                    MutationIntent, RequestDecodeLimits, decode_request,
+                };
+                let (bytes, allocation) =
+                    size_limited_input.ok_or(AdmissionError::StateMismatch)?;
+                let mut values = limits.facts();
+                // The retained request includes signature/origin fields absent
+                // from the payload fact. Its independently bounded preimage can
+                // exceed the fact decoder's 2 MiB maximum by those envelope bytes.
+                values.max_encoded_bytes = bytes.len().min(MAX_INPUT);
+                values.max_allocation_bytes = allocation;
+                let (found, intent) = decode_request(
+                    bytes,
+                    digest,
+                    RequestDecodeLimits {
+                        values,
+                        max_dictionaries: 1,
+                    },
+                )
+                .map_err(BootstrapError::from)?;
+                let MutationIntent::Event(intent) = intent else {
+                    return Err(AdmissionError::StateMismatch);
+                };
+                if found != request {
+                    return Err(AdmissionError::StateMismatch);
+                }
+                // A smaller current verification policy cannot reinterpret an
+                // already committed result. Its full original input is already
+                // owned; no sidecar creation or new native dispatch is involved.
+                let scope = intent.visibility_scope_id();
+                let origin = intent.origin();
+                let observation = intent.observation().copied();
+                let verified =
+                    verify_event(intent.into_event(), 4 * 1024 * 1024)?.map_err(|reason| {
+                        if reason == RejectionReason::EventSize {
+                            AdmissionError::Limit
+                        } else {
+                            AdmissionError::StateMismatch
+                        }
+                    })?;
+                self.require_receipt_effects(
+                    &receipt,
+                    super::receipt_effects::ReplayEventIntent {
+                        event: verified.event(),
+                        scope,
+                        origin,
+                        observation,
+                    },
+                    limits,
+                    reads,
+                )?;
+            }
+            if let Some(batch) = receipt.batch() {
+                let value = self
+                    .admission_value(
+                        IngestKey::PendingBatch {
+                            first: batch.first(),
+                        },
+                        128,
+                        reads,
+                    )?
+                    .ok_or(AdmissionError::StateMismatch)?;
+                if value != PendingBatchHeader::from_batch(batch).encode() {
+                    return Err(AdmissionError::StateMismatch);
+                }
+            }
+            let copy = super::NativeOutcomeCopy::receipt(&receipt, &self.manifest)?;
+            (AdmissionOutcome::Durable(receipt), copy)
+        };
+        Ok(Some((outcome, native_outcome)))
     }
 
     fn admission_value(
@@ -1086,11 +1187,16 @@ pub(super) fn matching_payload(
     fact: &Fact,
     event: &VerifiedEvent,
 ) -> Result<QualifiedRef, AdmissionError> {
+    matching_signed_payload(fact, event.event())
+}
+pub(super) fn matching_signed_payload(
+    fact: &Fact,
+    supplied: &SignedEvent,
+) -> Result<QualifiedRef, AdmissionError> {
     let FactPayload::EventPayload(payload) = fact.payload() else {
         return Err(AdmissionError::StateMismatch);
     };
     let body = &payload.body;
-    let supplied = event.event();
     if body.event_id != supplied.id
         || body.pubkey != supplied.pubkey
         || body.created_at != supplied.created_at
@@ -1153,14 +1259,15 @@ fn encode_rejection(
 }
 fn read_rejection(
     bytes: &[u8],
-    input: &PreparedEvent,
+    request: ProducerRequestId,
+    digest: Digest256,
     dataset: DatasetId,
 ) -> Result<(AdmissionOutcome, PolicyEpoch), AdmissionError> {
     let value = bytes
         .strip_prefix(REJECTION_PREFIX)
         .ok_or(AdmissionError::StateMismatch)?;
     let key = IngestKey::Request {
-        request_id: input.request,
+        request_id: request,
     }
     .encode()
     .map_err(|_| AdmissionError::InvalidInput)?;
@@ -1170,7 +1277,7 @@ fn read_rejection(
     {
         return Err(AdmissionError::StateMismatch);
     }
-    if value[32..64] != input.digest.as_bytes()[..] {
+    if value[32..64] != digest.as_bytes()[..] {
         return Err(AdmissionError::RequestConflict);
     }
     let reason = match value[88] {

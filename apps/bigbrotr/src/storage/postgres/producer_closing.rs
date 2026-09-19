@@ -29,24 +29,28 @@ pub struct ProducerCloseRequest<'a> {
 /// the identical historical target under exclusion; never compensate by opening
 /// the producer or treat a failed SQL commit as a negative native outcome.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum ProducerCloseError {
+pub enum ProducerOperationError<E> {
     Control(OwnerError),
     Registry(ingest_registry::RegistryError),
-    Native(BootstrapError),
+    Native(E),
+    Reservation(super::super::producer_requests::ReservationError),
+    Outcome(super::super::producer_outcomes::OutcomeError),
     CommitUnknown,
     DeliveryUnknown,
 }
-impl fmt::Display for ProducerCloseError {
+impl<E: fmt::Debug> fmt::Display for ProducerOperationError<E> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "producer closing unavailable: {self:?}")
+        write!(f, "producer operation unavailable: {self:?}")
     }
 }
-impl std::error::Error for ProducerCloseError {}
-impl From<OwnerError> for ProducerCloseError {
+impl<E: fmt::Debug> std::error::Error for ProducerOperationError<E> {}
+impl<E> From<OwnerError> for ProducerOperationError<E> {
     fn from(value: OwnerError) -> Self {
         Self::Control(value)
     }
 }
+
+pub type ProducerCloseError = ProducerOperationError<BootstrapError>;
 
 impl ControlSession {
     /// Installs/verifies the native barrier before confirming PG's scheduling
@@ -58,7 +62,7 @@ impl ControlSession {
         recovery: &mut IngestRecovery,
         input: ProducerCloseRequest<'_>,
         permit: OwnedPermit,
-        mut validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+        validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
     ) -> Result<ProducerClosing, ProducerCloseError> {
         if input.cancelled.load(Ordering::Relaxed) {
             return Err(ProducerCloseError::Native(
@@ -66,65 +70,15 @@ impl ControlSession {
             ));
         }
         let spec = input.registration;
-        let identity = *recovery.manifest().identity();
-        let domains = AllocationNamespaces::from_entries(&spec.allocation_domains)
-            .map_err(|_| OwnerError::InvalidInput)?;
-        if !recovery.matches_configured_root(input.ingest_root)
-            || spec.dataset_id != self.request.dataset
-            || spec.instance_id != *self.request.instance.as_bytes()
-            || identity.dataset_id != spec.dataset_id
-            || identity.owner_resource_id != spec.ingest_resource_id
-            || identity.shard_id != spec.shard_id
-            || identity.owner_epoch.get() != 1
-            || identity.process_incarnation != spec.process_incarnation
-            || identity.topology_generation
-                != spec
-                    .target_topology()
-                    .map_err(ProducerCloseError::Registry)?
-            || identity.policy_epoch.get() != spec.policy_revision
-            || recovery.manifest().allocation_namespaces() != &domains
-        {
-            return Err(OwnerError::InvalidInput.into());
-        }
-        // Start before all coordination I/O. Historical policy is the lower
-        // bound, while the authenticated current snapshot supplies this action's
-        // actual epoch. Its lease belongs to the current Control incarnation.
-        let mut lease = PolicyLeaseTracker::new(
-            spec.dataset_id,
-            self.identity.process_incarnation,
-            identity.policy_epoch,
-            PolicyLeaseTtl::new(input.policy_ttl).map_err(|_| OwnerError::InvalidInput)?,
-        )
-        .map_err(|_| OwnerError::Unavailable)?;
-        let ticket = lease.begin_refresh().map_err(|_| OwnerError::Unavailable)?;
-        self.begin_operation()?;
-        let tx = application_transaction(&mut self.client, 14)
-            .await
-            .map_err(transaction_error)?;
-        require(&tx, self.request.dataset, self.identity).await?;
-        let policy = snapshot(&tx, &self.request, &mut validate).await?;
-        ingest_registry::require_closing_registration(&tx, spec)
-            .await
-            .map_err(ProducerCloseError::Registry)?;
-        // Old Ingest scheduling expiry cannot prevent monotone recovery. Actual
-        // local exclusion is held by IngestRecovery, not this scheduling lease.
-        let remaining: i64 = tx.query_one("SELECT lease_expires_at_us - (EXTRACT(EPOCH FROM pg_catalog.clock_timestamp()) * 1000000)::bigint FROM control.owner_epochs WHERE resource_id=$1::bytea AND epoch=$2::text::numeric", &[&&self.identity.resource_id.as_bytes()[..], &self.identity.epoch.get().to_string()]).await.map_err(backend)?.try_get(0).map_err(backend)?;
-        let remaining = u64::try_from(remaining)
-            .ok()
-            .filter(|n| *n > 0)
-            .ok_or(OwnerError::Unavailable)?;
-        let current_epoch = PolicyEpoch::new(policy.policy_revision);
-        lease
-            .complete_refresh(
-                &ticket,
-                LeaseResponse {
-                    dataset: spec.dataset_id,
-                    process_incarnation: self.identity.process_incarnation,
-                    policy_epoch: current_epoch,
-                    ttl: input.policy_ttl.min(Duration::from_micros(remaining)),
-                },
+        let (tx, mut lease, current_epoch) = self
+            .begin_producer_recovery(
+                recovery,
+                input.ingest_root,
+                spec,
+                input.policy_ttl,
+                validate,
             )
-            .map_err(|_| OwnerError::Unavailable)?;
+            .await?;
         let closed = recovery
             .close_producer(
                 spec.producer_slot_id,
@@ -157,5 +111,77 @@ impl ControlSession {
         }
         self.available = true;
         Ok(closed)
+    }
+
+    /// Shared current-Control / immutable historical-target lock and lease order.
+    /// The caller retains native exclusion and cannot turn this into admission.
+    pub(super) async fn begin_producer_recovery<'a, E>(
+        &'a mut self,
+        recovery: &IngestRecovery,
+        ingest_root: &Path,
+        spec: &ingest_registry::InitialRegistration,
+        policy_ttl: Duration,
+        mut validate: impl FnMut(&str, [u8; 32]) -> Result<(), OwnerError>,
+    ) -> Result<(Transaction<'a>, PolicyLeaseTracker, PolicyEpoch), ProducerOperationError<E>> {
+        let identity = *recovery.manifest().identity();
+        let domains = AllocationNamespaces::from_entries(&spec.allocation_domains)
+            .map_err(|_| OwnerError::InvalidInput)?;
+        if !recovery.matches_configured_root(ingest_root)
+            || spec.dataset_id != self.request.dataset
+            || spec.instance_id != *self.request.instance.as_bytes()
+            || identity.dataset_id != spec.dataset_id
+            || identity.owner_resource_id != spec.ingest_resource_id
+            || identity.shard_id != spec.shard_id
+            || identity.owner_epoch.get() != 1
+            || identity.process_incarnation != spec.process_incarnation
+            || identity.topology_generation
+                != spec
+                    .target_topology()
+                    .map_err(ProducerOperationError::Registry)?
+            || identity.policy_epoch.get() != spec.policy_revision
+            || recovery.manifest().allocation_namespaces() != &domains
+        {
+            return Err(OwnerError::InvalidInput.into());
+        }
+        // Start before all coordination I/O. Historical policy is the lower
+        // bound, while the authenticated current snapshot supplies this action's
+        // actual epoch. Its lease belongs to the current Control incarnation.
+        let mut lease = PolicyLeaseTracker::new(
+            spec.dataset_id,
+            self.identity.process_incarnation,
+            identity.policy_epoch,
+            PolicyLeaseTtl::new(policy_ttl).map_err(|_| OwnerError::InvalidInput)?,
+        )
+        .map_err(|_| OwnerError::Unavailable)?;
+        let ticket = lease.begin_refresh().map_err(|_| OwnerError::Unavailable)?;
+        self.begin_operation()?;
+        let tx = application_transaction(&mut self.client, 14)
+            .await
+            .map_err(transaction_error)?;
+        require(&tx, self.request.dataset, self.identity).await?;
+        let policy = snapshot(&tx, &self.request, &mut validate).await?;
+        ingest_registry::require_closing_registration(&tx, spec)
+            .await
+            .map_err(ProducerOperationError::Registry)?;
+        // Old Ingest scheduling expiry cannot prevent monotone recovery. Actual
+        // local exclusion is held by IngestRecovery, not this scheduling lease.
+        let remaining: i64 = tx.query_one("SELECT lease_expires_at_us - (EXTRACT(EPOCH FROM pg_catalog.clock_timestamp()) * 1000000)::bigint FROM control.owner_epochs WHERE resource_id=$1::bytea AND epoch=$2::text::numeric", &[&&self.identity.resource_id.as_bytes()[..], &self.identity.epoch.get().to_string()]).await.map_err(backend)?.try_get(0).map_err(backend)?;
+        let remaining = u64::try_from(remaining)
+            .ok()
+            .filter(|n| *n > 0)
+            .ok_or(OwnerError::Unavailable)?;
+        let current_epoch = PolicyEpoch::new(policy.policy_revision);
+        lease
+            .complete_refresh(
+                &ticket,
+                LeaseResponse {
+                    dataset: spec.dataset_id,
+                    process_incarnation: self.identity.process_incarnation,
+                    policy_epoch: current_epoch,
+                    ttl: policy_ttl.min(Duration::from_micros(remaining)),
+                },
+            )
+            .map_err(|_| OwnerError::Unavailable)?;
+        Ok((tx, lease, current_epoch))
     }
 }

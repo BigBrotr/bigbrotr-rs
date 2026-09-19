@@ -157,3 +157,16 @@ branch; it must not be merged as a current-writer test.
 contacting engines. It checks the entire allowed current-Control recovery
 transition and rejects fifteen altered captures, including a repeated PG update
 after committed-reply loss and reuse of the original Control incarnation.
+
+## Positive original-request recovery candidate
+
+`recovery.py --root <owned-lab> --run-tag <tag>` uses a clean exact-source build
+from `native_initialization.py --producer-recovery`. Its first connected scenario
+raises a real PostgreSQL exception after the signed event's native commit, checks
+that the original outcome copy rolled back, joins the old Control driver, closes
+the native producer under a fresh Control claim, then resolves event and bootstrap
+originals. The event copy must name the current recorder; the existing bootstrap
+copy and exact retries retain their original row/xmin. Full independently expected
+native bytes, original inputs and all Control tables are compared. Source and
+artifact checks precede execution. A test program's presence is not PASS evidence;
+the checkpoint owns current executed status and remaining failure/process cases.

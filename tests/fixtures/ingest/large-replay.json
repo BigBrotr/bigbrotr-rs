@@ -1,0 +1,17 @@
+{
+  "authoring": "python-secp256k1 signing plus independent BIP340 equation verification; public test key 3",
+  "content_repeat": "x",
+  "content_count": 2096947,
+  "event": {
+    "pubkey": "f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9",
+    "created_at": 1,
+    "kind": 1,
+    "tags": [],
+    "id": "c0dda8ccaaf394e2a3217cb4d9fab2901f2e8cd7484b82a7c94ab046ac85d0be",
+    "sig": "a67a0339e1bdb7aa62b6a808ce049c5e875190adfcbf6b66508bbacd1eed5a33a27a8318995ad53dddad2df9ac5d5a4a2bc45cc978436454d999aa705351a500"
+  },
+  "payload_fact_bytes": 2097152,
+  "request_preimage_bytes": 2097230,
+  "payload_fact_sha256": "581a7835fbc74ce51956b411958baf723d14c0d9512520198d1a438ca4336c3e",
+  "request_preimage_sha256": "310f593e2af35b2ad83bb10c33512e7ce8dafbe4b25a457f46fe57d575fea2e8"
+}

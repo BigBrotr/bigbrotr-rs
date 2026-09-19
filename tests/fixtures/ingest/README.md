@@ -102,3 +102,13 @@ independently in Python from the format recipe, without the Rust writer. The
 native test compares the entire stored value and checks replay after reopen,
 changed-intent conflict, and refusal of malformed length, version, request ID,
 dataset and reason code without further durable effects.
+
+`large-replay.json` is a compact recipe for a real signed event whose payload
+fact is exactly 2 MiB while its complete producer-request preimage is 78 bytes
+larger. The recipe stores a repeated ASCII content byte and count instead of a
+multi-megabyte fixture. `python3 -B tests/fixtures/ingest/write_large_replay.py`
+regenerates it with the same independent signer and BIP340 equation verifier.
+Literal fact/request lengths and SHA256 values come from the Python CBOR encoder,
+not observed Rust output. The native regression admits the event, then retries
+the same request with a smaller verification policy and checks unchanged outcome
+bytes and complete native state. Fixture generation alone is not engine evidence.

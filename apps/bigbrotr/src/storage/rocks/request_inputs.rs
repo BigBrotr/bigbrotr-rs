@@ -55,9 +55,13 @@ pub(in crate::storage) struct StagedProducerRequest {
 pub struct RetainedRequestInput {
     request: ProducerRequestId,
     intent: MutationIntent,
+    encoded_bytes: u32,
     permit: OwnedPermit,
 }
 impl RetainedRequestInput {
+    pub(super) fn encoded_bytes(&self) -> u32 {
+        self.encoded_bytes
+    }
     pub fn required_data_bytes(limits: RequestDecodeLimits) -> Result<u64, RequestInputError> {
         limits
             .values
@@ -140,6 +144,7 @@ impl IngestStore {
         Ok(RetainedRequestInput {
             request,
             intent,
+            encoded_bytes: size as u32, // open_input enforces the 16 MiB bound
             permit,
         })
     }

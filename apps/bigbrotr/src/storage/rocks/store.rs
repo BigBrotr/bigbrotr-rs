@@ -50,6 +50,8 @@ mod request_input_tests;
 
 #[path = "admission.rs"]
 mod admission;
+#[path = "receipt_effects.rs"]
+mod receipt_effects;
 pub use admission::{
     AdmissionError, AdmissionLimits, AdmissionOutcome, PreparedEvent, RejectionReason,
     StoredOutcome,
@@ -64,6 +66,12 @@ pub use certification::{
 #[path = "producer_closing.rs"]
 mod producer_closing;
 pub use producer_closing::ProducerClosing;
+
+#[path = "producer_recovery.rs"]
+mod producer_recovery;
+pub use producer_recovery::{
+    ProducerRecoveryError, ProducerRecoveryLimits, ResolvedProducerRequest,
+};
 
 #[cfg(test)]
 #[path = "admission_tests.rs"]

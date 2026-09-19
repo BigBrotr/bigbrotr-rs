@@ -18,11 +18,14 @@ mod archive_coordinator;
 mod initial_batch;
 #[path = "producer_closing.rs"]
 mod producer_closing;
+#[path = "producer_recovery.rs"]
+mod producer_recovery;
 pub use initial_batch::{
     InitialBatchError, InitialBatchRequest, InitialCertificationRequest, InitialEventError,
     InitialEventRequest, InitialImportBatchRequest, InitialOperationError,
 };
-pub use producer_closing::{ProducerCloseError, ProducerCloseRequest};
+pub use producer_closing::{ProducerCloseError, ProducerCloseRequest, ProducerOperationError};
+pub use producer_recovery::{ProducerResolveError, ProducerResolveRequest};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum OwnerError {

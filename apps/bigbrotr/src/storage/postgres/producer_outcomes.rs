@@ -1,7 +1,8 @@
 //! Complete native outcomes copied under the reservation's finite retained grant.
 use super::ingest_registry::ControlOwner;
 use crate::storage::rocks::store::{
-    MAX_OUTCOME_BYTES, NativeOutcomeCopy, NativeOutcomeKind, StagedProducerRequest,
+    MAX_OUTCOME_BYTES, NativeOutcomeCopy, NativeOutcomeKind, ResolvedProducerRequest,
+    StagedProducerRequest,
 };
 use bigbrotr_model::{DatasetId, Digest256, PolicyEpoch, ProducerRequestId};
 use sha2::{Digest, Sha256};
@@ -96,7 +97,38 @@ pub(super) async fn record(
     {
         return Err(OutcomeError::Conflict);
     }
-    let request = staged.request;
+    record_native(tx, outcome, recorder).await
+}
+
+pub(super) async fn record_recovered(
+    tx: &Transaction<'_>,
+    reservation: &super::producer_requests::ProducerReservation,
+    resolved: &ResolvedProducerRequest,
+    recorder: ControlOwner,
+) -> Result<(), OutcomeError> {
+    let outcome = resolved.native_outcome();
+    if outcome.request() != reservation.request
+        || outcome.digest() != reservation.digest
+        || outcome.manifest_sha256() != reservation.manifest_sha256
+        || resolved.input_bytes() != reservation.input_bytes
+    {
+        return Err(OutcomeError::Conflict);
+    }
+    record_native(tx, outcome, recorder).await
+}
+
+async fn record_native(
+    tx: &Transaction<'_>,
+    outcome: &NativeOutcomeCopy,
+    recorder: ControlOwner,
+) -> Result<(), OutcomeError> {
+    if outcome.bytes().is_empty() || outcome.bytes().len() > MAX_OUTCOME_BYTES {
+        return Err(OutcomeError::Conflict);
+    }
+    let request = outcome.request();
+    let dataset = outcome.dataset();
+    let digest = outcome.digest();
+    let manifest = outcome.manifest_sha256();
     let epoch = request.producer_epoch.get().to_string();
     let sequence = request.request_sequence.get().to_string();
     let policy = outcome.policy_epoch().get().to_string();
@@ -104,9 +136,9 @@ pub(super) async fn record(
     let sha256: [u8; 32] = Sha256::digest(outcome.bytes()).into();
     // Upgrade the already-held registry lock before observing a competing copy.
     tx.query_one("SELECT reserved_through_request::text FROM control.producer_epochs WHERE dataset_id = $1::bytea AND producer_slot_id = $2::bytea AND producer_epoch = $3::text::numeric FOR UPDATE",
-        &[&&staged.dataset.as_bytes()[..], &&request.producer_slot_id.as_bytes()[..], &epoch]).await.map_err(backend)?;
+        &[&&dataset.as_bytes()[..], &&request.producer_slot_id.as_bytes()[..], &epoch]).await.map_err(backend)?;
     let prior = tx.query_opt("SELECT dataset_id = $4::bytea AND request_digest = $5::bytea AND manifest_sha256 = $6::bytea AND outcome_kind = $7::smallint AND policy_epoch = $8::text::numeric AND outcome_bytes = $9::bytea AND outcome_sha256 = $10::bytea FROM control.producer_outcomes WHERE producer_slot_id = $1::bytea AND producer_epoch = $2::text::numeric AND request_sequence = $3::text::numeric",
-        &[&&request.producer_slot_id.as_bytes()[..], &epoch, &sequence, &&staged.dataset.as_bytes()[..], &&staged.digest.as_bytes()[..], &&staged.manifest_sha256[..], &kind, &policy, &outcome.bytes(), &&sha256[..]]).await.map_err(backend)?;
+        &[&&request.producer_slot_id.as_bytes()[..], &epoch, &sequence, &&dataset.as_bytes()[..], &&digest.as_bytes()[..], &&manifest[..], &kind, &policy, &outcome.bytes(), &&sha256[..]]).await.map_err(backend)?;
     if let Some(row) = prior {
         return if row.try_get::<_, bool>(0).map_err(backend)? {
             Ok(())
@@ -115,6 +147,6 @@ pub(super) async fn record(
         };
     }
     tx.execute("INSERT INTO control.producer_outcomes(producer_slot_id, producer_epoch, request_sequence, dataset_id, request_digest, manifest_sha256, outcome_kind, policy_epoch, outcome_bytes, outcome_sha256, recorder_resource, recorder_epoch, recorder_incarnation, recorded_at_us) VALUES ($1::bytea, $2::text::numeric, $3::text::numeric, $4::bytea, $5::bytea, $6::bytea, $7::smallint, $8::text::numeric, $9::bytea, $10::bytea, $11::bytea, $12::text::numeric, $13::bytea, (EXTRACT(EPOCH FROM pg_catalog.clock_timestamp()) * 1000000)::bigint)",
-        &[&&request.producer_slot_id.as_bytes()[..], &epoch, &sequence, &&staged.dataset.as_bytes()[..], &&staged.digest.as_bytes()[..], &&staged.manifest_sha256[..], &kind, &policy, &outcome.bytes(), &&sha256[..], &&recorder.resource_id.as_bytes()[..], &recorder.epoch.get().to_string(), &&recorder.process_incarnation.as_bytes()[..]]).await.map_err(backend)?;
+        &[&&request.producer_slot_id.as_bytes()[..], &epoch, &sequence, &&dataset.as_bytes()[..], &&digest.as_bytes()[..], &&manifest[..], &kind, &policy, &outcome.bytes(), &&sha256[..], &&recorder.resource_id.as_bytes()[..], &recorder.epoch.get().to_string(), &&recorder.process_incarnation.as_bytes()[..]]).await.map_err(backend)?;
     Ok(())
 }

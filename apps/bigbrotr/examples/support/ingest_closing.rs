@@ -25,6 +25,7 @@ pub async fn run(
 ) {
     let cancelled = AtomicBool::new(false);
     let empty = mode == "event-closing-empty";
+    let recovering = mode.starts_with("event-recovery-");
     if !empty {
         drop(
             owner
@@ -73,35 +74,49 @@ pub async fn run(
             grant(budget, MIB, 0),
         )
         .unwrap();
-        drop(
-            owner
-                .admit_initial_event(
-                    &mut store,
-                    bigbrotr::storage::postgres::control_owner::InitialEventRequest {
-                        ingest_root: path,
-                        registration: spec,
-                        event: prepared,
-                        provenance_enabled: true,
-                        recorded_at: ObservedTime::new(456),
-                        limits: AdmissionLimits {
-                            max_outstanding_requests: 2,
-                            ..AdmissionLimits::default()
-                        },
-                        policy_ttl: Duration::from_secs(2),
-                        cancelled: &cancelled,
+        let admitted = owner
+            .admit_initial_event(
+                &mut store,
+                bigbrotr::storage::postgres::control_owner::InitialEventRequest {
+                    ingest_root: path,
+                    registration: spec,
+                    event: prepared,
+                    provenance_enabled: true,
+                    recorded_at: ObservedTime::new(456),
+                    limits: AdmissionLimits {
+                        max_outstanding_requests: 2,
+                        ..AdmissionLimits::default()
                     },
-                    grant(budget, 40 * MIB, 10 * MIB),
-                    |d, h, _| validate(d, h),
+                    policy_ttl: Duration::from_secs(2),
+                    cancelled: &cancelled,
+                },
+                grant(budget, 40 * MIB, 10 * MIB),
+                |d, h, _| validate(d, h),
+            )
+            .await;
+        if recovering {
+            assert!(matches!(
+                admitted,
+                Err(
+                    bigbrotr::storage::postgres::control_owner::InitialEventError::Outcome(
+                        bigbrotr::storage::postgres::producer_outcomes::OutcomeError::Backend
+                    )
                 )
-                .await
-                .unwrap(),
-        );
+            ));
+            emit(serde_json::json!({"event":"recovery-seed-copy-rolled-back"}));
+        } else {
+            drop(admitted.unwrap());
+        }
     }
     let manifest = *store.manifest();
     drop(store);
     // Closing is a fresh actor's operation. Join the old actual driver before
     // attempting its replacement; a scheduling sleep is not backend exclusion.
-    owner.release().await.unwrap();
+    if recovering {
+        drop(owner);
+    } else {
+        owner.release().await.unwrap();
+    }
     join(old_driver, false).await;
     let direct_config = config.clone();
     if mode == "event-closing-commit-lost" {
@@ -211,6 +226,9 @@ pub async fn run(
             }
             previous = Some(observed);
         }
+    }
+    if recovering {
+        crate::ingest_recovery::run(&mut current, &recovery, observer, spec, path, budget).await;
     }
     drop(recovery);
     let after = crate::ingest_snapshot::state(observer, path).await;

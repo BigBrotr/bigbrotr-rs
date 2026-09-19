@@ -13,35 +13,70 @@ unpublished Cargo packages and the read-only Go neighbor. No public release or
 Linux arm64 claim. No P02/P03 task or M1 gate is complete. All selected later
 product work remains required.
 
-P02-T02 step 4 close-only native producer barrier is implemented and has scoped
-native evidence. Root is finalizing the qualification commit and private push;
-next bounded implementation responsibility is resolving original producer outcomes
-through the exclusive historical recovery handle before any ACK/retirement or
-fresh Ingest successor. No active lab, local build or reviewer after the terminal observations below.
-Final read-only AI review found no factual discrepancy or overclaim; root verified
-the final observer result and collected-file hashes again before committing. Do not infer complete drain from issued_through().
+P02-T02 step 4 close-only native producer barrier is qualified and published.
+Root now owns positive original-request resolution through IngestRecovery: read
+and bind the exact retained input, validate the original native outcome and its
+complete retained dependencies, then copy it under current Control authority.
+The native operation must never admit, stage, reopen, ACK or infer absence from
+missing detail. Uncommitted reserved requests and full drain remain unresolved.
+Reuse the existing bootstrap/event replay validators and migration 0012 outcome
+ledger; its trigger already permits a current Control recorder with an active or
+draining historical Ingest and a closing producer. No SQL migration is needed
+for that positive-only boundary. Practical native/PG/COMMIT/crash validation is
+required before publishing the new capability. Native positive replay and the
+current-Control copy are now implemented in the dirty candidate; the connected
+fixture intentionally rolls back the original event's SQL copy after native sync,
+then closes and resolves under a new Control epoch. PostgreSQL execution is NOT_RUN.
 
 ## Git and integration state
 
-Mac main HEAD fd168a5 (full hash from Git), four unpublished candidate/harness
-commits ahead of last verified private origin/main 442f3d878b3215e421a71160b3613b7ab0c93c7b.
-Root owns only final observer/evidence/task/reference/checkpoint/inventory edits.
-Product candidate 0f6e366fec4f84c0c3078142bea8c1cb91198f4f,
-tree f148d133462d7b5f199aac9e3ad872bb02e2ae83; corrected fixture
-cc9151b9bd81512237bbb07b8bde1c446199d95d, observer 01af703 and compatibility harness fd168a5.
-No product/SQL/dependency changes after 0f6e366. Published migrations 1..14 unchanged.
-No unexpected writer or merge/rebase.
+Mac main and private origin/main both verified at
+8931a0f611b718cfac845cda39211e9e8da59d8c; clean after push, now root checkpoint
+and recovery implementation edits only (native replay/recovery and tests,
+PG common preflight/copy/resolver, finite recovery client and Python oracle,
+independent large signed fixture, owning references and this checkpoint). Product closing candidate
+0f6e366fec4f84c0c3078142bea8c1cb91198f4f, tree
+f148d133462d7b5f199aac9e3ad872bb02e2ae83; corrected fixture cc9151b,
+observer 01af703, compatibility harness fd168a5. All published unchanged.
+No unexpected writer or merge/rebase; migrations 1..14 remain unchanged.
 
 Separate clean compatibility worktree .research/worktrees/producer-closing-old-writer,
-branch research/producer-closing-old-writer, commit
-f899896b1207f5e71c4e39d9ab7814b293814735. Every 840 baseline 442f3d8 file is identical
-except an exact four-line cfg(test) hook; two fixture files added. This historical
-fixture must remain separate from current-writer tests. fact_codec_review committed
-only there; root reviewed every changed byte and qualified it on Tux. Both main
-and this compatibility branch still require the authorized private push after
-final checks. Local .research/targets/product is free; all agent Cargo processes
-were joined. An initial native-environment build was interrupted and retained,
-then normal Mac compile passed; missing-path invocation failed explicitly.
+branch research/producer-closing-old-writer, local and private remote commit
+f899896b1207f5e71c4e39d9ab7814b293814735. All 840 baseline files identical
+except the exact test hook and two added fixture files. Keep it separate; do not
+merge the old-source fixture into current product. Its Mac build and explicit
+missing-infrastructure failure are retained; actual compatibility ran on Tux.
+Local .research/targets/product is the owned build cache. No Tux lab was started
+for recovery yet. All prior Tux resource observations below remain historical.
+Independent AI review of native recovery identified a real request/fact size-bound
+counterexample; root reproduced and fixed it. The same reviewer found no further
+concrete issue in the connected PG preflight/copy code, but executed no engines.
+
+Dirty-candidate Mac evidence under .research/implementation/producer-recovery:
+- native-crypto.log: 8 recovery tests PASS after signature revalidation.
+- native-full.log: 11 recovery tests PASS, 0 failed/ignored, 117 filtered. Includes
+  historical full-width policy, zero reconstruction allocation/adequate identical
+  retry and independently signed 2 MiB payload / 2 MiB+78 request replay.
+- large-replay-red3.log: actual first admission succeeded, smaller-policy retry
+  failed Limit before the fix. Earlier large-replay-red.log failed in the fixture
+  fact reader's small string limit; red2 was a test type-name compile error. Keep
+  all three distinct. The compact fixture generator independently signs/verifies
+  and freezes full request/fact hashes; it is not itself native evidence.
+- connected-api-red.log failed on missing resolver API; connected-check.log now
+  PASS. Clippy first found collapsible_if; corrected clippy-corrected.log PASS. No connected engine PASS exists yet.
+- Prior semantic-red/closure-red/retry-size-red failures remain preserved. The
+  complete-store policy-correction run passed 41 cases with the actual packaged
+  worker test explicitly excluded on Mac. Linux must run that consumer.
+
+Current local sessions are joined. Final store-local.log: 45 PASS, 0 failed/ignored,
+83 filtered, with packaged-worker case explicitly skipped on Mac. Scoped Clippy,
+artifact links/JSON/Python and handoff checks PASS; no semantic gate follows from
+those document checks. Tux read-only preflight at 2026-09-19T23:20:53Z found380
+containers, eight unrelated running, zero BigBrotr running and97,201,893,376 free
+bytes. Its directories/processes/ports/volumes are captured under native/preflight.
+No remote resource was changed by that preflight. The next
+candidate needs complete diff review and affected artifact/handoff checks before
+Git transfer. No runtime grant, task checkbox or release capability was advanced.
 
 ## Implemented boundary and executed evidence
 
@@ -123,13 +158,20 @@ review directory. No active session/process obligation remains.
 
 ## Next action and remaining gates
 
-Finish final report/diff/structural review, commit and push the authorized private
-main and compatibility branch, verify remote hashes, then select the original-
-request resolution consumer for P02-T02 step 4. Read retained-input/outcome-copy,
-producer checkpoint/ACK, storage-services and recovery authority contracts before
-adding methods to IngestRecovery. Closing cannot stand in for durable outcome
-resolution or invent negative results for missing receipts/reservations. Fresh
-processes cannot impersonate old incarnations/candidate nonces.
+Finish local candidate review/checks, commit without publishing and transfer its
+exact Git revision to a separately inventoried Tux recovery lab. Build through the
+existing native runner's --producer-recovery mode and execute recovery.py normal:
+real original SQL rollback, new Control epoch, complete native bytes/sequence and
+original inputs unchanged, one exact outcome copied and replay xmin unchanged.
+Record failures before fixing; do not turn missing infrastructure into PASS.
+
+Then extend the same slice with actual PG-only/native-open refusal, mismatched
+reservation length/digest/manifest, Rejected/AlreadyDurable, resource/cancellation,
+SQL rollback and both lost-COMMIT orders under a fresh Control claim, held-old-LOCK
+and process recovery. Include independent altered-capture controls. Native missing
+input/detail is unresolved, never an absence proof; do not infer source closure,
+ACK, retirement, logical checkpoint completion or successor authority. The owning
+reference now describes the implemented candidate separately from qualification.
 
 Current close-only evidence does not include fresh-process/held-old-LOCK recovery,
 in-FFI or Control-backend kill, actual policy-head advancement, post-sync async

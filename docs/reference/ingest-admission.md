@@ -81,6 +81,17 @@ not a new request. Missing dependencies fail closed. This first adapter requires
 its source facts still in native storage; archive-backed resolution and pending
 reclamation are not enabled.
 
+Replay additionally binds that dependency set to the original verified event:
+complete body and event mapping, scoped eligibility, sufficient historical
+receive/witness effects and all input/fact dictionary references must be present.
+A structurally valid receipt containing only an unrelated valid dictionary is
+insufficient. Later corrections do not replace the receipt's historical closure.
+When a smaller retry verification policy discards the original owned body as
+oversize, replay can reconstruct it from its already retained preimage under the
+same input grant and the supported verifier profile. The complete request has
+its own 16 MiB bound: it can exceed the 2 MiB fact limit by its signature and
+attribution envelope. This path never creates a sidecar or admits a new request.
+
 ## New persistent values
 
 Existing key, fact, receipt, dictionary, counter and pending formats are unchanged.

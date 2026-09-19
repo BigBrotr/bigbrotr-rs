@@ -29,6 +29,8 @@ use tokio_postgres::{Config, NoTls};
 mod ingest_closing;
 #[path = "support/ingest_event.rs"]
 mod ingest_event;
+#[path = "support/ingest_recovery.rs"]
+mod ingest_recovery;
 #[path = "support/ingest_snapshot.rs"]
 mod ingest_snapshot;
 
@@ -387,7 +389,7 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
     emit(
         serde_json::json!({"event":"initialized","dataset":dataset,"manifest":hex(manifest.encode().as_bytes())}),
     );
-    if mode.starts_with("event-closing-") {
+    if mode.starts_with("event-closing-") || mode.starts_with("event-recovery-") {
         ingest_closing::run(
             config, owner, driver, &observer, store, &spec, &intent, path, &budget, mode, scope,
         )

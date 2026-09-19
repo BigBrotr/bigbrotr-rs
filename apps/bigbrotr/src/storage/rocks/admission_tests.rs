@@ -1328,3 +1328,6 @@ mod certification_tests;
 
 #[path = "producer_closing_tests.rs"]
 mod producer_closing_tests;
+
+#[path = "producer_recovery_tests.rs"]
+mod producer_recovery_tests;

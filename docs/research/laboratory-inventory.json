@@ -14600,6 +14600,20 @@
         "observed_at": "2026-09-19T22:33:36.297395+00:00"
       },
       "manifest": ".research/implementation/producer-closing/native/evidence-identity.json"
+    },
+    "producer_recovery": {
+      "state": "local-candidate; native lab not launched",
+      "editing_owner": "root / Mac main",
+      "base_source": "8931a0f611b718cfac845cda39211e9e8da59d8c",
+      "local_raw": ".research/implementation/producer-recovery",
+      "preflight": ".research/implementation/producer-recovery/native/preflight.json",
+      "preflight_at": "2026-09-19T23:20:53.112247+00:00",
+      "preexisting_containers": 380,
+      "unrelated_running": 8,
+      "bigbrotr_running": 0,
+      "free_bytes": 97201893376,
+      "planned_remote_root_prefix": "/home/tux/bigbrotr-implementation-20260917/runs/producer-recovery-",
+      "scope": "Positive original-request resolution after explicit native closing; required PG/process/fault qualification remains NOT_RUN"
     }
   },
   "implementation_monitor_corrections_20260918": {

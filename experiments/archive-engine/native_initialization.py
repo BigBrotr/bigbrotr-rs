@@ -19,8 +19,9 @@ if sys.argv[1:] == ['--build-binaries']:
     identity = build_binaries(SOURCE, os.environ)
     (out / 'worker-identity.json').write_text(json.dumps(identity, indent=2) + '\n')
     sys.exit(0)
-assert sys.argv[1:] in ([], ['--tls'], ['--publication'], ['--producer-inputs'], ['--producer-ledger'], ['--producer-ledger-fixture'], ['--import-source'], ['--input-bindings'], ['--certification'], ['--producer-closing'])
-producer_closing = sys.argv[1:] == ['--producer-closing']
+assert sys.argv[1:] in ([], ['--tls'], ['--publication'], ['--producer-inputs'], ['--producer-ledger'], ['--producer-ledger-fixture'], ['--import-source'], ['--input-bindings'], ['--certification'], ['--producer-closing'], ['--producer-recovery'])
+producer_recovery = sys.argv[1:] == ['--producer-recovery']
+producer_closing = producer_recovery or sys.argv[1:] == ['--producer-closing']
 certification = producer_closing or sys.argv[1:] == ['--certification']
 input_bindings = sys.argv[1:] == ['--input-bindings']
 import_source = sys.argv[1:] == ['--import-source']
@@ -97,6 +98,8 @@ if input_bindings:
         ('binding-clippy', ['cargo', 'clippy', '--locked', '--release', '-p', 'bigbrotr', '--lib', '--test', 'import_input_bindings', '--example', 'ingest_bootstrap_probe', '--', '-D', 'warnings'])]
 if certification:
     identity.update(scope='native producer closing and historical target under current Control' if producer_closing else 'initial existing-effect native read and connected Control consumer')
+    if producer_recovery:
+        identity.update(scope='positive original-request resolution and current-Control copy after native producer closing')
     checks = [checks[0],
         ('certification-clippy', ['cargo', 'clippy', '--locked', '--release', '-p', 'bigbrotr', '--lib', '--example', 'ingest_bootstrap_probe', '--', '-D', 'warnings'])]
 assert execute(checks, out / 'checks', SOURCE, env, identity, 1800)['status'] == 'PASS'

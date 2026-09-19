@@ -222,6 +222,44 @@ impl IngestStore {
         }
         self.validate_bootstrap(request, intent, limits)?;
         self.require_open_producer(request)?;
+        if let Some(receipt) = self.replay_bootstrap(request, intent, limits)? {
+            let copy = super::NativeOutcomeCopy::receipt(&receipt, &self.manifest)?;
+            require_authority()?;
+            return Ok(StoredReceipt::new(receipt, copy, permit));
+        }
+        let (mut prepared, receipt) =
+            self.prepare_bootstrap(request, intent, recorded_at, limits)?;
+        let outcome_copy = super::NativeOutcomeCopy::receipt(&receipt, &self.manifest)?;
+        prepared.sort();
+        let manifest = Entry {
+            key: IngestKey::Manifest
+                .encode()
+                .map_err(|_| BootstrapError::StateMismatch)?,
+            cf: ColumnFamily::Default,
+            value: self.manifest.encode().as_bytes().to_vec(),
+        };
+        self.require_exact_state(&[manifest])?;
+        let input = intent
+            .encode_request_preimage(request, limits.max_batch_bytes)
+            .map_err(|error| match error {
+                bigbrotr_model::EvidenceIntentError::AllocationFailed => BootstrapError::Allocation,
+                _ => BootstrapError::Limit,
+            })?;
+        self.retain_request_input(request, &input)
+            .map_err(BootstrapError::RequestInput)?;
+        drop(input);
+        self.commit_prepared(prepared, &mut require_authority)?;
+        Ok(StoredReceipt::new(receipt, outcome_copy, permit))
+    }
+
+    /// Positive-only retained bootstrap validation. Never stages or commits.
+    pub(super) fn replay_bootstrap(
+        &self,
+        request: ProducerRequestId,
+        intent: &EvidenceIntent,
+        limits: BootstrapLimits,
+    ) -> Result<Option<Receipt>, BootstrapError> {
+        self.validate_bootstrap(request, intent, limits)?;
         let digest = intent.request_digest(request);
         let receipts = self
             .db
@@ -281,34 +319,12 @@ impl IngestStore {
                 None
             }
         };
-        let (mut prepared, receipt) =
-            self.prepare_bootstrap(request, intent, retry_time.unwrap_or(recorded_at), limits)?;
-        let outcome_copy = super::NativeOutcomeCopy::receipt(&receipt, &self.manifest)?;
-        prepared.sort();
-        if retry_time.is_some() {
-            self.require_bootstrap_replay(&prepared.entries)?;
-            require_authority()?;
-            return Ok(StoredReceipt::new(receipt, outcome_copy, permit));
-        }
-        let manifest = Entry {
-            key: IngestKey::Manifest
-                .encode()
-                .map_err(|_| BootstrapError::StateMismatch)?,
-            cf: ColumnFamily::Default,
-            value: self.manifest.encode().as_bytes().to_vec(),
+        let Some(recorded_at) = retry_time else {
+            return Ok(None);
         };
-        self.require_exact_state(&[manifest])?;
-        let input = intent
-            .encode_request_preimage(request, limits.max_batch_bytes)
-            .map_err(|error| match error {
-                bigbrotr_model::EvidenceIntentError::AllocationFailed => BootstrapError::Allocation,
-                _ => BootstrapError::Limit,
-            })?;
-        self.retain_request_input(request, &input)
-            .map_err(BootstrapError::RequestInput)?;
-        drop(input);
-        self.commit_prepared(prepared, &mut require_authority)?;
-        Ok(StoredReceipt::new(receipt, outcome_copy, permit))
+        let (prepared, receipt) = self.prepare_bootstrap(request, intent, recorded_at, limits)?;
+        self.require_bootstrap_replay(&prepared.entries)?;
+        Ok(Some(receipt))
     }
 
     pub(super) fn commit_prepared(
@@ -596,10 +612,8 @@ impl IngestStore {
                     value.len() == 10 && value[..2] == [1, 2] && value[2..] >= entry.value[2..]
                 }
                 [1, 0x31] => {
-                    value.len() == 26
-                        && value[..2] == [1, 0x31]
-                        && value[2..10] >= entry.value[2..10]
-                        && value[10..] == [0; 16]
+                    let state = super::producer_closing::ProducerState::decode(&value)?;
+                    state.issued >= 1 && state.acknowledged == 0 && state.retired == 0
                 }
                 _ => value.as_ref() == entry.value.as_slice(),
             };
