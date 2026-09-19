@@ -21,91 +21,72 @@ installed service readiness.
 
 ## Actual Git and ownership
 
-Mac main HEAD is unpublished native candidate
-5262c84b7ea075172d1449d9eee2ed5d114889e3, tree
-992470e764587867fa541351eafb6d38b293b572, one commit ahead of origin/main b6894cc.
-Root owns post-candidate inventory/checkpoint updates and catalog CLI harness
-cleanup correction; sole writer. Product source is unchanged.
-Candidate contains the catalog CLI/configuration and shared bounded guard lock.
-No source changes after the candidate. Previous worker-only tested source remains
-53707a2a74a143c9aba78858068dea5df71809c6; it does not qualify the new consumer.
+Mac main HEAD is unpublished source candidate
+3e87a53087a445141e9079f40cdc902dd5add322, tree9400af8a01139e27747595ee7c65b0fafdaec7c1,
+two commits ahead of origin/main b6894cc. Root owns only qualification report,
+contracts/task notes, laboratory inventory and this checkpoint. Sole writer; no
+merge/rebase. Product inputs unchanged since5262c84;3e87a53 changes only the CLI
+laboratory cleanup and continuity metadata. No new product source since candidate.
 
-## Active native catalog lab
+## Installed catalog inspection qualified within its scope
 
-Transfer22928 finished. Exact713-file clean source exported on Tux under
-/home/tux/bigbrotr-implementation-20260917/runs/catalog-cli-5262c84.
-Owner595c0af940229c8e7c6c6a0aba1846ff, runner
-a90d3fdcc48a0a551836ec68c3b0a09b3c83ddc6a463cc2203a1dde2368fc17b,
-PG dc4df96cff73ff22968ee7ad776df882bd009bd77c2f4025607c06321c2c2518,
-network d148e33427d98f6861758f71182c186c2a46eb5612e17cdc522be85e99702449.
-Fresh identity/running/no-port checks passed. PG16.15 fsync/full_page_writes on.
-Runner2CPU/6GiB/512PIDs; PG1CPU/1GiB/128PIDs; internal network, no host ports.
-Native build,39 tests,Clippy and real Control issuance fixture reached READY.
-Session2265 now runs scientific_guard_cases.py then transport_cli_cases.py
-sequentially on5262c84. New catalog_cli_cases.py has NOT_RUN: AI review found
-cleanup failures could skip later PG restoration. Corrected on Mac; do not patch
-this live source. Retain these unaffected guard/transport outcomes, retire this
-lab, then qualify the corrected CLI harness from a fresh exact-source lab. Runner sleeps at most1800s
-following successful build; explicitly stop verified owned resources after cases.
-Inventory implementation_archive_worker_20260918.catalog_cli owns this new lab.
-Preflight275 retained containers/eight unrelated running/zero BigBrotr running;
-old labs stay retired. Raw .research/implementation/archive-worker/catalog-cli.
+[Native report](evidence/p02-catalog-cli-native-20260919.json) owns both exact
+source/dependency/artifact/workload/raw sets. Explicit archive.catalog_id is now
+a deployment root; generated init/example/schema/reference and selected Archive
+validation share it. Actual archive inspect uses the protected catalog connection
+and expected dataset/catalog/root to verify guard/scientific metadata. It grants
+no runtime authority, launches no worker and checks no data-file contents.
+No applied SQL checksum, policy encoding, scientific schema or journal change.
 
-## Installed worker binding qualification
+Read-only AI source review found unbounded discarded ordinal bytes before shape
+validation; all guard entrypoints now lock fixed scalars with LIMIT2, and activation
+reads owner values after installed validation. Documentation now distinguishes
+5s socket timeout,10s transport deadline,30s inspection and2s driver drain.
+A CLI-harness cleanup omission was corrected on Mac before that suite executed.
+Its cleanup attempts each resource independently and retains INCOMPLETE on error.
 
-[Native report](evidence/p02-installed-worker-binding-native-20260919.json) owns
-source, dependency, artifact, workload and raw identities. The shared builder
-compiles the worker first, embeds its length/hash in the main executable and
-verifies the installed bundle. WorkerInstallation::packaged uses only this anchor;
-unbound Cargo builds refuse. `archive verify-worker` consumes existing pre-exec
-checks without launching an engine. No adjacent receipt/runtime environment hash
-can supply authority. No dependency, applied SQL checksum or journal change.
+At5262c84:38 real scientific cases PASS (native schema/guard/refusal/ambiguity,
+both SQL lock orders, activation, seal and repeated current seal), plus six
+shared Control CLI cases PASS (TLS/signals/blocked cancellation/restart).
+Repeated seal is the same disabled current ordinal, despite its fixture label
+sealed-history. It does not qualify a predecessor after successor activation.
+At3e87a53:18 actual catalog CLI cases PASS, including wrong identities/credentials,
+TLS, empty/unbound/native-only state, lock deadline/retry and malformed owner.
+256MiB text ordinal refuses IncompatibleLayout without OOM in192MiB cgroup;
+independent length/MD5 unchanged.5.036s row-lock refusal, subsequent retry succeeds.
+Logical dumps remain equal; no inspected client backends remain. PG TLS settings
+restored. Mac39 Rust cases; each native candidate37 plus Clippy/Control fixture.
+Earlier commentary called native count39; logs/report correct it (two identity
+cases were local only). Native source/archive equality verified for all713 files
+per revision; production input files are identical between the two candidates.
 
-Native Linux amd64 PASS:12 actual installed cases (three successes/nine refusals),
-five invalid build assertions, seven Rust cases and affected Clippy. Relocated
-roots pass; altered worker plus forged sidecar/environment, library/all three
-extensions, missing extension, symlink, length and writable worker refuse.
-Complete copied package hashes match after restoring injected fixture mutations.
-Same-target Cargo rebuild changes the hash, then removes both variables and
-observes null/refusal, then restores the exact original main hash. Wrong/unbound
-intermediary binaries and their build-info/verifier outputs were not separately
-retained; exact-source assertions reach ready.json/exit0, with Cargo logs retained.
-Baseline6606103's exact main refuses the missing command with exit2 as expected.
+First main3c3333e02e90d662e5f237fd0e538c1eaa4a32a41e1f430560a7a11ae88dd429
+(8,230,496 bytes); second057f06f2271212379e307f5c7711f699ca4a51c87fc4ca30c4cab44e9f908694
+(8,230,440 bytes). Worker unchanged4e754f7f525f484df96920b9c7a73f5ddb40762b6e5051a459f45d41c60deac9.
+Raw .research/implementation/archive-worker/catalog-cli/{guard-transport,inspection},
+19 verified files each. Tars f602cb9708c01f1ba642806c29790a31aba27150c0293d4c2476590cc8341373
+and71abad6178574a2d8d4b1d4afacd4391f64c84d9cfaed2d1f1dc39cbba95db20.
+First local extraction failed on Python3.9's unsupported filter keyword after
+hash checks, before extraction. Bounded exclusive extraction reverified the same
+members and succeeded. The shell had continued with the reviewed cleanup commit
+and transfer while its checkpoint refresh failed; current state was reconciled.
+No product/test assertion changed. Full details and exclusions stay in the report.
 
-Frozen ELF amd64 main d331eb93105a163f4dcb1d3c1bf16e7d323016279858875bb303f236f0d39e25
-(8,017,896 bytes); worker4e754f7f525f484df96920b9c7a73f5ddb40762b6e5051a459f45d41c60deac9
-(12,571,504 bytes). Rust1.98.1; same native pins. All708 source files checked
-before/after; Mac Git archive equals Linux export:
-c8f8377bdd3363756dbbf3ffb574eb2f1a8d06702b425d4b528cbc5b3a448805.
-Raw root .research/implementation/archive-worker/installed-binding;26 collected
-files,337,920-byte tar07bd164168e16b8005debf5103a10338305158200fd5b9508682534127362d73.
+## Owned resources terminal
 
-The first ad hoc terminal audit failed on Docker mount-list order. All89
-complete-record discrepancies were independently checked equal; comparison now
-orders records without dropping fields. Product tests were not changed. Read-only
-AI source review found no blocker; its bound-to-unbound gap was covered before
-candidate. Recorded-evidence review confirmed hashes, source and literal CLI
-outcomes; it clarified the intermediary-output retention limit above. Reviewer
-performed no native execution or Tux action.
-
-Limits: shared ordered build used retained caches; full fresh tools/build.py was
-NOT_RUN. No engine/catalog startup, immutable production-mount, whole-process
-resource, recovery, Compose, release-authentication, peak-RSS or arm64 claim.
-The main executable still requires trusted outer installation/release authority.
-
-## Owned lab resources terminal
-
-Inventory implementation_archive_worker_20260918.installed_worker_binding owns
-/home/tux/bigbrotr-implementation-20260917/runs/installed-binding-53707a2;
-owner a63fc54f2d4a00d3ce96080da4077747;
-runner13d5f5051be606ac7f0ed9dba2a4b61a71dedeb029bcf1e5d7902f1443dc9e67.
-It exited0 itself, no OOM, now stopped-retained.2CPU/6GiB/512PIDs, network none,
-no ports or PG. All274 pre-existing identities/states/mounts/networks unchanged,
-including20 unrelated; eight unrelated running, zero BigBrotr running. That previous lab has no active
-experiment or cleanup obligation. Transfer77675, initial audit92757, corrected
-audit26503 and collection52398 are terminal. Retired labs stay stopped. Latest
-cache is installed-binding-53707a2/out/build; new runs need new resources and
-exact-source checks. Original6606103 resources remain retired.
+Both new labs are stopped-retained under
+/home/tux/bigbrotr-implementation-20260917/runs/:
+catalog-cli-5262c84 owner595c0af940229c8e7c6c6a0aba1846ff,
+catalog-cli-3e87a53 owner06095a02c49b84b572b0451c2e6bd688.
+Inventory implementation_archive_worker_20260918.catalog_cli/catalog_cli_inspection
+owns exact IDs/caps. Internal networks/no host ports. Both PGs stopped cleanly;
+runners explicitly stopped after READY; no OOM. Four Control and one malformed
+CLI auxiliary containers are stopped. All275 first/281 second preexisting
+container identities, states, complete mount records and networks unchanged.
+Eight unrelated running, zero BigBrotr. Audits61908/94967, collection52718 and
+CLI94516 are terminal; no active experiment/cleanup obligation. Old labs stay
+retired. Latest cache catalog-cli-3e87a53/out/build and assets out/archive-worker;
+future runs need new exact-source resources. No native arm64 or hosted Actions.
 
 ## Earlier evidence and constraints
 
@@ -138,29 +119,20 @@ Do not mechanically rerun unrelated suites.
 
 ## Next bounded action
 
-The root-owned catalog consumer is ready for an unpublished exact-source native
-candidate under P02-T04 steps3/4/5 and P01-T04. It adds archive.catalog_id as an
-explicit root, native lexical path validation, generated consumers and actual
-archive inspect through the protected catalog credential. Local tests:39 PASS
-(7 new CLI,24 config,6 binary/policy,2 catalog identity), affected Clippy PASS,
-artifact/link/syntax check has no errors. Raw local logs:
-.research/implementation/archive-worker/catalog-cli. Initial four-case red log
-is retained in the prior installed-binding raw root; stale generated-file failure
-was fixed by regenerating from the CLI, not weakening assertions.
-
-Read-only AI review found the connection deadline wording incorrect (now10s total,
-5s socket setting), and unbounded discarded owner values before shape validation.
-All guard entrypoints now lock via fixed scalars/LIMIT2/exact-one checking;
-activation reads values after validation. No SQL/checksum/policy format change.
-Native malformed-owner refusal, actual CLI/PG cases, both native DML lock orders,
-activation/seal/retry and shared Control transport are still NOT_RUN for this
-candidate. Existing scientific fixture gains a real retained-intent seal check.
-The exact-source lab above is now building. Finish active session2265 and collect actual native guard/transport outcomes.
-Review the independent cleanup correction, then commit the next exact candidate
-and run its CLI-specific cases in a new owned lab. Do not rerun unrelated suites
-when production source is unchanged. Inspect
-actual outcomes and immutable source/artifact identities, then collect and retire
-only owned resources. Source bugs require a new exact revision; no remote edits.
+Recorded-evidence AI review found no discrepancy in38 raw identities, two713-file
+source archives, literal outcomes/counts and full logical dumps. Reviewer did no
+Tux execution; ELF and full host records rely on the retained native audit. Final
+documentation diff reviewed; artifact check and436 local link fragments pass with
+no errors. Commit/push this qualification follow-up and verify private remote/main
+state; repository remains private, nonarchived, bigbrotr-rs. The next product consumer is explicit fresh
+catalog initialization using configured identity and the installed native worker.
+Read its existing native initializer, catalog credential/provisioning boundary and
+bootstrap exclusion contract before implementing. No implicit initialization on
+serve, synthetic ArchiveAttempt or automatic reuse of partial/existing catalogs.
+Installed initialization must preserve exact expected identity, finite grants,
+positive native child ownership and explicit ambiguous-result refusal/recovery.
+Separate reader credentials, retained-batch count/ranges, whole-role resource
+reconciliation, cross-boot recovery, protection and complete M1 remain required.
 
 Registry/resolver, budget/ownership/serve, PG preparation, native installation/
 process/lifetime and publication/custody sources were read completely. Integration

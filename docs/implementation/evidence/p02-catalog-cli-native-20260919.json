@@ -1,0 +1,712 @@
+{
+  "format": "bigbrotr-catalog-cli-native/1",
+  "observed_date": "2026-09-19",
+  "status": "PASS",
+  "scope": "Finite installed catalog metadata inspection, configured expected identity and affected shared guard/Control transport regressions; no installed Archive readiness",
+  "tasks": [
+    "P01-T04",
+    "P02-T04 steps 3/4/5"
+  ],
+  "implemented": [
+    "Explicit deployment-locked archive.catalog_id and selected native path validation; config init/example/schema/reference share the registry and generator.",
+    "archive inspect consumes protected postgres.catalog preparation and the actual guarded scientific inspection; no worker launch, initialization or runtime grant.",
+    "Every guard entrypoint locks a fixed scalar with LIMIT 2 before reading unvalidated owner values. Activation reads owner state only after installed shape validation."
+  ],
+  "compatibility": {
+    "selected_archive": "Older files must supply the actual expected catalog ID and compatible lexical root; unselected staged identities remain typed.",
+    "durable_formats": "No applied migration/checksum, scientific schema, policy encoding or custody journal change. The new key is excluded from persisted policy.",
+    "source_relation": "The two candidates have identical apps/crates/build inputs/contracts/migrations/tools. The second changes only the CLI laboratory cleanup and continuity metadata; binary build-info source identities differ."
+  },
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "native_toolchain": {
+      "os": "Linux",
+      "architecture": "x86_64",
+      "discovery": "llvm-config",
+      "environment": {
+        "CC": "/usr/lib/llvm-14/bin/clang",
+        "CXX": "/usr/lib/llvm-14/bin/clang++",
+        "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+        "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+        "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+      },
+      "tools": {
+        "CC": {
+          "path": "/usr/lib/llvm-14/bin/clang",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "CXX": {
+          "path": "/usr/lib/llvm-14/bin/clang++",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "AR": {
+          "path": "/usr/lib/llvm-14/bin/llvm-ar",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+          "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+          "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+        },
+        "LIBCLANG_PATH": {
+          "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+          "version": "Debian clang version 14.0.6"
+        },
+        "discovery": {
+          "path": "/usr/lib/llvm-14/bin/llvm-config",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+          "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+          "version": "14.0.6"
+        }
+      },
+      "sdk": null
+    },
+    "dependency_inputs_sha256": {
+      "Cargo.lock": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215",
+      "contracts/protocol/nip01-event.json": "b830d5ab8651f5a763ebcffdc0eb1737ba70f4602c93fc714c892865ffca2db8",
+      "contracts/protocol/versions.json": "37c76706c5a2aa4fc72a40aeed908f104620eafcee1118b7cee8baf133546c95",
+      "contracts/release/dependencies.json": "4f73cd0a81916b7d203556ff9ad1d8efd97dfe95b2b2305c35468747e8669132",
+      "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167"
+    },
+    "archive_native_registry_sha256": "ae0069565ab9411928df0cf067822630c4f3a912919e61633b952f8077a5e2c1",
+    "postgres": "16.15, fsync=on, full_page_writes=on",
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "isolation": "New owned internal networks, no host ports; runner 2 CPU/6GiB/512 PIDs, PG 1 CPU/1GiB/128 PIDs. Retained matching cache/assets, fresh source export and databases."
+  },
+  "sources": [
+    {
+      "name": "guard-transport",
+      "revision": "5262c84b7ea075172d1449d9eee2ed5d114889e3",
+      "tree": "992470e764587867fa541351eafb6d38b293b572",
+      "source_files": 713,
+      "source_archive_sha256": "c789f29a5be6e07d3f14be2eed9b6a965edad5c55bba0cad9b3f1035d251772f",
+      "source_manifest_sha256": "0478d43adb4d09b606a442091df1f0785544f2df98f4686938e27f8bf5869264",
+      "artifacts": {
+        "main": {
+          "sha256": "3c3333e02e90d662e5f237fd0e538c1eaa4a32a41e1f430560a7a11ae88dd429",
+          "bytes": 8230496,
+          "elf_machine": 62
+        },
+        "worker": {
+          "sha256": "4e754f7f525f484df96920b9c7a73f5ddb40762b6e5051a459f45d41c60deac9",
+          "bytes": 12571504,
+          "elf_machine": 62
+        }
+      },
+      "native_rust_tests": 37,
+      "raw_root": ".research/implementation/archive-worker/catalog-cli/guard-transport",
+      "raw": {
+        "tar_bytes": 174080,
+        "tar_sha256": "f602cb9708c01f1ba642806c29790a31aba27150c0293d4c2476590cc8341373",
+        "files": {
+          "resources.json": {
+            "bytes": 1193,
+            "sha256": "26fecf9ac7299625b51323bbf1479e2889fa009c7977a6b7fa815a8b9158fc19"
+          },
+          "audit.json": {
+            "bytes": 2082,
+            "sha256": "20eec96c02e6dffd2068567e1bbd51b6c757e7656170f9f2616d3fb1193927de"
+          },
+          "container.log": {
+            "bytes": 342,
+            "sha256": "0abda46820c17d538f458720542f0de113e6552b3e02f52bfcff7708abb4737b"
+          },
+          "out/build/source-manifest.json": {
+            "bytes": 87063,
+            "sha256": "0478d43adb4d09b606a442091df1f0785544f2df98f4686938e27f8bf5869264"
+          },
+          "out/native-tests/checks/clippy.log": {
+            "bytes": 297,
+            "sha256": "fa010edbca9c266112711545b78057e34674172b8fe97ae45b59b7fdb51d3509"
+          },
+          "out/native-tests/checks/fixtures.log": {
+            "bytes": 130,
+            "sha256": "7f1118d62e8b81b6c18a9bba30608f881704e6db1d97d83a64d7d86485be2237"
+          },
+          "out/native-tests/checks/native-ddl-fixture.log": {
+            "bytes": 190,
+            "sha256": "962299a6ecfbbb320a5c9627bf41cb8046ba1c68ac06ce8452e50405b97bcb44"
+          },
+          "out/native-tests/checks/result.json": {
+            "bytes": 4190,
+            "sha256": "38f0a0001489f3f47ca40bea0c8cf7f8c36a79aa675c7f0abd8c7b8b98ab0e24"
+          },
+          "out/native-tests/checks/tests.log": {
+            "bytes": 3817,
+            "sha256": "42283f32a64f51954cb4756a66d56262656eecd9c4125f7f88db32917a57e8e3"
+          },
+          "out/native-tests/control-fixture/control-fixture.log": {
+            "bytes": 542,
+            "sha256": "1ed77ccfc35dcc9efe5b7b4cb16d14fb2b5c29643587756b29a6636e7fca5c14"
+          },
+          "out/native-tests/control-fixture/result.json": {
+            "bytes": 2751,
+            "sha256": "ca722dfa481ca56eb660c5c28c69efca66d218beea8af0d380e4b412f02aaf04"
+          },
+          "out/native-tests/ordered-build.log": {
+            "bytes": 695,
+            "sha256": "ad6b1d452f4f59d3084ebcc457ab2858bf78770023af6422aa9db4a7d5ec7c97"
+          },
+          "out/native-tests/ready.json": {
+            "bytes": 4990,
+            "sha256": "c5802d5e43e85952a0eff9b9e671d7162f27d8a7d060ee0dfc7f3a44b6a4cb04"
+          },
+          "out/native-tests/result.json": {
+            "bytes": 2806,
+            "sha256": "04e1f1c89e43c6b2c6c0fa4a7d030f8f43a6a34bf3433dfa666dc1cb91055be0"
+          },
+          "out/native-tests/worker-identity.json": {
+            "bytes": 104,
+            "sha256": "e574d8382b617d1b1d46b7c7eba21ff72b5b71205f72a6a25bd08a08e1279dc8"
+          },
+          "guard-cases.json": {
+            "bytes": 11029,
+            "sha256": "85d03d9f3083bef4a9432975f034e5ea6922d2882ccb31fa2a5da850d46b7d2d"
+          },
+          "scientific-guard.log": {
+            "bytes": 1039,
+            "sha256": "838dd329b68c046ab1273c71c8614f0a3e58d6fc0058df7b8c5fd178ca5af6ec"
+          },
+          "transport-cli.json": {
+            "bytes": 11875,
+            "sha256": "4f978d69755082f9f330554c8a7a00252870439f8057a1aa0045aa295a6c70cd"
+          },
+          "transport-cli.log": {
+            "bytes": 54,
+            "sha256": "28cb2ab6e357d08e73f7c4d9858c286b4434d87042cb337ed5e370fe9045d0fc"
+          }
+        }
+      },
+      "terminal": {
+        "state": "stopped-retained",
+        "owned_containers": 6,
+        "preexisting_containers_unchanged": 275,
+        "unrelated_containers_unchanged": 20,
+        "unrelated_running": 8,
+        "bigbrotr_running": 0,
+        "observed_at": "2026-09-19T04:15:21.650248+00:00"
+      }
+    },
+    {
+      "name": "inspection",
+      "revision": "3e87a53087a445141e9079f40cdc902dd5add322",
+      "tree": "9400af8a01139e27747595ee7c65b0fafdaec7c1",
+      "source_files": 713,
+      "source_archive_sha256": "3700e9d4a08cae8c3d22de80693de68a88d070ef2316360482f2a161e7d5045a",
+      "source_manifest_sha256": "dc02f20b1703f32b1a01d5478a7fd80b3a8d3ddd8a72b4175ff9dc458eafdbc0",
+      "artifacts": {
+        "main": {
+          "sha256": "057f06f2271212379e307f5c7711f699ca4a51c87fc4ca30c4cab44e9f908694",
+          "bytes": 8230440,
+          "elf_machine": 62
+        },
+        "worker": {
+          "sha256": "4e754f7f525f484df96920b9c7a73f5ddb40762b6e5051a459f45d41c60deac9",
+          "bytes": 12571504,
+          "elf_machine": 62
+        }
+      },
+      "native_rust_tests": 37,
+      "raw_root": ".research/implementation/archive-worker/catalog-cli/inspection",
+      "raw": {
+        "tar_bytes": 266240,
+        "tar_sha256": "71abad6178574a2d8d4b1d4afacd4391f64c84d9cfaed2d1f1dc39cbba95db20",
+        "files": {
+          "resources.json": {
+            "bytes": 1193,
+            "sha256": "a5e3d308cbd1504f7bad26aba5937f5d42f546423e53c4400f72980ac59fc1ca"
+          },
+          "audit.json": {
+            "bytes": 1842,
+            "sha256": "127212e52018976ebf4836597b2cce5d80bde7c7e2488ca12bb7b6884d0a1f23"
+          },
+          "container.log": {
+            "bytes": 342,
+            "sha256": "5d879709d815642e5b2bc90850867eaa718634c9aa3962174449668b4c3855b3"
+          },
+          "out/build/source-manifest.json": {
+            "bytes": 87063,
+            "sha256": "dc02f20b1703f32b1a01d5478a7fd80b3a8d3ddd8a72b4175ff9dc458eafdbc0"
+          },
+          "out/native-tests/checks/clippy.log": {
+            "bytes": 297,
+            "sha256": "aa688876f9742e5553d498cf91cf6b7f07fdfa367f10003e4d2640b103f57876"
+          },
+          "out/native-tests/checks/fixtures.log": {
+            "bytes": 130,
+            "sha256": "3456f3eb897d0a34304b8004dd9229e05522c02c7c64c575d0a2723e11fa4cc4"
+          },
+          "out/native-tests/checks/native-ddl-fixture.log": {
+            "bytes": 190,
+            "sha256": "e922f306735de7f8feedfa75220140c76eb2c88d01b27eeac68dae4877153262"
+          },
+          "out/native-tests/checks/result.json": {
+            "bytes": 4191,
+            "sha256": "2936fcf1f016e91c82b768486aa5333b34a0c67d5584657c9a980e21bfdfd6c4"
+          },
+          "out/native-tests/checks/tests.log": {
+            "bytes": 3817,
+            "sha256": "2788b44b7a4733dd77b074041dff3580cd524836882d78d570f1844f9f284998"
+          },
+          "out/native-tests/control-fixture/control-fixture.log": {
+            "bytes": 542,
+            "sha256": "1122e8058df6d702e0b9ac21cd97977d5d3dd7815fbcf62a756c68657ad62bcd"
+          },
+          "out/native-tests/control-fixture/result.json": {
+            "bytes": 2751,
+            "sha256": "f150faf6a0ec05ad87d8268ac0e0533440e1cb0765e8e5454b4591abe72a8c4c"
+          },
+          "out/native-tests/ordered-build.log": {
+            "bytes": 695,
+            "sha256": "4cba8b724d8d93538b4b9a06d4c9358e7b743c2b23c16634e73fab7236ebda61"
+          },
+          "out/native-tests/ready.json": {
+            "bytes": 4990,
+            "sha256": "54426277b2990ee3a69bdb5dfe65e0fdf58f740317a752cd823daae40a5a9874"
+          },
+          "out/native-tests/result.json": {
+            "bytes": 2806,
+            "sha256": "13e17ad58faa211a341fee9bdd2e6c8073b4ffa97479a29e4dc9388209bdaa92"
+          },
+          "out/native-tests/worker-identity.json": {
+            "bytes": 104,
+            "sha256": "e574d8382b617d1b1d46b7c7eba21ff72b5b71205f72a6a25bd08a08e1279dc8"
+          },
+          "catalog-cli.json": {
+            "bytes": 8882,
+            "sha256": "86c86c9371643518e5ea3dbf0368caa3ef3c4c234cb32d616939cb7b9ff8239b"
+          },
+          "catalog-cli.log": {
+            "bytes": 32,
+            "sha256": "cae6da0eb2d7f188484d7507357896aaf4cec215ab9f8324549ce6e7d33c86c9"
+          },
+          "out/catalog-cli/before.sql": {
+            "bytes": 50607,
+            "sha256": "262015c8316161d7ebca2f0c9c0b229bcd5814fa67c6fd7fc241e7f2cf32026c"
+          },
+          "out/catalog-cli/after.sql": {
+            "bytes": 50607,
+            "sha256": "262015c8316161d7ebca2f0c9c0b229bcd5814fa67c6fd7fc241e7f2cf32026c"
+          }
+        }
+      },
+      "terminal": {
+        "state": "stopped-retained",
+        "owned_containers": 3,
+        "preexisting_containers_unchanged": 281,
+        "unrelated_containers_unchanged": 20,
+        "unrelated_running": 8,
+        "bigbrotr_running": 0,
+        "observed_at": "2026-09-19T04:19:35.169613+00:00"
+      }
+    }
+  ],
+  "validation": {
+    "mac": {
+      "status": "PASS",
+      "rust_tests": 39,
+      "groups": {
+        "binary_policy": 6,
+        "catalog_entrypoint": 7,
+        "catalog_identity": 2,
+        "configuration": 24
+      },
+      "clippy": "affected library/binary/example/tests PASS",
+      "artifact_check": "local links/fences/JSON/Python syntax: no errors",
+      "note": "Earlier commentary/checkpoint incorrectly called native total39; native logs contain37 (catalog_identity2 ran locally only)."
+    },
+    "native": {
+      "installed_cli": {
+        "source": "3e87a53087a445141e9079f40cdc902dd5add322",
+        "count": 18,
+        "cases": [
+          {
+            "name": "scientific-catalog-control-secret-unavailable",
+            "status": "PASS",
+            "exit": 0,
+            "stdout": "{\"catalog_id\":\"5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a\",\"data_root\":\"/out/schema_bbcat_cli/\",\"dataset_id\":\"01010101010101010101010101010101\",\"file_contents\":\"not-checked\",\"format\":\"bigbrotr-catalog-inspection/1\",\"ready\":false,\"runtime_authorization\":\"not-granted\",\"scientific_schema_version\":1,\"scope\":\"catalog identity, commit guard and logical schema metadata\",\"status\":\"verified\"}\n",
+            "stderr": "",
+            "logical_sha256": "262015c8316161d7ebca2f0c9c0b229bcd5814fa67c6fd7fc241e7f2cf32026c",
+            "seconds": 0.1360370717011392,
+            "remaining_clients": 0
+          },
+          {
+            "name": "wrong-dataset",
+            "status": "PASS",
+            "exit": 4,
+            "stdout": "",
+            "stderr": "error: archive catalog guard refused: WrongCatalog\n",
+            "logical_sha256": "262015c8316161d7ebca2f0c9c0b229bcd5814fa67c6fd7fc241e7f2cf32026c",
+            "seconds": 0.10982788307592273,
+            "remaining_clients": 0
+          },
+          {
+            "name": "wrong-catalog",
+            "status": "PASS",
+            "exit": 4,
+            "stdout": "",
+            "stderr": "error: archive catalog guard refused: WrongCatalog\n",
+            "logical_sha256": "262015c8316161d7ebca2f0c9c0b229bcd5814fa67c6fd7fc241e7f2cf32026c",
+            "seconds": 0.12525944598019123,
+            "remaining_clients": 0
+          },
+          {
+            "name": "wrong-root",
+            "status": "PASS",
+            "exit": 4,
+            "stdout": "",
+            "stderr": "error: archive catalog guard refused: IncompatibleLayout\n",
+            "logical_sha256": "262015c8316161d7ebca2f0c9c0b229bcd5814fa67c6fd7fc241e7f2cf32026c",
+            "seconds": 0.0960259148851037,
+            "remaining_clients": 0
+          },
+          {
+            "name": "wrong-password",
+            "status": "PASS",
+            "exit": 4,
+            "stdout": "",
+            "stderr": "error: PostgreSQL connection unavailable\n",
+            "logical_sha256": "262015c8316161d7ebca2f0c9c0b229bcd5814fa67c6fd7fc241e7f2cf32026c",
+            "seconds": 0.07415537722408772,
+            "remaining_clients": 0
+          },
+          {
+            "name": "denied-manager",
+            "status": "PASS",
+            "exit": 4,
+            "stdout": "",
+            "stderr": "error: archive catalog guard refused: Backend\n",
+            "logical_sha256": "262015c8316161d7ebca2f0c9c0b229bcd5814fa67c6fd7fc241e7f2cf32026c",
+            "seconds": 0.07961632264778018,
+            "remaining_clients": 0
+          },
+          {
+            "name": "unavailable",
+            "status": "PASS",
+            "exit": 4,
+            "stdout": "",
+            "stderr": "error: PostgreSQL connection unavailable\n",
+            "logical_sha256": "262015c8316161d7ebca2f0c9c0b229bcd5814fa67c6fd7fc241e7f2cf32026c",
+            "seconds": 0.04865380981937051,
+            "remaining_clients": 0
+          },
+          {
+            "name": "terminal-slash",
+            "status": "PASS",
+            "exit": 0,
+            "stdout": "{\"catalog_id\":\"5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a\",\"data_root\":\"/out/schema_bbcat_cli/\",\"dataset_id\":\"01010101010101010101010101010101\",\"file_contents\":\"not-checked\",\"format\":\"bigbrotr-catalog-inspection/1\",\"ready\":false,\"runtime_authorization\":\"not-granted\",\"scientific_schema_version\":1,\"scope\":\"catalog identity, commit guard and logical schema metadata\",\"status\":\"verified\"}\n",
+            "stderr": "",
+            "logical_sha256": "262015c8316161d7ebca2f0c9c0b229bcd5814fa67c6fd7fc241e7f2cf32026c",
+            "seconds": 0.13839325588196516,
+            "remaining_clients": 0
+          },
+          {
+            "name": "bbcat_empty",
+            "status": "PASS",
+            "exit": 4,
+            "stdout": "",
+            "stderr": "error: archive catalog guard refused: Backend\n",
+            "logical_sha256": "0e77efa469045104babcf70517274258fe0ba293367364625639b94073ae70fc",
+            "seconds": 0.07672790484502912,
+            "remaining_clients": 0
+          },
+          {
+            "name": "bbcat_unbound",
+            "status": "PASS",
+            "exit": 4,
+            "stdout": "",
+            "stderr": "error: archive catalog guard refused: Backend\n",
+            "logical_sha256": "7cf98a720c7c8ec18a31b396e54518c9a38c5ebe4cb260ac869cad5f4bb4f6de",
+            "seconds": 0.07667951378971338,
+            "remaining_clients": 0
+          },
+          {
+            "name": "bbcat_native",
+            "status": "PASS",
+            "exit": 4,
+            "stdout": "",
+            "stderr": "error: archive catalog guard refused: IncompatibleLayout\n",
+            "logical_sha256": "a6df591160154196858fcae69565dc7c271662d2ae47734262988598458fb290",
+            "seconds": 0.08422186225652695,
+            "remaining_clients": 0
+          },
+          {
+            "name": "bounded-malformed-owner",
+            "status": "PASS",
+            "exit": 4,
+            "stdout": "",
+            "stderr": "error: archive catalog guard refused: IncompatibleLayout\n",
+            "docker_attach_exit": 4,
+            "ordinal_bytes": 268435456,
+            "cgroup_bytes": 201326592,
+            "unchanged_ordinal_md5": "db0c5c918bc6c2562a3e8ef4b2885158"
+          },
+          {
+            "name": "multiple-singletons",
+            "status": "PASS",
+            "exit": 4,
+            "stdout": "",
+            "stderr": "error: archive catalog guard refused: Backend\n",
+            "logical_sha256": "7d8cf4f32a81c8114ba415ae85d45d9a5835c950234a56865729d6955dc3550f",
+            "seconds": 0.07607576483860612,
+            "remaining_clients": 0
+          },
+          {
+            "name": "owner-lock-deadline",
+            "status": "PASS",
+            "exit": 4,
+            "stdout": "",
+            "stderr": "error: archive catalog guard refused: Backend\n",
+            "seconds": 5.036363079678267,
+            "remaining_inspect_clients": 0
+          },
+          {
+            "name": "retry-after-lock",
+            "status": "PASS",
+            "exit": 0,
+            "stdout": "{\"catalog_id\":\"5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a\",\"data_root\":\"/out/schema_bbcat_cli/\",\"dataset_id\":\"01010101010101010101010101010101\",\"file_contents\":\"not-checked\",\"format\":\"bigbrotr-catalog-inspection/1\",\"ready\":false,\"runtime_authorization\":\"not-granted\",\"scientific_schema_version\":1,\"scope\":\"catalog identity, commit guard and logical schema metadata\",\"status\":\"verified\"}\n",
+            "stderr": "",
+            "logical_sha256": "262015c8316161d7ebca2f0c9c0b229bcd5814fa67c6fd7fc241e7f2cf32026c",
+            "seconds": 0.11661865608766675,
+            "remaining_clients": 0
+          },
+          {
+            "name": "tls",
+            "status": "PASS",
+            "exit": 0,
+            "stdout": "{\"catalog_id\":\"5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a\",\"data_root\":\"/out/schema_bbcat_cli/\",\"dataset_id\":\"01010101010101010101010101010101\",\"file_contents\":\"not-checked\",\"format\":\"bigbrotr-catalog-inspection/1\",\"ready\":false,\"runtime_authorization\":\"not-granted\",\"scientific_schema_version\":1,\"scope\":\"catalog identity, commit guard and logical schema metadata\",\"status\":\"verified\"}\n",
+            "stderr": "",
+            "logical_sha256": "262015c8316161d7ebca2f0c9c0b229bcd5814fa67c6fd7fc241e7f2cf32026c",
+            "seconds": 0.14800677401944995,
+            "remaining_clients": 0
+          },
+          {
+            "name": "wrong-ca",
+            "status": "PASS",
+            "exit": 4,
+            "stdout": "",
+            "stderr": "error: PostgreSQL connection unavailable\n",
+            "logical_sha256": "262015c8316161d7ebca2f0c9c0b229bcd5814fa67c6fd7fc241e7f2cf32026c",
+            "seconds": 0.06708109518513083,
+            "remaining_clients": 0
+          },
+          {
+            "name": "wrong-name",
+            "status": "PASS",
+            "exit": 4,
+            "stdout": "",
+            "stderr": "error: PostgreSQL connection unavailable\n",
+            "logical_sha256": "262015c8316161d7ebca2f0c9c0b229bcd5814fa67c6fd7fc241e7f2cf32026c",
+            "seconds": 0.07563330978155136,
+            "remaining_clients": 0
+          }
+        ],
+        "logical_dump_sha256": "262015c8316161d7ebca2f0c9c0b229bcd5814fa67c6fd7fc241e7f2cf32026c",
+        "restoration": "PASS",
+        "cleanup_errors": []
+      },
+      "scientific_guard": {
+        "source": "5262c84b7ea075172d1449d9eee2ed5d114889e3",
+        "count": 38,
+        "cases": [
+          "native-ddl-add",
+          "native-ddl-drop",
+          "native-ddl-rollback",
+          "explicit-native-only-mode-cannot-be-adopted",
+          "late-install-failure-rolls-back-all-guard-ddl",
+          "install-binding-retry-and-fresh-inspection",
+          "native-metadata-value-not-null",
+          "refuse-type",
+          "refuse-parent",
+          "refuse-nullable",
+          "refuse-default",
+          "refuse-order",
+          "refuse-oversized-name",
+          "refuse-missing-table",
+          "refuse-unknown-metadata-scope",
+          "refuse-null-scope-id",
+          "refuse-unknown-scope-id",
+          "refuse-duplicate-settings",
+          "refuse-binding-hash",
+          "refuse-missing-column",
+          "refuse-duplicate-column",
+          "refuse-initial-default",
+          "refuse-null-table-path",
+          "refuse-null-column_name",
+          "refuse-null-column_type",
+          "refuse-null-column_order",
+          "refuse-null-begin_snapshot",
+          "refuse-null-nulls_allowed",
+          "refuse-null-default_value",
+          "refuse-null-default_value_type",
+          "refuse-null-default_value_dialect",
+          "all-zero-inlining-scopes",
+          "lost-install-before-forward",
+          "lost-install-after-complete",
+          "scientific-activation",
+          "native-statement-share-lock-before-inspector",
+          "inspector-owner-lock-before-native-table-lock",
+          "seal-and-idempotent-resolution-after-shared-owner-lock"
+        ],
+        "scope": "Actual native DDL, scientific schema/guard installation, incompatible metadata, lost install replies, both SQL lock orders, activation and seal/repeated seal of the same current ordinal.",
+        "repeated_seal": "Fixture outcome sealed-history names disabled_current=false. The executed retry was the current ordinal already disabled, not a predecessor after successor activation."
+      },
+      "control_transport": {
+        "source": "5262c84b7ea075172d1449d9eee2ed5d114889e3",
+        "count": 6,
+        "cases": [
+          {
+            "name": "loopback-sigterm",
+            "status": "PASS",
+            "seconds": 0.18391352938488126,
+            "identity": {
+              "authority_scope": "local Control only; no principal/action grant",
+              "config_revision": "1",
+              "dataset_id": "22222222222222222222222222222222",
+              "format": "bigbrotr-control-runtime/1",
+              "listeners": [],
+              "native_stores": [],
+              "owner_epoch": "1",
+              "owner_resource_id": "64dfa6202b7383773d6330a1b8c0deb0",
+              "policy_revision": "1",
+              "process_incarnation": "4b9ff0b612287b19446ffebb17fb09d8",
+              "role": "control",
+              "state": "idle"
+            }
+          },
+          {
+            "name": "verify-full-sigint-restart",
+            "status": "PASS",
+            "seconds": 0.1739503159187734,
+            "identity": {
+              "authority_scope": "local Control only; no principal/action grant",
+              "config_revision": "1",
+              "dataset_id": "22222222222222222222222222222222",
+              "format": "bigbrotr-control-runtime/1",
+              "listeners": [],
+              "native_stores": [],
+              "owner_epoch": "2",
+              "owner_resource_id": "64dfa6202b7383773d6330a1b8c0deb0",
+              "policy_revision": "1",
+              "process_incarnation": "5d25f13727a77ec4cdb11eb648bbe384",
+              "role": "control",
+              "state": "idle"
+            },
+            "tls": {
+              "ssl": true,
+              "version": "TLSv1.3",
+              "cipher": "TLS_AES_256_GCM_SHA384",
+              "bits": 256
+            }
+          },
+          {
+            "name": "wrong_ca",
+            "status": "PASS",
+            "exit": 1,
+            "server_alert": "unknown ca",
+            "unchanged_history": true
+          },
+          {
+            "name": "wrong_name",
+            "status": "PASS",
+            "exit": 1,
+            "server_alert": "bad certificate",
+            "unchanged_history": true
+          },
+          {
+            "name": "cancel-blocked-policy",
+            "status": "PASS",
+            "seconds": 2.0755474297329783,
+            "identity": {
+              "authority_scope": "local Control only; no principal/action grant",
+              "config_revision": "1",
+              "dataset_id": "22222222222222222222222222222222",
+              "format": "bigbrotr-control-runtime/1",
+              "listeners": [],
+              "native_stores": [],
+              "owner_epoch": "3",
+              "owner_resource_id": "64dfa6202b7383773d6330a1b8c0deb0",
+              "policy_revision": "1",
+              "process_incarnation": "77c6b5c31ee9af7c3a343a83d2ce9f2a",
+              "role": "control",
+              "state": "idle"
+            },
+            "waits": [
+              {
+                "pid": 2035,
+                "backend_start": "2026-09-19T04:12:58.794184+00:00",
+                "blockers": [
+                  2049
+                ]
+              }
+            ],
+            "unchanged_history": true
+          },
+          {
+            "name": "restart-after-cancel",
+            "status": "PASS",
+            "seconds": 0.15073102619498968,
+            "identity": {
+              "authority_scope": "local Control only; no principal/action grant",
+              "config_revision": "1",
+              "dataset_id": "22222222222222222222222222222222",
+              "format": "bigbrotr-control-runtime/1",
+              "listeners": [],
+              "native_stores": [],
+              "owner_epoch": "4",
+              "owner_resource_id": "64dfa6202b7383773d6330a1b8c0deb0",
+              "policy_revision": "1",
+              "process_incarnation": "ee14840f7c7a6bbe1cd4165b65edda71",
+              "role": "control",
+              "state": "idle"
+            }
+          }
+        ],
+        "restoration": "PASS",
+        "cleanup_errors": []
+      },
+      "rust_tests": "37 in each candidate:6 binary/policy,7 catalog CLI,24 configuration; Clippy and actual Control issuance fixture PASS.",
+      "execution": "Trusted Tux invokes the shared tools.ci.execute/build_binaries and exact-source lab scripts; no hosted GitHub runner result."
+    }
+  },
+  "review_and_findings": [
+    {
+      "finding": "Discarded ordinal response before physical shape validation could import arbitrarily large malformed text.",
+      "origin": "Read-only AI source review; not an old native OOM observation.",
+      "resolution": "Shared fixed-scalar lock and post-validation activation fetch. Actual256MiB malformed owner refuses IncompatibleLayout in192MiB cgroup without OOM; independent length/MD5 unchanged."
+    },
+    {
+      "finding": "Documentation described5s as the complete connection deadline.",
+      "resolution": "Corrected to5s socket setting inside10s overall transport establishment, then30s inspection and2s driver drain."
+    },
+    {
+      "finding": "Initial CLI harness could skip later cleanup/TLS restoration if one cleanup failed.",
+      "resolution": "No catalog CLI cases ran at5262c84.3e87a53 independently attempts each resource and records INCOMPLETE on failure.18 actual cases finish with restored settings and no cleanup errors. Injected cleanup failures were not executed."
+    },
+    {
+      "finding": "Mac Python3.9 rejects tarfile.extractall(filter=...).",
+      "resolution": "First collection validated19 members/hashes then failed before extraction. Manual bounded exclusive extraction reverified the same members and succeeded; no product/test assertion change. The following shell had continued to the already reviewed cleanup commit/transfer with stale checkpoint metadata, subsequently reconciled."
+    }
+  ],
+  "limits": [
+    "Catalog manager in this isolated CLI fixture is postgres; denied nonmanager is tested, but this does not newly qualify least-privilege provisioning.",
+    "Inspection certifies metadata only. No file-content closure, protection, Archive service, positive initializer exclusion, restart/recovery, M1, Compose installation or release journey is claimed.",
+    "The192MiB hard-cap result covers one malformed response; it is not a measured total RSS bound or a guarantee of64MiB inspection memory or bounded server scan/MVCC cost.",
+    "No old oversized-response OOM, forced whole-operation30s timeout, DNS stall, repeated cleanup failure or cross-boot recovery was executed here. Existing statement/owner lock timeout and client closure were exercised.",
+    "Builds use retained caches and pinned assets. Full fresh tools/build.py, authenticated image promotion, hosted Actions and native Linux arm64 remain NOT_RUN.",
+    "Source review and recorded evidence review are AI review, not independent native execution."
+  ],
+  "recorded_evidence_review": {
+    "type": "read-only AI review",
+    "status": "no discrepancy found in scoped report",
+    "checked": "Both raw archives,38 raw-file identities,713 Git source files per candidate, recorded source/build/artifact identities, literal18 CLI/6 Control outcomes,38 scientific names/commit vectors/bindings, native37 vs Mac39 counts,256MiB MD5 and identical full logical dumps.",
+    "boundary": "Reviewer performed no native execution or Tux action. ELF contents and full host before/after mount records are absent from the local19-file archives; those claims rely on the retained native audit and its inspected source."
+  }
+}

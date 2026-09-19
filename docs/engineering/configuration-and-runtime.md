@@ -159,6 +159,15 @@ The owner-row lock may create physical PostgreSQL I/O; logical state is unchange
 Data-file closure, protection, explicit initialization/recovery and installed
 Archive service readiness remain separate gates.
 
+The [Linux amd64 qualification](../implementation/evidence/p02-catalog-cli-native-20260919.json)
+records 18 actual CLI cases at 3e87a53, including identity/credential/TLS refusals,
+empty and incompatible state, a 256 MiB malformed owner value refused without OOM
+under a 192 MiB process cap, and a 5.04s contended-lock refusal followed by retry.
+Logical dumps stay equal and no inspected client backend remains. This scoped
+case is not a measured total-memory limit. Identical production sources at 5262c84
+also pass 38 scientific guard cases and six shared Control transport cases; the
+report distinguishes their exact artifacts, source-only findings and exclusions.
+
 ## Explicit initial Control acceptance
 
 `config initialize --file PATH` is the finite deployment command that accepts a

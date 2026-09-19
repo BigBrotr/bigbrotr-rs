@@ -398,7 +398,11 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   unqualified. Explicit `archive.catalog_id` and
   [`archive inspect`](../engineering/configuration-and-runtime.md#explicit-catalog-inspection)
   now connect configured expected identity to privileged finite metadata checks;
-  native CLI qualification is pending for this candidate. Untrusted owner shape
+  [native qualification](evidence/p02-catalog-cli-native-20260919.json) passes 18
+  installed CLI cases at 3e87a53, with unchanged logical dumps and terminal driver
+  checks. Identical production sources at 5262c84 pass 38 scientific guard cases
+  (both lock orders, activation and repeated current sealing) plus six shared
+  Control CLI cases. Untrusted owner shape
   is locked through bounded fixed scalars before owner values are read by any
   guard entrypoint. Separate reader credentials, retained-batch recovery inputs
   and explicit initialization remain prerequisites.
