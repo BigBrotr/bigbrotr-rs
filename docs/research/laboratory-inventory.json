@@ -97,7 +97,7 @@
     "remote_state_mutated": false,
     "notes": "Shared active BigBrotr/unrelated services; /tmp is tmpfs. Extended realistic research is authorized; no new benchmark executed."
   },
-  "updated_at": "2026-09-18",
+  "updated_at": "2026-09-19T03:34:46.516035+00:00",
   "remote_retirement_20260917": {
     "evidence": "docs/research/evidence/tux-retirement-20260917.json",
     "local_operation_records": ".research/tux-retirement-20260917",
@@ -7934,6 +7934,44 @@
         "running_bigbrotr": 0
       },
       "next_cache_source": "/home/tux/bigbrotr-implementation-20260917/runs/shared-transport-6606103/out/build"
+    },
+    "installed_worker_binding": {
+      "local_root": ".research/implementation/archive-worker/installed-binding",
+      "resources": {
+        "source": "53707a2a74a143c9aba78858068dea5df71809c6",
+        "tree": "99598cfe9b343e97982e0a1e4cab5be30eaf2495",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-binding-53707a2",
+        "owner": "a63fc54f2d4a00d3ce96080da4077747",
+        "container": "bigbrotr-implementation-installed-binding-53707a2",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "state": "stopped-retained",
+        "cache": "/home/tux/bigbrotr-implementation-20260917/runs/shared-transport-6606103/out/build",
+        "source_files": 708,
+        "created_at": "2026-09-19T03:29:38.893134+00:00",
+        "container_id": "13d5f5051be606ac7f0ed9dba2a4b61a71dedeb029bcf1e5d7902f1443dc9e67",
+        "completed_at": "2026-09-19T03:34:46.516035+00:00",
+        "exit_code": 0,
+        "oom_killed": false
+      },
+      "limits": {
+        "cpus": 2,
+        "memory_bytes": 6442450944,
+        "pids": 512,
+        "network": "none",
+        "published_ports": [],
+        "source_read_only": true
+      },
+      "status": "PASS / stopped-retained",
+      "scope": "Exact-source ordered build, installed bundle-byte verifier and Cargo binding transitions. No engine/catalog process or release qualification.",
+      "preflight": "274 retained containers, eight unrelated running, zero BigBrotr running; new isolated runner only. Retired labs remain stopped; copy retained6606103 cache as build inputs only.",
+      "evidence": "docs/implementation/evidence/p02-installed-worker-binding-native-20260919.json",
+      "terminal_audit": {
+        "existing_containers_unchanged": 274,
+        "unrelated_containers_unchanged": 20,
+        "unrelated_running": 8,
+        "bigbrotr_running": 0,
+        "audit_mount_order_only_discrepancies": 89
+      }
     }
   },
   "implementation_monitor_corrections_20260918": {

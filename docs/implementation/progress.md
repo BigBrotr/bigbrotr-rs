@@ -14,108 +14,98 @@ All selected product work remains required; no P02 task or M1 gate is complete.
 
 Active P02-T03/T04 steps3/4/5: signed durable pending → actual PG DuckLake
 publication, positive fencing, fresh receipt resolution/protection, then M1
-read/export/restart. The next consumer is installed compact Archive startup/
-recovery with P01-T05/T06 ownership/resource prerequisites. Current serve remains
-Control-only and explicitly rejects other roles. Do not claim helper/example
-qualification as installed service readiness.
+read/export/restart. Installed compact Control+Archive is the next service
+consumer with P01-T05/T06 ownership/resource prerequisites. Current serve remains
+Control-only and rejects other roles. Helper/bundle-byte qualification is not
+installed service readiness.
 
 ## Actual Git and ownership
 
-Mac main HEAD and freshly verified remote main are now
-4ca199ecacf559a3871a4383f4f1a89cd4abf8b4 (qualification commit). Ordinary push83638
-completed from a40bf53; repository remains private, nonarchived, named bigbrotr-rs.
-Worktree was clean after push. Root now owns only this checkpoint update; no
-other writer, merge or rebase. Tested source remains
-6606103653d96b932e2adc11d2485b03d0955fc6,
-tree4d47f0d4b655d379ca8f442771291727eaa3852e.
-Read-only AI publication_review completed source/harness and recorded-evidence
-review without a discrepancy:49 hashes,21 raw members,703 source files, complete/
-interim oracles,27 journals,26 catalog/27 Control identities, ten clones and CLI
-owner history. No reviewer native execution or Tux actions; actual host/ELF/
-restoration claims rely on retained integrating-owner audits.
+Last observed main HEAD is tested source candidate
+53707a2a74a143c9aba78858068dea5df71809c6,
+tree99598cfe9b343e97982e0a1e4cab5be30eaf2495. This checkpoint accompanies its
+qualification-only follow-up; inspect Git log for that commit rather than treating
+the tested source as the newest document revision. Last verified remote before
+this follow-up was4ca199e. Root owns qualification evidence, task notes, inventory
+and this checkpoint; no other writer, merge or rebase. Finish/check the ordinary
+private push if interruption preceded it. No source changes after53707a2.
 
-## Shared PostgreSQL transport qualification
+## Installed worker binding qualification
 
-[Native report](evidence/p02-shared-postgres-transport-native-20260919.json) owns
-source, artifact, workload and raw identities. One protected prepared adapter
-returns the actual unpolled PostgreSQL driver. Control spawns/joins it through its
-existing wrapper; catalog provisioning/resolution/seal attach LocalAttempt custody
-before polling. The fixture-only 0600 credential copy is unlinked before connection.
-No dependency, applied SQL checksum, configuration or journal-format changes.
+[Native report](evidence/p02-installed-worker-binding-native-20260919.json) owns
+source, dependency, artifact, workload and raw identities. The shared builder
+compiles the worker first, embeds its length/hash in the main executable and
+verifies the installed bundle. WorkerInstallation::packaged uses only this anchor;
+unbound Cargo builds refuse. `archive verify-worker` consumes existing pre-exec
+checks without launching an engine. No adjacent receipt/runtime environment hash
+can supply authority. No dependency, applied SQL checksum or journal change.
 
-Mac route unit and affected Clippy PASS. Five native build/check commands PASS;
-actual native route unit 1 PASS. Actual Control CLI 6 PASS: loopback SIGTERM, TLS
-verify-full SIGINT/restart, wrong CA/name refusal, blocked-policy cancellation and
-restart. PG observes TLS 1.3/AES256; negative handshakes authorize no connection and
-preserve history. Four process exits 0/0/4/0, no OOM. Blocked cancellation 2.1035s;
-normal signal exits 0.1529–0.1719s, within the 6s harness bound. These are observed
-schedule times, not general latency/capacity guarantees. TLS original file/settings
-restored. CLI owner epochs 1–4 and exact retained history independently checked.
+Native Linux amd64 PASS:12 actual installed cases (three successes/nine refusals),
+five invalid build assertions, seven Rust cases and affected Clippy. Relocated
+roots pass; altered worker plus forged sidecar/environment, library/all three
+extensions, missing extension, symlink, length and writable worker refuse.
+Complete copied package hashes match after restoring injected fixture mutations.
+Same-target Cargo rebuild changes the hash, then removes both variables and
+observes null/refusal, then restores the exact original main hash. Wrong/unbound
+intermediary binaries and their build-info/verifier outputs were not separately
+retained; exact-source assertions reach ready.json/exit0, with Cargo logs retained.
+Baseline6606103's exact main refuses the missing command with exit2 as expected.
 
-Three custody/two missing-import schedules, ten clone controls and six signed
-publication/receipt journeys PASS. Same pinned query remains pending before driver
-polling and returns 9471 after custody attachment. All 27 journals match exact
-independent bytes; 26 catalog identities/OID bindings and 27 original Control requests
-match. Eleven complete signed input corpora, six full readbacks and three interim
-snapshots checked. No sidecar; Rocks pending retained; all 26 product writer roles
-sealed. No residual backend in 11 catalog/11 Control or CLI database. Fixture logins
-were separately disabled for retirement. No ACK/protection/reclamation introduced.
+Frozen ELF amd64 main d331eb93105a163f4dcb1d3c1bf16e7d323016279858875bb303f236f0d39e25
+(8,017,896 bytes); worker4e754f7f525f484df96920b9c7a73f5ddb40762b6e5051a459f45d41c60deac9
+(12,571,504 bytes). Rust1.98.1; same native pins. All708 source files checked
+before/after; Mac Git archive equals Linux export:
+c8f8377bdd3363756dbbf3ffb574eb2f1a8d06702b425d4b528cbc5b3a448805.
+Raw root .research/implementation/archive-worker/installed-binding;26 collected
+files,337,920-byte tar07bd164168e16b8005debf5103a10338305158200fd5b9508682534127362d73.
 
-Transfer 37097, CLI 61865, terminal 25285, retirement 5088 and collection 1592 completed.
-Scenario 21239 passed custody/missing, then exited 2 on unsupported signed --root;
-no signed case began. Correct positional 99556 executed all 6 signed cases. Preserve
-both logs; invocation refusal is NOT_RUN, not a product failure or a signed PASS.
-Raw root .research/implementation/archive-worker/shared-transport; report owns 49
-raw hashes. Collected 21-file tar SHA256
-1ca815bb9a9aee71abd8ca589c1d1a4070ff59e87f1bb1df44f3456252e16328.
-All 703 clean source/export hashes checked before/after; Mac Git archive equality
-SHA256 7a58eaf33f65c9c8ffc850c048ead83f1104cfd673a9f45bb2f8c32fb4115db4;
-manifest f4aa4052062b9e9e0bfbd12615ea8240c5ea2b7f7482361470685c5f0d2abb4f.
+The first ad hoc terminal audit failed on Docker mount-list order. All89
+complete-record discrepancies were independently checked equal; comparison now
+orders records without dropping fields. Product tests were not changed. Read-only
+AI source review found no blocker; its bound-to-unbound gap was covered before
+candidate. Recorded-evidence review confirmed hashes, source and literal CLI
+outcomes; it clarified the intermediary-output retention limit above. Reviewer
+performed no native execution or Tux action.
 
-AI source findings corrected before candidate: same pinned query across timeout,
-seal observer custody, independent cleanup/uncertain container-creation inspection,
-and bounded attributed TLS log polling. No new product blocker. Reviewer performed
-no native execution. Seal observer cancellation specifically was not injected;
-its actual blocked/success path and provisioning cancellation were executed.
+Limits: shared ordered build used retained caches; full fresh tools/build.py was
+NOT_RUN. No engine/catalog startup, immutable production-mount, whole-process
+resource, recovery, Compose, release-authentication, peak-RSS or arm64 claim.
+The main executable still requires trusted outer installation/release authority.
 
 ## Owned lab resources terminal
 
-Inventory implementation_archive_worker_20260918.shared_postgres_transport owns
-root /home/tux/bigbrotr-implementation-20260917/runs/shared-transport-6606103;
-owner5bfe03b68262b8cd86547e08af06fb14;
-runner7cfa5042ae7940b82627123fa08d787f8e56a2aaa9f66f50d32081b23cf375b3;
-PG6c93e47a57a846abcad2b11c82a66db1e85d5c49ed50b2f3c2bfe57b75937979;
-network46276ce50139fbadc486714ed6d6ea81346f9e5f11c52e23a36273b2ca58df8e retired.
-Runner, PG and four separately inventoried CLI containers stopped-retained; no OOM.
-All 20 unrelated container identities/states/mounts/networks unchanged; 8 running,
-0 BigBrotr running. No active experiment or cleanup obligation. Retained prior
-labs stay retired. Latest reusable cache is shared-transport-6606103/out/build;
-any new run requires new resources and exact source/dependency audits.
+Inventory implementation_archive_worker_20260918.installed_worker_binding owns
+/home/tux/bigbrotr-implementation-20260917/runs/installed-binding-53707a2;
+owner a63fc54f2d4a00d3ce96080da4077747;
+runner13d5f5051be606ac7f0ed9dba2a4b61a71dedeb029bcf1e5d7902f1443dc9e67.
+It exited0 itself, no OOM, now stopped-retained.2CPU/6GiB/512PIDs, network none,
+no ports or PG. All274 pre-existing identities/states/mounts/networks unchanged,
+including20 unrelated; eight unrelated running, zero BigBrotr running. No active
+experiment or cleanup obligation. Transfer77675, initial audit92757, corrected
+audit26503 and collection52398 are terminal. Retired labs stay stopped. Latest
+cache is installed-binding-53707a2/out/build; new runs need new resources and
+exact-source checks. Original6606103 resources remain retired.
 
 ## Earlier evidence and constraints
 
+[Shared PG transport6606103](evidence/p02-shared-postgres-transport-native-20260919.json)
+qualifies actual CLI TLS/signal/restart, custody and signed publication/receipt
+paths. Attach custody before polling its actual unpolled driver; Control's current
+budget wrapper remains per-command, not process-shared.
 [Retained Control read d86e147](evidence/p02-retained-attempt-read-native-20260919.json)
-qualified actual lookup/replay, blocked cancellation and poisoned-session refusal;
-baseline fcd63ac None-vs-Some remains FAIL. Current/historical request lookup returns
-only after rollback, reads fixed bounded fields and never re-registers intent.
-Malformed stored metadata/u64 extremes were not native tested. Issuer/time remains
-SQL history outside that receipt API.
+returns original intent after rollback without re-registering it; baseline
+fcd63ac FAIL retained. Malformed metadata/extremes not native tested.
 [Missing import770c485](evidence/p02-missing-import-native-20260919.json) retains
-seal-only e571002 FAIL and proves delayed actual owner requests/late-query blocking.
-Sequential tokio-postgres0.7.18 awaits owner-query ReadyForQuery before provisioning;
-no arbitrary pipelined-client qualification.
+seal-only e571002 FAIL and actual delayed owner/late-query discriminator.
 [Custody5ad77af](evidence/p02-local-custody-native-20260919.json) owns actual driver/
-worker descriptor custody. PDEATHSIG=SIGKILL; local exclusion is not remote rollback,
-whole-process resource reconciliation or cross-boot recovery.
+worker descriptors; local reap is not remote rollback/cross-boot recovery.
 [Receipts0b3a427](evidence/p02-archive-receipts-native-20260919.json) requires complete
 bounded EOF for Present/Absent; unknown termination retains capacity.
 [Signed fencingb12c902](evidence/p02-signed-fencing-native-20260919.json) qualifies both
 lock orders and40001→55000. [Normal INSERT failure](evidence/p02-native-commit-file-loss-20260918.json)
 remains rejected: lost native COMMIT response deleted committed files. Selected
-caller-owned COPY/registration retains uncertain files; no INSERT fallback or unlink
-on ambiguity. Catalog inspection locks owner FOR UPDATE before AccessShare reads;
-applied catalog0001/0002 unchanged. NOLOGIN/empty activity/PID/lease expiry is not
-old-client exclusion.
+caller-owned COPY/registration retains uncertain files; no INSERT fallback/unlink.
+NOLOGIN, empty activity, PID or lease expiry is not old-client exclusion.
 
 Scoped monitor corrections remain closed with executed evidence:
 [MON-001/002/004/006](evidence/p01-monitor-corrections-native-20260918.json),
@@ -127,43 +117,21 @@ Do not mechanically rerun unrelated suites.
 
 ## Next bounded action
 
-Qualification diff review, independent recorded-evidence review and final artifact/
-handoff checks PASS; source and evidence committed/pushed at4ca199e. Advance installed compact
-Archive startup/recovery under P02-T04 steps4/5. Compact co-location is explicitly
-allowed by deployment/operations contracts; do not create a second Control owner
-or substitute an example for a real command. The single owner must continue
-policy refresh/expiry/stop while catalog recovery waits; shared process grants and
-actual driver/native lifetime must survive that wait/cancellation. The new adapter
-supplies the unpolled catalog driver without bypassing TLS/secret preparation.
+Add expected catalog identity to the installed configuration/command boundary
+and consume it through actual privileged `archive inspect`, using the shared
+prepared PG transport and finite inspection grant. Inspect the existing config
+generator/recipes and guard callers first; do not derive expected identity from
+the same observed catalog row being checked. The native worker anchor is now
+available for the following explicit initialization/Archive consumer.
 
-Complete relevant configuration registry/resolver and actual CLI consumers before
-editing installed lifecycle. budget.rs (626) lines, ownership.rs, serve.rs, command
-wrapper, connection preparation/secret, archive lifetime/process/installation and
-publication/custody files now read completely. P01-T05/T06/T07 tasks and complete
-component/deployment/storage-service contracts inspected; operations placement,
-resource math and wait graph inspected. Configuration resolve.rs and registry.rs are now completely read, with actual CLI,
-builder, native initializer and guard callers. Read-only AI integration review
-confirmed missing installed bindings: expected catalog identity, trusted worker
-identity, separate SELECT-only reader credentials and authoritative retained-batch
-lookup for exact receipt count/ranges. The native initializer is fresh-only;
-recovery requires positive initializer/bootstrap exclusion then privileged
-inspection of the complete empty schema. Snapshot0/partial state is not a retry
-target. Do not copy the fixture's release/reacquire-Control schedule into serve.
-
-Next bounded prerequisite, P02-T04 step5/P08-T09 steps1/3: build the worker first,
-embed its exact length/SHA-256 in the main executable, and expose installed bundle
-verification through that trust anchor. No adjacent receipt or runtime environment
-may supply executable authority. The build receipt remains builder evidence, not
-release authentication; P08 signing stays required. Root owns the embedded identity, ordered builder, installed verifier, regressions,
-native harness and associated docs. Mac command tests5, asset tests2 and affected
-Clippy PASS. The two initial regressions failed against4ca199e (missing field and
-command). AI source review found no blocker; its bound-to-unbound cache transition
-gap is now included in the native harness. Read-only Tux preflight found274
-containers, eight unrelated running, zero BigBrotr running and237.8GiB free;
-retained source/build cache6606103 exists. Native execution is still NOT_RUN.
-Prepare a clean candidate and new installed-binding lab with network none; no
-new remote resource exists yet. After this prerequisite,
-implement catalog binding/explicit initialization and retained recovery inputs
-before compact Archive startup. No implicit init on serve.
-Incomplete-journal/cross-boot recovery, persistent host/process reconciliation,
-protection, full M1 and the remaining selected product remain required.
+Registry/resolver, budget/ownership/serve, PG preparation, native installation/
+process/lifetime and publication/custody sources were read completely. Integration
+review also identified separate SELECT-only reader credentials and authoritative
+retained-batch count/ranges before exact installed receipt recovery. The native
+initializer is fresh-only. Lost-reply recovery requires positive initializer/
+bootstrap exclusion then privileged inspection of the complete empty schema;
+snapshot0/partial is not a retry target. No implicit init on serve, fixture IDs,
+fabricated ArchiveAttempt or release/reacquire-Control loop. Keep Control refresh/
+expiry/stop live while retained blocking native/catalog work waits. Installed
+resource reconciliation, incomplete/cross-boot recovery, protection, full M1 and
+the remaining selected product remain required.

@@ -391,9 +391,12 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   The installed worker selector now binds the exact builder-produced executable
   length/hash inside the main binary. `archive verify-worker` consumes this anchor
   and the existing offline asset checks; an adjacent receipt or runtime hash
-  cannot supply authority. Native installed-bundle qualification is pending;
-  catalog identity, separate reader credentials, retained-batch recovery inputs
-  and explicit initialization remain prerequisites to the installed Archive role.
+  cannot supply authority. [Native qualification at `53707a2`](evidence/p02-installed-worker-binding-native-20260919.json)
+  passes12 installed bundle cases, five invalid build assertions, seven Rust cases
+  and actual same-target binding/change/unbinding/restoration. This used retained
+  build caches; the complete fresh builder and installed Archive lifecycle remain
+  unqualified. Catalog identity, separate reader credentials, retained-batch
+  recovery inputs and explicit initialization remain prerequisites.
   No step is complete from these prerequisites.
 - [ ] **Step 6:** Handle empty and one-small-event timer batches; publish useful progress
   without waiting for a size threshold that may never be reached.

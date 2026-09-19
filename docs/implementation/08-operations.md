@@ -305,8 +305,11 @@ Add a document-skew control: one unchanged document fetched repeatedly produces 
 - [ ] **Step 3:** implement bundle inventory/resolution checks and compatibility manifest. Container engines use tested versions/digests. Record image-index digest separately from per-architecture manifest digests; a successful amd64 image cannot stand in for arm64 support. Select Docker Hub under the provisioned project namespace, retain private candidate visibility, and test the final index by digest with its SBOM/provenance before promotion.
   The installed worker prerequisite embeds its exact length/hash in the main
   executable after an ordered build and exposes `archive verify-worker` against
-  that anchor. Bundle-byte inspection does not qualify catalog startup, image
-  permissions, outer release authentication or the whole installation journey.
+  that anchor. [Native prerequisite qualification](evidence/p02-installed-worker-binding-native-20260919.json)
+  exercises the relocated actual CLI and same-cache binding transitions. The full
+  fresh builder was not executed in that run. Bundle-byte inspection does not
+  qualify catalog startup, image permissions, outer release authentication or the
+  whole installation journey.
 - [ ] **Step 4:** proposed `python3 packaging/release/assemble.py --output artifacts/release-candidate` followed by `python3 packaging/release/verify.py artifacts/release-candidate`; verify clean build and reused-cache build contain exactly allowed assets and no canary development credential. Negative control remove a required seed/config mount from an assembled test copy; inventory validation must fail before launch.
 - [ ] **Step 5:** proposed `bundle-install` acceptance extracts the archive outside the checkout with a clean image cache, resolves mounts, initializes secrets/config, runs Compose and native documented installs on their actual supported architectures, obtains durable fixture admission/archive/read, opens local interfaces and shuts down. Retain installed file digests, process UID/binds, extension availability and output receipts. No checkout path or locally cached undeclared asset may rescue installation.
   Include fixed sync-only and monitor-only without CH, and serve-existing with

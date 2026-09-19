@@ -1,0 +1,561 @@
+{
+  "format": "bigbrotr-installed-worker-binding-evidence/1",
+  "status": "PASS",
+  "observed_at": "2026-09-19T03:34:46.516035+00:00",
+  "tasks": [
+    "P02-T04 step5 prerequisite",
+    "P08-T09 steps1/3 prerequisite"
+  ],
+  "scope": "Installed worker executable trust binding, actual relocated bundle-byte inspection and Cargo binding invalidation on native Linux amd64. No Archive role, catalog initialization/recovery, clean rebuild or release qualification.",
+  "source": {
+    "revision": "53707a2a74a143c9aba78858068dea5df71809c6",
+    "tree": "99598cfe9b343e97982e0a1e4cab5be30eaf2495",
+    "files": 708,
+    "archive_sha256": "c8f8377bdd3363756dbbf3ffb574eb2f1a8d06702b425d4b528cbc5b3a448805",
+    "manifest_sha256": "9d70b592fb32eeb10699b31baac8b69af8f2b8c1471fe15a1fe6c3297d35ab1a",
+    "mac_git_archive_equals_native": true,
+    "exported_source_unchanged": true,
+    "cargo_lock_sha256": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215"
+  },
+  "environment": {
+    "host": "Tux",
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "native_toolchain": {
+      "os": "Linux",
+      "architecture": "x86_64",
+      "discovery": "llvm-config",
+      "environment": {
+        "CC": "/usr/lib/llvm-14/bin/clang",
+        "CXX": "/usr/lib/llvm-14/bin/clang++",
+        "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+        "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+        "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+      },
+      "tools": {
+        "CC": {
+          "path": "/usr/lib/llvm-14/bin/clang",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "CXX": {
+          "path": "/usr/lib/llvm-14/bin/clang++",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "AR": {
+          "path": "/usr/lib/llvm-14/bin/llvm-ar",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+          "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+          "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+        },
+        "LIBCLANG_PATH": {
+          "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+          "version": "Debian clang version 14.0.6"
+        },
+        "discovery": {
+          "path": "/usr/lib/llvm-14/bin/llvm-config",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+          "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+          "version": "14.0.6"
+        }
+      },
+      "sdk": null
+    },
+    "limits": {
+      "cpus": 2,
+      "memory_bytes": 6442450944,
+      "pids": 512,
+      "network": "none",
+      "published_ports": []
+    },
+    "cache": "/home/tux/bigbrotr-implementation-20260917/runs/shared-transport-6606103/out/build",
+    "cache_scope": "Copied retained target/dependency cache; exact Cargo.lock equality checked before use. No edited source copied from that cache."
+  },
+  "implementation": {
+    "worker_first": "tools.build.build_binaries builds the worker once, computes its actual length/hash, then builds the main executable with that anchor. Frozen candidate package bytes remain unchanged during separate same-cache negative builds.",
+    "trust": "WorkerInstallation::packaged consumes the embedded anchor, never an adjacent receipt or runtime hash environment variable. The main executable must itself come from trusted installation/release authority.",
+    "build_metadata": "Additive archive_worker length/hash (or null) in bigbrotr-build/1 and length in bigbrotr-build-result/1. No persistent-format, SQL checksum or dependency change.",
+    "runtime": "archive verify-worker checks the existing pre-exec file/path/worker-mode rules and embedded library/extension pins without executing the worker. The execution adapter still rechecks before every launch.",
+    "documentation": [
+      "packaging/archive-worker/README.md",
+      "docs/development/build.md",
+      "docs/engineering/development-and-delivery.md"
+    ],
+    "upstream_reference": "https://doc.rust-lang.org/cargo/reference/build-scripts.html#rerun-if-env-changed"
+  },
+  "artifacts": {
+    "main": {
+      "bytes": 8017896,
+      "sha256": "d331eb93105a163f4dcb1d3c1bf16e7d323016279858875bb303f236f0d39e25",
+      "elf_machine": 62,
+      "elf_class": 64
+    },
+    "worker": {
+      "bytes": 12571504,
+      "sha256": "4e754f7f525f484df96920b9c7a73f5ddb40762b6e5051a459f45d41c60deac9",
+      "elf_machine": 62,
+      "elf_class": 64
+    }
+  },
+  "native_assets": {
+    "extension_platform": "linux_amd64",
+    "archive": {
+      "name": "libduckdb-linux-amd64.zip",
+      "url": "https://github.com/duckdb/duckdb/releases/download/v1.5.5/libduckdb-linux-amd64.zip",
+      "bytes": 41300590,
+      "sha256": "1fb8ce388157d84a25abe685a8a2520bf00c00321821968e4bb398fd766e7abb"
+    },
+    "library": {
+      "name": "libduckdb.so",
+      "bytes": 70529912,
+      "sha256": "fc23f12e376c47be520f75221288281906e7942e8fd6f6ce4849198ba60d0405"
+    },
+    "header": {
+      "name": "duckdb.h",
+      "bytes": 244057,
+      "sha256": "48e716b9ce96ca8fead9cb35693fdc0343ac0fc1f6e7db5561fa0f44b674153d"
+    },
+    "extensions": [
+      {
+        "name": "ducklake",
+        "url": "https://extensions.duckdb.org/v1.5.5/linux_amd64/ducklake.duckdb_extension.gz",
+        "compressed_bytes": 12655412,
+        "compressed_sha256": "733ccf19fedcfd5e0bfaf85993219145181099cc411076cabf14933ea16ab452",
+        "bytes": 36436086,
+        "sha256": "e51bf9e8d933d0e83780ae096455501b542cf962569a2ce5613532d702c08302"
+      },
+      {
+        "name": "postgres_scanner",
+        "url": "https://extensions.duckdb.org/v1.5.5/linux_amd64/postgres_scanner.duckdb_extension.gz",
+        "compressed_bytes": 14583967,
+        "compressed_sha256": "e0f631a5535f165468bc8a20501f8bc1490adbc877d38fcdff2f8d05531e1e5b",
+        "bytes": 41696558,
+        "sha256": "b1ced4cfc6311313e117c2afb3eac76508718778dde0716421503c7dbfb5605c"
+      },
+      {
+        "name": "httpfs",
+        "url": "https://extensions.duckdb.org/v1.5.5/linux_amd64/httpfs.duckdb_extension.gz",
+        "compressed_bytes": 7416043,
+        "compressed_sha256": "7cdd52a3135388718884a9b71e3987ba723002121e8e9de399c4ed619d824a05",
+        "bytes": 21570542,
+        "sha256": "887c392b1e49128d11667c81e3698d8b00dfdeb456771acf66d05a0f74f7b7d8"
+      }
+    ]
+  },
+  "baseline": {
+    "binary_sha256": "fb8066772e86e7d22b4dbf56745679eee5197193db1242b933530cfb6829b019",
+    "exit_code": 2,
+    "stdout": "",
+    "stderr": "error: unrecognized subcommand 'archive'\n\nUsage: bigbrotr <COMMAND>\n\nFor more information, try '--help'.\n",
+    "status": "EXPECTED_FAIL",
+    "reason": "installed verification command absent",
+    "source": "6606103653d96b932e2adc11d2485b03d0955fc6",
+    "artifact_identity_cross_checked_against": "p02-shared-postgres-transport-native-20260919.json"
+  },
+  "commands": [
+    {
+      "name": "ordered-build",
+      "command": [
+        "/usr/bin/python3",
+        "/source/experiments/archive-engine/native_installation.py",
+        "--build-binaries"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 45.678054715972394
+    },
+    {
+      "name": "command-tests",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--test",
+        "installed_worker",
+        "--test",
+        "cli_contract"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 23.001608049031347
+    },
+    {
+      "name": "asset-tests",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--lib",
+        "storage::archive::installation"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 9.879709049127996
+    },
+    {
+      "name": "clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--lib",
+        "--bin",
+        "bigbrotr",
+        "--test",
+        "installed_worker",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 1.7166734598577023
+    },
+    {
+      "name": "rebind",
+      "command": [
+        "cargo",
+        "build",
+        "--locked",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--bin",
+        "bigbrotr"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 18.1931056631729
+    },
+    {
+      "name": "unbind",
+      "command": [
+        "cargo",
+        "build",
+        "--locked",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--bin",
+        "bigbrotr"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 18.190834816079587
+    },
+    {
+      "name": "restore",
+      "command": [
+        "cargo",
+        "build",
+        "--locked",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--bin",
+        "bigbrotr"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 18.141245705541223
+    }
+  ],
+  "tests": {
+    "native_rust": {
+      "cli_contract": 3,
+      "installed_worker": 2,
+      "asset_verification": 2,
+      "failed": 0
+    },
+    "installed_cli": [
+      {
+        "name": "relocated-default-root",
+        "exit_code": 0,
+        "status": "PASS"
+      },
+      {
+        "name": "explicit-root",
+        "exit_code": 0,
+        "status": "PASS"
+      },
+      {
+        "name": "altered-worker-forged-receipt-and-environment",
+        "exit_code": 4,
+        "status": "PASS"
+      },
+      {
+        "name": "altered-library",
+        "exit_code": 4,
+        "status": "PASS"
+      },
+      {
+        "name": "altered-ducklake",
+        "exit_code": 4,
+        "status": "PASS"
+      },
+      {
+        "name": "altered-httpfs",
+        "exit_code": 4,
+        "status": "PASS"
+      },
+      {
+        "name": "altered-postgres_scanner",
+        "exit_code": 4,
+        "status": "PASS"
+      },
+      {
+        "name": "missing-extension",
+        "exit_code": 4,
+        "status": "PASS"
+      },
+      {
+        "name": "symlink-worker",
+        "exit_code": 4,
+        "status": "PASS"
+      },
+      {
+        "name": "wrong-worker-length",
+        "exit_code": 4,
+        "status": "PASS"
+      },
+      {
+        "name": "writable-worker",
+        "exit_code": 4,
+        "status": "PASS"
+      },
+      {
+        "name": "restored-bundle",
+        "exit_code": 0,
+        "status": "PASS"
+      }
+    ],
+    "oracle": "Independent hashlib worker length/hash; complete main output fields, literal success/refusal exits, all twelve actual stdout/stderr records retained. Three success cases and nine refusals. All moved package hashes unchanged after restoring only injected fixture mutations.",
+    "build_refusals": [
+      {
+        "name": "missing-bytes",
+        "exit_code": 101,
+        "status": "PASS"
+      },
+      {
+        "name": "missing-hash",
+        "exit_code": 101,
+        "status": "PASS"
+      },
+      {
+        "name": "zero-length",
+        "exit_code": 101,
+        "status": "PASS"
+      },
+      {
+        "name": "noncanonical-length",
+        "exit_code": 101,
+        "status": "PASS"
+      },
+      {
+        "name": "uppercase-hash",
+        "exit_code": 101,
+        "status": "PASS"
+      }
+    ],
+    "cargo_changed_hash_then_unbound_then_restored": {
+      "status": "PASS",
+      "changed_hash": "A same-target rebuild embeds the all-zero hash and refuses the intact real bundle.",
+      "unbound": "Removing both build variables emits explicit null and refuses the intact real bundle.",
+      "restored": "Rebuilding with the original worker identity reproduces the original frozen main hash.",
+      "limit": "Wrong-hash and unbound intermediary executable bytes, build-info output and verifier stdout/stderr were not separately retained. Those outcomes are supported by exact-source assertions reaching ready.json and runner exit0, with Cargo build logs retained."
+    }
+  },
+  "audit": {
+    "status": "PASS",
+    "initial_attempt": "FAIL: the ad hoc inventory auditor compared Docker mount enumeration as ordered lists.",
+    "diagnosis": "All89 discrepancies were solely enumeration order; independently compared complete records were equal, with no field omitted. The auditor now sorts complete serialized records before comparison. Product checks were not changed or rerun to hide a failure.",
+    "initial_discrepancies_sha256": "bc8c403e3bf9735669639ba130702364e781d1e116a26e41107b4b9e9c237ed9",
+    "existing_containers_unchanged": 274,
+    "unrelated_containers_unchanged": 20,
+    "unrelated_running": 8,
+    "bigbrotr_running": 0
+  },
+  "resources": {
+    "source": "53707a2a74a143c9aba78858068dea5df71809c6",
+    "tree": "99598cfe9b343e97982e0a1e4cab5be30eaf2495",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-binding-53707a2",
+    "owner": "a63fc54f2d4a00d3ce96080da4077747",
+    "container": "bigbrotr-implementation-installed-binding-53707a2",
+    "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "state": "stopped-retained",
+    "cache": "/home/tux/bigbrotr-implementation-20260917/runs/shared-transport-6606103/out/build",
+    "source_files": 708,
+    "created_at": "2026-09-19T03:29:38.893134+00:00",
+    "container_id": "13d5f5051be606ac7f0ed9dba2a4b61a71dedeb029bcf1e5d7902f1443dc9e67",
+    "completed_at": "2026-09-19T03:34:46.516035+00:00",
+    "exit_code": 0,
+    "oom_killed": false
+  },
+  "review": {
+    "kind": "read-only AI source review",
+    "result": "No source blocker; missing successful bound-to-unbound assertion added before candidate and executed.",
+    "limits": "Reviewer did not execute native commands. Integrating owner performed source/archive/artifact and resource audits.",
+    "recorded_evidence": "Independent AI review verified all26 raw hashes/archive members,708 Git source members,12 CLI outcomes,5 build refusals,7 Rust cases and89 complete mount-record comparisons. No discrepancy; intermediary output-retention limit clarified. ELF and terminal-host claims rely on integrating-owner audits."
+  },
+  "not_run": [
+    "Full tools/build.py fresh isolated build entrypoint; this run executed its shared ordered build function with retained caches.",
+    "Engine startup, catalog initialization/inspection/recovery, Archive serve and first-event M1.",
+    "Whole-process grants, persistent resource reconciliation, separate reader credential configuration and authoritative retained-batch resolution.",
+    "Docker Compose/image installation, outer release signature/promotion and Linux arm64.",
+    "Peak RSS, mixed workload performance, immutable production mount permissions and arbitrary hostile host writers."
+  ],
+  "raw": {
+    "root": ".research/implementation/archive-worker/installed-binding",
+    "archive": "evidence.tar",
+    "bytes": 337920,
+    "sha256": "07bd164168e16b8005debf5103a10338305158200fd5b9508682534127362d73",
+    "files": {
+      "audit-discrepancies.json": {
+        "bytes": 160754,
+        "sha256": "bc8c403e3bf9735669639ba130702364e781d1e116a26e41107b4b9e9c237ed9"
+      },
+      "resources.json": {
+        "bytes": 785,
+        "sha256": "cfbc3443478df0bc629fe4495368687d4c0bcc593fdb303dae8ef799abff7a79"
+      },
+      "audit.json": {
+        "bytes": 1268,
+        "sha256": "5b7266dfdfcffe9f628dad2c04a27f7dd7c87654d9fd26572646fe8c8bf7637b"
+      },
+      "container.log": {
+        "bytes": 348,
+        "sha256": "2e1f26d698c7137cfc20d99d5721bff6bbc8688ff6bad589d835683eef9aed02"
+      },
+      "out/build/source-manifest.json": {
+        "bytes": 86419,
+        "sha256": "9d70b592fb32eeb10699b31baac8b69af8f2b8c1471fe15a1fe6c3297d35ab1a"
+      },
+      "out/native-tests/baseline.json": {
+        "bytes": 332,
+        "sha256": "392656586f4791a5ed20cb167712cc879308373012f85fd842effe2028012390"
+      },
+      "out/native-tests/checks/asset-tests.log": {
+        "bytes": 560,
+        "sha256": "bee002847a4cc91443a4913a06524b18a71780484190a3a2c4ce1ad2c45f2356"
+      },
+      "out/native-tests/checks/clippy.log": {
+        "bytes": 297,
+        "sha256": "53864659018f191d7ef38e6c15f8b216bb060408d18e5e1f5b4521c355aca1af"
+      },
+      "out/native-tests/checks/command-tests.log": {
+        "bytes": 951,
+        "sha256": "b225c07f167fd3445aa523bb9f84aeafbb44ecffca8077fb7978170c2fc73e97"
+      },
+      "out/native-tests/checks/result.json": {
+        "bytes": 3685,
+        "sha256": "630a31780e9dad516bb1d57eb237b9393ce0a71b2b3734302f782452a10c0569"
+      },
+      "out/native-tests/installed/result.json": {
+        "bytes": 5737,
+        "sha256": "15132d569ff1fec58cde20e404c0d97ea2cf470ba23d0eff1bf555523f0433a1"
+      },
+      "out/native-tests/missing-bytes.log": {
+        "bytes": 1078,
+        "sha256": "8d9eb022f3a17f1f15e9f38aa819215e96a6d17f9a62f86cd7e7c9fc975f4768"
+      },
+      "out/native-tests/missing-hash.log": {
+        "bytes": 1078,
+        "sha256": "8d9eb022f3a17f1f15e9f38aa819215e96a6d17f9a62f86cd7e7c9fc975f4768"
+      },
+      "out/native-tests/noncanonical-length.log": {
+        "bytes": 1054,
+        "sha256": "5c8cc335ab07ee58c276daebb3bec9d1704825ad1561bdd5f67c9916ea7ac741"
+      },
+      "out/native-tests/ordered-build.log": {
+        "bytes": 695,
+        "sha256": "3b66c56c3b6f44d635cb2d83fa8777ffdd8b2893c33a5d36543fcc189fb81e7f"
+      },
+      "out/native-tests/ready.json": {
+        "bytes": 7275,
+        "sha256": "b69a0d5faef4ed489ef9eb6de79efc66015648f1c6cb4c132e4488a7bd3d9fd5"
+      },
+      "out/native-tests/rebind/rebind.log": {
+        "bytes": 130,
+        "sha256": "b34928e6bdd24797bc63e607095cf05f751b73a6307d1caa6354207cdf4054a6"
+      },
+      "out/native-tests/rebind/result.json": {
+        "bytes": 2857,
+        "sha256": "8b235c4a278d7edbaab1869be8bc23c03cdddcf24bc46ea54a33942a7bfccf20"
+      },
+      "out/native-tests/restore/restore.log": {
+        "bytes": 130,
+        "sha256": "f623b91eec1e35eab473e0ccbab8b566fbcb4853e21a5d862f8c331dca370333"
+      },
+      "out/native-tests/restore/result.json": {
+        "bytes": 2860,
+        "sha256": "fdf000cab973110fdb08ee51f859046d282b8bebf4bcf70aaf23e04b6d740ac8"
+      },
+      "out/native-tests/result.json": {
+        "bytes": 2845,
+        "sha256": "dafec7d4463cbb9ce055f48fb370f2ae8ebcbb7b6b9540d9bde78eaad86184ff"
+      },
+      "out/native-tests/unbind/result.json": {
+        "bytes": 2859,
+        "sha256": "1f538797f3faa182350e5d1f423750e34202ec1cea70e22c1b83633914c1b42b"
+      },
+      "out/native-tests/unbind/unbind.log": {
+        "bytes": 130,
+        "sha256": "b6acf8049740632172ba6cbe9429d4aceea0fd778368abb8c65c31c8cad35e57"
+      },
+      "out/native-tests/uppercase-hash.log": {
+        "bytes": 1054,
+        "sha256": "5c8cc335ab07ee58c276daebb3bec9d1704825ad1561bdd5f67c9916ea7ac741"
+      },
+      "out/native-tests/worker-identity.json": {
+        "bytes": 104,
+        "sha256": "e574d8382b617d1b1d46b7c7eba21ff72b5b71205f72a6a25bd08a08e1279dc8"
+      },
+      "out/native-tests/zero-length.log": {
+        "bytes": 1054,
+        "sha256": "5c8cc335ab07ee58c276daebb3bec9d1704825ad1561bdd5f67c9916ea7ac741"
+      }
+    },
+    "local_support": {
+      "launch.py": {
+        "bytes": 4285,
+        "sha256": "400c0c8661f4f78ee60c6d359877d89b5ded4c2509603fb642b6bb7a1ae5c657"
+      },
+      "transfer.py": {
+        "bytes": 1384,
+        "sha256": "861cb6a1fd7fb62a3e40dfdc82deebee6a264559b2a05e3c843eeac3341126d5"
+      },
+      "audit.py": {
+        "bytes": 4952,
+        "sha256": "48ecc26da1e40027d68b44e3fa145278fe9ffca81b3afd172d7a1a2cf376f5e7"
+      },
+      "audit-initial.py": {
+        "bytes": 4754,
+        "sha256": "c196ebee0cab95025f78bd000c33a63b554597073b9454a60f61e5567b9820c7"
+      }
+    }
+  }
+}
