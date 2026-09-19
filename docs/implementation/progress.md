@@ -20,17 +20,33 @@ and rejects other roles. Root remains sole writer/integrator.
 
 ## Actual Git and current review
 
-Mac main and freshly verified private origin/main are
-637c69f9112db0a3f9db3bb52e17ec861d906ef9 (retained-inputs evidence after d442125).
-Push32271 completed. Root is sole writer; no merge/rebase or contributor work.
-All previous Tux labs are stopped-retained as audited; none currently runs.
+Mac main is b203a41fdde08a7464beaa904bac107187b564ab, qualified within the scope
+below; private origin/main still637c69f pending the evidence commit. Root is sole
+writer. New dirty next fixture slice: publication_protocol helpers/faults, publication
+example CLI, native_commit_proxy target and coordinator_fault_cases Python plus
+signed harness11-case assertions. Those races/cancellation/COMMIT cases are NOT_RUN.
+Owning evidence/contracts/inventory/checkpoint are also dirty for the completed run.
+No merge/rebase or contributor edits.
 
-Current dirty next slice: new additive0010_archive_coordinator.sql, catalog/manifest,
-PostgreSQL archive_coordinator adapter and bound registration, cached exact local
-coordinator digest in coordinator/inputs, actual publication fixture/support protocol
-cases and signed harness, owning contracts/storage catalog/upgrade/P02 notes, this
-checkpoint. No old applied SQL, local input/journal bytes or dependency changes.
-Do not reset these owned edits. Native qualification for this dirty slice NOT_RUN.
+Exact b203a41 native run34551 and audit/collection12387 terminal0. No active lab.
+[Coordinator protocol evidence](evidence/p02-coordinator-protocol-native-20260919.json)
+records8 native Control boundary cases plus6 installed signed schedules PASS;
+shared ordered build,47Archive+8binary+11CLI PASS,1older holder case ignored.
+All22 bindings/input bytes and fresh receipts plus original full scientific oracles
+pass. Root independently rechecked65raw files/765Git source hashes and all literal
+oracles. Independent offline audit matched those plus2 synthetic input files.
+Schema9→10 proves logical columns, not migration xmin preservation; later retries
+include xmin. Restart equality executes in harness; its second SQL snapshot is not
+separately retained. Migration races/COMMIT/cancel NOT_RUN.
+
+Lab /home/tux/bigbrotr-implementation-20260917/runs/coordinator-protocol-b203a41,
+owner26eefb6e3d34e03c9cabe9a59b0a9054, inventoried coordinator_protocol. Stopped-retained
+at2026-09-19T13:00:37.584399+00:00: zeroowned SQL backends before shutdown,338preexisting
+containers unchanged,8unrelated running/0BigBrotr,noOOM. Runnerexit143/PGexit0;
+network1ff5a9d4e6f4742bed01cec56d51c7699621295c159e4ea88957f590d49a7f7b emptyretained.
+Raw .research/implementation/archive-worker/coordinator-protocol/qualified has65files;
+tar107d7a83b301c8ecd25265c42f3d13a17cad906f469349b963e8c5f78df6ca9b.
+Latest copied build cache is this lab/out/build. Never restart retired labs.
 
 The explicit typed initializer binds only an empty Control attempt history to one
 exact coordinator.json digest under actual Control fence+dataset lock. Identical
@@ -46,7 +62,7 @@ publication-example Clippy, format/artifact/link checks PASS. Initial tests fail
 for missing binding_digest/coordinator_binding before implementation. Clippy nested
 if failed twice before the same lint correction; corrected run passed. The first
 PG-filtered combined command selected zero integration tests; those were NOT_RUN
-there, then separately all13 executed and passed. No native result claimed. The final error-mapping change also passed all13
+there, then separately all13 executed and passed. The final error-mapping change also passed all13
 control-schema/attempt integration tests (5911) and artifact/handoff checks.
 
 Independent read-only AI design review found no concrete mutation-order defect;
@@ -253,24 +269,20 @@ External feedback reread previously; it records the earlier scoped closures too.
 
 ## Next bounded action
 
-Fixture/grants review is complete and its error-oracle finding is corrected.
-Form and qualify the exact unpublished protocol candidate next.
-Eight new synthetic actual-Control/local-custody cases are written in
-examples/support/publication_protocol.rs, invoked as archive-publication-probe
-protocol check by signed_publication_cases.py --installed before its six signed
-schedules. They cover missing ordinary binding/session poison, old unbound INSERT,
-exact binding/issuance retry with unchanged xmin, fresh owner, different local
-root under same IDs, mutation refusal, preserved old rows after9→10 with adoption
-refusal. These new practical cases are NOT_RUN; no active lab exists yet.
+Commit/push the completed b203a41 evidence separately from the new unqualified
+fault fixture changes. Review the new actual lock schedules, cancelled blocked
+initializer and both lost binding COMMIT replies. Locally scoped Clippy84509 PASS;
+new CLI argument guard corrected by source review before native use. The race
+fixture provisions SELECT defaults before migration so an unrelated GRANT race
+cannot masquerade as the intended issuance refusal. All new scenarios NOT_RUN.
 
-Then form a coherent unpublished candidate, transfer exact Git to a new inventoried
-Tux lab using retained-inputs-d442125/out/build cache and installed-publication assets,
-run shared ordered build and actual cases, inspect failures, audit/stop owned peers.
-Before completing the protocol guarantee, add/execute both migration/old-issuer
-lock-order races and both lost binding COMMIT response branches, plus cancelled/
-blocked operations. Existing native_commit_proxy currently targets native SQL only;
-inspect its full logic before extending it to the actual extended-protocol Control
-INSERT. Preserve unknown outcomes and exact row identities on fresh-session retry.
+Then form the next exact unpublished fixture candidate and create a fresh inventoried
+lab from b203a41/out/build. Run11 protocol cases +2 binding COMMIT-loss branches and
+six signed schedules. The extended-protocol proxy target matches only the fixed
+Control coordinator INSERT, leaving the earlier Control claim COMMIT intact. Observe
+both granted/waiting migration-lock modes, real PostgreSQL backend disappearance,
+unknown result/session poison and exact persisted rows on retry. Audit/stop owned
+peers and preserve failures before any completion claim.
 
 Still connect installed explicit setup/serve recovery, separate SELECT-only reader
 configuration, actual Ingest-owner handoff, shared Control/catalog/native budgets

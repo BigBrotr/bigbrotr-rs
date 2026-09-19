@@ -231,9 +231,11 @@ The next P02-T04 steps3/4/5 slice establishes the
 [initial coordinator protocol boundary](../specification/archive-storage-contract.md#initial-coordinator-protocol-boundary)
 through additive0010 and explicit fenced typed initialization. Bound issuance
 consumes actual retained inputs; old history stays inspectable and cannot be adopted.
-The installed signed fixture now consumes that path. Native migration ordering,
-missing/mismatched binding, retry and COMMIT-loss qualification is pending; no
-checkbox or recovery guarantee is complete from the draft.
+The installed signed fixture now consumes that path.
+[Native b203a41 evidence](evidence/p02-coordinator-protocol-native-20260919.json) covers
+eight actual binding/history/retry/refusal cases and six signed schedules with22
+bound inputs and fresh-process receipts. Migration ordering, COMMIT loss and
+cancellation remain pending; no checkbox or complete recovery gate is closed.
 
 **Depends on:** P02-T01/T02/T03 and P01-T05/T06.
 **Files:** application `src/storage/archive/{publisher,receipts,worker}.rs`,

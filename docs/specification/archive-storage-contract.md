@@ -214,7 +214,8 @@ local bytes survive cannot be detected by a binding hash alone. Restore, cross-b
 and relocation keep their separately fenced recovery gates. Complete missing-journal
 interpretation still requires actual catalog identity and per-attempt exclusion.
 The current implementation provides explicit typed operations and fixture consumers;
-installed setup/serve integration and practical qualification remain pending.
+[Eight native boundary cases plus six signed schedules](../implementation/evidence/p02-coordinator-protocol-native-20260919.json) pass at b203a41. Installed setup/serve, migration races, binding
+COMMIT-loss and cancellation qualification remain pending.
 
 ### Retained complete input linkage
 

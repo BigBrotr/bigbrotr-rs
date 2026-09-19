@@ -11767,6 +11767,104 @@
         "containers": "stopped-retained",
         "observed_at": "2026-09-19T12:56:12.890966+00:00"
       }
+    },
+    "coordinator_protocol": {
+      "status": "PASS-scoped-stopped-retained",
+      "local_raw_root": ".research/implementation/archive-worker/coordinator-protocol",
+      "resources": {
+        "source": "b203a41fdde08a7464beaa904bac107187b564ab",
+        "tree": "50700b1b586894ab8fe2adb138ac8a3b28b85aac",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/coordinator-protocol-b203a41",
+        "owner": "26eefb6e3d34e03c9cabe9a59b0a9054",
+        "container": "bigbrotr-implementation-coordinator-protocol-b203a41",
+        "postgres": "bigbrotr-implementation-coordinator-protocol-b203a41-pg",
+        "network": "bigbrotr-implementation-coordinator-protocol-b203a41",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "state": "stopped-retained",
+        "source_files": 765,
+        "started_at": "2026-09-19T12:56:43.480337+00:00",
+        "network_id": "1ff5a9d4e6f4742bed01cec56d51c7699621295c159e4ea88957f590d49a7f7b",
+        "postgres_id": "b11f1916254ef0fc7eb3db79c750a2ba1d48c0430bbe95a7e609e26fc4947de1",
+        "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+        "container_id": "7b5ce25143f08b641fb3cce362d4b4d16832ee146ddba3400c7d7bd088d66a20",
+        "completed_at": "2026-09-19T13:00:37.584399+00:00"
+      },
+      "scope": "explicit Control coordinator history, retained issuance and signed publication; lock-order and lost COMMIT cases pending",
+      "audit": {
+        "status": "PASS",
+        "source": "b203a41fdde08a7464beaa904bac107187b564ab",
+        "tree": "50700b1b586894ab8fe2adb138ac8a3b28b85aac",
+        "source_files": 765,
+        "source_archive_sha256": "8cd5362d2dc93ed8367c824b58148c59f4f62c99c30c2f1acb0c0edf4cbf841a",
+        "source_manifest_sha256": "c3aa0560fd8065278e16866c8c4b6a7fc0adf310ef5901906de40b9e0592cb22",
+        "artifacts": {
+          "main": {
+            "sha256": "0baf51cdefa76f5bcc35a66ebbd1b64792c9b4f0b95d8f6d2efdf6134a51e612",
+            "bytes": 8896480,
+            "elf_machine": 62
+          },
+          "worker": {
+            "sha256": "89e46e831e8e12f7e60b249493a619af4cd3bca7d984ec7a06574ede3d6f0b9f",
+            "bytes": 12608608,
+            "elf_machine": 62
+          },
+          "publisher": {
+            "sha256": "33a59de31021847d11208017306e48314eb059f62b8d4197094ad1db6a22edd1",
+            "bytes": 18706592,
+            "elf_machine": 62
+          }
+        },
+        "qualification": {
+          "installed-signed-cases": "PASS"
+        },
+        "cases": {
+          "installed-signed-cases": 6
+        },
+        "build_ready": true,
+        "terminal": {
+          "container_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-19T12:56:46.075409417Z",
+            "FinishedAt": "2026-09-19T13:00:33.624967867Z"
+          },
+          "postgres_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-19T12:56:44.150205706Z",
+            "FinishedAt": "2026-09-19T13:00:37.129039491Z"
+          }
+        },
+        "owned_containers": [
+          "7b5ce25143f08b641fb3cce362d4b4d16832ee146ddba3400c7d7bd088d66a20",
+          "b11f1916254ef0fc7eb3db79c750a2ba1d48c0430bbe95a7e609e26fc4947de1"
+        ],
+        "existing_containers_unchanged": 338,
+        "unrelated_containers_unchanged": 20,
+        "unrelated_running": 8,
+        "bigbrotr_running": 0,
+        "observed_at": "2026-09-19T13:00:37.584399+00:00",
+        "harness": null,
+        "owned_sql_backends_before_shutdown": 0,
+        "build_checks_status": "PASS"
+      },
+      "evidence": "docs/implementation/evidence/p02-coordinator-protocol-native-20260919.json",
+      "raw_manifest": ".research/implementation/archive-worker/coordinator-protocol/evidence-identity.json"
     }
   },
   "implementation_monitor_corrections_20260918": {

@@ -1,0 +1,290 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task_ids": [
+    "P01-T05",
+    "P02-T03",
+    "P02-T04"
+  ],
+  "status": "PASS-scoped",
+  "observed_at": "2026-09-19T13:00:37.584399+00:00",
+  "source_revision": "b203a41fdde08a7464beaa904bac107187b564ab",
+  "source_tree": "50700b1b586894ab8fe2adb138ac8a3b28b85aac",
+  "scope": "Explicit virgin Control coordinator binding and retained-input issuance, exact retries and historical refusal; installed signed fixture and fresh receipt process, not installed service recovery/dispatch.",
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "runner_limits": {
+      "cpus": 2,
+      "memory_bytes": 6442450944,
+      "pids": 512
+    },
+    "postgres_limits": {
+      "cpus": 1,
+      "memory_bytes": 1073741824,
+      "pids": 128
+    },
+    "placement": "same Linux boot, ext4 bind mounts, internal network, no published ports",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8"
+  },
+  "artifacts": {
+    "main": {
+      "sha256": "0baf51cdefa76f5bcc35a66ebbd1b64792c9b4f0b95d8f6d2efdf6134a51e612",
+      "bytes": 8896480,
+      "elf_machine": 62
+    },
+    "worker": {
+      "sha256": "89e46e831e8e12f7e60b249493a619af4cd3bca7d984ec7a06574ede3d6f0b9f",
+      "bytes": 12608608,
+      "elf_machine": 62
+    },
+    "publisher": {
+      "sha256": "33a59de31021847d11208017306e48314eb059f62b8d4197094ad1db6a22edd1",
+      "bytes": 18706592,
+      "elf_machine": 62
+    }
+  },
+  "source_identity": {
+    "archive_sha256": "8cd5362d2dc93ed8367c824b58148c59f4f62c99c30c2f1acb0c0edf4cbf841a",
+    "manifest_sha256": "c3aa0560fd8065278e16866c8c4b6a7fc0adf310ef5901906de40b9e0592cb22",
+    "files_independently_matched_to_mac_git_archive": 765,
+    "inputs_sha256": {
+      "Cargo.lock": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215",
+      "contracts/protocol/nip01-event.json": "b830d5ab8651f5a763ebcffdc0eb1737ba70f4602c93fc714c892865ffca2db8",
+      "contracts/protocol/versions.json": "37c76706c5a2aa4fc72a40aeed908f104620eafcee1118b7cee8baf133546c95",
+      "contracts/release/dependencies.json": "4f73cd0a81916b7d203556ff9ad1d8efd97dfe95b2b2305c35468747e8669132",
+      "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167",
+      "migrations/postgres/0010_archive_coordinator.sql": "95665cbb0c7e66159f495de00fe8d73834fcb68a93f01d79dfa2064834294c4b"
+    }
+  },
+  "executed": {
+    "build": "PASS shared tools.build ordered exact-source builder and tools.ci.execute checks",
+    "native_rust": {
+      "archive_passed": 47,
+      "ignored": 1,
+      "binary_passed": 8,
+      "cli_passed": 11,
+      "ignored_scope": "older native custody-holder dedicated fixture, not rerun or counted as PASS"
+    },
+    "clippy": "PASS scoped native library/binary/fixtures",
+    "mac": {
+      "archive_passed": 44,
+      "postgres_unit_passed": 9,
+      "schema_and_attempt_integration_passed": 13,
+      "clippy": "PASS library/publication fixture"
+    },
+    "protocol_cases": [
+      {
+        "name": "ordinary-missing-refuses-and-poisons",
+        "status": "PASS"
+      },
+      {
+        "name": "old-unbound-api-refused-after-migration",
+        "status": "PASS"
+      },
+      {
+        "name": "explicit-binding-identical-retry-preserves-xmin",
+        "status": "PASS"
+      },
+      {
+        "name": "bound-issuance-and-both-retries-preserve-history",
+        "status": "PASS"
+      },
+      {
+        "name": "fresh-control-epoch-preserves-original-binding-and-attempt",
+        "status": "PASS"
+      },
+      {
+        "name": "same-dataset-catalog-different-local-binding-refused",
+        "status": "PASS"
+      },
+      {
+        "name": "binding-update-delete-truncate-refused",
+        "status": "PASS"
+      },
+      {
+        "name": "old-history-survives-upgrade-and-cannot-be-adopted",
+        "status": "PASS"
+      }
+    ],
+    "signed_cases": [
+      {
+        "mode": "normal",
+        "status": "PASS",
+        "input_files": 4,
+        "physical_files": 8,
+        "catalog_files": 8,
+        "active_writers": 0
+      },
+      {
+        "mode": "before",
+        "status": "PASS",
+        "input_files": 3,
+        "physical_files": 8,
+        "catalog_files": 2,
+        "active_writers": 0
+      },
+      {
+        "mode": "after",
+        "status": "PASS",
+        "input_files": 3,
+        "physical_files": 8,
+        "catalog_files": 8,
+        "active_writers": 0
+      },
+      {
+        "mode": "owner_first",
+        "status": "PASS",
+        "input_files": 4,
+        "physical_files": 14,
+        "catalog_files": 8,
+        "active_writers": 0
+      },
+      {
+        "mode": "held_commit",
+        "status": "PASS",
+        "input_files": 4,
+        "physical_files": 8,
+        "catalog_files": 8,
+        "active_writers": 0
+      },
+      {
+        "mode": "held_rollback",
+        "status": "PASS",
+        "input_files": 4,
+        "physical_files": 14,
+        "catalog_files": 8,
+        "active_writers": 0
+      }
+    ],
+    "binding_oracles": "Eight actual Control/local-custody cases check missing/different binding, poison, specific55000 old unbound refusal, immutable exact retry including fresh owner and later issuance, UPDATE/DELETE/TRUNCATE23514 refusal, and preserved schema9 logical history with NULL after10/adoption refusal. Existing binding/attempt rows including xmin remain identical on retries/refusals.",
+    "signed_oracles": "All22 input bindings equal the independently hashed exact coordinator.json. Six fresh receipt processes require existing binding and preserve all binding/attempt rows including xmin. All original full signed scientific rows, negative controls,41 unchanged Rocks rows per case,22 exact266-byte files and restart outcomes independently rechecked on Mac.",
+    "receipt_label_scope": "Fixture conflict maps ReceiptError::ObservationUnknown, not a typed product Conflict. Independent final catalog rows establish the known same-digest/different-attempt conflicts in these cases."
+  },
+  "review": {
+    "mode": "root integration and independent read-only AI source review",
+    "finding": "Unbound fixture initially accepted generic Backend. Before native run mapped only55000 to Prerequisite and required that typed refusal. Grants and real consumers reviewed; no blocking mutation-order defect found.",
+    "offline": "Independent read-only AI audit matched65 raw files/tar and765 exact Git source hashes,8 protocol cases,22 signed plus2 synthetic complete input files,6 scientific readbacks and fresh receipt expectations. No discrepancy. No Tux/test rerun or independent ELF inspection.",
+    "preservation_limit": "Schema9-to10 compares original logical columns only: added NULL removed and xmin not part of that pre-migration oracle. Later retry/refusal snapshots include xmin. Signed restart equality is an executed harness assertion; JSON retains only its first SQL snapshot."
+  },
+  "failures_and_corrections": [
+    "Expected missing digest getter compile failure before implementation.",
+    "Nested-if Clippy lint corrected; final scoped checks passed.",
+    "Initial combined filtered PG command selected zero integration tests; separate command executed all13.",
+    "No native case failed in this qualification."
+  ],
+  "not_qualified": [
+    "Migration/old-issuer lock races, missing-migration refusal and cancellation of binding API",
+    "Lost binding COMMIT response branches and same-binding fresh-session retry",
+    "Installed explicit setup/serve recovery or Archive dispatch",
+    "Actual Ingest-owner handoff, unissued input enumeration and missing-journal interpretation",
+    "Source protection/reclamation/M1 read-export-restart",
+    "Input-write/fsync crash, ENOSPC, power loss, cross-boot, restore/history rollback or relocation",
+    "Aged capacity, native arm64, signed mTLS publication, ordinary Compose/release"
+  ],
+  "resources": {
+    "source": "b203a41fdde08a7464beaa904bac107187b564ab",
+    "tree": "50700b1b586894ab8fe2adb138ac8a3b28b85aac",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/coordinator-protocol-b203a41",
+    "owner": "26eefb6e3d34e03c9cabe9a59b0a9054",
+    "container": "bigbrotr-implementation-coordinator-protocol-b203a41",
+    "postgres": "bigbrotr-implementation-coordinator-protocol-b203a41-pg",
+    "network": "bigbrotr-implementation-coordinator-protocol-b203a41",
+    "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "state": "stopped-retained",
+    "source_files": 765,
+    "started_at": "2026-09-19T12:56:43.480337+00:00",
+    "network_id": "1ff5a9d4e6f4742bed01cec56d51c7699621295c159e4ea88957f590d49a7f7b",
+    "postgres_id": "b11f1916254ef0fc7eb3db79c750a2ba1d48c0430bbe95a7e609e26fc4947de1",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "container_id": "7b5ce25143f08b641fb3cce362d4b4d16832ee146ddba3400c7d7bd088d66a20",
+    "completed_at": "2026-09-19T13:00:37.584399+00:00"
+  },
+  "resource_audit": {
+    "status": "PASS",
+    "source": "b203a41fdde08a7464beaa904bac107187b564ab",
+    "tree": "50700b1b586894ab8fe2adb138ac8a3b28b85aac",
+    "source_files": 765,
+    "source_archive_sha256": "8cd5362d2dc93ed8367c824b58148c59f4f62c99c30c2f1acb0c0edf4cbf841a",
+    "source_manifest_sha256": "c3aa0560fd8065278e16866c8c4b6a7fc0adf310ef5901906de40b9e0592cb22",
+    "artifacts": {
+      "main": {
+        "sha256": "0baf51cdefa76f5bcc35a66ebbd1b64792c9b4f0b95d8f6d2efdf6134a51e612",
+        "bytes": 8896480,
+        "elf_machine": 62
+      },
+      "worker": {
+        "sha256": "89e46e831e8e12f7e60b249493a619af4cd3bca7d984ec7a06574ede3d6f0b9f",
+        "bytes": 12608608,
+        "elf_machine": 62
+      },
+      "publisher": {
+        "sha256": "33a59de31021847d11208017306e48314eb059f62b8d4197094ad1db6a22edd1",
+        "bytes": 18706592,
+        "elf_machine": 62
+      }
+    },
+    "qualification": {
+      "installed-signed-cases": "PASS"
+    },
+    "cases": {
+      "installed-signed-cases": 6
+    },
+    "build_ready": true,
+    "terminal": {
+      "container_id": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 143,
+        "Error": "",
+        "StartedAt": "2026-09-19T12:56:46.075409417Z",
+        "FinishedAt": "2026-09-19T13:00:33.624967867Z"
+      },
+      "postgres_id": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-09-19T12:56:44.150205706Z",
+        "FinishedAt": "2026-09-19T13:00:37.129039491Z"
+      }
+    },
+    "owned_containers": [
+      "7b5ce25143f08b641fb3cce362d4b4d16832ee146ddba3400c7d7bd088d66a20",
+      "b11f1916254ef0fc7eb3db79c750a2ba1d48c0430bbe95a7e609e26fc4947de1"
+    ],
+    "existing_containers_unchanged": 338,
+    "unrelated_containers_unchanged": 20,
+    "unrelated_running": 8,
+    "bigbrotr_running": 0,
+    "observed_at": "2026-09-19T13:00:37.584399+00:00",
+    "harness": null,
+    "owned_sql_backends_before_shutdown": 0,
+    "build_checks_status": "PASS"
+  },
+  "raw": {
+    "root": ".research/implementation/archive-worker/coordinator-protocol/qualified",
+    "tar_bytes": 542720,
+    "tar_sha256": "107d7a83b301c8ecd25265c42f3d13a17cad906f469349b963e8c5f78df6ca9b",
+    "manifest": ".research/implementation/archive-worker/coordinator-protocol/evidence-identity.json",
+    "files_verified": 65
+  },
+  "references": [
+    "docs/specification/archive-storage-contract.md#initial-coordinator-protocol-boundary",
+    "apps/bigbrotr/examples/support/publication_protocol.rs",
+    "experiments/archive-engine/signed_publication_cases.py",
+    "experiments/archive-engine/signed_publication_oracle.py"
+  ]
+}
