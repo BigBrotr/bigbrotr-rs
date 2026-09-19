@@ -7648,6 +7648,13 @@
       "report": "docs/implementation/evidence/p02-missing-import-native-20260919.json",
       "executed_scope": "Corrected nonmutating resolution: two actual delayed owner schedules, direct blocker pair, ten independent collision/retained-role controls; six signed journeys regress the shared seal path. All scoped native cases PASS at770c485; installed recovery/protection remain open.",
       "correction_cache_source": "/home/tux/bigbrotr-implementation-20260917/runs/publication-e571002/out/build"
+    },
+    "retained_attempt_read": {
+      "base_source": "127174218ccf6ab5fccce5da4f6be0927e554db0",
+      "state": "Preparing intentional failing native read baseline; no remote resources launched",
+      "local_root": ".research/implementation/archive-worker/attempt-read",
+      "scope": "Actual Control one-attempt historical read: exact identity, absence/current/historical, fresh owner, no mutation, wrong catalog and blocked cancellation with poisoned session. No catalog publication or new migration.",
+      "cache_source": "/home/tux/bigbrotr-implementation-20260917/runs/publication-770c485/out/build"
     }
   },
   "implementation_monitor_corrections_20260918": {

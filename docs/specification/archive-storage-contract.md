@@ -158,6 +158,18 @@ Control issuance alone cannot authorize publication, cleanup or pending ACK.
 Pre-protocol archive owner rows cause migration 0009 to refuse atomically rather
 than invent exclusion or adopt unknown credentials. Existing SQL stays immutable.
 
+Installed recovery also needs to observe a retained intent without knowing its
+complete original input in memory or resubmitting registration. The next bounded
+consumer reads one attempt ID from Control under the current actual owner fence,
+checks dataset/catalog and every retained identity field, and returns only after
+successful rollback. It returns no fresh credential or launch authority. A missing
+row is only missing Control history, never rollback or permission to reuse the ID.
+The existing driver/control reservation and deadline remain owned through join;
+failed or cancelled reads poison that Control session. Fixed-size fields and
+bounded numeric text keep the one-row response finite. No new ledger or migration
+is needed. The prepared baseline has no implemented lookup; its native
+discriminator has not yet run and grants no qualification.
+
 Infrastructure endpoints are operator-supplied trusted routes, distinct from
 untrusted relay/discovery URLs. Private PG/CH/S3/RPC endpoints are valid; keep
 their destination allowlist, DNS/TLS rules and credential scope explicit. A

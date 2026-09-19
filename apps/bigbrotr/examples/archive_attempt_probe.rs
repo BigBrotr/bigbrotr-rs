@@ -207,6 +207,13 @@ async fn run() {
     let first = request(20, 0, 7, 90);
     let second = request(22, 1, 7, 90);
     let (mut current, driver) = owner(40).await;
+    assert_eq!(
+        current
+            .read_archive_attempt(first.catalog(), *first.attempt_id())
+            .await
+            .unwrap(),
+        None,
+    );
     let commit = Cell::new(false);
     let initial = current
         .register_archive_attempt(&first, &commit)
@@ -223,6 +230,24 @@ async fn run() {
     assert!(!commit.get());
     assert!(!retry.created && retry.latest_issued);
     assert_eq!(retry.ordinal, 1);
+    let retained_before: String = admin.query_one("SELECT row_to_json(t)::text FROM (SELECT a.*,a.xmin::text FROM control.archive_attempts a WHERE ordinal=1)t", &[]).await.unwrap().get(0);
+    assert_eq!(
+        current
+            .read_archive_attempt(first.catalog(), *first.attempt_id())
+            .await
+            .unwrap(),
+        Some(retry.clone()),
+        "retained intent must be observed without submitting the original request",
+    );
+    let retained_after: String = admin.query_one("SELECT row_to_json(t)::text FROM (SELECT a.*,a.xmin::text FROM control.archive_attempts a WHERE ordinal=1)t", &[]).await.unwrap().get(0);
+    assert_eq!(retained_before, retained_after);
+    assert!(
+        current
+            .read_archive_attempt(first.catalog(), [33; 16])
+            .await
+            .unwrap()
+            .is_none()
+    );
     let next = current
         .register_archive_attempt(&second, &Cell::new(false))
         .await
@@ -235,11 +260,26 @@ async fn run() {
         .unwrap();
     assert!(!historical.created && !historical.latest_issued);
     assert_eq!(historical.ordinal, 1);
+    assert_eq!(
+        current
+            .read_archive_attempt(first.catalog(), *first.attempt_id())
+            .await
+            .unwrap(),
+        Some(historical.clone()),
+    );
     // Retain committed history after closing the actual session; a successor
     // resolves the original issuer's exact row, not a reminted request.
     drop(current);
     join(driver).await;
     let (mut successor, driver) = owner(42).await;
+    assert_eq!(
+        successor
+            .read_archive_attempt(first.catalog(), *first.attempt_id())
+            .await
+            .unwrap(),
+        Some(historical.clone()),
+        "fresh Control process must recover the exact original identity",
+    );
     assert_eq!(
         successor
             .register_archive_attempt(&first, &Cell::new(false))
@@ -344,11 +384,95 @@ async fn run() {
         next.release().await.unwrap();
         join(d).await;
     }
+    let (mut reader, driver) = owner(64).await;
+    assert_eq!(
+        reader.read_archive_attempt(first.catalog(), [0; 16]).await,
+        Err(ArchiveAttemptError::InvalidInput)
+    );
+    assert_eq!(
+        reader
+            .read_archive_attempt(reader.identity().resource_id, *first.attempt_id())
+            .await,
+        Err(ArchiveAttemptError::InvalidInput)
+    );
+    assert_eq!(
+        reader
+            .read_archive_attempt(first.catalog(), *second.attempt_id())
+            .await
+            .unwrap()
+            .unwrap()
+            .request(),
+        &second
+    );
+    assert_eq!(
+        reader
+            .read_archive_attempt(
+                OwnerResourceId::try_from([91; 16]).unwrap(),
+                *first.attempt_id()
+            )
+            .await,
+        Err(ArchiveAttemptError::Conflict)
+    );
+    assert_eq!(
+        reader
+            .read_archive_attempt(first.catalog(), *first.attempt_id())
+            .await,
+        Err(ArchiveAttemptError::Unavailable)
+    );
+    drop(reader);
+    join(driver).await;
+    let (mut reader, driver) = owner(66).await;
+    let block = admin.transaction().await.unwrap();
+    block
+        .batch_execute("LOCK TABLE control.archive_attempts IN ACCESS EXCLUSIVE MODE")
+        .await
+        .unwrap();
+    {
+        let read = reader.read_archive_attempt(first.catalog(), *first.attempt_id());
+        tokio::pin!(read);
+        let observed = async {
+            loop {
+                block
+                    .query_one("SELECT pg_stat_clear_snapshot()", &[])
+                    .await
+                    .unwrap();
+                let blocked = block.query_opt("SELECT json_build_object('event','retained-read-blocker','waiter',a.pid,'waiter_start',a.backend_start,'blocker',h.pid,'blocker_start',h.backend_start,'wait_event',a.wait_event)::text FROM pg_stat_activity a JOIN pg_stat_activity h ON h.pid=pg_backend_pid() WHERE a.datname=current_database() AND a.usename='bigbrotr_control' AND h.pid=ANY(pg_blocking_pids(a.pid)) AND a.wait_event_type='Lock'", &[]).await.unwrap();
+                if let Some(blocked) = blocked {
+                    println!("{}", blocked.get::<_, &str>(0));
+                    break;
+                }
+                tokio::time::sleep(Duration::from_millis(5)).await;
+            }
+        };
+        tokio::select! {
+            outcome = &mut read => panic!("read escaped actual table blocker: {outcome:?}"),
+            observed = tokio::time::timeout(Duration::from_secs(3), observed) => observed.unwrap(),
+        }
+    }
+    assert_eq!(
+        reader
+            .read_archive_attempt(first.catalog(), *first.attempt_id())
+            .await,
+        Err(ArchiveAttemptError::Unavailable)
+    );
+    block.rollback().await.unwrap();
+    drop(reader);
+    join(driver).await;
+    let (mut reader, driver) = owner(68).await;
+    assert_eq!(
+        reader
+            .read_archive_attempt(first.catalog(), *first.attempt_id())
+            .await
+            .unwrap(),
+        Some(historical)
+    );
+    reader.release().await.unwrap();
+    join(driver).await;
     drop(admin);
     join(admin_driver).await;
     println!(
         "{}",
-        serde_json::json!({"status":"PASS","rows":2,"ordinals":[1,2],"issuer_epochs":[1,1],"scope":"actual adapter issuance/replay/CAS/refusals and immutable SQL history; not catalog fencing or lost wire COMMIT"})
+        serde_json::json!({"status":"PASS","rows":2,"ordinals":[1,2],"issuer_epochs":[1,1],"retained_read":"exact current/historical identity, fresh owner, absence, wrong catalog, no mutation and actual blocked cancellation/poison/retry","scope":"actual adapter issuance/read/replay/CAS/refusals and immutable SQL history; not catalog fencing or lost wire COMMIT"})
     );
 }
 fn main() {

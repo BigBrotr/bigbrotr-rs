@@ -248,6 +248,21 @@ impl ControlSession {
         Ok(receipt)
     }
 
+    /// Observe one retained publication intent without issuing or importing it.
+    /// The caller owns the bounded control slot, deadline and actual driver.
+    /// Absence is only a missing Control record, never proof of rollback or
+    /// permission to reuse an attempt ID. This observation grants no launch.
+    pub async fn read_archive_attempt(
+        &mut self,
+        _catalog: OwnerResourceId,
+        _attempt_id: [u8; 16],
+    ) -> Result<
+        Option<super::archive_attempt::ArchiveAttemptReceipt>,
+        super::archive_attempt::ArchiveAttemptError,
+    > {
+        Ok(None)
+    }
+
     pub async fn release(mut self) -> Result<(), OwnerError> {
         self.begin_operation()?;
         let tx = application_transaction(&mut self.client, 7)

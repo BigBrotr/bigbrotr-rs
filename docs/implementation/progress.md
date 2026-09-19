@@ -21,17 +21,14 @@ cross-boot recovery and protection remain required.
 
 ## Actual Git and ownership
 
-Mac main HEAD is unpublished qualified correction
-770c4857c92500160a1725c03d7fc7c98ddfa7a5, tree
-f31e8b970e496d5601eb6e0d2018c58dd5e9aed9. Its parent e57100217ba653a6a266d34f681451df48ccebb6
-is the deliberately failing native baseline. Last verified origin/main is
-e9cf01f590cb229b332c76b9ffb88094828a03b7 (previous custody qualification).
-Root owns only subsequent qualification report/docs/checkpoint/inventory edits;
-no merge/rebase or remote source editing. Read-only AI publication_review completed
-source and recorded-evidence reviews with no material discrepancy. It verified all65
-raw hashes, both archives/manifests, executed counts, full oracles/journals and
-recorded cleanup; it did not remeasure ELF bytes or host state. Root is the sole
-integrating writer.
+Mac main HEAD and origin/main are127174218ccf6ab5fccce5da4f6be0927e554db0,
+verified pushed, private bigbrotr-rs and clean before the new read slice. That
+qualification commit delivers source770c485 and the intentional e571002 baseline.
+Root now owns dirty Control read API stub, native archive_attempt_probe regressions,
+owning contract/checkpoint/inventory edits. No other writer or remote source edit.
+Read-only publication_review finished source and recorded-evidence review of the
+qualified missing-import slice with no material discrepancy; native execution
+and host observations remain root's evidence.
 
 Transfer16951 ran from clean Git and is terminal. Source audit52741 verifies all699
 checkout/export files and exact Mac Git archive at770c485. Manifest SHA256
@@ -154,12 +151,21 @@ Do not mechanically rerun unrelated suites.
 
 ## Next bounded action
 
-Current recorded-evidence/diff review and structural checks pass. Fresh fetch
-confirmed origin/main e9cf01f and private, non-archived bigbrotr-rs. Commit this
-qualification and push the coherent baseline/correction/evidence sequence, then
-verify exact remote HEAD and clean worktree. Continue the installed
-archive recovery consumer: inspect retained Control-attempt lookup and ingest
-pending APIs plus lifecycle/resource contracts, define bounded recovery inventory
-and preserve exact identity without reissuing credentials. Use existing P02-T04
-steps, not a new plan. Incomplete-journal/cross-boot recovery, protection and the
-full M1 read/export/restart journey remain required; no task completion claim yet.
+The next P02-T04 recovery consumer observes one Control attempt by ID/catalog
+without resubmitting registration or requiring an in-memory ArchiveBatch. The
+actual adapter probe now checks absent/current/historical identity, fresh-owner
+recovery, unchanged full row/xmin, structural refusals, wrong catalog and directly
+blocked cancellation/session poisoning. The baseline API deliberately returns
+None, so its first retained-row observation must fail on actual PG. This is NOT_RUN
+until the new exact-source run; no native resource has been launched yet.
+
+Finish scoped baseline source/check review, create a candidate and run the existing
+native_archive_attempts.py in a fresh individually inventoried attempt-read lab,
+copying retired770c485 cache. Retain the actual failing assertion, then implement
+the bounded SQL read and replace the custody observer's fixture-side request
+reconstruction with that real consumer. Qualify actual read/refusals/cancellation
+and affected recovered-custody schedules; retire each owned lab independently.
+The ignored transfer/launch helpers live under
+.research/implementation/archive-worker/attempt-read. Existing installed lifecycle,
+resource reconciliation, incomplete-journal/cross-boot recovery, protection and
+full M1/read/export/restart remain required; no task completion claim.
