@@ -39,6 +39,8 @@ fn main() {
             | "retire"
             | "retire-cancel"
             | "install"
+            | "drain"
+            | "drain-other-database"
     ));
     let expects_identity = matches!(mode, "retire" | "retire-cancel" | "install");
     assert_eq!(expects_identity, args.len() == 10);
@@ -136,6 +138,17 @@ fn main() {
         }
         let outcome = tokio::time::timeout(Duration::from_secs(30),
             initialization::reserve(&mut client, &custody, "CatalogManager", &commit)).await.unwrap();
+        if matches!(mode, "drain" | "drain-other-database") {
+            let fresh = outcome.unwrap();
+            let mut value = reservation_value(fresh.reservation(), "reserved");
+            let target = if mode == "drain-other-database" { "postgres" } else { database };
+            value["residual_backend"] = queued_backend(fresh, target, &client, &custody).await;
+            drop(client);
+            assert!(driver.await.unwrap().is_ok());
+            assert!(LocalInitialization::recover(&identity).is_err());
+            println!("{}", serde_json::json!({"result":value, "commit_started":commit.get(), "driver_ok":true}));
+            return;
+        }
         drop(client);
         let driver_ok = driver.await.unwrap().is_ok();
         let report = match outcome {
@@ -152,6 +165,60 @@ fn main() {
         assert!(LocalInitialization::recover(&identity).is_err());
         println!("{}", serde_json::json!({"result":report, "commit_started":commit.get(),"driver_ok":driver_ok}));
     });
+}
+
+/// Deliberate lab residual-session injection, not a native initialization run.
+/// A separately controlled PG connection holds this advisory key. Queue actual
+/// bootstrap SQL, independently observe its wait, then destroy/join the selected
+/// tokio driver. The CLI must drain the remaining server backend after custody
+/// is released, including when that backend connected to another database.
+async fn queued_backend(
+    fresh: initialization::FreshBootstrap,
+    database: &str,
+    observer: &tokio_postgres::Client,
+    custody: &LocalInitialization,
+) -> serde_json::Value {
+    let config = fresh.with_login(|login, password| {
+        let mut config = Config::new();
+        config
+            .host("127.0.0.1")
+            .port(5432)
+            .dbname(database)
+            .user(login)
+            .password(password)
+            .application_name("bigbrotr-residual-bootstrap")
+            .connect_timeout(Duration::from_secs(5));
+        config
+    });
+    let (client, connection) = config.connect(NoTls).await.unwrap();
+    drop(config);
+    let driver = tokio::spawn(custody.retain_catalog_connection(connection).unwrap());
+    let pid: i32 = client
+        .query_one("SELECT pg_backend_pid()", &[])
+        .await
+        .unwrap()
+        .get(0);
+    let query = tokio::spawn(async move {
+        client
+            .batch_execute("SELECT pg_advisory_lock(1128419913,1)")
+            .await
+    });
+    let observed = tokio::time::timeout(Duration::from_secs(5), async {
+        loop {
+            let row = observer.query_opt(
+                "SELECT backend_start::text FROM pg_stat_activity WHERE pid=$1 AND application_name='bigbrotr-residual-bootstrap' AND state='active' AND wait_event_type='Lock' AND wait_event='advisory'",
+                &[&pid],
+            ).await.unwrap();
+            if let Some(row) = row { break row.get::<_, String>(0); }
+            tokio::time::sleep(Duration::from_millis(20)).await;
+        }
+    }).await.unwrap();
+    query.abort();
+    assert!(query.await.unwrap_err().is_cancelled());
+    driver.abort();
+    assert!(driver.await.unwrap_err().is_cancelled());
+    serde_json::json!({"pid":pid,"backend_start":observed,"database":database,
+        "queued_sql_observed":true,"actual_driver_destroyed_and_joined":true})
 }
 
 fn reservation_value(r: &initialization::Reservation, status: &str) -> serde_json::Value {

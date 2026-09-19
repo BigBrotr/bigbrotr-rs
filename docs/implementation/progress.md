@@ -20,13 +20,14 @@ Control-only and rejects other roles. Root remains sole writer/integrator.
 
 ## Actual Git and review
 
-Mac main HEAD3335e06e86eec01171ae1f2ecb2d8f75488ea2d0; origin/main last verified
-8f79a5621a9f76071b0c17d435494e3427920c10. Three unpublished coherent candidates:
-a1c0921 product CLI,6265286 expanded harness/user docs,3335e06 hardened workload
-process identity. Production Rust/inputs are identical across those three commits.
-Current root-owned changes: scoped evidence, owning contracts/tasks/user docs and
-checkpoint/inventory refresh. No merge/rebase, other contributor edits or local
-running process. Normal private push follows final recorded-evidence review/checks.
+Mac main and origin/main verified at759157bf1f7eb456313754ba8b6a862d45462cea;
+push84858 exited0 and the tree was clean. Repository remains private bigbrotr-rs.
+Published a1c0921 product CLI,6265286 expanded harness/user docs,3335e06 hardened
+workload identity and759157b reviewed evidence/docs. Production Rust/inputs are
+identical across those four commits. Root-owned changes now add a bounded residual-session fixture and five real CLI
+drain scenarios (same/other database, timeout, SIGTERM/SIGINT). Production Rust
+remains unchanged; native execution is not yet run. Local example check/Clippy and
+Python syntax checks pass. No merge/rebase or other contributor edits.
 
 Independent read-only AI source review found simultaneous credential preparation,
 legacy TLS address-selection regression and late long-manager refusal; corrected
@@ -88,7 +89,8 @@ Root: /home/tux/bigbrotr-implementation-20260917/runs/initialization-cli-6265286
 Owner: 8d2a1a9a8f6d99343e83f3fccb223e7c.
 Runner: a1e67224833e97f4d05af1d1f6cd232dbb649fc27cda3c59225421d6b8d197af stopped143.
 PG: ddb10491246fdf3739b5573c18a29476a01b46085469ffbf9c39cff46e8f81d9 stopped0.
-Network: c025c4bbe030d4e4e874b580baab674d26ce733d8d4c08bca907057033338254 empty-retained.
+Network: c025c4bbe030d4e4e874b580baab674d26ce733d8d4c08bca907057033338254
+removed after verified empty/stopped inspection at09:05:34UTC; containers/data retained.
 Runner2CPU/6GiB/512PIDs, PG1CPU/1GiB/128PIDs, internal/no host ports.
 Main:18e762557fd1fa45f3e89eb07ec4d982c0af50637e5ddb95205c0a1c7a47c3d3 (8791880bytes).
 Worker:c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227 (12608608bytes).
@@ -135,8 +137,9 @@ Do not mechanically rerun unrelated suites.
 
 ## Next bounded action
 
-Complete current evidence review/docs and normal private push. Then close the new
-CLI's nonempty/timeout drain and TLS/mTLS boundaries and remaining real crash/lost
+Qualify the five new actual CLI drain scenarios on a fresh exact-source Tux lab,
+record residual backend identity and durable no-change observations, and retire
+only that lab. Then close TLS/mTLS and remaining real crash/lost
 native-install acknowledgement cases without replacing the actual consumer with
 more standalone helper-only claims. Advance installed Control+Archive through real
 signed pending publication, receipt/read/export and restart. No P02 step or M1 gate

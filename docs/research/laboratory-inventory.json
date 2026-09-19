@@ -9527,8 +9527,9 @@
       "cache_source": "initialization-recovery-660df73",
       "resources": "both labs stopped-retained; no active experiment",
       "not_qualified": [
-        "native CLI journeys",
-        "cancellation/drain/TLS",
+        "nonempty/timeout drain",
+        "new CLI TLS/mTLS",
+        "remaining crash/acknowledgement paths",
         "release and service readiness"
       ],
       "candidate": {
@@ -9962,7 +9963,26 @@
         "files": 740,
         "archive_sha256": "18730e49603a15ab63ce512d9b77d9bdcd955d4feb38a3e3ad5f1ee2e276315b",
         "manifest_sha256": "111d17cb215fd746a9a4e43800b44c38faa35dec1f0cf4a1074a7a7192a035e5"
-      }
+      },
+      "second_network_retirement": [
+        {
+          "root": "initialization-cli-6265286",
+          "network": "c025c4bbe030d4e4e874b580baab674d26ce733d8d4c08bca907057033338254",
+          "owner": "8d2a1a9a8f6d99343e83f3fccb223e7c",
+          "status": "removed",
+          "containers": "retained-stopped",
+          "data": "retained",
+          "observed_at": "2026-09-19T09:05:34.620150+00:00"
+        }
+      ]
+    },
+    "initialization_drain": {
+      "status": "prepared-not-run",
+      "local_raw_root": ".research/implementation/archive-worker/initialization-drain",
+      "source_parent": "759157bf1f7eb456313754ba8b6a862d45462cea",
+      "scope": "actual archive recover with queued tokio-postgres residual backend after positive driver destruction; not native-worker residual SQL",
+      "cache_source": "initialization-cli-6265286",
+      "resources": "no new resources created yet; previous empty CLI network retired, containers/data retained"
     }
   },
   "implementation_monitor_corrections_20260918": {
