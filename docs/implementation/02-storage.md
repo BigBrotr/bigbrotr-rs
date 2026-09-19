@@ -312,8 +312,14 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   immutable journal/recovered-launch refusal and unchanged full database/filesystem
   observations on invalid inputs. Corrected fixtures isolate symlink/inode checks;
   a raw reopened descriptor demonstrates the documented trusted-parent boundary.
-  Durable database reservation, newly generated bootstrap credentials and the
-  complete initialization/recovery CLI remain open under this same step.
+  Atomic database reservation and newly generated bootstrap credentials now have
+  [scoped native qualification](evidence/p02-database-reservation-native-20260919.json)
+  at `bb8be6d`: 29 actual cases including the generated credential's native consumer,
+  exact returned identities, unsafe privilege rollback, competing roots and global
+  nonce collisions, both lost-COMMIT outcomes and coordinator SIGKILL before remote
+  rollback/late commit. Failed baseline/oracle candidates and review corrections
+  are retained. Bounded reservation observation, exact retirement/backend resolution,
+  graceful cancellation and the complete initialization/recovery CLI remain open.
 - [ ] **Step 4:** After an ambiguous commit, query the receipt in a new transaction; do not
   repeat while receipt state is unknown. Reject mismatched batch digest.
   Include loss of the actual native PostgreSQL COMMIT response, plus physical file

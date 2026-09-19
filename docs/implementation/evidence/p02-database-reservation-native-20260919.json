@@ -1,0 +1,3563 @@
+{
+  "format": "bigbrotr-database-reservation-evidence/1",
+  "observed_date": "2026-09-19",
+  "status": "PASS",
+  "scope": "P02-T04 steps3/4/5 atomic durable database reservation and generated bootstrap handoff; not complete initializer/recovery CLI or M1",
+  "sources": {
+    "baseline": {
+      "revision": "cfadb48a7260e457228b4da96ddcc5b4e6c4dac7",
+      "tree": "b58124fec8a4b6328b06bff7cf5780d5b4527bfb",
+      "files": 732,
+      "archive_sha256": "0bdf3a02c73181125a6ec1b0779269d78a967bfd12811aa140bf8d9d81784d84",
+      "manifest_sha256": "e9b9d035460a1a85cbe6ec39520c825fdc11363037ae139526e724bdadfa74ef"
+    },
+    "first": {
+      "revision": "71399117eec55a3abae671f131d8fed43dace887",
+      "tree": "f2636c49685592f484b72d47afb32a1b6c775be9",
+      "files": 733,
+      "archive_sha256": "31dd454bd842d4d62c0da6c37bd90edd09e6add4149a26bd924ef338606d54a6",
+      "manifest_sha256": "430aff3f5f06c30f577d49f0fae822f18124ef9223b839ed83bedf68d31e6554"
+    },
+    "fixture-failure": {
+      "revision": "543fafd5395be58b74bc3f96837b38503f846488",
+      "tree": "dbc61deeca5e58f88134babb0a7a1b294f3cc02c",
+      "files": 733,
+      "archive_sha256": "a28de6d9400a58b9e3ca300ecc31f9333fc731e1dd947e9d6bd62e643da2677f",
+      "manifest_sha256": "bfa4989fbd2f2cfa74e0ca88b656870f8776a9c2dc0dd21b72cbcef1cba6ceb6"
+    },
+    "qualified": {
+      "revision": "bb8be6d3e8633f564744286596501a1c2331ceb4",
+      "tree": "dfbb56e7731a9075cd7eb12dab31bdb8c995a991",
+      "files": 733,
+      "archive_sha256": "c12fc65a79432b3c390c30514a87d7c780fde1c72b81dc0d54a4431f167a95b4",
+      "manifest_sha256": "4a70b79aec47fc59c567a1e6fd2316e0576d702ffef98930a23a5d2e8ec02096"
+    }
+  },
+  "source_verification": {
+    "method": "Clean Git bundles, exact exported source hashes before/after, independently regenerated Mac Git archives and every source file; all raw archives/file hashes verified.",
+    "file_comparisons": 2931,
+    "production_unchanged_after_first": [
+      "apps/bigbrotr/examples/catalog_initialization_probe.rs",
+      "docs/implementation/progress.md",
+      "docs/research/laboratory-inventory.json",
+      "experiments/archive-engine/database_reservation_cases.py"
+    ]
+  },
+  "environment": {
+    "host": "Tux",
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "native_toolchain": {
+      "os": "Linux",
+      "architecture": "x86_64",
+      "discovery": "llvm-config",
+      "environment": {
+        "CC": "/usr/lib/llvm-14/bin/clang",
+        "CXX": "/usr/lib/llvm-14/bin/clang++",
+        "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+        "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+        "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+      },
+      "tools": {
+        "CC": {
+          "path": "/usr/lib/llvm-14/bin/clang",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "CXX": {
+          "path": "/usr/lib/llvm-14/bin/clang++",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "AR": {
+          "path": "/usr/lib/llvm-14/bin/llvm-ar",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+          "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+          "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+        },
+        "LIBCLANG_PATH": {
+          "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+          "version": "Debian clang version 14.0.6"
+        },
+        "discovery": {
+          "path": "/usr/lib/llvm-14/bin/llvm-config",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+          "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+          "version": "14.0.6"
+        }
+      },
+      "sdk": null
+    },
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "limits": {
+      "runner_cpus": 2,
+      "runner_memory_bytes": 6442450944,
+      "runner_pids": 512,
+      "postgres_cpus": 1,
+      "postgres_memory_bytes": 1073741824,
+      "postgres_pids": 128,
+      "host_ports": []
+    },
+    "profile": "Same-boot Linux ext4, isolated internal Docker network, loopback SCRAM; no host ports"
+  },
+  "dependencies": {
+    "inputs_sha256": {
+      "Cargo.lock": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215",
+      "contracts/protocol/nip01-event.json": "b830d5ab8651f5a763ebcffdc0eb1737ba70f4602c93fc714c892865ffca2db8",
+      "contracts/protocol/versions.json": "37c76706c5a2aa4fc72a40aeed908f104620eafcee1118b7cee8baf133546c95",
+      "contracts/release/dependencies.json": "4f73cd0a81916b7d203556ff9ad1d8efd97dfe95b2b2305c35468747e8669132",
+      "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167"
+    },
+    "archive_engine_registry_sha256": "ae0069565ab9411928df0cf067822630c4f3a912919e61633b952f8077a5e2c1",
+    "engine_version": "v1.5.5",
+    "binding_version": "1.10505.0",
+    "arrow_version": "58.4.0",
+    "assets": {
+      "extension_platform": "linux_amd64",
+      "archive": {
+        "name": "libduckdb-linux-amd64.zip",
+        "url": "https://github.com/duckdb/duckdb/releases/download/v1.5.5/libduckdb-linux-amd64.zip",
+        "bytes": 41300590,
+        "sha256": "1fb8ce388157d84a25abe685a8a2520bf00c00321821968e4bb398fd766e7abb"
+      },
+      "library": {
+        "name": "libduckdb.so",
+        "bytes": 70529912,
+        "sha256": "fc23f12e376c47be520f75221288281906e7942e8fd6f6ce4849198ba60d0405"
+      },
+      "header": {
+        "name": "duckdb.h",
+        "bytes": 244057,
+        "sha256": "48e716b9ce96ca8fead9cb35693fdc0343ac0fc1f6e7db5561fa0f44b674153d"
+      },
+      "extensions": [
+        {
+          "name": "ducklake",
+          "url": "https://extensions.duckdb.org/v1.5.5/linux_amd64/ducklake.duckdb_extension.gz",
+          "compressed_bytes": 12655412,
+          "compressed_sha256": "733ccf19fedcfd5e0bfaf85993219145181099cc411076cabf14933ea16ab452",
+          "bytes": 36436086,
+          "sha256": "e51bf9e8d933d0e83780ae096455501b542cf962569a2ce5613532d702c08302"
+        },
+        {
+          "name": "postgres_scanner",
+          "url": "https://extensions.duckdb.org/v1.5.5/linux_amd64/postgres_scanner.duckdb_extension.gz",
+          "compressed_bytes": 14583967,
+          "compressed_sha256": "e0f631a5535f165468bc8a20501f8bc1490adbc877d38fcdff2f8d05531e1e5b",
+          "bytes": 41696558,
+          "sha256": "b1ced4cfc6311313e117c2afb3eac76508718778dde0716421503c7dbfb5605c"
+        },
+        {
+          "name": "httpfs",
+          "url": "https://extensions.duckdb.org/v1.5.5/linux_amd64/httpfs.duckdb_extension.gz",
+          "compressed_bytes": 7416043,
+          "compressed_sha256": "7cdd52a3135388718884a9b71e3987ba723002121e8e9de399c4ed619d824a05",
+          "bytes": 21570542,
+          "sha256": "887c392b1e49128d11667c81e3698d8b00dfdeb456771acf66d05a0f74f7b7d8"
+        }
+      ]
+    },
+    "verification": "tools.archive_bundle.install_bundle verifies pinned assets before build; actual native Engine verifies bundle at startup"
+  },
+  "artifacts": {
+    "baseline": {
+      "main": {
+        "sha256": "20da6c46afb5d5f2dcd62555ee0674d5cf791778f41fda31116d02f53113b52f",
+        "bytes": 8224712,
+        "elf_machine": 62
+      },
+      "worker": {
+        "sha256": "baebeedbcf5871b7089109f4b39a29543e845bf9cbc09d92b97e11a82a4482bf",
+        "bytes": 12608608,
+        "elf_machine": 62
+      },
+      "initializer_sha256": "0b29b78e12adfba74b9cd99a84b1c5694bbc9502af3b1e80d3c32786fbf61e48"
+    },
+    "first": {
+      "main": {
+        "sha256": "db6bf8364e66c8191baa81cf8c8b2f3cb73cb08e81d450ddea0c7a3b6a92ea62",
+        "bytes": 8224752,
+        "elf_machine": 62
+      },
+      "worker": {
+        "sha256": "c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227",
+        "bytes": 12608608,
+        "elf_machine": 62
+      },
+      "initializer_sha256": "30778a4ca4bd5e115c72b2fc0f9cca1dd4802325e0843cbfb9d04754cdf2cb07"
+    },
+    "fixture-failure": {
+      "main": {
+        "sha256": "2922256722b62dce5ca8640631b4942129ff3c2637e227285e612d8a219ffec5",
+        "bytes": 8224752,
+        "elf_machine": 62
+      },
+      "worker": {
+        "sha256": "c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227",
+        "bytes": 12608608,
+        "elf_machine": 62
+      },
+      "initializer_sha256": "bc6e632377cc32b1f35aaf9209a196ca63a1290986abf529d9b2b67bb0b303b0"
+    },
+    "qualified": {
+      "main": {
+        "sha256": "e6372d10b7feb1dae30d9ab99e6c05fdbaec8ed0d18d1ea0f6059083c824a037",
+        "bytes": 8224696,
+        "elf_machine": 62
+      },
+      "worker": {
+        "sha256": "c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227",
+        "bytes": 12608608,
+        "elf_machine": 62
+      },
+      "initializer_sha256": "177cb18c7fdc512ca9a7eab382abfa8d597fafe5e2c3906401e344592cf4b9a4"
+    }
+  },
+  "implementation": [
+    "Permanent cluster role bb_init_database_<database OID> plus fresh restricted bb_init_<nonce> login in one explicit privileged transaction.",
+    "Canonical retained role comment binds local nonce and exact bootstrap/manager OIDs. Existing names refuse; no schema object or applied migration changes.",
+    "Shared native/parent pristine database predicate; shared exact manager validation; effective bootstrap PUBLIC privilege closure before handoff.",
+    "Fresh256-bit local password, server receives only precomputed SCRAM verifier; move-only material returned only after known COMMIT. One provisioning attempt per fresh local custody; recovered custody denied.",
+    "Provisioning PostgreSQL driver joined before the fresh credential is consumed by supervised reserved native initialization; native child is then positively joined."
+  ],
+  "qualifications": {
+    "baseline": {
+      "status": "FAIL",
+      "case_count": 1,
+      "cases": [
+        {
+          "name": "atomic_fresh_reservation",
+          "result": {
+            "commit_started": false,
+            "result": {
+              "reason": "Conflict",
+              "status": "refused"
+            }
+          },
+          "roles": [],
+          "database_oid": 16396
+        }
+      ],
+      "error": "{'commit_started': False, 'result': {'reason': 'Conflict', 'status': 'refused'}}",
+      "build": [
+        {
+          "name": "ordered-build",
+          "command": [
+            "/usr/bin/python3",
+            "/source/experiments/archive-engine/native_initialization.py",
+            "--build-binaries"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 45.08718419307843
+        }
+      ],
+      "checks": [
+        {
+          "name": "fixture",
+          "command": [
+            "cargo",
+            "build",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr",
+            "--example",
+            "catalog_schema_probe",
+            "--example",
+            "catalog_initialization_probe"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 13.236764011904597
+        },
+        {
+          "name": "parent-tests",
+          "command": [
+            "cargo",
+            "test",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr",
+            "--lib",
+            "storage::archive",
+            "--",
+            "--nocapture"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 10.38200702611357
+        },
+        {
+          "name": "clippy",
+          "command": [
+            "cargo",
+            "clippy",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr",
+            "-p",
+            "bigbrotr-archive-worker",
+            "--lib",
+            "--example",
+            "catalog_schema_probe",
+            "--example",
+            "catalog_initialization_probe",
+            "--bin",
+            "bigbrotr-archive-worker",
+            "--",
+            "-D",
+            "warnings"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 2.0177187491208315
+        }
+      ],
+      "parent_tests": {
+        "passed": 33,
+        "failed": 0,
+        "ignored": 1,
+        "ignored_scope": "Existing explicit native-holder case; separately qualified at3efde78, not rerun by this reservation slice."
+      }
+    },
+    "first": {
+      "status": "PASS",
+      "case_count": 24,
+      "cases": [
+        {
+          "name": "bbreserve_one-first-reserve",
+          "status": "PASS",
+          "expected": "reserved",
+          "observed": {
+            "commit_started": true,
+            "driver_ok": true,
+            "result": {
+              "bootstrap_login": "bb_init_03030303030303030303030303030303",
+              "bootstrap_oid": 16398,
+              "database_oid": 16396,
+              "manager_oid": 16395,
+              "reservation_oid": 16397,
+              "status": "reserved"
+            }
+          },
+          "durable": {
+            "database_oid": 16396,
+            "roles": [
+              {
+                "oid": "16398",
+                "rolname": "bb_init_03030303030303030303030303030303",
+                "rolcanlogin": true,
+                "rolsuper": false,
+                "rolcreatedb": false,
+                "rolcreaterole": false,
+                "rolinherit": false,
+                "rolreplication": false,
+                "rolbypassrls": false,
+                "rolconnlimit": 8,
+                "password_null": false,
+                "scram": true
+              },
+              {
+                "oid": "16397",
+                "rolname": "bb_init_database_16396",
+                "rolcanlogin": false,
+                "rolsuper": false,
+                "rolcreatedb": false,
+                "rolcreaterole": false,
+                "rolinherit": false,
+                "rolreplication": false,
+                "rolbypassrls": false,
+                "rolconnlimit": -1,
+                "password_null": true,
+                "scram": null
+              }
+            ],
+            "comment": "bigbrotr-catalog-initialization/1:03030303030303030303030303030303:16398:16395"
+          }
+        },
+        {
+          "name": "bbreserve_one-same_nonce-reserve",
+          "status": "PASS",
+          "expected": "Conflict",
+          "observed": {
+            "commit_started": false,
+            "driver_ok": true,
+            "result": {
+              "reason": "Conflict",
+              "status": "refused"
+            }
+          },
+          "database_and_roles_unchanged": true
+        },
+        {
+          "name": "bbreserve_one-other_nonce-reserve",
+          "status": "PASS",
+          "expected": "Conflict",
+          "observed": {
+            "commit_started": false,
+            "driver_ok": true,
+            "result": {
+              "reason": "Conflict",
+              "status": "refused"
+            }
+          },
+          "database_and_roles_unchanged": true
+        },
+        {
+          "name": "bbreserve_one-first-recover",
+          "status": "PASS",
+          "expected": "InvalidInput",
+          "observed": {
+            "commit_started": false,
+            "driver_ok": true,
+            "result": {
+              "reason": "InvalidInput",
+              "status": "refused"
+            }
+          },
+          "database_and_roles_unchanged": true
+        },
+        {
+          "name": "bbreserve_other-collision-reserve",
+          "status": "PASS",
+          "expected": "Conflict",
+          "observed": {
+            "commit_started": false,
+            "driver_ok": true,
+            "result": {
+              "reason": "Conflict",
+              "status": "refused"
+            }
+          },
+          "database_and_roles_unchanged": true
+        },
+        {
+          "name": "bbreserve_other-new_nonce-reserve",
+          "status": "PASS",
+          "expected": "reserved",
+          "observed": {
+            "commit_started": true,
+            "driver_ok": true,
+            "result": {
+              "bootstrap_login": "bb_init_04040404040404040404040404040404",
+              "bootstrap_oid": 16401,
+              "database_oid": 16399,
+              "manager_oid": 16395,
+              "reservation_oid": 16400,
+              "status": "reserved"
+            }
+          },
+          "durable": {
+            "database_oid": 16399,
+            "roles": [
+              {
+                "oid": "16401",
+                "rolname": "bb_init_04040404040404040404040404040404",
+                "rolcanlogin": true,
+                "rolsuper": false,
+                "rolcreatedb": false,
+                "rolcreaterole": false,
+                "rolinherit": false,
+                "rolreplication": false,
+                "rolbypassrls": false,
+                "rolconnlimit": 8,
+                "password_null": false,
+                "scram": true
+              },
+              {
+                "oid": "16400",
+                "rolname": "bb_init_database_16399",
+                "rolcanlogin": false,
+                "rolsuper": false,
+                "rolcreatedb": false,
+                "rolcreaterole": false,
+                "rolinherit": false,
+                "rolreplication": false,
+                "rolbypassrls": false,
+                "rolconnlimit": -1,
+                "password_null": true,
+                "scram": null
+              }
+            ],
+            "comment": "bigbrotr-catalog-initialization/1:04040404040404040404040404040404:16401:16395"
+          }
+        },
+        {
+          "name": "bbreserve_native-native-initialize",
+          "status": "PASS",
+          "expected": "reserved",
+          "observed": {
+            "commit_started": true,
+            "driver_ok": true,
+            "result": {
+              "bootstrap_login": "bb_init_05050505050505050505050505050505",
+              "bootstrap_oid": 16404,
+              "database_oid": 16402,
+              "manager_oid": 16395,
+              "native_initialized": true,
+              "reservation_oid": 16403,
+              "status": "reserved"
+            }
+          },
+          "logical_tables": "archive_commits,dictionaries,event_eligibility_facts,event_receive_facts,events,provenance_facts",
+          "durable": {
+            "database_oid": 16402,
+            "roles": [
+              {
+                "oid": "16404",
+                "rolname": "bb_init_05050505050505050505050505050505",
+                "rolcanlogin": true,
+                "rolsuper": false,
+                "rolcreatedb": false,
+                "rolcreaterole": false,
+                "rolinherit": false,
+                "rolreplication": false,
+                "rolbypassrls": false,
+                "rolconnlimit": 8,
+                "password_null": false,
+                "scram": true
+              },
+              {
+                "oid": "16403",
+                "rolname": "bb_init_database_16402",
+                "rolcanlogin": false,
+                "rolsuper": false,
+                "rolcreatedb": false,
+                "rolcreaterole": false,
+                "rolinherit": false,
+                "rolreplication": false,
+                "rolbypassrls": false,
+                "rolconnlimit": -1,
+                "password_null": true,
+                "scram": null
+              }
+            ],
+            "comment": "bigbrotr-catalog-initialization/1:05050505050505050505050505050505:16404:16395"
+          }
+        },
+        {
+          "name": "bbreserve_table-nonempty-reserve",
+          "status": "PASS",
+          "expected": "ExistingData",
+          "observed": {
+            "commit_started": false,
+            "driver_ok": true,
+            "result": {
+              "reason": "ExistingData",
+              "status": "refused"
+            }
+          },
+          "database_and_roles_unchanged": true
+        },
+        {
+          "name": "bbreserve_schema-nonempty-reserve",
+          "status": "PASS",
+          "expected": "ExistingData",
+          "observed": {
+            "commit_started": false,
+            "driver_ok": true,
+            "result": {
+              "reason": "ExistingData",
+              "status": "refused"
+            }
+          },
+          "database_and_roles_unchanged": true
+        },
+        {
+          "name": "bbreserve_extension-nonempty-reserve",
+          "status": "PASS",
+          "expected": "ExistingData",
+          "observed": {
+            "commit_started": false,
+            "driver_ok": true,
+            "result": {
+              "reason": "ExistingData",
+              "status": "refused"
+            }
+          },
+          "database_and_roles_unchanged": true
+        },
+        {
+          "name": "bbreserve_public_create-unsafe-reserve",
+          "status": "PASS",
+          "expected": "UnsafeRole",
+          "observed": {
+            "commit_started": false,
+            "driver_ok": true,
+            "result": {
+              "reason": "UnsafeRole",
+              "status": "refused"
+            }
+          },
+          "database_and_roles_unchanged": true
+        },
+        {
+          "name": "bbreserve_parameter-unsafe-reserve",
+          "status": "PASS",
+          "expected": "UnsafeRole",
+          "observed": {
+            "commit_started": false,
+            "driver_ok": true,
+            "result": {
+              "reason": "UnsafeRole",
+              "status": "refused"
+            }
+          },
+          "database_and_roles_unchanged": true
+        },
+        {
+          "name": "bbreserve_manager_super-unsafe-reserve",
+          "status": "PASS",
+          "expected": "UnsafeRole",
+          "observed": {
+            "commit_started": false,
+            "driver_ok": true,
+            "result": {
+              "reason": "UnsafeRole",
+              "status": "refused"
+            }
+          },
+          "database_and_roles_unchanged": true
+        },
+        {
+          "name": "bbreserve_manager_inherit-unsafe-reserve",
+          "status": "PASS",
+          "expected": "UnsafeRole",
+          "observed": {
+            "commit_started": false,
+            "driver_ok": true,
+            "result": {
+              "reason": "UnsafeRole",
+              "status": "refused"
+            }
+          },
+          "database_and_roles_unchanged": true
+        },
+        {
+          "name": "bbreserve_manager_member-unsafe-reserve",
+          "status": "PASS",
+          "expected": "UnsafeRole",
+          "observed": {
+            "commit_started": false,
+            "driver_ok": true,
+            "result": {
+              "reason": "UnsafeRole",
+              "status": "refused"
+            }
+          },
+          "database_and_roles_unchanged": true
+        },
+        {
+          "name": "bbreserve_lost_before-lost-reserve",
+          "status": "PASS",
+          "expected": "CommitUnknown",
+          "observed": {
+            "commit_started": true,
+            "driver_ok": false,
+            "result": {
+              "reason": "CommitUnknown",
+              "status": "refused"
+            }
+          },
+          "wire": {
+            "client_commit_complete": 0,
+            "commits_forwarded": 0,
+            "commits_seen": 1,
+            "declared_wire_bytes": 6635,
+            "elapsed_ns": 310995993,
+            "event": "receipt",
+            "faults": 1,
+            "format": "bigbrotr-pg-fault-proxy/1",
+            "frames": {
+              "backend": 119,
+              "frontend": 75
+            },
+            "held": false,
+            "hold_action": null,
+            "mode": "before-forward",
+            "reason": "before-forward",
+            "server_commit_complete": 0,
+            "tags": {
+              "backend": {
+                "31": 9,
+                "32": 9,
+                "33": 6,
+                "43": 20,
+                "44": 9,
+                "4b": 1,
+                "52": 4,
+                "53": 14,
+                "54": 9,
+                "5a": 29,
+                "74": 9
+              },
+              "frontend": {
+                "42": 9,
+                "43": 7,
+                "44": 9,
+                "45": 9,
+                "50": 9,
+                "51": 5,
+                "53": 25,
+                "70": 2
+              }
+            }
+          },
+          "durable": {
+            "database_oid": 16689,
+            "roles": []
+          }
+        },
+        {
+          "name": "bbreserve_lost_before-lost-recover",
+          "status": "PASS",
+          "expected": "InvalidInput",
+          "observed": {
+            "commit_started": false,
+            "driver_ok": true,
+            "result": {
+              "reason": "InvalidInput",
+              "status": "refused"
+            }
+          },
+          "database_and_roles_unchanged": true
+        },
+        {
+          "name": "bbreserve_lost_after-lost-reserve",
+          "status": "PASS",
+          "expected": "CommitUnknown",
+          "observed": {
+            "commit_started": true,
+            "driver_ok": false,
+            "result": {
+              "reason": "CommitUnknown",
+              "status": "refused"
+            }
+          },
+          "wire": {
+            "client_commit_complete": 0,
+            "commits_forwarded": 1,
+            "commits_seen": 1,
+            "declared_wire_bytes": 6655,
+            "elapsed_ns": 291140457,
+            "event": "receipt",
+            "faults": 1,
+            "format": "bigbrotr-pg-fault-proxy/1",
+            "frames": {
+              "backend": 122,
+              "frontend": 75
+            },
+            "held": false,
+            "hold_action": null,
+            "mode": "after-complete",
+            "reason": "after-complete",
+            "server_commit_complete": 1,
+            "tags": {
+              "backend": {
+                "31": 9,
+                "32": 9,
+                "33": 7,
+                "43": 21,
+                "44": 9,
+                "4b": 1,
+                "52": 4,
+                "53": 14,
+                "54": 9,
+                "5a": 30,
+                "74": 9
+              },
+              "frontend": {
+                "42": 9,
+                "43": 7,
+                "44": 9,
+                "45": 9,
+                "50": 9,
+                "51": 5,
+                "53": 25,
+                "70": 2
+              }
+            }
+          },
+          "durable": {
+            "database_oid": 16692,
+            "roles": [
+              {
+                "oid": "16694",
+                "rolname": "bb_init_09090909090909090909090909090909",
+                "rolcanlogin": true,
+                "rolsuper": false,
+                "rolcreatedb": false,
+                "rolcreaterole": false,
+                "rolinherit": false,
+                "rolreplication": false,
+                "rolbypassrls": false,
+                "rolconnlimit": 8,
+                "password_null": false,
+                "scram": true
+              },
+              {
+                "oid": "16693",
+                "rolname": "bb_init_database_16692",
+                "rolcanlogin": false,
+                "rolsuper": false,
+                "rolcreatedb": false,
+                "rolcreaterole": false,
+                "rolinherit": false,
+                "rolreplication": false,
+                "rolbypassrls": false,
+                "rolconnlimit": -1,
+                "password_null": true,
+                "scram": null
+              }
+            ],
+            "comment": "bigbrotr-catalog-initialization/1:09090909090909090909090909090909:16694:16395"
+          }
+        },
+        {
+          "name": "bbreserve_lost_after-lost-recover",
+          "status": "PASS",
+          "expected": "InvalidInput",
+          "observed": {
+            "commit_started": false,
+            "driver_ok": true,
+            "result": {
+              "reason": "InvalidInput",
+              "status": "refused"
+            }
+          },
+          "database_and_roles_unchanged": true
+        },
+        {
+          "name": "bbreserve_lost_after-fresh_root-reserve",
+          "status": "PASS",
+          "expected": "Conflict",
+          "observed": {
+            "commit_started": false,
+            "driver_ok": true,
+            "result": {
+              "reason": "Conflict",
+              "status": "refused"
+            }
+          },
+          "database_and_roles_unchanged": true
+        },
+        {
+          "name": "concurrent-database-release",
+          "status": "PASS",
+          "observed": [
+            {
+              "commit_started": true,
+              "driver_ok": true,
+              "result": {
+                "bootstrap_login": "bb_init_0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a",
+                "bootstrap_oid": 16697,
+                "database_oid": 16695,
+                "manager_oid": 16395,
+                "reservation_oid": 16696,
+                "status": "reserved"
+              }
+            },
+            {
+              "commit_started": false,
+              "driver_ok": true,
+              "result": {
+                "reason": "Conflict",
+                "status": "refused"
+              }
+            }
+          ],
+          "wire": {
+            "client_commit_complete": 1,
+            "commits_forwarded": 1,
+            "commits_seen": 1,
+            "declared_wire_bytes": 6749,
+            "elapsed_ns": 256750892,
+            "event": "receipt",
+            "faults": 1,
+            "format": "bigbrotr-pg-fault-proxy/1",
+            "frames": {
+              "backend": 127,
+              "frontend": 80
+            },
+            "held": false,
+            "hold_action": "release",
+            "mode": "hold",
+            "reason": "frontend-eof",
+            "server_commit_complete": 1,
+            "tags": {
+              "backend": {
+                "31": 9,
+                "32": 9,
+                "33": 9,
+                "43": 21,
+                "44": 9,
+                "4b": 1,
+                "52": 4,
+                "53": 14,
+                "54": 9,
+                "5a": 33,
+                "74": 9
+              },
+              "frontend": {
+                "42": 9,
+                "43": 9,
+                "44": 9,
+                "45": 9,
+                "50": 9,
+                "51": 5,
+                "53": 27,
+                "58": 1,
+                "70": 2
+              }
+            }
+          },
+          "waiters": [
+            {
+              "pid": 1344,
+              "blockers": [
+                1323
+              ],
+              "locktype": "advisory"
+            }
+          ],
+          "durable": {
+            "database_oid": 16695,
+            "roles": [
+              {
+                "oid": "16697",
+                "rolname": "bb_init_0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a",
+                "rolcanlogin": true,
+                "rolsuper": false,
+                "rolcreatedb": false,
+                "rolcreaterole": false,
+                "rolinherit": false,
+                "rolreplication": false,
+                "rolbypassrls": false,
+                "rolconnlimit": 8,
+                "password_null": false,
+                "scram": true
+              },
+              {
+                "oid": "16696",
+                "rolname": "bb_init_database_16695",
+                "rolcanlogin": false,
+                "rolsuper": false,
+                "rolcreatedb": false,
+                "rolcreaterole": false,
+                "rolinherit": false,
+                "rolreplication": false,
+                "rolbypassrls": false,
+                "rolconnlimit": -1,
+                "password_null": true,
+                "scram": null
+              }
+            ],
+            "comment": "bigbrotr-catalog-initialization/1:0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a:16697:16395"
+          }
+        },
+        {
+          "name": "concurrent-database-close",
+          "status": "PASS",
+          "observed": [
+            {
+              "commit_started": true,
+              "driver_ok": false,
+              "result": {
+                "reason": "CommitUnknown",
+                "status": "refused"
+              }
+            },
+            {
+              "commit_started": true,
+              "driver_ok": true,
+              "result": {
+                "bootstrap_login": "bb_init_0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d",
+                "bootstrap_oid": 16702,
+                "database_oid": 16698,
+                "manager_oid": 16395,
+                "reservation_oid": 16701,
+                "status": "reserved"
+              }
+            }
+          ],
+          "wire": {
+            "client_commit_complete": 0,
+            "commits_forwarded": 0,
+            "commits_seen": 1,
+            "declared_wire_bytes": 6670,
+            "elapsed_ns": 307594164,
+            "event": "receipt",
+            "faults": 1,
+            "format": "bigbrotr-pg-fault-proxy/1",
+            "frames": {
+              "backend": 121,
+              "frontend": 75
+            },
+            "held": true,
+            "hold_action": "close",
+            "mode": "hold",
+            "reason": "held-close",
+            "server_commit_complete": 0,
+            "tags": {
+              "backend": {
+                "31": 9,
+                "32": 9,
+                "33": 7,
+                "43": 20,
+                "44": 9,
+                "4b": 1,
+                "52": 4,
+                "53": 14,
+                "54": 9,
+                "5a": 30,
+                "74": 9
+              },
+              "frontend": {
+                "42": 9,
+                "43": 7,
+                "44": 9,
+                "45": 9,
+                "50": 9,
+                "51": 5,
+                "53": 25,
+                "70": 2
+              }
+            }
+          },
+          "waiters": [
+            {
+              "pid": 1430,
+              "blockers": [
+                1409
+              ],
+              "locktype": "advisory"
+            }
+          ],
+          "durable": {
+            "database_oid": 16698,
+            "roles": [
+              {
+                "oid": "16702",
+                "rolname": "bb_init_0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d",
+                "rolcanlogin": true,
+                "rolsuper": false,
+                "rolcreatedb": false,
+                "rolcreaterole": false,
+                "rolinherit": false,
+                "rolreplication": false,
+                "rolbypassrls": false,
+                "rolconnlimit": 8,
+                "password_null": false,
+                "scram": true
+              },
+              {
+                "oid": "16701",
+                "rolname": "bb_init_database_16698",
+                "rolcanlogin": false,
+                "rolsuper": false,
+                "rolcreatedb": false,
+                "rolcreaterole": false,
+                "rolinherit": false,
+                "rolreplication": false,
+                "rolbypassrls": false,
+                "rolconnlimit": -1,
+                "password_null": true,
+                "scram": null
+              }
+            ],
+            "comment": "bigbrotr-catalog-initialization/1:0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d:16702:16395"
+          }
+        },
+        {
+          "name": "concurrent-nonce-release",
+          "status": "PASS",
+          "observed": [
+            {
+              "commit_started": true,
+              "driver_ok": true,
+              "result": {
+                "bootstrap_login": "bb_init_0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e",
+                "bootstrap_oid": 16706,
+                "database_oid": 16703,
+                "manager_oid": 16395,
+                "reservation_oid": 16705,
+                "status": "reserved"
+              }
+            },
+            {
+              "commit_started": false,
+              "driver_ok": true,
+              "result": {
+                "reason": "Backend",
+                "status": "refused"
+              }
+            }
+          ],
+          "wire": {
+            "client_commit_complete": 1,
+            "commits_forwarded": 1,
+            "commits_seen": 1,
+            "declared_wire_bytes": 6740,
+            "elapsed_ns": 446040751,
+            "event": "receipt",
+            "faults": 1,
+            "format": "bigbrotr-pg-fault-proxy/1",
+            "frames": {
+              "backend": 127,
+              "frontend": 80
+            },
+            "held": false,
+            "hold_action": "release",
+            "mode": "hold",
+            "reason": "frontend-eof",
+            "server_commit_complete": 1,
+            "tags": {
+              "backend": {
+                "31": 9,
+                "32": 9,
+                "33": 9,
+                "43": 21,
+                "44": 9,
+                "4b": 1,
+                "52": 4,
+                "53": 14,
+                "54": 9,
+                "5a": 33,
+                "74": 9
+              },
+              "frontend": {
+                "42": 9,
+                "43": 9,
+                "44": 9,
+                "45": 9,
+                "50": 9,
+                "51": 5,
+                "53": 27,
+                "58": 1,
+                "70": 2
+              }
+            }
+          },
+          "waiters": [
+            {
+              "pid": 1530,
+              "blockers": [
+                1509
+              ],
+              "locktype": "transactionid"
+            }
+          ],
+          "durable": {
+            "database_oid": 16703,
+            "roles": [
+              {
+                "oid": "16706",
+                "rolname": "bb_init_0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e",
+                "rolcanlogin": true,
+                "rolsuper": false,
+                "rolcreatedb": false,
+                "rolcreaterole": false,
+                "rolinherit": false,
+                "rolreplication": false,
+                "rolbypassrls": false,
+                "rolconnlimit": 8,
+                "password_null": false,
+                "scram": true
+              },
+              {
+                "oid": "16705",
+                "rolname": "bb_init_database_16703",
+                "rolcanlogin": false,
+                "rolsuper": false,
+                "rolcreatedb": false,
+                "rolcreaterole": false,
+                "rolinherit": false,
+                "rolreplication": false,
+                "rolbypassrls": false,
+                "rolconnlimit": -1,
+                "password_null": true,
+                "scram": null
+              }
+            ],
+            "comment": "bigbrotr-catalog-initialization/1:0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e:16706:16395"
+          }
+        },
+        {
+          "name": "concurrent-nonce-close",
+          "status": "PASS",
+          "observed": [
+            {
+              "commit_started": true,
+              "driver_ok": false,
+              "result": {
+                "reason": "CommitUnknown",
+                "status": "refused"
+              }
+            },
+            {
+              "commit_started": true,
+              "driver_ok": true,
+              "result": {
+                "bootstrap_login": "bb_init_10101010101010101010101010101010",
+                "bootstrap_oid": 16714,
+                "database_oid": 16710,
+                "manager_oid": 16395,
+                "reservation_oid": 16713,
+                "status": "reserved"
+              }
+            }
+          ],
+          "wire": {
+            "client_commit_complete": 0,
+            "commits_forwarded": 0,
+            "commits_seen": 1,
+            "declared_wire_bytes": 6661,
+            "elapsed_ns": 408809134,
+            "event": "receipt",
+            "faults": 1,
+            "format": "bigbrotr-pg-fault-proxy/1",
+            "frames": {
+              "backend": 121,
+              "frontend": 75
+            },
+            "held": true,
+            "hold_action": "close",
+            "mode": "hold",
+            "reason": "held-close",
+            "server_commit_complete": 0,
+            "tags": {
+              "backend": {
+                "31": 9,
+                "32": 9,
+                "33": 7,
+                "43": 20,
+                "44": 9,
+                "4b": 1,
+                "52": 4,
+                "53": 14,
+                "54": 9,
+                "5a": 30,
+                "74": 9
+              },
+              "frontend": {
+                "42": 9,
+                "43": 7,
+                "44": 9,
+                "45": 9,
+                "50": 9,
+                "51": 5,
+                "53": 25,
+                "70": 2
+              }
+            }
+          },
+          "waiters": [
+            {
+              "pid": 1651,
+              "blockers": [
+                1630
+              ],
+              "locktype": "transactionid"
+            }
+          ],
+          "durable": {
+            "database_oid": 16710,
+            "roles": [
+              {
+                "oid": "16714",
+                "rolname": "bb_init_10101010101010101010101010101010",
+                "rolcanlogin": true,
+                "rolsuper": false,
+                "rolcreatedb": false,
+                "rolcreaterole": false,
+                "rolinherit": false,
+                "rolreplication": false,
+                "rolbypassrls": false,
+                "rolconnlimit": 8,
+                "password_null": false,
+                "scram": true
+              },
+              {
+                "oid": "16713",
+                "rolname": "bb_init_database_16710",
+                "rolcanlogin": false,
+                "rolsuper": false,
+                "rolcreatedb": false,
+                "rolcreaterole": false,
+                "rolinherit": false,
+                "rolreplication": false,
+                "rolbypassrls": false,
+                "rolconnlimit": -1,
+                "password_null": true,
+                "scram": null
+              }
+            ],
+            "comment": "bigbrotr-catalog-initialization/1:10101010101010101010101010101010:16714:16395"
+          }
+        }
+      ],
+      "error": null,
+      "build": [
+        {
+          "name": "ordered-build",
+          "command": [
+            "/usr/bin/python3",
+            "/source/experiments/archive-engine/native_initialization.py",
+            "--build-binaries"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 45.180519367568195
+        }
+      ],
+      "checks": [
+        {
+          "name": "fixture",
+          "command": [
+            "cargo",
+            "build",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr",
+            "--example",
+            "catalog_schema_probe",
+            "--example",
+            "catalog_initialization_probe"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 14.589768463745713
+        },
+        {
+          "name": "parent-tests",
+          "command": [
+            "cargo",
+            "test",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr",
+            "--lib",
+            "storage::archive",
+            "--",
+            "--nocapture"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 10.382133531849831
+        },
+        {
+          "name": "clippy",
+          "command": [
+            "cargo",
+            "clippy",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr",
+            "-p",
+            "bigbrotr-archive-worker",
+            "--lib",
+            "--example",
+            "catalog_schema_probe",
+            "--example",
+            "catalog_initialization_probe",
+            "--bin",
+            "bigbrotr-archive-worker",
+            "--",
+            "-D",
+            "warnings"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 2.0186210069805384
+        }
+      ],
+      "parent_tests": {
+        "passed": 33,
+        "failed": 0,
+        "ignored": 1,
+        "ignored_scope": "Existing explicit native-holder case; separately qualified at3efde78, not rerun by this reservation slice."
+      }
+    },
+    "fixture-failure": {
+      "status": "FAIL",
+      "case_count": 1,
+      "cases": [
+        {
+          "name": "bbreserve_one-first-reserve",
+          "status": "INCOMPLETE",
+          "expected": "reserved",
+          "observed": {
+            "commit_started": true,
+            "driver_ok": true,
+            "result": {
+              "bootstrap_login": "bb_init_03030303030303030303030303030303",
+              "bootstrap_oid": 16398,
+              "database_oid": 16396,
+              "initialization_id": [
+                3,
+                3,
+                3,
+                3,
+                3,
+                3,
+                3,
+                3,
+                3,
+                3,
+                3,
+                3,
+                3,
+                3,
+                3,
+                3
+              ],
+              "manager_login": "CatalogManager",
+              "manager_oid": 16395,
+              "reservation_oid": 16397,
+              "status": "reserved"
+            }
+          }
+        }
+      ],
+      "error": "{'bootstrap_login': 'bb_init_03030303030303030303030303030303', 'bootstrap_oid': 16398, 'database_oid': 16396, 'initialization_id': [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3], 'manager_login': 'CatalogManager', 'manager_oid': 16395, 'reservation_oid': 16397, 'status': 'reserved'}",
+      "build": [
+        {
+          "name": "ordered-build",
+          "command": [
+            "/usr/bin/python3",
+            "/source/experiments/archive-engine/native_initialization.py",
+            "--build-binaries"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 45.334756773896515
+        }
+      ],
+      "checks": [
+        {
+          "name": "fixture",
+          "command": [
+            "cargo",
+            "build",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr",
+            "--example",
+            "catalog_schema_probe",
+            "--example",
+            "catalog_initialization_probe"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 14.585547981318086
+        },
+        {
+          "name": "parent-tests",
+          "command": [
+            "cargo",
+            "test",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr",
+            "--lib",
+            "storage::archive",
+            "--",
+            "--nocapture"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 10.379906486254185
+        },
+        {
+          "name": "clippy",
+          "command": [
+            "cargo",
+            "clippy",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr",
+            "-p",
+            "bigbrotr-archive-worker",
+            "--lib",
+            "--example",
+            "catalog_schema_probe",
+            "--example",
+            "catalog_initialization_probe",
+            "--bin",
+            "bigbrotr-archive-worker",
+            "--",
+            "-D",
+            "warnings"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 2.0679727368988097
+        }
+      ],
+      "parent_tests": {
+        "passed": 33,
+        "failed": 0,
+        "ignored": 1,
+        "ignored_scope": "Existing explicit native-holder case; separately qualified at3efde78, not rerun by this reservation slice."
+      }
+    },
+    "qualified": {
+      "status": "PASS",
+      "case_count": 29,
+      "cases": [
+        {
+          "name": "bbreserve_one-first-reserve",
+          "status": "PASS",
+          "expected": "reserved",
+          "observed": {
+            "commit_started": true,
+            "driver_ok": true,
+            "result": {
+              "bootstrap_login": "bb_init_03030303030303030303030303030303",
+              "bootstrap_oid": 16398,
+              "database_oid": 16396,
+              "initialization_id": [
+                3,
+                3,
+                3,
+                3,
+                3,
+                3,
+                3,
+                3,
+                3,
+                3,
+                3,
+                3,
+                3,
+                3,
+                3,
+                3
+              ],
+              "manager_login": "CatalogManager",
+              "manager_oid": 16395,
+              "reservation_oid": 16397,
+              "status": "reserved"
+            }
+          },
+          "durable": {
+            "database_oid": 16396,
+            "roles": [
+              {
+                "oid": 16398,
+                "rolname": "bb_init_03030303030303030303030303030303",
+                "rolcanlogin": true,
+                "rolsuper": false,
+                "rolcreatedb": false,
+                "rolcreaterole": false,
+                "rolinherit": false,
+                "rolreplication": false,
+                "rolbypassrls": false,
+                "rolconnlimit": 8,
+                "password_null": false,
+                "scram": true
+              },
+              {
+                "oid": 16397,
+                "rolname": "bb_init_database_16396",
+                "rolcanlogin": false,
+                "rolsuper": false,
+                "rolcreatedb": false,
+                "rolcreaterole": false,
+                "rolinherit": false,
+                "rolreplication": false,
+                "rolbypassrls": false,
+                "rolconnlimit": -1,
+                "password_null": true,
+                "scram": null
+              }
+            ],
+            "comment": "bigbrotr-catalog-initialization/1:03030303030303030303030303030303:16398:16395"
+          }
+        },
+        {
+          "name": "bbreserve_one-same_nonce-reserve",
+          "status": "PASS",
+          "expected": "Conflict",
+          "observed": {
+            "commit_started": false,
+            "driver_ok": true,
+            "result": {
+              "reason": "Conflict",
+              "status": "refused"
+            }
+          },
+          "database_and_roles_unchanged": true
+        },
+        {
+          "name": "bbreserve_one-other_nonce-reserve",
+          "status": "PASS",
+          "expected": "Conflict",
+          "observed": {
+            "commit_started": false,
+            "driver_ok": true,
+            "result": {
+              "reason": "Conflict",
+              "status": "refused"
+            }
+          },
+          "database_and_roles_unchanged": true
+        },
+        {
+          "name": "bbreserve_one-first-recover",
+          "status": "PASS",
+          "expected": "InvalidInput",
+          "observed": {
+            "commit_started": false,
+            "driver_ok": true,
+            "result": {
+              "reason": "InvalidInput",
+              "status": "refused"
+            }
+          },
+          "database_and_roles_unchanged": true
+        },
+        {
+          "name": "bbreserve_other-collision-reserve",
+          "status": "PASS",
+          "expected": "Conflict",
+          "observed": {
+            "commit_started": false,
+            "driver_ok": true,
+            "result": {
+              "reason": "Conflict",
+              "status": "refused"
+            }
+          },
+          "database_and_roles_unchanged": true
+        },
+        {
+          "name": "bbreserve_other-new_nonce-reserve",
+          "status": "PASS",
+          "expected": "reserved",
+          "observed": {
+            "commit_started": true,
+            "driver_ok": true,
+            "result": {
+              "bootstrap_login": "bb_init_04040404040404040404040404040404",
+              "bootstrap_oid": 16401,
+              "database_oid": 16399,
+              "initialization_id": [
+                4,
+                4,
+                4,
+                4,
+                4,
+                4,
+                4,
+                4,
+                4,
+                4,
+                4,
+                4,
+                4,
+                4,
+                4,
+                4
+              ],
+              "manager_login": "CatalogManager",
+              "manager_oid": 16395,
+              "reservation_oid": 16400,
+              "status": "reserved"
+            }
+          },
+          "durable": {
+            "database_oid": 16399,
+            "roles": [
+              {
+                "oid": 16401,
+                "rolname": "bb_init_04040404040404040404040404040404",
+                "rolcanlogin": true,
+                "rolsuper": false,
+                "rolcreatedb": false,
+                "rolcreaterole": false,
+                "rolinherit": false,
+                "rolreplication": false,
+                "rolbypassrls": false,
+                "rolconnlimit": 8,
+                "password_null": false,
+                "scram": true
+              },
+              {
+                "oid": 16400,
+                "rolname": "bb_init_database_16399",
+                "rolcanlogin": false,
+                "rolsuper": false,
+                "rolcreatedb": false,
+                "rolcreaterole": false,
+                "rolinherit": false,
+                "rolreplication": false,
+                "rolbypassrls": false,
+                "rolconnlimit": -1,
+                "password_null": true,
+                "scram": null
+              }
+            ],
+            "comment": "bigbrotr-catalog-initialization/1:04040404040404040404040404040404:16401:16395"
+          }
+        },
+        {
+          "name": "bbreserve_native-native-initialize",
+          "status": "PASS",
+          "expected": "reserved",
+          "observed": {
+            "commit_started": true,
+            "driver_ok": true,
+            "result": {
+              "bootstrap_login": "bb_init_05050505050505050505050505050505",
+              "bootstrap_oid": 16404,
+              "database_oid": 16402,
+              "initialization_id": [
+                5,
+                5,
+                5,
+                5,
+                5,
+                5,
+                5,
+                5,
+                5,
+                5,
+                5,
+                5,
+                5,
+                5,
+                5,
+                5
+              ],
+              "manager_login": "CatalogManager",
+              "manager_oid": 16395,
+              "native_initialized": true,
+              "reservation_oid": 16403,
+              "status": "reserved"
+            }
+          },
+          "durable": {
+            "database_oid": 16402,
+            "roles": [
+              {
+                "oid": 16404,
+                "rolname": "bb_init_05050505050505050505050505050505",
+                "rolcanlogin": true,
+                "rolsuper": false,
+                "rolcreatedb": false,
+                "rolcreaterole": false,
+                "rolinherit": false,
+                "rolreplication": false,
+                "rolbypassrls": false,
+                "rolconnlimit": 8,
+                "password_null": false,
+                "scram": true
+              },
+              {
+                "oid": 16403,
+                "rolname": "bb_init_database_16402",
+                "rolcanlogin": false,
+                "rolsuper": false,
+                "rolcreatedb": false,
+                "rolcreaterole": false,
+                "rolinherit": false,
+                "rolreplication": false,
+                "rolbypassrls": false,
+                "rolconnlimit": -1,
+                "password_null": true,
+                "scram": null
+              }
+            ],
+            "comment": "bigbrotr-catalog-initialization/1:05050505050505050505050505050505:16404:16395"
+          },
+          "logical_tables": "archive_commits,dictionaries,event_eligibility_facts,event_receive_facts,events,provenance_facts"
+        },
+        {
+          "name": "bbreserve_unprivileged-manager-unprivileged",
+          "status": "PASS",
+          "expected": "UnsafeRole",
+          "observed": {
+            "commit_started": false,
+            "driver_ok": true,
+            "result": {
+              "reason": "UnsafeRole",
+              "status": "refused"
+            }
+          },
+          "database_and_roles_unchanged": true
+        },
+        {
+          "name": "bbreserve_table-nonempty-reserve",
+          "status": "PASS",
+          "expected": "ExistingData",
+          "observed": {
+            "commit_started": false,
+            "driver_ok": true,
+            "result": {
+              "reason": "ExistingData",
+              "status": "refused"
+            }
+          },
+          "database_and_roles_unchanged": true
+        },
+        {
+          "name": "bbreserve_schema-nonempty-reserve",
+          "status": "PASS",
+          "expected": "ExistingData",
+          "observed": {
+            "commit_started": false,
+            "driver_ok": true,
+            "result": {
+              "reason": "ExistingData",
+              "status": "refused"
+            }
+          },
+          "database_and_roles_unchanged": true
+        },
+        {
+          "name": "bbreserve_extension-nonempty-reserve",
+          "status": "PASS",
+          "expected": "ExistingData",
+          "observed": {
+            "commit_started": false,
+            "driver_ok": true,
+            "result": {
+              "reason": "ExistingData",
+              "status": "refused"
+            }
+          },
+          "database_and_roles_unchanged": true
+        },
+        {
+          "name": "bbreserve_public_create-unsafe-reserve",
+          "status": "PASS",
+          "expected": "UnsafeRole",
+          "observed": {
+            "commit_started": false,
+            "driver_ok": true,
+            "result": {
+              "reason": "UnsafeRole",
+              "status": "refused"
+            }
+          },
+          "database_and_roles_unchanged": true
+        },
+        {
+          "name": "bbreserve_parameter-unsafe-reserve",
+          "status": "PASS",
+          "expected": "UnsafeRole",
+          "observed": {
+            "commit_started": false,
+            "driver_ok": true,
+            "result": {
+              "reason": "UnsafeRole",
+              "status": "refused"
+            }
+          },
+          "database_and_roles_unchanged": true
+        },
+        {
+          "name": "bbreserve_manager_super-unsafe-reserve",
+          "status": "PASS",
+          "expected": "UnsafeRole",
+          "observed": {
+            "commit_started": false,
+            "driver_ok": true,
+            "result": {
+              "reason": "UnsafeRole",
+              "status": "refused"
+            }
+          },
+          "database_and_roles_unchanged": true
+        },
+        {
+          "name": "bbreserve_manager_inherit-unsafe-reserve",
+          "status": "PASS",
+          "expected": "UnsafeRole",
+          "observed": {
+            "commit_started": false,
+            "driver_ok": true,
+            "result": {
+              "reason": "UnsafeRole",
+              "status": "refused"
+            }
+          },
+          "database_and_roles_unchanged": true
+        },
+        {
+          "name": "bbreserve_manager_member-unsafe-reserve",
+          "status": "PASS",
+          "expected": "UnsafeRole",
+          "observed": {
+            "commit_started": false,
+            "driver_ok": true,
+            "result": {
+              "reason": "UnsafeRole",
+              "status": "refused"
+            }
+          },
+          "database_and_roles_unchanged": true
+        },
+        {
+          "name": "bbreserve_lost_before-lost-reserve",
+          "status": "PASS",
+          "expected": "CommitUnknown",
+          "observed": {
+            "commit_started": true,
+            "driver_ok": false,
+            "result": {
+              "reason": "CommitUnknown",
+              "status": "refused"
+            }
+          },
+          "wire": {
+            "client_commit_complete": 0,
+            "commits_forwarded": 0,
+            "commits_seen": 1,
+            "declared_wire_bytes": 6635,
+            "elapsed_ns": 314204918,
+            "event": "receipt",
+            "faults": 1,
+            "format": "bigbrotr-pg-fault-proxy/1",
+            "frames": {
+              "backend": 119,
+              "frontend": 75
+            },
+            "held": false,
+            "hold_action": null,
+            "mode": "before-forward",
+            "reason": "before-forward",
+            "server_commit_complete": 0,
+            "tags": {
+              "backend": {
+                "31": 9,
+                "32": 9,
+                "33": 6,
+                "43": 20,
+                "44": 9,
+                "4b": 1,
+                "52": 4,
+                "53": 14,
+                "54": 9,
+                "5a": 29,
+                "74": 9
+              },
+              "frontend": {
+                "42": 9,
+                "43": 7,
+                "44": 9,
+                "45": 9,
+                "50": 9,
+                "51": 5,
+                "53": 25,
+                "70": 2
+              }
+            }
+          },
+          "durable": {
+            "database_oid": 16690,
+            "roles": []
+          }
+        },
+        {
+          "name": "bbreserve_lost_before-lost-recover",
+          "status": "PASS",
+          "expected": "InvalidInput",
+          "observed": {
+            "commit_started": false,
+            "driver_ok": true,
+            "result": {
+              "reason": "InvalidInput",
+              "status": "refused"
+            }
+          },
+          "database_and_roles_unchanged": true
+        },
+        {
+          "name": "bbreserve_lost_after-lost-reserve",
+          "status": "PASS",
+          "expected": "CommitUnknown",
+          "observed": {
+            "commit_started": true,
+            "driver_ok": false,
+            "result": {
+              "reason": "CommitUnknown",
+              "status": "refused"
+            }
+          },
+          "wire": {
+            "client_commit_complete": 0,
+            "commits_forwarded": 1,
+            "commits_seen": 1,
+            "declared_wire_bytes": 6655,
+            "elapsed_ns": 309493471,
+            "event": "receipt",
+            "faults": 1,
+            "format": "bigbrotr-pg-fault-proxy/1",
+            "frames": {
+              "backend": 122,
+              "frontend": 75
+            },
+            "held": false,
+            "hold_action": null,
+            "mode": "after-complete",
+            "reason": "after-complete",
+            "server_commit_complete": 1,
+            "tags": {
+              "backend": {
+                "31": 9,
+                "32": 9,
+                "33": 7,
+                "43": 21,
+                "44": 9,
+                "4b": 1,
+                "52": 4,
+                "53": 14,
+                "54": 9,
+                "5a": 30,
+                "74": 9
+              },
+              "frontend": {
+                "42": 9,
+                "43": 7,
+                "44": 9,
+                "45": 9,
+                "50": 9,
+                "51": 5,
+                "53": 25,
+                "70": 2
+              }
+            }
+          },
+          "durable": {
+            "database_oid": 16693,
+            "roles": [
+              {
+                "oid": 16695,
+                "rolname": "bb_init_09090909090909090909090909090909",
+                "rolcanlogin": true,
+                "rolsuper": false,
+                "rolcreatedb": false,
+                "rolcreaterole": false,
+                "rolinherit": false,
+                "rolreplication": false,
+                "rolbypassrls": false,
+                "rolconnlimit": 8,
+                "password_null": false,
+                "scram": true
+              },
+              {
+                "oid": 16694,
+                "rolname": "bb_init_database_16693",
+                "rolcanlogin": false,
+                "rolsuper": false,
+                "rolcreatedb": false,
+                "rolcreaterole": false,
+                "rolinherit": false,
+                "rolreplication": false,
+                "rolbypassrls": false,
+                "rolconnlimit": -1,
+                "password_null": true,
+                "scram": null
+              }
+            ],
+            "comment": "bigbrotr-catalog-initialization/1:09090909090909090909090909090909:16695:16395"
+          }
+        },
+        {
+          "name": "bbreserve_lost_after-lost-recover",
+          "status": "PASS",
+          "expected": "InvalidInput",
+          "observed": {
+            "commit_started": false,
+            "driver_ok": true,
+            "result": {
+              "reason": "InvalidInput",
+              "status": "refused"
+            }
+          },
+          "database_and_roles_unchanged": true
+        },
+        {
+          "name": "bbreserve_lost_after-fresh_root-reserve",
+          "status": "PASS",
+          "expected": "Conflict",
+          "observed": {
+            "commit_started": false,
+            "driver_ok": true,
+            "result": {
+              "reason": "Conflict",
+              "status": "refused"
+            }
+          },
+          "database_and_roles_unchanged": true
+        },
+        {
+          "name": "concurrent-database-release",
+          "status": "PASS",
+          "observed": [
+            {
+              "commit_started": true,
+              "driver_ok": true,
+              "result": {
+                "bootstrap_login": "bb_init_0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a",
+                "bootstrap_oid": 16698,
+                "database_oid": 16696,
+                "initialization_id": [
+                  10,
+                  10,
+                  10,
+                  10,
+                  10,
+                  10,
+                  10,
+                  10,
+                  10,
+                  10,
+                  10,
+                  10,
+                  10,
+                  10,
+                  10,
+                  10
+                ],
+                "manager_login": "CatalogManager",
+                "manager_oid": 16395,
+                "reservation_oid": 16697,
+                "status": "reserved"
+              }
+            },
+            {
+              "commit_started": false,
+              "driver_ok": true,
+              "result": {
+                "reason": "Conflict",
+                "status": "refused"
+              }
+            }
+          ],
+          "wire": {
+            "client_commit_complete": 1,
+            "commits_forwarded": 1,
+            "commits_seen": 1,
+            "declared_wire_bytes": 6749,
+            "elapsed_ns": 290584445,
+            "event": "receipt",
+            "faults": 1,
+            "format": "bigbrotr-pg-fault-proxy/1",
+            "frames": {
+              "backend": 127,
+              "frontend": 80
+            },
+            "held": false,
+            "hold_action": "release",
+            "mode": "hold",
+            "reason": "frontend-eof",
+            "server_commit_complete": 1,
+            "tags": {
+              "backend": {
+                "31": 9,
+                "32": 9,
+                "33": 9,
+                "43": 21,
+                "44": 9,
+                "4b": 1,
+                "52": 4,
+                "53": 14,
+                "54": 9,
+                "5a": 33,
+                "74": 9
+              },
+              "frontend": {
+                "42": 9,
+                "43": 9,
+                "44": 9,
+                "45": 9,
+                "50": 9,
+                "51": 5,
+                "53": 27,
+                "58": 1,
+                "70": 2
+              }
+            }
+          },
+          "waiters": [
+            {
+              "pid": 1526,
+              "blockers": [
+                1505
+              ],
+              "locktype": "advisory"
+            }
+          ],
+          "durable": {
+            "database_oid": 16696,
+            "roles": [
+              {
+                "oid": 16698,
+                "rolname": "bb_init_0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a",
+                "rolcanlogin": true,
+                "rolsuper": false,
+                "rolcreatedb": false,
+                "rolcreaterole": false,
+                "rolinherit": false,
+                "rolreplication": false,
+                "rolbypassrls": false,
+                "rolconnlimit": 8,
+                "password_null": false,
+                "scram": true
+              },
+              {
+                "oid": 16697,
+                "rolname": "bb_init_database_16696",
+                "rolcanlogin": false,
+                "rolsuper": false,
+                "rolcreatedb": false,
+                "rolcreaterole": false,
+                "rolinherit": false,
+                "rolreplication": false,
+                "rolbypassrls": false,
+                "rolconnlimit": -1,
+                "password_null": true,
+                "scram": null
+              }
+            ],
+            "comment": "bigbrotr-catalog-initialization/1:0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a0a:16698:16395"
+          }
+        },
+        {
+          "name": "concurrent-database-close",
+          "status": "PASS",
+          "observed": [
+            {
+              "commit_started": true,
+              "driver_ok": false,
+              "result": {
+                "reason": "CommitUnknown",
+                "status": "refused"
+              }
+            },
+            {
+              "commit_started": true,
+              "driver_ok": true,
+              "result": {
+                "bootstrap_login": "bb_init_0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d",
+                "bootstrap_oid": 16703,
+                "database_oid": 16699,
+                "initialization_id": [
+                  13,
+                  13,
+                  13,
+                  13,
+                  13,
+                  13,
+                  13,
+                  13,
+                  13,
+                  13,
+                  13,
+                  13,
+                  13,
+                  13,
+                  13,
+                  13
+                ],
+                "manager_login": "CatalogManager",
+                "manager_oid": 16395,
+                "reservation_oid": 16702,
+                "status": "reserved"
+              }
+            }
+          ],
+          "wire": {
+            "client_commit_complete": 0,
+            "commits_forwarded": 0,
+            "commits_seen": 1,
+            "declared_wire_bytes": 6670,
+            "elapsed_ns": 362064492,
+            "event": "receipt",
+            "faults": 1,
+            "format": "bigbrotr-pg-fault-proxy/1",
+            "frames": {
+              "backend": 121,
+              "frontend": 75
+            },
+            "held": true,
+            "hold_action": "close",
+            "mode": "hold",
+            "reason": "held-close",
+            "server_commit_complete": 0,
+            "tags": {
+              "backend": {
+                "31": 9,
+                "32": 9,
+                "33": 7,
+                "43": 20,
+                "44": 9,
+                "4b": 1,
+                "52": 4,
+                "53": 14,
+                "54": 9,
+                "5a": 30,
+                "74": 9
+              },
+              "frontend": {
+                "42": 9,
+                "43": 7,
+                "44": 9,
+                "45": 9,
+                "50": 9,
+                "51": 5,
+                "53": 25,
+                "70": 2
+              }
+            }
+          },
+          "waiters": [
+            {
+              "pid": 1619,
+              "blockers": [
+                1598
+              ],
+              "locktype": "advisory"
+            }
+          ],
+          "durable": {
+            "database_oid": 16699,
+            "roles": [
+              {
+                "oid": 16703,
+                "rolname": "bb_init_0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d",
+                "rolcanlogin": true,
+                "rolsuper": false,
+                "rolcreatedb": false,
+                "rolcreaterole": false,
+                "rolinherit": false,
+                "rolreplication": false,
+                "rolbypassrls": false,
+                "rolconnlimit": 8,
+                "password_null": false,
+                "scram": true
+              },
+              {
+                "oid": 16702,
+                "rolname": "bb_init_database_16699",
+                "rolcanlogin": false,
+                "rolsuper": false,
+                "rolcreatedb": false,
+                "rolcreaterole": false,
+                "rolinherit": false,
+                "rolreplication": false,
+                "rolbypassrls": false,
+                "rolconnlimit": -1,
+                "password_null": true,
+                "scram": null
+              }
+            ],
+            "comment": "bigbrotr-catalog-initialization/1:0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d0d:16703:16395"
+          }
+        },
+        {
+          "name": "concurrent-nonce-release",
+          "status": "PASS",
+          "observed": [
+            {
+              "commit_started": true,
+              "driver_ok": true,
+              "result": {
+                "bootstrap_login": "bb_init_0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e",
+                "bootstrap_oid": 16707,
+                "database_oid": 16704,
+                "initialization_id": [
+                  14,
+                  14,
+                  14,
+                  14,
+                  14,
+                  14,
+                  14,
+                  14,
+                  14,
+                  14,
+                  14,
+                  14,
+                  14,
+                  14,
+                  14,
+                  14
+                ],
+                "manager_login": "CatalogManager",
+                "manager_oid": 16395,
+                "reservation_oid": 16706,
+                "status": "reserved"
+              }
+            },
+            {
+              "commit_started": false,
+              "driver_ok": true,
+              "result": {
+                "reason": "Backend",
+                "status": "refused"
+              }
+            }
+          ],
+          "wire": {
+            "client_commit_complete": 1,
+            "commits_forwarded": 1,
+            "commits_seen": 1,
+            "declared_wire_bytes": 6740,
+            "elapsed_ns": 303876252,
+            "event": "receipt",
+            "faults": 1,
+            "format": "bigbrotr-pg-fault-proxy/1",
+            "frames": {
+              "backend": 127,
+              "frontend": 80
+            },
+            "held": false,
+            "hold_action": "release",
+            "mode": "hold",
+            "reason": "frontend-eof",
+            "server_commit_complete": 1,
+            "tags": {
+              "backend": {
+                "31": 9,
+                "32": 9,
+                "33": 9,
+                "43": 21,
+                "44": 9,
+                "4b": 1,
+                "52": 4,
+                "53": 14,
+                "54": 9,
+                "5a": 33,
+                "74": 9
+              },
+              "frontend": {
+                "42": 9,
+                "43": 9,
+                "44": 9,
+                "45": 9,
+                "50": 9,
+                "51": 5,
+                "53": 27,
+                "58": 1,
+                "70": 2
+              }
+            }
+          },
+          "waiters": [
+            {
+              "pid": 1728,
+              "blockers": [
+                1705
+              ],
+              "locktype": "transactionid"
+            }
+          ],
+          "durable": {
+            "database_oid": 16704,
+            "roles": [
+              {
+                "oid": 16707,
+                "rolname": "bb_init_0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e",
+                "rolcanlogin": true,
+                "rolsuper": false,
+                "rolcreatedb": false,
+                "rolcreaterole": false,
+                "rolinherit": false,
+                "rolreplication": false,
+                "rolbypassrls": false,
+                "rolconnlimit": 8,
+                "password_null": false,
+                "scram": true
+              },
+              {
+                "oid": 16706,
+                "rolname": "bb_init_database_16704",
+                "rolcanlogin": false,
+                "rolsuper": false,
+                "rolcreatedb": false,
+                "rolcreaterole": false,
+                "rolinherit": false,
+                "rolreplication": false,
+                "rolbypassrls": false,
+                "rolconnlimit": -1,
+                "password_null": true,
+                "scram": null
+              }
+            ],
+            "comment": "bigbrotr-catalog-initialization/1:0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e0e:16707:16395"
+          }
+        },
+        {
+          "name": "concurrent-nonce-close",
+          "status": "PASS",
+          "observed": [
+            {
+              "commit_started": true,
+              "driver_ok": false,
+              "result": {
+                "reason": "CommitUnknown",
+                "status": "refused"
+              }
+            },
+            {
+              "commit_started": true,
+              "driver_ok": true,
+              "result": {
+                "bootstrap_login": "bb_init_10101010101010101010101010101010",
+                "bootstrap_oid": 16715,
+                "database_oid": 16711,
+                "initialization_id": [
+                  16,
+                  16,
+                  16,
+                  16,
+                  16,
+                  16,
+                  16,
+                  16,
+                  16,
+                  16,
+                  16,
+                  16,
+                  16,
+                  16,
+                  16,
+                  16
+                ],
+                "manager_login": "CatalogManager",
+                "manager_oid": 16395,
+                "reservation_oid": 16714,
+                "status": "reserved"
+              }
+            }
+          ],
+          "wire": {
+            "client_commit_complete": 0,
+            "commits_forwarded": 0,
+            "commits_seen": 1,
+            "declared_wire_bytes": 6661,
+            "elapsed_ns": 394535128,
+            "event": "receipt",
+            "faults": 1,
+            "format": "bigbrotr-pg-fault-proxy/1",
+            "frames": {
+              "backend": 121,
+              "frontend": 75
+            },
+            "held": true,
+            "hold_action": "close",
+            "mode": "hold",
+            "reason": "held-close",
+            "server_commit_complete": 0,
+            "tags": {
+              "backend": {
+                "31": 9,
+                "32": 9,
+                "33": 7,
+                "43": 20,
+                "44": 9,
+                "4b": 1,
+                "52": 4,
+                "53": 14,
+                "54": 9,
+                "5a": 30,
+                "74": 9
+              },
+              "frontend": {
+                "42": 9,
+                "43": 7,
+                "44": 9,
+                "45": 9,
+                "50": 9,
+                "51": 5,
+                "53": 25,
+                "70": 2
+              }
+            }
+          },
+          "waiters": [
+            {
+              "pid": 1849,
+              "blockers": [
+                1828
+              ],
+              "locktype": "transactionid"
+            }
+          ],
+          "durable": {
+            "database_oid": 16711,
+            "roles": [
+              {
+                "oid": 16715,
+                "rolname": "bb_init_10101010101010101010101010101010",
+                "rolcanlogin": true,
+                "rolsuper": false,
+                "rolcreatedb": false,
+                "rolcreaterole": false,
+                "rolinherit": false,
+                "rolreplication": false,
+                "rolbypassrls": false,
+                "rolconnlimit": 8,
+                "password_null": false,
+                "scram": true
+              },
+              {
+                "oid": 16714,
+                "rolname": "bb_init_database_16711",
+                "rolcanlogin": false,
+                "rolsuper": false,
+                "rolcreatedb": false,
+                "rolcreaterole": false,
+                "rolinherit": false,
+                "rolreplication": false,
+                "rolbypassrls": false,
+                "rolconnlimit": -1,
+                "password_null": true,
+                "scram": null
+              }
+            ],
+            "comment": "bigbrotr-catalog-initialization/1:10101010101010101010101010101010:16715:16395"
+          }
+        },
+        {
+          "name": "bbreserve_killed_close-killed-recover",
+          "status": "PASS",
+          "expected": "InvalidInput",
+          "observed": {
+            "commit_started": false,
+            "driver_ok": true,
+            "result": {
+              "reason": "InvalidInput",
+              "status": "refused"
+            }
+          },
+          "database_and_roles_unchanged": true
+        },
+        {
+          "name": "killed-before-close",
+          "status": "PASS",
+          "coordinator": {
+            "pid": 2759,
+            "signal": "SIGKILL"
+          },
+          "coordinator_exit": 137,
+          "proxy_exit": 0,
+          "wire": {
+            "client_commit_complete": 0,
+            "commits_forwarded": 0,
+            "commits_seen": 1,
+            "declared_wire_bytes": 6649,
+            "elapsed_ns": 1021273673,
+            "event": "receipt",
+            "faults": 1,
+            "format": "bigbrotr-pg-fault-proxy/1",
+            "frames": {
+              "backend": 121,
+              "frontend": 75
+            },
+            "held": true,
+            "hold_action": "close",
+            "mode": "hold",
+            "reason": "held-close",
+            "server_commit_complete": 0,
+            "tags": {
+              "backend": {
+                "31": 9,
+                "32": 9,
+                "33": 7,
+                "43": 20,
+                "44": 9,
+                "4b": 1,
+                "52": 4,
+                "53": 14,
+                "54": 9,
+                "5a": 30,
+                "74": 9
+              },
+              "frontend": {
+                "42": 9,
+                "43": 7,
+                "44": 9,
+                "45": 9,
+                "50": 9,
+                "51": 5,
+                "53": 25,
+                "70": 2
+              }
+            }
+          },
+          "journal_unchanged": true,
+          "no_native_objects": true,
+          "durable": {
+            "database_oid": 16716,
+            "roles": []
+          }
+        },
+        {
+          "name": "bbreserve_killed_release-killed-recover",
+          "status": "PASS",
+          "expected": "InvalidInput",
+          "observed": {
+            "commit_started": false,
+            "driver_ok": true,
+            "result": {
+              "reason": "InvalidInput",
+              "status": "refused"
+            }
+          },
+          "database_and_roles_unchanged": true
+        },
+        {
+          "name": "killed-before-release",
+          "status": "PASS",
+          "coordinator": {
+            "pid": 2789,
+            "signal": "SIGKILL"
+          },
+          "coordinator_exit": 137,
+          "proxy_exit": 0,
+          "wire": {
+            "client_commit_complete": 0,
+            "commits_forwarded": 1,
+            "commits_seen": 1,
+            "declared_wire_bytes": 6655,
+            "elapsed_ns": 891815507,
+            "event": "receipt",
+            "faults": 1,
+            "format": "bigbrotr-pg-fault-proxy/1",
+            "frames": {
+              "backend": 121,
+              "frontend": 75
+            },
+            "held": false,
+            "hold_action": "release",
+            "mode": "hold",
+            "reason": "frontend-eof",
+            "server_commit_complete": 0,
+            "tags": {
+              "backend": {
+                "31": 9,
+                "32": 9,
+                "33": 7,
+                "43": 20,
+                "44": 9,
+                "4b": 1,
+                "52": 4,
+                "53": 14,
+                "54": 9,
+                "5a": 30,
+                "74": 9
+              },
+              "frontend": {
+                "42": 9,
+                "43": 7,
+                "44": 9,
+                "45": 9,
+                "50": 9,
+                "51": 5,
+                "53": 25,
+                "70": 2
+              }
+            }
+          },
+          "journal_unchanged": true,
+          "no_native_objects": true,
+          "durable": {
+            "database_oid": 16719,
+            "roles": [
+              {
+                "oid": 16721,
+                "rolname": "bb_init_13131313131313131313131313131313",
+                "rolcanlogin": true,
+                "rolsuper": false,
+                "rolcreatedb": false,
+                "rolcreaterole": false,
+                "rolinherit": false,
+                "rolreplication": false,
+                "rolbypassrls": false,
+                "rolconnlimit": 8,
+                "password_null": false,
+                "scram": true
+              },
+              {
+                "oid": 16720,
+                "rolname": "bb_init_database_16719",
+                "rolcanlogin": false,
+                "rolsuper": false,
+                "rolcreatedb": false,
+                "rolcreaterole": false,
+                "rolinherit": false,
+                "rolreplication": false,
+                "rolbypassrls": false,
+                "rolconnlimit": -1,
+                "password_null": true,
+                "scram": null
+              }
+            ],
+            "comment": "bigbrotr-catalog-initialization/1:13131313131313131313131313131313:16721:16395"
+          }
+        }
+      ],
+      "error": null,
+      "build": [
+        {
+          "name": "ordered-build",
+          "command": [
+            "/usr/bin/python3",
+            "/source/experiments/archive-engine/native_initialization.py",
+            "--build-binaries"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 45.22858626022935
+        }
+      ],
+      "checks": [
+        {
+          "name": "fixture",
+          "command": [
+            "cargo",
+            "build",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr",
+            "--example",
+            "catalog_schema_probe",
+            "--example",
+            "catalog_initialization_probe"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 14.584807991981506
+        },
+        {
+          "name": "parent-tests",
+          "command": [
+            "cargo",
+            "test",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr",
+            "--lib",
+            "storage::archive",
+            "--",
+            "--nocapture"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 10.378749105613679
+        },
+        {
+          "name": "clippy",
+          "command": [
+            "cargo",
+            "clippy",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr",
+            "-p",
+            "bigbrotr-archive-worker",
+            "--lib",
+            "--example",
+            "catalog_schema_probe",
+            "--example",
+            "catalog_initialization_probe",
+            "--bin",
+            "bigbrotr-archive-worker",
+            "--",
+            "-D",
+            "warnings"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 2.0169882071204484
+        }
+      ],
+      "parent_tests": {
+        "passed": 33,
+        "failed": 0,
+        "ignored": 1,
+        "ignored_scope": "Existing explicit native-holder case; separately qualified at3efde78, not rerun by this reservation slice."
+      }
+    }
+  },
+  "failures_and_review": [
+    {
+      "source": "cfadb48a7260e457228b4da96ddcc5b4e6c4dac7",
+      "result": "Expected TDD FAIL",
+      "finding": "Deliberate reserve stub returned Conflict with commit_started=false and no roles; real durable-effects oracle discriminated missing feature."
+    },
+    {
+      "source": "71399117eec55a3abae671f131d8fed43dace887",
+      "result": "24 PASS with fixture limitations",
+      "finding": "Read-only AI review found returned OIDs/names not compared to independent SQL and losing same-DB bootstrap absence unchecked. Both added."
+    },
+    {
+      "source": "543fafd5395be58b74bc3f96837b38503f846488",
+      "result": "FAIL at first strengthened comparison; subsequent cases NOT_RUN",
+      "finding": "row_to_json(oid) emitted JSON strings while the Rust probe emitted numbers; real server diagnosis confirmed equal numeric values. Corrected independent SQL cast to bigint; did not relax identity equality.",
+      "diagnosis": {
+        "source": "543fafd5395be58b74bc3f96837b38503f846488",
+        "query": "SELECT row_to_json(r) FROM (SELECT oid,oid::bigint AS integer_oid,rolname FROM pg_authid WHERE rolname LIKE 'bb_init_%' ORDER BY oid) r",
+        "rows": [
+          {
+            "oid": "16397",
+            "integer_oid": 16397,
+            "rolname": "bb_init_database_16396"
+          },
+          {
+            "oid": "16398",
+            "integer_oid": 16398,
+            "rolname": "bb_init_03030303030303030303030303030303"
+          }
+        ],
+        "finding": "OID JSON string versus application integer; same numeric values. Qualification stopped at first strengthened assertion; kill cases NOT_RUN."
+      }
+    },
+    {
+      "source": "bb8be6d3e8633f564744286596501a1c2331ceb4",
+      "result": "Corrected before qualification",
+      "finding": "Distinct authenticated non-superuser initializer now discriminates superuser requirement; bounded PID collector wait removes scheduling-dependent false failure."
+    }
+  ],
+  "review": {
+    "kind": "Independent read-only AI source/fixture review",
+    "scope": "Complete reserve/manager/custody/credential/pristine/native boundaries and fixtures, Process/proxy/build/launch/audit; no independent Tux execution.",
+    "outcome": "No product source counterexample found. Recorded fixture discrimination/type/scheduling findings corrected and final cases executed.",
+    "recorded_evidence": {
+      "status": "PASS",
+      "verified_raw_files": 53,
+      "verified_source_files": 2931,
+      "git_archives": 4,
+      "scope": "Exact archive members/file hashes, regenerated Mac Git archives and all source hashes, case arrays, artifact/build/check/input and lifecycle mappings. No material discrepancy; driver-before-native join wording corrected.",
+      "limitations": "No independent Tux execution, ELF/host-inventory inspection, retained dump/filesystem-input inspection or verification of referenced Mac terminal sessions."
+    }
+  },
+  "local_checks": {
+    "initial_gate_red": "45862: second provisioning was incorrectly accepted by the deliberate always-allow baseline.",
+    "initial_gate_green": "4428 and97305:7 initialization custody tests PASS.",
+    "static": "Scoped parent/example Clippy and cargo fmt passed before final candidate; native parent/worker checks recorded per revision."
+  },
+  "lifecycle": {
+    "status": "All four owned labs stopped-retained, no OOM, unrelated workloads preserved; no blanket cleanup.",
+    "retired_networks": {
+      "previous-network-retirement.json": [
+        {
+          "root": "initialization-custody-3efde78",
+          "network": "2b1939cf10f83a8d09526f33f2c7e6d4f032047cd4687c15a33363c3f4529b9a",
+          "owner": "4d62aca117e9752fbcc2eaca1e11e76b",
+          "status": "removed",
+          "containers": "retained-stopped",
+          "data": "retained",
+          "observed_at": "2026-09-19T07:05:19.203391+00:00"
+        }
+      ],
+      "baseline-network-retirement.json": [
+        {
+          "root": "database-reservation-cfadb48",
+          "network": "6bb6c7fe42c3a26ac0ac7d22f6462b5a25fd491b1054927caf03f1ed0c64477f",
+          "owner": "c632b7616051887f945c9e8bb240eb2c",
+          "status": "removed",
+          "containers": "retained-stopped",
+          "data": "retained",
+          "observed_at": "2026-09-19T07:14:23.875429+00:00"
+        }
+      ],
+      "first-network-retirement.json": [
+        {
+          "root": "database-reservation-7139911",
+          "network": "a13b5b499373833b0b04838662579fd23399579271f3413447a693f541e1d7b6",
+          "owner": "214ab6b93f056c5fa76b24d64d787125",
+          "status": "removed",
+          "containers": "retained-stopped",
+          "data": "retained",
+          "observed_at": "2026-09-19T07:20:30.007333+00:00"
+        }
+      ],
+      "fixture-failure-network-retirement.json": [
+        {
+          "root": "database-reservation-543fafd",
+          "network": "9cb47d95fb181f6391b99e00ac48f4d880309fad39e810f1449fe78a029bd895",
+          "owner": "e529208194b5456ee90dcfc433ccab07",
+          "status": "removed",
+          "containers": "retained-stopped",
+          "data": "retained",
+          "observed_at": "2026-09-19T07:25:10.086903+00:00"
+        }
+      ]
+    },
+    "latest_resources": {
+      "source": "bb8be6d3e8633f564744286596501a1c2331ceb4",
+      "tree": "dfbb56e7731a9075cd7eb12dab31bdb8c995a991",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/database-reservation-bb8be6d",
+      "owner": "1656dcad7189d17f2c9ede14964348fb",
+      "container": "bigbrotr-implementation-database-reservation-bb8be6d",
+      "postgres": "bigbrotr-implementation-database-reservation-bb8be6d-pg",
+      "network": "bigbrotr-implementation-database-reservation-bb8be6d",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "state": "stopped-retained",
+      "source_files": 733,
+      "started_at": "2026-09-19T07:25:17.430476+00:00",
+      "network_id": "a498d0455f9cf71caa3b478cf7688f9f28c21f02203dad86ef758746fa26c57d",
+      "postgres_id": "af9d65fced82f856b6a5e96688498bc33d97a8a9183fdad5a8e550cd77010335",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "820c89b26b053bcc9e1ee104c9086cda5156ab087cb617f1839ebaebd239ab93",
+      "completed_at": "2026-09-19T07:27:56.333010+00:00"
+    }
+  },
+  "raw_evidence": {
+    "baseline": {
+      "local_root": ".research/implementation/archive-worker/database-reservation/baseline",
+      "identity": {
+        "tar_bytes": 143360,
+        "tar_sha256": "a9499675c4161e0539c8d7c79348dadcf60a34227fec73dd551b98d174477f60",
+        "files": {
+          "resources.json": {
+            "bytes": 1229,
+            "sha256": "f04998b01986950abb73ad010bdfa94fa71127612674135d291b4e4921c73739"
+          },
+          "audit.json": {
+            "bytes": 1860,
+            "sha256": "b78b95a07953e59097b009539ea0e699bd112df5790792b93e428d70724f4525"
+          },
+          "container.log": {
+            "bytes": 242,
+            "sha256": "101234eff74f28256fb893c8bc02e4ef910dec6ae321b8e2b0737777cd896c72"
+          },
+          "out/build/source-manifest.json": {
+            "bytes": 89601,
+            "sha256": "e9b9d035460a1a85cbe6ec39520c825fdc11363037ae139526e724bdadfa74ef"
+          },
+          "out/native-tests/checks/clippy.log": {
+            "bytes": 394,
+            "sha256": "de4760368fdf45e577779596792aa636ebdc1121011f77c16c94e7c62a587af8"
+          },
+          "out/native-tests/checks/fixture.log": {
+            "bytes": 130,
+            "sha256": "68d387d2feffb555e517370e63460e6175c8e486e3c0de4c03a9353b46983cdc"
+          },
+          "out/native-tests/checks/parent-tests.log": {
+            "bytes": 4435,
+            "sha256": "3b33e98afadd7cc7d42839f0b8268ee61ccc66a5b65b5a6ab36cdbd9527ba86c"
+          },
+          "out/native-tests/checks/result.json": {
+            "bytes": 3816,
+            "sha256": "4e6577858dae87875b4a800ad65f110b8c7922aab805acc3a5eb41c985d06418"
+          },
+          "out/native-tests/ordered-build.log": {
+            "bytes": 626,
+            "sha256": "00c68eb84a601b9877472aa373888673cf5c7e5fc0c59df59f1b603231deae12"
+          },
+          "out/native-tests/ready.json": {
+            "bytes": 4911,
+            "sha256": "5e14fa2e68e0c9e30467a17aa4a05dd0f2ab99f324ea5582001ba98c8b21e14f"
+          },
+          "out/native-tests/result.json": {
+            "bytes": 2800,
+            "sha256": "e7fe03cee6556de98771dbc00f72734e4bf5a4eeaff866d4654f909f85a10ebb"
+          },
+          "out/native-tests/worker-identity.json": {
+            "bytes": 104,
+            "sha256": "38346992aac1ec0c1aa368d9f3e4bef3874b2669de3d399a1ed8304e68a78877"
+          },
+          "database-reservation.json": {
+            "bytes": 5574,
+            "sha256": "bad44f9bdb065a02edf85bb939002a1e8baa4778e98feab412c9673c29a7336f"
+          }
+        }
+      },
+      "audit": {
+        "status": "PASS",
+        "source": "cfadb48a7260e457228b4da96ddcc5b4e6c4dac7",
+        "tree": "b58124fec8a4b6328b06bff7cf5780d5b4527bfb",
+        "source_files": 732,
+        "source_archive_sha256": "0bdf3a02c73181125a6ec1b0779269d78a967bfd12811aa140bf8d9d81784d84",
+        "source_manifest_sha256": "e9b9d035460a1a85cbe6ec39520c825fdc11363037ae139526e724bdadfa74ef",
+        "artifacts": {
+          "main": {
+            "sha256": "20da6c46afb5d5f2dcd62555ee0674d5cf791778f41fda31116d02f53113b52f",
+            "bytes": 8224712,
+            "elf_machine": 62
+          },
+          "worker": {
+            "sha256": "baebeedbcf5871b7089109f4b39a29543e845bf9cbc09d92b97e11a82a4482bf",
+            "bytes": 12608608,
+            "elf_machine": 62
+          }
+        },
+        "qualification": {
+          "database-reservation": "FAIL"
+        },
+        "cases": {
+          "database-reservation": 1
+        },
+        "build_ready": true,
+        "terminal": {
+          "container_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-19T07:05:29.830547667Z",
+            "FinishedAt": "2026-09-19T07:07:05.91646252Z"
+          },
+          "postgres_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-19T07:05:27.776149089Z",
+            "FinishedAt": "2026-09-19T07:07:06.62838694Z"
+          }
+        },
+        "owned_containers": [
+          "305fce3643237acf7c706a3516bd6b4bfdf93ea2d868bb82e9caadfbdfc2075e",
+          "737830f1328416d08b78cb5d2534dc2b7b261a7bf669ecb825b86b12847faff1"
+        ],
+        "existing_containers_unchanged": 302,
+        "unrelated_containers_unchanged": 20,
+        "unrelated_running": 8,
+        "bigbrotr_running": 0,
+        "observed_at": "2026-09-19T07:07:07.053930+00:00"
+      }
+    },
+    "first": {
+      "local_root": ".research/implementation/archive-worker/database-reservation/first",
+      "identity": {
+        "tar_bytes": 174080,
+        "tar_sha256": "782b4e7cbc7b0db3cc3751229ae2c0464e6065d08d2cad2ee3ab11b19d7dbee2",
+        "files": {
+          "resources.json": {
+            "bytes": 1229,
+            "sha256": "5686c747593939c73e05809380c44696a359a49f494b42a792fd0a3da19209cc"
+          },
+          "audit.json": {
+            "bytes": 1863,
+            "sha256": "ffa28445765bfaffbbd44939332a88d8d875676730fc10efd890cb0b6702d004"
+          },
+          "container.log": {
+            "bytes": 242,
+            "sha256": "d4fcbcc4dbf0779f4ac51853ea4ce8b24abd132b6328ac3844ce65d23a194925"
+          },
+          "out/build/source-manifest.json": {
+            "bytes": 89718,
+            "sha256": "430aff3f5f06c30f577d49f0fae822f18124ef9223b839ed83bedf68d31e6554"
+          },
+          "out/native-tests/checks/clippy.log": {
+            "bytes": 394,
+            "sha256": "db933e50ec15d68bc6bba7d4c6922a9430acf2fd33d495c08e5a026dd177400c"
+          },
+          "out/native-tests/checks/fixture.log": {
+            "bytes": 130,
+            "sha256": "a4378be68bc6286132921bf1fbcc6fcc741549c4bd5a369a79c944e088f3283b"
+          },
+          "out/native-tests/checks/parent-tests.log": {
+            "bytes": 4435,
+            "sha256": "6bf2eb1436b567e4039c7f101c541cac46d0c0fafc1cb8184a042319c1be8906"
+          },
+          "out/native-tests/checks/result.json": {
+            "bytes": 3817,
+            "sha256": "a1b549953d2079118e42c38e24d32f92969567e5bf5378af10a340f722a16276"
+          },
+          "out/native-tests/ordered-build.log": {
+            "bytes": 626,
+            "sha256": "7df2590d1c2dcba922e3071daa8d0ce71a6365e4e047cbd92fe78fe120c431fa"
+          },
+          "out/native-tests/ready.json": {
+            "bytes": 4911,
+            "sha256": "900b4269e3464aa4dd45c742cff59266f6ed1b92bef7903e4fc5d52d1b251655"
+          },
+          "out/native-tests/result.json": {
+            "bytes": 2801,
+            "sha256": "bcd4e1d3193472fc437d5af5c960ad8035d606ad7a65d3d9414ae56e488c6bfd"
+          },
+          "out/native-tests/worker-identity.json": {
+            "bytes": 104,
+            "sha256": "c76d6822c6cff10729edc0d68f41196558b6cdedee0779cbf55ce624e1e80878"
+          },
+          "database-reservation.json": {
+            "bytes": 30795,
+            "sha256": "27f1ebd5b243190a60a7d371dc9a92121bba66cf9934a312151ad45990855e59"
+          }
+        }
+      },
+      "audit": {
+        "status": "PASS",
+        "source": "71399117eec55a3abae671f131d8fed43dace887",
+        "tree": "f2636c49685592f484b72d47afb32a1b6c775be9",
+        "source_files": 733,
+        "source_archive_sha256": "31dd454bd842d4d62c0da6c37bd90edd09e6add4149a26bd924ef338606d54a6",
+        "source_manifest_sha256": "430aff3f5f06c30f577d49f0fae822f18124ef9223b839ed83bedf68d31e6554",
+        "artifacts": {
+          "main": {
+            "sha256": "db6bf8364e66c8191baa81cf8c8b2f3cb73cb08e81d450ddea0c7a3b6a92ea62",
+            "bytes": 8224752,
+            "elf_machine": 62
+          },
+          "worker": {
+            "sha256": "c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227",
+            "bytes": 12608608,
+            "elf_machine": 62
+          }
+        },
+        "qualification": {
+          "database-reservation": "PASS"
+        },
+        "cases": {
+          "database-reservation": 24
+        },
+        "build_ready": true,
+        "terminal": {
+          "container_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-19T07:14:34.072078211Z",
+            "FinishedAt": "2026-09-19T07:16:39.168622181Z"
+          },
+          "postgres_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-19T07:14:32.175516947Z",
+            "FinishedAt": "2026-09-19T07:16:42.444754212Z"
+          }
+        },
+        "owned_containers": [
+          "578812760aaf1f4c7dab54a24b0431cde9248fe1b08ea89a5a6ed9c1e4e4303a",
+          "130ab655251efc0d616844c685a50c2c914e9077efef04411aa7ea22bd2d60c3"
+        ],
+        "existing_containers_unchanged": 304,
+        "unrelated_containers_unchanged": 20,
+        "unrelated_running": 8,
+        "bigbrotr_running": 0,
+        "observed_at": "2026-09-19T07:16:42.893439+00:00"
+      }
+    },
+    "fixture-failure": {
+      "local_root": ".research/implementation/archive-worker/database-reservation/fixture-failure",
+      "identity": {
+        "tar_bytes": 153600,
+        "tar_sha256": "3288c2548998dc9b0f0e11908d95a711e109de200e8dd3176b150a2392bcc875",
+        "files": {
+          "resources.json": {
+            "bytes": 1229,
+            "sha256": "a0ebcfb7f4c0aeabe4670eb4fa77792a8703cfbc672247432ddbe7f8d1d23a06"
+          },
+          "audit.json": {
+            "bytes": 1862,
+            "sha256": "21732e84a1cbc10a2199f3ee56e89b62e50af6955c06c421be1846469499c50a"
+          },
+          "container.log": {
+            "bytes": 242,
+            "sha256": "9026c8a1d37d187fe26ecfe7f4484e41e3ac483b0a7a6eee0a064e46d5a35429"
+          },
+          "out/build/source-manifest.json": {
+            "bytes": 89718,
+            "sha256": "bfa4989fbd2f2cfa74e0ca88b656870f8776a9c2dc0dd21b72cbcef1cba6ceb6"
+          },
+          "out/native-tests/checks/clippy.log": {
+            "bytes": 394,
+            "sha256": "a6fc3d15b95fad2f34557482c1471949a4fc9de49982e2be9cb6b51221415e01"
+          },
+          "out/native-tests/checks/fixture.log": {
+            "bytes": 130,
+            "sha256": "f1b80cda3632497308f6062cb3486ec47601b663adc5a1f164946d3d2f1ddd6e"
+          },
+          "out/native-tests/checks/parent-tests.log": {
+            "bytes": 4435,
+            "sha256": "0b6ae5aa35804d8877dbf1a871bca309f62a93932ab8d31c4cac8ffbd7decc74"
+          },
+          "out/native-tests/checks/result.json": {
+            "bytes": 3817,
+            "sha256": "f80433116f3143bf42367011c7e44940fed45593488e14c049dc83497bb648f0"
+          },
+          "out/native-tests/ordered-build.log": {
+            "bytes": 626,
+            "sha256": "e893e7463c500fa35e49b99f654dd872bfa5fc6ccfab25fda37d58bab8bdd76f"
+          },
+          "out/native-tests/ready.json": {
+            "bytes": 4911,
+            "sha256": "73819f47376545a745ca05a10054a396257ecf23a1657a577bbcb5df77329505"
+          },
+          "out/native-tests/result.json": {
+            "bytes": 2801,
+            "sha256": "5176c4ad9cfa18c5d97c80993de45764cc6d6ab02a0cd546f12e7dea5f10a0da"
+          },
+          "out/native-tests/worker-identity.json": {
+            "bytes": 104,
+            "sha256": "c76d6822c6cff10729edc0d68f41196558b6cdedee0779cbf55ce624e1e80878"
+          },
+          "database-reservation.json": {
+            "bytes": 6330,
+            "sha256": "18114bf5f0f9b0525776726bbee9f800810178478062f21c85044624e84af2cf"
+          },
+          "fixture-diagnosis.json": {
+            "bytes": 609,
+            "sha256": "546c3b500a1ce36650fc6c74621798348082b812cde57f533e416bea678abdd5"
+          }
+        }
+      },
+      "audit": {
+        "status": "PASS",
+        "source": "543fafd5395be58b74bc3f96837b38503f846488",
+        "tree": "dbc61deeca5e58f88134babb0a7a1b294f3cc02c",
+        "source_files": 733,
+        "source_archive_sha256": "a28de6d9400a58b9e3ca300ecc31f9333fc731e1dd947e9d6bd62e643da2677f",
+        "source_manifest_sha256": "bfa4989fbd2f2cfa74e0ca88b656870f8776a9c2dc0dd21b72cbcef1cba6ceb6",
+        "artifacts": {
+          "main": {
+            "sha256": "2922256722b62dce5ca8640631b4942129ff3c2637e227285e612d8a219ffec5",
+            "bytes": 8224752,
+            "elf_machine": 62
+          },
+          "worker": {
+            "sha256": "c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227",
+            "bytes": 12608608,
+            "elf_machine": 62
+          }
+        },
+        "qualification": {
+          "database-reservation": "FAIL"
+        },
+        "cases": {
+          "database-reservation": 1
+        },
+        "build_ready": true,
+        "terminal": {
+          "container_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-19T07:20:39.743225883Z",
+            "FinishedAt": "2026-09-19T07:23:48.012814707Z"
+          },
+          "postgres_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-19T07:20:37.716363953Z",
+            "FinishedAt": "2026-09-19T07:23:48.725653288Z"
+          }
+        },
+        "owned_containers": [
+          "486646af4b23927fdea6780429d9acca275aab41db01d09c795a2e0bf0e04ccb",
+          "cb51692b50e39e755a7c7d99c4f97dd3e6eb1d0f317c8695cc3f8b5e6158afbc"
+        ],
+        "existing_containers_unchanged": 306,
+        "unrelated_containers_unchanged": 20,
+        "unrelated_running": 8,
+        "bigbrotr_running": 0,
+        "observed_at": "2026-09-19T07:23:49.192016+00:00"
+      }
+    },
+    "qualified": {
+      "local_root": ".research/implementation/archive-worker/database-reservation/qualified",
+      "identity": {
+        "tar_bytes": 174080,
+        "tar_sha256": "d8aadff775147bd4b8ec13af3eb3697fcab652e15ff94a75ce836f1591180352",
+        "files": {
+          "resources.json": {
+            "bytes": 1229,
+            "sha256": "b7274730223dcda5fdf06308c4f0d04172a4088a375916345c4370bdb1bf168f"
+          },
+          "audit.json": {
+            "bytes": 1863,
+            "sha256": "b95a41f5870c3c417cec26b84871c2deea71fd74b3f439d260ebd53e7847d3cc"
+          },
+          "container.log": {
+            "bytes": 242,
+            "sha256": "c4d6f30cb9329f1de84344f4c12f4c9c11de4bd8f10cdf7f03cd1375bf38a669"
+          },
+          "out/build/source-manifest.json": {
+            "bytes": 89718,
+            "sha256": "4a70b79aec47fc59c567a1e6fd2316e0576d702ffef98930a23a5d2e8ec02096"
+          },
+          "out/native-tests/checks/clippy.log": {
+            "bytes": 394,
+            "sha256": "db933e50ec15d68bc6bba7d4c6922a9430acf2fd33d495c08e5a026dd177400c"
+          },
+          "out/native-tests/checks/fixture.log": {
+            "bytes": 130,
+            "sha256": "eebb6e677eb4b05d8c37c976d9164e12f3f34e7b5c1db64b967fa8c9cb4b0422"
+          },
+          "out/native-tests/checks/parent-tests.log": {
+            "bytes": 4435,
+            "sha256": "866f343e51113e54c348fbaada0a4a1789aef10b0d2a3b68d7d7edd9223eeada"
+          },
+          "out/native-tests/checks/result.json": {
+            "bytes": 3817,
+            "sha256": "672e034512862c7d9572419a0acc5760396052a7484e21799e474cb09c7120fa"
+          },
+          "out/native-tests/ordered-build.log": {
+            "bytes": 626,
+            "sha256": "38323140dd7702b0e108935873aeb1b7e24f0621881226b9aa72f6b64dbf2ba0"
+          },
+          "out/native-tests/ready.json": {
+            "bytes": 4911,
+            "sha256": "90d55c4d29bc1b6bbe0627cbe71fdfc8f014f26cd751b4fdc9dd6280d5912205"
+          },
+          "out/native-tests/result.json": {
+            "bytes": 2800,
+            "sha256": "326c1305f1437526ee3b1358ceab0f3de1f7dcb1e6096a985ecda2c2c8482358"
+          },
+          "out/native-tests/worker-identity.json": {
+            "bytes": 104,
+            "sha256": "c76d6822c6cff10729edc0d68f41196558b6cdedee0779cbf55ce624e1e80878"
+          },
+          "database-reservation.json": {
+            "bytes": 38095,
+            "sha256": "2e1031a25b3c7e89856913836e50a8fe61ac98e3def81a8c1a28d5c6d5aeb981"
+          }
+        }
+      },
+      "audit": {
+        "status": "PASS",
+        "source": "bb8be6d3e8633f564744286596501a1c2331ceb4",
+        "tree": "dfbb56e7731a9075cd7eb12dab31bdb8c995a991",
+        "source_files": 733,
+        "source_archive_sha256": "c12fc65a79432b3c390c30514a87d7c780fde1c72b81dc0d54a4431f167a95b4",
+        "source_manifest_sha256": "4a70b79aec47fc59c567a1e6fd2316e0576d702ffef98930a23a5d2e8ec02096",
+        "artifacts": {
+          "main": {
+            "sha256": "e6372d10b7feb1dae30d9ab99e6c05fdbaec8ed0d18d1ea0f6059083c824a037",
+            "bytes": 8224696,
+            "elf_machine": 62
+          },
+          "worker": {
+            "sha256": "c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227",
+            "bytes": 12608608,
+            "elf_machine": 62
+          }
+        },
+        "qualification": {
+          "database-reservation": "PASS"
+        },
+        "cases": {
+          "database-reservation": 29
+        },
+        "build_ready": true,
+        "terminal": {
+          "container_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-19T07:25:20.105120639Z",
+            "FinishedAt": "2026-09-19T07:27:52.247292664Z"
+          },
+          "postgres_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-19T07:25:18.131767819Z",
+            "FinishedAt": "2026-09-19T07:27:55.893041918Z"
+          }
+        },
+        "owned_containers": [
+          "820c89b26b053bcc9e1ee104c9086cda5156ab087cb617f1839ebaebd239ab93",
+          "af9d65fced82f856b6a5e96688498bc33d97a8a9183fdad5a8e550cd77010335"
+        ],
+        "existing_containers_unchanged": 308,
+        "unrelated_containers_unchanged": 20,
+        "unrelated_running": 8,
+        "bigbrotr_running": 0,
+        "observed_at": "2026-09-19T07:27:56.333010+00:00"
+      }
+    }
+  },
+  "remaining": [
+    "Bounded reservation observer and exact role/OID recovery/retirement; fresh transport exclusion and actual backend resolution.",
+    "Graceful async cancellation of reservation operation was not exercised here; SIGKILL is process death, not graceful cancellation.",
+    "Full privileged initializer CLI, manager installation and fresh publication from one configured route; configured native mutual TLS.",
+    "Explicit recovery/abandonment for stranded pristine reservations, cluster-global role restore/mapping, cross-boot/power-loss/resource exhaustion.",
+    "No signed event workload, throughput/aged-state or capacity qualification in this slice; M1 and complete selected product remain open.",
+    "No hosted Actions success, Linux arm64 qualification or public release claim."
+  ]
+}

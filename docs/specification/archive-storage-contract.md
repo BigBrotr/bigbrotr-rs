@@ -275,8 +275,9 @@ and real native consumer now have [scoped qualification](../implementation/evide
 at `3efde78`: 22 actual parent/native/PG cases, unchanged full database/filesystem
 observations on refusals, real driver custody and a separately executed native
 holder regression. The raw reopened-descriptor case demonstrates the stated
-trusted-parent boundary. Database reservation, generated bootstrap credentials,
-ambiguous initialization recovery and the complete installed CLI remain required.
+trusted-parent boundary. The database reservation and generated bootstrap boundary
+is specified below; ambiguous initialization recovery and the complete installed
+CLI remain required.
 
 The durable database reservation is a dedicated cluster role named
 `bb_init_database_<database-oid>`, created by the explicit privileged initializer
@@ -322,6 +323,16 @@ an explicit recovery mapping including cluster-global roles; a database-only dum
 does not carry this reservation. A retained collision fails closed. The complete
 initializer/recovery command still owns backend exclusion, retirement, installation
 and final manager inspection; provisioning alone grants none of those outcomes.
+The atomic reservation and sole fresh credential now have
+[native qualification](../implementation/evidence/p02-database-reservation-native-20260919.json)
+at `bb8be6d`: 29 actual cases, exact returned role identities, effective privilege
+refusals, native scientific initialization with the generated password, competing
+roots/nonces, both lost-COMMIT outcomes and coordinator SIGKILL with late commit or
+rollback. The killed coordinator's local custody can be reacquired while its
+remote transaction remains open; fresh serialized SQL establishes the eventual
+outcome. This is no authority to reprovision or relaunch. A product reservation
+observer, exact retirement, graceful cancellation and full initializer/recovery
+consumer remain required; fixture SQL observations do not implement those services.
 
 The application-owned `bigbrotr_archive` schema contains immutable installation
 and attempt records plus one mutable owner row. Every native metadata mutation
