@@ -20,20 +20,67 @@ and rejects other roles. Root remains sole writer/integrator.
 
 ## Actual Git and current review
 
-Mac main and private origin/main were freshly verified at
-16231c7bebf112b826fda10feebce006b920a8b5 with a clean worktree. Product952fd9a
-and harness-onlyf822978 qualification/evidence are committed and pushed. No
-contributor edits or merge/rebase. Root now implements retained complete input
-linkage before issuance; native experiments remain stopped as last recorded below.
-No product completion claim.
+Mac main is candidate d44212572d4a8d0510d737caf151b0d4af7456a2, one commit above
+last verified private origin/main16231c7. Native qualification and resource audit
+are terminal PASS within scope; evidence is ready for a documentation-only commit
+and fast-forward private push after fresh fetch (private origin/main16231c7 unchanged). Root owns only checkpoint,
+inventory, P02 task introduction and the new evidence report; no contributor work
+or merge/rebase. Candidate product/source tree is unchanged after qualification.
 
-Independent read-only source review found two concrete gaps before candidate:
-canonical paths alone miss bind aliases; the explicit complete-first-half retry
-must sync its directory before writing the reverse binding. Both are corrected in
-952fd9a. Reviewer reread full placement/coordinator and relevant config/contracts/
-fixtures, finding no further concrete defect. Independent offline audit matched all58raw files/archive, all756source hashes,
-harnessf822978 and16cases/13terminal process records. No discrepancy found.
-No reviewer Tux/test rerun or independent executable inspection.
+Independent read-only AI source review caught full scientific identity and future
+mTLS descriptor-width gaps in receipt preflight; both were corrected before the
+candidate. Frozen local input bytes/digests were independently reconstructed. The
+independent offline evidence audit matched all57 raw files/tar,761 source hashes,
+22 input files/restart expectations and six full scientific readbacks, without
+discrepancy. No reviewer Tux/test rerun or executable inspection. The fixture
+label conflict means ObservationUnknown; independent final catalog rows establish
+the actual identity conflicts, not a new typed product error.
+
+## Retained complete inputs qualified
+
+[Native evidence](evidence/p02-retained-inputs-native-20260919.json) at d442125:
+shared ordered build and scoped Clippy PASS;47 native Archive tests,8 binary and11
+CLI tests PASS;1 older custody-holder fixture ignored, not counted as PASS.
+Mac44 Archive and5 model batch tests plus scoped Clippy PASS. Six actual installed
+signed publication/fencing schedules and six new fresh-process receipt inspections
+PASS. Each reclaims Control, reads original attempts/headers and inspects actual
+SELECT-only native receipts while the owned Rocks root is unreadable. All22 exact
+266-byte input files and final receipt statuses match the independent corpus.
+Same digest under a different attempt remains a conflict, never attributed to the
+original. Original full scientific/signature/ACL/fence/file oracles still apply;
+all41 Rocks rows remain unchanged per case. No source protection or dispatch claim.
+
+New immutable inputs bind original initialization/request/complete pending headers
+before issuance. Reopen reconstructs receipt metadata without fact bodies. Exact
+replay rejects regrouping even under an equal semantic digest. Maximum1024headers,
+63692file bytes;1MiB application data+1item stays owned with a clone of the original
+coordinator lock. Complete receipt-wire preflight preserves its separate32KiB cap,
+full scientific identity and worst future mTLS descriptor widths. Dependencies,
+applied SQL and old journal/pending/native wire formats are unchanged.
+
+Native matrix96371, audit33844 and collection93060 terminal0. Audit observed
+2026-09-19T12:29:11.482626+00:00: no owned SQL backends before shutdown, both owned
+containers stopped-retained/noOOM,336 preexisting containers unchanged,8 unrelated
+running and0 BigBrotr. Root /home/tux/bigbrotr-implementation-20260917/runs/retained-inputs-d442125;
+owner6890ce8bd3ed089feacc564f0605d17a. Inventory retained_inputs owns exact IDs/images/
+limits and full audit. Runner exit143, PG exit0, owned internal network empty-retained.
+Latest retained build cache is that root/out/build; never restart the finished lab.
+
+Raw .research/implementation/archive-worker/retained-inputs/qualified holds57files;
+tar dca60bb305073119c20f40615fec88b03e147583e461431c171b4cfb30fa1c55. Sibling
+manifest records all files. Source tree79a56e4553ade0e04141eaa206c0d5a55eb369bb;
+archive6126714856f2d2846181031bdf6a46815e1c48c31fe8413eb44c00afd5924334;
+manifest2b0203965a51adc4b637b0c2d9262b6d499f58c1e20249d870283b94b5476198.
+Main d231cfee2ace307dc7ba63c996a8cb4803a7fc20478fa3c45f5257a269984b61,8891424bytes.
+All22 local input bytes and fresh-process outputs rechecked independently on Mac.
+Only the verified empty stopped coordinator952fd9a networke2ebd20617dd... was removed
+2026-09-19T12:21:09.029610+00:00 to free address pools; containers/data preserved.
+
+Development failures: expected missingAPI compile failures; one preflight test used
+an invalid8000-byte root before correction to valid4000bytes/420ranges; Clippy chunk
+lint and fixture function shadowing corrected. A discriminating scientific identity
+test failed before restoring the comparison. Wrong model test target fingerprints
+was nonexistent; correct archive_batch passed5. No native case failed in this slice.
 
 ## Coordinator state qualified
 
@@ -77,9 +124,9 @@ collection initially failed on Python3.9 extractall(filter=...) before extractio
 validated regular-file extraction then independently verified all58 hashes and
 all756 source hashes against Mac Git archive. No native product case failed.
 
-## Owned resources and evidence
+## Prior coordinator resources and evidence
 
-No active experiment. Native matrix65396, resource audit4488 and corrected local
+That experiment is terminal; the current input-link lab is recorded below. Native matrix65396, resource audit4488 and corrected local
 collection exit0. Audit observed2026-09-19T11:49:34.956073+00:00: runner/PG stopped-
 retained, noOOM,334preexisting containers/mounts/networks/lifecycles unchanged,
 8unrelated running,0BigBrotr. ZeroControl backends observed before shutdown.
@@ -87,7 +134,7 @@ Root /home/tux/bigbrotr-implementation-20260917/runs/coordinator-state-952fd9a;
 owner49857907ed646833ac391f595692faab.
 Runner2c51e64fc6dbd6bfa70dc92e6b5a7bcbd937c1467a3d599ad379faccfd104f7c exit143.
 PG13d3d5fd6b63505c63e21d5014627ee4e70ef4ac623e747288999fcd4ca88a61 exit0.
-Networke2ebd20617dde954c14d525f70b8509a4d078d41fe922945ecf2fa6789c44d74 empty-retained.
+Networke2ebd20617dde954c14d525f70b8509a4d078d41fe922945ecf2fa6789c44d74 retired as recorded above.
 Runner2CPU/6GiB/512PIDs;PG1CPU/1GiB/128PIDs;internal/nohostports.
 Main0b4c3cf805ee8b54ce27c9b93d0121db2a6880c6e91987ba4203f5de2cf30a15,8888232bytes.
 Source treeb0d43b4d5a3639c21b1e684c37dc6d5d4f0a3c51.
@@ -181,52 +228,22 @@ External feedback reread previously; it records the earlier scoped closures too.
 
 ## Next bounded action
 
-Root dirty work above verified16231c7 implements retained complete input linkage
-and its signed publication fixture consumer. New inputs.rs writes bounded immutable
-<attempt>.inputs before Control issuance, binds original initialization/request and
-complete ordered pending headers, and keeps1MiB grant plus original lock clone.
-Read reconstructs receipt expectation without fact bodies; exact replay compares
-original grouping and full digest. Shared actual receipt-wire preflight includes
-route/credential escaping and worst later mTLS descriptor widths. AppliedSQL,
-pending/coordinator/initialization formats and dependencies are unchanged.
-
-44 Mac Archive tests PASS, including frozen independent266-byte format, every
-single-byte corruption/truncation, changed grouping with equal semantic digest,
-1024/1025headers, cancellation/shortgrants/privatefiles/partialpreservation. Scoped
-Clippy library/publication fixture PASS. Expected missingAPI failures observed first.
-A preflight fixture initially used invalid8000byte catalog root; corrected to valid
-4000bytes/420ranges to exercise actual wrapper expansion. InitialClippy exposed
-constantchunks lint and fixture function shadowing; corrected before candidate.
-Independent source reviewer found dropped scientific identity discrimination in
-shared preflight and FD decimal growth. New negative control reproduced the former;
-both corrections reread. Reviewer independently reconstructed frozenbytes/digests;
-no further concrete persistence/permit/custody defect. No reviewer tests/Tux run.
-
-Signed fixture retains/preflights before ordinary and successor issuance, reopens
-files for real native receipt inspection, and wraps actual Control/manager drivers
-with coordinator custody. New fresh-process fixture obtains original requests from
-fenced Control, reads headers and observes native receipts with no Rocks open.
-Harness independently reconstructs all input bytes and denies Rocks directory read
-while running that restart consumer. Native practical work is NOT_RUN yet; next:
-finish full diff/contract review, commit coherent unpublished candidate, transfer
-exact Git revision into a newly inventoried Tux lab using retained cache only,
-run shared ordered build and six installed signed schedules plus fresh-process
-receipt inspection, audit/stop owned resources and record evidence before push.
-
-No active experiment or changed remote resource at this boundary. Prior stopped
-lab inventory/evidence above remains retained. Root sole writer/integrator; no
-contributor edits or merge/rebase. Worktree paths visible in git status own this
-candidate; no unpublished commit yet.
+Finish documentation/evidence diff checks and private fast-forward push of d442125
+plus its evidence commit; independent evidence audit is now complete.
+Then connect installed recovery/dispatch. First establish the initial protocol-history
+boundary under the actual Control fence before any missing-journal interpretation.
+Read owning Control issuance/migration and local custody contracts before selecting
+that persistent boundary. Existing pre-protocol histories must refuse adoption.
 
 Still connect separate SELECT-only reader configuration, actual Ingest-owner
 handoff, shared Control/catalog/native budgets and owned blocking joins while
-Control heartbeats continue. Before interpreting a missing journal, establish the
-initial protocol-history boundary under the actual Control fence or separately
-qualified external exclusion; the new lock cannot retroactively exclude older
-coordinators. Unissued input-file enumeration/recovery remains separate. Initial
-Ingest registration/admission still binds original Control identity/epoch1; it is
-not a successor/restart protocol. Do not open a second writable Ingest store.
+Control heartbeats continue. Unissued input-file enumeration/recovery remains
+separate. Initial Ingest registration/admission still binds original Control
+identity/epoch1; it is not a successor/restart protocol. Do not open a second
+writable Ingest store. Catalog identity must be checked before absent-journal
+inferences, including a different data root under equal dataset/catalog IDs.
 
-Source policy/protection, cross-boot/restore/resource/power-failure, ordinary Compose/
-release and later product acceptance remain required. Full product remains
-authorized and unfinished; do not stop at this qualified component boundary.
+Source policy/protection, input-write/issuance crash boundaries, ENOSPC, cross-boot/
+restore/power-failure, ordinary Compose/release and later product acceptance remain
+required. Full product remains authorized and unfinished; do not stop at this
+qualified component boundary.

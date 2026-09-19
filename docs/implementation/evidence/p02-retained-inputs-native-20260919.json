@@ -1,0 +1,302 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task_ids": [
+    "P01-T05",
+    "P02-T03",
+    "P02-T04"
+  ],
+  "status": "PASS-scoped",
+  "observed_at": "2026-09-19T12:29:11.482626+00:00",
+  "source_revision": "d44212572d4a8d0510d737caf151b0d4af7456a2",
+  "source_tree": "79a56e4553ade0e04141eaa206c0d5a55eb369bb",
+  "scope": "Complete pending headers durably retained before Control issuance and fresh native receipt reconstruction from Control plus headers, without opening Rocks. Actual installed signed publication fixture, not installed Archive service dispatch or protection.",
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "runner_limits": {
+      "cpus": 2,
+      "memory_bytes": 6442450944,
+      "pids": 512
+    },
+    "postgres_limits": {
+      "cpus": 1,
+      "memory_bytes": 1073741824,
+      "pids": 128
+    },
+    "placement": "same Linux boot, ext4 bind mounts, internal network, no published ports",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8"
+  },
+  "artifacts": {
+    "main": {
+      "sha256": "d231cfee2ace307dc7ba63c996a8cb4803a7fc20478fa3c45f5257a269984b61",
+      "bytes": 8891424,
+      "elf_machine": 62
+    },
+    "worker": {
+      "sha256": "89e46e831e8e12f7e60b249493a619af4cd3bca7d984ec7a06574ede3d6f0b9f",
+      "bytes": 12608608,
+      "elf_machine": 62
+    },
+    "publisher": {
+      "sha256": "57176ca39456c8daaf421108650ca2bc5ea0374833387fcf8167a7717f20a299",
+      "bytes": 18539744,
+      "elf_machine": 62
+    }
+  },
+  "source_identity": {
+    "archive_sha256": "6126714856f2d2846181031bdf6a46815e1c48c31fe8413eb44c00afd5924334",
+    "manifest_sha256": "2b0203965a51adc4b637b0c2d9262b6d499f58c1e20249d870283b94b5476198",
+    "files_independently_matched_to_mac_git_archive": 761,
+    "inputs_sha256": {
+      "Cargo.lock": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215",
+      "contracts/protocol/nip01-event.json": "b830d5ab8651f5a763ebcffdc0eb1737ba70f4602c93fc714c892865ffca2db8",
+      "contracts/protocol/versions.json": "37c76706c5a2aa4fc72a40aeed908f104620eafcee1118b7cee8baf133546c95",
+      "contracts/release/dependencies.json": "4f73cd0a81916b7d203556ff9ad1d8efd97dfe95b2b2305c35468747e8669132",
+      "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167"
+    }
+  },
+  "executed": {
+    "build": "PASS shared ordered tools.build builder, exact clean source; native checks through tools.ci.execute",
+    "native_rust": {
+      "archive_passed": 47,
+      "ignored": 1,
+      "binary_passed": 8,
+      "cli_passed": 11,
+      "ignored_scope": "older native custody-holder dedicated fixture, not rerun or counted as PASS"
+    },
+    "clippy": "PASS scoped library, binary and actual publication/read/initialization fixtures",
+    "mac": {
+      "archive_passed": 44,
+      "model_archive_batch_passed": 5,
+      "clippy": "PASS library/publication fixture"
+    },
+    "cases": [
+      {
+        "mode": "normal",
+        "status": "PASS",
+        "physical_files": 8,
+        "catalog_files": 8,
+        "input_files": 4,
+        "input_restart_exit": 0,
+        "receipt_statuses": [
+          "conflict",
+          "present",
+          "present",
+          "conflict"
+        ],
+        "active_writers": 0
+      },
+      {
+        "mode": "before",
+        "status": "PASS",
+        "physical_files": 8,
+        "catalog_files": 2,
+        "input_files": 3,
+        "input_restart_exit": 0,
+        "receipt_statuses": [
+          "absent",
+          "present",
+          "absent"
+        ],
+        "active_writers": 0
+      },
+      {
+        "mode": "after",
+        "status": "PASS",
+        "physical_files": 8,
+        "catalog_files": 8,
+        "input_files": 3,
+        "input_restart_exit": 0,
+        "receipt_statuses": [
+          "conflict",
+          "present",
+          "present"
+        ],
+        "active_writers": 0
+      },
+      {
+        "mode": "owner_first",
+        "status": "PASS",
+        "physical_files": 14,
+        "catalog_files": 8,
+        "input_files": 4,
+        "input_restart_exit": 0,
+        "receipt_statuses": [
+          "conflict",
+          "present",
+          "conflict",
+          "present"
+        ],
+        "active_writers": 0
+      },
+      {
+        "mode": "held_commit",
+        "status": "PASS",
+        "physical_files": 8,
+        "catalog_files": 8,
+        "input_files": 4,
+        "input_restart_exit": 0,
+        "receipt_statuses": [
+          "conflict",
+          "present",
+          "present",
+          "conflict"
+        ],
+        "active_writers": 0
+      },
+      {
+        "mode": "held_rollback",
+        "status": "PASS",
+        "physical_files": 14,
+        "catalog_files": 8,
+        "input_files": 4,
+        "input_restart_exit": 0,
+        "receipt_statuses": [
+          "conflict",
+          "present",
+          "conflict",
+          "present"
+        ],
+        "active_writers": 0
+      }
+    ],
+    "delegation_refusals": 2,
+    "retained_input_files": 22,
+    "input_files_bytes_each": 266,
+    "independent_full_byte_oracle": "All22 files match independent canonical corpus/request/header bytes and original initialization hash. Native mode0600/single link; repeated after fresh process. Mac rechecked exact bytes, original tar modes and all22 restart records.",
+    "restart_discriminator": "Harness made only owned Rocks directory unreadable, verified unprivileged test -r failed, ran fresh reader process, restored mode in finally. New process claims Control, fetches original rows, reads headers and invokes actual SELECT-only native receipt reader. No fact body access.",
+    "preserved_oracles": "All original literal complete scientific rows and signed-event checks, dictionary closure/duplicate controls, catalog/file membership, privilege/positive fencing and unchanged41 Rocks rows per case still required.",
+    "receipt_status_scope": "Fixture conflict maps ReceiptError::ObservationUnknown, not a typed product Conflict. Independent final catalog rows establish the known same-digest/different-attempt conflicts in these cases."
+  },
+  "review": {
+    "mode": "integrating owner plus independent read-only AI source reviewer",
+    "corrected_findings": [
+      "Shared receipt preflight accidentally dropped full scientific identity comparison. Discriminating native_only_local negative control failed first; full comparison restored.",
+      "Future mTLS descriptor duplication can increase decimal width. Preflight now reserves maximum later descriptor parameter growth before exact32KiB JSON wrapper validation."
+    ],
+    "format": "Independent reviewer reconstructed frozen266-byte fixture and both CBOR digest domains.",
+    "limits": "No reviewer native test rerun or Tux executable inspection.",
+    "offline_evidence_audit": "Independent read-only AI review matched all57 files/tar, all761 Git/source hashes, harness/oracle hashes, all22 independently assembled266-byte input files,22 restart expectations and six full literal scientific readbacks. No discrepancy. Pending Rocks facts inaccessible to this process; scientific catalog storage remains accessible."
+  },
+  "failures_and_corrections": [
+    "Expected missing InputError/RetainedInputs/validate_receipt API compile failures before implementation.",
+    "Initial preflight test used invalid8000-byte catalog root and failed setup; changed to valid4000-byte root and420 ranges to exercise actual wrapper expansion.",
+    "Clippy constant-chunk lint and publication fixture function shadowing corrected before candidate.",
+    "Wrong local test target fingerprints did not exist; correct archive_batch target subsequently passed5 tests."
+  ],
+  "not_qualified": [
+    "Installed Archive service dispatch/recovery and Ingest-owner handoff",
+    "Unissued input enumeration, missing journal interpretation, or pre-protocol history adoption/exclusion",
+    "Source protection/reclamation or first full M1 read/export/restart journey",
+    "Crash at input write/fsync/Control issuance, ENOSPC, power-loss, cross-boot/restore/relocation",
+    "Aged mixed workloads, capacity, native arm64, ordinary Compose or release installation",
+    "Signed publication over TLS/mTLS"
+  ],
+  "resources": {
+    "source": "d44212572d4a8d0510d737caf151b0d4af7456a2",
+    "tree": "79a56e4553ade0e04141eaa206c0d5a55eb369bb",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/retained-inputs-d442125",
+    "owner": "6890ce8bd3ed089feacc564f0605d17a",
+    "container": "bigbrotr-implementation-retained-inputs-d442125",
+    "postgres": "bigbrotr-implementation-retained-inputs-d442125-pg",
+    "network": "bigbrotr-implementation-retained-inputs-d442125",
+    "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "state": "stopped-retained",
+    "source_files": 761,
+    "started_at": "2026-09-19T12:21:20.309624+00:00",
+    "network_id": "bef66c2ccbf5f475dd2f0f306b742e52b676dd408afbec7f353f2981aa25ef8c",
+    "postgres_id": "c4b7290a9c94e7064793995deb5f8c303c4ebc78eb47678780cb5b778b2bcddf",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "container_id": "6294111640fe930d5c01dc6559f20e4d95a25fbf91fab80e2d6b84c2b57d62a5",
+    "completed_at": "2026-09-19T12:29:11.482626+00:00"
+  },
+  "resource_audit": {
+    "status": "PASS",
+    "source": "d44212572d4a8d0510d737caf151b0d4af7456a2",
+    "tree": "79a56e4553ade0e04141eaa206c0d5a55eb369bb",
+    "source_files": 761,
+    "source_archive_sha256": "6126714856f2d2846181031bdf6a46815e1c48c31fe8413eb44c00afd5924334",
+    "source_manifest_sha256": "2b0203965a51adc4b637b0c2d9262b6d499f58c1e20249d870283b94b5476198",
+    "artifacts": {
+      "main": {
+        "sha256": "d231cfee2ace307dc7ba63c996a8cb4803a7fc20478fa3c45f5257a269984b61",
+        "bytes": 8891424,
+        "elf_machine": 62
+      },
+      "worker": {
+        "sha256": "89e46e831e8e12f7e60b249493a619af4cd3bca7d984ec7a06574ede3d6f0b9f",
+        "bytes": 12608608,
+        "elf_machine": 62
+      },
+      "publisher": {
+        "sha256": "57176ca39456c8daaf421108650ca2bc5ea0374833387fcf8167a7717f20a299",
+        "bytes": 18539744,
+        "elf_machine": 62
+      }
+    },
+    "qualification": {
+      "installed-signed-cases": "PASS"
+    },
+    "cases": {
+      "installed-signed-cases": 6
+    },
+    "build_ready": true,
+    "terminal": {
+      "container_id": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 143,
+        "Error": "",
+        "StartedAt": "2026-09-19T12:21:23.862072434Z",
+        "FinishedAt": "2026-09-19T12:29:08.053600065Z"
+      },
+      "postgres_id": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-09-19T12:21:21.945383709Z",
+        "FinishedAt": "2026-09-19T12:29:11.021814411Z"
+      }
+    },
+    "owned_containers": [
+      "6294111640fe930d5c01dc6559f20e4d95a25fbf91fab80e2d6b84c2b57d62a5",
+      "c4b7290a9c94e7064793995deb5f8c303c4ebc78eb47678780cb5b778b2bcddf"
+    ],
+    "existing_containers_unchanged": 336,
+    "unrelated_containers_unchanged": 20,
+    "unrelated_running": 8,
+    "bigbrotr_running": 0,
+    "observed_at": "2026-09-19T12:29:11.482626+00:00",
+    "harness": null,
+    "owned_sql_backends_before_shutdown": 0,
+    "build_checks_status": "PASS"
+  },
+  "raw": {
+    "root": ".research/implementation/archive-worker/retained-inputs/qualified",
+    "tar_bytes": 501760,
+    "tar_sha256": "dca60bb305073119c20f40615fec88b03e147583e461431c171b4cfb30fa1c55",
+    "manifest": ".research/implementation/archive-worker/retained-inputs/evidence-identity.json",
+    "files_verified": 57
+  },
+  "references": [
+    "docs/specification/archive-storage-contract.md#retained-complete-input-linkage",
+    "tests/fixtures/storage/archive-inputs-v1.json",
+    "apps/bigbrotr/examples/support/publication_inputs.rs",
+    "experiments/archive-engine/signed_publication_cases.py",
+    "experiments/archive-engine/signed_publication_oracle.py"
+  ]
+}

@@ -217,10 +217,13 @@ and keeps it through actual driver join. [Sixteen native CLI/Control cases](evid
 now pass at `952fd9a` with harness `f822978`, including physical bind aliases and actual
 SIGKILL/restart; 98 Rust tests pass and one holder fixture is explicitly ignored.
 This is a P02-T04/P01-T05 prerequisite, not step completion. Pre-protocol
-history adoption and actual recovery/dispatch remain required. The next implementation
-adds immutable complete input headers before issuance, exact grouping replay checks,
-and receipt reconstruction without facts, with a separate complete-wire preflight.
-Mac44 Archive tests/Clippy pass; signed native input/restart qualification is pending.
+history adoption and actual recovery/dispatch remain required. Immutable complete
+input headers now precede issuance, with exact grouping replay checks and receipt reconstruction without facts plus complete-wire preflight.
+[Native qualification](evidence/p02-retained-inputs-native-20260919.json) at `d442125`
+passes all six installed signed schedules and six fresh-process receipt inspections
+while Rocks is unreadable. All 22 input files match independently frozen bytes;
+47 native Archive tests, 8 binary tests, 11 CLI tests and scoped Clippy pass
+(one older holder fixture ignored). Installed dispatch and protection remain open.
 No step is complete from these prerequisites. See [the owning boundary](../specification/archive-storage-contract.md#persistent-coordinator-state).
 
 
