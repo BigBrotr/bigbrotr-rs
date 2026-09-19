@@ -1,4 +1,5 @@
 //! Connected initial native batch under the dedicated Control backend.
+use super::super::import_checkpoints::{self, ImportCheckpointError};
 use super::super::input_bindings::{self, ImportBatch, ImportJobBinding, InputBindingError};
 use super::super::producer_outcomes::{self, OutcomeError};
 use super::super::producer_requests::{self, ReservationError};
@@ -28,6 +29,7 @@ pub enum InitialOperationError<E> {
     Native(E),
     Reservation(ReservationError),
     InputBinding(InputBindingError),
+    ImportCheckpoint(ImportCheckpointError),
     /// The native result exists; this error never authorizes another request ID.
     Outcome(OutcomeError),
     /// Native work was dispatched. Its retained request must be resolved even
@@ -205,6 +207,11 @@ impl ControlSession {
         )
         .await
         .map_err(InitialBatchError::Outcome)?;
+        if input.cancelled.load(Ordering::Relaxed)
+            || lease.check_delivery(identity.policy_epoch).is_err()
+        {
+            return Err(InitialBatchError::DeliveryUnknown);
+        }
         tx.commit()
             .await
             .map_err(|_| InitialBatchError::Outcome(OutcomeError::CommitUnknown))?;
@@ -317,6 +324,16 @@ impl ControlSession {
         producer_outcomes::record(&tx, &staged, outcome.native_outcome(), spec.control)
             .await
             .map_err(InitialEventError::Outcome)?;
+        import_checkpoints::close_record(&tx, outcome.native_outcome(), spec.control)
+            .await
+            .map_err(InitialEventError::ImportCheckpoint)?;
+        // SQL awaits can consume the lease or observe cancellation after native
+        // completion. Do not publish its copy/progress with expired authority.
+        if input.cancelled.load(Ordering::Relaxed)
+            || lease.check_delivery(identity.policy_epoch).is_err()
+        {
+            return Err(InitialEventError::DeliveryUnknown);
+        }
         tx.commit()
             .await
             .map_err(|_| InitialEventError::Outcome(OutcomeError::CommitUnknown))?;
@@ -465,7 +482,7 @@ impl ControlSession {
         .map_err(|_| OwnerError::Unavailable)?;
         let ticket = lease.begin_refresh().map_err(|_| OwnerError::Unavailable)?;
         self.begin_operation()?;
-        let tx = application_transaction(&mut self.client, 13)
+        let tx = application_transaction(&mut self.client, 14)
             .await
             .map_err(transaction_error)?;
         require(&tx, self.request.dataset, self.identity).await?;

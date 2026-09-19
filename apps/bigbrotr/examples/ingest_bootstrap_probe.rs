@@ -187,7 +187,10 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
     let now: i64 = row.get(2);
     if matches!(
         mode,
-        "reservation-commit-lost" | "outcome-commit-lost" | "event-bindings-commit-lost"
+        "reservation-commit-lost"
+            | "outcome-commit-lost"
+            | "event-bindings-commit-lost"
+            | "event-bindings-checkpoints-commit-lost"
     ) {
         // The fault proxy accepts only loopback in the shared PG namespace.
         config.hostaddr("127.0.0.1".parse().unwrap()).port(6543);
@@ -601,7 +604,10 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
         .unwrap();
     if matches!(
         mode,
-        "reservation-commit-lost" | "outcome-commit-lost" | "event-bindings-commit-lost"
+        "reservation-commit-lost"
+            | "outcome-commit-lost"
+            | "event-bindings-commit-lost"
+            | "event-bindings-checkpoints-commit-lost"
     ) {
         assert!(ended.is_err());
     } else {

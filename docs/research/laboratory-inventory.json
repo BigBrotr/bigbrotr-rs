@@ -13815,7 +13815,117 @@
         "bigbrotr_running": 0,
         "observed_at": "2026-09-19T19:47:56.644913+00:00"
       },
-      "manifest": ".research/implementation/input-bindings/evidence-identity.json"
+      "manifest": ".research/implementation/input-bindings/evidence-identity.json",
+      "network_retirement": {
+        "status": "removed-after-verified-empty-and-owned-containers-stopped",
+        "successor_lab": "import-checkpoints-730e50e",
+        "evidence": "/home/tux/bigbrotr-implementation-20260917/runs/import-checkpoints-730e50e/prior-network-retirement.json"
+      }
+    },
+    "import_checkpoints_red": {
+      "source": "730e50ee08ef8bb96609ee964ee8ce593938045a",
+      "tree": "b1c5b0db69c9654e2029ed4f99b59eb214d31880",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/import-checkpoints-730e50e",
+      "owner": "37e0eb288090c5b5efd1bdab3e930e7d",
+      "container": "bigbrotr-implementation-import-checkpoints-730e50e",
+      "postgres": "bigbrotr-implementation-import-checkpoints-730e50e-pg",
+      "network": "bigbrotr-implementation-import-checkpoints-730e50e",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "state": "stopped-retained",
+      "source_files": 827,
+      "started_at": "2026-09-19T20:12:26.752576+00:00",
+      "network_id": "291c395f80cdd10f3752e6c6274f7b51a9236fc2157715ca849258674522f175",
+      "postgres_id": "4dd86aa86768a9ecc5e08736a90eb01cbe9f6998b7593d01835ec3624000daab",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "84348dffbf39833fb4fa83ee9544935982bce631760ddd8c5dc02a18672330dd",
+      "completed_at": "2026-09-19T20:16:33.536383+00:00",
+      "qualification": "EXPECTED_RED for missing native closure bridge; cleanup PASS; no checkpoint qualification",
+      "raw": ".research/implementation/import-checkpoints/red/qualified",
+      "terminal_audit": {
+        "status": "PASS",
+        "source": "730e50ee08ef8bb96609ee964ee8ce593938045a",
+        "tree": "b1c5b0db69c9654e2029ed4f99b59eb214d31880",
+        "source_manifest": {
+          "revision": "730e50ee08ef8bb96609ee964ee8ce593938045a",
+          "tree": "b1c5b0db69c9654e2029ed4f99b59eb214d31880",
+          "files": 827,
+          "archive_sha256": "f52cd2b0d8e711395e96eecf6e6944dc061160e8bd50110f627434762f7dc3e5",
+          "manifest_sha256": "5cb7ec3ac5723bc09148b91b51d4b225701c168f90db0004873bec98afe9e46e",
+          "lock_sha256": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215"
+        },
+        "reports": {
+          "import-checkpoints-red1.json": {
+            "status": "EXPECTED_RED",
+            "sha256": "50901a627d695f2827a5d3c521abf1b5b91ce71365fc463cb25fd3455aa9496f"
+          },
+          "out/native-tests/checks/result.json": {
+            "status": "PASS",
+            "sha256": "29f341eef0365235721106073a75a453e8398abbad72e345c05c327774619c0d"
+          }
+        },
+        "artifacts": {
+          "main": {
+            "sha256": "fc498a853205d9c3dc15e607f546435c62bc82446360b6e67a1ee19f9cba120d",
+            "bytes": 9219072,
+            "elf_machine": 62
+          },
+          "worker": {
+            "sha256": "4a8f8f37ec6dbf7b6e6def033966d21d116f027699cfd4c96ae6ff852f298f3c",
+            "bytes": 12608632,
+            "elf_machine": 62
+          },
+          "ingest_probe": {
+            "sha256": "53f0a3075dc605f2513b1a4d511bdf590a8309e32bdecbb8c18648ac41e3f0e9",
+            "bytes": 15449728,
+            "elf_machine": 62
+          }
+        },
+        "harnesses": {},
+        "prestop": {
+          "at": "2026-09-19T20:16:32.199741+00:00",
+          "owned_client_backends": 0,
+          "runner_processes": "PID                 PPID                STAT                COMMAND\n4171148             4171123             Ss                  docker-init\n4171161             4171148             S                   python3",
+          "owned_containers": [
+            "84348dffbf39833fb4fa83ee9544935982bce631760ddd8c5dc02a18672330dd",
+            "4dd86aa86768a9ecc5e08736a90eb01cbe9f6998b7593d01835ec3624000daab"
+          ]
+        },
+        "terminal": {
+          "84348dffbf39833fb4fa83ee9544935982bce631760ddd8c5dc02a18672330dd": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-19T20:12:29.52683469Z",
+            "FinishedAt": "2026-09-19T20:16:32.22250924Z"
+          },
+          "4dd86aa86768a9ecc5e08736a90eb01cbe9f6998b7593d01835ec3624000daab": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-19T20:12:27.509519788Z",
+            "FinishedAt": "2026-09-19T20:16:33.03677098Z"
+          }
+        },
+        "preexisting_containers_unchanged": 370,
+        "unrelated_containers_unchanged": 20,
+        "unrelated_running": 8,
+        "bigbrotr_running": 0,
+        "observed_at": "2026-09-19T20:16:33.536383+00:00"
+      },
+      "manifest": ".research/implementation/import-checkpoints/red/evidence-identity.json"
     }
   },
   "implementation_monitor_corrections_20260918": {

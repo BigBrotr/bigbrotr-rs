@@ -171,7 +171,7 @@ pub async fn run(
         for state in ["queued", "running"] {
             observer.execute("UPDATE control.jobs SET state=$1::text,job_revision=job_revision+1,owner_resource_id=$2::bytea,owner_epoch=$3::text::numeric,owner_incarnation=$4::bytea WHERE job_id=$5::bytea", &[&state, &&spec.control.resource_id.as_bytes()[..], &spec.control.epoch.get().to_string(), &&spec.control.process_incarnation.as_bytes()[..], &&[90u8;16][..]]).await.unwrap();
         }
-        if mode == "event-bindings-checkpoints" {
+        if mode.starts_with("event-bindings-checkpoints") {
             // Native request IDs remain contiguous while logical source order is
             // deliberately reversed. The duplicate event needs no new facts.
             for (index, sequence) in [(1, 2), (0, 3)] {
@@ -210,15 +210,32 @@ pub async fn run(
                     .unwrap();
                 let mut previous = None;
                 for recorded_at in [456, 789] {
-                    let outcome = owner
+                    let result = owner
                         .admit_initial_event(
                             store,
                             input(recorded_at, sequence),
                             grant(budget, 40 * MIB, 10 * MIB),
                             authorize,
                         )
-                        .await
-                        .unwrap();
+                        .await;
+                    if sequence == 3 && mode != "event-bindings-checkpoints" {
+                        let expected = match mode {
+                            "event-bindings-checkpoints-expired" => InitialEventError::DeliveryUnknown,
+                            "event-bindings-checkpoints-rollback" => InitialEventError::ImportCheckpoint(
+                                bigbrotr::storage::postgres::import_checkpoints::ImportCheckpointError::Backend,
+                            ),
+                            "event-bindings-checkpoints-commit-lost" => InitialEventError::Outcome(
+                                bigbrotr::storage::postgres::producer_outcomes::OutcomeError::CommitUnknown,
+                            ),
+                            _ => panic!("unknown checkpoint fault"),
+                        };
+                        assert!(matches!(&result, Err(actual) if actual == &expected));
+                        emit(
+                            serde_json::json!({"event":"logical-checkpoint-refused","error":format!("{expected:?}")}),
+                        );
+                        return;
+                    }
+                    let outcome = result.unwrap();
                     let AdmissionOutcome::Durable(receipt) = outcome.outcome() else {
                         panic!("verified bound import refused")
                     };

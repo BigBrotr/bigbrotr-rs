@@ -6,6 +6,7 @@ pub mod configuration;
 pub mod connection_settings;
 pub mod control_owner;
 pub mod enrollment;
+pub mod import_checkpoints;
 pub mod ingest_registry;
 pub mod initialization;
 pub mod input_bindings;
