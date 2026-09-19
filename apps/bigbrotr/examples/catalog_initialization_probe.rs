@@ -28,7 +28,10 @@ fn main() {
     let nonce: u8 = args[3].parse().unwrap();
     let port: u16 = args.get(4).map(|p| p.parse().unwrap()).unwrap_or(5432);
     let mode = args.get(5).map(String::as_str).unwrap_or("reserve");
-    assert!(matches!(mode, "reserve" | "initialize" | "recover"));
+    assert!(matches!(
+        mode,
+        "reserve" | "initialize" | "recover" | "unprivileged"
+    ));
     assert!(nonce > 0);
     for name in [database, suffix] {
         assert!(!name.is_empty() && name.bytes().all(|c| c.is_ascii_lowercase() || c == b'_'));
@@ -52,9 +55,10 @@ fn main() {
     assert_eq!(custody.initialization_id(), &[nonce; 16]);
     tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
         let mut config = Config::new();
-        config.host("127.0.0.1").port(port).dbname(database).user("postgres")
+        let user = if mode=="unprivileged" { "CatalogManager" } else { "postgres" };
+        config.host("127.0.0.1").port(port).dbname(database).user(user)
             .application_name("bigbrotr-initialization-probe")
-            .password(fs::read("/secrets/postgres").unwrap()).connect_timeout(Duration::from_secs(5));
+            .password(fs::read(format!("/secrets/{user}")).unwrap()).connect_timeout(Duration::from_secs(5));
         let (mut client, connection) = config.connect(NoTls).await.unwrap();
         let driver = tokio::spawn(custody.retain_catalog_connection(connection).unwrap());
         let commit = Cell::new(false);
@@ -67,7 +71,8 @@ fn main() {
                 let r = fresh.reservation();
                 let mut value = serde_json::json!({"status":"reserved", "database_oid":r.database_oid,
                     "reservation_oid":r.reservation_oid,"bootstrap_login":r.bootstrap_login,
-                    "bootstrap_oid":r.bootstrap_oid,"manager_oid":r.manager_oid});
+                    "bootstrap_oid":r.bootstrap_oid,"manager_oid":r.manager_oid,
+                    "manager_login":r.manager_login,"initialization_id":r.initialization_id});
                 if mode == "initialize" {
                     initialize(fresh, database, suffix, &custody);
                     value["native_initialized"] = true.into();

@@ -79,6 +79,8 @@ def invoke(database, suffix, nonce, expected, port=5432, mode='reserve'):
     assert result['result']['status'] == ('reserved' if expected=='reserved' else 'refused'), result
     if expected!='reserved': assert result['result']['reason']==expected, result
     assert result['commit_started'] == (expected in ('reserved','CommitUnknown'))
+    if expected=='reserved':
+        case['durable']=check_reservation(database,nonce,True,result)
     if expected not in ('reserved','CommitUnknown'):
         assert dump(database)==before and roles()==before_roles
         case['database_and_roles_unchanged']=True
@@ -86,7 +88,7 @@ def invoke(database, suffix, nonce, expected, port=5432, mode='reserve'):
     return result
 
 
-def check_reservation(database, nonce, expected):
+def check_reservation(database, nonce, expected, observed=None):
     database_oid = int(sql("SELECT oid FROM pg_database WHERE datname='"+database+"'"))
     names = [f'bb_init_database_{database_oid}', 'bb_init_' + f'{nonce:02x}' * 16]
     rows = json.loads(sql("SELECT COALESCE(json_agg(row_to_json(r)),'[]'::json) FROM "
@@ -109,13 +111,22 @@ def check_reservation(database, nonce, expected):
     assert comment==f"bigbrotr-catalog-initialization/1:{nonce:02x}"+f'{nonce:02x}'*15+f":{bootstrap['oid']}:{manager}"
     assert sql(f"SELECT count(*) FROM pg_auth_members WHERE roleid IN ({reservation['oid']},{bootstrap['oid']}) OR member IN ({reservation['oid']},{bootstrap['oid']})")=='0'
     assert sql(f"SELECT has_database_privilege({bootstrap['oid']},current_database(),'CONNECT') AND NOT has_database_privilege({bootstrap['oid']},current_database(),'CREATE') AND has_schema_privilege({bootstrap['oid']},'public','USAGE') AND has_schema_privilege({bootstrap['oid']},'public','CREATE')",database)=='t'
+    if observed is not None:
+        fields=observed['result'].copy()
+        fields.pop('native_initialized',None)
+        assert fields==dict(status='reserved',database_oid=database_oid,reservation_oid=reservation['oid'],
+            bootstrap_login=names[1],bootstrap_oid=bootstrap['oid'],manager_oid=manager,
+            manager_login='CatalogManager',initialization_id=[nonce]*16), fields
     return dict(database_oid=database_oid,roles=rows,comment=comment)
 
 
 children=[]
 try:
+    password=(run/'secrets/CatalogManager').read_text()
+    assert len(password)==64 and all(c in '0123456789abcdef' for c in password)
     sql('CREATE ROLE "CatalogManager" LOGIN NOSUPERUSER CREATEROLE NOCREATEDB '
-        'NOINHERIT NOREPLICATION NOBYPASSRLS;')
+        "NOINHERIT NOREPLICATION NOBYPASSRLS PASSWORD '"+password+"';")
+    del password
     first = fresh('one')
     invoke(first,'first',3,'reserved')
     report['cases'][-1]['durable']=check_reservation(first,3,True); save()
@@ -138,6 +149,10 @@ try:
     assert sql("SELECT string_agg(snapshot_id::text,',' ORDER BY snapshot_id) FROM public.ducklake_snapshot",native)=='0,1'
     assert sql('SELECT count(*) FROM public.ducklake_data_file',native)=='0'
     report['cases'][-1]['durable']=check_reservation(native,5,True); save()
+
+    unprivileged=fresh('unprivileged')
+    invoke(unprivileged,'manager',6,'UnsafeRole',mode='unprivileged')
+    check_reservation(unprivileged,6,False)
 
     for label, query in [('table','CREATE TABLE public.unrelated(value integer)'),
                          ('schema','CREATE SCHEMA unrelated'),
@@ -212,8 +227,58 @@ try:
             loser=other_db if action=='release' else db
             assert sql("SELECT count(*) FROM pg_roles WHERE rolname='bb_init_database_'||(SELECT oid::text FROM pg_database WHERE datname='"+loser+"')")=='0'
             if action=='release': assert dump(other_db)==other_before
+        else:
+            losing_nonce=second_nonce if action=='release' else nonce
+            assert sql("SELECT count(*) FROM pg_roles WHERE rolname='bb_init_"+f'{losing_nonce:02x}'*16+"'")=='0'
         report['cases'].append(dict(name='concurrent-'+scope+'-'+action,status='PASS',observed=[a,b],wire=receipt,
-            waiters=waiters,durable=check_reservation(winner_db,winner,True)));save()
+            waiters=waiters,durable=check_reservation(winner_db,winner,True,a if action=='release' else b)));save()
+
+    # Killing the actual coordinator excludes its local descriptors but cannot
+    # retract COMMIT already received by a remote intermediary. Exercise both
+    # durable outcomes after local custody is reacquired, without a new launch.
+    for action,nonce in [('close',18),('release',19)]:
+        db=fresh('killed_'+action)
+        proxy=Process(['docker','exec','-i',state['container'],'python3','-B',
+            '/source/experiments/control-migrations/fault_proxy.py','--upstream-port','5432',
+            '--mode','hold','--deadline-seconds','60'],input_pipe=True)
+        children.append(proxy); ready_proxy=proxy.event('ready',10)
+        target=arguments(db,'killed',nonce,ready_proxy['listen_port'],'initialize')[3:]
+        wrapper="import os,sys; print(os.getpid(),flush=True); os.execv(sys.argv[1],sys.argv[1:])"
+        peer=Process(['docker','exec',state['container'],'python3','-c',wrapper,*target]);children.append(peer)
+        proxy.event('held',10)
+        assert peer.stdout.endswith(b'\n') and peer.stdout.strip().isdigit()
+        pid=int(peer.stdout.strip())
+        journal=run/'out'/f'initialize_{db}_killed/.bigbrotr-initialization/intent.json'
+        journal_before=journal.read_bytes()
+        kill="""import json,os,pathlib,signal,sys
+pid=int(sys.argv[1]); fd=os.pidfd_open(pid)
+assert pathlib.Path(f'/proc/{pid}/exe').resolve()==pathlib.Path(sys.argv[2])
+assert pathlib.Path(f'/proc/{pid}/cmdline').read_bytes().split(b'\\0')[:-1]==[v.encode() for v in sys.argv[2:]]
+signal.pidfd_send_signal(fd,signal.SIGKILL); os.close(fd)
+print(json.dumps({'pid':pid,'signal':'SIGKILL'}))"""
+        killed=json.loads(command(['docker','exec',state['container'],'python3','-c',kill,str(pid),*target]))
+        assert peer.wait(10)==137 and not peer.stderr
+        assert command(['docker','exec',state['container'],'python3','-c',
+            "import pathlib,sys; assert not pathlib.Path('/proc/'+sys.argv[1]).exists()",str(pid)])==''
+        # This succeeds in reacquiring the actual lock while the remote PG
+        # transaction remains open; reserve must still deny recovered custody.
+        invoke(db,'killed',nonce,'InvalidInput',mode='recover')
+        assert check_reservation(db,nonce,False)['roles']==[]
+        assert sql("SELECT count(*) FROM pg_stat_activity WHERE datname='"+db+"' AND application_name='bigbrotr-initialization-probe' AND state='idle in transaction'")=='1'
+        proxy.send(action)
+        receipt=proxy.event('receipt',10)
+        exit_code=proxy.wait(5)
+        assert not proxy.stderr and exit_code in (0,3)
+        assert receipt['commits_seen']==1 and receipt['commits_forwarded']==(action=='release')
+        assert receipt['server_commit_complete'] in ([0,1] if action=='release' else [0])
+        # With a dead frontend the proxy may observe EOF before the backend ACK.
+        # The same real transaction lock resolves completion before SQL checks.
+        sql('BEGIN; SELECT pg_advisory_xact_lock(1111651442,1128354865); COMMIT;',db)
+        assert journal.read_bytes()==journal_before
+        assert sql("SELECT count(*) FROM pg_depend WHERE refclassid='pg_namespace'::regclass AND refobjid='public'::regnamespace",db)=='0'
+        report['cases'].append(dict(name='killed-before-'+action,status='PASS',coordinator=killed,
+            coordinator_exit=137,proxy_exit=exit_code,wire=receipt,journal_unchanged=True,
+            no_native_objects=True,durable=check_reservation(db,nonce,action=='release')));save()
     assert sql("SELECT count(*) FROM pg_stat_activity WHERE application_name='bigbrotr-initialization-probe' OR usename LIKE 'bb_init_%'")=='0'
     report['status']='PASS'
 except BaseException as error:

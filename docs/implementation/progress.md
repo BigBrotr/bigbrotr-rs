@@ -21,7 +21,7 @@ installed service readiness.
 
 ## Actual Git and ownership
 
-Mac main HEAD is cfadb48a7260e457228b4da96ddcc5b4e6c4dac7 (unpublished TDD
+Mac main HEAD is71399117eec55a3abae671f131d8fed43dace887 (unpublished native
 candidate); last verified origin/main is41a369aa19d3c542e929cec6f6fd341e574f5cf4. Three coherent commits pushed normally
 to verified private BigBrotr/bigbrotr-rs; push92091 terminal0 and remote ref matches.
 Root sole writer, no merge/rebase. Current root-owned edits add the database
@@ -177,11 +177,27 @@ returns move-only generated SCRAM material only after known COMMIT. Read-only AI
 source review found no counterexample; extracted pristine SQL matches old native
 literal except final newline. Observer/retirement APIs are still pending.
 
-Next: commit a clean implementation candidate, run actual native reservation
-cases on a new isolated lab, including generated-password native initialization,
-unchanged refusal state, both lost-COMMIT directions, competing roots and colliding
-nonces across databases. Record failures without retries on retained lab state.
-Then implement bounded observation/retirement and wire the installed CLI journey.
+7139911 native ordered build,33 parent tests and scoped Clippy PASS. Actual
+24cases PASS, including generated sole-holder password used by the actual native
+worker, six scientific tables/snapshots0,1, known refusal rollback, both lost COMMIT
+directions, same-DB competitors and same-nonce cross-DB unique-index competitors.
+Actual advisory/transactionid waiters observed before release/close. No signed data.
+Audit55793/collection55042 terminal0;13files/733source files independently verified,
+tar782b4e7cbc7b0db3cc3751229ae2c0464e6065d08d2cad2ee3ab11b19d7dbee2.
+Labdatabase-reservation-7139911 stopped-retained; inventory owns IDs/status.
+
+Read-only AI fixture review found two assertion gaps: returned reservation OIDs/
+names were not compared to independent SQL, and same-DB races did not exclude an
+orphan losing bootstrap. Both are strengthened in the current root-owned fixture
+edits. Added actual coordinator SIGKILL with exact pidfd/executable/argv identity,
+custody reacquisition while remote COMMIT remains held, then close/release and
+fresh serialized SQL resolution. Also added actual non-superuser initializer
+refusal. These added cases are NOT_RUN. Product reservation code unchanged.
+
+Next: commit this fixture candidate and qualify on a new isolated exact-source
+lab. Preserve first24 PASS with their stated oracle limits. Then implement bounded
+observation/retirement and wire the installed CLI journey; no initializer completion
+claim from the reserve operation or a SQL-only observer.
 
 Complete CLI/recovery, configured native mutual TLS, fresh manager publication/seal,
 SELECT-only readers, whole-role budget reconciliation/protection and M1 remain
