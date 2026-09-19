@@ -331,8 +331,13 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   It connects reservation, native initialization/join, recovery, exact retirement,
   manager installation and fresh inspection. Actual driver/native cancellation and
   a full output pipe are exercised. The malformed first fixture remains recorded.
-  Nonempty/timeout drain, new-CLI TLS/mTLS, remaining crash/acknowledgement paths and
-  the installed service still gate complete acceptance; this step remains open.
+  [Five actual CLI drain cases](evidence/p02-initialization-drain-native-20260919.json)
+  at artifact `78e7734` / harness `1978e12` now qualify nonempty waits across databases,
+  timeout, SIGTERM/SIGINT and retained retry after natural backend completion.
+  The producer is explicitly a custodied tokio-postgres residual-session fixture;
+  this does not qualify a blocked native libpq write. New-CLI TLS/mTLS, remaining
+  native crash/acknowledgement paths and the installed service still gate complete
+  acceptance; this step remains open.
 - [ ] **Step 4:** After an ambiguous commit, query the receipt in a new transaction; do not
   repeat while receipt state is unknown. Reject mismatched batch digest.
   Include loss of the actual native PostgreSQL COMMIT response, plus physical file

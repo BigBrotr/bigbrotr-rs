@@ -86,6 +86,10 @@ See the [owning archive contract](../specification/archive-storage-contract.md)
 and [current implementation checkpoint](../implementation/progress.md) for the
 revision-specific validation boundary and outstanding service/release work.
 The [native core evidence](../implementation/evidence/p02-initialization-cli-native-20260919.json)
-records 17 executed scenarios and preserves the failed first fixture. TLS of this
-new command, nonempty/timeout backend drain and remaining full acceptance cases
-are explicitly open; the guide does not advertise complete installation support.
+records 17 executed scenarios and preserves the failed first fixture. The separate
+[drain evidence](../implementation/evidence/p02-initialization-drain-native-20260919.json)
+exercises five actual recovery cases with SQL remaining on PostgreSQL after client
+destruction, including another database, timeout and both signals. The producer is
+a controlled tokio-postgres fixture. TLS of this new command, native mutual TLS,
+remaining native crash/acknowledgement paths and full service acceptance are still
+open; the guide does not advertise complete installation support.

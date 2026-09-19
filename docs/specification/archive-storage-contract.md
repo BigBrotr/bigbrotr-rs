@@ -409,8 +409,15 @@ idempotent recovery, retained partial/stranded refusals, both lost reservation
 COMMITs, two actual-driver cancellations with waiting recovery and native libpq
 startup cancellation/reap. A proven full stdout pipe exits with I/O failure in
 0.317s in this isolated run. The first malformed fixture remains a recorded failure.
-This does not qualify nonempty/timeout backend drain, the new CLI TLS matrix,
-native mutual TLS or the complete installed service/M1 acceptance.
+The subsequent [actual CLI drain matrix](../implementation/evidence/p02-initialization-drain-native-20260919.json)
+at artifact `78e7734` / harness `1978e12` passes five cases with a real queued bootstrap
+session after the custodied tokio-postgres driver is destroyed and joined. Recovery
+waits across database boundaries, preserves unresolved state on its 30-second
+deadline and SIGTERM/SIGINT, then observes stranded state after natural completion.
+Exact remote CLI/backend identities and unchanged catalog/marker bytes are checked.
+This is a deliberate residual-session fixture, not a blocked native libpq write.
+The new CLI TLS matrix, native mutual TLS, remaining native crash/acknowledgement
+paths and complete installed service/M1 acceptance remain required.
 
 The application-owned `bigbrotr_archive` schema contains immutable installation
 and attempt records plus one mutable owner row. Every native metadata mutation

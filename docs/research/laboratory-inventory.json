@@ -9977,12 +9977,12 @@
       ]
     },
     "initialization_drain": {
-      "status": "native-build-running",
+      "status": "five-cli-drain-cases-pass",
       "local_raw_root": ".research/implementation/archive-worker/initialization-drain",
       "source_parent": "759157bf1f7eb456313754ba8b6a862d45462cea",
       "scope": "actual archive recover with queued tokio-postgres residual backend after positive driver destruction; not native-worker residual SQL",
       "cache_source": "initialization-cli-6265286",
-      "resources": "owned runner and PG running; previous labs remain retired",
+      "resources": "owned runner and PG stopped-retained, network empty-retained, no active experiment",
       "candidate": {
         "source": "78e77346cb75379955aeb423e9fb33e7bd38533b",
         "tree": "da0dd523f8b1aa78fd14bc2ba23f2dda72cc3a26",
@@ -9993,14 +9993,176 @@
         "network": "bigbrotr-implementation-initialization-drain-78e7734",
         "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
         "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
-        "state": "running",
+        "state": "stopped-retained",
         "source_files": 742,
         "started_at": "2026-09-19T09:06:15.693171+00:00",
         "network_id": "0d723a977b4b2e6252f56ce3d17265739e0b80fbe86510a826c885bd32d7abcb",
         "postgres_id": "91c1b8e8d9374ca881e5305318e570a2973b377e808dcf076d1040a2811efbcb",
         "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
-        "container_id": "7f29d58ecb63a91777949facd3024eba09dc7bc330932c23d158ed95d82fd2fb"
-      }
+        "container_id": "7f29d58ecb63a91777949facd3024eba09dc7bc330932c23d158ed95d82fd2fb",
+        "completed_at": "2026-09-19T09:09:29.462801+00:00"
+      },
+      "audit": {
+        "status": "PASS",
+        "source": "78e77346cb75379955aeb423e9fb33e7bd38533b",
+        "tree": "da0dd523f8b1aa78fd14bc2ba23f2dda72cc3a26",
+        "source_files": 742,
+        "source_archive_sha256": "7e7fc8a575feafc93144f3f284719ad15a43b8cc74809917b282883c100210d7",
+        "source_manifest_sha256": "25c41551b127bbf30ab638a66e82b2fb878bf56704f44d3019147a47367cacf9",
+        "artifacts": {
+          "main": {
+            "sha256": "e62e4c14036a6001bc4fde9b891081eee0b5e86160fc69aa6c5eaf6e6ac87f2c",
+            "bytes": 8791920,
+            "elf_machine": 62
+          },
+          "worker": {
+            "sha256": "c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227",
+            "bytes": 12608608,
+            "elf_machine": 62
+          }
+        },
+        "qualification": {
+          "initialization-drain": "PASS"
+        },
+        "cases": {
+          "initialization-drain": 5
+        },
+        "build_ready": true,
+        "terminal": {
+          "container_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-19T09:06:18.227786388Z",
+            "FinishedAt": "2026-09-19T09:09:27.725918357Z"
+          },
+          "postgres_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-19T09:06:16.367954737Z",
+            "FinishedAt": "2026-09-19T09:09:29.025764205Z"
+          }
+        },
+        "owned_containers": [
+          "7f29d58ecb63a91777949facd3024eba09dc7bc330932c23d158ed95d82fd2fb",
+          "91c1b8e8d9374ca881e5305318e570a2973b377e808dcf076d1040a2811efbcb"
+        ],
+        "existing_containers_unchanged": 320,
+        "unrelated_containers_unchanged": 20,
+        "unrelated_running": 8,
+        "bigbrotr_running": 0,
+        "observed_at": "2026-09-19T09:09:29.462801+00:00",
+        "harness": {
+          "source": "1978e1227aead7daf69e30962a00b5778fca0174",
+          "tree": "fc05b380abfc5feddb925b9d9f39ea544f6a9660",
+          "script_sha256": "cbc1095041f7e628e5efe9eb11f36b4cf6faf74cdf4692b980f13bf605460e05",
+          "changed_paths": [
+            "docs/implementation/progress.md",
+            "docs/research/laboratory-inventory.json",
+            "experiments/archive-engine/initialization_drain_cases.py"
+          ],
+          "production_and_fixture_inputs_unchanged": true
+        }
+      },
+      "source_verification": {
+        "revision": "78e77346cb75379955aeb423e9fb33e7bd38533b",
+        "tree": "da0dd523f8b1aa78fd14bc2ba23f2dda72cc3a26",
+        "files": 742,
+        "archive_sha256": "7e7fc8a575feafc93144f3f284719ad15a43b8cc74809917b282883c100210d7",
+        "manifest_sha256": "25c41551b127bbf30ab638a66e82b2fb878bf56704f44d3019147a47367cacf9"
+      },
+      "workload_verification": {
+        "source": "1978e1227aead7daf69e30962a00b5778fca0174",
+        "tree": "fc05b380abfc5feddb925b9d9f39ea544f6a9660",
+        "script_sha256": "cbc1095041f7e628e5efe9eb11f36b4cf6faf74cdf4692b980f13bf605460e05",
+        "changed_paths": [
+          "docs/implementation/progress.md",
+          "docs/research/laboratory-inventory.json",
+          "experiments/archive-engine/initialization_drain_cases.py"
+        ],
+        "production_and_fixture_inputs_unchanged": true,
+        "verified_on": "Mac exact Git objects; production and fixture diff empty"
+      },
+      "evidence_identity": {
+        "tar_bytes": 163840,
+        "tar_sha256": "64362dbc89551372e770eaca30fcd7ae79ce71532db36cd341fb9b99346f0d0c",
+        "files": {
+          "resources.json": {
+            "bytes": 1229,
+            "sha256": "d74992751e8e64826f879745c19bceb4b1b08732819c64c5339c2c40645439fe"
+          },
+          "audit.json": {
+            "bytes": 2322,
+            "sha256": "5b16fdaac926d1143805a11b13b0ed99fc924fc4caa61536fa427abf5d5d7d10"
+          },
+          "container.log": {
+            "bytes": 283,
+            "sha256": "282f9e8b67098b995328dd23891de773f111babdf7be65273f79cd1a99f4ba36"
+          },
+          "out/build/source-manifest.json": {
+            "bytes": 90947,
+            "sha256": "25c41551b127bbf30ab638a66e82b2fb878bf56704f44d3019147a47367cacf9"
+          },
+          "out/native-tests/checks/cli-tests.log": {
+            "bytes": 2167,
+            "sha256": "84fca669ecef028cd15ca5408638e50868c1d0fb07c373eba39936ef897ca455"
+          },
+          "out/native-tests/checks/clippy.log": {
+            "bytes": 394,
+            "sha256": "35d52947ad46ecf68b5a506d15ade980bc7b7b9db429d53b51ff0a589a183c87"
+          },
+          "out/native-tests/checks/fixture.log": {
+            "bytes": 130,
+            "sha256": "c59ac6f87fcb4e3abc668c9a6068236991550292edb440bac7a27b864228d1be"
+          },
+          "out/native-tests/checks/parent-tests.log": {
+            "bytes": 4562,
+            "sha256": "a3bd4061fb12dbf2226ba01f6d013f633cbf1595ae25cb0f7ee7e8ec8d51e4da"
+          },
+          "out/native-tests/checks/result.json": {
+            "bytes": 4218,
+            "sha256": "981b2160087c63f6f8f0f58c588f08be3bbf7891c799ae77fb1c33d641cd11a6"
+          },
+          "out/native-tests/ordered-build.log": {
+            "bytes": 626,
+            "sha256": "d942346230ef7a3d019185b18cfcfe9dc4f2da4cb437278a19005bf6adc0511d"
+          },
+          "out/native-tests/ready.json": {
+            "bytes": 4911,
+            "sha256": "878efd7e8ba789e39c434db7e7485512b04322e12200cdb312aa54a6812c03a5"
+          },
+          "out/native-tests/result.json": {
+            "bytes": 2800,
+            "sha256": "f8b55f41deb1095ff3f5c4e59c2b215432eb61872b5083a03ff48cacd4d6bf27"
+          },
+          "out/native-tests/worker-identity.json": {
+            "bytes": 104,
+            "sha256": "c76d6822c6cff10729edc0d68f41196558b6cdedee0779cbf55ce624e1e80878"
+          },
+          "initialization-drain.json": {
+            "bytes": 20055,
+            "sha256": "1afa6f4051720183634af12960a279783fd8afbf2207b6a0481c6c23655ee0b9"
+          },
+          "initialization-drain.log": {
+            "bytes": 85,
+            "sha256": "521efad3bf038965b9958365e11ae8f9cbdd3131992ccaec69ff7e57d92ba380"
+          }
+        }
+      },
+      "report": "docs/implementation/evidence/p02-initialization-drain-native-20260919.json"
     }
   },
   "implementation_monitor_corrections_20260918": {

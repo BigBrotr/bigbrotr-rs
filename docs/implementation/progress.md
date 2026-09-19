@@ -20,14 +20,13 @@ Control-only and rejects other roles. Root remains sole writer/integrator.
 
 ## Actual Git and review
 
-Mac main and origin/main verified at759157bf1f7eb456313754ba8b6a862d45462cea;
-push84858 exited0 and the tree was clean. Repository remains private bigbrotr-rs.
-Published a1c0921 product CLI,6265286 expanded harness/user docs,3335e06 hardened
-workload identity and759157b reviewed evidence/docs. Production Rust/inputs are
-identical across those four commits. Root-owned changes now add a bounded residual-session fixture and five real CLI
-drain scenarios (same/other database, timeout, SIGTERM/SIGINT). Production Rust
-remains unchanged; artifact candidate78e7734 native build is running. Local example check/Clippy and
-Python syntax checks pass. No merge/rebase or other contributor edits.
+Mac main HEAD1978e1227aead7daf69e30962a00b5778fca0174;
+origin/main last verified759157bf1f7eb456313754ba8b6a862d45462cea (push84858 exited0).
+Private bigbrotr-rs. Two unpublished candidates:78e7734 residual-session fixture
+and five-case CLI harness;1978e12 stronger actual-process/query oracles. Product
+Rust is unchanged from759157b; fixture is unchanged between78e7734 and1978e12.
+Root-owned dirty work is scoped evidence, contracts/tasks/user docs and checkpoint/
+inventory. No merge/rebase, other contributor edits or active experiment.
 
 Independent read-only AI source review found simultaneous credential preparation,
 legacy TLS address-selection regression and late long-manager refusal; corrected
@@ -79,39 +78,59 @@ no COMMIT ACK after frontend EOF; lock ordering plus independent durable SQL pro
 the reservation committed and was retired. Native startup cancellation does not
 exercise a nonempty backend drain: delay reset precedes recovery.
 
+## Actual residual-session drain
+
+[Five-case evidence](evidence/p02-initialization-drain-native-20260919.json) at
+artifact78e7734/harness1978e12 passes (94104 exit0): same database, another database,
+30-second timeout, SIGTERM and SIGINT. The explicit producer consumes a fresh
+bootstrap credential into actual custodied tokio-postgres, queues advisory-lock
+SQL, observes that wait, then aborts/joins query and driver and exits. This is not
+a blocked native DuckDB/libpq operation. Recovery reacquires custody, retires the
+exact OID and polls. Remote CLI PID/start/argv/exe and actual PG drain query are
+observed before blocker release. Timeout/signals preserve the residual session,
+database dump and marker bytes; release then fresh recovery reports stranded state.
+No native table, credential reset, backend kill or new initialization occurs.
+
+Local example check30691, example Clippy/fmt/diff39313 and Python/snippet AST pass.
+New exact-source ordered native build, fixtures,34 archive-parent tests/1 ignored,
+8 binary tests/10 CLI tests and scoped Clippy pass. Ignored old native-holder case
+is not a PASS here; its earlier qualification remains separate. Recorded isolated
+elapsed timeout30.006s, signal-to-exit0.113/0.115s; no capacity/RSS/SLA claim.
+Independent read-only AI review corrected a local-wrapper-only liveness oracle
+before execution;1978e12 adds actual process and query observation. No further
+concrete counterexample found. Reviewer made no Tux calls. Root read all five
+case records and native build/check logs. Independent recorded-evidence audit
+verified all15 raw files, evidence/Git archives,742 source hashes and separate
+harness identity with no discrepancy. It did not rerun tests or inspect remote
+ELF/current processes.
+
 ## Owned resources and evidence
 
-Active isolated drain lab: initialization-drain-78e7734, owner
-772532228ad91c0d671adc6a8be9b483, runner7f29d58ecb63/PG91c1b8e8d937.
-Inventory initialization_drain and raw initialization-drain/resources.json own
-exact IDs. Native build is running; five-case workload is NOT_RUN. Independent
-read-only AI review identified the local-wrapper liveness weakness; the new
-harness verifies the exact remote CLI and actual PG drain query before release.
-No product/fixture change after78e7734. Previous audit52813 and collect65186 exited0. Both CLI labs are
-stopped-retained, no OOM.318 preexisting container/mount/network/lifecycle states
-unchanged;8 unrelated running, zero BigBrotr. Latest audit:
-2026-09-19T08:49:20.214389+00:00.
-Root: /home/tux/bigbrotr-implementation-20260917/runs/initialization-cli-6265286.
-Owner: 8d2a1a9a8f6d99343e83f3fccb223e7c.
-Runner: a1e67224833e97f4d05af1d1f6cd232dbb649fc27cda3c59225421d6b8d197af stopped143.
-PG: ddb10491246fdf3739b5573c18a29476a01b46085469ffbf9c39cff46e8f81d9 stopped0.
-Network: c025c4bbe030d4e4e874b580baab674d26ce733d8d4c08bca907057033338254
-removed after verified empty/stopped inspection at09:05:34UTC; containers/data retained.
+No active experiment. Audit67478 and collect4972 exited0. Latest audit:
+2026-09-19T09:09:29.462801+00:00. Both new containers stopped-retained, no OOM;
+320 preexisting container/mount/network/lifecycle states unchanged,8 unrelated
+running, zero BigBrotr. Retain containers/data; never restart retired labs.
+Root: /home/tux/bigbrotr-implementation-20260917/runs/initialization-drain-78e7734.
+Owner:772532228ad91c0d671adc6a8be9b483.
+Runner:7f29d58ecb63a91777949facd3024eba09dc7bc330932c23d158ed95d82fd2fb stopped143.
+PG:91c1b8e8d9374ca881e5305318e570a2973b377e808dcf076d1040a2811efbcb stopped0.
+Network:0d723a977b4b2e6252f56ce3d17265739e0b80fbe86510a826c885bd32d7abcb empty-retained.
 Runner2CPU/6GiB/512PIDs, PG1CPU/1GiB/128PIDs, internal/no host ports.
-Main:18e762557fd1fa45f3e89eb07ec4d982c0af50637e5ddb95205c0a1c7a47c3d3 (8791880bytes).
+Main:e62e4c14036a6001bc4fde9b891081eee0b5e86160fc69aa6c5eaf6e6ac87f2c (8791920bytes).
 Worker:c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227 (12608608bytes).
-Latest copied-cache/read-only-assets:6265286/out/{build,archive-worker}.
+Fixture:0217cf17cd856a3894321ef7633ca3fa054acca368b5698291ca667ea8c15e04.
+Latest copied-cache/read-only-assets:78e7734/out/{build,archive-worker}.
 
-Raw root:.research/implementation/archive-worker/initialization-cli.
-First16 files tar33d49f7a17374ad4651584518ab9aeb4ec99beb46fb87118ad535fc4691574cb;
-qualified15 files tar3271b6f508bc3f87353981d87ad4819805c5d14bd3e4315d484c41a2be955db0.
-Two regenerated Mac Git archives and1479source hashes match; separate workload
-Git/script hash verified. [Inventory](../research/laboratory-inventory.json),
-initialization_cli, owns both audits, source proofs and first-network retirement.
-Earlier660df73 network also removed after verified empty/stopped checks. Retain
-containers/data. Ignored transfer/launch helpers currently copy660df73 cache/assets;
-review before reuse. Audit verifies the optional separate harness-source checkout.
-Never blanket-prune/restart retired labs; re-inventory disk/network resources.
+Raw root:.research/implementation/archive-worker/initialization-drain/qualified.
+15 raw files, tar64362dbc89551372e770eaca30fcd7ae79ce71532db36cd341fb9b99346f0d0c.
+Regenerated Mac Git archive and742source hashes match; separate1978e12 workload
+Git/tree/script hash and unchanged product/fixture verified on Mac and Tux.
+[Inventory](../research/laboratory-inventory.json), initialization_drain, owns the
+resource/audit/evidence identities. Its launch helpers copy6265286 cache/assets;
+review before reuse and re-inventory disk/network resources. No blanket prune.
+Previous CLI6265286 network was removed at09:05:34UTC after fresh empty/stopped
+inspection; all previous containers/data remain retained. Earlier CLI evidence and
+1479source proofs remain under initialization-cli/{first,qualified}.
 
 ## Earlier qualified boundaries and monitor findings
 
@@ -131,7 +150,8 @@ Existing de1d402/56ef588 startup evidence demonstrates late visibility. Positive
 client destruction + exact retirement + fresh bounded natural drain excludes
 remaining SQL-capable sessions in the selected trusted-client scope. Late invisible
 backends can be inert; NOLOGIN/empty activity alone is not that proof. No PID kill
-or new VXID barrier selected. New consumer nonempty/timeout drain remains unqualified.
+or new VXID barrier selected. The five-case consumer qualification above now covers
+nonempty/timeout drain with the explicitly stated tokio-postgres fault producer.
 
 Scoped monitor corrections remain closed with executed evidence:
 [MON-001/002/004/006](evidence/p01-monitor-corrections-native-20260918.json),
@@ -143,13 +163,15 @@ Do not mechanically rerun unrelated suites.
 
 ## Next bounded action
 
-Qualify the five new actual CLI drain scenarios on a fresh exact-source Tux lab,
-record residual backend identity and durable no-change observations, and retire
-only that lab. Then close TLS/mTLS and remaining real crash/lost
-native-install acknowledgement cases without replacing the actual consumer with
-more standalone helper-only claims. Advance installed Control+Archive through real
-signed pending publication, receipt/read/export and restart. No P02 step or M1 gate
-closes from the17 core CLI cases. Full selected product work remains authorized.
+Finish the current recorded-evidence review/docs and normal private push. Then
+implement/qualify native mutual TLS through a protected bounded credential consumer
+and the actual initializer TLS matrix, followed by the remaining real native crash/
+lost-install acknowledgement paths. Do not rerun standalone custody/reservation
+qualification or restart architecture research without a concrete failure.
+
+Advance installed Control+Archive through real signed pending publication,
+receipt/read/export and restart. No P02 step or M1 gate closes from the17 core CLI
+and five residual-drain cases. Full selected product work remains authorized.
 
 Pristine stranded reservations require retirement/abandonment and a new database/
 root pair; no re-provisioning, runtime superuser promotion, REASSIGN OWNED or implicit

@@ -1,0 +1,635 @@
+{
+  "format": "bigbrotr-initialization-drain-evidence/1",
+  "observed_date": "2026-09-19",
+  "status": "PASS",
+  "scope": "Five actual archive recover drain cases after actual custodied tokio-postgres client destruction; full initializer/service acceptance remains open",
+  "tested_artifact_source": "78e77346cb75379955aeb423e9fb33e7bd38533b",
+  "source_verification": {
+    "revision": "78e77346cb75379955aeb423e9fb33e7bd38533b",
+    "tree": "da0dd523f8b1aa78fd14bc2ba23f2dda72cc3a26",
+    "files": 742,
+    "archive_sha256": "7e7fc8a575feafc93144f3f284719ad15a43b8cc74809917b282883c100210d7",
+    "manifest_sha256": "25c41551b127bbf30ab638a66e82b2fb878bf56704f44d3019147a47367cacf9"
+  },
+  "workload": {
+    "source": "1978e1227aead7daf69e30962a00b5778fca0174",
+    "tree": "fc05b380abfc5feddb925b9d9f39ea544f6a9660",
+    "script_sha256": "cbc1095041f7e628e5efe9eb11f36b4cf6faf74cdf4692b980f13bf605460e05",
+    "changed_paths": [
+      "docs/implementation/progress.md",
+      "docs/research/laboratory-inventory.json",
+      "experiments/archive-engine/initialization_drain_cases.py"
+    ],
+    "production_and_fixture_inputs_unchanged": true,
+    "verified_on": "Mac exact Git objects; production and fixture diff empty"
+  },
+  "production_change": "None relative to 759157b; new lab fixture and workload only. Ordered binaries rebuilt with 78e7734 source provenance.",
+  "resources": {
+    "source": "78e77346cb75379955aeb423e9fb33e7bd38533b",
+    "tree": "da0dd523f8b1aa78fd14bc2ba23f2dda72cc3a26",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/initialization-drain-78e7734",
+    "owner": "772532228ad91c0d671adc6a8be9b483",
+    "container": "bigbrotr-implementation-initialization-drain-78e7734",
+    "postgres": "bigbrotr-implementation-initialization-drain-78e7734-pg",
+    "network": "bigbrotr-implementation-initialization-drain-78e7734",
+    "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "state": "stopped-retained",
+    "source_files": 742,
+    "started_at": "2026-09-19T09:06:15.693171+00:00",
+    "network_id": "0d723a977b4b2e6252f56ce3d17265739e0b80fbe86510a826c885bd32d7abcb",
+    "postgres_id": "91c1b8e8d9374ca881e5305318e570a2973b377e808dcf076d1040a2811efbcb",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "container_id": "7f29d58ecb63a91777949facd3024eba09dc7bc330932c23d158ed95d82fd2fb",
+    "completed_at": "2026-09-19T09:09:29.462801+00:00"
+  },
+  "artifacts": {
+    "source": "78e77346cb75379955aeb423e9fb33e7bd38533b",
+    "source_manifest_sha256": "25c41551b127bbf30ab638a66e82b2fb878bf56704f44d3019147a47367cacf9",
+    "native_toolchain": {
+      "os": "Linux",
+      "architecture": "x86_64",
+      "discovery": "llvm-config",
+      "environment": {
+        "CC": "/usr/lib/llvm-14/bin/clang",
+        "CXX": "/usr/lib/llvm-14/bin/clang++",
+        "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+        "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+        "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+      },
+      "tools": {
+        "CC": {
+          "path": "/usr/lib/llvm-14/bin/clang",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "CXX": {
+          "path": "/usr/lib/llvm-14/bin/clang++",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "AR": {
+          "path": "/usr/lib/llvm-14/bin/llvm-ar",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+          "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+          "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+        },
+        "LIBCLANG_PATH": {
+          "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+          "version": "Debian clang version 14.0.6"
+        },
+        "discovery": {
+          "path": "/usr/lib/llvm-14/bin/llvm-config",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+          "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+          "version": "14.0.6"
+        }
+      },
+      "sdk": null
+    },
+    "scope": "permanent local reservation and actual native initializer",
+    "status": "READY",
+    "control": "e62e4c14036a6001bc4fde9b891081eee0b5e86160fc69aa6c5eaf6e6ac87f2c",
+    "worker": "c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227",
+    "probe": "210be5b56954b003f26282da89c4fe48531e3aa8ebd525ae12dc1c4e1497804b",
+    "initializer": "0217cf17cd856a3894321ef7633ca3fa054acca368b5698291ca667ea8c15e04",
+    "build_info": {
+      "archive_worker": {
+        "bytes": 12608608,
+        "sha256": "c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227"
+      },
+      "capabilities": [
+        "event-verification",
+        "config-static"
+      ],
+      "capability_scope": "Strict bounded event JSON and independent ID/BIP340 verification; offline static configuration candidates and incomplete read-only doctor diagnostics; no storage, durable configuration authority, source policy, wire transport, filter, or general NIP conformance claim",
+      "debug_info": "false",
+      "format": "bigbrotr-build/1",
+      "inputs_sha256": {
+        "Cargo.lock": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215",
+        "contracts/protocol/nip01-event.json": "b830d5ab8651f5a763ebcffdc0eb1737ba70f4602c93fc714c892865ffca2db8",
+        "contracts/protocol/versions.json": "37c76706c5a2aa4fc72a40aeed908f104620eafcee1118b7cee8baf133546c95",
+        "contracts/release/dependencies.json": "4f73cd0a81916b7d203556ff9ad1d8efd97dfe95b2b2305c35468747e8669132",
+        "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167"
+      },
+      "optimization": "3",
+      "product": "BigBrotr",
+      "profile_assertion": "release",
+      "protocol_registry_format": "bigbrotr-protocol-versions/1",
+      "protocols": {
+        "event_verifier": "bigbrotr-nip01-verifier/1",
+        "nostr_nips": "a2494f4f81d46684e5814a9bf35e2b1df978f955"
+      },
+      "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+      "schemas": {
+        "build_info": "bigbrotr-build/1",
+        "config_static": "bigbrotr-config-static/1",
+        "doctor": "bigbrotr-doctor/1",
+        "signed_event": "nip01-event/1"
+      },
+      "source": {
+        "dirty": false,
+        "manifest_sha256": "25c41551b127bbf30ab638a66e82b2fb878bf56704f44d3019147a47367cacf9",
+        "revision": "78e77346cb75379955aeb423e9fb33e7bd38533b",
+        "state": "builder-supplied",
+        "tree": "da0dd523f8b1aa78fd14bc2ba23f2dda72cc3a26"
+      },
+      "target": "x86_64-unknown-linux-gnu",
+      "version": "0.1.0-dev"
+    },
+    "source_unchanged": true
+  },
+  "commands": [
+    "python3 -B /source/experiments/archive-engine/native_initialization.py",
+    "python3 -B <run>/harness-source/experiments/archive-engine/initialization_drain_cases.py <run>"
+  ],
+  "local_checks": {
+    "example_check": "PASS session30691",
+    "example_clippy_fmt_diff": "PASS session39313",
+    "python_and_embedded_ast": "PASS"
+  },
+  "native_checks": {
+    "ordered_build": "PASS",
+    "fixture_build": "PASS",
+    "parent_tests": {
+      "passed": 34,
+      "failed": 0,
+      "ignored": 1
+    },
+    "binary_tests": {
+      "passed": 8,
+      "failed": 0
+    },
+    "cli_tests": {
+      "passed": 10,
+      "failed": 0
+    },
+    "clippy": "PASS",
+    "ignored_scope": "Existing native-holder case separately qualified at 3efde78; not rerun or counted PASS here."
+  },
+  "execution": {
+    "session": 94104,
+    "exit": 0,
+    "collected": 5,
+    "executed": 5,
+    "passed": 5,
+    "failed": 0,
+    "skipped": 0,
+    "not_run": 0
+  },
+  "cases": [
+    {
+      "name": "same_database",
+      "status": "PASS",
+      "blocked_backend": [
+        {
+          "pid": 190,
+          "start": "2026-09-19 09:08:30.522134+00",
+          "database": "bbdrain_same_database",
+          "state": "active",
+          "wait": "advisory"
+        }
+      ],
+      "actual_recovery_retired_then_waited": true,
+      "remote_cli": {
+        "pid": 3521,
+        "start": "319116491",
+        "state": "S",
+        "signal": 0
+      },
+      "drain_backend": [
+        {
+          "pid": 212,
+          "start": "2026-09-19 09:08:30.782354+00",
+          "state": "idle"
+        }
+      ],
+      "resolved": {
+        "exit": 4,
+        "seconds": 0.6349436691962183,
+        "stdout_empty": true,
+        "stranded": true,
+        "deadline": false,
+        "interrupted": false
+      },
+      "backend_gone": true,
+      "bootstrap_retired": true,
+      "native_tables": 0,
+      "bootstrap_oid": 16398,
+      "before": {
+        "database_sha256": "ba00a6541372f6f1da8a4e4d3e9b70c7c6439efb34efb1f9bd9577eb4e52ecdc",
+        "files": {
+          ".bigbrotr-initialization/custody.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          ".bigbrotr-initialization/intent.json": "1f78ea67ed2364e00691eae3b71a37c25d8d12242088ae25a0b4121bb6c7bc6b"
+        }
+      },
+      "after_equals_before": true,
+      "driver_destroyed_and_joined": true
+    },
+    {
+      "name": "other_database",
+      "status": "PASS",
+      "blocked_backend": [
+        {
+          "pid": 305,
+          "start": "2026-09-19 09:08:32.370409+00",
+          "database": "postgres",
+          "state": "active",
+          "wait": "advisory"
+        }
+      ],
+      "actual_recovery_retired_then_waited": true,
+      "remote_cli": {
+        "pid": 3541,
+        "start": "319116671",
+        "state": "S",
+        "signal": 0
+      },
+      "drain_backend": [
+        {
+          "pid": 326,
+          "start": "2026-09-19 09:08:32.584766+00",
+          "state": "idle"
+        }
+      ],
+      "resolved": {
+        "exit": 4,
+        "seconds": 0.7405331856571138,
+        "stdout_empty": true,
+        "stranded": true,
+        "deadline": false,
+        "interrupted": false
+      },
+      "backend_gone": true,
+      "bootstrap_retired": true,
+      "native_tables": 0,
+      "bootstrap_oid": 16401,
+      "before": {
+        "database_sha256": "442b11b4deb499d09a3ffd7a4b1d7ec1e3f4ed5f7fb37b18c4b91bdd1c5ab499",
+        "files": {
+          ".bigbrotr-initialization/custody.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          ".bigbrotr-initialization/intent.json": "818f3752f0919b8d6eab0ff58122e216fa27b186c6ba93bad2513b84dbddb68a"
+        }
+      },
+      "after_equals_before": true,
+      "driver_destroyed_and_joined": true
+    },
+    {
+      "name": "timeout",
+      "status": "PASS",
+      "blocked_backend": [
+        {
+          "pid": 420,
+          "start": "2026-09-19 09:08:34.130766+00",
+          "database": "bbdrain_timeout",
+          "state": "active",
+          "wait": "advisory"
+        }
+      ],
+      "actual_recovery_retired_then_waited": true,
+      "remote_cli": {
+        "pid": 3561,
+        "start": "319116841",
+        "state": "S",
+        "signal": 0
+      },
+      "drain_backend": [
+        {
+          "pid": 441,
+          "start": "2026-09-19 09:08:34.290198+00",
+          "state": "idle"
+        }
+      ],
+      "unresolved": {
+        "exit": 4,
+        "seconds": 30.00640161987394,
+        "stdout_empty": true,
+        "stranded": false,
+        "deadline": true,
+        "interrupted": false
+      },
+      "resolved": {
+        "exit": 4,
+        "seconds": 0.011133322026580572,
+        "stdout_empty": true,
+        "stranded": true,
+        "deadline": false,
+        "interrupted": false
+      },
+      "backend_gone": true,
+      "bootstrap_retired": true,
+      "native_tables": 0,
+      "bootstrap_oid": 16404,
+      "before": {
+        "database_sha256": "178c01ff2ddb7651495728b63283dea3a0a22c9a733b3b673a0003876c4c2ce7",
+        "files": {
+          ".bigbrotr-initialization/custody.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          ".bigbrotr-initialization/intent.json": "491da740562860730269840a96e7d2f657f20aa976b8a199893206824bd0c314"
+        }
+      },
+      "after_equals_before": true,
+      "driver_destroyed_and_joined": true
+    },
+    {
+      "name": "sigterm",
+      "status": "PASS",
+      "blocked_backend": [
+        {
+          "pid": 559,
+          "start": "2026-09-19 09:09:05.602117+00",
+          "database": "bbdrain_sigterm",
+          "state": "active",
+          "wait": "advisory"
+        }
+      ],
+      "actual_recovery_retired_then_waited": true,
+      "remote_cli": {
+        "pid": 3588,
+        "start": "319120002",
+        "state": "S",
+        "signal": 0
+      },
+      "drain_backend": [
+        {
+          "pid": 580,
+          "start": "2026-09-19 09:09:05.896567+00",
+          "state": "idle"
+        }
+      ],
+      "signal": {
+        "pid": 3588,
+        "start": "319120002",
+        "state": "S",
+        "signal": 15
+      },
+      "signal_to_exit_seconds": 0.11296720709651709,
+      "unresolved": {
+        "exit": 143,
+        "seconds": 0.742977405898273,
+        "stdout_empty": true,
+        "stranded": false,
+        "deadline": false,
+        "interrupted": true
+      },
+      "resolved": {
+        "exit": 4,
+        "seconds": 0.0109033421613276,
+        "stdout_empty": true,
+        "stranded": true,
+        "deadline": false,
+        "interrupted": false
+      },
+      "backend_gone": true,
+      "bootstrap_retired": true,
+      "native_tables": 0,
+      "bootstrap_oid": 16407,
+      "before": {
+        "database_sha256": "67e1fabc871bf04535ea37f08cb6c94a08b18f1a6fc11e1a77cee30af258747f",
+        "files": {
+          ".bigbrotr-initialization/custody.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          ".bigbrotr-initialization/intent.json": "3a1557622fe3e06d973dd6ea4c527d412e557c658be999b2d028e02c93814320"
+        }
+      },
+      "after_equals_before": true,
+      "driver_destroyed_and_joined": true
+    },
+    {
+      "name": "sigint",
+      "status": "PASS",
+      "blocked_backend": [
+        {
+          "pid": 696,
+          "start": "2026-09-19 09:09:07.957925+00",
+          "database": "bbdrain_sigint",
+          "state": "active",
+          "wait": "advisory"
+        }
+      ],
+      "actual_recovery_retired_then_waited": true,
+      "remote_cli": {
+        "pid": 3622,
+        "start": "319120224",
+        "state": "S",
+        "signal": 0
+      },
+      "drain_backend": [
+        {
+          "pid": 718,
+          "start": "2026-09-19 09:09:08.116127+00",
+          "state": "idle"
+        }
+      ],
+      "signal": {
+        "pid": 3622,
+        "start": "319120224",
+        "state": "S",
+        "signal": 2
+      },
+      "signal_to_exit_seconds": 0.11535692494362593,
+      "unresolved": {
+        "exit": 130,
+        "seconds": 0.8633016357198358,
+        "stdout_empty": true,
+        "stranded": false,
+        "deadline": false,
+        "interrupted": true
+      },
+      "resolved": {
+        "exit": 4,
+        "seconds": 0.011258906219154596,
+        "stdout_empty": true,
+        "stranded": true,
+        "deadline": false,
+        "interrupted": false
+      },
+      "backend_gone": true,
+      "bootstrap_retired": true,
+      "native_tables": 0,
+      "bootstrap_oid": 16410,
+      "before": {
+        "database_sha256": "edd4be8d8b554802342dd9d890c14f1c4310d2453719fefe5152fa7b25b4920b",
+        "files": {
+          ".bigbrotr-initialization/custody.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          ".bigbrotr-initialization/intent.json": "23f812bdb41f1b48b7f025e99228e79b38b589474222d4dea3934eb13ab41d54"
+        }
+      },
+      "after_equals_before": true,
+      "driver_destroyed_and_joined": true
+    }
+  ],
+  "oracle": [
+    "Fixture consumes one fresh bootstrap credential into actual custodied tokio-postgres connection, observes queued advisory-lock SQL, aborts and joins query and actual driver, then exits and releases custody.",
+    "Independent SQL verifies exact bootstrap OID and residual PID/backend_start/database/state after producer exit.",
+    "Actual remote recovery CLI identity and its PostgreSQL polling connection are observed while the blocker remains held, including a residual connected to another database.",
+    "Deadline and signals return their precise diagnostics/codes before blocker release; exact residual remains active, bootstrap is NOLOGIN/password NULL, catalog dump and retained files are unchanged.",
+    "Release permits natural backend completion; waiting or fresh recovery returns the precise pristine-stranded refusal, preserving dump and marker bytes with zero native tables. No pg_terminate_backend or credential reset."
+  ],
+  "server_client_connection_check_interval": "0",
+  "review": {
+    "mode": "Independent read-only AI source review and root execution/integration review",
+    "finding": "Initial harness observed local docker-exec liveness only; corrected before execution to exact remote CLI plus real PostgreSQL drain query.",
+    "result": "No further concrete source counterexample identified at 1978e12",
+    "boundary": "Reviewer did not execute Tux, inspect remote processes or measure artifacts. Root read all case records and native build/check logs.",
+    "recorded_evidence_audit": {
+      "result": "no discrepancy found",
+      "verified": "15 raw files and evidence archive contents/hashes; regenerated Git archive with742 source hashes; separate1978e12 harness identity and unchanged production/fixture; five case outcomes, timings, build/checks and explicit scope",
+      "boundary": "Read-only local records and Git audit; no test rerun, Tux access or direct independent ELF/current-process observation"
+    }
+  },
+  "audit": {
+    "status": "PASS",
+    "source": "78e77346cb75379955aeb423e9fb33e7bd38533b",
+    "tree": "da0dd523f8b1aa78fd14bc2ba23f2dda72cc3a26",
+    "source_files": 742,
+    "source_archive_sha256": "7e7fc8a575feafc93144f3f284719ad15a43b8cc74809917b282883c100210d7",
+    "source_manifest_sha256": "25c41551b127bbf30ab638a66e82b2fb878bf56704f44d3019147a47367cacf9",
+    "artifacts": {
+      "main": {
+        "sha256": "e62e4c14036a6001bc4fde9b891081eee0b5e86160fc69aa6c5eaf6e6ac87f2c",
+        "bytes": 8791920,
+        "elf_machine": 62
+      },
+      "worker": {
+        "sha256": "c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227",
+        "bytes": 12608608,
+        "elf_machine": 62
+      }
+    },
+    "qualification": {
+      "initialization-drain": "PASS"
+    },
+    "cases": {
+      "initialization-drain": 5
+    },
+    "build_ready": true,
+    "terminal": {
+      "container_id": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 143,
+        "Error": "",
+        "StartedAt": "2026-09-19T09:06:18.227786388Z",
+        "FinishedAt": "2026-09-19T09:09:27.725918357Z"
+      },
+      "postgres_id": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-09-19T09:06:16.367954737Z",
+        "FinishedAt": "2026-09-19T09:09:29.025764205Z"
+      }
+    },
+    "owned_containers": [
+      "7f29d58ecb63a91777949facd3024eba09dc7bc330932c23d158ed95d82fd2fb",
+      "91c1b8e8d9374ca881e5305318e570a2973b377e808dcf076d1040a2811efbcb"
+    ],
+    "existing_containers_unchanged": 320,
+    "unrelated_containers_unchanged": 20,
+    "unrelated_running": 8,
+    "bigbrotr_running": 0,
+    "observed_at": "2026-09-19T09:09:29.462801+00:00",
+    "harness": {
+      "source": "1978e1227aead7daf69e30962a00b5778fca0174",
+      "tree": "fc05b380abfc5feddb925b9d9f39ea544f6a9660",
+      "script_sha256": "cbc1095041f7e628e5efe9eb11f36b4cf6faf74cdf4692b980f13bf605460e05",
+      "changed_paths": [
+        "docs/implementation/progress.md",
+        "docs/research/laboratory-inventory.json",
+        "experiments/archive-engine/initialization_drain_cases.py"
+      ],
+      "production_and_fixture_inputs_unchanged": true
+    }
+  },
+  "raw": {
+    "root": ".research/implementation/archive-worker/initialization-drain/qualified",
+    "identity": {
+      "tar_bytes": 163840,
+      "tar_sha256": "64362dbc89551372e770eaca30fcd7ae79ce71532db36cd341fb9b99346f0d0c",
+      "files": {
+        "resources.json": {
+          "bytes": 1229,
+          "sha256": "d74992751e8e64826f879745c19bceb4b1b08732819c64c5339c2c40645439fe"
+        },
+        "audit.json": {
+          "bytes": 2322,
+          "sha256": "5b16fdaac926d1143805a11b13b0ed99fc924fc4caa61536fa427abf5d5d7d10"
+        },
+        "container.log": {
+          "bytes": 283,
+          "sha256": "282f9e8b67098b995328dd23891de773f111babdf7be65273f79cd1a99f4ba36"
+        },
+        "out/build/source-manifest.json": {
+          "bytes": 90947,
+          "sha256": "25c41551b127bbf30ab638a66e82b2fb878bf56704f44d3019147a47367cacf9"
+        },
+        "out/native-tests/checks/cli-tests.log": {
+          "bytes": 2167,
+          "sha256": "84fca669ecef028cd15ca5408638e50868c1d0fb07c373eba39936ef897ca455"
+        },
+        "out/native-tests/checks/clippy.log": {
+          "bytes": 394,
+          "sha256": "35d52947ad46ecf68b5a506d15ade980bc7b7b9db429d53b51ff0a589a183c87"
+        },
+        "out/native-tests/checks/fixture.log": {
+          "bytes": 130,
+          "sha256": "c59ac6f87fcb4e3abc668c9a6068236991550292edb440bac7a27b864228d1be"
+        },
+        "out/native-tests/checks/parent-tests.log": {
+          "bytes": 4562,
+          "sha256": "a3bd4061fb12dbf2226ba01f6d013f633cbf1595ae25cb0f7ee7e8ec8d51e4da"
+        },
+        "out/native-tests/checks/result.json": {
+          "bytes": 4218,
+          "sha256": "981b2160087c63f6f8f0f58c588f08be3bbf7891c799ae77fb1c33d641cd11a6"
+        },
+        "out/native-tests/ordered-build.log": {
+          "bytes": 626,
+          "sha256": "d942346230ef7a3d019185b18cfcfe9dc4f2da4cb437278a19005bf6adc0511d"
+        },
+        "out/native-tests/ready.json": {
+          "bytes": 4911,
+          "sha256": "878efd7e8ba789e39c434db7e7485512b04322e12200cdb312aa54a6812c03a5"
+        },
+        "out/native-tests/result.json": {
+          "bytes": 2800,
+          "sha256": "f8b55f41deb1095ff3f5c4e59c2b215432eb61872b5083a03ff48cacd4d6bf27"
+        },
+        "out/native-tests/worker-identity.json": {
+          "bytes": 104,
+          "sha256": "c76d6822c6cff10729edc0d68f41196558b6cdedee0779cbf55ce624e1e80878"
+        },
+        "initialization-drain.json": {
+          "bytes": 20055,
+          "sha256": "1afa6f4051720183634af12960a279783fd8afbf2207b6a0481c6c23655ee0b9"
+        },
+        "initialization-drain.log": {
+          "bytes": 85,
+          "sha256": "521efad3bf038965b9958365e11ae8f9cbdd3131992ccaec69ff7e57d92ba380"
+        }
+      }
+    }
+  },
+  "limits": [
+    "Residual SQL was deliberately produced by the selected tokio-postgres driver, not by a blocked actual DuckDB/libpq operation. Native startup cancellation has separate earlier evidence; native queued-SQL/crash acknowledgement schedules remain open.",
+    "Same-boot Linux amd64/ext4 and PostgreSQL 16.15 isolated lab; no cross-boot/restore, power/disk failure, Linux arm64, RSS/capacity or release qualification.",
+    "Single-run timings are observations, not throughput/latency guarantees.",
+    "New initializer TLS/mTLS matrix, remaining native/install ambiguous completions and real Control+Archive M1 read/export/restart still required."
+  ]
+}
