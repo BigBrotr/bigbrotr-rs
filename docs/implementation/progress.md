@@ -161,3 +161,16 @@ setup functions and clones bbcheckpoint_reverse1 so failure cannot corrupt the
 signed baseline. SQL/native compatibility/cancellation/concurrency remain open;
 these five PASS cases do not finish checkpoint qualification. Root owns current
 harness/inventory/checkpoint edits; the829 product source files stay unchanged.
+
+SQL constraints now PASS25 on native PostgreSQL16.15 using harness5049a76,
+report checkpoint-schema-sql1.json, clone bbcheckpoint_sql_sql1; zero clients.
+Includes multirow AFTER visibility, independent shard/global revisions, holes,
+synthetic rejected/missing/wrong outcomes, immutable retention/FK distinction,
+rollback and pause. The signed baseline remains untouched. Current HEAD5049a76
+is ahead of origin by3; root owns new checkpoint_upgrade.py and this checkpoint.
+Next actual13-to14 cases use retained8b0660e old binary: empty/populated upgrade,
+old-client refusal, new admission on13 refusal and incompatible nonzero prior
+checkpoint. Static reading shows migration_runner currently maps14/55000 to a
+generic backend error; the new practical test requires an explicit recovery
+diagnostic and should expose that missing mapping before correction. No SQL
+invariant loss is inferred from the diagnostic gap. Compatibility NOT_RUN.
