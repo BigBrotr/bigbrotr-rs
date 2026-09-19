@@ -13,6 +13,11 @@ The current CLI provides help/version/build identity, bounded independent
 [PostgreSQL control migrations](docs/operations/schema-upgrades.md), with
 [one-time Control initialization](docs/operations/control-initialization.md) and
 accepted-configuration inspection.
+The development CLI also provides explicit [archive and coordinator
+initialization](docs/user/archive-initialization.md) and finite
+[retained-receipt inspection](docs/user/archive-receipts.md). These commands have
+separate prerequisites and qualification scopes; the running service currently
+supervises Control only.
 Durable event admission, archive and product services remain implementation work.
 This is not an installable release.
 The repository remains private and

@@ -71,6 +71,20 @@ print(json.dumps(checked))
 """
 
 
+def canonical_dump(text):
+    # The missing-SELECT control reorders this one real ACL array on regrant.
+    # Normalize only its known dump block, never GRANT text in COPY/functions.
+    # The same grantor issues these complete grants; preserve their multiplicity
+    # and every other byte. An unexpected dump shape is an unresolved oracle.
+    header = '-- Name: TABLE ducklake_snapshot; Type: ACL; Schema: public; Owner: CatalogManager\n--\n\n'
+    assert text.count(header) == 1
+    before, _, rest = text.partition(header)
+    block, separator, after = rest.partition('\n\n')
+    grants = block.splitlines()
+    assert separator and grants and all(line.startswith('GRANT ') and line.endswith(';') for line in grants)
+    return before+header+'\n'.join(sorted(grants))+separator+after
+
+
 def run(root):
     source = Path(__file__).resolve().parents[2]
     resources = json.loads((root/'resources.json').read_text())
@@ -299,6 +313,9 @@ def run(root):
             physical[mode] = physical_files(mode)
             original = rows('bbpub_control_'+mode)
             originals[mode] = original
+            report['preservation_before'] = dict(physical_files=physical,control_rows=originals,
+                catalog_sha256={m:hashlib.sha256(v.encode()).hexdigest() for m,v in catalog_dumps.items()})
+            save()
             files = input_files(home,mode)
             rocks = home/'rocks'; permission = rocks.stat().st_mode & 0o777; rocks.chmod(0)
             try:
@@ -407,12 +424,12 @@ def run(root):
         for mode in MODES:
             after_dump = dump(mode)
             (root/f'out/signed_{mode}/receipt-catalog-after.sql').write_text(after_dump)
-            assert after_dump == catalog_dumps[mode]
+            assert canonical_dump(after_dump) == canonical_dump(catalog_dumps[mode])
             assert physical_files(mode) == physical[mode]
             assert rows('bbpub_control_'+mode) == originals[mode]
             assert input_files(root/f'out/signed_{mode}',mode)
         passed('all-catalog-rows-and-retained-files-unchanged',
-               catalog_sha256={m:hashlib.sha256(v.encode()).hexdigest() for m,v in catalog_dumps.items()}, physical_files=physical)
+               canonical_catalog_sha256={m:hashlib.sha256(canonical_dump(v).encode()).hexdigest() for m,v in catalog_dumps.items()}, physical_files=physical)
         assert inputs.read_bytes() == saved
         no_clients()
         report['status'] = 'PASS'
