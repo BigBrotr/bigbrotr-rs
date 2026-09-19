@@ -325,3 +325,64 @@ waits precede deadline/cancellation; missing or corrupt receipt files cannot bec
 absence for an unrelated target. Same-input retry succeeds after exact restoration.
 All source bytes remain retained. The two-receipt workload and bounded full scan
 do not establish aged capacity, persistent lifetime recovery or protection.
+
+## Persistent local attempt custody candidate
+
+`LocalAttempt::create` takes the actual immutable Control attempt and scientific
+catalog binding before a fresh writer is provisioned. The configured coordinator
+journal root is canonical, owner-only mode0700 and separate from archive data and
+job spill. Creation reserves a new directory named by the attempt's lowercase
+bytes16 hex. Existing directories, including interrupted partial creation, refuse;
+there is no retry cleanup or silent reuse.
+
+The permanent `custody.lock` is an empty mode0600 regular file, opened readonly
+and exclusively locked with nonblocking `flock`. The owner takes that lock before
+writing the complete `intent.json`. The closed compact JSON format
+`bigbrotr-local-archive-custody/1` binds boot ID, lock device/inode, dataset/catalog/
+root, attempt, coordinator and worker incarnations, issuance ordinal, topology and
+schema1 semantic digest. It omits the mutable `created`/`latest_issued` observations.
+The lock, intent and both directory levels are synchronized before returning.
+Intent bytes are capped at32KiB; recovery compares the exact encoded immutable
+identity, rejecting altered/extra fields, partial bytes and substituted inodes.
+This is operational custody state, not another archive transaction authority.
+
+The initial entrypoint accepts the current Linux boot and an actual local ext4
+mount. Restored/copied journals, missing records, another boot, other filesystems
+and another host require separate qualified recovery; none becomes an absent
+attempt automatically. Keep the journal root/inodes stable for the lifetime of
+retained obligations. Do not use NFS/CIFS, unlink/replace a lock, copy its bytes to
+claim ownership, or infer shared storage from matching path names.
+
+The publication parent consumes the matching fresh custody value together with
+FreshWriter. `command-fds` preserves one duplicate of the same locked open file
+description across exec before credentials enter stdin. It preserves the existing
+FD number and leaves all three bounded transport pipes unchanged. The trusted
+worker must keep inherited custody descriptors open until process exit and must
+never unlock them. A recovered value cannot launch, and even a failed fresh spawn
+consumes that value's launch allowance. Worker exit, grants and catalog outcomes
+keep their existing separate rules.
+
+Every dedicated provisioning catalog Connection must be wrapped with
+`retain_catalog_connection` before it is polled/spawned. Its clone remains until
+transport destruction, including cancellation before first poll. Dropping the
+provisioning future or detaching its JoinHandle is insufficient: queued PostgreSQL
+COMMIT may continue. The signed fixture now uses such a dedicated driver and joins
+it before handing the credential to the native publisher. This does not grant
+ordinary workers the fixture's privileged manager authority.
+
+`LocalAttempt::recover` locks first, then validates the exact journal, retaining
+the lock through the caller's catalog resolution. Occupied is a retryable lack of
+local exclusion, never permission to force replacement. An unrelated concurrent
+fork may briefly inherit CLOEXEC descriptors until exec and conservatively delay
+recovery. A failed/time-limited lock attempt cannot prove death. Successful custody
+reacquisition excludes registered descriptor holders under this trusted protocol;
+it is not whole-process reap, persisted resource reconciliation, backend rollback,
+receipt absence or file protection. Seal and resolve native catalog activity,
+inspect the fresh receipt and its required closure before deciding replay or ACK.
+Missing imported catalog attempts need their own nonmutating resolution; a seal
+Conflict is not a successful exclusion receipt.
+
+The implementation and Mac mechanism tests remain a candidate until exact-source
+Linux process/connection/engine failure scenarios are executed. Cross-boot recovery,
+installed lifecycle/resource reconciliation, incomplete-journal operator recovery,
+aged journal/receipt costs, protection and the complete M1 journey remain open.

@@ -21,12 +21,14 @@ required; finite fixtures do not implement that lifecycle.
 
 ## Actual Git and ownership
 
-Mac main candidate HEAD is 0b3a427de97d07bb092a7d0a69375a1d9eeb662b, tree
-f6535fed61a4af06a4279728d6dfc45369687a88. It is unpublished; origin/main last
-readback is d4f489548713ef06e39af8249f442522b1d322f1. Root is sole writer/integrator.
-Only receipt evidence/documentation, packaging README, inventory and this checkpoint
-are dirty after the tested candidate. No product, applied migration or dependency
-change after 0b3a427. No merge/rebase, remote editing or other contributor's work.
+Mac main and origin/main are ba5aca48727a11feeff4350877149247b2243a2d, freshly
+verified after ordinary fast-forward push. The worktree was clean before the local custody candidate began. Root is sole
+writer/integrator; current dirty files are owned: archive lifetime module/tests,
+worker/publisher wiring and publication probe, Cargo manifests/lock, dependency
+registry, related contracts/task/checkpoint and laboratory inventory. Tested product source remains
+0b3a427de97d07bb092a7d0a69375a1d9eeb662b, tree
+f6535fed61a4af06a4279728d6dfc45369687a88; ba5aca4 changes only documentation,
+evidence and inventory. No merge/rebase, remote editing or contributor changes.
 
 Transfer41732 ran from clean Git. All 691 Mac Git archive files match native
 checkout/export; manifest SHA
@@ -35,10 +37,10 @@ Native build/checks, signed13741, reader72032, terminal89582, retirement97365 an
 copies59984/65747 are terminal. All compilers are terminal. Source and final recorded-evidence reviews by read-only AI publication_review
 finished: exact hashes/outcomes/authority/cleanup agree. One report sentence was
 corrected to preserve TerminationUnknown precedence. Root has audited complete code/diff, contracts, actual outputs, source/
-artifact identities and terminal ownership. Documentation checks pass. Private origin was freshly fetched and remains at
-d4f4895; repository is private, named bigbrotr-rs and not archived. The containing
-evidence commit is ready for ordinary fast-forward delivery before another
-product edit. Resolve actual HEAD/origin on resumption.
+artifact identities and terminal ownership. Documentation checks pass. Private origin was fetched before delivery; repository
+is private, named bigbrotr-rs and not archived. Resumption rechecked all26 raw
+evidence hashes, terminal runner/PG state and absent dedicated network. Eight
+unrelated workloads remain running. Delivery of ba5aca4 is complete; the new local custody candidate below is active.
 
 ## Fresh receipt observer qualification
 
@@ -145,12 +147,55 @@ MON-009 uses additive0008, authoritative caps, sorted SHARE locks, inverse check
 READ COMMITTED and incompatible-history refusal; 24 actual PG cases pass. Do not
 mechanically rerun unrelated suites.
 
+## Local attempt custody candidate (dirty Mac work)
+
+P02-T04 steps4/5 now implement a synchronized immutable local journal before
+credential provisioning and close-only flock custody across the coordinator,
+actual dedicated PostgreSQL connection driver and one exec child. Recovery locks
+the same inode and compares complete immutable identity; it cannot launch again.
+The consumer uses the real provision/activate driver and retains recovered custody
+through fresh receipt inspection. See [candidate contract](../reference/archive-handoff.md#persistent-local-attempt-custody-candidate).
+Linux same-boot local ext4 only; no installed recovery or full-process exclusion
+claim. Pending remains retained. No task checkbox was completed.
+
+Mac development evidence under .research/implementation/archive-worker/lifetime:
+complete-core.log has8 scoped cases PASS; archive-regression.log has21 archive
+cases PASS; clippy-first.log and consumer-check.log PASS; artifacts.log/handoff.log
+PASS for structural checks only. All commands are terminal; fresh process listing
+finds no Cargo/rustc/native runner. These results cover the dirty candidate, not a
+native or released revision. Retained failures: missing transport custody clone
+(driver-red.log), ext3 accepted from shared ext magic (mount-red.log), initial
+journal stub and compile failures. destruction-red.log actually PASSed on the
+original wrapper; the explicit transport-before-lock field order is a clarity
+improvement, not a reproduced failure. Concurrent unrelated fork may transiently
+retain CLOEXEC locks until exec; bounded test retries acquire the actual lock,
+never infer exclusion from time.
+
+command-fds0.3.3 and four new transitive packages are locked; existing lock entries
+are unchanged. Exact upstream preserved_fds code was inspected. AI readonly
+publication_review found shared ext magic and requested drop-order discrimination;
+fixed/tested, final combined source review found no further product blocker. Its fixture
+cleanup finding was corrected so one wrapper-stop failure cannot skip remaining
+observations. Root verified that worker PDEATHSIG already forbids an ordinary
+parent-death survivor; the native fixture preserves that safeguard and separately
+tests live child-only descriptor custody. Actual native worker inheritance, parent death and queued catalog COMMIT
+cancellation have NOT_RUN status. New custody_cases.py and signed fixture modes
+cover those boundaries; an explicitly selected Linux-only test exercises the real
+worker after coordinator descriptors close. Final Mac archive21/Clippy/structural
+checks pass (archive-final-local.log, fixture-final-clippy.log, fixture-artifacts.log,
+fixture-handoff.log). Initial fixture Clippy E0716 was corrected and retained. No new
+Tux lab/resources exist. Inventory local_attempt_custody records this candidate.
+
 ## Next bounded action
 
-Complete ordinary private fast-forward delivery of this qualified receipt slice
-and verify remote HEAD. Then continue P02-T04
-steps 4/5: inspect retained Control attempt and Archive runtime/recovery contracts
-and implement persistent unique worker/credential lifecycle around the now-real
-publisher/receipt consumers. Preserve pending through unknown termination and
-commit outcomes. Qualified protection and M1 read/export/restart follow; no installed
-Archive role, selected optional capability or release is complete.
+Commit the reviewed unpublished candidate and transfer exact Git to a new Linux
+lab. The ignored launcher now copies 0b3a427 cache and validates a bounded bundle
+of the five added crate archives plus sparse-index entries against the current
+lock before its offline build. Prefetch archive SHA256
+52d849166f32e0c50e09cd9f758049ccdfd7a780f10a9535b903ad0da0d3e3cd.
+Fresh read-only preflight finds zero BigBrotr containers running and eight unrelated
+workloads running; retained at lifetime/preflight-local.json. No new lab yet. Create a new inventoried lab;
+never restart the retired receipt lab. Execute actual ext4 host admission, native
+child/parent-loss and real PostgreSQL driver/queued-COMMIT custody schedules plus
+the six signed publication/receipt schedules. Persistent installed lifecycle,
+missing-provision recovery, protection and M1 remain subsequent required work.

@@ -109,7 +109,13 @@ submitted remains a separate backend/receipt obligation. The real negative contr
 keeps that client alive and commits after login revocation and empty activity.
 This is a dependency prerequisite, not implemented persistent product recovery.
 P02-T04 must persist attempt/process/credential ownership before exposing write
-authority and qualify successor recovery. An unreachable old host is unknown
+authority and qualify successor recovery. The initial
+[local custody candidate](../reference/archive-handoff.md#persistent-local-attempt-custody-candidate)
+binds an immutable, synchronized per-attempt journal to close-only descriptor
+custody in the coordinator, actual catalog transport and native child. It is
+restricted to the same Linux boot and qualified local ext4 placement. This does
+not replace server transaction resolution, positive process/resource reconciliation
+or explicit cross-boot/host recovery. Native qualification remains pending. An unreachable old host is unknown
 until an enforced exclusion is established; do not substitute a timeout or treat
 new local process capacity as old-host termination. Changing the native connection
 protocol, pool/credential ownership or process containment requires requalification.

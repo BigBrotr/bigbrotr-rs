@@ -77,6 +77,7 @@ class Proxy:
         upstream_writer.write(header + startup)
         await upstream_writer.drain()
         state = dict(data=False, commit=False, backend_pid=None)
+        manager_committed = asyncio.Event()
 
         async def pump(source, destination, frontend):
             while True:
@@ -86,6 +87,11 @@ class Proxy:
                 tag, header, body = frame
                 if frontend and tag == b'Q':
                     query = body.upper()
+                    # Closed manager fixture: only the generated archive login
+                    # marks provisioning, never log its verifier or SQL bytes.
+                    if self.mode == 'hold-manager-commit' and query.startswith(b'CREATE ROLE "BB_ARCHIVE_'):
+                        state['data'] = True
+                        self.report['data_queries'] += 1
                     if b'INSERT INTO' in query and b'DUCKLAKE_DATA_FILE' in query:
                         state['data'] = True
                         self.report['data_queries'] += 1
@@ -94,6 +100,8 @@ class Proxy:
                     if query.rstrip(b'\0; \r\n') == b'COMMIT' and state['data']:
                         state['commit'] = True
                         self.report['data_commits'] += 1
+                        if not await self.hold('manager-commit', state['backend_pid']):
+                            return
                         if not await self.hold('commit', state['backend_pid']):
                             return
                         if self.mode == 'before-forward' and not self.report['faults']:
@@ -118,6 +126,7 @@ class Proxy:
                         raise ValueError('rejection-budget')
                 if not frontend and tag == b'C' and body == b'COMMIT\0' and state['commit']:
                     self.report['server_complete'] += 1
+                    manager_committed.set()
                     state['commit'] = False
                     state['data'] = False
                     if self.mode == 'after-complete' and not self.report['faults']:
@@ -132,6 +141,11 @@ class Proxy:
                     state['data'] = False
                 destination.write(tag + header + body)
                 await destination.drain()
+                if frontend and self.mode == 'hold-manager-commit' and tag == b'Q' and body.rstrip(b'\0; \r\n').upper() == b'COMMIT':
+                    # Once explicitly released, observe the real server COMMIT
+                    # before handling the dead manager's EOF. This fixture owns
+                    # both ends; production never receives this proxy behavior.
+                    await manager_committed.wait()
 
         pumps = [asyncio.create_task(pump(reader, upstream_writer, True)),
                  asyncio.create_task(pump(upstream, writer, False))]
@@ -188,7 +202,7 @@ class Proxy:
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--mode', choices=['pass', 'before-forward', 'after-complete', 'hold-data', 'hold-commit'], required=True)
+    parser.add_argument('--mode', choices=['pass', 'before-forward', 'after-complete', 'hold-data', 'hold-commit', 'hold-manager-commit'], required=True)
     try:
         sys.exit(asyncio.run(Proxy(parser.parse_args().mode).run()))
     except Exception:

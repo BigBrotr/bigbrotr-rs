@@ -37,6 +37,7 @@ checks = [
     ('receipt-input', ['cargo','test','--locked','--offline','--release','-p','bigbrotr-archive-worker','--test','receipt']),
     ('receipt-parent', ['cargo','test','--locked','--offline','--release','-p','bigbrotr','--lib','storage::archive::receipts']),
     ('receipt-protocol', ['cargo','test','--locked','--offline','--release','-p','bigbrotr-protocol','--test','archive_receipt']),
+    ('custody', ['cargo','test','--locked','--offline','--release','-p','bigbrotr','--lib','storage::archive::lifetime']),
 ]
 assert execute(checks,out,SOURCE,env,{'source':manifest['revision'],'native_toolchain':native},1800)['status']=='PASS'
 identity = dict(source=manifest['revision'], native_toolchain=native)
@@ -49,5 +50,10 @@ for source, destination, label in [
     shutil.copy2(source,destination)
     destination.chmod(0o500)
     identity[label] = file_hash(destination)
+assert execute([
+    ('native-custody', ['cargo','test','--locked','--offline','--release','-p','bigbrotr','--lib',
+                        'native_worker_alone_retains_custody_after_coordinator_descriptors_close',
+                        '--','--ignored','--nocapture'])
+],out/'custody-native',SOURCE,env,{'source':manifest['revision'],'native_toolchain':native},120)['status']=='PASS'
 (out/'ready.json').write_text(json.dumps(identity,indent=2)+'\n')
 print(json.dumps({'status':'READY',**identity}),flush=True)

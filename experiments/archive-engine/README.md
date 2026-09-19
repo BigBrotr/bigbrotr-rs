@@ -314,3 +314,21 @@ passes all six schedules, including the original three after proxy changes.
 Source/artifact/terminal audits pass; owned containers are stopped and network
 retired. This is finite native fencing evidence, not installed recovery or orphan
 cleanup.
+
+`custody_cases.py --root <owned-root>` adds three candidate local-journal schedules
+using the actual signed admission fixture, publication parent and PostgreSQL
+provisioning adapter. It kills only an identity-checked parent PID; the existing
+native worker's parent-death SIGKILL must terminate its child. A separate explicit
+Linux amd64 native test drops coordinator descriptors while the spawning thread
+lives, requiring the worker alone to keep the lock through engine startup.
+
+Two manager schedules cancel an actual queued provisioning COMMIT and detach its
+driver, then destroy the transport or kill the manager. Recovery must remain
+Occupied while the transport lives. After its destruction, local custody can be
+recovered while a separately owned proxy still holds the catalog transaction;
+fresh pg_blocking_pids must show product sealing waiting on that transaction.
+Only explicit proxy release permits COMMIT/sealing. The final role is disabled,
+the immutable attempt is retained, no scientific files are referenced and all
+41 Rocks rows match the independent retained digest. The proxy never logs SQL,
+verifiers or credentials. These sources are proposed tests until an exact native
+report records their actual outcomes; they do not implement installed recovery.

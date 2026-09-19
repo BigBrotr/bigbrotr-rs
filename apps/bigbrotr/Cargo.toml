@@ -17,6 +17,7 @@ zeroize.workspace = true
 bigbrotr-model.workspace = true
 bigbrotr-protocol.workspace = true
 clap.workspace = true
+command-fds.workspace = true
 getrandom.workspace = true
 rocksdb.workspace = true
 rustix = { workspace = true, features = ["time"] }

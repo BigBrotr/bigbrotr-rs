@@ -196,6 +196,15 @@
       "default_features": false,
       "license": "Apache-2.0",
       "source": "https://docs.rs/arrow/58.4.0/arrow/"
+    },
+    {
+      "name": "command-fds",
+      "version": "0.3.3",
+      "purpose": "Preserve one owned archive custody descriptor across private child exec without application unsafe code; no Tokio feature",
+      "license": "Apache-2.0",
+      "source": "https://docs.rs/command-fds/0.3.3/command_fds/",
+      "default_features": false,
+      "features": []
     }
   ],
   "lock": "Cargo.lock",

@@ -31,6 +31,7 @@ pub enum PreparationError {
     InvalidLimits,
     InvalidBootstrap,
     InvalidTemporaryRoot,
+    Custody(super::LifetimeError),
     Unavailable,
     Installation(InstallationError),
     Process(ProcessError),
@@ -178,6 +179,16 @@ impl<'a> Preparation<'a> {
         extra: &[String],
         budget: &ResourceBudget,
     ) -> Result<super::process::Process<'a>, PreparationError> {
+        self.start_with_custody(mode, extra, budget, None)
+    }
+
+    pub(super) fn start_with_custody(
+        &self,
+        mode: &str,
+        extra: &[String],
+        budget: &ResourceBudget,
+        custody: Option<&super::LocalAttempt>,
+    ) -> Result<super::process::Process<'a>, PreparationError> {
         let native_bytes = self
             .limits
             .memory_bytes
@@ -222,6 +233,11 @@ impl<'a> Preparation<'a> {
                 self.limits.threads.to_string(),
             ])
             .args(extra);
+        if let Some(custody) = custody {
+            custody
+                .inherit(&mut command)
+                .map_err(PreparationError::Custody)?;
+        }
         super::process::Process::spawn(&mut command, native, control, self.deadline, self.cancelled)
             .map_err(PreparationError::Process)
     }

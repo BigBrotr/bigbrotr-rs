@@ -578,3 +578,38 @@ three Rust material cases pass locally. The [native credential report](../implem
 at `d2b2609` qualifies actual PG16.15 SCRAM login, wrong-password refusal,
 non-superuser provisioning/membership, sealing, commit ambiguity and finite native
 handoff. Persistent service recovery and scientific publication remain separate.
+
+
+### Local archive custody descriptor candidate
+
+P02-T04 adds `command-fds`0.3.3 without default/optional features for one concrete
+private-worker descriptor. Inspected upstream commit
+`750b7be437f3063ed9e080bffd9050e293031e82`, `src/lib.rs`:
+`preserved_fds` owns its input until Command destruction and clears CLOEXEC only
+in the forked child through a nonallocating pre-exec callback. The parent keeps
+its ordinary CLOEXEC descriptor. The implementation uses preservation, not fixed
+FD remapping, avoiding collisions with standard streams or the exec-error pipe.
+No application unsafe code or child-side unsafe inherited-FD initializer is used.
+The lockfile descriptor is process-owned until exit and must never be explicitly
+unlocked, closed or reused by worker code. This is a trusted native worker
+contract, not containment against malicious child code.
+
+The locked additions are nix0.31.3 (fs; safe fcntl wrapper), cfg_aliases0.2.2 and
+thiserror/thiserror-impl2.0.20. Their MIT/Apache-2.0 licenses and the direct
+Apache-2.0 license use the existing license policy. No engine version changes.
+Source inspection of rustix1.1.5 confirms direct Linux flock and the Darwin libc
+flock wrapper. [Linux flock semantics](https://man7.org/linux/man-pages/man2/flock.2.html)
+retain a lock across dup/fork/exec until the final descriptor closes; explicit
+unlock would instead release every duplicate. A separately opened descriptor
+contends even in the same process. Network filesystems have different semantics
+and are excluded from this initial Linux ext4 candidate. Mac development tests
+cannot qualify Linux or host recovery.
+
+The permanent journal inode is never replaced or deleted by retry. Lock acquisition
+precedes complete manifest publication, and recovery locks before comparing the
+exact retained identity. A dedicated catalog connection must also retain a clone
+through transport destruction: tokio-postgres0.7.18 marks COMMIT done before
+awaiting its reply and its connection task can continue draining queued work
+after the operation future is dropped. Joining the operation alone is insufficient.
+This source review is not native qualification; actual process/driver crash and
+recovery evidence remains required before custody can authorize successor work.

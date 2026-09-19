@@ -7348,6 +7348,32 @@
         "125ea8f257bc52523aa5c68bbbc4f413df5d70ec67c8cbbc4dbccc2835a6cac5"
       ],
       "report": "docs/implementation/evidence/p02-archive-receipts-native-20260919.json"
+    },
+    "local_attempt_custody": {
+      "base_source": "ba5aca48727a11feeff4350877149247b2243a2d",
+      "state": "Root-owned dirty Mac candidate; no new Tux resources or active compiler",
+      "local_root": ".research/implementation/archive-worker/lifetime",
+      "local_validation": {
+        "core_cases": 8,
+        "archive_regression_cases": 21,
+        "clippy": "PASS",
+        "publication_example_check": "PASS",
+        "structural_artifact_handoff_checks": "PASS"
+      },
+      "native_status": "NOT_RUN: exact Linux host profile, native child parent-loss and queued PostgreSQL COMMIT custody remain required",
+      "scope": "Persistent local custody only; no installed lifecycle, full-process termination, receipt absence, protection or release claim",
+      "prefetch": {
+        "archive": ".research/implementation/archive-worker/lifetime/dependency-prefetch.tar",
+        "sha256": "52d849166f32e0c50e09cd9f758049ccdfd7a780f10a9535b903ad0da0d3e3cd",
+        "packages": 5,
+        "files": 10,
+        "status": "Mac cache bytes verified against current Cargo.lock; Tux copy not yet executed"
+      },
+      "preflight": {
+        "path": ".research/implementation/archive-worker/lifetime/preflight-local.json",
+        "bigbrotr_running": 0,
+        "unrelated_running": 8
+      }
     }
   },
   "implementation_monitor_corrections_20260918": {

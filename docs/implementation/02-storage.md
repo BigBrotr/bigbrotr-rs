@@ -352,8 +352,13 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   manager membership, real authentication, sealing, both COMMIT ambiguity branches
   and same-intent races. The signed native races linked above additionally qualify
   finite scientific publication versus activation in both lock orders. Persistent
-  lifecycle and installed recovery remain required. No step is complete from these
-  prerequisites.
+  lifecycle and installed recovery remain required. The new
+  [local attempt custody candidate](../reference/archive-handoff.md#persistent-local-attempt-custody-candidate)
+  synchronizes immutable intent before credentials, binds actual provisioning
+  drivers and native exec to one close-only lock, and refuses another launch from
+  recovered state. Exact-source Linux crash/cancellation/connection qualification,
+  incomplete journal and cross-boot recovery, resource reconciliation and protection
+  remain required. No step is complete from these prerequisites.
 - [ ] **Step 6:** Handle empty and one-small-event timer batches; publish useful progress
   without waiting for a size threshold that may never be reached.
 - [ ] **Step 7:** **Practical P02-T04:** run real PG/DuckLake transactions; kill preparation,

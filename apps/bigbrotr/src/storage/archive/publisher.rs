@@ -1,5 +1,5 @@
 //! Consuming fresh credential handoff to one supervised finite publisher.
-use super::{Preparation, PreparationError, ProcessError};
+use super::{LocalAttempt, Preparation, PreparationError, ProcessError};
 use crate::{
     runtime::ResourceBudget,
     storage::{
@@ -137,11 +137,14 @@ impl Write for Size {
 impl Preparation<'_> {
     /// Known native completion only, never protection or pending ACK. The caller
     /// must retain source/topology authority and the durable attempt across parent
-    /// loss. This move consumes even a refused fresh credential; do not reissue it.
+    /// loss. Custody must have been synchronized before provisioning; its actual
+    /// catalog driver must retain a descriptor clone through destruction. This
+    /// move consumes even a refused fresh credential/custody; do not reissue it.
     pub fn publish_pending(
         self,
         pending: &PendingBatch,
         writer: FreshWriter,
+        custody: LocalAttempt,
         route: &CatalogRoute<'_>,
         budget: &ResourceBudget,
     ) -> Result<PublicationResult, PublicationError> {
@@ -155,7 +158,8 @@ impl Preparation<'_> {
             std::slice::from_ref(pending.batch()),
         )
         .map_err(|_| PublicationError::Identity)?;
-        if identity != &science
+        if !custody.matches(&request, identity)
+            || identity != &science
             || archive.dataset_id() != request.dataset()
             || archive.digest() != request.batch_digest()
         {
@@ -192,13 +196,14 @@ impl Preparation<'_> {
             let mut size = Size(0);
             serde_json::to_writer(&mut size, &input).map_err(|_| PublicationError::InvalidInput)?;
             let mut process = self
-                .start(
+                .start_with_custody(
                     "publish-batch",
                     &[
                         self.limits.max_records.to_string(),
                         self.limits.max_encoded_bytes.to_string(),
                     ],
                     budget,
+                    Some(&custody),
                 )
                 .map_err(PublicationError::Preparation)?;
             let write = process.write_all(&size.0.to_be_bytes()).and_then(|()| {

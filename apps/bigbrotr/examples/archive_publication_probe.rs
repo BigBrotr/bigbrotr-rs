@@ -6,8 +6,8 @@ use bigbrotr::{
     },
     storage::{
         archive::{
-            ArtifactIdentity, CatalogReaderCredentials, CatalogRoute, CatalogTls, Preparation,
-            PreparationLimits, PublicationError, ReceiptError, ReceiptObservation,
+            ArtifactIdentity, CatalogReaderCredentials, CatalogRoute, CatalogTls, LocalAttempt,
+            Preparation, PreparationLimits, PublicationError, ReceiptError, ReceiptObservation,
             WorkerInstallation,
         },
         postgres::{
@@ -37,6 +37,8 @@ use std::{
 };
 use tokio_postgres::{Client, Config, NoTls};
 use zeroize::Zeroizing;
+#[path = "support/publication_custody.rs"]
+mod custody;
 #[path = "support/publication_ingest.rs"]
 mod ingest;
 const MIB: u64 = 1024 * 1024;
@@ -78,6 +80,13 @@ async fn connect(
     Client,
     tokio::task::JoinHandle<Result<(), tokio_postgres::Error>>,
 ) {
+    let (client, connection) = connection_config(database, role)
+        .connect(NoTls)
+        .await
+        .unwrap();
+    (client, tokio::spawn(connection))
+}
+fn connection_config(database: &str, role: &str) -> Config {
     let mut config = Config::new();
     config
         .host("127.0.0.1")
@@ -86,8 +95,36 @@ async fn connect(
         .password(fs::read(format!("/secrets/{role}")).unwrap())
         .application_name("bigbrotr-signed-publication-probe")
         .connect_timeout(Duration::from_secs(5));
-    let (client, connection) = config.connect(NoTls).await.unwrap();
-    (client, tokio::spawn(connection))
+    config
+}
+async fn provision(
+    database: &str,
+    custody: &LocalAttempt,
+    identity: &CatalogIdentity,
+    receipt: &bigbrotr::storage::postgres::archive_attempt::ArchiveAttemptReceipt,
+    report_activation: bool,
+) -> catalog_guard::FreshWriter {
+    let (mut manager, connection) = connection_config(database, "postgres")
+        .connect(NoTls)
+        .await
+        .unwrap();
+    // The dedicated transport itself holds custody before any provisioning SQL.
+    let driver = tokio::spawn(custody.retain_catalog_connection(connection).unwrap());
+    if report_activation {
+        let pid: i32 = manager
+            .query_one("SELECT pg_backend_pid()", &[])
+            .await
+            .unwrap()
+            .get(0);
+        emit(serde_json::json!({"event":"activation-begin","backend_pid":pid}));
+    }
+    let writer =
+        catalog_guard::provision_and_activate(&mut manager, identity, receipt, &Cell::new(false))
+            .await
+            .unwrap();
+    drop(manager);
+    driver.await.unwrap().unwrap();
+    writer
 }
 async fn initialize_control(database: &str) {
     let (mut admin, driver) = connect(database, "postgres").await;
@@ -187,12 +224,14 @@ async fn run(mode: &str, port: u16) {
         "owner_first" => 3,
         "held_commit" => 4,
         "held_rollback" => 5,
+        "custody_worker" | "custody_cancel" | "custody_manager" => 6,
         _ => panic!("closed case"),
     };
     let database = format!("bbpub_{mode}");
     let control = format!("bbpub_control_{mode}");
     let home = directory(PathBuf::from(format!("/out/signed_{mode}")));
     let data = directory(home.join("kind=7"));
+    let custody_root = directory(home.join("lifetimes"));
     let data_root = format!("{}/", data.display());
     let cancel = AtomicBool::new(false);
     let budget = ResourceBudget::new(
@@ -274,10 +313,37 @@ async fn run(mode: &str, port: u16) {
         expected_pending.push(serde_json::json!({"first":first,"last":p.batch().last().sequence.get(),"admission_digest":p.batch().digest(),"archive_digest":ArchiveBatch::new(1,TopologyGeneration::new(0),std::slice::from_ref(p.batch())).unwrap().digest(),"facts":p.batch().records().iter().zip(p.records()).map(|(r,b)|serde_json::json!({"sequence":r.source_record_id.sequence.get(),"digest":r.payload_digest,"preimage_hex":b.iter().map(|v|format!("{v:02x}")).collect::<String>()})).collect::<Vec<_>>()}));
     }
     emit(serde_json::json!({"event":"retained-inputs","batches":expected_pending}));
+    if mode.starts_with("custody_") {
+        let pending = ingest::pending(&store, 1, &budget, &cancel);
+        let request = custody::request(mode, pending.batch());
+        let receipt = owner
+            .register_archive_attempt(&request, &Cell::new(false))
+            .await
+            .unwrap();
+        // The observation process can acquire a new Control owner immediately;
+        // this release does not release archive journal or catalog custody.
+        owner.release().await.unwrap();
+        custody::Case {
+            home: &home,
+            database: &database,
+            identity: &identity,
+            installation: &installation,
+            worker_budget: &worker_budget,
+        }
+        .run(mode, port, receipt, &pending)
+        .await;
+        drop(store);
+        let after = ingest::logical_state(&path);
+        emit(
+            serde_json::json!({"event":"custody-terminal","rocks_rows":after.0,"rocks_digest":after.1}),
+        );
+        return;
+    }
     let mut outcomes = Vec::new();
     let mut successor: Option<(
         bigbrotr::storage::postgres::archive_attempt::ArchiveAttemptReceipt,
         catalog_guard::FreshWriter,
+        LocalAttempt,
     )> = None;
     for (ordinal, first) in [(1u8, 6), (2, 1), (3, 6), (4, 6)] {
         if ordinal == 4 && matches!(mode, "before" | "after") {
@@ -302,24 +368,19 @@ async fn run(mode: &str, port: u16) {
             &archive,
         )
         .unwrap();
-        let (receipt, writer) = if let Some((receipt, writer)) = successor.take() {
+        let (receipt, writer, custody) = if let Some((receipt, writer, custody)) = successor.take()
+        {
             assert_eq!(ordinal, 4);
             assert_eq!(receipt.request(), &request);
-            (receipt, writer)
+            (receipt, writer, custody)
         } else {
             let receipt = owner
                 .register_archive_attempt(&request, &Cell::new(false))
                 .await
                 .unwrap();
-            let writer = catalog_guard::provision_and_activate(
-                &mut admin,
-                &identity,
-                &receipt,
-                &Cell::new(false),
-            )
-            .await
-            .unwrap();
-            (receipt, writer)
+            let custody = LocalAttempt::create(&custody_root, &receipt, &identity).unwrap();
+            let writer = provision(&database, &custody, &identity, &receipt, false).await;
+            (receipt, writer, custody)
         };
         assert!(receipt.created);
         let expected_receipt =
@@ -365,30 +426,21 @@ async fn run(mode: &str, port: u16) {
                         tls: CatalogTls::LocalPlaintext(PlaintextBoundary::Loopback),
                     };
                     preparation(&copied_installation, &temp, &AtomicBool::new(false))
-                        .publish_pending(&pending, writer, &route, &copied_budget)
+                        .publish_pending(&pending, writer, custody, &route, &copied_budget)
                 });
             barrier(&home.join("activate"), 15).await;
-            let pid: i32 = admin
-                .query_one("SELECT pg_backend_pid()", &[])
-                .await
-                .unwrap()
-                .get(0);
-            emit(serde_json::json!({"event":"activation-begin","backend_pid":pid}));
-            let next_writer = catalog_guard::provision_and_activate(
-                &mut admin,
-                &identity,
-                &next_receipt,
-                &Cell::new(false),
-            )
-            .await
-            .unwrap();
-            successor = Some((next_receipt, next_writer));
+            let next_custody =
+                LocalAttempt::create(&custody_root, &next_receipt, &identity).unwrap();
+            let next_writer =
+                provision(&database, &next_custody, &identity, &next_receipt, true).await;
+            successor = Some((next_receipt, next_writer, next_custody));
             emit(serde_json::json!({"event":"activation-complete","ordinal":4}));
             child.await.unwrap()
         } else {
             preparation(&installation, &temp, &cancel).publish_pending(
                 &pending,
                 writer,
+                custody,
                 &route,
                 &worker_budget,
             )
@@ -414,6 +466,7 @@ async fn run(mode: &str, port: u16) {
                 .unwrap(),
             !(ordinal == 3 && index >= 3)
         );
+        let _recovered_custody = LocalAttempt::recover(&custody_root, &receipt, &identity).unwrap();
         catalog_guard::inspect(&mut admin, &identity).await.unwrap();
         let reader_route = CatalogRoute {
             address: "127.0.0.1".parse().unwrap(),
@@ -486,6 +539,15 @@ fn main() {
         .build()
         .unwrap()
         .block_on(async {
+            if args[2] == "observe" || args[2] == "seal" {
+                tokio::time::timeout(
+                    Duration::from_secs(15),
+                    custody::observe(&args[1], &args[2]),
+                )
+                .await
+                .unwrap();
+                return;
+            }
             tokio::time::timeout(
                 Duration::from_secs(150),
                 run(&args[1], args[2].parse().unwrap()),
