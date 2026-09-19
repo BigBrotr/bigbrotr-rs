@@ -26,8 +26,11 @@ issued publication intent through a fixed startup cutoff, in pages of 64. The
 a nonempty inventory contains recovery obligations; an empty inventory grants no
 Archive readiness. Historical catalog mismatches or holes refuse before `idle`.
 Policy/owner supervision continues between pages, and a signal or failed query
-closes and joins the driver. Control opens no catalog connection or local journal
-for this inventory. A deployment without a local Archive assignment reports
+closes and joins the driver. Control opens no catalog connection for this inventory. It first opens the
+explicitly registered local coordinator state and holds its permanent custody
+through driver join. Run the separate [state initialization command](archive-initialization.md)
+after catalog installation/recovery; missing or incompatible bindings refuse
+before connecting to Control. The binding does not resolve pre-protocol attempts. A deployment without a local Archive assignment reports
 `state=not-selected`. This addition does not enable `--roles archive`.
 
 Omitting `--roles` uses the root's explicit assignment. This initial slice refuses

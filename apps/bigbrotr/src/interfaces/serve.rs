@@ -99,6 +99,17 @@ impl Stop {
 }
 
 fn run(root: Resolved, output: &mut LifecycleOutput) -> Result<()> {
+    // Acquire before Control startup or any future issuance. The stable archive
+    // anchor prevents choosing another state root to bypass an old coordinator.
+    // Retain it through every actual driver join, including cancelled startup.
+    let coordinator = if root.local("archive") {
+        let identity = root.catalog_identity().map_err(|e| (3, e))?;
+        let state = root.archive_state_path().map_err(|e| (4, e))?;
+        Some(bigbrotr::storage::archive::LocalCoordinator::open(&identity, &state)
+            .map_err(|e| (4, format!("archive coordinator custody refused: {e:?}; explicit archive state-initialize is required")))?)
+    } else {
+        None
+    };
     let required = |name| {
         root.text(name)
             .ok_or_else(|| (3, "missing Control deployment root".into()))
@@ -136,8 +147,13 @@ fn run(root: Resolved, output: &mut LifecycleOutput) -> Result<()> {
         let (client, driver) = tokio::select! {
             biased;
             _ = stop.requested() => return Err((4, "Control startup cancelled before connection".into())),
-            result = postgres_command::connect(prepared) => result.map_err(|e| (1, e.to_string()))?,
+            result = bigbrotr::storage::postgres::transport::connect(prepared) => result.map_err(|e| (1, e.to_string()))?,
         };
+        // Attach the actual unpolled driver before any SQL can be queued. This
+        // also preserves exclusion if future supervision code drops its owner.
+        let driver = if let Some(custody) = &coordinator {
+            tokio::spawn(custody.retain_connection(driver).map_err(|e| (4, format!("cannot retain archive coordinator custody: {e:?}")))?)
+        } else { tokio::spawn(driver) };
         let outcome = supervise(client, request, &root, &mut stop, output).await;
         // No error, cancellation, output failure or unknown COMMIT can bypass
         // the join. Dropping the request/session alone does not free its grant.
@@ -147,6 +163,7 @@ fn run(root: Resolved, output: &mut LifecycleOutput) -> Result<()> {
     runtime.shutdown_timeout(postgres_command::DRIVER_DRAIN);
     let result = result.map(|value| output.emit(value, false));
     drop(grant);
+    drop(coordinator);
     result
 }
 

@@ -14,6 +14,43 @@ fn run(root: &Path, args: &[&str]) -> Output {
         .output()
         .unwrap()
 }
+
+#[test]
+fn coordinator_root_is_separate_deployment_state_without_offline_io() {
+    let dir = tempfile::tempdir().unwrap();
+    let mut doc = example(dir.path(), "archive-only");
+    let first = show(dir.path(), &doc);
+    assert_eq!(
+        first["settings"]["storage.archive_state_root"]["deployment_locked"],
+        true
+    );
+    doc["storage"]["archive_state_root"] = "/unavailable/private-state".into();
+    let changed = show(dir.path(), &doc);
+    assert_eq!(first["initial_policy"], changed["initial_policy"]);
+    for root in [
+        "/var/lib/bigbrotr/archive/child",
+        "/var/lib",
+        "/var/lib/bigbrotr/ingest",
+        "/var/lib/bigbrotr/scratch/child",
+    ] {
+        doc["storage"]["archive_state_root"] = root.into();
+        write(dir.path(), &doc);
+        let result = run(
+            dir.path(),
+            &["config", "validate", "--file", "instance.toml"],
+        );
+        assert_eq!(result.status.code(), Some(3), "{result:?}");
+    }
+    let doc = example(dir.path(), "serve-existing");
+    write(dir.path(), &doc);
+    let result = run(
+        dir.path(),
+        &["archive", "state-initialize", "--file", "instance.toml"],
+    );
+    assert_eq!(result.status.code(), Some(3), "{result:?}");
+    assert!(String::from_utf8_lossy(&result.stderr).contains("local Archive role"));
+    assert_eq!(fs::read_dir(dir.path()).unwrap().count(), 1);
+}
 fn example(root: &Path, recipe: &str) -> toml::Table {
     let output = run(root, &["config", "example", "--recipe", recipe]);
     assert!(output.status.success(), "{output:?}");

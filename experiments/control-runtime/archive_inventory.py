@@ -64,8 +64,10 @@ def main():
     def cli(*args):
         return subprocess.run(['docker', 'exec', state['container_id'], '/out/native-tests/bigbrotr', *args], text=True, capture_output=True, timeout=35)
 
-    def prepare(database, target=9):
+    def prepare(database, target=9, bind=True):
         sql('postgres', f'CREATE DATABASE {database};')
+        for suffix in ['data', 'state']:
+            (directory / (database + '-' + suffix)).mkdir(mode=0o700)
         text = (SOURCE / 'config/recipes/archive-only.toml').read_text()
         for section, key, value in [
             ('administration', 'enabled', False), ('topology', 'dataset_id', '01' * 16),
@@ -73,6 +75,8 @@ def main():
             ('postgres.control', 'endpoint', '127.0.0.1:5432'),
             ('postgres.control', 'database', database),
             ('postgres.control', 'password_ref', 'file:/secrets/bigbrotr_control'),
+            ('storage', 'archive_root', '/out/' + prefix + '/' + database + '-data'),
+            ('storage', 'archive_state_root', '/out/' + prefix + '/' + database + '-state'),
         ]:
             text = change(text, section, key, value)
         candidate = directory / (database + '.toml')
@@ -85,6 +89,10 @@ def main():
         for command in [('config', 'initialize', '--file', path), ('config', 'activate-initial', '--file', path, '--request-id', '44' * 16, '--expected-revision', '1')]:
             result = cli(*command)
             require(result.returncode == 0, 'explicit initialization/activation: ' + result.stderr)
+        subprocess.run(['docker', 'exec', state['container_id'], '/out/native-tests/archive-coordinator-probe', 'reserve', '/out/' + prefix + '/' + database + '-data'], check=True, capture_output=True, timeout=10)
+        if bind:
+            result = cli('archive', 'state-initialize', '--file', path)
+            require(result.returncode == 0, 'coordinator state binding: ' + result.stderr)
         return path
 
     def start(path, label, binary='/out/native-tests/bigbrotr'):
@@ -173,16 +181,73 @@ print(json.dumps({'pid':pid,'start_ticks':start,'signal':sys.argv[3],'pidfd':Tru
 
     save()
     try:
-        empty = prepare(prefix + '_empty')
-        baseline = start(empty, 'baseline', '/baseline/bigbrotr')
+        empty = prepare(prefix + '_empty', bind=False)
+        # The old schema does not recognize the new deployment root. Omit only
+        # that key in its separate negative-control file; accepted policy is
+        # identical because all storage paths are deployment roots.
+        original_path = directory / (prefix + '_empty.toml')
+        baseline_path = directory / 'baseline.toml'
+        baseline_path.write_text('\n'.join(line for line in original_path.read_text().splitlines() if not line.startswith('archive_state_root =')) + '\n')
+        baseline = start('/out/' + prefix + '/baseline.toml', 'baseline', '/baseline/bigbrotr')
         value = idle(baseline)
         require(not expect(value, 0, 0), 'old executable unexpectedly implements inventory')
         stop(baseline, prefix + '_empty')
         passed('negative-control-old-runtime-misses-inventory', baseline_source=json.loads(subprocess.check_output(['docker', 'exec', state['container_id'], '/baseline/bigbrotr', 'build-info']))['source']['revision'])
+        unbound = start(empty, 'unbound')
+        out, err = terminal(unbound, 4)
+        require(not out and 'Incomplete' in err, 'ordinary startup silently initialized coordinator')
+        state_dir = directory / (prefix + '_empty-state')
+        anchor = directory / (prefix + '_empty-data') / '.bigbrotr-initialization' / 'coordinator.json'
+        require(not anchor.exists() and not list(state_dir.iterdir()), 'unbound startup mutated state')
+        passed('missing-binding-refused-without-creation')
+        for label in ['first', 'retry']:
+            result = cli('archive', 'state-initialize', '--file', empty)
+            require(result.returncode == 0 and json.loads(result.stdout)['publication_authority'] == 'not-granted', 'explicit binding')
+            require(anchor.read_bytes() == (state_dir / 'coordinator.json').read_bytes(), 'two-ended binding differs')
+        retained = anchor.read_bytes()
+        passed('explicit-binding-and-identical-retry')
+        # The runner mounts this same /out tree again at /out-alias. Unlike a
+        # symlink, canonicalization preserves those different mountpoint names.
+        (state_dir / 'child').mkdir(mode=0o700)
+        for suffix in ['', '/child']:
+            alias = directory / ('alias' + ('-child' if suffix else '') + '.toml')
+            alias.write_text(change(original_path.read_text(), 'storage', 'scratch_root', '/out-alias/' + prefix + '/' + prefix + '_empty-state' + suffix))
+            result = cli('archive', 'state-initialize', '--file', '/out/' + prefix + '/' + alias.name)
+            require(result.returncode == 4 and 'aliases another selected writable root' in result.stderr, 'physical bind alias accepted')
+            require(anchor.read_bytes() == retained, 'alias refusal changed binding')
+        (state_dir / 'child').rmdir()
+        passed('actual-bind-mount-alias-and-nested-alias-refused')
         current = start(empty, 'empty')
         require(expect(idle(current), 0, 0), 'empty inventory')
+        contender = start(empty, 'coordinator-contender')
+        out, err = terminal(contender, 4)
+        require(not out and 'Occupied' in err, 'coordinator lock not enforced')
+        result = cli('archive', 'state-initialize', '--file', empty)
+        require(result.returncode == 4 and 'Occupied' in result.stderr, 'binding raced live coordinator')
+        passed('live-coordinator-refuses-process-and-initializer')
         stop(current, prefix + '_empty')
         passed('empty-history-distinct-from-unresolved')
+        other = directory / 'other-state'
+        other.mkdir(mode=0o700)
+        changed = directory / 'other.toml'
+        changed.write_text(change(original_path.read_text(), 'storage', 'archive_state_root', '/out/' + prefix + '/other-state'))
+        for command in [('archive', 'state-initialize'), ('serve', '--roles', 'control')]:
+            result = cli(*command, '--file', '/out/' + prefix + '/other.toml')
+            require(result.returncode == 4 and 'Identity' in result.stderr, 'substituted root accepted')
+        require(not list(other.iterdir()) and anchor.read_bytes() == retained, 'substitute root mutated state')
+        passed('substituted-state-root-refused-without-mutation')
+        anchor.unlink() # Isolated fixture crash between durable state and reverse binding.
+        result = cli('serve', '--roles', 'control', '--file', empty)
+        require(result.returncode == 4 and 'Incomplete' in result.stderr and not anchor.exists(), 'runtime repaired half binding')
+        result = cli('archive', 'state-initialize', '--file', empty)
+        require(result.returncode == 0 and anchor.read_bytes() == retained, 'explicit complete-half retry')
+        passed('complete-first-half-needs-explicit-retry')
+        anchor.write_bytes(b'partial')
+        for command in [('archive', 'state-initialize'), ('serve', '--roles', 'control')]:
+            result = cli(*command, '--file', empty)
+            require(result.returncode == 4 and 'Identity' in result.stderr and anchor.read_bytes() == b'partial', 'partial binding repaired')
+        anchor.write_bytes(retained) # Restore only deliberately corrupted owned fixture.
+        passed('partial-bytes-preserved-and-refused')
         path = prepare(prefix + '_full')
         seeded = subprocess.run(['docker', 'exec', state['container_id'], '/out/native-tests/archive-attempt-probe', '--seed-runtime', prefix + '_full'], text=True, capture_output=True, timeout=60)
         (directory / 'seed.stdout').write_text(seeded.stdout)

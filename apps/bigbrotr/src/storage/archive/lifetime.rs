@@ -451,7 +451,7 @@ fn ext4_mount(fdinfo: &str, mountinfo: &str) -> Result<bool, LifetimeError> {
     Ok(mounted == "ext4")
 }
 #[cfg(target_os = "linux")]
-fn bounded_proc(path: &str, maximum: usize) -> Result<String, LifetimeError> {
+pub(super) fn bounded_proc(path: &str, maximum: usize) -> Result<String, LifetimeError> {
     let mut bytes = Vec::new();
     bytes
         .try_reserve_exact(maximum + 1)

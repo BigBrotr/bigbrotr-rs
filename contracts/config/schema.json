@@ -3273,6 +3273,13 @@
           "x-bigbrotr-owner": "storage",
           "x-bigbrotr-reload": "restart"
         },
+        "archive_state_root": {
+          "format": "bigbrotr-absolute-path",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": true,
+          "x-bigbrotr-owner": "storage",
+          "x-bigbrotr-reload": "restart"
+        },
         "index_root": {
           "format": "bigbrotr-absolute-path",
           "type": "string",

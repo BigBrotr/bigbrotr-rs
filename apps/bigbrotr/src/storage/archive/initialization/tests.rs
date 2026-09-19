@@ -1,6 +1,73 @@
 use super::*;
 use std::{fs, os::unix::fs::PermissionsExt};
 const BOOT: &str = "01234567-89ab-cdef-0123-456789abcdef";
+
+#[test]
+fn coordinator_state_requires_explicit_binding_and_excludes_other_roots() {
+    let (_data, identity) = fixture();
+    let (state, _) = fixture();
+    let (other, _) = fixture();
+    let state = state.path().canonicalize().unwrap();
+    let other = other.path().canonicalize().unwrap();
+    drop(LocalInitialization::create_for_boot(&identity, [3; 16], BOOT).unwrap());
+    let custody = recover_released(&identity);
+    assert!(super::super::LocalCoordinator::from_custody(custody, &state, false).is_err());
+    assert!(fs::read_dir(&state).unwrap().next().is_none());
+    let custody = recover_released(&identity);
+    let owner = super::super::LocalCoordinator::from_custody(custody, &state, true).unwrap();
+    assert_eq!(owner.state_root(), state);
+    let bytes = fs::read(state.join("coordinator.json")).unwrap();
+    assert_eq!(
+        bytes,
+        fs::read(Path::new(identity.root()).join(".bigbrotr-initialization/coordinator.json"))
+            .unwrap()
+    );
+    assert!(matches!(
+        LocalInitialization::recover_for_boot(&identity, BOOT),
+        Err(LifetimeError::Occupied)
+    ));
+    drop(owner);
+    let custody = recover_released(&identity);
+    assert!(super::super::LocalCoordinator::from_custody(custody, &other, true).is_err());
+    assert!(fs::read_dir(&other).unwrap().next().is_none());
+    let custody = recover_released(&identity);
+    drop(super::super::LocalCoordinator::from_custody(custody, &state, false).unwrap());
+    assert_eq!(fs::read(state.join("coordinator.json")).unwrap(), bytes);
+}
+
+#[test]
+fn coordinator_keeps_driver_custody_and_preserves_partial_binding() {
+    let (_data, identity) = fixture();
+    let (state, _) = fixture();
+    let state = state.path().canonicalize().unwrap();
+    drop(LocalInitialization::create_for_boot(&identity, [3; 16], BOOT).unwrap());
+    let custody = recover_released(&identity);
+    let owner = super::super::LocalCoordinator::from_custody(custody, &state, true).unwrap();
+    let driver = owner
+        .retain_connection(std::future::pending::<()>())
+        .unwrap();
+    drop(owner);
+    assert!(matches!(
+        LocalInitialization::recover_for_boot(&identity, BOOT),
+        Err(LifetimeError::Occupied)
+    ));
+    drop(driver);
+    let binding = Path::new(identity.root()).join(".bigbrotr-initialization/coordinator.json");
+    let bytes = fs::read(&binding).unwrap();
+    fs::remove_file(&binding).unwrap(); // Simulate death before reverse binding creation.
+    let custody = recover_released(&identity);
+    assert!(super::super::LocalCoordinator::from_custody(custody, &state, false).is_err());
+    assert!(!binding.exists());
+    let custody = recover_released(&identity);
+    drop(super::super::LocalCoordinator::from_custody(custody, &state, true).unwrap());
+    assert_eq!(fs::read(&binding).unwrap(), bytes);
+    fs::write(&binding, b"partial").unwrap();
+    for initialize in [false, true] {
+        let custody = recover_released(&identity);
+        assert!(super::super::LocalCoordinator::from_custody(custody, &state, initialize).is_err());
+        assert_eq!(fs::read(&binding).unwrap(), b"partial");
+    }
+}
 // Concurrent process tests can fork while this test owns a CLOEXEC descriptor.
 // Require actual reacquisition after that short-lived pre-exec holder closes;
 // the deadline itself never establishes custody.

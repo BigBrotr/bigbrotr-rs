@@ -210,6 +210,15 @@ resolvable namespaced references and unchanged original bytes.
 
 ## P02-T04 — Transactional Parquet archive publication
 
+Current service connection: persistent `storage.archive_state_root` and explicit
+`archive state-initialize` bind one state directory to the retained initialization
+reservation; installed Control acquires coordinator custody before its connection
+and keeps it through actual driver join. Mac regressions pass; new native cases
+are pending. This is a P02-T04/P01-T05 prerequisite, not step completion. Pre-protocol
+history adoption, retained input headers before issuance and actual recovery/dispatch
+remain required. See [the owning boundary](../specification/archive-storage-contract.md#persistent-coordinator-state).
+
+
 **Depends on:** P02-T01/T02/T03 and P01-T05/T06.
 **Files:** application `src/storage/archive/{publisher,receipts,worker}.rs`,
 `contracts/archive/v1/batch.json`, `packaging/archive-worker/`,

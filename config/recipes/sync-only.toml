@@ -112,6 +112,7 @@ enabled = false
 
 [storage]
 archive_root = "/var/lib/bigbrotr/archive"
+archive_state_root = "/var/lib/bigbrotr/archive-state"
 index_root = "/var/lib/bigbrotr/index"
 ingest_root = "/var/lib/bigbrotr/ingest"
 scratch_root = "/var/lib/bigbrotr/scratch"

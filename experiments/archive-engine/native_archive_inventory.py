@@ -37,11 +37,12 @@ assert execute([('build', [sys.executable, __file__, '--build-binaries'])], out,
 worker = json.loads((out / 'worker-identity.json').read_text())
 env.update(BIGBROTR_ARCHIVE_WORKER_BYTES=str(worker['bytes']), BIGBROTR_ARCHIVE_WORKER_SHA256=worker['sha256'])
 assert execute([
-    ('fixture', ['cargo', 'build', '--locked', '--release', '-p', 'bigbrotr', '--example', 'archive_attempt_probe']),
-    ('tests', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr', '--bin', 'bigbrotr', '--test', 'archive_attempt', '--test', 'control_runtime_entrypoint', '--test', 'control_schema']),
+    ('fixture', ['cargo', 'build', '--locked', '--release', '-p', 'bigbrotr', '--example', 'archive_attempt_probe', '--example', 'archive_coordinator_probe']),
+    ('tests', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr', '--bin', 'bigbrotr', '--test', 'archive_attempt', '--test', 'control_runtime_entrypoint', '--test', 'control_schema', '--test', 'catalog_entrypoint', '--test', 'config_entrypoint']),
+    ('custody', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr', '--lib', 'storage::archive']),
     ('clippy', ['cargo', 'clippy', '--locked', '--release', '-p', 'bigbrotr', '--lib', '--bin', 'bigbrotr', '--example', 'archive_attempt_probe', '--', '-D', 'warnings']),
 ], out / 'checks', SOURCE, env, identity, 1800)['status'] == 'PASS'
-for name, target in [('bigbrotr', 'bigbrotr'), ('examples/archive_attempt_probe', 'archive-attempt-probe')]:
+for name, target in [('bigbrotr', 'bigbrotr'), ('examples/archive_attempt_probe', 'archive-attempt-probe'), ('examples/archive_coordinator_probe', 'archive-coordinator-probe')]:
     shutil.copy2(build / 'target/release' / name, out / target)
     (out / target).chmod(0o500)
 assert execute([('adapter', [str(out / 'archive-attempt-probe'), '--scan'])], out / 'adapter', SOURCE, env, identity, 180)['status'] == 'PASS'

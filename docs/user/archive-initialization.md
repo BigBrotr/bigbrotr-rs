@@ -118,6 +118,31 @@ Exit codes are 0 for installed and freshly inspected, 1 for local/output failure
 state, and 130/143 for interruption. A blocked output destination can produce exit1
 after a successful durable installation; run recovery to establish its result.
 
+Before starting Control with Archive assigned locally, provision a separate
+canonical mode0700 directory owned by the application UID and set
+`storage.archive_state_root` (recipe default `/var/lib/bigbrotr/archive-state`).
+Keep it disjoint from archive data, scratch, Ingest and Index roots. After successful
+catalog initialization/recovery, run:
+
+```sh
+bigbrotr archive state-initialize --file /etc/bigbrotr/instance.toml
+```
+
+This explicitly binds local coordinator state to the permanent initialization
+reservation. It opens no credentials or database and does not replace the catalog
+inspection above. It returns `state:bound`, `ready:false` and no publication
+permission. Repeating the identical command verifies the binding. A complete first
+half left before reverse registration can be finished only by this explicit command;
+partial bytes and conflicting/missing state remain preserved and refused. Do not
+move or delete either coordinator.json file or the original initialization marker.
+
+New Control startup requires that binding when Archive is assigned locally, even
+with `--roles control`; it holds the original permanent lock through backend join.
+A running coordinator therefore refuses state initialization and catalog recovery
+with occupied custody. Stop it before those explicit operations. Prior publication
+attempts are still unresolved history: registration does not certify that older
+code or its native clients have terminated. Complete recovery/dispatch remains work.
+
 See the [owning archive contract](../specification/archive-storage-contract.md)
 and [current implementation checkpoint](../implementation/progress.md) for the
 revision-specific validation boundary and outstanding service/release work.

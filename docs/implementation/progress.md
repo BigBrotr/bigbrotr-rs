@@ -173,6 +173,20 @@ Scoped monitor corrections remain closed with executed evidence:
 [MON-007](evidence/p01-archive-cache-retry-20260918.json).
 External feedback reread previously; it records the earlier scoped closures too.
 
+## Current coordinator implementation (qualification pending)
+
+Root has added the separate deployment root, immutable two-ended local binding,
+explicit state-initialize CLI and actual Control custody before connection through
+driver join. Applied SQL and initialization format stay unchanged. Mac 38 archive tests (including three new custody/placement regressions),
+8 binary tests and 36 CLI/config tests pass; scoped Clippy passes after correcting
+a Linux-only PathBuf import. Independent review found bind-mount alias checking
+and retry sync ordering gaps; both are corrected before native candidate testing.
+Read-only review confirmed the permanent reverse binding and advised against
+adopting pre-protocol history. Current consumer still only inventories it. Complete
+input headers before issuance, virgin protocol boundary, recovery and dispatch
+remain next responsibilities. Native cases and fresh exact-source Tux lab are being
+prepared; no new native qualification is claimed. Current changes are root-owned.
+
 ## Next bounded action
 
 Current evidence/diff review and private push are complete. Continue actual

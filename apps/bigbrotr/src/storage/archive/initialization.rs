@@ -65,6 +65,20 @@ impl LocalInitialization {
     pub fn identity(&self) -> &CatalogIdentity {
         &self.identity
     }
+    pub(super) fn coordinator_binding(&self) -> Result<(File, [u8; 32]), LifetimeError> {
+        if !self.recovered {
+            return Err(LifetimeError::Identity);
+        }
+        let root = lifetime::directory(Path::new(self.identity.root()))?;
+        let metadata = root.metadata().map_err(|_| LifetimeError::Filesystem)?;
+        if (metadata.dev(), metadata.ino()) != (self.root_device, self.root_inode) {
+            return Err(LifetimeError::Identity);
+        }
+        Ok((
+            lifetime::open_directory(&root, DIRECTORY)?,
+            self.journal_sha256,
+        ))
+    }
     pub(crate) fn is_recovered(&self) -> bool {
         self.recovered
     }

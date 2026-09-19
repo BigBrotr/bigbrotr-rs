@@ -126,6 +126,52 @@ until an enforced exclusion is established; do not substitute a timeout or treat
 new local process capacity as old-host termination. Changing the native connection
 protocol, pool/credential ownership or process containment requires requalification.
 
+### Persistent coordinator state
+
+`storage.archive_state_root` is a separate deployment root, private mode0700,
+canonical local ext4 and disjoint from selected data, scratch and other writable
+stores. Physical placement checks compare device/inode and the descriptor's actual
+mount ID/root from bounded [Linux proc records](https://www.kernel.org/doc/html/latest/filesystems/proc.html),
+so equal and nested ext4 bind aliases cannot pass through different canonical names.
+Other roots that are absent remain a later store-opening prerequisite; mount changes
+require quiescence and repeated preflight. It is not scratch space. After explicit catalog initialization/recovery,
+`archive state-initialize --file PATH` binds it to the existing local reservation.
+The finite command opens no database and grants no catalog readiness, attempt
+adoption, replay or publication authority.
+
+The existing `.bigbrotr-initialization/custody.lock` also serializes coordinators.
+While holding recovered initialization custody, write identical bounded canonical
+`bigbrotr-local-coordinator/1` bytes to `coordinator.json` in the state root and
+`.bigbrotr-initialization/coordinator.json` in the data root. They bind the canonical
+state path/device/inode and the initialization journal SHA256, which transitively
+binds dataset/catalog, original root/lock identities, nonce and boot. Sync the
+state file/directory before creating and syncing the reverse binding. A second
+root cannot create a competing registration. Applied initialization journal bytes
+and SQL remain unchanged.
+
+An identical complete pair is idempotent. Explicit state-initialize may complete
+an identical fully written first half when the reverse binding is absent and the
+state directory contains nothing else. Partial bytes, missing state after reverse
+binding, different identities and unrelated entries refuse without repair or
+removal. Ordinary serve only opens a complete pair; it never initializes either
+half. Reopening verifies and syncs both exact files and directories before returning
+custody. Cross-boot/restore/relocation remain refused by the original reservation.
+
+Control with a locally assigned Archive acquires this custody before connecting,
+inventories under it, and retains it through the actual unpolled driver and final
+join. A selected Control-only deployment without local Archive has no such
+prerequisite. Existing installations must run the explicit binding command before
+this newer Control startup. Generated roots remain outside accepted policy identity.
+
+This closes local coordinator overlap only for participating code. Pre-protocol
+coordinators/fixture-created attempts never held this lock and are not adopted or
+resolved by registering it. The current consumer still reports resolution not
+performed. Before later dispatch/recovery can interpret missing journals, it must
+establish the protocol's initial history boundary under the actual Control fence
+(or a separately qualified external exclusion) and retain complete input linkage
+before issuance. Per-attempt driver/native custody, remote SQL outcome resolution,
+source protection and process resource reconciliation remain independent gates.
+
 ### Retained publication intent issuance
 
 Migration 0009 adds `control.archive_attempts` as the first persistent publisher

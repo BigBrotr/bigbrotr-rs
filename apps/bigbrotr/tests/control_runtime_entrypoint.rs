@@ -31,10 +31,17 @@ fn explicit_control_role_reaches_credentials_but_never_activates_other_roles() {
         assert!(String::from_utf8_lossy(&result.stderr).contains("role selection"));
     }
     let result = invoke(Some("control"));
-    assert_eq!(result.status.code(), Some(3));
+    assert_eq!(result.status.code(), Some(4));
     assert!(result.stdout.is_empty());
-    assert!(String::from_utf8_lossy(&result.stderr).contains("protected PostgreSQL password"));
+    assert!(String::from_utf8_lossy(&result.stderr).contains("archive state root is unavailable"));
     assert!(!String::from_utf8_lossy(&result.stderr).contains("/nonexistent"));
-    assert_eq!(fs::read_to_string(file).unwrap(), recipe);
+    assert_eq!(fs::read_to_string(&file).unwrap(), recipe);
     assert_eq!(fs::read_dir(directory.path()).unwrap().count(), 1);
+    // A Control-only deployment has no local Archive custody prerequisite.
+    let mut control: toml::Table = recipe.parse().unwrap();
+    control["topology"]["local_roles"] = toml::Value::Array(vec!["control".into()]);
+    fs::write(&file, toml::to_string(&control).unwrap()).unwrap();
+    let result = invoke(Some("control"));
+    assert_eq!(result.status.code(), Some(3));
+    assert!(String::from_utf8_lossy(&result.stderr).contains("protected PostgreSQL password"));
 }

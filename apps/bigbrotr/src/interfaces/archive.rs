@@ -15,6 +15,10 @@ pub fn command() -> clap::Command {
         .subcommand(super::catalog_inspection::command())
         .subcommand(super::archive_initialization::command("initialize"))
         .subcommand(super::archive_initialization::command("recover"))
+        .subcommand(clap::Command::new("state-initialize")
+            .about("Explicitly bind persistent coordinator state to an existing local archive reservation")
+            .arg(clap::Arg::new("file").long("file").required(true).value_parser(clap::value_parser!(PathBuf)))
+            .after_help("Same-boot Linux ext4 only. Requires an existing canonical private state directory. No database connection, catalog recovery, attempt adoption or publication authority. Preserve incomplete/conflicting state. Exit: 0 bound, 1 I/O, 2 usage, 3 invalid configuration, 4 unavailable/incompatible custody."))
         .subcommand(clap::Command::new("verify-worker")
             .about("Verify the installed worker and offline native assets against this build")
             .arg(clap::Arg::new("root").long("root").value_parser(clap::value_parser!(PathBuf))
@@ -23,6 +27,41 @@ pub fn command() -> clap::Command {
 }
 
 pub fn execute(matches: &clap::ArgMatches) -> ExitCode {
+    if let Some(args) = matches.subcommand_matches("state-initialize") {
+        let Ok(mut output) = super::lifecycle_output::LifecycleOutput::start() else {
+            return ExitCode::FAILURE;
+        };
+        let result = (|| {
+            let config = crate::config::load(args.get_one::<PathBuf>("file").unwrap())?;
+            let identity = config.catalog_identity().map_err(|e| (3, e))?;
+            let root = config.archive_state_path().map_err(|e| (4, e))?;
+            let _custody =
+                bigbrotr::storage::archive::LocalCoordinator::initialize(&identity, &root)
+                    .map_err(|e| {
+                        (
+                            4,
+                            format!("archive coordinator state binding refused: {e:?}"),
+                        )
+                    })?;
+            Ok::<_, (u8, String)>(
+                serde_json::json!({"format":"bigbrotr-coordinator-state/1", "state":"bound",
+                "dataset_id":identity.dataset(), "catalog_id":identity.catalog(), "catalog_inspection":"not-performed",
+                "attempt_adoption":"not-performed", "publication_authority":"not-granted", "ready":false}),
+            )
+        })();
+        let code = match result {
+            Ok(value) => {
+                output.emit(value, false);
+                0
+            }
+            Err((code, error)) => {
+                output.emit(format_args!("error: {error}"), true);
+                code
+            }
+        };
+        let delivered = output.finish();
+        std::process::exit(i32::from(if delivered { code } else { 1 }));
+    }
     for name in ["initialize", "recover"] {
         if let Some(args) = matches.subcommand_matches(name) {
             return super::archive_initialization::execute(args, name == "initialize");

@@ -216,7 +216,13 @@ pub fn keys() -> Vec<Key> {
         "control",
         true
     );
-    for name in ["ingest_root", "index_root", "archive_root", "scratch_root"] {
+    for name in [
+        "ingest_root",
+        "index_root",
+        "archive_root",
+        "archive_state_root",
+        "scratch_root",
+    ] {
         add!(
             format!("storage.{name}"),
             Path,

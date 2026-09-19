@@ -87,6 +87,7 @@ pub fn overrides(recipe: &str) -> Result<BTreeMap<String, Value>, String> {
         ("ingest_root", "ingest"),
         ("index_root", "index"),
         ("archive_root", "archive"),
+        ("archive_state_root", "archive-state"),
         ("scratch_root", "scratch"),
     ] {
         set!(

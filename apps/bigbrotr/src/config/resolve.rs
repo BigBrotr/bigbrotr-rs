@@ -567,6 +567,7 @@ impl Resolved {
             ("storage.ingest_root", self.local("ingest")),
             ("storage.index_root", self.local("index")),
             ("storage.archive_root", self.local("archive")),
+            ("storage.archive_state_root", self.local("archive")),
             (
                 "storage.scratch_root",
                 self.flag("runtime.processes.native.enabled"),
@@ -694,6 +695,7 @@ impl Resolved {
                 self.require("ingest", "archive publisher")?;
             }
             self.present("storage.archive_root")?;
+            self.present("storage.archive_state_root")?;
             self.catalog_identity()?;
             self.present("storage.scratch_root")?;
             self.pg("catalog")?;
@@ -809,7 +811,45 @@ impl Resolved {
                 return Err("local writable storage roots must be distinct; filesystem alias checks require doctor/runtime".into());
             }
         }
+        if self.local("archive") {
+            let state = lexical_path(self.present("storage.archive_state_root")?);
+            for key in self
+                .selected_storage_roots()
+                .filter(|key| *key != "storage.archive_state_root")
+            {
+                let other = lexical_path(self.present(key)?);
+                if Path::new(&state).starts_with(&other) || Path::new(&other).starts_with(&state) {
+                    return Err("storage.archive_state_root must be disjoint from other selected writable roots".into());
+                }
+            }
+        }
         Ok(())
+    }
+    /// Filesystem checks for the actual local coordinator consumer. Offline
+    /// validation never opens these paths. Absent other stores are still checked
+    /// lexically above and must pass their own placement checks before opening.
+    pub fn archive_state_path(&self) -> Result<std::path::PathBuf, String> {
+        self.catalog_identity()?;
+        let state = Path::new(self.present("storage.archive_state_root")?);
+        let canonical = state
+            .canonicalize()
+            .map_err(|_| "archive state root is unavailable")?;
+        if canonical != state {
+            return Err("archive state root must be canonical".into());
+        }
+        for key in self
+            .selected_storage_roots()
+            .filter(|key| *key != "storage.archive_state_root")
+        {
+            let other = Path::new(self.present(key)?);
+            match other.canonicalize() {
+                Ok(other) => bigbrotr::storage::archive::LocalCoordinator::require_disjoint(&canonical, &other)
+                    .map_err(|_| "archive state root aliases another selected writable root or its placement cannot be verified")?,
+                Err(error) if error.kind() == std::io::ErrorKind::NotFound => (),
+                Err(_) => return Err("selected storage root placement cannot be inspected".into()),
+            }
+        }
+        Ok(canonical)
     }
     fn pg(&mut self, kind: &str) -> Result<(), String> {
         let prefix = format!("postgres.{kind}");

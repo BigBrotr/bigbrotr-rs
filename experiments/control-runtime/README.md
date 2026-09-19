@@ -75,3 +75,10 @@ the later fixture-only switch preserves those existing consumers without changin
 product code. Record artifact and harness revisions separately for a harness-only
 rerun (`--artifact-revision`), and use a fresh `--run-name` within an active lab.
 Protected CLI secret files must be owned by the runner with mode 0400/0600.
+
+The current archive_inventory matrix additionally exercises explicit coordinator
+state registration with the actual CLI, missing/partial bindings, identical retry,
+live-owner exclusion and a substituted state root. Its native fixture creates only
+a local initialization reservation; it does not initialize a scientific catalog.
+Existing populated histories remain observation-only. The matrix retains actual
+PostgreSQL cancellation/residual-fence cases; no receipt resolution is claimed.
