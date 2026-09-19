@@ -93,7 +93,7 @@ The public visibility descriptor literal is
 Future interpretations of these persistent layouts require an explicit version
 and migration, including any future producer-state extension.
 
-### Native producer closing (implementation in progress)
+### Native producer closing
 
 The P02-T02 step 4 operation installs a monotone producer barrier under the
 exclusive native owner. Its explicit per-producer migration preserves the three
@@ -123,8 +123,12 @@ Old native writers reject the changed version/length. The connected operation al
 sets PostgreSQL producer state to closing. After that SQL commit, old connected
 clients refuse before staging. If native sync succeeds but SQL rolls back, an old
 client can still stage an original before its native writer rejects the new value;
-that intermediate state does not permit a scientific commit beyond the barrier. Actual old/new client and interrupted-transition evidence is required;
-decoder inspection alone is not compatibility qualification. No global rewrite,
+that intermediate state does not permit a scientific commit beyond the barrier.
+The native qualification executes that old writer-library boundary on verified
+copies of stores closed by the new executable. The old source has only a test
+hook and fixture, with no writer/dependency changes; it is not an unmodified
+previously shipped binary. The connected fault cases preserve the barrier across
+SQL rollback, delayed SQL and both lost-COMMIT orders. No global rewrite,
 manifest identity change, source closure, retirement or successor activation is
 part of this per-producer migration.
 
@@ -135,7 +139,10 @@ initial-admission predicate cannot be used for closing retries: it intentionally
 refuses closing producers and does not grant a fresh process the old incarnation.
 SQL/native interruption remains unresolved until the same target's state is read
 under actual exclusion. The native core and `ControlSession::close_initial_producer` are implemented;
-practical qualification remains in progress. The connected wrapper validates the
+[scoped native qualification](../implementation/evidence/p02-producer-closing-native-20260920.json)
+records 35 native-store tests, twelve connected cases and eleven old-writer
+snapshots. This does not complete the producer drain or handoff.
+The connected wrapper validates the
 current Control fence, complete current policy documents and short local lease,
 then the full historical registration. It retains Ingest/role SHARE locks and a
 producer UPDATE lock through native sync and PG commit. It accepts an active or

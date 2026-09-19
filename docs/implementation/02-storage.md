@@ -173,6 +173,12 @@ One owner serializes exact identity decisions for each writable directory.
   records signed reverse-order/retry/fault cases, actual SQL lock schedules and
   additive compatibility. Complete claim/proof checkpointing, mutation ACK/GC,
   retirement and successor recovery still prevent completion of this step.
+  The [native producer barrier](../reference/ingest-bootstrap.md#native-producer-closing)
+  adds exclusive recovery and an explicit v1-to-v2 closing transition under a
+  current Control actor, without new facts/requests/ACK. [Native evidence](evidence/p02-producer-closing-native-20260920.json)
+  records 35 store tests, 12 connected scenarios and 11 old writer-library snapshots.
+  Exact retries and SQL interruption preserve the barrier. Full outcome drain,
+  ACK/GC, source closure and fresh-process successor activation remain required.
 - [ ] **Step 5:** Make provenance-off allocate no P inventory or event/endpoint side channel;
   retain scope eligibility and scoped first local receive/earlier corrections.
   Implement CertifyExisting against one committed inventory view, exact verified

@@ -45,7 +45,46 @@ def check_state(state, wanted, names, originals):
     return tables
 
 
+def check_recovery_control(before, after):
+    bytea = lambda n: '\\x'+(bytes([n])*16).hex()
+    owners = lambda tables: {r['epoch']:r for r in tables['owner_epochs'] if r['role']=='control'}
+    old, new = owners(before), owners(after)
+    assert set(old)=={1,2} and set(new)=={1,2,3}
+    assert len(before['owner_epochs'])==3 and len(after['owner_epochs'])==4
+    assert new[1]==old[1] and old[1]['state']=='released'
+    for epoch, role, incarnation in [(1,31,41),(2,33,43),(3,34,44)]:
+        row=new[epoch]
+        assert row['dataset_id']==bytea(1) and row['resource_id']==old[1]['resource_id']
+        assert row['role_instance_id']==bytea(role) and row['process_incarnation']==bytea(incarnation)
+        assert row['control_fence_version']==1 and row['lease_expires_at_us']==row['acquired_at_us']+60_000_000
+    retired, active = new[2],new[3]
+    assert old[2]['state']=='active' and retired['state']=='released' and active['state']=='active'
+    assert old[2]['released_at_us'] is old[2]['exclusion_method'] is old[2]['exclusion_digest'] is None
+    assert retired['released_at_us']>=old[2]['acquired_at_us'] and retired['xmin']!=old[2]['xmin']
+    exclusion=(b'bigbrotr/control-exclusion/1\0'+bytes([1])*16+bytes.fromhex(old[2]['resource_id'][2:])
+               +(2).to_bytes(8,'big')+bytes([43])*16+bytes([44])*16)
+    assert retired==dict(old[2],state='released',xmin=retired['xmin'],released_at_us=retired['released_at_us'],
+                        exclusion_method='storage_fenced',exclusion_digest='\\x'+sha(exclusion))
+    assert active['acquired_at_us']>=retired['released_at_us']
+    assert active['control_backend_pid']>0 and active['control_backend_pid'] not in [old[n]['control_backend_pid'] for n in [1,2]]
+    assert active['control_backend_start'] not in [old[n]['control_backend_start'] for n in [1,2]]
+    assert active==dict(old[2],epoch=3,xmin=active['xmin'],role_instance_id=bytea(34),process_incarnation=bytea(44),
+                       acquired_at_us=active['acquired_at_us'],lease_expires_at_us=active['lease_expires_at_us'],
+                       control_backend_pid=active['control_backend_pid'],control_backend_start=active['control_backend_start'])
+    assert active['xmin']==retired['xmin']
+    roles=lambda tables:{r['role_instance_id']:r for r in tables['role_instances']}
+    old_roles,new_roles=roles(before),roles(after)
+    assert set(old_roles)=={bytea(31),bytea(33),bytea(62)} and set(new_roles)==set(old_roles)|{bytea(34)}
+    assert len(before['role_instances'])==3 and len(after['role_instances'])==4
+    for role in [31,62]: assert new_roles[bytea(role)]==old_roles[bytea(role)]
+    prior, retired_role, current = old_roles[bytea(33)],new_roles[bytea(33)],new_roles[bytea(34)]
+    assert prior['retired_at_us'] is None and retired_role['retired_at_us']>=prior['created_at_us']
+    assert retired_role==dict(prior,xmin=active['xmin'],retired_at_us=retired_role['retired_at_us'])
+    assert prior['xmin']!=active['xmin'] and current['created_at_us']<=active['acquired_at_us']
+    assert current==dict(prior,role_instance_id=bytea(34),xmin=active['xmin'],created_at_us=current['created_at_us'])
+
 def same_window(before, after, pg_closes, recovered=False):
+    if recovered: check_recovery_control(before, after)
     for name in before:
         if name == 'producer_epochs':
             assert len(before[name]) == len(after[name]) == 1
@@ -56,8 +95,8 @@ def same_window(before, after, pg_closes, recovered=False):
             assert old == new
         elif recovered and name in ('role_instances','owner_epochs'):
             # A new Control must not impersonate the failed one; target Ingest
-            # identity/state/xmin remain exact. Other claim changes are checked
-            # against their literal role/epoch/incarnation below.
+            # identity/state/xmin remain exact. check_recovery_control checks
+            # every Control row against the exact allowed transition above.
             assert [r for r in before[name] if r['role']=='ingest'] == [r for r in after[name] if r['role']=='ingest']
         else:
             assert before[name] == after[name], name

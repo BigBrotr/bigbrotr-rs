@@ -127,7 +127,7 @@ checks a hash-bound normal capture and rejects altered proof/state observations
 offline. The [evidence report](../../docs/implementation/evidence/p02-certification-native-20260919.json)
 records executed scope and the remaining proof-checkpoint/recovery gates.
 
-## Producer closing qualification (in progress)
+## Producer closing qualification
 
 `closing.py` drives the actual `ingest_bootstrap_probe` closing consumer under a
 fresh Control owner and exclusive historical recovery handle. Use an inventoried
@@ -136,11 +136,12 @@ The oracle constructs the complete fixed v2 marker independently, compares every
 native key/value, exact signed originals and all 37 Control tables with xmin.
 It includes zero, PG-first, old expired Ingest lease, wrong target/authority,
 SQL rollback, delayed SQL and both lost-COMMIT orders. Interrupted work retries
-under a third Control claim without another native mutation. The old executable,
-process-kill/LOCK and complete outcome-drain/ACK journeys remain separate gates.
-Twelve scenarios now have native execution at product0f6e366 (fixture correction
-cc9151b; observer01af703). The final evidence report and compatibility qualification
-are in progress; these results do not close the complete handoff task.
+under a third Control claim without another native mutation. Process-kill/LOCK
+and complete outcome-drain/ACK journeys remain separate gates.
+Twelve scenarios now have native execution at product 0f6e366 (fixture correction
+cc9151b; observer 01af703). The [scoped report](../../docs/implementation/evidence/p02-producer-closing-native-20260920.json)
+also records old-writer compatibility and terminal resource cleanup. These results
+do not close the complete handoff task.
 
 `build_closing_probe.py` rebuilds a corrected finite client in a separate exact Git
 export while requiring unchanged product/dependency inputs. `build_old_closing_probe.py`
@@ -151,3 +152,8 @@ complete expected scientific bytes and original-input side effects. It does not
 claim that an unmodified shipped binary was used or that native test callbacks
 supply PostgreSQL authority. The old fixture remains on its recorded compatibility
 branch; it must not be merged as a current-writer test.
+
+`closing_observer.py` validates captured native/PG/original snapshots without
+contacting engines. It checks the entire allowed current-Control recovery
+transition and rejects fifteen altered captures, including a repeated PG update
+after committed-reply loss and reuse of the original Control incarnation.

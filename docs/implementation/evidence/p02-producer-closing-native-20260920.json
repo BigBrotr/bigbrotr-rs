@@ -1,0 +1,897 @@
+{
+  "format": "bigbrotr-producer-closing-evidence/1",
+  "observed_at": "2026-09-19T22:33:36.297395+00:00",
+  "status": "PASS",
+  "scope": "P02-T02 step4 close-only native barrier prerequisite; not complete producer drain, handoff, task or M1 acceptance",
+  "source": {
+    "revision": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+    "tree": "f148d133462d7b5f199aac9e3ad872bb02e2ae83",
+    "files": 846,
+    "archive_sha256": "b65121be520e504b7c98ae4ec85fce318e4f4d8f0937644651621f7f9e5ea35c",
+    "manifest_sha256": "3c0475568c7dcd49e2e13065540a6fca4d0b7bfcd9dd58c08c43e5ac608fa4eb",
+    "lock_sha256": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215"
+  },
+  "additional_sources": {
+    "out/closing-probe/source": {
+      "revision": "cc9151b9bd81512237bbb07b8bde1c446199d95d",
+      "tree": "300c1c0fc4291b690a5e6c0c358311b4191a6e36",
+      "files": 847,
+      "manifest_sha256": "e2f45942e162845bc5416bf81e958aa18af07d4f314192c9e6d4f8cb62be64cf",
+      "archive_sha256": "dc15beba3bbcf2966e73eeb52339677b396e10017703eb4f1dcb2ba966575a76"
+    },
+    "out/old-closing-probe/source": {
+      "revision": "f899896b1207f5e71c4e39d9ab7814b293814735",
+      "tree": "fca0c65dfee98ad1081c9a97db7cc9a7b00dbdc7",
+      "files": 842,
+      "manifest_sha256": "fda88661c2d7bed2f88fcc7dad5a34141a0080825faa94ff15c73cdbb7727814",
+      "archive_sha256": "02462cb0c16e07ec1a86394c56b35bce60f1eec1f8525757429f2544fec0c41e"
+    },
+    "out/old-closing-probe/baseline-source": {
+      "revision": "442f3d878b3215e421a71160b3613b7ab0c93c7b",
+      "tree": "32f538afb1e2c123d7a714bff298ff94bd017e23",
+      "files": 840,
+      "manifest_sha256": "2424f1cb59e42507061767854d316300f8c4f3f150e8903c82e40c9ff0b69a8f",
+      "archive_sha256": "cc6ec638137f09ef630d2cc7a7206da8fa9a0a019d7e3bd722b9408a6737d11a"
+    }
+  },
+  "harnesses": {
+    "harness-01af703": {
+      "revision": "01af703d70d370b75eea6c2d04d95bac0c016304",
+      "tree": "db5aed88f47bfbb498a96a0d75510c4df06ffdc9",
+      "product_unchanged": true
+    },
+    "harness-cc9151b": {
+      "revision": "cc9151b9bd81512237bbb07b8bde1c446199d95d",
+      "tree": "300c1c0fc4291b690a5e6c0c358311b4191a6e36",
+      "product_unchanged": true
+    },
+    "harness-fd168a5": {
+      "revision": "fd168a5a602e682b354d342f44ec1e7642fc865b",
+      "tree": "730540778786ed45cdc8ef23ee6afb8db90850c4",
+      "product_unchanged": true
+    }
+  },
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "rocksdb": "0.25.0",
+    "librocksdb_sys": "0.19.0+11.8.1",
+    "tokio_postgres": "0.7.18",
+    "runner_limits": {
+      "cpus": 2,
+      "memory_bytes": 6442450944,
+      "pids": 512
+    },
+    "postgres_limits": {
+      "cpus": 1,
+      "memory_bytes": 1073741824,
+      "pids": 128
+    },
+    "network": "internal; no host ports; main product source export mounted read-only; corrected/old export hashes checked before and after builds"
+  },
+  "artifacts": {
+    "main": {
+      "sha256": "f0bc9b88546e9571c42a688e6ca777ba0f9b48b6701fbf57cca9f1506b7b5abb",
+      "bytes": 9218760,
+      "elf_machine": 62
+    },
+    "worker": {
+      "sha256": "4a8f8f37ec6dbf7b6e6def033966d21d116f027699cfd4c96ae6ff852f298f3c",
+      "bytes": 12608632,
+      "elf_machine": 62
+    },
+    "ingest_probe": {
+      "sha256": "70eb1d342740e54be19b730583ba48bb37e39cfd4c3d93d0ff29df63c87c320f",
+      "bytes": 15952432,
+      "elf_machine": 62
+    },
+    "corrected_ingest_probe": {
+      "sha256": "b4cb5e1823a28935f4c97af3cc952e814b69c5982a16fdd0ea6fb3e1ff3bc161",
+      "bytes": 15956368,
+      "elf_machine": 62
+    },
+    "old_writer_test": {
+      "sha256": "c3838be980d792f6a4839a11735c590367a4de850efccf60f54ab0fdbf4ddb6a",
+      "bytes": 17050096,
+      "elf_machine": 62
+    }
+  },
+  "implementation": [
+    "Exclusive IngestRecovery compares the full historical manifest and has no admission API or conversion to IngestStore.",
+    "Explicit per-producer migration from v1 open to v2 closing preserves issued/ACK/retired; one synchronized native batch changes only that producer value. Exact retry has no native write.",
+    "Current Control backend/fence/policy/lease authorizes closure of separately validated historical metadata, under retained Ingest/role SHARE and producer UPDATE locks.",
+    "Native barrier precedes PG open-to-closing scheduling veto. PG already closing still requires actual native verification. Post-sync failure never compensates by reopening.",
+    "Fresh event/bootstrap staging and native dispatch refuse closing, including input verified before the barrier. Missing/zero state over retained receipts is refused.",
+    "Issued is a bounded boundary observation, never proof of complete interior outcome resolution or permission for ACK. Nonzero native ACK/retired currently refused.",
+    "Published migrations1..14 and dependency lock unchanged; no source closure, epoch retirement, scientific fact/input/outcome/checkpoint/ACK from closing."
+  ],
+  "build_and_tests": {
+    "status": "PASS",
+    "native_store_tests": 35,
+    "ignored": 0,
+    "filtered_out": 86,
+    "new_native_closing_tests": 8,
+    "checks": [
+      {
+        "path": ".research/implementation/producer-closing/native/qualified/out/native-tests/result.json",
+        "bytes": 2800,
+        "sha256": "cfc01e02426136dd39987336c8bd80701302ea3fa81a8596434f35f971bd1af5"
+      },
+      {
+        "path": ".research/implementation/producer-closing/native/qualified/out/native-tests/checks/result.json",
+        "bytes": 3693,
+        "sha256": "84beaeaaace623740864230e80ada3258838c79d9935300b4052dcb983cf301e"
+      },
+      {
+        "path": ".research/implementation/producer-closing/native/qualified/out/native-tests/certification/result.json",
+        "bytes": 2897,
+        "sha256": "ca854d0eeaa0310a18227c95d1ed0497f86b7d3bcabcc689d9faf2a5073db8a3"
+      },
+      {
+        "path": ".research/implementation/producer-closing/native/qualified/out/closing-probe/build/result.json",
+        "bytes": 3231,
+        "sha256": "7aa624a1a5603fa1fa9238859fcdb0356a63b4a544edb91fefd6e3f4197f4779"
+      },
+      {
+        "path": ".research/implementation/producer-closing/native/qualified/out/old-closing-probe/build/result.json",
+        "bytes": 3101,
+        "sha256": "1cd44c4f960a376a0218eef5285e7dd9e1e367927b145f833e4a69455caa0b7b"
+      }
+    ],
+    "includes": "Actual Rocks tests cover signed preverified request, zero, reopen/exact retry, pre/final authority failure, absent/incorrect/max/adjacent receipt boundary, unsupported ACK, resources, poisoned handle, exclusive open, codec and existing admission/bootstrap/input/packaged-worker regressions."
+  },
+  "connected_cases": [
+    {
+      "name": "normal",
+      "status": "PASS",
+      "capture": {
+        "path": ".research/implementation/producer-closing/native/qualified/closing-normal1.json",
+        "bytes": 127502,
+        "sha256": "8a69a9c1f569aa6eb0688c2c2944f1f50380cacb933d5be9089500ac513df640"
+      },
+      "product_source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+      "fixture_source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+      "observer_source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+      "checked": {
+        "native_rows": 26,
+        "control_tables": 37,
+        "originals": 2,
+        "before_sequence": 29,
+        "after_sequence": 30,
+        "successes": 2
+      },
+      "outputs": [
+        {
+          "attempt": 0,
+          "current_control_epoch": 2,
+          "event": "producer-closed",
+          "historical_control_epoch": 1,
+          "issued": 2
+        },
+        {
+          "attempt": 1,
+          "current_control_epoch": 2,
+          "event": "producer-closed",
+          "historical_control_epoch": 1,
+          "issued": 2
+        }
+      ],
+      "remaining_client_backends": 0
+    },
+    {
+      "name": "empty",
+      "status": "PASS",
+      "capture": {
+        "path": ".research/implementation/producer-closing/native/qualified/closing-empty1.json",
+        "bytes": 84837,
+        "sha256": "fc22bc0ba9276b6d66e4182378a90cd40adc8820cdd5d6183622bc7b8a9309ee"
+      },
+      "product_source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+      "fixture_source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+      "observer_source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+      "checked": {
+        "native_rows": 2,
+        "control_tables": 37,
+        "originals": 0,
+        "before_sequence": 1,
+        "after_sequence": 2,
+        "successes": 2
+      },
+      "outputs": [
+        {
+          "attempt": 0,
+          "current_control_epoch": 2,
+          "event": "producer-closed",
+          "historical_control_epoch": 1,
+          "issued": 0
+        },
+        {
+          "attempt": 1,
+          "current_control_epoch": 2,
+          "event": "producer-closed",
+          "historical_control_epoch": 1,
+          "issued": 0
+        }
+      ],
+      "remaining_client_backends": 0
+    },
+    {
+      "name": "pg-first",
+      "status": "PASS",
+      "capture": {
+        "path": ".research/implementation/producer-closing/native/qualified/closing-pgfirst1.json",
+        "bytes": 127510,
+        "sha256": "8096b3b3e707c9b354d045df342645b065ab1d799a18dd6f767155c0a69ef09c"
+      },
+      "product_source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+      "fixture_source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+      "observer_source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+      "checked": {
+        "native_rows": 26,
+        "control_tables": 37,
+        "originals": 2,
+        "before_sequence": 29,
+        "after_sequence": 30,
+        "successes": 2
+      },
+      "outputs": [
+        {
+          "attempt": 0,
+          "current_control_epoch": 2,
+          "event": "producer-closed",
+          "historical_control_epoch": 1,
+          "issued": 2
+        },
+        {
+          "attempt": 1,
+          "current_control_epoch": 2,
+          "event": "producer-closed",
+          "historical_control_epoch": 1,
+          "issued": 2
+        }
+      ],
+      "remaining_client_backends": 0
+    },
+    {
+      "name": "old-lease",
+      "status": "PASS",
+      "capture": {
+        "path": ".research/implementation/producer-closing/native/qualified/closing-oldlease.json",
+        "bytes": 127512,
+        "sha256": "52777165ef17d250f4ed7255f83ea4a5ee3fa70268df362fb9ab3f64eacc4933"
+      },
+      "product_source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+      "fixture_source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+      "observer_source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+      "checked": {
+        "native_rows": 26,
+        "control_tables": 37,
+        "originals": 2,
+        "before_sequence": 29,
+        "after_sequence": 30,
+        "successes": 2
+      },
+      "outputs": [
+        {
+          "attempt": 0,
+          "current_control_epoch": 2,
+          "event": "producer-closed",
+          "historical_control_epoch": 1,
+          "issued": 2
+        },
+        {
+          "attempt": 1,
+          "current_control_epoch": 2,
+          "event": "producer-closed",
+          "historical_control_epoch": 1,
+          "issued": 2
+        }
+      ],
+      "remaining_client_backends": 0
+    },
+    {
+      "name": "root",
+      "status": "PASS",
+      "capture": {
+        "path": ".research/implementation/producer-closing/native/qualified/closing-root1.json",
+        "bytes": 127318,
+        "sha256": "d14b28e4d50c4acdfcf87e65976394dc60553d27ea867fc729de4df5c361d09e"
+      },
+      "product_source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+      "fixture_source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+      "observer_source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+      "checked": {
+        "native_rows": 26,
+        "control_tables": 37,
+        "originals": 2,
+        "before_sequence": 29,
+        "after_sequence": 29,
+        "successes": 0
+      },
+      "outputs": [
+        {
+          "error": "Control(InvalidInput)",
+          "event": "closing-refused"
+        }
+      ],
+      "remaining_client_backends": 0
+    },
+    {
+      "name": "metadata",
+      "status": "PASS",
+      "capture": {
+        "path": ".research/implementation/producer-closing/native/qualified/closing-meta1.json",
+        "bytes": 127324,
+        "sha256": "e974bef3587c66834784bff48c326c1579759d9872bdf5a05617267aedb02b0b"
+      },
+      "product_source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+      "fixture_source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+      "observer_source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+      "checked": {
+        "native_rows": 26,
+        "control_tables": 37,
+        "originals": 2,
+        "before_sequence": 29,
+        "after_sequence": 29,
+        "successes": 0
+      },
+      "outputs": [
+        {
+          "error": "Registry(InvalidMetadata)",
+          "event": "closing-refused"
+        }
+      ],
+      "remaining_client_backends": 0
+    },
+    {
+      "name": "policy",
+      "status": "PASS",
+      "capture": {
+        "path": ".research/implementation/producer-closing/native/qualified/closing-policy1.json",
+        "bytes": 127327,
+        "sha256": "3cae76ee6fb4377b5ac3a91defc3a586a6d99e540652be2029ec5e6e708858ce"
+      },
+      "product_source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+      "fixture_source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+      "observer_source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+      "checked": {
+        "native_rows": 26,
+        "control_tables": 37,
+        "originals": 2,
+        "before_sequence": 29,
+        "after_sequence": 29,
+        "successes": 0
+      },
+      "outputs": [
+        {
+          "error": "Control(InvalidPolicy)",
+          "event": "closing-refused"
+        }
+      ],
+      "remaining_client_backends": 0
+    },
+    {
+      "name": "expired",
+      "status": "PASS",
+      "capture": {
+        "path": ".research/implementation/producer-closing/native/qualified/closing-expired1.json",
+        "bytes": 127329,
+        "sha256": "62b478f0bbb76abf76c1304ae6e036f1d0daac2dc457839af89b7ed46509491b"
+      },
+      "product_source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+      "fixture_source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+      "observer_source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+      "checked": {
+        "native_rows": 26,
+        "control_tables": 37,
+        "originals": 2,
+        "before_sequence": 29,
+        "after_sequence": 29,
+        "successes": 0
+      },
+      "outputs": [
+        {
+          "error": "Control(Unavailable)",
+          "event": "closing-refused"
+        }
+      ],
+      "remaining_client_backends": 0
+    },
+    {
+      "name": "rollback",
+      "status": "PASS",
+      "capture": {
+        "path": ".research/implementation/producer-closing/native/qualified/closing-rollback.json",
+        "bytes": 170601,
+        "sha256": "5b9978f9c3aff05052b487f3f0621122b3525f3558fb9ec91c1d876014396933"
+      },
+      "product_source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+      "fixture_source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+      "observer_source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+      "checked": {
+        "native_rows": 26,
+        "control_tables": 37,
+        "originals": 2,
+        "before_sequence": 29,
+        "after_sequence": 30,
+        "successes": 1
+      },
+      "outputs": [
+        {
+          "error": "Control(Backend)",
+          "event": "closing-refused"
+        },
+        {
+          "attempt": 1,
+          "current_control_epoch": 3,
+          "event": "producer-closed",
+          "historical_control_epoch": 1,
+          "issued": 2
+        }
+      ],
+      "remaining_client_backends": 0
+    },
+    {
+      "name": "late-sql",
+      "status": "PASS",
+      "capture": {
+        "path": ".research/implementation/producer-closing/native/qualified/closing-latesql1.json",
+        "bytes": 170603,
+        "sha256": "dfd43c093d098af1e2ad9a1ce4cc5db576367380a47bd23bcea6ee166bc7536e"
+      },
+      "product_source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+      "fixture_source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+      "observer_source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+      "checked": {
+        "native_rows": 26,
+        "control_tables": 37,
+        "originals": 2,
+        "before_sequence": 29,
+        "after_sequence": 30,
+        "successes": 1
+      },
+      "outputs": [
+        {
+          "error": "DeliveryUnknown",
+          "event": "closing-refused"
+        },
+        {
+          "attempt": 1,
+          "current_control_epoch": 3,
+          "event": "producer-closed",
+          "historical_control_epoch": 1,
+          "issued": 2
+        }
+      ],
+      "remaining_client_backends": 0
+    },
+    {
+      "name": "before-forward",
+      "status": "PASS",
+      "capture": {
+        "path": ".research/implementation/producer-closing/native/qualified/closing-before2.json",
+        "bytes": 169043,
+        "sha256": "c2fd916569e570fa9c0239381f819903f30b3fc962e787f3386d9fcc3a8b5507"
+      },
+      "product_source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+      "fixture_source": "cc9151b9bd81512237bbb07b8bde1c446199d95d",
+      "observer_source": "01af703d70d370b75eea6c2d04d95bac0c016304",
+      "checked": {
+        "native_rows": 26,
+        "control_tables": 37,
+        "originals": 2,
+        "before_sequence": 29,
+        "after_sequence": 30,
+        "successes": 1
+      },
+      "outputs": [
+        {
+          "error": "CommitUnknown",
+          "event": "closing-refused"
+        },
+        {
+          "attempt": 1,
+          "current_control_epoch": 3,
+          "event": "producer-closed",
+          "historical_control_epoch": 1,
+          "issued": 2
+        }
+      ],
+      "remaining_client_backends": 0
+    },
+    {
+      "name": "after-complete",
+      "status": "PASS",
+      "capture": {
+        "path": ".research/implementation/producer-closing/native/qualified/closing-after1.json",
+        "bytes": 169144,
+        "sha256": "8614e39ab9b4145d5b4a023041e360542f5bb1e0c17acbe56681a03394278725"
+      },
+      "product_source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+      "fixture_source": "cc9151b9bd81512237bbb07b8bde1c446199d95d",
+      "observer_source": "01af703d70d370b75eea6c2d04d95bac0c016304",
+      "checked": {
+        "native_rows": 26,
+        "control_tables": 37,
+        "originals": 2,
+        "before_sequence": 29,
+        "after_sequence": 30,
+        "successes": 1
+      },
+      "outputs": [
+        {
+          "error": "CommitUnknown",
+          "event": "closing-refused"
+        },
+        {
+          "attempt": 1,
+          "current_control_epoch": 3,
+          "event": "producer-closed",
+          "historical_control_epoch": 1,
+          "issued": 2
+        }
+      ],
+      "remaining_client_backends": 0
+    }
+  ],
+  "independent_expected": {
+    "populated_native_rows": 26,
+    "empty_native_rows": 2,
+    "producer_slot_hex": "42424242424242424242424242424242",
+    "producer_epoch": 1,
+    "populated_marker_hex": "023100000000000000020000000000000000000000000000000001",
+    "empty_marker_hex": "023100000000000000000000000000000000000000000000000001",
+    "control_tables": 37,
+    "unchanged_scientific_rows": true,
+    "unchanged_originals": true,
+    "new_facts_outcomes_requests_checkpoints_ack": 0,
+    "observed_populated_sequences": [
+      29,
+      30
+    ],
+    "observed_empty_sequences": [
+      1,
+      2
+    ],
+    "sequence_assertion": "Exactly one native increment on first closure; zero increment on native retry/recovery.29/30/1/2 are measured engine values, not independently invented starting coordinates.",
+    "control_recovery": "Historical Control epoch1 immutable; epoch2 exact release/exclusion changes with independently recomputed digest; epoch3 role34/inc44, stable resource, distinct backend, lease60s and exact role transition. Ingest remains identical.",
+    "committed_retry": "after-complete producer xmin1026 and native sequence30 remain unchanged through fresh-Control retry; PG-first xmin804 unchanged.",
+    "old_lease_case": "Historical Ingest draining with lease=acquired+1us, observed expired before current Control acquisition; current Control and local policy lease still required."
+  },
+  "compatibility": {
+    "status": "PASS",
+    "capture": {
+      "path": ".research/implementation/producer-closing/native/qualified/old-closing.json",
+      "bytes": 87320,
+      "sha256": "c84e5d9b010e30e7e723c2b217e4d9569fd5b1a32bcacdc5d85254d2d09b2192"
+    },
+    "old_writer": {
+      "source": "f899896b1207f5e71c4e39d9ab7814b293814735",
+      "baseline_product": "442f3d878b3215e421a71160b3613b7ab0c93c7b",
+      "source_manifest_sha256": "fda88661c2d7bed2f88fcc7dad5a34141a0080825faa94ff15c73cdbb7727814",
+      "baseline_source_manifest_sha256": "2424f1cb59e42507061767854d316300f8c4f3f150e8903c82e40c9ff0b69a8f",
+      "native_toolchain": {
+        "os": "Linux",
+        "architecture": "x86_64",
+        "discovery": "llvm-config",
+        "environment": {
+          "CC": "/usr/lib/llvm-14/bin/clang",
+          "CXX": "/usr/lib/llvm-14/bin/clang++",
+          "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+          "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+          "CARGO_BUILD_JOBS": "2",
+          "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+        },
+        "tools": {
+          "CC": {
+            "path": "/usr/lib/llvm-14/bin/clang",
+            "realpath": "/usr/lib/llvm-14/bin/clang",
+            "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+            "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+          },
+          "CXX": {
+            "path": "/usr/lib/llvm-14/bin/clang++",
+            "realpath": "/usr/lib/llvm-14/bin/clang",
+            "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+            "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+          },
+          "AR": {
+            "path": "/usr/lib/llvm-14/bin/llvm-ar",
+            "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+            "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+            "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+          },
+          "LIBCLANG_PATH": {
+            "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+            "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+            "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+            "version": "Debian clang version 14.0.6"
+          },
+          "discovery": {
+            "path": "/usr/lib/llvm-14/bin/llvm-config",
+            "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+            "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+            "version": "14.0.6"
+          }
+        },
+        "sdk": null
+      },
+      "baseline_files_identical_except_exact_test_hook": true,
+      "builder_sha256": "8193ec45c3011aa7a4bfa6a0204162586a024a8259f52fb98af3675ae204b434",
+      "status": "READY",
+      "sha256": "c3838be980d792f6a4839a11735c590367a4de850efccf60f54ab0fdbf4ddb6a",
+      "bytes": 17050096,
+      "source_unchanged": true
+    },
+    "checked": {
+      "snapshots": 11,
+      "old_scientific_writes": 0,
+      "added_originals": {
+        "populated": [
+          3
+        ],
+        "empty": [
+          1
+        ]
+      },
+      "scope": "actual old writer library; native boundary only, test callbacks grant no PG authority"
+    },
+    "baseline": "442f3d878b3215e421a71160b3613b7ab0c93c7b",
+    "fixture": "f899896b1207f5e71c4e39d9ab7814b293814735",
+    "branch": "research/producer-closing-old-writer",
+    "source_equivalence": "All840 baseline files byte-identical after removing the exact four-line cfg(test) hook; two independent fixture files added. No native/PG/dependency change.",
+    "outcomes": "Actual old event dispatch returns Limit for27-byte producer value; bootstrap replay and first bootstrap return StateMismatch. All11 snapshots preserve complete native rows/sequence. Old staging retains original3(populated) and original1(empty), exactly expected.",
+    "copies": "Byte-verified copies of the two stores actually closed by new0f6e366 executable; original qualified directories remain byte-identical.",
+    "boundary": "Old writer-library executable with test-only callbacks, not an unmodified previously shipped binary or connected PG authority test."
+  },
+  "offline_observer": {
+    "status": "PASS",
+    "scope": "offline captured evidence only; no engine execution",
+    "module_sha256": "21d3759b455032fbb161883cea05502ad00118e2fa5d2c8151d1769c05f877ee",
+    "observer_sha256": "7ead0e99c696990f1d181637ec9988a049271392c5b64512870f0a78f8e9bd06",
+    "reports": {
+      "normal1": {
+        "sha256": "8a69a9c1f569aa6eb0688c2c2944f1f50380cacb933d5be9089500ac513df640",
+        "source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+        "harness_revision": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f"
+      },
+      "empty1": {
+        "sha256": "fc22bc0ba9276b6d66e4182378a90cd40adc8820cdd5d6183622bc7b8a9309ee",
+        "source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+        "harness_revision": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f"
+      },
+      "pgfirst1": {
+        "sha256": "8096b3b3e707c9b354d045df342645b065ab1d799a18dd6f767155c0a69ef09c",
+        "source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+        "harness_revision": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f"
+      },
+      "oldlease": {
+        "sha256": "52777165ef17d250f4ed7255f83ea4a5ee3fa70268df362fb9ab3f64eacc4933",
+        "source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+        "harness_revision": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f"
+      },
+      "root1": {
+        "sha256": "d14b28e4d50c4acdfcf87e65976394dc60553d27ea867fc729de4df5c361d09e",
+        "source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+        "harness_revision": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f"
+      },
+      "meta1": {
+        "sha256": "e974bef3587c66834784bff48c326c1579759d9872bdf5a05617267aedb02b0b",
+        "source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+        "harness_revision": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f"
+      },
+      "policy1": {
+        "sha256": "3cae76ee6fb4377b5ac3a91defc3a586a6d99e540652be2029ec5e6e708858ce",
+        "source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+        "harness_revision": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f"
+      },
+      "expired1": {
+        "sha256": "62b478f0bbb76abf76c1304ae6e036f1d0daac2dc457839af89b7ed46509491b",
+        "source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+        "harness_revision": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f"
+      },
+      "rollback": {
+        "sha256": "5b9978f9c3aff05052b487f3f0621122b3525f3558fb9ec91c1d876014396933",
+        "source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+        "harness_revision": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f"
+      },
+      "latesql1": {
+        "sha256": "dfd43c093d098af1e2ad9a1ce4cc5db576367380a47bd23bcea6ee166bc7536e",
+        "source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+        "harness_revision": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f"
+      },
+      "before2": {
+        "sha256": "c2fd916569e570fa9c0239381f819903f30b3fc962e787f3386d9fcc3a8b5507",
+        "source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+        "harness_revision": "01af703d70d370b75eea6c2d04d95bac0c016304"
+      },
+      "after1": {
+        "sha256": "8614e39ab9b4145d5b4a023041e360542f5bb1e0c17acbe56681a03394278725",
+        "source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+        "harness_revision": "01af703d70d370b75eea6c2d04d95bac0c016304"
+      }
+    },
+    "checked_reports": 12,
+    "negative_controls": [
+      "committed-retry-xmin",
+      "old-incarnation-reused",
+      "wrong-successor-role",
+      "changed-historical-owner",
+      "changed-ingest-target",
+      "wrong-exclusion-digest",
+      "wrong-successor-lease",
+      "reused-backend",
+      "unretired-old-role",
+      "wrong-new-role-time",
+      "extra-ack",
+      "omitted-table",
+      "extra-native-write",
+      "changed-native-marker",
+      "changed-original"
+    ]
+  },
+  "review": {
+    "kind": "Independent AI read-only code and captured-evidence review; root integration/diff review. Not a new engine run.",
+    "observations": [
+      "No native/Control authority bypass found in inspected close-only core.",
+      "Clarified old staging can retain an original in native-closed/PG-open interval; old writer refuses the actual durable effect.",
+      "Strengthened max-boundary, ACK and adjacent-producer regressions before qualification.",
+      "Observed reports already preserve committed-retry xmin and fresh-Control rows. Earlier Python observer could accept alterations to those fields; strengthened full-row/digest checks and15 altered-capture controls now refuse them."
+    ]
+  },
+  "preserved_failures": {
+    "local": [
+      {
+        "path": ".research/implementation/producer-closing/missing-api.log",
+        "bytes": 1195,
+        "sha256": "6d35a4b4b19830f9a3c812051c10dc6cbf02dc55e96d492acc8bc90918bbf66a"
+      },
+      {
+        "path": ".research/implementation/producer-closing/semantic-red.log",
+        "bytes": 1306,
+        "sha256": "d09886c0cbd9269d62156404a56421799f931c7aa68aa8bfb88b6120c83d89b9"
+      },
+      {
+        "path": ".research/implementation/producer-closing/connected-missing-api.log",
+        "bytes": 2369,
+        "sha256": "be96a3da840a354c94f576eae403ca77d18c938f0c1439dc228e7e11bc6da97c"
+      },
+      {
+        "path": ".research/implementation/producer-closing/native-expanded.log",
+        "bytes": 1571,
+        "sha256": "270bb377cefa37ff2382d338591553050d53f075053109648f35148102ceca3f"
+      },
+      {
+        "path": ".research/implementation/producer-closing/store-regressions.log",
+        "bytes": 5714,
+        "sha256": "43b1cfb170f813b9632f859a7a2297a3fe5793c0e0a2ccd9451b0134e1c4c807"
+      },
+      {
+        "path": ".research/implementation/producer-closing/clippy-final.log",
+        "bytes": 175,
+        "sha256": "d74c5ae8cf37de008f4afcc7d7444dd75aca27ffe162afa63fec460d3d0bcc61"
+      }
+    ],
+    "native_stub": "Signed native test failed with semantic stub before implementation; missing APIs also failed compilation.",
+    "mac_suite": "34 native-store cases PASS; packaged-worker case FAILED because actual worker installation was absent and skip filter was misspelled. Preserve failure. That required case passed in native35-test run.",
+    "first_commit_loss": {
+      "path": "closing-before1.json",
+      "sha256": "adf12404520f94030ced1a3411a192bf9efc27ff6a7f7940139e7d604ee0896b",
+      "status": "INCOMPLETE",
+      "reason": "fixture appended a second port after real before-forward COMMIT loss; recovery not executed",
+      "capture": {
+        "path": ".research/implementation/producer-closing/native/qualified/closing-before1.json",
+        "bytes": 129238,
+        "sha256": "adf12404520f94030ced1a3411a192bf9efc27ff6a7f7940139e7d604ee0896b"
+      }
+    },
+    "correction": "tokio-postgres0.7.18 Config::port appends (config.rs409-430). cc9151b restores original direct Config. Product inputs unchanged; two real COMMIT-loss schedules then pass. Initial corrected harness also refused its intentionally changed fixture path before SQL; provenance check now separately binds exact fixture and product inputs.",
+    "old_fixture_mac": {
+      "status": "COMPILE_PASS",
+      "actual_closed_store_execution": "NOT_RUN",
+      "baseline": "442f3d878b3215e421a71160b3613b7ab0c93c7b",
+      "compile_command": [
+        "cargo",
+        "test",
+        "--locked",
+        "-p",
+        "bigbrotr",
+        "--lib",
+        "unchanged_old_writer_refuses_actual_closed_directories",
+        "--no-run"
+      ],
+      "compile_exit": 0,
+      "binary": {
+        "path": "/Users/vincenzo/Documents/GitHub/BigBrotr/bigbrotr-rs/.research/targets/product/debug/deps/bigbrotr-af2e0a759b58b617",
+        "bytes": 50523816,
+        "sha256": "32f59507a48f36db619d72c01440230d5c68816ca9608cec9831ae404427a2a0"
+      },
+      "missing_infrastructure": {
+        "exit": 101,
+        "one_test_failed_as_required": true
+      },
+      "interrupted_sanitized_environment_attempt": {
+        "exit": 130,
+        "owned_process_group": 9276,
+        "joined": true
+      },
+      "native_jobs": 2,
+      "compile.log": {
+        "bytes": 835,
+        "sha256": "cd3c67aa369cde486326317241d9cf6340b07b37232cf969397bafd1209860ed"
+      },
+      "compile-normal.log": {
+        "bytes": 926,
+        "sha256": "98ee08829b6533eedaa9b2e7713ffd8421ed3e89f595bf0ef45a38a5448e7b1c"
+      },
+      "missing-infrastructure.log": {
+        "bytes": 687,
+        "sha256": "97bcc8d9eceb5627a5ba292eb4a54382927264220661cc1cbda4071ceaae9337"
+      }
+    }
+  },
+  "terminal": {
+    "status": "PASS",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-closing-0f6e366",
+    "owner": "11748e8de0d0bb19d4178d5e0efecc47",
+    "containers": {
+      "692a92a610cf909e8c7901cd63b2b8d48e535290fae217f4963eea2263259aab": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 143,
+        "Error": "",
+        "StartedAt": "2026-09-19T22:12:10.427323363Z",
+        "FinishedAt": "2026-09-19T22:33:35.373625341Z"
+      },
+      "55b54500b996c4d089efc2e013a219d33189c220aef4036463fb30a3b477137f": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-09-19T22:12:08.419851737Z",
+        "FinishedAt": "2026-09-19T22:33:35.817606625Z"
+      }
+    },
+    "network": "5aecbf2df459dbf06a740a79770051e8015f06a6770ad1192ff2ba8e12ae5a01",
+    "network_state": "empty internal retained",
+    "preexisting_containers_unchanged": 378,
+    "unrelated_running": 8,
+    "bigbrotr_running": 0,
+    "owned_pg_clients": 0
+  },
+  "capture": {
+    "identity": {
+      "path": ".research/implementation/producer-closing/native/evidence-identity.json",
+      "bytes": 13469,
+      "sha256": "eeb6ef700c9cbbbcd25e422cc6d69d8d7fb97ccedd40efbcce89a97f73ae1b85"
+    },
+    "tar_sha256": "f4439e720fa4c7bb2d1db6e64fadf6c26fd2e92e5fee5dd8adcc6518a5f2c2b2",
+    "files": 73,
+    "all_hashes_verified_on_mac": true,
+    "all_four_exports_match_mac_git_archives": true,
+    "exact_original_files_compared_on_mac": 28
+  },
+  "limitations": [
+    "Close-only initial owner/producer epoch1. Complete outcome resolution, contiguous ACK, GC/abandonment, producer retirement, source closure, fresh Ingest successor and topology handoff remain required.",
+    "Native issued/max request key is not a complete receipt/dependency scrub or resolved-through proof. Nonzero ACK/retired unsupported by this operation.",
+    "Policy refusal is trusted-validator rejection; expired is local policy deadline; late-sql expires local authority after native sync. No actual policy-head advancement or current Control scheduling-expiry scenario.",
+    "Native callbacks cover authority before and after sync; no in-FFI kill, fresh-process recovery, held-old-process native LOCK, post-sync asynchronous cancellation or Control-backend kill in this close-only qualification.",
+    "No isolated callback supplies PG authority. Old library staging side effects are deliberately retained; no pre-staging refusal claim for native-closed/PG-open intermediate state.",
+    "Exact rows/sequence/originals and named resource bounds do not imply zero physical I/O, bounded FFI latency, process RSS, aged mixed-load capacity, ENOSPC or power-loss safety.",
+    "No installed-source runtime, complete M1 journey, Linux arm64, hosted Actions, Docker Hub promotion or public release qualification. All selected product work remains active."
+  ]
+}

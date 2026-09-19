@@ -14389,16 +14389,217 @@
       "network": "bigbrotr-implementation-producer-closing-0f6e366",
       "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
       "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
-      "state": "running",
+      "state": "stopped-retained",
       "source_files": 846,
       "started_at": "2026-09-19T22:12:07.711401+00:00",
       "network_id": "5aecbf2df459dbf06a740a79770051e8015f06a6770ad1192ff2ba8e12ae5a01",
       "postgres_id": "55b54500b996c4d089efc2e013a219d33189c220aef4036463fb30a3b477137f",
       "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
       "container_id": "692a92a610cf909e8c7901cd63b2b8d48e535290fae217f4963eea2263259aab",
-      "qualification": "IN_PROGRESS; exact-source native build; no connected scenarios executed",
-      "raw": ".research/implementation/producer-closing/native",
-      "cache_source": "certification-2f9ba08/out/build"
+      "completed_at": "2026-09-19T22:33:36.297395+00:00",
+      "qualification": "PASS for close-only native barrier: 35 actual native tests, 12 connected cases, old writer-library eleven snapshots and 15 offline negative controls; outcome resolution/ACK/retirement/source handoff remain open",
+      "raw": ".research/implementation/producer-closing/native/qualified",
+      "terminal_audit": {
+        "status": "PASS",
+        "source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+        "tree": "f148d133462d7b5f199aac9e3ad872bb02e2ae83",
+        "source_manifest": {
+          "revision": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+          "tree": "f148d133462d7b5f199aac9e3ad872bb02e2ae83",
+          "files": 846,
+          "archive_sha256": "b65121be520e504b7c98ae4ec85fce318e4f4d8f0937644651621f7f9e5ea35c",
+          "manifest_sha256": "3c0475568c7dcd49e2e13065540a6fca4d0b7bfcd9dd58c08c43e5ac608fa4eb",
+          "lock_sha256": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215"
+        },
+        "scope": "Source/artifact identity and terminal exclusion; native producer closing, fresh Control and old writer-library refusal",
+        "reports": {
+          "closing-normal1.json": {
+            "status": "PASS",
+            "sha256": "8a69a9c1f569aa6eb0688c2c2944f1f50380cacb933d5be9089500ac513df640"
+          },
+          "closing-empty1.json": {
+            "status": "PASS",
+            "sha256": "fc22bc0ba9276b6d66e4182378a90cd40adc8820cdd5d6183622bc7b8a9309ee"
+          },
+          "closing-pgfirst1.json": {
+            "status": "PASS",
+            "sha256": "8096b3b3e707c9b354d045df342645b065ab1d799a18dd6f767155c0a69ef09c"
+          },
+          "closing-oldlease.json": {
+            "status": "PASS",
+            "sha256": "52777165ef17d250f4ed7255f83ea4a5ee3fa70268df362fb9ab3f64eacc4933"
+          },
+          "closing-root1.json": {
+            "status": "PASS",
+            "sha256": "d14b28e4d50c4acdfcf87e65976394dc60553d27ea867fc729de4df5c361d09e"
+          },
+          "closing-meta1.json": {
+            "status": "PASS",
+            "sha256": "e974bef3587c66834784bff48c326c1579759d9872bdf5a05617267aedb02b0b"
+          },
+          "closing-policy1.json": {
+            "status": "PASS",
+            "sha256": "3cae76ee6fb4377b5ac3a91defc3a586a6d99e540652be2029ec5e6e708858ce"
+          },
+          "closing-expired1.json": {
+            "status": "PASS",
+            "sha256": "62b478f0bbb76abf76c1304ae6e036f1d0daac2dc457839af89b7ed46509491b"
+          },
+          "closing-rollback.json": {
+            "status": "PASS",
+            "sha256": "5b9978f9c3aff05052b487f3f0621122b3525f3558fb9ec91c1d876014396933"
+          },
+          "closing-latesql1.json": {
+            "status": "PASS",
+            "sha256": "dfd43c093d098af1e2ad9a1ce4cc5db576367380a47bd23bcea6ee166bc7536e"
+          },
+          "closing-before2.json": {
+            "status": "PASS",
+            "sha256": "c2fd916569e570fa9c0239381f819903f30b3fc962e787f3386d9fcc3a8b5507"
+          },
+          "closing-after1.json": {
+            "status": "PASS",
+            "sha256": "8614e39ab9b4145d5b4a023041e360542f5bb1e0c17acbe56681a03394278725"
+          },
+          "old-closing.json": {
+            "status": "PASS",
+            "sha256": "c84e5d9b010e30e7e723c2b217e4d9569fd5b1a32bcacdc5d85254d2d09b2192"
+          },
+          "out/native-tests/checks/result.json": {
+            "status": "PASS",
+            "sha256": "84beaeaaace623740864230e80ada3258838c79d9935300b4052dcb983cf301e"
+          },
+          "out/native-tests/certification/result.json": {
+            "status": "PASS",
+            "sha256": "ca854d0eeaa0310a18227c95d1ed0497f86b7d3bcabcc689d9faf2a5073db8a3"
+          },
+          "out/closing-probe/build/result.json": {
+            "status": "PASS",
+            "sha256": "7aa624a1a5603fa1fa9238859fcdb0356a63b4a544edb91fefd6e3f4197f4779"
+          },
+          "out/old-closing-probe/build/result.json": {
+            "status": "PASS",
+            "sha256": "1cd44c4f960a376a0218eef5285e7dd9e1e367927b145f833e4a69455caa0b7b"
+          }
+        },
+        "artifacts": {
+          "main": {
+            "sha256": "f0bc9b88546e9571c42a688e6ca777ba0f9b48b6701fbf57cca9f1506b7b5abb",
+            "bytes": 9218760,
+            "elf_machine": 62
+          },
+          "worker": {
+            "sha256": "4a8f8f37ec6dbf7b6e6def033966d21d116f027699cfd4c96ae6ff852f298f3c",
+            "bytes": 12608632,
+            "elf_machine": 62
+          },
+          "ingest_probe": {
+            "sha256": "70eb1d342740e54be19b730583ba48bb37e39cfd4c3d93d0ff29df63c87c320f",
+            "bytes": 15952432,
+            "elf_machine": 62
+          },
+          "corrected_ingest_probe": {
+            "sha256": "b4cb5e1823a28935f4c97af3cc952e814b69c5982a16fdd0ea6fb3e1ff3bc161",
+            "bytes": 15956368,
+            "elf_machine": 62
+          },
+          "old_writer_test": {
+            "sha256": "c3838be980d792f6a4839a11735c590367a4de850efccf60f54ab0fdbf4ddb6a",
+            "bytes": 17050096,
+            "elf_machine": 62
+          }
+        },
+        "additional_exports": {
+          "out/closing-probe/source": {
+            "revision": "cc9151b9bd81512237bbb07b8bde1c446199d95d",
+            "tree": "300c1c0fc4291b690a5e6c0c358311b4191a6e36",
+            "files": 847,
+            "manifest_sha256": "e2f45942e162845bc5416bf81e958aa18af07d4f314192c9e6d4f8cb62be64cf",
+            "archive_sha256": "dc15beba3bbcf2966e73eeb52339677b396e10017703eb4f1dcb2ba966575a76"
+          },
+          "out/old-closing-probe/source": {
+            "revision": "f899896b1207f5e71c4e39d9ab7814b293814735",
+            "tree": "fca0c65dfee98ad1081c9a97db7cc9a7b00dbdc7",
+            "files": 842,
+            "manifest_sha256": "fda88661c2d7bed2f88fcc7dad5a34141a0080825faa94ff15c73cdbb7727814",
+            "archive_sha256": "02462cb0c16e07ec1a86394c56b35bce60f1eec1f8525757429f2544fec0c41e"
+          },
+          "out/old-closing-probe/baseline-source": {
+            "revision": "442f3d878b3215e421a71160b3613b7ab0c93c7b",
+            "tree": "32f538afb1e2c123d7a714bff298ff94bd017e23",
+            "files": 840,
+            "manifest_sha256": "2424f1cb59e42507061767854d316300f8c4f3f150e8903c82e40c9ff0b69a8f",
+            "archive_sha256": "cc6ec638137f09ef630d2cc7a7206da8fa9a0a019d7e3bd722b9408a6737d11a"
+          }
+        },
+        "original_closed_stores_unchanged_by_compatibility": true,
+        "retained_failure": {
+          "path": "closing-before1.json",
+          "sha256": "adf12404520f94030ced1a3411a192bf9efc27ff6a7f7940139e7d604ee0896b",
+          "status": "INCOMPLETE",
+          "reason": "fixture appended a second port after real before-forward COMMIT loss; recovery not executed"
+        },
+        "harnesses": {
+          "harness-01af703": {
+            "revision": "01af703d70d370b75eea6c2d04d95bac0c016304",
+            "tree": "db5aed88f47bfbb498a96a0d75510c4df06ffdc9",
+            "product_unchanged": true
+          },
+          "harness-cc9151b": {
+            "revision": "cc9151b9bd81512237bbb07b8bde1c446199d95d",
+            "tree": "300c1c0fc4291b690a5e6c0c358311b4191a6e36",
+            "product_unchanged": true
+          },
+          "harness-fd168a5": {
+            "revision": "fd168a5a602e682b354d342f44ec1e7642fc865b",
+            "tree": "730540778786ed45cdc8ef23ee6afb8db90850c4",
+            "product_unchanged": true
+          }
+        },
+        "prestop": {
+          "at": "2026-09-19T22:33:35.351164+00:00",
+          "owned_client_backends": 0,
+          "runner_processes": "PID                 PPID                STAT                COMMAND\n105682              105658              Ss                  docker-init\n105695              105682              S                   python3",
+          "owned_containers": [
+            "692a92a610cf909e8c7901cd63b2b8d48e535290fae217f4963eea2263259aab",
+            "55b54500b996c4d089efc2e013a219d33189c220aef4036463fb30a3b477137f"
+          ]
+        },
+        "terminal": {
+          "692a92a610cf909e8c7901cd63b2b8d48e535290fae217f4963eea2263259aab": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-19T22:12:10.427323363Z",
+            "FinishedAt": "2026-09-19T22:33:35.373625341Z"
+          },
+          "55b54500b996c4d089efc2e013a219d33189c220aef4036463fb30a3b477137f": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-19T22:12:08.419851737Z",
+            "FinishedAt": "2026-09-19T22:33:35.817606625Z"
+          }
+        },
+        "preexisting_containers_unchanged": 378,
+        "unrelated_containers_unchanged": 20,
+        "unrelated_running": 8,
+        "bigbrotr_running": 0,
+        "observed_at": "2026-09-19T22:33:36.297395+00:00"
+      },
+      "manifest": ".research/implementation/producer-closing/native/evidence-identity.json"
     }
   },
   "implementation_monitor_corrections_20260918": {
