@@ -144,14 +144,20 @@ pub async fn observe(mode: &str, action: &str) {
     )
     .unwrap();
     let (client, driver) = connect(&format!("bbpub_control_{mode}"), "bigbrotr_control").await;
+    // Each observation is a new real process/Control claim. Retained role
+    // instances cannot be reused, even after an explicit release.
+    let mut role_instance_id = [0; 16];
+    let mut incarnation = [0; 16];
+    getrandom::fill(&mut role_instance_id).unwrap();
+    getrandom::fill(&mut incarnation).unwrap();
     let (mut owner, _) = ControlSession::acquire(
         client,
         ClaimRequest {
             dataset: dataset(),
             instance: [2; 16].try_into().unwrap(),
             authority_mode: "managed".into(),
-            role_instance_id: [32; 16],
-            incarnation: [42; 16].try_into().unwrap(),
+            role_instance_id,
+            incarnation: incarnation.try_into().unwrap(),
             lease_ttl: Duration::from_secs(15),
         },
         validate,

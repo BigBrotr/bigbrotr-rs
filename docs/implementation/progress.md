@@ -21,11 +21,11 @@ required; finite fixtures do not implement that lifecycle.
 
 ## Actual Git and ownership
 
-Mac main and origin/main are ba5aca48727a11feeff4350877149247b2243a2d, freshly
-verified after ordinary fast-forward push. The worktree was clean before the local custody candidate began. Root is sole
-writer/integrator; current dirty files are owned: archive lifetime module/tests,
-worker/publisher wiring and publication probe, Cargo manifests/lock, dependency
-registry, related contracts/task/checkpoint and laboratory inventory. Tested product source remains
+Mac main is unpublished candidate ead11f8d745548e927ecd08457ae6d67fbc6fa4b, tree
+c57857f96a2771e568c33de95779134821278759. Last verified origin/main remains
+ba5aca48727a11feeff4350877149247b2243a2d. No candidate push yet. Root is sole writer/integrator. All custody source/fixtures/contracts were committed
+coherently from the reviewed dirty candidate. Only the fixture observer correction and checkpoint/inventory are dirty after
+exact clean source transfer87227; all edits are root-owned. The delivered receipt qualification uses source
 0b3a427de97d07bb092a7d0a69375a1d9eeb662b, tree
 f6535fed61a4af06a4279728d6dfc45369687a88; ba5aca4 changes only documentation,
 evidence and inventory. No merge/rebase, remote editing or contributor changes.
@@ -95,7 +95,7 @@ separate cancellation timing, credential-only mounts, bounded failure log captur
 complete artifact audit and precise uniqueness claims before0b3a427. Initial
 fixture syntax/field-access compile failures are retained, not called PASS.
 
-## Owned lab is terminal
+## Previous receipt lab is terminal
 
 Inventory key implementation_archive_worker_20260918.fresh_receipt_reader owns
 /home/tux/bigbrotr-implementation-20260917/runs/publication-0b3a427.
@@ -147,7 +147,7 @@ MON-009 uses additive0008, authoritative caps, sorted SHARE locks, inverse check
 READ COMMITTED and incompatible-history refusal; 24 actual PG cases pass. Do not
 mechanically rerun unrelated suites.
 
-## Local attempt custody candidate (dirty Mac work)
+## Local attempt custody candidate ead11f8
 
 P02-T04 steps4/5 now implement a synchronized immutable local journal before
 credential provisioning and close-only flock custody across the coordinator,
@@ -178,24 +178,57 @@ fixed/tested, final combined source review found no further product blocker. Its
 cleanup finding was corrected so one wrapper-stop failure cannot skip remaining
 observations. Root verified that worker PDEATHSIG already forbids an ordinary
 parent-death survivor; the native fixture preserves that safeguard and separately
-tests live child-only descriptor custody. Actual native worker inheritance, parent death and queued catalog COMMIT
-cancellation have NOT_RUN status. New custody_cases.py and signed fixture modes
+tests live child-only descriptor custody. Native core/child checks now have scoped PASS evidence below; the full crash/
+queued-COMMIT schedules remain incomplete after the fixture failure. New custody_cases.py and signed fixture modes
 cover those boundaries; an explicitly selected Linux-only test exercises the real
 worker after coordinator descriptors close. Final Mac archive21/Clippy/structural
 checks pass (archive-final-local.log, fixture-final-clippy.log, fixture-artifacts.log,
-fixture-handoff.log). Initial fixture Clippy E0716 was corrected and retained. No new
-Tux lab/resources exist. Inventory local_attempt_custody records this candidate.
+fixture-handoff.log). Initial fixture Clippy E0716 was corrected and retained. The first individually inventoried custody lab is retired below; earlier receipt
+resources also remain retired.
+
+## First custody lab retired after fixture failure
+
+Inventory implementation_archive_worker_20260918.local_attempt_custody owns
+/home/tux/bigbrotr-implementation-20260917/runs/publication-ead11f8.
+Exact source ead11f8/tree c57857f; all696 exported files/archive SHA match Mac Git.
+Source audit is lifetime/ead11f8/mac-source-audit.json. Nine build/test commands
+and one explicit native-worker command PASS:28 actual Rust cases. The default
+Linux collection defers one native case; the separate exact selection executed
+that case successfully after installing the just-built worker. No required case
+was counted as passing from an ignored result.
+
+The first custody_worker schedule held real native COMMIT, observed matching
+journal inode/FD in parent and worker, then killed only the actual parent and
+positively observed child reap by PDEATHSIG. Its next recovery observer failed:
+fixture reused role_instance_id [32;16], PostgreSQL correctly raised
+role_instances_pkey. custody-cases.json remains INCOMPLETE, not PASS; manager and
+six signed schedules were NOT_RUN in this lab. Corrected Mac fixture now uses
+fresh entropy-backed role/process identities per observation; scoped Clippy PASS
+(observer-identity-clippy.log). Product Control constraints are unchanged.
+
+Owner378543361462ddf3f9072cfb69cbe69f;
+runner87fe059ffa88c51eba25616a2e4edac3fa1161e0f1565eccd79af459a5e61905;
+PG637b17a802c6865c0a4a750373cf97db8152ea70028f8bdea021e7cea36adefa;
+networkcd7483851b7fc15d140676b25a38d80e886ee2efbde9531f5599f286b1d72031 retired.
+Failed-retirement26025 is terminal: no other catalog backend, files0/snapshots2,
+privileged lab cleanup disabled owner and every owned non-admin login/password.
+This cleanup is explicitly not product recovery qualification. Both containers
+stopped-retained, no OOM, PG exit0; all20 unrelated identities unchanged, eight
+running and zero BigBrotr running. Never restart this lab. Transfer87227 and
+copies27500/23378 are terminal. Raw18-file archive hash
+58be9108c7fb6f353be700954aa05863e43aa127fadb81c2a887ec7488f780e5
+is extracted under lifetime/ead11f8; includes result/logs and failed-terminal.json.
 
 ## Next bounded action
 
-Commit the reviewed unpublished candidate and transfer exact Git to a new Linux
-lab. The ignored launcher now copies 0b3a427 cache and validates a bounded bundle
-of the five added crate archives plus sparse-index entries against the current
-lock before its offline build. Prefetch archive SHA256
-52d849166f32e0c50e09cd9f758049ccdfd7a780f10a9535b903ad0da0d3e3cd.
-Fresh read-only preflight finds zero BigBrotr containers running and eight unrelated
-workloads running; retained at lifetime/preflight-local.json. No new lab yet. Create a new inventoried lab;
-never restart the retired receipt lab. Execute actual ext4 host admission, native
-child/parent-loss and real PostgreSQL driver/queued-COMMIT custody schedules plus
-the six signed publication/receipt schedules. Persistent installed lifecycle,
-missing-provision recovery, protection and M1 remain subsequent required work.
+Commit the small fixture identity correction plus current evidence/checkpoint,
+then transfer a new clean exact-source lab. Copy the already built ead11f8 cache
+without modifying it; same Cargo.lock and preverified five-archive prefetch.
+Run custody_cases.py --root <new-root> and all six signed_publication_cases.py
+schedules after actual native checks. Manager COMMIT cancellation/death must keep
+Occupied until transport loss, then prove sealing blocks on the unresolved PG
+transaction. Proxy client_complete counts attempted forwarding, not acknowledgment.
+Retain outcomes, audit source/artifacts/roles/data and retire only owned resources
+before documenting/pushing qualification. Installed lifecycle, missing-provision
+recovery, cross-boot recovery, resource reconciliation, protection and M1 remain
+required; no P02 task or release is complete.

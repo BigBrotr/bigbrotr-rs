@@ -7351,7 +7351,7 @@
     },
     "local_attempt_custody": {
       "base_source": "ba5aca48727a11feeff4350877149247b2243a2d",
-      "state": "Root-owned dirty Mac candidate; no new Tux resources or active compiler",
+      "state": "ead11f8 native checks PASS, first crash fixture INCOMPLETE; owned runner/PG stopped-retained, network retired",
       "local_root": ".research/implementation/archive-worker/lifetime",
       "local_validation": {
         "core_cases": 8,
@@ -7360,20 +7360,79 @@
         "publication_example_check": "PASS",
         "structural_artifact_handoff_checks": "PASS"
       },
-      "native_status": "NOT_RUN: exact Linux host profile, native child parent-loss and queued PostgreSQL COMMIT custody remain required",
+      "native_status": "28 scoped Rust cases PASS including explicit native child-only custody; practical worker death observed, then recovery observer failed on reused Control identity; remaining scenarios NOT_RUN",
       "scope": "Persistent local custody only; no installed lifecycle, full-process termination, receipt absence, protection or release claim",
       "prefetch": {
         "archive": ".research/implementation/archive-worker/lifetime/dependency-prefetch.tar",
         "sha256": "52d849166f32e0c50e09cd9f758049ccdfd7a780f10a9535b903ad0da0d3e3cd",
         "packages": 5,
         "files": 10,
-        "status": "Mac cache bytes verified against current Cargo.lock; Tux copy not yet executed"
+        "status": "Exact checksum-verified prefetch installed in fresh copied Tux cache; native Cargo runs offline"
       },
       "preflight": {
         "path": ".research/implementation/archive-worker/lifetime/preflight-local.json",
         "bigbrotr_running": 0,
         "unrelated_running": 8
-      }
+      },
+      "candidate_source": "ead11f8d745548e927ecd08457ae6d67fbc6fa4b",
+      "source_audit": {
+        "status": "PASS",
+        "source": "ead11f8d745548e927ecd08457ae6d67fbc6fa4b",
+        "tree": "c57857f96a2771e568c33de95779134821278759",
+        "files": 696,
+        "manifest_sha256": "a5a5b765b9350b4db3d4cc2ba9bec8cb091a84df207ed5b516fc4b4a6e5d973f",
+        "archive_sha256": "9486975047f26de6aaeca19250318ab64a8670f0de8494468e3b2b68cda5069d"
+      },
+      "native_resources": {
+        "source": "ead11f8d745548e927ecd08457ae6d67fbc6fa4b",
+        "tree": "c57857f96a2771e568c33de95779134821278759",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/publication-ead11f8",
+        "owner": "378543361462ddf3f9072cfb69cbe69f",
+        "container": "bigbrotr-implementation-publication-ead11f8",
+        "postgres": "bigbrotr-implementation-publication-ead11f8-pg",
+        "network": "bigbrotr-implementation-publication-ead11f8",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "state": "stopped-retained-failed-fixture",
+        "source_files": 696,
+        "started_at": "2026-09-19T00:44:48.032581+00:00",
+        "network_id": "cd7483851b7fc15d140676b25a38d80e886ee2efbde9531f5599f286b1d72031",
+        "postgres_id": "637b17a802c6865c0a4a750373cf97db8152ea70028f8bdea021e7cea36adefa",
+        "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+        "container_id": "87fe059ffa88c51eba25616a2e4edac3fa1161e0f1565eccd79af459a5e61905",
+        "network_state": "retired",
+        "terminal": {
+          "container_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-19T00:44:50.602093259Z",
+            "FinishedAt": "2026-09-19T00:50:41.986527292Z"
+          },
+          "postgres_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-19T00:44:48.595232092Z",
+            "FinishedAt": "2026-09-19T00:50:42.910135108Z"
+          }
+        },
+        "finished_at": "2026-09-19T00:50:43.571331+00:00"
+      },
+      "failure": "PostgreSQL role_instances_pkey correctly refused the second fixture observer. Local fixture corrected to fresh entropy-backed role/process identities; native retry pending.",
+      "failed_terminal": ".research/implementation/archive-worker/lifetime/ead11f8/failed-terminal.json"
     }
   },
   "implementation_monitor_corrections_20260918": {
