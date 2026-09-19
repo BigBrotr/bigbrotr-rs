@@ -36,14 +36,14 @@ def main():
     def check(name,**detail):report['cases'].append(dict(name=name,result='PASS',**detail));save()
     def rows(db):
         names=json.loads(lab.sql(state,db,"SELECT json_agg(tablename ORDER BY tablename) FROM pg_tables WHERE schemaname='control';"))
-        require(len(names)==30,'complete-relation-inventory')
+        require(len(names)==31,'complete-relation-inventory')
         return {n:json.loads(lab.sql(state,db,f"SELECT coalesce(json_agg(t),'[]') FROM control.{n} t;")) for n in names}
     def prepare(name,active=True):
         db='bb_runtime_'+name;lab.sql(state,'postgres',f'CREATE DATABASE {db} OWNER bigbrotr_migrator;')
         path=lab.config(root,state,db);local=root/Path(path).name
         local.write_text(lab.change(local.read_text(),'postgres.control','password_ref','file:/lab/secrets/application'))
         if name!='enabled_administration':local.write_text(lab.change(local.read_text(),'administration','enabled',False))
-        require(lab.migrate(state,'apply',path,target=7).returncode==0,'migration')
+        require(lab.migrate(state,'apply',path,target=9).returncode==0,'migration')
         lab.sql(state,db,'GRANT USAGE ON SCHEMA control TO bigbrotr_control; GRANT SELECT, INSERT, UPDATE ON ALL TABLES IN SCHEMA control TO bigbrotr_control; GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA control TO bigbrotr_control;')
         require(lab.cli(state,'config','initialize','--file',path).returncode==0,'initialize')
         if active:require(lab.cli(state,'config','activate-initial','--file',path,'--request-id','51'*16,'--expected-revision','1').returncode==0,'activate')

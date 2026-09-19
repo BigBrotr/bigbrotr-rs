@@ -6,7 +6,10 @@ use bigbrotr::{
         ownership::fresh_process_incarnation,
         policy_authority::{LeaseResponse, PolicyLeaseTracker, PolicyLeaseTtl},
     },
-    storage::postgres::control_owner::{ClaimRequest, ControlSession, OwnerError, PolicySnapshot},
+    storage::postgres::{
+        archive_attempt::ArchiveAttemptError,
+        control_owner::{ClaimRequest, ControlSession, OwnerError, PolicySnapshot},
+    },
 };
 use bigbrotr_model::{DatasetId, PolicyEpoch, ProcessIncarnation};
 use clap::{Arg, ArgMatches, Command};
@@ -182,12 +185,50 @@ async fn supervise(
         .check_delivery(lease.known_epoch())
         .map_err(|e| (1, e.to_string()))?;
     let identity = owner.identity();
+    // Control owns the retained issuance history even when Archive is omitted
+    // from this process selection. Inventory is observation, never a terminal
+    // result: every observed intent still needs its catalog/custody resolution.
+    let archive_inventory = if root.local("archive") {
+        let catalog = root.catalog_identity().map_err(|e| (3, e))?.catalog();
+        let mut scan = tokio::select! {
+            biased;
+            _ = stop.requested() => return Err((4, "archive intent inventory cancelled".into())),
+            result = tokio::time::timeout(
+                duration(root, "renewal_timeout").min(lease.remaining_validity().map_err(|e| (1, e.to_string()))?),
+                owner.begin_archive_attempt_scan(catalog)
+            ) => result.map_err(|_| (1, "archive intent inventory deadline exceeded".into()))?
+                .map_err(attempt_error)?,
+        };
+        let mut pages = 0_u64;
+        while !scan.is_complete() {
+            refresh_authority(&mut owner, &mut lease, &mut renewed, dataset, root, stop).await?;
+            // Drop each bounded page before polling again; no history-sized
+            // collection or transaction survives a supervision boundary.
+            tokio::select! {
+                biased;
+                _ = stop.requested() => return Err((4, "archive intent inventory cancelled".into())),
+                result = tokio::time::timeout(
+                    duration(root, "renewal_timeout").min(lease.remaining_validity().map_err(|e| (1, e.to_string()))?),
+                    owner.read_archive_attempt_page(&mut scan)
+                ) => { result.map_err(|_| (1, "archive intent inventory deadline exceeded".into()))?
+                    .map_err(attempt_error)?; },
+            }
+            pages += 1;
+        }
+        snapshot =
+            refresh_authority(&mut owner, &mut lease, &mut renewed, dataset, root, stop).await?;
+        json!({"state":"observed", "catalog_id":catalog,
+            "issued_through":scan.high_water().to_string(), "observed_through":scan.observed_through().to_string(),
+            "pages":pages, "resolution":"not-performed", "publication_authority":"not-granted"})
+    } else {
+        json!({"state":"not-selected", "resolution":"not-performed", "publication_authority":"not-granted"})
+    };
     output.emit(
         json!({"format":"bigbrotr-control-runtime/1", "state":"idle", "role":"control",
         "dataset_id":dataset, "process_incarnation":incarnation,
         "owner_resource_id":identity.resource_id, "owner_epoch":identity.epoch.get().to_string(),
         "config_revision":snapshot.config_revision.to_string(), "policy_revision":snapshot.policy_revision.to_string(),
-        "listeners":[], "native_stores":[], "authority_scope":"local Control only; no principal/action grant"}),
+        "archive_intents":archive_inventory, "listeners":[], "native_stores":[], "authority_scope":"local Control only; no principal/action grant"}),
         false,
     );
     let heartbeat = duration(root, "heartbeat_interval");
@@ -209,34 +250,67 @@ async fn supervise(
             },
             _ = tokio::time::sleep(period) => {},
         }
-        // A paused process cannot revive its old lease before checking expiry.
-        lease
-            .check_delivery(lease.known_epoch())
-            .map_err(|e| (1, e.to_string()))?;
-        let ticket = lease.begin_refresh().map_err(|e| (1, e.to_string()))?;
-        let renew = renewed.elapsed() >= heartbeat;
-        let refresh_started = Instant::now();
-        let operation = async {
-            if renew {
-                owner.refresh(validate).await
-            } else {
-                owner.poll_policy(validate).await
-            }
-        };
-        let refreshed = tokio::select! {
-            biased;
-            _ = stop.requested() => Err(if renew { OwnerError::CommitUnknown } else { OwnerError::Unavailable }),
-            result = tokio::time::timeout(duration(root, "renewal_timeout").min(ttl), operation) =>
-                result.unwrap_or(Err(if renew { OwnerError::CommitUnknown } else { OwnerError::Backend })),
-        };
-        snapshot = refreshed.map_err(owner_error)?;
-        lease
-            .complete_refresh(&ticket, response(dataset, incarnation, snapshot, ttl))
-            .map_err(|e| (1, e.to_string()))?;
-        if renew {
-            renewed = refresh_started;
-        }
+        snapshot =
+            refresh_authority(&mut owner, &mut lease, &mut renewed, dataset, root, stop).await?;
     }
+}
+
+async fn refresh_authority(
+    owner: &mut ControlSession,
+    lease: &mut PolicyLeaseTracker,
+    renewed: &mut Instant,
+    dataset: DatasetId,
+    root: &Resolved,
+    stop: &mut Stop,
+) -> Result<PolicySnapshot> {
+    // A paused process cannot revive its old lease before checking expiry. This
+    // same path supervises bounded startup pages and the subsequent idle loop.
+    lease
+        .check_delivery(lease.known_epoch())
+        .map_err(|e| (1, e.to_string()))?;
+    let ticket = lease.begin_refresh().map_err(|e| (1, e.to_string()))?;
+    let renew = renewed.elapsed() >= duration(root, "heartbeat_interval");
+    let refresh_started = Instant::now();
+    let validate = |document: &str, digest| validate_policy(root, document, digest);
+    let operation = async {
+        if renew {
+            owner.refresh(validate).await
+        } else {
+            owner.poll_policy(validate).await
+        }
+    };
+    let ttl = duration(root, "authorization_ttl");
+    let snapshot = tokio::select! {
+        biased;
+        _ = stop.requested() => Err(if renew { OwnerError::CommitUnknown } else { OwnerError::Unavailable }),
+        result = tokio::time::timeout(duration(root, "renewal_timeout").min(ttl), operation) =>
+            result.unwrap_or(Err(if renew { OwnerError::CommitUnknown } else { OwnerError::Backend })),
+    }.map_err(owner_error)?;
+    lease
+        .complete_refresh(
+            &ticket,
+            response(
+                // These bindings belong to the original accepted tracker/session.
+                dataset,
+                owner.identity().process_incarnation,
+                snapshot,
+                ttl,
+            ),
+        )
+        .map_err(|e| (1, e.to_string()))?;
+    if renew {
+        *renewed = refresh_started;
+    }
+    Ok(snapshot)
+}
+
+fn attempt_error(error: ArchiveAttemptError) -> (u8, String) {
+    let code = match error {
+        ArchiveAttemptError::Backend => 1,
+        ArchiveAttemptError::Unavailable | ArchiveAttemptError::CommitUnknown => 4,
+        _ => 3,
+    };
+    (code, format!("archive intent inventory refused: {error:?}"))
 }
 
 fn duration(root: &Resolved, name: &str) -> Duration {

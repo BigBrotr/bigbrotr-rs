@@ -51,3 +51,16 @@ audits, all seven product process exits, 240 independently inspected relations
 and retained isolated resources. The same record separately qualifies the common
 foundation CI at `6314639`; that earlier source lacked the administration gate
 correction and is not the qualified runtime artifact.
+
+
+`archive_inventory.py --root /owned/archive-inventory-run` uses the exact-source
+`native_archive_inventory.py` build and a fresh inventoried PG laboratory. It
+runs the actual CLI migration/initialization/activation, seeds130 immutable
+attempts through the real fenced adapter, and checks three-page startup/restart,
+empty history, an old executable negative control, historical catalog mismatch,
+a blocked startup scan cancelled by SIGTERM with driver closure, and explicit
+migration0009 refusal. The adapter probe additionally exercises a fixed132-row
+cutoff with two later issuances, three page boundaries, numeric continuity,
+owner-bound cursors, historical corruption and blocked-page cancellation.
+The harness retains exact output and identities. This is an inventory consumer,
+not Archive execution, receipt resolution, source-policy or M1 qualification.

@@ -136,22 +136,33 @@ External feedback reread previously; it records the earlier scoped closures too.
 
 ## Next bounded action
 
-Offline evidence review, complete diff review, documentation checks and private
-push are complete. Next implement the installed compact
-Control+Archive lifecycle/ownership consumer through P01-T05/T06 and P02-T03/T04,
-using configured protected connections, common budgets, current Control authority,
-retained attempts and positive native/driver joins. Do not stop at a second set of
-standalone custody helpers. Current actual serve has no Archive owner/dispatch;
-read complete relevant runtime/configuration/source contracts before wiring it.
+Root is implementing the next actual Control consumer for P01-T05/T06 and
+P02-T04: fixed-cutoff, owner-bound,64-row intent enumeration before startup idle
+when Archive is locally assigned. No migration/dependency/worker/journal format
+change. Runtime reports inventory only; Archive execution remains refused.
+Root-owned edits: archive_attempt.rs, control_owner.rs, serve.rs, actual adapter
+fixture, native build/runtime cases and owning documentation. Baseline is clean
+ede3db437b8a9fdb4215313bb5712407d625a918; unpublished exact-source qualification
+candidate follows this checkpoint. Mac8binary+1attempt+1entrypoint tests pass;
+initial Clippy found an unnecessary fixture mut, corrected. Final scoped Clippy
+passes. Initial test compile discriminated missing scan methods, not native
+behavior. No new native case has run yet. Read-only reviewer is checking these
+changes; root remains sole writer. No active experiment at this boundary.
 
-Next-boundary source map inspected this turn: complete interfaces/serve.rs,
-postgres/ingest_registry.rs, postgres/initial_batch.rs, rocks/pending.rs and
-reference/archive-handoff.md. Rocks/store.rs read1–260 only; remainder uninspected
-this turn. Initial registration/admission is tied to its original Control identity
-and initial source epoch, so it cannot be treated as a restart protocol. The
-first real service consumer must preserve that distinction and established
-source-policy/resource ownership rather than copying the fixed fixture factory.
-No new service code has been written yet.
+Next: run the candidate on fresh inventoried Tux resources, inspect actual scan
+pages/cancellation and real serve journeys, preserve failures, review/record and
+push the coherent slice. Continue the installed Archive lifecycle afterward;
+this inventory does not qualify recovery or dispatch.
+
+Independent startup review identified required connections still absent: stable
+persistent custody root distinct from archive/spill/ingest, retained complete
+source-input linkage for ReceiptExpectation, separate SELECT-only reader input,
+Ingest-owner handoff and shared Control/catalog/native budgets with positive
+joins. An issued Control attempt without its local journal can precede a still
+live old coordinator creating custody: never recreate it or infer NotImported.
+All historical obligations need reconciliation, not merely the latest owner.
+Initial ingest registration/admission remains bound to its original Control
+identity/epoch1 and cannot be copied as a restart protocol.
 
 Pristine stranded reservations require a new database/root pair; no reprovisioning,
 runtime superuser promotion or implicit serve initialization. Source policy/budgets/

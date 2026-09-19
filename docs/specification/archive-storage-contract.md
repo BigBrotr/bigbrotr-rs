@@ -179,6 +179,29 @@ controls. No input sidecar or registration retry is required. Valid ordinals1/2
 and topology0 do not qualify malformed stored metadata or u64-extreme values;
 installed lifecycle/resource reconciliation remains required.
 
+The installed Control startup now inventories retained intent obligations when an
+Archive role is assigned locally, even if `--roles control` omits its execution.
+`begin_archive_attempt_scan` captures the dataset's highest issued ordinal under
+its actual Control owner. An opaque cursor binds that owner, dataset, expected
+catalog and fixed cutoff. `read_archive_attempt_page` returns at most64 bounded
+identity records in numeric ordinal order, using the existing dataset/ordinal
+index rather than OFFSET. Every ordinal from1 through the cutoff must appear;
+a historical catalog mismatch or missing prefix is incompatible state, never a
+filtered empty archive. Later issuance cannot extend the cutoff; `latest_issued`
+remains the current statement's historical observation, not a snapshot grant.
+
+A failed/cancelled page does not advance the cursor and poisons its Control
+session. Reconnection starts a new scan under the new owner; caller-supplied
+cursors cannot skip old obligations. Each page ends its transaction before the
+runtime refreshes policy and scheduling authority. Startup retains only the
+bounded page, uses its existing process reservation and deadlines, and joins the
+actual driver on every exit. Migration0009 is an explicit prerequisite; no startup
+migration or journal repair occurs. The lifecycle record distinguishes observed
+issued history from resolution, always reporting publication authority not granted.
+This inventory is not custody reacquisition, catalog outcome resolution, source
+input reconstruction or Archive readiness. Missing journals and incomplete input
+metadata remain recovery gates. Native acceptance is pending for this change.
+
 Infrastructure endpoints are operator-supplied trusted routes, distinct from
 untrusted relay/discovery URLs. Private PG/CH/S3/RPC endpoints are valid; keep
 their destination allowlist, DNS/TLS rules and credential scope explicit. A

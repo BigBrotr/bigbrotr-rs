@@ -7,7 +7,7 @@ bigbrotr serve --file /etc/bigbrotr/root.toml --roles control
 ```
 
 Use an existing validated root with Control assigned locally, protected application
-credentials, migration 0007, accepted initial configuration and the explicitly
+credentials, migration 0007 (0009 when Archive is assigned locally), accepted initial configuration and the explicitly
 activated first security revision with `administration.enabled=false`. For this
 initial backend-only slice, set that value in a fresh candidate **before**
 initialization/activation; the default recipes enable administration and must be
@@ -18,6 +18,17 @@ commands in [development build](../development/build.md) and the separate
 migrate or enroll. The process emits an `idle` JSON lifecycle record after it has
 obtained backend ownership and validated both stored documents. This record is
 local status, not a reusable authorization credential.
+
+When the deployment assigns Archive locally, Control first inventories every
+issued publication intent through a fixed startup cutoff, in pages of64. The
+`archive_intents` field reports that cutoff, observed prefix and page count.
+`resolution=not-performed` and `publication_authority=not-granted` are explicit:
+a nonempty inventory contains recovery obligations; an empty inventory grants no
+Archive readiness. Historical catalog mismatches or holes refuse before `idle`.
+Policy/owner supervision continues between pages, and a signal or failed query
+closes and joins the driver. Control opens no catalog connection or local journal
+for this inventory. A deployment without a local Archive assignment reports
+`state=not-selected`. This addition does not enable `--roles archive`.
 
 Omitting `--roles` uses the root's explicit assignment. This initial slice refuses
 any selected role other than Control before opening credentials. Selecting a

@@ -122,51 +122,168 @@ pub(super) async fn read(
     catalog: OwnerResourceId,
     attempt_id: [u8; 16],
 ) -> Result<Option<ArchiveAttemptReceipt>, ArchiveAttemptError> {
-    let row = tx.query_opt("SELECT substring(a.dataset_id FROM 1 FOR 17),substring(a.catalog_id FROM 1 FOR 17),CASE WHEN length(a.expected_predecessor::text)<=20 THEN a.expected_predecessor::text END,CASE WHEN length(a.ordinal::text)<=20 THEN a.ordinal::text END,a.schema_version=1,CASE WHEN length(a.topology_generation::text)<=20 THEN a.topology_generation::text END,substring(a.batch_digest FROM 1 FOR 33),substring(a.coordinator_incarnation FROM 1 FOR 17),substring(a.worker_incarnation FROM 1 FOR 17),NOT EXISTS(SELECT 1 FROM control.archive_attempts newer WHERE newer.dataset_id=a.dataset_id AND newer.ordinal>a.ordinal) FROM control.archive_attempts a WHERE a.attempt_id=$1::bytea LIMIT 2", &[&&attempt_id[..]]).await.map_err(backend)?;
+    let query = format!(
+        "SELECT {OBSERVATION} FROM control.archive_attempts a WHERE a.attempt_id=$1::bytea LIMIT 2"
+    );
+    let row = tx
+        .query_opt(&query, &[&&attempt_id[..]])
+        .await
+        .map_err(backend)?;
     let receipt = row
-        .map(|row| {
-            if fixed::<16>(&row, 0)? != *dataset.as_bytes()
-                || fixed::<16>(&row, 1)? != *catalog.as_bytes()
-            {
-                return Err(ArchiveAttemptError::Conflict);
-            }
-            let predecessor = number(&row, 2)?;
-            let ordinal = number(&row, 3)?;
-            let coordinator = ProcessIncarnation::try_from(fixed::<16>(&row, 7)?)
-                .map_err(|_| ArchiveAttemptError::InvalidMetadata)?;
-            let worker = ProcessIncarnation::try_from(fixed::<16>(&row, 8)?)
-                .map_err(|_| ArchiveAttemptError::InvalidMetadata)?;
-            if ordinal == 0
-                || predecessor.checked_add(1) != Some(ordinal)
-                || coordinator == worker
-                || !row
-                    .try_get::<_, bool>(4)
-                    .map_err(|_| ArchiveAttemptError::InvalidMetadata)?
-            {
-                return Err(ArchiveAttemptError::InvalidMetadata);
-            }
-            Ok(ArchiveAttemptReceipt {
-                request: ArchiveAttemptRequest {
-                    attempt_id,
-                    dataset,
-                    catalog,
-                    coordinator,
-                    worker,
-                    predecessor,
-                    ordinal,
-                    topology: TopologyGeneration::new(number(&row, 5)?),
-                    batch_digest: Digest256::from_bytes(fixed(&row, 6)?),
-                },
-                ordinal,
-                latest_issued: row
-                    .try_get(9)
-                    .map_err(|_| ArchiveAttemptError::InvalidMetadata)?,
-                created: false,
-            })
-        })
+        .as_ref()
+        .map(|row| decode(row, dataset, catalog))
         .transpose()?;
     tx.rollback().await.map_err(backend)?;
     Ok(receipt)
+}
+
+// Bound every returned field even on an incompatible restore. A page contains
+// at most 64 fixed-size observations; no event bodies or retained input payloads.
+const OBSERVATION: &str = "substring(a.dataset_id FROM 1 FOR 17),substring(a.catalog_id FROM 1 FOR 17),CASE WHEN length(a.expected_predecessor::text)<=20 THEN a.expected_predecessor::text END,CASE WHEN length(a.ordinal::text)<=20 THEN a.ordinal::text END,a.schema_version=1,CASE WHEN length(a.topology_generation::text)<=20 THEN a.topology_generation::text END,substring(a.batch_digest FROM 1 FOR 33),substring(a.coordinator_incarnation FROM 1 FOR 17),substring(a.worker_incarnation FROM 1 FOR 17),NOT EXISTS(SELECT 1 FROM control.archive_attempts newer WHERE newer.dataset_id=a.dataset_id AND newer.ordinal>a.ordinal),substring(a.attempt_id FROM 1 FOR 17)";
+
+fn decode(
+    row: &Row,
+    dataset: DatasetId,
+    catalog: OwnerResourceId,
+) -> Result<ArchiveAttemptReceipt, ArchiveAttemptError> {
+    if fixed::<16>(row, 0)? != *dataset.as_bytes() || fixed::<16>(row, 1)? != *catalog.as_bytes() {
+        return Err(ArchiveAttemptError::Conflict);
+    }
+    let predecessor = number(row, 2)?;
+    let ordinal = number(row, 3)?;
+    let coordinator = ProcessIncarnation::try_from(fixed::<16>(row, 7)?)
+        .map_err(|_| ArchiveAttemptError::InvalidMetadata)?;
+    let worker = ProcessIncarnation::try_from(fixed::<16>(row, 8)?)
+        .map_err(|_| ArchiveAttemptError::InvalidMetadata)?;
+    let attempt_id = fixed::<16>(row, 10)?;
+    if ordinal == 0
+        || predecessor.checked_add(1) != Some(ordinal)
+        || coordinator == worker
+        || attempt_id == [0; 16]
+        || !row
+            .try_get::<_, bool>(4)
+            .map_err(|_| ArchiveAttemptError::InvalidMetadata)?
+    {
+        return Err(ArchiveAttemptError::InvalidMetadata);
+    }
+    Ok(ArchiveAttemptReceipt {
+        request: ArchiveAttemptRequest {
+            attempt_id,
+            dataset,
+            catalog,
+            coordinator,
+            worker,
+            predecessor,
+            ordinal,
+            topology: TopologyGeneration::new(number(row, 5)?),
+            batch_digest: Digest256::from_bytes(fixed(row, 6)?),
+        },
+        ordinal,
+        latest_issued: row
+            .try_get(9)
+            .map_err(|_| ArchiveAttemptError::InvalidMetadata)?,
+        created: false,
+    })
+}
+
+/// Fixed immutable history cutoff bound to its issuing Control session. Completion
+/// means every issued intent through the cutoff was observed, not recovered,
+/// published, excluded, protected or safe to replay. Retain only one page at a
+/// time; the caller owns its budget, operation deadline and joined driver.
+#[derive(Debug)]
+pub struct ArchiveAttemptScan {
+    owner: ControlOwner,
+    dataset: DatasetId,
+    catalog: OwnerResourceId,
+    high_water: u64,
+    after: u64,
+}
+impl ArchiveAttemptScan {
+    pub const fn high_water(&self) -> u64 {
+        self.high_water
+    }
+    pub const fn observed_through(&self) -> u64 {
+        self.after
+    }
+    pub const fn is_complete(&self) -> bool {
+        self.after == self.high_water
+    }
+    pub(super) fn belongs_to(&self, dataset: DatasetId, owner: ControlOwner) -> bool {
+        self.dataset == dataset && self.owner == owner
+    }
+}
+
+pub(super) async fn begin_scan(
+    tx: Transaction<'_>,
+    dataset: DatasetId,
+    catalog: OwnerResourceId,
+    owner: ControlOwner,
+) -> Result<ArchiveAttemptScan, ArchiveAttemptError> {
+    // Do not filter on catalog: a wrong catalog is incompatible history, not an
+    // empty archive. The session fence excludes older Control issuers; newly
+    // issued intents on this same session belong to a subsequent scan.
+    let row = tx.query_opt("SELECT CASE WHEN length(ordinal::text)<=20 THEN ordinal::text END,substring(catalog_id FROM 1 FOR 17) FROM control.archive_attempts WHERE dataset_id=$1::bytea ORDER BY ordinal DESC LIMIT 1", &[&&dataset.as_bytes()[..]]).await.map_err(backend)?;
+    let high_water = if let Some(row) = row {
+        if fixed::<16>(&row, 1)? != *catalog.as_bytes() {
+            return Err(ArchiveAttemptError::Conflict);
+        }
+        let value = number(&row, 0)?;
+        if value == 0 {
+            return Err(ArchiveAttemptError::InvalidMetadata);
+        }
+        value
+    } else {
+        0
+    };
+    tx.rollback().await.map_err(backend)?;
+    Ok(ArchiveAttemptScan {
+        owner,
+        dataset,
+        catalog,
+        high_water,
+        after: 0,
+    })
+}
+
+pub(super) async fn read_page(
+    tx: Transaction<'_>,
+    scan: &mut ArchiveAttemptScan,
+) -> Result<Vec<ArchiveAttemptReceipt>, ArchiveAttemptError> {
+    let mut page = Vec::new();
+    let mut after = scan.after;
+    if !scan.is_complete() {
+        let query = format!(
+            "SELECT {OBSERVATION} FROM control.archive_attempts a WHERE a.dataset_id=$1::bytea AND a.ordinal>$2::text::numeric AND a.ordinal<=$3::text::numeric ORDER BY a.ordinal LIMIT 64"
+        );
+        let rows = tx
+            .query(
+                &query,
+                &[
+                    &&scan.dataset.as_bytes()[..],
+                    &scan.after.to_string(),
+                    &scan.high_water.to_string(),
+                ],
+            )
+            .await
+            .map_err(backend)?;
+        page.reserve_exact(rows.len());
+        for row in rows {
+            let receipt = decode(&row, scan.dataset, scan.catalog)?;
+            if after.checked_add(1) != Some(receipt.ordinal) || receipt.ordinal > scan.high_water {
+                return Err(ArchiveAttemptError::InvalidMetadata);
+            }
+            after = receipt.ordinal;
+            page.push(receipt);
+        }
+        if page.len() < 64 && after != scan.high_water {
+            return Err(ArchiveAttemptError::InvalidMetadata);
+        }
+    }
+    tx.rollback().await.map_err(backend)?;
+    // Cancellation/backend failure cannot acknowledge even a partially decoded
+    // page. The enclosing ControlSession remains poisoned in either case.
+    scan.after = after;
+    Ok(page)
 }
 
 fn fixed<const N: usize>(row: &Row, index: usize) -> Result<[u8; N], ArchiveAttemptError> {

@@ -214,6 +214,12 @@ async fn run() {
             .unwrap(),
         None,
     );
+    let empty = current
+        .begin_archive_attempt_scan(first.catalog())
+        .await
+        .unwrap();
+    assert_eq!(empty.high_water(), 0);
+    assert!(empty.is_complete());
     let commit = Cell::new(false);
     let initial = current
         .register_archive_attempt(&first, &commit)
@@ -468,21 +474,251 @@ async fn run() {
     );
     reader.release().await.unwrap();
     join(driver).await;
+    scan_cases(&mut admin).await;
     drop(admin);
     join(admin_driver).await;
     println!(
         "{}",
-        serde_json::json!({"status":"PASS","rows":2,"ordinals":[1,2],"issuer_epochs":[1,1],"retained_read":"exact current/historical identity, fresh owner, absence, wrong catalog, no mutation and actual blocked cancellation/poison/retry","scope":"actual adapter issuance/read/replay/CAS/refusals and immutable SQL history; not catalog fencing or lost wire COMMIT"})
+        serde_json::json!({"status":"PASS","initial_rows":2,"final_rows":134,"ordinals":[1,2],"issuer_epochs":[1,1],"retained_read":"exact current/historical identity, fresh owner, absence, wrong catalog, no mutation and actual blocked cancellation/poison/retry","scope":"actual adapter issuance/read/replay/CAS/refusals and immutable SQL history; not catalog fencing or lost wire COMMIT"})
     );
 }
+async fn scan_cases(admin: &mut Client) {
+    let catalog = OwnerResourceId::try_from([90; 16]).unwrap();
+    let (mut current, driver) = owner(140).await;
+    // Literal identities are independent of the SQL decoder and scan cursor.
+    let mut expected = vec![[20; 16], [22; 16]];
+    for n in 100..230 {
+        current
+            .register_archive_attempt(&request(n, expected.len() as u64, 7, 90), &Cell::new(false))
+            .await
+            .unwrap();
+        expected.push([n; 16]);
+    }
+    let mut scan = current.begin_archive_attempt_scan(catalog).await.unwrap();
+    assert_eq!(scan.high_water(), 132);
+    assert_eq!(scan.observed_through(), 0);
+    // Later issuance must neither extend this scan nor falsify latest_issued.
+    for (n, predecessor) in [(230, 132), (231, 133)] {
+        current
+            .register_archive_attempt(&request(n, predecessor, 7, 90), &Cell::new(false))
+            .await
+            .unwrap();
+    }
+    let before: String = admin.query_one("SELECT json_agg(t ORDER BY ordinal)::text FROM (SELECT a.*, a.xmin::text FROM control.archive_attempts a)t", &[]).await.unwrap().get(0);
+    let mut found = Vec::new();
+    let mut lengths = Vec::new();
+    while !scan.is_complete() {
+        let page = current.read_archive_attempt_page(&mut scan).await.unwrap();
+        lengths.push(page.len());
+        for receipt in page {
+            assert!(!receipt.created && !receipt.latest_issued);
+            assert_eq!(receipt.ordinal, found.len() as u64 + 1);
+            found.push(*receipt.request().attempt_id());
+        }
+        // Each page releases its PG transaction, allowing the actual authority
+        // refresh between pages without changing the immutable cutoff.
+        current.poll_policy(validate).await.unwrap();
+    }
+    assert_eq!(lengths, [64, 64, 4]);
+    assert_eq!(found, expected);
+    assert!(
+        current
+            .read_archive_attempt_page(&mut scan)
+            .await
+            .unwrap()
+            .is_empty()
+    );
+    assert_eq!(scan.observed_through(), 132);
+    let after: String = admin.query_one("SELECT json_agg(t ORDER BY ordinal)::text FROM (SELECT a.*, a.xmin::text FROM control.archive_attempts a)t", &[]).await.unwrap().get(0);
+    assert_eq!(
+        before, after,
+        "scan must not mutate any intent, including xmin"
+    );
+    let mut stale = current.begin_archive_attempt_scan(catalog).await.unwrap();
+    assert_eq!(stale.high_water(), 134);
+    current.release().await.unwrap();
+    join(driver).await;
+    let (mut successor, driver) = owner(142).await;
+    assert_eq!(
+        successor.read_archive_attempt_page(&mut stale).await,
+        Err(ArchiveAttemptError::InvalidInput)
+    );
+    let mut resumed = successor.begin_archive_attempt_scan(catalog).await.unwrap();
+    let mut last = None;
+    while !resumed.is_complete() {
+        last = successor
+            .read_archive_attempt_page(&mut resumed)
+            .await
+            .unwrap()
+            .pop();
+    }
+    let last = last.unwrap();
+    assert_eq!(last.ordinal, 134);
+    assert!(last.latest_issued);
+    successor.release().await.unwrap();
+    join(driver).await;
+    // Privileged corruption fixtures represent an incompatible restore. Never
+    // hide historical catalog mismatch using a catalog filter or skip a hole.
+    for (n, mutation, restore, error) in [
+        (
+            144,
+            "UPDATE control.archive_attempts SET catalog_id=decode(repeat('5b',16),'hex') WHERE ordinal=65",
+            "UPDATE control.archive_attempts SET catalog_id=decode(repeat('5a',16),'hex') WHERE ordinal=65",
+            ArchiveAttemptError::Conflict,
+        ),
+        (
+            146,
+            "UPDATE control.archive_attempts SET ordinal=1000,expected_predecessor=999 WHERE ordinal=65",
+            "UPDATE control.archive_attempts SET ordinal=65,expected_predecessor=64 WHERE ordinal=1000",
+            ArchiveAttemptError::InvalidMetadata,
+        ),
+    ] {
+        admin.batch_execute(&format!("BEGIN; ALTER TABLE control.archive_attempts DISABLE TRIGGER USER; {mutation}; ALTER TABLE control.archive_attempts ENABLE TRIGGER USER; COMMIT")).await.unwrap();
+        let (mut reader, driver) = owner(n).await;
+        let mut scan = reader.begin_archive_attempt_scan(catalog).await.unwrap();
+        assert_eq!(
+            reader
+                .read_archive_attempt_page(&mut scan)
+                .await
+                .unwrap()
+                .len(),
+            64
+        );
+        assert_eq!(
+            reader.read_archive_attempt_page(&mut scan).await,
+            Err(error)
+        );
+        assert_eq!(
+            scan.observed_through(),
+            64,
+            "failed page must not advance cursor"
+        );
+        assert_eq!(
+            reader.read_archive_attempt_page(&mut scan).await,
+            Err(ArchiveAttemptError::Unavailable)
+        );
+        drop(reader);
+        join(driver).await;
+        admin.batch_execute(&format!("BEGIN; ALTER TABLE control.archive_attempts DISABLE TRIGGER USER; {restore}; ALTER TABLE control.archive_attempts ENABLE TRIGGER USER; COMMIT")).await.unwrap();
+    }
+    let (mut reader, driver) = owner(148).await;
+    let mut scan = reader.begin_archive_attempt_scan(catalog).await.unwrap();
+    let block = admin.transaction().await.unwrap();
+    block
+        .batch_execute("LOCK TABLE control.archive_attempts IN ACCESS EXCLUSIVE MODE")
+        .await
+        .unwrap();
+    {
+        let page = reader.read_archive_attempt_page(&mut scan);
+        tokio::pin!(page);
+        let observed = async {
+            loop {
+                block
+                    .query_one("SELECT pg_stat_clear_snapshot()", &[])
+                    .await
+                    .unwrap();
+                let row = block.query_opt("SELECT json_build_object('event','scan-page-blocker','waiter',pid,'waiter_start',backend_start,'blocker',pg_backend_pid(),'wait_event',wait_event)::text FROM pg_stat_activity WHERE datname=current_database() AND usename='bigbrotr_control' AND pg_backend_pid()=ANY(pg_blocking_pids(pid)) AND wait_event_type='Lock'", &[]).await.unwrap();
+                if let Some(row) = row {
+                    println!("{}", row.get::<_, &str>(0));
+                    break;
+                }
+                tokio::time::sleep(Duration::from_millis(5)).await;
+            }
+        };
+        tokio::select! {
+            outcome = &mut page => panic!("page escaped blocker: {outcome:?}"),
+            result = tokio::time::timeout(Duration::from_secs(3), observed) => result.unwrap(),
+        }
+    }
+    assert_eq!(scan.observed_through(), 0);
+    assert_eq!(
+        reader.read_archive_attempt_page(&mut scan).await,
+        Err(ArchiveAttemptError::Unavailable)
+    );
+    block.rollback().await.unwrap();
+    drop(reader);
+    join(driver).await;
+    // Independent final SQL verifies cardinality, endpoints and immutable rows.
+    let actual: String = admin.query_one("SELECT json_agg(t ORDER BY ordinal)::text FROM (SELECT a.*, a.xmin::text FROM control.archive_attempts a)t", &[]).await.unwrap().get(0);
+    let normalize = |text: &str| {
+        let mut rows: Vec<serde_json::Value> = serde_json::from_str(text).unwrap();
+        for row in &mut rows {
+            row.as_object_mut().unwrap().remove("xmin");
+        }
+        rows
+    };
+    assert_eq!(normalize(&actual), normalize(&before));
+    println!(
+        "{}",
+        serde_json::json!({"event":"archive-attempt-scan", "status":"PASS", "rows":134, "pages":[64,64,4], "cutoff":132, "last_ordinal":134, "scope":"fixed cutoff, complete history, stale owner, historical catalog mismatch, gap, cancellation, unchanged intents"})
+    );
+}
+
+async fn seed_runtime(database: &str) {
+    let (admin, driver) = connect_database("postgres", database).await;
+    admin.batch_execute("BEGIN; INSERT INTO control.topology_generations(dataset_id,generation,created_at_us) VALUES(decode(repeat('01',16),'hex'),0,0); UPDATE control.topology_generations SET sealed=true; UPDATE control.datasets SET topology_generation=0; COMMIT;").await.unwrap();
+    let (client, connection) = connect_database("bigbrotr_control", database).await;
+    let (mut owner, _) = ControlSession::acquire(
+        client,
+        ClaimRequest {
+            dataset: dataset(),
+            instance: instance(),
+            authority_mode: "managed".into(),
+            role_instance_id: [150; 16],
+            incarnation: ProcessIncarnation::try_from([151; 16]).unwrap(),
+            lease_ttl: Duration::from_secs(60),
+        },
+        |document, digest| {
+            // Fixture seeding only. Actual serve independently validates the full
+            // accepted policy generated by its real initialization/activation CLI.
+            let value: serde_json::Value = serde_json::from_str(document).unwrap();
+            assert_eq!(value["settings"]["administration.enabled"], false);
+            let compact = serde_json::to_vec(&value).unwrap();
+            let actual: [u8; 32] = Sha256::new()
+                .chain_update(b"bigbrotr/product-policy/1\0")
+                .chain_update(compact)
+                .finalize()
+                .into();
+            assert_eq!(actual, digest);
+            Ok(())
+        },
+        &Cell::new(false),
+    )
+    .await
+    .unwrap();
+    for (predecessor, n) in (100..230).enumerate() {
+        owner
+            .register_archive_attempt(&request(n, predecessor as u64, 7, 90), &Cell::new(false))
+            .await
+            .unwrap();
+    }
+    owner.release().await.unwrap();
+    join(connection).await;
+    drop(admin);
+    join(driver).await;
+    println!(
+        "{}",
+        serde_json::json!({"status":"PASS", "event":"runtime-fixture-issued", "rows":130})
+    );
+}
+
 fn main() {
     tokio::runtime::Builder::new_current_thread()
         .enable_all()
         .build()
         .unwrap()
         .block_on(async {
-            tokio::time::timeout(Duration::from_secs(120), run())
-                .await
-                .expect("finite native probe");
+            tokio::time::timeout(Duration::from_secs(120), async {
+                let args: Vec<String> = std::env::args().skip(1).collect();
+                if let [mode, database] = args.as_slice() {
+                    assert_eq!(mode, "--seed-runtime");
+                    seed_runtime(database).await;
+                } else {
+                    assert!(args.is_empty());
+                    run().await;
+                }
+            })
+            .await
+            .expect("finite native probe");
         });
 }

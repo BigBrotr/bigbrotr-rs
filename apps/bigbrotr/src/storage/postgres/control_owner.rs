@@ -277,6 +277,59 @@ impl ControlSession {
         Ok(receipt)
     }
 
+    /// Capture all retained attempts for this dataset, including old lifetimes.
+    /// This read never resolves their native/catalog outcomes or grants replay.
+    pub async fn begin_archive_attempt_scan(
+        &mut self,
+        catalog: OwnerResourceId,
+    ) -> Result<
+        super::archive_attempt::ArchiveAttemptScan,
+        super::archive_attempt::ArchiveAttemptError,
+    > {
+        use super::archive_attempt::{self, ArchiveAttemptError};
+        if catalog == self.identity.resource_id {
+            return Err(ArchiveAttemptError::InvalidInput);
+        }
+        self.begin_operation()
+            .map_err(|_| ArchiveAttemptError::Unavailable)?;
+        let tx = application_transaction(&mut self.client, 9)
+            .await
+            .map_err(|_| ArchiveAttemptError::Prerequisite)?;
+        require(&tx, self.request.dataset, self.identity)
+            .await
+            .map_err(|_| ArchiveAttemptError::Unavailable)?;
+        let scan =
+            archive_attempt::begin_scan(tx, self.request.dataset, catalog, self.identity).await?;
+        self.available = true;
+        Ok(scan)
+    }
+
+    /// Observe at most 64 fixed-size intents. No caller-selected cursor can skip
+    /// a prefix, and a cursor from an old owner cannot be used after reconnect.
+    pub async fn read_archive_attempt_page(
+        &mut self,
+        scan: &mut super::archive_attempt::ArchiveAttemptScan,
+    ) -> Result<
+        Vec<super::archive_attempt::ArchiveAttemptReceipt>,
+        super::archive_attempt::ArchiveAttemptError,
+    > {
+        use super::archive_attempt::{self, ArchiveAttemptError};
+        if !scan.belongs_to(self.request.dataset, self.identity) {
+            return Err(ArchiveAttemptError::InvalidInput);
+        }
+        self.begin_operation()
+            .map_err(|_| ArchiveAttemptError::Unavailable)?;
+        let tx = application_transaction(&mut self.client, 9)
+            .await
+            .map_err(|_| ArchiveAttemptError::Prerequisite)?;
+        require(&tx, self.request.dataset, self.identity)
+            .await
+            .map_err(|_| ArchiveAttemptError::Unavailable)?;
+        let page = archive_attempt::read_page(tx, scan).await?;
+        self.available = true;
+        Ok(page)
+    }
+
     pub async fn release(mut self) -> Result<(), OwnerError> {
         self.begin_operation()?;
         let tx = application_transaction(&mut self.client, 7)
