@@ -1,0 +1,931 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P02-T04 steps4/5: missing catalog-import resolution after recovered local custody",
+  "date": "2026-09-19 Europe/Rome",
+  "status": "PASS scoped native resolution and regressions; installed lifecycle, protection and M1 remain open",
+  "source": "770c4857c92500160a1725c03d7fc7c98ddfa7a5",
+  "tree": "f31e8b970e496d5601eb6e0d2018c58dd5e9aed9",
+  "source_files": 699,
+  "archive_sha256": "193bcfe8dd462602be7e2af250e30c89196b58505f8d29468342fa4abcb98ec9",
+  "manifest_sha256": "c76d88b99fc0328a845be1c25ce009698481edc04f48a4f047d503478e88885c",
+  "environment": {
+    "host": "Tux native Linux amd64, same-boot ext4 bind-mounted journal and archive paths",
+    "kernel": "Linux 6.12.101+deb13-amd64 x86_64 GNU/Linux",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "native": "DuckDB1.5.5, DuckLake1.0, signed offline postgres_scanner; selected Rust1.98.1",
+    "toolchain": {
+      "os": "Linux",
+      "architecture": "x86_64",
+      "discovery": "llvm-config",
+      "environment": {
+        "CC": "/usr/lib/llvm-14/bin/clang",
+        "CXX": "/usr/lib/llvm-14/bin/clang++",
+        "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+        "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+        "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+      },
+      "tools": {
+        "CC": {
+          "path": "/usr/lib/llvm-14/bin/clang",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "CXX": {
+          "path": "/usr/lib/llvm-14/bin/clang++",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "AR": {
+          "path": "/usr/lib/llvm-14/bin/llvm-ar",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+          "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+          "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+        },
+        "LIBCLANG_PATH": {
+          "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+          "version": "Debian clang version 14.0.6"
+        },
+        "discovery": {
+          "path": "/usr/lib/llvm-14/bin/llvm-config",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+          "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+          "version": "14.0.6"
+        }
+      },
+      "sdk": null
+    },
+    "limits": {
+      "runner_cpus": 2,
+      "runner_memory_bytes": 6442450944,
+      "runner_pids": 512,
+      "postgres_cpus": 1,
+      "postgres_memory_bytes": 1073741824,
+      "postgres_pids": 128,
+      "worker_engine_memory_bytes": 134217728,
+      "worker_native_reserve_bytes": 402653184,
+      "worker_temp_bytes": 67108864,
+      "worker_threads": 1,
+      "manifest_bytes_maximum": 32768
+    },
+    "network": "Separate internal network with no published ports; loopback SCRAM inside owned PG namespace; native Cargo builds offline",
+    "cache": "Fresh copied stopped e571002 target/cargo-home; same pinned packages and verified prefetch; no retired environment restarted"
+  },
+  "identities_sha256": {
+    "Cargo.lock": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215",
+    "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167",
+    "contracts/release/archive-engine.json": "ae0069565ab9411928df0cf067822630c4f3a912919e61633b952f8077a5e2c1",
+    "migrations/catalog/0001_writer_guard.sql": "055deb8b354b0e2b3e361102cc7e1999bb0849966c3dfae93fddc5d2e5c3840f",
+    "migrations/catalog/0002_scientific_schema.sql": "bfff29bc12fea6fbbc09b59a092cbdffa2b3b7e940f0676eacbff18c9c851397",
+    "experiments/identity-contract/signed-fixture.json": "4c931ab34cb7adeb707fc2866f4a50b3ec8b694cbb2d4fb5e335f8f37a2d8875",
+    "experiments/archive-engine/signed_publication_oracle.py": "e056d511862e2f1659ffffdddbeab3702ef91079b5a9052cc82b8acf845d6a83",
+    "experiments/archive-engine/native_commit_proxy.py": "c970a2c8ca7622d261ede76c9a6204f3582ab702760bfa3f026fdc9315a595ce",
+    "experiments/archive-engine/missing_import_cases.py": "00130c6a5472c1e43b352306b9882e5f2912468c78ddb162442768d7d6143a98",
+    "experiments/archive-engine/missing_import_refusals.py": "254a44ecd153d85724051efaba8175ad8e212119ae17bd67b6d330f23a6375a5"
+  },
+  "artifacts_sha256": {
+    "worker": "526943396db4bb140d7ab2c5f3b64dc83d0378d3efaa0f21f0a5b91cb8e7cd86",
+    "probe": "19140060aaa1504d6c1b390f93e20a23cd843b3e9fe124403f0640a0454d3615",
+    "publisher": "22fdc7675f52d991621d4d5971a49da5e7b30fb98bef89abc149e694e64db0ff",
+    "reader": "6ba5dbb6566695ca3fe31d65a53a1c07f988e172a0614193ca21df40855fac95",
+    "receipt_reader": "6e05ecc738209a0f96158bf5e6d60478ab8aac00d44b3da44cfda6e0513040b5",
+    "embedded-test-0": "3ecb88f23b1ecc6fb7d0d9cf062ecbd86071f391b74dece1b60e7e541752faf2",
+    "input-test-0": "5f490d3996786f68d989ce205d1969afe19a771a5b174c858d323eebbca25064",
+    "receipts-test-0": "3ecb88f23b1ecc6fb7d0d9cf062ecbd86071f391b74dece1b60e7e541752faf2",
+    "receipt-input-test-0": "4e478890f2a60b49aced4316644c1d10524e1545e2bd42fa0e5981b8dd8c457d",
+    "receipt-parent-test-0": "a9a34309187e5ab1170bce46c98005b74a401a5256aaee059832af5b57599500",
+    "receipt-protocol-test-0": "17d77918d68b128a076be1d98aa1953f0d84cad960cfb5fc9779ed83e7ac4773",
+    "custody-test-0": "a9a34309187e5ab1170bce46c98005b74a401a5256aaee059832af5b57599500",
+    "custody-native/native-custody-test-0": "a9a34309187e5ab1170bce46c98005b74a401a5256aaee059832af5b57599500"
+  },
+  "commands": {
+    "build": "python3 -B /source/experiments/archive-engine/native_publication.py through shared tools.ci.execute",
+    "missing": "python3 -B <exact-checkout>/experiments/archive-engine/missing_import_cases.py --root <owned-root>",
+    "signed": "python3 -B <exact-checkout>/experiments/archive-engine/signed_publication_cases.py <owned-root>",
+    "checks": [
+      {
+        "name": "build",
+        "command": [
+          "cargo",
+          "build",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr-archive-worker",
+          "--bin",
+          "bigbrotr-archive-worker",
+          "--example",
+          "catalog-fence-probe"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 30.407469868659973
+      },
+      {
+        "name": "signed-fixtures",
+        "command": [
+          "cargo",
+          "build",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "-p",
+          "bigbrotr-archive-worker",
+          "--example",
+          "archive_publication_probe",
+          "--example",
+          "archive_read_probe",
+          "--example",
+          "archive_receipt_probe"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 23.15174900414422
+      },
+      {
+        "name": "embedded",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr-archive-worker",
+          "--lib",
+          "publication"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 30.174304495099932
+      },
+      {
+        "name": "input",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr-archive-worker",
+          "--test",
+          "publication"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 3.4497210420668125
+      },
+      {
+        "name": "receipts",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr-archive-worker",
+          "--lib",
+          "receipt::"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 9.901786133181304
+      },
+      {
+        "name": "receipt-input",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr-archive-worker",
+          "--test",
+          "receipt"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 3.2967653800733387
+      },
+      {
+        "name": "receipt-parent",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--lib",
+          "storage::archive::receipts"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 9.379577393177897
+      },
+      {
+        "name": "receipt-protocol",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr-protocol",
+          "--test",
+          "archive_receipt"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 3.168305671773851
+      },
+      {
+        "name": "custody",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--lib",
+          "storage::archive::lifetime"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 0.1139248707331717
+      },
+      {
+        "name": "native-custody",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--lib",
+          "native_worker_alone_retains_custody_after_coordinator_descriptors_close",
+          "--",
+          "--ignored",
+          "--nocapture"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 0.5025936006568372
+      }
+    ],
+    "rust_cases": 29,
+    "counts": {
+      "embedded": 7,
+      "input": 1,
+      "receipts": 5,
+      "receipt_input": 1,
+      "receipt_parent": 2,
+      "receipt_protocol": 3,
+      "custody": 9,
+      "native_custody": 1
+    },
+    "explicit_native": "Default Linux collection defers one case; the separate --ignored selection executes exactly that bundle-dependent case after actual worker installation. No skip counted as PASS."
+  },
+  "baseline": {
+    "source": "e57100217ba653a6a266d34f681451df48ccebb6",
+    "tree": "08e4a037a7d99b70e06bcc00505ff068451805cd",
+    "status": "FAIL",
+    "native_rust_cases": 29,
+    "actual_schedules": 2,
+    "failures": [
+      {
+        "expected": "not-imported",
+        "observed": {
+          "commit_started": false,
+          "event": "resolve-result",
+          "state": "conflict"
+        }
+      },
+      {
+        "expected": "not-imported",
+        "observed": {
+          "commit_started": false,
+          "event": "resolve-result",
+          "state": "conflict"
+        }
+      }
+    ],
+    "explanation": "The seal-only baseline returns Conflict both before delayed owner execution and after server disconnect. Live control actually provisions; destroyed driver queues no provisioning mutation. Missing observations remain FAIL, with positive terminal audit and retired resources.",
+    "source_audit": {
+      "status": "PASS",
+      "source": "e57100217ba653a6a266d34f681451df48ccebb6",
+      "tree": "08e4a037a7d99b70e06bcc00505ff068451805cd",
+      "files": 698,
+      "manifest_sha256": "d510a53eeeed01949f130a107bf31b0e4e46b9f6da030aa391ec0202e9e96d2d",
+      "archive_sha256": "109e4eb2cf119a963a5eb97dd009cad41a3d7102d0f4d37c7d2acbf3553d3c66"
+    },
+    "terminal_audit": {
+      "source": "e57100217ba653a6a266d34f681451df48ccebb6",
+      "tree": "08e4a037a7d99b70e06bcc00505ff068451805cd",
+      "source_files": 698,
+      "manifest_sha256": "d510a53eeeed01949f130a107bf31b0e4e46b9f6da030aa391ec0202e9e96d2d",
+      "cleanup": "owned containers stopped, network retired, no OOM",
+      "unrelated_unchanged": 20,
+      "unrelated_running": 8,
+      "running_bigbrotr": 0
+    },
+    "raw_archive_sha256": "469d4ef55b7cb7086fd419f3588efd51214dc98e8fc901bb110960638c50a3b2"
+  },
+  "resolution": {
+    "outcome": "Recovered-only exact identity, same owner FOR UPDATE, complete installed guard/scientific binding, unique lifetime/orphan-role checks and successful rollback yield NotImported. Exact imports retain recorded OID checks and sealing semantics.",
+    "compatibility": "No dependency, migration or custody journal-format changes; applied SQL checksums unchanged.",
+    "transport_premise": "Pinned tokio-postgres0.7.18 query_one drains RowStream through ReadyForQuery. Current sequential provisioning waits for the owner query before enqueueing mutations. Local custody covers the actual driver, not just its JoinHandle.",
+    "not_granted": "No new credential or launch; no receipt absence, replay, protection, ACK, reclamation or resource/process reconciliation."
+  },
+  "schedules": [
+    {
+      "mode": "custody_prelock_live",
+      "status": "PASS",
+      "journal_sha256": "346df60e439bee1254ab88cc05e539f583d99d6fcbcf381d1e4a97c7578d1915",
+      "held": {
+        "event": "held",
+        "mode": "hold-manager-owner",
+        "connections": 1,
+        "bytes": 2137,
+        "frames": 96,
+        "data_queries": 0,
+        "data_commits": 0,
+        "server_complete": 0,
+        "client_complete": 0,
+        "faults": 0,
+        "owner_requests": 1,
+        "owner_forwarded": 0,
+        "owner_complete": 0,
+        "guard_rejections": 0,
+        "serialization_rejections": 0,
+        "rejection_sequence": [],
+        "stage": "manager-owner",
+        "backend_pid": 172
+      },
+      "before": {
+        "owner": {
+          "singleton": true,
+          "ordinal": 0,
+          "enabled": false
+        },
+        "attempts": 0,
+        "role": null,
+        "files": 0,
+        "snapshots": 2
+      },
+      "after_release": {
+        "owner": {
+          "singleton": true,
+          "ordinal": 1,
+          "enabled": true
+        },
+        "attempts": 1,
+        "role": {
+          "login": true,
+          "password_null": false
+        },
+        "files": 0,
+        "snapshots": 2
+      },
+      "after_stop": {
+        "owner": {
+          "singleton": true,
+          "ordinal": 1,
+          "enabled": false
+        },
+        "attempts": 1,
+        "role": {
+          "login": false,
+          "password_null": true
+        },
+        "files": 0,
+        "snapshots": 2
+      },
+      "resolutions": [
+        {
+          "commit_started": true,
+          "event": "resolve-result",
+          "state": "sealed-changed"
+        },
+        {
+          "commit_started": true,
+          "event": "resolve-result",
+          "state": "sealed-unchanged"
+        }
+      ],
+      "process_count": 5
+    },
+    {
+      "mode": "custody_prelock_dead",
+      "status": "PASS",
+      "journal_sha256": "bd675d59410bcb5df6fd85a5faf53fab6d1bb606b2b1c59099382938b4f27f5b",
+      "held": {
+        "event": "held",
+        "mode": "hold-manager-owner",
+        "connections": 1,
+        "bytes": 2137,
+        "frames": 96,
+        "data_queries": 0,
+        "data_commits": 0,
+        "server_complete": 0,
+        "client_complete": 0,
+        "faults": 0,
+        "owner_requests": 1,
+        "owner_forwarded": 0,
+        "owner_complete": 0,
+        "guard_rejections": 0,
+        "serialization_rejections": 0,
+        "rejection_sequence": [],
+        "stage": "manager-owner",
+        "backend_pid": 228
+      },
+      "before": {
+        "owner": {
+          "singleton": true,
+          "ordinal": 0,
+          "enabled": false
+        },
+        "attempts": 0,
+        "role": null,
+        "files": 0,
+        "snapshots": 2
+      },
+      "after_release": {
+        "owner": {
+          "singleton": true,
+          "ordinal": 0,
+          "enabled": false
+        },
+        "attempts": 0,
+        "role": null,
+        "files": 0,
+        "snapshots": 2
+      },
+      "after_stop": {
+        "owner": {
+          "singleton": true,
+          "ordinal": 0,
+          "enabled": false
+        },
+        "attempts": 0,
+        "role": null,
+        "files": 0,
+        "snapshots": 2
+      },
+      "resolutions": [
+        {
+          "commit_started": false,
+          "event": "resolve-result",
+          "state": "not-imported"
+        },
+        {
+          "commit_started": false,
+          "event": "resolve-result",
+          "state": "not-imported"
+        }
+      ],
+      "process_count": 16,
+      "late_request_blocker": {
+        "waiter": 261,
+        "waiter_start": "2026-09-19T01:50:33.971582+00:00",
+        "wait_event_type": "Lock",
+        "wait_event": "transactionid",
+        "blocker": 228,
+        "blocker_start": "2026-09-19T01:50:33.235031+00:00",
+        "blocker_state": "idle in transaction"
+      }
+    }
+  ],
+  "refusals": [
+    {
+      "name": "ordinal_collision",
+      "status": "PASS",
+      "state": "conflict",
+      "commit_started": false,
+      "unchanged": true,
+      "original_oid": null,
+      "replacement_oid": null,
+      "cleanup": "owned clone and fixture roles dropped"
+    },
+    {
+      "name": "attempt_collision",
+      "status": "PASS",
+      "state": "conflict",
+      "commit_started": false,
+      "unchanged": true,
+      "original_oid": null,
+      "replacement_oid": null,
+      "cleanup": "owned clone and fixture roles dropped"
+    },
+    {
+      "name": "worker_collision",
+      "status": "PASS",
+      "state": "conflict",
+      "commit_started": false,
+      "unchanged": true,
+      "original_oid": null,
+      "replacement_oid": null,
+      "cleanup": "owned clone and fixture roles dropped"
+    },
+    {
+      "name": "login_collision",
+      "status": "PASS",
+      "state": "conflict",
+      "commit_started": false,
+      "unchanged": true,
+      "original_oid": null,
+      "replacement_oid": null,
+      "cleanup": "owned clone and fixture roles dropped"
+    },
+    {
+      "name": "orphan_disabled_role",
+      "status": "PASS",
+      "state": "conflict",
+      "commit_started": false,
+      "unchanged": true,
+      "original_oid": null,
+      "replacement_oid": null,
+      "cleanup": "owned clone and fixture roles dropped"
+    },
+    {
+      "name": "orphan_login_role",
+      "status": "PASS",
+      "state": "conflict",
+      "commit_started": false,
+      "unchanged": true,
+      "original_oid": null,
+      "replacement_oid": null,
+      "cleanup": "owned clone and fixture roles dropped"
+    },
+    {
+      "name": "missing_imported_role",
+      "status": "PASS",
+      "state": "conflict",
+      "commit_started": false,
+      "unchanged": true,
+      "original_oid": 18675,
+      "replacement_oid": null,
+      "cleanup": "owned clone and fixture roles dropped"
+    },
+    {
+      "name": "recreated_imported_role",
+      "status": "PASS",
+      "state": "conflict",
+      "commit_started": false,
+      "unchanged": true,
+      "original_oid": 18677,
+      "replacement_oid": 18678,
+      "cleanup": "owned clone and fixture roles dropped"
+    },
+    {
+      "name": "owner_without_attempt",
+      "status": "PASS",
+      "state": "incompatible-layout",
+      "commit_started": false,
+      "unchanged": true,
+      "original_oid": null,
+      "replacement_oid": null,
+      "cleanup": "owned clone and fixture roles dropped"
+    },
+    {
+      "name": "unrelated_same_batch",
+      "status": "PASS",
+      "state": "not-imported",
+      "commit_started": false,
+      "unchanged": true,
+      "original_oid": null,
+      "replacement_oid": null,
+      "cleanup": "owned clone and fixture roles dropped"
+    }
+  ],
+  "signed_schedules": [
+    {
+      "mode": "normal",
+      "status": "PASS",
+      "catalog_files": 8,
+      "physical_files": 8,
+      "active_writers": 0,
+      "blocking": []
+    },
+    {
+      "mode": "before",
+      "status": "PASS",
+      "catalog_files": 2,
+      "physical_files": 8,
+      "active_writers": 0,
+      "blocking": []
+    },
+    {
+      "mode": "after",
+      "status": "PASS",
+      "catalog_files": 8,
+      "physical_files": 8,
+      "active_writers": 0,
+      "blocking": []
+    },
+    {
+      "mode": "owner_first",
+      "status": "PASS",
+      "catalog_files": 8,
+      "physical_files": 14,
+      "active_writers": 0,
+      "blocking": [
+        {
+          "waiter": 1023,
+          "waiter_start": "2026-09-19T01:51:34.185637+00:00",
+          "waiter_user": "postgres",
+          "wait_event_type": "Lock",
+          "wait_event": "relation",
+          "blocker": 1022,
+          "blocker_start": "2026-09-19T01:51:34.169131+00:00",
+          "blocker_user": "postgres"
+        },
+        {
+          "waiter": 1015,
+          "waiter_start": "2026-09-19T01:51:33.976546+00:00",
+          "waiter_user": "bb_archive_cfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcf",
+          "wait_event_type": "Lock",
+          "wait_event": "transactionid",
+          "blocker": 1023,
+          "blocker_start": "2026-09-19T01:51:34.185637+00:00",
+          "blocker_user": "postgres"
+        }
+      ]
+    },
+    {
+      "mode": "held_commit",
+      "status": "PASS",
+      "catalog_files": 8,
+      "physical_files": 8,
+      "active_writers": 0,
+      "blocking": [
+        {
+          "waiter": 1099,
+          "waiter_start": "2026-09-19T01:51:41.507195+00:00",
+          "waiter_user": "postgres",
+          "wait_event_type": "Lock",
+          "wait_event": "transactionid",
+          "blocker": 1098,
+          "blocker_start": "2026-09-19T01:51:41.378301+00:00",
+          "blocker_user": "bb_archive_d7d7d7d7d7d7d7d7d7d7d7d7d7d7d7d7"
+        }
+      ]
+    },
+    {
+      "mode": "held_rollback",
+      "status": "PASS",
+      "catalog_files": 8,
+      "physical_files": 14,
+      "active_writers": 0,
+      "blocking": [
+        {
+          "waiter": 1168,
+          "waiter_start": "2026-09-19T01:51:48.318895+00:00",
+          "waiter_user": "postgres",
+          "wait_event_type": "Lock",
+          "wait_event": "transactionid",
+          "blocker": 1167,
+          "blocker_start": "2026-09-19T01:51:48.183537+00:00",
+          "blocker_user": "bb_archive_dfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdf"
+        }
+      ]
+    }
+  ],
+  "durable_effects": {
+    "journals": 24,
+    "imported_writers": 23,
+    "input_oracle": "Eight complete signed input corpora, six full scientific readbacks and three interim reads checked",
+    "journal_oracle": "All24 exact compact bytes independently assembled from literal identity and actual inode/device/boot; base64/lstat retained. Full23 immutable imported identities and role OID matches checked.",
+    "pending": "41 Rocks rows unchanged in every journey; digest da535e9d1edcdce8bf09033bb1d2b48ee10941c34f47b0b3db228f6285128c61. No ACK or reclamation.",
+    "missing": "Dead-driver case retains owner0 disabled, no role/import, zero files and two initialization snapshots before/after late owner execution. Three successful NotImported observations include the blocked resolver after backend closure.",
+    "credentials": "23 product-sealed writer roles NOLOGIN/password NULL; eight catalog owners disabled and no other catalog or Control backends. Four fixture service/bootstrap logins disabled only for lab retirement.",
+    "clones": "All ten created catalog clones and fixture roles dropped by ordinary DROP; original catalog/journal unchanged. LOGIN/password presence and xmin preservation checked for unrelated owner."
+  },
+  "review": {
+    "mac": "22 scoped archive cases PASS before last defensive seal match refinement; affected Clippy after that refinement PASS. Correction native runs29 cases and actual shared-seal regressions.",
+    "red_green": "Recovered-only gate fails with false provenance then passes; initial E0716 test compilation error was fixed before the actual failing assertion. Exact baseline missing-import failure precedes correction PASS.",
+    "ai_source": "Read-only publication_review read complete resolver, inspection/bindings, callers, fixtures and contract. Two fixture gaps fixed: rename actual target role to isolate historical login collision; give unrelated owner LOGIN/non-NULL fixture password and capture role xmin. No further product blocker found. No reviewer native execution.",
+    "root": "Reviewed complete diff/owning behavior; exact Mac/native source archive and699 file hashes,29 actual Rust cases, full rows/OIDs/journal bytes, signed oracles, blocker chains, artifacts and terminal ownership checked.",
+    "collection": "Mac Python lacks tarfile extraction filter; first local collection stopped after archive hash verification. Retry validated every regular relative member and rejected symlink destination components; no scenario was rerun or result changed.",
+    "ai_evidence": "Local read-only publication_review independently recomputed all65 raw hashes, both raw archives/source manifests,29 executed Rust counts per source, six complete/three interim scientific oracles, eight input corpora,24 journal bytes and23 imported identities/recorded OID matches. Ten clone discriminators, actual recorded blocker261\u2192228, baseline failures and retirement receipts match. Reviewer did not remeasure native ELF bytes or host state and performed no native execution."
+  },
+  "cleanup": {
+    "resources": {
+      "source": "770c4857c92500160a1725c03d7fc7c98ddfa7a5",
+      "tree": "f31e8b970e496d5601eb6e0d2018c58dd5e9aed9",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/publication-770c485",
+      "owner": "e38a04450601099ee58f4331c54a8b4a",
+      "container": "bigbrotr-implementation-publication-770c485",
+      "postgres": "bigbrotr-implementation-publication-770c485-pg",
+      "network": "bigbrotr-implementation-publication-770c485",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "state": "stopped-retained",
+      "source_files": 699,
+      "started_at": "2026-09-19T01:47:42.541132+00:00",
+      "network_id": "8c60735bf0504c84b4d78d7c5eec6f4db684c9ae3ab406d3c934bc564e14e397",
+      "postgres_id": "42809a581305613f54ff209555df9c06e48a88dbb6951f2ded7fc7b532a25bc3",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "b585cedd48ee8ae3d2bfcad3ad407d312b0f23f51ce78c69584454a59663726e",
+      "network_state": "retired",
+      "terminal": {
+        "runner": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 143,
+          "Error": "",
+          "StartedAt": "2026-09-19T01:47:45.184688678Z",
+          "FinishedAt": "2026-09-19T01:52:21.212939005Z"
+        },
+        "postgres": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-19T01:47:43.162896128Z",
+          "FinishedAt": "2026-09-19T01:52:23.749595034Z"
+        }
+      },
+      "finished_at": "2026-09-19T01:52:24.439742+00:00"
+    },
+    "audit": {
+      "source": "770c4857c92500160a1725c03d7fc7c98ddfa7a5",
+      "tree": "f31e8b970e496d5601eb6e0d2018c58dd5e9aed9",
+      "source_files": 699,
+      "manifest_sha256": "c76d88b99fc0328a845be1c25ce009698481edc04f48a4f047d503478e88885c",
+      "cleanup": "owned containers stopped, network retired, no OOM",
+      "unrelated_unchanged": 20,
+      "unrelated_running": 8,
+      "running_bigbrotr": 0
+    },
+    "baseline_resources": {
+      "source": "e57100217ba653a6a266d34f681451df48ccebb6",
+      "tree": "08e4a037a7d99b70e06bcc00505ff068451805cd",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/publication-e571002",
+      "owner": "dded27be112944fbda47822c7bf3e559",
+      "container": "bigbrotr-implementation-publication-e571002",
+      "postgres": "bigbrotr-implementation-publication-e571002-pg",
+      "network": "bigbrotr-implementation-publication-e571002",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "state": "stopped-retained-baseline",
+      "source_files": 698,
+      "started_at": "2026-09-19T01:28:58.087419+00:00",
+      "network_id": "67b1fb0b51be6b358a019536f0268efcb2d9aa61e4116872618e9afcc420786d",
+      "postgres_id": "924c8fe87e5206d3d881622f77ff185cf1dca2b219f033f34c06720485b794f9",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "c04723810714290ac93a3b04db9530c762520590718ef0767c8c16daf20d87f2",
+      "network_state": "retired",
+      "terminal": {
+        "runner": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 143,
+          "Error": "",
+          "StartedAt": "2026-09-19T01:29:04.648933529Z",
+          "FinishedAt": "2026-09-19T01:33:50.975850935Z"
+        },
+        "postgres": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-19T01:28:59.996864823Z",
+          "FinishedAt": "2026-09-19T01:33:52.328070023Z"
+        }
+      },
+      "finished_at": "2026-09-19T01:33:52.882558+00:00"
+    }
+  },
+  "raw_root": ".research/implementation/archive-worker/missing-import",
+  "raw_archive_sha256": "a56a7d5032de6a5170098aa453d64d83dc1f49190ddc8cbec4850cf128046620",
+  "limits": [
+    "Same-boot trusted private ext4 root and registered descriptor holders only; cross-boot/host and incomplete-journal recovery are not qualified.",
+    "Delayed owner Bind/Execute/Sync is real and its blocker is directly observed. This relies on the current sequential awaited adapter and actual driver destruction, not arbitrary pipelined SQL clients.",
+    "Small ten-fact corpora in eight catalog databases (each with its own Control database) and ten disposable clones; no aged-state, throughput, peak-RSS, power-loss or Linux arm64 claim.",
+    "Privileged isolated fixture, not installed service/release. Trusted Tux runs shared CI commands; hosted Actions billing remains unavailable."
+  ],
+  "remaining_gates": [
+    "Installed archive lifecycle and persistent process/resource reconciliation",
+    "Cross-boot/host and incomplete-journal recovery",
+    "Qualified protection, source ACK and reclamation",
+    "Full M1 read/export/restart; multi-batch/file/timer formation and complete scientific variants",
+    "Aged mixed workload/capacity, selected S3 profile and all remaining selected product/release work"
+  ],
+  "raw_sha256": {
+    "e571002/artifact-audit.json": "0dfcc7e1c6be35672db8dc573eb91bd11cfa7334a380ee120b9d2cd62a20bb09",
+    "e571002/audit.json": "430c06db517ba64aed4a2f7022875cd3c7b2fa5e57b91471745356d425449aea",
+    "e571002/launch.py": "b60c1bee23f61a9200f9c1f6826bf2347bdb55b10004f32db5d87488ef235260",
+    "e571002/mac-source-audit.json": "a656e8bc295ddfdbb7264ab4c04d8b387cc6afc8103c7ef2aeb13dec4e491f19",
+    "e571002/missing-import-cases.json": "c2fc95d9d995feb8b2adc3dff1b8bbf5127a2cdded0bbab3acf63cc98e5a9d12",
+    "e571002/out/native-tests/build.log": "80db4c348207c26173e8370a89043df1e25f090f5239ef8622127d55eb3269d0",
+    "e571002/out/native-tests/custody-native/native-custody.log": "167d9bd57a1d639d6cae0843a80af316bfe8f5e93616cd08c263a512e12a2d04",
+    "e571002/out/native-tests/custody-native/result.json": "af6cf606cfb3331600aa02789d90ce9083339749ea7384b953de9f7ce786e440",
+    "e571002/out/native-tests/custody.log": "115e25bbca43b9be5a7b19ef40975bbe5e31d71a5c52d2c640140054ee71399f",
+    "e571002/out/native-tests/embedded.log": "02d6bec333449db955eddc3ebc01c9c30d1c58862c00f8d1e24081dc3ab7ac36",
+    "e571002/out/native-tests/input.log": "12ac9f74b7ad5d7cf3a687e2cffbaaed4f9cb73010d0309cf21622ea578b49a6",
+    "e571002/out/native-tests/ready.json": "94a70d3fd4f7793ca9dc5c532150cdd3bb8c7dc1abb5e0546e10fb1d633b6b19",
+    "e571002/out/native-tests/receipt-input.log": "efb00b6a638a02b66e73ea17e63c08fc65556b24fbead90463ca4c963dfeee45",
+    "e571002/out/native-tests/receipt-parent.log": "78865cf36d5bf2ccc4a30debe6272d52e1156a1a011567215e07abe437c1dbbf",
+    "e571002/out/native-tests/receipt-protocol.log": "eb28f077f4f6b7f0d4011d434e0cfa1bfe92c77ff4ee02d37e90ba8991df3d37",
+    "e571002/out/native-tests/receipts.log": "5b02e5a118d60f9d798bfa1e1785ad38e4e827bb45657e9f664caea69b3db804",
+    "e571002/out/native-tests/result.json": "6d2450f9e9558a667136418a4071ef47698ba2960b6e08c46f4129c884a39387",
+    "e571002/out/native-tests/signed-fixtures.log": "c44c5776279d39eb0042096c43c29d437f18e9aac7042d4e44588c481e3f281e",
+    "e571002/resources.json": "c98fd8de5f0f7866f6f5aa12803bcfd81549203ffcd1841f964285b74f516cba",
+    "e571002/retire-baseline.py": "429d647adc3c0c9e393b9e634973c44bbe648c0d541f059b1f5771f7f19ed1df",
+    "e571002/source-manifest.json": "d510a53eeeed01949f130a107bf31b0e4e46b9f6da030aa391ec0202e9e96d2d",
+    "e571002/terminal-state.json": "097aa8616c1924af72ab5d88995b5c0f88dad097b8cf48c5c4353049469c0f08",
+    "e571002/terminal.py": "19fc71c517bbbfa3f40b058af4ea64d4eb3ee40167af99a376cfa5a837e42364",
+    "770c485/artifact-audit.json": "6cd93e6b7a99c92c049944d52eb0af35fee64f7390d2d6c8ae575a5d60305b14",
+    "770c485/audit.json": "f4a65870e852917caca8b2517005e0ed90aa18d93004eef1112b81416067163e",
+    "770c485/dependency-prefetch.json": "f3d7b8c88a5a4544d374ec68501a3ad99fa28db8ddd95b729164a8b7cf11e912",
+    "770c485/final-correction.py": "c35d25b26943f2f7cead528e7d10211438bf5dadd4d09a15fec643d66f5fa44c",
+    "770c485/launch.py": "684a5749c1856169bd6e9c8d267420f707cbdf90664ede13b784811bee06b0be",
+    "770c485/mac-source-audit.json": "c817e8e7a6d42612349619ffe538094b27abfc8241fdae6ea2f57ba07b135c8f",
+    "770c485/missing-import-cases.json": "c44517d61406362dc226c9f8f3f0ba1067e95b63ce4c83eb17e1871ba5aca942",
+    "770c485/out/native-tests/build.log": "74f9b08f4561466d0015064b597ef8b9b8d844de76a3c2a8b16110176eae16d1",
+    "770c485/out/native-tests/custody-native/native-custody.log": "167d9bd57a1d639d6cae0843a80af316bfe8f5e93616cd08c263a512e12a2d04",
+    "770c485/out/native-tests/custody-native/result.json": "f49aac9ed60da60391070fa2360d1a39c0f3c2383da32c745342097ffc04ad0a",
+    "770c485/out/native-tests/custody.log": "3146eed2939b23116bc0be67b86ed9fd3e91fd45771c05757f486d1b2f8993bf",
+    "770c485/out/native-tests/embedded.log": "598bffb3ff3da50abbfe804d5a9b38669be50e3da9cca874b0f3a67ac93b3b7b",
+    "770c485/out/native-tests/input.log": "60ab45354d2fb319f380dcfef94faf5fc5f2d2ff656e500383e0f018a6b04acb",
+    "770c485/out/native-tests/ready.json": "48b8383731fff5ea80478233f2f6594476ce33ff4d72f3ad70a1baffe6d9aba8",
+    "770c485/out/native-tests/receipt-input.log": "3786f87dff15e6269be802f8d49849f2499c2137cec277b8b2a70a6244e56f1f",
+    "770c485/out/native-tests/receipt-parent.log": "3efba13eaa86e01636b008147d5152499ac099097a0a4fdba9e9b9a94ddfd6ce",
+    "770c485/out/native-tests/receipt-protocol.log": "b5eff5c820017fccf6d40345774744de215fe604d3fff29aefce6c2d79ff6cdd",
+    "770c485/out/native-tests/receipts.log": "58229285a5f3b8292227e8662f87837adaea582fa7a519038971699ad0b0aa1f",
+    "770c485/out/native-tests/result.json": "ac47c8891e27be1684d07c0b68aa3c128f90eb32170aea2a0696c004b4988b25",
+    "770c485/out/native-tests/signed-fixtures.log": "70192b39ec40d23d99e54f8d0ce4c02f189fa17c417f0253f877c286fe8f812e",
+    "770c485/preflight.json": "c313adf19253fd647d14cdff031e8eb67ba7ec6403c390fa5e7de2d46c1643d3",
+    "770c485/resources.json": "01152b513095d5029da4f0bf4d4385e5561f5edbe5f37cff8553bafd3d2641e1",
+    "770c485/retire-correction.py": "f89a27d542d264d5c60c28dd98289ac85bfadd47f79bc0faad4f30dfd86333a1",
+    "770c485/signed-cases.json": "400e90c866fda3bb8d01a67a550f5fa8865e04e51c7784487a4d02194fd25c3e",
+    "770c485/source-manifest.json": "c76d88b99fc0328a845be1c25ce009698481edc04f48a4f047d503478e88885c",
+    "770c485/terminal-state.json": "8e9d34ea6e1df5c0fbf71d5912951015b062b9e37a7f891db2324eb85f084546",
+    "recovery-gate-red.log": "d2ed465be6755fec83f5181443c298e685ec64ad86493e7efbbad76120d86e06",
+    "recovery-gate-red-corrected.log": "e1cdaff37aa987cae4cb64e7aad983b0969192b12485724aa0a26b0b058ca19b",
+    "recovery-gate-green.log": "80ca2c00195f4a6e31929643c0e53af894d13b7447925d2141c4f213172587c9",
+    "implementation-clippy.log": "6ce093a5705feba7bdcdd26b49ae2949c66f62b3adb10c11fcce57c954a6a4d8",
+    "implementation-archive-tests.log": "69eed2bce7021e75b59807d7fa0f197c23e9738a1b87efaaa72e0b6f8b963697",
+    "candidate-clippy.log": "5c01a2e11f74774e5b933b0d8bf759027e8c427579fff252b8d3007a670af57f",
+    "candidate-artifacts.log": "93b86f3bb1140b0dad0b909bcc9d225496cde8cb52e449145c748e1c16d560df",
+    "candidate-handoff.json": "bf8fc5eb6ec8760977c9630d21364bcab6d88255845fa2c011d7b34b027ea01b",
+    "candidate-handoff.log": "579ff20e9aeecc1be1c662722f4f4c0567738b9cba73dc651f7be694c6625293",
+    "correction-execution.log": "1ed0af368dc039defe3f26fbf086e20b08400333cbc541a51827903a0fcc00a0",
+    "signed-correction-execution.log": "116c0565c9bb7ee83bcc33baae6f4a24a4ad2192121e4c71c504149965967930",
+    "terminal-correction.log": "1a2a38ad5cf7415d4a08f1f61831a01d5d69a8b6fffb405a6acdce96282d3dc5",
+    "retire-correction.log": "2717ea5f3c16a6b355a79f468c7086f6a285acab15a95220cfc1f7e992673d5a",
+    "collect-correction.log": "18da30bfdb31bcca223c7779f998dbaccfcde34b1d90e6807946cec8730b195b",
+    "collect-correction-retry.log": "7d13dae49452d7e5c957b95e4d9ebea83e7d5978b675baef248fcbf57d5289ac",
+    "collect-correction.py": "6b6af854aa457237316ab3579057eb352d3be042075bcadcf65c9a99f3a0e17b"
+  }
+}

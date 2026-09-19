@@ -343,8 +343,9 @@ role/import/owner state, zero scientific files and the same 41 Rocks rows. At
 `e571002` the live control completed provisioning; the destroyed driver sent no
 mutation after delayed owner execution. Both required NotImported observations
 returned Conflict and the baseline report remains FAIL, with terminal resources
-retired. The updated resolver and additional actual blocker observation await a
-new exact-source run.
+retired. The [corrected exact-source run at770c485](../../docs/implementation/evidence/p02-missing-import-native-20260919.json)
+passes both schedules and directly observes the later resolver's transaction-ID
+blocker. The missing branch returns only after rollback; it creates no credentials.
 
 `missing_import_refusals.py` creates ten disposable clones of the completed empty
 catalog, exercises ordinal/attempt/worker/login collisions, orphan disabled/login
@@ -354,5 +355,6 @@ attempt fields, owner/role xmin and role OIDs. A renamed actual role isolates th
 retained login-name collision from orphan-role detection; the unrelated owner
 keeps LOGIN and a non-NULL generated fixture password. Ordinary DROP removes only successfully
 created clones/fixture roles; no immutable history trigger is disabled and the
-original catalog/journal is unchanged. These additional cases are proposed until
-the native report records execution.
+original catalog/journal is unchanged. All ten cases pass at770c485, together with
+29 scoped native Rust cases and six signed publication/receipt regressions. Full
+installed recovery and protection remain open.

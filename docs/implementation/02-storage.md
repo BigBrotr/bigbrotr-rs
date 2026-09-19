@@ -359,15 +359,17 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   recovered state. [Native custody qualification at 5ad77af](evidence/p02-local-custody-native-20260919.json)
   passes 28 scoped Rust cases, three actual worker/driver/manager schedules and all
   six signed publication/receipt journeys, with 25 exact journals and unchanged
-  retained source rows. Missing catalog import, incomplete journal and cross-boot
+  retained source rows. Incomplete journal and cross-boot
   recovery, installed resource reconciliation and protection remain required.
-  The next missing-import slice adds a recovered-only identity gate and the
+  The missing-import slice adds a recovered-only identity gate and the
   actual delayed owner Bind/Execute/Sync discriminator in
-  `experiments/archive-engine/missing_import_cases.py`. Its current seal-only
+  `experiments/archive-engine/missing_import_cases.py`. The baseline seal-only
   adapter at e571002 failed the two required NotImported observations while
-  completing both driver schedules. The nonmutating branch is now implemented;
-  exact-source native qualification with collision and retained-role controls
-  remains pending.
+  completing both driver schedules. [Native qualification at770c485](evidence/p02-missing-import-native-20260919.json)
+  now passes both corrected schedules, ten collision/retained-role controls,
+  29 native Rust cases and six signed regressions of the shared seal path.
+  The actual late-query blocker, all24 exact journals and23 imported identity/OID
+  bindings are recorded; unrelated owner/credential state is preserved.
   No step is complete from these prerequisites.
 - [ ] **Step 6:** Handle empty and one-small-event timer batches; publish useful progress
   without waiting for a size threshold that may never be reached.

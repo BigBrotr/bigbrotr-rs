@@ -117,8 +117,11 @@ restricted to the same Linux boot and qualified local ext4 placement. This does
 not replace server transaction resolution, positive process/resource reconciliation
 or explicit cross-boot/host recovery. [Scoped native qualification](../implementation/evidence/p02-local-custody-native-20260919.json)
 now covers real inherited custody, parent/manager death and queued provisioning
-COMMIT cancellation; installed recovery and missing-import resolution remain
-required. An unreachable old host is unknown
+COMMIT cancellation. [Missing-import qualification](../implementation/evidence/p02-missing-import-native-20260919.json)
+additionally resolves a never-imported attempt without mutation under recovered
+custody and the catalog owner lock, including actual delayed protocol execution
+and conflicting retained identities. Installed lifecycle/resource reconciliation
+and incomplete-journal recovery remain required. An unreachable old host is unknown
 until an enforced exclusion is established; do not substitute a timeout or treat
 new local process capacity as old-host termination. Changing the native connection
 protocol, pool/credential ownership or process containment requires requalification.

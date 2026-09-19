@@ -7506,11 +7506,10 @@
     },
     "missing_import_resolution": {
       "base_source": "e9cf01f590cb229b332c76b9ffb88094828a03b7",
-      "state": "e571002 baseline completed with two expected missing-import FAIL observations; owned containers stopped-retained and network retired",
+      "state": "770c485 scoped native correction PASS, all owned resources terminal; baseline e571002 remains FAIL",
       "local_root": ".research/implementation/archive-worker/missing-import",
-      "planned_scope": "Corrected nonmutating resolution: two actual delayed owner schedules, direct blocker pair, ten independent collision/retained-role controls; six signed journeys regress the shared seal path. Native correction NOT_RUN.",
       "cache_source": "/home/tux/bigbrotr-implementation-20260917/runs/publication-5ad77af/out/build",
-      "local_validation": "22 archive cases PASS; affected Clippy and structural artifact/handoff checks PASS. Actual baseline remains FAIL; corrected native run NOT_RUN.",
+      "local_validation": "22 archive cases PASS; affected Clippy and structural artifact/handoff checks PASS. Native correction:29 Rust cases, two schedules, ten clone controls and six signed journeys PASS. Baseline missing observations remain FAIL.",
       "baseline_resources": {
         "source": "e57100217ba653a6a266d34f681451df48ccebb6",
         "tree": "08e4a037a7d99b70e06bcc00505ff068451805cd",
@@ -7578,7 +7577,77 @@
         "running_bigbrotr": 0
       },
       "baseline_raw_sha256": "469d4ef55b7cb7086fd419f3588efd51214dc98e8fc901bb110960638c50a3b2",
-      "next_cache_source": "/home/tux/bigbrotr-implementation-20260917/runs/publication-e571002/out/build"
+      "next_cache_source": "/home/tux/bigbrotr-implementation-20260917/runs/publication-770c485/out/build",
+      "correction_resources": {
+        "source": "770c4857c92500160a1725c03d7fc7c98ddfa7a5",
+        "tree": "f31e8b970e496d5601eb6e0d2018c58dd5e9aed9",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/publication-770c485",
+        "owner": "e38a04450601099ee58f4331c54a8b4a",
+        "container": "bigbrotr-implementation-publication-770c485",
+        "postgres": "bigbrotr-implementation-publication-770c485-pg",
+        "network": "bigbrotr-implementation-publication-770c485",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "state": "stopped-retained",
+        "source_files": 699,
+        "started_at": "2026-09-19T01:47:42.541132+00:00",
+        "network_id": "8c60735bf0504c84b4d78d7c5eec6f4db684c9ae3ab406d3c934bc564e14e397",
+        "postgres_id": "42809a581305613f54ff209555df9c06e48a88dbb6951f2ded7fc7b532a25bc3",
+        "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+        "container_id": "b585cedd48ee8ae3d2bfcad3ad407d312b0f23f51ce78c69584454a59663726e",
+        "network_state": "retired",
+        "terminal": {
+          "runner": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-19T01:47:45.184688678Z",
+            "FinishedAt": "2026-09-19T01:52:21.212939005Z"
+          },
+          "postgres": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-19T01:47:43.162896128Z",
+            "FinishedAt": "2026-09-19T01:52:23.749595034Z"
+          }
+        },
+        "finished_at": "2026-09-19T01:52:24.439742+00:00"
+      },
+      "correction_source_audit": {
+        "status": "PASS",
+        "source": "770c4857c92500160a1725c03d7fc7c98ddfa7a5",
+        "tree": "f31e8b970e496d5601eb6e0d2018c58dd5e9aed9",
+        "files": 699,
+        "manifest_sha256": "c76d88b99fc0328a845be1c25ce009698481edc04f48a4f047d503478e88885c",
+        "archive_sha256": "193bcfe8dd462602be7e2af250e30c89196b58505f8d29468342fa4abcb98ec9"
+      },
+      "correction_audit": {
+        "source": "770c4857c92500160a1725c03d7fc7c98ddfa7a5",
+        "tree": "f31e8b970e496d5601eb6e0d2018c58dd5e9aed9",
+        "source_files": 699,
+        "manifest_sha256": "c76d88b99fc0328a845be1c25ce009698481edc04f48a4f047d503478e88885c",
+        "cleanup": "owned containers stopped, network retired, no OOM",
+        "unrelated_unchanged": 20,
+        "unrelated_running": 8,
+        "running_bigbrotr": 0
+      },
+      "correction_raw_sha256": "a56a7d5032de6a5170098aa453d64d83dc1f49190ddc8cbec4850cf128046620",
+      "report": "docs/implementation/evidence/p02-missing-import-native-20260919.json",
+      "executed_scope": "Corrected nonmutating resolution: two actual delayed owner schedules, direct blocker pair, ten independent collision/retained-role controls; six signed journeys regress the shared seal path. All scoped native cases PASS at770c485; installed recovery/protection remain open.",
+      "correction_cache_source": "/home/tux/bigbrotr-implementation-20260917/runs/publication-e571002/out/build"
     }
   },
   "implementation_monitor_corrections_20260918": {

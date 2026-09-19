@@ -404,10 +404,15 @@ ReadyForQuery before queuing provisioning mutations. The native baseline at
 and later provisioned; destroying the driver permitted local reacquisition and
 the released late request created no role/import. The baseline's seal-only
 resolver returned Conflict in both missing observations, so its report remains
-FAIL. The new missing branch and ten independent collision/retained-role controls
-still require exact-source native qualification. RowShareLock alone is a relation
-lock; the updated fixture additionally observes the actual later resolver blocker
-before releasing the surviving server transaction.
+FAIL. [Qualification at770c485](../implementation/evidence/p02-missing-import-native-20260919.json)
+passes both corrected schedules and ten independent collision/retained-role
+controls. The actual late query blocks a later resolver on a PostgreSQL transaction
+ID; releasing that surviving backend lets resolution return NotImported without
+mutation. This is a directly observed blocker pair, distinct from a relation
+RowShareLock. A renamed role isolates the historical login-name collision, and
+an unrelated same-batch owner retains LOGIN, password presence and owner/role xmin.
+All29 scoped native Rust cases and six signed publication/receipt regressions pass;
+24 exact journals and23 imported identities/OID bindings were independently checked.
 
 [Native qualification at 5ad77af](../implementation/evidence/p02-local-custody-native-20260919.json)
 passes 28 scoped Rust cases, three actual custody/crash/queued-COMMIT schedules and
@@ -420,5 +425,5 @@ transaction. All 25 immutable journal byte sequences match independent identitie
 and all 41 retained Rocks rows remain unchanged in each journey.
 
 This is the same-boot ext4 custody prerequisite. Cross-boot recovery, installed
-lifecycle/resource reconciliation, missing catalog-import and incomplete-journal
+lifecycle/resource reconciliation and incomplete-journal
 recovery, aged journal/receipt costs, protection and complete M1 remain open.
