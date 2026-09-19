@@ -30,11 +30,26 @@ SQL clients. The script never treats a missing fixture or empty input as PASS.
 
 The ledger is still a prerequisite. Logical input positions, outcome/checkpoint
 closure, ACK/GC, successor replay, power loss and physical ENOSPC are not covered.
-`schema_cases.sql` checks19 nonempty/constraint/rollback observations against the
+`schema_cases.sql` checks20 nonempty/constraint/rollback observations against the
 actual successful bootstrap dataset, including the documented bulk refusal and
 empty versus unresolved epoch retirement. SQL concurrency and fresh-only migration
 compatibility still require their own practical schedules before qualification. The progress checkpoint and evidence
 report record actual execution; the presence of this harness is not a PASS claim.
+
+A later clean harness may use `run.py --root <owned-lab> --run-tag <tag>` to retain
+the original report and use fresh databases/paths. Both migration11 and12 must
+match the untouched product checkout. The truncate controls separately require
+the foreign-key refusal and the immutable-row guard when both tables are named.
+Pass the tagged report to `concurrency.py --reservation-report <filename>`.
+
+`outcome_upgrade.py --root <owned-lab> --old-root <retained-dddefd5-lab>` uses the
+hash-verified old executable without restarting its retired laboratory. Four
+cases exercise empty and populated compatible upgrades, refused insufficient
+completion headroom, and the new client on schema11. Successful upgrades create
+no synthetic outcomes; refused migrations preserve all rows and DDL. Old clients
+must reject schema12 before creating owners/native roots. Timeouts retain partial
+output and explicitly unknown remote exclusion; the owned terminal audit is
+required before qualification. This does not authorize historical-owner adoption.
 
 `concurrency.py --root <owned-lab>` follows successful reservation/schema cases.
 It clones the quiescent disposable SQL fixture, without native copies, and uses

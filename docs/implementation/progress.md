@@ -19,12 +19,11 @@ Archive receipt consumer is qualified separately. All later selected work remain
 
 ## Git and current work
 
-Mac main and private origin/main were verified clean and identical at
-`05520e06097a849b81386d74db8cd2936200540c` after the qualification push,
-including candidates 57cce75/4296320/dddefd5/5f19eb7 and the evidence commit.
-Root owns the dirty outcome-copy slice: additive0012, native witness/replay,
-PG bridge/metadata read, client/harness regressions and owning documentation.
-Nothing in this next slice is yet committed or qualified on Linux.
+Mac main is unpublished native candidate9537667dd140baac68ca79ecb56ea7c6ecce081f,
+tree71716b4155e6ed0068c1eb41d817f8c4b0bd3c18. Private origin/main remains
+last verified05520e06097a849b81386d74db8cd2936200540c. Candidate sources were clean
+when exported/transferred through Git. Root owns dirty checkpoint/inventory and practical harness changes, including
+new outcome_upgrade.py; these are not part of the candidate product under test.
 No other contributor edits were incorporated; existing review agents are read-only.
 No other implementation worktree is being integrated.
 
@@ -103,26 +102,33 @@ The scoped report binds current/old probes, native toolchain, workload and resul
 
 ## Owned resources
 
-No active lab or test process remains. Terminal audit at
-`2026-09-19T17:10:03.597105+00:00`: zero owned SQL clients before stop, no OOM,
-360 preexisting containers unchanged, 8 unrelated running, zero BigBrotr running.
-Current stopped-retained root:
-`/home/tux/bigbrotr-implementation-20260917/runs/producer-ledger-dddefd5`, owner
-`aacfaa7d629cfcd4de6349e649074904`; runner
-`7854121a281b31f22864d78a50e4e0d28b751c0f1f10020e8cb5e7be84fa827c`, PG
-`ddb519f9a71b73ae86cdf55f6b8416d4da3bab88200cb91bc8a9df96d8a22d1f`, old builder
-`e4254d441c905e4ca32d93dc0ebcf0e8dba6a97851b0be648232faf66baab6da`, empty network
-`25168fa5da33a578e5ee22f886cb4abfa5ac3d8d3ac01dd3fd0424857a581d88`.
+Active exact9537667 laboratory:
+`/home/tux/bigbrotr-implementation-20260917/runs/producer-outcomes-9537667`, owner
+`20434426dd46b15a09fc21b4d769ca53`; runner
+`45d5955fbfd130722fc5243c09866fb13b7c0e28c7166f44f513f98bfc3e8753`, PG
+`1b8d683a0039dc448e24b97b7cb880bf07218bc66fb26d9fad5482bab083adc5`, internal network
+`206354208a5b1b5a1b0f08f772c7b3908ff8db0903a4459b94e8afad72d7aa12`. No host ports;
+runner2CPU/6GiB/512PIDs, PG1CPU/1GiB/128PIDs. Readonly803-file Git export, copied
+Cargo cache from dddefd5 (same Cargo.lock), pinned prior runner/PG/native assets.
+Native build/checks reached READY. Five outcome cases and19SQL observations PASS;
+six reservation native cases PASS, then SQL fixture failed because the new FK
+refuses TRUNCATE with0A000 before the expected23514 guard. Its original report is
+retained INCOMPLETE. A clean separate harness will check both refusals and rerun
+in fresh tagged databases. The first wrapper missed its root argument; a signed
+wrapper used --root instead of the positional argument; both exited before tests.
+Corrected signed publication completed all six modes; inspect its report before
+qualification. No orchestrator remains active; verify actual container/process state.
+Ignored orchestration/raw root is `.research/implementation/producer-outcomes`.
 
-See `implementation_archive_worker_20260918.producer_ledger` and historical
-`producer_ledger_initial`/`producer_ledger_setup_retry` in the
-[laboratory inventory](../research/laboratory-inventory.json). Earlier 57cce75 and
-4296320 containers/data remain stopped-retained; only their verified empty owned
-networks were removed. Never restart retired labs or prune unrelated resources.
-Latest reusable copied cache is dddefd5/out/build; verify Cargo.lock before reuse.
-Readonly native assets remain installed-publication-61271e2/out/archive-worker.
-Mac ignored transfer/launch/audit helpers need fresh ownership/root updates before
-reuse; launch still names the already removed4296320 network. Do not rerun blindly.
+The first launch failed before containers because Docker's predefined address
+pools were exhausted. After checking the prior dddefd5 network was empty/internal
+and all three labeled owner containers stopped, only that old network was removed.
+The same new prepared source/cache/credentials then launched successfully; no
+product source was edited remotely. `retired-network.json` records the check.
+All prior dddefd5,57cce75,4296320 containers/data remain stopped-retained. Native
+assets remain installed-publication-61271e2/out/archive-worker. No unrelated
+workload was stopped or pruned. Follow `producer_outcomes` and prior ledger entries
+in the [laboratory inventory](../research/laboratory-inventory.json).
 
 ## Prior relevant qualifications and open boundaries
 
@@ -155,10 +161,11 @@ scoped closure of its five findings; no new issue was inferred from its old text
 
 ## Next bounded action
 
-Finish candidate source/diff checks for P02-T02 step4's native outcome copy, then
-commit the exact source for a fresh isolated Tux run. Run existing signed installed
-publication plus new five outcome-copy/fourth-COMMIT cases and19SQL observations;
-add practical0011->0012 headroom/compatibility cases. Outcomes remain NOT_RUN on Linux.
+Commit and transfer the reviewed practical harness separately through Git. Run
+fresh tagged reservation/schema and concurrency cases, then actual0011->0012
+headroom/client compatibility; keep the candidate product export unchanged.
+Independently compare signed-run PG outcomes with retained inputs/native bytes.
+Compatibility remains NOT_RUN; original SQL fixture failure remains recorded.
 Mac14migration tests,8input/native tests,5bootstrap tests and5structural receipt
 reader tests passed. Regression
 first failed UnknownTarget12; native witness tests first failed missing API. A

@@ -87,7 +87,10 @@ SELECT pg_temp.refuse('duplicate_sql_not_a_retry','23514','SELECT pg_temp.reserv
 SELECT pg_temp.refuse('counter_cannot_rewind','23514','UPDATE control.producer_epochs SET reserved_through_request=1 WHERE producer_slot_id=pg_temp.id(1001)');
 SELECT pg_temp.refuse('row_update_immutable','23514','UPDATE control.producer_requests SET input_bytes=input_bytes');
 SELECT pg_temp.refuse('row_delete_refused','23514','DELETE FROM control.producer_requests');
-SELECT pg_temp.refuse('truncate_refused','23514','TRUNCATE control.producer_requests');
+-- Include the referencing outcome table so PostgreSQL reaches the retained-row
+-- guards instead of rejecting the command earlier for its foreign key.
+SELECT pg_temp.refuse('truncate_foreign_key','0A000','TRUNCATE control.producer_requests');
+SELECT pg_temp.refuse('truncate_refused','23514','TRUNCATE control.producer_requests, control.producer_outcomes');
 SELECT pg_temp.producer(1002,64);
 SELECT pg_temp.refuse('same_epoch_bulk_atomic_refusal','23514',$q$
  INSERT INTO control.producer_requests(producer_slot_id,producer_epoch,request_sequence,dataset_id,
@@ -111,7 +114,7 @@ SELECT pg_temp.refuse('closing_epoch_refuses_reservation','23514','SELECT pg_tem
 UPDATE control.producer_epochs SET state='retired',retired_at_us=opened_at_us,
  closure_digest=decode(repeat('04',32),'hex') WHERE producer_slot_id=pg_temp.id(1003);
 SELECT pg_temp.check('empty_epoch_can_retire',(SELECT state='retired' AND reserved_through_request=0 FROM control.producer_epochs WHERE producer_slot_id=pg_temp.id(1003)));
-SELECT pg_temp.check('all_cases_executed',(SELECT count(*)=18 FROM results));
+SELECT pg_temp.check('all_cases_executed',(SELECT count(*)=19 FROM results));
 SELECT jsonb_build_object('status','PASS','cases',(SELECT jsonb_agg(to_jsonb(t) ORDER BY label) FROM results t));
 -- End the actual session owner; this fixture grants no native successor.
 UPDATE control.owner_epochs SET state='released',released_at_us=(extract(epoch FROM clock_timestamp())*1000000)::bigint,

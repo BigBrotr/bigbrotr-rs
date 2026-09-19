@@ -3,6 +3,7 @@
 import argparse
 import hashlib
 import json
+import re
 from pathlib import Path
 import subprocess
 import sys
@@ -35,11 +36,16 @@ finally:
 '''
 
 
-def main(root):
+def main(root, run_tag):
     state = json.loads((root / 'resources.json').read_text())
-    assert SOURCE == root / 'source'
-    assert command('git', '-C', str(SOURCE), 'rev-parse', 'HEAD') == state['source']
+    harness = command('git', '-C', str(SOURCE), 'rev-parse', 'HEAD')
     assert not command('git', '-C', str(SOURCE), 'status', '--porcelain')
+    assert command('git', '-C', str(root/'source'), 'rev-parse', 'HEAD') == state['source']
+    assert not command('git', '-C', str(root/'source'), 'status', '--porcelain')
+    for path in ['migrations/postgres/0011_producer_requests.sql', 'migrations/postgres/0012_producer_outcomes.sql']:
+        assert (SOURCE/path).read_bytes() == (root/'source'/path).read_bytes()
+    assert not run_tag or re.fullmatch('[a-z][a-z0-9]{0,11}', run_tag)
+    tag = run_tag+'_' if run_tag else ''
     runner, pg = state['container_id'], state['postgres_id']
     for identity in [runner, pg]:
         record = json.loads(command('docker', 'inspect', identity))[0]
@@ -48,9 +54,10 @@ def main(root):
     ready = json.loads((root/'out/native-tests/ready.json').read_text())
     assert ready['source'] == state['source']
     assert hashlib.sha256((root/'out/native-tests/ingest-bootstrap-probe').read_bytes()).hexdigest() == ready['ingest_probe']
-    evidence = root/'producer-reservation-cases.json'
+    evidence = root/('producer-reservation-cases'+('-'+run_tag if run_tag else '')+'.json')
     assert not evidence.exists()
-    report = dict(status='INCOMPLETE', source=state['source'], tree=state['tree'], artifacts=ready, cases=[])
+    report = dict(status='INCOMPLETE', source=state['source'], tree=state['tree'],
+                  harness_revision=harness, run_tag=run_tag, artifacts=ready, cases=[])
     def save(): evidence.write_text(json.dumps(report,indent=2)+'\n')
     def sql(db, text):
         return command('docker','exec','-i',pg,'psql','-XAt','-v','ON_ERROR_STOP=1','-U','postgres','-d',db,input=text)
@@ -64,7 +71,8 @@ def main(root):
     save()
     for label in ['write','reservation-refused','reservation-rollback','reserved','before-forward','after-complete']:
         case = dict(name=label,status='INCOMPLETE',process={});report['cases'].append(case);save()
-        db='bbproducer_'+label.replace('-','_')
+        db='bbproducer_'+tag+label.replace('-','_')
+        case['database'] = db
         sql('postgres',f'CREATE DATABASE {db}')
         setup={};execute(binary+['setup-12',db,'/secrets/postgres','unused'],30,setup)
         case['setup']=setup;save();assert setup['exit']==0 and not setup['stderr']
@@ -72,7 +80,7 @@ def main(root):
             sql(db,"CREATE FUNCTION public.fixture_abort() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'fixture rollback'; END $$; CREATE TRIGGER zz_fixture_abort AFTER INSERT ON control.producer_requests FOR EACH ROW EXECUTE FUNCTION public.fixture_abort();")
         proxy=None
         mode='reservation-commit-lost' if label in ['before-forward','after-complete'] else label
-        home='/out/producer_'+label
+        home='/out/producer_'+tag+label
         command('docker','exec',runner,'mkdir','-m','700',home)
         try:
             if mode=='reservation-commit-lost':
@@ -102,7 +110,7 @@ def main(root):
         actual=json.loads(command(*binary,'dump',home+'/db'))
         case['native']=actual
         assert [(r['cf'],bytes.fromhex(r['key']),bytes.fromhex(r['value'])) for r in actual['rows']]==wanted
-        retained=list((root/'out'/('producer_'+label)/'db/producer-inputs-v1').iterdir())
+        retained=list((root/'out'/('producer_'+tag+label)/'db/producer-inputs-v1').iterdir())
         assert len(retained)==1 and retained[0].read_bytes()==original
         case['input']={'name':retained[0].name,'bytes':len(original),'sha256':hashlib.sha256(original).hexdigest()}
         reserved=label not in ['reservation-rollback','before-forward']
@@ -128,17 +136,19 @@ def main(root):
         assert state_rows(db)==case['control']
         case['status']='PASS';save()
     fixture=SOURCE/'experiments/producer-requests/schema_cases.sql'
-    completed=subprocess.run(['docker','exec','-i',pg,'psql','-XAt','-U','postgres','-d','bbproducer_write'],
+    completed=subprocess.run(['docker','exec','-i',pg,'psql','-XAt','-U','postgres','-d','bbproducer_'+tag+'write'],
         input=fixture.read_text(),capture_output=True,text=True,timeout=60)
     report['schema']={'exit':completed.returncode,'stdout':completed.stdout,'stderr':completed.stderr,
         'fixture_sha256':hashlib.sha256(fixture.read_bytes()).hexdigest()}
     save()
     assert completed.returncode==0, 'schema fixture failed; inspect retained transcript'
     result, _ = json.JSONDecoder().raw_decode(completed.stdout[completed.stdout.index('{'):])
-    assert result['status']=='PASS' and len(result['cases'])==19
+    assert result['status']=='PASS' and len(result['cases'])==20
     report['status']='PASS';save()
     print(json.dumps({'status':'PASS','cases':len(report['cases'])}))
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--root',type=Path,required=True)
-    main(parser.parse_args().root.resolve(strict=True))
+    parser.add_argument('--run-tag', default='')
+    args = parser.parse_args()
+    main(args.root.resolve(strict=True), args.run_tag)

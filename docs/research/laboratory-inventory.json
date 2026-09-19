@@ -12924,7 +12924,15 @@
         "build_checks_status": "PASS"
       },
       "raw": ".research/implementation/producer-ledger/qualified",
-      "manifest": ".research/implementation/producer-ledger/qualified-evidence-identity.json"
+      "manifest": ".research/implementation/producer-ledger/qualified-evidence-identity.json",
+      "network_lifecycle": {
+        "state": "removed",
+        "at": "2026-09-19T17:43:29.396607+00:00",
+        "verified_empty": true,
+        "owner": "aacfaa7d629cfcd4de6349e649074904",
+        "reason": "completed prior lab; owned empty network releases exhausted address pool",
+        "audit": "/home/tux/bigbrotr-implementation-20260917/runs/producer-outcomes-9537667/retired-network.json"
+      }
     },
     "producer_ledger_initial": {
       "source": "57cce756a4ad47199d862c8e47fd345fd5eee9c3",
@@ -13395,6 +13403,31 @@
         "state": "removed",
         "scope": "Only the verified empty owned network; containers and data stopped-retained.",
         "evidence": ".research/implementation/producer-ledger/qualified/retired-network.json"
+      }
+    },
+    "producer_outcomes": {
+      "source": "9537667dd140baac68ca79ecb56ea7c6ecce081f",
+      "tree": "71716b4155e6ed0068c1eb41d817f8c4b0bd3c18",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-outcomes-9537667",
+      "owner": "20434426dd46b15a09fc21b4d769ca53",
+      "container": "bigbrotr-implementation-producer-outcomes-9537667",
+      "postgres": "bigbrotr-implementation-producer-outcomes-9537667-pg",
+      "network": "bigbrotr-implementation-producer-outcomes-9537667",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "state": "running",
+      "source_files": 803,
+      "started_at": "2026-09-19T17:42:04.211415+00:00",
+      "network_id": "206354208a5b1b5a1b0f08f772c7b3908ff8db0903a4459b94e8afad72d7aa12",
+      "postgres_id": "1b8d683a0039dc448e24b97b7cb880bf07218bc66fb26d9fad5482bab083adc5",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "45d5955fbfd130722fc5243c09866fb13b7c0e28c7166f44f513f98bfc3e8753",
+      "qualification": "IN_PROGRESS; READY, outcome5/SQL19 and signed6 PASS; reservation6 PASS then SQL FK expectation failed; corrected harness/upgrade pending",
+      "raw": ".research/implementation/producer-outcomes",
+      "launch_retry": {
+        "reason": "Docker predefined address pools fully subnetted before any new container",
+        "resolution": "Removed only verified-empty preceding producer-ledger network after verifying all three owned containers stopped",
+        "audit": "/home/tux/bigbrotr-implementation-20260917/runs/producer-outcomes-9537667/retired-network.json"
       }
     }
   },

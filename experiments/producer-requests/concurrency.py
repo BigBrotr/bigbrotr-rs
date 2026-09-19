@@ -82,7 +82,7 @@ CLOSE="UPDATE control.producer_epochs SET state='closing' WHERE producer_slot_id
 SNAPSHOT="SELECT reserved_through_request FROM control.producer_epochs WHERE producer_slot_id=decode(repeat('eb',16),'hex');"
 
 
-def main(root):
+def main(root, reservation_report):
     state=json.loads((root/'resources.json').read_text())
     assert state['root']==str(root)
     harness=command('git','-C',str(SOURCE),'rev-parse','HEAD')
@@ -91,14 +91,19 @@ def main(root):
     assert command('git','-C',str(product),'rev-parse','HEAD')==state['source']
     assert not command('git','-C',str(product),'status','--porcelain')
     assert (SOURCE/'migrations/postgres/0011_producer_requests.sql').read_bytes()==(product/'migrations/postgres/0011_producer_requests.sql').read_bytes()
+    assert (SOURCE/'migrations/postgres/0012_producer_outcomes.sql').read_bytes()==(product/'migrations/postgres/0012_producer_outcomes.sql').read_bytes()
     pg=state['postgres_id']
     container=json.loads(command('docker','inspect',pg))[0]
     assert container['Config']['Labels']['org.bigbrotr.publication']==state['owner'] and container['State']['Running']
-    prior=json.loads((root/'producer-reservation-cases.json').read_text())
+    assert Path(reservation_report).name == reservation_report
+    prior=json.loads((root/reservation_report).read_text())
     assert prior['status']=='PASS' and prior['source']==state['source']
+    template=prior['cases'][0].get('database','bbproducer_write')
+    assert template.startswith('bbproducer_') and template.replace('_','').isalnum()
     path=root/'producer-concurrency.json';assert not path.exists()
     report=dict(status='INCOMPLETE',source=state['source'],harness_revision=harness,
-        harness_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),cases=[])
+        harness_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        reservation_report=reservation_report, reservation_report_sha256=hashlib.sha256((root/reservation_report).read_bytes()).hexdigest(), cases=[])
     def save():path.write_text(json.dumps(report,indent=2)+'\n')
     def sql(db,text):return command('docker','exec','-i',pg,'psql','-XAt','-v','ON_ERROR_STOP=1','-U','postgres','-d',db,input=text)
     def connect(db, name, clients, stall_ready=False):
@@ -160,7 +165,7 @@ def main(root):
     for mode in ['reserve_commit','reserve_rollback','close_commit','close_rollback','old_rr','old_rc','cleanup_ready','cleanup_waiter']:
         case=dict(name=mode,status='INCOMPLETE');report['cases'].append(case);save()
         db='bbproducer_race_'+mode
-        sql('postgres','CREATE DATABASE '+db+' TEMPLATE bbproducer_write')
+        sql('postgres','CREATE DATABASE '+db+' TEMPLATE '+template)
         clients=[]
         try:
             producer=connect(db,'producer_'+mode,clients)
@@ -213,4 +218,6 @@ def main(root):
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--root',type=Path,required=True)
-    main(parser.parse_args().root.resolve(strict=True))
+    parser.add_argument('--reservation-report', default='producer-reservation-cases.json')
+    args = parser.parse_args()
+    main(args.root.resolve(strict=True), args.reservation_report)
