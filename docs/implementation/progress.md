@@ -21,17 +21,18 @@ qualification as installed service readiness.
 
 ## Actual Git and ownership
 
-Mac main HEAD 6606103653d96b932e2adc11d2485b03d0955fc6,
-tree 4d47f0d4b655d379ca8f442771291727eaa3852e, is the clean candidate tested on Tux.
-Last freshly verified remote main remains
-a40bf53784be2b2737f89a39b1b44e8a46f0d6ed. Candidate not yet pushed.
-Root owns only qualification report, task/dependency docs, inventory and checkpoint
-changes after6606103. No other writer, merge or rebase. Review and commit/push
-these documentation/evidence changes after final verification. Do not guess the
-future commit hash. Existing publication_review completed read-only source/harness and recorded-
-evidence review without a discrepancy. It checked49 hashes,21 raw members,703
-source files, complete/interim oracles,27 journals,26 catalog/27 Control identities,
-ten clones and CLI owner history; no native execution or Tux actions.
+Mac main HEAD and freshly verified remote main are now
+4ca199ecacf559a3871a4383f4f1a89cd4abf8b4 (qualification commit). Ordinary push83638
+completed from a40bf53; repository remains private, nonarchived, named bigbrotr-rs.
+Worktree was clean after push. Root now owns only this checkpoint update; no
+other writer, merge or rebase. Tested source remains
+6606103653d96b932e2adc11d2485b03d0955fc6,
+tree4d47f0d4b655d379ca8f442771291727eaa3852e.
+Read-only AI publication_review completed source/harness and recorded-evidence
+review without a discrepancy:49 hashes,21 raw members,703 source files, complete/
+interim oracles,27 journals,26 catalog/27 Control identities, ten clones and CLI
+owner history. No reviewer native execution or Tux actions; actual host/ELF/
+restoration claims rely on retained integrating-owner audits.
 
 ## Shared PostgreSQL transport qualification
 
@@ -126,8 +127,8 @@ Do not mechanically rerun unrelated suites.
 
 ## Next bounded action
 
-Finish recorded-evidence review, complete qualification diff/structural checks,
-commit/push verified 6606103 and its evidence. Then advance installed compact
+Qualification diff review, independent recorded-evidence review and final artifact/
+handoff checks PASS; source and evidence committed/pushed at4ca199e. Advance installed compact
 Archive startup/recovery under P02-T04 steps4/5. Compact co-location is explicitly
 allowed by deployment/operations contracts; do not create a second Control owner
 or substitute an example for a real command. The single owner must continue
@@ -140,7 +141,29 @@ editing installed lifecycle. budget.rs (626) lines, ownership.rs, serve.rs, comm
 wrapper, connection preparation/secret, archive lifetime/process/installation and
 publication/custody files now read completely. P01-T05/T06/T07 tasks and complete
 component/deployment/storage-service contracts inspected; operations placement,
-resource math and wait graph inspected. Broader configuration registry/resolver
-still incompletely read and unchanged. No next-slice product edit yet.
+resource math and wait graph inspected. Configuration resolve.rs and registry.rs are now completely read, with actual CLI,
+builder, native initializer and guard callers. Read-only AI integration review
+confirmed missing installed bindings: expected catalog identity, trusted worker
+identity, separate SELECT-only reader credentials and authoritative retained-batch
+lookup for exact receipt count/ranges. The native initializer is fresh-only;
+recovery requires positive initializer/bootstrap exclusion then privileged
+inspection of the complete empty schema. Snapshot0/partial state is not a retry
+target. Do not copy the fixture's release/reacquire-Control schedule into serve.
+
+Next bounded prerequisite, P02-T04 step5/P08-T09 steps1/3: build the worker first,
+embed its exact length/SHA-256 in the main executable, and expose installed bundle
+verification through that trust anchor. No adjacent receipt or runtime environment
+may supply executable authority. The build receipt remains builder evidence, not
+release authentication; P08 signing stays required. Root owns the embedded identity, ordered builder, installed verifier, regressions,
+native harness and associated docs. Mac command tests5, asset tests2 and affected
+Clippy PASS. The two initial regressions failed against4ca199e (missing field and
+command). AI source review found no blocker; its bound-to-unbound cache transition
+gap is now included in the native harness. Read-only Tux preflight found274
+containers, eight unrelated running, zero BigBrotr running and237.8GiB free;
+retained source/build cache6606103 exists. Native execution is still NOT_RUN.
+Prepare a clean candidate and new installed-binding lab with network none; no
+new remote resource exists yet. After this prerequisite,
+implement catalog binding/explicit initialization and retained recovery inputs
+before compact Archive startup. No implicit init on serve.
 Incomplete-journal/cross-boot recovery, persistent host/process reconciliation,
 protection, full M1 and the remaining selected product remain required.

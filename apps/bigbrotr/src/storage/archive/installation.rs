@@ -24,6 +24,7 @@ pub struct WorkerInstallation {
 }
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum InstallationError {
+    UnboundExecutable,
     InvalidAsset,
     HashMismatch,
     Io,
@@ -31,6 +32,35 @@ pub enum InstallationError {
     Deadline,
 }
 impl WorkerInstallation {
+    /// Select a bundle against the executable identity embedded by the builder.
+    /// The trusted main executable is the authority; runtime environment variables
+    /// and adjacent build receipts cannot replace this identity. An ordinary
+    /// unbound Cargo build cannot select an installed worker.
+    pub fn packaged(root: std::path::PathBuf) -> Result<Self, InstallationError> {
+        let identity: serde_json::Value = serde_json::from_str(include_str!(concat!(
+            env!("OUT_DIR"),
+            "/archive-worker.json"
+        )))
+        .map_err(|_| InstallationError::InvalidAsset)?;
+        if identity.is_null() {
+            return Err(InstallationError::UnboundExecutable);
+        }
+        Ok(Self {
+            root,
+            executable: asset_identity(&identity)?,
+        })
+    }
+
+    /// Inspect all pre-exec bytes without starting a worker or touching engines.
+    /// Successful inspection does not replace the check immediately before exec.
+    pub fn verify(
+        &self,
+        deadline: Instant,
+        cancelled: &AtomicBool,
+    ) -> Result<(), InstallationError> {
+        self.verified_command(deadline, cancelled).map(|_| ())
+    }
+
     /// The installation must remain immutable to the worker's runtime identity.
     /// Hashes detect wrong inputs; they do not revoke a concurrent host writer.
     pub(super) fn verified_command(

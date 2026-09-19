@@ -15,6 +15,9 @@ fn main() -> ExitCode {
         Some("doctor") => config::execute(matches.subcommand_matches("doctor").unwrap(), true),
         Some("event") => event::verify_stdin(),
         Some("serve") => interfaces::serve::execute(matches.subcommand_matches("serve").unwrap()),
+        Some("archive") => {
+            interfaces::archive::execute(matches.subcommand_matches("archive").unwrap())
+        }
         Some("access") => {
             interfaces::access::execute(matches.subcommand_matches("access").unwrap())
         }

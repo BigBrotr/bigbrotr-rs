@@ -218,6 +218,12 @@ child manifests and their referenced attestations; copy only the selected candid
 closure to the release repository and verify destination digests rather than
 assuming a tag-copy command preserved them. Never rebuild after acceptance under
 the same version.
+For the private native worker, compile the worker once before its main executable;
+the trusted builder embeds the worker length/hash in the parent. Runtime selection
+uses that anchor and the embedded native asset pins, never a mutable adjacent
+receipt or runtime environment hash. Unbound development builds refuse installed
+worker selection. This acyclic executable binding complements the outer signed
+release manifest; it cannot authenticate the main executable itself.
 Exact release tags are never reassigned; enable registry immutability where
 available, but installation relies on digests regardless. Optional moving aliases
 are convenience pointers and never the lock in shipped recipes. Docker documents

@@ -27,6 +27,33 @@ fn source_identity() -> Result<serde_json::Value, Box<dyn Error>> {
     }
 }
 
+fn worker_identity() -> Result<serde_json::Value, Box<dyn Error>> {
+    let names = [
+        "BIGBROTR_ARCHIVE_WORKER_BYTES",
+        "BIGBROTR_ARCHIVE_WORKER_SHA256",
+    ];
+    for name in names {
+        println!("cargo::rerun-if-env-changed={name}");
+    }
+    match (env::var(names[0]), env::var(names[1])) {
+        (Err(env::VarError::NotPresent), Err(env::VarError::NotPresent)) => Ok(json!(null)),
+        (Ok(bytes), Ok(sha256)) => {
+            let length: u64 = bytes.parse()?;
+            if length == 0
+                || length.to_string() != bytes
+                || sha256.len() != 64
+                || !sha256
+                    .bytes()
+                    .all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b))
+            {
+                return Err("invalid archive worker build identity".into());
+            }
+            Ok(json!({"bytes": length, "sha256": sha256}))
+        }
+        _ => Err("provide both archive worker build identity fields, or neither".into()),
+    }
+}
+
 fn main() -> Result<(), Box<dyn Error>> {
     let root = PathBuf::from(env::var_os("CARGO_MANIFEST_DIR").ok_or("missing manifest path")?)
         .join("../..");
@@ -80,11 +107,13 @@ fn main() -> Result<(), Box<dyn Error>> {
     {
         return Err("unsupported BIGBROTR_BUILD_PROFILE assertion".into());
     }
+    let worker = worker_identity()?;
     let info = json!({
         "format": "bigbrotr-build/1",
         "product": "BigBrotr",
         "version": env::var("CARGO_PKG_VERSION")?,
         "source": source_identity()?,
+        "archive_worker": worker,
         "rustc": String::from_utf8(compiler.stdout)?.trim(),
         "target": target,
         "profile_assertion": profile,
@@ -98,6 +127,10 @@ fn main() -> Result<(), Box<dyn Error>> {
         "protocols": versions["protocols"]
     });
     let output = PathBuf::from(env::var_os("OUT_DIR").ok_or("missing build output path")?);
+    fs::write(
+        output.join("archive-worker.json"),
+        serde_json::to_vec(&worker)?,
+    )?;
     let archive_registry = root.join("contracts/release/archive-engine.json");
     println!("cargo::rerun-if-changed={}", archive_registry.display());
     let archive: serde_json::Value = serde_json::from_slice(&fs::read(archive_registry)?)?;

@@ -388,6 +388,12 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   ten clone controls and six signed journeys. All 27 journal bytes and Control
   requests plus 26 imported identities/OID bindings are checked; resources retired.
   Installed service, shared process grants and complete recovery remain open.
+  The installed worker selector now binds the exact builder-produced executable
+  length/hash inside the main binary. `archive verify-worker` consumes this anchor
+  and the existing offline asset checks; an adjacent receipt or runtime hash
+  cannot supply authority. Native installed-bundle qualification is pending;
+  catalog identity, separate reader credentials, retained-batch recovery inputs
+  and explicit initialization remain prerequisites to the installed Archive role.
   No step is complete from these prerequisites.
 - [ ] **Step 6:** Handle empty and one-small-event timer batches; publish useful progress
   without waiting for a size threshold that may never be reached.

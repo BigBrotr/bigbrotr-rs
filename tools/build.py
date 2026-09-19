@@ -116,6 +116,21 @@ finally:
                       "tools": tools, "sdk": sdk}
 
 
+def build_binaries(source, env):
+    """Build once in dependency order; the parent binds the resulting worker bytes."""
+    subprocess.run(['cargo', 'build', '--locked', '--release', '-p', 'bigbrotr-archive-worker',
+                    '--bin', 'bigbrotr-archive-worker'], cwd=source, env=env, check=True)
+    worker = Path(env['CARGO_TARGET_DIR']) / 'release/bigbrotr-archive-worker'
+    identity = {'bytes': worker.stat().st_size, 'sha256': file_hash(worker)}
+    parent_env = dict(env, BIGBROTR_ARCHIVE_WORKER_BYTES=str(identity['bytes']),
+                      BIGBROTR_ARCHIVE_WORKER_SHA256=identity['sha256'])
+    subprocess.run(['cargo', 'build', '--locked', '--release', '-p', 'bigbrotr',
+                    '--bin', 'bigbrotr'], cwd=source, env=parent_env, check=True)
+    if worker.stat().st_size != identity['bytes'] or file_hash(worker) != identity['sha256']:
+        raise ValueError('archive worker changed while building the parent')
+    return identity
+
+
 def build(args):
     root = Path(__file__).resolve().parents[1]
     if git(root, "status", "--porcelain", "--untracked-files=all"):
@@ -168,7 +183,7 @@ def build(args):
     env.update({"CARGO_TARGET_DIR": str(output / "target"), "CARGO_HOME": str(output / "cargo-home"),
                 "BIGBROTR_SOURCE_REVISION": revision, "BIGBROTR_SOURCE_TREE": tree,
                 "BIGBROTR_SOURCE_MANIFEST_SHA256": manifest_hash, "BIGBROTR_BUILD_PROFILE": "release"})
-    subprocess.run(["cargo", "build", "--locked", "--release", "--workspace"], cwd=source, env=env, check=True)
+    worker_identity = build_binaries(source, env)
     verify_bundle(archive_root, target)
     for tool in native["tools"].values():
         if file_hash(Path(tool["path"])) != tool["sha256"]:
@@ -184,6 +199,15 @@ def build(args):
     worker = archive_root / 'bigbrotr-archive-worker'
     shutil.copy2(output / 'target/release/bigbrotr-archive-worker', worker)
     info = json.loads(subprocess.check_output([str(binary), "build-info"], cwd=output, env=env))
+    if (info.get('archive_worker') != worker_identity
+            or worker.stat().st_size != worker_identity['bytes']
+            or file_hash(worker) != worker_identity['sha256']):
+        raise ValueError('installed worker does not match the identity embedded in its parent')
+    verification = json.loads(subprocess.check_output(
+        [str(binary), 'archive', 'verify-worker'], cwd=output, env=env))
+    if (verification.get('result') != 'verified'
+            or verification.get('executable') != worker_identity):
+        raise ValueError('installed worker verification returned a different identity')
     if info["source"] != {"state": "builder-supplied", "revision": revision, "tree": tree,
                           "dirty": False, "manifest_sha256": manifest_hash}:
         raise ValueError("binary reports a different source identity")
@@ -194,7 +218,7 @@ def build(args):
         "format": "bigbrotr-build-result/1", "binary_sha256": file_hash(binary),
         "source_manifest_sha256": manifest_hash, "helper_sha256": helper_hash, "build_info": info,
         "native_toolchain": native,
-        "archive_worker": {"path": str(worker), "sha256": file_hash(worker),
+        "archive_worker": {"path": str(worker), **worker_identity,
                            "registry_sha256": members['contracts/release/archive-engine.json'],
                            "assets": archive_assets, "build_environment": archive_environment},
     }, indent=2) + "\n")

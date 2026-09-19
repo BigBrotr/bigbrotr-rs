@@ -4,6 +4,8 @@ The current binary provides `--help`, `--version`, `build-info` and
 [`event verify`](../reference/protocols.md), offline
 [configuration commands](../reference/configuration.md) and explicit initial
 [control-schema migrations](../operations/schema-upgrades.md). Event verification
+and the installed [archive worker verifier](../../packaging/archive-worker/README.md)
+have distinct scopes. Event verification
 does not collect, persist or serve events. Build information names the currently
 advertised bounded capabilities and their pinned protocol/parser versions;
 experimental command availability is not complete product qualification.
@@ -52,6 +54,7 @@ Commit a coherent candidate, then run:
 ```sh
 python3 tools/build.py --output .research/build-candidate
 .research/build-candidate/bigbrotr build-info
+.research/build-candidate/bigbrotr archive verify-worker
 ```
 
 Choose a fresh output directory for each run; existing directories are refused.
@@ -89,6 +92,12 @@ SHA-256, source manifest, executing helper and embedded build information. The b
 `rustc -vV`, Cargo target, optimization/debug settings, and lock/toolchain/dependency
 inventory hashes. It also binds the source-manifest SHA-256 and the builder's
 clean-source/profile assertions. It does not contain hostnames, build time or checkout paths.
+The builder compiles the worker before the main executable and embeds the actual
+worker length/hash in `archive_worker`. It verifies the installed bundle through
+the actual CLI before writing its receipt. Ordinary unbound Cargo builds expose
+`archive_worker: null` and refuse installed worker selection; runtime environment
+variables and adjacent receipts cannot replace the embedded anchor. The build
+receipt also records the worker length, without introducing a self-hash cycle.
 
 The receipt's additive `native_toolchain` field records the exact `CC`, `CXX`,
 `AR`, `CLANG_PATH`, `LIBCLANG_PATH`, SDK and job settings passed to Cargo.

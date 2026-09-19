@@ -37,12 +37,37 @@ links against its explicit `DUCKDB_LIB_DIR`, and produces:
 <new-directory>/build-result.json
 ```
 
-The worker has an executable-relative library search path. The result records
-worker hash, native asset identities and actual library build environment. The
+The builder compiles the worker first, then compiles the main executable with the
+worker's exact byte length and SHA-256 embedded as `build-info.archive_worker`.
+Each executable is built once; the worker does not depend on the main executable,
+so this binding introduces no artifact hash cycle. The worker has an
+executable-relative library search path. The result records
+worker length/hash, native asset identities and actual library build environment. The
 existing complete source and compiler receipts remain required. An explicit
 `--archive-bundle <directory>` copies and rechecks an existing matching bundle;
 it does not accept a different system engine. The worker's build script also
 refuses mismatched library/header inputs and implicit download/static overrides.
+
+Run `<new-directory>/bigbrotr archive verify-worker` after installation, including
+after moving the whole directory outside the checkout. It checks the sibling
+`archive-worker` directory against the embedded worker identity and native asset
+pins; `--root /canonical/absolute/bundle` selects an explicit immutable bundle.
+It reads no adjacent build receipt, runtime hash environment variable, secret,
+configuration or engine. Exit0 reports checked bundle bytes; exit4 refuses an
+unbound build or mismatched/missing/noncanonical input. This is not an engine,
+catalog, full-file permission audit or service readiness check. The same checks
+still run immediately before worker exec; a previous diagnostic cannot authorize
+a later changed bundle. Read-only installation to the runtime identity remains
+required, including protection from concurrent host writers.
+
+Ordinary Cargo builds with neither `BIGBROTR_ARCHIVE_WORKER_BYTES` nor
+`BIGBROTR_ARCHIVE_WORKER_SHA256` embed `null` and cannot select an installed worker.
+These build-time assertions are supplied by the trusted builder, not runtime
+configuration; incomplete or malformed assertions fail compilation. The main
+binary's provenance remains the trust boundary. Neither its embedded hash nor
+`build-result.json` replaces P08's authenticated release manifest and installation
+verification. This additive build metadata/private adapter change has no database
+or custody-journal migration.
 
 For development, prepare a fresh bundle with
 `python3 tools/archive_bundle.py --output .research/archive-bundle --cache .research/archive-downloads --download`.

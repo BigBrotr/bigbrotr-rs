@@ -33,6 +33,7 @@ class NativeBuildControls(unittest.TestCase):
             "DUCKDB_LIB_DIR": "/untrusted/duckdb", "DUCKDB_INCLUDE_DIR": "/untrusted/duckdb-header",
             "DUCKDB_DOWNLOAD_LIB": "1", "DUCKDB_STATIC": "1", "LD_LIBRARY_PATH": "/untrusted/so",
             "BIGBROTR_ARCHIVE_TEST_BUNDLE": "/untrusted/archive-bundle",
+            "BIGBROTR_ARCHIVE_WORKER_BYTES": "3", "BIGBROTR_ARCHIVE_WORKER_SHA256": "0" * 64,
         }
         with patch.dict(os.environ, overrides):
             env = builder.clean_environment()
