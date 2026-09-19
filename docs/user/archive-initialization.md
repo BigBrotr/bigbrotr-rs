@@ -143,6 +143,33 @@ with occupied custody. Stop it before those explicit operations. Prior publicati
 attempts are still unresolved history: registration does not certify that older
 code or its native clients have terminated. Complete recovery/dispatch remains work.
 
+The next command candidate explicitly registers that exact local binding in
+Control. First apply migration0010, initialize/activate Control's accepted policy
+with administration disabled for the current runtime, and grant its configured
+application login SELECT/INSERT on `control.archive_coordinators` plus execution
+of the migration's invoker guards. Keep the usual Control owner permissions and
+separate migration credential. With the coordinator stopped, run:
+
+```sh
+bigbrotr archive coordinator-initialize --file /etc/bigbrotr/instance.toml
+```
+
+This uses the configured Control credential and requires both roles locally.
+Success reports `state:bound`, `created:true` for the initial row or `false` for an
+identical retry, the binding digest, committed Control release and `ready:false`.
+It does not open the scientific catalog. A dataset with pre-protocol attempts
+refuses this initialization; preserve the rows for explicit recovery instead of
+backfilling their bindings. If output or COMMIT acknowledgement is lost, repeat
+the same command after the previous custodied session has terminated. The exact
+committed row and original issuer remain unchanged on retry.
+
+Ordinary startup with Archive assigned locally now requires migration0010 and this
+existing SQL binding before inventory/idle. It never invokes the command implicitly.
+Exit codes follow Control: 0 bound/released, 1 unavailable/output, 2 usage,
+3 prerequisite/configuration/conflict, 4 interrupted or unknown durable outcome.
+The typed operations and fault boundaries have native evidence; this new installed
+command/startup integration is pending practical qualification.
+
 See the [owning archive contract](../specification/archive-storage-contract.md)
 and [current implementation checkpoint](../implementation/progress.md) for the
 revision-specific validation boundary and outstanding service/release work.

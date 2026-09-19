@@ -239,6 +239,13 @@ add both candidate legacy-API/migration lock orders, cancelled blocked initializ
 and before/after binding COMMIT-loss retry. Installed setup/serve remains open;
 no checkbox or complete recovery gate is closed.
 
+The installed coordinator-initialize command and ordinary startup require are
+the next P02-T04 consumer slice. They share the existing Control owner/policy/
+transport executor, retain local custody through join, and explicitly refuse old
+unbound history after migration10. The previous local-only state command remains
+unchanged. Offline CLI regression and scoped checks pass; native installation,
+retry, startup/stop and refusal scenarios remain pending.
+
 **Depends on:** P02-T01/T02/T03 and P01-T05/T06.
 **Files:** application `src/storage/archive/{publisher,receipts,worker}.rs`,
 `contracts/archive/v1/batch.json`, `packaging/archive-worker/`,

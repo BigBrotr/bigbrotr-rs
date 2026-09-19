@@ -19,6 +19,7 @@ def main():
     parser.add_argument('--config', required=True)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--stream', choices=['stdout', 'stderr'], required=True)
+    parser.add_argument('--command', choices=['serve', 'coordinator-initialize'], default='serve')
     args = parser.parse_args()
     if args.output.exists():
         raise RuntimeError('refusing existing observation')
@@ -41,7 +42,9 @@ def main():
               'blocking': not bool(fcntl.fcntl(writer, fcntl.F_GETFL) & os.O_NONBLOCK)}
     started = time.monotonic()
     with args.output.with_suffix('.other-output').open('xb') as other:
-        child = subprocess.Popen([args.binary, 'serve', '--file', args.config, '--roles', 'control'],
+        command = (['serve', '--file', args.config, '--roles', 'control'] if args.command == 'serve'
+                   else ['archive', 'coordinator-initialize', '--file', args.config])
+        child = subprocess.Popen([args.binary, *command],
                                  stdout=writer if args.stream == 'stdout' else other,
                                  stderr=writer if args.stream == 'stderr' else other)
         record['pid'] = child.pid

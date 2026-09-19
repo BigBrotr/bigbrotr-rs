@@ -20,10 +20,27 @@ and rejects other roles. Root remains sole writer/integrator.
 
 ## Actual Git and current review
 
-Mac main is d355c5b3da4babcf5dc4f6219222e786b52915c9, now qualified in the scope below;
-private origin/main92962bb (fresh ls-remote) includes prior b203a41 evidence. Root
-is sole writer. Dirty evidence/contracts/P02/inventory/checkpoint finalize this run.
-No contributor edits, merge or rebase. No next CLI implementation edits yet.
+Mac main/private origin are c0adc89 after d355c5b fault evidence; push15055 terminal0.
+Root is sole writer; no merge/rebase/contributor changes. Current dirty next product
+slice: interfaces/archive.rs+serve.rs shared finite coordinator-initialize/ordinary
+require path, catalog_entrypoint regression, archive owning contract, user archive/
+Control guides and P02 notes, this checkpoint. Added the native coordinator_cli_cases.py matrix, build fixture
+selection, and finite-command full-output helper. No new SQL/API/dependency change.
+No active lab; latest stopped cache remains coordinator-faults-d355c5b/out/build.
+
+New command requires local Control+Archive and existing LocalCoordinator before
+credentials/SQL, claims actual Control with accepted administration-disabled policy,
+binds/retries using configured Control credentials then releases the owner. Shared
+stop/lease/commit flag/custody+driver join remain in one executor. Ordinary startup
+with local Archive now requires10+exactbinding even --rolescontrol, before scan/idle.
+This explicit compatibility change preserves/refuses old unbound history. Local
+state-initialize is still local-only; no native catalog or publication authority.
+
+Regression22288 first failed unknown-subcommand exit2 vs expected3. Implemented;
+18081 then passed11catalog CLI+1runtime entrypoint and binaryClippy. Artifact/handoff/
+diff checks pass. Independent complete consumer review found no blocker. A refused
+binding may still create a Control claim row; binding/attempt rows are the unchanged
+oracle. Local driver join never alone proves remote backend exit. Native CLI NOT_RUN.
 
 [Coordinator faults evidence](evidence/p02-coordinator-faults-native-20260919.json):
 actual11 protocol cases+2 binding COMMIT-loss branches and6 signed schedules PASS.
@@ -48,7 +65,8 @@ SQLbackends before shutdown;340preexisting containers unchanged,8unrelated runni
 Root /home/tux/bigbrotr-implementation-20260917/runs/coordinator-faults-d355c5b;
 owner750848b6890385a5a736b87122b3acdf; inventory coordinator_faults owns exactIDs.
 Internal networkfc95b04ff6b4aceb3f9c4d455aa3ae37093cc14a7dd2febe107c5ecf336f5a74
-is empty-retained. Raw .research/implementation/archive-worker/coordinator-faults/
+was verified empty/owned/stopped and removed at2026-09-19T13:31:57.382738+00:00;
+containers/data remain retained and inventory records the retirement. Raw .research/implementation/archive-worker/coordinator-faults/
 qualified has73files, tare9f22c3ed04a58dd967ea5b30e1a48207501437fbf260eb58a831560aed520de.
 Latest usable copied build cache is this root/out/build. No active lab/process.
 
@@ -295,19 +313,31 @@ External feedback reread previously; it records the earlier scoped closures too.
 
 ## Next bounded action
 
-Finish offline fault review, final evidence checks and coherent private commit/push.
-Then implement installed explicit coordinator binding and ordinary startup checks.
-Read interfaces/archive.rs, serve.rs (complete), postgres_command.rs,
-archive_initialization.rs, catalog_entrypoint.rs, user archive/control guides and
-Control initialization/activation guides this continuation; no next code edits.
-Existing archive state-initialize remains local-only. Proposed bounded next slice:
-archive coordinator-initialize uses configured actual Control credentials, existing
-LocalCoordinator custody and the shared Control claim/policy/transport lifecycle;
-no privileged catalog credentials, implicit migrations, input adoption or readiness.
-Reuse/refactor the owning Control executor without another transport implementation.
-Ordinary runtime only requires an existing binding; complete Archive role dispatch
-remains a separate immediate consumer. Decide exact startup compatibility in the
-owning contract and native fixture before changing current historical inventory.
+Review the authored native installed coordinator CLI matrix, then candidate/build/run.
+Relevant complete consumer files and user guides read. Read complete historical
+archive_inventory.py helpers/scenarios plus native_archive_inventory.py and
+archive_coordinator_probe.rs. That schema9 inventory harness is historical after
+this explicit compatibility change; preserve its old revision evidence.
+
+Use exact native_initialization.py --publication build with existing coordinator
+reservation and legacy attempt fixture binaries added only for the new matrix.
+New matrix should exercise one actual native catalog installation + local state +
+Control config initialization/activation + explicit binding/retry + ordinary serve
+start/stop/restart, missing local/SQL binding, missing migration, preserved130old
+attempts after9→10, legitimate alternate local root rejected by SQL digest, live
+custody contention, full stdout and both signal cancellations on real relation lock.
+Use exact PID/pidfd and PG backend_start/Control fence; prove Busy before releasing
+owned blocker, then backend disappearance and fresh retry. Preserve initializers'
+created Control claim rows even when binding refuses. No blanket owner-row equality. New harness review found a false-PASS gap for
+full stdout: corrected to require empty child stderr and a new released Control
+epoch, in addition to unchanged binding. Cleanup signal/join exceptions now retain
+INCOMPLETE and continue remaining cleanup/save; native results remain NOT_RUN.
+Catalog manager credentials can be made unavailable after actual catalog init to
+prove this command/Control-only startup uses no catalog connection.
+
+The11-case matrix and required fixture build selection are authored, not run.
+Ignored coordinator-cli launch/transfer/run/audit helpers are prepared; no new
+remote lab exists yet. New CLI help and docs label native qualification pending. Continue through concrete CLI/service integration after it.
 
 Still connect installed explicit setup/serve recovery, separate SELECT-only reader
 configuration, actual Ingest-owner handoff, shared Control/catalog/native budgets

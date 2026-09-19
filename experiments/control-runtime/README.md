@@ -76,7 +76,7 @@ product code. Record artifact and harness revisions separately for a harness-onl
 rerun (`--artifact-revision`), and use a fresh `--run-name` within an active lab.
 Protected CLI secret files must be owned by the runner with mode 0400/0600.
 
-The current archive_inventory matrix additionally exercises explicit coordinator
+The historical schema9 archive_inventory matrix additionally exercises explicit coordinator
 state registration with the actual CLI, missing/partial bindings, identical retry,
 live-owner exclusion, an actual coordinator SIGKILL/restart and a substituted state root.
 The binding oracle independently checks the original journal hash and host-assigned
@@ -84,3 +84,12 @@ directory device/inode, rather than only comparing the two stored copies. Its na
 a local initialization reservation; it does not initialize a scientific catalog.
 Existing populated histories remain observation-only. The matrix retains actual
 PostgreSQL cancellation/residual-fence cases; no receipt resolution is claimed.
+
+After migration10's explicit coordinator binding, current Control startup also
+requires that SQL binding. Use `experiments/archive-engine/coordinator_cli_cases.py`
+with the publication build and its fresh inventoried lab for the new command and
+startup consumer; its native qualification is pending. The older schema9 matrix
+and evidence retain their named historical source and are not current startup
+acceptance. The new matrix includes actual native catalog initialization, explicit
+Control/local/SQL setup, exact retry, refused old history, startup/restart, full
+stdout, actual signal cancellation and retained remote-backend fencing.

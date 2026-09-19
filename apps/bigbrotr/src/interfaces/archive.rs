@@ -15,6 +15,7 @@ pub fn command() -> clap::Command {
         .subcommand(super::catalog_inspection::command())
         .subcommand(super::archive_initialization::command("initialize"))
         .subcommand(super::archive_initialization::command("recover"))
+        .subcommand(super::serve::coordinator_command())
         .subcommand(clap::Command::new("state-initialize")
             .about("Explicitly bind persistent coordinator state to an existing local archive reservation")
             .arg(clap::Arg::new("file").long("file").required(true).value_parser(clap::value_parser!(PathBuf)))
@@ -27,6 +28,9 @@ pub fn command() -> clap::Command {
 }
 
 pub fn execute(matches: &clap::ArgMatches) -> ExitCode {
+    if let Some(args) = matches.subcommand_matches("coordinator-initialize") {
+        super::serve::initialize_coordinator(args);
+    }
     if let Some(args) = matches.subcommand_matches("state-initialize") {
         let Ok(mut output) = super::lifecycle_output::LifecycleOutput::start() else {
             return ExitCode::FAILURE;

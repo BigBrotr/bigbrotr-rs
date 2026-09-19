@@ -22,6 +22,23 @@ use tokio::{
 
 type Result<T> = std::result::Result<T, (u8, String)>;
 
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum Operation {
+    Serve,
+    InitializeCoordinator,
+}
+
+pub(super) fn coordinator_command() -> Command {
+    Command::new("coordinator-initialize")
+        .about("Explicitly bind an empty Control Archive history to existing local coordinator state")
+        .arg(Arg::new("file").long("file").required(true).value_name("PATH"))
+        .after_help("Requires local Control and Archive, an existing two-ended local state binding, migration0010 and accepted policy with administration.enabled=false. Uses the configured Control credential and actual owner fence. Exact retries preserve original attribution. Existing unbound attempts refuse; no migrations, catalog inspection, adoption or readiness. Stop the running coordinator first. Exit: 0 bound and owner released, 1 unavailable/I/O, 2 usage, 3 invalid/prerequisite/conflict, 4 cancelled or unknown durable outcome; retry the identical command after resolving custody.")
+}
+
+pub(super) fn initialize_coordinator(args: &ArgMatches) -> ! {
+    execute_operation(args, Operation::InitializeCoordinator)
+}
+
 pub(crate) fn command() -> Command {
     Command::new("serve")
         .about("Run explicitly assigned roles; the initial runtime implements Control only")
@@ -31,11 +48,25 @@ pub(crate) fn command() -> Command {
 }
 
 pub(crate) fn execute(args: &ArgMatches) -> ! {
+    execute_operation(args, Operation::Serve)
+}
+
+fn execute_operation(args: &ArgMatches, operation: Operation) -> ! {
     let Ok(mut output) = LifecycleOutput::start() else {
         std::process::exit(1);
     };
     let outcome = (|| {
         let root = crate::config::load(Path::new(args.get_one::<String>("file").unwrap()))?;
+        if operation == Operation::InitializeCoordinator {
+            root.catalog_identity().map_err(|e| (3, e))?;
+            if !root.local("control") {
+                return Err((
+                    3,
+                    "coordinator initialization requires the local Control role".into(),
+                ));
+            }
+            return run(root, &mut output, operation);
+        }
         let requested: Vec<&str> = args
             .get_many::<String>("roles")
             .map(|values| values.map(String::as_str).collect())
@@ -58,7 +89,7 @@ pub(crate) fn execute(args: &ArgMatches) -> ! {
                     .into(),
             ));
         }
-        run(root, &mut output)
+        run(root, &mut output, operation)
     })();
     let mut code = match outcome {
         Ok(()) => 0,
@@ -98,7 +129,7 @@ impl Stop {
     }
 }
 
-fn run(root: Resolved, output: &mut LifecycleOutput) -> Result<()> {
+fn run(root: Resolved, output: &mut LifecycleOutput, operation: Operation) -> Result<()> {
     // Acquire before Control startup or any future issuance. The stable archive
     // anchor prevents choosing another state root to bypass an old coordinator.
     // Retain it through every actual driver join, including cancelled startup.
@@ -154,7 +185,7 @@ fn run(root: Resolved, output: &mut LifecycleOutput) -> Result<()> {
         let driver = if let Some(custody) = &coordinator {
             tokio::spawn(custody.retain_connection(driver).map_err(|e| (4, format!("cannot retain archive coordinator custody: {e:?}")))?)
         } else { tokio::spawn(driver) };
-        let outcome = supervise(client, request, &root, &mut stop, output).await;
+        let outcome = supervise(client, request, &root, &mut stop, output, coordinator.as_ref(), operation).await;
         // No error, cancellation, output failure or unknown COMMIT can bypass
         // the join. Dropping the request/session alone does not free its grant.
         postgres_command::join(driver).await;
@@ -173,6 +204,8 @@ async fn supervise(
     root: &Resolved,
     stop: &mut Stop,
     output: &mut LifecycleOutput,
+    coordinator: Option<&bigbrotr::storage::archive::LocalCoordinator>,
+    operation: Operation,
 ) -> Result<Value> {
     let dataset = request.dataset;
     let incarnation = request.incarnation;
@@ -202,6 +235,45 @@ async fn supervise(
         .check_delivery(lease.known_epoch())
         .map_err(|e| (1, e.to_string()))?;
     let identity = owner.identity();
+    if let Some(coordinator) = coordinator {
+        let commit = Cell::new(false);
+        let binding = async {
+            if operation == Operation::InitializeCoordinator {
+                owner
+                    .initialize_archive_coordinator(coordinator, &commit)
+                    .await
+            } else {
+                owner
+                    .require_archive_coordinator(coordinator)
+                    .await
+                    .map(|()| false)
+            }
+        };
+        let created = tokio::select! {
+            biased;
+            _ = stop.requested() => Err(if commit.get() { ArchiveAttemptError::CommitUnknown } else { ArchiveAttemptError::Unavailable }),
+            result = tokio::time::timeout(duration(root, "renewal_timeout").min(lease.remaining_validity().map_err(|e| (1, e.to_string()))?), binding) =>
+                result.unwrap_or_else(|_| Err(if commit.get() { ArchiveAttemptError::CommitUnknown } else { ArchiveAttemptError::Backend })),
+        }.map_err(|error| {
+            let (code, _) = attempt_error(error);
+            (code, format!("archive coordinator protocol refused: {error:?}; explicit coordinator-initialize requires matching state and empty pre-protocol history"))
+        })?;
+        lease
+            .check_delivery(lease.known_epoch())
+            .map_err(|e| (1, e.to_string()))?;
+        if operation == Operation::InitializeCoordinator {
+            tokio::time::timeout(duration(root, "graceful_shutdown_timeout"), owner.release())
+                .await
+                .unwrap_or(Err(OwnerError::CommitUnknown))
+                .map_err(owner_error)?;
+            return Ok(
+                json!({"format":"bigbrotr-coordinator-initialization/1", "state":"bound",
+                "created":created, "dataset_id":dataset, "catalog_id":coordinator.identity().catalog(),
+                "binding_sha256":coordinator.binding_digest().to_string(), "owner_release":"committed",
+                "catalog_inspection":"not-performed", "publication_authority":"not-granted", "ready":false}),
+            );
+        }
+    }
     // Control owns the retained issuance history even when Archive is omitted
     // from this process selection. Inventory is observation, never a terminal
     // result: every observed intent still needs its catalog/custody resolution.

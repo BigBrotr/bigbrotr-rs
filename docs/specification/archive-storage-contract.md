@@ -218,7 +218,27 @@ and relocation keep their separately fenced recovery gates. Complete missing-jou
 interpretation still requires actual catalog identity and per-attempt exclusion.
 The current implementation provides explicit typed operations and fixture consumers;
 [Eight native boundary cases plus six signed schedules](../implementation/evidence/p02-coordinator-protocol-native-20260919.json) pass at b203a41. The separate d355c5b matrix adds the races and binding faults above. Installed
-setup/serve and complete recovery/dispatch remain pending.
+command/startup qualification and complete recovery/dispatch remain pending.
+
+The installed command candidate `archive coordinator-initialize --file PATH`
+requires local Control and Archive, the existing complete local state binding,
+migration10 and accepted initial configuration/security policy. It uses the
+configured Control credential through the same claim, policy validation, stop,
+deadline, resource grant and custodied-driver lifecycle as `serve`. It performs
+only explicit binding/identical retry, then a bounded owner release; successful
+output reports the exact digest, whether a row was created and `ready:false`.
+No catalog credential or native client is opened. A lost response is resolved by
+the identical command under a fresh actual Control fence; preserve both local
+files and SQL history. Local `state-initialize` remains a separate operation.
+
+Ordinary Control startup with Archive assigned locally now requires this exact
+SQL binding before it inventories attempts or emits idle, including `--roles
+control`. Missing migration/binding or pre-protocol history cannot initialize
+itself. This is an explicit compatibility change from the earlier schema9
+inventory-only candidate: old attempts remain retained/inspectable, but this
+startup refuses until a separately qualified recovery path exists. A deployment
+without local Archive retains its Control-only prerequisites. The new executable
+path still requires native command, stop, restart and refusal qualification.
 
 ### Retained complete input linkage
 

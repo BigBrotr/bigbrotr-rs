@@ -43,12 +43,11 @@ fn coordinator_root_is_separate_deployment_state_without_offline_io() {
     }
     let doc = example(dir.path(), "serve-existing");
     write(dir.path(), &doc);
-    let result = run(
-        dir.path(),
-        &["archive", "state-initialize", "--file", "instance.toml"],
-    );
-    assert_eq!(result.status.code(), Some(3), "{result:?}");
-    assert!(String::from_utf8_lossy(&result.stderr).contains("local Archive role"));
+    for command in ["state-initialize", "coordinator-initialize"] {
+        let result = run(dir.path(), &["archive", command, "--file", "instance.toml"]);
+        assert_eq!(result.status.code(), Some(3), "{result:?}");
+        assert!(String::from_utf8_lossy(&result.stderr).contains("local Archive role"));
+    }
     assert_eq!(fs::read_dir(dir.path()).unwrap().count(), 1);
 }
 fn example(root: &Path, recipe: &str) -> toml::Table {
