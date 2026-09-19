@@ -39,3 +39,16 @@ baseline source manifest. It permits differences only in explicitly named fixtur
 and checkpoint/inventory files, then builds exact-source binaries and executes the
 changed fixture test and Clippy. Broader unchanged suites retain their earlier
 source-bound evidence; this mode does not relabel them as newly executed tests.
+
+`build_old_probe.py` builds the original a1da96a client from an exact Git export
+mounted read-only in a separately inventoried native builder. `compatibility.py`
+then uses that actual binary and the new executable, recording both artifacts and
+the independent harness revision. Five schedules cover registration/migration in
+both advisory-lock orders, backend loss while an old process retains the actual
+POSIX Rocks lock, closed SQL history, and the new adapter's refusal of schema10.
+The backend-loss marker precedes native FFI; it proves that losing a PG backend
+does not exclude the native owner, without claiming a mid-FFI crash. Closed-history
+rows are a synthetic SQL negative control, not an implementation of native handoff.
+Failure must distinguish a precise compatibility refusal from timeout/connectivity
+errors, preserve schema/data, and leave no owned SQL clients. Reported execution,
+including any failure, remains the authority for qualification.

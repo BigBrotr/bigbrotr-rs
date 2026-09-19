@@ -12778,230 +12778,23 @@
       }
     },
     "producer_ledger": {
-      "source": "4296320d0e5e42ebe6c428bea918b80936eac7eb",
-      "tree": "13f6d27094ee6d1ce5e7c6a1330361985e7781c0",
-      "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ledger-4296320",
-      "owner": "0983b714a9c7e2a596238cd6b87044a6",
-      "container": "bigbrotr-implementation-producer-ledger-4296320",
-      "postgres": "bigbrotr-implementation-producer-ledger-4296320-pg",
-      "network": "bigbrotr-implementation-producer-ledger-4296320",
+      "source": "dddefd55be48cac7613a5ee460067da5e1acabaf",
+      "tree": "8e57463521793b7000a8bfcdc65e457558201dd9",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ledger-dddefd5",
+      "owner": "aacfaa7d629cfcd4de6349e649074904",
+      "container": "bigbrotr-implementation-producer-ledger-dddefd5",
+      "postgres": "bigbrotr-implementation-producer-ledger-dddefd5-pg",
+      "network": "bigbrotr-implementation-producer-ledger-dddefd5",
       "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
       "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
-      "state": "stopped-retained",
-      "source_files": 792,
-      "started_at": "2026-09-19T16:26:24.332807+00:00",
-      "network_id": "79dacdecd18f95c5445b94bb23932f8fdcaa2a8e0fccc55a5c68230cd9dbdee9",
-      "postgres_id": "b014da2ee7bd5b9ab87d35707a561f7bb83e7ac108a9dbcc83c7e4f88c7d66e5",
+      "state": "running",
+      "source_files": 793,
+      "started_at": "2026-09-19T16:47:23.514774+00:00",
+      "network_id": "25168fa5da33a578e5ee22f886cb4abfa5ac3d8d3ac01dd3fd0424857a581d88",
+      "postgres_id": "ddb519f9a71b73ae86cdf55f6b8416d4da3bab88200cb91bc8a9df96d8a22d1f",
       "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
-      "container_id": "debd57a9f60b6d3ea44c861cd32c115dd26e2bf0ba304a717063aa2babb6b969",
-      "raw": ".research/implementation/producer-ledger/corrected-setup",
-      "qualification": "INCOMPLETE: full build/checks and four reservation cases PASS; fifth fixture connection refused before Control claim; supplemental SQL transcript lost, UNKNOWN",
-      "completed_at": "2026-09-19T16:33:41.647251+00:00",
-      "terminal_audit": {
-        "status": "PASS",
-        "source": "4296320d0e5e42ebe6c428bea918b80936eac7eb",
-        "tree": "13f6d27094ee6d1ce5e7c6a1330361985e7781c0",
-        "source_files": 792,
-        "source_archive_sha256": "3e45f00cfe17c44929b0a16b76ff14761bd77078b463c681e42d96e6a83aa6b1",
-        "source_manifest_sha256": "7846863c88b2b2e76289e659be65ac189be664840cfcc1d9696758f964c5f150",
-        "artifacts": {
-          "main": {
-            "sha256": "3ac7c4180af83a94ef8ecd52181b84191ba6103680d614affd7c741ecdac7a6b",
-            "bytes": 9185600,
-            "elf_machine": 62
-          },
-          "worker": {
-            "sha256": "4a8f8f37ec6dbf7b6e6def033966d21d116f027699cfd4c96ae6ff852f298f3c",
-            "bytes": 12608632,
-            "elf_machine": 62
-          },
-          "publisher": {
-            "sha256": "5715dfa5902b9cd6b92770dcaa6dee765ef717456edaaac04a6a644fe86cae6a",
-            "bytes": 19059016,
-            "elf_machine": 62
-          },
-          "coordinator_probe": {
-            "sha256": "53e359cd3e12d6d263e1e61159898f009523f5989a5672f57b8075830d580b2f",
-            "bytes": 694344,
-            "elf_machine": 62
-          },
-          "attempt_probe": {
-            "sha256": "148c4b44e9715110873425820270a638a7f5222b7f7ca08591e51c89dcf5498d",
-            "bytes": 2651936,
-            "elf_machine": 62
-          },
-          "ingest_probe": {
-            "sha256": "fd7a9b86fda3f75333611a47c75a0c7923459913f70527a87cc12499f63bc41e",
-            "bytes": 15592376,
-            "elf_machine": 62
-          }
-        },
-        "qualification": {
-          "producer-reservation-cases": "INCOMPLETE"
-        },
-        "cases": {
-          "producer-reservation-cases": 5
-        },
-        "build_ready": true,
-        "terminal": {
-          "container_id": {
-            "Status": "exited",
-            "Running": false,
-            "Paused": false,
-            "Restarting": false,
-            "OOMKilled": false,
-            "Dead": false,
-            "Pid": 0,
-            "ExitCode": 143,
-            "Error": "",
-            "StartedAt": "2026-09-19T16:26:26.88487501Z",
-            "FinishedAt": "2026-09-19T16:33:39.487447259Z"
-          },
-          "postgres_id": {
-            "Status": "exited",
-            "Running": false,
-            "Paused": false,
-            "Restarting": false,
-            "OOMKilled": false,
-            "Dead": false,
-            "Pid": 0,
-            "ExitCode": 0,
-            "Error": "",
-            "StartedAt": "2026-09-19T16:26:25.023492157Z",
-            "FinishedAt": "2026-09-19T16:33:41.169307844Z"
-          }
-        },
-        "owned_containers": [
-          "debd57a9f60b6d3ea44c861cd32c115dd26e2bf0ba304a717063aa2babb6b969",
-          "b014da2ee7bd5b9ab87d35707a561f7bb83e7ac108a9dbcc83c7e4f88c7d66e5"
-        ],
-        "existing_containers_unchanged": 358,
-        "unrelated_containers_unchanged": 20,
-        "unrelated_running": 8,
-        "bigbrotr_running": 0,
-        "observed_at": "2026-09-19T16:33:41.647251+00:00",
-        "harness": null,
-        "owned_sql_backends_before_shutdown": 0,
-        "producer_input_checks": {
-          "source": "4296320d0e5e42ebe6c428bea918b80936eac7eb",
-          "source_manifest_sha256": "7846863c88b2b2e76289e659be65ac189be664840cfcc1d9696758f964c5f150",
-          "native_toolchain": {
-            "os": "Linux",
-            "architecture": "x86_64",
-            "discovery": "llvm-config",
-            "environment": {
-              "CC": "/usr/lib/llvm-14/bin/clang",
-              "CXX": "/usr/lib/llvm-14/bin/clang++",
-              "AR": "/usr/lib/llvm-14/bin/llvm-ar",
-              "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
-              "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
-              "CARGO_BUILD_JOBS": "2",
-              "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
-            },
-            "tools": {
-              "CC": {
-                "path": "/usr/lib/llvm-14/bin/clang",
-                "realpath": "/usr/lib/llvm-14/bin/clang",
-                "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
-                "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
-              },
-              "CXX": {
-                "path": "/usr/lib/llvm-14/bin/clang++",
-                "realpath": "/usr/lib/llvm-14/bin/clang",
-                "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
-                "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
-              },
-              "AR": {
-                "path": "/usr/lib/llvm-14/bin/llvm-ar",
-                "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
-                "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
-                "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
-              },
-              "LIBCLANG_PATH": {
-                "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
-                "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
-                "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
-                "version": "Debian clang version 14.0.6"
-              },
-              "discovery": {
-                "path": "/usr/lib/llvm-14/bin/llvm-config",
-                "realpath": "/usr/lib/llvm-14/bin/llvm-config",
-                "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
-                "version": "14.0.6"
-              }
-            },
-            "sdk": null
-          },
-          "scope": "permanent local reservation and actual native initializer",
-          "format": "bigbrotr-foundation-ci/1",
-          "status": "PASS",
-          "checks": [
-            {
-              "name": "model",
-              "command": [
-                "cargo",
-                "test",
-                "--locked",
-                "--release",
-                "-p",
-                "bigbrotr-model"
-              ],
-              "status": "PASS",
-              "executed": true,
-              "exit_code": 0,
-              "seconds": 33.4238213528879
-            },
-            {
-              "name": "native-owner",
-              "command": [
-                "cargo",
-                "test",
-                "--locked",
-                "--release",
-                "-p",
-                "bigbrotr",
-                "--lib",
-                "storage::rocks",
-                "--",
-                "--nocapture"
-              ],
-              "status": "PASS",
-              "executed": true,
-              "exit_code": 0,
-              "seconds": 1.2163665881380439
-            },
-            {
-              "name": "input-clippy",
-              "command": [
-                "cargo",
-                "clippy",
-                "--locked",
-                "--release",
-                "-p",
-                "bigbrotr-model",
-                "-p",
-                "bigbrotr",
-                "--all-targets",
-                "--",
-                "-D",
-                "warnings"
-              ],
-              "status": "PASS",
-              "executed": true,
-              "exit_code": 0,
-              "seconds": 3.8224906492978334
-            }
-          ],
-          "counts": {
-            "collected": 3,
-            "executed": 3,
-            "failed": 0,
-            "not_run": 0
-          }
-        },
-        "build_checks_status": "PASS"
-      },
-      "manifest": ".research/implementation/producer-ledger/corrected-setup-evidence-identity.json"
+      "container_id": "7854121a281b31f22864d78a50e4e0d28b751c0f1f10020e8cb5e7be84fa827c",
+      "qualification": "NOT_RUN: exact-source fixture-only build active"
     },
     "producer_ledger_initial": {
       "source": "57cce756a4ad47199d862c8e47fd345fd5eee9c3",
@@ -13236,6 +13029,232 @@
         "action": "remove verified empty retired network only; stopped containers and data retained",
         "successor_lab": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ledger-4296320"
       }
+    },
+    "producer_ledger_setup_retry": {
+      "source": "4296320d0e5e42ebe6c428bea918b80936eac7eb",
+      "tree": "13f6d27094ee6d1ce5e7c6a1330361985e7781c0",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ledger-4296320",
+      "owner": "0983b714a9c7e2a596238cd6b87044a6",
+      "container": "bigbrotr-implementation-producer-ledger-4296320",
+      "postgres": "bigbrotr-implementation-producer-ledger-4296320-pg",
+      "network": "bigbrotr-implementation-producer-ledger-4296320",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "state": "stopped-retained",
+      "source_files": 792,
+      "started_at": "2026-09-19T16:26:24.332807+00:00",
+      "network_id": "79dacdecd18f95c5445b94bb23932f8fdcaa2a8e0fccc55a5c68230cd9dbdee9",
+      "postgres_id": "b014da2ee7bd5b9ab87d35707a561f7bb83e7ac108a9dbcc83c7e4f88c7d66e5",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "debd57a9f60b6d3ea44c861cd32c115dd26e2bf0ba304a717063aa2babb6b969",
+      "raw": ".research/implementation/producer-ledger/corrected-setup",
+      "qualification": "INCOMPLETE: full build/checks and four reservation cases PASS; fifth fixture connection refused before Control claim; supplemental SQL transcript lost, UNKNOWN",
+      "completed_at": "2026-09-19T16:33:41.647251+00:00",
+      "terminal_audit": {
+        "status": "PASS",
+        "source": "4296320d0e5e42ebe6c428bea918b80936eac7eb",
+        "tree": "13f6d27094ee6d1ce5e7c6a1330361985e7781c0",
+        "source_files": 792,
+        "source_archive_sha256": "3e45f00cfe17c44929b0a16b76ff14761bd77078b463c681e42d96e6a83aa6b1",
+        "source_manifest_sha256": "7846863c88b2b2e76289e659be65ac189be664840cfcc1d9696758f964c5f150",
+        "artifacts": {
+          "main": {
+            "sha256": "3ac7c4180af83a94ef8ecd52181b84191ba6103680d614affd7c741ecdac7a6b",
+            "bytes": 9185600,
+            "elf_machine": 62
+          },
+          "worker": {
+            "sha256": "4a8f8f37ec6dbf7b6e6def033966d21d116f027699cfd4c96ae6ff852f298f3c",
+            "bytes": 12608632,
+            "elf_machine": 62
+          },
+          "publisher": {
+            "sha256": "5715dfa5902b9cd6b92770dcaa6dee765ef717456edaaac04a6a644fe86cae6a",
+            "bytes": 19059016,
+            "elf_machine": 62
+          },
+          "coordinator_probe": {
+            "sha256": "53e359cd3e12d6d263e1e61159898f009523f5989a5672f57b8075830d580b2f",
+            "bytes": 694344,
+            "elf_machine": 62
+          },
+          "attempt_probe": {
+            "sha256": "148c4b44e9715110873425820270a638a7f5222b7f7ca08591e51c89dcf5498d",
+            "bytes": 2651936,
+            "elf_machine": 62
+          },
+          "ingest_probe": {
+            "sha256": "fd7a9b86fda3f75333611a47c75a0c7923459913f70527a87cc12499f63bc41e",
+            "bytes": 15592376,
+            "elf_machine": 62
+          }
+        },
+        "qualification": {
+          "producer-reservation-cases": "INCOMPLETE"
+        },
+        "cases": {
+          "producer-reservation-cases": 5
+        },
+        "build_ready": true,
+        "terminal": {
+          "container_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-19T16:26:26.88487501Z",
+            "FinishedAt": "2026-09-19T16:33:39.487447259Z"
+          },
+          "postgres_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-19T16:26:25.023492157Z",
+            "FinishedAt": "2026-09-19T16:33:41.169307844Z"
+          }
+        },
+        "owned_containers": [
+          "debd57a9f60b6d3ea44c861cd32c115dd26e2bf0ba304a717063aa2babb6b969",
+          "b014da2ee7bd5b9ab87d35707a561f7bb83e7ac108a9dbcc83c7e4f88c7d66e5"
+        ],
+        "existing_containers_unchanged": 358,
+        "unrelated_containers_unchanged": 20,
+        "unrelated_running": 8,
+        "bigbrotr_running": 0,
+        "observed_at": "2026-09-19T16:33:41.647251+00:00",
+        "harness": null,
+        "owned_sql_backends_before_shutdown": 0,
+        "producer_input_checks": {
+          "source": "4296320d0e5e42ebe6c428bea918b80936eac7eb",
+          "source_manifest_sha256": "7846863c88b2b2e76289e659be65ac189be664840cfcc1d9696758f964c5f150",
+          "native_toolchain": {
+            "os": "Linux",
+            "architecture": "x86_64",
+            "discovery": "llvm-config",
+            "environment": {
+              "CC": "/usr/lib/llvm-14/bin/clang",
+              "CXX": "/usr/lib/llvm-14/bin/clang++",
+              "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+              "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+              "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+              "CARGO_BUILD_JOBS": "2",
+              "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+            },
+            "tools": {
+              "CC": {
+                "path": "/usr/lib/llvm-14/bin/clang",
+                "realpath": "/usr/lib/llvm-14/bin/clang",
+                "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+                "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+              },
+              "CXX": {
+                "path": "/usr/lib/llvm-14/bin/clang++",
+                "realpath": "/usr/lib/llvm-14/bin/clang",
+                "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+                "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+              },
+              "AR": {
+                "path": "/usr/lib/llvm-14/bin/llvm-ar",
+                "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+                "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+                "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+              },
+              "LIBCLANG_PATH": {
+                "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+                "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+                "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+                "version": "Debian clang version 14.0.6"
+              },
+              "discovery": {
+                "path": "/usr/lib/llvm-14/bin/llvm-config",
+                "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+                "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+                "version": "14.0.6"
+              }
+            },
+            "sdk": null
+          },
+          "scope": "permanent local reservation and actual native initializer",
+          "format": "bigbrotr-foundation-ci/1",
+          "status": "PASS",
+          "checks": [
+            {
+              "name": "model",
+              "command": [
+                "cargo",
+                "test",
+                "--locked",
+                "--release",
+                "-p",
+                "bigbrotr-model"
+              ],
+              "status": "PASS",
+              "executed": true,
+              "exit_code": 0,
+              "seconds": 33.4238213528879
+            },
+            {
+              "name": "native-owner",
+              "command": [
+                "cargo",
+                "test",
+                "--locked",
+                "--release",
+                "-p",
+                "bigbrotr",
+                "--lib",
+                "storage::rocks",
+                "--",
+                "--nocapture"
+              ],
+              "status": "PASS",
+              "executed": true,
+              "exit_code": 0,
+              "seconds": 1.2163665881380439
+            },
+            {
+              "name": "input-clippy",
+              "command": [
+                "cargo",
+                "clippy",
+                "--locked",
+                "--release",
+                "-p",
+                "bigbrotr-model",
+                "-p",
+                "bigbrotr",
+                "--all-targets",
+                "--",
+                "-D",
+                "warnings"
+              ],
+              "status": "PASS",
+              "executed": true,
+              "exit_code": 0,
+              "seconds": 3.8224906492978334
+            }
+          ],
+          "counts": {
+            "collected": 3,
+            "executed": 3,
+            "failed": 0,
+            "not_run": 0
+          }
+        },
+        "build_checks_status": "PASS"
+      },
+      "manifest": ".research/implementation/producer-ledger/corrected-setup-evidence-identity.json"
     }
   },
   "implementation_monitor_corrections_20260918": {

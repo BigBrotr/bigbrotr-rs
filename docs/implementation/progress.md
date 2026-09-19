@@ -19,15 +19,16 @@ Archive receipt consumer is qualified separately. All later selected work remain
 
 ## Git and current work
 
-Mac main is unpublished candidate `4296320d0e5e42ebe6c428bea918b80936eac7eb`,
-tree `13f6d27094ee6d1ce5e7c6a1330361985e7781c0`, following unpublished57cce75. Private origin/main remains
-`d98c96577ff0b850775b2494fa9e93db7b0bc64f`, freshly verified at resumption.
-The earlier a1da96a executable and d98c965 evidence are both published privately.
-No other contributor edits were incorporated. The setup correction, SQL fixture and storage-catalog0011 entry are committed in
-4296320. Root owns current dirty work: fault-proxy route correction in the bootstrap
-example, SQL/harness output decoding, new concurrency harness, narrow native
-fixture-only mode, lab inventory and this checkpoint. No other implementation worktree
-is being integrated. Existing review agents were read-only.
+Mac main is unpublished candidate `dddefd55be48cac7613a5ee460067da5e1acabaf`,
+tree `8e57463521793b7000a8bfcdc65e457558201dd9`, following57cce75/4296320.
+Private origin/main remains `d98c96577ff0b850775b2494fa9e93db7b0bc64f`, freshly
+verified. Root owns dirty checkpoint/inventory and new compatibility harness work.
+The new five-case harness and old-source builder are not executed yet; independent
+review corrected an unstable /proc/locks iterator-number comparison and missing
+artifact/source binding before use. A real-child Mac regression reproduced a
+selector-registration failure leaving the child alive (2a6103), then passed after
+covering spawn/registration with mandatory kill/reap cleanup (e5d0e7).
+No other contributor edits were incorporated. Existing review agents are read-only.
 
 ## Producer reservation prerequisite
 
@@ -87,7 +88,20 @@ rather than Control database and failed without writes. Both were corrected.
 
 ## Owned resources and evidence
 
-No active lab remains. Corrected candidate4296320 lab is stopped-retained:
+Active exact-dddefd5 lab:
+`/home/tux/bigbrotr-implementation-20260917/runs/producer-ledger-dddefd5`, owner
+`aacfaa7d629cfcd4de6349e649074904`, runner
+`7854121a281b31f22864d78a50e4e0d28b751c0f1f10020e8cb5e7be84fa827c`, PG
+`ddb519f9a71b73ae86cdf55f6b8416d4da3bab88200cb91bc8a9df96d8a22d1f`, network
+`25168fa5da33a578e5ee22f886cb4abfa5ac3d8d3ac01dd3fd0424857a581d88`.
+Fixture-only build/changed test/Clippy PASS, guarded against4296320 source manifest.
+Actual reports: all6 reservation cases PASS,19 SQL observations PASS,6 SQL schedules
+PASS plus2 cleanup controls PASS (0.872/0.961s,zero residual backends). Root read the
+raw reports; terminal resource audit/collection remain pending. The runner remains
+alive for compatibility work; no test process remains from these completed suites.
+4296320's verified empty network was removed; all its containers/data remain.
+
+Historical corrected candidate4296320 lab is stopped-retained:
 `/home/tux/bigbrotr-implementation-20260917/runs/producer-ledger-4296320`,
 owner `0983b714a9c7e2a596238cd6b87044a6`, runner
 `debd57a9f60b6d3ea44c861cd32c115dd26e2bf0ba304a717063aa2babb6b969`, PG
@@ -198,15 +212,12 @@ These findings do not imply broader task completion.
 
 ## Next bounded action
 
-Review/commit the fixture route/output corrections and concurrency harness.
-Transfer a fresh exact revision, using the narrow fixture-only build after verifying
-all product inputs match4296320. Execute all six fault cases,19 SQL observations
-and six concurrency schedules plus two harness cleanup controls; preserve both prior
-failed/unknown runs. The new `schema_cases.sql` is unexecuted: exercise its actual engine checks,
-then add/execute RC/RR snapshot races, reservation/closing in both lock orders and
-fresh-only migration compatibility (including old artifact and backend loss).
-Retain exact failed runs and update evidence before pushing verified private main.
-
+Finish fresh-only migration compatibility with the actual old a1da96a executable,
+registration/migration in both lock orders, closed history, new-on-old refusal and
+PG backend loss while the old native handle remains positively alive. Transfer
+new harness source only through clean Git; dddefd5 product artifacts remain exact.
+Then terminal-audit/collect the active lab, retain both earlier failed/unknown runs,
+write the scoped evidence and push verified private main.
 Continue the ledger's actual logical obligations and outcome closure, local freeze,
 current-Control PG close/register/topology transition and synchronized successor
 activation under one native handle. The initial adapter still binds original
