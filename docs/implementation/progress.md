@@ -21,11 +21,22 @@ readiness. Root remains the sole writer/integrator.
 
 ## Actual Git and review
 
-Mac main HEAD:2bd2bdb8f11395a0c1c329912961bea4b6af6dbc (unpublished exact-source
-TDD candidate). origin/main:f3e3302512213ccebb95ee78bb67fc38f44bd082 from prior
-verified normal private push. Root-owned changes implement observe/retire, shared
-restricted-role inspection and extend the real probe/harness for post-installation,
-unknown COMMIT and graceful cancellation. No merge/rebase/other writer edits.
+Mac main HEAD:decf4a9aea687a8ee658aed4002b1c52ba584048 (unpublished exact-source
+implementation candidate). origin/main:f3e3302512213ccebb95ee78bb67fc38f44bd082 from prior
+verified normal private push. Root-owned changes strengthen the independent durable-effect oracle for both
+lost-COMMIT directions and cancelled-driver resolution. Product Rust is unchanged
+since the39-case actual PASS atdecf4a9. No merge/rebase/other writer edits.
+
+Actual40803 terminal0:39 casesPASS including actual native initialization → exact
+retirement → manager installation → recovered observation; both lost COMMITs and
+both graceful-cancel outcomes with real advisory waiters. Review found no product
+counterexample but full independent effect fingerprints only covered known retire;
+the next harness applies them to ambiguity too. Audit56453/collection85546 terminal0,
+14raw files/735source hashes, tar4d2bc5316276f0b2347d018f69a74e29eb885a409a0c2f713b52fdc2458b6229.
+Runner9fda887f/PGbeb7258f stopped-retained,312preexisting containers unchanged,
+8unrelated running. Empty owned network4d9e80c8 retired after checks. No active lab.
+Exact IDs are under inventory.initialization_recovery.first; copied-cache/assets
+now come from initialization-recovery-decf4a9/out/{build,archive-worker}.
 
 Mac55046 failed the deliberately false recovered-state gate;61090 passed all eight
 initialization tests. Latest38696 scoped parent/example Clippy PASS; fmt/AST/diff
@@ -36,11 +47,12 @@ Clippy PASS. Baseline audit81590/collection82044 terminal0:14 raw files,735 Mac-
 source hashes, tar192e888690ce160c8aba61ab94a1d43997d023717aaa03f8be4e268d1bcce7a4.
 Baseline runner/PG stopped-retained, no OOM,310 preexisting containers unchanged,
 8 unrelated running; verified empty network07fd7603 retired. No active experiment.
-Inventory.initialization_recovery owns exact IDs and evidence. Next candidate will
-use the same actual probe and fresh resources; no PostgreSQL recovery PASS yet.
+Inventory.initialization_recovery owns exact IDs and evidence. The first implementation result above is separate from this deliberate baseline.
 
 Root reviewed the complete changed production/probe/harness files. Independent
-read-only custody reviewer is checking those changes/contracts; no extra edits.
+read-only custody reviewer completed those changes/contracts and Process/proxy
+boundaries, finding no product counterexample; root is strengthening its sole
+remaining oracle limitation before final qualification. No extra edits.
 Its completed upstream audit confirmed the previously recorded ready-before-query
 and shutdown ordering for PG16.15/tokio-postgres0.7.18/libpq18.3. Existing de1d402/
 56ef588 reports reused, no new startup experiment or VXID barrier.24 source-audit

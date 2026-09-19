@@ -9009,7 +9009,7 @@
     },
     "initialization_recovery": {
       "local_root": ".research/implementation/archive-worker/initialization-recovery",
-      "state": "baseline-failed-as-intended-stopped-retained-implementation-awaiting-native-run",
+      "state": "first39cases-passed-stopped-retained-strengthened-oracle-awaiting-native-run",
       "previous_network_retirement": [
         {
           "root": "database-reservation-bb8be6d",
@@ -9185,6 +9185,171 @@
           "containers": "retained-stopped",
           "data": "retained",
           "observed_at": "2026-09-19T07:56:21.002946+00:00"
+        }
+      ],
+      "first": {
+        "resources": {
+          "source": "decf4a9aea687a8ee658aed4002b1c52ba584048",
+          "tree": "91628d79e765b5016f9bff4e7bf4297a458a315f",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initialization-recovery-decf4a9",
+          "owner": "84b70957934e6c3bccd8457a7d064122",
+          "container": "bigbrotr-implementation-initialization-recovery-decf4a9",
+          "postgres": "bigbrotr-implementation-initialization-recovery-decf4a9-pg",
+          "network": "bigbrotr-implementation-initialization-recovery-decf4a9",
+          "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+          "state": "stopped-retained",
+          "source_files": 735,
+          "started_at": "2026-09-19T07:57:16.014579+00:00",
+          "network_id": "4d9e80c8af83d24bda2eed4785f2e5ccb5e90cc00f68a32f34ab987bbcf4a557",
+          "postgres_id": "beb7258f7d668da60453033dc5c5db583ccd2bc3424ff7a42886634fa830d218",
+          "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+          "container_id": "9fda887f85af56ba49901760a59e2063a463a572c864b71598b45f26792a401d",
+          "completed_at": "2026-09-19T08:00:33.129362+00:00"
+        },
+        "audit": {
+          "status": "PASS",
+          "source": "decf4a9aea687a8ee658aed4002b1c52ba584048",
+          "tree": "91628d79e765b5016f9bff4e7bf4297a458a315f",
+          "source_files": 735,
+          "source_archive_sha256": "93a614e6b28bb356bae2363fe789762d30c730448398e14af0b81744fdd5ee39",
+          "source_manifest_sha256": "697d25b423bfebfc90c5836696620d66c1c3a2d6b4f38542d3692f29cac89152",
+          "artifacts": {
+            "main": {
+              "sha256": "d6b820bf2655f2b42ce03dd571d32b22a3e931e60e7d00efa54a007403a7ae07",
+              "bytes": 8225568,
+              "elf_machine": 62
+            },
+            "worker": {
+              "sha256": "c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227",
+              "bytes": 12608608,
+              "elf_machine": 62
+            }
+          },
+          "qualification": {
+            "initialization-recovery": "PASS"
+          },
+          "cases": {
+            "initialization-recovery": 39
+          },
+          "build_ready": true,
+          "terminal": {
+            "container_id": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 143,
+              "Error": "",
+              "StartedAt": "2026-09-19T07:57:18.786591814Z",
+              "FinishedAt": "2026-09-19T08:00:30.753419059Z"
+            },
+            "postgres_id": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-09-19T07:57:16.6966697Z",
+              "FinishedAt": "2026-09-19T08:00:32.682193112Z"
+            }
+          },
+          "owned_containers": [
+            "9fda887f85af56ba49901760a59e2063a463a572c864b71598b45f26792a401d",
+            "beb7258f7d668da60453033dc5c5db583ccd2bc3424ff7a42886634fa830d218"
+          ],
+          "existing_containers_unchanged": 312,
+          "unrelated_containers_unchanged": 20,
+          "unrelated_running": 8,
+          "bigbrotr_running": 0,
+          "observed_at": "2026-09-19T08:00:33.129362+00:00"
+        },
+        "source_verification": {
+          "revision": "decf4a9aea687a8ee658aed4002b1c52ba584048",
+          "tree": "91628d79e765b5016f9bff4e7bf4297a458a315f",
+          "files": 735,
+          "archive_sha256": "93a614e6b28bb356bae2363fe789762d30c730448398e14af0b81744fdd5ee39",
+          "manifest_sha256": "697d25b423bfebfc90c5836696620d66c1c3a2d6b4f38542d3692f29cac89152"
+        },
+        "evidence_identity": {
+          "tar_bytes": 184320,
+          "tar_sha256": "4d2bc5316276f0b2347d018f69a74e29eb885a409a0c2f713b52fdc2458b6229",
+          "files": {
+            "resources.json": {
+              "bytes": 1241,
+              "sha256": "de632b403ce2e8faf017fb4943196073d20e9fd47b5987a6fd2f35b64f57e72e"
+            },
+            "audit.json": {
+              "bytes": 1867,
+              "sha256": "22255dc323fb193bfe47d663554d9390e6a2be65c608bcdabf87e294663f4895"
+            },
+            "container.log": {
+              "bytes": 242,
+              "sha256": "94f4469dbee219ad4e0408181b537263f07fff5903614e52125982d3f9e8835e"
+            },
+            "out/build/source-manifest.json": {
+              "bytes": 90003,
+              "sha256": "697d25b423bfebfc90c5836696620d66c1c3a2d6b4f38542d3692f29cac89152"
+            },
+            "out/native-tests/checks/clippy.log": {
+              "bytes": 394,
+              "sha256": "dd01d44737d1fd3edb9fab4df6d549b9c7543092f8457b29fefb6af8f19f10a9"
+            },
+            "out/native-tests/checks/fixture.log": {
+              "bytes": 130,
+              "sha256": "6a2bbff89a97db383bff96ea89d0c103d77ad4ede249d59e6a04dde24b7d3272"
+            },
+            "out/native-tests/checks/parent-tests.log": {
+              "bytes": 4562,
+              "sha256": "786175f8eca1cdf30f53bc315ff9d258c3e1f079a9f6e01d7dc04e6a82a3afe6"
+            },
+            "out/native-tests/checks/result.json": {
+              "bytes": 3816,
+              "sha256": "88d9c713f5872d3d2f2b8dba7c58e9298b0dd2d32f1479414dacfae6e8fe6525"
+            },
+            "out/native-tests/ordered-build.log": {
+              "bytes": 626,
+              "sha256": "bf9065e1cb0783f8c7b8daa1b9fb241e886345232c25761b75491039bda7c3f9"
+            },
+            "out/native-tests/ready.json": {
+              "bytes": 4911,
+              "sha256": "d5695e7c64bd3abf9007b22fa0c05c5365a40b73c3509a78925c5b8ea4c69894"
+            },
+            "out/native-tests/result.json": {
+              "bytes": 2800,
+              "sha256": "2b13648ba82f41a237173f7fc5624672bbeda3e119995b4891da8ce44a2c996b"
+            },
+            "out/native-tests/worker-identity.json": {
+              "bytes": 104,
+              "sha256": "c76d6822c6cff10729edc0d68f41196558b6cdedee0779cbf55ce624e1e80878"
+            },
+            "initialization-recovery.json": {
+              "bytes": 45130,
+              "sha256": "0dc78a0b243ec9973e098498704e89671aafe65b3663fc957d2da3ad3d022f19"
+            },
+            "initialization-recovery.log": {
+              "bytes": 32,
+              "sha256": "69fc9379989e893b08fe5733689f647391d76487414783de4612dd9e841c7327"
+            }
+          }
+        }
+      },
+      "first_network_retirement": [
+        {
+          "root": "initialization-recovery-decf4a9",
+          "network": "4d9e80c8af83d24bda2eed4785f2e5ccb5e90cc00f68a32f34ab987bbcf4a557",
+          "owner": "84b70957934e6c3bccd8457a7d064122",
+          "status": "removed",
+          "containers": "retained-stopped",
+          "data": "retained",
+          "observed_at": "2026-09-19T08:01:15.806368+00:00"
         }
       ]
     }

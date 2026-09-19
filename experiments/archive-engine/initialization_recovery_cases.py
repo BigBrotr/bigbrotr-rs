@@ -103,6 +103,18 @@ def unrelated_roles(bootstrap_oid):
         'comments',(SELECT json_agg(to_jsonb(c) ORDER BY objoid,classoid) FROM pg_shdescription c))::text)""")
 
 
+def resolved_durable(database, identity, before, unrelated_before, retired):
+    after = durable(database)
+    predicate = 'NOT rolcanlogin AND rolpassword IS NULL' if retired else 'rolcanlogin AND rolpassword IS NOT NULL'
+    assert sql(f"SELECT {predicate} FROM pg_authid WHERE oid={identity['bootstrap_oid']}") == 't'
+    assert known(database, identity['initialization_id'][0]) == identity
+    assert unrelated_roles(identity['bootstrap_oid']) == unrelated_before
+    assert after['database_sha256'] == before['database_sha256']
+    if not retired: assert after == before
+    return dict(before=before, after=after, exact_identity=True, bootstrap_retired=retired,
+                other_roles_attributes_memberships_comments_and_database_unchanged=True)
+
+
 def case(label, database, nonce, mode, expected_result, identity=None, changes=False, port=5432, suffix='owner'):
     before = durable(database)
     role_before = unrelated_roles(identity['bootstrap_oid']) if mode == 'retire' and changes else None
@@ -218,6 +230,7 @@ try:
         assert invoke(lost, nonce, 'reserve')['result']['status'] == 'reserved'
         current = known(lost, nonce)
         before = durable(lost)
+        unrelated_before = unrelated_roles(current['bootstrap_oid'])
         proxy = Process(['docker','exec','-i',state['container'],'python3','-B',
             '/source/experiments/control-migrations/fault_proxy.py','--upstream-port','5432',
             '--mode',mode,'--deadline-seconds','60'], input_pipe=True)
@@ -230,7 +243,8 @@ try:
         assert [receipt[k] for k in ['commits_seen','commits_forwarded','server_commit_complete','client_commit_complete','faults']] == counters
         if not retired: assert durable(lost) == before
         assert case('resolve-retirement-'+mode, lost, nonce, 'observe', observe_expected(current, retired))
-        report['cases'][-1].update(ambiguous=actual, wire=receipt); save()
+        report['cases'][-1].update(ambiguous=actual, wire=receipt,
+            resolved_durable=resolved_durable(lost, current, before, unrelated_before, retired)); save()
         assert case('repeat-retirement-'+mode, lost, nonce, 'retire', dict(status='retired', changed=not retired), current, changes=not retired)
 
     # A cancelled operation can have its COMMIT queued remotely. Destroy/join its
@@ -240,6 +254,8 @@ try:
         cancelled = fresh('cancel_' + action)
         assert invoke(cancelled, nonce, 'reserve')['result']['status'] == 'reserved'
         current = known(cancelled, nonce)
+        before = durable(cancelled)
+        unrelated_before = unrelated_roles(current['bootstrap_oid'])
         journal = run/'out'/f'initialize_{cancelled}_owner/.bigbrotr-initialization/intent.json'
         journal_before = journal.read_bytes()
         proxy = Process(['docker','exec','-i',state['container'],'python3','-B',
@@ -268,7 +284,8 @@ try:
         assert receipt['commits_seen']==1 and receipt['commits_forwarded']==(action=='release')
         assert journal.read_bytes() == journal_before
         report['cases'].append(dict(name='cancelled-driver-'+action, status='PASS', cancelled=cancellation,
-            observed=observation, waiters=waiters, wire=receipt, proxy_exit=exit_code, journal_unchanged=True)); save()
+            observed=observation, waiters=waiters, wire=receipt, proxy_exit=exit_code, journal_unchanged=True,
+            resolved_durable=resolved_durable(cancelled, current, before, unrelated_before, action=='release'))); save()
     assert sql("SELECT count(*) FROM pg_stat_activity WHERE application_name='bigbrotr-initialization-probe' OR usename LIKE 'bb_init_%'") == '0'
     report['status'] = 'PASS'
 except BaseException as error:
