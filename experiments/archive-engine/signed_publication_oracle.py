@@ -6,6 +6,7 @@ fixed experiment, not a generic native reader or a new product export format.
 """
 import hashlib
 import json
+import struct
 from pathlib import Path
 import sys
 
@@ -130,7 +131,62 @@ def expected(mode, bootstrap_only=False):
     return dict(event='readback', mode=mode, tables=tables, signed_event=None if empty_event else EVENT)
 
 
+def input_expectations(mode):
+    batches, _ = corpus()
+    result = []
+    for ordinal in range(1, 4 if mode in ('before', 'after') else 5):
+        batch = batches[0 if ordinal == 2 else 1]
+        n = 180 + MODES.index(mode) * 8 + ordinal
+        result.append(dict(dataset_id=DATASET.hex(), schema_version=1, topology_generation='0',
+            batch_digest=batch['archive_digest'], record_count=5,
+            input_ranges=[dict(shard_id=0, owner_epoch=1, first_sequence=batch['first'], last_sequence=batch['last'])],
+            attempt_id=[n] * 16, publication_ordinal=ordinal))
+    return result
+
+
+def restart_expectations(mode):
+    committed = expected(mode)['tables']['archive_commits']
+    result = []
+    for wanted in input_expectations(mode):
+        same_digest = [r for r in committed if r['batch_digest'].lower() == wanted['batch_digest']]
+        assert len(same_digest) <= 1
+        status = 'absent'
+        if same_digest:
+            row = same_digest[0]
+            status = ('present' if row['attempt_id'].lower() == bytes(wanted['attempt_id']).hex()
+                      and row['publication_ordinal'] == wanted['publication_ordinal'] else 'conflict')
+        result.append(dict(event='inputs-restart', expected=wanted, receipt=status))
+    return result
+
+
+def input_files(home, mode):
+    # Original initialization bytes have host-specific inode/path fields. All
+    # source, request and header fields below come from the independent corpus.
+    initialization = hashlib.sha256((home/'kind=7/.bigbrotr-initialization/intent.json').read_bytes()).digest()
+    batches, _ = corpus()
+    result = []
+    for expected in input_expectations(mode):
+        ordinal = expected['publication_ordinal']
+        n = expected['attempt_id'][0]
+        batch = batches[0 if ordinal == 2 else 1]
+        body = (b'BBINPUT\x01' + initialization + bytes([n])*16 + DATASET + bytes([90])*16
+                + bytes([80])*16 + bytes([n+1])*16 + struct.pack('>QQ', ordinal, 0)
+                + bytes.fromhex(batch['archive_digest']) + struct.pack('>I', 1)
+                + struct.pack('>IQQ', 0, 1, batch['first']) + b'\x01\x21'
+                + struct.pack('>Q', batch['last']) + bytes.fromhex(batch['admission_digest']))
+        wanted = body + hashlib.sha256(body).digest()
+        path = home/'archive-state'/((bytes([n])*16).hex()+'.inputs')
+        assert path.read_bytes() == wanted, 'independent complete retained input bytes'
+        assert path.stat().st_mode & 0o777 == 0o600 and path.stat().st_nlink == 1
+        result.append(dict(name=path.name, bytes=len(wanted), sha256=hashlib.sha256(wanted).hexdigest()))
+    assert sorted(p.name for p in (home/'archive-state').glob('*.inputs')) == sorted(r['name'] for r in result)
+    return result
+
+
 def check(mode, parent, reader, installed=False):
+    reopened = [r['expected'] for r in parent if r['event'] == 'inputs-reopened']
+    assert reopened == (input_expectations(mode) if installed else [])
+    parent = [r for r in parent if r['event'] != 'inputs-reopened']
     if installed and mode == 'normal':
         assert parent[2:6] == [
             dict(event='connect-ready'),

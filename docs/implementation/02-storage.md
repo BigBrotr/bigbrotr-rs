@@ -217,8 +217,11 @@ and keeps it through actual driver join. [Sixteen native CLI/Control cases](evid
 now pass at `952fd9a` with harness `f822978`, including physical bind aliases and actual
 SIGKILL/restart; 98 Rust tests pass and one holder fixture is explicitly ignored.
 This is a P02-T04/P01-T05 prerequisite, not step completion. Pre-protocol
-history adoption, retained input headers before issuance and actual recovery/dispatch
-remain required. See [the owning boundary](../specification/archive-storage-contract.md#persistent-coordinator-state).
+history adoption and actual recovery/dispatch remain required. The next implementation
+adds immutable complete input headers before issuance, exact grouping replay checks,
+and receipt reconstruction without facts, with a separate complete-wire preflight.
+Mac44 Archive tests/Clippy pass; signed native input/restart qualification is pending.
+No step is complete from these prerequisites. See [the owning boundary](../specification/archive-storage-contract.md#persistent-coordinator-state).
 
 
 **Depends on:** P02-T01/T02/T03 and P01-T05/T06.

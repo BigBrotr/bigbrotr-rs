@@ -82,6 +82,12 @@ impl LocalInitialization {
     pub(crate) fn is_recovered(&self) -> bool {
         self.recovered
     }
+    pub(super) fn retain_custody(&self) -> Result<File, LifetimeError> {
+        if !self.recovered {
+            return Err(LifetimeError::Identity);
+        }
+        self.lock.try_clone().map_err(|_| LifetimeError::Filesystem)
+    }
     pub(crate) fn take_provisioning(&self) -> Result<(), LifetimeError> {
         if self.launch_available.get() && self.provisioning_available.replace(false) {
             Ok(())

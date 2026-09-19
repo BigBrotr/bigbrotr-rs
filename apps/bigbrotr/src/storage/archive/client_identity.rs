@@ -129,6 +129,13 @@ pub(super) struct NativeTlsRetention {
     _material: Arc<Material>,
 }
 impl NativeTlsHandoff {
+    /// Later handoffs can allocate different descriptor numbers. Two positive
+    /// signed 32-bit descriptors need at most ten decimal digits each.
+    pub(super) fn maximum_parameter_growth(&self) -> usize {
+        "sslcertmode=require sslcert='/proc/self/fd/2147483647' sslkey='/proc/self/fd/2147483647'"
+            .len()
+            - self.parameters().len()
+    }
     pub(super) fn parameters(&self) -> String {
         format!(
             "sslcertmode=require sslcert='/proc/self/fd/{}' sslkey='/proc/self/fd/{}'",

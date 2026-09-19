@@ -15,6 +15,81 @@ use std::{
 };
 
 #[test]
+fn preflight_sizes_the_complete_native_receipt_request_without_io() {
+    use bigbrotr_model::TopologyGeneration;
+    use bigbrotr_protocol::archive_receipt::ReceiptRange;
+    let mut expected = ReceiptExpectation {
+        dataset_id: [1; 16].try_into().unwrap(),
+        schema_version: 1,
+        topology_generation: TopologyGeneration::new(0),
+        batch_digest: Digest256::from_bytes([5; 32]),
+        record_count: 420,
+        input_ranges: (0..420)
+            .map(|shard_id| ReceiptRange {
+                shard_id,
+                owner_epoch: 1,
+                first_sequence: 1,
+                last_sequence: 1,
+            })
+            .collect(),
+        attempt_id: [9; 16],
+        publication_ordinal: 1,
+    };
+    let route = CatalogRoute {
+        address: "127.0.0.1".parse().unwrap(),
+        port: 443,
+        database: "archive",
+        tls: CatalogTls::LocalPlaintext(PlaintextBoundary::Loopback),
+    };
+    let short = CatalogIdentity::local(
+        expected.dataset_id,
+        [90; 16].try_into().unwrap(),
+        "/archive/",
+    )
+    .unwrap();
+    let credential = || CatalogReaderCredentials {
+        login: "reader",
+        password: "private-fixture",
+    };
+    assert_eq!(
+        route.validate_receipt(&expected, &short, credential()),
+        Ok(())
+    );
+    let native_only =
+        CatalogIdentity::native_only_local(expected.dataset_id, short.catalog(), short.root())
+            .unwrap();
+    assert_eq!(
+        route.validate_receipt(&expected, &native_only, credential()),
+        Err(ReceiptError::InvalidInput)
+    );
+    assert!(serde_json::to_vec(&expected).unwrap().len() < MAX_INPUT_BYTES);
+    let long = CatalogIdentity::local(
+        expected.dataset_id,
+        short.catalog(),
+        &format!("/{}/", "a".repeat(4000)),
+    )
+    .unwrap();
+    assert_eq!(
+        route.validate_receipt(&expected, &long, credential()),
+        Err(ReceiptError::ResourceLimit)
+    );
+    expected
+        .input_ranges
+        .extend((420..1024).map(|shard_id| ReceiptRange {
+            shard_id,
+            owner_epoch: 1,
+            first_sequence: 1,
+            last_sequence: 1,
+        }));
+    expected.record_count = 1024;
+    expected.validate().unwrap();
+    assert_eq!(
+        route.validate_receipt(&expected, &short, credential()),
+        Err(ReceiptError::ResourceLimit)
+    );
+}
+
+#[test]
 fn receipt_reply_rejects_duplicate_conflicting_fields_and_trailing_values() {
     let expected: ReceiptExpectation = serde_json::from_value(serde_json::json!({
         "dataset_id":"01".repeat(16),"schema_version":1,"topology_generation":"0",

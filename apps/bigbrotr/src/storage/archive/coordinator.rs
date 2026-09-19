@@ -20,9 +20,10 @@ const MAX_BINDING: usize = 32 * 1024;
 /// This excludes cooperating same-boot coordinators only: it neither adopts old
 /// pre-protocol attempts nor resolves catalog transactions or missing journals.
 pub struct LocalCoordinator {
-    custody: LocalInitialization,
+    pub(super) custody: LocalInitialization,
     state_root: PathBuf,
-    _directory: File,
+    pub(super) directory: File,
+    pub(super) initialization_sha256: [u8; 32],
 }
 
 impl LocalCoordinator {
@@ -140,7 +141,8 @@ impl LocalCoordinator {
         Ok(Self {
             custody,
             state_root: root.to_owned(),
-            _directory: directory,
+            directory,
+            initialization_sha256,
         })
     }
 }

@@ -95,6 +95,11 @@ impl<'a> ArchiveBatch<'a> {
     pub const fn range_count(&self) -> u64 {
         self.range_count
     }
+    /// Complete original admission grouping, needed for exact pending replay.
+    /// Semantic archive ranges/digests intentionally do not retain this grouping.
+    pub fn batches(&self) -> &'a [AdmissionBatch] {
+        self.batches
+    }
     pub fn records(&self) -> impl Iterator<Item = &FactRef> {
         self.batches.iter().flat_map(AdmissionBatch::records)
     }

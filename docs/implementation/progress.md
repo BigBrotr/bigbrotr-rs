@@ -20,12 +20,12 @@ and rejects other roles. Root remains sole writer/integrator.
 
 ## Actual Git and current review
 
-Mac main is f82297835f3db2eb21b6efeb9858c8a03de64035, two coherent unpublished
-commits above verified private origin/main21de903. Product952fd9a81664e70e97104298978c261b06efcd59
-and harness-onlyf822978 are qualified below. Root now owns only evidence/inventory/
-documentation/checkpoint edits; no contributor edits or merge/rebase. Next delivery
-step is review these records, artifact/link checks, coherent evidence commit and
-private push, then continue implementation. No product completion claim.
+Mac main and private origin/main were freshly verified at
+16231c7bebf112b826fda10feebce006b920a8b5 with a clean worktree. Product952fd9a
+and harness-onlyf822978 qualification/evidence are committed and pushed. No
+contributor edits or merge/rebase. Root now implements retained complete input
+linkage before issuance; native experiments remain stopped as last recorded below.
+No product completion claim.
 
 Independent read-only source review found two concrete gaps before candidate:
 canonical paths alone miss bind aliases; the explicit complete-first-half retry
@@ -181,33 +181,52 @@ External feedback reread previously; it records the earlier scoped closures too.
 
 ## Next bounded action
 
-Finish evidence/diff review and private delivery of the coordinator slice, then
-implement retained input linkage before Control issuance and its actual recovery
-consumer. Do not repeat isolated inventory/custody qualification as a substitute
-for dispatch. Current owning reads are complete: config registry/resolve/policy,
-archive initialization/LocalInitialization/LocalAttempt, serve, storage/deployment
-contracts, ArchiveBatch and pending.rs. Latest bounded reading includes complete
-ReceiptExpectation and PendingBatchHeader, plus ArchiveAttemptRequest/read/scan.
+Root dirty work above verified16231c7 implements retained complete input linkage
+and its signed publication fixture consumer. New inputs.rs writes bounded immutable
+<attempt>.inputs before Control issuance, binds original initialization/request and
+complete ordered pending headers, and keeps1MiB grant plus original lock clone.
+Read reconstructs receipt expectation without fact bodies; exact replay compares
+original grouping and full digest. Shared actual receipt-wire preflight includes
+route/credential escaping and worst later mTLS descriptor widths. AppliedSQL,
+pending/coordinator/initialization formats and dependencies are unchanged.
 
-Persist a bounded ordered vector of existing PendingBatchHeader values (exact first
-SourceRecordId, last sequence, admission digest) bound to the full attempt identity
-BEFORE issuance. These reconstruct receipt count/maximal ranges without duplicated
-fact bodies; replay additionally requires actual Ingest-owner reads of complete
-batches and recomputed admission/archive digests. Missing linkage or missing pending
-never proves rollback or permits replay. Current LocalAttempt::create requires a
-fresh directory after issuance; use a separately bound immutable input reference
-file rather than breaking per-attempt custody. No code for input linkage exists yet.
+44 Mac Archive tests PASS, including frozen independent266-byte format, every
+single-byte corruption/truncation, changed grouping with equal semantic digest,
+1024/1025headers, cancellation/shortgrants/privatefiles/partialpreservation. Scoped
+Clippy library/publication fixture PASS. Expected missingAPI failures observed first.
+A preflight fixture initially used invalid8000byte catalog root; corrected to valid
+4000bytes/420ranges to exercise actual wrapper expansion. InitialClippy exposed
+constantchunks lint and fixture function shadowing; corrected before candidate.
+Independent source reviewer found dropped scientific identity discrimination in
+shared preflight and FD decimal growth. New negative control reproduced the former;
+both corrections reread. Reviewer independently reconstructed frozenbytes/digests;
+no further concrete persistence/permit/custody defect. No reviewer tests/Tux run.
 
-Still connect separate SELECT-only reader credentials, actual Ingest-owner handoff,
-shared Control/catalog/native budgets, and owned blocking native joins while Control
-heartbeats continue. Before interpreting a missing journal, establish the initial
-protocol-history boundary under the actual Control fence or separately qualified
-external exclusion; the new lock cannot retroactively exclude older coordinators.
-Initial Ingest registration/admission still binds original Control identity/epoch1;
-it is not a successor/restart protocol. Do not open a second writable Ingest store.
+Signed fixture retains/preflights before ordinary and successor issuance, reopens
+files for real native receipt inspection, and wraps actual Control/manager drivers
+with coordinator custody. New fresh-process fixture obtains original requests from
+fenced Control, reads headers and observes native receipts with no Rocks open.
+Harness independently reconstructs all input bytes and denies Rocks directory read
+while running that restart consumer. Native practical work is NOT_RUN yet; next:
+finish full diff/contract review, commit coherent unpublished candidate, transfer
+exact Git revision into a newly inventoried Tux lab using retained cache only,
+run shared ordered build and six installed signed schedules plus fresh-process
+receipt inspection, audit/stop owned resources and record evidence before push.
 
-Pristine stranded initialization reservations require a new database/root pair;
-no reprovisioning, runtime superuser promotion or implicit serve initialization.
-Source policy/budgets/protection, cross-boot/restore/resource/power-failure, ordinary
-Compose/release and later product acceptance remain required. Full product remains
-authorized and unfinished.
+No active experiment or changed remote resource at this boundary. Prior stopped
+lab inventory/evidence above remains retained. Root sole writer/integrator; no
+contributor edits or merge/rebase. Worktree paths visible in git status own this
+candidate; no unpublished commit yet.
+
+Still connect separate SELECT-only reader configuration, actual Ingest-owner
+handoff, shared Control/catalog/native budgets and owned blocking joins while
+Control heartbeats continue. Before interpreting a missing journal, establish the
+initial protocol-history boundary under the actual Control fence or separately
+qualified external exclusion; the new lock cannot retroactively exclude older
+coordinators. Unissued input-file enumeration/recovery remains separate. Initial
+Ingest registration/admission still binds original Control identity/epoch1; it is
+not a successor/restart protocol. Do not open a second writable Ingest store.
+
+Source policy/protection, cross-boot/restore/resource/power-failure, ordinary Compose/
+release and later product acceptance remain required. Full product remains
+authorized and unfinished; do not stop at this qualified component boundary.

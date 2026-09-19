@@ -7,8 +7,8 @@ use bigbrotr::{
     storage::{
         archive::{
             ArtifactIdentity, CatalogReaderCredentials, CatalogRoute, CatalogTls, LocalAttempt,
-            Preparation, PreparationLimits, PublicationError, ReceiptError, ReceiptObservation,
-            WorkerInstallation,
+            LocalCoordinator, Preparation, PreparationLimits, PublicationError, ReceiptError,
+            ReceiptObservation, RetainedInputs, WorkerInstallation,
         },
         postgres::{
             activation::{ActivationRequest, activate_initial},
@@ -43,6 +43,8 @@ mod custody;
 mod ingest;
 #[path = "support/publication_installation.rs"]
 mod installed_catalog;
+#[path = "support/publication_inputs.rs"]
+mod publication_inputs;
 const MIB: u64 = 1024 * 1024;
 fn dataset() -> DatasetId {
     [1; 16].try_into().unwrap()
@@ -316,6 +318,9 @@ async fn run(mode: &str, port: u16, installed: bool) {
     }
     let catalog: OwnerResourceId = [90; 16].try_into().unwrap();
     let identity = CatalogIdentity::local(dataset(), catalog, &data_root).unwrap();
+    let coordinator = installed.then(|| {
+        LocalCoordinator::initialize(&identity, &directory(home.join("archive-state"))).unwrap()
+    });
     let (mut admin, admin_driver) = connect(&database, "postgres").await;
     if !installed {
         assert!(
@@ -334,7 +339,12 @@ async fn run(mode: &str, port: u16, installed: bool) {
     // only the separately authenticated configured manager from this point.
     drop(admin);
     admin_driver.await.unwrap().unwrap();
-    let (mut admin, admin_driver) = connect(&database, manager_login).await;
+    let (mut admin, catalog_connection) = connection(&database, manager_login, 5432).await;
+    let admin_driver = if let Some(coordinator) = &coordinator {
+        tokio::spawn(coordinator.retain_connection(catalog_connection).unwrap())
+    } else {
+        tokio::spawn(catalog_connection)
+    };
     if installed {
         let row = admin.query_one("SELECT current_user::text,session_user::text,rolsuper,rolcreaterole,rolinherit FROM pg_roles WHERE rolname=current_user", &[]).await.unwrap();
         assert_eq!(row.get::<_, String>(0), "CatalogManager");
@@ -343,7 +353,12 @@ async fn run(mode: &str, port: u16, installed: bool) {
         fs::write(home.join("runtime-manager.json"), serde_json::to_vec(&serde_json::json!({"current_user":row.get::<_, String>(0),"session_user":row.get::<_, String>(1),"superuser":false,"createrole":true,"inherit":false})).unwrap()).unwrap();
     }
     initialize_control(&control).await;
-    let (client, driver) = connect(&control, "bigbrotr_control").await;
+    let (client, connection) = connection(&control, "bigbrotr_control", 5432).await;
+    let driver = if let Some(coordinator) = &coordinator {
+        tokio::spawn(coordinator.retain_connection(connection).unwrap())
+    } else {
+        tokio::spawn(connection)
+    };
     let (mut owner, policy) = ControlSession::acquire(
         client,
         ClaimRequest {
@@ -423,6 +438,33 @@ async fn run(mode: &str, port: u16, installed: bool) {
             &archive,
         )
         .unwrap();
+        let retained = coordinator.as_ref().map(|coordinator| {
+            let retained = coordinator
+                .retain_inputs(
+                    &request,
+                    &archive,
+                    grant(&budget, RetainedInputs::required_data_bytes(), 0),
+                    &cancel,
+                )
+                .unwrap();
+            retained.verify_replay(&archive).unwrap();
+            CatalogRoute {
+                address: "127.0.0.1".parse().unwrap(),
+                port: 5432,
+                database: &database,
+                tls: CatalogTls::LocalPlaintext(PlaintextBoundary::Loopback),
+            }
+            .validate_receipt(
+                retained.expectation(),
+                &identity,
+                CatalogReaderCredentials {
+                    login: "bigbrotr_receipt_reader",
+                    password: &reader_password,
+                },
+            )
+            .unwrap();
+            retained
+        });
         let (receipt, writer, custody) = if let Some((receipt, writer, custody)) = successor.take()
         {
             assert_eq!(ordinal, 4);
@@ -452,9 +494,13 @@ async fn run(mode: &str, port: u16, installed: bool) {
             (receipt, writer, custody)
         };
         assert!(receipt.created);
-        let expected_receipt =
+        if let Some(retained) = &retained {
+            assert_eq!(retained.request(), receipt.request());
+        }
+        let expected_receipt = coordinator.is_none().then(|| {
             ReceiptExpectation::from_archive(&archive, *request.attempt_id(), receipt.ordinal)
-                .unwrap();
+                .unwrap()
+        });
         let before = native_state(&admin).await;
         let route = CatalogRoute {
             address: "127.0.0.1".parse().unwrap(),
@@ -473,11 +519,41 @@ async fn run(mode: &str, port: u16, installed: bool) {
                 &archive,
             )
             .unwrap();
+            let next_inputs = coordinator.as_ref().map(|coordinator| {
+                let retained = coordinator
+                    .retain_inputs(
+                        &next,
+                        &archive,
+                        grant(&budget, RetainedInputs::required_data_bytes(), 0),
+                        &cancel,
+                    )
+                    .unwrap();
+                CatalogRoute {
+                    address: "127.0.0.1".parse().unwrap(),
+                    port: 5432,
+                    database: &database,
+                    tls: CatalogTls::LocalPlaintext(PlaintextBoundary::Loopback),
+                }
+                .validate_receipt(
+                    retained.expectation(),
+                    &identity,
+                    CatalogReaderCredentials {
+                        login: "bigbrotr_receipt_reader",
+                        password: &reader_password,
+                    },
+                )
+                .unwrap();
+                retained
+            });
             let next_receipt = owner
                 .register_archive_attempt(&next, &Cell::new(false))
                 .await
                 .unwrap();
             assert!(next_receipt.created);
+            if let Some(retained) = &next_inputs {
+                assert_eq!(retained.request(), next_receipt.request());
+            }
+            drop(next_inputs);
             let copied_installation = WorkerInstallation {
                 root: installation.root.clone(),
                 executable: installation.executable,
@@ -550,13 +626,34 @@ async fn run(mode: &str, port: u16, installed: bool) {
             database: &database,
             tls: CatalogTls::LocalPlaintext(PlaintextBoundary::Loopback),
         };
+        // Drop creation state: fresh file decoding supplies the expectation
+        // even after pending moved into and left the actual native worker.
+        drop(retained);
+        let recovered_inputs = coordinator.as_ref().map(|coordinator| {
+            coordinator
+                .read_inputs(
+                    receipt.request(),
+                    grant(&budget, RetainedInputs::required_data_bytes(), 0),
+                    &cancel,
+                )
+                .unwrap()
+                .unwrap()
+        });
+        let wanted = recovered_inputs
+            .as_ref()
+            .map(RetainedInputs::expectation)
+            .or(expected_receipt.as_ref())
+            .unwrap();
+        if installed {
+            emit(serde_json::json!({"event":"inputs-reopened","expected":wanted}));
+        }
         let observed = preparation(
             &installation,
             &directory(home.join(format!("receipt-{ordinal}-temp"))),
             &cancel,
         )
         .inspect_receipt(
-            &expected_receipt,
+            wanted,
             &identity,
             &reader_route,
             CatalogReaderCredentials {
@@ -617,6 +714,15 @@ fn main() {
         .build()
         .unwrap()
         .block_on(async {
+            if args[2] == "inputs" {
+                tokio::time::timeout(
+                    Duration::from_secs(90),
+                    publication_inputs::inspect(&args[1]),
+                )
+                .await
+                .unwrap();
+                return;
+            }
             if matches!(args[2].as_str(), "observe" | "seal" | "resolve") {
                 tokio::time::timeout(
                     Duration::from_secs(15),

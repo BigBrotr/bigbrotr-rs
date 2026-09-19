@@ -172,6 +172,61 @@ establish the protocol's initial history boundary under the actual Control fence
 before issuance. Per-attempt driver/native custody, remote SQL outcome resolution,
 source protection and process resource reconciliation remain independent gates.
 
+### Retained complete input linkage
+
+Before Control issuance, `LocalCoordinator::retain_inputs` synchronizes immutable
+`<32-lowercase-hex-attempt-id>.inputs` in the bound state root. It binds the original
+initialization journal SHA256, full immutable ArchiveAttemptRequest and the ordered
+complete PendingBatchHeader values. A header retains exact first SourceRecordId,
+last sequence and admission digest; no fact bodies, secrets or second ACK ledger.
+The caller checks actual downstream source, route, wire and resource admissibility
+before issuance. Current native publication still consumes one complete PendingBatch;
+the larger local format is not a promise of multi-batch dispatch.
+
+The local version1 bytes are `BBINPUT` followed by byte01 (eight bytes total),
+initialization SHA256 (32), attempt/dataset/catalog/coordinator/worker IDs (16 each),
+publication ordinal and topology generation (u64 big-endian each), archive digest
+(32), header count (u32 big-endian), then the ordered headers. Each header is first
+shard (u32), epoch and sequence (u64 each), followed by the existing 42-byte pending
+header `[01,21] || last_sequence_be64 || admission_digest`. Dataset is inherited
+from the request; schema1 and predecessor `ordinal-1` are fixed by the version.
+A final SHA256 covers every preceding byte. The checksum detects accidental change;
+it is not authenticity, a commit receipt or a proof that pending facts exist.
+
+Require 1–1024 headers, exact length `204 + 62*count` (maximum63,692), private
+regular nonlinked/nonfollowed files, ordered disjoint batches and checked total
+record counts. The frozen [format fixture](../../tests/fixtures/storage/archive-inputs-v1.json)
+uses independently assembled CBOR/field bytes and synthetic fact digests. It does
+not replace signed native qualification. A 1MiB owned application data grant and
+one item cover encoded buffers, headers, cached ranges and temporary conversion;
+that grant and a clone of the original coordinator lock stay with RetainedInputs.
+The cached receipt expectation is borrowed, not returned as an uncharged allocation.
+This is an allocation floor, not an RSS or retained-disk allowance.
+
+Exclusive creation syncs the file and state directory before returning. An identical
+complete retry verifies and syncs again; changed grouping under the same semantic
+Archive digest, partial bytes, unknown versions, wrong identities, symlinks, hard
+links and excess limits refuse without replacement/cleanup. A cancelled/failed
+write may have left bytes and cannot issue by assuming rollback. Synchronous file
+I/O needs an owned joined blocking service worker; cancellation is checked around
+bounded work, not assumed to interrupt filesystem sync.
+
+`read_inputs` takes the actual expected retained request and constructs receipt
+counts/maximal ranges without facts. Missing linkage means unknown input. Before
+replay, the actual Ingest owner must read every exact first batch, validate complete
+fact bytes, match each original header and recompute the full Archive digest.
+Regrouping adjacent batches can preserve that semantic digest and is still refused.
+Receipt preflight uses the exact complete native JSON wrapper, including route and
+credentials; 1024 valid ranges need not fit its separate32KiB wire limit. mTLS
+preflight additionally reserves the largest later descriptor-number widths in both
+DSN and JSON. No secret/certificate read or network connection occurs in preflight.
+
+Applied SQL, initialization/coordinator journals and pending formats are unchanged.
+Old attempts without linkage remain unresolved; this format does not adopt them,
+enumerate unissued orphan files, infer missing-journal outcomes or grant replay,
+publication, source protection or reclamation. The protocol-history boundary and
+installed Control+Archive recovery/dispatch remain separate prerequisites.
+
 ### Retained publication intent issuance
 
 Migration 0009 adds `control.archive_attempts` as the first persistent publisher

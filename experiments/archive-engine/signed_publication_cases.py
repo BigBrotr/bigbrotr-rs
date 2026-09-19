@@ -17,7 +17,7 @@ sys.dont_write_bytecode = True
 SOURCE = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(SOURCE / 'experiments/control-migrations'))
 from fault_cases import Incomplete, Process
-from signed_publication_oracle import MODES, check, expected
+from signed_publication_oracle import MODES, check, expected, input_files, restart_expectations
 
 
 def sha(path):
@@ -295,6 +295,27 @@ def main(root, installed=False):
                   json.loads(case['reader']['stdout']), installed=installed)
             assert case['active_writers'] == 0
             if installed:
+                home = root / f'out/signed_{mode}'
+                case['retained_input_files'] = input_files(home, mode)
+                restarted = case['input_restart'] = {}
+                rocks = home / 'rocks'
+                # Prove this fresh process can inspect exact catalog receipts
+                # without opening or reconstructing any pending fact bodies.
+                original_mode = rocks.stat().st_mode & 0o777
+                rocks.chmod(0)
+                try:
+                    denied = subprocess.run(['docker','exec',runner,'test','-r',f'/out/signed_{mode}/rocks'], capture_output=True)
+                    assert denied.returncode == 1
+                    execute(binary + ['/out/native-tests/archive-publication-probe', mode, 'inputs'], 90, restarted)
+                finally:
+                    rocks.chmod(original_mode)
+                    save()
+                assert restarted['exit'] == 0 and not restarted['stderr']
+                seen = [json.loads(line) for line in restarted['stdout'].splitlines()]
+                # Final catalog may now contain a successor receipt with the
+                # same semantic digest. Never call it the original attempt's receipt.
+                assert seen == restart_expectations(mode)
+                assert input_files(home, mode) == case['retained_input_files']
                 assert case['public_access'] == dict(database=[],schema=[])
                 assert case['installed_initializer']['new_installation'] is True
                 assert case['runtime_manager'] == dict(current_user='CatalogManager', session_user='CatalogManager', superuser=False, createrole=True, inherit=False)

@@ -2,6 +2,8 @@ use super::*;
 use std::{fs, os::unix::fs::PermissionsExt};
 const BOOT: &str = "01234567-89ab-cdef-0123-456789abcdef";
 
+mod inputs;
+
 #[test]
 fn coordinator_state_requires_explicit_binding_and_excludes_other_roots() {
     let (_data, identity) = fixture();
