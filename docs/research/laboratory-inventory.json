@@ -14094,7 +14094,32 @@
         "bigbrotr_running": 0,
         "observed_at": "2026-09-19T20:39:49.434371+00:00"
       },
-      "manifest": ".research/implementation/import-checkpoints/green/evidence-identity.json"
+      "manifest": ".research/implementation/import-checkpoints/green/evidence-identity.json",
+      "network_retirement": {
+        "status": "removed-after-verified-empty-and-owned-containers-stopped",
+        "successor_lab": "import-checkpoints-cb7905f",
+        "evidence": "/home/tux/bigbrotr-implementation-20260917/runs/import-checkpoints-cb7905f/prior-network-retirement.json"
+      }
+    },
+    "import_checkpoints_final": {
+      "source": "cb7905fe6a98380b8875acdee8f11ddd3f8809cc",
+      "tree": "b477bce343ee8e8e6a21419fe68243220d2ca349",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/import-checkpoints-cb7905f",
+      "owner": "50a453d1c2cd30239a63be431128312b",
+      "container": "bigbrotr-implementation-import-checkpoints-cb7905f",
+      "postgres": "bigbrotr-implementation-import-checkpoints-cb7905f-pg",
+      "network": "bigbrotr-implementation-import-checkpoints-cb7905f",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "state": "running",
+      "source_files": 832,
+      "started_at": "2026-09-19T20:44:00.755665+00:00",
+      "network_id": "43655e02c0afe3464e2ca75f7736be4d8e350d01e98f6f42f0b26e817a50f297",
+      "postgres_id": "685eddb4df2a5d3bd55b0d80043ba8f9e055773fe4bf044812e3052fceefb26f",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "104b8cd0f60198575fd733708b2afc1c6947e5e6155e51b0143594061ca9328c",
+      "qualification": "NOT_RUN; native diagnostic/cancellation candidate building",
+      "raw": ".research/implementation/import-checkpoints/final"
     }
   },
   "implementation_monitor_corrections_20260918": {

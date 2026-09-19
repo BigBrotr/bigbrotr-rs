@@ -22,11 +22,12 @@ ACK/GC, recovery and capacity remain required; no checkbox was completed.
 
 ## Git and integration state
 
-Mac main HEAD2100e25 (verify full hash), six unpublished commits ahead of private
+Mac main HEADcb7905fe6a98380b8875acdee8f11ddd3f8809cc, seven unpublished commits ahead of private
 origin/main last verified ddfa74064d840541e58208195b8e1612733c2ca3. No other writer,
-merge/rebase or unexpected files. Root owns current dirty migration_runner.rs,
-support/ingest_event.rs, import_checkpoints.py, laboratory-inventory.json and this
-checkpoint. The reviewer fact_codec_review is read-only/idle after scoped reviews.
+merge/rebase or unexpected files. The diagnostic/cancellation fixtures are committed atcb7905f,
+treeb477bce343ee8e8e6a21419fe68243220d2ca349. Root owns current dirty inventory, checkpoint and
+checkpoint_concurrency.py as the new native build runs. The concurrency harness
+is authored/NOT_RUN and reuses the fully read two-client cleanup mechanism. The reviewer fact_codec_review is read-only/idle after scoped reviews.
 
 Candidate730e50e/treeb1c5b0db69c9654e2029ed4f99b59eb214d31880 adds0014/catalog,
 regression and fixture without the Rust bridge. Candidate215f502bc33a634e758355edb2ca420be1a1f9f6,
@@ -117,7 +118,7 @@ coherent verified work. No competing task plan or completed task claim.
 
 ## Evidence and resources
 
-No active remote workload or tool session. Latest lab was audited/stopped at
+Native buildcb7905f is ACTIVE (below); no SQL fixture is active. Prior215f502 lab was audited/stopped at
 2026-09-19T20:39:49.434371+00:00, actual zero clients before stop/no OOM;
 all372 preexisting container lifecycles unchanged, eight unrelated running,
 zero BigBrotr running. Lab /home/tux/bigbrotr-implementation-20260917/runs/import-checkpoints-215f502,
@@ -164,3 +165,21 @@ External monitor findings remain scoped closed with practical evidence:
 [MON-010](evidence/p01-tls-presence-20260918.json),
 [MON-007](evidence/p01-archive-cache-retry-20260918.json).
 No new contrary evidence in the requested external review note.
+
+Current exact832-file candidate lab ACTIVE:
+/home/tux/bigbrotr-implementation-20260917/runs/import-checkpoints-cb7905f,
+owner50a453d1c2cd30239a63be431128312b. Runner
+104b8cd0f60198575fd733708b2afc1c6947e5e6155e51b0143594061ca9328c,
+PG685eddb4df2a5d3bd55b0d80043ba8f9e055773fe4bf044812e3052fceefb26f,
+internal network43655e02c0afe3464e2ca75f7736be4d8e350d01e98f6f42f0b26e817a50f297.
+No host ports; prior215f502 empty network2c1d647 was retired after fresh owned/
+stopped checks. Its containers/data remain. Next: wait READY; run seven
+import_checkpoints.py scenarios (reverse tagreverse1, then delayed/cancelled/expired/
+rollback/before-forward/after-complete with tags<=8 chars), checkpoint_schema.py
+--run-tag sql1, checkpoint_upgrade.py --old-root .../runs/input-bindings-8b0660e
+(now uses fresh r4 paths). Native final qualifier status remains NOT_RUN.
+Root read complete binding_concurrency.py; next bounded harness can reuse its
+actual two-client blocking/cleanup mechanism for closure-first/pause-first both
+COMMIT/ROLLBACK plus stale READ COMMITTED and unsupported REPEATABLE READ. Seed
+a synthetic bound reservation/outcome BEFORE each race, then race close_record
+against pause; observe closure/head/global revisions rather than reservation count.
