@@ -254,13 +254,27 @@ impl ControlSession {
     /// permission to reuse an attempt ID. This observation grants no launch.
     pub async fn read_archive_attempt(
         &mut self,
-        _catalog: OwnerResourceId,
-        _attempt_id: [u8; 16],
+        catalog: OwnerResourceId,
+        attempt_id: [u8; 16],
     ) -> Result<
         Option<super::archive_attempt::ArchiveAttemptReceipt>,
         super::archive_attempt::ArchiveAttemptError,
     > {
-        Ok(None)
+        use super::archive_attempt::{self, ArchiveAttemptError};
+        if attempt_id == [0; 16] || catalog == self.identity.resource_id {
+            return Err(ArchiveAttemptError::InvalidInput);
+        }
+        self.begin_operation()
+            .map_err(|_| ArchiveAttemptError::Unavailable)?;
+        let tx = application_transaction(&mut self.client, 9)
+            .await
+            .map_err(|_| ArchiveAttemptError::Prerequisite)?;
+        require(&tx, self.request.dataset, self.identity)
+            .await
+            .map_err(|_| ArchiveAttemptError::Unavailable)?;
+        let receipt = archive_attempt::read(tx, self.request.dataset, catalog, attempt_id).await?;
+        self.available = true;
+        Ok(receipt)
     }
 
     pub async fn release(mut self) -> Result<(), OwnerError> {

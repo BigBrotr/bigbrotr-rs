@@ -382,6 +382,14 @@ inspect the fresh receipt and its required closure before deciding replay or ACK
 Missing imported catalog attempts need their own nonmutating resolution; a seal
 Conflict is not a successful exclusion receipt.
 
+The recovery fixture now obtains the original request from the bounded
+`ControlSession::read_archive_attempt` using only the configured catalog and
+attempt ID. It releases and joins that fresh Control session before acquiring
+local custody. No fixture input sidecar or registration retry reconstructs the
+request. The committed Control row is still only an intent; the exact local
+journal, actual catalog resolution and subsequent receipt checks remain separate.
+This consumer change awaits native qualification.
+
 `resolve_after_local_custody` requires explicitly recovered custody and complete
 request/catalog identity before database work. A consumed launch allowance alone
 is insufficient. The fresh dedicated manager driver must also retain custody.

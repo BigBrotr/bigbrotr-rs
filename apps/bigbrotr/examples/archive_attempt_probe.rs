@@ -278,7 +278,7 @@ async fn run() {
             .await
             .unwrap(),
         Some(historical.clone()),
-        "fresh Control process must recover the exact original identity",
+        "fresh Control session must recover the exact original identity",
     );
     assert_eq!(
         successor

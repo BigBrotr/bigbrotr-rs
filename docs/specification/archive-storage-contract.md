@@ -161,14 +161,20 @@ than invent exclusion or adopt unknown credentials. Existing SQL stays immutable
 Installed recovery also needs to observe a retained intent without knowing its
 complete original input in memory or resubmitting registration. The next bounded
 consumer reads one attempt ID from Control under the current actual owner fence,
-checks dataset/catalog and every retained identity field, and returns only after
+checks the complete ArchiveAttemptRequest identity including dataset/catalog,
+and returns only after
 successful rollback. It returns no fresh credential or launch authority. A missing
 row is only missing Control history, never rollback or permission to reuse the ID.
 The existing driver/control reservation and deadline remain owned through join;
 failed or cancelled reads poison that Control session. Fixed-size fields and
 bounded numeric text keep the one-row response finite. No new ledger or migration
-is needed. The prepared baseline has no implemented lookup; its native
-discriminator has not yet run and grants no qualification.
+is needed. Issuer attribution and issue time remain retained SQL history; this
+receipt API does not return them. The baseline atfcd63ac passed13 structural Rust
+cases and failed the actual retained-row assertion (None instead of Some). The
+bounded read and custody consumer are now implemented locally; corrected native
+qualification is pending, including fresh actual observer processes. The current
+probe's valid ordinals1/2 and topology0 do not qualify malformed stored metadata
+or u64-extreme persisted values.
 
 Infrastructure endpoints are operator-supplied trusted routes, distinct from
 untrusted relay/discovery URLs. Private PG/CH/S3/RPC endpoints are valid; keep

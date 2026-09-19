@@ -7651,10 +7651,79 @@
     },
     "retained_attempt_read": {
       "base_source": "127174218ccf6ab5fccce5da4f6be0927e554db0",
-      "state": "Preparing intentional failing native read baseline; no remote resources launched",
+      "state": "fcd63ac baseline retained FAIL, owned lab stopped-retained/network retired; correction in local review",
       "local_root": ".research/implementation/archive-worker/attempt-read",
       "scope": "Actual Control one-attempt historical read: exact identity, absence/current/historical, fresh owner, no mutation, wrong catalog and blocked cancellation with poisoned session. No catalog publication or new migration.",
-      "cache_source": "/home/tux/bigbrotr-implementation-20260917/runs/publication-770c485/out/build"
+      "cache_source": "/home/tux/bigbrotr-implementation-20260917/runs/publication-770c485/out/build",
+      "baseline_resources": {
+        "source": "fcd63ac25fb606f11dd50e272fb291ee72fc4c77",
+        "tree": "acb796e366a1cf82263d791aebbb30ca00c10314",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/attempt-read-fcd63ac",
+        "owner": "3cc7d31605ab43142ddb8644700e3319",
+        "container": "bigbrotr-implementation-attempt-read-fcd63ac",
+        "postgres": "bigbrotr-implementation-attempt-read-fcd63ac-pg",
+        "network": "bigbrotr-implementation-attempt-read-fcd63ac",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "state": "stopped-retained-baseline",
+        "source_files": 700,
+        "started_at": "2026-09-19T02:05:45.400141+00:00",
+        "network_id": "63b5f3e699dcc3a86a465c8327a059a95eb1e68486bd94e8b96f0ababd416333",
+        "postgres_id": "2c43dab4f7f828ae875ce427a539366b5b6e08817cce5a89d41af9422ff29d80",
+        "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+        "container_id": "da6d6c2ec9332019e3b35d7d3a3b734556cc862a07773a1b84ae1ab56cb5e21f",
+        "network_state": "retired",
+        "terminal": {
+          "runner": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 1,
+            "Error": "",
+            "StartedAt": "2026-09-19T02:05:47.960619163Z",
+            "FinishedAt": "2026-09-19T02:06:25.397301253Z"
+          },
+          "postgres": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-19T02:05:46.019734142Z",
+            "FinishedAt": "2026-09-19T02:07:36.240779851Z"
+          }
+        },
+        "finished_at": "2026-09-19T02:07:36.865503+00:00"
+      },
+      "baseline_source_audit": {
+        "status": "PASS",
+        "source": "fcd63ac25fb606f11dd50e272fb291ee72fc4c77",
+        "tree": "acb796e366a1cf82263d791aebbb30ca00c10314",
+        "files": 700,
+        "manifest_sha256": "313a3efdccb3058a344d6da41c869a4868f71cad5ce09d3784361cdfb62e0bb6",
+        "archive_sha256": "53d30a556397680a1e8528080fbafe7f4d268daec306606f1773e19104f28e75"
+      },
+      "baseline_audit": {
+        "source": "fcd63ac25fb606f11dd50e272fb291ee72fc4c77",
+        "tree": "acb796e366a1cf82263d791aebbb30ca00c10314",
+        "source_files": 700,
+        "manifest_sha256": "313a3efdccb3058a344d6da41c869a4868f71cad5ce09d3784361cdfb62e0bb6",
+        "cleanup": "Owned failed runner exited; PG stopped, network retired, no OOM",
+        "unrelated_unchanged": 20,
+        "unrelated_running": 8,
+        "running_bigbrotr": 0
+      },
+      "baseline_raw_sha256": "bba7310b6b8572b762d6fdf8c9eae61ff8fe76fdd378534babea42be9bc87ddc",
+      "correction_scope": "Bounded one-record lookup and real recovered-custody consumer; new native_publication.py --retained-read selects13 intent/schema cases plus actual PG probe, then three custody and two missing-import schedules with ten clone controls. Correction NOT_RUN.",
+      "next_cache_source": "/home/tux/bigbrotr-implementation-20260917/runs/attempt-read-fcd63ac/out/build"
     }
   },
   "implementation_monitor_corrections_20260918": {

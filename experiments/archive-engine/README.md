@@ -358,3 +358,11 @@ created clones/fixture roles; no immutable history trigger is disabled and the
 original catalog/journal is unchanged. All ten cases pass at770c485, together with
 29 scoped native Rust cases and six signed publication/receipt regressions. Full
 installed recovery and protection remain open.
+
+`native_publication.py --retained-read` builds the same native worker and fixture
+consumers, then runs the thirteen intent/schema cases and the actual Control
+read/issuance probe. It selects those affected checks instead of the default
+publication/receipt/custody unit collection. The resulting ready marker precedes
+the separate actual custody and missing-import schedules. This profile currently
+awaits corrected exact-source execution; the earlier fcd63ac intent-read baseline
+failed the retained-row assertion as expected and its lab was retired.

@@ -5,9 +5,9 @@ use bigbrotr::storage::{
     archive::LifetimeError, postgres::archive_attempt::ArchiveAttemptReceipt,
     rocks::store::PendingBatch,
 };
-use bigbrotr_model::{AdmissionBatch, FactRef};
+use bigbrotr_model::AdmissionBatch;
 
-pub fn request(mode: &str, batch: &AdmissionBatch) -> ArchiveAttemptRequest {
+fn attempt_id(mode: &str) -> [u8; 16] {
     let id = match mode {
         "custody_worker" => 240,
         "custody_cancel" => 241,
@@ -16,11 +16,16 @@ pub fn request(mode: &str, batch: &AdmissionBatch) -> ArchiveAttemptRequest {
         "custody_prelock_dead" => 244,
         _ => panic!("closed custody fixture"),
     };
+    [id; 16]
+}
+
+pub fn request(mode: &str, batch: &AdmissionBatch) -> ArchiveAttemptRequest {
+    let attempt = attempt_id(mode);
     ArchiveAttemptRequest::new(
-        [id; 16],
+        attempt,
         [90; 16].try_into().unwrap(),
         [80; 16].try_into().unwrap(),
-        [id + 1; 16].try_into().unwrap(),
+        [attempt[0] + 1; 16].try_into().unwrap(),
         0,
         &ArchiveBatch::new(1, TopologyGeneration::new(0), std::slice::from_ref(batch)).unwrap(),
     )
@@ -44,11 +49,6 @@ impl Case<'_> {
     ) {
         let root = self.home.join("lifetimes");
         let custody = LocalAttempt::create(&root, &receipt, self.identity).unwrap();
-        fs::write(
-            self.home.join("custody-input.json"),
-            serde_json::to_vec(pending.batch().records()).unwrap(),
-        )
-        .unwrap();
         emit(
             serde_json::json!({"event":"custody-created","parent_pid":std::process::id(),"attempt":hex(receipt.request().attempt_id())}),
         );
@@ -198,16 +198,9 @@ pub async fn observe(mode: &str, action: &str, catalog_override: Option<&str>) {
                 .all(|b| b.is_ascii_lowercase() || b.is_ascii_digit() || b == b'_')
     }));
     let home = PathBuf::from(format!("/out/signed_{mode}"));
-    let bytes = fs::read(home.join("custody-input.json")).unwrap();
-    assert!(bytes.len() < 32768);
-    let records: Vec<FactRef> = serde_json::from_slice(&bytes).unwrap();
-    let request = request(mode, &AdmissionBatch::new(records).unwrap());
-    let identity = CatalogIdentity::local(
-        dataset(),
-        request.catalog(),
-        &format!("{}/kind=7/", home.display()),
-    )
-    .unwrap();
+    let catalog = [90; 16].try_into().unwrap();
+    let identity =
+        CatalogIdentity::local(dataset(), catalog, &format!("{}/kind=7/", home.display())).unwrap();
     let (client, driver) = connect(&format!("bbpub_control_{mode}"), "bigbrotr_control").await;
     // Each observation is a new real process/Control claim. Retained role
     // instances cannot be reused, even after an explicit release.
@@ -231,8 +224,9 @@ pub async fn observe(mode: &str, action: &str, catalog_override: Option<&str>) {
     .await
     .unwrap();
     let receipt = owner
-        .register_archive_attempt(&request, &Cell::new(false))
+        .read_archive_attempt(catalog, attempt_id(mode))
         .await
+        .unwrap()
         .unwrap();
     assert!(!receipt.created && receipt.latest_issued);
     owner.release().await.unwrap();

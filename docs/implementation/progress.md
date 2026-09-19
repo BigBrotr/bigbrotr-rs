@@ -21,14 +21,14 @@ cross-boot recovery and protection remain required.
 
 ## Actual Git and ownership
 
-Mac main HEAD and origin/main are127174218ccf6ab5fccce5da4f6be0927e554db0,
-verified pushed, private bigbrotr-rs and clean before the new read slice. That
-qualification commit delivers source770c485 and the intentional e571002 baseline.
-Root now owns dirty Control read API stub, native archive_attempt_probe regressions,
-owning contract/checkpoint/inventory edits. No other writer or remote source edit.
-Read-only publication_review finished source and recorded-evidence review of the
-qualified missing-import slice with no material discrepancy; native execution
-and host observations remain root's evidence.
+Mac main HEAD is unpublished baselinefcd63ac25fb606f11dd50e272fb291ee72fc4c77,
+treeacb796e366a1cf82263d791aebbb30ca00c10314. Verified origin/main remains
+127174218ccf6ab5fccce5da4f6be0927e554db0, delivering missing-import qualification.
+Root owns the dirty bounded Control read, fresh custody observer, focused native
+runner profile, task/contract/checkpoint/inventory edits. No merge/rebase or other
+writer. Read-only AI review found no correctness blocker in the new read/consumer;
+its native qualification is still pending. Earlier source770c485 qualification
+and its recorded-evidence review are delivered, not repeated current work.
 
 Transfer16951 ran from clean Git and is terminal. Source audit52741 verifies all699
 checkout/export files and exact Mac Git archive at770c485. Manifest SHA256
@@ -149,23 +149,47 @@ Scoped monitor corrections remain closed with executed evidence:
 [MON-007](evidence/p01-archive-cache-retry-20260918.json).
 Do not mechanically rerun unrelated suites.
 
-## Next bounded action
+## Active retained-attempt read and next bounded action
 
-The next P02-T04 recovery consumer observes one Control attempt by ID/catalog
-without resubmitting registration or requiring an in-memory ArchiveBatch. The
-actual adapter probe now checks absent/current/historical identity, fresh-owner
-recovery, unchanged full row/xmin, structural refusals, wrong catalog and directly
-blocked cancellation/session poisoning. The baseline API deliberately returns
-None, so its first retained-row observation must fail on actual PG. This is NOT_RUN
-until the new exact-source run; no native resource has been launched yet.
+P02-T04 now has a bounded `ControlSession::read_archive_attempt(catalog,id)`
+implementation in the dirty correction. It reads the complete ArchiveAttemptRequest
+identity under the actual owner fence, caps every field and detects duplicate
+rows, returns only after successful rollback, and poisons started failed/cancelled
+operations. It does not decode issuer attribution/time or create/activate anything.
+The custody observer uses that real read and joins Control before local recovery;
+it no longer writes/reads custody-input.json or re-registers a reconstructed batch.
 
-Finish scoped baseline source/check review, create a candidate and run the existing
-native_archive_attempts.py in a fresh individually inventoried attempt-read lab,
-copying retired770c485 cache. Retain the actual failing assertion, then implement
-the bounded SQL read and replace the custody observer's fixture-side request
-reconstruction with that real consumer. Qualify actual read/refusals/cancellation
-and affected recovered-custody schedules; retire each owned lab independently.
-The ignored transfer/launch helpers live under
-.research/implementation/archive-worker/attempt-read. Existing installed lifecycle,
-resource reconciliation, incomplete-journal/cross-boot recovery, protection and
-full M1/read/export/restart remain required; no task completion claim.
+Baseline fcd63ac is terminal:13 structural Rust cases, build and Clippy PASS; actual
+PG assertion failed None vs exact retained Some at the intended discriminator.
+Full actual first row and no residual DB backend were independently checked;
+runner exited1 (no OOM), PG stopped exit0, network retired. Inventory
+implementation_archive_worker_20260918.retained_attempt_read owns
+/home/tux/bigbrotr-implementation-20260917/runs/attempt-read-fcd63ac,
+owner3cc7d31605ab43142ddb8644700e3319;
+runnerda6d6c2ec9332019e3b35d7d3a3b734556cc862a07773a1b84ae1ab56cb5e21f;
+PG2c43dab4f7f828ae875ce427a539366b5b6e08817cce5a89d41af9422ff29d80;
+network63b5f3e699dcc3a86a465c8327a059a95eb1e68486bd94e8b96f0ababd416333 retired.
+Transfer97880, source55517, retirement25271 and collection61897 completed.
+All700 source files match exact Mac archive. Manifest SHA256
+313a3efdccb3058a344d6da41c869a4868f71cad5ce09d3784361cdfb62e0bb6;
+source archive53d30a556397680a1e8528080fbafe7f4d268daec306606f1773e19104f28e75;
+14-file raw archivebba7310b6b8572b762d6fdf8c9eae61ff8fe76fdd378534babea42be9bc87ddc.
+All20 unrelated resources unchanged,8 running,0 BigBrotr running. No active lab.
+
+Local affected reader/consumer Clippy and structural artifact checks pass. AI review
+covered the read, caller, migration, probe and contract, with no product blocker.
+The current probe covers ordinary persisted ordinals1/2 and topology0; malformed
+metadata/u64 extremes are not native tested, and no source proof is relabeled as
+execution. New native_publication.py --retained-read selects13 structure cases,
+builds actual consumers and executes the Control read probe; it does not count the
+default29-case collection as executed. Corrected native execution is NOT_RUN.
+
+Finish review/checks, create the corrected exact-source candidate and run that
+profile in a new individually inventoried attempt-read lab, copying retired
+fcd63ac cache. Then execute custody_cases.py (three schedules) and
+missing_import_cases.py (two schedules plus ten clones) with the real Control read
+consumer. Audit exact unchanged journals/rows, probe identity and actual blockers,
+retire resources, record both FAIL/PASS and push coherent verified work.
+Ignored helpers: .research/implementation/archive-worker/attempt-read.
+Installed lifecycle/resource reconciliation, incomplete-journal/cross-boot recovery,
+protection and full M1/read/export/restart remain required; no task completion claim.

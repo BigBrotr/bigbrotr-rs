@@ -5,11 +5,12 @@ use bigbrotr_model::{
     ArchiveBatch, DatasetId, Digest256, OwnerResourceId, ProcessIncarnation, TopologyGeneration,
 };
 use std::{cell::Cell, fmt};
-use tokio_postgres::Transaction;
+use tokio_postgres::{Row, Transaction};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ArchiveAttemptError {
     InvalidInput,
+    InvalidMetadata,
     Exhausted,
     Unavailable,
     Prerequisite,
@@ -110,6 +111,75 @@ impl ArchiveAttemptReceipt {
     pub fn request(&self) -> &ArchiveAttemptRequest {
         &self.request
     }
+}
+
+/// One bounded immutable observation in the caller's fenced transaction. It
+/// does not invoke registration or create a missing intent. Latest is observed
+/// in the same statement as the row and remains a historical fact, not a grant.
+pub(super) async fn read(
+    tx: Transaction<'_>,
+    dataset: DatasetId,
+    catalog: OwnerResourceId,
+    attempt_id: [u8; 16],
+) -> Result<Option<ArchiveAttemptReceipt>, ArchiveAttemptError> {
+    let row = tx.query_opt("SELECT substring(a.dataset_id FROM 1 FOR 17),substring(a.catalog_id FROM 1 FOR 17),CASE WHEN length(a.expected_predecessor::text)<=20 THEN a.expected_predecessor::text END,CASE WHEN length(a.ordinal::text)<=20 THEN a.ordinal::text END,a.schema_version=1,CASE WHEN length(a.topology_generation::text)<=20 THEN a.topology_generation::text END,substring(a.batch_digest FROM 1 FOR 33),substring(a.coordinator_incarnation FROM 1 FOR 17),substring(a.worker_incarnation FROM 1 FOR 17),NOT EXISTS(SELECT 1 FROM control.archive_attempts newer WHERE newer.dataset_id=a.dataset_id AND newer.ordinal>a.ordinal) FROM control.archive_attempts a WHERE a.attempt_id=$1::bytea LIMIT 2", &[&&attempt_id[..]]).await.map_err(backend)?;
+    let receipt = row
+        .map(|row| {
+            if fixed::<16>(&row, 0)? != *dataset.as_bytes()
+                || fixed::<16>(&row, 1)? != *catalog.as_bytes()
+            {
+                return Err(ArchiveAttemptError::Conflict);
+            }
+            let predecessor = number(&row, 2)?;
+            let ordinal = number(&row, 3)?;
+            let coordinator = ProcessIncarnation::try_from(fixed::<16>(&row, 7)?)
+                .map_err(|_| ArchiveAttemptError::InvalidMetadata)?;
+            let worker = ProcessIncarnation::try_from(fixed::<16>(&row, 8)?)
+                .map_err(|_| ArchiveAttemptError::InvalidMetadata)?;
+            if ordinal == 0
+                || predecessor.checked_add(1) != Some(ordinal)
+                || coordinator == worker
+                || !row
+                    .try_get::<_, bool>(4)
+                    .map_err(|_| ArchiveAttemptError::InvalidMetadata)?
+            {
+                return Err(ArchiveAttemptError::InvalidMetadata);
+            }
+            Ok(ArchiveAttemptReceipt {
+                request: ArchiveAttemptRequest {
+                    attempt_id,
+                    dataset,
+                    catalog,
+                    coordinator,
+                    worker,
+                    predecessor,
+                    ordinal,
+                    topology: TopologyGeneration::new(number(&row, 5)?),
+                    batch_digest: Digest256::from_bytes(fixed(&row, 6)?),
+                },
+                ordinal,
+                latest_issued: row
+                    .try_get(9)
+                    .map_err(|_| ArchiveAttemptError::InvalidMetadata)?,
+                created: false,
+            })
+        })
+        .transpose()?;
+    tx.rollback().await.map_err(backend)?;
+    Ok(receipt)
+}
+
+fn fixed<const N: usize>(row: &Row, index: usize) -> Result<[u8; N], ArchiveAttemptError> {
+    row.try_get::<_, &[u8]>(index)
+        .map_err(|_| ArchiveAttemptError::InvalidMetadata)?
+        .try_into()
+        .map_err(|_| ArchiveAttemptError::InvalidMetadata)
+}
+fn number(row: &Row, index: usize) -> Result<u64, ArchiveAttemptError> {
+    row.try_get::<_, &str>(index)
+        .ok()
+        .and_then(|s| s.parse().ok())
+        .ok_or(ArchiveAttemptError::InvalidMetadata)
 }
 
 pub(super) async fn register(
