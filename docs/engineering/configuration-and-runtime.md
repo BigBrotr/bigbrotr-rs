@@ -159,6 +159,14 @@ The owner-row lock may create physical PostgreSQL I/O; logical state is unchange
 Data-file closure, protection, explicit initialization/recovery and installed
 Archive service readiness remain separate gates.
 
+The explicit [initializer/recovery command candidate](../user/archive-initialization.md)
+now consumes a separately supplied privileged initializer credential, permanently
+reserves the local root/database, joins its sole native initializer, retires and
+drains the exact bootstrap, installs for the configured manager and inspects with
+a fresh manager connection. It does not run implicitly during serve or inspect.
+Its recovery and currently unqualified capabilities retain the owning archive
+contract's acceptance gates.
+
 The [Linux amd64 qualification](../implementation/evidence/p02-catalog-cli-native-20260919.json)
 records 18 actual CLI cases at 3e87a53, including identity/credential/TLS refusals,
 empty and incompatible state, a 256 MiB malformed owner value refused without OOM

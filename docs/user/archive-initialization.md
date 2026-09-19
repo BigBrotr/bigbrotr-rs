@@ -1,0 +1,83 @@
+# Explicit local archive initialization
+
+The implementation candidate provides `archive initialize` and `archive recover`.
+They initialize an empty scientific catalog and its commit guards; they do not
+start Archive, activate a writer, admit events or establish protection/readiness.
+The current supported custody placement is same-boot Linux ext4. Cross-boot and
+restore mappings remain implementation work.
+
+Prepare these inputs explicitly:
+
+- A statically valid configuration selecting local Archive, with independently
+  chosen dataset/catalog IDs and the expected catalog database and data root.
+- An empty PostgreSQL 16.15 database with fsync/full_page_writes enabled. The
+  restricted bootstrap must not inherit PUBLIC database CREATE or bypass grants.
+- A separate privileged initializer login. Its password comes from a protected
+  `file:/absolute/path` reference; never place password bytes in arguments.
+- A configured catalog manager with LOGIN, CREATEROLE and NOINHERIT, without
+  superuser, CREATEDB, replication, bypass-RLS or inherited administrative roles.
+  The initializer does not promote or create this manager.
+- An existing empty private data directory, plus an existing private scratch
+  directory owned by the command UID. Both paths must be canonical and disjoint;
+  scratch must also be disjoint from the immutable installed worker bundle.
+- A main executable built with the authenticated worker identity and its matching
+  bundle. An ordinary unbound Cargo executable cannot initialize a native catalog.
+
+Protected credential files must meet the
+[credential contract](../security/credentials.md). Configuration validation stays
+offline. The finite initializer then reads credentials, verifies the bundle and
+checks its allowances before permanently reserving the database/root pair.
+Native initialization currently refuses configured mutual TLS before reservation;
+completing that selected adapter remains required. It never falls back to plaintext.
+
+```sh
+bigbrotr archive initialize --file /etc/bigbrotr/instance.toml \
+  --initializer-user archive_installer \
+  --initializer-password-ref file:/run/secrets/archive-installer
+```
+
+By default, `archive-worker/` is beside the main executable. Use `--worker-root`
+only to select another canonical matching installed bundle. The initial profile
+requires at least 512 MiB in `archive.worker_memory_bytes`: one quarter is engine
+memory and the remainder covers native overhead. Initialization uses one worker,
+one engine thread and a 64 MiB temporary-file setting. Its application inspection
+grant includes 64 MiB plus connection preparation; application and native quotas
+remain separate. These declared bounds are not measured RSS or disk-capacity
+certificates. The process and filesystem limits of the deployment still apply.
+
+Success means the native child has joined, the exact temporary bootstrap login
+has been retired, remaining sessions have drained, the guard/schema ownership has
+been installed for the runtime manager, and a fresh manager connection has verified
+the installation. The JSON report retains `ready:false` and grants no runtime
+authority. The immutable local marker and PostgreSQL reservation roles remain.
+Private `initialize-<nonce>` scratch directories are retained for explicit cleanup
+after verifying process exclusion; do not remove an active worker's scratch.
+
+If a response is lost or a command exits unsuccessfully after reservation, preserve
+the same configuration identities, database, root and marker:
+
+```sh
+bigbrotr archive recover --file /etc/bigbrotr/instance.toml \
+  --initializer-user archive_installer \
+  --initializer-password-ref file:/run/secrets/archive-installer
+```
+
+Recovery never generates a replacement bootstrap credential or launches another
+native initializer. It can finish installation from complete scientific state or
+inspect an already installed matching catalog. Partial, altered or incompatible
+state refuses. A committed reservation with a still-pristine database is stranded:
+recovery retires its bootstrap and requires a new database/root pair. An absent
+database reservation also does not authorize reuse of the retained local marker.
+Do not delete markers, reset passwords or manually adopt tables to bypass refusal.
+
+SQL phases have a 30-second deadline; native supervision has a 120-second deadline.
+SIGINT/SIGTERM cancel the active operation and wait for owned transport/supervisor
+termination. A timeout remains unresolved until recovery establishes actual state.
+Exit codes are 0 for installed and freshly inspected, 1 for local/output failure,
+2 for usage, 3 for configuration/preflight refusal, 4 for unresolved/incompatible
+state, and 130/143 for interruption. A blocked output destination can produce exit1
+after a successful durable installation; run recovery to establish its result.
+
+See the [owning archive contract](../specification/archive-storage-contract.md)
+and [current implementation checkpoint](../implementation/progress.md) for the
+revision-specific validation boundary and outstanding service/release work.

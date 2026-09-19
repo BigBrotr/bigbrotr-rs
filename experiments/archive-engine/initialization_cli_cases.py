@@ -76,6 +76,7 @@ schema_version=1
 recipe="archive-only"
 authority_mode="managed"
 [topology]
+local_roles=["control","discoverer","validator","monitor","sync","ingest","archive"]
 instance_id="{'03'*16}"
 dataset_id="{dataset}"
 [archive]
@@ -138,7 +139,11 @@ def installed(database):
     assert sql("SELECT ordinal::text||'|'||enabled::text FROM bigbrotr_archive.owner", database) == '0|false'
     assert sql("SELECT count(*) FROM bigbrotr_archive.installation", database) == '1'
     assert sql("SELECT count(*) FROM bigbrotr_archive.attempts", database) == '0'
-    assert sql("SELECT count(*) FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace JOIN pg_roles r ON r.oid=c.relowner WHERE n.nspname IN ('public','bigbrotr_archive') AND c.relkind='r' AND r.rolname='CatalogManager'", database) == '32'
+    actual = sql("SELECT n.nspname||'|'||c.relname||'|'||r.rolname FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace JOIN pg_roles r ON r.oid=c.relowner WHERE n.nspname IN ('public','bigbrotr_archive') AND c.relkind='r' ORDER BY 1", database).splitlines()
+    native = json.loads((source / 'contracts/archive/catalog-native-v1.json').read_text())['tables']
+    expected = sorted(['public|' + name + '|CatalogManager' for name in native]
+        + ['bigbrotr_archive|' + name + '|CatalogManager' for name in ['installation', 'owner', 'attempts', 'scientific_schema']])
+    assert len(native) == 28 and actual == expected
     return dict(bootstrap_oid=oid, bootstrap_retired=True, native_tables=28, guard_tables=4, attempts=0)
 
 
@@ -149,6 +154,37 @@ def unchanged(name, database, action, path, exit_code):
         item.update(observed=observed, before=before, after=durable(database))
         assert observed['exit'] == exit_code and item['after'] == before
     case(name, execute)
+
+
+def managed_cli(action, path, label):
+    # The wrapper owns and joins the actual CLI, and reports no raw diagnostics.
+    script = '''import json,subprocess,sys
+from pathlib import Path
+p=subprocess.Popen(sys.argv[2:],stdout=subprocess.PIPE,stderr=subprocess.PIPE,env={})
+Path(sys.argv[1]).write_text(str(p.pid))
+out,err=p.communicate(timeout=160)
+print(json.dumps(dict(exit=p.returncode,output=json.loads(out) if out else None,stderr_nonempty=bool(err))))
+'''
+    process = Process(['docker', 'exec', state['container'], 'python3', '-c', script,
+        '/out/initialization-cli/' + label + '.pid', *args(action, path)])
+    children.append(process)
+    return process
+
+
+def terminate_cli(label):
+    script = '''import os,signal,sys
+from pathlib import Path
+pid=int(Path(sys.argv[1]).read_text())
+assert Path('/proc/'+str(pid)+'/cmdline').read_bytes().split(b'\\0')[0]==b'/out/native-tests/bigbrotr'
+os.kill(pid,signal.SIGTERM)
+'''
+    command(['docker', 'exec', state['container'], 'python3', '-c', script,
+             '/out/initialization-cli/' + label + '.pid'])
+
+
+def finished(process):
+    assert process.wait(40) == 0
+    return json.loads(process.stdout)
 
 
 try:
@@ -232,11 +268,95 @@ os.close(w);os.close(r)
             recovered, error = invoke('recover', direct)
             assert recovered['exit'] == 4
             assert (bootstrap(db) is not None) == expected
+            if expected:
+                _, oid = bootstrap(db)
+                assert sql(f"SELECT NOT rolcanlogin AND rolpassword IS NULL FROM pg_authid WHERE oid={oid}") == 't'
             assert (b'pristine reservation is stranded' if expected else b'no current database reservation') in error
             assert sql("SELECT count(*) FROM pg_class WHERE relnamespace='public'::regnamespace AND relkind='r'", db) == '0'
             item.update(observed=observed, proxy=receipt, recovered=recovered,
                         reservation_present=expected, native_tables=0, durable=durable(db))
         case('lost-reservation-commit-' + label, fault)
+
+    for action in ['close', 'release']:
+        db = fresh('cancel_' + action)
+        proxy = Process(['docker', 'exec', '-i', state['container'], 'python3', '-B',
+            '/source/experiments/control-migrations/fault_proxy.py', '--upstream-port', '5432',
+            '--mode', 'hold', '--deadline-seconds', '90'], input_pipe=True)
+        children.append(proxy)
+        event = proxy.event('ready', 10)
+        label = 'cancel-' + action
+        selected, retained_root = config(db, label, port=event['listen_port'])
+        direct, _ = config(db, label+'-direct', root=retained_root)
+        def cancelled_commit(item, db=db, label=label, selected=selected, direct=direct, proxy=proxy, action=action):
+            client = managed_cli('initialize', selected, label)
+            proxy.event('held', 15)
+            start = time.monotonic(); terminate_cli(label)
+            observed = finished(client)
+            elapsed = time.monotonic()-start
+            assert observed['exit'] == 143 and elapsed < 5
+            recovery = managed_cli('recover', direct, label+'-recovery')
+            until = time.monotonic()+3
+            waiting = False
+            while time.monotonic() < until:
+                waiting = sql(f"SELECT EXISTS(SELECT 1 FROM pg_stat_activity WHERE datname='{db}' AND wait_event_type='Lock' AND wait_event='advisory')") == 't'
+                if waiting: break
+                time.sleep(.05)
+            assert waiting
+            proxy.send(action)
+            receipt = proxy.event('receipt', 10); assert proxy.wait(10) == 0
+            resolved = finished(recovery)
+            assert resolved['exit'] == 4
+            expected = action == 'release'
+            assert (bootstrap(db) is not None) == expected
+            if expected:
+                _, oid = bootstrap(db)
+                assert sql(f"SELECT NOT rolcanlogin AND rolpassword IS NULL FROM pg_authid WHERE oid={oid}") == 't'
+            assert sql("SELECT count(*) FROM pg_class WHERE relnamespace='public'::regnamespace AND relkind='r'", db) == '0'
+            item.update(observed=observed, stop_seconds=elapsed, actual_recovery_lock_wait=True,
+                        proxy=receipt, recovered=resolved, reservation_present=expected, native_tables=0)
+        case('cancel-actual-driver-held-commit-' + action, cancelled_commit)
+
+    db = fresh('native_cancel')
+    selected, retained_root = config(db, 'native-cancel')
+    def cancel_native(item):
+        sql('ALTER SYSTEM SET post_auth_delay=6'); sql('SELECT pg_reload_conf()')
+        try:
+            client = managed_cli('initialize', selected, 'native-cancel')
+            # Observe the actual native executable with an established libpq
+            # socket before signaling its coordinator during delayed startup.
+            script = '''import json,os,time
+from pathlib import Path
+until=time.monotonic()+15
+while time.monotonic()<until:
+ for p in Path('/proc').iterdir():
+  if not p.name.isdigit(): continue
+  try:
+   if p.joinpath('cmdline').read_bytes().split(b'\\0')[0]!=b'/out/archive-worker/bigbrotr-archive-worker': continue
+   sockets={os.readlink(fd) for fd in p.joinpath('fd').iterdir()}
+   for line in Path('/proc/net/tcp').read_text().splitlines()[1:]:
+    fields=line.split()
+    if fields[2].endswith(':1538') and fields[3]=='01' and 'socket:['+fields[9]+']' in sockets:
+     print(json.dumps(dict(pid=int(p.name),established=True)));raise SystemExit
+  except (FileNotFoundError,PermissionError,ProcessLookupError): pass
+ time.sleep(.02)
+raise RuntimeError('native established socket not observed')
+'''
+            worker = json.loads(command(['docker', 'exec', state['container'], 'python3', '-c', script], timeout=20))
+            start = time.monotonic(); terminate_cli('native-cancel')
+            observed = finished(client); elapsed = time.monotonic()-start
+            assert observed['exit'] == 143 and elapsed < 6
+            command(['docker', 'exec', state['container'], 'python3', '-c',
+                "from pathlib import Path;import sys;assert not Path('/proc/'+sys.argv[1]).exists()", str(worker['pid'])])
+            item.update(observed=observed, worker=worker, stop_seconds=elapsed, native_process_reaped=True)
+        finally:
+            sql('ALTER SYSTEM RESET post_auth_delay'); sql('SELECT pg_reload_conf()')
+        recovered, error = invoke('recover', selected)
+        assert recovered['exit'] == 4 and b'pristine reservation is stranded' in error
+        _, oid = bootstrap(db)
+        assert sql(f"SELECT NOT rolcanlogin AND rolpassword IS NULL FROM pg_authid WHERE oid={oid}") == 't'
+        assert sql("SELECT count(*) FROM pg_class WHERE relnamespace='public'::regnamespace AND relkind='r'", db) == '0'
+        item.update(recovered=recovered, bootstrap_retired=True, native_tables=0)
+    case('cancel-real-native-libpq-startup-and-recover', cancel_native)
     report['status'] = 'PASS'; save()
     print(json.dumps(dict(status='PASS', source=state['source'], cases=len(report['cases']))))
 except BaseException as error:

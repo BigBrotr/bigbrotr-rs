@@ -9520,17 +9520,264 @@
       ]
     },
     "initialization_cli": {
-      "status": "candidate-prepared-not-run",
+      "status": "first-run-stopped-retained",
       "local_raw_root": ".research/implementation/archive-worker/initialization-cli",
       "source_parent": "8f79a5621a9f76071b0c17d435494e3427920c10",
       "scope": "actual installed archive initialize and recover commands",
       "cache_source": "initialization-recovery-660df73",
-      "resources": "none created yet",
+      "resources": "no active lab",
       "not_qualified": [
         "native CLI journeys",
         "cancellation/drain/TLS",
         "release and service readiness"
-      ]
+      ],
+      "candidate": {
+        "source": "a1c0921382faaa4252ca7eefd3aefbce3dc626bd",
+        "tree": "36cebbeb2a56b6d5fc4a7283a347cd9771f2c63d",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/initialization-cli-a1c0921",
+        "owner": "36bf5098807966e90503f29e86788b68",
+        "container": "bigbrotr-implementation-initialization-cli-a1c0921",
+        "postgres": "bigbrotr-implementation-initialization-cli-a1c0921-pg",
+        "network": "bigbrotr-implementation-initialization-cli-a1c0921",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "state": "running",
+        "source_files": 739,
+        "started_at": "2026-09-19T08:33:11.992866+00:00",
+        "network_id": "32fe4864e687757e7a508d8617d9174f7c42cbe3eefa34277635d7b8c0e1791d",
+        "postgres_id": "80ecad6fb09b31207702007b1091714e15dcbfde127a0fb2fb1f74c2fce898f9",
+        "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+        "container_id": "8484a9dcd3468979effa89b03651f85aa4836da68c2612ac2ff79357a3bbf889"
+      },
+      "first": {
+        "resources": {
+          "source": "a1c0921382faaa4252ca7eefd3aefbce3dc626bd",
+          "tree": "36cebbeb2a56b6d5fc4a7283a347cd9771f2c63d",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initialization-cli-a1c0921",
+          "owner": "36bf5098807966e90503f29e86788b68",
+          "container": "bigbrotr-implementation-initialization-cli-a1c0921",
+          "postgres": "bigbrotr-implementation-initialization-cli-a1c0921-pg",
+          "network": "bigbrotr-implementation-initialization-cli-a1c0921",
+          "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+          "state": "stopped-retained",
+          "source_files": 739,
+          "started_at": "2026-09-19T08:33:11.992866+00:00",
+          "network_id": "32fe4864e687757e7a508d8617d9174f7c42cbe3eefa34277635d7b8c0e1791d",
+          "postgres_id": "80ecad6fb09b31207702007b1091714e15dcbfde127a0fb2fb1f74c2fce898f9",
+          "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+          "container_id": "8484a9dcd3468979effa89b03651f85aa4836da68c2612ac2ff79357a3bbf889",
+          "completed_at": "2026-09-19T08:39:12.029511+00:00"
+        },
+        "audit": {
+          "status": "PASS",
+          "source": "a1c0921382faaa4252ca7eefd3aefbce3dc626bd",
+          "tree": "36cebbeb2a56b6d5fc4a7283a347cd9771f2c63d",
+          "source_files": 739,
+          "source_archive_sha256": "241b7101fb48244884aac17493ffce288aa58b0a8834317c124a86b51cca46c4",
+          "source_manifest_sha256": "fd712f5bed160364ed53df0cdfcae448f163c61242dd96b83823a802a075f40e",
+          "artifacts": {
+            "main": {
+              "sha256": "4554dd595191cbb5db1239c74d8bf2578d5c1676e4df8cb913dd28c46f6be708",
+              "bytes": 8791920,
+              "elf_machine": 62
+            },
+            "worker": {
+              "sha256": "c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227",
+              "bytes": 12608608,
+              "elf_machine": 62
+            }
+          },
+          "qualification": {
+            "initialization-cli": "FAIL"
+          },
+          "cases": {
+            "initialization-cli": 1
+          },
+          "build_ready": true,
+          "terminal": {
+            "container_id": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 143,
+              "Error": "",
+              "StartedAt": "2026-09-19T08:33:14.67012286Z",
+              "FinishedAt": "2026-09-19T08:39:10.839652828Z"
+            },
+            "postgres_id": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-09-19T08:33:12.664077335Z",
+              "FinishedAt": "2026-09-19T08:39:11.593470225Z"
+            }
+          },
+          "owned_containers": [
+            "8484a9dcd3468979effa89b03651f85aa4836da68c2612ac2ff79357a3bbf889",
+            "80ecad6fb09b31207702007b1091714e15dcbfde127a0fb2fb1f74c2fce898f9"
+          ],
+          "existing_containers_unchanged": 316,
+          "unrelated_containers_unchanged": 20,
+          "unrelated_running": 8,
+          "bigbrotr_running": 0,
+          "observed_at": "2026-09-19T08:39:12.029511+00:00"
+        },
+        "evidence_identity": {
+          "tar_bytes": 153600,
+          "tar_sha256": "33d49f7a17374ad4651584518ab9aeb4ec99beb46fb87118ad535fc4691574cb",
+          "files": {
+            "resources.json": {
+              "bytes": 1221,
+              "sha256": "ffee83501275db0598c616d548331e2167b280d80638faa87420b0083cef978d"
+            },
+            "audit.json": {
+              "bytes": 1857,
+              "sha256": "395b948cfa590d5d93479b8884eba179394e396b8f09372eab750c03c5460892"
+            },
+            "container.log": {
+              "bytes": 283,
+              "sha256": "7206fd1bd31c7912e6c8dde4d0c6421b25e355e869ed91a361ebfe391986028d"
+            },
+            "out/build/source-manifest.json": {
+              "bytes": 90556,
+              "sha256": "fd712f5bed160364ed53df0cdfcae448f163c61242dd96b83823a802a075f40e"
+            },
+            "out/native-tests/checks/cli-tests.log": {
+              "bytes": 2167,
+              "sha256": "9c61eb711b54e84843f2a93d56c7f7baaecbe80e98c4264910e792a88729eb90"
+            },
+            "out/native-tests/checks/clippy.log": {
+              "bytes": 394,
+              "sha256": "a6fc3d15b95fad2f34557482c1471949a4fc9de49982e2be9cb6b51221415e01"
+            },
+            "out/native-tests/checks/fixture.log": {
+              "bytes": 130,
+              "sha256": "de6e9bdf8623ca846b678be75645780e537573a84b654f4b5d2eb91a58a6ed44"
+            },
+            "out/native-tests/checks/parent-tests.log": {
+              "bytes": 4562,
+              "sha256": "139698937f4f0c64d412dd42063e00bc7b4052f61548661f5e8771112945ab91"
+            },
+            "out/native-tests/checks/result.json": {
+              "bytes": 4218,
+              "sha256": "24c4dd60393a1c127f1430a7b25bb7a60bfa090be175e0e7b2e39069e4e6b182"
+            },
+            "out/native-tests/ordered-build.log": {
+              "bytes": 626,
+              "sha256": "c2dc77a458d95d8e8022e9dd56fb87822d5b393a3ff85ca107e150425d635383"
+            },
+            "out/native-tests/ready.json": {
+              "bytes": 4911,
+              "sha256": "c1b0c7257f7b01c30c5e152ba8091ffbfbef065d25378d2008b2c0954a15d5d5"
+            },
+            "out/native-tests/result.json": {
+              "bytes": 2800,
+              "sha256": "15dd2a7eadba44d99a6e9c99cb37e8a0847dda157dbdccb12b236e7ab5471103"
+            },
+            "out/native-tests/worker-identity.json": {
+              "bytes": 104,
+              "sha256": "c76d6822c6cff10729edc0d68f41196558b6cdedee0779cbf55ce624e1e80878"
+            },
+            "fixture-diagnosis.json": {
+              "bytes": 2434,
+              "sha256": "72310e61a2c983b58a7fa652b3a14752b11bbc356151fa5b4dce960859b4badd"
+            },
+            "initialization-cli.json": {
+              "bytes": 5514,
+              "sha256": "0738073f395c1afdb94cedd07706cda880c454707ef5a58f617e2a388918fbf9"
+            },
+            "initialization-cli.log": {
+              "bytes": 896,
+              "sha256": "86afc34a20de7ac17f822deff00c19139a778102b3d5cb593513918c843ccf54"
+            }
+          }
+        },
+        "diagnosis": {
+          "status": "DIAGNOSTIC_PASS",
+          "scope": "corrected static fixture only; first harness outcome remains FAIL",
+          "source": "a1c0921382faaa4252ca7eefd3aefbce3dc626bd",
+          "configuration_sha256": "36f7ba87baeb74e1f90109a4f74aed98b5f3c7b3d2027d9b69f2e7a5a6301507",
+          "missing_root_field": "topology.local_roles",
+          "initialization_session": 75568,
+          "recovery_exit": 0,
+          "recovery": {
+            "bootstrap": "retired",
+            "catalog_id": "02020202020202020202020202020202",
+            "dataset_id": "01010101010101010101010101010101",
+            "format": "bigbrotr-catalog-initialization/1",
+            "manager_inspection": "verified",
+            "new_installation": false,
+            "ready": false,
+            "runtime_authorization": "not-granted",
+            "status": "installed"
+          },
+          "tables": [
+            "bigbrotr_archive|attempts|CatalogManager",
+            "bigbrotr_archive|installation|CatalogManager",
+            "bigbrotr_archive|owner|CatalogManager",
+            "bigbrotr_archive|scientific_schema|CatalogManager",
+            "public|ducklake_column|CatalogManager",
+            "public|ducklake_column_mapping|CatalogManager",
+            "public|ducklake_column_tag|CatalogManager",
+            "public|ducklake_data_file|CatalogManager",
+            "public|ducklake_delete_file|CatalogManager",
+            "public|ducklake_file_column_stats|CatalogManager",
+            "public|ducklake_file_partition_value|CatalogManager",
+            "public|ducklake_file_variant_stats|CatalogManager",
+            "public|ducklake_files_scheduled_for_deletion|CatalogManager",
+            "public|ducklake_inlined_data_tables|CatalogManager",
+            "public|ducklake_macro|CatalogManager",
+            "public|ducklake_macro_impl|CatalogManager",
+            "public|ducklake_macro_parameters|CatalogManager",
+            "public|ducklake_metadata|CatalogManager",
+            "public|ducklake_name_mapping|CatalogManager",
+            "public|ducklake_partition_column|CatalogManager",
+            "public|ducklake_partition_info|CatalogManager",
+            "public|ducklake_schema|CatalogManager",
+            "public|ducklake_schema_versions|CatalogManager",
+            "public|ducklake_snapshot|CatalogManager",
+            "public|ducklake_snapshot_changes|CatalogManager",
+            "public|ducklake_sort_expression|CatalogManager",
+            "public|ducklake_sort_info|CatalogManager",
+            "public|ducklake_table|CatalogManager",
+            "public|ducklake_table_column_stats|CatalogManager",
+            "public|ducklake_table_stats|CatalogManager",
+            "public|ducklake_tag|CatalogManager",
+            "public|ducklake_view|CatalogManager"
+          ],
+          "bootstrap_retired_and_backends": "t|0"
+        }
+      },
+      "first_source_verification": {
+        "revision": "a1c0921382faaa4252ca7eefd3aefbce3dc626bd",
+        "tree": "36cebbeb2a56b6d5fc4a7283a347cd9771f2c63d",
+        "files": 739,
+        "archive_sha256": "241b7101fb48244884aac17493ffce288aa58b0a8834317c124a86b51cca46c4",
+        "manifest_sha256": "fd712f5bed160364ed53df0cdfcae448f163c61242dd96b83823a802a075f40e"
+      },
+      "first_network_retirement": [
+        {
+          "root": "initialization-cli-a1c0921",
+          "network": "32fe4864e687757e7a508d8617d9174f7c42cbe3eefa34277635d7b8c0e1791d",
+          "owner": "36bf5098807966e90503f29e86788b68",
+          "status": "removed",
+          "containers": "retained-stopped",
+          "data": "retained",
+          "observed_at": "2026-09-19T08:41:43.691762+00:00"
+        }
+      ],
+      "first_outcome": "FAIL: generated fixture omitted explicit topology.local_roles; no marker created. Corrected diagnostic fixture initialized and recovered, exact 28 native +4 guard names/owners and retired bootstrap independently checked. Full harness not rerun on this source."
     }
   },
   "implementation_monitor_corrections_20260918": {

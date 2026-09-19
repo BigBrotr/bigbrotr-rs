@@ -21,21 +21,33 @@ readiness. Root remains the sole writer/integrator.
 
 ## Actual Git and review
 
-Implementation candidate is based on Mac main/origin/main
-8f79a5621a9f76071b0c17d435494e3427920c10. Root owns all current changes: the real
-archive initialize/recover command, one pinned route, shared fixed budget lanes,
-locked pristine observation, native fresh-credential consumer and CLI regressions.
-No merge/rebase or other contributor edit. Candidate is not yet native-qualified
-or pushed. Existing published recovery evidence below remains unchanged.
+Mac main HEAD a1c0921382faaa4252ca7eefd3aefbce3dc626bd is an unpublished candidate;
+origin/main remains 8f79a5621a9f76071b0c17d435494e3427920c10. Root owns subsequent
+harness corrections/extensions, user/engineering docs and this checkpoint/inventory.
+Production Rust is unchanged since a1c0921. No other contributor edits or merge/rebase.
 
-Local executable regression34372 failed as intended because initialize was absent.
-Sessions22301/10720 pass two route tests, eight binary tests and nine CLI cases;
-28469 adds one passing preflight regression for long manager names/native mTLS.
-Scoped Clippy, fmt, Python AST and diff checks pass. These are local evidence only.
-Independent read-only API/consumer review found excess simultaneous credential
-preparations, unintended existing-TLS route changes and late manager-name refusal;
-all three are corrected, with real 128MiB-payload CLI validation queued on Tux.
-No cancellation/join bypass found so far. Native CLI scenarios are NOT_RUN.
+Local RED34372 established the absent command; route2/binary8/CLI10 regressions and
+scoped Clippy pass. Native a1c0921 ordered builds, fixtures, archive-parent tests,
+binary/CLI tests and scoped Clippy pass. The first actual CLI harness FAILed before
+reservation: its fixture omitted mandatory explicit topology.local_roles. Corrected
+static input validates, and diagnostic session75568 actually initializes; subsequent
+recover independently confirms exact 28 native+4 guard names/owners, retired bootstrap
+and zero bootstrap backends. This diagnostic does not convert the first harness to PASS.
+
+Independent read-only AI review found three consumer issues before candidate commit:
+simultaneous preparations, changed legacy TLS selection and late long-manager refusal.
+All corrected and reviewed; no other concrete join/custody/recovery bypass found.
+It also found two harness oracle gaps, now corrected: exact names/schema/owners, and
+independent retirement SQL after lost COMMIT. Added two actual driver-cancel schedules
+and one real native libpq startup cancellation; these new cases are NOT_RUN.
+
+First lab was audited/retired (37678) and collected (50126): 16 raw files and all739
+Git source hashes verified; tar33d49f7a17374ad4651584518ab9aeb4ec99beb46fb87118ad535fc4691574cb.
+No active lab. Owned network32fe4864e687757e7a508d8617d9174f7c42cbe3eefa34277635d7b8c0e1791d
+removed after verified empty/stopped checks; containers/data retained. Eight unrelated
+running workloads unchanged. Latest first-lab resources/audit/diagnosis are inventoried
+under initialization_cli. Next bounded action: commit corrected harness/user docs,
+transfer a clean exact candidate, run full CLI matrix, then audit/retire and collect.
 
 ## Current initialization recovery qualification
 
@@ -137,22 +149,12 @@ Do not mechanically rerun unrelated suites.
 
 ## Next bounded action
 
-CLI integration started after the safe retired-lab checkpoint. Independent API
-review confirms custody-before-spawn, fixed separate application/native budget
-lanes, mandatory blocking-supervisor join and one pinned route. Scratch must also
-be disjoint from the archive root before permanent reservation. The owning archive
-contract now records command arguments and recovery outcomes. The executable
-entrypoint regression failed against the absent command and now passes locally.
-No new Tux resource or experiment is active.
-
-Wire the real explicit
-initializer/recovery CLI: separate privileged initializer credential from configured
-runtime manager, shared pinned transport/native route, positive native/driver join,
-actual custody reacquisition, exact observation/retirement, bounded natural backend
-drain, install_for_manager and fresh runtime-manager inspection. Exercise the actual
-executable's clean/partial/ambiguous/restart journeys; no further standalone helper
-qualification substitutes for that consumer. Configured native mutual TLS remains a
-gate before advertising that capability; implement/qualify it rather than dropping it.
+Complete the exact-source installed CLI matrix from the current candidate, including
+actual cancellation and blocked output. Keep missing TLS and nonempty/timeout drain
+scenarios explicit; no complete guarantee or P02 task closes without required evidence.
+Then advance the actual Control+Archive consumer through signed pending publication,
+read/export and restart. No additional standalone helper qualification substitutes
+for those user journeys. Native mTLS remains selected implementation work.
 
 A committed pristine reservation whose password was lost still requires explicit
 retirement/abandonment and a new database/root pair until a separately qualified
