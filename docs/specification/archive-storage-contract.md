@@ -183,9 +183,9 @@ The installed Control startup now inventories retained intent obligations when a
 Archive role is assigned locally, even if `--roles control` omits its execution.
 `begin_archive_attempt_scan` captures the dataset's highest issued ordinal under
 its actual Control owner. An opaque cursor binds that owner, dataset, expected
-catalog and fixed cutoff. `read_archive_attempt_page` returns at most64 bounded
+catalog and fixed cutoff. `read_archive_attempt_page` returns at most 64 bounded
 identity records in numeric ordinal order, using the existing dataset/ordinal
-index rather than OFFSET. Every ordinal from1 through the cutoff must appear;
+index rather than OFFSET. Every ordinal from 1 through the cutoff must appear;
 a historical catalog mismatch or missing prefix is incompatible state, never a
 filtered empty archive. Later issuance cannot extend the cutoff; `latest_issued`
 remains the current statement's historical observation, not a snapshot grant.
@@ -198,12 +198,16 @@ bounded page, uses its existing process reservation and deadlines, and joins the
 actual driver on every exit. Local driver termination does not prove immediate
 PostgreSQL backend exit: a blocked read may retain its server session fence until
 it proceeds or times out. A successor must still acquire that real fence and may
-return Busy in the interim; no owner metadata can substitute for it. Migration0009 is an explicit prerequisite; no startup
+return Busy in the interim; no owner metadata can substitute for it. Migration 0009 is an explicit prerequisite; no startup
 migration or journal repair occurs. The lifecycle record distinguishes observed
 issued history from resolution, always reporting publication authority not granted.
 This inventory is not custody reacquisition, catalog outcome resolution, source
 input reconstruction or Archive readiness. Missing journals and incomplete input
-metadata remain recovery gates. Native acceptance is pending for this change.
+metadata remain recovery gates. [Native evidence at a010c15](../implementation/evidence/p02-control-archive-inventory-native-20260919.json)
+qualifies the bounded 134-intent adapter and eight actual runtime cases with 130
+synthetic intents; the corrected harness is `d32d303`. It records historical mismatch,
+real blocked cancellation, residual session fencing and all preceding failures.
+This is a bounded functional workload, not aged capacity or Archive recovery.
 
 Infrastructure endpoints are operator-supplied trusted routes, distinct from
 untrusted relay/discovery URLs. Private PG/CH/S3/RPC endpoints are valid; keep

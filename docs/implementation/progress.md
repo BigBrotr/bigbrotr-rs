@@ -20,22 +20,59 @@ Control-only and rejects other roles. Root remains sole writer/integrator.
 
 ## Actual Git and review
 
-Product and evidence history through2868abe70254e8251e27b9eeda4b9bf701aeba80
-is verified on private origin/main (push58044 exit0). Native-tested product source
-is61271e277d3560da7ca305fb1d5dc8def326c912; baseline isdbb3aea17dd05ee00eb212ec2c652f1930497bfd.
-Mac main/origin matched2868abe with a clean tree immediately before this checkpoint
-refresh. Only this root-owned checkpoint is being updated; its following commit
-changes no tested code. No contributor edits, merge/rebase or active experiment.
+Mac main is d32d3035ff4b4689c642568d03a40264acfcf948, three unpublished commits
+ahead of private origin/main ede3db437b8a9fdb4215313bb5712407d625a918.
+Product source a010c153871569059a333633e4108ba08024f626 was native-tested;
+ca6be4f/d32d303 change only the runtime harness/documentation. Root owns current
+evidence/docs and fixture-compatibility follow-up edits. No contributor edits or
+merge/rebase. Private push follows the final checks and evidence review.
 
-Independent read-only AI source review found the missing PUBLIC oracle before
-correction qualification; added explicit DB/schema ACL absence. It then found
-only a textual delegation-ban conflict, now clarified with the exact manager
-CONNECT/public USAGE exception. No code blocker. Upgrade scope is explicit:
-fresh installed catalog with each grant option removed, not populated historical
-migration. Reviewer performed no edits or Tux execution. Offline evidence review verified both archives/all31files, six cases, two
-refusals, rights/PUBLIC, proxy/blockers, signed fixture readbacks and logs without
-discrepancy; no live host/ELF reinspection or rerun. Root reviewed full changed source/diff, all6 result records and
-complete native build/test logs. No review substitutes for execution.
+Independent read-only source review found no production defect. It caught a PID
+reuse risk in the new harness, fixed before candidate testing with exact argv/
+executable validation and pidfd signals. It confirmed the observed distinction
+between local driver join and residual PG session ownership. Offline evidence
+review verified all 62 raw files/archive identities, all 752 Git/source hashes,
+harness d32d303 and all eight cases/nine process outcomes without discrepancy;
+no live host rerun or ELF reinspection by the reviewer. Root read the complete changed implementation, owning contract,
+new case source, native build/test logs and all actual runtime result records.
+
+## Control startup inventory qualified
+
+[Native evidence](evidence/p02-control-archive-inventory-native-20260919.json)
+at a010c15 (runtime harness d32d303) records 22 Rust cases, scoped Clippy, actual
+Control issuance/scan and eight actual CLI startup cases. New owner-bound cursors
+capture a fixed cutoff, return at most 64 bounded identities and reject holes or
+historical catalog mismatch. A failed/cancelled page never advances; the session
+is poisoned. Actual serve inventories before idle when Archive is locally assigned,
+refreshes policy/owner authority between pages, and retains driver ownership through
+join. Migration 0009 is explicit; no Archive execution or recovery is advertised.
+
+Adapter: 132 captured intents in 64/64/4 pages exclude two later issuances; fresh scan
+finds 134. Literal identities, old-owner cursor refusal, old catalog mismatch,
+missing ordinal 65 and actual blocked-page cancellation are discriminating. Runtime:
+130 intents in 3 pages, restart, empty history, old 61271e2 executable negative control,
+historical mismatch before idle, cancellation, residual session fencing and missing
+migration refusal. Nine processes all terminate. Cancellation under the actual
+relation blocker takes 2.0667 s in this case. PG PID 522 retains the exact backend_start
+and granted Control advisory lock; a contender returns Busy and changes neither
+owner nor role history. Owned blocker rollback precedes backend disappearance and
+successful fresh epoch 6. All logical attempt rows remain unchanged.
+
+Preserved failures: fixture 0444 secrets refused before migration (owned empty DB
+verified, removed, and only fixture modes corrected to 0400); the first matrix
+passed 5 cases then incorrectly expected immediate remote backend disappearance while
+the blocker remained; ca6be4f rejected accompanying harness README before cases.
+Corrected d32d303 adds the stronger residual-fence oracle without changing product.
+Initial resource audit checked zero Control backends and stopped peers, then failed
+on Docker Mounts array order. Corrected set comparison verified all 332 prior
+containers/mounts/networks/lifecycles unchanged without restarting stopped resources.
+
+Final fixture-only adjustment makes the new scan extension explicit with --scan,
+preserving the default two-row archive_attempt_probe consumed by existing catalog
+fixtures. Mac Clippy passes; this dispatch-only adjustment has no new native run
+and is not included in the a010c15 artifact claim. Product code is unchanged.
+Mac 8 binary + 1 attempt + 1 entrypoint tests passed; final artifact/link checks pass.
+No whole old runtime suite, signed archive or hosted CI rerun is claimed here.
 
 ## Installed signed publication qualified
 
@@ -73,27 +110,28 @@ artifact/document/link/diff checks PASS after documentation updates.
 
 ## Owned resources and evidence
 
-No active experiment. Terminal audit60492 and collection17965 exited0 at
-2026-09-19T10:40:54.361580+00:00. Runner/PG stopped-retained, no OOM;
-330 preexisting container/mount/network/lifecycle states unchanged,8 unrelated
-running,0 BigBrotr. Root /home/tux/bigbrotr-implementation-20260917/runs/installed-publication-61271e2;
-owner eaa70c488f711089ad4030a96404a1a4.
-Runner 51953abe85796e82df2778fac54d9ab2dd4342de3cec9440a5f4d5e3e4262f34 stopped143;
-PG 1b032723926ad94dca8a6254d7f590f867ceea3cd8aefa5fb3a96feb9c13a60b stopped0.
-Network 64e91b6798545d6f7a320ec92d72430f34bf050af50543750b518162139e7feb empty-retained.
-Runner2CPU/6GiB/512PIDs,PG1CPU/1GiB/128PIDs,internal/nohostports.
-Main305d3f3b204f00337875269d65e5c927eb88af67cb8ba1c51fd365aa308d46c5 (8778544bytes).
+No active experiment. Audit 82002 and collection 56082 exited 0; final audit observed
+2026-09-19T11:16:54.446511+00:00. Runner/PG stopped-retained, no OOM, 8 unrelated
+running, 0 BigBrotr. Root /home/tux/bigbrotr-implementation-20260917/runs/intent-inventory-a010c15;
+owner 5e1ebab4055d1b03d6ca3d8589fa155c.
+Runner 4901f6029f96ad021cb4f95980f6c2242a6f3aa698ec8bccc49c589b841b9e7e exited 143;
+PG 0ac35440317b69262d9dd6155c2b6be3b290016c45c3291395b693f682cee4a3 exited 0.
+Network 06f8c4596e6601cfeb1398bda389cc3e678a7c29f579a0621b711769eca6fde8 empty-retained.
+Runner 2 CPU/6 GiB/512 PIDs; PG 1 CPU/1 GiB/128 PIDs; internal/no host ports.
+Main 57cc399d1bb33aacb4f67951571a235182b2cab8c7f9e79456d13234c6cda857 (8848040 bytes).
+Probe fdb5db996f7728512fdac9f3cf073090c8fc7bd1afae3e435e025d83595efc2c.
 Worker c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227 unchanged.
-Latest copied cache/assets:installed-publication-61271e2/out/{build,archive-worker}.
-Never restart retired labs.
+Latest copied build cache: intent-inventory-a010c15/out/build; native assets remain
+installed-publication-61271e2/out/archive-worker. Never restart retired labs.
 
-Raw .research/implementation/archive-worker/installed-publication/qualified:15files,
-tarcaddc7fbc12a635c682212d3aa6344481133e85210e2605c4c8cc3b3e31ac02f.
-Mac Git archive and all749 source hashes independently match. Baseline:16files,
-tar9c95ace767cd89687c372ad2f1e1769af20a3c60b63368b0d36e46c2e3c0d886.
-No credentials in evidence. Inventory installed_publication owns resources/audits/
-identities. Only verified empty stopped3ad4c64/baseline networks retired to free
-Docker address pools; containers/data retained. No unrelated cleanup.
+Raw .research/implementation/archive-worker/intent-inventory/qualified: 62 files,
+tar f4e785e4e4ec8065c5cffaf8290602011b54cc6160190280f94f2a2820a211b7.
+Mac Git archive and all 752 source hashes independently match. Harnessd32d303 clean
+Git/tree and file hashes independently checked; product input changes excluded.
+Credentials excluded. Inventory intent_inventory owns resources/audit/identities.
+Only the verified empty stopped 61271e2 network retired to free Docker address
+pools; its containers/data retained. No unrelated cleanup. Previous installed
+publication baseline/qualified evidence stays under its prior raw root and report.
 
 ## Earlier qualified boundaries and findings
 
@@ -136,53 +174,28 @@ External feedback reread previously; it records the earlier scoped closures too.
 
 ## Next bounded action
 
-Root is implementing the next actual Control consumer for P01-T05/T06 and
-P02-T04: fixed-cutoff, owner-bound,64-row intent enumeration before startup idle
-when Archive is locally assigned. No migration/dependency/worker/journal format
-change. Runtime reports inventory only; Archive execution remains refused.
-Root-owned edits: archive_attempt.rs, control_owner.rs, serve.rs, actual adapter
-fixture, native build/runtime cases and owning documentation. Baseline is clean
-ede3db437b8a9fdb4215313bb5712407d625a918; unpublished exact-source qualification
-candidate follows this checkpoint. Mac8binary+1attempt+1entrypoint tests pass;
-initial Clippy found an unnecessary fixture mut, corrected. Final scoped Clippy
-passes. Initial test compile discriminated missing scan methods, not native
-behavior. No new native case has run yet. Read-only reviewer is checking these
-changes; root remains sole writer. Fresh isolated native build is now active at sourcea010c153871569059a333633e4108ba08024f626.
-Transfer80876 exited0. Root /home/tux/bigbrotr-implementation-20260917/runs/intent-inventory-a010c15;
-owner5e1ebab4055d1b03d6ca3d8589fa155c; runner4901f6029f96ad021cb4f95980f6c2242a6f3aa698ec8bccc49c589b841b9e7e;
-PG0ac35440317b69262d9dd6155c2b6be3b290016c45c3291395b693f682cee4a3;
-network06f8c4596e6601cfeb1398bda389cc3e678a7c29f579a0621b711769eca6fde8.
-Full preflight preserved; runner2CPU/6GiB andPG1CPU/1GiB, internal/nohostports.
-Only the verified empty stopped61271e2 network retired; containers/data retained.
-Mac now has root-owned inventory/checkpoint follow-up changes only.
-Independent source review found no production defect and identified a PID-reuse
-risk in the new harness; corrected to exact argv/executable validation and pidfd
-signaling before this candidate. Native ordered build,22Rust cases, scoped Clippy and full issuance/scan adapter
-pass at a010c15. Runtime first refused the fixture's0444secret files before
-migration; preserved that failure, verified its DB empty and replaced only owned
-fixture modes with0400. Second run passed5cases before an incorrect harness
-assertion expected a remote backend to vanish while its relation blocker remained.
-Product exited4 and joined its local driver; PG retained the blocked read/session
-fence. Read-only review confirms that is not a production defect. The corrected
-harness now additionally requires exact PID/backend_start/advisory fence, Busy
-and unchanged owner/role history for a contender, then blocker rollback, remote
-closure and fresh epoch. Preserve failed reports; native rerun pending with same
-binary a010c15 and separately committed harness. Active lab remains running.
+Close the current evidence/diff review and private push, then continue actual
+installed compact Control+Archive lifecycle/ownership through P01-T05/T06 and
+P02-T03/T04. Enumeration now has an actual startup consumer; do not repeat its
+qualification as a substitute for implementing recovery and dispatch.
 
-Next: run the candidate on fresh inventoried Tux resources, inspect actual scan
-pages/cancellation and real serve journeys, preserve failures, review/record and
-push the coherent slice. Continue the installed Archive lifecycle afterward;
-this inventory does not qualify recovery or dispatch.
+Next implementation responsibility: explicit persistent coordinator/custody state
+root and complete retained input linkage, consumed by installed initialization and
+serve recovery. Read complete config registry/resolve/policy selected-root checks,
+archive initialization preflight/installation, LocalAttempt and owning storage/
+deployment contracts before editing. Do not use scratch or archive data as journal
+storage, create missing journals opportunistically, or treat empty catalog lookup
+as a complete recovery result. Preserve explicit initialization/upgrade semantics.
 
-Independent startup review identified required connections still absent: stable
-persistent custody root distinct from archive/spill/ingest, retained complete
-source-input linkage for ReceiptExpectation, separate SELECT-only reader input,
-Ingest-owner handoff and shared Control/catalog/native budgets with positive
-joins. An issued Control attempt without its local journal can precede a still
-live old coordinator creating custody: never recreate it or infer NotImported.
-All historical obligations need reconciliation, not merely the latest owner.
-Initial ingest registration/admission remains bound to its original Control
-identity/epoch1 and cannot be copied as a restart protocol.
+Independent startup review identifies remaining real connections: separate
+SELECT-only reader input, Ingest-owner pending handoff, shared Control/catalog/
+native budgets and positive joins while heartbeats remain active. An issued
+Control attempt without a local journal can precede a still-live old coordinator
+creating custody: require positive coordinator exclusion before interpreting it.
+The digest alone does not reconstruct ReceiptExpectation's count/ranges or source
+membership. Initial ingest registration/admission is bound to its original Control
+identity/epoch 1; it is not a restart protocol. Existing per-attempt custody handles
+registered driver/native lifetimes but not the issuance-before-journal gap.
 
 Pristine stranded reservations require a new database/root pair; no reprovisioning,
 runtime superuser promotion or implicit serve initialization. Source policy/budgets/

@@ -20,7 +20,7 @@ obtained backend ownership and validated both stored documents. This record is
 local status, not a reusable authorization credential.
 
 When the deployment assigns Archive locally, Control first inventories every
-issued publication intent through a fixed startup cutoff, in pages of64. The
+issued publication intent through a fixed startup cutoff, in pages of 64. The
 `archive_intents` field reports that cutoff, observed prefix and page count.
 `resolution=not-performed` and `publication_authority=not-granted` are explicit:
 a nonempty inventory contains recovery obligations; an empty inventory grants no
@@ -81,3 +81,11 @@ confirmed the then-open compact-JSON/JSONB size mismatch. The later
 [JSONB limit qualification](../implementation/evidence/p01-jsonb-limit-native-20260918.json)
 records its correction and exact boundary cases; the earlier report is historical
 evidence, not an outstanding MON-005 failure.
+
+[Startup inventory qualification](../implementation/evidence/p02-control-archive-inventory-native-20260919.json)
+at `a010c15` (harness `d32d303`) exercises eight actual executable cases, including
+130 retained intents, restart, historical catalog mismatch and cancelled startup.
+A blocked PostgreSQL read can outlive local driver termination; its session fence
+continues to refuse a successor with Busy until the backend actually exits. The
+case observes that fence, releases the owned test blocker, then verifies a fresh
+owner. It does not treat local driver join as remote backend termination.

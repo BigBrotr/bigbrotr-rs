@@ -1,0 +1,239 @@
+{
+  "format": "bigbrotr-control-archive-inventory-evidence/1",
+  "observed_at": "2026-09-19T11:16:54.446511+00:00",
+  "status": "PASS",
+  "scope": "P01-T05/T06 and P02-T04 bounded retained-intent inventory in the actual Control startup; not Archive recovery, publication authority or M1",
+  "source": {
+    "revision": "a010c153871569059a333633e4108ba08024f626",
+    "tree": "c0844283709eb377737fe321cb525d48d3548a2e",
+    "files": 752,
+    "archive_sha256": "60a2dab913c9df6faece48ca93b0666492fbae93d445e6951abb9d7bdff75f6f",
+    "manifest_sha256": "f157a30999f9a4d480c8139f91f33d3570ef8788662f18e9932f541f9a45ea40",
+    "harness_revision": "d32d3035ff4b4689c642568d03a40264acfcf948",
+    "harness_tree": "88a84efd4159610f8cf52fe7b10acae9d61f0926",
+    "mac_git_archive_and_all_file_hashes_match": true
+  },
+  "environment": {
+    "host": "Tux",
+    "target": "x86_64-unknown-linux-gnu",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "cargo_lock_sha256": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215",
+    "runner_limits": {
+      "cpus": 2,
+      "memory_bytes": 6442450944,
+      "pids": 512
+    },
+    "postgres_limits": {
+      "cpus": 1,
+      "memory_bytes": 1073741824,
+      "pids": 128
+    },
+    "network": "internal, no host ports"
+  },
+  "artifacts": {
+    "main": {
+      "sha256": "57cc399d1bb33aacb4f67951571a235182b2cab8c7f9e79456d13234c6cda857",
+      "bytes": 8848040,
+      "elf_machine": 62
+    },
+    "probe": {
+      "sha256": "fdb5db996f7728512fdac9f3cf073090c8fc7bd1afae3e435e025d83595efc2c",
+      "bytes": 2621768,
+      "elf_machine": 62
+    }
+  },
+  "implemented": [
+    "Opaque owner-bound cursor captures a fixed dataset ordinal cutoff; keyset pages return at most64 bounded identities without OFFSET or history-sized application storage.",
+    "All ordinals1..cutoff are required. Historical catalog mismatch, holes and malformed identities refuse instead of filtering/advancing. Later issuance is outside the fixed cutoff; latest_issued remains an observation at each statement.",
+    "Page rollback completes before cursor advancement. Failed/cancelled operations poison ControlSession; an old cursor cannot cross an owner change.",
+    "Actual serve --roles control inventories before idle when Archive is locally assigned, polls policy and renews owner authority between pages, retains its existing budget and joins the local driver on every exit.",
+    "Lifecycle output explicitly reports resolution not-performed and publication authority not-granted. Migration0009 is required explicitly for this consumer; Archive execution stays refused."
+  ],
+  "mac": {
+    "tests": {
+      "binary": 8,
+      "archive_attempt": 1,
+      "control_runtime_entrypoint": 1
+    },
+    "scoped_clippy": "PASS",
+    "initial_test_compile": "missing scan methods (E0599), not native behavior evidence"
+  },
+  "native": {
+    "ordered_build": "PASS",
+    "tests": {
+      "binary": 8,
+      "archive_attempt": 1,
+      "control_runtime_entrypoint": 1,
+      "control_schema": 12,
+      "failed": 0,
+      "ignored": 0
+    },
+    "scoped_clippy": "PASS",
+    "adapter": {
+      "status": "PASS",
+      "retained_rows": 134,
+      "fixed_cutoff": 132,
+      "page_sizes": [
+        64,
+        64,
+        4
+      ],
+      "checks": [
+        "empty history",
+        "literal attempt identity and ordinal membership",
+        "two later issuances excluded without false latest flag",
+        "fresh owner reads current134",
+        "old-owner cursor rejected without poisoning new owner",
+        "historical catalog mismatch on second page",
+        "ordinal65 moved to1000 produces a gap refusal",
+        "failed page cursor remains64 and session is poisoned",
+        "actual PG relation blocker before page cancellation; cursor remains0 and session is poisoned",
+        "complete retained row comparison; only deliberate corruption-fixture xmin changes normalized"
+      ]
+    },
+    "runtime": {
+      "status": "PASS",
+      "cases": [
+        {
+          "name": "negative-control-old-runtime-misses-inventory",
+          "status": "PASS",
+          "baseline_source": "61271e277d3560da7ca305fb1d5dc8def326c912"
+        },
+        {
+          "name": "empty-history-distinct-from-unresolved",
+          "status": "PASS"
+        },
+        {
+          "name": "populated-complete-history",
+          "status": "PASS",
+          "rows": 130,
+          "pages": 3
+        },
+        {
+          "name": "restart-complete-history",
+          "status": "PASS",
+          "rows": 130,
+          "pages": 3
+        },
+        {
+          "name": "historical-mismatch-before-idle",
+          "status": "PASS"
+        },
+        {
+          "name": "blocked-startup-cancel-and-join",
+          "status": "PASS",
+          "elapsed_seconds": 2.0667173550464213,
+          "blocker": [
+            {
+              "pid": 522,
+              "backend_start": "2026-09-19T11:14:55.677327+00:00",
+              "wait_event": "relation",
+              "blockers": [
+                515
+              ]
+            }
+          ],
+          "residual": {
+            "pid": 522,
+            "backend_start": "2026-09-19T11:14:55.677327+00:00",
+            "control_fence": true
+          },
+          "residual_owner": "successor refused Busy"
+        },
+        {
+          "name": "fresh-owner-after-cancelled-scan",
+          "status": "PASS"
+        },
+        {
+          "name": "explicit-0009-required-no-runtime-migration",
+          "status": "PASS"
+        }
+      ],
+      "actual_processes": 9,
+      "all_processes_terminal": true,
+      "logical_attempt_rows_unchanged": true
+    }
+  },
+  "negative_control": {
+    "source": "61271e277d3560da7ca305fb1d5dc8def326c912",
+    "binary_sha256": "305d3f3b204f00337875269d65e5c927eb88af67cb8ba1c51fd365aa308d46c5",
+    "result": "actual prior executable reaches idle but fails the independent archive_intents oracle; fenced shutdown committed"
+  },
+  "failures_and_corrections": [
+    {
+      "stage": "local compile/lint",
+      "outcome": "An unnecessary mutable fixture binding failed scoped Clippy; corrected before native candidate."
+    },
+    {
+      "stage": "runtime fixture permissions",
+      "outcome": "0444 secret files refused before migration; zero cases. Saved failure; verified the owned DB had no control schema/user tables/other clients, removed only that empty DB and supplied0400 files. Product and harness unchanged."
+    },
+    {
+      "stage": "first runtime matrix",
+      "outcome": "Five cases passed; an incorrect immediate remote-backend disappearance assertion failed after cancelled local exit. PG could retain the blocked read and session fence. No product failure inferred."
+    },
+    {
+      "stage": "corrected harness",
+      "outcome": "ca6be4f exact-artifact guard refused its accompanying experiment README before cases. d32d303 permits that named documentation path; production source remains a010c15."
+    },
+    {
+      "stage": "residual session oracle",
+      "outcome": "d32d303 proves exact residual PID522/backend_start and granted Control advisory lock, contender Busy without idle or owner/role mutations, then owned blocker rollback, bounded backend disappearance and fresh owner epoch6. Local cancellation took2.0667173550464213seconds including harness overhead; this is one measurement, not a universal SLA."
+    },
+    {
+      "stage": "resource audit",
+      "outcome": "First audit checked zero Control backends and stopped owned peers, then failed on Docker Mounts array order. Preserved source/trace; independently compared complete mount sets and terminal states without restarting.332 preexisting containers unchanged."
+    }
+  ],
+  "compatibility": {
+    "sql_checksums": "unchanged",
+    "dependencies": "unchanged",
+    "worker_wire_and_journals": "unchanged",
+    "runtime": "locally assigned Archive requires migration0009 even with --roles control",
+    "fixture_followup": "After qualification, scan extension moved to explicit --scan so default two-row archive_attempt_probe remains compatible with catalog consumers. Product code unchanged; fixture switch passed Mac Clippy and source review, not a new native run."
+  },
+  "resources": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/intent-inventory-a010c15",
+    "owner": "5e1ebab4055d1b03d6ca3d8589fa155c",
+    "container_id": "4901f6029f96ad021cb4f95980f6c2242a6f3aa698ec8bccc49c589b841b9e7e",
+    "postgres_id": "0ac35440317b69262d9dd6155c2b6be3b290016c45c3291395b693f682cee4a3",
+    "network_id": "06f8c4596e6601cfeb1398bda389cc3e678a7c29f579a0621b711769eca6fde8",
+    "state": "stopped-retained",
+    "runner_exit": 143,
+    "postgres_exit": 0,
+    "oom": false,
+    "network": "empty-retained",
+    "existing_containers_unchanged": 332,
+    "unrelated_running": 8,
+    "bigbrotr_running": 0,
+    "previous_network_retirement": [
+      {
+        "root": "installed-publication-61271e2",
+        "network": "64e91b6798545d6f7a320ec92d72430f34bf050af50543750b518162139e7feb",
+        "owner": "eaa70c488f711089ad4030a96404a1a4",
+        "status": "removed",
+        "containers": "retained-stopped",
+        "data": "retained",
+        "observed_at": "2026-09-19T11:06:11.787706+00:00"
+      }
+    ]
+  },
+  "raw": {
+    "root": ".research/implementation/archive-worker/intent-inventory/qualified",
+    "files": 62,
+    "tar_sha256": "f4e785e4e4ec8065c5cffaf8290602011b54cc6160190280f94f2a2820a211b7",
+    "tar_bytes": 307200,
+    "manifest_path": ".research/implementation/archive-worker/intent-inventory/evidence-identity.json",
+    "credentials_excluded": true
+  },
+  "limits": [
+    "This inventories immutable intent obligations, not outcome resolution, journal exclusion, complete input reconstruction, replay permission, source protection or pending ACK.",
+    "The runtime workload is130 synthetic attempts; adapter134. No aged-scale or maximum-capacity claim.",
+    "No Archive role execution, local journal initialization, catalog connection or native archive worker is started by this consumer.",
+    "Same-boot/cross-boot recovery, source policy, shared multi-role budgets, full publication/read/export/restart M1, ordinary Compose/release and Linux arm64 remain unqualified.",
+    "The old full16-case runtime suite and historical MON regression harness were not re-executed here; only the stated22native Rust tests and8new actual runtime cases passed."
+  ]
+}

@@ -10952,7 +10952,7 @@
       "next": "Installed Control+Archive service ownership/pending dispatch for M1; no active experiment"
     },
     "intent_inventory": {
-      "status": "native-build-running",
+      "status": "native-adapter-and-eight-runtime-cases-pass",
       "local_raw_root": ".research/implementation/archive-worker/intent-inventory",
       "scope": "fixed-cutoff Control archive intent enumeration and actual startup inventory; no native Archive execution or recovery",
       "resources": {
@@ -10965,13 +10965,14 @@
         "network": "bigbrotr-implementation-intent-inventory-a010c15",
         "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
         "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
-        "state": "running",
+        "state": "stopped-retained",
         "source_files": 752,
         "started_at": "2026-09-19T11:06:18.048171+00:00",
         "network_id": "06f8c4596e6601cfeb1398bda389cc3e678a7c29f579a0621b711769eca6fde8",
         "postgres_id": "0ac35440317b69262d9dd6155c2b6be3b290016c45c3291395b693f682cee4a3",
         "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
-        "container_id": "4901f6029f96ad021cb4f95980f6c2242a6f3aa698ec8bccc49c589b841b9e7e"
+        "container_id": "4901f6029f96ad021cb4f95980f6c2242a6f3aa698ec8bccc49c589b841b9e7e",
+        "completed_at": "2026-09-19T11:16:54.446511+00:00"
       },
       "previous_network_retirement": [
         {
@@ -10983,7 +10984,333 @@
           "data": "retained",
           "observed_at": "2026-09-19T11:06:11.787706+00:00"
         }
-      ]
+      ],
+      "audit": {
+        "status": "PASS",
+        "source": "a010c153871569059a333633e4108ba08024f626",
+        "tree": "c0844283709eb377737fe321cb525d48d3548a2e",
+        "source_files": 752,
+        "source_archive_sha256": "60a2dab913c9df6faece48ca93b0666492fbae93d445e6951abb9d7bdff75f6f",
+        "source_manifest_sha256": "f157a30999f9a4d480c8139f91f33d3570ef8788662f18e9932f541f9a45ea40",
+        "artifacts": {
+          "main": {
+            "sha256": "57cc399d1bb33aacb4f67951571a235182b2cab8c7f9e79456d13234c6cda857",
+            "bytes": 8848040,
+            "elf_machine": 62
+          },
+          "probe": {
+            "sha256": "fdb5db996f7728512fdac9f3cf073090c8fc7bd1afae3e435e025d83595efc2c",
+            "bytes": 2621768,
+            "elf_machine": 62
+          }
+        },
+        "baseline_sha256": "305d3f3b204f00337875269d65e5c927eb88af67cb8ba1c51fd365aa308d46c5",
+        "harness": {
+          "revision": "d32d3035ff4b4689c642568d03a40264acfcf948",
+          "tree": "88a84efd4159610f8cf52fe7b10acae9d61f0926",
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/intent-inventory-a010c15/harness-d32d303",
+          "artifact_revision": "a010c153871569059a333633e4108ba08024f626",
+          "files": {
+            "experiments/control-runtime/archive_inventory.py": "2bbff6b7e934559df728a8bc53df7a5a956fbd93e5f6fa21214d14b64911aee1",
+            "experiments/control-runtime/README.md": "c03e34bde5937b4af2c401cfea7981ff9ffae3216672a6a5fcdc1314391c539f"
+          }
+        },
+        "runtime_status": "PASS",
+        "runtime_cases": 8,
+        "terminal": {
+          "container_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-19T11:06:20.756455193Z",
+            "FinishedAt": "2026-09-19T11:15:34.755821017Z"
+          },
+          "postgres_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-19T11:06:18.731667113Z",
+            "FinishedAt": "2026-09-19T11:15:36.000860904Z"
+          }
+        },
+        "owned_containers": [
+          "4901f6029f96ad021cb4f95980f6c2242a6f3aa698ec8bccc49c589b841b9e7e",
+          "0ac35440317b69262d9dd6155c2b6be3b290016c45c3291395b693f682cee4a3"
+        ],
+        "existing_containers_unchanged": 332,
+        "unrelated_running": 8,
+        "bigbrotr_running": 0,
+        "control_backends_before_shutdown": 0,
+        "backend_observation": "initial audit prefix before owned shutdown; preserved source/failed Mounts trace, not re-executed",
+        "observed_at": "2026-09-19T11:16:54.446511+00:00"
+      },
+      "raw_identity": {
+        "tar_bytes": 307200,
+        "tar_sha256": "f4e785e4e4ec8065c5cffaf8290602011b54cc6160190280f94f2a2820a211b7",
+        "files": {
+          "resources.json": {
+            "bytes": 1213,
+            "sha256": "9dc95692edc3e775ff4de54ecaacb409c895dfc429caf0f8f5d65d447572f279"
+          },
+          "audit.json": {
+            "bytes": 2564,
+            "sha256": "5a25f499663155626d447299f5324f6ad54dabd3719188d3b8402dc51cf07af4"
+          },
+          "container.log": {
+            "bytes": 4282,
+            "sha256": "e1e448509db341193535e1108564dea57b7b87a3b5a367467a0b95ea1ef806f8"
+          },
+          "out/build/source-manifest.json": {
+            "bytes": 92309,
+            "sha256": "f157a30999f9a4d480c8139f91f33d3570ef8788662f18e9932f541f9a45ea40"
+          },
+          "out/native-tests/adapter/adapter.log": {
+            "bytes": 943,
+            "sha256": "72860c15948dfe06c8387226db88ce56d7b86f5b8b6c85a397cc56b6de3a59ad"
+          },
+          "out/native-tests/adapter/result.json": {
+            "bytes": 2646,
+            "sha256": "24106e266d85d0ca780b3c2d542076121f57896e880f56f77b27cb2effc4f54f"
+          },
+          "out/native-tests/build.log": {
+            "bytes": 695,
+            "sha256": "3825193ae936c8f1ba99177dc793c640ec013bb8e88e004107dfb5cf8760897b"
+          },
+          "out/native-tests/checks/clippy.log": {
+            "bytes": 297,
+            "sha256": "15fe905db7c765ae310f141ae8668a3354c6b8e7a961fc7e41ec9f12e67d065b"
+          },
+          "out/native-tests/checks/fixture.log": {
+            "bytes": 129,
+            "sha256": "dc87505efe57ad640bc6e79321da5b176633b48d857ca4d22e7c5e4d03a7a1be"
+          },
+          "out/native-tests/checks/result.json": {
+            "bytes": 3653,
+            "sha256": "0232339147a7bffcf740d94d6279805915e7993c1bb6fa9f15431c875499dcce"
+          },
+          "out/native-tests/checks/tests.log": {
+            "bytes": 2868,
+            "sha256": "a04b0bef7c3d7b1372405f3d5c7e19713154899dfb60b1f7a910a83e48624a50"
+          },
+          "out/native-tests/ready.json": {
+            "bytes": 4659,
+            "sha256": "acb3147c673bf5f20dfb4f0d9339774114433ea38c8ec8db0977ac92a49bdfe9"
+          },
+          "out/native-tests/result.json": {
+            "bytes": 2724,
+            "sha256": "03f358e980afe1693989ee4497bf8e2d8203f5cccfef5250f297fbb5e2ae04d6"
+          },
+          "out/native-tests/worker-identity.json": {
+            "bytes": 104,
+            "sha256": "c76d6822c6cff10729edc0d68f41196558b6cdedee0779cbf55ce624e1e80878"
+          },
+          "out/inventory/baseline.stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "out/inventory/baseline.stdout": {
+            "bytes": 531,
+            "sha256": "89b242c2bdfc6c509660c0c9dc84e10ef9a6b6a190a3b0449fdb1ba865a1385e"
+          },
+          "out/inventory/cancelled-scan.stderr": {
+            "bytes": 42,
+            "sha256": "06ec750467164c9a49738662b141649cf4e47e6befef2e269aa26fddeb219aa0"
+          },
+          "out/inventory/cancelled-scan.stdout": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "out/inventory/empty.stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "out/inventory/empty.stdout": {
+            "bytes": 739,
+            "sha256": "da3a80730308126e5a0a9845d0612da72d5947918c532e355e512e8533d47f79"
+          },
+          "out/inventory/historical-mismatch.stderr": {
+            "bytes": 50,
+            "sha256": "0e554e3f88d0cb6d5bdea19074b9ca3bcc088e4fa00421f8cf0804540f277d5b"
+          },
+          "out/inventory/historical-mismatch.stdout": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "out/inventory/populated.stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "out/inventory/populated.stdout": {
+            "bytes": 743,
+            "sha256": "79dfc46f1a4c278b71d71852befcb2f0f86ba061a199407762f1fc2123b2fd0a"
+          },
+          "out/inventory/restart.stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "out/inventory/restart.stdout": {
+            "bytes": 743,
+            "sha256": "48e17315f8cc0495f351e5930ae3764c0924922d0c20dcc2457bf2e64040f308"
+          },
+          "out/inventory/seed.stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "out/inventory/seed.stdout": {
+            "bytes": 62,
+            "sha256": "48d9255074d57f42637629b1b18a3661ac26bafe05d03744c23c51d81fbebcb9"
+          },
+          "out/inventory_qualified/after-cancellation.stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "out/inventory_qualified/after-cancellation.stdout": {
+            "bytes": 743,
+            "sha256": "756f4f41677f9f4c0fc544b103fce347862fa4e31f8ab805045b0d93aa3b9cf9"
+          },
+          "out/inventory_qualified/baseline.stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "out/inventory_qualified/baseline.stdout": {
+            "bytes": 531,
+            "sha256": "a06a88e4125d647eae507e92903bb35c7c9da86229eb910c416bbc377b398172"
+          },
+          "out/inventory_qualified/cancelled-scan.stderr": {
+            "bytes": 42,
+            "sha256": "06ec750467164c9a49738662b141649cf4e47e6befef2e269aa26fddeb219aa0"
+          },
+          "out/inventory_qualified/cancelled-scan.stdout": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "out/inventory_qualified/empty.stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "out/inventory_qualified/empty.stdout": {
+            "bytes": 739,
+            "sha256": "07d955df8493b200fb1c29bd1f02c88bbcd6065ed1686cf0c10f63f9d8956395"
+          },
+          "out/inventory_qualified/historical-mismatch.stderr": {
+            "bytes": 50,
+            "sha256": "0e554e3f88d0cb6d5bdea19074b9ca3bcc088e4fa00421f8cf0804540f277d5b"
+          },
+          "out/inventory_qualified/historical-mismatch.stdout": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "out/inventory_qualified/migration-required.stderr": {
+            "bytes": 54,
+            "sha256": "78419e0dd9770629e9d7fd767233e148ad52ebd8fcd79634e8bafcc32a1b6239"
+          },
+          "out/inventory_qualified/migration-required.stdout": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "out/inventory_qualified/populated.stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "out/inventory_qualified/populated.stdout": {
+            "bytes": 743,
+            "sha256": "1343ea46afff6fd7b136d5c8b6fdb01604556a17a04bce4e909c0153f5938c0a"
+          },
+          "out/inventory_qualified/residual-session-contender.stderr": {
+            "bytes": 46,
+            "sha256": "9a061a76014ac94f588b85665c812f56416464c2b9b42dd0febaa8ac2d8e6ce0"
+          },
+          "out/inventory_qualified/residual-session-contender.stdout": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "out/inventory_qualified/restart.stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "out/inventory_qualified/restart.stdout": {
+            "bytes": 743,
+            "sha256": "ea36847a1e23e40fe5f2d339db81c4ca47502194cb5a0922945302595498198d"
+          },
+          "out/inventory_qualified/seed.stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "out/inventory_qualified/seed.stdout": {
+            "bytes": 62,
+            "sha256": "48d9255074d57f42637629b1b18a3661ac26bafe05d03744c23c51d81fbebcb9"
+          },
+          "archive-inventory.json": {
+            "bytes": 5779,
+            "sha256": "77903f0e94e839fb03eab3083012beaedb4722cfabeff52d722b4b0c2007448c"
+          },
+          "archive-inventory.log": {
+            "bytes": 1146,
+            "sha256": "bc77375f5f32169bc3f17f2171bbe69af68af9a415943512b7bbbda12ecc880a"
+          },
+          "audit-initial.log": {
+            "bytes": 97,
+            "sha256": "12208d821f333b5fe680b708417bc71486d5654e2c9eae4250c216f17e7cd626"
+          },
+          "audit-initial.py": {
+            "bytes": 6848,
+            "sha256": "53857b17dc544f03cc43fd872d7ebb1df78a0b968c763ddf16480792b40338ab"
+          },
+          "audit-order-diagnosis.json": {
+            "bytes": 38285,
+            "sha256": "2b24fbb7ed1cd0f4a507135df280d22bf1f4974c70e376884735e8ae03515a8d"
+          },
+          "fixture-permissions.json": {
+            "bytes": 713,
+            "sha256": "86f7e63f2877d38df52e72c6c982d9e18430b203b2718884c09a52150dc30603"
+          },
+          "harness-audit.json": {
+            "bytes": 538,
+            "sha256": "74f8360ea7527655d5c3a1b3480e615627b75c19734a5b58ef3a869148948b27"
+          },
+          "harness-d32d303.json": {
+            "bytes": 284,
+            "sha256": "a847d0458ace3adbd8161c04896ce20c2c631eb117aaf68dd85b43aefe66eb5e"
+          },
+          "harness.json": {
+            "bytes": 284,
+            "sha256": "be246da346839f20794d5a42a703f2c29a0b74dbc47bc601b6b34c61ad7c91dc"
+          },
+          "inventory-qualified-d32d303.log": {
+            "bytes": 31,
+            "sha256": "0eca2af2f615d6e93563f5fcdaecdd57a646fd963fc6fdd918545c7c0f1d9b62"
+          },
+          "inventory-qualified.log": {
+            "bytes": 949,
+            "sha256": "d2554c4b6d5bbaafff6cb333bc8a6741e5a46da948d989923f08e014801cbbc9"
+          },
+          "inventory_qualified.json": {
+            "bytes": 8486,
+            "sha256": "05a92028a9cb95a087cd72d017af6087cf2ed62f683266ae52dab246bb151ce5"
+          },
+          "fixture-permissions-failure/archive-inventory.json": {
+            "bytes": 361,
+            "sha256": "4d9608c54b00d4ad1b68e8db781585ddb93e2145b6c65ec77b28e9683bc86129"
+          },
+          "fixture-permissions-failure/archive-inventory.log": {
+            "bytes": 1002,
+            "sha256": "582163006e1856f7f7ce89d316ec215222878303ac511f507988d04a7a2f4069"
+          }
+        }
+      },
+      "evidence": "docs/implementation/evidence/p02-control-archive-inventory-native-20260919.json"
     }
   },
   "implementation_monitor_corrections_20260918": {

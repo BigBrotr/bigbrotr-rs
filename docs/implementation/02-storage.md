@@ -502,6 +502,14 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   extra full S3 GET merely to create a first checksum. Backup/scrub/full semantic
   verification carry their actual budgets and evidence.
 
+The installed Control consumer now inventories retained publication intents before
+idle when Archive is locally assigned. [Native evidence](evidence/p02-control-archive-inventory-native-20260919.json)
+at `a010c15` covers fixed-cutoff paging in batches of 64, all historical obligations, stale
+cursor/gap/mismatch refusal and eight actual startup/restart/cancellation cases.
+It implements the enumeration prerequisite in P02-T04 steps 3/4/5 without granting
+publication authority or completing any step; source-input linkage, custody,
+CatalogManager/reader and Ingest dispatch remain required service connections.
+
 ## P02-T05 — Full online representation and immutable projections
 
 **Depends on:** P02-T01/T02/T03. **Files:**

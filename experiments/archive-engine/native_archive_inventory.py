@@ -44,7 +44,7 @@ assert execute([
 for name, target in [('bigbrotr', 'bigbrotr'), ('examples/archive_attempt_probe', 'archive-attempt-probe')]:
     shutil.copy2(build / 'target/release' / name, out / target)
     (out / target).chmod(0o500)
-assert execute([('adapter', [str(out / 'archive-attempt-probe')])], out / 'adapter', SOURCE, env, identity, 180)['status'] == 'PASS'
+assert execute([('adapter', [str(out / 'archive-attempt-probe'), '--scan'])], out / 'adapter', SOURCE, env, identity, 180)['status'] == 'PASS'
 assert inventory() == manifest['files_sha256']
 info = json.loads(subprocess.check_output([str(out / 'bigbrotr'), 'build-info'], env={}))
 assert info['source']['revision'] == manifest['revision'] and info['source']['dirty'] is False

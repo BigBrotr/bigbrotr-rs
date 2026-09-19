@@ -124,7 +124,7 @@ async fn migration_boundaries() {
     join(driver).await;
 }
 
-async fn run() {
+async fn run(include_scan: bool) {
     migration_boundaries().await;
     let (mut admin, admin_driver) = connect("postgres").await;
     // Exercise eligible forward upgrade, unchanged old ledger, and exact replay.
@@ -474,12 +474,14 @@ async fn run() {
     );
     reader.release().await.unwrap();
     join(driver).await;
-    scan_cases(&mut admin).await;
+    if include_scan {
+        scan_cases(&mut admin).await;
+    }
     drop(admin);
     join(admin_driver).await;
     println!(
         "{}",
-        serde_json::json!({"status":"PASS","initial_rows":2,"final_rows":134,"ordinals":[1,2],"issuer_epochs":[1,1],"retained_read":"exact current/historical identity, fresh owner, absence, wrong catalog, no mutation and actual blocked cancellation/poison/retry","scope":"actual adapter issuance/read/replay/CAS/refusals and immutable SQL history; not catalog fencing or lost wire COMMIT"})
+        serde_json::json!({"status":"PASS","initial_rows":2,"rows":if include_scan { 134 } else { 2 },"ordinals":[1,2],"issuer_epochs":[1,1],"retained_read":"exact current/historical identity, fresh owner, absence, wrong catalog, no mutation and actual blocked cancellation/poison/retry","scope":"actual adapter issuance/read/replay/CAS/refusals and immutable SQL history; not catalog fencing or lost wire COMMIT"})
     );
 }
 async fn scan_cases(admin: &mut Client) {
@@ -714,8 +716,11 @@ fn main() {
                     assert_eq!(mode, "--seed-runtime");
                     seed_runtime(database).await;
                 } else {
-                    assert!(args.is_empty());
-                    run().await;
+                    match args.as_slice() {
+                        [] => run(false).await,
+                        [mode] if mode == "--scan" => run(true).await,
+                        _ => panic!("expected --scan or --seed-runtime DATABASE"),
+                    }
                 }
             })
             .await
