@@ -27,8 +27,15 @@ Protected credential files must meet the
 [credential contract](../security/credentials.md). Configuration validation stays
 offline. The finite initializer then reads credentials, verifies the bundle and
 checks its allowances before permanently reserving the database/root pair.
-Native initialization currently refuses configured mutual TLS before reservation;
-completing that selected adapter remains required. It never falls back to plaintext.
+The native mutual-TLS candidate loads bounded protected certificate/key files
+before reservation and freezes them in anonymous sealed Linux descriptors. Its
+16 MiB application allowance stays charged through actual worker termination.
+This adapter is awaiting its native qualification matrix. It never falls back to
+plaintext. Native CA paths are limited to 1023 bytes by the pinned libpq; longer
+paths refuse before reserving the database/root pair. Server HBA must combine
+SCRAM with explicit client-certificate validation when mTLS is required. A shared
+certificate does not make its CN equal to every generated bootstrap/writer login;
+configure a compatible server policy or mapping.
 
 ```sh
 bigbrotr archive initialize --file /etc/bigbrotr/instance.toml \

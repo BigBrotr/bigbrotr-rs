@@ -72,10 +72,10 @@ impl<'a> Preparation<'a> {
             return Err(PreparationError::InvalidBootstrap);
         }
         fresh.with_login(|login, password| {
-            let dsn = route
-                .dsn(login, password, "bigbrotr-archive-initializer")
+            let (dsn, tls) = route
+                .connection(login, password, "bigbrotr-archive-initializer")
                 .map_err(|_| PreparationError::InvalidBootstrap)?;
-            self.initialize_reserved_catalog(&dsn, custody, budget)
+            self.initialize_reserved_catalog_with_tls(&dsn, custody, budget, tls)
         })
     }
 
@@ -132,6 +132,16 @@ impl<'a> Preparation<'a> {
         custody: &super::LocalInitialization,
         budget: &ResourceBudget,
     ) -> Result<(), PreparationError> {
+        self.initialize_reserved_catalog_with_tls(dsn, custody, budget, None)
+    }
+
+    fn initialize_reserved_catalog_with_tls(
+        self,
+        dsn: &str,
+        custody: &super::LocalInitialization,
+        budget: &ResourceBudget,
+        tls: Option<super::client_identity::NativeTlsHandoff>,
+    ) -> Result<(), PreparationError> {
         #[derive(serde::Serialize)]
         struct Input<'a> {
             dsn: &'a str,
@@ -158,6 +168,7 @@ impl<'a> Preparation<'a> {
             &[],
             budget,
             Custody::Initialization(custody),
+            tls,
         )?;
         let proof = proof.ok_or(PreparationError::Custody(super::LifetimeError::Identity))?;
         catalog_result(
@@ -238,7 +249,7 @@ impl<'a> Preparation<'a> {
         extra: &[String],
         budget: &ResourceBudget,
     ) -> Result<super::process::Process<'a>, PreparationError> {
-        self.start_with_custody(mode, extra, budget, None)
+        self.start_with_custody(mode, extra, budget, None, None)
     }
 
     pub(super) fn start_with_custody(
@@ -247,12 +258,14 @@ impl<'a> Preparation<'a> {
         extra: &[String],
         budget: &ResourceBudget,
         custody: Option<&super::LocalAttempt>,
+        tls: Option<super::client_identity::NativeTlsHandoff>,
     ) -> Result<super::process::Process<'a>, PreparationError> {
         self.start_owned(
             mode,
             extra,
             budget,
             custody.map_or(Custody::None, Custody::Archive),
+            tls,
         )
         .map(|(process, _)| process)
     }
@@ -263,6 +276,7 @@ impl<'a> Preparation<'a> {
         extra: &[String],
         budget: &ResourceBudget,
         custody: Custody<'_>,
+        tls: Option<super::client_identity::NativeTlsHandoff>,
     ) -> Result<
         (
             super::process::Process<'a>,
@@ -328,12 +342,14 @@ impl<'a> Preparation<'a> {
                     .map_err(PreparationError::Custody)?,
             ),
         };
-        let process = super::process::Process::spawn(
+        let tls = tls.map(|tls| tls.inherit(&mut command));
+        let process = super::process::Process::spawn_with_tls(
             &mut command,
             native,
             control,
             self.deadline,
             self.cancelled,
+            tls,
         )
         .map_err(PreparationError::Process)?;
         Ok((process, proof))

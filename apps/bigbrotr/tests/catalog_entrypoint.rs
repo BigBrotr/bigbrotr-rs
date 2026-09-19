@@ -260,11 +260,11 @@ fn initialize_refuses_manager_as_initializer_before_reading_credentials() {
 }
 
 #[test]
-fn initialize_rejects_unusable_manager_and_native_mtls_before_filesystem_effects() {
+fn initialize_rejects_unusable_manager_and_native_client_identity_before_reservation() {
     let dir = tempfile::tempdir().unwrap();
     for expected in [
         "catalog manager login",
-        "native catalog mutual TLS is not implemented",
+        "native catalog client identity refused",
     ] {
         let mut doc = example(dir.path(), "archive-only");
         if expected == "catalog manager login" {

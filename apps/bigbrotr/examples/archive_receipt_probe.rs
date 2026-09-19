@@ -3,8 +3,8 @@ use bigbrotr::{
     runtime::{ProcessEnvelope, ResourceBudget, ResourceLimits, WaiterLimits},
     storage::{
         archive::{
-            ArtifactIdentity, CatalogReaderCredentials, CatalogRoute, CatalogTls, Preparation,
-            PreparationLimits, WorkerInstallation,
+            ArtifactIdentity, CatalogReaderCredentials, CatalogRoute, CatalogTls,
+            NativeClientIdentity, Preparation, PreparationLimits, WorkerInstallation,
         },
         postgres::{catalog_guard::CatalogIdentity, connection_settings::PlaintextBoundary},
     },
@@ -34,9 +34,15 @@ struct Input {
     deadline_ms: u64,
     cancel_when_blocked: bool,
     #[serde(default)]
+    cancel_file: Option<PathBuf>,
+    #[serde(default)]
     tls_server_name: Option<String>,
     #[serde(default)]
     tls_ca_file: Option<PathBuf>,
+    #[serde(default)]
+    client_cert_ref: Option<String>,
+    #[serde(default)]
+    client_key_ref: Option<String>,
     #[serde(default)]
     wrong_password: bool,
 }
@@ -75,23 +81,44 @@ fn main() {
     } else {
         Zeroizing::new(fs::read_to_string(format!("/secrets/{}", input.role)).unwrap())
     };
-    let tls = match (&input.tls_server_name, &input.tls_ca_file) {
-        (None, None) => CatalogTls::LocalPlaintext(PlaintextBoundary::Loopback),
-        (Some(server_name), Some(ca_file)) => CatalogTls::VerifyFull {
-            server_name,
-            ca_file,
-        },
-        _ => panic!("incomplete lab TLS fixture"),
-    };
     let budget = ResourceBudget::new(
         ProcessEnvelope::new(
-            513 << 20,
+            529 << 20,
             0,
-            ResourceLimits::new(0, 1, 512 << 20, 1 << 20),
+            ResourceLimits::new(16 << 20, 2, 512 << 20, 1 << 20),
             WaiterLimits::new(0, 0),
         )
         .unwrap(),
     );
+    let identity_material = match (&input.client_cert_ref, &input.client_key_ref) {
+        (None, None) => None,
+        (Some(certificate), Some(key)) => Some(
+            NativeClientIdentity::load(
+                bigbrotr::secrets::SecretFile::parse(certificate).unwrap(),
+                bigbrotr::secrets::SecretFile::parse(key).unwrap(),
+                &budget,
+            )
+            .unwrap(),
+        ),
+        _ => panic!("incomplete lab client identity"),
+    };
+    let tls = match (
+        &input.tls_server_name,
+        &input.tls_ca_file,
+        &identity_material,
+    ) {
+        (None, None, None) => CatalogTls::LocalPlaintext(PlaintextBoundary::Loopback),
+        (Some(server_name), Some(ca_file), None) => CatalogTls::VerifyFull {
+            server_name,
+            ca_file,
+        },
+        (Some(server_name), Some(ca_file), Some(identity)) => CatalogTls::VerifyFullWithClient {
+            server_name,
+            ca_file,
+            identity,
+        },
+        _ => panic!("incomplete lab TLS fixture"),
+    };
     let cancel = AtomicBool::new(false);
     let done = AtomicBool::new(false);
     let start = Instant::now();
@@ -99,7 +126,12 @@ fn main() {
         if input.cancel_when_blocked {
             scope.spawn(|| {
                 while !done.load(Ordering::Relaxed) {
-                    if Path::new("/fixture/cancel").exists() {
+                    if input
+                        .cancel_file
+                        .as_deref()
+                        .unwrap_or(Path::new("/fixture/cancel"))
+                        .exists()
+                    {
                         cancel.store(true, Ordering::Relaxed);
                         break;
                     }
@@ -139,6 +171,7 @@ fn main() {
         done.store(true, Ordering::Relaxed);
         result
     });
+    drop(identity_material);
     println!(
         "{}",
         serde_json::json!({"outcome":format!("{result:?}"),"elapsed_ms":start.elapsed().as_millis(),

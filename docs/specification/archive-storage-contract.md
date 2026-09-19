@@ -101,7 +101,7 @@ alone is insufficient. Unknown termination or catalog state retains the job and
 source obligation; it does not authorize replacement publication or cleanup.
 
 The [exact native startup qualification](../implementation/evidence/p02-native-startup-exclusion-20260918.json)
-supports this ordering for the pinned trusted blocking libpq18.3 client and
+supports this ordering for the pinned trusted blocking libpq 18.3 client and
 PG16.15 server: the server publishes backend status before ReadyForQuery, and
 the native client waits for readiness before sending catalog SQL. A terminated
 client cannot later issue SQL through an invisible startup connection; SQL already
@@ -382,9 +382,16 @@ separate runtime manager. They do not create databases or promote that manager.
 Before permanent reservation, initialize must validate credentials, the bundle,
 bounded native/application grants and a new private directory below the configured
 scratch root, disjoint from the data root and bundle. Pin one resolved endpoint
-address across initializer, native and final manager connections. Native mutual
-TLS is a pre-reservation refusal until its adapter is implemented and qualified;
-this does not remove that selected capability from subsequent work.
+address across initializer, native and final manager connections. The native
+client-identity candidate reads bounded protected certificate/key inputs before
+reservation, validates their PEM/key pairing, and seals exact bytes in private
+mode 0400 Linux memfds. Each launch preserves its own CLOEXEC duplicates; libpq
+receives only their /proc/self/fd paths. No named secret copies or PEM in the
+32 KiB worker protocol. The 16 MiB preparation/source allowance remains owned until
+positive child reap, or permanently charged on unknown termination. The configured
+CA path must fit libpq 18.3's 1024-byte buffer including its terminator; longer paths
+refuse before permanent reservation even when the Rust connector could open them.
+Native mTLS and this command's TLS matrix still require actual qualification.
 
 The consumer must join every actual provisioning driver and its sole native child,
 reacquire local custody, observe and retire the exact bootstrap, then wait a bounded
@@ -456,15 +463,20 @@ The consuming callback still owns downstream copies and the one supervised child
 the Rust value alone is not proof of process uniqueness or memory erasure.
 
 The application-generated native publisher/receipt route now explicitly selects
-libpq18.3 `require_auth=scram-sha-256`, `gssencmode=disable` and
-`sslcertmode=disable`. Plaintext stays within its declared local boundary; TLS
+libpq 18.3 `require_auth=scram-sha-256` and `gssencmode=disable`. Without an
+explicit client identity it selects `sslcertmode=disable`; an explicit sealed
+identity selects `sslcertmode=require` plus the exact inherited descriptors. Plaintext stays within its declared local boundary; TLS
 still requires the configured CA and server name. A passwordless or incomplete
 authentication exchange must refuse before native SQL. This does not audit all
 server HBA rules: the dedicated roles must also require password authentication
 from every reachable client under the trusted infrastructure contract. Enabling
 trust elsewhere would invalidate sole-credential-holder exclusion even if this
-client refuses it. Native mutual TLS needs an explicit protected credential
-consumer and its own qualification; no ambient client certificate is selected.
+client refuses it. The sealed client-identity consumer still requires native
+qualification; no ambient client certificate is selected. `sslcertmode=require`
+ensures a requested client certificate is sent, not that the server validates it.
+Server HBA must impose its intended clientcert policy as well as SCRAM. A shared
+configured certificate does not imply CN equality with separately generated roles;
+verify-full client-CN binding requires an explicit compatible server mapping.
 This tightens native compatibility: deployments accepting only trust, certificate,
 GSS, cleartext-password or MD5 authentication refuse. Existing SCRAM credentials,
 catalog migrations and persisted identities remain unchanged. The

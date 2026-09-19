@@ -369,3 +369,13 @@ passes that profile and all five affected schedules plus ten clone controls.
 The actual read blocker, five exact unchanged journals, four imported identity/OID
 bindings, seven retained Control rows and sidecar absence are recorded. The earlier
 fcd63ac baseline failed the retained-row assertion; both labs are retired.
+
+`initialization_tls_cases.py ROOT` qualifies the exact installed initializer and
+native receipt client with explicit server-enforced mTLS plus SCRAM in a fresh
+owned lab. `native_initialization.py --tls` also builds the receipt fixture. It
+checks immutable reservations on refusals, real 128 MiB initialization/manager
+recovery, unchanged catalog reads, blocked native-query cancellation and a
+retained older executable as a discriminating valid-mTLS refusal control. It
+restores the owned server settings/HBA; final runner/database retirement and
+source/artifact auditing remain required. This harness is proposed until an
+actual run report records its outcomes; it does not qualify signed mTLS publishing.

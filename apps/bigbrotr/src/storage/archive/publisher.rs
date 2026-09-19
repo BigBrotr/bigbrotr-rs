@@ -34,6 +34,11 @@ pub enum CatalogTls<'a> {
         server_name: &'a str,
         ca_file: &'a Path,
     },
+    VerifyFullWithClient {
+        server_name: &'a str,
+        ca_file: &'a Path,
+        identity: &'a super::NativeClientIdentity,
+    },
 }
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum PublicationError {
@@ -55,15 +60,21 @@ fn literal(value: &str) -> String {
 impl CatalogRoute<'_> {
     /// Validate the native route before exposing any permanent bootstrap grant.
     pub fn validate(&self) -> Result<(), PublicationError> {
-        self.dsn("preflight", "preflight", "bigbrotr-route-preflight")
+        self.connection("preflight", "preflight", "bigbrotr-route-preflight")
             .map(|_| ())
     }
-    pub(super) fn dsn(
+    pub(super) fn connection(
         &self,
         login: &str,
         password: &str,
         application_name: &str,
-    ) -> Result<Zeroizing<String>, PublicationError> {
+    ) -> Result<
+        (
+            Zeroizing<String>,
+            Option<super::client_identity::NativeTlsHandoff>,
+        ),
+        PublicationError,
+    > {
         let valid = |s: &str| !s.is_empty() && s.len() <= 4096 && !s.chars().any(char::is_control);
         if self.port == 0
             || ![self.database, login, password, application_name]
@@ -90,12 +101,19 @@ impl CatalogRoute<'_> {
             CatalogTls::VerifyFull {
                 server_name,
                 ca_file,
+            }
+            | CatalogTls::VerifyFullWithClient {
+                server_name,
+                ca_file,
+                ..
             } => {
                 let ca = ca_file
                     .to_str()
                     .filter(|s| valid(s))
                     .ok_or(PublicationError::InvalidInput)?;
-                if !valid(server_name) || !ca_file.is_absolute() {
+                // Pinned libpq18.3 copies sslrootcert into MAXPGPATH=1024,
+                // silently truncating longer paths before opening the CA.
+                if !valid(server_name) || ca.len() >= 1024 || !ca_file.is_absolute() {
                     return Err(PublicationError::InvalidInput);
                 }
                 format!(
@@ -105,19 +123,34 @@ impl CatalogRoute<'_> {
                 )
             }
         };
-        Ok(Zeroizing::new(format!(
-            // Fresh password distribution is meaningful only with actual
-            // password authentication. libpq must refuse trust/cert-only or an
-            // incomplete SCRAM exchange before native SQL. Disable ambient
-            // client certificates and GSS transport outside this declared route.
-            "hostaddr={} port={} dbname={} user={} password={} connect_timeout=5 application_name={} require_auth=scram-sha-256 sslcertmode=disable gssencmode=disable {tls}",
-            address,
-            self.port,
-            literal(self.database),
-            literal(login),
-            literal(password),
-            literal(application_name)
-        )))
+        let handoff = match &self.tls {
+            CatalogTls::VerifyFullWithClient { identity, .. } => Some(
+                identity
+                    .handoff()
+                    .map_err(|_| PublicationError::InvalidInput)?,
+            ),
+            _ => None,
+        };
+        let client = handoff.as_ref().map_or_else(
+            || "sslcertmode=disable".into(),
+            |handoff| handoff.parameters(),
+        );
+        Ok((
+            Zeroizing::new(format!(
+                // Fresh password distribution is meaningful only with actual
+                // password authentication. libpq must refuse trust/cert-only or an
+                // incomplete SCRAM exchange before native SQL. Client certificates
+                // are explicit sealed inputs only; GSS transport remains disabled.
+                "hostaddr={} port={} dbname={} user={} password={} connect_timeout=5 application_name={} require_auth=scram-sha-256 {client} gssencmode=disable {tls}",
+                address,
+                self.port,
+                literal(self.database),
+                literal(login),
+                literal(password),
+                literal(application_name)
+            )),
+            handoff,
+        ))
     }
 }
 
@@ -191,7 +224,7 @@ impl Preparation<'_> {
             return Err(PublicationError::InvalidInput);
         }
         writer.with_login(|login, password| {
-            let dsn = route.dsn(login, password, "bigbrotr-archive-publisher")?;
+            let (dsn, tls) = route.connection(login, password, "bigbrotr-archive-publisher")?;
             let input = Input {
                 catalog: super::bootstrap::Input {
                     dsn: &dsn,
@@ -217,6 +250,7 @@ impl Preparation<'_> {
                     ],
                     budget,
                     Some(&custody),
+                    tls,
                 )
                 .map_err(PublicationError::Preparation)?;
             let write = process.write_all(&size.0.to_be_bytes()).and_then(|()| {
@@ -269,7 +303,10 @@ mod route_tests {
                 database: "catalog",
                 tls,
             };
-            let dsn = route.dsn("worker", "password", "bigbrotr-test").unwrap();
+            let (dsn, tls) = route
+                .connection("worker", "password", "bigbrotr-test")
+                .unwrap();
+            assert!(tls.is_none());
             assert!(dsn.contains("require_auth=scram-sha-256"));
             assert!(dsn.contains("sslcertmode=disable"));
             assert!(dsn.contains("gssencmode=disable"));
@@ -292,15 +329,32 @@ mod route_tests {
                 ("worker", invalid.as_str(), "application"),
                 ("worker", "password", invalid.as_str()),
             ] {
-                assert_eq!(
-                    route.dsn(login, password, name),
+                assert!(matches!(
+                    route.connection(login, password, name),
                     Err(PublicationError::InvalidInput)
-                );
+                ));
             }
         }
-        let dsn = route
-            .dsn("O'Neil", "quote' slash\\", "bigbrotr-test")
+        let (dsn, _) = route
+            .connection("O'Neil", "quote' slash\\", "bigbrotr-test")
             .unwrap();
         assert!(dsn.contains(r"dbname='a \' \\ db' user='O\'Neil' password='quote\' slash\\'"));
+    }
+
+    #[test]
+    fn ca_path_must_fit_libpq_without_truncation() {
+        for (length, accepted) in [(1023, true), (1024, false)] {
+            let name = format!("/{}", "a".repeat(length - 1));
+            let route = CatalogRoute {
+                address: "127.0.0.1".parse().unwrap(),
+                port: 5432,
+                database: "catalog",
+                tls: CatalogTls::VerifyFull {
+                    server_name: "catalog.example",
+                    ca_file: Path::new(&name),
+                },
+            };
+            assert_eq!(route.validate().is_ok(), accepted, "CA path bytes={length}");
+        }
     }
 }

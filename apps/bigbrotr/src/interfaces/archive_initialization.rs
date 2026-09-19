@@ -221,9 +221,9 @@ async fn initialize_fresh(
     budget: &ResourceBudget,
     stop: &mut Stop,
 ) -> Result<Option<PinnedRoute>> {
-    // Credential/bundle/scratch/native allowances are validated before a durable
-    // reservation. Do not claim native client authentication support prematurely.
-    preflight::native_tls(config)?;
+    // Freeze explicit native client material before a durable reservation;
+    // libpq receives sealed inherited descriptors, never ambient key paths.
+    let native_identity = preflight::native_tls(config, budget)?;
     let limits = preflight::limits(config)?;
     preflight::admit_native(config, budget)?;
     let (installation, scratch, nonce) = preflight::worker(config, identity, args)?;
@@ -243,7 +243,7 @@ async fn initialize_fresh(
                 .map_err(|e| (4, e.to_string()))
         })
         .await?;
-    let native_route = preflight::NativeRoute::new(config, &pinned)?;
+    let native_route = preflight::NativeRoute::new(config, &pinned, native_identity)?;
     let custody = LocalInitialization::create(identity, nonce)
         .map_err(|e| (4, format!("fresh local archive reservation refused: {e:?}")))?;
     let mut session = Session::retain(client, driver, pinned.clone(), grant, &custody)?;

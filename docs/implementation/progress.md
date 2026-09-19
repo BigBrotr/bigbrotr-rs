@@ -20,13 +20,16 @@ Control-only and rejects other roles. Root remains sole writer/integrator.
 
 ## Actual Git and review
 
-Mac main HEAD1978e1227aead7daf69e30962a00b5778fca0174;
-origin/main last verified759157bf1f7eb456313754ba8b6a862d45462cea (push84858 exited0).
-Private bigbrotr-rs. Two unpublished candidates:78e7734 residual-session fixture
-and five-case CLI harness;1978e12 stronger actual-process/query oracles. Product
-Rust is unchanged from759157b; fixture is unchanged between78e7734 and1978e12.
-Root-owned dirty work is scoped evidence, contracts/tasks/user docs and checkpoint/
-inventory. No merge/rebase, other contributor edits or active experiment.
+Mac main and origin/main verified at8972fb62f331a12ff61c349367ae9c3cf0cfa91d;
+push20640 exited0 and the tree was clean. Private bigbrotr-rs. Published78e7734
+residual-session fixture,1978e12 stronger actual-process/query oracles and8972fb6
+reviewed native evidence/docs. Product Rust is unchanged from759157b; fixture is
+unchanged after78e7734. Root-owned dirty work now implements bounded native client identity handoff in
+archive parent/preflight/process consumers, shared PEM-parser visibility, CLI
+regression and this checkpoint/inventory. New client_identity.rs owns sealed
+Linux memfds and a16MiB grant through child reap. No migration, dependency or
+worker-protocol change. No merge/rebase or other contributor edits. No active
+Tux experiment; native mTLS qualification is NOT_RUN.
 
 Independent read-only AI source review found simultaneous credential preparation,
 legacy TLS address-selection regression and late long-manager refusal; corrected
@@ -106,7 +109,10 @@ ELF/current processes.
 
 ## Owned resources and evidence
 
-No active experiment. Audit67478 and collect4972 exited0. Latest audit:
+No active experiment. Fresh preflight confirms the previous containers remain
+stopped and8 unrelated workloads running; its empty owned network was now removed
+after identity/stopped checks (native-mtls/previous-network-retirement.json).
+Audit67478 and collect4972 exited0. Latest audit:
 2026-09-19T09:09:29.462801+00:00. Both new containers stopped-retained, no OOM;
 320 preexisting container/mount/network/lifecycle states unchanged,8 unrelated
 running, zero BigBrotr. Retain containers/data; never restart retired labs.
@@ -161,11 +167,30 @@ Scoped monitor corrections remain closed with executed evidence:
 [MON-007](evidence/p01-archive-cache-retry-20260918.json).
 Do not mechanically rerun unrelated suites.
 
+## Current native mTLS candidate
+
+Local changes load protected bounded PEM/key inputs once, verify the key pair,
+seal mode0400 Linux memfds, and pass exact duplicated CLOEXEC descriptors to the
+sole native child through command-fds. No named key copies or raw PEM in the32KiB
+wire protocol. Client mode is require only for explicit configured identities;
+SCRAM, verify-full, exact CA/name and disabled GSS remain mandatory. Identity
+capacity remains charged through positive reap or unknown termination.
+Mac RED25949 reproduced the old blanket refusal. Archive tests33PASS, CLI10PASS,
+portable identity regression1PASS and scoped Clippy passed (23079/28510). Linux
+identity/FD tests and actual TLS/mTLS commands are NOT_RUN. Source audit manifest:
+.research/implementation/archive-worker/native-mtls/sources.json. Read-only AI
+review has found no FD collision/lifetime defect so far; actual server validation
+requires clientcert=verify-ca plus SCRAM in the dedicated lab (CN does not equal
+all three initializer/bootstrap/manager identities). Full product source review found a concrete pre-existing libpq CA-path truncation:
+fixed with pre-reservation1023-byte limit. RED74403 failed at1024; GREEN57017 passes with scoped Clippy/diff checks. Full new initializer/receipt matrix and receipt
+fixture are root-owned, not yet executed on Tux. Read-only harness review corrected two cancellation oracles: a60s native
+deadline distinct from <15s observed return, and exact pidfd-observed child death
+before SQL blocker release. Full harness/fixture source read; no Tux execution.
+
 ## Next bounded action
 
-Finish the current recorded-evidence review/docs and normal private push. Then
-implement/qualify native mutual TLS through a protected bounded credential consumer
-and the actual initializer TLS matrix, followed by the remaining real native crash/
+Finish the actual initializer/receipt TLS matrix, commit the reviewed candidate
+and transfer its clean exact Git revision to a freshly inventoried Tux lab, followed by the remaining real native crash/
 lost-install acknowledgement paths. Do not rerun standalone custody/reservation
 qualification or restart architecture research without a concrete failure.
 

@@ -93,8 +93,8 @@ impl Preparation<'_> {
         {
             return Err(ReceiptError::InvalidInput);
         }
-        let mut dsn = route
-            .dsn(
+        let (mut dsn, tls) = route
+            .connection(
                 credential.login,
                 credential.password,
                 "bigbrotr-archive-receipt",
@@ -117,10 +117,12 @@ impl Preparation<'_> {
             .map_err(ReceiptError::Preparation)?;
         serde_json::to_writer(&mut Size(0), &input).map_err(|_| ReceiptError::ResourceLimit)?;
         let mut process = self
-            .start(
+            .start_with_custody(
                 "inspect-receipt",
                 &[self.limits.max_records.to_string()],
                 budget,
+                None,
+                tls,
             )
             .map_err(ReceiptError::Preparation)?;
         let transfer = serde_json::to_writer(&mut process, &input);

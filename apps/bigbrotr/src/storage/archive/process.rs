@@ -37,16 +37,29 @@ pub(super) struct Process<'a> {
     failure: Option<ProcessError>,
     native: Option<OwnedPermit>,
     control: Option<OwnedPermit>,
+    tls: Option<super::client_identity::NativeTlsRetention>,
     deadline: Instant,
     cancelled: &'a AtomicBool,
 }
 impl<'a> Process<'a> {
+    #[cfg(test)]
     pub(super) fn spawn(
         command: &mut Command,
         native: OwnedPermit,
         control: OwnedPermit,
         deadline: Instant,
         cancelled: &'a AtomicBool,
+    ) -> Result<Self, ProcessError> {
+        Self::spawn_with_tls(command, native, control, deadline, cancelled, None)
+    }
+
+    pub(super) fn spawn_with_tls(
+        command: &mut Command,
+        native: OwnedPermit,
+        control: OwnedPermit,
+        deadline: Instant,
+        cancelled: &'a AtomicBool,
+        tls: Option<super::client_identity::NativeTlsRetention>,
     ) -> Result<Self, ProcessError> {
         if native.request().units().items() == 0
             || native.request().units().native_bytes() == 0
@@ -71,6 +84,7 @@ impl<'a> Process<'a> {
             failure: None,
             native: Some(native),
             control: Some(control),
+            tls,
             deadline,
             cancelled,
         };
@@ -201,6 +215,7 @@ impl Drop for Process<'_> {
             // process/backend; ordinary retry cannot repair this state.
             std::mem::forget(self.native.take());
             std::mem::forget(self.control.take());
+            std::mem::forget(self.tls.take());
         }
     }
 }

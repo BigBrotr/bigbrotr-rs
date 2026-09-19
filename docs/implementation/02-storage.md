@@ -337,7 +337,12 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   The producer is explicitly a custodied tokio-postgres residual-session fixture;
   this does not qualify a blocked native libpq write. New-CLI TLS/mTLS, remaining
   native crash/acknowledgement paths and the installed service still gate complete
-  acceptance; this step remains open.
+  acceptance; this step remains open. A protected sealed-FD native client-identity
+  candidate now wires initializer, publisher and receipt consumers without changing
+  the 32 KiB wire format. Local refusal/budget tests pass; its actual native mTLS
+  matrix, including blocked-query cancellation, remains NOT_RUN. Review also found
+  libpq truncates long CA paths; pre-reservation refusal now has a discriminating
+  local 1023/1024-byte regression and awaits the real-CA native scenario.
 - [ ] **Step 4:** After an ambiguous commit, query the receipt in a new transaction; do not
   repeat while receipt state is unknown. Reject mismatched batch digest.
   Include loss of the actual native PostgreSQL COMMIT response, plus physical file
@@ -373,7 +378,7 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   also disproves NOLOGIN plus empty activity as general exclusion: an invisible
   old connection later commits. Qualify actual process/client exclusion and
   credential/startup ordering before selecting the product protocol.
-  The [native libpq18.3/PG16.15 startup cases](evidence/p02-native-startup-exclusion-20260918.json)
+  The [native libpq 18.3/PG16.15 startup cases](evidence/p02-native-startup-exclusion-20260918.json)
   now exercise both an invisible live native writer and positive kill/reap before
   replacement. Persisted attempt/credential/process ownership and successor
   recovery remain required; neither this probe nor parent-death signaling is that

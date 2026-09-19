@@ -1,4 +1,5 @@
 mod bootstrap;
+mod client_identity;
 mod initialization;
 mod installation;
 mod lifetime;
@@ -7,6 +8,7 @@ mod publisher;
 mod receipts;
 mod worker;
 
+pub use client_identity::{NativeClientIdentity, NativeIdentityError};
 pub use initialization::LocalInitialization;
 pub use installation::{ArtifactIdentity, InstallationError, WorkerInstallation};
 pub use lifetime::{LifetimeError, LocalAttempt};

@@ -1,8 +1,12 @@
 use super::{Result, required};
 use bigbrotr::{
     runtime::{ProcessEnvelope, ResourceBudget, ResourceLimits, ResourceRequest, WaiterLimits},
+    secrets::SecretFile,
     storage::{
-        archive::{CatalogRoute, CatalogTls, Preparation, PreparationLimits, WorkerInstallation},
+        archive::{
+            CatalogRoute, CatalogTls, NativeClientIdentity, Preparation, PreparationLimits,
+            WorkerInstallation,
+        },
         postgres::{
             catalog_guard::CatalogIdentity, connection_settings::PlaintextBoundary,
             transport::PinnedRoute,
@@ -62,18 +66,33 @@ pub(super) fn budget(config: &crate::config::Resolved) -> Result<ResourceBudget>
     Ok(ResourceBudget::new(combined))
 }
 
-pub(super) fn native_tls(config: &crate::config::Resolved) -> Result<()> {
-    if config
-        .text("postgres.catalog.tls.client_cert_ref")
-        .is_some()
-        || config.text("postgres.catalog.tls.client_key_ref").is_some()
-    {
-        return Err((
+pub(super) fn native_tls(
+    config: &crate::config::Resolved,
+    budget: &ResourceBudget,
+) -> Result<Option<NativeClientIdentity>> {
+    let certificate = config.text("postgres.catalog.tls.client_cert_ref");
+    let key = config.text("postgres.catalog.tls.client_key_ref");
+    let refused = || {
+        (
             3,
-            "native catalog mutual TLS is not implemented; no reservation was created".into(),
-        ));
+            "native catalog client identity refused; no reservation was created".into(),
+        )
+    };
+    match (certificate, key) {
+        (None, None) => Ok(None),
+        (Some(certificate), Some(key))
+            if config.text("postgres.catalog.tls.mode") == Some("verify-full") =>
+        {
+            NativeClientIdentity::load(
+                SecretFile::parse(certificate).map_err(|_| refused())?,
+                SecretFile::parse(key).map_err(|_| refused())?,
+                budget,
+            )
+            .map(Some)
+            .map_err(|_| refused())
+        }
+        _ => Err(refused()),
     }
-    Ok(())
 }
 
 pub(super) fn limits(config: &crate::config::Resolved) -> Result<PreparationLimits> {
@@ -174,14 +193,23 @@ pub(super) struct NativeRoute {
 }
 enum NativeTls {
     Plain(PlaintextBoundary),
-    Full { server: String, ca: PathBuf },
+    Full {
+        server: String,
+        ca: PathBuf,
+        identity: Option<NativeClientIdentity>,
+    },
 }
 impl NativeRoute {
-    pub(super) fn new(config: &crate::config::Resolved, pinned: &PinnedRoute) -> Result<Self> {
+    pub(super) fn new(
+        config: &crate::config::Resolved,
+        pinned: &PinnedRoute,
+        identity: Option<NativeClientIdentity>,
+    ) -> Result<Self> {
         let tls = match required(config, "postgres.catalog.tls.mode")? {
             "verify-full" => NativeTls::Full {
                 server: required(config, "postgres.catalog.tls.server_name")?.into(),
                 ca: required(config, "postgres.catalog.tls.ca_file")?.into(),
+                identity,
             },
             "local-plaintext" => NativeTls::Plain(
                 match required(config, "postgres.catalog.tls.local_boundary")? {
@@ -213,9 +241,22 @@ impl NativeRoute {
             database: &self.database,
             tls: match &self.tls {
                 NativeTls::Plain(boundary) => CatalogTls::LocalPlaintext(*boundary),
-                NativeTls::Full { server, ca } => CatalogTls::VerifyFull {
+                NativeTls::Full {
+                    server,
+                    ca,
+                    identity: None,
+                } => CatalogTls::VerifyFull {
                     server_name: server,
                     ca_file: ca,
+                },
+                NativeTls::Full {
+                    server,
+                    ca,
+                    identity: Some(identity),
+                } => CatalogTls::VerifyFullWithClient {
+                    server_name: server,
+                    ca_file: ca,
+                    identity,
                 },
             },
         }

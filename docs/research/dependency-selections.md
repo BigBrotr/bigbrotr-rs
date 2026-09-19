@@ -356,7 +356,7 @@ activity observation. Login revocation plus enumeration alone is insufficient;
 actual client/process exclusion and startup ordering remain recovery gates.
 This research adds no archive schema or migration.
 
-The same selected libpq18.3 source makes authentication policy explicit.
+The same selected libpq 18.3 source makes authentication policy explicit.
 `fe-connect.c`'s `pqConnectOptions2` maps `require_auth=scram-sha-256` to required
 authentication and only the SCRAM SASL mechanism. `fe-auth.c`'s
 `check_expected_areq` rejects AuthenticationOk until `client_finished_auth`;
@@ -646,3 +646,13 @@ executes the actual CLI TLS good/wrong-CA/wrong-name, signals, blocked query
 cancellation/restart and signed catalog consumers. A single pinned query stays
 pending until custody attachment/driver polling. This confirms the finite adapter
 boundary; no shared process-budget or installed Archive readiness is claimed.
+
+The native client-identity candidate additionally uses the already locked
+rustix1.1.5 memfd/seal and CLOEXEC-duplication APIs, rustls0.23.45 strict PEM and
+key-pair validation, and command-fds0.3.3 preserved descriptors. Inspection of
+libpq REL_18_3 `fe-secure-openssl.c` confirms regular-file/mode 0400 compatibility
+and its 1024-byte sslrootcert buffer; the route rejects longer CA paths. Exact
+source hashes are inventoried under native_mtls. No dependency or private-worker
+wire format changes. A 16 MiB parent grant covers bounded credential preparation
+and retained memfds; it is not an RSS certificate. Actual Linux mTLS, server
+clientcert enforcement and cancellation remain qualification gates.

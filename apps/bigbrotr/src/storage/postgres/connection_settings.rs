@@ -460,7 +460,9 @@ fn root_store(bytes: &[u8]) -> Result<RootCertStore, ConnectionError> {
     Ok(roots)
 }
 
-fn certificate_chain(bytes: &[u8]) -> Result<Vec<CertificateDer<'static>>, ConnectionError> {
+pub(crate) fn certificate_chain(
+    bytes: &[u8],
+) -> Result<Vec<CertificateDer<'static>>, ConnectionError> {
     validate_pem_blocks(bytes, &["CERTIFICATE"]).map_err(|_| ConnectionError::ClientCertificate)?;
     let certificates = CertificateDer::pem_slice_iter(bytes)
         .collect::<Result<Vec<_>, _>>()
@@ -471,7 +473,7 @@ fn certificate_chain(bytes: &[u8]) -> Result<Vec<CertificateDer<'static>>, Conne
     Ok(certificates)
 }
 
-fn one_private_key(bytes: &[u8]) -> Result<PrivateKeyDer<'static>, ConnectionError> {
+pub(crate) fn one_private_key(bytes: &[u8]) -> Result<PrivateKeyDer<'static>, ConnectionError> {
     validate_pem_blocks(bytes, &["PRIVATE KEY", "RSA PRIVATE KEY", "EC PRIVATE KEY"])
         .map_err(|_| ConnectionError::ClientPrivateKey)?;
     let mut keys = PrivateKeyDer::pem_slice_iter(bytes);

@@ -10163,6 +10163,45 @@
         }
       },
       "report": "docs/implementation/evidence/p02-initialization-drain-native-20260919.json"
+    },
+    "native_mtls": {
+      "status": "local-candidate-native-not-run",
+      "local_raw_root": ".research/implementation/archive-worker/native-mtls",
+      "source_parent": "8972fb62f331a12ff61c349367ae9c3cf0cfa91d",
+      "scope": "sealed explicit client identity for actual native initializer and receipt routes",
+      "source_audit": [
+        {
+          "path": ".research/implementation/archive-worker/native-mtls/fe-secure-openssl.c",
+          "url": "https://raw.githubusercontent.com/postgres/postgres/REL_18_3/src/interfaces/libpq/fe-secure-openssl.c",
+          "bytes": 53797,
+          "sha256": "b0e0ebefe7b7a42af3fd4236783e06aa55e73037e0770115c421aca6db353b46"
+        },
+        {
+          "path": "/Users/vincenzo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/command-fds-0.3.3/src/lib.rs",
+          "version": "command-fds0.3.3",
+          "bytes": 15596,
+          "sha256": "48ae3cee2aecd732eea345c97dc3e569d5f4e7227100fa246546fd0af66bc886"
+        },
+        {
+          "path": ".research/implementation/archive-worker/native-mtls/pg_config_manual.h",
+          "url": "https://raw.githubusercontent.com/postgres/postgres/REL_18_3/src/include/pg_config_manual.h",
+          "bytes": 13536,
+          "sha256": "3b513dda5408337ef7c31bca491844650b4ea2cdb1b688d6b99ab74ba3f06700"
+        }
+      ],
+      "resources": "no remote lab launched; latest drain lab remains retired",
+      "next": "exact-source fresh lab with inherited sealed-FD tests and actual server-enforced mTLS plus SCRAM",
+      "retired_previous_networks": [
+        {
+          "root": "initialization-drain-78e7734",
+          "network": "0d723a977b4b2e6252f56ce3d17265739e0b80fbe86510a826c885bd32d7abcb",
+          "owner": "772532228ad91c0d671adc6a8be9b483",
+          "status": "removed",
+          "containers": "retained-stopped",
+          "data": "retained",
+          "observed_at": "2026-09-19T09:36:39.223547+00:00"
+        }
+      ]
     }
   },
   "implementation_monitor_corrections_20260918": {
