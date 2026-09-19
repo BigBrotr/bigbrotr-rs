@@ -70,7 +70,9 @@ with tarfile.open(archive) as tar:
     for member in tar.getmembers():
         assert not Path(member.name).is_absolute() and '..' not in Path(member.name).parts
         assert member.isfile() or member.isdir()
-    tar.extractall(baseline_source, filter='data')
+    # Match tools.build's prevalidated regular-file/directory-only extraction;
+    # the pinned Python3.11 runner does not provide the later filter keyword.
+    tar.extractall(baseline_source)
 baseline_manifest = dict(revision=baseline, archive_sha256=file_hash(archive), files_sha256=source_files(baseline_source))
 (build / 'baseline-source-manifest.json').write_text(json.dumps(baseline_manifest, indent=2) + '\n')
 assert file_hash(baseline_source / 'Cargo.lock') == file_hash(SOURCE / 'Cargo.lock')

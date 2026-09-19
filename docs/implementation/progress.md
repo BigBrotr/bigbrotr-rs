@@ -21,15 +21,13 @@ installed service readiness.
 
 ## Actual Git and ownership
 
-Mac main HEAD and freshly verified remote main remain
-0ca4fffa9c5f1bf5b1c447907dc2c3cc2fa2b1eb. Root is sole writer. Current dirty
-work is the native SCRAM/completion slice: archive bootstrap.rs/worker.rs/
-publisher.rs, archive_receipt_probe.rs, native_commit_proxy.py, new
-native_catalog_auth.py/catalog_auth_cases.py, owning archive-storage contract,
-archive-handoff, dependency selection, P02 task, inventory and this checkpoint.
-No new initializer reservation source, merge/rebase or remote experiment yet.
-Prior qualification source3e87a53087a445141e9079f40cdc902dd5add322 remains valid
-within its reported scope. New source is not native-qualified or pushed.
+Mac main HEAD is candidate567c2e6be437c3fab1b7f704a0f7161775a1ec10,
+treed3b869608b4e1563edae34103c1cb4aa2e126e64, one unpublished commit ahead of
+freshly verified origin/main0ca4fffa9c5f1bf5b1c447907dc2c3cc2fa2b1eb. Root is
+sole writer. Clean candidate transferred through Git (session88580 exited0),
+716 exact source files exported for isolated native build. Current dirty work is the baseline extraction compatibility fix in
+native_catalog_auth.py and post-run inventory/checkpoint metadata. No initializer reservation
+source, merge or rebase. Native qualification remains open.
 
 ## Installed catalog inspection qualified within its scope
 
@@ -77,19 +75,30 @@ No product/test assertion changed. Full details and exclusions stay in the repor
 
 ## Owned resources terminal
 
-Both new labs are stopped-retained under
-/home/tux/bigbrotr-implementation-20260917/runs/:
-catalog-cli-5262c84 owner595c0af940229c8e7c6c6a0aba1846ff,
-catalog-cli-3e87a53 owner06095a02c49b84b572b0451c2e6bd688.
-Inventory implementation_archive_worker_20260918.catalog_cli/catalog_cli_inspection
-owns exact IDs/caps. Internal networks/no host ports. Both PGs stopped cleanly;
-runners explicitly stopped after READY; no OOM. Four Control and one malformed
-CLI auxiliary containers are stopped. All275 first/281 second preexisting
-container identities, states, complete mount records and networks unchanged.
-Eight unrelated running, zero BigBrotr. Audits61908/94967, collection52718 and
-CLI94516 are terminal; no active experiment/cleanup obligation. Old labs stay
-retired. Latest cache catalog-cli-3e87a53/out/build and assets out/archive-worker;
-future runs need new exact-source resources. No native arm64 or hosted Actions.
+catalog-auth-567c2e6 is stopped-retained under
+/home/tux/bigbrotr-implementation-20260917/runs/,
+owner a6c7996617616a11af9af2f1d60c20cf. Runner
+1df0f4ba8b759122e9138bee3e328d1c723d6036ef55b1fd29e813468fa00578
+exited1 after baseline source extraction rejected Python3.11's unsupported filter
+keyword. Ordered production build,26 native Rust cases and Clippy passed; one
+unrelated native custody test was ignored (separately qualified earlier). No
+baseline executable/READY/authentication scenario result. Mac corrected extraction
+to the shared builder's validated regular-file/directory-only policy. This is a
+harness compatibility correction, no product/test expectation change.
+
+Audit82666 terminal: exact716 source files, no OOM, PG
+8f0bf2ffbfe8c06892392fbaa2417341a662762852ac41c7f2b1df017799ed5d
+stopped cleanly; internal networkc05139b273b5794651b211175935ec384387a47a4e58826f022d9e97852910dc
+empty. All284 preexisting containers, states and complete mounts/networks unchanged;
+eight unrelated running, zero BigBrotr. Collection33704 verified all11 raw files
+and tarababfdfa1818eda035e9976b9e7ee18143e36f2654f337a9c952aecf460968ab
+under .research/implementation/archive-worker/catalog-initialization/failed-build.
+Audit PASS means source/resource audit only; native auth is NOT_RUN.
+
+No active experiment or cleanup obligation. New exact-source run must follow the
+reviewed Mac correction, using the stopped567 build cache by copy and its native
+assets read-only. Do not restart retired labs. Prior catalog-cli526/3e87 reports
+remain valid within their scope. No arm64 or hosted Actions claim.
 
 ## Earlier evidence and constraints
 
@@ -141,8 +150,9 @@ INCOMPLETE. Final scoped source review found no further blocking finding. Propos
 PG/native receipt reads, a rebuilt unchanged0ca4fff parent as negative control,
 trust and omitted server-final authentication, TLS wrong CA/name/password, and
 independent unchanged catalog/driver observations. Native cases are NOT_RUN.
-Launch/transfer helpers are prepared locally; create a new catalog-auth-<revision>
-lab only from a clean committed candidate. Reuse latest3e87 build cache/assets by
+Candidate567c2e6 failed only baseline extraction before READY, as recorded above.
+Commit the one-line compatibility correction and use a new exact-source lab;
+authentication scenarios require its positive READY result. Reuse latest3e87 build cache/assets by
 copy/read-only mount, never restart retired resources. Fresh read-only Tux query
 again found the eight unrelated running containers and no BigBrotr running.
 

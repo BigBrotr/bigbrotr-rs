@@ -8022,7 +8022,7 @@
       "report": "docs/implementation/evidence/p02-catalog-cli-native-20260919.json"
     },
     "catalog_native_authentication": {
-      "status": "local regressions PASS; native qualification NOT_RUN; no new remote resources yet",
+      "status": "first native build incomplete:26 Rust PASS,1 unrelated custody test ignored,Clippy PASS; baseline extraction unsupported keyword; clean Mac harness correction pending",
       "local_root": ".research/implementation/archive-worker/catalog-initialization",
       "base_source": "0ca4fffa9c5f1bf5b1c447907dc2c3cc2fa2b1eb",
       "source_inspection": {
@@ -8044,7 +8044,30 @@
         "archive-tests.txt"
       ],
       "native_work": "separate exact-source lab via reviewed launch/transfer; previous3e87 cache read/copy only; no old lab restart",
-      "scope": "mandatory SCRAM on shared native publisher/receipt routes; strict bootstrap/initialize reply; complete initializer remains required"
+      "scope": "mandatory SCRAM on shared native publisher/receipt routes; strict bootstrap/initialize reply; complete initializer remains required",
+      "native_run": {
+        "source": "567c2e6be437c3fab1b7f704a0f7161775a1ec10",
+        "tree": "d3b869608b4e1563edae34103c1cb4aa2e126e64",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-auth-567c2e6",
+        "owner": "a6c7996617616a11af9af2f1d60c20cf",
+        "container": "bigbrotr-implementation-catalog-auth-567c2e6",
+        "postgres": "bigbrotr-implementation-catalog-auth-567c2e6-pg",
+        "network": "bigbrotr-implementation-catalog-auth-567c2e6",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "state": "stopped-retained",
+        "source_files": 716,
+        "started_at": "2026-09-19T04:58:03.426591+00:00",
+        "network_id": "c05139b273b5794651b211175935ec384387a47a4e58826f022d9e97852910dc",
+        "postgres_id": "8f0bf2ffbfe8c06892392fbaa2417341a662762852ac41c7f2b1df017799ed5d",
+        "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+        "container_id": "1df0f4ba8b759122e9138bee3e328d1c723d6036ef55b1fd29e813468fa00578",
+        "completed_at": "2026-09-19T05:00:36.830101+00:00",
+        "local_root": ".research/implementation/archive-worker/catalog-initialization/failed-build",
+        "qualification": "NOT_RUN: baseline extraction failed before auth scenarios",
+        "audit": ".research/implementation/archive-worker/catalog-initialization/failed-build/audit.json",
+        "raw_tar_sha256": "ababfdfa1818eda035e9976b9e7ee18143e36f2654f337a9c952aecf460968ab"
+      }
     }
   },
   "implementation_monitor_corrections_20260918": {
