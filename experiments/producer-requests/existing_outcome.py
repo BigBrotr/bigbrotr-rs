@@ -51,7 +51,9 @@ def main(root, observe_existing=False):
     assert ready['status']=='READY' and ready['baseline_product']==state['source']
     for name in ['apps/bigbrotr/examples/ingest_bootstrap_probe.rs',
                  'apps/bigbrotr/examples/support/ingest_event.rs',
-                 'experiments/ingest-bootstrap/event_oracle.py']:
+                 'experiments/ingest-bootstrap/event_oracle.py',
+                 'experiments/ingest-bootstrap/oracle.py',
+                 'tests/fixtures/ingest/import-event.jsonl']:
         assert (SOURCE/name).read_bytes()==(root/'out/outcome-probe/source'/name).read_bytes()
     artifact=root/'out/outcome-probe/ingest-bootstrap-probe'
     assert hashlib.sha256(artifact.read_bytes()).hexdigest()==ready['sha256']

@@ -230,3 +230,15 @@ result. The three boundaries (reservation, native write, outcome copy) remain
 separately identifiable. No producer_checkpoints, ACK, retirement or GC watermark
 is advanced by this copy. Required practical fault/compatibility evidence is
 recorded separately; this contract is not a PASS claim.
+
+The [native outcome report](../implementation/evidence/p02-producer-outcomes-native-20260919.json)
+records five actual connected outcome-copy/fourth-COMMIT cases and19 SQL constraint
+observations at9537667. Four old/new schema compatibility cases preserve all rows
+and DDL on refusal; they do not qualify upgraded runtime grants or owner recovery.
+Six installed signed-publication schedules independently compare all24 retained
+NewFacts/Rejected copies. A separately built fixture with identical product inputs
+also copies AlreadyDurable for a new request without adding facts; its exact retry
+preserves the original PG row/xmin, and all27 native rows match the independent
+oracle. No logical position, producer checkpoint, ACK or GC is inferred from these
+results. The report preserves the initial SQL expectation failure, later observer
+correction and terminal audit recovery rather than relabeling them as first-run success.

@@ -1,0 +1,1164 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-19",
+  "status": "PASS",
+  "scope": "P02-T02 step4 prerequisite: exact native NewFacts/AlreadyDurable/Rejected outcome copied durably to the original PG reservation before connected success. Linux amd64 finite native scenarios only; no logical position/checkpoint closure, ACK/GC, successor ownership or M1 completion.",
+  "source": {
+    "revision": "9537667dd140baac68ca79ecb56ea7c6ecce081f",
+    "tree": "71716b4155e6ed0068c1eb41d817f8c4b0bd3c18",
+    "dirty": false,
+    "source_manifests": [
+      {
+        "revision": "9537667dd140baac68ca79ecb56ea7c6ecce081f",
+        "tree": "71716b4155e6ed0068c1eb41d817f8c4b0bd3c18",
+        "files": 803,
+        "archive_sha256": "6f3a920558109dc6daf9c36ec6ea1c0b8ccc337404ac8f41c68bdeb1a245d3c0",
+        "manifest_sha256": "3beda968510274ef8c0ba3f94616851dbe8e5baa18fc640d6aaa8aa553611fb8"
+      },
+      {
+        "revision": "1c3e62fb4724a20e75915ee5eea98cbb5cb0427a",
+        "tree": "ff53bd877942d61a047e700bee81c0940841968b",
+        "files": 807,
+        "archive_sha256": "5d57f90a111d83452f60d80d2c8fce288f40f223584bb904fc0f91cd93356d4b",
+        "manifest_sha256": "7e6727f0557114c60ceae1d933e610b19099d0bc3d65568af3eaadb418bd42ea"
+      }
+    ],
+    "lockfile_sha256": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215"
+  },
+  "artifacts": {
+    "main": {
+      "sha256": "52411b89f9611307ed29886ba34837b029ff464d615d549baca8a0635feb6ae9",
+      "bytes": 9191928,
+      "elf_machine": 62
+    },
+    "worker": {
+      "sha256": "4a8f8f37ec6dbf7b6e6def033966d21d116f027699cfd4c96ae6ff852f298f3c",
+      "bytes": 12608632,
+      "elf_machine": 62
+    },
+    "publisher": {
+      "sha256": "fdceefbb6dc2c0f940fd238922403f0e0baaa7d4ae84ed92645f6bb59ffcaf74",
+      "bytes": 19080560,
+      "elf_machine": 62
+    },
+    "ingest_probe": {
+      "sha256": "08958c5b14092de0255670e6135ff1122b34934e0f275c20adca639064c0d002",
+      "bytes": 15671976,
+      "elf_machine": 62
+    },
+    "existing_probe": {
+      "sha256": "19759a8d9498c1173b02cbc43fcddf5ce3a900caad2c97de14d017510e62637d",
+      "bytes": 15685784,
+      "elf_machine": 62
+    },
+    "old_ingest_probe": {
+      "sha256": "9e9fda7bbf2ef217b32d2331aba6a232f35209e4d00e9235bfa55dc7a5ebdaf4",
+      "bytes": 15595616,
+      "elf_machine": 62
+    }
+  },
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "native_toolchain": {
+      "os": "Linux",
+      "architecture": "x86_64",
+      "discovery": "llvm-config",
+      "environment": {
+        "CC": "/usr/lib/llvm-14/bin/clang",
+        "CXX": "/usr/lib/llvm-14/bin/clang++",
+        "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+        "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+        "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+      },
+      "tools": {
+        "CC": {
+          "path": "/usr/lib/llvm-14/bin/clang",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "CXX": {
+          "path": "/usr/lib/llvm-14/bin/clang++",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "AR": {
+          "path": "/usr/lib/llvm-14/bin/llvm-ar",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+          "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+          "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+        },
+        "LIBCLANG_PATH": {
+          "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+          "version": "Debian clang version 14.0.6"
+        },
+        "discovery": {
+          "path": "/usr/lib/llvm-14/bin/llvm-config",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+          "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+          "version": "14.0.6"
+        }
+      },
+      "sdk": null
+    },
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "runner_cpu": 2,
+    "runner_memory_bytes": 6442450944,
+    "runner_pids": 512,
+    "postgres_cpu": 1,
+    "postgres_memory_bytes": 1073741824,
+    "postgres_pids": 128,
+    "published_ports": [],
+    "fixture_builder_network": "none"
+  },
+  "build_and_checks": {
+    "status": "PASS",
+    "checks": {
+      "build": [
+        {
+          "name": "ordered-build",
+          "command": [
+            "/usr/bin/python3",
+            "/source/experiments/archive-engine/native_initialization.py",
+            "--build-binaries"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 47.78359624510631
+        }
+      ],
+      "core": [
+        {
+          "name": "fixture",
+          "command": [
+            "cargo",
+            "build",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr",
+            "--example",
+            "catalog_schema_probe",
+            "--example",
+            "catalog_initialization_probe",
+            "--example",
+            "archive_receipt_probe",
+            "--example",
+            "ingest_bootstrap_probe",
+            "-p",
+            "bigbrotr-archive-worker",
+            "--example",
+            "archive_publication_probe",
+            "--example",
+            "archive_read_probe",
+            "--example",
+            "archive_coordinator_probe",
+            "--example",
+            "archive_attempt_probe"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 59.75827678665519
+        },
+        {
+          "name": "schema-tests",
+          "command": [
+            "cargo",
+            "test",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr",
+            "--test",
+            "control_schema"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 24.052657120861113
+        },
+        {
+          "name": "parent-tests",
+          "command": [
+            "cargo",
+            "test",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr",
+            "--lib",
+            "storage::archive",
+            "--",
+            "--nocapture"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 13.4829314481467
+        },
+        {
+          "name": "cli-tests",
+          "command": [
+            "cargo",
+            "test",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr",
+            "--bin",
+            "bigbrotr",
+            "--test",
+            "catalog_entrypoint",
+            "--test",
+            "control_runtime_entrypoint"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 12.634484205860645
+        },
+        {
+          "name": "clippy",
+          "command": [
+            "cargo",
+            "clippy",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr",
+            "-p",
+            "bigbrotr-archive-worker",
+            "--lib",
+            "--example",
+            "catalog_schema_probe",
+            "--example",
+            "catalog_initialization_probe",
+            "--example",
+            "archive_receipt_probe",
+            "--example",
+            "ingest_bootstrap_probe",
+            "--example",
+            "archive_publication_probe",
+            "--example",
+            "archive_read_probe",
+            "--example",
+            "archive_coordinator_probe",
+            "--example",
+            "archive_attempt_probe",
+            "--bin",
+            "bigbrotr",
+            "--bin",
+            "bigbrotr-archive-worker",
+            "--",
+            "-D",
+            "warnings"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 2.7737274020910263
+        }
+      ],
+      "input": [
+        {
+          "name": "model",
+          "command": [
+            "cargo",
+            "test",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr-model"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 33.218751326203346
+        },
+        {
+          "name": "native-owner",
+          "command": [
+            "cargo",
+            "test",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr",
+            "--lib",
+            "storage::rocks",
+            "--",
+            "--nocapture"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 1.2254920429550111
+        },
+        {
+          "name": "input-clippy",
+          "command": [
+            "cargo",
+            "clippy",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr-model",
+            "-p",
+            "bigbrotr",
+            "--all-targets",
+            "--",
+            "-D",
+            "warnings"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 3.872056373860687
+        }
+      ],
+      "fixture": [
+        {
+          "name": "outcome-client",
+          "command": [
+            "cargo",
+            "build",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr",
+            "--example",
+            "ingest_bootstrap_probe"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 13.286975339986384
+        },
+        {
+          "name": "outcome-client-clippy",
+          "command": [
+            "cargo",
+            "clippy",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr",
+            "--example",
+            "ingest_bootstrap_probe",
+            "--",
+            "-D",
+            "warnings"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 1.7170085776597261
+        }
+      ]
+    },
+    "test_results": {
+      "out/native-tests/checks/cli-tests.log": [
+        {
+          "passed": 8,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "passed": 13,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "passed": 1,
+          "failed": 0,
+          "ignored": 0
+        }
+      ],
+      "out/native-tests/checks/parent-tests.log": [
+        {
+          "passed": 47,
+          "failed": 0,
+          "ignored": 1
+        }
+      ],
+      "out/native-tests/checks/schema-tests.log": [
+        {
+          "passed": 14,
+          "failed": 0,
+          "ignored": 0
+        }
+      ],
+      "out/native-tests/producer-inputs/model.log": [
+        {
+          "passed": 5,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "passed": 5,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "passed": 4,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "passed": 10,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "passed": 4,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "passed": 5,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "passed": 6,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "passed": 4,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "passed": 1,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "passed": 6,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "passed": 4,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "passed": 4,
+          "failed": 0,
+          "ignored": 0
+        },
+        {
+          "passed": 0,
+          "failed": 0,
+          "ignored": 0
+        }
+      ],
+      "out/native-tests/producer-inputs/native-owner.log": [
+        {
+          "passed": 26,
+          "failed": 0,
+          "ignored": 0
+        }
+      ]
+    },
+    "ignored_is_not_pass": true,
+    "fixture_scope": "1c3e62f only changes allowlisted examples/harness/docs; all product, SQL, dependency and build-tool inputs match9537667. Original product artifacts/export remain unchanged. No hosted Actions result inferred."
+  },
+  "outcome_cases": [
+    {
+      "name": "write",
+      "status": "PASS",
+      "native_rows": 12,
+      "inspection": {
+        "exit": 0,
+        "remote_exclusion": "UNKNOWN",
+        "stdout": "{\"control_epoch\":2,\"digest\":\"ff59bb81840ae5e0590983759ca5191f285904db6257110c2c5217352334d940\",\"event\":\"reservation-observed\",\"input_bytes\":262,\"manifest\":\"1a7ab8c7dd1d4367b2ce680baa2b2d8f41d234589eaf9c78e5afe30ad1e7a59d\",\"outcome\":{\"bytes\":339,\"digest\":\"ff59bb81840ae5e0590983759ca5191f285904db6257110c2c5217352334d940\",\"kind\":1,\"policy\":\"1\",\"sha256\":\"bc29d8d846809946ea399c8ecaa63e124fdaa94af6a625447a9724f0dbc0803d\"},\"present\":true}\n",
+        "stderr": "",
+        "overflow": false
+      }
+    },
+    {
+      "name": "outcome-refused",
+      "status": "PASS",
+      "native_rows": 12,
+      "inspection": {
+        "exit": 0,
+        "remote_exclusion": "UNKNOWN",
+        "stdout": "{\"control_epoch\":2,\"digest\":\"ff59bb81840ae5e0590983759ca5191f285904db6257110c2c5217352334d940\",\"event\":\"reservation-observed\",\"input_bytes\":262,\"manifest\":\"1a7ab8c7dd1d4367b2ce680baa2b2d8f41d234589eaf9c78e5afe30ad1e7a59d\",\"outcome\":null,\"present\":true}\n",
+        "stderr": "",
+        "overflow": false
+      }
+    },
+    {
+      "name": "outcome-rollback",
+      "status": "PASS",
+      "native_rows": 12,
+      "inspection": {
+        "exit": 0,
+        "remote_exclusion": "UNKNOWN",
+        "stdout": "{\"control_epoch\":2,\"digest\":\"ff59bb81840ae5e0590983759ca5191f285904db6257110c2c5217352334d940\",\"event\":\"reservation-observed\",\"input_bytes\":262,\"manifest\":\"1a7ab8c7dd1d4367b2ce680baa2b2d8f41d234589eaf9c78e5afe30ad1e7a59d\",\"outcome\":null,\"present\":true}\n",
+        "stderr": "",
+        "overflow": false
+      }
+    },
+    {
+      "name": "before-forward",
+      "status": "PASS",
+      "native_rows": 12,
+      "inspection": {
+        "exit": 0,
+        "remote_exclusion": "UNKNOWN",
+        "stdout": "{\"control_epoch\":2,\"digest\":\"ff59bb81840ae5e0590983759ca5191f285904db6257110c2c5217352334d940\",\"event\":\"reservation-observed\",\"input_bytes\":262,\"manifest\":\"1a7ab8c7dd1d4367b2ce680baa2b2d8f41d234589eaf9c78e5afe30ad1e7a59d\",\"outcome\":null,\"present\":true}\n",
+        "stderr": "",
+        "overflow": false
+      },
+      "proxy_receipt": {
+        "client_commit_complete": 3,
+        "commit_number": 4,
+        "commits_forwarded": 3,
+        "commits_seen": 4,
+        "declared_wire_bytes": 110957,
+        "elapsed_ns": 208313046,
+        "event": "receipt",
+        "faults": 1,
+        "format": "bigbrotr-pg-fault-proxy/1",
+        "frames": {
+          "backend": 1051,
+          "frontend": 790
+        },
+        "held": false,
+        "hold_action": null,
+        "mode": "before-forward",
+        "reason": "before-forward",
+        "server_commit_complete": 3,
+        "tags": {
+          "backend": {
+            "31": 97,
+            "32": 97,
+            "33": 96,
+            "43": 124,
+            "44": 122,
+            "4b": 1,
+            "52": 4,
+            "53": 14,
+            "54": 83,
+            "5a": 302,
+            "6e": 14,
+            "74": 97
+          },
+          "frontend": {
+            "42": 97,
+            "43": 97,
+            "44": 97,
+            "45": 97,
+            "50": 97,
+            "51": 12,
+            "53": 291,
+            "70": 2
+          }
+        }
+      }
+    },
+    {
+      "name": "after-complete",
+      "status": "PASS",
+      "native_rows": 12,
+      "inspection": {
+        "exit": 0,
+        "remote_exclusion": "UNKNOWN",
+        "stdout": "{\"control_epoch\":2,\"digest\":\"ff59bb81840ae5e0590983759ca5191f285904db6257110c2c5217352334d940\",\"event\":\"reservation-observed\",\"input_bytes\":262,\"manifest\":\"1a7ab8c7dd1d4367b2ce680baa2b2d8f41d234589eaf9c78e5afe30ad1e7a59d\",\"outcome\":{\"bytes\":339,\"digest\":\"ff59bb81840ae5e0590983759ca5191f285904db6257110c2c5217352334d940\",\"kind\":1,\"policy\":\"1\",\"sha256\":\"bc29d8d846809946ea399c8ecaa63e124fdaa94af6a625447a9724f0dbc0803d\"},\"present\":true}\n",
+        "stderr": "",
+        "overflow": false
+      },
+      "proxy_receipt": {
+        "client_commit_complete": 3,
+        "commit_number": 4,
+        "commits_forwarded": 4,
+        "commits_seen": 4,
+        "declared_wire_bytes": 110980,
+        "elapsed_ns": 203126569,
+        "event": "receipt",
+        "faults": 1,
+        "format": "bigbrotr-pg-fault-proxy/1",
+        "frames": {
+          "backend": 1054,
+          "frontend": 790
+        },
+        "held": false,
+        "hold_action": null,
+        "mode": "after-complete",
+        "reason": "after-complete",
+        "server_commit_complete": 4,
+        "tags": {
+          "backend": {
+            "31": 97,
+            "32": 97,
+            "33": 97,
+            "43": 125,
+            "44": 122,
+            "4b": 1,
+            "52": 4,
+            "53": 14,
+            "54": 83,
+            "5a": 303,
+            "6e": 14,
+            "74": 97
+          },
+          "frontend": {
+            "42": 97,
+            "43": 97,
+            "44": 97,
+            "45": 97,
+            "50": 97,
+            "51": 12,
+            "53": 291,
+            "70": 2
+          }
+        }
+      }
+    }
+  ],
+  "sql_constraints": {
+    "outcomes": {
+      "count": 19,
+      "fixture_sha256": "cd8f06db52b950e889791fdf6da5a55f81185c1568a991de70c89e5094bb0427",
+      "observations": [
+        {
+          "label": "all_cases_executed",
+          "sqlstate": null
+        },
+        {
+          "label": "atomic_copy_rollback",
+          "sqlstate": "23505"
+        },
+        {
+          "label": "bad_checksum",
+          "sqlstate": "23514"
+        },
+        {
+          "label": "closing_epoch_can_finish_copy",
+          "sqlstate": null
+        },
+        {
+          "label": "completion_space_reserved_before_dispatch",
+          "sqlstate": "23514"
+        },
+        {
+          "label": "copies_do_not_allow_retirement",
+          "sqlstate": "55000"
+        },
+        {
+          "label": "exact_combined_capacity",
+          "sqlstate": null
+        },
+        {
+          "label": "native_copy_exists",
+          "sqlstate": null
+        },
+        {
+          "label": "nonempty_native_fixture",
+          "sqlstate": null
+        },
+        {
+          "label": "no_remaining_outcome_space",
+          "sqlstate": "23514"
+        },
+        {
+          "label": "outcome_delete",
+          "sqlstate": "23514"
+        },
+        {
+          "label": "outcome_oversize",
+          "sqlstate": "23514"
+        },
+        {
+          "label": "outcome_truncate",
+          "sqlstate": "23514"
+        },
+        {
+          "label": "outcome_update",
+          "sqlstate": "23514"
+        },
+        {
+          "label": "out_of_order_is_not_a_checkpoint",
+          "sqlstate": null
+        },
+        {
+          "label": "unknown_kind",
+          "sqlstate": "23514"
+        },
+        {
+          "label": "without_reservation",
+          "sqlstate": "23514"
+        },
+        {
+          "label": "wrong_manifest",
+          "sqlstate": "23514"
+        },
+        {
+          "label": "wrong_request_digest",
+          "sqlstate": "23514"
+        }
+      ]
+    },
+    "reservations": {
+      "count": 20,
+      "fixture_sha256": "7cba17ceb64cfeec0a2ae3d7b525662a3ff6872ed719e8f5882d7823a8ae22c4",
+      "observations": [
+        {
+          "label": "all_cases_executed",
+          "sqlstate": null
+        },
+        {
+          "label": "closing_epoch_refuses_reservation",
+          "sqlstate": "23514"
+        },
+        {
+          "label": "counter_cannot_rewind",
+          "sqlstate": "23514"
+        },
+        {
+          "label": "counter_without_row",
+          "sqlstate": "23514"
+        },
+        {
+          "label": "duplicate_sql_not_a_retry",
+          "sqlstate": "23514"
+        },
+        {
+          "label": "empty_epoch_can_retire",
+          "sqlstate": null
+        },
+        {
+          "label": "gap_before_first",
+          "sqlstate": "23514"
+        },
+        {
+          "label": "manifest_context_change",
+          "sqlstate": "23514"
+        },
+        {
+          "label": "nonempty_native_fixture",
+          "sqlstate": null
+        },
+        {
+          "label": "oversize_input",
+          "sqlstate": "23514"
+        },
+        {
+          "label": "retained_byte_limit",
+          "sqlstate": "23514"
+        },
+        {
+          "label": "row_delete_refused",
+          "sqlstate": "23514"
+        },
+        {
+          "label": "row_update_immutable",
+          "sqlstate": "23514"
+        },
+        {
+          "label": "same_epoch_bulk_atomic_refusal",
+          "sqlstate": "23514"
+        },
+        {
+          "label": "truncate_foreign_key",
+          "sqlstate": "0A000"
+        },
+        {
+          "label": "truncate_refused",
+          "sqlstate": "23514"
+        },
+        {
+          "label": "two_statements_advance_exact_counter",
+          "sqlstate": null
+        },
+        {
+          "label": "unresolved_reservations_refuse_retirement",
+          "sqlstate": "55000"
+        },
+        {
+          "label": "whole_transaction_rollback",
+          "sqlstate": "23514"
+        },
+        {
+          "label": "window_full",
+          "sqlstate": "23514"
+        }
+      ]
+    },
+    "negative_effect_check": "Every refusal compares every control table before/after; exact32MiB combined input/completion boundary and one-byte overflow are distinct controls."
+  },
+  "reservation_regression": {
+    "status": "PASS",
+    "harness_revision": "1a1ff27ec59b783c75bd2530903b965352710349",
+    "cases": [
+      {
+        "name": "write",
+        "status": "PASS",
+        "native_rows": 12,
+        "request_count": 1
+      },
+      {
+        "name": "reservation-refused",
+        "status": "PASS",
+        "native_rows": 1,
+        "request_count": 1
+      },
+      {
+        "name": "reservation-rollback",
+        "status": "PASS",
+        "native_rows": 1,
+        "request_count": 0
+      },
+      {
+        "name": "reserved",
+        "status": "PASS",
+        "native_rows": 1,
+        "request_count": 1
+      },
+      {
+        "name": "before-forward",
+        "status": "PASS",
+        "native_rows": 1,
+        "request_count": 0
+      },
+      {
+        "name": "after-complete",
+        "status": "PASS",
+        "native_rows": 1,
+        "request_count": 1
+      }
+    ]
+  },
+  "concurrency": {
+    "status": "PASS",
+    "harness_revision": "1a1ff27ec59b783c75bd2530903b965352710349",
+    "cases": [
+      {
+        "name": "reserve_commit",
+        "status": "PASS",
+        "observed": {
+          "count": 1,
+          "counter": 1,
+          "state": "closing"
+        },
+        "cleanup_seconds": 0.16714698588475585,
+        "remaining_backends": 0,
+        "cleanup_errors": []
+      },
+      {
+        "name": "reserve_rollback",
+        "status": "PASS",
+        "observed": {
+          "count": 0,
+          "counter": 0,
+          "state": "closing"
+        },
+        "cleanup_seconds": 0.20916578359901905,
+        "remaining_backends": 0,
+        "cleanup_errors": []
+      },
+      {
+        "name": "close_commit",
+        "status": "PASS",
+        "observed": {
+          "count": 0,
+          "counter": 0,
+          "state": "closing"
+        },
+        "cleanup_seconds": 0.16117830201983452,
+        "remaining_backends": 0,
+        "cleanup_errors": []
+      },
+      {
+        "name": "close_rollback",
+        "status": "PASS",
+        "observed": {
+          "count": 1,
+          "counter": 1,
+          "state": "open"
+        },
+        "cleanup_seconds": 0.20442449394613504,
+        "remaining_backends": 0,
+        "cleanup_errors": []
+      },
+      {
+        "name": "old_rr",
+        "status": "PASS",
+        "observed": {
+          "count": 1,
+          "counter": 1,
+          "state": "open"
+        },
+        "cleanup_seconds": 0.19997922517359257,
+        "remaining_backends": 0,
+        "cleanup_errors": []
+      },
+      {
+        "name": "old_rc",
+        "status": "PASS",
+        "observed": {
+          "count": 1,
+          "counter": 1,
+          "state": "closing"
+        },
+        "cleanup_seconds": 0.11831190995872021,
+        "remaining_backends": 0,
+        "cleanup_errors": []
+      },
+      {
+        "name": "cleanup_ready",
+        "status": "PASS",
+        "injected_failure": "second client READY deadline",
+        "cleanup_seconds": 0.8678878699429333,
+        "remaining_backends": 0,
+        "cleanup_errors": []
+      },
+      {
+        "name": "cleanup_waiter",
+        "status": "PASS",
+        "injected_failure": "waiter blocked behind running holder",
+        "cleanup_seconds": 0.9723514118231833,
+        "remaining_backends": 0,
+        "cleanup_errors": []
+      }
+    ],
+    "scope": "Six actual SQL row-lock/RC/RR schedules and two bounded harness cleanup controls; no native handoff inference."
+  },
+  "migration_compatibility": {
+    "status": "PASS",
+    "harness_revision": "1a1ff27ec59b783c75bd2530903b965352710349",
+    "old_source": "dddefd55be48cac7613a5ee460067da5e1acabaf",
+    "old_artifact": "9e9fda7bbf2ef217b32d2331aba6a232f35209e4d00e9235bfa55dc7a5ebdaf4",
+    "cases": [
+      {
+        "name": "empty",
+        "status": "PASS",
+        "schema_before": "f689208155fadede5111aa80f4ec9792fa54616b0126b691ba7d94b58ea34a37",
+        "schema_after": "681c6ce7a77c35990dd7268a672b4227ccebaf33689310f4f524f387657c299b",
+        "native_rows": 0,
+        "exits": {
+          "migration": 0,
+          "old_refusal": 101
+        }
+      },
+      {
+        "name": "retained",
+        "status": "PASS",
+        "schema_before": "f689208155fadede5111aa80f4ec9792fa54616b0126b691ba7d94b58ea34a37",
+        "schema_after": "681c6ce7a77c35990dd7268a672b4227ccebaf33689310f4f524f387657c299b",
+        "native_rows": 12,
+        "exits": {
+          "old_write": 0,
+          "migration": 0,
+          "old_refusal": 101
+        }
+      },
+      {
+        "name": "insufficient_headroom",
+        "status": "PASS",
+        "schema_before": "f689208155fadede5111aa80f4ec9792fa54616b0126b691ba7d94b58ea34a37",
+        "schema_after": "f689208155fadede5111aa80f4ec9792fa54616b0126b691ba7d94b58ea34a37",
+        "native_rows": 12,
+        "exits": {
+          "old_write": 0,
+          "migration": 1
+        }
+      },
+      {
+        "name": "new_on_old",
+        "status": "PASS",
+        "schema_before": "f689208155fadede5111aa80f4ec9792fa54616b0126b691ba7d94b58ea34a37",
+        "schema_after": "f689208155fadede5111aa80f4ec9792fa54616b0126b691ba7d94b58ea34a37",
+        "native_rows": 0,
+        "exits": {
+          "new_refusal": 101
+        }
+      }
+    ],
+    "scope": "0011\u21920012 schema/data compatibility only. Compatible rows preserved, no outcomes inferred/backfilled; insufficient headroom preserves all rows and DDL. Old client rejects12 before owner/native creation. New client on11 may claim Control before rejecting Ingest. This does not qualify runtime grant upgrade, operational restart or successor adoption."
+  },
+  "installed_signed_publication": {
+    "status": "PASS",
+    "source": "9537667dd140baac68ca79ecb56ea7c6ecce081f",
+    "modes": [
+      "normal",
+      "before",
+      "after",
+      "owner_first",
+      "held_commit",
+      "held_rollback"
+    ],
+    "requests": 24,
+    "kinds": {
+      "NewFacts": 12,
+      "Rejected": 12,
+      "AlreadyDurable": 0
+    },
+    "checks": "Actual Control/Rocks/DuckDB/Parquet/CatalogManager and receipt-reader restarts. All24 original inputs, reservation metadata, manifest, complete native receipt/rejection bytes, PG copy SHA/kind/policy/recorder and zero checkpoints independently compared."
+  },
+  "already_durable": {
+    "status": "PASS",
+    "fixture_revision": "1c3e62fb4724a20e75915ee5eea98cbb5cb0427a",
+    "observer_revision": "455f49c45621c5bef2c66dbe5b2500938d03fad9",
+    "artifact_sha256": "19759a8d9498c1173b02cbc43fcddf5ce3a900caad2c97de14d017510e62637d",
+    "native_rows": 27,
+    "scientific_facts": 6,
+    "new_facts_from_request3": 0,
+    "original_input_bytes": 298,
+    "receipt_bytes": 395,
+    "dependency_sequences": [
+      1,
+      3,
+      4,
+      5,
+      6
+    ],
+    "checks": "A distinct third request for the same signed import commits AlreadyDurable; identical retry preserves complete PG row and xmin. Independent expected27 native rows, original input and complete receipt plus full reservation/outcome context match. This is a mutation request without new scientific facts, not ExistingDurabilityProof.",
+    "observation_history": "Initial observer checked bytes/kind/digest but omitted some PG context assertions; independent AI counterexample prompted read-only455f49c recheck preserving/hash-binding the original report. Two unchanged oracle/input hashes also verified explicitly in observer-input-identities.json and added to the final preflight."
+  },
+  "local_regressions": {
+    "record": {
+      "path": ".research/implementation/producer-outcomes/mac-validation.json",
+      "sha256": "2b9c5eee8790eafcd7253c252c36872e1d10a0fd8aaa1f06d9f905f2f7e82217"
+    },
+    "before": [
+      "Migration catalog UnknownTarget12 before additive registration",
+      "Native witness tests failed to compile before witness API",
+      "Actual populated native bootstrap replay returned StateMismatch"
+    ],
+    "after": "14 migration,8 request-input/native,5 bootstrap and5 structural receipt tests PASS on Mac; scoped Clippy/fmt/structural checks PASS. Linux scope is recorded separately above."
+  },
+  "review": {
+    "kind": "Independent read-only AI review and integrating-owner full affected source/diff review",
+    "resolved": [
+      "Populated bootstrap replay must preserve/check immutable initial members without requiring the store to remain empty afterward.",
+      "Timeout observations now persist setup/SQL/client partial output and UNKNOWN remote exclusion.",
+      "AlreadyDurable observer initially omitted PG context fields; corrected comparison rejects12 independent altered-field controls.",
+      "Read-only observer preserves the original report and runs no CREATE/setup/admission; local simulated-process check verified this boundary."
+    ],
+    "boundary": "No whole product, successor, ACK, GC, installed source-policy or release review claimed."
+  },
+  "retained_failures": [
+    {
+      "report": {
+        "path": ".research/implementation/producer-outcomes/qualified/producer-reservation-cases.json",
+        "sha256": "fa53059f15013d5257f5030187bed28ce7f0679215e1414bdbb21a5fb6bad002"
+      },
+      "status": "INCOMPLETE",
+      "native_cases_passed": 6,
+      "failure": "TRUNCATE requests rejected by new FK0A000 before expected23514 trigger. Corrected harness tests both refusals and preserves every row; fresh tagged rerun passes20SQL observations."
+    },
+    {
+      "status": "NOT_RUN",
+      "failure": "First wrapper omitted root argument; first signed wrapper used --root instead of positional root. Both exited before dependent scenarios; corrected invocations have separate reports."
+    },
+    {
+      "status": "FAIL_THEN_RECOVERED",
+      "failure": "Docker address pools exhausted before any new container; only verified-empty owned prior dddefd5 network removed. No unrelated resource deleted.",
+      "report": {
+        "path": ".research/implementation/producer-outcomes/qualified/retired-network.json",
+        "sha256": "30dc51a37e87dc0078e6c6c28924d7e4225900964fbe82e6eedcbcfd5d0f77a4"
+      }
+    },
+    {
+      "status": "FAIL_THEN_RECOVERED",
+      "failure": "Terminal audit compared Docker mount-list order after stopping owned peers. Normalized mount sets match. Completed source/artifact/lifecycle audit without restart.",
+      "prestop_evidence": {
+        "original_audit_sha256": "500503e0a0b7673f41043ba7bd41420d0a646ae595006d97a8fe1fbdd7fca33a",
+        "original_failure_line": 48,
+        "tool_receipt": "84c117",
+        "owned_sql_backends_before_shutdown": 0,
+        "observed_by": "Original audit reached line48 after successfully asserting the actual SQL query returned zero and docker top contained only docker-init/python3, then stopping all three owned containers. No separate prestop receipt was persisted; this is retrospective control-flow evidence, not a newly executed SQL observation.",
+        "failure": "Unordered Docker Mounts list compared as an ordered list; diagnostic established same name/image/mount sets.",
+        "resume_scope": "Verify stopped owner identities and complete source/artifact/unrelated-resource/collection audit without restarting the retired lab."
+      }
+    }
+  ],
+  "bounds": {
+    "max_input_bytes": 16777216,
+    "max_outcome_bytes": 65536,
+    "completion_reservation_per_request": 65536,
+    "max_combined_declared_bytes_per_epoch": 33554432,
+    "max_retained_requests_per_epoch": "min(registered window,64)",
+    "additional_operation_grant_bytes": 262144,
+    "measurement_limit": "Finite correctness/constraint cases; not peak RSS, physical disk ceiling, aged throughput or capacity promise."
+  },
+  "not_run_or_not_implemented": [
+    "Logical source positions, complete obligations/gaps and causal producer checkpoints",
+    "ACK, detailed receipt/input GC, reclaimed capacity and proof-only checkpoint path",
+    "Successor recovery/closing/retirement/handoff and installed concurrent admission/source policy",
+    "Partial-input repair, ENOSPC, power/host loss and mixed-cut backup recovery",
+    "Native arm64, mixed aged workloads, full M1 read/export/restart and remaining selected product/release journeys"
+  ],
+  "resource_audit": {
+    "observed_at": "2026-09-19T18:12:00.858478+00:00",
+    "owned_containers": [
+      "45d5955fbfd130722fc5243c09866fb13b7c0e28c7166f44f513f98bfc3e8753",
+      "1b8d683a0039dc448e24b97b7cb880bf07218bc66fb26d9fad5482bab083adc5",
+      "c12c2498a1c51884e0bd480b6530a03b2530334ac1938bedda8ff5c959359cc9"
+    ],
+    "preexisting_container_lifecycles_unchanged": 363,
+    "retired_owned_network_changes": [],
+    "unrelated_containers_unchanged": 20,
+    "unrelated_running": 8,
+    "bigbrotr_running": 0,
+    "owned_sql_backends_before_shutdown": 0
+  },
+  "evidence": {
+    "raw": ".research/implementation/producer-outcomes/qualified",
+    "tar_sha256": "0cbc20128386e6235a31639e069d2efcc01430b6dbb647a50f1e315b600d5802",
+    "verified_files": 167,
+    "reports": [
+      {
+        "path": ".research/implementation/producer-outcomes/qualified/producer-outcome-cases.json",
+        "sha256": "09601f422dabb87b2870de023340ebe4a4a82cc4855a2607f3bd3dd23dcb0e6b"
+      },
+      {
+        "path": ".research/implementation/producer-outcomes/qualified/producer-reservation-cases-recheck.json",
+        "sha256": "28995472d618619e1f131bd9621d016111ac24a55cdda447eaefb9292b291d1c"
+      },
+      {
+        "path": ".research/implementation/producer-outcomes/qualified/producer-concurrency.json",
+        "sha256": "f0b5951d274180a9f12e3e53b8317a915ae3fc58b612cd93ffbe1dc9ca4ff070"
+      },
+      {
+        "path": ".research/implementation/producer-outcomes/qualified/producer-outcome-upgrade.json",
+        "sha256": "9903b274932ee2c0345ab135cd9a3935c3e7bd9779acf39161184e1364e97729"
+      },
+      {
+        "path": ".research/implementation/producer-outcomes/qualified/installed-signed-cases.json",
+        "sha256": "b211b6593e17c2177823bb170c4b7d11676afe82b4bc4df2bef3945aab39615e"
+      },
+      {
+        "path": ".research/implementation/producer-outcomes/qualified/signed-producer-outcomes.json",
+        "sha256": "ee7d8e4b0ebf7fcc5d9e838bf1eda0b9c6bd96a719f86cc77536d722295c6ad3"
+      },
+      {
+        "path": ".research/implementation/producer-outcomes/qualified/producer-existing-outcome-recheck.json",
+        "sha256": "cd93a5f4bccacf2ce7cd2ab1fa80ce30d843b0b5e809a15f68b5902bd3c0e6ef"
+      },
+      {
+        "path": ".research/implementation/producer-outcomes/qualified/audit.json",
+        "sha256": "0dd680c3a358dbfea03abeaed116b1eb801c45a8c20ca19465ce55562b543f10"
+      },
+      {
+        "path": ".research/implementation/producer-outcomes/qualified/observer-input-identities.json",
+        "sha256": "d9b561f58be1605cd3a8ecbdf460ca3120e9ca5e5525cdc17d162ec9faceaa7b"
+      }
+    ]
+  }
+}

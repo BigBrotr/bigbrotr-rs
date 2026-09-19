@@ -159,12 +159,14 @@ One owner serializes exact identity decisions for each writable directory.
   schedules, two harness cleanup controls and five actual old/new compatibility
   cases; six installed signed schedules at 57cce75 match 24 reservations. This
   qualifies that prerequisite, not this step's remaining ledger/ACK/handoff work.
-  The next [native outcome copy](../reference/producer-request-inputs.md#connected-native-outcome-copy-0012)
+  The [native outcome copy](../reference/producer-request-inputs.md#connected-native-outcome-copy-0012)
   adds migration0012 and a private native witness to the existing bridge, before
-  logical position/checkpoint closure. Its candidate practical tests include lost
-  outcome COMMIT replies, original rejection context, exact retry and combined
-  input/outcome capacity. These scenarios require actual native execution; their
-  presence is not qualification or completion of this step.
+  logical position/checkpoint closure. [Native outcome evidence](evidence/p02-producer-outcomes-native-20260919.json)
+  qualifies five outcome/COMMIT-loss cases,19 outcome SQL observations, four actual
+  migration/client compatibility cases, all24 signed-run copies and a distinct
+  AlreadyDurable request/retry with no new facts. Reservation/race regressions
+  also pass; initial fixture/audit failures remain recorded. This qualifies the
+  durable copy only, not this step's logical checkpoint, ACK/GC or handoff work.
 - [ ] **Step 5:** Make provenance-off allocate no P inventory or event/endpoint side channel;
   retain scope eligibility and scoped first local receive/earlier corrections.
   Implement CertifyExisting against one committed inventory view, exact verified
