@@ -103,6 +103,7 @@ pub async fn run(
     // attempting its replacement; a scheduling sleep is not backend exclusion.
     owner.release().await.unwrap();
     join(old_driver, false).await;
+    let direct_config = config.clone();
     if mode == "event-closing-commit-lost" {
         config.hostaddr("127.0.0.1".parse().unwrap()).port(6543);
     }
@@ -188,9 +189,9 @@ pub async fn run(
                 assert_eq!(observed, before);
                 return;
             }
-            config
-                .port(5432)
-                .application_name("bigbrotr-closing-recovery");
+            // Config::port appends: retain one port per host after proxy loss.
+            config = direct_config.clone();
+            config.application_name("bigbrotr-closing-recovery");
             (current, driver) = acquire(&config, spec, 34).await;
             recovery = IngestRecovery::open(path, manifest, limits(), grant(budget, 0, 128 * MIB))
                 .unwrap();

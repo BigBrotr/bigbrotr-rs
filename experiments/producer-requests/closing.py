@@ -63,14 +63,17 @@ def same_window(before, after, pg_closes, recovered=False):
             assert before[name] == after[name], name
 
 
-def main(root, tag, scenario):
+def main(root, tag, scenario, fixture_build=False):
     resources = json.loads((root/'resources.json').read_text())
     revision = command('git','-C',str(SOURCE),'rev-parse','HEAD')
     assert not command('git','-C',str(SOURCE),'status','--porcelain','--untracked-files=all')
     assert not command('git','-C',str(SOURCE),'diff',resources['source'],revision,'--','apps','crates','migrations','Cargo.lock','Cargo.toml','rust-toolchain.toml')
-    ready = json.loads((root/'out/native-tests/ready.json').read_text())
-    assert ready['status']=='READY' and ready['source']==resources['source']
-    assert sha((root/'out/native-tests/ingest-bootstrap-probe').read_bytes()) == ready['ingest_probe']
+    location = 'out/closing-probe' if fixture_build else 'out/native-tests'
+    ready = json.loads((root/location/'ready.json').read_text())
+    assert ready['status']=='READY' and ready['baseline_product' if fixture_build else 'source']==resources['source']
+    if fixture_build:
+        assert ready['source']==revision
+    assert sha((root/location/'ingest-bootstrap-probe').read_bytes()) == ready['sha256' if fixture_build else 'ingest_probe']
     for identity in [resources['container_id'],resources['postgres_id']]:
         owned = json.loads(command('docker','inspect',identity))[0]
         assert owned['Config']['Labels']['org.bigbrotr.publication']==resources['owner']
@@ -88,7 +91,7 @@ def main(root, tag, scenario):
             observation.update(status='RETURNED',exit=result.returncode,stdout=result.stdout,stderr=result.stderr)
             result.check_returncode(); return result.stdout.strip()
         finally: save()
-    binary=['docker','exec','-i',resources['container_id'],'/out/native-tests/ingest-bootstrap-probe']
+    binary=['docker','exec','-i',resources['container_id'],'/'+location+'/ingest-bootstrap-probe']
     def run(label,args):
         observation=report['processes'][label]={};save()
         try:execute(binary+args,45,observation)
@@ -170,4 +173,5 @@ if __name__=='__main__':
     parser.add_argument('--root',type=Path,required=True)
     parser.add_argument('--run-tag',required=True)
     parser.add_argument('--scenario',choices=['normal','empty','pg-first','old-lease','root','metadata','policy','expired','rollback','late-sql','before-forward','after-complete'],required=True)
-    args=parser.parse_args();main(args.root.resolve(strict=True),args.run_tag,args.scenario)
+    parser.add_argument('--fixture-build',action='store_true')
+    args=parser.parse_args();main(args.root.resolve(strict=True),args.run_tag,args.scenario,args.fixture_build)

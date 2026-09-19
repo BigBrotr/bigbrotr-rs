@@ -14376,7 +14376,29 @@
         "bigbrotr_running": 0,
         "observed_at": "2026-09-19T21:34:27.687349+00:00"
       },
-      "manifest": ".research/implementation/certification/native/evidence-identity.json"
+      "manifest": ".research/implementation/certification/native/evidence-identity.json",
+      "network_lifecycle": "Retired after fresh empty/owned/stopped checks by producer-closing-0f6e366 launcher; containers/data remain stopped and retained."
+    },
+    "producer_closing": {
+      "source": "0f6e366fec4f84c0c3078142bea8c1cb91198f4f",
+      "tree": "f148d133462d7b5f199aac9e3ad872bb02e2ae83",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-closing-0f6e366",
+      "owner": "11748e8de0d0bb19d4178d5e0efecc47",
+      "container": "bigbrotr-implementation-producer-closing-0f6e366",
+      "postgres": "bigbrotr-implementation-producer-closing-0f6e366-pg",
+      "network": "bigbrotr-implementation-producer-closing-0f6e366",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "state": "running",
+      "source_files": 846,
+      "started_at": "2026-09-19T22:12:07.711401+00:00",
+      "network_id": "5aecbf2df459dbf06a740a79770051e8015f06a6770ad1192ff2ba8e12ae5a01",
+      "postgres_id": "55b54500b996c4d089efc2e013a219d33189c220aef4036463fb30a3b477137f",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "692a92a610cf909e8c7901cd63b2b8d48e535290fae217f4963eea2263259aab",
+      "qualification": "IN_PROGRESS; exact-source native build; no connected scenarios executed",
+      "raw": ".research/implementation/producer-closing/native",
+      "cache_source": "certification-2f9ba08/out/build"
     }
   },
   "implementation_monitor_corrections_20260918": {

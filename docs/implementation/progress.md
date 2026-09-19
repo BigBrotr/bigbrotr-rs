@@ -17,12 +17,15 @@ P02-T02 step 5 initial CertifyExisting read is qualified and pushed. Root is
 implementing the native closing/recovery operation and its current-Control consumer. Next responsibility is the
 P02-T02 step 4 native closing/recovery foundation needed for an actual fresh-owner
 restart; proof-only progress and general admission/source consumers remain open.
-No active remote experiment or tool session after the terminal audit below.
+The new producer-closing lab is running its exact-source native build; the
+certification terminal audit below remains historical evidence, not its status.
 
 ## Git and integration state
 
-Mac main HEAD and private origin/main both
-442f3d878b3215e421a71160b3613b7ab0c93c7b, verified with ls-remote after push. Product/fixture candidate
+Mac main HEAD is unpublished candidate0f6e366fec4f84c0c3078142bea8c1cb91198f4f,
+treef148d133462d7b5f199aac9e3ad872bb02e2ae83. Last verified private origin/main
+442f3d878b3215e421a71160b3613b7ab0c93c7b. Candidate contains current closing product/
+fixture/contract work; root now owns only checkpoint/inventory updates. Product/fixture candidate
 2f9ba08cdbbd3b5b924600780424bfc41cb40571, tree
 4ad619113232428a205f5a7c0a48725b35dc7711; harness3342a21 changes no product input.
 Candidate, corrected harness and qualification commits are published. Root owns uncommitted native/PG producer-closing core/tests, shared native
@@ -173,4 +176,31 @@ Tux read-only inventory at 2026-09-19T22:09Z: eight unrelated containers running
 no BigBrotr running, 94GiB free. Ignored producer-closing/native launch/transfer
 helpers are adapted from the reviewed certification lab; they will create a new
 root, verify clean Git export, reuse only the stopped exact-lock certification
-build cache, and retire only its verified empty owned network. No lab created yet.
+build cache, and retire only its verified empty owned network. Lab now created at /home/tux/bigbrotr-implementation-20260917/runs/producer-closing-0f6e366.
+Owner 11748e8de0d0bb19d4178d5e0efecc47; runner 692a92a610cf909e8c7901cd63b2b8d48e535290fae217f4963eea2263259aab;
+PG 55b54500b996c4d089efc2e013a219d33189c220aef4036463fb30a3b477137f; network 5aecbf2df459dbf06a740a79770051e8015f06a6770ad1192ff2ba8e12ae5a01.
+846 clean Git-exported files, PostgreSQL16.15 fsync/full_page_writes on, same
+pinned images and resource limits as certification. New build is in progress;
+no qualification result yet. Prior certification empty network retired only
+after label/empty/stopped checks; its data/containers remain retained.
+
+Parallel bounded compatibility fixture: fact_codec_review solely owns
+.research/worktrees/producer-closing-old-writer on
+research/producer-closing-old-writer, baseline442f3d8. It may add only a fixture/
+test hook against unchanged old native code, never edit main or use Tux. Root
+will review source equivalence and transfer exact fixture commit. The purpose is
+actual old writer-library refusal against a store closed by the new executable;
+this is not a claim about an unmodified previously shipped binary.
+
+Native run at0f6e366: ordered binaries/fixtures/scoped Clippy and all35 native-store
+checks PASS, including the packaged worker. Ten connected cases PASS: normal,
+empty, PG-first, old-lease/draining, root, metadata, policy, expired, rollback and
+late-sql. Their files remain under the active lab as closing-<tag>.json.
+First before-forward lost-COMMIT case is INCOMPLETE/fixture FAIL: real proxy fault
+and native closed/PG open were observed, then fixture Config::port(5432) appended
+a second port and prevented reconnection. tokio-postgres0.7.18 config.rs409–430
+confirms additive semantics. Zero PG clients observed after failure. Preserve
+closing-before1.json; after-complete was NOT_RUN. Root corrected only the fixture
+to restore the retained direct Config, and is preparing an exact-source separate
+fixture rebuild that verifies all product/dependency bytes remain identical.
+No product fix or successful recovery is inferred from this failure.
