@@ -30,6 +30,12 @@ pub struct BootstrapRequest {
     data_root: String,
 }
 impl BootstrapRequest {
+    pub(crate) fn from_reserved(dsn: String, data_root: String) -> Result<Self, CatalogError> {
+        let request = Self { dsn, data_root };
+        request.validate()?;
+        Ok(request)
+    }
+
     pub fn read(input: impl Read) -> Result<Self, CatalogError> {
         let mut bytes = Vec::new();
         input
@@ -139,6 +145,15 @@ impl Engine {
         {
             return Err(CatalogError::InvalidDataRoot);
         }
+        self.initialize_validated_catalog(request)
+    }
+    pub fn initialize_reserved_catalog(
+        self,
+        request: crate::initialization_custody::ReservedRequest,
+    ) -> Result<(), CatalogError> {
+        self.initialize_validated_catalog(request.validate()?)
+    }
+    fn initialize_validated_catalog(self, request: BootstrapRequest) -> Result<(), CatalogError> {
         self.configure_catalog(&request)?;
         self.connection.execute_batch("ATTACH '' AS bigbrotr_init (TYPE postgres, SECRET 'bigbrotr_bootstrap', SECRET_STORAGE_TABLE '', READ_ONLY)")
             .map_err(|_| CatalogError::Configuration)?;

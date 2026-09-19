@@ -21,16 +21,20 @@ installed service readiness.
 
 ## Actual Git and ownership
 
-Last observed Mac main HEAD df4a598bd457fb4670d41f7db719e733aace7a7f,
-four unpublished commits after verified origin/main
-ac13f11e150b6b845d798c3e13a51aeecbff11e5. Root is sole writer, no merge/rebase.
-Dirty work now: qualification report, owning archive contract/task, inventory and
-this checkpoint. Production code is committed and native-qualified at df4a598;
-no post-test production change. Complete source diff reviewed by integrating owner;
-recorded-evidence AI review verified all 61 raw files, four archives and 2885
+Mac main HEAD and freshly verified remote main are both
+52ab36631f49d59bfad5ac7ad210d04e04efdbf2. All five ownership/qualification commits
+were pushed normally to the verified private repository. Push5252 terminal0;
+remote refs/heads/main matches. Root is sole writer, no merge/rebase. Working tree
+was clean after push. Current root-owned dirty work adds permanent local
+initialization custody and the real reserved native initialization consumer:
+parent archive initialization/{tests}, lifetime/bootstrap/worker/mod, native
+initialization_custody/catalog/main/lib and archive-storage-contract. No applied
+SQL or dependencies changed. These changes are not yet native-qualified.
+The previous ownership source remains qualified at df4a598. Its complete source
+diff, affected contracts and recorded effects were reviewed.
+Read-only AI evidence review verified all 61 raw files, four archives and 2885
 source files, outcomes/COPY/roles/faults/locks without discrepancy. It did not run
-native cases or inspect retained ELF/full host inventories independently. Private
-remote refreshed at ac13f11; normal evidence commit/push is the next Git action.
+native cases or inspect retained ELF/full host inventories independently.
 
 ## Current ownership/ACL qualification
 
@@ -103,7 +107,8 @@ Main 0e83b95ed456afb4088ac2df710cb7efa259fb72de5d231d2c984c73cba3744b,8,231,632 
 worker 4e754f7f525f484df96920b9c7a73f5ddb40762b6e5051a459f45d41c60deac9,12,571,504 bytes.
 Initial d21eacc launch exhausted Docker address pools. Only verified empty retired
 auth 567/e98 and install d21/4404 networks were removed; all containers/data retained.
-9f02f43 and df4a598 networks remain empty-retained. Record ownership/lifecycle before
+9f02f43 network was verified empty/owned/stopped and removed at 06:35:22Z;
+df4a598 remains empty-retained. Containers and data are preserved. Record ownership/lifecycle before
 future cleanup; source/credentials/data are never blanket-pruned.
 
 ## Earlier qualified prerequisites and exclusions
@@ -144,15 +149,31 @@ Do not mechanically rerun unrelated suites.
 
 ## Next bounded action
 
-Finish recorded-evidence review, affected document checks and coherent private
-push of ownership qualification, then implement explicit reserved initialization
-under P02-T04 steps3/4/5. Atomic manager installation is now available; it does not
+Ownership qualification, document checks, review and private push are complete.
+Continue explicit reserved initialization under P02-T04 steps3/4/5. Permanent
+private intent/lock creation, bounded same-boot recovery (no new launch), retained
+driver/child custody and native descriptor/journal validation are now dirty code.
+Mac 45704: 31 archive tests and parent/example Clippy PASS after wiring, including
+six new reservation cases. New full journal byte oracle and concurrent creators
+covered. Earlier parallel run28538 had two Occupied failures after holder drop;
+serial execution passed, and the same bounded actual-acquire helper used by
+LocalAttempt now handles concurrent test fork holders without inferring release.
+Formatting, diff and artifact checks PASS. Independent AI source review found no
+blocking in-contract defect; native FD identity is not independent flock proof.
+Mac native check 7885 terminal101: verified DUCKDB_LIB_DIR bundle absent; native
+Rust compilation and actual PostgreSQL cases remain NOT_RUN. No active local
+test or Tux experiment. The real parent/native/PG fixture now plans 22 cases,
+including unchanged DB on refusal and actual driver/child custody; still NOT_RUN.
+Next: commit the candidate and execute native_initialization.py followed by
+initialization_cases.py in a fresh inventoried exact-source Tux lab.
+Atomic manager installation is now available; it does not
 provision bootstrap credentials, establish native exclusion or reserve roots.
 
 The reviewed initializer design needs a distinct permanent reservation inside the
 actual data root, with inherited close-only custody. LocalAttempt requires a real
-ArchiveAttempt and cannot be reused or forged. Native initialize currently requires
-an empty root: explicitly validate its reservation, never temporarily remove it.
+ArchiveAttempt and cannot be reused or forged. The old native initialize requires
+an empty root; the new reserved command validates its permanent marker and
+inherited descriptor without removing it, then uses the same initialization path.
 The same DB with another root needs a durable reservation; a session advisory lock
 is insufficient. Fresh restricted DB-OID-specific role tombstone is the reviewed
 candidate; finalize lifecycle/backup/OID consequences in the owning contract.

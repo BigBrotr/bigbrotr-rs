@@ -8162,6 +8162,15 @@
           "containers": "retained-stopped",
           "data": "retained",
           "observed_at": "2026-09-19T05:52:56.256362+00:00"
+        },
+        {
+          "root": "catalog-install-9f02f43",
+          "network": "475fdc395c19cef344561137deef3000c5e9aae31f4cfac9eb2892a63899ea75",
+          "owner": "d8b7192cd764f58b56ddc49690c36c0e",
+          "status": "removed",
+          "containers": "retained-stopped",
+          "data": "retained",
+          "observed_at": "2026-09-19T06:35:22.949442+00:00"
         }
       ],
       "baseline_audit": ".research/implementation/archive-worker/catalog-ownership/baseline/audit.json",
@@ -8226,6 +8235,14 @@
       "qualified_audit": ".research/implementation/archive-worker/catalog-ownership/qualified/audit.json",
       "qualified_tar_sha256": "a87663f43a81e07ccfd0f423f3116f3edc69c1b6b3034967627e5790d465a0b2",
       "review": "Read-only AI source review findings corrected; final recorded-evidence AI review verified61 raw hashes, four archives and2885 source files, baseline/failure/56 qualified outcomes and COPY/role/lock/fault assertions with no discrepancy. No native execution or independent ELF/full host inventory review."
+    },
+    "initialization_custody": {
+      "local_root": ".research/implementation/archive-worker/initialization-custody",
+      "status": "Candidate prepared; no native run yet",
+      "scope": "P02-T04 steps3/4/5 permanent local reservation and real native consumer; DB reservation/full initializer pending",
+      "planned_run": "Fresh exact-source initialization-custody lab; copied df4a598 cache and read-only pinned assets; no retained lab restart",
+      "mac": "31 archive tests and scoped Clippy PASS; transient concurrent fork custody tests now require bounded actual reacquisition; native check NOT_RUN without verified Mac bundle",
+      "review": "Read-only AI review found no blocking defect within trusted typed parent boundary; same-inode reopened descriptor acceptance explicitly documented and included as a native observation."
     }
   },
   "implementation_monitor_corrections_20260918": {

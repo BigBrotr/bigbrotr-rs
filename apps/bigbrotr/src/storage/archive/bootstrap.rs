@@ -30,12 +30,14 @@ impl Input<'_> {
         }
         // Count the actual escaping before starting a child. No plaintext JSON
         // buffer is allocated; the second serialization streams onto its pipe.
-        serde_json::to_writer(WireLimit(0), self)
-            .map_err(|_| PreparationError::InvalidBootstrap)?;
+        wire_fits(self)?;
         Ok(())
     }
 }
 
+pub(super) fn wire_fits(input: &impl Serialize) -> Result<(), PreparationError> {
+    serde_json::to_writer(WireLimit(0), input).map_err(|_| PreparationError::InvalidBootstrap)
+}
 struct WireLimit(usize);
 
 pub(super) fn decode_response(output: &[u8], format: &str) -> Result<(), PreparationError> {

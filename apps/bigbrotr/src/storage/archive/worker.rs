@@ -52,6 +52,12 @@ pub struct Preparation<'a> {
     pub deadline: Instant,
     pub cancelled: &'a AtomicBool,
 }
+enum Custody<'a> {
+    None,
+    Archive(&'a super::LocalAttempt),
+    Initialization(&'a super::LocalInitialization),
+}
+
 impl<'a> Preparation<'a> {
     /// Explicit finite native catalog initialization/attach. The caller supplies
     /// a trusted, already validated infrastructure route/TLS policy and keeps
@@ -92,6 +98,54 @@ impl<'a> Preparation<'a> {
         )
     }
 
+    /// Initialize only the permanently reserved root, retaining the same locked
+    /// descriptor in the actual native child. Database/credential reservation and
+    /// subsequent retirement/install are still the caller's separate obligations.
+    pub fn initialize_reserved_catalog(
+        self,
+        dsn: &str,
+        custody: &super::LocalInitialization,
+        budget: &ResourceBudget,
+    ) -> Result<(), PreparationError> {
+        #[derive(serde::Serialize)]
+        struct Input<'a> {
+            dsn: &'a str,
+            data_root: &'a str,
+            custody: super::initialization::NativeCustody,
+        }
+        let root = custody.identity().root();
+        super::bootstrap::Input {
+            dsn,
+            data_root: root,
+        }
+        .validate()?;
+        // The largest positive descriptor bounds the actual serialized input
+        // before consuming the reservation's one launch or starting any child.
+        super::bootstrap::wire_fits(&Input {
+            dsn,
+            data_root: root,
+            custody: custody
+                .native_custody(i32::MAX)
+                .map_err(PreparationError::Custody)?,
+        })?;
+        let (process, proof) = self.start_owned(
+            "initialize-reserved-catalog",
+            &[],
+            budget,
+            Custody::Initialization(custody),
+        )?;
+        let proof = proof.ok_or(PreparationError::Custody(super::LifetimeError::Identity))?;
+        catalog_result(
+            process,
+            &Input {
+                dsn,
+                data_root: root,
+                custody: proof,
+            },
+            "bigbrotr-native-reserved-initialize/1",
+        )
+    }
+
     fn catalog_operation(
         self,
         mode: &str,
@@ -102,19 +156,8 @@ impl<'a> Preparation<'a> {
     ) -> Result<(), PreparationError> {
         let input = super::bootstrap::Input { dsn, data_root };
         input.validate()?;
-        let mut process = self.start(mode, &[], budget)?;
-        let transfer = serde_json::to_writer(&mut process, &input);
-        let transport_error = process.failure();
-        let output = process.finish();
-        if matches!(output, Err(ProcessError::TerminationUnknown)) {
-            return Err(PreparationError::Process(ProcessError::TerminationUnknown));
-        }
-        transfer.map_err(|_| {
-            transport_error
-                .map(PreparationError::Process)
-                .unwrap_or(PreparationError::InvalidBootstrap)
-        })?;
-        super::bootstrap::decode_response(output.map_err(PreparationError::Process)?, result_format)
+        let process = self.start(mode, &[], budget)?;
+        catalog_result(process, &input, result_format)
     }
 
     /// Private discardable staging only. No archive acknowledgement or reclaim.
@@ -180,6 +223,28 @@ impl<'a> Preparation<'a> {
         budget: &ResourceBudget,
         custody: Option<&super::LocalAttempt>,
     ) -> Result<super::process::Process<'a>, PreparationError> {
+        self.start_owned(
+            mode,
+            extra,
+            budget,
+            custody.map_or(Custody::None, Custody::Archive),
+        )
+        .map(|(process, _)| process)
+    }
+
+    fn start_owned(
+        &self,
+        mode: &str,
+        extra: &[String],
+        budget: &ResourceBudget,
+        custody: Custody<'_>,
+    ) -> Result<
+        (
+            super::process::Process<'a>,
+            Option<super::initialization::NativeCustody>,
+        ),
+        PreparationError,
+    > {
         let native_bytes = self
             .limits
             .memory_bytes
@@ -224,14 +289,31 @@ impl<'a> Preparation<'a> {
                 self.limits.threads.to_string(),
             ])
             .args(extra);
-        if let Some(custody) = custody {
-            custody
-                .inherit(&mut command)
-                .map_err(PreparationError::Custody)?;
-        }
-        super::process::Process::spawn(&mut command, native, control, self.deadline, self.cancelled)
-            .map_err(PreparationError::Process)
+        let proof = match custody {
+            Custody::None => None,
+            Custody::Archive(custody) => {
+                custody
+                    .inherit(&mut command)
+                    .map_err(PreparationError::Custody)?;
+                None
+            }
+            Custody::Initialization(custody) => Some(
+                custody
+                    .inherit(&mut command)
+                    .map_err(PreparationError::Custody)?,
+            ),
+        };
+        let process = super::process::Process::spawn(
+            &mut command,
+            native,
+            control,
+            self.deadline,
+            self.cancelled,
+        )
+        .map_err(PreparationError::Process)?;
+        Ok((process, proof))
     }
+
     fn inspect_result(
         &self,
         output: &[u8],
@@ -298,4 +380,23 @@ impl<'a> Preparation<'a> {
         }
         Ok(())
     }
+}
+
+fn catalog_result(
+    mut process: super::process::Process<'_>,
+    input: &impl serde::Serialize,
+    result_format: &str,
+) -> Result<(), PreparationError> {
+    let transfer = serde_json::to_writer(&mut process, input);
+    let transport_error = process.failure();
+    let output = process.finish();
+    if matches!(output, Err(ProcessError::TerminationUnknown)) {
+        return Err(PreparationError::Process(ProcessError::TerminationUnknown));
+    }
+    transfer.map_err(|_| {
+        transport_error
+            .map(PreparationError::Process)
+            .unwrap_or(PreparationError::InvalidBootstrap)
+    })?;
+    super::bootstrap::decode_response(output.map_err(PreparationError::Process)?, result_format)
 }

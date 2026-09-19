@@ -246,6 +246,33 @@ at df4a598. Existing incompatible grants are refused, not silently repaired.
 The complete reserved initializer, its CLI and fresh runtime-manager publication
 still require implementation/qualification under P02-T04.
 
+Fresh initialization reserves the actual local data root with a permanent private
+`.bigbrotr-initialization/` directory containing `custody.lock` and `intent.json`.
+The immutable `bigbrotr-local-initialization/1` journal binds a nonzero 128-bit
+initialization identity, dataset/catalog/root, Linux boot identity, and actual root
+and lock device/inode pairs. Synchronize the files and both directories before
+exposing bootstrap authority. Existing or partial reservations are preserved and
+refused; ordinary initialization never deletes or recreates them. This is separate
+from an ArchiveAttempt because no scientific batch exists yet.
+
+As with local publication custody, the supported starting placement is same-boot
+Linux ext4. Keep duplicates of the same locked open file description in the
+coordinator, actual PostgreSQL driver and at most one native child. Recovery may
+reacquire custody and inspect the retained identity, but grants no new child
+launch. It must still resolve database reservation, bootstrap retirement and server
+transactions. A copy, changed inode, different boot or incomplete journal is not
+automatic recovery authority. Cross-boot/restore mappings remain explicit work.
+The native reserved-initialization consumer must validate the retained marker and
+inherited descriptor before catalog effects; temporarily removing the marker to
+satisfy the older empty-root fixture is forbidden. The typed trusted parent
+establishes locked-open-file-description custody. Native validation checks the
+descriptor's device/inode and the retained journal's hash; it does not independently
+prove flock ownership or defend against a replaced/malicious parent supplying a
+separately opened descriptor for that same inode. The database also needs its
+separate durable reservation before credential exposure; local custody alone
+cannot exclude another root pointing to the same database. These new reservation
+paths remain unqualified until their actual native/process cases execute.
+
 The application-owned `bigbrotr_archive` schema contains immutable installation
 and attempt records plus one mutable owner row. Every native metadata mutation
 locks that row FOR SHARE through the actual native transaction. Activation locks

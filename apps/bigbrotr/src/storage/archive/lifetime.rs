@@ -83,14 +83,7 @@ impl LocalAttempt {
         &self,
         future: F,
     ) -> Result<impl Future<Output = F::Output> + use<F>, LifetimeError> {
-        let custody = self
-            .lock
-            .try_clone()
-            .map_err(|_| LifetimeError::Filesystem)?;
-        Ok(CustodiedConnection {
-            future,
-            _custody: custody,
-        })
+        retain_connection(&self.lock, future)
     }
 
     pub(super) fn matches(
@@ -219,6 +212,17 @@ impl LocalAttempt {
     }
 }
 
+pub(super) fn retain_connection<F: Future + Unpin>(
+    lock: &File,
+    future: F,
+) -> Result<impl Future<Output = F::Output> + use<F>, LifetimeError> {
+    let custody = lock.try_clone().map_err(|_| LifetimeError::Filesystem)?;
+    Ok(CustodiedConnection {
+        future,
+        _custody: custody,
+    })
+}
+
 // Field order is intentional for cancellation: destroy the actual transport
 // before closing its lock clone, whether or not it was ever polled.
 struct CustodiedConnection<F> {
@@ -264,7 +268,7 @@ fn validate_identity(
     }
     Ok(())
 }
-fn directory(path: &Path) -> Result<File, LifetimeError> {
+pub(super) fn directory(path: &Path) -> Result<File, LifetimeError> {
     if !path.is_absolute() || path.canonicalize().ok().as_deref() != Some(path) {
         return Err(LifetimeError::InvalidRoot);
     }
@@ -287,7 +291,7 @@ fn validate_directory(file: &File) -> Result<(), LifetimeError> {
         Ok(())
     }
 }
-fn open_directory(parent: &File, name: &str) -> Result<File, LifetimeError> {
+pub(super) fn open_directory(parent: &File, name: &str) -> Result<File, LifetimeError> {
     let file = File::from(
         openat(
             parent,
@@ -300,7 +304,7 @@ fn open_directory(parent: &File, name: &str) -> Result<File, LifetimeError> {
     validate_directory(&file)?;
     Ok(file)
 }
-fn create_file(parent: &File, name: &str) -> Result<File, LifetimeError> {
+pub(super) fn create_file(parent: &File, name: &str) -> Result<File, LifetimeError> {
     openat(
         parent,
         name,
@@ -310,7 +314,7 @@ fn create_file(parent: &File, name: &str) -> Result<File, LifetimeError> {
     .map(File::from)
     .map_err(|_| LifetimeError::Filesystem)
 }
-fn open_file(parent: &File, name: &str) -> Result<File, LifetimeError> {
+pub(super) fn open_file(parent: &File, name: &str) -> Result<File, LifetimeError> {
     openat(
         parent,
         name,
@@ -320,13 +324,13 @@ fn open_file(parent: &File, name: &str) -> Result<File, LifetimeError> {
     .map(File::from)
     .map_err(|_| LifetimeError::Incomplete)
 }
-fn private_file(m: &fs::Metadata) -> bool {
+pub(super) fn private_file(m: &fs::Metadata) -> bool {
     m.is_file()
         && m.mode() & 0o777 == 0o600
         && m.uid() == rustix::process::geteuid().as_raw()
         && m.nlink() == 1
 }
-fn validate_lock(file: &File) -> Result<(), LifetimeError> {
+pub(super) fn validate_lock(file: &File) -> Result<(), LifetimeError> {
     let m = file.metadata().map_err(|_| LifetimeError::Filesystem)?;
     if private_file(&m) && m.len() == 0 {
         Ok(())
@@ -334,7 +338,7 @@ fn validate_lock(file: &File) -> Result<(), LifetimeError> {
         Err(LifetimeError::Identity)
     }
 }
-fn acquire(file: &File) -> Result<(), LifetimeError> {
+pub(super) fn acquire(file: &File) -> Result<(), LifetimeError> {
     flock(file, FlockOperation::NonBlockingLockExclusive).map_err(|e| {
         if e == rustix::io::Errno::WOULDBLOCK {
             LifetimeError::Occupied
@@ -388,7 +392,7 @@ fn manifest(
     Ok(bytes)
 }
 #[cfg(target_os = "linux")]
-fn host_boot(root: &Path) -> Result<String, LifetimeError> {
+pub(super) fn host_boot(root: &Path) -> Result<String, LifetimeError> {
     // This starting implementation deliberately excludes network/overlay storage.
     // Identical paths or copied inode metadata on another host are not exclusion.
     let directory = directory(root)?;
@@ -463,7 +467,7 @@ fn bounded_proc(path: &str, maximum: usize) -> Result<String, LifetimeError> {
     String::from_utf8(bytes).map_err(|_| LifetimeError::UnsupportedHost)
 }
 #[cfg(not(target_os = "linux"))]
-fn host_boot(_root: &Path) -> Result<String, LifetimeError> {
+pub(super) fn host_boot(_root: &Path) -> Result<String, LifetimeError> {
     Err(LifetimeError::UnsupportedHost)
 }
 

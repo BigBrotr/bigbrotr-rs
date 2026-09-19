@@ -1,4 +1,5 @@
 mod bootstrap;
+mod initialization;
 mod installation;
 mod lifetime;
 mod process;
@@ -6,6 +7,7 @@ mod publisher;
 mod receipts;
 mod worker;
 
+pub use initialization::LocalInitialization;
 pub use installation::{ArtifactIdentity, InstallationError, WorkerInstallation};
 pub use lifetime::{LifetimeError, LocalAttempt};
 pub use process::ProcessError;

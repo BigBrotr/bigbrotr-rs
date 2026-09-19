@@ -7,3 +7,5 @@ pub mod publication;
 pub mod receipt;
 pub mod rows;
 mod schema;
+
+pub mod initialization_custody;

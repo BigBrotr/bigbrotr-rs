@@ -39,6 +39,7 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
     let inspect_engine = arguments.len() == 7 && arguments[1] == "inspect-engine";
     let bootstrap_catalog = arguments.len() == 7 && arguments[1] == "bootstrap-catalog";
     let initialize_catalog = arguments.len() == 7 && arguments[1] == "initialize-catalog";
+    let initialize_reserved = arguments.len() == 7 && arguments[1] == "initialize-reserved-catalog";
     let inspect_batch = arguments.len() == 9 && arguments[1] == "inspect-batch";
     let publish_batch = arguments.len() == 9 && arguments[1] == "publish-batch";
     let inspect_receipt = arguments.len() == 8 && arguments[1] == "inspect-receipt";
@@ -46,10 +47,11 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
         && !inspect_batch
         && !bootstrap_catalog
         && !initialize_catalog
+        && !initialize_reserved
         && !publish_batch
         && !inspect_receipt
     {
-        return Err("usage: bigbrotr-archive-worker {inspect-receipt BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_RECEIPTS | initialize-catalog BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | bootstrap-catalog BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | inspect-engine BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | inspect-batch BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_RECORDS MAX_ENCODED_BYTES | publish-batch BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_RECORDS MAX_ENCODED_BYTES}".into());
+        return Err("usage: bigbrotr-archive-worker {initialize-reserved-catalog BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | inspect-receipt BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_RECEIPTS | initialize-catalog BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | bootstrap-catalog BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | inspect-engine BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | inspect-batch BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_RECORDS MAX_ENCODED_BYTES | publish-batch BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_RECORDS MAX_ENCODED_BYTES}".into());
     }
     let number = |i: usize| -> Result<u64, Box<dyn std::error::Error>> {
         Ok(arguments[i].to_str().ok_or("invalid limit")?.parse()?)
@@ -72,6 +74,12 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
         serde_json::json!({"format":"bigbrotr-native-receipt/1", "status":status,
             "batch_digest":request.expected().batch_digest,"attempt_id":request.expected().attempt_id,
             "publication_ordinal":request.expected().publication_ordinal})
+    } else if initialize_reserved {
+        let request = bigbrotr_archive_worker::initialization_custody::ReservedRequest::read(
+            std::io::stdin().lock(),
+        )?;
+        engine.initialize_reserved_catalog(request)?;
+        serde_json::json!({"format":"bigbrotr-native-reserved-initialize/1","status":"initialized"})
     } else if initialize_catalog {
         let request =
             bigbrotr_archive_worker::catalog::BootstrapRequest::read(std::io::stdin().lock())?;
