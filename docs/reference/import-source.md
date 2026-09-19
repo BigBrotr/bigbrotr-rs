@@ -70,3 +70,10 @@ reader, compares its source identity to the independent lineage digest, and emit
 line1 at bytes `[0,353)`. Bootstrap request1 leaves the logical import prefix zero;
 event request2 and the distinct AlreadyDurable request3 retain their existing
 request semantics. No job checkpoint, ACK or GC is introduced.
+
+[Native qualification](../implementation/evidence/p03-import-source-native-20260919.json)
+binds the clean d376771 source, Linux binaries, actual PostgreSQL/Rocks admission
+and retry, complete native rows and captured PG outcomes. Mac/Linux tests include
+allocation lifetimes and real file faults. The report explicitly excludes full
+import jobs, current authorization, checkpoints, durable staging and hard I/O
+cancellation; those remain acceptance work for the owning tasks.

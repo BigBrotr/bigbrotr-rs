@@ -13578,6 +13578,110 @@
         ],
         "at": "2026-09-19T18:43:18.579071+00:00"
       }
+    },
+    "import_source": {
+      "source": "d376771c69dd48c88d2defeb128a42e58de53390",
+      "tree": "a93bf243db223553c1dd325922b18c8cc6260c4f",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/import-source-d376771",
+      "owner": "c0c631fd4559fbf9b4b2c5b5337acfb3",
+      "container": "bigbrotr-implementation-import-source-d376771",
+      "postgres": "bigbrotr-implementation-import-source-d376771-pg",
+      "network": "bigbrotr-implementation-import-source-d376771",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "state": "stopped-retained",
+      "source_files": 814,
+      "started_at": "2026-09-19T18:44:46.502429+00:00",
+      "network_id": "8ba5912db5425adc44d89d2315438a0fca4ffd34a7891dafb722ac546d69dcf4",
+      "postgres_id": "2102eff313b0fc8a9a13be80341305e22289707e0c56ccffa62eabbf5c31a399",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "72c0e1dd6c8e30bbc12cae8c9d9bf1dd11952394504713177607cdcc73a40e1e",
+      "completed_at": "2026-09-19T18:50:16.226782+00:00",
+      "qualification": "PASS for captured JSONL and connected native signed-admission prerequisite; import job/current authority/checkpoint/recovery remain open",
+      "raw": ".research/implementation/import-source/qualified",
+      "terminal_audit": {
+        "status": "PASS",
+        "source": "d376771c69dd48c88d2defeb128a42e58de53390",
+        "tree": "a93bf243db223553c1dd325922b18c8cc6260c4f",
+        "source_manifest": {
+          "revision": "d376771c69dd48c88d2defeb128a42e58de53390",
+          "tree": "a93bf243db223553c1dd325922b18c8cc6260c4f",
+          "files": 814,
+          "archive_sha256": "c868ccea56783547d4edc9db28c087e5936d3debdb3a9c63faa33a239c41ab8f",
+          "manifest_sha256": "00e323f42fc24f1cff84af5ef63f3d7ffa088dbbc79bb8402560fcd639fb5d1c",
+          "lock_sha256": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215"
+        },
+        "reports": {
+          "producer-existing-outcome.json": {
+            "status": "PASS",
+            "sha256": "d9a0eb3c7789ebde100479a9fc45eb76d19cf955cc4ece26678013a8779343f3"
+          },
+          "out/native-tests/checks/result.json": {
+            "status": "PASS",
+            "sha256": "17d5999966f63f47a92267dc610ace4df9664ed1eed1ce685ee93a15924beea6"
+          }
+        },
+        "artifacts": {
+          "main": {
+            "sha256": "f34997fc78d9768781362e5313dec8e10670dd02397d92fa7b8e20a9d91044da",
+            "bytes": 9198392,
+            "elf_machine": 62
+          },
+          "worker": {
+            "sha256": "4a8f8f37ec6dbf7b6e6def033966d21d116f027699cfd4c96ae6ff852f298f3c",
+            "bytes": 12608632,
+            "elf_machine": 62
+          },
+          "ingest_probe": {
+            "sha256": "99d66d02af30423345106944afbbec0714a001ba480504775d69844ff2e448ff",
+            "bytes": 15784960,
+            "elf_machine": 62
+          }
+        },
+        "prestop": {
+          "at": "2026-09-19T18:50:14.941829+00:00",
+          "owned_client_backends": 0,
+          "runner_processes": "PID                 PPID                STAT                COMMAND\n4092240             4092218             Ss                  docker-init\n4092256             4092240             S                   python3",
+          "owned_containers": [
+            "72c0e1dd6c8e30bbc12cae8c9d9bf1dd11952394504713177607cdcc73a40e1e",
+            "2102eff313b0fc8a9a13be80341305e22289707e0c56ccffa62eabbf5c31a399"
+          ]
+        },
+        "terminal": {
+          "72c0e1dd6c8e30bbc12cae8c9d9bf1dd11952394504713177607cdcc73a40e1e": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-19T18:44:49.236003884Z",
+            "FinishedAt": "2026-09-19T18:50:14.965368106Z"
+          },
+          "2102eff313b0fc8a9a13be80341305e22289707e0c56ccffa62eabbf5c31a399": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-19T18:44:47.192931924Z",
+            "FinishedAt": "2026-09-19T18:50:15.738830799Z"
+          }
+        },
+        "preexisting_containers_unchanged": 366,
+        "unrelated_containers_unchanged": 20,
+        "unrelated_running": 8,
+        "bigbrotr_running": 0,
+        "observed_at": "2026-09-19T18:50:16.226782+00:00"
+      },
+      "manifest": ".research/implementation/import-source/evidence-identity.json"
     }
   },
   "implementation_monitor_corrections_20260918": {

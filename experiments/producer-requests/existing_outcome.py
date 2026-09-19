@@ -43,6 +43,26 @@ def expected():
     return sorted((cf,k,v) for (cf,k),v in rows.items()),original,receipt
 
 
+def check_all_outcome_copies(control, wanted):
+    """Also usable on the hash-bound captured PG observation, without new writes."""
+    expected = {(cf, key): value for cf, key, value in wanted}
+    slot = bytes([66])*16
+    be = lambda n: n.to_bytes(8, 'big')
+    manifest = hashlib.sha256(expected['default', b'\x01\x01']).hexdigest()
+    assert len(control['outcomes']) == len(control['requests']) == 3
+    for sequence, row in enumerate(control['outcomes'], 1):
+        receipt = expected['receipts', b'\x01\x30'+slot+be(1)+be(sequence)]
+        assert row['request_sequence'] == sequence and row['producer_epoch'] == 1 and row['policy_epoch'] == 1
+        assert row['dataset_id'] == '\\x'+(bytes([1])*16).hex() and row['producer_slot_id'] == '\\x'+slot.hex()
+        assert row['manifest_sha256'] == '\\x'+manifest
+        assert row['outcome_kind'] == (1 if sequence < 3 else 2)
+        assert row['outcome_bytes'] == '\\x'+receipt.hex()
+        assert row['outcome_sha256'] == '\\x'+hashlib.sha256(receipt).hexdigest()
+        request = control['requests'][sequence-1]
+        assert row['request_digest'] == request['request_digest']
+        assert all(row['recorder_'+field] == request['issuer_'+field] for field in ['resource', 'epoch', 'incarnation'])
+
+
 def main(root, observe_existing=False, native_build=False):
     state=json.loads((root/'resources.json').read_text())
     harness=command('git','-C',str(SOURCE),'rev-parse','HEAD')
@@ -106,6 +126,7 @@ def main(root, observe_existing=False, native_build=False):
             completed_import_prefix_before_admission=0)]
         report['source_position'] = position[0]
     rows=report['control'];assert rows['checkpoints']==0 and len(rows['epochs'])==1 and rows['epochs'][0]['reserved_through_request']==3
+    check_all_outcome_copies(rows, wanted)
     assert len(rows['requests'])==len(rows['outcomes'])==3
     request,outcome=rows['requests'][2],rows['outcomes'][2]
     manifest=next(v for cf,k,v in wanted if cf=='default' and k==b'\x01\x01')

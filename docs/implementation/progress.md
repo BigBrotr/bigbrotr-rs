@@ -21,10 +21,11 @@ prerequisite to real P03-T10 logical obligations and P02-T02 checkpoints.
 
 ## Git and ownership
 
-Mac main and private origin/main are verified at
-4467de468d9a8be73f676983ef837d80032ea2b2; the qualification commit was pushed and
-the working tree was clean at resumption. Root now owns the bounded P03-T08/T09
-source/decoder prerequisite and its checkpoint, tests and documentation.
+Mac main is the locally verified candidate d376771c69dd48c88d2defeb128a42e58de53390,
+one commit ahead of private origin/main4467de468d9a8be73f676983ef837d80032ea2b2.
+The source/reader commit was transferred to Tux through Git from a clean checkout.
+Root owns subsequent dirty inventory/checkpoint/evidence and observer updates;
+no other edits.
 No other contributor edits were integrated. Existing agents were read-only reviewers.
 
 The tested product is exact9537667dd140baac68ca79ecb56ea7c6ecce081f, tree
@@ -84,7 +85,7 @@ assertions before the later audit failure, not a newly executed SQL observation.
 
 ## Evidence and retained resources
 
-No active BigBrotr lab/test process remains. Terminal audit completed
+The prior producer-outcomes qualification has no active process. Its terminal audit completed
 2026-09-19T18:12:00.858478+00:00: three owned containers stopped, no OOM,
 preexisting container lifecycles unchanged, eight unrelated containers running.
 Root remains retained:
@@ -118,26 +119,44 @@ are historical run helpers and require fresh ownership/path review before reuse.
 
 ## Remaining work and next bounded action
 
-The captured-source prerequisite is implemented in the current root-owned diff;
-see [its contract and limits](../reference/import-source.md). Thirteen Mac source
-tests, three real file-fault tests, two discriminating compile-fail lifetime tests,
-one existing fixture-policy test and scoped Clippy passed. Full raw logs are under
-.research/implementation/import-source. Initial missing-API RED, two bad fixture
-mkfifo symbol attempts, the two lifetime REDs and the actual unlink-failure RED
-are retained. Review found NLL could release the memory permit before an owned
-event was destroyed: explicit Drop plus consumer destruction now enforces drop
-checking. Unconfirmed unlink could forget an empty named file and admit endless
-retries: the allowance now remains retained and that scratch owner stops.
-The 353-byte signed-admission consumer is wired through the actual reader.
+The captured JSONL prerequisite at d376771 is now qualified on Mac and native
+Linux amd64; see [the evidence](evidence/p03-import-source-native-20260919.json)
+and [contract and limits](../reference/import-source.md). Thirteen source tests,
+three actual file-fault tests, two compile-fail allocation-lifetime tests and
+scoped Clippy passed on both targets. One fixture-policy test also passed on Mac.
+The actual 353-byte signed-source reader fed PostgreSQL/Rocks admission and retry:
+27 complete native rows, six scientific facts, three reservations/outcomes and
+zero checkpoints match the independent oracle. All three complete PG copies were
+additionally checked from the hash-bound captured engine observation with twelve
+altered-field negative controls; this was not new engine execution. The final
+observer enhancement and qualification documents are root-owned dirty work.
 
-Next: commit the locally verified candidate, transfer its clean exact Git export
-to a fresh isolated Tux lab, execute --import-source native build/checks and
-existing_outcome.py --native-build. Compare complete PG/native outcome bytes and
-the source position against the independent oracle, then audit/stop only the
-owned lab and retain a concise evidence report. This new Linux path is NOT_RUN
-at candidate preparation. The18:42 inventory found366 containers, no running
-BigBrotr lab, eight unrelated containers running and121.7GB free; it is not a
-future resource guarantee. Root remains sole writer; review was read-only AI.
+Review found NLL could release the permit before an owned event was destroyed;
+explicit Drop now enforces drop checking. Unconfirmed unlink could forget empty
+named files and admit endless retries; the allowance now stays retained and that
+scratch owner stops. Discriminating RED/GREEN evidence is retained. Initial audit
+used the wrong result filename and failed before shutdown; the corrected audit
+persisted actual zero-backend/prestop evidence before stopping either owner.
+
+The isolated lab is stopped-retained under
+/home/tux/bigbrotr-implementation-20260917/runs/import-source-d376771,
+ownerc0c631fd4559fbf9b4b2c5b5337acfb3; runner72c0e1dd6c8e30bbc12cae8c9d9bf1dd11952394504713177607cdcc73a40e1e,
+PG2102eff313b0fc8a9a13be80341305e22289707e0c56ccffa62eabbf5c31a399,
+empty retained internal network8ba5912db5425adc44d89d2315438a0fca4ffd34a7891dafb722ac546d69dcf4.
+Terminal audit at2026-09-19T18:50:16.226782+00:00 found no OOM, all366 preexisting
+container lifecycles unchanged, eight unrelated containers running and no BigBrotr
+container running. No active tool session remains. Source814-file export/tree
+a93bf243db223553c1dd325922b18c8cc6260c4f matches Mac Git archive. Mac raw collection
+.research/implementation/import-source/qualified has25 verified files, tar SHA256
+5f5f8e14b963ad7c9b901fbbad61a87805e1da4d915fd335f3b909a53d33dc1a.
+See implementation_archive_worker_20260918.import_source in the inventory.
+The newest retained build cache is this lab's out/build; verify Cargo.lock and
+artifact identities before reuse. No old container was restarted.
+
+Next: finish qualification document/diff checks and commit/push the candidate
+and evidence to private origin. Then select the first actual job/obligation
+consumer after reading its persistent schema and current authority boundaries.
+No P03 task step is claimed complete and no installed import CLI is advertised.
 
 Then wire actual job-scoped logical obligations to retained outcomes under
 P02-T02 step4/P03-T10. No offline source inspection is advertised as current-policy

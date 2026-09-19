@@ -280,6 +280,8 @@ source identity and line/byte positions to the existing finite signed-admission
 client. Its ephemeral snapshot is not durable job staging. T08's authorized
 job/current-policy adapter, installed dry-run, additional formats and T10's
 obligation/checkpoint acceptance remain open; no complete step is inferred.
+[Native prerequisite evidence](evidence/p03-import-source-native-20260919.json)
+records the actual signed-source consumer and its scoped limits.
 
 Dependencies: P03-T08 preflight core (not its deferred import acceptance);
 P01-T03 format/verification primitives and frozen producer
