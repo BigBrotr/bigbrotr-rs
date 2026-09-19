@@ -12,6 +12,7 @@ import time
 
 from signed_publication_cases import SOURCE, Process, command, event, send, sha
 from signed_publication_oracle import corpus
+from missing_import_refusals import run as refusal_cases
 
 MODES = ('custody_prelock_live', 'custody_prelock_dead')
 ROCKS_DIGEST = 'da535e9d1edcdce8bf09033bb1d2b48ee10941c34f47b0b3db228f6285128c61'
@@ -62,8 +63,8 @@ def main(root):
             processes.append(process)
             return process
 
-        def observe(action, expected):
-            probe = start(binary+[mode, action])
+        def observe(action, expected, database=None):
+            probe = start(binary+[mode, action]+([database] if database else []))
             observed = event(probe, 'custody-observed')
             assert observed['state'] == ('occupied' if expected == 'occupied' else 'recovered')
             if action == 'resolve':
@@ -87,6 +88,7 @@ def main(root):
             assert hello['source_sha256'] == sha(SOURCE/'experiments/archive-engine/native_commit_proxy.py')
             parent = start(binary+[mode, str(hello['port'])])
             created = event(parent, 'custody-created', 45)
+            event(parent, 'fresh-custody-refused')
             login = 'bb_archive_'+created['attempt']
             journal = home/'lifetimes'/created['attempt']/'intent.json'
             case['journal_sha256'] = sha(journal)
@@ -118,17 +120,33 @@ def main(root):
             else:
                 # The actual request executed after local recovery. Its backend
                 # owns a row lock, but the destroyed driver sent no provisioning.
-                case['late_backend'] = json.loads(sql(db, f"SELECT json_build_object('pid',pid,'state',state,'owner_query',query='SELECT ordinal::text,enabled FROM bigbrotr_archive.owner WHERE singleton FOR UPDATE','row_lock',EXISTS(SELECT 1 FROM pg_locks WHERE pid=a.pid AND relation='bigbrotr_archive.owner'::regclass AND mode='RowShareLock' AND granted)) FROM pg_stat_activity a WHERE pid={held['backend_pid']};"))
-                assert case['late_backend'] == dict(pid=held['backend_pid'], state='idle in transaction', owner_query=True, row_lock=True)
+                case['late_backend'] = json.loads(sql(db, f"SELECT json_build_object('pid',pid,'state',state,'owner_query',query='SELECT ordinal::text,enabled FROM bigbrotr_archive.owner WHERE singleton FOR UPDATE','relation_row_share',EXISTS(SELECT 1 FROM pg_locks WHERE pid=a.pid AND relation='bigbrotr_archive.owner'::regclass AND mode='RowShareLock' AND granted)) FROM pg_stat_activity a WHERE pid={held['backend_pid']};"))
+                assert case['late_backend'] == dict(pid=held['backend_pid'], state='idle in transaction', owner_query=True, relation_row_share=True)
                 case['after_release'] = snapshot()
                 assert case['after_release'] == case['before']
+                resolver = start(binary+[mode, 'resolve'])
+                waiter = event(resolver, 'resolve-begin')['backend_pid']
+                until = time.monotonic()+3
+                while time.monotonic() < until:
+                    blocked = json.loads(sql(db, f"SELECT coalesce(json_agg(row_to_json(t)),'[]'::json) FROM (SELECT w.pid AS waiter,w.backend_start AS waiter_start,w.wait_event_type,w.wait_event,h.pid AS blocker,h.backend_start AS blocker_start,h.state AS blocker_state FROM pg_stat_activity w JOIN pg_stat_activity h ON h.pid=ANY(pg_blocking_pids(w.pid)) WHERE w.pid={waiter} AND h.pid={held['backend_pid']} AND w.datname=current_database() AND h.datname=current_database())t;"))
+                    if blocked:
+                        break
+                    time.sleep(.01)
+                assert len(blocked) == 1 and blocked[0]['wait_event_type'] == 'Lock'
+                case['late_request_blocker'] = blocked[0]
+                save()
             send(proxy, 'stop\n')
             assert proxy.wait(10) == 0 and not proxy.stderr
             terminal = event(proxy, 'terminal')
             assert terminal['unexpected'] == 0
             assert terminal['data_queries'] == terminal['data_commits'] == terminal['server_complete'] == int(live)
             if not live:
+                resolved = event(resolver, 'resolve-result')
+                assert resolved['state'] == 'not-imported' and not resolved['commit_started']
+                assert resolver.wait(10) == 0 and not resolver.stderr and not resolver.overflow
                 observe('resolve', 'not-imported')
+                case['refusals'] = []
+                refusal_cases(sql, observe, case['refusals'], save)
             case['after_stop'] = snapshot()
             if live:
                 assert case['after_stop'] == dict(owner=dict(singleton=True, ordinal=1, enabled=False),

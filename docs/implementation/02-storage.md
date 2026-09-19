@@ -364,8 +364,10 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   The next missing-import slice adds a recovered-only identity gate and the
   actual delayed owner Bind/Execute/Sync discriminator in
   `experiments/archive-engine/missing_import_cases.py`. Its current seal-only
-  adapter deliberately still fails the required NotImported observations;
-  native baseline execution precedes implementing that nonmutating branch.
+  adapter at e571002 failed the two required NotImported observations while
+  completing both driver schedules. The nonmutating branch is now implemented;
+  exact-source native qualification with collision and retained-role controls
+  remains pending.
   No step is complete from these prerequisites.
 - [ ] **Step 6:** Handle empty and one-small-event timer batches; publish useful progress
   without waiting for a size threshold that may never be reached.

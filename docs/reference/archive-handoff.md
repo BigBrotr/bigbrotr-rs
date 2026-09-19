@@ -382,24 +382,32 @@ inspect the fresh receipt and its required closure before deciding replay or ACK
 Missing imported catalog attempts need their own nonmutating resolution; a seal
 Conflict is not a successful exclusion receipt.
 
-The next recovery slice requires an explicitly recovered custody value, not only
-a consumed launch allowance. `resolve_after_local_custody` currently delegates
-matching imported attempts to sealing; `NotImported` remains unimplemented pending
-the actual delayed-request discriminator. Its intended nonmutating branch holds
-the owner lock and verifies the complete installed catalog, then refuses ordinal,
-attempt, worker or login collisions and any orphan target-name role. It returns
-only after successful rollback and never issues credentials or reuses the journal.
-For an imported attempt the stored login OID must still match. A sealing result
-with `disabled_current=false` also includes a current owner already disabled.
-This adds no migration or persistent journal format.
+`resolve_after_local_custody` requires explicitly recovered custody and complete
+request/catalog identity before database work. A consumed launch allowance alone
+is insufficient. The fresh dedicated manager driver must also retain custody.
+Under the same owner FOR UPDATE lock, the adapter checks the full installed guard
+and scientific binding. An exact imported lifetime is sealed through the existing
+path; its stored login OID must still match. `disabled_current=false` also includes
+a current owner already disabled, not only historical imports.
+
+When no row has the intended ordinal, the nonmutating branch refuses any matching
+attempt ID, worker incarnation or login, and any orphan target-name role, including
+NOLOGIN roles. Only successful rollback returns `NotImported`. Coordinator and
+batch digest are deliberately not unique lifetime keys: another attempt may have
+published the same batch. This observation neither reissues credentials nor reuses
+the journal, authorizes replay/ACK, or changes another current owner. No migration
+or persistent journal format changes.
 
 The exact tokio-postgres0.7.18 adapter fully consumes the owner query through
-ReadyForQuery before queuing provisioning mutations. The next native fixture
-holds the actual Bind/Execute/Sync request, confirms missing rows while the live
-driver still holds custody, then releases it as a negative control. Its cancelled
-driver case destroys the actual transport before reacquisition and independently
-checks the delayed request cannot enqueue provisioning. Until executed, this is
-source reasoning and a proposed test, not a qualified missing-import outcome.
+ReadyForQuery before queuing provisioning mutations. The native baseline at
+`e571002` held the actual Bind/Execute/Sync request. A live driver retained custody
+and later provisioned; destroying the driver permitted local reacquisition and
+the released late request created no role/import. The baseline's seal-only
+resolver returned Conflict in both missing observations, so its report remains
+FAIL. The new missing branch and ten independent collision/retained-role controls
+still require exact-source native qualification. RowShareLock alone is a relation
+lock; the updated fixture additionally observes the actual later resolver blocker
+before releasing the surviving server transaction.
 
 [Native qualification at 5ad77af](../implementation/evidence/p02-local-custody-native-20260919.json)
 passes 28 scoped Rust cases, three actual custody/crash/queued-COMMIT schedules and

@@ -414,6 +414,19 @@ pub async fn seal(
     receipt: &ArchiveAttemptReceipt,
     commit_started: &Cell<bool>,
 ) -> Result<bool, GuardError> {
+    match resolve_inner(client, identity, receipt, false, commit_started).await? {
+        Resolution::Sealed { disabled_current } => Ok(disabled_current),
+        Resolution::NotImported => Err(GuardError::Conflict),
+    }
+}
+
+async fn resolve_inner(
+    client: &mut Client,
+    identity: &CatalogIdentity,
+    receipt: &ArchiveAttemptReceipt,
+    allow_missing: bool,
+    commit_started: &Cell<bool>,
+) -> Result<Resolution, GuardError> {
     let request = receipt.request();
     if request.dataset() != identity.dataset || request.catalog() != identity.catalog {
         return Err(GuardError::WrongCatalog);
@@ -427,8 +440,27 @@ pub async fn seal(
     .await
     .map_err(backend)?;
     inspection::installed(&tx, identity).await?;
-    if matches_attempt(&tx, request, &login).await? != Some(true) {
-        return Err(GuardError::Conflict);
+    match matches_attempt(&tx, request, &login).await? {
+        Some(true) => {}
+        Some(false) => return Err(GuardError::Conflict),
+        None if allow_missing => {
+            // An ordinal miss alone cannot distinguish absence from a conflicting
+            // imported lifetime or an orphan credential. Each identity predicate
+            // uses an existing unique key; no retained payload crosses the wire.
+            inspection::require(
+                &tx,
+                "SELECT NOT EXISTS(SELECT 1 FROM bigbrotr_archive.attempts WHERE attempt_id=$1::bytea OR worker_incarnation=$2::bytea OR login_name=$3::name) AND NOT EXISTS(SELECT 1 FROM pg_roles WHERE rolname=$3::name)",
+                &[&&request.attempt_id()[..], &&request.worker().as_bytes()[..], &login],
+                GuardError::Conflict,
+            ).await?;
+            // The actual provisioning driver was excluded before this owner
+            // lock. Already submitted mutations therefore finish before our
+            // inspection; a delayed owner query cannot enqueue later mutations
+            // through a destroyed sequential driver. No tombstone or new grant.
+            tx.rollback().await.map_err(backend)?;
+            return Ok(Resolution::NotImported);
+        }
+        None => return Err(GuardError::Conflict),
     }
     inspection::writer(&tx, &login).await?;
     tx.batch_execute(&format!(
@@ -440,7 +472,9 @@ pub async fn seal(
     let disabled = tx.execute("UPDATE bigbrotr_archive.owner SET enabled=false WHERE singleton AND ordinal=$1::text::numeric AND enabled", &[&request.ordinal().to_string()]).await.map_err(backend)?;
     commit_started.set(true);
     tx.commit().await.map_err(|_| GuardError::CommitUnknown)?;
-    Ok(disabled == 1)
+    Ok(Resolution::Sealed {
+        disabled_current: disabled == 1,
+    })
 }
 
 /// Resolve one retained attempt only after matching local custody is recovered.
@@ -456,7 +490,5 @@ pub async fn resolve_after_local_custody(
     if !custody.recovered_for(receipt.request(), identity) {
         return Err(GuardError::InvalidInput);
     }
-    seal(client, identity, receipt, commit_started)
-        .await
-        .map(|disabled_current| Resolution::Sealed { disabled_current })
+    resolve_inner(client, identity, receipt, true, commit_started).await
 }

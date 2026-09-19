@@ -335,12 +335,24 @@ records all three PASS, 28 scoped Rust cases and all six signed journeys. It ret
 the initial ead11f8 fixture failure (reused Control role identity) and its separately
 retired lab. Installed recovery remains required.
 
-`missing_import_cases.py` adds a proposed live-driver control and destroyed-driver
+`missing_import_cases.py` covers a live-driver control and destroyed-driver
 schedule around the actual tokio-postgres owner Bind/Execute/Sync request. The
 proxy retains that request before PostgreSQL executes it, then can keep the
 server endpoint alive after the client is destroyed. Independent queries check
-the delayed row lock, role/import/owner state, zero scientific files and the same
-41 Rocks rows. The initial resolution adapter still returns Conflict when no
-import exists; the two required NotImported observations intentionally fail until
-that behavior is implemented and qualified. Failed observations are retained even
-while the fixture finishes checking the delayed server request and cleanup.
+role/import/owner state, zero scientific files and the same 41 Rocks rows. At
+`e571002` the live control completed provisioning; the destroyed driver sent no
+mutation after delayed owner execution. Both required NotImported observations
+returned Conflict and the baseline report remains FAIL, with terminal resources
+retired. The updated resolver and additional actual blocker observation await a
+new exact-source run.
+
+`missing_import_refusals.py` creates ten disposable clones of the completed empty
+catalog, exercises ordinal/attempt/worker/login collisions, orphan disabled/login
+roles, a missing or actually recreated imported role, an inconsistent owner and a
+valid unrelated owner of the same batch. Exact before/after state includes full
+attempt fields, owner/role xmin and role OIDs. A renamed actual role isolates the
+retained login-name collision from orphan-role detection; the unrelated owner
+keeps LOGIN and a non-NULL generated fixture password. Ordinary DROP removes only successfully
+created clones/fixture roles; no immutable history trigger is disabled and the
+original catalog/journal is unchanged. These additional cases are proposed until
+the native report records execution.

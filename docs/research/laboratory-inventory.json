@@ -7506,11 +7506,79 @@
     },
     "missing_import_resolution": {
       "base_source": "e9cf01f590cb229b332c76b9ffb88094828a03b7",
-      "state": "Preparing exact-source native baseline; no new remote resources launched",
+      "state": "e571002 baseline completed with two expected missing-import FAIL observations; owned containers stopped-retained and network retired",
       "local_root": ".research/implementation/archive-worker/missing-import",
-      "planned_scope": "Two actual delayed owner Bind/Execute/Sync schedules with live-driver control and destroyed driver. Current seal-only resolver must fail the required NotImported observations; no missing-import qualification yet.",
+      "planned_scope": "Corrected nonmutating resolution: two actual delayed owner schedules, direct blocker pair, ten independent collision/retained-role controls; six signed journeys regress the shared seal path. Native correction NOT_RUN.",
       "cache_source": "/home/tux/bigbrotr-implementation-20260917/runs/publication-5ad77af/out/build",
-      "local_validation": "Nine custody mechanism cases PASS and scoped lib/publication-example Clippy PASS; new native scenarios NOT_RUN"
+      "local_validation": "22 archive cases PASS; affected Clippy and structural artifact/handoff checks PASS. Actual baseline remains FAIL; corrected native run NOT_RUN.",
+      "baseline_resources": {
+        "source": "e57100217ba653a6a266d34f681451df48ccebb6",
+        "tree": "08e4a037a7d99b70e06bcc00505ff068451805cd",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/publication-e571002",
+        "owner": "dded27be112944fbda47822c7bf3e559",
+        "container": "bigbrotr-implementation-publication-e571002",
+        "postgres": "bigbrotr-implementation-publication-e571002-pg",
+        "network": "bigbrotr-implementation-publication-e571002",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "state": "stopped-retained-baseline",
+        "source_files": 698,
+        "started_at": "2026-09-19T01:28:58.087419+00:00",
+        "network_id": "67b1fb0b51be6b358a019536f0268efcb2d9aa61e4116872618e9afcc420786d",
+        "postgres_id": "924c8fe87e5206d3d881622f77ff185cf1dca2b219f033f34c06720485b794f9",
+        "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+        "container_id": "c04723810714290ac93a3b04db9530c762520590718ef0767c8c16daf20d87f2",
+        "network_state": "retired",
+        "terminal": {
+          "runner": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-19T01:29:04.648933529Z",
+            "FinishedAt": "2026-09-19T01:33:50.975850935Z"
+          },
+          "postgres": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-19T01:28:59.996864823Z",
+            "FinishedAt": "2026-09-19T01:33:52.328070023Z"
+          }
+        },
+        "finished_at": "2026-09-19T01:33:52.882558+00:00"
+      },
+      "baseline_source_audit": {
+        "status": "PASS",
+        "source": "e57100217ba653a6a266d34f681451df48ccebb6",
+        "tree": "08e4a037a7d99b70e06bcc00505ff068451805cd",
+        "files": 698,
+        "manifest_sha256": "d510a53eeeed01949f130a107bf31b0e4e46b9f6da030aa391ec0202e9e96d2d",
+        "archive_sha256": "109e4eb2cf119a963a5eb97dd009cad41a3d7102d0f4d37c7d2acbf3553d3c66"
+      },
+      "baseline_audit": {
+        "source": "e57100217ba653a6a266d34f681451df48ccebb6",
+        "tree": "08e4a037a7d99b70e06bcc00505ff068451805cd",
+        "source_files": 698,
+        "manifest_sha256": "d510a53eeeed01949f130a107bf31b0e4e46b9f6da030aa391ec0202e9e96d2d",
+        "cleanup": "owned containers stopped, network retired, no OOM",
+        "unrelated_unchanged": 20,
+        "unrelated_running": 8,
+        "running_bigbrotr": 0
+      },
+      "baseline_raw_sha256": "469d4ef55b7cb7086fd419f3588efd51214dc98e8fc901bb110960638c50a3b2",
+      "next_cache_source": "/home/tux/bigbrotr-implementation-20260917/runs/publication-e571002/out/build"
     }
   },
   "implementation_monitor_corrections_20260918": {

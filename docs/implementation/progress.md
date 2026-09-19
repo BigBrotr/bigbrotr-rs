@@ -20,13 +20,15 @@ lifecycle, missing-import/cross-boot recovery and protection are still required.
 
 ## Actual Git and ownership
 
-Mac main and freshly verified origin/main are both
-e9cf01f590cb229b332c76b9ffb88094828a03b7 (qualification documentation only).
-Qualified source remains 5ad77af6bd5cd4e05eaa9855a48973dc04244858, tree
-8d322eda5a45c6ce0c3b6012acbb797d0147062b. All three custody commits were ordinarily
-pushed after fetching unchanged private origin. Working tree was clean after push;
-subsequent missing-import work/checkpoint edits are root-owned. No merge/rebase,
-remote editing or contributor changes. Root remains sole writer/integrator.
+Mac main HEAD is unpublished baseline candidate
+e57100217ba653a6a266d34f681451df48ccebb6, tree
+08e4a037a7d99b70e06bcc00505ff068451805cd. Verified origin/main remains
+e9cf01f590cb229b332c76b9ffb88094828a03b7, delivering custody qualification
+(source5ad77af). Transfer33779 ran from clean Git and is terminal. Root owns all
+subsequent checkpoint/inventory edits; no remote source editing or merge/rebase.
+Read-only AI publication_review found no blocker in the intentional baseline.
+Its RowShareLock observation is a relation lock, not an observed blocker pair;
+full immutable attempt/journal audit remains separate from count assertions.
 
 Exact clean transfer40965/scp87179 are terminal. All 696 native checkout/export
 files and the archive match Mac Git at 5ad77af. Manifest SHA256
@@ -121,9 +123,9 @@ product-sealed; four remaining fixture logins disabled for retirement. All nine
 owners disabled and no other catalog backend before stop. Terminal audit confirms
 20 unrelated identities unchanged, eight running and zero BigBrotr running.
 The failed ead11f8 lab and earlier receipt labs are also retired. No unfinished
-cleanup; never restart them. Latest reusable copied cache is 5ad77af/out/build;
-the ignored launcher now copies 5ad77af and preserves its 0b3a427 dependency
-baseline comparison. Any new lab must be separately inventoried and exact-Git.
+cleanup; never restart them. That custody run copied the ead11f8 cache. The latest
+missing-import baseline below now supplies the next copied cache; the launcher
+preserves its 0b3a427 dependency comparison. New labs are inventoried and exact-Git.
 
 ## Prior evidence and invariants
 
@@ -153,26 +155,58 @@ Scoped monitor corrections remain closed with executed evidence:
 [MON-007](evidence/p01-archive-cache-retry-20260918.json).
 Do not mechanically rerun unrelated suites.
 
+## Missing-import baseline and current correction
+
+Baseline e571002 is terminal. Native29 Rust cases and all10 build/check commands
+pass. Both actual delayed owner Bind/Execute/Sync schedules completed: the live
+control provisioned and was sealed; the destroyed driver sent no provisioning
+mutation after delayed execution. Its two expected NotImported results were
+Conflict, so missing-import-cases.json remains FAIL. No false PASS or weakened
+invariant. Independent terminal audit checks both exact journal byte sequences,
+full imported identity/OID, disabled/absent roles, source oracle and zero files.
+The row_lock field in that historical report names a RowShareLock relation lock;
+it is not a recorded blocker pair.
+
+Inventory implementation_archive_worker_20260918.missing_import_resolution owns
+/home/tux/bigbrotr-implementation-20260917/runs/publication-e571002.
+Owner dded27be112944fbda47822c7bf3e559; runner c04723810714290ac93a3b04db9530c762520590718ef0767c8c16daf20d87f2;
+PG 924c8fe87e5206d3d881622f77ff185cf1dca2b219f033f34c06720485b794f9;
+network 67b1fb0b51be6b358a019536f0268efcb2d9aa61e4116872618e9afcc420786d retired.
+Both containers stopped-retained, no OOM, PG exit0. Retirement59312 confirms all20
+unrelated identities unchanged,8 running,0 BigBrotr running. No active lab/cleanup.
+Transfer33779, native scenario86964, terminal55797 and raw copy are complete.
+All698 source hashes match exact Mac Git; raw21-file archive SHA256
+469d4ef55b7cb7086fd419f3588efd51214dc98e8fc901bb110960638c50a3b2.
+Local evidence root .research/implementation/archive-worker/missing-import/e571002.
+
+Root-owned dirty correction now implements NotImported under the same owner lock
+and full installed inspection, refusing unique lifetime collisions/orphan roles;
+matching imports use existing sealing with exact recorded OID. Return follows
+successful rollback, and only recovered matching LocalAttempt may call it. No
+migration or journal-format change. The updated native harness adds a directly
+observed late-query blocker pair plus ten disposable-clone refusal/preservation
+cases; native execution is still pending for this correction. Local22 archive cases
+and affected Clippy PASS. Original recovered-only gate red/green logs remain in
+lifetime; initial test E0716 was corrected before its actual failing assertion.
+Resumption verified HEAD/dirty ownership and actual stopped baseline containers;
+eight unrelated containers remain running. Focused Clippy and structural artifact/
+handoff checks pass. Read-only AI review identified an overlapping login-collision
+discriminator: its orphan role could mask the historical login predicate. The
+fixture now actually renames that role, retains the immutable login name and
+asserts target-role absence. The unrelated-owner control now has LOGIN and a
+non-NULL generated fixture password, with role xmin captured alongside owner xmin,
+so collateral credential sealing cannot be hidden by already-disabled values.
+These are fixture corrections, not reproduced product defects. Root remains the
+only writer; native correction is still NOT_RUN.
+
 ## Next bounded action
 
-Continue P02-T04 with missing-import resolution. Qualification evidence/docs are
-reviewed, committed and pushed. Add a recovered-only identity gate and same-lock
-resolution: exact import seals, no import/role/collision rolls back as NotImported.
-Applied migrations and journal bytes remain unchanged. The recovered-only unit
-gate has an observed failing baseline followed by
-nine passing custody cases; scoped lib/example Clippy and structural checks pass.
-The adapter currently seals imported attempts only. New missing_import_cases.py
-must reproduce two failed NotImported observations while completing both actual
-delayed-request schedules. Record that exact native baseline before implementing
-the missing branch; native execution and new resources have not started.
-Current seal Conflict is not
-successful exclusion when provisioning never committed. Read-only AI review finds
-no resurrection from a delayed pre-lock request in the exact sequential adapter:
-owner query is fully awaited before any provisioning mutation; already submitted
-mutations hold the conflicting owner lock. Qualify that narrow argument using the
-actual delayed Bind/Execute/Sync request, live-driver negative control and destroyed-
-driver case before accepting a missing import. Preserve custody throughout fresh
-privileged inspection; refuse orphan roles, identity collisions and OID mismatch;
-missing import never reissues credentials or means another attempt did not publish.
+Finish focused correction/fixture review and structural checks, create a coherent
+unpublished candidate, transfer new clean exact-Git source and copy the retired
+e571002 cache. Qualify missing_import_cases.py (two schedules plus ten clone cases)
+and six signed publication/receipt schedules because seal now shares its internal
+resolution path. Require actual blocker pairs, independent complete attempts/
+journals/rows, unchanged pending, positive terminal resource audit, then commit
+qualification and push verified private work. Do not restart any retired lab.
 Installed lifecycle, resource reconciliation, cross-boot recovery, protection and
 full M1/read/export/restart remain subsequent required work.

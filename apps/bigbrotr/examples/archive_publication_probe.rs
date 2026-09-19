@@ -537,7 +537,7 @@ async fn run(mode: &str, port: u16) {
 }
 fn main() {
     let args: Vec<_> = std::env::args().collect();
-    assert_eq!(args.len(), 3);
+    assert!(args.len() == 3 || args.len() == 4 && args[2] == "resolve");
     tokio::runtime::Builder::new_current_thread()
         .enable_all()
         .build()
@@ -546,7 +546,7 @@ fn main() {
             if matches!(args[2].as_str(), "observe" | "seal" | "resolve") {
                 tokio::time::timeout(
                     Duration::from_secs(15),
-                    custody::observe(&args[1], &args[2]),
+                    custody::observe(&args[1], &args[2], args.get(3).map(String::as_str)),
                 )
                 .await
                 .unwrap();

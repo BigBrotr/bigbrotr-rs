@@ -83,6 +83,19 @@ impl Case<'_> {
         emit(serde_json::json!({"event":"manager-connected","backend_pid":pid}));
         let committing = Cell::new(false);
         if mode.starts_with("custody_prelock_") {
+            assert_eq!(
+                catalog_guard::resolve_after_local_custody(
+                    &mut manager,
+                    self.identity,
+                    &receipt,
+                    &custody,
+                    &committing,
+                )
+                .await,
+                Err(catalog_guard::GuardError::InvalidInput),
+            );
+            assert!(!committing.get());
+            emit(serde_json::json!({"event":"fresh-custody-refused"}));
             if mode == "custody_prelock_live" {
                 let writer = catalog_guard::provision_and_activate(
                     &mut manager,
@@ -176,7 +189,14 @@ impl Case<'_> {
     }
 }
 
-pub async fn observe(mode: &str, action: &str) {
+pub async fn observe(mode: &str, action: &str, catalog_override: Option<&str>) {
+    assert!(catalog_override.is_none_or(|db| {
+        action == "resolve"
+            && db.starts_with("bbmiss_")
+            && db
+                .bytes()
+                .all(|b| b.is_ascii_lowercase() || b.is_ascii_digit() || b == b'_')
+    }));
     let home = PathBuf::from(format!("/out/signed_{mode}"));
     let bytes = fs::read(home.join("custody-input.json")).unwrap();
     assert!(bytes.len() < 32768);
@@ -240,13 +260,20 @@ pub async fn observe(mode: &str, action: &str) {
                 driver.await.unwrap().unwrap();
             }
             if action == "resolve" {
+                let database = format!("bbpub_{mode}");
                 let (mut manager, connection) =
-                    connection_config(&format!("bbpub_{mode}"), "postgres")
+                    connection_config(catalog_override.unwrap_or(&database), "postgres")
                         .connect(NoTls)
                         .await
                         .unwrap();
                 let driver = tokio::spawn(custody.retain_catalog_connection(connection).unwrap());
                 let committing = Cell::new(false);
+                let pid: i32 = manager
+                    .query_one("SELECT pg_backend_pid()", &[])
+                    .await
+                    .unwrap()
+                    .get(0);
+                emit(serde_json::json!({"event":"resolve-begin","backend_pid":pid}));
                 let result = catalog_guard::resolve_after_local_custody(
                     &mut manager,
                     &identity,
@@ -264,6 +291,8 @@ pub async fn observe(mode: &str, action: &str) {
                         disabled_current: false,
                     }) => "sealed-unchanged",
                     Err(catalog_guard::GuardError::Conflict) => "conflict",
+                    Err(catalog_guard::GuardError::InvalidInput) => "invalid-input",
+                    Err(catalog_guard::GuardError::IncompatibleLayout) => "incompatible-layout",
                     Err(error) => panic!("unexpected resolution error: {error:?}"),
                 };
                 emit(
