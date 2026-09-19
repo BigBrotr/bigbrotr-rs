@@ -19,9 +19,10 @@ if sys.argv[1:] == ['--build-binaries']:
     identity = build_binaries(SOURCE, os.environ)
     (out / 'worker-identity.json').write_text(json.dumps(identity, indent=2) + '\n')
     sys.exit(0)
-assert sys.argv[1:] in ([], ['--tls'], ['--publication'])
+assert sys.argv[1:] in ([], ['--tls'], ['--publication'], ['--producer-inputs'])
 tls = sys.argv[1:] == ['--tls']
-publication = sys.argv[1:] == ['--publication']
+producer_inputs = sys.argv[1:] == ['--producer-inputs']
+publication = producer_inputs or sys.argv[1:] == ['--publication']
 manifest = json.loads((build / 'source-manifest.json').read_text())
 
 
@@ -64,6 +65,18 @@ for src, dst in [('bigbrotr', out / 'bigbrotr'), ('bigbrotr-archive-worker', bun
                     ('examples/archive_attempt_probe', out / 'archive-attempt-probe')] if publication else [])]:
     shutil.copy2(build / 'target/release' / src, dst)
     dst.chmod(0o500)
+if producer_inputs:
+    # The actual same-source packaged worker is required by the native pending
+    # consumer test; library-only success cannot substitute for that process.
+    assert file_hash(bundle / 'bigbrotr-archive-worker') == worker['sha256']
+    env.update(BIGBROTR_ARCHIVE_TEST_INSTALLATION=str(bundle),
+               BIGBROTR_ARCHIVE_TEST_WORKER_BYTES=str(worker['bytes']),
+               BIGBROTR_ARCHIVE_TEST_WORKER_SHA256=worker['sha256'])
+    assert execute([
+        ('model', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr-model']),
+        ('native-owner', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr', '--lib', 'storage::rocks', '--', '--nocapture']),
+        ('input-clippy', ['cargo', 'clippy', '--locked', '--release', '-p', 'bigbrotr-model', '-p', 'bigbrotr', '--all-targets', '--', '-D', 'warnings']),
+    ], out / 'producer-inputs', SOURCE, env, identity, 1200)['status'] == 'PASS'
 assert source_files() == manifest['files_sha256']
 info = json.loads(subprocess.check_output([str(out / 'bigbrotr'), 'build-info'], env={}))
 assert info['archive_worker'] == worker and info['source']['revision'] == manifest['revision']

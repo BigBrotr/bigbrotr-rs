@@ -143,6 +143,11 @@ One owner serializes exact identity decisions for each writable directory.
   resource ownership; see [Mac](evidence/p02-receipt-reader-mac-20260918.json) and
   [native evidence](evidence/p02-receipt-reader-native-20260918.json).
   It does not resolve missing detail, grant authority or implement retirement.
+  The [exact producer-input staging prerequisite](../reference/producer-request-inputs.md)
+  now precedes new native bootstrap/event/rejection effects and feeds bounded
+  recovery decoding. PostgreSQL reservation/checkpoint closure, partial-input
+  recovery and the versioned successor protocol remain required; legacy receipt
+  replay does not qualify missing producer inputs.
 - [ ] **Step 5:** Make provenance-off allocate no P inventory or event/endpoint side channel;
   retain scope eligibility and scoped first local receive/earlier corrections.
   Implement CertifyExisting against one committed inventory view, exact verified

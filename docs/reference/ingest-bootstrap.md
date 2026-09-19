@@ -48,7 +48,8 @@ the storage owner rejects structurally valid but noncanonical URL identities.
 One WAL-enabled `WriteBatch`, with synchronous commit and missing-CF refusal,
 contains every dictionary fact, mapping, reverse candidate, allocation/source
 counter, producer state, pending marker and request receipt. It also rewrites the
-unchanged manifest. There is no partial write before this batch. `recorded_at` is
+unchanged manifest. No native fact/counter effect precedes this batch; retained request input is
+synchronized separately before dispatch. `recorded_at` is
 the trusted owner's supplied time; retry preserves the originally recorded time,
 context, dependencies and receipt bytes.
 
@@ -121,3 +122,10 @@ The two process kills occur before native dispatch and after commit before
 external receipt delivery; neither is a mid-FFI failure. The case named `retired`
 checks closing-state refusal, not completed producer retirement. The original
 524e38c run remains a failed oracle attempt with later scenarios unexecuted.
+
+The [retained producer input prerequisite](producer-request-inputs.md) now
+synchronizes the exact original request before each new native commit. It keeps
+all input detail within a finite sidecar and supports bounded recovery decoding;
+it does not implement the PostgreSQL producer ledger, ACK/GC or owner handoff.
+Historical receipt replay does not synthesize missing input files or claim that
+legacy stores satisfy the new input-completeness requirement.

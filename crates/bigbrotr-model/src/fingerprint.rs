@@ -424,7 +424,7 @@ pub(crate) fn evidence_intent_encoded_len(
     Ok(encoder.into_writer().count)
 }
 
-fn evidence_request<W: Write>(
+pub(crate) fn evidence_request<W: Write>(
     id: ProducerRequestId,
     intent: &EvidenceIntent,
     encoder: &mut Encoder<W>,
@@ -443,7 +443,7 @@ fn evidence_request<W: Write>(
         .u16(1)?;
     evidence_intent(intent, encoder)
 }
-fn request<W: Write>(
+pub(crate) fn request<W: Write>(
     id: Option<ProducerRequestId>,
     intent: &EventIntent,
     encoder: &mut Encoder<W>,

@@ -25,6 +25,7 @@ pub enum BootstrapError {
     StateMismatch,
     RequestConflict,
     AuthorityUnavailable,
+    RequestInput(super::RequestInputError),
     /// No negative outcome is implied. Close/join and resolve the exact request.
     CommitUnknown,
 }
@@ -86,7 +87,8 @@ impl BootstrapLimits {
             return Err(BootstrapError::InvalidLimits);
         }
         let vectors = self.max_mappings * (4 * size_of::<Entry>() + 2 * size_of::<FactRef>());
-        Ok((4 * self.max_batch_bytes
+        Ok((5 * self.max_batch_bytes
+            + super::request_inputs::STAGING_OVERHEAD_BYTES
             + vectors
             + 5 * size_of::<Entry>()
             + size_of::<Receipt>()
@@ -263,6 +265,15 @@ impl IngestStore {
             value: self.manifest.encode().as_bytes().to_vec(),
         };
         self.require_exact_state(&[manifest])?;
+        let input = intent
+            .encode_request_preimage(request, limits.max_batch_bytes)
+            .map_err(|error| match error {
+                bigbrotr_model::EvidenceIntentError::AllocationFailed => BootstrapError::Allocation,
+                _ => BootstrapError::Limit,
+            })?;
+        self.retain_request_input(request, &input)
+            .map_err(BootstrapError::RequestInput)?;
+        drop(input);
         self.commit_prepared(prepared, &mut require_authority)?;
         Ok(StoredReceipt::new(receipt, permit))
     }

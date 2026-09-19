@@ -154,3 +154,10 @@ SIGKILL retains the complete event batch. These are process crashes around
 dispatch, not power loss or faults inside FFI. Complete retirement, concurrent
 closing races, ENOSPC, archive-backed recovery, aged-state capacity and installed
 release behavior remain required.
+
+The [retained producer input prerequisite](producer-request-inputs.md) now
+synchronizes the exact original request before each new native commit. It keeps
+all input detail within a finite sidecar and supports bounded recovery decoding;
+it does not implement the PostgreSQL producer ledger, ACK/GC or owner handoff.
+Historical receipt replay does not synthesize missing input files or claim that
+legacy stores satisfy the new input-completeness requirement.

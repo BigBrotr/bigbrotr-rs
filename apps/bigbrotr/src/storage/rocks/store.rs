@@ -26,6 +26,10 @@ pub use pending::{PendingBatch, PendingBatchHeader, PendingError, PendingReadLim
 mod receipts;
 pub use receipts::{ReceiptReadError, StoredReceipt, required_receipt_data_bytes};
 
+#[path = "request_inputs.rs"]
+mod request_inputs;
+pub use request_inputs::{RequestInputError, RetainedRequestInput};
+
 #[path = "bootstrap.rs"]
 mod bootstrap;
 pub use bootstrap::{BootstrapError, BootstrapLimits};
@@ -33,6 +37,10 @@ pub use bootstrap::{BootstrapError, BootstrapLimits};
 #[cfg(test)]
 #[path = "bootstrap_tests.rs"]
 mod bootstrap_tests;
+
+#[cfg(test)]
+#[path = "request_input_tests.rs"]
+mod request_input_tests;
 
 #[path = "admission.rs"]
 mod admission;

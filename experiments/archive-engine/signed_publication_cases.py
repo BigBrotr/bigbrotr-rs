@@ -17,7 +17,7 @@ sys.dont_write_bytecode = True
 SOURCE = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(SOURCE / 'experiments/control-migrations'))
 from fault_cases import Incomplete, Process
-from signed_publication_oracle import MODES, check, expected, input_files, restart_expectations
+from signed_publication_oracle import MODES, check, expected, input_files, producer_input_files, restart_expectations
 
 
 def sha(path):
@@ -343,6 +343,7 @@ def main(root, installed=False):
             if installed:
                 home = root / f'out/signed_{mode}'
                 case['retained_input_files'] = input_files(home, mode)
+                case['producer_input_files'] = producer_input_files(home)
                 protocol_query = "SELECT json_build_object('bindings',(SELECT coalesce(json_agg(t),'[]') FROM (SELECT c.*,xmin::text AS xmin FROM control.archive_coordinators c)t),'attempts',(SELECT coalesce(json_agg(t ORDER BY ordinal),'[]') FROM (SELECT attempt_id,ordinal,coordinator_binding_sha256,xmin::text AS xmin FROM control.archive_attempts)t))"
                 protocol = case['coordinator_protocol'] = json.loads(sql('bbpub_control_'+mode, protocol_query))
                 digest = '\\x'+sha(home/'archive-state/coordinator.json')
@@ -369,6 +370,7 @@ def main(root, installed=False):
                 # same semantic digest. Never call it the original attempt's receipt.
                 assert seen == restart_expectations(mode)
                 assert input_files(home, mode) == case['retained_input_files']
+                assert producer_input_files(home) == case['producer_input_files']
                 assert json.loads(sql('bbpub_control_'+mode, protocol_query)) == protocol
                 assert case['public_access'] == dict(database=[],schema=[])
                 assert case['installed_initializer']['new_installation'] is True

@@ -183,6 +183,46 @@ def input_files(home, mode):
     return result
 
 
+def producer_input_files(home):
+    """Exact original mutation bytes, independently authored from the fixed corpus."""
+    descriptors = [
+        (4, 'visibility', {'class': 'public'}),
+        (1, 'endpoint', {'url': 'wss://public.example/'}),
+        (2, 'observer', dict(clock='system-utc', vantage='fixture-vantage', software=None,
+                             method_id=None, public_key=None, route_class=None, software_version=None)),
+        (3, 'access-scope', {'class': 'public', 'label': None, 'visibility_scope_id': reference(4)}),
+        (5, 'event-verification', dict(input='nip01-event/1', algorithm='sha256-bip340',
+            capability='event-id-and-signature', output_unit='verification-result',
+            failure_taxonomy='bigbrotr-nip01-verifier/1', algorithm_version=1,
+            protocol_revision='a2494f4f81d46684e5814a9bf35e2b1df978f955')),
+    ]
+    dictionaries = [['dictionary', 1, [reference(k), 1, schema, 1, value]]
+                    for k, schema, value in descriptors]
+    inputs = [('admit-evidence', [1, reference(4), dictionaries])]
+    event = EVENT
+    for sequence in [2, 3, 4]:
+        signed = [bytes(32) if sequence == 3 else bytes.fromhex(event['id']),
+                  bytes.fromhex(event['pubkey']), event['created_at'], event['kind'],
+                  event['tags'], event['content'],
+                  bytes(64) if sequence == 2 else bytes.fromhex(event['sig'])]
+        observation = [10_000_000, reference(2), [reference(2), 1, None, 0],
+                       [reference(1), reference(3), reference(5)]]
+        inputs.append(('admit', [1, reference(4), signed, 'network', None, observation]))
+    spool = home / 'rocks/producer-inputs-v1'
+    assert spool.stat().st_mode & 0o777 == 0o700 and not spool.is_symlink()
+    result = []
+    for sequence, (operation, intent) in enumerate(inputs, 1):
+        slot = bytes([66]) * 16
+        wanted = b'bigbrotr/producer-request/1\0' + cbor([[slot, 1, sequence], operation, 1, intent])
+        path = spool / f'{slot.hex()}-0000000000000001-{sequence:016x}.cbor'
+        assert path.is_file() and not path.is_symlink()
+        assert path.read_bytes() == wanted, 'independent original producer input bytes'
+        assert path.stat().st_mode & 0o777 == 0o600 and path.stat().st_nlink == 1
+        result.append(dict(name=path.name, bytes=len(wanted), sha256=hashlib.sha256(wanted).hexdigest()))
+    assert sorted(p.name for p in spool.iterdir()) == sorted(r['name'] for r in result)
+    return result
+
+
 def check(mode, parent, reader, installed=False):
     reopened = [r['expected'] for r in parent if r['event'] == 'inputs-reopened']
     assert reopened == (input_expectations(mode) if installed else [])

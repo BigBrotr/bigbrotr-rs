@@ -3,7 +3,8 @@
 `IngestStore` owns the first private native RocksDB handle for P02-T02. It exposes
 explicit `initialize` and `reopen` operations, the bound manifest, read-only native
 counters, a [bounded complete pending-batch feed](ingest-pending-format.md), and
-[retained request-detail inspection](ingest-receipt-format.md#native-detail-inspection).
+[retained request-detail inspection](ingest-receipt-format.md#native-detail-inspection),
+and [bounded producer-input recovery](producer-request-inputs.md).
 There is no generic put/delete, exported DB/CF handle, admission,
 receipt or policy grant. Opening a compatible directory is not proof of current
 control authority or permission to accept events.

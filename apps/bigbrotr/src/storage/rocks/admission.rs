@@ -28,6 +28,7 @@ pub enum AdmissionError {
     WindowFull,
     RetiredRequest,
     AuthorityUnavailable,
+    RequestInput(super::RequestInputError),
     CommitUnknown,
 }
 impl fmt::Display for AdmissionError {
@@ -49,6 +50,7 @@ impl From<BootstrapError> for AdmissionError {
             BootstrapError::RequestConflict => Self::RequestConflict,
             BootstrapError::AuthorityUnavailable => Self::AuthorityUnavailable,
             BootstrapError::CommitUnknown => Self::CommitUnknown,
+            BootstrapError::RequestInput(error) => Self::RequestInput(error),
         }
     }
 }
@@ -85,6 +87,7 @@ pub struct PreparedEvent {
     origin: EventOrigin,
     observation: Option<LocalObservation>,
     event: Option<Result<VerifiedEvent, RejectionReason>>,
+    request_preimage: Vec<u8>,
     allocation_bytes: usize,
     verification_limit_bytes: usize,
     _permit: OwnedPermit,
@@ -137,6 +140,12 @@ impl PreparedEvent {
                 charge(value.capacity())?;
             }
         }
+        let request_preimage = intent
+            .encode_request_preimage(request, left)
+            .map_err(BootstrapError::from)?;
+        left = left
+            .checked_sub(request_preimage.capacity())
+            .ok_or(AdmissionError::InsufficientReservation)?;
         let allocation_bytes = allocation_limit - left;
         let digest = intent.request_digest(request);
         let scope = intent.visibility_scope_id();
@@ -160,6 +169,7 @@ impl PreparedEvent {
             origin,
             observation,
             event: Some(event),
+            request_preimage,
             allocation_bytes,
             verification_limit_bytes: max_event_bytes,
             _permit: permit,
@@ -213,6 +223,7 @@ impl AdmissionLimits {
             return Err(AdmissionError::InvalidLimits);
         }
         Ok((8 * self.max_batch_bytes
+            + super::request_inputs::STAGING_OVERHEAD_BYTES
             + self.max_dependencies * (size_of::<FactRef>() + size_of::<QualifiedRef>())
             + Prepared::entry_allocation_bytes(16)
             + 4 * size_of::<Fact>()
@@ -411,6 +422,8 @@ impl IngestStore {
         // The shared native commit marks the handle uncertain before FFI, uses
         // sync+WAL, and retains all buffers/permits until native completion.
         authority()?;
+        self.retain_request_input(input.request, &input.request_preimage)
+            .map_err(AdmissionError::RequestInput)?;
         self.commit_prepared(writes, || {
             authority().map_err(|_| BootstrapError::AuthorityUnavailable)
         })?;

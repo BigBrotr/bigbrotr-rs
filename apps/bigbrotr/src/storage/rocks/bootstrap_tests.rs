@@ -15,7 +15,7 @@ use bigbrotr_model::{
 use std::sync::atomic::AtomicBool;
 
 const MIB: u64 = 1024 * 1024;
-fn scope() -> QualifiedRef {
+pub(super) fn scope() -> QualifiedRef {
     QualifiedRef {
         dataset_id: [1; 16].try_into().unwrap(),
         dictionary_kind: DictionaryKind::VisibilityScope,
@@ -23,7 +23,7 @@ fn scope() -> QualifiedRef {
         ordinal: Ordinal::new(1).unwrap(),
     }
 }
-fn intent(class: &str) -> EvidenceIntent {
+pub(super) fn intent(class: &str) -> EvidenceIntent {
     EvidenceIntent::new(
         1,
         scope(),
@@ -44,14 +44,14 @@ fn intent(class: &str) -> EvidenceIntent {
     )
     .unwrap()
 }
-fn request() -> ProducerRequestId {
+pub(super) fn request() -> ProducerRequestId {
     ProducerRequestId {
         producer_slot_id: [5; 16].try_into().unwrap(),
         producer_epoch: ProducerEpoch::new(1).unwrap(),
         request_sequence: RequestSequence::new(1).unwrap(),
     }
 }
-fn manifest() -> IngestManifest {
+pub(super) fn manifest() -> IngestManifest {
     IngestManifest::new(
         ManifestIdentity {
             dataset_id: scope().dataset_id,
@@ -70,7 +70,7 @@ fn manifest() -> IngestManifest {
         .unwrap(),
     )
 }
-fn native() -> RocksNativeLimits {
+pub(super) fn native() -> RocksNativeLimits {
     RocksNativeLimits::new(RocksNativeSettings {
         block_cache_bytes: 32 * MIB,
         write_buffer_manager_bytes: 16 * MIB,
@@ -82,7 +82,7 @@ fn native() -> RocksNativeLimits {
     })
     .unwrap()
 }
-fn budget() -> ResourceBudget {
+pub(super) fn budget() -> ResourceBudget {
     ResourceBudget::new(
         ProcessEnvelope::new(
             161 * MIB,
@@ -93,7 +93,7 @@ fn budget() -> ResourceBudget {
         .unwrap(),
     )
 }
-fn grant(b: &ResourceBudget, data: u64, native: u64) -> OwnedPermit {
+pub(super) fn grant(b: &ResourceBudget, data: u64, native: u64) -> OwnedPermit {
     b.try_acquire(ResourceRequest::data(data, 1, native).unwrap())
         .unwrap()
 }

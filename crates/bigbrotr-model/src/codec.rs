@@ -19,6 +19,8 @@ use minicbor::{Decoder, Encoder, encode::Write};
 use sha2::{Digest, Sha256};
 use std::{fmt, mem::size_of};
 
+pub mod request;
+
 const FACT_PREFIX: &[u8] = b"bigbrotr/fact/1\0";
 const DICTIONARY_PREFIX: &[u8] = b"bigbrotr/dictionary/1\0";
 

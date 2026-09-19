@@ -20,15 +20,13 @@ selected product work remains required.
 
 ## Git and latest qualification
 
-At preparation of this evidence-only follow-up, Mac main HEAD is
+Mac main and private origin/main both verified at
+`70a2227af5d866547ccd4500bd93cb565566c418`; worktree was clean after push.
+This is the documentation/evidence successor of tested executable source
 `d78bcc5bbf660fc0a7bca8807508a6c357e619d5`, tree
-`bd11aff821023718a42cba7b3eb35ec7311211fb`. Private origin was last observed at
-`e45c06b77f84bb1667071b3c8cb6e400e1f50654`; verify before pushing. Four unpublished
-coherent candidates preserve implementation and development failures: 4706373,
-55ac491, e5585da, d78bcc5. Pending root-owned files are the receipt evidence,
-P02/user documentation, this checkpoint and laboratory inventory. No other
-contributor changes. The commit enclosing this checkpoint may be their docs-only
-successor; inspect actual Git rather than assuming the executable revision is HEAD.
+`bd11aff821023718a42cba7b3eb35ec7311211fb`. All four development candidates and
+the scoped qualification are published privately. New dirty work belongs to root
+on the producer request recovery prerequisite; no other contributor changes.
 
 [Native receipt CLI evidence](evidence/p02-receipt-cli-native-20260919.json) at
 `d78bcc5` passes six installed signed producer schedules and all 16 receipt cases:
@@ -167,10 +165,43 @@ MON-007 includes real failed/retried/concurrent HTTPS cache writes. P01's stale
 slow-output wording now points to the earlier actual full-pipe evidence; all 13
 referenced retained artifact hashes were rechecked. No broader task completion.
 
-## Next bounded action
+## Producer input recovery prerequisite in progress
 
-Commit this reviewed evidence-only follow-up after affected documentation checks
-and verify/push private main. Then implement the recoverable producer request ledger
+Root-owned dirty work on 70a2227 adds the exact request decoder in bigbrotr-model,
+private bounded input staging/recovery in the existing native Ingest owner,
+discriminating fixtures/native tests and the linked
+[input contract](../reference/producer-request-inputs.md). No PostgreSQL ledger,
+ACK/GC or successor authority exists yet. Existing receipt replay is compatible
+but does not qualify legacy history as input-complete. All P02 checkboxes remain open.
+
+Mac sessions22316/2329 passed model decoding (now four cases); native staged-input
+cases passed, including signed admission/rejection and exact recovery, cancelled
+precommit effects, conflicts/partial files, reduced limits and finite spool bounds.
+Review found restrictive umask could make a committed input unreadable: actual
+RED68595 confirmed it; descriptor chmod/validation corrected it, GREEN12095.
+Session13532 additionally failed the packaged native-worker case because its
+required installation was absent on Mac; it is not PASS. Linux must execute it
+with the actual same-source worker. All-target Clippy14943 passed after documenting
+inline enum metadata without adding an infallible decode allocation. New filesystem
+substitution/retry tests passed in session3344. Retained Mac check run15512 in
+`.research/implementation/producer-inputs/mac` passed 58 model and 23 selected
+native-owner cases, all-target Clippy, format/artifact/handoff/diff checks. The
+packaged worker test was explicitly omitted on Mac, not counted as PASS.
+AI review caught a count-only crash oracle; a new independently authored fixture
+now compares every native key/value, plus original request bytes, around actual
+SIGKILL and reap. Run54655 (`mac-refined`) passes all seven input cases (both crash
+schedules) and Clippy. A Mac-only compile failure for Linux mknodat was corrected;
+FIFO remains explicitly Linux-only, while symlink/hardlink and crash cases ran Mac.
+Linux target, actual packaged worker and connected publication remain pending.
+
+Next: form the reviewed unpublished exact-source candidate, then create a new inventoried Tux lab from the stopped d78bcc5 copied cache and
+qualify native inputs plus the actual signed publication consumer. No new lab has
+started. Retain logs and source identities, audit/stop only owned resources, and
+publish scoped evidence before continuing the ledger/handoff prerequisite.
+
+## Following bounded action
+
+Implement the recoverable producer request ledger
 required by P01-T06 steps 2/3/5/6 and P02-T02 steps 2/4/7 before Ingest-owner handoff.
 Read-only AI review traced the current adapters, closure triggers and selected
 RocksDB lock source. It found that issued/ACK/retired counters alone do not retain

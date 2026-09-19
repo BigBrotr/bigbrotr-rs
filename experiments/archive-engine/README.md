@@ -416,3 +416,11 @@ records six signed schedules and both delegation refusals PASS at `61271e2`, wit
 22 sealed writer lifetimes, no PUBLIC access and unchanged retained source state.
 All owned containers were stopped and unrelated workloads preserved. Complete
 installed service/M1 and populated historical ACL upgrades remain unqualified.
+
+`native_initialization.py --producer-inputs` additionally runs the complete model
+and native Rocks owner tests, including staged-input process kills and the actual
+packaged pending consumer, with the same-source worker installation and its verified
+size/hash. It runs all-target input Clippy and retains per-command logs in
+`out/native-tests/producer-inputs`. Then run the installed signed publication cases
+against that lab; source checks, independent scientific oracle and terminal audit
+still apply. The flag adds no producer ledger, ACK or successor-owner authority.
