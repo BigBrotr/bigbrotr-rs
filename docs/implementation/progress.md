@@ -21,13 +21,14 @@ installed service readiness.
 
 ## Actual Git and ownership
 
-Mac main HEAD and freshly verified origin/main are both
-41a369aa19d3c542e929cec6f6fd341e574f5cf4. Three coherent commits pushed normally
+Mac main HEAD is cfadb48a7260e457228b4da96ddcc5b4e6c4dac7 (unpublished TDD
+candidate); last verified origin/main is41a369aa19d3c542e929cec6f6fd341e574f5cf4. Three coherent commits pushed normally
 to verified private BigBrotr/bigbrotr-rs; push92091 terminal0 and remote ref matches.
 Root sole writer, no merge/rebase. Current root-owned edits add the database
 reservation contract, a one-use local provisioning gate, and an actual PostgreSQL
-TDD probe/oracle. The new reserve function is deliberately a failing baseline
-stub, not implemented or qualified product behavior. No active Tux experiment. Exact candidates105a543 and3efde78 were
+TDD probe/oracle. The failing baseline was executed on native PG. Root-owned edits now implement
+the atomic transaction, shared manager/pristine validation and generated-password
+native probe; practical qualification of these edits remains pending. No active Tux experiment. Exact candidates105a543 and3efde78 were
 transferred through clean Git bundles. No production changes after native
 qualification. Between candidates, only practical fixture/checkpoint/inventory
 changed; worker bytes identical.41a369a adds qualification documentation/evidence.
@@ -155,20 +156,32 @@ COMMIT. Stranded pristine reservations require explicit abandonment/new pair;
 recovery never relaunches. Read-only design review identified these three closure
 points; all are included in the contract. No schema object or applied SQL changes.
 
-Current TDD: Mac45862 observed the expected second-provision failure with the
-always-allow baseline;4428 passed all7 initialization custody tests after the
-one-use gate.59807 and latest scoped parent/example Clippy/fmt passed. The actual
-PG fixture now independently expects two restricted durable roles after known
-COMMIT; reserve deliberately returns Conflict until its expected failing baseline
-has executed on clean exact-source Tux. Pinned PG16.15 CreateRole source inspected;
-source hash/path are in laboratory inventory. No reservation practical PASS yet.
+Current TDD: Mac45862 RED and4428/97305 seven custody tests PASS; scoped
+parent/example Clippy/fmt PASS. Clean cfadb48 native ordered build,33 parent tests
+and Clippy PASS. Actual PG baseline32283 FAILED as expected: Conflict,
+commit_started=false, roles empty. This is discriminating missing-feature evidence,
+not a product pass. Audit92264 and collection90299 terminal0;13 raw files and732
+Mac Git source files verified; tar a9499675c4161e0539c8d7c79348dadcf60a34227fec73dd551b98d174477f60.
 
-Next: commit the clean unpublished TDD candidate, inventory/launch a new isolated
-Tux database-reservation lab, run and retain its expected failing durable-effects
-oracle, then retire/audit that lab. Implement the atomic transaction and bounded
-observer, wire the fresh credential into the actual custodied native consumer,
-and qualify concurrency, rollback, lost-COMMIT and effective-privilege cases.
-Do not push the temporary failing baseline as finished work.
+Baseline database-reservation-cfadb48 stopped-retained, owner
+c632b7616051887f945c9e8bb240eb2c, runner305fce3643237acf7c706a3516bd6b4bfdf93ea2d868bb82e9caadfbdfc2075e,
+PG737830f1328416d08b78cb5d2534dc2b7b261a7bf669ecb825b86b12847faff1,
+network6bb6c7fe42c3a26ac0ac7d22f6462b5a25fd491b1054927caf03f1ed0c64477f empty-retained.
+No OOM or unrelated lifecycle changes;8 unrelated running. The previously retired
+3efde78 empty network was verified and removed before launch; data/containers kept.
+
+Atomic reserve now consumes the once-only gate, checks explicit initializer/
+restricted manager and shared pristine predicate, creates both restricted roles,
+comment and grants in one transaction, checks effective PUBLIC privileges, and
+returns move-only generated SCRAM material only after known COMMIT. Read-only AI
+source review found no counterexample; extracted pristine SQL matches old native
+literal except final newline. Observer/retirement APIs are still pending.
+
+Next: commit a clean implementation candidate, run actual native reservation
+cases on a new isolated lab, including generated-password native initialization,
+unchanged refusal state, both lost-COMMIT directions, competing roots and colliding
+nonces across databases. Record failures without retries on retained lab state.
+Then implement bounded observation/retirement and wire the installed CLI journey.
 
 Complete CLI/recovery, configured native mutual TLS, fresh manager publication/seal,
 SELECT-only readers, whole-role budget reconciliation/protection and M1 remain

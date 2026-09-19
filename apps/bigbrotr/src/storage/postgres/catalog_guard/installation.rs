@@ -43,27 +43,35 @@ pub async fn install_for_manager(
     .await
 }
 
-pub(super) async fn validate(
-    tx: &Transaction<'_>,
-    roles: InstallationRoles<'_>,
-) -> Result<String, GuardError> {
+pub(super) async fn manager(tx: &Transaction<'_>, login: &str) -> Result<u32, GuardError> {
     // A separate initial superuser is the narrow supported provisioner. Runtime
     // manager CREATEROLE is sufficient later; no temporary superuser alteration.
-    require(
-        tx,
+    let row = tx.query_opt(
         r#"
-SELECT current_user=session_user AND (SELECT rolsuper FROM pg_roles WHERE rolname=current_user)
-   AND m.oid=$2::oid AND m.rolname<>current_user AND m.rolcanlogin AND m.rolcreaterole
+SELECT m.oid, current_user=session_user AND (SELECT rolsuper FROM pg_roles WHERE rolname=current_user)
+   AND m.rolname<>current_user AND m.rolcanlogin AND m.rolcreaterole
    AND NOT m.rolsuper AND NOT m.rolcreatedb AND NOT m.rolreplication
    AND NOT m.rolbypassrls AND NOT m.rolinherit
    AND NOT has_parameter_privilege(m.oid,'session_replication_role','SET')
    AND NOT EXISTS (SELECT 1 FROM pg_auth_members a WHERE a.roleid=m.oid
        OR (a.member=m.oid AND (NOT a.admin_option OR a.inherit_option OR a.set_option)))
 FROM pg_roles m WHERE m.rolname=$1::name"#,
-        &[&roles.manager_login, &roles.manager_oid],
-        GuardError::UnsafeRole,
+        &[&login],
     )
-    .await?;
+    .await.map_err(backend)?.ok_or(GuardError::UnsafeRole)?;
+    if !row.try_get::<_, bool>(1).map_err(backend)? {
+        return Err(GuardError::UnsafeRole);
+    }
+    row.try_get(0).map_err(backend)
+}
+
+pub(super) async fn validate(
+    tx: &Transaction<'_>,
+    roles: InstallationRoles<'_>,
+) -> Result<String, GuardError> {
+    if manager(tx, roles.manager_login).await? != roles.manager_oid {
+        return Err(GuardError::UnsafeRole);
+    }
     require(
         tx,
         r#"

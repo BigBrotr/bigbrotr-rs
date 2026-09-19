@@ -1,7 +1,7 @@
 //! Durable database reservation and fresh bootstrap handoff for explicit initialization.
-use super::{GuardError, identifier};
+use super::{GuardError, backend, credentials::Material, identifier, inspection, installation};
 use crate::storage::archive::LocalInitialization;
-use std::{cell::Cell, fmt};
+use std::{cell::Cell, fmt, fmt::Write};
 use tokio_postgres::Client;
 use zeroize::Zeroizing;
 
@@ -41,15 +41,83 @@ impl FreshBootstrap {
 /// actual PostgreSQL driver before polling it and preserve custody/grants through
 /// terminal join. No fresh secret is returned on cancellation or unknown COMMIT.
 pub async fn reserve(
-    _client: &mut Client,
+    client: &mut Client,
     custody: &LocalInitialization,
     manager_login: &str,
-    _commit_started: &Cell<bool>,
+    commit_started: &Cell<bool>,
 ) -> Result<FreshBootstrap, GuardError> {
     identifier(manager_login)?;
     custody
         .take_provisioning()
         .map_err(|_| GuardError::InvalidInput)?;
-    // TDD baseline: the practical fixture must fail before reservation exists.
-    Err(GuardError::Conflict)
+    let tx = super::begin(client, true).await?;
+    let manager_oid = installation::manager(&tx, manager_login).await?;
+    inspection::require(
+        &tx,
+        include_str!("../../../../../../contracts/archive/catalog-pristine-v1.sql"),
+        &[],
+        GuardError::ExistingData,
+    )
+    .await?;
+    let row = tx
+        .query_one(
+            "SELECT oid,datname::text FROM pg_database WHERE datname=current_database()",
+            &[],
+        )
+        .await
+        .map_err(backend)?;
+    let database_oid: u32 = row.try_get(0).map_err(backend)?;
+    let database: &str = row.try_get(1).map_err(backend)?;
+    let reservation_login = format!("bb_init_database_{database_oid}");
+    let mut nonce = String::with_capacity(32);
+    for byte in custody.initialization_id() {
+        write!(&mut nonce, "{byte:02x}").expect("String write");
+    }
+    let bootstrap_login = format!("bb_init_{nonce}");
+    inspection::require(
+        &tx,
+        "SELECT NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname IN ($1::name,$2::name))",
+        &[&reservation_login, &bootstrap_login],
+        GuardError::Conflict,
+    )
+    .await?;
+    let material = Material::generate()?;
+    let reserved = identifier(&reservation_login)?;
+    let bootstrap = identifier(&bootstrap_login)?;
+    // Both names are retained permanently. The unique role-name index also
+    // excludes a colliding nonce created concurrently in a different database.
+    tx.batch_execute(&format!(
+        "CREATE ROLE {reserved} NOLOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOREPLICATION NOBYPASSRLS PASSWORD NULL; \
+         CREATE ROLE {bootstrap} LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOREPLICATION NOBYPASSRLS CONNECTION LIMIT 8 PASSWORD '{}'",
+        material.verifier.as_str()
+    )).await.map_err(backend)?;
+    let roles = tx.query_one(
+        "SELECT (SELECT oid FROM pg_roles WHERE rolname=$1::name),(SELECT oid FROM pg_roles WHERE rolname=$2::name)",
+        &[&reservation_login, &bootstrap_login],
+    ).await.map_err(backend)?;
+    let reservation_oid = roles.try_get(0).map_err(backend)?;
+    let bootstrap_oid: u32 = roles.try_get(1).map_err(backend)?;
+    let comment =
+        format!("bigbrotr-catalog-initialization/1:{nonce}:{bootstrap_oid}:{manager_oid}");
+    tx.batch_execute(&format!(
+        "COMMENT ON ROLE {reserved} IS '{comment}'; GRANT CONNECT ON DATABASE {} TO {bootstrap}; GRANT USAGE,CREATE ON SCHEMA public TO {bootstrap}",
+        identifier(database)?
+    )).await.map_err(backend)?;
+    // Restricted attributes alone miss inherited PUBLIC database/parameter
+    // privileges. Refuse those before the only plaintext handoff can happen.
+    inspection::bootstrap(&tx, &bootstrap_login).await?;
+    commit_started.set(true);
+    tx.commit().await.map_err(|_| GuardError::CommitUnknown)?;
+    Ok(FreshBootstrap {
+        reservation: Reservation {
+            database_oid,
+            reservation_oid,
+            initialization_id: *custody.initialization_id(),
+            bootstrap_login,
+            bootstrap_oid,
+            manager_login: manager_login.into(),
+            manager_oid,
+        },
+        password: material.password,
+    })
 }
