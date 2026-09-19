@@ -23,9 +23,15 @@ def command(args, stdin=None, timeout=60):
 
 
 state = json.loads((run / 'resources.json').read_text())
-assert source == run / 'source'
-assert command(['git', '-C', str(source), 'rev-parse', 'HEAD']) == state['source']
+assert source in (run / 'source', run / 'harness-source')
+assert command(['git', '-C', str(run / 'source'), 'rev-parse', 'HEAD']) == state['source']
 assert not command(['git', '-C', str(source), 'status', '--porcelain'])
+harness_revision = command(['git', '-C', str(source), 'rev-parse', 'HEAD'])
+changed = command(['git', '-C', str(source), 'diff', '--name-only', state['source'], harness_revision]).splitlines()
+assert all(name.startswith('docs/') or name == 'experiments/archive-engine/initialization_cli_cases.py' for name in changed)
+harness_identity = dict(source=harness_revision, tree=command(['git', '-C', str(source), 'rev-parse', 'HEAD^{tree}']),
+    script_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(), changed_paths=changed,
+    production_inputs_unchanged=True)
 for name in [state['container'], state['postgres']]:
     actual = json.loads(command(['docker', 'inspect', name]))[0]
     assert actual['Config']['Labels']['org.bigbrotr.publication'] == state['owner']
@@ -33,7 +39,7 @@ for name in [state['container'], state['postgres']]:
 ready = json.loads((run / 'out/native-tests/ready.json').read_text())
 assert ready['source'] == state['source']
 assert hashlib.sha256((run / 'out/native-tests/bigbrotr').read_bytes()).hexdigest() == ready['control']
-report = dict(source=state['source'], artifacts=ready, status='RUNNING', cases=[])
+report = dict(source=state['source'], harness=harness_identity, artifacts=ready, status='RUNNING', cases=[])
 output = run / 'initialization-cli.json'
 output.open('x').close()
 work = run / 'out/initialization-cli'
@@ -161,7 +167,8 @@ def managed_cli(action, path, label):
     script = '''import json,subprocess,sys
 from pathlib import Path
 p=subprocess.Popen(sys.argv[2:],stdout=subprocess.PIPE,stderr=subprocess.PIPE,env={})
-Path(sys.argv[1]).write_text(str(p.pid))
+record=dict(pid=p.pid,start=Path('/proc/'+str(p.pid)+'/stat').read_text().rsplit(')',1)[1].split()[19],argv=sys.argv[2:])
+with Path(sys.argv[1]).open('x') as f: json.dump(record,f)
 out,err=p.communicate(timeout=160)
 print(json.dumps(dict(exit=p.returncode,output=json.loads(out) if out else None,stderr_nonempty=bool(err))))
 '''
@@ -172,11 +179,21 @@ print(json.dumps(dict(exit=p.returncode,output=json.loads(out) if out else None,
 
 
 def terminate_cli(label):
-    script = '''import os,signal,sys
+    script = '''import json,os,signal,sys,time
 from pathlib import Path
-pid=int(Path(sys.argv[1]).read_text())
-assert Path('/proc/'+str(pid)+'/cmdline').read_bytes().split(b'\\0')[0]==b'/out/native-tests/bigbrotr'
-os.kill(pid,signal.SIGTERM)
+until=time.monotonic()+2
+while True:
+ try: record=json.loads(Path(sys.argv[1]).read_text());break
+ except (FileNotFoundError,json.JSONDecodeError):
+  assert time.monotonic()<until;time.sleep(.01)
+pid=record['pid'];fd=os.pidfd_open(pid)
+try:
+ proc=Path('/proc/'+str(pid))
+ assert proc.joinpath('stat').read_text().rsplit(')',1)[1].split()[19]==record['start']
+ assert proc.joinpath('cmdline').read_bytes().rstrip(b'\\0').split(b'\\0')==[s.encode() for s in record['argv']]
+ assert os.readlink(proc/'exe')=='/out/native-tests/bigbrotr'
+ signal.pidfd_send_signal(fd,signal.SIGTERM)
+finally: os.close(fd)
 '''
     command(['docker', 'exec', state['container'], 'python3', '-c', script,
              '/out/initialization-cli/' + label + '.pid'])
@@ -327,11 +344,18 @@ os.close(w);os.close(r)
             script = '''import json,os,time
 from pathlib import Path
 until=time.monotonic()+15
+record=None
 while time.monotonic()<until:
+ if record is None:
+  try: record=json.loads(Path('/out/initialization-cli/native-cancel.pid').read_text())
+  except (FileNotFoundError,json.JSONDecodeError): time.sleep(.01);continue
+ parent=Path('/proc/'+str(record['pid']))
+ assert parent.joinpath('stat').read_text().rsplit(')',1)[1].split()[19]==record['start']
  for p in Path('/proc').iterdir():
   if not p.name.isdigit(): continue
   try:
    if p.joinpath('cmdline').read_bytes().split(b'\\0')[0]!=b'/out/archive-worker/bigbrotr-archive-worker': continue
+   if int(p.joinpath('stat').read_text().rsplit(')',1)[1].split()[1])!=record['pid']: continue
    sockets={os.readlink(fd) for fd in p.joinpath('fd').iterdir()}
    for line in Path('/proc/net/tcp').read_text().splitlines()[1:]:
     fields=line.split()

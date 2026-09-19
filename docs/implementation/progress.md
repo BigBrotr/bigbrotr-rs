@@ -21,9 +21,8 @@ readiness. Root remains the sole writer/integrator.
 
 ## Actual Git and review
 
-Mac main HEAD a1c0921382faaa4252ca7eefd3aefbce3dc626bd is an unpublished candidate;
-origin/main remains 8f79a5621a9f76071b0c17d435494e3427920c10. Root owns subsequent
-harness corrections/extensions, user/engineering docs and this checkpoint/inventory.
+Mac main HEAD 6265286954aeebc17b415b5d5fecb7c6a5119768 is an unpublished candidate;
+origin/main remains 8f79a5621a9f76071b0c17d435494e3427920c10. Root owns the subsequent checkpoint/inventory refresh; harness/user docs are committed.
 Production Rust is unchanged since a1c0921. No other contributor edits or merge/rebase.
 
 Local RED34372 established the absent command; route2/binary8/CLI10 regressions and
@@ -43,11 +42,28 @@ and one real native libpq startup cancellation; these new cases are NOT_RUN.
 
 First lab was audited/retired (37678) and collected (50126): 16 raw files and all739
 Git source hashes verified; tar33d49f7a17374ad4651584518ab9aeb4ec99beb46fb87118ad535fc4691574cb.
-No active lab. Owned network32fe4864e687757e7a508d8617d9174f7c42cbe3eefa34277635d7b8c0e1791d
+First lab is retired. Owned network32fe4864e687757e7a508d8617d9174f7c42cbe3eefa34277635d7b8c0e1791d
 removed after verified empty/stopped checks; containers/data retained. Eight unrelated
 running workloads unchanged. Latest first-lab resources/audit/diagnosis are inventoried
 under initialization_cli. Next bounded action: commit corrected harness/user docs,
 transfer a clean exact candidate, run full CLI matrix, then audit/retire and collect.
+
+## Active CLI lab
+
+Exact clean Git transfer50076 exited0. Native candidate6265286 is building at
+/home/tux/bigbrotr-implementation-20260917/runs/initialization-cli-6265286.
+Owner 8d2a1a9a8f6d99343e83f3fccb223e7c; runner a1e67224833e97f4d05af1d1f6cd232dbb649fc27cda3c59225421d6b8d197af;
+PG ddb10491246fdf3739b5573c18a29476a01b46085469ffbf9c39cff46e8f81d9; network c025c4bbe030d4e4e874b580baab674d26ce733d8d4c08bca907057033338254.
+Same isolated image/engine and 2CPU6GiB/512PIDs runner +1CPU1GiB/128PIDs PG,
+internal network/no host ports. Never mutate the exported source. Wait for READY,
+run initialization_cli_cases.py, then use reviewed audit/collect helpers to retire
+only these two owned containers and verify unrelated workloads. Raw resources.json
+and inventory initialization_cli.second own the exact IDs. Build/fixtures/archive-parent/CLI/Clippy now PASS and READY. Matrix NOT_RUN so far.
+Read-only harness review found PID reuse and worker ancestry gaps; the next clean
+Git workload revision uses pidfd plus exact argv/start identity and PPid. Run this
+workload from a separate immutable harness-source checkout against6265286 artifacts;
+require Git diff to contain only the CLI harness and docs, and record both revisions.
+No product/build input changes or rebuild are needed for this workload correction.
 
 ## Current initialization recovery qualification
 

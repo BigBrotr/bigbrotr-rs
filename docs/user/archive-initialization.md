@@ -45,8 +45,8 @@ grant includes 64 MiB plus connection preparation; application and native quotas
 remain separate. These declared bounds are not measured RSS or disk-capacity
 certificates. The process and filesystem limits of the deployment still apply.
 
-Success means the native child has joined, the exact temporary bootstrap login
-has been retired, remaining sessions have drained, the guard/schema ownership has
+Successful initialize means the native child has joined, the exact temporary bootstrap login
+has been retired, remaining SQL-capable sessions have drained, the guard/schema ownership has
 been installed for the runtime manager, and a fresh manager connection has verified
 the installation. The JSON report retains `ready:false` and grants no runtime
 authority. The immutable local marker and PostgreSQL reservation roles remain.
@@ -63,7 +63,11 @@ bigbrotr archive recover --file /etc/bigbrotr/instance.toml \
 ```
 
 Recovery never generates a replacement bootstrap credential or launches another
-native initializer. It can finish installation from complete scientific state or
+native initializer. It establishes exclusion of the previous local custodied
+clients through reacquisition, rather than reaping another coordinator's child.
+Late, previously invisible selected-client backends may still appear, but cannot
+already have application SQL queued after positive client destruction. It can
+finish installation from complete scientific state or
 inspect an already installed matching catalog. Partial, altered or incompatible
 state refuses. A committed reservation with a still-pristine database is stranded:
 recovery retires its bootstrap and requires a new database/root pair. An absent

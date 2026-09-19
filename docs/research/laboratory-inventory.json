@@ -9520,12 +9520,12 @@
       ]
     },
     "initialization_cli": {
-      "status": "first-run-stopped-retained",
+      "status": "second-native-build-running",
       "local_raw_root": ".research/implementation/archive-worker/initialization-cli",
       "source_parent": "8f79a5621a9f76071b0c17d435494e3427920c10",
       "scope": "actual installed archive initialize and recover commands",
       "cache_source": "initialization-recovery-660df73",
-      "resources": "no active lab",
+      "resources": "second lab running",
       "not_qualified": [
         "native CLI journeys",
         "cancellation/drain/TLS",
@@ -9777,7 +9777,27 @@
           "observed_at": "2026-09-19T08:41:43.691762+00:00"
         }
       ],
-      "first_outcome": "FAIL: generated fixture omitted explicit topology.local_roles; no marker created. Corrected diagnostic fixture initialized and recovered, exact 28 native +4 guard names/owners and retired bootstrap independently checked. Full harness not rerun on this source."
+      "first_outcome": "FAIL: generated fixture omitted explicit topology.local_roles; no marker created. Corrected diagnostic fixture initialized and recovered, exact 28 native +4 guard names/owners and retired bootstrap independently checked. Full harness not rerun on this source.",
+      "second": {
+        "resources": {
+          "source": "6265286954aeebc17b415b5d5fecb7c6a5119768",
+          "tree": "fc66839584da2151dfa44edf0a35932d641bf081",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initialization-cli-6265286",
+          "owner": "8d2a1a9a8f6d99343e83f3fccb223e7c",
+          "container": "bigbrotr-implementation-initialization-cli-6265286",
+          "postgres": "bigbrotr-implementation-initialization-cli-6265286-pg",
+          "network": "bigbrotr-implementation-initialization-cli-6265286",
+          "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+          "state": "running",
+          "source_files": 740,
+          "started_at": "2026-09-19T08:42:59.448710+00:00",
+          "network_id": "c025c4bbe030d4e4e874b580baab674d26ce733d8d4c08bca907057033338254",
+          "postgres_id": "ddb10491246fdf3739b5573c18a29476a01b46085469ffbf9c39cff46e8f81d9",
+          "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+          "container_id": "a1e67224833e97f4d05af1d1f6cd232dbb649fc27cda3c59225421d6b8d197af"
+        }
+      }
     }
   },
   "implementation_monitor_corrections_20260918": {
