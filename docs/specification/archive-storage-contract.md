@@ -218,9 +218,10 @@ and relocation keep their separately fenced recovery gates. Complete missing-jou
 interpretation still requires actual catalog identity and per-attempt exclusion.
 The current implementation provides explicit typed operations and fixture consumers;
 [Eight native boundary cases plus six signed schedules](../implementation/evidence/p02-coordinator-protocol-native-20260919.json) pass at b203a41. The separate d355c5b matrix adds the races and binding faults above. Installed
-command/startup qualification and complete recovery/dispatch remain pending.
+command/startup now passes its [eleven native cases](../implementation/evidence/p02-coordinator-cli-native-20260919.json)
+at `5050999`; complete recovery/dispatch remains pending.
 
-The installed command candidate `archive coordinator-initialize --file PATH`
+The installed command `archive coordinator-initialize --file PATH`
 requires local Control and Archive, the existing complete local state binding,
 migration10 and accepted initial configuration/security policy. It uses the
 configured Control credential through the same claim, policy validation, stop,
@@ -237,8 +238,8 @@ control`. Missing migration/binding or pre-protocol history cannot initialize
 itself. This is an explicit compatibility change from the earlier schema9
 inventory-only candidate: old attempts remain retained/inspectable, but this
 startup refuses until a separately qualified recovery path exists. A deployment
-without local Archive retains its Control-only prerequisites. The new executable
-path still requires native command, stop, restart and refusal qualification.
+without local Archive retains its Control-only prerequisites. The executable path
+has native command, stop, restart and refusal qualification within the linked report; first complete event/read/export recovery remains open.
 
 ### Retained complete input linkage
 

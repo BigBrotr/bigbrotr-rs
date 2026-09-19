@@ -1,0 +1,368 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "status": "PASS within the installed coordinator command/startup scope",
+  "source": "50509993b8b9c7bb8661fb8c1aaacf5f389426fc",
+  "tree": "9d7c6b70d5a85f2c6b955fe5ecbc03d8cead4d32",
+  "implementation": "Explicit archive coordinator-initialize shares Control claim/policy/custodied transport lifecycle; ordinary startup requires exact existing SQL binding before inventory. No SQL or persistent format changes in this candidate.",
+  "environment": {
+    "platform": "native Linux amd64 on inventoried Tux",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "runner_limits": {
+      "cpu": 2,
+      "memory_bytes": 6442450944,
+      "pids": 512
+    },
+    "postgres_limits": {
+      "cpu": 1,
+      "memory_bytes": 1073741824,
+      "pids": 128
+    },
+    "network": "internal, no host ports; no CI/release credentials"
+  },
+  "identity": {
+    "source_archive_sha256": "ec3693621e3c97db9a5af23d606e1b8bea7ec399a4c25aeb54ed5ffba0eebd4c",
+    "source_manifest_sha256": "e3fc1cb9d48289750dc17baaa3f0cade30cfe3cc59a028f08eb5e25da59bde79",
+    "artifacts": {
+      "main": {
+        "sha256": "a508426d2a7b62f511512671676e833866e1963920449efa6acc2977c0d8d714",
+        "bytes": 8922424,
+        "elf_machine": 62
+      },
+      "worker": {
+        "sha256": "89e46e831e8e12f7e60b249493a619af4cd3bca7d984ec7a06574ede3d6f0b9f",
+        "bytes": 12608608,
+        "elf_machine": 62
+      },
+      "publisher": {
+        "sha256": "3e8405b8e99663bca091e3e55aded301289c7b03c7466d6b152c887684ee5c9b",
+        "bytes": 18988968,
+        "elf_machine": 62
+      },
+      "coordinator_probe": {
+        "sha256": "5159294e9af04e507b531ec1aba6dda4227bc82c14f4c2d0a6977ec0a2e32fc2",
+        "bytes": 693808,
+        "elf_machine": 62
+      },
+      "attempt_probe": {
+        "sha256": "c6e9836d5650dc979c591452e47f2c37014cd961c4bfeeed21cd4587af3e7f6c",
+        "bytes": 2642712,
+        "elf_machine": 62
+      }
+    }
+  },
+  "build": {
+    "entrypoints": [
+      "tools.build.build_binaries",
+      "tools.ci.execute",
+      "experiments/archive-engine/native_initialization.py --publication"
+    ],
+    "status": "PASS",
+    "tests": {
+      "archive_passed": 47,
+      "archive_ignored": 1,
+      "binary_passed": 8,
+      "catalog_cli_passed": 11,
+      "control_runtime_cli_passed": 1
+    },
+    "clippy": "PASS; actual library, application/worker and selected native fixtures"
+  },
+  "practical": {
+    "harness": "experiments/archive-engine/coordinator_cli_cases.py",
+    "harness_sha256": "bf9088bb99561f291405658c8278e952b4f5b53ff41710150c618e8ee9de45ce",
+    "commands": 38,
+    "cases": [
+      {
+        "name": "missing-local-state-refuses-before-control-claim",
+        "status": "PASS"
+      },
+      {
+        "name": "ordinary-missing-sql-binding-preserves-empty-history",
+        "status": "PASS"
+      },
+      {
+        "name": "explicit-binding-and-identical-retry",
+        "status": "PASS",
+        "rows": {
+          "bindings": [
+            {
+              "dataset_id": "\\x01010101010101010101010101010101",
+              "catalog_id": "\\x5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a",
+              "binding_sha256": "\\x04803befd3980dad808935be5e0b723faab3cfc21e383fb57a66197c5bceb167",
+              "protocol_version": 1,
+              "issuer_resource": "\\x97f759b2aec5dcb8ceffb2c2928c3e29",
+              "issuer_epoch": 2,
+              "issuer_role": "control",
+              "issuer_incarnation": "\\xbfe4ae5d9fa0373ae9e2d7348931fe1e",
+              "initialized_at_us": 1789824999288465,
+              "xmin": "776"
+            }
+          ],
+          "attempts": []
+        }
+      },
+      {
+        "name": "start-requires-binding-and-preserves-history",
+        "status": "PASS",
+        "owner_epoch": "4"
+      },
+      {
+        "name": "restart-requires-binding-and-preserves-history",
+        "status": "PASS",
+        "owner_epoch": "5"
+      },
+      {
+        "name": "full-stdout-exits-with-committed-identical-binding",
+        "status": "PASS",
+        "observation": {
+          "status": "TERMINAL",
+          "stream": "stdout",
+          "filled_bytes": 65536,
+          "blocking": true,
+          "pid": 5928,
+          "exit": 1,
+          "elapsed_seconds": 0.2655398710630834,
+          "retained_bytes": 65536,
+          "unchanged": true,
+          "eof_after_child_exit": true
+        },
+        "released_owner": {
+          "epoch": 6,
+          "state": "released",
+          "released_at_us": 1789825000712276
+        }
+      },
+      {
+        "name": "different-valid-local-binding-refused-without-repair",
+        "status": "PASS"
+      },
+      {
+        "name": "missing-migration-refused-without-runtime-ddl",
+        "status": "PASS"
+      },
+      {
+        "name": "old130-attempt-history-preserved-and-not-adopted",
+        "status": "PASS",
+        "rows": 130,
+        "snapshot_sha256": "49475c330cf957f1593df6b9e62088abf8a5c2afe0747fb52731988ff80e39b7"
+      },
+      {
+        "name": "blocked-binding-int-preserves-fence-then-retries",
+        "status": "PASS",
+        "elapsed_seconds": 2.051452349871397,
+        "blocker": 441,
+        "residual": {
+          "pid": 448,
+          "backend_start": "2026-09-19T13:36:46.655181+00:00",
+          "fence": true
+        }
+      },
+      {
+        "name": "blocked-binding-term-preserves-fence-then-retries",
+        "status": "PASS",
+        "elapsed_seconds": 2.1039506532251835,
+        "blocker": 517,
+        "residual": {
+          "pid": 524,
+          "backend_start": "2026-09-19T13:36:50.850713+00:00",
+          "fence": true
+        }
+      }
+    ],
+    "processes": [
+      {
+        "args": [
+          "/out/native-tests/bigbrotr",
+          "serve",
+          "--roles",
+          "control",
+          "--file",
+          "/out/coordinator-cli/installed/instance.toml"
+        ],
+        "exit": 0,
+        "signal": {
+          "pid": 5882,
+          "start_ticks": "320725374",
+          "pidfd": true,
+          "signal": "TERM"
+        }
+      },
+      {
+        "args": [
+          "/out/native-tests/bigbrotr",
+          "serve",
+          "--roles",
+          "control",
+          "--file",
+          "/out/coordinator-cli/installed/instance.toml"
+        ],
+        "exit": 0,
+        "signal": {
+          "pid": 5902,
+          "start_ticks": "320725421",
+          "pidfd": true,
+          "signal": "TERM"
+        }
+      },
+      {
+        "args": [
+          "/out/native-tests/bigbrotr",
+          "archive",
+          "coordinator-initialize",
+          "--file",
+          "/out/coordinator-cli/cancel_int/instance.toml"
+        ],
+        "exit": 4,
+        "signal": {
+          "pid": 6079,
+          "start_ticks": "320726071",
+          "pidfd": true,
+          "signal": "INT"
+        }
+      },
+      {
+        "args": [
+          "/out/native-tests/bigbrotr",
+          "archive",
+          "coordinator-initialize",
+          "--file",
+          "/out/coordinator-cli/cancel_term/instance.toml"
+        ],
+        "exit": 4,
+        "signal": {
+          "pid": 6138,
+          "start_ticks": "320726491",
+          "pidfd": true,
+          "signal": "TERM"
+        }
+      }
+    ]
+  },
+  "oracle": {
+    "installed": "One actual catalog initialization, then actual local state/Control initialization/activation. Manager credential made unavailable before coordinator commands; other refusal cases have only local reservations.",
+    "bindings": "Independent SHA of exact local coordinator bytes; original issuer epoch2 and xmin776 preserved across identical retry/start/restart/mismatch/full-output; no binding or attempt repair.",
+    "old_history": "Actual candidate legacy API seeds130 schema9 attempts, then actual migration10. Harness compares all original logical columns, requires NULL additions, and compares post-migration rows plus xmin after refusals. Only the final snapshot digest is retained, not a separate full130-row raw snapshot.",
+    "cancellation": "Actual PID/pidfd signals. PG relation wait and matching backend_start/granted Control fence observed after local driver termination; fresh command returns Busy with unchanged owner history, then owned blocker rollback/backend disappearance allows successful fresh initialization. Local wrapper exit alone is not remote exclusion.",
+    "blocked_output": "Actual blocking stdout pipe filled with65536bytes, no drain before child exit; original filler/EOF and empty child stderr; new epoch6 released. Actual child exit1 at0.26554s reflects lost output after identical committed binding.",
+    "credentials": "Fixture-specific non-superuser application grants; not a production least-privilege installation template."
+  },
+  "local": {
+    "status": "PASS",
+    "session": "47887",
+    "tests": 12,
+    "format_python_artifact_handoff_diff": "PASS",
+    "negative_control": "Earlier regression22288 failed unknown coordinator-initialize subcommand exit2 instead of local Archive refusal3; corrected implementation passes."
+  },
+  "review": {
+    "kind": "Root implementation/contract/helper review plus independent read-only AI review",
+    "corrected_before_native": [
+      "Full stdout initially checked helper stderr only; corrected to require actual child stderr empty and new released owner epoch.",
+      "Cleanup signal/join race could skip remaining observations; corrected per-item error recording and continued cleanup with INCOMPLETE."
+    ],
+    "native_failures": []
+  },
+  "resources": {
+    "inventory": "docs/research/laboratory-inventory.json:implementation_archive_worker_20260918.coordinator_cli",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/coordinator-cli-5050999",
+    "owner": "c12f58ecc3451f6421ca65c2a3643c0c",
+    "status": "stopped-retained",
+    "audit": {
+      "status": "PASS",
+      "source": "50509993b8b9c7bb8661fb8c1aaacf5f389426fc",
+      "tree": "9d7c6b70d5a85f2c6b955fe5ecbc03d8cead4d32",
+      "source_files": 770,
+      "source_archive_sha256": "ec3693621e3c97db9a5af23d606e1b8bea7ec399a4c25aeb54ed5ffba0eebd4c",
+      "source_manifest_sha256": "e3fc1cb9d48289750dc17baaa3f0cade30cfe3cc59a028f08eb5e25da59bde79",
+      "artifacts": {
+        "main": {
+          "sha256": "a508426d2a7b62f511512671676e833866e1963920449efa6acc2977c0d8d714",
+          "bytes": 8922424,
+          "elf_machine": 62
+        },
+        "worker": {
+          "sha256": "89e46e831e8e12f7e60b249493a619af4cd3bca7d984ec7a06574ede3d6f0b9f",
+          "bytes": 12608608,
+          "elf_machine": 62
+        },
+        "publisher": {
+          "sha256": "3e8405b8e99663bca091e3e55aded301289c7b03c7466d6b152c887684ee5c9b",
+          "bytes": 18988968,
+          "elf_machine": 62
+        },
+        "coordinator_probe": {
+          "sha256": "5159294e9af04e507b531ec1aba6dda4227bc82c14f4c2d0a6977ec0a2e32fc2",
+          "bytes": 693808,
+          "elf_machine": 62
+        },
+        "attempt_probe": {
+          "sha256": "c6e9836d5650dc979c591452e47f2c37014cd961c4bfeeed21cd4587af3e7f6c",
+          "bytes": 2642712,
+          "elf_machine": 62
+        }
+      },
+      "qualification": {
+        "coordinator-cli-cases": "PASS"
+      },
+      "cases": {
+        "coordinator-cli-cases": 11
+      },
+      "build_ready": true,
+      "terminal": {
+        "container_id": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 143,
+          "Error": "",
+          "StartedAt": "2026-09-19T13:34:08.915921048Z",
+          "FinishedAt": "2026-09-19T13:37:14.829664108Z"
+        },
+        "postgres_id": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-19T13:34:06.849125777Z",
+          "FinishedAt": "2026-09-19T13:37:16.763273832Z"
+        }
+      },
+      "owned_containers": [
+        "a063a6ba50cd14b121e2deab489b13da60d1000413604d1ea3982b9197fdc752",
+        "f2240df75735ed7ee48f059742450294515a9c13377bcbf3ab5dfbdc34dd6d65"
+      ],
+      "existing_containers_unchanged": 342,
+      "unrelated_containers_unchanged": 20,
+      "unrelated_running": 8,
+      "bigbrotr_running": 0,
+      "observed_at": "2026-09-19T13:37:17.226411+00:00",
+      "harness": null,
+      "owned_sql_backends_before_shutdown": 0,
+      "build_checks_status": "PASS"
+    }
+  },
+  "evidence": {
+    "raw_root": ".research/implementation/archive-worker/coordinator-cli/qualified",
+    "manifest": ".research/implementation/archive-worker/coordinator-cli/evidence-identity.json",
+    "tar_sha256": "492ba7f093a1b18bb4b87d91587f34c6667901ed802ea1fecaeedf2360564b19",
+    "files": 39,
+    "independent_source_files": 770
+  },
+  "not_qualified": [
+    "Archive role dispatch, source protection/reclamation and first complete M1 read/export/restart.",
+    "Installed CLI lost binding/release COMMIT replies; prior typed API fault qualification remains separately attributed to d355c5b.",
+    "Old pre-protocol history adoption; refusal preserves it without an advertised recovery route.",
+    "Cross-boot/restore/history rollback, power loss, aged mixed capacity, ordinary Compose/release or Linux arm64.",
+    "Hosted GitHub Actions availability; this is trusted native shared-command execution."
+  ]
+}

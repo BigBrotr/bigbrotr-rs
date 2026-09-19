@@ -11979,6 +11979,114 @@
         "containers": "stopped-retained",
         "observed_at": "2026-09-19T13:31:57.382738+00:00"
       }
+    },
+    "coordinator_cli": {
+      "status": "PASS-scoped-stopped-retained",
+      "local_raw_root": ".research/implementation/archive-worker/coordinator-cli",
+      "resources": {
+        "source": "50509993b8b9c7bb8661fb8c1aaacf5f389426fc",
+        "tree": "9d7c6b70d5a85f2c6b955fe5ecbc03d8cead4d32",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/coordinator-cli-5050999",
+        "owner": "c12f58ecc3451f6421ca65c2a3643c0c",
+        "container": "bigbrotr-implementation-coordinator-cli-5050999",
+        "postgres": "bigbrotr-implementation-coordinator-cli-5050999-pg",
+        "network": "bigbrotr-implementation-coordinator-cli-5050999",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "state": "stopped-retained",
+        "source_files": 770,
+        "started_at": "2026-09-19T13:34:06.156242+00:00",
+        "network_id": "85545ebe1a6f59fa1478b3c9ff77426b20af2edfe5d3a4e1bb07655ed8510550",
+        "postgres_id": "f2240df75735ed7ee48f059742450294515a9c13377bcbf3ab5dfbdc34dd6d65",
+        "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+        "container_id": "a063a6ba50cd14b121e2deab489b13da60d1000413604d1ea3982b9197fdc752",
+        "completed_at": "2026-09-19T13:37:17.226411+00:00"
+      },
+      "scope": "installed explicit coordinator setup/retry/startup/refusals and bounded output/cancellation",
+      "audit": {
+        "status": "PASS",
+        "source": "50509993b8b9c7bb8661fb8c1aaacf5f389426fc",
+        "tree": "9d7c6b70d5a85f2c6b955fe5ecbc03d8cead4d32",
+        "source_files": 770,
+        "source_archive_sha256": "ec3693621e3c97db9a5af23d606e1b8bea7ec399a4c25aeb54ed5ffba0eebd4c",
+        "source_manifest_sha256": "e3fc1cb9d48289750dc17baaa3f0cade30cfe3cc59a028f08eb5e25da59bde79",
+        "artifacts": {
+          "main": {
+            "sha256": "a508426d2a7b62f511512671676e833866e1963920449efa6acc2977c0d8d714",
+            "bytes": 8922424,
+            "elf_machine": 62
+          },
+          "worker": {
+            "sha256": "89e46e831e8e12f7e60b249493a619af4cd3bca7d984ec7a06574ede3d6f0b9f",
+            "bytes": 12608608,
+            "elf_machine": 62
+          },
+          "publisher": {
+            "sha256": "3e8405b8e99663bca091e3e55aded301289c7b03c7466d6b152c887684ee5c9b",
+            "bytes": 18988968,
+            "elf_machine": 62
+          },
+          "coordinator_probe": {
+            "sha256": "5159294e9af04e507b531ec1aba6dda4227bc82c14f4c2d0a6977ec0a2e32fc2",
+            "bytes": 693808,
+            "elf_machine": 62
+          },
+          "attempt_probe": {
+            "sha256": "c6e9836d5650dc979c591452e47f2c37014cd961c4bfeeed21cd4587af3e7f6c",
+            "bytes": 2642712,
+            "elf_machine": 62
+          }
+        },
+        "qualification": {
+          "coordinator-cli-cases": "PASS"
+        },
+        "cases": {
+          "coordinator-cli-cases": 11
+        },
+        "build_ready": true,
+        "terminal": {
+          "container_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-19T13:34:08.915921048Z",
+            "FinishedAt": "2026-09-19T13:37:14.829664108Z"
+          },
+          "postgres_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-19T13:34:06.849125777Z",
+            "FinishedAt": "2026-09-19T13:37:16.763273832Z"
+          }
+        },
+        "owned_containers": [
+          "a063a6ba50cd14b121e2deab489b13da60d1000413604d1ea3982b9197fdc752",
+          "f2240df75735ed7ee48f059742450294515a9c13377bcbf3ab5dfbdc34dd6d65"
+        ],
+        "existing_containers_unchanged": 342,
+        "unrelated_containers_unchanged": 20,
+        "unrelated_running": 8,
+        "bigbrotr_running": 0,
+        "observed_at": "2026-09-19T13:37:17.226411+00:00",
+        "harness": null,
+        "owned_sql_backends_before_shutdown": 0,
+        "build_checks_status": "PASS"
+      },
+      "evidence": "docs/implementation/evidence/p02-coordinator-cli-native-20260919.json",
+      "raw_manifest": ".research/implementation/archive-worker/coordinator-cli/evidence-identity.json"
     }
   },
   "implementation_monitor_corrections_20260918": {

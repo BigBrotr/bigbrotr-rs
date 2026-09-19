@@ -143,7 +143,7 @@ with occupied custody. Stop it before those explicit operations. Prior publicati
 attempts are still unresolved history: registration does not certify that older
 code or its native clients have terminated. Complete recovery/dispatch remains work.
 
-The next command candidate explicitly registers that exact local binding in
+The installed command explicitly registers that exact local binding in
 Control. First apply migration0010, initialize/activate Control's accepted policy
 with administration disabled for the current runtime, and grant its configured
 application login SELECT/INSERT on `control.archive_coordinators` plus execution
@@ -167,8 +167,10 @@ Ordinary startup with Archive assigned locally now requires migration0010 and th
 existing SQL binding before inventory/idle. It never invokes the command implicitly.
 Exit codes follow Control: 0 bound/released, 1 unavailable/output, 2 usage,
 3 prerequisite/configuration/conflict, 4 interrupted or unknown durable outcome.
-The typed operations and fault boundaries have native evidence; this new installed
-command/startup integration is pending practical qualification.
+The [native command/startup matrix](../implementation/evidence/p02-coordinator-cli-native-20260919.json)
+passes eleven scenarios at `5050999`, including actual installation, retry, startup/
+restart, preserved old history, full stdout and both signal cancellations. This
+does not enable Archive dispatch or close complete recovery.
 
 See the [owning archive contract](../specification/archive-storage-contract.md)
 and [current implementation checkpoint](../implementation/progress.md) for the

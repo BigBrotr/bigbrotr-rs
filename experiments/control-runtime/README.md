@@ -88,7 +88,8 @@ PostgreSQL cancellation/residual-fence cases; no receipt resolution is claimed.
 After migration10's explicit coordinator binding, current Control startup also
 requires that SQL binding. Use `experiments/archive-engine/coordinator_cli_cases.py`
 with the publication build and its fresh inventoried lab for the new command and
-startup consumer; its native qualification is pending. The older schema9 matrix
+startup consumer; [eleven native cases](../../docs/implementation/evidence/p02-coordinator-cli-native-20260919.json)
+pass at `5050999`. The older schema9 matrix
 and evidence retain their named historical source and are not current startup
 acceptance. The new matrix includes actual native catalog initialization, explicit
 Control/local/SQL setup, exact retry, refused old history, startup/restart, full

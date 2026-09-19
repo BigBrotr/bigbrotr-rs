@@ -236,15 +236,18 @@ The installed signed fixture now consumes that path.
 eight actual binding/history/retry/refusal cases and six signed schedules with22
 bound inputs and fresh-process receipts. [Native d355c5b faults](evidence/p02-coordinator-faults-native-20260919.json)
 add both candidate legacy-API/migration lock orders, cancelled blocked initialization
-and before/after binding COMMIT-loss retry. Installed setup/serve remains open;
+and before/after binding COMMIT-loss retry. Complete service dispatch remains open;
 no checkbox or complete recovery gate is closed.
 
 The installed coordinator-initialize command and ordinary startup require are
-the next P02-T04 consumer slice. They share the existing Control owner/policy/
+a qualified P02-T04 consumer slice. They share the existing Control owner/policy/
 transport executor, retain local custody through join, and explicitly refuse old
 unbound history after migration10. The previous local-only state command remains
-unchanged. Offline CLI regression and scoped checks pass; native installation,
-retry, startup/stop and refusal scenarios remain pending.
+unchanged. [Eleven native cases](evidence/p02-coordinator-cli-native-20260919.json)
+pass at `5050999`: actual installation, retry, startup/restart, old-history preservation,
+full stdout and both blocked signal cancellations. The native run passes 47 Archive,
+8 binary and 12 CLI tests plus scoped Clippy; one older holder test remains ignored. No dispatch,
+complete recovery or whole-task gate is closed.
 
 **Depends on:** P02-T01/T02/T03 and P01-T05/T06.
 **Files:** application `src/storage/archive/{publisher,receipts,worker}.rs`,

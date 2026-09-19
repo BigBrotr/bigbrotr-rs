@@ -33,14 +33,15 @@ after catalog installation/recovery; missing or incompatible bindings refuse
 before connecting to Control. The binding does not resolve pre-protocol attempts. A deployment without a local Archive assignment reports
 `state=not-selected`. This addition does not enable `--roles archive`.
 
-After the actual Control claim, the current startup candidate also requires the
+After the actual Control claim, the current startup also requires the
 exact SQL coordinator binding established by the separate `archive
 coordinator-initialize --file PATH` command. Missing migration/binding or a mismatch
 refuses before inventory/idle without creating a binding. The earlier schema9
 inventory could observe pre-protocol rows; this stricter startup preserves them
 and refuses their implicit adoption. No complete recovery route for that historical
-case is advertised. Installed command/startup qualification is pending; older
-inventory evidence below retains its original revision and scope.
+case is advertised. The [eleven native command/startup cases](../implementation/evidence/p02-coordinator-cli-native-20260919.json)
+pass at `5050999`. Older inventory evidence below retains its original revision and
+scope; neither result enables Archive dispatch.
 
 Omitting `--roles` uses the root's explicit assignment. This initial slice refuses
 any selected role other than Control before opening credentials. Selecting a
