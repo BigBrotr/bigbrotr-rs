@@ -188,6 +188,7 @@ pub(super) async fn installed(
         require(tx, "SELECT p.prosrc=$2::text AND p.prosecdef=$3::boolean AND p.proconfig=ARRAY['search_path=pg_catalog']::text[] AND p.pronargs=0 AND p.prorettype='trigger'::regtype AND l.lanname='plpgsql' AND p.proowner=n.nspowner FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace JOIN pg_language l ON l.oid=p.prolang WHERE n.nspname='bigbrotr_archive' AND p.proname=$1::name", &[&name,&body(delimiter),&definer], GuardError::IncompatibleLayout).await?;
     }
     require(tx, "SELECT (SELECT count(*)=2 FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname IN ('public','bigbrotr_archive')) AND NOT EXISTS(SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname IN ('public','bigbrotr_archive') AND c.relowner<>(SELECT nspowner FROM pg_namespace WHERE nspname='bigbrotr_archive')) AND (SELECT count(*)=1 FROM bigbrotr_archive.owner) AND NOT EXISTS(SELECT 1 FROM bigbrotr_archive.owner o WHERE o.ordinal>0 AND NOT EXISTS(SELECT 1 FROM bigbrotr_archive.attempts a WHERE a.ordinal=o.ordinal))", &[], GuardError::IncompatibleLayout).await?;
+    super::privileges::installed(tx).await?;
     let rows = tx.query("SELECT a.login_name::text FROM bigbrotr_archive.owner o JOIN bigbrotr_archive.attempts a ON a.ordinal=o.ordinal WHERE o.enabled LIMIT 1", &[]).await.map_err(backend)?;
     for row in rows {
         writer(tx, row.try_get(0).map_err(backend)?).await?;

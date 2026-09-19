@@ -8066,7 +8066,8 @@
         "local_root": ".research/implementation/archive-worker/catalog-initialization/failed-build",
         "qualification": "NOT_RUN: baseline extraction failed before auth scenarios",
         "audit": ".research/implementation/archive-worker/catalog-initialization/failed-build/audit.json",
-        "raw_tar_sha256": "ababfdfa1818eda035e9976b9e7ee18143e36f2654f337a9c952aecf460968ab"
+        "raw_tar_sha256": "ababfdfa1818eda035e9976b9e7ee18143e36f2654f337a9c952aecf460968ab",
+        "network_lifecycle": "removed after exact owned-empty retirement verification on2026-09-19; data/containers retained, never restart"
       },
       "corrected_run": {
         "source": "e98f4847453a6909766602701eec5d174ad65ebf",
@@ -8094,16 +8095,60 @@
           "7b3b1a189aedcd0423a66e886eeda7a4a0c49a71c7e4b82e4071ff2ff243b1dc",
           "afabe77f68ab52287a59d98725ca53a3176fe59447ddac54ad320cd75484bf36"
         ],
-        "preexisting_containers_unchanged": 286
+        "preexisting_containers_unchanged": 286,
+        "network_lifecycle": "removed after exact owned-empty retirement verification on2026-09-19; data/containers retained, never restart"
       },
       "report": "docs/implementation/evidence/p02-native-catalog-auth-20260919.json"
     },
     "catalog_installed_ownership": {
-      "status": "local regression fixtures prepared; native counterexamples NOT_RUN; no product ownership fix yet",
+      "status": "d21eacc two actual owner/ACL counterexamples REPRODUCED; lab stopped,14 raw files verified; Mac candidate ownership/ACL correction not native qualified",
       "local_root": ".research/implementation/archive-worker/catalog-ownership",
       "base_source": "ac13f11e150b6b845d798c3e13a51aeecbff11e5",
       "scope": "P02-T04 step3 atomic target ownership and guard ACL closure prerequisite",
-      "planned_run": "new isolated catalog-install source revision; stopped catalog-auth-e98 cache copied, assets read-only; no retained lab restart"
+      "planned_run": "new isolated catalog-install source revision; stopped catalog-auth-e98 cache copied, assets read-only; no retained lab restart",
+      "native_run": {
+        "source": "d21eaccba745490fd6211fab61a718d2653fe450",
+        "tree": "a31fd383b3f3702c5cb904339718991aa37b7864",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-install-d21eacc",
+        "owner": "6fc1dd36ee346693233e9d01d7402d8d",
+        "container": "bigbrotr-implementation-catalog-install-d21eacc",
+        "postgres": "bigbrotr-implementation-catalog-install-d21eacc-pg",
+        "network": "bigbrotr-implementation-catalog-install-d21eacc",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "state": "stopped-retained",
+        "source_files": 719,
+        "started_at": "2026-09-19T05:21:13.417554+00:00",
+        "network_id": "5feece189775bb4c9466f9bb7bfc64ab41088b5179af2212c004703c0a0635c9",
+        "postgres_id": "752b95efa020dc3ce16f8d092a87bc2bb128f9fae0ce5049c7a01aadeb65c40e",
+        "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+        "container_id": "bf059f87813aefaefdc88f55c439adf70ed0e4f4856b7ce5c51fd549a3658b0c",
+        "completed_at": "2026-09-19T05:26:52.148764+00:00"
+      },
+      "launch_recovery": "Docker address pools exhausted before network creation. Verified and removed only two empty retired auth networks; data/containers retained. Two resume preflights refused before creation because mount order and unrelated periodic Health samples differ; sorted full mounts and all other State fields verified equal, matching existing audit semantics. Same prepared source resumed; no source edits on Tux.",
+      "network_retirement": [
+        {
+          "root": "catalog-auth-567c2e6",
+          "network": "c05139b273b5794651b211175935ec384387a47a4e58826f022d9e97852910dc",
+          "owner": "a6c7996617616a11af9af2f1d60c20cf",
+          "status": "removed",
+          "containers": "retained-stopped",
+          "data": "retained",
+          "observed_at": "2026-09-19T05:22:31.051202+00:00"
+        },
+        {
+          "root": "catalog-auth-e98f484",
+          "network": "54e0540c140612cb4ac990b4ab628a9ed132e801f02cffa211abcec7149ce432",
+          "owner": "10e073fec5db6973e49633d7b63b4fea",
+          "status": "removed",
+          "containers": "retained-stopped",
+          "data": "retained",
+          "observed_at": "2026-09-19T05:22:31.304627+00:00"
+        }
+      ],
+      "baseline_audit": ".research/implementation/archive-worker/catalog-ownership/baseline/audit.json",
+      "baseline_tar_sha256": "19951df7132b7bc83c47ee23cfa39cc8ed638e42dc79b9f788340c81e2122ae6",
+      "baseline_source_verification": ".research/implementation/archive-worker/catalog-ownership/baseline-source-verification.json"
     }
   },
   "implementation_monitor_corrections_20260918": {

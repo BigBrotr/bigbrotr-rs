@@ -295,6 +295,11 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   [16 old/new native authentication cases](evidence/p02-native-catalog-auth-20260919.json)
   pass, including incomplete SCRAM before SQL and verify-full TLS refusals.
   Configured native mutual TLS and the installed initializer remain required.
+  Its atomic ownership transfer must validate the configured manager and retired
+  bootstrap names/OIDs, complete guard/native ACLs (including column/default ACLs),
+  required manager privileges and existing wrong-owner refusal. Qualify actual
+  non-owner writes, positive runtime manager use, rollback and ambiguous install;
+  a structural checksum alone does not prove those authority properties.
 - [ ] **Step 4:** After an ambiguous commit, query the receipt in a new transaction; do not
   repeat while receipt state is unknown. Reject mismatched batch digest.
   Include loss of the actual native PostgreSQL COMMIT response, plus physical file

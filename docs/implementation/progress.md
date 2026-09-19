@@ -21,12 +21,22 @@ installed service readiness.
 
 ## Actual Git and ownership
 
-Mac main HEAD/origin main verified ac13f11e150b6b845d798c3e13a51aeecbff11e5.
+Mac main HEAD d21eaccba745490fd6211fab61a718d2653fe450, one unpublished
+fixture commit ahead of verified origin/main ac13f11e150b6b845d798c3e13a51aeecbff11e5.
 All three authentication commits were pushed normally; GitHub confirms repository
 BigBrotr/bigbrotr-rs is private. Root is sole writer, no merge/rebase. The native
-revision remains e98f484; ac13f11 records qualification only. Current root-owned dirty work: native_catalog_install.py, catalog_install_cases.py,
-inventory/checkpoint. These prepare the actual old-code ACL/owner counterexamples;
-no product ownership fix yet. No other writer.
+revision remains e98f484; ac13f11 records qualification only. Current root-owned dirty work: catalog_guard.rs/inspection.rs plus new installation.rs/
+privileges.rs, catalog_install_probe.rs, native installer builder/cases, owning
+contract/task and inventory/checkpoint. Mac implementation compiles/Clippy PASS;
+new native qualification NOT_RUN. No other writer. Final Mac formatting, scoped
+Clippy (library and installer example), Python/artifact checks and diff checks PASS.
+Read-only AI source review of installer/ACL predicates and complete harness found
+missing ordinary manager rights, PUBLIC/default ACL/delegation and membership
+checks; all corrected before native execution. Failure output is retained before
+assertion, role comparisons include server-side credential/row fingerprints, and
+ambiguous-COMMIT backend drain is bounded. The final concurrency fixture retains
+actual advisory-lock waiter/blocker IDs; per-case normalized catalog dump hashes
+and initial/installed full snapshots are retained. Reviewer ran no native cases.
 
 ## Installed catalog inspection qualified within its scope
 
@@ -107,17 +117,42 @@ receipt observation checks immutable bindings, not full live guard compatibility
 No further discrepancy; reviewer did not execute native work or inspect retained
 ELF bytes/full host inventory locally. Root reviewed the complete change diff.
 
-## Owned resources terminal
+## Owned resources
 
 Both catalog-auth labs under /home/tux/bigbrotr-implementation-20260917/runs/
 are stopped-retained. Inventory catalog_native_authentication owns full identities.
-No active experiment or remaining cleanup obligation at the recorded terminal audit.
+That terminal audit predates the new active catalog-install-d21eacc lab below.
+
+Stopped-retained catalog-install-d21eacc owner6fc1dd36ee346693233e9d01d7402d8d:
+runnerbf059f87813aefaefdc88f55c439adf70ed0e4f4856b7ce5c51fd549a3658b0c,
+PG752b95efa020dc3ce16f8d092a87bc2bb128f9fae0ce5049c7a01aadeb65c40e,
+network5feece189775bb4c9466f9bb7bfc64ab41088b5179af2212c004703c0a0635c9.
+Clean719-file source and Git archive verified against native manifest. Two actual
+counterexamples REPRODUCED: generic install assigns postgres ownership; creator
+default grants let a reader UPDATE owner after normal schema USAGE, then generic
+inspection still accepts. Test mutation rolled back. No production fix was in this
+baseline revision. Mac correction now transfers expected manager ownership in one
+transaction and checks ACLs/manager rights; its practical qualification is NOT_RUN.
+Raw root .research/implementation/archive-worker/catalog-ownership; inventory
+catalog_installed_ownership. Audit26208 terminal0,collection1832 terminal0;14 raw
+files verified, tar19951df7132b7bc83c47ee23cfa39cc8ed638e42dc79b9f788340c81e2122ae6.
+All290 preexisting containers unchanged; eight unrelated running, zero BigBrotr.
+Runner stopped143,PG stopped0,no OOM, network empty-retained. No active experiment.
+Latest cache/assets: catalog-install-d21eacc/out/{build,archive-worker}, copy/RO only.
+Initial launch83125 failed before network creation because Docker address pools
+were exhausted. Verified and removed only the two empty retired auth networks
+below, retaining all containers/data. Resume preflights refused mount ordering and
+periodic unrelated Health changes; complete sorted mounts and other lifecycle
+fields matched. Resume5285 completed; native reproduction97474 and terminal audit succeeded. No
+Tux source edit.
+Network retirement identities and times are in inventory/network-retirement.json.
 
 catalog-auth-e98f484 owner10e073fec5db6973e49633d7b63b4fea:
 runner5a80bcfa5c64b2216c47fd3a771adc1692922321859e2518c4cbf2f8d47cf3ba
 stopped143 after READY and16 PASS;PGabb9fa5718986b13943e548ea3fa35b124b073a86402c8aaf0fa9c8fc590d991
 stopped0, no OOM. Both baseline auxiliary containers stopped0. Internal network
-54e0540c140612cb4ac990b4ab628a9ed132e801f02cffa211abcec7149ce432 empty.
+54e0540c140612cb4ac990b4ab628a9ed132e801f02cffa211abcec7149ce432 was empty,
+then removed after verified retirement to release its Docker address pool.
 Audit45843/collection32699 terminal0;286 preexisting containers and complete
 mounts/networks/states unchanged, eight unrelated running, zero BigBrotr.
 Latest retained cache catalog-auth-e98f484/out/build, native assets out/archive-worker;
@@ -128,7 +163,7 @@ catalog-auth-567c2e6 ownera6c7996617616a11af9af2f1d60c20cf:
 runner1df0f4ba8b759122e9138bee3e328d1c723d6036ef55b1fd29e813468fa00578
 exited1;PG8f0bf2ffbfe8c06892392fbaa2417341a662762852ac41c7f2b1df017799ed5d
 stopped0, no OOM. Networkc05139b273b5794651b211175935ec384387a47a4e58826f022d9e97852910dc
-empty. Audit82666/collection33704 terminal0;284 preexisting containers unchanged,
+was empty, then removed after verified retirement. Audit82666/collection33704 terminal0;284 preexisting containers unchanged,
 eight unrelated running. Failed build is retained, not auth evidence.
 Do not restart retired labs. No arm64 or hosted Actions claim.
 
@@ -165,10 +200,11 @@ Do not mechanically rerun unrelated suites.
 
 Implement the explicit fresh initializer under P02-T04 steps3/4/5, starting with
 one atomic install_for_manager operation: configured manager OID, exact object
-ownership transfer, retired bootstrap OID and privilege closure. First commit/transfer the regression fixture and measure the old-code owner/ACL
-counterexamples on a fresh lab, then implement the correction. Exercise real PG
-negative controls for initializer default privileges, wrong-owner existing state,
-atomic failure and unchanged SQL hashes; then wire reservation/custody and CLI.
+ownership transfer, retired bootstrap OID and privilege closure. Baseline counterexamples are collected. Finish source/harness review, Mac checks,
+then commit/transfer the ownership/ACL candidate and run its real PG cases, including
+expected role OIDs, named-reader compatibility, invalid defaults/columns/PUBLIC,
+missing manager rights, rollback, COMMIT ambiguity and concurrent installers.
+Native mutual TLS and complete reserved initializer/CLI remain required.
 No task checkbox closes from authentication alone.
 
 Initializer design review is complete, but not an implemented/qualified protocol:
@@ -195,8 +231,8 @@ native/guard object ownership transfer and final manager-OID/ACL closure. Existi
 installed() only proves consistent ownership; initializer default ACLs may leave
 third-party privileges after ALTER OWNER. Do not use temporary manager superuser,
 REASSIGN OWNED, or mutate applied migration checksums. Resolve the exact bootstrap
-creator membership and retirement ordering. These are design findings, not yet
-implemented or native qualified. No implicit init on serve, synthetic ArchiveAttempt, automatic partial retry
+creator membership and retirement ordering. The narrow ownership/ACL operation is now implemented on Mac and awaits native
+qualification; durable initializer reservations/CLI are still design only. No implicit init on serve, synthetic ArchiveAttempt, automatic partial retry
 or permission from matching observations. Separate SELECT-only reader credentials,
 retained batch count/ranges, whole-role resource reconciliation, cross-boot recovery,
 protection and complete M1 remain required. Current service remains Control-only.

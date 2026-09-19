@@ -220,6 +220,27 @@ the original empty snapshot0 path and cannot inspect a scientific binding; there
 inspects the existing guard without modifying it. Unknown COMMIT requires a fresh
 connection and inspection, not an assumption that initialization failed.
 
+The installed initializer must separate its explicit privileged credential from
+the configured non-superuser CREATEROLE catalog manager. Within that same install
+transaction it must transfer the 28 native tables, guard schema/tables and both
+guard functions to the expected manager name/OID, retaining database and public
+schema ownership. A consistent but wrong owner is not an existing installation
+for that manager. Broad REASSIGN OWNED, temporary runtime superuser promotion and
+post-commit ownership transfer are not selected paths.
+
+Ownership is not privilege closure. The installed boundary must reject unexpected
+creator default grants and inspect actual table, column, schema and function ACLs,
+including PUBLIC and built-in defaults for NULL ACLs. Ordinary readers may receive
+SELECT on installation/scientific_schema and native tables; no non-owner grant may
+authorize owner/attempt mutation, guard function execution, guard schema CREATE,
+native REFERENCES/TRIGGER/TRUNCATE or onward delegation. Runtime manager rights
+must also be present: owners can revoke their ordinary privileges from themselves.
+Manager membership must not create another ordinary owner principal. Superusers,
+database/public-schema administrators and privileged cluster-wide roles remain
+the trusted infrastructure boundary; object ACL inspection does not isolate them.
+These are installed-initializer requirements under P02-T04, not a claim that the
+current foundation install/inspection adapter already enforces all of them.
+
 The application-owned `bigbrotr_archive` schema contains immutable installation
 and attempt records plus one mutable owner row. Every native metadata mutation
 locks that row FOR SHARE through the actual native transaction. Activation locks

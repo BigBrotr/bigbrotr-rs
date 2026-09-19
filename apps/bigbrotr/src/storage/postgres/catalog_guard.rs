@@ -9,7 +9,10 @@ use tokio_postgres::{Client, IsolationLevel, Transaction};
 use zeroize::Zeroizing;
 mod credentials;
 mod inspection;
+mod installation;
+mod privileges;
 mod scientific;
+pub use installation::{InstallationRoles, install_for_manager};
 const SQL: &str = include_str!("../../../../../migrations/catalog/0001_writer_guard.sql");
 const WRITER_BODY: &str = "writer";
 
@@ -184,8 +187,23 @@ pub async fn install(
     bootstrap_login: &str,
     commit_started: &Cell<bool>,
 ) -> Result<bool, GuardError> {
+    install_inner(client, identity, bootstrap_login, None, commit_started).await
+}
+
+async fn install_inner(
+    client: &mut Client,
+    identity: &CatalogIdentity,
+    bootstrap_login: &str,
+    roles: Option<InstallationRoles<'_>>,
+    commit_started: &Cell<bool>,
+) -> Result<bool, GuardError> {
     let bootstrap = identifier(bootstrap_login)?;
     let tx = begin(client, true).await?;
+    let owner = if let Some(roles) = roles {
+        installation::validate(&tx, roles).await?
+    } else {
+        "CURRENT_USER".to_owned()
+    };
     let exists: bool = tx
         .query_one(
             "SELECT EXISTS(SELECT 1 FROM pg_namespace WHERE nspname='bigbrotr_archive')",
@@ -198,6 +216,10 @@ pub async fn install(
     if exists {
         lock_inspection(&tx).await?;
         inspection::installed(&tx, identity).await?;
+        if let Some(roles) = roles {
+            installation::expected_owner(&tx, roles).await?;
+            inspection::revoked(&tx, roles.bootstrap_login).await?;
+        }
         tx.rollback().await.map_err(backend)?;
         return Ok(false);
     }
@@ -218,6 +240,7 @@ pub async fn install(
         inspection::fresh(&tx, identity).await?;
     }
     inspection::bootstrap(&tx, bootstrap_login).await?;
+    privileges::fresh(&tx).await?;
     tx.batch_execute(SQL).await.map_err(backend)?;
     if identity.scientific {
         tx.batch_execute(scientific::SQL).await.map_err(backend)?;
@@ -226,9 +249,13 @@ pub async fn install(
         "REVOKE ALL ON SCHEMA public FROM {bootstrap}; REVOKE CREATE ON SCHEMA public FROM PUBLIC; REVOKE ALL ON ALL TABLES IN SCHEMA public FROM PUBLIC;"
     );
     for table in tables {
-        edits.push_str(&format!("ALTER TABLE public.{table} OWNER TO CURRENT_USER; REVOKE ALL ON public.{table} FROM {bootstrap}; CREATE TRIGGER bigbrotr_writer_guard BEFORE INSERT OR UPDATE OR DELETE OR TRUNCATE ON public.{table} FOR EACH STATEMENT EXECUTE FUNCTION bigbrotr_archive.require_writer();"));
+        edits.push_str(&format!("ALTER TABLE public.{table} OWNER TO {owner}; REVOKE ALL ON public.{table} FROM {bootstrap}; CREATE TRIGGER bigbrotr_writer_guard BEFORE INSERT OR UPDATE OR DELETE OR TRUNCATE ON public.{table} FOR EACH STATEMENT EXECUTE FUNCTION bigbrotr_archive.require_writer();"));
     }
     tx.batch_execute(&edits).await.map_err(backend)?;
+    if let Some(roles) = roles {
+        installation::transfer_guard(&tx, roles).await?;
+        installation::expected_owner(&tx, roles).await?;
+    }
     inspection::revoked(&tx, bootstrap_login).await?;
     let layout = inspection::layout(&tx).await?;
     tx.execute("INSERT INTO bigbrotr_archive.installation VALUES(true,$1::bytea,$2::bytea,$3::text,1,$4::bytea,$5::bytea)", &[&&identity.dataset.as_bytes()[..],&&identity.catalog.as_bytes()[..],&identity.root,&&checksum()[..],&&layout[..]]).await.map_err(backend)?;
