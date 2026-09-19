@@ -210,17 +210,40 @@ pub async fn run(
                     .unwrap();
                 let mut previous = None;
                 for recorded_at in [456, 789] {
-                    let result = owner
-                        .admit_initial_event(
-                            store,
-                            input(recorded_at, sequence),
-                            grant(budget, 40 * MIB, 10 * MIB),
-                            authorize,
+                    let admission = owner.admit_initial_event(
+                        store,
+                        input(recorded_at, sequence),
+                        grant(budget, 40 * MIB, 10 * MIB),
+                        authorize,
+                    );
+                    let result = if sequence == 3 && mode == "event-bindings-checkpoints-cancelled"
+                    {
+                        let cancel_during_sql = async {
+                            tokio::time::timeout(Duration::from_secs(5), async {
+                                loop {
+                                    let waiting: bool = observer.query_one("SELECT EXISTS(SELECT 1 FROM pg_stat_activity WHERE pid<>pg_backend_pid() AND datname=current_database() AND application_name='bigbrotr-ingest-bootstrap-probe' AND wait_event='PgSleep' AND query LIKE 'INSERT INTO control.import_record_closures%')", &[]).await.unwrap().get(0);
+                                    if waiting {
+                                        cancelled.store(true, std::sync::atomic::Ordering::Relaxed);
+                                        emit(serde_json::json!({"event":"cancelled-during-closure-sql"}));
+                                        break;
+                                    }
+                                    tokio::time::sleep(Duration::from_millis(10)).await;
+                                }
+                            }).await.unwrap();
+                        };
+                        let (result, ()) = tokio::join!(admission, cancel_during_sql);
+                        result
+                    } else {
+                        admission.await
+                    };
+                    if sequence == 3
+                        && !matches!(
+                            mode,
+                            "event-bindings-checkpoints" | "event-bindings-checkpoints-delayed"
                         )
-                        .await;
-                    if sequence == 3 && mode != "event-bindings-checkpoints" {
+                    {
                         let expected = match mode {
-                            "event-bindings-checkpoints-expired" => InitialEventError::DeliveryUnknown,
+                            "event-bindings-checkpoints-expired" | "event-bindings-checkpoints-cancelled" => InitialEventError::DeliveryUnknown,
                             "event-bindings-checkpoints-rollback" => InitialEventError::ImportCheckpoint(
                                 bigbrotr::storage::postgres::import_checkpoints::ImportCheckpointError::Backend,
                             ),

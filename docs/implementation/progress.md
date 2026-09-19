@@ -1,134 +1,157 @@
 # Current execution checkpoint
 
-Observed 2026-09-19. Navigation only; follow the
+Observed2026-09-19. Navigation only; follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
-Verify Git, dirty work, evidence and resources before continuing.
+Verify Git, dirty files, evidence and resource claims before continuing.
 
-## Mandate and active boundary
+## Mandate and current responsibility
 
-The owner-authorized complete implementation remains active. Mac is the sole
-editing/Git workspace; root is sole writer/integrator. Trusted exact-source Tux
-execution continues under the hosted-runner billing exception. Preserve private
-bigbrotr-rs, unpublished Cargo packages and the read-only Go neighbor. No public
-release or Linux arm64 claim. No P02/P03 task or M1 gate is complete. Serve currently
-implements Control only; the finite installed Archive consumer is separately
-qualified. All later selected work remains required.
+Complete owner-authorized implementation remains active. Mac is the sole editing/
+Git workspace; root integrates. Trusted exact-source Tux execution continues under
+the hosted-runner billing exception. Preserve private bigbrotr-rs, unpublished
+Cargo packages and the read-only Go neighbor. No public release or Linux arm64
+claim. No P02/P03 task or M1 gate is complete. Serve currently implements Control;
+the finite installed Archive consumer is separately qualified. All selected later
+product work remains required.
 
-Active P03-T10 step4 / P02-T02 step4: event-only logical closure from the native
-witness inside the existing outcome PG transaction, plus a separate job/shard
-contiguous head. The [input/checkpoint reference](../reference/import-input-bindings.md)
-and storage-catalog own the chosen meaning. Full installed import, claim/proof
-variants, ACK/GC and recovery remain required; no task checkbox changed.
+Active P03-T10 step4 / P02-T02 step4: event-only logical record closure from the
+private native witness in the SAME PG transaction as its complete outcome copy,
+plus a per-job/shard contiguous head. The [owning reference](../reference/import-input-bindings.md)
+and storage-catalog define meaning. Full installed import, claim/proof variants,
+ACK/GC, recovery and capacity remain required; no checkbox was completed.
 
-## Git and ownership
+## Git and integration state
 
-Mac main HEAD215f502bc33a634e758355edb2ca420be1a1f9f6, unpublished candidate,
-tree3b66c4f398b96e2b310a52c9740a034786ecc402; ahead of origin by2. Private origin/main last verified
-at ddfa74064d840541e58208195b8e1612733c2ca3. No unexpected changes or other writers.
-The native bridge/fixtures/oracle and docs are committed in215f502. Root owns
-current dirty checkpoint_schema_cases.sql (NOT_RUN), inventory and this checkpoint. Existing fact_codec_review is read-only, reviewing the witness
-and caller boundary. No independently edited remote source.
+Mac main HEAD2100e25 (verify full hash), six unpublished commits ahead of private
+origin/main last verified ddfa74064d840541e58208195b8e1612733c2ca3. No other writer,
+merge/rebase or unexpected files. Root owns current dirty migration_runner.rs,
+support/ingest_event.rs, import_checkpoints.py, laboratory-inventory.json and this
+checkpoint. The reviewer fact_codec_review is read-only/idle after scoped reviews.
 
-Candidate730e50e adds0014, compiled/JSON catalog entries, migration regression and
-reverse-order native fixture; it intentionally lacks the Rust bridge. Prior SQL
-checksums remain untouched. Current dirty code adds that bridge and requires14
-for connected initial native work. Only the real private NativeOutcomeCopy may
-close a bound event record, immediately after its full producer outcome is copied.
-Rejected and unbound outcomes create no progress; exact replay compares immutable
-membership without rewriting rows. Native detail reads/PG diagnostics cannot mint
-this witness. New closure/head/job revisions commit atomically with the outcome.
+Candidate730e50e/treeb1c5b0db69c9654e2029ed4f99b59eb214d31880 adds0014/catalog,
+regression and fixture without the Rust bridge. Candidate215f502bc33a634e758355edb2ca420be1a1f9f6,
+tree3b66c4f398b96e2b310a52c9740a034786ecc402, adds the bridge and requires14.
+Later5049a76/9e92932/cba6fa6/2100e25 commits add/correct exact-Git test harnesses;
+product inputs/binaries stayed215f502. No commit has been pushed for this slice.
+Published SQL1..13 is unchanged; SQL14 has not changed since730e50e.
 
-The head records logical line/byte boundary, not a producer mutation watermark.
-Holes preserve zero. Filling a gap0-to2 advances one shard revision and one global
-job checkpoint/job revision. Separate shard heads have separate local revisions.
-The finite64-bindings/job bound remains; no reclamation is implemented. Migration14
-preserves old unclosed bindings/outcomes, refuses unsupported nonzero prior import
-checkpoints55000, and performs no inferred closure/backfill. Fresh native replay
-still requires a legitimate owner; successor recovery is not implemented.
+Current private close_record accepts only NativeOutcomeCopy immediately after
+producer_outcomes::record. Rejected/unbound inputs cannot close a record. Replay
+compares immutable membership without changing rows. Head advancement changes its
+local revision and global job checkpoint/job revision once, preserving holes/zero.
+The64-retained-bindings/job cap bounds scans; there is no reclamation. Existing
+producer_checkpoints, mutation ACK and GC are untouched. Native receipt bytes
+retain full dependencies and original policy/topology/recovery/protection context.
+Migration14 never backfills closure from PG; unsupported nonzero old import
+checkpoint metadata is refused atomically. Successor replay remains unimplemented.
+Control, job, Ingest, producer locks preserve the original order. Cancellation and
+residual lease are rechecked after SQL awaits immediately before COMMIT.
 
-Late cancellation/residual lease checks now occur after SQL awaits before event
-and bootstrap COMMIT. Response loss remains unknown; it does not authorize a new
-request ID. Lock order remains Control, job, Ingest, producer.
+## Executed evidence
 
-## Executed evidence and current gaps
+Prior [input binding qualification](evidence/p03-input-bindings-native-20260919.json)
+at8b0660e remains scoped evidence:9 signed/fault cases,28 SQL constraints,6 real
+job-lock schedules and3 migration/client compatibility cases. Its final observer
+atddfa740 adds offline full-copy checks and117 altered-field controls. Remaining
+job/claim/proof/checkpoint/ACK/recovery work was not qualified there.
 
-Previous qualified [atomic input bindings](evidence/p03-input-bindings-native-20260919.json)
-at8b0660e:9 connected signed/fault cases,28 synthetic SQL constraints,6 real job-lock
-schedules and3 actual12-to13 compatibility cases. Complete original bytes and all
-native rows/PG receipts are compared independently. The final observer correction
-atddfa740 checks captured copies offline with117 altered-field controls; no extra
-native run is implied. The report retains initial incomplete harness runs and
-explains corrections. P03 job acceptance/checkpoints/ACK/recovery were not qualified.
+Current checkpoint prerequisite, actual Linux amd64/PostgreSQL16.15/Rust+Rocks:
+-730e50e built from827-file clean Git export.16 migration and5 binding tests plus
+ scoped Clippy PASS. Native reverse-order regression EXPECTED_RED: line2/request2
+ is admitted and its PG outcome exists, but no logical closure. Independent full
+ native oracle26 rows and two PG copies pass; zero clients. No product PASS implied.
+-215f502 built from829-file clean Git export. Same focused checks PASS. Five actual
+ signed schedules PASS: reverse, expired after SQL, closure rollback, COMMIT12
+ before-forward and after-complete reply loss. Each whole native state matches27
+ independent rows; all complete original files, request metadata and receipts match.
+ Reverse/after-complete retain closures line1/request3 + line2/request2, head2 at
+ byte706/revision1 and job revision4/checkpoint1. Other cases retain only line2,
+ no head, job revision3/checkpoint0. Exact replay includes xmin equality. Zero
+ producer checkpoints and zero remaining PG clients in all five cases.
+-25 synthetic SQL constraints PASS using harness5049a76, checkpoint-schema-sql1.json,
+ clone bbcheckpoint_sql_sql1. Covers missing/wrong/rejected outcomes, holes, multirow
+ AFTER visibility, independent shard/global revisions, no-op insertion, immutable
+ retention, FK0A000 versus guard23514, rollback and pause. No native attestation is
+ claimed for those synthetic outcomes; the signed baseline is untouched.
+-Compatibility r3 at harness2100e25: empty13-to14 and populated13-to14 PASS, with
+ retained actual8b0660e old binary/native27 rows/full originals/full PG copies;
+ old binary refuses14 before new effects. New binary on13 refuses before staging,
+ reservations or facts, after its explicit initial ownership/manifest registration.
+ The fourth case observes unsupported nonzero prior checkpoint refusal and exact
+ schema/rows/native/spool rollback, but fails the expected actionable diagnostic:
+ stderr is generic backend unavailable. Report remains INCOMPLETE with three PASS
+ cases and rollback_observed=true. Separate actual audit confirms zero clients.
 
-Current checkpoint regression:
-- Mac migration RED failed UnknownTarget(14) before adding the catalog entry.
-  All16 schema tests and scoped Clippy passed after it; logs under
-  .research/implementation/import-checkpoints/.
-- Exact827-file Git export730e50e built on native Linux amd64, PostgreSQL16.15,
-  actual Rust/Rocks and selected native worker.16 migration/5 binding tests and
-  scoped Clippy passed. The connected reverse-order fixture observed EXPECTED_RED:
-  line2/request2 native admission and full PG copy exist but zero logical closures.
-  Independent oracle matched all26 native rows and two complete PG outcome copies;
-  zero remaining client backends. This is a missing-feature regression, not PASS.
-- Verified19-file capture .research/implementation/import-checkpoints/red/qualified;
-  tar279bbde25d47209e02b03cc13213e7c28f4429761bfbf62d7dab6cff66f59957.
-  The827 source hashes match Mac Git archive and all artifact identities are bound.
-- Current dirty Rust bridge initially failed E0716 temporary-borrow checks; explicit
-  dataset/digest locals fixed it. Final scoped Mac Clippy passed. Native GREEN,
-  fault, SQL and compatibility qualification for this bridge are NOT_RUN.
-- Independent read-only AI review found no concrete SQL14 counterexample. It calls
-  out actual AFTER-row multirow visibility, multi-shard global revisions,
-  ON CONFLICT WHERE false, FK-versus-trigger TRUNCATE refusal and migration rollback.
-  This review did not execute PostgreSQL and cannot attest native semantics.
+Failures preserved: r1 old signed fixture refused InvalidScratch because its parent
+was755; r2 native27 passed then caller compared JSON-sorted requests[2,3,1] to an
+ordered oracle. r3 fixes private700 and explicit request ordering using NEW paths/
+databases. Initial rollback1 command was rejected before DB creation (tag length9);
+roll1 passed. Initial Rust E0716 was fixed with explicit dataset/digest locals.
+Independent AI review found a coherent-PG-digest oracle gap; import_originals now
+checks exact independent CBOR preimages/files/profile/size/digest, and source/frame/
+batch/head fields use literal fixture expectations. Captured RED originals pass;
+the coherent forged PG digest is refused offline. No missing output is called PASS.
 
-Independent review found an oracle gap: coherent PG digest changes were only
-compared between observed fields. import_originals.py now checks every complete
-original and metadata independently, including outcome-less request3. On the
-captured RED data both originals pass and a coherent PG digest forgery is refused;
-this is offline evidence only. Native harness also asserts literal source, ranges,
-single-record batch membership and head job/shard identity.
+## Active unqualified changes and next action
 
-The new finite fixture admits line2/request2 then line1/request3 of the same
-captured706-byte signed source. Expected heads0 then2, one revision, exact replay
-unchanged including xmin. Additional authored cases are second-record closure
-rollback, post-SQL TTL expiry and COMMIT12 loss before forwarding/after completion.
-They are NOT_RUN. Required synthetic SQL, compatibility, cancellation/lock schedules
-and retained-dependency controls remain before closing this prerequisite.
+The fourth compatibility case discriminates a missing CLI diagnostic, not failed
+SQL rollback. Root added migration_runner::UnqualifiedImportCheckpoints for14/55000
+with a static explicit-recovery message, preserving server-detail redaction. Mac
+Clippy passed. Actual native GREEN for this diagnostic is NOT_RUN.
 
-## Resources and cleanup
+The shared finite fixture/harness now adds cancellation while PostgreSQL actually
+reports PgSleep inside closure INSERT, plus the same1-second delay without
+cancellation. Both use the same native writer and post-SQL lease/cancel check;
+expected cancellation keeps old closure/head state, delayed positive commits.
+The observed wait marker avoids cancelling before native dispatch by accident.
+Fixture Clippy passes. These two schedules are NOT_RUN. Because the shared fixture
+changed, run all seven native schedules on the next exact source candidate.
 
-Current native build is ACTIVE in import-checkpoints-215f502 (see below).
-RED lab audited/stopped2026-09-19T20:16:33.536383+00:00:
-/home/tux/bigbrotr-implementation-20260917/runs/import-checkpoints-730e50e,
-owner37e0eb288090c5b5efd1bdab3e930e7d. Runner
-84348dffbf39833fb4fa83ee9544935982bce631760ddd8c5dc02a18672330dd,
-PG4dd86aa86768a9ecc5e08736a90eb01cbe9f6998b7593d01835ec3624000daab,
-empty internal network291c395f80cdd10f3752e6c6274f7b51a9236fc2157715ca849258674522f175.
-Actual zero clients before stop, no OOM, all370 preexisting container lifecycles
-preserved, eight unrelated running. See import_checkpoints_red in the
-[laboratory inventory](../research/laboratory-inventory.json). Its out/build is the
-newest cache; verify exact lock/source/artifact identities before reuse.
+Next bounded action: commit reviewed diagnostic/fixture changes with this evidence;
+transfer the clean revision to a fresh isolated lab using stopped215f502 build cache;
+run seven native schedules,25 SQL constraints and corrected four compatibility
+cases. Use fresh paths/run tag for compatibility, retaining r1/r2/r3 observations.
+Then execute remaining job/pause lock/isolation schedules, review complete diff and
+owning contracts, write concise qualification report, audit resources and push only
+coherent verified work. No competing task plan or completed task claim.
 
-Previous input-bindings-8b0660e containers/data remain stopped/retained; its empty
-networkcf84ec1 was removed only after fresh ownership/stopped verification to free
-Docker subnet capacity. The retirement receipt is in the RED lab. No global prune,
-old container restart, unrelated cleanup or remote source edit is authorized.
-Ignored launch/transfer/audit/collect helpers require fresh path/owner review.
+## Evidence and resources
 
-## Next bounded action
+No active remote workload or tool session. Latest lab was audited/stopped at
+2026-09-19T20:39:49.434371+00:00, actual zero clients before stop/no OOM;
+all372 preexisting container lifecycles unchanged, eight unrelated running,
+zero BigBrotr running. Lab /home/tux/bigbrotr-implementation-20260917/runs/import-checkpoints-215f502,
+owner8829981c7e519eff01113ae07d4e1a45. Runner
+8b407847a0a70f836d44ee8c756a7352067899deb20a25b7bde240d33c798330,
+PG6525900fbdb050bd0efd9a6453dbfb77136238c39ea359361f95341e00f78d8c,
+empty network2c1d6475208f7dd7388ceb67e598d8266e252b8652feab7e5de8bbea9cef3c13.
+See import_checkpoints in the [inventory](../research/laboratory-inventory.json).
+Its out/build is the newest exact-lock cache. Verify ownership before reuse.
 
-Review/commit the current bridge candidate, transfer its clean exact Git source to
-a fresh isolated Tux lab, then execute the five native checkpoint schedules. Retain
-actual observations before assertions; partial output remains unknown. Next add
-SQL multi-shard/retention and13-to14 compatibility cases, remaining cancellation and
-lock controls, full-diff/contract review and concise qualification evidence. Push
-only coherent verified work; unpublished candidates may precede native qualification.
+Mac .research/implementation/import-checkpoints/green/qualified has50 hash-verified
+files, tar604b22b54e8cf3b8a228684d4a3d170622d7aeadf8b2520947aee13e0a17447d.
+All829 source hashes match Mac Git archive. Main SHA256
+ddb8e4cbbfd28f14074f66401b0fa3964a4fce61e77ffbea48dfcccc351a2d17,
+probe4c936dc8c9ca584c1d674f2ef959049ccb6844e69dceb24faa56450079da777f.
+Audit binds complete artifact/source/dependency identities and preserves incomplete
+compatibility outcomes; its PASS qualifies terminal/source audit only.
 
-Initial adapters still bind original Control and producer/owner epoch1. Future
-recovery needs a read/recovery handle incapable of fresh admission, synchronized
-native closing, fresh-Control close/register/topology CAS and explicit successor
-activation/zero counters. A new process cannot impersonate an old incarnation or
-inherit its candidate nonce. Resolve ambiguous original outcomes first.
+Earlier RED capture: .research/implementation/import-checkpoints/red/qualified,
+19files, tar279bbde25d47209e02b03cc13213e7c28f4429761bfbf62d7dab6cff66f59957;
+lab import-checkpoints-730e50e remains stopped/retained. Prior empty networks of
+input-bindings-8b0660e and this RED lab were removed only after fresh owned-stopped
+checks to free Docker subnet pools. Their containers/data remain. No global prune,
+old-container restart, unrelated cleanup or remote source editing. Ignored launch/
+transfer/audit/collect helpers require fresh path/owner review and must not overwrite
+prior reports. Never include secret files in evidence tar/copies.
+
+## Remaining product gates
+
+Initial adapters still bind original Control and producer/owner epoch1. Recovery
+needs a read handle incapable of fresh admission, synchronized native closing,
+fresh-Control close/register/topology CAS and explicit successor activation/zero
+counters. New processes cannot impersonate old incarnations/candidate nonces.
+Resolve ambiguous original outcomes before choosing another path.
 
 Logical proof/claim closure, ACK/GC, archive protection/replay, ENOSPC/power loss,
 causally closed backup/restore, mixed aged workloads, M1 read/export/restart and all
@@ -140,50 +163,4 @@ External monitor findings remain scoped closed with practical evidence:
 [MON-009](evidence/p02-job-bounds-native-20260918.json),
 [MON-010](evidence/p01-tls-presence-20260918.json),
 [MON-007](evidence/p01-archive-cache-retry-20260918.json).
-No new contrary evidence was found in the requested external note.
-
-Current lab /home/tux/bigbrotr-implementation-20260917/runs/import-checkpoints-215f502,
-owner8829981c7e519eff01113ae07d4e1a45, clean829-file export. Runner
-8b407847a0a70f836d44ee8c756a7352067899deb20a25b7bde240d33c798330,
-PG6525900fbdb050bd0efd9a6453dbfb77136238c39ea359361f95341e00f78d8c,
-internal network2c1d6475208f7dd7388ceb67e598d8266e252b8652feab7e5de8bbea9cef3c13.
-Native build/tests READY; no host ports. Five connected schedules PASS on215f502:
-reverse, expired, rollback, before-forward, after-complete. Every full native
-state matches27 rows; all originals/PG copies/source positions compared. Reverse
-and after-complete retain two closures/head2; the other three retain line2 only
-and no head. All cases have zero client backends. Initial rollback1 launch was
-refused before creating a DB because its tag exceeded the accepted8 characters;
-roll1 corrected only the caller argument and passed. Logs preserve both attempts. RED network291c395 was removed after
-fresh empty/owned-stopped verification; old containers/data stay retained.
-Next execute authored checkpoint_schema.py plus checkpoint_schema_cases.sql from
-a clean harness Git checkout. It prepends only the existing synthetic fixture
-setup functions and clones bbcheckpoint_reverse1 so failure cannot corrupt the
-signed baseline. SQL/native compatibility/cancellation/concurrency remain open;
-these five PASS cases do not finish checkpoint qualification. Root owns current
-harness/inventory/checkpoint edits; the829 product source files stay unchanged.
-
-SQL constraints now PASS25 on native PostgreSQL16.15 using harness5049a76,
-report checkpoint-schema-sql1.json, clone bbcheckpoint_sql_sql1; zero clients.
-Includes multirow AFTER visibility, independent shard/global revisions, holes,
-synthetic rejected/missing/wrong outcomes, immutable retention/FK distinction,
-rollback and pause. The signed baseline remains untouched. Current HEAD5049a76
-is ahead of origin by3; root owns new checkpoint_upgrade.py and this checkpoint.
-Next actual13-to14 cases use retained8b0660e old binary: empty/populated upgrade,
-old-client refusal, new admission on13 refusal and incompatible nonzero prior
-checkpoint. Static reading shows migration_runner currently maps14/55000 to a
-generic backend error; the new practical test requires an explicit recovery
-diagnostic and should expose that missing mapping before correction. No SQL
-invariant loss is inferred from the diagnostic gap. First compatibility run: empty upgrade and old-client refusal PASS; retained
-old signed writer failed InvalidScratch because the harness created its parent
-with default755 instead of the required700. This is the existing source privacy
-boundary refusing a bad fixture, not a migration failure. Original r1 report/log
-retained INCOMPLETE; independently observed zero PG clients and idle runner.
-Corrected harness uses mode700 plus fresh r2 databases/paths and runs new-on-old
-before the expected missing-diagnostic case. No earlier data is retried in place.
-
-Compatibility r2 retained native write and all27 native rows passed, then the
-metadata observer failed because full-table snapshots are sorted by row JSON
-([2,3,1] requests) while the shared oracle requires request sequence order.
-Root corrected only that caller ordering, retained complete-byte checks, added
-full independent PG outcome comparison, and selected new r3 resources. r1/r2
-remain INCOMPLETE, not reclassified as PASS. Product215f502 remains unchanged.
+No new contrary evidence in the requested external review note.

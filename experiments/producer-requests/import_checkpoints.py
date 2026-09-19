@@ -68,8 +68,9 @@ def main(root, tag, red, scenario):
     setup = run('setup', ['setup-14', db, '/secrets/postgres', 'unused'])
     assert setup['exit'] == 0 and not setup['stderr']
     assert not red or scenario == 'reverse'
-    if scenario in ['expired', 'rollback']:
-        fault = "PERFORM pg_sleep(3);" if scenario == 'expired' else "RAISE EXCEPTION 'fixture checkpoint rollback';"
+    if scenario in ['expired', 'rollback', 'cancelled', 'delayed']:
+        fault = ("RAISE EXCEPTION 'fixture checkpoint rollback';" if scenario == 'rollback'
+                 else "PERFORM pg_sleep("+('3' if scenario == 'expired' else '1')+");")
         sql(db, "CREATE FUNCTION public.fixture_checkpoint_fault() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN IF NEW.logical_record=1 THEN "+fault+" END IF; RETURN NEW; END $$; CREATE TRIGGER zz_fixture_checkpoint_fault AFTER INSERT ON control.import_record_closures FOR EACH ROW EXECUTE FUNCTION public.fixture_checkpoint_fault()")
     command('docker', 'exec', state['container_id'], 'mkdir', '-m', '700', directory)
     mode = 'event-bindings-checkpoints'+('' if scenario == 'reverse' else '-'+scenario)
@@ -98,7 +99,7 @@ def main(root, tag, red, scenario):
     native = report['native'] = json.loads(dump['stdout']); save()
     wanted = expected_event(bytes([1])*16, True, 2)[0] if red else expected(2)[0]
     assert [(r['cf'], bytes.fromhex(r['key']), bytes.fromhex(r['value'])) for r in native['rows']] == wanted
-    committed = scenario in ['reverse', 'after-complete'] and not red
+    committed = scenario in ['reverse', 'delayed', 'after-complete'] and not red
     check_all_outcome_copies(control, wanted, request_count=2 if red else 3, outcome_count=3 if committed else 2)
     spool = root/directory.lstrip('/')/'db/producer-inputs-v1'
     files = {p.name:p.read_bytes() for p in spool.iterdir()}
@@ -145,7 +146,7 @@ def main(root, tag, red, scenario):
         assert (control['jobs'][0]['job_revision'], control['jobs'][0]['checkpoint_revision']) == (4, 1)
         messages = [json.loads(line) for line in result['stdout'].splitlines()]
         progress = [m for m in messages if m['event'] == 'logical-checkpoint']
-        assert [(m['request_sequence'], m['retry']) for m in progress] == ([(2, False), (2, True), (3, False), (3, True)] if scenario == 'reverse' else [(2, False), (2, True)])
+        assert [(m['request_sequence'], m['retry']) for m in progress] == ([(2, False), (2, True), (3, False), (3, True)] if scenario in ['reverse', 'delayed'] else [(2, False), (2, True)])
         for original, retry in zip(progress[::2], progress[1::2]):
             assert original['state'] == retry['state'] and original['receipt'] == retry['receipt']
         assert progress[0]['state']['heads'] == [] and len(progress[0]['state']['closures']) == 1
@@ -154,11 +155,13 @@ def main(root, tag, red, scenario):
         assert [(c['logical_record'], c['request_sequence']) for c in control['closures']] == [(2, 2)]
         assert not control['heads']
         assert (control['jobs'][0]['job_revision'], control['jobs'][0]['checkpoint_revision']) == (3, 0)
-    if not red and scenario != 'reverse':
+    if not red and scenario not in ['reverse', 'delayed']:
         messages = [json.loads(line) for line in result['stdout'].splitlines()]
-        wanted_error = {'expired':'DeliveryUnknown', 'rollback':'ImportCheckpoint(Backend)',
+        wanted_error = {'expired':'DeliveryUnknown', 'cancelled':'DeliveryUnknown', 'rollback':'ImportCheckpoint(Backend)',
                         'before-forward':'Outcome(CommitUnknown)', 'after-complete':'Outcome(CommitUnknown)'}[scenario]
         assert messages[-1] == dict(event='logical-checkpoint-refused', error=wanted_error)
+        if scenario == 'cancelled':
+            assert sum(m['event'] == 'cancelled-during-closure-sql' for m in messages) == 1
     report['remaining_client_backends'] = int(sql(db, 'SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND pid<>pg_backend_pid()'))
     assert report['remaining_client_backends'] == 0
     report['status'] = 'EXPECTED_RED' if red else 'PASS'
@@ -170,6 +173,6 @@ if __name__ == '__main__':
     parser.add_argument('--root', type=Path, required=True)
     parser.add_argument('--run-tag', required=True)
     parser.add_argument('--expect-missing-progress', action='store_true')
-    parser.add_argument('--scenario', choices=['reverse', 'expired', 'rollback', 'before-forward', 'after-complete'], default='reverse')
+    parser.add_argument('--scenario', choices=['reverse', 'expired', 'rollback', 'before-forward', 'after-complete', 'cancelled', 'delayed'], default='reverse')
     args = parser.parse_args()
     main(args.root.resolve(strict=True), args.run_tag, args.expect_missing_progress, args.scenario)

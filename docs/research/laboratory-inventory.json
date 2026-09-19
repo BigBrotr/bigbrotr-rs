@@ -13942,15 +13942,159 @@
       "network": "bigbrotr-implementation-import-checkpoints-215f502",
       "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
       "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
-      "state": "running",
+      "state": "stopped-retained",
       "source_files": 829,
       "started_at": "2026-09-19T20:23:28.273500+00:00",
       "network_id": "2c1d6475208f7dd7388ceb67e598d8266e252b8652feab7e5de8bbea9cef3c13",
       "postgres_id": "6525900fbdb050bd0efd9a6453dbfb77136238c39ea359361f95341e00f78d8c",
       "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
       "container_id": "8b407847a0a70f836d44ee8c756a7352067899deb20a25b7bde240d33c798330",
-      "qualification": "NOT_RUN; exact-source native bridge build active",
-      "raw": ".research/implementation/import-checkpoints/green"
+      "completed_at": "2026-09-19T20:39:49.434371+00:00",
+      "qualification": "PARTIAL: five native schedules and25 SQL cases PASS; three compatibility cases PASS, unsupported-history rollback observed but diagnostic RED; remaining checkpoint qualification open",
+      "raw": ".research/implementation/import-checkpoints/green/qualified",
+      "terminal_audit": {
+        "status": "PASS",
+        "source": "215f502bc33a634e758355edb2ca420be1a1f9f6",
+        "tree": "3b66c4f398b96e2b310a52c9740a034786ecc402",
+        "source_manifest": {
+          "revision": "215f502bc33a634e758355edb2ca420be1a1f9f6",
+          "tree": "3b66c4f398b96e2b310a52c9740a034786ecc402",
+          "files": 829,
+          "archive_sha256": "22c233f93d411cc3ec68523bb28342d7761646e3675a9622ef9f6254f16267d0",
+          "manifest_sha256": "7b5c10af002ee1bdb70a80fa098f41bad313fa2087beb2368b13a3d01ddcf5e5",
+          "lock_sha256": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215"
+        },
+        "scope": "Source/artifact identity and terminal exclusion; incomplete compatibility outcomes retained",
+        "compatibility_diagnostic_red": {
+          "exit": 1,
+          "stdout": "",
+          "stderr": "error: control migration backend unavailable or refused the operation\n"
+        },
+        "reports": {
+          "import-checkpoints-reverse1.json": {
+            "status": "PASS",
+            "sha256": "6eb953f6cf3ff4ed54264fd35aa7b5b894bea833804108a1c44969609b86243f"
+          },
+          "import-checkpoints-expired1.json": {
+            "status": "PASS",
+            "sha256": "37095e1e5256675ccc285708aa3965c165e77bb784240f253b63a0fa052851a7"
+          },
+          "import-checkpoints-roll1.json": {
+            "status": "PASS",
+            "sha256": "93e1f66d6db43e189158d9f1e4c44c482ca36bbe815b16226690bf2217801121"
+          },
+          "import-checkpoints-before1.json": {
+            "status": "PASS",
+            "sha256": "b3065a9cc16401c991102548eb2a125ab288c1c7fab985c57ab45497a401d9f1"
+          },
+          "import-checkpoints-after1.json": {
+            "status": "PASS",
+            "sha256": "5b4a9902ca1d466e527e19d5cb1b93dbbbac3e4727c3fb84fa37abc163f6db92"
+          },
+          "checkpoint-schema-sql1.json": {
+            "status": "PASS",
+            "sha256": "f82249a4e7828c0128caa43b0b3c8a5d9bb091bd6696667ae1ef532f16c62a7b"
+          },
+          "import-checkpoint-upgrade-r1.json": {
+            "status": "INCOMPLETE",
+            "sha256": "318ce5abf2939346e4cfec69bb28dc307542aa7d4272f77ed986be4a20aede2c"
+          },
+          "import-checkpoint-upgrade-r2.json": {
+            "status": "INCOMPLETE",
+            "sha256": "3c3395f3f4e78a576d29c70ad6a153d5c73d837e3b2a0ccea280933912d7871d"
+          },
+          "import-checkpoint-upgrade-r3.json": {
+            "status": "INCOMPLETE",
+            "sha256": "cec9ce6fb5190cf1bacb27a69a9301d0c9f6fe0db4e876fdee06b053c0b23658"
+          },
+          "out/native-tests/checks/result.json": {
+            "status": "PASS",
+            "sha256": "3d5438ab21f439f1417efabdf13ad4a920f599943800c0167d3bfcc7456d52e0"
+          }
+        },
+        "artifacts": {
+          "main": {
+            "sha256": "ddb8e4cbbfd28f14074f66401b0fa3964a4fce61e77ffbea48dfcccc351a2d17",
+            "bytes": 9219280,
+            "elf_machine": 62
+          },
+          "worker": {
+            "sha256": "4a8f8f37ec6dbf7b6e6def033966d21d116f027699cfd4c96ae6ff852f298f3c",
+            "bytes": 12608632,
+            "elf_machine": 62
+          },
+          "ingest_probe": {
+            "sha256": "4c936dc8c9ca584c1d674f2ef959049ccb6844e69dceb24faa56450079da777f",
+            "bytes": 15462576,
+            "elf_machine": 62
+          }
+        },
+        "harnesses": {
+          "harness-2100e25": {
+            "revision": "2100e25f8a8f3dc66d48a7b5ec28160eea327010",
+            "tree": "eede150bfc54a6b34e33b95e306ee03249627ab9",
+            "product_unchanged": true
+          },
+          "harness-5049a76": {
+            "revision": "5049a76fa0999fccbae7928e36c75cd73b953b40",
+            "tree": "90322b7ca6f606b398fe8f039b59e8ddb25d2430",
+            "product_unchanged": true
+          },
+          "harness-9e92932": {
+            "revision": "9e92932e95f5a65e12ee61f739514414a80304e1",
+            "tree": "a0a747cc67c056c8d2d7ca34b3e9d8bca9992c36",
+            "product_unchanged": true
+          },
+          "harness-cba6fa6": {
+            "revision": "cba6fa6d81ed478fb39272d37f7995415d57fc90",
+            "tree": "9b86da40342c9f1edbbfdb7ac762a35d16c37dd8",
+            "product_unchanged": true
+          }
+        },
+        "prestop": {
+          "at": "2026-09-19T20:39:48.024065+00:00",
+          "owned_client_backends": 0,
+          "runner_processes": "PID                 PPID                STAT                COMMAND\n4182956             4182932             Ss                  docker-init\n4182969             4182956             S                   python3",
+          "owned_containers": [
+            "8b407847a0a70f836d44ee8c756a7352067899deb20a25b7bde240d33c798330",
+            "6525900fbdb050bd0efd9a6453dbfb77136238c39ea359361f95341e00f78d8c"
+          ]
+        },
+        "terminal": {
+          "8b407847a0a70f836d44ee8c756a7352067899deb20a25b7bde240d33c798330": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-19T20:23:31.086423906Z",
+            "FinishedAt": "2026-09-19T20:39:48.04719915Z"
+          },
+          "6525900fbdb050bd0efd9a6453dbfb77136238c39ea359361f95341e00f78d8c": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-19T20:23:29.090686964Z",
+            "FinishedAt": "2026-09-19T20:39:48.949838819Z"
+          }
+        },
+        "preexisting_containers_unchanged": 372,
+        "unrelated_containers_unchanged": 20,
+        "unrelated_running": 8,
+        "bigbrotr_running": 0,
+        "observed_at": "2026-09-19T20:39:49.434371+00:00"
+      },
+      "manifest": ".research/implementation/import-checkpoints/green/evidence-identity.json"
     }
   },
   "implementation_monitor_corrections_20260918": {
