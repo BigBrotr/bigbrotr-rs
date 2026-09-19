@@ -8304,6 +8304,17 @@
       "qualified_audit": ".research/implementation/archive-worker/initialization-custody/qualified/audit.json",
       "qualified_tar_sha256": "4f54f9abccdbe7a3891dfc7fce91d5377c7d901f06ea37efd7d2c3c156870dad",
       "qualified_report": "docs/implementation/evidence/p02-initialization-custody-native-20260919.json"
+    },
+    "database_reservation": {
+      "state": "local-tdd-baseline-no-active-lab",
+      "local_root": ".research/implementation/archive-worker/database-reservation",
+      "upstream": {
+        "url": "https://raw.githubusercontent.com/postgres/postgres/REL_16_15/src/backend/commands/user.c",
+        "local_path": ".research/implementation/archive-worker/database-reservation/postgres-REL_16_15-user.c",
+        "sha256": "082713e0ba52a4a6896e9be4beba0d7258030b2b02291d3e8551619509845574",
+        "scope": "Complete CreateRole function, lines133-608: duplicate name checks, transactional catalog insertion, accepted verifier and superuser creator membership behavior."
+      },
+      "qualification": "NOT_RUN; reserve is a deliberately failing TDD baseline."
     }
   },
   "implementation_monitor_corrections_20260918": {

@@ -8,6 +8,7 @@ use std::{cell::Cell, fmt};
 use tokio_postgres::{Client, IsolationLevel, Transaction};
 use zeroize::Zeroizing;
 mod credentials;
+pub mod initialization;
 mod inspection;
 mod installation;
 mod privileges;

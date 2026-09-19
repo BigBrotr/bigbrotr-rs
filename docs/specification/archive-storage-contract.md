@@ -278,6 +278,51 @@ holder regression. The raw reopened-descriptor case demonstrates the stated
 trusted-parent boundary. Database reservation, generated bootstrap credentials,
 ambiguous initialization recovery and the complete installed CLI remain required.
 
+The durable database reservation is a dedicated cluster role named
+`bb_init_database_<database-oid>`, created by the explicit privileged initializer
+in the same transaction as a newly generated `bb_init_<initialization-id>` bootstrap
+login. The reservation has NOLOGIN, no password, administrative attributes or role
+memberships. Its canonical comment is
+`bigbrotr-catalog-initialization/1:<lowercase-hex-id>:<bootstrap-oid>:<manager-oid>`.
+The ID is the nonzero nonce in the local journal; OIDs are nonzero canonical decimal.
+The comment contains no root, dataset or secret. PostgreSQL roles and their
+[comments are cluster-wide](https://www.postgresql.org/docs/16/catalog-pg-shdescription.html),
+so unrelated databases cannot have independent reservations for the same OID.
+The configured runtime manager remains a separately supplied restricted CREATEROLE
+role. Neither it nor the bootstrap receives membership in the reservation.
+
+Serialize provision/observation using the existing database-scoped catalog
+transaction lock, and retain the reservation after commit: the lock alone is not
+durable exclusion. Require the same pristine database predicate as native startup
+before granting bootstrap CONNECT and public-schema USAGE/CREATE. Existing names,
+even with matching comments, refuse fresh provisioning. Generate a new 256-bit
+password locally using the existing SCRAM material implementation; send only its
+verifier in CREATE ROLE and expose the move-only password after known COMMIT.
+One fresh local custody may attempt provisioning once; recovered custody grants
+observation only. Cancellation or unknown COMMIT exposes no credential and retains
+the local marker for fresh, serialized observation after old transport exclusion.
+Check effective bootstrap privileges, including PUBLIC database CREATE and
+session_replication_role SET, before exposing the credential. Return only bounded
+identity fields; compare the canonical comment on the server without transferring
+an arbitrary role comment to the application.
+
+A committed reservation whose response/password was lost while the database is
+still pristine cannot resume native initialization automatically. Resolve and
+retire the retained bootstrap, preserve both reservations, and explicitly abandon
+that database/root pair in favor of a new pair. Reusing the stranded pair requires
+a separately specified and qualified recovery mapping; observation is insufficient.
+
+Retain the reservation and bootstrap role identities through retirement and guard
+installation. Fresh inspection must compare exact role OIDs and the retained
+comment; dropping/recreating a bootstrap or manager is incompatible. The reservation
+is not scientific data and creates no schema object that would invalidate native
+freshness. Ordinary startup/retry must not drop it, reset passwords or adopt partial
+state. Database drop/OID reuse, cluster restore and role-identity remapping require
+an explicit recovery mapping including cluster-global roles; a database-only dump
+does not carry this reservation. A retained collision fails closed. The complete
+initializer/recovery command still owns backend exclusion, retirement, installation
+and final manager inspection; provisioning alone grants none of those outcomes.
+
 The application-owned `bigbrotr_archive` schema contains immutable installation
 and attempt records plus one mutable owner row. Every native metadata mutation
 locks that row FOR SHARE through the actual native transaction. Activation locks

@@ -21,13 +21,16 @@ installed service readiness.
 
 ## Actual Git and ownership
 
-Mac main HEAD 3efde78c11e72eae14af367add420f51faaf70fa, two unpublished candidate
-commits after origin/main52ab36631f49d59bfad5ac7ad210d04e04efdbf2 (last verified).
-Root sole writer, no merge/rebase. Exact candidates105a543 and3efde78 transferred
-through clean Git bundles. Current dirty work is root-owned evidence, checkpoint,
-inventory, task02-storage and archive-storage-contract qualification prose only.
-No production changes after native qualification. Between the two candidates,
-only the practical fixture/checkpoint/inventory changed; worker bytes identical.
+Mac main HEAD and freshly verified origin/main are both
+41a369aa19d3c542e929cec6f6fd341e574f5cf4. Three coherent commits pushed normally
+to verified private BigBrotr/bigbrotr-rs; push92091 terminal0 and remote ref matches.
+Root sole writer, no merge/rebase. Current root-owned edits add the database
+reservation contract, a one-use local provisioning gate, and an actual PostgreSQL
+TDD probe/oracle. The new reserve function is deliberately a failing baseline
+stub, not implemented or qualified product behavior. No active Tux experiment. Exact candidates105a543 and3efde78 were
+transferred through clean Git bundles. No production changes after native
+qualification. Between candidates, only practical fixture/checkpoint/inventory
+changed; worker bytes identical.41a369a adds qualification documentation/evidence.
 Read-only AI source/fixture and final recorded-evidence reviews complete. Final
 review independently verified30 raw files, both archives and1456 Git source files,
 case/check/artifact/dependency/lifecycle mappings with no discrepancy. It did not
@@ -145,25 +148,28 @@ Do not mechanically rerun unrelated suites.
 
 ## Next bounded action
 
-Recorded-evidence review, artifact/handoff/diff checks and fresh private-remote
-inspection PASS. Commit this qualification and push normally, then continue the full reserved initializer underP02-T04 steps3/4/5:
-local custody and atomic manager installation now exist, but they do not reserve
-the database or provision a fresh sole-holder bootstrap credential.
+Durable reservation design now specifies a DB-OID NOLOGIN role and canonical
+bounded comment binding nonce/bootstrap/manager OIDs, atomic fresh bootstrap
+creation, strict role/effective PUBLIC privilege checks, and no secret on unknown
+COMMIT. Stranded pristine reservations require explicit abandonment/new pair;
+recovery never relaunches. Read-only design review identified these three closure
+points; all are included in the contract. No schema object or applied SQL changes.
 
-Finalize and implement the durable database reservation plus fresh restricted
-bootstrap role/material in one explicit privileged transaction. Same DB/different
-roots must conflict durably; a session advisory lock is insufficient. Reviewed
-candidate is a DB-OID-specific NOLOGIN role tombstone with only the initialization
-nonce in its global comment (avoid exposing root/dataset metadata). Define retained
-role/OID/recovery/restore lifecycle in the owning contract before code. Use existing
-SCRAM Material; expose secret only after known provisioning COMMIT, never via SQL
-plaintext/logs. Ambiguity preserves both reservations and forbids automatic retry.
+Current TDD: Mac45862 observed the expected second-provision failure with the
+always-allow baseline;4428 passed all7 initialization custody tests after the
+one-use gate.59807 and latest scoped parent/example Clippy/fmt passed. The actual
+PG fixture now independently expects two restricted durable roles after known
+COMMIT; reserve deliberately returns Conflict until its expected failing baseline
+has executed on clean exact-source Tux. Pinned PG16.15 CreateRole source inspected;
+source hash/path are in laboratory inventory. No reservation practical PASS yet.
 
-Wire the actual custodied driver/native consumer through one pinned trusted route,
-then positive join, exact bootstrap retirement/backend resolution, atomic manager
-install and fresh inspection. Configured native mutual TLS is still a gate.
-Pre-provisioned fixture credentials are not sole-holder custody. No runtime
-superuser promotion, REASSIGN OWNED, implicit serve initialization or permission
-from matching observations. Complete CLI/recovery, fresh manager publication/seal,
+Next: commit the clean unpublished TDD candidate, inventory/launch a new isolated
+Tux database-reservation lab, run and retain its expected failing durable-effects
+oracle, then retire/audit that lab. Implement the atomic transaction and bounded
+observer, wire the fresh credential into the actual custodied native consumer,
+and qualify concurrency, rollback, lost-COMMIT and effective-privilege cases.
+Do not push the temporary failing baseline as finished work.
+
+Complete CLI/recovery, configured native mutual TLS, fresh manager publication/seal,
 SELECT-only readers, whole-role budget reconciliation/protection and M1 remain
-required. Do not mark tasks complete from this prerequisite qualification.
+required. Do not mark tasks complete from prerequisite qualification.

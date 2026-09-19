@@ -31,6 +31,7 @@ pub struct LocalInitialization {
     root_device: u64,
     root_inode: u64,
     launch_available: Cell<bool>,
+    provisioning_available: Cell<bool>,
 }
 
 #[derive(Clone, Copy, Serialize)]
@@ -62,6 +63,13 @@ impl LocalInitialization {
     }
     pub fn identity(&self) -> &CatalogIdentity {
         &self.identity
+    }
+    pub(crate) fn take_provisioning(&self) -> Result<(), LifetimeError> {
+        if self.launch_available.get() && self.provisioning_available.replace(false) {
+            Ok(())
+        } else {
+            Err(LifetimeError::Identity)
+        }
     }
     pub fn retain_catalog_connection<F: Future + Unpin>(
         &self,
@@ -203,6 +211,7 @@ impl LocalInitialization {
             root_device: metadata.dev(),
             root_inode: metadata.ino(),
             launch_available: Cell::new(launch),
+            provisioning_available: Cell::new(launch),
         })
     }
 }

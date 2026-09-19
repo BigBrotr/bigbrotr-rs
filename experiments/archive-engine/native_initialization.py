@@ -45,12 +45,13 @@ assert execute([('ordered-build', [sys.executable, __file__, '--build-binaries']
 worker = json.loads((out / 'worker-identity.json').read_text())
 env.update(BIGBROTR_ARCHIVE_WORKER_BYTES=str(worker['bytes']), BIGBROTR_ARCHIVE_WORKER_SHA256=worker['sha256'])
 assert execute([
-    ('fixture', ['cargo', 'build', '--locked', '--release', '-p', 'bigbrotr', '--example', 'catalog_schema_probe']),
+    ('fixture', ['cargo', 'build', '--locked', '--release', '-p', 'bigbrotr', '--example', 'catalog_schema_probe', '--example', 'catalog_initialization_probe']),
     ('parent-tests', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr', '--lib', 'storage::archive', '--', '--nocapture']),
-    ('clippy', ['cargo', 'clippy', '--locked', '--release', '-p', 'bigbrotr', '-p', 'bigbrotr-archive-worker', '--lib', '--example', 'catalog_schema_probe', '--bin', 'bigbrotr-archive-worker', '--', '-D', 'warnings']),
+    ('clippy', ['cargo', 'clippy', '--locked', '--release', '-p', 'bigbrotr', '-p', 'bigbrotr-archive-worker', '--lib', '--example', 'catalog_schema_probe', '--example', 'catalog_initialization_probe', '--bin', 'bigbrotr-archive-worker', '--', '-D', 'warnings']),
 ], out / 'checks', SOURCE, env, identity, 1800)['status'] == 'PASS'
 for src, dst in [('bigbrotr', out / 'bigbrotr'), ('bigbrotr-archive-worker', bundle / 'bigbrotr-archive-worker'),
-                 ('examples/catalog_schema_probe', out / 'catalog-schema-probe')]:
+                 ('examples/catalog_schema_probe', out / 'catalog-schema-probe'),
+                 ('examples/catalog_initialization_probe', out / 'catalog-initialization-probe')]:
     shutil.copy2(build / 'target/release' / src, dst)
     dst.chmod(0o500)
 assert source_files() == manifest['files_sha256']
@@ -58,6 +59,7 @@ info = json.loads(subprocess.check_output([str(out / 'bigbrotr'), 'build-info'],
 assert info['archive_worker'] == worker and info['source']['revision'] == manifest['revision']
 assert info['source']['dirty'] is False
 result = dict(identity, status='READY', control=file_hash(out / 'bigbrotr'), worker=worker['sha256'],
-              probe=file_hash(out / 'catalog-schema-probe'), build_info=info, source_unchanged=True)
+              probe=file_hash(out / 'catalog-schema-probe'), initializer=file_hash(out / 'catalog-initialization-probe'),
+              build_info=info, source_unchanged=True)
 (out / 'ready.json').write_text(json.dumps(result, indent=2) + '\n')
 print(json.dumps({'status': 'READY', 'source': manifest['revision']}), flush=True)

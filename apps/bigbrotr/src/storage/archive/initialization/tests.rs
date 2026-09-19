@@ -132,6 +132,22 @@ fn recovery_is_held_by_the_unpolled_driver_and_never_authorizes_a_new_launch() {
 }
 
 #[test]
+fn provisioning_is_once_only_and_never_authorized_by_recovery_or_a_previous_launch() {
+    let (_temp, identity) = fixture();
+    let owner = LocalInitialization::create_for_boot(&identity, [3; 16], BOOT).unwrap();
+    assert_eq!(owner.take_provisioning(), Ok(()));
+    assert_eq!(owner.take_provisioning(), Err(LifetimeError::Identity));
+    drop(owner);
+    let recovered = recover_released(&identity);
+    assert_eq!(recovered.take_provisioning(), Err(LifetimeError::Identity));
+    let (_other, identity) = fixture();
+    let owner = LocalInitialization::create_for_boot(&identity, [4; 16], BOOT).unwrap();
+    let mut command = Command::new("/bin/true");
+    owner.inherit(&mut command).unwrap();
+    assert_eq!(owner.take_provisioning(), Err(LifetimeError::Identity));
+}
+
+#[test]
 fn a_native_command_clone_keeps_custody_until_its_child_exits() {
     use std::{
         io::{BufRead, BufReader},
