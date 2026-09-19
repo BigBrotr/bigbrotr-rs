@@ -5,10 +5,22 @@ use bigbrotr::storage::{
     archive::LocalInitialization, postgres::archive_attempt::ArchiveAttemptError,
 };
 use bigbrotr_model::{AdmissionBatch, Digest256, FactRef, OwnerEpoch, Sequence, SourceRecordId};
+#[path = "publication_protocol_faults.rs"]
+mod faults;
+pub use faults::commit_loss;
+
 type Driver = tokio::task::JoinHandle<Result<(), tokio_postgres::Error>>;
 
 async fn claim(database: &str, local: &LocalCoordinator, n: u8) -> (ControlSession, Driver) {
-    let (client, connection) = connection(database, "bigbrotr_control", 5432).await;
+    claim_port(database, local, n, 5432).await
+}
+async fn claim_port(
+    database: &str,
+    local: &LocalCoordinator,
+    n: u8,
+    port: u16,
+) -> (ControlSession, Driver) {
+    let (client, connection) = connection(database, "bigbrotr_control", port).await;
     let driver = tokio::spawn(local.retain_connection(connection).unwrap());
     let (owner, _) = ControlSession::acquire(
         client,
@@ -40,6 +52,21 @@ async fn snapshot(database: &str) -> serde_json::Value {
 }
 fn recorded(name: &str, state: serde_json::Value) {
     emit(serde_json::json!({"event":"protocol-case","name":name,"state":state}));
+}
+
+async fn prepare(database: &str, installed: bool) {
+    let (admin, driver) = connect("postgres", "postgres").await;
+    admin
+        .batch_execute(&format!("CREATE DATABASE {database}"))
+        .await
+        .unwrap();
+    drop(admin);
+    driver.await.unwrap().unwrap();
+    initialize_control(database, installed).await;
+    let (admin, driver) = connect(database, "postgres").await;
+    admin.batch_execute("BEGIN; INSERT INTO control.topology_generations(dataset_id,generation,created_at_us) VALUES(decode(repeat('01',16),'hex'),0,0); UPDATE control.topology_generations SET sealed=true; UPDATE control.datasets SET topology_generation=0; COMMIT;").await.unwrap();
+    drop(admin);
+    driver.await.unwrap().unwrap();
 }
 
 pub async fn run() {
@@ -83,18 +110,7 @@ pub async fn run() {
     )
     .unwrap();
     for database in ["bbprotocol_current", "bbprotocol_old"] {
-        let (admin, driver) = connect("postgres", "postgres").await;
-        admin
-            .batch_execute(&format!("CREATE DATABASE {database}"))
-            .await
-            .unwrap();
-        drop(admin);
-        driver.await.unwrap().unwrap();
-        initialize_control(database, database == "bbprotocol_current").await;
-        let (admin, driver) = connect(database, "postgres").await;
-        admin.batch_execute("BEGIN; INSERT INTO control.topology_generations(dataset_id,generation,created_at_us) VALUES(decode(repeat('01',16),'hex'),0,0); UPDATE control.topology_generations SET sealed=true; UPDATE control.datasets SET topology_generation=0; COMMIT;").await.unwrap();
-        drop(admin);
-        driver.await.unwrap().unwrap();
+        prepare(database, database == "bbprotocol_current").await;
     }
     let database = "bbprotocol_current";
     let before = snapshot(database).await;
@@ -306,4 +322,5 @@ pub async fn run() {
     assert_eq!(snapshot(database).await, before);
     recorded("old-history-survives-upgrade-and-cannot-be-adopted", before);
     assert_eq!(budget.snapshot().active_permits(), 0);
+    faults::races(&local, &request).await;
 }

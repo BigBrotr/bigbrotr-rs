@@ -20,12 +20,13 @@ and rejects other roles. Root remains sole writer/integrator.
 
 ## Actual Git and current review
 
-Mac main is b203a41fdde08a7464beaa904bac107187b564ab, qualified within the scope
-below; private origin/main still637c69f pending the evidence commit. Root is sole
+Mac main and private origin/main are92962bb after qualified b203a41 plus evidence.
+Push71167 completed. Root is sole
 writer. New dirty next fixture slice: publication_protocol helpers/faults, publication
 example CLI, native_commit_proxy target and coordinator_fault_cases Python plus
 signed harness11-case assertions. Those races/cancellation/COMMIT cases are NOT_RUN.
-Owning evidence/contracts/inventory/checkpoint are also dirty for the completed run.
+Inventory/checkpoint are also dirty for the new fault candidate and verified
+retirement of only the prior owned empty network.
 No merge/rebase or contributor edits.
 
 Exact b203a41 native run34551 and audit/collection12387 terminal0. No active lab.
@@ -43,7 +44,9 @@ Lab /home/tux/bigbrotr-implementation-20260917/runs/coordinator-protocol-b203a41
 owner26eefb6e3d34e03c9cabe9a59b0a9054, inventoried coordinator_protocol. Stopped-retained
 at2026-09-19T13:00:37.584399+00:00: zeroowned SQL backends before shutdown,338preexisting
 containers unchanged,8unrelated running/0BigBrotr,noOOM. Runnerexit143/PGexit0;
-network1ff5a9d4e6f4742bed01cec56d51c7699621295c159e4ea88957f590d49a7f7b emptyretained.
+Network1ff5a9d4e6f4742bed01cec56d51c7699621295c159e4ea88957f590d49a7f7b alone
+was verified empty/owned/stopped and removed at2026-09-19T13:06:46.914844+00:00;
+containers and data retained, exact retirement in inventory.
 Raw .research/implementation/archive-worker/coordinator-protocol/qualified has65files;
 tar107d7a83b301c8ecd25265c42f3d13a17cad906f469349b963e8c5f78df6ca9b.
 Latest copied build cache is this lab/out/build. Never restart retired labs.
@@ -269,12 +272,15 @@ External feedback reread previously; it records the earlier scoped closures too.
 
 ## Next bounded action
 
-Commit/push the completed b203a41 evidence separately from the new unqualified
-fault fixture changes. Review the new actual lock schedules, cancelled blocked
-initializer and both lost binding COMMIT replies. Locally scoped Clippy84509 PASS;
+Completed b203a41 evidence is committed/pushed in92962bb. Finish independent
+review of the new actual lock schedules, cancelled blocked initializer and both
+lost binding COMMIT replies. Latest scoped Clippy72075 PASS;
 new CLI argument guard corrected by source review before native use. The race
 fixture provisions SELECT defaults before migration so an unrelated GRANT race
-cannot masquerade as the intended issuance refusal. All new scenarios NOT_RUN.
+cannot masquerade as the intended issuance refusal. Independent fixture review found no execution blocker. Corrected its scope
+note: missing-migration subcase exercises require only; cancelled backend
+disappearance is checked after the owned relation blocker is released.
+All new scenarios NOT_RUN.
 
 Then form the next exact unpublished fixture candidate and create a fresh inventoried
 lab from b203a41/out/build. Run11 protocol cases +2 binding COMMIT-loss branches and

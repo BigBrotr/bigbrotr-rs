@@ -125,6 +125,8 @@ def main(root, installed=False):
             'fresh-control-epoch-preserves-original-binding-and-attempt',
             'same-dataset-catalog-different-local-binding-refused', 'binding-update-delete-truncate-refused',
             'old-history-survives-upgrade-and-cannot-be-adopted',
+            'old-issuer-lock-precedes-migration', 'migration-lock-precedes-old-issuer',
+            'cancelled-blocked-binding-preserves-empty-history',
         ]
         assert all(v['event']=='protocol-case' for v in values)
         assert values[0]['state'] == values[1]['state'] == dict(bindings=[], attempts=[])
@@ -137,6 +139,25 @@ def main(root, installed=False):
         local_digest = sha(root/'out/coordinator-protocol/state/coordinator.json')
         assert bindings['binding_sha256'] == '\\x'+local_digest
         assert values[3]['state']['attempts'][0]['coordinator_binding_sha256'] == '\\x'+local_digest
+        old_first, migration_first, cancelled = (v['state'] for v in values[8:])
+        assert old_first['before_binding'] == old_first['final']
+        assert not old_first['final']['bindings'] and len(old_first['final']['attempts']) == 1
+        assert old_first['final']['attempts'][0]['coordinator_binding_sha256'] is None
+        assert migration_first['before_binding'] == dict(bindings=[], attempts=[])
+        assert len(migration_first['final']['bindings']) == 1 and not migration_first['final']['attempts']
+        assert cancelled['final'] == dict(bindings=[], attempts=[])
+        # Independently require the held/waiting migration namespace/mode in
+        # both observed schedules, not merely their final row counts.
+        for state, holder_mode, waiter_mode in [(old_first, 'ShareLock', 'ExclusiveLock'),
+                                               (migration_first, 'ExclusiveLock', 'ShareLock')]:
+            relation, advisory = state['locks']
+            assert relation['event'] == 'relation' and advisory['event'] == 'advisory'
+            for pid, mode, granted in [(advisory['holder'], holder_mode, True),
+                                       (advisory['waiter'], waiter_mode, False)]:
+                assert any(row['pid'] == pid and row['locktype'] == 'advisory' and row['mode'] == mode
+                           and row['granted'] is granted and row['classid'] == str(0x42427472)
+                           and row['objid'] == str(0x4d494752) for row in advisory['locks'])
+        assert cancelled['locks']['event'] == 'relation'
         password = (root / 'secrets/CatalogManager').read_text()
         assert len(password) == 64 and all(c in '0123456789abcdef' for c in password)
         sql('postgres', 'CREATE ROLE "CatalogManager" LOGIN NOSUPERUSER CREATEROLE NOCREATEDB NOINHERIT NOREPLICATION NOBYPASSRLS PASSWORD ' + "'" + password + "';")

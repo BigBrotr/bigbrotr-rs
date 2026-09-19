@@ -32,7 +32,7 @@ class Proxy:
                            data_commits=0, server_complete=0, client_complete=0, faults=0,
                            owner_requests=0, owner_forwarded=0, owner_complete=0,
                            guard_rejections=0, serialization_rejections=0, rejection_sequence=[])
-        self.report.update(auth_finals_omitted=0, frontend_queries=0)
+        self.report.update(auth_finals_omitted=0, frontend_queries=0, coordinator_inserts=0)
 
     def emit(self, event, **extra):
         print(json.dumps(dict(event=event, mode=self.mode, target=self.target, **self.report, **extra)), flush=True)
@@ -109,6 +109,16 @@ class Proxy:
                     continue
                 if frontend and tag in (b'Q', b'P'):
                     self.report['frontend_queries'] += 1
+                if frontend and tag == b'P' and self.target == 'control-coordinator':
+                    # tokio-postgres prepares the fixed INSERT using extended
+                    # protocol. Its subsequent transaction COMMIT is simple Q.
+                    # Never confuse the earlier Control claim with this boundary.
+                    _, query, _ = body.split(b'\0', 2)
+                    if query.upper().startswith(b'INSERT INTO CONTROL.ARCHIVE_COORDINATORS('):
+                        state['data'] = True
+                        self.report['data_queries'] += 1
+                if not frontend and tag == b'C' and self.target == 'control-coordinator' and state['data'] and body == b'INSERT 0 1\0':
+                    self.report['coordinator_inserts'] += 1
                 if frontend and self.mode == 'hold-manager-owner':
                     if tag == b'P':
                         statement, query, _ = body.split(b'\0', 2)
@@ -264,7 +274,7 @@ class Proxy:
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--mode', choices=['pass', 'before-forward', 'after-complete', 'hold-data', 'hold-commit', 'hold-reply', 'hold-manager-commit', 'hold-manager-owner', 'omit-auth-final'], required=True)
-    parser.add_argument('--target', choices=['publication', 'native-schema', 'guard-install'], default='publication')
+    parser.add_argument('--target', choices=['publication', 'native-schema', 'guard-install', 'control-coordinator'], default='publication')
     try:
         args = parser.parse_args()
         sys.exit(asyncio.run(Proxy(args.mode, args.target).run()))

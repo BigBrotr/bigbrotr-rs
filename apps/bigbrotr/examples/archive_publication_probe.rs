@@ -750,7 +750,9 @@ async fn run(mode: &str, port: u16, installed: bool) {
 fn main() {
     let args: Vec<_> = std::env::args().collect();
     assert!(
-        args.len() == 3 || args.len() == 4 && (args[2] == "resolve" || args[3] == "--installed")
+        args.len() == 3
+            || args.len() == 4
+                && (args[2] == "resolve" || args[3] == "--installed" || args[1] == "protocol")
     );
     tokio::runtime::Builder::new_current_thread()
         .enable_all()
@@ -761,6 +763,15 @@ fn main() {
                 tokio::time::timeout(Duration::from_secs(120), publication_protocol::run())
                     .await
                     .unwrap();
+                return;
+            }
+            if args[1] == "protocol" {
+                tokio::time::timeout(
+                    Duration::from_secs(90),
+                    publication_protocol::commit_loss(&args[2], args[3].parse().unwrap()),
+                )
+                .await
+                .unwrap();
                 return;
             }
             if args[2] == "inputs" {

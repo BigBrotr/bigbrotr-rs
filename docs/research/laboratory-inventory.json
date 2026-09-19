@@ -11864,7 +11864,14 @@
         "build_checks_status": "PASS"
       },
       "evidence": "docs/implementation/evidence/p02-coordinator-protocol-native-20260919.json",
-      "raw_manifest": ".research/implementation/archive-worker/coordinator-protocol/evidence-identity.json"
+      "raw_manifest": ".research/implementation/archive-worker/coordinator-protocol/evidence-identity.json",
+      "network_retirement": {
+        "network": "1ff5a9d4e6f4742bed01cec56d51c7699621295c159e4ea88957f590d49a7f7b",
+        "owner": "26eefb6e3d34e03c9cabe9a59b0a9054",
+        "action": "remove verified empty retired network only",
+        "containers": "stopped-retained",
+        "observed_at": "2026-09-19T13:06:46.914844+00:00"
+      }
     }
   },
   "implementation_monitor_corrections_20260918": {
