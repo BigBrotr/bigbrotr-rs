@@ -27,6 +27,7 @@ pub enum AdmissionError {
     RequestGap,
     WindowFull,
     RetiredRequest,
+    ProducerClosing,
     AuthorityUnavailable,
     RequestInput(super::RequestInputError),
     CommitUnknown,
@@ -48,6 +49,7 @@ impl From<BootstrapError> for AdmissionError {
             BootstrapError::EngineRead => Self::EngineRead,
             BootstrapError::StateMismatch => Self::StateMismatch,
             BootstrapError::RequestConflict => Self::RequestConflict,
+            BootstrapError::ProducerClosing => Self::ProducerClosing,
             BootstrapError::AuthorityUnavailable => Self::AuthorityUnavailable,
             BootstrapError::CommitUnknown => Self::CommitUnknown,
             BootstrapError::RequestInput(error) => Self::RequestInput(error),
@@ -115,6 +117,7 @@ impl PreparedEvent {
         if self.scope.dataset_id != store.manifest.identity().dataset_id {
             return Err(AdmissionError::InvalidInput);
         }
+        store.require_open_producer(self.request)?;
         store
             .stage_producer_request(self.request, self.digest, &self.request_preimage)
             .map_err(AdmissionError::RequestInput)
@@ -362,17 +365,16 @@ impl IngestStore {
             producer_slot_id: input.request.producer_slot_id,
             producer_epoch: input.request.producer_epoch,
         };
-        let producer = self.admission_value(producer_key, 26, &mut reads)?;
-        let (issued, ack, retired) = match producer {
-            Some(v) if v.len() == 26 && v[..2] == [1, 0x31] => {
-                (number(&v[2..10])?, number(&v[10..18])?, number(&v[18..26])?)
-            }
-            None => (0, 0, 0),
-            _ => return Err(AdmissionError::StateMismatch),
-        };
-        if retired > ack || ack > issued {
-            return Err(AdmissionError::StateMismatch);
+        let producer = self.admission_value(producer_key, 27, &mut reads)?;
+        let producer = producer
+            .as_deref()
+            .map(super::producer_closing::ProducerState::decode)
+            .transpose()?
+            .unwrap_or_default();
+        if producer.closing {
+            return Err(AdmissionError::ProducerClosing);
         }
+        let (issued, ack, retired) = (producer.issued, producer.acknowledged, producer.retired);
         let sequence = input.request.request_sequence.get();
         let request_key = IngestKey::Request {
             request_id: input.request,

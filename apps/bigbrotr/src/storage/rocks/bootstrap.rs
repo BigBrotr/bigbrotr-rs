@@ -24,6 +24,7 @@ pub enum BootstrapError {
     EngineRead,
     StateMismatch,
     RequestConflict,
+    ProducerClosing,
     AuthorityUnavailable,
     RequestInput(super::RequestInputError),
     /// No negative outcome is implied. Close/join and resolve the exact request.
@@ -185,6 +186,7 @@ impl IngestStore {
             return Err(BootstrapError::CommitUnknown);
         }
         self.validate_bootstrap(request, intent, limits)?;
+        self.require_open_producer(request)?;
         let bytes = intent
             .encode_request_preimage(request, limits.max_batch_bytes)
             .map_err(|error| match error {
@@ -219,6 +221,7 @@ impl IngestStore {
             return Err(BootstrapError::CommitUnknown);
         }
         self.validate_bootstrap(request, intent, limits)?;
+        self.require_open_producer(request)?;
         let digest = intent.request_digest(request);
         let receipts = self
             .db

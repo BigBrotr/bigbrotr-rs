@@ -61,6 +61,10 @@ pub use certification::{
     CertificationLimits, CertificationOutcome, PreparedCertification, StoredCertification,
 };
 
+#[path = "producer_closing.rs"]
+mod producer_closing;
+pub use producer_closing::ProducerClosing;
+
 #[cfg(test)]
 #[path = "admission_tests.rs"]
 mod admission_tests;
@@ -134,6 +138,28 @@ pub struct IngestStore {
     _reservation: StoreReservation,
     manifest: IngestManifest,
     write_uncertain: bool,
+}
+
+/// Exclusive historical-state recovery. There is no conversion or mutable
+/// exposure to IngestStore, and opening never grants fresh admission authority.
+pub struct IngestRecovery {
+    store: IngestStore,
+}
+impl IngestRecovery {
+    pub fn open(
+        path: &Path,
+        expected: IngestManifest,
+        limits: RocksNativeLimits,
+        permit: OwnedPermit,
+    ) -> Result<Self, StoreError> {
+        IngestStore::reopen(path, expected, limits, permit).map(|store| Self { store })
+    }
+    pub const fn manifest(&self) -> &IngestManifest {
+        self.store.manifest()
+    }
+    pub(in crate::storage) fn matches_configured_root(&self, path: &Path) -> bool {
+        self.store.matches_configured_root(path)
+    }
 }
 impl IngestStore {
     /// Creates only an absent target under an existing parent, then synchronizes

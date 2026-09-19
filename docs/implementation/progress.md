@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-09-19. Navigation only; follow the
+Observed 2026-09-20 (Mac date; Tux UTC still 2026-09-19). Navigation only; follow the
 [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint).
 Verify Git, dirty files, evidence and resource claims before continuing.
 
@@ -13,20 +13,25 @@ Cargo packages and the read-only Go neighbor. No public release or Linux arm64
 claim. No P02/P03 task or M1 gate is complete. All selected later product work
 remains required.
 
-P02-T02 step 5 initial CertifyExisting read is qualified. Root completed documentation and
-captured-evidence review; the qualification commit/private push are next. Next responsibility is the
+P02-T02 step 5 initial CertifyExisting read is qualified and pushed. Root is
+implementing the native closing/recovery operation and its current-Control consumer. Next responsibility is the
 P02-T02 step 4 native closing/recovery foundation needed for an actual fresh-owner
 restart; proof-only progress and general admission/source consumers remain open.
 No active remote experiment or tool session after the terminal audit below.
 
 ## Git and integration state
 
-Mac main HEAD 3342a21d64056a5cb60143788e10e6ace5c7562e; private origin/main remains
-8fd34ddc86f27e619e50a002330f090abfb848b3. Product/fixture candidate
+Mac main HEAD and private origin/main both
+442f3d878b3215e421a71160b3613b7ab0c93c7b, verified with ls-remote after push. Product/fixture candidate
 2f9ba08cdbbd3b5b924600780424bfc41cb40571, tree
 4ad619113232428a205f5a7c0a48725b35dc7711; harness3342a21 changes no product input.
-Both commits remain unpublished pending the qualification commit/push. Root owns
-current evidence/reference/task/checkpoint/inventory and offline observer changes.
+Candidate, corrected harness and qualification commits are published. Root owns uncommitted native/PG producer-closing core/tests, shared native
+staging/admission/bootstrap/store/registry changes, closing probe and all-state
+fixture helper, Python engine oracle/native-runner selection, and checkpoint/
+reference updates. Eight local native
+tests pass. The current-Control bridge, actual consumer and twelve-case engine
+oracle are implemented but not yet executed on Tux. This new slice is not
+qualified or published.
 No other writer, unexpected files or merge/rebase. Published SQL 1..14 unchanged.
 
 ## Implemented boundary and executed evidence
@@ -69,8 +74,10 @@ the harness. Final AI review independently recalculated the four captured cases
 and found no remaining blocker; observed sequence29 is explicitly distinguished
 from a literal expected value. No remote execution by the reviewer. Root has read the native store, manifest/
 registration/store references, storage-services closing contract and bootstrap
-write/replay paths for the next slice. catalog_guard_review is independently
-inspecting PG closing/recovery constraints; no implementation change yet.
+write/replay paths for the next slice. catalog_guard_review completed the read-only PG closing/recovery review.
+fact_codec_review read the native barrier and five tests; no remaining bypass
+found. Neither reviewer ran remote engines. The bounded issued boundary is not
+a resolved-through prefix and must never authorize ACK.
 
 Limits: connected limit 32 is input preflight, policy is a trusted-validator
 refusal and retired label means producer closing. None qualifies decoder-byte
@@ -106,11 +113,32 @@ checks when creating this lab. Earlier failed runs remain retained as recorded.
 
 ## Next action and remaining gates
 
-Next bounded action: commit/push this qualified slice, then finish the closing/handoff
-contracts and actual native/open-owner paths for P02-T02 step 4. Start with a
-persistent closing barrier and a recovery read handle incapable of fresh admission;
-retain original-request resolution before any successor activation. Do not infer
-fresh-owner authority from a stale manifest, POSIX lock alone or missing response.
+Next bounded action: create an unpublished exact-source candidate and isolated
+Tux lab for the connected consumer, then qualify the interrupted transitions and actual old-client refusal on Tux.
+The exclusive IngestRecovery has no conversion/admission API. Native closing is
+an explicit producer-value v1-to-v2 migration, preserving issued/ACK/retired and all
+other keys. Signed input prepared before closure cannot cross the barrier. An
+absent/zero native producer with retained receipts is refused, never adopted as
+zero. Eight Mac tests PASS, including reopen/exact retry, first-empty closure,
+three authority boundaries, inconsistent receipt/state and fixed-width codec.
+Ignored logs: .research/implementation/producer-closing/{missing-api,semantic-red,
+native-first,native-core}.log. Semantic stub RED was executed before implementation.
+Scoped library/probe Clippy PASS. Full Mac native-store run: 34 PASS, one FAIL
+because the required packaged native worker is unavailable locally (the supplied
+skip name was wrong); preserve store-regressions.log, do not report suite PASS.
+That actual worker case is required by the imminent Linux native run. No active
+local test or Tux experiment. No SQL/dependency change.
+
+The connected close-only operation may use current schema14: PG closing is only
+a scheduling veto, never attestation of the native barrier or bound. Separate the
+fresh actor from the complete immutable historical target; current policy and
+Control lease authorize closure even when the old Ingest scheduling lease expired.
+Native sync must precede PG closing; rollback/lost response requires identical
+recovery, never compensating native reopen. Old clients can stage an original in
+the native-closed/PG-open intermediate state before refusing native admission;
+only confirmed PG closing supports pre-staging refusal. Boundary regressions
+for missing/excess max receipt, nonzero ACK and adjacent-slot isolation now pass. Review
+remaining recovery/ACK contracts before extending this close-only slice.
 
 Initial adapters still bind original Control and producer/owner epoch 1. Recovery
 needs native closing, fresh-Control close/register/topology CAS and explicit
@@ -129,3 +157,20 @@ External monitor findings remain scoped closed with practical evidence:
 [MON-010](evidence/p01-tls-presence-20260918.json),
 [MON-007](evidence/p01-archive-cache-retry-20260918.json).
 No new contrary evidence in the requested external review note.
+
+Current close-only candidate review: catalog_guard_review read the PG/native bridge
+and found no blocker. Root corrected fixture-only issues before running it:
+joined the old Control driver before fresh acquisition, aligned the signed event
+with the literal timestamp/window, and supplied bindings to the original-input
+oracle. No claim from compilation. The planned connected cases include normal,
+zero, PG-first, expired old Ingest lease/draining, wrong root/metadata, policy
+refusal, expired current policy, SQL rollback, late SQL, and two lost-COMMIT
+orders. Fresh-Control recovery keeps native closing after the selected post-sync
+failures. Actual old-client compatibility, process kill/concurrent native LOCK,
+new-policy heads and post-sync cancellation remain open.
+
+Tux read-only inventory at 2026-09-19T22:09Z: eight unrelated containers running,
+no BigBrotr running, 94GiB free. Ignored producer-closing/native launch/transfer
+helpers are adapted from the reviewed certification lab; they will create a new
+root, verify clean Git export, reuse only the stopped exact-lock certification
+build cache, and retire only its verified empty owned network. No lab created yet.

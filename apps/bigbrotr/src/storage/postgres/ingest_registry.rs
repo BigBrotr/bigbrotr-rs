@@ -351,6 +351,14 @@ fn optional_decimal(row: &Row, column: usize) -> Result<Option<u64>, RegistryErr
 }
 
 async fn observe(tx: &Transaction<'_>, s: &InitialRegistration) -> Result<Observed, RegistryError> {
+    observe_locked(tx, s, false).await
+}
+
+async fn observe_locked(
+    tx: &Transaction<'_>,
+    s: &InitialRegistration,
+    closing: bool,
+) -> Result<Observed, RegistryError> {
     let dataset = &s.dataset_id.as_bytes().as_slice();
     let resource = &s.ingest_resource_id.as_bytes().as_slice();
     let incarnation = &s.process_incarnation.as_bytes().as_slice();
@@ -445,8 +453,26 @@ async fn observe(tx: &Transaction<'_>, s: &InitialRegistration) -> Result<Observ
     }
     let slot_row = presence(tx.query_opt("SELECT dataset_id = $1::bytea AND registered_by_resource_id = $3::bytea AND registered_by_epoch = $4::text::numeric AND registered_by_role = 'control' AND registered_by_incarnation = $5::bytea AND created_at_us = $6::bigint, true FROM control.producer_slots WHERE producer_slot_id = $2::bytea", &[dataset, slot, control_resource, &control_epoch, control_incarnation, &s.created_at_us])
         .await.map_err(backend)?)?;
-    let producer = presence(tx.query_opt("SELECT dataset_id = $1::bytea AND producer_role_instance_id = $3::bytea AND producer_role = 'ingest' AND producer_incarnation = $4::bytea AND owner_resource_id = $5::bytea AND owner_epoch = 1 AND owner_role = 'ingest' AND owner_incarnation = $4::bytea AND outstanding_request_limit = $6::bigint AND opened_at_us = $7::bigint, CASE state WHEN 'open' THEN true WHEN 'closing' THEN false WHEN 'retired' THEN false END FROM control.producer_epochs WHERE producer_slot_id = $2::bytea AND producer_epoch = 1 FOR SHARE", &[dataset, slot, role, incarnation, resource, &i64::from(s.outstanding_request_limit), &s.created_at_us])
-        .await.map_err(backend)?)?;
+    let producer_sql = format!(
+        "SELECT dataset_id = $1::bytea AND producer_role_instance_id = $3::bytea AND producer_role = 'ingest' AND producer_incarnation = $4::bytea AND owner_resource_id = $5::bytea AND owner_epoch = 1 AND owner_role = 'ingest' AND owner_incarnation = $4::bytea AND outstanding_request_limit = $6::bigint AND opened_at_us = $7::bigint, CASE state WHEN 'open' THEN true WHEN 'closing' THEN false WHEN 'retired' THEN false END FROM control.producer_epochs WHERE producer_slot_id = $2::bytea AND producer_epoch = 1 {}",
+        if closing { "FOR UPDATE" } else { "FOR SHARE" }
+    );
+    let producer = presence(
+        tx.query_opt(
+            &producer_sql,
+            &[
+                dataset,
+                slot,
+                role,
+                incarnation,
+                resource,
+                &i64::from(s.outstanding_request_limit),
+                &s.created_at_us,
+            ],
+        )
+        .await
+        .map_err(backend)?,
+    )?;
     let required = [owner, role_row, stream, generation, slot_row, producer];
     let any = required.iter().any(|row| row.exists)
         || !members.is_empty()
@@ -485,6 +511,30 @@ pub(super) async fn require_initial_registration(
     if observe(tx, specification).await?.observation
         != (RegistrationObservation::Matching { current: true })
     {
+        return Err(RegistryError::InvalidMetadata);
+    }
+    Ok(())
+}
+
+/// Historical metadata is attribution; only the caller's current Control fence
+/// and exclusive recovery handle can authorize native closing. Keep the same
+/// complete identity comparison as registration without requiring old heads or
+/// scheduling leases to remain current.
+pub(super) async fn require_closing_registration(
+    tx: &Transaction<'_>,
+    specification: &InitialRegistration,
+) -> Result<(), RegistryError> {
+    specification.validate()?;
+    if !matches!(
+        observe_locked(tx, specification, true).await?.observation,
+        RegistrationObservation::Matching { .. }
+    ) {
+        return Err(RegistryError::InvalidMetadata);
+    }
+    // observe_locked retained Ingest/role SHARE then producer UPDATE. Released
+    // owners and retired producers cannot be resurrected by historical metadata.
+    let row = tx.query_one("SELECT o.state IN ('active','draining') AND r.retired_at_us IS NULL AND p.state IN ('open','closing') FROM control.owner_epochs o JOIN control.role_instances r ON r.role_instance_id=o.role_instance_id JOIN control.producer_epochs p ON p.owner_resource_id=o.resource_id AND p.owner_epoch=o.epoch WHERE o.resource_id=$1::bytea AND o.epoch=1 AND p.producer_slot_id=$2::bytea AND p.producer_epoch=1", &[&&specification.ingest_resource_id.as_bytes()[..], &&specification.producer_slot_id.as_bytes()[..]]).await.map_err(backend)?;
+    if !boolean(&row, 0)? {
         return Err(RegistryError::InvalidMetadata);
     }
     Ok(())

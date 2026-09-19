@@ -126,3 +126,16 @@ not policy-epoch advancement or completed retirement. `certification_observer.py
 checks a hash-bound normal capture and rejects altered proof/state observations
 offline. The [evidence report](../../docs/implementation/evidence/p02-certification-native-20260919.json)
 records executed scope and the remaining proof-checkpoint/recovery gates.
+
+## Producer closing qualification (in progress)
+
+`closing.py` drives the actual `ingest_bootstrap_probe` closing consumer under a
+fresh Control owner and exclusive historical recovery handle. Use an inventoried
+exact-revision native lab built with `native_initialization.py --producer-closing`.
+The oracle constructs the complete fixed v2 marker independently, compares every
+native key/value, exact signed originals and all 37 Control tables with xmin.
+It includes zero, PG-first, old expired Ingest lease, wrong target/authority,
+SQL rollback, delayed SQL and both lost-COMMIT orders. Interrupted work retries
+under a third Control claim without another native mutation. The old executable,
+process-kill/LOCK and complete outcome-drain/ACK journeys remain separate gates.
+These are implemented scenarios, not executed PASS evidence.

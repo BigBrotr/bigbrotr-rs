@@ -1325,3 +1325,6 @@ fn signed_pending_reopens_and_reaches_the_supervised_native_worker_without_ackno
 
 #[path = "certification_tests.rs"]
 mod certification_tests;
+
+#[path = "producer_closing_tests.rs"]
+mod producer_closing_tests;

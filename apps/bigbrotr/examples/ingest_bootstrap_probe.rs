@@ -25,8 +25,12 @@ use bigbrotr_model::{
 use std::{cell::Cell, io::Write, path::Path, sync::atomic::AtomicBool, time::Duration};
 use tokio_postgres::{Config, NoTls};
 
+#[path = "support/ingest_closing.rs"]
+mod ingest_closing;
 #[path = "support/ingest_event.rs"]
 mod ingest_event;
+#[path = "support/ingest_snapshot.rs"]
+mod ingest_snapshot;
 
 const MIB: u64 = 1024 * 1024;
 fn emit(value: serde_json::Value) {
@@ -383,6 +387,19 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
     emit(
         serde_json::json!({"event":"initialized","dataset":dataset,"manifest":hex(manifest.encode().as_bytes())}),
     );
+    if mode.starts_with("event-closing-") {
+        ingest_closing::run(
+            config, owner, driver, &observer, store, &spec, &intent, path, &budget, mode, scope,
+        )
+        .await;
+        drop(observer);
+        tokio::time::timeout(Duration::from_secs(5), observer_driver)
+            .await
+            .unwrap()
+            .unwrap()
+            .unwrap();
+        return;
+    }
     let mut validated = 0;
     let result = owner
         .bootstrap_initial_dictionaries(

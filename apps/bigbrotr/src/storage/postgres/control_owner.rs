@@ -16,10 +16,13 @@ use tokio_postgres::{Client, Row, Transaction};
 mod archive_coordinator;
 #[path = "initial_batch.rs"]
 mod initial_batch;
+#[path = "producer_closing.rs"]
+mod producer_closing;
 pub use initial_batch::{
     InitialBatchError, InitialBatchRequest, InitialCertificationRequest, InitialEventError,
     InitialEventRequest, InitialImportBatchRequest, InitialOperationError,
 };
+pub use producer_closing::{ProducerCloseError, ProducerCloseRequest};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum OwnerError {

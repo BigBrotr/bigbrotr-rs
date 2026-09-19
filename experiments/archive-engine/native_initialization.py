@@ -19,8 +19,9 @@ if sys.argv[1:] == ['--build-binaries']:
     identity = build_binaries(SOURCE, os.environ)
     (out / 'worker-identity.json').write_text(json.dumps(identity, indent=2) + '\n')
     sys.exit(0)
-assert sys.argv[1:] in ([], ['--tls'], ['--publication'], ['--producer-inputs'], ['--producer-ledger'], ['--producer-ledger-fixture'], ['--import-source'], ['--input-bindings'], ['--certification'])
-certification = sys.argv[1:] == ['--certification']
+assert sys.argv[1:] in ([], ['--tls'], ['--publication'], ['--producer-inputs'], ['--producer-ledger'], ['--producer-ledger-fixture'], ['--import-source'], ['--input-bindings'], ['--certification'], ['--producer-closing'])
+producer_closing = sys.argv[1:] == ['--producer-closing']
+certification = producer_closing or sys.argv[1:] == ['--certification']
 input_bindings = sys.argv[1:] == ['--input-bindings']
 import_source = sys.argv[1:] == ['--import-source']
 tls = sys.argv[1:] == ['--tls']
@@ -95,7 +96,7 @@ if input_bindings:
         ('binding-tests', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr', '--test', 'import_input_bindings', '--test', 'control_schema']),
         ('binding-clippy', ['cargo', 'clippy', '--locked', '--release', '-p', 'bigbrotr', '--lib', '--test', 'import_input_bindings', '--example', 'ingest_bootstrap_probe', '--', '-D', 'warnings'])]
 if certification:
-    identity.update(scope='initial existing-effect native read and connected Control consumer')
+    identity.update(scope='native producer closing and historical target under current Control' if producer_closing else 'initial existing-effect native read and connected Control consumer')
     checks = [checks[0],
         ('certification-clippy', ['cargo', 'clippy', '--locked', '--release', '-p', 'bigbrotr', '--lib', '--example', 'ingest_bootstrap_probe', '--', '-D', 'warnings'])]
 assert execute(checks, out / 'checks', SOURCE, env, identity, 1800)['status'] == 'PASS'
@@ -115,7 +116,7 @@ if certification:
                BIGBROTR_ARCHIVE_TEST_WORKER_BYTES=str(worker['bytes']),
                BIGBROTR_ARCHIVE_TEST_WORKER_SHA256=worker['sha256'])
     assert execute([
-        ('native-admission-certification', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr', '--lib', 'storage::rocks::store::admission_tests', '--', '--nocapture']),
+        ('native-admission-certification', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr', '--lib', 'storage::rocks::store::' if producer_closing else 'storage::rocks::store::admission_tests', '--', '--nocapture']),
     ], out / 'certification', SOURCE, env, identity, 1200)['status'] == 'PASS'
 if producer_inputs and not fixture_only and not import_source and not input_bindings and not certification:
     # The actual same-source packaged worker is required by the native pending

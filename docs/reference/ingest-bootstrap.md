@@ -93,6 +93,63 @@ The public visibility descriptor literal is
 Future interpretations of these persistent layouts require an explicit version
 and migration, including any future producer-state extension.
 
+### Native producer closing (implementation in progress)
+
+The P02-T02 step 4 operation installs a monotone producer barrier under the
+exclusive native owner. Its explicit per-producer migration preserves the three
+existing counters and replaces that producer's value with:
+
+```text
+02 31 || issued:BE64 || acknowledged:BE64 || retired:BE64 || 01
+```
+
+The last byte denotes closing. This initial version-two variant supports only
+closing; other lengths, versions and states are refused. Version-one open values
+remain readable and unchanged until this explicit operation. For a registered
+producer with no native effects, closing writes the same variant with three zero
+counters. In both formats `retired <= acknowledged <= issued`; closing does not
+advance any counter or infer completion of PostgreSQL reservations.
+
+The operation identity is the complete historical manifest, producer slot and
+epoch, and closing variant two. It is not a ProducerRequestId. The synchronized
+barrier is the only native write. It creates no request identity,
+input file, scientific fact, source sequence, pending batch, receipt or ACK. Exact
+retry reads the same closing value without writing. Fresh admission and staging
+for that producer are refused, including signed input prepared before the barrier.
+Retained facts, original inputs and request detail remain available for explicit
+recovery; neither an absent detail nor this barrier resolves an unknown request.
+
+Old native writers reject the changed version/length. The connected operation also
+sets PostgreSQL producer state to closing. After that SQL commit, old connected
+clients refuse before staging. If native sync succeeds but SQL rolls back, an old
+client can still stage an original before its native writer rejects the new value;
+that intermediate state does not permit a scientific commit beyond the barrier. Actual old/new client and interrupted-transition evidence is required;
+decoder inspection alone is not compatibility qualification. No global rewrite,
+manifest identity change, source closure, retirement or successor activation is
+part of this per-producer migration.
+
+An exclusive recovery handle compares the retained historical manifest and has
+no conversion to an admission handle. Current Control authority authorizes only
+monotone closing of the separately validated historical target. The original
+initial-admission predicate cannot be used for closing retries: it intentionally
+refuses closing producers and does not grant a fresh process the old incarnation.
+SQL/native interruption remains unresolved until the same target's state is read
+under actual exclusion. The native core and `ControlSession::close_initial_producer` are implemented;
+practical qualification remains in progress. The connected wrapper validates the
+current Control fence, complete current policy documents and short local lease,
+then the full historical registration. It retains Ingest/role SHARE locks and a
+producer UPDATE lock through native sync and PG commit. It accepts an active or
+draining historical Ingest with an unretired role and an open or closing producer;
+old scheduling expiry is not a barrier to monotone recovery. Released owners and
+retired producers are refused. Exact PG closing retries do not update the row.
+PG closing remains only a scheduling veto; it never attests the native bound.
+The caller reserves whole PG document buffers independently of the transferred
+4096-byte data and 4096-byte native minimum grant retained by the result.
+The issued counter is not evidence of a resolved outcome prefix or ACK permission.
+This initial operation refuses nonzero ACK/retired counters and requires the
+highest retained request key to equal issued (or no target request for zero). It
+does not scrub all interior receipt/dependency records.
+
 ## Resource and outcome boundary
 
 The caller reserves its input buffers and bounded PostgreSQL documents. A
