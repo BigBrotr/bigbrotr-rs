@@ -1,4 +1,5 @@
 //! Explicit finite initializer. Runtime startup never enters this path.
+use super::archive_preflight as preflight;
 use super::{lifecycle_output::LifecycleOutput, postgres_command};
 use bigbrotr::{
     runtime::{OwnedPermit, ResourceBudget},
@@ -24,7 +25,6 @@ use std::{
     time::{Duration, Instant},
 };
 use tokio::signal::unix::{Signal, SignalKind, signal};
-mod preflight;
 
 type Result<T> = std::result::Result<T, (u8, String)>;
 const SQL_DEADLINE: Duration = Duration::from_secs(30);
@@ -94,7 +94,7 @@ fn execute_inner(args: &clap::ArgMatches, initialize: bool) -> Result<Value> {
             "a separate initializer login of at most 63 bytes is required".into(),
         ));
     }
-    let budget = preflight::budget(&config)?;
+    let budget = preflight::budget(&config, 2)?;
     let executor = tokio::runtime::Builder::new_current_thread()
         .enable_all()
         .max_blocking_threads(2)
@@ -226,7 +226,15 @@ async fn initialize_fresh(
     let native_identity = preflight::native_tls(config, budget)?;
     let limits = preflight::limits(config)?;
     preflight::admit_native(config, budget)?;
-    let (installation, scratch, nonce) = preflight::worker(config, identity, args)?;
+    let (installation, scratch, nonce) = preflight::worker(
+        config,
+        identity,
+        args.get_one::<PathBuf>("worker-root").cloned(),
+        "initialize",
+        limits,
+        Instant::now() + SQL_DEADLINE,
+        &AtomicBool::new(false),
+    )?;
     let manager = postgres_command::prepare_catalog_as(
         config,
         required(config, "postgres.catalog.user")?,

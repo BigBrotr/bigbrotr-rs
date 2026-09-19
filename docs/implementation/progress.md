@@ -20,12 +20,35 @@ its binding at ordinary startup. All later selected product work remains require
 
 ## Actual Git and latest qualification
 
-Mac main is candidate 50509993b8b9c7bb8661fb8c1aaacf5f389426fc; private origin was
-last verified at c0adc89. Candidate5050999 is not yet pushed. Dirty root-owned
-files contain the new evidence, inventory/checkpoint and affected task/contract/
-user-document qualification updates. No product changes after the tested candidate;
-no merge/rebase or competing contributor work. Finish evidence review/checks,
-commit, fetch/reconcile and push the verified slice.
+Mac HEAD/main/private origin verified e45c06b77f84bb1667071b3c8cb6e400e1f50654
+at this boundary. Root owns the new receipt CLI/config/guard/shared-preflight,
+regressions, native harness and linked documentation/generated consumers. No other
+contributor changes. Preparing one unpublished candidate for exact-source Tux runs.
+No new native result or active lab/process yet.
+
+Installed `archive receipt-inspect` is now implemented as a finite supervised
+consumer of the exact retained Control request/local inputs. Full manager/reader
+privilege inspection and a fresh native full scan share one pinned catalog route.
+Accepted policy values supply native limits; managed seed drift cannot substitute
+them. Five simultaneous item slots cover Control, inputs, native TLS, reader
+material and worker; manager preparation terminates first. Continuous refresh is
+capped by remaining validity; policy change/stop/failure cancels and joins blocking
+work before Control cleanup. Missing inputs/partial scans never become Absent.
+No exclusion, replay, source protection or reclamation is granted.
+
+Regression58553 first ran13 tests with new2 FAIL as intended (missing subcommand/
+reader keys). Mac38165 now passes8 binary+13 catalog CLI+24 config+1 Control CLI;
+all-target Clippy42911 PASS after removing a preexisting no-op drop(batch) in a
+retained-input test (71121 initially failed that lint). Artifact/handoff/diff checks
+PASS; archive-library check49289 passes44 Mac cases (Linux-specific cases are separate). No native claim.
+Independent read-only AI design/code review found no remaining code counterexample;
+confirmed accepted-policy retention and item accounting before implementation.
+Harness review found snapshot lock blocked manager before native launch, missing
+native-death oracle, absent final catalog/file preservation check and fragile
+cleanup. Corrected with data_file lock, exact parent/worker pidfds and pre-unlock
+reap, full logical dumps/all data-state hashes, per-item cleanup. Native matrix
+remains unexecuted. Signed probe uses a separate literal seed with only accepted
+administration.enabled changed true→false; no production gate bypass.
 
 [Installed coordinator evidence](evidence/p02-coordinator-cli-native-20260919.json)
 records eleven native CLI cases at5050999, shared ordered build and Clippy PASS.
@@ -82,7 +105,7 @@ Owner c12f58ecc3451f6421ca65c2a3643c0c.
 Runner a063a6ba50cd14b121e2deab489b13da60d1000413604d1ea3982b9197fdc752 exited143;
 PG f2240df75735ed7ee48f059742450294515a9c13377bcbf3ab5dfbdc34dd6d65 exited0.
 Internal network85545ebe1a6f59fa1478b3c9ff77426b20af2edfe5d3a4e1bb07655ed8510550
-is verified empty and retained. Zero owned SQL backends before shutdown, no OOM;
+was verified empty and removed at 2026-09-19T14:10:46.059553+00:00; containers/data remain retained. Zero owned SQL backends before shutdown, no OOM;
 342 preexisting containers unchanged, eight unrelated running and zero BigBrotr.
 No active lab/process remains. Do not restart retired environments.
 
@@ -152,13 +175,17 @@ Mac/Linux. The present CLI qualification does not replace those reports.
 
 ## Next bounded action
 
-Finish review/document checks and commit/push5050999 with its evidence. Then wire
-retained Control attempts and inputs to the installed fresh native receipt consumer,
-with separate SELECT-only reader configuration, shared finite budgets and joined
-blocking work while Control supervision continues. Read complete relevant owning
-contracts/callers before edits; do not infer replay or protection from mere absence.
-Current continuation read full receipts.rs/catalog_inspection.rs and ingest_registry.rs
-for navigation; no next product edits yet.
+Inspect remaining check/review output, commit the owned receipt consumer as an
+unpublished exact-source candidate, then create a freshly inventoried Tux lab via
+Git. Run shared ordered native build/checks, existing six installed signed producer
+schedules and new receipt_cli_cases.py. It checks22 retained attempts, missing/
+corrupt inputs, full-scan/floor boundaries, managed drift, effective reader privilege
+refusals, actual blocked-reader heartbeat, INT/TERM, policy-head change and failed
+Control refresh. Observe native death/reap before blocker release and compare all
+catalog logical rows plus data/state files. Fix actual failures without weakening
+oracles; stop/audit owned resources and collect source/artifact/workload identities.
+Read-only data-mount integration is still unqualified; no claim from earlier
+separate reader fixtures. Update the existing evidence/task/checkpoint after runs.
 
 Actual Ingest-owner handoff is still required before compact service restart:
 initial registration/admission binds original Control identity/epoch1, not a

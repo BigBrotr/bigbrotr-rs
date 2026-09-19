@@ -19,5 +19,7 @@ pub use installation::{ArtifactIdentity, InstallationError, WorkerInstallation};
 pub use lifetime::{LifetimeError, LocalAttempt};
 pub use process::ProcessError;
 pub use publisher::{CatalogRoute, CatalogTls, PublicationError, PublicationResult};
-pub use receipts::{CatalogReaderCredentials, ReceiptError, ReceiptObservation};
+pub use receipts::{
+    CatalogReaderCredentials, ReceiptError, ReceiptObservation, validate_receipt_limits,
+};
 pub use worker::{Preparation, PreparationError, PreparationInspection, PreparationLimits};

@@ -122,6 +122,20 @@ fn prepare_input(
     serde_json::to_writer(&mut Size(0), &input).map_err(|_| ReceiptError::ResourceLimit)?;
     Ok((dsn, tls))
 }
+/// Pure bounded scan admission shared by operator preflight and actual launch.
+pub fn validate_receipt_limits(limits: super::PreparationLimits) -> Result<(), ReceiptError> {
+    if limits.max_records == 0 || limits.max_records.checked_add(1).is_none() {
+        return Err(ReceiptError::InvalidInput);
+    }
+    // One native vector plus Arrow/string conversion can coexist. This is
+    // an application allocation floor, not an engine/whole-process RSS cap.
+    let rows = limits.max_records.saturating_add(1).min(MAX_CHUNK_ROWS) as u64;
+    let floor = 16 * 1024 * 1024 + rows * 3 * (MAX_ROW_BYTES as u64 + 128);
+    if limits.native_reserve_bytes < floor {
+        return Err(ReceiptError::ResourceLimit);
+    }
+    Ok(())
+}
 impl Preparation<'_> {
     /// A new native process/transaction observes the original retained attempt.
     /// Absence is not exclusion: callers must separately fence every old writer
@@ -135,20 +149,7 @@ impl Preparation<'_> {
         credential: CatalogReaderCredentials<'_>,
         budget: &ResourceBudget,
     ) -> Result<ReceiptObservation, ReceiptError> {
-        if self.limits.max_records == 0 || self.limits.max_records.checked_add(1).is_none() {
-            return Err(ReceiptError::InvalidInput);
-        }
-        // One native vector plus Arrow/string conversion can coexist. This is
-        // an application allocation floor, not an engine/whole-process RSS cap.
-        let rows = self
-            .limits
-            .max_records
-            .saturating_add(1)
-            .min(MAX_CHUNK_ROWS) as u64;
-        let floor = 16 * 1024 * 1024 + rows * 3 * (MAX_ROW_BYTES as u64 + 128);
-        if self.limits.native_reserve_bytes < floor {
-            return Err(ReceiptError::ResourceLimit);
-        }
+        validate_receipt_limits(self.limits)?;
         let (dsn, tls) = prepare_input(expected, identity, route, credential, false)?;
         let input = Input {
             catalog: super::bootstrap::Input {

@@ -143,7 +143,6 @@ fn retains_complete_grouping_before_issuance_and_recovers_receipt_without_facts(
         "retained inputs keep coordinator custody during issuance"
     );
     drop(retained);
-    drop(batch);
     drop(inputs);
     let owner = coordinator(&identity, &root, false);
     let read = owner

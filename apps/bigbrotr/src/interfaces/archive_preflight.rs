@@ -1,4 +1,9 @@
-use super::{Result, required};
+type Result<T> = std::result::Result<T, (u8, String)>;
+fn required<'a>(config: &'a crate::config::Resolved, key: &str) -> Result<&'a str> {
+    config
+        .text(key)
+        .ok_or_else(|| (3, format!("{key}: required for archive command")))
+}
 use bigbrotr::{
     runtime::{ProcessEnvelope, ResourceBudget, ResourceLimits, ResourceRequest, WaiterLimits},
     secrets::SecretFile,
@@ -19,10 +24,10 @@ use std::{
     os::unix::fs::{DirBuilderExt, MetadataExt, PermissionsExt},
     path::{Path, PathBuf},
     sync::atomic::AtomicBool,
-    time::{Duration, Instant},
+    time::Instant,
 };
 
-pub(super) fn budget(config: &crate::config::Resolved) -> Result<ResourceBudget> {
+pub(super) fn budget(config: &crate::config::Resolved, items: u64) -> Result<ResourceBudget> {
     let envelope = |process: &str| {
         let n = |field: &str| config.number(&format!("runtime.processes.{process}.{field}"));
         ProcessEnvelope::new(
@@ -30,7 +35,7 @@ pub(super) fn budget(config: &crate::config::Resolved) -> Result<ResourceBudget>
             n("baseline_bytes"),
             ResourceLimits::new(
                 n("payload_bytes"),
-                2,
+                items,
                 n("native_bytes"),
                 n("completion_reserve_bytes"),
             ),
@@ -59,7 +64,7 @@ pub(super) fn budget(config: &crate::config::Resolved) -> Result<ResourceBudget>
             n.data_bytes(),
             n.control_bytes(),
         ])?,
-        ResourceLimits::new(a.data_bytes(), 2, n.native_bytes(), a.control_bytes()),
+        ResourceLimits::new(a.data_bytes(), items, n.native_bytes(), a.control_bytes()),
         WaiterLimits::new(0, 0),
     )
     .map_err(|_| (3, "invalid combined archive command envelope".into()))?;
@@ -100,7 +105,7 @@ pub(super) fn limits(config: &crate::config::Resolved) -> Result<PreparationLimi
     if total < 512 * 1024 * 1024 {
         return Err((
             3,
-            "native initialization requires a worker allowance of at least 512MiB".into(),
+            "native archive command requires a worker allowance of at least 512MiB".into(),
         ));
     }
     // The qualified initial empty-schema profile reserves three quarters for
@@ -118,11 +123,13 @@ pub(super) fn limits(config: &crate::config::Resolved) -> Result<PreparationLimi
 pub(super) fn worker(
     config: &crate::config::Resolved,
     identity: &CatalogIdentity,
-    args: &clap::ArgMatches,
+    worker_root: Option<PathBuf>,
+    purpose: &str,
+    limits: PreparationLimits,
+    deadline: Instant,
+    cancelled: &AtomicBool,
 ) -> Result<(WorkerInstallation, PathBuf, [u8; 16])> {
-    let root = args
-        .get_one::<PathBuf>("worker-root")
-        .cloned()
+    let root = worker_root
         .or_else(|| {
             std::env::current_exe()
                 .ok()?
@@ -151,31 +158,34 @@ pub(super) fn worker(
                 .into(),
         ));
     }
-    let cancelled = AtomicBool::new(false);
-    let deadline = Instant::now() + Duration::from_secs(30);
     installation
-        .verify(deadline, &cancelled)
+        .verify(deadline, cancelled)
         .map_err(|_| (3, "installed archive worker verification refused".into()))?;
     let mut nonce = [0; 16];
-    getrandom::fill(&mut nonce).map_err(|_| (1, "initialization entropy unavailable".into()))?;
+    getrandom::fill(&mut nonce).map_err(|_| (1, "archive command entropy unavailable".into()))?;
     if nonce == [0; 16] {
-        return Err((1, "invalid initialization entropy".into()));
+        return Err((1, "invalid archive command entropy".into()));
     }
     let name = nonce.iter().map(|b| format!("{b:02x}")).collect::<String>();
-    let scratch = root.join(format!("initialize-{name}"));
+    let scratch = root.join(format!("{purpose}-{name}"));
     fs::DirBuilder::new()
         .mode(0o700)
         .create(&scratch)
-        .map_err(|_| (1, "cannot exclusively create initialization scratch".into()))?;
+        .map_err(|_| {
+            (
+                1,
+                "cannot exclusively create archive command scratch".into(),
+            )
+        })?;
     Preparation {
         installation: &installation,
         temp_root: &scratch,
-        limits: limits(config)?,
+        limits,
         deadline,
-        cancelled: &cancelled,
+        cancelled,
     }
     .validate_temporary_root()
-    .map_err(|_| (3, "invalid initialization scratch".into()))?;
+    .map_err(|_| (3, "invalid archive command scratch".into()))?;
     // Retain this owned directory on every outcome. Cleanup must follow positive
     // process exclusion and an explicit lifecycle decision, never TempDir drop.
     Ok((installation, scratch, nonce))
@@ -309,7 +319,7 @@ mod tests {
             "/../../config/recipes/archive-only.toml"
         )))
         .unwrap();
-        let budget = budget(&config).unwrap();
+        let budget = budget(&config, 2).unwrap();
         let heap = config.number("runtime.processes.application.payload_bytes");
         let native = config.number("runtime.processes.native.native_bytes");
         assert!(

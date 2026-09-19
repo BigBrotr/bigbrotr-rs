@@ -2193,6 +2193,21 @@
               "x-bigbrotr-owner": "control",
               "x-bigbrotr-reload": "restart"
             },
+            "read_password_ref": {
+              "format": "bigbrotr-file-secret-reference",
+              "type": "string",
+              "writeOnly": true,
+              "x-bigbrotr-deployment-locked": true,
+              "x-bigbrotr-owner": "archive",
+              "x-bigbrotr-reload": "restart"
+            },
+            "read_user": {
+              "maxLength": 8192,
+              "type": "string",
+              "x-bigbrotr-deployment-locked": true,
+              "x-bigbrotr-owner": "archive",
+              "x-bigbrotr-reload": "restart"
+            },
             "tls": {
               "additionalProperties": false,
               "properties": {

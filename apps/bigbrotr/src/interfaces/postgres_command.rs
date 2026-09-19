@@ -32,6 +32,23 @@ pub(super) fn prepare(
     )
 }
 
+pub(super) fn prepare_control_shared(
+    config: &crate::config::Resolved,
+    user: &str,
+    password_reference: &str,
+    budget: &ResourceBudget,
+) -> CliResult<(PreparedConnection, OwnedPermit)> {
+    prepare_database(
+        config,
+        "postgres.control",
+        "Control",
+        user,
+        password_reference,
+        512 * 1024 * 1024,
+        Some(budget),
+    )
+}
+
 pub(super) fn prepare_catalog(
     config: &crate::config::Resolved,
     extra_reservation: u64,

@@ -915,6 +915,36 @@ credentials and readonly data access. Its immutable binding check does not
 replace privileged guard compatibility inspection. Neither Present nor Absent
 grants source protection or relaxes the old-lifetime exclusion order.
 
+The installed finite `archive receipt-inspect` candidate consumes the original
+Control attempt and its retained local input headers. It requires existing local
+and SQL coordinator bindings and local Control/Archive assignment. The manager
+first inspects the complete guard and effective privileges of a separately
+configured reader; the native reader uses that same pinned catalog route. A
+missing Control row or local header file is unresolved, never Absent. Historical
+attempts remain inspectable. The command observes only; it does not seal writers,
+exclude old transactions, authorize replay or protect/reclaim source records.
+
+Reader login/password-reference are nullable paired deployment roots, separate
+from the manager and excluded from persisted policy identities. Operator-provisioned
+access is CONNECT, schema USAGE and SELECT on native tables plus the two immutable
+binding tables, without memberships, DML, ownership, role administration, database
+CREATE/TEMP or grant options. Runtime inspection refuses unsafe effective access;
+privileged external operator changes remain outside the runtime threat boundary.
+No migration or persistent format changes solely for this consumer.
+
+The command-local `--max-receipts` defaults to128 and bounds the entire catalog
+scan, not only matching rows. It narrows finite work under the accepted policy's
+native allowance. With512MiB total,128MiB engine and384MiB native overhead, the
+existing allocation floor permits at most489 rows. Exhaustion refuses without a
+partial observation. Shared disjoint application/native budget lanes cover Control,
+manager preparation, retained inputs, reader material, optional TLS and the worker;
+at most five data items coexist. Accepted values cannot be substituted by managed
+seed drift. A policy-head change, signal, failed refresh or expiry cancels work and
+joins the actual blocking supervisor/SQL drivers before Control cleanup. Unknown
+native termination preserves its existing grants/scratch obligations. Whole-process
+RSS, disk pressure, read-only mount compatibility and uninterruptible filesystem
+stalls need their own measured qualification. See [operator usage](../user/archive-receipts.md).
+
 File preparation and integrity checks must describe their actual implementation.
 Native `INSERT` does not supply an application SHA-256 of every generated file.
 The protected archive cut requires the matching semantic receipt, complete file/

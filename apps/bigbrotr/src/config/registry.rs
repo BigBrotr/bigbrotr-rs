@@ -260,6 +260,16 @@ pub fn keys() -> Vec<Key> {
             true
         );
     }
+    for (field, kind) in [("read_user", Text), ("read_password_ref", Secret)] {
+        add!(
+            format!("postgres.catalog.{field}"),
+            kind,
+            Value::Null,
+            "restart",
+            "archive",
+            true
+        );
+    }
     add!(
         "clickhouse.placement",
         Enum(&["local", "remote"]),

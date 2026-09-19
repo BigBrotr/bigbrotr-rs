@@ -699,6 +699,18 @@ impl Resolved {
             self.catalog_identity()?;
             self.present("storage.scratch_root")?;
             self.pg("catalog")?;
+            let reader = self.text("postgres.catalog.read_user");
+            let password = self.text("postgres.catalog.read_password_ref");
+            if reader.is_some() != password.is_some() {
+                return Err("catalog reader credentials must be paired".into());
+            }
+            if let Some(reader) = reader
+                && (reader.len() > 63 || Some(reader) == self.text("postgres.catalog.user"))
+            {
+                return Err(
+                    "a separate catalog reader login of at most 63 bytes is required".into(),
+                );
+            }
         }
         if self.local("index")
             && self.flag("indexer.enabled")

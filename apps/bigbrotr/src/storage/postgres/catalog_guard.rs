@@ -12,6 +12,8 @@ pub mod initialization;
 mod inspection;
 mod installation;
 mod privileges;
+mod reader;
+pub use reader::inspect_reader;
 mod scientific;
 pub use installation::{InstallationRoles, install_for_manager};
 const SQL: &str = include_str!("../../../../../migrations/catalog/0001_writer_guard.sql");

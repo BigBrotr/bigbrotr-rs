@@ -64,7 +64,7 @@ fn hex(bytes: &[u8]) -> String {
     bytes.iter().map(|v| format!("{v:02x}")).collect()
 }
 fn validate(document: &str, digest: [u8; 32]) -> Result<(), OwnerError> {
-    let expected = include_str!("../../../experiments/configuration-inspection/policy.json");
+    let expected = include_str!("../../../experiments/archive-engine/receipt-policy.json");
     let value: serde_json::Value =
         serde_json::from_str(document).map_err(|_| OwnerError::InvalidPolicy)?;
     let expected_digest: [u8; 32] = Sha256::new()
@@ -181,7 +181,7 @@ async fn initialize_control(database: &str, installed: bool) {
     drop(admin);
     driver.await.unwrap().unwrap();
     let (mut application, driver) = connect(database, "bigbrotr_control").await;
-    let document = include_str!("../../../experiments/configuration-inspection/policy.json");
+    let document = include_str!("../../../experiments/archive-engine/receipt-policy.json");
     let digest = Sha256::new()
         .chain_update(b"bigbrotr/product-policy/1\0")
         .chain_update(document)

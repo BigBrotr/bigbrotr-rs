@@ -70,6 +70,83 @@ fn show(root: &Path, document: &toml::Table) -> Value {
 }
 
 #[test]
+fn receipt_inspection_refuses_unselected_archive_before_work() {
+    let dir = tempfile::tempdir().unwrap();
+    write(dir.path(), &example(dir.path(), "serve-existing"));
+    let result = run(
+        dir.path(),
+        &[
+            "archive",
+            "receipt-inspect",
+            "--file",
+            "instance.toml",
+            "--attempt-id",
+            "11111111111111111111111111111111",
+        ],
+    );
+    assert_eq!(result.status.code(), Some(3), "{result:?}");
+    assert!(String::from_utf8_lossy(&result.stderr).contains("local Archive role"));
+    assert!(result.stdout.is_empty());
+    assert_eq!(fs::read_dir(dir.path()).unwrap().count(), 1);
+}
+
+#[test]
+fn catalog_reader_credentials_are_separate_roots_without_offline_io() {
+    let dir = tempfile::tempdir().unwrap();
+    let mut doc = example(dir.path(), "archive-only");
+    let first = show(dir.path(), &doc);
+    doc["postgres"]["catalog"]
+        .as_table_mut()
+        .unwrap()
+        .insert("read_user".into(), "archive_reader".into());
+    doc["postgres"]["catalog"].as_table_mut().unwrap().insert(
+        "read_password_ref".into(),
+        "file:/absent/reader-password".into(),
+    );
+    let second = show(dir.path(), &doc);
+    assert_eq!(first["initial_policy"], second["initial_policy"]);
+    assert_eq!(
+        second["settings"]["postgres.catalog.read_user"]["deployment_locked"],
+        true
+    );
+    assert_eq!(
+        second["settings"]["postgres.catalog.read_password_ref"]["value"],
+        "[redacted]"
+    );
+    for missing in ["read_user", "read_password_ref"] {
+        let mut partial = doc.clone();
+        partial["postgres"]["catalog"]
+            .as_table_mut()
+            .unwrap()
+            .remove(missing);
+        write(dir.path(), &partial);
+        let result = run(
+            dir.path(),
+            &["config", "validate", "--file", "instance.toml"],
+        );
+        assert_eq!(result.status.code(), Some(3), "{result:?}");
+        assert!(
+            String::from_utf8_lossy(&result.stderr).contains("reader credentials must be paired")
+        );
+    }
+    doc["postgres"]["catalog"]["read_user"] = doc["postgres"]["catalog"]["user"].clone();
+    write(dir.path(), &doc);
+    let result = run(
+        dir.path(),
+        &["config", "validate", "--file", "instance.toml"],
+    );
+    assert_eq!(result.status.code(), Some(3), "{result:?}");
+    assert!(String::from_utf8_lossy(&result.stderr).contains("separate catalog reader"));
+    let mut staged = example(dir.path(), "serve-existing");
+    staged["postgres"]["catalog"]
+        .as_table_mut()
+        .unwrap()
+        .insert("read_user".into(), "staged_reader".into());
+    show(dir.path(), &staged);
+    assert_eq!(fs::read_dir(dir.path()).unwrap().count(), 1);
+}
+
+#[test]
 fn selected_archive_requires_an_explicit_identity_without_connecting() {
     let dir = tempfile::tempdir().unwrap();
     let mut doc = example(dir.path(), "archive-only");

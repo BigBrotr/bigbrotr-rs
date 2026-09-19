@@ -1,8 +1,11 @@
 //! First persistent role consumer. Every exit owns transport termination.
-use super::{lifecycle_output::LifecycleOutput, postgres_command};
+use super::{
+    archive_preflight, archive_receipt, lifecycle_output::LifecycleOutput, postgres_command,
+};
 use crate::config::{Resolved, policy::PolicySeed};
 use bigbrotr::{
     runtime::{
+        ResourceBudget,
         ownership::fresh_process_incarnation,
         policy_authority::{LeaseResponse, PolicyLeaseTracker, PolicyLeaseTtl},
     },
@@ -14,7 +17,16 @@ use bigbrotr::{
 use bigbrotr_model::{DatasetId, PolicyEpoch, ProcessIncarnation};
 use clap::{Arg, ArgMatches, Command};
 use serde_json::{Value, json};
-use std::{cell::Cell, collections::BTreeSet, path::Path, time::Duration};
+use std::{
+    cell::Cell,
+    collections::BTreeSet,
+    path::Path,
+    sync::{
+        Arc,
+        atomic::{AtomicBool, Ordering},
+    },
+    time::Duration,
+};
 use tokio::{
     signal::unix::{Signal, SignalKind, signal},
     time::Instant,
@@ -22,10 +34,10 @@ use tokio::{
 
 type Result<T> = std::result::Result<T, (u8, String)>;
 
-#[derive(Clone, Copy, PartialEq, Eq)]
 enum Operation {
     Serve,
     InitializeCoordinator,
+    InspectReceipt,
 }
 
 pub(super) fn coordinator_command() -> Command {
@@ -37,6 +49,9 @@ pub(super) fn coordinator_command() -> Command {
 
 pub(super) fn initialize_coordinator(args: &ArgMatches) -> ! {
     execute_operation(args, Operation::InitializeCoordinator)
+}
+pub(super) fn inspect_receipt(args: &ArgMatches) -> ! {
+    execute_operation(args, Operation::InspectReceipt)
 }
 
 pub(crate) fn command() -> Command {
@@ -57,7 +72,7 @@ fn execute_operation(args: &ArgMatches, operation: Operation) -> ! {
     };
     let outcome = (|| {
         let root = crate::config::load(Path::new(args.get_one::<String>("file").unwrap()))?;
-        if operation == Operation::InitializeCoordinator {
+        if matches!(operation, Operation::InitializeCoordinator) {
             root.catalog_identity().map_err(|e| (3, e))?;
             if !root.local("control") {
                 return Err((
@@ -65,7 +80,12 @@ fn execute_operation(args: &ArgMatches, operation: Operation) -> ! {
                     "coordinator initialization requires the local Control role".into(),
                 ));
             }
-            return run(root, &mut output, operation);
+            return run(root, &mut output, operation, None);
+        }
+        if matches!(operation, Operation::InspectReceipt) {
+            archive_receipt::Options::validate_roots(&root)?;
+            let options = archive_receipt::Options::parse(args)?;
+            return run(root, &mut output, operation, Some(options));
         }
         let requested: Vec<&str> = args
             .get_many::<String>("roles")
@@ -89,7 +109,7 @@ fn execute_operation(args: &ArgMatches, operation: Operation) -> ! {
                     .into(),
             ));
         }
-        run(root, &mut output, operation)
+        run(root, &mut output, operation, None)
     })();
     let mut code = match outcome {
         Ok(()) => 0,
@@ -129,7 +149,17 @@ impl Stop {
     }
 }
 
-fn run(root: Resolved, output: &mut LifecycleOutput, operation: Operation) -> Result<()> {
+struct ArchiveRun {
+    coordinator: Option<bigbrotr::storage::archive::LocalCoordinator>,
+    receipt: Option<(archive_receipt::Options, ResourceBudget)>,
+}
+
+fn run(
+    root: Resolved,
+    output: &mut LifecycleOutput,
+    operation: Operation,
+    receipt: Option<archive_receipt::Options>,
+) -> Result<()> {
     // Acquire before Control startup or any future issuance. The stable archive
     // anchor prevents choosing another state root to bypass an old coordinator.
     // Retain it through every actual driver join, including cancelled startup.
@@ -155,12 +185,26 @@ fn run(root: Resolved, output: &mut LifecycleOutput, operation: Operation) -> Re
     let role = fresh_process_incarnation().map_err(|e| (1, e.to_string()))?;
     // Both complete stored documents are revalidated against an immutable copy
     // of startup roots. The file is never reread or implicitly activated.
-    let (prepared, grant) = postgres_command::prepare(
-        &root,
-        required("postgres.control.user")?,
-        required("postgres.control.password_ref")?,
-        512 * 1024 * 1024,
-    )?;
+    // Control, retained inputs, native TLS, reader credential and worker overlap.
+    // Five bounded items share disjoint application/native process lanes.
+    let receipt = receipt
+        .map(|options| Ok((options, archive_preflight::budget(&root, 5)?)))
+        .transpose()?;
+    let (prepared, grant) = if let Some((_, budget)) = &receipt {
+        postgres_command::prepare_control_shared(
+            &root,
+            required("postgres.control.user")?,
+            required("postgres.control.password_ref")?,
+            budget,
+        )?
+    } else {
+        postgres_command::prepare(
+            &root,
+            required("postgres.control.user")?,
+            required("postgres.control.password_ref")?,
+            512 * 1024 * 1024,
+        )?
+    };
     let request = ClaimRequest {
         dataset,
         instance,
@@ -171,6 +215,7 @@ fn run(root: Resolved, output: &mut LifecycleOutput, operation: Operation) -> Re
     };
     let runtime = tokio::runtime::Builder::new_current_thread()
         .enable_all()
+        .max_blocking_threads(2)
         .build()
         .map_err(|_| (1, "cannot start Control runtime".into()))?;
     let result = runtime.block_on(async {
@@ -185,7 +230,7 @@ fn run(root: Resolved, output: &mut LifecycleOutput, operation: Operation) -> Re
         let driver = if let Some(custody) = &coordinator {
             tokio::spawn(custody.retain_connection(driver).map_err(|e| (4, format!("cannot retain archive coordinator custody: {e:?}")))?)
         } else { tokio::spawn(driver) };
-        let outcome = supervise(client, request, &root, &mut stop, output, coordinator.as_ref(), operation).await;
+        let outcome = supervise(client, request, &root, &mut stop, output, ArchiveRun { coordinator, receipt }, operation).await;
         // No error, cancellation, output failure or unknown COMMIT can bypass
         // the join. Dropping the request/session alone does not free its grant.
         postgres_command::join(driver).await;
@@ -194,7 +239,6 @@ fn run(root: Resolved, output: &mut LifecycleOutput, operation: Operation) -> Re
     runtime.shutdown_timeout(postgres_command::DRIVER_DRAIN);
     let result = result.map(|value| output.emit(value, false));
     drop(grant);
-    drop(coordinator);
     result
 }
 
@@ -204,7 +248,7 @@ async fn supervise(
     root: &Resolved,
     stop: &mut Stop,
     output: &mut LifecycleOutput,
-    coordinator: Option<&bigbrotr::storage::archive::LocalCoordinator>,
+    archive: ArchiveRun,
     operation: Operation,
 ) -> Result<Value> {
     let dataset = request.dataset;
@@ -217,7 +261,11 @@ async fn supervise(
         PolicyLeaseTtl::new(ttl).map_err(|e| (3, e.to_string()))?,
     )
     .map_err(|e| (1, e.to_string()))?;
-    let validate = |document: &str, digest| validate_policy(root, document, digest);
+    let mut accepted = None;
+    let validate = |document: &str, digest| {
+        accepted = Some(accepted_policy(root, document, digest)?);
+        Ok(())
+    };
     let ticket = lease.begin_refresh().map_err(|e| (1, e.to_string()))?;
     let mut renewed = Instant::now();
     let commit = Cell::new(false);
@@ -235,10 +283,10 @@ async fn supervise(
         .check_delivery(lease.known_epoch())
         .map_err(|e| (1, e.to_string()))?;
     let identity = owner.identity();
-    if let Some(coordinator) = coordinator {
+    if let Some(coordinator) = &archive.coordinator {
         let commit = Cell::new(false);
         let binding = async {
-            if operation == Operation::InitializeCoordinator {
+            if matches!(operation, Operation::InitializeCoordinator) {
                 owner
                     .initialize_archive_coordinator(coordinator, &commit)
                     .await
@@ -261,7 +309,7 @@ async fn supervise(
         lease
             .check_delivery(lease.known_epoch())
             .map_err(|e| (1, e.to_string()))?;
-        if operation == Operation::InitializeCoordinator {
+        if matches!(operation, Operation::InitializeCoordinator) {
             tokio::time::timeout(duration(root, "graceful_shutdown_timeout"), owner.release())
                 .await
                 .unwrap_or(Err(OwnerError::CommitUnknown))
@@ -273,6 +321,80 @@ async fn supervise(
                 "catalog_inspection":"not-performed", "publication_authority":"not-granted", "ready":false}),
             );
         }
+    }
+    if let Some((options, budget)) = archive.receipt {
+        let coordinator = archive
+            .coordinator
+            .expect("receipt roots require local Archive");
+        let receipt = tokio::select! {
+            biased;
+            _ = stop.requested() => return Err((4, "receipt request lookup cancelled".into())),
+            value = tokio::time::timeout(duration(root, "renewal_timeout")
+                .min(lease.remaining_validity().map_err(|e| (1,e.to_string()))?),
+                owner.read_archive_attempt(coordinator.identity().catalog(), options.attempt)) =>
+                value.map_err(|_| (4, "receipt request lookup deadline exceeded".into()))?.map_err(attempt_error)?,
+        }.ok_or_else(|| (4, "retained Control attempt missing; receipt observation unresolved".into()))?;
+        let accepted = accepted.ok_or_else(|| (3, "accepted receipt policy unavailable".into()))?;
+        lease
+            .check_delivery(lease.known_epoch())
+            .map_err(|e| (4, e.to_string()))?;
+        let cancelled = Arc::new(AtomicBool::new(false));
+        let child_cancelled = Arc::clone(&cancelled);
+        let mut child = tokio::task::spawn_blocking(move || {
+            archive_receipt::inspect(
+                accepted,
+                coordinator,
+                receipt,
+                options,
+                budget,
+                &child_cancelled,
+            )
+        });
+        let deadline = Instant::now() + archive_receipt::DEADLINE;
+        let mut joined = false;
+        let mut outcome = async {
+            loop {
+                let remaining = lease.remaining_validity().map_err(|e| (4,e.to_string()))?;
+                let period = (remaining / 2).min(duration(root,"heartbeat_interval").saturating_sub(renewed.elapsed()));
+                tokio::select! {
+                    biased;
+                    _ = stop.requested() => return Err((4, "receipt inspection cancelled; observation unresolved".into())),
+                    _ = tokio::time::sleep_until(deadline) => return Err((4, "receipt inspection deadline exceeded; observation unresolved".into())),
+                    result = &mut child => {
+                        joined = true;
+                        lease.check_delivery(PolicyEpoch::new(snapshot.policy_revision)).map_err(|e| (4,e.to_string()))?;
+                        return result.map_err(|_| (4, "receipt supervisor failed; observation unresolved".into()))?;
+                    },
+                    _ = tokio::time::sleep(period) => {},
+                }
+                let current = refresh_authority(&mut owner, &mut lease, &mut renewed, dataset, root, stop).await?;
+                if current != snapshot {
+                    return Err((4, "accepted policy changed during receipt inspection; retry under current policy".into()));
+                }
+            }
+        }.await;
+        // Cancellation cannot abort spawn_blocking. Join even when a task has
+        // finished between polls, and preserve unknown native termination detail.
+        cancelled.store(true, Ordering::Release);
+        if !joined {
+            let cleanup = match child.await {
+                Ok(Ok(_)) => None,
+                Ok(Err((_, detail))) => Some(detail),
+                Err(_) => Some("receipt supervisor join failed".into()),
+            };
+            if let (Err((_, reason)), Some(detail)) = (&mut outcome, cleanup) {
+                reason.push_str("; ");
+                reason.push_str(&detail);
+            }
+        }
+        let mut report = outcome?;
+        tokio::time::timeout(duration(root, "graceful_shutdown_timeout"), owner.release())
+            .await
+            .unwrap_or(Err(OwnerError::CommitUnknown))
+            .map_err(owner_error)?;
+        report["owner_release"] = json!("committed");
+        report["policy_revision"] = json!(snapshot.policy_revision.to_string());
+        return Ok(report);
     }
     // Control owns the retained issuance history even when Archive is omitted
     // from this process selection. Inventory is observation, never a terminal
@@ -372,7 +494,7 @@ async fn refresh_authority(
     let snapshot = tokio::select! {
         biased;
         _ = stop.requested() => Err(if renew { OwnerError::CommitUnknown } else { OwnerError::Unavailable }),
-        result = tokio::time::timeout(duration(root, "renewal_timeout").min(ttl), operation) =>
+        result = tokio::time::timeout(duration(root, "renewal_timeout").min(lease.remaining_validity().map_err(|e| (1, e.to_string()))?), operation) =>
             result.unwrap_or(Err(if renew { OwnerError::CommitUnknown } else { OwnerError::Backend })),
     }.map_err(owner_error)?;
     lease
@@ -431,6 +553,13 @@ fn validate_policy(
     document: &str,
     digest: [u8; 32],
 ) -> std::result::Result<(), OwnerError> {
+    accepted_policy(root, document, digest).map(|_| ())
+}
+fn accepted_policy(
+    root: &Resolved,
+    document: &str,
+    digest: [u8; 32],
+) -> std::result::Result<Resolved, OwnerError> {
     let accepted = PolicySeed::restore(document, digest, root.clone())
         .map_err(|_| OwnerError::InvalidPolicy)?;
     // The administration listener belongs to Control. Until it is implemented,
@@ -438,7 +567,7 @@ fn validate_policy(
     if accepted.flag("administration.enabled") {
         return Err(OwnerError::InvalidPolicy);
     }
-    Ok(())
+    Ok(accepted)
 }
 
 #[cfg(test)]

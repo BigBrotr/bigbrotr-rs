@@ -407,7 +407,12 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   existence and full body/receipt reads; a kill after COMMIT returned and metadata
   counts do not cover this boundary. The original normal-INSERT case fails;
   caller-owned scientific registration now passes the scoped native schedules
-  linked above. The new [private receipt consumer](../reference/archive-handoff.md#fresh-receipt-observation-candidate)
+  linked above. The installed [finite receipt command](../user/archive-receipts.md)
+  now consumes retained Control/local inputs under supervised accepted policy,
+  shared process budgets and independently inspected SELECT-only credentials.
+  Its new native CLI matrix is pending; earlier reader evidence does not qualify
+  its supervisor, policy-change or privilege-refusal paths.
+  The new [private receipt consumer](../reference/archive-handoff.md#fresh-receipt-observation-candidate)
   uses the actual supervised worker, complete retained batch/attempt identity,
   readonly binding/attach and a bounded full-field scan through EOF. It refuses
   malformed receipts (including unrelated rows), target-identity conflicts and
