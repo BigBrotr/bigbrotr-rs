@@ -77,5 +77,7 @@ behavior and the complete installed journey remain separate requirements.
 The [monitor regression evidence](../implementation/evidence/p01-monitor-corrections-native-20260918.json)
 adds delayed successful acquisition/polls, actual full output pipes and bounded
 process termination at `2c0dfc1`, plus all sixteen prior process cases. It also
-confirms an open maximum-policy defect: a candidate can fit compact JSON while
-exceeding PostgreSQL's JSONB text limit. Maximum-document acceptance is incomplete.
+confirmed the then-open compact-JSON/JSONB size mismatch. The later
+[JSONB limit qualification](../implementation/evidence/p01-jsonb-limit-native-20260918.json)
+records its correction and exact boundary cases; the earlier report is historical
+evidence, not an outstanding MON-005 failure.

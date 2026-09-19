@@ -195,7 +195,10 @@ session. Reconnection starts a new scan under the new owner; caller-supplied
 cursors cannot skip old obligations. Each page ends its transaction before the
 runtime refreshes policy and scheduling authority. Startup retains only the
 bounded page, uses its existing process reservation and deadlines, and joins the
-actual driver on every exit. Migration0009 is an explicit prerequisite; no startup
+actual driver on every exit. Local driver termination does not prove immediate
+PostgreSQL backend exit: a blocked read may retain its server session fence until
+it proceeds or times out. A successor must still acquire that real fence and may
+return Busy in the interim; no owner metadata can substitute for it. Migration0009 is an explicit prerequisite; no startup
 migration or journal repair occurs. The lifecycle record distinguishes observed
 issued history from resolution, always reporting publication authority not granted.
 This inventory is not custody reacquisition, catalog outcome resolution, source

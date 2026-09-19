@@ -147,7 +147,27 @@ candidate follows this checkpoint. Mac8binary+1attempt+1entrypoint tests pass;
 initial Clippy found an unnecessary fixture mut, corrected. Final scoped Clippy
 passes. Initial test compile discriminated missing scan methods, not native
 behavior. No new native case has run yet. Read-only reviewer is checking these
-changes; root remains sole writer. No active experiment at this boundary.
+changes; root remains sole writer. Fresh isolated native build is now active at sourcea010c153871569059a333633e4108ba08024f626.
+Transfer80876 exited0. Root /home/tux/bigbrotr-implementation-20260917/runs/intent-inventory-a010c15;
+owner5e1ebab4055d1b03d6ca3d8589fa155c; runner4901f6029f96ad021cb4f95980f6c2242a6f3aa698ec8bccc49c589b841b9e7e;
+PG0ac35440317b69262d9dd6155c2b6be3b290016c45c3291395b693f682cee4a3;
+network06f8c4596e6601cfeb1398bda389cc3e678a7c29f579a0621b711769eca6fde8.
+Full preflight preserved; runner2CPU/6GiB andPG1CPU/1GiB, internal/nohostports.
+Only the verified empty stopped61271e2 network retired; containers/data retained.
+Mac now has root-owned inventory/checkpoint follow-up changes only.
+Independent source review found no production defect and identified a PID-reuse
+risk in the new harness; corrected to exact argv/executable validation and pidfd
+signaling before this candidate. Native ordered build,22Rust cases, scoped Clippy and full issuance/scan adapter
+pass at a010c15. Runtime first refused the fixture's0444secret files before
+migration; preserved that failure, verified its DB empty and replaced only owned
+fixture modes with0400. Second run passed5cases before an incorrect harness
+assertion expected a remote backend to vanish while its relation blocker remained.
+Product exited4 and joined its local driver; PG retained the blocked read/session
+fence. Read-only review confirms that is not a production defect. The corrected
+harness now additionally requires exact PID/backend_start/advisory fence, Busy
+and unchanged owner/role history for a contender, then blocker rollback, remote
+closure and fresh epoch. Preserve failed reports; native rerun pending with same
+binary a010c15 and separately committed harness. Active lab remains running.
 
 Next: run the candidate on fresh inventoried Tux resources, inspect actual scan
 pages/cancellation and real serve journeys, preserve failures, review/record and

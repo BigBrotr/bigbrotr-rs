@@ -43,7 +43,10 @@ configuration acceptance. [Native execution at 2c0dfc1](../../docs/implementatio
 passes the four process regressions and the earlier sixteen scenarios. The
 200,000-entry candidate confirms MON-005: 10,407,457 compact bytes become
 10,607,924 JSONB text bytes; initialization fails without changing the database.
-That finding remains open pending bounded refusal and near-limit acceptance.
+That historical finding was subsequently corrected and qualified by the
+[JSONB limit cases](../../docs/implementation/evidence/p01-jsonb-limit-native-20260918.json).
+The original monitor script retains its counterexample semantics for the named
+historical source; it is not the current correction acceptance runner.
 
 [Executed native evidence](../../docs/implementation/evidence/p01-control-runtime-native-20260918.json)
 records the 16-case Linux amd64/PG16.15 run at `6be8515`, exact source/artifact
