@@ -85,6 +85,28 @@ fn dump(path: &Path) {
     }
     emit(serde_json::json!({"event":"dump","rows":rows}));
 }
+fn fixture_document() -> String {
+    // The expected fixture digest names compact JSON, not the pretty source.
+    serde_json::to_string(
+        &serde_json::from_str::<serde_json::Value>(include_str!(
+            "../../../experiments/configuration-inspection/policy.json"
+        ))
+        .unwrap(),
+    )
+    .unwrap()
+}
+#[test]
+fn setup_preserves_the_independent_frozen_policy_digest() {
+    use sha2::{Digest, Sha256};
+    let document = fixture_document();
+    let digest = Sha256::new()
+        .chain_update(b"bigbrotr/product-policy/1\0")
+        .chain_update(document.as_bytes())
+        .finalize()
+        .into();
+    validate(&document, digest).unwrap();
+}
+
 async fn setup(mut config: Config, target: u32) {
     use bigbrotr::storage::postgres::{
         activation::{ActivationRequest, activate_initial},
@@ -106,7 +128,7 @@ async fn setup(mut config: Config, target: u32) {
         .password(std::fs::read("/secrets/bigbrotr_control").unwrap());
     let (mut client, driver) = config.connect(NoTls).await.unwrap();
     let driver = tokio::spawn(driver);
-    let document = include_str!("../../../experiments/configuration-inspection/policy.json");
+    let document = fixture_document();
     let dataset = [1; 16].try_into().unwrap();
     let instance = [2; 16].try_into().unwrap();
     initialize(
@@ -115,10 +137,10 @@ async fn setup(mut config: Config, target: u32) {
             dataset,
             instance,
             authority_mode: "managed",
-            document,
+            document: &document,
             document_digest: Sha256::new()
                 .chain_update(b"bigbrotr/product-policy/1\0")
-                .chain_update(document)
+                .chain_update(document.as_bytes())
                 .finalize()
                 .into(),
             source_digest: [3; 32],

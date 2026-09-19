@@ -16,6 +16,8 @@ SQL clients. The script never treats a missing fixture or empty input as PASS.
 
 The ledger is still a prerequisite. Logical input positions, outcome/checkpoint
 closure, ACK/GC, successor replay, power loss and physical ENOSPC are not covered.
-SQL constraint concurrency and fresh-only migration compatibility require their
-own practical schedules before qualification. The progress checkpoint and evidence
+`schema_cases.sql` checks19 nonempty/constraint/rollback observations against the
+actual successful bootstrap dataset, including the documented bulk refusal and
+empty versus unresolved epoch retirement. SQL concurrency and fresh-only migration
+compatibility still require their own practical schedules before qualification. The progress checkpoint and evidence
 report record actual execution; the presence of this harness is not a PASS claim.

@@ -127,6 +127,15 @@ def main(root):
         assert observed['digest']==(hashlib.sha256(original).hexdigest() if reserved else None)
         assert state_rows(db)==case['control']
         case['status']='PASS';save()
+    fixture=SOURCE/'experiments/producer-requests/schema_cases.sql'
+    completed=subprocess.run(['docker','exec','-i',pg,'psql','-XAt','-U','postgres','-d','bbproducer_write'],
+        input=fixture.read_text(),capture_output=True,text=True,timeout=60)
+    report['schema']={'exit':completed.returncode,'stdout':completed.stdout,'stderr':completed.stderr,
+        'fixture_sha256':hashlib.sha256(fixture.read_bytes()).hexdigest()}
+    save()
+    assert completed.returncode==0, 'schema fixture failed; inspect retained transcript'
+    results=[json.loads(line) for line in completed.stdout.splitlines() if line.startswith('{')]
+    assert len(results)==1 and results[0]['status']=='PASS' and len(results[0]['cases'])==19
     report['status']='PASS';save()
     print(json.dumps({'status':'PASS','cases':len(report['cases'])}))
 

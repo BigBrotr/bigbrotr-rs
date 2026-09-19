@@ -12769,7 +12769,241 @@
         },
         "build_checks_status": "PASS"
       },
-      "manifest": ".research/implementation/producer-inputs/qualified-evidence-identity.json"
+      "manifest": ".research/implementation/producer-inputs/qualified-evidence-identity.json",
+      "network_retirement": {
+        "network": "9eb6446e9abcdff40af5a94b063f4bec57a28033af4b1d0bd4d20f8a03671537",
+        "owner": "d0127b7cec90129aa1e5a042be1e2bf0",
+        "action": "remove verified empty retired network only; prior containers and data remain stopped-retained",
+        "successor_lab": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ledger-57cce75"
+      }
+    },
+    "producer_ledger": {
+      "source": "57cce756a4ad47199d862c8e47fd345fd5eee9c3",
+      "tree": "6a12d601c0698be27859ed373cdc4ef614b698b1",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ledger-57cce75",
+      "owner": "836e9f794619ab56854d10ab6ad07144",
+      "container": "bigbrotr-implementation-producer-ledger-57cce75",
+      "postgres": "bigbrotr-implementation-producer-ledger-57cce75-pg",
+      "network": "bigbrotr-implementation-producer-ledger-57cce75",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "state": "stopped-retained",
+      "source_files": 791,
+      "started_at": "2026-09-19T16:13:53.333975+00:00",
+      "network_id": "2e4c666a993c0548f03434b61174b736bf17bf3632c188145865f20edc76bfd0",
+      "postgres_id": "657eeb657c72c69c0d9a84490498920a967eee730d28453825b4616b9f323dbb",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "2dff621b1ecfddf54fab10b9b36ff84031dc2c58507b3a17444a14f620244910",
+      "raw": ".research/implementation/producer-ledger/initial",
+      "qualification": "NOT_RUN: exact-source native build active",
+      "completed_at": "2026-09-19T16:22:18.616934+00:00",
+      "terminal_audit": {
+        "status": "PASS",
+        "source": "57cce756a4ad47199d862c8e47fd345fd5eee9c3",
+        "tree": "6a12d601c0698be27859ed373cdc4ef614b698b1",
+        "source_files": 791,
+        "source_archive_sha256": "e3ea66e110234d05207811bde9b1b91ab20ed04958846d259a6106448fd6ee39",
+        "source_manifest_sha256": "dc5f8f2e50eb5ca08e724e4f3870da41d703d1033f5073fceccbb54ce72f3e27",
+        "artifacts": {
+          "main": {
+            "sha256": "0a99b62873a48e1986d9fa9162a14e2dfd08d8246f1566791957c36a1df75f0c",
+            "bytes": 9185600,
+            "elf_machine": 62
+          },
+          "worker": {
+            "sha256": "4a8f8f37ec6dbf7b6e6def033966d21d116f027699cfd4c96ae6ff852f298f3c",
+            "bytes": 12608632,
+            "elf_machine": 62
+          },
+          "publisher": {
+            "sha256": "5715dfa5902b9cd6b92770dcaa6dee765ef717456edaaac04a6a644fe86cae6a",
+            "bytes": 19059016,
+            "elf_machine": 62
+          },
+          "coordinator_probe": {
+            "sha256": "53e359cd3e12d6d263e1e61159898f009523f5989a5672f57b8075830d580b2f",
+            "bytes": 694344,
+            "elf_machine": 62
+          },
+          "attempt_probe": {
+            "sha256": "148c4b44e9715110873425820270a638a7f5222b7f7ca08591e51c89dcf5498d",
+            "bytes": 2651936,
+            "elf_machine": 62
+          },
+          "ingest_probe": {
+            "sha256": "2f9dc0a530ff910dcce5295881084b67dca2317c68a59725c22dd980215a3ff1",
+            "bytes": 15604800,
+            "elf_machine": 62
+          }
+        },
+        "qualification": {
+          "installed-signed-cases": "PASS",
+          "producer-reservation-cases": "INCOMPLETE"
+        },
+        "cases": {
+          "installed-signed-cases": 6,
+          "producer-reservation-cases": 1
+        },
+        "build_ready": true,
+        "terminal": {
+          "container_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-19T16:13:56.073198744Z",
+            "FinishedAt": "2026-09-19T16:22:12.714958103Z"
+          },
+          "postgres_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-19T16:13:54.071360129Z",
+            "FinishedAt": "2026-09-19T16:22:18.151288035Z"
+          }
+        },
+        "owned_containers": [
+          "2dff621b1ecfddf54fab10b9b36ff84031dc2c58507b3a17444a14f620244910",
+          "657eeb657c72c69c0d9a84490498920a967eee730d28453825b4616b9f323dbb"
+        ],
+        "existing_containers_unchanged": 356,
+        "unrelated_containers_unchanged": 20,
+        "unrelated_running": 8,
+        "bigbrotr_running": 0,
+        "observed_at": "2026-09-19T16:22:18.616934+00:00",
+        "harness": null,
+        "owned_sql_backends_before_shutdown": 0,
+        "producer_input_checks": {
+          "source": "57cce756a4ad47199d862c8e47fd345fd5eee9c3",
+          "source_manifest_sha256": "dc5f8f2e50eb5ca08e724e4f3870da41d703d1033f5073fceccbb54ce72f3e27",
+          "native_toolchain": {
+            "os": "Linux",
+            "architecture": "x86_64",
+            "discovery": "llvm-config",
+            "environment": {
+              "CC": "/usr/lib/llvm-14/bin/clang",
+              "CXX": "/usr/lib/llvm-14/bin/clang++",
+              "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+              "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+              "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+              "CARGO_BUILD_JOBS": "2",
+              "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+            },
+            "tools": {
+              "CC": {
+                "path": "/usr/lib/llvm-14/bin/clang",
+                "realpath": "/usr/lib/llvm-14/bin/clang",
+                "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+                "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+              },
+              "CXX": {
+                "path": "/usr/lib/llvm-14/bin/clang++",
+                "realpath": "/usr/lib/llvm-14/bin/clang",
+                "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+                "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+              },
+              "AR": {
+                "path": "/usr/lib/llvm-14/bin/llvm-ar",
+                "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+                "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+                "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+              },
+              "LIBCLANG_PATH": {
+                "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+                "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+                "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+                "version": "Debian clang version 14.0.6"
+              },
+              "discovery": {
+                "path": "/usr/lib/llvm-14/bin/llvm-config",
+                "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+                "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+                "version": "14.0.6"
+              }
+            },
+            "sdk": null
+          },
+          "scope": "permanent local reservation and actual native initializer",
+          "format": "bigbrotr-foundation-ci/1",
+          "status": "PASS",
+          "checks": [
+            {
+              "name": "model",
+              "command": [
+                "cargo",
+                "test",
+                "--locked",
+                "--release",
+                "-p",
+                "bigbrotr-model"
+              ],
+              "status": "PASS",
+              "executed": true,
+              "exit_code": 0,
+              "seconds": 33.423576978966594
+            },
+            {
+              "name": "native-owner",
+              "command": [
+                "cargo",
+                "test",
+                "--locked",
+                "--release",
+                "-p",
+                "bigbrotr",
+                "--lib",
+                "storage::rocks",
+                "--",
+                "--nocapture"
+              ],
+              "status": "PASS",
+              "executed": true,
+              "exit_code": 0,
+              "seconds": 1.2783858380280435
+            },
+            {
+              "name": "input-clippy",
+              "command": [
+                "cargo",
+                "clippy",
+                "--locked",
+                "--release",
+                "-p",
+                "bigbrotr-model",
+                "-p",
+                "bigbrotr",
+                "--all-targets",
+                "--",
+                "-D",
+                "warnings"
+              ],
+              "status": "PASS",
+              "executed": true,
+              "exit_code": 0,
+              "seconds": 3.8221802241168916
+            }
+          ],
+          "counts": {
+            "collected": 3,
+            "executed": 3,
+            "failed": 0,
+            "not_run": 0
+          }
+        },
+        "build_checks_status": "PASS"
+      },
+      "manifest": ".research/implementation/producer-ledger/initial-evidence-identity.json"
     }
   },
   "implementation_monitor_corrections_20260918": {
