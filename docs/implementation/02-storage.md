@@ -345,8 +345,14 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   blocked native-query cancellation with pidfd-observed child exit before unblock.
   Review's libpq CA-path truncation finding has local RED/GREEN and a real long-CA
   refusal with unchanged permanent state. The initial Linux-only test compilation
-  failure is retained. Signed mTLS publication, remaining native crash/ack paths
-  and installed service/M1 acceptance remain open; this step is not complete.
+  failure is retained. [Nine installed late-fault cases](evidence/p02-initialization-late-native-20260919.json)
+  at `3ad4c64` now qualify lost scientific/guard COMMIT replies in both directions,
+  coordinator SIGKILL at both boundaries and native-worker SIGKILL. Independent
+  PostgreSQL state distinguishes rollback from commit; recovery with the entire
+  worker bundle absent preserves native rows/root markers, retires bootstrap and
+  remains idempotent. Partial scientific state refuses. Signed mTLS publication,
+  runtime-manager publication and installed service/M1 acceptance remain open;
+  this step is not complete.
 - [ ] **Step 4:** After an ambiguous commit, query the receipt in a new transaction; do not
   repeat while receipt state is unknown. Reject mismatched batch digest.
   Include loss of the actual native PostgreSQL COMMIT response, plus physical file

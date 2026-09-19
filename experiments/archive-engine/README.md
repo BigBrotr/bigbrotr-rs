@@ -391,4 +391,6 @@ identities/pidfds, joined proxy endpoints and fresh PostgreSQL observations deli
 the fault before reading durable state. Recovery runs with the entire worker bundle
 absent; native rows and root markers must remain unchanged, bootstrap retirement
 must be complete, and a second recovery must be idempotent. An incomplete native
-schema must remain refused. This matrix's source is not passing execution evidence.
+schema must remain refused. The [native report](../../docs/implementation/evidence/p02-initialization-late-native-20260919.json)
+records all nine PASS at `3ad4c64`, native build/checks and terminal audit. The
+initial Docker subnet-pool setup failure is retained; no product source changed.

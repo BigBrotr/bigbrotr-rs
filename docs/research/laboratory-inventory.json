@@ -10505,12 +10505,176 @@
       "evidence": "docs/implementation/evidence/p02-native-mtls-20260919.json"
     },
     "initialization_late": {
-      "status": "prepared-not-executed",
+      "status": "nine-native-late-fault-cases-pass",
       "local_raw_root": ".research/implementation/archive-worker/initialization-late",
       "source_parent": "030ec6652cdc6691231f3d9ea528c80fceb6306c",
       "scope": "nine actual initializer late commit-loss and process-crash recovery schedules",
-      "resources": "no active lab yet; copied launcher will create fresh owner-labelled namespace",
-      "cache_assets": "stopped native-mtls-50d9496; copied cache only, assets read-only"
+      "resources": {
+        "source": "3ad4c6498af1ad1ac45ae9350438c056197eae73",
+        "tree": "f42e064991ee703d0d708e0ab4623683cd4430fb",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/initialization-late-3ad4c64",
+        "owner": "a3bbe7de774452d58116a172cd6821a0",
+        "container": "bigbrotr-implementation-initialization-late-3ad4c64",
+        "postgres": "bigbrotr-implementation-initialization-late-3ad4c64-pg",
+        "network": "bigbrotr-implementation-initialization-late-3ad4c64",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "state": "stopped-retained",
+        "source_files": 747,
+        "started_at": "2026-09-19T10:04:22.896075+00:00",
+        "network_id": "ea8e467683c066ccdb01af786c3c8f10382b171f7868a27d484f6ca8198fdfb4",
+        "postgres_id": "5a3503d1308e300c193151f6d9101fe6696de787010f6a72786ed9a988b16cf4",
+        "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+        "container_id": "ea2f30d642b95327a884a34eb5da1ba77f87364d16ad70114e6a11df911622b6",
+        "completed_at": "2026-09-19T10:08:37.195255+00:00"
+      },
+      "cache_assets": "stopped native-mtls-50d9496; copied cache only, assets read-only",
+      "retired_previous_network": [
+        {
+          "root": "native-mtls-50d9496",
+          "network": "20abd03b103ecbd13c3f1f3f98714e76755d3b91db70a98e27474eec7355d99c",
+          "owner": "b571e46b2fd953100bc1f1bab7999929",
+          "status": "removed",
+          "containers": "retained-stopped",
+          "data": "retained",
+          "observed_at": "2026-09-19T10:05:12.463459+00:00"
+        }
+      ],
+      "setup_failure": "Docker default address pools exhausted before any containers; removed verified stopped prior empty network and refreshed preflight before resuming same lab",
+      "audit": {
+        "status": "PASS",
+        "source": "3ad4c6498af1ad1ac45ae9350438c056197eae73",
+        "tree": "f42e064991ee703d0d708e0ab4623683cd4430fb",
+        "source_files": 747,
+        "source_archive_sha256": "62553c65195bd5b81fecc7efacc04714fb33721253e7dfc9afaf448815415034",
+        "source_manifest_sha256": "91f304d566eb8124e78c485ffccf1036156cf143b4190a4571c83e0b324f49f6",
+        "artifacts": {
+          "main": {
+            "sha256": "bbe723ddb61ca56f510f31966f74e07bd88942ed22cfc3fd6f0a0abcd4719d1c",
+            "bytes": 8778560,
+            "elf_machine": 62
+          },
+          "worker": {
+            "sha256": "c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227",
+            "bytes": 12608608,
+            "elf_machine": 62
+          }
+        },
+        "qualification": {
+          "initialization-late": "PASS"
+        },
+        "cases": {
+          "initialization-late": 9
+        },
+        "build_ready": true,
+        "terminal": {
+          "container_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-19T10:05:16.312934028Z",
+            "FinishedAt": "2026-09-19T10:08:34.462686107Z"
+          },
+          "postgres_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-19T10:05:14.251605874Z",
+            "FinishedAt": "2026-09-19T10:08:36.762107138Z"
+          }
+        },
+        "owned_containers": [
+          "ea2f30d642b95327a884a34eb5da1ba77f87364d16ad70114e6a11df911622b6",
+          "5a3503d1308e300c193151f6d9101fe6696de787010f6a72786ed9a988b16cf4"
+        ],
+        "existing_containers_unchanged": 326,
+        "unrelated_containers_unchanged": 20,
+        "unrelated_running": 8,
+        "bigbrotr_running": 0,
+        "observed_at": "2026-09-19T10:08:37.195255+00:00",
+        "harness": null,
+        "build_checks_status": "PASS"
+      },
+      "evidence": "docs/implementation/evidence/p02-initialization-late-native-20260919.json",
+      "raw_identity": {
+        "tar_bytes": 204800,
+        "tar_sha256": "95d089b853ab515f6a74305703d3b6fba72ce7c4269da5f957c00bf844786a6c",
+        "files": {
+          "resources.json": {
+            "bytes": 1225,
+            "sha256": "86300c14c2f0fe5f2206a40aadd3795e030138d359539c821545ba736e1d61d0"
+          },
+          "audit.json": {
+            "bytes": 1912,
+            "sha256": "445c448e2ad21a5b3f16217b1f8ecf603d5a8e05edbef48c07c9542e5facfc45"
+          },
+          "container.log": {
+            "bytes": 283,
+            "sha256": "ef70e2daa665a9b23f86a2529524bb627b0faa3f9e0ae8606f1e506aa1915c01"
+          },
+          "out/build/source-manifest.json": {
+            "bytes": 91621,
+            "sha256": "91f304d566eb8124e78c485ffccf1036156cf143b4190a4571c83e0b324f49f6"
+          },
+          "out/native-tests/checks/cli-tests.log": {
+            "bytes": 2171,
+            "sha256": "57cc2f1e828faf11c1d1c74b439cf606a8d78fe92865352edb98cf28b866580d"
+          },
+          "out/native-tests/checks/clippy.log": {
+            "bytes": 394,
+            "sha256": "15d21bb625ba8257fc6c700dbb4443f35a9bc980a06d07c8c3f750864b1aaffa"
+          },
+          "out/native-tests/checks/fixture.log": {
+            "bytes": 130,
+            "sha256": "647a83c2788c03611b6173fada0ca67a1f78a57069589f20c385ff5051f54b2b"
+          },
+          "out/native-tests/checks/parent-tests.log": {
+            "bytes": 5023,
+            "sha256": "56686d94f2acf139bbe6bcb8037fce172ef93d307b3aa26379490d7663f35e18"
+          },
+          "out/native-tests/checks/result.json": {
+            "bytes": 4219,
+            "sha256": "8117f37368fa7e810f31f21e647edfda39d156548ad8d4fb90938b4680641ce7"
+          },
+          "out/native-tests/ordered-build.log": {
+            "bytes": 626,
+            "sha256": "23d8a6c875f47a3141427f8d6173ecba90709e4c70d68c0ce43167cc5422dc9e"
+          },
+          "out/native-tests/ready.json": {
+            "bytes": 4911,
+            "sha256": "6cdd41cab52f1935cfe362e66441273977ded58a1847e4e46e61ba9c2e5f5a2b"
+          },
+          "out/native-tests/result.json": {
+            "bytes": 2800,
+            "sha256": "30842c9f5c3ec7f164599b48ab491b18f1d5ad70aa89ac7c02acc9e726ecea93"
+          },
+          "out/native-tests/worker-identity.json": {
+            "bytes": 104,
+            "sha256": "c76d6822c6cff10729edc0d68f41196558b6cdedee0779cbf55ce624e1e80878"
+          },
+          "initialization-late.json": {
+            "bytes": 52811,
+            "sha256": "080d832587c77119b5987154679116edcbe11f681bfca59e4b2045e064754885"
+          },
+          "initialization-late.log": {
+            "bytes": 85,
+            "sha256": "ac7190544f4cecca7e5918cd1519442079d76e105513a770dbf946fe12274dc9"
+          }
+        }
+      },
+      "next": "runtime-manager signed publication and installed Control+Archive M1"
     }
   },
   "implementation_monitor_corrections_20260918": {

@@ -1,0 +1,1352 @@
+{
+  "format": "bigbrotr-initialization-late-evidence/1",
+  "observed_date": "2026-09-19",
+  "status": "PASS",
+  "scope": "Nine installed initializer late COMMIT-loss and process-crash schedules; not complete initializer/product acceptance",
+  "source": "3ad4c6498af1ad1ac45ae9350438c056197eae73",
+  "tree": "f42e064991ee703d0d708e0ab4623683cd4430fb",
+  "product_changes": "No Rust, dependency, migration or worker-protocol changes from030ec66; rebuilt main embeds candidate source identity. Added fault harness and proxy selection only.",
+  "commands": [
+    "python3 -B /source/experiments/archive-engine/native_initialization.py",
+    "python3 -B SOURCE/experiments/archive-engine/initialization_cli_cases.py OWNED_ROOT --late-faults"
+  ],
+  "environment": {
+    "host": "Tux",
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "1.98.1",
+    "clang": "14.0.6",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "duckdb": "1.5.5",
+    "duckdb_binding": "1.10505.0",
+    "arrow": "58.4.0",
+    "ducklake": "1.0.0",
+    "libpq": "18.3",
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "runner_limits": "2CPU/6GiB/512PIDs; read-only root; internal network; no host ports",
+    "postgres_limits": "1CPU/1GiB/128PIDs"
+  },
+  "inputs": {
+    "Cargo.lock": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215",
+    "source_archive_sha256": "62553c65195bd5b81fecc7efacc04714fb33721253e7dfc9afaf448815415034",
+    "source_manifest_sha256": "91f304d566eb8124e78c485ffccf1036156cf143b4190a4571c83e0b324f49f6",
+    "source_files": 747,
+    "harness": {
+      "source": "3ad4c6498af1ad1ac45ae9350438c056197eae73",
+      "tree": "f42e064991ee703d0d708e0ab4623683cd4430fb",
+      "script_sha256": "4ee4bc35debe1020f064a98863ab9205cb09493e89f3ae5421ee0496be1826c1",
+      "changed_paths": [],
+      "production_inputs_unchanged": true
+    },
+    "fault_sources": {
+      "initialization_fault_cases.py": "bc28dd17ac6cedb589e3c86a164f180c87efbd6c0be1a5e64b9197f145fcf1d5",
+      "native_commit_proxy.py": "25750545ee5d5068ad56ea0846d8265bcd3a74a599465ad1dd2c7f3e91c91f3a"
+    },
+    "worker_identity": {
+      "bytes": 12608608,
+      "sha256": "c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227"
+    }
+  },
+  "artifacts": {
+    "main": {
+      "sha256": "bbe723ddb61ca56f510f31966f74e07bd88942ed22cfc3fd6f0a0abcd4719d1c",
+      "bytes": 8778560,
+      "elf_machine": 62
+    },
+    "worker": {
+      "sha256": "c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227",
+      "bytes": 12608608,
+      "elf_machine": 62
+    }
+  },
+  "validation": {
+    "ordered_build": "PASS",
+    "fixture_build": "PASS",
+    "archive_parent_tests": {
+      "passed": 38,
+      "failed": 0,
+      "ignored": 1,
+      "filtered": 48
+    },
+    "binary_tests": {
+      "passed": 8,
+      "failed": 0
+    },
+    "catalog_cli_tests": {
+      "passed": 10,
+      "failed": 0
+    },
+    "scoped_clippy": "PASS",
+    "ignored_reason": "native_worker_alone_retains_custody_after_coordinator_descriptors_close needs its dedicated harness; earlier evidence retained, not rerun/PASS here",
+    "local": "Python outer/nested AST, core17case AST equality and direct-INSERT discriminator; artifact/document/link checks pass; no Rust change requiring an additional Mac suite"
+  },
+  "oracle": [
+    "Proxy direct INSERT target distinguishes scientific DDL transaction from preceding ATTACH metadata creation; guard target selects CREATE SCHEMA. One selected COMMIT per case; no frontend completion.",
+    "Coordinator/native SIGKILL uses pidfds acquired before signals and rechecks full argv, exact executable, PID/start/parent and reserved scratch nonce. Observed exits precede stopping the proxy; native parent-death exit is observed in both coordinator schema crashes.",
+    "Actual coordinator completion, joined remote proxy and fresh zero-client database observation precede independent SQL oracles. No PostgreSQL backend was killed.",
+    "Native rollback preserves28metadata tables,0logical tables/columns and snapshot0. Complete schema has6exactlogical tables,203columns,snapshots0/1,the independent declaration checksum/message and0datafiles.",
+    "Ownership rollback/commit is inspected before recovery. Guard commit already assigns all metadata to CatalogManager; guard rollback retains bootstrap ownership. Fresh recovery installs only complete scientific state.",
+    "All28native COPY rows and filesystem device/inode/mode/hash observations remain unchanged through recovery. First refusal may retire its bootstrap role; second recover preserves full database and global-role fingerprint.",
+    "Entire worker bundle temporarily absent during recover, repeat and successful manager inspect; restored before fresh initialize retry. No recovery native launch or silent repair; all fresh initialize retries refuse without DB/role/root changes."
+  ],
+  "cases": [
+    {
+      "name": "native-schema-before-forward",
+      "status": "PASS",
+      "target": "native-schema",
+      "mode": "before-forward",
+      "crash": null,
+      "observed": {
+        "exit": 4,
+        "output": null,
+        "stderr_nonempty": true,
+        "seconds": 0.7155199269764125
+      },
+      "before": {
+        "native_tables": 28,
+        "scientific_tables": [],
+        "columns": 0,
+        "snapshots": [
+          "0"
+        ],
+        "data_files": 0,
+        "guard_installed": false,
+        "owner_oid": 16398
+      },
+      "recovered": {
+        "exit": 4,
+        "output": null,
+        "stderr_nonempty": true,
+        "seconds": 0.08682293770834804
+      },
+      "repeated": {
+        "exit": 4,
+        "output": null,
+        "stderr_nonempty": true,
+        "seconds": 0.09858147101476789
+      },
+      "after": {
+        "native_tables": 28,
+        "scientific_tables": [],
+        "columns": 0,
+        "snapshots": [
+          "0"
+        ],
+        "data_files": 0,
+        "guard_installed": false,
+        "owner_oid": 16398
+      },
+      "fresh_initialize_retry": {
+        "exit": 4,
+        "output": null,
+        "stderr_nonempty": true,
+        "seconds": 0.16441969200968742
+      },
+      "bootstrap_retired": true,
+      "recovery_without_worker_bundle": true,
+      "native_rows_unchanged": true,
+      "root_unchanged": true,
+      "native_rows_sha256": "8084fc969320212bc37a5333662ca0b09ceba8134ae7354d79741cdf9a5c8705",
+      "durable": {
+        "database_sha256": "78d049fb24c3ce2c90f0c6e8085688f2abf34747d7e8861f336a502020570f3f",
+        "global_roles_md5": "cc807651fbf7e479153e835062c9b959"
+      },
+      "remaining_backends": 0,
+      "proxy": {
+        "data_queries": 1,
+        "data_commits": 1,
+        "server_complete": 0,
+        "client_complete": 0,
+        "faults": 1,
+        "unexpected": 0
+      }
+    },
+    {
+      "name": "native-schema-after-complete",
+      "status": "PASS",
+      "target": "native-schema",
+      "mode": "after-complete",
+      "crash": null,
+      "observed": {
+        "exit": 4,
+        "output": null,
+        "stderr_nonempty": true,
+        "seconds": 0.7848172769881785
+      },
+      "before": {
+        "native_tables": 28,
+        "scientific_tables": [
+          "archive_commits",
+          "dictionaries",
+          "event_eligibility_facts",
+          "event_receive_facts",
+          "events",
+          "provenance_facts"
+        ],
+        "columns": 203,
+        "snapshots": [
+          "0",
+          "1"
+        ],
+        "data_files": 0,
+        "guard_installed": false,
+        "owner_oid": 16541
+      },
+      "recovered": {
+        "exit": 0,
+        "output": {
+          "bootstrap": "retired",
+          "catalog_id": "02020202020202020202020202020202",
+          "dataset_id": "01010101010101010101010101010101",
+          "format": "bigbrotr-catalog-initialization/1",
+          "manager_inspection": "verified",
+          "new_installation": true,
+          "ready": false,
+          "runtime_authorization": "not-granted",
+          "status": "installed"
+        },
+        "stderr_nonempty": false,
+        "seconds": 0.31423657294362783
+      },
+      "repeated": {
+        "exit": 0,
+        "output": {
+          "bootstrap": "retired",
+          "catalog_id": "02020202020202020202020202020202",
+          "dataset_id": "01010101010101010101010101010101",
+          "format": "bigbrotr-catalog-initialization/1",
+          "manager_inspection": "verified",
+          "new_installation": false,
+          "ready": false,
+          "runtime_authorization": "not-granted",
+          "status": "installed"
+        },
+        "stderr_nonempty": false,
+        "seconds": 0.19821254210546613
+      },
+      "after": {
+        "native_tables": 28,
+        "scientific_tables": [
+          "archive_commits",
+          "dictionaries",
+          "event_eligibility_facts",
+          "event_receive_facts",
+          "events",
+          "provenance_facts"
+        ],
+        "columns": 203,
+        "snapshots": [
+          "0",
+          "1"
+        ],
+        "data_files": 0,
+        "guard_installed": true,
+        "owner_oid": 16395
+      },
+      "fresh_initialize_retry": {
+        "exit": 4,
+        "output": null,
+        "stderr_nonempty": true,
+        "seconds": 0.1622460251674056
+      },
+      "bootstrap_retired": true,
+      "recovery_without_worker_bundle": true,
+      "native_rows_unchanged": true,
+      "root_unchanged": true,
+      "native_rows_sha256": "cfc2c6d5b5a2a84f077a864b40abbcb9e97f22006163bc73246f18789730805e",
+      "durable": {
+        "database_sha256": "99521e04a3bb1f2f670bb7b51c07a31d2f1bb5ea4075f019e72bf8f0038d60a6",
+        "global_roles_md5": "217b123398c459bf1a7e5ffd9e229de8"
+      },
+      "remaining_backends": 0,
+      "proxy": {
+        "data_queries": 1,
+        "data_commits": 1,
+        "server_complete": 1,
+        "client_complete": 0,
+        "faults": 1,
+        "unexpected": 0
+      }
+    },
+    {
+      "name": "native-schema-kill-hold-commit",
+      "status": "PASS",
+      "target": "native-schema",
+      "mode": "hold-commit",
+      "crash": "coordinator",
+      "observed": {
+        "exit": -9,
+        "output": null,
+        "stderr_nonempty": false
+      },
+      "before": {
+        "native_tables": 28,
+        "scientific_tables": [],
+        "columns": 0,
+        "snapshots": [
+          "0"
+        ],
+        "data_files": 0,
+        "guard_installed": false,
+        "owner_oid": 16779
+      },
+      "recovered": {
+        "exit": 4,
+        "output": null,
+        "stderr_nonempty": true,
+        "seconds": 0.10553320171311498
+      },
+      "repeated": {
+        "exit": 4,
+        "output": null,
+        "stderr_nonempty": true,
+        "seconds": 0.09114180598407984
+      },
+      "after": {
+        "native_tables": 28,
+        "scientific_tables": [],
+        "columns": 0,
+        "snapshots": [
+          "0"
+        ],
+        "data_files": 0,
+        "guard_installed": false,
+        "owner_oid": 16779
+      },
+      "fresh_initialize_retry": {
+        "exit": 4,
+        "output": null,
+        "stderr_nonempty": true,
+        "seconds": 0.15878659626469016
+      },
+      "bootstrap_retired": true,
+      "recovery_without_worker_bundle": true,
+      "native_rows_unchanged": true,
+      "root_unchanged": true,
+      "native_rows_sha256": "7d660abf1dbd8fe5f8f14aa5dc99793069e3ba60cf92e6ddd43bba1bc7b7d7ea",
+      "durable": {
+        "database_sha256": "cdec80cccf0c10cbf078c5b5cdae1365fb479a208aa9649a511649b096b0d927",
+        "global_roles_md5": "6bec1959126690ec8ec022ec1129f50e"
+      },
+      "remaining_backends": 0,
+      "proxy": {
+        "data_queries": 1,
+        "data_commits": 1,
+        "server_complete": 0,
+        "client_complete": 0,
+        "faults": 0,
+        "unexpected": 0
+      },
+      "process_exclusion": {
+        "identities": [
+          {
+            "pid": 3800,
+            "start": "319470617",
+            "parent": 3794,
+            "exe": "/out/native-tests/bigbrotr",
+            "argv": [
+              "/out/native-tests/bigbrotr",
+              "archive",
+              "initialize",
+              "--file",
+              "/out/initialization-cli/native-schema-kill-hold-commit.toml",
+              "--initializer-user",
+              "postgres",
+              "--initializer-password-ref",
+              "file:/out/initialization-cli/initializer",
+              "--worker-root",
+              "/out/archive-worker"
+            ]
+          },
+          {
+            "pid": 3803,
+            "start": "319470637",
+            "parent": 3800,
+            "exe": "/out/archive-worker/bigbrotr-archive-worker",
+            "argv": [
+              "/out/archive-worker/bigbrotr-archive-worker",
+              "initialize-reserved-catalog",
+              "/out/archive-worker",
+              "/out/initialization-cli/native-schema-kill-hold-commit-scratch/initialize-74a16cf9296ea84f50523954833d8c1f",
+              "134217728",
+              "67108864",
+              "1"
+            ]
+          }
+        ],
+        "killed": 3800,
+        "exited": [
+          3800,
+          3803
+        ],
+        "seconds": 0.003491109237074852,
+        "pidfd_exit_before_proxy_stop": true
+      }
+    },
+    {
+      "name": "native-schema-kill-hold-reply",
+      "status": "PASS",
+      "target": "native-schema",
+      "mode": "hold-reply",
+      "crash": "coordinator",
+      "observed": {
+        "exit": -9,
+        "output": null,
+        "stderr_nonempty": false
+      },
+      "before": {
+        "native_tables": 28,
+        "scientific_tables": [
+          "archive_commits",
+          "dictionaries",
+          "event_eligibility_facts",
+          "event_receive_facts",
+          "events",
+          "provenance_facts"
+        ],
+        "columns": 203,
+        "snapshots": [
+          "0",
+          "1"
+        ],
+        "data_files": 0,
+        "guard_installed": false,
+        "owner_oid": 16922
+      },
+      "recovered": {
+        "exit": 0,
+        "output": {
+          "bootstrap": "retired",
+          "catalog_id": "02020202020202020202020202020202",
+          "dataset_id": "01010101010101010101010101010101",
+          "format": "bigbrotr-catalog-initialization/1",
+          "manager_inspection": "verified",
+          "new_installation": true,
+          "ready": false,
+          "runtime_authorization": "not-granted",
+          "status": "installed"
+        },
+        "stderr_nonempty": false,
+        "seconds": 0.30596800707280636
+      },
+      "repeated": {
+        "exit": 0,
+        "output": {
+          "bootstrap": "retired",
+          "catalog_id": "02020202020202020202020202020202",
+          "dataset_id": "01010101010101010101010101010101",
+          "format": "bigbrotr-catalog-initialization/1",
+          "manager_inspection": "verified",
+          "new_installation": false,
+          "ready": false,
+          "runtime_authorization": "not-granted",
+          "status": "installed"
+        },
+        "stderr_nonempty": false,
+        "seconds": 0.1461215796880424
+      },
+      "after": {
+        "native_tables": 28,
+        "scientific_tables": [
+          "archive_commits",
+          "dictionaries",
+          "event_eligibility_facts",
+          "event_receive_facts",
+          "events",
+          "provenance_facts"
+        ],
+        "columns": 203,
+        "snapshots": [
+          "0",
+          "1"
+        ],
+        "data_files": 0,
+        "guard_installed": true,
+        "owner_oid": 16395
+      },
+      "fresh_initialize_retry": {
+        "exit": 4,
+        "output": null,
+        "stderr_nonempty": true,
+        "seconds": 0.16092116804793477
+      },
+      "bootstrap_retired": true,
+      "recovery_without_worker_bundle": true,
+      "native_rows_unchanged": true,
+      "root_unchanged": true,
+      "native_rows_sha256": "3edd4e27a432c5ec5a6f84d72decf8d2f157717654bddb620d4c6090fc5d2c1c",
+      "durable": {
+        "database_sha256": "05d5d08bf13c84cc5a29c160924e89b2b95c9a29d7e158876a2c8fedb46fc3be",
+        "global_roles_md5": "836853fc2b0869b40fb821c7df420661"
+      },
+      "remaining_backends": 0,
+      "proxy": {
+        "data_queries": 1,
+        "data_commits": 1,
+        "server_complete": 1,
+        "client_complete": 0,
+        "faults": 0,
+        "unexpected": 0
+      },
+      "process_exclusion": {
+        "identities": [
+          {
+            "pid": 3939,
+            "start": "319471177",
+            "parent": 3933,
+            "exe": "/out/native-tests/bigbrotr",
+            "argv": [
+              "/out/native-tests/bigbrotr",
+              "archive",
+              "initialize",
+              "--file",
+              "/out/initialization-cli/native-schema-kill-hold-reply.toml",
+              "--initializer-user",
+              "postgres",
+              "--initializer-password-ref",
+              "file:/out/initialization-cli/initializer",
+              "--worker-root",
+              "/out/archive-worker"
+            ]
+          },
+          {
+            "pid": 3942,
+            "start": "319471196",
+            "parent": 3939,
+            "exe": "/out/archive-worker/bigbrotr-archive-worker",
+            "argv": [
+              "/out/archive-worker/bigbrotr-archive-worker",
+              "initialize-reserved-catalog",
+              "/out/archive-worker",
+              "/out/initialization-cli/native-schema-kill-hold-reply-scratch/initialize-ea2bf3587909018bb6b6bb865621a18d",
+              "134217728",
+              "67108864",
+              "1"
+            ]
+          }
+        ],
+        "killed": 3939,
+        "exited": [
+          3939,
+          3942
+        ],
+        "seconds": 0.003214151132851839,
+        "pidfd_exit_before_proxy_stop": true
+      }
+    },
+    {
+      "name": "guard-install-before-forward",
+      "status": "PASS",
+      "target": "guard-install",
+      "mode": "before-forward",
+      "crash": null,
+      "observed": {
+        "exit": 4,
+        "output": null,
+        "stderr_nonempty": true,
+        "seconds": 0.9878848381340504
+      },
+      "before": {
+        "native_tables": 28,
+        "scientific_tables": [
+          "archive_commits",
+          "dictionaries",
+          "event_eligibility_facts",
+          "event_receive_facts",
+          "events",
+          "provenance_facts"
+        ],
+        "columns": 203,
+        "snapshots": [
+          "0",
+          "1"
+        ],
+        "data_files": 0,
+        "guard_installed": false,
+        "owner_oid": 17160
+      },
+      "recovered": {
+        "exit": 0,
+        "output": {
+          "bootstrap": "retired",
+          "catalog_id": "02020202020202020202020202020202",
+          "dataset_id": "01010101010101010101010101010101",
+          "format": "bigbrotr-catalog-initialization/1",
+          "manager_inspection": "verified",
+          "new_installation": true,
+          "ready": false,
+          "runtime_authorization": "not-granted",
+          "status": "installed"
+        },
+        "stderr_nonempty": false,
+        "seconds": 0.2548771547153592
+      },
+      "repeated": {
+        "exit": 0,
+        "output": {
+          "bootstrap": "retired",
+          "catalog_id": "02020202020202020202020202020202",
+          "dataset_id": "01010101010101010101010101010101",
+          "format": "bigbrotr-catalog-initialization/1",
+          "manager_inspection": "verified",
+          "new_installation": false,
+          "ready": false,
+          "runtime_authorization": "not-granted",
+          "status": "installed"
+        },
+        "stderr_nonempty": false,
+        "seconds": 0.191220723092556
+      },
+      "after": {
+        "native_tables": 28,
+        "scientific_tables": [
+          "archive_commits",
+          "dictionaries",
+          "event_eligibility_facts",
+          "event_receive_facts",
+          "events",
+          "provenance_facts"
+        ],
+        "columns": 203,
+        "snapshots": [
+          "0",
+          "1"
+        ],
+        "data_files": 0,
+        "guard_installed": true,
+        "owner_oid": 16395
+      },
+      "fresh_initialize_retry": {
+        "exit": 4,
+        "output": null,
+        "stderr_nonempty": true,
+        "seconds": 0.1575370067730546
+      },
+      "bootstrap_retired": true,
+      "recovery_without_worker_bundle": true,
+      "native_rows_unchanged": true,
+      "root_unchanged": true,
+      "native_rows_sha256": "b0990be1d33bd48fe359e013df285202dfefad8daec88d913c0c7be610a262b2",
+      "durable": {
+        "database_sha256": "10808248f91893d18bbfee75d9e897930f10b89ca2b24bf7ad8b6fd440ee99b0",
+        "global_roles_md5": "11f8878f15954f4d25add0b1180dd1f7"
+      },
+      "remaining_backends": 0,
+      "proxy": {
+        "data_queries": 1,
+        "data_commits": 1,
+        "server_complete": 0,
+        "client_complete": 0,
+        "faults": 1,
+        "unexpected": 0
+      }
+    },
+    {
+      "name": "guard-install-after-complete",
+      "status": "PASS",
+      "target": "guard-install",
+      "mode": "after-complete",
+      "crash": null,
+      "observed": {
+        "exit": 4,
+        "output": null,
+        "stderr_nonempty": true,
+        "seconds": 0.9557047211565077
+      },
+      "before": {
+        "native_tables": 28,
+        "scientific_tables": [
+          "archive_commits",
+          "dictionaries",
+          "event_eligibility_facts",
+          "event_receive_facts",
+          "events",
+          "provenance_facts"
+        ],
+        "columns": 203,
+        "snapshots": [
+          "0",
+          "1"
+        ],
+        "data_files": 0,
+        "guard_installed": true,
+        "owner_oid": 16395
+      },
+      "recovered": {
+        "exit": 0,
+        "output": {
+          "bootstrap": "retired",
+          "catalog_id": "02020202020202020202020202020202",
+          "dataset_id": "01010101010101010101010101010101",
+          "format": "bigbrotr-catalog-initialization/1",
+          "manager_inspection": "verified",
+          "new_installation": false,
+          "ready": false,
+          "runtime_authorization": "not-granted",
+          "status": "installed"
+        },
+        "stderr_nonempty": false,
+        "seconds": 0.1909640938974917
+      },
+      "repeated": {
+        "exit": 0,
+        "output": {
+          "bootstrap": "retired",
+          "catalog_id": "02020202020202020202020202020202",
+          "dataset_id": "01010101010101010101010101010101",
+          "format": "bigbrotr-catalog-initialization/1",
+          "manager_inspection": "verified",
+          "new_installation": false,
+          "ready": false,
+          "runtime_authorization": "not-granted",
+          "status": "installed"
+        },
+        "stderr_nonempty": false,
+        "seconds": 0.14737813780084252
+      },
+      "after": {
+        "native_tables": 28,
+        "scientific_tables": [
+          "archive_commits",
+          "dictionaries",
+          "event_eligibility_facts",
+          "event_receive_facts",
+          "events",
+          "provenance_facts"
+        ],
+        "columns": 203,
+        "snapshots": [
+          "0",
+          "1"
+        ],
+        "data_files": 0,
+        "guard_installed": true,
+        "owner_oid": 16395
+      },
+      "fresh_initialize_retry": {
+        "exit": 4,
+        "output": null,
+        "stderr_nonempty": true,
+        "seconds": 0.1729477192275226
+      },
+      "bootstrap_retired": true,
+      "recovery_without_worker_bundle": true,
+      "native_rows_unchanged": true,
+      "root_unchanged": true,
+      "native_rows_sha256": "85f1d3beeb6a589c4445aefb2dc212cc56b1e39cdd9b5e4032a7c997e05c2501",
+      "durable": {
+        "database_sha256": "8478b7fae4aad6e2e31a0bc0165810a062d9fc4fc8ff076e961069c7d73b1f4f",
+        "global_roles_md5": "be404322d33cee840acdd4371542b755"
+      },
+      "remaining_backends": 0,
+      "proxy": {
+        "data_queries": 1,
+        "data_commits": 1,
+        "server_complete": 1,
+        "client_complete": 0,
+        "faults": 1,
+        "unexpected": 0
+      }
+    },
+    {
+      "name": "guard-install-kill-hold-commit",
+      "status": "PASS",
+      "target": "guard-install",
+      "mode": "hold-commit",
+      "crash": "coordinator",
+      "observed": {
+        "exit": -9,
+        "output": null,
+        "stderr_nonempty": false
+      },
+      "before": {
+        "native_tables": 28,
+        "scientific_tables": [
+          "archive_commits",
+          "dictionaries",
+          "event_eligibility_facts",
+          "event_receive_facts",
+          "events",
+          "provenance_facts"
+        ],
+        "columns": 203,
+        "snapshots": [
+          "0",
+          "1"
+        ],
+        "data_files": 0,
+        "guard_installed": false,
+        "owner_oid": 17733
+      },
+      "recovered": {
+        "exit": 0,
+        "output": {
+          "bootstrap": "retired",
+          "catalog_id": "02020202020202020202020202020202",
+          "dataset_id": "01010101010101010101010101010101",
+          "format": "bigbrotr-catalog-initialization/1",
+          "manager_inspection": "verified",
+          "new_installation": true,
+          "ready": false,
+          "runtime_authorization": "not-granted",
+          "status": "installed"
+        },
+        "stderr_nonempty": false,
+        "seconds": 0.30427510710433125
+      },
+      "repeated": {
+        "exit": 0,
+        "output": {
+          "bootstrap": "retired",
+          "catalog_id": "02020202020202020202020202020202",
+          "dataset_id": "01010101010101010101010101010101",
+          "format": "bigbrotr-catalog-initialization/1",
+          "manager_inspection": "verified",
+          "new_installation": false,
+          "ready": false,
+          "runtime_authorization": "not-granted",
+          "status": "installed"
+        },
+        "stderr_nonempty": false,
+        "seconds": 0.20190620701760054
+      },
+      "after": {
+        "native_tables": 28,
+        "scientific_tables": [
+          "archive_commits",
+          "dictionaries",
+          "event_eligibility_facts",
+          "event_receive_facts",
+          "events",
+          "provenance_facts"
+        ],
+        "columns": 203,
+        "snapshots": [
+          "0",
+          "1"
+        ],
+        "data_files": 0,
+        "guard_installed": true,
+        "owner_oid": 16395
+      },
+      "fresh_initialize_retry": {
+        "exit": 4,
+        "output": null,
+        "stderr_nonempty": true,
+        "seconds": 0.15807114588096738
+      },
+      "bootstrap_retired": true,
+      "recovery_without_worker_bundle": true,
+      "native_rows_unchanged": true,
+      "root_unchanged": true,
+      "native_rows_sha256": "c7aa92783ad73cac295da4356263465698d0c5fa358606461cd83325ce858001",
+      "durable": {
+        "database_sha256": "acdf768fb93e68496215fc32fa5fe8c727eb58c3d009fe866c468475c0a84620",
+        "global_roles_md5": "3102a97fb603b4794e42fde75ceed971"
+      },
+      "remaining_backends": 0,
+      "proxy": {
+        "data_queries": 1,
+        "data_commits": 1,
+        "server_complete": 0,
+        "client_complete": 0,
+        "faults": 0,
+        "unexpected": 0
+      },
+      "process_exclusion": {
+        "identities": [
+          {
+            "pid": 4360,
+            "start": "319473276",
+            "parent": 4354,
+            "exe": "/out/native-tests/bigbrotr",
+            "argv": [
+              "/out/native-tests/bigbrotr",
+              "archive",
+              "initialize",
+              "--file",
+              "/out/initialization-cli/guard-install-kill-hold-commit.toml",
+              "--initializer-user",
+              "postgres",
+              "--initializer-password-ref",
+              "file:/out/initialization-cli/initializer",
+              "--worker-root",
+              "/out/archive-worker"
+            ]
+          }
+        ],
+        "killed": 4360,
+        "exited": [
+          4360
+        ],
+        "seconds": 0.0004654400981962681,
+        "pidfd_exit_before_proxy_stop": true
+      }
+    },
+    {
+      "name": "guard-install-kill-hold-reply",
+      "status": "PASS",
+      "target": "guard-install",
+      "mode": "hold-reply",
+      "crash": "coordinator",
+      "observed": {
+        "exit": -9,
+        "output": null,
+        "stderr_nonempty": false
+      },
+      "before": {
+        "native_tables": 28,
+        "scientific_tables": [
+          "archive_commits",
+          "dictionaries",
+          "event_eligibility_facts",
+          "event_receive_facts",
+          "events",
+          "provenance_facts"
+        ],
+        "columns": 203,
+        "snapshots": [
+          "0",
+          "1"
+        ],
+        "data_files": 0,
+        "guard_installed": true,
+        "owner_oid": 16395
+      },
+      "recovered": {
+        "exit": 0,
+        "output": {
+          "bootstrap": "retired",
+          "catalog_id": "02020202020202020202020202020202",
+          "dataset_id": "01010101010101010101010101010101",
+          "format": "bigbrotr-catalog-initialization/1",
+          "manager_inspection": "verified",
+          "new_installation": false,
+          "ready": false,
+          "runtime_authorization": "not-granted",
+          "status": "installed"
+        },
+        "stderr_nonempty": false,
+        "seconds": 0.14276559092104435
+      },
+      "repeated": {
+        "exit": 0,
+        "output": {
+          "bootstrap": "retired",
+          "catalog_id": "02020202020202020202020202020202",
+          "dataset_id": "01010101010101010101010101010101",
+          "format": "bigbrotr-catalog-initialization/1",
+          "manager_inspection": "verified",
+          "new_installation": false,
+          "ready": false,
+          "runtime_authorization": "not-granted",
+          "status": "installed"
+        },
+        "stderr_nonempty": false,
+        "seconds": 0.19758337223902345
+      },
+      "after": {
+        "native_tables": 28,
+        "scientific_tables": [
+          "archive_commits",
+          "dictionaries",
+          "event_eligibility_facts",
+          "event_receive_facts",
+          "events",
+          "provenance_facts"
+        ],
+        "columns": 203,
+        "snapshots": [
+          "0",
+          "1"
+        ],
+        "data_files": 0,
+        "guard_installed": true,
+        "owner_oid": 16395
+      },
+      "fresh_initialize_retry": {
+        "exit": 4,
+        "output": null,
+        "stderr_nonempty": true,
+        "seconds": 0.11917513189837337
+      },
+      "bootstrap_retired": true,
+      "recovery_without_worker_bundle": true,
+      "native_rows_unchanged": true,
+      "root_unchanged": true,
+      "native_rows_sha256": "21da4403b2ff703ce45241dbb300ad382a207723cde440ff5cdfb65363f14207",
+      "durable": {
+        "database_sha256": "7926a0d8b34fb68751446b4fde3dd3c33914581016941c6df9ddb293de60a322",
+        "global_roles_md5": "f6d46d2dfd6ce9c5d114c5cc8dd2faa2"
+      },
+      "remaining_backends": 0,
+      "proxy": {
+        "data_queries": 1,
+        "data_commits": 1,
+        "server_complete": 1,
+        "client_complete": 0,
+        "faults": 0,
+        "unexpected": 0
+      },
+      "process_exclusion": {
+        "identities": [
+          {
+            "pid": 4506,
+            "start": "319473984",
+            "parent": 4500,
+            "exe": "/out/native-tests/bigbrotr",
+            "argv": [
+              "/out/native-tests/bigbrotr",
+              "archive",
+              "initialize",
+              "--file",
+              "/out/initialization-cli/guard-install-kill-hold-reply.toml",
+              "--initializer-user",
+              "postgres",
+              "--initializer-password-ref",
+              "file:/out/initialization-cli/initializer",
+              "--worker-root",
+              "/out/archive-worker"
+            ]
+          }
+        ],
+        "killed": 4506,
+        "exited": [
+          4506
+        ],
+        "seconds": 0.0004608519375324249,
+        "pidfd_exit_before_proxy_stop": true
+      }
+    },
+    {
+      "name": "native-worker-sigkill",
+      "status": "PASS",
+      "target": "native-schema",
+      "mode": "hold-commit",
+      "crash": "worker",
+      "observed": {
+        "exit": 4,
+        "output": null,
+        "stderr_nonempty": true
+      },
+      "before": {
+        "native_tables": 28,
+        "scientific_tables": [],
+        "columns": 0,
+        "snapshots": [
+          "0"
+        ],
+        "data_files": 0,
+        "guard_installed": false,
+        "owner_oid": 18306
+      },
+      "recovered": {
+        "exit": 4,
+        "output": null,
+        "stderr_nonempty": true,
+        "seconds": 0.05623822659254074
+      },
+      "repeated": {
+        "exit": 4,
+        "output": null,
+        "stderr_nonempty": true,
+        "seconds": 0.050753068178892136
+      },
+      "after": {
+        "native_tables": 28,
+        "scientific_tables": [],
+        "columns": 0,
+        "snapshots": [
+          "0"
+        ],
+        "data_files": 0,
+        "guard_installed": false,
+        "owner_oid": 18306
+      },
+      "fresh_initialize_retry": {
+        "exit": 4,
+        "output": null,
+        "stderr_nonempty": true,
+        "seconds": 0.1734119551256299
+      },
+      "bootstrap_retired": true,
+      "recovery_without_worker_bundle": true,
+      "native_rows_unchanged": true,
+      "root_unchanged": true,
+      "native_rows_sha256": "8b9b1e486001d38fed366f06529786f85e25558c77c62b7e0f4eff987c836eba",
+      "durable": {
+        "database_sha256": "6656bd4d20b6cb120f2b2483a67ae3b8c8e87110251bcb34ccf0e17f70d225bd",
+        "global_roles_md5": "4d608743c89fb5ef44d9f2ae0e760879"
+      },
+      "remaining_backends": 0,
+      "proxy": {
+        "data_queries": 1,
+        "data_commits": 1,
+        "server_complete": 0,
+        "client_complete": 0,
+        "faults": 0,
+        "unexpected": 0
+      },
+      "process_exclusion": {
+        "identities": [
+          {
+            "pid": 4652,
+            "start": "319474633",
+            "parent": 4646,
+            "exe": "/out/native-tests/bigbrotr",
+            "argv": [
+              "/out/native-tests/bigbrotr",
+              "archive",
+              "initialize",
+              "--file",
+              "/out/initialization-cli/native-worker-sigkill.toml",
+              "--initializer-user",
+              "postgres",
+              "--initializer-password-ref",
+              "file:/out/initialization-cli/initializer",
+              "--worker-root",
+              "/out/archive-worker"
+            ]
+          },
+          {
+            "pid": 4655,
+            "start": "319474653",
+            "parent": 4652,
+            "exe": "/out/archive-worker/bigbrotr-archive-worker",
+            "argv": [
+              "/out/archive-worker/bigbrotr-archive-worker",
+              "initialize-reserved-catalog",
+              "/out/archive-worker",
+              "/out/initialization-cli/native-worker-sigkill-scratch/initialize-ef2aa50765d94523c7b4d0535ba4c60c",
+              "134217728",
+              "67108864",
+              "1"
+            ]
+          }
+        ],
+        "killed": 4655,
+        "exited": [
+          4655
+        ],
+        "seconds": 0.003150993026793003,
+        "pidfd_exit_before_proxy_stop": true
+      }
+    }
+  ],
+  "measurements": {
+    "scope": "Single runs in isolated empty catalogs, no capacity/SLA claim",
+    "sigkill_to_observed_exit_seconds": {
+      "native-schema-kill-hold-commit": 0.003491109237074852,
+      "native-schema-kill-hold-reply": 0.003214151132851839,
+      "guard-install-kill-hold-commit": 0.0004654400981962681,
+      "guard-install-kill-hold-reply": 0.0004608519375324249,
+      "native-worker-sigkill": 0.003150993026793003
+    },
+    "first_recover_seconds": {
+      "native-schema-before-forward": 0.08682293770834804,
+      "native-schema-after-complete": 0.31423657294362783,
+      "native-schema-kill-hold-commit": 0.10553320171311498,
+      "native-schema-kill-hold-reply": 0.30596800707280636,
+      "guard-install-before-forward": 0.2548771547153592,
+      "guard-install-after-complete": 0.1909640938974917,
+      "guard-install-kill-hold-commit": 0.30427510710433125,
+      "guard-install-kill-hold-reply": 0.14276559092104435,
+      "native-worker-sigkill": 0.05623822659254074
+    }
+  },
+  "review": {
+    "kind": "Independent read-only AI source review; root actual execution and full case/log inspection",
+    "corrected_before_execution": [
+      "Overbroad schema selector also matched initial ATTACH; replaced with direct INSERT recognition.",
+      "Crash fixture expected scratch parent; corrected to exact initialize-nonce subdirectory."
+    ],
+    "withdrawn": "Reviewer NUL literal finding was tool-output escaping confusion; embedded AST proved one-byte NUL; code uses bytes([0]) for clarity.",
+    "limits": "No AI source review replaces actual execution.",
+    "recorded_evidence_audit": "Independent offline AI audit verified15raw files/archive,747Git source blobs,all9case subset fields,5pidfd records,checks/resource/identity/setup records without discrepancy. It did not reinspect live Tux/ELF or rerun tests; COPY/root equality is the executed harness oracle, retained as hashes/results rather than complete dumps."
+  },
+  "setup_failure": {
+    "outcome": "Recovered before any candidate container or practical case existed",
+    "reason": "Docker predefined address pools exhausted",
+    "action": "Verified prior50d9496lab stopped and network empty/owned, removed only that network, refreshed inventory and resumed same candidate lab owner. Containers/data retained.",
+    "local_launch_log_sha256": "9dd08391c7f8bc76f7306b1650abace4da31c0905d35df9fe332b5d8edbb34bb",
+    "retired_network": [
+      {
+        "root": "native-mtls-50d9496",
+        "network": "20abd03b103ecbd13c3f1f3f98714e76755d3b91db70a98e27474eec7355d99c",
+        "owner": "b571e46b2fd953100bc1f1bab7999929",
+        "status": "removed",
+        "containers": "retained-stopped",
+        "data": "retained",
+        "observed_at": "2026-09-19T10:05:12.463459+00:00"
+      }
+    ]
+  },
+  "resources": {
+    "source": "3ad4c6498af1ad1ac45ae9350438c056197eae73",
+    "tree": "f42e064991ee703d0d708e0ab4623683cd4430fb",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/initialization-late-3ad4c64",
+    "owner": "a3bbe7de774452d58116a172cd6821a0",
+    "container": "bigbrotr-implementation-initialization-late-3ad4c64",
+    "postgres": "bigbrotr-implementation-initialization-late-3ad4c64-pg",
+    "network": "bigbrotr-implementation-initialization-late-3ad4c64",
+    "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "state": "stopped-retained",
+    "source_files": 747,
+    "started_at": "2026-09-19T10:04:22.896075+00:00",
+    "network_id": "ea8e467683c066ccdb01af786c3c8f10382b171f7868a27d484f6ca8198fdfb4",
+    "postgres_id": "5a3503d1308e300c193151f6d9101fe6696de787010f6a72786ed9a988b16cf4",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "container_id": "ea2f30d642b95327a884a34eb5da1ba77f87364d16ad70114e6a11df911622b6",
+    "completed_at": "2026-09-19T10:08:37.195255+00:00"
+  },
+  "audit": {
+    "status": "PASS",
+    "source": "3ad4c6498af1ad1ac45ae9350438c056197eae73",
+    "tree": "f42e064991ee703d0d708e0ab4623683cd4430fb",
+    "source_files": 747,
+    "source_archive_sha256": "62553c65195bd5b81fecc7efacc04714fb33721253e7dfc9afaf448815415034",
+    "source_manifest_sha256": "91f304d566eb8124e78c485ffccf1036156cf143b4190a4571c83e0b324f49f6",
+    "artifacts": {
+      "main": {
+        "sha256": "bbe723ddb61ca56f510f31966f74e07bd88942ed22cfc3fd6f0a0abcd4719d1c",
+        "bytes": 8778560,
+        "elf_machine": 62
+      },
+      "worker": {
+        "sha256": "c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227",
+        "bytes": 12608608,
+        "elf_machine": 62
+      }
+    },
+    "qualification": {
+      "initialization-late": "PASS"
+    },
+    "cases": {
+      "initialization-late": 9
+    },
+    "build_ready": true,
+    "terminal": {
+      "container_id": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 143,
+        "Error": "",
+        "StartedAt": "2026-09-19T10:05:16.312934028Z",
+        "FinishedAt": "2026-09-19T10:08:34.462686107Z"
+      },
+      "postgres_id": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-09-19T10:05:14.251605874Z",
+        "FinishedAt": "2026-09-19T10:08:36.762107138Z"
+      }
+    },
+    "owned_containers": [
+      "ea2f30d642b95327a884a34eb5da1ba77f87364d16ad70114e6a11df911622b6",
+      "5a3503d1308e300c193151f6d9101fe6696de787010f6a72786ed9a988b16cf4"
+    ],
+    "existing_containers_unchanged": 326,
+    "unrelated_containers_unchanged": 20,
+    "unrelated_running": 8,
+    "bigbrotr_running": 0,
+    "observed_at": "2026-09-19T10:08:37.195255+00:00",
+    "harness": null,
+    "build_checks_status": "PASS"
+  },
+  "raw": {
+    "root": ".research/implementation/archive-worker/initialization-late/qualified",
+    "report_sha256": "080d832587c77119b5987154679116edcbe11f681bfca59e4b2045e064754885",
+    "identity": {
+      "tar_bytes": 204800,
+      "tar_sha256": "95d089b853ab515f6a74305703d3b6fba72ce7c4269da5f957c00bf844786a6c",
+      "files": {
+        "resources.json": {
+          "bytes": 1225,
+          "sha256": "86300c14c2f0fe5f2206a40aadd3795e030138d359539c821545ba736e1d61d0"
+        },
+        "audit.json": {
+          "bytes": 1912,
+          "sha256": "445c448e2ad21a5b3f16217b1f8ecf603d5a8e05edbef48c07c9542e5facfc45"
+        },
+        "container.log": {
+          "bytes": 283,
+          "sha256": "ef70e2daa665a9b23f86a2529524bb627b0faa3f9e0ae8606f1e506aa1915c01"
+        },
+        "out/build/source-manifest.json": {
+          "bytes": 91621,
+          "sha256": "91f304d566eb8124e78c485ffccf1036156cf143b4190a4571c83e0b324f49f6"
+        },
+        "out/native-tests/checks/cli-tests.log": {
+          "bytes": 2171,
+          "sha256": "57cc2f1e828faf11c1d1c74b439cf606a8d78fe92865352edb98cf28b866580d"
+        },
+        "out/native-tests/checks/clippy.log": {
+          "bytes": 394,
+          "sha256": "15d21bb625ba8257fc6c700dbb4443f35a9bc980a06d07c8c3f750864b1aaffa"
+        },
+        "out/native-tests/checks/fixture.log": {
+          "bytes": 130,
+          "sha256": "647a83c2788c03611b6173fada0ca67a1f78a57069589f20c385ff5051f54b2b"
+        },
+        "out/native-tests/checks/parent-tests.log": {
+          "bytes": 5023,
+          "sha256": "56686d94f2acf139bbe6bcb8037fce172ef93d307b3aa26379490d7663f35e18"
+        },
+        "out/native-tests/checks/result.json": {
+          "bytes": 4219,
+          "sha256": "8117f37368fa7e810f31f21e647edfda39d156548ad8d4fb90938b4680641ce7"
+        },
+        "out/native-tests/ordered-build.log": {
+          "bytes": 626,
+          "sha256": "23d8a6c875f47a3141427f8d6173ecba90709e4c70d68c0ce43167cc5422dc9e"
+        },
+        "out/native-tests/ready.json": {
+          "bytes": 4911,
+          "sha256": "6cdd41cab52f1935cfe362e66441273977ded58a1847e4e46e61ba9c2e5f5a2b"
+        },
+        "out/native-tests/result.json": {
+          "bytes": 2800,
+          "sha256": "30842c9f5c3ec7f164599b48ab491b18f1d5ad70aa89ac7c02acc9e726ecea93"
+        },
+        "out/native-tests/worker-identity.json": {
+          "bytes": 104,
+          "sha256": "c76d6822c6cff10729edc0d68f41196558b6cdedee0779cbf55ce624e1e80878"
+        },
+        "initialization-late.json": {
+          "bytes": 52811,
+          "sha256": "080d832587c77119b5987154679116edcbe11f681bfca59e4b2045e064754885"
+        },
+        "initialization-late.log": {
+          "bytes": 85,
+          "sha256": "ac7190544f4cecca7e5918cd1519442079d76e105513a770dbf946fe12274dc9"
+        }
+      }
+    },
+    "source_verification": {
+      "revision": "3ad4c6498af1ad1ac45ae9350438c056197eae73",
+      "tree": "f42e064991ee703d0d708e0ab4623683cd4430fb",
+      "files": 747,
+      "archive_sha256": "62553c65195bd5b81fecc7efacc04714fb33721253e7dfc9afaf448815415034",
+      "manifest_sha256": "91f304d566eb8124e78c485ffccf1036156cf143b4190a4571c83e0b324f49f6"
+    }
+  },
+  "not_qualified": [
+    "Concurrent installed initializer races and full alias/credential/exhaustion matrix beyond previous scoped cases.",
+    "Cross-boot/restore, filesystem/disk exhaustion, power failure, aged/mixed workloads, whole-process/native peak RSS guarantees.",
+    "Runtime manager signed publication and signed native mTLS publication; currently initialized catalogs intentionally contain no scientific event rows.",
+    "Installed Control+Archive M1 admission/read/export/restart, protection/ACK/retirement, Compose/release, Linux arm64 and hosted Actions."
+  ]
+}

@@ -101,6 +101,10 @@ destruction, including another database, timeout and both signals. The producer 
 a controlled tokio-postgres fixture. The [25 TLS/mTLS cases](../implementation/evidence/p02-native-mtls-20260919.json)
 also cover actual initialization/recovery, server-enforced certificate validation,
 refusals with unchanged durable state, and cancellation of a blocked native
-receipt query. Signed mTLS publication, remaining native crash/acknowledgement
-paths and full service acceptance remain open; the guide does not advertise
-complete installation support.
+receipt query. [Nine late-fault cases](../implementation/evidence/p02-initialization-late-native-20260919.json)
+at `3ad4c64` cover lost scientific/guard commit replies and coordinator/native
+process crashes, with recovery while the worker bundle is unavailable. An
+incomplete schema remains refused; complete committed state is installed or
+recognized without changing native data or the permanent root marker. Signed
+mTLS publication, full concurrent/exhaustion/restore and service acceptance
+remain open; the guide does not advertise complete installation support.
