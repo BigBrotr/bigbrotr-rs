@@ -43,19 +43,30 @@ def expected():
     return sorted((cf,k,v) for (cf,k),v in rows.items()),original,receipt
 
 
-def main(root):
+def main(root, observe_existing=False):
     state=json.loads((root/'resources.json').read_text())
     harness=command('git','-C',str(SOURCE),'rev-parse','HEAD')
     assert not command('git','-C',str(SOURCE),'status','--porcelain','--untracked-files=all')
     ready=json.loads((root/'out/outcome-probe/ready.json').read_text())
-    assert ready['status']=='READY' and ready['source']==harness and ready['baseline_product']==state['source']
+    assert ready['status']=='READY' and ready['baseline_product']==state['source']
+    for name in ['apps/bigbrotr/examples/ingest_bootstrap_probe.rs',
+                 'apps/bigbrotr/examples/support/ingest_event.rs',
+                 'experiments/ingest-bootstrap/event_oracle.py']:
+        assert (SOURCE/name).read_bytes()==(root/'out/outcome-probe/source'/name).read_bytes()
     artifact=root/'out/outcome-probe/ingest-bootstrap-probe'
     assert hashlib.sha256(artifact.read_bytes()).hexdigest()==ready['sha256']
     for identity in [state['container_id'],state['postgres_id']]:
         c=json.loads(command('docker','inspect',identity))[0]
         assert c['Config']['Labels']['org.bigbrotr.publication']==state['owner'] and c['State']['Running'] and not c['State']['OOMKilled']
     report=dict(status='INCOMPLETE',source=state['source'],harness_revision=harness,artifacts=ready,processes={})
-    path=root/'producer-existing-outcome.json';assert not path.exists()
+    path=root/'producer-existing-outcome.json'
+    if observe_existing:
+        prior=path.read_bytes();report=json.loads(prior)
+        assert report['source']==state['source'] and report['artifacts']==ready
+        assert report['processes']['admit']['exit']==0
+        report.update(status='INCOMPLETE',observer_revision=harness,prior_sha256=hashlib.sha256(prior).hexdigest())
+        path=root/'producer-existing-outcome-recheck.json'
+    assert not path.exists()
     def save():path.write_text(json.dumps(report,indent=2)+'\n')
     def sql(db,text):return command('docker','exec','-i',state['postgres_id'],'psql','-XqAt','-v','ON_ERROR_STOP=1','-U','postgres','-d',db,input=text)
     def run(label,args):
@@ -65,11 +76,14 @@ def main(root):
         assert observation['exit']==0 and not observation['stderr']
         return observation['stdout']
     save();db='bboutcome_existing'
-    sql('postgres','CREATE DATABASE '+db)
     binary=['docker','exec',state['container_id'],'/out/outcome-probe/ingest-bootstrap-probe']
-    run('setup',binary+['setup-12',db,'/secrets/postgres','unused'])
-    (root/'out/outcome-existing').mkdir(mode=0o700)
-    stdout=run('admit',binary+['event-outcomes',db,'/secrets/bigbrotr_control','/out/outcome-existing/db'])
+    if observe_existing:
+        stdout=report['processes']['admit']['stdout']
+    else:
+        sql('postgres','CREATE DATABASE '+db)
+        run('setup',binary+['setup-12',db,'/secrets/postgres','unused'])
+        (root/'out/outcome-existing').mkdir(mode=0o700)
+        stdout=run('admit',binary+['event-outcomes',db,'/secrets/bigbrotr_control','/out/outcome-existing/db'])
     native=json.loads(run('dump',binary+['dump','/out/outcome-existing/db']))
     report['native']=native
     report['control']=json.loads(sql(db,"SELECT jsonb_build_object('requests',(SELECT jsonb_agg(to_jsonb(r) ORDER BY request_sequence) FROM control.producer_requests r),'outcomes',(SELECT jsonb_agg(to_jsonb(o) ORDER BY request_sequence) FROM control.producer_outcomes o),'epochs',(SELECT jsonb_agg(to_jsonb(e)) FROM control.producer_epochs e),'checkpoints',(SELECT count(*) FROM control.producer_checkpoints))"));save()
@@ -80,11 +94,20 @@ def main(root):
     rows=report['control'];assert rows['checkpoints']==0 and len(rows['epochs'])==1 and rows['epochs'][0]['reserved_through_request']==3
     assert len(rows['requests'])==len(rows['outcomes'])==3
     request,outcome=rows['requests'][2],rows['outcomes'][2]
-    assert request['request_sequence']==outcome['request_sequence']==3
+    manifest=next(v for cf,k,v in wanted if cf=='default' and k==b'\x01\x01')
+    for row in [request,outcome]:
+        assert row['request_sequence']==3 and row['producer_epoch']==1
+        assert row['dataset_id']=='\\x'+(bytes([1])*16).hex()
+        assert row['producer_slot_id']=='\\x'+(bytes([66])*16).hex()
+        assert row['manifest_sha256']=='\\x'+hashlib.sha256(manifest).hexdigest()
+    assert request['input_profile']==1
     assert request['input_bytes']==len(original)
     assert request['request_digest']==outcome['request_digest']=='\\x'+hashlib.sha256(original).hexdigest()
     assert outcome['outcome_kind']==2 and outcome['policy_epoch']==1
     assert outcome['outcome_bytes']=='\\x'+receipt.hex() and outcome['outcome_sha256']=='\\x'+hashlib.sha256(receipt).hexdigest()
+    assert outcome['recorder_resource']==request['issuer_resource']
+    assert outcome['recorder_epoch']==request['issuer_epoch']
+    assert outcome['recorder_incarnation']==request['issuer_incarnation']
     spool=root/'out/outcome-existing/db/producer-inputs-v1'
     assert len(list(spool.iterdir()))==3
     assert (spool/((bytes([66])*16).hex()+'-0000000000000001-0000000000000003.cbor')).read_bytes()==original
@@ -95,4 +118,6 @@ def main(root):
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--root',type=Path,required=True)
-    main(parser.parse_args().root.resolve(strict=True))
+    parser.add_argument('--observe-existing',action='store_true')
+    args=parser.parse_args()
+    main(args.root.resolve(strict=True),args.observe_existing)

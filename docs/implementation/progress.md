@@ -19,7 +19,7 @@ Archive receipt consumer is qualified separately. All later selected work remain
 
 ## Git and current work
 
-Mac main is unpublished harness1a1ff27ec59b783c75bd2530903b965352710349. The tested
+Mac main is unpublished fixture/harness1c3e62fb4724a20e75915ee5eea98cbb5cb0427a. The tested
 product candidate is9537667dd140baac68ca79ecb56ea7c6ecce081f,
 tree71716b4155e6ed0068c1eb41d817f8c4b0bd3c18. Private origin/main remains
 last verified05520e06097a849b81386d74db8cd2936200540c. Candidate sources were clean
@@ -120,6 +120,9 @@ in fresh tagged databases. The first wrapper missed its root argument; a signed
 wrapper used --root instead of the positional argument; both exited before tests.
 Corrected signed publication completed all six modes; inspect its report before
 qualification. No orchestrator remains active; verify actual container/process state.
+The additional fixture builder c12c2498a1c51884e0bd480b6530a03b2530334ac1938bedda8ff5c959359cc9
+finished0/noOOM, network none, readonly1c3e62f export. Its out/outcome-probe artifact
+and manifests are separate from the original9537667 executable/export.
 Ignored orchestration/raw root is `.research/implementation/producer-outcomes`.
 
 The first launch failed before containers because Docker's predefined address
@@ -167,9 +170,13 @@ Harness1a1ff27 completed six fresh tagged reservation cases/20SQL observations,
 six concurrency schedules/two cleanup controls and four actual0011->0012
 compatibility cases. These qualify schema/data compatibility, not runtime grants,
 operational restart or successor adoption. Original SQL failure remains retained.
-Next commit/transfer the supplemental observers and separate fixture-only client;
-compare all24 signed PG outcomes and one connected AlreadyDurable request/retry
-with complete independent native/input bytes. Do not overwrite original artifacts.
+All24 signed PG outcomes match independent complete input/receipt/rejection bytes.
+Separate fixture1c3e62f built/Clippy PASS, artifact19759a8d9498c1173b02cbc43fcddf5ce3a900caad2c97de14d017510e62637d.
+Actual new-request AlreadyDurable/retry PASS with27 native rows,6 unchanged facts,
+exact298-byte input and395-byte receipt. This is not ExistingDurabilityProof.
+Independent review found missing PG context assertions in that observer; root added
+them and a read-only recheck preserving the initial report. Next transfer the exact
+observer, execute that recheck, then audit/stop/retain owned peers and collect evidence.
 Mac14migration tests,8input/native tests,5bootstrap tests and5structural receipt
 reader tests passed. Regression
 first failed UnknownTarget12; native witness tests first failed missing API. A
