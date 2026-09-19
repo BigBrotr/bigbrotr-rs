@@ -330,5 +330,7 @@ fresh pg_blocking_pids must show product sealing waiting on that transaction.
 Only explicit proxy release permits COMMIT/sealing. The final role is disabled,
 the immutable attempt is retained, no scientific files are referenced and all
 41 Rocks rows match the independent retained digest. The proxy never logs SQL,
-verifiers or credentials. These sources are proposed tests until an exact native
-report records their actual outcomes; they do not implement installed recovery.
+verifiers or credentials. [The 5ad77af report](../../docs/implementation/evidence/p02-local-custody-native-20260919.json)
+records all three PASS, 28 scoped Rust cases and all six signed journeys. It retains
+the initial ead11f8 fixture failure (reused Control role identity) and its separately
+retired lab. Installed recovery remains required.

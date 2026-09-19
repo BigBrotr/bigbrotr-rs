@@ -3483,7 +3483,7 @@
   },
   "implementation_archive_worker_20260918": {
     "local_root": ".research/implementation/archive-worker",
-    "state": "All six owned containers stopped-retained; eight unrelated workloads unchanged; zero BigBrotr containers running",
+    "state": "Recorded archive labs stopped-retained; latest5ad77af custody qualification retired; eight unrelated workloads unchanged and zero BigBrotr containers running at terminal audit",
     "native_assets": {
       "engine_version": "1.5.5",
       "source_commit": "d8cdaa33fda8df955cc76ef58a280f68f4cd43fa",
@@ -7351,7 +7351,7 @@
     },
     "local_attempt_custody": {
       "base_source": "ba5aca48727a11feeff4350877149247b2243a2d",
-      "state": "ead11f8 native checks PASS, first crash fixture INCOMPLETE; owned runner/PG stopped-retained, network retired",
+      "state": "5ad77af scoped native qualification PASS; both custody labs stopped-retained and networks retired",
       "local_root": ".research/implementation/archive-worker/lifetime",
       "local_validation": {
         "core_cases": 8,
@@ -7360,7 +7360,7 @@
         "publication_example_check": "PASS",
         "structural_artifact_handoff_checks": "PASS"
       },
-      "native_status": "28 scoped Rust cases PASS including explicit native child-only custody; practical worker death observed, then recovery observer failed on reused Control identity; remaining scenarios NOT_RUN",
+      "native_status": "28 native Rust cases,3 custody/crash/queued-COMMIT schedules and6 signed journeys PASS; installed/missing-import/cross-boot recovery and protection remain open",
       "scope": "Persistent local custody only; no installed lifecycle, full-process termination, receipt absence, protection or release claim",
       "prefetch": {
         "archive": ".research/implementation/archive-worker/lifetime/dependency-prefetch.tar",
@@ -7431,8 +7431,78 @@
         },
         "finished_at": "2026-09-19T00:50:43.571331+00:00"
       },
-      "failure": "PostgreSQL role_instances_pkey correctly refused the second fixture observer. Local fixture corrected to fresh entropy-backed role/process identities; native retry pending.",
-      "failed_terminal": ".research/implementation/archive-worker/lifetime/ead11f8/failed-terminal.json"
+      "failure": "Initial ead11f8 observation reused a Control identity and PostgreSQL role_instances_pkey refused it. Corrected 5ad77af uses fresh role/process identities; all three native custody schedules now pass.",
+      "failed_terminal": ".research/implementation/archive-worker/lifetime/ead11f8/failed-terminal.json",
+      "retry_native_resources": {
+        "source": "5ad77af6bd5cd4e05eaa9855a48973dc04244858",
+        "tree": "8d322eda5a45c6ce0c3b6012acbb797d0147062b",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/publication-5ad77af",
+        "owner": "3ee9394f8568590dbd287691fdf6974e",
+        "container": "bigbrotr-implementation-publication-5ad77af",
+        "postgres": "bigbrotr-implementation-publication-5ad77af-pg",
+        "network": "bigbrotr-implementation-publication-5ad77af",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "state": "stopped-retained",
+        "source_files": 696,
+        "started_at": "2026-09-19T00:52:57.591514+00:00",
+        "network_id": "50c14291687130213042563eb671f97b36c56b443ab797e864fd162adbc72194",
+        "postgres_id": "7cda174b3e77fe59d2e88376f61ccc692d3df6a51fbc64b321ebac943be6ee9f",
+        "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+        "container_id": "b3407cb9f0aeeeabb7add53e2454f3c071cf9a8b15f697932368e665f15d5cd4",
+        "network_state": "retired",
+        "terminal": {
+          "runner": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-19T00:53:03.63716496Z",
+            "FinishedAt": "2026-09-19T01:01:45.081794834Z"
+          },
+          "postgres": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-19T00:52:59.485445992Z",
+            "FinishedAt": "2026-09-19T01:01:49.04875039Z"
+          }
+        },
+        "finished_at": "2026-09-19T01:01:49.714776+00:00"
+      },
+      "retry_source_audit": {
+        "status": "PASS",
+        "source": "5ad77af6bd5cd4e05eaa9855a48973dc04244858",
+        "tree": "8d322eda5a45c6ce0c3b6012acbb797d0147062b",
+        "files": 696,
+        "manifest_sha256": "831b5c673cad36bc4948e1403a80d75a73e9a0e40553d525eaa594dfc8eb239d",
+        "archive_sha256": "6098eeac08cc57ae666458b7c704827a83ee3cb94f68a6c28e947891fe9f1ac7"
+      },
+      "qualified_report": "docs/implementation/evidence/p02-local-custody-native-20260919.json",
+      "terminal_audit": {
+        "source": "5ad77af6bd5cd4e05eaa9855a48973dc04244858",
+        "tree": "8d322eda5a45c6ce0c3b6012acbb797d0147062b",
+        "source_files": 696,
+        "manifest_sha256": "831b5c673cad36bc4948e1403a80d75a73e9a0e40553d525eaa594dfc8eb239d",
+        "cleanup": "owned containers stopped, network retired, no OOM",
+        "unrelated_unchanged": 20,
+        "unrelated_running": 8,
+        "running_bigbrotr": 0
+      },
+      "retained_journals": 25,
+      "product_sealed_writer_lifetimes": 25,
+      "retained_journal_capture": ".research/implementation/archive-worker/lifetime/5ad77af/retained-journal-capture.json"
     }
   },
   "implementation_monitor_corrections_20260918": {

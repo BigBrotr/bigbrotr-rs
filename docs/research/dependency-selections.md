@@ -611,5 +611,8 @@ exact retained identity. A dedicated catalog connection must also retain a clone
 through transport destruction: tokio-postgres0.7.18 marks COMMIT done before
 awaiting its reply and its connection task can continue draining queued work
 after the operation future is dropped. Joining the operation alone is insufficient.
-This source review is not native qualification; actual process/driver crash and
-recovery evidence remains required before custody can authorize successor work.
+[Native Linux qualification at 5ad77af](../implementation/evidence/p02-local-custody-native-20260919.json)
+now exercises the actual inherited worker descriptor, cancelled queued COMMIT,
+transport destruction, manager/parent crash and fresh local/catalog observations.
+It qualifies this finite custody prerequisite; installed recovery, missing-import
+resolution and resource/protection obligations remain separate.

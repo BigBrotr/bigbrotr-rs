@@ -243,7 +243,7 @@ Rocks admission/reopen. All five current families and exact receipt survive fres
 full readback, including a completed native COMMIT whose response was lost. A
 pre-forward disconnect leaves only bootstrap visible and retains the event's
 prepared files. Both fault outcomes stay unknown at the parent boundary; the lab
-reader separately observes the committed state. No source ACK occurs and all41
+reader separately observes the committed state. No source ACK occurs and all 41
 Rocks key/value records remain identical. The literal corpus includes one public
 network arrival with provenance, invalid ID/signature, missing closure and duplicate
 publication controls. [Later signed native fencing](../implementation/evidence/p02-signed-fencing-native-20260919.json)
@@ -382,7 +382,16 @@ inspect the fresh receipt and its required closure before deciding replay or ACK
 Missing imported catalog attempts need their own nonmutating resolution; a seal
 Conflict is not a successful exclusion receipt.
 
-The implementation and Mac mechanism tests remain a candidate until exact-source
-Linux process/connection/engine failure scenarios are executed. Cross-boot recovery,
-installed lifecycle/resource reconciliation, incomplete-journal operator recovery,
-aged journal/receipt costs, protection and the complete M1 journey remain open.
+[Native qualification at 5ad77af](../implementation/evidence/p02-local-custody-native-20260919.json)
+passes 28 scoped Rust cases, three actual custody/crash/queued-COMMIT schedules and
+all six signed publication/receipt schedules. The actual worker alone retains the
+lock after coordinator descriptors close; its existing parent-death SIGKILL still
+terminates it when the spawning parent dies. Dropped operations/detached handles
+leave the actual PG driver holding custody. After driver destruction or manager
+crash, local recovery succeeds while sealing still waits on the unresolved server
+transaction. All 25 immutable journal byte sequences match independent identities,
+and all 41 retained Rocks rows remain unchanged in each journey.
+
+This is the same-boot ext4 custody prerequisite. Cross-boot recovery, installed
+lifecycle/resource reconciliation, missing catalog-import and incomplete-journal
+recovery, aged journal/receipt costs, protection and complete M1 remain open.

@@ -1,0 +1,816 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P02-T04 steps4/5: persistent local attempt custody prerequisite",
+  "date": "2026-09-19 Europe/Rome",
+  "status": "PASS scoped native custody, engine and catalog schedules; installed lifecycle/recovery and protection remain open",
+  "source": "5ad77af6bd5cd4e05eaa9855a48973dc04244858",
+  "tree": "8d322eda5a45c6ce0c3b6012acbb797d0147062b",
+  "source_files": 696,
+  "archive_sha256": "6098eeac08cc57ae666458b7c704827a83ee3cb94f68a6c28e947891fe9f1ac7",
+  "manifest_sha256": "831b5c673cad36bc4948e1403a80d75a73e9a0e40553d525eaa594dfc8eb239d",
+  "environment": {
+    "host": "Tux native Linux amd64, same-boot ext4 bind-mounted journal and archive paths",
+    "kernel": "Linux 6.12.101+deb13-amd64 x86_64 GNU/Linux",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "native": "DuckDB1.5.5, DuckLake1.0, signed offline postgres_scanner; selected Rust1.98.1",
+    "toolchain": {
+      "os": "Linux",
+      "architecture": "x86_64",
+      "discovery": "llvm-config",
+      "environment": {
+        "CC": "/usr/lib/llvm-14/bin/clang",
+        "CXX": "/usr/lib/llvm-14/bin/clang++",
+        "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+        "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+        "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+      },
+      "tools": {
+        "CC": {
+          "path": "/usr/lib/llvm-14/bin/clang",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "CXX": {
+          "path": "/usr/lib/llvm-14/bin/clang++",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "AR": {
+          "path": "/usr/lib/llvm-14/bin/llvm-ar",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+          "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+          "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+        },
+        "LIBCLANG_PATH": {
+          "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+          "version": "Debian clang version 14.0.6"
+        },
+        "discovery": {
+          "path": "/usr/lib/llvm-14/bin/llvm-config",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+          "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+          "version": "14.0.6"
+        }
+      },
+      "sdk": null
+    },
+    "limits": {
+      "runner_cpus": 2,
+      "runner_memory_bytes": 6442450944,
+      "runner_pids": 512,
+      "postgres_cpus": 1,
+      "postgres_memory_bytes": 1073741824,
+      "postgres_pids": 128,
+      "worker_engine_memory_bytes": 134217728,
+      "worker_native_reserve_bytes": 402653184,
+      "worker_temp_bytes": 67108864,
+      "worker_threads": 1,
+      "manifest_bytes_maximum": 32768
+    },
+    "network": "Separate internal network with no published ports; loopback SCRAM inside owned PG namespace; native Cargo builds offline",
+    "cache": "Fresh copy of stopped-retained ead11f8 target/cargo-home; no editing or restarting retained environments"
+  },
+  "identities_sha256": {
+    "Cargo.lock": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215",
+    "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167",
+    "contracts/release/archive-engine.json": "ae0069565ab9411928df0cf067822630c4f3a912919e61633b952f8077a5e2c1",
+    "experiments/identity-contract/signed-fixture.json": "4c931ab34cb7adeb707fc2866f4a50b3ec8b694cbb2d4fb5e335f8f37a2d8875",
+    "experiments/configuration-inspection/policy.json": "15c470b515b014e9c7bb20a73b5e0eb2506a13f8581fe3c9d7140e363ae4f678",
+    "experiments/archive-engine/signed_publication_oracle.py": "e056d511862e2f1659ffffdddbeab3702ef91079b5a9052cc82b8acf845d6a83",
+    "experiments/archive-engine/native_commit_proxy.py": "de1d820249ecf0da502eb062122d167e4772032e07e251a9913aa7db685d57af",
+    "experiments/archive-engine/custody_cases.py": "d6fa0315adb7dbef382b2e530d48ffd409247f75626275a13376cbbd9e24525d",
+    "experiments/archive-engine/signed_publication_cases.py": "b188c7ecc0580abf7b7ee9603a153c1fdb601b138250456c8dc50132355c0556"
+  },
+  "new_dependencies": {
+    "packages": [
+      [
+        "nix",
+        "0.31.3",
+        "cf20d2fde8ff38632c426f1165ed7436270b44f199fc55284c38276f9db47c3d"
+      ],
+      [
+        "cfg_aliases",
+        "0.2.2",
+        "f079e83a288787bcd14a6aea84cee5c87a67c5a3e660c30f557a3d24761b3527"
+      ],
+      [
+        "thiserror-impl",
+        "2.0.20",
+        "bc04cd3e1236dd4a98afca4569f2deb3f120e5422a4023be2cb683f8486292af"
+      ],
+      [
+        "command-fds",
+        "0.3.3",
+        "1b60b5124979fccd9addd89d8b97a1d6eebb4950694520c75ddd722535ea443f"
+      ],
+      [
+        "thiserror",
+        "2.0.20",
+        "ec86235f5fcc2a73650310756d2ac5b138a5780bbbdfae3eeccec992c435ba4f"
+      ]
+    ],
+    "prefetch_archive_sha256": "52d849166f32e0c50e09cd9f758049ccdfd7a780f10a9535b903ad0da0d3e3cd",
+    "scope": "Only five registry entries added; all previous registry entries unchanged. Ten archive/index files verified against current Cargo.lock before offline build. command-fds0.3.3 preserved_fds only, no remapping/Tokio feature/application unsafe code."
+  },
+  "artifacts_sha256": {
+    "worker": "526943396db4bb140d7ab2c5f3b64dc83d0378d3efaa0f21f0a5b91cb8e7cd86",
+    "probe": "19140060aaa1504d6c1b390f93e20a23cd843b3e9fe124403f0640a0454d3615",
+    "publisher": "20c79ea4902ff9c82578442d3591651af7e266fccb10d4f2b5e750ddc802b4da",
+    "reader": "6ba5dbb6566695ca3fe31d65a53a1c07f988e172a0614193ca21df40855fac95",
+    "receipt_reader": "6184ff1c60b78c0b01d71e9c896aff0db5e57724bd4b36f0b4b18aba84f3ed81",
+    "embedded-test-0": "3ecb88f23b1ecc6fb7d0d9cf062ecbd86071f391b74dece1b60e7e541752faf2",
+    "input-test-0": "5f490d3996786f68d989ce205d1969afe19a771a5b174c858d323eebbca25064",
+    "receipts-test-0": "3ecb88f23b1ecc6fb7d0d9cf062ecbd86071f391b74dece1b60e7e541752faf2",
+    "receipt-input-test-0": "4e478890f2a60b49aced4316644c1d10524e1545e2bd42fa0e5981b8dd8c457d",
+    "receipt-parent-test-0": "62ec8ccd8d082c46963ecd1e8be123eeb09c19554426ab04518c6600e02983aa",
+    "receipt-protocol-test-0": "17d77918d68b128a076be1d98aa1953f0d84cad960cfb5fc9779ed83e7ac4773",
+    "custody-test-0": "62ec8ccd8d082c46963ecd1e8be123eeb09c19554426ab04518c6600e02983aa",
+    "custody-native/native-custody-test-0": "62ec8ccd8d082c46963ecd1e8be123eeb09c19554426ab04518c6600e02983aa"
+  },
+  "commands": {
+    "build": "python3 -B /source/experiments/archive-engine/native_publication.py via shared tools.ci.execute on readonly exact Git export",
+    "custody": "python3 -B <exact-checkout>/experiments/archive-engine/custody_cases.py --root <owned-root>",
+    "signed": "python3 -B <exact-checkout>/experiments/archive-engine/signed_publication_cases.py <owned-root>",
+    "checks": [
+      {
+        "name": "build",
+        "command": [
+          "cargo",
+          "build",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr-archive-worker",
+          "--bin",
+          "bigbrotr-archive-worker",
+          "--example",
+          "catalog-fence-probe"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 30.35895954305306
+      },
+      {
+        "name": "signed-fixtures",
+        "command": [
+          "cargo",
+          "build",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "-p",
+          "bigbrotr-archive-worker",
+          "--example",
+          "archive_publication_probe",
+          "--example",
+          "archive_read_probe",
+          "--example",
+          "archive_receipt_probe"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 23.004707257263362
+      },
+      {
+        "name": "embedded",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr-archive-worker",
+          "--lib",
+          "publication"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 30.224071281962097
+      },
+      {
+        "name": "input",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr-archive-worker",
+          "--test",
+          "publication"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 3.4474565512500703
+      },
+      {
+        "name": "receipts",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr-archive-worker",
+          "--lib",
+          "receipt::"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 9.901552505791187
+      },
+      {
+        "name": "receipt-input",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr-archive-worker",
+          "--test",
+          "receipt"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 3.400054084137082
+      },
+      {
+        "name": "receipt-parent",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--lib",
+          "storage::archive::receipts"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 9.278370755258948
+      },
+      {
+        "name": "receipt-protocol",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr-protocol",
+          "--test",
+          "archive_receipt"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 3.1191297811456025
+      },
+      {
+        "name": "custody",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--lib",
+          "storage::archive::lifetime"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 0.11433034995570779
+      },
+      {
+        "name": "native-custody",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--lib",
+          "native_worker_alone_retains_custody_after_coordinator_descriptors_close",
+          "--",
+          "--ignored",
+          "--nocapture"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 0.4658053070306778
+      }
+    ],
+    "rust_test_counts": {
+      "embedded": 7,
+      "input": 1,
+      "receipts": 5,
+      "receipt-input": 1,
+      "receipt-parent": 2,
+      "receipt-protocol": 3,
+      "custody": 8,
+      "custody-native/native-custody": 1
+    },
+    "explicit_native_case": "The default Linux collection ignores the bundle-dependent case; a separate explicit --ignored selection actually executes exactly that one case after the just-built worker is installed. It passes; no ignored result is counted as execution."
+  },
+  "custody_schedules": [
+    {
+      "mode": "custody_worker",
+      "status": "PASS",
+      "held": {
+        "stage": "commit",
+        "backend_pid": 238,
+        "data_queries": 1,
+        "data_commits": 1
+      },
+      "parent": {
+        "pid": 9642,
+        "ppid": 0,
+        "state": "S",
+        "start": "316159882",
+        "exe": "/out/native-tests/archive-publication-probe",
+        "held": [
+          24
+        ],
+        "inode": 18234630,
+        "device": 66306,
+        "children": [
+          9794
+        ]
+      },
+      "worker_before_parent_loss": {
+        "pid": 9794,
+        "ppid": 9642,
+        "state": "S",
+        "start": "316160060",
+        "exe": "/out/archive-worker/bigbrotr-archive-worker",
+        "held": [
+          10
+        ],
+        "inode": 18234630,
+        "device": 66306,
+        "children": []
+      },
+      "worker_reaped_after_parent_loss": true,
+      "catalog_blocking": {
+        "waiter": 242,
+        "waiter_start": "2026-09-19T00:55:47.426352+00:00",
+        "wait_event_type": "Lock",
+        "wait_event": "transactionid",
+        "blocker": 238,
+        "blocker_start": "2026-09-19T00:55:46.702383+00:00",
+        "blocker_state": "idle in transaction"
+      },
+      "final_catalog": {
+        "owner": {
+          "singleton": true,
+          "ordinal": 1,
+          "enabled": false
+        },
+        "attempt_count": 1,
+        "attempt": "f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0",
+        "login": false,
+        "password_null": true,
+        "files": 0,
+        "snapshots": 2,
+        "backends": 0
+      },
+      "journal_before_sha256": "22fa299fbe69b71c82ccf5247870944f99dfcd64abbb28de2bcba2287bec4486",
+      "journal_after_sha256": "22fa299fbe69b71c82ccf5247870944f99dfcd64abbb28de2bcba2287bec4486",
+      "retained_physical_files": 2
+    },
+    {
+      "mode": "custody_cancel",
+      "status": "PASS",
+      "held": {
+        "stage": "manager-commit",
+        "backend_pid": 278,
+        "data_queries": 1,
+        "data_commits": 1
+      },
+      "parent": {
+        "pid": 10039,
+        "ppid": 0,
+        "state": "S",
+        "start": "316160218",
+        "exe": "/out/native-tests/archive-publication-probe",
+        "held": [
+          10,
+          24
+        ],
+        "inode": 18235531,
+        "device": 66306,
+        "children": []
+      },
+      "worker_before_parent_loss": null,
+      "worker_reaped_after_parent_loss": null,
+      "catalog_blocking": {
+        "waiter": 282,
+        "waiter_start": "2026-09-19T00:55:50.218333+00:00",
+        "wait_event_type": "Lock",
+        "wait_event": "transactionid",
+        "blocker": 278,
+        "blocker_start": "2026-09-19T00:55:49.720393+00:00",
+        "blocker_state": "idle in transaction"
+      },
+      "final_catalog": {
+        "owner": {
+          "singleton": true,
+          "ordinal": 1,
+          "enabled": false
+        },
+        "attempt_count": 1,
+        "attempt": "f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1",
+        "login": false,
+        "password_null": true,
+        "files": 0,
+        "snapshots": 2,
+        "backends": 0
+      },
+      "journal_before_sha256": "5876b9fbe7d849a00ea970b787b5282f0d14519d2c543825fc41fdfb81f0c62e",
+      "journal_after_sha256": "5876b9fbe7d849a00ea970b787b5282f0d14519d2c543825fc41fdfb81f0c62e",
+      "retained_physical_files": 0
+    },
+    {
+      "mode": "custody_manager",
+      "status": "PASS",
+      "held": {
+        "stage": "manager-commit",
+        "backend_pid": 319,
+        "data_queries": 1,
+        "data_commits": 1
+      },
+      "parent": {
+        "pid": 10360,
+        "ppid": 0,
+        "state": "S",
+        "start": "316160494",
+        "exe": "/out/native-tests/archive-publication-probe",
+        "held": [
+          10,
+          24
+        ],
+        "inode": 18236426,
+        "device": 66306,
+        "children": []
+      },
+      "worker_before_parent_loss": null,
+      "worker_reaped_after_parent_loss": null,
+      "catalog_blocking": {
+        "waiter": 323,
+        "waiter_start": "2026-09-19T00:55:53.073785+00:00",
+        "wait_event_type": "Lock",
+        "wait_event": "transactionid",
+        "blocker": 319,
+        "blocker_start": "2026-09-19T00:55:52.461778+00:00",
+        "blocker_state": "idle in transaction"
+      },
+      "final_catalog": {
+        "owner": {
+          "singleton": true,
+          "ordinal": 1,
+          "enabled": false
+        },
+        "attempt_count": 1,
+        "attempt": "f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2f2",
+        "login": false,
+        "password_null": true,
+        "files": 0,
+        "snapshots": 2,
+        "backends": 0
+      },
+      "journal_before_sha256": "179eff28f7063224d4a67efb798c4bc783e33190622084f82e86807f1679dd2e",
+      "journal_after_sha256": "179eff28f7063224d4a67efb798c4bc783e33190622084f82e86807f1679dd2e",
+      "retained_physical_files": 0
+    }
+  ],
+  "signed_schedules": [
+    {
+      "mode": "normal",
+      "status": "PASS",
+      "catalog_files": 8,
+      "physical_files": 8,
+      "worker_active_permits": 0,
+      "receipt_states": [
+        "absent",
+        "present",
+        "present",
+        "conflict"
+      ]
+    },
+    {
+      "mode": "before",
+      "status": "PASS",
+      "catalog_files": 2,
+      "physical_files": 8,
+      "worker_active_permits": 0,
+      "receipt_states": [
+        "absent",
+        "present",
+        "absent"
+      ]
+    },
+    {
+      "mode": "after",
+      "status": "PASS",
+      "catalog_files": 8,
+      "physical_files": 8,
+      "worker_active_permits": 0,
+      "receipt_states": [
+        "absent",
+        "present",
+        "present"
+      ]
+    },
+    {
+      "mode": "owner_first",
+      "status": "PASS",
+      "catalog_files": 8,
+      "physical_files": 14,
+      "worker_active_permits": 0,
+      "receipt_states": [
+        "absent",
+        "present",
+        "absent",
+        "present"
+      ]
+    },
+    {
+      "mode": "held_commit",
+      "status": "PASS",
+      "catalog_files": 8,
+      "physical_files": 8,
+      "worker_active_permits": 0,
+      "receipt_states": [
+        "absent",
+        "present",
+        "present",
+        "conflict"
+      ]
+    },
+    {
+      "mode": "held_rollback",
+      "status": "PASS",
+      "catalog_files": 8,
+      "physical_files": 14,
+      "worker_active_permits": 0,
+      "receipt_states": [
+        "absent",
+        "present",
+        "absent",
+        "present"
+      ]
+    }
+  ],
+  "durable_effects": {
+    "journal_count": 25,
+    "archive_writer_count": 25,
+    "journal_size_bytes": [
+      603,
+      604,
+      609,
+      611,
+      612,
+      613
+    ],
+    "journal_oracle": "All25 complete compact JSON files match independently assembled field values/bytes, current boot, inode/device and frozen signed batch identities; private modes and permanent zero-length single-link locks checked. TopologyGeneration is the model canonical decimal string.",
+    "input_oracle": "all9 retained-input corpora exact; six full reads plus three pre-successor reads exact",
+    "retained_rocks_rows": 41,
+    "retained_rocks_digest": "da535e9d1edcdce8bf09033bb1d2b48ee10941c34f47b0b3db228f6285128c61",
+    "pending": "No acknowledgment or reclamation. Every fresh post-crash observer and all six signed terminal readers find the identical full raw Rocks logical state.",
+    "credentials": "All25 product-sealed archive logins have NOLOGIN/password NULL and all9 owners disabled; no other catalog backends at terminal inspection. Four remaining fixture service/bootstrap logins disabled separately for lab retirement."
+  },
+  "review_and_failures": {
+    "mac": "Dirty development on ba5aca4:8 custody mechanism tests and21 scoped archive tests PASS; affected example/Clippy/format and structural checks PASS. Mac is not Linux host qualification.",
+    "discriminating_controls": [
+      "Missing actual driver descriptor clone allowed recovery with a pending transport; reproduced then fixed.",
+      "Shared ext statfs magic wrongly accepted ext3; mount-ID/type discriminator fails before correction and passes after.",
+      "Readonly lock, duplicate creators, missing/partial/oversized/extra manifests, substituted inode, hard links, wrong root/boot and second launch are refused.",
+      "Actual exec child alone retains custody after coordinator/Command clones close and after native engine startup; positive supervisor reap releases it."
+    ],
+    "not_a_reproduced_failure": "The transport-destructor-order test already passed with the original async wrapper. Explicit transport-before-lock struct field order makes the invariant clear; it is not reported as a failing regression.",
+    "failed_candidate": {
+      "source": "ead11f8d745548e927ecd08457ae6d67fbc6fa4b",
+      "native_rust_cases": 28,
+      "practical_status": "INCOMPLETE",
+      "cause": "Second observation reused a retired Control role_instance_id. Actual PG role_instances_pkey refused it; no product invariant was relaxed. Corrected5ad77af fixture uses fresh entropy-backed process/role identities, and all three schedules pass.",
+      "retirement": "Owned failed lab manually disabled remaining authority and stopped containers/network; explicitly not product recovery qualification. Eight unrelated workloads unchanged.",
+      "raw_archive_sha256": "58be9108c7fb6f353be700954aa05863e43aa127fadb81c2a887ec7488f780e5"
+    },
+    "audit_fixture_correction": "Initial independent journal audit expected topology_generation as a JSON number. The model scalar implementation and identity/encoding contract require its decimal string. Corrected only the independent expected representation, retained failure log and original audit script; exact whole-byte comparison then passed.",
+    "ai_review": "Read-only publication_review inspected complete lifetime/tests, worker/publisher/process, actual PG driver, signed/custody fixtures, proxy and contracts. Shared ext magic and cleanup failure capture corrected. Native worker PDEATHSIG preserved; its ordinary parent-death survivor would be an invalid expectation. No reviewer native execution or edits.",
+    "ai_evidence_review": "Local read-only AI review independently recomputed all48 raw hashes, both696-file exact Git exports, executed Rust counts, all25 journal bytes/catalog identities, nine signed corpora, six complete/three intermediate readbacks and original PostgreSQL failure. Recorded artifact/resource audits reviewed; no independent reviewer native execution or host measurement. No discrepancy found.",
+    "root_review": "Complete implementation/diff and owning behavior reviewed; all696 source-file hashes, actual ELF identities/test counts, PG blocker chains/immutable rows, nine literal signed corpora, six full scientific readers/three pre-successor readers, all25 exact journal bytes and terminal ownership independently checked."
+  },
+  "retained_capture": {
+    "path": "5ad77af/retained-journal-capture.json",
+    "method": "Read-only capture from owned stopped-retained resources; exact intent bytes, lstat metadata, unchanged boot and allowlisted original PostgreSQL ERROR line. No restart or SQL execution."
+  },
+  "cleanup": {
+    "resources": {
+      "source": "5ad77af6bd5cd4e05eaa9855a48973dc04244858",
+      "tree": "8d322eda5a45c6ce0c3b6012acbb797d0147062b",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/publication-5ad77af",
+      "owner": "3ee9394f8568590dbd287691fdf6974e",
+      "container": "bigbrotr-implementation-publication-5ad77af",
+      "postgres": "bigbrotr-implementation-publication-5ad77af-pg",
+      "network": "bigbrotr-implementation-publication-5ad77af",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "state": "stopped-retained",
+      "source_files": 696,
+      "started_at": "2026-09-19T00:52:57.591514+00:00",
+      "network_id": "50c14291687130213042563eb671f97b36c56b443ab797e864fd162adbc72194",
+      "postgres_id": "7cda174b3e77fe59d2e88376f61ccc692d3df6a51fbc64b321ebac943be6ee9f",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "b3407cb9f0aeeeabb7add53e2454f3c071cf9a8b15f697932368e665f15d5cd4",
+      "network_state": "retired",
+      "terminal": {
+        "runner": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 143,
+          "Error": "",
+          "StartedAt": "2026-09-19T00:53:03.63716496Z",
+          "FinishedAt": "2026-09-19T01:01:45.081794834Z"
+        },
+        "postgres": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-19T00:52:59.485445992Z",
+          "FinishedAt": "2026-09-19T01:01:49.04875039Z"
+        }
+      },
+      "finished_at": "2026-09-19T01:01:49.714776+00:00"
+    },
+    "audit": {
+      "source": "5ad77af6bd5cd4e05eaa9855a48973dc04244858",
+      "tree": "8d322eda5a45c6ce0c3b6012acbb797d0147062b",
+      "source_files": 696,
+      "manifest_sha256": "831b5c673cad36bc4948e1403a80d75a73e9a0e40553d525eaa594dfc8eb239d",
+      "cleanup": "owned containers stopped, network retired, no OOM",
+      "unrelated_unchanged": 20,
+      "unrelated_running": 8,
+      "running_bigbrotr": 0
+    },
+    "failed_candidate_resources": {
+      "source": "ead11f8d745548e927ecd08457ae6d67fbc6fa4b",
+      "tree": "c57857f96a2771e568c33de95779134821278759",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/publication-ead11f8",
+      "owner": "378543361462ddf3f9072cfb69cbe69f",
+      "container": "bigbrotr-implementation-publication-ead11f8",
+      "postgres": "bigbrotr-implementation-publication-ead11f8-pg",
+      "network": "bigbrotr-implementation-publication-ead11f8",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "state": "stopped-retained-failed-fixture",
+      "source_files": 696,
+      "started_at": "2026-09-19T00:44:48.032581+00:00",
+      "network_id": "cd7483851b7fc15d140676b25a38d80e886ee2efbde9531f5599f286b1d72031",
+      "postgres_id": "637b17a802c6865c0a4a750373cf97db8152ea70028f8bdea021e7cea36adefa",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "87fe059ffa88c51eba25616a2e4edac3fa1161e0f1565eccd79af459a5e61905",
+      "network_state": "retired",
+      "terminal": {
+        "container_id": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 143,
+          "Error": "",
+          "StartedAt": "2026-09-19T00:44:50.602093259Z",
+          "FinishedAt": "2026-09-19T00:50:41.986527292Z"
+        },
+        "postgres_id": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-19T00:44:48.595232092Z",
+          "FinishedAt": "2026-09-19T00:50:42.910135108Z"
+        }
+      },
+      "finished_at": "2026-09-19T00:50:43.571331+00:00"
+    }
+  },
+  "raw_root": ".research/implementation/archive-worker/lifetime",
+  "raw_sha256": {
+    "5ad77af/artifact-audit.json": "f04f16cf8392353914cf1cc86fdab509cbb32a37d666958b515f98b3980c1a5b",
+    "5ad77af/audit.json": "1cb6cbbd693a2f5650e536cc3029afff989e6bc81d67d8865fa4df2ba6bcac55",
+    "5ad77af/custody-cases.json": "32bad392d28de12781310c5f50bc23aa555c9cf6d66058eea900eeecf4ed6185",
+    "5ad77af/custody-execution.log": "7da443fd90859ca978109c285078d32392de759262f03e6b25e2d5f011580936",
+    "5ad77af/dependency-prefetch.json": "f3d7b8c88a5a4544d374ec68501a3ad99fa28db8ddd95b729164a8b7cf11e912",
+    "5ad77af/final-audit.py": "1ecd1f25dc40c518b4178af631845f5f5f5add899830aa5d8665280e78aa19f5",
+    "5ad77af/final-state-audit.json": "d40a271ae260ac69308cb14723a17a177be111b8d47649e5c85b66ba31af8fda",
+    "5ad77af/final-state-execution.log": "a3d15a95de1f5e78d9fc494ce5f17f9690194df643373addd6755b65bdc4e184",
+    "5ad77af/final-state-initial-failure.log": "ded51ddcae131b3d58e027d309d7a304ee02c98468bc4f65a97f1ce60dbab8a4",
+    "5ad77af/launch.py": "d8b93d99e6b0a25f7b5d9e3076c4a911f524ba76d6db8065be8815f98ca72fae",
+    "5ad77af/mac-source-audit.json": "205bad863f9eae8dea7b574459d6db3d2aede926b4bffaa5a1b77a9c9c1edb74",
+    "5ad77af/out/native-tests/build.log": "7b29a2e672afca3e83b991ac88841c465774541a297eeff2f0ee207b14b08d89",
+    "5ad77af/out/native-tests/custody-native/native-custody.log": "23a54a1f41b21f7f3ec8c228300c6b0051abbe983702cd3eda6c94c9e310173a",
+    "5ad77af/out/native-tests/custody-native/result.json": "c2018a39d16bd95b6edc5767e5f9663d0fe320f16ffad9d8abf338e5960d0334",
+    "5ad77af/out/native-tests/custody.log": "845830a1c0d98e769faf77fe89acea994ded32d730fb030033fa16b77fefd5f6",
+    "5ad77af/out/native-tests/embedded.log": "935fda94e311bfafb07767c5a37fc760c4845cfbca35736da4ce320d91bc07cd",
+    "5ad77af/out/native-tests/input.log": "12ac9f74b7ad5d7cf3a687e2cffbaaed4f9cb73010d0309cf21622ea578b49a6",
+    "5ad77af/out/native-tests/ready.json": "65ebf309d23dd711b8f1ca1e5a1b125f43a69b3825475b3d225bc0f0dcf03098",
+    "5ad77af/out/native-tests/receipt-input.log": "169e974e08c85de80a22d753b97b96082ca5907e678d43276d424c6d27a42cfa",
+    "5ad77af/out/native-tests/receipt-parent.log": "7a30aed293c3ea9d4f8f53b9c95bc1ebfdf76d9ce59cff86c9fc0b82dd076b5a",
+    "5ad77af/out/native-tests/receipt-protocol.log": "eb28f077f4f6b7f0d4011d434e0cfa1bfe92c77ff4ee02d37e90ba8991df3d37",
+    "5ad77af/out/native-tests/receipts.log": "047bf9738754fd97939c3d572a0f4b54e1695b85de920b6aabdd091877a4c132",
+    "5ad77af/out/native-tests/result.json": "dd2afcd5981477d63bf91a1e5718da2c61c11a7127405fb393076ebf8de8e32a",
+    "5ad77af/out/native-tests/signed-fixtures.log": "ec1957db2964d68048df53ee41bb3a91f89d72c84b72fa2fefec2e2264d9caf1",
+    "5ad77af/preflight.json": "c544b1e9630493f4abb6325dd8b4be92ab4aef7af6ac091f2134201943690ec7",
+    "5ad77af/resources.json": "f600e13edd0a613f90ff0cc844d4eefa76d4b0b49f70851d7462e19c26a1ebea",
+    "5ad77af/retained-journal-capture.json": "e9586482bba258a0dcc1e8ab60612dd3b9b7563cbb970ae7abd66c9652f49feb",
+    "5ad77af/retire.py": "7492e7aae35c2797bacf0582a75290bbe61ca67a6b56f0d9b5f7b3020d17c57f",
+    "5ad77af/retirement-execution.log": "5ae6f510f4a1038da8e44177ca47b86e8e3985d276e7a7ac7fb94258a869f9c8",
+    "5ad77af/signed-cases.json": "f1ee3c8511793c3a3d4b3bee553030318f949ffb38845692bdf14ba6ea3801eb",
+    "5ad77af/signed-execution.log": "116c0565c9bb7ee83bcc33baae6f4a24a4ad2192121e4c71c504149965967930",
+    "5ad77af/source-manifest.json": "831b5c673cad36bc4948e1403a80d75a73e9a0e40553d525eaa594dfc8eb239d",
+    "5ad77af/terminal-execution.log": "a0b307ee7f7677f18f777e99f88ffe378baa818fe98c88f7e25e2e6d1af6c4db",
+    "5ad77af/terminal-observation.json": "a0b307ee7f7677f18f777e99f88ffe378baa818fe98c88f7e25e2e6d1af6c4db",
+    "5ad77af/terminal.py": "8bcea6abede91cf8e7e5256c99e68e70d0a39895cad4bbb41ab15d57e182981e",
+    "archive-final-local.log": "4f39ce24c76209fc88e843f2776b24b2ea9d504a591a836d443a37881d195bdf",
+    "capture-retained.py": "b51ee1e27629a306041424c561d5d448ffcfea8b46cb6f2e51cef819cad417da",
+    "complete-core.log": "042bb2c1fc19e5e36773025b25b0086964b468fa8056956426aa9a4945e1fca3",
+    "destruction-red.log": "1e01c37d6a10d164ded9a11b5024fd6a3483b1eba4b366515f35eaee95210aa3",
+    "driver-red.log": "e82cb69f5ef87b4b215f1b79ec8011c4519db63e7c7232dfb18758dab070f909",
+    "ead11f8/custody-cases.json": "b5422926789a2c8d8da4214facea09a4e5f2823484badfa7b2e6b210f89fc13c",
+    "ead11f8/failed-retirement.log": "f1eb777f0817a5344bfc48f57326a5c8e30d629a39988859fe320cdbad9100cc",
+    "ead11f8/failed-terminal.json": "2239e052f304315ef1ff2999b5d32f840d18fbf4a977e2e976b80b6e46354d76",
+    "ead11f8/mac-source-audit.json": "cbc91e7d69dc5f0f33d64c2f0f3aeb17ac931b1f3fbf6d70e9d82fad43d839ca",
+    "final-audit-initial.py": "e3d38b4ee7d782e73d28097fb4132336508b2cb5b961e2d0cb79c3c8c57c6dda",
+    "fixture-final-clippy.log": "7af92207f9139cd82986cbdf79cadcbac3345d5ac03dad774208fb19768f10cf",
+    "mount-red.log": "70cc634dd2504d45ef00c72d9eccb67341195f8650b27188a7648681cf340e95",
+    "observer-identity-clippy.log": "adc8fa098aa8b7199bf5d0f8c55d095c350179f4e2e331754b650ecd1e814609"
+  },
+  "limits": [
+    "Only registered close-only descriptors are excluded by LocalAttempt recovery; that is not whole-process/resource reconciliation, backend termination, receipt absence or file protection.",
+    "The actual native worker still uses PDEATHSIG=KILL; no safeguard was disabled to manufacture survival. Positive native child-only custody is tested while its spawning thread remains alive.",
+    "Actual manager operation cancellation/detached JoinHandle is not transport destruction. Queued COMMIT remains active; successful local recovery after transport loss still waits for catalog resolution.",
+    "Proxy client_complete counts attempted reply forwarding, not receipt by a dead manager. server_complete and independent fresh catalog state establish the observed committed branch.",
+    "Same-boot trusted stable private root and local ext4 only. Missing, copied, replaced or incompatible journals never authorize blind recovery or another launch.",
+    "25 small journals across nine isolated databases, with 10 source facts per database. No aged mixed workload, journal maintenance cost, peak RSS, throughput, host/power-loss or Linux arm64 support is qualified.",
+    "The fixture is a privileged lab coordinator; no installed service or release authority is granted. Hosted Actions billing remains unavailable; these are trusted Tux executions."
+  ],
+  "remaining_gates": [
+    "Nonmutating resolution when the intended catalog import never committed, including delayed pre-lock actual protocol requests",
+    "Installed archive lifecycle, persistent resource/process reconciliation and cross-boot/host recovery",
+    "Qualified protection, source acknowledgment and reclamation",
+    "Complete M1 product read/export/restart and remaining scientific schema/input variants",
+    "Multi-batch/file formation, aged mixed workloads, capacity and selected object storage",
+    "Complete selected product roles/surfaces, Compose installation/upgrade/recovery and private release journey"
+  ]
+}

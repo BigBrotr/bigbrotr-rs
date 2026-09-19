@@ -356,9 +356,12 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   [local attempt custody candidate](../reference/archive-handoff.md#persistent-local-attempt-custody-candidate)
   synchronizes immutable intent before credentials, binds actual provisioning
   drivers and native exec to one close-only lock, and refuses another launch from
-  recovered state. Exact-source Linux crash/cancellation/connection qualification,
-  incomplete journal and cross-boot recovery, resource reconciliation and protection
-  remain required. No step is complete from these prerequisites.
+  recovered state. [Native custody qualification at 5ad77af](evidence/p02-local-custody-native-20260919.json)
+  passes 28 scoped Rust cases, three actual worker/driver/manager schedules and all
+  six signed publication/receipt journeys, with 25 exact journals and unchanged
+  retained source rows. Missing catalog import, incomplete journal and cross-boot
+  recovery, installed resource reconciliation and protection remain required.
+  No step is complete from these prerequisites.
 - [ ] **Step 6:** Handle empty and one-small-event timer batches; publish useful progress
   without waiting for a size threshold that may never be reached.
 - [ ] **Step 7:** **Practical P02-T04:** run real PG/DuckLake transactions; kill preparation,
