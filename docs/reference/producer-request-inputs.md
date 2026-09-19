@@ -164,3 +164,15 @@ and [transaction isolation](https://www.postgresql.org/docs/16/transaction-iso.h
 Practical qualification must check rollback, ambiguous COMMIT, preserved original
 metadata and both closure orders using actual processes/engines; source inspection
 and a catalog unit test do not substitute for those cases.
+
+The [reservation evidence](../implementation/evidence/p02-producer-reservations-native-20260919.json)
+records six actual connected reservation/fault cases and 19 SQL observations at
+dddefd5, six closure/snapshot schedules, two bounded harness-cleanup controls and
+five old/new migration schedules. Actual old a1da96a process/LOCK observations
+show that losing its PG backend does not exclude native ownership; fresh-only migration 0011
+still refuses its committed history. The marker precedes FFI, so this does not
+qualify a mid-FFI crash. Six installed signed-publication schedules at 57cce75 also
+match all 24 PG reservations to retained inputs and native context. Earlier failed
+fixture runs and the lost supplemental SQL transcript remain recorded separately.
+These results qualify the reservation prerequisite only; logical progress,
+outcome closure, ACK/GC and successor recovery remain required.

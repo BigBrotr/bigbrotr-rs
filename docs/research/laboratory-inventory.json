@@ -12787,14 +12787,144 @@
       "network": "bigbrotr-implementation-producer-ledger-dddefd5",
       "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
       "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
-      "state": "running",
+      "state": "stopped-retained",
       "source_files": 793,
       "started_at": "2026-09-19T16:47:23.514774+00:00",
       "network_id": "25168fa5da33a578e5ee22f886cb4abfa5ac3d8d3ac01dd3fd0424857a581d88",
       "postgres_id": "ddb519f9a71b73ae86cdf55f6b8416d4da3bab88200cb91bc8a9df96d8a22d1f",
       "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
       "container_id": "7854121a281b31f22864d78a50e4e0d28b751c0f1f10020e8cb5e7be84fa827c",
-      "qualification": "NOT_RUN: exact-source fixture-only build active"
+      "qualification": "PASS within reservation prerequisite: six faults,19 SQL observations,six SQL races,two cleanup controls,five compatibility schedules. No logical outcome closure/ACK/GC/successor qualification.",
+      "compatibility_builder": {
+        "name": "bigbrotr-implementation-producer-ledger-dddefd5-old-build",
+        "owner": "aacfaa7d629cfcd4de6349e649074904",
+        "source": "a1da96a09ee73722d26003dedf793317b7bdf7e1",
+        "tree": "441b3e68f15706d44e76d140bfa811e088bb4d9d",
+        "harness": "5f19eb79447d4691a30b6a171555a755d5aff5e1",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "state": "stopped-retained",
+        "started_at": "2026-09-19T17:03:02.460520+00:00",
+        "id": "e4254d441c905e4ca32d93dc0ebcf0e8dba6a97851b0be648232faf66baab6da",
+        "terminal": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-19T17:03:03.195032941Z",
+          "FinishedAt": "2026-09-19T17:08:58.654940688Z"
+        }
+      },
+      "completed_at": "2026-09-19T17:10:03.597105+00:00",
+      "terminal_audit": {
+        "status": "PASS",
+        "source": "dddefd55be48cac7613a5ee460067da5e1acabaf",
+        "tree": "8e57463521793b7000a8bfcdc65e457558201dd9",
+        "source_files": 793,
+        "source_archive_sha256": "880d8789fedb08b147a049cb266b19077931838e40305d2ef0b8606e80a52d7b",
+        "source_manifest_sha256": "d023f821ae77df200166b247e7f00ca25d4d92b0825eb29fbe96b249deeaa6de",
+        "artifacts": {
+          "main": {
+            "sha256": "3e9673f7dd2468b307950e571e4a67e8a617647aa152f018a7d5922ec82d9b44",
+            "bytes": 9185816,
+            "elf_machine": 62
+          },
+          "worker": {
+            "sha256": "4a8f8f37ec6dbf7b6e6def033966d21d116f027699cfd4c96ae6ff852f298f3c",
+            "bytes": 12608632,
+            "elf_machine": 62
+          },
+          "publisher": {
+            "sha256": "5715dfa5902b9cd6b92770dcaa6dee765ef717456edaaac04a6a644fe86cae6a",
+            "bytes": 19059016,
+            "elf_machine": 62
+          },
+          "coordinator_probe": {
+            "sha256": "53e359cd3e12d6d263e1e61159898f009523f5989a5672f57b8075830d580b2f",
+            "bytes": 694344,
+            "elf_machine": 62
+          },
+          "attempt_probe": {
+            "sha256": "148c4b44e9715110873425820270a638a7f5222b7f7ca08591e51c89dcf5498d",
+            "bytes": 2651936,
+            "elf_machine": 62
+          },
+          "ingest_probe": {
+            "sha256": "9e9fda7bbf2ef217b32d2331aba6a232f35209e4d00e9235bfa55dc7a5ebdaf4",
+            "bytes": 15595616,
+            "elf_machine": 62
+          },
+          "old_ingest_probe": {
+            "sha256": "27dd834a76367153f622012c3847886fc230876f51aebbe27441d1f0e7696222",
+            "bytes": 15352248,
+            "elf_machine": 62,
+            "source": "a1da96a09ee73722d26003dedf793317b7bdf7e1"
+          }
+        },
+        "qualification": {
+          "producer-reservation-cases": "PASS",
+          "producer-concurrency": "PASS",
+          "producer-compatibility": "PASS"
+        },
+        "cases": {
+          "producer-reservation-cases": 6,
+          "producer-concurrency": 8,
+          "producer-compatibility": 5
+        },
+        "build_ready": true,
+        "terminal": {
+          "container_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-19T16:47:29.549136369Z",
+            "FinishedAt": "2026-09-19T17:10:01.895298339Z"
+          },
+          "postgres_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-19T16:47:25.569724056Z",
+            "FinishedAt": "2026-09-19T17:10:03.146990764Z"
+          }
+        },
+        "owned_containers": [
+          "e4254d441c905e4ca32d93dc0ebcf0e8dba6a97851b0be648232faf66baab6da",
+          "7854121a281b31f22864d78a50e4e0d28b751c0f1f10020e8cb5e7be84fa827c",
+          "ddb519f9a71b73ae86cdf55f6b8416d4da3bab88200cb91bc8a9df96d8a22d1f"
+        ],
+        "existing_containers_unchanged": 360,
+        "unrelated_containers_unchanged": 20,
+        "unrelated_running": 8,
+        "bigbrotr_running": 0,
+        "observed_at": "2026-09-19T17:10:03.597105+00:00",
+        "harness": null,
+        "old_source_files": 786,
+        "owned_sql_backends_before_shutdown": 0,
+        "producer_input_checks": {
+          "status": "NOT_RUN",
+          "reason": "fixture-only scope; unchanged inputs verified against baseline manifest"
+        },
+        "build_checks_status": "PASS"
+      },
+      "raw": ".research/implementation/producer-ledger/qualified",
+      "manifest": ".research/implementation/producer-ledger/qualified-evidence-identity.json"
     },
     "producer_ledger_initial": {
       "source": "57cce756a4ad47199d862c8e47fd345fd5eee9c3",
@@ -13024,10 +13154,16 @@
       },
       "manifest": ".research/implementation/producer-ledger/initial-evidence-identity.json",
       "network_retirement": {
-        "network": "2e4c666a993c0548f03434b61174b736bf17bf3632c188145865f20edc76bfd0",
-        "owner": "836e9f794619ab56854d10ab6ad07144",
-        "action": "remove verified empty retired network only; stopped containers and data retained",
-        "successor_lab": "/home/tux/bigbrotr-implementation-20260917/runs/producer-ledger-4296320"
+        "state": "removed",
+        "scope": "Only the verified empty owned network during4296320 launch; containers and data stopped-retained.",
+        "source": "4296320d0e5e42ebe6c428bea918b80936eac7eb"
+      },
+      "supplemental_reservation_audit": {
+        "path": ".research/implementation/producer-ledger/initial-ledger-metadata.json",
+        "sha256": "e321b17b05fe731339514db90d90fba3b38db2430ffd6c88fe9d203229372ec4",
+        "status": "PASS",
+        "reservations": 24,
+        "collection": "Retained remote report fetched and hash-verified separately; original evidence tar unchanged."
       }
     },
     "producer_ledger_setup_retry": {
@@ -13254,7 +13390,12 @@
         },
         "build_checks_status": "PASS"
       },
-      "manifest": ".research/implementation/producer-ledger/corrected-setup-evidence-identity.json"
+      "manifest": ".research/implementation/producer-ledger/corrected-setup-evidence-identity.json",
+      "network_retirement": {
+        "state": "removed",
+        "scope": "Only the verified empty owned network; containers and data stopped-retained.",
+        "evidence": ".research/implementation/producer-ledger/qualified/retired-network.json"
+      }
     }
   },
   "implementation_monitor_corrections_20260918": {

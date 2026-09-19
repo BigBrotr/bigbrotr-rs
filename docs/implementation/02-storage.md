@@ -151,11 +151,14 @@ One owner serializes exact identity decisions for each writable directory.
   at a1da96a covers staged-input recovery, complete crash oracles and six installed
   signed publication schedules; it does not complete this step.
   The connected [reservation prerequisite](../reference/producer-request-inputs.md#initial-connected-reservation-protocol-0011)
-  adds fresh-only0011, immutable PG input metadata and a distinct reserved counter.
+  adds fresh-only migration 0011, immutable PG input metadata and a distinct reserved counter.
   Stage and PG COMMIT precede a fresh authority check and native dispatch; no
-  outcome closure, ACK or successor recovery is implied. Its
-  [practical cases](../../experiments/producer-requests/README.md) must be executed
-  and recorded before this boundary is qualified.
+  outcome closure, ACK or successor recovery is implied.
+  [Native reservation evidence](evidence/p02-producer-reservations-native-20260919.json)
+  records six connected/fault cases, 19 SQL observations, six closure/snapshot
+  schedules, two harness cleanup controls and five actual old/new compatibility
+  cases; six installed signed schedules at 57cce75 match 24 reservations. This
+  qualifies that prerequisite, not this step's remaining ledger/ACK/handoff work.
 - [ ] **Step 5:** Make provenance-off allocate no P inventory or event/endpoint side channel;
   retain scope eligibility and scoped first local receive/earlier corrections.
   Implement CertifyExisting against one committed inventory view, exact verified
@@ -507,7 +510,7 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   completing both driver schedules. [Native qualification at770c485](evidence/p02-missing-import-native-20260919.json)
   now passes both corrected schedules, ten collision/retained-role controls,
   29 native Rust cases and six signed regressions of the shared seal path.
-  The actual late-query blocker, all24 exact journals and23 imported identity/OID
+  The actual late-query blocker, all 24 exact journals and23 imported identity/OID
   bindings are recorded; unrelated owner/credential state is preserved.
   The recovery consumer reads the original Control attempt by ID/catalog without
   re-registering it or reconstructing its batch from fixture sidecars.
