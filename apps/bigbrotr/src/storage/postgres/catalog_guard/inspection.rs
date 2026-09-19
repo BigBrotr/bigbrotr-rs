@@ -120,7 +120,7 @@ pub(super) async fn fresh(
 // new role. Permit that exact link to the catalog manager, never membership of
 // the native writer in another role or an inheriting/SET/foreign member. Before
 // guard installation the manager is the explicit installing current user.
-async fn restricted(tx: &Transaction<'_>, login: &str) -> Result<(), GuardError> {
+pub(super) async fn restricted(tx: &Transaction<'_>, login: &str) -> Result<(), GuardError> {
     require(tx, "SELECT NOT rolsuper AND NOT rolcreaterole AND NOT rolcreatedb AND NOT rolreplication AND NOT rolbypassrls AND rolname<>current_user AND NOT EXISTS(SELECT 1 FROM pg_auth_members m WHERE m.member=r.oid OR (m.roleid=r.oid AND NOT (m.member=COALESCE((SELECT nspowner FROM pg_namespace WHERE nspname='bigbrotr_archive'),(SELECT oid FROM pg_roles WHERE rolname=current_user)) AND m.admin_option AND NOT m.inherit_option AND NOT m.set_option))) AND NOT has_parameter_privilege(r.oid,'session_replication_role','SET') AND NOT has_database_privilege(r.oid,current_database(),'CREATE') FROM pg_roles r WHERE rolname=$1::name", &[&login], GuardError::UnsafeRole).await
 }
 pub(super) async fn bootstrap(tx: &Transaction<'_>, login: &str) -> Result<(), GuardError> {

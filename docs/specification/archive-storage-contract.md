@@ -343,6 +343,9 @@ nonce and current bootstrap/manager OIDs to the canonical server-side comment,
 validate restricted roles without assuming bootstrap ownership of already-installed
 tables, and return fixed identity fields plus whether the bootstrap is retired.
 No password/verifier or arbitrary comment crosses this observation boundary.
+Comments above128 bytes refuse as a resource limit; bounded noncanonical/missing
+comments refuse as conflict. A bootstrap is either LOGIN with a nonnull password
+or NOLOGIN with no password; mixed partial states refuse as unsafe role state.
 An absent reservation is reported only when both reserved role names are absent
 and the database is pristine. It means current absence, not proof that provisioning
 never committed, and grants no retry/relaunch authority.

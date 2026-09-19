@@ -21,36 +21,31 @@ readiness. Root remains the sole writer/integrator.
 
 ## Actual Git and review
 
-Mac main HEAD and freshly verified origin/main both:
-f3e3302512213ccebb95ee78bb67fc38f44bd082. Normal private push53773 terminal0;
-GitHub repository rechecked private. Five coherent commits pushed, no rewrite.
-Four clean exact-source candidates were transferred through Git bundles:
-cfadb48 baseline,7139911 implementation,543fafd strengthened fixture,bb8be6d corrected
-fixture. f3e3302 adds only owning documentation/evidence. Current root-owned dirty
-work adds immutable recovered-custody state/test, observation/retirement API TDD
-stubs and owning recovery semantics. The stubs deliberately return Conflict and
-are not implemented or qualified. No merge/rebase or other contributor edits.
-
-Independent read-only AI reviews covered complete reserve/manager/custody/credential/
-pristine/native code and actual fixture/build/lifecycle sources. No product source
-counterexample found; fixture identity/orphan/type/non-superuser/PID-stream issues
-were corrected. Final recorded-evidence review independently verified53 raw files,4 regenerated
-Git archives/2931 source hashes and case/artifact/check/lifecycle mappings. No material
-discrepancy; join-order prose corrected. No independent Tux/ELF/full host-inventory/
-dump-input inspection or Mac terminal replay. No extra agent edits.
-Artifact/handoff/diff checks PASS; evidence commit/private push complete. Product
-qualified reservation behavior is unchanged; the new recovery boundary is pending.
+Mac main HEAD:2bd2bdb8f11395a0c1c329912961bea4b6af6dbc (unpublished exact-source
+TDD candidate). origin/main:f3e3302512213ccebb95ee78bb67fc38f44bd082 from prior
+verified normal private push. Root-owned changes implement observe/retire, shared
+restricted-role inspection and extend the real probe/harness for post-installation,
+unknown COMMIT and graceful cancellation. No merge/rebase/other writer edits.
 
 Mac55046 failed the deliberately false recovered-state gate;61090 passed all eight
-initialization tests, scoped fmt and parent/example Clippy after storing actual
-reacquisition separately from consumed provision/launch flags. This qualifies no
-PostgreSQL observer. Next practical baseline extends the actual probe on a fresh
-exact-source Tux lab, followed by bounded observation and exact idempotent retirement.
-Independent read-only custody reviewer is checking exact PG16.15/tokio-postgres0.7.18/
-libpq18.3 startup ordering. Existing de1d402/56ef588 startup counterexample/native
-qualification was reread: late invisible backends and trusted ready-before-query
-ordering were already recorded. Do not repeat them as a new finding or infer backend
-exclusion from NOLOGIN/empty activity. No new Tux experiment is active.
+initialization tests. Latest38696 scoped parent/example Clippy PASS; fmt/AST/diff
+checks pass. Actual baseline83166 at2bd2bdb FAILED as intended: active observation,
+exact retirement and pristine absence returned Conflict; fresh custody refused with
+InvalidInput. All native builds,34 archive parent tests/one ignored and scoped
+Clippy PASS. Baseline audit81590/collection82044 terminal0:14 raw files,735 Mac-Git
+source hashes, tar192e888690ce160c8aba61ab94a1d43997d023717aaa03f8be4e268d1bcce7a4.
+Baseline runner/PG stopped-retained, no OOM,310 preexisting containers unchanged,
+8 unrelated running; verified empty network07fd7603 retired. No active experiment.
+Inventory.initialization_recovery owns exact IDs and evidence. Next candidate will
+use the same actual probe and fresh resources; no PostgreSQL recovery PASS yet.
+
+Root reviewed the complete changed production/probe/harness files. Independent
+read-only custody reviewer is checking those changes/contracts; no extra edits.
+Its completed upstream audit confirmed the previously recorded ready-before-query
+and shutdown ordering for PG16.15/tokio-postgres0.7.18/libpq18.3. Existing de1d402/
+56ef588 reports reused, no new startup experiment or VXID barrier.24 source-audit
+files/1416434 bytes verified against four manifests and inventoried. Future bounded
+natural drain must retain unknown on timeout; observation/retirement is not exclusion.
 
 ## Current database reservation qualification
 
@@ -173,10 +168,3 @@ Full CLI/recovery, fresh manager publication/seal, SELECT-only readers, whole-ro
 budget reconciliation/protection, cross-boot/restore/resource/power-failure evidence,
 M1 and the rest of the selected product remain required. No task checkbox closes
 from this prerequisite qualification.
-
-Current recovery baseline: actual probe now supports observe/fresh-observe/retire
-with independently supplied expected OIDs. Eight-case practical harness retains
-all four independent core outcomes before dependent cases; no PostgreSQL run yet.
-Mac c52807 scoped Clippy/fmt and Python AST/diff checks passed. Source-only backend
-audit downloads (24 files/1416434 bytes) verified against all four manifests and
-inventoried; no new startup experiment or VXID barrier selected.

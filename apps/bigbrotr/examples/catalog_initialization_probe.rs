@@ -6,7 +6,7 @@ use bigbrotr::{
             ArtifactIdentity, LocalInitialization, Preparation, PreparationLimits,
             WorkerInstallation,
         },
-        postgres::catalog_guard::{CatalogIdentity, initialization},
+        postgres::catalog_guard::{self, CatalogIdentity, InstallationRoles, initialization},
     },
 };
 use std::{
@@ -37,9 +37,12 @@ fn main() {
             | "observe"
             | "fresh-observe"
             | "retire"
+            | "retire-cancel"
+            | "install"
     ));
-    assert_eq!(mode == "retire", args.len() == 10);
-    let recovering = matches!(mode, "recover" | "observe" | "retire");
+    let expects_identity = matches!(mode, "retire" | "retire-cancel" | "install");
+    assert_eq!(expects_identity, args.len() == 10);
+    let recovering = matches!(mode, "recover" | "observe") || expects_identity;
     assert!(nonce > 0);
     for name in [database, suffix] {
         assert!(!name.is_empty() && name.bytes().all(|c| c.is_ascii_lowercase() || c == b'_'));
@@ -70,9 +73,9 @@ fn main() {
         let (mut client, connection) = config.connect(NoTls).await.unwrap();
         let driver = tokio::spawn(custody.retain_catalog_connection(connection).unwrap());
         let commit = Cell::new(false);
-        if matches!(mode, "observe" | "fresh-observe" | "retire") {
+        if matches!(mode, "observe" | "fresh-observe") || expects_identity {
             let operation = async {
-                if mode == "retire" {
+                if expects_identity {
                     let expected = initialization::Reservation {
                         database_oid: args[6].parse().unwrap(),
                         reservation_oid: args[7].parse().unwrap(),
@@ -82,8 +85,23 @@ fn main() {
                         manager_login: "CatalogManager".into(),
                         manager_oid: args[9].parse().unwrap(),
                     };
-                    initialization::retire_after_local_custody(&mut client, &custody, &expected, &commit)
-                        .await.map(|changed| serde_json::json!({"status":"retired", "changed":changed}))
+                    if mode == "install" {
+                        // This fixture calls install only after its native initializer
+                        // has joined and a separate exact retirement succeeded. A fresh
+                        // server observation additionally checks no submitted SQL remains.
+                        let remaining: i64 = client.query_one(
+                            "SELECT count(*) FROM pg_stat_activity WHERE usesysid=$1::oid",
+                            &[&expected.bootstrap_oid],
+                        ).await.unwrap().get(0);
+                        assert_eq!(remaining, 0);
+                        catalog_guard::install_for_manager(&mut client, &identity, InstallationRoles {
+                            bootstrap_login: &expected.bootstrap_login, bootstrap_oid: expected.bootstrap_oid,
+                            manager_login: &expected.manager_login, manager_oid: expected.manager_oid,
+                        }, &commit).await.map(|changed| serde_json::json!({"status":"installed","changed":changed}))
+                    } else {
+                        initialization::retire_after_local_custody(&mut client, &custody, &expected, &commit)
+                            .await.map(|changed| serde_json::json!({"status":"retired", "changed":changed}))
+                    }
                 } else {
                     initialization::observe_after_local_custody(&mut client, &custody, "CatalogManager")
                         .await.map(|observed| match observed {
@@ -96,12 +114,22 @@ fn main() {
                         })
                 }
             };
-            let report = match tokio::time::timeout(Duration::from_secs(30), operation).await.unwrap() {
-                Ok(value) => value,
-                Err(error) => serde_json::json!({"status":"refused", "reason":format!("{error:?}")}),
+            let seconds = if mode == "retire-cancel" { 2 } else { 30 };
+            let outcome = tokio::time::timeout(Duration::from_secs(seconds), operation).await;
+            let cancelled = outcome.is_err();
+            assert!(!cancelled || mode == "retire-cancel");
+            let report = match outcome {
+                Ok(Ok(value)) => value,
+                Ok(Err(error)) => serde_json::json!({"status":"refused", "reason":format!("{error:?}")}),
+                Err(_) => serde_json::json!({"status":"cancelled"}),
             };
             drop(client);
-            let driver_ok = driver.await.unwrap().is_ok();
+            let driver_ok = if cancelled {
+                driver.abort();
+                let result = tokio::time::timeout(Duration::from_secs(5), driver).await.unwrap();
+                assert!(result.is_err_and(|error| error.is_cancelled()));
+                false
+            } else { driver.await.unwrap().is_ok() };
             assert!(LocalInitialization::recover(&identity).is_err());
             println!("{}", serde_json::json!({"result":report,"commit_started":commit.get(),"driver_ok":driver_ok}));
             return;

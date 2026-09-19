@@ -9009,7 +9009,7 @@
     },
     "initialization_recovery": {
       "local_root": ".research/implementation/archive-worker/initialization-recovery",
-      "state": "practical-tdd-baseline-prepared-no-lab-yet",
+      "state": "baseline-failed-as-intended-stopped-retained-implementation-awaiting-native-run",
       "previous_network_retirement": [
         {
           "root": "database-reservation-bb8be6d",
@@ -9021,7 +9021,172 @@
           "observed_at": "2026-09-19T07:49:51.135216+00:00"
         }
       ],
-      "scope": "Recovered local custody gate, bounded observation and exact bootstrap retirement. PostgreSQL functions are explicit unimplemented TDD stubs pending real baseline."
+      "scope": "Recovered local custody gate, bounded observation and exact bootstrap retirement. PostgreSQL functions are explicit unimplemented TDD stubs pending real baseline.",
+      "baseline": {
+        "resources": {
+          "source": "2bd2bdb8f11395a0c1c329912961bea4b6af6dbc",
+          "tree": "95f64b1c64d84b9e224f4c4ccab9644c2c585347",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/initialization-recovery-2bd2bdb",
+          "owner": "5c4ceb14f36bec4b46cebf3fe6b98d25",
+          "container": "bigbrotr-implementation-initialization-recovery-2bd2bdb",
+          "postgres": "bigbrotr-implementation-initialization-recovery-2bd2bdb-pg",
+          "network": "bigbrotr-implementation-initialization-recovery-2bd2bdb",
+          "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+          "state": "stopped-retained",
+          "source_files": 735,
+          "started_at": "2026-09-19T07:50:27.093478+00:00",
+          "network_id": "07fd7603f63339c81eeddb5455ad401cdd5cd5c1d1e8be7aadc90210be84bd27",
+          "postgres_id": "c2cf727aed6614213851544e13c88551ff1ed08a753007478dcff140fd5592e8",
+          "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+          "container_id": "f7a68db90d85aa6d0c4e984262a65b1b6f966dc58afc9a80b7455d7a922d3f54",
+          "completed_at": "2026-09-19T07:55:04.495970+00:00"
+        },
+        "audit": {
+          "status": "PASS",
+          "source": "2bd2bdb8f11395a0c1c329912961bea4b6af6dbc",
+          "tree": "95f64b1c64d84b9e224f4c4ccab9644c2c585347",
+          "source_files": 735,
+          "source_archive_sha256": "1c3dd1296dc433f901ebe46946f9b94a102ebfaacb11c1b1e4d9d8b4733e0a2a",
+          "source_manifest_sha256": "1c1d074f4aa1eabac8eee3b07b92f0cf3170afda0cf4d78f34604db9559f27fd",
+          "artifacts": {
+            "main": {
+              "sha256": "63d0b031fb4a6352628cea7a656925319829b1ba6fa9ace223c0816e83f9e56f",
+              "bytes": 8224816,
+              "elf_machine": 62
+            },
+            "worker": {
+              "sha256": "c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227",
+              "bytes": 12608608,
+              "elf_machine": 62
+            }
+          },
+          "qualification": {
+            "initialization-recovery": "FAIL"
+          },
+          "cases": {
+            "initialization-recovery": 4
+          },
+          "build_ready": true,
+          "terminal": {
+            "container_id": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 143,
+              "Error": "",
+              "StartedAt": "2026-09-19T07:50:29.725385941Z",
+              "FinishedAt": "2026-09-19T07:55:03.181391657Z"
+            },
+            "postgres_id": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-09-19T07:50:27.76167474Z",
+              "FinishedAt": "2026-09-19T07:55:04.044857309Z"
+            }
+          },
+          "owned_containers": [
+            "f7a68db90d85aa6d0c4e984262a65b1b6f966dc58afc9a80b7455d7a922d3f54",
+            "c2cf727aed6614213851544e13c88551ff1ed08a753007478dcff140fd5592e8"
+          ],
+          "existing_containers_unchanged": 310,
+          "unrelated_containers_unchanged": 20,
+          "unrelated_running": 8,
+          "bigbrotr_running": 0,
+          "observed_at": "2026-09-19T07:55:04.495970+00:00"
+        },
+        "source_verification": {
+          "revision": "2bd2bdb8f11395a0c1c329912961bea4b6af6dbc",
+          "tree": "95f64b1c64d84b9e224f4c4ccab9644c2c585347",
+          "files": 735,
+          "archive_sha256": "1c3dd1296dc433f901ebe46946f9b94a102ebfaacb11c1b1e4d9d8b4733e0a2a",
+          "manifest_sha256": "1c1d074f4aa1eabac8eee3b07b92f0cf3170afda0cf4d78f34604db9559f27fd"
+        },
+        "evidence_identity": {
+          "tar_bytes": 153600,
+          "tar_sha256": "192e888690ce160c8aba61ab94a1d43997d023717aaa03f8be4e268d1bcce7a4",
+          "files": {
+            "resources.json": {
+              "bytes": 1241,
+              "sha256": "e01e7b41f5d0a904fb2f5437cfa3fb186bb4a7b308df25c9b75a763cd6833bb2"
+            },
+            "audit.json": {
+              "bytes": 1867,
+              "sha256": "c57636b177cf9235b28b8588f38d0aa9629e62a7f2fdac590afe9243a738c302"
+            },
+            "container.log": {
+              "bytes": 242,
+              "sha256": "6317cd11a450d9fde03f20599d206a0d83f79a78af95dd7c3ce0d1ff117e4272"
+            },
+            "out/build/source-manifest.json": {
+              "bytes": 90003,
+              "sha256": "1c1d074f4aa1eabac8eee3b07b92f0cf3170afda0cf4d78f34604db9559f27fd"
+            },
+            "out/native-tests/checks/clippy.log": {
+              "bytes": 394,
+              "sha256": "0bf199c6e885192b336271018d5e241a5ea0794fdf42d292ba6f0d40556add66"
+            },
+            "out/native-tests/checks/fixture.log": {
+              "bytes": 130,
+              "sha256": "a0fac7fee4ecb5de16c5b8d2fce3b68cac0801f2e28c817978dc6a2289208855"
+            },
+            "out/native-tests/checks/parent-tests.log": {
+              "bytes": 4562,
+              "sha256": "172c196f39227cc2f587eda52dc6f8bf46ea37909fdfed79b9ba6bd9bf22a610"
+            },
+            "out/native-tests/checks/result.json": {
+              "bytes": 3816,
+              "sha256": "35cd70675facf53630e2cbadb7ac8e0a41c9dd29aa5243b65b1b6ff1b40a7314"
+            },
+            "out/native-tests/ordered-build.log": {
+              "bytes": 626,
+              "sha256": "0b2fa8fb46b04473e74c86aa75c6c3e8c8f861379eef6eaf93d2178803d4d4d7"
+            },
+            "out/native-tests/ready.json": {
+              "bytes": 4911,
+              "sha256": "d1859b0f73027f3ac88a1f4173d8d6cb04fa9087772b3a3a07ff3124bb019129"
+            },
+            "out/native-tests/result.json": {
+              "bytes": 2800,
+              "sha256": "29a35a29cf214740acde3130517031a3f86970e8c95aff7f86fa92b4f913821c"
+            },
+            "out/native-tests/worker-identity.json": {
+              "bytes": 104,
+              "sha256": "c76d6822c6cff10729edc0d68f41196558b6cdedee0779cbf55ce624e1e80878"
+            },
+            "initialization-recovery.json": {
+              "bytes": 8619,
+              "sha256": "a976211caa4b7dcd410c11bb5ece84619b9d15f02dbe357ffa36acff7c83dbec"
+            },
+            "initialization-recovery.log": {
+              "bytes": 389,
+              "sha256": "d132f4bd6ecf54e62c01c28f2cc9d4305e9fa27f191d43e30bc0c0891f947e0a"
+            }
+          }
+        }
+      },
+      "baseline_network_retirement": [
+        {
+          "root": "initialization-recovery-2bd2bdb",
+          "network": "07fd7603f63339c81eeddb5455ad401cdd5cd5c1d1e8be7aadc90210be84bd27",
+          "owner": "5c4ceb14f36bec4b46cebf3fe6b98d25",
+          "status": "removed",
+          "containers": "retained-stopped",
+          "data": "retained",
+          "observed_at": "2026-09-19T07:56:21.002946+00:00"
+        }
+      ]
     }
   },
   "implementation_monitor_corrections_20260918": {
