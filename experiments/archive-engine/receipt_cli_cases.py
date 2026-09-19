@@ -43,9 +43,9 @@ try:
  print(json.dumps(dict(event='watch-ready',parent=parent,child=child)),flush=True)
  assert sys.stdin.readline()=='finish\n'
  assert poll.poll(0), 'native still live after CLI termination'
- try:current=record(Path('/proc')/str(child['pid']))
+ try:current=(Path('/proc')/str(child['pid'])/'stat').read_text().rsplit(')',1)[1].split()[19]
  except (FileNotFoundError,ProcessLookupError):current=None
- assert current is None or current['start']!=child['start'], 'native not reaped'
+ assert current is None or current!=child['start'], 'native not reaped'
  print(json.dumps(dict(event='watch-terminal',native_exited=True,reaped=True)),flush=True)
 finally:
  for fd in fds:os.close(fd)
@@ -230,9 +230,15 @@ def run(root):
         assert cli('normal','b6'*16,cap=489)['state'] == 'present'
         config = home/'receipt.toml'; original_text = config.read_text()
         try:
-            # Managed seed permits 1GiB, accepted policy remains512MiB. A cap of
-            # 490 would fit the file profile but must still be refused.
-            config.write_text(original_text.replace('[archive]\n','[archive]\nworker_memory_bytes = "1GiB"\n'))
+            # One 1GiB worker fits the seed envelope; accepted policy still uses
+            # two 512MiB workers. Cap490 must use the accepted worker allowance.
+            config.write_text(original_text.replace('[archive]\n','[archive]\nworker_memory_bytes = "1GiB"\nprepare_workers = 1\n'))
+            args = [binary,'config','validate','--file','/out/signed_normal/receipt.toml']
+            validation = dict(args=args)
+            report['commands'].append(validation)
+            try: execute(['docker','exec',runner,*args],15,validation)
+            finally: save()
+            assert validation['exit'] == 0 and not validation['stderr'], validation
             cli('normal','b6'*16,cap=490,code=3,contains='ResourceLimit')
         finally: config.write_text(original_text)
         passed('complete-scan-boundary-native-floor-and-managed-seed-drift')

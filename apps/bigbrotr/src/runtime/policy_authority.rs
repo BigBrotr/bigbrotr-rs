@@ -133,7 +133,10 @@ struct InstalledLease {
 }
 
 /// One refresh and one lease per owner. Mutable access serializes all transitions.
-/// Every output/retry must call `check_delivery` immediately before dispatch.
+/// Every policy-authorized output/retry must call `check_delivery` immediately
+/// before dispatch. A finite local diagnostic may report a completed observation
+/// after cleanup when its contract grants no continuing authority; its revision
+/// identifies the checked observation, not authority at diagnostic delivery.
 #[derive(Debug)]
 pub struct PolicyLeaseTracker<C: AuthorityClock = SuspendAwareClock> {
     clock: C,

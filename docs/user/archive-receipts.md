@@ -46,6 +46,8 @@ work cap; changing a managed seed file does not activate that allowance.
 
 Exit0 returns `bigbrotr-archive-receipt/1`, `state:present` or `state:absent`, original
 attempt/batch/ordinal, accepted policy revision and committed Control release.
+The revision identifies the policy checked at observation completion. This local
+report is emitted after cleanup; it is not a claim of current delivery authority.
 Both observations grant **no replay or source protection**. Present verifies the
 receipt, not all scientific files or their failure durability. Absent does not
 exclude an old writer/transaction. Missing/corrupt inputs, conflicting identities,

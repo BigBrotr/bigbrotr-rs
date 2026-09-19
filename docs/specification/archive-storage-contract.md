@@ -923,6 +923,11 @@ configured reader; the native reader uses that same pinned catalog route. A
 missing Control row or local header file is unresolved, never Absent. Historical
 attempts remain inspectable. The command observes only; it does not seal writers,
 exclude old transactions, authorize replay or protect/reclaim source records.
+Its final private operator report describes the observation checked before Control
+release and transport cleanup. `policy_revision` identifies admission/completion
+policy, not current delivery authority. Diagnostic output after cleanup authorizes
+no further catalog/native action; retry requires fresh admission. This exception
+does not apply to served query data, which needs delivery-time authorization.
 
 Reader login/password-reference are nullable paired deployment roots, separate
 from the manager and excluded from persisted policy identities. Operator-provisioned
