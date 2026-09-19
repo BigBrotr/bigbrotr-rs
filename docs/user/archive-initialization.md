@@ -84,6 +84,10 @@ This changes only ACLs; applied migration bytes/checksums and catalog data are
 unchanged. Preserve earlier attempts and their credential lifetimes. A previously
 committed but unusable writer must follow ordinary fencing/resolution and a new
 retained intent; these grants do not authorize reusing or resetting its password.
+The [installed publication evidence](../implementation/evidence/p02-installed-publication-native-20260919.json)
+at `61271e2` executes these grants after separately removing each grant option on
+a fresh installed catalog, and verifies six signed publication/fencing journeys.
+It does not qualify a populated historical upgrade or the full Archive service.
 
 If a response is lost or a command exits unsuccessfully after reservation, preserve
 the same configuration identities, database, root and marker:

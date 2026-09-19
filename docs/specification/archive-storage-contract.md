@@ -242,13 +242,22 @@ stay unchanged. Runtime inspection/recovery does not repair grants or reset a
 previously issued credential. The installed signed consumer at `dbb3aea` reproduced
 the previous failure: successful initialization, two issued writer lifetimes
 without CONNECT/USAGE and native authentication refusal with no files created.
+The [installed signed matrix](../implementation/evidence/p02-installed-publication-native-20260919.json)
+at `61271e2` passes all six publication/fencing schedules with the actual CLI and
+non-superuser manager, plus separate missing-delegation refusals without durable
+mutation. PUBLIC remains without database/schema access; 22 writer lifetimes
+finish sealed with nondelegable CONNECT/USAGE. The documented ACL grants are
+executed on a fresh installed catalog with each grant option removed in turn;
+this does not qualify a general populated historical upgrade.
 
 Ownership is not privilege closure. The installed boundary must reject unexpected
 creator default grants and inspect actual table, column, schema and function ACLs,
 including PUBLIC and built-in defaults for NULL ACLs. Ordinary readers may receive
 SELECT on installation/scientific_schema and native tables; no non-owner grant may
 authorize owner/attempt mutation, guard function execution, guard schema CREATE,
-native REFERENCES/TRIGGER/TRUNCATE or onward delegation. Runtime manager rights
+native REFERENCES/TRIGGER/TRUNCATE or onward delegation. The sole non-owner
+delegation exception is the manager's database CONNECT/public-schema USAGE above;
+it does not extend to writers or readers. Runtime manager rights
 must also be present before dependent binding INSERTs: owners can revoke their
 ordinary privileges from themselves, and foreign-key checks use that owner.
 Refuse this as unsafe role state before a generic SQL permission failure.

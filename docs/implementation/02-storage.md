@@ -350,16 +350,18 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   coordinator SIGKILL at both boundaries and native-worker SIGKILL. Independent
   PostgreSQL state distinguishes rollback from commit; recovery with the entire
   worker bundle absent preserves native rows/root markers, retires bootstrap and
-  remains idempotent. Partial scientific state refuses. Signed mTLS publication,
-  runtime-manager publication and installed service/M1 acceptance remain open;
+  remains idempotent. Partial scientific state refuses. Signed mTLS publication
+  and installed service/M1 acceptance remain open;
   this step is not complete.
   The installed signed consumer at `dbb3aea` now reproduces a missing delegation
   failure with PUBLIC CONNECT/USAGE revoked: initialization succeeds but generated
-  writers cannot connect. The correction must qualify explicit manager grant
-  options and writer access, separate missing-CONNECT/USAGE-delegation refusals
-  without durable mutation, the documented privileged ACL upgrade, and all six
-  signed publication/fencing schedules without reopening PUBLIC access. Existing
-  migration bytes/checksums and credential lifetimes remain unchanged.
+  writers cannot connect. The [correction at `61271e2`](evidence/p02-installed-publication-native-20260919.json)
+  passes all six signed publication/fencing schedules and two isolated missing
+  grant-option refusals without durable mutation. PUBLIC access stays absent;
+  22 writer lifetimes are sealed with nondelegable CONNECT/USAGE. The exact
+  documented privileged ACL grants run against a fresh installed catalog before
+  writer creation; populated historical upgrades remain separately unqualified.
+  Existing migration bytes/checksums and credential lifetimes remain unchanged.
 - [ ] **Step 4:** After an ambiguous commit, query the receipt in a new transaction; do not
   repeat while receipt state is unknown. Reject mismatched batch digest.
   Include loss of the actual native PostgreSQL COMMIT response, plus physical file

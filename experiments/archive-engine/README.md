@@ -411,3 +411,8 @@ ordinary access preserved, unchanged owner/attempt/role observations, and execut
 of the exact documented privileged ACL upgrade. Final PUBLIC database/schema
 privileges must remain absent. The original six scientific/fencing expectations
 remain unchanged; the oracle additionally checks those explicit refusal events.
+The [installed report](../../docs/implementation/evidence/p02-installed-publication-native-20260919.json)
+records six signed schedules and both delegation refusals PASS at `61271e2`, with
+22 sealed writer lifetimes, no PUBLIC access and unchanged retained source state.
+All owned containers were stopped and unrelated workloads preserved. Complete
+installed service/M1 and populated historical ACL upgrades remain unqualified.

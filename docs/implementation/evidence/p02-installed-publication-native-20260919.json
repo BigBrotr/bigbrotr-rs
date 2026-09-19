@@ -1,0 +1,821 @@
+{
+  "format": "bigbrotr-installed-publication-evidence/1",
+  "observed_date": "2026-09-19",
+  "status": "PASS",
+  "scope": "Installed CLI -> non-superuser CatalogManager -> signed durable pending publication, receipt observation and actual native fencing; not full Archive service/M1 acceptance",
+  "source": "61271e277d3560da7ca305fb1d5dc8def326c912",
+  "tree": "2d54dbed4b681ca33568146091829cbd6944a402",
+  "product_changes": "Manager CONNECT/public USAGE delegation, explicit nondelegable writer CONNECT and pre-commit effective access checks. No dependency, applied migration/checksum, worker wire or persistent format changes.",
+  "commands": [
+    "python3 -B /source/experiments/archive-engine/native_initialization.py --publication",
+    "python3 -B SOURCE/experiments/archive-engine/signed_publication_cases.py OWNED_ROOT --installed"
+  ],
+  "environment": {
+    "host": "Tux",
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "1.98.1",
+    "clang": "14.0.6",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "duckdb": "1.5.5",
+    "duckdb_binding": "1.10505.0",
+    "arrow": "58.4.0",
+    "ducklake": "1.0.0",
+    "libpq": "18.3",
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "runner_limits": "2CPU/6GiB/512PIDs; read-only root; internal network; no host ports",
+    "postgres_limits": "1CPU/1GiB/128PIDs"
+  },
+  "inputs": {
+    "cargo_lock_sha256": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215",
+    "source_files": 749,
+    "source_archive_sha256": "380731853006e5e9b750e7ff5a6f8bba9b0adbb10ebb066c23d4579bc365d700",
+    "source_manifest_sha256": "e066b96df42c7b0cd4723318cb12abe956a4fe263cc6f729265023453a7dd3ab",
+    "harness_sha256": "ec2f1dc27e31fd58077b878f0a075123bfb54a774d55c362d438d3ca2a27055e",
+    "oracle_sha256": "31e6efce8f12cbd397a4fabcf2dc24e0ac8f9d4b2af7bd7e1ea81ea5c1502b9d"
+  },
+  "artifacts": {
+    "main": {
+      "sha256": "305d3f3b204f00337875269d65e5c927eb88af67cb8ba1c51fd365aa308d46c5",
+      "bytes": 8778544,
+      "elf_machine": 62
+    },
+    "worker": {
+      "sha256": "c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227",
+      "bytes": 12608608,
+      "elf_machine": 62
+    },
+    "publisher_sha256": "4c75f2a31d09ac6d8f36801a2d8b2ebad5526774c516a60f90bb47d88cebdf22",
+    "reader_sha256": "6ba5dbb6566695ca3fe31d65a53a1c07f988e172a0614193ca21df40855fac95",
+    "receipt_reader_sha256": "faa039dfaee347d92aeac2f2f66bca574c7c08b5be5a2c3a66d35dfcc8d65a63"
+  },
+  "baseline": {
+    "source": "dbb3aea17dd05ee00eb212ec2c652f1930497bfd",
+    "tree": "a1645718c57b2f8e6f86dac1d5cefe8c8594370e",
+    "status": "FAIL",
+    "case": "normal",
+    "parent_exit": 101,
+    "parent_stderr": "\nthread 'main' (4839) panicked at apps/bigbrotr/examples/archive_publication_probe.rs:522:31:\ncalled `Result::unwrap()` on an `Err` value: OutcomeUnknown\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n",
+    "roles": {
+      "manager_superuser": false,
+      "manager_connect_delegate": false,
+      "manager_usage_delegate": false,
+      "native_and_guard_owned": true,
+      "writers": [
+        {
+          "login": "bb_archive_b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5b5",
+          "login_enabled": false,
+          "password_removed": true,
+          "connect": false,
+          "usage": false,
+          "connect_delegate": false,
+          "usage_delegate": false
+        },
+        {
+          "login": "bb_archive_b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6",
+          "login_enabled": true,
+          "password_removed": false,
+          "connect": false,
+          "usage": false,
+          "connect_delegate": false,
+          "usage_delegate": false
+        }
+      ]
+    },
+    "diagnosis": {
+      "public_database_privileges": [],
+      "public_schema_privileges": [],
+      "owner": {
+        "singleton": true,
+        "ordinal": 2,
+        "enabled": true
+      },
+      "active_clients": 0,
+      "schema_grant_warnings": 2,
+      "source": "dbb3aea17dd05ee00eb212ec2c652f1930497bfd",
+      "permission_denied_database": 2
+    },
+    "physical_files": 0,
+    "catalog_files": 0,
+    "not_run": [
+      "before",
+      "after",
+      "owner_first",
+      "held_commit",
+      "held_rollback"
+    ],
+    "raw_sha256": "9c95ace767cd89687c372ad2f1e1769af20a3c60b63368b0d36e46c2e3c0d886"
+  },
+  "validation": {
+    "ordered_build": "PASS",
+    "fixture_build": "PASS",
+    "archive_parent_tests": {
+      "passed": 38,
+      "failed": 0,
+      "ignored": 1
+    },
+    "binary_tests": {
+      "passed": 8,
+      "failed": 0
+    },
+    "catalog_cli_tests": {
+      "passed": 10,
+      "failed": 0
+    },
+    "scoped_clippy": "PASS",
+    "local": "Mac example Clippy, Python AST and document/artifact/link checks PASS",
+    "ignored_reason": "Dedicated native custody holder test not rerun here; earlier separate evidence retained"
+  },
+  "delegation_refusals": [
+    {
+      "privilege": "connect",
+      "before": {
+        "owner": {
+          "singleton": true,
+          "ordinal": 0,
+          "enabled": false
+        },
+        "attempts": [],
+        "writers": []
+      },
+      "revoked_access": {
+        "connect": true,
+        "connect_delegate": false,
+        "usage": true,
+        "usage_delegate": true
+      },
+      "status": "PASS",
+      "refusal": {
+        "commit_started": false,
+        "error": "UnsafeRole",
+        "event": "connect-refused"
+      },
+      "after": {
+        "owner": {
+          "singleton": true,
+          "ordinal": 0,
+          "enabled": false
+        },
+        "attempts": [],
+        "writers": []
+      },
+      "restored_access": {
+        "connect": true,
+        "connect_delegate": true,
+        "usage": true,
+        "usage_delegate": true
+      },
+      "public_access": {
+        "database": [],
+        "schema": []
+      }
+    },
+    {
+      "privilege": "usage",
+      "before": {
+        "owner": {
+          "singleton": true,
+          "ordinal": 0,
+          "enabled": false
+        },
+        "attempts": [],
+        "writers": []
+      },
+      "revoked_access": {
+        "connect": true,
+        "connect_delegate": true,
+        "usage": true,
+        "usage_delegate": false
+      },
+      "status": "PASS",
+      "refusal": {
+        "commit_started": false,
+        "error": "UnsafeRole",
+        "event": "usage-refused"
+      },
+      "after": {
+        "owner": {
+          "singleton": true,
+          "ordinal": 0,
+          "enabled": false
+        },
+        "attempts": [],
+        "writers": []
+      },
+      "restored_access": {
+        "connect": true,
+        "connect_delegate": true,
+        "usage": true,
+        "usage_delegate": true
+      },
+      "public_access": {
+        "database": [],
+        "schema": []
+      }
+    }
+  ],
+  "cases": [
+    {
+      "name": "normal",
+      "status": "PASS",
+      "manager": {
+        "createrole": true,
+        "current_user": "CatalogManager",
+        "inherit": false,
+        "session_user": "CatalogManager",
+        "superuser": false
+      },
+      "public_access": {
+        "database": [],
+        "schema": []
+      },
+      "writer_lifetimes": 4,
+      "writers_sealed_and_nondelegable": true,
+      "native_and_guard_owned": true,
+      "outcomes": [
+        {
+          "ordinal": 1,
+          "first": 6,
+          "success": false,
+          "receipt": "absent",
+          "snapshots": 2,
+          "files": 0
+        },
+        {
+          "ordinal": 2,
+          "first": 1,
+          "success": true,
+          "receipt": "present",
+          "snapshots": 3,
+          "files": 2
+        },
+        {
+          "ordinal": 3,
+          "first": 6,
+          "success": true,
+          "receipt": "present",
+          "snapshots": 4,
+          "files": 8
+        },
+        {
+          "ordinal": 4,
+          "first": 6,
+          "success": false,
+          "receipt": "conflict",
+          "snapshots": 4,
+          "files": 8
+        }
+      ],
+      "retained_rocks_rows": 41,
+      "retained_rocks_sha256": "da535e9d1edcdce8bf09033bb1d2b48ee10941c34f47b0b3db228f6285128c61",
+      "physical_files": 8,
+      "catalog_files": 8,
+      "active_writers": 0,
+      "blocking": [],
+      "proxy": {},
+      "successor_before_launch": null,
+      "worker_active_permits": 0
+    },
+    {
+      "name": "before",
+      "status": "PASS",
+      "manager": {
+        "createrole": true,
+        "current_user": "CatalogManager",
+        "inherit": false,
+        "session_user": "CatalogManager",
+        "superuser": false
+      },
+      "public_access": {
+        "database": [],
+        "schema": []
+      },
+      "writer_lifetimes": 3,
+      "writers_sealed_and_nondelegable": true,
+      "native_and_guard_owned": true,
+      "outcomes": [
+        {
+          "ordinal": 1,
+          "first": 6,
+          "success": false,
+          "receipt": "absent",
+          "snapshots": 2,
+          "files": 0
+        },
+        {
+          "ordinal": 2,
+          "first": 1,
+          "success": true,
+          "receipt": "present",
+          "snapshots": 3,
+          "files": 2
+        },
+        {
+          "ordinal": 3,
+          "first": 6,
+          "success": false,
+          "receipt": "absent",
+          "snapshots": 3,
+          "files": 2
+        }
+      ],
+      "retained_rocks_rows": 41,
+      "retained_rocks_sha256": "da535e9d1edcdce8bf09033bb1d2b48ee10941c34f47b0b3db228f6285128c61",
+      "physical_files": 8,
+      "catalog_files": 2,
+      "active_writers": 0,
+      "blocking": [],
+      "proxy": {
+        "mode": "before-forward",
+        "data_queries": 1,
+        "data_commits": 1,
+        "server_complete": 0,
+        "client_complete": 0,
+        "faults": 1,
+        "guard_rejections": 0,
+        "serialization_rejections": 0,
+        "rejection_sequence": [],
+        "unexpected": 0
+      },
+      "successor_before_launch": null,
+      "worker_active_permits": 0
+    },
+    {
+      "name": "after",
+      "status": "PASS",
+      "manager": {
+        "createrole": true,
+        "current_user": "CatalogManager",
+        "inherit": false,
+        "session_user": "CatalogManager",
+        "superuser": false
+      },
+      "public_access": {
+        "database": [],
+        "schema": []
+      },
+      "writer_lifetimes": 3,
+      "writers_sealed_and_nondelegable": true,
+      "native_and_guard_owned": true,
+      "outcomes": [
+        {
+          "ordinal": 1,
+          "first": 6,
+          "success": false,
+          "receipt": "absent",
+          "snapshots": 2,
+          "files": 0
+        },
+        {
+          "ordinal": 2,
+          "first": 1,
+          "success": true,
+          "receipt": "present",
+          "snapshots": 3,
+          "files": 2
+        },
+        {
+          "ordinal": 3,
+          "first": 6,
+          "success": false,
+          "receipt": "present",
+          "snapshots": 4,
+          "files": 8
+        }
+      ],
+      "retained_rocks_rows": 41,
+      "retained_rocks_sha256": "da535e9d1edcdce8bf09033bb1d2b48ee10941c34f47b0b3db228f6285128c61",
+      "physical_files": 8,
+      "catalog_files": 8,
+      "active_writers": 0,
+      "blocking": [],
+      "proxy": {
+        "mode": "after-complete",
+        "data_queries": 1,
+        "data_commits": 1,
+        "server_complete": 1,
+        "client_complete": 0,
+        "faults": 1,
+        "guard_rejections": 0,
+        "serialization_rejections": 0,
+        "rejection_sequence": [],
+        "unexpected": 0
+      },
+      "successor_before_launch": null,
+      "worker_active_permits": 0
+    },
+    {
+      "name": "owner_first",
+      "status": "PASS",
+      "manager": {
+        "createrole": true,
+        "current_user": "CatalogManager",
+        "inherit": false,
+        "session_user": "CatalogManager",
+        "superuser": false
+      },
+      "public_access": {
+        "database": [],
+        "schema": []
+      },
+      "writer_lifetimes": 4,
+      "writers_sealed_and_nondelegable": true,
+      "native_and_guard_owned": true,
+      "outcomes": [
+        {
+          "ordinal": 1,
+          "first": 6,
+          "success": false,
+          "receipt": "absent",
+          "snapshots": 2,
+          "files": 0
+        },
+        {
+          "ordinal": 2,
+          "first": 1,
+          "success": true,
+          "receipt": "present",
+          "snapshots": 3,
+          "files": 2
+        },
+        {
+          "ordinal": 3,
+          "first": 6,
+          "success": false,
+          "receipt": "absent",
+          "snapshots": 3,
+          "files": 2
+        },
+        {
+          "ordinal": 4,
+          "first": 6,
+          "success": true,
+          "receipt": "present",
+          "snapshots": 4,
+          "files": 8
+        }
+      ],
+      "retained_rocks_rows": 41,
+      "retained_rocks_sha256": "da535e9d1edcdce8bf09033bb1d2b48ee10941c34f47b0b3db228f6285128c61",
+      "physical_files": 14,
+      "catalog_files": 8,
+      "active_writers": 0,
+      "blocking": [
+        {
+          "waiter": 530,
+          "waiter_start": "2026-09-19T10:39:15.997293+00:00",
+          "waiter_user": "CatalogManager",
+          "wait_event_type": "Lock",
+          "wait_event": "relation",
+          "blocker": 529,
+          "blocker_start": "2026-09-19T10:39:15.97308+00:00",
+          "blocker_user": "postgres"
+        },
+        {
+          "waiter": 522,
+          "waiter_start": "2026-09-19T10:39:15.781675+00:00",
+          "waiter_user": "bb_archive_cfcfcfcfcfcfcfcfcfcfcfcfcfcfcfcf",
+          "wait_event_type": "Lock",
+          "wait_event": "transactionid",
+          "blocker": 530,
+          "blocker_start": "2026-09-19T10:39:15.997293+00:00",
+          "blocker_user": "CatalogManager"
+        }
+      ],
+      "proxy": {
+        "mode": "hold-data",
+        "data_queries": 2,
+        "data_commits": 0,
+        "server_complete": 0,
+        "client_complete": 0,
+        "faults": 0,
+        "guard_rejections": 1,
+        "serialization_rejections": 1,
+        "rejection_sequence": [
+          "serialization",
+          "guard"
+        ],
+        "unexpected": 0
+      },
+      "successor_before_launch": {
+        "singleton": true,
+        "ordinal": 4,
+        "enabled": true
+      },
+      "worker_active_permits": 0
+    },
+    {
+      "name": "held_commit",
+      "status": "PASS",
+      "manager": {
+        "createrole": true,
+        "current_user": "CatalogManager",
+        "inherit": false,
+        "session_user": "CatalogManager",
+        "superuser": false
+      },
+      "public_access": {
+        "database": [],
+        "schema": []
+      },
+      "writer_lifetimes": 4,
+      "writers_sealed_and_nondelegable": true,
+      "native_and_guard_owned": true,
+      "outcomes": [
+        {
+          "ordinal": 1,
+          "first": 6,
+          "success": false,
+          "receipt": "absent",
+          "snapshots": 2,
+          "files": 0
+        },
+        {
+          "ordinal": 2,
+          "first": 1,
+          "success": true,
+          "receipt": "present",
+          "snapshots": 3,
+          "files": 2
+        },
+        {
+          "ordinal": 3,
+          "first": 6,
+          "success": true,
+          "receipt": "present",
+          "snapshots": 4,
+          "files": 8
+        },
+        {
+          "ordinal": 4,
+          "first": 6,
+          "success": false,
+          "receipt": "conflict",
+          "snapshots": 4,
+          "files": 8
+        }
+      ],
+      "retained_rocks_rows": 41,
+      "retained_rocks_sha256": "da535e9d1edcdce8bf09033bb1d2b48ee10941c34f47b0b3db228f6285128c61",
+      "physical_files": 8,
+      "catalog_files": 8,
+      "active_writers": 0,
+      "blocking": [
+        {
+          "waiter": 623,
+          "waiter_start": "2026-09-19T10:39:23.511083+00:00",
+          "waiter_user": "CatalogManager",
+          "wait_event_type": "Lock",
+          "wait_event": "transactionid",
+          "blocker": 622,
+          "blocker_start": "2026-09-19T10:39:23.381722+00:00",
+          "blocker_user": "bb_archive_d7d7d7d7d7d7d7d7d7d7d7d7d7d7d7d7"
+        }
+      ],
+      "proxy": {
+        "mode": "hold-commit",
+        "data_queries": 1,
+        "data_commits": 1,
+        "server_complete": 1,
+        "client_complete": 1,
+        "faults": 0,
+        "guard_rejections": 0,
+        "serialization_rejections": 0,
+        "rejection_sequence": [],
+        "unexpected": 0
+      },
+      "successor_before_launch": {
+        "singleton": true,
+        "ordinal": 4,
+        "enabled": true
+      },
+      "worker_active_permits": 0
+    },
+    {
+      "name": "held_rollback",
+      "status": "PASS",
+      "manager": {
+        "createrole": true,
+        "current_user": "CatalogManager",
+        "inherit": false,
+        "session_user": "CatalogManager",
+        "superuser": false
+      },
+      "public_access": {
+        "database": [],
+        "schema": []
+      },
+      "writer_lifetimes": 4,
+      "writers_sealed_and_nondelegable": true,
+      "native_and_guard_owned": true,
+      "outcomes": [
+        {
+          "ordinal": 1,
+          "first": 6,
+          "success": false,
+          "receipt": "absent",
+          "snapshots": 2,
+          "files": 0
+        },
+        {
+          "ordinal": 2,
+          "first": 1,
+          "success": true,
+          "receipt": "present",
+          "snapshots": 3,
+          "files": 2
+        },
+        {
+          "ordinal": 3,
+          "first": 6,
+          "success": false,
+          "receipt": "absent",
+          "snapshots": 3,
+          "files": 2
+        },
+        {
+          "ordinal": 4,
+          "first": 6,
+          "success": true,
+          "receipt": "present",
+          "snapshots": 4,
+          "files": 8
+        }
+      ],
+      "retained_rocks_rows": 41,
+      "retained_rocks_sha256": "da535e9d1edcdce8bf09033bb1d2b48ee10941c34f47b0b3db228f6285128c61",
+      "physical_files": 14,
+      "catalog_files": 8,
+      "active_writers": 0,
+      "blocking": [
+        {
+          "waiter": 709,
+          "waiter_start": "2026-09-19T10:39:30.712761+00:00",
+          "waiter_user": "CatalogManager",
+          "wait_event_type": "Lock",
+          "wait_event": "transactionid",
+          "blocker": 708,
+          "blocker_start": "2026-09-19T10:39:30.582379+00:00",
+          "blocker_user": "bb_archive_dfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdf"
+        }
+      ],
+      "proxy": {
+        "mode": "hold-commit",
+        "data_queries": 1,
+        "data_commits": 1,
+        "server_complete": 0,
+        "client_complete": 0,
+        "faults": 1,
+        "guard_rejections": 0,
+        "serialization_rejections": 0,
+        "rejection_sequence": [],
+        "unexpected": 0
+      },
+      "successor_before_launch": {
+        "singleton": true,
+        "ordinal": 4,
+        "enabled": true
+      },
+      "worker_active_permits": 0
+    }
+  ],
+  "oracle": [
+    "Actual installed main initializes six fresh databases; runtime manager authenticated as NOSUPERUSER CREATEROLE NOINHERIT, not postgres.",
+    "PUBLIC DB and public-schema privileges revoked before installation and independently observed absent after refusal/upgrade and each signed schedule. No global grant can mask missing writer access.",
+    "Each manager grant option removed separately while both ordinary permissions remain present. Actual provision refuses UnsafeRole before commit; independent complete owner/attempt/writer state unchanged, then exact documented privileged grants restore delegation.",
+    "Literal separately authored CBOR fact/receipt/scientific row expectations and frozen signed event; invalid ID/signature, missing dictionary closure and duplicate receipt negatives retained.",
+    "Fresh full native body readback, SELECT-only receipt consumer, physical object identity/size and retained41 Rocks rows checked in every mode.",
+    "Actual owner-first and old-native-first PostgreSQL blockers use CatalogManager; owner-first observes serialization then guard refusal. Positive reap, historical sealing and complete independent read precede successor launch."
+  ],
+  "compatibility": {
+    "applied_sql_unchanged": true,
+    "explicit_upgrade": "docs/user/archive-initialization.md exact SQL block executed twice",
+    "upgrade_scope": "Fresh installed catalog before writer creation with each GO separately revoked; not a general populated historical catalog migration",
+    "existing_incompatible_acl": "UnsafeRole, no silent repair; retained old credentials cannot be reissued"
+  },
+  "review": {
+    "type": "independent read-only AI source review",
+    "findings": [
+      "Added independent PUBLIC absence oracle before corrected qualification.",
+      "Clarified exact manager delegation exception to non-owner delegation prohibition after candidate; documentation-only.",
+      "Disclosed fresh-catalog ACL upgrade scope."
+    ],
+    "execution": "Root owned actual tests/audit; reviewer did not execute or modify files.",
+    "offline_audit": "Both raw archives and all31 files verified; concise6case mapping,2GOrefusals, roles/PUBLIC, proxy/blocker evidence, signed fixture readbacks, physical/catalog references and build logs match. No discrepancy; no live host/ELF reinspection or rerun. Full749Git source audit performed separately by root."
+  },
+  "resources": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-publication-61271e2",
+    "owner": "eaa70c488f711089ad4030a96404a1a4",
+    "runner": "51953abe85796e82df2778fac54d9ab2dd4342de3cec9440a5f4d5e3e4262f34",
+    "postgres": "1b032723926ad94dca8a6254d7f590f867ceea3cd8aefa5fb3a96feb9c13a60b",
+    "network": "64e91b6798545d6f7a320ec92d72430f34bf050af50543750b518162139e7feb",
+    "state": "stopped-retained",
+    "terminal": {
+      "container_id": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 143,
+        "Error": "",
+        "StartedAt": "2026-09-19T10:36:26.689008231Z",
+        "FinishedAt": "2026-09-19T10:40:50.909298079Z"
+      },
+      "postgres_id": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-09-19T10:36:24.757833379Z",
+        "FinishedAt": "2026-09-19T10:40:53.919863643Z"
+      }
+    },
+    "preexisting_containers_unchanged": 330,
+    "unrelated_running": 8,
+    "bigbrotr_running": 0,
+    "observed_at": "2026-09-19T10:40:54.361580+00:00"
+  },
+  "raw": {
+    "path": ".research/implementation/archive-worker/installed-publication/qualified",
+    "tar_bytes": 378880,
+    "tar_sha256": "caddc7fbc12a635c682212d3aa6344481133e85210e2605c4c8cc3b3e31ac02f",
+    "files": {
+      "resources.json": {
+        "bytes": 1233,
+        "sha256": "3d6423254cd8b503dcb46b383194cef8c041fd9d7ac12935b09be7b52dd73faa"
+      },
+      "audit.json": {
+        "bytes": 1918,
+        "sha256": "6069c83076f2ac0d1a7c1dff10a6fe152f7edf779c5eba269af1dc606467ad24"
+      },
+      "container.log": {
+        "bytes": 283,
+        "sha256": "880c69e79f74273d77d6adb831443e8acae784eaf2d0babe5cced0140562c9d9"
+      },
+      "out/build/source-manifest.json": {
+        "bytes": 91904,
+        "sha256": "e066b96df42c7b0cd4723318cb12abe956a4fe263cc6f729265023453a7dd3ab"
+      },
+      "out/native-tests/checks/cli-tests.log": {
+        "bytes": 2171,
+        "sha256": "af637000593dc08fe897f8fc82cb3785b71b529a6ac77135ce597c47453e1b09"
+      },
+      "out/native-tests/checks/clippy.log": {
+        "bytes": 394,
+        "sha256": "1ea410f38958df970c150d1d37bf913ef41fb76893c64d99971be533748d7b07"
+      },
+      "out/native-tests/checks/fixture.log": {
+        "bytes": 227,
+        "sha256": "55547e0e400c61243f312eee188252e6c5314608042b85781ec414f953d4e254"
+      },
+      "out/native-tests/checks/parent-tests.log": {
+        "bytes": 5023,
+        "sha256": "0d540cfab6fe04e80f5711625ad456b4ddc62e952a017783d0d16ca4eccdcbf6"
+      },
+      "out/native-tests/checks/result.json": {
+        "bytes": 4592,
+        "sha256": "97dbd643d10bce2d06ecbf9f9ed16b55faa000fffc7ec4f3003ff4858e17df01"
+      },
+      "out/native-tests/ordered-build.log": {
+        "bytes": 626,
+        "sha256": "c435faa631a3e24bdce1584f15e939d2cb68dd366cb0426e9c444a7e7fcac260"
+      },
+      "out/native-tests/ready.json": {
+        "bytes": 5162,
+        "sha256": "f2c81f4d80dc287d6683d91ef0333059ced3418263f58d3930048f81fdca95d1"
+      },
+      "out/native-tests/result.json": {
+        "bytes": 2800,
+        "sha256": "f3173fa8c49d8e057627b7ad71ff8cfebb90872b76aabb0d43124a60e96b969d"
+      },
+      "out/native-tests/worker-identity.json": {
+        "bytes": 104,
+        "sha256": "c76d6822c6cff10729edc0d68f41196558b6cdedee0779cbf55ce624e1e80878"
+      },
+      "installed-signed-cases.json": {
+        "bytes": 225390,
+        "sha256": "f731bb22f7597f97a615502d4b85091b659ba006fbf377360afa2b19de89178e"
+      },
+      "installed-signed-cases.log": {
+        "bytes": 486,
+        "sha256": "116c0565c9bb7ee83bcc33baae6f4a24a4ad2192121e4c71c504149965967930"
+      }
+    }
+  },
+  "not_qualified": [
+    "Installed persistent Control+Archive lifecycle and source dispatch",
+    "Source policy, protection, source ACK/reclamation and public read/export/restart M1",
+    "Signed mTLS publication",
+    "Populated historical ACL upgrade/recovery with earlier unusable credentials",
+    "Cross-boot/restore, exhausted resources, aged/mixed load and power-loss",
+    "Ordinary Compose/release journeys, hosted Actions and native Linux arm64"
+  ]
+}

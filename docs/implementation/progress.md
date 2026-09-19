@@ -20,86 +20,86 @@ Control-only and rejects other roles. Root remains sole writer/integrator.
 
 ## Actual Git and review
 
-Mac main candidate dbb3aea17dd05ee00eb212ec2c652f1930497bfd; origin/main
-last verified ee0923a361d20b3369205739edf93fc5dcba89d3. Candidate wires the actual
-installed CLI/non-superuser CatalogManager into signed publication with PUBLIC
-CONNECT/USAGE revoked. Root-owned dirty fixes add manager delegation, explicit
-writer CONNECT and pre-commit positive access inspection; regression harness,
-contract/user documentation/checkpoint/inventory are being updated. No contributor
-edits or merge/rebase. Existing applied SQL and dependencies unchanged.
+Mac main candidate61271e277d3560da7ca305fb1d5dc8def326c912, preceded by
+baseline dbb3aea17dd05ee00eb212ec2c652f1930497bfd. Origin/main last verified
+at ee0923a361d20b3369205739edf93fc5dcba89d3. Root-owned dirty work is evidence,
+contract/reference/user/task documentation, inventory and checkpoint only.
+No contributor edits, merge/rebase or active experiment. Both candidate commits
+are unpublished pending final evidence review/private push.
 
-Installed baseline63285 exited1: normal publication FAIL at required ordinal2;
-other five schedules NOT_RUN. SQL independently shows manager lacks both grant
-options; two committed writer roles lack CONNECT/USAGE. Actual PG reports two
-USAGE no-op warnings and two CONNECT authentication failures. No physical/catalog
-files, no active clients, owner2 enabled; PUBLIC DB/schema ACLs empty. Initializer
-and fresh manager inspection incorrectly succeeded. This is measured evidence,
-not just review. Correction is not yet native-qualified.
+Independent read-only AI source review found the missing PUBLIC oracle before
+correction qualification; added explicit DB/schema ACL absence. It then found
+only a textual delegation-ban conflict, now clarified with the exact manager
+CONNECT/public USAGE exception. No code blocker. Upgrade scope is explicit:
+fresh installed catalog with each grant option removed, not populated historical
+migration. Reviewer performed no edits or Tux execution. Offline evidence review verified both archives/all31files, six cases, two
+refusals, rights/PUBLIC, proxy/blockers, signed fixture readbacks and logs without
+discrepancy; no live host/ELF reinspection or rerun. Root reviewed full changed source/diff, all6 result records and
+complete native build/test logs. No review substitutes for execution.
 
-Independent read-only AI source review caught an overbroad native-schema target
-that also matched ATTACH and an incorrect scratch-parent path in the crash oracle.
-Both corrected before practical execution. Reviewer withdrew an escaping/NUL
-misreading; embedded AST proved the right byte, now expressed as bytes([0]).
-No further concrete source issue found; no reviewer edits/Tux/tests. Root read
-all9 actual case records and complete native logs. Recorded-evidence audit verified15rawfiles/archive,747Git hashes and all9case
-records/checklogs without discrepancy. Offline audit only, no Tux/ELF reinspection
-or rerun; raw retains COPY/root hashes/results, not complete dumps. No AI review
-substitutes for execution.
+## Installed signed publication qualified
 
-## Late initializer faults qualified
+[Installed evidence](evidence/p02-installed-publication-native-20260919.json):
+baseline63285 exit1 atdbb3aea reproduced normal ordinal2 OutcomeUnknown. Successful
+initializer/manager inspection had left both manager grant options absent; two
+committed writer lifetimes lacked CONNECT/USAGE. PG independently emitted two
+USAGE no-op warnings and two CONNECT failures. PUBLIC ACLs empty, no physical/
+catalog files, no active clients; other5 schedules NOT_RUN. Baseline retained.
 
-[Late initialization evidence](evidence/p02-initialization-late-native-20260919.json)
-at3ad4c64:9actual scenarios PASS (98919 exit0). Scientific-schema and guard-install
-COMMIT replies lost before forward/after server completion; coordinator SIGKILL
-at both boundaries before forward/after completion; native-worker SIGKILL before
-scientific COMMIT. Exact PID/start/exe/fullargv/PPid/scratch nonce checked before
-pidfd signals. Native parent-death exit observed before stopping proxy in both
-coordinator schema crashes. No PostgreSQL backend killed.
+Correction61271e2 adds manager CONNECT/public USAGE WITH GRANT OPTION, checks both
+ordinary access and delegation, grants writer CONNECT explicitly, and verifies
+positive/nondelegable access before role/attempt/owner commit. No applied SQL,
+checksum, persistent format, dependency or native wire changes. Existing lacking
+ACLs refuse UnsafeRole; exact documented privileged grants are the explicit
+upgrade, never runtime repair or password reset.
 
-Positive coordinator/proxy termination and fresh zero-client DB observation precede
-independent SQL:28metadata remain; native rollback has0logical/0columns/snapshot0
-and refuses IncompatibleLayout after retirement. Complete schema has6logical/
-203columns/snapshots0,1/exact declaration message/checksum/0datafiles. Guard rollback
-keeps bootstrap ownership; committed guard has manager ownership. Recovery installs
-complete state or inspects existing state. All9 recover with entire worker bundle
-absent; second recovery idempotent; exact28native COPY rows and root marker/inodes/
-modes unchanged. Restored-bundle fresh initialization retry refuses without effects.
+Practical51521 exit0: six actual installed signed publication/fencing schedules
+PASS, plus two isolated missing-grant-option refusals. Each leaves ordinary manager
+access present, returns UnsafeRole before commit, and independently preserves
+owner0/empty attempts/no writer roles. Exact documentation SQL restores each GO.
+All6 actual CLI initializations use a non-superuser manager for subsequent
+provision/seal/inspect. PUBLIC DB/schema rights remain empty;22 writer lifetimes
+finish sealed/password removed with CONNECT/USAGE and no delegation. Original
+literal scientific rows/signed event, missing closure/duplicate controls and
+SELECT-only fresh receipts match. Actual lock chains cover both fencing orders,
+COMMIT/ROLLBACK and 40001→55000 stale rejection. All41 Rocks rows unchanged in
+each case.60physical files/42catalog references across6 fresh databases include
+retained orphan files, not capacity or reclamation evidence.
 
-Native ordered worker/main build and fixtures pass;38archive tests PASS+1ignored,
-8binary+10CLI tests PASS, scoped Clippy PASS. Ignored dedicated custody case retains
-earlier evidence, not PASS here. Local core17case AST unchanged, nested Python AST
-and direct-INSERT discriminator PASS. Doc/artifact/link checks and diff whitespace PASS.
-Measured SIGKILL-to-pidfd exit0.46–3.49ms, first recovery0.056–0.314s in these empty
-catalog scenarios only; no capacity/SLA claim. No new product fix needed.
+Native ordered builds/fixtures PASS;38archive tests PASS+1ignored,8binary+10CLI
+PASS, scoped Clippy PASS. The ignored custody-holder case has earlier dedicated
+evidence, not rerun/PASS here. Mac example Clippy and Python AST PASS. Final
+artifact/document/link/diff checks PASS after documentation updates.
 
 ## Owned resources and evidence
 
-Installed baseline terminal audit58981 and collection77465 exited0. Its runner/PG
-are stopped-retained, no OOM;328 preexisting containers unchanged,8 unrelated
-running,0 BigBrotr. Root
-/home/tux/bigbrotr-implementation-20260917/runs/installed-publication-dbb3aea;
-owner5efcd4a2896da3f7fdf9d6a76313b879. Runner
-e811b191623400f609a4be39983b74b30685114772ecbd4195ec5e648f20ddf5;
-PG2053589a9c8468a159f4e37d79d084b0e7935bff71232f62e7bd66305d7f8c4d.
-Empty retained network
-a892001d24da896d32813b84baaa7b75e90a64f3fed253bdf9543b99f97d6bc0.
+No active experiment. Terminal audit60492 and collection17965 exited0 at
+2026-09-19T10:40:54.361580+00:00. Runner/PG stopped-retained, no OOM;
+330 preexisting container/mount/network/lifecycle states unchanged,8 unrelated
+running,0 BigBrotr. Root /home/tux/bigbrotr-implementation-20260917/runs/installed-publication-61271e2;
+owner eaa70c488f711089ad4030a96404a1a4.
+Runner 51953abe85796e82df2778fac54d9ab2dd4342de3cec9440a5f4d5e3e4262f34 stopped143;
+PG 1b032723926ad94dca8a6254d7f590f867ceea3cd8aefa5fb3a96feb9c13a60b stopped0.
+Network 64e91b6798545d6f7a320ec92d72430f34bf050af50543750b518162139e7feb empty-retained.
 Runner2CPU/6GiB/512PIDs,PG1CPU/1GiB/128PIDs,internal/nohostports.
-Main2fe38a53fb6e7eaed4cef8141430230389ff889606c7654e16c5b9fccfb2c770;
-worker unchanged c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227.
-Raw .research/implementation/archive-worker/installed-publication/baseline:16files,
-tar9c95ace767cd89687c372ad2f1e1769af20a3c60b63368b0d36e46c2e3c0d886;
-749 source hashes/Git archive independently match. Secrets excluded.
-Baseline native ordered build/fixture/38archive+8binary+10CLI checks and Clippy PASS,
-one unrelated custody test ignored. These passes do not excuse practical FAIL.
+Main305d3f3b204f00337875269d65e5c927eb88af67cb8ba1c51fd365aa308d46c5 (8778544bytes).
+Worker c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227 unchanged.
+Latest copied cache/assets:installed-publication-61271e2/out/{build,archive-worker}.
+Never restart retired labs.
 
-Prior3ad4c64 late-fault evidence remains at its existing path/inventory. Its stopped
-containers/data retained; only verified empty owned network retired before baseline
-launch because address pools were exhausted. Latest stopped cache/assets are
-installed-publication-dbb3aea/out/{build,archive-worker}; use copied/read-only
-inputs for a fresh exact-source correction lab, never restart retired resources.
+Raw .research/implementation/archive-worker/installed-publication/qualified:15files,
+tarcaddc7fbc12a635c682212d3aa6344481133e85210e2605c4c8cc3b3e31ac02f.
+Mac Git archive and all749 source hashes independently match. Baseline:16files,
+tar9c95ace767cd89687c372ad2f1e1769af20a3c60b63368b0d36e46c2e3c0d886.
+No credentials in evidence. Inventory installed_publication owns resources/audits/
+identities. Only verified empty stopped3ad4c64/baseline networks retired to free
+Docker address pools; containers/data retained. No unrelated cleanup.
 
 ## Earlier qualified boundaries and findings
 
+[Late initializer faults](evidence/p02-initialization-late-native-20260919.json):
+9 cases at3ad4c64 pass for scientific/guard COMMIT loss, coordinator/native crashes,
+complete/partial recovery without the worker bundle and unchanged native/root state.
 [Native TLS/mTLS](evidence/p02-native-mtls-20260919.json):25cases at50d9496;
 sealed mode0400 memfd identities/16MiBretained grant, exact pairing/CA/servername,
 SCRAM/GSSdisabled. Actual initializer/receipt clients enforce clientcert+SCRAM;
@@ -136,17 +136,22 @@ External feedback reread previously; it records the earlier scoped closures too.
 
 ## Next bounded action
 
-Finish correction/source review, commit exact candidate and execute fresh installed
-six signed publication/fencing schedules plus two isolated manager grant-option
-refusals before first provision. Independently compare owner/attempt/role state;
-restore via exact documented operator SQL. Assert PUBLIC database/schema privileges
-remain absent throughout, and final writers retain only nondelegable access.
-No new migration/checksum bytes or ownership transfer. Existing installed ACLs
-require explicit privileged upgrade; runtime must refuse, never silently repair.
-Mac example Clippy and harness AST PASS; native corrected work NOT_RUN. Read-only
-reviewer initialization_custody_review identified the missing PUBLIC oracle;
-now included. Then return to installed service ownership/pending dispatch for M1.
-No more standalone custody/reservation helper qualification absent a new finding.
+Offline evidence review and affected documentation checks pass. Inspect final
+diff and push verified private history. Then implement the installed compact
+Control+Archive lifecycle/ownership consumer through P01-T05/T06 and P02-T03/T04,
+using configured protected connections, common budgets, current Control authority,
+retained attempts and positive native/driver joins. Do not stop at a second set of
+standalone custody helpers. Current actual serve has no Archive owner/dispatch;
+read complete relevant runtime/configuration/source contracts before wiring it.
+
+Next-boundary source map inspected this turn: complete interfaces/serve.rs,
+postgres/ingest_registry.rs, postgres/initial_batch.rs, rocks/pending.rs and
+reference/archive-handoff.md. Rocks/store.rs read1–260 only; remainder uninspected
+this turn. Initial registration/admission is tied to its original Control identity
+and initial source epoch, so it cannot be treated as a restart protocol. The
+first real service consumer must preserve that distinction and established
+source-policy/resource ownership rather than copying the fixed fixture factory.
+No new service code has been written yet.
 
 Pristine stranded reservations require a new database/root pair; no reprovisioning,
 runtime superuser promotion or implicit serve initialization. Source policy/budgets/

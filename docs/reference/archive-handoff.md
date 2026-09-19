@@ -217,8 +217,10 @@ The shared publisher/receipt DSN requires a completed SCRAM-SHA-256 exchange and
 disables ambient client certificates and GSS transport. All database/login/password/
 application-name strings are bounded before DSN allocation. The raw operator
 bootstrap DSN remains a separately validated caller responsibility. This route
-does not yet consume configured protected client certificates for native mutual
-TLS; that capability remains required before advertising it.
+also accepts the shared sealed-descriptor client identity prepared from protected
+configuration. The [native TLS/mTLS qualification](../implementation/evidence/p02-native-mtls-20260919.json)
+at `50d9496` covers installed initialization and receipt observation; signed mTLS
+publication remains required before advertising that consumer.
 The [native authentication report](../implementation/evidence/p02-native-catalog-auth-20260919.json)
 qualifies actual receipt reads under SCRAM, trust, incomplete exchanges and
 verify-full TLS, with old-client negative controls. It does not qualify mutual
@@ -267,6 +269,15 @@ work refuses duplicate replay and absent work publishes once. All pending and
 orphan files remain retained. Full schema variants, installed source policy,
 product receipt/read services and persistent lifecycle recovery remain P02-T04
 acceptance; no public command advertises this candidate.
+
+The [installed manager consumer](../implementation/evidence/p02-installed-publication-native-20260919.json)
+at `61271e2` runs the actual initializer followed by these six signed schedules as
+the configured non-superuser CatalogManager, with PUBLIC CONNECT/USAGE revoked.
+It qualifies explicit manager delegation, writer access, two isolated refusal
+controls and the same full-body/receipt/fencing oracles. All 22 generated writer
+lifetimes finish sealed; 41 Rocks rows remain unchanged per journey. This closes
+the fixture's earlier implicit PUBLIC/privileged-manager dependency, while source
+policy, persistent service dispatch and M1 still require their real consumers.
 
 ## Fresh receipt observation candidate
 
