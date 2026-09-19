@@ -299,8 +299,9 @@ before granting bootstrap CONNECT and public-schema USAGE/CREATE. Existing names
 even with matching comments, refuse fresh provisioning. Generate a new 256-bit
 password locally using the existing SCRAM material implementation; send only its
 verifier in CREATE ROLE and expose the move-only password after known COMMIT.
-One fresh local custody may attempt provisioning once; recovered custody grants
-observation only. Cancellation or unknown COMMIT exposes no credential and retains
+One fresh local custody may attempt provisioning once; recovered custody permits
+bounded observation and exact retirement, never fresh credentials or child launch.
+Cancellation or unknown COMMIT exposes no credential and retains
 the local marker for fresh, serialized observation after old transport exclusion.
 Check effective bootstrap privileges, including PUBLIC database CREATE and
 session_replication_role SET, before exposing the credential. Return only bounded
@@ -333,6 +334,30 @@ remote transaction remains open; fresh serialized SQL establishes the eventual
 outcome. This is no authority to reprovision or relaunch. A product reservation
 observer, exact retirement, graceful cancellation and full initializer/recovery
 consumer remain required; fixture SQL observations do not implement those services.
+
+Reservation recovery must require an actually reacquired local holder, not merely
+a consumed launch flag. The successful fresh path also joins its driver and native
+child, releases the fresh holder and reacquires the journal before this recovery
+boundary. Under the same exclusive database transaction lock, compare the retained
+nonce and current bootstrap/manager OIDs to the canonical server-side comment,
+validate restricted roles without assuming bootstrap ownership of already-installed
+tables, and return fixed identity fields plus whether the bootstrap is retired.
+No password/verifier or arbitrary comment crosses this observation boundary.
+An absent reservation is reported only when both reserved role names are absent
+and the database is pristine. It means current absence, not proof that provisioning
+never committed, and grants no retry/relaunch authority.
+
+Exact retirement takes a previously observed or freshly committed Reservation,
+revalidates all its role/database OIDs and comment in the locked transaction, and
+sets only that bootstrap NOLOGIN PASSWORD NULL. Keep both roles and the comment.
+An already-retired observation returns without a durable change. Unknown retirement
+COMMIT requires fresh excluded transport and exact revalidation; matching observed
+retired state or idempotent retirement resolves the credential state. Neither
+result establishes server-backend exclusion or allows guard installation by itself.
+The comment binds the original bootstrap/manager OIDs; first recovery observes the
+reservation role's current OID, while retries with a known Reservation compare that
+OID too. Privileged replacement/forgery of all retained metadata is outside the
+ordinary trusted-administrator failure model.
 
 The application-owned `bigbrotr_archive` schema contains immutable installation
 and attempt records plus one mutable owner row. Every native metadata mutation

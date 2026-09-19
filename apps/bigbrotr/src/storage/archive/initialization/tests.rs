@@ -132,6 +132,24 @@ fn recovery_is_held_by_the_unpolled_driver_and_never_authorizes_a_new_launch() {
 }
 
 #[test]
+fn only_actual_reacquisition_is_recovery_not_consumed_provisioning_or_launch() {
+    let (_temp, identity) = fixture();
+    let owner = LocalInitialization::create_for_boot(&identity, [3; 16], BOOT).unwrap();
+    assert!(!owner.is_recovered());
+    owner.take_provisioning().unwrap();
+    assert!(!owner.is_recovered());
+    let mut command = Command::new("/bin/true");
+    owner.inherit(&mut command).unwrap();
+    assert!(!owner.is_recovered());
+    drop(command);
+    drop(owner);
+    let recovered = recover_released(&identity);
+    assert!(recovered.is_recovered());
+    assert_eq!(recovered.take_provisioning(), Err(LifetimeError::Identity));
+    assert!(recovered.inherit(&mut Command::new("/bin/true")).is_err());
+}
+
+#[test]
 fn provisioning_is_once_only_and_never_authorized_by_recovery_or_a_previous_launch() {
     let (_temp, identity) = fixture();
     let owner = LocalInitialization::create_for_boot(&identity, [3; 16], BOOT).unwrap();

@@ -22,7 +22,7 @@ use zeroize::Zeroizing;
 
 fn main() {
     let args: Vec<_> = std::env::args().collect();
-    assert!((4..=6).contains(&args.len()));
+    assert!((4..=6).contains(&args.len()) || args.len() == 10);
     let database = &args[1];
     let suffix = &args[2];
     let nonce: u8 = args[3].parse().unwrap();
@@ -30,14 +30,22 @@ fn main() {
     let mode = args.get(5).map(String::as_str).unwrap_or("reserve");
     assert!(matches!(
         mode,
-        "reserve" | "initialize" | "recover" | "unprivileged"
+        "reserve"
+            | "initialize"
+            | "recover"
+            | "unprivileged"
+            | "observe"
+            | "fresh-observe"
+            | "retire"
     ));
+    assert_eq!(mode == "retire", args.len() == 10);
+    let recovering = matches!(mode, "recover" | "observe" | "retire");
     assert!(nonce > 0);
     for name in [database, suffix] {
         assert!(!name.is_empty() && name.bytes().all(|c| c.is_ascii_lowercase() || c == b'_'));
     }
     let root = PathBuf::from(format!("/out/initialize_{database}_{suffix}"));
-    if mode != "recover" {
+    if !recovering {
         fs::create_dir(&root).unwrap();
         fs::set_permissions(&root, fs::Permissions::from_mode(0o700)).unwrap();
     }
@@ -47,7 +55,7 @@ fn main() {
         &format!("{}/", root.display()),
     )
     .unwrap();
-    let custody = if mode == "recover" {
+    let custody = if recovering {
         LocalInitialization::recover(&identity).unwrap()
     } else {
         LocalInitialization::create(&identity, [nonce; 16]).unwrap()
@@ -62,17 +70,49 @@ fn main() {
         let (mut client, connection) = config.connect(NoTls).await.unwrap();
         let driver = tokio::spawn(custody.retain_catalog_connection(connection).unwrap());
         let commit = Cell::new(false);
+        if matches!(mode, "observe" | "fresh-observe" | "retire") {
+            let operation = async {
+                if mode == "retire" {
+                    let expected = initialization::Reservation {
+                        database_oid: args[6].parse().unwrap(),
+                        reservation_oid: args[7].parse().unwrap(),
+                        initialization_id: [nonce; 16],
+                        bootstrap_login: format!("bb_init_{}", format!("{nonce:02x}").repeat(16)),
+                        bootstrap_oid: args[8].parse().unwrap(),
+                        manager_login: "CatalogManager".into(),
+                        manager_oid: args[9].parse().unwrap(),
+                    };
+                    initialization::retire_after_local_custody(&mut client, &custody, &expected, &commit)
+                        .await.map(|changed| serde_json::json!({"status":"retired", "changed":changed}))
+                } else {
+                    initialization::observe_after_local_custody(&mut client, &custody, "CatalogManager")
+                        .await.map(|observed| match observed {
+                            None => serde_json::json!({"status":"absent"}),
+                            Some(observed) => {
+                                let mut value = reservation_value(&observed.reservation, "observed");
+                                value["bootstrap_retired"] = observed.bootstrap_retired.into();
+                                value
+                            }
+                        })
+                }
+            };
+            let report = match tokio::time::timeout(Duration::from_secs(30), operation).await.unwrap() {
+                Ok(value) => value,
+                Err(error) => serde_json::json!({"status":"refused", "reason":format!("{error:?}")}),
+            };
+            drop(client);
+            let driver_ok = driver.await.unwrap().is_ok();
+            assert!(LocalInitialization::recover(&identity).is_err());
+            println!("{}", serde_json::json!({"result":report,"commit_started":commit.get(),"driver_ok":driver_ok}));
+            return;
+        }
         let outcome = tokio::time::timeout(Duration::from_secs(30),
             initialization::reserve(&mut client, &custody, "CatalogManager", &commit)).await.unwrap();
         drop(client);
         let driver_ok = driver.await.unwrap().is_ok();
         let report = match outcome {
             Ok(fresh) => {
-                let r = fresh.reservation();
-                let mut value = serde_json::json!({"status":"reserved", "database_oid":r.database_oid,
-                    "reservation_oid":r.reservation_oid,"bootstrap_login":r.bootstrap_login,
-                    "bootstrap_oid":r.bootstrap_oid,"manager_oid":r.manager_oid,
-                    "manager_login":r.manager_login,"initialization_id":r.initialization_id});
+                let mut value = reservation_value(fresh.reservation(), "reserved");
                 if mode == "initialize" {
                     initialize(fresh, database, suffix, &custody);
                     value["native_initialized"] = true.into();
@@ -84,6 +124,13 @@ fn main() {
         assert!(LocalInitialization::recover(&identity).is_err());
         println!("{}", serde_json::json!({"result":report, "commit_started":commit.get(),"driver_ok":driver_ok}));
     });
+}
+
+fn reservation_value(r: &initialization::Reservation, status: &str) -> serde_json::Value {
+    serde_json::json!({"status":status, "database_oid":r.database_oid,
+        "reservation_oid":r.reservation_oid,"bootstrap_login":r.bootstrap_login,
+        "bootstrap_oid":r.bootstrap_oid,"manager_oid":r.manager_oid,
+        "manager_login":r.manager_login,"initialization_id":r.initialization_id})
 }
 
 fn initialize(

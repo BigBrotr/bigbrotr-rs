@@ -21,12 +21,15 @@ readiness. Root remains the sole writer/integrator.
 
 ## Actual Git and review
 
-Last observed Mac main HEAD: bb8be6d3e8633f564744286596501a1c2331ceb4.
-Last verified origin/main:41a369aa19d3c542e929cec6f6fd341e574f5cf4. Four clean
-unpublished exact-source candidates were transferred through Git bundles:
+Mac main HEAD and freshly verified origin/main both:
+f3e3302512213ccebb95ee78bb67fc38f44bd082. Normal private push53773 terminal0;
+GitHub repository rechecked private. Five coherent commits pushed, no rewrite.
+Four clean exact-source candidates were transferred through Git bundles:
 cfadb48 baseline,7139911 implementation,543fafd strengthened fixture,bb8be6d corrected
-fixture. Working edits now contain only evidence, owning task/contract, inventory
-and this checkpoint. No merge/rebase or other contributor changes.
+fixture. f3e3302 adds only owning documentation/evidence. Current root-owned dirty
+work adds immutable recovered-custody state/test, observation/retirement API TDD
+stubs and owning recovery semantics. The stubs deliberately return Conflict and
+are not implemented or qualified. No merge/rebase or other contributor edits.
 
 Independent read-only AI reviews covered complete reserve/manager/custody/credential/
 pristine/native code and actual fixture/build/lifecycle sources. No product source
@@ -35,8 +38,19 @@ were corrected. Final recorded-evidence review independently verified53 raw file
 Git archives/2931 source hashes and case/artifact/check/lifecycle mappings. No material
 discrepancy; join-order prose corrected. No independent Tux/ELF/full host-inventory/
 dump-input inspection or Mac terminal replay. No extra agent edits.
-Artifact/handoff/diff checks PASS. Evidence-only commit/private push remains to
-perform; product code and native artifacts have not changed since qualification.
+Artifact/handoff/diff checks PASS; evidence commit/private push complete. Product
+qualified reservation behavior is unchanged; the new recovery boundary is pending.
+
+Mac55046 failed the deliberately false recovered-state gate;61090 passed all eight
+initialization tests, scoped fmt and parent/example Clippy after storing actual
+reacquisition separately from consumed provision/launch flags. This qualifies no
+PostgreSQL observer. Next practical baseline extends the actual probe on a fresh
+exact-source Tux lab, followed by bounded observation and exact idempotent retirement.
+Independent read-only custody reviewer is checking exact PG16.15/tokio-postgres0.7.18/
+libpq18.3 startup ordering. Existing de1d402/56ef588 startup counterexample/native
+qualification was reread: late invisible backends and trusted ready-before-query
+ordering were already recorded. Do not repeat them as a new finding or infer backend
+exclusion from NOLOGIN/empty activity. No new Tux experiment is active.
 
 ## Current database reservation qualification
 
@@ -92,7 +106,7 @@ Root:/home/tux/bigbrotr-implementation-20260917/runs/database-reservation-bb8be6
 Owner:1656dcad7189d17f2c9ede14964348fb.
 Runner:820c89b26b053bcc9e1ee104c9086cda5156ab087cb617f1839ebaebd239ab93 stopped143.
 PG:af9d65fced82f856b6a5e96688498bc33d97a8a9183fdad5a8e550cd77010335 stopped0.
-Network:a498d0455f9cf71caa3b478cf7688f9f28c21f02203dad86ef758746fa26c57d empty-retained.
+Network:a498d0455f9cf71caa3b478cf7688f9f28c21f02203dad86ef758746fa26c57d removed after fresh ownership/terminal/empty checks; containers/data retained.
 Runner2CPU/6GiB/512PIDs, PG1CPU/1GiB/128PIDs, internal/no host ports.
 Latest reusable copied-cache/read-only-assets inputs:bb8be6d/out/{build,archive-worker}.
 Main:e6372d10b7feb1dae30d9ab99e6c05fdbaec8ed0d18d1ea0f6059083c824a037,8224696bytes.
@@ -138,8 +152,7 @@ Do not mechanically rerun unrelated suites.
 
 ## Next bounded action
 
-Finish normal private push of the verified evidence-only commit. Then implement
-bounded reservation observation and exact bootstrap retirement
+Implement bounded reservation observation and exact bootstrap retirement
 under recovered local custody/actual retained driver and the same authoritative
 transaction lock. Compare retained canonical comment and exact live role OIDs;
 never transfer an unbounded comment, reset passwords, adopt partial state or grant
@@ -160,3 +173,10 @@ Full CLI/recovery, fresh manager publication/seal, SELECT-only readers, whole-ro
 budget reconciliation/protection, cross-boot/restore/resource/power-failure evidence,
 M1 and the rest of the selected product remain required. No task checkbox closes
 from this prerequisite qualification.
+
+Current recovery baseline: actual probe now supports observe/fresh-observe/retire
+with independently supplied expected OIDs. Eight-case practical harness retains
+all four independent core outcomes before dependent cases; no PostgreSQL run yet.
+Mac c52807 scoped Clippy/fmt and Python AST/diff checks passed. Source-only backend
+audit downloads (24 files/1416434 bytes) verified against all four manifests and
+inventoried; no new startup experiment or VXID barrier selected.

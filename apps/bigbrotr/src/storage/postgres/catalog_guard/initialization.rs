@@ -17,6 +17,42 @@ pub struct Reservation {
     pub manager_oid: u32,
 }
 
+/// Bounded observation only; this is not backend exclusion or launch authority.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Observation {
+    pub reservation: Reservation,
+    pub bootstrap_retired: bool,
+}
+
+/// Observe only after actual local custody reacquisition. The actual fresh
+/// transport must retain that custody before polling and through terminal join.
+pub async fn observe_after_local_custody(
+    _client: &mut Client,
+    custody: &LocalInitialization,
+    _manager_login: &str,
+) -> Result<Option<Observation>, GuardError> {
+    if !custody.is_recovered() {
+        return Err(GuardError::InvalidInput);
+    }
+    // Practical TDD baseline: no database observation implemented yet.
+    Err(GuardError::Conflict)
+}
+
+/// Retire exact known identities after reacquisition; NOLOGIN is not backend
+/// exclusion. Cancellation/unknown COMMIT requires fresh serialized observation.
+pub async fn retire_after_local_custody(
+    _client: &mut Client,
+    custody: &LocalInitialization,
+    _expected: &Reservation,
+    _commit_started: &Cell<bool>,
+) -> Result<bool, GuardError> {
+    if !custody.is_recovered() {
+        return Err(GuardError::InvalidInput);
+    }
+    // Practical TDD baseline: no database retirement implemented yet.
+    Err(GuardError::Conflict)
+}
+
 /// Newly committed bootstrap material. Observation cannot construct this type.
 pub struct FreshBootstrap {
     reservation: Reservation,

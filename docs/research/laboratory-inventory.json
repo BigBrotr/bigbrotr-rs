@@ -8981,6 +8981,47 @@
           "observed_at": "2026-09-19T07:25:10.086903+00:00"
         }
       ]
+    },
+    "bootstrap_backend_source_audit": {
+      "local_root": ".research/implementation/archive-worker/bootstrap-backend-audit",
+      "state": "retained-source-audit-only",
+      "manifests": {
+        ".research/implementation/archive-worker/bootstrap-backend-audit/barrier-sources.json": {
+          "bytes": 1832,
+          "sha256": "e1f769163b94e1043416ae3fc163d65463b7a8836ba87ea2339eba3638e09030"
+        },
+        ".research/implementation/archive-worker/bootstrap-backend-audit/client-sources.json": {
+          "bytes": 2172,
+          "sha256": "622400cc364bfab1ee2b24a414471991edda8f1b774afc00f94b375e6a68724a"
+        },
+        ".research/implementation/archive-worker/bootstrap-backend-audit/shutdown-sources.json": {
+          "bytes": 728,
+          "sha256": "4851bd80383331ccd028d442c57828e5ab60bcc14c0e4d8d242cf907aaa13bcb"
+        },
+        ".research/implementation/archive-worker/bootstrap-backend-audit/sources.json": {
+          "bytes": 2937,
+          "sha256": "821cc77dd5652702273f7f9f410d7428ef0f894fc924ffbfa56c0cfd592254e5"
+        }
+      },
+      "files": 24,
+      "bytes": 1416434,
+      "scope": "Independent read-only exact PG16.15, tokio-postgres0.7.18, scanner/libpq18.3 startup and shutdown audit. Existing de1d402/56ef588 qualification reused; no new experiment or selected VXID barrier. Natural bounded drain remains a future consumer prerequisite; no backend exclusion implemented by observation/retirement."
+    },
+    "initialization_recovery": {
+      "local_root": ".research/implementation/archive-worker/initialization-recovery",
+      "state": "practical-tdd-baseline-prepared-no-lab-yet",
+      "previous_network_retirement": [
+        {
+          "root": "database-reservation-bb8be6d",
+          "network": "a498d0455f9cf71caa3b478cf7688f9f28c21f02203dad86ef758746fa26c57d",
+          "owner": "1656dcad7189d17f2c9ede14964348fb",
+          "status": "removed",
+          "containers": "retained-stopped",
+          "data": "retained",
+          "observed_at": "2026-09-19T07:49:51.135216+00:00"
+        }
+      ],
+      "scope": "Recovered local custody gate, bounded observation and exact bootstrap retirement. PostgreSQL functions are explicit unimplemented TDD stubs pending real baseline."
     }
   },
   "implementation_monitor_corrections_20260918": {
