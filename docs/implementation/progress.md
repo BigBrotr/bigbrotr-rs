@@ -21,7 +21,7 @@ installed service readiness.
 
 ## Actual Git and ownership
 
-Mac main HEAD is71399117eec55a3abae671f131d8fed43dace887 (unpublished native
+Mac main HEAD is543fafd5395be58b74bc3f96837b38503f846488 (unpublished native
 candidate); last verified origin/main is41a369aa19d3c542e929cec6f6fd341e574f5cf4. Three coherent commits pushed normally
 to verified private BigBrotr/bigbrotr-rs; push92091 terminal0 and remote ref matches.
 Root sole writer, no merge/rebase. Current root-owned edits add the database
@@ -194,10 +194,20 @@ custody reacquisition while remote COMMIT remains held, then close/release and
 fresh serialized SQL resolution. Also added actual non-superuser initializer
 refusal. These added cases are NOT_RUN. Product reservation code unchanged.
 
-Next: commit this fixture candidate and qualify on a new isolated exact-source
-lab. Preserve first24 PASS with their stated oracle limits. Then implement bounded
-observation/retirement and wire the installed CLI journey; no initializer completion
-claim from the reserve operation or a SQL-only observer.
+543fafd native build/33 parent tests/scoped Clippy PASS, then actual qualification
+35519 FAILED at the first strengthened identity comparison: row_to_json(oid)
+returns JSON strings while Rust returns integers. Direct actual PG query verified
+identical numeric values and the bigint cast; fixture-diagnosis.json retained.
+SIGKILL cases NOT_RUN. Audit14670/collection13410 terminal0;14raw files/733Git source
+files verified; tar3288c2548998dc9b0f0e11908d95a711e109de200e8dd3176b150a2392bcc875.
+
+Root-owned fixes now cast independent OIDs to bigint, use a distinct authenticated
+non-superuser initializer (the prior caller equaled the manager and conflated two
+predicates), and wait for the independently drained PID line before pidfd checks.
+These review findings affect fixture discrimination/reliability, not product code.
+Next: commit and execute the corrected final candidate on a new isolated lab,
+then preserve all four source outcomes, retire/audit resources, and publish the
+qualified coherent work privately. Bounded observer/retirement APIs are next.
 
 Complete CLI/recovery, configured native mutual TLS, fresh manager publication/seal,
 SELECT-only readers, whole-role budget reconciliation/protection and M1 remain

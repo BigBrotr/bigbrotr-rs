@@ -8306,7 +8306,7 @@
       "qualified_report": "docs/implementation/evidence/p02-initialization-custody-native-20260919.json"
     },
     "database_reservation": {
-      "state": "first24-pass-stopped-retained-strengthened-fixture-awaits-native",
+      "state": "fixture-failure-stopped-retained-corrected-oracle-awaits-native",
       "local_root": ".research/implementation/archive-worker/database-reservation",
       "upstream": {
         "url": "https://raw.githubusercontent.com/postgres/postgres/REL_16_15/src/backend/commands/user.c",
@@ -8314,7 +8314,7 @@
         "sha256": "082713e0ba52a4a6896e9be4beba0d7258030b2b02291d3e8551619509845574",
         "scope": "Complete CreateRole function, lines133-608: duplicate name checks, transactional catalog insertion, accepted verifier and superuser creator membership behavior."
       },
-      "qualification": "First24 actual cases PASS with two recorded oracle gaps; strengthened identity/orphan checks and coordinator SIGKILL/non-superuser cases NOT_RUN.",
+      "qualification": "First24 PASS with recorded oracle gaps;543fafd FAIL at first numeric-type comparison, no product mismatch; actual server diagnosis retained. Coordinator kill cases NOT_RUN.",
       "baseline": {
         "resources": {
           "source": "cfadb48a7260e457228b4da96ddcc5b4e6c4dac7",
@@ -8635,6 +8635,188 @@
           "containers": "retained-stopped",
           "data": "retained",
           "observed_at": "2026-09-19T07:14:23.875429+00:00"
+        }
+      ],
+      "fixture_failure": {
+        "resources": {
+          "source": "543fafd5395be58b74bc3f96837b38503f846488",
+          "tree": "dbc61deeca5e58f88134babb0a7a1b294f3cc02c",
+          "root": "/home/tux/bigbrotr-implementation-20260917/runs/database-reservation-543fafd",
+          "owner": "e529208194b5456ee90dcfc433ccab07",
+          "container": "bigbrotr-implementation-database-reservation-543fafd",
+          "postgres": "bigbrotr-implementation-database-reservation-543fafd-pg",
+          "network": "bigbrotr-implementation-database-reservation-543fafd",
+          "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+          "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+          "state": "stopped-retained",
+          "source_files": 733,
+          "started_at": "2026-09-19T07:20:37.033709+00:00",
+          "network_id": "9cb47d95fb181f6391b99e00ac48f4d880309fad39e810f1449fe78a029bd895",
+          "postgres_id": "cb51692b50e39e755a7c7d99c4f97dd3e6eb1d0f317c8695cc3f8b5e6158afbc",
+          "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+          "container_id": "486646af4b23927fdea6780429d9acca275aab41db01d09c795a2e0bf0e04ccb",
+          "completed_at": "2026-09-19T07:23:49.192016+00:00"
+        },
+        "audit": {
+          "status": "PASS",
+          "source": "543fafd5395be58b74bc3f96837b38503f846488",
+          "tree": "dbc61deeca5e58f88134babb0a7a1b294f3cc02c",
+          "source_files": 733,
+          "source_archive_sha256": "a28de6d9400a58b9e3ca300ecc31f9333fc731e1dd947e9d6bd62e643da2677f",
+          "source_manifest_sha256": "bfa4989fbd2f2cfa74e0ca88b656870f8776a9c2dc0dd21b72cbcef1cba6ceb6",
+          "artifacts": {
+            "main": {
+              "sha256": "2922256722b62dce5ca8640631b4942129ff3c2637e227285e612d8a219ffec5",
+              "bytes": 8224752,
+              "elf_machine": 62
+            },
+            "worker": {
+              "sha256": "c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227",
+              "bytes": 12608608,
+              "elf_machine": 62
+            }
+          },
+          "qualification": {
+            "database-reservation": "FAIL"
+          },
+          "cases": {
+            "database-reservation": 1
+          },
+          "build_ready": true,
+          "terminal": {
+            "container_id": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 143,
+              "Error": "",
+              "StartedAt": "2026-09-19T07:20:39.743225883Z",
+              "FinishedAt": "2026-09-19T07:23:48.012814707Z"
+            },
+            "postgres_id": {
+              "Status": "exited",
+              "Running": false,
+              "Paused": false,
+              "Restarting": false,
+              "OOMKilled": false,
+              "Dead": false,
+              "Pid": 0,
+              "ExitCode": 0,
+              "Error": "",
+              "StartedAt": "2026-09-19T07:20:37.716363953Z",
+              "FinishedAt": "2026-09-19T07:23:48.725653288Z"
+            }
+          },
+          "owned_containers": [
+            "486646af4b23927fdea6780429d9acca275aab41db01d09c795a2e0bf0e04ccb",
+            "cb51692b50e39e755a7c7d99c4f97dd3e6eb1d0f317c8695cc3f8b5e6158afbc"
+          ],
+          "existing_containers_unchanged": 306,
+          "unrelated_containers_unchanged": 20,
+          "unrelated_running": 8,
+          "bigbrotr_running": 0,
+          "observed_at": "2026-09-19T07:23:49.192016+00:00"
+        },
+        "evidence_identity": {
+          "tar_bytes": 153600,
+          "tar_sha256": "3288c2548998dc9b0f0e11908d95a711e109de200e8dd3176b150a2392bcc875",
+          "files": {
+            "resources.json": {
+              "bytes": 1229,
+              "sha256": "a0ebcfb7f4c0aeabe4670eb4fa77792a8703cfbc672247432ddbe7f8d1d23a06"
+            },
+            "audit.json": {
+              "bytes": 1862,
+              "sha256": "21732e84a1cbc10a2199f3ee56e89b62e50af6955c06c421be1846469499c50a"
+            },
+            "container.log": {
+              "bytes": 242,
+              "sha256": "9026c8a1d37d187fe26ecfe7f4484e41e3ac483b0a7a6eee0a064e46d5a35429"
+            },
+            "out/build/source-manifest.json": {
+              "bytes": 89718,
+              "sha256": "bfa4989fbd2f2cfa74e0ca88b656870f8776a9c2dc0dd21b72cbcef1cba6ceb6"
+            },
+            "out/native-tests/checks/clippy.log": {
+              "bytes": 394,
+              "sha256": "a6fc3d15b95fad2f34557482c1471949a4fc9de49982e2be9cb6b51221415e01"
+            },
+            "out/native-tests/checks/fixture.log": {
+              "bytes": 130,
+              "sha256": "f1b80cda3632497308f6062cb3486ec47601b663adc5a1f164946d3d2f1ddd6e"
+            },
+            "out/native-tests/checks/parent-tests.log": {
+              "bytes": 4435,
+              "sha256": "0b6ae5aa35804d8877dbf1a871bca309f62a93932ab8d31c4cac8ffbd7decc74"
+            },
+            "out/native-tests/checks/result.json": {
+              "bytes": 3817,
+              "sha256": "f80433116f3143bf42367011c7e44940fed45593488e14c049dc83497bb648f0"
+            },
+            "out/native-tests/ordered-build.log": {
+              "bytes": 626,
+              "sha256": "e893e7463c500fa35e49b99f654dd872bfa5fc6ccfab25fda37d58bab8bdd76f"
+            },
+            "out/native-tests/ready.json": {
+              "bytes": 4911,
+              "sha256": "73819f47376545a745ca05a10054a396257ecf23a1657a577bbcb5df77329505"
+            },
+            "out/native-tests/result.json": {
+              "bytes": 2801,
+              "sha256": "5176c4ad9cfa18c5d97c80993de45764cc6d6ab02a0cd546f12e7dea5f10a0da"
+            },
+            "out/native-tests/worker-identity.json": {
+              "bytes": 104,
+              "sha256": "c76d6822c6cff10729edc0d68f41196558b6cdedee0779cbf55ce624e1e80878"
+            },
+            "database-reservation.json": {
+              "bytes": 6330,
+              "sha256": "18114bf5f0f9b0525776726bbee9f800810178478062f21c85044624e84af2cf"
+            },
+            "fixture-diagnosis.json": {
+              "bytes": 609,
+              "sha256": "546c3b500a1ce36650fc6c74621798348082b812cde57f533e416bea678abdd5"
+            }
+          }
+        },
+        "source_verification": {
+          "revision": "543fafd5395be58b74bc3f96837b38503f846488",
+          "tree": "dbc61deeca5e58f88134babb0a7a1b294f3cc02c",
+          "files": 733,
+          "archive_sha256": "a28de6d9400a58b9e3ca300ecc31f9333fc731e1dd947e9d6bd62e643da2677f",
+          "manifest_sha256": "bfa4989fbd2f2cfa74e0ca88b656870f8776a9c2dc0dd21b72cbcef1cba6ceb6"
+        },
+        "diagnosis": {
+          "source": "543fafd5395be58b74bc3f96837b38503f846488",
+          "query": "SELECT row_to_json(r) FROM (SELECT oid,oid::bigint AS integer_oid,rolname FROM pg_authid WHERE rolname LIKE 'bb_init_%' ORDER BY oid) r",
+          "rows": [
+            {
+              "oid": "16397",
+              "integer_oid": 16397,
+              "rolname": "bb_init_database_16396"
+            },
+            {
+              "oid": "16398",
+              "integer_oid": 16398,
+              "rolname": "bb_init_03030303030303030303030303030303"
+            }
+          ],
+          "finding": "OID JSON string versus application integer; same numeric values. Qualification stopped at first strengthened assertion; kill cases NOT_RUN."
+        }
+      },
+      "first_network_retirement": [
+        {
+          "root": "database-reservation-7139911",
+          "network": "a13b5b499373833b0b04838662579fd23399579271f3413447a693f541e1d7b6",
+          "owner": "214ab6b93f056c5fa76b24d64d787125",
+          "status": "removed",
+          "containers": "retained-stopped",
+          "data": "retained",
+          "observed_at": "2026-09-19T07:20:30.007333+00:00"
         }
       ]
     }

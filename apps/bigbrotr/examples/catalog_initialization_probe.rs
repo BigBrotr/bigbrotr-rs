@@ -55,7 +55,7 @@ fn main() {
     assert_eq!(custody.initialization_id(), &[nonce; 16]);
     tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async {
         let mut config = Config::new();
-        let user = if mode=="unprivileged" { "CatalogManager" } else { "postgres" };
+        let user = if mode=="unprivileged" { "bigbrotr_control" } else { "postgres" };
         config.host("127.0.0.1").port(port).dbname(database).user(user)
             .application_name("bigbrotr-initialization-probe")
             .password(fs::read(format!("/secrets/{user}")).unwrap()).connect_timeout(Duration::from_secs(5));

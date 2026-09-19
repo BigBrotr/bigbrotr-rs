@@ -92,7 +92,7 @@ def check_reservation(database, nonce, expected, observed=None):
     database_oid = int(sql("SELECT oid FROM pg_database WHERE datname='"+database+"'"))
     names = [f'bb_init_database_{database_oid}', 'bb_init_' + f'{nonce:02x}' * 16]
     rows = json.loads(sql("SELECT COALESCE(json_agg(row_to_json(r)),'[]'::json) FROM "
-        "(SELECT oid,rolname,rolcanlogin,rolsuper,rolcreatedb,rolcreaterole,rolinherit,"
+        "(SELECT oid::bigint AS oid,rolname,rolcanlogin,rolsuper,rolcreatedb,rolcreaterole,rolinherit,"
         "rolreplication,rolbypassrls,rolconnlimit,rolpassword IS NULL AS password_null,"
         "rolpassword LIKE 'SCRAM-SHA-256$4096:%' AS scram FROM pg_authid WHERE rolname IN ('"
         + "','".join(names) + "') ORDER BY rolname) r"))
@@ -246,8 +246,13 @@ try:
         wrapper="import os,sys; print(os.getpid(),flush=True); os.execv(sys.argv[1],sys.argv[1:])"
         peer=Process(['docker','exec',state['container'],'python3','-c',wrapper,*target]);children.append(peer)
         proxy.event('held',10)
-        assert peer.stdout.endswith(b'\n') and peer.stdout.strip().isdigit()
-        pid=int(peer.stdout.strip())
+        until=time.monotonic()+5
+        with peer.condition:
+            while b'\n' not in peer.stdout:
+                assert peer.process.poll() is None and not peer.overflow and time.monotonic()<until
+                peer.condition.wait(min(.1,max(0,until-time.monotonic())))
+            assert peer.stdout.endswith(b'\n') and peer.stdout.strip().isdigit()
+            pid=int(peer.stdout.strip())
         journal=run/'out'/f'initialize_{db}_killed/.bigbrotr-initialization/intent.json'
         journal_before=journal.read_bytes()
         kill="""import json,os,pathlib,signal,sys
