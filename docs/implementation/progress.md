@@ -20,16 +20,39 @@ and rejects other roles. Root remains sole writer/integrator.
 
 ## Actual Git and current review
 
-Mac main and private origin/main are92962bb after qualified b203a41 plus evidence.
-Push71167 completed. Root is sole
-writer. New dirty next fixture slice: publication_protocol helpers/faults, publication
-example CLI, native_commit_proxy target and coordinator_fault_cases Python plus
-signed harness11-case assertions. Those races/cancellation/COMMIT cases are NOT_RUN.
-Inventory/checkpoint are also dirty for the new fault candidate and verified
-retirement of only the prior owned empty network.
-No merge/rebase or contributor edits.
+Mac main is d355c5b3da4babcf5dc4f6219222e786b52915c9, now qualified in the scope below;
+private origin/main92962bb (fresh ls-remote) includes prior b203a41 evidence. Root
+is sole writer. Dirty evidence/contracts/P02/inventory/checkpoint finalize this run.
+No contributor edits, merge or rebase. No next CLI implementation edits yet.
 
-Exact b203a41 native run34551 and audit/collection12387 terminal0. No active lab.
+[Coordinator faults evidence](evidence/p02-coordinator-faults-native-20260919.json):
+actual11 protocol cases+2 binding COMMIT-loss branches and6 signed schedules PASS.
+Shared native ordered build/Clippy and47Archive+8binary+11CLI PASS;1older holder
+ignored. Actual granted/waiting migration key modes prove both orders; cancellation
+poisons the blocked initializer then leaves empty rows after blocker release/driver
+join/backend disappearance. Both lost replies are CommitUnknown: before creates
+once under fresh epoch2, after preserves original epoch1 row/xmin. All22 signed
+inputs/fresh receipts/full scientific oracles retained. Root checked73raw files,
+768exactGit source hashes, lock modes/counters/final states and complete oracles.
+Independent final offline review matched all hashes, both lock graphs and
+COMMIT before0/0→epoch2 / after1/0→sameepoch1+xmin1245. No native case failed.
+
+Legacy issuer is candidate schema9 API, not an older executable. Missing migration
+exercises require only. No cross-boot/restore/history-rollback or service-readiness
+claim. No SQL/product API/dependency change after b203a41. Pre-native fixture CLI
+arity oversight corrected by source review; no failed native case hidden.
+
+Matrix42028 and audit/collection96798 terminal0. Lab stopped-retained, zeroowned
+SQLbackends before shutdown;340preexisting containers unchanged,8unrelated running,
+0BigBrotr/noOOM at2026-09-19T13:11:35.851279+00:00. Runnerexit143/PGexit0.
+Root /home/tux/bigbrotr-implementation-20260917/runs/coordinator-faults-d355c5b;
+owner750848b6890385a5a736b87122b3acdf; inventory coordinator_faults owns exactIDs.
+Internal networkfc95b04ff6b4aceb3f9c4d455aa3ae37093cc14a7dd2febe107c5ecf336f5a74
+is empty-retained. Raw .research/implementation/archive-worker/coordinator-faults/
+qualified has73files, tare9f22c3ed04a58dd967ea5b30e1a48207501437fbf260eb58a831560aed520de.
+Latest usable copied build cache is this root/out/build. No active lab/process.
+
+Exact prior b203a41 native run34551 and audit/collection12387 terminal0.
 [Coordinator protocol evidence](evidence/p02-coordinator-protocol-native-20260919.json)
 records8 native Control boundary cases plus6 installed signed schedules PASS;
 shared ordered build,47Archive+8binary+11CLI PASS,1older holder case ignored.
@@ -38,7 +61,7 @@ pass. Root independently rechecked65raw files/765Git source hashes and all liter
 oracles. Independent offline audit matched those plus2 synthetic input files.
 Schema9→10 proves logical columns, not migration xmin preservation; later retries
 include xmin. Restart equality executes in harness; its second SQL snapshot is not
-separately retained. Migration races/COMMIT/cancel NOT_RUN.
+separately retained. Its own scope excludes the later d355c5b cases above.
 
 Lab /home/tux/bigbrotr-implementation-20260917/runs/coordinator-protocol-b203a41,
 owner26eefb6e3d34e03c9cabe9a59b0a9054, inventoried coordinator_protocol. Stopped-retained
@@ -272,23 +295,19 @@ External feedback reread previously; it records the earlier scoped closures too.
 
 ## Next bounded action
 
-Completed b203a41 evidence is committed/pushed in92962bb. Finish independent
-review of the new actual lock schedules, cancelled blocked initializer and both
-lost binding COMMIT replies. Latest scoped Clippy72075 PASS;
-new CLI argument guard corrected by source review before native use. The race
-fixture provisions SELECT defaults before migration so an unrelated GRANT race
-cannot masquerade as the intended issuance refusal. Independent fixture review found no execution blocker. Corrected its scope
-note: missing-migration subcase exercises require only; cancelled backend
-disappearance is checked after the owned relation blocker is released.
-All new scenarios NOT_RUN.
-
-Then form the next exact unpublished fixture candidate and create a fresh inventoried
-lab from b203a41/out/build. Run11 protocol cases +2 binding COMMIT-loss branches and
-six signed schedules. The extended-protocol proxy target matches only the fixed
-Control coordinator INSERT, leaving the earlier Control claim COMMIT intact. Observe
-both granted/waiting migration-lock modes, real PostgreSQL backend disappearance,
-unknown result/session poison and exact persisted rows on retry. Audit/stop owned
-peers and preserve failures before any completion claim.
+Finish offline fault review, final evidence checks and coherent private commit/push.
+Then implement installed explicit coordinator binding and ordinary startup checks.
+Read interfaces/archive.rs, serve.rs (complete), postgres_command.rs,
+archive_initialization.rs, catalog_entrypoint.rs, user archive/control guides and
+Control initialization/activation guides this continuation; no next code edits.
+Existing archive state-initialize remains local-only. Proposed bounded next slice:
+archive coordinator-initialize uses configured actual Control credentials, existing
+LocalCoordinator custody and the shared Control claim/policy/transport lifecycle;
+no privileged catalog credentials, implicit migrations, input adoption or readiness.
+Reuse/refactor the owning Control executor without another transport implementation.
+Ordinary runtime only requires an existing binding; complete Archive role dispatch
+remains a separate immediate consumer. Decide exact startup compatibility in the
+owning contract and native fixture before changing current historical inventory.
 
 Still connect installed explicit setup/serve recovery, separate SELECT-only reader
 configuration, actual Ingest-owner handoff, shared Control/catalog/native budgets

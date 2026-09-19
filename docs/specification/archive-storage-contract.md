@@ -206,7 +206,10 @@ upgrade (and blocks first binding), or observes migration10 before it can issue.
 Both old applied SQL files and their checksums remain unchanged. PostgreSQL16
 [transactional trigger behavior and ordering](https://www.postgresql.org/docs/16/trigger-definition.html)
 and [lock semantics](https://www.postgresql.org/docs/16/explicit-locking.html) own
-the underlying boundaries; actual race/commit-loss qualification is still required.
+the underlying boundaries. [Native d355c5b evidence](../implementation/evidence/p02-coordinator-faults-native-20260919.json)
+exercises both candidate legacy-API/migration lock orders, cancelled blocked binding
+and both lost binding COMMIT replies with exact fresh-session retry. It does not
+execute a prior-version binary or qualify an administrative history rollback.
 
 This is same-boot participation history, not catalog inspection, launch permission
 or a restore protocol. Privileged in-place rollback of Control history while exact
@@ -214,8 +217,8 @@ local bytes survive cannot be detected by a binding hash alone. Restore, cross-b
 and relocation keep their separately fenced recovery gates. Complete missing-journal
 interpretation still requires actual catalog identity and per-attempt exclusion.
 The current implementation provides explicit typed operations and fixture consumers;
-[Eight native boundary cases plus six signed schedules](../implementation/evidence/p02-coordinator-protocol-native-20260919.json) pass at b203a41. Installed setup/serve, migration races, binding
-COMMIT-loss and cancellation qualification remain pending.
+[Eight native boundary cases plus six signed schedules](../implementation/evidence/p02-coordinator-protocol-native-20260919.json) pass at b203a41. The separate d355c5b matrix adds the races and binding faults above. Installed
+setup/serve and complete recovery/dispatch remain pending.
 
 ### Retained complete input linkage
 

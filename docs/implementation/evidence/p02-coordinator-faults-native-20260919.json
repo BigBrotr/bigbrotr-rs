@@ -1,0 +1,447 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task_ids": [
+    "P01-T05",
+    "P02-T03",
+    "P02-T04"
+  ],
+  "status": "PASS-scoped",
+  "observed_at": "2026-09-19T13:11:35.851279+00:00",
+  "source_revision": "d355c5b3da4babcf5dc4f6219222e786b52915c9",
+  "source_tree": "b48f977744599b549ab8b71ed37113c6e87af6fe",
+  "scope": "Actual candidate legacy-API versus migration10 lock ordering, cancelled blocked initialization and both binding COMMIT-loss outcomes; full same-source bound signed fixture repeated.",
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "runner_limits": {
+      "cpus": 2,
+      "memory_bytes": 6442450944,
+      "pids": 512
+    },
+    "postgres_limits": {
+      "cpus": 1,
+      "memory_bytes": 1073741824,
+      "pids": 128
+    },
+    "placement": "same Linux boot, ext4 bind mounts, internal network, no published ports",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8"
+  },
+  "artifacts": {
+    "main": {
+      "sha256": "a41c9aae6cca333a6e2e4347b197136f69c2d1f515b7b0d86b0dd58446c28ec2",
+      "bytes": 8896480,
+      "elf_machine": 62
+    },
+    "worker": {
+      "sha256": "89e46e831e8e12f7e60b249493a619af4cd3bca7d984ec7a06574ede3d6f0b9f",
+      "bytes": 12608608,
+      "elf_machine": 62
+    },
+    "publisher": {
+      "sha256": "3e8405b8e99663bca091e3e55aded301289c7b03c7466d6b152c887684ee5c9b",
+      "bytes": 18988968,
+      "elf_machine": 62
+    }
+  },
+  "source_identity": {
+    "archive_sha256": "5d746b6d87fb28374f4ad37a9657b1d5569117e351c342b1ddc082b677016ad2",
+    "manifest_sha256": "ba485de208435954a6ea792dec226b92ed330dbe4dc3c5a0ec34930e12bf66dc",
+    "files_independently_matched_to_mac_git_archive": 768
+  },
+  "executed": {
+    "build": "PASS shared ordered tools.build and tools.ci.execute, exact clean native source",
+    "native_rust": {
+      "archive_passed": 47,
+      "ignored": 1,
+      "binary_passed": 8,
+      "cli_passed": 11,
+      "ignored_scope": "older native custody-holder dedicated fixture, not rerun or counted as PASS"
+    },
+    "clippy": "PASS native library/binary/fixtures; Mac scoped publication fixture72075 PASS",
+    "core_case_names": [
+      "ordinary-missing-refuses-and-poisons",
+      "old-unbound-api-refused-after-migration",
+      "explicit-binding-identical-retry-preserves-xmin",
+      "bound-issuance-and-both-retries-preserve-history",
+      "fresh-control-epoch-preserves-original-binding-and-attempt",
+      "same-dataset-catalog-different-local-binding-refused",
+      "binding-update-delete-truncate-refused",
+      "old-history-survives-upgrade-and-cannot-be-adopted",
+      "old-issuer-lock-precedes-migration",
+      "migration-lock-precedes-old-issuer",
+      "cancelled-blocked-binding-preserves-empty-history"
+    ],
+    "lock_schedules": [
+      {
+        "name": "old-issuer-lock-precedes-migration",
+        "status": "PASS",
+        "locks": [
+          {
+            "backend_start": "2026-09-19 13:10:09.334713+00",
+            "blockers": [
+              201
+            ],
+            "event": "relation",
+            "holder": 201,
+            "locks": [
+              {
+                "classid": "1111651442",
+                "granted": true,
+                "locktype": "advisory",
+                "mode": "ExclusiveLock",
+                "objid": "1129599564",
+                "pid": 198
+              },
+              {
+                "classid": "1111651442",
+                "granted": true,
+                "locktype": "advisory",
+                "mode": "ShareLock",
+                "objid": "1296648018",
+                "pid": 198
+              },
+              {
+                "classid": null,
+                "granted": false,
+                "locktype": "relation",
+                "mode": "AccessShareLock",
+                "objid": null,
+                "pid": 198
+              }
+            ],
+            "waiter": 198
+          },
+          {
+            "backend_start": "2026-09-19 13:10:09.347675+00",
+            "blockers": [
+              198
+            ],
+            "event": "advisory",
+            "holder": 198,
+            "locks": [
+              {
+                "classid": "1111651442",
+                "granted": true,
+                "locktype": "advisory",
+                "mode": "ExclusiveLock",
+                "objid": "1129599564",
+                "pid": 198
+              },
+              {
+                "classid": "1111651442",
+                "granted": true,
+                "locktype": "advisory",
+                "mode": "ShareLock",
+                "objid": "1296648018",
+                "pid": 198
+              },
+              {
+                "classid": null,
+                "granted": false,
+                "locktype": "relation",
+                "mode": "AccessShareLock",
+                "objid": null,
+                "pid": 198
+              },
+              {
+                "classid": "1111651442",
+                "granted": false,
+                "locktype": "advisory",
+                "mode": "ExclusiveLock",
+                "objid": "1296648018",
+                "pid": 200
+              }
+            ],
+            "waiter": 200
+          }
+        ]
+      },
+      {
+        "name": "migration-lock-precedes-old-issuer",
+        "status": "PASS",
+        "locks": [
+          {
+            "backend_start": "2026-09-19 13:10:10.121171+00",
+            "blockers": [
+              214
+            ],
+            "event": "relation",
+            "holder": 214,
+            "locks": [
+              {
+                "classid": "1111651442",
+                "granted": true,
+                "locktype": "advisory",
+                "mode": "ExclusiveLock",
+                "objid": "1296648018",
+                "pid": 213
+              },
+              {
+                "classid": null,
+                "granted": false,
+                "locktype": "relation",
+                "mode": "AccessExclusiveLock",
+                "objid": null,
+                "pid": 213
+              }
+            ],
+            "waiter": 213
+          },
+          {
+            "backend_start": "2026-09-19 13:10:10.108468+00",
+            "blockers": [
+              213
+            ],
+            "event": "advisory",
+            "holder": 213,
+            "locks": [
+              {
+                "classid": "1111651442",
+                "granted": true,
+                "locktype": "advisory",
+                "mode": "ExclusiveLock",
+                "objid": "1129599564",
+                "pid": 211
+              },
+              {
+                "classid": "1111651442",
+                "granted": false,
+                "locktype": "advisory",
+                "mode": "ShareLock",
+                "objid": "1296648018",
+                "pid": 211
+              },
+              {
+                "classid": "1111651442",
+                "granted": true,
+                "locktype": "advisory",
+                "mode": "ExclusiveLock",
+                "objid": "1296648018",
+                "pid": 213
+              },
+              {
+                "classid": null,
+                "granted": false,
+                "locktype": "relation",
+                "mode": "AccessExclusiveLock",
+                "objid": null,
+                "pid": 213
+              }
+            ],
+            "waiter": 211
+          }
+        ]
+      }
+    ],
+    "cancelled": {
+      "status": "PASS",
+      "locks": {
+        "backend_start": "2026-09-19 13:10:10.917378+00",
+        "blockers": [
+          226
+        ],
+        "event": "relation",
+        "holder": 226,
+        "locks": [
+          {
+            "classid": "1111651442",
+            "granted": true,
+            "locktype": "advisory",
+            "mode": "ExclusiveLock",
+            "objid": "1129599564",
+            "pid": 224
+          },
+          {
+            "classid": "1111651442",
+            "granted": true,
+            "locktype": "advisory",
+            "mode": "ShareLock",
+            "objid": "1296648018",
+            "pid": 224
+          },
+          {
+            "classid": null,
+            "granted": false,
+            "locktype": "relation",
+            "mode": "AccessShareLock",
+            "objid": null,
+            "pid": 224
+          }
+        ],
+        "waiter": 224
+      },
+      "state": "empty binding/attempt history unchanged after dropped blocked API future, poisoned session, blocker rollback, joined driver and backend disappearance; fresh require returns Prerequisite"
+    },
+    "binding_commit_loss": [
+      {
+        "mode": "before",
+        "status": "PASS",
+        "proxy": {
+          "connections": 1,
+          "data_queries": 1,
+          "coordinator_inserts": 1,
+          "data_commits": 1,
+          "server_complete": 0,
+          "client_complete": 0,
+          "faults": 1,
+          "unexpected": 0
+        },
+        "original_row_present_before_retry": false,
+        "final_issuer_epoch": 2,
+        "retry_preserved_original_row_and_xmin": false
+      },
+      {
+        "mode": "after",
+        "status": "PASS",
+        "proxy": {
+          "connections": 1,
+          "data_queries": 1,
+          "coordinator_inserts": 1,
+          "data_commits": 1,
+          "server_complete": 1,
+          "client_complete": 0,
+          "faults": 1,
+          "unexpected": 0
+        },
+        "original_row_present_before_retry": true,
+        "final_issuer_epoch": 1,
+        "retry_preserved_original_row_and_xmin": true
+      }
+    ],
+    "signed_schedules": 6,
+    "retained_inputs": 22,
+    "full_oracles": "Six original complete signed/scientific/closure/duplicate/ACL/fencing/file/Rocks and fresh-process receipt oracles remain required. Root independently rechecked exact266-byte22inputs and restart expectations.",
+    "unknown_outcomes": "Both lost binding replies return CommitUnknown with commit flag set and poison further calls. Before-forward leaves no binding then exact fresh epoch2 retry creates it. After-complete retains epoch1 binding/xmin unchanged on retry. Original actual drivers joined and PG backend disappearance observed before fresh claim."
+  },
+  "review": {
+    "mode": "root plus independent read-only AI source review",
+    "scope_notes": [
+      "Legacy-API schedules run current candidate, not a previously published executable; unknown-ledger refusal by older binary was not exercised.",
+      "Schema9-to10 comparison covers original logical columns, not pre/post migration physical tuples or xmin. Later retry/refusal snapshots include xmin.",
+      "Missing-migration subcases exercise ordinary require only.",
+      "Cancellation backend disappearance follows explicit release of the owned relation blocker, not while blocked.",
+      "Signed fresh-process equality is executed in harness; only its first SQL snapshot is retained."
+    ],
+    "offline": "Independent read-only AI review matched73files/tar and768sources. Confirmed old-first PID198 shared/migrator200 exclusive-wait; migration-first213 exclusive/211 shared-wait; cancellation224 relation-wait then empty history. Lost replies0/0 createepoch2 and1/0 preserveepoch1/xmin1245. No Tux/rerun/independent ELF inspection."
+  },
+  "failures_and_corrections": [
+    "Pre-native source review found new fixture CLI arity guard missing its numeric proxy-port form; corrected before execution.",
+    "Source review clarified missing-migration require-only coverage and preprovisioned SELECT defaults to isolate SQL guard from grant ordering.",
+    "No native case failed. No applied SQL/product API/dependency changes after b203a41."
+  ],
+  "not_qualified": [
+    "Installed explicit coordinator setup/serve integration and Archive dispatch",
+    "Old executable upgrade journey, cross-boot/history restore/relocation",
+    "Per-attempt missing-journal resolution, source protection/reclamation and Ingest-owner handoff",
+    "Input-write/fsync crash, ENOSPC, power loss and first complete M1 read/export/restart",
+    "Aged workloads/capacity/native arm64/ordinary Compose/release/signed mTLS publication"
+  ],
+  "resources": {
+    "source": "d355c5b3da4babcf5dc4f6219222e786b52915c9",
+    "tree": "b48f977744599b549ab8b71ed37113c6e87af6fe",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/coordinator-faults-d355c5b",
+    "owner": "750848b6890385a5a736b87122b3acdf",
+    "container": "bigbrotr-implementation-coordinator-faults-d355c5b",
+    "postgres": "bigbrotr-implementation-coordinator-faults-d355c5b-pg",
+    "network": "bigbrotr-implementation-coordinator-faults-d355c5b",
+    "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "state": "stopped-retained",
+    "source_files": 768,
+    "started_at": "2026-09-19T13:07:47.764078+00:00",
+    "network_id": "fc95b04ff6b4aceb3f9c4d455aa3ae37093cc14a7dd2febe107c5ecf336f5a74",
+    "postgres_id": "6487b737f0da5f8eec2d12f28ef22364f4eb8207431c46b5982a2becf928ede1",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "container_id": "333aca9f906e8af14adc3b6ecf2d9e3a7334520f68c3a3f9a987cbb5071329e0",
+    "completed_at": "2026-09-19T13:11:35.851279+00:00"
+  },
+  "resource_audit": {
+    "status": "PASS",
+    "source": "d355c5b3da4babcf5dc4f6219222e786b52915c9",
+    "tree": "b48f977744599b549ab8b71ed37113c6e87af6fe",
+    "source_files": 768,
+    "source_archive_sha256": "5d746b6d87fb28374f4ad37a9657b1d5569117e351c342b1ddc082b677016ad2",
+    "source_manifest_sha256": "ba485de208435954a6ea792dec226b92ed330dbe4dc3c5a0ec34930e12bf66dc",
+    "artifacts": {
+      "main": {
+        "sha256": "a41c9aae6cca333a6e2e4347b197136f69c2d1f515b7b0d86b0dd58446c28ec2",
+        "bytes": 8896480,
+        "elf_machine": 62
+      },
+      "worker": {
+        "sha256": "89e46e831e8e12f7e60b249493a619af4cd3bca7d984ec7a06574ede3d6f0b9f",
+        "bytes": 12608608,
+        "elf_machine": 62
+      },
+      "publisher": {
+        "sha256": "3e8405b8e99663bca091e3e55aded301289c7b03c7466d6b152c887684ee5c9b",
+        "bytes": 18988968,
+        "elf_machine": 62
+      }
+    },
+    "qualification": {
+      "installed-signed-cases": "PASS",
+      "coordinator-fault-cases": "PASS"
+    },
+    "cases": {
+      "installed-signed-cases": 6,
+      "coordinator-fault-cases": 2
+    },
+    "build_ready": true,
+    "terminal": {
+      "container_id": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 143,
+        "Error": "",
+        "StartedAt": "2026-09-19T13:07:50.806202503Z",
+        "FinishedAt": "2026-09-19T13:11:30.761141096Z"
+      },
+      "postgres_id": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-09-19T13:07:48.451899412Z",
+        "FinishedAt": "2026-09-19T13:11:35.395059274Z"
+      }
+    },
+    "owned_containers": [
+      "333aca9f906e8af14adc3b6ecf2d9e3a7334520f68c3a3f9a987cbb5071329e0",
+      "6487b737f0da5f8eec2d12f28ef22364f4eb8207431c46b5982a2becf928ede1"
+    ],
+    "existing_containers_unchanged": 340,
+    "unrelated_containers_unchanged": 20,
+    "unrelated_running": 8,
+    "bigbrotr_running": 0,
+    "observed_at": "2026-09-19T13:11:35.851279+00:00",
+    "harness": null,
+    "owned_sql_backends_before_shutdown": 0,
+    "build_checks_status": "PASS"
+  },
+  "raw": {
+    "root": ".research/implementation/archive-worker/coordinator-faults/qualified",
+    "tar_bytes": 573440,
+    "tar_sha256": "e9f22c3ed04a58dd967ea5b30e1a48207501437fbf260eb58a831560aed520de",
+    "manifest": ".research/implementation/archive-worker/coordinator-faults/evidence-identity.json",
+    "files_verified": 73
+  },
+  "references": [
+    "docs/implementation/evidence/p02-coordinator-protocol-native-20260919.json",
+    "docs/specification/archive-storage-contract.md#initial-coordinator-protocol-boundary",
+    "apps/bigbrotr/examples/support/publication_protocol_faults.rs",
+    "experiments/archive-engine/coordinator_fault_cases.py"
+  ]
+}
