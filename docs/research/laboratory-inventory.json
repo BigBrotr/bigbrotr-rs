@@ -13925,7 +13925,32 @@
         "bigbrotr_running": 0,
         "observed_at": "2026-09-19T20:16:33.536383+00:00"
       },
-      "manifest": ".research/implementation/import-checkpoints/red/evidence-identity.json"
+      "manifest": ".research/implementation/import-checkpoints/red/evidence-identity.json",
+      "network_retirement": {
+        "status": "removed-after-verified-empty-and-owned-containers-stopped",
+        "successor_lab": "import-checkpoints-215f502",
+        "evidence": "/home/tux/bigbrotr-implementation-20260917/runs/import-checkpoints-215f502/prior-network-retirement.json"
+      }
+    },
+    "import_checkpoints": {
+      "source": "215f502bc33a634e758355edb2ca420be1a1f9f6",
+      "tree": "3b66c4f398b96e2b310a52c9740a034786ecc402",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/import-checkpoints-215f502",
+      "owner": "8829981c7e519eff01113ae07d4e1a45",
+      "container": "bigbrotr-implementation-import-checkpoints-215f502",
+      "postgres": "bigbrotr-implementation-import-checkpoints-215f502-pg",
+      "network": "bigbrotr-implementation-import-checkpoints-215f502",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "state": "running",
+      "source_files": 829,
+      "started_at": "2026-09-19T20:23:28.273500+00:00",
+      "network_id": "2c1d6475208f7dd7388ceb67e598d8266e252b8652feab7e5de8bbea9cef3c13",
+      "postgres_id": "6525900fbdb050bd0efd9a6453dbfb77136238c39ea359361f95341e00f78d8c",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "8b407847a0a70f836d44ee8c756a7352067899deb20a25b7bde240d33c798330",
+      "qualification": "NOT_RUN; exact-source native bridge build active",
+      "raw": ".research/implementation/import-checkpoints/green"
     }
   },
   "implementation_monitor_corrections_20260918": {

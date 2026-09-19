@@ -22,12 +22,11 @@ variants, ACK/GC and recovery remain required; no task checkbox changed.
 
 ## Git and ownership
 
-Mac main HEAD730e50ee08ef8bb96609ee964ee8ce593938045a, unpublished candidate,
-tree b1c5b0db69c9654e2029ed4f99b59eb214d31880. Private origin/main last verified
+Mac main HEAD215f502bc33a634e758355edb2ca420be1a1f9f6, unpublished candidate,
+tree3b66c4f398b96e2b310a52c9740a034786ecc402; ahead of origin by2. Private origin/main last verified
 at ddfa74064d840541e58208195b8e1612733c2ca3. No unexpected changes or other writers.
-Root owns current dirty import_checkpoints.rs, initial_batch.rs, postgres/mod.rs,
-finite fixture/proxy modes, import_checkpoints.py, storage-catalog, inventory and
-this checkpoint. Existing fact_codec_review is read-only, reviewing the witness
+The native bridge/fixtures/oracle and docs are committed in215f502. Root owns
+current dirty checkpoint_schema_cases.sql (NOT_RUN), inventory and this checkpoint. Existing fact_codec_review is read-only, reviewing the witness
 and caller boundary. No independently edited remote source.
 
 Candidate730e50e adds0014, compiled/JSON catalog entries, migration regression and
@@ -98,7 +97,8 @@ and retained-dependency controls remain before closing this prerequisite.
 
 ## Resources and cleanup
 
-No active remote workload. RED lab audited/stopped2026-09-19T20:16:33.536383+00:00:
+Current native build is ACTIVE in import-checkpoints-215f502 (see below).
+RED lab audited/stopped2026-09-19T20:16:33.536383+00:00:
 /home/tux/bigbrotr-implementation-20260917/runs/import-checkpoints-730e50e,
 owner37e0eb288090c5b5efd1bdab3e930e7d. Runner
 84348dffbf39833fb4fa83ee9544935982bce631760ddd8c5dc02a18672330dd,
@@ -141,3 +141,23 @@ External monitor findings remain scoped closed with practical evidence:
 [MON-010](evidence/p01-tls-presence-20260918.json),
 [MON-007](evidence/p01-archive-cache-retry-20260918.json).
 No new contrary evidence was found in the requested external note.
+
+Current lab /home/tux/bigbrotr-implementation-20260917/runs/import-checkpoints-215f502,
+owner8829981c7e519eff01113ae07d4e1a45, clean829-file export. Runner
+8b407847a0a70f836d44ee8c756a7352067899deb20a25b7bde240d33c798330,
+PG6525900fbdb050bd0efd9a6453dbfb77136238c39ea359361f95341e00f78d8c,
+internal network2c1d6475208f7dd7388ceb67e598d8266e252b8652feab7e5de8bbea9cef3c13.
+Native build/tests READY; no host ports. Five connected schedules PASS on215f502:
+reverse, expired, rollback, before-forward, after-complete. Every full native
+state matches27 rows; all originals/PG copies/source positions compared. Reverse
+and after-complete retain two closures/head2; the other three retain line2 only
+and no head. All cases have zero client backends. Initial rollback1 launch was
+refused before creating a DB because its tag exceeded the accepted8 characters;
+roll1 corrected only the caller argument and passed. Logs preserve both attempts. RED network291c395 was removed after
+fresh empty/owned-stopped verification; old containers/data stay retained.
+Next execute authored checkpoint_schema.py plus checkpoint_schema_cases.sql from
+a clean harness Git checkout. It prepends only the existing synthetic fixture
+setup functions and clones bbcheckpoint_reverse1 so failure cannot corrupt the
+signed baseline. SQL/native compatibility/cancellation/concurrency remain open;
+these five PASS cases do not finish checkpoint qualification. Root owns current
+harness/inventory/checkpoint edits; the829 product source files stay unchanged.
