@@ -173,6 +173,14 @@ pub fn keys() -> Vec<Key> {
         true
     );
     add!(
+        "archive.catalog_id",
+        Identity,
+        Value::Null,
+        "identity",
+        "archive",
+        true
+    );
+    add!(
         "topology.ordered_set_reader",
         Enum(&["absent", "index"]),
         "absent",

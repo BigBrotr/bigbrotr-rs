@@ -395,8 +395,13 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   passes12 installed bundle cases, five invalid build assertions, seven Rust cases
   and actual same-target binding/change/unbinding/restoration. This used retained
   build caches; the complete fresh builder and installed Archive lifecycle remain
-  unqualified. Catalog identity, separate reader credentials, retained-batch
-  recovery inputs and explicit initialization remain prerequisites.
+  unqualified. Explicit `archive.catalog_id` and
+  [`archive inspect`](../engineering/configuration-and-runtime.md#explicit-catalog-inspection)
+  now connect configured expected identity to privileged finite metadata checks;
+  native CLI qualification is pending for this candidate. Untrusted owner shape
+  is locked through bounded fixed scalars before owner values are read by any
+  guard entrypoint. Separate reader credentials, retained-batch recovery inputs
+  and explicit initialization remain prerequisites.
   No step is complete from these prerequisites.
 - [ ] **Step 6:** Handle empty and one-small-event timer batches; publish useful progress
   without waiting for a size threshold that may never be reached.

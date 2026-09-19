@@ -327,6 +327,17 @@ File/name mappings, file contents and protection are separate publication/recove
 checks, not certified by logical schema inspection.
 
 Installed inspection holds the owner row FOR UPDATE against guarded native DML.
+Before shape validation, that lock returns only a fixed scalar and at most two
+rows, retaining exact-one refusal without importing untrusted owner payload.
+Activation and resolution share that lock; activation reads owner values only
+after validating the installed shape. Applied SQL/checksums and lock order stay
+unchanged. Server scan/MVCC work remains distinct from bounded response bytes.
+The explicit [`archive inspect --file PATH`](../engineering/configuration-and-runtime.md#explicit-catalog-inspection)
+consumer supplies expected `topology.dataset_id`, `archive.catalog_id` and
+`storage.archive_root` from deployment roots and uses the protected catalog
+manager connection. It verifies logical metadata only, rolls back its transaction
+and grants no runtime authority. Missing/partial/unbound catalogs refuse; it does
+not initialize, repair or infer expected identity from observed catalog state.
 It must not subsequently acquire SHARE table locks: native DML holds its table
 lock before its statement trigger waits for the owner. Ordinary AccessShare reads
 are compatible with that waiting DML. First installation instead locks all native
@@ -402,8 +413,9 @@ refused consistently by the private parent, worker and catalog identity because
 the pinned engine treats singleton registration paths as globs. SQL quoting does
 not make them literal. Existing such experimental roots require a separately
 qualified operator relocation, never silent path rewriting. Applied catalog SQL,
-scientific schema and canonical identities are unchanged. Initial static candidate
-configuration does not yet qualify these archive placement settings.
+scientific schema and canonical identities are unchanged. Selected local Archive
+configuration now enforces these lexical path restrictions at the expected
+catalog-identity boundary; actual placement/alias checks remain runtime work.
 
 The typed Arrow/native adapter must preserve nullable compound values through
 actual Parquet, including null entries before and between present references.

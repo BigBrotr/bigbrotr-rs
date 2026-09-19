@@ -43,7 +43,7 @@ async fn run() {
     )
     .unwrap();
     let mode = mode.strip_prefix("native-").unwrap_or(mode);
-    let receipt = if mode == "activate" {
+    let receipt = if matches!(mode, "activate" | "seal") {
         Some(fixture::intent(1).await)
     } else {
         None
@@ -65,6 +65,15 @@ async fn run() {
         )
         .await
         .map(|_| "provisioned-discarded"),
+        "seal" => catalog_guard::seal(&mut client, &identity, receipt.as_ref().unwrap(), &commit)
+            .await
+            .map(|disabled| {
+                if disabled {
+                    "sealed-current"
+                } else {
+                    "sealed-history"
+                }
+            }),
         _ => panic!("unknown mode"),
     };
     let outcome = match result {

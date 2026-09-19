@@ -8,6 +8,9 @@ enabled = true
 [api]
 enabled = true
 
+[archive]
+catalog_id = "33333333333333333333333333333333"
+
 [archive.publisher]
 enabled = true
 

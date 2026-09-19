@@ -517,6 +517,36 @@ pub fn absolute_path(text: &str) -> bool {
 }
 
 impl Resolved {
+    /// Expected installation binding from the deployment root, never learned
+    /// from the catalog being inspected. No filesystem or credential I/O here.
+    pub fn catalog_identity(
+        &self,
+    ) -> Result<bigbrotr::storage::postgres::catalog_guard::CatalogIdentity, String> {
+        use bigbrotr::storage::postgres::catalog_guard::CatalogIdentity;
+        if !self.local("archive") {
+            return Err("catalog inspection requires a declared local Archive role".into());
+        }
+        let dataset = self
+            .present("topology.dataset_id")?
+            .parse()
+            .map_err(|_| "invalid dataset identity")?;
+        let catalog = self
+            .present("archive.catalog_id")?
+            .parse()
+            .map_err(|_| "invalid archive.catalog_id")?;
+        let root = self.present("storage.archive_root")?;
+        // Native catalog metadata uses a terminal slash. Preserve every other
+        // byte: aliases, repeated separators and glob names require explicit
+        // correction rather than silently changing an installation binding.
+        let root = if root.ends_with('/') {
+            root.to_owned()
+        } else {
+            format!("{root}/")
+        };
+        CatalogIdentity::local(dataset, catalog, &root)
+            .map_err(|_| "storage.archive_root requires a bounded canonical local path without glob characters or repeated separators".into())
+    }
+
     pub fn value(&self, key: &str) -> &Value {
         &self.values[key]
     }
@@ -664,6 +694,7 @@ impl Resolved {
                 self.require("ingest", "archive publisher")?;
             }
             self.present("storage.archive_root")?;
+            self.catalog_identity()?;
             self.present("storage.scratch_root")?;
             self.pg("catalog")?;
         }

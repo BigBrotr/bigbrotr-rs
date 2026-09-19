@@ -60,6 +60,13 @@ still run immediately before worker exec; a previous diagnostic cannot authorize
 a later changed bundle. Read-only installation to the runtime identity remains
 required, including protection from concurrent host writers.
 
+The separate `bigbrotr archive inspect --file instance.toml` command uses the
+configured catalog manager connection and explicit expected catalog/dataset/root
+identity. It checks installed guard and scientific schema metadata without
+launching the native worker. File contents and service readiness remain unchecked;
+see [catalog inspection](../../docs/engineering/configuration-and-runtime.md#explicit-catalog-inspection)
+for configuration compatibility, credentials, bounds and exit codes.
+
 Ordinary Cargo builds with neither `BIGBROTR_ARCHIVE_WORKER_BYTES` nor
 `BIGBROTR_ARCHIVE_WORKER_SHA256` embed `null` and cannot select an installed worker.
 These build-time assertions are supplied by the trusted builder, not runtime

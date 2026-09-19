@@ -176,12 +176,18 @@ pub fn overrides(recipe: &str) -> Result<BTreeMap<String, Value>, String> {
     Ok(values)
 }
 
-pub fn document(recipe: &str, instance: &str, dataset: &str) -> Result<String, String> {
+pub fn document(
+    recipe: &str,
+    instance: &str,
+    dataset: &str,
+    catalog: &str,
+) -> Result<String, String> {
     let mut values = overrides(recipe)?;
     values.insert("config.schema_version".into(), json!(1));
     values.insert("config.authority_mode".into(), json!("managed"));
     values.insert("topology.instance_id".into(), json!(instance));
     values.insert("topology.dataset_id".into(), json!(dataset));
+    values.insert("archive.catalog_id".into(), json!(catalog));
     for role in ["control", "ingest", "archive"] {
         let key = format!("topology.remote.{role}.dataset_id");
         if values.contains_key(&key) {

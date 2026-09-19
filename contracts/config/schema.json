@@ -116,6 +116,16 @@
     "archive": {
       "additionalProperties": false,
       "properties": {
+        "catalog_id": {
+          "not": {
+            "const": "00000000000000000000000000000000"
+          },
+          "pattern": "^[0-9a-f]{32}$",
+          "type": "string",
+          "x-bigbrotr-deployment-locked": true,
+          "x-bigbrotr-owner": "archive",
+          "x-bigbrotr-reload": "identity"
+        },
         "compression": {
           "default": "zstd-3",
           "enum": [

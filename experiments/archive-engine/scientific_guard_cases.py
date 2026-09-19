@@ -204,6 +204,12 @@ try:
     ready_session(writer);release(writer)
     record('inspector-owner-lock-before-native-table-lock')
     assert sql(db,"SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND application_name IN ('fixture_holder','fixture_writer','bigbrotr-catalog-recovery-probe')")=='0'
+    assert probe('seal',db,'sealed-current')['commit_started']
+    assert sql(db,"SELECT ordinal=1 AND NOT enabled FROM bigbrotr_archive.owner WHERE singleton")=='t'
+    assert sql(db,"SELECT NOT rolcanlogin FROM pg_roles WHERE rolname='"+login+"'")=='t'
+    probe('inspect',db,'inspected')
+    assert probe('seal',db,'sealed-history')['commit_started']
+    record('seal-and-idempotent-resolution-after-shared-owner-lock')
     report['status']='PASS';save();print(json.dumps({'status':'PASS','cases':len(report['cases'])}))
 except BaseException:
     report['status']='FAIL';save();raise

@@ -244,8 +244,10 @@ pub async fn install(
 async fn lock_inspection(tx: &Transaction<'_>) -> Result<(), GuardError> {
     // Native DML already obtains a table lock before its trigger locks this row.
     // Do not request SHARE table locks after this: that would reverse lock order.
+    // Shape is not trusted yet. Transfer no owner values and at most two fixed
+    // scalars; query_one still refuses a malformed non-singleton owner table.
     tx.query_one(
-        "SELECT ordinal FROM bigbrotr_archive.owner WHERE singleton FOR UPDATE",
+        "SELECT 1 FROM bigbrotr_archive.owner WHERE singleton LIMIT 2 FOR UPDATE",
         &[],
     )
     .await
@@ -337,14 +339,15 @@ async fn activate_inner(
     let login = writer_login(receipt);
     let quoted = identifier(&login)?;
     let tx = begin(client, false).await?;
+    lock_inspection(&tx).await?;
+    inspection::installed(&tx, identity).await?;
     let state = tx
         .query_one(
-            "SELECT ordinal::text,enabled FROM bigbrotr_archive.owner WHERE singleton FOR UPDATE",
+            "SELECT ordinal::text,enabled FROM bigbrotr_archive.owner WHERE singleton",
             &[],
         )
         .await
         .map_err(backend)?;
-    inspection::installed(&tx, identity).await?;
     let current = state
         .try_get::<_, &str>(0)
         .ok()
@@ -433,12 +436,7 @@ async fn resolve_inner(
     }
     let login = writer_login(receipt);
     let tx = begin(client, false).await?;
-    tx.query_one(
-        "SELECT ordinal FROM bigbrotr_archive.owner WHERE singleton FOR UPDATE",
-        &[],
-    )
-    .await
-    .map_err(backend)?;
+    lock_inspection(&tx).await?;
     inspection::installed(&tx, identity).await?;
     match matches_attempt(&tx, request, &login).await? {
         Some(true) => {}

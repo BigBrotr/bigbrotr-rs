@@ -119,6 +119,46 @@ allowance plus protected-connection preparation, retained through output. This
 allowance is not measured peak RSS or an engine query-cost guarantee. Physical
 SQL scan/MVCC cost and peak memory remain workload qualification work.
 
+## Explicit catalog inspection
+
+A selected local Archive requires `archive.catalog_id`, the expected nonzero
+lowercase 128-bit hexadecimal installation identity. `config init` generates a
+fresh candidate alongside instance/dataset IDs; examples contain a deterministic
+candidate. This deployment root is excluded from the accepted policy document:
+adding it does not change existing policy bytes, digest or format. Older files
+selecting Archive must supply the actual installation ID before validation or
+inspection. An unselected catalog may omit it; staged values remain typed.
+Never learn the expected ID from the same catalog row being checked.
+
+`storage.archive_root` for selected Archive follows the native catalog's lexical
+path contract: an absolute non-root path, no dot components, repeated separators,
+control or glob characters (`*`, `?`, `[`), at most 4096 bytes including a terminal
+slash. Configuration may omit that last slash; only the expected catalog binding
+adds it. Filesystem alias/permission checks are separate; offline validation opens
+no storage directory, certificate or credential. Other storage-root comparison
+continues to normalize separators solely for alias detection. Old experimental
+paths that violate the native contract require explicit operator correction or
+qualified relocation, never silent rewriting.
+
+`archive inspect --file PATH` checks the configured dataset/catalog/root against
+the installed scientific catalog through the protected `postgres.catalog` manager
+credential. It uses the shared verified PostgreSQL transport: a five-second
+socket connection setting within a ten-second overall establishment deadline,
+then a 30-second inspection deadline. The existing guard acquires
+the migration lock and owner row, checks metadata and rolls back. The caller
+retains a conservative 64 MiB inspection allowance plus connection preparation
+through actual driver join and output; this is not a measured process RSS limit.
+Connection cleanup waits at most two seconds before aborting/joining its driver.
+
+Success reports `bigbrotr-catalog-inspection/1`, expected identity/root, scientific
+schema version1, verified metadata, file contents `not-checked`, runtime authority
+`not-granted` and `ready:false`. Exit4 covers unavailable/incompatible catalogs;
+exit3 covers configuration/credential refusals. It neither initializes a catalog,
+creates an ArchiveAttempt, activates ownership nor launches a native worker.
+The owner-row lock may create physical PostgreSQL I/O; logical state is unchanged.
+Data-file closure, protection, explicit initialization/recovery and installed
+Archive service readiness remain separate gates.
+
 ## Explicit initial Control acceptance
 
 `config initialize --file PATH` is the finite deployment command that accepts a

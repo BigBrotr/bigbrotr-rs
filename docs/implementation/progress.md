@@ -21,14 +21,14 @@ installed service readiness.
 
 ## Actual Git and ownership
 
-Last observed main HEAD is tested source candidate
+Mac main HEAD and freshly verified remote main are
+b6894ccb7c09179ec7b9440b6db980d18b23c260 (qualification-only follow-up).
+Ordinary push8085 completed from4ca199e; repository remains private, nonarchived,
+named bigbrotr-rs. Worktree was clean after push. Root owns the catalog CLI/configuration slice and this checkpoint; no other
+writer, merge or rebase. Dirty source adds explicit archive.catalog_id, native
+path validation, shared catalog PG preparation and archive inspect plus tests. Tested source remains
 53707a2a74a143c9aba78858068dea5df71809c6,
-tree99598cfe9b343e97982e0a1e4cab5be30eaf2495. This checkpoint accompanies its
-qualification-only follow-up; inspect Git log for that commit rather than treating
-the tested source as the newest document revision. Last verified remote before
-this follow-up was4ca199e. Root owns qualification evidence, task notes, inventory
-and this checkpoint; no other writer, merge or rebase. Finish/check the ordinary
-private push if interruption preceded it. No source changes after53707a2.
+tree99598cfe9b343e97982e0a1e4cab5be30eaf2495. Uncommitted catalog-consumer changes are not yet native-qualified.
 
 ## Installed worker binding qualification
 
@@ -117,12 +117,27 @@ Do not mechanically rerun unrelated suites.
 
 ## Next bounded action
 
-Add expected catalog identity to the installed configuration/command boundary
-and consume it through actual privileged `archive inspect`, using the shared
-prepared PG transport and finite inspection grant. Inspect the existing config
-generator/recipes and guard callers first; do not derive expected identity from
-the same observed catalog row being checked. The native worker anchor is now
-available for the following explicit initialization/Archive consumer.
+The root-owned catalog consumer is ready for an unpublished exact-source native
+candidate under P02-T04 steps3/4/5 and P01-T04. It adds archive.catalog_id as an
+explicit root, native lexical path validation, generated consumers and actual
+archive inspect through the protected catalog credential. Local tests:39 PASS
+(7 new CLI,24 config,6 binary/policy,2 catalog identity), affected Clippy PASS,
+artifact/link/syntax check has no errors. Raw local logs:
+.research/implementation/archive-worker/catalog-cli. Initial four-case red log
+is retained in the prior installed-binding raw root; stale generated-file failure
+was fixed by regenerating from the CLI, not weakening assertions.
+
+Read-only AI review found the connection deadline wording incorrect (now10s total,
+5s socket setting), and unbounded discarded owner values before shape validation.
+All guard entrypoints now lock via fixed scalars/LIMIT2/exact-one checking;
+activation reads values after validation. No SQL/checksum/policy format change.
+Native malformed-owner refusal, actual CLI/PG cases, both native DML lock orders,
+activation/seal/retry and shared Control transport are still NOT_RUN for this
+candidate. Existing scientific fixture gains a real retained-intent seal check.
+No new remote resource yet. Transfer exact committed source using the ignored
+catalog-cli/transfer.py and reviewed launch.py; new catalog-cli-<revision> lab,
+retained537 cache/assets, scoped PG16.15/private network, no host ports. Verify
+and inventory real launch identity before invoking the exact-source harnesses.
 
 Registry/resolver, budget/ownership/serve, PG preparation, native installation/
 process/lifetime and publication/custody sources were read completely. Integration

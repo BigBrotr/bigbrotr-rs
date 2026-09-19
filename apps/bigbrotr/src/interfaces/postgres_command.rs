@@ -21,37 +21,75 @@ pub(super) fn prepare(
     password_reference: &str,
     extra_reservation: u64,
 ) -> CliResult<(PreparedConnection, OwnedPermit)> {
-    let password = secret(password_reference)?;
-    let present = |key: &str| {
+    prepare_database(
+        config,
+        "postgres.control",
+        "Control",
+        user,
+        password_reference,
+        extra_reservation,
+    )
+}
+
+pub(super) fn prepare_catalog(
+    config: &crate::config::Resolved,
+    extra_reservation: u64,
+) -> CliResult<(PreparedConnection, OwnedPermit)> {
+    let required = |key: &str| {
         config
             .text(key)
-            .ok_or_else(|| (3, format!("{key}: required for explicit Control command")))
+            .ok_or_else(|| (3, format!("{key}: required for explicit catalog command")))
     };
-    let tls = match present("postgres.control.tls.mode")? {
+    prepare_database(
+        config,
+        "postgres.catalog",
+        "Archive catalog",
+        required("postgres.catalog.user")?,
+        required("postgres.catalog.password_ref")?,
+        extra_reservation,
+    )
+}
+
+fn prepare_database(
+    config: &crate::config::Resolved,
+    prefix: &str,
+    label: &str,
+    user: &str,
+    password_reference: &str,
+    extra_reservation: u64,
+) -> CliResult<(PreparedConnection, OwnedPermit)> {
+    let password = secret(password_reference)?;
+    let present = |field: &str| {
+        let key = format!("{prefix}.{field}");
+        config
+            .text(&key)
+            .ok_or_else(|| (3, format!("{key}: required for explicit {label} command")))
+    };
+    let tls = match present("tls.mode")? {
         "verify-full" => TlsSettings::VerifyFull {
-            ca_file: Path::new(present("postgres.control.tls.ca_file")?),
-            server_name: present("postgres.control.tls.server_name")?,
+            ca_file: Path::new(present("tls.ca_file")?),
+            server_name: present("tls.server_name")?,
             client_certificate: config
-                .text("postgres.control.tls.client_cert_ref")
+                .text(&format!("{prefix}.tls.client_cert_ref"))
                 .map(secret)
                 .transpose()?,
             client_private_key: config
-                .text("postgres.control.tls.client_key_ref")
+                .text(&format!("{prefix}.tls.client_key_ref"))
                 .map(secret)
                 .transpose()?,
         },
         "local-plaintext" => TlsSettings::LocalPlaintext {
-            boundary: match present("postgres.control.tls.local_boundary")? {
+            boundary: match present("tls.local_boundary")? {
                 "loopback" => PlaintextBoundary::Loopback,
                 "private-bridge" => PlaintextBoundary::PrivateBridge,
-                _ => return Err((3, "invalid control database plaintext boundary".into())),
+                _ => return Err((3, format!("invalid {label} database plaintext boundary"))),
             },
         },
-        _ => return Err((3, "invalid control database TLS mode".into())),
+        _ => return Err((3, format!("invalid {label} database TLS mode"))),
     };
     let settings = ConnectionSettings {
-        endpoint: present("postgres.control.endpoint")?,
-        database: present("postgres.control.database")?,
+        endpoint: present("endpoint")?,
+        database: present("database")?,
         user,
         password,
         connect_timeout: Duration::from_secs(5),
@@ -65,7 +103,7 @@ pub(super) fn prepare(
         .checked_mul(8)
         .and_then(|n| n.checked_add(16 * 1024 * 1024))
         .and_then(|n| n.checked_add(extra_reservation))
-        .ok_or_else(|| (3, "Control command memory reservation overflow".into()))?;
+        .ok_or_else(|| (3, format!("{label} command memory reservation overflow")))?;
     let number = |name: &str| config.number(&format!("runtime.processes.application.{name}"));
     let envelope = ProcessEnvelope::new(
         number("memory_max_bytes"),
@@ -85,7 +123,7 @@ pub(super) fn prepare(
         .map_err(|_| {
             (
                 3,
-                "Control preparation does not fit the declared payload grant".into(),
+                format!("{label} preparation does not fit the declared payload grant"),
             )
         })?;
     let prepared = settings.prepare().map_err(|error| (3, error.to_string()))?;

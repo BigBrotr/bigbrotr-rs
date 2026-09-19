@@ -12,6 +12,7 @@ pub fn command() -> clap::Command {
         .about("Inspect installed archive prerequisites")
         .subcommand_required(true)
         .disable_help_subcommand(true)
+        .subcommand(super::catalog_inspection::command())
         .subcommand(clap::Command::new("verify-worker")
             .about("Verify the installed worker and offline native assets against this build")
             .arg(clap::Arg::new("root").long("root").value_parser(clap::value_parser!(PathBuf))
@@ -20,6 +21,9 @@ pub fn command() -> clap::Command {
 }
 
 pub fn execute(matches: &clap::ArgMatches) -> ExitCode {
+    if let Some(args) = matches.subcommand_matches("inspect") {
+        return super::catalog_inspection::execute(args);
+    }
     let matches = matches.subcommand_matches("verify-worker").unwrap();
     let root = matches.get_one::<PathBuf>("root").cloned().or_else(|| {
         std::env::current_exe()
