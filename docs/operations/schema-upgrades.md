@@ -3,8 +3,9 @@
 Status: initial P02-T01 foundation. The checked-in catalog contains
 `0001_control.sql`, `0002_ingest.sql`, `0801_management_identity.sql`,
 `0805_owner_enrollment.sql`, `0802_management_commands.sql`,
-`0007_control_owner.sql`, `0008_job_bounds.sql`, `0009_archive_attempts.sql` and
-`0010_archive_coordinator.sql`. The executable includes explicit inspection, planning and
+`0007_control_owner.sql`, `0008_job_bounds.sql`, `0009_archive_attempts.sql`,
+`0010_archive_coordinator.sql`, `0011_producer_requests.sql` and
+`0012_producer_outcomes.sql`. The executable includes explicit inspection, planning and
 application using the selected PostgreSQL driver. Its local planner, preparation
 and entrypoint tests pass. Native Linux amd64 PostgreSQL execution now covers
 the actual CLI, 104 independent SQL constraint cases, initial read-only runtime
@@ -42,7 +43,7 @@ require PostgreSQL 16.15, `fsync=on` and `full_page_writes=on`; apply forces
 transaction-local `synchronous_commit=on`. They do not initialize a dataset or
 qualify a complete installation or release upgrade.
 
-An omitted target selects the latest embedded migration, currently 10. An explicit
+An omitted target selects the latest embedded migration, currently 12. An explicit
 target 1 preserves the initial control-only boundary for its historical fixtures.
 Migration 2 refuses existing topology members with SQLSTATE `55000`: migration 1
 had no source registry, so their exact source authority cannot be inferred.
@@ -60,6 +61,15 @@ of its invoker guards, without UPDATE/DELETE/TRUNCATE or DDL authority. Existing
 runtime grants must be extended deliberately after the explicit migration.
 The [protocol boundary](../specification/archive-storage-contract.md#initial-coordinator-protocol-boundary)
 states current integration and practical qualification limits.
+
+Migration11 is fresh-only for Ingest registration history. Migration12 adds
+immutable producer outcome copies and reserves 64KiB per input for completion
+within the retained 32MiB envelope. It refuses incompatible prior reservation
+totals with55000, without modifying history or adopting native authority. See the
+[producer input/outcome contract](../reference/producer-request-inputs.md) for
+compatibility and unresolved recovery gates. Runtime provisioning needs SELECT/
+INSERT on `control.producer_outcomes` and EXECUTE on its invoker guards; no UPDATE,
+DELETE, TRUNCATE or DDL privilege. Original migration bytes remain unchanged.
 
 Output is bounded JSON with format `bigbrotr-control-migration/1`, version/count
 strings, exact pending SQL hashes and explicit absent version as null. Exit 0

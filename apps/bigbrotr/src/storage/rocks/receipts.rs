@@ -46,7 +46,7 @@ pub fn required_receipt_data_bytes(limits: ReceiptDecodeLimits) -> Result<u64, R
     }
     limits
         .max_allocation_bytes
-        .checked_add(size_of::<Receipt>())
+        .checked_add(size_of::<StoredReceipt>())
         .and_then(|n| u64::try_from(n).ok())
         .ok_or(ReceiptReadError::InvalidLimits)
 }
@@ -55,17 +55,26 @@ pub fn required_receipt_data_bytes(limits: ReceiptDecodeLimits) -> Result<u64, R
 /// It grants no current policy, producer, retention or dependency authority.
 pub struct StoredReceipt {
     receipt: Receipt,
+    native_outcome: Option<super::NativeOutcomeCopy>,
     _permit: OwnedPermit,
 }
 impl StoredReceipt {
-    pub(super) fn new(receipt: Receipt, permit: OwnedPermit) -> Self {
+    pub(super) fn new(
+        receipt: Receipt,
+        native_outcome: super::NativeOutcomeCopy,
+        permit: OwnedPermit,
+    ) -> Self {
         Self {
             receipt,
+            native_outcome: Some(native_outcome),
             _permit: permit,
         }
     }
     pub fn receipt(&self) -> &Receipt {
         &self.receipt
+    }
+    pub(in crate::storage) fn native_outcome(&self) -> Option<&super::NativeOutcomeCopy> {
+        self.native_outcome.as_ref()
     }
 }
 
@@ -125,6 +134,7 @@ impl IngestStore {
         check_cancel(cancelled)?;
         Ok(Some(StoredReceipt {
             receipt,
+            native_outcome: None,
             _permit: permit,
         }))
     }

@@ -1,5 +1,19 @@
 # Producer reservation prerequisite
 
+The current client requires migration12 for connected dispatch. Historical
+evidence remains bound to its original source and migration11; do not rerun an
+old published result with current sources and label it equivalent.
+
+`outcomes.py --root <owned-lab>` exercises the next outcome-copy boundary:
+successful exact replay, denied INSERT, statement rollback and the fourth COMMIT
+lost before forwarding/after server completion. All five cases require the
+complete independently expected native state. PG copies are present in exactly
+the two committed cases; a fresh Control owner inspects metadata. The SQL fixture
+additionally checks immutable copies, reservation/digest/context matching, atomic
+rollback, out-of-order copies without checkpoints, closing-state completion and
+the combined32MiB envelope. Synthetic SQL bytes are constraint fixtures, not
+native attestations. No outcome row authorizes checkpoint, ACK or retirement.
+
 This trusted exact-Git Linux experiment exercises the connected initial adapter,
 PostgreSQL16.15 and actual RocksDB, using the independently encoded two-visibility
 bootstrap from `experiments/ingest-bootstrap/oracle.py`. Run only inside a separately

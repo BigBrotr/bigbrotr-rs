@@ -70,11 +70,15 @@ pub enum AdmissionOutcome {
 }
 pub struct StoredOutcome {
     outcome: AdmissionOutcome,
+    native_outcome: super::NativeOutcomeCopy,
     _permit: OwnedPermit,
 }
 impl StoredOutcome {
     pub fn outcome(&self) -> &AdmissionOutcome {
         &self.outcome
+    }
+    pub(in crate::storage) fn native_outcome(&self) -> &super::NativeOutcomeCopy {
+        &self.native_outcome
     }
 }
 
@@ -246,6 +250,7 @@ impl AdmissionLimits {
             return Err(AdmissionError::InvalidLimits);
         }
         Ok((8 * self.max_batch_bytes
+            + super::outcome_copy::HANDOFF_DATA_BYTES
             + super::request_inputs::STAGING_OVERHEAD_BYTES
             + self.max_dependencies * (size_of::<FactRef>() + size_of::<QualifiedRef>())
             + Prepared::entry_allocation_bytes(16)
@@ -358,8 +363,18 @@ impl IngestStore {
             if sequence > issued {
                 return Err(AdmissionError::StateMismatch);
             }
-            let outcome = if value.starts_with(REJECTION_PREFIX) {
-                read_rejection(&value, &input, identity.dataset_id)?
+            let (outcome, native_outcome) = if value.starts_with(REJECTION_PREFIX) {
+                let (outcome, policy) = read_rejection(&value, &input, identity.dataset_id)?;
+                (
+                    outcome,
+                    super::NativeOutcomeCopy::rejection(
+                        input.request,
+                        input.digest,
+                        policy,
+                        &self.manifest,
+                        value,
+                    ),
+                )
             } else {
                 let receipt = Receipt::decode_persistent(&value, limits.receipts())
                     .map_err(BootstrapError::from)?;
@@ -390,11 +405,13 @@ impl IngestStore {
                         return Err(AdmissionError::StateMismatch);
                     }
                 }
-                AdmissionOutcome::Durable(receipt)
+                let copy = super::NativeOutcomeCopy::receipt(&receipt, &self.manifest)?;
+                (AdmissionOutcome::Durable(receipt), copy)
             };
             authority()?;
             return Ok(StoredOutcome {
                 outcome,
+                native_outcome,
                 _permit: permit,
             });
         }
@@ -430,6 +447,18 @@ impl IngestStore {
                 encode_rejection(&input, identity.dataset_id, identity.policy_epoch, *reason)?
             }
         };
+        let native_outcome = match &outcome {
+            AdmissionOutcome::Durable(receipt) => {
+                super::NativeOutcomeCopy::receipt(receipt, &self.manifest)?
+            }
+            AdmissionOutcome::Rejected(_) => super::NativeOutcomeCopy::rejection(
+                input.request,
+                input.digest,
+                identity.policy_epoch,
+                &self.manifest,
+                frame(&[], &[&detail])?,
+            ),
+        };
         writes.put(request_key, detail)?;
         writes.put(
             producer_key,
@@ -452,6 +481,7 @@ impl IngestStore {
         })?;
         Ok(StoredOutcome {
             outcome,
+            native_outcome,
             _permit: permit,
         })
     }
@@ -1077,7 +1107,7 @@ fn read_rejection(
     bytes: &[u8],
     input: &PreparedEvent,
     dataset: DatasetId,
-) -> Result<AdmissionOutcome, AdmissionError> {
+) -> Result<(AdmissionOutcome, PolicyEpoch), AdmissionError> {
     let value = bytes
         .strip_prefix(REJECTION_PREFIX)
         .ok_or(AdmissionError::StateMismatch)?;
@@ -1103,5 +1133,8 @@ fn read_rejection(
         5 => RejectionReason::EventSize,
         _ => return Err(AdmissionError::IncompatibleSchema),
     };
-    Ok(AdmissionOutcome::Rejected(reason))
+    Ok((
+        AdmissionOutcome::Rejected(reason),
+        PolicyEpoch::new(number(&value[80..88])?),
+    ))
 }

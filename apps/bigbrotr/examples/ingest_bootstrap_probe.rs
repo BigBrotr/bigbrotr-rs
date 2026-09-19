@@ -185,7 +185,7 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
         .try_into()
         .unwrap();
     let now: i64 = row.get(2);
-    if mode == "reservation-commit-lost" {
+    if matches!(mode, "reservation-commit-lost" | "outcome-commit-lost") {
         // The fault proxy accepts only loopback in the shared PG namespace.
         config.hostaddr("127.0.0.1".parse().unwrap()).port(6543);
     }
@@ -215,10 +215,12 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
             request_sequence: bigbrotr_model::RequestSequence::new(1).unwrap(),
         };
         let observed = owner.read_producer_reservation(request).await.unwrap();
+        let outcome = owner.read_producer_outcome(request).await.unwrap();
         emit(
             serde_json::json!({"event":"reservation-observed", "control_epoch":owner.identity().epoch.get(),
             "present":observed.is_some(),"digest":observed.map(|r| r.digest.to_string()),
-            "input_bytes":observed.map(|r| r.input_bytes), "manifest":observed.map(|r|hex(&r.manifest_sha256))}),
+            "input_bytes":observed.map(|r| r.input_bytes), "manifest":observed.map(|r|hex(&r.manifest_sha256)),
+            "outcome":outcome.map(|r|serde_json::json!({"kind":r.kind as i16,"policy":r.policy_epoch.get().to_string(),"digest":r.request_digest,"sha256":hex(&r.outcome_sha256),"bytes":r.outcome_bytes}))}),
         );
         owner.release().await.unwrap();
         drop(observer);
@@ -432,6 +434,28 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
             original_row.get::<_, String>(0),
             original_row.get::<_, String>(1),
         );
+        let original_outcome = observer
+            .query_one(
+                "SELECT row_to_json(r)::text, xmin::text FROM control.producer_outcomes r",
+                &[],
+            )
+            .await
+            .unwrap();
+        let original_outcome = (
+            original_outcome.get::<_, String>(0),
+            original_outcome.get::<_, String>(1),
+        );
+        let copied = owner
+            .read_producer_outcome(receipt.receipt().request_id())
+            .await
+            .unwrap()
+            .unwrap();
+        assert_eq!(
+            copied.kind,
+            bigbrotr::storage::rocks::store::NativeOutcomeKind::NewFacts
+        );
+        assert_eq!(copied.request_digest, metadata.digest);
+        assert_eq!(copied.policy_epoch.get(), 1);
         let first = receipt.receipt().batch().unwrap().first();
         assert_eq!(receipt.receipt().batch().unwrap().records().len(), 2);
         if mode == "after" {
@@ -469,6 +493,20 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
             ),
             original_row
         );
+        let retried_outcome = observer
+            .query_one(
+                "SELECT row_to_json(r)::text, xmin::text FROM control.producer_outcomes r",
+                &[],
+            )
+            .await
+            .unwrap();
+        assert_eq!(
+            (
+                retried_outcome.get::<_, String>(0),
+                retried_outcome.get::<_, String>(1)
+            ),
+            original_outcome
+        );
         drop(retry);
         let pending = store
             .read_pending_batch(
@@ -500,6 +538,18 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
             Ok(_) => panic!("negative control accepted"),
         };
         match mode {
+            "outcome-commit-lost" => assert_eq!(
+                error,
+                InitialBatchError::Outcome(
+                    bigbrotr::storage::postgres::producer_outcomes::OutcomeError::CommitUnknown
+                )
+            ),
+            "outcome-rollback" | "outcome-refused" => assert_eq!(
+                error,
+                InitialBatchError::Outcome(
+                    bigbrotr::storage::postgres::producer_outcomes::OutcomeError::Backend
+                )
+            ),
             "reservation-refused" => {
                 assert_eq!(error, InitialBatchError::Control(OwnerError::InvalidPolicy))
             }
@@ -544,7 +594,7 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
         .await
         .unwrap()
         .unwrap();
-    if mode == "reservation-commit-lost" {
+    if matches!(mode, "reservation-commit-lost" | "outcome-commit-lost") {
         assert!(ended.is_err());
     } else {
         ended.unwrap();

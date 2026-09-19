@@ -97,7 +97,8 @@ SELECT pg_temp.refuse('same_epoch_bulk_atomic_refusal','23514',$q$
 SELECT pg_temp.refuse('oversize_input','23514','SELECT pg_temp.reserve(1002,1,16777217)');
 SELECT pg_temp.reserve(1002,1,16777216);
 SELECT pg_temp.refuse('manifest_context_change','23514',$q$SELECT pg_temp.reserve(1002,2,1,decode(repeat('03',32),'hex'))$q$);
-SELECT pg_temp.reserve(1002,2,16777216);
+-- 0012 reserves 64KiB per outcome before either native dispatch.
+SELECT pg_temp.reserve(1002,2,16646144);
 SELECT pg_temp.refuse('retained_byte_limit','23514','SELECT pg_temp.reserve(1002,3,1)');
 UPDATE control.producer_epochs SET state='closing' WHERE producer_slot_id=pg_temp.id(1002);
 SELECT pg_temp.refuse('unresolved_reservations_refuse_retirement','55000',$q$

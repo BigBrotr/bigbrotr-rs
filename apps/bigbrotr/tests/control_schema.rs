@@ -257,3 +257,28 @@ fn producer_reservations_require_the_new_complete_prefix() {
     );
     assert!(migrations::require_applied(&applied, 11).is_ok());
 }
+
+#[test]
+fn producer_outcomes_require_an_additive_migration_after_reservations() {
+    let plan = plan(&[], 12).expect("producer outcome copy must have an explicit migration");
+    assert_eq!(
+        plan.pending.last().unwrap().name,
+        "0012_producer_outcomes.sql"
+    );
+    let applied: Vec<_> = plan.pending[..10]
+        .iter()
+        .map(|m| AppliedMigration {
+            version: m.version,
+            name: m.name.into(),
+            checksum: m.checksum(),
+            reader_min: m.reader_min,
+            reader_max: m.reader_max,
+            writer_floor: m.writer_floor,
+        })
+        .collect();
+    assert_eq!(
+        migrations::require_applied(&applied, 12),
+        Err(MigrationError::MissingPrerequisite(12))
+    );
+    assert_eq!(migrations::plan(&applied, 12).unwrap().pending.len(), 1);
+}

@@ -88,6 +88,7 @@ impl BootstrapLimits {
         }
         let vectors = self.max_mappings * (4 * size_of::<Entry>() + 2 * size_of::<FactRef>());
         Ok((5 * self.max_batch_bytes
+            + super::outcome_copy::HANDOFF_DATA_BYTES
             + super::request_inputs::STAGING_OVERHEAD_BYTES
             + vectors
             + 5 * size_of::<Entry>()
@@ -196,7 +197,8 @@ impl IngestStore {
 
     /// Internal primitive, never a public authority-by-callback interface.
     /// &mut serializes decisions; the retained native LOCK excludes other opens.
-    /// Only initial epoch/request one is supported. Any later state is refused.
+    /// Only initial epoch/request one is supported. A retained bootstrap may be
+    /// replayed after later admissions, without rewinding their counters.
     pub(in crate::storage) fn bootstrap_dictionaries(
         &mut self,
         request: ProducerRequestId,
@@ -278,13 +280,12 @@ impl IngestStore {
         };
         let (mut prepared, receipt) =
             self.prepare_bootstrap(request, intent, retry_time.unwrap_or(recorded_at), limits)?;
+        let outcome_copy = super::NativeOutcomeCopy::receipt(&receipt, &self.manifest)?;
         prepared.sort();
         if retry_time.is_some() {
-            // Complete equality also checks pending closure, both counters, all
-            // inventory values, producer state, original context and receipt.
-            self.require_exact_state(&prepared.entries)?;
+            self.require_bootstrap_replay(&prepared.entries)?;
             require_authority()?;
-            return Ok(StoredReceipt::new(receipt, permit));
+            return Ok(StoredReceipt::new(receipt, outcome_copy, permit));
         }
         let manifest = Entry {
             key: IngestKey::Manifest
@@ -304,7 +305,7 @@ impl IngestStore {
             .map_err(BootstrapError::RequestInput)?;
         drop(input);
         self.commit_prepared(prepared, &mut require_authority)?;
-        Ok(StoredReceipt::new(receipt, permit))
+        Ok(StoredReceipt::new(receipt, outcome_copy, permit))
     }
 
     pub(super) fn commit_prepared(
@@ -569,6 +570,39 @@ impl IngestStore {
                 return Err(BootstrapError::StateMismatch);
             }
             iterator.status().map_err(|_| BootstrapError::EngineRead)?;
+        }
+        Ok(())
+    }
+
+    fn require_bootstrap_replay(&self, expected: &[Entry]) -> Result<(), BootstrapError> {
+        for entry in expected {
+            let cf = self
+                .db
+                .cf_handle(entry.cf.name())
+                .ok_or(BootstrapError::EngineRead)?;
+            let value = self
+                .db
+                .get_pinned_cf_opt(cf, entry.key.as_bytes(), &read_options())
+                .map_err(|_| BootstrapError::EngineRead)?
+                .ok_or(BootstrapError::StateMismatch)?;
+            let matches = match entry.key.as_bytes()[..2] {
+                // Later admissions may advance the source and issued counters.
+                // This verifies the retained bootstrap, not a complete later cut
+                // or a contiguous producer checkpoint. No ACK/GC exists yet.
+                [1, 2] => {
+                    value.len() == 10 && value[..2] == [1, 2] && value[2..] >= entry.value[2..]
+                }
+                [1, 0x31] => {
+                    value.len() == 26
+                        && value[..2] == [1, 0x31]
+                        && value[2..10] >= entry.value[2..10]
+                        && value[10..] == [0; 16]
+                }
+                _ => value.as_ref() == entry.value.as_slice(),
+            };
+            if !matches {
+                return Err(BootstrapError::StateMismatch);
+            }
         }
         Ok(())
     }

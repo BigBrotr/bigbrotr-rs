@@ -78,6 +78,34 @@ fn producer_input_is_retained_before_effects_and_recovers_exact_original_intent(
         )
         .unwrap();
     let expected = receipt.receipt().encode_persistent(8192).unwrap();
+    let copy = receipt
+        .native_outcome()
+        .expect("owner-verified commit witness");
+    assert_eq!(copy.bytes(), expected);
+    assert_eq!(copy.request(), id);
+    assert_eq!(copy.digest(), digest);
+    assert_eq!(copy.dataset(), manifest().identity().dataset_id);
+    assert_eq!(copy.kind(), NativeOutcomeKind::NewFacts);
+    let inspected = store
+        .read_receipt(
+            id,
+            digest,
+            bigbrotr_model::receipt_codec::ReceiptDecodeLimits {
+                max_encoded_bytes: 8192,
+                max_allocation_bytes: 8192,
+                max_batch_records: 8,
+                max_dependencies: 8,
+            },
+            grant(&b, MIB, 0),
+            &std::sync::atomic::AtomicBool::new(false),
+        )
+        .unwrap()
+        .unwrap();
+    assert!(
+        inspected.native_outcome().is_none(),
+        "structural reads cannot mint a commit witness"
+    );
+    drop(inspected);
     drop(receipt);
     let committed = store.db.latest_sequence_number();
     assert!(committed > before);
@@ -95,6 +123,7 @@ fn producer_input_is_retained_before_effects_and_recovers_exact_original_intent(
         )
         .unwrap();
     assert_eq!(replay.receipt().encode_persistent(8192).unwrap(), expected);
+    assert_eq!(replay.native_outcome().unwrap().bytes(), expected);
     assert_eq!(store.db.latest_sequence_number(), committed);
 }
 
@@ -217,6 +246,25 @@ fn complete_signed_and_rejected_inputs_survive_native_admission_and_reopen() {
     assert_eq!(receipt.batch().unwrap().records().len(), 3);
     let receipt_bytes = receipt.encode_persistent(8192).unwrap();
     drop(outcome);
+    let committed = store.db.latest_sequence_number();
+    let replay = store
+        .bootstrap_dictionaries(
+            bootstrap_id,
+            &boot,
+            ObservedTime::new(999),
+            BootstrapLimits {
+                max_mappings: 8,
+                max_batch_bytes: MIB as usize,
+            },
+            grant(&b, 8 * MIB, 4 * MIB),
+            || Ok(()),
+        )
+        .expect("bootstrap outcome remains recoverable after later events");
+    assert_eq!(replay.receipt().request_id(), bootstrap_id);
+    assert_eq!(replay.receipt().batch().unwrap().records().len(), 2);
+    assert!(replay.native_outcome().is_some());
+    assert_eq!(store.db.latest_sequence_number(), committed);
+    drop(replay);
     let rejection: serde_json::Value = serde_json::from_str(include_str!(
         "../../../../../tests/fixtures/ingest/rejected-request.json"
     ))
@@ -250,7 +298,36 @@ fn complete_signed_and_rejected_inputs_survive_native_admission_and_reopen() {
         rejected.outcome(),
         &AdmissionOutcome::Rejected(RejectionReason::Signature)
     );
+    let copy = rejected.native_outcome();
+    assert_eq!(copy.request(), rejected_id);
+    assert_eq!(copy.digest(), rejected_digest);
+    assert_eq!(copy.dataset(), scope.dataset_id);
+    assert_eq!(copy.kind(), NativeOutcomeKind::Rejected);
+    assert_eq!(copy.policy_epoch().get(), 1);
+    let key = super::super::keys::IngestKey::Request {
+        request_id: rejected_id,
+    }
+    .encode()
+    .unwrap();
+    let mut historic = store
+        .db
+        .get_cf(store.db.cf_handle("receipts").unwrap(), key.as_bytes())
+        .unwrap()
+        .unwrap();
+    assert_eq!(copy.bytes(), historic);
     drop(rejected);
+    // A historical v1 rejection under a different policy: replay must retain its
+    // original full-u64 context, not synthesize today's manifest epoch (1).
+    let end = historic.len();
+    historic[end - 9..end - 1].copy_from_slice(&u64::MAX.to_be_bytes());
+    store
+        .db
+        .put_cf(
+            store.db.cf_handle("receipts").unwrap(),
+            key.as_bytes(),
+            &historic,
+        )
+        .unwrap();
     drop(store);
     let mut store =
         IngestStore::reopen(&path, manifest, native(), grant(&b, 0, 128 * MIB)).unwrap();
@@ -300,6 +377,8 @@ fn complete_signed_and_rejected_inputs_survive_native_admission_and_reopen() {
                 outcome.outcome(),
                 &AdmissionOutcome::Rejected(RejectionReason::Signature)
             );
+            assert_eq!(outcome.native_outcome().policy_epoch().get(), u64::MAX);
+            assert_eq!(outcome.native_outcome().bytes(), historic);
         }
         assert_eq!(store.db.latest_sequence_number(), before);
     }

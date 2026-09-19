@@ -356,6 +356,29 @@ impl ControlSession {
         Ok(row)
     }
 
+    /// Observe producer-copy metadata without claiming current native protection,
+    /// logical progress or permission to reuse a missing request.
+    pub async fn read_producer_outcome(
+        &mut self,
+        request: bigbrotr_model::ProducerRequestId,
+    ) -> Result<
+        Option<super::producer_outcomes::ProducerOutcomeObservation>,
+        super::producer_outcomes::OutcomeError,
+    > {
+        use super::producer_outcomes::{self, OutcomeError};
+        self.begin_operation().map_err(|_| OutcomeError::Backend)?;
+        let tx = application_transaction(&mut self.client, 12)
+            .await
+            .map_err(|_| OutcomeError::Backend)?;
+        require(&tx, self.request.dataset, self.identity)
+            .await
+            .map_err(|_| OutcomeError::Backend)?;
+        let row = producer_outcomes::read(&tx, self.request.dataset, request).await?;
+        tx.rollback().await.map_err(|_| OutcomeError::Backend)?;
+        self.available = true;
+        Ok(row)
+    }
+
     pub async fn release(mut self) -> Result<(), OwnerError> {
         self.begin_operation()?;
         let tx = application_transaction(&mut self.client, 7)

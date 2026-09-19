@@ -35,8 +35,8 @@ Dropping an async future cannot cancel native FFI.
 ## Closed initial state
 
 Only producer epoch one, request sequence one, owner epoch one and admission
-policy version one are accepted. The store must contain exactly its manifest,
-or exactly the complete retained initial batch being retried. Dictionaries are
+policy version one are accepted. A new bootstrap requires exactly its manifest;
+replay requires the complete retained initial batch. Dictionaries are
 caller ordered, with ordinals contiguous from one in each registered namespace.
 The first visibility mapping may reference itself. Every other envelope or
 descriptor dependency must precede its consumer in the batch. Duplicate complete
@@ -53,12 +53,15 @@ synchronized separately before dispatch. `recorded_at` is
 the trusted owner's supplied time; retry preserves the originally recorded time,
 context, dependencies and receipt bytes.
 
-A retry reconstructs and compares the **entire** initial key/value state before
-returning the retained result. Missing or changed members and unexpected keys
-fail closed. In particular, missing receipt detail with other persisted effects
-is not rollback. Later populated stores require the general receipt-resolution
-operation, not this bounded initializer. A changed digest for the same retained
-request returns RequestConflict.
+A retry reconstructs and compares every immutable initial member, the manifest,
+allocation counters, pending closure and exact receipt. Later event admissions may
+advance source/issued counters and add keys; replay checks that those counters
+have not regressed and ACK/retired remain zero. It never rewrites them or certifies
+the later source cut. Missing or changed required members fail closed. In particular,
+missing receipt detail with other persisted effects is not rollback. A changed
+digest for the same retained request returns RequestConflict. This allows the
+original bootstrap outcome to be copied after later events, while successor
+authority, generalized dictionary mutation and post-GC replay remain separate work.
 
 ## Persistent values added by this slice
 
@@ -125,7 +128,8 @@ checks closing-state refusal, not completed producer retirement. The original
 
 The [retained producer input prerequisite](producer-request-inputs.md) now
 synchronizes the exact original request before each new native commit. It keeps
-all input detail within a finite sidecar and supports bounded recovery decoding;
-it does not implement the PostgreSQL producer ledger, ACK/GC or owner handoff.
+all input detail within a finite sidecar and supports bounded recovery decoding.
+The connected [reservation/outcome protocol](producer-request-inputs.md#connected-native-outcome-copy-0012)
+adds a durable PG copy before successful return, without ACK/GC or owner handoff.
 Historical receipt replay does not synthesize missing input files or claim that
 legacy stores satisfy the new input-completeness requirement.

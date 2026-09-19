@@ -66,7 +66,7 @@ def main(root):
         case = dict(name=label,status='INCOMPLETE',process={});report['cases'].append(case);save()
         db='bbproducer_'+label.replace('-','_')
         sql('postgres',f'CREATE DATABASE {db}')
-        setup={};execute(binary+['setup-11',db,'/secrets/postgres','unused'],30,setup)
+        setup={};execute(binary+['setup-12',db,'/secrets/postgres','unused'],30,setup)
         case['setup']=setup;save();assert setup['exit']==0 and not setup['stderr']
         if label=='reservation-rollback':
             sql(db,"CREATE FUNCTION public.fixture_abort() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'fixture rollback'; END $$; CREATE TRIGGER zz_fixture_abort AFTER INSERT ON control.producer_requests FOR EACH ROW EXECUTE FUNCTION public.fixture_abort();")

@@ -41,6 +41,10 @@
     {
       "version": 11,
       "name": "0011_producer_requests.sql"
+    },
+    {
+      "version": 12,
+      "name": "0012_producer_outcomes.sql"
     }
   ],
   "reserved": [

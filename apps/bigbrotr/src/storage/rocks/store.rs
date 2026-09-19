@@ -26,6 +26,11 @@ pub use pending::{PendingBatch, PendingBatchHeader, PendingError, PendingReadLim
 mod receipts;
 pub use receipts::{ReceiptReadError, StoredReceipt, required_receipt_data_bytes};
 
+#[path = "outcome_copy.rs"]
+mod outcome_copy;
+pub use outcome_copy::NativeOutcomeKind;
+pub(in crate::storage) use outcome_copy::{MAX_OUTCOME_BYTES, NativeOutcomeCopy};
+
 #[path = "request_inputs.rs"]
 mod request_inputs;
 pub(in crate::storage) use request_inputs::StagedProducerRequest;

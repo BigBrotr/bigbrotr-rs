@@ -19,11 +19,12 @@ Archive receipt consumer is qualified separately. All later selected work remain
 
 ## Git and current work
 
-Last observed Mac main is unpublished harness candidate
-`5f19eb79447d4691a30b6a171555a755d5aff5e1`, following 57cce75/4296320/dddefd5.
-Private origin/main was last verified at
-`d98c96577ff0b850775b2494fa9e93db7b0bc64f`; fetch/check before publishing.
-Root owns dirty evidence, reference/task notes, inventory and this checkpoint.
+Mac main and private origin/main were verified clean and identical at
+`05520e06097a849b81386d74db8cd2936200540c` after the qualification push,
+including candidates 57cce75/4296320/dddefd5/5f19eb7 and the evidence commit.
+Root owns the dirty outcome-copy slice: additive0012, native witness/replay,
+PG bridge/metadata read, client/harness regressions and owning documentation.
+Nothing in this next slice is yet committed or qualified on Linux.
 No other contributor edits were incorporated; existing review agents are read-only.
 No other implementation worktree is being integrated.
 
@@ -154,15 +155,31 @@ scoped closure of its five findings; no new issue was inferred from its old text
 
 ## Next bounded action
 
-Finish evidence/diff review and documentation checks, then commit and fast-forward
-push the verified reservation prerequisite to private main after inspecting remote
-changes. Continue P02-T02 step 4 with actual logical source-position obligations and
-typed durable outcome/checkpoint closure before ACK/GC or nonempty retirement.
-Read the complete owning contracts/callers for that new boundary; recent searches
-of acquisition/storage architecture were navigation, not a complete review.
+Finish candidate source/diff checks for P02-T02 step4's native outcome copy, then
+commit the exact source for a fresh isolated Tux run. Run existing signed installed
+publication plus new five outcome-copy/fourth-COMMIT cases and19SQL observations;
+add practical0011->0012 headroom/compatibility cases. Outcomes remain NOT_RUN on Linux.
+Mac14migration tests,8input/native tests,5bootstrap tests and5structural receipt
+reader tests passed. Regression
+first failed UnknownTarget12; native witness tests first failed missing API. A
+real populated-store bootstrap replay failed StateMismatch, then passed after
+checking its retained immutable members with nonregressing source/issued counters.
+Existing missing/altered-member negatives also passed. Scoped library/client
+Clippy, artifact/link checks and handoff checks passed (zero structural errors).
+
+Independent read-only AI review found the populated bootstrap replay obstacle;
+root reproduced/fixed it; independent follow-up found no residual local replay
+counterexample. No successor or post-reopen qualification was inferred. The ledger copy
+retains original rejection policy and full canonical bytes, reserves64KiB outcome
+space before dispatch, and does not advance logical positions/checkpoints/ACK/GC.
+Structural receipt inspection produces no native witness. Compatible old PG rows
+are not successor authorization. The existing bare-digest producer_checkpoints
+relation remains insufficient progress authority. Raw local evidence for this
+candidate is summarized in ignored .research/implementation/producer-outcomes/
+mac-validation.json (base/diff/file identities and tool receipts); this is not a release report.
 
 The initial adapter still binds original Control and owner/producer epoch1;
-bootstrap is initial-store-only, admission requires positive watermarks, allocation
+new bootstrap is initial-store-only (retained replay allows later events), admission requires positive watermarks, allocation
 domains have immutable owners, and registry observation needs epoch scoping. Future
 handoff needs one recovery handle incapable of admission, synchronized local
 closure, fresh-Control PG close/register/topology CAS and synchronized successor

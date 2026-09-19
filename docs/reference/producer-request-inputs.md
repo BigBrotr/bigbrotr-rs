@@ -176,3 +176,57 @@ match all 24 PG reservations to retained inputs and native context. Earlier fail
 fixture runs and the lost supplemental SQL transcript remain recorded separately.
 These results qualify the reservation prerequisite only; logical progress,
 outcome closure, ACK/GC and successor recovery remain required.
+
+## Connected native outcome copy (0012)
+
+P02-T02 step 4 next binds each reservation to an immutable producer-side copy of
+the complete native outcome. Migration0012 and the initial bootstrap/event bridges
+own this responsibility. A successful connected return requires both the native
+commit (or exact validated native replay) and the PostgreSQL outcome COMMIT.
+This is still not a logical position checkpoint: these bridges have no import or
+traversal position and must not derive one from the mutation request sequence.
+
+The native owner alone produces the internal outcome witness. Ordinary structural
+receipt inspection cannot produce it. It binds the exact native manifest, request,
+dataset, digest, outcome kind and original policy epoch, retaining the complete
+unchanged receipt/1 or rejection/1 bytes. Receipts include their original protection
+context, batch and dependency closure; rejection preserves its original policy
+epoch rather than the current retry's epoch. NewFacts, AlreadyDurable and Rejected
+are distinct. A rejection creates no event progress basis. Retryable errors,
+uncertain commits and RetiredRequest produce no witness.
+
+The ledger stores typed keys/kind/policy, the canonical operational outcome bytes
+and their SHA256, original reservation binding and recording Control tuple. No
+event body is copied into PG. The trusted adapter validates the native witness;
+SQL checks reservation identity, retained bounds, current Control/Ingest authority,
+immutability and the byte checksum. A database checksum alone is not native
+commit authority. Identical retries preserve the original outcome row and timestamp;
+different bytes or context refuse. A current Control owner can inspect bounded
+outcome metadata without impersonating the producer. Absence is not native absence.
+
+Before dispatch, each input reservation also reserves 64KiB for its outcome within
+the existing 32MiB retained producer envelope. This covers the supported maximum
+256 bootstrap records/dependencies or 5 event records/256 dependencies; encoders
+refuse larger results before mutation. The operation grant adds 256KiB for the
+retained encoded copy and PG handoff staging. These are application bounds, not RSS
+or physical-disk ceilings. All rows and inputs remain retained; no capacity is
+reclaimed yet. Migration0012 refuses preexisting reservation sets without this
+headroom (55000), preserving applied checksums and all history. Compatible earlier
+reservations remain unresolved until an actual native outcome is recovered; no
+backfill or successful outcome is inferred. Unknown new migration fences old SQL
+starts, but PG backend loss still does not exclude native work.
+Migration compatibility does not authorize a successor: the existing restriction
+to the original Control/producer incarnation remains. A new process still needs
+the separately implemented and qualified recovery/handoff protocol. Native
+bootstrap replay now checks its complete retained batch in a populated store,
+without claiming a complete later cut or rewinding any counter.
+
+The native-operation PG transaction records the outcome after native completion.
+Failure before its COMMIT leaves native effects intact and the session unavailable;
+loss of the COMMIT reply is a distinct Outcome CommitUnknown. A retry must resolve
+the original native request and compare the retained ledger identity. Cancellation,
+lease expiry or backend loss after native dispatch never become a negative native
+result. The three boundaries (reservation, native write, outcome copy) remain
+separately identifiable. No producer_checkpoints, ACK, retirement or GC watermark
+is advanced by this copy. Required practical fault/compatibility evidence is
+recorded separately; this contract is not a PASS claim.

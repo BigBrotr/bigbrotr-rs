@@ -1,4 +1,5 @@
 //! Connected initial native batch under the dedicated Control backend.
+use super::super::producer_outcomes::{self, OutcomeError};
 use super::super::producer_requests::{self, ReservationError};
 use super::*;
 use crate::{
@@ -25,6 +26,8 @@ pub enum InitialOperationError<E> {
     Registry(ingest_registry::RegistryError),
     Native(E),
     Reservation(ReservationError),
+    /// The native result exists; this error never authorizes another request ID.
+    Outcome(OutcomeError),
     /// Native work was dispatched. Its retained request must be resolved even
     /// when later coordination cleanup or output authorization is unavailable.
     DeliveryUnknown,
@@ -157,12 +160,33 @@ impl ControlSession {
                     .map_err(|_| BootstrapError::AuthorityUnavailable)
             },
         );
-        // This transaction observes/fences; it makes no scientific PG writes.
-        // A failure here cannot roll back a successful synchronized Rocks batch.
-        tx.rollback()
+        let receipt = match result {
+            Ok(receipt) => receipt,
+            Err(error) => {
+                tx.rollback()
+                    .await
+                    .map_err(|_| InitialBatchError::DeliveryUnknown)?;
+                return Err(InitialBatchError::Native(error));
+            }
+        };
+        if input.cancelled.load(Ordering::Relaxed)
+            || lease.check_delivery(identity.policy_epoch).is_err()
+        {
+            return Err(InitialBatchError::DeliveryUnknown);
+        }
+        producer_outcomes::record(
+            &tx,
+            &staged,
+            receipt
+                .native_outcome()
+                .ok_or(InitialBatchError::Outcome(OutcomeError::InvalidMetadata))?,
+            spec.control,
+        )
+        .await
+        .map_err(InitialBatchError::Outcome)?;
+        tx.commit()
             .await
-            .map_err(|_| InitialBatchError::DeliveryUnknown)?;
-        let receipt = result.map_err(InitialBatchError::Native)?;
+            .map_err(|_| InitialBatchError::Outcome(OutcomeError::CommitUnknown))?;
         if input.cancelled.load(Ordering::Relaxed)
             || self.client.is_closed()
             || lease.check_delivery(identity.policy_epoch).is_err()
@@ -251,10 +275,26 @@ impl ControlSession {
                     .map_err(|_| AdmissionError::AuthorityUnavailable)
             },
         );
-        tx.rollback()
+        let outcome = match result {
+            Ok(outcome) => outcome,
+            Err(error) => {
+                tx.rollback()
+                    .await
+                    .map_err(|_| InitialEventError::DeliveryUnknown)?;
+                return Err(InitialEventError::Native(error));
+            }
+        };
+        if input.cancelled.load(Ordering::Relaxed)
+            || lease.check_delivery(identity.policy_epoch).is_err()
+        {
+            return Err(InitialEventError::DeliveryUnknown);
+        }
+        producer_outcomes::record(&tx, &staged, outcome.native_outcome(), spec.control)
             .await
-            .map_err(|_| InitialEventError::DeliveryUnknown)?;
-        let outcome = result.map_err(InitialEventError::Native)?;
+            .map_err(InitialEventError::Outcome)?;
+        tx.commit()
+            .await
+            .map_err(|_| InitialEventError::Outcome(OutcomeError::CommitUnknown))?;
         if input.cancelled.load(Ordering::Relaxed)
             || self.client.is_closed()
             || lease.check_delivery(identity.policy_epoch).is_err()
@@ -302,7 +342,7 @@ impl ControlSession {
         .map_err(|_| OwnerError::Unavailable)?;
         let ticket = lease.begin_refresh().map_err(|_| OwnerError::Unavailable)?;
         self.begin_operation()?;
-        let tx = application_transaction(&mut self.client, 11)
+        let tx = application_transaction(&mut self.client, 12)
             .await
             .map_err(transaction_error)?;
         require(&tx, self.request.dataset, self.identity).await?;
