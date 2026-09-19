@@ -7,223 +7,176 @@ Verify Git, dirty work, evidence and resources before continuing.
 ## Mandate and active boundary
 
 The owner-authorized complete implementation remains active. Mac is the sole
-editing/Git workspace. Trusted exact-source Tux execution continues despite the
-hosted Actions billing block. Preserve private bigbrotr-rs, unpublished Cargo
-packages and the read-only Go neighbor. No public release or Linux arm64 claim.
-Root is sole writer/integrator. No P02 task or M1 gate is complete.
+editing/Git workspace; root is sole writer/integrator. Trusted exact-source Tux
+execution continues despite hosted Actions billing being unavailable. Preserve
+private bigbrotr-rs, unpublished Cargo packages and the read-only Go neighbor.
+No public release or Linux arm64 claim. No P02 task or M1 gate is complete.
 
-Active P02-T03/T04 steps 3/4/5 and P01-T05/T06 prerequisites connect signed durable
-pending inputs to publication, fresh receipts/protection and M1 read/export/restart.
-Current serve implements Control only and rejects other roles. The latest useful
-consumer is the installed finite archive receipt inspection command. All later
-selected product work remains required.
+Active P02-T02 step 4 and P01-T06 steps 2/3/5/6 prerequisites lead toward the
+P02-T03/T04 publication, protection and M1 read/export/restart boundary. Current
+serve implements Control only and rejects other roles. The installed finite
+Archive receipt consumer is qualified separately. All later selected work remains.
 
-## Git and latest qualification
+## Git and current work
 
-Mac main and private origin/main both verified at
-`70a2227af5d866547ccd4500bd93cb565566c418`; worktree was clean after push.
-This is the documentation/evidence successor of tested executable source
-`d78bcc5bbf660fc0a7bca8807508a6c357e619d5`, tree
-`bd11aff821023718a42cba7b3eb35ec7311211fb`. All four development candidates and
-the scoped qualification are published privately. New dirty work belongs to root
-on the producer request recovery prerequisite; no other contributor changes.
+Mac main is unpublished candidate
+`a1da96a09ee73722d26003dedf793317b7bdf7e1`, tree
+`441b3e68f15706d44e76d140bfa811e088bb4d9d`. Private origin/main last freshly
+verified at `70a2227af5d866547ccd4500bd93cb565566c418`. Clean candidate source
+was transferred through Git and exported readonly for Tux. Current root-owned
+dirty work is producer-input evidence, related documentation/checkpoint and the
+existing laboratory inventory. No other contributor edits were incorporated.
+Before pushing, verify actual state; the enclosing evidence commit may be a
+documentation-only successor of the tested executable revision.
 
-[Native receipt CLI evidence](evidence/p02-receipt-cli-native-20260919.json) at
-`d78bcc5` passes six installed signed producer schedules and all 16 receipt cases:
-39 finite commands, five supervised processes, 22 original retained observations
-(11 Present, two Absent, nine conflicts refused), missing/corrupt inputs, whole-scan
-limits, accepted-policy seed drift, five effective reader privilege refusals,
-readonly data/state bind mounts, blocked-reader heartbeat and four cancellations.
-INT 0.1074s, TERM 0.1124s, policy change 0.1710s and failed Control refresh 5.1893s;
-actual native exit/reap is checked with pidfds before releasing owned PG blockers.
-The refresh-failure case is not isolated lease-expiry-only qualification. The
-proxy-held first-query connection and later blocked pool connection can differ.
+## Producer input prerequisite
 
-All six complete catalog dumps compare after normalizing only random dump markers
-and the single fixture-touched ACL block's grant ordering. Other statements/data,
-grant multiplicity and privileges remain identical. All 106 data/state file hashes
-and original Control coordinator/attempt rows including xmin match their initial
-baseline. A fresh independent read of stopped retained files also matches all 106.
-Readonly mount evidence exercises actual custody locks and file/directory fsync,
-with four kernel EROFS controls and disjoint writable scratch. It does not make
-other host/runner mounts immutable. The cap489/cap490 checks use a two-receipt
-catalog: allocation admission evidence, not a 489-row load or capacity/RSS claim.
+The [input contract](../reference/producer-request-inputs.md) now owns exact
+profile-1 request decoding and synchronized co-located staging in the sole native
+Ingest owner. Complete signed bodies survive rejection; recovered typed input
+retains its allocation grant. New native bootstrap/event/rejection batches stage
+and sync the input before the final authority check and synchronized effects.
+Identical retry compares bytes; changed, partial and unsafe paths refuse. Existing
+legacy receipt replay remains available but does not establish input completeness.
+No SQL/manifest format change, producer ledger, ACK/GC or successor authority yet.
 
-Ordered native build and Clippy PASS; 47 Archive + 8 binary + 13 catalog CLI +
-1 Control CLI tests PASS, one older Archive fixture ignored, not PASS. Matrix86430,
-terminal audit/collection91781 exit0. Root verified 111 raw files and 776 source
-hashes against Mac Git archive, read actual commands/proxy/process observations,
-compared all six dumps and checked the independently retained physical hashes.
-Mac38165 passed 46 selected binary/config/CLI cases;49289 passed 44 Archive cases;
-all-target Clippy42911 and format/Python/artifact/handoff/diff checks passed.
+[Native evidence](evidence/p02-producer-inputs-native-20260919.json) at a1da96a:
+58 model tests, 25 actual Rocks owner tests, 47 Archive tests, 8 binary/13 catalog
+CLI/1 Control CLI tests PASS; one older Archive fixture ignored, not PASS.
+All-target input Clippy and ordered same-source main/worker build PASS. The actual
+packaged pending-consumer test ran on Linux, closing its Mac missing-installation
+case. Mac retained runs `mac`/`mac-refined` cover 58 model / 23 selected native tests,
+then all 7 refined input cases and Clippy; docs/format checks passed.
 
-The command consumes the exact retained Control request/local inputs, including
-historical attempts. Full manager/reader privilege inspection and a fresh native
-full scan use one pinned catalog route. Accepted policy supplies native limits;
-managed seed drift cannot replace it. Shared disjoint resource lanes retain five
-simultaneous item slots through actual joined work. Policy changes/stops/failures
-cancel and join the blocking task before Control cleanup. Missing inputs or partial
-scans are unresolved, never Absent. Final local metadata reports the policy checked
-at observation completion, not current delivery authority. No replay, writer
-exclusion, source protection or reclamation is granted.
+Two actual SIGKILL/reap schedules preserve exact staged input before native
+bootstrap dispatch and after synced commit before external receipt delivery.
+The independently authored fixture compares every key/value in all three CFs:
+one manifest row before, all nine rows after. This is one-dictionary bootstrap,
+not event/rejection mid-FFI or power-loss qualification. Symlink/hardlink refusal,
+Linux FIFO, reduced decoder limits, same-input recovery/retry, partial/conflicting
+files and restrictive umask all ran against actual filesystem/Rocks bindings.
 
-Independent read-only AI review found and checked accepted-policy retention,
-resource slots, native fault barrier, zombie/reap oracle, initial baseline retention
-and scoped ACL normalization. It independently verified all e5585da raw/source
-hashes and scoped observations; that failed run remains FAIL. It performed no Tux
-execution. Final d78bcc5 offline review independently matched all 111 raw hashes, 776 Git
-source hashes, all 16 cases, six signed/scientific outcomes, 22 receipt identities
-and terminal records. No discrepancy found within that boundary. The reviewer
-verified the physical-check summary identity, not remote contents or live state.
+The six installed signed publication schedules PASS with actual Control,
+PostgreSQL 16.15, DuckDB/Parquet, CatalogManager and reader. The independent oracle
+compares all 24 producer-input files across six stores: bootstrap 890 bytes and three
+487-byte signed/invalid-signature/invalid-ID requests per store. Original metadata
+and signed bodies remain exact across reopen/receipt-reader restart. Populated
+Rocks state preserves its complete baseline digest; it is not a second independently
+authored complete native image. Scientific rows/batches have their separate literal
+oracle. Post-shutdown fresh Tux reads additionally match all 24 file hashes, six
+mode 0700 / UID 1000 spools and mode 0600 / UID 1000 / single-link files.
 
-## Development failures retained
+Finite limits: 64 files / 32 MiB aggregate logical retained bytes per store, 16 MiB/input,
+64 KiB staging reservation and 8 KiB comparison scratch. Count 64/65 and sparse
+2 x 16 MiB controls test admission limits, not RSS, physical ENOSPC or throughput.
+All inputs remain retained; partial writes can block same-name retry pending
+explicit repair. Staging alone cannot authorize handoff or receipt reclamation.
 
-- 4706373: seven receipt cases passed, then the drift fixture exceeded its static
-  worker envelope before the intended ResourceLimit check. Fixed to one 1GiB seed
-  worker versus accepted two 512MiB workers, with actual offline validation first.
-- 55ac491: nine cases passed, then the fixture's pre-acquired data_file lock blocked
-  the manager structural inspection. Actual PG query diagnosis retained. Fixed
-  with a reader-only first-query proxy barrier after full manager drain, before
-  installing the real reader relation blocker. No product guard was weakened.
-- e5585da: 15 cases passed, then raw dump equality rejected the fixture-induced
-  grant order change. The initial physical baseline was not retained, so no final
-  preservation PASS was claimed. Corrected to the exact known ACL block and saved
-  all initial hashes before commands. The diagnostic helper's extra final newline
-  was explicitly corrected to the harness's strip behavior; six supplementary
-  final dump reads are identified as post-failure diagnostics.
+Independent read-only AI review found an umask counterexample; root reproduced
+and fixed it (RED68595, descriptor chmod/validation GREEN12095). Review verified
+64 KiB charging and
+required an exact crash oracle instead of counts. Independent oracle reconstruction
+matches complete fixtures and rejects altered inputs/additional files. No reviewer
+ran remote experiments. Final independent offline evidence review and root both
+verified all 121 raw hashes and 786 Git source files, six signed/scientific and
+receipt-restart oracles, 24 input files and recorded terminal/check observations.
+Reviewer did not freshly measure remote binaries/state; root performed the native
+audit and supplemental post-stop metadata reads. No substantive discrepancy. The
+raw runner retains its initializer scope label; this report states the actual scope. Earlier missing
+Mac packaged-worker and Mac Linux-only mknodat compilation failures are recorded
+without being counted as passes.
 
-All failed roots, tar identities and their terminal audits are linked by the
-latest evidence report and inventory. Do not overwrite or restart them.
+## Owned resources and evidence
 
-## Owned resources
-
-Latest lab is stopped-retained at `2026-09-19T14:50:22.861842+00:00`:
-`/home/tux/bigbrotr-implementation-20260917/runs/receipt-cli-d78bcc5`.
-Inventory `implementation_archive_worker_20260918.receipt_cli` in
+No active lab remains. Producer-input lab stopped-retained at
+`2026-09-19T15:40:39.105871+00:00`:
+`/home/tux/bigbrotr-implementation-20260917/runs/producer-inputs-a1da96a`.
+Owner `d0127b7cec90129aa1e5a042be1e2bf0`.
+Runner `6d8a16589bb92fd29179a9200d636f752c87c189e54bfc96072d5a4a0dcadb21`;
+PG `95364e0fbbec70fcf645b936f9cc13970ef2502cc30a430ed349946dd3ce607e`;
+empty internal network `9eb6446e9abcdff40af5a94b063f4bec57a28033af4b1d0bd4d20f8a03671537`.
+Inventory `implementation_archive_worker_20260918.producer_inputs` in
 [the laboratory inventory](../research/laboratory-inventory.json).
-Owner `510e75ddf576d0a9564e67f72aff1bbb`.
-Runner `06b2121f29c143f193ad634a426078e87ceec28dd86ed6e90f64438088770556`;
-PG `bcd135a73e00a012fa34d47cf2379c7a8f46f12e83cb9093e0a7a39e19dfad3d`;
-readonly auxiliary `19686bc07c9653253f683c5c205d22ca626923a0d87c8c87ae4eb707fed3b995`;
-empty internal network `fa7cdc8fb8752e9a742d5d30b8d72c7d9c75751bf06c8aaf42d4061d963ca7cd`.
-Zero owned SQL clients before stop, no OOM; 351 preexisting containers unchanged,
-eight unrelated running, zero BigBrotr running. No active lab remains.
 
-Raw `.research/implementation/archive-worker/receipt-cli-preservation/qualified`:
-111 files; sibling `qualified-evidence-identity.json` binds tar
-`02ac209a51b5bb0f56457b4a77087f9019bde0aad40d3495c27e1fcabfe80bef`.
-Main `e9f7bb6541f7f2797b41afc27ddd979859481147b290889569fcb938629ca59e`,
-9,172,936 bytes; worker
-`89e46e831e8e12f7e60b249493a619af4cd3bca7d984ec7a06574ede3d6f0b9f`.
-Exact source/dependency/artifact identities, finite limits and images are in the
-report/inventory. Latest copied build cache is this lab/out/build; verify Cargo.lock
-before reuse. Native assets remain the readonly installed-publication-61271e2 bundle.
-Only verified empty owned networks of the three failed receipt labs were removed;
-all their containers/data remain retained. No broad prune or historical lab restart.
+Runner 2 CPU / 6 GiB / 512 PIDs; PG 1 CPU / 1 GiB / 128 PIDs; no published ports. Zero owned SQL
+clients before stop, no OOM; 354 preexisting containers unchanged, 8 unrelated running,
+zero BigBrotr running. Initial subnet exhaustion happened before any container.
+After fresh ownership/lifecycle checks, only the empty retired d78bcc5 network was
+removed; the same candidate setup resumed. All historical containers/data remain.
+Do not restart retired labs or perform broad cleanup.
 
-## Prior boundaries still relevant
+Raw `.research/implementation/producer-inputs/qualified`: 121 files, tar
+`86ef372190f0a152caa3391c637dcd2ed851b80d38a64f467516a0c35ff1c73e`.
+Sibling identity and post-stop `retained-input-metadata.json` bind actual hashes.
+Main `41be30f090776f6ee3b21bd7187037c02d90418f5f50be00fbc928859b42bbf9`,
+worker `4a8f8f37ec6dbf7b6e6def033966d21d116f027699cfd4c96ae6ff852f298f3c`.
+Latest reusable copied cache is this lab/out/build; verify Cargo.lock before reuse.
+Readonly native assets remain the installed-publication-61271e2 bundle.
 
-- [Installed coordinator CLI5050999](evidence/p02-coordinator-cli-native-20260919.json):
-  explicit local/Control binding, exact retry, startup/refusal/restart, blocked
-  stdout and driver-cancellation/fence behavior; ordinary local Archive startup
-  requires migration10/exact binding. One active local reservation, not adoption.
-- [Coordinator protocol b203a41](evidence/p02-coordinator-protocol-native-20260919.json)
-  and [faults d355c5b](evidence/p02-coordinator-faults-native-20260919.json): immutable
-  migration0010, both legacy/migration lock orders and binding COMMIT ambiguity.
-  Typed API evidence, not installed CLI lost binding/release COMMIT qualification.
-- [Retained inputs d442125](evidence/p02-retained-inputs-native-20260919.json): complete
-  synchronized headers precede issuance; grouping replay, input custody/budget,
-  complete wire preflight and 22 exact retained inputs. No source protection.
-- [Local coordinator state](evidence/p02-coordinator-state-native-20260919.json):
-  two-ended binding, real contention/SIGKILL, missing/partial/substituted state.
-- [Installed signed publication61271e2](evidence/p02-installed-publication-native-20260919.json),
-  [late initializer faults](evidence/p02-initialization-late-native-20260919.json),
-  [native TLS/mTLS](evidence/p02-native-mtls-20260919.json),
-  [residual drain](evidence/p02-initialization-drain-native-20260919.json),
+## Prior relevant qualifications
+
+- [Receipt CLI d78bcc5](evidence/p02-receipt-cli-native-20260919.json), published by
+  70a2227: 16 cases / 39 commands / 5 supervised processes, 22 receipt observations, readonly
+  mounts, blocked-reader shutdown, unchanged catalog/source/Control baselines.
+  Exact failed 4706373/55ac491/e5585da runs remain retained. Refresh failure is not
+  isolated lease-expiry qualification; cap 489/490 uses two receipts, not load.
+- [Coordinator CLI 5050999](evidence/p02-coordinator-cli-native-20260919.json) and
+  [protocol b203a41](evidence/p02-coordinator-protocol-native-20260919.json),
+  [faults d355c5b](evidence/p02-coordinator-faults-native-20260919.json): exact local/
+  Control binding, additive 0010, lock races and ambiguity within their scopes.
+- [Archive retained inputs d442125](evidence/p02-retained-inputs-native-20260919.json):
+  original publication headers before issuance; no source protection/GC grant.
+- [Installed publication 61271e2](evidence/p02-installed-publication-native-20260919.json),
+  [initialization faults](evidence/p02-initialization-late-native-20260919.json),
+  [TLS/mTLS](evidence/p02-native-mtls-20260919.json),
+  [drain](evidence/p02-initialization-drain-native-20260919.json),
   [recovery](evidence/p02-initialization-recovery-native-20260919.json) and
-  [custody](evidence/p02-initialization-custody-native-20260919.json) retain their
-  scoped results/failures. Native signed mTLS remains unqualified.
+  [custody](evidence/p02-initialization-custody-native-20260919.json) retain scoped
+  results/failures. Native signed mTLS remains unqualified.
 
 Caller-owned COPY/registration follows measured normal INSERT COMMIT-loss deletion
-of committed files. No unlink/fallback is allowed. Positive client destruction,
-exact credential retirement and fresh bounded drain establish exclusion;
-NOLOGIN/empty activity or local driver exit alone do not. Hash bindings cannot
-prove absence of privileged Control-history rollback with exact local bytes.
+of committed files. No unlink/fallback. Positive destruction, credential retirement
+and fresh bounded drain establish exclusion; NOLOGIN/empty activity alone do not.
+Exact local hashes cannot detect privileged rollback of matching Control history.
 
 ## External review findings
 
-The external implementer-feedback.md was reread; it retains historical findings
-and acknowledges scoped corrections. Executed reports remain
+Recorded scoped corrections remain
 [MON-001/002/004/006](evidence/p01-monitor-corrections-native-20260918.json),
 [MON-005](evidence/p01-jsonb-limit-native-20260918.json),
 [MON-009](evidence/p02-job-bounds-native-20260918.json),
 [MON-010](evidence/p01-tls-presence-20260918.json),
 [MON-007](evidence/p01-archive-cache-retry-20260918.json).
-MON-009 uses additive0008 and authoritative source closure/sorted locks in both
-orders, including incompatible upgrade/rollback. MON-010 is offline TLS presence;
-MON-007 includes real failed/retried/concurrent HTTPS cache writes. P01's stale
-slow-output wording now points to the earlier actual full-pipe evidence; all 13
-referenced retained artifact hashes were rechecked. No broader task completion.
+MON-009 uses additive 0008 with authoritative closure/sorted locks in both orders;
+MON-010 is offline TLS presence; MON-007 includes actual failed/retried/concurrent
+HTTPS writes. Review findings do not imply broader task completion.
 
-## Producer input recovery prerequisite in progress
+## Next bounded action
 
-Root-owned dirty work on 70a2227 adds the exact request decoder in bigbrotr-model,
-private bounded input staging/recovery in the existing native Ingest owner,
-discriminating fixtures/native tests and the linked
-[input contract](../reference/producer-request-inputs.md). No PostgreSQL ledger,
-ACK/GC or successor authority exists yet. Existing receipt replay is compatible
-but does not qualify legacy history as input-complete. All P02 checkboxes remain open.
+Commit this reviewed qualification and push verified private main. Then implement the
+recoverable producer request ledger under existing P01-T06 steps 2/3/5/6 and
+P02-T02 steps 2/4/7 before Ingest handoff. Read complete remaining owning SQL and
+actual dispatch/recovery consumers; do not infer completion from the staged input.
 
-Mac sessions22316/2329 passed model decoding (now four cases); native staged-input
-cases passed, including signed admission/rejection and exact recovery, cancelled
-precommit effects, conflicts/partial files, reduced limits and finite spool bounds.
-Review found restrictive umask could make a committed input unreadable: actual
-RED68595 confirmed it; descriptor chmod/validation corrected it, GREEN12095.
-Session13532 additionally failed the packaged native-worker case because its
-required installation was absent on Mac; it is not PASS. Linux must execute it
-with the actual same-source worker. All-target Clippy14943 passed after documenting
-inline enum metadata without adding an infallible decode allocation. New filesystem
-substitution/retry tests passed in session3344. Retained Mac check run15512 in
-`.research/implementation/producer-inputs/mac` passed 58 model and 23 selected
-native-owner cases, all-target Clippy, format/artifact/handoff/diff checks. The
-packaged worker test was explicitly omitted on Mac, not counted as PASS.
-AI review caught a count-only crash oracle; a new independently authored fixture
-now compares every native key/value, plus original request bytes, around actual
-SIGKILL and reap. Run54655 (`mac-refined`) passes all seven input cases (both crash
-schedules) and Clippy. A Mac-only compile failure for Linux mknodat was corrected;
-FIFO remains explicitly Linux-only, while symlink/hardlink and crash cases ran Mac.
-Linux target, actual packaged worker and connected publication remain pending.
+The ledger needs durable PG reservation metadata tied to the retained body outside
+PG, a reserved-through counter distinct from native issued/ACK/retired, logical
+source obligations and exact outcome/checkpoint closure. Reservation COMMIT must
+precede dispatch; staged-but-unreserved and partial inputs need explicit handling.
+Legacy writers ignore the sidecar, so the versioned admission/handoff protocol
+must gate incompatible manifests/history before relying on input completeness.
+Root has not implemented that ledger/transition or selected its final schema yet.
 
-Next: form the reviewed unpublished exact-source candidate, then create a new inventoried Tux lab from the stopped d78bcc5 copied cache and
-qualify native inputs plus the actual signed publication consumer. No new lab has
-started. Retain logs and source identities, audit/stop only owned resources, and
-publish scoped evidence before continuing the ledger/handoff prerequisite.
+Previously reviewed handoff constraints still apply: synchronized local freeze,
+current-Control PostgreSQL close/register/topology transition, then synchronized
+successor activation under one native handle. Initial adapter/native primitives
+bind original Control and owner/producer epoch 1; bootstrap is initial-store-only,
+and admission currently expects a positive source watermark. Allocation domains
+have immutable owners; fresh domains and explicit zero stream cuts are required.
+Registry observation must scope domains by epoch. A new process cannot impersonate
+the old incarnation or inherit a dead candidate nonce; unresolved original outcomes
+must be resolved before closure/explicit workflow gaps and fresh authority.
 
-## Following bounded action
-
-Implement the recoverable producer request ledger
-required by P01-T06 steps 2/3/5/6 and P02-T02 steps 2/4/7 before Ingest-owner handoff.
-Read-only AI review traced the current adapters, closure triggers and selected
-RocksDB lock source. It found that issued/ACK/retired counters alone do not retain
-outstanding request inputs. Root has not implemented the ledger or transition.
-Read the owning request/retirement contracts and actual dispatch callers first;
-exercise bootstrap plus a signed event with a retained unacknowledged receipt,
-not only an empty-store successor. The future handoff needs a synchronized local
-freeze, a current-Control PostgreSQL transition, then synchronized local activation
-under one native handle. Recovery must not inherit a dead candidate process nonce.
-
-Initial registration/admission binds original Control identity and Ingest epoch1,
-not a successor protocol. Never impersonate an old incarnation or open a second
-writable IngestStore. Current schema keeps allocation-domain owners immutable;
-fresh domains and closed source/producer cuts need explicit PG/native recovery.
-Admission rejects an empty source watermark and hardcodes epoch1; bootstrap is
-initial-store-only. Historical registration inspection currently counts domains
-across all epochs and must not misclassify retained history after a successor.
-These are next-slice findings, not an implemented design or completed task.
-
-Unissued input enumeration, catalog/per-attempt exclusion and credential retirement
-still precede missing-journal meaning and replay. Source policy/protection,
-input-write/issuance crashes, ENOSPC, cross-boot/restore/power failure, mixed aged
-workloads, M1 full read/export/restart, acquisition/analytics/read surfaces/browser
-products and ordinary Compose/release journeys remain required. Continue through
-all selected product work after this boundary.
+Archive replay/exclusion and source protection, input-write failures/ENOSPC,
+cross-boot/restore/power loss, mixed aged workloads, M1 full read/export/restart,
+acquisition/analytics/read surfaces/browser products and ordinary Compose/release
+journeys remain required. Continue the complete selected implementation afterward.

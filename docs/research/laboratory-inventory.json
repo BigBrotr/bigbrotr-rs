@@ -12536,7 +12536,240 @@
         "build_checks_status": "PASS"
       },
       "raw": ".research/implementation/archive-worker/receipt-cli-preservation/qualified",
-      "manifest": ".research/implementation/archive-worker/receipt-cli-preservation/qualified-evidence-identity.json"
+      "manifest": ".research/implementation/archive-worker/receipt-cli-preservation/qualified-evidence-identity.json",
+      "network_retirement": {
+        "network": "fa7cdc8fb8752e9a742d5d30b8d72c7d9c75751bf06c8aaf42d4061d963ca7cd",
+        "owner": "510e75ddf576d0a9564e67f72aff1bbb",
+        "action": "remove verified empty retired network only",
+        "containers": "stopped-retained",
+        "observed_at": "2026-09-19T15:36:08.074783+00:00"
+      }
+    },
+    "producer_inputs": {
+      "source": "a1da96a09ee73722d26003dedf793317b7bdf7e1",
+      "tree": "441b3e68f15706d44e76d140bfa811e088bb4d9d",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-inputs-a1da96a",
+      "owner": "d0127b7cec90129aa1e5a042be1e2bf0",
+      "container": "bigbrotr-implementation-producer-inputs-a1da96a",
+      "postgres": "bigbrotr-implementation-producer-inputs-a1da96a-pg",
+      "network": "bigbrotr-implementation-producer-inputs-a1da96a",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "state": "stopped-retained",
+      "source_files": 786,
+      "started_at": "2026-09-19T15:35:01.405009+00:00",
+      "setup_retry": "Initial network allocation failed before any container; one independently verified empty retired network removed.",
+      "network_id": "9eb6446e9abcdff40af5a94b063f4bec57a28033af4b1d0bd4d20f8a03671537",
+      "postgres_id": "95364e0fbbec70fcf645b936f9cc13970ef2502cc30a430ed349946dd3ce607e",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "6d8a16589bb92fd29179a9200d636f752c87c189e54bfc96072d5a4a0dcadb21",
+      "raw": ".research/implementation/producer-inputs/qualified",
+      "mac_checks": [
+        "mac/result.json",
+        "mac-refined/result.json"
+      ],
+      "setup_failure": "Initial Docker address pools exhausted before any container; resumed after verified old empty network retirement.",
+      "completed_at": "2026-09-19T15:40:39.105871+00:00",
+      "terminal_audit": {
+        "status": "PASS",
+        "source": "a1da96a09ee73722d26003dedf793317b7bdf7e1",
+        "tree": "441b3e68f15706d44e76d140bfa811e088bb4d9d",
+        "source_files": 786,
+        "source_archive_sha256": "29aec60b4f938f4b9f3be26cbb6ad31f7c8df6116697dfb7e0bb0bbf48c1a8c7",
+        "source_manifest_sha256": "e7af839ae4f70022eba23302c3b7e14d6c0f5ff7e1d7ce54fb605b971cae05f3",
+        "artifacts": {
+          "main": {
+            "sha256": "41be30f090776f6ee3b21bd7187037c02d90418f5f50be00fbc928859b42bbf9",
+            "bytes": 9172176,
+            "elf_machine": 62
+          },
+          "worker": {
+            "sha256": "4a8f8f37ec6dbf7b6e6def033966d21d116f027699cfd4c96ae6ff852f298f3c",
+            "bytes": 12608632,
+            "elf_machine": 62
+          },
+          "publisher": {
+            "sha256": "94edb364da9e11ec7f690afba8f815b32861b0ff9b0b8786cf4a637cd8df7cdb",
+            "bytes": 19011096,
+            "elf_machine": 62
+          },
+          "coordinator_probe": {
+            "sha256": "e01f22a1eeed515ce5429bca55c45e06895d2f7b7f44a4775bcab9c28096c0b9",
+            "bytes": 693400,
+            "elf_machine": 62
+          },
+          "attempt_probe": {
+            "sha256": "748ad1f91e1d1dd51f5be793d3258dd2e885fb5cd11d5a9d67628889987331be",
+            "bytes": 2640984,
+            "elf_machine": 62
+          }
+        },
+        "qualification": {
+          "installed-signed-cases": "PASS"
+        },
+        "cases": {
+          "installed-signed-cases": 6
+        },
+        "build_ready": true,
+        "terminal": {
+          "container_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-19T15:36:11.81637552Z",
+            "FinishedAt": "2026-09-19T15:40:34.571363608Z"
+          },
+          "postgres_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-19T15:36:09.846301437Z",
+            "FinishedAt": "2026-09-19T15:40:38.642061316Z"
+          }
+        },
+        "owned_containers": [
+          "6d8a16589bb92fd29179a9200d636f752c87c189e54bfc96072d5a4a0dcadb21",
+          "95364e0fbbec70fcf645b936f9cc13970ef2502cc30a430ed349946dd3ce607e"
+        ],
+        "existing_containers_unchanged": 354,
+        "unrelated_containers_unchanged": 20,
+        "unrelated_running": 8,
+        "bigbrotr_running": 0,
+        "observed_at": "2026-09-19T15:40:39.105871+00:00",
+        "harness": null,
+        "owned_sql_backends_before_shutdown": 0,
+        "producer_input_checks": {
+          "source": "a1da96a09ee73722d26003dedf793317b7bdf7e1",
+          "source_manifest_sha256": "e7af839ae4f70022eba23302c3b7e14d6c0f5ff7e1d7ce54fb605b971cae05f3",
+          "native_toolchain": {
+            "os": "Linux",
+            "architecture": "x86_64",
+            "discovery": "llvm-config",
+            "environment": {
+              "CC": "/usr/lib/llvm-14/bin/clang",
+              "CXX": "/usr/lib/llvm-14/bin/clang++",
+              "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+              "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+              "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+              "CARGO_BUILD_JOBS": "2",
+              "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+            },
+            "tools": {
+              "CC": {
+                "path": "/usr/lib/llvm-14/bin/clang",
+                "realpath": "/usr/lib/llvm-14/bin/clang",
+                "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+                "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+              },
+              "CXX": {
+                "path": "/usr/lib/llvm-14/bin/clang++",
+                "realpath": "/usr/lib/llvm-14/bin/clang",
+                "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+                "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+              },
+              "AR": {
+                "path": "/usr/lib/llvm-14/bin/llvm-ar",
+                "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+                "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+                "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+              },
+              "LIBCLANG_PATH": {
+                "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+                "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+                "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+                "version": "Debian clang version 14.0.6"
+              },
+              "discovery": {
+                "path": "/usr/lib/llvm-14/bin/llvm-config",
+                "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+                "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+                "version": "14.0.6"
+              }
+            },
+            "sdk": null
+          },
+          "scope": "permanent local reservation and actual native initializer",
+          "format": "bigbrotr-foundation-ci/1",
+          "status": "PASS",
+          "checks": [
+            {
+              "name": "model",
+              "command": [
+                "cargo",
+                "test",
+                "--locked",
+                "--release",
+                "-p",
+                "bigbrotr-model"
+              ],
+              "status": "PASS",
+              "executed": true,
+              "exit_code": 0,
+              "seconds": 33.37406259868294
+            },
+            {
+              "name": "native-owner",
+              "command": [
+                "cargo",
+                "test",
+                "--locked",
+                "--release",
+                "-p",
+                "bigbrotr",
+                "--lib",
+                "storage::rocks",
+                "--",
+                "--nocapture"
+              ],
+              "status": "PASS",
+              "executed": true,
+              "exit_code": 0,
+              "seconds": 1.2836656384170055
+            },
+            {
+              "name": "input-clippy",
+              "command": [
+                "cargo",
+                "clippy",
+                "--locked",
+                "--release",
+                "-p",
+                "bigbrotr-model",
+                "-p",
+                "bigbrotr",
+                "--all-targets",
+                "--",
+                "-D",
+                "warnings"
+              ],
+              "status": "PASS",
+              "executed": true,
+              "exit_code": 0,
+              "seconds": 3.770794606767595
+            }
+          ],
+          "counts": {
+            "collected": 3,
+            "executed": 3,
+            "failed": 0,
+            "not_run": 0
+          }
+        },
+        "build_checks_status": "PASS"
+      },
+      "manifest": ".research/implementation/producer-inputs/qualified-evidence-identity.json"
     }
   },
   "implementation_monitor_corrections_20260918": {

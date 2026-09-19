@@ -147,7 +147,9 @@ One owner serializes exact identity decisions for each writable directory.
   now precedes new native bootstrap/event/rejection effects and feeds bounded
   recovery decoding. PostgreSQL reservation/checkpoint closure, partial-input
   recovery and the versioned successor protocol remain required; legacy receipt
-  replay does not qualify missing producer inputs.
+  replay does not qualify missing producer inputs. The [scoped native evidence](evidence/p02-producer-inputs-native-20260919.json)
+  at a1da96a covers staged-input recovery, complete crash oracles and six installed
+  signed publication schedules; it does not complete this step.
 - [ ] **Step 5:** Make provenance-off allocate no P inventory or event/endpoint side channel;
   retain scope eligibility and scoped first local receive/earlier corrections.
   Implement CertifyExisting against one committed inventory view, exact verified

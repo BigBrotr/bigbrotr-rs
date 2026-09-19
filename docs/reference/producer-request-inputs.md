@@ -97,3 +97,12 @@ reopen, cancellation before effects, changed-input conflict, reduced limits,
 partial data, file permissions, restrictive umask and finite spool limits. Process tests additionally kill the actual owner before/after its native commit.
 Execution and unexecuted scenarios must be recorded separately in the progress
 checkpoint and slice evidence; the presence of these tests is not a PASS claim.
+
+The [native a1da96a report](../implementation/evidence/p02-producer-inputs-native-20260919.json)
+records seven input-boundary cases within 25 actual Rocks tests, including exact
+pre/post-commit SIGKILL/reap state, filesystem substitutions and the packaged
+pending consumer. Six installed publication schedules independently check 24 input
+files. The crash oracle covers a one-dictionary bootstrap; populated publication
+state is checked for invariability against its complete original digest. These
+results do not qualify power loss, partial-input repair, a producer ledger or
+successor authority.

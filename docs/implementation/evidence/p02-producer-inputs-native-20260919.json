@@ -1,0 +1,506 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "date": "2026-09-19",
+  "status": "PASS",
+  "scope": "P02-T02 step 4 prerequisite: exact initial producer-input staging/recovery, actual native owner boundaries and installed signed publication on Linux amd64; no ledger/ACK/GC/successor or full M1 qualification",
+  "source": {
+    "revision": "a1da96a09ee73722d26003dedf793317b7bdf7e1",
+    "tree": "441b3e68f15706d44e76d140bfa811e088bb4d9d",
+    "dirty": false,
+    "archive_sha256": "29aec60b4f938f4b9f3be26cbb6ad31f7c8df6116697dfb7e0bb0bbf48c1a8c7",
+    "manifest_sha256": "e7af839ae4f70022eba23302c3b7e14d6c0f5ff7e1d7ce54fb605b971cae05f3",
+    "verified_source_files": 786,
+    "lockfile_sha256": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215"
+  },
+  "artifacts": {
+    "main": {
+      "sha256": "41be30f090776f6ee3b21bd7187037c02d90418f5f50be00fbc928859b42bbf9",
+      "bytes": 9172176,
+      "elf_machine": 62
+    },
+    "worker": {
+      "sha256": "4a8f8f37ec6dbf7b6e6def033966d21d116f027699cfd4c96ae6ff852f298f3c",
+      "bytes": 12608632,
+      "elf_machine": 62
+    },
+    "publisher": {
+      "sha256": "94edb364da9e11ec7f690afba8f815b32861b0ff9b0b8786cf4a637cd8df7cdb",
+      "bytes": 19011096,
+      "elf_machine": 62
+    },
+    "coordinator_probe": {
+      "sha256": "e01f22a1eeed515ce5429bca55c45e06895d2f7b7f44a4775bcab9c28096c0b9",
+      "bytes": 693400,
+      "elf_machine": 62
+    },
+    "attempt_probe": {
+      "sha256": "748ad1f91e1d1dd51f5be793d3258dd2e885fb5cd11d5a9d67628889987331be",
+      "bytes": 2640984,
+      "elf_machine": 62
+    }
+  },
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "native_toolchain": {
+      "os": "Linux",
+      "architecture": "x86_64",
+      "discovery": "llvm-config",
+      "environment": {
+        "CC": "/usr/lib/llvm-14/bin/clang",
+        "CXX": "/usr/lib/llvm-14/bin/clang++",
+        "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+        "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+        "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+      },
+      "tools": {
+        "CC": {
+          "path": "/usr/lib/llvm-14/bin/clang",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "CXX": {
+          "path": "/usr/lib/llvm-14/bin/clang++",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "AR": {
+          "path": "/usr/lib/llvm-14/bin/llvm-ar",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+          "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+          "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+        },
+        "LIBCLANG_PATH": {
+          "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+          "version": "Debian clang version 14.0.6"
+        },
+        "discovery": {
+          "path": "/usr/lib/llvm-14/bin/llvm-config",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+          "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+          "version": "14.0.6"
+        }
+      },
+      "sdk": null
+    },
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "runner_limits": {
+      "cpus": 2,
+      "memory_bytes": 6442450944,
+      "memory_swap_bytes": 6442450944,
+      "pids": 512
+    },
+    "postgres_limits": {
+      "cpus": 1,
+      "memory_bytes": 1073741824,
+      "memory_swap_bytes": 1073741824,
+      "pids": 128
+    },
+    "network": "Internal only, no published ports; trusted private source, no hosted Actions credentials",
+    "cache": "Copied stopped receipt-cli-d78bcc5 cargo-home/target after Cargo.lock equality; immutable exact Git export, no remote product edits",
+    "dependencies": {
+      "rocksdb": "0.25.0",
+      "librocksdb-sys": "0.19.0+11.8.1",
+      "minicbor": "2.3.0",
+      "rustix": "1.1.5",
+      "archive_registry_sha256": "ae0069565ab9411928df0cf067822630c4f3a912919e61633b952f8077a5e2c1"
+    }
+  },
+  "implemented": [
+    "Exact profile-1 mutation decoder preserves producer identity and original signed event/dictionaries/attribution, verifies digest and complete canonical re-encoding, bounds allocations before reservation.",
+    "Existing exclusive IngestStore stages complete private producer input and syncs file/directory before each new dictionary/event/rejection batch. Final authority still precedes actual WAL+sync native commit.",
+    "Identical existing input is byte-compared and synchronized; changed/partial/unsafe inputs refuse without new native facts. Recovered decoded ownership carries its resource grant.",
+    "PreparedEvent retains request preimage before invalid-signature/body rejection can discard original input. Input and staging overhead remain charged.",
+    "Legacy receipt replay remains available but cannot establish input completeness. No native format/SQL migration or ACK authority is introduced."
+  ],
+  "checks": {
+    "build": {
+      "status": "PASS",
+      "counts": {
+        "collected": 1,
+        "executed": 1,
+        "failed": 0,
+        "not_run": 0
+      },
+      "commands": [
+        {
+          "name": "ordered-build",
+          "command": [
+            "/usr/bin/python3",
+            "/source/experiments/archive-engine/native_initialization.py",
+            "--build-binaries"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 47.83150930609554
+        }
+      ],
+      "raw": "out/native-tests/result.json",
+      "sha256": "910a8afc727beb0c8abe5b1dd4e1e3e7c152928bb40f3a9ca98d0252121c73db"
+    },
+    "archive-cli": {
+      "status": "PASS",
+      "counts": {
+        "collected": 4,
+        "executed": 4,
+        "failed": 0,
+        "not_run": 0
+      },
+      "commands": [
+        {
+          "name": "fixture",
+          "command": [
+            "cargo",
+            "build",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr",
+            "--example",
+            "catalog_schema_probe",
+            "--example",
+            "catalog_initialization_probe",
+            "--example",
+            "archive_receipt_probe",
+            "-p",
+            "bigbrotr-archive-worker",
+            "--example",
+            "archive_publication_probe",
+            "--example",
+            "archive_read_probe",
+            "--example",
+            "archive_coordinator_probe",
+            "--example",
+            "archive_attempt_probe"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 50.49521807394922
+        },
+        {
+          "name": "parent-tests",
+          "command": [
+            "cargo",
+            "test",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr",
+            "--lib",
+            "storage::archive",
+            "--",
+            "--nocapture"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 13.386413644067943
+        },
+        {
+          "name": "cli-tests",
+          "command": [
+            "cargo",
+            "test",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr",
+            "--bin",
+            "bigbrotr",
+            "--test",
+            "catalog_entrypoint",
+            "--test",
+            "control_runtime_entrypoint"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 33.47793080518022
+        },
+        {
+          "name": "clippy",
+          "command": [
+            "cargo",
+            "clippy",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr",
+            "-p",
+            "bigbrotr-archive-worker",
+            "--lib",
+            "--example",
+            "catalog_schema_probe",
+            "--example",
+            "catalog_initialization_probe",
+            "--example",
+            "archive_receipt_probe",
+            "--example",
+            "archive_publication_probe",
+            "--example",
+            "archive_read_probe",
+            "--example",
+            "archive_coordinator_probe",
+            "--example",
+            "archive_attempt_probe",
+            "--bin",
+            "bigbrotr",
+            "--bin",
+            "bigbrotr-archive-worker",
+            "--",
+            "-D",
+            "warnings"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 2.5698681101202965
+        }
+      ],
+      "raw": "out/native-tests/checks/result.json",
+      "sha256": "dcedebe6b3dc76766452b288731066a76e53d529f18fbd242963aaf56a991aed"
+    },
+    "producer-inputs": {
+      "status": "PASS",
+      "counts": {
+        "collected": 3,
+        "executed": 3,
+        "failed": 0,
+        "not_run": 0
+      },
+      "commands": [
+        {
+          "name": "model",
+          "command": [
+            "cargo",
+            "test",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr-model"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 33.37406259868294
+        },
+        {
+          "name": "native-owner",
+          "command": [
+            "cargo",
+            "test",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr",
+            "--lib",
+            "storage::rocks",
+            "--",
+            "--nocapture"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 1.2836656384170055
+        },
+        {
+          "name": "input-clippy",
+          "command": [
+            "cargo",
+            "clippy",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr-model",
+            "-p",
+            "bigbrotr",
+            "--all-targets",
+            "--",
+            "-D",
+            "warnings"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 3.770794606767595
+        }
+      ],
+      "raw": "out/native-tests/producer-inputs/result.json",
+      "sha256": "58597d65f476eaca3ac4008539cc656774b2f849c7d12b66b7aef81155c79401"
+    }
+  },
+  "executed": {
+    "model_tests": 58,
+    "native_rocks_tests": 25,
+    "new_input_tests": [
+      "storage::rocks::store::request_input_tests::complete_signed_and_rejected_inputs_survive_native_admission_and_reopen",
+      "storage::rocks::store::request_input_tests::killed_producer_preserves_input_before_and_after_native_commit",
+      "storage::rocks::store::request_input_tests::producer_input_is_retained_before_effects_and_recovers_exact_original_intent",
+      "storage::rocks::store::request_input_tests::restrictive_umask_cannot_commit_an_unreadable_producer_input",
+      "storage::rocks::store::request_input_tests::retained_spool_count_and_byte_limits_allow_exact_retry_without_reclamation",
+      "storage::rocks::store::request_input_tests::staged_input_conflict_partial_file_and_reduced_limits_preserve_native_state",
+      "storage::rocks::store::request_input_tests::substituted_input_paths_are_refused_without_following_or_mutating_them"
+    ],
+    "archive_tests": 47,
+    "archive_tests_ignored": 1,
+    "binary_tests": 8,
+    "catalog_cli_tests": 13,
+    "control_cli_tests": 1,
+    "note": "Ignored older Archive fixture is not PASS. Native Rocks subset has no ignored tests and includes the actual same-source packaged worker."
+  },
+  "crashes": {
+    "kind": "Actual child SIGKILL and reap before native write_opt dispatch and after synchronized bootstrap completion before external receipt delivery",
+    "expected": "Independent full raw image: exactly one manifest row before versus all nine default/facts/receipts key/value rows after; complete original request recovered in both cases",
+    "fixture_sha256": "35a2f51b4228bf27aa853826dc03821e4de898910a5a1d4db8182f698542562d",
+    "scope": "One-dictionary bootstrap under fixture callback authority; no mid-FFI fault, event/rejection kill, power loss or new-incarnation authority claim"
+  },
+  "publication": {
+    "status": "PASS",
+    "modes": [
+      "normal",
+      "before",
+      "after",
+      "owner_first",
+      "held_commit",
+      "held_rollback"
+    ],
+    "raw_sha256": "224c8730a5017d01cd5942195dd8eb0797fb1c8bf36739431387c373ee94e3ec",
+    "producer_files": 24,
+    "spools": 6,
+    "per_spool_inputs": [
+      {
+        "name": "42424242424242424242424242424242-0000000000000001-0000000000000001.cbor",
+        "bytes": 890,
+        "sha256": "a0f5148ac93eac3edbc724b24a6282423fde24491dc78c27c802ed14258edc70"
+      },
+      {
+        "name": "42424242424242424242424242424242-0000000000000001-0000000000000002.cbor",
+        "bytes": 487,
+        "sha256": "36f2564c821c7111a81e6fb41d7cabea072febc571666ad6f96bd2621c89fbc9"
+      },
+      {
+        "name": "42424242424242424242424242424242-0000000000000001-0000000000000003.cbor",
+        "bytes": 487,
+        "sha256": "8cb644b363e98529f10e978d1aae921c1020746a18a4648ffeac742b90bdb493"
+      },
+      {
+        "name": "42424242424242424242424242424242-0000000000000001-0000000000000004.cbor",
+        "bytes": 487,
+        "sha256": "edc807999b59c279ffa61ffae622b70d705c1abc2f13d7483f265d032478d9a1"
+      }
+    ],
+    "checks": [
+      "Actual Control-connected bootstrap plus invalid-signature, invalid-ID and valid network admission, exact retry and native reopen.",
+      "Installed initializer and runtime CatalogManager, actual DuckDB/PostgreSQL/Parquet worker and reader, six retained publication/fencing/COMMIT schedules.",
+      "Independent literal scientific/archive expectations and exact four producer request bytes per store, unchanged after receipt-reader restart.",
+      "Populated Rocks state preserves its full pre-publication digest baseline; this is invariability, not an independently authored full populated native image."
+    ],
+    "note": "before/after here target Archive COMMIT schedules, separate from the native bootstrap process-kill test."
+  },
+  "filesystem_observation": {
+    "status": "PASS",
+    "source": "Post-shutdown fresh read of all six actual Tux spools and 24 files; compared again to collected hashes.",
+    "runner_uid": 1000,
+    "spool_mode": "0700",
+    "file_mode": "0600",
+    "file_links": 1,
+    "raw": ".research/implementation/producer-inputs/retained-input-metadata.json",
+    "raw_sha256": "08930aacac7aa17d08b55cbcc311922ee9114bfede9cefa48f0a02aec93f179e",
+    "observed_at": "2026-09-19T15:42:15.954620+00:00"
+  },
+  "finite_limits": {
+    "input_bytes": 16777216,
+    "retained_files_per_store": 64,
+    "retained_logical_bytes_per_store": 33554432,
+    "staging_reservation_bytes": 65536,
+    "comparison_scratch_bytes": 8192,
+    "observed": "64 exact files allowed;65th refused; identical retry remains allowed at the count cap. Two sparse logical 16 MiB files exhaust the byte cap. Neither case measures physical disk exhaustion, RSS, sustained capacity or aged state."
+  },
+  "fixture_and_harness_sha256": {
+    "tests/fixtures/ingest/staged-bootstrap-crash.json": "35a2f51b4228bf27aa853826dc03821e4de898910a5a1d4db8182f698542562d",
+    "tests/fixtures/ingest/write_staged_bootstrap_vector.py": "793bf35ef3e8a85fc65278efbd1d14296ec218f7ac87190fa2f78809847db2d4",
+    "crates/bigbrotr-model/tests/fixtures/signed-request-v1.json": "088d03e940643a74e3342d424798325e85f95e56ca1a9f89085c979bc1aea885",
+    "crates/bigbrotr-model/tests/fixtures/write_signed_request_vector.py": "379b543eb92c8f43b064cf44f2b1a89ea458f2d54d022d7c59aff941195dfd67",
+    "experiments/archive-engine/signed_publication_oracle.py": "55149479453c85c9b226f095368a26a0e57d4321a60812504efd79f735edd82e",
+    "experiments/archive-engine/signed_publication_cases.py": "56930ba4234e49bb16eaadcb79824812597706184fac3bfed3d5c72421218b7d",
+    "experiments/archive-engine/native_initialization.py": "177121e8e706e3576a9b363132bd46a8c7092d2eaad0228434b5cc29ffec2887"
+  },
+  "mac": {
+    "raw": ".research/implementation/producer-inputs",
+    "checks": {
+      "mac/result.json": "a80fa1e70ac851bc8172266d0c8b13b50dbd755404c1ee3fa8a2acb5357a01ee",
+      "mac-refined/result.json": "d851ab8ae66f096c90134c8e5e51c590370cb21ad62c6edc2704d2a2ff373a75"
+    },
+    "scope": "58 model and 23 selected Rocks tests, then 7 refined input cases including SIGKILL/full independent image, all-target Clippy and docs checks. Packaged native worker omitted explicitly; its Linux execution passed.",
+    "development_failures": [
+      "Tool session59673: initial recovery stub failed Missing before effects.",
+      "Session68595: restrictive umask reproduced native success with unreadable staged input; descriptor chmod/validation corrected it, session12095 passed.",
+      "Session13532: packaged-worker test failed because Mac installation identity variables were absent; not counted as PASS.",
+      "Mac mknodat compilation refused; special FIFO fixture is now Linux-only and executed there.",
+      "AI review rejected count-only crash evidence; replaced with exact independent bytes before native qualification."
+    ],
+    "failure_evidence": "Earlier tool-session outcomes are checkpointed observations; retained mac/mac-refined logs bind the final dirty-source checks, not raw transcripts of those earlier sessions."
+  },
+  "setup_failure": {
+    "result": "Network allocation failed before any container; source/cache prepared only.",
+    "resolution": "Verified stopped owned d78bcc5 peers and empty internal network, retired that network only, then resumed same-source launch. No product correction or skipped case.",
+    "retirement": {
+      "network": "fa7cdc8fb8752e9a742d5d30b8d72c7d9c75751bf06c8aaf42d4061d963ca7cd",
+      "owner": "510e75ddf576d0a9564e67f72aff1bbb",
+      "action": "remove verified empty retired network only",
+      "containers": "stopped-retained",
+      "observed_at": "2026-09-19T15:36:08.074783+00:00"
+    },
+    "launch_log_sha256": "dde67e02b0516a43261bccc41917cf0b57ccb336626fd4c4b764857932bf1085",
+    "resume_log_sha256": "ecefed2b5d78197c093d227ab7525599a1711ce36f7c98b18c42f950d253f312"
+  },
+  "terminal": {
+    "status": "PASS",
+    "state": "stopped-retained",
+    "observed_at": "2026-09-19T15:40:39.105871+00:00",
+    "owner": "d0127b7cec90129aa1e5a042be1e2bf0",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-inputs-a1da96a",
+    "containers": [
+      "6d8a16589bb92fd29179a9200d636f752c87c189e54bfc96072d5a4a0dcadb21",
+      "95364e0fbbec70fcf645b936f9cc13970ef2502cc30a430ed349946dd3ce607e"
+    ],
+    "network_id": "9eb6446e9abcdff40af5a94b063f4bec57a28033af4b1d0bd4d20f8a03671537",
+    "network": "empty internal, retained",
+    "owned_sql_backends_before_shutdown": 0,
+    "preexisting_containers_unchanged": 354,
+    "unrelated_running": 8,
+    "bigbrotr_running": 0,
+    "oom": false,
+    "raw_audit_sha256": "0c3a711b41d6f0fad7efdadad5884008938942799cca0f4e7bf2e7663770cdad"
+  },
+  "raw": {
+    "root": ".research/implementation/producer-inputs/qualified",
+    "files": 121,
+    "tar_sha256": "86ef372190f0a152caa3391c637dcd2ed851b80d38a64f467516a0c35ff1c73e",
+    "identity_sha256": "725e6ff2e10923481ba6c6c3ecf025c2ba7638a535881418e7bbc41ba51c0778"
+  },
+  "review": {
+    "kind": "Independent read-only AI code/oracle review plus integrating owner source/diff/native-output review",
+    "findings": "Umask confirmed and corrected;64 KiB charged; crash byte oracle strengthened. Independent memory-only oracle reconstruction matches manifest, all 9 native records and 4 publication requests; four changed-input controls and an extra file rejected.",
+    "boundary": "Independent offline evidence audit matched all 121 raw files,786 Git source hashes, six signed/scientific and fresh-process receipt outcomes, 24 CBOR files, supplemental metadata and recorded terminal/check logs. No substantive discrepancy. Executable identities and host state were checked against recorded evidence, not freshly remeasured by reviewer; binaries and killed temporary databases are not in the tar. Production implementation had its separate scoped code/oracle review.",
+    "raw_label_caveat": "producer-inputs/result.json inherits the native initializer scope label from the shared runner. The concrete commands/logs and this report define the actual narrower qualification; it is not an additional capability claim."
+  },
+  "remaining": [
+    "PostgreSQL producer reservation ledger and reserved-through counter, logical source positions, durable outcome/checkpoint closure, ACK/GC and versioned owner handoff.",
+    "Safe explicit partial-input repair; partial write currently preserves evidence and can block same-name retry.",
+    "Legacy complete-input adoption/refusal gate; old executables can ignore this sidecar, so it is not a successor barrier.",
+    "ENOSPC, native mid-FFI ambiguous commit, power/host loss, restored mixed cuts, concurrent handoff and aged mixed workloads.",
+    "Installed complete service/read/export/restart journey and ordinary Compose/release qualification, native Linux arm64.",
+    "No hosted GitHub Actions pass, public release, unlimited capacity or complete product claim."
+  ]
+}
