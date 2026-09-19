@@ -14247,7 +14247,28 @@
         "bigbrotr_running": 0,
         "observed_at": "2026-09-19T20:50:11.082280+00:00"
       },
-      "manifest": ".research/implementation/import-checkpoints/final/evidence-identity.json"
+      "manifest": ".research/implementation/import-checkpoints/final/evidence-identity.json",
+      "network_retirement": "Verified empty network removed by certification launcher; containers and data remain stopped and retained"
+    },
+    "certification": {
+      "source": "2f9ba08cdbbd3b5b924600780424bfc41cb40571",
+      "tree": "4ad619113232428a205f5a7c0a48725b35dc7711",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/certification-2f9ba08",
+      "owner": "48c1600daf24b8ad30664c66702dcd48",
+      "container": "bigbrotr-implementation-certification-2f9ba08",
+      "postgres": "bigbrotr-implementation-certification-2f9ba08-pg",
+      "network": "bigbrotr-implementation-certification-2f9ba08",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "state": "running",
+      "source_files": 838,
+      "started_at": "2026-09-19T21:30:01.107840+00:00",
+      "network_id": "3d454be2842da6c4f2e14bece201ae0f459f41c2f3620f0bf8f4b62ace08efa0",
+      "postgres_id": "dcbf244f7e4ef416aef14d58ec43bd60a1eb95f3e48f3bcc14a5259b627947ef",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "7c9992eb1f9fe87c4eb472a09575c43d704ae1c94103465961317166661c002b",
+      "qualification": "INCOMPLETE: exact-source build active; connected cases not yet executed",
+      "raw": ".research/implementation/certification/native"
     }
   },
   "implementation_monitor_corrections_20260918": {

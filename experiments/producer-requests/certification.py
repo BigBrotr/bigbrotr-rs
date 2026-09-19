@@ -42,10 +42,10 @@ def expected_proof(wanted):
         dependencies.append([[dataset, 0, 1, sequence], rows['facts', key][2:34]])
     preimage = b'bigbrotr/existing-proof/1\0'+cbor([dataset, 0, 'local-synced', bytes([67])*16,
                                                 1, digest, dependencies])
-    return dict(result='existing', context=dict(dataset_id=dataset.hex(), topology_generation=0,
-        protection_class='local-synced', recovery_generation=(bytes([67])*16).hex(), policy_epoch=1),
+    return dict(result='existing', context=dict(dataset_id=dataset.hex(), topology_generation='0',
+        protection_class='local-synced', recovery_generation=(bytes([67])*16).hex(), policy_epoch='1'),
         intent_digest=digest.hex(), proof_digest=sha(preimage), dependencies=[dict(
-            source_record_id=dict(dataset_id=dataset.hex(), shard_id=0, owner_epoch=1, sequence=s[3]),
+            source_record_id=dict(dataset_id=dataset.hex(), shard_id=0, owner_epoch='1', sequence=str(s[3])),
             payload_digest=d.hex()) for s, d in dependencies])
 
 
@@ -64,7 +64,7 @@ def check_messages(messages, scenario, wanted, originals, table_names):
     assert len(tables['producer_requests']) == len(tables['producer_outcomes']) == 2
     assert len(tables['producer_epochs']) == 1
     assert tables['producer_epochs'][0]['reserved_through_request'] == 2
-    assert tables['producer_epochs'][0]['state'] == ('closing' if scenario == 'retired' else 'active')
+    assert tables['producer_epochs'][0]['state'] == ('closing' if scenario == 'retired' else 'open')
     for name in ['producer_input_bindings', 'import_record_closures', 'import_checkpoints',
                  'producer_checkpoints', 'jobs']:
         assert tables[name] == []
@@ -93,9 +93,10 @@ def main(root, tag, scenario):
     resources = json.loads((root/'resources.json').read_text())
     revision = command('git', '-C', str(SOURCE), 'rev-parse', 'HEAD')
     assert not command('git', '-C', str(SOURCE), 'status', '--porcelain', '--untracked-files=all')
-    assert revision == resources['source']
+    assert not command('git', '-C', str(SOURCE), 'diff', resources['source'], revision, '--',
+                       'apps', 'crates', 'migrations', 'Cargo.lock', 'Cargo.toml', 'rust-toolchain.toml')
     ready = json.loads((root/'out/native-tests/ready.json').read_text())
-    assert ready['status'] == 'READY' and ready['source'] == revision
+    assert ready['status'] == 'READY' and ready['source'] == resources['source']
     assert sha((root/'out/native-tests/ingest-bootstrap-probe').read_bytes()) == ready['ingest_probe']
     for identity in [resources['container_id'], resources['postgres_id']]:
         owned = json.loads(command('docker', 'inspect', identity))[0]
@@ -104,7 +105,8 @@ def main(root, tag, scenario):
     assert tag.isalnum() and 1 <= len(tag) <= 8
     target = root/('certification-'+tag+'.json')
     assert not target.exists()
-    report = dict(status='INCOMPLETE', source=revision, artifacts=ready, scenario=scenario,
+    report = dict(status='INCOMPLETE', source=resources['source'], harness_revision=revision,
+                  artifacts=ready, scenario=scenario,
                   processes={}, sql=[])
     def save(): target.write_text(json.dumps(report, indent=2)+'\n')
     def sql(db, text):

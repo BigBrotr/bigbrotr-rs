@@ -18,13 +18,14 @@ inventory, with verified intent and no mutation identity/staging/sequence. Root
 implemented the native evaluator and connected Control read wrapper; Linux
 qualification is next. Independent fact_codec_review found no concrete product
 defect, and identified two fixture gaps now corrected (explicit rejection cases;
-all Control tables and xmin). No active remote experiment. The previous finite event-only
+all Control tables and xmin). Exact-source native build is active in the certification lab below. The previous finite event-only
 checkpoint slice is qualified and pushed; general proof/claim closure remains open.
 
 ## Git and integration state
 
-Mac main HEAD and private origin/main both 8fd34ddc86f27e619e50a002330f090abfb848b3,
-verified through ls-remote after push. Root owns current checkpoint and forthcoming
+Mac main candidate HEAD 2f9ba08cdbbd3b5b924600780424bfc41cb40571; private
+origin/main remains 8fd34ddc86f27e619e50a002330f090abfb848b3. Candidate is
+unpublished pending native qualification. Root owns current checkpoint and forthcoming
 certification changes. No other writer, merge/rebase or unexpected files. Final
 checkpoint product/fixture source remains cb7905fe6a98380b8875acdee8f11ddd3f8809cc;
 its ba53ae9 concurrency harness changes no product inputs. Published SQL 1..14
@@ -78,8 +79,16 @@ engine run. Cooperative flag cancellation is not future/driver abort qualificati
 
 ## Evidence and resources
 
-No active experiment or tool session. Read-only resumption inspection confirms
-both final containers exited without OOM and no running BigBrotr container.
+Active certification lab /home/tux/bigbrotr-implementation-20260917/runs/certification-2f9ba08;
+owner 48c1600daf24b8ad30664c66702dcd48. Runner 7c9992eb1f9fe87c4eb472a09575c43d704ae1c94103465961317166661c002b;
+PG dcbf244f7e4ef416aef14d58ec43bd60a1eb95f3e48f3bcc14a5259b627947ef;
+network 3d454be2842da6c4f2e14bece201ae0f459f41c2f3620f0bf8f4b62ace08efa0.
+Source 2f9ba08, 838 clean exported files; cache copied from prior stopped final
+checkpoint lab after identical Cargo.lock check. Full preflight inventoried prior
+containers, processes, ports, volumes, networks and directories. The prior empty
+checkpoint network was retired after owner/stopped checks; no data removed.
+Build is active; cases not yet executed. Ignored helpers/raw:
+.research/implementation/certification/native. Prior checkpoint terminal evidence:
 Terminal audit at 2026-09-19T20:50:11.082280+00:00 records 374 preexisting container
 lifecycles unchanged, eight unrelated running and zero BigBrotr running.
 Final lab /home/tux/bigbrotr-implementation-20260917/runs/import-checkpoints-cb7905f,
@@ -104,9 +113,11 @@ review before reuse and must not overwrite old evidence or include secret files.
 
 ## Next action and remaining gates
 
-Next bounded action: commit the reviewed certification candidate and transfer its
-clean Git revision to a fresh inventoried Tux lab; run --certification and the four
-connected scenarios with the independent full-byte oracle. Mac logs under
+Next bounded action: join the active --certification build, then run the four
+connected scenarios through the corrected independent harness. AI review caught
+static oracle spelling errors before connected execution: producer state is open,
+and portable u64 JSON fields are decimal strings. Corrected harness changes no
+product input; transfer through a separate clean Git checkout. Mac logs under
 .research/implementation/certification retain the missing-API and semantic RED,
 six new actual-Rocks tests PASS (including 30 corpus evaluations), 13 admission/
 certification regressions PASS with the packaged-worker case explicitly skipped,
