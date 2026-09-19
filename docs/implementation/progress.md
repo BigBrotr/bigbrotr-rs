@@ -13,135 +13,114 @@ Cargo packages and the read-only Go neighbor. No public release or Linux arm64
 claim. No P02/P03 task or M1 gate is complete. All selected later product work
 remains required.
 
-Active P02-T02 step 5: initial CertifyExisting consumer over the retained native
-inventory, with verified intent and no mutation identity/staging/sequence. Root
-implemented the native evaluator and connected Control read wrapper; Linux
-qualification is next. Independent fact_codec_review found no concrete product
-defect, and identified two fixture gaps now corrected (explicit rejection cases;
-all Control tables and xmin). Exact-source native build is active in the certification lab below. The previous finite event-only
-checkpoint slice is qualified and pushed; general proof/claim closure remains open.
+P02-T02 step 5 initial CertifyExisting read is qualified. Root completed documentation and
+captured-evidence review; the qualification commit/private push are next. Next responsibility is the
+P02-T02 step 4 native closing/recovery foundation needed for an actual fresh-owner
+restart; proof-only progress and general admission/source consumers remain open.
+No active remote experiment or tool session after the terminal audit below.
 
 ## Git and integration state
 
-Mac main candidate HEAD 2f9ba08cdbbd3b5b924600780424bfc41cb40571; private
-origin/main remains 8fd34ddc86f27e619e50a002330f090abfb848b3. Candidate is
-unpublished pending native qualification. Root owns current checkpoint and forthcoming
-certification changes. No other writer, merge/rebase or unexpected files. Final
-checkpoint product/fixture source remains cb7905fe6a98380b8875acdee8f11ddd3f8809cc;
-its ba53ae9 concurrency harness changes no product inputs. Published SQL 1..14
-must remain unchanged.
+Mac main HEAD 3342a21d64056a5cb60143788e10e6ace5c7562e; private origin/main remains
+8fd34ddc86f27e619e50a002330f090abfb848b3. Product/fixture candidate
+2f9ba08cdbbd3b5b924600780424bfc41cb40571, tree
+4ad619113232428a205f5a7c0a48725b35dc7711; harness3342a21 changes no product input.
+Both commits remain unpublished pending the qualification commit/push. Root owns
+current evidence/reference/task/checkpoint/inventory and offline observer changes.
+No other writer, unexpected files or merge/rebase. Published SQL 1..14 unchanged.
 
-The private close_record accepts only NativeOutcomeCopy after recording the full
-outcome. Rejected/unbound inputs cannot close a record. Replay compares immutable
-membership without changing rows. Head advancement increments local/global job
-revisions, preserving holes/zero. The 64-retained-bindings/job cap bounds scans;
-there is no reclamation. Producer ACK/GC watermarks remain untouched. Migration 14
-refuses unsupported prior nonzero import checkpoints atomically with an explicit
-recovery diagnostic. Control, job, Ingest, producer lock order is preserved.
-Cancellation/residual lease are rechecked after SQL awaits before COMMIT.
+## Implemented boundary and executed evidence
 
-## Executed evidence
+The [certification report](evidence/p02-certification-native-20260919.json) records
+source/artifact identities, all outcomes, counterexamples and limits. Prepared
+certification owns exact verified event input/grant without ProducerRequestId or
+mutation preimage. One exclusive native view validates full payload, scope,
+receive/witness sufficiency and both input/historical dictionary closure. The
+Control wrapper validates current policy/registration/fence/lease, rolls back its
+read transaction, then checks final authority before delivery. A clean refusal
+can retry corrected limits on the same current session. No persistent format or
+dependency changes, request/original/outcome/progress writes, counters or ACK.
 
-The [qualification report](evidence/p03-import-checkpoints-native-20260919.json)
-records source/artifact identities, all outcomes, preserved failures and limits.
-Final native qualification at cb7905f, Linux amd64/PostgreSQL 16.15/Rust+Rocks:
-- Clean 832-file Git export, source hashes unchanged; 16 migration and 5 binding
-  tests, scoped Clippy and actual release binaries/fixtures built successfully.
-- Seven connected signed cases PASS: reverse logical order, identical delayed
-  positive, cooperative cancellation during actual closure PgSleep, lease expiry
-  after SQL, rollback, and COMMIT 12 reply loss before forwarding/after completion.
-  All match 27 independent native rows, three full originals and exact PG copies.
-  Reverse/delayed/after-complete retain two closures, head line 2/byte 706/revision 1,
-  job revision 4/checkpoint 1. Others retain line 2 only, no head, job 3/checkpoint 0.
-  Exact replay preserves complete rows including xmin. No producer checkpoint.
-- 25 synthetic SQL constraint cases PASS, including holes, shard/global revisions,
-  multirow AFTER visibility, no-op replay, immutable retention, rejected outcomes,
-  wrong digest, rollback and pause. These synthetic outcomes are not native proof.
-- Six real two-client lock/isolation schedules PASS using HEAD harness: both lock
-  orders with COMMIT/ROLLBACK, stale READ COMMITTED and refused REPEATABLE READ.
-  Actual blocking PIDs observed; closure/head/job state independently checked.
-- Four actual 13-to-14 compatibility cases PASS (r4): empty/populated migration,
-  old client refuses 14, new client refuses admission on 13, and unsupported old
-  checkpoint refuses with explicit recovery diagnostic and unchanged complete
-  rows/schema/native/spool. No migration backfill. New client on 13 may initialize
-  its owner/native manifest before refusal; no input staging, reservation or fact.
-- Every completed case and terminal audit observed zero owned PG client backends.
+Executed at 2f9ba08, Linux amd64/PostgreSQL 16.15/Rust 1.98.1/actual Rocks:
+- 838 clean Git-exported files remain exact; full source manifest independently
+  matches Mac Git archive. Actual ordered binaries/fixtures and scoped Clippy PASS.
+- 14 native admission/certification tests PASS, none ignored. Includes six new
+  tests, 30 signed corpus before/after evaluations, full mutation window, both
+  lineage/observer closures, exact provenance key, dependency limit/identical
+  retry, corrupt indexed dependency, uncertain handle and final authority checks.
+  The same-source packaged-worker reopen consumer actually ran on Tux.
+- Four connected cases PASS: normal (9) evaluations plus expired, validator refusal
+  and producer-closing. Three complete proofs match independent context, ordered
+  dependencies [1,3,4,5,6] and digest. All cases preserve 26 native rows and
+  unchanged observed sequence 29,
+  two exact original inputs, two reserved/native requests/outcome copies, no
+  bindings/closures/heads/jobs/ACK, and all 37 Control tables including xmin during
+  the certification window. Final owner release is outside that comparison.
+- Twenty offline altered-capture controls refused; no new engine execution.
+- Every connected case and terminal audit observed zero owned PG client backends.
 
-Preserved failures: native 730e50e RED observed admitted line 2 with no closure;
-local E0716 fixed with explicit locals; rollback1 rejected before DB creation
-(tag too long). Compatibility r1 failed private scratch permissions, r2 failed
-oracle request ordering, r3 observed correct rollback but generic CLI diagnostic.
-They remain INCOMPLETE; r4 is a separate corrected run. Independent AI review found
-a coherent-PG-digest oracle gap: literal original CBOR/files and all binding/head
-fields now checked, with offline altered-digest refusal retained. Final AI review
-found no new blocking counterexample; it inspected captured evidence, not a new
-engine run. Cooperative flag cancellation is not future/driver abort qualification.
+Mac ignored logs preserve the missing-API and semantic stub RED, six new native
+checks and 13 admission regressions PASS with packaged-worker case explicitly
+skipped locally. The latter ran in the 14 native tests. AI read-only review fixed
+two fixture gaps before candidate: false Signature rejection in unrelated cases,
+and incomplete PG snapshots. Review also caught Python oracle state/spelling
+errors (open, decimal-string u64) before connected execution; 3342a21 corrects only
+the harness. Final AI review independently recalculated the four captured cases
+and found no remaining blocker; observed sequence29 is explicitly distinguished
+from a literal expected value. No remote execution by the reviewer. Root has read the native store, manifest/
+registration/store references, storage-services closing contract and bootstrap
+write/replay paths for the next slice. catalog_guard_review is independently
+inspecting PG closing/recovery constraints; no implementation change yet.
+
+Limits: connected limit 32 is input preflight, policy is a trusted-validator
+refusal and retired label means producer closing. None qualifies decoder-byte
+exhaustion, actual PolicyEpoch advancement or completed retirement by itself.
+Native dependency-budget exhaustion/identical retry is separately executed.
+No physical zero-I/O/RSS claim, in-FFI kill, task/driver abort or rollback-reply-loss
+qualification. Existing local-synced retained native facts only; no GC/fallback.
 
 ## Evidence and resources
 
-Active certification lab /home/tux/bigbrotr-implementation-20260917/runs/certification-2f9ba08;
-owner 48c1600daf24b8ad30664c66702dcd48. Runner 7c9992eb1f9fe87c4eb472a09575c43d704ae1c94103465961317166661c002b;
-PG dcbf244f7e4ef416aef14d58ec43bd60a1eb95f3e48f3bcc14a5259b627947ef;
-network 3d454be2842da6c4f2e14bece201ae0f459f41c2f3620f0bf8f4b62ace08efa0.
-Source 2f9ba08, 838 clean exported files; cache copied from prior stopped final
-checkpoint lab after identical Cargo.lock check. Full preflight inventoried prior
-containers, processes, ports, volumes, networks and directories. The prior empty
-checkpoint network was retired after owner/stopped checks; no data removed.
-Build is active; cases not yet executed. Ignored helpers/raw:
-.research/implementation/certification/native. Prior checkpoint terminal evidence:
-Terminal audit at 2026-09-19T20:50:11.082280+00:00 records 374 preexisting container
-lifecycles unchanged, eight unrelated running and zero BigBrotr running.
-Final lab /home/tux/bigbrotr-implementation-20260917/runs/import-checkpoints-cb7905f,
-owner 50a453d1c2cd30239a63be431128312b. Runner
-104b8cd0f60198575fd733708b2afc1c6947e5e6155e51b0143594061ca9328c,
-PG 685eddb4df2a5d3bd55b0d80043ba8f9e055773fe4bf044812e3052fceefb26f,
-retained empty internal network 43655e02c0afe3464e2ca75f7736be4d8e350d01e98f6f42f0b26e817a50f297.
-Its out/build is the latest exact-lock cache. Verify ownership before reuse.
-See import_checkpoints_final in the [inventory](../research/laboratory-inventory.json).
+Terminal audit 2026-09-19T21:34:27.687349+00:00 passes: 376 preexisting container lifecycles unchanged,
+eight unrelated running, zero BigBrotr running, zero owned PG clients, no OOM.
+Certification lab /home/tux/bigbrotr-implementation-20260917/runs/certification-2f9ba08,
+owner 48c1600daf24b8ad30664c66702dcd48; runner 7c9992eb1f9fe87c4eb472a09575c43d704ae1c94103465961317166661c002b,
+PG dcbf244f7e4ef416aef14d58ec43bd60a1eb95f3e48f3bcc14a5259b627947ef,
+empty internal retained network 3d454be2842da6c4f2e14bece201ae0f459f41c2f3620f0bf8f4b62ace08efa0.
+Containers/data remain stopped and retained. Its out/build is the latest exact-lock
+cache. See certification in the [inventory](../research/laboratory-inventory.json).
+Runner 2 CPU/6 GiB/512 PIDs; PG 1 CPU/1 GiB/128 PIDs; no host ports. These limits are not
+performance qualification. No global prune or unrelated cleanup.
 
-Mac .research/implementation/import-checkpoints/final/qualified retains 53
-hash-verified files; tar SHA256 251eeaa5ac0d7d3e1d01993285c302aeee6f3b447aeab7f82e1d05535fe43cd0.
-All 832 source hashes match Mac Git archive. Main SHA256
-ed0776b68e4815686246d4df7c9e1527b15a54ddcbf5a0231b355ffb64a09575,
-ingest probe e49fd9df41553b82288540ab36d43c8ec1ddba2ad2803d5fcf3aba6265793b7e.
-Audit and evidence-identity.json retain complete source/artifact/report identities.
-Earlier red/qualified (19 files) and green/qualified (50 files) captures preserve
-failures. Their lab containers/data remain stopped. Prior owned empty networks
-were retired after inspection to free subnet pools; no global prune or unrelated
-cleanup. Helpers under the ignored import-checkpoints directory need path/owner
-review before reuse and must not overwrite old evidence or include secret files.
+Mac .research/implementation/certification/native/qualified retains 30 hash-verified
+files. Tar SHA256 03a8faf6519c4059950323532113376903bb6712e5d59b3d20afc5dc76211048;
+identity is ../evidence-identity.json relative to that directory. All 838 source
+hashes match Mac Git archive. Main cf1f96916751f9a03b721b71cafa1cb34fc4e862e15929e3ac0c3d95ca9435db;
+ingest probe e1b8579921c4664c431e0cc141edc6fcb6a794cadd15fcefdf6c143fe1fb155b.
+Ignored launch/transfer/audit/collect helpers require path/owner review before reuse.
+
+Previous [event-only checkpoint qualification](evidence/p03-import-checkpoints-native-20260919.json)
+at cb7905f remains valid/pushed. Its lab import-checkpoints-cb7905f containers/data
+remain stopped; the empty owned network 43655e02 was retired after fresh ownership
+checks when creating this lab. Earlier failed runs remain retained as recorded.
 
 ## Next action and remaining gates
 
-Next bounded action: join the active --certification build, then run the four
-connected scenarios through the corrected independent harness. AI review caught
-static oracle spelling errors before connected execution: producer state is open,
-and portable u64 JSON fields are decimal strings. Corrected harness changes no
-product input; transfer through a separate clean Git checkout. Mac logs under
-.research/implementation/certification retain the missing-API and semantic RED,
-six new actual-Rocks tests PASS (including 30 corpus evaluations), 13 admission/
-certification regressions PASS with the packaged-worker case explicitly skipped,
-and scoped fixture/library Clippy PASS. No connected certification result yet.
-Root owns native certification/tests, shared admission helpers, Control wrapper,
-connected fixture, certification.py, build-mode/original-input oracle and docs.
-Shared verifier and bounded fact/dictionary readers are reused; no admission dry-run,
-fake ProducerRequestId or certification ledger. Independent checks must compare
-all native rows, latest sequence and original input files before/after, including
-full mutation window, missing scope/receive/witness/dictionary, alternate valid and
-invalid signatures, different input/stored lineage, expiry/cancellation and limits.
-A dangling/corrupt indexed fact is an error, not healthy absence. Keep proof-only
-checkpoint/ACK, archive fallback and successor recovery gates explicit.
+Next bounded action: commit/push this qualified slice, then finish the closing/handoff
+contracts and actual native/open-owner paths for P02-T02 step 4. Start with a
+persistent closing barrier and a recovery read handle incapable of fresh admission;
+retain original-request resolution before any successor activation. Do not infer
+fresh-owner authority from a stale manifest, POSIX lock alone or missing response.
 
 Initial adapters still bind original Control and producer/owner epoch 1. Recovery
-needs a read handle incapable of fresh admission, synchronized native closing,
-fresh-Control close/register/topology CAS and explicit successor activation/zero
-counters. New processes cannot impersonate old incarnations/candidate nonces.
-Resolve ambiguous original outcomes before choosing another path.
-
-Logical proof/claim closure, ACK/GC, archive protection/replay, ENOSPC/power loss,
-causally closed backup/restore, mixed aged workloads, M1 read/export/restart and all
-selected acquisition/analytics/read/UI/website/Compose/release journeys remain.
-Hosted Actions and native Linux arm64 are not qualified by Tux amd64 execution.
+needs native closing, fresh-Control close/register/topology CAS and explicit
+successor activation/zero counters. New processes cannot impersonate old
+incarnations/candidate nonces. M1 still needs actual read/standalone export/restart.
+Proof-only logical progress, claims/rejections, complete-source-cut compaction,
+ACK/GC, archive protection/replay, ENOSPC/power loss, causally closed backup/restore,
+mixed aged workloads and every selected acquisition/analytics/read/UI/website/
+Compose/release journey remain required. Hosted Actions and native Linux arm64 are
+not qualified by Tux amd64 execution.
 
 External monitor findings remain scoped closed with practical evidence:
 [MON-001/002/004/006](evidence/p01-monitor-corrections-native-20260918.json),

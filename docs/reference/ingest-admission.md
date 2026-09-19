@@ -163,14 +163,14 @@ Historical receipt replay does not synthesize missing input files or claim that
 legacy stores satisfy the new input-completeness requirement.
 
 
-## Existing-effect certification (implementation in progress)
+## Existing-effect certification
 
 P02-T02 step 5 adds an internal CertifyExisting consumer with a separately prepared
 verified intent and the already specified certification digest. It has no mutation
-request identity or synchronized input file. Reuse bounded verification and native
-fact/dictionary readers under exclusive IngestStore access; evaluate current policy
-and delivery authority through the connected Control session. The method never
-prepares an admission batch or changes counters, request detail or source facts.
+request identity or synchronized input file. It reuses bounded verification and
+native fact/dictionary readers under exclusive IngestStore access, evaluating
+current policy and delivery authority through the connected Control session.
+The method never prepares an admission batch or changes counters, request detail or source facts.
 
 ExistingProof requires the exact body, eligibility in the requested scope, sufficient
 receive/witness minima and complete input plus retained-fact dictionary closure.
@@ -188,4 +188,21 @@ requires a fresh evaluation under current policy. Producers must resolve an earl
 ambiguous Admit through its original ledger before selecting certification; an API
 without a request ID cannot infer that workflow history. Proof checkpointing,
 compaction, backup validation and successor recovery remain separate acceptance.
-Implementation and native qualification of this section are not yet complete.
+
+[Native qualification](../implementation/evidence/p02-certification-native-20260919.json)
+at product/fixture `2f9ba08` and independent harness `3342a21` passes 14 actual native
+tests, including the packaged-worker consumer and 30 before/after signed corpus
+evaluations. Four connected cases perform 12 read evaluations: three full proofs
+and the expected missing-effect, invalid/size, resource, cancellation, expired
+lease, validator and closing-producer refusals. Independent full bytes, proof
+context/dependencies/digest, original inputs, 26 native rows/sequence and all 37
+Control tables with `xmin` are checked. Twenty offline altered-capture controls
+are refused; they are oracle checks, not new engine experiments.
+
+The no-mutation comparison covers certification before the separately authorized
+Control release. It does not claim zero physical engine I/O. Connected resource
+refusal uses input preflight; native tests separately exhaust dependency count and
+retry identical intent with adequate limits. Validator refusal and a producer in
+closing do not qualify policy-epoch advancement or complete retirement. There is
+no in-FFI interruption, proof-only progress/GC/restore or successor qualification
+from this initial read prerequisite, and P02-T02 step 5 remains incomplete.

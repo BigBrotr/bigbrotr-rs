@@ -1,0 +1,422 @@
+{
+  "format": "bigbrotr-existing-effect-certification-evidence/1",
+  "observed_at": "2026-09-19T21:34:27.687349+00:00",
+  "status": "PASS",
+  "scope": "P02-T02 step5 initial existing-effect read prerequisite; not complete task, installed source service or M1 acceptance",
+  "source": {
+    "revision": "2f9ba08cdbbd3b5b924600780424bfc41cb40571",
+    "tree": "4ad619113232428a205f5a7c0a48725b35dc7711",
+    "files": 838,
+    "archive_sha256": "9a4bfc28095c4a72c19963ea323376f479efc37826efc0df4a58fa67e307a9b5",
+    "manifest_sha256": "b47f9cbbb4dc9815bf793de9664df992600dfbbbd309c683163e6946d6645fca",
+    "lock_sha256": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215"
+  },
+  "harness": {
+    "revision": "3342a21d64056a5cb60143788e10e6ace5c7562e",
+    "tree": "58e8d6e4c9a7df2d2a521ea13f22e26f46ce175d",
+    "product_unchanged": true
+  },
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "rocksdb": "0.25.0",
+    "librocksdb_sys": "0.19.0+11.8.1",
+    "runner_limits": {
+      "cpus": 2,
+      "memory_bytes": 6442450944,
+      "pids": 512
+    },
+    "postgres_limits": {
+      "cpus": 1,
+      "memory_bytes": 1073741824,
+      "pids": 128
+    },
+    "network": "internal; no host ports; source exports mounted read-only"
+  },
+  "artifacts": {
+    "main": {
+      "sha256": "cf1f96916751f9a03b721b71cafa1cb34fc4e862e15929e3ac0c3d95ca9435db",
+      "bytes": 9219376,
+      "elf_machine": 62
+    },
+    "worker": {
+      "sha256": "4a8f8f37ec6dbf7b6e6def033966d21d116f027699cfd4c96ae6ff852f298f3c",
+      "bytes": 12608632,
+      "elf_machine": 62
+    },
+    "ingest_probe": {
+      "sha256": "e1b8579921c4664c431e0cc141edc6fcb6a794cadd15fcefdf6c143fe1fb155b",
+      "bytes": 15796496,
+      "elf_machine": 62
+    }
+  },
+  "implementation": [
+    "PreparedCertification independently verifies exact signed intent and retains its grant, without ProducerRequestId or mutation preimage allocation.",
+    "One exclusive native view checks full payload, exact scoped eligibility, sufficient scoped receive and optional exact witness minimum, input and historical dictionary closure.",
+    "Healthy missing effect returns NeedsAdmission; invalid/excluded input is rejected; corrupt present dependencies and configured resource failures retain their distinct errors.",
+    "Control validates configured root, exact initial registration, current policy/fence and residual lease; the read transaction is explicitly rolled back before final delivery validation.",
+    "No persistent-format, dependency, migration, checkpoint, producer counter or ACK change. A known clean read refusal can be retried with corrected limits on the same session."
+  ],
+  "build_and_tests": {
+    "status": "PASS",
+    "native_tests": 14,
+    "ignored": 0,
+    "filtered_out": 99,
+    "corpus_certification_evaluations": 30,
+    "checks": [
+      {
+        "path": ".research/implementation/certification/native/qualified/out/native-tests/result.json",
+        "bytes": 2800,
+        "sha256": "8e07062d04edc6935dd0484e5452af4294a57c96b66438c2c18ea117e12d0198"
+      },
+      {
+        "path": ".research/implementation/certification/native/qualified/out/native-tests/checks/result.json",
+        "bytes": 3693,
+        "sha256": "c51bbe504a4dd2bc73b30539af6b8e850fb7427c55af98bf152f3a0ebfcae314"
+      },
+      {
+        "path": ".research/implementation/certification/native/qualified/out/native-tests/certification/result.json",
+        "bytes": 2912,
+        "sha256": "48fa6f20de5a3658e48b719f29679fd34d5a42fd851b1f5da9e2eab20131ae5e"
+      }
+    ],
+    "includes": "Actual Rocks adapter, full-window read, lineage/observer closure, provenance-specific witness, configured dependency exhaustion/identical retry, corrupted indexed fact, lost authority checks, uncertain native handle, admission regressions and actual packaged-worker reopen consumer."
+  },
+  "connected_cases": [
+    {
+      "name": "normal",
+      "status": "PASS",
+      "capture": {
+        "path": ".research/implementation/certification/native/qualified/certification-normal1.json",
+        "bytes": 133514,
+        "sha256": "30e060e91d1f7b0cf7bc6312b9dfe8e4ddeb1dd3d8a28db4d3f06e931ea4bfd4"
+      },
+      "checked": {
+        "reads": 9,
+        "existing": 3,
+        "native_rows": 26,
+        "control_tables": 37,
+        "native_sequence": 29
+      },
+      "outcomes": [
+        {
+          "case": "existing",
+          "result": "existing"
+        },
+        {
+          "case": "existing",
+          "result": "existing"
+        },
+        {
+          "case": "missing-scope",
+          "result": "needs-admission"
+        },
+        {
+          "case": "missing-lineage",
+          "result": "needs-admission"
+        },
+        {
+          "case": "invalid",
+          "result": "rejected",
+          "reason": "Signature"
+        },
+        {
+          "case": "size",
+          "result": "rejected",
+          "reason": "EventSize"
+        },
+        {
+          "case": "limit",
+          "result": "refused",
+          "error": "Native(Limit)"
+        },
+        {
+          "case": "cancelled",
+          "result": "refused",
+          "error": "Native(AuthorityUnavailable)"
+        },
+        {
+          "case": "existing",
+          "result": "existing"
+        }
+      ],
+      "original_inputs": {
+        "42424242424242424242424242424242-0000000000000001-0000000000000001.cbor": {
+          "bytes": 443,
+          "sha256": "36eebd9cf6758f2598db5886d77f8e305ba3829855e3c9e58595f71b2705da6e"
+        },
+        "42424242424242424242424242424242-0000000000000001-0000000000000002.cbor": {
+          "bytes": 298,
+          "sha256": "6a70f0a0facb73ab67caedb52f25cb2a9f1ea073213e4ebe3462b8f42c746834"
+        }
+      },
+      "remaining_client_backends": 0
+    },
+    {
+      "name": "expired",
+      "status": "PASS",
+      "capture": {
+        "path": ".research/implementation/certification/native/qualified/certification-expire1.json",
+        "bytes": 128145,
+        "sha256": "86fffdcfa029f5def797c60f234b675f80f8e5770f883b08bd9193c70b10364e"
+      },
+      "checked": {
+        "reads": 1,
+        "existing": 0,
+        "native_rows": 26,
+        "control_tables": 37,
+        "native_sequence": 29
+      },
+      "outcomes": [
+        {
+          "case": "expired",
+          "result": "refused",
+          "error": "Control(Unavailable)"
+        }
+      ],
+      "original_inputs": {
+        "42424242424242424242424242424242-0000000000000001-0000000000000001.cbor": {
+          "bytes": 443,
+          "sha256": "36eebd9cf6758f2598db5886d77f8e305ba3829855e3c9e58595f71b2705da6e"
+        },
+        "42424242424242424242424242424242-0000000000000001-0000000000000002.cbor": {
+          "bytes": 298,
+          "sha256": "6a70f0a0facb73ab67caedb52f25cb2a9f1ea073213e4ebe3462b8f42c746834"
+        }
+      },
+      "remaining_client_backends": 0
+    },
+    {
+      "name": "policy",
+      "status": "PASS",
+      "capture": {
+        "path": ".research/implementation/certification/native/qualified/certification-policy1.json",
+        "bytes": 128143,
+        "sha256": "a44b251548d3f5d08eba2e046d57a7cee5ef74d4e80a1f1ab34f770b12c622d5"
+      },
+      "checked": {
+        "reads": 1,
+        "existing": 0,
+        "native_rows": 26,
+        "control_tables": 37,
+        "native_sequence": 29
+      },
+      "outcomes": [
+        {
+          "case": "policy",
+          "result": "refused",
+          "error": "Control(InvalidPolicy)"
+        }
+      ],
+      "original_inputs": {
+        "42424242424242424242424242424242-0000000000000001-0000000000000001.cbor": {
+          "bytes": 443,
+          "sha256": "36eebd9cf6758f2598db5886d77f8e305ba3829855e3c9e58595f71b2705da6e"
+        },
+        "42424242424242424242424242424242-0000000000000001-0000000000000002.cbor": {
+          "bytes": 298,
+          "sha256": "6a70f0a0facb73ab67caedb52f25cb2a9f1ea073213e4ebe3462b8f42c746834"
+        }
+      },
+      "remaining_client_backends": 0
+    },
+    {
+      "name": "retired",
+      "status": "PASS",
+      "capture": {
+        "path": ".research/implementation/certification/native/qualified/certification-retire1.json",
+        "bytes": 128162,
+        "sha256": "ae040667c7513a74c65bd014d5f8d9295483ef7e8117f6d1a5286c4564755125"
+      },
+      "checked": {
+        "reads": 1,
+        "existing": 0,
+        "native_rows": 26,
+        "control_tables": 37,
+        "native_sequence": 29
+      },
+      "outcomes": [
+        {
+          "case": "retired",
+          "result": "refused",
+          "error": "Registry(InvalidMetadata)"
+        }
+      ],
+      "original_inputs": {
+        "42424242424242424242424242424242-0000000000000001-0000000000000001.cbor": {
+          "bytes": 443,
+          "sha256": "36eebd9cf6758f2598db5886d77f8e305ba3829855e3c9e58595f71b2705da6e"
+        },
+        "42424242424242424242424242424242-0000000000000001-0000000000000002.cbor": {
+          "bytes": 298,
+          "sha256": "6a70f0a0facb73ab67caedb52f25cb2a9f1ea073213e4ebe3462b8f42c746834"
+        }
+      },
+      "remaining_client_backends": 0
+    }
+  ],
+  "independent_expected": {
+    "native_rows": 26,
+    "complete_original_inputs": 2,
+    "producer_reserved_through": 2,
+    "pg_tables_in_each_nonmutation_snapshot": 37,
+    "closure_tables_empty": [
+      "producer_input_bindings",
+      "import_record_closures",
+      "import_checkpoints",
+      "producer_checkpoints",
+      "jobs"
+    ],
+    "intent_sha256": "6fcb4eb0fed2c06b5a7db0d4bd7bff48f936794620ce5dd7cc4282e2d7b9d11c",
+    "proof_sha256": "daed0d7c31ef2c9beec2a29bcb06e6ca04fba268b82598485cbb688f3cf509b5",
+    "dependency_sequences": [
+      1,
+      3,
+      4,
+      5,
+      6
+    ],
+    "basis": "Independent frozen event/original-input CBOR and all key/value bytes; complete PG outcome copies, proof context/dependencies/digest and table rows with xmin. Snapshot period ends before authorized Control release.",
+    "observed_native_latest_sequence": 29,
+    "sequence_assertion": "Positive sequence unchanged during each certification;29 is observed, not a literal expected value."
+  },
+  "offline_negative_controls": {
+    "status": "PASS",
+    "scope": "offline captured proof and nonmutation counterexamples; no new engine run",
+    "source": "2f9ba08cdbbd3b5b924600780424bfc41cb40571",
+    "harness": "3342a21d64056a5cb60143788e10e6ace5c7562e",
+    "capture_sha256": "30e060e91d1f7b0cf7bc6312b9dfe8e4ddeb1dd3d8a28db4d3f06e931ea4bfd4",
+    "observed": {
+      "reads": 9,
+      "existing": 3,
+      "native_rows": 26,
+      "control_tables": 37,
+      "native_sequence": 29
+    },
+    "negative_controls": [
+      "intent_digest",
+      "proof_digest",
+      "context-dataset_id",
+      "context-topology_generation",
+      "context-protection_class",
+      "context-recovery_generation",
+      "context-policy_epoch",
+      "source-dataset_id",
+      "source-shard_id",
+      "source-owner_epoch",
+      "source-sequence",
+      "dependency-digest",
+      "missing-dependency",
+      "dependency-order",
+      "false-signature-rejection",
+      "changed-sequence",
+      "changed-native_sha256",
+      "changed-control_sha256",
+      "changed-control_tables",
+      "changed-originals"
+    ],
+    "observer_sha256": "420175ea37d90823bfa098a30f105eadd14147b9a2b931fb1e8bb1db3bc17071",
+    "checker_sha256": "3883166eaf9d260b8580315fd59d77cb104551a568b95092523728bb49b00739"
+  },
+  "preserved_red_and_review": {
+    "local": [
+      {
+        "path": ".research/implementation/certification/missing-api.log",
+        "bytes": 1841,
+        "sha256": "32220573a097997710e65473e83f1466f3efddc97d2071b0e47d9d35a2b20c79"
+      },
+      {
+        "path": ".research/implementation/certification/semantic-red.log",
+        "bytes": 1697,
+        "sha256": "2ac650614bc004db65a9f6cc52c3b9234b92f271eecd9fa34b8289a6c8b7c30b"
+      },
+      {
+        "path": ".research/implementation/certification/native-core-expanded.log",
+        "bytes": 1273,
+        "sha256": "731e589cfcb655fdadaf526f1121b062c4f41f7afa51d2ccacb3fa41ed56d556"
+      },
+      {
+        "path": ".research/implementation/certification/admission-regressions-mac.log",
+        "bytes": 2167,
+        "sha256": "2ebaad9d42dde8fa72b70b8a01ea1b92f3eac72d3c34b20bf432fd3c1b32557e"
+      },
+      {
+        "path": ".research/implementation/certification/final-fixture-clippy.log",
+        "bytes": 175,
+        "sha256": "833db98a9d78ae78992d7fac804b81fecd3101603954cb7ccae5476dcd250ff5"
+      }
+    ],
+    "red": "Missing API then stub NeedsAdmission failed the real native signed-existing assertion before implementation.",
+    "local_scope": "Dirty working tree before candidate; six certification tests and thirteen admission/certification regressions passed. Packaged-worker test was explicitly skipped locally and then executed on native candidate.",
+    "review": "Independent AI read-only review of core, Control wrapper, fixture and Python oracle; not a separate engine execution.",
+    "findings": [
+      "Fixture Rejected branch was not limited to invalid/size; corrected before candidate.",
+      "Initial PG state oracle omitted authority tables/xmin; replaced by complete 37-table snapshots before candidate.",
+      "Harness initially expected producer active instead of open and JSON integers instead of decimal strings. Confirmed against schema/scalar source and corrected in3342a21 before connected cases; no engine failure from those static findings."
+    ],
+    "final_review": "Independent AI review recalculated the four captured cases, exact original/native/proof expectations and artifact bindings, inspected14-test log and terminal audit. No remaining blocker; source sequence29 identified as observed rather than independently expected. No remote execution."
+  },
+  "dependency_inspection": "Locked rocksdb0.25.0 db.rs get_pinned/get_pinned_cf native pinnable slice implementations; private DB handle and exclusive &mut owner serialize logical writes. No physical zero-I/O or RSS inference.",
+  "terminal": {
+    "status": "PASS",
+    "owner": "48c1600daf24b8ad30664c66702dcd48",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/certification-2f9ba08",
+    "containers": {
+      "7c9992eb1f9fe87c4eb472a09575c43d704ae1c94103465961317166661c002b": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 143,
+        "Error": "",
+        "StartedAt": "2026-09-19T21:30:03.928315051Z",
+        "FinishedAt": "2026-09-19T21:34:25.646969647Z"
+      },
+      "dcbf244f7e4ef416aef14d58ec43bd60a1eb95f3e48f3bcc14a5259b627947ef": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-09-19T21:30:01.956381476Z",
+        "FinishedAt": "2026-09-19T21:34:27.195557011Z"
+      }
+    },
+    "network": "3d454be2842da6c4f2e14bece201ae0f459f41c2f3620f0bf8f4b62ace08efa0",
+    "network_state": "empty, internal, retained",
+    "preexisting_containers_unchanged": 376,
+    "unrelated_running": 8,
+    "bigbrotr_running": 0,
+    "owned_pg_clients": 0
+  },
+  "capture": {
+    "identity": {
+      "path": ".research/implementation/certification/native/evidence-identity.json",
+      "bytes": 5298,
+      "sha256": "877bc56d6d3caee735b3b39ccc6e4129d9f86eb2574a75620280c6615e756e1f"
+    },
+    "tar_sha256": "03a8faf6519c4059950323532113376903bb6712e5d59b3d20afc5dc76211048",
+    "files": 30,
+    "all_hashes_verified_on_mac": true,
+    "all_838_source_files_match_mac_git_archive": true
+  },
+  "limitations": [
+    "Only initial owner/producer epoch1 and existing local-synced retained facts; no archive fallback, current installed source-policy interpreter or successor recovery.",
+    "Normal limit32 case tests input-allocation preflight; actual dependency-budget exhaustion and corrected identical retry occur in the native test.",
+    "Policy case is trusted-validator rejection, not actual PolicyEpoch advancement. Retired fixture places producer in closing, not completed retirement.",
+    "Cancellation uses an initially set flag in the connected case and first/final authority callbacks in native tests; no in-FFI kill, task/driver abort or rollback-reply-loss qualification.",
+    "Logical rows, xmin, native sequence and originals are unchanged during certification; no claim of zero physical I/O or background engine work.",
+    "Full-window reads succeed but no proof-only logical checkpoint, closure compaction, ACK/GC or post-GC/restore proof validation is implemented.",
+    "No performance/aged-load/RSS, ENOSPC, power-loss, off-host protection, Linux arm64, hosted Actions or release qualification. All selected product work remains required."
+  ]
+}

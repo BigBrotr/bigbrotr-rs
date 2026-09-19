@@ -113,3 +113,16 @@ All scripts retain partial output; a failed or timed-out remote command requires
 an owned terminal audit. The [qualification report](../../docs/implementation/evidence/p03-import-checkpoints-native-20260919.json)
 records actual executions and preserves r1/r2/r3 failures. General import, ACK/GC
 and successor recovery remain outside this finite prerequisite.
+
+`certification.py --root <owned-lab> --run-tag <tag> --scenario <scenario>` requires
+`native_initialization.py --certification` artifacts. Its four scenarios are
+`normal`, `expired`, `policy` and `retired`; each uses fresh isolated PG/native
+state. After signed admission fills the two-slot window, the fixture performs
+CertifyExisting reads without a mutation identity. Full proof bytes, all native
+rows/sequence, originals and all Control tables with `xmin` must match independent
+expectations; the later Control release is outside the read comparison period.
+The latter two names mean validator rejection and producer closing respectively,
+not policy-epoch advancement or completed retirement. `certification_observer.py`
+checks a hash-bound normal capture and rejects altered proof/state observations
+offline. The [evidence report](../../docs/implementation/evidence/p02-certification-native-20260919.json)
+records executed scope and the remaining proof-checkpoint/recovery gates.

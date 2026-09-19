@@ -182,6 +182,12 @@ One owner serializes exact identity decisions for each writable directory.
   Producer handoff accepts Receipt/ExistingProof bases; proof-only classified
   prefixes/pages need no request sequence or ingest ACK. Resolve ambiguous Admit
   requests before choosing a new certification path, and ACK only mutation slots.
+  The [initial existing-effect read](../reference/ingest-admission.md#existing-effect-certification)
+  now passes [native qualification](evidence/p02-certification-native-20260919.json):
+  14 actual native tests, four connected cases/twelve reads and independent full
+  proof/state oracles. No mutation request, original, fact, sequence or PG row is
+  added by these reads, including a full mutation window. Proof-only checkpoint,
+  compaction, GC/restore and successor recovery still prevent step completion.
 - [ ] **Step 6:** Use bounded positive cache with full equality; account for pending/flushing
   maps, native caches, memtables and compaction alongside the cache's own slab.
 - [ ] **Step 7:** **Practical P02-T02:** use the actual Rust binding, kill before/after synced
