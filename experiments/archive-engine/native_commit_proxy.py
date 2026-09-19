@@ -77,6 +77,11 @@ class Proxy:
         startup = await reader.readexactly(length - 4)
         if startup[:4] != b'\0\3\0\0':
             raise ValueError('plaintext-required')
+        fields = startup[4:].split(b'\0')
+        if fields[-2:] != [b'', b''] or len(fields) % 2:
+            raise ValueError('startup-fields')
+        fields = fields[:-2]
+        receipt_reader = dict(zip(fields[::2], fields[1::2])).get(b'user') == b'bigbrotr_receipt_reader'
         upstream, upstream_writer = await asyncio.open_connection('127.0.0.1', 5432)
         self.writers.append(upstream_writer)
         upstream_writer.write(header + startup)
@@ -109,6 +114,12 @@ class Proxy:
                     continue
                 if frontend and tag in (b'Q', b'P'):
                     self.report['frontend_queries'] += 1
+                    # The actual native reader exists only after full manager
+                    # inspection. Hold its first authenticated query so the lab
+                    # can acquire a real relation lock without racing inspection.
+                    if self.mode == 'hold-reader-query' and receipt_reader:
+                        if not await self.hold('reader-query', state['backend_pid']):
+                            return
                 if frontend and tag == b'P' and self.target == 'control-coordinator':
                     # tokio-postgres prepares the fixed INSERT using extended
                     # protocol. Its subsequent transaction COMMIT is simple Q.
@@ -273,7 +284,7 @@ class Proxy:
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--mode', choices=['pass', 'before-forward', 'after-complete', 'hold-data', 'hold-commit', 'hold-reply', 'hold-manager-commit', 'hold-manager-owner', 'omit-auth-final'], required=True)
+    parser.add_argument('--mode', choices=['pass', 'before-forward', 'after-complete', 'hold-data', 'hold-commit', 'hold-reply', 'hold-manager-commit', 'hold-manager-owner', 'hold-reader-query', 'omit-auth-final'], required=True)
     parser.add_argument('--target', choices=['publication', 'native-schema', 'guard-install', 'control-coordinator'], default='publication')
     try:
         args = parser.parse_args()

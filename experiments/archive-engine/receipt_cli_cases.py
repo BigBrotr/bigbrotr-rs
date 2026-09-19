@@ -7,6 +7,7 @@ All negative controls preserve original input/catalog bytes and retained issuanc
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 import select
 import subprocess
@@ -51,6 +52,24 @@ finally:
  for fd in fds:os.close(fd)
 """
 
+READONLY = r"""import errno,json,os
+from pathlib import Path
+checked=[]
+for mode in ['normal','before']:
+ home=Path('/out')/('signed_'+mode)
+ for path in [home/'kind=7/.bigbrotr-initialization/intent.json',home/'archive-state/coordinator.json']:
+  assert os.statvfs(path).f_flag & os.ST_RDONLY
+  try:fd=os.open(path,os.O_WRONLY)
+  except OSError as error:
+   assert error.errno==errno.EROFS
+   checked.append(dict(path=str(path),write_errno=error.errno,readonly=True))
+  else:
+   os.close(fd)
+   raise AssertionError('kernel allowed writable data/state descriptor')
+ assert not os.statvfs(home/'initialize-scratch').f_flag & os.ST_RDONLY
+print(json.dumps(checked))
+"""
+
 
 def run(root):
     source = Path(__file__).resolve().parents[2]
@@ -69,11 +88,12 @@ def run(root):
     signed = json.loads((root/'installed-signed-cases.json').read_text())
     assert signed['status'] == 'PASS' and signed['source'] == resources['source']
     report = dict(status='INCOMPLETE', source=resources['source'], tree=resources['tree'],
-                  artifacts=ready, harness_sha256=sha(Path(__file__)), cases=[], commands=[], processes=[])
+                  artifacts=ready, harness_sha256=sha(Path(__file__)), cases=[], commands=[], processes=[], auxiliary=[])
     path = root/'receipt-cli-cases.json'
     assert not path.exists()
     binary = '/out/native-tests/bigbrotr'
-    processes, blockers, watchers = [], [], []
+    processes, blockers, watchers, proxies = [], [], [], []
+    restore_config = None
 
     def save():
         path.write_text(json.dumps(report, indent=2)+'\n')
@@ -89,13 +109,13 @@ def run(root):
     def rows(db):
         return json.loads(sql(db, "SELECT json_build_object('bindings',(SELECT json_agg(t) FROM (SELECT c.*,xmin::text AS xmin FROM control.archive_coordinators c)t),'attempts',(SELECT json_agg(t ORDER BY ordinal) FROM (SELECT a.*,xmin::text AS xmin FROM control.archive_attempts a)t))"))
 
-    def cli(mode, attempt, code=0, contains=None, cap=128):
+    def cli(mode, attempt, code=0, contains=None, cap=128, target=None):
         args = [binary, 'archive', 'receipt-inspect', '--file', f'/out/signed_{mode}/receipt.toml',
                 '--attempt-id', attempt, '--max-receipts', str(cap), '--worker-root', '/out/archive-worker']
-        record = dict(args=args)
+        record = dict(args=args, container_id=target or runner)
         report['commands'].append(record)
         try:
-            execute(['docker', 'exec', runner, *args], 135, record)
+            execute(['docker', 'exec', target or runner, *args], 135, record)
         finally:
             save()
         assert record['exit'] == code, record
@@ -133,6 +153,53 @@ def run(root):
         report['processes'].append(record); processes.append((p,record)); save()
         return p,record
 
+    def start_blocked():
+        nonlocal restore_config
+        proxy = Process(['docker','exec','-i',runner,'python3','-B',
+                         '/source/experiments/archive-engine/native_commit_proxy.py',
+                         '--mode','hold-reader-query'],input_pipe=True)
+        metadata = {}
+        proxies.append((proxy,metadata))
+        report.setdefault('proxies',[]).append(metadata)
+        hello = metadata['ready'] = event(proxy,'ready')
+        assert hello['source_sha256'] == sha(source/'experiments/archive-engine/native_commit_proxy.py')
+        config = root/'out/signed_normal/receipt.toml'
+        original = config.read_text()
+        assert restore_config is None
+        restore_config = (config,original)
+        config.write_text(change(original,'postgres.catalog','endpoint',f'127.0.0.1:{hello["port"]}'))
+        item = start()
+        held = metadata['held'] = event(proxy,'held')
+        assert held['stage'] == 'reader-query' and held['backend_pid'] > 0
+        # The barrier follows the real manager driver and precedes native SQL.
+        deadline = time.monotonic()+8
+        while sql('bbpub_normal',"SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND usename='CatalogManager'") != '0':
+            assert time.monotonic() < deadline, 'inspection manager backend did not drain'
+            time.sleep(.02)
+        metadata['manager_backends_before_lock'] = 0
+        p, holder = lock('bbpub_normal','LOCK TABLE public.ducklake_data_file IN ACCESS EXCLUSIVE MODE')
+        send(proxy,'release\n'); metadata['released'] = event(proxy,'released')
+        observed = wait_lock('bigbrotr_receipt_reader','bbpub_normal',holder)
+        assert observed['application_name'] == 'bigbrotr-archive-receipt'
+        save()
+        return p,item,observed,(proxy,metadata)
+
+    def finish_proxy(item):
+        proxy,metadata = item
+        if proxy.process.poll() is None:
+            send(proxy,'stop\n')
+        assert proxy.wait(5) == 0 and not proxy.stderr and not proxy.overflow
+        metadata['terminal'] = event(proxy,'terminal')
+        assert metadata['terminal']['unexpected'] == 0
+        proxy.stop(); save()
+
+    def restore_route():
+        nonlocal restore_config
+        if restore_config:
+            config,original = restore_config
+            config.write_text(original)
+            restore_config = None
+
     def wait_lock(user, db, holder):
         deadline = time.monotonic()+10
         while True:
@@ -155,6 +222,47 @@ def run(root):
         else:
             assert not record['stderr'], record
         return record
+
+    def retire_auxiliary(record):
+        c = json.loads(command('docker','inspect',record['id']))[0]
+        assert c['Id'] == record['id'] and c['Config']['Labels']['org.bigbrotr.receipt-cli-cases'] == resources['owner']
+        if c['State']['Running']:
+            command('docker','stop','--time','10',record['id'])
+            c = json.loads(command('docker','inspect',record['id']))[0]
+        record['terminal'] = c['State']; save()
+        assert not c['State']['Running'] and not c['State']['OOMKilled']
+
+    def readonly_observations():
+        # Keep exactly the original path/device/inode identities while removing
+        # every writable data/state alias. Only disjoint scratch is writable.
+        args = ['docker','create','--init','--name',resources['container']+'-readonly',
+                '--label','org.bigbrotr.receipt-cli-cases='+resources['owner'],
+                '--label','org.bigbrotr.publication='+resources['owner'],
+                '--user',f'{os.getuid()}:{os.getgid()}', '--cpus','2','--memory','6g',
+                '--memory-swap','6g','--pids-limit','512','--network','container:'+pg,
+                '--read-only','--cap-drop','ALL','--security-opt','no-new-privileges',
+                '--tmpfs','/tmp:rw,nosuid,nodev,size=64m',
+                '--mount',f'type=bind,src={root / "out"},dst=/out,readonly']
+        for mode in ['normal','before']:
+            path = f'/out/signed_{mode}/initialize-scratch'
+            args += ['--mount',f'type=bind,src={root / path.lstrip("/")},dst={path}']
+        identity = command(*args,resources['image'],'python3','-c','import time; time.sleep(600)')
+        record = dict(id=identity)
+        report['auxiliary'].append(record); save()
+        try:
+            command('docker','start',identity)
+            c = json.loads(command('docker','inspect',identity))[0]
+            assert c['State']['Running'] and not c['HostConfig']['PortBindings']
+            record['mounts'] = [dict(source=m['Source'],destination=m['Destination'],writable=m['RW']) for m in c['Mounts']]
+            record['kernel_write_refusals'] = json.loads(command('docker','exec',identity,'python3','-c',READONLY))
+            save()
+            assert cli('normal','b6'*16,target=identity)['state'] == 'present'
+            assert cli('before','bd'*16,target=identity)['state'] == 'absent'
+        finally:
+            retire_auxiliary(record)
+        no_clients()
+        passed('readonly-data-and-state-mount-present-and-absent',container_id=identity,
+               kernel_write_refusals=record['kernel_write_refusals'])
 
     save()
     try:
@@ -254,21 +362,20 @@ def run(root):
             finally: sql('bbpub_normal',revoke)
         assert cli('normal','b6'*16)['state'] == 'present'
         passed('effective-reader-privilege-refusals-and-identical-retry')
+        readonly_observations()
         # Real native wait after manager inspection; supervise policy and renew
         # Control while PostgreSQL holds the reader's snapshot query.
-        p, holder = lock('bbpub_normal','LOCK TABLE public.ducklake_data_file IN ACCESS EXCLUSIVE MODE')
-        item = start(); observed = wait_lock('bigbrotr_receipt_reader','bbpub_normal',holder)
-        assert observed['application_name'] == 'bigbrotr-archive-receipt'
+        p,item,observed,proxy = start_blocked()
         before = sql('bbpub_control_normal',"SELECT lease_expires_at_us FROM control.owner_epochs WHERE role='control' ORDER BY epoch DESC LIMIT 1")
         time.sleep(3)
         after = sql('bbpub_control_normal',"SELECT lease_expires_at_us FROM control.owner_epochs WHERE role='control' ORDER BY epoch DESC LIMIT 1")
         assert int(after) > int(before)
         unlock(p)
         assert json.loads(terminal(item,0)['stdout'])['state'] == 'present'
+        finish_proxy(proxy); restore_route()
         no_clients(); passed('native-blocked-read-keeps-control-heartbeats',observed=observed,before=before,after=after)
         for reason in ['INT','TERM','policy','lease']:
-            p, holder = lock('bbpub_normal','LOCK TABLE public.ducklake_data_file IN ACCESS EXCLUSIVE MODE')
-            item = start(); observed = wait_lock('bigbrotr_receipt_reader','bbpub_normal',holder)
+            p,item,observed,proxy = start_blocked()
             watcher = Process(['docker','exec','-i',runner,'python3','-u','-c',WATCH,*item[1]['args']],input_pipe=True)
             watchers.append(watcher)
             item[1]['worker'] = event(watcher,'watch-ready')
@@ -295,7 +402,7 @@ def run(root):
             assert item[1]['worker_terminal']==dict(event='watch-terminal',native_exited=True,reaped=True)
             save()
             if reason == 'lease': unlock(blocked)
-            unlock(p); no_clients()
+            unlock(p); finish_proxy(proxy); restore_route(); no_clients()
             passed('blocked-native-'+reason.lower()+'-joins-without-observation',observed=observed,elapsed_seconds=elapsed)
         for mode in MODES:
             after_dump = dump(mode)
@@ -339,6 +446,15 @@ def run(root):
                     watcher.process.stdin.close()
                     watcher.wait(5)
                 watcher.stop()
+            except Exception as error:
+                report['status']='INCOMPLETE';report.setdefault('cleanup_errors',[]).append(type(error).__name__)
+        for proxy in proxies:
+            try: finish_proxy(proxy)
+            except Exception as error:
+                report['status']='INCOMPLETE';report.setdefault('cleanup_errors',[]).append(type(error).__name__)
+        restore_route()
+        for record in report['auxiliary']:
+            try: retire_auxiliary(record)
             except Exception as error:
                 report['status']='INCOMPLETE';report.setdefault('cleanup_errors',[]).append(type(error).__name__)
         save()

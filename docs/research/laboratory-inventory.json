@@ -12206,6 +12206,118 @@
         "containers": "stopped-retained",
         "observed_at": "2026-09-19T14:23:46.878756+00:00"
       }
+    },
+    "receipt_cli_blocker_development": {
+      "source": "55ac4917d40e9669ebddcfbb883ee4d844f54bb6",
+      "tree": "44e8a74e6c60c4233fc02dd1287340708cc3f501",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/receipt-cli-55ac491",
+      "owner": "c2f8a7b3ab8404970a6527497a8605c8",
+      "container": "bigbrotr-implementation-receipt-cli-55ac491",
+      "postgres": "bigbrotr-implementation-receipt-cli-55ac491-pg",
+      "network": "bigbrotr-implementation-receipt-cli-55ac491",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "state": "stopped-retained",
+      "source_files": 776,
+      "started_at": "2026-09-19T14:24:00.094822+00:00",
+      "network_id": "8869aa6889d8e66c7ba5107c83d42b3496a0601fd41385a9b019f134e9942885",
+      "postgres_id": "fb9b6e902ce5ec64b3d5b7bc084397c0106f4d51e60e43273f0a72b64c3c1e92",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "c4ebc67efbe7d06cdfbc21fad06e69ec2b9f7f7b8996338eff0176dd7510c783",
+      "completed_at": "2026-09-19T14:31:19.735340+00:00",
+      "terminal_audit": {
+        "status": "PASS",
+        "source": "55ac4917d40e9669ebddcfbb883ee4d844f54bb6",
+        "tree": "44e8a74e6c60c4233fc02dd1287340708cc3f501",
+        "source_files": 776,
+        "source_archive_sha256": "583547a7a48fd309e636f984d15b32c8e439332c56526fb490811da2b950f63c",
+        "source_manifest_sha256": "dc6679f410d163e6966155b83083caa3e8f8110036ce571b8dfc50dd7ba47454",
+        "artifacts": {
+          "main": {
+            "sha256": "6d97c0298260e234ac62c6966678f19715a91f322cbd07023f791feb5ca38811",
+            "bytes": 9172936,
+            "elf_machine": 62
+          },
+          "worker": {
+            "sha256": "89e46e831e8e12f7e60b249493a619af4cd3bca7d984ec7a06574ede3d6f0b9f",
+            "bytes": 12608608,
+            "elf_machine": 62
+          },
+          "publisher": {
+            "sha256": "fd259e6db3f33806404ede2fd3cf25777f7db689fbf5570383a004e1bc6c2901",
+            "bytes": 18984440,
+            "elf_machine": 62
+          },
+          "coordinator_probe": {
+            "sha256": "9744fd81413c85ea89cdc18a70a4cc62241b92f50a1b2915bd4ea96dbe1a7372",
+            "bytes": 694584,
+            "elf_machine": 62
+          },
+          "attempt_probe": {
+            "sha256": "fee159f3ca2d442e190ddf8680df776e4994cbd759f8ac4942b61ed1131a1630",
+            "bytes": 2642440,
+            "elf_machine": 62
+          }
+        },
+        "qualification": {
+          "installed-signed-cases": "PASS",
+          "receipt-cli-cases": "FAIL"
+        },
+        "cases": {
+          "installed-signed-cases": 6,
+          "receipt-cli-cases": 9
+        },
+        "build_ready": true,
+        "terminal": {
+          "container_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-19T14:24:04.509958587Z",
+            "FinishedAt": "2026-09-19T14:31:15.262669994Z"
+          },
+          "postgres_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-19T14:24:02.303671535Z",
+            "FinishedAt": "2026-09-19T14:31:19.268140698Z"
+          }
+        },
+        "owned_containers": [
+          "c4ebc67efbe7d06cdfbc21fad06e69ec2b9f7f7b8996338eff0176dd7510c783",
+          "fb9b6e902ce5ec64b3d5b7bc084397c0106f4d51e60e43273f0a72b64c3c1e92"
+        ],
+        "existing_containers_unchanged": 346,
+        "unrelated_containers_unchanged": 20,
+        "unrelated_running": 8,
+        "bigbrotr_running": 0,
+        "observed_at": "2026-09-19T14:31:19.735340+00:00",
+        "harness": null,
+        "owned_sql_backends_before_shutdown": 0,
+        "build_checks_status": "PASS"
+      },
+      "raw": ".research/implementation/archive-worker/receipt-cli-retry/failed-55ac491",
+      "manifest": ".research/implementation/archive-worker/receipt-cli-retry/failed-55ac491-evidence-identity.json",
+      "network_retirement": {
+        "network": "8869aa6889d8e66c7ba5107c83d42b3496a0601fd41385a9b019f134e9942885",
+        "owner": "c2f8a7b3ab8404970a6527497a8605c8",
+        "action": "remove verified empty retired network only",
+        "containers": "stopped-retained",
+        "observed_at": "2026-09-19T14:34:35.567220+00:00"
+      }
     }
   },
   "implementation_monitor_corrections_20260918": {

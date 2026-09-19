@@ -20,29 +20,33 @@ its binding at ordinary startup. All later selected product work remains require
 
 ## Actual Git and latest qualification
 
-Mac main candidate4706373a34e0754b2dd48bf77b77a7a6bdeb1734; private origin remains
-e45c06b77f84bb1667071b3c8cb6e400e1f50654. Candidate is unpublished; tree
-cf7d336337a201d1d0a3c7b3f4de4ec74720d12b. Root owns all current dirty files:
-receipt harness, policy-authority comment, receipt contract/user documentation,
-this checkpoint and laboratory inventory. No other contributor changes.
+Mac main unpublished55ac4917d40e9669ebddcfbb883ee4d844f54bb6; private origin remains
+e45c06b77f84bb1667071b3c8cb6e400e1f50654. Tree44e8a74e6c60c4233fc02dd1287340708cc3f501.
+Root owns all dirty files: receipt harness, native proxy, checkpoint and inventory.
+No product implementation changed since4706373 except its policy-authority comment.
 
-Native4706373 build/checks PASS; six installed signed schedules PASS, including22
-retained original observations. Receipt matrix FAIL after7 top-level cases at the
-managed seed fixture: one1GiB worker declaration retained default2workers and was
-refused by static envelope validation before the intended ResourceLimit check.
-Privilege, heartbeat, cancellation and final preservation cases were NOT_RUN.
-No product defect established. Preserve this failed result. The pending harness
-sets prepare_workers=1 and records actual offline config validation before the
-unchanged accepted-policy refusal oracle. A separate WATCH fix observes stat
-starttime even for zombies before claiming reaping. Independent read-only AI
-review confirmed both and found no further concrete harness blocker.
+Native55ac491 build,47 Archive+8 binary+13 catalogCLI+1 ControlCLI and Clippy PASS;
+one older Archive fixture ignored. Six installed signed schedules PASS. Receipt
+matrix76405 FAIL after9 top-level cases:22 original retained observations, missing/
+corrupt inputs, complete-scan floor, valid managed seed drift, five reader privilege
+refusals/retry all pass. The data_file lock intended for native work instead blocks
+CatalogManager's structural layout query. Diagnosis22803 observed that actual PG
+wait; releasing the blocker let the same CLI finish Present. This fixture cannot
+qualify native cancellation. No product defect established. Heartbeat, native
+cancellation and final preservation cases NOT_RUN. A new proxy barrier holds only
+the reader's first authenticated query after manager drain, then acquires/releases
+the actual table lock. New dirty readonly data/state mount test also remains NOT_RUN.
 
-Matrix7908 exited1; terminal audit65705 and collection5965 exited0. Root verified
-105 raw hashes and776 source hashes against Mac Git archive. Lab stopped-retained;
-zero owned SQL clients before stop, no OOM,344 preexisting containers unchanged,
-eight unrelated still running. The policy-authority comment/contract now explicitly
-scope final receipt metadata to a completed local observation after cleanup;
-policy_revision never grants current delivery authority or future served reads.
+Audit/collection48815 exit0:106 raw hashes and776 source hashes verified against
+Mac Git archive; zero owned SQL clients before stop, no OOM,346 preexisting
+containers unchanged, eight unrelated running. Raw failed-55ac491 includes the
+actual blocked-query diagnosis (PostgreSQL activity text itself is capped at1024).
+Earlier4706373 failure after7 cases was a statically invalid drift fixture; fixed
+with prepare_workers=1 plus actual offline validation. WATCH now reads stat directly
+so a zombie cannot be mistaken for a reaped process. Preserve both failed reports.
+Read-only AI review checked corrections and mount boundaries; protocol barrier review found wrong config keys
+(corrected to endpoint) and a possible transient manager-backend drain
+(corrected to bounded observation before lock). No product guard was changed. Local checks pass syntax, format, artifact/handoff/diff.
 
 Installed `archive receipt-inspect` is now implemented as a finite supervised
 consumer of the exact retained Control request/local inputs. Full manager/reader
@@ -116,6 +120,18 @@ record. No reviewer Tux or ELF execution claim.
 
 ## Owned resources and retained evidence
 
+
+Latest lab55ac491 stopped-retained at2026-09-19T14:31:19.735340+00:00.
+Root `/home/tux/bigbrotr-implementation-20260917/runs/receipt-cli-55ac491`;
+owner c2f8a7b3ab8404970a6527497a8605c8. Exact container/network/artifact identities in
+inventory receipt_cli_blocker_development and raw
+`.research/implementation/archive-worker/receipt-cli-retry/failed-55ac491`.
+Tar906dfa20562a33d5053c70890916838ab6f64b44eb3f04ec996e44aa8f97ec34;
+main6d97c0298260e234ac62c6966678f19715a91f322cbd07023f791feb5ca38811.
+No active laboratory remains. Its out/build is the latest reusable copied cache.
+Its verified empty owned network was removed at2026-09-19T14:34:35.567220+00:00.
+Containers/data retained.
+
 Stopped-retained `/home/tux/bigbrotr-implementation-20260917/runs/receipt-cli-4706373`
 at2026-09-19T14:16:31.423049+00:00. Inventory receipt_cli_development entry.
 Owner3366f5e7dabb00d9c1178e8c57740f6c;
@@ -127,8 +143,7 @@ Raw `.research/implementation/archive-worker/receipt-cli/failed-4706373`105files
 tar e67cc1150a1121641f2e59e724afc73596e90d6fac15beaef4b6459b42f10a95.
 Main734595c9782f52fbf6f031062d7d8d6bfa005ad82b47fabfc6ed5f4effe2cef4,
 worker89e46e831e8e12f7e60b249493a619af4cd3bca7d984ec7a06574ede3d6f0b9f.
-No active lab/process remains. Do not restart older retained labs. Latest reusable
-copied build cache is receipt-cli-4706373/out/build; exact Cargo.lock check required.
+Do not restart older retained labs. Copied caches require exact Cargo.lock verification before reuse.
 
 
 Previous coordinator lab is stopped-retained at2026-09-19T13:37:17.226411+00:00:
@@ -141,7 +156,7 @@ PG f2240df75735ed7ee48f059742450294515a9c13377bcbf3ab5dfbdc34dd6d65 exited0.
 Internal network85545ebe1a6f59fa1478b3c9ff77426b20af2edfe5d3a4e1bb07655ed8510550
 was verified empty and removed at 2026-09-19T14:10:46.059553+00:00; containers/data remain retained. Zero owned SQL backends before shutdown, no OOM;
 342 preexisting containers unchanged, eight unrelated running and zero BigBrotr.
-No active lab/process remains. Do not restart retired environments.
+Do not restart retired environments.
 
 Raw `.research/implementation/archive-worker/coordinator-cli/qualified`:39files;
 sibling evidence-identity.json binds tar492ba7f093a1b18bb4b87d91587f34c6667901ed802ea1fecaeedf2360564b19.
@@ -208,15 +223,13 @@ Mac/Linux. The present CLI qualification does not replace those reports.
 
 ## Next bounded action
 
-Verify corrected harness/doc diff, commit an unpublished exact-source candidate,
-then create a fresh inventoried Tux lab via Git. Run ordered native build/checks,
-six installed signed producer schedules and receipt_cli_cases.py. Preserve the
-failed4706373 raw evidence. New checks must reach valid seed drift, effective
-reader privileges, blocked-reader heartbeat, INT/TERM, policy-head change, failed
-refresh and native death/reaping before blocker release, plus final catalog/file
-preservation. Stop/audit/collect and update evidence/checkpoint before pushing.
-Read-only data-mount integration remains unqualified; follow with that actual
-custody/fsync boundary before advertising the combined readonly profile.
+Review the corrected proxy/barrier and readonly mount diff. Commit an unpublished
+candidate and create a fresh Tux lab via Git. Shared native build/checks, six signed
+producer schedules and the16-case receipt matrix must actually reach blocked native
+heartbeat/cancellation, pidfd/death/reap before unlock, readonly mount Present/Absent
+and final full catalog/file comparisons. Preserve both failed runs; no weaker
+expected results. Terminal audit must include the owned readonly auxiliary container.
+Then collect/review evidence, document exact scope and push verified private history.
 
 Actual Ingest-owner handoff is still required before compact service restart:
 initial registration/admission binds original Control identity/epoch1, not a
