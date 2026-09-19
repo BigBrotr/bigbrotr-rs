@@ -20,16 +20,14 @@ Control-only and rejects other roles. Root remains sole writer/integrator.
 
 ## Actual Git and review
 
-Mac main and origin/main verified at8972fb62f331a12ff61c349367ae9c3cf0cfa91d;
-push20640 exited0 and the tree was clean. Private bigbrotr-rs. Published78e7734
-residual-session fixture,1978e12 stronger actual-process/query oracles and8972fb6
-reviewed native evidence/docs. Product Rust is unchanged from759157b; fixture is
-unchanged after78e7734. Root-owned dirty work now implements bounded native client identity handoff in
-archive parent/preflight/process consumers, shared PEM-parser visibility, CLI
-regression and this checkpoint/inventory. New client_identity.rs owns sealed
-Linux memfds and a16MiB grant through child reap. No migration, dependency or
-worker-protocol change. No merge/rebase or other contributor edits. No active
-Tux experiment; native mTLS qualification is NOT_RUN.
+Mac main d5cfcd424ccbdf10a43a954a41658bea58e8cf7f; origin/main remains8972fb6.
+One unpublished candidate implements sealed native identities/CA bounds and the
+actual TLS matrix. Local checks passed before commit; clean exact Git source
+transferred by bundle (4049 exit0). Root-owned dirty checkpoint/inventory only.
+No merge/rebase or other contributor edits. Native build failed in the Linux-only custody test: missing new optional TLS
+argument. Fixed that call with None; product unchanged. No practical case launched.
+Failure retained; owned resources stopped/audited, eight unrelated workloads
+unchanged. Preparing a new exact candidate and fresh lab.
 
 Independent read-only AI source review found simultaneous credential preparation,
 legacy TLS address-selection regression and late long-manager refusal; corrected
@@ -109,23 +107,16 @@ ELF/current processes.
 
 ## Owned resources and evidence
 
-No active experiment. Fresh preflight confirms the previous containers remain
-stopped and8 unrelated workloads running; its empty owned network was now removed
-after identity/stopped checks (native-mtls/previous-network-retirement.json).
-Audit67478 and collect4972 exited0. Latest audit:
-2026-09-19T09:09:29.462801+00:00. Both new containers stopped-retained, no OOM;
-320 preexisting container/mount/network/lifecycle states unchanged,8 unrelated
-running, zero BigBrotr. Retain containers/data; never restart retired labs.
-Root: /home/tux/bigbrotr-implementation-20260917/runs/initialization-drain-78e7734.
-Owner:772532228ad91c0d671adc6a8be9b483.
-Runner:7f29d58ecb63a91777949facd3024eba09dc7bc330932c23d158ed95d82fd2fb stopped143.
-PG:91c1b8e8d9374ca881e5305318e570a2973b377e808dcf076d1040a2811efbcb stopped0.
-Network:0d723a977b4b2e6252f56ce3d17265739e0b80fbe86510a826c885bd32d7abcb empty-retained.
-Runner2CPU/6GiB/512PIDs, PG1CPU/1GiB/128PIDs, internal/no host ports.
-Main:e62e4c14036a6001bc4fde9b891081eee0b5e86160fc69aa6c5eaf6e6ac87f2c (8791920bytes).
-Worker:c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227 (12608608bytes).
-Fixture:0217cf17cd856a3894321ef7633ca3fa054acca368b5698291ca667ea8c15e04.
-Latest copied-cache/read-only-assets:78e7734/out/{build,archive-worker}.
+No active experiment. Failed native-mtls-d5cfcd4 lab stopped-retained by audit35137;
+PG stopped0, runner1, no OOM.322 preexisting containers unchanged,8 unrelated
+running,0 BigBrotr. Ordered worker/main and fixtures compiled; Linux parent-test
+compile failed E0061 at lifetime/tests.rs:449 (new TLS argument omitted). CLI and
+Clippy not run; no practical workload. Exact raw failure/source proof collected
+at .research/implementation/archive-worker/native-mtls/failed-build;10files tar
+61671b0165d2248841ebb6a269dccb0591612d78127ddc80d6d4ff9a6573efa6.
+Product unchanged by the test-only None fix; next candidate reruns affected native
+build/tests before practical cases. Full failure resource IDs and manifests live
+in native_mtls inventory entry. Empty failed-lab network removed after exact stopped/owner checks.
 
 Raw root:.research/implementation/archive-worker/initialization-drain/qualified.
 15 raw files, tar64362dbc89551372e770eaca30fcd7ae79ce71532db36cd341fb9b99346f0d0c.

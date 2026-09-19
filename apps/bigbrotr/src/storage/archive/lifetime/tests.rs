@@ -451,6 +451,7 @@ fn native_worker_alone_retains_custody_after_coordinator_descriptors_close() {
             &["16".into(), MIB.to_string()],
             &budget,
             Some(&owner),
+            None,
         )
         .unwrap();
     // start_with_custody has returned: its Command/clone are already destroyed.
