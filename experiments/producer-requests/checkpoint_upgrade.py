@@ -50,12 +50,12 @@ def main(root, old_root):
     assert hashlib.sha256(old_artifact.read_bytes()).hexdigest() == old['ingest_probe']
     for path, key in [('bigbrotr', 'control'), ('ingest-bootstrap-probe', 'ingest_probe')]:
         assert hashlib.sha256((root/'out/native-tests'/path).read_bytes()).hexdigest() == ready[key]
-    work = root/'out/checkpoint-upgrade-r1'; work.mkdir(mode=0o700)
+    work = root/'out/checkpoint-upgrade-r2'; work.mkdir(mode=0o700)
     shutil.copyfile(old_artifact, work/'old-ingest-probe'); (work/'old-ingest-probe').chmod(0o500)
     assert hashlib.sha256((work/'old-ingest-probe').read_bytes()).hexdigest() == old['ingest_probe']
     credential = work/'migrator-secret'
     credential.write_bytes((root/'secrets/postgres').read_bytes()); credential.chmod(0o400)
-    report_path = root/'import-checkpoint-upgrade-r1.json'; assert not report_path.exists()
+    report_path = root/'import-checkpoint-upgrade-r2.json'; assert not report_path.exists()
     report = dict(status='INCOMPLETE', source=state['source'], harness_revision=harness,
                   harness_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
                   artifacts=ready, old_build=old, cases=[], operations=[])
@@ -83,15 +83,15 @@ def main(root, old_root):
     def sql(db, text):
         return checked('sql:'+db, ['docker','exec','-i',pg,'psql','-XqAt','-v','ON_ERROR_STOP=1','-U','postgres','-d',db], input=text)
     new = ['docker','exec',runner,'/out/native-tests/ingest-bootstrap-probe']
-    old_command = ['docker','exec',runner,'/out/checkpoint-upgrade-r1/old-ingest-probe']
+    old_command = ['docker','exec',runner,'/out/checkpoint-upgrade-r2/old-ingest-probe']
     main_command = ['docker','exec',runner,'/out/native-tests/bigbrotr']
-    checked('config-init',main_command+['config','init','--recipe','archive-only','--output','/out/checkpoint-upgrade-r1/template.toml'])
+    checked('config-init',main_command+['config','init','--recipe','archive-only','--output','/out/checkpoint-upgrade-r2/template.toml'])
     def config(db):
         text = change((work/'template.toml').read_text(),'postgres.control','database',db)
         text = change(text,'postgres.control','endpoint','127.0.0.1:5432')
         text = change(text,'postgres.control.tls','local_boundary','loopback')
         (work/(db+'.toml')).write_text(text)
-        return '/out/checkpoint-upgrade-r1/'+db+'.toml'
+        return '/out/checkpoint-upgrade-r2/'+db+'.toml'
     def snapshot(db):
         names = json.loads(sql(db,"SELECT jsonb_agg(tablename ORDER BY tablename) FROM pg_tables WHERE schemaname='control'"))
         assert 1 <= len(names) <= 64 and all(n.replace('_','').isalnum() for n in names)
@@ -107,12 +107,12 @@ def main(root, old_root):
         case[label] = dict(exit=p.returncode, stdout=p.stdout, stderr=p.stderr); save()
         return p
     save()
-    for mode in ['empty', 'retained', 'nonzero_checkpoint', 'new_on_old']:
+    for mode in ['empty', 'retained', 'new_on_old', 'nonzero_checkpoint']:
         case = dict(name=mode, status='INCOMPLETE'); report['cases'].append(case); save()
-        db = 'bbcheckpoint_upgrade_r1_'+mode
+        db = 'bbcheckpoint_upgrade_r2_'+mode
         sql('postgres','CREATE DATABASE '+db)
         checked('setup:'+db,new+['setup-13',db,'/secrets/postgres','unused'])
-        home = '/out/checkpoint-upgrade-r1/'+mode+'/db'; (work/mode).mkdir()
+        home = '/out/checkpoint-upgrade-r2/'+mode+'/db'; (work/mode).mkdir(mode=0o700)
         if mode in ['retained', 'nonzero_checkpoint']:
             p = execute(case,'old_write',old_command+['event-bindings',db,'/secrets/bigbrotr_control',home])
             assert p.returncode == 0 and not p.stderr
@@ -154,11 +154,14 @@ def main(root, old_root):
             case['native'] = native
             assert schema_digest(db) == case['schema_before']
         else:
-            p = execute(case,'migration',main_command+['migrate','apply','--file',config(db),'--user','postgres','--password-ref','file:/out/checkpoint-upgrade-r1/migrator-secret','--target','14'])
-            after = snapshot(db)
+            p = execute(case,'migration',main_command+['migrate','apply','--file',config(db),'--user','postgres','--password-ref','file:/out/checkpoint-upgrade-r2/migrator-secret','--target','14'])
+            after = snapshot(db); case['after'] = after; save()
             if mode == 'nonzero_checkpoint':
                 assert p.returncode == 1 and not p.stdout
                 assert after == before and schema_digest(db) == case['schema_before']
+                assert json.loads(checked('native-dump-after:'+db,new+['dump',home])) == case['native']
+                assert {p.name:p.read_bytes() for p in spool.iterdir()} == inputs
+                case['rollback_observed'] = True; save()
                 # Required concrete recovery diagnostic; the current candidate
                 # is expected to expose the missing mapping before correction.
                 assert 'migration 14 refuses import checkpoints without typed closure' in p.stderr
@@ -169,7 +172,7 @@ def main(root, old_root):
                 assert not after['import_record_closures'] and not after['import_checkpoints']
                 assert {k:v for k,v in after.items() if k not in ['schema_versions','import_record_closures','import_checkpoints']} == {k:v for k,v in before.items() if k != 'schema_versions'}
                 migrated_schema = schema_digest(db)
-                old_home = '/out/checkpoint-upgrade-r1/'+mode+'/old-refused'
+                old_home = '/out/checkpoint-upgrade-r2/'+mode+'/old-refused'
                 p = execute(case,'old_refusal',old_command+['write',db,'/secrets/bigbrotr_control',old_home])
                 assert p.returncode == 101 and 'IncompatibleDeployment' in p.stderr
                 assert snapshot(db) == after and not (work/mode/'old-refused').exists()

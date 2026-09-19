@@ -173,4 +173,10 @@ old-client refusal, new admission on13 refusal and incompatible nonzero prior
 checkpoint. Static reading shows migration_runner currently maps14/55000 to a
 generic backend error; the new practical test requires an explicit recovery
 diagnostic and should expose that missing mapping before correction. No SQL
-invariant loss is inferred from the diagnostic gap. Compatibility NOT_RUN.
+invariant loss is inferred from the diagnostic gap. First compatibility run: empty upgrade and old-client refusal PASS; retained
+old signed writer failed InvalidScratch because the harness created its parent
+with default755 instead of the required700. This is the existing source privacy
+boundary refusing a bad fixture, not a migration failure. Original r1 report/log
+retained INCOMPLETE; independently observed zero PG clients and idle runner.
+Corrected harness uses mode700 plus fresh r2 databases/paths and runs new-on-old
+before the expected missing-diagnostic case. No earlier data is retried in place.
