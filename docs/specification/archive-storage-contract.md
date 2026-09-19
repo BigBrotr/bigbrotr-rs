@@ -898,3 +898,11 @@ compatibility candidate, not a selected mandatory product dependency. Its offici
 explicitly lacks redundant storage. MinIO Community is not a new default: its
 [official repository](https://github.com/minio/minio) was archived on 2026-04-25;
 replacement/vendor choices require their own maintained release qualification.
+
+The [coordinator-state native evidence](../implementation/evidence/p02-coordinator-state-native-20260919.json)
+at `952fd9a` with harness `f822978` records 16 actual CLI/Control cases, 98 passing
+Rust tests plus one explicitly ignored holder fixture, and the bounded 134-intent
+adapter. Actual bind aliases, live contention, SIGKILL/restart, partial bindings and
+blocked inventory cancellation are exercised. The local fixture creates an
+initialization reservation only; it does not install a native scientific catalog.
+No pre-protocol history adoption, Archive dispatch or protection is qualified.

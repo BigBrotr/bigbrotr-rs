@@ -161,3 +161,11 @@ incomplete schema remains refused; complete committed state is installed or
 recognized without changing native data or the permanent root marker. Signed
 mTLS publication, full concurrent/exhaustion/restore and service acceptance
 remain open; the guide does not advertise complete installation support.
+
+The [coordinator-state native evidence](../implementation/evidence/p02-coordinator-state-native-20260919.json)
+at `952fd9a` with harness `f822978` records 16 actual CLI/Control cases, 98 passing
+Rust tests plus one explicitly ignored holder fixture, and the bounded 134-intent
+adapter. Actual bind aliases, live contention, SIGKILL/restart, partial bindings and
+blocked inventory cancellation are exercised. The local fixture creates an
+initialization reservation only; it does not install a native scientific catalog.
+No pre-protocol history adoption, Archive dispatch or protection is qualified.

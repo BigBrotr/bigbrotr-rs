@@ -213,8 +213,10 @@ resolvable namespaced references and unchanged original bytes.
 Current service connection: persistent `storage.archive_state_root` and explicit
 `archive state-initialize` bind one state directory to the retained initialization
 reservation; installed Control acquires coordinator custody before its connection
-and keeps it through actual driver join. Mac regressions pass; new native cases
-are pending. This is a P02-T04/P01-T05 prerequisite, not step completion. Pre-protocol
+and keeps it through actual driver join. [Sixteen native CLI/Control cases](evidence/p02-coordinator-state-native-20260919.json)
+now pass at `952fd9a` with harness `f822978`, including physical bind aliases and actual
+SIGKILL/restart; 98 Rust tests pass and one holder fixture is explicitly ignored.
+This is a P02-T04/P01-T05 prerequisite, not step completion. Pre-protocol
 history adoption, retained input headers before issuance and actual recovery/dispatch
 remain required. See [the owning boundary](../specification/archive-storage-contract.md#persistent-coordinator-state).
 

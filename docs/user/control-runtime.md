@@ -92,3 +92,11 @@ A blocked PostgreSQL read can outlive local driver termination; its session fenc
 continues to refuse a successor with Busy until the backend actually exits. The
 case observes that fence, releases the owned test blocker, then verifies a fresh
 owner. It does not treat local driver join as remote backend termination.
+
+The [coordinator-state native evidence](../implementation/evidence/p02-coordinator-state-native-20260919.json)
+at `952fd9a` with harness `f822978` records 16 actual CLI/Control cases, 98 passing
+Rust tests plus one explicitly ignored holder fixture, and the bounded 134-intent
+adapter. Actual bind aliases, live contention, SIGKILL/restart, partial bindings and
+blocked inventory cancellation are exercised. The local fixture creates an
+initialization reservation only; it does not install a native scientific catalog.
+No pre-protocol history adoption, Archive dispatch or protection is qualified.

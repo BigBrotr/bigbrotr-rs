@@ -1,0 +1,364 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task_ids": [
+    "P01-T05",
+    "P01-T06",
+    "P02-T04"
+  ],
+  "status": "PASS-scoped",
+  "observed_at": "2026-09-19T11:49:34.956073+00:00",
+  "source_revision": "952fd9a81664e70e97104298978c261b06efcd59",
+  "source_tree": "b0d43b4d5a3639c21b1e684c37dc6d5d4f0a3c51",
+  "harness": {
+    "revision": "f82297835f3db2eb21b6efeb9858c8a03de64035",
+    "tree": "1e6f5e1cc0891480cf452db28f242d4d300a54cc",
+    "path": "/home/tux/bigbrotr-implementation-20260917/runs/coordinator-state-952fd9a/harness-f822978",
+    "artifact_revision": "952fd9a81664e70e97104298978c261b06efcd59",
+    "files": {
+      "experiments/control-runtime/archive_inventory.py": "17400273b298a537483a2acf88166e1c40747dd9b0300e9f4b6bb5f286d807fc",
+      "experiments/control-runtime/README.md": "69f7bdd6667c9daeb1194a01d5a9d709b2013aeb6de57478a9ce28506af64ca5"
+    }
+  },
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "runner_limits": {
+      "cpus": 2,
+      "memory_bytes": 6442450944,
+      "pids": 512
+    },
+    "postgres_limits": {
+      "cpus": 1,
+      "memory_bytes": 1073741824,
+      "pids": 128
+    },
+    "placement": "same Linux boot, ext4 bind mounts; isolated internal network, no published ports"
+  },
+  "scope": "Explicit persistent coordinator state binding and actual Control startup custody, not Archive dispatch/recovery or source protection.",
+  "artifacts": {
+    "main": {
+      "sha256": "0b4c3cf805ee8b54ce27c9b93d0121db2a6880c6e91987ba4203f5de2cf30a15",
+      "bytes": 8888232,
+      "elf_machine": 62
+    },
+    "probe": {
+      "sha256": "4ea9873317d3978cd9e02781150a38f9d92df8fc909ed0255b249074e30a26ea",
+      "bytes": 2617120,
+      "elf_machine": 62
+    },
+    "coordinator_probe": {
+      "sha256": "2a53ce34604ec5c3058cc9888d5cadba0283558df25420317e83f9f9ead78753",
+      "bytes": 694360,
+      "elf_machine": 62
+    }
+  },
+  "archive_worker": {
+    "bytes": 12608608,
+    "sha256": "c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227"
+  },
+  "source_identity": {
+    "archive_sha256": "52604aa9010b642d0dcd85aec9981c1e25d811667222d79c64b7cd3dcf133fb3",
+    "manifest_sha256": "d76917d002eacd2dc1195ff71c58d7248d6e0e6d1145f9237a31168b18eb9272",
+    "files_independently_matched_to_mac_git_archive": 756
+  },
+  "executed": {
+    "build": "PASS through shared tools.build.build_binaries with clean environment and exact source",
+    "native_rust": {
+      "passed": 98,
+      "ignored": 1,
+      "ignored_scope": "previous native custody-holder dedicated test; not rerun or counted as PASS"
+    },
+    "clippy": "PASS scoped library, binary and archive_attempt_probe; Mac also archive_coordinator_probe",
+    "adapter": "PASS actual fenced Control scan:132 cutoff,64/64/4 pages,134 final rows; exact reads/refusals/cancellation",
+    "runtime": {
+      "status": "PASS",
+      "cases": [
+        {
+          "name": "negative-control-old-runtime-misses-inventory",
+          "status": "PASS",
+          "baseline_source": "61271e277d3560da7ca305fb1d5dc8def326c912"
+        },
+        {
+          "name": "missing-binding-refused-without-creation",
+          "status": "PASS"
+        },
+        {
+          "name": "explicit-binding-and-identical-retry",
+          "status": "PASS",
+          "binding": {
+            "format": "bigbrotr-local-coordinator/1",
+            "initialization_sha256": [
+              6,
+              20,
+              166,
+              76,
+              53,
+              137,
+              121,
+              250,
+              206,
+              133,
+              150,
+              36,
+              166,
+              171,
+              28,
+              90,
+              196,
+              9,
+              168,
+              160,
+              246,
+              98,
+              124,
+              238,
+              212,
+              171,
+              142,
+              89,
+              137,
+              198,
+              251,
+              61
+            ],
+            "state_root": "/out/inventory/inventory_empty-state",
+            "state_device": 66306,
+            "state_inode": 23210991
+          },
+          "binding_sha256": "a92665c973c4740dab2f1b4a3cde51b5b2a18d3cb4d9fdc3447024f8399d9420"
+        },
+        {
+          "name": "actual-bind-mount-alias-and-nested-alias-refused",
+          "status": "PASS"
+        },
+        {
+          "name": "live-coordinator-refuses-process-and-initializer",
+          "status": "PASS"
+        },
+        {
+          "name": "empty-history-distinct-from-unresolved",
+          "status": "PASS"
+        },
+        {
+          "name": "actual-coordinator-sigkill-and-fresh-restart",
+          "status": "PASS",
+          "old_epoch": "3",
+          "new_epoch": "4"
+        },
+        {
+          "name": "substituted-state-root-refused-without-mutation",
+          "status": "PASS"
+        },
+        {
+          "name": "complete-first-half-needs-explicit-retry",
+          "status": "PASS"
+        },
+        {
+          "name": "partial-bytes-preserved-and-refused",
+          "status": "PASS"
+        },
+        {
+          "name": "populated-complete-history",
+          "status": "PASS",
+          "rows": 130,
+          "pages": 3
+        },
+        {
+          "name": "restart-complete-history",
+          "status": "PASS",
+          "rows": 130,
+          "pages": 3
+        },
+        {
+          "name": "historical-mismatch-before-idle",
+          "status": "PASS"
+        },
+        {
+          "name": "blocked-startup-cancel-and-join",
+          "status": "PASS",
+          "elapsed_seconds": 2.0647607129067183,
+          "blocker": [
+            {
+              "pid": 334,
+              "backend_start": "2026-09-19T11:48:46.696547+00:00",
+              "wait_event": "relation",
+              "blockers": [
+                327
+              ]
+            }
+          ],
+          "residual": {
+            "pid": 334,
+            "backend_start": "2026-09-19T11:48:46.696547+00:00",
+            "control_fence": true
+          },
+          "residual_owner": "successor refused Busy"
+        },
+        {
+          "name": "fresh-owner-after-cancelled-scan",
+          "status": "PASS"
+        },
+        {
+          "name": "explicit-0009-required-no-runtime-migration",
+          "status": "PASS"
+        }
+      ],
+      "recorded_serve_processes": 13,
+      "all_terminal": true
+    },
+    "mac": {
+      "archive_tests": 38,
+      "binary_tests": 8,
+      "cli_config_tests": 36,
+      "clippy": "PASS",
+      "generated_consumers": "PASS"
+    }
+  },
+  "durable_observations": {
+    "rows": 130,
+    "before_sha256": "61d0120ccb7ee656feefc86b713743dafca346e679352af736cd7881520af43b",
+    "logical_rows_unchanged": true,
+    "no_native_catalog_started": true
+  },
+  "review": {
+    "mode": "independent read-only source review plus integrating-owner review",
+    "findings_corrected_before_candidate": [
+      "Canonical path comparison missed physical equal/nested bind aliases; compare actual descriptor mount-relative locations.",
+      "Complete-first-half retry must sync the state directory before writing the reverse binding."
+    ],
+    "limits": "No pre-protocol attempt adoption; absent other roots and later mount changes retain their owning preflight prerequisites.",
+    "offline_evidence_audit": "Independent reviewer matched all58 raw files/archive,756 source hashes/Git archive, harness revision/hashes and16 cases/13 process outputs. No discrepancy. No reviewer live Tux/test rerun or independent executable inspection."
+  },
+  "failures_and_corrections": [
+    {
+      "scope": "Mac development",
+      "observed": "Initial new custody tests failed because LocalCoordinator did not yet exist; implementation made them pass."
+    },
+    {
+      "scope": "Mac development",
+      "observed": "First scoped Clippy failed on non-Linux unused PathBuf import; cfg import corrected and Clippy rerun successfully before native candidate."
+    },
+    {
+      "scope": "Mac evidence collection",
+      "observed": "Python3.9 rejected tarfile.extractall(filter=...) before extracting any file. Verified regular-file paths were then copied exclusively and all58 hashes/source identities verified; no engine rerun or artifact change."
+    }
+  ],
+  "not_qualified": [
+    "Archive service execution or publication dispatch",
+    "Retained complete input linkage before issuance",
+    "Adoption/exclusion of pre-protocol coordinators or fixture histories",
+    "Missing-attempt-journal interpretation, catalog receipt resolution or pending ACK",
+    "Power-loss, cross-boot, restore or relocation",
+    "Aged capacity, mixed load, native arm64, ordinary Compose/release journey",
+    "TLS/mTLS signed publication or historical initialized catalog upgrade"
+  ],
+  "resources": {
+    "source": "952fd9a81664e70e97104298978c261b06efcd59",
+    "tree": "b0d43b4d5a3639c21b1e684c37dc6d5d4f0a3c51",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/coordinator-state-952fd9a",
+    "owner": "49857907ed646833ac391f595692faab",
+    "container": "bigbrotr-implementation-coordinator-state-952fd9a",
+    "postgres": "bigbrotr-implementation-coordinator-state-952fd9a-pg",
+    "network": "bigbrotr-implementation-coordinator-state-952fd9a",
+    "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "state": "stopped-retained",
+    "source_files": 756,
+    "started_at": "2026-09-19T11:45:27.774347+00:00",
+    "network_id": "e2ebd20617dde954c14d525f70b8509a4d078d41fe922945ecf2fa6789c44d74",
+    "postgres_id": "13d3d5fd6b63505c63e21d5014627ee4e70ef4ac623e747288999fcd4ca88a61",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "container_id": "2c51e64fc6dbd6bfa70dc92e6b5a7bcbd937c1467a3d599ad379faccfd104f7c",
+    "completed_at": "2026-09-19T11:49:34.956073+00:00"
+  },
+  "resource_audit": {
+    "status": "PASS",
+    "source": "952fd9a81664e70e97104298978c261b06efcd59",
+    "tree": "b0d43b4d5a3639c21b1e684c37dc6d5d4f0a3c51",
+    "source_files": 756,
+    "source_archive_sha256": "52604aa9010b642d0dcd85aec9981c1e25d811667222d79c64b7cd3dcf133fb3",
+    "source_manifest_sha256": "d76917d002eacd2dc1195ff71c58d7248d6e0e6d1145f9237a31168b18eb9272",
+    "artifacts": {
+      "main": {
+        "sha256": "0b4c3cf805ee8b54ce27c9b93d0121db2a6880c6e91987ba4203f5de2cf30a15",
+        "bytes": 8888232,
+        "elf_machine": 62
+      },
+      "probe": {
+        "sha256": "4ea9873317d3978cd9e02781150a38f9d92df8fc909ed0255b249074e30a26ea",
+        "bytes": 2617120,
+        "elf_machine": 62
+      },
+      "coordinator_probe": {
+        "sha256": "2a53ce34604ec5c3058cc9888d5cadba0283558df25420317e83f9f9ead78753",
+        "bytes": 694360,
+        "elf_machine": 62
+      }
+    },
+    "baseline_sha256": "305d3f3b204f00337875269d65e5c927eb88af67cb8ba1c51fd365aa308d46c5",
+    "harness": {
+      "revision": "f82297835f3db2eb21b6efeb9858c8a03de64035",
+      "tree": "1e6f5e1cc0891480cf452db28f242d4d300a54cc",
+      "path": "/home/tux/bigbrotr-implementation-20260917/runs/coordinator-state-952fd9a/harness-f822978",
+      "artifact_revision": "952fd9a81664e70e97104298978c261b06efcd59",
+      "files": {
+        "experiments/control-runtime/archive_inventory.py": "17400273b298a537483a2acf88166e1c40747dd9b0300e9f4b6bb5f286d807fc",
+        "experiments/control-runtime/README.md": "69f7bdd6667c9daeb1194a01d5a9d709b2013aeb6de57478a9ce28506af64ca5"
+      }
+    },
+    "runtime_status": "PASS",
+    "runtime_cases": 16,
+    "terminal": {
+      "container_id": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 143,
+        "Error": "",
+        "StartedAt": "2026-09-19T11:45:30.460983649Z",
+        "FinishedAt": "2026-09-19T11:49:33.033299804Z"
+      },
+      "postgres_id": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-09-19T11:45:28.50536219Z",
+        "FinishedAt": "2026-09-19T11:49:34.511289722Z"
+      }
+    },
+    "owned_containers": [
+      "2c51e64fc6dbd6bfa70dc92e6b5a7bcbd937c1467a3d599ad379faccfd104f7c",
+      "13d3d5fd6b63505c63e21d5014627ee4e70ef4ac623e747288999fcd4ca88a61"
+    ],
+    "existing_containers_unchanged": 334,
+    "unrelated_running": 8,
+    "bigbrotr_running": 0,
+    "control_backends_before_shutdown": 0,
+    "observed_at": "2026-09-19T11:49:34.956073+00:00"
+  },
+  "raw": {
+    "root": ".research/implementation/archive-worker/coordinator-state/qualified",
+    "tar_bytes": 276480,
+    "tar_sha256": "31224db0db7e5585c2f76e6e2547ac54a25b302b72d48bf902e540473ecea6fd",
+    "manifest": ".research/implementation/archive-worker/coordinator-state/evidence-identity.json",
+    "files_verified": 58
+  },
+  "references": [
+    "docs/specification/archive-storage-contract.md#persistent-coordinator-state",
+    "docs/user/archive-initialization.md",
+    "experiments/control-runtime/archive_inventory.py",
+    "experiments/archive-engine/native_archive_inventory.py"
+  ]
+}
