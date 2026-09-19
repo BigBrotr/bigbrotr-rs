@@ -20,12 +20,13 @@ Control-only and rejects other roles. Root remains sole writer/integrator.
 
 ## Actual Git and review
 
-Mac main is d32d3035ff4b4689c642568d03a40264acfcf948, three unpublished commits
-ahead of private origin/main ede3db437b8a9fdb4215313bb5712407d625a918.
-Product source a010c153871569059a333633e4108ba08024f626 was native-tested;
-ca6be4f/d32d303 change only the runtime harness/documentation. Root owns current
-evidence/docs and fixture-compatibility follow-up edits. No contributor edits or
-merge/rebase. Private push follows the final checks and evidence review.
+Mac main and private origin/main matched094d630b561ca0e2732e8745d9e08143d7f71151
+with a clean tree (push28205 exit0; remote hash and PRIVATE visibility verified).
+Native-tested product source is a010c153871569059a333633e4108ba08024f626;
+qualified runtime harness is d32d3035ff4b4689c642568d03a40264acfcf948. Published
+094d630 adds evidence and the fixture-only --scan compatibility switch. This root-
+owned checkpoint refresh changes no tested product code. No contributor edits or
+merge/rebase. Current qualification is closed; the whole-product goal stays active.
 
 Independent read-only source review found no production defect. It caught a PID
 reuse risk in the new harness, fixed before candidate testing with exact argv/
@@ -174,14 +175,17 @@ External feedback reread previously; it records the earlier scoped closures too.
 
 ## Next bounded action
 
-Close the current evidence/diff review and private push, then continue actual
+Current evidence/diff review and private push are complete. Continue actual
 installed compact Control+Archive lifecycle/ownership through P01-T05/T06 and
 P02-T03/T04. Enumeration now has an actual startup consumer; do not repeat its
 qualification as a substitute for implementing recovery and dispatch.
 
 Next implementation responsibility: explicit persistent coordinator/custody state
 root and complete retained input linkage, consumed by installed initialization and
-serve recovery. Read complete config registry/resolve/policy selected-root checks,
+serve recovery. Next-boundary reading has begun: archive_initialization/preflight.rs
+read completely; registry.rs180–275 and resolve.rs550–765 read for root selection.
+Those two owning files are only partially reread at this boundary; no new root or
+custody code has been written. Read complete config registry/resolve/policy selected-root checks,
 archive initialization preflight/installation, LocalAttempt and owning storage/
 deployment contracts before editing. Do not use scratch or archive data as journal
 storage, create missing journals opportunistically, or treat empty catalog lookup
