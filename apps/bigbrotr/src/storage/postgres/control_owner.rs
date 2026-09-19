@@ -18,7 +18,7 @@ mod archive_coordinator;
 mod initial_batch;
 pub use initial_batch::{
     InitialBatchError, InitialBatchRequest, InitialEventError, InitialEventRequest,
-    InitialOperationError,
+    InitialImportBatchRequest, InitialOperationError,
 };
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

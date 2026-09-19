@@ -307,6 +307,11 @@ Paths: `apps/bigbrotr/src/acquisition/import/jsonl.rs`, `apps/bigbrotr/src/acqui
 
 ## P03-T10 — Join claims, admit and resume imports with bounded spill
 
+The [initial input-binding adapter](../reference/import-input-bindings.md) is an
+in-progress step3 prerequisite. Its event-only batch binds positions and original
+requests before dispatch; it does not complete job authorization, claim/proof
+obligations, checkpoints or this task's large-import acceptance.
+
 Dependencies: P03-T08/T09; P02-T02/T03/T04/T07/T08. Inputs are decoded records and
 preflight source manifest and destination policy; outputs are durable complete events, imported claims,
 job checkpoints and bounded rejection summary. Local network witnesses and

@@ -282,3 +282,28 @@ fn producer_outcomes_require_an_additive_migration_after_reservations() {
     );
     assert_eq!(migrations::plan(&applied, 12).unwrap().pending.len(), 1);
 }
+
+#[test]
+fn input_bindings_require_the_exact_additive_prefix_after_outcomes() {
+    let old = plan(&[], 12).unwrap();
+    let applied: Vec<_> = old
+        .pending
+        .iter()
+        .map(|m| AppliedMigration {
+            version: m.version,
+            name: m.name.into(),
+            checksum: m.checksum(),
+            reader_min: m.reader_min,
+            reader_max: m.reader_max,
+            writer_floor: m.writer_floor,
+        })
+        .collect();
+    assert_eq!(
+        migrations::require_applied(&applied, 13),
+        Err(MigrationError::MissingPrerequisite(13))
+    );
+    let upgrade = plan(&applied, 13).unwrap();
+    assert_eq!(upgrade.pending.len(), 1);
+    assert_eq!(upgrade.pending[0].name, "0013_input_bindings.sql");
+    assert!(migrations::require_applied(&applied, 12).is_ok());
+}

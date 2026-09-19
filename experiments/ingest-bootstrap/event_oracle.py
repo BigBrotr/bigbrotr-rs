@@ -9,12 +9,16 @@ from pathlib import Path
 from oracle import cbor
 
 
-def expected_event(dataset, committed):
+def expected_event(dataset, committed, repetitions=1):
     source_root = Path(__file__).resolve().parents[2]
     artifact = (source_root / 'tests/fixtures/ingest/import-event.jsonl').read_bytes()
+    assert repetitions in (1, 2)
     artifact_digest = bytes.fromhex('c30658a75b2b913e509b7618f36ebae75fa1d5680dc8fe4e322aae638d8affae')
     assert hashlib.sha256(artifact).digest() == artifact_digest
     event = json.loads(artifact)
+    if repetitions == 2:
+        artifact_digest = bytes.fromhex("ce439b495fd2f99031706e9625529e264cd3043ffc16af4fd6002243503e90fc")
+        assert hashlib.sha256(artifact * 2).digest() == artifact_digest
     be = lambda n, width=8: n.to_bytes(width, 'big')
     sha = lambda b: hashlib.sha256(b).digest()
     source = lambda n: [dataset, 0, 1, n]

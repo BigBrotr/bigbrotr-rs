@@ -1,4 +1,5 @@
 //! Connected initial native batch under the dedicated Control backend.
+use super::super::input_bindings::{self, ImportBatch, ImportJobBinding, InputBindingError};
 use super::super::producer_outcomes::{self, OutcomeError};
 use super::super::producer_requests::{self, ReservationError};
 use super::*;
@@ -26,6 +27,7 @@ pub enum InitialOperationError<E> {
     Registry(ingest_registry::RegistryError),
     Native(E),
     Reservation(ReservationError),
+    InputBinding(InputBindingError),
     /// The native result exists; this error never authorizes another request ID.
     Outcome(OutcomeError),
     /// Native work was dispatched. Its retained request must be resolved even
@@ -52,6 +54,8 @@ struct InitialIngestContext<'a> {
     ingest_root: &'a std::path::Path,
     registration: &'a ingest_registry::InitialRegistration,
     policy_ttl: Duration,
+    request: Option<ProducerRequestId>,
+    job: Option<ImportJobBinding>,
 }
 
 pub struct InitialEventRequest<'a> {
@@ -60,6 +64,19 @@ pub struct InitialEventRequest<'a> {
     pub event: PreparedEvent,
     pub provenance_enabled: bool,
     pub recorded_at: ObservedTime,
+    pub limits: AdmissionLimits,
+    pub policy_ttl: Duration,
+    pub cancelled: &'a AtomicBool,
+}
+
+/// Complete event-only JSONL batch supplied by a trusted source/policy consumer.
+/// The prepared events retain their separate memory grants while being staged.
+/// This API binds existing job metadata; it does not accept an operator job.
+pub struct InitialImportBatchRequest<'a> {
+    pub ingest_root: &'a std::path::Path,
+    pub registration: &'a ingest_registry::InitialRegistration,
+    pub batch: &'a ImportBatch<'a>,
+    pub events: &'a [PreparedEvent],
     pub limits: AdmissionLimits,
     pub policy_ttl: Duration,
     pub cancelled: &'a AtomicBool,
@@ -106,6 +123,8 @@ impl ControlSession {
                     ingest_root: input.ingest_root,
                     registration: spec,
                     policy_ttl: input.policy_ttl,
+                    request: Some(request),
+                    job: None,
                 },
                 &mut validate,
             )
@@ -141,6 +160,8 @@ impl ControlSession {
                     ingest_root: input.ingest_root,
                     registration: spec,
                     policy_ttl: input.policy_ttl,
+                    request: Some(request),
+                    job: None,
                 },
                 &mut validate,
             )
@@ -222,6 +243,8 @@ impl ControlSession {
                     ingest_root: input.ingest_root,
                     registration: spec,
                     policy_ttl: input.policy_ttl,
+                    request: Some(input.event.request_id()),
+                    job: None,
                 },
                 |document, digest| validate(document, digest, &input.event),
             )
@@ -256,6 +279,8 @@ impl ControlSession {
                     ingest_root: input.ingest_root,
                     registration: spec,
                     policy_ttl: input.policy_ttl,
+                    request: Some(input.event.request_id()),
+                    job: None,
                 },
                 |document, digest| validate(document, digest, &input.event),
             )
@@ -305,6 +330,104 @@ impl ControlSession {
         Ok(outcome)
     }
 
+    /// Synchronize all original inputs, then atomically bind their complete
+    /// source-position list and PG reservations before any native event dispatch.
+    /// An error can retain unreserved staging; it cannot authorize changed retry
+    /// bytes. CommitUnknown requires observing/retrying this exact batch.
+    pub async fn reserve_initial_import_batch(
+        &mut self,
+        store: &mut IngestStore,
+        input: InitialImportBatchRequest<'_>,
+        permit: OwnedPermit,
+        mut validate: impl FnMut(&str, [u8; 32], &PreparedEvent) -> Result<(), OwnerError>,
+    ) -> Result<(), InitialEventError> {
+        let spec = input.registration;
+        if input.events.len() != input.batch.record_count()
+            || input.limits.max_outstanding_requests > u64::from(spec.outstanding_request_limit)
+            || permit.request().units().data_bytes()
+                < input
+                    .limits
+                    .required_data_bytes()
+                    .map_err(InitialEventError::Native)?
+                    .checked_add(64 * 1024)
+                    .ok_or(InitialEventError::Native(AdmissionError::Limit))?
+        {
+            return Err(InitialEventError::InputBinding(
+                InputBindingError::InvalidInput,
+            ));
+        }
+        let first = input.events[0].request_id().request_sequence.get();
+        for (index, event) in input.events.iter().enumerate() {
+            if event.request_id().producer_slot_id != spec.producer_slot_id
+                || event.request_id().producer_epoch.get() != 1
+                || first.checked_add(index as u64)
+                    != Some(event.request_id().request_sequence.get())
+                || event.verified_event().is_none()
+                || !matches!(event.origin(), bigbrotr_model::EventOrigin::Import(_))
+                || event.observation().is_some()
+            {
+                return Err(InitialEventError::InputBinding(
+                    InputBindingError::InvalidInput,
+                ));
+            }
+        }
+        let identity = *store.manifest().identity();
+        let (tx, mut lease) = self
+            .begin_initial_native_operation(
+                store,
+                InitialIngestContext {
+                    ingest_root: input.ingest_root,
+                    registration: spec,
+                    policy_ttl: input.policy_ttl,
+                    request: None,
+                    job: Some(input.batch.job),
+                },
+                |document, digest| {
+                    for event in input.events {
+                        validate(document, digest, event)?;
+                    }
+                    Ok(())
+                },
+            )
+            .await?;
+        let mut staged = Vec::new();
+        staged
+            .try_reserve_exact(input.events.len())
+            .map_err(|_| InitialEventError::Native(AdmissionError::Allocation))?;
+        for event in input.events {
+            if input.cancelled.load(Ordering::Relaxed) {
+                return Err(InitialEventError::Native(
+                    AdmissionError::AuthorityUnavailable,
+                ));
+            }
+            staged.push(
+                event
+                    .stage(store, input.limits, &permit)
+                    .map_err(InitialEventError::Native)?,
+            );
+        }
+        input_bindings::record_batch(&tx, input.batch, &staged, spec.control)
+            .await
+            .map_err(InitialEventError::InputBinding)?;
+        for request in &staged {
+            producer_requests::reserve(&tx, request, spec.control)
+                .await
+                .map_err(InitialEventError::Reservation)?;
+        }
+        if input.cancelled.load(Ordering::Relaxed)
+            || lease.check_delivery(identity.policy_epoch).is_err()
+        {
+            return Err(InitialEventError::Native(
+                AdmissionError::AuthorityUnavailable,
+            ));
+        }
+        tx.commit()
+            .await
+            .map_err(|_| InitialEventError::InputBinding(InputBindingError::CommitUnknown))?;
+        self.available = true;
+        Ok(())
+    }
+
     async fn begin_initial_native_operation<'a, E>(
         &'a mut self,
         store: &IngestStore,
@@ -342,7 +465,7 @@ impl ControlSession {
         .map_err(|_| OwnerError::Unavailable)?;
         let ticket = lease.begin_refresh().map_err(|_| OwnerError::Unavailable)?;
         self.begin_operation()?;
-        let tx = application_transaction(&mut self.client, 12)
+        let tx = application_transaction(&mut self.client, 13)
             .await
             .map_err(transaction_error)?;
         require(&tx, self.request.dataset, self.identity).await?;
@@ -353,6 +476,28 @@ impl ControlSession {
             || policy.policy_digest != *spec.policy_digest.as_bytes()
         {
             return Err(OwnerError::InvalidPolicy.into());
+        }
+        if let Some(job) = input.job {
+            if job.config_revision != spec.config_revision
+                || job.policy_revision != spec.policy_revision
+            {
+                return Err(OwnerError::InvalidPolicy.into());
+            }
+            input_bindings::lock_job(&tx, spec.dataset_id, spec.control, job)
+                .await
+                .map_err(InitialOperationError::InputBinding)?;
+        }
+        if let Some(request) = input.request {
+            input_bindings::lock_request_job(
+                &tx,
+                spec.dataset_id,
+                spec.control,
+                request,
+                spec.config_revision,
+                spec.policy_revision,
+            )
+            .await
+            .map_err(InitialOperationError::InputBinding)?;
         }
         ingest_registry::require_initial_registration(&tx, spec)
             .await

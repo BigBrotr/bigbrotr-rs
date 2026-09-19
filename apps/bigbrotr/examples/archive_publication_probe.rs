@@ -162,7 +162,7 @@ async fn initialize_control(database: &str, installed: bool) {
     assert_eq!(
         migration_runner::run(
             &mut admin,
-            if installed { 12 } else { 9 },
+            if installed { 13 } else { 9 },
             true,
             &Cell::new(false)
         )

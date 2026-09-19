@@ -90,7 +90,7 @@ SELECT pg_temp.refuse('row_delete_refused','23514','DELETE FROM control.producer
 -- Include the referencing outcome table so PostgreSQL reaches the retained-row
 -- guards instead of rejecting the command earlier for its foreign key.
 SELECT pg_temp.refuse('truncate_foreign_key','0A000','TRUNCATE control.producer_requests');
-SELECT pg_temp.refuse('truncate_refused','23514','TRUNCATE control.producer_requests, control.producer_outcomes');
+SELECT pg_temp.refuse('truncate_refused','23514','TRUNCATE control.producer_requests, control.producer_outcomes, control.producer_input_bindings');
 SELECT pg_temp.producer(1002,64);
 SELECT pg_temp.refuse('same_epoch_bulk_atomic_refusal','23514',$q$
  INSERT INTO control.producer_requests(producer_slot_id,producer_epoch,request_sequence,dataset_id,

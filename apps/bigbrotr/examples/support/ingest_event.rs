@@ -1,11 +1,24 @@
 //! Finite signed import consumer for connected native admission qualification.
 use super::*;
 use bigbrotr::acquisition::import::{JsonlReader, ScratchSpace, SourceIdentity, SourceSnapshot};
-use bigbrotr::storage::postgres::control_owner::{InitialEventError, InitialEventRequest};
+use bigbrotr::storage::postgres::control_owner::{
+    InitialEventError, InitialEventRequest, InitialImportBatchRequest,
+};
+use bigbrotr::storage::postgres::input_bindings::{ImportBatch, ImportJobBinding};
 use bigbrotr::storage::rocks::store::{
     AdmissionError, AdmissionLimits, AdmissionOutcome, PreparedEvent,
 };
 use bigbrotr_model::{EventIntent, ProducerEpoch, ProducerRequestId, RequestSequence};
+
+pub fn source_digest(mode: &str) -> Digest256 {
+    if mode.starts_with("event-bindings") {
+        "ce439b495fd2f99031706e9625529e264cd3043ffc16af4fd6002243503e90fc"
+    } else {
+        "c30658a75b2b913e509b7618f36ebae75fa1d5680dc8fe4e322aae638d8affae"
+    }
+    .parse()
+    .unwrap()
+}
 
 #[allow(
     clippy::too_many_arguments,
@@ -30,16 +43,17 @@ pub async fn run(
     let source_bytes = include_bytes!("../../../../tests/fixtures/ingest/import-event.jsonl");
     let mut source = tempfile::NamedTempFile::new_in(path.parent().unwrap()).unwrap();
     source.write_all(source_bytes).unwrap();
+    let binding_mode = mode.starts_with("event-bindings");
+    if binding_mode {
+        source.write_all(source_bytes).unwrap();
+    }
     let scratch = ScratchSpace::new(path.parent().unwrap(), 4096, 1).unwrap();
     let captured = SourceSnapshot::capture(
         source.path(),
         &scratch,
         Some(SourceIdentity {
-            bytes: source_bytes.len() as u64,
-            sha256: *"c30658a75b2b913e509b7618f36ebae75fa1d5680dc8fe4e322aae638d8affae"
-                .parse::<Digest256>()
-                .unwrap()
-                .as_bytes(),
+            bytes: source_bytes.len() as u64 * if binding_mode { 2 } else { 1 },
+            sha256: *source_digest(mode).as_bytes(),
         }),
         &AtomicBool::new(false),
     )
@@ -62,6 +76,16 @@ pub async fn run(
     // The outer fixture holds its input allocation grant before this copy.
     let event = record.result().as_ref().unwrap().event().clone();
     drop(record);
+    let mut positions = vec![position];
+    if binding_mode {
+        let second = reader
+            .next_record(&AtomicBool::new(false))
+            .unwrap()
+            .unwrap();
+        assert_eq!(second.result().as_ref().unwrap().event(), &event);
+        positions.push(second.position());
+        drop(second);
+    }
     assert!(
         reader
             .next_record(&AtomicBool::new(false))
@@ -70,12 +94,14 @@ pub async fn run(
     );
     drop(reader);
     assert_eq!(scratch.used_bytes(), 0);
-    emit(
-        serde_json::json!({"event":"import-position", "line":position.line,
+    for position in &positions {
+        emit(
+            serde_json::json!({"event":"import-position", "line":position.line,
         "byte_start":position.byte_start,"byte_end":position.byte_end,
         "source_bytes":position.source.bytes,"source_sha256":hex(&position.source.sha256),
         "record_sha256":hex(&position.sha256),"completed_import_prefix_before_admission":0}),
-    );
+        );
+    }
     let original_id = event.id;
     let request_id = ProducerRequestId {
         producer_slot_id: spec.producer_slot_id,
@@ -97,7 +123,10 @@ pub async fn run(
     if mode == "event-retired" {
         observer.execute("UPDATE control.producer_epochs SET state='closing' WHERE producer_slot_id=$1::bytea AND producer_epoch=1",&[&&spec.producer_slot_id.as_bytes()[..]]).await.unwrap();
     }
-    let cancelled = AtomicBool::new(mode == "event-cancelled");
+    let cancelled = AtomicBool::new(matches!(
+        mode,
+        "event-cancelled" | "event-bindings-cancelled"
+    ));
     let input = |recorded_at, sequence| InitialEventRequest {
         ingest_root: if mode == "event-wrong-root" {
             path.parent().unwrap()
@@ -109,7 +138,11 @@ pub async fn run(
         provenance_enabled: true,
         recorded_at: ObservedTime::new(recorded_at),
         limits: AdmissionLimits {
-            max_outstanding_requests: if mode == "event-outcomes" { 3 } else { 2 },
+            max_outstanding_requests: if mode == "event-outcomes" || binding_mode {
+                3
+            } else {
+                2
+            },
             ..AdmissionLimits::default()
         },
         policy_ttl: Duration::from_secs(2),
@@ -132,6 +165,137 @@ pub async fn run(
         }
         Ok(())
     };
+    if binding_mode {
+        // Trusted lab setup of an existing running job, not operator acceptance.
+        observer.execute("INSERT INTO control.jobs(job_id,dataset_id,principal_id,request_key,request_digest,kind,config_revision,policy_revision,created_at_us,input_complete) SELECT $1::bytea,dataset_id,principal_id,'input-bindings'::bytea,$2::bytea,'import',1,1,0,true FROM control.principals WHERE kind='installation'", &[&&[90u8;16][..], &&[91u8;32][..]]).await.unwrap();
+        for state in ["queued", "running"] {
+            observer.execute("UPDATE control.jobs SET state=$1::text,job_revision=job_revision+1,owner_resource_id=$2::bytea,owner_epoch=$3::text::numeric,owner_incarnation=$4::bytea WHERE job_id=$5::bytea", &[&state, &&spec.control.resource_id.as_bytes()[..], &spec.control.epoch.get().to_string(), &&spec.control.process_incarnation.as_bytes()[..], &&[90u8;16][..]]).await.unwrap();
+        }
+        let batch = ImportBatch::new(
+            ImportJobBinding {
+                id: [90; 16],
+                request_digest: [91; 32],
+                expected_revision: 3,
+                config_revision: 1,
+                policy_revision: 1,
+            },
+            [92; 32],
+            0,
+            &positions,
+        )
+        .unwrap();
+        let events = [prepare(2), prepare(3)];
+        let mut original_rows = None;
+        for _ in 0..2 {
+            let result = owner
+                .reserve_initial_import_batch(
+                    store,
+                    InitialImportBatchRequest {
+                        ingest_root: path,
+                        registration: spec,
+                        batch: &batch,
+                        events: &events,
+                        limits: AdmissionLimits {
+                            max_outstanding_requests: 3,
+                            ..AdmissionLimits::default()
+                        },
+                        policy_ttl: Duration::from_secs(2),
+                        cancelled: &cancelled,
+                    },
+                    grant(budget, 40 * MIB, 10 * MIB),
+                    authorize,
+                )
+                .await;
+            let expected_error = match mode {
+                "event-bindings-commit-lost" => Some(InitialEventError::InputBinding(
+                    bigbrotr::storage::postgres::input_bindings::InputBindingError::CommitUnknown,
+                )),
+                "event-bindings-rollback" => Some(InitialEventError::Reservation(
+                    bigbrotr::storage::postgres::producer_requests::ReservationError::Backend,
+                )),
+                "event-bindings-cancelled" => Some(InitialEventError::Native(
+                    AdmissionError::AuthorityUnavailable,
+                )),
+                _ => None,
+            };
+            if let Some(expected) = expected_error {
+                assert_eq!(result, Err(expected));
+                emit(
+                    serde_json::json!({"event":"binding-refused", "error":format!("{expected:?}")}),
+                );
+                return;
+            }
+            result.unwrap();
+            let observed: String = observer.query_one("SELECT jsonb_agg(to_jsonb(b)||jsonb_build_object('xmin',xmin::text) ORDER BY logical_record)::text FROM control.producer_input_bindings b", &[]).await.unwrap().get(0);
+            if let Some(prior) = &original_rows {
+                assert_eq!(prior, &observed);
+            }
+            original_rows = Some(observed);
+            let row = observer.query_one("SELECT (SELECT count(*) FROM control.producer_requests),(SELECT count(*) FROM control.producer_outcomes),(SELECT count(*) FROM control.producer_checkpoints)", &[]).await.unwrap();
+            assert_eq!(
+                (
+                    row.get::<_, i64>(0),
+                    row.get::<_, i64>(1),
+                    row.get::<_, i64>(2)
+                ),
+                (3, 1, 0)
+            );
+        }
+        emit(
+            serde_json::json!({"event":"input-batch-bound","records":2,"requests":3,"outcomes":1,"checkpoints":0,"retry_unchanged":true}),
+        );
+        if mode == "event-bindings-conflict" {
+            let mut changed = positions.clone();
+            changed[0].sha256[0] ^= 1;
+            let wrong = ImportBatch::new(
+                ImportJobBinding {
+                    id: [90; 16],
+                    request_digest: [91; 32],
+                    expected_revision: 3,
+                    config_revision: 1,
+                    policy_revision: 1,
+                },
+                [92; 32],
+                0,
+                &changed,
+            )
+            .unwrap();
+            let error = owner
+                .reserve_initial_import_batch(
+                    store,
+                    InitialImportBatchRequest {
+                        ingest_root: path,
+                        registration: spec,
+                        batch: &wrong,
+                        events: &events,
+                        limits: AdmissionLimits {
+                            max_outstanding_requests: 3,
+                            ..AdmissionLimits::default()
+                        },
+                        policy_ttl: Duration::from_secs(2),
+                        cancelled: &cancelled,
+                    },
+                    grant(budget, 40 * MIB, 10 * MIB),
+                    authorize,
+                )
+                .await
+                .unwrap_err();
+            assert_eq!(
+                error,
+                InitialEventError::InputBinding(
+                    bigbrotr::storage::postgres::input_bindings::InputBindingError::Conflict
+                )
+            );
+            emit(serde_json::json!({"event":"binding-refused", "error":format!("{error:?}")}));
+            return;
+        }
+        if mode == "event-bindings-before" {
+            tokio::time::sleep(Duration::from_secs(120)).await;
+        }
+        if mode == "event-bindings-paused" {
+            observer.execute("UPDATE control.jobs SET state='paused',reason_code='operator_requested',job_revision=job_revision+1 WHERE job_id=$1::bytea", &[&&[90u8;16][..]]).await.unwrap();
+        }
+    }
     let result = owner
         .admit_initial_event(
             store,
@@ -140,6 +304,12 @@ pub async fn run(
             |document, digest, candidate| {
                 authorize(document, digest, candidate)?;
                 validations += 1;
+                if validations == 3 && mode == "event-bindings-pause-between" {
+                    emit(serde_json::json!({"event":"before-native-job-recheck"}));
+                    let mut reply = [0; 9];
+                    std::io::Read::read_exact(&mut std::io::stdin(), &mut reply).unwrap();
+                    assert_eq!(&reply, b"continue\n");
+                }
                 if validations == 2 {
                     if mode == "event-before" {
                         emit(serde_json::json!({"event":"before-native"}));
@@ -153,7 +323,10 @@ pub async fn run(
             },
         )
         .await;
-    if matches!(mode, "event-write" | "event-after" | "event-outcomes") {
+    if matches!(
+        mode,
+        "event-write" | "event-after" | "event-outcomes" | "event-bindings"
+    ) {
         let outcome = result.unwrap();
         let AdmissionOutcome::Durable(receipt) = outcome.outcome() else {
             panic!("verified import refused")
@@ -202,7 +375,7 @@ pub async fn run(
             serde_json::json!({"event":"receipt","bytes":hex(&bytes),"facts":pending.records().iter().map(|r|hex(r)).collect::<Vec<_>>(),"replay_exact":true}),
         );
         drop(pending);
-        if mode == "event-outcomes" {
+        if mode == "event-outcomes" || mode == "event-bindings" {
             let mut exact = None;
             let mut retained = None;
             for recorded_at in [1000, 2000] {
@@ -252,6 +425,12 @@ pub async fn run(
             Ok(_) => panic!("negative event control accepted"),
         };
         match mode {
+            "event-bindings-paused" | "event-bindings-pause-between" => assert_eq!(
+                error,
+                InitialEventError::InputBinding(
+                    bigbrotr::storage::postgres::input_bindings::InputBindingError::Conflict
+                )
+            ),
             "event-cancelled" => assert_eq!(
                 error,
                 InitialEventError::Native(AdmissionError::AuthorityUnavailable)

@@ -75,7 +75,7 @@ def main(root, run_tag):
         case['database'] = db
         sql('postgres',f'CREATE DATABASE {db}')
         setup=case['setup']={};save()
-        try: execute(binary+['setup-12',db,'/secrets/postgres','unused'],30,setup)
+        try: execute(binary+['setup-13',db,'/secrets/postgres','unused'],30,setup)
         finally: save()
         assert setup['exit']==0 and not setup['stderr']
         if label=='reservation-rollback':

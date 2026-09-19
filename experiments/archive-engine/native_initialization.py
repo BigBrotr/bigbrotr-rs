@@ -19,12 +19,13 @@ if sys.argv[1:] == ['--build-binaries']:
     identity = build_binaries(SOURCE, os.environ)
     (out / 'worker-identity.json').write_text(json.dumps(identity, indent=2) + '\n')
     sys.exit(0)
-assert sys.argv[1:] in ([], ['--tls'], ['--publication'], ['--producer-inputs'], ['--producer-ledger'], ['--producer-ledger-fixture'], ['--import-source'])
+assert sys.argv[1:] in ([], ['--tls'], ['--publication'], ['--producer-inputs'], ['--producer-ledger'], ['--producer-ledger-fixture'], ['--import-source'], ['--input-bindings'])
+input_bindings = sys.argv[1:] == ['--input-bindings']
 import_source = sys.argv[1:] == ['--import-source']
 tls = sys.argv[1:] == ['--tls']
 fixture_only = sys.argv[1:] == ['--producer-ledger-fixture']
-producer_inputs = import_source or sys.argv[1:] in (['--producer-inputs'], ['--producer-ledger'], ['--producer-ledger-fixture'])
-producer_ledger = import_source or sys.argv[1:] in (['--producer-ledger'], ['--producer-ledger-fixture'])
+producer_inputs = input_bindings or import_source or sys.argv[1:] in (['--producer-inputs'], ['--producer-ledger'], ['--producer-ledger-fixture'])
+producer_ledger = input_bindings or import_source or sys.argv[1:] in (['--producer-ledger'], ['--producer-ledger-fixture'])
 publication = producer_inputs or sys.argv[1:] == ['--publication']
 manifest = json.loads((build / 'source-manifest.json').read_text())
 
@@ -87,6 +88,11 @@ if import_source:
         ('source-faults', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr', '--lib', 'acquisition::import']),
         ('source-lifetime', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr', '--doc', 'acquisition::import::jsonl::JsonlRecord']),
         ('source-clippy', ['cargo', 'clippy', '--locked', '--release', '-p', 'bigbrotr', '--lib', '--test', 'acquisition_import_jsonl', '--example', 'ingest_bootstrap_probe', '--', '-D', 'warnings'])]
+if input_bindings:
+    identity.update(scope='atomic import position/original input binding prerequisite')
+    checks = [checks[0],
+        ('binding-tests', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr', '--test', 'import_input_bindings', '--test', 'control_schema']),
+        ('binding-clippy', ['cargo', 'clippy', '--locked', '--release', '-p', 'bigbrotr', '--lib', '--test', 'import_input_bindings', '--example', 'ingest_bootstrap_probe', '--', '-D', 'warnings'])]
 assert execute(checks, out / 'checks', SOURCE, env, identity, 1800)['status'] == 'PASS'
 for src, dst in [*([('examples/ingest_bootstrap_probe', out / 'ingest-bootstrap-probe')] if producer_ledger else []), ('bigbrotr', out / 'bigbrotr'), ('bigbrotr-archive-worker', bundle / 'bigbrotr-archive-worker'),
                  ('examples/catalog_schema_probe', out / 'catalog-schema-probe'),
@@ -98,7 +104,7 @@ for src, dst in [*([('examples/ingest_bootstrap_probe', out / 'ingest-bootstrap-
                     ('examples/archive_attempt_probe', out / 'archive-attempt-probe')] if publication else [])]:
     shutil.copy2(build / 'target/release' / src, dst)
     dst.chmod(0o500)
-if producer_inputs and not fixture_only and not import_source:
+if producer_inputs and not fixture_only and not import_source and not input_bindings:
     # The actual same-source packaged worker is required by the native pending
     # consumer test; library-only success cannot substitute for that process.
     assert file_hash(bundle / 'bigbrotr-archive-worker') == worker['sha256']

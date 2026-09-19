@@ -21,12 +21,12 @@ prerequisite to real P03-T10 logical obligations and P02-T02 checkpoints.
 
 ## Git and ownership
 
-Mac main is the locally verified candidate d376771c69dd48c88d2defeb128a42e58de53390,
-one commit ahead of private origin/main4467de468d9a8be73f676983ef837d80032ea2b2.
-The source/reader commit was transferred to Tux through Git from a clean checkout.
-Root owns subsequent dirty inventory/checkpoint/evidence and observer updates;
-no other edits.
-No other contributor edits were integrated. Existing agents were read-only reviewers.
+Mac main and private origin/main were verified at
+2886b2b8af64f393d1f29cf1e257a754cb51cfd9 after pushing the source candidate and
+qualification. Root now owns the additive0013 input-binding slice: new SQL,
+input_bindings.rs, initial_batch/control_owner integration, migration catalogs,
+shape tests and related contract/checkpoint changes. No other edits or active
+remote process. Existing agents remain read-only reviewers.
 
 The tested product is exact9537667dd140baac68ca79ecb56ea7c6ecce081f, tree
 71716b4155e6ed0068c1eb41d817f8c4b0bd3c18, clean803-file Git export. Harness1a1ff27
@@ -129,7 +129,7 @@ The actual 353-byte signed-source reader fed PostgreSQL/Rocks admission and retr
 zero checkpoints match the independent oracle. All three complete PG copies were
 additionally checked from the hash-bound captured engine observation with twelve
 altered-field negative controls; this was not new engine execution. The final
-observer enhancement and qualification documents are root-owned dirty work.
+observer enhancement and qualification documents were committed and pushed.
 
 Review found NLL could release the permit before an owned event was destroyed;
 explicit Drop now enforces drop checking. Unconfirmed unlink could forget empty
@@ -153,17 +153,34 @@ See implementation_archive_worker_20260918.import_source in the inventory.
 The newest retained build cache is this lab's out/build; verify Cargo.lock and
 artifact identities before reuse. No old container was restarted.
 
-Next: finish qualification document/diff checks and commit/push the candidate
-and evidence to private origin. Then select the first actual job/obligation
-consumer after reading its persistent schema and current authority boundaries.
-No P03 task step is claimed complete and no installed import CLI is advertised.
+The next P03-T10 step3/P02-T02 step4 prerequisite is in progress: atomic
+source-position/original-request binding for a complete event-only JSONL batch.
+The design is recorded in [input bindings](../reference/import-input-bindings.md).
+A single typed bounded relation carries every position, exact original input
+metadata and complete ordered batch membership; all bindings and reservations
+commit before dispatch. Existing unbound requests cannot be retroactively attached.
+Current job/Control ownership is checked before Ingest/producer locks and again
+before native dispatch. No operator job acceptance or runtime import grant exists.
+Claim/proof/reject completion and every checkpoint/ACK/GC remain open.
 
-Then wire actual job-scoped logical obligations to retained outcomes under
-P02-T02 step4/P03-T10. No offline source inspection is advertised as current-policy
-import preflight. Preserve zero prefixes, holes, multi-obligation records and
-source identity; bootstrap request1 never becomes imported line1. The bare-digest
-producer_checkpoints relation is not sufficient progress authority. The independent
-read-only AI reviewer confirmed these boundaries and the absent job adapter.
+Local missing-API and framing RED regressions are retained under
+.research/implementation/input-bindings. Five shape cases and15 migration cases
+passed, including the explicit migration13 prerequisite.
+The actual finite consumer now captures two signed identical records at distinct
+positions, atomically reserves/retries both bindings, then admits their distinct
+requests. Nine connected failure cases and28 synthetic SQL cases are written,
+NOT_RUN natively. Scoped Clippy passed after a retained collapsible-if failure;
+the first overwritten Clippy diagnostics are unavailable. Python oracle review
+confirmed all complete original input bytes, including unreserved failed staging.
+Review also found missing SQL timeout evidence; the harness now retains phase,
+partial output and explicitly unknown remote exclusion. A locally checked candidate is being recorded for exact-revision native testing.
+
+Next bounded action: finish scoped checks and complete diff review, commit a clean
+Git candidate, then create a separately inventoried Tux lab and execute the actual
+PG/native cases. Add explicit12-to13 compatibility and competing transaction
+schedules before claiming this persistent boundary qualified. Preserve complete
+original requests and zero logical prefixes through every ambiguous outcome.
+No P03 task step or M1 milestone is complete.
 
 Initial adapters still bind the original Control and owner/producer epoch1.
 Future recovery needs a read/recovery handle incapable of fresh admission,

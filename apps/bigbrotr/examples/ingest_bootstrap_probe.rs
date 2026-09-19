@@ -185,7 +185,10 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
         .try_into()
         .unwrap();
     let now: i64 = row.get(2);
-    if matches!(mode, "reservation-commit-lost" | "outcome-commit-lost") {
+    if matches!(
+        mode,
+        "reservation-commit-lost" | "outcome-commit-lost" | "event-bindings-commit-lost"
+    ) {
         // The fault proxy accepts only loopback in the shared PG namespace.
         config.hostaddr("127.0.0.1".parse().unwrap()).port(6543);
     }
@@ -258,7 +261,12 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
             )]
         },
         producer_slot_id: [66; 16].try_into().unwrap(),
-        outstanding_request_limit: if mode == "event-outcomes" { 3 } else { 2 },
+        outstanding_request_limit: if mode == "event-outcomes" || mode.starts_with("event-bindings")
+        {
+            3
+        } else {
+            2
+        },
         created_at_us: now,
         lease_expires_at_us: now + 60_000_000,
     };
@@ -315,10 +323,7 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
                     format: DescriptorLabel::new("nostr-jsonl".into()).unwrap(),
                     format_version: 1,
                     source_dataset_id: None,
-                    source_artifact_digest:
-                        "c30658a75b2b913e509b7618f36ebae75fa1d5680dc8fe4e322aae638d8affae"
-                            .parse()
-                            .unwrap(),
+                    source_artifact_digest: ingest_event::source_digest(mode),
                 }),
             )
             .unwrap(),
@@ -594,7 +599,10 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
         .await
         .unwrap()
         .unwrap();
-    if matches!(mode, "reservation-commit-lost" | "outcome-commit-lost") {
+    if matches!(
+        mode,
+        "reservation-commit-lost" | "outcome-commit-lost" | "event-bindings-commit-lost"
+    ) {
         assert!(ended.is_err());
     } else {
         ended.unwrap();

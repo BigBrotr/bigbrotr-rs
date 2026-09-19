@@ -22,10 +22,10 @@ def command(*args,input=None):
     return p.stdout.strip()
 
 
-def expected():
+def expected(repetitions=1):
     dataset,slot = bytes([1])*16,bytes([66])*16
     be=lambda n,width=8:n.to_bytes(width,'big')
-    rows,_,_ = expected_event(dataset,True)
+    rows,_,_ = expected_event(dataset,True,repetitions)
     rows={(cf,k):v for cf,k,v in rows}
     source_key=lambda n:dataset+be(0,4)+be(1)+be(n)
     deps=[[[dataset,0,1,n],rows['facts',b'\x01\x20'+source_key(n)][2:34]] for n in [1,3,4,5,6]]
@@ -105,7 +105,7 @@ def main(root, observe_existing=False, native_build=False):
         stdout=report['processes']['admit']['stdout']
     else:
         sql('postgres','CREATE DATABASE '+db)
-        run('setup',binary+['setup-12',db,'/secrets/postgres','unused'])
+        run('setup',binary+['setup-13',db,'/secrets/postgres','unused'])
         (root/'out/outcome-existing').mkdir(mode=0o700)
         stdout=run('admit',binary+['event-outcomes',db,'/secrets/bigbrotr_control','/out/outcome-existing/db'])
     native=json.loads(run('dump',binary+['dump','/out/outcome-existing/db']))

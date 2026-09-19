@@ -8,6 +8,7 @@ pub mod control_owner;
 pub mod enrollment;
 pub mod ingest_registry;
 pub mod initialization;
+pub mod input_bindings;
 pub mod migration_runner;
 pub mod migrations;
 pub mod producer_outcomes;

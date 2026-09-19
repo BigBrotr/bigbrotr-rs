@@ -46,7 +46,7 @@ def main(root):
         report['cases'].append(case); save()
         db = 'bboutcome_'+label.replace('-', '_')
         sql('postgres', f'CREATE DATABASE {db}')
-        setup = {}; execute(binary+['setup-12', db, '/secrets/postgres', 'unused'], 30, setup)
+        setup = {}; execute(binary+['setup-13', db, '/secrets/postgres', 'unused'], 30, setup)
         case['setup'] = setup; save()
         assert setup['exit'] == 0 and not setup['stderr']
         if label == 'outcome-refused':
