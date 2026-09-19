@@ -167,6 +167,12 @@ One owner serializes exact identity decisions for each writable directory.
   AlreadyDurable request/retry with no new facts. Reservation/race regressions
   also pass; initial fixture/audit failures remain recorded. This qualifies the
   durable copy only, not this step's logical checkpoint, ACK/GC or handoff work.
+  The finite [event-only import checkpoint](../reference/import-input-bindings.md#event-only-logical-checkpoint)
+  adds native-witness closure and a contiguous logical shard head in that same
+  outcome transaction. [Native evidence](evidence/p03-import-checkpoints-native-20260919.json)
+  records signed reverse-order/retry/fault cases, actual SQL lock schedules and
+  additive compatibility. Complete claim/proof checkpointing, mutation ACK/GC,
+  retirement and successor recovery still prevent completion of this step.
 - [ ] **Step 5:** Make provenance-off allocate no P inventory or event/endpoint side channel;
   retain scope eligibility and scoped first local receive/earlier corrections.
   Implement CertifyExisting against one committed inventory view, exact verified

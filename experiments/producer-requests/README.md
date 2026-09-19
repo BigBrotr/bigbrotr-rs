@@ -1,7 +1,7 @@
 # Producer reservation prerequisite
 
-The current client requires migration12 for connected dispatch. Historical
-evidence remains bound to its original source and migration11; do not rerun an
+The current client requires migration14 for connected dispatch. Historical
+evidence remains bound to its original source and schema; do not rerun an
 old published result with current sources and label it equivalent.
 
 `outcomes.py --root <owned-lab>` exercises the next outcome-copy boundary:
@@ -92,3 +92,24 @@ rows are a synthetic SQL negative control, not an implementation of native hando
 Failure must distinguish a precise compatibility refusal from timeout/connectivity
 errors, preserve schema/data, and leave no owned SQL clients. Reported execution,
 including any failure, remains the authority for qualification.
+
+`import_checkpoints.py --root <owned-lab> --run-tag <tag> --scenario <scenario>`
+uses `native_initialization.py --input-bindings` artifacts. It binds signed logical
+line2/request2 before line1/request3, checking the native witness, complete originals,
+PG outcome copies and contiguous head separately. Scenarios are `reverse`, `delayed`,
+`cancelled`, `expired`, `rollback`, `before-forward` and `after-complete`; each needs
+a fresh alphanumeric tag of at most eight characters. Cancellation observes actual
+closure SQL sleep before setting the cooperative flag; delayed is its positive
+control. COMMIT12 proxy observations distinguish server completion from delivery.
+`--expect-missing-progress` is only the measured pre-bridge 730e50e RED fixture.
+
+After successful `reverse1`, `checkpoint_schema.py --root <owned-lab> --run-tag sql1`
+and `checkpoint_concurrency.py --root <owned-lab>` clone its quiescent PG database.
+Their synthetic outcomes test SQL consistency and both closure/pause lock orders,
+not native attestation. `checkpoint_upgrade.py --root <owned-lab> --old-root
+<retained-8b0660e-lab>` copies the verified old binary into the new lab and uses
+fresh r4 paths for four compatibility cases. It never restarts the old lab.
+All scripts retain partial output; a failed or timed-out remote command requires
+an owned terminal audit. The [qualification report](../../docs/implementation/evidence/p03-import-checkpoints-native-20260919.json)
+records actual executions and preserves r1/r2/r3 failures. General import, ACK/GC
+and successor recovery remain outside this finite prerequisite.

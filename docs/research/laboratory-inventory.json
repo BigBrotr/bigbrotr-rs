@@ -14111,15 +14111,143 @@
       "network": "bigbrotr-implementation-import-checkpoints-cb7905f",
       "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
       "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
-      "state": "running",
+      "state": "stopped-retained",
       "source_files": 832,
       "started_at": "2026-09-19T20:44:00.755665+00:00",
       "network_id": "43655e02c0afe3464e2ca75f7736be4d8e350d01e98f6f42f0b26e817a50f297",
       "postgres_id": "685eddb4df2a5d3bd55b0d80043ba8f9e055773fe4bf044812e3052fceefb26f",
       "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
       "container_id": "104b8cd0f60198575fd733708b2afc1c6947e5e6155e51b0143594061ca9328c",
-      "qualification": "NOT_RUN; native diagnostic/cancellation candidate building",
-      "raw": ".research/implementation/import-checkpoints/final"
+      "completed_at": "2026-09-19T20:50:11.082280+00:00",
+      "qualification": "PASS for finite event-only checkpoint prerequisite: seven native schedules,25 SQL constraints,six lock schedules,four13-to14 compatibility cases; general import/recovery/ACK remain open",
+      "raw": ".research/implementation/import-checkpoints/final/qualified",
+      "terminal_audit": {
+        "status": "PASS",
+        "source": "cb7905fe6a98380b8875acdee8f11ddd3f8809cc",
+        "tree": "b477bce343ee8e8e6a21419fe68243220d2ca349",
+        "source_manifest": {
+          "revision": "cb7905fe6a98380b8875acdee8f11ddd3f8809cc",
+          "tree": "b477bce343ee8e8e6a21419fe68243220d2ca349",
+          "files": 832,
+          "archive_sha256": "5586b70753cd1c0276501cca43f6473f38b17b344ac2d667be2b14c7809e084f",
+          "manifest_sha256": "42a43565423535010e4b8b3c61a0d6f2dee827f737f609e213219e2e4e300b4a",
+          "lock_sha256": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215"
+        },
+        "scope": "Source/artifact identity and terminal exclusion; finite checkpoint prerequisite",
+        "reports": {
+          "import-checkpoints-reverse1.json": {
+            "status": "PASS",
+            "sha256": "545695707a50b0b402d9c0d436454823b46754bf591db1b8a4969513d0d4f490"
+          },
+          "import-checkpoints-delay1.json": {
+            "status": "PASS",
+            "sha256": "94dda68df74ad4f033592845c446d92a3ad22473c60d658ab88777d63562e035"
+          },
+          "import-checkpoints-cancel1.json": {
+            "status": "PASS",
+            "sha256": "197e525e1eaab97faad0fdfcd66dc196c9eaefbe5e3ac38475fd4d22b481ecb0"
+          },
+          "import-checkpoints-expired1.json": {
+            "status": "PASS",
+            "sha256": "afe9c948e94adfc7f2bddb94a8ac599a0e9b10601b317b7792b436e166ec7abe"
+          },
+          "import-checkpoints-roll1.json": {
+            "status": "PASS",
+            "sha256": "470d6062fa4ef7b4d9016a83c2860d497fe1ef78ef6d9243e6d3fcf0a23fc601"
+          },
+          "import-checkpoints-before1.json": {
+            "status": "PASS",
+            "sha256": "553c88ef9f155406088b326c0b4a4eb83276ca73dd17dd457c526897fc26d0a9"
+          },
+          "import-checkpoints-after1.json": {
+            "status": "PASS",
+            "sha256": "784f159d08326d35962a50beaa8ea6c7d7fb4508303cc4f7e42b448f19eb78fe"
+          },
+          "checkpoint-schema-sql1.json": {
+            "status": "PASS",
+            "sha256": "319d9bf33e04979207976316a50a23451b0c3fbbce6c37432f992a3a828eaae6"
+          },
+          "import-checkpoint-concurrency-r1.json": {
+            "status": "PASS",
+            "sha256": "97007d258188accc0a85e8ba19c1080a5c6f5892d9ea6d78a336dc2a172bb558"
+          },
+          "import-checkpoint-upgrade-r4.json": {
+            "status": "PASS",
+            "sha256": "6c4cf0820589a6a0e5b7e3fa472631e14a606d222e793e6e3ab85219efdbcb0f"
+          },
+          "out/native-tests/checks/result.json": {
+            "status": "PASS",
+            "sha256": "26182dc69e34f45f949ef3267c1974faf259a00b20b672eed13d7742569fa9d3"
+          }
+        },
+        "artifacts": {
+          "main": {
+            "sha256": "ed0776b68e4815686246d4df7c9e1527b15a54ddcbf5a0231b355ffb64a09575",
+            "bytes": 9219400,
+            "elf_machine": 62
+          },
+          "worker": {
+            "sha256": "4a8f8f37ec6dbf7b6e6def033966d21d116f027699cfd4c96ae6ff852f298f3c",
+            "bytes": 12608632,
+            "elf_machine": 62
+          },
+          "ingest_probe": {
+            "sha256": "e49fd9df41553b82288540ab36d43c8ec1ddba2ad2803d5fcf3aba6265793b7e",
+            "bytes": 15667112,
+            "elf_machine": 62
+          }
+        },
+        "harnesses": {
+          "harness-ba53ae9": {
+            "revision": "ba53ae9733cff82582f8be9c485e7bcb7526922f",
+            "tree": "9faad4183c4ee6e5a8c5bb74b2ffc2d10eda142e",
+            "product_unchanged": true
+          }
+        },
+        "prestop": {
+          "at": "2026-09-19T20:50:05.770636+00:00",
+          "owned_client_backends": 0,
+          "runner_processes": "PID                 PPID                STAT                COMMAND\n33560               33537               Ss                  docker-init\n33573               33560               S                   python3",
+          "owned_containers": [
+            "104b8cd0f60198575fd733708b2afc1c6947e5e6155e51b0143594061ca9328c",
+            "685eddb4df2a5d3bd55b0d80043ba8f9e055773fe4bf044812e3052fceefb26f"
+          ]
+        },
+        "terminal": {
+          "104b8cd0f60198575fd733708b2afc1c6947e5e6155e51b0143594061ca9328c": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-19T20:44:03.381608679Z",
+            "FinishedAt": "2026-09-19T20:50:05.793897115Z"
+          },
+          "685eddb4df2a5d3bd55b0d80043ba8f9e055773fe4bf044812e3052fceefb26f": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-19T20:44:01.469250509Z",
+            "FinishedAt": "2026-09-19T20:50:10.607661613Z"
+          }
+        },
+        "preexisting_containers_unchanged": 374,
+        "unrelated_containers_unchanged": 20,
+        "unrelated_running": 8,
+        "bigbrotr_running": 0,
+        "observed_at": "2026-09-19T20:50:11.082280+00:00"
+      },
+      "manifest": ".research/implementation/import-checkpoints/final/evidence-identity.json"
     }
   },
   "implementation_monitor_corrections_20260918": {

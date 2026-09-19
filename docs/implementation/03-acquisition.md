@@ -309,8 +309,14 @@ Paths: `apps/bigbrotr/src/acquisition/import/jsonl.rs`, `apps/bigbrotr/src/acqui
 
 The [initial input-binding adapter](../reference/import-input-bindings.md) is a
 step 3 prerequisite with [native evidence](evidence/p03-input-bindings-native-20260919.json).
-Its event-only batch binds positions and original requests before dispatch; it does not complete job authorization, claim/proof
-obligations, checkpoints or this task's large-import acceptance.
+Its event-only batch binds positions and original requests before dispatch.
+The separate step 4 [logical checkpoint prerequisite](../reference/import-input-bindings.md#event-only-logical-checkpoint)
+now closes these one-Admit records from the native outcome witness in the same PG
+transaction, preserving holes and exact retry. [Native evidence](evidence/p03-import-checkpoints-native-20260919.json)
+covers seven signed cases, 25 SQL constraints, six lock schedules and four migration/
+client compatibility cases. Job authorization, claim/proof/rejection obligations,
+ACK/GC, successor recovery and large-import acceptance remain open; neither step
+is complete.
 
 Dependencies: P03-T08/T09; P02-T02/T03/T04/T07/T08. Inputs are decoded records and
 preflight source manifest and destination policy; outputs are durable complete events, imported claims,

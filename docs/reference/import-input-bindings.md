@@ -43,8 +43,9 @@ Control fence, job, Ingest owner and producer locks follow one order. Source
 identity, byte ordering and the finite per-job ledger are serialized by the job
 row. Ordinary connected admission checks a bound request's current running job
 in both its reservation and native transactions. Cancellation/pause/owner changes
-cannot be ignored merely because its reservation already exists. Initial native
-operations therefore require migration13 explicitly. Historical unbound bootstrap
+cannot be ignored merely because its reservation already exists. Migration13
+introduced this binding prerequisite; current native operations additionally
+require migration14 for the closure protocol below. Historical unbound bootstrap
 and other initial consumers remain distinct; bootstrap request1 never becomes
 imported line1.
 
@@ -56,9 +57,10 @@ is unknown and poisons the current Control session; no native dispatch has begun
 through that call. Resolve through the retained original batch and current owner,
 never replace an ambiguous request with certification or a new identity.
 
-All bindings and original input/outcome detail remain retained. No logical
-imported prefix, job success, dependency closure, producer checkpoint, ACK, GC or
-successor authority follows from these rows. Further work must connect complete
+All bindings and original input/outcome detail remain retained. Binding rows alone
+authorize no logical imported prefix, job success, producer checkpoint, ACK, GC or
+successor authority. The event-only closure below adds its own native witness.
+General import still must connect complete
 Receipt/ExistingProof and separate claim/exclusion obligations before advancing
 whole logical positions, including proof-only progress with a zero or unchanged
 mutation watermark. The bare producer_checkpoints digest is insufficient.
@@ -75,9 +77,9 @@ import acceptance above is required before advertising resumable import.
 provide the deferred AFTER ROW constraints used here; their actual atomicity and
 READ COMMITTED lock behavior were exercised in the recorded SQL cases.
 
-## Event-only logical checkpoint (implementation in progress)
+## Event-only logical checkpoint
 
-The next P03-T10 step 4 / P02-T02 step 4 slice records a bound event record's
+The P03-T10 step 4 / P02-T02 step 4 prerequisite records a bound event record's
 closure in the existing native-outcome PG transaction. Only the native owner's
 NewFacts/AlreadyDurable witness can authorize it; diagnostics, structural receipt
 reads, Rejected and unbound bootstrap requests cannot create logical progress.
@@ -111,11 +113,21 @@ a PG checksum or migration cannot manufacture its witness. New connected native
 operations explicitly require14. Fresh-process recovery and native-owner handoff
 remain separate gates, not implicit permission to replay another incarnation.
 
-Practical cases must include reverse logical order with contiguous mutation IDs:
+The [native qualification](../implementation/evidence/p03-import-checkpoints-native-20260919.json)
+binds product cb7905f on Linux amd64/PostgreSQL 16.15. Seven actual signed cases
 bind/admit line2 as request2, then line1 as request3 of the same signed snapshot.
-The first closure leaves prefix0; the second closes prefix2 in one revision and
-can be AlreadyDurable. Also exercise two shards with global revisions, exact
-retries, wrong receipts, rejected/unbound inputs, rollback and COMMIT reply loss,
-pauses/lease expiry, immutable dependency retention and13-to14 compatibility.
-This section records the selected responsibility; its implementation and native
-qualification are not yet complete.
+The first closure leaves prefix0; the second AlreadyDurable receipt closes prefix2
+in one revision. Exact replay preserves full rows, including xmin. Rollback,
+cooperative cancellation during SQL, lease expiry and COMMIT reply loss distinguish
+native durability from committed PG progress. The identical SQL delay without
+cancellation succeeds. After-complete reply loss retains progress despite an
+unknown caller result; this does not implement successor recovery.
+
+Twenty-five synthetic SQL constraints cover shard/global revisions, wrong/missing
+and rejected outcomes, retention and multirow visibility. Six actual lock/isolation
+schedules cover closure/pause in both orders and rollback. Four actual 13-to-14
+compatibility cases preserve old rows/native bytes and refuse unsupported old
+checkpoints with an explicit recovery diagnostic. SQL fixtures establish constraints,
+not native authenticity. This finite event-only prerequisite does not qualify
+claim/proof closure, ACK/GC, future abort, installed resumable import or large-job
+capacity; those remain required under the owning tasks.

@@ -1,0 +1,797 @@
+{
+  "format": "bigbrotr-import-checkpoint-evidence/1",
+  "status": "PASS",
+  "scope": "P03-T10 step 4 / P02-T02 step 4 finite event-only logical checkpoint prerequisite; no complete task or M1 acceptance",
+  "source": {
+    "revision": "cb7905fe6a98380b8875acdee8f11ddd3f8809cc",
+    "tree": "b477bce343ee8e8e6a21419fe68243220d2ca349",
+    "files": 832,
+    "archive_sha256": "5586b70753cd1c0276501cca43f6473f38b17b344ac2d667be2b14c7809e084f",
+    "manifest_sha256": "42a43565423535010e4b8b3c61a0d6f2dee827f737f609e213219e2e4e300b4a",
+    "lock_sha256": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215"
+  },
+  "artifacts": {
+    "main": {
+      "sha256": "ed0776b68e4815686246d4df7c9e1527b15a54ddcbf5a0231b355ffb64a09575",
+      "bytes": 9219400,
+      "elf_machine": 62
+    },
+    "worker": {
+      "sha256": "4a8f8f37ec6dbf7b6e6def033966d21d116f027699cfd4c96ae6ff852f298f3c",
+      "bytes": 12608632,
+      "elf_machine": 62
+    },
+    "ingest_probe": {
+      "sha256": "e49fd9df41553b82288540ab36d43c8ec1ddba2ad2803d5fcf3aba6265793b7e",
+      "bytes": 15667112,
+      "elf_machine": 62
+    }
+  },
+  "harnesses": {
+    "harness-ba53ae9": {
+      "revision": "ba53ae9733cff82582f8be9c485e7bcb7526922f",
+      "tree": "9faad4183c4ee6e5a8c5bb74b2ffc2d10eda142e",
+      "product_unchanged": true
+    }
+  },
+  "environment": {
+    "native_target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "native_toolchain": {
+      "os": "Linux",
+      "architecture": "x86_64",
+      "discovery": "llvm-config",
+      "environment": {
+        "CC": "/usr/lib/llvm-14/bin/clang",
+        "CXX": "/usr/lib/llvm-14/bin/clang++",
+        "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+        "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+        "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+      },
+      "tools": {
+        "CC": {
+          "path": "/usr/lib/llvm-14/bin/clang",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "CXX": {
+          "path": "/usr/lib/llvm-14/bin/clang++",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "AR": {
+          "path": "/usr/lib/llvm-14/bin/llvm-ar",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+          "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+          "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+        },
+        "LIBCLANG_PATH": {
+          "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+          "version": "Debian clang version 14.0.6"
+        },
+        "discovery": {
+          "path": "/usr/lib/llvm-14/bin/llvm-config",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+          "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+          "version": "14.0.6"
+        }
+      },
+      "sdk": null
+    },
+    "dependency_inputs": {
+      "Cargo.lock": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215",
+      "contracts/protocol/nip01-event.json": "b830d5ab8651f5a763ebcffdc0eb1737ba70f4602c93fc714c892865ffca2db8",
+      "contracts/protocol/versions.json": "37c76706c5a2aa4fc72a40aeed908f104620eafcee1118b7cee8baf133546c95",
+      "contracts/release/dependencies.json": "9bea8c27908c680afc63ec9b74c481ea522c2b7a32232ab4dbca82b1920d7dd0",
+      "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167"
+    },
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "postgres": "16.15; fsync=on; full_page_writes=on",
+    "isolation": "Fresh private database per signed case; cloned disposable SQL baselines; internal network and no host ports; read-only clean Git export",
+    "grants": {
+      "runner_cpus": 2,
+      "runner_memory_bytes": 6442450944,
+      "runner_pids": 512,
+      "postgres_cpus": 1,
+      "postgres_memory_bytes": 1073741824,
+      "postgres_pids": 128
+    },
+    "measurement_limit": "Container grants are limits, not measured peak memory, throughput or aged-state capacity."
+  },
+  "build": {
+    "command": "python3 -B /source/experiments/archive-engine/native_initialization.py --input-bindings",
+    "source_files_before_after": 832,
+    "source_unchanged": true,
+    "checks": [
+      {
+        "name": "fixture",
+        "command": [
+          "cargo",
+          "build",
+          "--locked",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--example",
+          "catalog_schema_probe",
+          "--example",
+          "catalog_initialization_probe",
+          "--example",
+          "archive_receipt_probe",
+          "--example",
+          "ingest_bootstrap_probe",
+          "-p",
+          "bigbrotr-archive-worker",
+          "--example",
+          "archive_publication_probe",
+          "--example",
+          "archive_read_probe",
+          "--example",
+          "archive_coordinator_probe",
+          "--example",
+          "archive_attempt_probe"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 60.54564775340259
+      },
+      {
+        "name": "binding-tests",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--test",
+          "import_input_bindings",
+          "--test",
+          "control_schema"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 26.962266051676124
+      },
+      {
+        "name": "binding-clippy",
+        "command": [
+          "cargo",
+          "clippy",
+          "--locked",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--lib",
+          "--test",
+          "import_input_bindings",
+          "--example",
+          "ingest_bootstrap_probe",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 1.8675485691055655
+      }
+    ],
+    "test_counts": {
+      "control_schema": 16,
+      "import_input_bindings": 5
+    }
+  },
+  "contract": {
+    "migration": 14,
+    "published_migrations_unchanged": "1..13",
+    "native_witness": "Only private NativeOutcomeCopy from the actual owner feeds closure after the full producer_outcomes copy in the same PG transaction.",
+    "atomicity": "A closure may exist beyond a hole without advancing a head. Filling the hole advances a complete logical prefix and local/global revisions once. Replay preserves complete rows and xmin.",
+    "ownership": "Control, bound job, Ingest, producer lock order; running sealed job and original native tuple required. READ COMMITTED only. Cancellation/residual lease rechecked after SQL awaits before COMMIT.",
+    "retained_dependencies": "Original binding and complete receipt dependencies/policy/topology/recovery/protection remain reachable; no source-cut maximum substituted, no ACK or GC implied.",
+    "compatibility": "Explicit additive migration; no backfill from PG diagnostics; unsupported old nonzero import checkpoints require explicit recovery."
+  },
+  "independent_oracles": [
+    "Frozen signed 353-byte JSONL event repeated at two positions; source size706/SHA ce439b495fd2f99031706e9625529e264cd3043ffc16af4fd6002243503e90fc. Logical line2 uses request2, then line1 uses request3. Bootstrap request1 is unbound.",
+    "experiments/producer-requests/existing_outcome.py independently expects all27 native key/value rows, including six scientific facts, NewFacts and AlreadyDurable receipts; full PG copies compared, not only digest/count.",
+    "import_originals.py independently constructs full CBOR preimages and checks every synchronized original file plus PG dataset/slot/epoch/digest/profile/size/manifest. Request3 is checked even when its PG outcome rolls back.",
+    "Binding source/range/record digest/batch fields and checkpoint prefixes/revisions have literal expectations. Exact successful retry compares all closure/head/job fields including xmin and full receipt bytes.",
+    "COMMIT12 protocol proxy counts distinguish before-forward from after-complete reply loss. Cooperative cancellation is set only after observing actual PgSleep in closure INSERT; identical sleep without cancellation is a positive control."
+  ],
+  "signed_cases": [
+    {
+      "scenario": "reverse",
+      "report": "import-checkpoints-reverse1.json",
+      "status": "PASS",
+      "native_rows": 27,
+      "original_files": 3,
+      "reservations": 3,
+      "outcome_copies": 3,
+      "closures": [
+        {
+          "logical_record": 1,
+          "request_sequence": 3
+        },
+        {
+          "logical_record": 2,
+          "request_sequence": 2
+        }
+      ],
+      "heads": [
+        {
+          "shard_id": 0,
+          "revision": 1,
+          "complete_through_record": 2,
+          "byte_offset": 706
+        }
+      ],
+      "job_revision": 4,
+      "job_checkpoint_revision": 1,
+      "producer_checkpoints": 0,
+      "caller_error": null,
+      "remaining_client_backends": 0
+    },
+    {
+      "scenario": "delayed",
+      "report": "import-checkpoints-delay1.json",
+      "status": "PASS",
+      "native_rows": 27,
+      "original_files": 3,
+      "reservations": 3,
+      "outcome_copies": 3,
+      "closures": [
+        {
+          "logical_record": 1,
+          "request_sequence": 3
+        },
+        {
+          "logical_record": 2,
+          "request_sequence": 2
+        }
+      ],
+      "heads": [
+        {
+          "shard_id": 0,
+          "revision": 1,
+          "complete_through_record": 2,
+          "byte_offset": 706
+        }
+      ],
+      "job_revision": 4,
+      "job_checkpoint_revision": 1,
+      "producer_checkpoints": 0,
+      "caller_error": null,
+      "remaining_client_backends": 0
+    },
+    {
+      "scenario": "cancelled",
+      "report": "import-checkpoints-cancel1.json",
+      "status": "PASS",
+      "native_rows": 27,
+      "original_files": 3,
+      "reservations": 3,
+      "outcome_copies": 2,
+      "closures": [
+        {
+          "logical_record": 2,
+          "request_sequence": 2
+        }
+      ],
+      "heads": [],
+      "job_revision": 3,
+      "job_checkpoint_revision": 0,
+      "producer_checkpoints": 0,
+      "caller_error": "DeliveryUnknown",
+      "remaining_client_backends": 0
+    },
+    {
+      "scenario": "expired",
+      "report": "import-checkpoints-expired1.json",
+      "status": "PASS",
+      "native_rows": 27,
+      "original_files": 3,
+      "reservations": 3,
+      "outcome_copies": 2,
+      "closures": [
+        {
+          "logical_record": 2,
+          "request_sequence": 2
+        }
+      ],
+      "heads": [],
+      "job_revision": 3,
+      "job_checkpoint_revision": 0,
+      "producer_checkpoints": 0,
+      "caller_error": "DeliveryUnknown",
+      "remaining_client_backends": 0
+    },
+    {
+      "scenario": "rollback",
+      "report": "import-checkpoints-roll1.json",
+      "status": "PASS",
+      "native_rows": 27,
+      "original_files": 3,
+      "reservations": 3,
+      "outcome_copies": 2,
+      "closures": [
+        {
+          "logical_record": 2,
+          "request_sequence": 2
+        }
+      ],
+      "heads": [],
+      "job_revision": 3,
+      "job_checkpoint_revision": 0,
+      "producer_checkpoints": 0,
+      "caller_error": "ImportCheckpoint(Backend)",
+      "remaining_client_backends": 0
+    },
+    {
+      "scenario": "before-forward",
+      "report": "import-checkpoints-before1.json",
+      "status": "PASS",
+      "native_rows": 27,
+      "original_files": 3,
+      "reservations": 3,
+      "outcome_copies": 2,
+      "closures": [
+        {
+          "logical_record": 2,
+          "request_sequence": 2
+        }
+      ],
+      "heads": [],
+      "job_revision": 3,
+      "job_checkpoint_revision": 0,
+      "producer_checkpoints": 0,
+      "caller_error": "Outcome(CommitUnknown)",
+      "remaining_client_backends": 0
+    },
+    {
+      "scenario": "after-complete",
+      "report": "import-checkpoints-after1.json",
+      "status": "PASS",
+      "native_rows": 27,
+      "original_files": 3,
+      "reservations": 3,
+      "outcome_copies": 3,
+      "closures": [
+        {
+          "logical_record": 1,
+          "request_sequence": 3
+        },
+        {
+          "logical_record": 2,
+          "request_sequence": 2
+        }
+      ],
+      "heads": [
+        {
+          "shard_id": 0,
+          "revision": 1,
+          "complete_through_record": 2,
+          "byte_offset": 706
+        }
+      ],
+      "job_revision": 4,
+      "job_checkpoint_revision": 1,
+      "producer_checkpoints": 0,
+      "caller_error": "Outcome(CommitUnknown)",
+      "remaining_client_backends": 0
+    }
+  ],
+  "sql_constraints": {
+    "report": "checkpoint-schema-sql1.json",
+    "status": "PASS",
+    "count": 25,
+    "scope": "Synthetic SQL consistency, not native receipt attestation",
+    "cases": [
+      {
+        "label": "closure_head_job_rollback",
+        "sqlstate": null
+      },
+      {
+        "label": "closure_immutable_delete",
+        "sqlstate": "23514"
+      },
+      {
+        "label": "closure_immutable_update",
+        "sqlstate": "23514"
+      },
+      {
+        "label": "closure_truncate_fk",
+        "sqlstate": "0A000"
+      },
+      {
+        "label": "closure_truncate_guard",
+        "sqlstate": "23514"
+      },
+      {
+        "label": "closure_without_outcome",
+        "sqlstate": "23514"
+      },
+      {
+        "label": "first_shard_revision",
+        "sqlstate": null
+      },
+      {
+        "label": "forged_global_revision",
+        "sqlstate": "23514"
+      },
+      {
+        "label": "gap_fill_one_revision",
+        "sqlstate": null
+      },
+      {
+        "label": "head_delete",
+        "sqlstate": "23514"
+      },
+      {
+        "label": "head_noop_revision",
+        "sqlstate": "23514"
+      },
+      {
+        "label": "head_without_contiguous_members",
+        "sqlstate": "23514"
+      },
+      {
+        "label": "head_wrong_byte_boundary",
+        "sqlstate": "23514"
+      },
+      {
+        "label": "hole_preserves_zero",
+        "sqlstate": null
+      },
+      {
+        "label": "identical_insert_no_rewrite",
+        "sqlstate": null
+      },
+      {
+        "label": "local_revisions_remain_independent",
+        "sqlstate": null
+      },
+      {
+        "label": "multirow_after_visibility",
+        "sqlstate": null
+      },
+      {
+        "label": "nonempty_native_fixture",
+        "sqlstate": null
+      },
+      {
+        "label": "paused_job_closure_refused",
+        "sqlstate": "23514"
+      },
+      {
+        "label": "producer_watermarks_unchanged",
+        "sqlstate": null
+      },
+      {
+        "label": "rejected_is_not_event_closure",
+        "sqlstate": "23514"
+      },
+      {
+        "label": "retained_outcome_delete",
+        "sqlstate": "23514"
+      },
+      {
+        "label": "retained_outcome_truncate",
+        "sqlstate": "23514"
+      },
+      {
+        "label": "second_shard_global_revision",
+        "sqlstate": null
+      },
+      {
+        "label": "wrong_outcome_digest",
+        "sqlstate": "23514"
+      }
+    ]
+  },
+  "concurrency": {
+    "report": "import-checkpoint-concurrency-r1.json",
+    "status": "PASS",
+    "scope": "Actual two-client job lock/isolation schedules over synthetic bound outcome rows; original signed baseline remains unchanged",
+    "cases": [
+      {
+        "name": "closure_commit",
+        "status": "PASS",
+        "observed": {
+          "bindings": 1,
+          "requests": 1,
+          "outcomes": 1,
+          "closures": 1,
+          "heads": 1,
+          "prefix": 1,
+          "shard_revision": 1,
+          "byte_offset": 100,
+          "state": "paused",
+          "job_revision": 5,
+          "job_checkpoint": 1,
+          "producer_checkpoints": 0
+        },
+        "actual_blocking_observed": true,
+        "remaining_backends": 0,
+        "cleanup_errors": []
+      },
+      {
+        "name": "closure_rollback",
+        "status": "PASS",
+        "observed": {
+          "bindings": 1,
+          "requests": 1,
+          "outcomes": 1,
+          "closures": 0,
+          "heads": 0,
+          "prefix": 0,
+          "shard_revision": 0,
+          "byte_offset": 0,
+          "state": "paused",
+          "job_revision": 4,
+          "job_checkpoint": 0,
+          "producer_checkpoints": 0
+        },
+        "actual_blocking_observed": true,
+        "remaining_backends": 0,
+        "cleanup_errors": []
+      },
+      {
+        "name": "pause_commit",
+        "status": "PASS",
+        "observed": {
+          "bindings": 1,
+          "requests": 1,
+          "outcomes": 1,
+          "closures": 0,
+          "heads": 0,
+          "prefix": 0,
+          "shard_revision": 0,
+          "byte_offset": 0,
+          "state": "paused",
+          "job_revision": 4,
+          "job_checkpoint": 0,
+          "producer_checkpoints": 0
+        },
+        "actual_blocking_observed": true,
+        "remaining_backends": 0,
+        "cleanup_errors": []
+      },
+      {
+        "name": "pause_rollback",
+        "status": "PASS",
+        "observed": {
+          "bindings": 1,
+          "requests": 1,
+          "outcomes": 1,
+          "closures": 1,
+          "heads": 1,
+          "prefix": 1,
+          "shard_revision": 1,
+          "byte_offset": 100,
+          "state": "running",
+          "job_revision": 4,
+          "job_checkpoint": 1,
+          "producer_checkpoints": 0
+        },
+        "actual_blocking_observed": true,
+        "remaining_backends": 0,
+        "cleanup_errors": []
+      },
+      {
+        "name": "old_rr",
+        "status": "PASS",
+        "observed": {
+          "bindings": 1,
+          "requests": 1,
+          "outcomes": 1,
+          "closures": 0,
+          "heads": 0,
+          "prefix": 0,
+          "shard_revision": 0,
+          "byte_offset": 0,
+          "state": "paused",
+          "job_revision": 4,
+          "job_checkpoint": 0,
+          "producer_checkpoints": 0
+        },
+        "actual_blocking_observed": false,
+        "remaining_backends": 0,
+        "cleanup_errors": []
+      },
+      {
+        "name": "old_rc",
+        "status": "PASS",
+        "observed": {
+          "bindings": 1,
+          "requests": 1,
+          "outcomes": 1,
+          "closures": 0,
+          "heads": 0,
+          "prefix": 0,
+          "shard_revision": 0,
+          "byte_offset": 0,
+          "state": "paused",
+          "job_revision": 4,
+          "job_checkpoint": 0,
+          "producer_checkpoints": 0
+        },
+        "actual_blocking_observed": false,
+        "remaining_backends": 0,
+        "cleanup_errors": []
+      }
+    ]
+  },
+  "compatibility": {
+    "report": "import-checkpoint-upgrade-r4.json",
+    "status": "PASS",
+    "old_source": "8b0660e580a61503686abab6a02944258e995bb0",
+    "old_ingest_probe_sha256": "19abd7e1a156b7d65145e965bbf5645eeff377ca5db78d2161bb0dd154844a9a",
+    "cases": [
+      {
+        "name": "empty",
+        "status": "PASS",
+        "observed": "Explicit 13-to-14 migration adds empty closure/head tables and one ledger entry. All old rows retained. Actual old client refuses 14 before creating ownership or native directory."
+      },
+      {
+        "name": "retained",
+        "status": "PASS",
+        "observed": "Actual 8b0660e binary creates signed bindings/outcomes and 27 native rows. Migration preserves complete originals, native bytes and every old PG row; no inferred closure. Old binary refuses 14 before new effects."
+      },
+      {
+        "name": "new_on_old",
+        "status": "PASS",
+        "observed": "New client refuses admission with Control(IncompatibleDeployment) on 13, after initial owner/native-manifest registration. No staged input, reservation, outcome, checkpoint or scientific fact; schema unchanged."
+      },
+      {
+        "name": "nonzero_checkpoint",
+        "status": "PASS",
+        "observed": "Unsupported old import checkpoint refuses with CLI exit 1 and explicit migration-14 recovery diagnostic. Complete PG rows/schema/native bytes/originals unchanged; no ledger 14. Synthetic prior checkpoint is deliberately unqualified history."
+      }
+    ]
+  },
+  "preserved_failures": [
+    {
+      "source": "730e50ee08ef8bb96609ee964ee8ce593938045a",
+      "status": "EXPECTED_RED",
+      "raw": ".research/implementation/import-checkpoints/red/qualified",
+      "observed": "Actual signed line2/request2 native admission and PG outcome exist; closure absent. Fixture expected1/actual0; independent26 native rows and complete originals/PG copies. No engine PASS implied."
+    },
+    {
+      "status": "FAIL_THEN_FIXED",
+      "observed": "Initial Rust E0716 temporary lifetimes fixed with explicit dataset/digest/manifest locals. Final scoped Clippy passed."
+    },
+    {
+      "status": "REFUSED_BEFORE_SETUP",
+      "observed": "rollback1 exceeded maximum tag length8; no database created. Fresh roll1 executed successfully."
+    },
+    {
+      "status": "INCOMPLETE",
+      "raw": ".research/implementation/import-checkpoints/green/qualified",
+      "observed": "Compatibility r1: old native fixture refused755 scratch parent. r2:0700 fixed, native27 passed, then observer request order[2,3,1] failed. r3: first three cases passed; fourth rollback observed but generic diagnostic failed. New paths/r4 preserve all earlier outcomes."
+    },
+    {
+      "status": "OFFLINE_NEGATIVE_CONTROL",
+      "raw": ".research/implementation/import-checkpoints/original-observer-red.json",
+      "observed": "Independent AI review constructed coherent altered PG request digest that the prior copy-to-copy check accepted. New literal CBOR original oracle refuses it. This is an offline observer control, not a new native run."
+    }
+  ],
+  "review": {
+    "kind": "Independent AI review and integrating owner source/evidence review",
+    "inspected": "SQL14 and affected prior guards; native witness bridge, transaction lifetime, migration mapper, signed fixture, independent whole-byte oracles and practical harnesses.",
+    "outcome": "No unresolved concrete counterexample in this finite scope. Review-found oracle gap corrected before final native qualification.",
+    "boundary": "Final reviewer inspected seven captured signed reports and compatibility r4; read final mapper/fixture/harness delta. It checked six lock-schedule results without a fresh engine run or full reread of the new concurrency harness; integrating owner reviewed that harness."
+  },
+  "raw": {
+    "root": ".research/implementation/import-checkpoints/final/qualified",
+    "manifest": ".research/implementation/import-checkpoints/final/evidence-identity.json",
+    "manifest_sha256": "6590c6113d5f678f12640543a5441ff13f6aa49f223ed02cca55cbeeda105094",
+    "files": 53,
+    "tar_bytes": 4331520,
+    "tar_sha256": "251eeaa5ac0d7d3e1d01993285c302aeee6f3b447aeab7f82e1d05535fe43cd0",
+    "reports": {
+      "import-checkpoints-reverse1.json": {
+        "status": "PASS",
+        "sha256": "545695707a50b0b402d9c0d436454823b46754bf591db1b8a4969513d0d4f490"
+      },
+      "import-checkpoints-delay1.json": {
+        "status": "PASS",
+        "sha256": "94dda68df74ad4f033592845c446d92a3ad22473c60d658ab88777d63562e035"
+      },
+      "import-checkpoints-cancel1.json": {
+        "status": "PASS",
+        "sha256": "197e525e1eaab97faad0fdfcd66dc196c9eaefbe5e3ac38475fd4d22b481ecb0"
+      },
+      "import-checkpoints-expired1.json": {
+        "status": "PASS",
+        "sha256": "afe9c948e94adfc7f2bddb94a8ac599a0e9b10601b317b7792b436e166ec7abe"
+      },
+      "import-checkpoints-roll1.json": {
+        "status": "PASS",
+        "sha256": "470d6062fa4ef7b4d9016a83c2860d497fe1ef78ef6d9243e6d3fcf0a23fc601"
+      },
+      "import-checkpoints-before1.json": {
+        "status": "PASS",
+        "sha256": "553c88ef9f155406088b326c0b4a4eb83276ca73dd17dd457c526897fc26d0a9"
+      },
+      "import-checkpoints-after1.json": {
+        "status": "PASS",
+        "sha256": "784f159d08326d35962a50beaa8ea6c7d7fb4508303cc4f7e42b448f19eb78fe"
+      },
+      "checkpoint-schema-sql1.json": {
+        "status": "PASS",
+        "sha256": "319d9bf33e04979207976316a50a23451b0c3fbbce6c37432f992a3a828eaae6"
+      },
+      "import-checkpoint-concurrency-r1.json": {
+        "status": "PASS",
+        "sha256": "97007d258188accc0a85e8ba19c1080a5c6f5892d9ea6d78a336dc2a172bb558"
+      },
+      "import-checkpoint-upgrade-r4.json": {
+        "status": "PASS",
+        "sha256": "6c4cf0820589a6a0e5b7e3fa472631e14a606d222e793e6e3ab85219efdbcb0f"
+      },
+      "out/native-tests/checks/result.json": {
+        "status": "PASS",
+        "sha256": "26182dc69e34f45f949ef3267c1974faf259a00b20b672eed13d7742569fa9d3"
+      }
+    }
+  },
+  "resources": {
+    "inventory": "docs/research/laboratory-inventory.json#implementation_archive_worker_20260918.import_checkpoints_final",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/import-checkpoints-cb7905f",
+    "owner": "50a453d1c2cd30239a63be431128312b",
+    "status": "stopped-retained",
+    "observed_at": "2026-09-19T20:50:11.082280+00:00",
+    "owned_client_backends": 0,
+    "terminal": {
+      "104b8cd0f60198575fd733708b2afc1c6947e5e6155e51b0143594061ca9328c": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 143,
+        "Error": "",
+        "StartedAt": "2026-09-19T20:44:03.381608679Z",
+        "FinishedAt": "2026-09-19T20:50:05.793897115Z"
+      },
+      "685eddb4df2a5d3bd55b0d80043ba8f9e055773fe4bf044812e3052fceefb26f": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-09-19T20:44:01.469250509Z",
+        "FinishedAt": "2026-09-19T20:50:10.607661613Z"
+      }
+    },
+    "preexisting_containers_unchanged": 374,
+    "unrelated_running": 8,
+    "bigbrotr_running": 0,
+    "cleanup": "Only freshly inspected owned empty prior networks retired to free Docker subnet pools; stopped containers/data retained. No global prune, unrelated cleanup or historical owner restart."
+  },
+  "not_qualified": [
+    "Installed import/status/resume, complete source-policy grants or retained source-manifest custody.",
+    "Multi-obligation claim/proof-only/terminal-rejection logical closure; ExistingProof compaction.",
+    "Producer ACK, receipt/input GC, retirement, new-owner replay/handoff or fresh-process recovery.",
+    "Future/driver abort during SQL; current cancellation case uses cooperative AtomicBool.",
+    "General native unbound-event closure branch as a separate new case; the unbound bootstrap is observed without import progress.",
+    "Large imports beyond64 retained bindings/job, memory peak, mixed aged load, throughput or arbitrary capacity.",
+    "Power loss, ENOSPC, causal backup/restore, complete M1 read/export/restart or packaged installation.",
+    "Hosted GitHub Actions, Linux arm64, public release or complete selected product."
+  ]
+}
