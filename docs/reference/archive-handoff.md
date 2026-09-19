@@ -219,6 +219,10 @@ application-name strings are bounded before DSN allocation. The raw operator
 bootstrap DSN remains a separately validated caller responsibility. This route
 does not yet consume configured protected client certificates for native mutual
 TLS; that capability remains required before advertising it.
+The [native authentication report](../implementation/evidence/p02-native-catalog-auth-20260919.json)
+qualifies actual receipt reads under SCRAM, trust, incomplete exchanges and
+verify-full TLS, with old-client negative controls. It does not qualify mutual
+TLS or the installed initializer.
 This private candidate is not yet a qualified Archive role or recovery path.
 
 The private `publish-batch` command takes the same limits as `inspect-batch`.

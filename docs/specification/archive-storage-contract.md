@@ -268,9 +268,12 @@ client refuses it. Native mutual TLS needs an explicit protected credential
 consumer and its own qualification; no ambient client certificate is selected.
 This tightens native compatibility: deployments accepting only trust, certificate,
 GSS, cleartext-password or MD5 authentication refuse. Existing SCRAM credentials,
-catalog migrations and persisted identities remain unchanged. Actual native
-positive/refusal and incomplete-exchange qualification is pending in P02-T04;
-source inspection and unit tests alone are not that evidence.
+catalog migrations and persisted identities remain unchanged. The
+[native qualification at e98f484](../implementation/evidence/p02-native-catalog-auth-20260919.json)
+covers 16 actual receipt-read authentication cases, including unchanged old-client
+controls, omitted server-final, trust, cleartext challenge and verify-full TLS.
+The old client sends SQL after the incomplete exchange; the new client refuses
+before SQL. This does not qualify native mutual TLS or installed initialization.
 
 The PG16 catalog manager needs CREATEROLE and its implicit ADMIN-only membership
 in roles it creates. Provisioning locally clears createrole_self_grant; inspection

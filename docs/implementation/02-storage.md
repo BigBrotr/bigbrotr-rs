@@ -291,8 +291,10 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   completion and explicit refusal of partial/ambiguous state. Before that handoff,
   the shared native route now requires a completed SCRAM exchange; existing trust
   or other non-SCRAM-only routes refuse. The closed bootstrap/initialize response
-  now rejects duplicate fields. Discriminating local regressions pass; actual
-  old/new native authentication and TLS qualification remains pending.
+  now rejects duplicate fields. Discriminating local regressions and
+  [16 old/new native authentication cases](evidence/p02-native-catalog-auth-20260919.json)
+  pass, including incomplete SCRAM before SQL and verify-full TLS refusals.
+  Configured native mutual TLS and the installed initializer remain required.
 - [ ] **Step 4:** After an ambiguous commit, query the receipt in a new transaction; do not
   repeat while receipt state is unknown. Reject mismatched batch digest.
   Include loss of the actual native PostgreSQL COMMIT response, plus physical file

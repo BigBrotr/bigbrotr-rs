@@ -1,0 +1,824 @@
+{
+  "format": "bigbrotr-native-catalog-auth-evidence/1",
+  "observed_date": "2026-09-19",
+  "status": "PASS",
+  "scope": "P02-T04 steps3/4/5 prerequisite: mandatory complete SCRAM on the shared native publisher/receipt route and closed catalog completion decoding; not installed initialization or M1 completion",
+  "sources": [
+    {
+      "revision": "567c2e6be437c3fab1b7f704a0f7161775a1ec10",
+      "tree": "d3b869608b4e1563edae34103c1cb4aa2e126e64",
+      "files": 716,
+      "archive_sha256": "7cab487f3e6e69189a37a67f9c9a74cd038044cd31c061ec694b1733026e73b6"
+    },
+    {
+      "revision": "e98f4847453a6909766602701eec5d174ad65ebf",
+      "tree": "8003e919c8f5ea287894be71f77f3f91f2d0f93e",
+      "files": 716,
+      "archive_sha256": "81e4671d76475ccb51105f32f5b5ae6704e24e43b052a85b98af552e19c21db2"
+    },
+    {
+      "revision": "0ca4fffa9c5f1bf5b1c447907dc2c3cc2fa2b1eb",
+      "tree": "cb5d1534698b33897165a3ea02d937a02c19b22d",
+      "files": 714,
+      "archive_sha256": "5e76a418ffad81725a476d8a7d4178e1c1e54b17455e10f34e2337fbf7f886ec"
+    }
+  ],
+  "source_verification": {
+    "status": "PASS",
+    "method": "Clean Git bundle transfer, Git archives and every exported file checked against native manifests before/after runs and independently on Mac",
+    "comparisons": 2146,
+    "production_inputs_567_to_e98": "apps/, crates/, contracts/, migrations/ and tools/ byte-identical; e98 changes baseline extraction and continuity metadata only"
+  },
+  "environment": {
+    "host": "Tux",
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "native_toolchain": {
+      "os": "Linux",
+      "architecture": "x86_64",
+      "discovery": "llvm-config",
+      "environment": {
+        "CC": "/usr/lib/llvm-14/bin/clang",
+        "CXX": "/usr/lib/llvm-14/bin/clang++",
+        "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+        "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+        "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+      },
+      "tools": {
+        "CC": {
+          "path": "/usr/lib/llvm-14/bin/clang",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "CXX": {
+          "path": "/usr/lib/llvm-14/bin/clang++",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "AR": {
+          "path": "/usr/lib/llvm-14/bin/llvm-ar",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+          "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+          "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+        },
+        "LIBCLANG_PATH": {
+          "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+          "version": "Debian clang version 14.0.6"
+        },
+        "discovery": {
+          "path": "/usr/lib/llvm-14/bin/llvm-config",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+          "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+          "version": "14.0.6"
+        }
+      },
+      "sdk": null
+    },
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "server": "PostgreSQL16.15 Linux amd64; fsync=on, full_page_writes=on",
+    "limits": {
+      "runner_cpu": 2,
+      "runner_memory_bytes": 6442450944,
+      "runner_pids": 512,
+      "postgres_cpu": 1,
+      "postgres_memory_bytes": 1073741824,
+      "postgres_pids": 128,
+      "baseline_reader_memory_bytes": 805306368
+    },
+    "network": "Owned internal Docker network, no published host ports",
+    "execution": "Trusted exact revision through tools.build and tools.ci.execute; no hosted Actions claim"
+  },
+  "dependencies": {
+    "cargo_lock_sha256": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215",
+    "archive_registry": "contracts/release/archive-engine.json",
+    "archive_registry_sha256": "ae0069565ab9411928df0cf067822630c4f3a912919e61633b952f8077a5e2c1",
+    "duckdb": "1.5.5",
+    "duckdb_rust": "1.10505.0",
+    "arrow": "58.4.0",
+    "ducklake": "1.0",
+    "libpq": "18.3",
+    "postgres_scanner_source": "41223e51559cd581f1c06e170b71c71df25bbaac"
+  },
+  "artifacts": {
+    "failed_build": {
+      "main": {
+        "sha256": "64ebca279d7c8571604d9207d06b072efecf75ae1c912a24ced115d79e3c0286",
+        "bytes": 8231280,
+        "elf_machine": 62
+      },
+      "worker": {
+        "sha256": "4e754f7f525f484df96920b9c7a73f5ddb40762b6e5051a459f45d41c60deac9",
+        "bytes": 12571504,
+        "elf_machine": 62
+      }
+    },
+    "qualified": {
+      "main": {
+        "sha256": "2b3f01f36e30e3090cd2f8f12257b577125bd9aa9be850723b7765528841b1b0",
+        "bytes": 8231280,
+        "elf_machine": 62
+      },
+      "worker": {
+        "sha256": "4e754f7f525f484df96920b9c7a73f5ddb40762b6e5051a459f45d41c60deac9",
+        "bytes": 12571504,
+        "elf_machine": 62
+      }
+    },
+    "probes": {
+      "probe": "0d7217a06eadf075bb142ab112d6933288d6accdc50f518847cee0f42c7d5811",
+      "guard": "d4588c6ca65f0ca08b685fc8b4ac3e089f1bdf5aa51729eb9fed6cc1dd21e447",
+      "receipt_reader": "e37e673280ce08ef5e3289fa17fccfc0bbe3d93fe92da970172785b4171ce986",
+      "baseline_source": "0ca4fffa9c5f1bf5b1c447907dc2c3cc2fa2b1eb",
+      "baseline_reader": "a1849146a1c244ddac9dd6f828114f93f0e6852bc3495ca316bd55897117a2d7"
+    }
+  },
+  "local": {
+    "platform": "Mac",
+    "status": "PASS",
+    "tests": 25,
+    "ignored": 0,
+    "clippy": "PASS: bigbrotr lib and archive_receipt_probe",
+    "regressions": "Three new tests observed failing before the fix and passing afterward; duplicate completion fields were accepted, empty login accepted, mandatory auth options absent",
+    "raw": {
+      "response-red.txt": "472187cd6c91f68dd56d682b03ab11bcf3b79a94420d7e8367898fec184ff685",
+      "response-green.txt": "0f94a06192662a48164f75a41b5897655d2a890e04f2289b872bd9052b1da83b",
+      "route-red.txt": "f4a398d3a8c17d36921be5b63af41b43e7794ffc8cd430ab08579996494e8013",
+      "route-green.txt": "958b1955c75af46ca3eccd0d356acbb896f46055cdc51417a8a86147c4ae1997",
+      "archive-tests.txt": "409d08ddd8b6595f27acc9b0c2a6da88f2dbe02b8bcec2a0a5598453bcb5a053",
+      "clippy.txt": "fecede7c2157efe2f16c8c8b9dce94b0fb4dd384dca8207046c8bf7636eb0ffe"
+    }
+  },
+  "native_builds": {
+    "567c2e6": {
+      "status": "INCOMPLETE",
+      "ordered_build": "PASS",
+      "rust_tests_passed": 26,
+      "rust_tests_ignored": 1,
+      "clippy": "PASS",
+      "auth_cases": "NOT_RUN",
+      "reason": "Pinned Python3.11 rejected tar.extractall(filter=...) before baseline executable/READY. Fixed with the shared builder validated regular-file/directory-only extraction policy; no product or test expectation change"
+    },
+    "e98f484": {
+      "status": "PASS",
+      "ordered_build": "PASS",
+      "fixtures": "PASS",
+      "rust_tests_passed": 26,
+      "rust_tests_ignored": 1,
+      "clippy": "PASS",
+      "baseline_build": "PASS: unchanged published0ca4fff source, original receipt probe, same pinned native worker"
+    },
+    "ignored_test": {
+      "name": "storage::archive::lifetime::tests::native_worker_alone_retains_custody_after_coordinator_descriptors_close",
+      "reason": "Requires exact native bundle and is run explicitly by its custody qualification; not rerun by this slice, not counted as PASS"
+    }
+  },
+  "workload": {
+    "source": "experiments/archive-engine/catalog_auth_cases.py",
+    "builder": "experiments/archive-engine/native_catalog_auth.py",
+    "proxy": "experiments/archive-engine/native_commit_proxy.py",
+    "receipt_fixture": "apps/bigbrotr/examples/archive_receipt_probe.rs",
+    "purpose": "Actual native receipt observation against a fresh scientific catalog and SELECT-only reader. Intentionally empty receipt relation: success requires the reader's immutable binding checks and a completed native receipt query, returning Absent; this is not event publication or load evidence",
+    "input": {
+      "expected": {
+        "dataset_id": "01010101010101010101010101010101",
+        "schema_version": 1,
+        "topology_generation": "0",
+        "batch_digest": "7171717171717171717171717171717171717171717171717171717171717171",
+        "record_count": 1,
+        "input_ranges": [
+          {
+            "shard_id": 0,
+            "owner_epoch": 1,
+            "first_sequence": 1,
+            "last_sequence": 1
+          }
+        ],
+        "attempt_id": [
+          72,
+          72,
+          72,
+          72,
+          72,
+          72,
+          72,
+          72,
+          72,
+          72,
+          72,
+          72,
+          72,
+          72,
+          72,
+          72
+        ],
+        "publication_ordinal": 1
+      },
+      "catalog_id": "5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a",
+      "data_root": "/out/schema_bbcat_auth/",
+      "database": "bbcat_auth",
+      "port": 5432,
+      "role": "bigbrotr_receipt_reader",
+      "max_receipts": 1,
+      "reserve_bytes": 402653184,
+      "deadline_ms": 15000,
+      "cancel_when_blocked": false
+    },
+    "negative_controls": "Unchanged original0ca4fff reader rebuilt independently: trust and omitted real server SCRAM-final both return Absent. Proxy removes only SASLFinal and forwards actual following AuthenticationOk; it is backed by actual PostgreSQL, not a fake database",
+    "oracle": "Literal success/refusal cases plus actual parent outcome, zero returned permit count, unchanged full normalized pg_dump, no remaining target backends after a bounded five-second wait, positive proxy terminal/EOF"
+  },
+  "cases": [
+    {
+      "name": "scram",
+      "status": "PASS",
+      "parent": "candidate",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 364,
+        "outcome": "Ok(Absent)"
+      },
+      "catalog_unchanged": true,
+      "remaining_clients": 0
+    },
+    {
+      "name": "wrong-password",
+      "status": "PASS",
+      "parent": "candidate",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 318,
+        "outcome": "Err(ObservationUnknown)"
+      },
+      "catalog_unchanged": true,
+      "remaining_clients": 0
+    },
+    {
+      "name": "scram-retry",
+      "status": "PASS",
+      "parent": "candidate",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 368,
+        "outcome": "Ok(Absent)"
+      },
+      "catalog_unchanged": true,
+      "remaining_clients": 0
+    },
+    {
+      "name": "baseline-trust",
+      "status": "PASS",
+      "parent": "baseline",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 620,
+        "outcome": "Ok(Absent)"
+      },
+      "catalog_unchanged": true,
+      "remaining_clients": 0
+    },
+    {
+      "name": "trust",
+      "status": "PASS",
+      "parent": "candidate",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 352,
+        "outcome": "Err(ObservationUnknown)"
+      },
+      "catalog_unchanged": true,
+      "remaining_clients": 0
+    },
+    {
+      "name": "trust-wrong-password",
+      "status": "PASS",
+      "parent": "candidate",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 333,
+        "outcome": "Err(ObservationUnknown)"
+      },
+      "catalog_unchanged": true,
+      "remaining_clients": 0
+    },
+    {
+      "name": "cleartext-password-challenge",
+      "status": "PASS",
+      "parent": "candidate",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 308,
+        "outcome": "Err(ObservationUnknown)"
+      },
+      "catalog_unchanged": true,
+      "remaining_clients": 0
+    },
+    {
+      "name": "baseline-incomplete-scram",
+      "status": "PASS",
+      "parent": "baseline",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 665,
+        "outcome": "Ok(Absent)"
+      },
+      "catalog_unchanged": true,
+      "remaining_clients": 0,
+      "proxy": {
+        "event": "terminal",
+        "mode": "omit-auth-final",
+        "connections": 2,
+        "bytes": 555132,
+        "frames": 5762,
+        "data_queries": 0,
+        "data_commits": 0,
+        "server_complete": 0,
+        "client_complete": 0,
+        "faults": 0,
+        "owner_requests": 0,
+        "owner_forwarded": 0,
+        "owner_complete": 0,
+        "guard_rejections": 0,
+        "serialization_rejections": 0,
+        "rejection_sequence": [],
+        "auth_finals_omitted": 2,
+        "frontend_queries": 125,
+        "unexpected": 0
+      }
+    },
+    {
+      "name": "incomplete-scram",
+      "status": "PASS",
+      "parent": "candidate",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 336,
+        "outcome": "Err(ObservationUnknown)"
+      },
+      "catalog_unchanged": true,
+      "remaining_clients": 0,
+      "proxy": {
+        "event": "terminal",
+        "mode": "omit-auth-final",
+        "connections": 1,
+        "bytes": 467,
+        "frames": 11,
+        "data_queries": 0,
+        "data_commits": 0,
+        "server_complete": 0,
+        "client_complete": 0,
+        "faults": 0,
+        "owner_requests": 0,
+        "owner_forwarded": 0,
+        "owner_complete": 0,
+        "guard_rejections": 0,
+        "serialization_rejections": 0,
+        "rejection_sequence": [],
+        "auth_finals_omitted": 1,
+        "frontend_queries": 0,
+        "unexpected": 0
+      }
+    },
+    {
+      "name": "scram-after-proxy",
+      "status": "PASS",
+      "parent": "candidate",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 362,
+        "outcome": "Ok(Absent)"
+      },
+      "catalog_unchanged": true,
+      "remaining_clients": 0
+    },
+    {
+      "name": "tls-scram",
+      "status": "PASS",
+      "parent": "candidate",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 414,
+        "outcome": "Ok(Absent)"
+      },
+      "catalog_unchanged": true,
+      "remaining_clients": 0
+    },
+    {
+      "name": "tls-wrong-password",
+      "status": "PASS",
+      "parent": "candidate",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 374,
+        "outcome": "Err(ObservationUnknown)"
+      },
+      "catalog_unchanged": true,
+      "remaining_clients": 0
+    },
+    {
+      "name": "tls-wrong-ca",
+      "status": "PASS",
+      "parent": "candidate",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 352,
+        "outcome": "Err(ObservationUnknown)"
+      },
+      "catalog_unchanged": true,
+      "remaining_clients": 0
+    },
+    {
+      "name": "tls-wrong-name",
+      "status": "PASS",
+      "parent": "candidate",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 318,
+        "outcome": "Err(ObservationUnknown)"
+      },
+      "catalog_unchanged": true,
+      "remaining_clients": 0
+    },
+    {
+      "name": "tls-trust",
+      "status": "PASS",
+      "parent": "candidate",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 366,
+        "outcome": "Err(ObservationUnknown)"
+      },
+      "catalog_unchanged": true,
+      "remaining_clients": 0
+    },
+    {
+      "name": "tls-restored-scram",
+      "status": "PASS",
+      "parent": "candidate",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 375,
+        "outcome": "Ok(Absent)"
+      },
+      "catalog_unchanged": true,
+      "remaining_clients": 0
+    }
+  ],
+  "durable_checks": {
+    "all_catalog_dumps_equal": true,
+    "dump_bytes": 55991,
+    "dump_sha256": "c862c3c1f92f41a3690d6c79a12aae44be494d619be7bdc5fdb9fcc1de23ac82",
+    "hba_and_auto_config_restoration": "PASS",
+    "tls": "verify-full positive and wrong CA/name/password refusal; protocol version/cipher not captured",
+    "remaining_target_backends": 0,
+    "cleanup_errors": []
+  },
+  "resource_audits": {
+    "failed": {
+      "status": "PASS",
+      "source": "567c2e6be437c3fab1b7f704a0f7161775a1ec10",
+      "tree": "d3b869608b4e1563edae34103c1cb4aa2e126e64",
+      "source_files": 716,
+      "source_archive_sha256": "7cab487f3e6e69189a37a67f9c9a74cd038044cd31c061ec694b1733026e73b6",
+      "source_manifest_sha256": "581ea9b6adbaa14a15ff2ff68e7ded6a76b72f841d4b8b2ef3b762603864a18e",
+      "artifacts": {
+        "main": {
+          "sha256": "64ebca279d7c8571604d9207d06b072efecf75ae1c912a24ced115d79e3c0286",
+          "bytes": 8231280,
+          "elf_machine": 62
+        },
+        "worker": {
+          "sha256": "4e754f7f525f484df96920b9c7a73f5ddb40762b6e5051a459f45d41c60deac9",
+          "bytes": 12571504,
+          "elf_machine": 62
+        }
+      },
+      "qualification": {},
+      "cases": {},
+      "build_ready": false,
+      "terminal": {
+        "container_id": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 1,
+          "Error": "",
+          "StartedAt": "2026-09-19T04:58:06.140359316Z",
+          "FinishedAt": "2026-09-19T04:59:17.648195568Z"
+        },
+        "postgres_id": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-19T04:58:04.079102257Z",
+          "FinishedAt": "2026-09-19T05:00:36.420400703Z"
+        }
+      },
+      "owned_containers": [
+        "1df0f4ba8b759122e9138bee3e328d1c723d6036ef55b1fd29e813468fa00578",
+        "8f0bf2ffbfe8c06892392fbaa2417341a662762852ac41c7f2b1df017799ed5d"
+      ],
+      "existing_containers_unchanged": 284,
+      "unrelated_containers_unchanged": 20,
+      "unrelated_running": 8,
+      "bigbrotr_running": 0,
+      "observed_at": "2026-09-19T05:00:36.830101+00:00"
+    },
+    "qualified": {
+      "status": "PASS",
+      "source": "e98f4847453a6909766602701eec5d174ad65ebf",
+      "tree": "8003e919c8f5ea287894be71f77f3f91f2d0f93e",
+      "source_files": 716,
+      "source_archive_sha256": "81e4671d76475ccb51105f32f5b5ae6704e24e43b052a85b98af552e19c21db2",
+      "source_manifest_sha256": "fb342e4e5eaba5eec60d61978ea1aef8a0563f99b2d1b239955f2f4fd5556a15",
+      "artifacts": {
+        "main": {
+          "sha256": "2b3f01f36e30e3090cd2f8f12257b577125bd9aa9be850723b7765528841b1b0",
+          "bytes": 8231280,
+          "elf_machine": 62
+        },
+        "worker": {
+          "sha256": "4e754f7f525f484df96920b9c7a73f5ddb40762b6e5051a459f45d41c60deac9",
+          "bytes": 12571504,
+          "elf_machine": 62
+        }
+      },
+      "qualification": {
+        "catalog-auth": "PASS"
+      },
+      "cases": {
+        "catalog-auth": 16
+      },
+      "build_ready": true,
+      "terminal": {
+        "container_id": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 143,
+          "Error": "",
+          "StartedAt": "2026-09-19T05:02:13.085147611Z",
+          "FinishedAt": "2026-09-19T05:04:56.678470028Z"
+        },
+        "postgres_id": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-19T05:02:11.229070614Z",
+          "FinishedAt": "2026-09-19T05:04:57.44062543Z"
+        }
+      },
+      "owned_containers": [
+        "7b3b1a189aedcd0423a66e886eeda7a4a0c49a71c7e4b82e4071ff2ff243b1dc",
+        "afabe77f68ab52287a59d98725ca53a3176fe59447ddac54ad320cd75484bf36",
+        "5a80bcfa5c64b2216c47fd3a771adc1692922321859e2518c4cbf2f8d47cf3ba",
+        "abb9fa5718986b13943e548ea3fa35b124b073a86402c8aaf0fa9c8fc590d991"
+      ],
+      "existing_containers_unchanged": 286,
+      "unrelated_containers_unchanged": 20,
+      "unrelated_running": 8,
+      "bigbrotr_running": 0,
+      "observed_at": "2026-09-19T05:04:57.834496+00:00"
+    },
+    "auxiliary": [
+      {
+        "name": "bigbrotr-implementation-catalog-auth-e98f484-baseline-trust",
+        "state": "stopped-retained",
+        "id": "7b3b1a189aedcd0423a66e886eeda7a4a0c49a71c7e4b82e4071ff2ff243b1dc",
+        "terminal": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-19T05:04:02.766074181Z",
+          "FinishedAt": "2026-09-19T05:04:03.464281366Z"
+        }
+      },
+      {
+        "name": "bigbrotr-implementation-catalog-auth-e98f484-baseline-incomplete-scram",
+        "state": "stopped-retained",
+        "id": "afabe77f68ab52287a59d98725ca53a3176fe59447ddac54ad320cd75484bf36",
+        "terminal": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-19T05:04:06.463538404Z",
+          "FinishedAt": "2026-09-19T05:04:07.236087762Z"
+        }
+      }
+    ],
+    "state": "All owned containers stopped-retained, internal networks empty; no current cleanup obligation. Eight unrelated containers remained running; complete preexisting mounts/networks/states compared by retained audit script"
+  },
+  "review": {
+    "type": "Independent read-only AI source/design review plus integrating-owner review",
+    "finding": "Proxy cleanup could skip positive terminal capture on an early error",
+    "resolution": "Independent finally cleanup and bounded terminal capture before native execution; unresolved remote process leaves INCOMPLETE",
+    "boundary": "Reviewer verified all30 raw-file hashes, both archives,2146 source hashes,16 outcomes/proxy vectors and test counts against retained evidence, but did not execute native cases. Receipt reads check immutable bindings, not complete live guard compatibility. Raw archives omit executable bytes and complete host inventory; terminal audit records their observed identity. No whole-libpq review claim"
+  },
+  "raw": [
+    {
+      "root": ".research/implementation/archive-worker/catalog-initialization/failed-build",
+      "identity": ".research/implementation/archive-worker/catalog-initialization/failed-build/evidence-identity.json",
+      "identity_sha256": "b6fc9a5e9540d04cd8a175e48c0cf742e78919d948824dc01a8e6c00d3caef99",
+      "tar_sha256": "ababfdfa1818eda035e9976b9e7ee18143e36f2654f337a9c952aecf460968ab",
+      "tar_bytes": 133120,
+      "verified_files": 11,
+      "files": {
+        "resources.json": {
+          "bytes": 1197,
+          "sha256": "a0d54237e7fda6b1c9299eeb65e2ac5ed150e4e6c887adb382bc9ec1e5d0e3d2"
+        },
+        "audit.json": {
+          "bytes": 1790,
+          "sha256": "028548f1930e2dcc4b0a788a10e103cbdfdfc24c6ebb1d033ed7e2d2eb0f1c1b"
+        },
+        "container.log": {
+          "bytes": 747,
+          "sha256": "2657310dafadb215083466a49bb92284053c4b81cfbdbc99508c8d17371b463d"
+        },
+        "out/build/source-manifest.json": {
+          "bytes": 87453,
+          "sha256": "581ea9b6adbaa14a15ff2ff68e7ded6a76b72f841d4b8b2ef3b762603864a18e"
+        },
+        "out/native-tests/checks/clippy.log": {
+          "bytes": 297,
+          "sha256": "d679213bbcca4d10cc3d87ba929a328fa4e57d3bb1345f1436f8ac2cdb077206"
+        },
+        "out/native-tests/checks/fixtures.log": {
+          "bytes": 130,
+          "sha256": "c4bcf5f99cbd9086c7632facee567f97dfa9e6fa68d8af1cc06c05337ea15ba6"
+        },
+        "out/native-tests/checks/result.json": {
+          "bytes": 3707,
+          "sha256": "1feaff2a3e8784008b66fb5751bfcaad895a1f0b6e94e1a44b26d44c377b0ea1"
+        },
+        "out/native-tests/checks/tests.log": {
+          "bytes": 3599,
+          "sha256": "8f9b33ab5eb4561d11daeadf0b1b07a31edf883798b9c92d9a485a1d511b523e"
+        },
+        "out/native-tests/ordered-build.log": {
+          "bytes": 626,
+          "sha256": "755d162d0bf0c3f0ffe62ff7e2fa3d57c661e1154946b48ac9452600374c7ba0"
+        },
+        "out/native-tests/result.json": {
+          "bytes": 2807,
+          "sha256": "8672f41f7cbd92d000bae569627cfb953463ec7b66ce9e16cfa5b37f9dfb58cc"
+        },
+        "out/native-tests/worker-identity.json": {
+          "bytes": 104,
+          "sha256": "e574d8382b617d1b1d46b7c7eba21ff72b5b71205f72a6a25bd08a08e1279dc8"
+        }
+      }
+    },
+    {
+      "root": ".research/implementation/archive-worker/catalog-initialization/qualified",
+      "identity": ".research/implementation/archive-worker/catalog-initialization/qualified/evidence-identity.json",
+      "identity_sha256": "03945f7e77447a0df49808bb3faec7fef60a1fc36795fd972ab81c9311d27e45",
+      "tar_sha256": "1600c55da1376435a0ef0a9646e9623bfa27487e7be4465cbb45ff1289d55b45",
+      "tar_bytes": 389120,
+      "verified_files": 19,
+      "files": {
+        "resources.json": {
+          "bytes": 1197,
+          "sha256": "bb606f297bcc5dfd01a18aa0acfe478fd842520b76175ffcbaa93b4874365dd6"
+        },
+        "audit.json": {
+          "bytes": 1990,
+          "sha256": "f3a60c6ff6fffaa794bdeda979e5ee12c9d1eb82021025feb3add2ec554156bc"
+        },
+        "container.log": {
+          "bytes": 269,
+          "sha256": "5f7b6c8251061f93499c95d5fb1ce01e40fd87dcc7837cb00acc533e90662507"
+        },
+        "out/build/source-manifest.json": {
+          "bytes": 87453,
+          "sha256": "fb342e4e5eaba5eec60d61978ea1aef8a0563f99b2d1b239955f2f4fd5556a15"
+        },
+        "out/native-tests/baseline/baseline.log": {
+          "bytes": 138,
+          "sha256": "e24bcbae82a57d1e14eb25df44ad3ddb23d97fb4ac133cc6499c53025d1aadd2"
+        },
+        "out/native-tests/baseline/result.json": {
+          "bytes": 563,
+          "sha256": "92b559e35ac7b714ff2206fd6ce4d258f09bbe4b577f3e7c6ea00c3afd5ca054"
+        },
+        "out/native-tests/checks/clippy.log": {
+          "bytes": 297,
+          "sha256": "d679213bbcca4d10cc3d87ba929a328fa4e57d3bb1345f1436f8ac2cdb077206"
+        },
+        "out/native-tests/checks/fixtures.log": {
+          "bytes": 130,
+          "sha256": "578bf14af3411335375790fbfa3fe9aaa02be8cd3687a7535cd290171e8bba04"
+        },
+        "out/native-tests/checks/result.json": {
+          "bytes": 3705,
+          "sha256": "c58f24d9f96713323a2b2c98d06ff16439e08a49bc934cfaeb903de86242a2f0"
+        },
+        "out/native-tests/checks/tests.log": {
+          "bytes": 3599,
+          "sha256": "0637792b4ecd0465303ab2c016699302343d4c1478d5a516e63052c22b230dc3"
+        },
+        "out/native-tests/ordered-build.log": {
+          "bytes": 626,
+          "sha256": "19406c15bf0a1ea042b10a68640b6cf4179fd11cc156a02cf4b9d4a11b882658"
+        },
+        "out/native-tests/ready.json": {
+          "bytes": 5156,
+          "sha256": "f542569af5d354c90a22706f8a1c3f74735fb282d68beda1902b56e9d8b93ced"
+        },
+        "out/native-tests/result.json": {
+          "bytes": 2808,
+          "sha256": "b33df958ab54fb14e30b50e40bf51b39fde5434547ac2c174c0cbd387f785058"
+        },
+        "out/native-tests/worker-identity.json": {
+          "bytes": 104,
+          "sha256": "e574d8382b617d1b1d46b7c7eba21ff72b5b71205f72a6a25bd08a08e1279dc8"
+        },
+        "catalog-auth.json": {
+          "bytes": 38326,
+          "sha256": "0245bb79538b372ed68acc12a1b2071cca9b12bc8f4221d8b9e7418dc1857db2"
+        },
+        "catalog-auth.log": {
+          "bytes": 32,
+          "sha256": "c6740c526f5d809f5d2828a3f9a5e155852156a607f22bb758ecd1d2d88a7073"
+        },
+        "out/catalog-auth/before.sql": {
+          "bytes": 55991,
+          "sha256": "c862c3c1f92f41a3690d6c79a12aae44be494d619be7bdc5fdb9fcc1de23ac82"
+        },
+        "out/catalog-auth/after.sql": {
+          "bytes": 55991,
+          "sha256": "c862c3c1f92f41a3690d6c79a12aae44be494d619be7bdc5fdb9fcc1de23ac82"
+        },
+        "out/build/baseline-source-manifest.json": {
+          "bytes": 87117,
+          "sha256": "6187ff3d2caac5166ee809b0b9bdf27f7f60cb47814a4f8f57fb10cbf776f8e6"
+        }
+      }
+    }
+  ],
+  "not_run": [
+    "Native configured mutual TLS/client credentials",
+    "Actual GSS or MD5 authentication challenge",
+    "Forced proxy cleanup failure",
+    "Fresh signed publication in this slice",
+    "Installed initialization/reservation/recovery journey",
+    "Cross-boot custody recovery",
+    "Compose installation, migration/upgrade/release journey",
+    "Mixed or aged load, peak RSS, capacity qualification",
+    "Linux arm64 and hosted GitHub Actions"
+  ],
+  "compatibility": "Shared native routes now refuse passwordless, incomplete or non-SCRAM authentication. Dedicated roles still require password authentication on every reachable trusted server route. Existing SQL checksums, schema, credential representation and native worker bytes unchanged; raw operator bootstrap DSN remains caller responsibility."
+}

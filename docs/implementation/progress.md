@@ -21,13 +21,14 @@ installed service readiness.
 
 ## Actual Git and ownership
 
-Mac main HEAD is candidate567c2e6be437c3fab1b7f704a0f7161775a1ec10,
-treed3b869608b4e1563edae34103c1cb4aa2e126e64, one unpublished commit ahead of
-freshly verified origin/main0ca4fffa9c5f1bf5b1c447907dc2c3cc2fa2b1eb. Root is
-sole writer. Clean candidate transferred through Git (session88580 exited0),
-716 exact source files exported for isolated native build. Current dirty work is the baseline extraction compatibility fix in
-native_catalog_auth.py and post-run inventory/checkpoint metadata. No initializer reservation
-source, merge or rebase. Native qualification remains open.
+Mac main HEAD is e98f4847453a6909766602701eec5d174ad65ebf,
+tree8003e919c8f5ea287894be71f77f3f91f2d0f93e, two unpublished commits ahead of
+origin/main0ca4fffa9c5f1bf5b1c447907dc2c3cc2fa2b1eb. Root is sole writer.
+Production inputs unchanged from567c2e6; e98f484 changes only baseline extraction
+and continuity metadata. Clean source transferred through Git (17775 exited0),
+716 files verified before/after native execution and against Git on Mac. Current
+dirty work is the qualification report and owning documentation/inventory/checkpoint.
+No initializer reservation source, merge or rebase; native auth slice qualified.
 
 ## Installed catalog inspection qualified within its scope
 
@@ -73,32 +74,65 @@ members and succeeded. The shell had continued with the reviewed cleanup commit
 and transfer while its checkpoint refresh failed; current state was reconciled.
 No product/test assertion changed. Full details and exclusions stay in the report.
 
+## Native authentication qualified within its scope
+
+[Native report](evidence/p02-native-catalog-auth-20260919.json) owns source,
+artifacts, workloads, failures, exclusions and raw identities. At e98f484,16 actual
+PG/native receipt cases PASS. Unchanged original0ca4fff accepts trust and an
+omitted real SCRAM server-final; new code refuses both, with zero SQL messages
+versus125 from the old client in the incomplete-exchange case. SCRAM positive,
+wrong password, cleartext challenge, verify-full TLS and wrong CA/name/password
+cases pass. All full catalog dumps unchanged, permits returned, target backends
+zero, HBA/config restored. No TLS version/cipher, RSS or performance claim.
+
+The closed bootstrap/initialize decoder rejects duplicate/unknown/trailing fields;
+all native route private strings are bounded before allocation. Three new tests
+were observed red before fixes, then green. Mac25 archive tests/Clippy PASS.
+Both native builds26 PASS,1 unrelated custody test ignored,Clippy PASS. The ignored
+case remains separately qualified earlier, not executed here. Candidate567c2e6
+failed baseline extraction before READY on Python3.11's unsupported filter keyword;
+auth cases NOT_RUN. Corrected e98f484 uses the shared builder's validated extraction
+policy, with production inputs byte-identical. No SQL checksum, schema, credential
+representation or worker bytes changed. Configured native mutual TLS remains a gate.
+
+Source archives and all2146 files across567/e98/original0ca4 verified against Git.
+Raw .research/implementation/archive-worker/catalog-initialization/{failed-build,qualified},
+11 and19 verified files, tar hashes ababfdfa1818eda035e9976b9e7ee18143e36f2654f337a9c952aecf460968ab
+and1600c55da1376435a0ef0a9646e9623bfa27487e7be4465cbb45ff1289d55b45.
+Exact libpq18.3 parser/auth completion/server-final branches inspected; source
+hashes in inventory. Read-only AI source review found a proxy cleanup gap, fixed
+before execution with independent finally cleanup and bounded terminal capture.
+Forced cleanup failure not exercised; unresolved state remains INCOMPLETE.
+Recorded-evidence AI review verified all30 raw hashes, both archives,2146 source
+hashes,16 outcomes/proxy vectors and test counts. Its wording finding was corrected:
+receipt observation checks immutable bindings, not full live guard compatibility.
+No further discrepancy; reviewer did not execute native work or inspect retained
+ELF bytes/full host inventory locally. Root reviewed the complete change diff.
+
 ## Owned resources terminal
 
-catalog-auth-567c2e6 is stopped-retained under
-/home/tux/bigbrotr-implementation-20260917/runs/,
-owner a6c7996617616a11af9af2f1d60c20cf. Runner
-1df0f4ba8b759122e9138bee3e328d1c723d6036ef55b1fd29e813468fa00578
-exited1 after baseline source extraction rejected Python3.11's unsupported filter
-keyword. Ordered production build,26 native Rust cases and Clippy passed; one
-unrelated native custody test was ignored (separately qualified earlier). No
-baseline executable/READY/authentication scenario result. Mac corrected extraction
-to the shared builder's validated regular-file/directory-only policy. This is a
-harness compatibility correction, no product/test expectation change.
+Both catalog-auth labs under /home/tux/bigbrotr-implementation-20260917/runs/
+are stopped-retained. Inventory catalog_native_authentication owns full identities.
+No active experiment or remaining cleanup obligation at the recorded terminal audit.
 
-Audit82666 terminal: exact716 source files, no OOM, PG
-8f0bf2ffbfe8c06892392fbaa2417341a662762852ac41c7f2b1df017799ed5d
-stopped cleanly; internal networkc05139b273b5794651b211175935ec384387a47a4e58826f022d9e97852910dc
-empty. All284 preexisting containers, states and complete mounts/networks unchanged;
-eight unrelated running, zero BigBrotr. Collection33704 verified all11 raw files
-and tarababfdfa1818eda035e9976b9e7ee18143e36f2654f337a9c952aecf460968ab
-under .research/implementation/archive-worker/catalog-initialization/failed-build.
-Audit PASS means source/resource audit only; native auth is NOT_RUN.
+catalog-auth-e98f484 owner10e073fec5db6973e49633d7b63b4fea:
+runner5a80bcfa5c64b2216c47fd3a771adc1692922321859e2518c4cbf2f8d47cf3ba
+stopped143 after READY and16 PASS;PGabb9fa5718986b13943e548ea3fa35b124b073a86402c8aaf0fa9c8fc590d991
+stopped0, no OOM. Both baseline auxiliary containers stopped0. Internal network
+54e0540c140612cb4ac990b4ab628a9ed132e801f02cffa211abcec7149ce432 empty.
+Audit45843/collection32699 terminal0;286 preexisting containers and complete
+mounts/networks/states unchanged, eight unrelated running, zero BigBrotr.
+Latest retained cache catalog-auth-e98f484/out/build, native assets out/archive-worker;
+copy/read-only reuse only. Cached target last built the baseline: always rebuild
+from the next exact source; cached executable identity is not new source evidence.
 
-No active experiment or cleanup obligation. New exact-source run must follow the
-reviewed Mac correction, using the stopped567 build cache by copy and its native
-assets read-only. Do not restart retired labs. Prior catalog-cli526/3e87 reports
-remain valid within their scope. No arm64 or hosted Actions claim.
+catalog-auth-567c2e6 ownera6c7996617616a11af9af2f1d60c20cf:
+runner1df0f4ba8b759122e9138bee3e328d1c723d6036ef55b1fd29e813468fa00578
+exited1;PG8f0bf2ffbfe8c06892392fbaa2417341a662762852ac41c7f2b1df017799ed5d
+stopped0, no OOM. Networkc05139b273b5794651b211175935ec384387a47a4e58826f022d9e97852910dc
+empty. Audit82666/collection33704 terminal0;284 preexisting containers unchanged,
+eight unrelated running. Failed build is retained, not auth evidence.
+Do not restart retired labs. No arm64 or hosted Actions claim.
 
 ## Earlier evidence and constraints
 
@@ -131,30 +165,11 @@ Do not mechanically rerun unrelated suites.
 
 ## Next bounded action
 
-Finish review and native qualification of the concrete authentication prerequisite
-for installed initialization, then resume the explicit fresh initializer under
-P02-T04 steps3/4/5. Shared CatalogRoute DSNs now require completed SCRAM and disable
-ambient client certificates/GSS. Every private string is bounded before encoding.
-The previous Value decoder accepted conflicting duplicate completion fields;
-closed borrowed decoding now refuses them. Red cases were executed before fixes;
-Mac25 archive tests plus scoped Clippy PASS. Raw local logs live under
-.research/implementation/archive-worker/catalog-initialization. No applied SQL,
-credential format, schema or native worker change. Authentication compatibility
-now refuses non-SCRAM routes; native mutual TLS remains an explicit required gate.
-
-Exact libpq18.3 tar verified against recorded SHA512. Read require_auth parser,
-check_expected_areq and SCRAM final verification branches; added source hashes to
-inventory. No whole-libpq review claim. Read-only AI review publication_review found a proxy cleanup omission; independent
-finally cleanup and bounded terminal capture now keep unresolved remote state
-INCOMPLETE. Final scoped source review found no further blocking finding. Proposed native cases use actual
-PG/native receipt reads, a rebuilt unchanged0ca4fff parent as negative control,
-trust and omitted server-final authentication, TLS wrong CA/name/password, and
-independent unchanged catalog/driver observations. Native cases are NOT_RUN.
-Candidate567c2e6 failed only baseline extraction before READY, as recorded above.
-Commit the one-line compatibility correction and use a new exact-source lab;
-authentication scenarios require its positive READY result. Reuse latest3e87 build cache/assets by
-copy/read-only mount, never restart retired resources. Fresh read-only Tux query
-again found the eight unrelated running containers and no BigBrotr running.
+Finish recorded-evidence review of native authentication, check the complete diff,
+commit the qualification and push the three coherent commits to private main.
+Then implement the explicit fresh initializer under P02-T04 steps3/4/5, starting
+with installed ownership transfer and durable reservation/custody boundaries.
+No task checkbox closes from authentication alone.
 
 Initializer design review is complete, but not an implemented/qualified protocol:
 it needs a distinct permanent reservation anchored inside the actual data root,
@@ -174,7 +189,14 @@ Native catalog/schema/bootstrap, actual worker/preparation, LocalAttempt,
 manager credential/guard installation and shared connection preparation/transport
 were read at their affected boundaries. TLS credentials and one pinned manager/
 native destination still need an installed adapter; do not infer one from the
-lab. No implicit init on serve, synthetic ArchiveAttempt, automatic partial retry
+lab. Read-only AI design review requires a narrow install_for_manager transaction:
+explicit privileged initializer, non-superuser configured runtime manager, exact
+native/guard object ownership transfer and final manager-OID/ACL closure. Existing
+installed() only proves consistent ownership; initializer default ACLs may leave
+third-party privileges after ALTER OWNER. Do not use temporary manager superuser,
+REASSIGN OWNED, or mutate applied migration checksums. Resolve the exact bootstrap
+creator membership and retirement ordering. These are design findings, not yet
+implemented or native qualified. No implicit init on serve, synthetic ArchiveAttempt, automatic partial retry
 or permission from matching observations. Separate SELECT-only reader credentials,
 retained batch count/ranges, whole-role resource reconciliation, cross-boot recovery,
 protection and complete M1 remain required. Current service remains Control-only.

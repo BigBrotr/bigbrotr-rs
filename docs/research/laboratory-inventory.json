@@ -8022,7 +8022,7 @@
       "report": "docs/implementation/evidence/p02-catalog-cli-native-20260919.json"
     },
     "catalog_native_authentication": {
-      "status": "first native build incomplete:26 Rust PASS,1 unrelated custody test ignored,Clippy PASS; baseline extraction unsupported keyword; clean Mac harness correction pending",
+      "status": "16 actual native authentication cases PASS at e98f484; both labs stopped-retained; installed initializer remains required",
       "local_root": ".research/implementation/archive-worker/catalog-initialization",
       "base_source": "0ca4fffa9c5f1bf5b1c447907dc2c3cc2fa2b1eb",
       "source_inspection": {
@@ -8043,7 +8043,7 @@
         "route-green.txt",
         "archive-tests.txt"
       ],
-      "native_work": "separate exact-source lab via reviewed launch/transfer; previous3e87 cache read/copy only; no old lab restart",
+      "native_work": "Exact-source isolated builds; stopped caches copied and assets read-only; no retired lab restart",
       "scope": "mandatory SCRAM on shared native publisher/receipt routes; strict bootstrap/initialize reply; complete initializer remains required",
       "native_run": {
         "source": "567c2e6be437c3fab1b7f704a0f7161775a1ec10",
@@ -8067,7 +8067,36 @@
         "qualification": "NOT_RUN: baseline extraction failed before auth scenarios",
         "audit": ".research/implementation/archive-worker/catalog-initialization/failed-build/audit.json",
         "raw_tar_sha256": "ababfdfa1818eda035e9976b9e7ee18143e36f2654f337a9c952aecf460968ab"
-      }
+      },
+      "corrected_run": {
+        "source": "e98f4847453a6909766602701eec5d174ad65ebf",
+        "tree": "8003e919c8f5ea287894be71f77f3f91f2d0f93e",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-auth-e98f484",
+        "owner": "10e073fec5db6973e49633d7b63b4fea",
+        "container": "bigbrotr-implementation-catalog-auth-e98f484",
+        "postgres": "bigbrotr-implementation-catalog-auth-e98f484-pg",
+        "network": "bigbrotr-implementation-catalog-auth-e98f484",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "state": "stopped-retained",
+        "source_files": 716,
+        "started_at": "2026-09-19T05:02:10.512647+00:00",
+        "network_id": "54e0540c140612cb4ac990b4ab628a9ed132e801f02cffa211abcec7149ce432",
+        "postgres_id": "abb9fa5718986b13943e548ea3fa35b124b073a86402c8aaf0fa9c8fc590d991",
+        "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+        "container_id": "5a80bcfa5c64b2216c47fd3a771adc1692922321859e2518c4cbf2f8d47cf3ba",
+        "completed_at": "2026-09-19T05:04:57.834496+00:00",
+        "local_root": ".research/implementation/archive-worker/catalog-initialization/qualified",
+        "qualification": "PASS:16 cases;26 Rust PASS,1 unrelated custody case ignored;Clippy PASS",
+        "audit": ".research/implementation/archive-worker/catalog-initialization/qualified/audit.json",
+        "raw_tar_sha256": "1600c55da1376435a0ef0a9646e9623bfa27487e7be4465cbb45ff1289d55b45",
+        "auxiliary_containers": [
+          "7b3b1a189aedcd0423a66e886eeda7a4a0c49a71c7e4b82e4071ff2ff243b1dc",
+          "afabe77f68ab52287a59d98725ca53a3176fe59447ddac54ad320cd75484bf36"
+        ],
+        "preexisting_containers_unchanged": 286
+      },
+      "report": "docs/implementation/evidence/p02-native-catalog-auth-20260919.json"
     }
   },
   "implementation_monitor_corrections_20260918": {

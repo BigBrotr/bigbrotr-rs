@@ -365,9 +365,12 @@ failure for a mismatch. The [official connection contract](https://www.postgresq
 also requires completed authentication. The shared native route selects this
 policy plus disabled GSS transport/ambient client certificates. That client
 requirement does not audit all server HBA routes or authorize arbitrary clients.
-Exact source hashes and planned native old/new controls belong to the existing
-archive-worker inventory; actual qualification is pending, not inferred from
-this narrow source inspection.
+Exact source hashes belong to the existing archive-worker inventory. The
+[native old/new qualification](../implementation/evidence/p02-native-catalog-auth-20260919.json)
+executes 16 actual PG/native cases at e98f484. The unchanged 0ca4fff client accepts
+trust and an omitted server-final; the new client refuses, sending zero SQL
+messages in the incomplete-exchange case. Verify-full TLS positive/refusal cases
+also pass. Native mutual TLS, GSS and MD5 challenges were not executed.
 
 Scientific schema initialization also uses an explicit memory secret on its
 separate READ_ONLY PostgreSQL preflight attachment, with `SECRET_STORAGE_TABLE=''`.
