@@ -20,12 +20,12 @@ Control-only and rejects other roles. Root remains sole writer/integrator.
 
 ## Actual Git and review
 
-Mac main candidate61271e277d3560da7ca305fb1d5dc8def326c912, preceded by
-baseline dbb3aea17dd05ee00eb212ec2c652f1930497bfd. Origin/main last verified
-at ee0923a361d20b3369205739edf93fc5dcba89d3. Root-owned dirty work is evidence,
-contract/reference/user/task documentation, inventory and checkpoint only.
-No contributor edits, merge/rebase or active experiment. Both candidate commits
-are unpublished pending final evidence review/private push.
+Product and evidence history through2868abe70254e8251e27b9eeda4b9bf701aeba80
+is verified on private origin/main (push58044 exit0). Native-tested product source
+is61271e277d3560da7ca305fb1d5dc8def326c912; baseline isdbb3aea17dd05ee00eb212ec2c652f1930497bfd.
+Mac main/origin matched2868abe with a clean tree immediately before this checkpoint
+refresh. Only this root-owned checkpoint is being updated; its following commit
+changes no tested code. No contributor edits, merge/rebase or active experiment.
 
 Independent read-only AI source review found the missing PUBLIC oracle before
 correction qualification; added explicit DB/schema ACL absence. It then found
@@ -136,8 +136,8 @@ External feedback reread previously; it records the earlier scoped closures too.
 
 ## Next bounded action
 
-Offline evidence review and affected documentation checks pass. Inspect final
-diff and push verified private history. Then implement the installed compact
+Offline evidence review, complete diff review, documentation checks and private
+push are complete. Next implement the installed compact
 Control+Archive lifecycle/ownership consumer through P01-T05/T06 and P02-T03/T04,
 using configured protected connections, common budgets, current Control authority,
 retained attempts and positive native/driver joins. Do not stop at a second set of
