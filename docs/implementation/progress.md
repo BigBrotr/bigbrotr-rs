@@ -20,12 +20,14 @@ Control-only and rejects other roles. Root remains sole writer/integrator.
 
 ## Actual Git and review
 
-Mac main at candidate3ad4c6498af1ad1ac45ae9350438c056197eae73, not yet pushed;
-origin/main last verified030ec6652cdc6691231f3d9ea528c80fceb6306c. Candidate adds
-late fault harness/proxy selectors only; no Rust/dependency/SQL/protocol changes.
-Root-owned dirty work records qualification in task/user/experiment documentation,
-laboratory inventory, evidence JSON and this checkpoint. No contributor edits,
-merge/rebase or active experiment. Review complete diff/checks before private push.
+Mac main and origin/main verified at ee0923a361d20b3369205739edf93fc5dcba89d3;
+push82436 exited0 and the tree was clean. Private bigbrotr-rs visibility verified.
+Published3ad4c64 adds late fault harness/proxy selectors only; ee0923a records the
+executed qualification. No Rust/dependency/SQL/protocol change in this slice.
+Root-owned dirty work wires actual installed CLI and non-superuser CatalogManager
+into the six signed-publication schedules, with PUBLIC database/schema privileges
+revoked and independent manager/writer rights observations. No production fix yet. No contributor edits,
+merge/rebase or active experiment.
 
 Independent read-only AI source review caught an overbroad native-schema target
 that also matched ATTACH and an incorrect scratch-parent path in the crash oracle.
@@ -127,9 +129,16 @@ External feedback reread previously; it records the earlier scoped closures too.
 
 ## Next bounded action
 
-Late-fault evidence audit/doc checks and complete diff review are done; private
-push is the next Git action.
-Then advance runtime-manager signed publication and installed Control+Archive M1.
+Late-fault evidence audit/doc checks, complete diff review and private push are
+complete. Next execute the signed installed-manager baseline. Source review found
+an implicit dependency on PUBLIC CONNECT/USAGE: manager receives no delegation,
+activation omits writer CONNECT and its USAGE grant can warn without granting.
+Independent read-only review agrees; no actual reproduction yet. Baseline must
+be executed before correcting installed manager grants and pre-commit checks.
+Mac example check/Clippy, Python AST PASS. Raw helpers at
+.research/implementation/archive-worker/installed-publication reuse stopped3ad4c64
+cache/assets; create a fresh exact-Git owner-labelled lab. Before launch retire
+only that stopped lab's verified empty network (Docker pools currently exhausted).
 Root has read complete archive_publication_probe.rs: it still directly initializes
 and provisions/seals as postgres. Replace that fixture boundary with the actual
 installed CLI+non-superuser CatalogManager consumer while preserving independent

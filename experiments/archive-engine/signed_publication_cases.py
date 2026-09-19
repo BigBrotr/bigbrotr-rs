@@ -73,7 +73,7 @@ def send(process, text):
     process.process.stdin.flush()
 
 
-def main(root):
+def main(root, installed=False):
     resources = json.loads((root / 'resources.json').read_text())
     revision = resources['source']
     assert SOURCE == root / 'source'
@@ -93,7 +93,11 @@ def main(root):
     result = dict(source=revision, tree=resources['tree'], status='INCOMPLETE', artifacts=ready,
                   oracle_sha256=sha(SOURCE / 'experiments/archive-engine/signed_publication_oracle.py'),
                   harness_sha256=sha(Path(__file__)), cases=[])
-    evidence = root / 'signed-cases.json'
+    result['installation_mode'] = 'installed-manager' if installed else 'privileged-foundation'
+    evidence = root / ('installed-signed-cases.json' if installed else 'signed-cases.json')
+    assert not evidence.exists()
+    if installed:
+        assert sha(out / 'bigbrotr') == ready['control']
 
     def save():
         evidence.write_text(json.dumps(result, indent=2) + '\n')
@@ -104,13 +108,21 @@ def main(root):
 
     binary = ['docker', 'exec', '--env', 'LD_LIBRARY_PATH=/out/archive-worker/lib', runner]
     save()
+    if installed:
+        password = (root / 'secrets/CatalogManager').read_text()
+        assert len(password) == 64 and all(c in '0123456789abcdef' for c in password)
+        sql('postgres', 'CREATE ROLE "CatalogManager" LOGIN NOSUPERUSER CREATEROLE NOCREATEDB NOINHERIT NOREPLICATION NOBYPASSRLS PASSWORD ' + "'" + password + "';")
+        del password
     for mode in MODES:
         case = dict(mode=mode, status='INCOMPLETE')
         result['cases'].append(case)
         save()
         db = 'bbpub_' + mode
         sql('postgres', f'CREATE DATABASE {db}; CREATE DATABASE bbpub_control_{mode};')
-        sql(db, 'GRANT USAGE,CREATE ON SCHEMA public TO "BootstrapMixed";')
+        if installed:
+            sql(db, f'REVOKE ALL ON DATABASE {db} FROM PUBLIC; REVOKE ALL ON SCHEMA public FROM PUBLIC;')
+        else:
+            sql(db, 'GRANT USAGE,CREATE ON SCHEMA public TO "BootstrapMixed";')
         proxy = None
         holder = None
 
@@ -121,6 +133,11 @@ def main(root):
             save()
             case['catalog_files'] = json.loads(sql(db, "SELECT coalesce(json_agg(row_to_json(t)),'[]'::json) FROM (SELECT d.data_file_id,d.path,d.path_is_relative,d.file_size_bytes,d.record_count,t.table_name,t.path AS table_path,s.path AS schema_path FROM ducklake_data_file d JOIN ducklake_table t ON t.table_id=d.table_id JOIN ducklake_schema s ON s.schema_id=t.schema_id ORDER BY t.table_name,d.data_file_id)t;"))
             case['active_writers'] = int(sql(db, "SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND left(usename,11)='bb_archive_';"))
+            if installed:
+                home = root / f'out/signed_{mode}'
+                case['installed_initializer'] = json.loads((home/'installed-initialization.json').read_text())
+                case['runtime_manager'] = json.loads((home/'runtime-manager.json').read_text())
+                case['roles'] = json.loads(sql(db, "SELECT json_build_object('manager_superuser',(SELECT rolsuper FROM pg_roles WHERE rolname='CatalogManager'),'manager_connect_delegate',has_database_privilege('CatalogManager',current_database(),'CONNECT WITH GRANT OPTION'),'manager_usage_delegate',has_schema_privilege('CatalogManager','public','USAGE WITH GRANT OPTION'),'native_and_guard_owned',(SELECT count(*)=32 AND bool_and(c.relowner='\"CatalogManager\"'::regrole) FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname IN ('public','bigbrotr_archive') AND c.relkind='r'),'writers',(SELECT json_agg(json_build_object('login',a.login_name,'login_enabled',r.rolcanlogin,'password_removed',r.rolpassword IS NULL,'connect',has_database_privilege(r.oid,current_database(),'CONNECT'),'usage',has_schema_privilege(r.oid,'public','USAGE'),'connect_delegate',has_database_privilege(r.oid,current_database(),'CONNECT WITH GRANT OPTION'),'usage_delegate',has_schema_privilege(r.oid,'public','USAGE WITH GRANT OPTION')) ORDER BY a.ordinal) FROM bigbrotr_archive.attempts a JOIN pg_authid r ON r.oid=a.login_oid))"))
             save()
 
         try:
@@ -170,15 +187,15 @@ def main(root):
                 old_login = 'bb_archive_' + f'{n:02x}' * 16
                 if mode == 'owner_first':
                     row = blocking(manager_pid, held_schema['backend_pid'])
-                    assert row['waiter_user'] == row['blocker_user'] == 'postgres'
+                    assert row['waiter_user'] == ('CatalogManager' if installed else 'postgres') and row['blocker_user'] == 'postgres'
                     send(proxy, 'release\n')
                     row = blocking(old_pid, manager_pid)
-                    assert row['waiter_user'] == old_login and row['blocker_user'] == 'postgres'
+                    assert row['waiter_user'] == old_login and row['blocker_user'] == ('CatalogManager' if installed else 'postgres')
                     send(holder, 'ROLLBACK;\n\\q\n')
                     assert holder.wait(5) == 0 and not holder.stderr
                 else:
                     row = blocking(manager_pid, old_pid)
-                    assert row['waiter_user'] == 'postgres' and row['blocker_user'] == old_login
+                    assert row['waiter_user'] == ('CatalogManager' if installed else 'postgres') and row['blocker_user'] == old_login
                     send(proxy, 'release\n' if mode == 'held_commit' else 'close\n')
                 # Positive old child reap, successor fencing and exact historical
                 # seal precede a separate native receipt/body observation. Only
@@ -197,7 +214,7 @@ def main(root):
                 (home / 'readback-complete').touch(exist_ok=False)
 
             case['parent'] = {}
-            execute(binary + ['/out/native-tests/archive-publication-probe', mode, str(port)], 180,
+            execute(binary + ['/out/native-tests/archive-publication-probe', mode, str(port)] + (['--installed'] if installed else []), 180,
                     case['parent'], race if MODES.index(mode) >= 3 else None)
             save()
             if proxy:
@@ -232,6 +249,14 @@ def main(root):
             check(mode, [json.loads(line) for line in case['parent']['stdout'].splitlines()],
                   json.loads(case['reader']['stdout']))
             assert case['active_writers'] == 0
+            if installed:
+                assert case['installed_initializer']['new_installation'] is True
+                assert case['runtime_manager'] == dict(current_user='CatalogManager', session_user='CatalogManager', superuser=False, createrole=True, inherit=False)
+                rights = case['roles']
+                assert rights['manager_superuser'] is False and rights['native_and_guard_owned'] is True
+                assert rights['manager_connect_delegate'] is True and rights['manager_usage_delegate'] is True
+                assert len(rights['writers']) == (3 if mode in ('before','after') else 4)
+                assert all(w['connect'] and w['usage'] and not w['login_enabled'] and w['password_removed'] and not w['connect_delegate'] and not w['usage_delegate'] for w in rights['writers'])
             file_count = 14 if mode in ('owner_first', 'held_rollback') else 8
             assert len(case['physical_files']) == file_count
             physical = {row['path']: row for row in case['physical_files']}
@@ -283,4 +308,6 @@ def main(root):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('root', type=Path)
-    main(parser.parse_args().root.resolve())
+    parser.add_argument('--installed', action='store_true')
+    args = parser.parse_args()
+    main(args.root.resolve(), args.installed)

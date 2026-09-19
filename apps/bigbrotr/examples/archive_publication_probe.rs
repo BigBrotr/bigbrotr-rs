@@ -41,6 +41,8 @@ use zeroize::Zeroizing;
 mod custody;
 #[path = "support/publication_ingest.rs"]
 mod ingest;
+#[path = "support/publication_installation.rs"]
+mod installed_catalog;
 const MIB: u64 = 1024 * 1024;
 fn dataset() -> DatasetId {
     [1; 16].try_into().unwrap()
@@ -114,7 +116,25 @@ async fn provision(
     receipt: &bigbrotr::storage::postgres::archive_attempt::ArchiveAttemptReceipt,
     report_activation: bool,
 ) -> catalog_guard::FreshWriter {
-    let (mut manager, connection) = connection(database, "postgres", 5432).await;
+    provision_as(
+        "postgres",
+        database,
+        custody,
+        identity,
+        receipt,
+        report_activation,
+    )
+    .await
+}
+async fn provision_as(
+    login: &str,
+    database: &str,
+    custody: &LocalAttempt,
+    identity: &CatalogIdentity,
+    receipt: &bigbrotr::storage::postgres::archive_attempt::ArchiveAttemptReceipt,
+    report_activation: bool,
+) -> catalog_guard::FreshWriter {
+    let (mut manager, connection) = connection(database, login, 5432).await;
     // The dedicated transport itself holds custody before any provisioning SQL.
     let driver = tokio::spawn(custody.retain_catalog_connection(connection).unwrap());
     if report_activation {
@@ -223,7 +243,13 @@ async fn native_state(client: &Client) -> (i64, i64) {
     let row=client.query_one("SELECT (SELECT count(*) FROM public.ducklake_snapshot),(SELECT count(*) FROM public.ducklake_data_file)",&[]).await.unwrap();
     (row.get(0), row.get(1))
 }
-async fn run(mode: &str, port: u16) {
+async fn run(mode: &str, port: u16, installed: bool) {
+    assert!(!installed || !mode.starts_with("custody_"));
+    let manager_login = if installed {
+        "CatalogManager"
+    } else {
+        "postgres"
+    };
     let index = match mode {
         "normal" => 0u8,
         "before" => 1,
@@ -275,29 +301,47 @@ async fn run(mode: &str, port: u16) {
             sha256: ready["worker"].as_str().unwrap().parse().unwrap(),
         },
     };
-    let password = Zeroizing::new(fs::read_to_string("/secrets/BootstrapMixed").unwrap());
-    assert!(password.bytes().all(|v| v.is_ascii_hexdigit()));
-    let dsn = Zeroizing::new(format!(
-        "hostaddr=127.0.0.1 port=5432 dbname={database} user=BootstrapMixed password={} sslmode=disable connect_timeout=5",
-        password.as_str()
-    ));
-    preparation(&installation, &directory(home.join("init-temp")), &cancel)
-        .initialize_catalog(&dsn, &data_root, &worker_budget)
-        .unwrap();
+    if installed {
+        installed_catalog::initialize(&home, &database, &data_root);
+    } else {
+        let password = Zeroizing::new(fs::read_to_string("/secrets/BootstrapMixed").unwrap());
+        assert!(password.bytes().all(|v| v.is_ascii_hexdigit()));
+        let dsn = Zeroizing::new(format!(
+            "hostaddr=127.0.0.1 port=5432 dbname={database} user=BootstrapMixed password={} sslmode=disable connect_timeout=5",
+            password.as_str()
+        ));
+        preparation(&installation, &directory(home.join("init-temp")), &cancel)
+            .initialize_catalog(&dsn, &data_root, &worker_budget)
+            .unwrap();
+    }
     let catalog: OwnerResourceId = [90; 16].try_into().unwrap();
     let identity = CatalogIdentity::local(dataset(), catalog, &data_root).unwrap();
     let (mut admin, admin_driver) = connect(&database, "postgres").await;
-    assert!(
-        catalog_guard::install(&mut admin, &identity, "BootstrapMixed", &Cell::new(false))
-            .await
-            .unwrap()
-    );
+    if !installed {
+        assert!(
+            catalog_guard::install(&mut admin, &identity, "BootstrapMixed", &Cell::new(false))
+                .await
+                .unwrap()
+        );
+    }
     assert_eq!(native_state(&admin).await, (2, 0));
     // Qualification-only reader role is independent of every writer lifetime.
     // No catalog mutations, schema creation, TEMP or privileged guard inspection.
     admin.batch_execute(&format!("REVOKE TEMP ON DATABASE {database} FROM PUBLIC; GRANT CONNECT ON DATABASE {database} TO bigbrotr_receipt_reader; GRANT USAGE ON SCHEMA public,bigbrotr_archive TO bigbrotr_receipt_reader; GRANT SELECT ON ALL TABLES IN SCHEMA public TO bigbrotr_receipt_reader; GRANT SELECT ON bigbrotr_archive.installation,bigbrotr_archive.scientific_schema TO bigbrotr_receipt_reader;")).await.unwrap();
     let reader_password =
         Zeroizing::new(fs::read_to_string("/secrets/bigbrotr_receipt_reader").unwrap());
+    // Privileged infrastructure setup ends here. Runtime catalog operations use
+    // only the separately authenticated configured manager from this point.
+    drop(admin);
+    admin_driver.await.unwrap().unwrap();
+    let (mut admin, admin_driver) = connect(&database, manager_login).await;
+    if installed {
+        let row = admin.query_one("SELECT current_user::text,session_user::text,rolsuper,rolcreaterole,rolinherit FROM pg_roles WHERE rolname=current_user", &[]).await.unwrap();
+        assert_eq!(row.get::<_, String>(0), "CatalogManager");
+        assert_eq!(row.get::<_, String>(1), "CatalogManager");
+        assert!(!row.get::<_, bool>(2) && row.get::<_, bool>(3) && !row.get::<_, bool>(4));
+        fs::write(home.join("runtime-manager.json"), serde_json::to_vec(&serde_json::json!({"current_user":row.get::<_, String>(0),"session_user":row.get::<_, String>(1),"superuser":false,"createrole":true,"inherit":false})).unwrap()).unwrap();
+    }
     initialize_control(&control).await;
     let (client, driver) = connect(&control, "bigbrotr_control").await;
     let (mut owner, policy) = ControlSession::acquire(
@@ -390,7 +434,15 @@ async fn run(mode: &str, port: u16) {
                 .await
                 .unwrap();
             let custody = LocalAttempt::create(&custody_root, &receipt, &identity).unwrap();
-            let writer = provision(&database, &custody, &identity, &receipt, false).await;
+            let writer = provision_as(
+                manager_login,
+                &database,
+                &custody,
+                &identity,
+                &receipt,
+                false,
+            )
+            .await;
             (receipt, writer, custody)
         };
         assert!(receipt.created);
@@ -442,8 +494,15 @@ async fn run(mode: &str, port: u16) {
             barrier(&home.join("activate"), 15).await;
             let next_custody =
                 LocalAttempt::create(&custody_root, &next_receipt, &identity).unwrap();
-            let next_writer =
-                provision(&database, &next_custody, &identity, &next_receipt, true).await;
+            let next_writer = provision_as(
+                manager_login,
+                &database,
+                &next_custody,
+                &identity,
+                &next_receipt,
+                true,
+            )
+            .await;
             successor = Some((next_receipt, next_writer, next_custody));
             emit(serde_json::json!({"event":"activation-complete","ordinal":4}));
             child.await.unwrap()
@@ -544,7 +603,9 @@ async fn run(mode: &str, port: u16) {
 }
 fn main() {
     let args: Vec<_> = std::env::args().collect();
-    assert!(args.len() == 3 || args.len() == 4 && args[2] == "resolve");
+    assert!(
+        args.len() == 3 || args.len() == 4 && (args[2] == "resolve" || args[3] == "--installed")
+    );
     tokio::runtime::Builder::new_current_thread()
         .enable_all()
         .build()
@@ -561,7 +622,11 @@ fn main() {
             }
             tokio::time::timeout(
                 Duration::from_secs(150),
-                run(&args[1], args[2].parse().unwrap()),
+                run(
+                    &args[1],
+                    args[2].parse().unwrap(),
+                    args.get(3).is_some_and(|s| s == "--installed"),
+                ),
             )
             .await
             .unwrap();

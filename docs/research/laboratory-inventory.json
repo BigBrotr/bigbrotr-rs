@@ -10675,6 +10675,14 @@
         }
       },
       "next": "runtime-manager signed publication and installed Control+Archive M1"
+    },
+    "installed_publication": {
+      "status": "prepared-baseline-not-executed",
+      "local_raw_root": ".research/implementation/archive-worker/installed-publication",
+      "source_parent": "ee0923a361d20b3369205739edf93fc5dcba89d3",
+      "scope": "actual installed CLI -> restricted runtime manager -> signed publication/receipt/fencing without PUBLIC CONNECT or schema USAGE",
+      "resources": "no active experiment yet",
+      "suspected_failure": "manager delegation and writer CONNECT missing; actual reproduction required"
     }
   },
   "implementation_monitor_corrections_20260918": {

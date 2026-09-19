@@ -394,3 +394,13 @@ must be complete, and a second recovery must be idempotent. An incomplete native
 schema must remain refused. The [native report](../../docs/implementation/evidence/p02-initialization-late-native-20260919.json)
 records all nine PASS at `3ad4c64`, native build/checks and terminal audit. The
 initial Docker subnet-pool setup failure is retained; no product source changed.
+
+`native_initialization.py --publication` builds the installed main and signed
+publication/read/receipt fixtures against the same authenticated worker.
+`signed_publication_cases.py ROOT --installed` uses the actual installed initializer
+and NOSUPERUSER/CREATEROLE/NOINHERIT CatalogManager for provisioning, sealing and
+inspection. PUBLIC database and public-schema privileges are revoked before
+initialization; writer CONNECT/USAGE and manager delegation are independently
+inspected. The original six signed/fencing oracles remain unchanged. This profile
+is prepared validation, not executed qualification; the baseline is expected to
+expose missing runtime grants, which must be measured before correction.
