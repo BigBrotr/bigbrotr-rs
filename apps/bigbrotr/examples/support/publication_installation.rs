@@ -1,11 +1,48 @@
 //! Actual installed CLI prerequisite for the signed runtime-manager consumer.
+use bigbrotr::storage::{
+    archive::LocalAttempt,
+    postgres::{
+        archive_attempt::ArchiveAttemptReceipt,
+        catalog_guard::{self, CatalogIdentity, GuardError},
+    },
+};
 use std::{
+    cell::Cell,
     fs::{self, OpenOptions},
     io::Write,
     os::unix::fs::OpenOptionsExt,
     path::Path,
     process::Command,
 };
+
+pub async fn delegation_checks(
+    home: &Path,
+    database: &str,
+    custody: &LocalAttempt,
+    identity: &CatalogIdentity,
+    receipt: &ArchiveAttemptReceipt,
+) {
+    for privilege in ["connect", "usage"] {
+        super::emit(serde_json::json!({"event":format!("{privilege}-ready")}));
+        super::barrier(&home.join(format!("{privilege}-revoked")), 15).await;
+        let (mut manager, connection) = super::connection(database, "CatalogManager", 5432).await;
+        let driver = tokio::spawn(custody.retain_catalog_connection(connection).unwrap());
+        let commit = Cell::new(false);
+        let result =
+            catalog_guard::provision_and_activate(&mut manager, identity, receipt, &commit).await;
+        drop(manager);
+        driver.await.unwrap().unwrap();
+        assert!(
+            matches!(result, Err(GuardError::UnsafeRole)),
+            "{privilege}: {result:?}"
+        );
+        assert!(!commit.get());
+        super::emit(
+            serde_json::json!({"event":format!("{privilege}-refused"),"error":"UnsafeRole","commit_started":false}),
+        );
+        super::barrier(&home.join(format!("{privilege}-restored")), 15).await;
+    }
+}
 
 pub fn initialize(home: &Path, database: &str, data_root: &str) {
     let scratch = super::directory(home.join("initialize-scratch"));

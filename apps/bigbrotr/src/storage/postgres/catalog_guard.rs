@@ -423,13 +423,23 @@ async fn activate_inner(
     inspection::writer(&tx, &login).await?;
     tx.execute("INSERT INTO bigbrotr_archive.attempts SELECT $1::text::numeric,$2::bytea,$3::bytea,$4::bytea,$5::text::numeric,$6::bytea,$7::name,oid FROM pg_roles WHERE rolname=$7::name", &[&ordinal,&&request.attempt_id()[..],&&request.coordinator().as_bytes()[..],&&request.worker().as_bytes()[..],&topology,&&request.batch_digest().as_bytes()[..],&login]).await.map_err(backend)?;
     let tables = inspection::native(&tx).await?;
-    let mut grants = format!("GRANT USAGE ON SCHEMA public TO {quoted};");
+    let database: String = tx
+        .query_one("SELECT current_database()", &[])
+        .await
+        .map_err(backend)?
+        .try_get(0)
+        .map_err(backend)?;
+    let mut grants = format!(
+        "GRANT CONNECT ON DATABASE {} TO {quoted}; GRANT USAGE ON SCHEMA public TO {quoted};",
+        identifier(&database)?
+    );
     for table in tables {
         grants.push_str(&format!(
             "GRANT SELECT,INSERT,UPDATE,DELETE ON public.{table} TO {quoted};"
         ));
     }
     tx.batch_execute(&grants).await.map_err(backend)?;
+    privileges::writer_access(&tx, &login).await?;
     let changed=tx.execute("UPDATE bigbrotr_archive.owner SET ordinal=$1::text::numeric,enabled=true WHERE singleton AND ordinal<$1::text::numeric", &[&ordinal]).await.map_err(backend)?;
     if changed != 1 {
         return Err(GuardError::Conflict);

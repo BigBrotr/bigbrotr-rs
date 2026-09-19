@@ -61,6 +61,30 @@ authority. The immutable local marker and PostgreSQL reservation roles remain.
 Private `initialize-<nonce>` scratch directories are retained for explicit cleanup
 after verifying process exclusion; do not remove an active worker's scratch.
 
+The initializer gives the manager CONNECT on the catalog database and USAGE on
+`public`, both WITH GRANT OPTION. Each new writer receives those privileges and
+native table DML without delegation. Database and `public` schema ownership stay
+unchanged; PUBLIC access is unnecessary. Installation inspection refuses a manager
+missing either ordinary access or delegation, before creating another writer.
+
+Existing installations from before this requirement need an explicit privileged
+ACL upgrade while Archive is quiescent. Connect `psql -X -v ON_ERROR_STOP=1` to the
+exact catalog database as its trusted administrator, with `catalog_database` and
+`catalog_manager` variables set to the verified database and configured manager
+names. Apply these grants, then use the normal recovery command below for fresh
+inspection. Recovery itself does not repair existing ACLs or re-enable writers.
+
+```sql
+-- Runtime catalog manager delegation.
+GRANT CONNECT ON DATABASE :"catalog_database" TO :"catalog_manager" WITH GRANT OPTION;
+GRANT USAGE ON SCHEMA public TO :"catalog_manager" WITH GRANT OPTION;
+```
+
+This changes only ACLs; applied migration bytes/checksums and catalog data are
+unchanged. Preserve earlier attempts and their credential lifetimes. A previously
+committed but unusable writer must follow ordinary fencing/resolution and a new
+retained intent; these grants do not authorize reusing or resetting its password.
+
 If a response is lost or a command exits unsuccessfully after reservation, preserve
 the same configuration identities, database, root and marker:
 

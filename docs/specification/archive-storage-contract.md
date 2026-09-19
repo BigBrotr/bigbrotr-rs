@@ -228,6 +228,21 @@ schema ownership. A consistent but wrong owner is not an existing installation
 for that manager. Broad REASSIGN OWNED, temporary runtime superuser promotion and
 post-commit ownership transfer are not selected paths.
 
+Because database/public-schema ownership is retained, the initializer explicitly
+grants the manager CONNECT and public-schema USAGE WITH GRANT OPTION. Inspection
+requires both ordinary access and delegation, independently of PUBLIC. Activation
+grants the new writer CONNECT, USAGE and the four native DML privileges without
+delegation, and checks their effective presence before committing the role,
+attempt and owner. PostgreSQL [GRANT warnings](https://www.postgresql.org/docs/16/sql-grant.html)
+alone do not establish access.
+Older installed ACLs lacking delegation refuse UnsafeRole; the explicit privileged
+[ACL upgrade](../user/archive-initialization.md) changes only those grants under
+quiescence. Applied migration checksums, object ownership and retained attempts
+stay unchanged. Runtime inspection/recovery does not repair grants or reset a
+previously issued credential. The installed signed consumer at `dbb3aea` reproduced
+the previous failure: successful initialization, two issued writer lifetimes
+without CONNECT/USAGE and native authentication refusal with no files created.
+
 Ownership is not privilege closure. The installed boundary must reject unexpected
 creator default grants and inspect actual table, column, schema and function ACLs,
 including PUBLIC and built-in defaults for NULL ACLs. Ordinary readers may receive
@@ -433,8 +448,12 @@ SELECT-only receipt observations and cancellation of an actually blocked native
 TLS query. An exact pidfd observes child exit before SQL blocker release; the
 60-second native deadline remains distant. The older executable's valid-mTLS
 refusal and initial Linux-only test compilation failure are retained. Signed mTLS
-publication, remaining native crash/acknowledgement paths and complete installed
-service/M1 acceptance remain required.
+publication and complete installed service/M1 acceptance remain required.
+[Nine late-fault cases](../implementation/evidence/p02-initialization-late-native-20260919.json)
+at `3ad4c64` now cover lost scientific/guard COMMIT replies, coordinator SIGKILL at
+both boundaries and native-worker SIGKILL before schema COMMIT. Recovery with the
+entire bundle absent preserves native rows/root markers, installs or recognizes
+complete state, and refuses partial scientific state.
 
 The application-owned `bigbrotr_archive` schema contains immutable installation
 and attempt records plus one mutable owner row. Every native metadata mutation

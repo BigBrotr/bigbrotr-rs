@@ -401,6 +401,13 @@ publication/read/receipt fixtures against the same authenticated worker.
 and NOSUPERUSER/CREATEROLE/NOINHERIT CatalogManager for provisioning, sealing and
 inspection. PUBLIC database and public-schema privileges are revoked before
 initialization; writer CONNECT/USAGE and manager delegation are independently
-inspected. The original six signed/fencing oracles remain unchanged. This profile
-is prepared validation, not executed qualification; the baseline is expected to
-expose missing runtime grants, which must be measured before correction.
+inspected. At `dbb3aea` the normal case actually failed: two generated roles lack
+CONNECT/USAGE, manager delegation is absent, and PG reports both no-op schema
+grants and refused authentication; no physical/catalog files were produced. The
+other five schedules were not run. Its independently verified source/raw evidence
+and stopped owned resources are inventoried.
+The correction adds separate CONNECT/USAGE grant-option refusal controls with
+ordinary access preserved, unchanged owner/attempt/role observations, and execution
+of the exact documented privileged ACL upgrade. Final PUBLIC database/schema
+privileges must remain absent. The original six scientific/fencing expectations
+remain unchanged; the oracle additionally checks those explicit refusal events.

@@ -96,7 +96,7 @@ pub(super) async fn transfer_guard(
         .try_get(0)
         .map_err(backend)?;
     let mut sql = format!(
-        "GRANT CONNECT ON DATABASE {} TO {owner}; GRANT USAGE ON SCHEMA public TO {owner}; ALTER SCHEMA bigbrotr_archive OWNER TO {owner};",
+        "GRANT CONNECT ON DATABASE {} TO {owner} WITH GRANT OPTION; GRANT USAGE ON SCHEMA public TO {owner} WITH GRANT OPTION; ALTER SCHEMA bigbrotr_archive OWNER TO {owner};",
         identifier(&database)?
     );
     for table in ["installation", "attempts", "owner", "scientific_schema"] {

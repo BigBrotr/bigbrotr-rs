@@ -92,9 +92,11 @@ SELECT NOT EXISTS (
     require(tx, r#"
 WITH manager AS (SELECT nspowner AS oid FROM pg_namespace WHERE nspname='bigbrotr_archive')
 SELECT has_database_privilege(m.oid,current_database(),'CONNECT')
+   AND has_database_privilege(m.oid,current_database(),'CONNECT WITH GRANT OPTION')
    AND NOT EXISTS (SELECT 1 FROM pg_auth_members a WHERE a.roleid=m.oid
        OR (a.member=m.oid AND (NOT a.admin_option OR a.inherit_option OR a.set_option)))
    AND has_schema_privilege(m.oid,'public','USAGE')
+   AND has_schema_privilege(m.oid,'public','USAGE WITH GRANT OPTION')
    AND has_schema_privilege(m.oid,'bigbrotr_archive','USAGE')
    AND has_schema_privilege(m.oid,'bigbrotr_archive','CREATE')
    AND NOT EXISTS (
@@ -107,4 +109,28 @@ SELECT has_database_privilege(m.oid,current_database(),'CONNECT')
        WHERE n.nspname='bigbrotr_archive' AND NOT has_function_privilege(m.oid,p.oid,'EXECUTE')
    )
 FROM manager m"#, &[], GuardError::UnsafeRole).await
+}
+
+pub(super) async fn writer_access(tx: &Transaction<'_>, login: &str) -> Result<(), GuardError> {
+    // GRANT can succeed with only a warning and no effect. Establish effective
+    // access before committing a new credential/owner, independently of PUBLIC.
+    // Retired bootstrap/writer inspection deliberately does not require access.
+    require(
+        tx,
+        r#"
+SELECT has_database_privilege($1::name,current_database(),'CONNECT')
+   AND NOT has_database_privilege($1::name,current_database(),'CONNECT WITH GRANT OPTION')
+   AND has_schema_privilege($1::name,'public','USAGE')
+   AND NOT has_schema_privilege($1::name,'public','USAGE WITH GRANT OPTION')
+   AND NOT EXISTS (
+       SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace
+       CROSS JOIN unnest(ARRAY['SELECT','INSERT','UPDATE','DELETE']) p(privilege)
+       WHERE n.nspname='public' AND c.relkind='r'
+         AND (NOT has_table_privilege($1::name,c.oid,p.privilege)
+              OR has_table_privilege($1::name,c.oid,p.privilege||' WITH GRANT OPTION'))
+   )"#,
+        &[&login],
+        GuardError::UnsafeRole,
+    )
+    .await
 }

@@ -130,7 +130,15 @@ def expected(mode, bootstrap_only=False):
     return dict(event='readback', mode=mode, tables=tables, signed_event=None if empty_event else EVENT)
 
 
-def check(mode, parent, reader):
+def check(mode, parent, reader, installed=False):
+    if installed and mode == 'normal':
+        assert parent[2:6] == [
+            dict(event='connect-ready'),
+            dict(event='connect-refused',error='UnsafeRole',commit_started=False),
+            dict(event='usage-ready'),
+            dict(event='usage-refused',error='UnsafeRole',commit_started=False),
+        ]
+        parent = parent[:2] + parent[6:]
     stages = ['signed-reopened', 'retained-inputs']
     if MODES.index(mode) >= 3:
         stages += ['activation-begin', 'activation-complete', 'old-excluded']

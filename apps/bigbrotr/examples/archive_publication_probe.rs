@@ -434,6 +434,12 @@ async fn run(mode: &str, port: u16, installed: bool) {
                 .await
                 .unwrap();
             let custody = LocalAttempt::create(&custody_root, &receipt, &identity).unwrap();
+            if installed && mode == "normal" && ordinal == 1 {
+                installed_catalog::delegation_checks(
+                    &home, &database, &custody, &identity, &receipt,
+                )
+                .await;
+            }
             let writer = provision_as(
                 manager_login,
                 &database,

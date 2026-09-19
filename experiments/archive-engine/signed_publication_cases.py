@@ -106,6 +106,9 @@ def main(root, installed=False):
         return command('docker', 'exec', '-i', pg, 'psql', '-XAt', '-v', 'ON_ERROR_STOP=1',
                        '-U', 'postgres', '-d', db, input=query)
 
+    def public_access(db):
+        return json.loads(sql(db, "SELECT json_build_object('database',(SELECT coalesce(json_agg(a.privilege_type ORDER BY a.privilege_type),'[]'::json) FROM pg_database d CROSS JOIN LATERAL aclexplode(COALESCE(d.datacl,acldefault('d',d.datdba))) a WHERE d.datname=current_database() AND a.grantee=0),'schema',(SELECT coalesce(json_agg(a.privilege_type ORDER BY a.privilege_type),'[]'::json) FROM pg_namespace n CROSS JOIN LATERAL aclexplode(COALESCE(n.nspacl,acldefault('n',n.nspowner))) a WHERE n.nspname='public' AND a.grantee=0))"))
+
     binary = ['docker', 'exec', '--env', 'LD_LIBRARY_PATH=/out/archive-worker/lib', runner]
     save()
     if installed:
@@ -135,6 +138,7 @@ def main(root, installed=False):
             case['active_writers'] = int(sql(db, "SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND left(usename,11)='bb_archive_';"))
             if installed:
                 home = root / f'out/signed_{mode}'
+                case['public_access'] = public_access(db)
                 case['installed_initializer'] = json.loads((home/'installed-initialization.json').read_text())
                 case['runtime_manager'] = json.loads((home/'runtime-manager.json').read_text())
                 case['roles'] = json.loads(sql(db, "SELECT json_build_object('manager_superuser',(SELECT rolsuper FROM pg_roles WHERE rolname='CatalogManager'),'manager_connect_delegate',has_database_privilege('CatalogManager',current_database(),'CONNECT WITH GRANT OPTION'),'manager_usage_delegate',has_schema_privilege('CatalogManager','public','USAGE WITH GRANT OPTION'),'native_and_guard_owned',(SELECT count(*)=32 AND bool_and(c.relowner='\"CatalogManager\"'::regrole) FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname IN ('public','bigbrotr_archive') AND c.relkind='r'),'writers',(SELECT json_agg(json_build_object('login',a.login_name,'login_enabled',r.rolcanlogin,'password_removed',r.rolpassword IS NULL,'connect',has_database_privilege(r.oid,current_database(),'CONNECT'),'usage',has_schema_privilege(r.oid,'public','USAGE'),'connect_delegate',has_database_privilege(r.oid,current_database(),'CONNECT WITH GRANT OPTION'),'usage_delegate',has_schema_privilege(r.oid,'public','USAGE WITH GRANT OPTION')) ORDER BY a.ordinal) FROM bigbrotr_archive.attempts a JOIN pg_authid r ON r.oid=a.login_oid))"))
@@ -213,9 +217,50 @@ def main(root, installed=False):
                 save()
                 (home / 'readback-complete').touch(exist_ok=False)
 
+            def delegation(parent):
+                home = root / f'out/signed_{mode}'
+                def state():
+                    return json.loads(sql(db, "SELECT json_build_object('owner',(SELECT row_to_json(o) FROM bigbrotr_archive.owner o),'attempts',(SELECT coalesce(json_agg(row_to_json(a) ORDER BY ordinal),'[]'::json) FROM bigbrotr_archive.attempts a),'writers',(SELECT coalesce(json_agg(json_build_object('oid',oid,'name',rolname,'login',rolcanlogin,'password_present',rolpassword IS NOT NULL) ORDER BY rolname),'[]'::json) FROM pg_authid WHERE left(rolname,11)='bb_archive_'))"))
+                def access():
+                    return json.loads(sql(db, "SELECT json_build_object('connect',has_database_privilege('CatalogManager',current_database(),'CONNECT'),'connect_delegate',has_database_privilege('CatalogManager',current_database(),'CONNECT WITH GRANT OPTION'),'usage',has_schema_privilege('CatalogManager','public','USAGE'),'usage_delegate',has_schema_privilege('CatalogManager','public','USAGE WITH GRANT OPTION'))"))
+                doc = (SOURCE/'docs/user/archive-initialization.md').read_text()
+                upgrade = doc.split('```sql\n-- Runtime catalog manager delegation.\n',1)[1].split('```',1)[0]
+                for privilege in ['connect','usage']:
+                    event(parent, privilege+'-ready')
+                    before = state()
+                    assert before == dict(owner=dict(singleton=True,ordinal=0,enabled=False),attempts=[],writers=[])
+                    assert access() == dict(connect=True,connect_delegate=True,usage=True,usage_delegate=True)
+                    target = f'CONNECT ON DATABASE {db}' if privilege == 'connect' else 'USAGE ON SCHEMA public'
+                    sql(db, f'REVOKE GRANT OPTION FOR {target} FROM "CatalogManager";')
+                    rights = access()
+                    wanted = dict(connect=True,connect_delegate=True,usage=True,usage_delegate=True)
+                    wanted[privilege+'_delegate'] = False
+                    assert rights == wanted
+                    record = dict(privilege=privilege,before=before,revoked_access=rights,status='INCOMPLETE')
+                    case.setdefault('delegation_refusals',[]).append(record)
+                    save()
+                    (home/(privilege+'-revoked')).touch(exist_ok=False)
+                    record['refusal'] = event(parent, privilege+'-refused')
+                    record['after'] = state()
+                    assert record['after'] == before
+                    assert record['refusal'] == dict(event=privilege+'-refused',error='UnsafeRole',commit_started=False)
+                    # Execute the exact documented privileged ACL upgrade; do not
+                    # rewrite applied SQL or repair roles through runtime access.
+                    command('docker','exec','-i',pg,'psql','-XAt','-v','ON_ERROR_STOP=1',
+                            '-v','catalog_database='+db,'-v','catalog_manager=CatalogManager',
+                            '-U','postgres','-d',db,input=upgrade)
+                    record['restored_access'] = access()
+                    record['public_access'] = public_access(db)
+                    assert record['restored_access'] == dict(connect=True,connect_delegate=True,usage=True,usage_delegate=True)
+                    assert record['public_access'] == dict(database=[],schema=[])
+                    assert state() == before
+                    record['status'] = 'PASS'
+                    save()
+                    (home/(privilege+'-restored')).touch(exist_ok=False)
+
             case['parent'] = {}
             execute(binary + ['/out/native-tests/archive-publication-probe', mode, str(port)] + (['--installed'] if installed else []), 180,
-                    case['parent'], race if MODES.index(mode) >= 3 else None)
+                    case['parent'], race if MODES.index(mode) >= 3 else delegation if installed and mode == 'normal' else None)
             save()
             if proxy:
                 proxy.process.stdin.write(b'stop\n')
@@ -247,9 +292,10 @@ def main(root, installed=False):
             save()
             assert case['reader']['exit'] == 0 and not case['reader']['stderr'], 'actual native readback failed'
             check(mode, [json.loads(line) for line in case['parent']['stdout'].splitlines()],
-                  json.loads(case['reader']['stdout']))
+                  json.loads(case['reader']['stdout']), installed=installed)
             assert case['active_writers'] == 0
             if installed:
+                assert case['public_access'] == dict(database=[],schema=[])
                 assert case['installed_initializer']['new_installation'] is True
                 assert case['runtime_manager'] == dict(current_user='CatalogManager', session_user='CatalogManager', superuser=False, createrole=True, inherit=False)
                 rights = case['roles']

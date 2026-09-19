@@ -10677,12 +10677,177 @@
       "next": "runtime-manager signed publication and installed Control+Archive M1"
     },
     "installed_publication": {
-      "status": "prepared-baseline-not-executed",
+      "status": "baseline-practical-failure-confirmed-correction-prepared",
       "local_raw_root": ".research/implementation/archive-worker/installed-publication",
       "source_parent": "ee0923a361d20b3369205739edf93fc5dcba89d3",
       "scope": "actual installed CLI -> restricted runtime manager -> signed publication/receipt/fencing without PUBLIC CONNECT or schema USAGE",
-      "resources": "no active experiment yet",
-      "suspected_failure": "manager delegation and writer CONNECT missing; actual reproduction required"
+      "resources": {
+        "source": "dbb3aea17dd05ee00eb212ec2c652f1930497bfd",
+        "tree": "a1645718c57b2f8e6f86dac1d5cefe8c8594370e",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/installed-publication-dbb3aea",
+        "owner": "5efcd4a2896da3f7fdf9d6a76313b879",
+        "container": "bigbrotr-implementation-installed-publication-dbb3aea",
+        "postgres": "bigbrotr-implementation-installed-publication-dbb3aea-pg",
+        "network": "bigbrotr-implementation-installed-publication-dbb3aea",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "state": "stopped-retained",
+        "source_files": 749,
+        "started_at": "2026-09-19T10:25:17.795009+00:00",
+        "network_id": "a892001d24da896d32813b84baaa7b75e90a64f3fed253bdf9543b99f97d6bc0",
+        "postgres_id": "2053589a9c8468a159f4e37d79d084b0e7935bff71232f62e7bd66305d7f8c4d",
+        "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+        "container_id": "e811b191623400f609a4be39983b74b30685114772ecbd4195ec5e648f20ddf5",
+        "completed_at": "2026-09-19T10:31:20.953973+00:00"
+      },
+      "audit": {
+        "status": "PASS",
+        "source": "dbb3aea17dd05ee00eb212ec2c652f1930497bfd",
+        "tree": "a1645718c57b2f8e6f86dac1d5cefe8c8594370e",
+        "source_files": 749,
+        "source_archive_sha256": "a74f721083ebe9406ae45b3a7b39420f2321db84c7897f69a08cf35f55ff3bca",
+        "source_manifest_sha256": "b9a1e62f0048389770ef3dd4ddf67c3cc8f823d87ee287685dc9e5851ebc71a0",
+        "artifacts": {
+          "main": {
+            "sha256": "2fe38a53fb6e7eaed4cef8141430230389ff889606c7654e16c5b9fccfb2c770",
+            "bytes": 8778576,
+            "elf_machine": 62
+          },
+          "worker": {
+            "sha256": "c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227",
+            "bytes": 12608608,
+            "elf_machine": 62
+          }
+        },
+        "qualification": {
+          "installed-signed-cases": "FAIL"
+        },
+        "cases": {
+          "installed-signed-cases": 1
+        },
+        "build_ready": true,
+        "terminal": {
+          "container_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-19T10:25:20.448739071Z",
+            "FinishedAt": "2026-09-19T10:31:19.514740707Z"
+          },
+          "postgres_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-19T10:25:18.473572362Z",
+            "FinishedAt": "2026-09-19T10:31:20.490678029Z"
+          }
+        },
+        "owned_containers": [
+          "e811b191623400f609a4be39983b74b30685114772ecbd4195ec5e648f20ddf5",
+          "2053589a9c8468a159f4e37d79d084b0e7935bff71232f62e7bd66305d7f8c4d"
+        ],
+        "existing_containers_unchanged": 328,
+        "unrelated_containers_unchanged": 20,
+        "unrelated_running": 8,
+        "bigbrotr_running": 0,
+        "observed_at": "2026-09-19T10:31:20.953973+00:00",
+        "harness": null,
+        "build_checks_status": "PASS"
+      },
+      "raw_identity": {
+        "tar_bytes": 163840,
+        "tar_sha256": "9c95ace767cd89687c372ad2f1e1769af20a3c60b63368b0d36e46c2e3c0d886",
+        "files": {
+          "resources.json": {
+            "bytes": 1233,
+            "sha256": "774abeb58fa7a366747b13151c334746dd2ba2f9e4ae7321d9650cd85c33de5f"
+          },
+          "audit.json": {
+            "bytes": 1918,
+            "sha256": "bdfb71f521192ec77f5e0ab93c1f516656625a0de95849bee4f13599014f65fe"
+          },
+          "container.log": {
+            "bytes": 283,
+            "sha256": "eab6acb70d799e4979300e92ca46acc430fb9835a0d8e6416d70a7f7f1466b53"
+          },
+          "out/build/source-manifest.json": {
+            "bytes": 91904,
+            "sha256": "b9a1e62f0048389770ef3dd4ddf67c3cc8f823d87ee287685dc9e5851ebc71a0"
+          },
+          "out/native-tests/checks/cli-tests.log": {
+            "bytes": 2171,
+            "sha256": "efaaec36434edb774221494ae003f34c29c1cdaa9c6442d9a161420c34fbc5e8"
+          },
+          "out/native-tests/checks/clippy.log": {
+            "bytes": 394,
+            "sha256": "c85a4ac7f387506ff597a5451c8e37611e2a608de1fa1588c0d301e56d9abb80"
+          },
+          "out/native-tests/checks/fixture.log": {
+            "bytes": 227,
+            "sha256": "1b8bc8b4cb83df7ed05ebb4685fbc28fb5f5e9375947abb7f4f4cd91572b0263"
+          },
+          "out/native-tests/checks/parent-tests.log": {
+            "bytes": 5023,
+            "sha256": "e1041f194244907ec192865456c56727d12c32123e812367a6e682ddf86be668"
+          },
+          "out/native-tests/checks/result.json": {
+            "bytes": 4593,
+            "sha256": "340af74e9f26cd8a5e41c82d3a041da6b231ccb8b2fb78a6fb7e2840ddfcbb5f"
+          },
+          "out/native-tests/ordered-build.log": {
+            "bytes": 626,
+            "sha256": "8c6a01780964666169bb93d21111c137eec588aa72712760136f29de07c0fe6b"
+          },
+          "out/native-tests/ready.json": {
+            "bytes": 5162,
+            "sha256": "81add91fdbdb8a0983b5eccba299e97e3e55d5670b74e71e89b1e8fff7d09f0d"
+          },
+          "out/native-tests/result.json": {
+            "bytes": 2799,
+            "sha256": "a7bb9b06dd23dde2f23f12102a8f5a13b440accc41336ebe1745424081a0d116"
+          },
+          "out/native-tests/worker-identity.json": {
+            "bytes": 104,
+            "sha256": "c76d6822c6cff10729edc0d68f41196558b6cdedee0779cbf55ce624e1e80878"
+          },
+          "fixture-diagnosis.json": {
+            "bytes": 296,
+            "sha256": "1eb9cd236ccb6616598cca723e0d4d9cc670187e6e37c866a53954191d7ee8b8"
+          },
+          "installed-signed-cases.json": {
+            "bytes": 14409,
+            "sha256": "828e764e91f2e6ca2052ab7cfad80c37449ad8e70893e1dfb0065850a436dbe7"
+          },
+          "installed-signed-cases.log": {
+            "bytes": 672,
+            "sha256": "983fc3a03cd63adf5e27482e3d483049b73cbe601e4d71910465848163fd4fe9"
+          }
+        }
+      },
+      "confirmed_failure": "normal ordinal2 OutcomeUnknown; two writer lifetimes without CONNECT/USAGE, manager lacks grant options, PUBLIC absent, no files; other five schedules NOT_RUN",
+      "network_retirement": [
+        {
+          "root": "initialization-late-3ad4c64",
+          "network": "ea8e467683c066ccdb01af786c3c8f10382b171f7868a27d484f6ca8198fdfb4",
+          "owner": "a3bbe7de774452d58116a172cd6821a0",
+          "status": "removed",
+          "containers": "retained-stopped",
+          "data": "retained",
+          "observed_at": "2026-09-19T10:25:11.544014+00:00"
+        }
+      ]
     }
   },
   "implementation_monitor_corrections_20260918": {

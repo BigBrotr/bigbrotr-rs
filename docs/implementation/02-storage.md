@@ -353,6 +353,13 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   remains idempotent. Partial scientific state refuses. Signed mTLS publication,
   runtime-manager publication and installed service/M1 acceptance remain open;
   this step is not complete.
+  The installed signed consumer at `dbb3aea` now reproduces a missing delegation
+  failure with PUBLIC CONNECT/USAGE revoked: initialization succeeds but generated
+  writers cannot connect. The correction must qualify explicit manager grant
+  options and writer access, separate missing-CONNECT/USAGE-delegation refusals
+  without durable mutation, the documented privileged ACL upgrade, and all six
+  signed publication/fencing schedules without reopening PUBLIC access. Existing
+  migration bytes/checksums and credential lifetimes remain unchanged.
 - [ ] **Step 4:** After an ambiguous commit, query the receipt in a new transaction; do not
   repeat while receipt state is unknown. Reject mismatched batch digest.
   Include loss of the actual native PostgreSQL COMMIT response, plus physical file

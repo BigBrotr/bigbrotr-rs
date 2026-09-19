@@ -20,14 +20,21 @@ Control-only and rejects other roles. Root remains sole writer/integrator.
 
 ## Actual Git and review
 
-Mac main and origin/main verified at ee0923a361d20b3369205739edf93fc5dcba89d3;
-push82436 exited0 and the tree was clean. Private bigbrotr-rs visibility verified.
-Published3ad4c64 adds late fault harness/proxy selectors only; ee0923a records the
-executed qualification. No Rust/dependency/SQL/protocol change in this slice.
-Root-owned dirty work wires actual installed CLI and non-superuser CatalogManager
-into the six signed-publication schedules, with PUBLIC database/schema privileges
-revoked and independent manager/writer rights observations. No production fix yet. No contributor edits,
-merge/rebase or active experiment.
+Mac main candidate dbb3aea17dd05ee00eb212ec2c652f1930497bfd; origin/main
+last verified ee0923a361d20b3369205739edf93fc5dcba89d3. Candidate wires the actual
+installed CLI/non-superuser CatalogManager into signed publication with PUBLIC
+CONNECT/USAGE revoked. Root-owned dirty fixes add manager delegation, explicit
+writer CONNECT and pre-commit positive access inspection; regression harness,
+contract/user documentation/checkpoint/inventory are being updated. No contributor
+edits or merge/rebase. Existing applied SQL and dependencies unchanged.
+
+Installed baseline63285 exited1: normal publication FAIL at required ordinal2;
+other five schedules NOT_RUN. SQL independently shows manager lacks both grant
+options; two committed writer roles lack CONNECT/USAGE. Actual PG reports two
+USAGE no-op warnings and two CONNECT authentication failures. No physical/catalog
+files, no active clients, owner2 enabled; PUBLIC DB/schema ACLs empty. Initializer
+and fresh manager inspection incorrectly succeeded. This is measured evidence,
+not just review. Correction is not yet native-qualified.
 
 Independent read-only AI source review caught an overbroad native-schema target
 that also matched ATTACH and an incorrect scratch-parent path in the crash oracle.
@@ -67,29 +74,29 @@ catalog scenarios only; no capacity/SLA claim. No new product fix needed.
 
 ## Owned resources and evidence
 
-No active experiment. Terminal audit62417 and collection8021 exited0 at
-2026-09-19T10:08:37.195255+00:00. Both candidate containers stopped-retained,
-no OOM;326 preexisting container/mount/network/lifecycle states unchanged,
-8 unrelated running,0 BigBrotr. Retain containers/data; never restart retired labs.
-Root /home/tux/bigbrotr-implementation-20260917/runs/initialization-late-3ad4c64.
-Owner a3bbe7de774452d58116a172cd6821a0.
-Runner ea2f30d642b95327a884a34eb5da1ba77f87364d16ad70114e6a11df911622b6 stopped143.
-PG 5a3503d1308e300c193151f6d9101fe6696de787010f6a72786ed9a988b16cf4 stopped0.
-Network ea8e467683c066ccdb01af786c3c8f10382b171f7868a27d484f6ca8198fdfb4 empty-retained.
+Installed baseline terminal audit58981 and collection77465 exited0. Its runner/PG
+are stopped-retained, no OOM;328 preexisting containers unchanged,8 unrelated
+running,0 BigBrotr. Root
+/home/tux/bigbrotr-implementation-20260917/runs/installed-publication-dbb3aea;
+owner5efcd4a2896da3f7fdf9d6a76313b879. Runner
+e811b191623400f609a4be39983b74b30685114772ecbd4195ec5e648f20ddf5;
+PG2053589a9c8468a159f4e37d79d084b0e7935bff71232f62e7bd66305d7f8c4d.
+Empty retained network
+a892001d24da896d32813b84baaa7b75e90a64f3fed253bdf9543b99f97d6bc0.
 Runner2CPU/6GiB/512PIDs,PG1CPU/1GiB/128PIDs,internal/nohostports.
-Main bbe723ddb61ca56f510f31966f74e07bd88942ed22cfc3fd6f0a0abcd4719d1c (8778560bytes).
-Worker c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227 unchanged.
-Latest cache/assets:initialization-late-3ad4c64/out/{build,archive-worker}.
+Main2fe38a53fb6e7eaed4cef8141430230389ff889606c7654e16c5b9fccfb2c770;
+worker unchanged c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227.
+Raw .research/implementation/archive-worker/installed-publication/baseline:16files,
+tar9c95ace767cd89687c372ad2f1e1769af20a3c60b63368b0d36e46c2e3c0d886;
+749 source hashes/Git archive independently match. Secrets excluded.
+Baseline native ordered build/fixture/38archive+8binary+10CLI checks and Clippy PASS,
+one unrelated custody test ignored. These passes do not excuse practical FAIL.
 
-Raw .research/implementation/archive-worker/initialization-late/qualified:15files,
-tar95d089b853ab515f6a74305703d3b6fba72ce7c4269da5f957c00bf844786a6c.
-Regenerated Mac Git archive and747 source hashes match. Credentials remain only
-inside retained owned lab, excluded from evidence. Inventory initialization_late
-owns resources/audit/identities; ignored launch/transfer/audit/collect helpers retained.
-Initial setup exhausted Docker subnet pools before any candidate container existed.
-Verified prior50d9496 stopped/owned and network empty, removed only that network,
-refreshed full preflight and resumed same owned lab. launch.log retains setup failure;
-retired-network.json retains deletion evidence. No blanket prune.
+Prior3ad4c64 late-fault evidence remains at its existing path/inventory. Its stopped
+containers/data retained; only verified empty owned network retired before baseline
+launch because address pools were exhausted. Latest stopped cache/assets are
+installed-publication-dbb3aea/out/{build,archive-worker}; use copied/read-only
+inputs for a fresh exact-source correction lab, never restart retired resources.
 
 ## Earlier qualified boundaries and findings
 
@@ -129,20 +136,16 @@ External feedback reread previously; it records the earlier scoped closures too.
 
 ## Next bounded action
 
-Late-fault evidence audit/doc checks, complete diff review and private push are
-complete. Next execute the signed installed-manager baseline. Source review found
-an implicit dependency on PUBLIC CONNECT/USAGE: manager receives no delegation,
-activation omits writer CONNECT and its USAGE grant can warn without granting.
-Independent read-only review agrees; no actual reproduction yet. Baseline must
-be executed before correcting installed manager grants and pre-commit checks.
-Mac example check/Clippy, Python AST PASS. Raw helpers at
-.research/implementation/archive-worker/installed-publication reuse stopped3ad4c64
-cache/assets; create a fresh exact-Git owner-labelled lab. Before launch retire
-only that stopped lab's verified empty network (Docker pools currently exhausted).
-Root has read complete archive_publication_probe.rs: it still directly initializes
-and provisions/seals as postgres. Replace that fixture boundary with the actual
-installed CLI+non-superuser CatalogManager consumer while preserving independent
-signed readback/receipt checks, then wire actual service ownership/pending dispatch.
+Finish correction/source review, commit exact candidate and execute fresh installed
+six signed publication/fencing schedules plus two isolated manager grant-option
+refusals before first provision. Independently compare owner/attempt/role state;
+restore via exact documented operator SQL. Assert PUBLIC database/schema privileges
+remain absent throughout, and final writers retain only nondelegable access.
+No new migration/checksum bytes or ownership transfer. Existing installed ACLs
+require explicit privileged upgrade; runtime must refuse, never silently repair.
+Mac example Clippy and harness AST PASS; native corrected work NOT_RUN. Read-only
+reviewer initialization_custody_review identified the missing PUBLIC oracle;
+now included. Then return to installed service ownership/pending dispatch for M1.
 No more standalone custody/reservation helper qualification absent a new finding.
 
 Pristine stranded reservations require a new database/root pair; no reprovisioning,
