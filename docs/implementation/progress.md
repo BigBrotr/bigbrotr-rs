@@ -21,14 +21,12 @@ installed service readiness.
 
 ## Actual Git and ownership
 
-Mac main HEAD is e98f4847453a6909766602701eec5d174ad65ebf,
-tree8003e919c8f5ea287894be71f77f3f91f2d0f93e, two unpublished commits ahead of
-origin/main0ca4fffa9c5f1bf5b1c447907dc2c3cc2fa2b1eb. Root is sole writer.
-Production inputs unchanged from567c2e6; e98f484 changes only baseline extraction
-and continuity metadata. Clean source transferred through Git (17775 exited0),
-716 files verified before/after native execution and against Git on Mac. Current
-dirty work is the qualification report and owning documentation/inventory/checkpoint.
-No initializer reservation source, merge or rebase; native auth slice qualified.
+Mac main HEAD/origin main verified ac13f11e150b6b845d798c3e13a51aeecbff11e5.
+All three authentication commits were pushed normally; GitHub confirms repository
+BigBrotr/bigbrotr-rs is private. Root is sole writer, no merge/rebase. The native
+revision remains e98f484; ac13f11 records qualification only. Current root-owned dirty work: native_catalog_install.py, catalog_install_cases.py,
+inventory/checkpoint. These prepare the actual old-code ACL/owner counterexamples;
+no product ownership fix yet. No other writer.
 
 ## Installed catalog inspection qualified within its scope
 
@@ -165,10 +163,12 @@ Do not mechanically rerun unrelated suites.
 
 ## Next bounded action
 
-Finish recorded-evidence review of native authentication, check the complete diff,
-commit the qualification and push the three coherent commits to private main.
-Then implement the explicit fresh initializer under P02-T04 steps3/4/5, starting
-with installed ownership transfer and durable reservation/custody boundaries.
+Implement the explicit fresh initializer under P02-T04 steps3/4/5, starting with
+one atomic install_for_manager operation: configured manager OID, exact object
+ownership transfer, retired bootstrap OID and privilege closure. First commit/transfer the regression fixture and measure the old-code owner/ACL
+counterexamples on a fresh lab, then implement the correction. Exercise real PG
+negative controls for initializer default privileges, wrong-owner existing state,
+atomic failure and unchanged SQL hashes; then wire reservation/custody and CLI.
 No task checkbox closes from authentication alone.
 
 Initializer design review is complete, but not an implemented/qualified protocol:

@@ -8097,6 +8097,13 @@
         "preexisting_containers_unchanged": 286
       },
       "report": "docs/implementation/evidence/p02-native-catalog-auth-20260919.json"
+    },
+    "catalog_installed_ownership": {
+      "status": "local regression fixtures prepared; native counterexamples NOT_RUN; no product ownership fix yet",
+      "local_root": ".research/implementation/archive-worker/catalog-ownership",
+      "base_source": "ac13f11e150b6b845d798c3e13a51aeecbff11e5",
+      "scope": "P02-T04 step3 atomic target ownership and guard ACL closure prerequisite",
+      "planned_run": "new isolated catalog-install source revision; stopped catalog-auth-e98 cache copied, assets read-only; no retained lab restart"
     }
   },
   "implementation_monitor_corrections_20260918": {
