@@ -26,7 +26,7 @@ Published a1c0921 product CLI,6265286 expanded harness/user docs,3335e06 hardene
 workload identity and759157b reviewed evidence/docs. Production Rust/inputs are
 identical across those four commits. Root-owned changes now add a bounded residual-session fixture and five real CLI
 drain scenarios (same/other database, timeout, SIGTERM/SIGINT). Production Rust
-remains unchanged; native execution is not yet run. Local example check/Clippy and
+remains unchanged; artifact candidate78e7734 native build is running. Local example check/Clippy and
 Python syntax checks pass. No merge/rebase or other contributor edits.
 
 Independent read-only AI source review found simultaneous credential preparation,
@@ -81,7 +81,13 @@ exercise a nonempty backend drain: delay reset precedes recovery.
 
 ## Owned resources and evidence
 
-No active experiment. Audit52813 and collect65186 exited0. Both CLI labs are
+Active isolated drain lab: initialization-drain-78e7734, owner
+772532228ad91c0d671adc6a8be9b483, runner7f29d58ecb63/PG91c1b8e8d937.
+Inventory initialization_drain and raw initialization-drain/resources.json own
+exact IDs. Native build is running; five-case workload is NOT_RUN. Independent
+read-only AI review identified the local-wrapper liveness weakness; the new
+harness verifies the exact remote CLI and actual PG drain query before release.
+No product/fixture change after78e7734. Previous audit52813 and collect65186 exited0. Both CLI labs are
 stopped-retained, no OOM.318 preexisting container/mount/network/lifecycle states
 unchanged;8 unrelated running, zero BigBrotr. Latest audit:
 2026-09-19T08:49:20.214389+00:00.

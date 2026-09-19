@@ -9977,12 +9977,30 @@
       ]
     },
     "initialization_drain": {
-      "status": "prepared-not-run",
+      "status": "native-build-running",
       "local_raw_root": ".research/implementation/archive-worker/initialization-drain",
       "source_parent": "759157bf1f7eb456313754ba8b6a862d45462cea",
       "scope": "actual archive recover with queued tokio-postgres residual backend after positive driver destruction; not native-worker residual SQL",
       "cache_source": "initialization-cli-6265286",
-      "resources": "no new resources created yet; previous empty CLI network retired, containers/data retained"
+      "resources": "owned runner and PG running; previous labs remain retired",
+      "candidate": {
+        "source": "78e77346cb75379955aeb423e9fb33e7bd38533b",
+        "tree": "da0dd523f8b1aa78fd14bc2ba23f2dda72cc3a26",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/initialization-drain-78e7734",
+        "owner": "772532228ad91c0d671adc6a8be9b483",
+        "container": "bigbrotr-implementation-initialization-drain-78e7734",
+        "postgres": "bigbrotr-implementation-initialization-drain-78e7734-pg",
+        "network": "bigbrotr-implementation-initialization-drain-78e7734",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "state": "running",
+        "source_files": 742,
+        "started_at": "2026-09-19T09:06:15.693171+00:00",
+        "network_id": "0d723a977b4b2e6252f56ce3d17265739e0b80fbe86510a826c885bd32d7abcb",
+        "postgres_id": "91c1b8e8d9374ca881e5305318e570a2973b377e808dcf076d1040a2811efbcb",
+        "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+        "container_id": "7f29d58ecb63a91777949facd3024eba09dc7bc330932c23d158ed95d82fd2fb"
+      }
     }
   },
   "implementation_monitor_corrections_20260918": {

@@ -25,9 +25,15 @@ def command(args, input=None, timeout=45):
 
 run = Path(sys.argv[1]).resolve()
 state = json.loads((run / 'resources.json').read_text())
-assert source == run / 'source'
-assert command(['git', '-C', str(source), 'rev-parse', 'HEAD']) == state['source']
+assert source in (run / 'source', run / 'harness-source')
+assert command(['git', '-C', str(run / 'source'), 'rev-parse', 'HEAD']) == state['source']
 assert not command(['git', '-C', str(source), 'status', '--porcelain', '--untracked-files=all'])
+harness_revision = command(['git', '-C', str(source), 'rev-parse', 'HEAD'])
+changed = command(['git', '-C', str(source), 'diff', '--name-only', state['source'], harness_revision]).splitlines()
+assert all(name.startswith('docs/') or name == 'experiments/archive-engine/initialization_drain_cases.py' for name in changed)
+harness = dict(source=harness_revision, tree=command(['git', '-C', str(source), 'rev-parse', 'HEAD^{tree}']),
+    script_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(), changed_paths=changed,
+    production_and_fixture_inputs_unchanged=True)
 for name in [state['container'], state['postgres']]:
     actual = json.loads(command(['docker', 'inspect', name]))[0]
     assert actual['Config']['Labels']['org.bigbrotr.publication'] == state['owner'] and actual['State']['Running']
@@ -39,7 +45,7 @@ work = run / 'out/initialization-drain'
 work.mkdir(mode=0o700)
 output = run / 'initialization-drain.json'
 output.open('x').close()
-report = dict(source=state['source'], artifacts=ready, status='RUNNING', cases=[],
+report = dict(source=state['source'], harness=harness, artifacts=ready, status='RUNNING', cases=[],
               fault_producer='custodied tokio-postgres fixture with actual queued SQL, driver aborted and joined')
 children = []
 
@@ -100,20 +106,22 @@ print(json.dumps(dict(exit=p.returncode,seconds=time.monotonic()-start,stdout_em
     return process
 
 
-def signal_cli(label, number):
+def inspect_or_signal_cli(label, number=0):
     script = '''import json,os,signal,sys
 from pathlib import Path
 record=json.loads(Path(sys.argv[1]).read_text());pid=record['pid'];fd=os.pidfd_open(pid)
 try:
  proc=Path('/proc/'+str(pid))
- assert proc.joinpath('stat').read_text().rsplit(')',1)[1].split()[19]==record['start']
+ fields=proc.joinpath('stat').read_text().rsplit(')',1)[1].split()
+ assert fields[19]==record['start'] and fields[0]!='Z'
  assert proc.joinpath('cmdline').read_bytes().rstrip(b'\\0').split(b'\\0')==[s.encode() for s in record['argv']]
  assert os.readlink(proc/'exe')=='/out/native-tests/bigbrotr'
  signal.pidfd_send_signal(fd,int(sys.argv[2]))
+ print(json.dumps(dict(pid=pid,start=record['start'],state=fields[0],signal=int(sys.argv[2]))))
 finally: os.close(fd)
 '''
-    command(['docker', 'exec', state['container'], 'python3', '-c', script,
-        '/out/initialization-drain/' + label + '.pid', str(number)])
+    return json.loads(command(['docker', 'exec', state['container'], 'python3', '-c', script,
+        '/out/initialization-drain/' + label + '.pid', str(number)]))
 
 
 def finished(process):
@@ -181,14 +189,23 @@ password_ref="file:/out/initialization-drain/manager"
         # A skipped drain would have returned the pristine refusal by now.
         time.sleep(.3)
         assert client.process.poll() is None and active(oid) == expected
+        remote_cli = inspect_or_signal_cli(label)
+        # Observe the real consumer's fresh polling connection too. A delayed
+        # docker-exec wrapper cannot stand in for the actual CLI or its drain.
+        drain = json.loads(sql(f"SELECT COALESCE(json_agg(json_build_object('pid',pid,'start',backend_start::text,'state',state)),'[]') FROM pg_stat_activity WHERE datname='{database}' AND usename='postgres' AND query='SELECT EXISTS(SELECT 1 FROM pg_stat_activity WHERE usesysid=$1::oid)'"))
+        assert len(drain) == 1
         assert durable(database, root) == before
         item.update(fixture=fixture, blocked_backend=expected, before=before,
-                    actual_recovery_retired_then_waited=True)
+                    actual_recovery_retired_then_waited=True, remote_cli=remote_cli, drain_backend=drain)
         save()
         if label in ['timeout', 'sigterm', 'sigint']:
             if label != 'timeout':
-                signal_cli(label, 15 if label == 'sigterm' else 2)
+                signal_start = time.monotonic()
+                item['signal'] = inspect_or_signal_cli(label, 15 if label == 'sigterm' else 2)
             observed = finished(client)
+            if label != 'timeout':
+                item['signal_to_exit_seconds'] = time.monotonic() - signal_start
+                assert item['signal_to_exit_seconds'] < 5
             assert observed['exit'] == {'timeout': 4, 'sigterm': 143, 'sigint': 130}[label]
             assert observed['deadline' if label == 'timeout' else 'interrupted'] and not observed['stranded']
             assert observed['stdout_empty']
