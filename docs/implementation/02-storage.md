@@ -370,11 +370,15 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   29 native Rust cases and six signed regressions of the shared seal path.
   The actual late-query blocker, all24 exact journals and23 imported identity/OID
   bindings are recorded; unrelated owner/credential state is preserved.
-  The next recovery consumer reads the original Control attempt by ID/catalog
-  without re-registering it or reconstructing its batch from fixture sidecars.
-  Baseline fcd63ac failed the retained-row read assertion on actual PG; the bounded
-  lookup and fresh custody observer integration are implemented locally, with
-  corrected native read/cancellation and affected custody schedules pending.
+  The recovery consumer reads the original Control attempt by ID/catalog without
+  re-registering it or reconstructing its batch from fixture sidecars.
+  [Native qualification at `d86e147`](evidence/p02-retained-attempt-read-native-20260919.json)
+  retains the failed fcd63ac assertion and passes the actual bounded read probe,
+  13 intent/schema cases, three custody and two missing-import schedules with
+  ten clone controls. Five journals, four imported identities/OID bindings and
+  seven Control rows match independent values; actual blocked cancellation and
+  fresh-session retry pass. No sidecar is created. Installed lifecycle/resource
+  reconciliation, malformed metadata/extreme values and protection remain open.
   No step is complete from these prerequisites.
 - [ ] **Step 6:** Handle empty and one-small-event timer batches; publish useful progress
   without waiting for a size threshold that may never be reached.

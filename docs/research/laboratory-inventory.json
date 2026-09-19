@@ -7651,7 +7651,7 @@
     },
     "retained_attempt_read": {
       "base_source": "127174218ccf6ab5fccce5da4f6be0927e554db0",
-      "state": "fcd63ac baseline retained FAIL, owned lab stopped-retained/network retired; correction in local review",
+      "state": "d86e147 scoped correction PASS; both labs stopped-retained and networks retired; fcd63ac remains FAIL",
       "local_root": ".research/implementation/archive-worker/attempt-read",
       "scope": "Actual Control one-attempt historical read: exact identity, absence/current/historical, fresh owner, no mutation, wrong catalog and blocked cancellation with poisoned session. No catalog publication or new migration.",
       "cache_source": "/home/tux/bigbrotr-implementation-20260917/runs/publication-770c485/out/build",
@@ -7722,8 +7722,77 @@
         "running_bigbrotr": 0
       },
       "baseline_raw_sha256": "bba7310b6b8572b762d6fdf8c9eae61ff8fe76fdd378534babea42be9bc87ddc",
-      "correction_scope": "Bounded one-record lookup and real recovered-custody consumer; new native_publication.py --retained-read selects13 intent/schema cases plus actual PG probe, then three custody and two missing-import schedules with ten clone controls. Correction NOT_RUN.",
-      "next_cache_source": "/home/tux/bigbrotr-implementation-20260917/runs/attempt-read-fcd63ac/out/build"
+      "correction_scope": "13 structural Rust cases plus real Control probe, three custody and two missing-import schedules with ten clone controls PASS",
+      "next_cache_source": "/home/tux/bigbrotr-implementation-20260917/runs/attempt-read-d86e147/out/build",
+      "correction_resources": {
+        "source": "d86e14723e132ef027260ec14ad86903f0f8af2e",
+        "tree": "20524e2c887fef883f8366f5f2b257dd7fd4fc04",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/attempt-read-d86e147",
+        "owner": "288b1429cc83b761733231d012c31367",
+        "container": "bigbrotr-implementation-attempt-read-d86e147",
+        "postgres": "bigbrotr-implementation-attempt-read-d86e147-pg",
+        "network": "bigbrotr-implementation-attempt-read-d86e147",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "state": "stopped-retained",
+        "source_files": 700,
+        "started_at": "2026-09-19T02:18:28.844425+00:00",
+        "network_id": "082120b857061d7d16b5810341130f2526c1cb1f24d79bfd29c8566446e26d3c",
+        "postgres_id": "2b767e95090bc4b502acbbe7cbedbd8e252da7c7baa8cd185793a30c9ed4ce3b",
+        "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+        "container_id": "7cbeba1bbc5dd2399c3d5730f6335108dce9994542b5543ae0622633bc99a650",
+        "network_state": "retired",
+        "terminal": {
+          "runner": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-19T02:18:31.491619829Z",
+            "FinishedAt": "2026-09-19T02:22:39.539660511Z"
+          },
+          "postgres": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-19T02:18:29.491987738Z",
+            "FinishedAt": "2026-09-19T02:22:39.700509945Z"
+          }
+        },
+        "finished_at": "2026-09-19T02:22:40.296004+00:00"
+      },
+      "correction_source_audit": {
+        "status": "PASS",
+        "source": "d86e14723e132ef027260ec14ad86903f0f8af2e",
+        "tree": "20524e2c887fef883f8366f5f2b257dd7fd4fc04",
+        "files": 700,
+        "manifest_sha256": "5ee7f9f50439bf8ee00173d7ec912ac2e3a59348edb08749b73da89943535e3d",
+        "archive_sha256": "d1ecae786e2508d5a103d9db6b7bcd43a5ec78aa7179113413f74282c98988c4"
+      },
+      "correction_audit": {
+        "source": "d86e14723e132ef027260ec14ad86903f0f8af2e",
+        "tree": "20524e2c887fef883f8366f5f2b257dd7fd4fc04",
+        "source_files": 700,
+        "manifest_sha256": "5ee7f9f50439bf8ee00173d7ec912ac2e3a59348edb08749b73da89943535e3d",
+        "cleanup": "owned containers stopped, network retired, no OOM",
+        "unrelated_unchanged": 20,
+        "unrelated_running": 8,
+        "running_bigbrotr": 0
+      },
+      "correction_raw_sha256": "02be56fa08e5899982da375c5efaa7cfd9badc53a2a693fdff68f9f3b2e46696",
+      "report": "docs/implementation/evidence/p02-retained-attempt-read-native-20260919.json",
+      "correction_cache_source": "/home/tux/bigbrotr-implementation-20260917/runs/attempt-read-fcd63ac/out/build"
     }
   },
   "implementation_monitor_corrections_20260918": {

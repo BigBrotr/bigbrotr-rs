@@ -388,7 +388,12 @@ attempt ID. It releases and joins that fresh Control session before acquiring
 local custody. No fixture input sidecar or registration retry reconstructs the
 request. The committed Control row is still only an intent; the exact local
 journal, actual catalog resolution and subsequent receipt checks remain separate.
-This consumer change awaits native qualification.
+[Native qualification at `d86e147`](../implementation/evidence/p02-retained-attempt-read-native-20260919.json)
+passes the actual current/historical read, fresh session, absence, wrong catalog,
+nonmutation and blocked cancellation/poison/retry probe. Three custody and two
+missing-import schedules with ten clone controls use fresh observer processes;
+all five exact journals remain unchanged and no input sidecar exists. This is
+still a fixture consumer, not the installed recovery lifecycle.
 
 `resolve_after_local_custody` requires explicitly recovered custody and complete
 request/catalog identity before database work. A consumed launch allowance alone

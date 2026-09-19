@@ -7,138 +7,117 @@ Verify Git, dirty work, evidence and resource claims before continuing.
 ## Mandate and active boundary
 
 Owner-authorized complete implementation remains active. Mac is the sole editing/
-Git workspace; use trusted exact-source Tux execution despite unavailable hosted
-Actions. Preserve private bigbrotr-rs, unpublished Cargo packages and read-only Go
-neighbor. No public release/rename or Linux arm64 qualification. All selected
-product work remains required; no P02 task or M1 gate is complete.
+Git workspace; trusted exact-source Tux execution continues despite unavailable
+hosted Actions. Preserve private bigbrotr-rs, unpublished Cargo packages and
+read-only Go neighbor. No public release/rename or Linux arm64 qualification.
+All selected product work remains required; no P02 task or M1 gate is complete.
 
 Active P02-T03/T04 steps3/4/5: signed durable pending → actual PG DuckLake
 publication, positive fencing, fresh receipt resolution/protection, then M1
 read/export/restart. Finite publication, receipt observation, local descriptor
-custody and missing-import resolution now have scoped native evidence. Pending
-remains retained. Installed lifecycle/resource reconciliation, incomplete-journal/
-cross-boot recovery and protection remain required.
+custody, missing-import resolution and retained Control intent lookup now have
+scoped native evidence. Pending stays retained. Installed lifecycle/resource
+reconciliation, incomplete-journal/cross-boot recovery and protection remain open.
 
 ## Actual Git and ownership
 
-Mac main HEAD is unpublished baselinefcd63ac25fb606f11dd50e272fb291ee72fc4c77,
-treeacb796e366a1cf82263d791aebbb30ca00c10314. Verified origin/main remains
-127174218ccf6ab5fccce5da4f6be0927e554db0, delivering missing-import qualification.
-Root owns the dirty bounded Control read, fresh custody observer, focused native
-runner profile, task/contract/checkpoint/inventory edits. No merge/rebase or other
-writer. Read-only AI review found no correctness blocker in the new read/consumer;
-its native qualification is still pending. Earlier source770c485 qualification
-and its recorded-evidence review are delivered, not repeated current work.
+Mac main HEAD d86e14723e132ef027260ec14ad86903f0f8af2e,
+tree20524e2c887fef883f8366f5f2b257dd7fd4fc04, is the tested unpublished correction.
+Its baseline fcd63ac25fb606f11dd50e272fb291ee72fc4c77 remains a retained intentional
+failure. Last verified origin/main127174218ccf6ab5fccce5da4f6be0927e554db0 delivers
+the earlier missing-import qualification. Root owns only current evidence,
+task/contract/reference/experiment-doc, inventory and checkpoint edits. No other
+writer or merge/rebase. Read-only AI publication_review completed source and recorded-evidence review
+without a blocker/discrepancy. It verified all56 hashes, both source/raw archives,
+five journal/input corpora and ten clone controls locally. No reviewer native
+execution/Tux actions; host/ELF claims rely on recorded audits.
 
-Transfer16951 ran from clean Git and is terminal. Source audit52741 verifies all699
-checkout/export files and exact Mac Git archive at770c485. Manifest SHA256
-c76d88b99fc0328a845be1c25ce009698481edc04f48a4f047d503478e88885c;
-archive SHA256193bcfe8dd462602be7e2af250e30c89196b58505f8d29468342fa4abcb98ec9.
-No dependency, migration checksum or custody journal-format changes in this slice.
+No dependency, applied SQL checksum, custody journal-format or installed
+configuration changes in the current slice. The exact clean source transfer81405
+completed. Mac archive equality and all700 native checkout/export hashes verified:
+manifest5ee7f9f50439bf8ee00173d7ec912ac2e3a59348edb08749b73da89943535e3d;
+archive d1ecae786e2508d5a103d9db6b7bcd43a5ec78aa7179113413f74282c98988c4.
 
-## Missing-import qualification
+## Retained attempt qualification
 
-[Native report](evidence/p02-missing-import-native-20260919.json) owns the current
-source, artifact, workload, raw-evidence and cleanup identities. At770c485 all10
-build/check commands and29 actual Rust cases pass. The default Linux collection
-defers one native case; a separate explicit selection executes it against the
-just-installed actual worker. Ignored results are never counted as execution.
-Two actual delayed owner Bind/Execute/Sync schedules, ten disposable-clone controls
-and six signed publication/receipt regressions pass. Native10391, signed11595,
-terminal38021, retirement48501 and raw copy13524 are terminal.
+[Native report](evidence/p02-retained-attempt-read-native-20260919.json) owns
+source, artifacts, workload, baseline/correction raw hashes and cleanup identities.
+Five build/check commands,13 actual Rust intent/schema cases and the actual Control
+probe PASS. Three custody and two missing-import schedules plus ten clone controls
+PASS. Sessions45457 (scenarios),76449 (terminal audit),44262 (retirement) and37347
+(collection) completed. No active experiment or cleanup obligation remains.
 
-The recovered-only LocalAttempt gate checks complete immutable identity before
-SQL. Under the same owner FOR UPDATE lock and full installed guard/scientific
-inspection, an exact imported lifetime is sealed using its recorded role OID.
-An ordinal miss refuses attempt/worker/login collisions and any orphan target-name
-role, including NOLOGIN. Successful rollback yields nonmutating NotImported;
-no credential, new launch, journal reuse, receipt absence or ACK is granted.
-Another attempt of the same batch/coordinator is legal and remains unchanged.
+`ControlSession::read_archive_attempt(catalog,id)` reads one complete retained
+ArchiveAttemptRequest under the actual owner fence. Fixed fields/numeric text are
+bounded; duplicate/invalid metadata is not absence. Some/None returns only after
+successful rollback; a failed/cancelled started operation poisons the session.
+Issuer attribution/time remains SQL history outside this receipt API. Missing
+Control history grants no credential, ID reuse, launch, rollback, ACK or protection.
 
-The pinned sequential tokio-postgres0.7.18 adapter consumes owner-query results
-through ReadyForQuery before enqueueing provisioning. The live-driver control
-retains custody and really provisions after delayed execution. Destroying and
-joining the actual driver permits local recovery; the delayed actual owner query
-then creates no role/import. A later resolver directly waits on that backend's
-transaction-ID lock (waiter261, blocker228 with backend_start identities retained)
-and returns NotImported after backend closure. This is a real blocker pair,
-not an inference from a relation RowShareLock or empty activity.
+Actual probe covers current/historical identity, unknown ID, new session, wrong
+catalog, unchanged row/xmin, invalid input before SQL, real blocked cancellation,
+poisoned reuse and fresh-session retry. Waiter165 was blocked by149 on relation
+lock with actual backend_start identities. Valid ordinals1/2 and topology0 only:
+malformed stored metadata and persisted u64 extremes remain NOT_RUN.
 
-All24 compact journal byte sequences and23 full imported identities/OID bindings
-match independent values. Eight signed input corpora, six complete scientific
-readbacks and three interim reads match the literal oracle. Each journey retains
-41 Rocks rows with digest da535e9d1edcdce8bf09033bb1d2b48ee10941c34f47b0b3db228f6285128c61.
-The missing case retains owner0 disabled, no role/import, zero files and two
-initialization snapshots. All23 imported writers are product-sealed. Ten clones
-and fixture roles were dropped; original journals/catalogs remain unchanged.
-Small same-boot ext4 workload only; no aged-state, peak-RSS, power-loss or arm64 claim.
+The fresh custody observer process reads the original request from Control,
+releases/joins its driver, then recovers exact local custody and resolves/seals
+catalog authority. It no longer creates/reads custody-input.json or re-registers a
+reconstructed batch. All five journal byte sequences remain unchanged; full four
+imported identity/OID bindings and seven retained Control request rows match
+independent values. Five complete signed input corpora retain41 Rocks rows each,
+digest da535e9d1edcdce8bf09033bb1d2b48ee10941c34f47b0b3db228f6285128c61.
+Two prepared Parquet files remain after worker COMMIT ambiguity; other four cases
+have none. Five catalogs have only two initialization snapshots and no catalog
+files. No sidecar exists. Four product writer roles sealed; no residual backend in
+five catalog/five Control or standalone attempts/fresh/legacy databases. Fixture
+service logins disabled separately for retirement. Ten clones/fixture roles dropped.
 
-Raw root .research/implementation/archive-worker/missing-import contains baseline
-and corrected execution, manifests, source archives, audit helpers and terminal
-journal bytes. Corrected24-file native raw archive SHA256
-a56a7d5032de6a5170098aa453d64d83dc1f49190ddc8cbec4850cf128046620.
-The report currently owns65 raw hashes. Mac22 scoped archive cases passed before
-the last defensive seal-match refinement; affected Clippy after it passed, followed
-by the complete affected native checks. Structural artifact/handoff checks pass.
+Baseline fcd63ac actually failed None vs retained Some after13 Rust cases/build/
+Clippy passed. Its full first row and no residual backend were independently
+checked; no failed result was reclassified. Corrected20-file raw archive SHA256
+02be56fa08e5899982da375c5efaa7cfd9badc53a2a693fdff68f9f3b2e46696;
+baseline14-file archive bba7310b6b8572b762d6fdf8c9eae61ff8fe76fdd378534babea42be9bc87ddc.
+Raw root .research/implementation/archive-worker/attempt-read; current report owns
+56 raw hashes. Same-boot ext4/Linux amd64 only; no aged query/peak RSS/power-loss claim.
 
-## Failures and review findings retained
+## Owned lab resources terminal
 
-Baseline e571002 completed29 native cases and both schedules, but the seal-only
-resolver returned Conflict in two required missing observations. Its report remains
-FAIL. Independent full attempt/journal audit and retirement passed; no missing
-result was reclassified as success. Baseline21-file raw archive SHA256
-469d4ef55b7cb7086fd419f3588efd51214dc98e8fc901bb110960638c50a3b2.
-The recovered-only gate also has a retained actual failing assertion before its
-correction; an earlier E0716 fixture compilation error was fixed first.
+Inventory implementation_archive_worker_20260918.retained_attempt_read owns both
+labs. Correction root /home/tux/bigbrotr-implementation-20260917/runs/attempt-read-d86e147;
+owner288b1429cc83b761733231d012c31367;
+runner7cbeba1bbc5dd2399c3d5730f6335108dce9994542b5543ae0622633bc99a650;
+PG2b767e95090bc4b502acbbe7cbedbd8e252da7c7baa8cd185793a30c9ed4ce3b;
+network082120b857061d7d16b5810341130f2526c1cb1f24d79bfd29c8566446e26d3c retired.
+Both containers stopped-retained, no OOM, PG exit0. All20 unrelated container
+identities/states/mounts/networks unchanged;8 running and0 BigBrotr running.
+Baseline fcd63ac and previous custody/receipt/missing-import labs are also retired;
+never restart them. Latest reusable cache is d86e147/out/build. A new run must
+inventory separate resources and preserve exact source/dependency checks.
 
-Read-only AI source review found two fixture gaps, both fixed before770c485:
-rename the actual target role to isolate the historical login-name predicate;
-give the unrelated owner LOGIN/non-NULL password and capture role/owner xmin so
-collateral mutation is observable. No product defect was found in that review.
-No AI reviewer ran native workloads or changed files.
+## Earlier evidence and constraints
 
-First local collection failed because Mac Python lacks tarfile's extraction
-filter argument, after verifying archive SHA. Retry explicitly validates regular
-relative members and rejects symlink destinations; no native scenario or result
-changed. Both collection logs remain retained.
+[Missing import770c485](evidence/p02-missing-import-native-20260919.json) retains
+29 native Rust cases, two delayed actual owner-query schedules, ten collision/
+role controls and six signed publication/receipt journeys. Full24 journal bytes
+and23 imported identities/OIDs checked. The seal-only e571002 baseline remains
+FAIL. Dead-driver late query creates no role/import; a real blocked resolver
+returns NotImported only after server closure. Sequential tokio-postgres0.7.18
+awaits owner-query ReadyForQuery before enqueueing provisioning. This does not
+qualify arbitrary pipelined clients. AI fixture findings were fixed before770c485.
 
-## All owned resources terminal
-
-Inventory implementation_archive_worker_20260918.missing_import_resolution owns
-baseline e571002 and corrected root
-/home/tux/bigbrotr-implementation-20260917/runs/publication-770c485.
-Correction owner e38a04450601099ee58f4331c54a8b4a;
-runner b585cedd48ee8ae3d2bfcad3ad407d312b0f23f51ce78c69584454a59663726e;
-PG42809a581305613f54ff209555df9c06e48a88dbb6951f2ded7fc7b532a25bc3;
-network8c60735bf0504c84b4d78d7c5eec6f4db684c9ae3ab406d3c934bc564e14e397 retired.
-Both containers stopped-retained, no OOM, PG exit0. Four fixture service/bootstrap
-logins were disabled separately for retirement after product assertions. All eight
-catalog and Control databases had no other backend at terminal audit. All20
-unrelated container identities/states/mounts/networks unchanged,8 running,0 BigBrotr
-running. No active lab or cleanup obligation. Earlier custody/receipt labs are
-also retired; never restart them. Latest reusable cache770c485/out/build; next
-launcher must deliberately select it and preserve dependency identity checks.
-
-## Prior evidence and constraints
-
-[Local custody5ad77af](evidence/p02-local-custody-native-20260919.json) qualifies
-actual coordinator/driver/native descriptor retention, worker parent-death and
-queued COMMIT schedules. Its failed ead11f8 fixture reused a Control role identity;
-the actual PG error and corrected run remain recorded. Local exclusion does not
-establish whole-process/resource reconciliation or remote transaction resolution.
-
-[Fresh receipts0b3a427](evidence/p02-archive-receipts-native-20260919.json) retains
-18 separate SELECT-only/readonly fault cases. Present/Absent require complete
-bounded observation; failed/incomplete/conflicting scans cannot authorize absence.
-TerminationUnknown retains capacity and exclusion obligations.
-
-[Signed fencingb12c902](evidence/p02-signed-fencing-native-20260919.json) retains
-both lock orders and actual40001→55000 rejection. [Normal INSERT failure](evidence/p02-native-commit-file-loss-20260918.json)
+[Custody5ad77af](evidence/p02-local-custody-native-20260919.json) qualifies actual
+coordinator/driver/native descriptors and queued COMMIT schedules; local exclusion
+does not prove whole-process/resource reconciliation or remote rollback.
+[Receipts0b3a427](evidence/p02-archive-receipts-native-20260919.json) requires complete
+bounded EOF for Present/Absent; failed/conflicting/incomplete scans cannot grant
+absence. TerminationUnknown retains capacity and exclusion obligations.
+[Signed fencingb12c902](evidence/p02-signed-fencing-native-20260919.json) retains both
+lock orders and actual40001→55000 refusal. [Normal INSERT failure](evidence/p02-native-commit-file-loss-20260918.json)
 remains rejected: lost native COMMIT response deleted committed files. Selected
-caller-owned COPY/registration retains prepared files through ambiguity. Never
-add an INSERT fallback or unlink uncertain files. Guard inspection locks owner
-FOR UPDATE before compatible AccessShare reads; no SHARE table lock inversion.
-Applied catalog migrations0001/0002 remain unchanged. NOLOGIN/empty activity/PID/
+caller-owned COPY/registration retains uncertain files. No INSERT fallback or
+unlink on ambiguity. Guard inspection locks owner FOR UPDATE before compatible
+AccessShare reads; applied catalog0001/0002 unchanged. NOLOGIN/empty activity/PID/
 expired lease is not old-client exclusion.
 
 Scoped monitor corrections remain closed with executed evidence:
@@ -149,47 +128,13 @@ Scoped monitor corrections remain closed with executed evidence:
 [MON-007](evidence/p01-archive-cache-retry-20260918.json).
 Do not mechanically rerun unrelated suites.
 
-## Active retained-attempt read and next bounded action
+## Next bounded action
 
-P02-T04 now has a bounded `ControlSession::read_archive_attempt(catalog,id)`
-implementation in the dirty correction. It reads the complete ArchiveAttemptRequest
-identity under the actual owner fence, caps every field and detects duplicate
-rows, returns only after successful rollback, and poisons started failed/cancelled
-operations. It does not decode issuer attribution/time or create/activate anything.
-The custody observer uses that real read and joins Control before local recovery;
-it no longer writes/reads custody-input.json or re-registers a reconstructed batch.
-
-Baseline fcd63ac is terminal:13 structural Rust cases, build and Clippy PASS; actual
-PG assertion failed None vs exact retained Some at the intended discriminator.
-Full actual first row and no residual DB backend were independently checked;
-runner exited1 (no OOM), PG stopped exit0, network retired. Inventory
-implementation_archive_worker_20260918.retained_attempt_read owns
-/home/tux/bigbrotr-implementation-20260917/runs/attempt-read-fcd63ac,
-owner3cc7d31605ab43142ddb8644700e3319;
-runnerda6d6c2ec9332019e3b35d7d3a3b734556cc862a07773a1b84ae1ab56cb5e21f;
-PG2c43dab4f7f828ae875ce427a539366b5b6e08817cce5a89d41af9422ff29d80;
-network63b5f3e699dcc3a86a465c8327a059a95eb1e68486bd94e8b96f0ababd416333 retired.
-Transfer97880, source55517, retirement25271 and collection61897 completed.
-All700 source files match exact Mac archive. Manifest SHA256
-313a3efdccb3058a344d6da41c869a4868f71cad5ce09d3784361cdfb62e0bb6;
-source archive53d30a556397680a1e8528080fbafe7f4d268daec306606f1773e19104f28e75;
-14-file raw archivebba7310b6b8572b762d6fdf8c9eae61ff8fe76fdd378534babea42be9bc87ddc.
-All20 unrelated resources unchanged,8 running,0 BigBrotr running. No active lab.
-
-Local affected reader/consumer Clippy and structural artifact checks pass. AI review
-covered the read, caller, migration, probe and contract, with no product blocker.
-The current probe covers ordinary persisted ordinals1/2 and topology0; malformed
-metadata/u64 extremes are not native tested, and no source proof is relabeled as
-execution. New native_publication.py --retained-read selects13 structure cases,
-builds actual consumers and executes the Control read probe; it does not count the
-default29-case collection as executed. Corrected native execution is NOT_RUN.
-
-Finish review/checks, create the corrected exact-source candidate and run that
-profile in a new individually inventoried attempt-read lab, copying retired
-fcd63ac cache. Then execute custody_cases.py (three schedules) and
-missing_import_cases.py (two schedules plus ten clones) with the real Control read
-consumer. Audit exact unchanged journals/rows, probe identity and actual blockers,
-retire resources, record both FAIL/PASS and push coherent verified work.
-Ignored helpers: .research/implementation/archive-worker/attempt-read.
-Installed lifecycle/resource reconciliation, incomplete-journal/cross-boot recovery,
-protection and full M1/read/export/restart remain required; no task completion claim.
+Recorded-evidence review and full current documentation diff review are complete;
+structural artifact/handoff checks PASS. Commit qualification and ordinarily push
+the three coherent unpublished commits to the private repository. Then map the
+installed archive owner/runtime and exact configuration consumers to integrate
+bounded startup recovery with this retained-intent lookup, actual custody and
+catalog resolution. Read complete owning files before choosing that next slice;
+keep installed resource reconciliation, incomplete-journal/cross-boot recovery,
+protection and full M1 required. No completion claim from prerequisite fixtures.

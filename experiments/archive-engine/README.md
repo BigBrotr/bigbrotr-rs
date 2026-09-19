@@ -363,6 +363,9 @@ installed recovery and protection remain open.
 consumers, then runs the thirteen intent/schema cases and the actual Control
 read/issuance probe. It selects those affected checks instead of the default
 publication/receipt/custody unit collection. The resulting ready marker precedes
-the separate actual custody and missing-import schedules. This profile currently
-awaits corrected exact-source execution; the earlier fcd63ac intent-read baseline
-failed the retained-row assertion as expected and its lab was retired.
+the separate actual custody and missing-import schedules.
+[Executed evidence at `d86e147`](../../docs/implementation/evidence/p02-retained-attempt-read-native-20260919.json)
+passes that profile and all five affected schedules plus ten clone controls.
+The actual read blocker, five exact unchanged journals, four imported identity/OID
+bindings, seven retained Control rows and sidecar absence are recorded. The earlier
+fcd63ac baseline failed the retained-row assertion; both labs are retired.

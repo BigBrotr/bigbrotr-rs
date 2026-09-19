@@ -1,0 +1,600 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "task": "P02-T04 steps4/5: retained Control attempt observation and local custody recovery consumer",
+  "date": "2026-09-19 Europe/Rome",
+  "status": "PASS scoped native read and affected custody journeys; installed lifecycle/protection/M1 remain open",
+  "source": "d86e14723e132ef027260ec14ad86903f0f8af2e",
+  "tree": "20524e2c887fef883f8366f5f2b257dd7fd4fc04",
+  "files": 700,
+  "manifest_sha256": "5ee7f9f50439bf8ee00173d7ec912ac2e3a59348edb08749b73da89943535e3d",
+  "archive_sha256": "d1ecae786e2508d5a103d9db6b7bcd43a5ec78aa7179113413f74282c98988c4",
+  "environment": {
+    "host": "Tux native Linux amd64, same-boot ext4 bind-mounted journal and archive paths",
+    "kernel": "Linux 6.12.101+deb13-amd64 x86_64 GNU/Linux",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "native": "DuckDB1.5.5, DuckLake1.0, signed offline postgres_scanner; selected Rust1.98.1",
+    "toolchain": {
+      "os": "Linux",
+      "architecture": "x86_64",
+      "discovery": "llvm-config",
+      "environment": {
+        "CC": "/usr/lib/llvm-14/bin/clang",
+        "CXX": "/usr/lib/llvm-14/bin/clang++",
+        "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+        "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+        "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+      },
+      "tools": {
+        "CC": {
+          "path": "/usr/lib/llvm-14/bin/clang",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "CXX": {
+          "path": "/usr/lib/llvm-14/bin/clang++",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "AR": {
+          "path": "/usr/lib/llvm-14/bin/llvm-ar",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+          "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+          "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+        },
+        "LIBCLANG_PATH": {
+          "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+          "version": "Debian clang version 14.0.6"
+        },
+        "discovery": {
+          "path": "/usr/lib/llvm-14/bin/llvm-config",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+          "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+          "version": "14.0.6"
+        }
+      },
+      "sdk": null
+    },
+    "limits": {
+      "runner_cpus": 2,
+      "runner_memory_bytes": 6442450944,
+      "runner_pids": 512,
+      "postgres_cpus": 1,
+      "postgres_memory_bytes": 1073741824,
+      "postgres_pids": 128,
+      "worker_engine_memory_bytes": 134217728,
+      "worker_native_reserve_bytes": 402653184,
+      "worker_temp_bytes": 67108864,
+      "worker_threads": 1,
+      "manifest_bytes_maximum": 32768
+    },
+    "network": "Separate internal network with no published ports; loopback SCRAM inside owned PG namespace; native Cargo builds offline",
+    "cache": "Copied stopped fcd63ac target/cargo-home, verified same Cargo.lock and five pinned prefetch packages; retired environments remain stopped"
+  },
+  "identities_sha256": {
+    "Cargo.lock": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215",
+    "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167",
+    "contracts/release/archive-engine.json": "ae0069565ab9411928df0cf067822630c4f3a912919e61633b952f8077a5e2c1",
+    "migrations/postgres/0009_archive_attempts.sql": "2c931bf013bfc6a6ceb3e5c86fcda7b14ea8959c235baa997bce8420c247bc11",
+    "migrations/catalog/0001_writer_guard.sql": "055deb8b354b0e2b3e361102cc7e1999bb0849966c3dfae93fddc5d2e5c3840f",
+    "migrations/catalog/0002_scientific_schema.sql": "bfff29bc12fea6fbbc09b59a092cbdffa2b3b7e940f0676eacbff18c9c851397",
+    "experiments/identity-contract/signed-fixture.json": "4c931ab34cb7adeb707fc2866f4a50b3ec8b694cbb2d4fb5e335f8f37a2d8875",
+    "experiments/archive-engine/signed_publication_oracle.py": "e056d511862e2f1659ffffdddbeab3702ef91079b5a9052cc82b8acf845d6a83",
+    "experiments/archive-engine/native_commit_proxy.py": "c970a2c8ca7622d261ede76c9a6204f3582ab702760bfa3f026fdc9315a595ce",
+    "experiments/archive-engine/native_publication.py": "0a84d24555465a15b7962e5da192a2bd8c307d44f2affc1349cb501b6726ebd2",
+    "experiments/archive-engine/custody_cases.py": "d6fa0315adb7dbef382b2e530d48ffd409247f75626275a13376cbbd9e24525d",
+    "experiments/archive-engine/missing_import_cases.py": "00130c6a5472c1e43b352306b9882e5f2912468c78ddb162442768d7d6143a98",
+    "experiments/archive-engine/missing_import_refusals.py": "254a44ecd153d85724051efaba8175ad8e212119ae17bd67b6d330f23a6375a5"
+  },
+  "artifacts_sha256": {
+    "worker": "526943396db4bb140d7ab2c5f3b64dc83d0378d3efaa0f21f0a5b91cb8e7cd86",
+    "probe": "19140060aaa1504d6c1b390f93e20a23cd843b3e9fe124403f0640a0454d3615",
+    "publisher": "7cf3cd836c434f07a84fba4b9dbf2600627f5d229a5ba30166d12370f12204a1",
+    "reader": "6ba5dbb6566695ca3fe31d65a53a1c07f988e172a0614193ca21df40855fac95",
+    "receipt_reader": "4a258cc01185b84962362d593178045feab756daf9fb5af83b30bd4f533de770",
+    "intent_reader": "6fd63f7f5127a9b9707e6efc10975b1f77b13b3865b24979fe156792ee87217e",
+    "retained-test-0": "81e623053afedb31c360403328c897e437bf0081a390f90b02a6509cae84e42f",
+    "retained-test-1": "e01142647c5374f86622acc461d7616f9c9b1dc204efbb2e6c4a607d781b88b8"
+  },
+  "commands": {
+    "build": "python3 -B /source/experiments/archive-engine/native_publication.py --retained-read through shared tools.ci.execute",
+    "custody": "python3 -B <exact-checkout>/experiments/archive-engine/custody_cases.py --root <owned-root>",
+    "missing": "python3 -B <exact-checkout>/experiments/archive-engine/missing_import_cases.py --root <owned-root>",
+    "checks": [
+      {
+        "name": "build",
+        "command": [
+          "cargo",
+          "build",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr-archive-worker",
+          "--bin",
+          "bigbrotr-archive-worker",
+          "--example",
+          "catalog-fence-probe"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 30.407557138241827
+      },
+      {
+        "name": "signed-fixtures",
+        "command": [
+          "cargo",
+          "build",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "-p",
+          "bigbrotr-archive-worker",
+          "--example",
+          "archive_publication_probe",
+          "--example",
+          "archive_read_probe",
+          "--example",
+          "archive_receipt_probe"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 23.00467751873657
+      },
+      {
+        "name": "retained-tests",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--test",
+          "archive_attempt",
+          "--test",
+          "control_schema"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 23.154742419254035
+      },
+      {
+        "name": "retained-build",
+        "command": [
+          "cargo",
+          "build",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--example",
+          "archive_attempt_probe"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 5.974927417933941
+      },
+      {
+        "name": "retained-clippy",
+        "command": [
+          "cargo",
+          "clippy",
+          "--locked",
+          "--offline",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--lib",
+          "--example",
+          "archive_attempt_probe",
+          "--example",
+          "archive_publication_probe",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 1.5667068837210536
+      },
+      {
+        "name": "adapter",
+        "command": [
+          "/out/native-tests/archive-attempt-probe"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 2.3184716482646763
+      }
+    ],
+    "rust_cases": 13,
+    "counts": {
+      "archive_attempt": 1,
+      "control_schema": 12
+    },
+    "selection": "Five build/check commands plus actual PG probe. Default29 publication/receipt/custody cases and six signed publication journeys are NOT_RUN for this correction; their previous source770c485 qualification is retained."
+  },
+  "baseline": {
+    "source": "fcd63ac25fb606f11dd50e272fb291ee72fc4c77",
+    "tree": "acb796e366a1cf82263d791aebbb30ca00c10314",
+    "status": "FAIL",
+    "rust_cases": 13,
+    "failure": "Actual retained Control row exists, but the unimplemented lookup returns None instead of exact Some(ArchiveAttemptReceipt). Native adapter exits101, runner exits1. Full first row and terminal no-backend state captured; baseline not relabeled PASS.",
+    "raw_archive_sha256": "bba7310b6b8572b762d6fdf8c9eae61ff8fe76fdd378534babea42be9bc87ddc",
+    "source_audit": {
+      "status": "PASS",
+      "source": "fcd63ac25fb606f11dd50e272fb291ee72fc4c77",
+      "tree": "acb796e366a1cf82263d791aebbb30ca00c10314",
+      "files": 700,
+      "manifest_sha256": "313a3efdccb3058a344d6da41c869a4868f71cad5ce09d3784361cdfb62e0bb6",
+      "archive_sha256": "53d30a556397680a1e8528080fbafe7f4d268daec306606f1773e19104f28e75"
+    },
+    "terminal_audit": {
+      "source": "fcd63ac25fb606f11dd50e272fb291ee72fc4c77",
+      "tree": "acb796e366a1cf82263d791aebbb30ca00c10314",
+      "source_files": 700,
+      "manifest_sha256": "313a3efdccb3058a344d6da41c869a4868f71cad5ce09d3784361cdfb62e0bb6",
+      "cleanup": "Owned failed runner exited; PG stopped, network retired, no OOM",
+      "unrelated_unchanged": 20,
+      "unrelated_running": 8,
+      "running_bigbrotr": 0
+    }
+  },
+  "read_contract": {
+    "identity": "Complete ArchiveAttemptRequest, including dataset/catalog, attempt, predecessor/ordinal, schema1, topology, batch digest and coordinator/worker. Receipt created=false; latest_issued is a single-statement historical observation.",
+    "bounds": "One bound attempt lookup; fixed byte fields capped at expected size+1, numeric text capped at20, LIMIT2 duplicate detection. No payload or full SQL history download.",
+    "authority": "Current Control owner fence; successful rollback before Some/None. A failed/cancelled started operation poisons the session. Invalid zero ID/self-Control resource rejected before SQL. Missing record grants no ID reuse, launch or rollback proof.",
+    "consumer": "Fresh observer process knows only configured catalog and attempt ID, reads retained request, releases and joins Control, then recovers exact local journal and resolves/seals catalog. No custody-input.json or registration retry.",
+    "compatibility": "No dependency, applied SQL checksum, journal format or installed configuration change. Issuer attribution/time remains SQL history and is not returned by this API."
+  },
+  "read_cases": [
+    "Absent before issuance; exact current receipt after issuance and identical retry",
+    "First row and xmin unchanged across read; another unknown ID absent",
+    "Historical first intent after second issuance and fresh actual Control session",
+    "Invalid input leaves session usable; wrong catalog returns Conflict and poisons",
+    "Actual relation lock observed before cancellation, poisoned reuse refused, driver joined, fresh owner reads exact original intent"
+  ],
+  "read_blocker": {
+    "event": "retained-read-blocker",
+    "waiter": 165,
+    "waiter_start": "2026-09-19T02:19:58.38614+00:00",
+    "blocker": 149,
+    "blocker_start": "2026-09-19T02:19:57.315172+00:00",
+    "wait_event": "relation"
+  },
+  "schedules": [
+    {
+      "mode": "custody_worker",
+      "status": "PASS",
+      "processes": 5,
+      "process_exits": [
+        0,
+        137,
+        0,
+        0,
+        0
+      ],
+      "journal_sha256": "8de64f9ff5e1e7f13f7c0f13516c6d8ff6d8e6e678e735bf026768a2712b45c0",
+      "blocker": {
+        "waiter": 202,
+        "waiter_start": "2026-09-19T02:21:47.593725+00:00",
+        "wait_event_type": "Lock",
+        "wait_event": "transactionid",
+        "blocker": 198,
+        "blocker_start": "2026-09-19T02:21:46.890759+00:00",
+        "blocker_state": "idle in transaction"
+      },
+      "clone_controls": 0
+    },
+    {
+      "mode": "custody_cancel",
+      "status": "PASS",
+      "processes": 5,
+      "process_exits": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "journal_sha256": "0be7f7149fc9b25808d59cd54aa1c62649045ddca5feca5704c85e94c4c3e31f",
+      "blocker": {
+        "waiter": 243,
+        "waiter_start": "2026-09-19T02:21:50.305678+00:00",
+        "wait_event_type": "Lock",
+        "wait_event": "transactionid",
+        "blocker": 239,
+        "blocker_start": "2026-09-19T02:21:49.838791+00:00",
+        "blocker_state": "idle in transaction"
+      },
+      "clone_controls": 0
+    },
+    {
+      "mode": "custody_manager",
+      "status": "PASS",
+      "processes": 5,
+      "process_exits": [
+        0,
+        137,
+        0,
+        0,
+        0
+      ],
+      "journal_sha256": "66dae33ba0addc21cd9ec09e3b60b2816d5609ad89d2ef8928ad4415315fcb06",
+      "blocker": {
+        "waiter": 283,
+        "waiter_start": "2026-09-19T02:21:53.052152+00:00",
+        "wait_event_type": "Lock",
+        "wait_event": "transactionid",
+        "blocker": 279,
+        "blocker_start": "2026-09-19T02:21:52.525413+00:00",
+        "blocker_state": "idle in transaction"
+      },
+      "clone_controls": 0
+    },
+    {
+      "mode": "custody_prelock_live",
+      "status": "PASS",
+      "processes": 5,
+      "process_exits": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "journal_sha256": "71a5d964512c13fc39f85a3486a053055a416aa16e2df4518eb967385475bb0b",
+      "blocker": null,
+      "clone_controls": 0
+    },
+    {
+      "mode": "custody_prelock_dead",
+      "status": "PASS",
+      "processes": 16,
+      "process_exits": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "journal_sha256": "087f99189cf264e1232ce4015dcbdd0eb578cbf634b34140541b25a9ad74c799",
+      "blocker": {
+        "waiter": 408,
+        "waiter_start": "2026-09-19T02:21:58.923372+00:00",
+        "wait_event_type": "Lock",
+        "wait_event": "transactionid",
+        "blocker": 375,
+        "blocker_start": "2026-09-19T02:21:58.230825+00:00",
+        "blocker_state": "idle in transaction"
+      },
+      "clone_controls": 10
+    }
+  ],
+  "durable_effects": {
+    "journals": 5,
+    "imported_writers": 4,
+    "control_attempt_rows": 7,
+    "journal_oracle": "All five compact byte sequences independently assembled from literal identities, exact input digest and actual boot/inode/device; all unchanged from pre-fault hashes. Exact bytes retained as base64.",
+    "catalog_oracle": "Four full imported identities and actual role OID bindings, owners disabled and writer roles NOLOGIN/password NULL; missing-import case retains zero imported rows/role. All five catalogs retain two initialization snapshots and zero catalog data files.",
+    "control_oracle": "Five custody databases each retain one original intent issued at epoch1; standalone read probe retains two original rows. All request fields checked independently; later observer acquisitions do not reissue intents.",
+    "input": "Five complete independently expected signed corpora; each retains41 Rocks rows and digest da535e9d1edcdce8bf09033bb1d2b48ee10941c34f47b0b3db228f6285128c61.",
+    "files": "Two caller-owned prepared Parquet files retained after worker commit ambiguity; zero physical Parquet in four other cases. No fixture sidecar in any of five homes.",
+    "clones": "Ten collision/orphan/missing-role/OID/unrelated-owner controls PASS; exact before/after values and original OIDs preserved as required; owned clones and fixture roles dropped.",
+    "backends": "No other backend in five catalogs, five Control databases or standalone attempts/fresh/legacy at terminal audit. Four fixture service/bootstrap logins disabled separately for retirement."
+  },
+  "review": {
+    "source": "Read-only AI publication_review inspected complete reader/caller/migration/probe/contracts; no correctness blocker. Qualification limits clarified: issuer/time not decoded; malformed metadata and u64 extremes not executed.",
+    "root": "Complete affected source/doc/fixture diff reviewed; actual independent rows/journal bytes, input oracles, blocker pairs, source archive/700 file hashes, ELF amd64 artifacts and terminal ownership verified.",
+    "recorded_evidence": "Read-only AI publication_review found no discrepancy: independently verified all56 raw hashes, both700-file exact Git archives and all14/20 raw members; recomputed five input corpora and exact journal bytes, compared Control/catalog identities and ten clone discriminators. No reviewer native execution/Tux access. ELF, live metadata, kernel/mount and host cleanup claims rely on recorded audits/helpers."
+  },
+  "cleanup": {
+    "resources": {
+      "source": "d86e14723e132ef027260ec14ad86903f0f8af2e",
+      "tree": "20524e2c887fef883f8366f5f2b257dd7fd4fc04",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/attempt-read-d86e147",
+      "owner": "288b1429cc83b761733231d012c31367",
+      "container": "bigbrotr-implementation-attempt-read-d86e147",
+      "postgres": "bigbrotr-implementation-attempt-read-d86e147-pg",
+      "network": "bigbrotr-implementation-attempt-read-d86e147",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "state": "stopped-retained",
+      "source_files": 700,
+      "started_at": "2026-09-19T02:18:28.844425+00:00",
+      "network_id": "082120b857061d7d16b5810341130f2526c1cb1f24d79bfd29c8566446e26d3c",
+      "postgres_id": "2b767e95090bc4b502acbbe7cbedbd8e252da7c7baa8cd185793a30c9ed4ce3b",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "7cbeba1bbc5dd2399c3d5730f6335108dce9994542b5543ae0622633bc99a650",
+      "network_state": "retired",
+      "terminal": {
+        "runner": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 143,
+          "Error": "",
+          "StartedAt": "2026-09-19T02:18:31.491619829Z",
+          "FinishedAt": "2026-09-19T02:22:39.539660511Z"
+        },
+        "postgres": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-19T02:18:29.491987738Z",
+          "FinishedAt": "2026-09-19T02:22:39.700509945Z"
+        }
+      },
+      "finished_at": "2026-09-19T02:22:40.296004+00:00"
+    },
+    "audit": {
+      "source": "d86e14723e132ef027260ec14ad86903f0f8af2e",
+      "tree": "20524e2c887fef883f8366f5f2b257dd7fd4fc04",
+      "source_files": 700,
+      "manifest_sha256": "5ee7f9f50439bf8ee00173d7ec912ac2e3a59348edb08749b73da89943535e3d",
+      "cleanup": "owned containers stopped, network retired, no OOM",
+      "unrelated_unchanged": 20,
+      "unrelated_running": 8,
+      "running_bigbrotr": 0
+    },
+    "baseline_resources": {
+      "source": "fcd63ac25fb606f11dd50e272fb291ee72fc4c77",
+      "tree": "acb796e366a1cf82263d791aebbb30ca00c10314",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/attempt-read-fcd63ac",
+      "owner": "3cc7d31605ab43142ddb8644700e3319",
+      "container": "bigbrotr-implementation-attempt-read-fcd63ac",
+      "postgres": "bigbrotr-implementation-attempt-read-fcd63ac-pg",
+      "network": "bigbrotr-implementation-attempt-read-fcd63ac",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "state": "stopped-retained-baseline",
+      "source_files": 700,
+      "started_at": "2026-09-19T02:05:45.400141+00:00",
+      "network_id": "63b5f3e699dcc3a86a465c8327a059a95eb1e68486bd94e8b96f0ababd416333",
+      "postgres_id": "2c43dab4f7f828ae875ce427a539366b5b6e08817cce5a89d41af9422ff29d80",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "da6d6c2ec9332019e3b35d7d3a3b734556cc862a07773a1b84ae1ab56cb5e21f",
+      "network_state": "retired",
+      "terminal": {
+        "runner": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 1,
+          "Error": "",
+          "StartedAt": "2026-09-19T02:05:47.960619163Z",
+          "FinishedAt": "2026-09-19T02:06:25.397301253Z"
+        },
+        "postgres": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 0,
+          "Error": "",
+          "StartedAt": "2026-09-19T02:05:46.019734142Z",
+          "FinishedAt": "2026-09-19T02:07:36.240779851Z"
+        }
+      },
+      "finished_at": "2026-09-19T02:07:36.865503+00:00"
+    }
+  },
+  "raw_root": ".research/implementation/archive-worker/attempt-read",
+  "raw_archive_sha256": "02be56fa08e5899982da375c5efaa7cfd9badc53a2a693fdff68f9f3b2e46696",
+  "limits": [
+    "Ordinary persisted ordinals1/2 and topology0 only: malformed stored metadata and persisted u64 extremes NOT_RUN.",
+    "Same-boot ext4 and actual registered drivers/processes only; no cross-boot/host or incomplete-journal qualification.",
+    "Small five ten-fact corpora; no aged-query plan, throughput, peak RSS, power-loss or Linux arm64 claim.",
+    "Fixture consumers and private exact-source Tux runner, not installed Compose recovery or hosted GitHub Actions."
+  ],
+  "remaining_gates": [
+    "Installed lifecycle and bounded persistent resource/process reconciliation",
+    "Cross-boot/host and incomplete-journal recovery",
+    "Qualified receipt protection and source ACK/reclamation",
+    "Full M1 read/export/restart and all remaining selected product/release work"
+  ],
+  "raw_sha256": {
+    "fcd63ac/audit-and-retire-baseline.py": "e380bf08143ada027755b3a8680d006701d80a556c1079f889b47de207884779",
+    "fcd63ac/audit.json": "c962e299e812509efddda66c8a20da45b93a91daa78d052dd1a4b528fd100ac6",
+    "fcd63ac/dependency-prefetch.json": "f3d7b8c88a5a4544d374ec68501a3ad99fa28db8ddd95b729164a8b7cf11e912",
+    "fcd63ac/launch.py": "97e5ae28095073a3a11aacdfced868624ce0baf58645c77e6c82e33e1581ea95",
+    "fcd63ac/mac-source-audit.json": "e424c857a90656a70b89d74d3e1d04f017a025cf6d2c69a31a3f977eb61753c0",
+    "fcd63ac/out/native-tests/adapter/adapter.log": "75fe5a72dc14b5df47ba6c57f2c21eb551d8677d5e3a3172dbb8d553d9cc65ac",
+    "fcd63ac/out/native-tests/adapter/result.json": "c7a493332f135b69b326fac5f90b7013db21c3a437422999dfdcac49cbc67c99",
+    "fcd63ac/out/native-tests/build.log": "0ac24073038765df9143f5f23dd042f17306153afe4a373361abab122174d789",
+    "fcd63ac/out/native-tests/clippy.log": "a221d821fb984bd641c33ee57008b8e21f380d902938f0d1c1a60d9243b4d2f6",
+    "fcd63ac/out/native-tests/probe-identity.json": "d9f02b1146bd8fb5483b82d5c08dc91679bda2757eb5307ead681de226133964",
+    "fcd63ac/out/native-tests/result.json": "170bcc69f309b3d4e1acbf2f8f9bbc5859eb69ca5d967b95161e820492707cd6",
+    "fcd63ac/out/native-tests/tests.log": "b733874144e79266bb19c58edff6dac4838b3662eec905f7cebdfb79cac668f3",
+    "fcd63ac/preflight.json": "d5a8dfd9c0ddd15f6574e2ebcf5e9d52b241a9b54772164bcd104d9a2aa18d40",
+    "fcd63ac/resources.json": "fd92c50fb7ff90bfafc181c5b71afa554b31e7d92af1eb36fe6292c920268461",
+    "fcd63ac/source-manifest.json": "313a3efdccb3058a344d6da41c869a4868f71cad5ce09d3784361cdfb62e0bb6",
+    "fcd63ac/terminal-state.json": "690cb8abd8314e536fee52ac3b5436bac683d8e7401e1fdb9c257ce85e5cde15",
+    "d86e147/artifact-audit.json": "e1138ddc6d1b9fbbfc8d6529be30469cf78caf51685574dfc39d6014cab44e61",
+    "d86e147/audit.json": "653de31407723b8eb79f605b04f1809acbc7e57360c9863db03965cb9af56fa1",
+    "d86e147/custody-cases.json": "4b2ab111e4a67166f56a8ea365304a674c6cd80c9fc6278f5dd37d802fefc29e",
+    "d86e147/dependency-prefetch.json": "f3d7b8c88a5a4544d374ec68501a3ad99fa28db8ddd95b729164a8b7cf11e912",
+    "d86e147/final-correction.py": "cbfcbc5e6420445c735fe4f3df6b3afc9e5c4eb9180acd0163ac2c60356a60ec",
+    "d86e147/launch.py": "e9d23861f3fea2edc7b3ef16dd264a56413291172b1b0cf015619e6eccdb8ef6",
+    "d86e147/mac-source-audit.json": "fa595baba8350236a0aa0804065a4449e78fe680866b35efbcf1bff2c683ed38",
+    "d86e147/missing-import-cases.json": "aa4abfa78d99a12a937213f7f84dfaffa5ac64bb4a67749a6449ac3d60fd6435",
+    "d86e147/out/native-tests/build.log": "f9f76488a90155a22df52389b4300ced72bba8ea66bcf5358f5fe599c4452db8",
+    "d86e147/out/native-tests/ready.json": "3647d01dcb3f05f9b6189eec45b761857801d0d3391e192c63e7641dd601fda0",
+    "d86e147/out/native-tests/result.json": "c19fadef566d0597ea3a370159d882c3e945eedeaef6c042ba6ca3511dfba25c",
+    "d86e147/out/native-tests/retained/adapter.log": "64069270ee1dfd003770aeae28f40007a1bacf0ea0ae5d6ab8c203abc701f98a",
+    "d86e147/out/native-tests/retained/result.json": "377721a45e7264a8e1f04c4980bf23f0b28936197cbdf108dc1bba9a74e6c610",
+    "d86e147/out/native-tests/retained-build.log": "176be4b199e9b549a4c2f54cb115f242749bd98e2aa1216641092d72d326e747",
+    "d86e147/out/native-tests/retained-clippy.log": "12bb4fc86520b962f25f702c0a049f1871dadd5627fe17d1a940048af855c2ec",
+    "d86e147/out/native-tests/retained-tests.log": "9c2e232b2bad5b3a266a4ca6e9cbdc6f29d08a237dbc73937dd8ffbdf532cad6",
+    "d86e147/out/native-tests/signed-fixtures.log": "c63d77028385acaad8c50430dd68e732ac405d715204f3563951803109e493a5",
+    "d86e147/preflight.json": "8d1e0c086eb12c3e0c9aaefbc09d5980160ca6babb1e2254412983481f58d06a",
+    "d86e147/resources.json": "283da91115c0fa97e39074b5903c9b9bc7d67bbe54f7b9e5c584f6aa140269e3",
+    "d86e147/retire-correction.py": "7fa3b555329f9d76fbe084a47df52cc56d501d9c90c49113b1777159ad723140",
+    "d86e147/source-manifest.json": "5ee7f9f50439bf8ee00173d7ec912ac2e3a59348edb08749b73da89943535e3d",
+    "d86e147/terminal-state.json": "4d931d59798364a55a57ec94f4bc25613f0477ac80e2ae3f38068e87a2d9d1ea",
+    "baseline-clippy.log": "573045314b9eca22f7470005d12816bb7ec0771e76ae10e1cbaa150bea384d90",
+    "baseline-local-tests.log": "baaa9a10920ce0c83eba1e5802da615ac6dcc97d4246fa5f36b146515636f7c0",
+    "baseline-artifacts.log": "6ecce5a6dadc333d117431b9f18bb9f40416bbb3a282b2ca156876ad6105363a",
+    "baseline-transfer.log": "e25587827fc1fac31d1648fe8d1fe88060d53d83f017480480f075125402c491",
+    "baseline-retirement.log": "f8f9705ed9b5359eea9f000a229458c485bb434423cd9c9b5a257c981e7abbb5",
+    "baseline-collection.log": "68e71d57cbb8315fa6c19d42af8b5286928b774c9bcaf67b1fc60463e924221b",
+    "reader-clippy.log": "2c74dbe74bb7b46b5e3af75b6b54c309ddbb8e4d0d657c7025909815ed88b5c0",
+    "consumer-clippy.log": "85f3249bc55f49370f04300b98d8bbf2f2795edd34b4f93fe544e4820c12b40b",
+    "correction-artifacts.log": "6ecce5a6dadc333d117431b9f18bb9f40416bbb3a282b2ca156876ad6105363a",
+    "correction-handoff.json": "4f03a9b80df347dfe403cd28590f05de0fb3cbe669ba66e9a72a7139217fd9c7",
+    "correction-handoff.log": "ee8eadd6d9e56bf71bf32f08fd2c8f0f77158711c59cb10ef93b2018438b98e1",
+    "correction-transfer.log": "c89fb192bf3770ed73688582e24104166f387763dd717424849b9c0f752e83fd",
+    "correction-custody.log": "2abc22844137447e34d67464ab788f4f5b9ca1b37b42f8cb59f7f362a5afc96c",
+    "correction-terminal.log": "bbcbf3742fbc36c8e2fda39f85dd184abebd0182dee008e027738b58b75bbbbd",
+    "correction-retirement.log": "ea9e47b1a0549c60843f893acef6cfd797f13d78c33a7506e516091ce8d780b6",
+    "correction-collection.log": "47c5170792c4d48b72012b01ab78abbbe15a1a98f79a1b8dcd151d7a4d1bde3f",
+    "correction-host.log": "9ad56ee251235060c383839dfed98cc893d7753be90cfff06279e2d1e9ff6ecb",
+    "collect-correction.py": "d508c001ce43189b9fea3915d88bd29807bf3bde4689228af6a3c6ed12419615"
+  }
+}

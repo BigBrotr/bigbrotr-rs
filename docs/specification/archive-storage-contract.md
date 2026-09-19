@@ -171,10 +171,13 @@ bounded numeric text keep the one-row response finite. No new ledger or migratio
 is needed. Issuer attribution and issue time remain retained SQL history; this
 receipt API does not return them. The baseline atfcd63ac passed13 structural Rust
 cases and failed the actual retained-row assertion (None instead of Some). The
-bounded read and custody consumer are now implemented locally; corrected native
-qualification is pending, including fresh actual observer processes. The current
-probe's valid ordinals1/2 and topology0 do not qualify malformed stored metadata
-or u64-extreme persisted values.
+bounded read and custody consumer at `d86e147` now have
+[native qualification](../implementation/evidence/p02-retained-attempt-read-native-20260919.json):
+13 structure cases, the actual Control read/cancellation probe and five affected
+custody/missing-import journeys with fresh observer processes and ten clone
+controls. No input sidecar or registration retry is required. Valid ordinals1/2
+and topology0 do not qualify malformed stored metadata or u64-extreme values;
+installed lifecycle/resource reconciliation remains required.
 
 Infrastructure endpoints are operator-supplied trusted routes, distinct from
 untrusted relay/discovery URLs. Private PG/CH/S3/RPC endpoints are valid; keep
