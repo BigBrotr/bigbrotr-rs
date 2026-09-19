@@ -21,22 +21,18 @@ installed service readiness.
 
 ## Actual Git and ownership
 
-Mac main HEAD d21eaccba745490fd6211fab61a718d2653fe450, one unpublished
-fixture commit ahead of verified origin/main ac13f11e150b6b845d798c3e13a51aeecbff11e5.
-All three authentication commits were pushed normally; GitHub confirms repository
-BigBrotr/bigbrotr-rs is private. Root is sole writer, no merge/rebase. The native
-revision remains e98f484; ac13f11 records qualification only. Current root-owned dirty work: catalog_guard.rs/inspection.rs plus new installation.rs/
-privileges.rs, catalog_install_probe.rs, native installer builder/cases, owning
-contract/task and inventory/checkpoint. Mac implementation compiles/Clippy PASS;
-new native qualification NOT_RUN. No other writer. Final Mac formatting, scoped
-Clippy (library and installer example), Python/artifact checks and diff checks PASS.
-Read-only AI source review of installer/ACL predicates and complete harness found
-missing ordinary manager rights, PUBLIC/default ACL/delegation and membership
-checks; all corrected before native execution. Failure output is retained before
-assertion, role comparisons include server-side credential/row fingerprints, and
-ambiguous-COMMIT backend drain is bounded. The final concurrency fixture retains
-actual advisory-lock waiter/blocker IDs; per-case normalized catalog dump hashes
-and initial/installed full snapshots are retained. Reviewer ran no native cases.
+Mac main HEAD 4404a1630300a75453280744cefa9f7cf0973ebe, two unpublished
+fixture/implementation commits ahead of verified origin/main ac13f11e150b6b845d798c3e13a51aeecbff11e5.
+All three authentication commits were pushed normally; repository remains private.
+Root is sole writer. Dirty harness/checkpoint/inventory correct the first native
+fixture failure. Candidate4404a16 build/three credential tests/Clippy PASS; native
+suite FAIL after its first install because data-only pg_dump owner comments change
+with intended ownership. Independent retained COPY comparison:28 blocks,224 rows
+identical; changed-table and missing-block negative controls refuse. No product
+change. Corrected harness compares complete COPY headers/rows with nonempty/table
+preconditions; full catalog dumps still guard refusal/no-mutation cases. It also
+persists observed probe JSON before any subsequent audit I/O (AI review finding).
+Mac source row comparison and Python checks PASS; corrected native suite NOT_RUN.
 
 ## Installed catalog inspection qualified within its scope
 
@@ -119,6 +115,19 @@ ELF bytes/full host inventory locally. Root reviewed the complete change diff.
 
 ## Owned resources
 
+Stopped-retained catalog-install-4404a16 owner2b037967476967d24ea43e7c9860b770:
+runnerfba591746d3e1721daf77e84b06a59ea4a908a51a484a58a646c58a5238b1986,
+PG2ed4c54bf3ca7232c7b2d70498d4bc4cf817cfc3b5662699f5334baec70948e4.
+Source tree47aa62bb0c76de6095c322ab9d5b831355106ec9,722 files. Native99281 terminal1;
+audit55319 terminal0,collection28487 terminal0.15 raw files and all722 source files
+verified. Tar2e3ed2a2d4d5b94156f16f40776a6e723dafecadabf6fa3b02ee7dec846c329c;
+raw catalog-ownership/failed-owner-comments; diagnosis in failure-diagnostics.
+Runner stopped143,PG0,no OOM,292 preexisting containers unchanged,8 unrelated
+running,zero BigBrotr. Verified empty retired networks for4404a16 andd21eacc were
+removed to release Docker address pools; all containers/data retained. Inventory
+records exact IDs/times. No active experiment. Next source copies4404a16 build cache
+and mounts its native assets read-only; no retired lab restart.
+
 Both catalog-auth labs under /home/tux/bigbrotr-implementation-20260917/runs/
 are stopped-retained. Inventory catalog_native_authentication owns full identities.
 That terminal audit predates the new active catalog-install-d21eacc lab below.
@@ -137,7 +146,7 @@ Raw root .research/implementation/archive-worker/catalog-ownership; inventory
 catalog_installed_ownership. Audit26208 terminal0,collection1832 terminal0;14 raw
 files verified, tar19951df7132b7bc83c47ee23cfa39cc8ed638e42dc79b9f788340c81e2122ae6.
 All290 preexisting containers unchanged; eight unrelated running, zero BigBrotr.
-Runner stopped143,PG stopped0,no OOM, network empty-retained. No active experiment.
+Runner stopped143,PG stopped0,no OOM, network empty-retained. Both installation labs are stopped-retained.
 Latest cache/assets: catalog-install-d21eacc/out/{build,archive-worker}, copy/RO only.
 Initial launch83125 failed before network creation because Docker address pools
 were exhausted. Verified and removed only the two empty retired auth networks
@@ -200,8 +209,8 @@ Do not mechanically rerun unrelated suites.
 
 Implement the explicit fresh initializer under P02-T04 steps3/4/5, starting with
 one atomic install_for_manager operation: configured manager OID, exact object
-ownership transfer, retired bootstrap OID and privilege closure. Baseline counterexamples are collected. Finish source/harness review, Mac checks,
-then commit/transfer the ownership/ACL candidate and run its real PG cases, including
+ownership transfer, retired bootstrap OID and privilege closure. Baseline counterexamples and4404a16 fixture FAIL are collected. Commit/transfer
+the corrected harness (production inputs unchanged), then run its real PG cases, including
 expected role OIDs, named-reader compatibility, invalid defaults/columns/PUBLIC,
 missing manager rights, rollback, COMMIT ambiguity and concurrent installers.
 Native mutual TLS and complete reserved initializer/CLI remain required.

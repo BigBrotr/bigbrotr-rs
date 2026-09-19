@@ -14,6 +14,22 @@ import lab
 from fault_cases import Process
 
 
+def native_rows(text):
+    """Compare all 28 native COPY headers/rows; pg_dump owner comments must change."""
+    blocks, current = [], None
+    for line in text.splitlines():
+        if line.startswith('COPY '):
+            assert current is None and line.startswith('COPY public.')
+            current = [line]
+        elif current is not None:
+            current.append(line)
+            if line == '\\.':
+                blocks.append(current)
+                current = None
+    assert current is None and len(blocks) == 28 and any(len(b) > 2 for b in blocks)
+    return blocks
+
+
 def main(root):
     state = json.loads((root / 'resources.json').read_text())
     assert SOURCE == root / 'source' and state['root'] == str(root) and state['state'] == 'running'
@@ -53,6 +69,7 @@ def main(root):
         args = ['exec', state['postgres_id'], 'pg_dump', '-U', 'postgres', '-d', database]
         if data: args += ['--data-only', '--schema=public']
         result = lab.docker(*args).stdout
+        if data: return native_rows(result)
         return '\n'.join(line for line in result.splitlines() if not line.startswith(('\\restrict ', '\\unrestrict ')))
 
     def role_state():
@@ -86,8 +103,9 @@ def main(root):
         observed = json.loads(value.stdout)
         assert isinstance(observed,dict) and set(observed)=={'outcome','commit_started','session_superuser','active_permits'}
         assert observed['outcome'] in {'installed','existing','inspected','InvalidInput','Backend','IncompatibleEngine','IncompatibleLayout','WrongCatalog','UnsafeRole','ExistingData','Conflict','CommitUnknown','ResourceLimit','Entropy'}
+        case['observed'] = observed; save()
         after, roles_after = dump(database), role_state()
-        case.update(observed=observed, catalog_before_sha256=hashlib.sha256(before.encode()).hexdigest(),
+        case.update(catalog_before_sha256=hashlib.sha256(before.encode()).hexdigest(),
                     catalog_after_sha256=hashlib.sha256(after.encode()).hexdigest(),
                     roles_before_fingerprint=roles, roles_after_fingerprint=roles_after); save()
         assert value.returncode==0 and not value.stderr
