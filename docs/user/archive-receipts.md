@@ -68,7 +68,10 @@ or preflight,4 cancelled/unresolved. A blocked stdout may cause exit1 after a
 completed observation/release. Repeating inspection creates a fresh observation.
 No readiness or full recovery guarantee follows from a successful command.
 
-The integrated CLI's native qualification is pending. Existing native reader
-fixtures cover READ_ONLY engine/SELECT-only access separately; this command's
-custody/fsync path on a read-only data mount remains to be exercised. No Linux
-arm64, cross-boot restore, complete Archive service or M1 qualification is claimed.
+The [native CLI qualification](../implementation/evidence/p02-receipt-cli-native-20260919.json)
+at `d78bcc5` covers 22 retained attempts, refusal boundaries, real blocked-reader
+supervision and cancellation, and Present/Absent through readonly data/state bind
+mounts with writable disjoint scratch. The latter exercises actual custody locks
+and file/directory synchronization; it does not make other host mounts immutable.
+The initial 512MiB worker scan limit remains finite. No Linux arm64, signed native
+mTLS, cross-boot restore, complete Archive service or M1 qualification is claimed.

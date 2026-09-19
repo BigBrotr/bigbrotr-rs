@@ -410,8 +410,14 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   linked above. The installed [finite receipt command](../user/archive-receipts.md)
   now consumes retained Control/local inputs under supervised accepted policy,
   shared process budgets and independently inspected SELECT-only credentials.
-  Its new native CLI matrix is pending; earlier reader evidence does not qualify
-  its supervisor, policy-change or privilege-refusal paths.
+  [Sixteen native CLI cases at `d78bcc5`](evidence/p02-receipt-cli-native-20260919.json)
+  qualify 22 original retained observations, missing/corrupt inputs, scan/resource
+  limits, accepted-policy seed drift, effective privilege refusals, readonly data/
+  state mounts and actual blocked-reader supervision/cancellation. All catalog
+  statements/data (apart from one ACL block's grant ordering), original Control
+  rows and 106 data/state files remain unchanged. Three failed development matrices
+  are retained with their fixture corrections. This observation grants no replay,
+  writer exclusion, protection or reclamation; lifecycle recovery remains required.
   The new [private receipt consumer](../reference/archive-handoff.md#fresh-receipt-observation-candidate)
   uses the actual supervised worker, complete retained batch/attempt identity,
   readonly binding/attach and a bounded full-field scan through EOF. It refuses

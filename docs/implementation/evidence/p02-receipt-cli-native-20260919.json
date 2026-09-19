@@ -1,0 +1,1124 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "status": "PASS within the finite installed receipt observation scope",
+  "source": "d78bcc5bbf660fc0a7bca8807508a6c357e619d5",
+  "tree": "bd11aff821023718a42cba7b3eb35ec7311211fb",
+  "implementation": "Installed archive receipt-inspect consumes exact retained Control/local input identity under supervised policy and shared budgets. It performs full manager/reader privilege inspection, then fresh native full-catalog observation, joins work and releases Control. No SQL migration or persistent format change.",
+  "environment": {
+    "platform": "native Linux amd64/ext4 on isolated Tux",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "runner_limits": {
+      "cpu": 2,
+      "memory_bytes": 6442450944,
+      "pids": 512
+    },
+    "postgres_limits": {
+      "cpu": 1,
+      "memory_bytes": 1073741824,
+      "pids": 128
+    },
+    "network": "internal; no host ports or CI/release keys"
+  },
+  "identity": {
+    "source_archive_sha256": "39a6f388d00a4a57a9bfd83513fe369526ecaaca6d38613d1b6816f84ca4e15a",
+    "source_manifest_sha256": "382bc895553ea702d262039dfee83fa8f4a84e1e77cc93b3dbe446a787c2392c",
+    "inputs_sha256": {
+      "Cargo.lock": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215",
+      "contracts/protocol/nip01-event.json": "b830d5ab8651f5a763ebcffdc0eb1737ba70f4602c93fc714c892865ffca2db8",
+      "contracts/protocol/versions.json": "37c76706c5a2aa4fc72a40aeed908f104620eafcee1118b7cee8baf133546c95",
+      "contracts/release/dependencies.json": "4f73cd0a81916b7d203556ff9ad1d8efd97dfe95b2b2305c35468747e8669132",
+      "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167"
+    },
+    "artifacts": {
+      "main": {
+        "sha256": "e9f7bb6541f7f2797b41afc27ddd979859481147b290889569fcb938629ca59e",
+        "bytes": 9172936,
+        "elf_machine": 62
+      },
+      "worker": {
+        "sha256": "89e46e831e8e12f7e60b249493a619af4cd3bca7d984ec7a06574ede3d6f0b9f",
+        "bytes": 12608608,
+        "elf_machine": 62
+      },
+      "publisher": {
+        "sha256": "fd259e6db3f33806404ede2fd3cf25777f7db689fbf5570383a004e1bc6c2901",
+        "bytes": 18984440,
+        "elf_machine": 62
+      },
+      "coordinator_probe": {
+        "sha256": "9744fd81413c85ea89cdc18a70a4cc62241b92f50a1b2915bd4ea96dbe1a7372",
+        "bytes": 694584,
+        "elf_machine": 62
+      },
+      "attempt_probe": {
+        "sha256": "fee159f3ca2d442e190ddf8680df776e4994cbd759f8ac4942b61ed1131a1630",
+        "bytes": 2642440,
+        "elf_machine": 62
+      }
+    }
+  },
+  "build": {
+    "entrypoints": [
+      "tools.build.build_binaries",
+      "tools.ci.execute",
+      "experiments/archive-engine/native_initialization.py --publication"
+    ],
+    "status": "PASS",
+    "tests": {
+      "archive_passed": 47,
+      "archive_ignored": 1,
+      "binary_passed": 8,
+      "catalog_cli_passed": 13,
+      "control_runtime_cli_passed": 1
+    },
+    "clippy": "PASS; selected actual native application/worker/library/fixtures"
+  },
+  "practical": {
+    "harness": "experiments/archive-engine/receipt_cli_cases.py",
+    "harness_sha256": "ed41a728949714c44e7c65855d5293a3f4f3b6a41f8ec4ca99871ac268a3dc6a",
+    "commands": 39,
+    "supervised_processes": 5,
+    "signed_producer_schedules": 6,
+    "retained_attempt_observations": 22,
+    "observation_classes": {
+      "conflict": 9,
+      "present": 11,
+      "absent": 2
+    },
+    "cases": [
+      {
+        "name": "signed-retained-observations-normal",
+        "status": "PASS"
+      },
+      {
+        "name": "signed-retained-observations-before",
+        "status": "PASS"
+      },
+      {
+        "name": "signed-retained-observations-after",
+        "status": "PASS"
+      },
+      {
+        "name": "signed-retained-observations-owner_first",
+        "status": "PASS"
+      },
+      {
+        "name": "signed-retained-observations-held_commit",
+        "status": "PASS"
+      },
+      {
+        "name": "signed-retained-observations-held_rollback",
+        "status": "PASS"
+      },
+      {
+        "name": "missing-control-missing-input-corrupt-input-never-absent",
+        "status": "PASS"
+      },
+      {
+        "name": "complete-scan-boundary-native-floor-and-managed-seed-drift",
+        "status": "PASS"
+      },
+      {
+        "name": "effective-reader-privilege-refusals-and-identical-retry",
+        "status": "PASS"
+      },
+      {
+        "name": "readonly-data-and-state-mount-present-and-absent",
+        "status": "PASS",
+        "container_id": "19686bc07c9653253f683c5c205d22ca626923a0d87c8c87ae4eb707fed3b995",
+        "kernel_write_refusals": [
+          {
+            "path": "/out/signed_normal/kind=7/.bigbrotr-initialization/intent.json",
+            "write_errno": 30,
+            "readonly": true
+          },
+          {
+            "path": "/out/signed_normal/archive-state/coordinator.json",
+            "write_errno": 30,
+            "readonly": true
+          },
+          {
+            "path": "/out/signed_before/kind=7/.bigbrotr-initialization/intent.json",
+            "write_errno": 30,
+            "readonly": true
+          },
+          {
+            "path": "/out/signed_before/archive-state/coordinator.json",
+            "write_errno": 30,
+            "readonly": true
+          }
+        ]
+      },
+      {
+        "name": "native-blocked-read-keeps-control-heartbeats",
+        "status": "PASS",
+        "observed": {
+          "pid": 1363,
+          "backend_start": "2026-09-19T14:49:53.699786+00:00",
+          "application_name": "bigbrotr-archive-receipt",
+          "blockers": [
+            1362
+          ]
+        },
+        "before": "1789829452995608",
+        "after": "1789829455995995"
+      },
+      {
+        "name": "blocked-native-int-joins-without-observation",
+        "status": "PASS",
+        "observed": {
+          "pid": 1417,
+          "backend_start": "2026-09-19T14:49:57.891159+00:00",
+          "application_name": "bigbrotr-archive-receipt",
+          "blockers": [
+            1416
+          ]
+        },
+        "elapsed_seconds": 0.10738149518147111
+      },
+      {
+        "name": "blocked-native-term-joins-without-observation",
+        "status": "PASS",
+        "observed": {
+          "pid": 1449,
+          "backend_start": "2026-09-19T14:49:59.083465+00:00",
+          "application_name": "bigbrotr-archive-receipt",
+          "blockers": [
+            1448
+          ]
+        },
+        "elapsed_seconds": 0.11237619305029511
+      },
+      {
+        "name": "blocked-native-policy-joins-without-observation",
+        "status": "PASS",
+        "observed": {
+          "pid": 1482,
+          "backend_start": "2026-09-19T14:50:00.318264+00:00",
+          "application_name": "bigbrotr-archive-receipt",
+          "blockers": [
+            1481
+          ]
+        },
+        "elapsed_seconds": 0.1710437503643334
+      },
+      {
+        "name": "blocked-native-lease-joins-without-observation",
+        "status": "PASS",
+        "observed": {
+          "pid": 1528,
+          "backend_start": "2026-09-19T14:50:01.71111+00:00",
+          "application_name": "bigbrotr-archive-receipt",
+          "blockers": [
+            1527
+          ]
+        },
+        "elapsed_seconds": 5.189262280706316
+      },
+      {
+        "name": "all-catalog-rows-and-retained-files-unchanged",
+        "status": "PASS",
+        "canonical_catalog_sha256": {
+          "normal": "3dfd2f5915300a1d18a88ea20912abe7bbfbb8b85e5af13150f136a63e5f4e91",
+          "before": "0e443e37f170a279441fa821fb6d9321b8f7d9ccceb5595c283957c9a8e4474c",
+          "after": "39665d426f20d44a70d278d3e7711aa879f6866a061599be445a84714d2dae76",
+          "owner_first": "4afb15f3c8e2c023bf97feffb7faa9c894ac4dee22e6242c57569932424cdf25",
+          "held_commit": "9378c0b8bd0256f999619634a84ce9bc4d8e5508e31a0b8575b8b32661bc10be",
+          "held_rollback": "c7e8e731db074f447d9a715e4ffdc75a1e5993e292f35c2d003dc1cdc15b6410"
+        }
+      }
+    ],
+    "proxies": [
+      {
+        "ready": {
+          "event": "ready",
+          "mode": "hold-reader-query",
+          "target": "publication",
+          "connections": 0,
+          "bytes": 0,
+          "frames": 0,
+          "data_queries": 0,
+          "data_commits": 0,
+          "server_complete": 0,
+          "client_complete": 0,
+          "faults": 0,
+          "owner_requests": 0,
+          "owner_forwarded": 0,
+          "owner_complete": 0,
+          "guard_rejections": 0,
+          "serialization_rejections": 0,
+          "rejection_sequence": [],
+          "auth_finals_omitted": 0,
+          "frontend_queries": 0,
+          "coordinator_inserts": 0,
+          "port": 38167,
+          "source_sha256": "e58f2ee6c12494ee2a4240a2509612b0358361f138be3a6c4bab15b7cb9ed2cd"
+        },
+        "held": {
+          "event": "held",
+          "mode": "hold-reader-query",
+          "target": "publication",
+          "connections": 2,
+          "bytes": 129020,
+          "frames": 2424,
+          "data_queries": 0,
+          "data_commits": 0,
+          "server_complete": 0,
+          "client_complete": 0,
+          "faults": 0,
+          "owner_requests": 0,
+          "owner_forwarded": 0,
+          "owner_complete": 0,
+          "guard_rejections": 0,
+          "serialization_rejections": 0,
+          "rejection_sequence": [],
+          "auth_finals_omitted": 0,
+          "frontend_queries": 95,
+          "coordinator_inserts": 0,
+          "stage": "reader-query",
+          "backend_pid": 1348
+        },
+        "manager_backends_before_lock": 0,
+        "released": {
+          "event": "released",
+          "mode": "hold-reader-query",
+          "target": "publication",
+          "connections": 2,
+          "bytes": 129020,
+          "frames": 2424,
+          "data_queries": 0,
+          "data_commits": 0,
+          "server_complete": 0,
+          "client_complete": 0,
+          "faults": 0,
+          "owner_requests": 0,
+          "owner_forwarded": 0,
+          "owner_complete": 0,
+          "guard_rejections": 0,
+          "serialization_rejections": 0,
+          "rejection_sequence": [],
+          "auth_finals_omitted": 0,
+          "frontend_queries": 95,
+          "coordinator_inserts": 0,
+          "action": "release"
+        },
+        "terminal": {
+          "event": "terminal",
+          "mode": "hold-reader-query",
+          "target": "publication",
+          "connections": 3,
+          "bytes": 682607,
+          "frames": 7980,
+          "data_queries": 0,
+          "data_commits": 0,
+          "server_complete": 0,
+          "client_complete": 0,
+          "faults": 0,
+          "owner_requests": 0,
+          "owner_forwarded": 0,
+          "owner_complete": 0,
+          "guard_rejections": 0,
+          "serialization_rejections": 0,
+          "rejection_sequence": [],
+          "auth_finals_omitted": 0,
+          "frontend_queries": 151,
+          "coordinator_inserts": 0,
+          "unexpected": 0
+        }
+      },
+      {
+        "ready": {
+          "event": "ready",
+          "mode": "hold-reader-query",
+          "target": "publication",
+          "connections": 0,
+          "bytes": 0,
+          "frames": 0,
+          "data_queries": 0,
+          "data_commits": 0,
+          "server_complete": 0,
+          "client_complete": 0,
+          "faults": 0,
+          "owner_requests": 0,
+          "owner_forwarded": 0,
+          "owner_complete": 0,
+          "guard_rejections": 0,
+          "serialization_rejections": 0,
+          "rejection_sequence": [],
+          "auth_finals_omitted": 0,
+          "frontend_queries": 0,
+          "coordinator_inserts": 0,
+          "port": 36975,
+          "source_sha256": "e58f2ee6c12494ee2a4240a2509612b0358361f138be3a6c4bab15b7cb9ed2cd"
+        },
+        "held": {
+          "event": "held",
+          "mode": "hold-reader-query",
+          "target": "publication",
+          "connections": 2,
+          "bytes": 129020,
+          "frames": 2424,
+          "data_queries": 0,
+          "data_commits": 0,
+          "server_complete": 0,
+          "client_complete": 0,
+          "faults": 0,
+          "owner_requests": 0,
+          "owner_forwarded": 0,
+          "owner_complete": 0,
+          "guard_rejections": 0,
+          "serialization_rejections": 0,
+          "rejection_sequence": [],
+          "auth_finals_omitted": 0,
+          "frontend_queries": 95,
+          "coordinator_inserts": 0,
+          "stage": "reader-query",
+          "backend_pid": 1402
+        },
+        "manager_backends_before_lock": 0,
+        "released": {
+          "event": "released",
+          "mode": "hold-reader-query",
+          "target": "publication",
+          "connections": 2,
+          "bytes": 129020,
+          "frames": 2424,
+          "data_queries": 0,
+          "data_commits": 0,
+          "server_complete": 0,
+          "client_complete": 0,
+          "faults": 0,
+          "owner_requests": 0,
+          "owner_forwarded": 0,
+          "owner_complete": 0,
+          "guard_rejections": 0,
+          "serialization_rejections": 0,
+          "rejection_sequence": [],
+          "auth_finals_omitted": 0,
+          "frontend_queries": 95,
+          "coordinator_inserts": 0,
+          "action": "release"
+        },
+        "terminal": {
+          "event": "terminal",
+          "mode": "hold-reader-query",
+          "target": "publication",
+          "connections": 3,
+          "bytes": 660873,
+          "frames": 7712,
+          "data_queries": 0,
+          "data_commits": 0,
+          "server_complete": 0,
+          "client_complete": 0,
+          "faults": 0,
+          "owner_requests": 0,
+          "owner_forwarded": 0,
+          "owner_complete": 0,
+          "guard_rejections": 0,
+          "serialization_rejections": 0,
+          "rejection_sequence": [],
+          "auth_finals_omitted": 0,
+          "frontend_queries": 141,
+          "coordinator_inserts": 0,
+          "unexpected": 0
+        }
+      },
+      {
+        "ready": {
+          "event": "ready",
+          "mode": "hold-reader-query",
+          "target": "publication",
+          "connections": 0,
+          "bytes": 0,
+          "frames": 0,
+          "data_queries": 0,
+          "data_commits": 0,
+          "server_complete": 0,
+          "client_complete": 0,
+          "faults": 0,
+          "owner_requests": 0,
+          "owner_forwarded": 0,
+          "owner_complete": 0,
+          "guard_rejections": 0,
+          "serialization_rejections": 0,
+          "rejection_sequence": [],
+          "auth_finals_omitted": 0,
+          "frontend_queries": 0,
+          "coordinator_inserts": 0,
+          "port": 41411,
+          "source_sha256": "e58f2ee6c12494ee2a4240a2509612b0358361f138be3a6c4bab15b7cb9ed2cd"
+        },
+        "held": {
+          "event": "held",
+          "mode": "hold-reader-query",
+          "target": "publication",
+          "connections": 2,
+          "bytes": 129028,
+          "frames": 2424,
+          "data_queries": 0,
+          "data_commits": 0,
+          "server_complete": 0,
+          "client_complete": 0,
+          "faults": 0,
+          "owner_requests": 0,
+          "owner_forwarded": 0,
+          "owner_complete": 0,
+          "guard_rejections": 0,
+          "serialization_rejections": 0,
+          "rejection_sequence": [],
+          "auth_finals_omitted": 0,
+          "frontend_queries": 95,
+          "coordinator_inserts": 0,
+          "stage": "reader-query",
+          "backend_pid": 1434
+        },
+        "manager_backends_before_lock": 0,
+        "released": {
+          "event": "released",
+          "mode": "hold-reader-query",
+          "target": "publication",
+          "connections": 2,
+          "bytes": 129028,
+          "frames": 2424,
+          "data_queries": 0,
+          "data_commits": 0,
+          "server_complete": 0,
+          "client_complete": 0,
+          "faults": 0,
+          "owner_requests": 0,
+          "owner_forwarded": 0,
+          "owner_complete": 0,
+          "guard_rejections": 0,
+          "serialization_rejections": 0,
+          "rejection_sequence": [],
+          "auth_finals_omitted": 0,
+          "frontend_queries": 95,
+          "coordinator_inserts": 0,
+          "action": "release"
+        },
+        "terminal": {
+          "event": "terminal",
+          "mode": "hold-reader-query",
+          "target": "publication",
+          "connections": 3,
+          "bytes": 660881,
+          "frames": 7712,
+          "data_queries": 0,
+          "data_commits": 0,
+          "server_complete": 0,
+          "client_complete": 0,
+          "faults": 0,
+          "owner_requests": 0,
+          "owner_forwarded": 0,
+          "owner_complete": 0,
+          "guard_rejections": 0,
+          "serialization_rejections": 0,
+          "rejection_sequence": [],
+          "auth_finals_omitted": 0,
+          "frontend_queries": 141,
+          "coordinator_inserts": 0,
+          "unexpected": 0
+        }
+      },
+      {
+        "ready": {
+          "event": "ready",
+          "mode": "hold-reader-query",
+          "target": "publication",
+          "connections": 0,
+          "bytes": 0,
+          "frames": 0,
+          "data_queries": 0,
+          "data_commits": 0,
+          "server_complete": 0,
+          "client_complete": 0,
+          "faults": 0,
+          "owner_requests": 0,
+          "owner_forwarded": 0,
+          "owner_complete": 0,
+          "guard_rejections": 0,
+          "serialization_rejections": 0,
+          "rejection_sequence": [],
+          "auth_finals_omitted": 0,
+          "frontend_queries": 0,
+          "coordinator_inserts": 0,
+          "port": 35999,
+          "source_sha256": "e58f2ee6c12494ee2a4240a2509612b0358361f138be3a6c4bab15b7cb9ed2cd"
+        },
+        "held": {
+          "event": "held",
+          "mode": "hold-reader-query",
+          "target": "publication",
+          "connections": 2,
+          "bytes": 129028,
+          "frames": 2424,
+          "data_queries": 0,
+          "data_commits": 0,
+          "server_complete": 0,
+          "client_complete": 0,
+          "faults": 0,
+          "owner_requests": 0,
+          "owner_forwarded": 0,
+          "owner_complete": 0,
+          "guard_rejections": 0,
+          "serialization_rejections": 0,
+          "rejection_sequence": [],
+          "auth_finals_omitted": 0,
+          "frontend_queries": 95,
+          "coordinator_inserts": 0,
+          "stage": "reader-query",
+          "backend_pid": 1467
+        },
+        "manager_backends_before_lock": 0,
+        "released": {
+          "event": "released",
+          "mode": "hold-reader-query",
+          "target": "publication",
+          "connections": 2,
+          "bytes": 129028,
+          "frames": 2424,
+          "data_queries": 0,
+          "data_commits": 0,
+          "server_complete": 0,
+          "client_complete": 0,
+          "faults": 0,
+          "owner_requests": 0,
+          "owner_forwarded": 0,
+          "owner_complete": 0,
+          "guard_rejections": 0,
+          "serialization_rejections": 0,
+          "rejection_sequence": [],
+          "auth_finals_omitted": 0,
+          "frontend_queries": 95,
+          "coordinator_inserts": 0,
+          "action": "release"
+        },
+        "terminal": {
+          "event": "terminal",
+          "mode": "hold-reader-query",
+          "target": "publication",
+          "connections": 3,
+          "bytes": 660881,
+          "frames": 7712,
+          "data_queries": 0,
+          "data_commits": 0,
+          "server_complete": 0,
+          "client_complete": 0,
+          "faults": 0,
+          "owner_requests": 0,
+          "owner_forwarded": 0,
+          "owner_complete": 0,
+          "guard_rejections": 0,
+          "serialization_rejections": 0,
+          "rejection_sequence": [],
+          "auth_finals_omitted": 0,
+          "frontend_queries": 141,
+          "coordinator_inserts": 0,
+          "unexpected": 0
+        }
+      },
+      {
+        "ready": {
+          "event": "ready",
+          "mode": "hold-reader-query",
+          "target": "publication",
+          "connections": 0,
+          "bytes": 0,
+          "frames": 0,
+          "data_queries": 0,
+          "data_commits": 0,
+          "server_complete": 0,
+          "client_complete": 0,
+          "faults": 0,
+          "owner_requests": 0,
+          "owner_forwarded": 0,
+          "owner_complete": 0,
+          "guard_rejections": 0,
+          "serialization_rejections": 0,
+          "rejection_sequence": [],
+          "auth_finals_omitted": 0,
+          "frontend_queries": 0,
+          "coordinator_inserts": 0,
+          "port": 44221,
+          "source_sha256": "e58f2ee6c12494ee2a4240a2509612b0358361f138be3a6c4bab15b7cb9ed2cd"
+        },
+        "held": {
+          "event": "held",
+          "mode": "hold-reader-query",
+          "target": "publication",
+          "connections": 2,
+          "bytes": 129028,
+          "frames": 2424,
+          "data_queries": 0,
+          "data_commits": 0,
+          "server_complete": 0,
+          "client_complete": 0,
+          "faults": 0,
+          "owner_requests": 0,
+          "owner_forwarded": 0,
+          "owner_complete": 0,
+          "guard_rejections": 0,
+          "serialization_rejections": 0,
+          "rejection_sequence": [],
+          "auth_finals_omitted": 0,
+          "frontend_queries": 95,
+          "coordinator_inserts": 0,
+          "stage": "reader-query",
+          "backend_pid": 1513
+        },
+        "manager_backends_before_lock": 0,
+        "released": {
+          "event": "released",
+          "mode": "hold-reader-query",
+          "target": "publication",
+          "connections": 2,
+          "bytes": 129028,
+          "frames": 2424,
+          "data_queries": 0,
+          "data_commits": 0,
+          "server_complete": 0,
+          "client_complete": 0,
+          "faults": 0,
+          "owner_requests": 0,
+          "owner_forwarded": 0,
+          "owner_complete": 0,
+          "guard_rejections": 0,
+          "serialization_rejections": 0,
+          "rejection_sequence": [],
+          "auth_finals_omitted": 0,
+          "frontend_queries": 95,
+          "coordinator_inserts": 0,
+          "action": "release"
+        },
+        "terminal": {
+          "event": "terminal",
+          "mode": "hold-reader-query",
+          "target": "publication",
+          "connections": 3,
+          "bytes": 660881,
+          "frames": 7712,
+          "data_queries": 0,
+          "data_commits": 0,
+          "server_complete": 0,
+          "client_complete": 0,
+          "faults": 0,
+          "owner_requests": 0,
+          "owner_forwarded": 0,
+          "owner_complete": 0,
+          "guard_rejections": 0,
+          "serialization_rejections": 0,
+          "rejection_sequence": [],
+          "auth_finals_omitted": 0,
+          "frontend_queries": 141,
+          "coordinator_inserts": 0,
+          "unexpected": 0
+        }
+      }
+    ],
+    "processes": [
+      {
+        "args": [
+          "/out/native-tests/bigbrotr",
+          "archive",
+          "receipt-inspect",
+          "--file",
+          "/out/signed_normal/receipt.toml",
+          "--attempt-id",
+          "b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6",
+          "--worker-root",
+          "/out/archive-worker"
+        ],
+        "exit": 0,
+        "stdout": "{\"attempt_id\":\"b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6\",\"batch_digest\":\"c2a6a1d24e83f3dcd8e955eca3f4bf42c87e26227a40b0b0262c84dd32f0a19b\",\"catalog_id\":\"5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a\",\"catalog_inspection\":\"verified\",\"dataset_id\":\"01010101010101010101010101010101\",\"format\":\"bigbrotr-archive-receipt/1\",\"max_receipts\":128,\"owner_release\":\"committed\",\"policy_revision\":\"1\",\"publication_ordinal\":\"2\",\"reader_privileges\":\"select-only\",\"ready\":false,\"replay_authority\":\"not-granted\",\"source_protection\":\"not-granted\",\"state\":\"present\",\"writer_exclusion\":\"not-performed\"}\n",
+        "stderr": ""
+      },
+      {
+        "args": [
+          "/out/native-tests/bigbrotr",
+          "archive",
+          "receipt-inspect",
+          "--file",
+          "/out/signed_normal/receipt.toml",
+          "--attempt-id",
+          "b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6",
+          "--worker-root",
+          "/out/archive-worker"
+        ],
+        "exit": 4,
+        "worker": {
+          "event": "watch-ready",
+          "parent": {
+            "pid": 17338,
+            "start": "321165130",
+            "ppid": 0,
+            "exe": "/out/native-tests/bigbrotr",
+            "argv": [
+              "/out/native-tests/bigbrotr",
+              "archive",
+              "receipt-inspect",
+              "--file",
+              "/out/signed_normal/receipt.toml",
+              "--attempt-id",
+              "b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6",
+              "--worker-root",
+              "/out/archive-worker"
+            ]
+          },
+          "child": {
+            "pid": 17347,
+            "start": "321165158",
+            "ppid": 17338,
+            "exe": "/out/archive-worker/bigbrotr-archive-worker",
+            "argv": [
+              "/out/archive-worker/bigbrotr-archive-worker",
+              "inspect-receipt",
+              "/out/archive-worker",
+              "/out/signed_normal/initialize-scratch/receipt-a850c07c2b3a1b698c6d211a80c48d72",
+              "134217728",
+              "67108864",
+              "1",
+              "128"
+            ]
+          }
+        },
+        "signal": {
+          "pid": 17338,
+          "start_ticks": "321165130",
+          "pidfd": true,
+          "signal": "INT"
+        },
+        "stdout": "",
+        "stderr": "error: receipt inspection cancelled; observation unresolved; receipt observation unresolved: ObservationUnknown; preserve scratch and retained inputs\n",
+        "worker_terminal": {
+          "event": "watch-terminal",
+          "native_exited": true,
+          "reaped": true
+        }
+      },
+      {
+        "args": [
+          "/out/native-tests/bigbrotr",
+          "archive",
+          "receipt-inspect",
+          "--file",
+          "/out/signed_normal/receipt.toml",
+          "--attempt-id",
+          "b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6",
+          "--worker-root",
+          "/out/archive-worker"
+        ],
+        "exit": 4,
+        "worker": {
+          "event": "watch-ready",
+          "parent": {
+            "pid": 17462,
+            "start": "321165250",
+            "ppid": 0,
+            "exe": "/out/native-tests/bigbrotr",
+            "argv": [
+              "/out/native-tests/bigbrotr",
+              "archive",
+              "receipt-inspect",
+              "--file",
+              "/out/signed_normal/receipt.toml",
+              "--attempt-id",
+              "b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6",
+              "--worker-root",
+              "/out/archive-worker"
+            ]
+          },
+          "child": {
+            "pid": 17470,
+            "start": "321165283",
+            "ppid": 17462,
+            "exe": "/out/archive-worker/bigbrotr-archive-worker",
+            "argv": [
+              "/out/archive-worker/bigbrotr-archive-worker",
+              "inspect-receipt",
+              "/out/archive-worker",
+              "/out/signed_normal/initialize-scratch/receipt-9dde1b91b11ae82ac30c120e58aa493f",
+              "134217728",
+              "67108864",
+              "1",
+              "128"
+            ]
+          }
+        },
+        "signal": {
+          "pid": 17462,
+          "start_ticks": "321165250",
+          "pidfd": true,
+          "signal": "TERM"
+        },
+        "stdout": "",
+        "stderr": "error: receipt inspection cancelled; observation unresolved; receipt observation unresolved: ObservationUnknown; preserve scratch and retained inputs\n",
+        "worker_terminal": {
+          "event": "watch-terminal",
+          "native_exited": true,
+          "reaped": true
+        }
+      },
+      {
+        "args": [
+          "/out/native-tests/bigbrotr",
+          "archive",
+          "receipt-inspect",
+          "--file",
+          "/out/signed_normal/receipt.toml",
+          "--attempt-id",
+          "b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6",
+          "--worker-root",
+          "/out/archive-worker"
+        ],
+        "exit": 4,
+        "worker": {
+          "event": "watch-ready",
+          "parent": {
+            "pid": 17585,
+            "start": "321165376",
+            "ppid": 0,
+            "exe": "/out/native-tests/bigbrotr",
+            "argv": [
+              "/out/native-tests/bigbrotr",
+              "archive",
+              "receipt-inspect",
+              "--file",
+              "/out/signed_normal/receipt.toml",
+              "--attempt-id",
+              "b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6",
+              "--worker-root",
+              "/out/archive-worker"
+            ]
+          },
+          "child": {
+            "pid": 17593,
+            "start": "321165408",
+            "ppid": 17585,
+            "exe": "/out/archive-worker/bigbrotr-archive-worker",
+            "argv": [
+              "/out/archive-worker/bigbrotr-archive-worker",
+              "inspect-receipt",
+              "/out/archive-worker",
+              "/out/signed_normal/initialize-scratch/receipt-8699a4d64ec7b98590839f87cd29b92c",
+              "134217728",
+              "67108864",
+              "1",
+              "128"
+            ]
+          }
+        },
+        "stdout": "",
+        "stderr": "error: accepted policy changed during receipt inspection; retry under current policy; receipt observation unresolved: ObservationUnknown; preserve scratch and retained inputs\n",
+        "worker_terminal": {
+          "event": "watch-terminal",
+          "native_exited": true,
+          "reaped": true
+        }
+      },
+      {
+        "args": [
+          "/out/native-tests/bigbrotr",
+          "archive",
+          "receipt-inspect",
+          "--file",
+          "/out/signed_normal/receipt.toml",
+          "--attempt-id",
+          "b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6",
+          "--worker-root",
+          "/out/archive-worker"
+        ],
+        "exit": 4,
+        "worker": {
+          "event": "watch-ready",
+          "parent": {
+            "pid": 17702,
+            "start": "321165507",
+            "ppid": 0,
+            "exe": "/out/native-tests/bigbrotr",
+            "argv": [
+              "/out/native-tests/bigbrotr",
+              "archive",
+              "receipt-inspect",
+              "--file",
+              "/out/signed_normal/receipt.toml",
+              "--attempt-id",
+              "b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6b6",
+              "--worker-root",
+              "/out/archive-worker"
+            ]
+          },
+          "child": {
+            "pid": 17710,
+            "start": "321165540",
+            "ppid": 17702,
+            "exe": "/out/archive-worker/bigbrotr-archive-worker",
+            "argv": [
+              "/out/archive-worker/bigbrotr-archive-worker",
+              "inspect-receipt",
+              "/out/archive-worker",
+              "/out/signed_normal/initialize-scratch/receipt-6e7332abb8d6ae5d07a0967b28d55fb3",
+              "134217728",
+              "67108864",
+              "1",
+              "128"
+            ]
+          }
+        },
+        "stdout": "",
+        "stderr": "error: Control backend operation failed: CommitUnknown; receipt observation unresolved: ObservationUnknown; preserve scratch and retained inputs\n",
+        "worker_terminal": {
+          "event": "watch-terminal",
+          "native_exited": true,
+          "reaped": true
+        }
+      }
+    ],
+    "readonly_auxiliary": [
+      {
+        "id": "19686bc07c9653253f683c5c205d22ca626923a0d87c8c87ae4eb707fed3b995",
+        "mounts": [
+          {
+            "source": "/home/tux/bigbrotr-implementation-20260917/runs/receipt-cli-d78bcc5/out",
+            "destination": "/out",
+            "writable": false
+          },
+          {
+            "source": "/home/tux/bigbrotr-implementation-20260917/runs/receipt-cli-d78bcc5/out/signed_normal/initialize-scratch",
+            "destination": "/out/signed_normal/initialize-scratch",
+            "writable": true
+          },
+          {
+            "source": "/home/tux/bigbrotr-implementation-20260917/runs/receipt-cli-d78bcc5/out/signed_before/initialize-scratch",
+            "destination": "/out/signed_before/initialize-scratch",
+            "writable": true
+          }
+        ],
+        "kernel_write_refusals": [
+          {
+            "path": "/out/signed_normal/kind=7/.bigbrotr-initialization/intent.json",
+            "write_errno": 30,
+            "readonly": true
+          },
+          {
+            "path": "/out/signed_normal/archive-state/coordinator.json",
+            "write_errno": 30,
+            "readonly": true
+          },
+          {
+            "path": "/out/signed_before/kind=7/.bigbrotr-initialization/intent.json",
+            "write_errno": 30,
+            "readonly": true
+          },
+          {
+            "path": "/out/signed_before/archive-state/coordinator.json",
+            "write_errno": 30,
+            "readonly": true
+          }
+        ],
+        "terminal": {
+          "Status": "exited",
+          "Running": false,
+          "Paused": false,
+          "Restarting": false,
+          "OOMKilled": false,
+          "Dead": false,
+          "Pid": 0,
+          "ExitCode": 143,
+          "Error": "",
+          "StartedAt": "2026-09-19T14:49:51.17545666Z",
+          "FinishedAt": "2026-09-19T14:49:52.718297773Z"
+        }
+      }
+    ]
+  },
+  "oracle": {
+    "signed": "Existing independent complete signed/scientific corpus and restart_expectations; producer matrix passes before CLI observation. Original complete headers read with Rocks inaccessible.",
+    "missing": "Missing Control attempt, missing/corrupt local inputs and incomplete/conflicting full scans refuse as unresolved, never Absent.",
+    "resources": "One-row cap1 Present versus two-row cap1 Unknown; default profile cap489 Present/cap490 ResourceLimit. A statically valid one1GiB-worker seed still uses accepted two512MiB policy. These are allocation admission bounds, not measured RSS or capacity. The 489/490 allowance controls scan the two actual retained receipts, not a489-row load.",
+    "privileges": "Effective INSERT, column UPDATE, TEMP, CREATEROLE and missing SELECT each refuse UnsafeRole; all grants restored and fresh identical retry succeeds.",
+    "cancellation": "Proxy holds actual reader first authenticated query after full manager inspection/drain; actual PG relation blocker installed before release. Native wait observed. INT/TERM/policy/Control failure terminate and reap exact pidfd-bound worker before owned blocker release; no observation output escapes. The held first-query and later blocked pool backend need not be the same connection. The case named lease observes failed Control refresh, not isolated expiry alone.",
+    "readonly": "Original data/state path/device/inode identities through readonly bind, four actual EROFS write-open controls, writable disjoint scratch. Present and Absent use actual LocalCoordinator locking/fsync and native reader. Host/original runner still have writable mounts; no globally immutable storage or filesystem remount claim.",
+    "preservation": "All six catalog dumps compare byte-for-byte except randomized pg_dump restrict markers and ordering inside the single known ducklake_snapshot ACL block. Grant multiplicity/privileges/recipients and every other statement/data byte are preserved. Every data/state file hash and Control coordinator/attempt row including xmin matches its recorded initial baseline."
+  },
+  "local": {
+    "regression": "Initial catalog_entrypoint run58553 failed the two new command/reader-root tests; actual implementation passes.",
+    "checks": "Mac38165:8 binary+13 catalogCLI+24 config+1 ControlCLI; Mac49289:44 Archive; all-target Clippy42911, format, Python, artifact/handoff/diff pass. Linux-specific tests are separate.",
+    "oracle_correction": "Six retained e5585da before/after dump pairs agree under the one-ACL-block oracle; changed privilege/schema remain unequal."
+  },
+  "review": {
+    "kind": "Integrating-owner review and independent read-only AI review; no reviewer Tux execution",
+    "findings": [
+      "Retain accepted resolved policy rather than discarding it; reserve five simultaneous item slots.",
+      "Use actual native query barrier after manager inspection; observe exact native death/reap before unlock.",
+      "Retain initial physical/control baselines; compare only ACL ordering canonically, away from COPY/function text.",
+      "Final policy_revision identifies completed local observation, not current authority or served data."
+    ],
+    "development_failures": [
+      {
+        "source": "4706373a34e0754b2dd48bf77b77a7a6bdeb1734",
+        "outcome": "FAIL",
+        "reason": "Static envelope refused the drift fixture before its intended accepted-policy ResourceLimit check; 7 top-level cases passed.",
+        "raw_root": ".research/implementation/archive-worker/receipt-cli/failed-4706373",
+        "tar_sha256": "e67cc1150a1121641f2e59e724afc73596e90d6fac15beaef4b6459b42f10a95",
+        "files": 105,
+        "terminal_audit": "PASS; isolated owned resources stopped"
+      },
+      {
+        "source": "55ac4917d40e9669ebddcfbb883ee4d844f54bb6",
+        "outcome": "FAIL",
+        "reason": "Pre-acquired data_file lock blocked the manager structural inspection, so native wait was not reached; 9 cases passed. Actual PG query diagnosis retained.",
+        "raw_root": ".research/implementation/archive-worker/receipt-cli-retry/failed-55ac491",
+        "tar_sha256": "906dfa20562a33d5053c70890916838ab6f64b44eb3f04ec996e44aa8f97ec34",
+        "files": 106,
+        "terminal_audit": "PASS; isolated owned resources stopped"
+      },
+      {
+        "source": "e5585dadb6970f421cb10bda5d7966fd54a41368",
+        "outcome": "FAIL",
+        "reason": "15 cases passed; final dump comparison rejected fixture-induced GRANT ordering. Six diagnostic dumps otherwise match; initial physical baseline was not persisted, so final preservation remained unqualified.",
+        "raw_root": ".research/implementation/archive-worker/receipt-cli-barrier/failed-e5585da",
+        "tar_sha256": "87f944138a5ffc717fc038a22d5f8cb239d43561a1d87f20eafea38324c8a0fe",
+        "files": 112,
+        "terminal_audit": "PASS; isolated owned resources stopped"
+      }
+    ],
+    "final_offline_review": "Independent read-only AI review matched all 111 raw hashes, 776 Git source hashes, 16 receipt cases, six signed/scientific outcomes and restart records, 22 receipt identities, dump/file/control baselines and terminal records. No discrepancy found within the inspected boundary. The separate stopped-Tux physical-check summary identity was verified; remote contents and live state were not inspected by that reviewer."
+  },
+  "resources": {
+    "inventory": "docs/research/laboratory-inventory.json:implementation_archive_worker_20260918.receipt_cli",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/receipt-cli-d78bcc5",
+    "owner": "510e75ddf576d0a9564e67f72aff1bbb",
+    "status": "stopped-retained",
+    "owned_containers": [
+      "19686bc07c9653253f683c5c205d22ca626923a0d87c8c87ae4eb707fed3b995",
+      "06b2121f29c143f193ad634a426078e87ceec28dd86ed6e90f64438088770556",
+      "bcd135a73e00a012fa34d47cf2379c7a8f46f12e83cb9093e0a7a39e19dfad3d"
+    ],
+    "owned_sql_backends_before_shutdown": 0,
+    "preexisting_containers_unchanged": 351,
+    "unrelated_running": 8,
+    "observed_at": "2026-09-19T14:50:22.861842+00:00"
+  },
+  "evidence": {
+    "raw_root": ".research/implementation/archive-worker/receipt-cli-preservation/qualified",
+    "manifest": ".research/implementation/archive-worker/receipt-cli-preservation/qualified-evidence-identity.json",
+    "tar_sha256": "02ac209a51b5bb0f56457b4a77087f9019bde0aad40d3495c27e1fcabfe80bef",
+    "files": 111,
+    "independent_source_files": 776,
+    "independent_retained_physical_check": {
+      "path": ".research/implementation/archive-worker/receipt-cli-preservation/retained-physical-check.json",
+      "sha256": "6329e72c4b8a05f174f9374547da0d26fc8f08fdecbb0d1645beeb2d5dd1c952",
+      "files": 106
+    }
+  },
+  "not_qualified": [
+    "Writer/transaction exclusion, replay authority, source protection/reclamation or persisted lifecycle recovery from receipt metadata alone.",
+    "Native signed mTLS receipt/publication, CLI lost release-COMMIT reply, uninterruptible kernel/filesystem stall termination.",
+    "Ingest successor handoff, ordinary Archive dispatcher, M1 full read/export/restart and other selected product services.",
+    "Cross-boot restore/power loss, aged/mixed capacity, peak RSS, unbounded receipt catalogs, ordinary Compose/release and Linux arm64.",
+    "Hosted GitHub Actions availability; this is trusted native execution of shared build/CI commands."
+  ]
+}
