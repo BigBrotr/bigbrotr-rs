@@ -223,6 +223,17 @@ Both are corrected locally. Four actual captures were rechecked offline with
 accepted an altered Ingest lease; the corrected one refuses. Evidence is under
 native/faults, including ingest-owner-regression.txt. No new engine run is implied.
 
+Additional 2580fb2 Python / 3135497 fixture Tux cases digest2, cancel1, policy1,
+expired1, roll1, late1, before1 and after1 PASS. Together with normal2, pgonly1,
+size1 and res1 this is 12 successful scenarios. Both proxy receipts prove COMMIT4
+loss with three client completions and server count3/4. Actual recovery uses new
+Control3 after each selected failure, preserving native sequence30 and copies.
+The first manif1 setup failed earlier than intended: migration0011 rejected its
+changed manifest during reservation; only bootstrap16 native rows/request1 survive.
+Client exit101 and zero backends captured. The corrected fixture will inject that
+explicit privileged corruption after BEFORE guards, leaving product SQL unchanged;
+it is defensive corruption evidence, not a legitimate writer. No new run yet.
+
 ## Next action and remaining gates
 
 Commit/export the corrected Python observer (Rust/product unchanged), then run

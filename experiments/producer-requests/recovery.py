@@ -193,12 +193,20 @@ def main(root, tag, scenario, fixture_build):
     if scenario in ['input-size', 'input-digest', 'input-manifest']:
         field = {'input-size':'input_bytes', 'input-digest':'request_digest', 'input-manifest':'manifest_sha256'}[scenario]
         value = 'NEW.input_bytes+1' if scenario == 'input-size' else f'set_byte(NEW.{field},0,get_byte(NEW.{field},0)#1)'
-        # Explicit corrupt-fixture writer, before immutable insertion. Never
-        # disable production guards or update a previously accepted reservation.
-        sql(db, f"CREATE FUNCTION public.fixture_corrupt_input() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN NEW.{field}:={value}; RETURN NEW; END $$; CREATE TRIGGER aa_fixture_corrupt_input BEFORE INSERT ON control.producer_requests FOR EACH ROW WHEN (NEW.request_sequence=2) EXECUTE FUNCTION public.fixture_corrupt_input();")
+        # A cross-request manifest conflict is already refused by migration0011.
+        # To reach the defensive resolver check, inject that corruption AFTER
+        # its BEFORE guards. This privileged fixture is not a legitimate writer.
+        # Other faults run before guards. No applied function/trigger is changed.
+        trigger = 'zz_fixture_corrupt_input' if scenario == 'input-manifest' else 'aa_fixture_corrupt_input'
+        report['reservation_fault'] = dict(field=field, trigger=trigger,
+            scope='privileged corruption after validation' if scenario == 'input-manifest' else 'corruption before validation')
+        sql(db, f"CREATE FUNCTION public.fixture_corrupt_input() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN NEW.{field}:={value}; RETURN NEW; END $$; CREATE TRIGGER {trigger} BEFORE INSERT ON control.producer_requests FOR EACH ROW WHEN (NEW.request_sequence=2) EXECUTE FUNCTION public.fixture_corrupt_input();")
     if scenario in ['rollback', 'late-sql']:
         action = "RAISE EXCEPTION 'fixture rollback of recovered event outcome copy'" if scenario == 'rollback' else 'PERFORM pg_sleep(3)'
         sql(db, f"CREATE FUNCTION public.fixture_abort_recovered_copy() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN {action}; RETURN NEW; END $$; CREATE TRIGGER zz_fixture_abort_recovered_copy AFTER INSERT ON control.producer_outcomes FOR EACH ROW WHEN (NEW.recorder_epoch=2 AND NEW.request_sequence=2) EXECUTE FUNCTION public.fixture_abort_recovered_copy();")
+    if scenario == 'input-manifest':
+        guards = report['reservation_guards'] = json.loads(sql(db, "SELECT jsonb_agg(jsonb_build_object('name',tgname,'enabled',tgenabled) ORDER BY tgname) FROM pg_trigger WHERE tgrelid='control.producer_requests'::regclass AND NOT tgisinternal AND (tgtype & 7)=7"))
+        assert guards == [dict(name=name, enabled='O') for name in ['producer_request_guard', 'producer_request_outcome_capacity', 'zz_fixture_corrupt_input']]
     command('docker', 'exec', resources['container_id'], 'mkdir', '-m', '700', directory)
     lost, proxy = scenario in ['before-forward', 'after-complete'], None
     try:

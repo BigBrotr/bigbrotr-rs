@@ -185,3 +185,14 @@ separate Git export, requiring all product/dependency inputs equal to d2959da.
 `--fixture-build` selects its verified artifact without replacing baseline binaries.
 These finite same-process reconnect cases do not qualify fresh-process exclusion,
 held native LOCK, complete drain, ACK or successor authority.
+
+The manifest corruption case requires a privileged fixture fault **after** the
+ordinary reservation BEFORE guards: migration0011 already rejects a changed
+manifest while its existing first reservation is present. The first `manif1`
+attempt demonstrates that earlier refusal and is retained as a failed recovery
+setup, not as resolver qualification. The corrected fixture changes only request2
+immediately before insertion after the guards; subsequent immutability remains
+intact, and outcome copying must still refuse. This exercises defensive reading
+of corrupted metadata, not an allowed producer write. Actual trigger order and
+enabled state are captured; the ordering follows PostgreSQL16's
+[CREATE TRIGGER contract](https://www.postgresql.org/docs/16/sql-createtrigger.html).
