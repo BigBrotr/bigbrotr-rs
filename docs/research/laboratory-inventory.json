@@ -13703,17 +13703,119 @@
       "network": "bigbrotr-implementation-input-bindings-8b0660e",
       "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
       "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
-      "state": "running",
+      "state": "stopped-retained",
       "source_files": 821,
       "started_at": "2026-09-19T19:37:17.273915+00:00",
       "network_id": "cf84ec1bf3d00bdb21d917d228586b3656b78b20c6f15b86ae8751472575022e",
       "postgres_id": "16784bdea7e461276e0f150f65d07025f7afe845aa05d456034ad66fe1628c4f",
       "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
       "container_id": "71e0b9ed56ef51a06ce9d2cfdcf8e190502ba52dee35389a3660591f1f671977",
-      "scope": "Initial complete event-only JSONL input binding prerequisite; native qualification running, not full import or checkpoints",
-      "raw_local": ".research/implementation/input-bindings",
-      "initial_launch": "Docker default subnet pool exhausted; verified empty retained import-source network removed; no container or data removed",
-      "next_action": "Observe exact-source build, then nine connected native cases and SQL constraints"
+      "completed_at": "2026-09-19T19:47:56.644913+00:00",
+      "qualification": "PASS for finite complete input binding and native admission prerequisite; operator job acceptance, logical checkpoints and recovery remain open",
+      "raw": ".research/implementation/input-bindings/qualified",
+      "terminal_audit": {
+        "status": "PASS",
+        "source": "8b0660e580a61503686abab6a02944258e995bb0",
+        "tree": "58c952229d935e074013378b6f922afb8fcdd588",
+        "source_manifest": {
+          "revision": "8b0660e580a61503686abab6a02944258e995bb0",
+          "tree": "58c952229d935e074013378b6f922afb8fcdd588",
+          "files": 821,
+          "archive_sha256": "7aecb7a5ae0b93c6bc18cd661371e2d207501f63c046d0a1552338a8552cda7d",
+          "manifest_sha256": "416bc7aac97d68730986861af385157a13f5130e687a0f9d716d8abcb136d6ba",
+          "lock_sha256": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215"
+        },
+        "reports": {
+          "input-binding-cases-r2.json": {
+            "status": "PASS",
+            "sha256": "25d131d19e9e4badbf08fb8929af09cc01e925cd4331bc5f5cd25fdc0852da72"
+          },
+          "input-binding-concurrency-r2.json": {
+            "status": "PASS",
+            "sha256": "9ae77ddedf2ac771a346058f7cdcb9c6699ef1f33f6f0972d0baf64d171a4d23"
+          },
+          "input-binding-upgrade-r2.json": {
+            "status": "PASS",
+            "sha256": "79c62c0417a431e832508adfd53cb7e796c3b1d9a831c843b603adbc76be08fc"
+          },
+          "out/native-tests/checks/result.json": {
+            "status": "PASS",
+            "sha256": "b8dda65ce3ae924efb1e369814e0984f2972764cd41c01662857b4d8b4d28234"
+          }
+        },
+        "artifacts": {
+          "main": {
+            "sha256": "7472c0eb181a8c7f6bd4f0267ed9ceadcf07d383fc0c259ea2356eeb1fed7ae4",
+            "bytes": 9206328,
+            "elf_machine": 62
+          },
+          "worker": {
+            "sha256": "4a8f8f37ec6dbf7b6e6def033966d21d116f027699cfd4c96ae6ff852f298f3c",
+            "bytes": 12608632,
+            "elf_machine": 62
+          },
+          "ingest_probe": {
+            "sha256": "19abd7e1a156b7d65145e965bbf5645eeff377ca5db78d2161bb0dd154844a9a",
+            "bytes": 15413648,
+            "elf_machine": 62
+          }
+        },
+        "harnesses": {
+          "harness-32f1ed7": {
+            "revision": "32f1ed755de681a1c0f12d532828d6262c38e76a",
+            "tree": "a84971a98a488ff0b8bb20388abb4e963600f8f1",
+            "product_unchanged": true
+          },
+          "harness-5fe32c0": {
+            "revision": "5fe32c0d35871501d670e3d9574369edf03ade2b",
+            "tree": "b3b9358c8e79de7c80bfa01d9544f8401428cdf9",
+            "product_unchanged": true
+          }
+        },
+        "prestop": {
+          "at": "2026-09-19T19:47:54.524346+00:00",
+          "owned_client_backends": 0,
+          "runner_processes": "PID                 PPID                STAT                COMMAND\n4121835             4121809             Ss                  docker-init\n4121847             4121835             S                   python3",
+          "owned_containers": [
+            "71e0b9ed56ef51a06ce9d2cfdcf8e190502ba52dee35389a3660591f1f671977",
+            "16784bdea7e461276e0f150f65d07025f7afe845aa05d456034ad66fe1628c4f"
+          ]
+        },
+        "terminal": {
+          "71e0b9ed56ef51a06ce9d2cfdcf8e190502ba52dee35389a3660591f1f671977": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-19T19:38:09.588791051Z",
+            "FinishedAt": "2026-09-19T19:47:54.547569383Z"
+          },
+          "16784bdea7e461276e0f150f65d07025f7afe845aa05d456034ad66fe1628c4f": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-19T19:38:07.66148404Z",
+            "FinishedAt": "2026-09-19T19:47:56.181465158Z"
+          }
+        },
+        "preexisting_containers_unchanged": 368,
+        "unrelated_containers_unchanged": 20,
+        "unrelated_running": 8,
+        "bigbrotr_running": 0,
+        "observed_at": "2026-09-19T19:47:56.644913+00:00"
+      },
+      "manifest": ".research/implementation/input-bindings/evidence-identity.json"
     }
   },
   "implementation_monitor_corrections_20260918": {

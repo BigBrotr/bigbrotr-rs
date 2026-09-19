@@ -140,7 +140,8 @@ def main(root, run_tag):
         assert len(control['outcomes']) == (3 if label=='complete' else 1)
         assert control['checkpoints'] == 0 and len(control['jobs'])==1
         assert control['jobs'][0]['checkpoint_revision']==0
-        if label=='complete': check_all_outcome_copies(control, wanted)
+        check_all_outcome_copies(control, wanted, request_count=3 if bound else 1,
+                                outcome_count=3 if label=='complete' else 1)
         for index, binding in enumerate(control['bindings']):
             request = control['requests'][index+1]
             assert binding['job_id']=='\\x'+(bytes([90])*16).hex()

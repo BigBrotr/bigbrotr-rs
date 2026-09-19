@@ -43,13 +43,14 @@ def expected(repetitions=1):
     return sorted((cf,k,v) for (cf,k),v in rows.items()),original,receipt
 
 
-def check_all_outcome_copies(control, wanted):
+def check_all_outcome_copies(control, wanted, *, request_count=3, outcome_count=3):
     """Also usable on the hash-bound captured PG observation, without new writes."""
     expected = {(cf, key): value for cf, key, value in wanted}
     slot = bytes([66])*16
     be = lambda n: n.to_bytes(8, 'big')
     manifest = hashlib.sha256(expected['default', b'\x01\x01']).hexdigest()
-    assert len(control['outcomes']) == len(control['requests']) == 3
+    assert 1 <= outcome_count <= request_count <= 3
+    assert len(control['outcomes']) == outcome_count and len(control['requests']) == request_count
     for sequence, row in enumerate(control['outcomes'], 1):
         receipt = expected['receipts', b'\x01\x30'+slot+be(1)+be(sequence)]
         assert row['request_sequence'] == sequence and row['producer_epoch'] == 1 and row['policy_epoch'] == 1

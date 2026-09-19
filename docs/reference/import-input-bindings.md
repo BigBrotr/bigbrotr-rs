@@ -1,6 +1,6 @@
 # Original requests and import positions
 
-P03-T10 step3 and P02-T02 step4 require a producer to retain the logical work
+P03-T10 step 3 and P02-T02 step 4 require a producer to retain the logical work
 associated with an original mutation before dispatch. Additive migration0013
 introduces the initial event-only JSONL binding consumer. It is an internal
 consistency adapter under the real Control/native owner, not installed import,
@@ -31,7 +31,7 @@ Each binding retains exact producer slot/epoch/sequence, digest, profile/byte
 count and native manifest hash; complete recovery bytes remain in the synchronized
 co-located input spool. Deferred foreign keys and a complete-batch constraint
 refuse missing members, holes, partial reservations and conflicting context.
-The initial relation admits at most64 retained bindings per job and the existing
+The initial relation admits at most 64 retained bindings per job and the existing
 producer/spool window and byte bounds still apply. This is a finite prerequisite,
 not the selected large-import capacity or a reclaiming production ledger. The
 bridge reserves64KiB additional temporary metadata memory before staging; this
@@ -61,6 +61,14 @@ Receipt/ExistingProof and separate claim/exclusion obligations before advancing
 whole logical positions, including proof-only progress with a zero or unchanged
 mutation watermark. The bare producer_checkpoints digest is insufficient.
 
-The current slice is under implementation. Local shape checks are not native SQL,
-connected failure/recovery, upgrade or release qualification. Its practical report
-will bind exact source/artifact identities and exercised limits when available.
+The [native prerequisite evidence](../implementation/evidence/p03-input-bindings-native-20260919.json)
+binds product 8b0660e on Linux amd64 with PostgreSQL 16.15 and the actual Rust/Rocks
+consumer: nine connected cases, 28 synthetic SQL constraints, six observed job-lock
+schedules and three 12-to-13 compatibility cases. Full original bytes and complete
+native/PG receipts are compared independently; no checkpoint advanced. The ledger
+is still finite and event-only; the remaining job, recovery, capacity and installed
+import acceptance above is required before advertising resumable import.
+
+[PostgreSQL 16 trigger semantics](https://www.postgresql.org/docs/16/sql-createtrigger.html)
+provide the deferred AFTER ROW constraints used here; their actual atomicity and
+READ COMMITTED lock behavior were exercised in the recorded SQL cases.
