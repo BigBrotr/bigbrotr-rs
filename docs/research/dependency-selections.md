@@ -59,6 +59,22 @@ Sources: [secp256k1 0.33.1 verification](https://docs.rs/secp256k1/0.33.1/secp25
 [nostr 0.45.5 Event](https://docs.rs/nostr/0.45.5/nostr/struct.Event.html), and
 [pinned NIP-01](https://github.com/nostr-protocol/nips/blob/a2494f4f81d46684e5814a9bf35e2b1df978f955/01.md).
 
+## Captured import source files
+
+The already locked MIT/Apache-2.0 `tempfile` 3.27.0 is now also a runtime dependency
+for the [captured JSONL source](../reference/import-source.md). No new version or
+transitive package is selected. Exact installed crate source was inspected at
+`src/file/imp/unix.rs` and the creation, `into_parts` and `TempPath::close` paths
+in `src/file/mod.rs`. Linux's unnamed creation uses O_TMPFILE with a named/unlink
+fallback; that fallback deliberately ignores unlink failures. The product instead
+creates an empty `NamedTempFile`, explicitly checks `TempPath::close` and descriptor
+link count, and only then copies source bytes. `TempPath::close` forgets its path
+on error, so an unconfirmed cleanup retains its allowance and disables that
+scratch owner pending inventory rather than permitting unbounded retry artifacts.
+No named temporary file containing source payload is published. The same pinned
+rustix regular-file open policy is reused. These API/source facts do not qualify
+durable import staging, a new platform, or hard cancellation of filesystem I/O.
+
 ## Exact persisted-policy fractions
 
 The same pinned serde_json 1.0.151 now enables `float_roundtrip` in addition to

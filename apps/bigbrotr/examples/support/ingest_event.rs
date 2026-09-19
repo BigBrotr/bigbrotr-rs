@@ -1,10 +1,11 @@
 //! Finite signed import consumer for connected native admission qualification.
 use super::*;
+use bigbrotr::acquisition::import::{JsonlReader, ScratchSpace, SourceIdentity, SourceSnapshot};
 use bigbrotr::storage::postgres::control_owner::{InitialEventError, InitialEventRequest};
 use bigbrotr::storage::rocks::store::{
     AdmissionError, AdmissionLimits, AdmissionOutcome, PreparedEvent,
 };
-use bigbrotr_model::{EventIntent, ProducerEpoch, ProducerRequestId, RequestSequence, SignedEvent};
+use bigbrotr_model::{EventIntent, ProducerEpoch, ProducerRequestId, RequestSequence};
 
 #[allow(
     clippy::too_many_arguments,
@@ -26,10 +27,55 @@ pub async fn run(
         ordinal: Ordinal::new(1).unwrap(),
         ..scope
     };
-    let event: SignedEvent = serde_json::from_str(include_str!(
-        "../../../../tests/fixtures/ingest/import-event.jsonl"
-    ))
+    let source_bytes = include_bytes!("../../../../tests/fixtures/ingest/import-event.jsonl");
+    let mut source = tempfile::NamedTempFile::new_in(path.parent().unwrap()).unwrap();
+    source.write_all(source_bytes).unwrap();
+    let scratch = ScratchSpace::new(path.parent().unwrap(), 4096, 1).unwrap();
+    let captured = SourceSnapshot::capture(
+        source.path(),
+        &scratch,
+        Some(SourceIdentity {
+            bytes: source_bytes.len() as u64,
+            sha256: *"c30658a75b2b913e509b7618f36ebae75fa1d5680dc8fe4e322aae638d8affae"
+                .parse::<Digest256>()
+                .unwrap()
+                .as_bytes(),
+        }),
+        &AtomicBool::new(false),
+    )
     .unwrap();
+    let mut reader = JsonlReader::new(
+        captured,
+        bigbrotr_protocol::EventLimits::default(),
+        grant(budget, 11 * MIB, 0),
+    )
+    .unwrap();
+    let record = reader
+        .next_record(&AtomicBool::new(false))
+        .unwrap()
+        .unwrap();
+    let position = record.position();
+    assert_eq!(
+        (position.line, position.byte_start, position.byte_end),
+        (1, 0, source_bytes.len() as u64)
+    );
+    // The outer fixture holds its input allocation grant before this copy.
+    let event = record.result().as_ref().unwrap().event().clone();
+    drop(record);
+    assert!(
+        reader
+            .next_record(&AtomicBool::new(false))
+            .unwrap()
+            .is_none()
+    );
+    drop(reader);
+    assert_eq!(scratch.used_bytes(), 0);
+    emit(
+        serde_json::json!({"event":"import-position", "line":position.line,
+        "byte_start":position.byte_start,"byte_end":position.byte_end,
+        "source_bytes":position.source.bytes,"source_sha256":hex(&position.source.sha256),
+        "record_sha256":hex(&position.sha256),"completed_import_prefix_before_admission":0}),
+    );
     let original_id = event.id;
     let request_id = ProducerRequestId {
         producer_slot_id: spec.producer_slot_id,

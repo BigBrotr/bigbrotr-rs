@@ -16,14 +16,15 @@ Active P02-T02 step 4 and P01-T06 steps 2/3/5/6 prerequisites lead toward the
 P02-T03/T04 publication/protection and M1 read/export/restart boundary. Current
 serve implements Control only and rejects other roles. The installed finite
 Archive receipt consumer is qualified separately. All later selected work remains.
+The current bounded slice is P03-T08/T09 captured JSONL source/positioning as a
+prerequisite to real P03-T10 logical obligations and P02-T02 checkpoints.
 
 ## Git and ownership
 
-At qualification-commit preparation, Mac main HEAD is
-455f49c45621c5bef2c66dbe5b2500938d03fad9. Private origin/main was last verified at
-05520e06097a849b81386d74db8cd2936200540c. Root owns dirty evidence/task/reference/
-checkpoint/inventory updates and two additional observer input-identity checks.
-The next coherent qualification commit/push will change that state; verify reality.
+Mac main and private origin/main are verified at
+4467de468d9a8be73f676983ef837d80032ea2b2; the qualification commit was pushed and
+the working tree was clean at resumption. Root now owns the bounded P03-T08/T09
+source/decoder prerequisite and its checkpoint, tests and documentation.
 No other contributor edits were integrated. Existing agents were read-only reviewers.
 
 The tested product is exact9537667dd140baac68ca79ecb56ea7c6ecce081f, tree
@@ -92,7 +93,11 @@ owner20434426dd46b15a09fc21b4d769ca53. Runner45d5955fbfd130722fc5243c09866fb13b7
 PG1b8d683a0039dc448e24b97b7cb880bf07218bc66fb26d9fad5482bab083adc5,
 fixture builderc12c2498a1c51884e0bd480b6530a03b2530334ac1938bedda8ff5c959359cc9.
 Internal empty network206354208a5b1b5a1b0f08f772c7b3908ff8db0903a4459b94e8afad72d7aa12
-is retained. Never restart retired labs or prune unrelated resources.
+was removed at2026-09-19T18:43:18.579071+00:00 after rechecking its owner label,
+empty membership and all three stopped owner containers; only that network was
+removed to free a subnet for the next isolated lab. See its inventory retirement
+and .research/implementation/import-source/retired-network.json. Never restart
+retired labs or prune unrelated resources.
 
 Mac raw .research/implementation/producer-outcomes/qualified contains167 verified
 files, tar SHA256 0cbc20128386e6235a31639e069d2efcc01430b6dbb647a50f1e315b600d5802.
@@ -113,14 +118,33 @@ are historical run helpers and require fresh ownership/path review before reuse.
 
 ## Remaining work and next bounded action
 
-Finish reviewing/committing/pushing this qualification and verify the private
-remote. Then wire actual logical input obligations to the retained outcomes under
-P02-T02 step4, using the finite immutable JSONL import consumer from P03-T08/T09/T10
-rather than inventing positions from request sequences. Read the complete owning
-import/operations contracts, existing job/producer-checkpoint schemas and relevant
-callers before selecting that first implementation boundary. Preserve zero prefixes,
-holes, rejection classification, multi-obligation records and original input identity.
-The bare-digest producer_checkpoints relation is not sufficient progress authority.
+The captured-source prerequisite is implemented in the current root-owned diff;
+see [its contract and limits](../reference/import-source.md). Thirteen Mac source
+tests, three real file-fault tests, two discriminating compile-fail lifetime tests,
+one existing fixture-policy test and scoped Clippy passed. Full raw logs are under
+.research/implementation/import-source. Initial missing-API RED, two bad fixture
+mkfifo symbol attempts, the two lifetime REDs and the actual unlink-failure RED
+are retained. Review found NLL could release the memory permit before an owned
+event was destroyed: explicit Drop plus consumer destruction now enforces drop
+checking. Unconfirmed unlink could forget an empty named file and admit endless
+retries: the allowance now remains retained and that scratch owner stops.
+The 353-byte signed-admission consumer is wired through the actual reader.
+
+Next: commit the locally verified candidate, transfer its clean exact Git export
+to a fresh isolated Tux lab, execute --import-source native build/checks and
+existing_outcome.py --native-build. Compare complete PG/native outcome bytes and
+the source position against the independent oracle, then audit/stop only the
+owned lab and retain a concise evidence report. This new Linux path is NOT_RUN
+at candidate preparation. The18:42 inventory found366 containers, no running
+BigBrotr lab, eight unrelated containers running and121.7GB free; it is not a
+future resource guarantee. Root remains sole writer; review was read-only AI.
+
+Then wire actual job-scoped logical obligations to retained outcomes under
+P02-T02 step4/P03-T10. No offline source inspection is advertised as current-policy
+import preflight. Preserve zero prefixes, holes, multi-obligation records and
+source identity; bootstrap request1 never becomes imported line1. The bare-digest
+producer_checkpoints relation is not sufficient progress authority. The independent
+read-only AI reviewer confirmed these boundaries and the absent job adapter.
 
 Initial adapters still bind the original Control and owner/producer epoch1.
 Future recovery needs a read/recovery handle incapable of fresh admission,

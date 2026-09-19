@@ -13565,7 +13565,19 @@
         "bigbrotr_running": 0,
         "observed_at": "2026-09-19T18:12:00.858478+00:00"
       },
-      "manifest": ".research/implementation/producer-outcomes/qualified-evidence-identity.json"
+      "manifest": ".research/implementation/producer-outcomes/qualified-evidence-identity.json",
+      "network_retirement": {
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-outcomes-9537667",
+        "owner": "20434426dd46b15a09fc21b4d769ca53",
+        "network_id": "206354208a5b1b5a1b0f08f772c7b3908ff8db0903a4459b94e8afad72d7aa12",
+        "action": "removed verified empty retained network only",
+        "owned_containers_stopped": [
+          "45d5955fbfd130722fc5243c09866fb13b7c0e28c7166f44f513f98bfc3e8753",
+          "1b8d683a0039dc448e24b97b7cb880bf07218bc66fb26d9fad5482bab083adc5",
+          "c12c2498a1c51884e0bd480b6530a03b2530334ac1938bedda8ff5c959359cc9"
+        ],
+        "at": "2026-09-19T18:43:18.579071+00:00"
+      }
     }
   },
   "implementation_monitor_corrections_20260918": {

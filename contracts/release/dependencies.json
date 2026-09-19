@@ -41,7 +41,7 @@
     {
       "name": "tempfile",
       "version": "3.27.0",
-      "purpose": "Isolated process-test directories; test-only",
+      "purpose": "Private import source captures with checked unlink; isolated process-test directories",
       "license": "MIT OR Apache-2.0",
       "source": "https://docs.rs/tempfile/3.27.0/tempfile/"
     },

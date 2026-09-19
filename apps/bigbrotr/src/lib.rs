@@ -1,5 +1,6 @@
 //! Shared application boundaries used by executable adapters.
 
+pub mod acquisition;
 pub mod management;
 pub mod runtime;
 pub mod secrets;

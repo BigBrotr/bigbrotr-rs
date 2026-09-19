@@ -275,6 +275,12 @@ Paths: `apps/bigbrotr/src/acquisition/import/preflight.rs`, `apps/bigbrotr/src/a
 
 ## P03-T09 — Decode full JSONL, native and pinned protobuf artifacts
 
+The [captured JSONL prerequisite](../reference/import-source.md) supplies bounded
+source identity and line/byte positions to the existing finite signed-admission
+client. Its ephemeral snapshot is not durable job staging. T08's authorized
+job/current-policy adapter, installed dry-run, additional formats and T10's
+obligation/checkpoint acceptance remain open; no complete step is inferred.
+
 Dependencies: P03-T08 preflight core (not its deferred import acceptance);
 P01-T03 format/verification primitives and frozen producer
 schema; P02-T03/T04 archive contracts. Inputs are preflight-approved immutable

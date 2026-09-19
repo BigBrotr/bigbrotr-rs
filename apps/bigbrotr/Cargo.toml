@@ -25,6 +25,7 @@ rustls.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 sha2.workspace = true
+tempfile.workspace = true
 tokio.workspace = true
 tokio-postgres.workspace = true
 tokio-postgres-rustls.workspace = true
@@ -39,7 +40,6 @@ sha2.workspace = true
 rustix = { workspace = true, features = ["pipe"] }
 serde_json.workspace = true
 sha2.workspace = true
-tempfile.workspace = true
 
 [lints]
 workspace = true

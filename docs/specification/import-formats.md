@@ -1,7 +1,8 @@
 # Import format contract and Pensieve source inspection
 
-Status: selected adapter design; product adapters and interoperability acceptance
-are not implemented. P03-T08/T09/T10 own import preflight, decoding and recovery;
+Status: selected adapter design with a bounded captured-JSONL source/reader
+prerequisite; full product import and interoperability acceptance remain open.
+P03-T08/T09/T10 own import preflight, decoding and recovery;
 P08-T04 owns export. The [data contract](data-contracts.md) remains authoritative
 for the admitted event, clocks, claims and signed fidelity.
 
@@ -79,6 +80,17 @@ above i64 maximum with a precise incompatibility; it cannot clamp or silently
 reinterpret them. Ordinary full Parquet/JSONL exports preserve the larger domain.
 
 ## Framing and resource rules
+
+The JSONL unit is a LF-terminated line or the nonempty final unit at exact file
+EOF. CR in CRLF remains JSON whitespace and counts toward the wire cap; positions
+and raw-record digests include the complete delimiters. Blank lines are invalid
+records and an empty file has zero records. A safely framed oversized/malformed
+unit may be classified while continuing; I/O failure cannot become a completed
+rejection or advance a checkpoint. [Captured-source implementation](../reference/import-source.md)
+defines the current ephemeral storage and allocation boundary. Full job authority,
+destination policy and durable obligation closure remain separate prerequisites.
+
+For the length-delimited protobuf adapter:
 
 1. EOF before the first byte of the next length is clean completion. EOF after
    any prefix byte is a truncated source, not successful end of file.

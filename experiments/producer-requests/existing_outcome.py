@@ -43,20 +43,22 @@ def expected():
     return sorted((cf,k,v) for (cf,k),v in rows.items()),original,receipt
 
 
-def main(root, observe_existing=False):
+def main(root, observe_existing=False, native_build=False):
     state=json.loads((root/'resources.json').read_text())
     harness=command('git','-C',str(SOURCE),'rev-parse','HEAD')
     assert not command('git','-C',str(SOURCE),'status','--porcelain','--untracked-files=all')
-    ready=json.loads((root/'out/outcome-probe/ready.json').read_text())
-    assert ready['status']=='READY' and ready['baseline_product']==state['source']
+    ready_path = 'out/native-tests/ready.json' if native_build else 'out/outcome-probe/ready.json'
+    ready=json.loads((root/ready_path).read_text())
+    assert ready['status']=='READY' and ready['source' if native_build else 'baseline_product']==state['source']
+    source_export = root/('out/build/source' if native_build else 'out/outcome-probe/source')
     for name in ['apps/bigbrotr/examples/ingest_bootstrap_probe.rs',
                  'apps/bigbrotr/examples/support/ingest_event.rs',
                  'experiments/ingest-bootstrap/event_oracle.py',
                  'experiments/ingest-bootstrap/oracle.py',
                  'tests/fixtures/ingest/import-event.jsonl']:
-        assert (SOURCE/name).read_bytes()==(root/'out/outcome-probe/source'/name).read_bytes()
-    artifact=root/'out/outcome-probe/ingest-bootstrap-probe'
-    assert hashlib.sha256(artifact.read_bytes()).hexdigest()==ready['sha256']
+        assert (SOURCE/name).read_bytes()==(source_export/name).read_bytes()
+    artifact=root/('out/native-tests/ingest-bootstrap-probe' if native_build else 'out/outcome-probe/ingest-bootstrap-probe')
+    assert hashlib.sha256(artifact.read_bytes()).hexdigest()==ready['ingest_probe' if native_build else 'sha256']
     for identity in [state['container_id'],state['postgres_id']]:
         c=json.loads(command('docker','inspect',identity))[0]
         assert c['Config']['Labels']['org.bigbrotr.publication']==state['owner'] and c['State']['Running'] and not c['State']['OOMKilled']
@@ -78,7 +80,7 @@ def main(root, observe_existing=False):
         assert observation['exit']==0 and not observation['stderr']
         return observation['stdout']
     save();db='bboutcome_existing'
-    binary=['docker','exec',state['container_id'],'/out/outcome-probe/ingest-bootstrap-probe']
+    binary=['docker','exec',state['container_id'],'/'+str(artifact.relative_to(root))]
     if observe_existing:
         stdout=report['processes']['admit']['stdout']
     else:
@@ -93,6 +95,16 @@ def main(root, observe_existing=False):
     assert [(r['cf'],bytes.fromhex(r['key']),bytes.fromhex(r['value'])) for r in native['rows']]==wanted
     message=json.loads(stdout.splitlines()[-1])
     assert message==dict(event='existing-receipt',bytes=receipt.hex(),replay_exact=True,row_unchanged=True)
+    if native_build:
+        messages = [json.loads(line) for line in stdout.splitlines()]
+        position = [m for m in messages if m['event']=='import-position']
+        source_bytes = (SOURCE/'tests/fixtures/ingest/import-event.jsonl').read_bytes()
+        assert position == [dict(event='import-position', line=1, byte_start=0,
+            byte_end=len(source_bytes), source_bytes=len(source_bytes),
+            source_sha256=hashlib.sha256(source_bytes).hexdigest(),
+            record_sha256=hashlib.sha256(source_bytes).hexdigest(),
+            completed_import_prefix_before_admission=0)]
+        report['source_position'] = position[0]
     rows=report['control'];assert rows['checkpoints']==0 and len(rows['epochs'])==1 and rows['epochs'][0]['reserved_through_request']==3
     assert len(rows['requests'])==len(rows['outcomes'])==3
     request,outcome=rows['requests'][2],rows['outcomes'][2]
@@ -121,5 +133,6 @@ def main(root, observe_existing=False):
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--root',type=Path,required=True)
     parser.add_argument('--observe-existing',action='store_true')
+    parser.add_argument('--native-build',action='store_true',help='Use the exact main native build instead of the separate historical fixture build')
     args=parser.parse_args()
-    main(args.root.resolve(strict=True),args.observe_existing)
+    main(args.root.resolve(strict=True),args.observe_existing,args.native_build)
