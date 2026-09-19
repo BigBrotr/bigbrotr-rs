@@ -138,4 +138,16 @@ It includes zero, PG-first, old expired Ingest lease, wrong target/authority,
 SQL rollback, delayed SQL and both lost-COMMIT orders. Interrupted work retries
 under a third Control claim without another native mutation. The old executable,
 process-kill/LOCK and complete outcome-drain/ACK journeys remain separate gates.
-These are implemented scenarios, not executed PASS evidence.
+Twelve scenarios now have native execution at product0f6e366 (fixture correction
+cc9151b; observer01af703). The final evidence report and compatibility qualification
+are in progress; these results do not close the complete handoff task.
+
+`build_closing_probe.py` rebuilds a corrected finite client in a separate exact Git
+export while requiring unchanged product/dependency inputs. `build_old_closing_probe.py`
+requires every old442f3d8 tracked byte to match, except the exact test hook and two
+fixture files. `old_closing.py` copies the two actually closed stores, verifies the
+copy identities, invokes that explicitly selected old native test and compares
+complete expected scientific bytes and original-input side effects. It does not
+claim that an unmodified shipped binary was used or that native test callbacks
+supply PostgreSQL authority. The old fixture remains on its recorded compatibility
+branch; it must not be merged as a current-writer test.

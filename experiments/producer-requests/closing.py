@@ -156,6 +156,8 @@ def main(root, tag, scenario, fixture_build=False):
         mid=one('closing-interrupted');mt=check_state(mid,wanted,names,originals)
         same_window(bt,mt,scenario=='after-complete')
         assert mid['sequence']==before['sequence']+1
+        if scenario=='after-complete':
+            assert mt['producer_epochs']==at['producer_epochs'], 'committed PG retry rewrote producer row'
     successes=[m for m in messages if m['event']=='producer-closed']
     assert len(successes)==(0 if negative else 1 if interrupted else 2)
     for m in successes:

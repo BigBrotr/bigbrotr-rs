@@ -214,3 +214,25 @@ intentional fixture correction. The observer now permits only that exact fixture
 path relative to baseline, and requires all actual Rust/build inputs to match
 the rebuilt artifact source. This changes provenance validation, not expected
 state, faults or product semantics. Both COMMIT cases still await rerun.
+
+Both corrected COMMIT cases now PASS (before2, after1) using cc9151b fixture and
+01af703 observer. Total12 connected cases PASS,35 native-store tests PASS. All
+captured cases retain zero PG client backends. Source rows/originals/full37tables
+and native sequence match: populated29->30, empty1->2, refused29->29. These are
+observed engine sequences, not claims about physical zero I/O. Old-writer compile
+is still running locally under fact_codec_review; root assigned exclusive Mac
+.research/targets/product to that agent until join. No root Cargo may race it.
+The first explicit compiler environment invalidated librocksdb-sys cache; its
+owned process was stopped/joined, normal-environment compile is still running.
+
+Root independently read the full old410-line fixture, independent CBOR literals
+and four-line cfg(test) hook. It will run on copies of normal1/empty1; never modify
+previously qualified original directories. New root-owned main experiment helpers
+build_old_closing_probe.py and old_closing.py validate complete old-source identity,
+compile only the old native test and compare all eleven snapshots plus exact
+originals. They have syntax checks only so far. catalog_guard_review is reviewing
+all12 captured reports read-only and checking altered captures; no SQL/native
+work by that reviewer. Next bounded action: complete the old writer fixture build,
+transfer its exact Git revision, execute the copied-store compatibility test,
+then terminal resource audit/collection and scoped qualification commit. Published
+origin remains442f3d8; current main01af703 plus owned helper/checkpoint edits.
