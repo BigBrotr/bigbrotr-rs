@@ -10,3 +10,4 @@ pub mod ingest_registry;
 pub mod initialization;
 pub mod migration_runner;
 pub mod migrations;
+pub mod transport;

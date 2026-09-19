@@ -379,6 +379,10 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   seven Control rows match independent values; actual blocked cancellation and
   fresh-session retry pass. No sidecar is created. Installed lifecycle/resource
   reconciliation, malformed metadata/extreme values and protection remain open.
+  Installed compact recovery preparation shares the protected PostgreSQL adapter
+  with Control: the returned actual driver remains unpolled until the catalog
+  consumer attaches custody. The real publication fixture consumes it, including
+  seal/recovery. Scoped native TLS, signals and queued-query validation is pending.
   No step is complete from these prerequisites.
 - [ ] **Step 6:** Handle empty and one-small-event timer batches; publish useful progress
   without waiting for a size threshold that may never be reached.

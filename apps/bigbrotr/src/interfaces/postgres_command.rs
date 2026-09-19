@@ -1,39 +1,20 @@
 //! Shared finite PostgreSQL command preparation and owned transport lifecycle.
+use bigbrotr::storage::postgres::transport;
 use bigbrotr::{
     runtime::{
         OwnedPermit, ProcessEnvelope, ResourceBudget, ResourceLimits, ResourceRequest, WaiterLimits,
     },
     secrets::SecretFile,
     storage::postgres::connection_settings::{
-        ConnectionSettings, PlaintextBoundary, PreparedConnection, PreparedTransport, TlsSettings,
+        ConnectionSettings, PlaintextBoundary, PreparedConnection, TlsSettings,
     },
 };
-use std::{
-    future::Future,
-    net::{IpAddr, Ipv4Addr, SocketAddr},
-    path::Path,
-    pin::Pin,
-    time::Duration,
-};
+use std::{path::Path, time::Duration};
 use tokio_postgres::Client;
-const CONNECT_DEADLINE: Duration = Duration::from_secs(10);
+pub(super) use transport::ConnectError;
 pub(super) const DRIVER_DRAIN: Duration = Duration::from_secs(2);
 type CliResult<T> = Result<T, (u8, String)>;
-type Driver = Pin<Box<dyn Future<Output = Result<(), tokio_postgres::Error>> + Send>>;
 pub(super) type DriverHandle = tokio::task::JoinHandle<Result<(), tokio_postgres::Error>>;
-#[derive(Debug)]
-pub(super) enum ConnectError {
-    Backend,
-    PlaintextRoute,
-}
-impl std::fmt::Display for ConnectError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(match self {
-            Self::Backend => "PostgreSQL connection unavailable",
-            Self::PlaintextRoute => "resolved PostgreSQL plaintext route is outside its declared local boundary or exceeds the address limit",
-        })
-    }
-}
 pub(super) fn prepare(
     config: &crate::config::Resolved,
     user: &str,
@@ -123,30 +104,7 @@ fn secret(reference: &str) -> CliResult<SecretFile<'_>> {
 pub(super) async fn connect(
     prepared: PreparedConnection,
 ) -> Result<(Client, DriverHandle), ConnectError> {
-    let (mut config, transport) = prepared.into_parts();
-    let connect = async {
-        let pair: (tokio_postgres::Client, Driver) = match transport {
-            PreparedTransport::LocalPlaintext(boundary) => {
-                pin_plaintext_route(&mut config, boundary).await?;
-                let (client, driver) = config
-                    .connect(tokio_postgres::NoTls)
-                    .await
-                    .map_err(|_| ConnectError::Backend)?;
-                (client, Box::pin(driver))
-            }
-            PreparedTransport::VerifyFull(connector) => {
-                let (client, driver) = config
-                    .connect(connector)
-                    .await
-                    .map_err(|_| ConnectError::Backend)?;
-                (client, Box::pin(driver))
-            }
-        };
-        Ok::<_, ConnectError>(pair)
-    };
-    let (client, driver) = tokio::time::timeout(CONNECT_DEADLINE, connect)
-        .await
-        .map_err(|_| ConnectError::Backend)??;
+    let (client, driver) = transport::connect(prepared).await?;
     Ok((client, tokio::spawn(driver)))
 }
 
@@ -164,86 +122,5 @@ pub(super) async fn join(mut driver: DriverHandle) {
     {
         driver.abort();
         let _ = driver.await;
-    }
-}
-
-async fn pin_plaintext_route(
-    config: &mut tokio_postgres::Config,
-    boundary: PlaintextBoundary,
-) -> Result<(), ConnectError> {
-    let [tokio_postgres::config::Host::Tcp(host)] = config.get_hosts() else {
-        return Err(ConnectError::PlaintextRoute);
-    };
-    let [port] = config.get_ports() else {
-        return Err(ConnectError::PlaintextRoute);
-    };
-    let address = if host == "localhost" {
-        // Deterministic loopback without an ambient resolver alias. An IPv6-only
-        // database can explicitly select [::1] in its endpoint.
-        vetted_address(
-            [SocketAddr::new(Ipv4Addr::LOCALHOST.into(), *port)],
-            boundary,
-        )?
-    } else if let Ok(address) = host.parse::<IpAddr>() {
-        vetted_address([SocketAddr::new(address, *port)], boundary)?
-    } else {
-        let addresses = tokio::net::lookup_host((host.as_str(), *port))
-            .await
-            .map_err(|_| ConnectError::Backend)?;
-        vetted_address(addresses, boundary)?
-    };
-    // hostaddr prevents a second DNS resolution between policy and connect.
-    config.hostaddr(address);
-    Ok(())
-}
-
-fn vetted_address(
-    addresses: impl IntoIterator<Item = SocketAddr>,
-    boundary: PlaintextBoundary,
-) -> Result<IpAddr, ConnectError> {
-    let mut selected = None;
-    for (index, address) in addresses.into_iter().enumerate() {
-        let ip = address.ip().to_canonical();
-        let allowed = match boundary {
-            PlaintextBoundary::Loopback => ip.is_loopback(),
-            PlaintextBoundary::PrivateBridge => match ip {
-                IpAddr::V4(ip) => ip.is_private(),
-                IpAddr::V6(ip) => ip.is_unique_local(),
-            },
-        };
-        if index >= 16 || !allowed {
-            return Err(ConnectError::PlaintextRoute);
-        }
-        selected.get_or_insert(ip);
-    }
-    selected.ok_or(ConnectError::PlaintextRoute)
-}
-
-#[cfg(test)]
-mod route_tests {
-    use super::*;
-
-    #[test]
-    fn plaintext_requires_all_bounded_answers_inside_the_selected_boundary() {
-        for (boundary, allowed, forbidden) in [
-            (PlaintextBoundary::Loopback, "127.0.0.1", "10.0.0.2"),
-            (PlaintextBoundary::PrivateBridge, "172.18.0.2", "8.8.8.8"),
-            (PlaintextBoundary::PrivateBridge, "fd00::2", "fe80::2"),
-        ] {
-            let local = SocketAddr::new(allowed.parse().unwrap(), 5432);
-            let external = SocketAddr::new(forbidden.parse().unwrap(), 5432);
-            assert_eq!(vetted_address([local], boundary).unwrap(), local.ip());
-            assert!(vetted_address([local, external], boundary).is_err());
-            assert!(vetted_address([external, local], boundary).is_err());
-            assert!(vetted_address([], boundary).is_err());
-            assert!(vetted_address([local; 16], boundary).is_ok());
-            assert!(vetted_address([local; 17], boundary).is_err());
-        }
-        let mapped = SocketAddr::new("::ffff:127.0.0.1".parse().unwrap(), 5432);
-        assert_eq!(
-            vetted_address([mapped], PlaintextBoundary::Loopback).unwrap(),
-            IpAddr::V4(Ipv4Addr::LOCALHOST)
-        );
-        assert!(vetted_address([mapped], PlaintextBoundary::PrivateBridge).is_err());
     }
 }

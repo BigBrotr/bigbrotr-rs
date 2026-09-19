@@ -616,3 +616,13 @@ now exercises the actual inherited worker descriptor, cancelled queued COMMIT,
 transport destruction, manager/parent crash and fresh local/catalog observations.
 It qualifies this finite custody prerequisite; installed recovery, missing-import
 resolution and resource/protection obligations remain separate.
+
+The shared `storage::postgres::transport` adapter returns the actual unpolled
+connection future after authentication. Control's wrapper starts/joins it;
+catalog custody is attached before task creation. Exact locked
+`tokio-postgres`0.7.18 `src/connect_raw.rs` performs startup/authentication and
+`read_info` before constructing Client/Connection. Driver destruction is still
+not remote rollback; DNS may retain runtime blocking work after timeout. No new
+pool, reconnect/fallback or resource-accounting guarantee is introduced. The
+publication fixture now consumes the same protected preparer and transport;
+scoped native TLS, signals and custody validation remains pending.

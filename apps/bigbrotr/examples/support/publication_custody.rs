@@ -68,12 +68,27 @@ impl Case<'_> {
             .publish_pending(pending, writer, custody, &route, self.worker_budget);
             panic!("parent-death fixture was not killed: {result:?}");
         }
-        let (mut manager, connection) = connection_config(self.database, "postgres")
-            .port(port)
-            .connect(NoTls)
-            .await
-            .unwrap();
-        let driver = tokio::spawn(custody.retain_catalog_connection(connection).unwrap());
+        let (mut manager, connection) = connection(self.database, "postgres", port).await;
+        let driver = if mode == "custody_cancel" {
+            let query = manager.query_one("SELECT 9471::integer", &[]);
+            tokio::pin!(query);
+            assert!(
+                tokio::time::timeout(Duration::from_millis(100), &mut query)
+                    .await
+                    .is_err(),
+                "the returned driver must not execute queued SQL before custody is attached",
+            );
+            let driver = tokio::spawn(custody.retain_catalog_connection(connection).unwrap());
+            let row = tokio::time::timeout(Duration::from_secs(5), &mut query)
+                .await
+                .unwrap()
+                .unwrap();
+            assert_eq!(row.get::<_, i32>(0), 9471);
+            emit(serde_json::json!({"event":"unpolled-driver-verified","value":9471}));
+            driver
+        } else {
+            tokio::spawn(custody.retain_catalog_connection(connection).unwrap())
+        };
         let abort = driver.abort_handle();
         let pid: i32 = manager
             .query_one("SELECT pg_backend_pid()", &[])
@@ -240,7 +255,9 @@ pub async fn observe(mode: &str, action: &str, catalog_override: Option<&str>) {
             let rocks = ingest::logical_state(&home.join("rocks"));
             emit(serde_json::json!({"event":"retained-rocks","rows":rocks.0,"digest":rocks.1}));
             if action == "seal" {
-                let (mut manager, driver) = connect(&format!("bbpub_{mode}"), "postgres").await;
+                let (mut manager, connection) =
+                    connection(&format!("bbpub_{mode}"), "postgres", 5432).await;
+                let driver = tokio::spawn(custody.retain_catalog_connection(connection).unwrap());
                 let pid: i32 = manager
                     .query_one("SELECT pg_backend_pid()", &[])
                     .await
@@ -256,10 +273,7 @@ pub async fn observe(mode: &str, action: &str, catalog_override: Option<&str>) {
             if action == "resolve" {
                 let database = format!("bbpub_{mode}");
                 let (mut manager, connection) =
-                    connection_config(catalog_override.unwrap_or(&database), "postgres")
-                        .connect(NoTls)
-                        .await
-                        .unwrap();
+                    connection(catalog_override.unwrap_or(&database), "postgres", 5432).await;
                 let driver = tokio::spawn(custody.retain_catalog_connection(connection).unwrap());
                 let committing = Cell::new(false);
                 let pid: i32 = manager

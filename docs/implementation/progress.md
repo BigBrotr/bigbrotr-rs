@@ -21,13 +21,16 @@ reconciliation, incomplete-journal/cross-boot recovery and protection remain ope
 
 ## Actual Git and ownership
 
-Mac main HEAD d86e14723e132ef027260ec14ad86903f0f8af2e,
-tree20524e2c887fef883f8366f5f2b257dd7fd4fc04, is the tested unpublished correction.
-Its baseline fcd63ac25fb606f11dd50e272fb291ee72fc4c77 remains a retained intentional
-failure. Last verified origin/main127174218ccf6ab5fccce5da4f6be0927e554db0 delivers
-the earlier missing-import qualification. Root owns only current evidence,
-task/contract/reference/experiment-doc, inventory and checkpoint edits. No other
-writer or merge/rebase. Read-only AI publication_review completed source and recorded-evidence review
+Mac main HEAD and freshly verified remote main are now
+a40bf53784be2b2737f89a39b1b44e8a46f0d6ed (qualification commit). Push26829 completed
+ordinarily from1271742; repository remains private, nonarchived, named bigbrotr-rs.
+Worktree was clean after push. Root now owns the shared PostgreSQL transport
+extraction, Control wrapper, publication/custody fixture, scoped native runner and
+associated documentation/inventory edits. No other writer or merge/rebase. Tested product source remains
+d86e14723e132ef027260ec14ad86903f0f8af2e,
+tree20524e2c887fef883f8366f5f2b257dd7fd4fc04. Baseline
+fcd63ac25fb606f11dd50e272fb291ee72fc4c77 retains the intentional failure.
+Read-only AI publication_review completed source and recorded-evidence review
 without a blocker/discrepancy. It verified all56 hashes, both source/raw archives,
 five journal/input corpora and ten clone controls locally. No reviewer native
 execution/Tux actions; host/ELF claims rely on recorded audits.
@@ -130,11 +133,26 @@ Do not mechanically rerun unrelated suites.
 
 ## Next bounded action
 
-Recorded-evidence review and full current documentation diff review are complete;
-structural artifact/handoff checks PASS. Commit qualification and ordinarily push
-the three coherent unpublished commits to the private repository. Then map the
-installed archive owner/runtime and exact configuration consumers to integrate
-bounded startup recovery with this retained-intent lookup, actual custody and
-catalog resolution. Read complete owning files before choosing that next slice;
-keep installed resource reconciliation, incomplete-journal/cross-boot recovery,
-protection and full M1 required. No completion claim from prerequisite fixtures.
+P01-T05/T06 prerequisite for P02-T04 installed compact recovery: one prepared
+PostgreSQL transport now returns the actual unpolled driver. Control still spawns
+and joins it; catalog consumers attach LocalAttempt custody before spawning.
+The real publication fixture now uses protected ConnectionSettings and the same
+adapter. Its fixture-only 0600 password copy is unlinked before connection await.
+A pinned SQL query must remain pending before driver polling and return literal
+9471 after custody attachment. AI source review found a pre-existing unwrapped
+seal observer driver; that branch is now wrapped too. Native validation NOT_RUN.
+Mac route unit and affected Clippy pass in ignored shared-transport raw root;
+repeat affected Clippy after the seal change. No dependency, SQL or config change.
+
+Next: complete scoped native build/CLI TLS and signal harness, commit an exact
+clean candidate, then create a separately inventoried Tux run from d86e147 cache.
+Exercise the actual Control executable and signed publication/custody consumers;
+check unpolled-query observation, durable identities and terminal drivers. Current
+serve remains Control-only. The adapter does not implement installed Archive
+lifecycle, a shared process budget, DNS task termination or remote RPC.
+
+Full affected connection/preparer/secret/fixture files and P01-T05/T06/T07 task,
+deployment/component/storage-service contracts inspected. Runtime budget and
+broader configuration registry/resolver remain incompletely inspected and unchanged.
+Incomplete-journal/cross-boot recovery, persistent resource reconciliation,
+protection and full M1 remain required. No new remote lab launched yet.

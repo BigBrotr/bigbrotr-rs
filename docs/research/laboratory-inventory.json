@@ -7793,6 +7793,12 @@
       "correction_raw_sha256": "02be56fa08e5899982da375c5efaa7cfd9badc53a2a693fdff68f9f3b2e46696",
       "report": "docs/implementation/evidence/p02-retained-attempt-read-native-20260919.json",
       "correction_cache_source": "/home/tux/bigbrotr-implementation-20260917/runs/attempt-read-fcd63ac/out/build"
+    },
+    "shared_postgres_transport": {
+      "base_source": "a40bf53784be2b2737f89a39b1b44e8a46f0d6ed",
+      "local_root": ".research/implementation/archive-worker/shared-transport",
+      "state": "local source and harness preparation; native NOT_RUN; no remote resources",
+      "cache_source": "/home/tux/bigbrotr-implementation-20260917/runs/attempt-read-d86e147/out/build"
     }
   },
   "implementation_monitor_corrections_20260918": {

@@ -122,6 +122,9 @@ def main(root):
             assert hello['source_sha256'] == sha(SOURCE/'experiments/archive-engine/native_commit_proxy.py')
             parent = start(binary+[mode, str(hello['port'])])
             created = event(parent, 'custody-created', 45)
+            if mode == 'custody_cancel':
+                case['unpolled_driver'] = event(parent, 'unpolled-driver-verified')
+                assert case['unpolled_driver'] == dict(event='unpolled-driver-verified', value=9471)
             lock = f'/out/signed_{mode}/lifetimes/{created["attempt"]}/custody.lock'
             journal = home/'lifetimes'/created['attempt']/'intent.json'
             case['journal_before_sha256'] = sha(journal)

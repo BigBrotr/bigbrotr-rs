@@ -16,8 +16,9 @@ build = SOURCE.parent
 out = Path('/out/native-tests')
 bundle = Path('/out/archive-worker')
 manifest = json.loads((build / 'source-manifest.json').read_text())
-assert sys.argv[1:] in ([], ['--retained-read'])
+assert sys.argv[1:] in ([], ['--retained-read'], ['--shared-transport'])
 retained_read = sys.argv[1:] == ['--retained-read']
+shared_transport = sys.argv[1:] == ['--shared-transport']
 assert {str(p.relative_to(SOURCE)): file_hash(p) for p in sorted(SOURCE.rglob('*')) if p.is_file()} == manifest['files_sha256']
 bundle.mkdir()
 install_bundle(Path('/assets'), bundle, 'x86_64-unknown-linux-gnu')
@@ -34,7 +35,13 @@ checks = [
     ('build', ['cargo','build','--locked','--offline','--release','-p','bigbrotr-archive-worker','--bin','bigbrotr-archive-worker','--example','catalog-fence-probe']),
     ('signed-fixtures', ['cargo','build','--locked','--offline','--release','-p','bigbrotr','-p','bigbrotr-archive-worker','--example','archive_publication_probe','--example','archive_read_probe','--example','archive_receipt_probe']),
 ]
-if retained_read:
+if shared_transport:
+    checks += [
+        ('transport-tests', ['cargo','test','--locked','--offline','--release','-p','bigbrotr','--lib','storage::postgres::transport']),
+        ('control-build', ['cargo','build','--locked','--offline','--release','-p','bigbrotr','--bin','bigbrotr']),
+        ('transport-clippy', ['cargo','clippy','--locked','--offline','--release','-p','bigbrotr','--lib','--bin','bigbrotr','--example','archive_publication_probe','--','-D','warnings']),
+    ]
+elif retained_read:
     checks += [
         ('retained-tests', ['cargo','test','--locked','--offline','--release','-p','bigbrotr','--test','archive_attempt','--test','control_schema']),
         ('retained-build', ['cargo','build','--locked','--offline','--release','-p','bigbrotr','--example','archive_attempt_probe']),
@@ -61,7 +68,12 @@ for source, destination, label in [
     shutil.copy2(source,destination)
     destination.chmod(0o500)
     identity[label] = file_hash(destination)
-if retained_read:
+if shared_transport:
+    executable = out/'bigbrotr'
+    shutil.copy2(build/'target/release/bigbrotr',executable)
+    executable.chmod(0o500)
+    identity['control'] = file_hash(executable)
+elif retained_read:
     probe = out/'archive-attempt-probe'
     shutil.copy2(build/'target/release/examples/archive_attempt_probe',probe)
     probe.chmod(0o500)

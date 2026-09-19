@@ -14,10 +14,10 @@ use bigbrotr::{
             activation::{ActivationRequest, activate_initial},
             archive_attempt::ArchiveAttemptRequest,
             catalog_guard::{self, CatalogIdentity},
-            connection_settings::PlaintextBoundary,
+            connection_settings::{ConnectionSettings, PlaintextBoundary, TlsSettings},
             control_owner::{ClaimRequest, ControlSession, OwnerError},
             initialization::{InitialConfiguration, initialize},
-            migration_runner,
+            migration_runner, transport,
         },
     },
 };
@@ -35,7 +35,7 @@ use std::{
     sync::atomic::AtomicBool,
     time::{Duration, Instant},
 };
-use tokio_postgres::{Client, Config, NoTls};
+use tokio_postgres::Client;
 use zeroize::Zeroizing;
 #[path = "support/publication_custody.rs"]
 mod custody;
@@ -80,22 +80,32 @@ async fn connect(
     Client,
     tokio::task::JoinHandle<Result<(), tokio_postgres::Error>>,
 ) {
-    let (client, connection) = connection_config(database, role)
-        .connect(NoTls)
-        .await
-        .unwrap();
+    let (client, connection) = connection(database, role, 5432).await;
     (client, tokio::spawn(connection))
 }
-fn connection_config(database: &str, role: &str) -> Config {
-    let mut config = Config::new();
-    config
-        .host("127.0.0.1")
-        .dbname(database)
-        .user(role)
-        .password(fs::read(format!("/secrets/{role}")).unwrap())
-        .application_name("bigbrotr-signed-publication-probe")
-        .connect_timeout(Duration::from_secs(5));
-    config
+async fn connection(database: &str, role: &str, port: u16) -> (Client, transport::Driver) {
+    // The shared product preparer requires a private credential descriptor. The
+    // lab's PG container also reads /secrets, so copy only this fixture credential
+    // to an exclusive mode0600 file, then unlink it after preparation (before connect).
+    let mut secret = tempfile::NamedTempFile::new_in("/out").unwrap();
+    secret
+        .write_all(&fs::read(format!("/secrets/{role}")).unwrap())
+        .unwrap();
+    let reference = format!("file:{}", secret.path().display());
+    let prepared = ConnectionSettings {
+        endpoint: &format!("127.0.0.1:{port}"),
+        database,
+        user: role,
+        password: bigbrotr::secrets::SecretFile::parse(&reference).unwrap(),
+        connect_timeout: Duration::from_secs(5),
+        tls: TlsSettings::LocalPlaintext {
+            boundary: PlaintextBoundary::Loopback,
+        },
+    }
+    .prepare()
+    .unwrap();
+    drop(secret);
+    transport::connect(prepared).await.unwrap()
 }
 async fn provision(
     database: &str,
@@ -104,10 +114,7 @@ async fn provision(
     receipt: &bigbrotr::storage::postgres::archive_attempt::ArchiveAttemptReceipt,
     report_activation: bool,
 ) -> catalog_guard::FreshWriter {
-    let (mut manager, connection) = connection_config(database, "postgres")
-        .connect(NoTls)
-        .await
-        .unwrap();
+    let (mut manager, connection) = connection(database, "postgres", 5432).await;
     // The dedicated transport itself holds custody before any provisioning SQL.
     let driver = tokio::spawn(custody.retain_catalog_connection(connection).unwrap());
     if report_activation {
