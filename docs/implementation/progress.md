@@ -180,3 +180,10 @@ boundary refusing a bad fixture, not a migration failure. Original r1 report/log
 retained INCOMPLETE; independently observed zero PG clients and idle runner.
 Corrected harness uses mode700 plus fresh r2 databases/paths and runs new-on-old
 before the expected missing-diagnostic case. No earlier data is retried in place.
+
+Compatibility r2 retained native write and all27 native rows passed, then the
+metadata observer failed because full-table snapshots are sorted by row JSON
+([2,3,1] requests) while the shared oracle requires request sequence order.
+Root corrected only that caller ordering, retained complete-byte checks, added
+full independent PG outcome comparison, and selected new r3 resources. r1/r2
+remain INCOMPLETE, not reclassified as PASS. Product215f502 remains unchanged.
