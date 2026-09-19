@@ -204,3 +204,13 @@ closing-before1.json; after-complete was NOT_RUN. Root corrected only the fixtur
 to restore the retained direct Config, and is preparing an exact-source separate
 fixture rebuild that verifies all product/dependency bytes remain identical.
 No product fix or successful recovery is inferred from this failure.
+
+Corrected fixture cc9151b built and passed Clippy on Tux; SHA256
+b4cb5e1823a28935f4c97af3cc952e814b69c5982a16fdd0ea6fb3e1ff3bc161,
+retained under out/closing-probe. Builder verified every product/dependency input
+identical to0f6e366; original binaries/export untouched. Its first harness launch
+refused before any SQL because the original all-apps equality check included the
+intentional fixture correction. The observer now permits only that exact fixture
+path relative to baseline, and requires all actual Rust/build inputs to match
+the rebuilt artifact source. This changes provenance validation, not expected
+state, faults or product semantics. Both COMMIT cases still await rerun.

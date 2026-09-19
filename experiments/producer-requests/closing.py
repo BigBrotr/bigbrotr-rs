@@ -67,12 +67,16 @@ def main(root, tag, scenario, fixture_build=False):
     resources = json.loads((root/'resources.json').read_text())
     revision = command('git','-C',str(SOURCE),'rev-parse','HEAD')
     assert not command('git','-C',str(SOURCE),'status','--porcelain','--untracked-files=all')
-    assert not command('git','-C',str(SOURCE),'diff',resources['source'],revision,'--','apps','crates','migrations','Cargo.lock','Cargo.toml','rust-toolchain.toml')
+    fixture_exception = [':!apps/bigbrotr/examples/support/ingest_closing.rs'] if fixture_build else []
+    assert not command('git','-C',str(SOURCE),'diff',resources['source'],revision,'--','apps','crates','migrations','Cargo.lock','Cargo.toml','rust-toolchain.toml',*fixture_exception)
     location = 'out/closing-probe' if fixture_build else 'out/native-tests'
     ready = json.loads((root/location/'ready.json').read_text())
     assert ready['status']=='READY' and ready['baseline_product' if fixture_build else 'source']==resources['source']
     if fixture_build:
-        assert ready['source']==revision
+        # The rebuilt artifact may have a later Python-only observer. Every
+        # actual Rust fixture/product/build input must still match its source.
+        assert not command('git','-C',str(SOURCE),'diff',ready['source'],revision,'--',
+                           'apps','crates','migrations','Cargo.lock','Cargo.toml','rust-toolchain.toml','tools')
     assert sha((root/location/'ingest-bootstrap-probe').read_bytes()) == ready['sha256' if fixture_build else 'ingest_probe']
     for identity in [resources['container_id'],resources['postgres_id']]:
         owned = json.loads(command('docker','inspect',identity))[0]
