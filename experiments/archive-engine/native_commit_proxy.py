@@ -1,25 +1,28 @@
 #!/usr/bin/env python3
-"""Owned plaintext loopback lab only: lose the reply to one native data COMMIT.
+"""Owned plaintext loopback lab only: interrupt one selected archive COMMIT.
 
 DuckLake uses several native connections and commits during attach. Target only
-the connection that submitted an INSERT containing ducklake_data_file; other
-transactions pass. Log allowlisted counters, never SQL/authentication payloads.
+the publication INSERT by default, or explicitly the scientific schema or guard
+installation transaction. Log counters, never SQL/authentication payloads.
 """
 import argparse
 import asyncio
 import hashlib
 import json
 from pathlib import Path
+import re
 import struct
 import sys
 
 MAX_FRAME = 8 * 1024 * 1024
 MAX_WIRE = 64 * 1024 * 1024
+SCHEMA_INSERT = re.compile(rb'\bINSERT\s+INTO\s+(?:(?:"[^"]+"|[A-Z_][A-Z_0-9]*)\.)*"?DUCKLAKE_TABLE"?\s+(?:VALUES|\()')
 
 
 class Proxy:
-    def __init__(self, mode):
+    def __init__(self, mode, target='publication'):
         self.mode = mode
+        self.target = target
         self.writers = []
         self.tasks = []
         self.held = False
@@ -32,7 +35,7 @@ class Proxy:
         self.report.update(auth_finals_omitted=0, frontend_queries=0)
 
     def emit(self, event, **extra):
-        print(json.dumps(dict(event=event, mode=self.mode, **self.report, **extra)), flush=True)
+        print(json.dumps(dict(event=event, mode=self.mode, target=self.target, **self.report, **extra)), flush=True)
 
     async def hold(self, stage, backend_pid):
         if self.mode != 'hold-' + stage or self.held:
@@ -132,7 +135,14 @@ class Proxy:
                     if self.mode in ('hold-manager-commit', 'hold-manager-owner') and query.startswith(b'CREATE ROLE "BB_ARCHIVE_'):
                         state['data'] = True
                         self.report['data_queries'] += 1
-                    if b'INSERT INTO' in query and b'DUCKLAKE_DATA_FILE' in query:
+                    selected = (
+                        (self.target == 'publication' and b'INSERT INTO' in query and b'DUCKLAKE_DATA_FILE' in query)
+                        # ATTACH creates ducklake_table but inserts into other
+                        # metadata tables. Only its direct INSERT is this commit.
+                        or (self.target == 'native-schema' and SCHEMA_INSERT.search(query))
+                        or (self.target == 'guard-install' and b'CREATE SCHEMA BIGBROTR_ARCHIVE;' in query)
+                    )
+                    if selected:
                         state['data'] = True
                         self.report['data_queries'] += 1
                         if not await self.hold('data', state['backend_pid']):
@@ -172,6 +182,8 @@ class Proxy:
                     if self.mode == 'after-complete' and not self.report['faults']:
                         self.report['faults'] += 1
                         self.emit('fault')
+                        return
+                    if not await self.hold('reply', state['backend_pid']):
                         return
                     self.report['client_complete'] += 1
                 if not frontend and tag == b'Z' and body == b'I':
@@ -251,9 +263,11 @@ class Proxy:
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--mode', choices=['pass', 'before-forward', 'after-complete', 'hold-data', 'hold-commit', 'hold-manager-commit', 'hold-manager-owner', 'omit-auth-final'], required=True)
+    parser.add_argument('--mode', choices=['pass', 'before-forward', 'after-complete', 'hold-data', 'hold-commit', 'hold-reply', 'hold-manager-commit', 'hold-manager-owner', 'omit-auth-final'], required=True)
+    parser.add_argument('--target', choices=['publication', 'native-schema', 'guard-install'], default='publication')
     try:
-        sys.exit(asyncio.run(Proxy(parser.parse_args().mode).run()))
+        args = parser.parse_args()
+        sys.exit(asyncio.run(Proxy(args.mode, args.target).run()))
     except Exception:
         print('native commit proxy failed', file=sys.stderr)
         sys.exit(3)

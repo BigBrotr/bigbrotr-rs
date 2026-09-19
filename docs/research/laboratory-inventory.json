@@ -10503,6 +10503,14 @@
         }
       },
       "evidence": "docs/implementation/evidence/p02-native-mtls-20260919.json"
+    },
+    "initialization_late": {
+      "status": "prepared-not-executed",
+      "local_raw_root": ".research/implementation/archive-worker/initialization-late",
+      "source_parent": "030ec6652cdc6691231f3d9ea528c80fceb6306c",
+      "scope": "nine actual initializer late commit-loss and process-crash recovery schedules",
+      "resources": "no active lab yet; copied launcher will create fresh owner-labelled namespace",
+      "cache_assets": "stopped native-mtls-50d9496; copied cache only, assets read-only"
     }
   },
   "implementation_monitor_corrections_20260918": {

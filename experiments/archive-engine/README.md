@@ -381,3 +381,14 @@ source/artifact auditing remain required. The
 [native report](../../docs/implementation/evidence/p02-native-mtls-20260919.json)
 records 25 passing cases at `50d9496` and the retained earlier test compilation
 failure; it does not qualify signed mTLS publishing.
+
+`initialization_cli_cases.py ROOT --late-faults` selects nine additional installed
+initializer schedules at the scientific-schema and guard-install commits: lost
+replies before/after server completion, coordinator SIGKILL before forwarding or
+after completion, and native-worker SIGKILL before the schema COMMIT. Explicit
+proxy targets avoid the preceding DuckLake ATTACH transaction. Exact process
+identities/pidfds, joined proxy endpoints and fresh PostgreSQL observations delimit
+the fault before reading durable state. Recovery runs with the entire worker bundle
+absent; native rows and root markers must remain unchanged, bootstrap retirement
+must be complete, and a second recovery must be idempotent. An incomplete native
+schema must remain refused. This matrix's source is not passing execution evidence.

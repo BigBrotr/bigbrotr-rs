@@ -9,6 +9,8 @@ import sys
 import time
 
 sys.dont_write_bytecode = True
+assert len(sys.argv) == 2 or sys.argv[2:] == ['--late-faults']
+late_faults = sys.argv[2:] == ['--late-faults']
 run = Path(sys.argv[1]).resolve()
 source = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(source / 'experiments/control-migrations'))
@@ -40,7 +42,7 @@ ready = json.loads((run / 'out/native-tests/ready.json').read_text())
 assert ready['source'] == state['source']
 assert hashlib.sha256((run / 'out/native-tests/bigbrotr').read_bytes()).hexdigest() == ready['control']
 report = dict(source=state['source'], harness=harness_identity, artifacts=ready, status='RUNNING', cases=[])
-output = run / 'initialization-cli.json'
+output = run / ('initialization-late.json' if late_faults else 'initialization-cli.json')
 output.open('x').close()
 work = run / 'out/initialization-cli'
 work.mkdir(mode=0o700)
@@ -213,23 +215,31 @@ try:
     sql('CREATE ROLE "CatalogManager" LOGIN NOSUPERUSER CREATEROLE NOCREATEDB '
         "NOINHERIT NOREPLICATION NOBYPASSRLS PASSWORD '" + password + "';")
     del password
-    database = fresh('clean')
-    path, root = config(database, 'clean', extra='[runtime.processes.application]\npayload_bytes="128MiB"')
-    def clean(item):
-        observed, _ = invoke('initialize', path)
-        item['observed'] = observed; save()
-        assert observed['exit'] == 0 and observed['output']['new_installation'] is True
-        item['independent'] = installed(database)
-    case('initialize-real-worker-with-128mib-parent-payload', clean)
-    unchanged('fresh-manager-inspect', database, 'inspect', path, 0)
-    unchanged('restart-recover-idempotent', database, 'recover', path, 0)
-    unchanged('fresh-initialize-retry-refuses-no-row-change', database, 'initialize', path, 4)
-    wrong, _ = config(database, 'wrong-dataset', root=root, dataset='04'*16)
-    unchanged('wrong-dataset-recovery-refuses', database, 'recover', wrong, 4)
+    if late_faults:
+        from types import SimpleNamespace
+        from initialization_fault_cases import run as late_cases
+        late_cases(SimpleNamespace(root=run, source=source, state=state, report=report,
+            work=work, children=children, save=save, sql=sql, fresh=fresh, durable=durable,
+            config=config, args=args, invoke=invoke, case=case, bootstrap=bootstrap,
+            installed=installed, managed_cli=managed_cli, finished=finished, command=command))
+    else:
+        database = fresh('clean')
+        path, root = config(database, 'clean', extra='[runtime.processes.application]\npayload_bytes="128MiB"')
+        def clean(item):
+            observed, _ = invoke('initialize', path)
+            item['observed'] = observed; save()
+            assert observed['exit'] == 0 and observed['output']['new_installation'] is True
+            item['independent'] = installed(database)
+        case('initialize-real-worker-with-128mib-parent-payload', clean)
+        unchanged('fresh-manager-inspect', database, 'inspect', path, 0)
+        unchanged('restart-recover-idempotent', database, 'recover', path, 0)
+        unchanged('fresh-initialize-retry-refuses-no-row-change', database, 'initialize', path, 4)
+        wrong, _ = config(database, 'wrong-dataset', root=root, dataset='04'*16)
+        unchanged('wrong-dataset-recovery-refuses', database, 'recover', wrong, 4)
 
-    def blocked_output(item):
-        before = durable(database)
-        script = '''import fcntl,json,os,subprocess,sys,time
+        def blocked_output(item):
+            before = durable(database)
+            script = '''import fcntl,json,os,subprocess,sys,time
 r,w=os.pipe(); fcntl.fcntl(w,fcntl.F_SETFL,os.O_NONBLOCK)
 try:
  while True: os.write(w,b'x'*4096)
@@ -240,108 +250,108 @@ _,err=p.communicate(timeout=10)
 print(json.dumps(dict(exit=p.returncode,seconds=time.monotonic()-t,stderr_nonempty=bool(err))))
 os.close(w);os.close(r)
 '''
-        value = json.loads(command(['docker', 'exec', state['container'], 'python3', '-c', script, *args('recover', path)]))
-        item.update(observed=value, before=before, after=durable(database))
-        assert value['exit'] == 1 and value['seconds'] < 5 and before == item['after']
-    case('actual-full-output-pipe-bounded-exit', blocked_output)
+            value = json.loads(command(['docker', 'exec', state['container'], 'python3', '-c', script, *args('recover', path)]))
+            item.update(observed=value, before=before, after=durable(database))
+            assert value['exit'] == 1 and value['seconds'] < 5 and before == item['after']
+        case('actual-full-output-pipe-bounded-exit', blocked_output)
 
-    for label, mode, nonce in [('stranded', 'reserve', 51), ('complete', 'initialize', 52), ('partial', 'initialize', 53)]:
-        db = fresh(label)
-        fixture = json.loads(command(['docker', 'exec', state['container'], '/out/native-tests/catalog-initialization-probe', db, 'owner', str(nonce), '5432', mode]))
-        assert fixture['result']['status'] == 'reserved'
-        fixture_root = '/out/initialize_' + db + '_owner'
-        selected, _ = config(db, label, root=fixture_root)
-        if label == 'partial': sql('CREATE TABLE unrelated(marker integer); INSERT INTO unrelated VALUES(73)', db)
-        def recover_case(item, db=db, selected=selected, label=label):
-            before = durable(db)
-            observed, error = invoke('recover', selected)
-            item.update(observed=observed, before=before, after=durable(db))
-            assert observed['exit'] == (0 if label == 'complete' else 4)
-            role, oid = bootstrap(db)
-            assert sql(f"SELECT NOT rolcanlogin AND rolpassword IS NULL FROM pg_authid WHERE oid={oid}") == 't'
-            if label == 'complete': item['independent'] = installed(db)
-            else:
-                assert before['database_sha256'] == item['after']['database_sha256']
-                if label == 'stranded': assert b'pristine reservation is stranded' in error
-        case('recover-' + label, recover_case)
-        unchanged('recover-' + label + '-repeat', db, 'recover', selected, 0 if label == 'complete' else 4)
-
-    # Actual first reservation COMMIT lost before/after PostgreSQL completion.
-    for label, mode, expected in [('before', 'before-forward', False), ('after', 'after-complete', True)]:
-        db = fresh(label)
-        proxy = Process(['docker', 'exec', '-i', state['container'], 'python3', '-B',
-            '/source/experiments/control-migrations/fault_proxy.py', '--upstream-port', '5432',
-            '--mode', mode, '--deadline-seconds', '90'], input_pipe=True)
-        children.append(proxy)
-        event = proxy.event('ready', 10)
-        selected, fault_root = config(db, label, port=event['listen_port'])
-        direct, _ = config(db, label+'-direct', root=fault_root)
-        def fault(item, db=db, selected=selected, direct=direct, proxy=proxy, expected=expected):
-            observed, _ = invoke('initialize', selected)
-            assert observed['exit'] == 4
-            receipt = proxy.event('receipt', 10); assert proxy.wait(10) == 0
-            assert receipt['commits_seen'] == 1 and receipt['commits_forwarded'] == int(expected)
-            assert receipt['client_commit_complete'] == 0
-            recovered, error = invoke('recover', direct)
-            assert recovered['exit'] == 4
-            assert (bootstrap(db) is not None) == expected
-            if expected:
-                _, oid = bootstrap(db)
+        for label, mode, nonce in [('stranded', 'reserve', 51), ('complete', 'initialize', 52), ('partial', 'initialize', 53)]:
+            db = fresh(label)
+            fixture = json.loads(command(['docker', 'exec', state['container'], '/out/native-tests/catalog-initialization-probe', db, 'owner', str(nonce), '5432', mode]))
+            assert fixture['result']['status'] == 'reserved'
+            fixture_root = '/out/initialize_' + db + '_owner'
+            selected, _ = config(db, label, root=fixture_root)
+            if label == 'partial': sql('CREATE TABLE unrelated(marker integer); INSERT INTO unrelated VALUES(73)', db)
+            def recover_case(item, db=db, selected=selected, label=label):
+                before = durable(db)
+                observed, error = invoke('recover', selected)
+                item.update(observed=observed, before=before, after=durable(db))
+                assert observed['exit'] == (0 if label == 'complete' else 4)
+                role, oid = bootstrap(db)
                 assert sql(f"SELECT NOT rolcanlogin AND rolpassword IS NULL FROM pg_authid WHERE oid={oid}") == 't'
-            assert (b'pristine reservation is stranded' if expected else b'no current database reservation') in error
-            assert sql("SELECT count(*) FROM pg_class WHERE relnamespace='public'::regnamespace AND relkind='r'", db) == '0'
-            item.update(observed=observed, proxy=receipt, recovered=recovered,
-                        reservation_present=expected, native_tables=0, durable=durable(db))
-        case('lost-reservation-commit-' + label, fault)
+                if label == 'complete': item['independent'] = installed(db)
+                else:
+                    assert before['database_sha256'] == item['after']['database_sha256']
+                    if label == 'stranded': assert b'pristine reservation is stranded' in error
+            case('recover-' + label, recover_case)
+            unchanged('recover-' + label + '-repeat', db, 'recover', selected, 0 if label == 'complete' else 4)
 
-    for action in ['close', 'release']:
-        db = fresh('cancel_' + action)
-        proxy = Process(['docker', 'exec', '-i', state['container'], 'python3', '-B',
-            '/source/experiments/control-migrations/fault_proxy.py', '--upstream-port', '5432',
-            '--mode', 'hold', '--deadline-seconds', '90'], input_pipe=True)
-        children.append(proxy)
-        event = proxy.event('ready', 10)
-        label = 'cancel-' + action
-        selected, retained_root = config(db, label, port=event['listen_port'])
-        direct, _ = config(db, label+'-direct', root=retained_root)
-        def cancelled_commit(item, db=db, label=label, selected=selected, direct=direct, proxy=proxy, action=action):
-            client = managed_cli('initialize', selected, label)
-            proxy.event('held', 15)
-            start = time.monotonic(); terminate_cli(label)
-            observed = finished(client)
-            elapsed = time.monotonic()-start
-            assert observed['exit'] == 143 and elapsed < 5
-            recovery = managed_cli('recover', direct, label+'-recovery')
-            until = time.monotonic()+3
-            waiting = False
-            while time.monotonic() < until:
-                waiting = sql(f"SELECT EXISTS(SELECT 1 FROM pg_stat_activity WHERE datname='{db}' AND wait_event_type='Lock' AND wait_event='advisory')") == 't'
-                if waiting: break
-                time.sleep(.05)
-            assert waiting
-            proxy.send(action)
-            receipt = proxy.event('receipt', 10); assert proxy.wait(10) == 0
-            resolved = finished(recovery)
-            assert resolved['exit'] == 4
-            expected = action == 'release'
-            assert (bootstrap(db) is not None) == expected
-            if expected:
-                _, oid = bootstrap(db)
-                assert sql(f"SELECT NOT rolcanlogin AND rolpassword IS NULL FROM pg_authid WHERE oid={oid}") == 't'
-            assert sql("SELECT count(*) FROM pg_class WHERE relnamespace='public'::regnamespace AND relkind='r'", db) == '0'
-            item.update(observed=observed, stop_seconds=elapsed, actual_recovery_lock_wait=True,
-                        proxy=receipt, recovered=resolved, reservation_present=expected, native_tables=0)
-        case('cancel-actual-driver-held-commit-' + action, cancelled_commit)
+        # Actual first reservation COMMIT lost before/after PostgreSQL completion.
+        for label, mode, expected in [('before', 'before-forward', False), ('after', 'after-complete', True)]:
+            db = fresh(label)
+            proxy = Process(['docker', 'exec', '-i', state['container'], 'python3', '-B',
+                '/source/experiments/control-migrations/fault_proxy.py', '--upstream-port', '5432',
+                '--mode', mode, '--deadline-seconds', '90'], input_pipe=True)
+            children.append(proxy)
+            event = proxy.event('ready', 10)
+            selected, fault_root = config(db, label, port=event['listen_port'])
+            direct, _ = config(db, label+'-direct', root=fault_root)
+            def fault(item, db=db, selected=selected, direct=direct, proxy=proxy, expected=expected):
+                observed, _ = invoke('initialize', selected)
+                assert observed['exit'] == 4
+                receipt = proxy.event('receipt', 10); assert proxy.wait(10) == 0
+                assert receipt['commits_seen'] == 1 and receipt['commits_forwarded'] == int(expected)
+                assert receipt['client_commit_complete'] == 0
+                recovered, error = invoke('recover', direct)
+                assert recovered['exit'] == 4
+                assert (bootstrap(db) is not None) == expected
+                if expected:
+                    _, oid = bootstrap(db)
+                    assert sql(f"SELECT NOT rolcanlogin AND rolpassword IS NULL FROM pg_authid WHERE oid={oid}") == 't'
+                assert (b'pristine reservation is stranded' if expected else b'no current database reservation') in error
+                assert sql("SELECT count(*) FROM pg_class WHERE relnamespace='public'::regnamespace AND relkind='r'", db) == '0'
+                item.update(observed=observed, proxy=receipt, recovered=recovered,
+                            reservation_present=expected, native_tables=0, durable=durable(db))
+            case('lost-reservation-commit-' + label, fault)
 
-    db = fresh('native_cancel')
-    selected, retained_root = config(db, 'native-cancel')
-    def cancel_native(item):
-        sql('ALTER SYSTEM SET post_auth_delay=6'); sql('SELECT pg_reload_conf()')
-        try:
-            client = managed_cli('initialize', selected, 'native-cancel')
-            # Observe the actual native executable with an established libpq
-            # socket before signaling its coordinator during delayed startup.
-            script = '''import json,os,time
+        for action in ['close', 'release']:
+            db = fresh('cancel_' + action)
+            proxy = Process(['docker', 'exec', '-i', state['container'], 'python3', '-B',
+                '/source/experiments/control-migrations/fault_proxy.py', '--upstream-port', '5432',
+                '--mode', 'hold', '--deadline-seconds', '90'], input_pipe=True)
+            children.append(proxy)
+            event = proxy.event('ready', 10)
+            label = 'cancel-' + action
+            selected, retained_root = config(db, label, port=event['listen_port'])
+            direct, _ = config(db, label+'-direct', root=retained_root)
+            def cancelled_commit(item, db=db, label=label, selected=selected, direct=direct, proxy=proxy, action=action):
+                client = managed_cli('initialize', selected, label)
+                proxy.event('held', 15)
+                start = time.monotonic(); terminate_cli(label)
+                observed = finished(client)
+                elapsed = time.monotonic()-start
+                assert observed['exit'] == 143 and elapsed < 5
+                recovery = managed_cli('recover', direct, label+'-recovery')
+                until = time.monotonic()+3
+                waiting = False
+                while time.monotonic() < until:
+                    waiting = sql(f"SELECT EXISTS(SELECT 1 FROM pg_stat_activity WHERE datname='{db}' AND wait_event_type='Lock' AND wait_event='advisory')") == 't'
+                    if waiting: break
+                    time.sleep(.05)
+                assert waiting
+                proxy.send(action)
+                receipt = proxy.event('receipt', 10); assert proxy.wait(10) == 0
+                resolved = finished(recovery)
+                assert resolved['exit'] == 4
+                expected = action == 'release'
+                assert (bootstrap(db) is not None) == expected
+                if expected:
+                    _, oid = bootstrap(db)
+                    assert sql(f"SELECT NOT rolcanlogin AND rolpassword IS NULL FROM pg_authid WHERE oid={oid}") == 't'
+                assert sql("SELECT count(*) FROM pg_class WHERE relnamespace='public'::regnamespace AND relkind='r'", db) == '0'
+                item.update(observed=observed, stop_seconds=elapsed, actual_recovery_lock_wait=True,
+                            proxy=receipt, recovered=resolved, reservation_present=expected, native_tables=0)
+            case('cancel-actual-driver-held-commit-' + action, cancelled_commit)
+
+        db = fresh('native_cancel')
+        selected, retained_root = config(db, 'native-cancel')
+        def cancel_native(item):
+            sql('ALTER SYSTEM SET post_auth_delay=6'); sql('SELECT pg_reload_conf()')
+            try:
+                client = managed_cli('initialize', selected, 'native-cancel')
+                # Observe the actual native executable with an established libpq
+                # socket before signaling its coordinator during delayed startup.
+                script = '''import json,os,time
 from pathlib import Path
 until=time.monotonic()+15
 record=None
@@ -365,22 +375,22 @@ while time.monotonic()<until:
  time.sleep(.02)
 raise RuntimeError('native established socket not observed')
 '''
-            worker = json.loads(command(['docker', 'exec', state['container'], 'python3', '-c', script], timeout=20))
-            start = time.monotonic(); terminate_cli('native-cancel')
-            observed = finished(client); elapsed = time.monotonic()-start
-            assert observed['exit'] == 143 and elapsed < 6
-            command(['docker', 'exec', state['container'], 'python3', '-c',
-                "from pathlib import Path;import sys;assert not Path('/proc/'+sys.argv[1]).exists()", str(worker['pid'])])
-            item.update(observed=observed, worker=worker, stop_seconds=elapsed, native_process_reaped=True)
-        finally:
-            sql('ALTER SYSTEM RESET post_auth_delay'); sql('SELECT pg_reload_conf()')
-        recovered, error = invoke('recover', selected)
-        assert recovered['exit'] == 4 and b'pristine reservation is stranded' in error
-        _, oid = bootstrap(db)
-        assert sql(f"SELECT NOT rolcanlogin AND rolpassword IS NULL FROM pg_authid WHERE oid={oid}") == 't'
-        assert sql("SELECT count(*) FROM pg_class WHERE relnamespace='public'::regnamespace AND relkind='r'", db) == '0'
-        item.update(recovered=recovered, bootstrap_retired=True, native_tables=0)
-    case('cancel-real-native-libpq-startup-and-recover', cancel_native)
+                worker = json.loads(command(['docker', 'exec', state['container'], 'python3', '-c', script], timeout=20))
+                start = time.monotonic(); terminate_cli('native-cancel')
+                observed = finished(client); elapsed = time.monotonic()-start
+                assert observed['exit'] == 143 and elapsed < 6
+                command(['docker', 'exec', state['container'], 'python3', '-c',
+                    "from pathlib import Path;import sys;assert not Path('/proc/'+sys.argv[1]).exists()", str(worker['pid'])])
+                item.update(observed=observed, worker=worker, stop_seconds=elapsed, native_process_reaped=True)
+            finally:
+                sql('ALTER SYSTEM RESET post_auth_delay'); sql('SELECT pg_reload_conf()')
+            recovered, error = invoke('recover', selected)
+            assert recovered['exit'] == 4 and b'pristine reservation is stranded' in error
+            _, oid = bootstrap(db)
+            assert sql(f"SELECT NOT rolcanlogin AND rolpassword IS NULL FROM pg_authid WHERE oid={oid}") == 't'
+            assert sql("SELECT count(*) FROM pg_class WHERE relnamespace='public'::regnamespace AND relkind='r'", db) == '0'
+            item.update(recovered=recovered, bootstrap_retired=True, native_tables=0)
+        case('cancel-real-native-libpq-startup-and-recover', cancel_native)
     report['status'] = 'PASS'; save()
     print(json.dumps(dict(status='PASS', source=state['source'], cases=len(report['cases']))))
 except BaseException as error:

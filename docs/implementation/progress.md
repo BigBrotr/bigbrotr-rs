@@ -20,12 +20,13 @@ Control-only and rejects other roles. Root remains sole writer/integrator.
 
 ## Actual Git and review
 
-Mac main50d94961c0d931715abd098bf1118018eb2101e2; origin/main last observed8972fb6.
-Two unpublished candidates: d5cfcd4 implements native sealed client identities,
-CA bounds and TLS matrix;50d9496 fixes one Linux-only test caller's new optional
-TLS argument. No product/fixture/workload change between those commits. Dirty
-root-owned documentation, checkpoint, inventory and new native-mTLS evidence.
-No merge/rebase, other contributor edits or active experiment. Private push pending.
+Mac main and origin/main verified at030ec6652cdc6691231f3d9ea528c80fceb6306c;
+push39629 exited0 and the tree was clean. Published d5cfcd4 native identities/CA
+bounds/matrix,50d9496 Linux-only test-call correction and030ec66 native evidence.
+No product/fixture/workload change between the two tested candidates except that
+unit-test argument. Root-owned dirty work adds the nine late initializer fault schedules and scoped
+proxy targets plus documentation/checkpoint updates; no product Rust change.
+No merge/rebase, other contributor edits or active experiment yet. Private bigbrotr-rs.
 
 Independent read-only AI review found the pre-existing libpq CA-path truncation
 and two cancellation-oracle gaps (timeout overlap, blocker released before child
@@ -131,9 +132,15 @@ mechanically rerun unrelated suites.
 
 ## Next bounded action
 
-Finish recorded-evidence review, document checks and coherent private push for
-native mTLS. Then qualify remaining actual initializer native-crash/lost-install
-acknowledgement paths with existing CLI/engines and independent durable oracles.
+Run the nine actual initializer native-crash/lost-install acknowledgement
+schedules with the existing CLI/engines and independent durable oracles.
+Read-only review caught an overly broad native-schema selector and a per-job
+scratch-path oracle error; corrected before execution. Local outer/nested Python
+AST and direct-INSERT discriminator checks PASS. No practical case executed yet.
+Fresh raw helper root .research/implementation/archive-worker/initialization-late;
+launch reuses only the stopped50d9496 build cache and native assets. Tux read-only
+preflight:8 unrelated running containers, no BigBrotr;172GiB free. Native mTLS
+review, document checks and private push are complete within the scope above.
 Advance the fresh runtime-manager signed publication consumer and installed
 Control+Archive through actual receipt/read/export/restart. Do not repeat standalone
 custody/reservation qualification or reopen architecture without concrete evidence.
