@@ -65,6 +65,17 @@ fn setup(
     IngestManifest,
     RocksNativeLimits,
 ) {
+    setup_entries(entries(provenance))
+}
+fn setup_entries(
+    entries: Vec<DictionaryEntry>,
+) -> (
+    tempfile::TempDir,
+    IngestStore,
+    ResourceBudget,
+    IngestManifest,
+    RocksNativeLimits,
+) {
     let root = tempfile::tempdir().unwrap();
     let path = root.path().join("db");
     let budget = ResourceBudget::new(
@@ -113,7 +124,6 @@ fn setup(
     .unwrap();
     let mut store =
         IngestStore::initialize(&path, manifest, native, grant(&budget, 0, 128 * MIB)).unwrap();
-    let entries = entries(provenance);
     let bootstrap = EvidenceIntent::new(
         1,
         reference(DictionaryKind::VisibilityScope, 1),
@@ -1312,3 +1322,6 @@ fn signed_pending_reopens_and_reaches_the_supervised_native_worker_without_ackno
         }
     }
 }
+
+#[path = "certification_tests.rs"]
+mod certification_tests;

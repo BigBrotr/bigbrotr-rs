@@ -161,3 +161,31 @@ all input detail within a finite sidecar and supports bounded recovery decoding;
 it does not implement the PostgreSQL producer ledger, ACK/GC or owner handoff.
 Historical receipt replay does not synthesize missing input files or claim that
 legacy stores satisfy the new input-completeness requirement.
+
+
+## Existing-effect certification (implementation in progress)
+
+P02-T02 step 5 adds an internal CertifyExisting consumer with a separately prepared
+verified intent and the already specified certification digest. It has no mutation
+request identity or synchronized input file. Reuse bounded verification and native
+fact/dictionary readers under exclusive IngestStore access; evaluate current policy
+and delivery authority through the connected Control session. The method never
+prepares an admission batch or changes counters, request detail or source facts.
+
+ExistingProof requires the exact body, eligibility in the requested scope, sufficient
+receive/witness minima and complete input plus retained-fact dictionary closure.
+A new import lineage may differ from the original representative: retain both
+required descriptors without replacing that representative. Healthy absence means
+NeedsAdmission. A present index with missing/corrupt backing data remains an error;
+it cannot certify a damaged view. Invalid/excluded input is never certified by ID.
+The returned proof retains its resource permit and original current protection
+context. This first consumer requires all dependencies still retained locally
+under local-synced protection; no archive fallback or new retention promise.
+
+Cancellation and lease checks precede I/O and follow the bounded read before
+output. Native reads retain their worker/grants until joined. Read response loss
+requires a fresh evaluation under current policy. Producers must resolve an earlier
+ambiguous Admit through its original ledger before selecting certification; an API
+without a request ID cannot infer that workflow history. Proof checkpointing,
+compaction, backup validation and successor recovery remain separate acceptance.
+Implementation and native qualification of this section are not yet complete.

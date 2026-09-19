@@ -5,11 +5,14 @@ from pathlib import Path
 from oracle import cbor
 
 
-def originals():
+def originals(repetitions=2):
     dataset, slot = bytes([1])*16, bytes([66])*16
     raw = (Path(__file__).resolve().parents[2]/'tests/fixtures/ingest/import-event.jsonl').read_bytes()
-    digest = hashlib.sha256(raw*2).digest()
-    assert len(raw) == 353 and digest.hex() == 'ce439b495fd2f99031706e9625529e264cd3043ffc16af4fd6002243503e90fc'
+    assert repetitions in (1, 2)
+    digest = hashlib.sha256(raw*repetitions).digest()
+    assert len(raw) == 353 and digest.hex() == {
+        1:'c30658a75b2b913e509b7618f36ebae75fa1d5680dc8fe4e322aae638d8affae',
+        2:'ce439b495fd2f99031706e9625529e264cd3043ffc16af4fd6002243503e90fc'}[repetitions]
     scope = [dataset, 4, bytes([64])*16, 1]
     lineage = [dataset, 9, bytes([69])*16, 1]
     dictionaries = [['dictionary', 1, [[dataset, 4, bytes([64])*16, n], 1, 'visibility', 1, {'class':name}]]
@@ -25,8 +28,8 @@ def originals():
             3:preimage(3, 'admit', [1, scope, signed, 'import', lineage, None])}
 
 
-def check(control, files, wanted_native, count):
-    expected = originals()
+def check(control, files, wanted_native, count, *, repetitions=2):
+    expected = originals(repetitions)
     slot = bytes([66])*16
     manifest = next(value for cf, key, value in wanted_native if cf == 'default' and key == b'\x01\x01')
     manifest_sha = '\\x'+hashlib.sha256(manifest).hexdigest()

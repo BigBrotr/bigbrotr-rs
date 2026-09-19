@@ -55,6 +55,12 @@ pub use admission::{
     StoredOutcome,
 };
 
+#[path = "certification.rs"]
+mod certification;
+pub use certification::{
+    CertificationLimits, CertificationOutcome, PreparedCertification, StoredCertification,
+};
+
 #[cfg(test)]
 #[path = "admission_tests.rs"]
 mod admission_tests;

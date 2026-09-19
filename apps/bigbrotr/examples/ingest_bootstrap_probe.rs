@@ -66,7 +66,7 @@ fn grant(b: &ResourceBudget, data: u64, native: u64) -> OwnedPermit {
     b.try_acquire(ResourceRequest::data(data, 1, native).unwrap())
         .unwrap()
 }
-fn dump(path: &Path) {
+fn raw_state(path: &Path) -> (Vec<serde_json::Value>, u64) {
     // Independent raw native observation, deliberately outside the product API.
     let db = rocksdb::DB::open_cf_for_read_only(
         &rocksdb::Options::default(),
@@ -83,6 +83,10 @@ fn dump(path: &Path) {
             rows.push(serde_json::json!({"cf":cf,"key":hex(&key),"value":hex(&value)}));
         }
     }
+    (rows, db.latest_sequence_number())
+}
+fn dump(path: &Path) {
+    let (rows, _) = raw_state(path);
     emit(serde_json::json!({"event":"dump","rows":rows}));
 }
 fn fixture_document() -> String {

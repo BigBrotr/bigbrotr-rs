@@ -17,8 +17,8 @@ mod archive_coordinator;
 #[path = "initial_batch.rs"]
 mod initial_batch;
 pub use initial_batch::{
-    InitialBatchError, InitialBatchRequest, InitialEventError, InitialEventRequest,
-    InitialImportBatchRequest, InitialOperationError,
+    InitialBatchError, InitialBatchRequest, InitialCertificationRequest, InitialEventError,
+    InitialEventRequest, InitialImportBatchRequest, InitialOperationError,
 };
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

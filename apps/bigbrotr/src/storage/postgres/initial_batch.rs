@@ -12,8 +12,9 @@ use crate::{
     storage::rocks::{
         manifest::AllocationNamespaces,
         store::{
-            AdmissionError, AdmissionLimits, BootstrapError, BootstrapLimits, IngestStore,
-            PreparedEvent, StoredOutcome, StoredReceipt,
+            AdmissionError, AdmissionLimits, BootstrapError, BootstrapLimits, CertificationLimits,
+            IngestStore, PreparedCertification, PreparedEvent, StoredCertification, StoredOutcome,
+            StoredReceipt,
         },
     },
 };
@@ -32,8 +33,9 @@ pub enum InitialOperationError<E> {
     ImportCheckpoint(ImportCheckpointError),
     /// The native result exists; this error never authorizes another request ID.
     Outcome(OutcomeError),
-    /// Native work was dispatched. Its retained request must be resolved even
-    /// when later coordination cleanup or output authorization is unavailable.
+    /// Native work was dispatched but later cleanup/delivery is unavailable.
+    /// Mutations require original-request resolution; certification is a read
+    /// and must be evaluated again under current authority.
     DeliveryUnknown,
 }
 impl<E: fmt::Debug> fmt::Display for InitialOperationError<E> {
@@ -71,6 +73,18 @@ pub struct InitialEventRequest<'a> {
     pub cancelled: &'a AtomicBool,
 }
 
+/// Trusted exact-source read request; no producer mutation identity or job
+/// completion follows from it. Resolve previous ambiguous Admit work first.
+pub struct InitialCertificationRequest<'a> {
+    pub ingest_root: &'a std::path::Path,
+    pub registration: &'a ingest_registry::InitialRegistration,
+    pub event: PreparedCertification,
+    pub provenance_enabled: bool,
+    pub limits: CertificationLimits,
+    pub policy_ttl: Duration,
+    pub cancelled: &'a AtomicBool,
+}
+
 /// Complete event-only JSONL batch supplied by a trusted source/policy consumer.
 /// The prepared events retain their separate memory grants while being staged.
 /// This API binds existing job metadata; it does not accept an operator job.
@@ -98,6 +112,64 @@ pub struct InitialBatchRequest<'a> {
 }
 
 impl ControlSession {
+    /// Same current source/policy/owner checks as admission, with no input
+    /// staging, producer reservation or outcome/progress writes. A successful
+    /// rollback releases the read transaction before final delivery validation.
+    pub async fn certify_initial_event(
+        &mut self,
+        store: &mut IngestStore,
+        input: InitialCertificationRequest<'_>,
+        permit: OwnedPermit,
+        mut validate: impl FnMut(&str, [u8; 32], &PreparedCertification) -> Result<(), OwnerError>,
+    ) -> Result<StoredCertification, InitialEventError> {
+        if input.cancelled.load(Ordering::Relaxed) {
+            return Err(InitialEventError::Native(
+                AdmissionError::AuthorityUnavailable,
+            ));
+        }
+        let identity = *store.manifest().identity();
+        let (tx, mut lease) = self
+            .begin_initial_native_operation(
+                store,
+                InitialIngestContext {
+                    ingest_root: input.ingest_root,
+                    registration: input.registration,
+                    policy_ttl: input.policy_ttl,
+                    request: None,
+                    job: None,
+                },
+                |document, digest| validate(document, digest, &input.event),
+            )
+            .await?;
+        let result = store.certify_event(
+            input.event,
+            input.provenance_enabled,
+            input.limits,
+            permit,
+            || {
+                if input.cancelled.load(Ordering::Relaxed) {
+                    return Err(AdmissionError::AuthorityUnavailable);
+                }
+                lease
+                    .check_delivery(identity.policy_epoch)
+                    .map_err(|_| AdmissionError::AuthorityUnavailable)
+            },
+        );
+        tx.rollback()
+            .await
+            .map_err(|_| InitialEventError::DeliveryUnknown)?;
+        if input.cancelled.load(Ordering::Relaxed)
+            || self.client.is_closed()
+            || lease.check_delivery(identity.policy_epoch).is_err()
+        {
+            return Err(InitialEventError::DeliveryUnknown);
+        }
+        // A completed read refusal does not make a new commit ambiguous. The
+        // caller may correct its limits and re-evaluate on this current session.
+        self.available = true;
+        result.map_err(InitialEventError::Native)
+    }
+
     /// One initial dictionary bootstrap, including exact retained replay.
     /// Run on a dedicated bounded owner worker: native FFI is synchronous and
     /// cannot be cancelled by dropping a future. Retain/join that worker and the

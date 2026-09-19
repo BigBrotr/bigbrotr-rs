@@ -126,47 +126,8 @@ impl PreparedEvent {
         max_event_bytes: usize,
         permit: OwnedPermit,
     ) -> Result<Self, AdmissionError> {
-        if max_event_bytes == 0 || max_event_bytes > 4 * 1024 * 1024 {
-            return Err(AdmissionError::InvalidLimits);
-        }
-        if intent.admission_policy_version() != 1 {
-            return Err(AdmissionError::IncompatibleSchema);
-        }
-        // Spare capacities count, including empty arrays. Check each aggregate
-        // before descending so hostile typed input cannot cause unbounded work.
-        let event = intent.event();
-        let mut left = usize::try_from(permit.request().units().data_bytes())
-            .unwrap_or(usize::MAX)
-            .min(MAX_INPUT);
-        let allocation_limit = left;
-        let mut charge = |bytes: usize| {
-            left = left
-                .checked_sub(bytes)
-                .ok_or(AdmissionError::InsufficientReservation)?;
-            Ok::<_, AdmissionError>(())
-        };
-        if permit.request().units().items() == 0 {
-            return Err(AdmissionError::InsufficientReservation);
-        }
-        charge(size_of::<Self>())?;
-        charge(event.content.capacity())?;
-        charge(
-            event
-                .tags
-                .capacity()
-                .checked_mul(size_of::<Vec<String>>())
-                .ok_or(AdmissionError::Limit)?,
-        )?;
-        for tag in &event.tags {
-            charge(
-                tag.capacity()
-                    .checked_mul(size_of::<String>())
-                    .ok_or(AdmissionError::Limit)?,
-            )?;
-            for value in tag {
-                charge(value.capacity())?;
-            }
-        }
+        let mut left = input_allowance(&intent, max_event_bytes, &permit, size_of::<Self>())?;
+        let allocation_limit = input_capacity(&permit);
         let request_preimage = intent
             .encode_request_preimage(request, left)
             .map_err(BootstrapError::from)?;
@@ -178,17 +139,7 @@ impl PreparedEvent {
         let scope = intent.visibility_scope_id();
         let origin = intent.origin();
         let observation = intent.observation().copied();
-        let event = match verify_owned(intent.into_event(), max_event_bytes) {
-            Ok(event) => Ok(event),
-            Err(error) => Err(match error {
-                EventError::EmptyTag => RejectionReason::EmptyTag,
-                EventError::EventIdMismatch => RejectionReason::EventId,
-                EventError::InvalidPublicKey => RejectionReason::PublicKey,
-                EventError::InvalidSignature => RejectionReason::Signature,
-                EventError::EventSizeLimit => RejectionReason::EventSize,
-                _ => return Err(AdmissionError::InvalidInput),
-            }),
-        };
+        let event = verify_event(intent.into_event(), max_event_bytes)?;
         Ok(Self {
             request,
             digest,
@@ -223,6 +174,78 @@ impl PreparedEvent {
         self.origin
     }
 }
+/// Input accounting shared by mutation and read-only certification. The latter
+/// never allocates a mutation preimage or constructs a ProducerRequestId.
+pub(super) fn input_capacity(permit: &OwnedPermit) -> usize {
+    usize::try_from(permit.request().units().data_bytes())
+        .unwrap_or(usize::MAX)
+        .min(MAX_INPUT)
+}
+pub(super) fn input_allowance(
+    intent: &EventIntent,
+    max_event_bytes: usize,
+    permit: &OwnedPermit,
+    value_bytes: usize,
+) -> Result<usize, AdmissionError> {
+    if max_event_bytes == 0 || max_event_bytes > 4 * 1024 * 1024 {
+        return Err(AdmissionError::InvalidLimits);
+    }
+    if intent.admission_policy_version() != 1 {
+        return Err(AdmissionError::IncompatibleSchema);
+    }
+    // Spare capacities count, including empty arrays. Check each aggregate
+    // before descending so hostile typed input cannot cause unbounded work.
+    let event = intent.event();
+    let mut left = usize::try_from(permit.request().units().data_bytes())
+        .unwrap_or(usize::MAX)
+        .min(MAX_INPUT);
+    let mut charge = |bytes: usize| {
+        left = left
+            .checked_sub(bytes)
+            .ok_or(AdmissionError::InsufficientReservation)?;
+        Ok::<_, AdmissionError>(())
+    };
+    if permit.request().units().items() == 0 {
+        return Err(AdmissionError::InsufficientReservation);
+    }
+    charge(value_bytes)?;
+    charge(event.content.capacity())?;
+    charge(
+        event
+            .tags
+            .capacity()
+            .checked_mul(size_of::<Vec<String>>())
+            .ok_or(AdmissionError::Limit)?,
+    )?;
+    for tag in &event.tags {
+        charge(
+            tag.capacity()
+                .checked_mul(size_of::<String>())
+                .ok_or(AdmissionError::Limit)?,
+        )?;
+        for value in tag {
+            charge(value.capacity())?;
+        }
+    }
+    Ok(left)
+}
+pub(super) fn verify_event(
+    event: SignedEvent,
+    max_event_bytes: usize,
+) -> Result<Result<VerifiedEvent, RejectionReason>, AdmissionError> {
+    Ok(match verify_owned(event, max_event_bytes) {
+        Ok(event) => Ok(event),
+        Err(error) => Err(match error {
+            EventError::EmptyTag => RejectionReason::EmptyTag,
+            EventError::EventIdMismatch => RejectionReason::EventId,
+            EventError::InvalidPublicKey => RejectionReason::PublicKey,
+            EventError::InvalidSignature => RejectionReason::Signature,
+            EventError::EventSizeLimit => RejectionReason::EventSize,
+            _ => return Err(AdmissionError::InvalidInput),
+        }),
+    })
+}
+
 #[derive(Debug, Clone, Copy)]
 pub struct AdmissionLimits {
     pub max_batch_bytes: usize,
@@ -261,7 +284,7 @@ impl AdmissionLimits {
         self.required_data_bytes()?;
         Ok((2 * self.max_batch_bytes + 1024) as u64)
     }
-    fn facts(self) -> FactDecodeLimits {
+    pub(super) fn facts(self) -> FactDecodeLimits {
         FactDecodeLimits {
             max_encoded_bytes: self.max_batch_bytes.min(2 * 1024 * 1024),
             max_allocation_bytes: 4 * self.max_batch_bytes,
@@ -278,12 +301,12 @@ impl AdmissionLimits {
         }
     }
 }
-struct ReadBudget {
+pub(super) struct ReadBudget {
     bytes: usize,
     reads: usize,
 }
 impl ReadBudget {
-    fn new(limits: AdmissionLimits) -> Self {
+    pub(super) fn new(limits: AdmissionLimits) -> Self {
         Self {
             bytes: 8 * limits.max_batch_bytes,
             reads: 4 * limits.max_dependencies + 32,
@@ -512,7 +535,7 @@ impl IngestStore {
         copy.extend_from_slice(&value);
         Ok(Some(copy))
     }
-    fn admission_fact(
+    pub(super) fn admission_fact(
         &self,
         r: FactRef,
         limits: AdmissionLimits,
@@ -540,7 +563,7 @@ impl IngestStore {
         }
         Ok(fact)
     }
-    fn indexed_fact(
+    pub(super) fn indexed_fact(
         &self,
         key: IngestKey,
         limits: AdmissionLimits,
@@ -578,16 +601,27 @@ impl IngestStore {
         }
         Ok(Some(fact))
     }
-    fn dictionary_dependency(
+    pub(super) fn dictionary_dependency(
         &self,
         reference: QualifiedRef,
         limits: AdmissionLimits,
         reads: &mut ReadBudget,
         dependencies: &mut Vec<FactRef>,
     ) -> Result<DictionaryEntry, AdmissionError> {
-        let fact = self
-            .indexed_fact(IngestKey::Dictionary { reference }, limits, reads)?
-            .ok_or(AdmissionError::StateMismatch)?;
+        self.lookup_dictionary_dependency(reference, limits, reads, dependencies)?
+            .ok_or(AdmissionError::StateMismatch)
+    }
+    pub(super) fn lookup_dictionary_dependency(
+        &self,
+        reference: QualifiedRef,
+        limits: AdmissionLimits,
+        reads: &mut ReadBudget,
+        dependencies: &mut Vec<FactRef>,
+    ) -> Result<Option<DictionaryEntry>, AdmissionError> {
+        let Some(fact) = self.indexed_fact(IngestKey::Dictionary { reference }, limits, reads)?
+        else {
+            return Ok(None);
+        };
         let FactPayload::Dictionary(entry) = fact.payload() else {
             return Err(AdmissionError::StateMismatch);
         };
@@ -603,7 +637,20 @@ impl IngestStore {
                 }
             }
         }
-        Ok(entry.clone())
+        Ok(Some(entry.clone()))
+    }
+    pub(super) fn retain_admission_fact(
+        &self,
+        fact: &Fact,
+        limits: AdmissionLimits,
+        reads: &mut ReadBudget,
+        dependencies: &mut Vec<FactRef>,
+    ) -> Result<(), AdmissionError> {
+        add_dependency(dependencies, fact.fact_ref(), limits)?;
+        for reference in fact.dictionary_refs() {
+            self.dictionary_dependency(reference, limits, reads, dependencies)?;
+        }
+        Ok(())
     }
     fn prepare_event_effects(
         &self,
@@ -727,23 +774,10 @@ impl IngestStore {
         let payload = self.indexed_fact(payload_key, limits, writer.reads)?;
         let has_payload = payload.is_some();
         if let Some(fact) = payload {
-            let FactPayload::EventPayload(payload) = fact.payload() else {
-                return Err(AdmissionError::StateMismatch);
-            };
-            let body = &payload.body;
-            let supplied = event.event();
-            if body.event_id != event_id
-                || body.pubkey != supplied.pubkey
-                || body.created_at != supplied.created_at
-                || body.kind != supplied.kind
-                || body.tags != supplied.tags
-                || body.content != supplied.content
-            {
-                return Err(AdmissionError::StateMismatch);
-            }
+            let event_ordinal = matching_payload(&fact, &event)?;
             writer.retain(&fact)?;
             let mapping = self.dictionary_dependency(
-                payload.event_ordinal,
+                event_ordinal,
                 limits,
                 writer.reads,
                 &mut writer.dependencies,
@@ -986,16 +1020,8 @@ struct EventWrites<'a> {
 }
 impl EventWrites<'_> {
     fn retain(&mut self, fact: &Fact) -> Result<(), AdmissionError> {
-        add_dependency(&mut self.dependencies, fact.fact_ref(), self.limits)?;
-        for reference in fact.dictionary_refs() {
-            self.store.dictionary_dependency(
-                reference,
-                self.limits,
-                self.reads,
-                &mut self.dependencies,
-            )?;
-        }
-        Ok(())
+        self.store
+            .retain_admission_fact(fact, self.limits, self.reads, &mut self.dependencies)
     }
     fn emit(&mut self, payload: FactPayload) -> Result<FactRef, AdmissionError> {
         let identity = self.store.manifest.identity();
@@ -1054,7 +1080,27 @@ impl EventWrites<'_> {
         Ok(())
     }
 }
-fn add_dependency(
+pub(super) fn matching_payload(
+    fact: &Fact,
+    event: &VerifiedEvent,
+) -> Result<QualifiedRef, AdmissionError> {
+    let FactPayload::EventPayload(payload) = fact.payload() else {
+        return Err(AdmissionError::StateMismatch);
+    };
+    let body = &payload.body;
+    let supplied = event.event();
+    if body.event_id != supplied.id
+        || body.pubkey != supplied.pubkey
+        || body.created_at != supplied.created_at
+        || body.kind != supplied.kind
+        || body.tags != supplied.tags
+        || body.content != supplied.content
+    {
+        return Err(AdmissionError::StateMismatch);
+    }
+    Ok(payload.event_ordinal)
+}
+pub(super) fn add_dependency(
     values: &mut Vec<FactRef>,
     value: FactRef,
     limits: AdmissionLimits,

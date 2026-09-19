@@ -13,21 +13,22 @@ Cargo packages and the read-only Go neighbor. No public release or Linux arm64
 claim. No P02/P03 task or M1 gate is complete. All selected later product work
 remains required.
 
-Active P03-T10 step 4 / P02-T02 step 4: qualify and document finite event-only
-logical record closure from the private native witness in the SAME PG transaction
-as its complete outcome copy, plus a per-job/shard contiguous head. See the
-[owning reference](../reference/import-input-bindings.md). Full installed import,
-claim/proof variants, ACK/GC, recovery and capacity remain required.
+Active P02-T02 step 5: initial CertifyExisting consumer over the retained native
+inventory, with verified intent and no mutation identity/staging/sequence. Root
+implemented the native evaluator and connected Control read wrapper; Linux
+qualification is next. Independent fact_codec_review found no concrete product
+defect, and identified two fixture gaps now corrected (explicit rejection cases;
+all Control tables and xmin). No active remote experiment. The previous finite event-only
+checkpoint slice is qualified and pushed; general proof/claim closure remains open.
 
 ## Git and integration state
 
-Mac main HEAD ba53ae9733cff82582f8be9c485e7bcb7526922f, eight unpublished commits
-ahead of private origin/main last verified ddfa74064d840541e58208195b8e1612733c2ca3.
-No other writer, merge/rebase or unexpected files. Root owns dirty progress and
-laboratory-inventory files. Final product/fixture source is cb7905fe6a98380b8875acdee8f11ddd3f8809cc,
-tree b477bce343ee8e8e6a21419fe68243220d2ca349. HEAD changes only the concurrency
-harness, tree 9faad4183c4ee6e5a8c5bb74b2ffc2d10eda142e; product inputs are identical.
-Published SQL 1..13 is unchanged. Additive SQL 14 has not changed since 730e50e.
+Mac main HEAD and private origin/main both 8fd34ddc86f27e619e50a002330f090abfb848b3,
+verified through ls-remote after push. Root owns current checkpoint and forthcoming
+certification changes. No other writer, merge/rebase or unexpected files. Final
+checkpoint product/fixture source remains cb7905fe6a98380b8875acdee8f11ddd3f8809cc;
+its ba53ae9 concurrency harness changes no product inputs. Published SQL 1..14
+must remain unchanged.
 
 The private close_record accepts only NativeOutcomeCopy after recording the full
 outcome. Rejected/unbound inputs cannot close a record. Replay compares immutable
@@ -103,12 +104,22 @@ review before reuse and must not overwrite old evidence or include secret files.
 
 ## Next action and remaining gates
 
-Checkpoint qualification report, owning references/task notes and integrated diff
-review are complete. Artifact and handoff/link checks passed with no errors; their
-scope is structural. Commit/push this verified slice, then begin P02-T02 step 5
-CertifyExisting: inspect exact native admission/reducer and proof contracts before
-adding its read-only existing-effect consumer. Independent fact_codec_review is
-reading that boundary only, with no writes or Tux work. No task checkbox changed.
+Next bounded action: commit the reviewed certification candidate and transfer its
+clean Git revision to a fresh inventoried Tux lab; run --certification and the four
+connected scenarios with the independent full-byte oracle. Mac logs under
+.research/implementation/certification retain the missing-API and semantic RED,
+six new actual-Rocks tests PASS (including 30 corpus evaluations), 13 admission/
+certification regressions PASS with the packaged-worker case explicitly skipped,
+and scoped fixture/library Clippy PASS. No connected certification result yet.
+Root owns native certification/tests, shared admission helpers, Control wrapper,
+connected fixture, certification.py, build-mode/original-input oracle and docs.
+Shared verifier and bounded fact/dictionary readers are reused; no admission dry-run,
+fake ProducerRequestId or certification ledger. Independent checks must compare
+all native rows, latest sequence and original input files before/after, including
+full mutation window, missing scope/receive/witness/dictionary, alternate valid and
+invalid signatures, different input/stored lineage, expiry/cancellation and limits.
+A dangling/corrupt indexed fact is an error, not healthy absence. Keep proof-only
+checkpoint/ACK, archive fallback and successor recovery gates explicit.
 
 Initial adapters still bind original Control and producer/owner epoch 1. Recovery
 needs a read handle incapable of fresh admission, synchronized native closing,

@@ -10,6 +10,9 @@ use bigbrotr::storage::rocks::store::{
 };
 use bigbrotr_model::{EventIntent, ProducerEpoch, ProducerRequestId, RequestSequence};
 
+#[path = "ingest_certification.rs"]
+mod ingest_certification;
+
 pub fn source_digest(mode: &str) -> Digest256 {
     if mode.starts_with("event-bindings") {
         "ce439b495fd2f99031706e9625529e264cd3043ffc16af4fd6002243503e90fc"
@@ -454,7 +457,8 @@ pub async fn run(
     if matches!(
         mode,
         "event-write" | "event-after" | "event-outcomes" | "event-bindings"
-    ) {
+    ) || mode.starts_with("event-certification")
+    {
         let outcome = result.unwrap();
         let AdmissionOutcome::Durable(receipt) = outcome.outcome() else {
             panic!("verified import refused")
@@ -545,6 +549,14 @@ pub async fn run(
             emit(
                 serde_json::json!({"event":"existing-receipt","bytes":hex(&exact.unwrap()),"replay_exact":true,"row_unchanged":true}),
             );
+        }
+        if mode.starts_with("event-certification")
+            && !ingest_certification::run(
+                &mut owner, observer, store, spec, path, budget, mode, scope, lineage, &event,
+            )
+            .await
+        {
+            return;
         }
         owner.release().await.unwrap();
     } else {
