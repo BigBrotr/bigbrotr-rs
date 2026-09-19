@@ -25,8 +25,8 @@ Mac main and private origin/main were verified at
 2886b2b8af64f393d1f29cf1e257a754cb51cfd9 after pushing the source candidate and
 qualification. Root now owns the additive0013 input-binding slice: new SQL,
 input_bindings.rs, initial_batch/control_owner integration, migration catalogs,
-shape tests and related contract/checkpoint changes. No other edits or active
-remote process. Existing agents remain read-only reviewers.
+shape tests and related contract/checkpoint changes. Candidate8b0660e is locally committed and not pushed. Root also owns the new
+lab inventory; native build is running in the isolated lab recorded below. Existing agents remain read-only reviewers.
 
 The tested product is exact9537667dd140baac68ca79ecb56ea7c6ecce081f, tree
 71716b4155e6ed0068c1eb41d817f8c4b0bd3c18, clean803-file Git export. Harness1a1ff27
@@ -201,3 +201,27 @@ External findings remain scoped closed, with their discriminating practical repo
 [MON-010](evidence/p01-tls-presence-20260918.json),
 [MON-007](evidence/p01-archive-cache-retry-20260918.json).
 No new contrary evidence was found in the requested external review note.
+
+Current native input-binding lab:
+/home/tux/bigbrotr-implementation-20260917/runs/input-bindings-8b0660e,
+owner a710e974999512c582c0f7b8fd7b79d6. Runner
+71e0b9ed56ef51a06ce9d2cfdcf8e190502ba52dee35389a3660591f1f671977 and PG
+16784bdea7e461276e0f150f65d07025f7afe845aa05d456034ad66fe1628c4f are running;
+internal network cf84ec1bf3d00bdb21d917d228586b3656b78b20c6f15b86ae8751472575022e.
+Source821-file export at8b0660e580a61503686abab6a02944258e995bb0/tree
+58c952229d935e074013378b6f922afb8fcdd588. Initial launch failed before containers
+because the subnet pool was full. The verified empty import-source network
+8ba5912 was retired; its stopped containers/data remain. See input_bindings and
+import_source.network_retirement in the laboratory inventory. Native cases NOT_RUN
+while build executes. Terminal ownership/unrelated-workload audit remains owed.
+
+Native8b0660e build,15 schema tests,5 binding shape tests and scoped Clippy passed.
+The first connected harness passed complete/paused, then failed in pause-between:
+its shared subprocess helper used DEVNULL instead of an input pipe. This is a
+harness failure, not a product PASS. input-binding-cases.json remains INCOMPLETE;
+interrupted-audit.json observed zero PG clients and only the idle runner wrapper.
+An explicit input_pipe option now has an actual local interactive subprocess check.
+The corrected tagged run, three12-to13 compatibility cases and six SQL job/pause
+lock schedules are prepared locally. Product8b0660e binaries/source remain fixed;
+additional harness code will transfer through a separately identified clean Git
+checkout. Remaining native cases and terminal cleanup are still owed.

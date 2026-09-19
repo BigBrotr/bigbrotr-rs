@@ -13681,7 +13681,39 @@
         "bigbrotr_running": 0,
         "observed_at": "2026-09-19T18:50:16.226782+00:00"
       },
-      "manifest": ".research/implementation/import-source/evidence-identity.json"
+      "manifest": ".research/implementation/import-source/evidence-identity.json",
+      "network_retirement": {
+        "network": "8ba5912db5425adc44d89d2315438a0fca4ffd34a7891dafb722ac546d69dcf4",
+        "owner": "c0c631fd4559fbf9b4b2c5b5337acfb3",
+        "stopped_containers": [
+          "72c0e1dd6c8e30bbc12cae8c9d9bf1dd11952394504713177607cdcc73a40e1e",
+          "2102eff313b0fc8a9a13be80341305e22289707e0c56ccffa62eabbf5c31a399"
+        ],
+        "observed_at": "2026-09-19T19:38:07.337425+00:00",
+        "state": "removed"
+      }
+    },
+    "input_bindings": {
+      "source": "8b0660e580a61503686abab6a02944258e995bb0",
+      "tree": "58c952229d935e074013378b6f922afb8fcdd588",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/input-bindings-8b0660e",
+      "owner": "a710e974999512c582c0f7b8fd7b79d6",
+      "container": "bigbrotr-implementation-input-bindings-8b0660e",
+      "postgres": "bigbrotr-implementation-input-bindings-8b0660e-pg",
+      "network": "bigbrotr-implementation-input-bindings-8b0660e",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "state": "running",
+      "source_files": 821,
+      "started_at": "2026-09-19T19:37:17.273915+00:00",
+      "network_id": "cf84ec1bf3d00bdb21d917d228586b3656b78b20c6f15b86ae8751472575022e",
+      "postgres_id": "16784bdea7e461276e0f150f65d07025f7afe845aa05d456034ad66fe1628c4f",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "71e0b9ed56ef51a06ce9d2cfdcf8e190502ba52dee35389a3660591f1f671977",
+      "scope": "Initial complete event-only JSONL input binding prerequisite; native qualification running, not full import or checkpoints",
+      "raw_local": ".research/implementation/input-bindings",
+      "initial_launch": "Docker default subnet pool exhausted; verified empty retained import-source network removed; no container or data removed",
+      "next_action": "Observe exact-source build, then nine connected native cases and SQL constraints"
     }
   },
   "implementation_monitor_corrections_20260918": {

@@ -20,10 +20,12 @@ sys.path.insert(0, str(SOURCE/'experiments/producer-requests'))
 from run import KILL
 
 
-def main(root):
+def main(root, run_tag):
     state = json.loads((root/'resources.json').read_text())
-    assert SOURCE == root/'source'
-    assert command('git', '-C', str(SOURCE), 'rev-parse', 'HEAD') == state['source']
+    harness = command('git', '-C', str(SOURCE), 'rev-parse', 'HEAD')
+    assert command('git', '-C', str(root/'source'), 'rev-parse', 'HEAD') == state['source']
+    assert not command('git', '-C', str(SOURCE), 'diff', state['source'], harness, '--',
+                       'apps', 'crates', 'migrations', 'Cargo.lock', 'Cargo.toml')
     assert not command('git', '-C', str(SOURCE), 'status', '--porcelain', '--untracked-files=all')
     ready = json.loads((root/'out/native-tests/ready.json').read_text())
     assert ready['status'] == 'READY' and ready['source'] == state['source']
@@ -33,8 +35,10 @@ def main(root):
         owned = json.loads(command('docker', 'inspect', identity))[0]
         assert owned['Config']['Labels']['org.bigbrotr.publication'] == state['owner']
         assert owned['State']['Running'] and not owned['State']['OOMKilled']
-    report = dict(status='INCOMPLETE', source=state['source'], tree=state['tree'], artifacts=ready, cases=[], sql_operations=[])
-    target = root/'input-binding-cases.json'
+    assert run_tag.isalnum() and 1 <= len(run_tag) <= 8
+    report = dict(status='INCOMPLETE', source=state['source'], tree=state['tree'], harness_revision=harness,
+                  artifacts=ready, cases=[], sql_operations=[])
+    target = root/('input-binding-cases-'+run_tag+'.json')
     assert not target.exists()
     def save(): target.write_text(json.dumps(report, indent=2)+'\n')
     def sql(db, text, phase='observe', timeout=30):
@@ -79,7 +83,7 @@ def main(root):
     save()
     for label in ['complete', 'paused', 'pause-between', 'conflict', 'cancelled', 'rollback', 'before', 'before-forward', 'after-complete']:
         case = dict(name=label, status='INCOMPLETE', process={});report['cases'].append(case);save()
-        db = 'bbbindings_'+label.replace('-', '_');case['database'] = db
+        db = 'bbbindings_'+run_tag+'_'+label.replace('-', '_');case['database'] = db
         sql('postgres', 'CREATE DATABASE '+db, 'create-database')
         setup = case['setup'] = {};save()
         try: execute(binary+['setup-13', db, '/secrets/postgres', 'unused'], 30, setup)
@@ -89,7 +93,7 @@ def main(root):
             sql(db, "CREATE FUNCTION public.fixture_abort() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN IF NEW.request_sequence=3 THEN RAISE EXCEPTION 'fixture reservation rollback'; END IF; RETURN NEW; END $$; CREATE TRIGGER zz_fixture_abort AFTER INSERT ON control.producer_requests FOR EACH ROW EXECUTE FUNCTION public.fixture_abort()", 'install-rollback-fault')
         mode = 'event-bindings'+('' if label == 'complete' else '-'+label)
         if label in ['before-forward', 'after-complete']: mode = 'event-bindings-commit-lost'
-        directory = '/out/bindings-'+label
+        directory = '/out/bindings-'+run_tag+'-'+label
         command('docker', 'exec', state['container_id'], 'mkdir', '-m', '700', directory)
         proxy = None
         try:
@@ -109,7 +113,8 @@ def main(root):
                     case['before_pause'] = rows(db);save()
                     sql(db, "UPDATE control.jobs SET state='paused',reason_code='operator_requested',job_revision=job_revision+1", 'pause-before-native')
                     send(process, 'continue\n')
-                execute(binary+args, 35, case['process'], interact if label=='pause-between' else None);save()
+                execute(binary+args, 35, case['process'], interact if label=='pause-between' else None,
+                        input_pipe=label=='pause-between');save()
                 assert case['process']['exit'] == 0 and not case['process']['stderr']
             if proxy:
                 assert proxy.wait(5) == 0
@@ -169,7 +174,8 @@ def main(root):
         case['status']='PASS';save()
     # Real synthetic SQL constraints remain distinct from signed native evidence.
     schema = report['schema'] = dict(status='INCOMPLETE');save()
-    output = sql('bbbindings_complete', (SOURCE/'experiments/producer-requests/binding_schema_cases.sql').read_text(), 'binding-schema', 45)
+    schema_db = 'bbbindings_'+run_tag+'_complete'
+    output = sql(schema_db, (SOURCE/'experiments/producer-requests/binding_schema_cases.sql').read_text(), 'binding-schema', 45)
     observed = [json.loads(line) for line in output.splitlines() if line.startswith('{')]
     assert len(observed)==1 and observed[0]['status']=='PASS'
     expected_labels = {'nonempty_native_fixture', 'missing_batch_member', 'missing_original_reservation',
@@ -182,7 +188,7 @@ def main(root):
         'exact_retained_ledger_limit', 'another_producer_does_not_multiply_job_limit', 'paused_job_refuses_new_input',
         'binding_never_advances_any_checkpoint'}
     assert {case['label'] for case in observed[0]['cases']} == expected_labels
-    schema['remaining_client_backends'] = int(sql('bbbindings_complete', 'SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND pid<>pg_backend_pid()', 'schema-backend-audit'))
+    schema['remaining_client_backends'] = int(sql(schema_db, 'SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND pid<>pg_backend_pid()', 'schema-backend-audit'))
     assert schema['remaining_client_backends']==0
     schema.update(status='PASS',result=observed[0]);save()
     report['status']='PASS';save();print(json.dumps(dict(status='PASS',cases=len(report['cases']),sql_cases=len(observed[0]['cases']))))
@@ -191,4 +197,6 @@ def main(root):
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--root',type=Path,required=True)
-    main(parser.parse_args().root.resolve(strict=True))
+    parser.add_argument('--run-tag',required=True)
+    args=parser.parse_args()
+    main(args.root.resolve(strict=True), args.run_tag)
