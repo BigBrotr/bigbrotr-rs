@@ -171,6 +171,94 @@ pub async fn run(
         for state in ["queued", "running"] {
             observer.execute("UPDATE control.jobs SET state=$1::text,job_revision=job_revision+1,owner_resource_id=$2::bytea,owner_epoch=$3::text::numeric,owner_incarnation=$4::bytea WHERE job_id=$5::bytea", &[&state, &&spec.control.resource_id.as_bytes()[..], &spec.control.epoch.get().to_string(), &&spec.control.process_incarnation.as_bytes()[..], &&[90u8;16][..]]).await.unwrap();
         }
+        if mode == "event-bindings-checkpoints" {
+            // Native request IDs remain contiguous while logical source order is
+            // deliberately reversed. The duplicate event needs no new facts.
+            for (index, sequence) in [(1, 2), (0, 3)] {
+                let batch = ImportBatch::new(
+                    ImportJobBinding {
+                        id: [90; 16],
+                        request_digest: [91; 32],
+                        expected_revision: 3,
+                        config_revision: 1,
+                        policy_revision: 1,
+                    },
+                    [92; 32],
+                    0,
+                    &positions[index..=index],
+                )
+                .unwrap();
+                owner
+                    .reserve_initial_import_batch(
+                        store,
+                        InitialImportBatchRequest {
+                            ingest_root: path,
+                            registration: spec,
+                            batch: &batch,
+                            events: &[prepare(sequence)],
+                            limits: AdmissionLimits {
+                                max_outstanding_requests: 3,
+                                ..AdmissionLimits::default()
+                            },
+                            policy_ttl: Duration::from_secs(2),
+                            cancelled: &cancelled,
+                        },
+                        grant(budget, 40 * MIB, 10 * MIB),
+                        authorize,
+                    )
+                    .await
+                    .unwrap();
+                let mut previous = None;
+                for recorded_at in [456, 789] {
+                    let outcome = owner
+                        .admit_initial_event(
+                            store,
+                            input(recorded_at, sequence),
+                            grant(budget, 40 * MIB, 10 * MIB),
+                            authorize,
+                        )
+                        .await
+                        .unwrap();
+                    let AdmissionOutcome::Durable(receipt) = outcome.outcome() else {
+                        panic!("verified bound import refused")
+                    };
+                    assert_eq!(receipt.batch().is_some(), sequence == 2);
+                    let observation: String = observer.query_one("SELECT jsonb_build_object('closures',(SELECT coalesce(jsonb_agg(to_jsonb(c)||jsonb_build_object('xmin',xmin::text) ORDER BY logical_record),'[]'::jsonb) FROM control.import_record_closures c),'heads',(SELECT coalesce(jsonb_agg(to_jsonb(h)||jsonb_build_object('xmin',xmin::text)),'[]'::jsonb) FROM control.import_checkpoints h),'job',(SELECT to_jsonb(j)||jsonb_build_object('xmin',xmin::text) FROM control.jobs j),'producer_checkpoints',(SELECT count(*) FROM control.producer_checkpoints))::text", &[]).await.unwrap().get(0);
+                    let state: serde_json::Value = serde_json::from_str(&observation).unwrap();
+                    assert_eq!(
+                        state["closures"].as_array().unwrap().len(),
+                        (sequence - 1) as usize
+                    );
+                    assert_eq!(state["producer_checkpoints"], 0);
+                    if sequence == 2 {
+                        assert!(state["heads"].as_array().unwrap().is_empty());
+                        assert_eq!(state["closures"][0]["logical_record"], 2);
+                        assert_eq!(state["job"]["checkpoint_revision"], 0);
+                        assert_eq!(state["job"]["job_revision"], 3);
+                    } else {
+                        assert_eq!(state["heads"].as_array().unwrap().len(), 1);
+                        assert_eq!(state["heads"][0]["complete_through_record"], 2);
+                        assert_eq!(state["heads"][0]["byte_offset"], 706);
+                        assert_eq!(state["heads"][0]["revision"], 1);
+                        assert_eq!(state["job"]["checkpoint_revision"], 1);
+                        assert_eq!(state["job"]["job_revision"], 4);
+                    }
+                    let current = (receipt.encode_persistent(8192).unwrap(), observation);
+                    if let Some(prior) = &previous {
+                        assert_eq!(
+                            prior, &current,
+                            "exact replay must not rewrite retained progress"
+                        );
+                    }
+                    emit(
+                        serde_json::json!({"event":"logical-checkpoint", "request_sequence":sequence, "receipt":hex(&current.0), "state":state, "retry":previous.is_some()}),
+                    );
+                    previous = Some(current);
+                }
+            }
+            owner.release().await.unwrap();
+            return;
+        }
         let batch = ImportBatch::new(
             ImportJobBinding {
                 id: [90; 16],

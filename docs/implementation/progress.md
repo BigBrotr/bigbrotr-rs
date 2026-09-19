@@ -21,13 +21,16 @@ No operator import acceptance, installed import grant, ACK or GC is implemented.
 
 ## Git and ownership
 
-Mac main HEAD is5fe32c0d35871501d670e3d9574369edf03ade2b. Private origin/main last
-verified at2886b2b8af64f393d1f29cf1e257a754cb51cfd9. Three local candidates are
-unpublished:8b0660e product/batch binding,32f1ed7 harness/compatibility,
-5fe32c0 corrected oracle/fixture. Do not rewrite them. Root owns the remaining
-qualification diff: this checkpoint, lab inventory, P03 task/reference text,
-new p03-input-bindings evidence report, shared complete-copy checker enhancement,
-input_bindings.py caller and new binding_observer.py. No other contributor edits.
+Mac main and private origin/main were verified clean at
+ddfa74064d840541e58208195b8e1612733c2ca3 after pushing all four coherent commits.
+Root owns the current checkpoint, import reference, additive migration0014, its
+compiled/JSON catalog entries, migration regression and reverse-order native
+fixture in support/ingest_event.rs. No unexpected dirty files. SQL14 and the
+native fixture are an unpublished candidate; the Rust closure bridge is not yet
+implemented. Independent read-only AI review found no concrete SQL counterexample
+but requires actual PostgreSQL trigger visibility/multi-shard/rollback cases.
+Fresh Tux inspection confirms the prior two owned containers stopped, no OOM,
+empty retained network and eight unrelated containers still running.
 
 Product source 8b0660e580a61503686abab6a02944258e995bb0/tree
 58c952229d935e074013378b6f922afb8fcdd588 was built from a clean 821-file Git export.
@@ -127,12 +130,17 @@ ownership/path review. No global prune or unrelated cleanup is authorized.
 
 ## Next bounded action and remaining gates
 
-Finish reading the qualification report/diff, run the affected artifact/handoff
-checks, commit and push the verified coherent candidates plus qualification.
-Then follow P03-T10/P02-T02 owning contracts to implement the first complete
-logical-obligation/checkpoint consumer from retained bindings and native outcomes,
-including gaps, zero mutation prefixes and proof/claim distinctions. Do not infer
-logical progress from reservations or bare PG outcome copies. No competing plan.
+The qualification report and complete diff are reviewed, structural checks passed,
+and all verified commits were pushed. Current bounded action: follow P03-T10 step4
+and P02-T02 step4 to select and implement the first complete logical-obligation/
+checkpoint consumer from retained bindings and native outcomes. Read the owning
+Importer and identity/encoding proof/closure contracts, current job/checkpoint DDL,
+and native StoredOutcome/NativeOutcomeCopy APIs. An independent read-only review
+is checking whether an explicitly event-only checkpoint can safely precede claim/
+proof variants and the exact retained dependency/witness requirements. Do not infer
+logical progress from reservations, counts or bare PG outcome copies. Preserve
+holes, zero mutation prefixes, policy/owner fencing and separate claim obligations.
+No competing plan and no completed task claim.
 
 Initial adapters still bind original Control and producer/owner epoch1. Future
 recovery requires a read/recovery handle incapable of fresh admission, synchronized
@@ -151,3 +159,20 @@ External monitor findings remain scoped closed with practical evidence:
 [MON-010](evidence/p01-tls-presence-20260918.json),
 [MON-007](evidence/p01-archive-cache-retry-20260918.json).
 No new contrary evidence was found in the requested external note.
+
+The next bounded design is now in import-input-bindings.md: closure membership
+from the actual native witness inside the existing outcome transaction, plus a
+separate job/shard contiguous head. The global job checkpoint revision increments
+once per advancing shard head; gap closure0-to2 is one increment and exact replay
+is zero. Existing producer_checkpoints cannot represent this meaning and stay
+untouched. Recheck cancellation/residual lease after SQL awaits before COMMIT.
+A real reverse-order fixture can bind/admit line2/request2 then line1/request3;
+this exercises prefix0 then2 without successor impersonation or noncontiguous
+native request IDs. New0014 must retain old unclosed rows and refuse unsupported
+nonzero old import checkpoints. Migration catalog RED failed UnknownTarget(14) before implementation; all16
+Mac schema tests and scoped Clippy passed afterward. Logs are under
+.research/implementation/import-checkpoints/. The new native reverse-order
+fixture still needs its expected RED execution before wiring the Rust closure
+bridge. SQL/native behavior and compatibility are NOT_RUN. Next: clean candidate
+Git transfer, isolated Tux build and expected missing-closure observation; then
+implement the native witness bridge and required late lease/cancellation check.

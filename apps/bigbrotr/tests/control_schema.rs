@@ -307,3 +307,27 @@ fn input_bindings_require_the_exact_additive_prefix_after_outcomes() {
     assert_eq!(upgrade.pending[0].name, "0013_input_bindings.sql");
     assert!(migrations::require_applied(&applied, 12).is_ok());
 }
+
+#[test]
+fn import_record_checkpoints_require_explicit_protocol_after_input_bindings() {
+    let old = plan(&[], 13).unwrap();
+    let applied: Vec<_> = old
+        .pending
+        .iter()
+        .map(|m| AppliedMigration {
+            version: m.version,
+            name: m.name.into(),
+            checksum: m.checksum(),
+            reader_min: m.reader_min,
+            reader_max: m.reader_max,
+            writer_floor: m.writer_floor,
+        })
+        .collect();
+    let upgrade = plan(&applied, 14).expect("logical checkpoint protocol is explicit");
+    assert_eq!(upgrade.pending.len(), 1);
+    assert_eq!(upgrade.pending[0].name, "0014_import_checkpoints.sql");
+    assert_eq!(
+        migrations::require_applied(&applied, 14),
+        Err(MigrationError::MissingPrerequisite(14))
+    );
+}

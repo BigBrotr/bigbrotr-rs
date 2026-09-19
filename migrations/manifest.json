@@ -49,6 +49,10 @@
     {
       "version": 13,
       "name": "0013_input_bindings.sql"
+    },
+    {
+      "version": 14,
+      "name": "0014_import_checkpoints.sql"
     }
   ],
   "reserved": [
