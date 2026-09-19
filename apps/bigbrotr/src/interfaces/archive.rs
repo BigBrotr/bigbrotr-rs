@@ -9,10 +9,12 @@ use std::{
 
 pub fn command() -> clap::Command {
     clap::Command::new("archive")
-        .about("Inspect installed archive prerequisites")
+        .about("Initialize, recover and inspect the local archive")
         .subcommand_required(true)
         .disable_help_subcommand(true)
         .subcommand(super::catalog_inspection::command())
+        .subcommand(super::archive_initialization::command("initialize"))
+        .subcommand(super::archive_initialization::command("recover"))
         .subcommand(clap::Command::new("verify-worker")
             .about("Verify the installed worker and offline native assets against this build")
             .arg(clap::Arg::new("root").long("root").value_parser(clap::value_parser!(PathBuf))
@@ -21,6 +23,11 @@ pub fn command() -> clap::Command {
 }
 
 pub fn execute(matches: &clap::ArgMatches) -> ExitCode {
+    for name in ["initialize", "recover"] {
+        if let Some(args) = matches.subcommand_matches(name) {
+            return super::archive_initialization::execute(args, name == "initialize");
+        }
+    }
     if let Some(args) = matches.subcommand_matches("inspect") {
         return super::catalog_inspection::execute(args);
     }

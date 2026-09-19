@@ -53,6 +53,11 @@ fn literal(value: &str) -> String {
     format!("'{}'", value.replace('\\', "\\\\").replace('\'', "\\'"))
 }
 impl CatalogRoute<'_> {
+    /// Validate the native route before exposing any permanent bootstrap grant.
+    pub fn validate(&self) -> Result<(), PublicationError> {
+        self.dsn("preflight", "preflight", "bigbrotr-route-preflight")
+            .map(|_| ())
+    }
     pub(super) fn dsn(
         &self,
         login: &str,

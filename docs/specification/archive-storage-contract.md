@@ -373,6 +373,35 @@ had weaker ambiguous-effect oracles, strengthened and rerun without changing Rus
 No applied SQL, comment/journal format or dependency changed. Full initializer CLI,
 SQL-capable backend drain, native mutual TLS and service ownership remain required.
 
+The explicit command consumer is `archive initialize --file PATH
+--initializer-user NAME --initializer-password-ref file:/ABSOLUTE/PATH`, with an
+optional `--worker-root` for the authenticated installed bundle. `archive recover`
+takes the same initializer arguments and never launches a native child. Both use
+the configured catalog endpoint/database/TLS, expected dataset/catalog/root and
+separate runtime manager. They do not create databases or promote that manager.
+Before permanent reservation, initialize must validate credentials, the bundle,
+bounded native/application grants and a new private directory below the configured
+scratch root, disjoint from the data root and bundle. Pin one resolved endpoint
+address across initializer, native and final manager connections. Native mutual
+TLS is a pre-reservation refusal until its adapter is implemented and qualified;
+this does not remove that selected capability from subsequent work.
+
+The consumer must join every actual provisioning driver and its sole native child,
+reacquire local custody, observe and retire the exact bootstrap, then wait a bounded
+time for remaining sessions with that bootstrap OID across the cluster. Each poll
+uses a fresh transaction/statistics snapshot. This natural drain follows positive
+client destruction: a late, previously invisible selected-client backend cannot
+have queued application SQL after that destruction. No PID termination, empty
+activity-only proof or new native launch is permitted. Timeout preserves unresolved
+state. A pristine stranded reservation is retired but cannot be installed; report
+the need for a new database/root pair. Partial scientific state refuses. Complete
+scientific state proceeds through `install_for_manager` and a fresh connection
+using the configured manager to inspect the installed identity/schema/guards.
+Signals cancel SQL, then join its driver; native cancellation must set the child's
+flag and await its blocking supervisor, never abandon a running blocking task.
+Output delivery has a bounded drain after data owners terminate. These are consumer
+acceptance requirements, not executed CLI evidence yet.
+
 The application-owned `bigbrotr_archive` schema contains immutable installation
 and attempt records plus one mutable owner row. Every native metadata mutation
 locks that row FOR SHARE through the actual native transaction. Activation locks

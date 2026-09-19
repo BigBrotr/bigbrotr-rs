@@ -47,7 +47,8 @@ env.update(BIGBROTR_ARCHIVE_WORKER_BYTES=str(worker['bytes']), BIGBROTR_ARCHIVE_
 assert execute([
     ('fixture', ['cargo', 'build', '--locked', '--release', '-p', 'bigbrotr', '--example', 'catalog_schema_probe', '--example', 'catalog_initialization_probe']),
     ('parent-tests', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr', '--lib', 'storage::archive', '--', '--nocapture']),
-    ('clippy', ['cargo', 'clippy', '--locked', '--release', '-p', 'bigbrotr', '-p', 'bigbrotr-archive-worker', '--lib', '--example', 'catalog_schema_probe', '--example', 'catalog_initialization_probe', '--bin', 'bigbrotr-archive-worker', '--', '-D', 'warnings']),
+    ('cli-tests', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr', '--bin', 'bigbrotr', '--test', 'catalog_entrypoint']),
+    ('clippy', ['cargo', 'clippy', '--locked', '--release', '-p', 'bigbrotr', '-p', 'bigbrotr-archive-worker', '--lib', '--example', 'catalog_schema_probe', '--example', 'catalog_initialization_probe', '--bin', 'bigbrotr', '--bin', 'bigbrotr-archive-worker', '--', '-D', 'warnings']),
 ], out / 'checks', SOURCE, env, identity, 1800)['status'] == 'PASS'
 for src, dst in [('bigbrotr', out / 'bigbrotr'), ('bigbrotr-archive-worker', bundle / 'bigbrotr-archive-worker'),
                  ('examples/catalog_schema_probe', out / 'catalog-schema-probe'),

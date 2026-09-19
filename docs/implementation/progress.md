@@ -21,24 +21,21 @@ readiness. Root remains the sole writer/integrator.
 
 ## Actual Git and review
 
-Mac main HEAD:660df73aa24c63122054c00750fdc62486d38e12, three unpublished coherent
-candidates ahead of the previously verified private origin/main f3e3302512213ccebb95ee78bb67fc38f44bd082.
-2bd2bdb is the deliberate practical baseline; decf4a9 implements recovery; 660df73
-strengthens four ambiguous-effect oracles with identical Rust/probe sources.
-Current root-owned dirty work is owning docs, inventory, this checkpoint and the
-new native evidence report. No merge/rebase, other contributor edits or active
-local process. Artifact/handoff/diff checks passed; repository rechecked private.
-Evidence commit/private push still pending.
+Implementation candidate is based on Mac main/origin/main
+8f79a5621a9f76071b0c17d435494e3427920c10. Root owns all current changes: the real
+archive initialize/recover command, one pinned route, shared fixed budget lanes,
+locked pristine observation, native fresh-credential consumer and CLI regressions.
+No merge/rebase or other contributor edit. Candidate is not yet native-qualified
+or pushed. Existing published recovery evidence below remains unchanged.
 
-Independent read-only AI review read complete affected implementation, actual
-probe/harness and reused custody/installation/Process/proxy boundaries. No product
-counterexample found. It identified weaker effects checks in ambiguous cases;
-660df73 closes that gap. No extra edits or Tux access by reviewer. Recorded-evidence
-review independently verified all 42 raw files, three evidence/Git archives and
-2,205 source hashes with matching outcomes/artifacts/checks; no discrepancy. It did
-not execute Tux/tests or independently inspect ELF, database, current host state or
-Mac sessions without logs in these archives.
-Root reviewed changed code, complete case outcomes and source/artifact mappings.
+Local executable regression34372 failed as intended because initialize was absent.
+Sessions22301/10720 pass two route tests, eight binary tests and nine CLI cases;
+28469 adds one passing preflight regression for long manager names/native mTLS.
+Scoped Clippy, fmt, Python AST and diff checks pass. These are local evidence only.
+Independent read-only API/consumer review found excess simultaneous credential
+preparations, unintended existing-TLS route changes and late manager-name refusal;
+all three are corrected, with real 128MiB-payload CLI validation queued on Tux.
+No cancellation/join bypass found so far. Native CLI scenarios are NOT_RUN.
 
 ## Current initialization recovery qualification
 
@@ -91,7 +88,7 @@ Root: /home/tux/bigbrotr-implementation-20260917/runs/initialization-recovery-66
 Owner: 66c9b8e62ed364937966eafdf91c1dbb.
 Runner: d5616898fdfe88d444fad2d05bcaa75290fe209f33b2d0007461d467ea540143 stopped (exit 143).
 PG: 05e7205060b20b63685c46b6fa33817c19bc4ea4c1d25834193ad10e91a6e81f stopped (exit 0).
-Network: 66d99379f9fac486a54a150cbd286b2a917073e4ef41370bb95dacc6be44e82c empty-retained.
+Network: 66d99379f9fac486a54a150cbd286b2a917073e4ef41370bb95dacc6be44e82c removed after ownership/empty/stopped checks at 08:31:49 UTC; containers/data retained.
 Runner 2 CPU / 6 GiB / 512 PIDs, PG 1 CPU / 1 GiB / 128 PIDs, internal/no host ports.
 Latest reusable copied-cache/read-only-assets: 660df73/out/{build,archive-worker}.
 Main: 64383588096f86031bc7af8468075172b5ea057b41698d61e230632613f6246c, 8225624 bytes.
@@ -140,8 +137,15 @@ Do not mechanically rerun unrelated suites.
 
 ## Next bounded action
 
-Commit/push this reviewed qualified slice normally to the private repository,
-then wire the real explicit
+CLI integration started after the safe retired-lab checkpoint. Independent API
+review confirms custody-before-spawn, fixed separate application/native budget
+lanes, mandatory blocking-supervisor join and one pinned route. Scratch must also
+be disjoint from the archive root before permanent reservation. The owning archive
+contract now records command arguments and recovery outcomes. The executable
+entrypoint regression failed against the absent command and now passes locally.
+No new Tux resource or experiment is active.
+
+Wire the real explicit
 initializer/recovery CLI: separate privileged initializer credential from configured
 runtime manager, shared pinned transport/native route, positive native/driver join,
 actual custody reacquisition, exact observation/retirement, bounded natural backend

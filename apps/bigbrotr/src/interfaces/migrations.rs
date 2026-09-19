@@ -140,7 +140,8 @@ async fn execute_connection(
         super::postgres_command::connect(prepared)
             .await
             .map_err(|error| match error {
-                super::postgres_command::ConnectError::Backend => RunError::Backend,
+                super::postgres_command::ConnectError::Backend
+                | super::postgres_command::ConnectError::Route => RunError::Backend,
                 super::postgres_command::ConnectError::PlaintextRoute => RunError::PlaintextRoute,
             })?;
     let commit_started = Cell::new(false);

@@ -22,6 +22,8 @@ pub struct Reservation {
 pub struct Observation {
     pub reservation: Reservation,
     pub bootstrap_retired: bool,
+    /// Same locked native freshness predicate, not permission to relaunch.
+    pub database_pristine: bool,
 }
 
 /// Observe only after actual local custody reacquisition. The actual fresh
@@ -155,6 +157,15 @@ async fn observe(
         .map_err(backend)?
         .try_get(0)
         .map_err(backend)?;
+    let database_pristine = tx
+        .query_one(
+            include_str!("../../../../../../contracts/archive/catalog-pristine-v1.sql"),
+            &[],
+        )
+        .await
+        .map_err(backend)?
+        .try_get(0)
+        .map_err(backend)?;
     Ok(Some(Observation {
         reservation: Reservation {
             database_oid,
@@ -166,6 +177,7 @@ async fn observe(
             manager_oid,
         },
         bootstrap_retired,
+        database_pristine,
     }))
 }
 

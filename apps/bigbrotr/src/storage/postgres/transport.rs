@@ -23,25 +23,72 @@ pub type Driver = Pin<Box<dyn Future<Output = Result<(), tokio_postgres::Error>>
 pub enum ConnectError {
     Backend,
     PlaintextRoute,
+    Route,
 }
 impl std::fmt::Display for ConnectError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(match self {
             Self::Backend => "PostgreSQL connection unavailable",
             Self::PlaintextRoute => "resolved PostgreSQL plaintext route is outside its declared local boundary or exceeds the address limit",
+            Self::Route => "PostgreSQL route is empty, oversized or differs from the pinned endpoint",
         })
     }
 }
 impl std::error::Error for ConnectError {}
+/// One selected infrastructure route, reusable only for the same endpoint.
+/// The fields are private so callers cannot substitute an unvalidated address.
+#[derive(Clone)]
+pub struct PinnedRoute {
+    host: String,
+    port: u16,
+    address: IpAddr,
+}
+impl PinnedRoute {
+    pub fn address(&self) -> IpAddr {
+        self.address
+    }
+    pub fn port(&self) -> u16 {
+        self.port
+    }
+}
 /// Establish authentication under the prepared TLS/plaintext policy, pinning
 /// plaintext DNS answers before connection. The caller owns cancellation and
 /// must retain the returned driver before issuing SQL. No reconnect or fallback.
 pub async fn connect(prepared: PreparedConnection) -> Result<(Client, Driver), ConnectError> {
+    if matches!(
+        prepared.security(),
+        super::connection_settings::ConnectionSecurity::VerifyFull { .. }
+    ) {
+        // Existing finite/service consumers retain tokio-postgres's address
+        // selection. Only consumers sharing a route with native use the new pin.
+        let (config, PreparedTransport::VerifyFull(connector)) = prepared.into_parts() else {
+            unreachable!("prepared TLS security matches its transport")
+        };
+        let (client, driver) = tokio::time::timeout(CONNECT_DEADLINE, config.connect(connector))
+            .await
+            .map_err(|_| ConnectError::Backend)?
+            .map_err(|_| ConnectError::Backend)?;
+        return Ok((client, Box::pin(driver)));
+    }
+    let (client, driver, _) = connect_pinned(prepared, None).await?;
+    Ok((client, driver))
+}
+
+/// Pin DNS once across a finite operation's fresh connections and native client.
+/// TLS continues to authenticate the explicitly configured server identity.
+pub async fn connect_pinned(
+    prepared: PreparedConnection,
+    previous: Option<&PinnedRoute>,
+) -> Result<(Client, Driver, PinnedRoute), ConnectError> {
     let (mut config, transport) = prepared.into_parts();
     let connect = async {
+        let boundary = match &transport {
+            PreparedTransport::LocalPlaintext(boundary) => Some(*boundary),
+            PreparedTransport::VerifyFull(_) => None,
+        };
+        let route = pin_route(&mut config, boundary, previous).await?;
         let pair: (tokio_postgres::Client, Driver) = match transport {
-            PreparedTransport::LocalPlaintext(boundary) => {
-                pin_plaintext_route(&mut config, boundary).await?;
+            PreparedTransport::LocalPlaintext(_) => {
                 let (client, driver) = config
                     .connect(tokio_postgres::NoTls)
                     .await
@@ -56,69 +103,139 @@ pub async fn connect(prepared: PreparedConnection) -> Result<(Client, Driver), C
                 (client, Box::pin(driver))
             }
         };
-        Ok::<_, ConnectError>(pair)
+        Ok::<_, ConnectError>((pair.0, pair.1, route))
     };
-    let (client, driver) = tokio::time::timeout(CONNECT_DEADLINE, connect)
+    tokio::time::timeout(CONNECT_DEADLINE, connect)
         .await
-        .map_err(|_| ConnectError::Backend)??;
-    Ok((client, driver))
+        .map_err(|_| ConnectError::Backend)?
 }
 
-async fn pin_plaintext_route(
+async fn pin_route(
     config: &mut tokio_postgres::Config,
-    boundary: PlaintextBoundary,
-) -> Result<(), ConnectError> {
+    boundary: Option<PlaintextBoundary>,
+    previous: Option<&PinnedRoute>,
+) -> Result<PinnedRoute, ConnectError> {
     let [tokio_postgres::config::Host::Tcp(host)] = config.get_hosts() else {
-        return Err(ConnectError::PlaintextRoute);
+        return Err(ConnectError::Route);
     };
     let [port] = config.get_ports() else {
-        return Err(ConnectError::PlaintextRoute);
+        return Err(ConnectError::Route);
     };
-    let address = if host == "localhost" {
+    let address = if let Some(previous) = previous {
+        if previous.host != *host || previous.port != *port {
+            return Err(ConnectError::Route);
+        }
+        select_address([SocketAddr::new(previous.address, *port)], boundary)?
+    } else if host == "localhost" {
         // Deterministic loopback without an ambient resolver alias. An IPv6-only
         // database can explicitly select [::1] in its endpoint.
-        vetted_address(
+        select_address(
             [SocketAddr::new(Ipv4Addr::LOCALHOST.into(), *port)],
             boundary,
         )?
     } else if let Ok(address) = host.parse::<IpAddr>() {
-        vetted_address([SocketAddr::new(address, *port)], boundary)?
+        select_address([SocketAddr::new(address, *port)], boundary)?
     } else {
         let addresses = tokio::net::lookup_host((host.as_str(), *port))
             .await
             .map_err(|_| ConnectError::Backend)?;
-        vetted_address(addresses, boundary)?
+        select_address(addresses, boundary)?
+    };
+    let route = PinnedRoute {
+        host: host.clone(),
+        port: *port,
+        address,
     };
     // hostaddr prevents a second DNS resolution between policy and connect.
     config.hostaddr(address);
-    Ok(())
+    Ok(route)
 }
 
-fn vetted_address(
+fn select_address(
     addresses: impl IntoIterator<Item = SocketAddr>,
-    boundary: PlaintextBoundary,
+    boundary: Option<PlaintextBoundary>,
 ) -> Result<IpAddr, ConnectError> {
     let mut selected = None;
     for (index, address) in addresses.into_iter().enumerate() {
         let ip = address.ip().to_canonical();
         let allowed = match boundary {
-            PlaintextBoundary::Loopback => ip.is_loopback(),
-            PlaintextBoundary::PrivateBridge => match ip {
+            None => true,
+            Some(PlaintextBoundary::Loopback) => ip.is_loopback(),
+            Some(PlaintextBoundary::PrivateBridge) => match ip {
                 IpAddr::V4(ip) => ip.is_private(),
                 IpAddr::V6(ip) => ip.is_unique_local(),
             },
         };
         if index >= 16 || !allowed {
-            return Err(ConnectError::PlaintextRoute);
+            return Err(if boundary.is_some() {
+                ConnectError::PlaintextRoute
+            } else {
+                ConnectError::Route
+            });
         }
         selected.get_or_insert(ip);
     }
-    selected.ok_or(ConnectError::PlaintextRoute)
+    selected.ok_or(if boundary.is_some() {
+        ConnectError::PlaintextRoute
+    } else {
+        ConnectError::Route
+    })
 }
 
 #[cfg(test)]
 mod route_tests {
     use super::*;
+
+    fn vetted_address(
+        addresses: impl IntoIterator<Item = SocketAddr>,
+        boundary: PlaintextBoundary,
+    ) -> Result<IpAddr, ConnectError> {
+        select_address(addresses, Some(boundary))
+    }
+
+    #[tokio::test(flavor = "current_thread")]
+    async fn reuse_binds_endpoint_and_rechecks_the_plaintext_boundary_without_dns() {
+        let route = PinnedRoute {
+            host: "does-not-resolve.invalid".into(),
+            port: 443,
+            address: "127.0.0.1".parse().unwrap(),
+        };
+        let config = || {
+            let mut c = tokio_postgres::Config::new();
+            c.host(&route.host).port(443);
+            c
+        };
+        let mut c = config();
+        assert_eq!(
+            pin_route(&mut c, None, Some(&route))
+                .await
+                .unwrap()
+                .address(),
+            route.address()
+        );
+        assert_eq!(c.get_hostaddrs(), &[route.address()]);
+        assert!(matches!(
+            pin_route(
+                &mut config(),
+                Some(PlaintextBoundary::PrivateBridge),
+                Some(&route)
+            )
+            .await,
+            Err(ConnectError::PlaintextRoute)
+        ));
+        let mut wrong = tokio_postgres::Config::new();
+        wrong.host("different.invalid").port(443);
+        assert!(matches!(
+            pin_route(&mut wrong, None, Some(&route)).await,
+            Err(ConnectError::Route)
+        ));
+        let mut wrong = tokio_postgres::Config::new();
+        wrong.host(&route.host).port(5432);
+        assert!(matches!(
+            pin_route(&mut wrong, None, Some(&route)).await,
+            Err(ConnectError::Route)
+        ));
+    }
 
     #[test]
     fn plaintext_requires_all_bounded_answers_inside_the_selected_boundary() {

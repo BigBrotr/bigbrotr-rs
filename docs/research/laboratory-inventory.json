@@ -9506,7 +9506,31 @@
             }
           }
         }
-      }
+      },
+      "qualified_network_retirement": [
+        {
+          "root": "initialization-recovery-660df73",
+          "network": "66d99379f9fac486a54a150cbd286b2a917073e4ef41370bb95dacc6be44e82c",
+          "owner": "66c9b8e62ed364937966eafdf91c1dbb",
+          "status": "removed",
+          "containers": "retained-stopped",
+          "data": "retained",
+          "observed_at": "2026-09-19T08:31:49.284004+00:00"
+        }
+      ]
+    },
+    "initialization_cli": {
+      "status": "candidate-prepared-not-run",
+      "local_raw_root": ".research/implementation/archive-worker/initialization-cli",
+      "source_parent": "8f79a5621a9f76071b0c17d435494e3427920c10",
+      "scope": "actual installed archive initialize and recover commands",
+      "cache_source": "initialization-recovery-660df73",
+      "resources": "none created yet",
+      "not_qualified": [
+        "native CLI journeys",
+        "cancellation/drain/TLS",
+        "release and service readiness"
+      ]
     }
   },
   "implementation_monitor_corrections_20260918": {

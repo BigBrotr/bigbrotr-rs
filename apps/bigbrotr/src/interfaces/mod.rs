@@ -1,5 +1,6 @@
 pub mod access;
 pub mod archive;
+mod archive_initialization;
 mod catalog_inspection;
 pub(crate) mod configuration;
 pub(crate) mod initial_activation;

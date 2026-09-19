@@ -59,6 +59,31 @@ enum Custody<'a> {
 }
 
 impl<'a> Preparation<'a> {
+    /// Consume the only freshly committed credential into its custodied child.
+    /// The route is the same pinned endpoint used by the reserving connection.
+    pub fn initialize_fresh_catalog(
+        self,
+        fresh: crate::storage::postgres::catalog_guard::initialization::FreshBootstrap,
+        custody: &super::LocalInitialization,
+        route: &super::CatalogRoute<'_>,
+        budget: &ResourceBudget,
+    ) -> Result<(), PreparationError> {
+        if fresh.reservation().initialization_id != *custody.initialization_id() {
+            return Err(PreparationError::InvalidBootstrap);
+        }
+        fresh.with_login(|login, password| {
+            let dsn = route
+                .dsn(login, password, "bigbrotr-archive-initializer")
+                .map_err(|_| PreparationError::InvalidBootstrap)?;
+            self.initialize_reserved_catalog(&dsn, custody, budget)
+        })
+    }
+
+    /// Check the actual private empty scratch directory before durable admission.
+    pub fn validate_temporary_root(&self) -> Result<(), PreparationError> {
+        self.check_temporary_root()
+    }
+
     /// Explicit finite native catalog initialization/attach. The caller supplies
     /// a trusted, already validated infrastructure route/TLS policy and keeps
     /// credentials out of argv/environment/logs. This success proves joined

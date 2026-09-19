@@ -28,6 +28,7 @@ pub(super) fn prepare(
         user,
         password_reference,
         extra_reservation,
+        None,
     )
 }
 
@@ -47,6 +48,24 @@ pub(super) fn prepare_catalog(
         required("postgres.catalog.user")?,
         required("postgres.catalog.password_ref")?,
         extra_reservation,
+        None,
+    )
+}
+
+pub(super) fn prepare_catalog_as(
+    config: &crate::config::Resolved,
+    user: &str,
+    password_reference: &str,
+    budget: &ResourceBudget,
+) -> CliResult<(PreparedConnection, OwnedPermit)> {
+    prepare_database(
+        config,
+        "postgres.catalog",
+        "Archive catalog",
+        user,
+        password_reference,
+        64 * 1024 * 1024,
+        Some(budget),
     )
 }
 
@@ -57,6 +76,7 @@ fn prepare_database(
     user: &str,
     password_reference: &str,
     extra_reservation: u64,
+    shared_budget: Option<&ResourceBudget>,
 ) -> CliResult<(PreparedConnection, OwnedPermit)> {
     let password = secret(password_reference)?;
     let present = |field: &str| {
@@ -117,7 +137,8 @@ fn prepare_database(
         WaiterLimits::new(0, 0),
     )
     .map_err(|_| (3, "invalid application memory envelope".into()))?;
-    let budget = ResourceBudget::new(envelope);
+    let own_budget = ResourceBudget::new(envelope);
+    let budget = shared_budget.unwrap_or(&own_budget);
     let grant = budget
         .try_acquire(ResourceRequest::data(reservation, 1, 0).expect("positive reservation"))
         .map_err(|_| {

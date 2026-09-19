@@ -202,3 +202,103 @@ fn initialization_generates_distinct_explicit_catalog_candidates() {
         show(dir.path(), &doc);
     }
 }
+
+#[test]
+fn explicit_initialization_and_recovery_refuse_unselected_archive() {
+    let dir = tempfile::tempdir().unwrap();
+    write(dir.path(), &example(dir.path(), "serve-existing"));
+    for command in ["initialize", "recover"] {
+        let result = run(
+            dir.path(),
+            &[
+                "archive",
+                command,
+                "--file",
+                "instance.toml",
+                "--initializer-user",
+                "installer",
+                "--initializer-password-ref",
+                "file:/absent/installer",
+            ],
+        );
+        assert_eq!(result.status.code(), Some(3), "{result:?}");
+        assert!(
+            String::from_utf8(result.stderr)
+                .unwrap()
+                .contains("local Archive role")
+        );
+        assert!(result.stdout.is_empty());
+        assert_eq!(fs::read_dir(dir.path()).unwrap().count(), 1);
+    }
+}
+
+#[test]
+fn initialize_refuses_manager_as_initializer_before_reading_credentials() {
+    let dir = tempfile::tempdir().unwrap();
+    write(dir.path(), &example(dir.path(), "archive-only"));
+    let result = run(
+        dir.path(),
+        &[
+            "archive",
+            "initialize",
+            "--file",
+            "instance.toml",
+            "--initializer-user",
+            "bigbrotr_catalog",
+            "--initializer-password-ref",
+            "file:/absent/installer",
+        ],
+    );
+    assert_eq!(result.status.code(), Some(3), "{result:?}");
+    assert!(
+        String::from_utf8(result.stderr)
+            .unwrap()
+            .contains("separate initializer")
+    );
+    assert!(result.stdout.is_empty());
+    assert_eq!(fs::read_dir(dir.path()).unwrap().count(), 1);
+}
+
+#[test]
+fn initialize_rejects_unusable_manager_and_native_mtls_before_filesystem_effects() {
+    let dir = tempfile::tempdir().unwrap();
+    for expected in [
+        "catalog manager login",
+        "native catalog mutual TLS is not implemented",
+    ] {
+        let mut doc = example(dir.path(), "archive-only");
+        if expected == "catalog manager login" {
+            doc["postgres"]["catalog"]["user"] = "m".repeat(80).into();
+        } else {
+            let tls = doc["postgres"]["catalog"]["tls"].as_table_mut().unwrap();
+            tls.remove("local_boundary");
+            for (key, value) in [
+                ("mode", "verify-full"),
+                ("server_name", "catalog.example"),
+                ("ca_file", "/absent/ca.pem"),
+                ("client_cert_ref", "file:/absent/cert"),
+                ("client_key_ref", "file:/absent/key"),
+            ] {
+                tls.insert(key.into(), value.into());
+            }
+        }
+        write(dir.path(), &doc);
+        let result = run(
+            dir.path(),
+            &[
+                "archive",
+                "initialize",
+                "--file",
+                "instance.toml",
+                "--initializer-user",
+                "installer",
+                "--initializer-password-ref",
+                "file:/absent/installer",
+            ],
+        );
+        assert_eq!(result.status.code(), Some(3), "{result:?}");
+        assert!(String::from_utf8(result.stderr).unwrap().contains(expected));
+        assert!(result.stdout.is_empty());
+        assert_eq!(fs::read_dir(dir.path()).unwrap().count(), 1);
+    }
+}
