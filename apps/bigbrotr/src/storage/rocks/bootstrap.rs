@@ -165,6 +165,35 @@ impl Prepared {
 }
 
 impl IngestStore {
+    /// Stage before the connected adapter commits its PG reservation. The
+    /// operation permit remains borrowed until it transfers to native dispatch.
+    pub(in crate::storage) fn stage_initial_dictionaries(
+        &mut self,
+        request: ProducerRequestId,
+        intent: &EvidenceIntent,
+        limits: BootstrapLimits,
+        permit: &OwnedPermit,
+    ) -> Result<super::StagedProducerRequest, BootstrapError> {
+        if permit.request().units().data_bytes() < limits.required_data_bytes()?
+            || permit.request().units().native_bytes() < limits.required_native_bytes()?
+            || permit.request().units().items() == 0
+        {
+            return Err(BootstrapError::InsufficientReservation);
+        }
+        if self.write_uncertain {
+            return Err(BootstrapError::CommitUnknown);
+        }
+        self.validate_bootstrap(request, intent, limits)?;
+        let bytes = intent
+            .encode_request_preimage(request, limits.max_batch_bytes)
+            .map_err(|error| match error {
+                bigbrotr_model::EvidenceIntentError::AllocationFailed => BootstrapError::Allocation,
+                _ => BootstrapError::Limit,
+            })?;
+        self.stage_producer_request(request, intent.request_digest(request), &bytes)
+            .map_err(BootstrapError::RequestInput)
+    }
+
     /// Internal primitive, never a public authority-by-callback interface.
     /// &mut serializes decisions; the retained native LOCK excludes other opens.
     /// Only initial epoch/request one is supported. Any later state is refused.

@@ -231,3 +231,29 @@ fn archive_attempts_append_without_rewriting_applied_sql() {
         "0009_archive_attempts.sql"
     );
 }
+
+#[test]
+fn producer_reservations_require_the_new_complete_prefix() {
+    let plan = plan(&[], 11).expect("producer reservation protocol must be explicit");
+    assert_eq!(
+        plan.pending.iter().map(|m| m.version).collect::<Vec<_>>(),
+        [1, 2, 801, 805, 802, 7, 8, 9, 10, 11]
+    );
+    let applied: Vec<_> = plan
+        .pending
+        .iter()
+        .map(|m| AppliedMigration {
+            version: m.version,
+            name: m.name.into(),
+            checksum: m.checksum(),
+            reader_min: m.reader_min,
+            reader_max: m.reader_max,
+            writer_floor: m.writer_floor,
+        })
+        .collect();
+    assert_eq!(
+        migrations::require_applied(&applied[..9], 11),
+        Err(MigrationError::MissingPrerequisite(11))
+    );
+    assert!(migrations::require_applied(&applied, 11).is_ok());
+}

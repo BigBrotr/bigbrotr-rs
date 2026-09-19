@@ -19,6 +19,7 @@ pub enum RunError {
     SourceRegistrationRequired,
     IncompatibleJobBounds,
     UnqualifiedArchiveHistory,
+    UnqualifiedProducerHistory,
     Plan(migrations::MigrationError),
     CommitUnknown,
 }
@@ -33,6 +34,7 @@ impl fmt::Display for RunError {
             Self::SourceRegistrationRequired => f.write_str("control migration 2 requires explicit verified source registration for existing topology streams; no authority is inferred"),
             Self::IncompatibleJobBounds => f.write_str("control migration 8 refuses job cuts beyond authoritative source closure; explicit reconciliation required; no history was rewritten"),
             Self::UnqualifiedArchiveHistory => f.write_str("control migration 9 refuses pre-protocol archive owner history; explicit recovery required; no authority was adopted"),
+            Self::UnqualifiedProducerHistory => f.write_str("control migration 11 refuses pre-ledger ingest history, including closed history; explicit recovery required; no authority was adopted"),
             Self::Plan(error) => error.fmt(f),
             Self::CommitUnknown => f.write_str("migration COMMIT outcome unknown; resolve the same catalog target under migration serialization before retry"),
         }
@@ -109,6 +111,10 @@ pub async fn run(
                 && error.code().is_some_and(|code| code.code() == "55000")
             {
                 RunError::UnqualifiedArchiveHistory
+            } else if migration.version == 11
+                && error.code().is_some_and(|code| code.code() == "55000")
+            {
+                RunError::UnqualifiedProducerHistory
             } else {
                 backend(error)
             }

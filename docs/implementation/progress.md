@@ -19,15 +19,14 @@ Archive receipt consumer is qualified separately. All later selected work remain
 
 ## Git and current work
 
-Mac main is unpublished candidate
+Mac main and freshly queried private origin/main are
+`d98c96577ff0b850775b2494fa9e93db7b0bc64f`, clean at resumption.
+This documentation/evidence successor qualifies executable revision
 `a1da96a09ee73722d26003dedf793317b7bdf7e1`, tree
-`441b3e68f15706d44e76d140bfa811e088bb4d9d`. Private origin/main last freshly
-verified at `70a2227af5d866547ccd4500bd93cb565566c418`. Clean candidate source
-was transferred through Git and exported readonly for Tux. Current root-owned
-dirty work is producer-input evidence, related documentation/checkpoint and the
-existing laboratory inventory. No other contributor edits were incorporated.
-Before pushing, verify actual state; the enclosing evidence commit may be a
-documentation-only successor of the tested executable revision.
+`441b3e68f15706d44e76d140bfa811e088bb4d9d`. Both commits are published privately.
+No other contributor edits were incorporated. Root now owns the request-reservation
+prerequisite and this checkpoint. Fresh Tux inspection confirmed both owned lab
+containers stopped, neither OOM-killed, and only the eight unrelated workloads running.
 
 ## Producer input prerequisite
 
@@ -153,8 +152,7 @@ HTTPS writes. Review findings do not imply broader task completion.
 
 ## Next bounded action
 
-Commit this reviewed qualification and push verified private main. Then implement the
-recoverable producer request ledger under existing P01-T06 steps 2/3/5/6 and
+Implement the recoverable producer request ledger under existing P01-T06 steps 2/3/5/6 and
 P02-T02 steps 2/4/7 before Ingest handoff. Read complete remaining owning SQL and
 actual dispatch/recovery consumers; do not infer completion from the staged input.
 
@@ -164,7 +162,21 @@ source obligations and exact outcome/checkpoint closure. Reservation COMMIT must
 precede dispatch; staged-but-unreserved and partial inputs need explicit handling.
 Legacy writers ignore the sidecar, so the versioned admission/handoff protocol
 must gate incompatible manifests/history before relying on input completeness.
-Root has not implemented that ledger/transition or selected its final schema yet.
+Root-owned uncommitted code now adds immutable PostgreSQL reservation metadata and its
+reserved-through counter, with the real initial bootstrap/event adapters staging
+before reservation COMMIT and revalidating authority before native dispatch.
+It retains all reservations and refuses retirement while outcome closure is absent.
+This is a prerequisite, not the whole logical-progress/outcome/ACK ledger.
+
+Independent static review found that PG backend loss during synchronous Rocks FFI
+can release the migration lock before native completion. That lock is not a native
+fence. Additive 0011 therefore starts fresh-only: refuse any prior producer slots,
+source streams, allocation domains or Ingest owner epochs, including closed history;
+no backfill/adoption. Both registration/migration lock orders were reviewed: prior
+registration leaves durable veto rows, later old registration rejects unknown0011.
+New adapters must explicitly require migration11, not merely accept a known prefix.
+Old-history adoption still needs explicit positive exclusion and versioned recovery.
+The review was static; these compatibility schedules still need practical evidence.
 
 Previously reviewed handoff constraints still apply: synchronized local freeze,
 current-Control PostgreSQL close/register/topology transition, then synchronized
@@ -180,3 +192,22 @@ Archive replay/exclusion and source protection, input-write failures/ENOSPC,
 cross-boot/restore/power loss, mixed aged workloads, M1 full read/export/restart,
 acquisition/analytics/read surfaces/browser products and ordinary Compose/release
 journeys remain required. Continue the complete selected implementation afterward.
+
+
+Current Mac checks: catalog regression failed at missing target11 (session53388),
+then all13 catalog tests passed after implementation (69192). One native staging
+case passed (94888), followed by all8 staging cases and13 catalog tests (19946); all-target Clippy passed (17451). Selected third-COMMIT proxy
+regression failed before its option existed, then all19 actual loopback wire tests
+passed (97072). A test syntax typo was corrected before compilation; not a RED
+behavior result. No new PG/native Linux qualification yet. Next: review candidate,
+commit exact inputs, launch a new isolated ledger lab with the latest copied cache,
+then execute reservation faults, SQL concurrency and migration compatibility.
+
+Independent read-only AI review found no bypass in the inspected adapter. It
+confirmed the need to declare/test single-reservation SQL statements (same-epoch
+bulk INSERT refuses) and to update the old bootstrap harness to migration11/33
+relations and conditional PG reservation effects. Both are now reflected in code
+and docs. The new reserved-before-native marker is the third validator callback;
+the old before-native marker remains before staging/reservation. Root diff review
+also fixed an overbroad Python replacement before candidate execution. SQL tests,
+compatibility races and complete qualification remain outstanding.

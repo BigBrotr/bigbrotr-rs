@@ -42,7 +42,7 @@ def main():
     def save(): lab.write_json(output, report)
     def rows(database):
         names = json.loads(lab.sql(state, database, "SELECT json_agg(tablename ORDER BY tablename) FROM pg_tables WHERE schemaname='control';"))
-        require(len(names) == 30, 'table-inventory')
+        require(len(names) == 33, 'table-inventory')
         return {n: json.loads(lab.sql(state, database, f"SELECT coalesce(json_agg(t),'[]') FROM control.{n} t;")) for n in names}
     save()
     try:
@@ -54,7 +54,7 @@ def main():
             path = lab.config(root, state, db)
             local = root / Path(path).name
             local.write_text(lab.change(local.read_text(), 'postgres.control', 'password_ref', 'file:/lab/secrets/application'))
-            require(lab.migrate(state, 'apply', path, target=7).returncode == 0, 'migration')
+            require(lab.migrate(state, 'apply', path, target=11).returncode == 0, 'migration')
             lab.sql(state, db, 'GRANT USAGE ON SCHEMA control TO bigbrotr_control; GRANT SELECT, INSERT, UPDATE ON ALL TABLES IN SCHEMA control TO bigbrotr_control; GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA control TO bigbrotr_control;')
             require(lab.cli(state, 'config', 'initialize', '--file', path).returncode == 0, 'initialize')
             require(lab.cli(state, 'config', 'activate-initial', '--file', path, '--request-id', '71' * 16, '--expected-revision', '1').returncode == 0, 'activate')
@@ -110,7 +110,11 @@ def main():
                 require(all(m['event'] != 'receipt' for m in messages), 'crash-delivered-receipt')
             after = rows(db)
             changed = {n for n in before if before[n] != after[n]}
-            require(changed == {'datasets','owner_epochs','role_instances','topology_generations','topology_streams','source_streams','producer_slots','producer_epochs','allocation_domains'}, 'unexpected-pg-effects')
+            expected_changes = {'datasets','owner_epochs','role_instances','topology_generations','topology_streams','source_streams','producer_slots','producer_epochs','allocation_domains'}
+            reserved = (2 if case in ['write','after'] else 1) if event_suite else (1 if case in ['write','after'] else 0)
+            if reserved: expected_changes.add('producer_requests')
+            require(changed == expected_changes, 'unexpected-pg-effects')
+            require(len(after['producer_requests']) == reserved and int(after['producer_epochs'][0]['reserved_through_request']) == reserved, 'reservation-counter')
             require(len(after['owner_epochs']) == 2 and len(after['producer_epochs']) == 1 and len(after['allocation_domains']) == (3 if event_suite else 1), 'pg-cardinality')
             (root / (mode + '.control.json')).write_text(json.dumps(after, indent=2) + '\n')
             report['cases'].append({'name':mode, 'result':'PASS', 'native_rows':len(tuples), 'native_sha256':hashlib.sha256(dumped.stdout.encode()).hexdigest(), 'control_tables':len(after)})

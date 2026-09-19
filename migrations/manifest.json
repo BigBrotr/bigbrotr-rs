@@ -37,6 +37,10 @@
     {
       "version": 10,
       "name": "0010_archive_coordinator.sql"
+    },
+    {
+      "version": 11,
+      "name": "0011_producer_requests.sql"
     }
   ],
   "reserved": [

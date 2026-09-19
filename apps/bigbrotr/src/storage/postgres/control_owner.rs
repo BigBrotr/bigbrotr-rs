@@ -332,6 +332,30 @@ impl ControlSession {
         Ok(page)
     }
 
+    /// Read retained input metadata under a fresh current Control fence. Missing
+    /// metadata is not a negative native outcome and cannot authorize reuse.
+    pub async fn read_producer_reservation(
+        &mut self,
+        request: bigbrotr_model::ProducerRequestId,
+    ) -> Result<
+        Option<super::producer_requests::ProducerReservation>,
+        super::producer_requests::ReservationError,
+    > {
+        use super::producer_requests::{self, ReservationError};
+        self.begin_operation()
+            .map_err(|_| ReservationError::Backend)?;
+        let tx = application_transaction(&mut self.client, 11)
+            .await
+            .map_err(|_| ReservationError::Backend)?;
+        require(&tx, self.request.dataset, self.identity)
+            .await
+            .map_err(|_| ReservationError::Backend)?;
+        let row = producer_requests::read(&tx, self.request.dataset, request).await?;
+        tx.rollback().await.map_err(|_| ReservationError::Backend)?;
+        self.available = true;
+        Ok(row)
+    }
+
     pub async fn release(mut self) -> Result<(), OwnerError> {
         self.begin_operation()?;
         let tx = application_transaction(&mut self.client, 7)

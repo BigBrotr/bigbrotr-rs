@@ -58,7 +58,7 @@ class Session:
         item = {
             "format": "bigbrotr-pg-fault-proxy/1", "event": event,
             "elapsed_ns": time.monotonic_ns() - self.started_ns,
-            "mode": self.args.mode, "held": self.held,
+            "mode": self.args.mode, "commit_number": self.args.commit_number, "held": self.held,
             "hold_action": self.hold_action, "faults": self.faults,
             "commits_seen": self.commits_seen,
             "commits_forwarded": self.commits_forwarded,
@@ -107,20 +107,20 @@ class Session:
             tag, header, body = message
             if direction == "frontend" and tag == b"Q" and is_commit(body):
                 self.commits_seen += 1
-                if self.commits_seen != 1:
+                if self.commits_seen > self.args.commit_number:
                     raise Refused("multiple-commits")
-                if self.args.mode == "before-forward":
+                if self.commits_seen == self.args.commit_number and self.args.mode == "before-forward":
                     self.faults += 1
                     self.emit("fault", reason="before-forward")
                     return "before-forward"
-                if self.args.mode == "hold":
+                if self.commits_seen == self.args.commit_number and self.args.mode == "hold":
                     self.faults += 1
                     self.held = True
                     self.emit("held")
                     await self.hold_gate
                     # Only an explicit release completes this future. Close,
                     # stdin failure and deadline cancel without forwarding.
-                self.pending_commit = True
+                self.pending_commit = self.commits_seen == self.args.commit_number
                 self.commits_forwarded += 1
             if direction == "backend" and tag == b"C" and body == b"COMMIT\x00":
                 self.server_commit_complete += 1
@@ -302,6 +302,7 @@ def main():
     parser.add_argument("--upstream-port", type=bounded_int(1, 65535), required=True)
     parser.add_argument("--listen-port", type=bounded_int(0, 65535), default=0)
     parser.add_argument("--mode", choices=("pass", "before-forward", "after-complete", "hold"), required=True)
+    parser.add_argument("--commit-number", type=bounded_int(1, 64), default=1)
     parser.add_argument("--deadline-seconds", type=deadline, default=120)
     parser.add_argument("--max-frame-bytes", type=bounded_int(8, 16 * 1024 * 1024), default=1024 * 1024)
     parser.add_argument("--max-wire-bytes", type=bounded_int(64, 1024 * 1024 * 1024), default=64 * 1024 * 1024)

@@ -10,6 +10,7 @@ use bigbrotr_model::{
     },
 };
 use rustix::fs::{Dir, Mode, OFlags, mkdirat, openat};
+use sha2::{Digest, Sha256};
 use std::{
     fs::File,
     io::{Read, Write},
@@ -38,6 +39,17 @@ pub enum RequestInputError {
     Codec(CodecError),
 }
 
+/// Constructed only by this exclusive native owner after synchronizing exact
+/// input bytes. This witnesses staging, never native admission or authority.
+pub(in crate::storage) struct StagedProducerRequest {
+    pub request: ProducerRequestId,
+    pub dataset: bigbrotr_model::DatasetId,
+    pub digest: Digest256,
+    pub input_bytes: u32,
+    pub manifest_sha256: [u8; 32],
+    _synchronized: (),
+}
+
 /// Decoded original input plus its retained grant. Recovery still needs the
 /// producer ledger, original outcome resolution and current dispatch authority.
 pub struct RetainedRequestInput {
@@ -60,6 +72,22 @@ impl RetainedRequestInput {
     }
 }
 impl IngestStore {
+    pub(super) fn stage_producer_request(
+        &mut self,
+        request: ProducerRequestId,
+        digest: Digest256,
+        bytes: &[u8],
+    ) -> Result<StagedProducerRequest, RequestInputError> {
+        self.retain_request_input(request, bytes)?;
+        Ok(StagedProducerRequest {
+            request,
+            dataset: self.manifest.identity().dataset_id,
+            digest,
+            input_bytes: bytes.len() as u32, // retain_request_input bounded to 16 MiB
+            manifest_sha256: Sha256::digest(self.manifest.encode().as_bytes()).into(),
+            _synchronized: (),
+        })
+    }
     /// Bounded synchronous read through the existing exclusive owner. Missing,
     /// malformed or mismatched bytes remain unresolved, never an absent effect.
     /// This does not recreate a producer incarnation or authorize a new commit.

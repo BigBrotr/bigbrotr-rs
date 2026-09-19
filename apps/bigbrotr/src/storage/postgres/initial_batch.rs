@@ -1,4 +1,5 @@
 //! Connected initial native batch under the dedicated Control backend.
+use super::super::producer_requests::{self, ReservationError};
 use super::*;
 use crate::{
     runtime::{
@@ -23,6 +24,7 @@ pub enum InitialOperationError<E> {
     Control(OwnerError),
     Registry(ingest_registry::RegistryError),
     Native(E),
+    Reservation(ReservationError),
     /// Native work was dispatched. Its retained request must be resolved even
     /// when later coordination cleanup or output authorization is unavailable.
     DeliveryUnknown,
@@ -89,6 +91,46 @@ impl ControlSession {
     ) -> Result<StoredReceipt, InitialBatchError> {
         let spec = input.registration;
         let identity = *store.manifest().identity();
+        let request = ProducerRequestId {
+            producer_slot_id: spec.producer_slot_id,
+            producer_epoch: ProducerEpoch::new(1).map_err(|_| OwnerError::InvalidInput)?,
+            request_sequence: RequestSequence::new(1).map_err(|_| OwnerError::InvalidInput)?,
+        };
+        let (reservation_tx, mut reservation_lease) = self
+            .begin_initial_native_operation(
+                store,
+                InitialIngestContext {
+                    ingest_root: input.ingest_root,
+                    registration: spec,
+                    policy_ttl: input.policy_ttl,
+                },
+                &mut validate,
+            )
+            .await?;
+        let staged = store
+            .stage_initial_dictionaries(request, input.intent, input.limits, &permit)
+            .map_err(InitialBatchError::Native)?;
+        producer_requests::reserve(&reservation_tx, &staged, spec.control)
+            .await
+            .map_err(InitialBatchError::Reservation)?;
+        if input.cancelled.load(Ordering::Relaxed) {
+            return Err(InitialBatchError::Native(
+                BootstrapError::AuthorityUnavailable,
+            ));
+        }
+        if reservation_lease
+            .check_delivery(identity.policy_epoch)
+            .is_err()
+        {
+            return Err(OwnerError::Unavailable.into());
+        }
+        reservation_tx
+            .commit()
+            .await
+            .map_err(|_| InitialBatchError::Reservation(ReservationError::CommitUnknown))?;
+        self.available = true;
+        // COMMIT precedes native dispatch. Acquire a new complete policy/registry
+        // snapshot and a new local lease, accounting for both PG round trips.
         let (tx, mut lease) = self
             .begin_initial_native_operation(
                 store,
@@ -101,11 +143,7 @@ impl ControlSession {
             )
             .await?;
         let result = store.bootstrap_dictionaries(
-            ProducerRequestId {
-                producer_slot_id: spec.producer_slot_id,
-                producer_epoch: ProducerEpoch::new(1).map_err(|_| OwnerError::InvalidInput)?,
-                request_sequence: RequestSequence::new(1).map_err(|_| OwnerError::InvalidInput)?,
-            },
+            request,
             input.intent,
             input.recorded_at,
             input.limits,
@@ -153,6 +191,40 @@ impl ControlSession {
             return Err(OwnerError::InvalidInput.into());
         }
         let identity = *store.manifest().identity();
+        let (reservation_tx, mut reservation_lease) = self
+            .begin_initial_native_operation(
+                store,
+                InitialIngestContext {
+                    ingest_root: input.ingest_root,
+                    registration: spec,
+                    policy_ttl: input.policy_ttl,
+                },
+                |document, digest| validate(document, digest, &input.event),
+            )
+            .await?;
+        let staged = input
+            .event
+            .stage(store, input.limits, &permit)
+            .map_err(InitialEventError::Native)?;
+        producer_requests::reserve(&reservation_tx, &staged, spec.control)
+            .await
+            .map_err(InitialEventError::Reservation)?;
+        if input.cancelled.load(Ordering::Relaxed) {
+            return Err(InitialEventError::Native(
+                AdmissionError::AuthorityUnavailable,
+            ));
+        }
+        if reservation_lease
+            .check_delivery(identity.policy_epoch)
+            .is_err()
+        {
+            return Err(OwnerError::Unavailable.into());
+        }
+        reservation_tx
+            .commit()
+            .await
+            .map_err(|_| InitialEventError::Reservation(ReservationError::CommitUnknown))?;
+        self.available = true;
         let (tx, mut lease) = self
             .begin_initial_native_operation(
                 store,
@@ -230,7 +302,7 @@ impl ControlSession {
         .map_err(|_| OwnerError::Unavailable)?;
         let ticket = lease.begin_refresh().map_err(|_| OwnerError::Unavailable)?;
         self.begin_operation()?;
-        let tx = application_transaction(&mut self.client, 7)
+        let tx = application_transaction(&mut self.client, 11)
             .await
             .map_err(transaction_error)?;
         require(&tx, self.request.dataset, self.identity).await?;

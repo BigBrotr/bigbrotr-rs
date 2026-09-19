@@ -178,7 +178,7 @@ impl RegistrationAttempt {
                 return Err(RegistryError::HeadsChanged);
             }
             migrations::require_applied(&migration_runner::read_ledger(&tx).await
-                .map_err(|_| RegistryError::IncompatibleSchema)?, 7)
+                .map_err(|_| RegistryError::IncompatibleSchema)?, 11)
                 .map_err(|_| RegistryError::IncompatibleSchema)?;
             let owner = self.specification.control;
             tx.query_one("SELECT control.require_control_owner($1::bytea, $2::bytea, $3::text::numeric, $4::bytea)",

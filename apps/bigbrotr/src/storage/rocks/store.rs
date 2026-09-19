@@ -28,6 +28,7 @@ pub use receipts::{ReceiptReadError, StoredReceipt, required_receipt_data_bytes}
 
 #[path = "request_inputs.rs"]
 mod request_inputs;
+pub(in crate::storage) use request_inputs::StagedProducerRequest;
 pub use request_inputs::{RequestInputError, RetainedRequestInput};
 
 #[path = "bootstrap.rs"]

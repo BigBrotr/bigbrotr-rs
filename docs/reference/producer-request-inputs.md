@@ -1,8 +1,8 @@
 # Retained producer request inputs
 
 This P02-T02 step 4 prerequisite retains the exact initial co-located producer
-input before every new synchronized dictionary, event or rejection batch. It is
-not yet the producer ledger, an ACK checkpoint or the successor-owner protocol.
+input before every new synchronized dictionary, event or rejection batch. Its connected reservation prerequisite is described below; logical progress,
+outcome closure, ACK checkpoints and successor ownership remain separate work.
 PostgreSQL continues to hold coordination metadata rather than event bodies.
 
 The sole open `IngestStore` owns the staging directory `producer-inputs-v1` inside
@@ -84,9 +84,9 @@ history or require explicit recovery. Old executables can ignore this added
 sidecar, so it cannot serve as a new ownership barrier or grant until that versioned
 protocol is implemented and enforced.
 
-The pending PostgreSQL reservation, reserved-through counter, logical source
-obligations, outcome/checkpoint closure, ACK/GC, partial-input recovery and owner
-handoff remain required. A new process must not impersonate the old incarnation.
+Beyond the initial reservation protocol below, logical source obligations,
+outcome/checkpoint closure, ACK/GC, partial-input recovery and owner handoff
+remain required. A new process must not impersonate the old incarnation.
 This slice preserves inputs and enables bounded inspection; it does not resolve
 ambiguous native outcomes, abandon workflow positions or issue a successor lease.
 
@@ -106,3 +106,61 @@ files. The crash oracle covers a one-dictionary bootstrap; populated publication
 state is checked for invariability against its complete original digest. These
 results do not qualify power loss, partial-input repair, a producer ledger or
 successor authority.
+
+## Initial connected reservation protocol (0011)
+
+The connected initial bootstrap/event adapters require additive migration0011.
+The same mutable native handle first synchronizes its exact input under the
+borrowed operation grant. The adapter then commits an immutable
+`control.producer_requests` row: original slot/epoch/sequence, dataset, profile1
+request digest, encoded byte length, exact native manifest SHA256, original
+issuing Control identity and reservation timestamp. Bodies remain in the spool.
+A newly validated Control/policy/registry transaction follows successful COMMIT;
+only then can the native primitive run, compare staged bytes again and perform
+its final authority check. Four validator calls cover the two complete policy
+snapshots. The validator is a trusted internal contract, not a request callback.
+
+`producer_epochs.reserved_through_request` starts at zero and advances atomically
+with each contiguous reservation. It is distinct from native issued/ACK/retired
+watermarks. Request rows and counters survive rejected events and failed dispatch.
+The SQL trigger updates the producer row, so concurrent closing and reservation
+serialize on that actual row; an older repeatable-read snapshot cannot advance a
+stale counter after another transaction changes it. The supported write is one
+reservation per statement; same-epoch multi-row INSERT is refused atomically.
+The adapter resolves an identical retry by reading all bound metadata under the
+producer lock, preserving the original row and timestamp. A different input or
+native manifest refuses. SQL alone cannot verify a filesystem synchronization;
+the internal staging witness has no externally constructible capability.
+
+This prerequisite retains all rows: at most min(registered window,64) requests
+and 32MiB declared input bytes per epoch, plus the stricter existing per-store
+spool bounds. It implements no reclaimed capacity. Retirement with any reserved
+request is refused until typed outcome/progress closure is implemented; a bare
+caller-supplied checkpoint digest is insufficient. Empty epochs may still close.
+Neither the counter nor row presence proves a native admission result.
+
+Cancellation or PG error before reservation COMMIT leaves no dispatch. If COMMIT
+is dispatched but its answer is lost, the result is Reservation CommitUnknown;
+the session remains poisoned and the input remains retained. Native DeliveryUnknown
+is a different boundary. A fresh current Control session can inspect one bounded
+reservation by the original identity, without impersonating its original process.
+Missing metadata does not establish native absence or permit identity reuse.
+There is no automatic replay under a new incarnation in this prerequisite.
+
+Migration0011 refuses all preexisting producer slots, source streams, allocation
+domains or Ingest owner epochs, including retired/released history. It acquires
+relation locks under the existing exclusive migration advisory lock before the
+preflight. There is no backfill, input-completeness inference or implicit adoption.
+Old registration that commits first leaves veto history; an old adapter starting
+after migration sees an unknown migration and refuses. New registration/dispatch
+explicitly require0011. This is a fresh-only compatibility boundary, not a claim
+that a PG lock excludes native FFI: losing its PG backend can release locks while
+an old Rocks write still runs. Legacy adoption needs explicit positive exclusion
+and recovery. Previously applied migration bytes and native formats remain intact.
+
+The concurrency design follows PostgreSQL16's documented
+[trigger visibility](https://www.postgresql.org/docs/16/trigger-datachanges.html)
+and [transaction isolation](https://www.postgresql.org/docs/16/transaction-iso.html).
+Practical qualification must check rollback, ambiguous COMMIT, preserved original
+metadata and both closure orders using actual processes/engines; source inspection
+and a catalog unit test do not substitute for those cases.

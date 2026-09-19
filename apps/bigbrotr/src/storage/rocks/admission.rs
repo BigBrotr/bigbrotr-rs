@@ -93,6 +93,29 @@ pub struct PreparedEvent {
     _permit: OwnedPermit,
 }
 impl PreparedEvent {
+    pub(in crate::storage) fn stage(
+        &self,
+        store: &mut IngestStore,
+        limits: AdmissionLimits,
+        permit: &OwnedPermit,
+    ) -> Result<super::StagedProducerRequest, AdmissionError> {
+        if permit.request().units().data_bytes() < limits.required_data_bytes()?
+            || permit.request().units().native_bytes() < limits.required_native_bytes()?
+            || permit.request().units().items() == 0
+        {
+            return Err(AdmissionError::InsufficientReservation);
+        }
+        if store.write_uncertain {
+            return Err(AdmissionError::CommitUnknown);
+        }
+        if self.scope.dataset_id != store.manifest.identity().dataset_id {
+            return Err(AdmissionError::InvalidInput);
+        }
+        store
+            .stage_producer_request(self.request, self.digest, &self.request_preimage)
+            .map_err(AdmissionError::RequestInput)
+    }
+
     pub fn new(
         request: ProducerRequestId,
         intent: EventIntent,

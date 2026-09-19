@@ -155,6 +155,24 @@ class ProxyTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result["client_commit_complete"], 1)
         self.assertEqual(result["faults"], 0)
 
+    async def test_only_selected_commit_loses_its_reply(self):
+        async def scenario(reader, writer):
+            for _ in range(3):
+                self.assertEqual(await receive(reader), (b"Q", b"COMMIT\x00"))
+                writer.write(frame(b"C", b"COMMIT\x00") + frame(b"Z", b"I"))
+                await writer.drain()
+            self.assertEqual(await reader.read(), b"")
+        reader, writer = await self.start("after-complete", scenario, "--commit-number", "3")
+        await self.authenticate(reader, writer)
+        for _ in range(2):
+            writer.write(frame(b"Q", b"COMMIT\x00")); await writer.drain()
+            self.assertEqual(await receive(reader), (b"C", b"COMMIT\x00"))
+            self.assertEqual(await receive(reader), (b"Z", b"I"))
+        writer.write(frame(b"Q", b"COMMIT\x00")); await writer.drain()
+        self.assertEqual(await reader.read(), b"")
+        result = await self.finish()
+        self.assertEqual((result["commits_seen"], result["server_commit_complete"], result["client_commit_complete"], result["faults"]), (3, 3, 2, 1))
+
     async def test_before_forward_never_delivers_commit(self):
         async def server(reader, writer):
             self.assertEqual(await reader.read(), b"")
