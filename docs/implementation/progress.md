@@ -31,8 +31,9 @@ now passes on actual PostgreSQL/Rocks at d2959da; wider qualification remains op
 
 ## Git and integration state
 
-Mac main candidate d2959da61a54a89b6b4e1b4806aa3a819bdff778, tree
-45d8c742d032641b9579bfc3ae9bc0e2ef80ffa0, is committed but unpublished; private
+Mac main fixture candidate 313549724b1fce2926b9cdbd4cf32acf824c784e is unpublished.
+Its product is unchanged from candidate d2959da61a54a89b6b4e1b4806aa3a819bdff778, tree
+45d8c742d032641b9579bfc3ae9bc0e2ef80ffa0; private
 origin/main was read-only verified still 8931a0f611b718cfac845cda39211e9e8da59d8c.
 Root checkpoint/inventory, supplemental recovery.py observer and finite Rust
 fixture fault/snapshot-emission edits now follow the clean candidate; product unchanged.
@@ -42,7 +43,11 @@ checks explicit refusals/session poison, reconnects as epoch 3 for retryable cas
 and emits every intermediate snapshot. ingest_closing.rs routes PG-only native-open
 and proxy fault modes into it. The Python runner now implements all 13 selected refusal/fault scenarios with
 independent original-byte/metadata and exact current-Control transition checks;
-its separate fixture-only build script is ready. These scenarios are not yet executed. Its 859 source
+its separate fixture-only build script is ready. Actual normal2, pgonly1, size1 and res1 now PASS. digest1 remains INCOMPLETE:
+actual fixture/refusal/zero-backend checks passed, but the observer incorrectly
+expected the PG trigger name schema-qualified. Corrected observer is dirty.
+The original log prints guard_producer_outcome() unqualified; keep this failed
+observation. A too-long resource1 tag refused before setup; res1 is its valid run. Its 859 source
 files were exported through Git to the new isolated Tux lab; ordered native build,
 scoped Clippy, all 46 native tests and the first connected case passed. Native replay/recovery, PG preflight/copy, finite client/oracle, independent
 large signed fixture and owning references are all in the candidate. Product closing candidate
@@ -206,10 +211,22 @@ Ignored launch/transfer/build/audit/collect helpers need path/owner review befor
 reuse. Review captures and offline observer receipt live under the same root's
 review directory. No active session/process obligation remains.
 
+New fixture build at 3135497 PASS on Tux; artifact SHA256
+9efd7d0d5293858b7aab7bd2de69fc3a3c619b9feb0c69b2d64cadbddb203d71.
+Its separate source export/build under out/recovery-probe asserts unchanged
+product/dependency inputs. Initial ignored transfer helper had a SyntaxError
+before execution; corrected helper/build completed and logs are retained.
+Independent AI review found two observer issues: an omitted unchanged Ingest
+owner row in third-Control cases and request order versus JSONB/xmin order.
+Both are corrected locally. Four actual captures were rechecked offline with
+34 altered controls and reordered-row positive controls. The old checker really
+accepted an altered Ingest lease; the corrected one refuses. Evidence is under
+native/faults, including ingest-owner-regression.txt. No new engine run is implied.
+
 ## Next action and remaining gates
 
-Commit/export the compiling finite fixture and execute its new Python fault
-scenario setup/oracle on the verified idle Tux lab: pg-only, input-size/digest/manifest, resource, cancelled, policy,
+Commit/export the corrected Python observer (Rust/product unchanged), then run
+remaining fault scenarios on the verified idle Tux lab, preserving every prior capture: pg-only, input-size/digest/manifest, resource, cancelled, policy,
 expired, rollback, late-sql and lost COMMIT before-forward/after-complete. Seed
 copy failures for digest/manifest mutation come from the actual reservation guard,
 not the normal AFTER INSERT fixture: collect/check the specific PG backend error

@@ -78,7 +78,7 @@ def check_messages(messages, scenario, names, originals, control, seed_failure):
     assert failure and all('['+str(original_owner['control_backend_pid'])+']' in line for line in failure)
     guard = scenario in ['input-digest', 'input-manifest']
     error = 'outcome copy requires its exact retained reservation' if guard else 'fixture rollback of original event outcome copy'
-    function = 'control.guard_producer_outcome()' if guard else 'public.fixture_abort_original_copy()'
+    function = 'guard_producer_outcome()' if guard else 'public.fixture_abort_original_copy()'
     assert sum('ERROR:  '+error in line for line in failure) == 1
     assert any('function '+function in line and ' at RAISE' in line for line in failure)
     assert any('STATEMENT:  INSERT INTO control.producer_outcomes(' in line for line in failure)
@@ -102,7 +102,9 @@ def check_messages(messages, scenario, names, originals, control, seed_failure):
     after = mid if permanent else one('recovery-after')
     at = check_state(after, wanted, names, originals)
     assert after['sequence'] == before['sequence']
-    if replaced: check_recovery_control(bt, at)
+    if replaced:
+        check_recovery_control(bt, at)
+        assert [r for r in bt['owner_epochs'] if r['role'] == 'ingest'] == [r for r in at['owner_epochs'] if r['role'] == 'ingest']
     for name in names:
         if name == 'producer_outcomes' or replaced and name in ['owner_epochs', 'role_instances']: continue
         assert bt[name] == at[name], name
@@ -120,7 +122,7 @@ def check_messages(messages, scenario, names, originals, control, seed_failure):
         assert row['recorder_resource'] == control['requests'][n-1]['issuer_resource']
         assert row['recorder_role'] == 'control' and row['recorded_at_us'] >= control['requests'][n-1]['reserved_at_us']
     for table, key in [('producer_requests', 'requests'), ('producer_outcomes', 'outcomes')]:
-        assert [{k:v for k, v in r.items() if k != 'xmin'} for r in at[table]] == control[key]
+        assert [{k:v for k, v in r.items() if k != 'xmin'} for r in sorted(at[table], key=lambda r:r['request_sequence'])] == control[key]
     resolved = [m for m in messages if m['event'] == 'producer-resolved']
     assert [m['request'] for m in resolved] == ([] if permanent else [2, 2, 1])
     intermediate = [m for m in messages if m['event'] == 'recovery-observed']
