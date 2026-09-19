@@ -36,7 +36,7 @@ def main():
     require((args.artifact_revision or revision) == state['source'], 'artifact revision')
     if revision != state['source']:
         changes = subprocess.check_output(['git', '-C', str(SOURCE), 'diff', '--name-only', state['source'], revision], text=True).splitlines()
-        require(changes and all(p.startswith('docs/') or p == 'experiments/control-runtime/archive_inventory.py' for p in changes), 'non-harness artifact drift')
+        require(changes and all(p.startswith('docs/') or p in ['experiments/control-runtime/archive_inventory.py', 'experiments/control-runtime/README.md'] for p in changes), 'non-harness artifact drift')
     require(not subprocess.check_output(['git', '-C', str(SOURCE), 'status', '--porcelain']), 'dirty harness')
     for key in ['container_id', 'postgres_id']:
         data = json.loads(subprocess.check_output(['docker', 'inspect', state[key]]))[0]
