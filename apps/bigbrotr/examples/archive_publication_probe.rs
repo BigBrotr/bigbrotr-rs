@@ -224,7 +224,11 @@ async fn run(mode: &str, port: u16) {
         "owner_first" => 3,
         "held_commit" => 4,
         "held_rollback" => 5,
-        "custody_worker" | "custody_cancel" | "custody_manager" => 6,
+        "custody_worker"
+        | "custody_cancel"
+        | "custody_manager"
+        | "custody_prelock_live"
+        | "custody_prelock_dead" => 6,
         _ => panic!("closed case"),
     };
     let database = format!("bbpub_{mode}");
@@ -539,7 +543,7 @@ fn main() {
         .build()
         .unwrap()
         .block_on(async {
-            if args[2] == "observe" || args[2] == "seal" {
+            if matches!(args[2].as_str(), "observe" | "seal" | "resolve") {
                 tokio::time::timeout(
                     Duration::from_secs(15),
                     custody::observe(&args[1], &args[2]),

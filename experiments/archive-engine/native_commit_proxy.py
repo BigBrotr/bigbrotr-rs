@@ -27,6 +27,7 @@ class Proxy:
         self.release = asyncio.Event()
         self.report = dict(connections=0, bytes=0, frames=0, data_queries=0,
                            data_commits=0, server_complete=0, client_complete=0, faults=0,
+                           owner_requests=0, owner_forwarded=0, owner_complete=0,
                            guard_rejections=0, serialization_rejections=0, rejection_sequence=[])
 
     def emit(self, event, **extra):
@@ -76,20 +77,49 @@ class Proxy:
         self.writers.append(upstream_writer)
         upstream_writer.write(header + startup)
         await upstream_writer.drain()
-        state = dict(data=False, commit=False, backend_pid=None)
+        state = dict(data=False, commit=False, backend_pid=None,
+                     owner_statement=None, owner_waiting=False, owner_forwarded=False)
         manager_committed = asyncio.Event()
 
         async def pump(source, destination, frontend):
             while True:
-                frame = await self.frame(source)
+                try:
+                    frame = await self.frame(source)
+                except ConnectionError:
+                    if not (frontend and self.mode == 'hold-manager-owner' and state['owner_forwarded']):
+                        raise
+                    frame = None
                 if frame is None:
+                    if frontend and self.mode == 'hold-manager-owner' and state['owner_forwarded']:
+                        # Deliberately keep the lab's server endpoint alive until
+                        # explicit stop, even after the real driver is destroyed.
+                        await asyncio.Future()
                     return
                 tag, header, body = frame
+                if frontend and self.mode == 'hold-manager-owner':
+                    if tag == b'P':
+                        statement, query, _ = body.split(b'\0', 2)
+                        if query == b'SELECT ordinal::text,enabled FROM bigbrotr_archive.owner WHERE singleton FOR UPDATE':
+                            assert state['owner_statement'] is None and len(statement) <= 64
+                            state['owner_statement'] = statement
+                    if tag == b'B' and body.split(b'\0', 2)[1] == state['owner_statement']:
+                        execute, sync = await self.frame(source), await self.frame(source)
+                        assert execute and execute[0] == b'E' and execute[2] == b'\0'*5
+                        assert sync and sync[0] == b'S' and sync[2] == b''
+                        self.report['owner_requests'] += 1
+                        if not await self.hold('manager-owner', state['backend_pid']):
+                            return
+                        state['owner_waiting'] = state['owner_forwarded'] = True
+                        self.report['owner_forwarded'] += 1
+                        for parts in (frame, execute, sync):
+                            destination.write(b''.join(parts))
+                        await destination.drain()
+                        continue
                 if frontend and tag == b'Q':
                     query = body.upper()
                     # Closed manager fixture: only the generated archive login
                     # marks provisioning, never log its verifier or SQL bytes.
-                    if self.mode == 'hold-manager-commit' and query.startswith(b'CREATE ROLE "BB_ARCHIVE_'):
+                    if self.mode in ('hold-manager-commit', 'hold-manager-owner') and query.startswith(b'CREATE ROLE "BB_ARCHIVE_'):
                         state['data'] = True
                         self.report['data_queries'] += 1
                     if b'INSERT INTO' in query and b'DUCKLAKE_DATA_FILE' in query:
@@ -139,8 +169,17 @@ class Proxy:
                     # connection. Its later transactions need fresh classification.
                     state['commit'] = False
                     state['data'] = False
-                destination.write(tag + header + body)
-                await destination.drain()
+                if not frontend and tag == b'Z' and state['owner_waiting']:
+                    assert body == b'T'
+                    state['owner_waiting'] = False
+                    self.report['owner_complete'] += 1
+                    self.emit('owner-complete', backend_pid=state['backend_pid'])
+                try:
+                    destination.write(tag + header + body)
+                    await destination.drain()
+                except ConnectionError:
+                    if not (not frontend and self.mode == 'hold-manager-owner' and state['owner_forwarded']):
+                        raise
                 if frontend and self.mode == 'hold-manager-commit' and tag == b'Q' and body.rstrip(b'\0; \r\n').upper() == b'COMMIT':
                     # Once explicitly released, observe the real server COMMIT
                     # before handling the dead manager's EOF. This fixture owns
@@ -202,7 +241,7 @@ class Proxy:
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--mode', choices=['pass', 'before-forward', 'after-complete', 'hold-data', 'hold-commit', 'hold-manager-commit'], required=True)
+    parser.add_argument('--mode', choices=['pass', 'before-forward', 'after-complete', 'hold-data', 'hold-commit', 'hold-manager-commit', 'hold-manager-owner'], required=True)
     try:
         sys.exit(asyncio.run(Proxy(parser.parse_args().mode).run()))
     except Exception:

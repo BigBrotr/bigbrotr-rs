@@ -382,6 +382,25 @@ inspect the fresh receipt and its required closure before deciding replay or ACK
 Missing imported catalog attempts need their own nonmutating resolution; a seal
 Conflict is not a successful exclusion receipt.
 
+The next recovery slice requires an explicitly recovered custody value, not only
+a consumed launch allowance. `resolve_after_local_custody` currently delegates
+matching imported attempts to sealing; `NotImported` remains unimplemented pending
+the actual delayed-request discriminator. Its intended nonmutating branch holds
+the owner lock and verifies the complete installed catalog, then refuses ordinal,
+attempt, worker or login collisions and any orphan target-name role. It returns
+only after successful rollback and never issues credentials or reuses the journal.
+For an imported attempt the stored login OID must still match. A sealing result
+with `disabled_current=false` also includes a current owner already disabled.
+This adds no migration or persistent journal format.
+
+The exact tokio-postgres0.7.18 adapter fully consumes the owner query through
+ReadyForQuery before queuing provisioning mutations. The next native fixture
+holds the actual Bind/Execute/Sync request, confirms missing rows while the live
+driver still holds custody, then releases it as a negative control. Its cancelled
+driver case destroys the actual transport before reacquisition and independently
+checks the delayed request cannot enqueue provisioning. Until executed, this is
+source reasoning and a proposed test, not a qualified missing-import outcome.
+
 [Native qualification at 5ad77af](../implementation/evidence/p02-local-custody-native-20260919.json)
 passes 28 scoped Rust cases, three actual custody/crash/queued-COMMIT schedules and
 all six signed publication/receipt schedules. The actual worker alone retains the

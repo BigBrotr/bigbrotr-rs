@@ -361,6 +361,11 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   six signed publication/receipt journeys, with 25 exact journals and unchanged
   retained source rows. Missing catalog import, incomplete journal and cross-boot
   recovery, installed resource reconciliation and protection remain required.
+  The next missing-import slice adds a recovered-only identity gate and the
+  actual delayed owner Bind/Execute/Sync discriminator in
+  `experiments/archive-engine/missing_import_cases.py`. Its current seal-only
+  adapter deliberately still fails the required NotImported observations;
+  native baseline execution precedes implementing that nonmutating branch.
   No step is complete from these prerequisites.
 - [ ] **Step 6:** Handle empty and one-small-event timer batches; publish useful progress
   without waiting for a size threshold that may never be reached.

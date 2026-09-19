@@ -98,6 +98,44 @@ fn retained_identity_is_locked_before_recovery_and_never_recreated() {
 }
 
 #[test]
+fn recovery_authority_requires_reacquisition_not_a_consumed_launch() {
+    let (root, request, identity) = fixture();
+    let root = root.path().canonicalize().unwrap();
+    let owner = LocalAttempt::create_for_boot(&root, &request, &identity, BOOT).unwrap();
+    assert!(!owner.recovered_for(&request, &identity));
+    let mut command = Command::new("/nonexistent-bigbrotr-lifetime-worker");
+    owner.inherit(&mut command).unwrap();
+    assert!(!owner.recovered_for(&request, &identity));
+    drop(command);
+    drop(owner);
+    let recovered = recover_released(&root, &request, &identity);
+    assert!(recovered.recovered_for(&request, &identity));
+    let changed = CatalogIdentity::local(request.dataset(), request.catalog(), "/other/").unwrap();
+    assert!(!recovered.recovered_for(&request, &changed));
+    let batches = [AdmissionBatch::new(vec![FactRef {
+        source_record_id: SourceRecordId {
+            dataset_id: request.dataset(),
+            shard_id: 0,
+            owner_epoch: OwnerEpoch::new(1).unwrap(),
+            sequence: Sequence::new(1).unwrap(),
+        },
+        payload_digest: Digest256::from_bytes([2; 32]),
+    }])
+    .unwrap()];
+    let batch = ArchiveBatch::new(1, TopologyGeneration::new(1), &batches).unwrap();
+    let changed = ArchiveAttemptRequest::new(
+        *request.attempt_id(),
+        request.catalog(),
+        request.coordinator(),
+        request.worker(),
+        0,
+        &batch,
+    )
+    .unwrap();
+    assert!(!recovered.recovered_for(&changed, &identity));
+}
+
+#[test]
 fn child_retains_lock_after_parent_descriptors_close_and_failed_spawn_does_not_leak() {
     let (root, request, identity) = fixture();
     let root = root.path().canonicalize().unwrap();

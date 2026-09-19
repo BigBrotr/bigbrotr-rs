@@ -97,6 +97,16 @@ pub enum Activation {
     Observed { current: bool, enabled: bool },
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Resolution {
+    NotImported,
+    /// Whether this call changed an enabled current owner to disabled. False
+    /// also includes an already disabled current owner, not only historical ones.
+    Sealed {
+        disabled_current: bool,
+    },
+}
+
 /// One newly committed credential lifetime. Observation/recovery never constructs
 /// this value. It is move-only and has no serialization or plaintext getter.
 /// The consuming callback must transfer it only to its one privately supervised
@@ -431,4 +441,22 @@ pub async fn seal(
     commit_started.set(true);
     tx.commit().await.map_err(|_| GuardError::CommitUnknown)?;
     Ok(disabled == 1)
+}
+
+/// Resolve one retained attempt only after matching local custody is recovered.
+/// The dedicated manager driver must also retain that custody through transport
+/// destruction. This is not receipt absence, file protection or process reap.
+pub async fn resolve_after_local_custody(
+    client: &mut Client,
+    identity: &CatalogIdentity,
+    receipt: &ArchiveAttemptReceipt,
+    custody: &crate::storage::archive::LocalAttempt,
+    commit_started: &Cell<bool>,
+) -> Result<Resolution, GuardError> {
+    if !custody.recovered_for(receipt.request(), identity) {
+        return Err(GuardError::InvalidInput);
+    }
+    seal(client, identity, receipt, commit_started)
+        .await
+        .map(|disabled_current| Resolution::Sealed { disabled_current })
 }

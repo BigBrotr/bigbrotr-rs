@@ -20,15 +20,13 @@ lifecycle, missing-import/cross-boot recovery and protection are still required.
 
 ## Actual Git and ownership
 
-At checkpoint preparation Mac main HEAD is
-5ad77af6bd5cd4e05eaa9855a48973dc04244858, tree
-8d322eda5a45c6ce0c3b6012acbb797d0147062b. Its parent ead11f8 implements custody;
-5ad77af corrects fixture observer identities. Both are unpublished candidates.
-Last verified origin/main is ba5aca48727a11feeff4350877149247b2243a2d. Root is sole
-writer/integrator. No merge/rebase or remote source edits. Dirty files are this
-checkpoint, laboratory inventory, linked custody contracts/task/experiment docs
-and the new native evidence report. The next commit is qualification documentation
-only; verify actual HEAD/diff after it instead of assuming this source is still HEAD.
+Mac main and freshly verified origin/main are both
+e9cf01f590cb229b332c76b9ffb88094828a03b7 (qualification documentation only).
+Qualified source remains 5ad77af6bd5cd4e05eaa9855a48973dc04244858, tree
+8d322eda5a45c6ce0c3b6012acbb797d0147062b. All three custody commits were ordinarily
+pushed after fetching unchanged private origin. Working tree was clean after push;
+subsequent missing-import work/checkpoint edits are root-owned. No merge/rebase,
+remote editing or contributor changes. Root remains sole writer/integrator.
 
 Exact clean transfer40965/scp87179 are terminal. All 696 native checkout/export
 files and the archive match Mac Git at 5ad77af. Manifest SHA256
@@ -41,8 +39,8 @@ read-only publication_review completed the recorded-evidence audit, including al
 48 raw hashes, exact journal bytes and the original PostgreSQL error. Root has read
 actual results and audited source/artifacts, full rows, journal bytes and cleanup.
 Structural artifact/handoff checks and diff whitespace checks PASS. Origin was
-fetched again: ba5aca4 remains remote HEAD; repository private, named bigbrotr-rs
-and not archived. No candidate push has occurred yet.
+fetched before push: ba5aca4 was still remote HEAD; repository private, named bigbrotr-rs
+and not archived. Delivery is complete at e9cf01f; exact remote HEAD and clean worktree were verified.
 
 ## Qualified local custody prerequisite
 
@@ -124,7 +122,7 @@ owners disabled and no other catalog backend before stop. Terminal audit confirm
 20 unrelated identities unchanged, eight running and zero BigBrotr running.
 The failed ead11f8 lab and earlier receipt labs are also retired. No unfinished
 cleanup; never restart them. Latest reusable copied cache is 5ad77af/out/build;
-the ignored launcher currently copies ead11f8 and preserves its 0b3a427 dependency
+the ignored launcher now copies 5ad77af and preserves its 0b3a427 dependency
 baseline comparison. Any new lab must be separately inventoried and exact-Git.
 
 ## Prior evidence and invariants
@@ -157,10 +155,17 @@ Do not mechanically rerun unrelated suites.
 
 ## Next bounded action
 
-Evidence review, structural checks and complete documentation diff review are
-finished. Commit qualification and push the verified work to the unchanged private
-remote using an ordinary fast-forward.
-Then continue P02-T04 with missing-import resolution. Current seal Conflict is not
+Continue P02-T04 with missing-import resolution. Qualification evidence/docs are
+reviewed, committed and pushed. Add a recovered-only identity gate and same-lock
+resolution: exact import seals, no import/role/collision rolls back as NotImported.
+Applied migrations and journal bytes remain unchanged. The recovered-only unit
+gate has an observed failing baseline followed by
+nine passing custody cases; scoped lib/example Clippy and structural checks pass.
+The adapter currently seals imported attempts only. New missing_import_cases.py
+must reproduce two failed NotImported observations while completing both actual
+delayed-request schedules. Record that exact native baseline before implementing
+the missing branch; native execution and new resources have not started.
+Current seal Conflict is not
 successful exclusion when provisioning never committed. Read-only AI review finds
 no resurrection from a delayed pre-lock request in the exact sequential adapter:
 owner query is fully awaited before any provisioning mutation; already submitted

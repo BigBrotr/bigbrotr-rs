@@ -7503,6 +7503,14 @@
       "retained_journals": 25,
       "product_sealed_writer_lifetimes": 25,
       "retained_journal_capture": ".research/implementation/archive-worker/lifetime/5ad77af/retained-journal-capture.json"
+    },
+    "missing_import_resolution": {
+      "base_source": "e9cf01f590cb229b332c76b9ffb88094828a03b7",
+      "state": "Preparing exact-source native baseline; no new remote resources launched",
+      "local_root": ".research/implementation/archive-worker/missing-import",
+      "planned_scope": "Two actual delayed owner Bind/Execute/Sync schedules with live-driver control and destroyed driver. Current seal-only resolver must fail the required NotImported observations; no missing-import qualification yet.",
+      "cache_source": "/home/tux/bigbrotr-implementation-20260917/runs/publication-5ad77af/out/build",
+      "local_validation": "Nine custody mechanism cases PASS and scoped lib/publication-example Clippy PASS; new native scenarios NOT_RUN"
     }
   },
   "implementation_monitor_corrections_20260918": {

@@ -12,6 +12,8 @@ pub fn request(mode: &str, batch: &AdmissionBatch) -> ArchiveAttemptRequest {
         "custody_worker" => 240,
         "custody_cancel" => 241,
         "custody_manager" => 242,
+        "custody_prelock_live" => 243,
+        "custody_prelock_dead" => 244,
         _ => panic!("closed custody fixture"),
     };
     ArchiveAttemptRequest::new(
@@ -80,6 +82,49 @@ impl Case<'_> {
             .get(0);
         emit(serde_json::json!({"event":"manager-connected","backend_pid":pid}));
         let committing = Cell::new(false);
+        if mode.starts_with("custody_prelock_") {
+            if mode == "custody_prelock_live" {
+                let writer = catalog_guard::provision_and_activate(
+                    &mut manager,
+                    self.identity,
+                    &receipt,
+                    &committing,
+                )
+                .await
+                .unwrap();
+                assert!(committing.get());
+                drop(writer); // Negative control: never launch this credential.
+                drop(manager);
+                driver.await.unwrap().unwrap();
+            } else {
+                let cancel_path = self.home.join("cancel-operation");
+                {
+                    let operation = catalog_guard::provision_and_activate(
+                        &mut manager,
+                        self.identity,
+                        &receipt,
+                        &committing,
+                    );
+                    tokio::pin!(operation);
+                    tokio::select! {
+                        _ = barrier(&cancel_path, 15) => {},
+                        outcome = &mut operation => panic!("owner hold missing: {}", outcome.is_ok()),
+                    }
+                }
+                assert!(
+                    !committing.get(),
+                    "owner query precedes all provisioning mutations"
+                );
+                drop(manager);
+                driver.abort();
+                assert!(driver.await.unwrap_err().is_cancelled());
+            }
+            drop(custody);
+            emit(
+                serde_json::json!({"event":"prelock-driver-terminal","committing":committing.get()}),
+            );
+            return;
+        }
         let cancel_path = self.home.join("cancel-operation");
         {
             let operation = catalog_guard::provision_and_activate(
@@ -176,7 +221,7 @@ pub async fn observe(mode: &str, action: &str) {
         Err(LifetimeError::Occupied) if action == "observe" => {
             emit(serde_json::json!({"event":"custody-observed","state":"occupied"}))
         }
-        Ok(_custody) => {
+        Ok(custody) => {
             emit(serde_json::json!({"event":"custody-observed","state":"recovered"}));
             let rocks = ingest::logical_state(&home.join("rocks"));
             emit(serde_json::json!({"event":"retained-rocks","rows":rocks.0,"digest":rocks.1}));
@@ -191,6 +236,39 @@ pub async fn observe(mode: &str, action: &str) {
                 let result =
                     catalog_guard::seal(&mut manager, &identity, &receipt, &Cell::new(false)).await;
                 emit(serde_json::json!({"event":"seal-result","disabled":result.unwrap()}));
+                drop(manager);
+                driver.await.unwrap().unwrap();
+            }
+            if action == "resolve" {
+                let (mut manager, connection) =
+                    connection_config(&format!("bbpub_{mode}"), "postgres")
+                        .connect(NoTls)
+                        .await
+                        .unwrap();
+                let driver = tokio::spawn(custody.retain_catalog_connection(connection).unwrap());
+                let committing = Cell::new(false);
+                let result = catalog_guard::resolve_after_local_custody(
+                    &mut manager,
+                    &identity,
+                    &receipt,
+                    &custody,
+                    &committing,
+                )
+                .await;
+                let state = match result {
+                    Ok(catalog_guard::Resolution::NotImported) => "not-imported",
+                    Ok(catalog_guard::Resolution::Sealed {
+                        disabled_current: true,
+                    }) => "sealed-changed",
+                    Ok(catalog_guard::Resolution::Sealed {
+                        disabled_current: false,
+                    }) => "sealed-unchanged",
+                    Err(catalog_guard::GuardError::Conflict) => "conflict",
+                    Err(error) => panic!("unexpected resolution error: {error:?}"),
+                };
+                emit(
+                    serde_json::json!({"event":"resolve-result","state":state,"commit_started":committing.get()}),
+                );
                 drop(manager);
                 driver.await.unwrap().unwrap();
             }

@@ -45,6 +45,7 @@ pub struct LocalAttempt {
     request: ArchiveAttemptRequest,
     identity: CatalogIdentity,
     launch_available: Cell<bool>,
+    recovered: bool,
 }
 
 impl LocalAttempt {
@@ -98,6 +99,14 @@ impl LocalAttempt {
         identity: &CatalogIdentity,
     ) -> bool {
         self.request == *request && self.identity == *identity && self.launch_available.get()
+    }
+
+    pub(crate) fn recovered_for(
+        &self,
+        request: &ArchiveAttemptRequest,
+        identity: &CatalogIdentity,
+    ) -> bool {
+        self.recovered && self.request == *request && self.identity == *identity
     }
 
     /// Preserve a duplicate of the SAME open file description. An open of the
@@ -160,6 +169,7 @@ impl LocalAttempt {
             request: request.clone(),
             identity: identity.clone(),
             launch_available: Cell::new(true),
+            recovered: false,
         })
     }
 
@@ -204,6 +214,7 @@ impl LocalAttempt {
             request: request.clone(),
             identity: identity.clone(),
             launch_available: Cell::new(false),
+            recovered: true,
         })
     }
 }

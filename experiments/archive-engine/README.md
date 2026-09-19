@@ -334,3 +334,13 @@ verifiers or credentials. [The 5ad77af report](../../docs/implementation/evidenc
 records all three PASS, 28 scoped Rust cases and all six signed journeys. It retains
 the initial ead11f8 fixture failure (reused Control role identity) and its separately
 retired lab. Installed recovery remains required.
+
+`missing_import_cases.py` adds a proposed live-driver control and destroyed-driver
+schedule around the actual tokio-postgres owner Bind/Execute/Sync request. The
+proxy retains that request before PostgreSQL executes it, then can keep the
+server endpoint alive after the client is destroyed. Independent queries check
+the delayed row lock, role/import/owner state, zero scientific files and the same
+41 Rocks rows. The initial resolution adapter still returns Conflict when no
+import exists; the two required NotImported observations intentionally fail until
+that behavior is implemented and qualified. Failed observations are retained even
+while the fixture finishes checking the delayed server request and cleanup.
