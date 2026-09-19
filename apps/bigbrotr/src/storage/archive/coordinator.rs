@@ -2,8 +2,10 @@
 //! initialization lock also excludes coordinators before per-attempt custody exists.
 use super::{LifetimeError, LocalInitialization, lifetime};
 use crate::storage::postgres::catalog_guard::CatalogIdentity;
+use bigbrotr_model::Digest256;
 use rustix::fs::{Mode, OFlags, openat};
 use serde::Serialize;
+use sha2::{Digest, Sha256};
 use std::{
     fs::{self, File},
     future::Future,
@@ -24,6 +26,7 @@ pub struct LocalCoordinator {
     state_root: PathBuf,
     pub(super) directory: File,
     pub(super) initialization_sha256: [u8; 32],
+    binding_digest: Digest256,
 }
 
 impl LocalCoordinator {
@@ -46,6 +49,15 @@ impl LocalCoordinator {
 
     pub fn state_root(&self) -> &Path {
         &self.state_root
+    }
+
+    /// Identity of the exact two-ended local binding, not a SQL capability.
+    pub fn binding_digest(&self) -> Digest256 {
+        self.binding_digest
+    }
+
+    pub fn identity(&self) -> &CatalogIdentity {
+        self.custody.identity()
     }
 
     /// Compare actual mount-relative locations as well as canonical names.
@@ -143,6 +155,7 @@ impl LocalCoordinator {
             state_root: root.to_owned(),
             directory,
             initialization_sha256,
+            binding_digest: Digest256::from_bytes(Sha256::digest(&expected).into()),
         })
     }
 }

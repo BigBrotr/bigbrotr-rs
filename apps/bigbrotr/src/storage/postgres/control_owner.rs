@@ -12,6 +12,8 @@ use sha2::{Digest, Sha256};
 use std::{cell::Cell, fmt, time::Duration};
 use tokio_postgres::{Client, Row, Transaction};
 
+#[path = "archive_coordinator.rs"]
+mod archive_coordinator;
 #[path = "initial_batch.rs"]
 mod initial_batch;
 pub use initial_batch::{

@@ -112,6 +112,31 @@ def main(root, installed=False):
     binary = ['docker', 'exec', '--env', 'LD_LIBRARY_PATH=/out/archive-worker/lib', runner]
     save()
     if installed:
+        protocol = result['coordinator_protocol'] = {}
+        try:
+            execute(binary + ['/out/native-tests/archive-publication-probe', 'protocol', 'check'], 150, protocol)
+        finally:
+            save()
+        assert protocol['exit'] == 0 and not protocol['stderr']
+        values = [json.loads(line) for line in protocol['stdout'].splitlines()]
+        assert [v['name'] for v in values] == [
+            'ordinary-missing-refuses-and-poisons', 'old-unbound-api-refused-after-migration',
+            'explicit-binding-identical-retry-preserves-xmin', 'bound-issuance-and-both-retries-preserve-history',
+            'fresh-control-epoch-preserves-original-binding-and-attempt',
+            'same-dataset-catalog-different-local-binding-refused', 'binding-update-delete-truncate-refused',
+            'old-history-survives-upgrade-and-cannot-be-adopted',
+        ]
+        assert all(v['event']=='protocol-case' for v in values)
+        assert values[0]['state'] == values[1]['state'] == dict(bindings=[], attempts=[])
+        assert len(values[2]['state']['bindings']) == 1 and not values[2]['state']['attempts']
+        assert values[3]['state'] == values[4]['state'] == values[5]['state'] == values[6]['state']
+        assert len(values[3]['state']['attempts']) == 1
+        assert not values[7]['state']['bindings'] and len(values[7]['state']['attempts']) == 1
+        assert values[7]['state']['attempts'][0]['coordinator_binding_sha256'] is None
+        bindings = values[2]['state']['bindings'][0]
+        local_digest = sha(root/'out/coordinator-protocol/state/coordinator.json')
+        assert bindings['binding_sha256'] == '\\x'+local_digest
+        assert values[3]['state']['attempts'][0]['coordinator_binding_sha256'] == '\\x'+local_digest
         password = (root / 'secrets/CatalogManager').read_text()
         assert len(password) == 64 and all(c in '0123456789abcdef' for c in password)
         sql('postgres', 'CREATE ROLE "CatalogManager" LOGIN NOSUPERUSER CREATEROLE NOCREATEDB NOINHERIT NOREPLICATION NOBYPASSRLS PASSWORD ' + "'" + password + "';")
@@ -297,6 +322,13 @@ def main(root, installed=False):
             if installed:
                 home = root / f'out/signed_{mode}'
                 case['retained_input_files'] = input_files(home, mode)
+                protocol_query = "SELECT json_build_object('bindings',(SELECT coalesce(json_agg(t),'[]') FROM (SELECT c.*,xmin::text AS xmin FROM control.archive_coordinators c)t),'attempts',(SELECT coalesce(json_agg(t ORDER BY ordinal),'[]') FROM (SELECT attempt_id,ordinal,coordinator_binding_sha256,xmin::text AS xmin FROM control.archive_attempts)t))"
+                protocol = case['coordinator_protocol'] = json.loads(sql('bbpub_control_'+mode, protocol_query))
+                digest = '\\x'+sha(home/'archive-state/coordinator.json')
+                assert len(protocol['bindings']) == 1 and protocol['bindings'][0]['protocol_version'] == 1
+                assert protocol['bindings'][0]['binding_sha256'] == digest
+                assert len(protocol['attempts']) == len(case['retained_input_files'])
+                assert all(row['coordinator_binding_sha256'] == digest for row in protocol['attempts'])
                 restarted = case['input_restart'] = {}
                 rocks = home / 'rocks'
                 # Prove this fresh process can inspect exact catalog receipts
@@ -316,6 +348,7 @@ def main(root, installed=False):
                 # same semantic digest. Never call it the original attempt's receipt.
                 assert seen == restart_expectations(mode)
                 assert input_files(home, mode) == case['retained_input_files']
+                assert json.loads(sql('bbpub_control_'+mode, protocol_query)) == protocol
                 assert case['public_access'] == dict(database=[],schema=[])
                 assert case['installed_initializer']['new_installation'] is True
                 assert case['runtime_manager'] == dict(current_user='CatalogManager', session_user='CatalogManager', superuser=False, createrole=True, inherit=False)

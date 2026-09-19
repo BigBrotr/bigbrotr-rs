@@ -5,7 +5,7 @@ use crate::{
     runtime::OwnedPermit,
     storage::{postgres::archive_attempt::ArchiveAttemptRequest, rocks::store::PendingBatchHeader},
 };
-use bigbrotr_model::{ArchiveBatch, OwnerEpoch, Sequence, SourceRecordId};
+use bigbrotr_model::{ArchiveBatch, Digest256, OwnerEpoch, Sequence, SourceRecordId};
 use bigbrotr_protocol::archive_receipt::{ReceiptExpectation, ReceiptRange};
 use rustix::fs::{Mode, OFlags, openat};
 use sha2::{Digest, Sha256};
@@ -41,6 +41,7 @@ pub struct RetainedInputs {
     request: ArchiveAttemptRequest,
     headers: Vec<PendingBatchHeader>,
     expectation: ReceiptExpectation,
+    coordinator_binding: Digest256,
     _custody: File,
     _permit: OwnedPermit,
 }
@@ -58,6 +59,9 @@ impl RetainedInputs {
     }
     pub fn expectation(&self) -> &ReceiptExpectation {
         &self.expectation
+    }
+    pub fn coordinator_binding(&self) -> Digest256 {
+        self.coordinator_binding
     }
 
     /// Call only after the actual Ingest owner has read every exact first batch
@@ -124,6 +128,7 @@ impl LocalCoordinator {
             request: request.clone(),
             headers,
             expectation,
+            coordinator_binding: self.binding_digest(),
             _custody: custody,
             _permit: permit,
         })
@@ -152,6 +157,7 @@ impl LocalCoordinator {
             request: request.clone(),
             headers,
             expectation,
+            coordinator_binding: self.binding_digest(),
             _custody: self.custody.retain_custody()?,
             _permit: permit,
         }))

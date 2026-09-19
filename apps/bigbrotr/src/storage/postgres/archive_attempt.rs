@@ -305,6 +305,26 @@ pub(super) async fn register(
     issuer: ControlOwner,
     commit_started: &Cell<bool>,
 ) -> Result<ArchiveAttemptReceipt, ArchiveAttemptError> {
+    register_inner(tx, request, issuer, None, commit_started).await
+}
+
+pub(super) async fn register_bound(
+    tx: Transaction<'_>,
+    request: &ArchiveAttemptRequest,
+    issuer: ControlOwner,
+    binding: Digest256,
+    commit_started: &Cell<bool>,
+) -> Result<ArchiveAttemptReceipt, ArchiveAttemptError> {
+    register_inner(tx, request, issuer, Some(binding), commit_started).await
+}
+
+async fn register_inner(
+    tx: Transaction<'_>,
+    request: &ArchiveAttemptRequest,
+    issuer: ControlOwner,
+    binding: Option<Digest256>,
+    commit_started: &Cell<bool>,
+) -> Result<ArchiveAttemptReceipt, ArchiveAttemptError> {
     let dataset = &request.dataset.as_bytes()[..];
     let attempt = &request.attempt_id[..];
     let catalog = &request.catalog.as_bytes()[..];
@@ -314,6 +334,15 @@ pub(super) async fn register(
     let ordinal = request.ordinal.to_string();
     let topology = request.topology.get().to_string();
     let digest = &request.batch_digest.as_bytes()[..];
+    if let Some(binding) = binding {
+        let row = tx.query_opt("SELECT coordinator_binding_sha256=$2::bytea FROM control.archive_attempts WHERE attempt_id=$1::bytea", &[&attempt,&&binding.as_bytes()[..]])
+            .await.map_err(backend)?;
+        if let Some(row) = row
+            && row.try_get::<_, Option<bool>>(0).map_err(backend)? != Some(true)
+        {
+            return Err(ArchiveAttemptError::Conflict);
+        }
+    }
     // Equality is evaluated in PostgreSQL; no unbounded stored value is returned.
     // Retries compare every request field, retaining the original issuer even
     // when the resolving Control session has a later epoch.
@@ -335,7 +364,46 @@ pub(super) async fn register(
     if !matches {
         return Err(ArchiveAttemptError::Conflict);
     }
-    tx.execute("INSERT INTO control.archive_attempts(attempt_id,dataset_id,catalog_id,ordinal,expected_predecessor,schema_version,topology_generation,batch_digest,coordinator_incarnation,worker_incarnation,issuer_resource,issuer_epoch,issuer_incarnation,issued_at_us) VALUES ($1::bytea,$2::bytea,$3::bytea,$4::text::numeric,$5::text::numeric,1,$6::text::numeric,$7::bytea,$8::bytea,$9::bytea,$10::bytea,$11::text::numeric,$12::bytea,(EXTRACT(EPOCH FROM pg_catalog.clock_timestamp())*1000000)::bigint)", &[&attempt,&dataset,&catalog,&ordinal,&predecessor,&topology,&digest,&coordinator,&worker,&&issuer.resource_id.as_bytes()[..],&issuer.epoch.get().to_string(),&&issuer.process_incarnation.as_bytes()[..]]).await.map_err(backend)?;
+    let resource = &issuer.resource_id.as_bytes()[..];
+    let epoch = issuer.epoch.get().to_string();
+    let incarnation = &issuer.process_incarnation.as_bytes()[..];
+    let mut parameters: Vec<&(dyn tokio_postgres::types::ToSql + Sync)> = vec![
+        &attempt,
+        &dataset,
+        &catalog,
+        &ordinal,
+        &predecessor,
+        &topology,
+        &digest,
+        &coordinator,
+        &worker,
+        &resource,
+        &epoch,
+        &incarnation,
+    ];
+    let binding_bytes = binding.as_ref().map(|v| &v.as_bytes()[..]);
+    let (column, value) = if binding.is_some() {
+        parameters.push(&binding_bytes);
+        (",coordinator_binding_sha256", ",$13::bytea")
+    } else {
+        ("", "")
+    };
+    // The schema9 branch only supports retained prerequisite fixtures. After
+    // migration10 the database trigger rejects every unbound new insertion.
+    let sql = format!(
+        "INSERT INTO control.archive_attempts(attempt_id,dataset_id,catalog_id,ordinal,expected_predecessor,schema_version,topology_generation,batch_digest,coordinator_incarnation,worker_incarnation,issuer_resource,issuer_epoch,issuer_incarnation,issued_at_us{column}) VALUES ($1::bytea,$2::bytea,$3::bytea,$4::text::numeric,$5::text::numeric,1,$6::text::numeric,$7::bytea,$8::bytea,$9::bytea,$10::bytea,$11::text::numeric,$12::bytea,(EXTRACT(EPOCH FROM pg_catalog.clock_timestamp())*1000000)::bigint{value})"
+    );
+    tx.execute(&sql, &parameters).await.map_err(|error| {
+        // Migration10's issuance guard reports the missing/mismatched protocol
+        // prerequisite explicitly. Permission/transport/other SQL failures must
+        // not look like that known refusal to callers or practical fixtures.
+        if error.code() == Some(&tokio_postgres::error::SqlState::OBJECT_NOT_IN_PREREQUISITE_STATE)
+        {
+            ArchiveAttemptError::Prerequisite
+        } else {
+            backend(error)
+        }
+    })?;
     commit_started.set(true);
     tx.commit()
         .await

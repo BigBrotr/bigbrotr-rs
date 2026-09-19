@@ -20,21 +20,44 @@ and rejects other roles. Root remains sole writer/integrator.
 
 ## Actual Git and current review
 
-Mac main is candidate d44212572d4a8d0510d737caf151b0d4af7456a2, one commit above
-last verified private origin/main16231c7. Native qualification and resource audit
-are terminal PASS within scope; evidence is ready for a documentation-only commit
-and fast-forward private push after fresh fetch (private origin/main16231c7 unchanged). Root owns only checkpoint,
-inventory, P02 task introduction and the new evidence report; no contributor work
-or merge/rebase. Candidate product/source tree is unchanged after qualification.
+Mac main and freshly verified private origin/main are
+637c69f9112db0a3f9db3bb52e17ec861d906ef9 (retained-inputs evidence after d442125).
+Push32271 completed. Root is sole writer; no merge/rebase or contributor work.
+All previous Tux labs are stopped-retained as audited; none currently runs.
 
-Independent read-only AI source review caught full scientific identity and future
-mTLS descriptor-width gaps in receipt preflight; both were corrected before the
-candidate. Frozen local input bytes/digests were independently reconstructed. The
-independent offline evidence audit matched all57 raw files/tar,761 source hashes,
-22 input files/restart expectations and six full scientific readbacks, without
-discrepancy. No reviewer Tux/test rerun or executable inspection. The fixture
-label conflict means ObservationUnknown; independent final catalog rows establish
-the actual identity conflicts, not a new typed product error.
+Current dirty next slice: new additive0010_archive_coordinator.sql, catalog/manifest,
+PostgreSQL archive_coordinator adapter and bound registration, cached exact local
+coordinator digest in coordinator/inputs, actual publication fixture/support protocol
+cases and signed harness, owning contracts/storage catalog/upgrade/P02 notes, this
+checkpoint. No old applied SQL, local input/journal bytes or dependency changes.
+Do not reset these owned edits. Native qualification for this dirty slice NOT_RUN.
+
+The explicit typed initializer binds only an empty Control attempt history to one
+exact coordinator.json digest under actual Control fence+dataset lock. Identical
+retries preserve original attribution. Ordinary require never creates a row.
+New INSERT requires nonNULL matching binding; old rows stay NULL and cannot be
+adopted. register_retained_archive_attempt borrows actual owned/synchronized inputs.
+Schema9 prerequisite fixtures remain explicit; after10 old unbound INSERT refuses.
+Installed signed fixtures now initialize on virgin history, issue through this API,
+and require the binding in the fresh receipt process. Setup/serve wiring remains open.
+
+Mac44 Archive tests,9 scoped PG tests,12 control-schema+1 attempt tests, library/
+publication-example Clippy, format/artifact/link checks PASS. Initial tests failed
+for missing binding_digest/coordinator_binding before implementation. Clippy nested
+if failed twice before the same lint correction; corrected run passed. The first
+PG-filtered combined command selected zero integration tests; those were NOT_RUN
+there, then separately all13 executed and passed. No native result claimed. The final error-mapping change also passed all13
+control-schema/attempt integration tests (5911) and artifact/handoff checks.
+
+Independent read-only AI design review found no concrete mutation-order defect;
+confirmed existing migration locks serialize application/upgrade ordering. Hashes
+cannot detect privileged in-place rollback of Control history while exact local
+bytes survive; explicit restore/history rollback remains outside this guarantee.
+The complete fixture/grants integration review found no blocker. Its unbound-INSERT
+oracle accepted any Backend error; corrected to map only SQLSTATE55000 to
+Prerequisite and require that exact typed refusal. Updated scoped Clippy17386 PASS. The prior offline input
+qualification audit matched57 files,761 sources,22 inputs/restart outcomes and six
+full readbacks without discrepancy; no reviewer Tux/test/ELF inspection.
 
 ## Retained complete inputs qualified
 
@@ -63,7 +86,9 @@ Native matrix96371, audit33844 and collection93060 terminal0. Audit observed
 containers stopped-retained/noOOM,336 preexisting containers unchanged,8 unrelated
 running and0 BigBrotr. Root /home/tux/bigbrotr-implementation-20260917/runs/retained-inputs-d442125;
 owner6890ce8bd3ed089feacc564f0605d17a. Inventory retained_inputs owns exact IDs/images/
-limits and full audit. Runner exit143, PG exit0, owned internal network empty-retained.
+limits and full audit. Runner exit143, PG exit0. The verified owned empty network alone was retired
+at 2026-09-19T12:56:12.890966+00:00 to free its Docker address pool;
+containers and data remain retained. Inventory records the exact retirement.
 Latest retained build cache is that root/out/build; never restart the finished lab.
 
 Raw .research/implementation/archive-worker/retained-inputs/qualified holds57files;
@@ -228,22 +253,32 @@ External feedback reread previously; it records the earlier scoped closures too.
 
 ## Next bounded action
 
-Finish documentation/evidence diff checks and private fast-forward push of d442125
-plus its evidence commit; independent evidence audit is now complete.
-Then connect installed recovery/dispatch. First establish the initial protocol-history
-boundary under the actual Control fence before any missing-journal interpretation.
-Read owning Control issuance/migration and local custody contracts before selecting
-that persistent boundary. Existing pre-protocol histories must refuse adoption.
+Fixture/grants review is complete and its error-oracle finding is corrected.
+Form and qualify the exact unpublished protocol candidate next.
+Eight new synthetic actual-Control/local-custody cases are written in
+examples/support/publication_protocol.rs, invoked as archive-publication-probe
+protocol check by signed_publication_cases.py --installed before its six signed
+schedules. They cover missing ordinary binding/session poison, old unbound INSERT,
+exact binding/issuance retry with unchanged xmin, fresh owner, different local
+root under same IDs, mutation refusal, preserved old rows after9→10 with adoption
+refusal. These new practical cases are NOT_RUN; no active lab exists yet.
 
-Still connect separate SELECT-only reader configuration, actual Ingest-owner
-handoff, shared Control/catalog/native budgets and owned blocking joins while
-Control heartbeats continue. Unissued input-file enumeration/recovery remains
-separate. Initial Ingest registration/admission still binds original Control
-identity/epoch1; it is not a successor/restart protocol. Do not open a second
-writable Ingest store. Catalog identity must be checked before absent-journal
-inferences, including a different data root under equal dataset/catalog IDs.
+Then form a coherent unpublished candidate, transfer exact Git to a new inventoried
+Tux lab using retained-inputs-d442125/out/build cache and installed-publication assets,
+run shared ordered build and actual cases, inspect failures, audit/stop owned peers.
+Before completing the protocol guarantee, add/execute both migration/old-issuer
+lock-order races and both lost binding COMMIT response branches, plus cancelled/
+blocked operations. Existing native_commit_proxy currently targets native SQL only;
+inspect its full logic before extending it to the actual extended-protocol Control
+INSERT. Preserve unknown outcomes and exact row identities on fresh-session retry.
 
-Source policy/protection, input-write/issuance crash boundaries, ENOSPC, cross-boot/
-restore/power-failure, ordinary Compose/release and later product acceptance remain
-required. Full product remains authorized and unfinished; do not stop at this
-qualified component boundary.
+Still connect installed explicit setup/serve recovery, separate SELECT-only reader
+configuration, actual Ingest-owner handoff, shared Control/catalog/native budgets
+and joined blocking work while heartbeats continue. Unissued input enumeration and
+catalog/per-attempt checks precede missing-journal inferences. Initial Ingest
+registration/admission still binds original Control identity/epoch1; it is not a
+successor/restart protocol. Do not open a second writable Ingest store.
+
+Source policy/protection, input-write/issuance crashes, ENOSPC, cross-boot/restore/
+power-failure, ordinary Compose/release and later product acceptance remain required.
+Full product remains authorized and unfinished; continue beyond this component.

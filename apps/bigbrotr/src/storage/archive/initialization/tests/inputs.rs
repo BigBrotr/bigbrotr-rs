@@ -77,6 +77,10 @@ fn retains_complete_grouping_before_issuance_and_recovers_receipt_without_facts(
     let root = state.path().canonicalize().unwrap();
     drop(LocalInitialization::create_for_boot(&identity, [3; 16], BOOT).unwrap());
     let owner = coordinator(&identity, &root, true);
+    let binding = Digest256::from_bytes(
+        Sha256::digest(fs::read(root.join("coordinator.json")).unwrap()).into(),
+    );
+    assert_eq!(owner.binding_digest(), binding);
     let inputs = batches();
     let batch = ArchiveBatch::new(1, TopologyGeneration::new(0), &inputs).unwrap();
     let request = request(&batch);
@@ -90,6 +94,7 @@ fn retains_complete_grouping_before_issuance_and_recovers_receipt_without_facts(
     let retained = owner
         .retain_inputs(&request, &batch, permit(), &cancel)
         .unwrap();
+    assert_eq!(retained.coordinator_binding(), binding);
     assert_eq!(retained.headers().len(), 5);
     assert_eq!(retained.expectation().record_count, 6);
     assert_eq!(
@@ -147,6 +152,7 @@ fn retains_complete_grouping_before_issuance_and_recovers_receipt_without_facts(
         .unwrap();
     assert_eq!(read.expectation().record_count, 6);
     assert_eq!(read.request(), &request);
+    assert_eq!(read.coordinator_binding(), binding);
     assert_eq!(
         read.verify_replay(&ArchiveBatch::new(1, TopologyGeneration::new(0), &batches()).unwrap()),
         Ok(())

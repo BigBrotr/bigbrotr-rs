@@ -172,6 +172,50 @@ establish the protocol's initial history boundary under the actual Control fence
 before issuance. Per-attempt driver/native custody, remote SQL outcome resolution,
 source protection and process resource reconciliation remain independent gates.
 
+### Initial coordinator protocol boundary
+
+Migration `0010_archive_coordinator.sql` adds one immutable
+`control.archive_coordinators` binding per dataset. It names the catalog, protocol1,
+SHA256 of the exact existing two-ended `coordinator.json` bytes, and original
+Control issuer attribution. The digest transitively binds local initialization,
+root/lock identities and boot; it contains no credential. This migration leaves
+old attempt rows unchanged and inspectable, with a NULL coordinator binding.
+It does not infer that those attempts obeyed local custody.
+
+Explicit `ControlSession::initialize_archive_coordinator` holds the actual Control
+fence and dataset row lock before inspecting binding/history. Only absent binding
+and zero issued attempts permit its initial insertion. An exact existing binding
+retries without rewriting its original attribution, including after later issuance.
+Different binding or any pre-protocol history refuses. Ordinary
+`require_archive_coordinator` only observes an existing exact binding; missing is
+a prerequisite failure, never implicit initialization. Actual SQL connection drivers
+must retain original local custody before any query, including failed/cancelled calls.
+
+New attempt insertion after migration10 requires non-NULL
+`coordinator_binding_sha256` matching the dataset/catalog's binding. The existing
+attempt trigger retains the Control fence and dataset lock before the additional
+binding guard runs. `register_retained_archive_attempt` consumes a borrowed actual
+RetainedInputs token, checks this binding and preserves it on identical retries;
+the local permit and lock remain held. The earlier API supports schema9 prerequisite
+fixtures; its unbound new INSERT is refused after migration10. An observed or
+retried historical request remains no publication capability.
+
+Application transactions hold the existing shared migration lock; explicit migration
+holds its exclusive counterpart. An old issuance therefore completes before the
+upgrade (and blocks first binding), or observes migration10 before it can issue.
+Both old applied SQL files and their checksums remain unchanged. PostgreSQL16
+[transactional trigger behavior and ordering](https://www.postgresql.org/docs/16/trigger-definition.html)
+and [lock semantics](https://www.postgresql.org/docs/16/explicit-locking.html) own
+the underlying boundaries; actual race/commit-loss qualification is still required.
+
+This is same-boot participation history, not catalog inspection, launch permission
+or a restore protocol. Privileged in-place rollback of Control history while exact
+local bytes survive cannot be detected by a binding hash alone. Restore, cross-boot
+and relocation keep their separately fenced recovery gates. Complete missing-journal
+interpretation still requires actual catalog identity and per-attempt exclusion.
+The current implementation provides explicit typed operations and fixture consumers;
+installed setup/serve integration and practical qualification remain pending.
+
 ### Retained complete input linkage
 
 Before Control issuance, `LocalCoordinator::retain_inputs` synchronizes immutable

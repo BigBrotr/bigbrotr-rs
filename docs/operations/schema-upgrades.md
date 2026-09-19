@@ -3,7 +3,8 @@
 Status: initial P02-T01 foundation. The checked-in catalog contains
 `0001_control.sql`, `0002_ingest.sql`, `0801_management_identity.sql`,
 `0805_owner_enrollment.sql`, `0802_management_commands.sql`,
-`0007_control_owner.sql`, `0008_job_bounds.sql` and `0009_archive_attempts.sql`. The executable includes explicit inspection, planning and
+`0007_control_owner.sql`, `0008_job_bounds.sql`, `0009_archive_attempts.sql` and
+`0010_archive_coordinator.sql`. The executable includes explicit inspection, planning and
 application using the selected PostgreSQL driver. Its local planner, preparation
 and entrypoint tests pass. Native Linux amd64 PostgreSQL execution now covers
 the actual CLI, 104 independent SQL constraint cases, initial read-only runtime
@@ -41,13 +42,24 @@ require PostgreSQL 16.15, `fsync=on` and `full_page_writes=on`; apply forces
 transaction-local `synchronous_commit=on`. They do not initialize a dataset or
 qualify a complete installation or release upgrade.
 
-An omitted target selects the latest embedded migration, currently 9. An explicit
+An omitted target selects the latest embedded migration, currently 10. An explicit
 target 1 preserves the initial control-only boundary for its historical fixtures.
 Migration 2 refuses existing topology members with SQLSTATE `55000`: migration 1
 had no source registry, so their exact source authority cannot be inferred.
 The CLI reports this preflight specifically and leaves the transaction uncommitted.
 Eligible databases without topology members can retain existing control rows
 while applying 2. There is no automatic backfill or destructive repair.
+
+Migration10 preserves existing Archive attempts with a NULL coordinator binding;
+it does not adopt them into the local custody protocol. Subsequent new issuance
+requires an explicitly initialized binding and retained inputs. A dataset with old
+attempts cannot initialize that binding; inspect/preserve it for separately qualified
+recovery. No ordinary startup migrates, rewrites or discards old rows. The typed
+initializer requires SELECT/INSERT on `control.archive_coordinators` and execution
+of its invoker guards, without UPDATE/DELETE/TRUNCATE or DDL authority. Existing
+runtime grants must be extended deliberately after the explicit migration.
+The [protocol boundary](../specification/archive-storage-contract.md#initial-coordinator-protocol-boundary)
+states current integration and practical qualification limits.
 
 Output is bounded JSON with format `bigbrotr-control-migration/1`, version/count
 strings, exact pending SQL hashes and explicit absent version as null. Exit 0

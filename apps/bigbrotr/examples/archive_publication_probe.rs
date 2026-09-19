@@ -45,6 +45,8 @@ mod ingest;
 mod installed_catalog;
 #[path = "support/publication_inputs.rs"]
 mod publication_inputs;
+#[path = "support/publication_protocol.rs"]
+mod publication_protocol;
 const MIB: u64 = 1024 * 1024;
 fn dataset() -> DatasetId {
     [1; 16].try_into().unwrap()
@@ -155,16 +157,27 @@ async fn provision_as(
     driver.await.unwrap().unwrap();
     writer
 }
-async fn initialize_control(database: &str) {
+async fn initialize_control(database: &str, installed: bool) {
     let (mut admin, driver) = connect(database, "postgres").await;
     assert_eq!(
-        migration_runner::run(&mut admin, 9, true, &Cell::new(false))
-            .await
-            .unwrap()
-            .applied,
-        8
+        migration_runner::run(
+            &mut admin,
+            if installed { 10 } else { 9 },
+            true,
+            &Cell::new(false)
+        )
+        .await
+        .unwrap()
+        .applied,
+        if installed { 9 } else { 8 }
     );
     admin.batch_execute("GRANT USAGE ON SCHEMA control TO bigbrotr_control; GRANT SELECT ON ALL TABLES IN SCHEMA control TO bigbrotr_control; GRANT INSERT,UPDATE ON control.datasets,control.principals,control.config_revisions,control.policy_revisions,control.management_audit,control.management_commands,control.role_instances,control.owner_epochs,control.topology_generations,control.source_streams,control.topology_streams,control.allocation_domains,control.producer_slots,control.producer_epochs TO bigbrotr_control; GRANT INSERT ON control.archive_attempts TO bigbrotr_control; GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA control TO bigbrotr_control;").await.unwrap();
+    if installed {
+        admin
+            .batch_execute("GRANT INSERT ON control.archive_coordinators TO bigbrotr_control")
+            .await
+            .unwrap();
+    }
     drop(admin);
     driver.await.unwrap().unwrap();
     let (mut application, driver) = connect(database, "bigbrotr_control").await;
@@ -352,7 +365,7 @@ async fn run(mode: &str, port: u16, installed: bool) {
         assert!(!row.get::<_, bool>(2) && row.get::<_, bool>(3) && !row.get::<_, bool>(4));
         fs::write(home.join("runtime-manager.json"), serde_json::to_vec(&serde_json::json!({"current_user":row.get::<_, String>(0),"session_user":row.get::<_, String>(1),"superuser":false,"createrole":true,"inherit":false})).unwrap()).unwrap();
     }
-    initialize_control(&control).await;
+    initialize_control(&control, installed).await;
     let (client, connection) = connection(&control, "bigbrotr_control", 5432).await;
     let driver = if let Some(coordinator) = &coordinator {
         tokio::spawn(coordinator.retain_connection(connection).unwrap())
@@ -375,6 +388,24 @@ async fn run(mode: &str, port: u16, installed: bool) {
     .await
     .unwrap();
     let (observer, observer_driver) = connect(&control, "bigbrotr_control").await;
+    if let Some(coordinator) = &coordinator {
+        assert!(
+            owner
+                .initialize_archive_coordinator(coordinator, &Cell::new(false))
+                .await
+                .unwrap()
+        );
+        assert!(
+            !owner
+                .initialize_archive_coordinator(coordinator, &Cell::new(false))
+                .await
+                .unwrap()
+        );
+        owner
+            .require_archive_coordinator(coordinator)
+            .await
+            .unwrap();
+    }
     let path = home.join("rocks");
     let store = ingest::prepare(&mut owner, policy, &observer, &path, &budget, &cancel).await;
     let mut expected_pending = Vec::new();
@@ -471,10 +502,16 @@ async fn run(mode: &str, port: u16, installed: bool) {
             assert_eq!(receipt.request(), &request);
             (receipt, writer, custody)
         } else {
-            let receipt = owner
-                .register_archive_attempt(&request, &Cell::new(false))
-                .await
-                .unwrap();
+            let receipt = if let Some(inputs) = &retained {
+                owner
+                    .register_retained_archive_attempt(inputs, &Cell::new(false))
+                    .await
+            } else {
+                owner
+                    .register_archive_attempt(&request, &Cell::new(false))
+                    .await
+            }
+            .unwrap();
             let custody = LocalAttempt::create(&custody_root, &receipt, &identity).unwrap();
             if installed && mode == "normal" && ordinal == 1 {
                 installed_catalog::delegation_checks(
@@ -545,10 +582,16 @@ async fn run(mode: &str, port: u16, installed: bool) {
                 .unwrap();
                 retained
             });
-            let next_receipt = owner
-                .register_archive_attempt(&next, &Cell::new(false))
-                .await
-                .unwrap();
+            let next_receipt = if let Some(inputs) = &next_inputs {
+                owner
+                    .register_retained_archive_attempt(inputs, &Cell::new(false))
+                    .await
+            } else {
+                owner
+                    .register_archive_attempt(&next, &Cell::new(false))
+                    .await
+            }
+            .unwrap();
             assert!(next_receipt.created);
             if let Some(retained) = &next_inputs {
                 assert_eq!(retained.request(), next_receipt.request());
@@ -714,6 +757,12 @@ fn main() {
         .build()
         .unwrap()
         .block_on(async {
+            if args[1] == "protocol" && args[2] == "check" {
+                tokio::time::timeout(Duration::from_secs(120), publication_protocol::run())
+                    .await
+                    .unwrap();
+                return;
+            }
             if args[2] == "inputs" {
                 tokio::time::timeout(
                     Duration::from_secs(90),

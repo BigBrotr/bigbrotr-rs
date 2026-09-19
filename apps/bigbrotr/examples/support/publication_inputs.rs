@@ -34,6 +34,10 @@ pub async fn inspect(mode: &str) {
     )
     .await
     .unwrap();
+    control
+        .require_archive_coordinator(&coordinator)
+        .await
+        .unwrap();
     let budget = ResourceBudget::new(
         ProcessEnvelope::new(
             515 * MIB,

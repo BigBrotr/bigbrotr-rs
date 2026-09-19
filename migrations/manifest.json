@@ -33,6 +33,10 @@
     {
       "version": 9,
       "name": "0009_archive_attempts.sql"
+    },
+    {
+      "version": 10,
+      "name": "0010_archive_coordinator.sql"
     }
   ],
   "reserved": [
