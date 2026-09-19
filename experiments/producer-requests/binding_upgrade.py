@@ -17,7 +17,7 @@ SOURCE = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(SOURCE/'experiments/control-migrations'))
 sys.path.insert(0, str(SOURCE/'experiments/ingest-bootstrap'))
 from lab import change
-from oracle import expected
+from oracle import expected, cbor
 
 
 def command(*args, input=None):
@@ -48,12 +48,12 @@ def main(root, old_root):
     assert hashlib.sha256(old_artifact.read_bytes()).hexdigest() == old['ingest_probe']
     for path, key in [('bigbrotr', 'control'), ('ingest-bootstrap-probe', 'ingest_probe')]:
         assert hashlib.sha256((root/'out/native-tests'/path).read_bytes()).hexdigest() == ready[key]
-    work = root/'out/binding-upgrade'; work.mkdir(mode=0o700)
+    work = root/'out/binding-upgrade-r2'; work.mkdir(mode=0o700)
     shutil.copyfile(old_artifact, work/'old-ingest-probe'); (work/'old-ingest-probe').chmod(0o500)
     assert hashlib.sha256((work/'old-ingest-probe').read_bytes()).hexdigest() == old['ingest_probe']
     credential = work/'migrator-secret'
     credential.write_bytes((root/'secrets/postgres').read_bytes()); credential.chmod(0o400)
-    report_path = root/'input-binding-upgrade.json'; assert not report_path.exists()
+    report_path = root/'input-binding-upgrade-r2.json'; assert not report_path.exists()
     report = dict(status='INCOMPLETE', source=state['source'], harness_revision=harness,
                   harness_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
                   artifacts=ready, old_build=old, cases=[], operations=[])
@@ -81,15 +81,15 @@ def main(root, old_root):
     def sql(db, text):
         return checked('sql:'+db, ['docker','exec','-i',pg,'psql','-XqAt','-v','ON_ERROR_STOP=1','-U','postgres','-d',db], input=text)
     new = ['docker','exec',runner,'/out/native-tests/ingest-bootstrap-probe']
-    old_command = ['docker','exec',runner,'/out/binding-upgrade/old-ingest-probe']
+    old_command = ['docker','exec',runner,'/out/binding-upgrade-r2/old-ingest-probe']
     main_command = ['docker','exec',runner,'/out/native-tests/bigbrotr']
-    checked('config-init',main_command+['config','init','--recipe','archive-only','--output','/out/binding-upgrade/template.toml'])
+    checked('config-init',main_command+['config','init','--recipe','archive-only','--output','/out/binding-upgrade-r2/template.toml'])
     def config(db):
         text = change((work/'template.toml').read_text(),'postgres.control','database',db)
         text = change(text,'postgres.control','endpoint','127.0.0.1:5432')
         text = change(text,'postgres.control.tls','local_boundary','loopback')
         (work/(db+'.toml')).write_text(text)
-        return '/out/binding-upgrade/'+db+'.toml'
+        return '/out/binding-upgrade-r2/'+db+'.toml'
     def snapshot(db):
         names = json.loads(sql(db,"SELECT jsonb_agg(tablename ORDER BY tablename) FROM pg_tables WHERE schemaname='control'"))
         assert 1 <= len(names) <= 64 and all(n.replace('_','').isalnum() for n in names)
@@ -107,10 +107,10 @@ def main(root, old_root):
     save()
     for mode in ['empty', 'retained', 'new_on_old']:
         case = dict(name=mode, status='INCOMPLETE'); report['cases'].append(case); save()
-        db = 'bbbinding_upgrade_'+mode
+        db = 'bbbinding_upgrade_r2_'+mode
         sql('postgres','CREATE DATABASE '+db)
         checked('setup:'+db,new+['setup-12',db,'/secrets/postgres','unused'])
-        home = '/out/binding-upgrade/'+mode+'/db'; (work/mode).mkdir()
+        home = '/out/binding-upgrade-r2/'+mode+'/db'; (work/mode).mkdir()
         if mode == 'retained':
             p = execute(case,'old_write',old_command+['write',db,'/secrets/bigbrotr_control',home])
             assert p.returncode == 0 and not p.stderr
@@ -120,6 +120,12 @@ def main(root, old_root):
             inputs = list((work/mode/'db/producer-inputs-v1').iterdir())
             assert len(inputs) == 1
             original = inputs[0].read_bytes()
+            dataset,slot=bytes([1])*16,bytes([66])*16
+            scope=[dataset,4,bytes([64])*16,1]
+            dictionaries=[['dictionary',1,[[dataset,4,bytes([64])*16,n],1,'visibility',1,{'class':label}]] for n,label in [(1,'public'),(2,'private')]]
+            wanted_input=b'bigbrotr/producer-request/1\0'+cbor([[slot,1,1],'admit-evidence',1,[1,scope,dictionaries]])
+            assert original==wanted_input
+            assert inputs[0].name==slot.hex()+'-0000000000000001-0000000000000001.cbor'
             row = snapshot(db)['producer_requests'][0]
             assert row['input_bytes'] == len(original) and row['request_digest'] == '\\x'+hashlib.sha256(original).hexdigest()
             case['input'] = dict(name=inputs[0].name, bytes=len(original), sha256=hashlib.sha256(original).hexdigest())
@@ -127,20 +133,25 @@ def main(root, old_root):
         case['schema_before'] = schema_digest(db); save()
         if mode == 'new_on_old':
             p = execute(case,'new_refusal',new+['write',db,'/secrets/bigbrotr_control',home])
-            assert p.returncode == 101 and 'IncompatibleSchema' in p.stderr
+            assert p.returncode == 101 and 'Control(IncompatibleDeployment)' in p.stderr
             after = snapshot(db)
             assert not after['producer_requests'] and not after['producer_outcomes']
             assert not after['producer_checkpoints'] and len(after['producer_epochs']) == 1
             assert after['producer_epochs'][0]['reserved_through_request'] == 0
             assert len(after['owner_epochs']) == 2
+            changed={'datasets','owner_epochs','role_instances','producer_slots','producer_epochs','source_streams','topology_generations','topology_streams','allocation_domains'}
+            assert {k:v for k,v in after.items() if k not in changed} == {k:v for k,v in before.items() if k not in changed}
+            assert len(before['datasets'])==len(after['datasets'])==1
+            assert before['datasets'][0]['topology_generation'] is None and after['datasets'][0]['topology_generation']==0
+            assert {k:v for k,v in before['datasets'][0].items() if k!='topology_generation'} == {k:v for k,v in after['datasets'][0].items() if k!='topology_generation'}
             native = json.loads(checked('native-refused:'+db,new+['dump',home]))
             wanted,_,_ = expected(bytes([1])*16,False)
             assert [(r['cf'],bytes.fromhex(r['key']),bytes.fromhex(r['value'])) for r in native['rows']] == wanted
-            assert not list((work/mode/'db').glob('producer-inputs-v1/*.cbor'))
+            assert not (work/mode/'db/producer-inputs-v1').exists()
             case['native'] = native
             assert schema_digest(db) == case['schema_before']
         else:
-            p = execute(case,'migration',main_command+['migrate','apply','--file',config(db),'--user','postgres','--password-ref','file:/out/binding-upgrade/migrator-secret','--target','13'])
+            p = execute(case,'migration',main_command+['migrate','apply','--file',config(db),'--user','postgres','--password-ref','file:/out/binding-upgrade-r2/migrator-secret','--target','13'])
             after = snapshot(db)
             assert p.returncode == 0 and not p.stderr
             assert json.loads(p.stdout)['status'] == 'applied'
@@ -149,7 +160,7 @@ def main(root, old_root):
             assert {k:v for k,v in after.items() if k not in ['schema_versions','producer_input_bindings']} == {k:v for k,v in before.items() if k != 'schema_versions'}
             migrated_schema = schema_digest(db)
             # Old startup rejects unknown13 before any new owner/native root.
-            old_home = '/out/binding-upgrade/'+mode+'/old-refused'
+            old_home = '/out/binding-upgrade-r2/'+mode+'/old-refused'
             p = execute(case,'old_refusal',old_command+['write',db,'/secrets/bigbrotr_control',old_home])
             assert p.returncode == 101 and 'IncompatibleDeployment' in p.stderr
             assert snapshot(db) == after and not (work/mode/'old-refused').exists()

@@ -55,16 +55,23 @@ def main(root):
     prior_path=root/'input-binding-cases-r2.json'
     prior=json.loads(prior_path.read_text())
     assert prior['status']=='PASS' and prior['source']==state['source']
-    template='bbbindings_r2_conflict'
-    path=root/'input-binding-concurrency.json';assert not path.exists()
+    template='bbbindings_r2_complete'
+    path=root/'input-binding-concurrency-r2.json';assert not path.exists()
     report=dict(status='INCOMPLETE',source=state['source'],harness_revision=harness,
         harness_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         native_report_sha256=hashlib.sha256(prior_path.read_bytes()).hexdigest(),cases=[],operations=[])
     fixture=(SOURCE/'experiments/producer-requests/binding_schema_cases.sql').read_text()
-    claim=fixture[:fixture.index('SELECT pg_temp.job(1001);')]+"SELECT pg_temp.job(1001);\n"
-    bind='SELECT pg_temp.single(1001,1,1,0,353);'
-    pause="UPDATE control.jobs SET state='paused',job_revision=job_revision+1,reason_code='operator_requested' WHERE job_id=decode(lpad(to_hex(1001),32,'0'),'hex');"
-    snapshot="SELECT state FROM control.jobs WHERE job_id=decode(lpad(to_hex(1001),32,'0'),'hex');"
+    claim=fixture[:fixture.index('SELECT pg_temp.job(1001);')]
+    # The template includes the completed constraint corpus; scope the native
+    # prerequisite to its original producer, and allocate separate fixture IDs.
+    claim=claim.replace('count(*)=3 FROM control.producer_requests', "count(*)=3 FROM control.producer_requests WHERE producer_slot_id=decode(repeat('42',16),'hex')")
+    claim=claim.replace('count(*)=2 FROM control.producer_input_bindings', "count(*)=2 FROM control.producer_input_bindings WHERE producer_slot_id=decode(repeat('42',16),'hex')")
+    claim=claim.replace('reserved_through_request=3 FROM control.producer_epochs', "reserved_through_request=3 FROM control.producer_epochs WHERE producer_slot_id=decode(repeat('42',16),'hex')")
+    claim=claim.replace('pg_temp.id(225)','pg_temp.id(230)').replace('pg_temp.id(226)','pg_temp.id(231)')
+    claim += "SELECT pg_temp.job(2001);\n"
+    bind='SELECT pg_temp.single(2001,1,1,0,353);'
+    pause="UPDATE control.jobs SET state='paused',job_revision=job_revision+1,reason_code='operator_requested' WHERE job_id=decode(lpad(to_hex(2001),32,'0'),'hex');"
+    snapshot="SELECT state FROM control.jobs WHERE job_id=decode(lpad(to_hex(2001),32,'0'),'hex');"
     def save():path.write_text(json.dumps(report,indent=2)+'\n')
     def sql(db,text):
         item=dict(database=db,sql_sha256=hashlib.sha256(text.encode()).hexdigest(),exit=None,remote_exclusion='UNKNOWN')
@@ -130,7 +137,7 @@ def main(root):
     save()
     for mode in ['bind_commit','bind_rollback','pause_commit','pause_rollback','old_rr','old_rc']:
         case=dict(name=mode,status='INCOMPLETE');report['cases'].append(case);save()
-        db='bbbindings_race_'+mode
+        db='bbbindings_race_r2_'+mode
         sql('postgres','CREATE DATABASE '+db+' TEMPLATE '+template)
         clients=[]
         try:
@@ -162,7 +169,7 @@ def main(root):
                 send(producer,bind+'COMMIT;'+mark('BOUND'))
                 assert producer.wait(5)==3 and (b'25001' if mode=='old_rr' else b'23514') in producer.stderr
                 wanted=(0,'paused')
-            observed=json.loads(sql(db,"SELECT json_build_object('bindings',(SELECT count(*) FROM control.producer_input_bindings WHERE job_id=j.job_id),'requests',(SELECT count(*) FROM control.producer_requests WHERE producer_slot_id=j.job_id),'counter',(SELECT reserved_through_request FROM control.producer_epochs WHERE producer_slot_id=j.job_id),'state',j.state,'job_checkpoint',j.checkpoint_revision,'producer_checkpoints',(SELECT count(*) FROM control.producer_checkpoints)) FROM control.jobs j WHERE job_id=decode(lpad(to_hex(1001),32,'0'),'hex')"))
+            observed=json.loads(sql(db,"SELECT json_build_object('bindings',(SELECT count(*) FROM control.producer_input_bindings WHERE job_id=j.job_id),'requests',(SELECT count(*) FROM control.producer_requests WHERE producer_slot_id=j.job_id),'counter',(SELECT reserved_through_request FROM control.producer_epochs WHERE producer_slot_id=j.job_id),'state',j.state,'job_checkpoint',j.checkpoint_revision,'producer_checkpoints',(SELECT count(*) FROM control.producer_checkpoints)) FROM control.jobs j WHERE job_id=decode(lpad(to_hex(2001),32,'0'),'hex')"))
             case['observed']=observed
             assert observed==dict(bindings=wanted[0],requests=wanted[0],counter=wanted[0],state=wanted[1],job_checkpoint=0,producer_checkpoints=0)
         finally:

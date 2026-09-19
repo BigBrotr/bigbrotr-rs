@@ -225,3 +225,15 @@ The corrected tagged run, three12-to13 compatibility cases and six SQL job/pause
 lock schedules are prepared locally. Product8b0660e binaries/source remain fixed;
 additional harness code will transfer through a separately identified clean Git
 checkout. Remaining native cases and terminal cleanup are still owed.
+
+Corrected harness32f1ed7:9 connected native cases and28 SQL constraints PASS with
+zero remaining client backends. Complete case has27 independently checked native
+rows; refused/unknown binding cases retain the exact16 bootstrap rows and expected
+original spool bytes, with zero checkpoints. Compatibility empty/retained upgrades
+passed; new-on12 correctly refused but the harness expected the obsolete error
+label IncompatibleSchema instead of Control(IncompatibleDeployment). Initial race
+fixture cloned a dropped, unreleased Control owner and correctly failed prior
+exclusion before racing; cleanup observed no remaining backends. Both reports
+remain INCOMPLETE. Corrected compatibility oracle binds the262-byte original
+independently and preserves unrelated tables; race fixture now clones the released
+complete SQL corpus with separately allocated IDs. Reruns use new tagged resources.
