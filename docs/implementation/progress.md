@@ -24,17 +24,28 @@ ledger; its trigger already permits a current Control recorder with an active or
 draining historical Ingest and a closing producer. No SQL migration is needed
 for that positive-only boundary. Practical native/PG/COMMIT/crash validation is
 required before publishing the new capability. Native positive replay and the
-current-Control copy are now implemented in the dirty candidate; the connected
+current-Control copy are now implemented in candidate d2959da; the connected
 fixture intentionally rolls back the original event's SQL copy after native sync,
-then closes and resolves under a new Control epoch. PostgreSQL execution is NOT_RUN.
+then closes and resolves under a new Control epoch. That first connected scenario
+now passes on actual PostgreSQL/Rocks at d2959da; wider qualification remains open.
 
 ## Git and integration state
 
-Mac main and private origin/main both verified at
-8931a0f611b718cfac845cda39211e9e8da59d8c; clean after push, now root checkpoint
-and recovery implementation edits only (native replay/recovery and tests,
-PG common preflight/copy/resolver, finite recovery client and Python oracle,
-independent large signed fixture, owning references and this checkpoint). Product closing candidate
+Mac main candidate d2959da61a54a89b6b4e1b4806aa3a819bdff778, tree
+45d8c742d032641b9579bfc3ae9bc0e2ef80ffa0, is committed but unpublished; private
+origin/main was read-only verified still 8931a0f611b718cfac845cda39211e9e8da59d8c.
+Root checkpoint/inventory, supplemental recovery.py observer and finite Rust
+fixture fault/snapshot-emission edits now follow the clean candidate; product unchanged.
+The changed fixture compiles (fixture-observer-check.log, fixture-fault-check.log);
+no new engine run yet. Updated fixture Clippy and Python syntax PASS. ingest_recovery.rs now owns the current session/driver,
+checks explicit refusals/session poison, reconnects as epoch 3 for retryable cases,
+and emits every intermediate snapshot. ingest_closing.rs routes PG-only native-open
+and proxy fault modes into it. The Python runner now implements all 13 selected refusal/fault scenarios with
+independent original-byte/metadata and exact current-Control transition checks;
+its separate fixture-only build script is ready. These scenarios are not yet executed. Its 859 source
+files were exported through Git to the new isolated Tux lab; ordered native build,
+scoped Clippy, all 46 native tests and the first connected case passed. Native replay/recovery, PG preflight/copy, finite client/oracle, independent
+large signed fixture and owning references are all in the candidate. Product closing candidate
 0f6e366fec4f84c0c3078142bea8c1cb91198f4f, tree
 f148d133462d7b5f199aac9e3ad872bb02e2ae83; corrected fixture cc9151b,
 observer 01af703, compatibility harness fd168a5. All published unchanged.
@@ -46,8 +57,9 @@ f899896b1207f5e71c4e39d9ab7814b293814735. All 840 baseline files identical
 except the exact test hook and two added fixture files. Keep it separate; do not
 merge the old-source fixture into current product. Its Mac build and explicit
 missing-infrastructure failure are retained; actual compatibility ran on Tux.
-Local .research/targets/product is the owned build cache. No Tux lab was started
-for recovery yet. All prior Tux resource observations below remain historical.
+Local .research/targets/product is the owned build cache. The new Tux recovery lab started at 2026-09-19T23:23:42Z after clean source
+and fresh resource/ownership checks. All prior closing observations below remain
+historical.
 Independent AI review of native recovery identified a real request/fact size-bound
 counterexample; root reproduced and fixed it. The same reviewer found no further
 concrete issue in the connected PG preflight/copy code, but executed no engines.
@@ -63,20 +75,58 @@ Dirty-candidate Mac evidence under .research/implementation/producer-recovery:
   all three distinct. The compact fixture generator independently signs/verifies
   and freezes full request/fact hashes; it is not itself native evidence.
 - connected-api-red.log failed on missing resolver API; connected-check.log now
-  PASS. Clippy first found collapsible_if; corrected clippy-corrected.log PASS. No connected engine PASS exists yet.
+  PASS. Clippy first found collapsible_if; corrected clippy-corrected.log PASS.
 - Prior semantic-red/closure-red/retry-size-red failures remain preserved. The
   complete-store policy-correction run passed 41 cases with the actual packaged
   worker test explicitly excluded on Mac. Linux must run that consumer.
 
-Current local sessions are joined. Final store-local.log: 45 PASS, 0 failed/ignored,
+Local build/test/SSH sessions are joined, including 98482 normal1 and 85932 collection.
+No case is currently executing; the owned Tux runner/PG remain running for the
+next qualification scenarios. Independent AI fixture/oracle review completed with the supplemental rollback
+logging gap below and no product defect; it independently rechecked the 15 captures,
+complete expected native/PG/original bytes and boundaries. Root is the only writer. Final store-local.log: 45 PASS, 0 failed/ignored,
 83 filtered, with packaged-worker case explicitly skipped on Mac. Scoped Clippy,
 artifact links/JSON/Python and handoff checks PASS; no semantic gate follows from
-those document checks. Tux read-only preflight at 2026-09-19T23:20:53Z found380
-containers, eight unrelated running, zero BigBrotr running and97,201,893,376 free
+those document checks. Tux read-only preflight at 2026-09-19T23:20:53Z found 380
+containers, eight unrelated running, zero BigBrotr running and 97,201,893,376 free
 bytes. Its directories/processes/ports/volumes are captured under native/preflight.
-No remote resource was changed by that preflight. The next
-candidate needs complete diff review and affected artifact/handoff checks before
-Git transfer. No runtime grant, task checkbox or release capability was advanced.
+No remote resource was changed by that preflight. The subsequent launch removed
+only the verified empty owned prior closing network; its containers/data remain
+stopped. New lab /home/tux/bigbrotr-implementation-20260917/runs/producer-recovery-d2959da,
+owner f7d0467948f3bf4483742da12de9597e; runner
+9a4699be5fa84f00bcd08ebec900b06d78cd6203c3d9726f64a40541a058ace5;
+PG f49ef729184ce2a756173c42d1379df31b84e1fe3b1869968c82bb35c7b4afa9;
+internal network 803f48ecda42e8ec11f83afb9094d36e9355a356e6daeb59606ed649f6367be1.
+Same pinned runner/PG images and 2 CPU / 6 GiB + 1 CPU / 1 GiB limits as the prior closing
+lab; no host ports. Build completed native_initialization.py --producer-recovery in the
+runner. Source/build/inputs stay owned by that lab; no second editing checkout.
+Verify the existing ready.json/artifacts and current container states before new cases. Candidate diff review and affected artifact/handoff checks passed
+before Git transfer; later fixture/product changes need their affected checks. No runtime grant, task checkbox or release capability was advanced.
+
+Recovery baseline evidence is collected under
+.research/implementation/producer-recovery/native/baseline: 15 files with sizes and
+hashes independently rechecked against baseline-identity.json. Tar SHA256
+f80d7e39f71a79a1dfd6db275d35e53a9e3de67fd727feaf15fd0b35986d3cb8.
+All 859 exported source files match Mac Git d2959da. Ready/control SHA256
+8d3e6ab6a0f454423ac522cc07a9dab5204581e9a7f31201f524a673ec057c0b;
+worker 4a8f8f37ec6dbf7b6e6def033966d21d116f027699cfd4c96ae6ff852f298f3c;
+probe 3ccc6f556a9a933402a097c8bfe13e98ffb6a4be669efbd82918b03fee0affc5.
+Actual Linux tests: 46 PASS/0 failed/0 ignored/86 filtered, packaged worker included.
+recovery-normal1.json: PASS, 26 exact native rows, 37 Control tables, 2 originals,
+native sequence 30 unchanged by resolution; resolved request 2 twice and bootstrap 1.
+Only producer_outcomes changes (one new row). Original bootstrap xmin 759 remains;
+new event recorder epoch 2 / incarnation 43, xmin 765; reservations xmin 758/760 unchanged.
+Zero fixture backends at case end. No source progress/ACK/GC was inferred.
+Independent review found the original fixture accepted generic Outcome Backend
+without proving its precise injected error. Root additionally captured PG backend 166
+(from the captured original Control row/start) at 23:25:54.435 UTC: exact fixture
+ERROR, RAISE context and INSERT statement. seed-fault-pg.log and its detached
+seed-fault-identity.json preserve this supplemental evidence outside the original
+15-file capture. The current dirty Python observer now requires this correlation;
+it has not run on Tux yet. The dirty Rust fixture also emits each intermediate
+recovery snapshot so the offline oracle can independently compare retry xmin;
+the baseline checked those intermediate states inside executed Rust assertions. This was an oracle gap, not a new measured product defect.
+This is a collected baseline, not the final evidence report or terminal cleanup.
 
 ## Implemented boundary and executed evidence
 
@@ -158,13 +208,19 @@ review directory. No active session/process obligation remains.
 
 ## Next action and remaining gates
 
-Finish local candidate review/checks, commit without publishing and transfer its
-exact Git revision to a separately inventoried Tux recovery lab. Build through the
-existing native runner's --producer-recovery mode and execute recovery.py normal:
-real original SQL rollback, new Control epoch, complete native bytes/sequence and
-original inputs unchanged, one exact outcome copied and replay xmin unchanged.
-Record failures before fixing; do not turn missing infrastructure into PASS.
-
+Commit/export the compiling finite fixture and execute its new Python fault
+scenario setup/oracle on the verified idle Tux lab: pg-only, input-size/digest/manifest, resource, cancelled, policy,
+expired, rollback, late-sql and lost COMMIT before-forward/after-complete. Seed
+copy failures for digest/manifest mutation come from the actual reservation guard,
+not the normal AFTER INSERT fixture: collect/check the specific PG backend error
+for each. The current Control proxy faults on COMMIT 4 (acquire, close, close retry,
+then resolution); original seed remains direct. Add a separate exact Git
+fixture-only export/build, asserting every product/dependency byte still matches
+d2959da. Preserve the original normal1 capture; never relabel its old oracle as
+checking later emitted snapshots or exact PG error logs. Keep edits on Mac; use a new exact Git fixture export/build on
+Tux, never modify its existing source. The initial current-Control preflight/copy
+review found no product defect. Any new contrary finding requires a discriminating
+regression and affected candidate requalification.
 Then extend the same slice with actual PG-only/native-open refusal, mismatched
 reservation length/digest/manifest, Rejected/AlreadyDurable, resource/cancellation,
 SQL rollback and both lost-COMMIT orders under a fresh Control claim, held-old-LOCK

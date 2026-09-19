@@ -119,13 +119,16 @@ pub async fn run(
     }
     join(old_driver, false).await;
     let direct_config = config.clone();
-    if mode == "event-closing-commit-lost" {
+    if matches!(
+        mode,
+        "event-closing-commit-lost" | "event-recovery-commit-lost"
+    ) {
         config.hostaddr("127.0.0.1".parse().unwrap()).port(6543);
     }
     config.application_name("bigbrotr-closing-fault");
     let (mut current, mut driver) = acquire(&config, spec, 33).await;
     assert_ne!(current.identity(), spec.control);
-    if mode == "event-closing-pg-first" {
+    if matches!(mode, "event-closing-pg-first" | "event-recovery-pg-only") {
         observer.execute("UPDATE control.producer_epochs SET state='closing' WHERE producer_slot_id=$1::bytea AND producer_epoch=1", &[&&spec.producer_slot_id.as_bytes()[..]]).await.unwrap();
     }
     if mode == "event-closing-old-lease" {
@@ -166,7 +169,11 @@ pub async fn run(
         "event-closing-rollback" | "event-closing-late-sql" | "event-closing-commit-lost"
     );
     let mut previous = None;
-    for attempt in 0..2 {
+    for attempt in 0..if mode == "event-recovery-pg-only" {
+        0
+    } else {
+        2
+    } {
         let mut validations = 0;
         let result = current
             .close_initial_producer(
@@ -228,7 +235,19 @@ pub async fn run(
         }
     }
     if recovering {
-        crate::ingest_recovery::run(&mut current, &recovery, observer, spec, path, budget).await;
+        crate::ingest_recovery::run(
+            direct_config,
+            current,
+            driver,
+            recovery,
+            observer,
+            spec,
+            path,
+            budget,
+            mode,
+        )
+        .await;
+        return;
     }
     drop(recovery);
     let after = crate::ingest_snapshot::state(observer, path).await;
@@ -240,14 +259,17 @@ pub async fn run(
     current.release().await.unwrap();
     join(driver, false).await;
 }
-async fn join(driver: tokio::task::JoinHandle<Result<(), tokio_postgres::Error>>, failed: bool) {
+pub(super) async fn join(
+    driver: tokio::task::JoinHandle<Result<(), tokio_postgres::Error>>,
+    failed: bool,
+) {
     let result = tokio::time::timeout(Duration::from_secs(5), driver)
         .await
         .unwrap()
         .unwrap();
     assert_eq!(result.is_err(), failed);
 }
-async fn acquire(
+pub(super) async fn acquire(
     config: &Config,
     spec: &InitialRegistration,
     id: u8,

@@ -170,3 +170,18 @@ copy and exact retries retain their original row/xmin. Full independently expect
 native bytes, original inputs and all Control tables are compared. Source and
 artifact checks precede execution. A test program's presence is not PASS evidence;
 the checkpoint owns current executed status and remaining failure/process cases.
+
+The extended `--scenario` selector covers native-open/PG-closing refusal,
+reservation byte-length/digest/manifest conflicts, reduced decoding resources,
+initial cancellation, policy refusal, local expiry, SQL rollback/delay and both
+lost-COMMIT orders. Corrupt fixture reservations are changed before insertion by
+an explicit lab-only trigger; production guards remain enabled. Engine error logs
+are correlated to the original Control backend so a generic Backend error cannot
+stand in for the intended copy failure. Every exact retry emits its complete
+snapshot, including xmin. A third Control claim follows retryable failures; a
+committed-but-undelivered copy retains the second recorder and xmin.
+`build_recovery_probe.py` builds only this client in `/out/recovery-probe` from a
+separate Git export, requiring all product/dependency inputs equal to d2959da.
+`--fixture-build` selects its verified artifact without replacing baseline binaries.
+These finite same-process reconnect cases do not qualify fresh-process exclusion,
+held native LOCK, complete drain, ACK or successor authority.

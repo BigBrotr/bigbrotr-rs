@@ -14599,13 +14599,14 @@
         "bigbrotr_running": 0,
         "observed_at": "2026-09-19T22:33:36.297395+00:00"
       },
-      "manifest": ".research/implementation/producer-closing/native/evidence-identity.json"
+      "manifest": ".research/implementation/producer-closing/native/evidence-identity.json",
+      "network_lifecycle": "empty owned network removed by recovery lab launch after verifying labels, no endpoints and both original containers stopped; historical data and containers retained"
     },
     "producer_recovery": {
-      "state": "local-candidate; native lab not launched",
+      "state": "running-retained for further qualification; native build and first connected case complete",
       "editing_owner": "root / Mac main",
       "base_source": "8931a0f611b718cfac845cda39211e9e8da59d8c",
-      "local_raw": ".research/implementation/producer-recovery",
+      "local_raw": ".research/implementation/producer-recovery/native",
       "preflight": ".research/implementation/producer-recovery/native/preflight.json",
       "preflight_at": "2026-09-19T23:20:53.112247+00:00",
       "preexisting_containers": 380,
@@ -14613,7 +14614,30 @@
       "bigbrotr_running": 0,
       "free_bytes": 97201893376,
       "planned_remote_root_prefix": "/home/tux/bigbrotr-implementation-20260917/runs/producer-recovery-",
-      "scope": "Positive original-request resolution after explicit native closing; required PG/process/fault qualification remains NOT_RUN"
+      "scope": "Positive original-request resolution after explicit native closing; required PG/process/fault qualification remains NOT_RUN",
+      "source": "d2959da61a54a89b6b4e1b4806aa3a819bdff778",
+      "tree": "45d8c742d032641b9579bfc3ae9bc0e2ef80ffa0",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-recovery-d2959da",
+      "owner": "f7d0467948f3bf4483742da12de9597e",
+      "container": "bigbrotr-implementation-producer-recovery-d2959da",
+      "postgres": "bigbrotr-implementation-producer-recovery-d2959da-pg",
+      "network": "bigbrotr-implementation-producer-recovery-d2959da",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "source_files": 859,
+      "started_at": "2026-09-19T23:23:42.228493+00:00",
+      "network_id": "803f48ecda42e8ec11f83afb9094d36e9355a356e6daeb59606ed649f6367be1",
+      "postgres_id": "f49ef729184ce2a756173c42d1379df31b84e1fe3b1869968c82bb35c7b4afa9",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "9a4699be5fa84f00bcd08ebec900b06d78cd6203c3d9726f64a40541a058ace5",
+      "baseline_status": "PASS:46 native tests and normal recovery case only; required negative/ambiguous/process scenarios remain open",
+      "baseline_raw": ".research/implementation/producer-recovery/native/baseline",
+      "baseline_identity": ".research/implementation/producer-recovery/native/baseline-identity.json",
+      "baseline_tar_sha256": "f80d7e39f71a79a1dfd6db275d35e53a9e3de67fd727feaf15fd0b35986d3cb8",
+      "baseline_native_rows": 26,
+      "baseline_control_tables": 37,
+      "baseline_originals": 2,
+      "baseline_remaining_pg_clients": 0
     }
   },
   "implementation_monitor_corrections_20260918": {
