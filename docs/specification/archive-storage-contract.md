@@ -270,8 +270,13 @@ descriptor's device/inode and the retained journal's hash; it does not independe
 prove flock ownership or defend against a replaced/malicious parent supplying a
 separately opened descriptor for that same inode. The database also needs its
 separate durable reservation before credential exposure; local custody alone
-cannot exclude another root pointing to the same database. These new reservation
-paths remain unqualified until their actual native/process cases execute.
+cannot exclude another root pointing to the same database. The local reservation
+and real native consumer now have [scoped qualification](../implementation/evidence/p02-initialization-custody-native-20260919.json)
+at `3efde78`: 22 actual parent/native/PG cases, unchanged full database/filesystem
+observations on refusals, real driver custody and a separately executed native
+holder regression. The raw reopened-descriptor case demonstrates the stated
+trusted-parent boundary. Database reservation, generated bootstrap credentials,
+ambiguous initialization recovery and the complete installed CLI remain required.
 
 The application-owned `bigbrotr_archive` schema contains immutable installation
 and attempt records plus one mutable owner row. Every native metadata mutation

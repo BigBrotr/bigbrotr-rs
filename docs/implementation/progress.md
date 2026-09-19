@@ -21,128 +21,119 @@ installed service readiness.
 
 ## Actual Git and ownership
 
-Mac main HEAD is candidate 105a54323e92d259200205d20585c2278ab1a9d9,
-origin/main freshly verified at 52ab36631f49d59bfad5ac7ad210d04e04efdbf2.
-Root sole writer; no merge/rebase. Candidate clean before Git bundle transfer;
-only checkpoint/inventory updated after launch. New local custody and actual
-native consumer are awaiting qualification. Previous ownership source remains
-qualified at df4a598; no applied SQL or dependency changes in the candidate.
-Read-only AI evidence review verified all 61 raw files, four archives and 2885
-source files, outcomes/COPY/roles/faults/locks without discrepancy. It did not run
-native cases or inspect retained ELF/full host inventories independently.
+Mac main HEAD 3efde78c11e72eae14af367add420f51faaf70fa, two unpublished candidate
+commits after origin/main52ab36631f49d59bfad5ac7ad210d04e04efdbf2 (last verified).
+Root sole writer, no merge/rebase. Exact candidates105a543 and3efde78 transferred
+through clean Git bundles. Current dirty work is root-owned evidence, checkpoint,
+inventory, task02-storage and archive-storage-contract qualification prose only.
+No production changes after native qualification. Between the two candidates,
+only the practical fixture/checkpoint/inventory changed; worker bytes identical.
+Read-only AI source/fixture and final recorded-evidence reviews complete. Final
+review independently verified30 raw files, both archives and1456 Git source files,
+case/check/artifact/dependency/lifecycle mappings with no discrepancy. It did not
+execute tests or independently inspect ELF/full host inventories/dump/fingerprint
+inputs; those observations come from the inspected harness and retained results.
 
-## Current ownership/ACL qualification
+## Current initialization custody qualification
 
-[Native report](evidence/p02-catalog-ownership-native-20260919.json) owns four exact
-sources, artifacts, workload, failures and 61 verified raw files. All 2885 exported
-source-file comparisons and four archives match independent Mac Git input.
+[Native report](evidence/p02-initialization-custody-native-20260919.json) owns two
+sources/artifacts, workload, fixture limitations and30 verified raw files. Both
+archives and1456 exported source-file comparisons match independent Mac Git.
 
-The finite install_for_manager transaction validates exact manager/bootstrap
-names/OIDs, transfers 28 native tables, 4 guard tables, guard schema and 2 functions
-to the non-superuser runtime manager, and preserves database/public-schema owners.
-Shared guard inspection verifies default/actual table,column,function/schema ACLs,
-PUBLIC, onward delegation, required ordinary manager rights and membership closure.
-No applied SQL checksum, native worker bytes or scientific schema changes.
-Incompatible persisted grants refuse; no implicit repair/adoption.
+LocalInitialization reserves the actual root with permanent private marker, lock
+and synchronized immutable bounded journal. It binds initialization/dataset/catalog/
+root/boot/device/inode identities, retains close-only custody in the actual driver
+and one native child, preserves partial state and denies any recovered launch.
+The real reserved native command checks descriptor/journal identity then shares
+the existing strict fresh catalog/scientific initializer. No fake ArchiveAttempt,
+applied SQL change, new dependency, implicit adoption or marker removal.
 
-At d21eacc: two real counterexamples REPRODUCED. Generic foundation install leaves
-postgres owner; initializer defaults allow a named reader to UPDATE guard.owner
-and old inspection accepts. Test mutation rolled back.
-At 4404a16: first install succeeds, suite FAIL because data-only pg_dump comments
-contain the intentionally changed owner. Retained 28 COPY blocks / 224 metadata rows
-are identical; changed-table/missing-block negative controls discriminate the fix.
-At 9f02f43: 22 cases PASS, then FAIL: missing owner SELECT returns Backend before
-final semantic validation. Full catalog and role fingerprints unchanged. PG error
-and exact 16.15 ri_PlanCheck/ri_PerformCheck confirm owner-authorized FK execution.
-df4a598 validates privileges before binding INSERT, retaining final full inspection.
+Mac45704:31 archive tests and scoped Clippy PASS, including six new reservation
+cases, complete journal byte oracle and competing creators. Earlier parallel28538
+had two Occupied failures after holder drop; serial six PASS. Concurrent process
+forks can briefly retain CLOEXEC descriptors: tests now use the existing bounded
+actual-reacquisition pattern, never elapsed-time authority. Native Mac7885 failed
+before compilation for absent verified DUCKDB_LIB_DIR; no ambient library bypass.
 
-At df4a598: 56 actual PG cases PASS. Includes real non-superuser manager inspection,
-wrong OIDs/owner/unretired bootstrap, permitted named readers, incompatible defaults,
-column/table/function/schema/PUBLIC/delegation/membership grants, missing manager
-rights, mid-DDL rollback, both actual lost-COMMIT directions and two real concurrent
-installers. Fresh observations resolve installed versus absent states; no automatic
-ambiguous initializer retry is inferred. Two waiter PID/blocker/classid/objid sets
-and holder PID retained; exactly one installed and one existing. Normal fixture
-calls return permits and drain target backends to zero; role fingerprints unchanged.
-Raw full-dump hashes cover refusals; before/after snapshots append one LF, and
-installed snapshot includes reader grants. This is empty scientific initialization
-with nonempty native metadata, not a signed-event/publication workload.
+105a543: ordered native build,32 parent tests, scoped Clippy and22 practical cases
+PASS, with review-discovered fixture limits. Symlink target was inside root,
+wrong FD/replaced lock conflated file shape, reopened-FD case also inherited the
+original lock, temporary cleanup could follow unknown termination, and selected
+PG dumps omitted ACL/owner/comments. All corrected in3efde78; first evidence retained.
 
-Mac formatting/scoped Clippy/Python-artifact/diff checks PASS. All four native
-builds and scoped Clippy PASS; each native unit selection runs three credential/
-SCRAM cases, not ACL unit coverage. The 56 practical cases own ACL evidence.
-Read-only AI review found missing ordinary rights, membership/PUBLIC/default/delegation
-checks, late failure-output capture and incomplete lock evidence; corrected before
-qualification. It also confirmed early privilege validation uses only catalogs/ACLs
-and preserves one transaction. Reviewer ran no native tests. No adversarial cluster
-administrator isolation, performance, resource exhaustion or full initializer claim.
+3efde78: ordered native build,32 parent tests and scoped native/parent Clippy PASS.
+The one normally ignored native-holder test was separately executed on its exact
+compiled ELF with the verified bundle:1PASS/0ignored. All22 corrected actual cases
+PASS: parent fresh initialization and recovered-launch refusal, real PG driver
+before polling/live/after join, native marker/FD/inode/mode/link/JSON refusals and
+actual child SIGKILL custody. Seventeen refusals plus the killed child leave full
+PG dumps and filesystem fingerprints unchanged; PG restrict tokens alone normalized.
+Positive scientific state is literal six logical tables, snapshots0/1, zero data
+files and schema commit hash, not a signed event workload. Target backends drain.
+
+Native validation proves FD identity, not flock ownership. A raw fixture supplies
+only a separately reopened same-inode FD, reacquires the lock after exec before supplying input,
+and then initializes successfully. This is the explicit trusted-parent boundary:
+review found no public typed parent path that supplies such a descriptor. It is
+not adversarial same-UID isolation or authority for an external raw caller.
+Database reservation/generated credentials/ambiguous initialization recovery,
+installed CLI, cross-boot recovery, power-loss and resource-exhaustion remain open.
 
 ## Owned resources
 
-No active experiment. initialization-custody-105a543 completed ordered build,
-31 parent archive tests and scoped native Clippy; 22 practical cases PASS with
-known fixture discrimination limits (see below). Native50139/audit98011 and
-collection97363 terminal0. Fourteen raw files and728 exact source files verified;
-first tar d58779e39e11d2156ec09623c2cc08d228af17da1b7c1de5aaaa0d0335afeb5e.
-Runner566d10ad7c47efb5882411b2037c304bdf24361d4e7b0b0e2b7d58e3ff8395e9
-stopped143; PG65ce35914d70eddb32f0a5442186b388aa25fdadef7348d905813cc2746494b3
-stopped0; noOOM. All298 preexisting containers unchanged; eight unrelated running.
-The owned empty network3289b4cba3db26a626aaa7f7f406cf23c62c8ea1a92909e96d4ceedd2d199ef0
-was verified and removed at06:39:54Z; containers/data remain retained, no restart.
-Local raw/helpers: .research/implementation/archive-worker/initialization-custody.
-Next lab copies105a543/out/build and mounts105a543/out/archive-worker read-only.
-[Inventory](../research/laboratory-inventory.json), catalog_installed_ownership,
-owns complete resource identities, preflights, earlier failures and network retirement.
+No active experiment. Qualified native85078, explicit-holder25445, audit55764 and
+collection50491 terminal0. Both initialization labs stopped-retained; never restart.
+[Inventory](../research/laboratory-inventory.json), initialization_custody, owns full
+preflights/resources, former lab evidence and verified network retirement.
 
-Latest catalog-install-df4a598 under /home/tux/bigbrotr-implementation-20260917/runs/:
-owner ae618964fe0d75e57cf5fa544f0194d9;
-runner 00c4459223e84481b0d86f9baaa5af3d6737b48c6ee62dbb20184ca172529b19 stopped 143;
-PG c3eaeded17c4e01bbce3ab00249d1bb225123b36fad615800f75a9ca96f3d0e5 stopped 0;
-network 71739e209d37eefeca4df25d4e86c13fb85803ad35fb8aa9d38626a81f73d94c empty-retained.
-No OOM; all 296 preexisting containers, full mounts/networks/lifecycle unchanged;
-eight unrelated running, zero BigBrotr at 2026-09-19T06:02:06.620144Z.
-Latest reusable cache/assets: df4a598/out/{build,archive-worker}; copy/read-only
-only, always rebuild from new exact source. Runner image/limits and actualPG16.15
-fsync/full_page_writes identities are in report/inventory. No host ports.
+Latest /home/tux/bigbrotr-implementation-20260917/runs/initialization-custody-3efde78:
+owner4d62aca117e9752fbcc2eaca1e11e76b;
+runnerbe517f3f29ca4b2d538acb8c2dbb54cf15abe526a2a9b00bb6ca827eaf15ca45 stopped143;
+PG92443e34d179e58dc0c01dfe269885598455d3595f780fe6dc99114e31aa733d stopped0;
+network2b1939cf10f83a8d09526f33f2c7e6d4f032047cd4687c15a33363c3f4529b9a empty-retained.
+No OOM; all300 preexisting containers/mounts/networks/lifecycle unchanged;
+eight unrelated running, zero BigBrotr at2026-09-19T06:43:22.241954Z.
+Runner2CPU/6GiB/512PIDs, PG1CPU/1GiB/128PIDs, internal network/no host ports.
+Latest copied-cache/read-only-assets inputs:3efde78/out/{build,archive-worker}.
 
-Raw root .research/implementation/archive-worker/catalog-ownership:
-baseline 14 files;failed-owner-comments 15;failed-owner-privilege 16;qualified 16.
-Qualified tar a87663f43a81e07ccfd0f423f3116f3edc69c1b6b3034967627e5790d465a0b2.
-Main 0e83b95ed456afb4088ac2df710cb7efa259fb72de5d231d2c984c73cba3744b,8,231,632 bytes;
-worker 4e754f7f525f484df96920b9c7a73f5ddb40762b6e5051a459f45d41c60deac9,12,571,504 bytes.
-Initial d21eacc launch exhausted Docker address pools. Only verified empty retired
-auth 567/e98 and install d21/4404 networks were removed; all containers/data retained.
-9f02f43 network was verified empty/owned/stopped and removed at 06:35:22Z;
-df4a598 remains empty-retained. Containers and data are preserved. Record ownership/lifecycle before
-future cleanup; source/credentials/data are never blanket-pruned.
+Raw root .research/implementation/archive-worker/initialization-custody:
+first14files,tar d58779e39e11d2156ec09623c2cc08d228af17da1b7c1de5aaaa0d0335afeb5e;
+qualified16files,tar4f54f9abccdbe7a3891dfc7fce91d5377c7d901f06ea37efd7d2c3c156870dad.
+Main11be3f3e38f07a27e4f3de5a185058cc634995a84e04c49eb7e3cc161eba133e,8,224,680bytes;
+workerbaebeedbcf5871b7089109f4b39a29543e845bf9cbc09d92b97e11a82a4482bf,12,608,608bytes.
+Only verified empty owned retired9f02f43 and105a543 networks removed this slice;
+containers/data retained. Earlier catalog-install-df4a598 remains stopped-retained.
+Address pools may need verified lifecycle cleanup before another network launch.
+Never blanket-prune, restart retained labs or modify another workload.
 
 ## Earlier qualified prerequisites and exclusions
 
-[Installed catalog CLI](evidence/p02-catalog-cli-native-20260919.json): explicit
-archive.catalog_id, protected actual archive inspect and bounded malformed-owner
-refusal.38 scientific guard cases and18 CLI cases; it checks guard/scientific
-metadata, not archive file content or startup authority.
-[Native authentication](evidence/p02-native-catalog-auth-20260919.json):16 old/new
-real PG/native receipt cases; mandatory complete SCRAM refuses trust and omitted
-server-final before SQL. Closed completion decoder rejects duplicate fields.
-Actual verify-full positives/wrong CA/name/password; no configured mutual TLS claim.
+[Ownership/ACL](evidence/p02-catalog-ownership-native-20260919.json):56 actual PG cases
+atdf4a598, including exact configured manager/bootstrap OIDs, atomic28native+4guard
+ownership, defaults/columns/PUBLIC/delegation/membership/ordinary privileges,
+non-superuser manager inspection, rollback, both lost-COMMIT directions and real
+concurrent installers. Baseline counterexamples and both fixture/early-ACL failures
+retained. Full initializer and fresh manager publication remain pending.
+[Catalog CLI](evidence/p02-catalog-cli-native-20260919.json):explicit catalog ID,
+protected actual inspect,38 scientific guard cases and18 CLI cases; no archive-file
+content/startup-authority claim.
+[Native auth](evidence/p02-native-catalog-auth-20260919.json):16 old/new cases;
+mandatory complete SCRAM and closed replies, real verify-full; no configured mTLS.
 [Shared PG transport](evidence/p02-shared-postgres-transport-native-20260919.json):
-actual CLI TLS/signals/restart,custody,signed publication/receipt paths. Attach
-custody before polling actual driver; Control budget remains per-command.
+actual CLI TLS/signals/restart,custody,signed publication/receipt; attach custody
+before polling actual driver. Control budget remains per-command.
 [Retained Control intent](evidence/p02-retained-attempt-read-native-20260919.json):
-original request returned after rollback without re-registration; malformed metadata
-and extremes not native-qualified.
-[Missing import](evidence/p02-missing-import-native-20260919.json) and
-[local custody](evidence/p02-local-custody-native-20260919.json): real delayed
-query/owner schedules, actual driver and worker descriptors; local reap is not
-remote rollback or cross-boot/host recovery.
-[Fresh receipts](evidence/p02-archive-receipts-native-20260919.json): bounded complete
-EOF required; uncertain termination retains capacity.
-[Signed fencing](evidence/p02-signed-fencing-native-20260919.json): both lock orders,
-40001→55000. [Normal INSERT failure](evidence/p02-native-commit-file-loss-20260918.json)
-remains rejected: lost native COMMIT response deleted committed files. Selected
-caller-owned COPY/registration retains uncertain files; no INSERT fallback/unlink.
-NOLOGIN, empty activity, PID or lease expiry is not old-client exclusion.
+original request after rollback without re-registration; malformed metadata and
+extremes not native-qualified.
+[Missing import](evidence/p02-missing-import-native-20260919.json),
+[local custody](evidence/p02-local-custody-native-20260919.json),
+[fresh receipts](evidence/p02-archive-receipts-native-20260919.json),
+[signed fencing](evidence/p02-signed-fencing-native-20260919.json): local reap is
+not remote rollback; unknown termination retains capacity; both lock orders tested.
+[Normal INSERT failure](evidence/p02-native-commit-file-loss-20260918.json) remains
+rejected: lost native COMMIT response deleted committed files. Selected caller-owned
+COPY/registration retains uncertain files; no INSERT fallback/unlink. NOLOGIN,
+empty activity, PID or lease expiry is not old-client exclusion.
 
 Scoped monitor corrections remain closed with executed evidence:
 [MON-001/002/004/006](evidence/p01-monitor-corrections-native-20260918.json),
@@ -154,51 +145,25 @@ Do not mechanically rerun unrelated suites.
 
 ## Next bounded action
 
-Ownership qualification, document checks, review and private push are complete.
-Continue explicit reserved initialization under P02-T04 steps3/4/5. Permanent
-private intent/lock creation, bounded same-boot recovery (no new launch), retained
-driver/child custody and native descriptor/journal validation are now dirty code.
-Mac 45704: 31 archive tests and parent/example Clippy PASS after wiring, including
-six new reservation cases. New full journal byte oracle and concurrent creators
-covered. Earlier parallel run28538 had two Occupied failures after holder drop;
-serial execution passed, and the same bounded actual-acquire helper used by
-LocalAttempt now handles concurrent test fork holders without inferring release.
-Formatting, diff and artifact checks PASS. Independent AI source review found no
-blocking in-contract defect; native FD identity is not independent flock proof.
-Mac native check 7885 terminal101: verified DUCKDB_LIB_DIR bundle absent.
-The first exact Tux build and22 practical cases PASS, with fixture limitations. The first real parent/native/PG run exercised22 cases. AI review found symlink
-refusal happened too early, wrong-fd/replaced-lock cases conflated file-shape
-checks, and raw reopened-fd inherited the original lock too. TemporaryDirectory
-could clean while termination unknown. The local fixture now retains scratch,
-isolates these controls, verifies actual absent custody for the raw reopened-fd
-observation, compares full PG dumps (only random restrict tokens normalized) and
-captures unchanged filesystem fingerprints on refusals. No production change.
-Next: commit corrected fixture/docs and qualify the exact revision in a fresh
-lab using native_initialization.py then initialization_cases.py; audit, collect,
-review and record its actual scope before private push.
-Atomic manager installation is now available; it does not
-provision bootstrap credentials, establish native exclusion or reserve roots.
+Recorded-evidence review, artifact/handoff/diff checks and fresh private-remote
+inspection PASS. Commit this qualification and push normally, then continue the full reserved initializer underP02-T04 steps3/4/5:
+local custody and atomic manager installation now exist, but they do not reserve
+the database or provision a fresh sole-holder bootstrap credential.
 
-The reviewed initializer design needs a distinct permanent reservation inside the
-actual data root, with inherited close-only custody. LocalAttempt requires a real
-ArchiveAttempt and cannot be reused or forged. The old native initialize requires
-an empty root; the new reserved command validates its permanent marker and
-inherited descriptor without removing it, then uses the same initialization path.
-The same DB with another root needs a durable reservation; a session advisory lock
-is insufficient. Fresh restricted DB-OID-specific role tombstone is the reviewed
-candidate; finalize lifecycle/backup/OID consequences in the owning contract.
+Finalize and implement the durable database reservation plus fresh restricted
+bootstrap role/material in one explicit privileged transaction. Same DB/different
+roots must conflict durably; a session advisory lock is insufficient. Reviewed
+candidate is a DB-OID-specific NOLOGIN role tombstone with only the initialization
+nonce in its global comment (avoid exposing root/dataset metadata). Define retained
+role/OID/recovery/restore lifecycle in the owning contract before code. Use existing
+SCRAM Material; expose secret only after known provisioning COMMIT, never via SQL
+plaintext/logs. Ambiguity preserves both reservations and forbids automatic retry.
 
-Generate fresh bootstrap credentials, expose once only after known provisioning
-COMMIT, and keep all secret-bearing drivers/native children under positive custody.
-Use one pinned manager/native destination and protected configured TLS inputs;
-configured native mutual TLS remains a gate. Positive native join, exact bootstrap
-retirement/backend resolution, atomic install and fresh inspection are required.
-Unknown provisioning/native/retirement/install outcomes preserve reservations for
-explicit recovery. Pre-provisioned credentials cannot establish sole-holder custody.
-No runtime superuser promotion, REASSIGN OWNED, implicit serve initialization,
-automatic partial retry or permission from matching observations.
-
-Actual fresh publication/seal under the configured non-superuser manager, separate
-SELECT-only readers, retained batch count/ranges, whole-role resource reconciliation,
-cross-boot recovery, protection and complete M1 remain required. The current service
-is Control-only. Full initializer/reservation/CLI remains implementation work.
+Wire the actual custodied driver/native consumer through one pinned trusted route,
+then positive join, exact bootstrap retirement/backend resolution, atomic manager
+install and fresh inspection. Configured native mutual TLS is still a gate.
+Pre-provisioned fixture credentials are not sole-holder custody. No runtime
+superuser promotion, REASSIGN OWNED, implicit serve initialization or permission
+from matching observations. Complete CLI/recovery, fresh manager publication/seal,
+SELECT-only readers, whole-role budget reconciliation/protection and M1 remain
+required. Do not mark tasks complete from this prerequisite qualification.

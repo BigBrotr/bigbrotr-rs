@@ -1,0 +1,1123 @@
+{
+  "format": "bigbrotr-initialization-custody-evidence/1",
+  "observed_date": "2026-09-19",
+  "status": "PASS",
+  "scope": "P02-T04 steps3/4/5 permanent local root reservation and actual reserved native consumer; no complete database reservation, generated bootstrap credential, installed initializer or M1 claim",
+  "sources": {
+    "first": {
+      "revision": "105a54323e92d259200205d20585c2278ab1a9d9",
+      "tree": "53e3d8c431c7564182357ec099d3cb1f9c79e4c8",
+      "files": 728,
+      "archive_sha256": "5891c27a50c81a55f3d51718a16f11f78d16c98873e81cc5ca3aec87121fa9b1",
+      "manifest_sha256": "9b6e569042513f94ba50df4e52a15efae52cfc1525105067649a26936cbf6909"
+    },
+    "qualified": {
+      "revision": "3efde78c11e72eae14af367add420f51faaf70fa",
+      "tree": "a29e006e42c074ee3431364df56023a3db0251a4",
+      "files": 728,
+      "archive_sha256": "4b9028c3fb8a958dfdf25ba261133b5321f1fd9d532ec2ba369c20d35fd4c607",
+      "manifest_sha256": "167f5870701d5f97e40e4249ae8b39ce821d29a81fae2fbd370d9dc131467acb"
+    }
+  },
+  "source_verification": {
+    "status": "PASS",
+    "method": "Clean Git bundle and archive, all exported source files checked before/after and independently against Mac Git; 1456 file comparisons across two revisions",
+    "production_equivalence": {
+      "changed_paths": [
+        "docs/implementation/progress.md",
+        "docs/research/laboratory-inventory.json",
+        "experiments/archive-engine/initialization_cases.py"
+      ],
+      "rust_native_sql_dependencies": "Identical between first and qualified candidates; worker bytes identical; parent source identity changes"
+    }
+  },
+  "environment": {
+    "host": "Tux",
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "native_toolchain": {
+      "os": "Linux",
+      "architecture": "x86_64",
+      "discovery": "llvm-config",
+      "environment": {
+        "CC": "/usr/lib/llvm-14/bin/clang",
+        "CXX": "/usr/lib/llvm-14/bin/clang++",
+        "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+        "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+        "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+      },
+      "tools": {
+        "CC": {
+          "path": "/usr/lib/llvm-14/bin/clang",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "CXX": {
+          "path": "/usr/lib/llvm-14/bin/clang++",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "AR": {
+          "path": "/usr/lib/llvm-14/bin/llvm-ar",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+          "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+          "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+        },
+        "LIBCLANG_PATH": {
+          "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+          "version": "Debian clang version 14.0.6"
+        },
+        "discovery": {
+          "path": "/usr/lib/llvm-14/bin/llvm-config",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+          "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+          "version": "14.0.6"
+        }
+      },
+      "sdk": null
+    },
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "limits": {
+      "runner_cpus": 2,
+      "runner_memory_bytes": 6442450944,
+      "runner_pids": 512,
+      "postgres_cpus": 1,
+      "postgres_memory_bytes": 1073741824,
+      "postgres_pids": 128,
+      "host_ports": []
+    },
+    "profile": "Same-boot Linux ext4; actual parent LocalInitialization::create enforces the descriptor mount profile"
+  },
+  "dependencies": {
+    "inputs_sha256": {
+      "Cargo.lock": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215",
+      "contracts/protocol/nip01-event.json": "b830d5ab8651f5a763ebcffdc0eb1737ba70f4602c93fc714c892865ffca2db8",
+      "contracts/protocol/versions.json": "37c76706c5a2aa4fc72a40aeed908f104620eafcee1118b7cee8baf133546c95",
+      "contracts/release/dependencies.json": "4f73cd0a81916b7d203556ff9ad1d8efd97dfe95b2b2305c35468747e8669132",
+      "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167"
+    },
+    "archive_engine_registry_sha256": "ae0069565ab9411928df0cf067822630c4f3a912919e61633b952f8077a5e2c1",
+    "engine_version": "v1.5.5",
+    "binding_version": "1.10505.0",
+    "arrow_version": "58.4.0",
+    "assets": {
+      "extension_platform": "linux_amd64",
+      "archive": {
+        "name": "libduckdb-linux-amd64.zip",
+        "url": "https://github.com/duckdb/duckdb/releases/download/v1.5.5/libduckdb-linux-amd64.zip",
+        "bytes": 41300590,
+        "sha256": "1fb8ce388157d84a25abe685a8a2520bf00c00321821968e4bb398fd766e7abb"
+      },
+      "library": {
+        "name": "libduckdb.so",
+        "bytes": 70529912,
+        "sha256": "fc23f12e376c47be520f75221288281906e7942e8fd6f6ce4849198ba60d0405"
+      },
+      "header": {
+        "name": "duckdb.h",
+        "bytes": 244057,
+        "sha256": "48e716b9ce96ca8fead9cb35693fdc0343ac0fc1f6e7db5561fa0f44b674153d"
+      },
+      "extensions": [
+        {
+          "name": "ducklake",
+          "url": "https://extensions.duckdb.org/v1.5.5/linux_amd64/ducklake.duckdb_extension.gz",
+          "compressed_bytes": 12655412,
+          "compressed_sha256": "733ccf19fedcfd5e0bfaf85993219145181099cc411076cabf14933ea16ab452",
+          "bytes": 36436086,
+          "sha256": "e51bf9e8d933d0e83780ae096455501b542cf962569a2ce5613532d702c08302"
+        },
+        {
+          "name": "postgres_scanner",
+          "url": "https://extensions.duckdb.org/v1.5.5/linux_amd64/postgres_scanner.duckdb_extension.gz",
+          "compressed_bytes": 14583967,
+          "compressed_sha256": "e0f631a5535f165468bc8a20501f8bc1490adbc877d38fcdff2f8d05531e1e5b",
+          "bytes": 41696558,
+          "sha256": "b1ced4cfc6311313e117c2afb3eac76508718778dde0716421503c7dbfb5605c"
+        },
+        {
+          "name": "httpfs",
+          "url": "https://extensions.duckdb.org/v1.5.5/linux_amd64/httpfs.duckdb_extension.gz",
+          "compressed_bytes": 7416043,
+          "compressed_sha256": "7cdd52a3135388718884a9b71e3987ba723002121e8e9de399c4ed619d824a05",
+          "bytes": 21570542,
+          "sha256": "887c392b1e49128d11667c81e3698d8b00dfdeb456771acf66d05a0f74f7b7d8"
+        }
+      ]
+    },
+    "verification": "tools.archive_bundle.install_bundle verifies pinned assets before build; actual native Engine verifies bundle at startup"
+  },
+  "artifacts": {
+    "first": {
+      "main": {
+        "sha256": "31fdca39ce2c0dff1981a7f967bf8a812ebc8ea7157bfb23d9efcc7b2147e7db",
+        "bytes": 8224736,
+        "elf_machine": 62
+      },
+      "worker": {
+        "sha256": "baebeedbcf5871b7089109f4b39a29543e845bf9cbc09d92b97e11a82a4482bf",
+        "bytes": 12608608,
+        "elf_machine": 62
+      }
+    },
+    "qualified": {
+      "main": {
+        "sha256": "11be3f3e38f07a27e4f3de5a185058cc634995a84e04c49eb7e3cc161eba133e",
+        "bytes": 8224680,
+        "elf_machine": 62
+      },
+      "worker": {
+        "sha256": "baebeedbcf5871b7089109f4b39a29543e845bf9cbc09d92b97e11a82a4482bf",
+        "bytes": 12608608,
+        "elf_machine": 62
+      }
+    },
+    "qualified_probe_sha256": "99ea67b6e5c9ad28a355bfca0e36ed45030dfc7505c57c1357d596e14b842b20"
+  },
+  "implemented": [
+    "Private permanent .bigbrotr-initialization marker and locked custody.lock, immutable bounded intent.json with initialization/dataset/catalog/root/boot/device/inode identity, synchronized before return",
+    "Close-only custody retained by unpolled or actual PostgreSQL transport and one native child; partial state preserved, recovery observes/reacquires but cannot launch",
+    "Actual private initialize-reserved-catalog worker validates marker, descriptor identity and journal hash then shares the existing strict fresh PostgreSQL/scientific initialization path",
+    "Bounded parent wire preflight before one launch, exact closed response and positive child join; grants retained through supervision"
+  ],
+  "mac": {
+    "source": "Dirty Rust files subsequently committed unchanged as105a543; fixture-only refinement at3efde78",
+    "checks": [
+      {
+        "command": "cargo test --locked -p bigbrotr --lib storage::archive::",
+        "status": "PASS",
+        "passed": 31,
+        "failed": 0,
+        "ignored": 0,
+        "session": 45704
+      },
+      {
+        "command": "cargo clippy --locked -p bigbrotr --lib --example catalog_schema_probe -- -D warnings",
+        "status": "PASS",
+        "session": 45704
+      },
+      {
+        "command": "cargo fmt --all -- --check; git diff --check; python3 -B experiments/verify_artifacts.py",
+        "status": "PASS"
+      }
+    ],
+    "prior_failure": {
+      "session": 28538,
+      "outcome": "4 passed,2 failed: Occupied after local holder drop in parallel process tests",
+      "disposition": "Six cases pass serially. Concurrent fork can temporarily retain CLOEXEC descriptors until exec; same existing LocalAttempt bounded actual-acquisition helper adopted for initialization tests, never elapsed-time authority. Full parallel31 then PASS."
+    },
+    "native_check": {
+      "session": 7885,
+      "exit": 101,
+      "status": "NOT_RUN",
+      "reason": "Mac verified DUCKDB_LIB_DIR bundle absent; no ambient-library bypass"
+    }
+  },
+  "native_checks": {
+    "first": {
+      "builder": "experiments/archive-engine/native_initialization.py",
+      "status": "PASS",
+      "checks": [
+        {
+          "name": "ordered-build",
+          "command": [
+            "/usr/bin/python3",
+            "/source/experiments/archive-engine/native_initialization.py",
+            "--build-binaries"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 45.09142310032621
+        },
+        {
+          "name": "fixture",
+          "command": [
+            "cargo",
+            "build",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr",
+            "--example",
+            "catalog_schema_probe"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 8.679771818220615
+        },
+        {
+          "name": "parent-tests",
+          "command": [
+            "cargo",
+            "test",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr",
+            "--lib",
+            "storage::archive",
+            "--",
+            "--nocapture"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 10.331058376003057
+        },
+        {
+          "name": "clippy",
+          "command": [
+            "cargo",
+            "clippy",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr",
+            "-p",
+            "bigbrotr-archive-worker",
+            "--lib",
+            "--example",
+            "catalog_schema_probe",
+            "--bin",
+            "bigbrotr-archive-worker",
+            "--",
+            "-D",
+            "warnings"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 3.6215491280891
+        }
+      ],
+      "parent_tests": {
+        "passed": 32,
+        "failed": 0,
+        "ignored": 1,
+        "ignored_case": "native_worker_alone_retains_custody_after_coordinator_descriptors_close"
+      }
+    },
+    "qualified": {
+      "builder": "experiments/archive-engine/native_initialization.py",
+      "status": "PASS",
+      "checks": [
+        {
+          "name": "ordered-build",
+          "command": [
+            "/usr/bin/python3",
+            "/source/experiments/archive-engine/native_initialization.py",
+            "--build-binaries"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 45.185417701955885
+        },
+        {
+          "name": "fixture",
+          "command": [
+            "cargo",
+            "build",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr",
+            "--example",
+            "catalog_schema_probe"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 8.728736847173423
+        },
+        {
+          "name": "parent-tests",
+          "command": [
+            "cargo",
+            "test",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr",
+            "--lib",
+            "storage::archive",
+            "--",
+            "--nocapture"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 10.381364568136632
+        },
+        {
+          "name": "clippy",
+          "command": [
+            "cargo",
+            "clippy",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr",
+            "-p",
+            "bigbrotr-archive-worker",
+            "--lib",
+            "--example",
+            "catalog_schema_probe",
+            "--bin",
+            "bigbrotr-archive-worker",
+            "--",
+            "-D",
+            "warnings"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 2.019015070050955
+        }
+      ],
+      "parent_tests": {
+        "passed": 32,
+        "failed": 0,
+        "ignored": 1,
+        "ignored_case": "native_worker_alone_retains_custody_after_coordinator_descriptors_close"
+      },
+      "explicit_native_holder": {
+        "status": "PASS",
+        "passed": 1,
+        "failed": 0,
+        "ignored": 0,
+        "test_executable_sha256": "bf15108534e3898c17196b882c2e351da432335e9b422b1a05c4d0b942efb272",
+        "checks": [
+          {
+            "name": "original-native-holder",
+            "command": [
+              "/out/build/target/release/deps/bigbrotr-925eca4e1ec86f86",
+              "storage::archive::lifetime::tests::native_worker_alone_retains_custody_after_coordinator_descriptors_close",
+              "--exact",
+              "--ignored",
+              "--nocapture",
+              "--test-threads=1"
+            ],
+            "status": "PASS",
+            "executed": true,
+            "exit_code": 0,
+            "seconds": 0.3643435873091221
+          }
+        ],
+        "environment": {
+          "BIGBROTR_ARCHIVE_TEST_BUNDLE": "/out/archive-worker"
+        },
+        "orchestrator_path": ".research/implementation/archive-worker/initialization-custody/native-holder.py",
+        "orchestrator_sha256": "5cb27db01dc6af5e8b5a348ebf0e90dcb615ffdc779d3360514e2dc2b71521db"
+      }
+    }
+  },
+  "first_run": {
+    "status": "PASS_WITH_FIXTURE_LIMITATIONS",
+    "cases": 22,
+    "limitations": [
+      "Symlink target inside root triggered extra-root check first",
+      "Wrong fd was /dev/null; replaced lock was unlinked, confounding inode checks with file shape",
+      "Reopened fd case also inherited original locked fd",
+      "TemporaryDirectory could clean scratch on unknown termination",
+      "PG dump excluded ownership, ACLs and comments"
+    ],
+    "correction": "3efde78 isolates target/lock outside root, uses private regular wrong fd, passes only reopened fd and demonstrates actual lock availability while child waits, retains all scratch and compares full PG dumps plus filesystem fingerprints"
+  },
+  "qualified_cases": [
+    {
+      "case": "actual-parent-reserved",
+      "result": {
+        "active_permits": 0,
+        "outcome": "Ok(())",
+        "success": true
+      },
+      "effects": {
+        "tables": [
+          "archive_commits",
+          "dictionaries",
+          "event_eligibility_facts",
+          "event_receive_facts",
+          "events",
+          "provenance_facts"
+        ],
+        "snapshots": [
+          0,
+          1
+        ],
+        "data_files": 0,
+        "schema_sha256": "29025d8409a038a34adca7411c8799b5f39c53b11b70a04bdf0980dcc949e451"
+      },
+      "journal_sha256": "2161ea3ce9263259392bba3bd93f01d5dd4e1cb92348f8a58253d828e19717e0"
+    },
+    {
+      "case": "actual-parent-driver-custody",
+      "result": {
+        "joined": "reacquired",
+        "live": "occupied",
+        "query": 42,
+        "status": "PASS",
+        "unpolled": "occupied"
+      },
+      "effects": {
+        "database_unchanged_sha256": "0dd535b8b68018038e72ebe1393be8c3681f274db1908faf3d60fee874c042fd"
+      },
+      "journal_sha256": "b40c6f056df5d4c1a971147adbacab57301b7de6d7d24359ef98c9985741618f"
+    },
+    {
+      "case": "valid",
+      "result": {
+        "exit": 0,
+        "stdout": "{\"format\":\"bigbrotr-native-reserved-initialize/1\",\"status\":\"initialized\"}\n",
+        "stderr": "",
+        "journal_sha256": "1e1ce68b60fafdabcaef2736f5dcd0d7efa9950ea24ac6d74087d1d1e19d4ece",
+        "filesystem_before_sha256": "e5b126c5069860c25024e9e5e6a0c3cdd54449e10191905c888ef0dfa0890d49",
+        "filesystem_after_sha256": "e5b126c5069860c25024e9e5e6a0c3cdd54449e10191905c888ef0dfa0890d49"
+      },
+      "status": "PASS",
+      "effects": {
+        "tables": [
+          "archive_commits",
+          "dictionaries",
+          "event_eligibility_facts",
+          "event_receive_facts",
+          "events",
+          "provenance_facts"
+        ],
+        "snapshots": [
+          0,
+          1
+        ],
+        "data_files": 0,
+        "schema_sha256": "29025d8409a038a34adca7411c8799b5f39c53b11b70a04bdf0980dcc949e451"
+      }
+    },
+    {
+      "case": "changed-journal",
+      "result": {
+        "exit": 1,
+        "stdout": "",
+        "stderr": "archive catalog bootstrap failed: InvalidDataRoot\n",
+        "journal_sha256": "5c29a1adf37a7474ac3062d7f20538904144fcdbc190c47bdb4052576ab77431",
+        "filesystem_before_sha256": "9f7d79df413892da2cea65378d512cdcb2e836d82684af3d010030efad4406e0",
+        "filesystem_after_sha256": "9f7d79df413892da2cea65378d512cdcb2e836d82684af3d010030efad4406e0"
+      },
+      "status": "PASS",
+      "database_unchanged_sha256": "0dd535b8b68018038e72ebe1393be8c3681f274db1908faf3d60fee874c042fd"
+    },
+    {
+      "case": "empty-journal",
+      "result": {
+        "exit": 1,
+        "stdout": "",
+        "stderr": "archive catalog bootstrap failed: InvalidDataRoot\n",
+        "journal_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "filesystem_before_sha256": "8eb55119a16b34ce2db56af3ff241f4b4bbff0df2a89892ca6bc26a7ccfaf32f",
+        "filesystem_after_sha256": "8eb55119a16b34ce2db56af3ff241f4b4bbff0df2a89892ca6bc26a7ccfaf32f"
+      },
+      "status": "PASS",
+      "database_unchanged_sha256": "0dd535b8b68018038e72ebe1393be8c3681f274db1908faf3d60fee874c042fd"
+    },
+    {
+      "case": "oversized-journal",
+      "result": {
+        "exit": 1,
+        "stdout": "",
+        "stderr": "archive catalog bootstrap failed: InvalidDataRoot\n",
+        "journal_sha256": "cd72c76486c91c4032a0b357522fe03413380d37ad7d8661bd98feb5209f1bf6",
+        "filesystem_before_sha256": "b6498f2e56edf2bc1dfb8f7e65a6ec7d081e6996848a037052be0b27a8a40986",
+        "filesystem_after_sha256": "b6498f2e56edf2bc1dfb8f7e65a6ec7d081e6996848a037052be0b27a8a40986"
+      },
+      "status": "PASS",
+      "database_unchanged_sha256": "0dd535b8b68018038e72ebe1393be8c3681f274db1908faf3d60fee874c042fd"
+    },
+    {
+      "case": "replaced-lock",
+      "result": {
+        "exit": 1,
+        "stdout": "",
+        "stderr": "archive catalog bootstrap failed: InvalidDataRoot\n",
+        "journal_sha256": "81f9ff7bc4484a7d2ca6e8848b853f21043c43d2cfbafb7dbd43c4dfde6b434d",
+        "filesystem_before_sha256": "1e52f6315fc5d46cff136785e3d3ab8a60fe6fe37e6df1d13568b776114217ba",
+        "filesystem_after_sha256": "1e52f6315fc5d46cff136785e3d3ab8a60fe6fe37e6df1d13568b776114217ba"
+      },
+      "status": "PASS",
+      "database_unchanged_sha256": "0dd535b8b68018038e72ebe1393be8c3681f274db1908faf3d60fee874c042fd"
+    },
+    {
+      "case": "missing-fd",
+      "result": {
+        "exit": 1,
+        "stdout": "",
+        "stderr": "archive catalog bootstrap failed: InvalidDataRoot\n",
+        "journal_sha256": "addc911f18d841c9c79bec72a7afa65ace630e2b0f30b076fd2d8e660d3c1bab",
+        "filesystem_before_sha256": "7c81d046828f2c765c3c8dbaa5139e58fa54b398ae09ed42b0c8bf80000be56d",
+        "filesystem_after_sha256": "7c81d046828f2c765c3c8dbaa5139e58fa54b398ae09ed42b0c8bf80000be56d"
+      },
+      "status": "PASS",
+      "database_unchanged_sha256": "0dd535b8b68018038e72ebe1393be8c3681f274db1908faf3d60fee874c042fd"
+    },
+    {
+      "case": "wrong-fd",
+      "result": {
+        "exit": 1,
+        "stdout": "",
+        "stderr": "archive catalog bootstrap failed: InvalidDataRoot\n",
+        "journal_sha256": "15813b730424598b6f607bad4495f59c8221feb7ee9d7374a6797cfde49e6769",
+        "filesystem_before_sha256": "decd5fa57021ddef5db96b3b3da799b5cefa0667b7dd24376d5cc9075144de93",
+        "filesystem_after_sha256": "decd5fa57021ddef5db96b3b3da799b5cefa0667b7dd24376d5cc9075144de93"
+      },
+      "status": "PASS",
+      "database_unchanged_sha256": "0dd535b8b68018038e72ebe1393be8c3681f274db1908faf3d60fee874c042fd"
+    },
+    {
+      "case": "wrong-root-inode",
+      "result": {
+        "exit": 1,
+        "stdout": "",
+        "stderr": "archive catalog bootstrap failed: InvalidDataRoot\n",
+        "journal_sha256": "590b0c75fcf422fe9238797f03c877d1d6237b003c5da011014ac143dd6db151",
+        "filesystem_before_sha256": "b88fd1d6c48eeaa524acd514178d00d2ebb6d0235499eed7dadf564ca654838e",
+        "filesystem_after_sha256": "b88fd1d6c48eeaa524acd514178d00d2ebb6d0235499eed7dadf564ca654838e"
+      },
+      "status": "PASS",
+      "database_unchanged_sha256": "0dd535b8b68018038e72ebe1393be8c3681f274db1908faf3d60fee874c042fd"
+    },
+    {
+      "case": "root-mode",
+      "result": {
+        "exit": 1,
+        "stdout": "",
+        "stderr": "archive catalog bootstrap failed: InvalidDataRoot\n",
+        "journal_sha256": "a3e61207d32d6604bc9ffd117fd11b40f295a7a323008d5e28b7b86fd84abd20",
+        "filesystem_before_sha256": "9fb7c8565223b6b2d29a039f71cfeef09c3f1c0fc8be3e23aa7969106de4e096",
+        "filesystem_after_sha256": "9fb7c8565223b6b2d29a039f71cfeef09c3f1c0fc8be3e23aa7969106de4e096"
+      },
+      "status": "PASS",
+      "database_unchanged_sha256": "0dd535b8b68018038e72ebe1393be8c3681f274db1908faf3d60fee874c042fd"
+    },
+    {
+      "case": "marker-mode",
+      "result": {
+        "exit": 1,
+        "stdout": "",
+        "stderr": "archive catalog bootstrap failed: InvalidDataRoot\n",
+        "journal_sha256": "95bf6497d18fdd1650909097a93c56962d7f894c1323db290e2683c628c44659",
+        "filesystem_before_sha256": "c339d955a19d401ab5c77ccaa7ff7f1863e28ee28eb863a96a7071a4dd9a6f83",
+        "filesystem_after_sha256": "c339d955a19d401ab5c77ccaa7ff7f1863e28ee28eb863a96a7071a4dd9a6f83"
+      },
+      "status": "PASS",
+      "database_unchanged_sha256": "0dd535b8b68018038e72ebe1393be8c3681f274db1908faf3d60fee874c042fd"
+    },
+    {
+      "case": "journal-mode",
+      "result": {
+        "exit": 1,
+        "stdout": "",
+        "stderr": "archive catalog bootstrap failed: InvalidDataRoot\n",
+        "journal_sha256": "ec8d28dc1fb70ca1dcfb92d47a02cce2480e554238efe305898b17a89e3a4adb",
+        "filesystem_before_sha256": "ada3bd7ff83d6ce12c9be917accd492699e21f7db2b6f257176f2677254482b1",
+        "filesystem_after_sha256": "ada3bd7ff83d6ce12c9be917accd492699e21f7db2b6f257176f2677254482b1"
+      },
+      "status": "PASS",
+      "database_unchanged_sha256": "0dd535b8b68018038e72ebe1393be8c3681f274db1908faf3d60fee874c042fd"
+    },
+    {
+      "case": "symlink-journal",
+      "result": {
+        "exit": 1,
+        "stdout": "",
+        "stderr": "archive catalog bootstrap failed: InvalidDataRoot\n",
+        "journal_sha256": "73fc34d12aa0170a4c444059c1ad4fd4915b44ae94d6796699324e886db3cff7",
+        "filesystem_before_sha256": "8ff0b4f93582ff8d4af5c5853732f98b1cf7b89e152be35e8d87db1720a25f24",
+        "filesystem_after_sha256": "8ff0b4f93582ff8d4af5c5853732f98b1cf7b89e152be35e8d87db1720a25f24"
+      },
+      "status": "PASS",
+      "database_unchanged_sha256": "0dd535b8b68018038e72ebe1393be8c3681f274db1908faf3d60fee874c042fd"
+    },
+    {
+      "case": "extra-root",
+      "result": {
+        "exit": 1,
+        "stdout": "",
+        "stderr": "archive catalog bootstrap failed: InvalidDataRoot\n",
+        "journal_sha256": "bc07dcb91f65f9477eee39f655d01b9dded5e1629de6db5b5efb3643087a4ea8",
+        "filesystem_before_sha256": "83efae8570728afb1ebb5243ed07c465e2e978529808751088d742ecc73e5082",
+        "filesystem_after_sha256": "83efae8570728afb1ebb5243ed07c465e2e978529808751088d742ecc73e5082"
+      },
+      "status": "PASS",
+      "database_unchanged_sha256": "0dd535b8b68018038e72ebe1393be8c3681f274db1908faf3d60fee874c042fd"
+    },
+    {
+      "case": "extra-marker",
+      "result": {
+        "exit": 1,
+        "stdout": "",
+        "stderr": "archive catalog bootstrap failed: InvalidDataRoot\n",
+        "journal_sha256": "9b28ff403766f52f311b04deb393506db50ce5f1e85f316f5b678bab3b49fdf1",
+        "filesystem_before_sha256": "91e01276b776422acd654405cfe202d05f25a1f851a70880553300a850e4318a",
+        "filesystem_after_sha256": "91e01276b776422acd654405cfe202d05f25a1f851a70880553300a850e4318a"
+      },
+      "status": "PASS",
+      "database_unchanged_sha256": "0dd535b8b68018038e72ebe1393be8c3681f274db1908faf3d60fee874c042fd"
+    },
+    {
+      "case": "unknown-field",
+      "result": {
+        "exit": 1,
+        "stdout": "",
+        "stderr": "archive catalog bootstrap failed: InvalidInput\n",
+        "journal_sha256": "f665c24b2af669371f76b5521d33209a449a49f27d6adbf9af691b559b8f8ab4",
+        "filesystem_before_sha256": "2798f358a5c238281b3a88c48e1b7003ac083aec30ba35cb1e08e08bc1417418",
+        "filesystem_after_sha256": "2798f358a5c238281b3a88c48e1b7003ac083aec30ba35cb1e08e08bc1417418"
+      },
+      "status": "PASS",
+      "database_unchanged_sha256": "0dd535b8b68018038e72ebe1393be8c3681f274db1908faf3d60fee874c042fd"
+    },
+    {
+      "case": "duplicate-field",
+      "result": {
+        "exit": 1,
+        "stdout": "",
+        "stderr": "archive catalog bootstrap failed: InvalidInput\n",
+        "journal_sha256": "eae4e9f1024b16ab8a5b5798b4a15dee0ca03d7bde28cf6723a754d30d4ccf27",
+        "filesystem_before_sha256": "707e6d1d6eb25e034c59530237ed7937744aba13fdc7f5ca2ead256dacd57f9f",
+        "filesystem_after_sha256": "707e6d1d6eb25e034c59530237ed7937744aba13fdc7f5ca2ead256dacd57f9f"
+      },
+      "status": "PASS",
+      "database_unchanged_sha256": "0dd535b8b68018038e72ebe1393be8c3681f274db1908faf3d60fee874c042fd"
+    },
+    {
+      "case": "trailing-value",
+      "result": {
+        "exit": 1,
+        "stdout": "",
+        "stderr": "archive catalog bootstrap failed: InvalidInput\n",
+        "journal_sha256": "fbc117cfcb54092aaeecd5ee2cd49104b436c0b41a42ba6221b048d7e45c4e04",
+        "filesystem_before_sha256": "5d1884965294d2bb8f0e8e8ceb4648c29d34e219d2303f0297be34ddd1c9bf39",
+        "filesystem_after_sha256": "5d1884965294d2bb8f0e8e8ceb4648c29d34e219d2303f0297be34ddd1c9bf39"
+      },
+      "status": "PASS",
+      "database_unchanged_sha256": "0dd535b8b68018038e72ebe1393be8c3681f274db1908faf3d60fee874c042fd"
+    },
+    {
+      "case": "oversized-wire",
+      "result": {
+        "exit": 1,
+        "stdout": "",
+        "stderr": "archive catalog bootstrap failed: InvalidInput\n",
+        "journal_sha256": "64e365bcec20c85675121e8161e00292fb3bd2a44f7603aac40f3599874f3e17",
+        "filesystem_before_sha256": "e30acccd7f6b1a6a042b15ea6b251cd413ccf51cc238cb8dc0ec02ddf4400a35",
+        "filesystem_after_sha256": "e30acccd7f6b1a6a042b15ea6b251cd413ccf51cc238cb8dc0ec02ddf4400a35"
+      },
+      "status": "PASS",
+      "database_unchanged_sha256": "0dd535b8b68018038e72ebe1393be8c3681f274db1908faf3d60fee874c042fd"
+    },
+    {
+      "case": "killed-child-custody",
+      "result": {
+        "exit": -9,
+        "held": "occupied",
+        "joined": "reacquired",
+        "journal_sha256": "d125084f9a608b23b1a73acffc46a602f800f1e6541744d4dbd32ad75e0fdd9e",
+        "filesystem_before_sha256": "356deee6768310b935309eb1a2a2d34a210575edb3ed5507ad45ec566bf600b8",
+        "filesystem_after_sha256": "356deee6768310b935309eb1a2a2d34a210575edb3ed5507ad45ec566bf600b8"
+      },
+      "status": "PASS",
+      "database_unchanged_sha256": "0dd535b8b68018038e72ebe1393be8c3681f274db1908faf3d60fee874c042fd"
+    },
+    {
+      "case": "reopened-unlocked-fd",
+      "result": {
+        "exit": 0,
+        "stdout": "{\"format\":\"bigbrotr-native-reserved-initialize/1\",\"status\":\"initialized\"}\n",
+        "stderr": "",
+        "journal_sha256": "9325702390ea124e601fb5474d5232806d13d724593af64a6ac6448e10be3841",
+        "filesystem_before_sha256": "a0477dddbfabb819c3982d1c8943d818131b6befab28a26befe8422bdb2c81b6",
+        "filesystem_after_sha256": "a0477dddbfabb819c3982d1c8943d818131b6befab28a26befe8422bdb2c81b6"
+      },
+      "status": "PASS",
+      "effects": {
+        "tables": [
+          "archive_commits",
+          "dictionaries",
+          "event_eligibility_facts",
+          "event_receive_facts",
+          "events",
+          "provenance_facts"
+        ],
+        "snapshots": [
+          0,
+          1
+        ],
+        "data_files": 0,
+        "schema_sha256": "29025d8409a038a34adca7411c8799b5f39c53b11b70a04bdf0980dcc949e451"
+      },
+      "limitation": "Raw fixture passed only a reopened same-inode FD; actual flock reacquired while worker waited for input, then native initialize accepted. Only the typed trusted parent establishes locked-OFD custody."
+    }
+  ],
+  "oracles": {
+    "scientific": "Literal six logical table names, snapshots0/1, zero data files and schema1 commit hash; no signed event workload",
+    "journal": "Independent complete byte oracle with literal identity encodings/ordering and host-assigned root/lock values; Python checks actual parent format/identity/compact bytes",
+    "refusals": "17 exact InvalidInput/InvalidDataRoot refusals plus one actual SIGKILL; same complete PG dump with only random psql restrict tokens normalized; root path/mode/uid/device/inode/link/target/content fingerprints unchanged; journal bytes unchanged",
+    "driver": "Actual returned tokio_postgres Connection retained before polling; occupied before spawn and after literal SELECT42; client close and driver join precede actual reacquisition",
+    "native_holder": "Original LocalAttempt native test drops coordinator descriptors, then observes the real worker executable and read(0) syscall before checking refused recovery; actual supervisor drop reaps the child and releases all grants",
+    "raw_custody_boundary": "Python raw fixture with only separately reopened same-inode fd allows lock reacquisition after exec, before supplying stdin input, then initialization succeeds. This deliberately demonstrates that the native identity check cannot establish flock ownership; typed trusted parent construction supplies that invariant"
+  },
+  "review": {
+    "kind": "Read-only independent AI review",
+    "source_scope": "Complete initialization, lifetime, bootstrap, worker, process, installation, native catalog/engine/bundle/schema callers, CatalogIdentity, command-fds0.3.3 and affected contract; separate complete fixture/build/CI review",
+    "findings": "No blocking defect inside trusted typed parent boundary; five fixture limitations corrected before qualified run",
+    "uninspected": "Reviewer ran no Cargo/native/Tux and did not independently inspect retained ELF, full host inventories, database dumps or filesystem fingerprint inputs; those observations are supported by inspected fixture/audit code and retained results. Mac sessions were not replayed.",
+    "evidence_audit": "Independent read-only AI audit verified30 raw hashes, exact members/hashes of both archives,1456 Git source files and both archives,22 cases/17 refusals/scientific/fingerprint expectations,builds/Clippy/unit counts and explicit native-holder,artifact/dependency/lifecycle/network mappings; no discrepancy."
+  },
+  "resources": {
+    "first": {
+      "source": "105a54323e92d259200205d20585c2278ab1a9d9",
+      "tree": "53e3d8c431c7564182357ec099d3cb1f9c79e4c8",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/initialization-custody-105a543",
+      "owner": "04619b09bb655690931953003d96b769",
+      "container": "bigbrotr-implementation-initialization-custody-105a543",
+      "postgres": "bigbrotr-implementation-initialization-custody-105a543-pg",
+      "network": "bigbrotr-implementation-initialization-custody-105a543",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "state": "stopped-retained",
+      "source_files": 728,
+      "started_at": "2026-09-19T06:36:06.916814+00:00",
+      "network_id": "3289b4cba3db26a626aaa7f7f406cf23c62c8ea1a92909e96d4ceedd2d199ef0",
+      "postgres_id": "65ce35914d70eddb32f0a5442186b388aa25fdadef7348d905813cc2746494b3",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "566d10ad7c47efb5882411b2037c304bdf24361d4e7b0b0e2b7d58e3ff8395e9",
+      "completed_at": "2026-09-19T06:39:33.187952+00:00"
+    },
+    "qualified": {
+      "source": "3efde78c11e72eae14af367add420f51faaf70fa",
+      "tree": "a29e006e42c074ee3431364df56023a3db0251a4",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/initialization-custody-3efde78",
+      "owner": "4d62aca117e9752fbcc2eaca1e11e76b",
+      "container": "bigbrotr-implementation-initialization-custody-3efde78",
+      "postgres": "bigbrotr-implementation-initialization-custody-3efde78-pg",
+      "network": "bigbrotr-implementation-initialization-custody-3efde78",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "state": "stopped-retained",
+      "source_files": 728,
+      "started_at": "2026-09-19T06:40:49.813200+00:00",
+      "network_id": "2b1939cf10f83a8d09526f33f2c7e6d4f032047cd4687c15a33363c3f4529b9a",
+      "postgres_id": "92443e34d179e58dc0c01dfe269885598455d3595f780fe6dc99114e31aa733d",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "be517f3f29ca4b2d538acb8c2dbb54cf15abe526a2a9b00bb6ca827eaf15ca45",
+      "completed_at": "2026-09-19T06:43:22.241954+00:00"
+    },
+    "audits": {
+      "first": {
+        "status": "PASS",
+        "source": "105a54323e92d259200205d20585c2278ab1a9d9",
+        "tree": "53e3d8c431c7564182357ec099d3cb1f9c79e4c8",
+        "source_files": 728,
+        "source_archive_sha256": "5891c27a50c81a55f3d51718a16f11f78d16c98873e81cc5ca3aec87121fa9b1",
+        "source_manifest_sha256": "9b6e569042513f94ba50df4e52a15efae52cfc1525105067649a26936cbf6909",
+        "artifacts": {
+          "main": {
+            "sha256": "31fdca39ce2c0dff1981a7f967bf8a812ebc8ea7157bfb23d9efcc7b2147e7db",
+            "bytes": 8224736,
+            "elf_machine": 62
+          },
+          "worker": {
+            "sha256": "baebeedbcf5871b7089109f4b39a29543e845bf9cbc09d92b97e11a82a4482bf",
+            "bytes": 12608608,
+            "elf_machine": 62
+          }
+        },
+        "qualification": {
+          "initialization": "PASS"
+        },
+        "cases": {
+          "initialization": 22
+        },
+        "build_ready": true,
+        "terminal": {
+          "container_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-19T06:36:09.550885531Z",
+            "FinishedAt": "2026-09-19T06:39:29.053620629Z"
+          },
+          "postgres_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-19T06:36:07.607683385Z",
+            "FinishedAt": "2026-09-19T06:39:32.767647487Z"
+          }
+        },
+        "owned_containers": [
+          "566d10ad7c47efb5882411b2037c304bdf24361d4e7b0b0e2b7d58e3ff8395e9",
+          "65ce35914d70eddb32f0a5442186b388aa25fdadef7348d905813cc2746494b3"
+        ],
+        "existing_containers_unchanged": 298,
+        "unrelated_containers_unchanged": 20,
+        "unrelated_running": 8,
+        "bigbrotr_running": 0,
+        "observed_at": "2026-09-19T06:39:33.187952+00:00"
+      },
+      "qualified": {
+        "status": "PASS",
+        "source": "3efde78c11e72eae14af367add420f51faaf70fa",
+        "tree": "a29e006e42c074ee3431364df56023a3db0251a4",
+        "source_files": 728,
+        "source_archive_sha256": "4b9028c3fb8a958dfdf25ba261133b5321f1fd9d532ec2ba369c20d35fd4c607",
+        "source_manifest_sha256": "167f5870701d5f97e40e4249ae8b39ce821d29a81fae2fbd370d9dc131467acb",
+        "artifacts": {
+          "main": {
+            "sha256": "11be3f3e38f07a27e4f3de5a185058cc634995a84e04c49eb7e3cc161eba133e",
+            "bytes": 8224680,
+            "elf_machine": 62
+          },
+          "worker": {
+            "sha256": "baebeedbcf5871b7089109f4b39a29543e845bf9cbc09d92b97e11a82a4482bf",
+            "bytes": 12608608,
+            "elf_machine": 62
+          }
+        },
+        "qualification": {
+          "initialization": "PASS"
+        },
+        "cases": {
+          "initialization": 22
+        },
+        "build_ready": true,
+        "terminal": {
+          "container_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-19T06:40:52.407598823Z",
+            "FinishedAt": "2026-09-19T06:43:18.048849349Z"
+          },
+          "postgres_id": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-19T06:40:50.460110776Z",
+            "FinishedAt": "2026-09-19T06:43:21.810547924Z"
+          }
+        },
+        "owned_containers": [
+          "be517f3f29ca4b2d538acb8c2dbb54cf15abe526a2a9b00bb6ca827eaf15ca45",
+          "92443e34d179e58dc0c01dfe269885598455d3595f780fe6dc99114e31aa733d"
+        ],
+        "existing_containers_unchanged": 300,
+        "unrelated_containers_unchanged": 20,
+        "unrelated_running": 8,
+        "bigbrotr_running": 0,
+        "observed_at": "2026-09-19T06:43:22.241954+00:00"
+      }
+    },
+    "network_retirement": [
+      {
+        "root": "catalog-install-9f02f43",
+        "network": "475fdc395c19cef344561137deef3000c5e9aae31f4cfac9eb2892a63899ea75",
+        "owner": "d8b7192cd764f58b56ddc49690c36c0e",
+        "status": "removed",
+        "containers": "retained-stopped",
+        "data": "retained",
+        "observed_at": "2026-09-19T06:35:22.949442+00:00"
+      },
+      {
+        "root": "initialization-custody-105a543",
+        "network": "3289b4cba3db26a626aaa7f7f406cf23c62c8ea1a92909e96d4ceedd2d199ef0",
+        "owner": "04619b09bb655690931953003d96b769",
+        "status": "removed",
+        "containers": "retained-stopped",
+        "data": "retained",
+        "observed_at": "2026-09-19T06:39:54.666420+00:00"
+      }
+    ],
+    "lifecycle": "Both labs stopped-retained, data preserved; final empty internal network retained. No unrelated container lifecycle/mount/network changes, eight unrelated running"
+  },
+  "raw_evidence": {
+    "first": {
+      "root": ".research/implementation/archive-worker/initialization-custody/first",
+      "tar_bytes": 153600,
+      "tar_sha256": "d58779e39e11d2156ec09623c2cc08d228af17da1b7c1de5aaaa0d0335afeb5e",
+      "files": {
+        "resources.json": {
+          "bytes": 1237,
+          "sha256": "e40ab44f08b73d6f0b3cd77168206bed9de9da8211e57c1656cbb16da3155b1a"
+        },
+        "audit.json": {
+          "bytes": 1851,
+          "sha256": "4ccc74f6c0b0b8089c714a2e0d7118da3f933c2cb90999725050d4d84a8bd576"
+        },
+        "container.log": {
+          "bytes": 242,
+          "sha256": "a168c924582a0c99a351757011fa7add52a3340c800d2df792420e2f648c3938"
+        },
+        "out/build/source-manifest.json": {
+          "bytes": 89045,
+          "sha256": "9b6e569042513f94ba50df4e52a15efae52cfc1525105067649a26936cbf6909"
+        },
+        "out/native-tests/checks/clippy.log": {
+          "bytes": 872,
+          "sha256": "997c1a7ee7d5b6b0dd1febb4378ce3af581466a25ca360a0d440cb13afd4fadc"
+        },
+        "out/native-tests/checks/fixture.log": {
+          "bytes": 129,
+          "sha256": "850a8dd6ad95d97755871e6a5ed16437bef35758e34d9261152247c346d9047b"
+        },
+        "out/native-tests/checks/parent-tests.log": {
+          "bytes": 4302,
+          "sha256": "a1a1b3c873847d7cc3d6dee740047d6ec6a2c820630c0174ee63ecc75ea5c403"
+        },
+        "out/native-tests/checks/result.json": {
+          "bytes": 3691,
+          "sha256": "ffe6cafe16909765be26b7c0c670c6f7e9283bb8e426d99b9e6380fad9617c13"
+        },
+        "out/native-tests/ordered-build.log": {
+          "bytes": 626,
+          "sha256": "e96767f50fa3a374375d3a0194a8feed6876a165d379a89e683411272fcc1dbd"
+        },
+        "out/native-tests/ready.json": {
+          "bytes": 4826,
+          "sha256": "c631af65eefba37107080201aa276780e33a0ee1e052706d90006d55d020f72a"
+        },
+        "out/native-tests/result.json": {
+          "bytes": 2800,
+          "sha256": "632d060223869b6dc50d054dd81a9c89eaaab16b100e2b266a32774ffa57b000"
+        },
+        "out/native-tests/worker-identity.json": {
+          "bytes": 104,
+          "sha256": "38346992aac1ec0c1aa368d9f3e4bef3874b2669de3d399a1ed8304e68a78877"
+        },
+        "initialization.json": {
+          "bytes": 15093,
+          "sha256": "0a3f3868f3b20369fc9df2195176a9c10479ce10f7371270da2091d9dcfce33f"
+        },
+        "initialization.log": {
+          "bytes": 32,
+          "sha256": "ab0b1b3e722a7e460255fc4713f1af3f2ab16b9ebdfe68dd10d1a1b522fa18d2"
+        }
+      }
+    },
+    "qualified": {
+      "root": ".research/implementation/archive-worker/initialization-custody/qualified",
+      "tar_bytes": 174080,
+      "tar_sha256": "4f54f9abccdbe7a3891dfc7fce91d5377c7d901f06ea37efd7d2c3c156870dad",
+      "files": {
+        "resources.json": {
+          "bytes": 1237,
+          "sha256": "f1cdea0081421bc060f6b71d37a09d8337bd7250de0683710f057e11a1444158"
+        },
+        "audit.json": {
+          "bytes": 1851,
+          "sha256": "440db65569a2486fbcfde1524aaff6fcbaeff1e3c09f706ee6aafa42b4da45c5"
+        },
+        "container.log": {
+          "bytes": 242,
+          "sha256": "09806885b373d79076f97f55ce1cf4434c6fcda9d557abb772a16f80876ab7e6"
+        },
+        "out/build/source-manifest.json": {
+          "bytes": 89045,
+          "sha256": "167f5870701d5f97e40e4249ae8b39ce821d29a81fae2fbd370d9dc131467acb"
+        },
+        "out/native-tests/actual-holder/original-native-holder.log": {
+          "bytes": 232,
+          "sha256": "6146d1485b51d8f2a2fa488728c4781a144659295f40c6750899fabd84e44861"
+        },
+        "out/native-tests/actual-holder/result.json": {
+          "bytes": 5534,
+          "sha256": "3edc55dca94fa3fa5d7862de7077b416e07c66533841f670b6ef3d0de33b3958"
+        },
+        "out/native-tests/checks/clippy.log": {
+          "bytes": 394,
+          "sha256": "b99e8adce213f48fd70960360de951f177f81051d59dbf656dccc3e46cbb9165"
+        },
+        "out/native-tests/checks/fixture.log": {
+          "bytes": 129,
+          "sha256": "f67f3a15467ad958e8c0b1fc55d85278f1f68db1cb2183c4d05bb8df37d86990"
+        },
+        "out/native-tests/checks/parent-tests.log": {
+          "bytes": 4302,
+          "sha256": "ad1bcbb7c90d1becfadac19a09e9c052c71ce0e48f99a5b99e27a6ba8200ba3c"
+        },
+        "out/native-tests/checks/result.json": {
+          "bytes": 3693,
+          "sha256": "6d4acbe1bca19c2354499872cffbbfc2ec91c6cac05d0a1f7e3332261b90ffda"
+        },
+        "out/native-tests/ordered-build.log": {
+          "bytes": 626,
+          "sha256": "4490ef0c59a91d18544c3629ceb1e9d864c82a01814cb40ed978be5290bfd803"
+        },
+        "out/native-tests/ready.json": {
+          "bytes": 4826,
+          "sha256": "b0d9bcff7aa2ac1bfb6f53566c6e0fdd328f6279c86c07f6f7950c6521991d57"
+        },
+        "out/native-tests/result.json": {
+          "bytes": 2801,
+          "sha256": "66f766e962991d3f852d5d0359e8b4f26bcca7ed5240f62cd64d3e2e6a25f7f8"
+        },
+        "out/native-tests/worker-identity.json": {
+          "bytes": 104,
+          "sha256": "38346992aac1ec0c1aa368d9f3e4bef3874b2669de3d399a1ed8304e68a78877"
+        },
+        "initialization.json": {
+          "bytes": 19322,
+          "sha256": "4e3ceaca5e76b5f428fc5b2ce40f4e1423b1fb2bd2c669b4b2bf47d38279b2b5"
+        },
+        "initialization.log": {
+          "bytes": 32,
+          "sha256": "ab0b1b3e722a7e460255fc4713f1af3f2ab16b9ebdfe68dd10d1a1b522fa18d2"
+        }
+      }
+    }
+  },
+  "not_qualified": [
+    "Durable reservation of the same database across different roots",
+    "Fresh generated/bootstrap provisioning, ambiguous provisioning/DDL commit recovery and role retirement in the complete initializer",
+    "Installed init/recovery CLI, configured mutual TLS and fresh runtime-manager publication",
+    "Power-loss/fsync fault injection, cross-boot/restore/host recovery",
+    "Adversarial same-UID parent or cluster administrator isolation",
+    "Resource exhaustion, workload throughput/aged state, protection and M1 signed read/export/restart",
+    "Linux arm64, hosted Actions availability and release/Compose installation"
+  ],
+  "interpretation_corrections": [
+    "Raw reopened-fd limitation text says the worker waited for input. The executed assertion proves exec completed and stdin input was withheld; it does not observe read(0) in this raw case. The separate original-native-holder test does observe that syscall."
+  ]
+}

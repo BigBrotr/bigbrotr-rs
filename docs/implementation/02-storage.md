@@ -306,6 +306,14 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   rights/default ACLs refuse, both COMMIT-loss directions resolve, and concurrent
   installers produce one install and one existing observation. Complete reserved
   initialization and fresh publication under that manager remain required.
+  Permanent local initialization custody and its actual native consumer now have
+  [scoped native evidence](evidence/p02-initialization-custody-native-20260919.json)
+  at `3efde78`: 22 practical cases, actual driver/native descriptor retention,
+  immutable journal/recovered-launch refusal and unchanged full database/filesystem
+  observations on invalid inputs. Corrected fixtures isolate symlink/inode checks;
+  a raw reopened descriptor demonstrates the documented trusted-parent boundary.
+  Durable database reservation, newly generated bootstrap credentials and the
+  complete initialization/recovery CLI remain open under this same step.
 - [ ] **Step 4:** After an ambiguous commit, query the receipt in a new transaction; do not
   repeat while receipt state is unknown. Reject mismatched batch digest.
   Include loss of the actual native PostgreSQL COMMIT response, plus physical file
