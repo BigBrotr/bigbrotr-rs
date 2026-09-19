@@ -377,5 +377,7 @@ checks immutable reservations on refusals, real 128 MiB initialization/manager
 recovery, unchanged catalog reads, blocked native-query cancellation and a
 retained older executable as a discriminating valid-mTLS refusal control. It
 restores the owned server settings/HBA; final runner/database retirement and
-source/artifact auditing remain required. This harness is proposed until an
-actual run report records its outcomes; it does not qualify signed mTLS publishing.
+source/artifact auditing remain required. The
+[native report](../../docs/implementation/evidence/p02-native-mtls-20260919.json)
+records 25 passing cases at `50d9496` and the retained earlier test compilation
+failure; it does not qualify signed mTLS publishing.

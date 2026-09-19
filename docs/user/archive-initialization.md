@@ -30,7 +30,8 @@ checks its allowances before permanently reserving the database/root pair.
 The native mutual-TLS candidate loads bounded protected certificate/key files
 before reservation and freezes them in anonymous sealed Linux descriptors. Its
 16 MiB application allowance stays charged through actual worker termination.
-This adapter is awaiting its native qualification matrix. It never falls back to
+The [native matrix](../implementation/evidence/p02-native-mtls-20260919.json)
+qualifies initialization and receipt observation at `50d9496`. It never falls back to
 plaintext. Native CA paths are limited to 1023 bytes by the pinned libpq; longer
 paths refuse before reserving the database/root pair. Server HBA must combine
 SCRAM with explicit client-certificate validation when mTLS is required. A shared
@@ -97,6 +98,9 @@ records 17 executed scenarios and preserves the failed first fixture. The separa
 [drain evidence](../implementation/evidence/p02-initialization-drain-native-20260919.json)
 exercises five actual recovery cases with SQL remaining on PostgreSQL after client
 destruction, including another database, timeout and both signals. The producer is
-a controlled tokio-postgres fixture. TLS of this new command, native mutual TLS,
-remaining native crash/acknowledgement paths and full service acceptance are still
-open; the guide does not advertise complete installation support.
+a controlled tokio-postgres fixture. The [25 TLS/mTLS cases](../implementation/evidence/p02-native-mtls-20260919.json)
+also cover actual initialization/recovery, server-enforced certificate validation,
+refusals with unchanged durable state, and cancellation of a blocked native
+receipt query. Signed mTLS publication, remaining native crash/acknowledgement
+paths and full service acceptance remain open; the guide does not advertise
+complete installation support.

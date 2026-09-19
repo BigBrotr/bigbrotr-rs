@@ -613,7 +613,7 @@ contract, not containment against malicious child code.
 The locked additions are nix0.31.3 (fs; safe fcntl wrapper), cfg_aliases0.2.2 and
 thiserror/thiserror-impl2.0.20. Their MIT/Apache-2.0 licenses and the direct
 Apache-2.0 license use the existing license policy. No engine version changes.
-Source inspection of rustix1.1.5 confirms direct Linux flock and the Darwin libc
+Source inspection of rustix 1.1.5 confirms direct Linux flock and the Darwin libc
 flock wrapper. [Linux flock semantics](https://man7.org/linux/man-pages/man2/flock.2.html)
 retain a lock across dup/fork/exec until the final descriptor closes; explicit
 unlock would instead release every duplicate. A separately opened descriptor
@@ -648,11 +648,14 @@ pending until custody attachment/driver polling. This confirms the finite adapte
 boundary; no shared process-budget or installed Archive readiness is claimed.
 
 The native client-identity candidate additionally uses the already locked
-rustix1.1.5 memfd/seal and CLOEXEC-duplication APIs, rustls0.23.45 strict PEM and
-key-pair validation, and command-fds0.3.3 preserved descriptors. Inspection of
+rustix 1.1.5 memfd/seal and CLOEXEC-duplication APIs, rustls 0.23.45 strict PEM and
+key-pair validation, and command-fds 0.3.3 preserved descriptors. Inspection of
 libpq REL_18_3 `fe-secure-openssl.c` confirms regular-file/mode 0400 compatibility
 and its 1024-byte sslrootcert buffer; the route rejects longer CA paths. Exact
 source hashes are inventoried under native_mtls. No dependency or private-worker
 wire format changes. A 16 MiB parent grant covers bounded credential preparation
-and retained memfds; it is not an RSS certificate. Actual Linux mTLS, server
-clientcert enforcement and cancellation remain qualification gates.
+and retained memfds; it is not an RSS certificate.
+[Actual Linux qualification](../implementation/evidence/p02-native-mtls-20260919.json)
+at `50d9496` passes 25 initializer/receipt TLS/mTLS cases, including server clientcert
+validation, SCRAM-only acceptance and blocked native-query cancellation. Signed
+mTLS publication and broader service/release gates remain open.

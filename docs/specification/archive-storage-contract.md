@@ -370,8 +370,9 @@ COMMIT outcomes and both graceful-cancel outcomes. The new observer actually wai
 on the old transaction's advisory lock after reacquiring local custody. The
 baseline failed its three missing operations as intended; the first 39-case pass
 had weaker ambiguous-effect oracles, strengthened and rerun without changing Rust.
-No applied SQL, comment/journal format or dependency changed. Full initializer CLI,
-SQL-capable backend drain, native mutual TLS and service ownership remain required.
+No applied SQL, comment/journal format or dependency changed. That slice left
+full initializer CLI, SQL-capable backend drain, native mutual TLS and service
+ownership to the subsequent work below.
 
 The explicit command consumer is `archive initialize --file PATH
 --initializer-user NAME --initializer-password-ref file:/ABSOLUTE/PATH`, with an
@@ -391,7 +392,9 @@ receives only their /proc/self/fd paths. No named secret copies or PEM in the
 positive child reap, or permanently charged on unknown termination. The configured
 CA path must fit libpq 18.3's 1024-byte buffer including its terminator; longer paths
 refuse before permanent reservation even when the Rust connector could open them.
-Native mTLS and this command's TLS matrix still require actual qualification.
+The [native TLS matrix](../implementation/evidence/p02-native-mtls-20260919.json)
+at `50d9496` now qualifies initialization and receipt observation through this path;
+signed mTLS publication remains a separate consumer gate.
 
 The consumer must join every actual provisioning driver and its sole native child,
 reacquire local custody, observe and retire the exact bootstrap, then wait a bounded
@@ -423,8 +426,15 @@ waits across database boundaries, preserves unresolved state on its 30-second
 deadline and SIGTERM/SIGINT, then observes stranded state after natural completion.
 Exact remote CLI/backend identities and unchanged catalog/marker bytes are checked.
 This is a deliberate residual-session fixture, not a blocked native libpq write.
-The new CLI TLS matrix, native mutual TLS, remaining native crash/acknowledgement
-paths and complete installed service/M1 acceptance remain required.
+The [25-case native TLS matrix](../implementation/evidence/p02-native-mtls-20260919.json)
+at `50d9496` now covers TLS and server-enforced mTLS initialization with a 128 MiB parent
+payload, fresh manager inspect/recover, unchanged pre-reservation refusals, real
+SELECT-only receipt observations and cancellation of an actually blocked native
+TLS query. An exact pidfd observes child exit before SQL blocker release; the
+60-second native deadline remains distant. The older executable's valid-mTLS
+refusal and initial Linux-only test compilation failure are retained. Signed mTLS
+publication, remaining native crash/acknowledgement paths and complete installed
+service/M1 acceptance remain required.
 
 The application-owned `bigbrotr_archive` schema contains immutable installation
 and attempt records plus one mutable owner row. Every native metadata mutation
@@ -471,8 +481,9 @@ authentication exchange must refuse before native SQL. This does not audit all
 server HBA rules: the dedicated roles must also require password authentication
 from every reachable client under the trusted infrastructure contract. Enabling
 trust elsewhere would invalidate sole-credential-holder exclusion even if this
-client refuses it. The sealed client-identity consumer still requires native
-qualification; no ambient client certificate is selected. `sslcertmode=require`
+client refuses it. The sealed client-identity consumer has scoped initializer
+and receipt qualification in the matrix above; no ambient client certificate is
+selected. `sslcertmode=require`
 ensures a requested client certificate is sent, not that the server validates it.
 Server HBA must impose its intended clientcert policy as well as SCRAM. A shared
 configured certificate does not imply CN equality with separately generated roles;

@@ -1,0 +1,835 @@
+{
+  "format": "bigbrotr-native-mtls-evidence/1",
+  "observed_date": "2026-09-19",
+  "status": "PASS",
+  "scope": "Actual installed TLS/mTLS initialization, fresh manager inspect/recover, sealed-FD native SELECT-only receipt authentication and blocked-query cancellation; signed mTLS publishing and full M1 remain open",
+  "tested_source": "50d94961c0d931715abd098bf1118018eb2101e2",
+  "source_verification": {
+    "revision": "50d94961c0d931715abd098bf1118018eb2101e2",
+    "tree": "de8f4f52ccec1e77063beac100016ee489403004",
+    "files": 745,
+    "archive_sha256": "bcfd6539a957ed7395db851d47369192e47a7fc6357948a9e93f2ab4838d35b7",
+    "manifest_sha256": "f34781f52f5219a5bc045b030ff92a2f1fa543668f57c897b15a8b3fbe7e35b7"
+  },
+  "workload": {
+    "path": "experiments/archive-engine/initialization_tls_cases.py",
+    "sha256": "9435e3643464b417a88d40aa220090c1950e95385f2ce097b0409cfdf3d4ec98",
+    "source": "50d94961c0d931715abd098bf1118018eb2101e2"
+  },
+  "production_changes": [
+    "Bounded protected certificate/key loading, strict PEM and key-pair validation, immutable mode0400 Linux memfds with write/grow/shrink/seal seals, per-launch CLOEXEC duplication and exact inherited descriptors.",
+    "Initializer/publisher/receipt routes use explicit sealed identity only; verify-full and completed SCRAM remain required. A16MiB parent grant is retained through actual reap or permanently charged on unknown termination. No named secret copies or private PEM in worker protocol.",
+    "CA paths >=1024 bytes refuse before permanent reservation; pinned libpq silently truncates its1024-byte buffer. No migration, dependency or worker protocol change."
+  ],
+  "checks": {
+    "mac": "34 archive-parent tests,10 CLI regressions and scoped Clippy passed; then additional CA-path regression RED74403/GREEN57017 plus scoped Clippy/fmt/diff and artifact/handoff structure checks. Linux-only caller subsequently fixed.",
+    "linux": {
+      "ordered_build": "PASS",
+      "fixtures": "PASS",
+      "archive_parent_tests": {
+        "passed": 38,
+        "ignored": 1,
+        "failed": 0
+      },
+      "binary_tests": 8,
+      "cli_tests": 10,
+      "clippy": "PASS",
+      "ignored": "Previously qualified native-holder scenario was not rerun or counted PASS. Its changed optional-TLS argument compiles in this run."
+    }
+  },
+  "first_failure": {
+    "source": "d5cfcd424ccbdf10a43a954a41658bea58e8cf7f",
+    "status": "FAIL",
+    "reason": "Linux-only custody test omitted new optional TLS argument: E0061. Ordered product and fixture builds passed; parent-test compilation failed; subsequent CLI/Clippy NOT_RUN; practical workload NOT_RUN.",
+    "correction": "50d9496 passes None at that test caller; production/fixture/workload unchanged.",
+    "raw_root": ".research/implementation/archive-worker/native-mtls/failed-build",
+    "identity": {
+      "tar_bytes": 133120,
+      "tar_sha256": "61671b0165d2248841ebb6a269dccb0591612d78127ddc80d6d4ff9a6573efa6",
+      "files": {
+        "resources.json": {
+          "bytes": 1193,
+          "sha256": "791bfa0aa2b43bb7df6515ff87a13399c562ed0790461abdc0751cb82fbbe35e"
+        },
+        "audit.json": {
+          "bytes": 1840,
+          "sha256": "e1f16eb2d2676d67f6552aacc67ca0f68843fbc753c2124d462ca246bddd01eb"
+        },
+        "container.log": {
+          "bytes": 667,
+          "sha256": "e602fac78484ef1a8b60104bb8df690fa67a54ea277dce5ace8b25e16cc7321a"
+        },
+        "out/build/source-manifest.json": {
+          "bytes": 91355,
+          "sha256": "52e73898828c8b02611170891cf7a99d2b2472d719bf306982246379643ac9e9"
+        },
+        "out/native-tests/checks/fixture.log": {
+          "bytes": 130,
+          "sha256": "e858659ed9e8b400e48953fe053a2987cbbad9ae6fe38552afd73cc68dabd3b4"
+        },
+        "out/native-tests/checks/parent-tests.log": {
+          "bytes": 1200,
+          "sha256": "33f49d5125293695a167924091d10524a25736e844986c4158995836dbe26380"
+        },
+        "out/native-tests/checks/result.json": {
+          "bytes": 4169,
+          "sha256": "47d29494e24d9fa0de86a06b5d46756a724268377ef4c7c04ef4a3e246521e2a"
+        },
+        "out/native-tests/ordered-build.log": {
+          "bytes": 626,
+          "sha256": "652ba3e8493a2c866fc4674cb98be862002d633e758a30134cd1c0bda426746e"
+        },
+        "out/native-tests/result.json": {
+          "bytes": 2799,
+          "sha256": "ff6ab3705b323ff48ebf9617eb34ac63c4425797ad111ed42a7d01b6391bb869"
+        },
+        "out/native-tests/worker-identity.json": {
+          "bytes": 104,
+          "sha256": "c76d6822c6cff10729edc0d68f41196558b6cdedee0779cbf55ce624e1e80878"
+        }
+      }
+    }
+  },
+  "baseline": {
+    "source": "78e77346cb75379955aeb423e9fb33e7bd38533b",
+    "sha256": "e62e4c14036a6001bc4fde9b891081eee0b5e86160fc69aa6c5eaf6e6ac87f2c",
+    "case": "published-baseline-refuses-valid-mtls",
+    "observed": "Exact retained executable refuses the same valid mTLS configuration before reservation; candidate succeeds under server-enforced clientcert plus SCRAM."
+  },
+  "authentication": {
+    "server": "clientcert=verify-ca plus scram-sha-256",
+    "client": "verify-full with explicit CA/server name, sslcertmode=require with sealed client identity, require_auth=scram-sha-256; GSS disabled",
+    "pki": {
+      "openssl": "OpenSSL 3.5.7 9 Jun 2026 (Library: OpenSSL 3.5.7 9 Jun 2026)",
+      "certificate_sha256": {
+        "wrong_client_ca.crt": "b8e4889f552f297c97e8b9a4ad76646721b3b457baae70545f3ef85308b7e283",
+        "ca.crt": "048e6314ef546a5fe6ba9b25f7c07778db5ce006da7d0115968531fb2b7cf620",
+        "wrong_identity.crt": "f6a0b97b32b4fc8fb1062d5b155b0d8ca9ca4147cba6b5e57b6d42647cc3cf8e",
+        "server.crt": "afb64e1dd37b4e5667cab951d237be4bff94fb8e93f66fbca53e8af7bb028758",
+        "wrong_ca.crt": "6101659d33e73e828760f49095718501ef4603cf99e7bacbc5c61ae0c63ff8b9",
+        "client.crt": "e1d39abcc53dd4924b99183b9e9ea00a95d365a7714a9f181901b9c93fdcc45e"
+      }
+    },
+    "server_configuration_restoration": "PASS",
+    "note": "Shared client certificate is authenticated by CA, while each login retains separate SCRAM identity; CN-to-login binding is not qualified."
+  },
+  "cases": [
+    {
+      "name": "server-without-tls-refused-before-reservation",
+      "status": "PASS",
+      "observed": {
+        "exit": 4,
+        "output": null,
+        "stderr_nonempty": true,
+        "seconds": 0.17997079715132713
+      },
+      "root_entries": [],
+      "durable_snapshot_unchanged": true
+    },
+    {
+      "name": "long-ca-refused-before-permanent-reservation",
+      "status": "PASS",
+      "observed": {
+        "exit": 3,
+        "output": null,
+        "stderr_nonempty": true,
+        "seconds": 0.16026514070108533
+      },
+      "root_entries": [],
+      "durable_snapshot_unchanged": true
+    },
+    {
+      "name": "initialize-verify-full-scram-128mib",
+      "status": "PASS",
+      "observed": {
+        "exit": 0,
+        "output": {
+          "bootstrap": "retired",
+          "catalog_id": "02020202020202020202020202020202",
+          "dataset_id": "01010101010101010101010101010101",
+          "format": "bigbrotr-catalog-initialization/1",
+          "manager_inspection": "verified",
+          "new_installation": true,
+          "ready": false,
+          "runtime_authorization": "not-granted",
+          "status": "installed"
+        },
+        "stderr_nonempty": false,
+        "seconds": 0.9616542123258114
+      },
+      "independent": {
+        "bootstrap_oid": 16400,
+        "bootstrap_retired": true,
+        "remaining_backends": 0,
+        "native_tables": 28,
+        "guard_tables": 4,
+        "attempts": 0,
+        "native_authorized_tls": 2
+      }
+    },
+    {
+      "name": "tls-fresh-inspect",
+      "status": "PASS",
+      "observed": {
+        "exit": 0,
+        "output": {
+          "catalog_id": "02020202020202020202020202020202",
+          "data_root": "/out/native-mtls/tls-data/",
+          "dataset_id": "01010101010101010101010101010101",
+          "file_contents": "not-checked",
+          "format": "bigbrotr-catalog-inspection/1",
+          "ready": false,
+          "runtime_authorization": "not-granted",
+          "scientific_schema_version": 1,
+          "scope": "catalog identity, commit guard and logical schema metadata",
+          "status": "verified"
+        },
+        "stderr_nonempty": false,
+        "seconds": 0.12598061375319958
+      },
+      "durable_snapshot_unchanged": true
+    },
+    {
+      "name": "tls-fresh-recover",
+      "status": "PASS",
+      "observed": {
+        "exit": 0,
+        "output": {
+          "bootstrap": "retired",
+          "catalog_id": "02020202020202020202020202020202",
+          "dataset_id": "01010101010101010101010101010101",
+          "format": "bigbrotr-catalog-initialization/1",
+          "manager_inspection": "verified",
+          "new_installation": false,
+          "ready": false,
+          "runtime_authorization": "not-granted",
+          "status": "installed"
+        },
+        "stderr_nonempty": false,
+        "seconds": 0.2060002419166267
+      },
+      "durable_snapshot_unchanged": true
+    },
+    {
+      "name": "wrong_ca-before-reservation",
+      "status": "PASS",
+      "observed": {
+        "exit": 4,
+        "output": null,
+        "stderr_nonempty": true,
+        "seconds": 0.16595865320414305
+      },
+      "root_entries": [],
+      "durable_snapshot_unchanged": true
+    },
+    {
+      "name": "wrong_name-before-reservation",
+      "status": "PASS",
+      "observed": {
+        "exit": 4,
+        "output": null,
+        "stderr_nonempty": true,
+        "seconds": 0.14970570197328925
+      },
+      "root_entries": [],
+      "durable_snapshot_unchanged": true
+    },
+    {
+      "name": "missing_certificate-before-reservation",
+      "status": "PASS",
+      "observed": {
+        "exit": 4,
+        "output": null,
+        "stderr_nonempty": true,
+        "seconds": 0.12216511089354753
+      },
+      "root_entries": [],
+      "durable_snapshot_unchanged": true
+    },
+    {
+      "name": "untrusted_client-before-reservation",
+      "status": "PASS",
+      "observed": {
+        "exit": 4,
+        "output": null,
+        "stderr_nonempty": true,
+        "seconds": 0.17116781091317534
+      },
+      "root_entries": [],
+      "durable_snapshot_unchanged": true
+    },
+    {
+      "name": "key_mismatch-before-reservation",
+      "status": "PASS",
+      "observed": {
+        "exit": 3,
+        "output": null,
+        "stderr_nonempty": true,
+        "seconds": 0.03130819322541356
+      },
+      "root_entries": [],
+      "durable_snapshot_unchanged": true
+    },
+    {
+      "name": "oversize-before-reservation",
+      "status": "PASS",
+      "observed": {
+        "exit": 3,
+        "output": null,
+        "stderr_nonempty": true,
+        "seconds": 0.0822096629999578
+      },
+      "root_entries": [],
+      "durable_snapshot_unchanged": true
+    },
+    {
+      "name": "public_key-before-reservation",
+      "status": "PASS",
+      "observed": {
+        "exit": 3,
+        "output": null,
+        "stderr_nonempty": true,
+        "seconds": 0.08832155773416162
+      },
+      "root_entries": [],
+      "durable_snapshot_unchanged": true
+    },
+    {
+      "name": "published-baseline-refuses-valid-mtls",
+      "status": "PASS",
+      "observed": {
+        "exit": 3,
+        "output": null,
+        "stderr_nonempty": true,
+        "seconds": 0.08430700283497572
+      },
+      "root_entries": [],
+      "durable_snapshot_unchanged": true
+    },
+    {
+      "name": "initialize-server-enforced-mtls-scram-128mib",
+      "status": "PASS",
+      "observed": {
+        "exit": 0,
+        "output": {
+          "bootstrap": "retired",
+          "catalog_id": "02020202020202020202020202020202",
+          "dataset_id": "01010101010101010101010101010101",
+          "format": "bigbrotr-catalog-initialization/1",
+          "manager_inspection": "verified",
+          "new_installation": true,
+          "ready": false,
+          "runtime_authorization": "not-granted",
+          "status": "installed"
+        },
+        "stderr_nonempty": false,
+        "seconds": 1.0014112498611212
+      },
+      "independent": {
+        "bootstrap_oid": 16645,
+        "bootstrap_retired": true,
+        "remaining_backends": 0,
+        "native_tables": 28,
+        "guard_tables": 4,
+        "attempts": 0,
+        "native_authorized_tls": 2
+      }
+    },
+    {
+      "name": "mtls-fresh-inspect",
+      "status": "PASS",
+      "observed": {
+        "exit": 0,
+        "output": {
+          "catalog_id": "02020202020202020202020202020202",
+          "data_root": "/out/native-mtls/mtls-data/",
+          "dataset_id": "01010101010101010101010101010101",
+          "file_contents": "not-checked",
+          "format": "bigbrotr-catalog-inspection/1",
+          "ready": false,
+          "runtime_authorization": "not-granted",
+          "scientific_schema_version": 1,
+          "scope": "catalog identity, commit guard and logical schema metadata",
+          "status": "verified"
+        },
+        "stderr_nonempty": false,
+        "seconds": 0.12926509277895093
+      },
+      "durable_snapshot_unchanged": true
+    },
+    {
+      "name": "mtls-fresh-recover",
+      "status": "PASS",
+      "observed": {
+        "exit": 0,
+        "output": {
+          "bootstrap": "retired",
+          "catalog_id": "02020202020202020202020202020202",
+          "dataset_id": "01010101010101010101010101010101",
+          "format": "bigbrotr-catalog-initialization/1",
+          "manager_inspection": "verified",
+          "new_installation": false,
+          "ready": false,
+          "runtime_authorization": "not-granted",
+          "status": "installed"
+        },
+        "stderr_nonempty": false,
+        "seconds": 0.15310649992898107
+      },
+      "durable_snapshot_unchanged": true
+    },
+    {
+      "name": "native-valid",
+      "status": "PASS",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 360,
+        "outcome": "Ok(Absent)"
+      },
+      "remaining_clients": 0,
+      "durable_snapshot_unchanged": true
+    },
+    {
+      "name": "native-missing-client",
+      "status": "PASS",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 335,
+        "outcome": "Err(ObservationUnknown)"
+      },
+      "remaining_clients": 0,
+      "durable_snapshot_unchanged": true
+    },
+    {
+      "name": "native-untrusted-client",
+      "status": "PASS",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 387,
+        "outcome": "Err(ObservationUnknown)"
+      },
+      "remaining_clients": 0,
+      "durable_snapshot_unchanged": true
+    },
+    {
+      "name": "native-wrong-password",
+      "status": "PASS",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 390,
+        "outcome": "Err(ObservationUnknown)"
+      },
+      "remaining_clients": 0,
+      "durable_snapshot_unchanged": true
+    },
+    {
+      "name": "native-wrong-ca",
+      "status": "PASS",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 329,
+        "outcome": "Err(ObservationUnknown)"
+      },
+      "remaining_clients": 0,
+      "durable_snapshot_unchanged": true
+    },
+    {
+      "name": "native-wrong-name",
+      "status": "PASS",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 360,
+        "outcome": "Err(ObservationUnknown)"
+      },
+      "remaining_clients": 0,
+      "durable_snapshot_unchanged": true
+    },
+    {
+      "name": "native-blocked-cancel",
+      "status": "PASS",
+      "blocked_native_tls": [
+        {
+          "pid": 1312,
+          "ssl": true,
+          "version": "TLSv1.3",
+          "client_dn": "/CN=bigbrotr_migrator",
+          "wait": "Lock"
+        }
+      ],
+      "native_exit": {
+        "parent": {
+          "pid": 4809,
+          "start": "319328830",
+          "ppid": 0,
+          "exe": "/out/native-tests/archive-receipt-probe",
+          "argv": [
+            "/out/native-tests/archive-receipt-probe",
+            "/out/native-mtls/native-blocked-cancel/input.json",
+            "/out/native-mtls/native-blocked-cancel/job"
+          ]
+        },
+        "child": {
+          "pid": 4816,
+          "start": "319328844",
+          "ppid": 4809,
+          "exe": "/out/archive-worker/bigbrotr-archive-worker",
+          "argv": [
+            "/out/archive-worker/bigbrotr-archive-worker",
+            "inspect-receipt",
+            "/out/archive-worker",
+            "/out/native-mtls/native-blocked-cancel/job",
+            "134217728",
+            "67108864",
+            "1",
+            "1"
+          ]
+        },
+        "native_exited_before_unlock": true,
+        "seconds": 0.0054936190135777
+      },
+      "observed": {
+        "active_permits": 0,
+        "cancelled": true,
+        "elapsed_ms": 448,
+        "outcome": "Err(ObservationUnknown)"
+      },
+      "remaining_clients": 0,
+      "durable_snapshot_unchanged": true
+    },
+    {
+      "name": "native-mtls-without-scram-refused",
+      "status": "PASS",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 364,
+        "outcome": "Err(ObservationUnknown)"
+      },
+      "remaining_clients": 0,
+      "durable_snapshot_unchanged": true
+    },
+    {
+      "name": "native-mtls-retry-after-refusals",
+      "status": "PASS",
+      "observed": {
+        "active_permits": 0,
+        "cancelled": false,
+        "elapsed_ms": 360,
+        "outcome": "Ok(Absent)"
+      },
+      "remaining_clients": 0,
+      "durable_snapshot_unchanged": true
+    }
+  ],
+  "oracles": [
+    "Complete database pg_dump and global role/member/comment snapshots remain unchanged on pre-reservation refusals; data roots remain empty. Long-CA refusal checks its precise static diagnostic.",
+    "Both real native initializations use128MiB application payload, create exactly28 native and4 guard tables with expected manager ownership, retire exact bootstrap OID and leave no bootstrap backends. Native bootstrap authorization is observed over TLS. Fresh inspect/recover leave complete snapshots unchanged.",
+    "Real SELECT-only native receipt worker returns Absent from the actually initialized empty catalog; missing/untrusted certificates, wrong password/CA/name and trust-with-clientcert refuse, preserving all catalog/role snapshots and releasing grants.",
+    "Blocked receipt SQL is observed in pg_stat_activity with actual TLSv1.3/client_dn and a real blocking chain. Exact worker exe/argv/PPid/start plus pidfd prove worker exit before releasing the blocker. Probe returns cancelled/zero permits at448ms, well before its60s deadline; cancellation-to-native-exit5.49ms is a single-run observation.",
+    "Linux tests prove sealed material survives original file replacement/removal, cannot be mutated or inherited by an ambient exec, and releases capacity only after its retained handoff."
+  ],
+  "review": {
+    "mode": "Independent read-only AI source review plus root diff/execution review",
+    "findings": [
+      "CA-path truncation corrected with local RED/GREEN and real long-CA refusal.",
+      "Cancellation harness originally overlapped timeout and released blocker too early; corrected before execution with distant deadline and exact pidfd observation.",
+      "Linux-only missing call argument discovered by actual native compile, retained as failure and corrected."
+    ],
+    "boundary": "AI reviewer did not execute tests/Tux. Root read all25 practical records and complete native check logs.",
+    "recorded_evidence_audit": {
+      "result": "no substantive discrepancy found",
+      "verified": "25 case records,2 raw archives/25 extracted files,745 source hashes per candidate regenerated from Git, source/workload/artifact/PKI/baseline/audit identities, successful logs and initial failed compile/NOT_RUN statuses",
+      "boundary": "Read-only local records and Git; no live Tux, direct ELF inspection or test rerun. Unrelated-workload state is the recorded root audit, not a second remote observation."
+    }
+  },
+  "resources": {
+    "source": "50d94961c0d931715abd098bf1118018eb2101e2",
+    "tree": "de8f4f52ccec1e77063beac100016ee489403004",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/native-mtls-50d9496",
+    "owner": "b571e46b2fd953100bc1f1bab7999929",
+    "container": "bigbrotr-implementation-native-mtls-50d9496",
+    "postgres": "bigbrotr-implementation-native-mtls-50d9496-pg",
+    "network": "bigbrotr-implementation-native-mtls-50d9496",
+    "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "state": "stopped-retained",
+    "source_files": 745,
+    "started_at": "2026-09-19T09:41:13.356005+00:00",
+    "network_id": "20abd03b103ecbd13c3f1f3f98714e76755d3b91db70a98e27474eec7355d99c",
+    "postgres_id": "ce37a5487c694a731af62713b944f4b232d7479c5137d183f92168488baab022",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "container_id": "8cb2fbd90508e8e62d160ee9dd97b5c18b7debaad9e02e991bdd7d3b6b3f53f4",
+    "completed_at": "2026-09-19T09:44:31.634711+00:00"
+  },
+  "audit": {
+    "status": "PASS",
+    "source": "50d94961c0d931715abd098bf1118018eb2101e2",
+    "tree": "de8f4f52ccec1e77063beac100016ee489403004",
+    "source_files": 745,
+    "source_archive_sha256": "bcfd6539a957ed7395db851d47369192e47a7fc6357948a9e93f2ab4838d35b7",
+    "source_manifest_sha256": "f34781f52f5219a5bc045b030ff92a2f1fa543668f57c897b15a8b3fbe7e35b7",
+    "artifacts": {
+      "main": {
+        "sha256": "43fc9a788c2a9f9579773abd0adf7d6ec8b8f75589031a036972d4de890fd461",
+        "bytes": 8778576,
+        "elf_machine": 62
+      },
+      "worker": {
+        "sha256": "c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227",
+        "bytes": 12608608,
+        "elf_machine": 62
+      }
+    },
+    "qualification": {
+      "native-mtls": "PASS"
+    },
+    "cases": {
+      "native-mtls": 25
+    },
+    "build_ready": true,
+    "terminal": {
+      "container_id": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 143,
+        "Error": "",
+        "StartedAt": "2026-09-19T09:41:16.042798822Z",
+        "FinishedAt": "2026-09-19T09:44:28.935963082Z"
+      },
+      "postgres_id": {
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2026-09-19T09:41:14.041899997Z",
+        "FinishedAt": "2026-09-19T09:44:31.197161665Z"
+      }
+    },
+    "owned_containers": [
+      "8cb2fbd90508e8e62d160ee9dd97b5c18b7debaad9e02e991bdd7d3b6b3f53f4",
+      "ce37a5487c694a731af62713b944f4b232d7479c5137d183f92168488baab022"
+    ],
+    "existing_containers_unchanged": 324,
+    "unrelated_containers_unchanged": 20,
+    "unrelated_running": 8,
+    "bigbrotr_running": 0,
+    "observed_at": "2026-09-19T09:44:31.634711+00:00",
+    "harness": null,
+    "build_checks_status": "PASS"
+  },
+  "artifacts": {
+    "source": "50d94961c0d931715abd098bf1118018eb2101e2",
+    "source_manifest_sha256": "f34781f52f5219a5bc045b030ff92a2f1fa543668f57c897b15a8b3fbe7e35b7",
+    "native_toolchain": {
+      "os": "Linux",
+      "architecture": "x86_64",
+      "discovery": "llvm-config",
+      "environment": {
+        "CC": "/usr/lib/llvm-14/bin/clang",
+        "CXX": "/usr/lib/llvm-14/bin/clang++",
+        "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+        "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+        "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+      },
+      "tools": {
+        "CC": {
+          "path": "/usr/lib/llvm-14/bin/clang",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "CXX": {
+          "path": "/usr/lib/llvm-14/bin/clang++",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "AR": {
+          "path": "/usr/lib/llvm-14/bin/llvm-ar",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+          "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+          "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+        },
+        "LIBCLANG_PATH": {
+          "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+          "version": "Debian clang version 14.0.6"
+        },
+        "discovery": {
+          "path": "/usr/lib/llvm-14/bin/llvm-config",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+          "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+          "version": "14.0.6"
+        }
+      },
+      "sdk": null
+    },
+    "scope": "permanent local reservation and actual native initializer",
+    "status": "READY",
+    "control": "43fc9a788c2a9f9579773abd0adf7d6ec8b8f75589031a036972d4de890fd461",
+    "worker": "c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227",
+    "probe": "5516e4eed7df9dcfaf57cdf7db6656d623b5328b22b1e29bc37650a159d988f5",
+    "initializer": "e1940908792118e5540958804f039fe59a752ef91545cc56e2b374ca85c5702c",
+    "build_info": {
+      "archive_worker": {
+        "bytes": 12608608,
+        "sha256": "c057d67b5fe762b9db2d3ac543060a49a0a010b5198161f9109e06dc3b322227"
+      },
+      "capabilities": [
+        "event-verification",
+        "config-static"
+      ],
+      "capability_scope": "Strict bounded event JSON and independent ID/BIP340 verification; offline static configuration candidates and incomplete read-only doctor diagnostics; no storage, durable configuration authority, source policy, wire transport, filter, or general NIP conformance claim",
+      "debug_info": "false",
+      "format": "bigbrotr-build/1",
+      "inputs_sha256": {
+        "Cargo.lock": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215",
+        "contracts/protocol/nip01-event.json": "b830d5ab8651f5a763ebcffdc0eb1737ba70f4602c93fc714c892865ffca2db8",
+        "contracts/protocol/versions.json": "37c76706c5a2aa4fc72a40aeed908f104620eafcee1118b7cee8baf133546c95",
+        "contracts/release/dependencies.json": "4f73cd0a81916b7d203556ff9ad1d8efd97dfe95b2b2305c35468747e8669132",
+        "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167"
+      },
+      "optimization": "3",
+      "product": "BigBrotr",
+      "profile_assertion": "release",
+      "protocol_registry_format": "bigbrotr-protocol-versions/1",
+      "protocols": {
+        "event_verifier": "bigbrotr-nip01-verifier/1",
+        "nostr_nips": "a2494f4f81d46684e5814a9bf35e2b1df978f955"
+      },
+      "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+      "schemas": {
+        "build_info": "bigbrotr-build/1",
+        "config_static": "bigbrotr-config-static/1",
+        "doctor": "bigbrotr-doctor/1",
+        "signed_event": "nip01-event/1"
+      },
+      "source": {
+        "dirty": false,
+        "manifest_sha256": "f34781f52f5219a5bc045b030ff92a2f1fa543668f57c897b15a8b3fbe7e35b7",
+        "revision": "50d94961c0d931715abd098bf1118018eb2101e2",
+        "state": "builder-supplied",
+        "tree": "de8f4f52ccec1e77063beac100016ee489403004"
+      },
+      "target": "x86_64-unknown-linux-gnu",
+      "version": "0.1.0-dev"
+    },
+    "source_unchanged": true,
+    "receipt_reader": "cdb22a9f519328389594e38767f51b607e5f2c7b3e60e2b91064ab26cbea0d21"
+  },
+  "upstream_source_audit": [
+    {
+      "path": ".research/implementation/archive-worker/native-mtls/fe-secure-openssl.c",
+      "url": "https://raw.githubusercontent.com/postgres/postgres/REL_18_3/src/interfaces/libpq/fe-secure-openssl.c",
+      "bytes": 53797,
+      "sha256": "b0e0ebefe7b7a42af3fd4236783e06aa55e73037e0770115c421aca6db353b46"
+    },
+    {
+      "path": "/Users/vincenzo/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/command-fds-0.3.3/src/lib.rs",
+      "version": "command-fds0.3.3",
+      "bytes": 15596,
+      "sha256": "48ae3cee2aecd732eea345c97dc3e569d5f4e7227100fa246546fd0af66bc886"
+    },
+    {
+      "path": ".research/implementation/archive-worker/native-mtls/pg_config_manual.h",
+      "url": "https://raw.githubusercontent.com/postgres/postgres/REL_18_3/src/include/pg_config_manual.h",
+      "bytes": 13536,
+      "sha256": "3b513dda5408337ef7c31bca491844650b4ea2cdb1b688d6b99ab74ba3f06700"
+    }
+  ],
+  "raw": {
+    "root": ".research/implementation/archive-worker/native-mtls/qualified",
+    "identity": {
+      "tar_bytes": 174080,
+      "tar_sha256": "ee6403ce580eaf54db602b49e4677153fbcb71a8c972615d4fcec7b4d33e58fc",
+      "files": {
+        "resources.json": {
+          "bytes": 1193,
+          "sha256": "7e27476c349ebe0f867d9524eca45cd277f6e5f3b5e3599e5e049f882d68f468"
+        },
+        "audit.json": {
+          "bytes": 1897,
+          "sha256": "725550f1ceb21ae42db4904cd90b51128d41ddb799ec126e4beefd533c98ae25"
+        },
+        "container.log": {
+          "bytes": 283,
+          "sha256": "fa6ef041e2d92426a8b10c10b615e834b57565d2e8b046b4d5b436f9e60f2020"
+        },
+        "out/build/source-manifest.json": {
+          "bytes": 91355,
+          "sha256": "f34781f52f5219a5bc045b030ff92a2f1fa543668f57c897b15a8b3fbe7e35b7"
+        },
+        "out/native-tests/checks/cli-tests.log": {
+          "bytes": 2171,
+          "sha256": "7725efb4af5ee41534b8fce9892377a85398dd169d5295ea1bde6bbcb9e2271f"
+        },
+        "out/native-tests/checks/clippy.log": {
+          "bytes": 394,
+          "sha256": "88fed75d66088849b8e4ea90a9671a55ed2412d1af369d2cc7e602511edeccdc"
+        },
+        "out/native-tests/checks/fixture.log": {
+          "bytes": 130,
+          "sha256": "ec4e725b5278bfeb81e1a5d3ac56bff619605f82ce600296696822a198533a5c"
+        },
+        "out/native-tests/checks/parent-tests.log": {
+          "bytes": 5023,
+          "sha256": "caf1344c787f161933fdef2c191e7a72ba7a4f7ffa35d1a21014a085c5e39a46"
+        },
+        "out/native-tests/checks/result.json": {
+          "bytes": 4327,
+          "sha256": "b52bcbe75a40da6b3e73f535b29ca07d502e3269cc1dfe242d7f53a90a2c7841"
+        },
+        "out/native-tests/ordered-build.log": {
+          "bytes": 626,
+          "sha256": "df9aa15a98639778e5a288f6b17530b79006dae896f63f136660e1f633d5bb9d"
+        },
+        "out/native-tests/ready.json": {
+          "bytes": 4999,
+          "sha256": "76b57081b3713228396ca55fab8f24e74c11080de9c6f26fa2882ee917946522"
+        },
+        "out/native-tests/result.json": {
+          "bytes": 2801,
+          "sha256": "b6f541cd1c1c08c50fccfa73d375913697b3bcb9cf4eb4e1da834be1b52c864e"
+        },
+        "out/native-tests/worker-identity.json": {
+          "bytes": 104,
+          "sha256": "c76d6822c6cff10729edc0d68f41196558b6cdedee0779cbf55ce624e1e80878"
+        },
+        "native-mtls.json": {
+          "bytes": 28032,
+          "sha256": "693273bca6dfca8150e35f230645656e31ad8bbb26ffc833068d4e8ac85f06ed"
+        },
+        "native-mtls.log": {
+          "bytes": 32,
+          "sha256": "5b981323ae329c2fd0e498eed7e5269f9b1d0e6a7c31b4ea3bc73360d3ec653a"
+        }
+      }
+    }
+  },
+  "limitations": [
+    "Same-boot Linux amd64/ext4, PostgreSQL16.15 and pinned worker/engine bundle only. No arm64/release or capacity/RSS/SLA claim.",
+    "Shared native publisher route is wired but actual signed publication under mTLS is not qualified by this initializer/receipt matrix.",
+    "Receipt catalog is intentionally empty; successful Absent exercises metadata and native query/authentication, not event readback or protection.",
+    "Rotation test covers sealed client source files; arbitrary stalls reading protected regular files and operator mutation of CA paths are not qualified.",
+    "Remaining initializer native-crash/lost-install acknowledgement and whole-role source policy/protection/read/export/restart acceptance remain open."
+  ]
+}

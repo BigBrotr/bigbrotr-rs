@@ -294,7 +294,8 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   now rejects duplicate fields. Discriminating local regressions and
   [16 old/new native authentication cases](evidence/p02-native-catalog-auth-20260919.json)
   pass, including incomplete SCRAM before SQL and verify-full TLS refusals.
-  Configured native mutual TLS and the installed initializer remain required.
+  That authentication slice left configured native mutual TLS and the installed
+  initializer to subsequent work below.
   Its atomic ownership transfer must validate the configured manager and retired
   bootstrap names/OIDs, complete guard/native ACLs (including column/default ACLs),
   required manager privileges and existing wrong-owner refusal. Qualify actual
@@ -323,8 +324,9 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   at `660df73`, including actual post-manager-installation observation, both lost
   COMMITs and graceful cancellation with real advisory waiters. Independent durable
   effect checks cover ambiguous outcomes too; the failed baseline and weaker first
-  oracle remain recorded. SQL-capable backend drain, the complete initialization/
-  recovery CLI and configured native mutual TLS remain open.
+  oracle remain recorded. That recovery slice did not implement SQL-capable backend
+  drain, the complete initialization/recovery CLI or configured native mutual TLS;
+  see later evidence below.
   The real [initializer/recovery CLI](../user/archive-initialization.md) now has
   [17 scoped native scenarios](evidence/p02-initialization-cli-native-20260919.json)
   with binaries at `6265286` and separately pinned harness `3335e06` (unchanged production).
@@ -335,14 +337,16 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   at artifact `78e7734` / harness `1978e12` now qualify nonempty waits across databases,
   timeout, SIGTERM/SIGINT and retained retry after natural backend completion.
   The producer is explicitly a custodied tokio-postgres residual-session fixture;
-  this does not qualify a blocked native libpq write. New-CLI TLS/mTLS, remaining
-  native crash/acknowledgement paths and the installed service still gate complete
-  acceptance; this step remains open. A protected sealed-FD native client-identity
-  candidate now wires initializer, publisher and receipt consumers without changing
-  the 32 KiB wire format. Local refusal/budget tests pass; its actual native mTLS
-  matrix, including blocked-query cancellation, remains NOT_RUN. Review also found
-  libpq truncates long CA paths; pre-reservation refusal now has a discriminating
-  local 1023/1024-byte regression and awaits the real-CA native scenario.
+  this does not qualify a blocked native libpq write. Protected sealed-FD client
+  identities now wire initializer, publisher and receipt consumers without changing
+  the 32 KiB wire format. [25 actual native TLS/mTLS cases](evidence/p02-native-mtls-20260919.json)
+  at `50d9496` pass for installed initialization, fresh manager inspect/recover and
+  SELECT-only receipt reads, including server clientcert+SCRAM enforcement and
+  blocked native-query cancellation with pidfd-observed child exit before unblock.
+  Review's libpq CA-path truncation finding has local RED/GREEN and a real long-CA
+  refusal with unchanged permanent state. The initial Linux-only test compilation
+  failure is retained. Signed mTLS publication, remaining native crash/ack paths
+  and installed service/M1 acceptance remain open; this step is not complete.
 - [ ] **Step 4:** After an ambiguous commit, query the receipt in a new transaction; do not
   repeat while receipt state is unknown. Reject mismatched batch digest.
   Include loss of the actual native PostgreSQL COMMIT response, plus physical file
