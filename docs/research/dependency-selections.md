@@ -624,5 +624,9 @@ catalog custody is attached before task creation. Exact locked
 `read_info` before constructing Client/Connection. Driver destruction is still
 not remote rollback; DNS may retain runtime blocking work after timeout. No new
 pool, reconnect/fallback or resource-accounting guarantee is introduced. The
-publication fixture now consumes the same protected preparer and transport;
-scoped native TLS, signals and custody validation remains pending.
+publication fixture now consumes the same protected preparer and transport.
+[Native qualification at `6606103`](../implementation/evidence/p02-shared-postgres-transport-native-20260919.json)
+executes the actual CLI TLS good/wrong-CA/wrong-name, signals, blocked query
+cancellation/restart and signed catalog consumers. A single pinned query stays
+pending until custody attachment/driver polling. This confirms the finite adapter
+boundary; no shared process-budget or installed Archive readiness is claimed.

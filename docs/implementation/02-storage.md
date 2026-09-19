@@ -382,7 +382,12 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   Installed compact recovery preparation shares the protected PostgreSQL adapter
   with Control: the returned actual driver remains unpolled until the catalog
   consumer attaches custody. The real publication fixture consumes it, including
-  seal/recovery. Scoped native TLS, signals and queued-query validation is pending.
+  seal/recovery. [Native qualification at `6606103`](evidence/p02-shared-postgres-transport-native-20260919.json)
+  passes six actual CLI TLS/signal/cancellation/restart cases, the same pinned
+  query-before-driver discriminator, three custody/two missing-import schedules,
+  ten clone controls and six signed journeys. All 27 journal bytes and Control
+  requests plus 26 imported identities/OID bindings are checked; resources retired.
+  Installed service, shared process grants and complete recovery remain open.
   No step is complete from these prerequisites.
 - [ ] **Step 6:** Handle empty and one-small-event timer batches; publish useful progress
   without waiting for a size threshold that may never be reached.

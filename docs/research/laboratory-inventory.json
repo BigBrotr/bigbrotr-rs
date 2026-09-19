@@ -7797,8 +7797,143 @@
     "shared_postgres_transport": {
       "base_source": "a40bf53784be2b2737f89a39b1b44e8a46f0d6ed",
       "local_root": ".research/implementation/archive-worker/shared-transport",
-      "state": "local source and harness preparation; native NOT_RUN; no remote resources",
-      "cache_source": "/home/tux/bigbrotr-implementation-20260917/runs/attempt-read-d86e147/out/build"
+      "state": "scoped native qualification PASS; runner, PG and four CLI containers stopped-retained; network retired",
+      "cache_source": "/home/tux/bigbrotr-implementation-20260917/runs/attempt-read-d86e147/out/build",
+      "resources": {
+        "source": "6606103653d96b932e2adc11d2485b03d0955fc6",
+        "tree": "4d47f0d4b655d379ca8f442771291727eaa3852e",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/shared-transport-6606103",
+        "owner": "5bfe03b68262b8cd86547e08af06fb14",
+        "container": "bigbrotr-implementation-shared-transport-6606103",
+        "postgres": "bigbrotr-implementation-shared-transport-6606103-pg",
+        "network": "bigbrotr-implementation-shared-transport-6606103",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "state": "stopped-retained",
+        "source_files": 703,
+        "started_at": "2026-09-19T02:54:15.692847+00:00",
+        "network_id": "46276ce50139fbadc486714ed6d6ea81346f9e5f11c52e23a36273b2ca58df8e",
+        "postgres_id": "6c93e47a57a846abcad2b11c82a66db1e85d5c49ed50b2f3c2bfe57b75937979",
+        "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+        "container_id": "7cfa5042ae7940b82627123fa08d787f8e56a2aaa9f66f50d32081b23cf375b3",
+        "network_state": "retired",
+        "terminal": {
+          "runner": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 143,
+            "Error": "",
+            "StartedAt": "2026-09-19T02:54:18.211022142Z",
+            "FinishedAt": "2026-09-19T02:58:34.907869234Z"
+          },
+          "postgres": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-19T02:54:16.340033962Z",
+            "FinishedAt": "2026-09-19T02:58:37.480112539Z"
+          }
+        },
+        "finished_at": "2026-09-19T02:58:38.109760+00:00"
+      },
+      "control_containers": [
+        {
+          "name": "bigbrotr-implementation-shared-transport-6606103-cli-plain",
+          "id": "70576eaabb8ca9f6980e7e8d777a6dabc54310e4e44fdd6f316bccbaa3ec4979",
+          "terminal": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-19T02:55:53.389477597Z",
+            "FinishedAt": "2026-09-19T02:55:53.627497125Z"
+          }
+        },
+        {
+          "name": "bigbrotr-implementation-shared-transport-6606103-cli-tls",
+          "id": "14d8f99c128ed1619b534afda5d874b044bd38186d91a86549c20ef932c3eaa7",
+          "terminal": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-19T02:55:55.209600569Z",
+            "FinishedAt": "2026-09-19T02:55:55.405986252Z"
+          }
+        },
+        {
+          "name": "bigbrotr-implementation-shared-transport-6606103-cli-cancel",
+          "id": "ef5a1d5173f4d952a2175255935842f84fc152e1cd1d4d87dabf6a2bdc827a1e",
+          "terminal": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 4,
+            "Error": "",
+            "StartedAt": "2026-09-19T02:55:56.197283197Z",
+            "FinishedAt": "2026-09-19T02:56:00.927219114Z"
+          }
+        },
+        {
+          "name": "bigbrotr-implementation-shared-transport-6606103-cli-restart",
+          "id": "fa2dd329aaf9049f4cf5e61748b328f7fd1174a51a2f6b19100fbc4bff88ca3b",
+          "terminal": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-09-19T02:56:01.464088288Z",
+            "FinishedAt": "2026-09-19T02:56:01.597699947Z"
+          }
+        }
+      ],
+      "report": "docs/implementation/evidence/p02-shared-postgres-transport-native-20260919.json",
+      "raw_archive": {
+        "files": 21,
+        "bytes": 2795520,
+        "sha256": "1ca815bb9a9aee71abd8ca589c1d1a4070ff59e87f1bb1df44f3456252e16328"
+      },
+      "audit": {
+        "source": "6606103653d96b932e2adc11d2485b03d0955fc6",
+        "tree": "4d47f0d4b655d379ca8f442771291727eaa3852e",
+        "source_files": 703,
+        "manifest_sha256": "f4aa4052062b9e9e0bfbd12615ea8240c5ea2b7f7482361470685c5f0d2abb4f",
+        "cleanup": "owned containers stopped, network retired, no OOM",
+        "unrelated_unchanged": 20,
+        "unrelated_running": 8,
+        "running_bigbrotr": 0
+      },
+      "next_cache_source": "/home/tux/bigbrotr-implementation-20260917/runs/shared-transport-6606103/out/build"
     }
   },
   "implementation_monitor_corrections_20260918": {
