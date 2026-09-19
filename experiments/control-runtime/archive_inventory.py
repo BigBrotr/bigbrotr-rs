@@ -205,7 +205,12 @@ print(json.dumps({'pid':pid,'start_ticks':start,'signal':sys.argv[3],'pidfd':Tru
             require(result.returncode == 0 and json.loads(result.stdout)['publication_authority'] == 'not-granted', 'explicit binding')
             require(anchor.read_bytes() == (state_dir / 'coordinator.json').read_bytes(), 'two-ended binding differs')
         retained = anchor.read_bytes()
-        passed('explicit-binding-and-identical-retry')
+        inode = state_dir.stat()
+        expected_binding = dict(format='bigbrotr-local-coordinator/1',
+            initialization_sha256=list(hashlib.sha256((anchor.parent / 'intent.json').read_bytes()).digest()),
+            state_root='/out/' + prefix + '/' + prefix + '_empty-state', state_device=inode.st_dev, state_inode=inode.st_ino)
+        require(json.loads(retained) == expected_binding, 'independent initialization/root binding')
+        passed('explicit-binding-and-identical-retry', binding=expected_binding, binding_sha256=hashlib.sha256(retained).hexdigest())
         # The runner mounts this same /out tree again at /out-alias. Unlike a
         # symlink, canonicalization preserves those different mountpoint names.
         (state_dir / 'child').mkdir(mode=0o700)
@@ -227,6 +232,20 @@ print(json.dumps({'pid':pid,'start_ticks':start,'signal':sys.argv[3],'pidfd':Tru
         passed('live-coordinator-refuses-process-and-initializer')
         stop(current, prefix + '_empty')
         passed('empty-history-distinct-from-unresolved')
+        crashed = start(empty, 'crashed-coordinator')
+        before_crash = idle(crashed)
+        signal(crashed, 'KILL')
+        terminal(crashed, 137)
+        deadline = time.monotonic() + 5
+        while sql(prefix + '_empty', "SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND usename='bigbrotr_control';") != '0':
+            require(time.monotonic() < deadline, 'crashed Control backend retained')
+            time.sleep(.01)
+        restarted = start(empty, 'after-coordinator-crash')
+        after_crash = idle(restarted)
+        require(expect(after_crash, 0, 0) and int(after_crash['owner_epoch']) == int(before_crash['owner_epoch']) + 1, 'fresh owner after actual crash')
+        stop(restarted, prefix + '_empty')
+        require(anchor.read_bytes() == retained and (state_dir / 'coordinator.json').read_bytes() == retained, 'crash recovery rewrote binding')
+        passed('actual-coordinator-sigkill-and-fresh-restart', old_epoch=before_crash['owner_epoch'], new_epoch=after_crash['owner_epoch'])
         other = directory / 'other-state'
         other.mkdir(mode=0o700)
         changed = directory / 'other.toml'
