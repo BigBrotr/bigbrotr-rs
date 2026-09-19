@@ -51,6 +51,17 @@ must reject schema12 before creating owners/native roots. Timeouts retain partia
 output and explicitly unknown remote exclusion; the owned terminal audit is
 required before qualification. This does not authorize historical-owner adoption.
 
+`signed_outcomes.py --root <owned-lab>` compares all24 signed-run reservations and
+outcomes with independent complete receipt/rejection bytes, original inputs and
+native manifest. This corpus has NewFacts and Rejected outcomes, not AlreadyDurable.
+`build_outcome_probe.py` builds a separate finite client from an exact Git export,
+refusing changes outside the listed fixture/documentation inputs relative to9537667.
+`existing_outcome.py --root <owned-lab>` then exercises a distinct request for an
+already admitted signed import. It compares all27 native rows, the complete retained
+input and AlreadyDurable copy; an identical retry must preserve the PG row/xmin.
+The original product executables/export stay intact. All these are qualification
+clients, not supported command-line installation or successor-recovery workflows.
+
 `concurrency.py --root <owned-lab>` follows successful reservation/schema cases.
 It clones the quiescent disposable SQL fixture, without native copies, and uses
 actual independently connected PostgreSQL sessions. Reservation-first and

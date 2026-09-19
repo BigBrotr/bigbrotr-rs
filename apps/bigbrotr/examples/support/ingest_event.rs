@@ -36,9 +36,12 @@ pub async fn run(
         producer_epoch: ProducerEpoch::new(1).unwrap(),
         request_sequence: RequestSequence::new(2).unwrap(),
     };
-    let prepare = || {
+    let prepare = |sequence| {
         PreparedEvent::new(
-            request_id,
+            ProducerRequestId {
+                request_sequence: RequestSequence::new(sequence).unwrap(),
+                ..request_id
+            },
             EventIntent::import(1, scope, event.clone(), lineage).unwrap(),
             256 * 1024,
             grant(budget, MIB, 0),
@@ -49,18 +52,18 @@ pub async fn run(
         observer.execute("UPDATE control.producer_epochs SET state='closing' WHERE producer_slot_id=$1::bytea AND producer_epoch=1",&[&&spec.producer_slot_id.as_bytes()[..]]).await.unwrap();
     }
     let cancelled = AtomicBool::new(mode == "event-cancelled");
-    let input = |recorded_at| InitialEventRequest {
+    let input = |recorded_at, sequence| InitialEventRequest {
         ingest_root: if mode == "event-wrong-root" {
             path.parent().unwrap()
         } else {
             path
         },
         registration: spec,
-        event: prepare(),
+        event: prepare(sequence),
         provenance_enabled: true,
         recorded_at: ObservedTime::new(recorded_at),
         limits: AdmissionLimits {
-            max_outstanding_requests: 2,
+            max_outstanding_requests: if mode == "event-outcomes" { 3 } else { 2 },
             ..AdmissionLimits::default()
         },
         policy_ttl: Duration::from_secs(2),
@@ -86,7 +89,7 @@ pub async fn run(
     let result = owner
         .admit_initial_event(
             store,
-            input(456),
+            input(456, 2),
             grant(budget, 40 * MIB, 10 * MIB),
             |document, digest, candidate| {
                 authorize(document, digest, candidate)?;
@@ -104,7 +107,7 @@ pub async fn run(
             },
         )
         .await;
-    if matches!(mode, "event-write" | "event-after") {
+    if matches!(mode, "event-write" | "event-after" | "event-outcomes") {
         let outcome = result.unwrap();
         let AdmissionOutcome::Durable(receipt) = outcome.outcome() else {
             panic!("verified import refused")
@@ -120,7 +123,7 @@ pub async fn run(
         let retry = owner
             .admit_initial_event(
                 store,
-                input(789),
+                input(789, 2),
                 grant(budget, 40 * MIB, 10 * MIB),
                 authorize,
             )
@@ -153,6 +156,49 @@ pub async fn run(
             serde_json::json!({"event":"receipt","bytes":hex(&bytes),"facts":pending.records().iter().map(|r|hex(r)).collect::<Vec<_>>(),"replay_exact":true}),
         );
         drop(pending);
+        if mode == "event-outcomes" {
+            let mut exact = None;
+            let mut retained = None;
+            for recorded_at in [1000, 2000] {
+                let outcome = owner
+                    .admit_initial_event(
+                        store,
+                        input(recorded_at, 3),
+                        grant(budget, 40 * MIB, 10 * MIB),
+                        authorize,
+                    )
+                    .await
+                    .unwrap();
+                let AdmissionOutcome::Durable(receipt) = outcome.outcome() else {
+                    panic!("existing valid event refused")
+                };
+                assert!(receipt.batch().is_none());
+                let bytes = receipt.encode_persistent(8192).unwrap();
+                let copied = owner
+                    .read_producer_outcome(receipt.request_id())
+                    .await
+                    .unwrap()
+                    .unwrap();
+                assert_eq!(
+                    copied.kind,
+                    bigbrotr::storage::rocks::store::NativeOutcomeKind::AlreadyDurable
+                );
+                let row = observer.query_one(
+                    "SELECT row_to_json(o)::text, xmin::text FROM control.producer_outcomes o WHERE request_sequence=3", &[],
+                ).await.unwrap();
+                let row = (row.get::<_, String>(0), row.get::<_, String>(1));
+                if let Some(previous) = &exact {
+                    assert_eq!(previous, &bytes);
+                    assert_eq!(retained.as_ref(), Some(&row));
+                } else {
+                    exact = Some(bytes);
+                    retained = Some(row);
+                }
+            }
+            emit(
+                serde_json::json!({"event":"existing-receipt","bytes":hex(&exact.unwrap()),"replay_exact":true,"row_unchanged":true}),
+            );
+        }
         owner.release().await.unwrap();
     } else {
         let error = match result {

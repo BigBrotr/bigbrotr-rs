@@ -74,8 +74,10 @@ def main(root, run_tag):
         db='bbproducer_'+tag+label.replace('-','_')
         case['database'] = db
         sql('postgres',f'CREATE DATABASE {db}')
-        setup={};execute(binary+['setup-12',db,'/secrets/postgres','unused'],30,setup)
-        case['setup']=setup;save();assert setup['exit']==0 and not setup['stderr']
+        setup=case['setup']={};save()
+        try: execute(binary+['setup-12',db,'/secrets/postgres','unused'],30,setup)
+        finally: save()
+        assert setup['exit']==0 and not setup['stderr']
         if label=='reservation-rollback':
             sql(db,"CREATE FUNCTION public.fixture_abort() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'fixture rollback'; END $$; CREATE TRIGGER zz_fixture_abort AFTER INSERT ON control.producer_requests FOR EACH ROW EXECUTE FUNCTION public.fixture_abort();")
         proxy=None
@@ -136,11 +138,17 @@ def main(root, run_tag):
         assert state_rows(db)==case['control']
         case['status']='PASS';save()
     fixture=SOURCE/'experiments/producer-requests/schema_cases.sql'
-    completed=subprocess.run(['docker','exec','-i',pg,'psql','-XAt','-U','postgres','-d','bbproducer_'+tag+'write'],
-        input=fixture.read_text(),capture_output=True,text=True,timeout=60)
-    report['schema']={'exit':completed.returncode,'stdout':completed.stdout,'stderr':completed.stderr,
-        'fixture_sha256':hashlib.sha256(fixture.read_bytes()).hexdigest()}
-    save()
+    report['schema']={'exit':None, 'remote_exclusion':'UNKNOWN',
+        'fixture_sha256':hashlib.sha256(fixture.read_bytes()).hexdigest()};save()
+    try:
+        completed=subprocess.run(['docker','exec','-i',pg,'psql','-XAt','-U','postgres','-d','bbproducer_'+tag+'write'],
+            input=fixture.read_text(),capture_output=True,text=True,timeout=60)
+        report['schema'].update(exit=completed.returncode,stdout=completed.stdout,stderr=completed.stderr)
+    except subprocess.TimeoutExpired as error:
+        partial=lambda b: b.decode(errors='replace') if isinstance(b,bytes) else b or ''
+        report['schema'].update(failure='TimeoutExpired',stdout=partial(error.stdout),stderr=partial(error.stderr))
+        raise
+    finally: save()
     assert completed.returncode==0, 'schema fixture failed; inspect retained transcript'
     result, _ = json.JSONDecoder().raw_decode(completed.stdout[completed.stdout.index('{'):])
     assert result['status']=='PASS' and len(result['cases'])==20

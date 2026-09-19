@@ -19,11 +19,13 @@ Archive receipt consumer is qualified separately. All later selected work remain
 
 ## Git and current work
 
-Mac main is unpublished native candidate9537667dd140baac68ca79ecb56ea7c6ecce081f,
+Mac main is unpublished harness1a1ff27ec59b783c75bd2530903b965352710349. The tested
+product candidate is9537667dd140baac68ca79ecb56ea7c6ecce081f,
 tree71716b4155e6ed0068c1eb41d817f8c4b0bd3c18. Private origin/main remains
 last verified05520e06097a849b81386d74db8cd2936200540c. Candidate sources were clean
 when exported/transferred through Git. Root owns dirty checkpoint/inventory and practical harness changes, including
-new outcome_upgrade.py; these are not part of the candidate product under test.
+the outcome-only fixture client and signed/AlreadyDurable outcome observers;
+these are not part of the candidate product under test.
 No other contributor edits were incorporated; existing review agents are read-only.
 No other implementation worktree is being integrated.
 
@@ -161,11 +163,13 @@ scoped closure of its five findings; no new issue was inferred from its old text
 
 ## Next bounded action
 
-Commit and transfer the reviewed practical harness separately through Git. Run
-fresh tagged reservation/schema and concurrency cases, then actual0011->0012
-headroom/client compatibility; keep the candidate product export unchanged.
-Independently compare signed-run PG outcomes with retained inputs/native bytes.
-Compatibility remains NOT_RUN; original SQL fixture failure remains recorded.
+Harness1a1ff27 completed six fresh tagged reservation cases/20SQL observations,
+six concurrency schedules/two cleanup controls and four actual0011->0012
+compatibility cases. These qualify schema/data compatibility, not runtime grants,
+operational restart or successor adoption. Original SQL failure remains retained.
+Next commit/transfer the supplemental observers and separate fixture-only client;
+compare all24 signed PG outcomes and one connected AlreadyDurable request/retry
+with complete independent native/input bytes. Do not overwrite original artifacts.
 Mac14migration tests,8input/native tests,5bootstrap tests and5structural receipt
 reader tests passed. Regression
 first failed UnknownTarget12; native witness tests first failed missing API. A

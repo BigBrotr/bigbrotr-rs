@@ -258,7 +258,7 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
             )]
         },
         producer_slot_id: [66; 16].try_into().unwrap(),
-        outstanding_request_limit: 2,
+        outstanding_request_limit: if mode == "event-outcomes" { 3 } else { 2 },
         created_at_us: now,
         lease_expires_at_us: now + 60_000_000,
     };
