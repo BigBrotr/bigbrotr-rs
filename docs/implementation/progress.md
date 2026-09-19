@@ -21,14 +21,35 @@ installed service readiness.
 
 ## Actual Git and ownership
 
-Mac main HEAD and freshly verified remote main are
-b6894ccb7c09179ec7b9440b6db980d18b23c260 (qualification-only follow-up).
-Ordinary push8085 completed from4ca199e; repository remains private, nonarchived,
-named bigbrotr-rs. Worktree was clean after push. Root owns the catalog CLI/configuration slice and this checkpoint; no other
-writer, merge or rebase. Dirty source adds explicit archive.catalog_id, native
-path validation, shared catalog PG preparation and archive inspect plus tests. Tested source remains
-53707a2a74a143c9aba78858068dea5df71809c6,
-tree99598cfe9b343e97982e0a1e4cab5be30eaf2495. Uncommitted catalog-consumer changes are not yet native-qualified.
+Mac main HEAD is unpublished native candidate
+5262c84b7ea075172d1449d9eee2ed5d114889e3, tree
+992470e764587867fa541351eafb6d38b293b572, one commit ahead of origin/main b6894cc.
+Root owns post-candidate inventory/checkpoint updates and catalog CLI harness
+cleanup correction; sole writer. Product source is unchanged.
+Candidate contains the catalog CLI/configuration and shared bounded guard lock.
+No source changes after the candidate. Previous worker-only tested source remains
+53707a2a74a143c9aba78858068dea5df71809c6; it does not qualify the new consumer.
+
+## Active native catalog lab
+
+Transfer22928 finished. Exact713-file clean source exported on Tux under
+/home/tux/bigbrotr-implementation-20260917/runs/catalog-cli-5262c84.
+Owner595c0af940229c8e7c6c6a0aba1846ff, runner
+a90d3fdcc48a0a551836ec68c3b0a09b3c83ddc6a463cc2203a1dde2368fc17b,
+PG dc4df96cff73ff22968ee7ad776df882bd009bd77c2f4025607c06321c2c2518,
+network d148e33427d98f6861758f71182c186c2a46eb5612e17cdc522be85e99702449.
+Fresh identity/running/no-port checks passed. PG16.15 fsync/full_page_writes on.
+Runner2CPU/6GiB/512PIDs; PG1CPU/1GiB/128PIDs; internal network, no host ports.
+Native build,39 tests,Clippy and real Control issuance fixture reached READY.
+Session2265 now runs scientific_guard_cases.py then transport_cli_cases.py
+sequentially on5262c84. New catalog_cli_cases.py has NOT_RUN: AI review found
+cleanup failures could skip later PG restoration. Corrected on Mac; do not patch
+this live source. Retain these unaffected guard/transport outcomes, retire this
+lab, then qualify the corrected CLI harness from a fresh exact-source lab. Runner sleeps at most1800s
+following successful build; explicitly stop verified owned resources after cases.
+Inventory implementation_archive_worker_20260918.catalog_cli owns this new lab.
+Preflight275 retained containers/eight unrelated running/zero BigBrotr running;
+old labs stay retired. Raw .research/implementation/archive-worker/catalog-cli.
 
 ## Installed worker binding qualification
 
@@ -80,7 +101,7 @@ owner a63fc54f2d4a00d3ce96080da4077747;
 runner13d5f5051be606ac7f0ed9dba2a4b61a71dedeb029bcf1e5d7902f1443dc9e67.
 It exited0 itself, no OOM, now stopped-retained.2CPU/6GiB/512PIDs, network none,
 no ports or PG. All274 pre-existing identities/states/mounts/networks unchanged,
-including20 unrelated; eight unrelated running, zero BigBrotr running. No active
+including20 unrelated; eight unrelated running, zero BigBrotr running. That previous lab has no active
 experiment or cleanup obligation. Transfer77675, initial audit92757, corrected
 audit26503 and collection52398 are terminal. Retired labs stay stopped. Latest
 cache is installed-binding-53707a2/out/build; new runs need new resources and
@@ -134,10 +155,12 @@ activation reads values after validation. No SQL/checksum/policy format change.
 Native malformed-owner refusal, actual CLI/PG cases, both native DML lock orders,
 activation/seal/retry and shared Control transport are still NOT_RUN for this
 candidate. Existing scientific fixture gains a real retained-intent seal check.
-No new remote resource yet. Transfer exact committed source using the ignored
-catalog-cli/transfer.py and reviewed launch.py; new catalog-cli-<revision> lab,
-retained537 cache/assets, scoped PG16.15/private network, no host ports. Verify
-and inventory real launch identity before invoking the exact-source harnesses.
+The exact-source lab above is now building. Finish active session2265 and collect actual native guard/transport outcomes.
+Review the independent cleanup correction, then commit the next exact candidate
+and run its CLI-specific cases in a new owned lab. Do not rerun unrelated suites
+when production source is unchanged. Inspect
+actual outcomes and immutable source/artifact identities, then collect and retire
+only owned resources. Source bugs require a new exact revision; no remote edits.
 
 Registry/resolver, budget/ownership/serve, PG preparation, native installation/
 process/lifetime and publication/custody sources were read completely. Integration

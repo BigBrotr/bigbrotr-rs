@@ -7972,6 +7972,30 @@
         "bigbrotr_running": 0,
         "audit_mount_order_only_discrepancies": 89
       }
+    },
+    "catalog_cli": {
+      "source": "5262c84b7ea075172d1449d9eee2ed5d114889e3",
+      "tree": "992470e764587867fa541351eafb6d38b293b572",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/catalog-cli-5262c84",
+      "owner": "595c0af940229c8e7c6c6a0aba1846ff",
+      "container": "bigbrotr-implementation-catalog-cli-5262c84",
+      "postgres": "bigbrotr-implementation-catalog-cli-5262c84-pg",
+      "network": "bigbrotr-implementation-catalog-cli-5262c84",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "state": "running-build",
+      "source_files": 713,
+      "started_at": "2026-09-19T04:08:48.965880+00:00",
+      "network_id": "d148e33427d98f6861758f71182c186c2a46eb5612e17cdc522be85e99702449",
+      "postgres_id": "dc4df96cff73ff22968ee7ad776df882bd009bd77c2f4025607c06321c2c2518",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "a90d3fdcc48a0a551836ec68c3b0a09b3c83ddc6a463cc2203a1dde2368fc17b",
+      "local_root": ".research/implementation/archive-worker/catalog-cli",
+      "scope": "finite installed CLI, native schema and shared guard/transport regression; no service readiness",
+      "cache": "installed-binding-53707a2/out/build",
+      "retirement": "pending; integrating root owns runner and PG",
+      "preexisting_containers": 275,
+      "unrelated_running": 8
     }
   },
   "implementation_monitor_corrections_20260918": {

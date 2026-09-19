@@ -205,25 +205,48 @@ def main():
     except BaseException as error:
         report.update(status='FAIL', failure_class=type(error).__name__); raise
     finally:
+        cleanup_errors = []
         try:
             if blocker is not None:
-                sql('bbcat_cli', "SELECT pg_terminate_backend(pid,5000) FROM pg_stat_activity WHERE application_name='catalog-cli-blocker';")
-                blocker.stdin.close(); blocker.wait(timeout=5)
+                try:
+                    sql('bbcat_cli', "SELECT pg_terminate_backend(pid,5000) FROM pg_stat_activity WHERE application_name='catalog-cli-blocker';")
+                    blocker.stdin.close(); blocker.wait(timeout=5)
+                except BaseException as error:
+                    cleanup_errors.append(dict(resource='blocker', error=type(error).__name__))
             for record_container in report['containers']:
-                info = json.loads(lab.docker('inspect', record_container.get('id', record_container['name'])).stdout)[0]
-                assert info['Config']['Labels']['org.bigbrotr.catalog-cli'] == state['owner']
-                if info['State']['Running']: lab.docker('stop', '--time', '3', info['Id'])
-                assert not json.loads(lab.docker('inspect', info['Id']).stdout)[0]['State']['Running']
+                try:
+                    # An ambiguous create is resolved only by reserved name and
+                    # owner label; failed inspection does not prove absence.
+                    info = json.loads(lab.docker('inspect', record_container.get('id', record_container['name'])).stdout)[0]
+                    assert info['Config']['Labels']['org.bigbrotr.catalog-cli'] == state['owner']
+                    record_container['id'] = info['Id']
+                    if info['State']['Running']: lab.docker('stop', '--time', '3', info['Id'])
+                    terminal = json.loads(lab.docker('inspect', info['Id']).stdout)[0]['State']
+                    assert not terminal['Running']
+                    record_container.update(state='stopped-retained', terminal=terminal)
+                except BaseException as error:
+                    cleanup_errors.append(dict(resource=record_container['name'], error=type(error).__name__))
             if original is not None:
-                lab.docker('exec', '-i', state['postgres_id'], 'sh', '-c', 'cat > /var/lib/postgresql/data/postgresql.auto.conf', data=original)
-                assert lab.docker('exec', state['postgres_id'], 'cat', auto).stdout == original
-                assert sql('postgres', 'SELECT pg_reload_conf();') == 't'
-                until = time.monotonic()+5
-                while tls_cases.settings(state) != settings:
-                    assert time.monotonic()<until; time.sleep(.05)
-                report['restoration'] = 'PASS'
-            if report['status'] == 'COLLECTED': report['status'] = 'PASS'
-        finally: save()
+                try:
+                    pg = json.loads(lab.docker('inspect', state['postgres_id']).stdout)[0]
+                    assert pg['Config']['Labels']['org.bigbrotr.publication'] == state['owner'] and pg['State']['Running']
+                    lab.docker('exec', '-i', state['postgres_id'], 'sh', '-c', 'cat > /var/lib/postgresql/data/postgresql.auto.conf', data=original)
+                    assert lab.docker('exec', state['postgres_id'], 'cat', auto).stdout == original
+                    assert sql('postgres', 'SELECT pg_reload_conf();') == 't'
+                    until = time.monotonic()+5
+                    while tls_cases.settings(state) != settings:
+                        assert time.monotonic()<until; time.sleep(.05)
+                    report['restoration'] = 'PASS'
+                except BaseException as error:
+                    report['restoration'] = 'FAIL'
+                    cleanup_errors.append(dict(resource='postgres-settings', error=type(error).__name__))
+        finally:
+            report['cleanup_errors'] = cleanup_errors
+            if cleanup_errors: report['status'] = 'INCOMPLETE'
+            elif report['status'] == 'COLLECTED' and report.get('restoration') == 'PASS': report['status'] = 'PASS'
+            save()
+        if cleanup_errors:
+            raise RuntimeError('cleanup incomplete; inspect retained ownership report')
     print(json.dumps(dict(status=report['status'], cases=len(report['cases']))))
 
 
