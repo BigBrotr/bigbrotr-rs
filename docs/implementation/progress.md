@@ -21,13 +21,10 @@ another diagnostic command instead of the real read consumer.
 
 ## Git and ownership
 
-Local main/HEAD is `b7cb520`; freshly pushed origin remains `9e3e44e`.
-The unpublished candidate added the independent PG issuance-audit oracle. Root
-now owns dirty additive0807, session storage audit writes, schema/probe regressions,
-the combined native audit driver and owning documentation. Mac final tests,
-build and scoped Clippy PASS; actual new SQL is NOT_RUN. No other writer or
-merge/rebase. Initial session baseline5a4e0d1 and qualified COMMIT fixturee65116b
-remain unchanged history. Full candidate state is listed by Git.
+Local main/HEAD is unpublished `f7b0443`; origin remains `9e3e44e`.
+Root owns the fixture predecessor correction and failure/checkpoint/inventory
+evidence. Atomic audit product/migration input remains exactlyf7b0443. No other
+writer or merge/rebase. Full candidate state is listed by Git.
 
 The private panel implements a generated same-origin three-route session client
 and static login/self/logout UI, with bounded streaming, timeout, exact decimal
@@ -161,12 +158,30 @@ and now passes. Focused proxy tests pass. The HTTP
 fixture now isolates privileges and joins each logout audit to the target digest,
 principal and revisions; native qualification is still pending.
 
-Next bounded action: commit the reviewed implementation as an unpublished
-candidate, then execute
-experiments/browser-sessions/audit_native.py in a fresh exact-Git Tux lab.
-Require17adapter/12HTTP/8COMMIT cases and independent terminal SQL; do not claim
-new PG-crash or browser qualification from this run. All broader denied-attempt
-audit, configurable retention/capacity, reauth, grants and drain remain P08-T02 work.
+[First new audit run failed](evidence/p08-session-audit-fixture-failure-20260920.json)
+atf7b0443 before the first case: fixture revision2 omitted previous_revision1,
+refused by the existing PG config_revisions_check(23514). No0807 or session audit
+runtime case ran. Build,17schema+2token,Clippy and8proxy tests PASS; HTTP/COMMIT
+NOT_RUN. All16capture/995source hashes verified against Mac Git archive.
+Raw session-audit/native-audit; remote runs/session-audit-f7b0443,
+owner9b178a2463e22b321ac5c85cbee05142. Runnerb28787af30fbb38c36a469113004a6d0d2903f4df228b450f8c19e78439f2040
+and PG964c440f5969e7b5efd8151a187db66eb8c8e634814b6ad139c8d32acf12613f
+stopped/PID0/noOOM; own empty network removed,484previous records unchanged,
+eight unrelated workloads running. Zero Control backends/activeowners; one
+pre-upgrade revoked session and no audit. Original failure remains retained.
+
+Further verified cache retirement removed3066 .rlib/.rmeta/.o/.a from stopped
+RED/f7 caches and1664 .o/.a from stopped b6d9d7e/709656d caches. Artifact hashes,
+sources/evidence/data preserved; all486containers unchanged/eight unrelated
+running. Free7,673,692,160bytes. Receipts under session-audit/tux-{failed-cache,
+panel-object}-retirement.json. All these partial caches remain forbidden for reuse.
+Mac corrected fixture tests/build/Clippy PASS in session-audit/mac-predecessor.
+
+Next bounded action: commit the fixture predecessor correction and launch
+native-audit-corrected in a fresh exact-Git lab. Require17adapter/
+12HTTP/8COMMIT cases and independent terminal SQL; no new PG-crash/browser claim.
+All broader denied-attempt audit, configurable retention/capacity, reauth, grants
+and drain remain P08-T02 work.
 
 Ordinary owner data.read still grants no history/export. First history consumer
 requires scoped grant CAS + reauth + principal/action/scope delivery authority,

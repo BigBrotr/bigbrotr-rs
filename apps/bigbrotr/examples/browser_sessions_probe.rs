@@ -177,8 +177,8 @@ async fn run(mut config: Config) {
             ('a6','owner.enroll','rejected',NULL,'f5','invalid-token','fixture',0),
             ('a7','owner.enroll','rejected',NULL,'f5','expired','fixture',0)
         ) v(id,action,outcome,revision,subject,reason,requester,uid);
-        INSERT INTO control.config_revisions(revision,dataset_id,schema_version,authority_mode,document,document_digest,accepted_source_digest,accepted_at_us,actor_id)
-            SELECT 2,dataset_id,schema_version,authority_mode,document,document_digest,accepted_source_digest,accepted_at_us,actor_id FROM control.config_revisions WHERE revision=1;
+        INSERT INTO control.config_revisions(revision,previous_revision,dataset_id,schema_version,authority_mode,document,document_digest,accepted_source_digest,accepted_at_us,actor_id)
+            SELECT 2,1,dataset_id,schema_version,authority_mode,document,document_digest,accepted_source_digest,accepted_at_us,actor_id FROM control.config_revisions WHERE revision=1;
     "#).await.unwrap();
     let legacy_audits: String = admin.query_one("SELECT json_agg(json_build_array(to_jsonb(a)-'policy_revision',a.xmin::text) ORDER BY audit_id)::text FROM control.management_audit a", &[]).await.unwrap().get(0);
     assert_eq!(

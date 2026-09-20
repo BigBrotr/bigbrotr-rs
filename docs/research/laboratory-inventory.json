@@ -17813,7 +17813,7 @@
   "implementation_session_audit_20260920": {
     "owner": "root implementer",
     "local_root": ".research/implementation/session-audit",
-    "state": "Native RED executed and stopped/retained; dirty0807 implementation awaits native qualification",
+    "state": "f7b0443 native fixture FAIL before first case; stopped/retained; predecessor correction pending new exact-Git run",
     "source_base": "b7cb520a4666b419f55629aa0536227728e216b4",
     "scope": "P08-T02 accepted session mutation audit. Rejected attempts, retention maintenance, reauth, scope grants and delivery authority remain separate required work.",
     "red_evidence": "docs/implementation/evidence/p08-session-audit-red-20260920.json",
@@ -17850,6 +17850,63 @@
       "raw_receipt": ".research/implementation/session-audit/tux-red-cache-retirement.json",
       "run": "session-audit-red-b7cb520",
       "cache_reuse": "Forbidden: partial cache. Preserve actual executables, sources, evidence and private data; only e65116b remains intact."
-    }
+    },
+    "failed_qualification": {
+      "evidence": "docs/implementation/evidence/p08-session-audit-fixture-failure-20260920.json",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/session-audit-f7b0443",
+      "owner": "9b178a2463e22b321ac5c85cbee05142",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "964c440f5969e7b5efd8151a187db66eb8c8e634814b6ad139c8d32acf12613f"
+        },
+        {
+          "name": "rust-audit",
+          "id": "b28787af30fbb38c36a469113004a6d0d2903f4df228b450f8c19e78439f2040"
+        }
+      ],
+      "state": "stopped-retained",
+      "network": "removed after owner/no-endpoint audit",
+      "preexisting_preserved": 484,
+      "unrelated_running": 8
+    },
+    "additional_cache_retirements": [
+      {
+        "format": "bigbrotr-owned-cache-retirement/1",
+        "started_at": 1789916305.5996938,
+        "state": "PASS",
+        "free_before": 4988854272,
+        "finished_at": 1789916310.1674986,
+        "free_after": 7337762816,
+        "removed_files": 3066,
+        "removed_logical_bytes": 2352588642,
+        "containers_unchanged": 486,
+        "unrelated_running": 8,
+        "raw_receipt": ".research/implementation/session-audit/tux-failed-cache-retirement.json",
+        "runs": [
+          "/home/tux/bigbrotr-implementation-20260917/runs/session-audit-red-b7cb520",
+          "/home/tux/bigbrotr-implementation-20260917/runs/session-audit-f7b0443"
+        ],
+        "cache_reuse": "Forbidden: partially retired Cargo caches"
+      },
+      {
+        "format": "bigbrotr-owned-cache-retirement/1",
+        "started_at": 1789916371.8675025,
+        "state": "PASS",
+        "free_before": 7337574400,
+        "finished_at": 1789916377.7341058,
+        "free_after": 7673692160,
+        "removed_files": 1664,
+        "removed_logical_bytes": 333242704,
+        "containers_unchanged": 486,
+        "unrelated_running": 8,
+        "raw_receipt": ".research/implementation/session-audit/tux-panel-object-retirement.json",
+        "runs": [
+          "/home/tux/bigbrotr-implementation-20260917/runs/private-panel-no-preload-b6d9d7e",
+          "/home/tux/bigbrotr-implementation-20260917/runs/private-panel-static-response-709656d"
+        ],
+        "cache_reuse": "Forbidden: partially retired Cargo caches"
+      }
+    ]
   }
 }

@@ -1,0 +1,93 @@
+{
+  "format": "bigbrotr-session-audit-native/1",
+  "status": "FAIL",
+  "source": "f7b0443d7630cbcaa3b2d433367af491573f7be2",
+  "tree": "f7fba54079199b29aa1313bc8493720bd73f92e0",
+  "cause": "Fixture config revision2 omitted previous_revision1; PostgreSQL23514 config_revisions_check stopped before0807 upgrade or any case",
+  "checks": [
+    {
+      "name": "build",
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0
+    },
+    {
+      "name": "schema-and-tokens",
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0
+    },
+    {
+      "name": "clippy",
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0
+    },
+    {
+      "name": "proxy-targets",
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0
+    },
+    {
+      "name": "native-sessions",
+      "status": "FAIL",
+      "executed": true,
+      "exit_code": 101
+    },
+    {
+      "name": "native-http",
+      "status": "NOT_RUN"
+    },
+    {
+      "name": "native-commits",
+      "status": "NOT_RUN"
+    }
+  ],
+  "cases": {
+    "native-sessions": 0,
+    "native-http": 0,
+    "native-commits": 0
+  },
+  "independent_sql": {
+    "sessions": {
+      "sessions": 1,
+      "revoked": 1,
+      "issue_audits": 0,
+      "revoke_audits": 0,
+      "grants": 7,
+      "active_control": 0,
+      "backends": 0
+    }
+  },
+  "capture": {
+    "root": ".research/implementation/session-audit/native-audit",
+    "archive_sha256": "3875663a309034a35a37777d68112f4e89b75d258d69884de355f62b93253b71",
+    "files": 16,
+    "source_files": 995,
+    "offline_verification": "PASS"
+  },
+  "resources": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/session-audit-f7b0443",
+    "owner": "9b178a2463e22b321ac5c85cbee05142",
+    "containers": [
+      {
+        "name": "postgres",
+        "id": "964c440f5969e7b5efd8151a187db66eb8c8e634814b6ad139c8d32acf12613f"
+      },
+      {
+        "name": "rust-audit",
+        "id": "b28787af30fbb38c36a469113004a6d0d2903f4df228b450f8c19e78439f2040"
+      }
+    ],
+    "state": "stopped-retained",
+    "network": "removed after owner/no-endpoint audit",
+    "preexisting_preserved": 484,
+    "unrelated_running": 8
+  },
+  "limits": [
+    "No session-audit runtime case executed; no product success/failure inferred",
+    "Native HTTP/COMMIT steps NOT_RUN; original failed artifact/data retained",
+    "Correcting fixture must not relax predecessor or audit constraints"
+  ]
+}
