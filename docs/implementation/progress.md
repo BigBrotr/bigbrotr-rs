@@ -166,9 +166,14 @@ Full raw report remains frontier-fault-cases-initial.json; do not mark it PASS.
 Corrected harness adds an existing fixture barrier before publication so backend
 identities are checked while alive, then explicitly releases it. It will first
 resolve the interrupted operation and continue a fresh namespace/operation range
-against declared base revision2. No product or binary change. Next: commit/transfer
-this harness-only correction, run --namespace retry --base-revision2
---operation-base0xd1 --recovery-operation0xe1, then collect/stop the owned lab.
+against declared base revision2. Retry1fb54dd resolves original op e1 and passes
+manager-loss rollback, then its complete-row oracle rejects the new Archive owner
+because it omitted three existing nullable Control-fence columns from its expected
+shape. Actual op d1 committed revision3. Corrected oracle explicitly requires all
+three fields NULL; offline check of the preserved full post-state passes. Original
+retry report remains INCOMPLETE. No product or binary change. Next: transfer this
+harness-only correction and run --namespace qualified --base-revision3
+--operation-base0xc1 --recovery-operation0xd1, then collect/stop the owned lab.
 Runner and PG remain active; no source edit on Tux.
 
 Root-owned current edits: new restart/fault-only fixture and bounded proxy/harness,

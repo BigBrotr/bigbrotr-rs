@@ -29,6 +29,7 @@ def verify_added_frontier(case, op, revision):
         role_instance_id=owner['role_instance_id'],process_incarnation=incarnation,
         acquired_at_us=owner['acquired_at_us'],lease_expires_at_us=issuer['lease_expires_at_us'],
         state='active',released_at_us=None,exclusion_method=None,exclusion_digest=None,
+        control_fence_version=None,control_backend_pid=None,control_backend_start=None,
         archive_frontier_protocol=1,xmin=xmin)
     assert issuer['acquired_at_us']<=owner['acquired_at_us']<owner['lease_expires_at_us']
     for old in before['owners']:
