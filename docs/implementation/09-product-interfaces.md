@@ -59,9 +59,13 @@ records Mac10 client/8 model/25 config/6 policy/17 management tests, strict type
 checks, build/Clippy and both bundles. Actual TCP cases cover headers, exact mounts,
 refusals and zero-byte delivery after revocation; these are not browser evidence.
 Independent AI review corrections have discriminating runtime regressions for
-cross-tab lifecycle. Real browser/Rust/PostgreSQL, public application separation,
-large blocked response, full accessible primitives and shared frontend CI/release
-assembly remain required. No task step or browser journey is marked complete.
+cross-tab lifecycle. The [actual native browser matrix](evidence/p09-private-panel-bootstrap-real-native-20260920.json)
+executes eight session journeys on Chromium/Firefox at both mounts; WebKit passes
+seven and fails recovery from an absent bootstrap module. The selected correction
+omits speculative JS preloads while retaining ordinary imports and CSS. Qualify
+the same real 404/restoration/reload journey before closing this guarantee.
+Public application separation, large blocked response, full accessible primitives
+and shared frontend CI/release assembly remain required. No task step is complete.
 
 ## P09-T02 — Public navigation, capabilities and first useful data
 

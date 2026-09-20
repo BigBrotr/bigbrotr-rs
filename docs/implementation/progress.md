@@ -21,12 +21,11 @@ another diagnostic command instead of the real read consumer.
 
 ## Git and ownership
 
-Local main/HEAD is `6d663b73de80862de2d6ab1cac1b66e70c2b4214`;
-six unpublished commits follow origin `b98426146c68caffcbf6822bdb956d1a8abbd30d`.
-Root owns the actual missing-module fixture, browser client, evidence, inventory,
-README and this checkpoint. Product source is unchanged since cc4aa3a; no other
-writer or merge/rebase was observed. The CDP reordered-event/capacity tests passed
-locally and natively after an executed runtime RED.
+Local main/HEAD is `596d447f044907cd1f286d084feff730297ee174`;
+seven unpublished commits follow origin `b98426146c68caffcbf6822bdb956d1a8abbd30d`.
+Root owns the private build no-preload correction (new prerender hook and Vite
+option), browser assertions, owning contracts/task/dependency record, evidence,
+inventory and checkpoint. No other writer or merge/rebase was observed.
 Private local
 session API production baseline5a4e0d1 and qualified COMMIT fixturee65116b remain
 unchanged history. Full candidate state is listed by Git, not this summary.
@@ -172,10 +171,35 @@ logical bytes) from stopped cc4aa3a. Its partial Cargo cache must not be reused;
 artifacts/data retained. All 461 container records unchanged, free space
 13,212,532,736 bytes. The e65116b and 6d663b7 caches remain intact.
 
-Next bounded action: review/build the actual bootstrap fault fixture, commit it,
-and execute the full six-case native matrix in fresh resources. Preserve all
-instrumented failures. Large blocked response, forced detached-browser cleanup,
-frontend shared CI and wider P09/M1 remain open.
+[Actual asset deployment](evidence/p09-private-panel-bootstrap-real-native-20260920.json)
+at 596d447 completes eight journeys for Chromium/Firefox at both mounts.
+WebKit still fails both: real module 404, zero restored 200s, link and explicit
+reload ineffective. There is no request interception, ruling it out as a necessary
+trigger here. This matches WebKit bug 270357's retained failed modulepreload;
+internal engine causality remains an inference. The private build correction
+suppresses JS preload links during Kit prerendering and JS dependency preloads in
+Vite. CSS, ordinary imports and CSP remain. Mac type check, root/control builds
+and JS syntax PASS; both 13-file bundles have zero HTML modulepreloads and verified
+hashes (bundle-no-preload-reviewed-check.json). Read-only AI review restricted
+the filter to CSS only, preserving the existing no-font-preload default. The
+final reviewed type check and both builds PASS. Native correction remains NOT_RUN.
+
+All ten actual-fault containers are stopped/PID0/noOOM; 461 prior resources
+preserved, eight unrelated workloads remain, zero PG clients. Capture 148 files
+and 985 source hashes verified. Raw `private-panel/native-real-bootstrap`, remote
+`runs/private-panel-real-bootstrap-596d447`, owner
+`903756a322891a620c7530c936241e40`. Preserve the WebKit failed active-owner rows.
+Verified cache retirement then removed only 2534 .rlib/.rmeta files (3,993,815,712
+logical bytes) from the stopped 6d663b7/596d447 targets, preserving all actual
+artifacts, sources, receipts and data. All 471 containers unchanged; free space
+13,216,038,912 bytes. These two partial caches must not be reused. Baseline
+qualified e65116b remains intact. No owned job or cleanup debt is active.
+
+Next bounded action: commit the reviewed no-preload correction and repeat the
+same six actual browser/Rust/PG journeys in a fresh exact-source lab. Preserve
+all original failures and require exact module 404 -> restoration -> 200 plus
+usable UI. Large blocked response, forced detached-browser cleanup, frontend
+shared CI and wider P09/M1 remain open.
 
 Preserve `.research/worktrees/producer-closing-old-writer`, last verified clean at
 `f899896b1207f5e71c4e39d9ab7814b293814735` on

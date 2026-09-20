@@ -737,3 +737,17 @@ not executed browser evidence. The [fixture](../../experiments/private-panel/REA
 binds actual launched executables and distinct container lifetimes. Source inspection
 of Playwright's exact `packages/utils/processLauncher.ts` confirms detached browser
 groups: Node/probe termination alone does not establish browser cleanup.
+
+The [actual missing-module deployment](../implementation/evidence/p09-private-panel-bootstrap-real-native-20260920.json)
+at 596d447 reproduces WebKit2359 recovery failure without request interception,
+while Chromium/Firefox recover on both mounts. The failure is consistent with
+[WebKit 270357](https://bugs.webkit.org/show_bug.cgi?id=270357), which describes
+failed speculative module loads surviving ordinary reload. The selected mitigation
+uses Kit2.70.3 `resolve`'s `preload` filter during static prerendering and Vite8.3.0
+`build.modulePreload = false` for dynamic dependency preloads. Exact installed
+`src/runtime/server/page/render.js` filters JS links/headers through this hook;
+Vite `dist/node/chunks/node.js` retains only CSS dependency preloads under this
+option. Ordinary imports and CSS remain. This may increase request waterfalls;
+no latency improvement is claimed. No dependency version changed. Native recovery
+qualification of the corrected bundle is pending; do not infer it from this
+source inspection or from Linux WebKit to Safari on Apple hardware.

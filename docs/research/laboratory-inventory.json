@@ -17321,7 +17321,7 @@
   "implementation_private_panel_20260920": {
     "local_root": ".research/implementation/private-panel",
     "owner": "root implementer",
-    "state": "Bootstrap instrumentation diagnostics complete; actual server asset fault qualification pending. All owned jobs stopped.",
+    "state": "Real missing-module WebKit failure reproduced; private no-preload correction pending native qualification.",
     "source_base": "b98426146c68caffcbf6822bdb956d1a8abbd30d",
     "dependency_manifest": ".research/implementation/private-panel/dependencies/selected-candidates.json",
     "contents": "Official registry metadata/verified archives/sources; local client and bundle checks; controlled native logs including failures and cache recovery; generated bundles are artifacts, not source authority.",
@@ -17620,6 +17620,82 @@
       "free_after_bytes": 13212532736,
       "partial_cache_do_not_reuse": "private-panel-referrer-cc4aa3a",
       "preserved": "Executables, shared libraries, source, receipts and data retained and hash checked. The e65116b and 6d663b7 caches remain intact."
+    },
+    "real_bootstrap_qualification": {
+      "source": "596d447f044907cd1f286d084feff730297ee174",
+      "tree": "f65b35637d5055205ccb51f569d0d6650edbfb7f",
+      "owner": "903756a322891a620c7530c936241e40",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/private-panel-real-bootstrap-596d447",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "environment",
+          "id": "061cb32f4fef7028d969daa21ac4042452e108b3b24027f05b0d8df0f78a154f"
+        },
+        {
+          "name": "rust",
+          "id": "cf1440f7b4ce7ff675fdb9120791914f7f9af74f37bbaa918e9f7e8a49c2bdf3"
+        },
+        {
+          "name": "frontend",
+          "id": "ec1daae8f739e042c44f44f5213b3b7705593bd96c9b1b0de852d5d3ffa0ff40"
+        },
+        {
+          "name": "postgres",
+          "id": "fab58e4cd6f7a83020559e1dc038e7e787bb274a8d956584bff237f7fb5508f9"
+        },
+        {
+          "name": "chromium-root",
+          "id": "94926ff83a65f96664b3cc25ed2da02b12bbd687d92f8223333615b164bd2821"
+        },
+        {
+          "name": "chromium-control",
+          "id": "ccc0aaac2e3df989ee1d64b129dfc1c4261f651944e240780e8920e49f2c67ad"
+        },
+        {
+          "name": "firefox-root",
+          "id": "0124a6fd96e0cab9fb07bee7b3e4fb500d8aeedb898e00f87722b98c9f384845"
+        },
+        {
+          "name": "firefox-control",
+          "id": "fed24f03018de4426a750ed1902a7a6e40747bbbe85706d2d7eb97df14bdd7a0"
+        },
+        {
+          "name": "webkit-root",
+          "id": "0b524a2b149450551f07b23da46de854636e00e4b607fcacc80f6c616f79605d"
+        },
+        {
+          "name": "webkit-control",
+          "id": "6ea95c32c0de2e752a4c1e7f43b172873acdbe374e5e176248655e91eef1daf0"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+      "started_at": "2026-09-20T13:56:55.049685+00:00",
+      "network_id": "6d431144b67764d3a7583d2127ffcdc4fd12a3506541169a0113ec042f596483",
+      "postgres_id": "fab58e4cd6f7a83020559e1dc038e7e787bb274a8d956584bff237f7fb5508f9",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json",
+      "local_root": ".research/implementation/private-panel/native-real-bootstrap",
+      "evidence": "docs/implementation/evidence/p09-private-panel-bootstrap-real-native-20260920.json",
+      "capture_sha256": "c0d04df3f112d588a8b104c3031b0a9a9658c0d9f39dd58443e19bb81a4fce3e",
+      "observation": "Actual missing-module and restored-bundle deployment without interception: Chromium/Firefox pass both mounts; WebKit fails both. All ten owned containers stopped/PID 0/no OOM; 461 prior preserved; eight unrelated workloads remain; zero PG clients. 148 capture files and 985 source hashes verified."
+    },
+    "bootstrap_cache_retirement": {
+      "receipt": ".research/implementation/private-panel/tux-bootstrap-cache-retirement.json",
+      "status": "PASS",
+      "removed_files": 2534,
+      "removed_logical_bytes": 3993815712,
+      "containers_unchanged": 471,
+      "unrelated_running": 8,
+      "free_after_bytes": 13216038912,
+      "partial_caches_do_not_reuse": [
+        "private-panel-bootstrap-6d663b7",
+        "private-panel-real-bootstrap-596d447"
+      ],
+      "preserved": "Actual executables/shared libraries/source/receipts/private data hash checked. Baseline e65116b cache remains intact."
     }
   }
 }

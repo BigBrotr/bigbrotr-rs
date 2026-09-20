@@ -1,0 +1,497 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "tasks": [
+    "P08-T02",
+    "P09-T01",
+    "P09-T07"
+  ],
+  "status": "FAIL_WITH_SCOPED_PASSES",
+  "source": {
+    "revision": "596d447f044907cd1f286d084feff730297ee174",
+    "tree": "f65b35637d5055205ccb51f569d0d6650edbfb7f",
+    "files_verified": 985,
+    "clean": true
+  },
+  "prerequisites": {
+    "rust": {
+      "cargo_lock": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+      "pnpm_lock": "70f6e67f3f968c9f55236f563994c04413cf679a58da3ebbd1ebcfb5d089d1a4",
+      "status": "PASS",
+      "counts": {
+        "collected": 3,
+        "executed": 3,
+        "failed": 0,
+        "not_run": 0
+      },
+      "artifacts": {
+        "bigbrotr": "dcd8f6dfa22742278a4f01afcbf4c8b123c75461a2dbde17fb740ca2f299b793",
+        "examples/browser_http_probe": "bad785b537013d5ed7c0b03dfe84b8f1e7c1dfc43c02cbe7a16d8426efbf4c9f"
+      }
+    },
+    "frontend": {
+      "cargo_lock": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+      "pnpm_lock": "70f6e67f3f968c9f55236f563994c04413cf679a58da3ebbd1ebcfb5d089d1a4",
+      "node_sha256": "4cfdaeec2e3689e4728b4bc98932a9147a3f98162bdc7955c03c0d7fa3b8aa94",
+      "pnpm_sha256": "98e6b99a881d64a1cc982c3e60aa260bf02160386b12e74475e06486dc74b090",
+      "status": "PASS",
+      "counts": {
+        "collected": 7,
+        "executed": 7,
+        "failed": 0,
+        "not_run": 0
+      },
+      "bundles": {
+        "root": {
+          "manifest_sha256": "42ed2d676178702bb90635c964a32ad61f80e837b8a08731522d98063235312e",
+          "files": 13,
+          "bytes": 128534
+        },
+        "control": {
+          "manifest_sha256": "da63d0049b0b9e164f6f46c4d895541bdbc5d3d33b86bf7bb61684b54253d073",
+          "files": 13,
+          "bytes": 128568
+        }
+      }
+    }
+  },
+  "cases": {
+    "chromium-control": {
+      "status": "PASS",
+      "passed_journeys": 8,
+      "failure": null,
+      "bootstrap": {
+        "interception": false,
+        "noStore": true,
+        "script404s": 1,
+        "early200s": 0,
+        "restored200s": 1,
+        "navigations": 3,
+        "beforeClick": 1,
+        "afterClick": 3
+      }
+    },
+    "chromium-root": {
+      "status": "PASS",
+      "passed_journeys": 8,
+      "failure": null,
+      "bootstrap": {
+        "interception": false,
+        "noStore": true,
+        "script404s": 1,
+        "early200s": 0,
+        "restored200s": 1,
+        "navigations": 3,
+        "beforeClick": 1,
+        "afterClick": 3
+      }
+    },
+    "firefox-control": {
+      "status": "PASS",
+      "passed_journeys": 8,
+      "failure": null,
+      "bootstrap": {
+        "interception": false,
+        "noStore": true,
+        "script404s": 2,
+        "early200s": 0,
+        "restored200s": 1,
+        "navigations": 3,
+        "beforeClick": 1,
+        "afterClick": 3
+      }
+    },
+    "firefox-root": {
+      "status": "PASS",
+      "passed_journeys": 8,
+      "failure": null,
+      "bootstrap": {
+        "interception": false,
+        "noStore": true,
+        "script404s": 2,
+        "early200s": 0,
+        "restored200s": 1,
+        "navigations": 3,
+        "beforeClick": 1,
+        "afterClick": 3
+      }
+    },
+    "webkit-control": {
+      "status": "FAIL",
+      "passed_journeys": 7,
+      "failure": {
+        "stage": "missing-bootstrap-recovery",
+        "kind": "ExpectError",
+        "location": {
+          "line": 277,
+          "column": 83
+        },
+        "inspection": "unavailable"
+      },
+      "bootstrap": {
+        "interception": false,
+        "noStore": true,
+        "script404s": 1,
+        "early200s": 0,
+        "restored200s": 0,
+        "navigations": 3,
+        "beforeClick": 1,
+        "afterClick": 2,
+        "explicitReload": "failed"
+      }
+    },
+    "webkit-root": {
+      "status": "FAIL",
+      "passed_journeys": 7,
+      "failure": {
+        "stage": "missing-bootstrap-recovery",
+        "kind": "ExpectError",
+        "location": {
+          "line": 277,
+          "column": 83
+        },
+        "inspection": "unavailable"
+      },
+      "bootstrap": {
+        "interception": false,
+        "noStore": true,
+        "script404s": 1,
+        "early200s": 0,
+        "restored200s": 0,
+        "navigations": 3,
+        "beforeClick": 1,
+        "afterClick": 2,
+        "explicitReload": "failed"
+      }
+    }
+  },
+  "interpretation": [
+    "Without any browser request interception, Chromium and Firefox complete eight journeys at both mounts. Firefox receives two actual 404s for the selected module, then one 200 after restoration.",
+    "WebKit fails the same recovery on both mounts: one real module 404, zero early 200s, zero restored 200s; both link navigation and explicit reload fail. This rules out request interception as a necessary trigger in this environment.",
+    "Actual Rust restarts load the deliberately incomplete manifest then the exact original manifest. Session and bucket rows including xmin remain unchanged. Missing responses carry no-store.",
+    "The pattern matches WebKit bug 270357: speculative modulepreload failure can persist in memory across reload. This source-based explanation is an inference consistent with the actual observations; no WebKit internal trace was taken."
+  ],
+  "candidate_correction": {
+    "status": "LOCAL_BUILD_CHECKS_PASS_NATIVE_PENDING",
+    "behavior": "Disable speculative JavaScript preloading in SvelteKit prerendering and Vite dynamic import dependencies. Keep ordinary imports, CSS handling, CSP and explicit user reload.",
+    "tradeoff": "JavaScript dependencies are discovered through ordinary imports, potentially adding request waterfalls. No startup-performance improvement is claimed.",
+    "compatibility": "Rebuild private bundles; no API, persistent format, migration or dependency version change. Already loaded failed documents cannot be repaired until a new document is fetched.",
+    "initial_mac": {
+      "checks": "Svelte/TypeScript zero errors/warnings; both real static builds and browser JS syntax PASS.",
+      "bundles": {
+        "root": {
+          "status": "PASS",
+          "files": 13,
+          "bytes": 127900,
+          "manifest_sha256": "0c78ec03825ddbd88c7a3585c7bec5a07685cb1a76ba74cbcafb8e2930a8c8d3",
+          "html_modulepreloads": 0
+        },
+        "control": {
+          "status": "PASS",
+          "files": 13,
+          "bytes": 127934,
+          "manifest_sha256": "860ba37f7597b753cbe077b7262893889ee84193701636c104fafbfc99758049",
+          "html_modulepreloads": 0
+        }
+      },
+      "raw": {
+        ".research/implementation/private-panel/no-preload-mac/build-root.log": "d5763eb9125bf51222c1fbf5e50394559f6cb759ddbe5a01ec29597c9e003e7d",
+        ".research/implementation/private-panel/no-preload-mac/result.json": "2e371ea0ee0ea074f7af538576f0061c167da0fa65b19cfa58f3384d6ac50ba4",
+        ".research/implementation/private-panel/no-preload-mac/types.log": "6a9974b5ef90112381963a8b6cf620e435abd870775204db3977935dd1201fed",
+        ".research/implementation/private-panel/no-preload-control-mac/browser-syntax.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        ".research/implementation/private-panel/no-preload-control-mac/build-control.log": "adc33cfa949973c85d601ebb9607036b357c25d1211a63ef0a636a69aa5166c3",
+        ".research/implementation/private-panel/no-preload-control-mac/result.json": "62b1a5aa914596b843b6d705279e61e90ae47decf058e1ccae553878e24d7ce2"
+      },
+      "inputs": {
+        "apps/admin/src/hooks.server.ts": "c4e3c4b4760bebe49c589b75cd2cc49d0761aea0b9d589af4749c04028edb0b0",
+        "apps/admin/vite.config.ts": "a8e42df39871b3af4adcb2b1e5f01e9f5fc6cd2b46e8d90a007a442f81421812",
+        "experiments/private-panel/browser.mjs": "d873fb82407e0fcdd560543388204c1dec640bbb00f7cca87dcbd7a38bd37b84"
+      },
+      "review_disposition": "Read-only AI review found that type != js also enables font preloads beyond Kit defaults; final filter permits CSS only. The current bundle has no fonts; no runtime font fault was observed."
+    },
+    "mac": {
+      "status": "PASS",
+      "checks": "Final Svelte/TypeScript check and both actual bundles PASS; no HTML modulepreloads, all manifest file hashes verified.",
+      "bundles": {
+        "root": {
+          "files": 13,
+          "bytes": 127900,
+          "manifest_sha256": "0c78ec03825ddbd88c7a3585c7bec5a07685cb1a76ba74cbcafb8e2930a8c8d3",
+          "html_modulepreloads": 0,
+          "status": "PASS"
+        },
+        "control": {
+          "files": 13,
+          "bytes": 127934,
+          "manifest_sha256": "860ba37f7597b753cbe077b7262893889ee84193701636c104fafbfc99758049",
+          "html_modulepreloads": 0,
+          "status": "PASS"
+        }
+      },
+      "raw": {
+        ".research/implementation/private-panel/no-preload-reviewed-root/build.log": "b69eaffea068c7243f7fb741cf549e7f980501c5b97bf0a4978d564b339789d9",
+        ".research/implementation/private-panel/no-preload-reviewed-root/result.json": "bcf7862c6924de3f52eb0badf353a58277934dc026273aec572ba7f3a76c0f01",
+        ".research/implementation/private-panel/no-preload-reviewed-root/types.log": "6a9974b5ef90112381963a8b6cf620e435abd870775204db3977935dd1201fed",
+        ".research/implementation/private-panel/no-preload-reviewed-control/build.log": "5db1eb4d60242f28901375527861c9ae8d8e6cd7f8c7ee1f89c3c1ea35672d88",
+        ".research/implementation/private-panel/no-preload-reviewed-control/result.json": "b32c9e92d849acaedbd07f2db189b5f7eccde4cc6541ac9cd93fdd3e531e9a77"
+      },
+      "inputs": {
+        "apps/admin/src/hooks.server.ts": "469bdcc2a261ff2e7bc411f593a686c90ced2890a4dd96155220a3590b778410",
+        "apps/admin/vite.config.ts": "a8e42df39871b3af4adcb2b1e5f01e9f5fc6cd2b46e8d90a007a442f81421812",
+        "experiments/private-panel/browser.mjs": "d873fb82407e0fcdd560543388204c1dec640bbb00f7cca87dcbd7a38bd37b84"
+      }
+    }
+  },
+  "upstream": [
+    {
+      "url": "https://bugs.webkit.org/show_bug.cgi?id=270357",
+      "kind": "Upstream bug report, not independent proof of our exact engine internals."
+    },
+    {
+      "package": "@sveltejs/kit@2.70.3",
+      "path": "src/runtime/server/page/render.js",
+      "boundary": "render_response filters modulepreloads using resolve_opts.preload({type:js,path}) before adding link headers or HTML."
+    },
+    {
+      "package": "vite@8.3.0",
+      "path": "dist/node/chunks/node.js",
+      "boundary": "build import analysis filters dynamic dependency preloads to CSS when modulePreload is false."
+    }
+  ],
+  "resources": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/private-panel-real-bootstrap-596d447",
+    "owner": "903756a322891a620c7530c936241e40",
+    "state": "stopped-retained",
+    "containers": [
+      {
+        "name": "environment",
+        "id": "061cb32f4fef7028d969daa21ac4042452e108b3b24027f05b0d8df0f78a154f"
+      },
+      {
+        "name": "rust",
+        "id": "cf1440f7b4ce7ff675fdb9120791914f7f9af74f37bbaa918e9f7e8a49c2bdf3"
+      },
+      {
+        "name": "frontend",
+        "id": "ec1daae8f739e042c44f44f5213b3b7705593bd96c9b1b0de852d5d3ffa0ff40"
+      },
+      {
+        "name": "postgres",
+        "id": "fab58e4cd6f7a83020559e1dc038e7e787bb274a8d956584bff237f7fb5508f9"
+      },
+      {
+        "name": "chromium-root",
+        "id": "94926ff83a65f96664b3cc25ed2da02b12bbd687d92f8223333615b164bd2821"
+      },
+      {
+        "name": "chromium-control",
+        "id": "ccc0aaac2e3df989ee1d64b129dfc1c4261f651944e240780e8920e49f2c67ad"
+      },
+      {
+        "name": "firefox-root",
+        "id": "0124a6fd96e0cab9fb07bee7b3e4fb500d8aeedb898e00f87722b98c9f384845"
+      },
+      {
+        "name": "firefox-control",
+        "id": "fed24f03018de4426a750ed1902a7a6e40747bbbe85706d2d7eb97df14bdd7a0"
+      },
+      {
+        "name": "webkit-root",
+        "id": "0b524a2b149450551f07b23da46de854636e00e4b607fcacc80f6c616f79605d"
+      },
+      {
+        "name": "webkit-control",
+        "id": "6ea95c32c0de2e752a4c1e7f43b172873acdbe374e5e176248655e91eef1daf0"
+      }
+    ],
+    "network_state": "removed after owner/no-endpoint audit"
+  },
+  "terminal": {
+    "preexisting_preserved": 461,
+    "unrelated_running": 8,
+    "remaining_pg_clients": [],
+    "source_unchanged": true,
+    "source_checkout_clean": true,
+    "free_bytes": 9242816512,
+    "cases": {
+      "chromium-root": {
+        "container_ok": true,
+        "status": "PASS",
+        "independent_sql": {
+          "sessions": 1,
+          "revoked": 1,
+          "active_accounts": 1,
+          "grants": 7,
+          "no_active_control": true,
+          "heads": [
+            "1",
+            "1"
+          ],
+          "backends": 0
+        },
+        "sql_matches": true
+      },
+      "chromium-control": {
+        "container_ok": true,
+        "status": "PASS",
+        "independent_sql": {
+          "sessions": 1,
+          "revoked": 1,
+          "active_accounts": 1,
+          "grants": 7,
+          "no_active_control": true,
+          "heads": [
+            "1",
+            "1"
+          ],
+          "backends": 0
+        },
+        "sql_matches": true
+      },
+      "firefox-root": {
+        "container_ok": true,
+        "status": "PASS",
+        "independent_sql": {
+          "sessions": 1,
+          "revoked": 1,
+          "active_accounts": 1,
+          "grants": 7,
+          "no_active_control": true,
+          "heads": [
+            "1",
+            "1"
+          ],
+          "backends": 0
+        },
+        "sql_matches": true
+      },
+      "firefox-control": {
+        "container_ok": true,
+        "status": "PASS",
+        "independent_sql": {
+          "sessions": 1,
+          "revoked": 1,
+          "active_accounts": 1,
+          "grants": 7,
+          "no_active_control": true,
+          "heads": [
+            "1",
+            "1"
+          ],
+          "backends": 0
+        },
+        "sql_matches": true
+      },
+      "webkit-root": {
+        "container_ok": false,
+        "status": "FAIL",
+        "independent_sql": {
+          "sessions": 1,
+          "revoked": 1,
+          "active_accounts": 1,
+          "grants": 7,
+          "no_active_control": false,
+          "heads": [
+            "1",
+            "1"
+          ],
+          "backends": 0
+        },
+        "sql_matches": false
+      },
+      "webkit-control": {
+        "container_ok": false,
+        "status": "FAIL",
+        "independent_sql": {
+          "sessions": 1,
+          "revoked": 1,
+          "active_accounts": 1,
+          "grants": 7,
+          "no_active_control": false,
+          "heads": [
+            "1",
+            "1"
+          ],
+          "backends": 0
+        },
+        "sql_matches": false
+      }
+    }
+  },
+  "raw": {
+    "root": ".research/implementation/private-panel/native-real-bootstrap",
+    "capture_sha256": "c0d04df3f112d588a8b104c3031b0a9a9658c0d9f39dd58443e19bb81a4fce3e",
+    "capture_files": 148,
+    "identity_sha256": "606ab47b6a0f0817f1e15dcd90e4247fbda361cccab4ad0599a2159a5261bf8b",
+    "key_files": {
+      "out/build/source-manifest.json": {
+        "bytes": 121767,
+        "sha256": "93d5d1d86730cf2cdd4c678aa01b3fadf80686a82314f628725e7a367fe983aa"
+      },
+      "out/cases/chromium-control/checks/browser.log": {
+        "bytes": 765,
+        "sha256": "2c3d22c8675d7986785e30b8c825b9796e048c577cce4016107de321f9bf6f78"
+      },
+      "out/cases/chromium-control/fixture/browser-report.json": {
+        "bytes": 10558,
+        "sha256": "19893d4a99307bb7ba3096b16a1b800735699c80872511edacad74d4b30330ca"
+      },
+      "out/cases/chromium-root/checks/browser.log": {
+        "bytes": 757,
+        "sha256": "11e38470d053e125f363bf9b51365a67f1c2358a71021ade2b2eae720ec639c8"
+      },
+      "out/cases/chromium-root/fixture/browser-report.json": {
+        "bytes": 10551,
+        "sha256": "964e51b74c89f20588e24acfe44097831070553e4203ecaab8ffe3fc138c517a"
+      },
+      "out/cases/firefox-control/checks/browser.log": {
+        "bytes": 764,
+        "sha256": "40bfdc3b39c8bc51de05ac48cfbf15010a3ebb79db10f81e0200bb546fc5c079"
+      },
+      "out/cases/firefox-control/fixture/browser-report.json": {
+        "bytes": 10803,
+        "sha256": "427f1a63e48b2f696785695d96f6790bcdd51cc1c02baaf20e4ffc33da2be9fd"
+      },
+      "out/cases/firefox-root/checks/browser.log": {
+        "bytes": 756,
+        "sha256": "8454291cb1a27696d5e01942d877576fbef3d8d88a013cfdb691abab01e3b970"
+      },
+      "out/cases/firefox-root/fixture/browser-report.json": {
+        "bytes": 10795,
+        "sha256": "c823599ce0a6b66ac365648619697e762ffb56b8c52ef1e0cf8aec5b5d587d59"
+      },
+      "out/cases/webkit-control/checks/browser.log": {
+        "bytes": 820,
+        "sha256": "3a4b94fab797cfb9357508e4b0e5590500bcc12ef2e1b9a9c55486c1c2a4de79"
+      },
+      "out/cases/webkit-control/fixture/browser-report.json": {
+        "bytes": 11605,
+        "sha256": "c4fa9aa7360e11b0b4045f68ba85ab9150a2eae6f96258b95999b0a16a6ceeef"
+      },
+      "out/cases/webkit-root/checks/browser.log": {
+        "bytes": 820,
+        "sha256": "0384d0ccd31c890653bed004f33f2ab3a1053f6b3712538e661399ccf48c0d14"
+      },
+      "out/cases/webkit-root/fixture/browser-report.json": {
+        "bytes": 11598,
+        "sha256": "48deda17467012527ad55a0656dea6d58e028d4abc60540292238f027b273efc"
+      },
+      "out/frontend-result.json": {
+        "bytes": 3141,
+        "sha256": "b20ed97799b287f01086ebb7c74fdb842348124d2cb24e41f619ba0beb97ebb2"
+      },
+      "out/rust-result.json": {
+        "bytes": 3940,
+        "sha256": "58c12be34969752392ac740e237c771b02219764e4050e9694978b46dfa2bd27"
+      },
+      "terminal-audit.json": {
+        "bytes": 38279,
+        "sha256": "4681f07f19504f874ec35d80935b7dda0a7e34dcf5481e1e4328a08d85f6d41d"
+      }
+    }
+  },
+  "limitations": [
+    "Full browser matrix remains FAIL until the candidate correction executes successfully against the same real missing-module journey.",
+    "The two failed WebKit cases retain active owner rows after process teardown; no graceful release is claimed for those cases.",
+    "No general Safari/Apple, capacity, accessibility, P09/M1 or release qualification."
+  ]
+}

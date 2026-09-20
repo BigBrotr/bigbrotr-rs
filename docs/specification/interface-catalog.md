@@ -177,6 +177,17 @@ foreign Origin remain refused; Referer is never an authorization fallback. This
 header/meta correction changes no API schema or persistent state, but requires
 deploying the matching Rust response and rebuilt private bundle together.
 
+Private bundles omit speculative JavaScript preloading in prerendered HTML and
+client import dependencies. Ordinary imports and stylesheet loading remain;
+failed bootstrap leaves the static reload notice available. The actual missing
+module/restored-bundle journey must recover after user reload with normal browser
+caching, a real 404 followed by 200, and no request interception or CSP bypass.
+This addresses the measured WebKit recovery failure consistent with
+[upstream bug 270357](https://bugs.webkit.org/show_bug.cgi?id=270357).
+The tradeoff is potentially more sequential dependency requests, not a measured
+performance improvement. The correction requires a rebuilt private bundle;
+API and persistent formats are unchanged. P09-T01 owns continued qualification.
+
 Setup/reset credentials use a 15-minute maximum lifetime, hash-only storage,
 single atomic consumption, bounded guesses and protected one-time display.
 Bind each setup/reset challenge to the principal credential/security revision;

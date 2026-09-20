@@ -107,6 +107,7 @@ try {
     assert.equal(response.headers()['referrer-policy'], 'same-origin');
     await expect(page.locator('meta[name="referrer"]')).toHaveAttribute('content', 'same-origin');
     await expect(signIn).toBeEnabled();
+    await expect(page.locator('link[rel="modulepreload"]')).toHaveCount(0);
     await expect(page.locator('#startup-recovery')).toBeHidden();
     await page.keyboard.press('Tab');
     await expect(page.getByRole('link', { name: 'Skip to session' })).toBeFocused();
@@ -291,6 +292,7 @@ try {
     diagnostic.afterClick = diagnostic.navigations;
     await expect.poll(() => diagnostic.restored200s).toBeGreaterThan(0);
     await expect(missing.locator('#startup-recovery')).toBeHidden();
+    await expect(missing.locator('link[rel="modulepreload"]')).toHaveCount(0);
     assert.equal(diagnostic.noStore, true);
     assert.equal(diagnostic.overflow, undefined);
     await missing.close();

@@ -70,8 +70,12 @@ passes all eight journeys on Chromium and the first seven on Firefox/WebKit.
 show two real Firefox 404s, invalidating the exact-one count assumption. WebKit
 navigated but never retried the module after removing interception; explicit reload
 also failed. Playwright's exact WKPage.updateRequestInterception toggles resource
-caching, so that instrumentation is not transparent. The replacement native fault
-above is pending execution; no product recovery fix is inferred from this result.
+caching, so that instrumentation is not transparent. The [actual deployment fault](../../docs/implementation/evidence/p09-private-panel-bootstrap-real-native-20260920.json)
+subsequently reproduced WebKit's failure without interception, while Chromium
+and Firefox recovered on both mounts. The selected private build now omits
+speculative JavaScript preloads (Kit prerender links and Vite dynamic dependencies),
+consistent with the upstream modulepreload cache defect. Its corrected native
+matrix remains pending; ordinary imports, CSS and CSP remain in use.
 Further diagnostics retain bounded request categories, status,
 navigation counts and numeric matcher results. An explicit browser reload
 after a failed link is diagnostic only: the original failure remains FAIL.
