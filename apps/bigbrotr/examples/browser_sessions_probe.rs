@@ -277,7 +277,7 @@ async fn run(mut config: Config) {
         SessionLifetime::new(Duration::from_secs(10), Duration::from_secs(1)).unwrap(),
     )
     .await;
-    admin.batch_execute("CREATE FUNCTION public.delay_touch() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN PERFORM pg_sleep(1.3); RETURN NEW; END $$; CREATE TRIGGER a_delay_touch BEFORE UPDATE ON control.browser_sessions FOR EACH ROW WHEN (NEW.revoked_at_us IS NULL) EXECUTE FUNCTION public.delay_touch()").await.unwrap();
+    admin.batch_execute("CREATE TABLE public.touch_marker(entered boolean NOT NULL); GRANT INSERT ON public.touch_marker TO bigbrotr_control; CREATE FUNCTION public.delay_touch() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN INSERT INTO public.touch_marker VALUES(true); PERFORM pg_sleep(1.3); RETURN NEW; END $$; CREATE TRIGGER a_delay_touch BEFORE UPDATE ON control.browser_sessions FOR EACH ROW WHEN (NEW.revoked_at_us IS NULL) EXECUTE FUNCTION public.delay_touch()").await.unwrap();
     let before_touch: String = admin
         .query_one(
             "SELECT json_agg(s ORDER BY session_id)::text FROM control.browser_sessions s",
@@ -301,8 +301,20 @@ async fn run(mut config: Config) {
             .unwrap()
             .get::<_, String>(0)
     );
+    assert_eq!(
+        admin
+            .query_one(
+                "SELECT count(*) FROM public.touch_marker WHERE entered",
+                &[]
+            )
+            .await
+            .unwrap()
+            .get::<_, i64>(0),
+        1,
+        "the delayed trigger must actually run"
+    );
     owner.poll_policy(validate).await.unwrap();
-    admin.batch_execute("DROP TRIGGER a_delay_touch ON control.browser_sessions; DROP FUNCTION public.delay_touch()").await.unwrap();
+    admin.batch_execute("DROP TRIGGER a_delay_touch ON control.browser_sessions; DROP FUNCTION public.delay_touch(); DROP TABLE public.touch_marker").await.unwrap();
     case("expiry-crossing-between-clock-read-and-touch-is-normal-denial");
 
     let isolation = admin

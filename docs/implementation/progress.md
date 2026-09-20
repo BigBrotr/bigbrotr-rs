@@ -22,16 +22,16 @@ another diagnostic command instead of the real read consumer.
 ## Git and ownership
 
 Base local main/private origin/main is pushed `34720bafb1c221089aec04ee4458994f07bfb6db`.
-Root is preparing one unpublished exact-Git candidate for browser session storage
-and native tests. Dirty files are root-owned: additive migration0806/catalog,
-management/session types, private Control adapter/wiring, native test probe/runner,
-focused tests and owning documentation. No existing published SQL was edited.
+Local main is unpublished candidate `7a0f4b692d90f6af0f31cdb21bb76fac34401ebd`,
+tree`6b24f429152ef369a18a93f9207c695fd47d6fd0`, transferred clean via Git with931 files.
+Only subsequent dirty files are this checkpoint and the laboratory inventory.
+Candidate adds migration0806, private Control/session adapter, regressions and docs. No existing published SQL was edited.
 No parallel writer, merge or rebase. Independent read-only review found expiry
 crossing, stale-isolation and post-lock clock boundaries; root added corrections
 and discriminatory native scenarios. Mac token/schema tests and scoped Clippy
 passed after review corrections (2 token/lifetime,16 schema tests). One recheck
 launcher refused an already-existing output directory before running commands;
-the distinct reviewed output then passed. No Tux lab yet.
+the distinct reviewed output then passed. Tux lab is now active; see resources below.
 GitHub remains private bigbrotr-rs. HTTP has not been exposed.
 
 Preserve `.research/worktrees/producer-closing-old-writer`, last verified clean at
@@ -84,7 +84,16 @@ holder files/413 preexisting lifecycle records. Main capture SHA256:
 
 ## Resources
 
-All BigBrotr labs stopped/retained; no active jobs or cleanup debt. Current
+Browser sessions7a0f4b6 lab is stopped/retained after12 native cases PASS and
+independent SQL checks (8 sessions,credential2/authentication4,7 grants,released
+Control). Zero PG clients, no OOM,414 preexisting resources preserved; owned empty
+network removed. Raw capture14files SHA256
+`deb09289f6a862bcf53f67d6edb7f918908d5b81e0dbe310ad091b3e2824f0cb`.
+Root verified all hashes and931 source files against Mac Git archive. A follow-up
+fixture adds a persistent trigger-entry marker: original crossing case did not
+independently prove entry rather than earlier expiry. No production change.
+Next candidate reruns this bounded fixture in a fresh lab; no active Tux job yet.
+All older BigBrotr labs remain stopped/retained. Previous
 `implementation_archive_worker_20260918.event_query_candidate` is recorded in the
 [laboratory inventory](../research/laboratory-inventory.json).
 
@@ -115,8 +124,8 @@ wiring its actual private listener. New files: management/sessions.rs,
 storage/postgres/browser_sessions.rs, browser_sessions_probe.rs and
 experiments/browser-sessions/native.py. Current Mac raw checks and the proposed
 exact-source launcher are under `.research/implementation/management-sessions/`.
-Initial RED was missing-API compilation, not runtime fault evidence. No native
-session case has executed yet. Do not call P08-T02 or any session journey complete.
+Initial RED was missing-API compilation, not runtime fault evidence. Native build has passed; all12 native cases passed; crossing-specific oracle is being strengthened before
+claiming that particular race. Do not call P08-T02 or any session journey complete.
 
 The adapter preserves initial seven grants and accepted policy bytes. Two fenced
 transactions bracket Argon2: fixed persistent account/peer hash buckets charge

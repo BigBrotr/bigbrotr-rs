@@ -17159,5 +17159,28 @@
     },
     "local_evidence": ".research/implementation/archive-cache",
     "observation": "Five real HTTPS/filesystem tests PASS; clean exact source before/after; container stopped-retained, no network allocation or published port."
+  },
+  "implementation_browser_sessions_20260920": {
+    "source": "7a0f4b692d90f6af0f31cdb21bb76fac34401ebd",
+    "tree": "6b24f429152ef369a18a93f9207c695fd47d6fd0",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/browser-sessions-7a0f4b6",
+    "owner": "695522a33d2a299ac7e5f768b6f3435c",
+    "container": "bigbrotr-implementation-browser-sessions-7a0f4b6",
+    "postgres": "bigbrotr-implementation-browser-sessions-7a0f4b6-pg",
+    "network": "bigbrotr-implementation-browser-sessions-7a0f4b6",
+    "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "state": "stopped-retained",
+    "source_files": 931,
+    "started_at": "2026-09-20T10:02:14.734846+00:00",
+    "network_id": "941c7c924134bb87ee5520c00d40f86d15a1145963f1171cc99dd8d58b80d754",
+    "postgres_id": "9923f9854694bf09d216fbcda5e7f828869d5c48f759dd175362d20e7f6f0d8f",
+    "catalog_manager_provisioned": true,
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "container_id": "c1c7d3fbdc9778430c330d099c1e0cb7820433db7b033305d61c793b64800ca4",
+    "network_state": "removed after owner/no-endpoint audit; containers and data retained",
+    "terminal_audit": "terminal-audit.json",
+    "observed": "12 native cases passed; terminal audit PASS, zero clients, both stopped/PID0/noOOM,414 preexisting containers preserved. Touch crossing oracle requires trigger marker before claiming that specific race; fixture follow-up in progress.",
+    "evidence": ".research/implementation/management-sessions/capture/"
   }
 }
