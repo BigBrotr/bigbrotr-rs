@@ -266,6 +266,14 @@ resolvable namespaced references and unchanged original bytes.
 
 ## P02-T04 — Transactional Parquet archive publication
 
+The [private exact-reference hydration consumer](../reference/archive-format.md#exact-historical-signed-event-hydration)
+now reconstructs original signed events from payload/eligibility facts in one
+native transaction. [Twenty connected cases](evidence/p02-archive-event-native-20260920.json)
+at `3f29952` consume actual admission/publication, reject missing/corrupt files,
+verify original signatures and read after actual PostgreSQL postmaster crashes.
+This supports M1 read/export wiring; it supplies no complete archive frontier,
+certified cut, policy grant or retention pin and completes no P02/P06 task.
+
 Current service connection: persistent `storage.archive_state_root` and explicit
 `archive state-initialize` bind one state directory to the retained initialization
 reservation; installed Control acquires coordinator custody before its connection

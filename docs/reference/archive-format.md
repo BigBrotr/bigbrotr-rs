@@ -163,7 +163,7 @@ qualified. Two fixture failures and their corrected independent oracles are reta
 
 ## Exact historical signed-event hydration
 
-The next P02-T04 / P06-T02 step3 prerequisite reads one explicitly named immutable
+The P02-T04 / P06-T02 step3 prerequisite reads one explicitly named immutable
 payload fact and one explicitly named scope eligibility fact in the same native
 DuckLake read transaction. Input includes their complete FactRefs, dataset, event
 ID and required visibility scope. It verifies both complete schema1 envelopes and
@@ -186,3 +186,14 @@ engine/vector, serialized row, decoder, verified event and output buffers coexis
 and need separate accounting from the small diagnostic channel. Validate actual
 signed extremes, scope-specific alternate signatures, duplicate/missing/corrupt
 facts, reduced limits, large output and blocked cancellation before qualification.
+
+[Scoped native qualification](../implementation/evidence/p02-archive-event-native-20260920.json)
+at `3f29952` executes 20 connected cases through actual signed admission,
+installed catalog initialization/publication, SELECT-only PostgreSQL and the
+verified private worker. Both complete signed fixtures survive actual metadata
+postmaster crashes; missing/corrupt payload files refuse, restored files read
+identically, and blocked cancellation/deadline release resources before retry.
+The larger connected event is 94,577 JSON bytes (65,536 UTF-8 content bytes).
+Seven native unit cases additionally cover unsigned time extremes, a 2 MiB body,
+scope-specific alternate signatures and interleaved snapshot reads. No current
+query, source-cut certificate, installed pin/authority or capacity claim follows.

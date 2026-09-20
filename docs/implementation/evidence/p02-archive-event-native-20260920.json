@@ -1,0 +1,757 @@
+{
+  "format": "bigbrotr-archive-event-evidence/1",
+  "status": "PASS",
+  "observed_at": "2026-09-20T02:13:24.872730+00:00",
+  "scope": "P02-T04 / P06-T02 step3 private exact-reference hydration prerequisite only; no installed public read, policy/pin authority, complete query/export, M1 or release qualification",
+  "source": {
+    "product_revision": "730daa23dcdaa1ffe0b015bfb6feb7e382815fbc",
+    "qualified_revision": "3f2995211bc8ea02b09e12e019d6e5d01bb55d9a",
+    "tree": "184686b635dcd2397ca6c90dd263692d1381096d",
+    "files": 877,
+    "archive_sha256": "bfe788410c1851964b0290218a077ec80c04b30d415e2710c30d57f70756aa54",
+    "manifest_sha256": "faf18063de2eb88c65f0242c2c148a3f96b71a5a9919bc188fe7885d1961398c",
+    "lock_sha256": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215",
+    "verified_against_mac_git_archive": true,
+    "unchanged_after_execution": true,
+    "correction": "3f29952 changes only connected fixture UPDATE permission on control.jobs plus checkpoint/inventory; no product code or applied SQL changed"
+  },
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "limits": "runner2CPU/6GiB/512PIDs;PG1CPU/1GiB/128PIDs;512MiBtmpfs;nonroot builder;readonly source/root;internal network;no host ports/socket/release credentials",
+    "engines": {
+      "path": "contracts/release/archive-engine.json",
+      "bytes": 8159,
+      "sha256": "ae0069565ab9411928df0cf067822630c4f3a912919e61633b952f8077a5e2c1"
+    },
+    "dependencies": {
+      "path": "contracts/release/dependencies.json",
+      "bytes": 16208,
+      "sha256": "9bea8c27908c680afc63ec9b74c481ea522c2b7a32232ab4dbca82b1920d7dd0"
+    },
+    "native_toolchain": {
+      "path": ".research/implementation/archive-event/corrected/collected/out/native-tests/ready.json",
+      "bytes": 5446,
+      "sha256": "f0beba4fb530a9c5e7642783c3bc598df2a80618f83e6e702fe0356b0eddc2cf"
+    }
+  },
+  "artifacts": {
+    "control": "f38b4d15e842e4a02fb8e7abed5b343160261da55d9c2b8bebdf6bc8949e037b",
+    "worker": "c528d5956e5533da5cdc79e50f1c5dc80e9c0a0e5f09252981b9b02f27f42d5b",
+    "publisher": "08f8e7bb3a9da20006674973a901ba9139dfdd37fa1c31a75fb334c39d3ce974",
+    "reader": "1f848e5a8d214d3497e8e495ece77077a0700c590a8f69b1d2ab2fc35ada5114",
+    "event_reader": "20709525a4ac035583b2ce7feefa12c7c09dd4d54c78c1aadad77ada14a5181e"
+  },
+  "implementation": [
+    "Shared closed private request names complete payload/eligibility FactRefs, dataset, event ID and required scope; it is not a grant.",
+    "Fresh SELECT-only PG/DuckLake attachment reuses the verified scientific catalog identity; both facts and actual snapshot ID are read in one native transaction. Engine is consumed before success output.",
+    "Select by SourceRecordId without digest filtering; refuse duplicate/conflicting/missing/oversized rows. Recompute schema1 full-envelope fact digests, compare body identity and verify the original requested-scope signature.",
+    "Payload storage scope may differ; it does not choose a signature, first-acquisition time or public metadata. Result contains only the seven original signed fields and actual native snapshot ID.",
+    "Bounded data capture exceeds the4096-byte diagnostic channel and transfers its resource grant with the decoded body. Parent re-verifies ID/signature, checks deadline/cancel after decode, and requires successful exit/clean EOF/positive reap.",
+    "Output allocation failure after spawn explicitly joins and gives TerminationUnknown precedence. Unknown live work retains native/control/TLS/data grants; no kernel-uninterruptible task was manufactured in this run.",
+    "No persistent format, migration, public role readiness or capability advertisement changed. Main and private worker are selected as one exact build tuple."
+  ],
+  "oracle": {
+    "signed_small": {
+      "path": "experiments/identity-contract/signed-fixture.json",
+      "bytes": 58802,
+      "sha256": "4c931ab34cb7adeb707fc2866f4a50b3ec8b694cbb2d4fb5e335f8f37a2d8875"
+    },
+    "signed_extremes": {
+      "path": "tests/fixtures/protocol/signed-extremes.json",
+      "bytes": 2640,
+      "sha256": "dfe738600b4b6df4bce59c7a44cfdfc9222c618d518301d8b7fab589d3ac7ec7"
+    },
+    "signed_large": {
+      "path": "tests/fixtures/protocol/archive-event-response.json",
+      "bytes": 962,
+      "sha256": "815bf9e7e0fbcda73a77fbc3f91bebe0ec5c5f356e01bd665f695a8edb5af963"
+    },
+    "large_author": {
+      "path": "tests/fixtures/protocol/write_archive_event_response.py",
+      "bytes": 1139,
+      "sha256": "d73219c3e8e30e3308e3b7123bf10ab9dfb636e856a082cc5f7b19337ae3a77d"
+    },
+    "large_author_execution": {
+      "path": ".research/implementation/archive-event/fixture-authoring.log",
+      "bytes": 113,
+      "sha256": "cd4ce8da6addfe9db9a8b6766970f240f593332b00dc519fd83ddeb90ab27a4d"
+    },
+    "independent_fact_oracle": {
+      "path": "experiments/archive-engine/signed_publication_oracle.py",
+      "bytes": 15123,
+      "sha256": "ca18908226f79dc5a81ca3e09440253eed2bdcbb73d15403fc8b528bca02b6ae"
+    },
+    "large_native_row": {
+      "path": "tests/fixtures/ingest/large-replay.json",
+      "bytes": 796,
+      "sha256": "8a8e079c80d9f74999a4e405552b2e2ea4ac69fa9ccedcc4cf652ea35dfc21a0"
+    },
+    "meaning": "Complete expected signed objects and canonical fact preimages are independently authored. The94,577-byte recipe hash binds its declared serialization_fields order, not arbitrary JSON field ordering. The connected fixture uses actual signed Rocks admission, installed initialization, retained inputs, Control writer fencing and publication; it is trusted fixture source authorization, not installed read policy."
+  },
+  "upstream_inspection": {
+    "ducklake_commit": "d8a1881e22516ea3d186d73e83c65fe5bd1a1dc4",
+    "paths": [
+      "src/functions/ducklake_current_snapshot.cpp",
+      "src/storage/ducklake_transaction.cpp:1520",
+      "src/storage/ducklake_metadata_manager.cpp:4080"
+    ],
+    "consequence": "current_snapshot uses the transaction snapshot; two queries must stay in that transaction. Engine lifetime is consumed, not reused as a latest-view promise. Exact implementation was inspected locally; real interleaving is separately exercised."
+  },
+  "linux": {
+    "ordered_build": [
+      {
+        "name": "ordered-build",
+        "command": [
+          "/usr/bin/python3",
+          "/source/experiments/archive-engine/native_initialization.py",
+          "--build-binaries"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 48.75222624093294
+      }
+    ],
+    "checks": [
+      {
+        "name": "fixture",
+        "command": [
+          "cargo",
+          "build",
+          "--locked",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--example",
+          "catalog_schema_probe",
+          "--example",
+          "catalog_initialization_probe",
+          "--example",
+          "archive_receipt_probe",
+          "--example",
+          "archive_event_probe",
+          "-p",
+          "bigbrotr-archive-worker",
+          "--example",
+          "archive_publication_probe",
+          "--example",
+          "archive_read_probe",
+          "--example",
+          "archive_coordinator_probe",
+          "--example",
+          "archive_attempt_probe"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 54.96075956616551
+      },
+      {
+        "name": "parent-tests",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--lib",
+          "storage::archive",
+          "--",
+          "--nocapture"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 14.8901008493267
+      },
+      {
+        "name": "native-events",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--release",
+          "-p",
+          "bigbrotr-archive-worker",
+          "--lib",
+          "event::tests",
+          "--",
+          "--nocapture"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 42.86317664105445
+      },
+      {
+        "name": "clippy",
+        "command": [
+          "cargo",
+          "clippy",
+          "--locked",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "-p",
+          "bigbrotr-archive-worker",
+          "--lib",
+          "--example",
+          "catalog_schema_probe",
+          "--example",
+          "catalog_initialization_probe",
+          "--example",
+          "archive_receipt_probe",
+          "--example",
+          "archive_event_probe",
+          "--example",
+          "archive_publication_probe",
+          "--example",
+          "archive_read_probe",
+          "--example",
+          "archive_coordinator_probe",
+          "--example",
+          "archive_attempt_probe",
+          "--bin",
+          "bigbrotr",
+          "--bin",
+          "bigbrotr-archive-worker",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 2.7698710253462195
+      }
+    ],
+    "native_tests": {
+      "passed": 7,
+      "failed": 0,
+      "ignored": 0
+    },
+    "parent_default_tests": {
+      "passed": 50,
+      "failed": 0,
+      "ignored": 1
+    },
+    "explicit_native_holder": [
+      {
+        "name": "native-holder",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--lib",
+          "storage::archive::lifetime::tests::native_worker_alone_retains_custody_after_coordinator_descriptors_close",
+          "--",
+          "--ignored",
+          "--exact",
+          "--nocapture"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 0.46449634386226535
+      }
+    ],
+    "ignore_disposition": "The default skipped native-holder case was explicitly executed against the exact packaged worker:1PASS,0failed,0ignored; no required case is counted from a skip.",
+    "logs": [
+      {
+        "path": ".research/implementation/archive-event/corrected/collected/out/native-tests/ordered-build.log",
+        "bytes": 626,
+        "sha256": "e379b03dc05e791d465e7be7cc96b4b7c214b91c74de722822ff28ae5347d7dd"
+      },
+      {
+        "path": ".research/implementation/archive-event/corrected/collected/out/native-tests/checks/parent-tests.log",
+        "bytes": 6435,
+        "sha256": "b20ecad3dce00eaedbd2f53659500f25ec074e660cdc123c39778bd0f9c5c29c"
+      },
+      {
+        "path": ".research/implementation/archive-event/corrected/collected/out/native-tests/checks/native-events.log",
+        "bytes": 1055,
+        "sha256": "8fe0ee90a90b617bb68584d0b47a324a6688884acf449925623d84f638dfde08"
+      },
+      {
+        "path": ".research/implementation/archive-event/corrected/collected/out/native-tests/checks/clippy.log",
+        "bytes": 394,
+        "sha256": "6b0bc1f60f1ad1893e8b302b5121f346cebcf0e093b6580a78fe82c81b593eb5"
+      },
+      {
+        "path": ".research/implementation/archive-event/corrected/collected/out/native-tests/lifetime/native-holder.log",
+        "bytes": 388,
+        "sha256": "3ac93d80967cfbc71f562fe3965652aa39bd3b185785ad59b4d225fb516ab4d4"
+      }
+    ],
+    "connected_command": "python3 -B source/experiments/archive-engine/event_cases.py <owned-root>",
+    "connected_cases": [
+      {
+        "case": "normal-complete",
+        "status": "PASS",
+        "elapsed_ms": 415,
+        "result": "observed",
+        "active_permits_after_delivery": 0,
+        "signed_fields": 7,
+        "snapshot_id": "3",
+        "signed_event_json_bytes": 398
+      },
+      {
+        "case": "scope",
+        "status": "PASS",
+        "elapsed_ms": 407,
+        "result": "refused",
+        "active_permits_after_delivery": 0,
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "case": "digest",
+        "status": "PASS",
+        "elapsed_ms": 425,
+        "result": "refused",
+        "active_permits_after_delivery": 0,
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "case": "event-id",
+        "status": "PASS",
+        "elapsed_ms": 385,
+        "result": "refused",
+        "active_permits_after_delivery": 0,
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "case": "missing",
+        "status": "PASS",
+        "elapsed_ms": 354,
+        "result": "refused",
+        "active_permits_after_delivery": 0,
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "case": "row-limit",
+        "status": "PASS",
+        "elapsed_ms": 423,
+        "result": "refused",
+        "active_permits_after_delivery": 0,
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "case": "zero-limit",
+        "status": "PASS",
+        "elapsed_ms": 0,
+        "result": "refused",
+        "active_permits_after_delivery": 0,
+        "refusal": "Input(ResourceLimit)"
+      },
+      {
+        "case": "wrong-catalog",
+        "status": "PASS",
+        "elapsed_ms": 338,
+        "result": "refused",
+        "active_permits_after_delivery": 0,
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "case": "unavailable-database",
+        "status": "PASS",
+        "elapsed_ms": 319,
+        "result": "refused",
+        "active_permits_after_delivery": 0,
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "case": "missing-file",
+        "status": "PASS",
+        "elapsed_ms": 348,
+        "result": "refused",
+        "active_permits_after_delivery": 0,
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "case": "missing-file-restored",
+        "status": "PASS",
+        "elapsed_ms": 421,
+        "result": "observed",
+        "active_permits_after_delivery": 0,
+        "signed_fields": 7,
+        "snapshot_id": "3",
+        "signed_event_json_bytes": 398
+      },
+      {
+        "case": "corrupt-footer",
+        "status": "PASS",
+        "elapsed_ms": 406,
+        "result": "refused",
+        "active_permits_after_delivery": 0,
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "case": "corrupt-footer-restored",
+        "status": "PASS",
+        "elapsed_ms": 416,
+        "result": "observed",
+        "active_permits_after_delivery": 0,
+        "signed_fields": 7,
+        "snapshot_id": "3",
+        "signed_event_json_bytes": 398
+      },
+      {
+        "case": "cancel-blocked",
+        "status": "PASS",
+        "elapsed_ms": 440,
+        "result": "refused",
+        "active_permits_after_delivery": 0,
+        "refusal": "ObservationUnknown",
+        "observed_pg_blocking": [
+          {
+            "pid": 491,
+            "user": "bigbrotr_receipt_reader",
+            "application": "bigbrotr-archive-event",
+            "wait_type": "Lock",
+            "blockers": [
+              456
+            ]
+          }
+        ]
+      },
+      {
+        "case": "cancel-blocked-retry",
+        "status": "PASS",
+        "elapsed_ms": 389,
+        "result": "observed",
+        "active_permits_after_delivery": 0,
+        "signed_fields": 7,
+        "snapshot_id": "3",
+        "signed_event_json_bytes": 398
+      },
+      {
+        "case": "deadline-blocked",
+        "status": "PASS",
+        "elapsed_ms": 6004,
+        "result": "refused",
+        "active_permits_after_delivery": 0,
+        "refusal": "ObservationUnknown",
+        "observed_pg_blocking": [
+          {
+            "pid": 559,
+            "user": "bigbrotr_receipt_reader",
+            "application": "bigbrotr-archive-event",
+            "wait_type": "Lock",
+            "blockers": [
+              522
+            ]
+          }
+        ]
+      },
+      {
+        "case": "deadline-blocked-retry",
+        "status": "PASS",
+        "elapsed_ms": 415,
+        "result": "observed",
+        "active_permits_after_delivery": 0,
+        "signed_fields": 7,
+        "snapshot_id": "3",
+        "signed_event_json_bytes": 398
+      },
+      {
+        "case": "normal-pg-restarted",
+        "status": "PASS",
+        "elapsed_ms": 352,
+        "result": "observed",
+        "active_permits_after_delivery": 0,
+        "signed_fields": 7,
+        "snapshot_id": "3",
+        "signed_event_json_bytes": 398
+      },
+      {
+        "case": "large-complete",
+        "status": "PASS",
+        "elapsed_ms": 368,
+        "result": "observed",
+        "active_permits_after_delivery": 0,
+        "signed_fields": 7,
+        "snapshot_id": "3",
+        "signed_event_json_bytes": 94577
+      },
+      {
+        "case": "large-pg-restarted",
+        "status": "PASS",
+        "elapsed_ms": 350,
+        "result": "observed",
+        "active_permits_after_delivery": 0,
+        "signed_fields": 7,
+        "snapshot_id": "3",
+        "signed_event_json_bytes": 94577
+      }
+    ],
+    "complete_capture": {
+      "path": ".research/implementation/archive-event/corrected/collected/event-cases.json",
+      "bytes": 2007233,
+      "sha256": "dfe337812d26de88505688dd2251bbcd43d55eb59d66b45735ce049d42afa80d"
+    }
+  },
+  "durable_effects": {
+    "normal_metadata_unchanged": true,
+    "large_metadata_unchanged": true,
+    "physical_files_per_fixture": 8,
+    "all_file_hashes_restored": true,
+    "readers_select_only": true,
+    "restarts": [
+      {
+        "before": "2026-09-20 02:08:23.820773+00",
+        "after": "2026-09-20 02:11:35.992121+00",
+        "signal": "SIGQUIT"
+      },
+      {
+        "before": "2026-09-20 02:11:35.992121+00",
+        "after": "2026-09-20 02:11:52.013013+00",
+        "signal": "SIGQUIT"
+      }
+    ],
+    "restart_class": "SIGQUIT actual postmaster then automatic restart by explicitly owned lab wrapper; same container namespace/data. Different pg_postmaster_start_time, complete metadata equality and exact signed readback after each. Not host/power loss."
+  },
+  "observations": {
+    "connected_row_byte_limit": 1048576,
+    "largest_connected_signed_json_bytes": 94577,
+    "largest_connected_content_utf8_bytes": 65536,
+    "native_embedded_signed_content_bytes": 2096947,
+    "success_elapsed_ms": [
+      415,
+      421,
+      416,
+      389,
+      415,
+      352,
+      368,
+      350
+    ],
+    "cancelled_blocked_job_total_ms": 440,
+    "deadline_ms": 6000,
+    "deadline_return_ms": 6004,
+    "limits": "These small-fixture elapsed times include startup and verification; they are not throughput/capacity/RSS qualification. Cancellation440ms is total job time, not latency since the marker. Both actual PG waits are recorded; stdout-blocked refusal is a separate Linux Process test."
+  },
+  "mac": {
+    "environment": "Apple Silicon macOS;Rust1.98.1;actual pinned DuckDB/DuckLake bundle;dirty development snapshots preceding candidate",
+    "native_expanded": {
+      "passed": 6,
+      "failed": 0,
+      "ignored": 0
+    },
+    "closed_request": {
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0
+    },
+    "parent_archive": {
+      "passed": 46,
+      "failed": 0,
+      "ignored": 0
+    },
+    "final_transport": {
+      "passed": 10,
+      "failed": 0,
+      "ignored": 0
+    },
+    "logs": [
+      {
+        "path": ".research/implementation/archive-event/mac-red.log",
+        "bytes": 999,
+        "sha256": "b21ac26ced099dcbb808594be510ad5e5bc7bfac06f05329f33b6591c25f8b69"
+      },
+      {
+        "path": ".research/implementation/archive-event/mac-transport-red.log",
+        "bytes": 1024,
+        "sha256": "172f39348d97e1268b23cccaad0fc399f6092b33babbf2a775ca1bfe2606338c"
+      },
+      {
+        "path": ".research/implementation/archive-event/mac-native-expanded.log",
+        "bytes": 1013,
+        "sha256": "6265fa6f0af6aa65377f97ae8ee40543e9a9c8742a5406b6a29823bc275b3549"
+      },
+      {
+        "path": ".research/implementation/archive-event/mac-request.log",
+        "bytes": 534,
+        "sha256": "3a68ff342dc20de7eec20f851fb473ef9369e8e227428a8a27b7367a5860dc99"
+      },
+      {
+        "path": ".research/implementation/archive-event/mac-parent-final.log",
+        "bytes": 5663,
+        "sha256": "45262f172bbc3b0f258ec75bde6054bd6a0ec685af3fdd022d0bb4a1ded978cd"
+      },
+      {
+        "path": ".research/implementation/archive-event/mac-review-fix.log",
+        "bytes": 5663,
+        "sha256": "703b3566560cc43957837ed8bd9d6c20162b1c669e3c38d76e9b89acc2d73d6c"
+      },
+      {
+        "path": ".research/implementation/archive-event/mac-transport-final.log",
+        "bytes": 1461,
+        "sha256": "aadafb00e30f82570e1f5f1f8b08469de0734ea888221e1f0ffacda691a3885a"
+      },
+      {
+        "path": ".research/implementation/archive-event/mac-clippy-candidate.log",
+        "bytes": 175,
+        "sha256": "fc9ce4f8804651ace3de23b1c8f30580186ffe2d2611b0d6b3809759821c580c"
+      },
+      {
+        "path": ".research/implementation/archive-event/mac-fixture-acl.log",
+        "bytes": 175,
+        "sha256": "920a673c0b42be91d5280fcba8e7ec2a1fda6d540f452fe1a524ae122788ee82"
+      }
+    ],
+    "red_sources": [
+      {
+        "path": ".research/implementation/archive-event/red-event.rs",
+        "bytes": 705,
+        "sha256": "a75e5e3c27ebc24cb1183df246482ffc4d30965b76b9a179225de871c0acde18"
+      },
+      {
+        "path": ".research/implementation/archive-event/red-tests.rs",
+        "bytes": 3864,
+        "sha256": "d261fab9c81192b93e7365bc472543ffc0ada3688522a6b6b489c1f0faebfebc"
+      },
+      {
+        "path": ".research/implementation/archive-event/red-process.rs",
+        "bytes": 9753,
+        "sha256": "fe435de44cb48a6d3f595f1711ad14b4d863d9dd19bd7bae28f6fa55356cb474"
+      },
+      {
+        "path": ".research/implementation/archive-event/red-process-tests.rs",
+        "bytes": 8666,
+        "sha256": "ac2fda39a3cc68eceb1577b72554b84c7a5dd1e977f4a351790fc1bd4c8fe45c"
+      }
+    ],
+    "red_meaning": "Real native seeded fixture refused Native with missing read implementation; real64KiB child output refused OutputLimit before data transport. Initial compilation/fixture transaction errors are not semantic RED."
+  },
+  "preserved_failures": [
+    {
+      "kind": "fixture compile/transaction setup",
+      "description": "Wrong DuckDB appender signature, then one transaction wrote two attached databases; fixed stage setup before the archive transaction.",
+      "evidence": [
+        {
+          "path": ".research/implementation/archive-event/mac-first-compile.log",
+          "bytes": 2751,
+          "sha256": "db42c1c380c6ef0e819540554192789488946d1350c888cadbc2d4dc89896c72"
+        },
+        {
+          "path": ".research/implementation/archive-event/mac-fixture-transaction.log",
+          "bytes": 1261,
+          "sha256": "78eafe1d8bb174f04a1bc83ca61086dfe0a197cd3b80a8b8a3ac8c249e58559c"
+        }
+      ]
+    },
+    {
+      "kind": "snapshot fixture expectation",
+      "description": "Reusing the embedded metadata connection retained the old view after COMMIT; that latest-view expectation failed. The selected product consumes the engine; a fresh engine correctly refuses changed references, while the interleaved original transaction observes the original complete pair.",
+      "evidence": [
+        {
+          "path": ".research/implementation/archive-event/mac-refusals.log",
+          "bytes": 1478,
+          "sha256": "0cacc83a5156790794671a9c5b9c0d1cd3bdf51bc50f5f91d3c8f809abb6e518"
+        },
+        {
+          "path": ".research/implementation/archive-event/mac-snapshot-diagnostic.log",
+          "bytes": 1431,
+          "sha256": "fbdfe2f2b08c3ef0b8c755be2b3a67eaf926237d82a485e9e1f139cc52ae0a86"
+        },
+        {
+          "path": ".research/implementation/archive-event/mac-snapshot-fresh.log",
+          "bytes": 517,
+          "sha256": "1a8bfcd8b0bb84930e857d5fb0d9cee0be51d46af010ff0e7e4c80301ebac7cd"
+        }
+      ]
+    },
+    {
+      "kind": "lab network allocation",
+      "description": "First launch refused exhausted Docker subnet pools before engines existed. After positive owner/no-endpoint/stopped checks, only the empty retained outcomes lab network was removed; containers/data preserved.",
+      "evidence": {
+        "path": ".research/implementation/archive-event/first/collected/network-cleanup.json",
+        "bytes": 35843,
+        "sha256": "db7b8677603050972cdf85d3a34e54967abd910d06dd5d3cce78a4b1a68aefbb"
+      }
+    },
+    {
+      "kind": "connected seed ACL",
+      "revision": "730daa23dcdaa1ffe0b015bfb6feb7e382815fbc",
+      "outcome": "INCOMPLETE; no hydration case executed",
+      "description": "Actual request-binding SELECT FOR UPDATE required jobs UPDATE privilege missing from fixture. One fixture grant added; no guard weakened. Original lab stopped/collected with no clients,385preexisting containers preserved; new run used fresh state.",
+      "capture": {
+        "path": ".research/implementation/archive-event/first/evidence-identity.json",
+        "bytes": 3111,
+        "sha256": "b658d5073fe89b2568204ddd5983f9eeb8af6a8d2a5fb9103e0bedf5decaaa9b"
+      },
+      "cases": {
+        "path": ".research/implementation/archive-event/first/collected/event-cases.json",
+        "bytes": 6406,
+        "sha256": "23dbd23d0407e2e983bc30d08f6b8ee66ec3a1f675c4750dcef08bef15e912ff"
+      },
+      "postgres_error": {
+        "path": ".research/implementation/archive-event/first/postgres-errors.json",
+        "bytes": 247,
+        "sha256": "2ae6ed7aa53084ee20fa4519d3674b02162f83620663454016afe18b3a85ad5f"
+      }
+    }
+  ],
+  "review": {
+    "kind": "independent read-only AI review plus integrating owner review",
+    "findings": [
+      "Added final deadline/cancellation check after decode/crypto.",
+      "Added explicit join/error precedence after output reservation failure.",
+      "Corrected harness current migrations/ACL prerequisite, unique global writer IDs, holder cleanup, deadline lower-bound discriminator and per-poll restart timeout.",
+      "Declared fixture JSON serialization order; compare complete objects independently."
+    ],
+    "boundary": "No reviewer engine execution. Current/full public read semantics, source cut proof, policy grants and pins are outside this primitive and remain required.",
+    "evidence_review": "Independent AI review reconciled41path/size/hash references, both60-file captures and877source files per revision with Git; independently verified all signed fields/ID/BIP340 for8successes,12refusals, metadata/file equality, actual blockers and test logs. No engine execution. Corrected collector timestamp meaning and separated connected original-signature verification from the native alternate-scope-signature cases."
+  },
+  "resource_closure": {
+    "audit": {
+      "path": ".research/implementation/archive-event/corrected/collected/terminal-audit.json",
+      "bytes": 10087,
+      "sha256": "87712a4901f75145ba119e6a1a2b1f2d3c9cfe80418d99265bf3dcd9204fe624"
+    },
+    "state": "stopped-retained; owned empty network removed, all containers/data retained",
+    "remaining_pg_clients": 0,
+    "preexisting_preserved": 387,
+    "unrelated_running": 8,
+    "bigbrotr_running": 0,
+    "collector_exit_codes": {
+      "/bigbrotr-implementation-archive-event-3f29952": 143,
+      "/bigbrotr-implementation-archive-event-3f29952-pg": 137
+    },
+    "exit_meaning": "Owned sleeping runner stopped with143; persistent PG wrapper required Docker terminal kill137, noOOM. Both positively stopped/Pid0 before collection; these collector exits are not test-process failures.",
+    "identities": {
+      "path": ".research/implementation/archive-event/corrected/collected/resources.json",
+      "bytes": 1280,
+      "sha256": "d0bbf26ab3617b13e203581555c97def6c3b0ce48a6785923b4cde91d4837816"
+    },
+    "capture": {
+      "path": ".research/implementation/archive-event/corrected/evidence-identity.json",
+      "bytes": 6274,
+      "sha256": "df5164252c929aefabcb3d415b8631870769138ed1b1d3776c563a781bf7b0b5"
+    },
+    "capture_sha256": "95192130f2313c62d4bf36dc0b11e5a20566cdaf7356996d86db24ead6deae69",
+    "capture_files": 40,
+    "finished_at": {
+      "/bigbrotr-implementation-archive-event-3f29952": "2026-09-20T02:13:25.009369723Z",
+      "/bigbrotr-implementation-archive-event-3f29952-pg": "2026-09-20T02:13:35.10713238Z"
+    },
+    "preservation_evidence": "Executed collector assertions and recorded preflight inventory support the387preexisting-container preservation result. The capture does not retain every final unrelated-container observation for independent recomputation; both owned terminal states are fully retained."
+  },
+  "remaining": [
+    "Installed principal/action/scope read authorization and revocation through output.",
+    "Verified complete topological archive frontier, source-cut and actual snapshot/retention pin adapter; no fabricated cut from two refs.",
+    "Scope/cut-correct first-acquisition metadata and current winner/deletion/expiry reduction.",
+    "Standalone signed JSONL plus full selected exports, manifest publication/recovery, ordinary read interfaces and M1 journey.",
+    "Object-store hydration, missing metadata engine recovery paths, mixed aged load, RSS/capacity measurements, host/power loss and native Linux arm64.",
+    "Full selected product, packaging/release and browser journeys remain incomplete."
+  ],
+  "observed_at_meaning": "Collector start; owned resource shutdown completed at the separate recorded container FinishedAt values."
+}

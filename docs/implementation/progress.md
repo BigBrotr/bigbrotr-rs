@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-09-20 on Mac; latest terminal Tux audit 01:18:44Z.
+Observed 2026-09-20 on Mac; latest owned Tux processes stopped at 02:13:35Z.
 Navigation only: follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint)
 and verify Git, dirty files, evidence and actual resources.
 
@@ -10,171 +10,144 @@ Complete owner-authorized product implementation remains active. Mac is the prim
 editing/Git workspace; Tux executes trusted exact-Git Linux work under the hosted
 runner billing exception. Preserve private bigbrotr-rs, unpublished Cargo packages
 and the read-only Go neighbor. No public release or Linux arm64 claim. No P02/P03
-task or M1 milestone is complete; all selected later product work remains required.
+or P06 task or M1 milestone is complete; all selected later work remains required.
 
-P02-T02 step4 positive original-request recovery is implemented and scoped native
-qualification was published at ef58a6b. Its [report](evidence/p02-producer-recovery-native-20260920.json)
-records 46 native tests, 19 connected captures, actual separate-process recovery,
-failures and exclusions. It copies original NewFacts, AlreadyDurable or Rejected
-without changing native data or logical progress. Missing detail/reservation never
-becomes a noncommit witness. Drain, checkpoints, ACK/GC and successor authority
-remain required. Original three captures and owned lab resources remain retained;
-the report/inventory holds their identities instead of duplicating them here.
+Current boundary: close scoped P02-T04 / P06-T02 step3 private exact-reference
+signed-event hydration qualification, then implement the positive archive frontier
+and actual pin prerequisite needed by M1 installed read/export. Existing task files
+own the backlog. No competing plan or new instruction file.
 
 ## Git and ownership
 
-Local main is at unpublished candidate730daa23dcdaa1ffe0b015bfb6feb7e382815fbc;
-private origin/main was last verified at published9c4c4a79721394515fb5d6c99da2af48f0e62a0f.
-WAL product ec386ac and its qualification are committed/pushed. Root owns dirty
-checkpoint/inventory updates during native hydration qualification. No parallel
-writer, merge or rebase. Reverify remote before publication.
+Local main is at unpublished fixture correction
+3f2995211bc8ea02b09e12e019d6e5d01bb55d9a, following product candidate
+730daa23dcdaa1ffe0b015bfb6feb7e382815fbc. Private origin/main was last verified at
+published9c4c4a79721394515fb5d6c99da2af48f0e62a0f. Root owns dirty evidence,
+checkpoint, inventory and owning-task/reference updates. No parallel writer,
+merge or rebase. Reverify remote before publication. All local/SSH build, harness,
+collector and capture sessions are joined.
 
 Separate compatibility worktree .research/worktrees/producer-closing-old-writer
-remains at published f899896b1207f5e71c4e39d9ab7814b293814735 on
-research/producer-closing-old-writer; do not merge its old fixture. Local
-.research/targets/product and copied Tux build caches are not source authority.
+remains at publishedf899896b1207f5e71c4e39d9ab7814b293814735 on
+research/producer-closing-old-writer; preserve it and do not merge its old fixture.
+Build caches are not source authority.
 
-## Current finding and implemented prerequisite
+## Implemented and executed hydration boundary
 
-Independent read-only AI review identified a concrete native recovery problem
-while examining proposed reserved-but-uncommitted resolution. Rocks11.8.1's default
-PointInTimeRecovery suppresses detected corruption and can successfully open after
-losing synchronized outcomes. Mac reproduced this through the actual product:
-synced bootstrap, actual child SIGKILL/reap, one damaged CRC byte, successful reopen
-at sequence1 with all bootstrap effects absent. The unpublished negative-resolver
-stub was removed, not qualified.
+[Archive format](../reference/archive-format.md#exact-historical-signed-event-hydration)
+owns the narrow contract. The shared private request names exact payload and
+eligibility FactRefs, dataset/event ID and required scope. The native worker reads
+both complete schema1 envelopes in one DuckLake transaction, recomputes digests
+and verifies the scope's original ID/BIP340 signature. Payload storage scope may
+differ; it never supplies another scope's signature/acquisition metadata. Parent
+transport retains a separate data grant through body delivery, bounds output,
+rechecks cancellation/deadline after decoding, and requires clean EOF and positive
+reap. Output allocation failure after spawn explicitly joins; unknown termination
+wins over a resource refusal. No public/current query, certified cut, authority,
+pin, standalone export or readiness claim is introduced.
 
-Candidate ec386ac explicitly sets AbsoluteConsistency with paranoid checks retained.
-[Native profile](../reference/ingest-native-profile.md#selected-options),
-[store](../reference/ingest-store.md) and
-[request inputs](../reference/producer-request-inputs.md#positive-original-request-resolution)
-record the compatibility and availability consequences. No persistent bytes, SQL,
-manifest or profile number changed. Earlier binaries remain permissive; rollback
-reintroduces the risk, and today's strict open cannot attest earlier recovery.
-Incomplete trailing records now refuse open even after interrupted append.
+The [qualification report](evidence/p02-archive-event-native-20260920.json) binds
+exact source, dependencies, artifacts, fixtures, commands, observations and limits.
+Native source3f29952/tree184686b635dcd2397ca6c90dd263692d1381096d has877 files,
+verified against Mac git archive. All product code is identical to730daa2;
+3f29952 adds only the missing fixture jobs UPDATE grant plus checkpoint/inventory.
 
-Executed limitation: removing an entire final record yields a valid shorter WAL;
-strict open succeeds with only the manifest. Therefore issued+closing metadata,
-missing PG copy and successful reopen cannot authorize a negative resolution.
-Additional provenance/exclusion design is required before noncommit/retirement.
-No ACK, GC, native noncommit API or successor permission was introduced.
+Executed on Linux amd64, Rust1.98.1, PostgreSQL16.15 and pinned native archive bundle:
+20 connected cases PASS through actual signed Rocks admission, installed catalog
+initialization, retained inputs/publication and verified worker read. Exact seven
+signed fields survive separate processes and two actual postmaster SIGQUIT/restarts.
+The larger connected event is94,577 JSON bytes/65,536 UTF-8 content bytes. Missing
+and corrupt physical files refuse; exact restoration permits identical reads.
+Wrong scope/ID/digest/catalog, absent data/database and reduced limits refuse.
+Actual PG lock waits precede cancellation and deadline refusal; retries succeed.
+Deadline6000ms returns at6004ms; cancellation440ms is total job time, not latency
+since the marker. Complete metadata and Parquet hashes remain unchanged.
 
-## Executed qualification and preserved failures
+Seven native worker tests PASS, including full unsigned-time extremes, a2MiB body,
+valid alternate scope signatures, envelope corruption/duplicates and interleaving.
+Fifty parent tests PASS; the one default ignored native-holder test is then
+explicitly run against the exact packaged worker:1PASS/0ignored. Scoped Clippy
+passes. Linux Process tests independently prove full stdout/stderr pipe cancellation;
+PG lock cases are not described as stdout tests. No RSS/capacity/mixed-load claim.
 
-The [WAL report](evidence/p02-wal-recovery-native-20260920.json) binds source,
-dependency, artifact, command and workload identities. Mac semantic RED precedes
-the fix; final WAL2/profile5/store47 tests and Clippy pass. Mac explicitly excluded
-the absent packaged Linux worker. Linux executed it successfully among53 native
-tests, followed by22 integration tests and Clippy; zero failed/ignored. The runner
-built actual main/worker with the shared exact-source builder and CI executor.
-No broader CI/install/release or arm64 qualification is inferred.
+Mac retains semantic RED native/transport sources and logs,6 expanded native tests,
+1 closed-request test,46 parent tests,10 final transport tests and Clippy. These
+are dirty development snapshots, not Linux arm64 qualification. Independent AI
+code/harness review found and corrected final deadline checking, allocation-error
+termination precedence, fixture prerequisites/unique writer IDs, holder cleanup,
+deadline discrimination and bounded restart polling. Independent AI evidence
+review reconciled all41 file references, both captures and Git exports, signed
+objects/refusals and durable effects. No substantive discrepancy; collector start
+is now explicitly distinguished from terminal FinishedAt, and preservation of387
+prior containers is attributed to executed collector assertions rather than an
+independent recomputation of unretained unrelated final observations.
 
-New native tests compare every default/facts/receipts row with a frozen independent
-fixture. Intact crash preserves all rows. CRC corruption and a one-byte truncated
-record body refuse both ordinary/recovery opens and preserve exact damaged WALs
-through retry; separate permissive controls lose the complete bootstrap.
-Complete-record removal confirms the limitation above. Temporary test databases
-were removed after assertions; fixture, hashes and complete logs are retained.
+## Preserved failures and owned resources
 
-Ignored root .research/implementation/wal-recovery retains Mac RED patch/test
-snapshot and logs, candidate.bundle, launch/collector source, preflight and capture.
-collected contains16 verified files; evidence-identity.json binds tarSHA
-2b2b2e4095bd898b52c0525fcb69821f184c7fd60a0223ef909c17b4877e7372.
-All868source files/archive independently match Mac git archive ec386ac.
-Linux mainSHA6c96dc8d310a38408cef7c0a6e388b858258ef4a08dc11359a07ce1c6fe4442d;
-workerSHA4a8f8f37ec6dbf7b6e6def033966d21d116f027699cfd4c96ae6ff852f298f3c.
+Ignored root .research/implementation/archive-event owns logs, authoring recipe,
+Git bundles, launch/collector sources and captures. First fixture drafts had
+compiler/appender and cross-database transaction setup errors; neither is semantic
+RED. An initial reused embedded-connection latest-view expectation failed. Original
+logs are retained; the selected consuming-engine path uses a fresh reader, which
+correctly refuses changed references after the coherent original transaction.
 
-Preserved failures: first draft failed SHA formatting compilation (producer-noncommit/
-native-red.log; not semantic RED). Initial terminal collector compared order-sensitive
-Mounts arrays and rejected122 reorderings: every full entry matched after sorting
-by Destination. First Mac tar extraction rejected an unsupported Python filter
-argument before writes; explicit validated regular-file extraction then succeeded.
-No native outcome was relabeled or invariant weakened. Final independent AI evidence review verified16 capture files,868 Git source files,
-23 report references and122 Mounts-only permutations. No new host/engine run by reviewer.
+First Tux lab archive-event-730daa2 refused exhausted Docker network pools before
+creating engines. Only the positively inventoried empty stopped outcomes-efeb4e0
+network was removed; containers/data remain. Its eventual connected seed failed
+before hydration because a real SELECT FOR UPDATE lacked jobs UPDATE privilege.
+Outcome INCOMPLETE is retained under first/:20 captured files, tarSHA
+9df323590045588cbab31eba650af3b0fcae31c85faa7a8e6f4fa6ef68a9c3d2;
+allowlisted postgres-errors.json records the actual permission error. Both owned
+containers are stopped; its now-empty network was removed.385 prior containers
+were preserved and no PG clients remained. Never rerun initialization in that root.
 
-## Owned resources and next bounded action
+Corrected lab /home/tux/bigbrotr-implementation-20260917/runs/archive-event-3f29952,
+ownere5cf2feb6e321f851dcf2affcb081a50, runner
+c7cf7b2f412d18fa1dd289c6a2d491a1f74e48779351054f98cb47ada3d909cc and PG
+f7d76cbd51946442f0c5da2c65c984cd91e93753c0219b8fde51a6136e5303ec are positively
+stopped/Pid0, noOOM. Collector exits143/137 reflect deliberate container shutdown,
+not failed test processes. Empty owned network removed; containers/data retained.
+Terminal audit preserves387 preexisting containers,8 unrelated running and
+0 BigBrotr running; zero PG clients remained before shutdown.
+corrected/evidence-identity.json binds40 files and tarSHA
+95192130f2313c62d4bf36dc0b11e5a20566cdaf7356996d86db24ead6deae69.
+All877 exported sources and captured bytes match their Mac-verified identities.
+[Inventory](../research/laboratory-inventory.json) entries archive_event and
+archive_event_corrected own complete images, limits and lifecycle details.
 
-New WAL lab /home/tux/bigbrotr-implementation-20260917/runs/wal-recovery-ec386ac,
-owner553610940546c5a19f1cede583572ca7, container
-48a3f17e13f0a84a6282f8e0e5c8b6dbf9e9d628f5dbe960e496c25086c32ec8,
-exited itself at01:14:10Z, code0, noOOM. Terminal audit01:18:44Z preserves all384
-preexisting container identities/lifecycles/mounts/networks,8unrelated running and
-0BigBrotr running. 2CPU/6GiB/512PIDs, networknone, readonlysource/root; noPG,
-ports/socket/credentials. Stopped container/data retained; never restart its finite
-entrypoint over occupied output. All local launch/build/SSH sessions joined.
-[Inventory](../research/laboratory-inventory.json) entry
-implementation_archive_worker_20260918.wal_recovery owns details. Earlier d2959da
-and efeb4e0 recovery labs remain stopped, preserved by this terminal comparison.
+## Next bounded action and open gates
 
-Next active slice: P02-T04 / P06-T02 step3 exact historical signed-event hydration,
-a prerequisite for M1 read/export. The existing archive-format reference now owns
-the narrow contract: two exact payload/eligibility FactRefs in one native transaction,
-full envelope/digest and actual signature verification, scope-specific representative,
-bounded data output/grant and actual supervised consumer. No public/current read,
-certified cut, absence, protection or export authority. Read-only independent design
-review confirmed this boundary and flagged retaining authority through body delivery;
-the receipt-only diagnostic cleanup exception cannot be reused.
-Root has read the full read-view contract and relevant owning tasks/schema/native
-receipt/engine/catalog/transport callers. Dirty root-owned implementation now adds
-the shared private event request, native same-transaction full-envelope reader,
-actual signature verification and parent data transport retaining its grant until
-the body is dropped. The catalog attach/credential path is shared with receipts.
-The isolated archive_event_probe is a real consumer, not an installed policy/pin.
+Evidence review is complete. Run affected artifact/handoff checks, inspect the
+complete diff and publish coherent private commits. Then read the complete
+owning archive-frontier/retention SQL and callers for the P02-T04/T07 bridge:
+verified committed batches -> contiguous complete prefix for every topology stream
+(including zero prefixes) -> archive consumer frontier -> actual snapshot lease
+and retention claims. Do not derive a SourceCut from two FactRefs, DuckLake max
+snapshot, or LocalCoordinator custody. A real archive owner/attestation consumer
+is still absent. This positive work does not need negative producer resolution.
 
-Mac raw evidence lives in .research/implementation/archive-event. Core native and
-transport semantic REDs are retained separately from fixture compilation errors.
-mac-native-expanded.log:6PASS actual DuckLake/Parquet tests (extreme timestamps,
-scope representatives, complete-envelope corruptions/duplicates, bad signature with
-valid digest,2MiB body and interleaved snapshot). mac-parent-final.log:46PASS.
-Initial Clippy passed. mac-request.log:1PASS closed/bounded request controls.
-An initial reused embedded-connection snapshot expectation failed; original logs
-are retained. The selected reader consumes its engine; a fresh reader after the
-interleaving correctly refuses the changed reference. No broader current-view
-claim is inferred. Independent read-only AI review found two issues: final decode
-must recheck deadline/cancel, and output-allocation failure after spawn must join
-explicitly and prioritize unknown termination. Both code corrections now exist;
-post-fix parent tests pass. mac-transport-final.log:10PASS including complete large
-output followed by a still-live child at cancellation/deadline; no body is delivered.
-mac-clippy-candidate.log passes both libraries/binaries/tests and both connected
-probes. Artifact/handoff checks report no errors. All Mac sessions are joined.
+Independent read-only follow-on design review found existing snapshot_leases and
+retention_claims require a sealed consumer_frontier_revision; current publication
+has no adapter producing that frontier. Historical read/export also needs actual
+principal/action/scope authorization, current policy and retained pins through
+output. AccountObservation is not reusable authentication, PolicyLeaseTracker is
+only local duration, and current administrative principal_grants omit history/export.
+EventRead currently selects a fresh snapshot; pinned consumers need an explicit
+snapshot binding. M1 acquisition metadata must come from authorized eligibility/
+receive facts, never the shared payload's recorded timestamp. LifecycleOutput's
+4096-byte diagnostic/post-Control-cleanup rules cannot carry served event data.
 
-Next bounded action: finish exact-Git Tux qualification of
-PostgreSQL -> verified worker -> parent, using the existing actual signed publisher
-and a new independent94KiB signed fixture. Candidate730daa2 binds all product and
-builder/harness sources. AI harness review corrected obsolete fixture migration prerequisites
-(installed Control now14), colliding global writer identities, holder cleanup,
-deadline discrimination and bounded restart polling. The old privileged-foundation
-fixture is not qualified by this slice. Native qualification and eventual
-authority/pin/installed consumers remain required. Negative producer resolution
-remains unimplemented; the demonstrated WAL limitation stays open.
+Earlier qualified positive producer recovery and strict WAL reopen remain at
+[their recovery report](evidence/p02-producer-recovery-native-20260920.json) and
+[WAL report](evidence/p02-wal-recovery-native-20260920.json). Strict recovery cannot
+detect a completely removed final WAL record. Negative resolution remains
+unimplemented; closing/issued/missing PG copy plus successful open cannot authorize
+noncommit. Do not bypass this executed limitation. WAL lab ec386ac remains stopped;
+its prior evidence/inventory owns retained resources.
 
-New active lab /home/tux/bigbrotr-implementation-20260917/runs/archive-event-730daa2,
-owner8aa8ac9f80646090772e8de0c51d3ba5, runner08549de70651bec7c303b37381103546ea6daf820bbd589a719fd343dbb31965,
-PG758d64694185015703e2a183a8e8cc348fc1bd6052e09a496fc63892dc996056.
-Exact877-file Git export/tree c58ce40f11ef02a08f0e29e69b73ee81703664bd; build,
-7native tests,50parent tests and Clippy passed. One existing unrelated holder
-fixture is ignored; this is not a zero-skip broad qualification. Connected seed
-failed before hydration: PostgreSQL reports missing UPDATE on control.jobs for
-the real request-binding SELECT FOR UPDATE. Root added that single fixture ACL;
-mac-fixture-acl.log passes Clippy. No product guard changed.
-Initial launch refused Docker address-pool exhaustion before creating any engine.
-The verified empty stopped outcomes-efeb4e0 network was removed; both containers
-and data remain retained. Failed launch.py and separate resume-launch.py/cleanup
-record preserve that boundary. Terminal collector joined/stopped the owned runner
-and PG, removed its now-empty network and preserved385preexisting containers.
-Zero PG clients remained;8unrelated running and0BigBrotr running. The20-file
-capture and all877exported sources match Mac Git; first/evidence-identity.json
-binds tarSHA9df323590045588cbab31eba650af3b0fcae31c85faa7a8e6f4fa6ef68a9c3d2.
-All sessions joined, stopped containers/data retained. Outcome INCOMPLETE, not
-hydration PASS. Next: commit the fixture ACL correction and run the same scenario
-from a new exact-Git isolated lab. Never rerun initialization in the failed root.
-
-M1 still needs actual read, standalone export and restart. Proof/input checkpoint
-closure, ACK/GC/abandonment, source closure/topologyCAS, successor activation,
-archive fallback/causal restore, ENOSPC/power loss, async post-sync cancellation,
-aged mixed workloads and nativearm64 remain open. All selected acquisition,
-analytics/ranking/publication/read/UI/site/blog/Compose/release journeys remain
-required. Existing task files own the complete backlog.
+M1 installed read/export/restart, acquisition/analytics/ranking/publication/read
+surfaces, UI/admin/site/blog, Compose/release and all other selected task acceptance
+remain required. No task checkbox is closed by this prerequisite.
 
 External monitor findings remain scoped closed with practical evidence:
 [MON001/002/004/006](evidence/p01-monitor-corrections-native-20260918.json),
