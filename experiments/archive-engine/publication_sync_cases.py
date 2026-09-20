@@ -47,7 +47,7 @@ def ordering_evidence(lines, file):
     assert len(sync) == 1 and sync[0].body.endswith('= 0')
     assert sync[0].entered > original.completed
     # Native threads share the descriptor table; a different TID can close it.
-    assert not any(c.body.startswith(f'close({fd}<{file}>') and
+    assert not any(c.body.startswith(f'close({fd}<') and
                    original.entered < c.entered <= sync[0].completed for c in lines)
     expected = [str(Path(file).parents[i]) for i in range(4)]
     following = [c for c in lines if c.entered > sync[0].completed and
@@ -76,13 +76,15 @@ def check_oracle():
     # Entry before the last sync, completion afterwards, previously passed.
     early_read = prefix+parents[:3]+[start, parents[3], end]
     cross_thread_close = [prefix[0], f'102 1.1 close(9<{file}>) = 0', *prefix[1:], *parents, start, end]
-    for invalid in [early_read, cross_thread_close]:
+    renamed_close = [line.replace(file+'>) = 0', file+' (deleted)>) = 0')
+                     if 'close(' in line else line for line in cross_thread_close]
+    for invalid in [early_read, cross_thread_close, renamed_close]:
         try:
             ordering_evidence(decoded_lines('\n'.join(invalid)), file)
         except AssertionError:
             continue
         raise AssertionError('trace oracle accepted the negative control')
-    print('Trace oracle: positive and 2 discriminating negative controls PASS')
+    print('Trace oracle: positive and 3 discriminating negative controls PASS')
 
 
 def main(root):

@@ -1,0 +1,439 @@
+{
+  "format": "bigbrotr-archive-file-sync-evidence/1",
+  "status": "PASS",
+  "scope": "P02-T04 step8 local pre-registration file/directory synchronization prerequisite; no protected frontier, reclamation, power-loss, complete task or release qualification",
+  "source": {
+    "revision": "b9ddd74782738e7a2c49f32b188cc244a653e736",
+    "tree": "1418aeb7b67e28e7bf5766a52e1aef3159bfeb7a",
+    "files": 880,
+    "archive_sha256": "b71d3a4ca25c75410f040991bc3e731ba8ff5188a22b90a98088d69dff9dac58",
+    "manifest": {
+      "path": ".research/implementation/archive-file-persistence/capture/collected/out/build/source-manifest.json",
+      "bytes": 108666,
+      "sha256": "c98ce2057263d9f1dcb39165e5795b0151ca2de4e847c0dea46928dc3ac9c004"
+    },
+    "lock_sha256": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215",
+    "verified_against_mac_git_archive": true,
+    "clean_and_unchanged": true
+  },
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "host": {
+      "kernel": "Linux 6.12.101+deb13-amd64 x86_64 GNU/Linux",
+      "filesystem": "/dev/nvme0n1p2 ext4 rw,relatime,errors=remount-ro"
+    },
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "limits": "Runner2CPU/6GiB/512PIDs;PG1CPU/1GiB/128PIDs;512MiBtmpfs;internal network,no host ports,readonly root/source,no release credentials",
+    "engines": {
+      "path": "contracts/release/archive-engine.json",
+      "bytes": 8159,
+      "sha256": "ae0069565ab9411928df0cf067822630c4f3a912919e61633b952f8077a5e2c1"
+    },
+    "dependencies": {
+      "path": "contracts/release/dependencies.json",
+      "bytes": 16208,
+      "sha256": "9bea8c27908c680afc63ec9b74c481ea522c2b7a32232ab4dbca82b1920d7dd0"
+    },
+    "native_toolchain": {
+      "path": ".research/implementation/archive-file-persistence/capture/collected/out/native-tests/ready.json",
+      "bytes": 5635,
+      "sha256": "3e36c2f1c5b218548301fda416bb8cc4deff73c26ffb60adc94f8cf28a0b0070"
+    }
+  },
+  "artifacts": {
+    "control": "c3a2052eb139eddeaf141cf78d70805a7fb10e6f90d5e1fa87a62035348925e8",
+    "worker": "2423b88e8b68a7e98fd1624988e1a0285e03c5d42077933bc6be338b6d832b5c",
+    "publisher": "cf678016540093fb08158f84de371931e39810d3aa0d6aa29914af1d1e86f1fa",
+    "reader": "237d83026e262ef166f67d7bb358a6c5d5f992c72251465cf0420870d0ec0bd6",
+    "event_reader": "aeb0834dd58aeb7ac6117c7f2767e49c2934e1f19374343165019d6aacf5d57b",
+    "publication_tests": {
+      "path": "/out/build/target/release/deps/bigbrotr_archive_worker-463fbc6bc6e7a4f3",
+      "sha256": "7fa5fdc2b914709755f826c6cef383a6f3497f87660ba7850cd00e9bb0c72920"
+    }
+  },
+  "implementation": [
+    "Hold four directory descriptors before creating descendants. Exclusively create mode0600 output and retain its original descriptor through native COPY with USE_TMP_FILE false.",
+    "Require same nonempty regular single-link inode. Synchronize original file then attempt/table/main/root directories before native registration; abort on first error without retrying fsync.",
+    "Retain completed files after failure and refuse attempt reuse. All scientific families and receipt still enter one fenced native transaction. Five application descriptors coexist per file; no full-file checksum pass or new dependency/schema.",
+    "Operator owns stable namespace and durable provisioning of the root and its own parent entry. Existing archives are not retroactively certified."
+  ],
+  "upstream": {
+    "duckdb_commit": "d8cdaa33fd",
+    "paths": [
+      "src/planner/binder/statement/bind_copy.cpp",
+      "src/execution/physical_plan/plan_copy_to_file.cpp",
+      "src/execution/operator/persistent/physical_copy_to_file.cpp",
+      "extension/parquet/parquet_writer.cpp",
+      "src/common/serializer/buffered_file_writer.cpp",
+      "src/common/local_file_system.cpp"
+    ],
+    "official_sources": [
+      "https://raw.githubusercontent.com/duckdb/duckdb/d8cdaa33fd/src/planner/binder/statement/bind_copy.cpp",
+      "https://raw.githubusercontent.com/duckdb/duckdb/d8cdaa33fd/src/common/serializer/buffered_file_writer.cpp",
+      "https://www.kernel.org/doc/html/v6.8/core-api/errseq.html"
+    ],
+    "consequence": "COPY normally replaces an existing local destination via temporary inode. Parquet Finalize/Close does not invoke the separate Sync method. Holding a descriptor before writes observes the earlier error-cursor boundary; reopening only after COPY can miss an already-observed writeback error."
+  },
+  "baseline": {
+    "source": "e1852b8819b657ca2ec919dab2feff3716225056",
+    "result": {
+      "path": ".research/implementation/archive-file-persistence/baseline/result.json",
+      "bytes": 3016,
+      "sha256": "62c3899b7d27c0ddec3721096b85b05cb8b9db6c4840aa68276c0c9afab6e5c5"
+    },
+    "trace": {
+      "path": ".research/implementation/archive-file-persistence/baseline/trace.log",
+      "bytes": 37034,
+      "sha256": "3e359d93296b8b2c6880ccf5e469037d6550d09e36f5a66fe14f80aadbd50782"
+    },
+    "prepared_files": 3,
+    "prepared_file_syncs": 0,
+    "native_test": "1PASS/0failed/0ignored",
+    "meaning": "Confirmed syscall gap despite actual successful publication/readback; no measured power-loss failure.",
+    "resource_result": "Single owned no-network container exited0/Pid0/noOOM;391 preexisting containers preserved. First collector compared unordered Docker mount arrays; sorted comparison and retained full terminal inventory close that collector-only failure."
+  },
+  "linux": {
+    "build": {
+      "path": ".research/implementation/archive-file-persistence/capture/collected/out/native-tests/result.json",
+      "bytes": 2801,
+      "sha256": "eae5adf800ede942e8e3c320aa7a7709ab83685385e657cf2d183f6e8e796920"
+    },
+    "checks": {
+      "path": ".research/implementation/archive-file-persistence/capture/collected/out/native-tests/checks/result.json",
+      "bytes": 4588,
+      "sha256": "20aa1ebf670097b3607d28b265b82d907f76d090252cc1443e1d1c6783b0038f"
+    },
+    "native_publication": {
+      "path": ".research/implementation/archive-file-persistence/capture/collected/out/native-tests/checks/native-publication.log",
+      "bytes": 1444,
+      "sha256": "769fe770a8ebde7024deb3e6d00ed11bb368f8db5652c58447f52dd72b3b835f"
+    },
+    "native_tests": {
+      "passed": 9,
+      "failed": 0,
+      "ignored": 1
+    },
+    "ignore_disposition": "Sync-fault fixture explicitly executed eight times below, each1PASS/0failed/0ignored; default ignore is not counted as success.",
+    "syscall_result": {
+      "path": ".research/implementation/archive-file-persistence/capture/collected/out/sync-cases/result.json",
+      "bytes": 19781,
+      "sha256": "77f61308463bd1fcac99c99f2110518196b4dcaa4459a7644422657861138001"
+    },
+    "syscall_cases": [
+      {
+        "name": "ordered-sync",
+        "status": "PASS",
+        "trace": {
+          "path": ".research/implementation/archive-file-persistence/capture/collected/out/sync-cases/ordered-sync.trace",
+          "bytes": 44159,
+          "sha256": "84d4364f757f496a320d5ecd99006c5da0c9bad0ad1cbaf94853223ada90a130"
+        },
+        "injected": null,
+        "retained_file_count": 0
+      },
+      {
+        "name": "file",
+        "status": "PASS",
+        "trace": {
+          "path": ".research/implementation/archive-file-persistence/capture/collected/out/sync-cases/file.trace",
+          "bytes": 11702,
+          "sha256": "bc1903b9808710c88f87fee7ee41c505c6e9f28660d9d0c1f159d4637318ef12"
+        },
+        "injected": [
+          [
+            "6687",
+            "fsync(9</out/sync-cases/file/objects/main/dictionaries/prepared-09090909090909090909090909090909/data.parquet>) = -1 EIO (Input/output error) (INJECTED)"
+          ]
+        ],
+        "retained_file_count": 1
+      },
+      {
+        "name": "attempt",
+        "status": "PASS",
+        "trace": {
+          "path": ".research/implementation/archive-file-persistence/capture/collected/out/sync-cases/attempt.trace",
+          "bytes": 9267,
+          "sha256": "584ca13df5279d61a3551c4d04a37e91d6e489d22b0383129cf80843ab317d23"
+        },
+        "injected": [
+          [
+            "6890",
+            "fsync(8</out/sync-cases/attempt/objects/main/dictionaries/prepared-09090909090909090909090909090909>) = -1 EIO (Input/output error) (INJECTED)"
+          ]
+        ],
+        "retained_file_count": 1
+      },
+      {
+        "name": "table",
+        "status": "PASS",
+        "trace": {
+          "path": ".research/implementation/archive-file-persistence/capture/collected/out/sync-cases/table.trace",
+          "bytes": 9265,
+          "sha256": "4c53ce82df92b46c611f547e43f59da97dd7fb28219dbb36e71f21d2b8f6282d"
+        },
+        "injected": [
+          [
+            "7093",
+            "fsync(7</out/sync-cases/table/objects/main/dictionaries>) = -1 EIO (Input/output error) (INJECTED)"
+          ]
+        ],
+        "retained_file_count": 1
+      },
+      {
+        "name": "main",
+        "status": "PASS",
+        "trace": {
+          "path": ".research/implementation/archive-file-persistence/capture/collected/out/sync-cases/main.trace",
+          "bytes": 9223,
+          "sha256": "e6480b596e643d637f0cc4bededaff324f7d60af2c5a4567a57614891b2cb437"
+        },
+        "injected": [
+          [
+            "7296",
+            "fsync(6</out/sync-cases/main/objects/main>) = -1 EIO (Input/output error) (INJECTED)"
+          ]
+        ],
+        "retained_file_count": 1
+      },
+      {
+        "name": "root",
+        "status": "PASS",
+        "trace": {
+          "path": ".research/implementation/archive-file-persistence/capture/collected/out/sync-cases/root.trace",
+          "bytes": 9208,
+          "sha256": "d1a7fed5054154d4ad81336502f008e5b2cee3cc9afa98ee5cd8d960ab4080ba"
+        },
+        "injected": [
+          [
+            "7499",
+            "fsync(5</out/sync-cases/root/objects>) = -1 EIO (Input/output error) (INJECTED)"
+          ]
+        ],
+        "retained_file_count": 1
+      },
+      {
+        "name": "receipt",
+        "status": "PASS",
+        "trace": {
+          "path": ".research/implementation/archive-file-persistence/capture/collected/out/sync-cases/receipt.trace",
+          "bytes": 11816,
+          "sha256": "e36c8334915c9e541ff445d9b4e01fe02394c422c2d7153b105dcac34e8b017f"
+        },
+        "injected": [
+          [
+            "7702",
+            "fsync(9</out/sync-cases/receipt/objects/main/archive_commits/prepared-09090909090909090909090909090909/data.parquet>) = -1 EIO (Input/output error) (INJECTED)"
+          ]
+        ],
+        "retained_file_count": 3
+      },
+      {
+        "name": "file-enospc",
+        "status": "PASS",
+        "trace": {
+          "path": ".research/implementation/archive-file-persistence/capture/collected/out/sync-cases/file-enospc.trace",
+          "bytes": 11843,
+          "sha256": "2391bb31649a9fd4ae2f6dc6b5dc12dad43f3f66d84dbe92a2d09b99bd3ec975"
+        },
+        "injected": [
+          [
+            "7905",
+            "fsync(9</out/sync-cases/file-enospc/objects/main/dictionaries/prepared-09090909090909090909090909090909/data.parquet>) = -1 ENOSPC (No space left on device) (INJECTED)"
+          ]
+        ],
+        "retained_file_count": 1
+      },
+      {
+        "name": "receipt-enospc",
+        "status": "PASS",
+        "trace": {
+          "path": ".research/implementation/archive-file-persistence/capture/collected/out/sync-cases/receipt-enospc.trace",
+          "bytes": 11957,
+          "sha256": "159da398371984c23d512808dd993ed039f0ea7b94d143414b55b5ba1fc35d1e"
+        },
+        "injected": [
+          [
+            "8108",
+            "fsync(9</out/sync-cases/receipt-enospc/objects/main/archive_commits/prepared-09090909090909090909090909090909/data.parquet>) = -1 ENOSPC (No space left on device) (INJECTED)"
+          ]
+        ],
+        "retained_file_count": 3
+      }
+    ],
+    "syscall_claim": "Positive: original descriptor retained, file plus four directory fsyncs finish before first native read/registration for all3files. Faults: exactly1selected injected syscall, expected retained prefix, PreparedFiles refusal, zero committed scientific/receipt rows and ducklake_data_file references, same-attempt retry refused with unchanged completed bytes.",
+    "fault_readback_limit": "Footer counts and byte-stable retained files do not establish full semantic readback after EIO. Actual signed full-family verification is the separate connected matrix.",
+    "connected_result": {
+      "path": ".research/implementation/archive-file-persistence/capture/collected/event-cases.json",
+      "bytes": 2924925,
+      "sha256": "4d8cff0e97dd017291d6d02feba6119f90ad50fa421bc60648827c3a9b1859f3"
+    },
+    "connected_cases": 31,
+    "connected_claim": "Actual signed Rocks admission, guarded publication, installed native binding and full signed reads including2MiB and exact historical snapshot; limits, malformed identities, missing/corrupt files, unavailablePG, actual cancellation/deadline, identical restored retry and3PG SIGQUIT/restarts.",
+    "fixtures": {
+      "normal": {
+        "metadata_unchanged": true,
+        "files": 8,
+        "file_hashes_unchanged": true,
+        "restart": {
+          "before": "2026-09-20 03:11:18.113929+00",
+          "after": "2026-09-20 03:14:34.417268+00",
+          "signal": "SIGQUIT"
+        }
+      },
+      "large": {
+        "metadata_unchanged": true,
+        "files": 8,
+        "file_hashes_unchanged": true,
+        "restart": {
+          "before": "2026-09-20 03:14:34.417268+00",
+          "after": "2026-09-20 03:14:49.794925+00",
+          "signal": "SIGQUIT"
+        }
+      },
+      "history": {
+        "metadata_unchanged": true,
+        "files": 11,
+        "file_hashes_unchanged": true,
+        "restart": {
+          "before": "2026-09-20 03:14:49.794925+00",
+          "after": "2026-09-20 03:15:07.655138+00",
+          "signal": "SIGQUIT"
+        }
+      }
+    }
+  },
+  "oracle": {
+    "executed_harness_sha256": "7f765d313e2c2c19b56c9613ba8115acbfd8d7c2e166c7039f9d5d733ed8f445",
+    "final_harness": {
+      "path": "experiments/archive-engine/publication_sync_cases.py",
+      "bytes": 9477,
+      "sha256": "5dddea2ee12181d83ae3ae1bf5886f4dca4cc1d5a10e053a5d8e024f78b1d0eb"
+    },
+    "offline_trace_verification": {
+      "path": ".research/implementation/archive-file-persistence/offline-oracle.json",
+      "bytes": 505,
+      "sha256": "b146fa4f5d6b5b2769fd9737a6b2818683991e42c55ef26a523d41d20aaae88d"
+    },
+    "offline_command": "python3 -B .research/implementation/archive-file-persistence/verify_capture.py",
+    "offline_verifier": {
+      "path": ".research/implementation/archive-file-persistence/verify_capture.py",
+      "bytes": 2041,
+      "sha256": "1c0b4adb9988a403e057e1d239ec0cffb857f994200b0e2ad9f885c2ce4a912b"
+    },
+    "difference": "Linux executes exact b9ddd74. Subsequent oracle-only correction matches closes by FD across all threads without requiring unchanged pathname; corrected local oracle rechecks the unchanged captured trace. No product-source or Tux checkout edits.",
+    "negative_controls": "Reject read entry before final directory sync completion even if open returns later; reject close by another TID; reject same close with (deleted) pathname annotation. One positive and3negative controls executed.",
+    "signed_harness": {
+      "path": "experiments/archive-engine/event_cases.py",
+      "bytes": 16692,
+      "sha256": "79a477abef6385c0cbd358170064f59f11c9b4b038a3e759886823854aeb4a14"
+    },
+    "signed_oracle": {
+      "path": "experiments/archive-engine/signed_publication_oracle.py",
+      "bytes": 16086,
+      "sha256": "368c6757670447a33ca3d9798356f025c11bd27901f9bfa828bc872b95b4dd43"
+    },
+    "signed_fixture": {
+      "path": "experiments/identity-contract/signed-fixture.json",
+      "bytes": 58802,
+      "sha256": "4c931ab34cb7adeb707fc2866f4a50b3ec8b694cbb2d4fb5e335f8f37a2d8875"
+    },
+    "prior_discriminator": {
+      "source": {
+        "path": ".research/implementation/archive-file-persistence/oracle_red.py",
+        "bytes": 1288,
+        "sha256": "92ddbcfe15b2945a93eb124b2aa76f2ebda24f2e9caf71c949809b361db9bdde"
+      },
+      "log": {
+        "path": ".research/implementation/archive-file-persistence/mac-oracle-red.log",
+        "bytes": 105,
+        "sha256": "35e63ef0cbfd1a7773d71cb3b3403817196353728ba90ee42174d1d7938d0522"
+      },
+      "result": "Exact b9ddd74 oracle accepts cross-thread close with (deleted) path; corrected oracle refuses the identical trace."
+    }
+  },
+  "mac": {
+    "environment": "Apple Silicon macOS/Rust1.98.1/pinned native bundle; development snapshots",
+    "results": "Native COPY identity discriminator1PASS; publication8PASS; additional replaced/aliased identity1PASS; worker lib/tests Clippy PASS; trace oracle1positive/3negative PASS.",
+    "logs": [
+      {
+        "path": ".research/implementation/archive-file-persistence/mac-copy-identity.log",
+        "bytes": 535,
+        "sha256": "de1760335c3ffe0fed3d600e127ed5fb287578c59886789bae58d476c6dd24f5"
+      },
+      {
+        "path": ".research/implementation/archive-file-persistence/mac-publication.log",
+        "bytes": 1229,
+        "sha256": "8bcf9d3fc376c725536e26365d3807b8413e930d711bbd8216155a01b16c3030"
+      },
+      {
+        "path": ".research/implementation/archive-file-persistence/mac-identity-refusals.log",
+        "bytes": 522,
+        "sha256": "00968a50122f44d3bbb6c4556d8fcb23b0baa3e6ebf62adfc774beae21b795f0"
+      },
+      {
+        "path": ".research/implementation/archive-file-persistence/mac-clippy.log",
+        "bytes": 699,
+        "sha256": "cf33553470a004e56974a970963f17a04d4d56d108d4650f392efb3c4b607239"
+      },
+      {
+        "path": ".research/implementation/archive-file-persistence/mac-oracle.log",
+        "bytes": 67,
+        "sha256": "c870ee20c1b77bc8eb09f46e737ab33de4ece4a496ea129a9d4a8fb658472686"
+      }
+    ]
+  },
+  "review": {
+    "kind": "Independent read-only AI and integrating owner review",
+    "findings": [
+      "Exact injected path/errno and retained-file prefix added; footer-only counts explicitly scoped.",
+      "Trace oracle preserves syscall entry/completion and checks original FD across all native TIDs, including renamed/deleted annotation."
+    ],
+    "boundary": "Product publication/owned helpers and harness inspected; no product defect found within stable operator namespace. Independent reviewer did not execute engines.",
+    "evidence_review": "Independent read-only AI verified880source files against b9ddd747,58captured files/tar and37report references; rechecked9traces with corrected oracle and1positive/3negative controls, explicit8fault invocations and native9PASS/1ignored, artifacts,31request hashes/outcomes, complete normal/history rows/inputs/outcomes/Rocks and large signed event, snapshot4/3,8/8/11file hashes and3restarts. Recomputed preservation392containers from full inventories. No concrete discrepancy; no engine execution or source edits."
+  },
+  "resources": {
+    "audit": {
+      "path": ".research/implementation/archive-file-persistence/capture/collected/terminal-audit.json",
+      "bytes": 10240,
+      "sha256": "0e42c2cbb5d940c18305b31c5fe2f805bbdaea28ac68903019b37f1598f2c97f"
+    },
+    "identities": {
+      "path": ".research/implementation/archive-file-persistence/capture/collected/resources.json",
+      "bytes": 1276,
+      "sha256": "87aea63cedf7a005e7c2f5bdd316282291bb57d1016658fc6ffea560fb5e217e"
+    },
+    "terminal_inventory": {
+      "path": ".research/implementation/archive-file-persistence/capture/collected/terminal-inventory.json",
+      "bytes": 721649,
+      "sha256": "380a1b4f2c296130ac420b15866ac20f6648343dc2108af06e98da5e0bd947b8"
+    },
+    "capture": {
+      "path": ".research/implementation/archive-file-persistence/capture/evidence-identity.json",
+      "bytes": 9063,
+      "sha256": "553fb7432fa543ead34101a9ea9e683b3ef89c5213681f413b679af4564a8430"
+    },
+    "capture_sha256": "92b2148a238e0d1c2ad242709ad015f74cee8e78ef164225349cb3d69af44a97",
+    "capture_files": 58,
+    "remaining_pg_clients": [],
+    "preexisting_preserved": 392,
+    "unrelated_running": 8,
+    "bigbrotr_running": 0,
+    "state": "stopped-retained",
+    "network_state": "removed after owner/no-endpoint audit; containers and data retained",
+    "collector_exit_codes": {
+      "/bigbrotr-implementation-archive-sync-b9ddd74": 143,
+      "/bigbrotr-implementation-archive-sync-b9ddd74-pg": 137
+    },
+    "exit_meaning": "Deliberate sleeping-runner/PG-wrapper shutdown143/137, Pid0/noOOM; not test-process failures.",
+    "preservation_evidence": "Full sanitized terminal container inventory retained and compared independently against preflight, including lifecycle, mounts, networks and restart policy."
+  },
+  "remaining": [
+    "Injected EIO/ENOSPC replaces syscall results; it is not actual device writeback error, disk exhaustion or host/power-loss simulation.",
+    "Qualified catalog/filesystem/device failure class and root provisioning remain required before protected frontier or pending reclamation; no capacity/RSS/mixed-workload or Linux arm64 claim.",
+    "Complete contiguous admission prefixes for every topology stream including0, same-cut dictionary/reference closure, real Archive owner/frontier and immutable native snapshot pin with reclamation exclusion.",
+    "Installed current principal/action/scope/policy through output, first-acquisition metadata, standalone export and complete selected product."
+  ]
+}

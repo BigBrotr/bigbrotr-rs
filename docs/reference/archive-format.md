@@ -228,7 +228,7 @@ delivery.
 
 ## Local prepared file persistence
 
-The current candidate holds each exclusively created output file open before
+The publisher holds each exclusively created output file open before
 native COPY and requires `USE_TMP_FILE false`, so COPY writes that inode instead
 of replacing it through a temporary. After regular-file, device/inode and single-link
 checks, it synchronizes the original descriptor and the held attempt/table/main/root
@@ -244,6 +244,11 @@ make a descriptor held across the write preferable to reopening after native clo
 A completed COPY and matching bytes still do not prove a failure class. The root's
 own parent entry must already be durable, and qualified catalog/filesystem/device
 behavior plus reference closure remain prerequisites for protection/reclamation.
-Mac native identity/publication tests pass; exact-revision Linux sync-error and
-connected qualification are pending. Existing archives are not retroactively
-certified by this change.
+[Native qualification](../implementation/evidence/p02-archive-file-sync-native-20260920.json)
+at `b9ddd74` passes nine syscall cases, nine native tests and31 connected signed
+PG cases. The eight injected faults explicitly execute the default ignored test.
+Each refuses publication and attempt reuse while retaining completed files. The
+positive trace verifies file/directory sync completion before native read/registration.
+Injection validates application error handling, not actual device writeback or
+power loss. Mac native identity/publication tests and scoped Clippy also pass.
+Existing archives are not retroactively certified by this change.

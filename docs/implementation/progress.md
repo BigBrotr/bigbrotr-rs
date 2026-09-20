@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-09-20 on Mac; the latest owned Tux lab is stopped and collected.
+Observed 2026-09-20 on Mac; the owned Tux file-sync lab is stopped and collected.
 Navigation only: follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint)
 and verify Git, dirty files, evidence and actual resources.
 
@@ -12,26 +12,60 @@ runner billing exception. Preserve private bigbrotr-rs, unpublished Cargo packag
 and the read-only Go neighbor. No public release or Linux arm64 claim. No P02/P03
 or P06 task or M1 milestone is complete; all selected later work remains required.
 
-Current boundary: closing exact native snapshot selection, then P02-T04 step8
-file/catalog protection feeding the positive P02-T04/T07 frontier/pin bridge for M1.
+Current boundary: closing P02-T04 step8 local file-sync qualification, then the
+positive P02-T04/T07 frontier/pin bridge for M1.
 Existing task files own the backlog. No task checkbox closes from this prerequisite.
 
 ## Git and ownership
 
-Local main and private origin/main are equal at
-5e4046fd02c4f4bb27c613372a80f086d0631e11 after ordinary push. Snapshot product and
-evidence are published. Root owns new dirty publication.rs/publication_tests.rs,
-native_initialization.py, publication_sync_cases.py and their owning docs/inventory.
-No parallel writer, merge or rebase. Independent AI review is read-only.
+Git anchor inspected before this evidence/checkpoint commit: local main is
+qualified candidate b9ddd74782738e7a2c49f32b188cc244a653e736; private origin/main
+was5e4046fd02c4f4bb27c613372a80f086d0631e11. This commit contains final FD-only
+trace-oracle correction, qualification report and owning docs/inventory. Product
+sources are unchanged after native qualification. Ordinary push is authorized;
+verify actual HEAD/origin on resumption. No parallel writer/merge/rebase.
+Independent AI evidence review is complete without concrete discrepancy:880source
+files,58captures,37report references,9traces,31connected cases and392preserved
+containers agree. Scoped artifact/handoff checks pass; no additional engine run
+is justified solely by the oracle/documentation change.
 
 Separate compatibility worktree .research/worktrees/producer-closing-old-writer
-remains at publishedf899896b1207f5e71c4e39d9ab7814b293814735 on
+remains at published f899896b1207f5e71c4e39d9ab7814b293814735 on
 research/producer-closing-old-writer; preserve it. Build caches are not source
-authority. All execution sessions are joined; no active experiment or cleanup debt. The Mac
-COPY identity and replaced/aliased identity regressions pass, as do8 native
-publication tests. Logs are under .research/implementation/archive-file-persistence.
-The new ignored sync-fault fixture requires explicit Linux strace execution; it
-has not run and is not counted PASS.
+authority. All execution sessions are joined; no active experiment or cleanup debt.
+
+## Executed local file-persistence boundary
+
+[File-sync evidence](evidence/p02-archive-file-sync-native-20260920.json) binds
+b9ddd74/tree1418aeb7b67e28e7bf5766a52e1aef3159bfeb7a and the exact880-file Git
+export, actual binaries and pinned native engines. Linux amd64/Rust1.98.1/PG16.15
+passes9 native publication tests and scoped Clippy. The default ignored fault
+fixture executes explicitly8times: six EIO positions (file,attempt,table,main,root,
+receipt) and file/receipt ENOSPC. All see the one exact injected error, zero
+committed rows/file references, expected retained-file prefix and byte-stable
+refused same-attempt retry. Footer counts are not full semantic readback.
+
+The positive syscall trace verifies original held FD and file/four directory
+sync completion before first native read for3files. Independent review required
+entry/completion positions, all-thread closes and changed pathname annotations.
+The final FD-only oracle is a local post-candidate correction: it rechecks the
+unchanged captured trace and one positive/three discriminating negative fixtures.
+No Tux source edit or product rebuild occurred for this oracle-only change.
+
+31 actual signed PG cases also pass, with independent full family rows, retained
+inputs/outcomes and Rocks identity. They include2MiB body, current/exact historical
+snapshot, missing/corrupt objects, limits, unavailable PG, cancellation/deadline,
+restored retries and3actual PG SIGQUIT/restarts. All8/8/11native file hashes and
+catalog metadata remain unchanged. No device writeback, real disk exhaustion,
+host/power-loss, mixed-load/RSS/capacity or arm64 claim.
+
+Publisher retains original FD before COPY, uses USE_TMP_FILE false, requires
+same regular nonempty single-link inode, syncs it and held attempt/table/main/root
+before registration, and aborts without sync retries on any error. Five bounded
+application FDs; no full-file checksum pass or schema change. Root and its parent
+entry require durable operator provisioning. Existing archives are not retroactively
+certified. No source protection/reclamation or task closure follows from this slice.
+
 
 ## Executed snapshot boundary
 
@@ -76,56 +110,40 @@ No prior failure is relabeled PASS by this new qualification.
 
 ## Owned lab and evidence
 
-Latest lab /home/tux/bigbrotr-implementation-20260917/runs/archive-snapshot-e1852b8,
-owner1e37c1e3a953a2a0ff75f2f3330f8d94; runner
-5b66f4070428281aa0bc245c001aa0e11d7c2272eed1779234a96db03e59b0f1 and PG
-9c5b10ceafa03d5a6bb08b05c7dc777be02bb124c47eee19413b0888417f0f6f are stopped/Pid0/noOOM.
-Collector143/137 exits are deliberate runner/PG-wrapper shutdown, not test failures.
-Only the empty owned network9648e39a455226133f2e42a671b22125ef9e097b4543819de330344d8af58112
-was removed; containers/data retained. No PG clients remained;389 preexisting
-containers were preserved,8 unrelated running and0 BigBrotr running. Preservation
-is supported by executed collector assertions/preflight, not independently
-recomputable from unretained final unrelated-container observations.
+Latest lab /home/tux/bigbrotr-implementation-20260917/runs/archive-sync-b9ddd74,
+owner8ecc03c3fd0b48f27f7956a6af2bf701. Runner
+f19e76c95d800585399a457dbb3f52ed2b90fb6bcbc78615f683e649ab14fd30 and PG
+119797b8ae7ae0075b290973e7c3b9e638e41795efd3631f241f2c4705d97a81 are
+stopped/Pid0/noOOM. Collector143/137 are deliberate shutdown exits. Only the
+empty owned networke111bb641df9002909d4b1bd320b2b77d7789e82d19775e84ab0c0e231db272b
+was removed; containers/data retained. No PG clients remained;392 preexisting
+containers preserved,8 unrelated running,0BigBrotr. Complete sanitized terminal
+inventory is retained and independently compared with preflight.
 
-Ignored .research/implementation/archive-snapshot/capture contains51 verified files,
-tarSHA33dd24a24a8298a6cfffeddac16a3f76eac469b2e041f4c87e67a2914330bb24.
-Launch/transfer/collector sources and Mac logs are in the parent ignored directory.
-[Inventory](../research/laboratory-inventory.json) archive_snapshot entry owns exact
-images, limits and lifecycle. Prior archive-event-730daa2/3f29952 labs remain stopped,
-retained, networks removed. Never rerun finite initialization over any of these roots.
+Ignored .research/implementation/archive-file-persistence/capture contains58
+verified files, tarSHA92b2148a238e0d1c2ad242709ad015f74cee8e78ef164225349cb3d69af44a97.
+Launch/transfer/collector, Mac logs and offline oracle check are in its parent.
+[Inventory](../research/laboratory-inventory.json) file_sync_candidate owns identities.
+Prior snapshot e1852b8 and all older finite labs remain stopped/retained; their
+reports own the evidence. Never rerun initialization over these roots.
 
 ## Next bounded action and open gates
 
-Mac native checks and complete diff review have passed for the local candidate.
-The trace oracle now retains syscall entry/completion positions and checks closes
-across all native TIDs; one positive and two discriminating negative controls pass.
-Commit the file-persistence candidate unpublished and run exact Git on a fresh Tux lab. Execute the9 explicit
-syscall cases (one full ordering trace, six EIO positions and file/receipt ENOSPC),
-plus31 actual signed PG consumer cases. The harness must see exactly the selected
-injected path/error and the expected retained-file prefix; footer counts alone
-are not full semantic readback. Then collect/stop and review evidence before push.
+Commit/push the reviewed file-sync qualification, then implement the bounded
+native batch-membership observer feeding the complete frontier/pin bridge below:
+compare retained complete source IDs/digests and required family/file membership
+in one exact native snapshot, with independent missing/duplicate/wrong-file and
+resource controls. Preserve actual protection-class/root-provisioning gates and
+reference closure before any frontier or reclamation authority is published.
 
-Exact e1852b8 baseline in file-sync-baseline-e1852b8 confirms0 prepared-file syncs
-for3 actual scientific/receipt files despite successful native publication/readback.
-Its single owned containerabdc3154fb504ca8710fa118d435b2b424c9647eb5ea14507519afb5da9459b2,
-owner90c65f57a72a27d52ba757ceca185c3c, exited0/Pid0/noOOM; no network or PG was created.
-391 preexisting containers preserved,8 unrelated running/0BigBrotr. Raw source,
-trace, preflight and complete terminal inventory are retained under
-.research/implementation/archive-file-persistence/baseline. First collector failed
-because it compared unordered Docker mount arrays; sorted comparison verifies
-identical mount contents and all lifecycle/network state. No engine rerun occurred.
-
-Upstream DuckDB d8cdaa33fd confirms native close lacks sync and COPY on an existing
-file normally replaces its inode. Candidate holds file before COPY, selects
-USE_TMP_FILE false, checks same regular/single-link inode, then syncs original
-file and held attempt/table/main/root descriptors before registration. Mac actual
-COPY demonstrates default inode replacement versus direct retention. Existing
-main/table modes stay compatible. No new migration or scientific encoding. Root
-parent entry provisioning, actual device writeback errors, power loss and catalog
-persistence remain unqualified; injected fsync errors are application-boundary
-validation only. Independent review found no product defect; the runner identifies
-each fault and exact file prefix, and reports footer counts/byte stability with
-their actual narrower meaning. No source protection or reclamation is authorized.
+The exact e1852b8 baseline in file-sync-baseline-e1852b8 confirms0prepared-file
+syncs for3actual scientific/receipt files despite successful native readback. Its
+single owned containerabdc3154fb504ca8710fa118d435b2b424c9647eb5ea14507519afb5da9459b2,
+owner90c65f57a72a27d52ba757ceca185c3c, exited0/Pid0/noOOM; no network/PG created.
+391 preexisting containers preserved. First collector failed only on unordered
+Docker mount array comparison; sorted comparison/full retained terminal inventory
+close it. Baseline evidence is linked from the file-sync report; no power-loss
+failure was measured.
 
 Implement the complete P02-T04/T07 frontier bridge: verified committed batches
 -> contiguous complete prefix for every topology stream (including zero) -> real
@@ -138,6 +156,20 @@ frontier is not. References must resolve inside the SAME cut: a dictionary visib
 in the native snapshot but above another stream's bound cannot certify closure.
 Preserve exclusion of reclamation across native observation and the PG binding/pin;
 a lost PG response resolves the identical immutable snapshot/cut identity.
+
+New source inspection for this bridge: DuckLake d8a1881e22516ea3d186d73e83c65fe5bd1a1dc4
+src/functions/ducklake_list_files.cpp (complete107lines) calls GetFilesForTable
+without predicates and materializes every file during binding. A SQL LIMIT on
+that function does not bound native metadata work. Select and qualify an actual
+bounded membership path; do not assume the function is an incremental file lookup.
+Official list_files documentation identifies its snapshot parameters; exact source
+owns this allocation finding. The clean retained checkout
+.research/checkouts/ducklake-s3-review matches that revision; GetFilesForTable
+was read completely at1587–1743. GetVirtualColumns at390–403 exposes filename
+and snapshot_id, so bounded source-membership queries are a candidate to qualify
+in the actual engine; predicate pushdown and aged-catalog cost are not yet measured.
+No frontier implementation or measured large-catalog limit follows yet. Existing pre-sync archives also have no persisted proof that
+the new path created them; they cannot be retroactively certified by this binary.
 
 Independent read-only follow-on design review found existing snapshot_leases and
 retention_claims require a sealed consumer_frontier_revision; current publication
