@@ -159,8 +159,10 @@ is an explicit resource. An ID lookup is not an archive-policy bypass.
   retention or authorization lease.
   The private event-ID lookup now resolves eligibility in one exact qualified
   scope and both facts inside explicit source bounds at the retained native
-  snapshot, with parent membership/signature checks. Practical qualification is
-  pending. It does not certify the caller's topology or supply live action/scope
+  snapshot, with parent membership/signature checks. [Native qualification](evidence/p02-archive-event-query-native-20260920.json)
+  at `eceab88` passes 41 connected cases, 11 native tests, 56 parent tests and the
+  explicitly executed native-holder test; Mac 11 native/2 protocol/1 parent tests
+  and Clippy pass. It does not certify the caller's topology or supply live action/scope
   authorization, scanned-byte admission or public missing/unavailable semantics;
   those remain required by steps2/4/5 and P06-T01.
 - [ ] **Step 4:** distinguish temporarily unavailable, corrupt, absent and

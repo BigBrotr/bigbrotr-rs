@@ -1,0 +1,603 @@
+{
+  "format": "bigbrotr-archive-event-query-evidence/1",
+  "status": "PASS",
+  "scope": "P02-T04 / P06-T02 private event-ID lookup within explicit scope/source bounds; not live authentication, certified query admission, complete P06/M1 or release qualification",
+  "source": {
+    "revision": "eceab88b31a318203b0a104e4f0c02e48c0bf8b0",
+    "tree": "06a71bb804022f9a67761df28017cad20f75c491",
+    "files": 924,
+    "archive_sha256": "3732de9fcbb62b62059c1489796370920ffe7783a153bcd7a5152fa23d92ad23",
+    "manifest": {
+      "path": ".research/implementation/archive-event-query/capture/out/build/source-manifest.json",
+      "bytes": 114390,
+      "sha256": "7350ed6b9ba712af7aeca7ccad457a355f2ff102c3679ccb9da4b751abc3e766"
+    },
+    "clean_unchanged": true,
+    "verified_against_mac_git_archive": true,
+    "lock_sha256": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215"
+  },
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "host": {
+      "kernel": "Linux 6.12.101+deb13-amd64 x86_64 GNU/Linux",
+      "filesystem": "/dev/nvme0n1p2 ext4 rw,relatime,errors=remount-ro"
+    },
+    "limits": "Runner2CPU/6GiB/512PIDs;PG1CPU/1GiB/128PIDs;internal network/no host ports;readonly source/root;no release credentials",
+    "engines": {
+      "path": "contracts/release/archive-engine.json",
+      "bytes": 8159,
+      "sha256": "ae0069565ab9411928df0cf067822630c4f3a912919e61633b952f8077a5e2c1"
+    },
+    "dependencies": {
+      "path": "contracts/release/dependencies.json",
+      "bytes": 16208,
+      "sha256": "9bea8c27908c680afc63ec9b74c481ea522c2b7a32232ab4dbca82b1920d7dd0"
+    },
+    "toolchain": {
+      "path": ".research/implementation/archive-event-query/capture/out/native-tests/ready.json",
+      "bytes": 5446,
+      "sha256": "eea3780bab0001dc606cb49fd315a1a26764eccda5e7cc187c46db41635fff57"
+    }
+  },
+  "artifacts": {
+    "control": "a3d8a652599032b85e0905c3e5e1f04622cba65d297400c8109c7e1d3496b35f",
+    "worker": "eee1335bdf03b521778b06cacd39c5623abae491fde3d4b14a9f20e0b31bbf78",
+    "publisher": "cc0bdeb148347e9ba0707fb9497fc231e68eec3725494c10f730668d159d1975",
+    "reader": "7703e4b23ad8a020eb0d76d3f7ff6255314943c9b17c13c3cee94cafc04e7b4c",
+    "event_reader": "b48cd9afd696964c68b48a59a378c1496066129ffcf32c6ae5e2e4ce7d141b1a"
+  },
+  "implementation": [
+    "Private EventQuery carries dataset, ID, complete qualified scope, ordered explicit source bounds/topology and mandatory native snapshot; no FactRefs are required from the caller.",
+    "One native transaction selects the exact-scope eligibility before shared payload; both references must be within the explicit cut. Empty/zero/omitted streams do not inherit records. Both full schema1 facts, canonical digests, body identity and original scope signature are verified.",
+    "Exactly one logical reference per lookup; two independently valid alternatives refuse. Full hydration still selects by source identity without digest filtering, detecting conflicting source duplicates.",
+    "The parent checks both returned source references, snapshot, event ID and signature; existing allocation/custody survives until the body drops. Same supervised private process carries bounded input/output, memory, deadline and cancellation.",
+    "Existing exact-reference reads remain supported. No migration, persistent scientific encoding or advertised public capability changes."
+  ],
+  "oracle": {
+    "harness": {
+      "path": "experiments/archive-engine/event_cases.py",
+      "bytes": 30221,
+      "sha256": "f1774425aa6a64b2775ceb32ed23aa04affb0faebf8cd959443b25576c0e93ce"
+    },
+    "independent": {
+      "path": "experiments/archive-engine/signed_publication_oracle.py",
+      "bytes": 16215,
+      "sha256": "7ad4381bdc691d45245232d7cbdebeed039c6de0c182bcdc193b3479678917a4"
+    },
+    "signed": {
+      "path": "experiments/identity-contract/signed-fixture.json",
+      "bytes": 58802,
+      "sha256": "4c931ab34cb7adeb707fc2866f4a50b3ec8b694cbb2d4fb5e335f8f37a2d8875"
+    },
+    "large": {
+      "path": "tests/fixtures/protocol/archive-event-response.json",
+      "bytes": 962,
+      "sha256": "815bf9e7e0fbcda73a77fbc3f91bebe0ec5c5f356e01bd665f695a8edb5af963"
+    },
+    "authority": "Trusted fixture retains its complete scientific files. Source bounds/topology are caller declarations; no principal grant or current read-policy authority follows.",
+    "discriminators": [
+      "Literal payload source7 and eligibility8: prefixes0/6/7 refuse,8/10 return the exact independently signed event; foreign epoch/shard and absent stream refuse, unrelated zero stream does not alter output.",
+      "Actual catalog head4 still yields exact snapshot3 before/after PG crash. Old, missing and out-of-domain snapshots do not fall back to latest.",
+      "Native tests cover full unsigned source/time extrema, shared payload storage scope different from eligibility, separate valid signatures, same ordinal across different allocation domains, missing scope before corrupt payload, multistream/zero cuts and valid logical duplicates whose exact references each hydrate successfully."
+    ]
+  },
+  "linux": {
+    "build": {
+      "path": ".research/implementation/archive-event-query/capture/out/native-tests/result.json",
+      "bytes": 2800,
+      "sha256": "ea373240c384b64607ac573dff60e0f966dbd6cab3e1bb69590420503ef64129"
+    },
+    "checks": {
+      "path": ".research/implementation/archive-event-query/capture/out/native-tests/checks/result.json",
+      "bytes": 4952,
+      "sha256": "a3e58910413996415897485db8446979848686dc1646c6926478ecbc871b022b"
+    },
+    "native_tests": {
+      "passed": 11,
+      "failed": 0,
+      "ignored": 0
+    },
+    "parent_tests": {
+      "passed": 56,
+      "failed": 0,
+      "ignored": 1
+    },
+    "explicit_native_holder": {
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "artifact": {
+        "path": "/home/tux/bigbrotr-implementation-20260917/runs/archive-event-query-eceab88/out/build/target/release/deps/bigbrotr-925eca4e1ec86f86",
+        "sha256": "e4bb793fe6001c59d5006497774abbfa51610fb05a69e506602a6685c6226017"
+      },
+      "worker": "eee1335bdf03b521778b06cacd39c5623abae491fde3d4b14a9f20e0b31bbf78",
+      "execution": {
+        "path": ".research/implementation/archive-event-query/holder/native-holder.log",
+        "bytes": 231,
+        "sha256": "2bdc8d8f9f657fa7fa92429684da3b8bc4bbccc1f87e62004ebe67b94e1501f5"
+      },
+      "initial_inventory": {
+        "path": ".research/implementation/archive-event-query/holder/result.json",
+        "bytes": 2227,
+        "sha256": "7622c9ebf32203cf7072f0a4688877348841304988e7228c475c66632aaed245"
+      },
+      "audit": {
+        "path": ".research/implementation/archive-event-query/holder/reconciled-audit.json",
+        "bytes": 3107,
+        "sha256": "cabcea3633ecbc3356a6d53a4d254c324f5d3545c4862650c13e0bd84aecea92"
+      },
+      "scope": "Actual packaged worker alone retains exclusion while blocked on stdin after parent coordinator descriptors close; positive reap releases grants. Existing LocalAttempt custody test, not query-specific parent-death qualification."
+    },
+    "ignore_disposition": "The one default ignored native-holder test was executed explicitly against the same packaged worker in a separate fresh no-network container; no required skip is counted PASS.",
+    "connected_command": "python3 -B source/experiments/archive-engine/event_cases.py <owned-root> --query-lookup",
+    "connected_cases": [
+      {
+        "name": "normal-captured-cut",
+        "status": "PASS"
+      },
+      {
+        "name": "normal-complete",
+        "status": "PASS",
+        "elapsed_ms": 421,
+        "outcome": "observed",
+        "active_permits": 0,
+        "snapshot_id": "3"
+      },
+      {
+        "name": "prefix-0",
+        "status": "PASS",
+        "elapsed_ms": 389,
+        "outcome": "refused",
+        "active_permits": 0,
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "name": "prefix-6",
+        "status": "PASS",
+        "elapsed_ms": 419,
+        "outcome": "refused",
+        "active_permits": 0,
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "name": "prefix-7",
+        "status": "PASS",
+        "elapsed_ms": 415,
+        "outcome": "refused",
+        "active_permits": 0,
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "name": "prefix-8",
+        "status": "PASS",
+        "elapsed_ms": 415,
+        "outcome": "observed",
+        "active_permits": 0,
+        "snapshot_id": "3"
+      },
+      {
+        "name": "prefix-10",
+        "status": "PASS",
+        "elapsed_ms": 399,
+        "outcome": "observed",
+        "active_permits": 0,
+        "snapshot_id": "3"
+      },
+      {
+        "name": "missing-stream",
+        "status": "PASS",
+        "elapsed_ms": 379,
+        "outcome": "refused",
+        "active_permits": 0,
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "name": "foreign-epoch",
+        "status": "PASS",
+        "elapsed_ms": 415,
+        "outcome": "refused",
+        "active_permits": 0,
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "name": "foreign-shard",
+        "status": "PASS",
+        "elapsed_ms": 401,
+        "outcome": "refused",
+        "active_permits": 0,
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "name": "unrelated-zero",
+        "status": "PASS",
+        "elapsed_ms": 425,
+        "outcome": "observed",
+        "active_permits": 0,
+        "snapshot_id": "3"
+      },
+      {
+        "name": "snapshot-0",
+        "status": "PASS",
+        "elapsed_ms": 401,
+        "outcome": "refused",
+        "active_permits": 0,
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "name": "snapshot-1",
+        "status": "PASS",
+        "elapsed_ms": 406,
+        "outcome": "refused",
+        "active_permits": 0,
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "name": "snapshot-2",
+        "status": "PASS",
+        "elapsed_ms": 406,
+        "outcome": "refused",
+        "active_permits": 0,
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "name": "snapshot-4",
+        "status": "PASS",
+        "elapsed_ms": 412,
+        "outcome": "refused",
+        "active_permits": 0,
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "name": "snapshot-9223372036854775807",
+        "status": "PASS",
+        "elapsed_ms": 413,
+        "outcome": "refused",
+        "active_permits": 0,
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "name": "snapshot-9223372036854775808",
+        "status": "PASS",
+        "elapsed_ms": 6,
+        "outcome": "refused",
+        "active_permits": 0,
+        "refusal": "Input(InvalidInput)"
+      },
+      {
+        "name": "snapshot-18446744073709551615",
+        "status": "PASS",
+        "elapsed_ms": 7,
+        "outcome": "refused",
+        "active_permits": 0,
+        "refusal": "Input(InvalidInput)"
+      },
+      {
+        "name": "snapshot-exact",
+        "status": "PASS",
+        "elapsed_ms": 364,
+        "outcome": "observed",
+        "active_permits": 0,
+        "snapshot_id": "3"
+      },
+      {
+        "name": "scope",
+        "status": "PASS",
+        "elapsed_ms": 383,
+        "outcome": "refused",
+        "active_permits": 0,
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "name": "event-id",
+        "status": "PASS",
+        "elapsed_ms": 397,
+        "outcome": "refused",
+        "active_permits": 0,
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "name": "missing",
+        "status": "PASS",
+        "elapsed_ms": 412,
+        "outcome": "refused",
+        "active_permits": 0,
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "name": "row-limit",
+        "status": "PASS",
+        "elapsed_ms": 407,
+        "outcome": "refused",
+        "active_permits": 0,
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "name": "zero-limit",
+        "status": "PASS",
+        "elapsed_ms": 6,
+        "outcome": "refused",
+        "active_permits": 0,
+        "refusal": "Input(ResourceLimit)"
+      },
+      {
+        "name": "wrong-catalog",
+        "status": "PASS",
+        "elapsed_ms": 0,
+        "outcome": "refused",
+        "active_permits": 0,
+        "refusal": "Preparation(Custody(Identity))"
+      },
+      {
+        "name": "unavailable-database",
+        "status": "PASS",
+        "elapsed_ms": 347,
+        "outcome": "refused",
+        "active_permits": 0,
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "name": "missing-file",
+        "status": "PASS",
+        "elapsed_ms": 354,
+        "outcome": "refused",
+        "active_permits": 0,
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "name": "missing-file-restored",
+        "status": "PASS",
+        "elapsed_ms": 417,
+        "outcome": "observed",
+        "active_permits": 0,
+        "snapshot_id": "3"
+      },
+      {
+        "name": "corrupt-footer",
+        "status": "PASS",
+        "elapsed_ms": 376,
+        "outcome": "refused",
+        "active_permits": 0,
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "name": "corrupt-footer-restored",
+        "status": "PASS",
+        "elapsed_ms": 424,
+        "outcome": "observed",
+        "active_permits": 0,
+        "snapshot_id": "3"
+      },
+      {
+        "name": "cancel-blocked",
+        "status": "PASS",
+        "elapsed_ms": 345,
+        "outcome": "refused",
+        "active_permits": 0,
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "name": "cancel-blocked-retry",
+        "status": "PASS",
+        "elapsed_ms": 429,
+        "outcome": "observed",
+        "active_permits": 0,
+        "snapshot_id": "3"
+      },
+      {
+        "name": "deadline-blocked",
+        "status": "PASS",
+        "elapsed_ms": 6006,
+        "outcome": "refused",
+        "active_permits": 0,
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "name": "deadline-blocked-retry",
+        "status": "PASS",
+        "elapsed_ms": 417,
+        "outcome": "observed",
+        "active_permits": 0,
+        "snapshot_id": "3"
+      },
+      {
+        "name": "normal-pg-restarted",
+        "status": "PASS",
+        "elapsed_ms": 365,
+        "outcome": "observed",
+        "active_permits": 0,
+        "snapshot_id": "3"
+      },
+      {
+        "name": "large-complete",
+        "status": "PASS",
+        "elapsed_ms": 421,
+        "outcome": "observed",
+        "active_permits": 0,
+        "snapshot_id": "3"
+      },
+      {
+        "name": "large-pg-restarted",
+        "status": "PASS",
+        "elapsed_ms": 439,
+        "outcome": "observed",
+        "active_permits": 0,
+        "snapshot_id": "3"
+      },
+      {
+        "name": "history-captured-cut",
+        "status": "PASS"
+      },
+      {
+        "name": "history-complete",
+        "status": "PASS",
+        "elapsed_ms": 398,
+        "outcome": "observed",
+        "active_permits": 0,
+        "snapshot_id": "4"
+      },
+      {
+        "name": "history-exact-previous",
+        "status": "PASS",
+        "elapsed_ms": 403,
+        "outcome": "observed",
+        "active_permits": 0,
+        "snapshot_id": "3"
+      },
+      {
+        "name": "history-pg-restarted",
+        "status": "PASS",
+        "elapsed_ms": 410,
+        "outcome": "observed",
+        "active_permits": 0,
+        "snapshot_id": "3"
+      }
+    ],
+    "complete_capture": {
+      "path": ".research/implementation/archive-event-query/capture/query-cases.json",
+      "bytes": 2955845,
+      "sha256": "772b5f58087d792072acec934ed8a5801e838cb86d1ac3c24355b867fc397d51"
+    },
+    "case_counts": {
+      "connected_total": 41,
+      "event_query_processes": 39,
+      "certified_cut_journeys": 2
+    }
+  },
+  "observations": {
+    "fixtures": {
+      "normal": {
+        "metadata_unchanged": true,
+        "files": 8,
+        "all_file_hashes_unchanged": true,
+        "restart": {
+          "before": "2026-09-20 09:21:22.173313+00",
+          "after": "2026-09-20 09:24:58.155859+00",
+          "signal": "SIGQUIT"
+        }
+      },
+      "large": {
+        "metadata_unchanged": true,
+        "files": 8,
+        "all_file_hashes_unchanged": true,
+        "restart": {
+          "before": "2026-09-20 09:24:58.155859+00",
+          "after": "2026-09-20 09:25:13.927576+00",
+          "signal": "SIGQUIT"
+        }
+      },
+      "history": {
+        "metadata_unchanged": true,
+        "files": 11,
+        "all_file_hashes_unchanged": true,
+        "restart": {
+          "before": "2026-09-20 09:25:13.927576+00",
+          "after": "2026-09-20 09:25:33.565084+00",
+          "signal": "SIGQUIT"
+        }
+      }
+    },
+    "cancelled_blocked_total_ms": 345,
+    "deadline_ms": 6000,
+    "deadline_return_ms": 6006,
+    "qualification": "Actual identified PG relation blockers, post-read zero permits and PG backend disappearance before retry. Three SIGQUIT postmaster restarts with fresh processes and unchanged metadata/file hashes. Elapsed includes startup, not cancellation-marker latency. No capacity, RSS, mixed/aged workload or universal latency claim."
+  },
+  "mac": {
+    "environment": "Apple Silicon macOS,Rust1.98.1,pinned native bundle; reviewed product inputs match eceab88, checkpoint/inventory may be dirty",
+    "red": "Missing EventQuery/lookup API compile failure; not a runtime counterexample",
+    "red_capture": {
+      "path": ".research/implementation/archive-event-query/red/result.json",
+      "bytes": 689,
+      "sha256": "124bc9c04112ac755957a95655b5a1693a05e555a1c75cf7c290ecc4ed8b675f"
+    },
+    "native_tests": 11,
+    "protocol_tests": 2,
+    "parent_tests": 1,
+    "checks": {
+      "path": ".research/implementation/archive-event-query/reviewed/result.json",
+      "bytes": 1711,
+      "sha256": "d80b144dca0d826b8d4f763315200bbea04d17dda1666d37193454f69a0f30f1"
+    },
+    "logs": [
+      {
+        "path": ".research/implementation/archive-event-query/reviewed/clippy.log",
+        "bytes": 432,
+        "sha256": "8c53484ce19f765404296341f670721680f1edf36e6be108827dcc0a2c4f1d73"
+      },
+      {
+        "path": ".research/implementation/archive-event-query/reviewed/native-events.log",
+        "bytes": 1802,
+        "sha256": "e296cd860b955af629e9581d3b821011eaf0959f6497fa08788f7e52efbba5d0"
+      },
+      {
+        "path": ".research/implementation/archive-event-query/reviewed/parent-events.log",
+        "bytes": 614,
+        "sha256": "22fd99cc6414223bbe21ddf08c6fce22b55dd7b8e93f8d22e652df45ea6ee19d"
+      },
+      {
+        "path": ".research/implementation/archive-event-query/reviewed/protocol-query.log",
+        "bytes": 1480,
+        "sha256": "91905c91b4443f66e29f59b139ec932ccc79540a5be13e7989594e6413e0e3c1"
+      }
+    ]
+  },
+  "review": {
+    "kind": "Independent read-only AI plus integrating owner code/oracle review",
+    "corrections": [
+      "Rebuilt duplicate facts with correct digests and proved both exact alternatives individually readable before asserting query ambiguity.",
+      "Added same-ordinal/different-allocation-domain representatives and missing-scope/corrupt-body ordering discriminator."
+    ],
+    "boundary": "Reviewer ran no engines. Topology certification, live action/scope grants and scan admission remain caller responsibilities; parent still maps native failures including Missing to ObservationUnknown."
+  },
+  "resources": {
+    "audit": {
+      "path": ".research/implementation/archive-event-query/capture/terminal-audit.json",
+      "bytes": 10391,
+      "sha256": "8de1ae43676429191cd4624ff08112abd96c8780d9b198fcee217de460c4dc8a"
+    },
+    "identities": {
+      "path": ".research/implementation/archive-event-query/capture/resources.json",
+      "bytes": 1343,
+      "sha256": "49c6e6fc3abaac7d9d15902a3d97d01b03cc3335de2498a5f2c438c2a984d237"
+    },
+    "capture": {
+      "path": ".research/implementation/archive-event-query/evidence-identity.json",
+      "bytes": 2835,
+      "sha256": "d15a4dc05b3132594b582b29dc7fa66e78f4c4b30e77c1e764945dcfb0f57c59"
+    },
+    "capture_sha256": "e16a91c279e51cbf6d3710efa226ecbc0a5712a66614ed657cc870d060ae2de7",
+    "capture_files": 18,
+    "offline_verification": {
+      "path": ".research/implementation/archive-event-query/offline-verification.json",
+      "bytes": 210,
+      "sha256": "7480e3a87e278adef454ea47730a8efabc563f27036a5983402025a166b48e90"
+    },
+    "preexisting_preserved": 411,
+    "remaining_pg_clients": [],
+    "state": "main two containers stopped/PID0/no OOM; owned empty network removed; data retained",
+    "holder_capture": {
+      "path": ".research/implementation/archive-event-query/holder-identity.json",
+      "bytes": 801,
+      "sha256": "f0282bd478cd0b45c7e9930a09bc76586aaf02c9ec3b7e60e41058228a460d73"
+    },
+    "holder_preexisting_preserved": 413,
+    "holder_state": "additional no-network container exited0/PID0/no OOM; retained",
+    "unrelated_running": 8,
+    "bigbrotr_running": 0,
+    "collector_correction": "Supplemental holder collector initially failed comparing rolling health logs and unordered Docker Mounts. Original INCOMPLETE result and failed log remain retained. A read-only reconciliation compares mounts by destination and preserves lifecycle/image/networks plus health status/failing streak. Three unrelated health statuses stay healthy with zero failing streak. No engine rerun, product change or resource mutation repaired the audit.",
+    "initial_holder_collector_log": {
+      "path": ".research/implementation/archive-event-query/native-holder.log",
+      "bytes": 302,
+      "sha256": "c3ec85a02c61011e44f7e27adfef332c3d8eed40b0dd5ddeefb188322d2c84e3"
+    }
+  },
+  "remaining": [
+    "Bind actual query inputs to a certified retained pin/frontier and fresh principal/action/scope authority through real output; explicit history grants remain separate from data.read and export.",
+    "Implement public typed missing/unavailable/corrupt/resource outcomes and scanned-byte admission. LIMIT2 bounds results, not scan cost; current private native reservations do not qualify the shared public64MiB profile.",
+    "Complete restrictive security-change applied barrier, output revocation/drain, export, authenticated/public surfaces, M1 and all selected product tasks.",
+    "Query-specific parent death, mixed/aged load, actual reclamation under active queries, host/power-loss, installed/release journey and Linux arm64 remain unqualified."
+  ]
+}

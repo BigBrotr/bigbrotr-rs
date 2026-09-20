@@ -1,7 +1,7 @@
 # Current execution checkpoint
 
-Observed 2026-09-20 on Mac after native snapshot-pin recovery and owned lab cleanup.
-Navigation only: follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint)
+Observed 2026-09-20 on Mac after native event-ID query qualification and owned
+lab cleanup. Navigation only: follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint)
 and verify Git, dirty files, evidence and resources before continuing.
 
 ## Mandate and active boundary
@@ -12,188 +12,168 @@ exception. Preserve private bigbrotr-rs, unpublished Cargo packages and read-onl
 Go neighbor. No public release, rename or Linux arm64 claim. No P02/P03/P06 task
 or M1 milestone is complete; all selected later product work remains required.
 
-Active boundary: P02-T04/T07 -> actual bounded authenticated event/export/restart.
-Native cut/frontier, original pin retention and explicit excluded-reader recovery
-now have scoped qualification. They grant no principal/action authorization, source
-ACK or GC permission. Existing task files own the backlog; do not create another
-plan or another diagnostic command instead of the real read consumer.
+Active boundary: P02-T04/T07 -> P06-T01/T02 and P08-T02 actual bounded
+authenticated event/export/restart. Native cut/frontier, original pin retention,
+explicit excluded-reader recovery and private event-ID selection now have scoped
+qualification. They grant no principal/action authorization, source ACK or GC
+permission. Existing task files own the backlog; do not create another plan or
+another diagnostic command instead of the real read consumer.
 
 ## Git and ownership
 
-Local main and private origin/main are verified at pushed
-`8f3c3c744710904fd9a4a1bd19440c4b301d1ddf`. Product recovery candidate is
-`51d35aea1c44a0a884ed9595114de7da89a83ebd`, tree
-`80c50e15d3d49013474e23f923badd988e84f68d`; schema oraclec0674ae and claim-negative
-oracle0b7609f do not change production. Working tree was clean after push. Root's
-next unpublished exact-source candidate contains the private event query protocol,
-native lookup, parent adapter and connected fixture. Qualification is pending.
-No parallel writer, merge or rebase. Independent AI review is read-only and runs
-no engines; catalog_guard_review is investigating the grant/activation boundary.
+Local main contains unpublished product candidate
+`eceab88b31a318203b0a104e4f0c02e48c0bf8b0`, tree
+`06a71bb804022f9a67761df28017cad20f75c491`; private origin/main was verified at
+`8f3c3c744710904fd9a4a1bd19440c4b301d1ddf` before this qualification. Candidate
+was clean when transferred through Git; Tux exported924 hashed files. Root's
+subsequent edits are the scoped evidence, task/reference documentation, this
+checkpoint and laboratory inventory, to be reviewed/committed/pushed next.
+No parallel writer, merge or rebase. Independent read-only query review finished;
+no reviewer engine execution. No local or remote build/test remains active.
 
 Preserve `.research/worktrees/producer-closing-old-writer`, last verified clean at
 `f899896b1207f5e71c4e39d9ab7814b293814735` on
 `research/producer-closing-old-writer`, and other historical worktrees.
-Caches are never source authority. A focused Mac native event/protocol/parent/Clippy
-run is active under `.research/implementation/archive-event-query/integrated`:11
-native event cases,2 protocol tests and1 parent test PASS; Clippy is compiling
-the native dependency graph. Subsequent review strengthened the duplicate oracle
-(two individually valid exact reads), same-ordinal/different-domain scopes and
-missing scope before corrupt body. Those fixture updates still require execution.
-No remote test/build remains active.
-Applied migrations0017 and0018 must not be rewritten.
+Caches are never source authority. Applied migrations0017/0018 must not be rewritten.
 
 ## Executed current boundary
 
-[Recovery evidence](evidence/p02-archive-pin-recovery-native-20260920.json) binds
-clean919-file source51d35ae, locked dependencies and actual native artifacts.
-Linux amd64, Rust1.98.1, PG16.15 fsync/full_page_writes and pinned Archive package:
+[Event query evidence](evidence/p02-archive-event-query-native-20260920.json) binds
+clean924-file sourceeceab88, locked dependencies and actual native artifacts.
+Linux amd64 Rust1.98.1/PG16.15 fsync/full_page_writes/pinned Archive package:
 
-- Mac16 custody/16 schema tests and consumer Clippy; Linux native build,16 custody/
-  16 schema tests and Clippy PASS. Custody restriction survives rewrap and actual
-  retained drivers. The initial missing-method RED is compile failure evidence,
-  not a runtime counterexample.
-- Two full signed cut journeys;14 native recovery cases PASS. Populated17->18
-  preserves original pin/lease/claim values and xmin. Installed checksums match.
-- Actual event reader blocks on an identified PG relation holder and inherits
-  the exact FLOCK descriptor. Recovery refuses Occupied before Control claim.
-  After the blocker releases, the full signed event is returned at snapshot3,
-  permits drop to zero and later recovery succeeds.
-- Fresh recovery-only wrapper and actual drivers exclude ordinary startup until
-  both join. Lease1->2 and positive source claim[1,10] release atomically with
-  separate current-Control attribution; original issuer remains unchanged.
-  Literal independently SQL-backed receipts and full row/xmin comparisons agree.
-- Lost COMMIT before forwarding leaves no release; retry completes it. Loss after
-  server completion leaves the full effect; retry resolves it without rewrite.
-  Identified manager backend exits during held COMMIT; committed release survives
-  but postcommit capture verification returns Unavailable, then retry resolves it.
-- Eleven SQL recovery cases atc0674ae cover same-holder refusal, incomplete/wrong
-  binding/revision/missing lease, immutability/TRUNCATE, duplicate release, rollback
-  and empty-cut closure after scheduling expiry under an actual fenced backend.
-  Unrelated pin402 and original bindings/xmin stay unchanged. Separate16->18
-  preserves legacy NULL lease/xmin and refuses its explicit recovery/adoption.
-- At0b7609f the proxy deliberately omits the actual positive claim release UPDATE.
-  COMMIT reaches PG and fails23514 with the exact incomplete-recovery message:
-  one injection, one selected COMMIT, zero successful server/client completions.
-  All four ledgers remain unchanged. One active original obligation is retained
-  intentionally in stopped lab data; expiry never releases it implicitly.
+- Private EventQuery needs ID, dataset, complete qualified scope, ordered explicit
+  source bounds/topology and exact native snapshot. It selects scope eligibility
+  before shared payload; both references are inside the cut. Full fact digests,
+  body ID and original scope signature verify in one transaction. Parent checks
+  both references/snapshot/signature, retaining allocation and actual custody.
+- Mac 11 native/2 protocol/1 parent tests and Clippy PASS. Linux build, 11 native
+  event tests, 56 parent tests and Clippy PASS. Initial RED was a missing-API
+  compile failure, not an executed runtime counterexample.
+- 41 connected cases PASS:39 actual query processes plus two signed cut journeys.
+  Literal payload7/eligibility8: prefixes0/6/7 refuse,8/10 succeed. Absent/foreign
+  streams refuse; unrelated zero prefix changes nothing. Wrong scope/ID/snapshot,
+  missing/corrupt files, reduced capacity and unavailable database refuse. Restored
+  files/adequate capacity retry successfully without changing stored data.
+- Actual identified PG blockers: cancellation returns after345ms total job time;
+  6000ms deadline returns at6006ms. Zero permits and PG backend disappearance are
+  observed before retries. Times include startup, not cancellation-marker latency.
+- Three actual SIGQUIT postmaster restarts preserve metadata and all8/8/11 Parquet
+  file hashes for normal/large/history fixtures. Latest4 still yields selected3.
+  No capacity, RSS, mixed/aged workload or universal latency claim.
+- Independent review strengthened the duplicate oracle: both alternatives now
+  have valid full facts and each exact reference hydrates; query ambiguity refuses.
+  Same-ordinal/different-allocation-domain signatures and missing scope before
+  corrupt payload also pass on actual native engines.
+- The one default ignored native-holder case was explicitly executed against the
+  same packaged worker in a separate fresh no-network container:1 PASS/0 ignored.
+  It proves the existing LocalAttempt worker-only FD lifetime, not query-specific
+  parent death. The supplemental collector failed on changing health logs and
+  unordered Docker mount output. Original INCOMPLETE result/failed log remain;
+  separate read-only reconciliation verifies all413 preexisting lifecycle/image/
+  mount/network states and unchanged healthy/zero-failing-streak statuses. No
+  engine rerun or resource mutation repaired that audit.
 
-Native metadata/eight Parquet files are unchanged across the14-case recovery
-matrix. No capacity/general latency claim. Source review strengthened actual
-manager exclusion, literal receipt checks and unchanged prior attribution. It also
-found that a proxy cleanup exception could skip report saving; the final harness
-records cleanup/stop errors and polls backend disappearance for at most5s. That
-exceptional cleanup path was not engine-exercised; executed negative remains0b7609f.
-An initial uncommitted Python missing bracket was fixed before any engine run.
-
-Root offline verification checks all21 capture hashes,919 production source hashes
-against a Mac Git archive, unchanged production in extra fixture revisions and
-all409 preexisting container states. No failure was converted into PASS by cleanup.
+Root offline verification checked all18 main capture hashes,924 source hashes
+against Mac Git archive, unchanged411 preexisting containers, and five supplemental
+holder files/413 preexisting lifecycle records. Main capture SHA256:
+`e16a91c279e51cbf6d3710efa226ecbc0a5712a66614ed657cc870d060ae2de7`.
 
 ## Resources
 
-All BigBrotr labs stopped/retained; no cleanup debt or active jobs. Latest inventory:
-`implementation_archive_worker_20260918.pin_recovery_candidate` in the
+All BigBrotr labs stopped/retained; no active jobs or cleanup debt. Current
+`implementation_archive_worker_20260918.event_query_candidate` is recorded in the
 [laboratory inventory](../research/laboratory-inventory.json).
 
-- Root `/home/tux/bigbrotr-implementation-20260917/runs/archive-pin-recovery-51d35ae`;
-  owner `633d0b140f8327d8bdbf1df6fb961a99`.
-- Runner `dadc77d3d27b092ea75883647a3f4b614143c9ee485d384334f4fa75fd01d64d`;
-  PG `1b4bc1d246973a59d576971ad7fbdb4eae21fcc3cf57fe2f84faa2c0c1b0363a`.
-- Both stopped/PID0/no OOM; zero PG clients before stop. All409 preexisting
-  containers preserved, eight unrelated workloads running. Only empty owned
-  network removed; sources, artifacts, retained obligations and data preserved.
-- Raw `.research/implementation/archive-pin-recovery/`; terminal
-  `capture/resources.json` supersedes initial local `resources.json`.
-  Capture SHA256 `bf7c99a402d9d88f1eaa02b001c0172c91652136a3438234e075aa0d7977e98d`.
+- Root `/home/tux/bigbrotr-implementation-20260917/runs/archive-event-query-eceab88`;
+  owner `ab6f975f80f8e277da3edcd1ac78c1b7`. Runner
+  `00e71dbfe00a03ce0a6ba2826c8b7183a8d2bcab0b95ee80b2a579ff6039e745`, PG
+  `563f4e8c6e63d97753352cccb6ab71704aaee060d9cfccbd2594e322baff6775` stopped/PID0/noOOM;
+  zero PG clients before stop. Owned empty network removed; data retained.
+- Supplemental root appends `-holder`; owner `7505ecef41097cf7b0547fef93e43448`,
+  container `bebbf82ab2eb163de9ba8f977c83772f23da66adcb16a400a0ffa741bbc2b760`
+  exited0/PID0/noOOM. Network none, no PG/no new volumes. Eight unrelated workloads
+  remain running. Old labs remain retained under their reports/inventory.
+- Raw `.research/implementation/archive-event-query/` contains source bundle,
+  launch/transfer/collector scripts, Mac red/green/integrated/reviewed checks,
+  main capture/identity/offline verification and separate holder evidence. Original
+  local resources.json is stale running state; capture/resources.json is terminal.
 
-Runner2CPU/6GiB/512PIDs, PG1CPU/1GiB/128PIDs, internal network/no host ports,
-read-only trusted production source/root, no release credentials. Earlier pin-ledger
-27150f2, historical-capturea670f03 and reader-custody5ba3051 labs remain stopped and
-retained under their reports/inventory. Never restart a used output root.
+Main runner2CPU/6GiB/512PIDs, PG1CPU/1GiB/128PIDs, internal network/no host ports,
+readonly trusted production source/root, no release credentials. Supplemental
+holder2CPU/1GiB/64PIDs, readonly artifact mounts and256MiB scratch. Do not restart
+used test output roots or treat caches as source. Native recovery51d35ae retains
+one deliberately active original pin obligation after the negative COMMIT case.
 
 ## Next bounded product action
 
-Next execute the reviewed Mac checks and a fresh exact-Git Tux `--archive-event`
-build followed by `event_cases.py ROOT --query-lookup`; retain raw results and
-verify owned cleanup before qualification. Then connect the native pin and
-explicit recovery to the actual bounded authenticated event/export consumer.
-Current focused reading includes complete authentication.rs, policy_authority.rs,
-control_owner.rs, serve.rs, activation.rs, configuration.rs, access/self_inspection,
-0801/0802/0805, private-administration and read-view contract; P06-T01/T02/T03
-and P08-T02 task sections. Remaining native selection/output/auth callers and
-linked identity/scope contracts need their bounded reads before edits. No new
-public behavior is advertised after the recovery qualification. The private
-event-ID lookup now selects eligibility in an explicit scope/cut, then the shared
-body, re-verifies full facts/signature in the same exact native snapshot, and
-returns internal references for the parent to recheck. Its initial native Mac
-RED was a missing-API compile failure; the first actual lookup test passes, while
-expanded native/protocol/parent tests pass before the final review fixture
-strengthening; Clippy is running. The existing event probe/harness now selects
-query mode with no caller-supplied FactRefs; its real-PG journey has not run yet. It is not principal
-authorization or a scanned-byte guarantee; those are still required before public
-use. AccountObservation is historical
-inspection, not reusable authentication. Its snapshot ends before Argon2: require
-fresh active principal/credential revision/grant revision/action/scope afterward.
-Initial owner grants include data.read but omit explicit history/export: add an
-explicit audited grant transition,
-not a backfill or implicit administrator read authority. Control poll_policy alone
-cannot observe credential/grant revocation. The next design choice is the narrow
-explicit history grant/update consumer and its pending/applied restrictive-change
-barrier. Existing0802 only represents first zero-participant activation, and0805
-allows seven initial actions. Any new action/schema is additive; do not infer
-history permission from data.read or promote AccountObservation. A read-only
-independent review found no requirement to bump global policy for pure grant
-addition. Doing so would stop the initial producer at its immutable registration
-epoch (initial_batch.rs preflight), requiring an explicit handoff. Select an
-audited, reauthenticated additive grant with monotonic account revision and
-fresh consumer authorization; restrictions still need pending/applied authority
-loss plus bounded drain for affected work. grant_revision is not currently a
-live authority generation. No grant schema/implementation or native evidence
-exists yet. The read-only reviewer found no concrete product bypass and proposed the
-three stronger fixtures above. The parent currently conservatively maps native
-Missing to ObservationUnknown; public typed refusal semantics remain required.
+Review the final report/doc diff and hash references, commit the evidence and push
+coherently. Then connect private selection and actual pin to authenticated history
+and export consumers. Do not treat this lookup or an AccountObservation as access
+capability. The query's topology is caller-declared, so derive bounds/snapshot/
+topology together from the certified retained pin. Public typed missing/unavailable/
+corrupt/resource outcomes remain required: current native Missing becomes parent
+ObservationUnknown. LIMIT2 bounds result count, not scanned bytes; implement the
+selected scan admission before public use. Existing native reservations do not
+qualify the shared public64MiB memory profile.
 
-EventRead verifies native snapshot/references but not SourceCut or principal scope;
-caller checks both FactRefs against its pin cut and permitted scope. Preserve local
-custody -> native catalog barrier -> short Control transaction order. Retain actual
-transports through join. Move blocking native work with its whole coordinator into
-supervised work: LocalCoordinator is Send, not Sync. LifecycleOutput's4096-byte
-post-cleanup diagnostics cannot carry served data; delivery must be bounded,
-interruptible and retain authorization/custody until output ends. No unsafe Sync,
-implicit read grants from historical retries, or expiry-based claim release.
+Focused owning reading already covered authentication.rs, credentials.rs,
+policy_authority.rs, control_owner.rs, serve.rs, activation.rs, configuration.rs,
+access/self_inspection,0801/0802/0805, private-administration/read-view contracts,
+P06-T01/T02/T03 and P08-T02 sections, full event protocol/native/parent/probe/harness.
+The next HTTP consumer's selected adapter is axum0.8.9/Hyper1/Tower0.5 from
+`docs/research/dependency-selections.md`; only its selected-set and HTTP sections
+were read for this next boundary (a whole-file read was truncated). Follow the
+linked exact official source/API evidence before adding dependencies/listeners.
+No HTTP/session/grant change exists yet.
 
-LocalPinRecovery is acquired only through a fresh flock and permanently restricts
-its owning LocalInitialization before exposing references/clones. It cannot be
-constructed from/to an ordinary coordinator; rewrap does not restore reader rights.
-Event/cut readers and pin registration refuse. Receipt/membership diagnostics are
-separate primitives, unused by recovery. Both actual recovery drivers must finish
-before ordinary startup reacquires custody and a new Control epoch. Qualified17
-pins can be recovered; NULL legacy obligations cannot. SQL records the recoverer
-separately, requires the released original issuer/exact local binding and atomically
-releases claims/lease. Scheduling expiry alone does not prevent closure under the
-actual fenced backend; it grants no new scheduling or delivery authority.
+Initial owner has data.read but no history/export grant. Add an explicit audited,
+reauthenticated additive history grant; never backfill or infer one from admin.
+0802 represents first activation only;0805 allows only seven initial actions.
+Any new action/schema is additive. Independent contract review found no requirement
+to bump global policy for a pure grant addition: doing so would stop the initial
+producer's immutable registration epoch (initial_batch.rs preflight), requiring
+explicit handoff. Use a monotonic account grant revision and fresh authorization;
+restrictions still require pending/applied authority loss plus bounded drain of
+affected work. grant_revision is not currently a live security generation.
 
-Typed renewal, permanent-blocker cancellation/join, legacy positive claims,
-multi-stream/zero mixtures, other purposes, actual concurrent compaction/reclamation,
-aged/mixed workloads and served read/export/restart remain required. No M1,
-ordinary install/release, host/power-loss or arm64 qualification.
+AccountObservation ends its SQL snapshot before Argon2 and is historical only.
+Fresh principal-active/credential revision/grant revision/action/scope checks are
+required after the bounded blocking hash. Control poll_policy alone sees no grant
+revocation. Bind any live lease to the actual principal/credential/action/scope/
+incarnation and current policy; response delay cannot extend its5s request-start
+validity. Previously admitted output cannot be relabeled with newer authority.
+LifecycleOutput's4096-byte post-cleanup diagnostics cannot carry served data;
+delivery must be bounded/interruptible and retain authority/custody until it ends.
 
-## Other preserved findings
+## Preserved storage and review boundaries
+
+[Recovery evidence](evidence/p02-archive-pin-recovery-native-20260920.json) at51d35ae
+qualifies14 native recovery cases, 11 SQL constraints plus legacy16->18, and the
+actual omitted-positive-claim COMMIT negative at0b7609f. Qualified17 pins have
+separate recoverer attribution; original bindings/xmin never change. NULL legacy
+leases cannot be adopted. LocalPinRecovery comes only from fresh flock and keeps
+its LocalInitialization recovery-only across rewrap. No conversion restores read
+rights. All actual transports must join before ordinary startup reacquires custody.
+Scheduling expiry alone does not prevent closure under the actual fenced backend;
+it grants no new read/scheduling authority. No implicit expiry/drop claim release.
 
 [Pin evidence](evidence/p02-archive-snapshot-pins-native-20260920.json) qualifies
-original registration/retry/release at27150f2 with22 fault cases and14 SQL constraints.
-[Historical capture](evidence/p02-archive-historical-capture-native-20260920.json)
-selects retained snapshot3 under head4. [Reader custody](evidence/p02-archive-reader-custody-native-20260920.json)
-at5ba3051 covers38 connected cases, native FD negative and PG crash/parent death.
-[Frontiers](evidence/p02-archive-frontier-native-20260920.json) are immutable exact
-native observations. These are prerequisites, not complete product qualification.
+registration/retry/release at27150f2. [Historical capture](evidence/p02-archive-historical-capture-native-20260920.json)
+selects retained3 under head4. [Reader custody](evidence/p02-archive-reader-custody-native-20260920.json)
+at5ba3051 includes actual inherited FD negative and PG crash/parent death.
+[Frontiers](evidence/p02-archive-frontier-native-20260920.json) bind immutable
+native observations. Preserve local custody -> catalog barrier -> short Control
+transaction ordering. LocalCoordinator is Send, not Sync: move the whole owner
+into supervised blocking work; no unsafe Sync. Retain all native/Control transports
+through join. Historical receipt retries grant no current authority.
 
-Strict WAL reopen cannot detect removal of a complete final record; missing PG
-rows/local reopen never establish negative noncommit resolution. Full receipt
-scan/native metadata materialization remains a finite tested small workload.
-Topology does not implicitly inherit omitted old epochs: preserve T1{old:N,new:0}
-before new:M. No omission SQL bug/fix is claimed; cross-epoch correction/reference
-closure and disjoint new data still need qualification.
+Strict WAL reopen cannot detect removal of a complete final record. Missing PG
+rows/local reopen never prove noncommit. Full receipt scan/native metadata work
+remains a finite small workload. Topology never implicitly inherits omitted epochs:
+preserve T1{old:N,new:0} before new:M. Cross-epoch correction/reference closure,
+permanent-blocker recovery drain, multistream pin mixtures, actual GC, aged/mixed
+load, installed authenticated read/export/restart and full release remain required.
 
 Monitor findings remain scoped closed with practical evidence:
 [MON001/002/004/006](evidence/p01-monitor-corrections-native-20260918.json),

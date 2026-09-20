@@ -15216,6 +15216,46 @@
       "terminal_audit": "terminal-audit.json",
       "evidence": "docs/implementation/evidence/p02-archive-pin-recovery-native-20260920.json",
       "observed": "Terminal owner audit: zero clients, both stopped/PID0/no OOM,409 preexisting containers unchanged,8 unrelated running; empty owned network removed. Data and one negative-case obligation retained."
+    },
+    "event_query_candidate": {
+      "source": "eceab88b31a318203b0a104e4f0c02e48c0bf8b0",
+      "tree": "06a71bb804022f9a67761df28017cad20f75c491",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-event-query-eceab88",
+      "owner": "ab6f975f80f8e277da3edcd1ac78c1b7",
+      "container": "bigbrotr-implementation-archive-event-query-eceab88",
+      "postgres": "bigbrotr-implementation-archive-event-query-eceab88-pg",
+      "network": "bigbrotr-implementation-archive-event-query-eceab88",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "state": "stopped-retained",
+      "source_files": 924,
+      "started_at": "2026-09-20T09:21:20.214730+00:00",
+      "network_id": "b01cc2770342f9287188821f847952ea14341ed2ac7baca7ae8c6ea4b5be3a09",
+      "postgres_id": "563f4e8c6e63d97753352cccb6ab71704aaee060d9cfccbd2594e322baff6775",
+      "catalog_manager_provisioned": true,
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "00e71dbfe00a03ce0a6ba2826c8b7183a8d2bcab0b95ee80b2a579ff6039e745",
+      "network_state": "removed after owner/no-endpoint audit; containers and data retained",
+      "terminal_audit": "terminal-audit.json",
+      "observed": "41 connected cases PASS; zero PG clients before stop; both stopped/PID0/no OOM; owned empty network removed;411 preexisting containers preserved and8 unrelated running. Data retained.",
+      "evidence": "docs/implementation/evidence/p02-archive-event-query-native-20260920.json",
+      "native_holder": {
+        "source": "eceab88b31a318203b0a104e4f0c02e48c0bf8b0",
+        "source_tree": "06a71bb804022f9a67761df28017cad20f75c491",
+        "owner": "7505ecef41097cf7b0547fef93e43448",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-event-query-eceab88-holder",
+        "container": "bigbrotr-implementation-event-query-holder-eceab88",
+        "container_id": "bebbf82ab2eb163de9ba8f977c83772f23da66adcb16a400a0ffa741bbc2b760",
+        "test_binary": {
+          "path": "/home/tux/bigbrotr-implementation-20260917/runs/archive-event-query-eceab88/out/build/target/release/deps/bigbrotr-925eca4e1ec86f86",
+          "sha256": "e4bb793fe6001c59d5006497774abbfa51610fb05a69e506602a6685c6226017"
+        },
+        "worker": "eee1335bdf03b521778b06cacd39c5623abae491fde3d4b14a9f20e0b31bbf78",
+        "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "state": "exited0-retained",
+        "observed": "Explicit ignored native holder PASS. Initial collector comparison failed on rolling Health logs/unordered Mounts. Separate read-only reconciliation preserves413 preexisting lifecycle/mount/network/image states;3 health states remain healthy. No running BigBrotr job.",
+        "evidence": ".research/implementation/archive-event-query/holder/reconciled-audit.json"
+      }
     }
   },
   "implementation_monitor_corrections_20260918": {

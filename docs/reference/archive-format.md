@@ -250,7 +250,15 @@ The P06 scan admission, public typed missing/unavailable distinctions and live
 authorization consumer are still required: worker failure currently reaches the
 parent as `ObservationUnknown`, never as a global absence certificate. No SQL
 migration, persistent row format or public resource is introduced by this private
-parent/worker change. Its practical qualification is pending.
+parent/worker change. [Native qualification](../implementation/evidence/p02-archive-event-query-native-20260920.json)
+at `eceab88` passes 41 connected cases (39 actual query processes and two signed
+cut journeys),11 native event tests, 56 parent tests plus the explicitly executed
+native-holder case. It covers bounded prefixes, unavailable/corrupt files,
+blocked cancellation/deadline, exact historical selection and three real PG crash
+restarts with unchanged metadata/files. Mac 11 native/2 protocol/1 parent tests and
+scoped Clippy also pass. The supplemental holder audit initially compared changing
+health logs/unordered mount output; its failed record and separate read-only
+reconciliation remain retained. No public authority or scan-capacity claim follows.
 
 
 ## Local prepared file persistence
