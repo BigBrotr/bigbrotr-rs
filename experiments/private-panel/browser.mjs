@@ -21,6 +21,26 @@ let context;
 let stage = 'launch';
 let foreign;
 let commandNumber = 0;
+let primaryPage;
+const observations = [];
+const observationWork = [];
+function observe(page) {
+  const append = (request, event, status) => {
+    const path = new URL(request.url()).pathname;
+    if (!path.startsWith('/management/')) return;
+    if (observations.length >= 128) { report.observationLimit = true; return; }
+    const entry = { path, method: request.method(), event, status };
+    observations.push(entry);
+    observationWork.push(request.allHeaders().then(headers => {
+      entry.origin = headers.origin === origin ? 'expected'
+        : headers.origin === 'null' ? 'null' : headers.origin === undefined ? 'missing' : 'foreign';
+      entry.contentType = ['application/json', 'text/plain'].includes(headers['content-type']) ? headers['content-type'] : 'other-or-missing';
+    }).catch(() => { entry.origin = 'unobserved'; }));
+  };
+  page.on('request', request => append(request, 'request'));
+  page.on('response', response => append(response.request(), 'response', response.status()));
+  page.on('requestfailed', request => append(request, 'failed'));
+}
 async function step(name, body) {
   stage = name;
   const start = performance.now();
@@ -48,6 +68,8 @@ try {
   report.executable = ({ chromium, firefox, webkit }[engine]).executablePath();
   context = await browser.newContext({ viewport: { width: 1280, height: 800 } });
   const page = await context.newPage();
+  primaryPage = page;
+  observe(page);
   // The default headless Chromium launch may use headless_shell rather than
   // executablePath(). Bind the actual native files in this private PID namespace.
   report.launchedExecutables = [];
@@ -136,6 +158,21 @@ try {
     });
     await new Promise(resolve => foreign.listen(0, '127.0.0.1', resolve));
     const other = await context.newPage();
+    observe(other);
+    if (engine === 'chromium') {
+      // CORS errors can omit CDP responseReceived (and Playwright Response).
+      // Observe only the selected wire status, never raw headers or body.
+      const cdp = await context.newCDPSession(other);
+      await cdp.send('Network.enable');
+      const requests = new Set();
+      report.foreignWireStatuses = [];
+      cdp.on('Network.requestWillBeSent', event => {
+        if (event.request.url === origin + '/management/v1/sessions' && event.request.method === 'POST') requests.add(event.requestId);
+      });
+      cdp.on('Network.responseReceivedExtraInfo', event => {
+        if (requests.has(event.requestId) && report.foreignWireStatuses.length < 8) report.foreignWireStatuses.push(event.statusCode);
+      });
+    }
     await other.goto(`http://127.0.0.1:${foreign.address().port}/`);
     assert.equal(hostCookies, true, 'host cookies are not port-isolated');
     const denied = other.waitForResponse(response => response.url() === origin + '/management/v1/sessions', { timeout: 5000 });
@@ -195,12 +232,23 @@ try {
     await expect(missing.locator('#startup-recovery')).toBeHidden();
     await missing.close();
   });
+  assert.equal(report.observationLimit, undefined, 'browser observation limit');
   report.status = 'PASS';
 } catch (error) {
   report.status = 'FAIL';
   // Call logs can contain filled credentials or headers. Keep only the stage
   // and exception class; SQL, wire data and arbitrary error text stay private.
   report.failure = { stage, kind: error?.constructor?.name ?? 'UnknownError' };
+  const location = String(error?.stack).match(/browser\.mjs:(\d+):(\d+)/);
+  if (location) report.failure.location = { line: Number(location[1]), column: Number(location[2]) };
+  if (primaryPage) {
+    try {
+      const notice = await primaryPage.locator('#session-notice').textContent({ timeout: 1000 });
+      report.failure.notice = ['at least 12', 'Sign-in was refused', 'browser request was refused', 'could not be confirmed'].find(text => notice?.includes(text)) ?? 'other';
+    } catch { report.failure.inspection = 'unavailable'; }
+    try { await primaryPage.screenshot({ path: join(home, 'failure.png'), fullPage: true, timeout: 3000 }); }
+    catch { report.failure.screenshot = 'unavailable'; }
+  }
 } finally {
   report.teardown = [];
   for (const [name, resource] of [['context', context], ['browser', browser]]) {
@@ -214,6 +262,8 @@ try {
     }
   }
   if (foreign) await new Promise(resolve => foreign.close(resolve));
+  await Promise.allSettled(observationWork);
+  report.http = observations;
   await writeFile(join(home, 'browser-report.json'), JSON.stringify(report, null, 2) + '\n', { flag: 'wx', mode: 0o600 });
   process.exitCode = report.status === 'PASS' ? 0 : 1;
 }

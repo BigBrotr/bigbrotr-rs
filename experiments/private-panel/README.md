@@ -36,6 +36,13 @@ Never reuse a case container after a failure. Retain failed output and collect
 the entire owned container, including on timeout. Independently inspect PostgreSQL
 durable state and unrelated host resources before calling the run qualified.
 
+Failure diagnostics retain bounded management method/path/status and classify
+Origin as expected/null/missing/foreign; they never retain header values or bodies.
+Chromium's selected cross-origin POST additionally records the CDP wire status:
+a CORS failure can suppress Playwright's normal Response event. That observation
+does not turn a timeout into a passed case. Failure locations and fixed notice
+categories distinguish denied requests from the fixture's own assertions.
+
 Browser versions come from the exact npm package's `browsers.json`: Chromium
 revision1243, Firefox1543 and WebKit2359. The pinned official Noble image provides
 their native dependencies and browser files, but does not supply the repository's

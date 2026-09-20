@@ -1,0 +1,764 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "tasks": [
+    "P08-T02",
+    "P09-T01",
+    "P09-T07"
+  ],
+  "status": "FAIL",
+  "source": {
+    "revision": "8c19aa996f92098790017fd7615133dc677a7fc2",
+    "tree": "938a4c89bc96f45d5e4da1b19f1daf7577527e21",
+    "clean": true,
+    "files_verified": 979
+  },
+  "prerequisites": {
+    "rust": {
+      "source": "8c19aa996f92098790017fd7615133dc677a7fc2",
+      "tree": "938a4c89bc96f45d5e4da1b19f1daf7577527e21",
+      "stage": "rust",
+      "cargo_lock": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+      "pnpm_lock": "70f6e67f3f968c9f55236f563994c04413cf679a58da3ebbd1ebcfb5d089d1a4",
+      "native_toolchain": {
+        "os": "Linux",
+        "architecture": "x86_64",
+        "discovery": "llvm-config",
+        "environment": {
+          "CC": "/usr/lib/llvm-14/bin/clang",
+          "CXX": "/usr/lib/llvm-14/bin/clang++",
+          "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+          "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+          "CARGO_BUILD_JOBS": "2",
+          "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+        },
+        "tools": {
+          "CC": {
+            "path": "/usr/lib/llvm-14/bin/clang",
+            "realpath": "/usr/lib/llvm-14/bin/clang",
+            "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+            "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+          },
+          "CXX": {
+            "path": "/usr/lib/llvm-14/bin/clang++",
+            "realpath": "/usr/lib/llvm-14/bin/clang",
+            "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+            "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+          },
+          "AR": {
+            "path": "/usr/lib/llvm-14/bin/llvm-ar",
+            "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+            "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+            "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+          },
+          "LIBCLANG_PATH": {
+            "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+            "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+            "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+            "version": "Debian clang version 14.0.6"
+          },
+          "discovery": {
+            "path": "/usr/lib/llvm-14/bin/llvm-config",
+            "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+            "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+            "version": "14.0.6"
+          }
+        },
+        "sdk": null
+      },
+      "format": "bigbrotr-foundation-ci/1",
+      "status": "PASS",
+      "checks": [
+        {
+          "name": "build",
+          "command": [
+            "cargo",
+            "build",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr",
+            "--bin",
+            "bigbrotr",
+            "--example",
+            "browser_http_probe"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 34.017667880281806
+        },
+        {
+          "name": "management",
+          "command": [
+            "cargo",
+            "test",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr",
+            "--bin",
+            "bigbrotr",
+            "interfaces::management::"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 16.409048093948513
+        },
+        {
+          "name": "clippy",
+          "command": [
+            "cargo",
+            "clippy",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr",
+            "--bin",
+            "bigbrotr",
+            "--example",
+            "browser_http_probe",
+            "--",
+            "-D",
+            "warnings"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 2.5791288600303233
+        }
+      ],
+      "counts": {
+        "collected": 3,
+        "executed": 3,
+        "failed": 0,
+        "not_run": 0
+      },
+      "artifacts": {
+        "bigbrotr": "1574e2018793638d33229d90c3875c73fbb2dc232b86175d3ba0725b45d685c4",
+        "examples/browser_http_probe": "196d26df204fb7c402f75801edf153cda4991bc01b95fdab7816408181dc06c3"
+      },
+      "source_unchanged": true
+    },
+    "frontend": {
+      "source": "8c19aa996f92098790017fd7615133dc677a7fc2",
+      "tree": "938a4c89bc96f45d5e4da1b19f1daf7577527e21",
+      "stage": "frontend",
+      "cargo_lock": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+      "pnpm_lock": "70f6e67f3f968c9f55236f563994c04413cf679a58da3ebbd1ebcfb5d089d1a4",
+      "node_sha256": "4cfdaeec2e3689e4728b4bc98932a9147a3f98162bdc7955c03c0d7fa3b8aa94",
+      "pnpm_sha256": "98e6b99a881d64a1cc982c3e60aa260bf02160386b12e74475e06486dc74b090",
+      "format": "bigbrotr-foundation-ci/1",
+      "status": "PASS",
+      "checks": [
+        {
+          "name": "install",
+          "command": [
+            "/tools/node/bin/node",
+            "/tools/pnpm/bin/pnpm.cjs",
+            "install",
+            "--frozen-lockfile",
+            "--ignore-scripts",
+            "--strict-peer-dependencies",
+            "--store-dir",
+            "/out/pnpm-store"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 1.3672803225927055
+        },
+        {
+          "name": "contracts",
+          "command": [
+            "/tools/node/bin/node",
+            "/tools/pnpm/bin/pnpm.cjs",
+            "contracts:check"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 0.5150143401697278
+        },
+        {
+          "name": "client-types",
+          "command": [
+            "/tools/node/bin/node",
+            "/tools/pnpm/bin/pnpm.cjs",
+            "check:client"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 0.7154010226950049
+        },
+        {
+          "name": "client",
+          "command": [
+            "/tools/node/bin/node",
+            "/tools/pnpm/bin/pnpm.cjs",
+            "test:client"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 6.326050370000303
+        },
+        {
+          "name": "admin-types",
+          "command": [
+            "/tools/node/bin/node",
+            "/tools/pnpm/bin/pnpm.cjs",
+            "--filter",
+            "@bigbrotr/admin",
+            "check"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 1.9407928818836808
+        },
+        {
+          "name": "admin-unit",
+          "command": [
+            "/tools/node/bin/node",
+            "/tools/pnpm/bin/pnpm.cjs",
+            "--filter",
+            "@bigbrotr/admin",
+            "test:unit"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 1.3168837232515216
+        }
+      ],
+      "counts": {
+        "collected": 6,
+        "executed": 6,
+        "failed": 0,
+        "not_run": 0
+      },
+      "bundles": {
+        "root": {
+          "manifest_sha256": "10b55af760b276dd8509c66b55aff11ad5793fa501ba951e71d5396191c6a594",
+          "files": 13,
+          "bytes": 128534
+        },
+        "control": {
+          "manifest_sha256": "3767ac312cc2d732a3510bae6760cd074135cf3ced5730f4adb9bac0bd29f2ac",
+          "files": 13,
+          "bytes": 128568
+        }
+      },
+      "frontend_originals_unchanged": true,
+      "source_unchanged": true
+    }
+  },
+  "executed": {
+    "browser_combinations": 6,
+    "complete_pass": 0,
+    "chromium": "Both mounts pass initial load/keyboard, invalid/wrong password and login/cookie assertions; cross-origin observation times out.",
+    "firefox_webkit": "Both mounts pass initial load/keyboard then fail invalid/wrong password assertion; no sessions were issued. Failure location/origin not yet observed; more diagnostics required."
+  },
+  "resources": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/private-panel-platform-8c19aa9",
+    "owner": "0fea57f8c203cf946e73dec27de263a6",
+    "state": "stopped-retained; all ten containers PID0/noOOM; owned empty network removed",
+    "prior_containers_preserved": 427,
+    "unrelated_running": 8,
+    "remaining_pg_clients": [],
+    "durable_outcomes": {
+      "chromium-root": {
+        "container_ok": false,
+        "status": "FAIL",
+        "independent_sql": {
+          "sessions": 1,
+          "revoked": 0,
+          "active_accounts": 1,
+          "grants": 7,
+          "no_active_control": false,
+          "heads": [
+            "1",
+            "1"
+          ],
+          "backends": 0
+        },
+        "sql_matches": false
+      },
+      "chromium-control": {
+        "container_ok": false,
+        "status": "FAIL",
+        "independent_sql": {
+          "sessions": 1,
+          "revoked": 0,
+          "active_accounts": 1,
+          "grants": 7,
+          "no_active_control": false,
+          "heads": [
+            "1",
+            "1"
+          ],
+          "backends": 0
+        },
+        "sql_matches": false
+      },
+      "firefox-root": {
+        "container_ok": false,
+        "status": "FAIL",
+        "independent_sql": {
+          "sessions": 0,
+          "revoked": 0,
+          "active_accounts": 1,
+          "grants": 7,
+          "no_active_control": false,
+          "heads": [
+            "1",
+            "1"
+          ],
+          "backends": 0
+        },
+        "sql_matches": false
+      },
+      "firefox-control": {
+        "container_ok": false,
+        "status": "FAIL",
+        "independent_sql": {
+          "sessions": 0,
+          "revoked": 0,
+          "active_accounts": 1,
+          "grants": 7,
+          "no_active_control": false,
+          "heads": [
+            "1",
+            "1"
+          ],
+          "backends": 0
+        },
+        "sql_matches": false
+      },
+      "webkit-root": {
+        "container_ok": false,
+        "status": "FAIL",
+        "independent_sql": {
+          "sessions": 0,
+          "revoked": 0,
+          "active_accounts": 1,
+          "grants": 7,
+          "no_active_control": false,
+          "heads": [
+            "1",
+            "1"
+          ],
+          "backends": 0
+        },
+        "sql_matches": false
+      },
+      "webkit-control": {
+        "container_ok": false,
+        "status": "FAIL",
+        "independent_sql": {
+          "sessions": 0,
+          "revoked": 0,
+          "active_accounts": 1,
+          "grants": 7,
+          "no_active_control": false,
+          "heads": [
+            "1",
+            "1"
+          ],
+          "backends": 0
+        },
+        "sql_matches": false
+      }
+    }
+  },
+  "raw": {
+    "root": ".research/implementation/private-panel/native-platform",
+    "capture_sha256": "a20a2488b8f63f5215f3f3e97ca44911d3bd25c00df974d60b59fa7a552d7248",
+    "files": {
+      "browser-config.json": {
+        "bytes": 6711,
+        "sha256": "2c1f4e0fd6450f43ddb46d60c2a6df30855a8588e165b1f2559fb0eda8d7ff35"
+      },
+      "browser-image-pull.log": {
+        "bytes": 440,
+        "sha256": "47c69d5d79d7d21ec4d0905e5a7443386ac1fe7f64d03e88e7a5be5b4343033a"
+      },
+      "browser-image.json": {
+        "bytes": 1817,
+        "sha256": "b1154f80fdc1b61f125e37b311139c8f767df266fa95e680cc55f952a9faed8b"
+      },
+      "browser-manifest.json": {
+        "bytes": 1644,
+        "sha256": "bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7"
+      },
+      "chromium-control.container.log": {
+        "bytes": 37,
+        "sha256": "e4b374967102fb9477f2f27bd68ee99ac937279f99ee64a9cadd21d0b2a3cdc1"
+      },
+      "chromium-root.container.log": {
+        "bytes": 37,
+        "sha256": "e4b374967102fb9477f2f27bd68ee99ac937279f99ee64a9cadd21d0b2a3cdc1"
+      },
+      "collect.py": {
+        "bytes": 2460,
+        "sha256": "16ce6d5f9369185d3908b274de163f909c7f63c2fcf3e14de227cdecf232662d"
+      },
+      "elf-needed.txt": {
+        "bytes": 3072,
+        "sha256": "5d0f459454e259afd9a588d3bb1e4bbfa77b44c3b5f9179cc33009e59d376033"
+      },
+      "environment.container.log": {
+        "bytes": 66,
+        "sha256": "9f2f87b76cb863e2356cc4381418b2e634ae9e106c122c0b630f7d206787a0ac"
+      },
+      "firefox-control.container.log": {
+        "bytes": 37,
+        "sha256": "e4b374967102fb9477f2f27bd68ee99ac937279f99ee64a9cadd21d0b2a3cdc1"
+      },
+      "firefox-root.container.log": {
+        "bytes": 37,
+        "sha256": "e4b374967102fb9477f2f27bd68ee99ac937279f99ee64a9cadd21d0b2a3cdc1"
+      },
+      "frontend.container.log": {
+        "bytes": 314,
+        "sha256": "7fc9b24581805256ff680ceb8c8a658c609a4e48b1a86572f5638b5225f8251b"
+      },
+      "launch.py": {
+        "bytes": 18206,
+        "sha256": "dc084d977bc4eae5477964b84e8fed0c17a574b3c034a55bff2ed7206301c80e"
+      },
+      "orchestrator.log": {
+        "bytes": 1509,
+        "sha256": "1ec7c4051b9d70f805589cd5d96451dd108ad9366f27f612ad112043952d18b9"
+      },
+      "out/build/source-manifest.json": {
+        "bytes": 120909,
+        "sha256": "8a7fe26e375e40079626a6f9892bb072d4981f4308ee6d52ea2737046a16e2df"
+      },
+      "out/cases/chromium-control/checks/browser.log": {
+        "bytes": 228,
+        "sha256": "531ca90c8c0a1edf3298c8de48b8e0d2e4d7857ac8debcddf98eefd11fea390d"
+      },
+      "out/cases/chromium-control/checks/result.json": {
+        "bytes": 1523,
+        "sha256": "7fc382aa5972f82cd5294a70d22725de27a5ee412f48d67c216796c020684966"
+      },
+      "out/cases/chromium-control/fixture/browser-report.json": {
+        "bytes": 1031,
+        "sha256": "42355c58d776bfd6b9436f57c01f1bdd4dd8de4f121d3390519e3a2892b79422"
+      },
+      "out/cases/chromium-control/fixture/browser.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/chromium-control/fixture/browser.stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/chromium-control/fixture/panel-initial.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/chromium-control/fixture/panel-initial.stdout": {
+        "bytes": 781,
+        "sha256": "2daa73e7769477734d335edc93b0f041cad7863e0fca984043b2bcf943b29087"
+      },
+      "out/cases/chromium-control/fixture/signed-out-mobile.png": {
+        "bytes": 32258,
+        "sha256": "d72565568a263a94583b24b915b20ac9348d2e2ae8c715a26b776ac1bbf54e11"
+      },
+      "out/cases/chromium-control/native-result.json": {
+        "bytes": 1602,
+        "sha256": "99431a15e0fab1450e3d9bf1f5a91cddd6b4cecd4afc40ccc26e5c16ecb252bf"
+      },
+      "out/cases/chromium-root/checks/browser.log": {
+        "bytes": 228,
+        "sha256": "531ca90c8c0a1edf3298c8de48b8e0d2e4d7857ac8debcddf98eefd11fea390d"
+      },
+      "out/cases/chromium-root/checks/result.json": {
+        "bytes": 1514,
+        "sha256": "631efc6cd7d63aff4ea47871659e56bc2b44fa41c4effb38f00013ae01b96520"
+      },
+      "out/cases/chromium-root/fixture/browser-report.json": {
+        "bytes": 1024,
+        "sha256": "a63a0e947738499b0bf1206349da0897a02bfd58e401361d4f1fbc2d5b96d621"
+      },
+      "out/cases/chromium-root/fixture/browser.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/chromium-root/fixture/browser.stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/chromium-root/fixture/panel-initial.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/chromium-root/fixture/panel-initial.stdout": {
+        "bytes": 773,
+        "sha256": "3d74585cdf8bee6dc55325bb7c851d693719ca93eeaf9d507c44968674baf268"
+      },
+      "out/cases/chromium-root/fixture/signed-out-mobile.png": {
+        "bytes": 32258,
+        "sha256": "d72565568a263a94583b24b915b20ac9348d2e2ae8c715a26b776ac1bbf54e11"
+      },
+      "out/cases/chromium-root/native-result.json": {
+        "bytes": 1593,
+        "sha256": "f05a7d8ece4fe0cbaa26be11e1820d143087136a92e882dd0817adad857fb90a"
+      },
+      "out/cases/firefox-control/checks/browser.log": {
+        "bytes": 228,
+        "sha256": "531ca90c8c0a1edf3298c8de48b8e0d2e4d7857ac8debcddf98eefd11fea390d"
+      },
+      "out/cases/firefox-control/checks/result.json": {
+        "bytes": 1521,
+        "sha256": "ff0192c07803b6a9e454db400790ee659553a5258ea520e0bfec12ffc0a706a0"
+      },
+      "out/cases/firefox-control/fixture/browser-report.json": {
+        "bytes": 745,
+        "sha256": "87a48e7384d75ef3775505c7df026e020857ed4cc33471f00911a532e69fc3f5"
+      },
+      "out/cases/firefox-control/fixture/browser.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/firefox-control/fixture/browser.stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/firefox-control/fixture/panel-initial.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/firefox-control/fixture/panel-initial.stdout": {
+        "bytes": 781,
+        "sha256": "356769ae7bfa70143e2b4d698464bcc968f528c2537590e03dcf2a886e313d60"
+      },
+      "out/cases/firefox-control/fixture/signed-out-mobile.png": {
+        "bytes": 37127,
+        "sha256": "1d5a60ff2d6d854dd6a20cc0c9b01f3a17db64db0d258ce29a056a737a25c4f2"
+      },
+      "out/cases/firefox-control/native-result.json": {
+        "bytes": 1600,
+        "sha256": "cc6df4be94ed1cc8886959220e243d46051b7c20b95bd0f2ba013b9567b245b3"
+      },
+      "out/cases/firefox-root/checks/browser.log": {
+        "bytes": 228,
+        "sha256": "531ca90c8c0a1edf3298c8de48b8e0d2e4d7857ac8debcddf98eefd11fea390d"
+      },
+      "out/cases/firefox-root/checks/result.json": {
+        "bytes": 1511,
+        "sha256": "1cd0bc1129e219b785516ea6b40acc5af4c9c2fefee2b0e3b53ee73a424232ea"
+      },
+      "out/cases/firefox-root/fixture/browser-report.json": {
+        "bytes": 737,
+        "sha256": "51b1ce227b07494915efcd13f574ac7ab2a918d80ab18b749cab875e19583950"
+      },
+      "out/cases/firefox-root/fixture/browser.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/firefox-root/fixture/browser.stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/firefox-root/fixture/panel-initial.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/firefox-root/fixture/panel-initial.stdout": {
+        "bytes": 773,
+        "sha256": "e8bb8708ea60c6657a11b638b36164374e72746c2a3fcefcf984dfdcfc763e16"
+      },
+      "out/cases/firefox-root/fixture/signed-out-mobile.png": {
+        "bytes": 37127,
+        "sha256": "1d5a60ff2d6d854dd6a20cc0c9b01f3a17db64db0d258ce29a056a737a25c4f2"
+      },
+      "out/cases/firefox-root/native-result.json": {
+        "bytes": 1590,
+        "sha256": "0beed6c20aaec67c54f44e16150f031cd1b9a6a17e3dc83c26b9bd5776ee6d06"
+      },
+      "out/cases/webkit-control/checks/browser.log": {
+        "bytes": 228,
+        "sha256": "531ca90c8c0a1edf3298c8de48b8e0d2e4d7857ac8debcddf98eefd11fea390d"
+      },
+      "out/cases/webkit-control/checks/result.json": {
+        "bytes": 1519,
+        "sha256": "ea120f1cd6687b4dc002733e7665868b36bffbfb4429a91d1849c5a526b5431a"
+      },
+      "out/cases/webkit-control/fixture/browser-report.json": {
+        "bytes": 1102,
+        "sha256": "fade5ed0e000063710ef8ae27feed8b06d3a3ee0cd5603965d7da5ddaaeb4fa9"
+      },
+      "out/cases/webkit-control/fixture/browser.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/webkit-control/fixture/browser.stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/webkit-control/fixture/panel-initial.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/webkit-control/fixture/panel-initial.stdout": {
+        "bytes": 781,
+        "sha256": "af3a513d04541b0d67c40f6ce53087ea1692498872eece52a10214643c91ffb4"
+      },
+      "out/cases/webkit-control/fixture/signed-out-mobile.png": {
+        "bytes": 35524,
+        "sha256": "d60d98cec30e41201495dfd7093a77805977a762466c114bb5dd2a2920ae5ec4"
+      },
+      "out/cases/webkit-control/native-result.json": {
+        "bytes": 1598,
+        "sha256": "b597bf3f62d6e491ca9fa84fa27e1a21e32e771632323a74cbb7918c1a6f64e6"
+      },
+      "out/cases/webkit-root/checks/browser.log": {
+        "bytes": 228,
+        "sha256": "531ca90c8c0a1edf3298c8de48b8e0d2e4d7857ac8debcddf98eefd11fea390d"
+      },
+      "out/cases/webkit-root/checks/result.json": {
+        "bytes": 1510,
+        "sha256": "98bec05c6470940177a998532b756209d0d14fea161f1af32f33871274fc5ba6"
+      },
+      "out/cases/webkit-root/fixture/browser-report.json": {
+        "bytes": 1094,
+        "sha256": "1e7a9fc12606ddc9ab9fc682240015b20796dc4444fbd750f610f5ba30e240de"
+      },
+      "out/cases/webkit-root/fixture/browser.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/webkit-root/fixture/browser.stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/webkit-root/fixture/panel-initial.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/webkit-root/fixture/panel-initial.stdout": {
+        "bytes": 773,
+        "sha256": "906b44d8682a33593dbfbd64a07140bc64a022d9072c70462ae8c6d76b4b10ac"
+      },
+      "out/cases/webkit-root/fixture/signed-out-mobile.png": {
+        "bytes": 35524,
+        "sha256": "d60d98cec30e41201495dfd7093a77805977a762466c114bb5dd2a2920ae5ec4"
+      },
+      "out/cases/webkit-root/native-result.json": {
+        "bytes": 1589,
+        "sha256": "42b1642c31bf3ef4d73ff6b5a3834b01b2e2fc1b933382876a73c8c067ba5b61"
+      },
+      "out/frontend-checks/admin-types.log": {
+        "bytes": 280,
+        "sha256": "37ca03cf49ddd89c35e54d6f692c52f7eb8c9bec51aef8f6fd2ee3d60b4ba642"
+      },
+      "out/frontend-checks/admin-unit.log": {
+        "bytes": 974,
+        "sha256": "6ee852824a9f4c642b135f3aeb4884802162733770c5f886e5a009f2da88051f"
+      },
+      "out/frontend-checks/client-types.log": {
+        "bytes": 108,
+        "sha256": "8ae72dcf889df81bfde3d3c59d4846c89b886a6a37dc4d3b83f832d892aaed37"
+      },
+      "out/frontend-checks/client.log": {
+        "bytes": 1155,
+        "sha256": "0c5613a8307f2aba7e9d11dc52b2dfbaf3333b530bea811ab2a00f7a57831baa"
+      },
+      "out/frontend-checks/contracts.log": {
+        "bytes": 115,
+        "sha256": "d4205e5a960af071afcd9d65c48902c7380b105c6e55908064ba516b509b915d"
+      },
+      "out/frontend-checks/install.log": {
+        "bytes": 749,
+        "sha256": "2ff40a45da82d90278d49503417f5a9586e616ca8cfc5ff922cff414ac4b861a"
+      },
+      "out/frontend-checks/result.json": {
+        "bytes": 2459,
+        "sha256": "b179627cd3e202e67a56b474503a89a2f992e951352f44acd8705d913d6e3c93"
+      },
+      "out/frontend-control/build.log": {
+        "bytes": 3747,
+        "sha256": "e507f20c14503b00d5a5f414dc620742d49f67d3b13ad9a175f15b2f63add8a6"
+      },
+      "out/frontend-control/result.json": {
+        "bytes": 942,
+        "sha256": "f4ff028141bcdf60fe5f17ef5ea5b469a7c393c5f7dad83d0adc9c8ac2c52543"
+      },
+      "out/frontend-result.json": {
+        "bytes": 2859,
+        "sha256": "516cb54f846e962b221cf0860aa3ecb858b65a93f4d9ba1bc5a095c70278e82f"
+      },
+      "out/frontend-root/build.log": {
+        "bytes": 3747,
+        "sha256": "54e85d1b8862b5a7194ead7ab2d726b7bcdfed1e5cd85e0f807a432d8ba93410"
+      },
+      "out/frontend-root/result.json": {
+        "bytes": 944,
+        "sha256": "7573c5eb71a72ccbde71f0725fcb503d8e3ad02ceb8afae1b6a4095168db7539"
+      },
+      "out/rust-checks/build.log": {
+        "bytes": 298,
+        "sha256": "4ceac25e2e2e535a910b4509e64477aacd10dbe3a471c8db4ec3c348eed62a33"
+      },
+      "out/rust-checks/clippy.log": {
+        "bytes": 297,
+        "sha256": "6e622cb1d299121f68607d35c09f2f6e0460e8688ca59465869bb7f8c2536837"
+      },
+      "out/rust-checks/management.log": {
+        "bytes": 2247,
+        "sha256": "24737e49a6f290a8a0a726137c1b8f6e3cf5a7345de673e042b87ac87859acd8"
+      },
+      "out/rust-checks/result.json": {
+        "bytes": 3706,
+        "sha256": "7523344ad2aa812d44260b765a3cb681eb9286fc59c7caa73657b408ecf9085b"
+      },
+      "out/rust-result.json": {
+        "bytes": 3942,
+        "sha256": "c133cafdda2663426f41e52f042318fff75e5e060af87cc8eded0c6568aa75a9"
+      },
+      "preflight.json": {
+        "bytes": 3562875,
+        "sha256": "eccdd637c5001000b5e5c32b6add19a9f829ed44f0b53a4c58fd690c753665c5"
+      },
+      "resources.json": {
+        "bytes": 2320,
+        "sha256": "121451cc4adb589b288870179a4de3f48e68219c09df5a81be4706fa0aa8ee95"
+      },
+      "running-audit.json": {
+        "bytes": 19139,
+        "sha256": "3544f8846523ac3b804a90a9a98054ab4ff104a38b9586a450fd4aef4778903e"
+      },
+      "rust.container.log": {
+        "bytes": 111,
+        "sha256": "5e22aebdf07588fd4a31c2d0c516aad9b11630aa75f559179b86cd75c1e8cc3f"
+      },
+      "terminal-audit.json": {
+        "bytes": 37920,
+        "sha256": "b3db0e24f55cc577c97f2f59a0ad9238a26e1720a2d77540f7e8a9d357d19fe0"
+      },
+      "terminal-inventory.json": {
+        "bytes": 802871,
+        "sha256": "a2b89fe9e379abdd8875b5de66af156df450dff251e5386670b7affd0f3680a0"
+      },
+      "tool-inputs.json": {
+        "bytes": 376,
+        "sha256": "652c4b0b906225c4d9ea5653b60d6cbb8828340c18a11f64a47bbabd120f5209"
+      },
+      "webkit-control.container.log": {
+        "bytes": 37,
+        "sha256": "e4b374967102fb9477f2f27bd68ee99ac937279f99ee64a9cadd21d0b2a3cdc1"
+      },
+      "webkit-root.container.log": {
+        "bytes": 37,
+        "sha256": "e4b374967102fb9477f2f27bd68ee99ac937279f99ee64a9cadd21d0b2a3cdc1"
+      }
+    }
+  },
+  "scope": "Executed failures are preserved. No full browser journey, graceful Control release on failed cases, P08/P09/M1 or release qualification. Browser close and wrapper process observations are scoped checks; terminal owned-container inspection is independently required."
+}

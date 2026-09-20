@@ -21,11 +21,12 @@ another diagnostic command instead of the real read consumer.
 
 ## Git and ownership
 
-Local main/HEAD is fixture candidate `4593e37179d31a9b9cdcbd5fd98655d71922c7ec`,
-product6a85696 unchanged. Both commits remain unpublished; origin remains
-`b98426146c68caffcbf6822bdb956d1a8abbd30d`. Root is recording the failed native
-prerequisite and preparing a replacement lab. Only evidence/inventory/checkpoint
-are dirty; no product modification. No parallel writer/merge/rebase. Private local
+Local main/HEAD is `8c19aa996f92098790017fd7615133dc677a7fc2`,
+fixture4593e37 and product6a85696 unchanged. Three commits remain unpublished;
+origin remains `b98426146c68caffcbf6822bdb956d1a8abbd30d`. Root is recording actual
+browser failures and adding bounded sanitized request diagnostics. Only
+browser.mjs, experiment README, evidence/inventory/checkpoint are dirty; no product
+modification. No parallel writer/merge/rebase. Private local
 session API production baseline5a4e0d1 and qualified COMMIT fixturee65116b remain
 unchanged history. Full candidate state is listed by Git, not this summary.
 
@@ -38,7 +39,7 @@ completed exit0; no compiler,
 browser or product process is owned/running. Root and/control bundles contain13
 files (128471/128505bytes), independently hash-verified in bundle-suspend-check.json.
 Their manifestSHA256 values begin af02d47c and9481850c. Earlier bundle-* artifacts
-remain historical and predate the suspend correction. No browser has launched.
+remain historical and predate the suspend correction. Actual browser outcomes are below.
 
 The candidate implements a generated closed same-origin session client and thin
 login/self/logout panel, with bounded streaming/timeout, exact decimal integers,
@@ -69,12 +70,12 @@ The experimental panel mode now compiles; panel-fixture-compile and
 panel-fixture-reviewed both passed actual example build/Clippy and JS syntax.
 Frozen strict-peer install with ignored scripts passed; only three exact Playwright
 packages were added, no previous dependency resolution changed. Eight browser
-journeys and independent SQL boundary/restart oracles are written, NOT_RUN.
+journeys and independent SQL boundary/restart oracles are written; actual failures below.
 Read-only AI review corrected exact-action and logout-removal assertions, teardown
 failure accounting, SQL assertion redaction and binding actual executable/script/
 bundle hashes to the selected source. Separate browser process groups require a
 fresh container per pair, /proc observations and host terminal collection; no
-Node-only join claim. No browser has launched.
+Node-only join claim.
 
 [First native attempt](evidence/p09-private-panel-native-prerequisite-20260920.json)
 at4593e37 is INCOMPLETE before frontend/browser/PG. The launcher incorrectly
@@ -89,14 +90,29 @@ bd3463465b16396b6f7d961067fc0613. Replacement launcher separates manifest/config
 checks, probes actual tool availability first, registers create before start and
 attempts collection of every owned container even after a cleanup error.
 
-Next bounded action: commit this failure evidence, transfer exact Git source and execute
-Chromium/Firefox/WebKit at root and/control on isolated native Tux PostgreSQL.
-Candidate product is6a85696. Native orchestration is prepared under ignored
-private-panel/native-platform; each browser has a new database/output/container. Official
-Noble platform image and matching registry/browser revisions are pinned in the
-dependency record. Tux host Node is absent; provision hash-verified Node26.4.0/
-pnpm9.15.9 in the owned lab, not globally. Native engine/browser evidence and
-frontend shared CI assembly remain required; no P09 task or M1 completion.
+[First real browser matrix](evidence/p09-private-panel-browser-failures-20260920.json)
+at8c19aa9 is FAIL: all six browser/mount combinations executed. Native build,
+17management tests/Clippy, six frontend checks and both bundles PASS. Image
+Python3.12.3 and selected Node26.4.0 were actually executed. Chromium passes three
+journeys (startup/keyboard/mobile, invalid/wrong password, login/cookies) before
+cross-origin Response timeout. Firefox/WebKit pass startup but fail invalid/wrong
+password assertion; neither issued a session. No whole browser case is complete.
+All10owned containers stopped/PID0/noOOM; empty network removed; zero PG clients,
+427prior containers preserved,8unrelated running.95capture/979source hashes verified.
+Raw private-panel/native-platform; remote runs/private-panel-platform-8c19aa9,
+owner0fea57f8c203cf946e73dec27de263a6. Retain failed data/active owner rows; process
+termination is not a graceful Control release. No owned job is running.
+
+Next bounded action: commit bounded diagnostics and run only root mount in three
+fresh browser containers/databases to identify these failures, then fix confirmed
+causes and repeat the full matrix. Candidate product remains6a85696. Native
+orchestration is prepared under ignored private-panel/native-diagnostics. Read-only
+AI source review suggests two distinct mechanisms, not yet measured: no-referrer
+(header AND HTML meta) yields Origin:null for same-origin POST per Fetch, correctly
+refused by Boundary; Chromium CORS403 can omit Playwright Response, making the
+fixture time out. New diagnostics classify Origin/status/notice and selected CDP
+wire status without headers/bodies. Do not accept Origin:null or count a timeout
+as PASS. Large blocked response, frontend shared CI and wider P09/M1 remain open.
 
 Preserve `.research/worktrees/producer-closing-old-writer`, last verified clean at
 `f899896b1207f5e71c4e39d9ab7814b293814735` on
@@ -370,12 +386,12 @@ The local client, panel and bounded static listener now have scoped evidence abo
 Next qualify production bundles against actual
 Chromium/Firefox/WebKit and Rust/PG, including cookie/CSRF and same-host second-port
 controls. P08-T02 and P09-T01/T07 own this work; no alternate UI stack or diagnostic
-CLI. No browser has been launched. Initial frontend candidate metadata, ten
+CLI. Browser failures above remain unresolved. Initial frontend candidate metadata, ten
 SHA512-verified npm archives and source inspection are retained under
 .research/implementation/private-panel/dependencies and inventoried. Selected
 Svelte5.57.1/Kit2.70.3/static3.0.10/Vite8.3.0/TS5.9.3, Playwright1.63.0 candidates
 are not release-qualified. Latest TS7 was deliberately excluded by actual peer
-requirements. No matching browser engine has been downloaded yet. The first
+requirements. Matching native browser engines were downloaded and executed as recorded above. The first
 OpenAPI3.1 contract describes only the three existing session routes; standalone
 Ajv validation and generated TS avoid runtime schema compilation/eval. No P09
 step is complete. Static assets, browser tests, audit and actual data access remain.

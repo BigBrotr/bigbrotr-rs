@@ -17321,7 +17321,7 @@
   "implementation_private_panel_20260920": {
     "local_root": ".research/implementation/private-panel",
     "owner": "root implementer",
-    "state": "Local scoped checks PASS; first native prerequisite INCOMPLETE/stopped-retained before any browser or PG; replacement pending",
+    "state": "First browser matrix FAIL/stopped-retained; bounded diagnostic follow-up pending",
     "source_base": "b98426146c68caffcbf6822bdb956d1a8abbd30d",
     "dependency_manifest": ".research/implementation/private-panel/dependencies/selected-candidates.json",
     "contents": "Official registry metadata/verified archives/sources; local client and bundle checks; controlled native logs including failures and cache recovery; generated bundles are artifacts, not source authority.",
@@ -17372,6 +17372,68 @@
       "observation": "INCOMPLETE before frontend/browser/PG: Docker containerd image inspect Id was platform manifest digest, not the expected config digest. Native build interrupted by launcher cleanup (exit143); no test outcome. One container stopped/PID0/noOOM;426prior lifecycle records preserved,8unrelated workloads remain. No network or database created; source/tools/caches retained.",
       "evidence": "docs/implementation/evidence/p09-private-panel-native-prerequisite-20260920.json",
       "capture_sha256": "d948b88f86a5f1dd63c609cdd07693ddeddaebfddc9a41e6f24f32d1e8f40921"
+    },
+    "browser_first_matrix": {
+      "source": "8c19aa996f92098790017fd7615133dc677a7fc2",
+      "tree": "938a4c89bc96f45d5e4da1b19f1daf7577527e21",
+      "owner": "0fea57f8c203cf946e73dec27de263a6",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/private-panel-platform-8c19aa9",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "environment",
+          "id": "0e9113b198bf62b195fa6830cc64ac1a282558e3bf688094e1e4dcbc07442b72"
+        },
+        {
+          "name": "rust",
+          "id": "d946606ab06fb98c1f5f89f000483566165095f4ce347fb1d44db64eb153b656"
+        },
+        {
+          "name": "frontend",
+          "id": "f200a8a2ea923583ad0da6b0edc4f0214be55fb302531ede79e2d27071de04f5"
+        },
+        {
+          "name": "postgres",
+          "id": "8d2c1d82724f17bb22536830cd967a614893db9da395db90e340103618202512"
+        },
+        {
+          "name": "chromium-root",
+          "id": "924c03a54aae4506088574d266d7dd40724331e790c8c86d8728dc3a8a6a4b8d"
+        },
+        {
+          "name": "chromium-control",
+          "id": "cd5d091ecb22e6e168204518f0bc44d4e14c2c002834e1746fc257ef707de10e"
+        },
+        {
+          "name": "firefox-root",
+          "id": "f34d4fdfa166d9692e8b1fa3abcd1b50b9aa8ec3ae51489017522684637d8f0d"
+        },
+        {
+          "name": "firefox-control",
+          "id": "a132b6f0217cd1b33208f54bb80defd9f3302f5c43103d25fd1a096cfee90d81"
+        },
+        {
+          "name": "webkit-root",
+          "id": "a591d2bfd86989f8225e0dc4368758b8d0af1b7ec5dd40895b649e295da42af5"
+        },
+        {
+          "name": "webkit-control",
+          "id": "041baf4f2cf5d29532bb698273b8c3cd0851c787c7a6c04c7a9116886f322783"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+      "started_at": "2026-09-20T13:19:08.037129+00:00",
+      "network_id": "8847cc5f886b19f02e428e0c824095161a2447f1234402133002f8e0c8bdd0da",
+      "postgres_id": "8d2c1d82724f17bb22536830cd967a614893db9da395db90e340103618202512",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json",
+      "local_root": ".research/implementation/private-panel/native-platform",
+      "evidence": "docs/implementation/evidence/p09-private-panel-browser-failures-20260920.json",
+      "capture_sha256": "a20a2488b8f63f5215f3f3e97ca44911d3bd25c00df974d60b59fa7a552d7248",
+      "observation": "6 actual browser/mount combinations FAIL; prerequisites PASS. All10ownedcontainers stoppedPID0/noOOM;427priorpreserved,8unrelatedrunning;emptyownednetworkremoved;zeroPGclients.95capturefiles/979sourcehashesverified. Preserve failures and private fixture data."
     }
   }
 }
