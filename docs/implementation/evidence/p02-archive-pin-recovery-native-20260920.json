@@ -1,0 +1,179 @@
+{
+  "format": "bigbrotr-snapshot-pin-recovery-evidence/1",
+  "status": "PASS",
+  "scope": "Fresh recovery-only local exclusion and explicit atomic release of original qualified Archive pins; no automatic GC, principal authority or live delivery qualification",
+  "source": {
+    "revision": "51d35aea1c44a0a884ed9595114de7da89a83ebd",
+    "tree": "80c50e15d3d49013474e23f923badd988e84f68d",
+    "files": 919,
+    "manifest": {
+      "path": ".research/implementation/archive-pin-recovery/capture/out/build/source-manifest.json",
+      "bytes": 113718,
+      "sha256": "bdd2bff551c961090c77298dd46fa9aff13542b567fb14e4d41d143cec1acec4"
+    },
+    "schema_fixture": "c0674ae7a1a648b9403bddd04343c13727e8e0d9",
+    "claim_negative_fixture": "0b7609fc65aab2d12e9260de15e563156aa3d266",
+    "production_unchanged_in_extra_fixtures": true
+  },
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "host": {
+      "kernel": "Linux 6.12.101+deb13-amd64 x86_64 GNU/Linux",
+      "filesystem": "/dev/nvme0n1p2 ext4 rw,relatime,errors=remount-ro"
+    },
+    "limits": "Runner2CPU/6GiB/512PIDs; PG1CPU/1GiB/128PIDs; trusted exact Git, read-only source/root, internal network/no ports, no release credentials"
+  },
+  "dependencies": {
+    "cargo_lock_sha256": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215",
+    "toolchain_sha256": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167",
+    "release_selection_sha256": "9bea8c27908c680afc63ec9b74c481ea522c2b7a32232ab4dbca82b1920d7dd0",
+    "migration17_sha256": "99803d4b76d35ea9b1b9619cb3b570ba62ea7a198af5345f0cb8378135ed5e37",
+    "migration18_sha256": "5902a230916f368a54858872909cc619fea010fceb54a204032eef9d8a17e012"
+  },
+  "artifacts": {
+    "control": "c00d25e2d1da3e1c90dc8266f01e2299601aa3ebdf1f089b21ef06da2d29731a",
+    "worker": "b7049b1013846bf53d373defa6230a9483d84e4bf844c5956f48795701aad389",
+    "publisher": "fa0e3bed2e818178c83e677c3c6fd31b0eadaf5c479bdd9ea44473721a92c4ac",
+    "reader": "937e78a3b291015c91dcf5b1623aacca1fdd4a8bfd231f98b155059a260b9989",
+    "event_reader": "2b832795a17a4731eedb1bf9b28c4bf083eddcb91c10725f6621c91592509d7f"
+  },
+  "checks": {
+    "mac": {
+      "path": ".research/implementation/archive-pin-recovery/fixture-green/result.json",
+      "bytes": 1313,
+      "sha256": "e8252809b6fc9a92a62e08abc4729ceab7935e4e636f8551063a7bc89351845d"
+    },
+    "linux_build": {
+      "path": ".research/implementation/archive-pin-recovery/capture/out/native-tests/result.json",
+      "bytes": 2800,
+      "sha256": "496f2d7b67e7bcf5a4a1e4064eefdff38284ab9d339021c934f263696ceeb187"
+    },
+    "linux_checks": {
+      "path": ".research/implementation/archive-pin-recovery/capture/out/native-tests/checks/result.json",
+      "bytes": 4932,
+      "sha256": "1d9c3a703f3bd0cbcf86996873d82107d6b438eb5ec9e0d7ae7ada7b48d8b79f"
+    },
+    "readiness": {
+      "path": ".research/implementation/archive-pin-recovery/capture/out/native-tests/ready.json",
+      "bytes": 5443,
+      "sha256": "1cdc35ee7e767f5545c22cfe84c8ee3cbdebba70b3b393468d141f576ec5f1db"
+    },
+    "executed": "Mac16 schema/16 custody tests and consumer Clippy; Linux actual native build,16 schema/16 custody tests and Clippy"
+  },
+  "native": {
+    "signed_cuts": 2,
+    "cuts_evidence": {
+      "path": ".research/implementation/archive-pin-recovery/capture/cut-cases.json",
+      "bytes": 642543,
+      "sha256": "d9033caf49bfcca46d9b1bdeb6b7a898bbb5ac5d239769220e2b0b14c674a19f"
+    },
+    "recovery_cases": 14,
+    "recovery_evidence": {
+      "path": ".research/implementation/archive-pin-recovery/capture/pin-recovery-cases.json",
+      "bytes": 796575,
+      "sha256": "20651b8432dc28d138514a317b8d1e4a7abc240f5a207362a859469d0a224d9d"
+    },
+    "observed": [
+      "Populated schema17 pin remains byte/value/xmin-identical after installed migration18; complete actual migration ledger/checksums match.",
+      "Actual event reader blocks on the identified PostgreSQL relation holder. Native process has the exact inherited FLOCK descriptor. Concurrent recovery reports Occupied before Control claim, leaves four ledgers unchanged. Releasing blocker permits exact full signed event read at snapshot3 and zero active permits; only then recovery succeeds.",
+      "Original snapshot3/frontier1 and source prefix[1,10] retain their identity while lease revision advances1->2, claims release and separate recovery attribution names the new actual backend role/incarnation. Independent raw rows/xmin and literal returned receipt fields agree.",
+      "Recovery wrapper blocks ordinary reacquisition; its actual Control/manager drivers continue holding custody after wrapper drop. Both join before ordinary startup reacquires. Historical identical retry leaves original bindings/recovery rows/xmin unchanged and does not COMMIT a new effect.",
+      "Before-forward COMMIT loss returns CommitUnknown with no durable release; retry under fresh recovery custody completes it. After-complete loss returns CommitUnknown with the full atomic effect; retry resolves that same historical receipt.",
+      "Manager PID/backend_start exclusion is observed while Control COMMIT is held. COMMIT completes, but postcommit catalog verification returns Unavailable. Retry resolves the original release without rewriting attribution."
+    ],
+    "native_metadata_unchanged_during_14_cases": true,
+    "native_parquet_files_unchanged_during_14_cases": 8,
+    "measurement_scope": "Small signed fixture, one positive source stream and historical snapshot3; no capacity or universal timing result"
+  },
+  "sql": {
+    "evidence": {
+      "path": ".research/implementation/archive-pin-recovery/capture/pin-recovery-schema.json",
+      "bytes": 34326,
+      "sha256": "2693fee8c71f0cb3eee2a96e00e369b1a50098499f719485e7cdb8262a7809d6"
+    },
+    "groups": 2,
+    "recovery_constraint_cases": 11,
+    "observed": [
+      "Same holder, incomplete release, wrong local binding/revision, missing lease, attribution update/delete/TRUNCATE and duplicate release are refused; rollback preserves all values/xmin.",
+      "Empty-cut closure after scheduling expiry succeeds only under the actual fenced Control backend, preserving original issuer and unrelated pin402. This is closure authority, never scheduling/read renewal.",
+      "Schema16->18 keeps an unqualified NULL legacy lease and its xmin unchanged. Explicit attempted recovery is refused by the exact qualified-lease guard, not an unrelated backend error."
+    ]
+  },
+  "negative": {
+    "evidence": {
+      "path": ".research/implementation/archive-pin-recovery/capture/pin-recovery-negative.json",
+      "bytes": 40399,
+      "sha256": "16470e848b4fbfef4e52d1f89ac9525f34adc5820d416ef83fed9371abd51563"
+    },
+    "observed": "Actual authenticated prepared UPDATE of the new positive[1,10] claim release is replaced with the same typed statement plus AND false. The recovery COMMIT reaches PostgreSQL and fails23514 with the exact incomplete-recovery message. Wire counters:1 injection,1 selected COMMIT,0 successful server/client completions. All four ledger values/xmin remain unchanged; the original active obligation remains in stopped lab data.",
+    "result": {
+      "commit_started": true,
+      "control_closed": true,
+      "drivers_joined": true,
+      "event": "pin-result",
+      "manager_closed": true,
+      "ordinary_reacquired": true,
+      "outcome": "CommitUnknown",
+      "receipt": null
+    },
+    "post_run_harness_change": "Review found that a failing proxy cleanup could bypass final report saving. Final source records cleanup/stop errors and polls backend disappearance for at most5s; native evidence remains the executed0b7609f revision. The exceptional cleanup path was not engine-exercised."
+  },
+  "failures": [
+    {
+      "scope": "pre-execution Python syntax",
+      "status": "RESOLVED_BEFORE_ENGINE_RUN",
+      "meaning": "Missing bracket in initial uncommitted harness was caught by verify_artifacts and corrected. No native result was overwritten."
+    },
+    {
+      "scope": "test-first custody declaration",
+      "status": "EXPECTED_COMPILE_FAILURE",
+      "meaning": "Red check failed on missing methods; it is compile evidence, not a runtime counterexample.",
+      "evidence": ".research/implementation/archive-pin-recovery/red"
+    }
+  ],
+  "review": {
+    "kind": "Independent read-only AI plus integrating owner diff/oracle review",
+    "observed": "Review strengthened actual manager exit observation, literal SQL-backed receipt oracle, unchanged prior recovery rows, unrelated pin402/original binding xmin, and cleanup error persistence. Reviewer ran no engines. No product SQL/adapter defect was observed in this scoped qualification."
+  },
+  "closure": {
+    "audit": {
+      "path": ".research/implementation/archive-pin-recovery/capture/terminal-audit.json",
+      "bytes": 10678,
+      "sha256": "2843e331dbbcb6a236815ecda493f341de66275d228630b5a86b414503c5edbd"
+    },
+    "resources": {
+      "path": ".research/implementation/archive-pin-recovery/capture/resources.json",
+      "bytes": 1347,
+      "sha256": "2b301c862c6991b64bfb045ed868a8a38b4f3a0eaae877a4842fc5a36ab029e0"
+    },
+    "state": "stopped-retained",
+    "remaining_pg_clients": 0,
+    "preexisting_preserved": 409,
+    "unrelated_running": 8,
+    "bigbrotr_running": 0,
+    "network": "Empty owned network removed; stopped containers, exact sources/artifacts and data retained; no cleanup debt"
+  },
+  "capture": {
+    "identity": {
+      "path": ".research/implementation/archive-pin-recovery/evidence-identity.json",
+      "bytes": 3275,
+      "sha256": "f2dc23bf26bdc7d0cf13129f2f9cd71e02723555d4f8d1964048e55de0d02b61"
+    },
+    "sha256": "bf7c99a402d9d88f1eaa02b001c0172c91652136a3438234e075aa0d7977e98d",
+    "files": 21
+  },
+  "offline": {
+    "path": ".research/implementation/archive-pin-recovery/offline-verification.json",
+    "bytes": 323,
+    "sha256": "61d847a766b11815355ba4fb1f09b98645e3f4f2f0b007fca9f64b19864f9520"
+  },
+  "remaining": [
+    "Continuous principal/action/scope and policy authority, typed pin renewal, bounded interrupted live delivery and actual served read/export/restart remain required.",
+    "Recovery cancellation while waiting on a permanent blocker, multiple/zero source mixtures under native load, other consumer purposes, legacy positive claims, actual concurrent compaction/reclamation and aged/mixed workloads remain unqualified.",
+    "Recovery requires the selected same-host local descriptor-exclusion contract; no host/power-loss, Linux arm64, ordinary installation or release qualification. P02-T04/T07, P06 and M1 remain open."
+  ]
+}

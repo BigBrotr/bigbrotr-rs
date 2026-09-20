@@ -775,11 +775,13 @@ cannot reclaim required evidence, pending data or readable generations.
   replies. Original parser failure remains recorded. Typed renewal, old-holder
   recovery, actual concurrent reclamation,
   other consumer purposes and actual authorized read/export remain required.
-  Draft0018 and the recovery adapter now require a fresh recovery-only custody
-  lifetime; event/cut reads and pin registration cannot share it. Local tests
-  preserve this restriction across rewrap and retained drivers. Native recovery,
-  populated0017 upgrade, explicit result resolution and interrupted recovery
-  remain pending; migration0017's applied bytes stay unchanged.
+  [Native recovery evidence](evidence/p02-archive-pin-recovery-native-20260920.json)
+  at51d35ae qualifies a fresh recovery-only custody lifetime: readers/new pins
+  cannot share it, including rewrap and retained drivers. Fourteen native cases,
+  eleven SQL cases, unchanged populated17/legacy16 upgrades and a real omitted
+  positive-claim release cover explicit recovery/atomicity/result resolution.
+  Applied0017/0018 bytes remain unchanged. Permanent-blocker cancellation, typed
+  renewal, actual authorized read/export and concurrent reclamation remain open.
 - [ ] **Step 2:** Reclaim pending payload only after committed archive and safety policy;
   preserve identity/receipt metadata for its correctness horizon.
 - [ ] **Step 3:** Compact files without changing source identities or reference resolution;

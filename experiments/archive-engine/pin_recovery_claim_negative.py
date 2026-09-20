@@ -4,6 +4,7 @@ import argparse
 import json
 from pathlib import Path
 import sys
+import time
 sys.dont_write_bytecode = True
 from signed_publication_cases import command, execute, sha, Process, event, send, proxy_observation
 
@@ -72,13 +73,21 @@ def main(root):
         assert terminal['pin_rejections']==['incomplete-recovery']
         proxy.stop();proxy=None
         report['after']=rows();assert report['after']==before
-        report['remaining_pg_clients']=json.loads(sql("SELECT coalesce(json_agg(pid),'[]') FROM pg_stat_activity WHERE backend_type='client backend' AND pid<>pg_backend_pid()",'postgres'))
-        assert report['remaining_pg_clients']==[]
+        until=time.monotonic()+5
+        while True:
+            report['remaining_pg_clients']=json.loads(sql("SELECT coalesce(json_agg(pid),'[]') FROM pg_stat_activity WHERE backend_type='client backend' AND pid<>pg_backend_pid()",'postgres'))
+            if not report['remaining_pg_clients']:break
+            assert time.monotonic()<until,'backend did not exit'
+            time.sleep(.02)
         report['status']='PASS'
     finally:
         if proxy:
-            try:send(proxy,'stop\n');proxy.wait(5)
-            finally:proxy.stop();report['proxy_incomplete']=proxy_observation(proxy)
+            try:send(proxy,'stop\n');assert proxy.wait(5)==0
+            except BaseException as error:report['proxy_cleanup_error']=type(error).__name__
+            finally:
+                try:proxy.stop()
+                except BaseException as error:report['proxy_stop_error']=type(error).__name__
+                report['proxy_incomplete']=proxy_observation(proxy)
         save()
     print(json.dumps(dict(status=report['status'],source=state['source'],harness=revision)))
 

@@ -1151,9 +1151,9 @@ or orphaned obligations remain retained; another Control cannot release them.
 The initial multiline JSON parser failure is preserved. No live delivery,
 old-holder recovery, actual compaction or protected read/export is qualified.
 
-### Excluded reader recovery candidate
+### Excluded reader recovery
 
-P02-T07's next additive migration0018 records immutable recovery attribution
+P02-T07's additive migration0018 records immutable recovery attribution
 without adopting or rewriting existing0017 bindings. The new adapter requires a
 `LocalPinRecovery` lifetime obtained only by a fresh local flock acquisition. It
 cannot be built from an existing coordinator or converted publicly into one.
@@ -1181,8 +1181,16 @@ exclusion, not new scheduling authority. Unknown COMMIT and failed postcommit
 capture verification require explicit result resolution; an unavailable reply
 does not establish rollback of the release.
 
-Local custody/rewrap tests and compilation pass; migration0018 and the native
-recovery consumer are not yet engine-qualified. This does not close P02-T07.
+[Scoped native recovery evidence](../implementation/evidence/p02-archive-pin-recovery-native-20260920.json)
+at51d35ae passes two signed cuts and14 recovery cases, including actual blocked
+reader FLOCK exclusion, unchanged populated17 upgrade, both lost-COMMIT outcomes,
+manager loss and historical retry. Eleven additional SQL cases cover empty cuts,
+rollback and immutable attribution; schema16 legacy rows remain unadopted. An
+actual positive-claim omission refuses the entire recovery COMMIT with unchanged
+rows/xmin. Mac and Linux custody/schema tests and Clippy pass. All409 preexisting
+containers are preserved; the isolated lab is stopped/retained. This does not
+qualify cancellation behind a permanent blocker, live delivery, concurrent actual
+reclamation, host/power loss or P02-T07 as a whole.
 
 ## File formation, reads and cost
 

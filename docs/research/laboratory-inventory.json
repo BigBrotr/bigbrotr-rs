@@ -15204,14 +15204,18 @@
       "network": "bigbrotr-implementation-archive-pin-recovery-51d35ae",
       "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
       "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
-      "state": "running",
+      "state": "stopped-retained",
       "source_files": 919,
       "started_at": "2026-09-20T08:43:28.476265+00:00",
       "network_id": "b05b7e951615b83c424ed86a10ed7dbba5eb17b904756124b225aed297d6217c",
       "postgres_id": "1b4bc1d246973a59d576971ad7fbdb4eae21fcc3cf57fe2f84faa2c0c1b0363a",
       "catalog_manager_provisioned": true,
       "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
-      "container_id": "dadc77d3d27b092ea75883647a3f4b614143c9ee485d384334f4fa75fd01d64d"
+      "container_id": "dadc77d3d27b092ea75883647a3f4b614143c9ee485d384334f4fa75fd01d64d",
+      "network_state": "removed after owner/no-endpoint audit; containers and data retained",
+      "terminal_audit": "terminal-audit.json",
+      "evidence": "docs/implementation/evidence/p02-archive-pin-recovery-native-20260920.json",
+      "observed": "Terminal owner audit: zero clients, both stopped/PID0/no OOM,409 preexisting containers unchanged,8 unrelated running; empty owned network removed. Data and one negative-case obligation retained."
     }
   },
   "implementation_monitor_corrections_20260918": {
