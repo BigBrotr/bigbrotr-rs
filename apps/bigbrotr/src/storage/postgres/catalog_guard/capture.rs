@@ -12,6 +12,7 @@ pub struct CatalogCapture<'a> {
     tx: Transaction<'a>,
     coordinator: &'a LocalCoordinator,
     snapshot: u64,
+    head: u64,
     started: Instant,
     deadline: Instant,
 }
@@ -40,6 +41,27 @@ impl<'a> CatalogCapture<'a> {
         coordinator: &'a LocalCoordinator,
         duration: Duration,
     ) -> Result<Self, GuardError> {
+        Self::select(client, coordinator, None, duration).await
+    }
+    /// Stabilize an exact retained snapshot, even after publication advances.
+    /// Existence under this barrier is not a durable pin or file validation.
+    pub async fn at_snapshot(
+        client: &'a mut Client,
+        coordinator: &'a LocalCoordinator,
+        snapshot: u64,
+        duration: Duration,
+    ) -> Result<Self, GuardError> {
+        if snapshot == 0 || snapshot > i64::MAX as u64 {
+            return Err(GuardError::InvalidInput);
+        }
+        Self::select(client, coordinator, Some(snapshot), duration).await
+    }
+    async fn select(
+        client: &'a mut Client,
+        coordinator: &'a LocalCoordinator,
+        selected: Option<u64>,
+        duration: Duration,
+    ) -> Result<Self, GuardError> {
         if duration.is_zero() || duration > Duration::from_secs(120) {
             return Err(GuardError::InvalidInput);
         }
@@ -58,21 +80,33 @@ impl<'a> CatalogCapture<'a> {
             GuardError::Conflict,
         )
         .await?;
-        let snapshot: i64 = tx.query_one("SELECT snapshot_id FROM public.ducklake_snapshot ORDER BY snapshot_id DESC LIMIT 1", &[]).await.map_err(backend)?.try_get(0).map_err(backend)?;
-        let snapshot = u64::try_from(snapshot).map_err(|_| GuardError::IncompatibleLayout)?;
-        if snapshot == 0 || Instant::now() >= deadline {
+        let head: i64 = tx.query_one("SELECT snapshot_id FROM public.ducklake_snapshot ORDER BY snapshot_id DESC LIMIT 1", &[]).await.map_err(backend)?.try_get(0).map_err(backend)?;
+        let head = u64::try_from(head).map_err(|_| GuardError::IncompatibleLayout)?;
+        let snapshot = selected.unwrap_or(head);
+        if head == 0 || Instant::now() >= deadline {
             return Err(GuardError::Conflict);
         }
+        inspection::require(
+            &tx,
+            "SELECT EXISTS(SELECT 1 FROM public.ducklake_snapshot WHERE snapshot_id=$1::bigint)",
+            &[&(snapshot as i64)],
+            GuardError::Conflict,
+        )
+        .await?;
         // The parent's native deadline is at most120s. This finite server limit
         // allows native work to run without letting an abandoned barrier persist.
         // A fresh query checks the actual session before downstream durable work.
         tx.batch_execute("SET LOCAL idle_in_transaction_session_timeout='125s'")
             .await
             .map_err(backend)?;
+        if Instant::now() >= deadline {
+            return Err(GuardError::Conflict);
+        }
         Ok(Self {
             tx,
             coordinator,
             snapshot,
+            head,
             started: Instant::now(),
             deadline,
         })
@@ -88,7 +122,7 @@ impl<'a> CatalogCapture<'a> {
     }
     pub(crate) async fn require_virgin(&self) -> Result<(), GuardError> {
         self.verify().await?;
-        if self.snapshot != 1 {
+        if self.snapshot != 1 || self.head != 1 {
             return Err(GuardError::ExistingData);
         }
         inspection::require(
@@ -105,14 +139,17 @@ impl<'a> CatalogCapture<'a> {
         if Instant::now() >= self.deadline {
             return Err(GuardError::Conflict);
         }
-        inspection::require(&self.tx, "SELECT NOT enabled AND (SELECT max(snapshot_id) FROM public.ducklake_snapshot)=$1::bigint FROM bigbrotr_archive.owner WHERE singleton", &[&(self.snapshot as i64)], GuardError::Conflict).await?;
+        inspection::require(&self.tx, "SELECT NOT enabled AND (SELECT max(snapshot_id) FROM public.ducklake_snapshot)=$1::bigint AND EXISTS(SELECT 1 FROM public.ducklake_snapshot WHERE snapshot_id=$2::bigint) FROM bigbrotr_archive.owner WHERE singleton", &[&(self.head as i64), &(self.snapshot as i64)], GuardError::Conflict).await?;
         if Instant::now() >= self.deadline {
             return Err(GuardError::Conflict);
         }
         Ok(())
     }
     pub async fn accept(&self, observed: ObservedCut) -> Result<CapturedCut<'_, 'a>, GuardError> {
-        if observed.catalog() != self.identity()
+        // Frontier publication observes the current complete cut. Historical
+        // selection may protect an old receipt but cannot publish it as latest.
+        if self.snapshot != self.head
+            || observed.catalog() != self.identity()
             || observed.observation().snapshot_id != self.snapshot
             || observed.started() < self.started
         {

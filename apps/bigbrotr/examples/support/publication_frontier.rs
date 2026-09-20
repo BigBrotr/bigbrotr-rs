@@ -148,4 +148,64 @@ pub async fn inspect(
     );
     drop(captured);
     capture.finish().await.unwrap();
+    if mode == "history" && !prefix {
+        // An old frontier must never be silently rebound to the current head.
+        let historical =
+            CatalogCapture::at_snapshot(manager, coordinator, 3, Duration::from_secs(30))
+                .await
+                .unwrap();
+        assert_eq!(historical.snapshot_id(), 3);
+        historical.verify().await.unwrap();
+        let old_cut = preparation(
+            installation,
+            &directory(home.join("historical-cut-temp")),
+            cancel,
+        )
+        .inspect_cut(
+            CutRead {
+                dataset_id: dataset(),
+                topology_generation: TopologyGeneration::new(0),
+                bounds: vec![CutBound {
+                    shard_id: 0,
+                    owner_epoch: 1,
+                    complete_through: 10,
+                }],
+                receipts: inputs
+                    .iter()
+                    .filter(|input| input.request().ordinal() <= 3)
+                    .map(|input| input.expectation().clone())
+                    .collect(),
+                snapshot_id: Some(3),
+            },
+            coordinator,
+            &CatalogRoute {
+                address: "127.0.0.1".parse().unwrap(),
+                port: 5432,
+                database,
+                tls: CatalogTls::LocalPlaintext(PlaintextBoundary::Loopback),
+            },
+            CatalogReaderCredentials {
+                login: "bigbrotr_receipt_reader",
+                password,
+            },
+            budget,
+            12,
+        )
+        .unwrap();
+        let old_observation = old_cut.observation().clone();
+        assert!(matches!(
+            historical.accept(old_cut).await,
+            Err(bigbrotr::storage::postgres::catalog_guard::GuardError::Conflict)
+        ));
+        historical.finish().await.unwrap();
+        assert!(matches!(
+            CatalogCapture::at_snapshot(manager, coordinator, 5, Duration::from_secs(30)).await,
+            Err(bigbrotr::storage::postgres::catalog_guard::GuardError::Conflict)
+        ));
+        emit(
+            serde_json::json!({"event":"historical-capture", "snapshot_id":3,
+            "latest":4,"missing_snapshot_refused":5,"old_observation":old_observation,
+            "historical_publication_refused":true}),
+        );
+    }
 }

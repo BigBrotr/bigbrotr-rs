@@ -20,18 +20,18 @@ another administrative diagnostic command instead of the real read consumer.
 
 ## Git and ownership
 
-Local main is candidate `5ba30517244de213d68d68fbcf465ddf9465156c`, tree
-`3192ebffab309e9b8db9b00a7d4bfa0b8e380755`. Private origin/main was last verified
-at `8a1d8ba43c44af1203ca1f17d9be043283db4616`. Repository privacy was confirmed
-there. No push of the new candidate yet. Current root-owned dirty work: new reader
-custody evidence, task/reference documentation, lab inventory and this checkpoint.
-No parallel writer, merge or rebase. Finish report/diff/remote checks, commit this
-qualified boundary and push normally before advancing product edits.
+Local main and private origin/main were verified at
+`88e93678db830f08d22f49cfb6d234ee50fc40dc` after pushing the qualified custody
+boundary. Root-owned new work: exact historical CatalogCapture selection,
+publication fixture/oracle, an unqualified-pin SQL negative fixture and this
+checkpoint. No parallel writer, merge or rebase. Candidate native testing follows
+through an exact clean Git revision; no migration17 or persistent pin exists yet.
 
 Preserve `.research/worktrees/producer-closing-old-writer`, last verified clean at
 `f899896b1207f5e71c4e39d9ab7814b293814735` on
 `research/producer-closing-old-writer`, and other historical worktrees.
-Caches are not source authority. No local build or SSH session remains running.
+Caches are not source authority. No local build or SSH session remains running at this checkpoint. Tux read-only
+inspection still finds eight unrelated containers running and no BigBrotr lab.
 
 ## Executed reader custody boundary
 
@@ -132,7 +132,16 @@ PG row or successful local reopen.
 
 ## Next bounded product action
 
-Implement the real snapshot pin consumer under P02-T04/T07. The existing 0002
+Implement the real snapshot pin consumer under P02-T04/T07. The first bounded
+change now selects and rechecks exact historical snapshots under the existing
+catalog owner lock while remembering the head separately. An old selection cannot
+be accepted for new frontier publication or virgin initialization. Mac scoped
+Clippy passes; its initial missing-API compile failure is retained under
+`.research/implementation/archive-snapshot-pin/red` (not a runtime RED).
+Next execute normal/history signed native cuts and the unqualified lease negative
+on isolated PG16 at the exact candidate revision, then implement migration17 and
+the actual pin consumer. SQL and native cases are not yet executed.
+ The existing 0002
 lease shapes need additive qualification: immutable protocol attribution and a
 1:1 binding to the 0016 frontier, no adoption of old rows, actual current Control
 holder/role/incarnation and PostgreSQL clock checks after blocking work. The
@@ -144,8 +153,7 @@ Use a stable catalog/consumer lock shared with maintenance before scanning pins;
 locking only existing leases cannot exclude a new insertion. Preserve the order
 local custody -> catalog barrier -> short Control transaction. Never take native
 table SHARE after the native owner FOR UPDATE: native DML takes table then row.
-Verify actual historical snapshot existence under that barrier; CatalogCapture
-currently selects latest. Do not substitute latest for an older frontier.
+Verify actual historical snapshot existence under that barrier; The new CatalogCapture selector is not yet natively qualified. Do not substitute latest for an older frontier.
 
 Connect the pin to an actual bounded event/export consumer. Keep current
 principal/action/scope and policy authority through output; AccountObservation is

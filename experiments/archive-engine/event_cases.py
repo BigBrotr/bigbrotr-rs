@@ -178,7 +178,7 @@ def main(root, capture_cut=False, reader_custody=False):
                 assert [v['expected'] for v in values if v['event']=='inputs-reopened'] == input_expectations(mode)
                 # This slice consumes installed initialization/retained inputs;
                 # its dedicated mode omits previously qualified ACL fault races.
-                check(mode, [v for v in values if v['event'] not in ('inputs-reopened', 'captured-cut', 'captured-prefix', 'historical-frontier')], json.loads(reader['stdout']))
+                check(mode, [v for v in values if v['event'] not in ('inputs-reopened', 'captured-cut', 'captured-prefix', 'historical-frontier', 'historical-capture')], json.loads(reader['stdout']))
             request = identity(value, records, mode)
             before, original_files = metadata(db), files(mode)
             result[mode+'_metadata_before'] = before
@@ -189,12 +189,16 @@ def main(root, capture_cut=False, reader_custody=False):
                 assert captured == [cut_expectation(mode)], 'independent complete cut and request digest'
                 prefixes = [v for v in values if v['event'] == 'captured-prefix']
                 historical = [v for v in values if v['event'] == 'historical-frontier']
+                historical_capture = [v for v in values if v['event'] == 'historical-capture']
                 if mode == 'history':
                     prefix = cut_expectation(mode, True)
                     assert prefixes == [prefix], 'independent earlier cut'
                     assert historical == [dict(event='historical-frontier', **prefix['frontier'], family_counts=prefix['observation']['family_counts'])], 'old identity after latest snapshot advances'
+                    assert historical_capture == [dict(event='historical-capture', snapshot_id=3,
+                        latest=4, missing_snapshot_refused=5, old_observation=prefix['observation'],
+                        historical_publication_refused=True)], 'historical barrier must retain exact selection'
                 else:
-                    assert prefixes == historical == []
+                    assert prefixes == historical == historical_capture == []
                 marker = json.loads(sql('bbpub_control_'+mode,
                     "SELECT row_to_json(t) FROM (SELECT encode(dataset_id,'hex') AS dataset, encode(catalog_id,'hex') AS catalog, protocol_version, protection_class, baseline_snapshot FROM control.archive_persistence)t;"))
                 assert marker == dict(dataset='01'*16, catalog='5a'*16, protocol_version=1,
@@ -222,7 +226,7 @@ def main(root, capture_cut=False, reader_custody=False):
                     owner=['archive',1,'active',True,'control',True,True]), 'independent durable frontier binding'
                 result['cases'].append(dict(name=mode+'-captured-cut', status='PASS',
                     cut=captured[0], persistence=marker, attempt_protocols=protocols, frontier=frontier,
-                    prefixes=prefixes, historical=historical))
+                    prefixes=prefixes, historical=historical, historical_capture=historical_capture))
                 save()
                 if capture_cut:
                     continue
