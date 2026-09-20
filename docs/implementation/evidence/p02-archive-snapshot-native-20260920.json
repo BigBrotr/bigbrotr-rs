@@ -1,0 +1,522 @@
+{
+  "format": "bigbrotr-archive-snapshot-evidence/1",
+  "status": "PASS",
+  "scope": "P02-T07 step1 / P06-T02 step3 exact native snapshot selection prerequisite; no retention/policy lease, protected frontier, complete task, M1 or release qualification",
+  "source": {
+    "revision": "e1852b8819b657ca2ec919dab2feff3716225056",
+    "tree": "fa342caeaa55881ce72e23dfa1fb97ce46a52bbf",
+    "files": 878,
+    "archive_sha256": "e6aaa363a5c57ee6f1a278f5290e40f1b8eefd206a60ddae0a07d263679e0ab6",
+    "manifest": {
+      "path": ".research/implementation/archive-snapshot/capture/collected/out/build/source-manifest.json",
+      "bytes": 108392,
+      "sha256": "1e03e89d2cbb380781682ff37a14510ed62cab8bb174e08179574d782a7446ae"
+    },
+    "lock_sha256": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215",
+    "verified_against_mac_git_archive": true,
+    "clean_and_unchanged": true
+  },
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "limits": "Runner2CPU/6GiB/512PIDs;PG1CPU/1GiB/128PIDs;512MiBtmpfs;internal network,nohostports,readonly source/root,no release credentials",
+    "engines": {
+      "path": "contracts/release/archive-engine.json",
+      "bytes": 8159,
+      "sha256": "ae0069565ab9411928df0cf067822630c4f3a912919e61633b952f8077a5e2c1"
+    },
+    "dependencies": {
+      "path": "contracts/release/dependencies.json",
+      "bytes": 16208,
+      "sha256": "9bea8c27908c680afc63ec9b74c481ea522c2b7a32232ab4dbca82b1920d7dd0"
+    },
+    "native_toolchain": {
+      "path": ".research/implementation/archive-snapshot/capture/collected/out/native-tests/ready.json",
+      "bytes": 5446,
+      "sha256": "f098b598f35a1b51238ac1df4ce952d64c549d0d5231a04d0fcd7248795a5c40"
+    }
+  },
+  "artifacts": {
+    "control": "adc3353b2c59614d1aa37fe6759ab31af5ca0b60958d98a7e8b2327c637237cf",
+    "worker": "a16f570a190b142e59162263ac389f39bd5d0fc3148f65ea486d93fda5f2e9b1",
+    "publisher": "53631c9bbbd3db1ce7b773740ce1b4090b5c609580681d321823db80ac5195b7",
+    "reader": "237d83026e262ef166f67d7bb358a6c5d5f992c72251465cf0420870d0ec0bd6",
+    "event_reader": "2b9d98ccb78d7290384a88073775c5fe19ee0bf0236d8fd37ca3264c4c4b6525"
+  },
+  "implementation": [
+    "Optional private EventRead snapshot_id selects native SNAPSHOT_VERSION at readonly ATTACH. Missing/null preserves the existing fresh observer. Nonnegative native BIGINT domain0..i64::MAX is distinct from unsigned source sequence.",
+    "Worker observes actual transaction snapshot before either full fact lookup; parent requires the same ID after complete signed-response decoding. Missing/expired/wrong snapshot refuses without latest fallback.",
+    "No persistent SQL/scientific encoding changed. Main and private worker are one exact build tuple. Numeric selection conveys neither pin nor authority."
+  ],
+  "upstream": {
+    "ducklake_commit": "d8a1881e22516ea3d186d73e83c65fe5bd1a1dc4",
+    "paths": [
+      "src/storage/ducklake_storage.cpp",
+      "src/storage/ducklake_transaction.cpp:1530",
+      "src/storage/ducklake_metadata_manager.cpp:4091",
+      "src/functions/ducklake_current_snapshot.cpp",
+      "src/functions/ducklake_expire_snapshots.cpp"
+    ],
+    "official_documentation": "https://ducklake.select/docs/stable/duckdb/usage/time_travel",
+    "consequence": "Exact source parses BIGINT, applies the catalog at-clause and requires equality with one retained snapshot; missing version throws rather than selecting latest."
+  },
+  "oracle": {
+    "harness": {
+      "path": "experiments/archive-engine/event_cases.py",
+      "bytes": 16692,
+      "sha256": "79a477abef6385c0cbd358170064f59f11c9b4b038a3e759886823854aeb4a14"
+    },
+    "independent": {
+      "path": "experiments/archive-engine/signed_publication_oracle.py",
+      "bytes": 16086,
+      "sha256": "368c6757670447a33ca3d9798356f025c11bd27901f9bfa828bc872b95b4dd43"
+    },
+    "signed": {
+      "path": "experiments/identity-contract/signed-fixture.json",
+      "bytes": 58802,
+      "sha256": "4c931ab34cb7adeb707fc2866f4a50b3ec8b694cbb2d4fb5e335f8f37a2d8875"
+    },
+    "history": "Actual third signed admission request appends correction facts11/12 referencing9/10, received5M/recorded20M. Real guarded attempt5 commits snapshot4. Independent literal CBOR/digests and all native family fields, retained inputs/outcomes and equal initial/terminal Rocks rows/digest are checked. Full consumer must still return snapshot3 before/after PG crash; ignoring ATTACH selection fails the positive discriminator.",
+    "source_authority": "Trusted fixture source authorization; no installed read-policy claim."
+  },
+  "linux": {
+    "ordered_build": {
+      "path": ".research/implementation/archive-snapshot/capture/collected/out/native-tests/result.json",
+      "bytes": 2800,
+      "sha256": "da2303b9368f3910c91c04566f46edd992466ebf456ea16b7db04108b1bea730"
+    },
+    "checks": {
+      "path": ".research/implementation/archive-snapshot/capture/collected/out/native-tests/checks/result.json",
+      "bytes": 4953,
+      "sha256": "057ff967c45ad3a82e573801514a0834f9dd5d8338419f464eb5f45ad753b651"
+    },
+    "logs": [
+      {
+        "path": ".research/implementation/archive-snapshot/capture/collected/out/native-tests/ordered-build.log",
+        "bytes": 626,
+        "sha256": "2192ce1e6af777fd2590824a8597560bae12b10b62fedeb0f3b9c45e9c01bfdf"
+      },
+      {
+        "path": ".research/implementation/archive-snapshot/capture/collected/out/native-tests/checks/fixture.log",
+        "bytes": 227,
+        "sha256": "0ebd25d755f8023148cff09edff2f004071262d01151f21d7ec556aa98fc8ef2"
+      },
+      {
+        "path": ".research/implementation/archive-snapshot/capture/collected/out/native-tests/checks/parent-tests.log",
+        "bytes": 6537,
+        "sha256": "149a99d164f95cb57e6de6a379790dfcf3f3f48b08e26c51e6658488bc4f2cec"
+      },
+      {
+        "path": ".research/implementation/archive-snapshot/capture/collected/out/native-tests/checks/native-events.log",
+        "bytes": 1242,
+        "sha256": "6a5e403d550c444e4a2ae9f3f5a34d73d8f90748ba2e860fef07e18f60499411"
+      },
+      {
+        "path": ".research/implementation/archive-snapshot/capture/collected/out/native-tests/checks/clippy.log",
+        "bytes": 394,
+        "sha256": "0d3b8ae3d4aae47707e394a5107c1f796951f1e5b32be31d12da757ffb416640"
+      },
+      {
+        "path": ".research/implementation/archive-snapshot/capture/collected/out/native-tests/lifetime/native-holder.log",
+        "bytes": 388,
+        "sha256": "c2f1e5bacf9dd32e979346767c7e7c8c435dccdeb08fd83389ebb58026165eed"
+      }
+    ],
+    "native_tests": {
+      "passed": 9,
+      "failed": 0,
+      "ignored": 0
+    },
+    "parent_tests": {
+      "passed": 51,
+      "failed": 0,
+      "ignored": 1
+    },
+    "explicit_native_holder": {
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "result": {
+        "path": ".research/implementation/archive-snapshot/capture/collected/out/native-tests/lifetime/result.json",
+        "bytes": 3161,
+        "sha256": "3589ee4655ccf77e2e030019df0ddef8089978bf991523c54e028adc3fed8eb8"
+      }
+    },
+    "ignore_disposition": "Default skipped native-holder test explicitly executed against this same packaged worker; no required skip counted PASS.",
+    "connected_cases": [
+      {
+        "name": "normal-complete",
+        "status": "PASS",
+        "elapsed_ms": 361,
+        "result": "observed",
+        "snapshot_id": "3"
+      },
+      {
+        "name": "snapshot-0",
+        "status": "PASS",
+        "elapsed_ms": 409,
+        "result": "refused",
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "name": "snapshot-1",
+        "status": "PASS",
+        "elapsed_ms": 410,
+        "result": "refused",
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "name": "snapshot-2",
+        "status": "PASS",
+        "elapsed_ms": 421,
+        "result": "refused",
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "name": "snapshot-4",
+        "status": "PASS",
+        "elapsed_ms": 322,
+        "result": "refused",
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "name": "snapshot-9223372036854775807",
+        "status": "PASS",
+        "elapsed_ms": 326,
+        "result": "refused",
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "name": "snapshot-9223372036854775808",
+        "status": "PASS",
+        "elapsed_ms": 0,
+        "result": "refused",
+        "refusal": "Input(InvalidInput)"
+      },
+      {
+        "name": "snapshot-18446744073709551615",
+        "status": "PASS",
+        "elapsed_ms": 0,
+        "result": "refused",
+        "refusal": "Input(InvalidInput)"
+      },
+      {
+        "name": "snapshot-exact",
+        "status": "PASS",
+        "elapsed_ms": 410,
+        "result": "observed",
+        "snapshot_id": "3"
+      },
+      {
+        "name": "scope",
+        "status": "PASS",
+        "elapsed_ms": 412,
+        "result": "refused",
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "name": "digest",
+        "status": "PASS",
+        "elapsed_ms": 398,
+        "result": "refused",
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "name": "event-id",
+        "status": "PASS",
+        "elapsed_ms": 391,
+        "result": "refused",
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "name": "missing",
+        "status": "PASS",
+        "elapsed_ms": 388,
+        "result": "refused",
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "name": "row-limit",
+        "status": "PASS",
+        "elapsed_ms": 353,
+        "result": "refused",
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "name": "zero-limit",
+        "status": "PASS",
+        "elapsed_ms": 0,
+        "result": "refused",
+        "refusal": "Input(ResourceLimit)"
+      },
+      {
+        "name": "wrong-catalog",
+        "status": "PASS",
+        "elapsed_ms": 329,
+        "result": "refused",
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "name": "unavailable-database",
+        "status": "PASS",
+        "elapsed_ms": 320,
+        "result": "refused",
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "name": "missing-file",
+        "status": "PASS",
+        "elapsed_ms": 344,
+        "result": "refused",
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "name": "missing-file-restored",
+        "status": "PASS",
+        "elapsed_ms": 391,
+        "result": "observed",
+        "snapshot_id": "3"
+      },
+      {
+        "name": "corrupt-footer",
+        "status": "PASS",
+        "elapsed_ms": 402,
+        "result": "refused",
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "name": "corrupt-footer-restored",
+        "status": "PASS",
+        "elapsed_ms": 354,
+        "result": "observed",
+        "snapshot_id": "3"
+      },
+      {
+        "name": "cancel-blocked",
+        "status": "PASS",
+        "elapsed_ms": 401,
+        "result": "refused",
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "name": "cancel-blocked-retry",
+        "status": "PASS",
+        "elapsed_ms": 344,
+        "result": "observed",
+        "snapshot_id": "3"
+      },
+      {
+        "name": "deadline-blocked",
+        "status": "PASS",
+        "elapsed_ms": 6006,
+        "result": "refused",
+        "refusal": "ObservationUnknown"
+      },
+      {
+        "name": "deadline-blocked-retry",
+        "status": "PASS",
+        "elapsed_ms": 390,
+        "result": "observed",
+        "snapshot_id": "3"
+      },
+      {
+        "name": "normal-pg-restarted",
+        "status": "PASS",
+        "elapsed_ms": 422,
+        "result": "observed",
+        "snapshot_id": "3"
+      },
+      {
+        "name": "large-complete",
+        "status": "PASS",
+        "elapsed_ms": 408,
+        "result": "observed",
+        "snapshot_id": "3"
+      },
+      {
+        "name": "large-pg-restarted",
+        "status": "PASS",
+        "elapsed_ms": 363,
+        "result": "observed",
+        "snapshot_id": "3"
+      },
+      {
+        "name": "history-complete",
+        "status": "PASS",
+        "elapsed_ms": 354,
+        "result": "observed",
+        "snapshot_id": "4"
+      },
+      {
+        "name": "history-exact-previous",
+        "status": "PASS",
+        "elapsed_ms": 425,
+        "result": "observed",
+        "snapshot_id": "3"
+      },
+      {
+        "name": "history-pg-restarted",
+        "status": "PASS",
+        "elapsed_ms": 376,
+        "result": "observed",
+        "snapshot_id": "3"
+      }
+    ],
+    "connected_command": "python3 -B source/experiments/archive-engine/event_cases.py <owned-root>",
+    "complete_capture": {
+      "path": ".research/implementation/archive-snapshot/capture/collected/event-cases.json",
+      "bytes": 2924736,
+      "sha256": "3cc849b7b33d61df8424d7744e7ec134e3a3f1bf1a1b1fa02e7a1f28cb9d79ef"
+    }
+  },
+  "observations": {
+    "fixtures": {
+      "normal": {
+        "metadata_unchanged": true,
+        "files": 8,
+        "all_file_hashes_unchanged": true,
+        "restart": {
+          "before": "2026-09-20 02:43:26.33583+00",
+          "after": "2026-09-20 02:46:58.310493+00",
+          "signal": "SIGQUIT"
+        }
+      },
+      "large": {
+        "metadata_unchanged": true,
+        "files": 8,
+        "all_file_hashes_unchanged": true,
+        "restart": {
+          "before": "2026-09-20 02:46:58.310493+00",
+          "after": "2026-09-20 02:47:14.056547+00",
+          "signal": "SIGQUIT"
+        }
+      },
+      "history": {
+        "metadata_unchanged": true,
+        "files": 11,
+        "all_file_hashes_unchanged": true,
+        "restart": {
+          "before": "2026-09-20 02:47:14.056547+00",
+          "after": "2026-09-20 02:47:32.964169+00",
+          "signal": "SIGQUIT"
+        }
+      }
+    },
+    "history_latest": 4,
+    "history_requested": 3,
+    "cancelled_blocked_total_ms": 401,
+    "deadline_ms": 6000,
+    "deadline_return_ms": 6006,
+    "limits": "Small finite workloads; elapsed time includes startup. Cancellation is total job time, not latency since marker. Actual PG blockers recorded. No mixed-load, RSS/capacity, host/power-loss or Linux arm64 claim."
+  },
+  "mac": {
+    "environment": "Apple Silicon macOS,Rust1.98.1,pinned native bundle;dirty development snapshots",
+    "semantic_red": "Old state after later deletion returned Missing while ATTACH ignored requested snapshot; correction returns original complete signed pair.",
+    "native_tests": {
+      "passed": 9,
+      "failed": 0,
+      "ignored": 0
+    },
+    "parent_targeted": {
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0
+    },
+    "logs": [
+      {
+        "path": ".research/implementation/archive-snapshot/mac-red.log",
+        "bytes": 1130,
+        "sha256": "a79c88a8ee3afe32b4f340e75ae9793fe9410c8ba8780abe164db5fa0d33e8f5"
+      },
+      {
+        "path": ".research/implementation/archive-snapshot/mac-first-green.log",
+        "bytes": 648,
+        "sha256": "0cabd84c6e69f7274d9df481e83809e5eda9dd030fa3e5eb24bc842c13fda4c7"
+      },
+      {
+        "path": ".research/implementation/archive-snapshot/mac-snapshots.log",
+        "bytes": 1434,
+        "sha256": "9aff77bf057e75f1b59c65c2f3e17bc5cf504de717755730e8a45a11eb9ee453"
+      },
+      {
+        "path": ".research/implementation/archive-snapshot/mac-parent.log",
+        "bytes": 614,
+        "sha256": "95fff913d067074ad7819bbcd63d6ce9928a84cf3dabec8215ccc6aefb094ab3"
+      },
+      {
+        "path": ".research/implementation/archive-snapshot/mac-clippy.log",
+        "bytes": 431,
+        "sha256": "465f7d01ec4c8ce312fa8c5076c4adaa0023ad79520a70924a04e579fb2f50dd"
+      },
+      {
+        "path": ".research/implementation/archive-snapshot/mac-fixture-clippy.log",
+        "bytes": 308,
+        "sha256": "d64d96f76f7b56b179f6d8e83e76abb060333cf897d9731c2011004244376368"
+      }
+    ],
+    "red_sources": [
+      {
+        "path": ".research/implementation/archive-snapshot/red-receipt.rs",
+        "bytes": 10928,
+        "sha256": "6900d3e53dae73e606e0c6848fdb1ef74c9ed3260548b758b08930c8e405702d"
+      },
+      {
+        "path": ".research/implementation/archive-snapshot/red-tests.rs",
+        "bytes": 19368,
+        "sha256": "f2fcab0806161980265328220e6b429a90472d977419d2ed3006cd05679d2eda"
+      }
+    ]
+  },
+  "review": {
+    "kind": "Independent read-only AI and integrating owner review",
+    "findings": [
+      "Strengthened connected history case: latest4/exact3; older fixture only had latest3/exact3.",
+      "History oracle now checks retained-input expectations, full outcomes and initial/terminal Rocks identity as well as all independent native scientific rows."
+    ],
+    "boundary": "No reviewer engine execution; complete frontier/pin/export/public read remains outside this selector.",
+    "evidence_review": "Independent read-only AI review verified all51 captured files,28 report references,878 source files against qualified Git and the tar identity; recomputed all31 outcomes, latest4/exact3 before/after restart, full rows/outcomes/Rocks identity, tests and audit. No engine execution; no concrete inconsistency."
+  },
+  "resources": {
+    "audit": {
+      "path": ".research/implementation/archive-snapshot/capture/collected/terminal-audit.json",
+      "bytes": 10149,
+      "sha256": "e1b755d9353c707da087508f6eb56bb501a2f22b139bf4844bac23f63b9b6336"
+    },
+    "identities": {
+      "path": ".research/implementation/archive-snapshot/capture/collected/resources.json",
+      "bytes": 1292,
+      "sha256": "1e624ed88176bf789eed9c9e5c0ed8f51fc988d2a4a2316f45b800273df3e11b"
+    },
+    "capture": {
+      "path": ".research/implementation/archive-snapshot/capture/evidence-identity.json",
+      "bytes": 8033,
+      "sha256": "deed58a466ce8cf30332424b5301c5314f464c2ae59fd5abb50a6b8fce994da4"
+    },
+    "capture_sha256": "33dd24a24a8298a6cfffeddac16a3f76eac469b2e041f4c87e67a2914330bb24",
+    "capture_files": 51,
+    "remaining_pg_clients": [],
+    "preexisting_preserved": 389,
+    "unrelated_running": 8,
+    "bigbrotr_running": 0,
+    "state": "stopped-retained; only empty owned network removed",
+    "collector_started_at": "2026-09-20T02:47:52.043783+00:00",
+    "finished_at": {
+      "/bigbrotr-implementation-archive-snapshot-e1852b8": "2026-09-20T02:47:52.155691419Z",
+      "/bigbrotr-implementation-archive-snapshot-e1852b8-pg": "2026-09-20T02:48:02.256610818Z"
+    },
+    "collector_exit_codes": {
+      "/bigbrotr-implementation-archive-snapshot-e1852b8": 143,
+      "/bigbrotr-implementation-archive-snapshot-e1852b8-pg": 137
+    },
+    "exit_meaning": "Deliberate sleeping-runner/PG-wrapper shutdown, noOOM; not test-process failures.",
+    "preservation_evidence": "Executed collector assertions plus preflight inventory; all final unrelated observations were not retained for independent recomputation."
+  },
+  "remaining": [
+    "Complete protected frontier from contiguous complete admission prefixes for every registered topology stream, including0, with dictionary/reference closure inside the same cut.",
+    "Qualified file/directory plus catalog persistence and reclamation exclusion before binding immutable catalog/snapshot identity to real Archive owner/frontier/pins.",
+    "Installed principal/action/scope policy through output, cut-correct first acquisition metadata, standalone exports, complete M1 and selected product."
+  ]
+}

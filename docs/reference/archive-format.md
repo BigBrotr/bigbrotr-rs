@@ -198,7 +198,7 @@ Seven native unit cases additionally cover unsigned time extremes, a 2 MiB body,
 scope-specific alternate signatures and interleaved snapshot reads. No current
 query, source-cut certificate, installed pin/authority or capacity claim follows.
 
-The next pin-consumer prerequisite adds optional `snapshot_id` to the private
+The pin-consumer prerequisite adds optional `snapshot_id` to the private
 EventRead. An exact value selects `SNAPSHOT_VERSION` at the readonly DuckLake
 attachment; both lookups and `ducklake_current_snapshot` therefore use that
 selection. The worker checks the actual snapshot before reading either fact, and
@@ -215,6 +215,12 @@ documents the attach option. At the pinned upstream commit
 BIGINT, `DuckLakeTransaction::GetSnapshot` applies the catalog selection, and
 `DuckLakeMetadataManager::GetSnapshot(BoundAtClause&)` requires the exact retained
 snapshot row. Actual native tests distinguish old-state reads after deletion,
-expiry with still-readable current data and future IDs; connected PG qualification
-is pending. Selecting a snapshot is not acquiring its retention pin or authorizing
-the event; the caller still needs both through delivery.
+expiry with still-readable current data and future IDs.
+[Native Linux qualification](../implementation/evidence/p02-archive-snapshot-native-20260920.json)
+at `e1852b8` passes nine native tests and31 connected cases. The history fixture
+advances the actual catalog to snapshot4 with receive/provenance corrections, then
+reads snapshot3 through the complete consumer before and after a PG crash. All
+scientific rows, input expectations, publication outcomes and initial/terminal
+Rocks identities are independently checked. Selecting a snapshot is not acquiring
+its retention pin or authorizing the event; the caller still needs both through
+delivery.

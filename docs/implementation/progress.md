@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-09-20 on Mac; latest owned Tux processes stopped at 02:13:35Z.
+Observed 2026-09-20 on Mac; the latest owned Tux lab is stopped and collected.
 Navigation only: follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint)
 and verify Git, dirty files, evidence and actual resources.
 
@@ -12,133 +12,101 @@ runner billing exception. Preserve private bigbrotr-rs, unpublished Cargo packag
 and the read-only Go neighbor. No public release or Linux arm64 claim. No P02/P03
 or P06 task or M1 milestone is complete; all selected later work remains required.
 
-Current boundary: P02-T07 step1 / P06-T02 step3 exact native snapshot selection,
-then the positive frontier/pin bridge needed by M1. Existing task files own the
-backlog. No task checkbox closes from this prerequisite.
+Current boundary: closing exact native snapshot selection, then P02-T04 step8
+file/catalog protection feeding the positive P02-T04/T07 frontier/pin bridge for M1.
+Existing task files own the backlog. No task checkbox closes from this prerequisite.
 
 ## Git and ownership
 
-Local main and private origin/main were verified equal at
-9128ca8533a51012f4e24ab86ae3e3782c977419 after ordinary push. The hydration product,
-fixture correction and evidence commits are published. Root owns current dirty
-snapshot-selection changes in protocol/archive_event, worker event/receipt/tests,
-parent archive/events and event_cases harness plus these owning docs. No parallel
-writer, merge or rebase. Independent AI review is read-only.
-
-The connected fixture now publishes a real third admission batch11..12 correcting
-receive/provenance times, through the existing guarded path. It independently
-observes latest snapshot4, then requires exact3 through the full consumer before
-and after PG restart. This discriminates an ignored ATTACH selector. Independent
-AI review found and closed an oracle gap: history now also checks all reopened
-inputs, publication outcomes and identical initial/terminal Rocks rows/digest.
-Both normal/history compare all native families against literal CBOR/signed
-expected records. The planned connected run has31 cases; none yet executed for
-this candidate. The two changed fixture examples pass scoped Mac Clippy.
-
-The snapshot candidate adds an optional exact native snapshot selector. One Mac
-native regression first failed Missing after a later deletion while the selector
-was ignored; after the fix all9 event native tests and the1 parent response test
-pass, as does scoped Clippy. Raw sources/logs live under ignored
-.research/implementation/archive-snapshot. Fresh Linux qualification is pending;
-no experiment active yet. All prior execution sessions are joined.
+Private origin/main remains at9128ca8533a51012f4e24ab86ae3e3782c977419.
+Local main is the qualified unpublished product/fixture candidate
+e1852b8819b657ca2ec919dab2feff3716225056/treefa342caeaa55881ce72e23dfa1fb97ce46a52bbf.
+Root owns the evidence report, archive-format/task notes, checkpoint and lab
+inventory updates, plus an unstaged next-slice native COPY inode regression in
+worker publication_tests.rs. No next-slice product behavior has changed. No parallel writer, merge or rebase. Independent AI reviews
+are read-only: snapshot evidence and next file-persistence prerequisite.
 
 Separate compatibility worktree .research/worktrees/producer-closing-old-writer
 remains at publishedf899896b1207f5e71c4e39d9ab7814b293814735 on
 research/producer-closing-old-writer; preserve it. Build caches are not source
-authority. Both prior owned hydration containers freshly observed stopped/Pid0,
-noOOM, with8 unrelated running and0 BigBrotr running.
+authority. All Tux sessions are joined; no active remote experiment or cleanup debt. The Mac
+COPY identity regression passes1case/0failed/0ignored; its log is under
+.research/implementation/archive-file-persistence/mac-copy-identity.log.
 
-## Implemented and executed hydration boundary
+## Executed snapshot boundary
 
 [Archive format](../reference/archive-format.md#exact-historical-signed-event-hydration)
-owns the narrow contract. The shared private request names exact payload and
-eligibility FactRefs, dataset/event ID and required scope. The native worker reads
-both complete schema1 envelopes in one DuckLake transaction, recomputes digests
-and verifies the scope's original ID/BIP340 signature. Payload storage scope may
-differ; it never supplies another scope's signature/acquisition metadata. Parent
-transport retains a separate data grant through body delivery, bounds output,
-rechecks cancellation/deadline after decoding, and requires clean EOF and positive
-reap. Output allocation failure after spawn explicitly joins; unknown termination
-wins over a resource refusal. No public/current query, certified cut, authority,
-pin, standalone export or readiness claim is introduced.
+owns the contract; [snapshot qualification](evidence/p02-archive-snapshot-native-20260920.json)
+binds source/dependencies/artifacts/inputs/commands/results/limits. Private EventRead
+optionally names the exact native nonnegative BIGINT snapshot. Worker readonly
+ATTACH selects it, actual snapshot is checked before both exact-reference fact
+lookups, and parent requires the same ID in the full verified response. Missing,
+expired or mismatching snapshots refuse without fallback. None preserves the
+private fresh observer. No pin, public authority or certified cut is created.
 
-The [qualification report](evidence/p02-archive-event-native-20260920.json) binds
-exact source, dependencies, artifacts, fixtures, commands, observations and limits.
-Native source3f29952/tree184686b635dcd2397ca6c90dd263692d1381096d has877 files,
-verified against Mac git archive. All product code is identical to730daa2;
-3f29952 adds only the missing fixture jobs UPDATE grant plus checkpoint/inventory.
+At e1852b8, exact878-file Git export verified against Mac, Linux amd64/Rust1.98.1/
+PG16.15/pinned native bundle passes31 connected cases,9 native tests,51 parent tests
+and scoped Clippy. The default ignored holder is explicitly executed using that
+same packaged worker:1PASS/0ignored. Actual signed Rocks admission, installed catalog
+initialization, retained inputs, guarded publication and complete worker read run.
+The history fixture commits corrections11/12 to receive/provenance via attempt5,
+advancing latest to4, then reads exact3 before and after PG SIGQUIT/restart. Full
+native rows, literal CBOR/digests, reopened inputs, outcomes and initial/terminal
+Rocks identity are compared independently. Ignoring ATTACH selection fails this
+positive discriminator. Missing/corrupt files, mismatched refs/scope/catalog,
+limits and blocked cancellation/deadline refuse; restored identical retries pass.
+Three actual PG restarts preserve all metadata and8/8/11 file hashes. Deadline6000ms
+returns6006ms; cancellation401ms is total job time, not latency since marker.
+No RSS, capacity, host/power-loss, installed authorization or Linux arm64 claim.
 
-Executed on Linux amd64, Rust1.98.1, PostgreSQL16.15 and pinned native archive bundle:
-20 connected cases PASS through actual signed Rocks admission, installed catalog
-initialization, retained inputs/publication and verified worker read. Exact seven
-signed fields survive separate processes and two actual postmaster SIGQUIT/restarts.
-The larger connected event is94,577 JSON bytes/65,536 UTF-8 content bytes. Missing
-and corrupt physical files refuse; exact restoration permits identical reads.
-Wrong scope/ID/digest/catalog, absent data/database and reduced limits refuse.
-Actual PG lock waits precede cancellation and deadline refusal; retries succeed.
-Deadline6000ms returns at6004ms; cancellation440ms is total job time, not latency
-since the marker. Complete metadata and Parquet hashes remain unchanged.
+Mac actual native regression first failed Missing after a later deletion while
+ATTACH ignored the selection. Corrected9 native and1 parent tests plus Clippy pass.
+Native cases include actual snapshot expiry while current data remains readable,
+wrong actual snapshot, full unsigned times and2MiB signed body. Semantic RED sources
+and logs are retained under .research/implementation/archive-snapshot.
+Independent code/harness review closed the latest3/exact3 discriminator gap and
+added history input/outcome/Rocks identity checks. Independent evidence review verified all51 captured files,28 report references
+and878 source files; all31 outcomes, full rows, Rocks identity, test counts and
+terminal audit agree. No reviewer engine execution or concrete discrepancy.
 
-Seven native worker tests PASS, including full unsigned-time extremes, a2MiB body,
-valid alternate scope signatures, envelope corruption/duplicates and interleaving.
-Fifty parent tests PASS; the one default ignored native-holder test is then
-explicitly run against the exact packaged worker:1PASS/0ignored. Scoped Clippy
-passes. Linux Process tests independently prove full stdout/stderr pipe cancellation;
-PG lock cases are not described as stdout tests. No RSS/capacity/mixed-load claim.
+The [earlier hydration report](evidence/p02-archive-event-native-20260920.json)
+retains exact-reference/data-transport qualification at3f29952, including its first
+INCOMPLETE seed ACL run, network allocation failure and semantic RED sources.
+No prior failure is relabeled PASS by this new qualification.
 
-Mac retains semantic RED native/transport sources and logs,6 expanded native tests,
-1 closed-request test,46 parent tests,10 final transport tests and Clippy. These
-are dirty development snapshots, not Linux arm64 qualification. Independent AI
-code/harness review found and corrected final deadline checking, allocation-error
-termination precedence, fixture prerequisites/unique writer IDs, holder cleanup,
-deadline discrimination and bounded restart polling. Independent AI evidence
-review reconciled all41 file references, both captures and Git exports, signed
-objects/refusals and durable effects. No substantive discrepancy; collector start
-is now explicitly distinguished from terminal FinishedAt, and preservation of387
-prior containers is attributed to executed collector assertions rather than an
-independent recomputation of unretained unrelated final observations.
+## Owned lab and evidence
 
-## Preserved failures and owned resources
+Latest lab /home/tux/bigbrotr-implementation-20260917/runs/archive-snapshot-e1852b8,
+owner1e37c1e3a953a2a0ff75f2f3330f8d94; runner
+5b66f4070428281aa0bc245c001aa0e11d7c2272eed1779234a96db03e59b0f1 and PG
+9c5b10ceafa03d5a6bb08b05c7dc777be02bb124c47eee19413b0888417f0f6f are stopped/Pid0/noOOM.
+Collector143/137 exits are deliberate runner/PG-wrapper shutdown, not test failures.
+Only the empty owned network9648e39a455226133f2e42a671b22125ef9e097b4543819de330344d8af58112
+was removed; containers/data retained. No PG clients remained;389 preexisting
+containers were preserved,8 unrelated running and0 BigBrotr running. Preservation
+is supported by executed collector assertions/preflight, not independently
+recomputable from unretained final unrelated-container observations.
 
-Ignored root .research/implementation/archive-event owns logs, authoring recipe,
-Git bundles, launch/collector sources and captures. First fixture drafts had
-compiler/appender and cross-database transaction setup errors; neither is semantic
-RED. An initial reused embedded-connection latest-view expectation failed. Original
-logs are retained; the selected consuming-engine path uses a fresh reader, which
-correctly refuses changed references after the coherent original transaction.
-
-First Tux lab archive-event-730daa2 refused exhausted Docker network pools before
-creating engines. Only the positively inventoried empty stopped outcomes-efeb4e0
-network was removed; containers/data remain. Its eventual connected seed failed
-before hydration because a real SELECT FOR UPDATE lacked jobs UPDATE privilege.
-Outcome INCOMPLETE is retained under first/:20 captured files, tarSHA
-9df323590045588cbab31eba650af3b0fcae31c85faa7a8e6f4fa6ef68a9c3d2;
-allowlisted postgres-errors.json records the actual permission error. Both owned
-containers are stopped; its now-empty network was removed.385 prior containers
-were preserved and no PG clients remained. Never rerun initialization in that root.
-
-Corrected lab /home/tux/bigbrotr-implementation-20260917/runs/archive-event-3f29952,
-ownere5cf2feb6e321f851dcf2affcb081a50, runner
-c7cf7b2f412d18fa1dd289c6a2d491a1f74e48779351054f98cb47ada3d909cc and PG
-f7d76cbd51946442f0c5da2c65c984cd91e93753c0219b8fde51a6136e5303ec are positively
-stopped/Pid0, noOOM. Collector exits143/137 reflect deliberate container shutdown,
-not failed test processes. Empty owned network removed; containers/data retained.
-Terminal audit preserves387 preexisting containers,8 unrelated running and
-0 BigBrotr running; zero PG clients remained before shutdown.
-corrected/evidence-identity.json binds40 files and tarSHA
-95192130f2313c62d4bf36dc0b11e5a20566cdaf7356996d86db24ead6deae69.
-All877 exported sources and captured bytes match their Mac-verified identities.
-[Inventory](../research/laboratory-inventory.json) entries archive_event and
-archive_event_corrected own complete images, limits and lifecycle details.
+Ignored .research/implementation/archive-snapshot/capture contains51 verified files,
+tarSHA33dd24a24a8298a6cfffeddac16a3f76eac469b2e041f4c87e67a2914330bb24.
+Launch/transfer/collector sources and Mac logs are in the parent ignored directory.
+[Inventory](../research/laboratory-inventory.json) archive_snapshot entry owns exact
+images, limits and lifecycle. Prior archive-event-730daa2/3f29952 labs remain stopped,
+retained, networks removed. Never rerun finite initialization over any of these roots.
 
 ## Next bounded action and open gates
 
-Finish the snapshot-selection diff review and checks, commit a clean unpublished
-candidate, transfer exact Git to a freshly inventoried isolated Tux run, execute
-the actual connected selected-snapshot/refusal/missing-file/restart consumer and
-collect/stop owned resources. Do not relaunch either old finite builder.
+Finish evidence review, run affected document/handoff checks, commit documentation
+and push the verified snapshot slice normally after checking remote state. Then
+qualify/implement local file persistence before the protected frontier: current
+publisher COPY/registration does not explicitly synchronize files/directories.
+Independent upstream review raised a concrete boundary to inspect: reopening a
+file only after COPY closed its writer can miss earlier Linux writeback errors.
+Inspect exact native open/close behavior and exercise a held descriptor or supported
+native sync mechanism; do not infer power-loss persistence from PG restart or hash.
+Keep the existing caller-owned registration, no ordinary-INSERT fallback.
 
-Then implement the complete P02-T04/T07 frontier bridge: verified committed batches
+Implement the complete P02-T04/T07 frontier bridge: verified committed batches
 -> contiguous complete prefix for every topology stream (including zero) -> real
 Archive consumer owner/frontier -> actual snapshot lease and retention claims.
 Do not derive a SourceCut from two FactRefs, DuckLake max snapshot or coordinator
@@ -156,8 +124,8 @@ has no adapter producing that frontier. Historical read/export also needs actual
 principal/action/scope authorization, current policy and retained pins through
 output. AccountObservation is not reusable authentication, PolicyLeaseTracker is
 only local duration, and current administrative principal_grants omit history/export.
-The exact snapshot selector in the current candidate supplies no persistent
-snapshot binding or pin; those remain required. M1 acquisition metadata must come from authorized eligibility/
+The qualified exact snapshot selector supplies no persistent snapshot binding
+or pin; those remain required. M1 acquisition metadata must come from authorized eligibility/
 receive facts, never the shared payload's recorded timestamp. LifecycleOutput's
 4096-byte diagnostic/post-Control-cleanup rules cannot carry served event data.
 

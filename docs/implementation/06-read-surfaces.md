@@ -152,9 +152,10 @@ is an explicit resource. An ID lookup is not an archive-policy bypass.
   passes against the same packaged worker. It supplies neither source admission,
   current-view reduction, installed pins nor public/history authority. This step
   and the first-event milestone remain incomplete.
-  The next private consumer selects an exact retained native snapshot and refuses
-  a missing/expired selection without latest-view fallback. Mac native tests pass;
-  exact-revision PostgreSQL qualification is pending. A numeric selector is not a
+  The private consumer selects an exact retained native snapshot and refuses
+  a missing/expired selection without latest-view fallback. [Native qualification](evidence/p02-archive-snapshot-native-20260920.json)
+  at `e1852b8` passes31 connected cases and nine native tests, including actual
+  latest4/exact3 reads before and after PG crash. A numeric selector is not a
   retention or authorization lease.
 - [ ] **Step 4:** distinguish temporarily unavailable, corrupt, absent and
   policy-withheld bodies. Enforce bounded cold lookup and scan cost. Return

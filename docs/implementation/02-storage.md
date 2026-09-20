@@ -710,6 +710,10 @@ cannot reclaim required evidence, pending data or readable generations.
 - [ ] **Step 1:** Register readers, exports, backups and active derived/publication inputs
   against immutable snapshot identities; keep lease expiry distinct from evidence
   retention and policy authorization.
+  The [exact native selector](evidence/p02-archive-snapshot-native-20260920.json) at
+  `e1852b8` passes31 connected cases and nine native tests. It supplies the reader
+  prerequisite only; actual protected frontier and retained pin registration remain
+  required before this step can close.
 - [ ] **Step 2:** Reclaim pending payload only after committed archive and safety policy;
   preserve identity/receipt metadata for its correctness horizon.
 - [ ] **Step 3:** Compact files without changing source identities or reference resolution;
