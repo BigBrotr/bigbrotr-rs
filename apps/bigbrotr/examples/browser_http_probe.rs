@@ -1,4 +1,6 @@
 //! Isolated native executable/PG journey; never a product command or fake server.
+#[path = "browser_http_probe/commit.rs"]
+mod commit;
 use serde_json::{Value, json};
 use std::{
     fs::{self, File},
@@ -352,7 +354,7 @@ async fn faults(binary: &Path, config: &Path, home: &Path, admin: &Client) {
     );
 }
 
-async fn run(binary: PathBuf, home: PathBuf, fault_cases: bool) {
+async fn run(binary: PathBuf, home: PathBuf, mode: &str) {
     fs::create_dir(&home).unwrap();
     assert!(
         TcpStream::connect(ADDRESS).is_err(),
@@ -462,7 +464,7 @@ async fn run(binary: PathBuf, home: PathBuf, fault_cases: bool) {
         ],
     );
     let principal = enrolled["principal_id"].as_str().unwrap().to_string();
-    if fault_cases {
+    if mode != "ordinary" {
         cli(
             &binary,
             &config,
@@ -478,9 +480,16 @@ async fn run(binary: PathBuf, home: PathBuf, fault_cases: bool) {
             ],
         );
         admin.batch_execute("GRANT SELECT,INSERT,UPDATE ON control.browser_sessions,control.login_buckets TO bigbrotr_control; GRANT DELETE ON control.browser_sessions TO bigbrotr_control").await.unwrap();
-        faults(&binary, &config, &home, &admin).await;
-        drop(admin);
-        driver.await.unwrap().unwrap();
+        if mode == "faults" {
+            faults(&binary, &config, &home, &admin).await;
+            drop(admin);
+            driver.await.unwrap().unwrap();
+        } else {
+            let (token, _) = commit::run(&binary, &config, &home, &admin).await;
+            drop(admin);
+            driver.await.unwrap().unwrap();
+            commit::crash(&binary, &config, &home, &connection, &token).await;
+        }
         return;
     }
     let mut missing = Server::start(&binary, &config, &home, "missing-migration");
@@ -805,9 +814,10 @@ fn main() {
     let mut args = std::env::args().skip(1);
     let binary = PathBuf::from(args.next().expect("actual product binary"));
     let home = PathBuf::from(args.next().expect("fresh isolated fixture directory"));
-    let faults = match args.next().as_deref() {
-        None => false,
-        Some("--faults-only") => true,
+    let mode = match args.next().as_deref() {
+        None => "ordinary",
+        Some("--faults-only") => "faults",
+        Some("--commits-only") => "commits",
         _ => panic!("unknown fixture mode"),
     };
     assert!(args.next().is_none());
@@ -815,5 +825,5 @@ fn main() {
         .enable_all()
         .build()
         .unwrap()
-        .block_on(run(binary, home, faults));
+        .block_on(run(binary, home, mode));
 }

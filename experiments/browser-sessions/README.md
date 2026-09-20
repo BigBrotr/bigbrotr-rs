@@ -47,3 +47,23 @@ records three cases at661b54b plus the separate actual Management::stop join
 discriminator; failed fixture paths do not establish a TCP thread join. The driver
 compares all source hashes against the qualified baseline except the explicit
 fixture/docs allowlist; no modified product implementation can pass that check.
+
+`--commits-only` exercises actual login/logout through the existing bounded
+`archive-engine/native_commit_proxy.py`. The new fixed targets select the session
+INSERT or revocation UPDATE, so owner/renewal/touch transactions cannot shift the
+fault boundary. Each case requires one completed mutation and selected COMMIT,
+then verifies the actual HTTP outcome, specific CommitUnknown refusal and durable
+rows. Pass, before-forward and after-complete schedules are distinct. Existing
+rows/xmin must survive issuance; logout binds the expected credential digest and
+preserves other rows. Unknown logout emits no cookie-clearing response; confirmed
+retry preserves the revocation. Lost issuance requires an explicit new login.
+
+The same mode ends with a live-cookie PostgreSQL crash. The separately owned host
+controller `http_crash.py` validates both container identities/labels, observes the
+postmaster PID/start time and two live sessions, sends SIGQUIT, then requires a new
+postmaster and unchanged rows/xmin before releasing the fixture marker. This is
+PostgreSQL's [immediate shutdown](https://www.postgresql.org/docs/16/server-shutdown.html),
+which requires recovery on restart; it is not a host power-loss or filesystem-fault
+claim. The actual old Control must fail closed, and a successor must accept the
+retained cookie. Markers alone and compile-only checks do not qualify this case.
+Native execution of this new mode is pending until linked revision-bound evidence.

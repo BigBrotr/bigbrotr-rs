@@ -21,15 +21,15 @@ another diagnostic command instead of the real read consumer.
 
 ## Git and ownership
 
-Local main is clean tested candidate `661b54be3fbe5652053b66ebffb3e962f4363cd7`,
-tree`08a3f74bff0c5285fc5e2591af745e038fd28806`. origin/main and remote main last
-verified at pushed8974fb8. Native941-file source export matches Mac Git archive.
-Product remains5a4e0d1; this candidate adds fixtures and a cfg(test) join test only.
-Root-owned dirty work records qualification: report, checkpoint, inventory, P08
-and fixture README. No parallel writer/merge/rebase. Independent read-only
-catalog_guard_review completed this follow-up. All tests terminal; all owned
-labs stopped/retained. Review evidence/docs, commit and push the verified slice.
-No browser/API readiness or product completion claim.
+Local main/origin/main/remote main were freshly verified clean at pushed
+`48da158dbe1984b05df9913b0f04b5c963665594`. Candidate661b54b and its941-file
+native capture are qualified below; product remains5a4e0d1. Root now owns the
+COMMIT fixture follow-up: browser_http_probe.rs and its new commit.rs module,
+http_native.py, new http_crash.py/test_commit_targets.py, native_commit_proxy.py,
+experiment README and this checkpoint. No production or migration change. No
+parallel writer/merge/rebase; catalog_guard_review is read-only. Existing labs
+are all stopped/retained. No new remote resources yet. No session/API readiness
+or product completion claim.
 
 Preserve `.research/worktrees/producer-closing-old-writer`, last verified clean at
 `f899896b1207f5e71c4e39d9ab7814b293814735` on
@@ -242,10 +242,21 @@ no-join runtime RED or universal latency bound is claimed. Independent review
 corrected the timestamp boundary and successor count; failed-path client join
 is not claimed. Terminal SQL/audit/source/capture verification PASS.
 
-Next bounded action after evidence commit/push: ambiguous issuance/logout COMMIT
-and actual PostgreSQL crash with retained cookies through the real executable,
-then actual browser cookie/CSRF checks. Reuse the existing bounded wire fault
-proxy and require independent persisted outcomes; no product fault hooks.
+Next bounded action: finish review/commit the COMMIT fixture candidate, transfer
+its exact Git revision to a fresh Tux lab and run actual issuance/logout pass,
+before-forward and after-complete cases, explicit retry and PG SIGQUIT/recovery
+with a live cookie. The existing bounded native wire proxy gains two exact SQL
+targets and a completed-mutation counter; no product fault hooks. Two target unit
+tests failed initially for missing helper, then passed. Mac probe build/Clippy
+passed in commit-fixture-first and commit-fixture-reviewed. Independent review
+corrected secret-bearing assert output, process guard before READY, target-specific
+logout and other-row/xmin preservation; issuance preserves previous rows/xmin.
+External controller retries transient replacement observations within one residual
+deadline; identity/owner/OOM mismatches remain fatal. It requires actual old/new postmaster
+identity, unchanged rows and only then marker release. Native cases NOT_RUN.
+Prepared ignored scripts under .research/implementation/management-http/commit-native
+inventory all previous resources and compare production inputs to5a4e0d1.
+After qualification, continue actual browser cookie/CSRF and the real read consumer.
 Tool discovery found no browser MCP capability; inspect selected browser tooling
 and use an isolated actual client rather than treating raw TCP as a browser. Continue login audit, reauthentication and scope-qualified grants needed
 by the real private history reader. P08-T02 owns these steps; no parallel plan or
