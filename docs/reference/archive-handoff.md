@@ -412,6 +412,57 @@ recorded; the follow-up changes only that label variable, with no product/Tux
 source edit. This evidence does not qualify payload corruption outside inspected
 columns, protected frontiers, aged capacity or Linux arm64.
 
+## Complete native cut observation in progress
+
+The P02-T04/T07 frontier bridge consumes a private `CutRead`, not another public
+diagnostic command. Its parent must resolve the sealed topology and authoritative
+closed-source bounds, and obtain each complete receipt expectation from retained
+admission headers. The native protocol does not grant those authorities.
+
+The request names dataset, topology, every ordered stream bound including zero,
+ordered committed receipt expectations and an optional exact native snapshot.
+At most128 receipts,1024 streams and1024 total ranges fit the independent32KiB
+credential-bearing request cap; the admitted fact cap bounds the entire cut.
+The ranges must partition exactly1..N in every nonzero stream. Overlap, holes,
+extra streams and splitting a supplied receipt refuse. Publication ordinal holes
+are legitimate; a failed attempt does not allocate another source sequence.
+An empty topology and explicit zero streams remain distinct valid structures.
+The caller still proves original admission grouping and topology membership.
+
+One native transaction scans all receipt fields through bounded EOF once, checks
+each original batch's complete source/digest/file membership, then resolves
+references through views restricted to this SAME source cut. The initial five
+families cover envelope scopes, dictionary descriptor dependencies, event ordinal
+mapping, eligibility-to-payload, receive/provenance-to-scoped-eligibility and
+optional same-family correction targets. Repeated equal dictionary mappings are
+permitted; conflicting complete mapping values refuse. Correction keys and an
+earlier observation time must agree. Within one shard/epoch the target must have
+a lower source sequence; no sequence order is invented across streams.
+A dictionary visible above another stream's
+bound cannot supply closure. Native memory, joins, metadata and spill remain
+inside the process grant/deadline; row limits alone do not bound engine metadata.
+
+`bigbrotr-native-cut/1` returns the actual snapshot, five family counts and a
+request binding. Its SHA256 preimage is ASCII `bigbrotr/archive-cut-inspection/1`
+plus NUL, dataset16, topology u64, bound count u64, each bound `(shard u32,epoch
+u64,through u64)`, receipt count u64, then each receipt `(dataset16,schema u16,
+topology u64,digest32,count u64,attempt16,ordinal u64,range count u64)` and each
+range `(shard u32,epoch u64,first u64,last u64)`. Finish with snapshot-present
+byte0/1 and its u64 when present. All integers are big-endian, and collection
+order is retained. This private transport binding is not a new scientific cut
+identity, persisted manifest or protection certificate. The literal fixture is
+[independently assembled](../../tests/fixtures/protocol/archive-cut.json).
+
+This remains implementation work, with local native development tests only.
+It compares stored digests and dependency columns; it does not reconstruct every
+typed descriptor or check all its intrinsic constraints. Typed reconstruction,
+full payload rehash and signature verification belong to hydration/scrub.
+Actual Archive ownership,
+qualified persistence participation, catalog stabilization, immutable PG frontier/
+snapshot binding and retained read pin must precede a protected read. Existing
+files cannot acquire persistence provenance merely by running a newer binary.
+No P02 step, M1, Linux capacity or release qualification follows from these tests.
+
 ## Persistent local attempt custody candidate
 
 `LocalAttempt::create` takes the actual immutable Control attempt and scientific

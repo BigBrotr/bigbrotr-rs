@@ -23,10 +23,15 @@ pub fn validate_membership_limits(
     max_facts: usize,
 ) -> Result<(), ReceiptError> {
     read.validate(max_facts).map_err(input_error)?;
+    validate_member_count_limits(limits, read.receipt.record_count)
+}
+pub(super) fn validate_member_count_limits(
+    limits: PreparationLimits,
+    records: u64,
+) -> Result<(), ReceiptError> {
     // Original and regrouped FactRef buffers overlap. Arrow/native conversion
     // may hold three vectors; character-clamped filenames can use four UTF-8
     // bytes each. Receipt scanning has a separate floor, conservatively added.
-    let records = read.receipt.record_count;
     let rows = records.saturating_add(1).min(MAX_CHUNK_ROWS as u64);
     let receipt_floor = receipts::receipt_allocation_floor(limits)?;
     let floor = records

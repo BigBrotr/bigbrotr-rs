@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-09-20 on Mac after collecting the owned Tux membership lab.
+Observed 2026-09-20 on Mac during the complete native cut/frontier bridge.
 Navigation only: follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint)
 and verify Git, dirty files, evidence and actual resources.
 
@@ -12,28 +12,87 @@ runner billing exception. Preserve private bigbrotr-rs, unpublished Cargo packag
 and the read-only Go neighbor. No public release or Linux arm64 claim. No P02/P03
 or P06 task or M1 milestone is complete; all selected later work remains required.
 
-Current boundary: close the P02-T04/T07 native batch-membership prerequisite, then
-implement the positive complete frontier/native snapshot/pin bridge for M1.
+Current boundary: implement the positive P02-T04/T07 complete frontier/native
+snapshot/pin bridge for M1. The native batch-membership prerequisite is committed
+and pushed. Next implementation work combines verified whole batches into an
+explicit topology prefix and checks references inside that same native cut.
 Existing task files own the backlog. No checkbox closes from this prerequisite.
 
 ## Git and ownership
 
-Before this qualification/checkpoint commit, local main is tested candidate
-3369091e572fc6344ccc3e363fc1f31ff4b44d42, tree
-bfb4de117aab48a79264b99a0ce3594ad37109a9. Private origin/main was freshly verified
-at072bd806da27286da6ac40fcd0f09bfcea47b22c before candidate testing. Root-owned dirty
-work is the qualification report, owning docs/task/checkpoint/inventory and one
-harness loop-variable correction. Product Rust is unchanged after native testing.
-Commit/push is authorized; verify actual HEAD/origin on resumption. No parallel
-writer, merge or rebase. All Mac/Tux execution and collection sessions are joined.
+Local main and private origin/main are freshly verified at
+0a1b6e9b68a7f6fcf3f9cfd44576df25a070cc3d, including the native qualification of
+3369091e572fc6344ccc3e363fc1f31ff4b44d42 (tree
+bfb4de117aab48a79264b99a0ce3594ad37109a9). The current root-owned dirty work adds archive_cut protocol,
+native cut inspection/reference closure, supervised parent observation and frozen
+fixtures; it refactors receipt/member scans to share one native transaction.
+It also adds CatalogCapture, fresh persistence migration0015/adapter and the
+expanded installed coordinator initializer, plus practical harness changes. These
+new PG/CLI behaviors are NOT_RUN. No PostgreSQL frontier/pin adapter or user-facing
+cut command exists yet. Verify
+actual HEAD/origin on resumption. No parallel writer, merge or rebase. All previous
+Mac/Tux qualification sessions are joined; current development runs are below.
 
 The compatibility worktree .research/worktrees/producer-closing-old-writer was
-freshly verified clean atf899896b1207f5e71c4e39d9ab7814b293814735 on
+freshly verified clean at f899896b1207f5e71c4e39d9ab7814b293814735 on
 research/producer-closing-old-writer. Preserve it and the other historical worktrees.
 Build caches are not source authority. Independent read-only AI code, harness and
 final evidence reviews are complete. The evidence reviewer recomputed source,
 capture and input hashes, full CLI results and preserved container state without
 editing or executing engines; no additional discrepancy was found.
+
+## Current uncommitted cut work
+
+The private CutRead checks a complete contiguous prefix for every supplied stream,
+including zero, whole receipt ranges and publication ordinal gaps. A single native
+transaction checks every selected receipt, original batch membership and reference
+closure across all five families in the same bounded cut. It returns an actual
+snapshot and request digest, not topology, persistence, frontier or retention
+authority. The parent retains its resource grant and requires positive worker reap.
+
+Mac development checks at .research/implementation/archive-cut/mac-checks/result.json
+passed all nine selected groups (protocol, parent, native cut/closure, affected
+membership/receipt regressions and Clippy). No selected test was ignored. These
+are dirty-source development results, not Linux or bridge qualification. A native
+control confirms the old batch census accepts a payload whose dictionary lies
+outside the requested cut; the complete-cut check rejects it. Disabling the new
+closure call makes that test fail. The frozen signed12-fact corpus covers all
+families;15 isolated SQL mutations exercise dependency/correction refusal.
+
+Independent AI review found missing same-stream correction order in the new SQL.
+The real native receive case failed before the correction; receive/provenance
+negative cases now pass, as do cross-shard and cross-epoch positive controls.
+Logs correction-order-red.log, correction-order-green.log and
+correction-cross-stream-green.log under .research/implementation/archive-cut
+record the exact scope. All sessions including6340 are joined. The current five-group Mac run is joined. No test is active.
+These are Mac dirty-source results, not Linux or complete bridge qualification.
+
+CatalogCapture now holds the installed owner-row barrier, exact native snapshot,
+local coordinator custody and a bounded live manager transaction. Migration0015
+adds immutable fresh-only persistence participation, preserves historical NULL
+attempts, and requires the marker for newly bound attempts. The existing installed
+coordinator initializer opens the real manager connection and establishes the
+marker only for the initial guarded catalog with no Control/native attempts.
+Current schema, collision, CLI, parent-cut and scoped Clippy checks passed in
+bridge-current-checks/result.json;
+real PostgreSQL, installed CLI and fault scenarios remain NOT_RUN. The earlier bridge-cli-checks contains a temporary orphan-directory test
+subsequently removed, not evidence for final behavior.
+
+Independent review found a proposed synchronous orphan scan could block the
+supervisor. It was removed: publisher source already uses exclusive original
+paths, refuses collisions and registers only explicitly prepared files. No orphan
+is adopted or deleted. The initial scientific catalog and both attempt histories
+remain checked under custody; root durable provisioning remains separate. The
+installed harness now requires unrelated orphan preservation and exclusion from
+native membership; it has not yet run. User initialization documentation now describes migration15 and actual catalog
+inspection, with the earlier qualification explicitly historical.
+
+The bridge remains incomplete: actual Archive ownership, complete sealed-topology
+frontier binding and PG-clock snapshot pins are next responsibilities. Control
+ownership is not Archive authority. Manager-session loss must refuse; postcommit
+loss may leave an immutable marker and must resolve by identical retry. No remote
+lab has been started for the current work. Last terminal Tux state below was not
+refreshed solely for this checkpoint.
 
 ## Executed membership boundary
 
@@ -123,8 +182,17 @@ remain prerequisites, not source protection.
 
 ## Next bounded action and open gates
 
-The final qualification diff is reconciled; commit/push remains the next Git
-action at this checkpoint. Then implement the complete P02-T04/T07 frontier bridge: verified
+The previous membership qualification/push is complete. The reused native
+cut/initializer harness and user documentation now include independent request
+digests, signed full rows, manager loss on both sides of final verification,
+immutable-marker retry and preserved old NULL history. These practical cases
+remain NOT_RUN. Diff review and example compilation are complete. Independent AI review found
+and corrected a fixture schema-width error (u16, not u32); its Python digest now
+matches the frozen literal protocol vector. The expanded initializer contract was
+also reconciled with its historical evidence. Create and transfer an
+unpublished clean candidate through Git to a newly inventoried
+Tux lab for actual PG/CLI/cut and fault verification. Continue the P02-T04/T07
+frontier bridge: verified
 committed complete batches -> contiguous complete prefix for every topology
 stream (including zero) -> actual Archive consumer owner/frontier -> immutable
 native snapshot binding and real snapshot lease/retention claims. Preserve

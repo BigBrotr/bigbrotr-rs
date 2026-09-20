@@ -160,6 +160,15 @@ pub(super) async fn fresh(
     tx: &Transaction<'_>,
     identity: &CatalogIdentity,
 ) -> Result<(), GuardError> {
+    virgin(tx, identity).await?;
+    require(tx,"SELECT NOT EXISTS(SELECT 1 FROM pg_trigger t JOIN pg_class c ON c.oid=t.tgrelid JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public') AND NOT EXISTS(SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='public')",&[],GuardError::IncompatibleLayout).await
+}
+
+/// Exact initial metadata, also reusable after the writer guard is installed.
+pub(super) async fn virgin(
+    tx: &Transaction<'_>,
+    identity: &CatalogIdentity,
+) -> Result<(), GuardError> {
     super::inspection::metadata(tx, identity).await?;
     live(tx).await?;
     for table in super::inspection::native(tx).await? {
@@ -193,5 +202,5 @@ pub(super) async fn fresh(
         .collect();
     let extra = format!("sha256:{}", EXPECTED.schema_sha256);
     require(tx,"SELECT count(*)=2 AND count(*) FILTER(WHERE (snapshot_id=0 AND changes_made='created_schema:\"main\"' AND author IS NULL AND commit_message IS NULL AND commit_extra_info IS NULL) IS TRUE)=1 AND count(*) FILTER(WHERE (snapshot_id=1 AND ARRAY(SELECT x FROM unnest(string_to_array(changes_made,','))x ORDER BY x COLLATE \"C\")=$1::text[] AND author='BigBrotr' AND commit_message='initialize archive schema 1' AND commit_extra_info=$2::text) IS TRUE)=1 FROM public.ducklake_snapshot_changes", &[&names,&extra],GuardError::ExistingData).await?;
-    require(tx,"SELECT NOT EXISTS(SELECT 1 FROM pg_trigger t JOIN pg_class c ON c.oid=t.tgrelid JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public') AND NOT EXISTS(SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='public')",&[],GuardError::IncompatibleLayout).await
+    Ok(())
 }

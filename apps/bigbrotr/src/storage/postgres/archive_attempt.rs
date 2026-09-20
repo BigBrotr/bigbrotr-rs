@@ -335,7 +335,7 @@ async fn register_inner(
     let topology = request.topology.get().to_string();
     let digest = &request.batch_digest.as_bytes()[..];
     if let Some(binding) = binding {
-        let row = tx.query_opt("SELECT coordinator_binding_sha256=$2::bytea FROM control.archive_attempts WHERE attempt_id=$1::bytea", &[&attempt,&&binding.as_bytes()[..]])
+        let row = tx.query_opt("SELECT coordinator_binding_sha256=$2::bytea AND persistence_protocol=1 FROM control.archive_attempts WHERE attempt_id=$1::bytea", &[&attempt,&&binding.as_bytes()[..]])
             .await.map_err(backend)?;
         if let Some(row) = row
             && row.try_get::<_, Option<bool>>(0).map_err(backend)? != Some(true)
@@ -384,7 +384,10 @@ async fn register_inner(
     let binding_bytes = binding.as_ref().map(|v| &v.as_bytes()[..]);
     let (column, value) = if binding.is_some() {
         parameters.push(&binding_bytes);
-        (",coordinator_binding_sha256", ",$13::bytea")
+        (
+            ",coordinator_binding_sha256,persistence_protocol",
+            ",$13::bytea,1",
+        )
     } else {
         ("", "")
     };

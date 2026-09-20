@@ -42,9 +42,9 @@ enum Operation {
 
 pub(super) fn coordinator_command() -> Command {
     Command::new("coordinator-initialize")
-        .about("Explicitly bind an empty Control Archive history to existing local coordinator state")
+        .about("Bind fresh Archive coordination and qualified local persistence explicitly")
         .arg(Arg::new("file").long("file").required(true).value_name("PATH"))
-        .after_help("Requires local Control and Archive, an existing two-ended local state binding, migration0010 and accepted policy with administration.enabled=false. Uses the configured Control credential and actual owner fence. Exact retries preserve original attribution. Existing unbound attempts refuse; no migrations, catalog inspection, adoption or readiness. Stop the running coordinator first. Exit: 0 bound and owner released, 1 unavailable/I/O, 2 usage, 3 invalid/prerequisite/conflict, 4 cancelled or unknown durable outcome; retry the identical command after resolving custody.")
+        .after_help("Requires local Control and Archive, the existing local state binding, migration0015 and accepted policy with administration.enabled=false. Uses configured Control and catalog-manager credentials. New persistence participation requires empty Control/native attempt history, the exact initial catalog with no registered data. Unregistered orphan files remain untouched. Exact retries preserve attribution; older archives need explicit recovery. No migration or readiness is implied. Stop the running coordinator first. Exit: 0 bound and owner released, 1 unavailable/I/O, 2 usage, 3 invalid/prerequisite/conflict, 4 cancelled or unknown outcome; retry identically after resolving custody.")
 }
 
 pub(super) fn initialize_coordinator(args: &ArgMatches) -> ! {
@@ -152,6 +152,7 @@ impl Stop {
 struct ArchiveRun {
     coordinator: Option<bigbrotr::storage::archive::LocalCoordinator>,
     receipt: Option<(archive_receipt::Options, ResourceBudget)>,
+    initialization_budget: Option<ResourceBudget>,
 }
 
 fn run(
@@ -190,7 +191,14 @@ fn run(
     let receipt = receipt
         .map(|options| Ok((options, archive_preflight::budget(&root, 5)?)))
         .transpose()?;
-    let (prepared, grant) = if let Some((_, budget)) = &receipt {
+    let initialization_budget = matches!(operation, Operation::InitializeCoordinator)
+        .then(|| archive_preflight::budget(&root, 2))
+        .transpose()?;
+    let shared_budget = receipt
+        .as_ref()
+        .map(|(_, budget)| budget)
+        .or(initialization_budget.as_ref());
+    let (prepared, grant) = if let Some(budget) = shared_budget {
         postgres_command::prepare_control_shared(
             &root,
             required("postgres.control.user")?,
@@ -230,7 +238,7 @@ fn run(
         let driver = if let Some(custody) = &coordinator {
             tokio::spawn(custody.retain_connection(driver).map_err(|e| (4, format!("cannot retain archive coordinator custody: {e:?}")))?)
         } else { tokio::spawn(driver) };
-        let outcome = supervise(client, request, &root, &mut stop, output, ArchiveRun { coordinator, receipt }, operation).await;
+        let outcome = supervise(client, request, &root, &mut stop, output, ArchiveRun { coordinator, receipt, initialization_budget }, operation).await;
         // No error, cancellation, output failure or unknown COMMIT can bypass
         // the join. Dropping the request/session alone does not free its grant.
         postgres_command::join(driver).await;
@@ -310,6 +318,25 @@ async fn supervise(
             .check_delivery(lease.known_epoch())
             .map_err(|e| (1, e.to_string()))?;
         if matches!(operation, Operation::InitializeCoordinator) {
+            let accepted = accepted
+                .as_ref()
+                .ok_or_else(|| (3, "accepted initialization policy unavailable".into()))?;
+            let persistence_created = initialize_persistence(
+                accepted,
+                &mut owner,
+                coordinator,
+                archive
+                    .initialization_budget
+                    .as_ref()
+                    .expect("initializer budget"),
+                stop,
+                duration(root, "renewal_timeout")
+                    .min(lease.remaining_validity().map_err(|e| (4, e.to_string()))?),
+            )
+            .await?;
+            lease
+                .check_delivery(lease.known_epoch())
+                .map_err(|e| (4, e.to_string()))?;
             tokio::time::timeout(duration(root, "graceful_shutdown_timeout"), owner.release())
                 .await
                 .unwrap_or(Err(OwnerError::CommitUnknown))
@@ -318,7 +345,8 @@ async fn supervise(
                 json!({"format":"bigbrotr-coordinator-initialization/1", "state":"bound",
                 "created":created, "dataset_id":dataset, "catalog_id":coordinator.identity().catalog(),
                 "binding_sha256":coordinator.binding_digest().to_string(), "owner_release":"committed",
-                "catalog_inspection":"not-performed", "publication_authority":"not-granted", "ready":false}),
+                "catalog_inspection":"verified", "persistence_protocol":1,
+                "persistence_created":persistence_created, "publication_authority":"not-granted", "ready":false}),
             );
         }
     }
@@ -464,6 +492,72 @@ async fn supervise(
         snapshot =
             refresh_authority(&mut owner, &mut lease, &mut renewed, dataset, root, stop).await?;
     }
+}
+
+async fn initialize_persistence(
+    config: &Resolved,
+    owner: &mut ControlSession,
+    coordinator: &bigbrotr::storage::archive::LocalCoordinator,
+    budget: &ResourceBudget,
+    stop: &mut Stop,
+    remaining: Duration,
+) -> Result<bool> {
+    use bigbrotr::storage::postgres::{catalog_guard::CatalogCapture, transport};
+    let deadline = Instant::now() + remaining.min(Duration::from_secs(30));
+    let required = |key| {
+        config
+            .text(key)
+            .ok_or_else(|| (3, format!("{key}: required for persistence initialization")))
+    };
+    let (prepared, grant) = postgres_command::prepare_catalog_as(
+        config,
+        required("postgres.catalog.user")?,
+        required("postgres.catalog.password_ref")?,
+        budget,
+    )?;
+    let (mut manager, connection) = tokio::select! {
+        biased;
+        _ = stop.requested() => return Err((4,"persistence initialization cancelled before catalog connection".into())),
+        result = tokio::time::timeout_at(deadline, transport::connect(prepared)) =>
+            result.map_err(|_| (4,"persistence catalog connection deadline".into()))?
+                .map_err(|_| (1,"persistence catalog connection unavailable".into()))?,
+    };
+    let driver = tokio::spawn(
+        coordinator
+            .retain_connection(connection)
+            .map_err(|_| (4, "cannot retain persistence catalog custody".into()))?,
+    );
+    let commit = Cell::new(false);
+    let outcome = {
+        let operation = async {
+            let duration = deadline.saturating_duration_since(Instant::now());
+            let capture = CatalogCapture::open(&mut manager, coordinator, duration)
+                .await
+                .map_err(|e| (4, format!("persistence catalog barrier refused: {e:?}")))?;
+            let created = owner
+                .initialize_archive_persistence(&capture, &commit)
+                .await
+                .map_err(attempt_error)?;
+            capture.finish().await.map_err(|_| {
+                (
+                    4,
+                    "persistence catalog barrier termination unresolved".into(),
+                )
+            })?;
+            Ok(created)
+        };
+        tokio::select! {
+            biased;
+            _ = stop.requested() => Err((4,format!("persistence initialization cancelled; commit_started={}",commit.get()))),
+            result = tokio::time::timeout_at(deadline, operation) => result.unwrap_or_else(|_| Err((4,format!("persistence initialization deadline; commit_started={}",commit.get())))),
+        }
+    };
+    // Dropping a cancelled operation only queues rollback; retain the actual
+    // driver's custody and grant through transport destruction before returning.
+    drop(manager);
+    postgres_command::join(driver).await;
+    drop(grant);
+    outcome
 }
 
 async fn refresh_authority(

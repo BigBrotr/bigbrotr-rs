@@ -322,6 +322,14 @@ full stdout and both blocked signal cancellations. The native run passes 47 Arch
 8 binary and 12 CLI tests plus scoped Clippy; one older holder test remains ignored. No dispatch,
 complete recovery or whole-task gate is closed.
 
+The current P02-T04/T07 bridge adds a complete native cut (whole retained batches,
+zero prefixes and same-cut reference closure), a live catalog capture barrier and
+[fresh-only local persistence participation](../specification/archive-storage-contract.md#qualified-local-persistence-participation)
+through additive0015. The installed coordinator initializer consumes the marker;
+new issuance requires it. Native/PG/CLI qualification and the actual Archive
+frontier/snapshot/lease binding remain open. The older command evidence above does
+not qualify this expanded initializer. No checkbox closes from development tests.
+
 **Depends on:** P02-T01/T02/T03 and P01-T05/T06.
 **Files:** application `src/storage/archive/{publisher,receipts,worker}.rs`,
 `contracts/archive/v1/batch.json`, `packaging/archive-worker/`,

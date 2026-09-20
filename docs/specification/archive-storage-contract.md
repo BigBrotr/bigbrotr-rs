@@ -221,16 +221,17 @@ The current implementation provides explicit typed operations and fixture consum
 command/startup now passes its [eleven native cases](../implementation/evidence/p02-coordinator-cli-native-20260919.json)
 at `5050999`; complete recovery/dispatch remains pending.
 
-The installed command `archive coordinator-initialize --file PATH`
-requires local Control and Archive, the existing complete local state binding,
-migration10 and accepted initial configuration/security policy. It uses the
-configured Control credential through the same claim, policy validation, stop,
-deadline, resource grant and custodied-driver lifecycle as `serve`. It performs
-only explicit binding/identical retry, then a bounded owner release; successful
-output reports the exact digest, whether a row was created and `ready:false`.
-No catalog credential or native client is opened. A lost response is resolved by
-the identical command under a fresh actual Control fence; preserve both local
-files and SQL history. Local `state-initialize` remains a separate operation.
+The current installed `archive coordinator-initialize --file PATH` extends that
+historically qualified coordinator-only operation with explicit fresh persistence
+participation described below. It requires migration15 and uses both configured
+Control and catalog-manager credentials, actual Control fencing, a bounded catalog
+barrier and custodied drivers. Identical retry preserves original rows and issuer
+attribution. Successful output includes catalog inspection, persistence protocol1
+and separate creation flags, while retaining `ready:false`. A lost response is
+resolved by the same command under a fresh actual Control fence; preserve both
+local files and SQL history. Local `state-initialize` remains separate. The expanded
+operation is a development candidate; the5050999 matrix qualifies only its earlier
+coordinator-only behavior, not persistence initialization.
 
 Ordinary Control startup with Archive assigned locally now requires this exact
 SQL binding before it inventories attempts or emits idle, including `--roles
@@ -1005,6 +1006,53 @@ the selected provider. “S3-compatible” does not transfer Amazon's guarantees
 another server. A provider outage pauses archive progress; pending capacity and
 completion reserves govern further admission. Never acknowledge a stronger
 durability class solely because a destination is remote.
+
+### Qualified local persistence participation
+
+P02-T04/T07 records local synchronization protocol1 explicitly before its first
+publication. Additive Control migration0015 retains old attempt rows unchanged,
+with a nullable historical `persistence_protocol`. Every new attempt must name
+protocol1 and an immutable `archive_persistence` binding for the exact dataset,
+catalog and local coordinator. A new binary, file hash or membership observation
+cannot certify old files retrospectively. The ordinary migrator applies the SQL;
+runtime initialization never performs DDL.
+
+The explicit coordinator initializer uses its actual Control fence and retained
+local custody, opens the configured catalog manager and holds
+`bigbrotr_archive.owner FOR UPDATE`. It verifies the installed scientific guard,
+requires the native writer to be disabled, and checks the exact initial catalog
+at snapshot1 with no catalog or Control attempt history, including failed or
+ambiguous attempts. Control initialization and issuance serialize on the same
+dataset row. The marker commits with protocol, class, baseline snapshot and
+original issuer/time. An identical retry observes that row without requiring an
+already participating archive to become empty again. Missing, different or
+pre-protocol participation needs explicit recovery; historical values are never
+backfilled by migration or ordinary startup.
+
+This check concerns registered catalog membership. It does not rescan, adopt or
+remove unregistered files. The qualified writer exclusively creates its attempt
+directory and original file, synchronizes that inode and its parents, then registers
+only that explicit path. An unrelated orphan remains outside membership; a path
+collision refuses publication without overwriting it. Root/parent durable
+provisioning remains a separate installation requirement. A synchronous directory
+walk on Control would add no persistence proof and could block its supervision.
+
+The connected cut capture retains the same catalog barrier while a joined private
+worker observes its exact snapshot. An observation made before this barrier or
+for another catalog/snapshot refuses. A fresh manager query checks session and
+barrier liveness before downstream persistence. Capture is limited to120 seconds;
+the server's abandoned-transaction timeout is125 seconds. The local coordinator
+and both actual database drivers retain custody through termination. This custody
+must also exclude every future local reclamation operation, including when the
+manager backend disappears. No table SHARE lock may be acquired after the owner
+row: native DML locks its table first and would invert that order.
+
+This is implementation work awaiting actual PostgreSQL/native and installed CLI
+qualification. The persistence marker and captured cut alone grant no read,
+frontier, pending reclamation or source acknowledgement. P02-T04/T07 must still
+bind a real Archive consumer frontier and native snapshot atomically, retain its
+lease and positive source claims (zero streams retain the native pin), and resolve
+lost replies using the same immutable identity. Complete M1 is still open.
 
 ## File formation, reads and cost
 

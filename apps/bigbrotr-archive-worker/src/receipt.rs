@@ -225,7 +225,39 @@ pub(crate) fn scan_attached(
     expected: &ReceiptExpectation,
     max_receipts: usize,
 ) -> Result<ReceiptObservation, ReceiptError> {
-    let maximum = scan_limit(expected, max_receipts)?;
+    scan_limit(expected, max_receipts)?;
+    let mut found = false;
+    scan_receipts(c, expected.dataset_id, max_receipts, |actual| {
+        if actual.batch_digest == expected.batch_digest
+            || actual.attempt_id == expected.attempt_id
+            || actual.publication_ordinal == expected.publication_ordinal
+        {
+            if found || &actual != expected {
+                return Err(ReceiptError::Mismatch);
+            }
+            found = true;
+        }
+        Ok(())
+    })?;
+    Ok(if found {
+        ReceiptObservation::Present
+    } else {
+        ReceiptObservation::Absent
+    })
+}
+
+/// One bounded full scan shared by single-batch and complete-cut observation.
+/// The caller holds one native transaction through every downstream family read.
+pub(crate) fn scan_receipts(
+    c: &Connection,
+    dataset: DatasetId,
+    max_receipts: usize,
+    mut visit: impl FnMut(ReceiptExpectation) -> Result<(), ReceiptError>,
+) -> Result<(), ReceiptError> {
+    let maximum = max_receipts
+        .checked_add(1)
+        .filter(|_| max_receipts > 0)
+        .ok_or(ReceiptError::InvalidInput)?;
     // No target predicate: count/existence and filtered scans can skip missing
     // receipt objects using catalog statistics. Consume actual receipt fields
     // through EOF, including after a match, to detect late duplicates/failures.
@@ -238,7 +270,6 @@ pub(crate) fn scan_attached(
     let stream = statement
         .stream_arrow([])
         .map_err(|_| ReceiptError::Native)?;
-    let mut found = false;
     let mut scanned = 0usize;
     for batch in stream {
         if batch.num_rows() > MAX_CHUNK_ROWS {
@@ -267,26 +298,14 @@ pub(crate) fn scan_attached(
                 return Err(ReceiptError::ResourceLimit);
             }
             let actual = NativeReceipt::decode(text)?;
-            if actual.dataset_id != expected.dataset_id {
+            if actual.dataset_id != dataset {
                 return Err(ReceiptError::Mismatch);
             }
-            if actual.batch_digest == expected.batch_digest
-                || actual.attempt_id == expected.attempt_id
-                || actual.publication_ordinal == expected.publication_ordinal
-            {
-                if found || &actual != expected {
-                    return Err(ReceiptError::Mismatch);
-                }
-                found = true;
-            }
+            visit(actual)?;
         }
     }
     drop(statement);
-    Ok(if found {
-        ReceiptObservation::Present
-    } else {
-        ReceiptObservation::Absent
-    })
+    Ok(())
 }
 
 fn scan_limit(expected: &ReceiptExpectation, max_receipts: usize) -> Result<usize, ReceiptError> {

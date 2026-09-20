@@ -53,6 +53,10 @@
     {
       "version": 14,
       "name": "0014_import_checkpoints.sql"
+    },
+    {
+      "version": 15,
+      "name": "0015_archive_persistence.sql"
     }
   ],
   "reserved": [

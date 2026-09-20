@@ -20,7 +20,8 @@ if sys.argv[1:] == ['--build-binaries']:
     identity = build_binaries(SOURCE, os.environ)
     (out / 'worker-identity.json').write_text(json.dumps(identity, indent=2) + '\n')
     sys.exit(0)
-assert sys.argv[1:] in ([], ['--tls'], ['--publication'], ['--producer-inputs'], ['--producer-ledger'], ['--producer-ledger-fixture'], ['--import-source'], ['--input-bindings'], ['--certification'], ['--producer-closing'], ['--producer-recovery'], ['--archive-event'], ['--publication-sync'], ['--archive-membership'])
+assert sys.argv[1:] in ([], ['--tls'], ['--publication'], ['--producer-inputs'], ['--producer-ledger'], ['--producer-ledger-fixture'], ['--import-source'], ['--input-bindings'], ['--certification'], ['--producer-closing'], ['--producer-recovery'], ['--archive-event'], ['--publication-sync'], ['--archive-membership'], ['--archive-cut'])
+archive_cut = sys.argv[1:] == ['--archive-cut']
 archive_membership = sys.argv[1:] == ['--archive-membership']
 publication_sync = sys.argv[1:] == ['--publication-sync']
 archive_event = publication_sync or sys.argv[1:] == ['--archive-event']
@@ -33,7 +34,7 @@ tls = sys.argv[1:] == ['--tls']
 fixture_only = sys.argv[1:] == ['--producer-ledger-fixture']
 producer_inputs = certification or input_bindings or import_source or sys.argv[1:] in (['--producer-inputs'], ['--producer-ledger'], ['--producer-ledger-fixture'])
 producer_ledger = certification or input_bindings or import_source or sys.argv[1:] in (['--producer-ledger'], ['--producer-ledger-fixture'])
-publication = archive_membership or archive_event or producer_inputs or sys.argv[1:] == ['--publication']
+publication = archive_cut or archive_membership or archive_event or producer_inputs or sys.argv[1:] == ['--publication']
 manifest = json.loads((build / 'source-manifest.json').read_text())
 
 
@@ -119,6 +120,18 @@ if archive_membership:
         ('cli', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr', '--test', 'catalog_entrypoint']),
         ('protocol', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr-protocol', '--lib', 'archive_membership']),
         checks[-1]]
+if archive_cut:
+    identity.update(scope='complete native cut, catalog barrier and fresh persistence participation; frontier/pins remain unimplemented')
+    env.update(BIGBROTR_ARCHIVE_TEST_BUNDLE=str(bundle))
+    checks = [checks[0], checks[1],
+        ('native-cut', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr-archive-worker', '--lib', 'native_complete_cut', '--', '--nocapture']),
+        ('native-closure', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr-archive-worker', '--lib', 'native_cut_closure', '--', '--nocapture']),
+        ('collision', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr-archive-worker', '--lib', 'existing_attempt_files_and_symlinked_table_parent_are_never_reused']),
+        ('receipt-regression', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr-archive-worker', '--lib', 'receipt::tests']),
+        ('membership-regression', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr-archive-worker', '--lib', 'native_membership_requires_complete_source_and_original_files_in_one_snapshot']),
+        ('parent-cut', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr', '--lib', 'storage::archive::cut']),
+        ('protocol-cut', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr-protocol', '--lib', 'archive_cut']),
+        checks[3], checks[4]]
 if input_bindings:
     identity.update(scope='atomic import position/original input binding prerequisite')
     checks = [checks[0],

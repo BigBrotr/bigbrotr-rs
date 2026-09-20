@@ -43,6 +43,8 @@ mod custody;
 mod ingest;
 #[path = "support/publication_installation.rs"]
 mod installed_catalog;
+#[path = "support/publication_frontier.rs"]
+mod publication_frontier;
 #[path = "support/publication_inputs.rs"]
 mod publication_inputs;
 #[path = "support/publication_protocol.rs"]
@@ -162,19 +164,19 @@ async fn initialize_control(database: &str, installed: bool) {
     assert_eq!(
         migration_runner::run(
             &mut admin,
-            if installed { 14 } else { 9 },
+            if installed { 15 } else { 9 },
             true,
             &Cell::new(false)
         )
         .await
         .unwrap()
         .applied,
-        if installed { 13 } else { 8 }
+        if installed { 14 } else { 8 }
     );
     admin.batch_execute("GRANT USAGE ON SCHEMA control TO bigbrotr_control; GRANT SELECT ON ALL TABLES IN SCHEMA control TO bigbrotr_control; GRANT INSERT,UPDATE ON control.datasets,control.principals,control.config_revisions,control.policy_revisions,control.management_audit,control.management_commands,control.role_instances,control.owner_epochs,control.topology_generations,control.source_streams,control.topology_streams,control.allocation_domains,control.producer_slots,control.producer_epochs TO bigbrotr_control; GRANT INSERT ON control.archive_attempts TO bigbrotr_control; GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA control TO bigbrotr_control;").await.unwrap();
     if installed {
         admin
-            .batch_execute("GRANT INSERT ON control.archive_coordinators, control.producer_requests, control.producer_outcomes TO bigbrotr_control; GRANT UPDATE ON control.jobs TO bigbrotr_control")
+            .batch_execute("GRANT INSERT ON control.archive_coordinators, control.archive_persistence, control.producer_requests, control.producer_outcomes TO bigbrotr_control; GRANT UPDATE ON control.jobs TO bigbrotr_control")
             .await
             .unwrap();
     }
@@ -258,7 +260,7 @@ async fn native_state(client: &Client) -> (i64, i64) {
     let row=client.query_one("SELECT (SELECT count(*) FROM public.ducklake_snapshot),(SELECT count(*) FROM public.ducklake_data_file)",&[]).await.unwrap();
     (row.get(0), row.get(1))
 }
-async fn run(mode: &str, port: u16, installed: bool, event_read: bool) {
+async fn run(mode: &str, port: u16, installed: bool, event_read: bool, capture_cut: bool) {
     assert!(!installed || !mode.starts_with("custody_"));
     let manager_login = if installed {
         "CatalogManager"
@@ -301,9 +303,9 @@ async fn run(mode: &str, port: u16, installed: bool, event_read: bool) {
     let inputs = grant(&budget, 32 * MIB, 0);
     let worker_budget = ResourceBudget::new(
         ProcessEnvelope::new(
-            513 * MIB,
+            514 * MIB,
             0,
-            ResourceLimits::new(0, 1, 512 * MIB, MIB),
+            ResourceLimits::new(MIB, 2, 512 * MIB, MIB),
             WaiterLimits::new(0, 0),
         )
         .unwrap(),
@@ -408,6 +410,7 @@ async fn run(mode: &str, port: u16, installed: bool, event_read: bool) {
             .require_archive_coordinator(coordinator)
             .await
             .unwrap();
+        publication_frontier::initialize(&mut owner, &mut admin, coordinator).await;
     }
     let path = home.join("rocks");
     let store = ingest::prepare(&mut owner, policy, &observer, &path, &budget, &cancel, mode).await;
@@ -447,6 +450,7 @@ async fn run(mode: &str, port: u16, installed: bool, event_read: bool) {
         return;
     }
     let mut outcomes = Vec::new();
+    let mut committed_inputs = Vec::new();
     let mut successor: Option<(
         bigbrotr::storage::postgres::archive_attempt::ArchiveAttemptReceipt,
         catalog_guard::FreshWriter,
@@ -522,7 +526,7 @@ async fn run(mode: &str, port: u16, installed: bool, event_read: bool) {
             }
             .unwrap();
             let custody = LocalAttempt::create(&custody_root, &receipt, &identity).unwrap();
-            if installed && !event_read && mode == "normal" && ordinal == 1 {
+            if installed && !event_read && !capture_cut && mode == "normal" && ordinal == 1 {
                 installed_catalog::delegation_checks(
                     &home, &database, &custody, &identity, &receipt,
                 )
@@ -739,11 +743,31 @@ async fn run(mode: &str, port: u16, installed: bool, event_read: bool) {
         };
         assert_eq!(after, expected);
         outcomes.push(serde_json::json!({"ordinal":ordinal,"first":first,"success":success,"snapshots":after.0,"files":after.1,"attempt_id":format!("{n:02x}").repeat(16),"receipt":receipt_state}));
+        if capture_cut && receipt_state == "present" {
+            committed_inputs.push(recovered_inputs.unwrap());
+        }
         if ordinal == 3 && racing {
             emit(serde_json::json!({"event":"old-excluded","worker_active_permits":0}));
             barrier(&home.join("readback-complete"), 60).await;
         }
     }
+    if capture_cut {
+        publication_frontier::inspect(
+            mode,
+            &mut owner,
+            &mut admin,
+            coordinator.as_ref().unwrap(),
+            &committed_inputs,
+            &installation,
+            &home,
+            &worker_budget,
+            &database,
+            &reader_password,
+            &cancel,
+        )
+        .await;
+    }
+    drop(committed_inputs);
     drop(store);
     let after = ingest::logical_state(&path);
     emit(
@@ -764,7 +788,10 @@ fn main() {
         args.len() == 3
             || args.len() == 4
                 && (args[2] == "resolve"
-                    || matches!(args[3].as_str(), "--installed" | "--event-read")
+                    || matches!(
+                        args[3].as_str(),
+                        "--installed" | "--event-read" | "--capture-cut"
+                    )
                     || args[1] == "protocol")
     );
     tokio::runtime::Builder::new_current_thread()
@@ -810,9 +837,11 @@ fn main() {
                 run(
                     &args[1],
                     args[2].parse().unwrap(),
-                    args.get(3)
-                        .is_some_and(|s| matches!(s.as_str(), "--installed" | "--event-read")),
+                    args.get(3).is_some_and(|s| {
+                        matches!(s.as_str(), "--installed" | "--event-read" | "--capture-cut")
+                    }),
                     args.get(3).is_some_and(|s| s == "--event-read"),
+                    args.get(3).is_some_and(|s| s == "--capture-cut"),
                 ),
             )
             .await

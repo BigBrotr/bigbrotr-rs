@@ -14,6 +14,8 @@ use tokio_postgres::{Client, Row, Transaction};
 
 #[path = "archive_coordinator.rs"]
 mod archive_coordinator;
+#[path = "archive_persistence.rs"]
+mod archive_persistence;
 #[path = "initial_batch.rs"]
 mod initial_batch;
 #[path = "producer_closing.rs"]

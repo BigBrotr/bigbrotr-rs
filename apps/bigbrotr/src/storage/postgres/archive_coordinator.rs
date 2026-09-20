@@ -116,7 +116,7 @@ impl ControlSession {
         }
         self.begin_operation()
             .map_err(|_| ArchiveAttemptError::Unavailable)?;
-        let tx = application_transaction(&mut self.client, 10)
+        let tx = application_transaction(&mut self.client, 15)
             .await
             .map_err(|_| ArchiveAttemptError::Prerequisite)?;
         require(&tx, self.request.dataset, self.identity)

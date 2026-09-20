@@ -143,34 +143,49 @@ with occupied custody. Stop it before those explicit operations. Prior publicati
 attempts are still unresolved history: registration does not certify that older
 code or its native clients have terminated. Complete recovery/dispatch remains work.
 
-The installed command explicitly registers that exact local binding in
-Control. First apply migration0010, initialize/activate Control's accepted policy
-with administration disabled for the current runtime, and grant its configured
-application login SELECT/INSERT on `control.archive_coordinators` plus execution
-of the migration's invoker guards. Keep the usual Control owner permissions and
-separate migration credential. With the coordinator stopped, run:
+The installed command registers that exact local binding in Control and explicitly
+starts qualified local file persistence. Apply migrations through0015, activate
+Control's accepted policy with administration disabled for the current runtime,
+and grant its configured application login SELECT/INSERT on
+`control.archive_coordinators` and `control.archive_persistence`, plus execution
+of the migration guards. Keep the usual Control owner permissions, separate
+migration credential and configured catalog manager. With the coordinator stopped:
 
 ```sh
 bigbrotr archive coordinator-initialize --file /etc/bigbrotr/instance.toml
 ```
 
-This uses the configured Control credential and requires both roles locally.
-Success reports `state:bound`, `created:true` for the initial row or `false` for an
-identical retry, the binding digest, committed Control release and `ready:false`.
-It does not open the scientific catalog. A dataset with pre-protocol attempts
-refuses this initialization; preserve the rows for explicit recovery instead of
-backfilling their bindings. If output or COMMIT acknowledgement is lost, repeat
-the same command after the previous custodied session has terminated. The exact
-committed row and original issuer remain unchanged on retry.
+The command uses Control and catalog-manager credentials and requires both roles
+locally. The first persistence registration requires the exact initial guarded
+catalog at native snapshot1, a disabled writer and no prior Control or native
+attempts, including failed attempts. Unregistered orphan files remain untouched
+and outside catalog membership; the publisher refuses existing output paths.
+The marker does not retrospectively certify an existing archive's file durability.
+Preserve incompatible history for explicit recovery; do not backfill its bindings.
 
-Ordinary startup with Archive assigned locally now requires migration0010 and this
-existing SQL binding before inventory/idle. It never invokes the command implicitly.
+Success reports `state:bound`, `created:true` for the initial coordinator row,
+`catalog_inspection:verified`, `persistence_protocol:1`, `persistence_created:true`,
+the binding digest, committed Control release and `ready:false`. An identical
+retry preserves both original rows and issuers and reports both created fields
+as false. A partially completed first call can report `created:false` and
+`persistence_created:true` on retry. Existing matching persistence registration
+is inspected without requiring the catalog to remain empty.
+
+If output or COMMIT acknowledgement is lost, preserve configuration and state and
+repeat the same command after the previous custodied session has terminated.
+A manager-session failure after the Control commit may leave a valid marker even
+though the command refuses; identical retry resolves that outcome. A positive
+result establishes no Archive owner, protected frontier, snapshot pin or readiness.
+
+Ordinary Archive-assigned startup still requires the existing coordinator binding
+before inventory/idle and never initializes it implicitly. New retained attempt
+issuance requires migration0015 and matching persistence participation.
 Exit codes follow Control: 0 bound/released, 1 unavailable/output, 2 usage,
 3 prerequisite/configuration/conflict, 4 interrupted or unknown durable outcome.
-The [native command/startup matrix](../implementation/evidence/p02-coordinator-cli-native-20260919.json)
-passes eleven scenarios at `5050999`, including actual installation, retry, startup/
-restart, preserved old history, full stdout and both signal cancellations. This
-does not enable Archive dispatch or close complete recovery.
+The earlier [native command/startup matrix](../implementation/evidence/p02-coordinator-cli-native-20260919.json)
+at5050999 tested the original coordinator-only behavior. The expanded persistence
+initialization is a development candidate awaiting actual PostgreSQL/CLI and
+failure qualification; those historical eleven scenarios do not qualify it.
 
 See the [owning archive contract](../specification/archive-storage-contract.md)
 and [current implementation checkpoint](../implementation/progress.md) for the

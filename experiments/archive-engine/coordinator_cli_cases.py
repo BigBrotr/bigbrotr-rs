@@ -88,7 +88,7 @@ def run(root):
             assert not record['stderr']
         return json.loads(record['stdout']) if record['stdout'] else None
 
-    def prepare(label, target=10, native=False, state=True):
+    def prepare(label, target=15, native=False, state=True):
         database = 'bbcli_'+label
         home = directory/label
         home.mkdir(mode=0o700)
@@ -137,7 +137,9 @@ def run(root):
         return database, home, path
 
     def rows(db):
-        return json.loads(sql(db, "SELECT json_build_object('bindings',(SELECT coalesce(json_agg(t),'[]') FROM (SELECT c.*,xmin::text AS xmin FROM control.archive_coordinators c)t),'attempts',(SELECT coalesce(json_agg(t ORDER BY ordinal),'[]') FROM (SELECT a.*,xmin::text AS xmin FROM control.archive_attempts a)t))"))
+        value = json.loads(sql(db, "SELECT json_build_object('bindings',(SELECT coalesce(json_agg(t),'[]') FROM (SELECT c.*,xmin::text AS xmin FROM control.archive_coordinators c)t),'attempts',(SELECT coalesce(json_agg(t ORDER BY ordinal),'[]') FROM (SELECT a.*,xmin::text AS xmin FROM control.archive_attempts a)t))"))
+        value['persistence'] = json.loads(sql(db, "SELECT coalesce(json_agg(t),'[]') FROM (SELECT p.*,xmin::text AS xmin FROM control.archive_persistence p)t")) if sql(db, "SELECT to_regclass('control.archive_persistence') IS NOT NULL") == 't' else []
+        return value
 
     def no_clients(db):
         deadline = time.monotonic()+6
@@ -191,25 +193,25 @@ def run(root):
         sql('postgres', 'CREATE ROLE "CatalogManager" LOGIN NOSUPERUSER CREATEROLE NOCREATEDB NOINHERIT NOREPLICATION NOBYPASSRLS PASSWORD '+"'"+manager_password+"'")
         del manager_password
         db, home, path = prepare('installed', native=True, state=False)
-        # One real scientific installation; Control subsequently cannot read
-        # the configured manager credential, which is deliberately unavailable.
+        # Missing local custody refuses before reading either backend credential.
         (home/'CatalogManager').rename(home/'CatalogManager.unavailable')
         cli('archive', 'coordinator-initialize', '--file', path, code=4, contains='Incomplete')
         assert sql(db, 'SELECT count(*) FROM control.owner_epochs') == '0'
-        assert rows(db) == dict(bindings=[], attempts=[])
+        assert rows(db) == dict(bindings=[], attempts=[], persistence=[])
         passed('missing-local-state-refuses-before-control-claim')
         cli('archive', 'state-initialize', '--file', path)
         local = (home/'state/coordinator.json').read_bytes()
         cli('serve', '--roles', 'control', '--file', path, code=3, contains='coordinator protocol refused: Prerequisite')
         no_clients(db)
-        assert rows(db) == dict(bindings=[], attempts=[])
+        assert rows(db) == dict(bindings=[], attempts=[], persistence=[])
         assert sql(db, 'SELECT count(*) FROM control.owner_epochs') == '1'
         passed('ordinary-missing-sql-binding-preserves-empty-history')
+        (home/'CatalogManager.unavailable').rename(home/'CatalogManager')
         for created in [True, False]:
             value = cli('archive', 'coordinator-initialize', '--file', path)
             assert value == dict(format='bigbrotr-coordinator-initialization/1', state='bound', created=created,
                                  dataset_id='01'*16, catalog_id='5a'*16, binding_sha256=hashlib.sha256(local).hexdigest(),
-                                 owner_release='committed', catalog_inspection='not-performed',
+                                 owner_release='committed', catalog_inspection='verified', persistence_protocol=1, persistence_created=created,
                                  publication_authority='not-granted', ready=False)
             actual = rows(db)
             if created:
@@ -217,6 +219,84 @@ def run(root):
             assert actual == original
             assert actual['bindings'][0]['issuer_epoch'] == 2
         passed('explicit-binding-and-identical-retry', rows=original)
+        assert len(original['persistence']) == 1
+        persistence = original['persistence'][0]
+        assert persistence['catalog_id'] == '\\x'+'5a'*16
+        assert persistence['coordinator_binding_sha256'] == '\\x'+hashlib.sha256(local).hexdigest()
+        assert persistence['protocol_version'] == persistence['baseline_snapshot'] == 1
+        assert persistence['protection_class'] == 'local-synced'
+        assert persistence['issuer_epoch'] == original['bindings'][0]['issuer_epoch']
+
+        orphan_db, orphan_home, orphan_path = prepare('orphan', native=True)
+        orphan = orphan_home/'data/unregistered.parquet'
+        orphan.write_bytes(b'independent unregistered scientific file')
+        value = cli('archive', 'coordinator-initialize', '--file', orphan_path)
+        assert value['created'] is True and value['persistence_created'] is True
+        assert orphan.read_bytes() == b'independent unregistered scientific file'
+        assert sql(orphan_db+'_catalog', 'SELECT count(*) FROM public.ducklake_data_file') == '0'
+        retained_orphan = rows(orphan_db)
+        value = cli('archive', 'coordinator-initialize', '--file', orphan_path)
+        assert value['created'] is False and value['persistence_created'] is False
+        assert rows(orphan_db) == retained_orphan
+        assert orphan.read_bytes() == b'independent unregistered scientific file'
+        passed('unregistered-orphan-preserved-outside-membership', sha256=sha(orphan))
+
+        for phase in ['before_verify', 'during_commit']:
+            fault_db, _, fault_path = prepare('loss_'+phase, native=True)
+            timing = 'BEFORE' if phase == 'before_verify' else 'AFTER'
+            constraint = '' if phase == 'before_verify' else 'CONSTRAINT '
+            deferred = '' if phase == 'before_verify' else 'DEFERRABLE INITIALLY DEFERRED '
+            sql(fault_db, "CREATE FUNCTION control.test_persistence_barrier() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN PERFORM pg_advisory_xact_lock(902315); RETURN NEW; END $$; "
+                +f"CREATE {constraint}TRIGGER test_persistence_barrier {timing} INSERT ON control.archive_persistence {deferred}FOR EACH ROW EXECUTE FUNCTION control.test_persistence_barrier();")
+            blocker = subprocess.Popen(['docker','exec','-i',pg,'psql','-XqAt','-v','ON_ERROR_STOP=1','-U','postgres','-d',fault_db],
+                                       stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            try:
+                blocker.stdin.write("BEGIN; SELECT pg_advisory_xact_lock(902315); SELECT pg_backend_pid();\n")
+                blocker.stdin.flush()
+                assert select.select([blocker.stdout],[],[],5)[0]
+                assert blocker.stdout.readline().strip() == ''
+                holder = int(blocker.stdout.readline())
+                item = start(fault_path, 'archive', 'coordinator-initialize')
+                until = time.monotonic()+5
+                while True:
+                    blocked = json.loads(sql(fault_db, f"SELECT coalesce(json_agg(json_build_object('pid',pid,'backend_start',backend_start,'query',query,'blockers',pg_blocking_pids(pid))),'[]') FROM pg_stat_activity WHERE datname=current_database() AND usename='bigbrotr_control' AND wait_event_type='Lock' AND wait_event='advisory' AND {holder}=ANY(pg_blocking_pids(pid));"))
+                    if blocked: break
+                    assert time.monotonic() < until
+                    time.sleep(.01)
+                assert len(blocked) == 1
+                assert blocked[0]['query'] == 'COMMIT' if phase == 'during_commit' else blocked[0]['query'].startswith('INSERT INTO control.archive_persistence')
+                managers = json.loads(sql(fault_db+'_catalog', "SELECT coalesce(json_agg(json_build_object('pid',pid,'backend_start',backend_start,'state',state)),'[]') FROM pg_stat_activity WHERE datname=current_database() AND usename='CatalogManager';"))
+                assert len(managers) == 1 and managers[0]['state'] == 'idle in transaction'
+                manager = managers[0]
+                assert sql(fault_db+'_catalog', f"SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE pid={manager['pid']} AND backend_start='{manager['backend_start']}'::timestamptz AND datname=current_database() AND usename='CatalogManager';") == 't'
+            finally:
+                blocker.stdin.write('ROLLBACK;\n')
+                blocker.stdin.close()
+                assert blocker.wait(timeout=5) == 0
+            failure = terminal(item, 4)
+            assert not failure['stdout']
+            assert ('barrier termination unresolved' if phase == 'during_commit' else 'Unavailable') in failure['stderr']
+            no_clients(fault_db)
+            assert sql(fault_db+'_catalog', "SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND usename='CatalogManager'") == '0'
+            before_retry = rows(fault_db)
+            assert len(before_retry['bindings']) == 1 and before_retry['attempts'] == []
+            assert len(before_retry['persistence']) == int(phase == 'during_commit')
+            sql(fault_db, 'DROP TRIGGER test_persistence_barrier ON control.archive_persistence; DROP FUNCTION control.test_persistence_barrier()')
+            retry = cli('archive', 'coordinator-initialize', '--file', fault_path)
+            assert retry['created'] is False and retry['persistence_created'] is (phase == 'before_verify')
+            after_retry = rows(fault_db)
+            assert after_retry['bindings'] == before_retry['bindings'] and after_retry['attempts'] == []
+            assert len(after_retry['persistence']) == 1
+            if phase == 'during_commit': assert after_retry == before_retry
+            for operation in ['UPDATE control.archive_persistence SET protocol_version=1',
+                              'DELETE FROM control.archive_persistence', 'TRUNCATE control.archive_persistence']:
+                denied = subprocess.run(['docker','exec','-i',pg,'psql','-XqAt','-v','ON_ERROR_STOP=1','-U','postgres','-d',fault_db],
+                                        input=operation, text=True, capture_output=True, timeout=5)
+                assert denied.returncode != 0 and 'archive persistence participation is immutable' in denied.stderr
+            assert rows(fault_db) == after_retry
+            passed('manager-loss-'+phase+'-and-identical-retry', blocker=holder, blocked=blocked,
+                   manager=manager, before_retry=before_retry, after_retry=after_retry)
+
         for name in ['start', 'restart']:
             item = start(path, 'serve', '--roles', 'control')
             value = idle(item)
@@ -277,9 +357,20 @@ def run(root):
         no_clients(old_db)
         assert rows(old_db) == retained
         passed('old130-attempt-history-preserved-and-not-adopted', rows=130, snapshot_sha256=hashlib.sha256(json.dumps(retained,sort_keys=True).encode()).hexdigest())
+        cli('migrate', 'apply', '--file', old_path, '--target', '15', '--user', 'postgres',
+            '--password-ref', 'file:/out/coordinator-cli/old/postgres')
+        sql(old_db, 'GRANT SELECT,INSERT ON control.archive_persistence TO bigbrotr_control; GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA control TO bigbrotr_control')
+        after_persistence_upgrade = rows(old_db)
+        assert after_persistence_upgrade['bindings'] == after_persistence_upgrade['persistence'] == []
+        for before, after in zip(retained['attempts'], after_persistence_upgrade['attempts']):
+            assert after['persistence_protocol'] is None
+            assert {k:v for k,v in after.items() if k != 'persistence_protocol'} == before
+        cli('archive', 'coordinator-initialize', '--file', old_path, code=3, contains='Conflict')
+        assert rows(old_db) == after_persistence_upgrade
+        passed('persistence-upgrade-preserves-old130-null-history-without-adoption')
 
         for name in ['INT', 'TERM']:
-            cancelled_db, _, cancelled_path = prepare('cancel_'+name.lower())
+            cancelled_db, _, cancelled_path = prepare('cancel_'+name.lower(), native=True)
             blocker = subprocess.Popen(['docker', 'exec', '-i', pg, 'psql', '-XqAt', '-v', 'ON_ERROR_STOP=1', '-U', 'postgres', '-d', cancelled_db], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             try:
                 blocker.stdin.write("BEGIN; LOCK TABLE control.archive_coordinators IN ACCESS EXCLUSIVE MODE; SELECT pg_backend_pid();\n")
@@ -310,7 +401,7 @@ def run(root):
                 blocker.stdin.close()
                 assert blocker.wait(timeout=5) == 0
             no_clients(cancelled_db)
-            assert rows(cancelled_db) == dict(bindings=[], attempts=[])
+            assert rows(cancelled_db) == dict(bindings=[], attempts=[], persistence=[])
             value = cli('archive', 'coordinator-initialize', '--file', cancelled_path)
             assert value['created'] is True
             passed('blocked-binding-'+name.lower()+'-preserves-fence-then-retries', elapsed_seconds=elapsed, blocker=holder, residual=residual)

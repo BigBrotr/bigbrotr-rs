@@ -28,3 +28,6 @@ mod events;
 pub use events::{ArchiveEventError, ArchivedEvent};
 mod membership;
 pub use membership::validate_membership_limits;
+
+mod cut;
+pub use cut::{ObservedCut, validate_cut_limits};

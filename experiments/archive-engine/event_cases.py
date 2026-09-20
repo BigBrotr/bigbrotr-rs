@@ -6,7 +6,10 @@ not claim installed policy, retention pins, a certified cut or a current read vi
 All failure results are saved before assertions; terminal resource exclusion is a
 separate owner-verified host audit.
 """
+import argparse
 import copy
+import hashlib
+import struct
 import json
 from pathlib import Path
 import subprocess
@@ -19,7 +22,42 @@ from signed_publication_oracle import EVENT, corpus, check, input_expectations
 from fault_cases import Process
 
 
-def main(root):
+def cut_digest(read):
+    body = b'bigbrotr/archive-cut-inspection/1\0' + bytes.fromhex(read['dataset_id'])
+    body += struct.pack('>QQ', int(read['topology_generation']), len(read['bounds']))
+    for b in read['bounds']:
+        body += struct.pack('>IQQ', b['shard_id'], b['owner_epoch'], b['complete_through'])
+    body += struct.pack('>Q', len(read['receipts']))
+    for r in read['receipts']:
+        body += bytes.fromhex(r['dataset_id']) + struct.pack('>HQ', r['schema_version'], int(r['topology_generation']))
+        body += bytes.fromhex(r['batch_digest']) + struct.pack('>Q', r['record_count']) + bytes(r['attempt_id'])
+        body += struct.pack('>QQ', r['publication_ordinal'], len(r['input_ranges']))
+        for bound in r['input_ranges']:
+            body += struct.pack('>IQQQ', *(bound[k] for k in ('shard_id','owner_epoch','first_sequence','last_sequence')))
+    body += bytes([read['snapshot_id'] is not None])
+    if read['snapshot_id'] is not None:
+        body += struct.pack('>Q', read['snapshot_id'])
+    return hashlib.sha256(body).hexdigest()
+
+
+def cut_expectation(mode):
+    """Independent literal wire recipe; does not import a product encoder."""
+    receipts = [r for r in input_expectations(mode) if r['publication_ordinal'] in (2, 3, 5)]
+    snapshot, count = (4, 12) if mode == 'history' else (3, 10)
+    read = dict(dataset_id='01'*16, topology_generation='0',
+                bounds=[dict(shard_id=0, owner_epoch=1, complete_through=count)],
+                receipts=receipts, snapshot_id=snapshot)
+    observation = dict(format='bigbrotr-native-cut/1', snapshot_id=snapshot,
+                       request_digest=cut_digest(read),
+                       family_counts=[6, 1, 1, 2, 2] if mode == 'history' else [6, 1, 1, 1, 1])
+    return dict(event='captured-cut', observation=observation, read=read,
+                frontier='not-implemented', pin='not-implemented')
+
+
+def main(root, capture_cut=False):
+    if capture_cut:
+        frozen = json.loads((Path(__file__).resolve().parents[2]/'tests/fixtures/protocol/archive-cut.json').read_text())
+        assert cut_digest(frozen['read']) == frozen['request_digest']
     resources = json.loads((root/'resources.json').read_text())
     source = root/'source'
     assert Path(__file__).resolve().parents[2] == source
@@ -33,11 +71,13 @@ def main(root):
     out = root/'out/native-tests'
     ready = json.loads((out/'ready.json').read_text())
     assert ready['source'] == resources['source']
-    for label, path in [('worker', root/'out/archive-worker/bigbrotr-archive-worker'),
-                        ('publisher', out/'archive-publication-probe'),
-                        ('reader', out/'archive-read-probe'), ('event_reader', out/'archive-event-probe')]:
+    artifacts = [('worker', root/'out/archive-worker/bigbrotr-archive-worker'),
+                 ('publisher', out/'archive-publication-probe'), ('reader', out/'archive-read-probe')]
+    if not capture_cut:
+        artifacts.append(('event_reader', out/'archive-event-probe'))
+    for label, path in artifacts:
         assert sha(path) == ready[label]
-    evidence = root/'event-cases.json'
+    evidence = root/('cut-cases.json' if capture_cut else 'event-cases.json')
     assert not evidence.exists()
     result = dict(source=resources['source'], tree=resources['tree'], status='INCOMPLETE',
                   artifacts=ready, harness_sha256=sha(Path(__file__)),
@@ -49,7 +89,7 @@ def main(root):
         return command('docker', 'exec', '-i', pg, 'psql', '-XAtq', '-v', 'ON_ERROR_STOP=1',
                        '-U', 'postgres', '-d', db, input=query)
     binary = ['docker', 'exec', '--env', 'LD_LIBRARY_PATH=/out/archive-worker/lib', runner]
-    inputs = root/'out/event-inputs'
+    inputs = root/('out/cut-inputs' if capture_cut else 'out/event-inputs')
     inputs.mkdir()
     def run_case(label, request, wanted, interact=None):
         case = dict(name=label, status='INCOMPLETE')
@@ -99,7 +139,7 @@ def main(root):
                 for p in sorted(home.rglob('*.parquet'))}
     save()
     try:
-        for mode in ['normal', 'large', 'history']:
+        for mode in (['normal', 'history'] if capture_cut else ['normal', 'large', 'history']):
             value = EVENT
             if mode == 'large':
                 recipe = json.loads((source/'tests/fixtures/protocol/archive-event-response.json').read_text())
@@ -111,7 +151,7 @@ def main(root):
             parent = {}
             result[mode+'_publisher'] = parent
             try:
-                execute(binary+['/out/native-tests/archive-publication-probe', mode, '5432', '--event-read'], 180, parent)
+                execute(binary+['/out/native-tests/archive-publication-probe', mode, '5432', '--capture-cut' if capture_cut else '--event-read'], 180, parent)
             finally:
                 save()
             assert parent['exit'] == 0 and not parent['stderr'] and not parent['overflow']
@@ -127,12 +167,27 @@ def main(root):
                 assert [v['expected'] for v in values if v['event']=='inputs-reopened'] == input_expectations(mode)
                 # This slice consumes installed initialization/retained inputs;
                 # its dedicated mode omits previously qualified ACL fault races.
-                check(mode, [v for v in values if v['event']!='inputs-reopened'], json.loads(reader['stdout']))
+                check(mode, [v for v in values if v['event'] not in ('inputs-reopened', 'captured-cut')], json.loads(reader['stdout']))
             request = identity(value, records, mode)
             before, original_files = metadata(db), files(mode)
             result[mode+'_metadata_before'] = before
             assert len(original_files) == (11 if mode == 'history' else 8)
             result[mode+'_files'] = original_files
+            if capture_cut:
+                captured = [v for v in values if v['event'] == 'captured-cut']
+                assert captured == [cut_expectation(mode)], 'independent complete cut and request digest'
+                marker = json.loads(sql('bbpub_control_'+mode,
+                    "SELECT row_to_json(t) FROM (SELECT encode(dataset_id,'hex') AS dataset, encode(catalog_id,'hex') AS catalog, protocol_version, protection_class, baseline_snapshot FROM control.archive_persistence)t;"))
+                assert marker == dict(dataset='01'*16, catalog='5a'*16, protocol_version=1,
+                                      protection_class='local-synced', baseline_snapshot=1)
+                protocols = json.loads(sql('bbpub_control_'+mode,
+                    "SELECT json_agg(persistence_protocol ORDER BY ordinal) FROM control.archive_attempts;"))
+                assert protocols == [1]*(5 if mode == 'history' else 4)
+                assert int(sql(db, 'SELECT max(snapshot_id) FROM ducklake_snapshot;')) == (4 if mode == 'history' else 3)
+                result['cases'].append(dict(name=mode+'-captured-cut', status='PASS',
+                    cut=captured[0], persistence=marker, attempt_protocols=protocols))
+                save()
+                continue
             run_case(mode+'-complete', request, value)
             if mode == 'history':
                 assert int(sql(db, 'SELECT max(snapshot_id) FROM ducklake_snapshot;')) == 4
@@ -265,5 +320,8 @@ def main(root):
 
 
 if __name__ == '__main__':
-    assert len(sys.argv) == 2
-    main(Path(sys.argv[1]).resolve())
+    parser = argparse.ArgumentParser()
+    parser.add_argument('root', type=Path)
+    parser.add_argument('--capture-cut', action='store_true')
+    args = parser.parse_args()
+    main(args.root.resolve(), args.capture_cut)

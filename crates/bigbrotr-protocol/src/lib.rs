@@ -11,5 +11,6 @@ pub mod archive_batch;
 pub mod archive_receipt;
 pub mod endpoint;
 
+pub mod archive_cut;
 pub mod archive_event;
 pub mod archive_membership;

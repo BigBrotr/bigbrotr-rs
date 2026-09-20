@@ -165,11 +165,6 @@ pub(crate) fn inspect_attached(
 ) -> Result<MembershipObservation, ReceiptError> {
     read.validate(max_facts)?;
     let expected = &read.receipt;
-    let count = usize::try_from(expected.record_count).map_err(|_| ReceiptError::ResourceLimit)?;
-    let mut records = Vec::new();
-    records
-        .try_reserve_exact(count)
-        .map_err(|_| ReceiptError::ResourceLimit)?;
     c.execute_batch("BEGIN TRANSACTION")
         .map_err(|_| ReceiptError::Native)?;
     let snapshot_id: u64 = c
@@ -185,6 +180,39 @@ pub(crate) fn inspect_attached(
     if receipt::scan_attached(c, expected, max_receipts)? != ReceiptObservation::Present {
         return Err(ReceiptError::Mismatch);
     }
+    let family_counts = scan_members(c, expected, root, max_facts)?;
+    let observation = MembershipObservation {
+        format: FORMAT.into(),
+        snapshot_id,
+        batch_digest: expected.batch_digest,
+        attempt_id: expected.attempt_id,
+        publication_ordinal: expected.publication_ordinal,
+        family_counts,
+        files: 1 + family_counts.iter().filter(|n| **n != 0).count() as u32,
+    };
+    observation.validate(read)?;
+    c.execute_batch("COMMIT")
+        .map_err(|_| ReceiptError::Native)?;
+    Ok(observation)
+}
+
+/// Caller owns the surrounding transaction, matching committed receipt and exact
+/// snapshot. Does not begin/commit or establish reference closure by itself.
+pub(crate) fn scan_members(
+    c: &Connection,
+    expected: &ReceiptExpectation,
+    root: &Path,
+    max_facts: usize,
+) -> Result<[u64; 5], ReceiptError> {
+    expected.validate()?;
+    if expected.record_count > max_facts as u64 {
+        return Err(ReceiptError::ResourceLimit);
+    }
+    let count = usize::try_from(expected.record_count).map_err(|_| ReceiptError::ResourceLimit)?;
+    let mut records = Vec::new();
+    records
+        .try_reserve_exact(count)
+        .map_err(|_| ReceiptError::ResourceLimit)?;
     let receipt_path = original_path(root, "archive_commits", &expected.attempt_id);
     require_file(&receipt_path)?;
     let mut statement = c
@@ -295,19 +323,7 @@ pub(crate) fn inspect_attached(
         }
     }
     require_membership(expected, records)?;
-    let observation = MembershipObservation {
-        format: FORMAT.into(),
-        snapshot_id,
-        batch_digest: expected.batch_digest,
-        attempt_id: expected.attempt_id,
-        publication_ordinal: expected.publication_ordinal,
-        family_counts,
-        files: 1 + family_counts.iter().filter(|n| **n != 0).count() as u32,
-    };
-    observation.validate(read)?;
-    c.execute_batch("COMMIT")
-        .map_err(|_| ReceiptError::Native)?;
-    Ok(observation)
+    Ok(family_counts)
 }
 
 #[cfg(test)]

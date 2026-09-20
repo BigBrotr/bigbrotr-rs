@@ -1,5 +1,5 @@
-//! Synthetic native Control/custody checks. No scientific publication in this
-//! fixture; the separate signed schedules consume the same bound issuance API.
+//! Native Control/custody checks with an actual fresh installed catalog.
+//! No scientific publication here; signed schedules consume the same issuance API.
 use super::*;
 use bigbrotr::storage::{
     archive::LocalInitialization, postgres::archive_attempt::ArchiveAttemptError,
@@ -78,7 +78,19 @@ pub async fn run() {
         &format!("{}/", data.display()),
     )
     .unwrap();
-    drop(LocalInitialization::create(&identity, [3; 16]).unwrap());
+    let catalog_database = "bbprotocol_catalog";
+    let (admin, driver) = connect("postgres", "postgres").await;
+    admin
+        .batch_execute("CREATE DATABASE bbprotocol_catalog")
+        .await
+        .unwrap();
+    drop(admin);
+    driver.await.unwrap().unwrap();
+    let (admin, driver) = connect(catalog_database, "postgres").await;
+    admin.batch_execute("REVOKE ALL ON DATABASE bbprotocol_catalog FROM PUBLIC; REVOKE ALL ON SCHEMA public FROM PUBLIC").await.unwrap();
+    drop(admin);
+    driver.await.unwrap().unwrap();
+    installed_catalog::initialize(&home, catalog_database, &format!("{}/", data.display()));
     let local = LocalCoordinator::initialize(&identity, &directory(home.join("state"))).unwrap();
     let budget = ResourceBudget::new(
         ProcessEnvelope::new(
@@ -162,6 +174,11 @@ pub async fn run() {
         "explicit-binding-identical-retry-preserves-xmin",
         bound.clone(),
     );
+    let (mut manager, transport) = connection(catalog_database, "CatalogManager", 5432).await;
+    let manager_driver = tokio::spawn(local.retain_connection(transport).unwrap());
+    publication_frontier::initialize(&mut owner, &mut manager, &local).await;
+    drop(manager);
+    manager_driver.await.unwrap().unwrap();
     let retained = local
         .retain_inputs(
             &request,

@@ -797,3 +797,381 @@ fn native_membership_requires_complete_source_and_original_files_in_one_snapshot
         }
     }
 }
+
+#[test]
+fn native_complete_cut_needs_dictionary_inside_its_own_stream_bound() {
+    use bigbrotr_protocol::{
+        archive_cut::{CutBound, CutRead},
+        archive_receipt::ReceiptExpectation,
+    };
+    let home = tempfile::tempdir_in(std::env::temp_dir().canonicalize().unwrap()).unwrap();
+    let temp = tempfile::tempdir().unwrap();
+    let catalog = home.path().join("catalog.ducklake");
+    let data = home.path().join("objects");
+    let all = facts();
+    let definitions: Vec<_> = all[..2]
+        .iter()
+        .map(|f| {
+            Fact::new(
+                bigbrotr_model::SourceRecordId {
+                    shard_id: 2,
+                    ..f.source_record_id()
+                },
+                f.visibility_scope_id(),
+                f.recorded_at(),
+                f.payload().clone(),
+            )
+            .unwrap()
+        })
+        .collect();
+    let body = Fact::new(
+        bigbrotr_model::SourceRecordId {
+            sequence: Sequence::new(1).unwrap(),
+            ..all[2].source_record_id()
+        },
+        all[2].visibility_scope_id(),
+        all[2].recorded_at(),
+        all[2].payload().clone(),
+    )
+    .unwrap();
+    let engine = open(temp.path(), &catalog, &data);
+    schema::initialize(&engine.connection).unwrap();
+    let mut receipts = Vec::new();
+    let (prepared, mut request) = prepare(engine, &definitions, &data);
+    request.attempt_id = [8; 16];
+    request.publication_ordinal = 2;
+    let archive = ArchiveBatch::new(
+        1,
+        request.topology_generation,
+        std::slice::from_ref(prepared.batch()),
+    )
+    .unwrap();
+    receipts.push(
+        ReceiptExpectation::from_archive(&archive, request.attempt_id, request.publication_ordinal)
+            .unwrap(),
+    );
+    prepared.publish_attached(&request).unwrap();
+    drop(prepared);
+    let engine = open(temp.path(), &catalog, &data);
+    let (prepared, mut request) = prepare(engine, &[body], &data);
+    request.publication_ordinal = 5;
+    let archive = ArchiveBatch::new(
+        1,
+        request.topology_generation,
+        std::slice::from_ref(prepared.batch()),
+    )
+    .unwrap();
+    receipts.push(
+        ReceiptExpectation::from_archive(&archive, request.attempt_id, request.publication_ordinal)
+            .unwrap(),
+    );
+    prepared.publish_attached(&request).unwrap();
+    drop(prepared);
+    let complete = CutRead {
+        dataset_id: all[0].source_record_id().dataset_id,
+        topology_generation: TopologyGeneration::new(u64::MAX),
+        bounds: vec![
+            CutBound {
+                shard_id: 0,
+                owner_epoch: 1,
+                complete_through: 1,
+            },
+            CutBound {
+                shard_id: 1,
+                owner_epoch: 1,
+                complete_through: 0,
+            },
+            CutBound {
+                shard_id: 2,
+                owner_epoch: 1,
+                complete_through: 2,
+            },
+        ],
+        receipts,
+        snapshot_id: Some(3),
+    };
+    for case in [
+        "complete",
+        "future-dictionary",
+        "zero",
+        "missing-prefix",
+        "partial",
+        "limit",
+        "snapshot",
+    ] {
+        let mut read = complete.clone();
+        match case {
+            "future-dictionary" => {
+                read.bounds[2].complete_through = 0;
+                read.receipts.remove(0);
+            }
+            "zero" => {
+                read.receipts.clear();
+                for bound in &mut read.bounds {
+                    bound.complete_through = 0;
+                }
+            }
+            "missing-prefix" => {
+                read.receipts.remove(0);
+            }
+            "partial" => read.bounds[2].complete_through = 1,
+            "snapshot" => read.snapshot_id = Some(2),
+            _ => (),
+        }
+        let engine = open(temp.path(), &catalog, &data);
+        // The negative fixture has complete current catalog membership. Only
+        // applying the requested source cut makes its dictionaries unavailable.
+        if case == "future-dictionary" {
+            let refs:String=engine.connection.query_row("SELECT string_agg(source_record_id.sequence::VARCHAR,',' ORDER BY source_record_id.sequence) FROM archive.dictionaries",[],|r|r.get(0)).unwrap();
+            assert_eq!(refs, "1,2");
+            assert_eq!(
+                crate::membership::inspect_attached(
+                    &engine.connection,
+                    &bigbrotr_protocol::archive_membership::MembershipRead {
+                        receipt: read.receipts[0].clone(),
+                        snapshot_id: Some(3)
+                    },
+                    &data,
+                    4,
+                    3
+                )
+                .unwrap()
+                .family_counts,
+                [0, 1, 0, 0, 0]
+            );
+        }
+        let result = crate::cut::inspect_attached(
+            &engine.connection,
+            &read,
+            &data,
+            4,
+            if case == "limit" { 2 } else { 3 },
+        );
+        eprintln!("complete cut {case}: {result:?}");
+        if matches!(case, "complete" | "zero") {
+            let observed = result.unwrap();
+            assert_eq!(observed.snapshot_id, 3);
+            assert_eq!(
+                observed.family_counts,
+                if case == "zero" {
+                    [0; 5]
+                } else {
+                    [2, 1, 0, 0, 0]
+                }
+            );
+            observed.validate(&read, 3).unwrap();
+        } else {
+            assert!(result.is_err(), "{case}: {result:?}");
+        }
+    }
+}
+
+#[test]
+fn native_cut_closure_checks_every_current_family_and_correction_target() {
+    use bigbrotr_protocol::{
+        archive_cut::{CutBound, CutRead},
+        archive_receipt::ReceiptExpectation,
+    };
+    let fixture: serde_json::Value = serde_json::from_str(include_str!(
+        "../../../tests/fixtures/storage/archive-cut.json"
+    ))
+    .unwrap();
+    let all: Vec<_> = fixture["records"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|f| decode(f, "digest"))
+        .collect();
+    let signed: bigbrotr_model::SignedEvent =
+        serde_json::from_value(fixture["signed_event"].clone()).unwrap();
+    bigbrotr_protocol::verify_owned(signed, 65536).unwrap();
+    let home = tempfile::tempdir_in(std::env::temp_dir().canonicalize().unwrap()).unwrap();
+    let temp = tempfile::tempdir().unwrap();
+    let catalog = home.path().join("catalog.ducklake");
+    let data = home.path().join("objects");
+    let engine = open(temp.path(), &catalog, &data);
+    schema::initialize(&engine.connection).unwrap();
+    let (prepared, mut request) = prepare(engine, &all, &data);
+    request.topology_generation = TopologyGeneration::new(0);
+    request.batch_digest = fixture["archive_digest"].as_str().unwrap().parse().unwrap();
+    let archive = ArchiveBatch::new(
+        1,
+        request.topology_generation,
+        std::slice::from_ref(prepared.batch()),
+    )
+    .unwrap();
+    assert_eq!(archive.digest(), request.batch_digest);
+    let read = CutRead {
+        dataset_id: all[0].source_record_id().dataset_id,
+        topology_generation: TopologyGeneration::new(0),
+        bounds: vec![CutBound {
+            shard_id: 0,
+            owner_epoch: 1,
+            complete_through: 12,
+        }],
+        receipts: vec![
+            ReceiptExpectation::from_archive(
+                &archive,
+                request.attempt_id,
+                request.publication_ordinal,
+            )
+            .unwrap(),
+        ],
+        snapshot_id: Some(2),
+    };
+    prepared.publish_attached(&request).unwrap();
+    drop(prepared);
+    let engine = open(temp.path(), &catalog, &data);
+    assert_eq!(
+        crate::cut::inspect_attached(&engine.connection, &read, &data, 4, 12)
+            .unwrap()
+            .family_counts,
+        [6, 1, 1, 2, 2]
+    );
+    drop(engine);
+    // Each mutation is uncommitted native SQL in its own transaction. Exercise
+    // the reference checker directly so original-file or stored-digest refusal
+    // cannot mask a missing dependency predicate. No mutation is persisted.
+    for (case, sql) in [
+        (
+            "visibility",
+            "UPDATE archive.events SET visibility_scope_id=struct_update(visibility_scope_id,ordinal:=2::UBIGINT)",
+        ),
+        (
+            "event-mapping",
+            "UPDATE archive.dictionaries SET descriptor_value=struct_update(descriptor_value,event_id:=from_hex(repeat('ff',32))) WHERE descriptor_schema='event'",
+        ),
+        (
+            "payload",
+            "UPDATE archive.event_eligibility_facts SET event_id=from_hex(repeat('ff',32))",
+        ),
+        (
+            "eligibility-scope",
+            "UPDATE archive.event_eligibility_facts SET visibility_scope_id=struct_update(visibility_scope_id,ordinal:=2::UBIGINT)",
+        ),
+        (
+            "observer",
+            "UPDATE archive.event_receive_facts SET observer_id=struct_update(observer_id,ordinal:=2::UBIGINT)",
+        ),
+        (
+            "clock",
+            "UPDATE archive.event_receive_facts SET clock_quality=struct_update(clock_quality,clock_id:=struct_update(clock_quality.clock_id,ordinal:=2::UBIGINT))",
+        ),
+        (
+            "endpoint",
+            "UPDATE archive.provenance_facts SET endpoint_id=struct_update(endpoint_id,ordinal:=2::UBIGINT)",
+        ),
+        (
+            "access",
+            "UPDATE archive.provenance_facts SET access_scope_id=struct_update(access_scope_id,ordinal:=2::UBIGINT)",
+        ),
+        (
+            "method",
+            "UPDATE archive.provenance_facts SET verification_method_id=struct_update(verification_method_id,ordinal:=2::UBIGINT)",
+        ),
+        (
+            "import-lineage",
+            "UPDATE archive.event_eligibility_facts SET origin='import'",
+        ),
+        (
+            "descriptor-dependency",
+            "UPDATE archive.dictionaries SET descriptor_value=struct_update(descriptor_value,visibility_scope_id:=struct_update(descriptor_value.visibility_scope_id,ordinal:=2::UBIGINT)) WHERE descriptor_schema='access-scope'",
+        ),
+        (
+            "receive-corrects-family",
+            "UPDATE archive.event_receive_facts SET corrects=struct_update(corrects,sequence:=10::UBIGINT) WHERE corrects IS NOT NULL",
+        ),
+        (
+            "provenance-corrects-key",
+            "UPDATE archive.provenance_facts SET corrects=struct_update(corrects,sequence:=9::UBIGINT) WHERE corrects IS NOT NULL",
+        ),
+        (
+            "non-earlier-correction",
+            "UPDATE archive.event_receive_facts SET received_at=10000001 WHERE corrects IS NOT NULL",
+        ),
+        (
+            "outside-cut-target",
+            "UPDATE archive.provenance_facts SET corrects=struct_update(corrects,sequence:=13::UBIGINT) WHERE corrects IS NOT NULL",
+        ),
+    ] {
+        let engine = open(temp.path(), &catalog, &data);
+        engine
+            .connection
+            .execute_batch("BEGIN TRANSACTION")
+            .unwrap();
+        assert!(
+            engine.connection.execute(sql, []).unwrap() > 0,
+            "{case} must mutate actual native rows"
+        );
+        let result = crate::cut::reference_closure(&engine.connection, &read, [6, 1, 1, 2, 2]);
+        assert_eq!(
+            result,
+            Err(crate::receipt::ReceiptError::Mismatch),
+            "{case}: {result:?}"
+        );
+        engine.connection.execute_batch("ROLLBACK").unwrap();
+    }
+    for table in ["event_receive_facts", "provenance_facts"] {
+        let engine = open(temp.path(), &catalog, &data);
+        let c = &engine.connection;
+        c.execute_batch("BEGIN TRANSACTION").unwrap();
+        // Reverse the two correction edges without breaking the family, key or
+        // decreasing timestamp. Only same-stream source order is invalid.
+        let changed = c.execute(&format!(
+            "UPDATE archive.{table} SET received_at=CASE WHEN corrects IS NULL THEN 4000000 ELSE received_at END, corrects=CASE WHEN corrects IS NULL THEN struct_update(source_record_id,sequence:=source_record_id.sequence+2) ELSE NULL END"
+        ), []).unwrap();
+        assert_eq!(changed, 2);
+        let matching: u64 = c.query_row(&format!(
+            "SELECT count(*) FROM archive.{table} f JOIN archive.{table} p ON p.source_record_id=f.corrects AND p.event_id=f.event_id AND p.visibility_scope_id=f.visibility_scope_id AND p.received_at>f.received_at WHERE f.corrects.sequence>f.source_record_id.sequence"
+        ), [], |r| r.get(0)).unwrap();
+        assert_eq!(
+            matching, 1,
+            "{table}: valid target and timestamp must exist"
+        );
+        assert_eq!(
+            crate::cut::reference_closure(c, &read, [6, 1, 1, 2, 2]),
+            Err(crate::receipt::ReceiptError::Mismatch),
+            "{table}: future same-stream correction"
+        );
+        c.execute_batch("ROLLBACK").unwrap();
+
+        for different in ["shard_id:=1::UINTEGER", "owner_epoch:=2::UBIGINT"] {
+            let engine = open(temp.path(), &catalog, &data);
+            let c = &engine.connection;
+            c.execute_batch("BEGIN TRANSACTION").unwrap();
+            let changed = c.execute(&format!(
+                "UPDATE archive.{table} SET source_record_id=CASE WHEN corrects IS NULL THEN struct_update(source_record_id,{different}) ELSE source_record_id END, received_at=CASE WHEN corrects IS NULL THEN 4000000 ELSE received_at END, corrects=CASE WHEN corrects IS NULL THEN struct_update(source_record_id,sequence:=source_record_id.sequence+2) ELSE NULL END"
+            ), []).unwrap();
+            assert_eq!(changed, 2);
+            let mut projected = read.clone();
+            projected.bounds.push(CutBound {
+                shard_id: if different.starts_with("shard_id") {
+                    1
+                } else {
+                    0
+                },
+                owner_epoch: if different.starts_with("owner_epoch") {
+                    2
+                } else {
+                    1
+                },
+                complete_through: 12,
+            });
+            // This helper tests only projected reference closure, deliberately
+            // bypassing original-file census and the now-changed source ranges.
+            assert_eq!(
+                crate::cut::reference_closure(c, &projected, [6, 1, 1, 2, 2]),
+                Ok(()),
+                "{table}: sequence order must not extend across {different}"
+            );
+            c.execute_batch("ROLLBACK").unwrap();
+        }
+    }
+    let engine = open(temp.path(), &catalog, &data);
+    assert_eq!(
+        crate::cut::inspect_attached(&engine.connection, &read, &data, 4, 12)
+            .unwrap()
+            .family_counts,
+        [6, 1, 1, 2, 2]
+    );
+}
