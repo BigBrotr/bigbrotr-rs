@@ -1,0 +1,232 @@
+{
+  "format": "bigbrotr-historical-capture-evidence/1",
+  "status": "PASS",
+  "scope": "Exact historical CatalogCapture only; no persistent pin, public delivery, restart or M1 qualification",
+  "source": {
+    "revision": "a670f03227866efaa98e05567339e6977f875ef5",
+    "tree": "023a950e61862ed1190152e5cb5700036e1337ef",
+    "files": 908,
+    "manifest": {
+      "path": ".research/implementation/archive-snapshot-pin/capture/out/build/source-manifest.json",
+      "bytes": 112277,
+      "sha256": "8307b1a8bc896df91a4892546130e65399ae658276526f8048ebad21991cc66e"
+    }
+  },
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94"
+  },
+  "build": {
+    "path": ".research/implementation/archive-snapshot-pin/capture/out/native-tests/checks/result.json",
+    "bytes": 4454,
+    "sha256": "30ce7ef79b7cd3f16973da2b227fb265cbe678a0dad7d256b890eaad22a00143"
+  },
+  "artifacts": {
+    "source": "a670f03227866efaa98e05567339e6977f875ef5",
+    "source_manifest_sha256": "8307b1a8bc896df91a4892546130e65399ae658276526f8048ebad21991cc66e",
+    "native_toolchain": {
+      "os": "Linux",
+      "architecture": "x86_64",
+      "discovery": "llvm-config",
+      "environment": {
+        "CC": "/usr/lib/llvm-14/bin/clang",
+        "CXX": "/usr/lib/llvm-14/bin/clang++",
+        "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+        "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+        "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+      },
+      "tools": {
+        "CC": {
+          "path": "/usr/lib/llvm-14/bin/clang",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "CXX": {
+          "path": "/usr/lib/llvm-14/bin/clang++",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "AR": {
+          "path": "/usr/lib/llvm-14/bin/llvm-ar",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+          "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+          "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+        },
+        "LIBCLANG_PATH": {
+          "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+          "version": "Debian clang version 14.0.6"
+        },
+        "discovery": {
+          "path": "/usr/lib/llvm-14/bin/llvm-config",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+          "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+          "version": "14.0.6"
+        }
+      },
+      "sdk": null
+    },
+    "scope": "actual native cut to immutable fenced Archive frontier; pin/served-read qualification remains open",
+    "status": "READY",
+    "control": "84286f4d1f83dfc6d668a4f8ca52e287ddefb21f95b7e7b778f1d51cea33462d",
+    "worker": "b7049b1013846bf53d373defa6230a9483d84e4bf844c5956f48795701aad389",
+    "probe": "96cdda624bb60eea7e03a7138cbbc642ee46558bd70567b00c2d958e89644fdf",
+    "initializer": "8c2a5b3801d419faf836bc026860c5d74faf327f4d48e3af086ea69121e5f354",
+    "build_info": {
+      "archive_worker": {
+        "bytes": 14229416,
+        "sha256": "b7049b1013846bf53d373defa6230a9483d84e4bf844c5956f48795701aad389"
+      },
+      "capabilities": [
+        "event-verification",
+        "config-static"
+      ],
+      "capability_scope": "Strict bounded event JSON and independent ID/BIP340 verification; offline static configuration candidates and incomplete read-only doctor diagnostics; no storage, durable configuration authority, source policy, wire transport, filter, or general NIP conformance claim",
+      "debug_info": "false",
+      "format": "bigbrotr-build/1",
+      "inputs_sha256": {
+        "Cargo.lock": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215",
+        "contracts/protocol/nip01-event.json": "b830d5ab8651f5a763ebcffdc0eb1737ba70f4602c93fc714c892865ffca2db8",
+        "contracts/protocol/versions.json": "37c76706c5a2aa4fc72a40aeed908f104620eafcee1118b7cee8baf133546c95",
+        "contracts/release/dependencies.json": "9bea8c27908c680afc63ec9b74c481ea522c2b7a32232ab4dbca82b1920d7dd0",
+        "rust-toolchain.toml": "887f9be066a15585a2c583578e84b0fcb541126d81546276bad3d2ff00d61167"
+      },
+      "optimization": "3",
+      "product": "BigBrotr",
+      "profile_assertion": "release",
+      "protocol_registry_format": "bigbrotr-protocol-versions/1",
+      "protocols": {
+        "event_verifier": "bigbrotr-nip01-verifier/1",
+        "nostr_nips": "a2494f4f81d46684e5814a9bf35e2b1df978f955"
+      },
+      "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+      "schemas": {
+        "build_info": "bigbrotr-build/1",
+        "config_static": "bigbrotr-config-static/1",
+        "doctor": "bigbrotr-doctor/1",
+        "signed_event": "nip01-event/1"
+      },
+      "source": {
+        "dirty": false,
+        "manifest_sha256": "8307b1a8bc896df91a4892546130e65399ae658276526f8048ebad21991cc66e",
+        "revision": "a670f03227866efaa98e05567339e6977f875ef5",
+        "state": "builder-supplied",
+        "tree": "023a950e61862ed1190152e5cb5700036e1337ef"
+      },
+      "target": "x86_64-unknown-linux-gnu",
+      "version": "0.1.0-dev"
+    },
+    "source_unchanged": true,
+    "publisher": "815341f984d2a00c6ba6bb3f212861af7a7486544ae56ac78cc6959074ceae8e",
+    "reader": "937e78a3b291015c91dcf5b1623aacca1fdd4a8bfd231f98b155059a260b9989",
+    "coordinator_probe": "03a5b3aadcf805a7ed44e54eb8d752e9bb1b5803c4aa4d3620b7d4239a73180e",
+    "attempt_probe": "e586f5290ff3134441b925fc6d0bdf2297ed259aba20c1659f3a64622cdf43ef",
+    "receipt_reader": "53c208d707ac57da89aaec286ec8e713eb6e45663ceb04833bad49862b8de7cc"
+  },
+  "native": {
+    "cases": 2,
+    "evidence": {
+      "path": ".research/implementation/archive-snapshot-pin/capture/cut-cases.json",
+      "bytes": 635988,
+      "sha256": "51a3bd44f94e0aeedaf97c437eee32212a688d6d57dde07f0f17e6d9bf4aab6d"
+    },
+    "observed": [
+      "Normal complete signed cut at snapshot3, head3.",
+      "History preserves prefix3 and later4 with independent full signed/fact/digest oracle.",
+      "Select exact old3 under barrier with head4; actual native old-cut observation matches original prefix. Missing5 refuses. Historical accept refuses new frontier publication."
+    ],
+    "limitations": [
+      "Historical verify occurs before native work in this candidate. A later dirty fixture adds fresh verify after native work; not included in this evidence.",
+      "The capture-only harness does not execute historical restart, cancellation, manager loss or deadline cases."
+    ]
+  },
+  "pre_protocol": {
+    "status": "EXPECTED_FAIL",
+    "evidence": {
+      "path": ".research/implementation/archive-snapshot-pin/capture/pin-red2.json",
+      "bytes": 10657,
+      "sha256": "23908107be9a08ef77b2a793a984272d5685d2d8d50fc78d8c78d84f9cf4cd99"
+    },
+    "meaning": "Schema16 accepts an unqualified Archive lease; the independent assertion fails and the DO transaction rolls back the lease. It is not qualified native pin authority."
+  },
+  "failures": [
+    {
+      "scope": "native harness launched before READY",
+      "evidence": {
+        "path": ".research/implementation/archive-snapshot-pin/cases.log",
+        "bytes": 1392,
+        "sha256": "71dcb9541cf17488a2dde3eb06a3822d33d1cd16acfd6794eadbea1c034d3f7e"
+      },
+      "meaning": "Missing ready.json; no native cases or case-output directory created. cases-ready.log records the subsequent complete run."
+    },
+    {
+      "scope": "baseline orchestration import",
+      "evidence": {
+        "path": ".research/implementation/archive-snapshot-pin/baseline.log",
+        "bytes": 116,
+        "sha256": "c250253b1bd117ce800a7986ceb8af7f2a50fe15d9b20aee612d6fef3d4cbb2b"
+      },
+      "meaning": "Incorrect import path before database or fixture work."
+    },
+    {
+      "scope": "baseline protected credential input",
+      "evidence": {
+        "path": ".research/implementation/archive-snapshot-pin/capture/pin-red.json",
+        "bytes": 1037,
+        "sha256": "0b0200ad6864ca4f70e7435e89b6cf5ab362a949c8d3cb94e4716bfec0407b3e"
+      },
+      "meaning": "CLI refused read-only 0444 fixture secret before connecting. Fresh baseline directory/database uses a private0600 copy; no product safety was relaxed."
+    },
+    {
+      "scope": "Mac check output directory reused",
+      "meaning": "The check runner refused an existing green directory before executing checks; green2 used a fresh directory."
+    }
+  ],
+  "review": {
+    "kind": "independent read-only AI and integrating owner",
+    "disposition": "No concrete selector bypass. Preserve fresh post-native verify and fault/restart limits; reviewer ran no engines."
+  },
+  "closure": {
+    "audit": {
+      "path": ".research/implementation/archive-snapshot-pin/capture/terminal-audit.json",
+      "bytes": 10409,
+      "sha256": "d1cb3591f8d126cd6922fd2a35550be82ee544fb667c9267f7e5f6deaa3cb4ef"
+    },
+    "resources": {
+      "path": ".research/implementation/archive-snapshot-pin/capture/resources.json",
+      "bytes": 1347,
+      "sha256": "e182cb185881fecc1f4f90bd2728becafd543cf6d2586bc78970981f3d60317c"
+    },
+    "state": "stopped-retained",
+    "preexisting_preserved": 405,
+    "unrelated_running": 8,
+    "bigbrotr_running": 0,
+    "remaining_pg_clients": 0,
+    "network": "empty owned network removed; containers/data/artifacts retained"
+  },
+  "capture": {
+    "identity": {
+      "path": ".research/implementation/archive-snapshot-pin/evidence-identity.json",
+      "bytes": 2938,
+      "sha256": "c2d407de64f73e5dd6374c1c6cc7756a1c75581d6c5b53d10be7dce0aadd183b"
+    },
+    "sha256": "b216a68f71bdea66f262c7a1d6944caf754325e318c24cdf089bae329a41ed37",
+    "files": 19
+  },
+  "offline": {
+    "path": ".research/implementation/archive-snapshot-pin/offline-verification.json",
+    "bytes": 216,
+    "sha256": "75d4b0cbbdf1a853dc85b0dd3a335f4594fe1cd65b4100928e60d75fa9a1916b"
+  },
+  "remaining": [
+    "Migration17 current-holder binding and actual consumer, renewal/clock boundaries, both maintenance lock orders, legacy positive claims, ambiguous commits and old-holder recovery.",
+    "Actual principal/action/scope authorization, bounded interrupted output, served read/export/restart and complete selected product."
+  ]
+}

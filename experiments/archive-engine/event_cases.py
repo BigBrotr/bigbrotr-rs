@@ -52,7 +52,7 @@ def cut_expectation(mode, prefix=False):
                        family_counts=[6, 1, 1, 2, 2] if mode == 'history' and not prefix else [6, 1, 1, 1, 1])
     return dict(event='captured-prefix' if prefix else 'captured-cut', observation=observation, read=read,
                 frontier=dict(operation_id=('f0' if prefix else 'f1')*16, revision=2 if mode=='history' and not prefix else 1, snapshot_id=snapshot,
-                              request_digest=cut_digest(read)), pin='not-implemented')
+                              request_digest=cut_digest(read)), pin='not-granted')
 
 
 def main(root, capture_cut=False, reader_custody=False):
@@ -178,7 +178,7 @@ def main(root, capture_cut=False, reader_custody=False):
                 assert [v['expected'] for v in values if v['event']=='inputs-reopened'] == input_expectations(mode)
                 # This slice consumes installed initialization/retained inputs;
                 # its dedicated mode omits previously qualified ACL fault races.
-                check(mode, [v for v in values if v['event'] not in ('inputs-reopened', 'captured-cut', 'captured-prefix', 'historical-frontier', 'historical-capture')], json.loads(reader['stdout']))
+                check(mode, [v for v in values if v['event'] not in ('inputs-reopened', 'captured-cut', 'captured-prefix', 'historical-frontier', 'historical-capture', 'pin-history')], json.loads(reader['stdout']))
             request = identity(value, records, mode)
             before, original_files = metadata(db), files(mode)
             result[mode+'_metadata_before'] = before

@@ -19,6 +19,9 @@ mod archive_frontier;
 #[path = "archive_persistence.rs"]
 mod archive_persistence;
 pub use archive_frontier::ArchiveFrontierReceipt;
+#[path = "snapshot_leases.rs"]
+mod snapshot_leases;
+pub use snapshot_leases::{ArchivePinError, ArchivePinReceipt, ArchivePinRequest};
 #[path = "initial_batch.rs"]
 mod initial_batch;
 #[path = "producer_closing.rs"]

@@ -61,6 +61,10 @@
     {
       "version": 16,
       "name": "0016_archive_frontiers.sql"
+    },
+    {
+      "version": 17,
+      "name": "0017_archive_snapshot_pins.sql"
     }
   ],
   "reserved": [

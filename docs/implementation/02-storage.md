@@ -763,6 +763,13 @@ cannot reclaim required evidence, pending data or readable generations.
   deadline, stopped-child parent death and lock reacquisition pass. Fifteen Mac
   custody tests and consumer Clippy also pass. No pin/policy grant or step closure
   follows; concurrent maintenance by the same coordinator remains a separate gate.
+  [Historical capture at `a670f03`](evidence/p02-archive-historical-capture-native-20260920.json)
+  qualifies exact retained snapshot3 under head4 in two signed cut journeys.
+  The new migration0017 and Control pin adapter bind this selection to the original
+  frontier, current holder and atomic positive claims, resolve identical retries
+  without renewal and release after joined consumption. Native pin qualification
+  is pending. Typed renewal, old-holder recovery, maintenance lock schedules,
+  other consumer purposes and actual authorized read/export remain required.
 - [ ] **Step 2:** Reclaim pending payload only after committed archive and safety policy;
   preserve identity/receipt metadata for its correctness horizon.
 - [ ] **Step 3:** Compact files without changing source identities or reference resolution;

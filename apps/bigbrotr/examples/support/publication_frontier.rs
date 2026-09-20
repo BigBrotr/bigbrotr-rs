@@ -2,6 +2,14 @@
 use super::*;
 use bigbrotr::storage::postgres::catalog_guard::CatalogCapture;
 
+async fn pin_state(mode: &str) -> serde_json::Value {
+    let (client, driver) = connect(&format!("bbpub_control_{mode}"), "postgres").await;
+    let text: String = client.query_one("SELECT json_build_object('leases',(SELECT json_agg(t ORDER BY lease_id) FROM (SELECT *,xmin::text AS xmin FROM control.snapshot_leases)t),'bindings',(SELECT json_agg(t ORDER BY lease_id) FROM (SELECT *,xmin::text AS xmin FROM control.archive_snapshot_pins)t),'claims',(SELECT json_agg(t ORDER BY claim_id) FROM (SELECT *,xmin::text AS xmin FROM control.retention_claims)t))::text", &[]).await.unwrap().get(0);
+    drop(client);
+    driver.await.unwrap().unwrap();
+    serde_json::from_str(&text).unwrap()
+}
+
 pub async fn initialize(
     owner: &mut ControlSession,
     manager: &mut Client,
@@ -144,7 +152,7 @@ pub async fn inspect(
         }
     );
     emit(
-        serde_json::json!({"event":if prefix {"captured-prefix"} else {"captured-cut"}, "observation":captured.observed().observation(),"read":captured.observed().read(),"frontier":{"operation_id":hex(&frontier.operation_id),"revision":frontier.revision,"snapshot_id":frontier.snapshot_id,"request_digest":frontier.request_digest},"pin":"not-implemented"}),
+        serde_json::json!({"event":if prefix {"captured-prefix"} else {"captured-cut"}, "observation":captured.observed().observation(),"read":captured.observed().read(),"frontier":{"operation_id":hex(&frontier.operation_id),"revision":frontier.revision,"snapshot_id":frontier.snapshot_id,"request_digest":frontier.request_digest},"pin":"not-granted"}),
     );
     drop(captured);
     capture.finish().await.unwrap();
@@ -156,6 +164,41 @@ pub async fn inspect(
                 .unwrap();
         assert_eq!(historical.snapshot_id(), 3);
         historical.verify().await.unwrap();
+        let request = bigbrotr::storage::postgres::control_owner::ArchivePinRequest {
+            lease_id: [0xf2; 16],
+            frontier_revision: 1,
+            ttl: Duration::from_secs(10),
+        };
+        let pin = owner
+            .register_archive_pin(&historical, &request, &Cell::new(false))
+            .await
+            .unwrap();
+        assert!(pin.created && !pin.released);
+        assert_eq!(
+            (pin.frontier_revision, pin.snapshot_id, pin.lease_revision),
+            (1, 3, 1)
+        );
+        let registered = pin_state(mode).await;
+        let retry = owner
+            .register_archive_pin(&historical, &request, &Cell::new(false))
+            .await
+            .unwrap();
+        assert_eq!(
+            retry,
+            bigbrotr::storage::postgres::control_owner::ArchivePinReceipt {
+                created: false,
+                ..pin
+            }
+        );
+        assert_eq!(
+            owner
+                .read_archive_pin(coordinator.identity().catalog(), request.lease_id)
+                .await
+                .unwrap(),
+            Some(retry)
+        );
+        let retried = pin_state(mode).await;
+        assert_eq!(retried, registered);
         let old_cut = preparation(
             installation,
             &directory(home.join("historical-cut-temp")),
@@ -193,10 +236,32 @@ pub async fn inspect(
         )
         .unwrap();
         let old_observation = old_cut.observation().clone();
+        historical.verify().await.unwrap();
         assert!(matches!(
             historical.accept(old_cut).await,
             Err(bigbrotr::storage::postgres::catalog_guard::GuardError::Conflict)
         ));
+        let released = owner
+            .release_archive_pin(&pin, &Cell::new(false))
+            .await
+            .unwrap();
+        assert!(released.released && !released.created);
+        assert_eq!(released.lease_revision, 2);
+        let released_state = pin_state(mode).await;
+        let old_retry = owner
+            .register_archive_pin(&historical, &request, &Cell::new(false))
+            .await
+            .unwrap();
+        assert_eq!(
+            old_retry, released,
+            "an acquisition retry cannot resurrect a released pin"
+        );
+        let released_retry = pin_state(mode).await;
+        assert_eq!(released_state, released_retry);
+        emit(
+            serde_json::json!({"event":"pin-history", "registered":registered,
+            "retried":retried, "released":released_state, "released_retry":released_retry}),
+        );
         historical.finish().await.unwrap();
         assert!(matches!(
             CatalogCapture::at_snapshot(manager, coordinator, 5, Duration::from_secs(30)).await,

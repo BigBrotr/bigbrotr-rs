@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-09-20 on Mac after native reader custody qualification.
+Observed 2026-09-20 on Mac after historical capture qualification; pin registration is in progress.
 Navigation only: follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint)
 and verify Git, dirty files, evidence and resources before continuing.
 
@@ -20,18 +20,22 @@ another administrative diagnostic command instead of the real read consumer.
 
 ## Git and ownership
 
-Local main and private origin/main were verified at
-`88e93678db830f08d22f49cfb6d234ee50fc40dc` after pushing the qualified custody
-boundary. Root-owned new work: exact historical CatalogCapture selection,
-publication fixture/oracle, an unqualified-pin SQL negative fixture and this
-checkpoint. No parallel writer, merge or rebase. Candidate native testing follows
-through an exact clean Git revision; no migration17 or persistent pin exists yet.
+Local main is unpublished candidate `a670f03227866efaa98e05567339e6977f875ef5`,
+tree `023a950e61862ed1190152e5cb5700036e1337ef`; private origin/main remains
+`88e93678db830f08d22f49cfb6d234ee50fc40dc`. Root-owned dirty work implements the draft migration17, actual Control
+pin adapter and independent SQL/native fixtures, plus their documentation and the
+historical-capture evidence report. No parallel writer, merge or rebase. These
+pin changes are not yet engine-tested. Fresh Mac16 schema tests and consumer Clippy
+pass including the row/xmin fixture; artifact/link/syntax checks and the11 report
+file references also pass. This changeset is the next unpublished native candidate.
+Historical candidate a670f03 is qualified only for exact capture, not a live pin.
 
 Preserve `.research/worktrees/producer-closing-old-writer`, last verified clean at
 `f899896b1207f5e71c4e39d9ab7814b293814735` on
 `research/producer-closing-old-writer`, and other historical worktrees.
-Caches are not source authority. No local build or SSH session remains running at this checkpoint. Tux read-only
-inspection still finds eight unrelated containers running and no BigBrotr lab.
+Caches are not source authority. No local build remains. The a670f03 lab is
+stopped and retained; both container states were freshly checked after resumption.
+Do not reuse its output root. The terminal audit preserved eight unrelated workloads.
 
 ## Executed reader custody boundary
 
@@ -86,7 +90,28 @@ are under `.research/implementation/archive-reader-custody/`.
 
 ## Resources
 
-The new lab is stopped and retained, under
+Historical capture lab `implementation_archive_worker_20260918.snapshot_pin_candidate`:
+root `/home/tux/bigbrotr-implementation-20260917/runs/archive-snapshot-pin-a670f03`,
+owner `28ca642047c2e9c70519690e4f926ae7`, runner
+`19dfdf17fb2bcf3781ba22c067f8dccc777b6884d5426368367cf69176d301e0`, PG
+`c8d862237c736d0779be6bf11591d6fbe3d2acd8217d366a40bc465453cac766`.
+Both stopped/PID0/no OOM; empty owned network removed, sources/data/artifacts
+retained. All405 preexisting containers preserved, eight unrelated running,
+no BigBrotr running and no PG clients. No cleanup debt.
+
+[Historical capture evidence](evidence/p02-archive-historical-capture-native-20260920.json)
+records the exact908-file Git export, native build/16 schema tests/Clippy and two
+signed complete-cut journeys. Exact old snapshot3 remains distinct from head4;
+missing5 and old-cut publication refuse. The schema16 unqualified-lease negative
+fails as expected and rolls back. This is a new-protocol baseline, not a defect
+in a previously qualified pin. Initial orchestration/credential-input failures
+are retained. Offline verification checks19 capture files, source and terminal
+state. Capture SHA256 `b216a68f71bdea66f262c7a1d6944caf754325e318c24cdf089bae329a41ed37`.
+Raw scripts/evidence: `.research/implementation/archive-snapshot-pin/`; terminal
+`capture/resources.json` supersedes the initial local `resources.json`.
+
+
+The previous custody lab is stopped and retained, under
 [the laboratory inventory](../research/laboratory-inventory.json),
 `implementation_archive_worker_20260918.reader_custody_candidate`:
 
@@ -132,28 +157,33 @@ PG row or successful local reopen.
 
 ## Next bounded product action
 
-Implement the real snapshot pin consumer under P02-T04/T07. The first bounded
-change now selects and rechecks exact historical snapshots under the existing
-catalog owner lock while remembering the head separately. An old selection cannot
-be accepted for new frontier publication or virgin initialization. Mac scoped
-Clippy passes; its initial missing-API compile failure is retained under
-`.research/implementation/archive-snapshot-pin/red` (not a runtime RED).
-Next execute normal/history signed native cuts and the unqualified lease negative
-on isolated PG16 at the exact candidate revision, then implement migration17 and
-the actual pin consumer. SQL and native cases are not yet executed.
- The existing 0002
-lease shapes need additive qualification: immutable protocol attribution and a
-1:1 binding to the 0016 frontier, no adoption of old rows, actual current Control
-holder/role/incarnation and PostgreSQL clock checks after blocking work. The
-historical publisher need not remain alive. Old unqualified retention claims
-remain obligations and cannot be ignored. Zero/empty cuts still require native
-snapshot protection despite having no positive source ranges.
+Finish and qualify the real snapshot pin adapter under P02-T04/T07. Draft0017
+extends existing leases with immutable protocol1, original current Control issuer,
+exact0016 frontier binding, atomic positive source-prefix claims and PG clock
+checks after waits. Old NULL rows remain unchanged retention obligations and cannot
+be adopted. Zero/empty cuts still retain a native snapshot without positive ranges.
+The actual adapter registers, resolves identical retries without expiry extension,
+and explicitly releases after joined consumption. Receipts grant no live delivery.
 
-Use a stable catalog/consumer lock shared with maintenance before scanning pins;
-locking only existing leases cannot exclude a new insertion. Preserve the order
-local custody -> catalog barrier -> short Control transaction. Never take native
-table SHARE after the native owner FOR UPDATE: native DML takes table then row.
-Verify actual historical snapshot existence under that barrier; The new CatalogCapture selector is not yet natively qualified. Do not substitute latest for an older frontier.
+The independent rows/xmin oracle, owning contracts and scoped Mac checks are ready.
+Next commit the unpublished exact candidate, then create a fresh inventoried
+Tux build, `event_cases.py --capture-cut` and `snapshot_pin_cases.py`; preserve all
+outcomes and qualify both maintenance lock orders, expiry/positive claims and
+ambiguous commit before claiming the pin boundary. No engine pin cases executed yet.
+
+Stable consumer prelocking precedes every lease/claim row update. Maintenance must
+lock the same consumer then scan in a fresh READ COMMITTED statement, including
+expired/legacy unreleased obligations. Adapter leaves completeness/clock checks
+deferred through COMMIT, then rechecks capture. Catalog/local custody stays through
+join; no native table SHARE after owner FOR UPDATE. The historical-capture fixture
+now also rechecks after native work; that edit is not in the a670f03 evidence.
+
+Old-Control recovery release is still missing: expiry is never worker-exit proof.
+Do not allow a new holder to erase old obligations without positively excluding
+all corresponding consumers, including concurrent work under the same coordinator.
+The current10-second fixture pin and30-second worker bound do not establish live
+in-flight delivery authority. SQL relational cases and current-holder registration
+alone cannot close P02-T07 or the read/export/restart milestone.
 
 Connect the pin to an actual bounded event/export consumer. Keep current
 principal/action/scope and policy authority through output; AccountObservation is

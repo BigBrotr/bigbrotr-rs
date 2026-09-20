@@ -1096,6 +1096,49 @@ the test blocker; it does not establish permanent-blocker cancellation latency.
 Preserved fixture failures and scope limits are in the report. Authoritative
 source handoff, native pin/GC lock orders and protected read/export remain required.
 
+### Native snapshot pin candidate
+
+P02-T07 adds migration0017 over the existing snapshot lease and retention claim
+ledger. A new Archive lease explicitly names protocol1 and has one immutable
+binding to an exact0016 frontier and its native snapshot. Control acquires local
+custody, selects that retained snapshot under the catalog barrier, and registers
+lease, original current Control issuer and all positive source prefixes atomically.
+The publisher of a historical frontier need not remain alive. A zero or empty cut
+still requires its native snapshot binding, without inventing positive claims.
+No old lease or claim is rewritten or automatically adopted by the migration.
+
+The first adapter supports the current Control role-instance holder and reader
+purpose. It checks the actual fenced backend, holder incarnation and PostgreSQL
+clock after waits. Registration is limited to120 seconds and1024 source bounds.
+Lease identity and declared TTL are immutable; an identical acquisition retry
+returns the original stored result without renewal or resurrection. SQL supports
+live CAS renewal, but the typed renewal and other consumer-purpose adapters remain
+unimplemented. A receipt is historical metadata, not principal authorization or
+proof of a live pin after its reply arrives.
+
+All pin mutations take the stable Archive consumer row before lease/claim row
+locks. Maintenance must take the same consumer lock and scan obligations in a
+fresh READ COMMITTED statement; locking only existing leases misses insertion.
+Unreleased obligations include expired and legacy rows. SQL BEFORE ROW triggers
+cannot precede PostgreSQL's own UPDATE row lock, so callers must explicitly follow
+this order. The adapter keeps clock/completeness checks deferred through COMMIT
+and rechecks the catalog capture afterward. Forcing constraints early is not a
+proof of commit-time validity. Native work and delivery require separate live
+authority checks and retained custody through actual termination.
+
+Release atomically transitions the original holder's lease and every claim after
+its consumers have joined. No Drop, timeout or expiry releases obligations. A new
+Control holder cannot release the old holder's pin through this API; recovery
+needs positive exclusion of its consumers, including concurrent work under the
+same local coordinator. That recovery transition, renewal, both maintenance lock
+orders and actual authorized delivery remain qualification gates.
+
+[Historical capture evidence](../implementation/evidence/p02-archive-historical-capture-native-20260920.json)
+at `a670f03` qualifies exact old snapshot3 under head4, missing-snapshot refusal
+and refusal to publish an old observation as the latest frontier. It does not
+qualify migration0017 or the new persistent adapter. Their native fixtures are
+pending; no protected read/export or retention task is complete.
+
 ## File formation, reads and cost
 
 Maintain the existing ZSTD3/bounded batch starting policy and disabled scientific

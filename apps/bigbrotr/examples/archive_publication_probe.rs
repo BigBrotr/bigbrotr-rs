@@ -166,19 +166,19 @@ async fn initialize_control(database: &str, installed: bool) {
     assert_eq!(
         migration_runner::run(
             &mut admin,
-            if installed { 16 } else { 9 },
+            if installed { 17 } else { 9 },
             true,
             &Cell::new(false)
         )
         .await
         .unwrap()
         .applied,
-        if installed { 15 } else { 8 }
+        if installed { 16 } else { 8 }
     );
     admin.batch_execute("GRANT USAGE ON SCHEMA control TO bigbrotr_control; GRANT SELECT ON ALL TABLES IN SCHEMA control TO bigbrotr_control; GRANT INSERT,UPDATE ON control.datasets,control.principals,control.config_revisions,control.policy_revisions,control.management_audit,control.management_commands,control.role_instances,control.owner_epochs,control.topology_generations,control.source_streams,control.topology_streams,control.allocation_domains,control.producer_slots,control.producer_epochs TO bigbrotr_control; GRANT INSERT ON control.archive_attempts TO bigbrotr_control; GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA control TO bigbrotr_control;").await.unwrap();
     if installed {
         admin
-            .batch_execute("GRANT INSERT ON control.archive_coordinators, control.archive_persistence, control.producer_requests, control.producer_outcomes, control.archive_owner_sessions, control.archive_frontier_snapshots, control.archive_frontier_batches, control.consumer_frontiers TO bigbrotr_control; GRANT INSERT,UPDATE ON control.consumers, control.consumer_frontier_revisions TO bigbrotr_control; GRANT UPDATE ON control.jobs TO bigbrotr_control")
+            .batch_execute("GRANT INSERT ON control.archive_coordinators, control.archive_persistence, control.producer_requests, control.producer_outcomes, control.archive_owner_sessions, control.archive_frontier_snapshots, control.archive_frontier_batches, control.consumer_frontiers, control.archive_snapshot_pins TO bigbrotr_control; GRANT INSERT,UPDATE ON control.consumers, control.consumer_frontier_revisions, control.snapshot_leases, control.retention_claims TO bigbrotr_control; GRANT UPDATE ON control.jobs TO bigbrotr_control")
             .await
             .unwrap();
     }
