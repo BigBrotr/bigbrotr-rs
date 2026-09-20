@@ -97,7 +97,7 @@
     "remote_state_mutated": false,
     "notes": "Shared active BigBrotr/unrelated services; /tmp is tmpfs. Extended realistic research is authorized; no new benchmark executed."
   },
-  "updated_at": "2026-09-19T03:34:46.516035+00:00",
+  "updated_at": "2026-09-20T01:18:44.526544+00:00",
   "remote_retirement_20260917": {
     "evidence": "docs/research/evidence/tux-retirement-20260917.json",
     "local_operation_records": ".research/tux-retirement-20260917",
@@ -14725,6 +14725,44 @@
         }
       },
       "qualification": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json"
+    },
+    "wal_recovery": {
+      "source": "ec386ac26175339c5f990be75eef860d27887c60",
+      "tree": "bb177700aa681ee8f86c0458e5699f3e3c6f6704",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/wal-recovery-ec386ac",
+      "owner": "553610940546c5a19f1cede583572ca7",
+      "container": "bigbrotr-implementation-wal-recovery-ec386ac",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "state": "stopped",
+      "source_files": 868,
+      "cache_source": "d2959da61a54a89b6b4e1b4806aa3a819bdff778",
+      "cache_path": "/home/tux/bigbrotr-implementation-20260917/runs/producer-recovery-d2959da/out/build",
+      "started_at": "2026-09-20T01:12:32.562973+00:00",
+      "container_id": "48a3f17e13f0a84a6282f8e0e5c8b6dbf9e9d628f5dbe960e496c25086c32ec8",
+      "local_raw": ".research/implementation/wal-recovery",
+      "purpose": "Strict native WAL reopen qualification; no negative resolver",
+      "limits": "2CPU/6GiB/512PIDs; network none; readonly source/root;512MiBtmpfs; no PostgreSQL or credentials",
+      "preexisting_containers": 384,
+      "unrelated_running": 8,
+      "free_bytes": 89893294080,
+      "source_archive_sha256": "f0d85079438a06bbdfd261aedc2289c4da063abde9d0b2de67ca06d89fa85224",
+      "source_manifest_sha256": "032c1d29e3fbd192e303d41582fd11eda5858bfe8b812404a8f5495a1d9859bf",
+      "source_export_verified_against_mac_git": true,
+      "finished_at": "2026-09-20T01:14:10.851162518Z",
+      "terminal_audit": {
+        "path": ".research/implementation/wal-recovery/collected/terminal-audit.json",
+        "bytes": 3008,
+        "sha256": "5aa110fc712401adcdfe5914d9815045631a51b156905c9ffbbbc8d91abecabb"
+      },
+      "qualification": "docs/implementation/evidence/p02-wal-recovery-native-20260920.json",
+      "capture": {
+        "path": ".research/implementation/wal-recovery/evidence-identity.json",
+        "bytes": 2541,
+        "sha256": "6f2b0a0f682d420790a557a64dd6e1b1dec5315dee193a1582f932e256152b27"
+      },
+      "native_tests": 53,
+      "integration_tests": 22,
+      "source_unchanged": true
     }
   },
   "implementation_monitor_corrections_20260918": {

@@ -43,3 +43,7 @@ the final evidence report must distinguish executed native targets and preserved
 REDs from pending qualification. These tests do not exercise real power failure,
 mid-FFI kill, whole-WAL removal, historical salvage adoption, causal backup,
 producer checkpoint/ACK/GC or successor activation.
+
+The [native evidence](../../docs/implementation/evidence/p02-wal-recovery-native-20260920.json)
+records execution at ec386ac on Linuxamd64, the preceding Mac RED/GREEN and scoped
+limitations. The stopped laboratory and captured artifacts remain inventoried.

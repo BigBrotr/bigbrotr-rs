@@ -161,3 +161,9 @@ preserve the damaged WAL through retry. An intact crash reopens with every origi
 row. A separate record-boundary truncation control deliberately demonstrates the
 remaining limitation above. These bounded cases do not test power loss, mid-FFI
 kill, missing whole WALs, filesystem failure or historical lossy recovery adoption.
+
+The [ec386ac qualification](../implementation/evidence/p02-wal-recovery-native-20260920.json)
+records the Mac semantic failure before correction and actual Linux53 native plus22
+integration tests, including the packaged worker, followed by Clippy. Exact source,
+artifacts, failed collection attempts and terminal resource audit are retained.
+The complete-record-loss control is an observed limitation, not recovery authority.

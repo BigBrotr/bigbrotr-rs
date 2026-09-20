@@ -1,0 +1,346 @@
+{
+  "format": "bigbrotr-wal-recovery-evidence/1",
+  "status": "PASS",
+  "observed_at": "2026-09-20T01:18:44.526544+00:00",
+  "scope": "P02-T02 step4 strict reopen prerequisite only; no negative resolution, complete drain, M1 or release qualification",
+  "source": {
+    "revision": "ec386ac26175339c5f990be75eef860d27887c60",
+    "tree": "bb177700aa681ee8f86c0458e5699f3e3c6f6704",
+    "files": 868,
+    "archive_sha256": "f0d85079438a06bbdfd261aedc2289c4da063abde9d0b2de67ca06d89fa85224",
+    "manifest_sha256": "032c1d29e3fbd192e303d41582fd11eda5858bfe8b812404a8f5495a1d9859bf",
+    "lock_sha256": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215",
+    "verified_against_mac_git_archive": true,
+    "unchanged_after_execution": true
+  },
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "rocksdb": "0.25.0",
+    "librocksdb_sys": "0.19.0+11.8.1",
+    "rocksdb_commit": "abeebd9630f11bd08c28b7bd43c7bdfc62050654",
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "limits": "2CPU/6GiB/512PIDs; 512MiBtmpfs; nonroot; network none; readonly root/source; no PostgreSQL, host ports/socket or credentials",
+    "trusted_cache_source": "d2959da61a54a89b6b4e1b4806aa3a819bdff778; compiler/dependency cache only, not source authority",
+    "native_toolchain": {
+      "path": ".research/implementation/wal-recovery/collected/out/wal-tests/qualification.json",
+      "bytes": 4841,
+      "sha256": "04853941b1564d8eaf52bf95b851ef710d76c211c4b39fbeb83dd2a78a2bbbfc"
+    }
+  },
+  "artifacts": {
+    "out/wal-tests/bigbrotr": {
+      "bytes": 9214744,
+      "sha256": "6c96dc8d310a38408cef7c0a6e388b858258ef4a08dc11359a07ce1c6fe4442d"
+    },
+    "out/archive-worker/bigbrotr-archive-worker": {
+      "bytes": 12608632,
+      "sha256": "4a8f8f37ec6dbf7b6e6def033966d21d116f027699cfd4c96ae6ff852f298f3c"
+    }
+  },
+  "change": [
+    "Set explicit AbsoluteConsistency recovery with paranoid checks retained; persisted OPTIONS confirms the actual native setting.",
+    "No persistent encoding, migration, manifest or profile number change. Earlier binaries remain permissive and must not be used as a recovery fallback. This change cannot attest their past recovery.",
+    "Incomplete trailing WAL records also refuse open, including interrupted appends. Preserve suspect directory for explicit recovery.",
+    "No negative resolver was implemented. Exclusive ownership, closing and successful strict reopen do not establish authoritative absence."
+  ],
+  "oracle": {
+    "path": "tests/fixtures/ingest/staged-bootstrap-crash.json",
+    "comparison": "Every key/value in default, facts and receipts; frozen before and after inventories independent of current production replay",
+    "fixture": {
+      "path": "tests/fixtures/ingest/staged-bootstrap-crash.json",
+      "bytes": 3344,
+      "sha256": "35a2f51b4228bf27aa853826dc03821e4de898910a5a1d4db8182f698542562d"
+    },
+    "process": "Child synchronizes real bootstrap, prints completion marker, parent observes marker, SIGKILLs and positively reaps signal9, then opens the same directory. Each case uses a fresh owned directory.",
+    "wal": "One ordinary physical FULL-record WAL, 1265bytes; bootstrap final record starts at146; receipt key is checked before corruption."
+  },
+  "cases": [
+    {
+      "case": "intact synced crash",
+      "expected": "Strict recovery preserves every after-fixture row",
+      "status": "PASS"
+    },
+    {
+      "case": "one CRC byte changed",
+      "original_sha256": "6d12aa9f60f419338ed524f4e4834bd62df98ef1401417acbe36c186fb342090",
+      "damaged_sha256": "70127341000bfa0ea56471980e737003a170df1504eef502688662ac07caf0e6",
+      "damaged_bytes": 1265,
+      "expected": "Ordinary and recovery opens refuse EngineOpen; both attempts preserve exact damaged WAL bytes; explicit PointInTime control opens and loses all bootstrap effects",
+      "status": "PASS"
+    },
+    {
+      "case": "last payload byte removed",
+      "damaged_sha256": "8e8ff36a57cf2caf0bd688d09d7fc6797537810196fb1852c5d21b8c9f471736",
+      "damaged_bytes": 1264,
+      "expected": "Same two refusals, WAL preservation and permissive control as CRC case",
+      "status": "PASS"
+    },
+    {
+      "case": "complete last record removed",
+      "damaged_sha256": "0c4e78e07c783caa8c5294fc57c2113ed79b60228d6ea23e317b958306aae701",
+      "damaged_bytes": 146,
+      "expected": "Strict open succeeds with only before-fixture manifest; executed LIMITATION, never a noncommit witness",
+      "status": "OBSERVED_LIMITATION"
+    }
+  ],
+  "linux": {
+    "status": "PASS",
+    "ordered_build": [
+      {
+        "name": "ordered-build",
+        "command": [
+          "/usr/bin/python3",
+          "/out/build/source/experiments/ingest-wal-recovery/run_native.py",
+          "--build-binaries"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 48.09422995895147
+      }
+    ],
+    "checks": [
+      {
+        "name": "native-rocks",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--lib",
+          "storage::rocks",
+          "--",
+          "--nocapture"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 15.508434870745987
+      },
+      {
+        "name": "store-and-format",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--test",
+          "rocks_store",
+          "--test",
+          "rocks_manifest",
+          "--test",
+          "rocks_keys"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 30.419722157996148
+      },
+      {
+        "name": "clippy",
+        "command": [
+          "cargo",
+          "clippy",
+          "--locked",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--lib",
+          "--tests",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 3.0195898469537497
+      }
+    ],
+    "native_tests": {
+      "passed": 53,
+      "failed": 0,
+      "ignored": 0,
+      "filtered": 81,
+      "includes_actual_packaged_worker": true
+    },
+    "integration_tests": {
+      "keys": 9,
+      "manifest": 3,
+      "store": 10,
+      "failed": 0,
+      "ignored": 0
+    },
+    "logs": [
+      {
+        "path": ".research/implementation/wal-recovery/collected/out/wal-tests/ordered-build.log",
+        "bytes": 626,
+        "sha256": "e98a0c1a7dfbf726a3f0857a45776b0453dd0b768df945f10cf05c371de13ef0"
+      },
+      {
+        "path": ".research/implementation/wal-recovery/collected/out/wal-tests/checks/native-rocks.log",
+        "bytes": 9878,
+        "sha256": "6b0827c84f7541ffc72618641b1fc0c07517c405dca16a60fd76e4fd40ad4f12"
+      },
+      {
+        "path": ".research/implementation/wal-recovery/collected/out/wal-tests/checks/store-and-format.log",
+        "bytes": 2384,
+        "sha256": "09b1910ef0fddafeb4420b6468a5041f7d4657cfe47e7150977b39bea4f63bb5"
+      },
+      {
+        "path": ".research/implementation/wal-recovery/collected/out/wal-tests/checks/clippy.log",
+        "bytes": 297,
+        "sha256": "30762d07d4b8f476320329efeff170a5961311aa34f50b15350f9e4feafdf9fc"
+      }
+    ],
+    "build_info": {
+      "path": ".research/implementation/wal-recovery/collected/out/wal-tests/qualification.json",
+      "bytes": 4841,
+      "sha256": "04853941b1564d8eaf52bf95b851ef710d76c211c4b39fbeb83dd2a78a2bbbfc"
+    }
+  },
+  "mac": {
+    "target": "aarch64-apple-darwin",
+    "source": "Uncommitted candidate changes against ef58a6b25db69c1f82e5909db632b3f1547a392f; exact RED patch/new-test snapshot retained. Not an exact-commit release build.",
+    "red": "Original product PointInTime options: CRC damage lost synced bootstrap and ordinary recovery opened with sequence1; 0passed/1failed/128filtered. Semantic assertion failure.",
+    "green": "After option fix, original discriminating test passed for intact/CRC/truncated body. Final two-test version additionally passes the complete-record limitation control.",
+    "tests": {
+      "wal": 2,
+      "profile": 5,
+      "store": 47,
+      "store_worker": "Explicitly excluded on Mac because packaged Linux worker unavailable; required case executed on Tux",
+      "clippy": "PASS"
+    },
+    "evidence": [
+      {
+        "path": ".research/implementation/wal-recovery/mac-red.log",
+        "bytes": 1711,
+        "sha256": "828f452c5805acd8ddcd6068fa2bb62af429444f5974455acf7f282b3fee93be"
+      },
+      {
+        "path": ".research/implementation/wal-recovery/mac-red-tracked.patch",
+        "bytes": 4865,
+        "sha256": "7afff69f884bb8fd3d3521c19f9bf0bc72cb78af4ce5d9b4bca739a5b174595e"
+      },
+      {
+        "path": ".research/implementation/wal-recovery/mac-red-wal_recovery_tests.rs",
+        "bytes": 7778,
+        "sha256": "3c3f6f9a3bcc3be29d902a01f1ebb1b5ccd5aea68ef7ab89bf73bbf04d9f5283"
+      },
+      {
+        "path": ".research/implementation/wal-recovery/mac-green.log",
+        "bytes": 1834,
+        "sha256": "b424f0edabe2012888f31f193e9d0b069e7331827599dea7f95587220d770f9d"
+      },
+      {
+        "path": ".research/implementation/wal-recovery/mac-wal-final.log",
+        "bytes": 2352,
+        "sha256": "89f6a6b93e6682324bd35ac312cc875920092928656a5b829879dc27fbeb9c34"
+      },
+      {
+        "path": ".research/implementation/wal-recovery/mac-profile.log",
+        "bytes": 1518,
+        "sha256": "8c7b14eb8eb24de51c21dc0b5e99d75878a2e9b2848d4b24afdc06f00089d44f"
+      },
+      {
+        "path": ".research/implementation/wal-recovery/mac-store.log",
+        "bytes": 6540,
+        "sha256": "78e2d9f95b4e341da3f7f8e307bb71072f41482117ac34dcf94570fa9ca7b4d2"
+      },
+      {
+        "path": ".research/implementation/wal-recovery/mac-store-identity.json",
+        "bytes": 332,
+        "sha256": "be79c5ebcebbe7f8cb390e1d55633e0cfcd56758f5e10a51e10a7f64cd8a608e"
+      },
+      {
+        "path": ".research/implementation/wal-recovery/mac-clippy.log",
+        "bytes": 676,
+        "sha256": "ea2fdbac40c12160c63c6290152599a3d6550f7b1a104feda78dbba5f060902e"
+      }
+    ]
+  },
+  "preserved_failures": [
+    {
+      "failure": "First discarded draft failed compilation on SHA hex LowerHex formatting; no tests executed and not semantic RED",
+      "evidence": {
+        "path": ".research/implementation/producer-noncommit/native-red.log",
+        "bytes": 3461,
+        "sha256": "0b436308e0ec9eafaf7681fa01152156fd40c0f0aed8479b99c8992248511ba5"
+      }
+    },
+    {
+      "failure": "Initial terminal audit compared order-sensitive Mounts arrays and refused 122 reorderings. Every complete entry matched after sorting by Destination; all other identity/lifecycle/network checks unchanged.",
+      "evidence": [
+        {
+          "path": ".research/implementation/wal-recovery/collect-order-sensitive.py",
+          "bytes": 4093,
+          "sha256": "22eb4e0a68d5cb87134fca285f8e0485ec907a39866a1e9b3e1714080846ce52"
+        },
+        {
+          "path": ".research/implementation/wal-recovery/audit-difference.log",
+          "bytes": 183929,
+          "sha256": "0ed153f0da586de0fc3c92c3183219cf23135d082ab651c46909624aed26d51c"
+        }
+      ]
+    },
+    {
+      "failure": "First Mac extraction used unsupported tarfile filter argument in installed Python and stopped before extracting files. Retried by validating regular member/path/hash and exclusive file writes; all16files verified.",
+      "scope": "Collection helper compatibility, not native product failure"
+    }
+  ],
+  "terminal": {
+    "status": "PASS",
+    "finished_at": "2026-09-20T01:14:10.851162518Z",
+    "exit_code": 0,
+    "oom": false,
+    "preexisting_preserved": 384,
+    "unrelated_running": 8,
+    "bigbrotr_running": 0,
+    "cleanup": "Finite owned runner exited itself; stopped container and data retained. No other resource mutation.",
+    "audit": {
+      "path": ".research/implementation/wal-recovery/collected/terminal-audit.json",
+      "bytes": 3008,
+      "sha256": "5aa110fc712401adcdfe5914d9815045631a51b156905c9ffbbbc8d91abecabb"
+    }
+  },
+  "capture": {
+    "root": ".research/implementation/wal-recovery/collected",
+    "files": 16,
+    "archive_sha256": "2b2b2e4095bd898b52c0525fcb69821f184c7fd60a0223ef909c17b4877e7372",
+    "identity": {
+      "path": ".research/implementation/wal-recovery/evidence-identity.json",
+      "bytes": 2541,
+      "sha256": "6f2b0a0f682d420790a557a64dd6e1b1dec5315dee193a1582f932e256152b27"
+    },
+    "source_manifest": {
+      "path": ".research/implementation/wal-recovery/collected/out/build/source-manifest.json",
+      "bytes": 107131,
+      "sha256": "032c1d29e3fbd192e303d41582fd11eda5858bfe8b812404a8f5495a1d9859bf"
+    },
+    "resources": {
+      "path": ".research/implementation/wal-recovery/collected/resources.json",
+      "bytes": 833,
+      "sha256": "34dc3173cd0d804c47c474e7574a3b3fbb4a9c79df59e2c3303d03158dc1f5e2"
+    },
+    "temporary_engine_directories": "Cleaned by native tests after assertions; deterministic fixture and complete command logs retained. Raw WAL directories not retained."
+  },
+  "review": {
+    "kind": "Independent read-only AI review plus integrating owner review",
+    "boundary": "Complete option/test/runner/shared builder+CI/profile/store/input references and Mac evidence inspected before candidate. Final independent offline review recomputed all16 capture files/tar, all868 source files against Git, all23 report references and all122 Mounts-only reorderings. No new engine/host execution by reviewer.",
+    "findings": "Default PointInTime recovery counterexample confirmed and corrected; full-record-loss limitation reproduced. Proposed negative resolver deferred and unpublished stub removed. Final review found no further substantive issue; report clarified two total open attempts, one per API."
+  },
+  "not_run": [
+    "Power failure or interrupted mid-FFI native append",
+    "Whole-WAL removal or historical salvage adoption",
+    "Causal backup/restore and recovery provenance for authoritative noncommit",
+    "Producer checkpoint, ACK/GC, retirement or successor activation",
+    "Aged mixed-workload performance and filesystem/ENOSPC failure",
+    "Native Linux arm64",
+    "Packaged installation/release or complete M1 read/export/restart journey"
+  ]
+}
