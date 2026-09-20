@@ -65,6 +65,10 @@
     {
       "version": 17,
       "name": "0017_archive_snapshot_pins.sql"
+    },
+    {
+      "version": 18,
+      "name": "0018_archive_pin_recovery.sql"
     }
   ],
   "reserved": [

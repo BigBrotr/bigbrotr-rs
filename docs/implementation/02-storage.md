@@ -775,6 +775,11 @@ cannot reclaim required evidence, pending data or readable generations.
   replies. Original parser failure remains recorded. Typed renewal, old-holder
   recovery, actual concurrent reclamation,
   other consumer purposes and actual authorized read/export remain required.
+  Draft0018 and the recovery adapter now require a fresh recovery-only custody
+  lifetime; event/cut reads and pin registration cannot share it. Local tests
+  preserve this restriction across rewrap and retained drivers. Native recovery,
+  populated0017 upgrade, explicit result resolution and interrupted recovery
+  remain pending; migration0017's applied bytes stay unchanged.
 - [ ] **Step 2:** Reclaim pending payload only after committed archive and safety policy;
   preserve identity/receipt metadata for its correctness horizon.
 - [ ] **Step 3:** Compact files without changing source identities or reference resolution;

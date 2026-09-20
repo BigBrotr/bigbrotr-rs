@@ -1151,6 +1151,39 @@ or orphaned obligations remain retained; another Control cannot release them.
 The initial multiline JSON parser failure is preserved. No live delivery,
 old-holder recovery, actual compaction or protected read/export is qualified.
 
+### Excluded reader recovery candidate
+
+P02-T07's next additive migration0018 records immutable recovery attribution
+without adopting or rewriting existing0017 bindings. The new adapter requires a
+`LocalPinRecovery` lifetime obtained only by a fresh local flock acquisition. It
+cannot be built from an existing coordinator or converted publicly into one.
+The owning LocalInitialization is permanently restricted: event/cut readers and
+new pin registration, including acquisition retries, refuse. Rewrapping custody
+cannot reset that restriction. Receipt/membership diagnostics remain separate
+primitives; this recovery path does not invoke them.
+
+This deliberately requires all recovery drivers to terminate before normal
+startup reacquires custody and establishes its ordinary Control connection. The
+extra bounded startup transition excludes readers that could otherwise begin
+under the same coordinator while recovery awaits SQL. A new wrapper alone, the
+expiry of a pin, or loss of only the old Control backend is insufficient evidence.
+Existing qualified0017 pins can be explicitly recovered after this new acquisition;
+unqualified NULL rows remain outside automatic recovery and retain their obligations.
+
+The adapter verifies the exact native snapshot under the catalog barrier, then
+prelocks the consumer and records the current actual Control backend as recoverer.
+The original issuer must be released, and its lease identity/holder remain intact.
+Recovery attribution, lease transition and every positive source claim release
+commit together. A historical retry preserves the original recovery attribution
+and xmin; it grants no new read. As with ordinary release, the scheduling lease may
+have expired: this closure requires the actual fenced backend and positive local
+exclusion, not new scheduling authority. Unknown COMMIT and failed postcommit
+capture verification require explicit result resolution; an unavailable reply
+does not establish rollback of the release.
+
+Local custody/rewrap tests and compilation pass; migration0018 and the native
+recovery consumer are not yet engine-qualified. This does not close P02-T07.
+
 ## File formation, reads and cost
 
 Maintain the existing ZSTD3/bounded batch starting policy and disabled scientific

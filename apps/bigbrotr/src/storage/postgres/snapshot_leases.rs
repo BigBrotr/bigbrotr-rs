@@ -73,6 +73,84 @@ fn number(row: &Row, i: usize) -> Result<u64, Error> {
 }
 
 impl ControlSession {
+    /// Retire an old holder's obligations only in a fresh recovery-only custody
+    /// lifetime. Ordinary readers cannot be launched under that lifetime. Keep
+    /// both actual transports retained through join, including unknown COMMIT.
+    pub async fn recover_archive_pin(
+        &mut self,
+        recovery: &crate::storage::archive::LocalPinRecovery,
+        manager: &mut tokio_postgres::Client,
+        lease_id: [u8; 16],
+        duration: Duration,
+        commit_started: &Cell<bool>,
+    ) -> Result<ArchivePinReceipt, Error> {
+        let coordinator = recovery.coordinator();
+        let identity = recovery.identity();
+        if identity.dataset() != self.request.dataset || coordinator.permits_reader_pins() {
+            return Err(Error::InvalidInput);
+        }
+        // Historical lookup holds no Control transaction while acquiring the
+        // catalog barrier. Every immutable value is checked again under lock.
+        let expected = self
+            .read_archive_pin(identity.catalog(), lease_id)
+            .await?
+            .ok_or(Error::Conflict)?;
+        if expected.released {
+            return Ok(expected);
+        }
+        let capture =
+            CatalogCapture::at_snapshot(manager, coordinator, expected.snapshot_id, duration)
+                .await
+                .map_err(|_| Error::Unavailable)?;
+        self.begin_operation().map_err(|_| Error::Unavailable)?;
+        let tx = application_transaction(&mut self.client, 18)
+            .await
+            .map_err(|_| Error::Prerequisite)?;
+        require(&tx, self.request.dataset, self.identity)
+            .await
+            .map_err(|_| Error::Unavailable)?;
+        lock(&tx, self.request.dataset, identity.catalog()).await?;
+        let old = read(
+            &tx,
+            self.request.dataset,
+            identity.catalog(),
+            lease_id,
+            self.identity,
+        )
+        .await?
+        .ok_or(Error::Conflict)?;
+        if old.current_holder || old.receipt != expected {
+            return Err(Error::Conflict);
+        }
+        let dataset = &self.request.dataset.as_bytes()[..];
+        let catalog_id = identity.catalog();
+        let catalog = &catalog_id.as_bytes()[..];
+        let lease = &lease_id[..];
+        tx.execute("INSERT INTO control.archive_pin_recoveries(lease_id,dataset_id,consumer_id,expected_lease_revision,coordinator_binding_sha256,exclusion_protocol,recoverer_resource,recoverer_epoch,recoverer_incarnation,recovered_at_us) VALUES ($1::bytea,$2::bytea,$3::bytea,$4::text::numeric,$5::bytea,1,$6::bytea,$7::text::numeric,$8::bytea,(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint)", &[&lease,&dataset,&catalog,&expected.lease_revision.to_string(),&&coordinator.binding_digest().as_bytes()[..],&&self.identity.resource_id.as_bytes()[..],&self.identity.epoch.get().to_string(),&&self.identity.process_incarnation.as_bytes()[..]]).await.map_err(backend)?;
+        tx.execute("UPDATE control.retention_claims SET state='released',released_at_us=(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint,release_reason='old_reader_excluded' WHERE lease_id=$1::bytea AND state='active'", &[&lease]).await.map_err(backend)?;
+        let changed = tx.execute("UPDATE control.snapshot_leases SET state='released',lease_revision=lease_revision+1,updated_at_us=(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint,released_at_us=(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint,release_reason='old_reader_excluded' WHERE lease_id=$1::bytea AND lease_revision=$2::text::numeric AND state='active'", &[&lease,&expected.lease_revision.to_string()]).await.map_err(backend)?;
+        if changed != 1 {
+            return Err(Error::Conflict);
+        }
+        let receipt = read(
+            &tx,
+            self.request.dataset,
+            identity.catalog(),
+            lease_id,
+            self.identity,
+        )
+        .await?
+        .ok_or(Error::InvalidMetadata)?
+        .receipt;
+        capture.verify().await.map_err(|_| Error::Unavailable)?;
+        commit_started.set(true);
+        tx.commit().await.map_err(|_| Error::CommitUnknown)?;
+        capture.verify().await.map_err(|_| Error::Unavailable)?;
+        capture.finish().await.map_err(|_| Error::Unavailable)?;
+        self.available = true;
+        Ok(receipt)
+    }
+
     /// Caller holds local custody and both actual transports through commit/join.
     /// All claims are retained independently of expiry. Native existence is
     /// checked under the barrier; signed file integrity belongs to the reader.
@@ -86,6 +164,7 @@ impl ControlSession {
         let identity = capture.identity();
         if identity.dataset() != self.request.dataset
             || identity.catalog() == self.identity.resource_id
+            || !capture.coordinator().permits_reader_pins()
         {
             return Err(Error::InvalidInput);
         }

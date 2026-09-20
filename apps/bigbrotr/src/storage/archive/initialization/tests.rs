@@ -5,6 +5,45 @@ const BOOT: &str = "01234567-89ab-cdef-0123-456789abcdef";
 mod inputs;
 
 #[test]
+fn pin_recovery_custody_cannot_be_rewrapped_into_a_reader() {
+    let (_data, identity) = fixture();
+    let (state, _) = fixture();
+    let state = state.path().canonicalize().unwrap();
+    drop(LocalInitialization::create_for_boot(&identity, [3; 16], BOOT).unwrap());
+    let mut custody = recover_released(&identity);
+    custody.restrict_to_pin_recovery();
+    let owner = super::super::LocalCoordinator::from_custody(custody, &state, true).unwrap();
+    let driver = owner
+        .retain_connection(std::future::pending::<()>())
+        .unwrap();
+    assert!(!owner.permits_reader_pins());
+    assert_eq!(
+        owner.inherit_reader(&mut Command::new("/bin/true")),
+        Err(LifetimeError::Identity)
+    );
+    let custody = owner.custody;
+    let rewrapped = super::super::LocalCoordinator::from_custody(custody, &state, false).unwrap();
+    assert!(!rewrapped.permits_reader_pins());
+    assert_eq!(
+        rewrapped.inherit_reader(&mut Command::new("/bin/true")),
+        Err(LifetimeError::Identity)
+    );
+    drop(rewrapped);
+    assert!(matches!(
+        LocalInitialization::recover_for_boot(&identity, BOOT),
+        Err(LifetimeError::Occupied)
+    ));
+    drop(driver);
+    let ordinary =
+        super::super::LocalCoordinator::from_custody(recover_released(&identity), &state, false)
+            .unwrap();
+    assert!(ordinary.permits_reader_pins());
+    ordinary
+        .inherit_reader(&mut Command::new("/bin/true"))
+        .unwrap();
+}
+
+#[test]
 fn coordinator_children_retain_custody_until_the_last_actual_exit() {
     use std::{
         io::{BufRead, BufReader},

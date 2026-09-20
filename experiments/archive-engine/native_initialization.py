@@ -20,9 +20,10 @@ if sys.argv[1:] == ['--build-binaries']:
     identity = build_binaries(SOURCE, os.environ)
     (out / 'worker-identity.json').write_text(json.dumps(identity, indent=2) + '\n')
     sys.exit(0)
-assert sys.argv[1:] in ([], ['--tls'], ['--publication'], ['--producer-inputs'], ['--producer-ledger'], ['--producer-ledger-fixture'], ['--import-source'], ['--input-bindings'], ['--certification'], ['--producer-closing'], ['--producer-recovery'], ['--archive-event'], ['--publication-sync'], ['--archive-membership'], ['--archive-cut'], ['--archive-frontier'], ['--reader-custody'])
+assert sys.argv[1:] in ([], ['--tls'], ['--publication'], ['--producer-inputs'], ['--producer-ledger'], ['--producer-ledger-fixture'], ['--import-source'], ['--input-bindings'], ['--certification'], ['--producer-closing'], ['--producer-recovery'], ['--archive-event'], ['--publication-sync'], ['--archive-membership'], ['--archive-cut'], ['--archive-frontier'], ['--reader-custody'], ['--pin-recovery'])
+pin_recovery = sys.argv[1:] == ['--pin-recovery']
 reader_custody = sys.argv[1:] == ['--reader-custody']
-archive_frontier = sys.argv[1:] == ['--archive-frontier']
+archive_frontier = pin_recovery or sys.argv[1:] == ['--archive-frontier']
 archive_cut = archive_frontier or sys.argv[1:] == ['--archive-cut']
 archive_membership = sys.argv[1:] == ['--archive-membership']
 publication_sync = sys.argv[1:] == ['--publication-sync']
@@ -76,7 +77,7 @@ assert execute([('ordered-build', [sys.executable, __file__, '--build-binaries']
 worker = json.loads((out / 'worker-identity.json').read_text())
 env.update(BIGBROTR_ARCHIVE_WORKER_BYTES=str(worker['bytes']), BIGBROTR_ARCHIVE_WORKER_SHA256=worker['sha256'])
 tls_fixture = ['--example', 'archive_receipt_probe'] if tls or publication else []
-if archive_event: tls_fixture += ['--example', 'archive_event_probe']
+if archive_event or pin_recovery: tls_fixture += ['--example', 'archive_event_probe']
 if producer_ledger: tls_fixture += ['--example', 'ingest_bootstrap_probe']
 publication_fixture = ['-p', 'bigbrotr-archive-worker', '--example', 'archive_publication_probe', '--example', 'archive_read_probe', '--example', 'archive_coordinator_probe', '--example', 'archive_attempt_probe'] if publication else []
 checks = [
@@ -149,6 +150,9 @@ if input_bindings:
 if archive_frontier:
     identity.update(scope='actual native cut to immutable fenced Archive frontier; pin/served-read qualification remains open')
     checks = [checks[0], checks[1], checks[-1]]
+    if pin_recovery:
+        identity.update(scope='fresh exclusive recovery lifetime and atomic old-holder native pin release')
+        checks.insert(2, ('recovery-custody', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr', '--lib', 'storage::archive::initialization::tests', '--', '--test-threads=1']))
 if certification:
     identity.update(scope='native producer closing and historical target under current Control' if producer_closing else 'initial existing-effect native read and connected Control consumer')
     if producer_recovery:
@@ -160,7 +164,7 @@ for src, dst in [*([('examples/ingest_bootstrap_probe', out / 'ingest-bootstrap-
                  ('examples/catalog_schema_probe', out / 'catalog-schema-probe'),
                  ('examples/catalog_initialization_probe', out / 'catalog-initialization-probe'),
                  *([('examples/archive_receipt_probe', out / 'archive-receipt-probe')] if tls or publication else []),
-                 *([('examples/archive_event_probe', out / 'archive-event-probe')] if archive_event else []),
+                 *([('examples/archive_event_probe', out / 'archive-event-probe')] if archive_event or pin_recovery else []),
                  *([('examples/archive_publication_probe', out / 'archive-publication-probe'),
                     ('examples/archive_read_probe', out / 'archive-read-probe'),
                     ('examples/archive_coordinator_probe', out / 'archive-coordinator-probe'),
@@ -201,7 +205,7 @@ if publication:
     result.update(coordinator_probe=file_hash(out/'archive-coordinator-probe'), attempt_probe=file_hash(out/'archive-attempt-probe'))
 if tls or publication:
     result['receipt_reader'] = file_hash(out / 'archive-receipt-probe')
-if archive_event:
+if archive_event or pin_recovery:
     result['event_reader'] = file_hash(out / 'archive-event-probe')
 if publication_sync:
     log = (out / 'checks/native-publication.log').read_text()

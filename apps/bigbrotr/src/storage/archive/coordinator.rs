@@ -61,6 +61,9 @@ impl LocalCoordinator {
     pub fn identity(&self) -> &CatalogIdentity {
         self.custody.identity()
     }
+    pub(crate) fn permits_reader_pins(&self) -> bool {
+        self.custody.permits_reader_pins()
+    }
 
     /// Compare actual mount-relative locations as well as canonical names.
     /// Deployment mount changes require quiescence and repeated preflight.
@@ -80,6 +83,9 @@ impl LocalCoordinator {
     /// The trusted worker keeps the descriptor until actual exit, including
     /// when its parent dies or cannot establish termination before its deadline.
     pub(super) fn inherit_reader(&self, command: &mut Command) -> Result<(), LifetimeError> {
+        if !self.permits_reader_pins() {
+            return Err(LifetimeError::Identity);
+        }
         let fd = self.custody.retain_custody()?;
         if fd.as_raw_fd() < 3 {
             return Err(LifetimeError::Filesystem);

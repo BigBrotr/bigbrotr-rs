@@ -33,6 +33,7 @@ pub struct LocalInitialization {
     launch_available: Cell<bool>,
     provisioning_available: Cell<bool>,
     recovered: bool,
+    pin_recovery_only: bool,
 }
 
 #[derive(Clone, Copy, Serialize)]
@@ -81,6 +82,14 @@ impl LocalInitialization {
     }
     pub(crate) fn is_recovered(&self) -> bool {
         self.recovered
+    }
+    // Sticky on the flock owner, so rebuilding a coordinator cannot restore
+    // reader permissions. Only closing every duplicate permits a fresh owner.
+    pub(super) fn restrict_to_pin_recovery(&mut self) {
+        self.pin_recovery_only = true;
+    }
+    pub(super) fn permits_reader_pins(&self) -> bool {
+        !self.pin_recovery_only
     }
     pub(super) fn retain_custody(&self) -> Result<File, LifetimeError> {
         if !self.recovered {
@@ -237,6 +246,7 @@ impl LocalInitialization {
             launch_available: Cell::new(launch),
             provisioning_available: Cell::new(launch),
             recovered: !launch,
+            pin_recovery_only: false,
         })
     }
 }

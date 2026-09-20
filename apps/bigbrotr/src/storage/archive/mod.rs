@@ -5,6 +5,7 @@ mod initialization;
 mod inputs;
 mod installation;
 mod lifetime;
+mod pin_recovery;
 mod placement;
 mod process;
 mod publisher;
@@ -17,6 +18,7 @@ pub use initialization::LocalInitialization;
 pub use inputs::{InputError, RetainedInputs};
 pub use installation::{ArtifactIdentity, InstallationError, WorkerInstallation};
 pub use lifetime::{LifetimeError, LocalAttempt};
+pub use pin_recovery::LocalPinRecovery;
 pub use process::ProcessError;
 pub use publisher::{CatalogRoute, CatalogTls, PublicationError, PublicationResult};
 pub use receipts::{

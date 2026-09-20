@@ -20,20 +20,21 @@ another administrative diagnostic command instead of the real read consumer.
 
 ## Git and ownership
 
-Local main is unpublished oracle candidate `e828eb6bb1b93c8d2a2cf88a651ac4ca1ff63573`.
-Production pin adapter is `27150f253f0fbcb72e2d25a9ebd082493acb8eba`, with fixture
-`583f0852f8bae090b3e222d9d653701b386a6f30`. Private origin/main was verified at
-`88e93678db830f08d22f49cfb6d234ee50fc40dc`. Root-owned dirty work is the new pin
-qualification report, owning contract/task updates, inventory and this checkpoint.
-No parallel writer, merge or rebase. Independent read-only AI review is ongoing
-in `catalog_guard_review` for the next recovery boundary, not implementation.
+Local main and private origin/main are verified at pushed
+`a91fdd51172c1c66e9d603278480410ae68cc8b9`. Qualified product pin adapter is
+`27150f253f0fbcb72e2d25a9ebd082493acb8eba`, fixture583f085/oraclee828eb6.
+Root-owned dirty work is now the recovery-only custody type and test, draft0018,
+ControlSession recovery adapter, native fixture/proxy extension, migration catalog
+and owning contract/task updates. No parallel writer, merge or rebase. Read-only
+AI review found no concrete atomicity defect and clarified diagnostics/clock scope.
 
 Preserve `.research/worktrees/producer-closing-old-writer`, last verified clean at
 `f899896b1207f5e71c4e39d9ab7814b293814735` on
 `research/producer-closing-old-writer`, and other historical worktrees.
 Caches are not source authority. No local build or remote test remains active.
-Next review this documentation/evidence diff, commit and push the verified slice
-normally, then implement the bounded recovery transition below.
+The qualified pin slice is committed and pushed. The independent recovery harness is written but unexecuted; qualify the new
+transition below. No migration18 engine run
+or recovery product commit exists yet.
 
 ## Executed current boundary
 
@@ -112,19 +113,41 @@ transaction order and both transports through join. Expiry stops delivery; it
 never proves worker exit or permits dropping claims. NULL legacy rows remain
 obligations and outside automatic qualified recovery.
 
-The proposed recovery design is under narrow review: associate a custody lifetime
-permanently with its first actual ControlOwner before pin registration/recovery.
-A successor using the same custody must refuse rebinding; a fresh successful flock
-acquisition excludes old worker/body/driver duplicates. Store the non-resettable
-association on LocalInitialization, which owns the flock, rather than only on the
-LocalCoordinator wrapper: from_custody consumes an existing holder and is not a
-fresh acquisition. No new migration or association code exists yet. Verify reader
-work preceding association, same-custody concurrency and old17 compatibility before
-settling the design. Recovery attribution must be additive migration18, preserve
-original17 rows, require current actual Control and exact native/catalog binding,
-and distinguish same-holder normal release from positively excluded old-holder
-recovery. Record/reproduce counterexamples; do not mistake a new wrapper or SQL
-attestation alone for new exclusion.
+The bounded design now uses a dedicated LocalPinRecovery wrapper obtained only
+by fresh LocalCoordinator::open. It immediately marks the owning LocalInitialization
+recovery-only before exposing references or clones. No public conversion from/to
+an ordinary coordinator exists. The sticky restriction survives from_custody;
+event/cut reader launch and pin registration (including retries) refuse. Diagnostic
+receipt/membership APIs are separate and unused by recovery. All retained drivers
+must terminate before ordinary startup can reacquire custody; the extra startup
+connection/Control epoch is deliberate. This closes both rewrap and pre-association
+reader races without a resettable per-Control association.
+
+Draft0018 adds immutable archive_pin_recoveries, requires original issuer released,
+current actual Control backend and exact original local binding, and atomically
+releases lease/claims with old_reader_excluded. Original17 attribution stays intact.
+The adapter selects exact retained native snapshot under the catalog barrier,
+prelocks the consumer, verifies capture before/after COMMIT and poisons incomplete
+Control operations. Historical released retry never rewrites attribution. Like
+ordinary release, scheduling expiry alone does not stop this closure: actual
+backend fence and positive descriptor exclusion still apply. Applied0017 bytes are
+unchanged. Additive18 is not yet applied anywhere.
+
+Mac16 custody tests (including rewrap/driver lifetime),16 schema tests and fixture
+Clippy pass under `.research/implementation/archive-pin-recovery/fixture-green`.
+Missing-method compile failure is retained in `red` (not runtime RED). The first
+`green` validates product/type before the native fixture edit. New fixture action
+recover calls the actual API, verifies ordinary open is blocked while the recovery
+wrapper/drivers hold custody, and reacquires after join. Proxy supports the exact
+archive_pin_recoveries INSERT boundary. The independent native recovery oracle now covers: populated17->18 rows/xmin unchanged, explicit original/recoverer identity,
+atomic positive claim release, identical retry, lost replies, manager loss, rollback,
+and recovery refused while an actual blocked native reader retains custody. It
+checks exact returned receipts, joins, original issuer/recoverer identities and
+unchanged metadata/eight Parquet files. Read-only AI review strengthened manager
+exit observation and receipt/history comparisons. Python syntax initially found
+a missing bracket, fixed before execution. SQL constraint negatives beyond the
+actual COMMIT faults remain to add. Next scoped checks, an unpublished candidate
+commit, then an exact-Git fresh Tux lab. Do not restart the stopped pin-ledger lab.
 
 Actual delivery still needs fresh principal/action/scope and policy checks through
 output. AccountObservation is not reusable authentication; initial administration

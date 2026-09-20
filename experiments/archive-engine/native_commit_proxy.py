@@ -123,14 +123,15 @@ class Proxy:
                     if self.mode == 'hold-reader-query' and receipt_reader:
                         if not await self.hold('reader-query', state['backend_pid']):
                             return
-                if frontend and tag == b'P' and self.target in ('control-coordinator', 'control-frontier', 'control-pin'):
+                if frontend and tag == b'P' and self.target in ('control-coordinator', 'control-frontier', 'control-pin', 'control-pin-recovery'):
                     # tokio-postgres prepares the fixed INSERT using extended
                     # protocol. Its subsequent transaction COMMIT is simple Q.
                     # Never confuse the earlier Control claim with this boundary.
                     statement, query, tail = body.split(b'\0', 2)
                     table = {'control-coordinator': b'ARCHIVE_COORDINATORS',
                              'control-frontier': b'ARCHIVE_FRONTIER_SNAPSHOTS',
-                             'control-pin': b'ARCHIVE_SNAPSHOT_PINS'}[self.target]
+                             'control-pin': b'ARCHIVE_SNAPSHOT_PINS',
+                             'control-pin-recovery': b'ARCHIVE_PIN_RECOVERIES'}[self.target]
                     if query.upper().startswith(b'INSERT INTO CONTROL.' + table + b'('):
                         state['data'] = True
                         self.report['data_queries'] += 1
@@ -315,7 +316,7 @@ class Proxy:
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--mode', choices=['pass', 'before-forward', 'after-complete', 'hold-data', 'hold-commit', 'hold-reply', 'hold-manager-commit', 'hold-manager-owner', 'hold-reader-query', 'omit-auth-final', 'omit-pin-claim', 'wrong-pin-prefix', 'wrong-pin-purpose'], required=True)
-    parser.add_argument('--target', choices=['publication', 'native-schema', 'guard-install', 'control-coordinator', 'control-frontier', 'control-pin'], default='publication')
+    parser.add_argument('--target', choices=['publication', 'native-schema', 'guard-install', 'control-coordinator', 'control-frontier', 'control-pin', 'control-pin-recovery'], default='publication')
     parser.add_argument('--lifetime-seconds', type=int, choices=[120, 180], default=120,
                         help='Use180 when observing the actual120-second CLI deadline plus setup/cleanup')
     try:
