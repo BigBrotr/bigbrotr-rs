@@ -41,8 +41,7 @@ def source(sequence):
     return [DATASET, 0, 1, sequence]
 
 
-def corpus():
-    event = EVENT
+def corpus(event=EVENT):
     body = [bytes.fromhex(event['id']), bytes.fromhex(event['pubkey']), event['created_at'],
             event['kind'], event['tags'], event['content']]
     body_digest = digest(b'bigbrotr/body/1\0', body)

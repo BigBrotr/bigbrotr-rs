@@ -160,3 +160,29 @@ native ALTER/DROP/rollback, all selected schema/NULL/metadata refusals, installa
 rollback, lost guard COMMIT and two directly observed SQL lock orders. Those lock
 cases use PG statements; no scientific native publisher or batch receipt is
 qualified. Two fixture failures and their corrected independent oracles are retained.
+
+## Exact historical signed-event hydration
+
+The next P02-T04 / P06-T02 step3 prerequisite reads one explicitly named immutable
+payload fact and one explicitly named scope eligibility fact in the same native
+DuckLake read transaction. Input includes their complete FactRefs, dataset, event
+ID and required visibility scope. It verifies both complete schema1 envelopes and
+recomputed canonical fact digests, matching event/body identity and the original
+scope signature through the actual ID/BIP340 verifier. Payload storage scope may
+differ from eligibility scope; shared payload metadata stays internal and never
+supplies a signature or acquisition time for another scope.
+
+This private storage primitive observes exact retained references. It does not
+select current winners, certify a complete SourceCut or prove absence, dictionary
+closure or protection. Missing, conflicting, malformed, oversized and unreadable
+records refuse without a partial event. The caller must retain actual source
+pins and current read authority before serving any data; the receipt diagnostic's
+post-Control-cleanup exception does not apply to event bodies. No public API or
+standalone export is advertised until those consumers are implemented and tested.
+
+Implement bounded full-body transport under a transferred data grant alongside
+the existing supervised process, deadline, cancellation and positive reap. Native
+engine/vector, serialized row, decoder, verified event and output buffers coexist
+and need separate accounting from the small diagnostic channel. Validate actual
+signed extremes, scope-specific alternate signatures, duplicate/missing/corrupt
+facts, reduced limits, large output and blocked cancellation before qualification.

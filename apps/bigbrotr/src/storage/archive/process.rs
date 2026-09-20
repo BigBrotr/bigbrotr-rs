@@ -38,6 +38,7 @@ pub(super) struct Process<'a> {
     native: Option<OwnedPermit>,
     control: Option<OwnedPermit>,
     tls: Option<super::client_identity::NativeTlsRetention>,
+    output_permit: Option<OwnedPermit>,
     deadline: Instant,
     cancelled: &'a AtomicBool,
 }
@@ -85,6 +86,7 @@ impl<'a> Process<'a> {
             native: Some(native),
             control: Some(control),
             tls,
+            output_permit: None,
             deadline,
             cancelled,
         };
@@ -96,6 +98,48 @@ impl<'a> Process<'a> {
             return Err(ProcessError::Io);
         }
         Ok(process)
+    }
+
+    /// Select a finite data response before sending the request. A separate
+    /// transferred grant covers capture and downstream decoding; diagnostic
+    /// stderr remains small. The caller reserves decoder overlap in this grant.
+    pub(super) fn reserve_data_output(
+        &mut self,
+        limit: usize,
+        permit: OwnedPermit,
+    ) -> Result<(), ProcessError> {
+        if limit == 0
+            || permit.request().units().data_bytes() < limit as u64
+            || permit.request().units().items() == 0
+            || self.output_permit.is_some()
+            || self.stdout.length != 0
+            || self.failure.is_some()
+        {
+            return Err(ProcessError::InsufficientReservation);
+        }
+        let mut bytes = Vec::new();
+        bytes
+            .try_reserve_exact(limit)
+            .map_err(|_| ProcessError::InsufficientReservation)?;
+        bytes.resize(limit, 0);
+        self.stdout.bytes = bytes;
+        self.output_permit = Some(permit);
+        Ok(())
+    }
+    /// Only a joined successful process with complete clean EOF can transfer the
+    /// data allocation. Unknown termination keeps the grant charged in Drop.
+    pub(super) fn take_data_output(&mut self) -> Result<(Vec<u8>, OwnedPermit), ProcessError> {
+        self.finish()?;
+        if self.output_permit.is_none() {
+            return Err(ProcessError::InsufficientReservation);
+        }
+        let mut bytes = std::mem::take(&mut self.stdout.bytes);
+        bytes.truncate(self.stdout.length);
+        self.stdout.length = 0;
+        Ok((
+            bytes,
+            self.output_permit.take().expect("checked output grant"),
+        ))
     }
 
     /// Close stdin, drain both bounded outputs, and positively reap the child.
@@ -216,6 +260,7 @@ impl Drop for Process<'_> {
             std::mem::forget(self.native.take());
             std::mem::forget(self.control.take());
             std::mem::forget(self.tls.take());
+            std::mem::forget(self.output_permit.take());
         }
     }
 }
@@ -233,7 +278,7 @@ fn nonblocking(pipe: &impl AsFd) -> rustix::io::Result<()> {
 }
 struct Capture<T> {
     pipe: T,
-    bytes: [u8; PIPE_BYTES],
+    bytes: Vec<u8>,
     length: usize,
     eof: bool,
 }
@@ -241,7 +286,7 @@ impl<T: Read> Capture<T> {
     fn new(pipe: T) -> Self {
         Self {
             pipe,
-            bytes: [0; PIPE_BYTES],
+            bytes: vec![0; PIPE_BYTES],
             length: 0,
             eof: false,
         }
@@ -251,17 +296,18 @@ impl<T: Read> Capture<T> {
             return Ok(false);
         }
         let mut excess = [0];
-        let buffer = if self.length == PIPE_BYTES {
+        let buffer = if self.length == self.bytes.len() {
             &mut excess[..]
         } else {
-            &mut self.bytes[self.length..]
+            let end = (self.length + PIPE_BYTES).min(self.bytes.len());
+            &mut self.bytes[self.length..end]
         };
         match self.pipe.read(buffer) {
             Ok(0) => {
                 self.eof = true;
                 Ok(true)
             }
-            Ok(_) if self.length == PIPE_BYTES => Err(ProcessError::OutputLimit),
+            Ok(_) if self.length == self.bytes.len() => Err(ProcessError::OutputLimit),
             Ok(count) => {
                 self.length += count;
                 Ok(true)

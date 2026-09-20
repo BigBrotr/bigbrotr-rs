@@ -1,0 +1,40 @@
+{
+  "authoring": "python-secp256k1 plus independent BIP340 equation verifier; public test key3",
+  "content_repeat": "archive\u0000event \u00e9\n",
+  "content_count": 4096,
+  "event": {
+    "pubkey": "f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9",
+    "created_at": 1,
+    "kind": 1,
+    "tags": [
+      [
+        "x"
+      ],
+      [
+        "x",
+        ""
+      ],
+      [
+        "t",
+        "\u00e9"
+      ],
+      [
+        "t",
+        "\u00e9"
+      ]
+    ],
+    "id": "05e909d2c260edbb52e21e3813a492ade70523c8493fb0ae5a9a37a04354db31",
+    "sig": "93a62a6b8babc20f9d4eeefeda3ccdfb172214196550ffcdcd74ff0e9bd625fbf76305d8a14be98ffebe521a627ca8d59efa6b84a7a3600f8c420fc5f5393774"
+  },
+  "serialization_fields": [
+    "pubkey",
+    "created_at",
+    "kind",
+    "tags",
+    "content",
+    "id",
+    "sig"
+  ],
+  "signed_event_bytes": 94577,
+  "signed_event_sha256": "5f880ef37e4bdafb8dd37c42a796afa5c4db1a2f9a5363b625c3bbaba2b78727"
+}

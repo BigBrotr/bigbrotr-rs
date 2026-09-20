@@ -89,11 +89,28 @@ impl Engine {
         request: &ReceiptRequest,
         max_receipts: usize,
     ) -> Result<ReceiptObservation, ReceiptError> {
-        let root = std::path::Path::new(request.catalog.data_root());
+        self.attach_readonly_catalog(
+            &request.catalog,
+            request.expected.dataset_id,
+            request.catalog_id,
+        )?;
+        inspect_attached(&self.connection, &request.expected, max_receipts)
+        // Engine destruction closes every native client before the response.
+    }
+}
+
+impl Engine {
+    pub(crate) fn attach_readonly_catalog(
+        &self,
+        catalog: &BootstrapRequest,
+        dataset: DatasetId,
+        catalog_id: OwnerResourceId,
+    ) -> Result<(), ReceiptError> {
+        let root = std::path::Path::new(catalog.data_root());
         if root.canonicalize().ok().as_deref() != Some(root) || !root.is_dir() {
             return Err(ReceiptError::InvalidInput);
         }
-        self.configure_catalog(&request.catalog)
+        self.configure_catalog(catalog)
             .map_err(|_| ReceiptError::Configuration)?;
         self.connection.execute_batch("ATTACH '' AS bigbrotr_receipt (TYPE postgres, SECRET 'bigbrotr_bootstrap', SECRET_STORAGE_TABLE '', READ_ONLY)")
             .map_err(|_| ReceiptError::Configuration)?;
@@ -111,9 +128,9 @@ impl Engine {
         )));
         let query = format!(
             "SELECT (SELECT count(*)=1 AND count(*) FILTER(WHERE (singleton AND protocol=1 AND dataset_id=decode('{}','hex') AND catalog_id=decode('{}','hex') AND data_root={} AND sql_checksum=decode('{guard}','hex')) IS TRUE)=1 FROM bigbrotr_archive.installation) AND (SELECT count(*)=1 AND count(*) FILTER(WHERE (singleton AND format_version=1 AND initialization_snapshot=1 AND declaration_checksum=decode('{declaration}','hex') AND native_layout_checksum=decode('{layout}','hex') AND sql_checksum=decode('{science}','hex')) IS TRUE)=1 FROM bigbrotr_archive.scientific_schema) AS valid",
-            request.expected.dataset_id,
-            request.catalog_id,
-            literal(request.catalog.data_root())
+            dataset,
+            catalog_id,
+            literal(catalog.data_root())
         );
         let valid: bool = self
             .connection
@@ -132,10 +149,9 @@ impl Engine {
         self.connection
             .execute_batch("DETACH bigbrotr_receipt")
             .map_err(|_| ReceiptError::Native)?;
-        self.connection.execute_batch(&format!("ATTACH 'ducklake:postgres:' AS archive (DATA_PATH {}, DATA_INLINING_ROW_LIMIT 0, AUTOMATIC_MIGRATION false, CREATE_IF_NOT_EXISTS false, META_SECRET_STORAGE_TABLE '', META_SECRET 'bigbrotr_bootstrap', READ_ONLY)", literal(request.catalog.data_root())))
+        self.connection.execute_batch(&format!("ATTACH 'ducklake:postgres:' AS archive (DATA_PATH {}, DATA_INLINING_ROW_LIMIT 0, AUTOMATIC_MIGRATION false, CREATE_IF_NOT_EXISTS false, META_SECRET_STORAGE_TABLE '', META_SECRET 'bigbrotr_bootstrap', READ_ONLY)", literal(catalog.data_root())))
             .map_err(|_| ReceiptError::Configuration)?;
-        inspect_attached(&self.connection, &request.expected, max_receipts)
-        // Engine destruction closes every native client before the response.
+        Ok(())
     }
 }
 

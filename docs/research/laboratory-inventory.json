@@ -14763,6 +14763,21 @@
       "native_tests": 53,
       "integration_tests": 22,
       "source_unchanged": true
+    },
+    "archive_event": {
+      "state": "local implementation and checks; native lab not yet created",
+      "local_raw": ".research/implementation/archive-event",
+      "purpose": "Exact-reference signed event hydration under a bounded supervised consumer; no public read authority",
+      "local_evidence": [
+        "mac-native-expanded.log",
+        "mac-request.log",
+        "mac-parent-final.log",
+        "mac-review-fix.log",
+        "mac-transport-final.log",
+        "mac-clippy-final.log"
+      ],
+      "native_recipe": "experiments/archive-engine/event_cases.py",
+      "native_qualification": "NOT_RUN"
     }
   },
   "implementation_monitor_corrections_20260918": {

@@ -214,3 +214,114 @@ fn cancellation_terminates_a_proven_full_output_pipe_without_draining_it() {
         assert_eq!(budget.snapshot().active_permits(), 0);
     }
 }
+
+#[test]
+fn data_response_larger_than_diagnostics_keeps_its_own_grant_after_reap() {
+    let data_budget = ResourceBudget::new(
+        ProcessEnvelope::new(
+            1024 * 1024,
+            0,
+            ResourceLimits::new(1024 * 1024, 1, 0, 0),
+            WaiterLimits::new(0, 0),
+        )
+        .unwrap(),
+    );
+    let budget = budget();
+    let cancel = AtomicBool::new(false);
+    let mut command = Command::new("/usr/bin/printf");
+    command.args(["%065536d", "0"]);
+    let mut process = spawn(&mut command, &budget, &cancel, Duration::from_secs(2));
+    let permit = data_budget
+        .try_acquire(ResourceRequest::data(65536, 1, 0).unwrap())
+        .unwrap();
+    process.reserve_data_output(65536, permit).unwrap();
+    assert_eq!(process.finish().unwrap(), &vec![b'0'; 65536]);
+    let (bytes, permit) = process.take_data_output().unwrap();
+    drop(process);
+    assert_eq!(budget.snapshot().active_permits(), 0);
+    assert_eq!(data_budget.snapshot().active_permits(), 1);
+    assert_eq!(bytes, vec![b'0'; 65536]);
+    drop((bytes, permit));
+    assert_eq!(data_budget.snapshot().active_permits(), 0);
+}
+
+#[test]
+fn data_capture_cap_and_failure_keep_diagnostic_and_lifetime_bounds() {
+    for stderr in [false, true] {
+        let data_budget = ResourceBudget::new(
+            ProcessEnvelope::new(
+                1024 * 1024,
+                0,
+                ResourceLimits::new(1024 * 1024, 1, 0, 0),
+                WaiterLimits::new(0, 0),
+            )
+            .unwrap(),
+        );
+        let budget = budget();
+        let cancel = AtomicBool::new(false);
+        let mut command = Command::new("/bin/sh");
+        command.args([
+            "-c",
+            if stderr {
+                "exec /usr/bin/printf '%04097d' 0 >&2"
+            } else {
+                "exec /usr/bin/printf '%065537d' 0"
+            },
+        ]);
+        let mut process = spawn(&mut command, &budget, &cancel, Duration::from_secs(2));
+        let permit = data_budget
+            .try_acquire(ResourceRequest::data(65536, 1, 0).unwrap())
+            .unwrap();
+        process.reserve_data_output(65536, permit).unwrap();
+        assert!(matches!(
+            process.take_data_output(),
+            Err(ProcessError::OutputLimit)
+        ));
+        assert!(process.terminated());
+        assert_eq!(data_budget.snapshot().active_permits(), 1);
+        drop(process);
+        assert_eq!(data_budget.snapshot().active_permits(), 0);
+    }
+}
+
+#[test]
+fn complete_data_without_exit_is_not_delivered_after_cancellation_or_deadline() {
+    for explicit_cancel in [false, true] {
+        let data_budget = ResourceBudget::new(
+            ProcessEnvelope::new(
+                1024 * 1024,
+                0,
+                ResourceLimits::new(1024 * 1024, 1, 0, 0),
+                WaiterLimits::new(0, 0),
+            )
+            .unwrap(),
+        );
+        let budget = budget();
+        let cancel = AtomicBool::new(false);
+        let mut command = Command::new("/bin/sh");
+        command.args(["-c", "printf '%065536d' 0; exec /bin/sleep 30"]);
+        let mut process = spawn(&mut command, &budget, &cancel, Duration::from_secs(5));
+        let permit = data_budget
+            .try_acquire(ResourceRequest::data(65536, 1, 0).unwrap())
+            .unwrap();
+        process.reserve_data_output(65536, permit).unwrap();
+        while process.stdout.length < 65536 {
+            process.pump().unwrap();
+            thread::sleep(POLL);
+        }
+        assert!(process.child.try_wait().unwrap().is_none());
+        if explicit_cancel {
+            cancel.store(true, Ordering::Relaxed);
+        } else {
+            process.deadline = Instant::now();
+        }
+        assert!(
+            matches!(process.take_data_output(), Err(e) if e == if explicit_cancel { ProcessError::Cancelled } else { ProcessError::Deadline })
+        );
+        assert!(process.terminated());
+        assert_eq!(data_budget.snapshot().active_permits(), 1);
+        drop(process);
+        assert_eq!(data_budget.snapshot().active_permits(), 0);
+        assert_eq!(budget.snapshot().active_permits(), 0);
+    }
+}

@@ -19,7 +19,8 @@ if sys.argv[1:] == ['--build-binaries']:
     identity = build_binaries(SOURCE, os.environ)
     (out / 'worker-identity.json').write_text(json.dumps(identity, indent=2) + '\n')
     sys.exit(0)
-assert sys.argv[1:] in ([], ['--tls'], ['--publication'], ['--producer-inputs'], ['--producer-ledger'], ['--producer-ledger-fixture'], ['--import-source'], ['--input-bindings'], ['--certification'], ['--producer-closing'], ['--producer-recovery'])
+assert sys.argv[1:] in ([], ['--tls'], ['--publication'], ['--producer-inputs'], ['--producer-ledger'], ['--producer-ledger-fixture'], ['--import-source'], ['--input-bindings'], ['--certification'], ['--producer-closing'], ['--producer-recovery'], ['--archive-event'])
+archive_event = sys.argv[1:] == ['--archive-event']
 producer_recovery = sys.argv[1:] == ['--producer-recovery']
 producer_closing = producer_recovery or sys.argv[1:] == ['--producer-closing']
 certification = producer_closing or sys.argv[1:] == ['--certification']
@@ -29,7 +30,7 @@ tls = sys.argv[1:] == ['--tls']
 fixture_only = sys.argv[1:] == ['--producer-ledger-fixture']
 producer_inputs = certification or input_bindings or import_source or sys.argv[1:] in (['--producer-inputs'], ['--producer-ledger'], ['--producer-ledger-fixture'])
 producer_ledger = certification or input_bindings or import_source or sys.argv[1:] in (['--producer-ledger'], ['--producer-ledger-fixture'])
-publication = producer_inputs or sys.argv[1:] == ['--publication']
+publication = archive_event or producer_inputs or sys.argv[1:] == ['--publication']
 manifest = json.loads((build / 'source-manifest.json').read_text())
 
 
@@ -69,6 +70,7 @@ assert execute([('ordered-build', [sys.executable, __file__, '--build-binaries']
 worker = json.loads((out / 'worker-identity.json').read_text())
 env.update(BIGBROTR_ARCHIVE_WORKER_BYTES=str(worker['bytes']), BIGBROTR_ARCHIVE_WORKER_SHA256=worker['sha256'])
 tls_fixture = ['--example', 'archive_receipt_probe'] if tls or publication else []
+if archive_event: tls_fixture += ['--example', 'archive_event_probe']
 if producer_ledger: tls_fixture += ['--example', 'ingest_bootstrap_probe']
 publication_fixture = ['-p', 'bigbrotr-archive-worker', '--example', 'archive_publication_probe', '--example', 'archive_read_probe', '--example', 'archive_coordinator_probe', '--example', 'archive_attempt_probe'] if publication else []
 checks = [
@@ -84,6 +86,12 @@ if fixture_only:
     checks = [checks[0],
         ('fixture-policy', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr', '--example', 'ingest_bootstrap_probe']),
         ('fixture-clippy', ['cargo', 'clippy', '--locked', '--release', '-p', 'bigbrotr', '--example', 'ingest_bootstrap_probe', '--', '-D', 'warnings'])]
+if archive_event:
+    identity.update(scope='private exact historical event hydration and supervised bounded body delivery')
+    env.update(BIGBROTR_ARCHIVE_TEST_BUNDLE=str(bundle))
+    checks = [checks[0], checks[2],
+        ('native-events', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr-archive-worker', '--lib', 'event::tests', '--', '--nocapture']),
+        checks[4]]
 if import_source:
     identity.update(scope='captured JSONL source and existing connected signed-admission consumer')
     checks = [checks[0],
@@ -107,6 +115,7 @@ for src, dst in [*([('examples/ingest_bootstrap_probe', out / 'ingest-bootstrap-
                  ('examples/catalog_schema_probe', out / 'catalog-schema-probe'),
                  ('examples/catalog_initialization_probe', out / 'catalog-initialization-probe'),
                  *([('examples/archive_receipt_probe', out / 'archive-receipt-probe')] if tls or publication else []),
+                 *([('examples/archive_event_probe', out / 'archive-event-probe')] if archive_event else []),
                  *([('examples/archive_publication_probe', out / 'archive-publication-probe'),
                     ('examples/archive_read_probe', out / 'archive-read-probe'),
                     ('examples/archive_coordinator_probe', out / 'archive-coordinator-probe'),
@@ -147,5 +156,7 @@ if publication:
     result.update(coordinator_probe=file_hash(out/'archive-coordinator-probe'), attempt_probe=file_hash(out/'archive-attempt-probe'))
 if tls or publication:
     result['receipt_reader'] = file_hash(out / 'archive-receipt-probe')
+if archive_event:
+    result['event_reader'] = file_hash(out / 'archive-event-probe')
 (out / 'ready.json').write_text(json.dumps(result, indent=2) + '\n')
 print(json.dumps({'status': 'READY', 'source': manifest['revision']}), flush=True)

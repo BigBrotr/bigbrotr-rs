@@ -9,3 +9,5 @@ pub mod rows;
 mod schema;
 
 pub mod initialization_custody;
+
+pub mod event;

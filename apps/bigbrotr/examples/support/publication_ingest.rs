@@ -89,7 +89,21 @@ fn native() -> RocksNativeLimits {
     })
     .unwrap()
 }
-pub fn event() -> SignedEvent {
+pub fn event(large: bool) -> SignedEvent {
+    if large {
+        let recipe: serde_json::Value = serde_json::from_str(include_str!(
+            "../../../../tests/fixtures/protocol/archive-event-response.json"
+        ))
+        .unwrap();
+        let mut event = recipe["event"].clone();
+        event["content"] = serde_json::json!(
+            recipe["content_repeat"]
+                .as_str()
+                .unwrap()
+                .repeat(recipe["content_count"].as_u64().unwrap() as usize)
+        );
+        return serde_json::from_value(event).unwrap();
+    }
     let corpus: serde_json::Value = serde_json::from_str(include_str!(
         "../../../../experiments/identity-contract/signed-fixture.json"
     ))
@@ -155,6 +169,7 @@ pub async fn prepare(
     path: &Path,
     budget: &ResourceBudget,
     cancel: &AtomicBool,
+    large: bool,
 ) -> IngestStore {
     let now: i64 = observer
         .query_one(
@@ -258,7 +273,7 @@ pub async fn prepare(
     };
     let mut successful = None;
     for (sequence, bad) in [(2, "signature"), (3, "id"), (4, "valid"), (4, "retry")] {
-        let mut input = event();
+        let mut input = event(large);
         if bad == "signature" {
             input.sig = Signature::from_bytes([0; 64]);
         }
@@ -307,7 +322,7 @@ pub async fn prepare(
                     if matches!(bad, "valid" | "retry")
                         && candidate
                             .verified_event()
-                            .is_none_or(|v| v.event() != &event())
+                            .is_none_or(|v| v.event() != &event(large))
                     {
                         return Err(OwnerError::InvalidPolicy);
                     }

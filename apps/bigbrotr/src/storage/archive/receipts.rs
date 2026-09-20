@@ -80,33 +80,14 @@ fn prepare_input(
         ExpectationError::InvalidIdentity => ReceiptError::InvalidInput,
         ExpectationError::ResourceLimit => ReceiptError::ResourceLimit,
     })?;
-    let scientific =
-        CatalogIdentity::local(expected.dataset_id, identity.catalog(), identity.root())
-            .map_err(|_| ReceiptError::InvalidInput)?;
-    if identity != &scientific {
-        return Err(ReceiptError::InvalidInput);
-    }
-    if [credential.login, credential.password]
-        .iter()
-        .any(|s| s.is_empty() || s.len() > 4096 || s.chars().any(char::is_control))
-    {
-        return Err(ReceiptError::InvalidInput);
-    }
-    let (mut dsn, tls) = route
-        .connection(
-            credential.login,
-            credential.password,
-            "bigbrotr-archive-receipt",
-        )
-        .map_err(|_| ReceiptError::InvalidInput)?;
-    // libpq applies this to every connection, including native attach work.
-    // Explicit READ_ONLY attachments and SELECT-only grants are separate.
-    dsn.push_str(" options='-c default_transaction_read_only=on'");
-    if allow_fd_growth && let Some(handoff) = &tls {
-        // Trailing spaces size both the raw DSN and its JSON for the largest
-        // possible later FD numbers. This preflight-only value is never sent.
-        dsn.extend(std::iter::repeat_n(' ', handoff.maximum_parameter_growth()));
-    }
+    let (dsn, tls) = reader_connection(
+        expected.dataset_id,
+        identity,
+        route,
+        credential,
+        allow_fd_growth,
+        "bigbrotr-archive-receipt",
+    )?;
     let input = Input {
         catalog: super::bootstrap::Input {
             dsn: &dsn,
@@ -120,6 +101,44 @@ fn prepare_input(
         .validate()
         .map_err(ReceiptError::Preparation)?;
     serde_json::to_writer(&mut Size(0), &input).map_err(|_| ReceiptError::ResourceLimit)?;
+    Ok((dsn, tls))
+}
+pub(super) fn reader_connection(
+    dataset: bigbrotr_model::DatasetId,
+    identity: &CatalogIdentity,
+    route: &CatalogRoute<'_>,
+    credential: CatalogReaderCredentials<'_>,
+    allow_fd_growth: bool,
+    application: &str,
+) -> Result<
+    (
+        zeroize::Zeroizing<String>,
+        Option<super::client_identity::NativeTlsHandoff>,
+    ),
+    ReceiptError,
+> {
+    let scientific = CatalogIdentity::local(dataset, identity.catalog(), identity.root())
+        .map_err(|_| ReceiptError::InvalidInput)?;
+    if identity != &scientific {
+        return Err(ReceiptError::InvalidInput);
+    }
+    if [credential.login, credential.password]
+        .iter()
+        .any(|s| s.is_empty() || s.len() > 4096 || s.chars().any(char::is_control))
+    {
+        return Err(ReceiptError::InvalidInput);
+    }
+    let (mut dsn, tls) = route
+        .connection(credential.login, credential.password, application)
+        .map_err(|_| ReceiptError::InvalidInput)?;
+    // libpq applies this to every connection, including native attach work.
+    // Explicit READ_ONLY attachments and SELECT-only grants are separate.
+    dsn.push_str(" options='-c default_transaction_read_only=on'");
+    if allow_fd_growth && let Some(handoff) = &tls {
+        // Trailing spaces size both the raw DSN and its JSON for the largest
+        // possible later FD numbers. This preflight-only value is never sent.
+        dsn.extend(std::iter::repeat_n(' ', handoff.maximum_parameter_growth()));
+    }
     Ok((dsn, tls))
 }
 /// Pure bounded scan admission shared by operator preflight and actual launch.

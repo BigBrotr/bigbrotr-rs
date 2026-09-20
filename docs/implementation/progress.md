@@ -23,11 +23,10 @@ the report/inventory holds their identities instead of duplicating them here.
 
 ## Git and ownership
 
-Local main candidate ec386ac26175339c5f990be75eef860d27887c60, tree
-bb177700aa681ee8f86c0458e5699f3e3c6f6704, is one commit ahead of last verified
-private origin/main ef58a6b25db69c1f82e5909db632b3f1547a392f. Candidate is not yet
-pushed. Root owns the pending evidence, checkpoint, inventory and reference updates.
-No parallel writer, merge or rebase. Final evidence review and artifact/link checks pass; qualification commit/push pending.
+Local main and private origin/main verified at published
+9c4c4a79721394515fb5d6c99da2af48f0e62a0f. WAL product candidate ec386ac and its
+qualification are committed/pushed; remote repository remains private. Root owns
+new archive hydration edits described below. No parallel writer, merge or rebase.
 
 Separate compatibility worktree .research/worktrees/producer-closing-old-writer
 remains at published f899896b1207f5e71c4e39d9ab7814b293814735 on
@@ -106,12 +105,47 @@ entrypoint over occupied output. All local launch/build/SSH sessions joined.
 implementation_archive_worker_20260918.wal_recovery owns details. Earlier d2959da
 and efeb4e0 recovery labs remain stopped, preserved by this terminal comparison.
 
-Next bounded action: complete scoped evidence review, artifact/link checks and
-qualification commit/private push; verify remote identity/privacy. Then continue
-P02-T02 step4 through positive outcome/proof checkpoint closure while designing
-negative resolution against the demonstrated WAL/provenance limitation. Re-read
-owning operations/storage contracts and actual checkpoint consumers before editing.
-Do not infer absence from missing detail or advertise drain completion.
+Next active slice: P02-T04 / P06-T02 step3 exact historical signed-event hydration,
+a prerequisite for M1 read/export. The existing archive-format reference now owns
+the narrow contract: two exact payload/eligibility FactRefs in one native transaction,
+full envelope/digest and actual signature verification, scope-specific representative,
+bounded data output/grant and actual supervised consumer. No public/current read,
+certified cut, absence, protection or export authority. Read-only independent design
+review confirmed this boundary and flagged retaining authority through body delivery;
+the receipt-only diagnostic cleanup exception cannot be reused.
+Root has read the full read-view contract and relevant owning tasks/schema/native
+receipt/engine/catalog/transport callers. Dirty root-owned implementation now adds
+the shared private event request, native same-transaction full-envelope reader,
+actual signature verification and parent data transport retaining its grant until
+the body is dropped. The catalog attach/credential path is shared with receipts.
+The isolated archive_event_probe is a real consumer, not an installed policy/pin.
+
+Mac raw evidence lives in .research/implementation/archive-event. Core native and
+transport semantic REDs are retained separately from fixture compilation errors.
+mac-native-expanded.log:6PASS actual DuckLake/Parquet tests (extreme timestamps,
+scope representatives, complete-envelope corruptions/duplicates, bad signature with
+valid digest,2MiB body and interleaved snapshot). mac-parent-final.log:46PASS.
+Initial Clippy passed. mac-request.log:1PASS closed/bounded request controls.
+An initial reused embedded-connection snapshot expectation failed; original logs
+are retained. The selected reader consumes its engine; a fresh reader after the
+interleaving correctly refuses the changed reference. No broader current-view
+claim is inferred. Independent read-only AI review found two issues: final decode
+must recheck deadline/cancel, and output-allocation failure after spawn must join
+explicitly and prioritize unknown termination. Both code corrections now exist;
+post-fix parent tests pass. mac-transport-final.log:10PASS including complete large
+output followed by a still-live child at cancellation/deadline; no body is delivered.
+mac-clippy-candidate.log passes both libraries/binaries/tests and both connected
+probes. Artifact/handoff checks report no errors. All Mac sessions are joined.
+
+Next bounded action: finish scoped local checks and exact-Git Tux qualification of
+PostgreSQL -> verified worker -> parent, using the existing actual signed publisher
+and a new independent94KiB signed fixture. New builder/harness edits are root-owned,
+uncommitted. AI harness review corrected obsolete fixture migration prerequisites
+(installed Control now14), colliding global writer identities, holder cleanup,
+deadline discrimination and bounded restart polling. The old privileged-foundation
+fixture is not qualified by this slice. No new Tux run is active yet. Native qualification and eventual
+authority/pin/installed consumers remain required. Negative producer resolution
+remains unimplemented; the demonstrated WAL limitation stays open.
 
 M1 still needs actual read, standalone export and restart. Proof/input checkpoint
 closure, ACK/GC/abandonment, source closure/topologyCAS, successor activation,

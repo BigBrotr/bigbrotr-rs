@@ -144,6 +144,12 @@ is an explicit resource. An ID lookup is not an archive-policy bypass.
   continuation at the correct scan position; do not consume the unreturned row.
   If the first eligible row cannot fit, refuse explicitly. Report effective page
   size without changing the normalized query/cursor contract mid-pagination.
+  The in-progress [private archive hydration prerequisite](../reference/archive-format.md#exact-historical-signed-event-hydration)
+  reads an exact payload/eligibility pair with complete digest and signature
+  verification. It has a real supervised consumer and local native regressions;
+  connected Linux qualification is pending. It supplies neither source admission,
+  current-view reduction, installed pins nor public/history authority. This step
+  and the first-event milestone remain incomplete.
 - [ ] **Step 4:** distinguish temporarily unavailable, corrupt, absent and
   policy-withheld bodies. Enforce bounded cold lookup and scan cost. Return
   resource unavailability or the documented policy result, not a partial body

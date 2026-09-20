@@ -162,14 +162,14 @@ async fn initialize_control(database: &str, installed: bool) {
     assert_eq!(
         migration_runner::run(
             &mut admin,
-            if installed { 13 } else { 9 },
+            if installed { 14 } else { 9 },
             true,
             &Cell::new(false)
         )
         .await
         .unwrap()
         .applied,
-        if installed { 11 } else { 8 }
+        if installed { 13 } else { 8 }
     );
     admin.batch_execute("GRANT USAGE ON SCHEMA control TO bigbrotr_control; GRANT SELECT ON ALL TABLES IN SCHEMA control TO bigbrotr_control; GRANT INSERT,UPDATE ON control.datasets,control.principals,control.config_revisions,control.policy_revisions,control.management_audit,control.management_commands,control.role_instances,control.owner_epochs,control.topology_generations,control.source_streams,control.topology_streams,control.allocation_domains,control.producer_slots,control.producer_epochs TO bigbrotr_control; GRANT INSERT ON control.archive_attempts TO bigbrotr_control; GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA control TO bigbrotr_control;").await.unwrap();
     if installed {
@@ -258,7 +258,7 @@ async fn native_state(client: &Client) -> (i64, i64) {
     let row=client.query_one("SELECT (SELECT count(*) FROM public.ducklake_snapshot),(SELECT count(*) FROM public.ducklake_data_file)",&[]).await.unwrap();
     (row.get(0), row.get(1))
 }
-async fn run(mode: &str, port: u16, installed: bool) {
+async fn run(mode: &str, port: u16, installed: bool, event_read: bool) {
     assert!(!installed || !mode.starts_with("custody_"));
     let manager_login = if installed {
         "CatalogManager"
@@ -267,6 +267,7 @@ async fn run(mode: &str, port: u16, installed: bool) {
     };
     let index = match mode {
         "normal" => 0u8,
+        "large" => 7,
         "before" => 1,
         "after" => 2,
         "owner_first" => 3,
@@ -279,6 +280,7 @@ async fn run(mode: &str, port: u16, installed: bool) {
         | "custody_prelock_dead" => 6,
         _ => panic!("closed case"),
     };
+    let racing = matches!(mode, "owner_first" | "held_commit" | "held_rollback");
     let database = format!("bbpub_{mode}");
     let control = format!("bbpub_control_{mode}");
     let home = directory(PathBuf::from(format!("/out/signed_{mode}")));
@@ -407,7 +409,16 @@ async fn run(mode: &str, port: u16, installed: bool) {
             .unwrap();
     }
     let path = home.join("rocks");
-    let store = ingest::prepare(&mut owner, policy, &observer, &path, &budget, &cancel).await;
+    let store = ingest::prepare(
+        &mut owner,
+        policy,
+        &observer,
+        &path,
+        &budget,
+        &cancel,
+        mode == "large",
+    )
+    .await;
     let mut expected_pending = Vec::new();
     for first in [1, 6] {
         let p = ingest::pending(&store, first, &budget, &cancel);
@@ -513,7 +524,7 @@ async fn run(mode: &str, port: u16, installed: bool) {
             }
             .unwrap();
             let custody = LocalAttempt::create(&custody_root, &receipt, &identity).unwrap();
-            if installed && mode == "normal" && ordinal == 1 {
+            if installed && !event_read && mode == "normal" && ordinal == 1 {
                 installed_catalog::delegation_checks(
                     &home, &database, &custody, &identity, &receipt,
                 )
@@ -546,7 +557,7 @@ async fn run(mode: &str, port: u16, installed: bool) {
             tls: CatalogTls::LocalPlaintext(PlaintextBoundary::Loopback),
         };
         let temp = directory(home.join(format!("publish-{ordinal}-temp")));
-        let result = if ordinal == 3 && index >= 3 {
+        let result = if ordinal == 3 && racing {
             let next = ArchiveAttemptRequest::new(
                 [n + 1; 16],
                 catalog,
@@ -641,7 +652,7 @@ async fn run(mode: &str, port: u16, installed: bool) {
             )
         };
         let success = ordinal == 2
-            || (ordinal == 3 && matches!(mode, "normal" | "held_commit"))
+            || (ordinal == 3 && matches!(mode, "normal" | "large" | "held_commit"))
             || (ordinal == 4 && matches!(mode, "owner_first" | "held_rollback"));
         if success {
             assert_eq!(result.unwrap().batch_digest, expected_digest);
@@ -659,7 +670,7 @@ async fn run(mode: &str, port: u16, installed: bool) {
             catalog_guard::seal(&mut admin, &identity, &receipt, &Cell::new(false))
                 .await
                 .unwrap(),
-            !(ordinal == 3 && index >= 3)
+            !(ordinal == 3 && racing)
         );
         let _recovered_custody = LocalAttempt::recover(&custody_root, &receipt, &identity).unwrap();
         catalog_guard::inspect(&mut admin, &identity).await.unwrap();
@@ -728,7 +739,7 @@ async fn run(mode: &str, port: u16, installed: bool) {
         };
         assert_eq!(after, expected);
         outcomes.push(serde_json::json!({"ordinal":ordinal,"first":first,"success":success,"snapshots":after.0,"files":after.1,"attempt_id":format!("{n:02x}").repeat(16),"receipt":receipt_state}));
-        if ordinal == 3 && index >= 3 {
+        if ordinal == 3 && racing {
             emit(serde_json::json!({"event":"old-excluded","worker_active_permits":0}));
             barrier(&home.join("readback-complete"), 60).await;
         }
@@ -752,7 +763,9 @@ fn main() {
     assert!(
         args.len() == 3
             || args.len() == 4
-                && (args[2] == "resolve" || args[3] == "--installed" || args[1] == "protocol")
+                && (args[2] == "resolve"
+                    || matches!(args[3].as_str(), "--installed" | "--event-read")
+                    || args[1] == "protocol")
     );
     tokio::runtime::Builder::new_current_thread()
         .enable_all()
@@ -797,7 +810,9 @@ fn main() {
                 run(
                     &args[1],
                     args[2].parse().unwrap(),
-                    args.get(3).is_some_and(|s| s == "--installed"),
+                    args.get(3)
+                        .is_some_and(|s| matches!(s.as_str(), "--installed" | "--event-read")),
+                    args.get(3).is_some_and(|s| s == "--event-read"),
                 ),
             )
             .await

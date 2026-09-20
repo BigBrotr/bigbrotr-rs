@@ -42,6 +42,7 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
     let initialize_reserved = arguments.len() == 7 && arguments[1] == "initialize-reserved-catalog";
     let inspect_batch = arguments.len() == 9 && arguments[1] == "inspect-batch";
     let publish_batch = arguments.len() == 9 && arguments[1] == "publish-batch";
+    let read_event = arguments.len() == 8 && arguments[1] == "read-event";
     let inspect_receipt = arguments.len() == 8 && arguments[1] == "inspect-receipt";
     if !inspect_engine
         && !inspect_batch
@@ -50,8 +51,9 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
         && !initialize_reserved
         && !publish_batch
         && !inspect_receipt
+        && !read_event
     {
-        return Err("usage: bigbrotr-archive-worker {initialize-reserved-catalog BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | inspect-receipt BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_RECEIPTS | initialize-catalog BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | bootstrap-catalog BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | inspect-engine BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | inspect-batch BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_RECORDS MAX_ENCODED_BYTES | publish-batch BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_RECORDS MAX_ENCODED_BYTES}".into());
+        return Err("usage: bigbrotr-archive-worker {read-event BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_ROW_BYTES | initialize-reserved-catalog BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | inspect-receipt BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_RECEIPTS | initialize-catalog BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | bootstrap-catalog BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | inspect-engine BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS | inspect-batch BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_RECORDS MAX_ENCODED_BYTES | publish-batch BUNDLE_DIR EMPTY_TEMP_DIR MEMORY_BYTES TEMP_BYTES THREADS MAX_RECORDS MAX_ENCODED_BYTES}".into());
     }
     let number = |i: usize| -> Result<u64, Box<dyn std::error::Error>> {
         Ok(arguments[i].to_str().ok_or("invalid limit")?.parse()?)
@@ -63,7 +65,11 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
     };
     let engine = Engine::open(Path::new(&arguments[3]), limits)?;
     engine.load_bundle(Path::new(&arguments[2]))?;
-    let inspection = if inspect_receipt {
+    let inspection = if read_event {
+        let request = bigbrotr_archive_worker::event::EventRequest::read(std::io::stdin().lock())?;
+        let observation = engine.read_event(&request, usize::try_from(number(7)?)?)?;
+        serde_json::to_value(observation)?
+    } else if inspect_receipt {
         let request =
             bigbrotr_archive_worker::receipt::ReceiptRequest::read(std::io::stdin().lock())?;
         let observation = engine.inspect_receipt(&request, usize::try_from(number(7)?)?)?;
