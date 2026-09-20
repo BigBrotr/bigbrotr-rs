@@ -1,6 +1,8 @@
 //! Isolated native executable/PG journey; never a product command or fake server.
 #[path = "browser_http_probe/commit.rs"]
 mod commit;
+#[path = "browser_http_probe/panel.rs"]
+mod panel;
 use serde_json::{Value, json};
 use std::{
     fs::{self, File},
@@ -354,7 +356,7 @@ async fn faults(binary: &Path, config: &Path, home: &Path, admin: &Client) {
     );
 }
 
-async fn run(binary: PathBuf, home: PathBuf, mode: &str) {
+async fn run(binary: PathBuf, home: PathBuf, mode: &str, panel: Option<panel::Options>) {
     fs::create_dir(&home).unwrap();
     assert!(
         TcpStream::connect(ADDRESS).is_err(),
@@ -376,13 +378,16 @@ async fn run(binary: PathBuf, home: PathBuf, mode: &str) {
         .connect_timeout(Duration::from_secs(5));
     let (admin, driver) = connection.connect(NoTls).await.unwrap();
     let driver = tokio::spawn(driver);
+    let database = panel
+        .as_ref()
+        .map_or_else(|| "http_sessions".to_owned(), panel::Options::database);
     admin
-        .batch_execute("CREATE DATABASE http_sessions")
+        .batch_execute(&format!("CREATE DATABASE {database}"))
         .await
         .unwrap();
     drop(admin);
     driver.await.unwrap().unwrap();
-    connection.dbname("http_sessions");
+    connection.dbname(&database);
     let (admin, driver) = connection.connect(NoTls).await.unwrap();
     let driver = tokio::spawn(driver);
     let mut document: toml::Table = include_str!("../../../config/recipes/serve-existing.toml")
@@ -395,11 +400,14 @@ async fn run(binary: PathBuf, home: PathBuf, mode: &str) {
         .unwrap()
         .as_table_mut()
         .unwrap();
-    control.insert("database".into(), "http_sessions".into());
+    control.insert("database".into(), database.into());
     control.insert(
         "password_ref".into(),
         format!("file:{}", home.join("bigbrotr_control").display()).into(),
     );
+    if let Some(options) = &panel {
+        options.configure(&mut document);
+    }
     let config = home.join("instance.toml");
     fs::write(&config, toml::to_string(&document).unwrap()).unwrap();
     let admin_ref = format!("file:{}", home.join("postgres").display());
@@ -484,11 +492,23 @@ async fn run(binary: PathBuf, home: PathBuf, mode: &str) {
             faults(&binary, &config, &home, &admin).await;
             drop(admin);
             driver.await.unwrap().unwrap();
-        } else {
+        } else if mode == "commits" {
             let (token, _) = commit::run(&binary, &config, &home, &admin).await;
             drop(admin);
             driver.await.unwrap().unwrap();
             commit::crash(&binary, &config, &home, &connection, &token).await;
+        } else {
+            panel::run(
+                &binary,
+                &config,
+                &home,
+                &admin,
+                &principal,
+                panel.expect("panel options"),
+            )
+            .await;
+            drop(admin);
+            driver.await.unwrap().unwrap();
         }
         return;
     }
@@ -814,10 +834,15 @@ fn main() {
     let mut args = std::env::args().skip(1);
     let binary = PathBuf::from(args.next().expect("actual product binary"));
     let home = PathBuf::from(args.next().expect("fresh isolated fixture directory"));
+    let mut panel = None;
     let mode = match args.next().as_deref() {
         None => "ordinary",
         Some("--faults-only") => "faults",
         Some("--commits-only") => "commits",
+        Some("--panel") => {
+            panel = Some(panel::Options::parse(&mut args));
+            "panel"
+        }
         _ => panic!("unknown fixture mode"),
     };
     assert!(args.next().is_none());
@@ -825,5 +850,5 @@ fn main() {
         .enable_all()
         .build()
         .unwrap()
-        .block_on(run(binary, home, mode));
+        .block_on(run(binary, home, mode, panel));
 }

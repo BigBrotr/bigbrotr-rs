@@ -694,7 +694,7 @@ not selected: the actual generator peer constraint is5.x. Install uses strict
 peers and ignored lifecycle scripts; build and generation are explicit commands.
 
 Official registry archives for the initial ten researched candidates, including
-Playwright1.63.0 (not yet installed/qualified), have verified SHA512 registry
+Playwright1.63.0 (installed as a dev dependency, not yet browser-qualified), have verified SHA512 registry
 integrities and independently recorded SHA256 digests. Metadata and sources are
 under the inventoried `.research/implementation/private-panel/dependencies`.
 Scoped source inspection covers adapter-static3.0.10 `index.js`, Kit2.70.3
@@ -721,3 +721,19 @@ builds, following the [browser installation contract](https://playwright.dev/doc
 Do not overwrite installed branded browsers or treat WebKit on Linux as Safari
 on Apple hardware. Real Chromium/Firefox/WebKit session, CSP, cookie, second-port,
 missing-asset and cancellation journeys against Rust/PostgreSQL remain required.
+
+The isolated Linux amd64 candidate pins official Noble image
+`mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7`.
+Its platform config is `sha256:2c1f4e0fd6450f43ddb46d60c2a6df30855a8588e165b1f2559fb0eda8d7ff35`.
+The exact upstream commit1b025d7e20a026371cd5f98ba0cdce48892737c8 and npm
+`browsers.json` bytes agree: SHA256
+`545d52f8382c391e605562c330e9c1c534a16045898203037a49bb8bd769a946`,
+Chromium/headless-shell1243 (153.0.8010.12), Firefox1543 (155.0),
+WebKit2359 (26.6). Image Node24 is not substituted for the selected toolchain:
+the lab separately installs Node26.4.0 Linux x64, tar SHA256
+`5c4286dcd5bbd5acb1ccc7eb0e088bd5eb1e3affad671ee9364004f8f6a4a431`,
+and registry-integrity-verified pnpm9.15.9. These are researched candidate inputs,
+not executed browser evidence. The [fixture](../../experiments/private-panel/README.md)
+binds actual launched executables and distinct container lifetimes. Source inspection
+of Playwright's exact `packages/utils/processLauncher.ts` confirms detached browser
+groups: Node/probe termination alone does not establish browser cleanup.

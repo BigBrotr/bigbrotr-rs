@@ -12,9 +12,10 @@
     "check:client": "tsc --project packages/api-client/tsconfig.json"
   },
   "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "@types/node": "26.4.0",
     "ajv": "8.20.0",
     "openapi-typescript": "7.13.0",
-    "typescript": "5.9.3",
-    "@types/node": "26.4.0"
+    "typescript": "5.9.3"
   }
 }

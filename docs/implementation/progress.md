@@ -21,10 +21,12 @@ another diagnostic command instead of the real read consumer.
 
 ## Git and ownership
 
-Local main/HEAD/origin remain pushed `b98426146c68caffcbf6822bdb956d1a8abbd30d`;
-a local candidate is being prepared, not yet committed/pushed. Root owns all dirty
-frontend packages/locks/contracts/tools, Rust asset/config/listener changes and
-related generated docs/evidence. No parallel writer/merge/rebase. Private local
+Local main/HEAD is candidate `6a856960cf594687141524ff2c100711c54d2fd1`,
+clean immediately after commit and not yet pushed. Origin remains
+`b98426146c68caffcbf6822bdb956d1a8abbd30d`. Root is now adding the actual native
+browser qualification fixture and pinned Playwright dev dependency. The dispatcher,
+new panel.rs/browser.mjs/native.py/README, npm lock, dependency record and checkpoint
+are the only new dirty work. No parallel writer/merge/rebase. Private local
 session API production baseline5a4e0d1 and qualified COMMIT fixturee65116b remain
 unchanged history. Full candidate state is listed by Git, not this summary.
 
@@ -64,10 +66,24 @@ bytes. All logs retained under private-panel. The Mac cache-recovery record cove
 only8672696KiB of verified inactive owned incremental data; no source/evidence or
 linked/native artifact was removed.
 
-Next bounded action: review/stage this coherent candidate, commit locally, then
-add/run an exact-Git native browser fixture using actual Rust/PostgreSQL and both
-production bundles. Tux host Node is absent; provision pinned tools/browser engines
-inside a new isolated lab, not globally. Native engine/browser evidence and
+The experimental panel mode now compiles; panel-fixture-compile and
+panel-fixture-reviewed both passed actual example build/Clippy and JS syntax.
+Frozen strict-peer install with ignored scripts passed; only three exact Playwright
+packages were added, no previous dependency resolution changed. Eight browser
+journeys and independent SQL boundary/restart oracles are written, NOT_RUN.
+Read-only AI review corrected exact-action and logout-removal assertions, teardown
+failure accounting, SQL assertion redaction and binding actual executable/script/
+bundle hashes to the selected source. Separate browser process groups require a
+fresh container per pair, /proc observations and host terminal collection; no
+Node-only join claim. No browser has launched and no new remote lab exists yet.
+
+Next bounded action: commit this fixture, transfer exact Git source and execute
+Chromium/Firefox/WebKit at root and/control on isolated native Tux PostgreSQL.
+Candidate product is6a85696. Native orchestration is prepared under ignored
+private-panel/native; each browser has a new database/output/container. Official
+Noble platform image and matching registry/browser revisions are pinned in the
+dependency record. Tux host Node is absent; provision hash-verified Node26.4.0/
+pnpm9.15.9 in the owned lab, not globally. Native engine/browser evidence and
 frontend shared CI assembly remain required; no P09 task or M1 completion.
 
 Preserve `.research/worktrees/producer-closing-old-writer`, last verified clean at
