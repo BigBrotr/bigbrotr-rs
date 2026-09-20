@@ -112,6 +112,20 @@ now has native/PG child and restart evidence. Live certified pin validation belo
 in the grant transaction; a historical pin receipt is not authority. These
 prerequisites do not complete any step below.
 
+The [equal-mapping correction](evidence/p02-archive-visibility-repetition-native-20260920.json)
+preserves availability for the cut's valid repeated mappings without accepting
+conflicts. Its quiescent native mutations certify lookup semantics, not a new
+frontier or grant. Continue directly with the authenticated consumer: register
+`history.read` as a separate scope-qualified action and use the existing
+`/v1/resources/event_history` QueryRequest/QueryPage contract on the private
+origin with a session adapter. This binding does not turn management cookies into
+public bearer credentials or add a second query protocol. An unconfigured native
+reader remains explicitly unavailable; do not silently enable it in serve-existing.
+Preserve typed absent versus unavailable/corrupt native outcomes before returning
+an empty successful collection. Scope grant changes extend the common command-key
+ledger with atomic CAS/audit/proof consumption; restrictive application waits for
+the actual affected workers and socket delivery to drain.
+
 - [ ] **Step 1:** implement atomic one-time owner enrollment using a random token in a new 0600 local file or explicit enrollment command output, ten-minute default expiry and single-use consume. Two concurrent enrollments can create only the intended initial owner. An unclaimed instance remains authenticated/locked; no first-visitor ownership shortcut exists.
 - [ ] **Step 2:** implement local account authentication, eight-hour maximum/thirty-minute idle defaults, revocation, logout, reauthentication before grants, CSRF tokens and exact Origin checks. Use Argon2id with a 16-byte random salt, 32-byte hash, 64 MiB memory, three iterations and one lane as the initial local-account baseline; version those parameters and rehash on successful login after a future policy update. Bound hashing concurrency through reserved memory/CPU grants and account/peer rate limits; a host unable to reserve one hash reports unavailable, never falls back to plaintext or a cheaper silent hash. Store only salt/hash/parameters; enrollment/session/CSRF tokens use 32 random bytes. Local loopback HTTP and remote HTTPS have explicit cookie modes; remote non-TLS refuses startup.
 - [ ] **Step 3:** implement action/resource authorization at the command handler, protected secret-reference write, and attributable append-only audit entries for accepted/rejected requests. Securely open supported regular secret files and reject pipe/device/disallowed symlink substitutions; enforce owner/mode/size on the opened descriptor. Never return stored secrets or permit arbitrary path browsing.

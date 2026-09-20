@@ -21,47 +21,58 @@ another diagnostic command instead of the real read consumer.
 
 ## Git, current qualification and next action
 
-Observed main/HEAD and origin/main `aabbb80f2dbfb9df869b096ac94fd6314237459a`.
-The three visibility commits are pushed; private repository identity verified.
-Root owns the current equal-mapping lookup correction/test and read-view wording,
-archive_read_probe/support/visibility_fixture.rs and visibility_cases.py fixture
-extensions, plus this checkpoint. The prior qualified visibility slice is pushed.
-No other writer or merge/rebase. Last qualified product is
-b5ff8ab;5dfa978 changes fixture/documentation, aabbb80 records qualification.
-No migration/dependency changed. Inspect actual Git before continuing.
+Observed main/HEAD `473873101db0cd59c087f2b9d65174cab3a79f9b`, one local
+candidate ahead of last verified origin/main `aabbb80f2dbfb9df869b096ac94fd6314237459a`.
+Root owns only the new qualification report, laboratory inventory and checkpoint
+updates after that exact source. No other writer, merge/rebase or active experiment.
+Recheck actual Git and remote before continuing. No migration/dependency changed.
 
-New consumer review confirmed an availability defect after the scoped qualification:
-`docs/reference/archive-handoff.md` and worker cut.rs admit equal complete dictionary
-mappings at distinct SourceRecordId values; the lookup rejected any second row.
-Actual Mac native RED at `archive-visibility/equal-mapping-red` ran1test, failed
-with Mismatch on two valid equal mappings (not a compile failure). Root now counts
-distinct complete mapping values under the same cut, selects the lowest source
-occurrence, then preserves source-only uniqueness/full representative validation.
-The extended native regression adds a third conflicting value: it must refuse
-when included, while prefix2 still succeeds. Same-source duplicate tests remain.
-This is a correction to conform to the existing cut contract, no format/migration/
-dependency change. Native5tests/worker Clippy PASS; local exec session75031 finished,
-raw `archive-visibility/equal-mapping-green/result.json`. New quiescent lab-only
-append fixture builds/scoped Clippy PASS in `equal-mapping-fixture-reviewed`;
-six new actual PGchild repetition/conflict cases are NOT_RUN.
-They deliberately bypass publication and claim no certified cut/pin authority;
-independent Python CBOR and full readback expectations define both new facts.
-Independent AI review caught the administrative writer guard: only the fixture's
-postgres mutation sessions now use startup replication_role=replica, with complete
-guard/trigger/role-setting comparisons before/after. No persistent bypass or role
-privilege change. Earlier helper checks retain missing build environment, missing
-PATH, private schema import and Clippy chunk API failures; none was a PG run.
-No Tux experiment is active. Previous27PGchild cases qualifyb5ff8ab only, not this
-new correction. Next bounded action: finish these tests/review, qualify the actual
-PGchild mapping repetition/conflict behavior on an exact new candidate, then
-continue the integrated grant/live-pin consumer. Do not leave this availability
-finding open when consolidating grant activation.
+[Equal-mapping correction](evidence/p02-archive-visibility-repetition-native-20260920.json)
+is qualified on that candidate. The certified cut allows equal complete mapping
+values at distinct source IDs; the former lookup refused every second row.
+Executed Mac native RED failed on two independently valid equal facts. The fix
+counts distinct complete values before choosing the lowest source occurrence,
+then retains full-fact/source-only uniqueness checks in the same transaction.
+A third conflicting value cannot hide behind the first two equal occurrences.
 
-Fresh read-only Tux inspection:494retained container records, eight unrelated
-running, no BigBrotr process active;74,448,355,328bytes free. Full candidate launcher
-`archive-visibility/equal-mapping-native` will verify ownership and reuse only the
-intactb5ff8ab build cache, never the retired partial caches. New source goes through
-Git bundle; native5/protocol2 plus33actual lookup cases are the declared run.
+Mac five native tests/worker Clippy and final helper build/Clippy PASS. Linux
+exact build, five native/two protocol tests and scoped Clippy PASS; 33 actual
+parent/PGchild cases PASS. Six added cases cover equal source11/public, conflicting
+source12/private, excluded prefixes, and selected snapshots3/4 under head5.
+Independent Python CBOR and complete six-family/signed-event readback define the
+expected facts. Quiescent fixture-only postgres sessions bypass triggers through
+startup replication_role=replica; they certify no admission/frontier/pin.
+Independent AI review caught the missing bypass before PG execution. All guard
+rows/trigger definitions and role/parameter settings checked before/after agree.
+Earlier helper environment, private-schema import and Clippy failures remain
+recorded separately; they were not PG runs.
+
+The original27 cases also pass with the changed worker, including actual PG
+SIGQUIT/restart before the quiescent mutations. All28original metadata tables and
+eight original Parquet hashes remain unchanged during read-only tests. The two
+mutations add two files; full independent readback and all10retained file hashes
+verify after fresh processes. No second crash of the mutated corpus was run.
+Terminal independent SQL finds zero backends in both fixture databases.
+
+Fresh terminal owner `41d7646853956b9928c750e3b6123620`, root
+`/home/tux/bigbrotr-implementation-20260917/runs/archive-visibility-4738731`:
+runner`b8d87ab2a88fd90c39df0595bab0403ae090a5e16cdd0e6af1acc2b09950fd3d`,
+PG`776cfd7d3cfcb15c21f6ae422f3f868d5434f06f04512861e6c71a90df1ee821`
+are exited/PID0/noOOM, own empty network removed. All494prior records preserved,
+eight unrelated workloads remain running;70,775,050,240bytes free. Intactb5ff8ab
+cache supplied the new isolated build; no cache was retired in this run.
+Raw `archive-visibility/equal-mapping-native`:57capture files and1008source files
+independently verified against Mac Git archive; captureSHA256
+`c6f5770c64b2f9ca094135a7d3eea1935465e11f311631e8aec190e692b6cb46`.
+No cleanup debt. Keep secret-bearing fixture directories remote. Verify current
+ownership/state before any reuse; do not restart used output roots.
+
+Next bounded action: review/commit/push this qualification, then implement the
+integrated P08-T02 reauthentication/scoped-grant/live-pin and P06 history consumer.
+No further diagnostic-only precursor. Root has now also read complete0017/0018,
+CatalogCapture, browser_sessions, management transport/delivery and connection
+preparation; next grant work must inspect the actual migration consumers/manifest
+and versioned QueryRequest/QueryPage contracts.
 
 [Visibility qualification](evidence/p02-archive-visibility-native-20260920.json)
 now PASS within its stated private allocation boundary. Actualb5ff8ab executable/
@@ -230,9 +241,8 @@ reauthentication bound to the exact grant command, versioned scope-qualified gra
 CAS and principal/action/scope delivery authority for the first real history read.
 Boundary review found a concrete prerequisite: no existing public adapter result
 certifies allocation of a particular visibility QualifiedRef. A browser-supplied
-name cannot become an active grant awaiting future allocation. The current dirty slice implements the exact visibility dictionary lookup under
-the existing retained native snapshot/cut, returning a non-forgeable allocated-scope
-observation for the grant consumer; PostgreSQL qualification remains pending. Reuse native reader custody, finite work and full-fact
+name cannot become an active grant awaiting future allocation. The exact visibility dictionary lookup under the retained native snapshot/cut
+now has the scoped PG qualification above, including equal repeated mappings. Reuse native reader custody, finite work and full-fact
 validation; exercise absent/unallocated, wrong domain, duplicate, corrupt, excluded
 cut and snapshot cases. This supplies allocation evidence, never read permission.
 A later restrictive grant remains pending until actual affected work has drained;

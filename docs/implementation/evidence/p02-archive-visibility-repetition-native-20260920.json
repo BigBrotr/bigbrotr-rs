@@ -1,0 +1,352 @@
+{
+  "format": "bigbrotr-archive-visibility-repetition-evidence/1",
+  "status": "PASS",
+  "scope": "P02-T04/P06-T02/P08-T02 allocation prerequisite correction; no grant, certified query admission or complete M1 qualification",
+  "source": {
+    "revision": "473873101db0cd59c087f2b9d65174cab3a79f9b",
+    "tree": "ed175c18b862a3b6af7697e17602bfa59c447034",
+    "manifest": {
+      "path": ".research/implementation/archive-visibility/equal-mapping-native/capture/out/build/source-manifest.json",
+      "bytes": 124839,
+      "sha256": "01121ebf95419f2d5b4c96ff83c215f303a0cf4f0b4a8732e23a9d7b209ccaf0"
+    },
+    "verified_files": 1008,
+    "lock_sha256": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122"
+  },
+  "problem": "The certified-cut contract permits identical complete dictionary mappings at distinct source identities. The previous lookup rejected any second row, denying valid allocation evidence.",
+  "implementation": "Within one selected native transaction count distinct complete mapping values, select the lowest (shard,epoch,sequence) occurrence, verify its full fact and rehydrate by source identity alone. A conflict behind two equal occurrences remains detectable. Cross-family uniqueness still belongs to certified cut membership.",
+  "compatibility": "No migration, dependency, persistent scientific encoding or wire format change. Existing duplicate-source and malformed selected-fact refusals remain.",
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "native_bundle": {
+      "path": "contracts/release/archive-engine.json",
+      "bytes": 8159,
+      "sha256": "ae0069565ab9411928df0cf067822630c4f3a912919e61633b952f8077a5e2c1"
+    },
+    "limits": "Runner2CPU6GiB512PIDs; PG2CPU1GiB128PIDs; private internal network/no host ports; trusted read-only exact source; no release keys"
+  },
+  "artifacts": {
+    "control": "843c5a31cf900979b4d38a8bcead8577028dee8a3f2aa563669c2c356dbb34b0",
+    "worker": "cff98cb3603dc86581a61f62b2dc284e972e7ee2c61e96c85501f1507485cbda",
+    "publisher": "82dd1bf6106d37485abe9e6e299348bf20eac09770d79aee12486aa70b67c555",
+    "reader": "a4b69df5ffafdfdf093cf8f65a5a5a3ab058641cde5cfdbe3f84991ffca5a951",
+    "event_reader": "4f28b7542ccb8c0d4a1689650d80c759deb8513632dfac0f5340cdbd55bcfe2d"
+  },
+  "mac": {
+    "runtime_red": {
+      "path": ".research/implementation/archive-visibility/equal-mapping-red/result.json",
+      "bytes": 761,
+      "sha256": "931c55250b034746021a311bf2eef6aff8c30c1dfee7d21e1bda719314594f43"
+    },
+    "runtime_red_log": {
+      "path": ".research/implementation/archive-visibility/equal-mapping-red/native-equal-mapping.log",
+      "bytes": 1031,
+      "sha256": "0608db65896e3bcace50350d38e30f197bf6241357a852e9b8108b8f7989cd82"
+    },
+    "native_five_and_worker_clippy": {
+      "path": ".research/implementation/archive-visibility/equal-mapping-green/result.json",
+      "bytes": 1070,
+      "sha256": "0bb4bcc9c49f8714cc475f4ca663cd8846d616d84f3b723bdee08f2a4cfaea03"
+    },
+    "reviewed_fixture_build_clippy": {
+      "path": ".research/implementation/archive-visibility/equal-mapping-fixture-reviewed/result.json",
+      "bytes": 1029,
+      "sha256": "6d63a22aa45ce1235297f338f7c1e23f95580b342cf67534108d1f05a74e1131"
+    },
+    "earlier_helper_failures": "Missing native build environment; then missing PATH; private schema import; Clippy chunks_exact API. Retained separately under equal-mapping-fixture*, never counted as PG failures or passing checks."
+  },
+  "linux": {
+    "build": {
+      "path": ".research/implementation/archive-visibility/equal-mapping-native/capture/out/native-tests/result.json",
+      "bytes": 2811,
+      "sha256": "3fbe26ab3491a139445a3f8b838692bfb4be32a84dd285f119f4be83fa650c55"
+    },
+    "checks": {
+      "path": ".research/implementation/archive-visibility/equal-mapping-native/capture/out/native-tests/checks/result.json",
+      "bytes": 4950,
+      "sha256": "3d127f433fe2dc87e77fa6d902c651be55da37f5a0eac700bb4d5ca6a6b51df4"
+    },
+    "native_tests": 5,
+    "protocol_tests": 2,
+    "ignored": 0,
+    "connected_count": 33,
+    "capture": {
+      "path": ".research/implementation/archive-visibility/equal-mapping-native/capture/visibility-cases.json",
+      "bytes": 948153,
+      "sha256": "c7d76c720cae23fb99a02fb54454ec558948983508ade12f5fafd7fadacfb2cf"
+    },
+    "cases": [
+      {
+        "name": "visibility-repeat",
+        "status": "PASS",
+        "result": {
+          "class": "public",
+          "fact_ref": {
+            "payload_digest": "62dfe6f4203b615a68396354f80396dae72514f01448362b38483214724da619",
+            "source_record_id": {
+              "dataset_id": "01010101010101010101010101010101",
+              "owner_epoch": "1",
+              "sequence": "1",
+              "shard_id": 0
+            }
+          },
+          "scope": {
+            "allocation_domain": "04040404040404040404040404040404",
+            "dataset_id": "01010101010101010101010101010101",
+            "dictionary_kind": 4,
+            "ordinal": "1"
+          },
+          "snapshot_id": "4",
+          "status": "observed"
+        },
+        "active_permits": 0
+      },
+      {
+        "name": "visibility-repeat-excluded",
+        "status": "PASS",
+        "result": {
+          "class": "public",
+          "fact_ref": {
+            "payload_digest": "62dfe6f4203b615a68396354f80396dae72514f01448362b38483214724da619",
+            "source_record_id": {
+              "dataset_id": "01010101010101010101010101010101",
+              "owner_epoch": "1",
+              "sequence": "1",
+              "shard_id": 0
+            }
+          },
+          "scope": {
+            "allocation_domain": "04040404040404040404040404040404",
+            "dataset_id": "01010101010101010101010101010101",
+            "dictionary_kind": 4,
+            "ordinal": "1"
+          },
+          "snapshot_id": "4",
+          "status": "observed"
+        },
+        "active_permits": 0
+      },
+      {
+        "name": "visibility-conflict",
+        "status": "PASS",
+        "result": {
+          "error": "ObservationUnknown",
+          "status": "refused"
+        },
+        "active_permits": 0
+      },
+      {
+        "name": "visibility-conflict-excluded",
+        "status": "PASS",
+        "result": {
+          "class": "public",
+          "fact_ref": {
+            "payload_digest": "62dfe6f4203b615a68396354f80396dae72514f01448362b38483214724da619",
+            "source_record_id": {
+              "dataset_id": "01010101010101010101010101010101",
+              "owner_epoch": "1",
+              "sequence": "1",
+              "shard_id": 0
+            }
+          },
+          "scope": {
+            "allocation_domain": "04040404040404040404040404040404",
+            "dataset_id": "01010101010101010101010101010101",
+            "dictionary_kind": 4,
+            "ordinal": "1"
+          },
+          "snapshot_id": "5",
+          "status": "observed"
+        },
+        "active_permits": 0
+      },
+      {
+        "name": "equal-historical-under-conflicting-head",
+        "status": "PASS",
+        "result": {
+          "class": "public",
+          "fact_ref": {
+            "payload_digest": "62dfe6f4203b615a68396354f80396dae72514f01448362b38483214724da619",
+            "source_record_id": {
+              "dataset_id": "01010101010101010101010101010101",
+              "owner_epoch": "1",
+              "sequence": "1",
+              "shard_id": 0
+            }
+          },
+          "scope": {
+            "allocation_domain": "04040404040404040404040404040404",
+            "dataset_id": "01010101010101010101010101010101",
+            "dictionary_kind": 4,
+            "ordinal": "1"
+          },
+          "snapshot_id": "4",
+          "status": "observed"
+        },
+        "active_permits": 0
+      },
+      {
+        "name": "original-historical-under-conflicting-head",
+        "status": "PASS",
+        "result": {
+          "class": "public",
+          "fact_ref": {
+            "payload_digest": "62dfe6f4203b615a68396354f80396dae72514f01448362b38483214724da619",
+            "source_record_id": {
+              "dataset_id": "01010101010101010101010101010101",
+              "owner_epoch": "1",
+              "sequence": "1",
+              "shard_id": 0
+            }
+          },
+          "scope": {
+            "allocation_domain": "04040404040404040404040404040404",
+            "dataset_id": "01010101010101010101010101010101",
+            "dictionary_kind": 4,
+            "ordinal": "1"
+          },
+          "snapshot_id": "3",
+          "status": "observed"
+        },
+        "active_permits": 0
+      }
+    ],
+    "original_27": "Reexecuted with changed actual worker: bound/scope/snapshot absence, reduced row reservation, unavailable PG, dictionary disappearance/corruption/restoration, fresh child after actual PG SIGQUIT restart."
+  },
+  "oracle": {
+    "driver": {
+      "path": "experiments/archive-engine/visibility_cases.py",
+      "sha256": "212d7f2017152b7ebad11ae3130e4dfdfa878634bff51ff9b0323185454d23f1"
+    },
+    "original": "Separately authored signed_publication_oracle.py and signed-fixture.json; full six-family readback and original signed event",
+    "mutation": "Independent Python CBOR preimages: source11/public equal mapping and source12/private conflict, recorded0. Actual Rust/native insertion accepts those complete digests; all normalized scientific fields and archive receipts compare to independently extended literal expectations.",
+    "privilege_boundary": "Quiescent fixture-only postgres sessions use startup replication_role=replica. No new admission, certified frontier, retention pin or authority is minted. This deliberately bypasses the product writer guard to test lookup on controlled native rows."
+  },
+  "durable": {
+    "metadata_tables": 28,
+    "original_readonly_metadata_unchanged": true,
+    "original_parquet_files": 8,
+    "mutated_parquet_files": 10,
+    "original_parquet_bytes_hashes_preserved": true,
+    "guard_before_after_equal": true,
+    "guard_scope": "Installation/scientific schema, owner, attempts, trigger definitions/enabled state, pg_db_role_setting and pg_parameter_acl; not every pg_roles attribute.",
+    "restart": {
+      "before": "2026-09-20 16:23:28.116169+00",
+      "after": "2026-09-20 16:26:55.216161+00",
+      "signal": "SIGQUIT",
+      "attempts": [
+        {
+          "exit": 2,
+          "start": ""
+        },
+        {
+          "exit": 2,
+          "start": ""
+        },
+        {
+          "exit": 2,
+          "start": ""
+        },
+        {
+          "exit": 2,
+          "start": ""
+        },
+        {
+          "exit": 2,
+          "start": ""
+        },
+        {
+          "exit": 2,
+          "start": ""
+        },
+        {
+          "exit": 2,
+          "start": ""
+        },
+        {
+          "exit": 2,
+          "start": ""
+        },
+        {
+          "exit": 2,
+          "start": ""
+        },
+        {
+          "exit": 2,
+          "start": ""
+        },
+        {
+          "exit": 2,
+          "start": ""
+        },
+        {
+          "exit": 2,
+          "start": ""
+        },
+        {
+          "exit": 2,
+          "start": ""
+        },
+        {
+          "exit": 0,
+          "start": "2026-09-20 16:26:55.216161+00"
+        }
+      ]
+    },
+    "restart_scope": "Actual postmaster immediate shutdown and fresh lookup before quiescent mutations; repeated/conflicting mappings were not additionally crash-tested.",
+    "remaining_backends": {
+      "bbpub_normal": {
+        "backends": 0
+      },
+      "bbpub_control_normal": {
+        "backends": 0
+      }
+    },
+    "terminal_independent": {
+      "path": ".research/implementation/archive-visibility/equal-mapping-native/capture/terminal-independent.json",
+      "bytes": 6373,
+      "sha256": "5838080a47515d5cb317ad846a02fb569958b4019cb9057b6107293fba788a16"
+    }
+  },
+  "review": {
+    "kind": "Independent read-only AI plus root complete change/evidence review",
+    "finding": "Administrative fixture writable attach would be refused by sealed guard even as postgres; fixed before PG execution with explicitly isolated session-only bypass. Matching libpq upstream source preserves startup options through native pool connection creation/reset.",
+    "upstream": "postgres extension41223e5: src/storage/postgres_catalog.cpp, src/storage/postgres_connection_pool.cpp, src/postgres_utils.cpp; PostgreSQL16 RESET and libpq options documentation."
+  },
+  "resources": {
+    "state": "Both owned containers exited/PID0/noOOM; owned empty network removed; source/data/artifacts retained",
+    "identities": {
+      "path": ".research/implementation/archive-visibility/equal-mapping-native/capture/resources.json",
+      "bytes": 1362,
+      "sha256": "e50de0f461e04c0a6ba2c33e97045c62381ef21d9d39ef7f6310de86b5eebb6d"
+    },
+    "terminal": {
+      "path": ".research/implementation/archive-visibility/equal-mapping-native/capture/terminal-audit.json",
+      "bytes": 4392,
+      "sha256": "fbc1169c51b997a0f326aaf595be66470c75cfdea44fafa959dc1b94bb544d16"
+    },
+    "capture": {
+      "path": ".research/implementation/archive-visibility/equal-mapping-native/evidence-identity.json",
+      "bytes": 9147,
+      "sha256": "925020263bc2788e1535cbd8594635baeda84cd587a4f7d2a6d0becabde4182b"
+    },
+    "capture_sha256": "c6f5770c64b2f9ca094135a7d3eea1935465e11f311631e8aec190e692b6cb46",
+    "verified_capture_files": 57,
+    "offline": {
+      "path": ".research/implementation/archive-visibility/equal-mapping-native/offline-verification.json",
+      "bytes": 201,
+      "sha256": "7ab8d2fd959794596081c9c9f132738a84f8f0a9f710a193dc3cdbfeee4fde93"
+    },
+    "preexisting_preserved": 494,
+    "unrelated_running": 8,
+    "free_terminal": 70775050240
+  },
+  "remaining": [
+    "Actual session/reauthentication-bound scoped grant CAS/audit/retry, live certified pin validation and authenticated event_history/export consumer.",
+    "Visibility-specific blocked-engine cancellation/parent death, common64MiB profile/scanned-byte admission, aged/mixed load, host suspend/power loss, Linuxarm64 and release journeys remain unqualified.",
+    "The complete selected product remains required; no phase or milestone is completed by this correction."
+  ]
+}

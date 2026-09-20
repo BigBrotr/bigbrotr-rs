@@ -146,6 +146,17 @@ keep an unattended session alive. Full grant/reauthentication/audit and remote-T
 routes remain separate required implementation. Generated types and runtime
 validators cover this actual subset; they do not advertise the whole table above.
 
+The selected next history consumer mounts the same
+`/v1/resources/event_history` resource on the private origin with a browser-session
+authentication adapter. It uses the shared QueryRequest/QueryPage semantics,
+requires the separate `history.read` action for the complete visibility reference,
+and does not confer export permission. This private cookie binding does not apply
+to public HTTP, MCP or other bearer transports. GET query decoding is specific to
+the resource route; session and static routes keep their closed request shapes.
+Until the native reader, live certified pin, principal authority and delivery
+lifetimes are connected and qualified, this is a selected integration contract,
+not an advertised implemented endpoint.
+
 The initial private static bundle has a closed JSON manifest
 `bigbrotr-private-assets/1`: exactly `format`, `base_path` and `files`, with each
 file containing `path`, unsigned `bytes` and lowercase hex64 `sha256` over the

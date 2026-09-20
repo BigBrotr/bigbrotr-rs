@@ -18097,6 +18097,42 @@
       "unrelated_running": 8,
       "owned_state": "Both exited/PID0/noOOM; empty owned network removed; data/artifacts retained",
       "free_terminal": 74454454272
+    },
+    "equal_mapping_qualification": {
+      "report": "docs/implementation/evidence/p02-archive-visibility-repetition-native-20260920.json",
+      "resources": {
+        "source": "473873101db0cd59c087f2b9d65174cab3a79f9b",
+        "tree": "ed175c18b862a3b6af7697e17602bfa59c447034",
+        "owner": "41d7646853956b9928c750e3b6123620",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-visibility-4738731",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "postgres",
+            "id": "776cfd7d3cfcb15c21f6ae422f3f868d5434f06f04512861e6c71a90df1ee821"
+          },
+          {
+            "name": "rust-visibility",
+            "id": "b8d87ab2a88fd90c39df0595bab0403ae090a5e16cdd0e6af1acc2b09950fd3d"
+          }
+        ],
+        "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "owner_label": "org.bigbrotr.archive-visibility",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "started_at": "2026-09-20T16:23:24.146626+00:00",
+        "network_id": "1f1690ee039f26d6ab947de911e3c973dde70810d791a79b82d3d3672525e5da",
+        "postgres_id": "776cfd7d3cfcb15c21f6ae422f3f868d5434f06f04512861e6c71a90df1ee821",
+        "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+        "container_id": "b8d87ab2a88fd90c39df0595bab0403ae090a5e16cdd0e6af1acc2b09950fd3d",
+        "network_state": "removed after owner/no-endpoint audit",
+        "terminal_audit": "terminal-audit.json"
+      },
+      "capture_sha256": "c6f5770c64b2f9ca094135a7d3eea1935465e11f311631e8aec190e692b6cb46",
+      "verified_capture_files": 57,
+      "verified_source_files": 1008,
+      "preexisting_preserved": 494,
+      "unrelated_running": 8,
+      "free_terminal": 70775050240
     }
   }
 }
