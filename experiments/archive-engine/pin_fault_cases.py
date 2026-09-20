@@ -21,7 +21,9 @@ def main(root):
     revision = command('git','-C',str(source),'rev-parse','HEAD')
     assert not command('git','-C',str(source),'status','--porcelain','--untracked-files=all')
     ready = json.loads((root/'out/pin-fault-build/ready.json').read_text())
-    assert revision == ready['source'] and state['source'] == ready['product_source']
+    assert state['source'] == ready['product_source']
+    changed = command('git','-C',str(source),'diff','--name-only',ready['source'],revision).splitlines()
+    assert all(p.startswith('docs/') or p == 'experiments/archive-engine/pin_fault_cases.py' for p in changed)
     assert sha(root/'out/pin-fault-build/archive-publication-probe') == ready['artifact_sha256']
     assert json.loads((root/'cut-cases.json').read_text())['status'] == 'PASS'
     runner, pg = state['container_id'], state['postgres_id']
@@ -33,7 +35,8 @@ def main(root):
     directory.mkdir(mode=0o700)
     report_path = root/'pin-fault-cases.json'
     assert not report_path.exists()
-    report = dict(status='INCOMPLETE', source=state['source'], harness=ready, cases=[],
+    report = dict(status='INCOMPLETE', source=state['source'], harness=ready,
+                  oracle_source=revision, changed_paths=changed, cases=[],
                   proxy_sha256=sha(source/'experiments/archive-engine/native_commit_proxy.py'))
 
     def save():
@@ -309,6 +312,11 @@ def main(root):
         assert short['observed']['receipt']==original
         passed(short)
         time.sleep(.6)
+        report['expired_retry_clock'] = json.loads(sql("SELECT json_build_object('now_us',(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint,'expires_at_us',expires_at_us,'state',state) FROM control.snapshot_leases WHERE lease_id=decode(repeat('d4',16),'hex')"))
+        clock = report['expired_retry_clock']
+        assert clock['state']=='active' and clock['expires_at_us']==original['expires_at_us']
+        assert clock['now_us']>=clock['expires_at_us']
+        save()
         retry = fixture('expired-retry',0xd4,ttl_ms=500)
         unchanged(retry)
         assert retry['observed']['receipt']==dict(original,created=False)

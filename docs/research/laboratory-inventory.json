@@ -15184,7 +15184,7 @@
       "container_id": "ab1b9197451d6fa5f94017a4cccc616c5fb603a16c827bf60cd030ca41c03288",
       "local_raw": ".research/implementation/archive-pin-ledger",
       "purpose": "Actual historical snapshot pin registration, retry and release with independent SQL state oracle",
-      "qualification": "Native build/16 schema tests/Clippy PASS; two signed cut journeys with pin PASS. SQL report parser FAIL after constraints completed; legacy/independent pin oracle NOT_RUN. New fixture-only exact-Git harness pending.",
+      "qualification": "Native27150f2 build/16 schema tests/Clippy and two signed cut journeys PASS. Harness583f085 passes14 pin SQL constraints plus unchanged legacy upgrade and independent native row/xmin oracle. Initial multiline report parser failure retained. Fixture-only fault build READY; fault matrix pending.",
       "limits": "Runner2CPU/6GiB/512PIDs; PG1CPU/1GiB/128PIDs; internal network/no host ports; trusted exact source"
     }
   },

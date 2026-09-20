@@ -20,8 +20,8 @@ another administrative diagnostic command instead of the real read consumer.
 
 ## Git and ownership
 
-Local main is unpublished candidate `27150f253f0fbcb72e2d25a9ebd082493acb8eba`,
-tree `e6888308cde125b0543338fef721b7978903c37e`; private origin/main remains
+Local main is unpublished fixture candidate `583f0852f8bae090b3e222d9d653701b386a6f30`
+over production `27150f253f0fbcb72e2d25a9ebd082493acb8eba`; private origin/main remains
 `88e93678db830f08d22f49cfb6d234ee50fc40dc`. Root-owned dirty work adds the finite pin fault fixture, transport negative controls,
 independent fault oracle and SQL-report parser correction, plus this checkpoint
 and lab inventory. Candidate27150f2
@@ -99,7 +99,12 @@ PG `bbf73a48667bbe1d867883a15384251ba6af195a23bc49987f38c74c3467ff6e`. Exact913-
 native build/16 schema tests/Clippy PASS and two signed capture cases PASS.
 `pin-schema-cases.json` remains INCOMPLETE after the multiline parser failure;
 raw error is `.research/implementation/archive-pin-ledger/pin-schema.log`.
-No active test process; owned runner/PG remain running for the next bounded tests. Both containers and their owned
+Corrected exact-Git harness583f085 passes three qualification groups: all14
+pin SQL constraints, schema16->17 unchanged legacy rows/refused adoption, and
+independent native three-table retry/release values/xmin. Its fixture-only build
+and Clippy pass, with unchanged production inputs verified by manifest.
+The next oracle-only change samples actual PG time for expired retry; then run
+the fault matrix. Owned runner/PG remain running for these bounded tests. Both containers and their owned
 network need terminal audit/cleanup. Scripts/resources/preflight under
 `.research/implementation/archive-pin-ledger/`. Do not restart or reuse output root.
 
