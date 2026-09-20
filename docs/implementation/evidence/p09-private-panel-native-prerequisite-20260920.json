@@ -1,0 +1,93 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "tasks": [
+    "P08-T02",
+    "P09-T01",
+    "P09-T07"
+  ],
+  "status": "INCOMPLETE",
+  "source": {
+    "revision": "4593e37179d31a9b9cdcbd5fd98655d71922c7ec",
+    "tree": "ad9046104f36e430e451409ff613f9f5de089019",
+    "clean": true,
+    "files_verified": 978
+  },
+  "environment": {
+    "os": "Linux",
+    "architecture": "x86_64",
+    "browser_image_manifest": "sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+    "browser_image_config": "sha256:2c1f4e0fd6450f43ddb46d60c2a6df30855a8588e165b1f2559fb0eda8d7ff35"
+  },
+  "executed": {
+    "image_pull": "PASS; requested manifest digest matched",
+    "launcher": "FAIL; incorrectly expected Docker image inspect Id to equal config digest; actual Id equaled selected platform manifest",
+    "rust_build": "INTERRUPTED by launcher cleanup, container exit143; result remains RUNNING and is not acceptance evidence",
+    "frontend": "NOT_RUN",
+    "browser_cases": "NOT_RUN",
+    "postgres": "NOT_RUN"
+  },
+  "resolution": "Verify registry manifest/config bytes separately, local RepoDigests/platform and optional Descriptor; do not equate backend-specific inspect Id with config digest. Probe actual Python/Node prerequisites before expensive builds. Register Docker create before start and collect all owned resources even if one cleanup fails. Replacement run still required.",
+  "resources": {
+    "owner": "bd3463465b16396b6f7d961067fc0613",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/private-panel-4593e37",
+    "container": "9f096a0cabfdc8063a4e2be97eeb46922a1c21703360bb39b0f7dab33c720743",
+    "terminal": "stopped/PID0/noOOM; source/tools/cache retained; no PG/network created",
+    "prior_containers_preserved": 426,
+    "unrelated_running": 8
+  },
+  "raw": {
+    "root": ".research/implementation/private-panel/native",
+    "capture_sha256": "d948b88f86a5f1dd63c609cdd07693ddeddaebfddc9a41e6f24f32d1e8f40921",
+    "files": {
+      "browser-image-pull.log": {
+        "bytes": 1080,
+        "sha256": "961f73c33140ba4da70476a2a9c031c01e3b86812fd63648c53dd70be54a7af5"
+      },
+      "collect.py": {
+        "bytes": 2460,
+        "sha256": "16ce6d5f9369185d3908b274de163f909c7f63c2fcf3e14de227cdecf232662d"
+      },
+      "launch.py": {
+        "bytes": 15503,
+        "sha256": "4b2d0b2c8eca2142622d0da6923743b195ed931811609c886bae40795e9506b1"
+      },
+      "orchestrator.log": {
+        "bytes": 164,
+        "sha256": "016910bf33c063ab41e906054d632e67cb574f744f639b0e9cca0add69338e26"
+      },
+      "out/build/source-manifest.json": {
+        "bytes": 120753,
+        "sha256": "22296abd0e077d10499e24a1f9e3578e0c8393812f0da0f091f8f17fa7953bef"
+      },
+      "out/rust-checks/build.log": {
+        "bytes": 235,
+        "sha256": "1aedf686d83f924fec0ce59b3f2373de6ba0eb20e3f66bf6f2bb8479ae3eebe6"
+      },
+      "out/rust-checks/result.json": {
+        "bytes": 3377,
+        "sha256": "d1558726fff98c3766afa8b1eed00f28a878a8bdd0bb47592ddd50bd31373a2c"
+      },
+      "preflight.json": {
+        "bytes": 3554703,
+        "sha256": "639cba5f2990512718ceafec6d2ec06c85f682bdd52a4d828655b075093056f7"
+      },
+      "resources.json": {
+        "bytes": 823,
+        "sha256": "39a5a1f9fad289f5ecc8c32a034727473d62c69055f19633ea939e1ac65371eb"
+      },
+      "terminal-audit.json": {
+        "bytes": 2443,
+        "sha256": "646b46b282120dab77b2004eb3b14502f70524e5a84b458ee374648e9c3310e4"
+      },
+      "terminal-inventory.json": {
+        "bytes": 785472,
+        "sha256": "83d383abef05cd6b0ba973fc6339cce4bcc02150cab45fc60e3600817dd765f9"
+      },
+      "tool-inputs.json": {
+        "bytes": 376,
+        "sha256": "652c4b0b906225c4d9ea5653b60d6cbb8828340c18a11f64a47bbabd120f5209"
+      }
+    }
+  },
+  "scope": "No product failure or browser execution was observed. This failed laboratory prerequisite cannot qualify P08/P09/M1."
+}

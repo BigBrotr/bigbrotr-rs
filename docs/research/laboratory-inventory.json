@@ -17321,7 +17321,7 @@
   "implementation_private_panel_20260920": {
     "local_root": ".research/implementation/private-panel",
     "owner": "root implementer",
-    "state": "Local frontend, loader and actual TCP checks PASS; no browser or remote lab started; all owned local jobs terminal",
+    "state": "Local scoped checks PASS; first native prerequisite INCOMPLETE/stopped-retained before any browser or PG; replacement pending",
     "source_base": "b98426146c68caffcbf6822bdb956d1a8abbd30d",
     "dependency_manifest": ".research/implementation/private-panel/dependencies/selected-candidates.json",
     "contents": "Official registry metadata/verified archives/sources; local client and bundle checks; controlled native logs including failures and cache recovery; generated bundles are artifacts, not source authority.",
@@ -17350,6 +17350,28 @@
         "browser-http-commits-c98398b"
       ],
       "preserved": "Actual executable/shared artifact hashes, sources, receipts, native bundles, fixtures and databases. Qualified e65116b cache intact."
+    },
+    "first_native_attempt": {
+      "source": "4593e37179d31a9b9cdcbd5fd98655d71922c7ec",
+      "tree": "ad9046104f36e430e451409ff613f9f5de089019",
+      "owner": "bd3463465b16396b6f7d961067fc0613",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/private-panel-4593e37",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "rust",
+          "id": "9f096a0cabfdc8063a4e2be97eeb46922a1c21703360bb39b0f7dab33c720743"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+      "started_at": "2026-09-20T13:13:02.547848+00:00",
+      "terminal_audit": "terminal-audit.json",
+      "local_root": ".research/implementation/private-panel/native",
+      "observation": "INCOMPLETE before frontend/browser/PG: Docker containerd image inspect Id was platform manifest digest, not the expected config digest. Native build interrupted by launcher cleanup (exit143); no test outcome. One container stopped/PID0/noOOM;426prior lifecycle records preserved,8unrelated workloads remain. No network or database created; source/tools/caches retained.",
+      "evidence": "docs/implementation/evidence/p09-private-panel-native-prerequisite-20260920.json",
+      "capture_sha256": "d948b88f86a5f1dd63c609cdd07693ddeddaebfddc9a41e6f24f32d1e8f40921"
     }
   }
 }

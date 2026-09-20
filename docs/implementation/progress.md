@@ -21,12 +21,11 @@ another diagnostic command instead of the real read consumer.
 
 ## Git and ownership
 
-Local main/HEAD is candidate `6a856960cf594687141524ff2c100711c54d2fd1`,
-clean immediately after commit and not yet pushed. Origin remains
-`b98426146c68caffcbf6822bdb956d1a8abbd30d`. Root is now adding the actual native
-browser qualification fixture and pinned Playwright dev dependency. The dispatcher,
-new panel.rs/browser.mjs/native.py/README, npm lock, dependency record and checkpoint
-are the only new dirty work. No parallel writer/merge/rebase. Private local
+Local main/HEAD is fixture candidate `4593e37179d31a9b9cdcbd5fd98655d71922c7ec`,
+product6a85696 unchanged. Both commits remain unpublished; origin remains
+`b98426146c68caffcbf6822bdb956d1a8abbd30d`. Root is recording the failed native
+prerequisite and preparing a replacement lab. Only evidence/inventory/checkpoint
+are dirty; no product modification. No parallel writer/merge/rebase. Private local
 session API production baseline5a4e0d1 and qualified COMMIT fixturee65116b remain
 unchanged history. Full candidate state is listed by Git, not this summary.
 
@@ -75,12 +74,25 @@ Read-only AI review corrected exact-action and logout-removal assertions, teardo
 failure accounting, SQL assertion redaction and binding actual executable/script/
 bundle hashes to the selected source. Separate browser process groups require a
 fresh container per pair, /proc observations and host terminal collection; no
-Node-only join claim. No browser has launched and no new remote lab exists yet.
+Node-only join claim. No browser has launched.
 
-Next bounded action: commit this fixture, transfer exact Git source and execute
+[First native attempt](evidence/p09-private-panel-native-prerequisite-20260920.json)
+at4593e37 is INCOMPLETE before frontend/browser/PG. The launcher incorrectly
+equated Docker image inspect Id with config digest; this host returned the pinned
+platform manifest digest. Direct registry bytes independently verify both selected
+manifest/config hashes. Cleanup interrupted the Rust build with exit143; its
+RUNNING receipt is not PASS. One owned container is stopped/PID0/noOOM, all426
+prior lifecycle records unchanged,8unrelated workloads remain; no network/PG.
+Twelve capture files and978 source hashes independently verified on Mac. Preserve
+private-panel/native and remote runs/private-panel-4593e37, owner
+bd3463465b16396b6f7d961067fc0613. Replacement launcher separates manifest/config
+checks, probes actual tool availability first, registers create before start and
+attempts collection of every owned container even after a cleanup error.
+
+Next bounded action: commit this failure evidence, transfer exact Git source and execute
 Chromium/Firefox/WebKit at root and/control on isolated native Tux PostgreSQL.
 Candidate product is6a85696. Native orchestration is prepared under ignored
-private-panel/native; each browser has a new database/output/container. Official
+private-panel/native-platform; each browser has a new database/output/container. Official
 Noble platform image and matching registry/browser revisions are pinned in the
 dependency record. Tux host Node is absent; provision hash-verified Node26.4.0/
 pnpm9.15.9 in the owned lab, not globally. Native engine/browser evidence and
@@ -145,7 +157,7 @@ are retained. Both audits PASS: all426 container lifecycle/mount records unchang
 8unrelated workloads still running; final free28,275,548,160bytes. Qualifiede65116b
 cache remains intact for copying into a new lab. Raw scripts/receipts are under
 private-panel/tux-cache-retirement*, with remote receipts in the owned runs root.
-No new remote lab/process/network was created and no cleanup is pending.
+The subsequent first native panel attempt is stopped/retained as recorded above; no cleanup is pending.
 
 
 Qualified COMMIT lab `/home/tux/bigbrotr-implementation-20260917/runs/browser-http-commits-e65116b`
