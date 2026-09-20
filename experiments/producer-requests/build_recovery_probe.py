@@ -17,7 +17,7 @@ from tools.archive_bundle import build_environment
 from tools.ci import execute
 
 work = SOURCE.parent
-assert work == Path('/out/recovery-probe')
+assert work in [Path('/out/recovery-probe'), Path('/out/recovery-probe-process')]
 manifest = json.loads((work/'source-manifest.json').read_text())
 baseline = json.loads(Path('/out/build/source-manifest.json').read_text())
 assert baseline['revision'] == 'd2959da61a54a89b6b4e1b4806aa3a819bdff778'
@@ -29,6 +29,7 @@ def fixture(name):
         'apps/bigbrotr/examples/ingest_bootstrap_probe.rs',
         'apps/bigbrotr/examples/support/ingest_closing.rs',
         'apps/bigbrotr/examples/support/ingest_recovery.rs',
+        'apps/bigbrotr/examples/support/ingest_recovery_process.rs',
         'docs/implementation/progress.md', 'docs/research/laboratory-inventory.json',
     }
 assert {k:v for k,v in manifest['files_sha256'].items() if not fixture(k)} == {

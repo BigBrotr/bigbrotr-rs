@@ -16,7 +16,9 @@ import time
 
 
 def main(args):
-    executable, database, secret, home = args
+    assert len(args) in (4, 6)
+    executable, database, secret, home = args[:4]
+    mode, marker = args[4:] if len(args) == 6 else ('before', 'before-native')
     p = None
     selector = selectors.DefaultSelector()
     output = b''
@@ -40,7 +42,7 @@ def main(args):
                   executable_sha256=hashlib.sha256(Path(f'/proc/{p.pid}/exe').read_bytes()).hexdigest(),
                   device=device, inode=inode, locks=locks))
     try:
-        p = subprocess.Popen([executable, 'before', database, secret, home],
+        p = subprocess.Popen([executable, mode, database, secret, home],
                              stdout=subprocess.PIPE, stderr=subprocess.PIPE, start_new_session=True)
         selector.register(p.stdout, selectors.EVENT_READ)
         deadline = time.monotonic()+20
@@ -51,7 +53,7 @@ def main(args):
                 assert part
                 output += part
                 assert len(output) <= 65536
-                if any(json.loads(line).get('event') == 'before-native'
+                if any(json.loads(line).get('event') == marker
                        for line in output.split(b'\n')[:-1]): break
         else: raise RuntimeError('old native marker deadline')
         selector.unregister(p.stdout)

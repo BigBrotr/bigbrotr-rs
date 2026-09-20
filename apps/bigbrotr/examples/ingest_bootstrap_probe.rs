@@ -31,6 +31,8 @@ mod ingest_closing;
 mod ingest_event;
 #[path = "support/ingest_recovery.rs"]
 mod ingest_recovery;
+#[path = "support/ingest_recovery_process.rs"]
+mod ingest_recovery_process;
 #[path = "support/ingest_snapshot.rs"]
 mod ingest_snapshot;
 
@@ -665,6 +667,8 @@ fn main() {
         .block_on(async {
             if let Some(target) = args[1].strip_prefix("setup-") {
                 setup(config, target.parse().unwrap()).await;
+            } else if args[1].starts_with("recovery-process-") {
+                ingest_recovery_process::run(config, &args[1], Path::new(&args[4])).await;
             } else {
                 run(config, &args[1], Path::new(&args[4])).await;
             }

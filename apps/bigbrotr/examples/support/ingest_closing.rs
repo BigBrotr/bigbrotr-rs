@@ -108,6 +108,15 @@ pub async fn run(
             drop(admitted.unwrap());
         }
     }
+    if mode == "event-recovery-hold-old" {
+        emit(
+            serde_json::json!({"event":"old-native-held", "state":crate::ingest_snapshot::state(observer, path).await}),
+        );
+        // The external finite supervisor observes the real POSIX LOCK, kills
+        // only this Control backend, then kills and reaps this entire process.
+        tokio::time::sleep(Duration::from_secs(120)).await;
+        panic!("held-owner supervisor failed to finish");
+    }
     let manifest = *store.manifest();
     drop(store);
     // Closing is a fresh actor's operation. Join the old actual driver before

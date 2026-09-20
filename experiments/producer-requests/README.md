@@ -196,3 +196,15 @@ intact, and outcome copying must still refuse. This exercises defensive reading
 of corrupted metadata, not an allowed producer write. Actual trigger order and
 enabled state are captured; the ordering follows PostgreSQL16's
 [CREATE TRIGGER contract](https://www.postgresql.org/docs/16/sql-createtrigger.html).
+
+`process_recovery.py` uses a separate `out/recovery-probe-process` artifact. Its
+supervised seed holds the actual native writer after native success and failed
+outcome copy. The harness kills the exact Control backend by PID/start identity,
+observes the old process's POSIX LOCK before/after a distinct refused recovery
+process, then SIGKILLs and positively reaps the old child. A third process must
+open the same directory, claim current Control, close and resolve the unchanged
+originals. Complete native/Control/original observations and exact first-Control
+exclusion are checked. The larger seven-snapshot output has an explicit 512KiB
+collector bound; the old six/seven-snapshot fault capture came close to its
+256KiB limit. This is after-native process recovery, not a mid-FFI interruption,
+power-loss guarantee, general registration factory or successor admission.

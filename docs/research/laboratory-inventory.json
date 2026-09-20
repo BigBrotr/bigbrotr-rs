@@ -14603,7 +14603,7 @@
       "network_lifecycle": "empty owned network removed by recovery lab launch after verifying labels, no endpoints and both original containers stopped; historical data and containers retained"
     },
     "producer_recovery": {
-      "state": "running-retained for further qualification; native build and first connected case complete",
+      "state": "running-retained; 13 fault cases collected; fresh-process fixture in preparation",
       "editing_owner": "root / Mac main",
       "base_source": "8931a0f611b718cfac845cda39211e9e8da59d8c",
       "local_raw": ".research/implementation/producer-recovery/native",
@@ -14637,7 +14637,15 @@
       "baseline_native_rows": 26,
       "baseline_control_tables": 37,
       "baseline_originals": 2,
-      "baseline_remaining_pg_clients": 0
+      "baseline_remaining_pg_clients": 0,
+      "fault_capture": ".research/implementation/producer-recovery/native/faults-collected",
+      "fault_capture_identity": ".research/implementation/producer-recovery/native/faults-evidence-identity.json",
+      "fault_capture_tar_sha256": "d8486368fef38e59d5acf6bd1cf27913b9737b96ad14ecfb2e49c7a19c0bb652",
+      "fault_capture_files": 55,
+      "fault_scenarios_pass": 13,
+      "offline_altered_controls": 131,
+      "last_idle_audit": "2026-09-19T23:56:52.553659+00:00",
+      "last_pg_clients": 0
     }
   },
   "implementation_monitor_corrections_20260918": {
