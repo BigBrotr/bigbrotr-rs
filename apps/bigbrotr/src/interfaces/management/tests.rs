@@ -1,0 +1,493 @@
+use super::*;
+use axum::http::{HeaderMap, HeaderValue, Method, Uri};
+
+fn headers(host: &str, origin: Option<&str>) -> HeaderMap {
+    let mut headers = HeaderMap::new();
+    headers.insert("host", HeaderValue::from_str(host).unwrap());
+    if let Some(origin) = origin {
+        headers.insert("origin", HeaderValue::from_str(origin).unwrap());
+    }
+    headers
+}
+
+#[test]
+fn browser_boundary_rejects_ambiguous_and_foreign_authorities_before_authentication() {
+    let boundary = BrowserBoundary::loopback("127.0.0.1:8081".parse().unwrap()).unwrap();
+    let uri: Uri = "/management/v1/sessions".parse().unwrap();
+    let good = headers("127.0.0.1:8081", Some("http://127.0.0.1:8081"));
+    assert!(boundary.check(&Method::POST, &uri, &good).is_ok());
+    for origin in [
+        None,
+        Some("null"),
+        Some("http://127.0.0.1:8080"),
+        Some("http://localhost:8081"),
+        Some("http://127.0.0.1:8081/"),
+    ] {
+        assert!(
+            boundary
+                .check(&Method::POST, &uri, &headers("127.0.0.1:8081", origin))
+                .is_err()
+        );
+    }
+    for host in [
+        "localhost:8081",
+        "127.0.0.1:8080",
+        "127.0.0.1:8081.evil.example",
+    ] {
+        assert!(
+            boundary
+                .check(
+                    &Method::POST,
+                    &uri,
+                    &headers(host, Some("http://127.0.0.1:8081"))
+                )
+                .is_err()
+        );
+    }
+    for field in ["host", "origin"] {
+        let mut duplicate = good.clone();
+        duplicate.append(field, good[field].clone());
+        assert!(boundary.check(&Method::POST, &uri, &duplicate).is_err());
+    }
+    assert!(
+        boundary
+            .check(
+                &Method::POST,
+                &"http://127.0.0.1:8081/management/v1/sessions"
+                    .parse()
+                    .unwrap(),
+                &good
+            )
+            .is_err()
+    );
+    assert!(
+        boundary
+            .check(&Method::GET, &uri, &headers("127.0.0.1:8081", None))
+            .is_ok()
+    );
+    assert!(
+        boundary
+            .check(
+                &Method::GET,
+                &uri,
+                &headers("127.0.0.1:8081", Some("http://127.0.0.1:8080"))
+            )
+            .is_err()
+    );
+}
+
+#[test]
+fn browser_origin_uses_ipv6_brackets_and_omits_default_http_port() {
+    let uri: Uri = "/management/v1/me".parse().unwrap();
+    for (address, host, origin) in [
+        ("127.0.0.1:80", "127.0.0.1", "http://127.0.0.1"),
+        ("[::1]:8081", "[::1]:8081", "http://[::1]:8081"),
+        ("[::1]:80", "[::1]", "http://[::1]"),
+    ] {
+        let boundary = BrowserBoundary::loopback(address.parse().unwrap()).unwrap();
+        assert!(
+            boundary
+                .check(&Method::POST, &uri, &headers(host, Some(origin)))
+                .is_ok()
+        );
+    }
+    for address in [
+        "0.0.0.0:8081",
+        "192.168.1.2:8081",
+        "[::]:8081",
+        "127.0.0.1:0",
+    ] {
+        assert!(BrowserBoundary::loopback(address.parse().unwrap()).is_err());
+    }
+}
+
+use bigbrotr::management::sessions::{BrowserSecret, IssuedSession, SessionObservation};
+use tokio::{
+    io::{AsyncReadExt, AsyncWriteExt},
+    net::{TcpListener, TcpStream},
+};
+
+async fn server() -> (transport::Server, SocketAddr, ResourceBudget) {
+    let budget = ResourceBudget::new(
+        ProcessEnvelope::new(
+            16 << 20,
+            1 << 20,
+            ResourceLimits::new(8 << 20, 34, 0, 1 << 20),
+            WaiterLimits::new(0, 0),
+        )
+        .unwrap(),
+    );
+    let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let address = listener.local_addr().unwrap();
+    (
+        transport::Server::from_listener(
+            listener,
+            budget.clone(),
+            delivery_gate(Duration::from_secs(5)),
+        )
+        .unwrap(),
+        address,
+        budget,
+    )
+}
+
+fn delivery_gate(ttl: Duration) -> DeliveryGate {
+    use bigbrotr::runtime::policy_authority::{LeaseResponse, PolicyLeaseTracker, PolicyLeaseTtl};
+    let dataset = "01010101010101010101010101010101".parse().unwrap();
+    let process = "02020202020202020202020202020202".parse().unwrap();
+    let epoch = bigbrotr_model::PolicyEpoch::new(1);
+    let mut lease =
+        PolicyLeaseTracker::new(dataset, process, epoch, PolicyLeaseTtl::new(ttl).unwrap())
+            .unwrap();
+    let ticket = lease.begin_refresh().unwrap();
+    lease
+        .complete_refresh(
+            &ticket,
+            LeaseResponse {
+                dataset,
+                process_incarnation: process,
+                policy_epoch: epoch,
+                ttl,
+            },
+        )
+        .unwrap();
+    DeliveryGate::new(lease.delivery_window(epoch).unwrap())
+}
+
+#[tokio::test]
+async fn actually_blocked_socket_cannot_resume_writing_after_gate_revocation() {
+    use std::{pin::Pin, task::Poll};
+    use tokio::io::AsyncWrite;
+    let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let client = TcpStream::connect(listener.local_addr().unwrap())
+        .await
+        .unwrap();
+    let (mut reader, _) = listener.accept().await.unwrap();
+    client.writable().await.unwrap();
+    let block = [42_u8; 16 * 1024];
+    let mut accepted = 0;
+    loop {
+        match client.try_write(&block) {
+            Ok(n) => {
+                assert!(n > 0);
+                accepted += n;
+                assert!(
+                    accepted < 64 * 1024 * 1024,
+                    "OS did not block within explicit fixture bound"
+                );
+            }
+            Err(e) if e.kind() == std::io::ErrorKind::WouldBlock => break,
+            Err(e) => panic!("unexpected socket error {e}"),
+        }
+    }
+    assert!(accepted > 0);
+    let gate = delivery_gate(Duration::from_secs(5));
+    let mut writer = delivery::GuardedSocket::new(client, gate.clone());
+    // Already full at the OS, and the same pending writer remains alive.
+    std::future::poll_fn(|cx| {
+        loop {
+            match Pin::new(&mut writer).poll_write(cx, &block) {
+                Poll::Pending => return Poll::Ready(()),
+                Poll::Ready(Ok(n)) => {
+                    assert!(n > 0);
+                    accepted += n;
+                    assert!(
+                        accepted < 64 * 1024 * 1024,
+                        "fixture socket did not remain bounded"
+                    );
+                }
+                Poll::Ready(Err(e)) => panic!("unexpected write error {e}"),
+            }
+        }
+    })
+    .await;
+    gate.revoke();
+    let drained = tokio::spawn(async move {
+        let mut bytes = Vec::new();
+        reader.read_to_end(&mut bytes).await.unwrap();
+        bytes
+    });
+    let error = writer
+        .write_all(b"must-not-be-delivered")
+        .await
+        .unwrap_err();
+    assert_eq!(error.kind(), std::io::ErrorKind::PermissionDenied);
+    drop(writer);
+    let bytes = tokio::time::timeout(Duration::from_secs(2), drained)
+        .await
+        .unwrap()
+        .unwrap();
+    assert_eq!(bytes.len(), accepted);
+    assert!(bytes.iter().all(|b| *b == 42));
+}
+
+#[tokio::test]
+async fn socket_delivery_checks_expiry_even_without_a_supervisor_poll() {
+    let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let client = TcpStream::connect(listener.local_addr().unwrap())
+        .await
+        .unwrap();
+    let (mut reader, _) = listener.accept().await.unwrap();
+    let gate = delivery_gate(Duration::from_millis(50));
+    let mut writer = delivery::GuardedSocket::new(client, gate.clone());
+    writer.write_all(b"before").await.unwrap();
+    tokio::time::sleep(Duration::from_millis(70)).await;
+    assert_eq!(
+        writer.write_all(b"after").await.unwrap_err().kind(),
+        std::io::ErrorKind::PermissionDenied
+    );
+    assert!(
+        gate.renew({
+            use bigbrotr::runtime::policy_authority::*;
+            let epoch = bigbrotr_model::PolicyEpoch::new(1);
+            let dataset = "01010101010101010101010101010101".parse().unwrap();
+            let process = "02020202020202020202020202020202".parse().unwrap();
+            let mut lease = PolicyLeaseTracker::new(
+                dataset,
+                process,
+                epoch,
+                PolicyLeaseTtl::new(Duration::from_secs(5)).unwrap(),
+            )
+            .unwrap();
+            let ticket = lease.begin_refresh().unwrap();
+            lease
+                .complete_refresh(
+                    &ticket,
+                    LeaseResponse {
+                        dataset,
+                        process_incarnation: process,
+                        policy_epoch: epoch,
+                        ttl: Duration::from_secs(5),
+                    },
+                )
+                .unwrap();
+            lease.delivery_window(epoch).unwrap()
+        })
+        .is_err()
+    );
+    drop(writer);
+    let mut bytes = Vec::new();
+    reader.read_to_end(&mut bytes).await.unwrap();
+    assert_eq!(bytes, b"before");
+}
+async fn exchange(address: SocketAddr, request: String) -> String {
+    tokio::time::timeout(Duration::from_secs(7), async {
+        let mut socket = TcpStream::connect(address).await.unwrap();
+        socket.write_all(request.as_bytes()).await.unwrap();
+        let mut bytes = Vec::new();
+        socket.read_to_end(&mut bytes).await.unwrap();
+        String::from_utf8(bytes).unwrap()
+    })
+    .await
+    .unwrap()
+}
+fn login_request(address: SocketAddr, extra: &str, body: &str) -> String {
+    format!(
+        "POST /management/v1/sessions HTTP/1.1\r\nHost: {address}\r\nOrigin: http://{address}\r\nContent-Type: application/json\r\nContent-Length: {}\r\n{extra}\r\n{body}",
+        body.len()
+    )
+}
+
+#[tokio::test]
+async fn actual_http_refusals_never_enqueue_authentication() {
+    let (mut server, address, budget) = server().await;
+    let body = r#"{"username":"owner","password":"correct horse battery"}"#;
+    let valid = login_request(address, "", body);
+    let oversized = "x".repeat(8193);
+    for (request, status) in [
+        (
+            valid.replace(&format!("Host: {address}"), "Host: localhost"),
+            403,
+        ),
+        (
+            valid.replace(&format!("Origin: http://{address}"), "Origin: null"),
+            403,
+        ),
+        (
+            valid.replace(&format!("Origin: http://{address}\r\n"), ""),
+            403,
+        ),
+        (
+            login_request(address, &format!("Origin: http://{address}\r\n"), body),
+            403,
+        ),
+        (login_request(address, "", &oversized), 413),
+        (
+            login_request(
+                address,
+                "",
+                r#"{"username":"owner","password":"never-log-this","extra":1}"#,
+            ),
+            400,
+        ),
+    ] {
+        let response = exchange(address, request).await;
+        assert!(
+            response.starts_with(&format!("HTTP/1.1 {status} ")),
+            "{response}"
+        );
+        assert!(response.contains("cache-control: no-store\r\n"));
+        assert!(!response.contains("never-log-this"));
+        assert!(server.commands.try_recv().is_err());
+    }
+    server.stop().await.unwrap();
+    assert_eq!(budget.snapshot().active_permits(), 0);
+}
+
+#[tokio::test]
+async fn actual_http_keeps_separate_cookies_and_explicit_csrf_proof() {
+    let (mut server, address, budget) = server().await;
+    let body = r#"{"username":"owner","password":"correct horse battery"}"#;
+    let client = tokio::spawn(exchange(address, login_request(address, "", body)));
+    let command = server.commands.recv().await.unwrap();
+    let transport::Operation::Login {
+        username,
+        password,
+        peer,
+    } = command.operation
+    else {
+        panic!("wrong command");
+    };
+    assert_eq!(username, "owner");
+    assert_eq!(password.as_str(), "correct horse battery");
+    assert_eq!(peer, address.ip());
+    let session = "11".repeat(32);
+    let csrf = "22".repeat(32);
+    command
+        .completion
+        .finish(Ok(transport::Reply::Login(IssuedSession {
+            session: BrowserSecret::parse_hex(session.as_bytes()).unwrap(),
+            csrf: BrowserSecret::parse_hex(csrf.as_bytes()).unwrap(),
+            observation: SessionObservation {
+                principal: "01010101010101010101010101010101".parse().unwrap(),
+                credential_revision: 1,
+                grant_revision: 1,
+                policy_revision: 1,
+                expires_at_us: 50,
+                idle_expires_at_us: 40,
+                stored_actions: vec![],
+            },
+        })));
+    let response = client.await.unwrap();
+    let (headers, body) = response.split_once("\r\n\r\n").unwrap();
+    assert!(headers.starts_with("HTTP/1.1 201 "));
+    let cookies: Vec<_> = headers
+        .split("\r\n")
+        .filter(|s| s.starts_with("set-cookie:"))
+        .collect();
+    assert_eq!(cookies.len(), 2);
+    assert_eq!(
+        cookies[0],
+        format!(
+            "set-cookie: BigBrotrLocalSession={session}; Path=/; Max-Age=28800; SameSite=Strict; HttpOnly"
+        )
+    );
+    assert_eq!(
+        cookies[1],
+        format!("set-cookie: BigBrotrLocalCsrf={csrf}; Path=/; Max-Age=28800; SameSite=Strict")
+    );
+    assert!(!body.contains(&session) && !body.contains(&csrf));
+    assert!(body.contains("observation-only"));
+    let logout = format!(
+        "DELETE /management/v1/sessions/current HTTP/1.1\r\nHost: {address}\r\nOrigin: http://{address}\r\nCookie: BigBrotrLocalSession={session}; BigBrotrLocalCsrf={csrf}\r\n"
+    );
+    // Automatic cookies alone cannot supply the explicit command proof.
+    assert!(
+        exchange(address, format!("{logout}\r\n"))
+            .await
+            .starts_with("HTTP/1.1 403 ")
+    );
+    assert!(server.commands.try_recv().is_err());
+    for known in [false, true] {
+        let client = tokio::spawn(exchange(
+            address,
+            format!("{logout}X-CSRF-Token: {csrf}\r\n\r\n"),
+        ));
+        let command = server.commands.recv().await.unwrap();
+        let transport::Operation::Logout {
+            session: token,
+            csrf: proof,
+        } = command.operation
+        else {
+            panic!("wrong command");
+        };
+        assert_eq!(token.expose_hex().as_str(), session);
+        assert_eq!(proof.expose_hex().as_str(), csrf);
+        command.completion.finish(if known {
+            Ok(transport::Reply::Logout)
+        } else {
+            Err(SessionError::CommitUnknown)
+        });
+        let response = client.await.unwrap();
+        if known {
+            assert!(response.starts_with("HTTP/1.1 204 "));
+            assert_eq!(response.matches("set-cookie:").count(), 2);
+            assert_eq!(response.matches("Max-Age=0;").count(), 2);
+        } else {
+            assert!(response.starts_with("HTTP/1.1 503 "));
+            assert!(!response.contains("set-cookie:"));
+        }
+    }
+    server.stop().await.unwrap();
+    assert_eq!(budget.snapshot().active_permits(), 0);
+}
+
+#[tokio::test]
+async fn actual_incomplete_sockets_are_bounded_and_joined_at_stop() {
+    let (mut server, address, budget) = server().await;
+    let mut clients = Vec::new();
+    for _ in 0..transport::CONNECTIONS {
+        let mut socket = TcpStream::connect(address).await.unwrap();
+        socket
+            .write_all(b"POST /management/v1/sessions HTTP/1.1\r\n")
+            .await
+            .unwrap();
+        clients.push(socket);
+    }
+    tokio::time::timeout(Duration::from_secs(1), async {
+        while budget.snapshot().active_permits() != 16 {
+            tokio::task::yield_now().await;
+        }
+    })
+    .await
+    .unwrap();
+    let mut excess = TcpStream::connect(address).await.unwrap();
+    let mut buffer = [0; 1];
+    assert_eq!(
+        tokio::time::timeout(Duration::from_secs(1), excess.read(&mut buffer))
+            .await
+            .unwrap()
+            .unwrap(),
+        0
+    );
+    assert_eq!(budget.snapshot().active_permits(), 16);
+    tokio::time::timeout(Duration::from_secs(1), server.stop())
+        .await
+        .unwrap()
+        .unwrap();
+    assert_eq!(budget.snapshot().active_permits(), 0);
+    assert!(TcpStream::connect(address).await.is_err());
+    for mut socket in clients {
+        assert_eq!(socket.read(&mut buffer).await.unwrap(), 0);
+    }
+}
+
+#[tokio::test]
+async fn expired_connection_leaves_queued_command_and_its_grant_until_collected() {
+    let (mut server, address, budget) = server().await;
+    let request = login_request(
+        address,
+        "",
+        r#"{"username":"owner","password":"correct horse battery"}"#,
+    );
+    let client = tokio::spawn(exchange(address, request));
+    let command = server.commands.recv().await.unwrap();
+    assert!(!command.completion.abandoned());
+    assert_eq!(budget.snapshot().active_permits(), 2);
+    assert_eq!(client.await.unwrap(), "");
+    assert!(command.completion.abandoned());
+    assert_eq!(budget.snapshot().active_permits(), 1);
+    drop(command);
+    server.stop().await.unwrap();
+    assert_eq!(budget.snapshot().active_permits(), 0);
+}

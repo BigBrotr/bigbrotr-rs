@@ -18,6 +18,7 @@ pub enum SessionError {
     InvalidMetadata,
     Unavailable,
     CommitUnknown,
+    PolicyChanged,
 }
 impl fmt::Display for SessionError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {

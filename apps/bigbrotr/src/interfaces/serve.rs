@@ -1,6 +1,7 @@
 //! First persistent role consumer. Every exit owns transport termination.
 use super::{
-    archive_preflight, archive_receipt, lifecycle_output::LifecycleOutput, postgres_command,
+    archive_preflight, archive_receipt, lifecycle_output::LifecycleOutput, management,
+    postgres_command,
 };
 use crate::config::{Resolved, policy::PolicySeed};
 use bigbrotr::{
@@ -44,7 +45,7 @@ pub(super) fn coordinator_command() -> Command {
     Command::new("coordinator-initialize")
         .about("Bind fresh Archive coordination and qualified local persistence explicitly")
         .arg(Arg::new("file").long("file").required(true).value_name("PATH"))
-        .after_help("Requires local Control and Archive, the existing local state binding, migration0015 and accepted policy with administration.enabled=false. Uses configured Control and catalog-manager credentials. New persistence participation requires empty Control/native attempt history, the exact initial catalog with no registered data. Unregistered orphan files remain untouched. Exact retries preserve attribution; older archives need explicit recovery. No migration or readiness is implied. Stop the running coordinator first. Exit: 0 bound and owner released, 1 unavailable/I/O, 2 usage, 3 invalid/prerequisite/conflict, 4 cancelled or unknown outcome; retry identically after resolving custody.")
+        .after_help("Requires local Control and Archive, the existing local state binding, migration0015 and an accepted policy. This finite command starts no listener. Uses configured Control and catalog-manager credentials. New persistence participation requires empty Control/native attempt history, the exact initial catalog with no registered data. Unregistered orphan files remain untouched. Exact retries preserve attribution; older archives need explicit recovery. No migration or readiness is implied. Stop the running coordinator first. Exit: 0 bound and owner released, 1 unavailable/I/O, 2 usage, 3 invalid/prerequisite/conflict, 4 cancelled or unknown outcome; retry identically after resolving custody.")
 }
 
 pub(super) fn initialize_coordinator(args: &ArgMatches) -> ! {
@@ -59,7 +60,7 @@ pub(crate) fn command() -> Command {
         .about("Run explicitly assigned roles; the initial runtime implements Control only")
         .arg(Arg::new("file").long("file").required(true).value_name("PATH"))
         .arg(Arg::new("roles").long("roles").value_delimiter(',').num_args(1..).value_name("ROLE,..."))
-        .after_help("Requires explicit initialization, migrations and initial policy activation with administration.enabled=false. SIGINT/SIGTERM stop the owner. No listeners or native stores are started by the Control-only slice. Exit: 0 stopped, 1 unavailable/I/O, 2 usage, 3 invalid configuration/policy, 4 cancelled or unknown durable outcome.")
+        .after_help("Requires explicit initialization, migrations and initial policy activation. Accepted administration.enabled starts the loopback private session API (login, me, logout); migration0806 and its SQL privileges are required before binding. Other management actions and native stores are not started. Accepted policy changes require restart in this slice. SIGINT/SIGTERM stop admission and join HTTP/password work before owner release. Exit: 0 stopped, 1 unavailable/I/O, 2 usage, 3 invalid configuration/policy, 4 cancelled or unknown durable outcome.")
 }
 
 pub(crate) fn execute(args: &ArgMatches) -> ! {
@@ -121,8 +122,9 @@ fn execute_operation(args: &ArgMatches, operation: Operation) -> ! {
     if !output.finish() && code == 0 {
         code = 1;
     }
-    // run() already closed/joined every backend and released its grants. Exit
-    // also terminates a blocked diagnostics-only thread; it cannot outlive us.
+    // run() has closed/joined backend transports. Exit also terminates a blocked
+    // diagnostics thread or a password worker whose bounded join failed; that
+    // latter path cannot report graceful owner release.
     std::process::exit(i32::from(code));
 }
 
@@ -153,6 +155,7 @@ struct ArchiveRun {
     coordinator: Option<bigbrotr::storage::archive::LocalCoordinator>,
     receipt: Option<(archive_receipt::Options, ResourceBudget)>,
     initialization_budget: Option<ResourceBudget>,
+    management_budget: Option<ResourceBudget>,
 }
 
 fn run(
@@ -194,10 +197,16 @@ fn run(
     let initialization_budget = matches!(operation, Operation::InitializeCoordinator)
         .then(|| archive_preflight::budget(&root, 2))
         .transpose()?;
+    // Accepted managed policy, not file drift, selects the eventual listener.
+    // Prepare one envelope even when the file currently says disabled.
+    let management_budget = matches!(operation, Operation::Serve)
+        .then(|| management::budget(&root))
+        .transpose()?;
     let shared_budget = receipt
         .as_ref()
         .map(|(_, budget)| budget)
-        .or(initialization_budget.as_ref());
+        .or(initialization_budget.as_ref())
+        .or(management_budget.as_ref());
     let (prepared, grant) = if let Some(budget) = shared_budget {
         postgres_command::prepare_control_shared(
             &root,
@@ -238,7 +247,7 @@ fn run(
         let driver = if let Some(custody) = &coordinator {
             tokio::spawn(custody.retain_connection(driver).map_err(|e| (4, format!("cannot retain archive coordinator custody: {e:?}")))?)
         } else { tokio::spawn(driver) };
-        let outcome = supervise(client, request, &root, &mut stop, output, ArchiveRun { coordinator, receipt, initialization_budget }, operation).await;
+        let outcome = supervise(client, request, &root, &mut stop, output, ArchiveRun { coordinator, receipt, initialization_budget, management_budget }, operation).await;
         // No error, cancellation, output failure or unknown COMMIT can bypass
         // the join. Dropping the request/session alone does not free its grant.
         postgres_command::join(driver).await;
@@ -284,6 +293,7 @@ async fn supervise(
             result.unwrap_or_else(|_| Err(if commit.get() { OwnerError::CommitUnknown } else { OwnerError::Backend })),
     };
     let (mut owner, mut snapshot) = acquired.map_err(owner_error)?;
+    let accepted_snapshot = snapshot;
     lease
         .complete_refresh(&ticket, response(dataset, incarnation, snapshot, ttl))
         .map_err(|e| (1, e.to_string()))?;
@@ -462,35 +472,117 @@ async fn supervise(
     } else {
         json!({"state":"not-selected", "resolution":"not-performed", "publication_authority":"not-granted"})
     };
+    if snapshot != accepted_snapshot {
+        return Err((
+            4,
+            "accepted policy changed during startup; restart required".into(),
+        ));
+    }
+    let accepted = accepted.ok_or_else(|| (3, "accepted runtime policy unavailable".into()))?;
+    let mut management = if accepted.flag("administration.enabled") {
+        tokio::select! {
+            biased;
+            _ = stop.requested() => return Err((4,"private session startup cancelled".into())),
+            result = tokio::time::timeout(duration(root,"renewal_timeout")
+                .min(lease.remaining_validity().map_err(|e| (4,e.to_string()))?), owner.require_browser_sessions()) => {
+                result.map_err(|_| (4,"private session prerequisites deadline".into()))?
+                    .map_err(|e| (3,format!("private session prerequisites refused: {e:?}")))?;
+            }
+        }
+        lease
+            .check_delivery(lease.known_epoch())
+            .map_err(|e| (4, e.to_string()))?;
+        Some(
+            management::Management::start(
+                &accepted,
+                archive.management_budget.expect("serve budget"),
+                lease
+                    .delivery_window(lease.known_epoch())
+                    .map_err(|e| (4, e.to_string()))?,
+            )
+            .await?,
+        )
+    } else {
+        None
+    };
+    let listeners = if management.is_some() {
+        json!([{"kind":"private-session-http", "host":accepted.text("administration.listen.host"),
+            "port":accepted.number("administration.listen.port"), "profile":"trusted-host-loopback"}])
+    } else {
+        json!([])
+    };
     output.emit(
         json!({"format":"bigbrotr-control-runtime/1", "state":"idle", "role":"control",
         "dataset_id":dataset, "process_incarnation":incarnation,
         "owner_resource_id":identity.resource_id, "owner_epoch":identity.epoch.get().to_string(),
         "config_revision":snapshot.config_revision.to_string(), "policy_revision":snapshot.policy_revision.to_string(),
-        "archive_intents":archive_inventory, "listeners":[], "native_stores":[], "authority_scope":"local Control only; no principal/action grant"}),
+        "archive_intents":archive_inventory, "listeners":listeners, "native_stores":[], "authority_scope":"local Control and private session observation; no data/action capability"}),
         false,
     );
     let heartbeat = duration(root, "heartbeat_interval");
+    let outcome = async {
+    let mut refresh_due = Instant::now() + (lease.remaining_validity().map_err(|e| (1,e.to_string()))? / 2)
+        .min(heartbeat.saturating_sub(renewed.elapsed()));
     loop {
-        let remaining = lease.remaining_validity().map_err(|e| (1, e.to_string()))?;
+        lease.check_delivery(lease.known_epoch()).map_err(|e| (1,e.to_string()))?;
         // A slow successful response already consumed part of the request-start
         // lifetime. Neither that delay nor output handling may extend authority.
-        let period = (remaining / 2).min(heartbeat.saturating_sub(renewed.elapsed()));
         tokio::select! {
             biased;
-            _ = stop.requested() => {
-                // This owner has no admitted data work. Release remains fenced
-                // until the transaction and driver are terminal.
-                tokio::time::timeout(duration(root, "graceful_shutdown_timeout"), owner.release()).await
-                    .unwrap_or(Err(OwnerError::CommitUnknown)).map_err(owner_error)?;
-                return Ok(json!({"format":"bigbrotr-control-runtime/1", "state":"stopped", "role":"control",
-                    "owner_epoch":identity.epoch.get().to_string(), "policy_revision":snapshot.policy_revision.to_string(),
-                    "release":"committed"}));
+            _ = stop.requested() => return Ok(()),
+            // Renewal wins a continuously ready queue. HTTP cannot starve it.
+            _ = tokio::time::sleep_until(refresh_due) => {
+                let current = refresh_authority(&mut owner, &mut lease, &mut renewed, dataset, root, stop).await?;
+                if current != snapshot {
+                    return Err((4,"accepted policy changed; private runtime restart required".into()));
+                }
+                if let Some(management)=&management {
+                    management.renew_delivery(lease.delivery_window(lease.known_epoch()).map_err(|e| (4,e.to_string()))?)?;
+                }
+                // Preserve this absolute deadline across every HTTP command.
+                // Recreating half of the remaining lifetime for each ready item
+                // would repeatedly postpone renewal under continuous traffic.
+                refresh_due = Instant::now() + (lease.remaining_validity().map_err(|e| (1,e.to_string()))? / 2)
+                    .min(heartbeat.saturating_sub(renewed.elapsed()));
             },
-            _ = tokio::time::sleep(period) => {},
+            work = next_management(&mut management) => {
+                lease.check_delivery(lease.known_epoch()).map_err(|e| (4,e.to_string()))?;
+                let maximum = duration(root,"renewal_timeout").min(lease.remaining_validity().map_err(|e| (4,e.to_string()))? / 2);
+                let response = tokio::select! {
+                    biased;
+                    _ = stop.requested() => return Err((4,"private session operation cancelled; outcome unresolved".into())),
+                    result = management.as_mut().expect("management work source").execute(work,&mut owner,maximum) => result?,
+                };
+                // Tokio deadlines alone do not detect every suspend/resume.
+                // Keep the response/grant until the authority clock agrees.
+                lease.check_delivery(lease.known_epoch()).map_err(|e| (4,e.to_string()))?;
+                if let Some(response) = response { response.deliver(); }
+            },
         }
-        snapshot =
-            refresh_authority(&mut owner, &mut lease, &mut renewed, dataset, root, stop).await?;
+    }}.await;
+    // Every error after binding takes this path. Actual sockets and password
+    // tasks terminate before releasing the owner or dropping its SQL session.
+    if let Some(management) = &mut management {
+        management
+            .stop(duration(root, "graceful_shutdown_timeout"))
+            .await?;
+    }
+    outcome?;
+    tokio::time::timeout(duration(root, "graceful_shutdown_timeout"), owner.release())
+        .await
+        .unwrap_or(Err(OwnerError::CommitUnknown))
+        .map_err(owner_error)?;
+    Ok(
+        json!({"format":"bigbrotr-control-runtime/1", "state":"stopped", "role":"control",
+        "owner_epoch":identity.epoch.get().to_string(), "policy_revision":snapshot.policy_revision.to_string(),
+        "release":"committed"}),
+    )
+}
+
+async fn next_management(management: &mut Option<management::Management>) -> management::Work {
+    match management {
+        Some(management) => management.next().await,
+        None => std::future::pending().await,
     }
 }
 
@@ -654,14 +746,7 @@ fn accepted_policy(
     document: &str,
     digest: [u8; 32],
 ) -> std::result::Result<Resolved, OwnerError> {
-    let accepted = PolicySeed::restore(document, digest, root.clone())
-        .map_err(|_| OwnerError::InvalidPolicy)?;
-    // The administration listener belongs to Control. Until it is implemented,
-    // an accepted enablement cannot be silently replaced with an idle backend.
-    if accepted.flag("administration.enabled") {
-        return Err(OwnerError::InvalidPolicy);
-    }
-    Ok(accepted)
+    PolicySeed::restore(document, digest, root.clone()).map_err(|_| OwnerError::InvalidPolicy)
 }
 
 #[cfg(test)]
@@ -669,16 +754,17 @@ mod tests {
     use super::*;
 
     #[test]
-    fn accepted_administration_gate_cannot_be_silently_ignored() {
+    fn accepted_administration_gate_is_selected_from_policy_despite_file_drift() {
         let directory = tempfile::tempdir().unwrap();
         let path = directory.path().join("root.toml");
         let enabled = include_str!("../../../../config/recipes/archive-only.toml");
         std::fs::write(&path, enabled).unwrap();
         let root = crate::config::load(&path).unwrap();
         let seed = PolicySeed::from_resolved(&root).unwrap();
-        assert_eq!(
-            validate_policy(&root, seed.document(), seed.digest()),
-            Err(OwnerError::InvalidPolicy)
+        assert!(
+            accepted_policy(&root, seed.document(), seed.digest())
+                .unwrap()
+                .flag("administration.enabled")
         );
         let disabled = enabled.replace(
             "[administration]\nenabled = true",
@@ -689,9 +775,15 @@ mod tests {
         let candidate = crate::config::load(&path).unwrap();
         let accepted = PolicySeed::from_resolved(&candidate).unwrap();
         // Managed file drift must not substitute the file gate for accepted policy.
-        assert_eq!(
-            validate_policy(&root, accepted.document(), accepted.digest()),
-            Ok(())
+        assert!(
+            !accepted_policy(&root, accepted.document(), accepted.digest())
+                .unwrap()
+                .flag("administration.enabled")
+        );
+        assert!(
+            accepted_policy(&candidate, seed.document(), seed.digest())
+                .unwrap()
+                .flag("administration.enabled")
         );
     }
 }

@@ -158,6 +158,29 @@ Internal refreshes do not count as browser activity. Revocation is terminal, and
 touching after an idle or absolute deadline cannot revive a session. A stored
 session observation is not a data-action lease or evidence of completed drain.
 
+The initial HTTP consumer is a trusted-host loopback profile: exact configured IP
+and port in Host/Origin, HTTP1 with sixteen owned connections, no keepalive, an
+eight-KiB request body and five-second total connection deadline. Its session
+cookie is HttpOnly and both session/CSRF cookies are SameSite=Strict, Path=/,
+without Secure on this explicitly local HTTP profile. A mutation requires the
+exact Origin and an explicit CSRF header bound to that session. Cookies are
+host-scoped, **not port-isolated**: another service on the same cookie host can
+receive them. Use this profile only where those services are trusted; remote
+HTTPS remains separate implementation and acceptance work. Forwarding headers
+and hostname aliases cannot silently widen the authority.
+
+The supervisor shares one process envelope with the Control connection, queues,
+actual sockets and one password worker. Disconnect does not release hash memory
+before wiping/join. Queued requests and completed hashes past the HTTP deadline
+cannot initiate issuance; an already admitted SQL operation is collected under
+its own authority budget, suppressing a late response. Every actual socket write
+checks a suspend-aware delivery window. Shutdown invalidates that gate and joins
+sockets/hash work before a graceful Control release. Accepted policy changes
+currently require restart; this is not the later applied/draining barrier.
+These controls require the executable/engine/browser evidence of P08-T02 before
+advertising session or administration readiness. General login audit, configurable
+lifetimes, reauthentication, grants and the private panel remain required.
+
 | Action | Initial permission bundle | Additional requirement |
 |---|---|---|
 | Read allowed data/status | Viewer | Resource/input visibility permits that principal |

@@ -100,6 +100,7 @@ pub struct ControlSession {
     request: ClaimRequest,
     identity: ingest_registry::ControlOwner,
     available: bool,
+    validated_policy: PolicySnapshot,
 }
 impl ControlSession {
     /// The validator checks BOTH complete stored documents against actual roots.
@@ -171,6 +172,7 @@ impl ControlSession {
                 request,
                 identity,
                 available: true,
+                validated_policy: policy,
             },
             policy,
         ))
@@ -215,6 +217,7 @@ impl ControlSession {
         }
         tx.commit().await.map_err(|_| OwnerError::CommitUnknown)?;
         self.available = true;
+        self.validated_policy = policy;
         Ok(policy)
     }
     pub async fn register_ingest(

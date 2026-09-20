@@ -98,7 +98,7 @@
     {
       "name": "tokio",
       "version": "1.53.1",
-      "purpose": "Owned PostgreSQL connection tasks and persistent Control lifecycle; explicit rt/net/time/sync/signal/macros, plus tokio-postgres required I/O features",
+      "purpose": "Owned PostgreSQL connection tasks and persistent Control lifecycle; explicit rt/net/time/sync/signal/macros/io-util for owned HTTP and PostgreSQL I/O",
       "license": "MIT",
       "license_notice": "https://github.com/tokio-rs/tokio/blob/75fef53d0a8590c2d1dbb63672aa7b7d1ef51155/LICENSE",
       "source": "https://docs.rs/tokio/1.53.1/tokio/",
@@ -108,7 +108,8 @@
         "time",
         "sync",
         "signal",
-        "macros"
+        "macros",
+        "io-util"
       ]
     },
     {
@@ -205,6 +206,43 @@
       "source": "https://docs.rs/command-fds/0.3.3/command_fds/",
       "default_features": false,
       "features": []
+    },
+    {
+      "name": "axum",
+      "version": "0.8.9",
+      "purpose": "Private management routing over explicitly owned HTTP1 connections",
+      "default_features": false,
+      "features": [
+        "http1",
+        "json",
+        "tokio"
+      ],
+      "license": "MIT",
+      "source": "https://docs.rs/axum/0.8.9/axum/"
+    },
+    {
+      "name": "hyper",
+      "version": "1.11.1",
+      "purpose": "Owned HTTP1 connection future with explicit header, buffer and deadline controls",
+      "default_features": false,
+      "features": [
+        "http1",
+        "server"
+      ],
+      "license": "MIT",
+      "source": "https://docs.rs/hyper/1.11.1/hyper/"
+    },
+    {
+      "name": "hyper-util",
+      "version": "0.1.20",
+      "purpose": "Tokio IO/timer and Tower-to-Hyper service adapter; no automatic connection spawner",
+      "default_features": false,
+      "features": [
+        "service",
+        "tokio"
+      ],
+      "license": "MIT",
+      "source": "https://docs.rs/hyper-util/0.1.20/hyper_util/"
     }
   ],
   "lock": "Cargo.lock",

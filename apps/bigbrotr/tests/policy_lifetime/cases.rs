@@ -60,6 +60,60 @@ fn installed(at: AuthorityTick) -> PolicyLeaseTracker<ManualClock> {
 }
 
 #[test]
+fn delivery_window_rechecks_real_clock_without_extending_the_installed_lease() {
+    let start = AuthorityTick(seconds(100));
+    let mut owner = installed(start);
+    owner.clock.0.set(Ok(start + seconds(3)));
+    let mut delivery = owner.delivery_window(epoch(1)).unwrap();
+    assert_eq!(delivery.epoch(), epoch(1));
+    assert_eq!(delivery.check(), Ok(()));
+    owner.clock.0.set(Ok(start + seconds(5)));
+    assert_eq!(delivery.check(), Err(LeaseError::Expired));
+    owner.clock.0.set(Ok(start + seconds(4)));
+    assert_eq!(delivery.check(), Err(LeaseError::Expired));
+    let mut owner = installed(start);
+    let mut delivery = owner.delivery_window(epoch(1)).unwrap();
+    owner.clock.0.set(Ok(start + seconds(2)));
+    assert_eq!(delivery.check(), Ok(()));
+    owner.clock.0.set(Ok(start + seconds(1)));
+    assert_eq!(delivery.check(), Err(LeaseError::ClockRegression));
+    assert!(owner.delivery_window(epoch(2)).is_err());
+}
+
+#[test]
+fn delivery_window_renewal_preserves_samples_taken_while_control_was_waiting() {
+    let start = AuthorityTick(seconds(100));
+    let mut owner = installed(start);
+    let mut delivery = owner.delivery_window(epoch(1)).unwrap();
+    owner.clock.0.set(Ok(start + Duration::from_millis(4000)));
+    let ticket = owner.begin_refresh().unwrap();
+    owner.clock.0.set(Ok(start + Duration::from_millis(4200)));
+    delivery.check().unwrap();
+    owner.clock.0.set(Ok(start + Duration::from_millis(4100)));
+    owner.complete_refresh(&ticket, response(1)).unwrap();
+    let replacement = owner.delivery_window(epoch(1)).unwrap();
+    assert_eq!(
+        delivery.renew(replacement),
+        Err(LeaseError::ClockRegression)
+    );
+    owner.clock.0.set(Ok(start + Duration::from_millis(4300)));
+    assert_eq!(delivery.check(), Err(LeaseError::ClockRegression));
+
+    let mut owner = installed(start);
+    let mut delivery = owner.delivery_window(epoch(1)).unwrap();
+    owner.clock.0.set(Ok(start + seconds(3)));
+    let ticket = owner.begin_refresh().unwrap();
+    owner.complete_refresh(&ticket, response(1)).unwrap();
+    delivery
+        .renew(owner.delivery_window(epoch(1)).unwrap())
+        .unwrap();
+    owner.clock.0.set(Ok(start + seconds(6)));
+    delivery.check().unwrap();
+    owner.clock.0.set(Ok(start + seconds(8)));
+    assert_eq!(delivery.check(), Err(LeaseError::Expired));
+}
+
+#[test]
 fn absent_policy_refuses_and_each_delivery_or_retry_rechecks_expiry() {
     let now = AuthorityTick(seconds(100));
     assert_eq!(

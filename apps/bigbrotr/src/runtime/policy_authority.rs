@@ -63,7 +63,7 @@ mod sealed {
 pub trait AuthorityClock: sealed::Sealed {
     fn read(&self) -> Result<AuthorityTick, LeaseError>;
 }
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub struct SuspendAwareClock;
 impl sealed::Sealed for SuspendAwareClock {}
 impl AuthorityClock for SuspendAwareClock {
@@ -130,6 +130,80 @@ struct PendingRefresh {
 struct InstalledLease {
     epoch: PolicyEpoch,
     deadline: AuthorityTick,
+}
+
+/// A transport-side time bound copied from a checked lease, never an action
+/// grant. The owning supervisor must invalidate its transport gate on policy
+/// change or shutdown. Each actual write samples the suspend-aware clock again.
+pub struct DeliveryWindow<C: AuthorityClock = SuspendAwareClock> {
+    clock: C,
+    last_tick: AuthorityTick,
+    deadline: AuthorityTick,
+    epoch: PolicyEpoch,
+    failed: Option<LeaseError>,
+}
+impl<C: AuthorityClock> DeliveryWindow<C> {
+    pub const fn epoch(&self) -> PolicyEpoch {
+        self.epoch
+    }
+    pub fn check(&mut self) -> Result<(), LeaseError> {
+        if let Some(error) = self.failed {
+            return Err(error);
+        }
+        let result = self.clock.read().and_then(|now| {
+            if now < self.last_tick {
+                return Err(LeaseError::ClockRegression);
+            }
+            self.last_tick = now;
+            if now >= self.deadline {
+                return Err(LeaseError::Expired);
+            }
+            Ok(())
+        });
+        if let Err(error) = result {
+            self.failed = Some(error);
+        }
+        result
+    }
+    /// Same-policy refresh preserves the transport's highest clock sample. A
+    /// expired/failed window cannot be revived even by a freshly minted window.
+    pub fn renew(&mut self, mut next: Self) -> Result<(), LeaseError> {
+        let result = (|| {
+            self.check()?;
+            if next.epoch != self.epoch {
+                return Err(LeaseError::StalePolicy);
+            }
+            next.last_tick = next.last_tick.max(self.last_tick);
+            next.check()?;
+            Ok(())
+        })();
+        match result {
+            Ok(()) => {
+                *self = next;
+                Ok(())
+            }
+            Err(error) => {
+                self.failed = Some(error);
+                Err(error)
+            }
+        }
+    }
+}
+
+impl<C: AuthorityClock + Clone> PolicyLeaseTracker<C> {
+    pub fn delivery_window(
+        &mut self,
+        admitted_epoch: PolicyEpoch,
+    ) -> Result<DeliveryWindow<C>, LeaseError> {
+        self.check_delivery(admitted_epoch)?;
+        Ok(DeliveryWindow {
+            clock: self.clock.clone(),
+            last_tick: self.last_tick,
+            deadline: self.lease.as_ref().expect("checked lease").deadline,
+            epoch: admitted_epoch,
+            failed: None,
+        })
+    }
 }
 
 /// One refresh and one lease per owner. Mutable access serializes all transitions.

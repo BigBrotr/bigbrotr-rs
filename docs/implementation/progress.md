@@ -21,16 +21,19 @@ another diagnostic command instead of the real read consumer.
 
 ## Git and ownership
 
-Local main is `d37e81fb1ce36d2f42962878d565b87cd7d4fdee` (unpublished),
-tree`52ebc81531a384f04b605309eb8c93e5ceeb799d`. Product source is
-`7a0f4b692d90f6af0f31cdb21bb76fac34401ebd`, unchanged by the fixture-only follow-up.
-Both clean931-file revisions were transferred through Git and verified on Tux.
-Private origin/main remains`34720bafb1c221089aec04ee4458994f07bfb6db` until the
-qualification/docs commit is pushed. Root-only dirty changes are evidence,
-P08 task prose, laboratory inventory and this checkpoint. No parallel writer,
-merge or rebase. No local/remote build/test remains active. Independent read-only
-review completed; review suggestions and stronger fixture were engine-qualified.
-GitHub remains private bigbrotr-rs. HTTP has not been exposed.
+Local main, origin/main and remote refs/heads/main are verified at pushed
+`4b4daf1e8bfa0a7f572dcee5ce5f8d8e9f7ce2df`. Product source7a0f4b6 and
+qualified fixture d37e81f retain their exact identities in the session report;
+4b4daf1 adds qualification/docs only. Root-owned dirty HTTP work now includes
+exact dependencies/lock additions and release inventory; management
+{mod,boundary,transport,delivery,tests}.rs; serve.rs integration;
+ControlSession.validated_policy and browser session prerequisite/head checks;
+DeliveryWindow in runtime/policy_authority.rs with clock regressions; SessionError
+PolicyChanged; checkpoint/laboratory inventory. No parallel writer/merge/rebase.
+The listener is wired but has not yet been run with an actual Control executable
+and PostgreSQL. No HTTP native/browser qualification or API advertisement.
+All remote labs remain stopped (fresh SSH docker ps observed only the same8
+unrelated workloads). Local check results are below; no remote experiment started.
 
 Preserve `.research/worktrees/producer-closing-old-writer`, last verified clean at
 `f899896b1207f5e71c4e39d9ab7814b293814735` on
@@ -134,8 +137,8 @@ output; newdirectory checks passed. First crossing oracle lacked proof of trigge
 entry; finalfixture persists/asserts one marker, proves unchanged session rows,
 then performs fresh Controlpoll successfully. No P08-T02 step complete.
 
-Next review report/doc diff and21rawhash references, commit/push verified work, then
-connect actual private Axum listener and owned hash supervisor. Files:
+Report/doc diff and21rawhash references were reviewed; verified commits pushed.
+Next connect actual private Axum listener and owned hash supervisor. Files:
 management/sessions.rs, storage/postgres/browser_sessions.rs, nativeprobe and
 experiments/browser-sessions/native.py. HTTP/audit/reauth/scopedgrant/streamdrain
 are not implemented. Do not replace the real consumer with another diagnosticCLI.
@@ -152,16 +155,78 @@ update; the adapter checks affected rows. INSERT requires READ COMMITTED and
 reads the clock after account locking. Review suggestions are statically addressed,
 engine-qualified within the report's stated scope.
 
-Continue P08-T02 actual private Axum consumer. HTTP must use a bounded typed channel into the existing
-supervisor, shared process budget, owned connection tasks and owned/joined hash
-work; stop admission and join both before Control release. Do not put the Send,
-not Sync LocalCoordinator or its Cell-based operations in Axum State. Axum0.8.9
-selected; its raw serve helper has unbounded detached connection tasks, so use
-an explicitly owned Hyper loop. Exact dependency source/API reading remains before
-adding transport dependencies. Retained resolution lock is
-`.research/dependency-selections/resolution/Cargo.lock`:axum0.8.9,hyper1.11.1,
-hyper-util0.1.20,tower0.5.3,http1.5.0,http-body-util0.1.5; tower-http not resolved
-there. No need to add unused HTTP middleware. No such dependencies were added yet.
+Continue P08-T02 actual private Axum consumer. Dirty implementation now selects
+accepted administration policy (including file drift), requires migration0806 and
+all individual table privileges before binding, and owns16 HTTP1 connections,
+32headers/16KiBbuffer/8KiBbody, no keepalive,5s total connection deadline. Axum0.8.9
+on explicitly owned Hyper1.11.1/hyper-util0.1.20 tasks; default Axum serve would
+spawn detached unbounded connections. Shared process envelope covers Control,
+connections, queued commands and one65MiB Argon2 worker. No new budget allowance.
+HTTP commands use a bounded typed queue into Control; caller cancellation does not
+drop request/hash grants. SQL admitted while a request is live now completes under
+its own remaining-authority duration, without client timeout cancelling healthy
+Control. Late hash/queued work does not start issuance. Expected denial keeps the
+backend usable; cancelled/unknown SQL terminates Control. Every exit after bind
+joins sockets/hash before ordinary owner release; hash join timeout requires process
+exit and cannot report graceful release. Finite initialization/receipt commands do
+not start a listener. Policy/config changes conservatively require restart until
+P08-T03 applied/draining transitions exist.
+
+HTTP dependency archives under `.research/implementation/management-http/upstream`
+were verified against selected lock checksums and exact official sources read.
+Cargo.lock adds15packages without old version/checksum changes; direct Tokio io-util
+now records actual socket use. Inventory retains both source archive digests.
+Mac `integrated-first`5 tests and `tcp-corrected`9tests PASS. `tcp-first` failed on
+fixture PrincipalId::new misuse (corrected to typed parse). `tcp-and-clippy` tests
+passed but Clippy found128-byte response error variants; helpers now return compact
+StatusCode and materialize response only at boundary. `delivery-integrated`14policy
+clock tests+11interface tests+Clippy PASS. Initial delivery-window RED was a missing
+API compile error, not a runtime counterexample. Final `delivery-reviewed`15clock+11interface tests and Clippy PASS, including
+clock-renewal and TCP fixture corrections below. Raw paths under same HTTP root.
+
+Read-only reviewer catalog_guard_review found two real static liveness/authority
+issues: relative refresh sleep reset under continuous HTTP work; lease check only
+before oneshot rather than actual socket write. Dirty corrections keep refresh_due
+absolute across commands and wrap raw TCP poll_write/vectored/flush with a shared
+DeliveryGate and sealed suspend-aware DeliveryWindow. Gate is revoked before stop,
+only same-policy windows can renew, clock failure/expiry permanently closes it.
+A later review found renew could discard a newer transport clock sample; new
+DeliveryWindow::renew conserves that sample and refuses expired/failed predecessor.
+Manual regression covers104.2 transport sample then104.1 Control response. The TCP
+fixture now loops to real Pending with explicit64MiB ceiling, avoiding a Pending
+without registered wake. The earlier actual Mac tests observed OS WouldBlock,
+retained the writer, revoked the gate, drained exactly previously accepted bytes;
+another observed50ms expiry without supervisor polling. No suspend/native claim.
+
+All browser SQL operations now compare current config/policy heads with the last
+fully validated Control snapshot before charges/mutation/delivery; observed new
+policy cannot be ignored until polling. Review also identified client deadline
+cancelling SQL after a slow body; dirty SQL timeout uses authority budget only,
+with response suppression when client abandoned. Both still need real PG schedules.
+Origin/cookie rules: canonical exact root IP:port, default80 omitted in Origin,
+IPv6 brackets, no forwarding/Referer fallback. Cookies are host-scoped, never
+port-isolated: trusted-host loopback profile assumes trusted services on cookiehost.
+Actual browser second-port negative control remains needed. Explicit CSRF header
+must match this session's digest; unknown logout does not clear cookies; lost
+issuance requires explicit new login. /me returns observation, not action authority.
+
+Next bounded action: recheck final clock/socket corrections, create actual
+executable+PG native fixture (continuous requests >2TTLs, slow admitted request,
+head change, missing SQL privilege, login/cookies/restart/logout, actual blocked
+transport/hash stop), commit clean candidate for exact Git transfer, inventory and
+start fresh Tux lab. The actual executable fixture browser_http_probe and driver http_native.py now
+exist. `fixture-final`build+Clippy PASS. Its slow-body oracle proves collected SQL
+and no issuance, not that no hash was admitted. `candidate-check`also passed four CLI entrypoint tests and final probe build/Clippy.
+Reviewer checked both native fixture files; missing-prerequisite reasons and no
+ready output are asserted, and session snapshots include xmin for mixed-CSRF/head
+change schedules. No candidate or lab yet exists. A dependency cache archive contains
+only15 checksum-verified newly locked crates and30 total cache/index files, SHA256
+797533c19e7fe3cc72cf260211c17620a5c60ea57e6f04af3b26460bd3f744b0. Local
+prepare script initially used Python without tomllib; retried successfully with
+Homebrew Python3.11. No remote change occurred during that failed preparation.
+Artifact/link/handoff checks passed; these are documentation checks, not product
+acceptance. Ignored launch.py/transfer.py have been prepared and read, not executed.
+Native/browser/audit/reauthentication/grants/drain remain required. No new plan.
 
 Read-only grant/session contract review completed: separate scope-qualified
 history-grant table, reauthentication bound to command digest, grant revision CAS,

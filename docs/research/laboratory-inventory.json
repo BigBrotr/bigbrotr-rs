@@ -17204,6 +17204,22 @@
       "terminal_audit": "terminal-audit.json",
       "observed": "12 real PG cases PASS with committed touch-trigger marker; unchanged product inputs versus7a0f4b6. Terminal audit PASS, zero clients,416 preexisting resources preserved,8 unrelated running,network removed.",
       "evidence": "docs/implementation/evidence/p08-browser-session-storage-native-20260920.json"
+    },
+    "http_dependency_inspection": {
+      "local_root": ".research/implementation/management-http/upstream",
+      "status": "Exact minimal HTTP dependencies implemented; source hashes verified; Mac clock/TCP checks and Clippy passed. Native executable and browser validation pending.",
+      "packages": [
+        {
+          "crate": "hyper",
+          "version": "1.11.1",
+          "sha256": "27b501faa50e7a26c3d3560ca625132f4078a17771f4810baf70475ae48cbe43"
+        },
+        {
+          "crate": "hyper-util",
+          "version": "0.1.20",
+          "sha256": "96547c2556ec9d12fb1578c4eaf448b04993e7fb79cbaad930a656880a6bdfa0"
+        }
+      ]
     }
   }
 }

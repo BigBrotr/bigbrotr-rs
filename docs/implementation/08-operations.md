@@ -135,6 +135,18 @@ including an observed delayed-touch trigger and subsequent usable Control.
 Do not advertise the session API until the listener journey
 and its resource/transport lifetimes are exercised.
 
+The next bounded consumer wires three private routes (login, logout and self
+observation) into the actual Control supervisor, with one shared process envelope,
+owned HTTP1 connections, owned password work and socket-level delivery checks.
+`serve` follows the accepted administration gate despite managed file drift;
+migration0806 and each required SQL privilege are checked before binding. Every
+browser transaction checks the current config/policy head against the last fully
+validated Control snapshot. An observed change stops this runtime for explicit
+restart; it is not yet an application barrier or action-grant implementation.
+The native executable fixture is `browser_http_probe`, driven by
+`experiments/browser-sessions/http_native.py`. Its presence or compilation is not
+execution evidence. No T02 step is closed by these partial routes.
+
 **Failure states:** unavailable policy authority causes expiry/fail-closed, not anonymous fallback. Last-owner recovery is an explicit local, positively authorized CLI operation with an audit record; it cannot be triggered through an unauthenticated HTTP request. Enrollment output is never copied into CI evidence.
 
 The selected Argon2id parameters are an application baseline to benchmark under

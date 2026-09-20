@@ -1,5 +1,5 @@
 //! Short fenced transactions surrounding, never containing, password hashing.
-use super::{ControlSession, require};
+use super::{ControlSession, PolicySnapshot, require};
 use crate::{
     management::{
         credentials::{random, validate_name},
@@ -25,6 +25,28 @@ fn metadata(_: tokio_postgres::Error) -> SessionError {
 }
 
 impl ControlSession {
+    /// Startup prerequisite for the real private listener, before accepting any
+    /// credentials. This is not a user session or a policy/action capability.
+    pub async fn require_browser_sessions(&mut self) -> Result<(), SessionError> {
+        self.begin_operation()
+            .map_err(|_| SessionError::Unavailable)?;
+        let tx = application_transaction(&mut self.client, 806)
+            .await
+            .map_err(|_| SessionError::Prerequisite)?;
+        require(&tx, self.request.dataset, self.identity)
+            .await
+            .map_err(|_| SessionError::Unavailable)?;
+        lock_dataset(&tx, self.request.dataset, self.validated_policy).await?;
+        // PostgreSQL's comma-separated privilege argument means ANY, not ALL.
+        // Check each required privilege separately before aggregating.
+        let row = tx.query_one("SELECT bool_and(has_table_privilege(CURRENT_USER,t.name,p.privilege)) FROM (VALUES ('control.browser_sessions',ARRAY['SELECT','INSERT','UPDATE','DELETE']),('control.login_buckets',ARRAY['SELECT','INSERT','UPDATE']),('control.local_accounts',ARRAY['SELECT','UPDATE']),('control.local_credentials',ARRAY['SELECT','UPDATE']),('control.principal_grants',ARRAY['SELECT'])) t(name,privileges) CROSS JOIN LATERAL unnest(t.privileges) p(privilege)", &[]).await.map_err(backend)?;
+        if !row.try_get::<_, bool>(0).map_err(metadata)? {
+            return Err(SessionError::Prerequisite);
+        }
+        tx.rollback().await.map_err(backend)?;
+        self.available = true;
+        Ok(())
+    }
     /// Charges fixed persistent account/peer buckets before returning any hash
     /// work. The peer is the socket address supplied by the private listener,
     /// never a caller-controlled forwarding header.
@@ -42,7 +64,7 @@ impl ControlSession {
         require(&tx, self.request.dataset, self.identity)
             .await
             .map_err(|_| SessionError::Unavailable)?;
-        lock_dataset(&tx, self.request.dataset).await?;
+        lock_dataset(&tx, self.request.dataset, self.validated_policy).await?;
         let now = now(&tx).await?;
         // Account before peer is a fixed lock order, including hash collisions.
         let account_bucket = bucket(b"account", username.as_bytes());
@@ -98,7 +120,7 @@ impl ControlSession {
         require(&tx, self.request.dataset, self.identity)
             .await
             .map_err(|_| SessionError::Unavailable)?;
-        let policy = lock_dataset(&tx, self.request.dataset).await?;
+        let policy = lock_dataset(&tx, self.request.dataset, self.validated_policy).await?;
         let outcome = issue(
             &tx,
             self.request.dataset,
@@ -136,7 +158,7 @@ impl ControlSession {
         require(&tx, self.request.dataset, self.identity)
             .await
             .map_err(|_| SessionError::Unavailable)?;
-        let policy = lock_dataset(&tx, self.request.dataset).await?;
+        let policy = lock_dataset(&tx, self.request.dataset, self.validated_policy).await?;
         let outcome = inspect(&tx, self.request.dataset, token, touch, policy).await;
         let outcome = terminal(&tx, outcome)?;
         tx.commit().await.map_err(|_| SessionError::CommitUnknown)?;
@@ -159,7 +181,7 @@ impl ControlSession {
         require(&tx, self.request.dataset, self.identity)
             .await
             .map_err(|_| SessionError::Unavailable)?;
-        lock_dataset(&tx, self.request.dataset).await?;
+        lock_dataset(&tx, self.request.dataset, self.validated_policy).await?;
         let outcome = revoke(&tx, self.request.dataset, token, csrf).await;
         let outcome = terminal(&tx, outcome)?;
         tx.commit().await.map_err(|_| SessionError::CommitUnknown)?;
@@ -182,9 +204,20 @@ fn terminal<T>(
         Ok(value) => Ok(Ok(value)),
     }
 }
-async fn lock_dataset(tx: &Transaction<'_>, dataset: DatasetId) -> Result<u64, SessionError> {
-    let row = tx.query_one("SELECT left(policy_revision::text,21) FROM control.datasets WHERE dataset_id=$1::bytea AND config_revision IS NOT NULL AND policy_revision IS NOT NULL FOR UPDATE", &[&&dataset.as_bytes()[..]]).await.map_err(backend)?;
-    revision(&row, 0)
+async fn lock_dataset(
+    tx: &Transaction<'_>,
+    dataset: DatasetId,
+    expected: PolicySnapshot,
+) -> Result<u64, SessionError> {
+    let row = tx.query_one("SELECT left(config_revision::text,21),left(policy_revision::text,21) FROM control.datasets WHERE dataset_id=$1::bytea AND config_revision IS NOT NULL AND policy_revision IS NOT NULL FOR UPDATE", &[&&dataset.as_bytes()[..]]).await.map_err(backend)?;
+    // A newly observed authoritative head cannot be ignored until the next poll.
+    // Reject before login charges, session issuance, touches or revocation.
+    if revision(&row, 0)? != expected.config_revision
+        || revision(&row, 1)? != expected.policy_revision
+    {
+        return Err(SessionError::PolicyChanged);
+    }
+    Ok(expected.policy_revision)
 }
 async fn now(tx: &Transaction<'_>) -> Result<i64, SessionError> {
     tx.query_one(

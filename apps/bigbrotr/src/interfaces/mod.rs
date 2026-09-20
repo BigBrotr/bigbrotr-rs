@@ -7,6 +7,7 @@ mod catalog_inspection;
 pub(crate) mod configuration;
 pub(crate) mod initial_activation;
 mod lifecycle_output;
+mod management;
 pub mod migrations;
 mod postgres_command;
 mod self_inspection;
