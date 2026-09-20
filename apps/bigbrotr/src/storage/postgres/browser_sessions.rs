@@ -30,7 +30,7 @@ impl ControlSession {
     pub async fn require_browser_sessions(&mut self) -> Result<(), SessionError> {
         self.begin_operation()
             .map_err(|_| SessionError::Unavailable)?;
-        let tx = application_transaction(&mut self.client, 806)
+        let tx = application_transaction(&mut self.client, 807)
             .await
             .map_err(|_| SessionError::Prerequisite)?;
         require(&tx, self.request.dataset, self.identity)
@@ -39,7 +39,7 @@ impl ControlSession {
         lock_dataset(&tx, self.request.dataset, self.validated_policy).await?;
         // PostgreSQL's comma-separated privilege argument means ANY, not ALL.
         // Check each required privilege separately before aggregating.
-        let row = tx.query_one("SELECT bool_and(has_table_privilege(CURRENT_USER,t.name,p.privilege)) FROM (VALUES ('control.browser_sessions',ARRAY['SELECT','INSERT','UPDATE','DELETE']),('control.login_buckets',ARRAY['SELECT','INSERT','UPDATE']),('control.local_accounts',ARRAY['SELECT','UPDATE']),('control.local_credentials',ARRAY['SELECT','UPDATE']),('control.principal_grants',ARRAY['SELECT'])) t(name,privileges) CROSS JOIN LATERAL unnest(t.privileges) p(privilege)", &[]).await.map_err(backend)?;
+        let row = tx.query_one("SELECT bool_and(has_table_privilege(CURRENT_USER,t.name,p.privilege)) FROM (VALUES ('control.browser_sessions',ARRAY['SELECT','INSERT','UPDATE','DELETE']),('control.login_buckets',ARRAY['SELECT','INSERT','UPDATE']),('control.local_accounts',ARRAY['SELECT','UPDATE']),('control.local_credentials',ARRAY['SELECT','UPDATE']),('control.principal_grants',ARRAY['SELECT']),('control.management_audit',ARRAY['INSERT'])) t(name,privileges) CROSS JOIN LATERAL unnest(t.privileges) p(privilege)", &[]).await.map_err(backend)?;
         if !row.try_get::<_, bool>(0).map_err(metadata)? {
             return Err(SessionError::Prerequisite);
         }
@@ -114,7 +114,7 @@ impl ControlSession {
         let id: [u8; 16] = random().map_err(|_| SessionError::Unavailable)?;
         self.begin_operation()
             .map_err(|_| SessionError::Unavailable)?;
-        let tx = application_transaction(&mut self.client, 806)
+        let tx = application_transaction(&mut self.client, 807)
             .await
             .map_err(|_| SessionError::Prerequisite)?;
         require(&tx, self.request.dataset, self.identity)
@@ -134,6 +134,17 @@ impl ControlSession {
         )
         .await;
         let outcome = terminal(&tx, outcome)?;
+        if outcome.is_ok() {
+            audit_mutation(
+                &tx,
+                self.request.dataset,
+                account.principal,
+                &id,
+                self.validated_policy,
+                "browser.session.issue",
+            )
+            .await?;
+        }
         tx.commit().await.map_err(|_| SessionError::CommitUnknown)?;
         self.available = true;
         outcome.map(|observation| IssuedSession {
@@ -175,7 +186,7 @@ impl ControlSession {
     ) -> Result<(), SessionError> {
         self.begin_operation()
             .map_err(|_| SessionError::Unavailable)?;
-        let tx = application_transaction(&mut self.client, 806)
+        let tx = application_transaction(&mut self.client, 807)
             .await
             .map_err(|_| SessionError::Prerequisite)?;
         require(&tx, self.request.dataset, self.identity)
@@ -184,9 +195,20 @@ impl ControlSession {
         lock_dataset(&tx, self.request.dataset, self.validated_policy).await?;
         let outcome = revoke(&tx, self.request.dataset, token, csrf).await;
         let outcome = terminal(&tx, outcome)?;
+        if let Ok(Some((principal, session_id))) = &outcome {
+            audit_mutation(
+                &tx,
+                self.request.dataset,
+                *principal,
+                session_id,
+                self.validated_policy,
+                "browser.session.revoke",
+            )
+            .await?;
+        }
         tx.commit().await.map_err(|_| SessionError::CommitUnknown)?;
         self.available = true;
-        outcome
+        outcome.map(|_| ())
     }
 }
 
@@ -385,14 +407,39 @@ async fn revoke(
     dataset: DatasetId,
     token: &BrowserSecret,
     csrf: &BrowserSecret,
-) -> Result<(), SessionError> {
-    session_account(tx, dataset, token).await?;
+) -> Result<Option<(PrincipalId, [u8; 16])>, SessionError> {
+    let (principal, _) = session_account(tx, dataset, token).await?;
     let row = tx.query_opt("SELECT substring(session_id FROM 1 FOR 17),csrf_digest=$3::bytea,revoked_at_us IS NOT NULL FROM control.browser_sessions WHERE dataset_id=$1::bytea AND token_digest=$2::bytea FOR UPDATE", &[&&dataset.as_bytes()[..], &&token.session_digest()[..], &&csrf.csrf_digest()[..]]).await.map_err(backend)?.ok_or(SessionError::Denied)?;
     if !row.try_get::<_, bool>(1).map_err(metadata)? {
         return Err(SessionError::Denied);
     }
     if !row.try_get::<_, bool>(2).map_err(metadata)? {
-        tx.execute("UPDATE control.browser_sessions SET revoked_at_us=GREATEST(issued_at_us,(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint) WHERE dataset_id=$1::bytea AND session_id=$2::bytea", &[&&dataset.as_bytes()[..], &&fixed::<16>(&row,0)?[..]]).await.map_err(backend)?;
+        let session_id = fixed::<16>(&row, 0)?;
+        let changed = tx.execute("UPDATE control.browser_sessions SET revoked_at_us=GREATEST(issued_at_us,(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint) WHERE dataset_id=$1::bytea AND session_id=$2::bytea", &[&&dataset.as_bytes()[..], &&session_id[..]]).await.map_err(backend)?;
+        if changed != 1 {
+            return Err(SessionError::InvalidMetadata);
+        }
+        return Ok(Some((principal, session_id)));
+    }
+    Ok(None)
+}
+// The caller has already validated the current policy and session mutation in
+// this same transaction. A receipt failure must roll back the credential change.
+async fn audit_mutation(
+    tx: &Transaction<'_>,
+    dataset: DatasetId,
+    principal: PrincipalId,
+    session_id: &[u8; 16],
+    policy: PolicySnapshot,
+    action: &str,
+) -> Result<(), SessionError> {
+    let audit_id: [u8; 16] = random().map_err(|_| SessionError::Unavailable)?;
+    let changed = tx.execute("INSERT INTO control.management_audit(audit_id,dataset_id,actor_id,action,outcome,created_at_us,config_revision,subject_id,policy_revision) VALUES($1::bytea,$2::bytea,$3::bytea,$4::text,'accepted',(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint,$5::text::numeric,$6::bytea,$7::text::numeric)",
+        &[&&audit_id[..], &&dataset.as_bytes()[..], &&principal.as_bytes()[..], &action,
+          &policy.config_revision.to_string(), &&session_id[..], &policy.policy_revision.to_string()])
+        .await.map_err(backend)?;
+    if changed != 1 {
+        return Err(SessionError::InvalidMetadata);
     }
     Ok(())
 }

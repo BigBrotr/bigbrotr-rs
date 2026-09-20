@@ -17813,8 +17813,43 @@
   "implementation_session_audit_20260920": {
     "owner": "root implementer",
     "local_root": ".research/implementation/session-audit",
-    "state": "Preparing first independent native RED for atomic accepted issuance audit; no production implementation yet",
-    "source_base": "9e3e44e",
-    "scope": "P08-T02 accepted session mutation audit. Rejected attempts, retention maintenance, reauth, scope grants and delivery authority remain separate required work."
+    "state": "Native RED executed and stopped/retained; dirty0807 implementation awaits native qualification",
+    "source_base": "b7cb520a4666b419f55629aa0536227728e216b4",
+    "scope": "P08-T02 accepted session mutation audit. Rejected attempts, retention maintenance, reauth, scope grants and delivery authority remain separate required work.",
+    "red_evidence": "docs/implementation/evidence/p08-session-audit-red-20260920.json",
+    "red_resources": {
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/session-audit-red-b7cb520",
+      "owner": "67b7dee453380a9e3631a98f9fdc5c7d",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "0fd62cac35bff150df9d9a93cd79164d63368befec64624e401c540f692b68da"
+        },
+        {
+          "name": "rust-audit",
+          "id": "a2fc518a99ddb1fd1b190866212b87359a887f2d3bbe353445071d4e82ec9e8d"
+        }
+      ],
+      "state": "stopped-retained",
+      "network_state": "removed after owner/no-endpoint audit",
+      "preexisting_preserved": 482,
+      "unrelated_running": 8,
+      "free_bytes": 6429016064
+    },
+    "red_cache_retirement": {
+      "format": "bigbrotr-owned-cache-retirement/1",
+      "started_at": 1789915803.4694335,
+      "state": "PASS",
+      "free_before": 6424698880,
+      "finished_at": 1789915806.211103,
+      "free_after": 8415055872,
+      "removed_files": 1268,
+      "removed_logical_bytes": 1996907856,
+      "containers_unchanged": 484,
+      "unrelated_running": 8,
+      "raw_receipt": ".research/implementation/session-audit/tux-red-cache-retirement.json",
+      "run": "session-audit-red-b7cb520",
+      "cache_reuse": "Forbidden: partial cache. Preserve actual executables, sources, evidence and private data; only e65116b remains intact."
+    }
   }
 }

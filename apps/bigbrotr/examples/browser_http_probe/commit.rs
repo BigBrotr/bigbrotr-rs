@@ -164,6 +164,10 @@ async fn other_rows(admin: &Client, digest: &[u8; 32]) -> String {
     admin.query_one("SELECT coalesce(json_agg(s ORDER BY session_id)::text,'[]') FROM (SELECT s.*,xmin::text AS xmin FROM control.browser_sessions s WHERE token_digest<>$1::bytea) s", &[&&digest[..]]).await.unwrap().get(0)
 }
 
+async fn audit_rows(admin: &Client) -> String {
+    admin.query_one("SELECT coalesce(json_agg(json_build_array(row_to_json(a),a.xmin::text) ORDER BY audit_id)::text,'[]') FROM control.management_audit a WHERE action LIKE 'browser.session.%'", &[]).await.unwrap().get(0)
+}
+
 pub(super) async fn run(
     binary: &Path,
     config: &Path,
@@ -201,6 +205,15 @@ pub(super) async fn run(
             count(admin, "SELECT count(*) FROM control.browser_sessions").await,
             expected
         );
+        assert_eq!(
+            count(
+                admin,
+                "SELECT count(*) FROM control.management_audit WHERE action='browser.session.issue'"
+            )
+            .await,
+            expected
+        );
+        assert_eq!(count(admin,"SELECT count(*) FROM control.management_audit a JOIN control.browser_sessions s ON a.dataset_id=s.dataset_id AND a.actor_id=s.principal_id AND a.subject_id=s.session_id WHERE a.action='browser.session.issue' AND a.config_revision=1 AND a.policy_revision=1").await,expected);
         let after = rows(admin).await;
         assert!(
             before.iter().all(|row| after.contains(row)),
@@ -248,6 +261,7 @@ pub(super) async fn run(
             credentials.0, credentials.1
         );
         let before = session_state(admin).await;
+        let audits_before = audit_rows(admin).await;
         let digest = token_digest(&credentials.0);
         let others = other_rows(admin, &digest).await;
         if mode == "pass" {
@@ -282,11 +296,15 @@ pub(super) async fn run(
             .await,
             revoked
         );
+        assert_eq!(count(admin,"SELECT count(*) FROM control.management_audit WHERE action='browser.session.revoke'").await,revoked);
         if mode == "before-forward" {
             assert_eq!(before, session_state(admin).await);
+            assert_eq!(audits_before, audit_rows(admin).await);
         }
         let target_revoked: bool = admin.query_one("SELECT revoked_at_us IS NOT NULL FROM control.browser_sessions WHERE token_digest=$1::bytea", &[&&digest[..]]).await.unwrap().get(0);
         assert_eq!(target_revoked, mode != "before-forward");
+        let target_audits: i64 = admin.query_one("SELECT count(*) FROM control.management_audit a JOIN control.browser_sessions s ON a.dataset_id=s.dataset_id AND a.actor_id=s.principal_id AND a.subject_id=s.session_id WHERE s.token_digest=$1::bytea AND a.action='browser.session.revoke' AND a.outcome='accepted' AND a.config_revision=1 AND a.policy_revision=1", &[&&digest[..]]).await.unwrap().get(0);
+        assert_eq!(target_audits, i64::from(mode != "before-forward"));
         assert_eq!(other_rows(admin, &digest).await, others);
         case(
             &name,
@@ -297,6 +315,7 @@ pub(super) async fn run(
     server.ready();
     assert_eq!(me(&successor.0).status, 401);
     let before = session_state(admin).await;
+    let audits_before = audit_rows(admin).await;
     let reply = request(
         "DELETE",
         "/management/v1/sessions/current",
@@ -309,6 +328,7 @@ pub(super) async fn run(
     );
     assert_eq!(reply.status, 204);
     assert_eq!(session_state(admin).await, before);
+    assert_eq!(audits_before, audit_rows(admin).await);
     let issued = login(PASSWORD);
     assert_eq!(issued.status, 201);
     let live = (

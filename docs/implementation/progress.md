@@ -21,13 +21,13 @@ another diagnostic command instead of the real read consumer.
 
 ## Git and ownership
 
-Local main/HEAD and freshly pushed origin are `9e3e44e`. Root owns a new
-independent PG issuance-audit oracle in browser_sessions_probe.rs plus the
-checkpoint/inventory updates. No product code or schema changed yet. This is an
-unpublished RED candidate, not a qualified feature. No other writer/merge/rebase.
-Private local
-session API production baseline5a4e0d1 and qualified COMMIT fixturee65116b remain
-unchanged history. Full candidate state is listed by Git, not this summary.
+Local main/HEAD is `b7cb520`; freshly pushed origin remains `9e3e44e`.
+The unpublished candidate added the independent PG issuance-audit oracle. Root
+now owns dirty additive0807, session storage audit writes, schema/probe regressions,
+the combined native audit driver and owning documentation. Mac final tests,
+build and scoped Clippy PASS; actual new SQL is NOT_RUN. No other writer or
+merge/rebase. Initial session baseline5a4e0d1 and qualified COMMIT fixturee65116b
+remain unchanged history. Full candidate state is listed by Git.
 
 The private panel implements a generated same-origin three-route session client
 and static login/self/logout UI, with bounded streaming, timeout, exact decimal
@@ -123,17 +123,51 @@ sources/receipts/data hash preserved. These partial caches MUST NOT be reused;
 e65116b remains intact. Free space9,850,245,120bytes; receipt/inventory under
 private-panel/tux-qualified-cache-retirement.json. No active job or cleanup debt.
 
-Next bounded action: commit the independent issuance-audit regression and run
-one isolated PG/native RED via .research/implementation/session-audit/native-red.
-Expected observation: one actually committed session but zero matching accepted
-issue audits; no product correction exists yet. Then implement additive0807 and
-atomic issue/logout audit in the existing fenced transactions. Audit accepted
-means durable mutation, not browser cookie receipt. Use a partial unique index
-only for these actions; append logout only on an actual transition; no FK from
-audit subject to removable session rows and no backfill of old revocations.
-Audit failure must rollback mutation; unchanged retry must preserve attribution.
-All broader denied-attempt audit, configurable retention/capacity, reauth, grants
-and drain remain P08-T02 work. Read-only review confirmed these boundaries.
+[Independent native RED](evidence/p08-session-audit-red-20260920.json) atb7cb520
+confirmed one committed session and zero matching accepted issuance audits.
+Build/schema/token/Clippy passed; the actual adapter fixture failed its first
+issuance audit assertion (0 != 1). All15capture/991source hashes independently
+verified against Mac Git archive. Raw session-audit/native-red; remote
+runs/session-audit-red-b7cb520, owner67b7dee453380a9e3631a98f9fdc5c7d.
+Rust a2fc518a99ddb1fd1b190866212b87359a887f2d3bbe353445071d4e82ec9e8d and PG
+0fd62cac35bff150df9d9a93cd79164d63368befec64624e401c540f692b68da are stopped/PID0/noOOM;
+empty owned network removed,482prior resources preserved/eight unrelated running.
+The panicking fixture did not release Control; do not turn process death into a
+claimed graceful release. Free6,429,016,064bytes before the next cache inventory.
+
+Dirty0807 appends accepted issuance and actual logout audit in the same fenced
+transaction. Audit accepted means durable mutation, not browser cookie receipt.
+Partial uniqueness only for these actions; no FK to removable session rows and
+no backfill of historical revocations. Audit insertion failure rolls back both
+session write/cleanup; unchanged logout retry preserves attribution. The fixture
+now tests existing legacy shapes/xmin across migration, NULL/mixed revision refusal,
+audit failures and retries across separate Control incarnations. Actual HTTP
+prerequisites and targeted COMMIT ambiguity gain independent audit oracles.
+Read-only AI review found missing legacy/restart evidence; fixtures address it,
+but native execution is pending. Mac reviewed17schema+2token tests, build and Clippy
+passed under session-audit/mac-proxy-reviewed; native SQL cases remain NOT_RUN.
+
+Verified RED cache retirement removed1268 .rlib/.rmeta files (1,996,907,856
+logical bytes), preserving actual artifact hashes, sources, evidence and data.
+All484container records unchanged/eight unrelated running. Free8,415,055,872bytes;
+receipt session-audit/tux-red-cache-retirement.json. This partial cache MUST NOT
+be reused; e65116b remains the sole intact reusable cache.
+
+Further read-only review found a proxy count conflating the second audit INSERT,
+a missing807 refusal also missing unrelated privileges, and a logout count lacking
+subject attribution. Actual synthetic wire RED observed2 mutations versus expected1;
+corrected response correlation observes1. The early ErrorResponse/Sync interleaving also failed its independent regression
+and now passes. Focused proxy tests pass. The HTTP
+fixture now isolates privileges and joins each logout audit to the target digest,
+principal and revisions; native qualification is still pending.
+
+Next bounded action: commit the reviewed implementation as an unpublished
+candidate, then execute
+experiments/browser-sessions/audit_native.py in a fresh exact-Git Tux lab.
+Require17adapter/12HTTP/8COMMIT cases and independent terminal SQL; do not claim
+new PG-crash or browser qualification from this run. All broader denied-attempt
+audit, configurable retention/capacity, reauth, grants and drain remain P08-T02 work.
+
 Ordinary owner data.read still grants no history/export. First history consumer
 requires scoped grant CAS + reauth + principal/action/scope delivery authority,
 then retained pin/worker ownership through actual completion. Existing task files

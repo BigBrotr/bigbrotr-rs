@@ -2,6 +2,31 @@ use bigbrotr::storage::postgres::migrations;
 
 use migrations::{AppliedMigration, MigrationError, catalog, plan};
 
+#[test]
+fn session_mutation_audit_requires_an_explicit_additive_upgrade() {
+    let applied: Vec<_> = plan(&[], 806)
+        .unwrap()
+        .pending
+        .iter()
+        .map(|m| AppliedMigration {
+            version: m.version,
+            name: m.name.into(),
+            checksum: m.checksum(),
+            reader_min: m.reader_min,
+            reader_max: m.reader_max,
+            writer_floor: m.writer_floor,
+        })
+        .collect();
+    assert_eq!(
+        migrations::require_applied(&applied, 807),
+        Err(MigrationError::MissingPrerequisite(807))
+    );
+    let upgrade = plan(&applied, 807).unwrap();
+    assert_eq!(upgrade.pending.len(), 1);
+    assert_eq!(upgrade.pending[0].name, "0807_session_mutation_audit.sql");
+    assert!(migrations::require_applied(&applied, 806).is_ok());
+}
+
 fn initial_receipt() -> AppliedMigration {
     let migration = &catalog()[0];
     AppliedMigration {

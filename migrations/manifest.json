@@ -73,6 +73,10 @@
     {
       "version": 806,
       "name": "0806_browser_sessions.sql"
+    },
+    {
+      "version": 807,
+      "name": "0807_session_mutation_audit.sql"
     }
   ],
   "reserved": [

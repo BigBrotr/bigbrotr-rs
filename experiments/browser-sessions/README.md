@@ -71,3 +71,26 @@ records nine cases at e65116b, including the actual owned PostgreSQL SIGQUIT.
 The initial c98398b fixture failed before readiness because it used an unsupported
 configuration key. That failure and its untouched catalog remain retained; the
 corrected endpoint was qualified in a new lab.
+
+
+`audit_native.py` qualifies the additive0807 session mutation audit through the
+actual adapter and executable. It requires17 distinct storage cases,12 ordinary
+HTTP cases and8 selected COMMIT cases, plus schema/token and proxy regressions.
+The `--audit-commits-only` fixture mode uses a separate isolated database and omits
+only the host-controlled PG crash; it never claims that unexecuted crash passed.
+Migration checks start with real legacy audit rows, preserve their values/xmin,
+and refuse missing or mismatched policy/config bindings. An injected audit error
+must roll back issuance/terminal cleanup or logout; a new Control incarnation
+retries the operation without changing established attribution. Missing807 is
+isolated from missing privileges, and missing audit INSERT prevents startup.
+
+Each issue/logout COMMIT case independently binds audit to the actual principal,
+session and revisions. The wire observer correlates extended Parse/Bind/Execute
+responses through Sync boundaries, so the following audit INSERT cannot count as
+the session mutation. It supports the closed unnamed-portal fixture profile and
+refuses unsupported response shapes. The selected behavior follows PostgreSQL16
+[message flow](https://www.postgresql.org/docs/16/protocol-flow.html) and
+[message formats](https://www.postgresql.org/docs/16/protocol-message-formats.html).
+A synthetic wire transcript reproduced the old observer counting two mutations;
+that transcript is a fixture discriminator, not engine durability evidence.
+Native qualification of this new audit slice is pending.

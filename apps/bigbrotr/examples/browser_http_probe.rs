@@ -378,9 +378,17 @@ async fn run(binary: PathBuf, home: PathBuf, mode: &str, panel: Option<panel::Op
         .connect_timeout(Duration::from_secs(5));
     let (admin, driver) = connection.connect(NoTls).await.unwrap();
     let driver = tokio::spawn(driver);
-    let database = panel
-        .as_ref()
-        .map_or_else(|| "http_sessions".to_owned(), panel::Options::database);
+    let database = panel.as_ref().map_or_else(
+        || {
+            if mode == "audit-commits" {
+                "http_audit_commits"
+            } else {
+                "http_sessions"
+            }
+            .to_owned()
+        },
+        panel::Options::database,
+    );
     admin
         .batch_execute(&format!("CREATE DATABASE {database}"))
         .await
@@ -480,7 +488,7 @@ async fn run(binary: PathBuf, home: PathBuf, mode: &str, panel: Option<panel::Op
                 "migrate",
                 "apply",
                 "--target",
-                "806",
+                "807",
                 "--user",
                 "postgres",
                 "--password-ref",
@@ -492,11 +500,13 @@ async fn run(binary: PathBuf, home: PathBuf, mode: &str, panel: Option<panel::Op
             faults(&binary, &config, &home, &admin).await;
             drop(admin);
             driver.await.unwrap().unwrap();
-        } else if mode == "commits" {
+        } else if mode == "commits" || mode == "audit-commits" {
             let (token, _) = commit::run(&binary, &config, &home, &admin).await;
             drop(admin);
             driver.await.unwrap().unwrap();
-            commit::crash(&binary, &config, &home, &connection, &token).await;
+            if mode == "commits" {
+                commit::crash(&binary, &config, &home, &connection, &token).await;
+            }
         } else {
             panel::run(
                 &binary,
@@ -538,7 +548,37 @@ async fn run(binary: PathBuf, home: PathBuf, mode: &str, panel: Option<panel::Op
             &admin_ref,
         ],
     );
-    admin.batch_execute("GRANT SELECT,INSERT,UPDATE ON control.browser_sessions,control.login_buckets TO bigbrotr_control").await.unwrap();
+    admin.batch_execute("GRANT SELECT,INSERT,UPDATE ON control.browser_sessions,control.login_buckets TO bigbrotr_control; GRANT DELETE ON control.browser_sessions TO bigbrotr_control; GRANT INSERT ON control.management_audit TO bigbrotr_control").await.unwrap();
+    let mut missing = Server::start(&binary, &config, &home, "missing-audit-migration");
+    missing.terminal(3);
+    assert!(fs::read(&missing.stdout).unwrap().is_empty());
+    assert!(
+        fs::read_to_string(&missing.stderr)
+            .unwrap()
+            .contains("private session prerequisites refused: Prerequisite")
+    );
+    case(
+        "missing-audit-migration-refuses-before-bind",
+        json!({"exit":3}),
+    );
+    cli(
+        &binary,
+        &config,
+        &[
+            "migrate",
+            "apply",
+            "--target",
+            "807",
+            "--user",
+            "postgres",
+            "--password-ref",
+            &admin_ref,
+        ],
+    );
+    admin
+        .batch_execute("REVOKE DELETE ON control.browser_sessions FROM bigbrotr_control")
+        .await
+        .unwrap();
     let mut missing = Server::start(&binary, &config, &home, "missing-delete");
     missing.terminal(3);
     assert!(fs::read(&missing.stdout).unwrap().is_empty());
@@ -559,6 +599,30 @@ async fn run(binary: PathBuf, home: PathBuf, mode: &str, panel: Option<panel::Op
         .batch_execute("GRANT DELETE ON control.browser_sessions TO bigbrotr_control")
         .await
         .unwrap();
+    admin
+        .batch_execute("REVOKE INSERT ON control.management_audit FROM bigbrotr_control")
+        .await
+        .unwrap();
+    let mut missing = Server::start(&binary, &config, &home, "missing-audit-insert");
+    missing.terminal(3);
+    assert!(fs::read(&missing.stdout).unwrap().is_empty());
+    assert!(
+        fs::read_to_string(&missing.stderr)
+            .unwrap()
+            .contains("private session prerequisites refused: Prerequisite")
+    );
+    assert_eq!(
+        count(&admin, "SELECT count(*) FROM control.browser_sessions").await,
+        0
+    );
+    admin
+        .batch_execute("GRANT INSERT ON control.management_audit TO bigbrotr_control")
+        .await
+        .unwrap();
+    case(
+        "missing-audit-insert-privilege-refuses-before-bind",
+        json!({"missing":"INSERT audit"}),
+    );
     // Managed file drift cannot disable an enabled accepted policy.
     document
         .get_mut("administration")
@@ -839,6 +903,7 @@ fn main() {
         None => "ordinary",
         Some("--faults-only") => "faults",
         Some("--commits-only") => "commits",
+        Some("--audit-commits-only") => "audit-commits",
         Some("--panel") => {
             panel = Some(panel::Options::parse(&mut args));
             "panel"

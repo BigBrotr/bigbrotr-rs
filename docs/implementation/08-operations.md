@@ -160,6 +160,16 @@ and PostgreSQL SIGQUIT/live-cookie cases. The initial fixture configuration fail
 is retained separately. Specific revocation and other-row/xmin checks distinguish
 these outcomes. Browser, general audit/grants and remote TLS remain required.
 
+The additive0807 slice records only newly committed session issuance/explicit
+logout, in the same fenced transaction as the mutation. A partial unique index
+preserves logout retry identity without changing rejected bootstrap audit. There
+is no historical backfill or FK to removable session credentials. Startup requires
+807 and audit INSERT privilege. Independent PG regression first observed a real
+session without its receipt on the preceding product. New migration, rollback,
+legacy-revocation, cleanup and retry tests remain unqualified until actual native
+execution. General rejected-attempt audit, retention/capacity maintenance, reauth,
+grant CAS and restrictive application remain required; no T02 step is complete.
+
 **Failure states:** unavailable policy authority causes expiry/fail-closed, not anonymous fallback. Last-owner recovery is an explicit local, positively authorized CLI operation with an audit record; it cannot be triggered through an unauthenticated HTTP request. Enrollment output is never copied into CI evidence.
 
 The selected Argon2id parameters are an application baseline to benchmark under

@@ -60,7 +60,7 @@ pub(crate) fn command() -> Command {
         .about("Run explicitly assigned roles; the initial runtime implements Control only")
         .arg(Arg::new("file").long("file").required(true).value_name("PATH"))
         .arg(Arg::new("roles").long("roles").value_delimiter(',').num_args(1..).value_name("ROLE,..."))
-        .after_help("Requires explicit initialization, migrations and initial policy activation. Accepted administration.enabled starts the loopback private session API (login, me, logout); migration0806 and its SQL privileges are required before binding. Other management actions and native stores are not started. Accepted policy changes require restart in this slice. SIGINT/SIGTERM stop admission and join HTTP/password work before owner release. Exit: 0 stopped, 1 unavailable/I/O, 2 usage, 3 invalid configuration/policy, 4 cancelled or unknown durable outcome.")
+        .after_help("Requires explicit initialization, migrations and initial policy activation. Accepted administration.enabled starts the loopback private session API (login, me, logout); migration0807 and its session/audit SQL privileges are required before binding. Other management actions and native stores are not started. Accepted policy changes require restart in this slice. SIGINT/SIGTERM stop admission and join HTTP/password work before owner release. Exit: 0 stopped, 1 unavailable/I/O, 2 usage, 3 invalid configuration/policy, 4 cancelled or unknown durable outcome.")
 }
 
 pub(crate) fn execute(args: &ArgMatches) -> ! {

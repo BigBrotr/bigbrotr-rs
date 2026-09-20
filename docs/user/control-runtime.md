@@ -9,8 +9,9 @@ bigbrotr serve --file /etc/bigbrotr/root.toml --roles control
 Use an existing validated root with Control assigned locally, protected application
 credentials, the current explicit Control migrations, accepted initial
 configuration and an activated security revision. Accepted
-`administration.enabled=true` additionally requires migration0806 and the browser
-session SQL privileges, then binds the configured loopback private listener.
+`administration.enabled=true` additionally requires migration0807, the browser
+session SQL privileges and INSERT on control.management_audit, then binds the
+configured loopback private listener.
 Its initial routes provide login, self inspection and logout; they grant no data
 read or management-command authority. `administration.enabled=false` starts no
 listener. Editing an already accepted managed
@@ -85,6 +86,15 @@ unconfirmed outcome; inspect the current session or explicitly retry the intende
 action. Local expiry and changes in another tab clear prior observations. A
 static loading/reload notice remains available if the startup script fails.
 The full administration workflows remain under implementation.
+
+New session issuance and explicit logout append an attributable audit receipt
+in the same PostgreSQL transaction. An audit write failure also rolls back the
+session mutation. A committed issuance may still have an undelivered cookie;
+its audit does not claim the browser received it. Retrying an already committed
+logout keeps its original audit, while revocations predating this feature or
+caused by account reset receive no fabricated logout receipt. Session cleanup
+retains those audit records. Rejected-request audit, audit browsing and retention
+maintenance remain under implementation.
 
 The accepted PostgreSQL configuration/security documents remain authoritative;
 changes to a managed seed or staged declarative file do not activate themselves.

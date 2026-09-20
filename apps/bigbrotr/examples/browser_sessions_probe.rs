@@ -62,6 +62,44 @@ fn case(name: &str) {
     println!("{}", serde_json::json!({"case":name,"status":"PASS"}));
 }
 
+async fn acquire(
+    config: &Config,
+    identity: u8,
+) -> (
+    ControlSession,
+    tokio::task::JoinHandle<Result<(), tokio_postgres::Error>>,
+) {
+    let (client, owner_driver) = config.connect(NoTls).await.unwrap();
+    let owner_driver = tokio::spawn(owner_driver);
+    let (owner, _) = ControlSession::acquire(
+        client,
+        ClaimRequest {
+            dataset: DatasetId::try_from([1; 16]).unwrap(),
+            instance: DatasetId::try_from([2; 16]).unwrap(),
+            authority_mode: "managed".into(),
+            role_instance_id: [identity; 16],
+            incarnation: ProcessIncarnation::try_from([identity + 10; 16]).unwrap(),
+            lease_ttl: Duration::from_secs(60),
+        },
+        validate,
+        &Cell::new(false),
+    )
+    .await
+    .unwrap();
+    (owner, owner_driver)
+}
+async fn session_audit_state(admin: &Client) -> String {
+    admin.query_one("SELECT json_build_array((SELECT json_agg(json_build_array(row_to_json(s),s.xmin::text) ORDER BY session_id) FROM control.browser_sessions s),(SELECT json_agg(json_build_array(row_to_json(a),a.xmin::text) ORDER BY audit_id) FROM control.management_audit a))::text", &[]).await.unwrap().get(0)
+}
+async fn audit_failure(admin: &Client, enabled: bool) {
+    let sql = if enabled {
+        "CREATE FUNCTION public.refuse_session_audit() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'injected audit refusal' USING ERRCODE='23514'; END $$; CREATE TRIGGER refuse_session_audit BEFORE INSERT ON control.management_audit FOR EACH ROW WHEN (NEW.action IN ('browser.session.issue','browser.session.revoke')) EXECUTE FUNCTION public.refuse_session_audit()"
+    } else {
+        "DROP TRIGGER refuse_session_audit ON control.management_audit; DROP FUNCTION public.refuse_session_audit()"
+    };
+    admin.batch_execute(sql).await.unwrap();
+}
+
 async fn run(mut config: Config) {
     let (mut admin, driver) = config.connect(NoTls).await.unwrap();
     let driver = tokio::spawn(driver);
@@ -120,35 +158,81 @@ async fn run(mut config: Config) {
             .get::<_, i64>(0),
         7
     );
+    // A real pre-0807 revocation remains unattributed; upgrade never fabricates
+    // a caller for old history. Token hashes are independent fixed test values.
+    admin.batch_execute(r#"WITH t AS (SELECT (EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint AS n)
+        INSERT INTO control.browser_sessions SELECT decode(repeat('d1',16),'hex'),dataset_id,principal_id,credential_revision,authentication_revision,
+        decode('cbf00566adf0b082a29ee703cbd8097341e3dec290e3e7ecf6879b7d44abac4b','hex'),decode('8140f81bce52aad45ec535eeba3857c9ca7c69842b31a329e0de64e48d6be8e9','hex'),n,n+60000000,30000000,n,n+30000000,NULL FROM control.local_accounts,t;
+        UPDATE control.browser_sessions SET revoked_at_us=issued_at_us;"#).await.unwrap();
+    admin.batch_execute(r#"
+        INSERT INTO control.principals(principal_id,dataset_id,kind,created_at_us,database_role,local_os_uid)
+            VALUES(decode(repeat('f1',16),'hex'),decode(repeat('01',16),'hex'),'installation',0,'fixture',0);
+        INSERT INTO control.management_audit(audit_id,dataset_id,actor_id,action,outcome,created_at_us,config_revision,subject_id,reason,requester_database_role,requester_os_uid)
+        SELECT decode(repeat(id,16),'hex'),decode(repeat('01',16),'hex'),decode(repeat('f1',16),'hex'),action,outcome,0,revision,CASE WHEN subject IS NULL THEN NULL ELSE decode(repeat(subject,16),'hex') END,reason,requester,uid FROM (VALUES
+            ('a1','dataset.initialize','accepted',1::numeric,NULL::text,NULL::text,NULL::text,NULL::bigint),
+            ('a2','policy.activate-initial','accepted',1,'f2',NULL,'fixture',0),
+            ('a3','owner-token.issue','accepted',NULL,'f3',NULL,'fixture',0),
+            ('a4','owner-token.revoke','accepted',NULL,'f3',NULL,'fixture',0),
+            ('a5','owner.enroll','accepted',NULL,'f4',NULL,'fixture',0),
+            ('a6','owner.enroll','rejected',NULL,'f5','invalid-token','fixture',0),
+            ('a7','owner.enroll','rejected',NULL,'f5','expired','fixture',0)
+        ) v(id,action,outcome,revision,subject,reason,requester,uid);
+        INSERT INTO control.config_revisions(revision,dataset_id,schema_version,authority_mode,document,document_digest,accepted_source_digest,accepted_at_us,actor_id)
+            SELECT 2,dataset_id,schema_version,authority_mode,document,document_digest,accepted_source_digest,accepted_at_us,actor_id FROM control.config_revisions WHERE revision=1;
+    "#).await.unwrap();
+    let legacy_audits: String = admin.query_one("SELECT json_agg(json_build_array(to_jsonb(a)-'policy_revision',a.xmin::text) ORDER BY audit_id)::text FROM control.management_audit a", &[]).await.unwrap().get(0);
+    assert_eq!(
+        migration_runner::run(&mut admin, 807, true, &Cell::new(false))
+            .await
+            .unwrap()
+            .applied,
+        1
+    );
+    assert_eq!(admin.query_one("SELECT count(*) FROM control.management_audit WHERE action LIKE 'browser.session.%'", &[]).await.unwrap().get::<_,i64>(0), 0);
+    assert!(legacy_audits == admin.query_one("SELECT json_agg(json_build_array(to_jsonb(a)-'policy_revision',a.xmin::text) ORDER BY audit_id)::text FROM control.management_audit a", &[]).await.unwrap().get::<_,String>(0), "upgrade changed legacy audit fields/xmin");
+    assert_eq!(
+        admin
+            .query_one(
+                "SELECT count(*) FROM control.management_audit WHERE policy_revision IS NULL",
+                &[]
+            )
+            .await
+            .unwrap()
+            .get::<_, i64>(0),
+        7
+    );
+    for (config_revision, policy_revision, code) in [
+        (None, Some("1"), "23514"),
+        (Some("1"), None, "23514"),
+        (Some("2"), Some("1"), "23503"),
+    ] {
+        let error=admin.execute("INSERT INTO control.management_audit(audit_id,dataset_id,actor_id,action,outcome,created_at_us,config_revision,policy_revision,subject_id) VALUES(decode(repeat('ee',16),'hex'),decode(repeat('01',16),'hex'),decode(repeat('10',16),'hex'),'browser.session.issue','accepted',0,$1::text::numeric,$2::text::numeric,decode(repeat('d1',16),'hex'))", &[&config_revision,&policy_revision]).await.unwrap_err();
+        assert_eq!(error.code().unwrap().code(), code);
+    }
+    case("audit-upgrade-preserves-legacy-shapes-and-refuses-null-or-mixed-revisions");
     admin.batch_execute("GRANT USAGE ON SCHEMA control TO bigbrotr_control; GRANT SELECT,INSERT,UPDATE ON ALL TABLES IN SCHEMA control TO bigbrotr_control; GRANT DELETE ON control.browser_sessions TO bigbrotr_control; GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA control TO bigbrotr_control").await.unwrap();
     case("additive-upgrade-preserves-password-and-seven-grants");
     config
         .user("bigbrotr_control")
         .password(std::fs::read("/secrets/bigbrotr_control").unwrap());
-    let (client, owner_driver) = config.connect(NoTls).await.unwrap();
-    let owner_driver = tokio::spawn(owner_driver);
-    let (mut owner, _) = ControlSession::acquire(
-        client,
-        ClaimRequest {
-            dataset: DatasetId::try_from([1; 16]).unwrap(),
-            instance: DatasetId::try_from([2; 16]).unwrap(),
-            authority_mode: "managed".into(),
-            role_instance_id: [31; 16],
-            incarnation: ProcessIncarnation::try_from([41; 16]).unwrap(),
-            lease_ttl: Duration::from_secs(60),
-        },
-        validate,
-        &Cell::new(false),
-    )
-    .await
-    .unwrap();
+    let (mut owner, mut owner_driver) = acquire(&config, 31).await;
 
+    owner.require_browser_sessions().await.unwrap();
+    owner
+        .revoke_browser_session(
+            &BrowserSecret::parse_hex(&[b'b'; 64]).unwrap(),
+            &BrowserSecret::parse_hex(&[b'c'; 64]).unwrap(),
+        )
+        .await
+        .unwrap();
+    assert_eq!(admin.query_one("SELECT count(*) FROM control.management_audit WHERE action='browser.session.revoke'", &[]).await.unwrap().get::<_,i64>(0), 0);
+    case("legacy-revocation-retry-does-not-invent-audit");
     let first = login(&mut owner, SessionLifetime::default()).await;
     // Independent durable oracle: an issued credential must have one immutable
     // attributable receipt in the same database, even if its HTTP reply is lost.
     let issuance_audits: i64 = admin
         .query_one(
-            "SELECT count(*) FROM control.management_audit a JOIN control.browser_sessions s ON a.dataset_id=s.dataset_id AND a.actor_id=s.principal_id AND a.subject_id=s.session_id WHERE a.action='browser.session.issue' AND a.outcome='accepted' AND a.config_revision=1",
+            "SELECT count(*) FROM control.management_audit a JOIN control.browser_sessions s ON a.dataset_id=s.dataset_id AND a.actor_id=s.principal_id AND a.subject_id=s.session_id WHERE a.action='browser.session.issue' AND a.outcome='accepted' AND a.config_revision=1 AND a.policy_revision=1 AND a.requester_database_role IS NULL AND a.requester_os_uid IS NULL AND a.reason IS NULL",
             &[],
         )
         .await
@@ -247,10 +331,32 @@ async fn run(mut config: Config) {
         .revoke_browser_session(&second.session, &second.csrf)
         .await
         .unwrap();
+    let audit_before_retry: String = admin.query_one("SELECT json_agg(json_build_array(row_to_json(a),a.xmin::text) ORDER BY audit_id)::text FROM control.management_audit a", &[]).await.unwrap().get(0);
+    assert_eq!(admin.query_one("SELECT count(*) FROM control.management_audit WHERE action='browser.session.revoke'", &[]).await.unwrap().get::<_,i64>(0),1);
+
     owner
         .revoke_browser_session(&second.session, &second.csrf)
         .await
         .unwrap();
+    assert_eq!(audit_before_retry,admin.query_one("SELECT json_agg(json_build_array(row_to_json(a),a.xmin::text) ORDER BY audit_id)::text FROM control.management_audit a", &[]).await.unwrap().get::<_,String>(0));
+    assert_eq!(admin.query_one("SELECT count(*) FROM control.management_audit WHERE action='browser.session.issue'", &[]).await.unwrap().get::<_,i64>(0),2);
+    for statement in [
+        "UPDATE control.management_audit SET created_at_us=created_at_us+1 WHERE action='browser.session.issue'",
+        "DELETE FROM control.management_audit WHERE action='browser.session.issue'",
+    ] {
+        assert_eq!(
+            admin
+                .batch_execute(statement)
+                .await
+                .unwrap_err()
+                .code()
+                .unwrap()
+                .code(),
+            "23514"
+        );
+    }
+    case("logout-retry-preserves-audit-and-session-cleanup-retains-attribution");
+
     assert!(matches!(
         owner.inspect_browser_session(&second.session, false).await,
         Err(SessionError::Denied)
@@ -408,6 +514,70 @@ async fn run(mut config: Config) {
         8
     );
     case("eight-session-capacity-and-safe-terminal-cleanup");
+    // Fail after the session SQL mutation, inside its audit INSERT. A failed
+    // audit must poison this owner and roll back both session cleanup and write.
+    admin.batch_execute("UPDATE control.browser_sessions SET revoked_at_us=GREATEST(issued_at_us,(EXTRACT(EPOCH FROM clock_timestamp())*1000000)::bigint) WHERE revoked_at_us IS NULL").await.unwrap();
+    reset_buckets(&admin).await;
+    let before = session_audit_state(&admin).await;
+    audit_failure(&admin, true).await;
+    let verified = owner
+        .begin_browser_login("alice", "127.0.0.1".parse().unwrap())
+        .await
+        .unwrap()
+        .verify(PASSWORD, &mut permit())
+        .unwrap();
+    assert!(matches!(
+        owner
+            .finish_browser_login(verified, SessionLifetime::default())
+            .await,
+        Err(SessionError::Backend)
+    ));
+    drop(owner);
+    owner_driver.await.unwrap().unwrap();
+    assert!(
+        before == session_audit_state(&admin).await,
+        "audit failure changed session or audit rows/xmin"
+    );
+    audit_failure(&admin, false).await;
+    (owner, owner_driver) = acquire(&config, 32).await;
+    let last = login(&mut owner, SessionLifetime::default()).await;
+    assert_eq!(admin.query_one("SELECT count(*) FROM control.management_audit WHERE action='browser.session.issue'", &[]).await.unwrap().get::<_,i64>(0),13);
+    case("audit-insert-failure-rolls-back-issuance-and-terminal-cleanup");
+
+    let before = session_audit_state(&admin).await;
+    audit_failure(&admin, true).await;
+    assert!(matches!(
+        owner
+            .revoke_browser_session(&last.session, &last.csrf)
+            .await,
+        Err(SessionError::Backend)
+    ));
+    drop(owner);
+    owner_driver.await.unwrap().unwrap();
+    assert!(
+        before == session_audit_state(&admin).await,
+        "audit failure changed revocation or audit rows/xmin"
+    );
+    audit_failure(&admin, false).await;
+    (owner, owner_driver) = acquire(&config, 33).await;
+    owner
+        .revoke_browser_session(&last.session, &last.csrf)
+        .await
+        .unwrap();
+    let before = session_audit_state(&admin).await;
+    owner.release().await.unwrap();
+    owner_driver.await.unwrap().unwrap();
+    (owner, owner_driver) = acquire(&config, 34).await;
+    owner
+        .revoke_browser_session(&last.session, &last.csrf)
+        .await
+        .unwrap();
+    assert!(
+        before == session_audit_state(&admin).await,
+        "logout retry changed its committed receipt"
+    );
+    assert_eq!(admin.query_one("SELECT count(*) FROM control.management_audit WHERE action='browser.session.revoke'", &[]).await.unwrap().get::<_,i64>(0),2);
+    case("audit-insert-failure-rolls-back-logout-and-successor-retry-is-idempotent");
     owner.release().await.unwrap();
     owner_driver.await.unwrap().unwrap();
     drop(admin);

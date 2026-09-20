@@ -179,7 +179,25 @@ sockets/hash work before a graceful Control release. Accepted policy changes
 currently require restart; this is not the later applied/draining barrier.
 These controls require the executable/engine/browser evidence of P08-T02 before
 advertising session or administration readiness. General login audit, configurable
-lifetimes, reauthentication, grants and the private panel remain required.
+lifetimes, reauthentication, grants and full private administration remain required.
+
+The first session mutation audit profile adds migration0807. New issuance and
+explicit logout append `browser.session.issue` or `browser.session.revoke` with
+outcome `accepted` atomically with the session change. The actor is the actual
+local principal, subject is the non-secret session ID, and configuration/security
+revisions reference the validated snapshot. No password, token, credential hash,
+raw username or peer address is copied to the receipt. Accepted means committed,
+not delivered to the browser; ambiguous COMMIT retains that distinction.
+
+Only a new revocation transition appends logout audit. An identical retry keeps
+the original row, while reset/deactivation and pre-upgrade revocations receive
+no retroactive logout attribution. Deleting terminal credential rows to enforce
+the eight-session cap never deletes their audit. An audit INSERT failure rolls
+back the session mutation and makes that Control connection unavailable. Existing
+policy documents and bootstrap receipts keep their meanings; no implicit policy
+upgrade or historical backfill occurs. This profile does not complete rejected
+request audit, the configurable365-day retention/maintenance consumer or audit
+capacity admission. Audit rows remain retained until that maintenance path exists.
 
 | Action | Initial permission bundle | Additional requirement |
 |---|---|---|

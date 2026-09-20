@@ -360,3 +360,14 @@ for replay resolution after ordinary audit TTL. This does not implement sessions
 API tokens, account lifecycle or active policy leases. The
 [local enrollment contract](../product/private-administration.md#local-first-owner-transition)
 owns its command and failure semantics.
+
+0807 extends the same append-only audit with accepted browser session issuance
+and explicit logout. Policy/config references, immutable principal attribution
+and a non-secret session subject commit with the mutation. A partial unique index
+covers only these two accepted actions, preserving repeated rejected enrollment
+receipts. The subject deliberately has no FK to removable session credentials.
+Existing sessions/audits are not backfilled; an already revoked session retry
+creates no new logout attribution. Private startup requires this explicit
+migration and the audit INSERT privilege. The session profile and remaining
+ordinary audit retention/capacity responsibilities are defined in
+[private administration](../product/private-administration.md).

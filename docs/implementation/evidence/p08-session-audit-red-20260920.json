@@ -1,0 +1,53 @@
+{
+  "format": "bigbrotr-session-audit-red/1",
+  "status": "EXPECTED_RED",
+  "source": "b7cb520a4666b419f55629aa0536227728e216b4",
+  "tree": "65e401329727e38e7c9929dc8ff24263370c10b1",
+  "scope": "P08-T02 independent accepted issuance audit oracle; unchanged production from9e3e44e",
+  "environment": {
+    "host": "Tux native Linux amd64",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d"
+  },
+  "observed": {
+    "build_schema_tokens_clippy": "PASS",
+    "native_adapter": "FAIL at first issuance audit oracle: actual0 expected1",
+    "independent_sql": {
+      "sessions": 1,
+      "issue_audits": 0,
+      "grants": 7,
+      "backends": 0
+    }
+  },
+  "limits": [
+    "Only first baseline upgrade case completed; remaining cases NOT_RUN",
+    "Panicking fixture leaves an active Control row; no graceful release claim",
+    "No product correction or audit capacity/retention qualification"
+  ],
+  "capture": {
+    "local_root": ".research/implementation/session-audit/native-red",
+    "archive_sha256": "fb04fe73000b650da22a2d8b09965e236bb07bdfe35bf4fd678d8be6523f2641",
+    "capture_files": 15,
+    "source_files": 991,
+    "offline_verification": "PASS"
+  },
+  "resources": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/session-audit-red-b7cb520",
+    "owner": "67b7dee453380a9e3631a98f9fdc5c7d",
+    "containers": [
+      {
+        "name": "postgres",
+        "id": "0fd62cac35bff150df9d9a93cd79164d63368befec64624e401c540f692b68da"
+      },
+      {
+        "name": "rust-audit",
+        "id": "a2fc518a99ddb1fd1b190866212b87359a887f2d3bbe353445071d4e82ec9e8d"
+      }
+    ],
+    "state": "stopped-retained",
+    "network_state": "removed after owner/no-endpoint audit",
+    "preexisting_preserved": 482,
+    "unrelated_running": 8,
+    "free_bytes": 6429016064
+  }
+}

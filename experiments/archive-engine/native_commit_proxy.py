@@ -7,6 +7,7 @@ installation transaction. Log counters, never SQL/authentication payloads.
 """
 import argparse
 import asyncio
+from collections import deque
 import hashlib
 import json
 from pathlib import Path
@@ -30,6 +31,66 @@ CONTROL_TARGETS = {
 
 def control_target_query(target, query):
     return query.upper().startswith(CONTROL_TARGETS[target])
+
+
+class SessionCommandObserver:
+    """Correlate extended Execute completions, including a following audit INSERT.
+
+    Closed lab profile: unnamed portals, unlimited Execute, bounded queue. A Sync
+    marker separates error recovery; simple Query may have several completions.
+    PostgreSQL16 protocol-flow/message-formats define these response boundaries.
+    No SQL parameters, authentication bytes or row data are retained.
+    """
+    def __init__(self, target):
+        self.target = target
+        self.statements = set()
+        self.bound = False
+        self.pending = deque()
+        self.discard_until_sync = False
+
+    def frontend(self, tag, body):
+        if tag == b'P':
+            statement, query, _ = body.split(b'\0', 2)
+            assert len(statement) <= 64
+            self.statements.discard(statement)
+            if control_target_query(self.target, query):
+                self.statements.add(statement)
+            assert len(self.statements) <= 16
+        elif tag == b'C' and body[:1] == b'S':
+            self.statements.discard(body[1:-1])
+        elif tag == b'B':
+            portal, statement, _ = body.split(b'\0', 2)
+            assert portal == b''
+            self.bound = statement in self.statements
+        elif tag == b'E':
+            assert body == b'\0' * 5
+            if not self.discard_until_sync:
+                self.pending.append(self.bound)
+        elif tag in (b'Q', b'S'):
+            assert not self.discard_until_sync or tag == b'S'
+            self.pending.append(tag)
+            self.discard_until_sync = False
+        assert len(self.pending) <= 128
+
+    def backend(self, tag, body):
+        if tag == b'C':
+            assert self.pending and self.pending[0] != b'S'
+            if self.pending[0] == b'Q':
+                return False
+            selected = self.pending.popleft()
+            expected = b'INSERT 0 1\0' if self.target.endswith('issue') else b'UPDATE 1\0'
+            return selected and body == expected
+        if tag == b'E':
+            # The server skips the remaining extended cycle through Sync on
+            # error. Preserve queued later cycles instead of misattributing them.
+            while self.pending and self.pending[0] not in (b'S', b'Q'):
+                self.pending.popleft()
+            self.discard_until_sync = not self.pending
+        elif tag == b'Z' and self.pending:
+            assert self.pending.popleft() in (b'S', b'Q')
+        elif tag in (b's', b'I', b'G', b'H', b'W'):
+            raise ValueError('unsupported-session-query-profile')
+        return False
 
 
 class Proxy:
@@ -105,6 +166,8 @@ class Proxy:
         await upstream_writer.drain()
         state = dict(data=False, commit=False, backend_pid=None,
                      owner_statement=None, owner_waiting=False, owner_forwarded=False)
+        session_commands = SessionCommandObserver(self.target) if self.target in (
+            'control-session-issue', 'control-session-revoke') else None
         manager_committed = asyncio.Event()
 
         async def pump(source, destination, frontend):
@@ -122,6 +185,11 @@ class Proxy:
                         await asyncio.Future()
                     return
                 tag, header, body = frame
+                if session_commands is not None:
+                    if frontend:
+                        session_commands.frontend(tag, body)
+                    elif session_commands.backend(tag, body):
+                        self.report['session_mutations_complete'] += 1
                 if not frontend and self.mode == 'omit-auth-final' and tag == b'R' and body[:4] == struct.pack('!I', 12):
                     # Real server authentication succeeds, but the client must
                     # refuse the following AuthenticationOk without its verifier.
@@ -171,11 +239,6 @@ class Proxy:
                         self.report['pin_claim_injections'] += 1
                 if not frontend and tag == b'C' and self.target == 'control-coordinator' and state['data'] and body == b'INSERT 0 1\0':
                     self.report['coordinator_inserts'] += 1
-                if not frontend and tag == b'C' and state['data'] and (
-                    (self.target == 'control-session-issue' and body == b'INSERT 0 1\0')
-                    or (self.target == 'control-session-revoke' and body == b'UPDATE 1\0')
-                ):
-                    self.report['session_mutations_complete'] += 1
                 if frontend and self.mode == 'hold-manager-owner':
                     if tag == b'P':
                         statement, query, _ = body.split(b'\0', 2)
