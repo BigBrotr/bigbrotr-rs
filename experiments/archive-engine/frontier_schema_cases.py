@@ -7,6 +7,7 @@ matrix does not infer scientific truth from privileged synthetic SQL fixtures.
 import argparse
 import json
 from pathlib import Path
+import re
 import sys
 
 sys.dont_write_bytecode = True
@@ -14,7 +15,10 @@ from signed_publication_cases import command, execute, sha
 from lab import change
 
 
-def main(root):
+def main(root, namespace):
+    assert not namespace or re.fullmatch('[a-z]{1,12}', namespace)
+    prefix = 'bbfrontier_'+(namespace+'_' if namespace else '')
+    directory_name = 'frontier-sql'+('-'+namespace if namespace else '')
     source = Path(__file__).resolve().parents[2]
     state = json.loads((root/'resources.json').read_text())
     assert source in (root/'source', root/'harness-source')
@@ -30,9 +34,9 @@ def main(root):
     ready = json.loads((root/'out/native-tests/ready.json').read_text())
     assert ready['source'] == state['source']
     assert sha(root/'out/native-tests/bigbrotr') == ready['control']
-    directory = root/'out/frontier-sql'
+    directory = root/'out'/directory_name
     directory.mkdir(mode=0o700)
-    report_path = root/'frontier-schema-cases.json'
+    report_path = root/('frontier-schema-cases'+('-'+namespace if namespace else '')+'.json')
     assert not report_path.exists()
     report = dict(status='INCOMPLETE', source=state['source'], harness_source=revision,
                   changed_paths=changed, artifact=ready['control'], cases=[], commands=[],
@@ -51,9 +55,9 @@ def main(root):
         report['commands'].append(record)
         try:
             execute(['docker', 'exec', state['container_id'], '/out/native-tests/bigbrotr',
-                     'migrate', 'apply', '--file', '/out/frontier-sql/'+label+'/instance.toml',
+                     'migrate', 'apply', '--file', '/out/'+directory_name+'/'+label+'/instance.toml',
                      '--target', str(target), '--user', 'postgres', '--password-ref',
-                     'file:/out/frontier-sql/'+label+'/postgres'], 75, record)
+                     'file:/out/'+directory_name+'/'+label+'/postgres'], 75, record)
         finally:
             save()
         assert record['exit'] == 0 and not record['stderr'] and not record['overflow']
@@ -61,7 +65,7 @@ def main(root):
         assert result['current_version'] == str(target)
         entries = json.loads((source/'migrations/manifest.json').read_text())['application_order']
         entries = entries[:next(i+1 for i,e in enumerate(entries) if e['version']==target)]
-        ledger = json.loads(sql('bbfrontier_'+label, "SELECT json_agg(json_build_array(migration,name,encode(checksum,'hex')) ORDER BY migration) FROM control.schema_versions"))
+        ledger = json.loads(sql(prefix+label, "SELECT json_agg(json_build_array(migration,name,encode(checksum,'hex')) ORDER BY migration) FROM control.schema_versions"))
         assert ledger == sorted([[e['version'], e['name'], sha(source/'migrations/postgres'/e['name'])] for e in entries])
         record['ledger'] = ledger
         save()
@@ -75,13 +79,13 @@ def main(root):
             p.chmod(0o600)
         text = (source/'config/recipes/archive-only.toml').read_text()
         for section,key,value in [('postgres.control','endpoint','127.0.0.1:5432'),
-                                  ('postgres.control','database','bbfrontier_'+label),
-                                  ('postgres.control','password_ref','file:/out/frontier-sql/'+label+'/bigbrotr_control')]:
+                                  ('postgres.control','database',prefix+label),
+                                  ('postgres.control','password_ref','file:/out/'+directory_name+'/'+label+'/bigbrotr_control')]:
             text = change(text,section,key,value)
         (home/'instance.toml').write_text(text)
-        sql('postgres','CREATE DATABASE bbfrontier_'+label)
+        sql('postgres','CREATE DATABASE '+prefix+label)
         migrate(label,target)
-        return 'bbfrontier_'+label
+        return prefix+label
 
     def observe(database):
         return json.loads(sql(database, """SELECT json_build_object(
@@ -100,7 +104,7 @@ def main(root):
                 record['output'] = sql(database, fixture.read_text())
                 record['rows'] = observe(database)
                 assert ('PASS: unbound empty archive frontier refused atomically' in record['output']
-                        if label=='unbound' else json.loads(record['output'].splitlines()[-1])['status']=='PASS')
+                        if label=='unbound' else json.loads(record['output'])['status']=='PASS')
                 record['status'] = 'PASS'
             finally:
                 save()
@@ -135,4 +139,6 @@ def main(root):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('root', type=Path)
-    main(parser.parse_args().root)
+    parser.add_argument('--namespace', default='')
+    args = parser.parse_args()
+    main(args.root, args.namespace)
