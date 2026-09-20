@@ -1,5 +1,5 @@
-// Actual production assets and Rust HTTP only. Fault routing below still asks
-// the real server for an absent asset; no API response or CSP is substituted.
+// Actual production assets and Rust HTTP only. The native fixture temporarily
+// omits one bootstrap module; no request interception, API mock or CSP bypass.
 import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
 import { writeFile, readFile, rename, readdir, readlink } from 'node:fs/promises';
@@ -56,8 +56,9 @@ async function command(value) {
   const deadline = performance.now() + 12_000;
   for (;;) {
     try {
-      assert.equal(JSON.parse(await readFile(join(home, `browser-response-${number}.json`), 'utf8')).state, 'verified');
-      return;
+      const response = JSON.parse(await readFile(join(home, `browser-response-${number}.json`), 'utf8'));
+      assert.equal(response.state, 'verified');
+      return response;
     } catch (error) { if (error.code !== 'ENOENT') throw error; }
     assert.ok(performance.now() < deadline, 'restart response deadline');
     await sleep(20);
@@ -231,10 +232,14 @@ try {
     assert.deepEqual(external, []);
   });
   await step('missing-bootstrap-recovery', async () => {
+    const fault = await command('remove-bootstrap');
+    assert.match(fault.module, /^_app\/immutable\/entry\/start\.[A-Za-z0-9_-]+\.js$/);
+    const bootstrapUrl = origin + base + fault.module;
     const missing = await context.newPage();
     primaryPage = missing;
     let actualMissing = 0;
-    const diagnostic = report.missingBootstrap = { rewrites: 0, script404s: 0, events: [], navigations: 0 };
+    let restoring = false;
+    const diagnostic = report.missingBootstrap = { interception: false, noStore: true, script404s: 0, early200s: 0, restored200s: 0, events: [], navigations: 0 };
     const record = (request, event, status) => {
       if (diagnostic.events.length >= 128) { diagnostic.overflow = true; return; }
       const path = new URL(request.url()).pathname;
@@ -245,20 +250,27 @@ try {
     missing.on('requestfailed', request => record(request, 'failed'));
     missing.on('response', response => {
       record(response.request(), 'response', response.status());
-      if (response.request().resourceType() === 'script' && response.status() === 404) actualMissing++;
+      if (response.url() === bootstrapUrl) {
+        if (response.status() === 404) actualMissing++;
+        if (response.status() === 200) {
+          if (restoring) diagnostic.restored200s++;
+          else diagnostic.early200s++;
+        }
+        diagnostic.noStore &&= response.headers()['cache-control'] === 'no-store';
+      }
       diagnostic.script404s = actualMissing;
     });
     missing.on('framenavigated', frame => { if (frame === missing.mainFrame()) diagnostic.navigations++; });
-    await missing.route('**/_app/immutable/entry/start.*.js', route => {
-      diagnostic.rewrites++;
-      return route.continue({ url: origin + '/__absent-panel-start.js' });
-    });
     await missing.goto(origin + base);
     await expect(missing.locator('#startup-recovery')).toBeVisible();
     await expect(missing.getByRole('link', { name: 'Reload the panel' })).toBeVisible();
-    await expect.poll(() => actualMissing).toBe(1);
+    // Firefox may separately request preload and import. Their multiplicity
+    // is not an invariant: require a real 404 for the exact bootstrap module.
+    await expect.poll(() => actualMissing).toBeGreaterThan(0);
     await missing.screenshot({ path: join(home, 'missing-bootstrap.png'), fullPage: true });
-    await missing.unrouteAll();
+    assert.equal((await command('restore-bootstrap')).module, fault.module);
+    assert.equal(diagnostic.early200s, 0);
+    restoring = true;
     diagnostic.beforeClick = diagnostic.navigations;
     await missing.getByRole('link', { name: 'Reload the panel' }).click();
     try {
@@ -277,7 +289,9 @@ try {
       throw error;
     }
     diagnostic.afterClick = diagnostic.navigations;
+    await expect.poll(() => diagnostic.restored200s).toBeGreaterThan(0);
     await expect(missing.locator('#startup-recovery')).toBeHidden();
+    assert.equal(diagnostic.noStore, true);
     assert.equal(diagnostic.overflow, undefined);
     await missing.close();
   });

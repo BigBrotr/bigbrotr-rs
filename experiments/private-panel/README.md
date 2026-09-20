@@ -23,9 +23,17 @@ layout, invalid and wrong password, exact stored permissions, actual cookie
 attributes, CSRF/second-port Origin denial, retained cookie after process restart,
 cross-tab logout, new login/reload, and missing bootstrap recovery. SQL compares
 complete session and attempt-bucket rows including xmin before/after denials and
-session rows across restart before `/me`. The absent bootstrap request is rewritten
-to an actually missing server path; its real404 is required. This is a controlled
-request fault, not a claim about an actual deployment rollout. Screenshots are
+session rows across restart before `/me`. The fixture copies the verified bundle
+into its private case directory. With the
+server stopped, it omits the start module from both disk and the closed manifest,
+then starts the actual Rust process. The page must observe a real 404 for that
+module. Restoration reinstalls the exact original module/manifest and restarts;
+clicking the visible reload link must fetch the real module with 200 and restore
+the enabled login form. Both restarts assert unchanged session/bucket rows and
+loaded manifest identities. No browser request is intercepted, so normal browser
+cache behavior remains active. This is a deliberate incomplete-asset deployment;
+removing a declared file without adjusting its manifest correctly refuses startup.
+Screenshots are
 synthetic; arbitrary exception text, headers and cookies are not exported.
 
 Node teardown failure fails the journey. The wrapper checks `/proc` for remaining
@@ -58,9 +66,14 @@ failed. [Discriminating diagnostics](../../docs/implementation/evidence/p09-priv
 confirmed the document referrer-policy defect in Firefox/WebKit and the distinct
 Chromium CORS observation error. The [corrected matrix](../../docs/implementation/evidence/p09-private-panel-referrer-native-20260920.json)
 passes all eight journeys on Chromium and the first seven on Firefox/WebKit.
-The missing-bootstrap response count and reload-link recovery remain unresolved
-in those engines. Further diagnostics retain bounded request categories, status,
-rewrite/navigation counts and numeric matcher results. An explicit browser reload
+[Further diagnostics](../../docs/implementation/evidence/p09-private-panel-bootstrap-diagnostics-20260920.json)
+show two real Firefox 404s, invalidating the exact-one count assumption. WebKit
+navigated but never retried the module after removing interception; explicit reload
+also failed. Playwright's exact WKPage.updateRequestInterception toggles resource
+caching, so that instrumentation is not transparent. The replacement native fault
+above is pending execution; no product recovery fix is inferred from this result.
+Further diagnostics retain bounded request categories, status,
+navigation counts and numeric matcher results. An explicit browser reload
 after a failed link is diagnostic only: the original failure remains FAIL.
 The Chromium wire observer correlates either CDP event order, with finite pending
 and output capacities; reordered-event and capacity regressions run in the frontend

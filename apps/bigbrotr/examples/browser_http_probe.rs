@@ -406,7 +406,7 @@ async fn run(binary: PathBuf, home: PathBuf, mode: &str, panel: Option<panel::Op
         format!("file:{}", home.join("bigbrotr_control").display()).into(),
     );
     if let Some(options) = &panel {
-        options.configure(&mut document);
+        options.configure(&mut document, &home);
     }
     let config = home.join("instance.toml");
     fs::write(&config, toml::to_string(&document).unwrap()).unwrap();

@@ -17321,7 +17321,7 @@
   "implementation_private_panel_20260920": {
     "local_root": ".research/implementation/private-panel",
     "owner": "root implementer",
-    "state": "Referrer fix scoped nativePASS; missing-bootstrap Firefox/WebKitFAIL. All jobs stopped; diagnostics pending.",
+    "state": "Bootstrap instrumentation diagnostics complete; actual server asset fault qualification pending. All owned jobs stopped.",
     "source_base": "b98426146c68caffcbf6822bdb956d1a8abbd30d",
     "dependency_manifest": ".research/implementation/private-panel/dependencies/selected-candidates.json",
     "contents": "Official registry metadata/verified archives/sources; local client and bundle checks; controlled native logs including failures and cache recovery; generated bundles are artifacts, not source authority.",
@@ -17560,6 +17560,66 @@
         "private-panel-diagnostics-50185d3"
       ],
       "preserved": "Actual executables/shared libraries/build receipts/source/tools/fixtures/PGdata/captures. Referrercc4aa3a and qualifiede65116b caches intact."
+    },
+    "bootstrap_diagnostics": {
+      "source": "6d663b73de80862de2d6ab1cac1b66e70c2b4214",
+      "tree": "2f0b89984c31d1410db069c2b38a8793a40d74d8",
+      "owner": "ae7efc0e61bc12224d45e0cbc07cabab",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/private-panel-bootstrap-6d663b7",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "environment",
+          "id": "a2e45ae5288441e81762c3f17b2d270bd288af770f2c1daf59dc4bf6c82c142d"
+        },
+        {
+          "name": "rust",
+          "id": "600b3da39c5ba06b24384f27aeed34747aa7afc51f06859815c86961f85e487b"
+        },
+        {
+          "name": "frontend",
+          "id": "9c71c2b757b94634ce927b9598ba964095ace700051454e209fff135b0e1bee3"
+        },
+        {
+          "name": "postgres",
+          "id": "4eff03b606784b65772b9260af41f358f677d8c5ebee7b1c9b854fa5a44889b0"
+        },
+        {
+          "name": "chromium-root",
+          "id": "49313024a6b3bdf9e5ef580b58b9b6e8487e6ed8a0cd1db499098a9192a98688"
+        },
+        {
+          "name": "firefox-root",
+          "id": "caaf9eb2edb0e76f17e963d8bc24ffbb2abbf5c85157c7e19d080c2670682c42"
+        },
+        {
+          "name": "webkit-root",
+          "id": "28a39564d944be61b4422edbbf26f88d8b4d8a493c68b8d65c960cab87179fd1"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+      "started_at": "2026-09-20T13:47:57.383373+00:00",
+      "network_id": "a9e9a6098763e0845501d222e290cd892090fcc67668f2ea66a1c6eb844e8a84",
+      "postgres_id": "4eff03b606784b65772b9260af41f358f677d8c5ebee7b1c9b854fa5a44889b0",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json",
+      "local_root": ".research/implementation/private-panel/native-bootstrap",
+      "evidence": "docs/implementation/evidence/p09-private-panel-bootstrap-diagnostics-20260920.json",
+      "capture_sha256": "39ee81460894d5f0e49c9626cb0a1e50e314a1e80c727a523d3b9bdc2d5f03a4",
+      "observation": "Chromium root passed eight journeys; Firefox/WebKit passed seven then failed bootstrap recovery. All seven containers stopped, 454 prior preserved, eight unrelated workloads running, zero PostgreSQL clients. 80 capture files and 984 source hashes verified."
+    },
+    "referrer_cache_retirement": {
+      "receipt": ".research/implementation/private-panel/tux-referrer-cache-retirement.json",
+      "status": "PASS",
+      "removed_logical_bytes": 1996907856,
+      "removed_files": 1267,
+      "containers_unchanged": 461,
+      "free_after_bytes": 13212532736,
+      "partial_cache_do_not_reuse": "private-panel-referrer-cc4aa3a",
+      "preserved": "Executables, shared libraries, source, receipts and data retained and hash checked. The e65116b and 6d663b7 caches remain intact."
     }
   }
 }

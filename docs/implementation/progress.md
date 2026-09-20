@@ -21,13 +21,12 @@ another diagnostic command instead of the real read consumer.
 
 ## Git and ownership
 
-Local main/HEAD is `cc4aa3abc26301c252c7197c0d9a1b6057916b9b`;
-five unpublished commits follow origin `b98426146c68caffcbf6822bdb956d1a8abbd30d`.
-Root owns the current evidence/inventory update and browser diagnostic changes,
-including new wire-status helper/tests. No other dirty work, parallel writer or
-merge/rebase was observed on resumption. The CDP reordered-event regression has
-an executed RED and both reordered-event/capacity tests now PASS. JS syntax and
-Python parsing PASS; product source is unchanged since cc4aa3a.
+Local main/HEAD is `6d663b73de80862de2d6ab1cac1b66e70c2b4214`;
+six unpublished commits follow origin `b98426146c68caffcbf6822bdb956d1a8abbd30d`.
+Root owns the actual missing-module fixture, browser client, evidence, inventory,
+README and this checkpoint. Product source is unchanged since cc4aa3a; no other
+writer or merge/rebase was observed. The CDP reordered-event/capacity tests passed
+locally and natively after an executed runtime RED.
 Private local
 session API production baseline5a4e0d1 and qualified COMMIT fixturee65116b remain
 unchanged history. Full candidate state is listed by Git, not this summary.
@@ -151,11 +150,32 @@ The intact cc4aa3a and e65116b caches remain. Receipt is inventoried under
 `private-panel/tux-failed-cache-retirement.json`. Last observed Tux free space is
 15,145,680,896 bytes. No cleanup debt remains.
 
-Next bounded action: commit the corrected CDP event-order observer and bounded
-missing-bootstrap diagnostics, then run all three root cases in a fresh
-exact-revision native lab. Preserve original failures and do not weaken the 404
-or recovery oracle before identifying their causes. Large blocked response,
-forced detached-browser cleanup, frontend shared CI and wider P09/M1 remain open.
+[Bootstrap diagnostics](evidence/p09-private-panel-bootstrap-diagnostics-20260920.json)
+at 6d663b7 execute all three root cases. Chromium passes eight journeys;
+Firefox issues two real bootstrap 404s, invalidating the exact-one assumption.
+WebKit navigates after the link and explicit reload but never requests the module
+again. Playwright toggles resource caching with interception; this is a possible
+instrumentation interaction, not a proven product defect. The replacement fixture
+now removes/restores the actual module and manifest in a private bundle copy,
+with real Rust restarts and unchanged SQL assertions. No request interception.
+The first Mac compile failed on unsupported digest LowerHex; corrected build,
+Clippy and JS syntax passed. Read-only AI review then tightened the exact module
+URL and post-restoration 200 timing. The final reviewed build, Clippy and JS
+syntax all PASS; native execution remains pending.
+
+All seven diagnostic containers are stopped/PID0/noOOM; zero PG clients, 454 prior
+containers preserved, eight unrelated workloads remain. Capture 80 files and 984
+source hashes verified; raw `private-panel/native-bootstrap`; remote root
+`runs/private-panel-bootstrap-6d663b7`, owner `ae7efc0e61bc12224d45e0cbc07cabab`.
+A separate verified retirement removed only 1267 .rlib/.rmeta files (1,996,907,856
+logical bytes) from stopped cc4aa3a. Its partial Cargo cache must not be reused;
+artifacts/data retained. All 461 container records unchanged, free space
+13,212,532,736 bytes. The e65116b and 6d663b7 caches remain intact.
+
+Next bounded action: review/build the actual bootstrap fault fixture, commit it,
+and execute the full six-case native matrix in fresh resources. Preserve all
+instrumented failures. Large blocked response, forced detached-browser cleanup,
+frontend shared CI and wider P09/M1 remain open.
 
 Preserve `.research/worktrees/producer-closing-old-writer`, last verified clean at
 `f899896b1207f5e71c4e39d9ab7814b293814735` on

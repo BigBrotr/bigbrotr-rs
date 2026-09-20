@@ -37,9 +37,29 @@ impl Options {
             "/control/"
         }
     }
-    pub fn configure(&self, document: &mut toml::Table) {
+    pub fn configure(&self, document: &mut toml::Table, home: &Path) {
+        let deployed = home.join("assets");
+        fs::create_dir(&deployed).unwrap();
+        let manifest: Value =
+            serde_json::from_slice(&fs::read(self.assets.join("manifest.json")).unwrap()).unwrap();
+        for entry in manifest["files"].as_array().unwrap() {
+            let path = entry["path"].as_str().unwrap();
+            assert!(
+                Path::new(path)
+                    .components()
+                    .all(|c| matches!(c, std::path::Component::Normal(_)))
+            );
+            let target = deployed.join(path);
+            fs::create_dir_all(target.parent().unwrap()).unwrap();
+            fs::copy(self.assets.join(path), target).unwrap();
+        }
+        fs::copy(
+            self.assets.join("manifest.json"),
+            deployed.join("manifest.json"),
+        )
+        .unwrap();
         let assets = toml::Table::from_iter([
-            ("directory".into(), self.assets.to_str().unwrap().into()),
+            ("directory".into(), deployed.to_str().unwrap().into()),
             ("base_path".into(), self.base().into()),
         ]);
         document
@@ -48,6 +68,44 @@ impl Options {
             .as_table_mut()
             .unwrap()
             .insert("assets".into(), assets.into());
+    }
+
+    fn bootstrap_fault(&self, home: &Path, missing: bool) -> Value {
+        use sha2::{Digest, Sha256};
+        let original = fs::read(self.assets.join("manifest.json")).unwrap();
+        let mut manifest: Value = serde_json::from_slice(&original).unwrap();
+        let files = manifest["files"].as_array_mut().unwrap();
+        let candidates: Vec<_> = files
+            .iter()
+            .enumerate()
+            .filter(|(_, entry)| {
+                entry["path"]
+                    .as_str()
+                    .unwrap()
+                    .starts_with("_app/immutable/entry/start.")
+            })
+            .map(|(index, _)| index)
+            .collect();
+        assert_eq!(candidates.len(), 1);
+        let entry = files.remove(candidates[0]);
+        let path = entry["path"].as_str().unwrap();
+        let target = home.join("assets").join(path);
+        let deployed_manifest = if missing {
+            // Omit this module from the closed manifest as well. Removing a
+            // declared file alone must correctly prevent server startup.
+            fs::remove_file(&target).unwrap();
+            serde_json::to_vec(&manifest).unwrap()
+        } else {
+            fs::copy(self.assets.join(path), &target).unwrap();
+            original
+        };
+        fs::write(home.join("assets/manifest.json"), &deployed_manifest).unwrap();
+        let digest: String = Sha256::digest(&deployed_manifest)
+            .iter()
+            .map(|byte| format!("{byte:02x}"))
+            .collect();
+        json!({"module":path,"module_sha256":entry["sha256"],"missing":missing,
+            "manifest_sha256":digest})
     }
 }
 struct BrowserProcess(Child);
@@ -101,6 +159,7 @@ pub(super) async fn run(
         if request.exists() {
             assert!(fs::metadata(&request).unwrap().len() <= 1024);
             let value: Value = serde_json::from_slice(&fs::read(&request).unwrap()).unwrap();
+            let mut response = json!({"state":"verified"});
             match command {
                 1 => {
                     assert_eq!(value, json!({"command":"observe-boundary"}));
@@ -126,10 +185,43 @@ pub(super) async fn run(
                         "restart changed session rows"
                     );
                 }
+                4 | 5 => {
+                    let missing = command == 4;
+                    assert_eq!(
+                        value,
+                        json!({"command":if missing {"remove-bootstrap"} else {"restore-bootstrap"}})
+                    );
+                    let before = (session_state(admin).await, bucket_state(admin).await);
+                    server.stop();
+                    let fault = options.bootstrap_fault(home, missing);
+                    let name = if missing {
+                        "panel-missing-bootstrap"
+                    } else {
+                        "panel-restored-bootstrap"
+                    };
+                    server = Server::start(binary, config, home, name);
+                    let observed = server.ready();
+                    assert_eq!(
+                        observed["listeners"][0]["private_assets"]["manifest_sha256"],
+                        fault["manifest_sha256"]
+                    );
+                    if !missing {
+                        assert_eq!(
+                            observed["listeners"][0]["private_assets"],
+                            first["listeners"][0]["private_assets"]
+                        );
+                    }
+                    assert!(
+                        before == (session_state(admin).await, bucket_state(admin).await),
+                        "asset restart changed sessions or buckets"
+                    );
+                    response["module"] = fault["module"].clone();
+                    case(name, fault);
+                }
                 _ => panic!("unexpected browser fixture command"),
             }
             let temporary = home.join(format!("browser-response-{command}.tmp"));
-            fs::write(&temporary, b"{\"state\":\"verified\"}\n").unwrap();
+            fs::write(&temporary, serde_json::to_vec(&response).unwrap()).unwrap();
             fs::rename(
                 temporary,
                 home.join(format!("browser-response-{command}.json")),
@@ -148,7 +240,7 @@ pub(super) async fn run(
         tokio::time::sleep(Duration::from_millis(10)).await;
     }
     assert_eq!(
-        command, 4,
+        command, 6,
         "browser did not execute required SQL controls/restart"
     );
     let report: Value =
