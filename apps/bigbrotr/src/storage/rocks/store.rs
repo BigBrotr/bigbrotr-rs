@@ -48,6 +48,10 @@ mod bootstrap_tests;
 #[path = "request_input_tests.rs"]
 mod request_input_tests;
 
+#[cfg(test)]
+#[path = "wal_recovery_tests.rs"]
+mod wal_recovery_tests;
+
 #[path = "admission.rs"]
 mod admission;
 #[path = "receipt_effects.rs"]

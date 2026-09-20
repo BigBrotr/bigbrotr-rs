@@ -26,20 +26,22 @@ remain separate required work.
 
 ## Git and ownership
 
-Observed before this checkpoint commit: main HEAD
-7114401e7b5026ad014db69a0def7461b9d01ceb, nine unpublished commits above last
-read-only verified origin/main8931a0f611b718cfac845cda39211e9e8da59d8c.
+Verified on resumption: main and remote refs/heads/main both point to
+published ef58a6b25db69c1f82e5909db632b3f1547a392f. The working tree was clean.
+The final qualification/report/reference commit and private push are complete.
 Product candidate d2959da61a54a89b6b4e1b4806aa3a819bdff778, tree
-45d8c742d032641b9579bfc3ae9bc0e2ef80ffa0, remains unchanged in product libraries,
-migrations1..14 and dependencies through all subsequent fixture builds.
+45d8c742d032641b9579bfc3ae9bc0e2ef80ffa0, remains the qualified product input;
+later published commits contain fixture, observer and evidence changes.
 
-Root owns final report/reference/task/experiment documentation, this checkpoint,
-lab inventory and the small offline observer correction. No unexpected writer,
-merge or rebase. The next coherent documentation/evidence commit and private push
-are pending at this observation; verify actual HEAD/origin when resuming rather
-than guessing that publication happened. Independent AI review of new captures and the complete report is done:49path/size/
-hash references match, no further concrete finding. Artifact/link/handoff checks
-PASS; all19captures pass the final observer. No parallel writer or test process.
+Root owns the strict WAL reopening prerequisite below. The proposed negative
+resolver was deferred and its unpublished stub removed after independent review
+identified a real lossy-recovery counterexample.
+Independent AI review of the prior complete report verified all49path/size/hash
+references; final artifact/link/handoff checks and all19offline observers passed.
+No parallel writer. Read-only inspection confirms both lab pairs remain stopped,
+no BigBrotr container runs, and the eight unrelated workloads remain running.
+The three retained capture identity files are present; their earlier full hash
+verification remains dated evidence, not a newly rerun engine qualification.
 
 Separate compatibility worktree .research/worktrees/producer-closing-old-writer
 remains clean at published f899896b1207f5e71c4e39d9ab7814b293814735 on
@@ -142,13 +144,39 @@ Actual Linuxamd64, Rust1.98.1, PG16.15, Rocks11.8.1; noarm64 evidence.
 
 ## Next bounded action and remaining gates
 
-Complete the final scoped report review, affected documentation checks and coherent
-private commit/push; verify remote identity/privacy and clean status afterwards.
-Then resume P02-T02 step4 drain/checkpoint work by reading the complete owning
-operations sections for outcome handoff, reserved-but-uncommitted resolution and
-contiguous ACK/retirement, alongside current producer/checkpoint DDL and real
-callers. Select the next implementable responsibility from those contracts; do not
-reinterpret the positive-only resolver as a complete drain or noncommit proof.
+P02-T02 step4 changed direction after a concrete dependency failure. The proposed
+negative resolver remains unimplemented: current issued+closing metadata cannot
+establish that an earlier permissive native recovery never lost a committed tail.
+The review traced Rocks11.8.1 PointInTimeRecovery's default and explicit corruption
+suppression. Mac reproduced it with the actual product: synchronized bootstrap,
+child SIGKILL/reap, one corrupted CRC byte, then successful reopen with sequence1
+and no bootstrap effects. This is measured, not only a source concern.
+
+The working fix sets AbsoluteConsistency with paranoid checks retained. Manifest,
+profile1 bytes, receipt/reservation bindings and SQL stay unchanged; old binaries
+remain permissive and this fix cannot attest their history retrospectively.
+Native tests also demonstrate that complete-record boundary truncation still
+reopens successfully, preventing an overclaim of authoritative absence.
+
+Local evidence is .research/implementation/wal-recovery: mac-red.log and its exact
+tracked patch/new-test snapshot, mac-green.log, mac-wal-final.log (2tests),
+mac-profile.log (5tests), mac-store.log and mac-store-identity.json (47tests;
+actual binarySHA30ff65a2d18fb2b09405719ebf6069bc3a6160f9b3747c793fce242dd38b5a2a).
+All those final tests pass; the required packaged worker was explicitly excluded
+on Mac and must execute on Linux. A prior draft compile error (SHA hex formatting)
+is retained at producer-noncommit/native-red.log and is not a semantic RED.
+Local Clippy, formatting, diff whitespace, artifact and handoff checks PASS.
+Independent AI review inspected the complete fix/tests/runner/reference changes
+and Mac evidence; its only checkpoint mismatch is now corrected. Linux NOT_RUN.
+
+Next bounded action: finish affected review/Clippy/documentation checks, commit
+this candidate, transfer it by Git to a fresh inventoried no-network Tux lab and
+execute experiments/ingest-wal-recovery/run_native.py. The runner builds the actual
+same-source worker/application and exercises native owner/profile/store/format
+checks with finite resources. No new Tux lab has started yet. Preserve existing
+stopped laboratories and their data. Record native output, failures, terminal
+resource audit and exact source/artifact identities before publishing qualification.
+Then continue the selected drain/checkpoint task; absence/ACK/GC remain separate.
 
 M1 still needs actual read, standalone export and restart. Proof/input checkpoint
 closure, ACK/GC/abandonment, source closure/topologyCAS, successor activation,

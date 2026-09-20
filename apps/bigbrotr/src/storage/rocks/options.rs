@@ -1,6 +1,6 @@
 //! Native option profile 1. These controls are not a process RSS or disk ceiling.
 use rocksdb::{
-    BlockBasedOptions, Cache, ColumnFamilyDescriptor, DBCompressionType, Options,
+    BlockBasedOptions, Cache, ColumnFamilyDescriptor, DBCompressionType, DBRecoveryMode, Options,
     WriteBufferManager,
 };
 use std::fmt;
@@ -229,6 +229,9 @@ impl RocksNativeProfile {
         db_options.set_use_fsync(true);
         db_options.set_atomic_flush(true);
         db_options.set_paranoid_checks(true);
+        // Detected WAL damage must not silently discard a synced outcome at open.
+        // Incomplete tails require explicit recovery; never fall back to PIT.
+        db_options.set_wal_recovery_mode(DBRecoveryMode::AbsoluteConsistency);
         db_options.set_manual_wal_flush(false);
         db_options.set_max_total_wal_size(limits.max_total_wal_bytes);
         db_options.set_max_open_files(limits.max_open_files);
@@ -463,6 +466,7 @@ mod tests {
             ("max_total_wal_size=16777216", 1),
             ("use_fsync=true", 1),
             ("atomic_flush=true", 1),
+            ("wal_recovery_mode=kAbsoluteConsistency", 1),
             ("write_buffer_size=2097152", 3),
             ("max_write_buffer_number=2", 3),
             ("block_size=16384", 3),

@@ -187,6 +187,12 @@ One owner serializes exact identity decisions for each writable directory.
   recovery in a distinct process. Missing receipt or reservation stays Unresolved;
   corrupt existing copy stays Conflict. This does not complete drain, ACK/GC or
   this step; reserved-but-uncommitted resolution remains separate work.
+  That negative path additionally requires recovery provenance: the
+  [WAL reopening risk slice](../../experiments/ingest-wal-recovery/README.md)
+  found default point-in-time recovery could hide a lost synchronized batch.
+  Strict reopening refuses detected damage, but does not prove a complete tail
+  was never lost or salvaged earlier. Do not infer noncommit from an issued
+  counter until that remaining boundary has an implemented, qualified witness.
 - [ ] **Step 5:** Make provenance-off allocate no P inventory or event/endpoint side channel;
   retain scope eligibility and scoped first local receive/earlier corrections.
   Implement CertifyExisting against one committed inventory view, exact verified

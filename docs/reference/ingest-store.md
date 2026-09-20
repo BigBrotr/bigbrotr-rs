@@ -58,6 +58,13 @@ expected manifest. The codec refuses values longer than 266 bytes before field
 processing. It makes no additional Rust copy of an oversized native value; native
 recovery, block reads and allocations are still subject to engine/OS limits.
 
+The [native profile](ingest-native-profile.md#selected-options) selects absolute
+WAL consistency. Detected checksum damage and incomplete records refuse native
+open; no automatic point-in-time salvage occurs. Preserve the directory for
+explicit recovery. This stricter acceptance can make an interrupted trailing
+append unavailable. It neither repairs already lost history nor makes successful
+open an authoritative noncommit or backup-validation result.
+
 Unknown versions, malformed or absent manifest, a different dataset, owner
 resource, source shard, owner epoch, process incarnation, topology, recovery or
 policy coordinate, and any changed current namespace are refused. No mismatch

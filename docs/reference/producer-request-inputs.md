@@ -295,3 +295,11 @@ inspection plus PostgreSQL handoff. Dictionary closure keeps two bounded vectors
 of fixed-size references and decodes one fact at a time. This is not a whole-store
 scrub, an archive fallback, causal backup validation, contiguous resolved prefix,
 input repair, ACK/GC or logical import completion. Those remain required tasks.
+
+The planned reserved-but-uncommitted resolver has an additional prerequisite:
+healthy recovery provenance must exclude silent loss of a previously committed
+tail. The [native profile](ingest-native-profile.md#selected-options) now refuses
+detected WAL damage, but a complete-record truncation and an earlier permissive
+recovery cannot be disproved by today's successful open or issued counter alone.
+No negative resolution API, durable noncommit row or retirement permission is
+provided by this fix. Preserve unresolved reservations and their original inputs.

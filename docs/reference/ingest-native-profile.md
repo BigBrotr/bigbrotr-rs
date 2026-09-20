@@ -66,10 +66,34 @@ The older isolated binding experiment put WBM only in CF options; its successful
 cache, compression and crash cases did not establish WBM attachment.
 
 DB options explicitly select `use_fsync=true`, atomic flush, paranoid checks,
+`wal_recovery_mode=kAbsoluteConsistency`,
 automatic WAL flushing, supplied WAL/open-file/background targets, one file-opening
 thread and one subcompaction. mmap reads/writes remain disabled. Diagnostic LOGs
 rotate at a 1 MiB target with four retained files, avoiding the default single
 unbounded LOG. WAL and LOG sizes are rotation/flush targets, not strict disk quotas.
+
+Ordinary reopening must refuse detected WAL damage. The engine's default
+`kPointInTimeRecovery` can successfully reopen before a corrupted record, losing
+even a previously synchronized application batch. `paranoid_checks=true` alone
+does not prevent that fallback. The pinned [recovery modes](https://github.com/facebook/rocksdb/blob/abeebd9630f11bd08c28b7bd43c7bdfc62050654/include/rocksdb/options.h#L411)
+and [error handling](https://github.com/facebook/rocksdb/blob/abeebd9630f11bd08c28b7bd43c7bdfc62050654/db/db_impl/db_impl_open.cc#L1715)
+define this distinction. Absolute consistency also refuses an incomplete trailing
+record, including one caused by an interrupted append. Preserve the suspect
+directory for explicit recovery; never retry automatically with a permissive mode.
+
+This corrects an omitted option in profile1 without rewriting manifests, keys,
+receipts or reservation digests. It tightens open acceptance, not the persistent
+format. Earlier executables remain permissive; rolling back to one reintroduces
+the risk. A manifest version bump alone would not fence their native recovery,
+which occurs before the application manifest check. No previous permissive
+recovery is retrospectively qualified by this fix.
+
+Even strict recovery cannot detect every loss: a WAL truncated exactly between
+complete records can still parse successfully. Nor does successful open establish
+causal backup closure or prove that a whole WAL was never removed. Consequently,
+it is not a native noncommit witness. The initial producer resolver remains
+positive-only; authoritatively resolving reserved-but-uncommitted work requires
+additional provenance and exclusion evidence before checkpoint/retirement use.
 
 The builder starts with creation and missing-CF creation disabled. The store may
 enable them only after its explicit fresh-initialization checks; reopen separately
@@ -128,3 +152,12 @@ These are local option-attachment/configuration checks. They do not qualify the
 complete product store, hard RSS limits, load/stall behavior, ENOSPC/fsync errors,
 crash recovery, backup closure or fencing. Native target support and release
 acceptance remain owned by the integrated store's exact-revision tests.
+
+`wal_recovery_tests` adds actual synced bootstrap, child SIGKILL/reap, complete
+frozen native-row comparison, one-byte WAL-checksum corruption and a truncated
+record body. Each damaged case includes a permissive-mode negative control that
+loses the entire batch; ordinary store and recovery opens must both refuse and
+preserve the damaged WAL through retry. An intact crash reopens with every original
+row. A separate record-boundary truncation control deliberately demonstrates the
+remaining limitation above. These bounded cases do not test power loss, mid-FFI
+kill, missing whole WALs, filesystem failure or historical lossy recovery adoption.
