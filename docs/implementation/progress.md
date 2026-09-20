@@ -21,10 +21,10 @@ another diagnostic command instead of the real read consumer.
 
 ## Git and ownership
 
-Local main/HEAD is unpublished `f7b0443`; origin remains `9e3e44e`.
-Root owns the fixture predecessor correction and failure/checkpoint/inventory
-evidence. Atomic audit product/migration input remains exactlyf7b0443. No other
-writer or merge/rebase. Full candidate state is listed by Git.
+Local main/HEAD is unpublished `62abdbb`; origin remains `9e3e44e`.
+Root owns the fixture logical/physical comparison, source-based DDL cost notes,
+and failure/checkpoint/inventory evidence. Product/migration input remains exactly
+f7b0443. No other writer or merge/rebase. Full candidate state is listed by Git.
 
 The private panel implements a generated same-origin three-route session client
 and static login/self/logout UI, with bounded streaming, timeout, exact decimal
@@ -177,11 +177,35 @@ running. Free7,673,692,160bytes. Receipts under session-audit/tux-{failed-cache,
 panel-object}-retirement.json. All these partial caches remain forbidden for reuse.
 Mac corrected fixture tests/build/Clippy PASS in session-audit/mac-predecessor.
 
-Next bounded action: commit the fixture predecessor correction and launch
-native-audit-corrected in a fresh exact-Git lab. Require17adapter/
-12HTTP/8COMMIT cases and independent terminal SQL; no new PG-crash/browser claim.
-All broader denied-attempt audit, configurable retention/capacity, reauth, grants
-and drain remain P08-T02 work.
+The corrected62abdbb run applied807, then FAILED its combined logical/xmin
+upgrade comparison before the first case. Build/schema/token/Clippy/8proxy checks
+passed; HTTP/COMMIT NOT_RUN. All16capture/996source hashes verified. Raw
+session-audit/native-audit-corrected; root runs/session-audit-62abdbb,
+owner5e70fe39915e032abb9e0aa4590c3ef0; runnerbe104298ba5cb4ac7d17a04a94a5cbb4591d8345392f97bb8877e00040fb1ef1
+and PG2bbabc595e88741ca4290190b010876ba9b86c5101bfcd89a88f7b74bca4df33
+stopped/PID0/noOOM; own empty network removed,486prior records preserved/eight
+unrelated running. Zero active Control/backends. Failure report above includes
+this attempt; it does not independently prove which field differed.
+
+Official PG REL_16_15 ATExecAddColumn/ATRewriteTable inspection and read-only AI
+review explain the constrained-domain heap rewrite. Required immutability covers
+logical fields/attribution, not physical xmin across DDL. Keep807 checksum fixed;
+compare all seven complete logical receipts separately and record physical
+relfilenode/xmin before/after. Ordinary retry/rollback xmin assertions remain.
+Owning storage catalog now records explicit rewrite/downtime/headroom cost; no
+large-history migration capacity claim. Actual logical preservation remains
+NOT_RUN until the corrected native fixture executes.
+
+Verified retirement removed4214 .rlib/.rmeta/.o/.a (4,216,205,404logicalbytes)
+only from stopped62abdbb/eceab88 Cargo caches. Artifact hashes preserved;488prior
+containers unchanged/eight unrelated running. Free8,453,083,136bytes. Receipt
+session-audit/tux-rewrite-cache-retirement.json. These caches MUST NOT be reused;
+e65116b remains intact. Mac rewrite fixture tests/build/Clippy PASS.
+
+Next bounded action: commit the corrected upgrade oracle and run
+native-audit-rewrite from fresh exact Git.
+Require17adapter/12HTTP/8COMMIT cases and independent terminal SQL; no new PG-crash
+or browser claim. Full denied audit/retention/capacity/reauth/grants/drain remain.
 
 Ordinary owner data.read still grants no history/export. First history consumer
 requires scoped grant CAS + reauth + principal/action/scope delivery authority,

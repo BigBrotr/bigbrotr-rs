@@ -78,7 +78,7 @@ actual adapter and executable. It requires17 distinct storage cases,12 ordinary
 HTTP cases and8 selected COMMIT cases, plus schema/token and proxy regressions.
 The `--audit-commits-only` fixture mode uses a separate isolated database and omits
 only the host-controlled PG crash; it never claims that unexecuted crash passed.
-Migration checks start with real legacy audit rows, preserve their values/xmin,
+Migration checks start with real legacy audit rows, preserve every logical field,
 and refuse missing or mismatched policy/config bindings. An injected audit error
 must roll back issuance/terminal cleanup or logout; a new Control incarnation
 retries the operation without changing established attribution. Missing807 is
@@ -93,4 +93,8 @@ refuses unsupported response shapes. The selected behavior follows PostgreSQL16
 [message formats](https://www.postgresql.org/docs/16/protocol-message-formats.html).
 A synthetic wire transcript reproduced the old observer counting two mutations;
 that transcript is a fixture discriminator, not engine durability evidence.
+The upgrade reports relation file identity/xmin separately: PostgreSQL16.15
+rewrites the audit heap when adding the constrained domain. Comparing xmin
+across that DDL incorrectly rejects valid preservation; ordinary retry/rollback
+comparisons still include xmin. The original failed runs remain retained.
 Native qualification of this new audit slice is pending.

@@ -371,3 +371,16 @@ creates no new logout attribution. Private startup requires this explicit
 migration and the audit INSERT privilege. The session profile and remaining
 ordinary audit retention/capacity responsibilities are defined in
 [private administration](../product/private-administration.md).
+
+
+On PostgreSQL16.15, adding0807's constrained nullable `control.u64` column rewrites
+`management_audit` under the explicit migration lock. Existing logical receipt
+fields/identities must remain exact; physical row `xmin` and relation file identity
+are not product identity across this DDL. Normal idempotent retries still must
+leave existing rows untouched. The upstream
+[ATExecAddColumn implementation](https://raw.githubusercontent.com/postgres/postgres/REL_16_15/src/backend/commands/tablecmds.c)
+explains the constrained-domain rewrite. Upgrade needs downtime and headroom for
+the audit table plus indexes; this small fixture does not qualify a large audit
+history's disk requirement or duration. Stop old clients before migration; the
+heap rewrite is not MVCC-safe for an older snapshot. Applied migration checksums
+remain fixed.

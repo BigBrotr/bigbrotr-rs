@@ -180,7 +180,11 @@ async fn run(mut config: Config) {
         INSERT INTO control.config_revisions(revision,previous_revision,dataset_id,schema_version,authority_mode,document,document_digest,accepted_source_digest,accepted_at_us,actor_id)
             SELECT 2,1,dataset_id,schema_version,authority_mode,document,document_digest,accepted_source_digest,accepted_at_us,actor_id FROM control.config_revisions WHERE revision=1;
     "#).await.unwrap();
-    let legacy_audits: String = admin.query_one("SELECT json_agg(json_build_array(to_jsonb(a)-'policy_revision',a.xmin::text) ORDER BY audit_id)::text FROM control.management_audit a", &[]).await.unwrap().get(0);
+    // ADD COLUMN of a constrained domain rewrites the heap in PostgreSQL16.
+    // Logical receipt fields must remain exact; xmin is only compared across
+    // ordinary mutations/retries below, not across this explicit DDL rewrite.
+    let legacy_audits: String = admin.query_one("SELECT jsonb_agg(to_jsonb(a)-'policy_revision' ORDER BY audit_id)::text FROM control.management_audit a", &[]).await.unwrap().get(0);
+    let legacy_physical: String = admin.query_one("SELECT json_build_array(pg_relation_filenode('control.management_audit'),array_agg(DISTINCT xmin::text))::text FROM control.management_audit", &[]).await.unwrap().get(0);
     assert_eq!(
         migration_runner::run(&mut admin, 807, true, &Cell::new(false))
             .await
@@ -189,7 +193,12 @@ async fn run(mut config: Config) {
         1
     );
     assert_eq!(admin.query_one("SELECT count(*) FROM control.management_audit WHERE action LIKE 'browser.session.%'", &[]).await.unwrap().get::<_,i64>(0), 0);
-    assert!(legacy_audits == admin.query_one("SELECT json_agg(json_build_array(to_jsonb(a)-'policy_revision',a.xmin::text) ORDER BY audit_id)::text FROM control.management_audit a", &[]).await.unwrap().get::<_,String>(0), "upgrade changed legacy audit fields/xmin");
+    assert!(legacy_audits == admin.query_one("SELECT jsonb_agg(to_jsonb(a)-'policy_revision' ORDER BY audit_id)::text FROM control.management_audit a", &[]).await.unwrap().get::<_,String>(0), "upgrade changed legacy audit fields");
+    let after_physical: String = admin.query_one("SELECT json_build_array(pg_relation_filenode('control.management_audit'),array_agg(DISTINCT xmin::text))::text FROM control.management_audit", &[]).await.unwrap().get(0);
+    println!(
+        "{}",
+        serde_json::json!({"observation":"audit-upgrade-physical-state","before":serde_json::from_str::<serde_json::Value>(&legacy_physical).unwrap(),"after":serde_json::from_str::<serde_json::Value>(&after_physical).unwrap(),"legacy_fields_unchanged":true})
+    );
     assert_eq!(
         admin
             .query_one(

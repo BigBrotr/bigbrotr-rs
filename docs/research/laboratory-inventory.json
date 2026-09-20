@@ -17813,7 +17813,7 @@
   "implementation_session_audit_20260920": {
     "owner": "root implementer",
     "local_root": ".research/implementation/session-audit",
-    "state": "f7b0443 native fixture FAIL before first case; stopped/retained; predecessor correction pending new exact-Git run",
+    "state": "62abdbb fixture FAIL at combined logical+xmin oracle after807; preserved stopped lab; corrected physical/logical comparison awaits execution",
     "source_base": "b7cb520a4666b419f55629aa0536227728e216b4",
     "scope": "P08-T02 accepted session mutation audit. Rejected attempts, retention maintenance, reauth, scope grants and delivery authority remain separate required work.",
     "red_evidence": "docs/implementation/evidence/p08-session-audit-red-20260920.json",
@@ -17906,7 +17906,43 @@
           "/home/tux/bigbrotr-implementation-20260917/runs/private-panel-static-response-709656d"
         ],
         "cache_reuse": "Forbidden: partially retired Cargo caches"
+      },
+      {
+        "format": "bigbrotr-owned-cache-retirement/1",
+        "started_at": 1789916652.7070868,
+        "state": "PASS",
+        "free_before": 4247314432,
+        "finished_at": 1789916660.0493622,
+        "free_after": 8453083136,
+        "removed_files": 4214,
+        "removed_logical_bytes": 4216205404,
+        "containers_unchanged": 488,
+        "unrelated_running": 8,
+        "raw_receipt": ".research/implementation/session-audit/tux-rewrite-cache-retirement.json",
+        "runs": [
+          "/home/tux/bigbrotr-implementation-20260917/runs/session-audit-62abdbb",
+          "/home/tux/bigbrotr-implementation-20260917/runs/archive-event-query-eceab88"
+        ],
+        "cache_reuse": "Forbidden: partial62abdbb/eceab88 caches; executable/shared artifacts hash-preserved"
       }
-    ]
+    ],
+    "rewrite_fixture_failure": {
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/session-audit-62abdbb",
+      "owner": "5e70fe39915e032abb9e0aa4590c3ef0",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "2bbabc595e88741ca4290190b010876ba9b86c5101bfcd89a88f7b74bca4df33"
+        },
+        {
+          "name": "rust-audit",
+          "id": "be104298ba5cb4ac7d17a04a94a5cbb4591d8345392f97bb8877e00040fb1ef1"
+        }
+      ],
+      "state": "stopped-retained",
+      "network": "removed after owner/no-endpoint audit",
+      "preexisting_preserved": 486,
+      "unrelated_running": 8
+    }
   }
 }

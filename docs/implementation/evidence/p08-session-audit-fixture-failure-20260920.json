@@ -89,5 +89,53 @@
     "No session-audit runtime case executed; no product success/failure inferred",
     "Native HTTP/COMMIT steps NOT_RUN; original failed artifact/data retained",
     "Correcting fixture must not relax predecessor or audit constraints"
-  ]
+  ],
+  "followup": {
+    "status": "FAIL",
+    "source": "62abdbb31ecfdd5abc196d60c66b075f990b80dc",
+    "tree": "022c769f990f218e097b01f4e93b4f48799ef483",
+    "cause": "Combined legacy logical fields+xmin comparison differed after807. No case completed. The old assertion did not independently identify the changed field.",
+    "capture": {
+      "root": ".research/implementation/session-audit/native-audit-corrected",
+      "archive_sha256": "9878cd2bf3f1decaaff0c4ce1bb012e533fbcdfbf163ebfd36de3d18a1dff22b",
+      "files": 16,
+      "source_files": 996,
+      "offline_verification": "PASS"
+    },
+    "independent_sql": {
+      "sessions": {
+        "sessions": 1,
+        "revoked": 1,
+        "issue_audits": 0,
+        "revoke_audits": 0,
+        "grants": 7,
+        "active_control": 0,
+        "backends": 0
+      }
+    },
+    "resources": {
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/session-audit-62abdbb",
+      "owner": "5e70fe39915e032abb9e0aa4590c3ef0",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "2bbabc595e88741ca4290190b010876ba9b86c5101bfcd89a88f7b74bca4df33"
+        },
+        {
+          "name": "rust-audit",
+          "id": "be104298ba5cb4ac7d17a04a94a5cbb4591d8345392f97bb8877e00040fb1ef1"
+        }
+      ],
+      "state": "stopped-retained",
+      "network": "removed after owner/no-endpoint audit",
+      "preexisting_preserved": 486,
+      "unrelated_running": 8
+    },
+    "diagnosis": {
+      "official_source": "https://raw.githubusercontent.com/postgres/postgres/REL_16_15/src/backend/commands/tablecmds.c",
+      "boundary": "ATExecAddColumn6709\u20136828 forces heap rewrite for a newly added domain with CHECK; ATRewriteTable copies old attributes and inserts replacement tuples",
+      "invariant": "Exact legacy logical fields/identities, not physical xmin across explicit DDL. Ordinary unchanged retries still require fields+xmin.",
+      "next": "Keep checksum-stable807; compare all logical fields separately and report actual relfilenode/xmin before and after. No logical preservation claimed until execution."
+    }
+  }
 }
