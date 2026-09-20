@@ -86,15 +86,18 @@ def verify_added_frontier(case, op, revision):
         for r in expected['read']['receipts']]
 
 
-def main(root, namespace):
+def main(root, namespace, base_revision, operation_base, recovery_operation):
     assert namespace.isalpha() and namespace.islower() and len(namespace)<=12
+    assert base_revision>=1 and 1<=operation_base<=249
     source = Path(__file__).resolve().parents[2]
     state = json.loads((root/'resources.json').read_text())
     assert source == root/'harness-source'
     assert not command('git','-C',str(source),'status','--porcelain','--untracked-files=all')
     build = root/'out/frontier-fault-build'
     ready = json.loads((build/'ready.json').read_text())
-    assert ready['source'] == command('git','-C',str(source),'rev-parse','HEAD')
+    harness_revision=command('git','-C',str(source),'rev-parse','HEAD')
+    changed=command('git','-C',str(source),'diff','--name-only',ready['source'],harness_revision).splitlines()
+    assert all(p.startswith('docs/') or p=='experiments/archive-engine/frontier_fault_cases.py' for p in changed)
     assert ready['product_source'] == state['source']
     assert sha(build/'archive-publication-probe') == ready['artifact_sha256']
     for key in ['container_id','postgres_id']:
@@ -108,6 +111,8 @@ def main(root, namespace):
     report_path = root/('frontier-fault-cases-'+namespace+'.json')
     assert not report_path.exists()
     report = dict(status='INCOMPLETE',source=state['source'],harness=ready,cases=[],
+                  harness_source=harness_revision,changed_paths=changed,base_revision=base_revision,
+                  operation_base=operation_base,recovery_operation=recovery_operation,
                   proxy_sha256=sha(source/'experiments/archive-engine/native_commit_proxy.py'))
     def save(): report_path.write_text(json.dumps(report,indent=2)+'\n')
     def sql(query,db='bbpub_control_normal'):
@@ -145,7 +150,7 @@ def main(root, namespace):
                 send(holder,"SET idle_in_transaction_session_timeout='30s'; SET statement_timeout='30s'; BEGIN; LOCK TABLE control.archive_frontier_snapshots IN SHARE MODE; SELECT json_build_object('event','locked','pid',pid,'backend_start',backend_start::text) FROM pg_stat_activity WHERE pid=pg_backend_pid();\n")
                 case['holder_ready']=event(holder,'locked');save()
                 holder_pid=case['holder_ready']['pid']
-            request=dict(case=label,operation=op,expected_revision=revision,control_port=port,lookup=lookup,wait=False,cancel=cancel)
+            request=dict(case=label,operation=op,expected_revision=revision,control_port=port,lookup=lookup,wait=not lookup,cancel=cancel)
             path=directory/(label+'.json');path.write_text(json.dumps(request)+'\n')
             process=case['process']={}
             def interact(p):
@@ -156,6 +161,7 @@ def main(root, namespace):
                     observed=json.loads(sql(f"SELECT row_to_json(t) FROM (SELECT pid,backend_start::text,usename,datname FROM pg_stat_activity WHERE pid={case['ready'][kind+'_pid']})t"))
                     assert observed==dict(pid=case['ready'][kind+'_pid'],backend_start=case['ready'][kind+'_start'],usename=user,datname=database)
                 case['issuer']=json.loads(sql("SELECT row_to_json(o) FROM control.owner_epochs o WHERE role='control' AND state='active'"));save()
+                (root/'out/signed_normal'/('frontier-'+label)/'continue').touch(exist_ok=False)
                 if blocked:
                     until=time.monotonic()+8
                     while True:
@@ -236,11 +242,15 @@ def main(root, namespace):
     save()
     try:
         original=fixture('historical',0xf1,0,lookup=True);published(original,0xf1,1,False);unchanged(original);passed(original)
-        revision=1
+        assert original['after']['consumers'][0]['current_revision']==base_revision
+        if recovery_operation is not None:
+            recovered=fixture('prior-interruption',recovery_operation,base_revision-1,lookup=True)
+            published(recovered,recovery_operation,base_revision,False);unchanged(recovered);passed(recovered)
+        revision=base_revision
         for name,op,options,wanted in [
-            ('manager-before',0xe1,dict(manager_loss=True,blocked=True),'Unavailable'),
-            ('commit-before',0xe2,dict(proxy_mode='before-forward'),'CommitUnknown'),
-            ('commit-after',0xe3,dict(proxy_mode='after-complete'),'CommitUnknown'),
+            ('manager-before',operation_base,dict(manager_loss=True,blocked=True),'Unavailable'),
+            ('commit-before',operation_base+1,dict(proxy_mode='before-forward'),'CommitUnknown'),
+            ('commit-after',operation_base+2,dict(proxy_mode='after-complete'),'CommitUnknown'),
         ]:
             case=fixture(name,op,revision,**options)
             assert case['observed']['outcome']==wanted
@@ -257,17 +267,17 @@ def main(root, namespace):
             if committed:unchanged(retry)
             else:verify_added_frontier(retry,op,revision+1)
             passed(retry);revision+=1
-        case=fixture('manager-after',0xe4,revision,manager_loss=True,proxy_mode='hold-commit')
+        case=fixture('manager-after',operation_base+3,revision,manager_loss=True,proxy_mode='hold-commit')
         # A historical result can commit under retained local exclusion. The
         # dead capture is reported; it confers no pin or read authority.
         assert case['observed']['outcome']=='published' and case['observed']['commit_started']
         assert not case['observed']['capture_closed'] and not case['observed']['manager_closed']
-        published(case,0xe4,revision+1,True);verify_added_frontier(case,0xe4,revision+1);passed(case);revision+=1
-        retry=fixture('manager-after-retry',0xe4,revision-1);published(retry,0xe4,revision,False);unchanged(retry);passed(retry)
-        case=fixture('cancel-blocked',0xe5,revision,blocked=True,cancel=True)
+        published(case,operation_base+3,revision+1,True);verify_added_frontier(case,operation_base+3,revision+1);passed(case);revision+=1
+        retry=fixture('manager-after-retry',operation_base+3,revision-1);published(retry,operation_base+3,revision,False);unchanged(retry);passed(retry)
+        case=fixture('cancel-blocked',operation_base+4,revision,blocked=True,cancel=True)
         assert case['observed']['outcome']=='cancelled' and not case['observed']['commit_started']
         unchanged(case);passed(case)
-        case=fixture('stale-head',0xe6,0)
+        case=fixture('stale-head',operation_base+5,0)
         assert case['observed']['outcome']=='Conflict' and not case['observed']['commit_started']
         unchanged(case);passed(case)
         report['status']='PASS'
@@ -277,4 +287,7 @@ def main(root, namespace):
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('root',type=Path);parser.add_argument('--namespace',required=True)
-    args=parser.parse_args();main(args.root,args.namespace)
+    parser.add_argument('--base-revision',type=int,default=1)
+    parser.add_argument('--operation-base',type=lambda v:int(v,0),default=0xe1)
+    parser.add_argument('--recovery-operation',type=lambda v:int(v,0))
+    args=parser.parse_args();main(args.root,args.namespace,args.base_revision,args.operation_base,args.recovery_operation)

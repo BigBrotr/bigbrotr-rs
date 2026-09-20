@@ -21,7 +21,7 @@ the backlog; do not create another plan or diagnostic public command.
 ## Git and ownership
 
 Private origin/main was freshly checked at988bc4a7f694d878736c825cba1f34e2220c4335.
-Local HEAD was freshly verified clean at7758ce4 (fixture parser correction), after
+Local HEAD was freshly verified at4bdc20f (restart/fault fixture), after7758ce4 and
 163fc59 (SQL fixtures/docs). Product candidate remainse64ee8545436adf78ef4faf4cd46d188fb211660
 (tree8ca3cdded5f443b47fa008eae2d1da85d2b1f36c), after test candidate9aa86b9. The four qualified commits were pushed normally after fetch;
 no remote work required reconciliation. Product candidate
@@ -124,7 +124,7 @@ Next: capture and stop this lab; create a separately inventoried fresh lab with
 unchanged hash-verified e64 artifacts and explicit CatalogManager provisioning,
 then execute the signed normal/history matrix. Two signed native normal/history cuts now PASS in the separately provisioned
 lab below with unchanged e64 artifact hashes. COMMIT/manager-loss and cancellation
-faults remain pending. A new fixture-only restart consumer is being compiled locally;
+faults are active. A new fixture-only restart consumer is compiled on Mac/Tux;
 no product adapter change was required.
 
 RED lab /home/tux/bigbrotr-implementation-20260917/runs/archive-frontier-9aa86b9,
@@ -155,15 +155,29 @@ See frontier_provisioned_candidate for exact container/PG/network IDs and owner.
 It reuses verified original e64 native artifacts and an exact clean900-file Git
 export, provisioning the omitted CatalogManager prerequisite before execution.
 Both actual signed normal/history matrices PASS, including immutable historical
-lookup after snapshot advancement. Native build was not repeated. Runner and PG
-remain active for the pending targeted fault matrix; no source edit on Tux.
+lookup after snapshot advancement. Native build was not repeated. Fixture-only
+4bdc20f is built under out/frontier-fault-build; product remains e64. First fault
+matrix initial is INCOMPLETE: three cases pass (historical lookup, manager loss
+while snapshot INSERT blocked with full rollback, subsequent absent lookup).
+The following retry committed revision2/op e1, with stdout reporting joined drivers,
+but the harness queried its already-exited backend and failed parsing no row.
+Full raw report remains frontier-fault-cases-initial.json; do not mark it PASS.
+
+Corrected harness adds an existing fixture barrier before publication so backend
+identities are checked while alive, then explicitly releases it. It will first
+resolve the interrupted operation and continue a fresh namespace/operation range
+against declared base revision2. No product or binary change. Next: commit/transfer
+this harness-only correction, run --namespace retry --base-revision2
+--operation-base0xd1 --recovery-operation0xe1, then collect/stop the owned lab.
+Runner and PG remain active; no source edit on Tux.
 
 Root-owned current edits: new restart/fault-only fixture and bounded proxy/harness,
 plus this checkpoint/inventory. Restart fixture uses3MiB data for two retained
 inputs plus the native cut request; independent durable oracle covers all eight
 relations, exact original history/xmin, new owner attribution and allowed release.
 PID/start/database/login bind fault targets; proxy stages distinguish COMMIT.
-Mac Clippy is still compiling native dependencies (session97239); an earlier direct
+Mac Clippy completed PASS (session97239), and exact fixture4bdc20f built and passed
+scoped Clippy on Tux with unchanged product/dependency inputs (session23736). an earlier direct
 invocation was deliberately terminated as group63684 after omitting the selected
 native build environment, exit143, not a test outcome. Python syntax, formatting,
 diff and structural artifact checks pass. Candidate commits may precede native
