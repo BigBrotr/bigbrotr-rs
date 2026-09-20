@@ -18,20 +18,20 @@ Existing task files own the backlog. No task checkbox closes from this prerequis
 
 ## Git and ownership
 
-Private origin/main remains at9128ca8533a51012f4e24ab86ae3e3782c977419.
-Local main is the qualified unpublished product/fixture candidate
-e1852b8819b657ca2ec919dab2feff3716225056/treefa342caeaa55881ce72e23dfa1fb97ce46a52bbf.
-Root owns the evidence report, archive-format/task notes, checkpoint and lab
-inventory updates, plus an unstaged next-slice native COPY inode regression in
-worker publication_tests.rs. No next-slice product behavior has changed. No parallel writer, merge or rebase. Independent AI reviews
-are read-only: snapshot evidence and next file-persistence prerequisite.
+Local main and private origin/main are equal at
+5e4046fd02c4f4bb27c613372a80f086d0631e11 after ordinary push. Snapshot product and
+evidence are published. Root owns new dirty publication.rs/publication_tests.rs,
+native_initialization.py, publication_sync_cases.py and their owning docs/inventory.
+No parallel writer, merge or rebase. Independent AI review is read-only.
 
 Separate compatibility worktree .research/worktrees/producer-closing-old-writer
 remains at publishedf899896b1207f5e71c4e39d9ab7814b293814735 on
 research/producer-closing-old-writer; preserve it. Build caches are not source
-authority. All Tux sessions are joined; no active remote experiment or cleanup debt. The Mac
-COPY identity regression passes1case/0failed/0ignored; its log is under
-.research/implementation/archive-file-persistence/mac-copy-identity.log.
+authority. All execution sessions are joined; no active experiment or cleanup debt. The Mac
+COPY identity and replaced/aliased identity regressions pass, as do8 native
+publication tests. Logs are under .research/implementation/archive-file-persistence.
+The new ignored sync-fault fixture requires explicit Linux strace execution; it
+has not run and is not counted PASS.
 
 ## Executed snapshot boundary
 
@@ -96,15 +96,36 @@ retained, networks removed. Never rerun finite initialization over any of these 
 
 ## Next bounded action and open gates
 
-Finish evidence review, run affected document/handoff checks, commit documentation
-and push the verified snapshot slice normally after checking remote state. Then
-qualify/implement local file persistence before the protected frontier: current
-publisher COPY/registration does not explicitly synchronize files/directories.
-Independent upstream review raised a concrete boundary to inspect: reopening a
-file only after COPY closed its writer can miss earlier Linux writeback errors.
-Inspect exact native open/close behavior and exercise a held descriptor or supported
-native sync mechanism; do not infer power-loss persistence from PG restart or hash.
-Keep the existing caller-owned registration, no ordinary-INSERT fallback.
+Mac native checks and complete diff review have passed for the local candidate.
+The trace oracle now retains syscall entry/completion positions and checks closes
+across all native TIDs; one positive and two discriminating negative controls pass.
+Commit the file-persistence candidate unpublished and run exact Git on a fresh Tux lab. Execute the9 explicit
+syscall cases (one full ordering trace, six EIO positions and file/receipt ENOSPC),
+plus31 actual signed PG consumer cases. The harness must see exactly the selected
+injected path/error and the expected retained-file prefix; footer counts alone
+are not full semantic readback. Then collect/stop and review evidence before push.
+
+Exact e1852b8 baseline in file-sync-baseline-e1852b8 confirms0 prepared-file syncs
+for3 actual scientific/receipt files despite successful native publication/readback.
+Its single owned containerabdc3154fb504ca8710fa118d435b2b424c9647eb5ea14507519afb5da9459b2,
+owner90c65f57a72a27d52ba757ceca185c3c, exited0/Pid0/noOOM; no network or PG was created.
+391 preexisting containers preserved,8 unrelated running/0BigBrotr. Raw source,
+trace, preflight and complete terminal inventory are retained under
+.research/implementation/archive-file-persistence/baseline. First collector failed
+because it compared unordered Docker mount arrays; sorted comparison verifies
+identical mount contents and all lifecycle/network state. No engine rerun occurred.
+
+Upstream DuckDB d8cdaa33fd confirms native close lacks sync and COPY on an existing
+file normally replaces its inode. Candidate holds file before COPY, selects
+USE_TMP_FILE false, checks same regular/single-link inode, then syncs original
+file and held attempt/table/main/root descriptors before registration. Mac actual
+COPY demonstrates default inode replacement versus direct retention. Existing
+main/table modes stay compatible. No new migration or scientific encoding. Root
+parent entry provisioning, actual device writeback errors, power loss and catalog
+persistence remain unqualified; injected fsync errors are application-boundary
+validation only. Independent review found no product defect; the runner identifies
+each fault and exact file prefix, and reports footer counts/byte stability with
+their actual narrower meaning. No source protection or reclamation is authorized.
 
 Implement the complete P02-T04/T07 frontier bridge: verified committed batches
 -> contiguous complete prefix for every topology stream (including zero) -> real

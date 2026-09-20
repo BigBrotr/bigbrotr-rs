@@ -878,8 +878,23 @@ For local placement, prepare files below canonical `main/<table>/` in exclusivel
 created mode0700 `prepared-<attempt-id>/` directories. Never overwrite or reuse an
 attempt directory and never unlink its files in worker error cleanup. Native
 registration must store paths relative to the guarded table root; relocation and
-recovery must preserve their complete membership. Explicitly disable Hive path
-partition discovery and refuse missing/extra columns: directory names cannot
+recovery must preserve their complete membership. The local file-persistence
+prerequisite exclusively creates and holds the output descriptor before native
+COPY, explicitly disables temporary-file replacement with `USE_TMP_FILE false`,
+and checks that the completed path still names that same regular, single-link
+inode. Synchronize that original descriptor, then attempt/table/main/root directory
+descriptors held before their child creations, before registering the file. Any
+synchronization error aborts the attempt; retrying fsync until success cannot
+repair an earlier writeback error. Existing parents still require synchronization.
+The data root and its own parent entry must already be persistently provisioned;
+this finite publisher does not create or synchronize arbitrary ancestors. These
+calls alone are not qualification of the filesystem/device/catalog failure class.
+A completed COPY is retained after synchronization/registration failure. An
+internally failed COPY can remove its own incomplete output; no attempt directory
+is reused in either case. Privileged concurrent namespace alteration remains
+outside the operator-owned root boundary. Existing SQL and scientific formats
+are unchanged. Explicitly disable Hive path partition discovery and refuse
+missing/extra columns: directory names cannot
 replace actual scientific values. Local roots containing `*`, `?` or `[` are
 refused consistently by the private parent, worker and catalog identity because
 the pinned engine treats singleton registration paths as globs. SQL quoting does

@@ -615,6 +615,12 @@ and archive receipt. Preparation can parallelize; logical publication has one ow
   qualify native persistence/integrity before reclamation without requiring an
   extra full S3 GET merely to create a first checksum. Backup/scrub/full semantic
   verification carry their actual budgets and evidence.
+  The next local prerequisite retains the original pre-COPY file descriptor and
+  synchronizes it plus directory ancestry before native registration. Exact
+  DuckDB source inspection and a native inode test require `USE_TMP_FILE false`.
+  A Linux baseline trace at `e1852b8` confirms no prepared-file fsync despite
+  successful publication/readback. Candidate error-injection and connected
+  qualification remain pending; no power-loss/protection/reclamation claim follows.
 
 The installed Control consumer now inventories retained publication intents before
 idle when Archive is locally assigned. [Native evidence](evidence/p02-control-archive-inventory-native-20260919.json)

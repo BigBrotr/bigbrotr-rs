@@ -2,6 +2,7 @@
 """Exact-source build for reserved initialization; isolated native Linux lab only."""
 import json
 import os
+import re
 from pathlib import Path
 import shutil
 import subprocess
@@ -19,8 +20,9 @@ if sys.argv[1:] == ['--build-binaries']:
     identity = build_binaries(SOURCE, os.environ)
     (out / 'worker-identity.json').write_text(json.dumps(identity, indent=2) + '\n')
     sys.exit(0)
-assert sys.argv[1:] in ([], ['--tls'], ['--publication'], ['--producer-inputs'], ['--producer-ledger'], ['--producer-ledger-fixture'], ['--import-source'], ['--input-bindings'], ['--certification'], ['--producer-closing'], ['--producer-recovery'], ['--archive-event'])
-archive_event = sys.argv[1:] == ['--archive-event']
+assert sys.argv[1:] in ([], ['--tls'], ['--publication'], ['--producer-inputs'], ['--producer-ledger'], ['--producer-ledger-fixture'], ['--import-source'], ['--input-bindings'], ['--certification'], ['--producer-closing'], ['--producer-recovery'], ['--archive-event'], ['--publication-sync'])
+publication_sync = sys.argv[1:] == ['--publication-sync']
+archive_event = publication_sync or sys.argv[1:] == ['--archive-event']
 producer_recovery = sys.argv[1:] == ['--producer-recovery']
 producer_closing = producer_recovery or sys.argv[1:] == ['--producer-closing']
 certification = producer_closing or sys.argv[1:] == ['--certification']
@@ -92,6 +94,11 @@ if archive_event:
     checks = [checks[0], checks[2],
         ('native-events', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr-archive-worker', '--lib', 'event::tests', '--', '--nocapture']),
         checks[4]]
+    if publication_sync:
+        identity.update(scope='held local file/directory synchronization before native registration')
+        checks = [checks[0],
+            ('native-publication', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr-archive-worker', '--lib', 'publication::tests', '--', '--nocapture']),
+            checks[-1]]
 if import_source:
     identity.update(scope='captured JSONL source and existing connected signed-admission consumer')
     checks = [checks[0],
@@ -158,5 +165,10 @@ if tls or publication:
     result['receipt_reader'] = file_hash(out / 'archive-receipt-probe')
 if archive_event:
     result['event_reader'] = file_hash(out / 'archive-event-probe')
+if publication_sync:
+    log = (out / 'checks/native-publication.log').read_text()
+    paths = re.findall(r'Running unittests src/lib.rs \((/out/build/target/release/deps/bigbrotr_archive_worker-[0-9a-f]+)\)', log)
+    assert len(paths) == 1
+    result['publication_tests'] = dict(path=paths[0], sha256=file_hash(Path(paths[0])))
 (out / 'ready.json').write_text(json.dumps(result, indent=2) + '\n')
 print(json.dumps({'status': 'READY', 'source': manifest['revision']}), flush=True)

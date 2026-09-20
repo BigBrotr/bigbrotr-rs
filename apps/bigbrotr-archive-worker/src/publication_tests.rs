@@ -420,3 +420,166 @@ fn existing_attempt_files_and_symlinked_table_parent_are_never_reused() {
         }
     }
 }
+
+#[test]
+fn native_copy_requires_explicit_direct_output_to_preserve_the_held_file() {
+    use std::{fs::OpenOptions, io::Read, os::unix::fs::MetadataExt};
+    let home = tempfile::tempdir_in(std::env::temp_dir().canonicalize().unwrap()).unwrap();
+    let temp = tempfile::tempdir().unwrap();
+    let engine = open(
+        temp.path(),
+        &home.path().join("catalog.ducklake"),
+        &home.path().join("objects"),
+    );
+    for direct in [false, true] {
+        let path = home.path().join(format!("copy-{direct}.parquet"));
+        let mut held = OpenOptions::new()
+            .read(true)
+            .write(true)
+            .create_new(true)
+            .open(&path)
+            .unwrap();
+        engine.connection.execute_batch(&format!(
+            "COPY (SELECT 18446744073709551615::UBIGINT AS n, 'é' AS body) TO '{}' (FORMAT PARQUET{})",
+            path.display(), if direct { ", USE_TMP_FILE false" } else { "" }
+        )).unwrap();
+        let original = held.metadata().unwrap();
+        let named = fs::metadata(&path).unwrap();
+        assert_eq!(
+            (original.dev(), original.ino()) == (named.dev(), named.ino()),
+            direct,
+            "default COPY replaces the precreated inode; direct output preserves it"
+        );
+        assert_eq!(original.nlink(), u64::from(direct));
+        let mut bytes = Vec::new();
+        held.read_to_end(&mut bytes).unwrap();
+        if direct {
+            assert_eq!(bytes, fs::read(&path).unwrap());
+            assert!(bytes.starts_with(b"PAR1") && bytes.ends_with(b"PAR1"));
+            held.sync_all().unwrap();
+        } else {
+            assert!(bytes.is_empty());
+        }
+        let row: (u64, String) = engine
+            .connection
+            .query_row(
+                &format!("SELECT n,body FROM read_parquet('{}')", path.display()),
+                [],
+                |r| Ok((r.get(0)?, r.get(1)?)),
+            )
+            .unwrap();
+        assert_eq!(row, (u64::MAX, "é".into()));
+    }
+}
+
+#[test]
+fn replaced_or_aliased_output_is_not_the_held_original_file() {
+    use std::io::Write;
+    for fault in ["empty", "replaced", "symlink", "hardlink"] {
+        let home = tempfile::tempdir().unwrap();
+        let path = home.path().join("data.parquet");
+        let mut held = File::create_new(&path).unwrap();
+        assert_eq!(
+            require_same_file(&held, &path),
+            Err(PublicationError::PreparedFiles)
+        );
+        if fault != "empty" {
+            held.write_all(b"completed-native-output").unwrap();
+            require_same_file(&held, &path).unwrap();
+            let prior = home.path().join("prior");
+            if fault == "hardlink" {
+                fs::hard_link(&path, &prior).unwrap();
+            } else {
+                fs::rename(&path, &prior).unwrap();
+                if fault == "symlink" {
+                    std::os::unix::fs::symlink(&prior, &path).unwrap();
+                } else {
+                    fs::write(&path, b"completed-native-output").unwrap();
+                }
+            }
+        }
+        assert_eq!(
+            require_same_file(&held, &path),
+            Err(PublicationError::PreparedFiles)
+        );
+    }
+}
+
+/// Invoked under native syscall fault injection in an isolated Linux process.
+/// No production hook or environment-controlled behavior is introduced.
+#[test]
+#[ignore = "requires isolated strace fault injection and an exclusive fixture root"]
+fn native_sync_refusal_prevents_committed_membership_and_attempt_reuse() {
+    let home =
+        std::path::PathBuf::from(std::env::var_os("BIGBROTR_ARCHIVE_TEST_SYNC_HOME").unwrap());
+    assert!(home.is_absolute());
+    fs::create_dir(&home).unwrap();
+    let temp = home.join("temp");
+    fs::create_dir(&temp).unwrap();
+    let catalog = home.join("catalog.ducklake");
+    let data = home.join("objects");
+    let engine = open(&temp, &catalog, &data);
+    schema::initialize(&engine.connection).unwrap();
+    let (prepared, request) = prepare(engine, &facts(), &data);
+    assert_eq!(
+        prepared.publish_attached(&request),
+        Err(PublicationError::PreparedFiles)
+    );
+    drop(prepared);
+    let engine = open(&temp, &catalog, &data);
+    for table in schema::TABLES.into_iter().chain(["archive_commits"]) {
+        let count: u64 = engine
+            .connection
+            .query_row(&format!("SELECT count(*) FROM archive.{table}"), [], |r| {
+                r.get(0)
+            })
+            .unwrap();
+        assert_eq!(count, 0, "failed synchronization cannot publish {table}");
+    }
+    let metadata = duckdb::Connection::open(&catalog).unwrap();
+    let files: u64 = metadata
+        .query_row("SELECT count(*) FROM ducklake_data_file", [], |r| r.get(0))
+        .unwrap();
+    assert_eq!(files, 0);
+    drop(metadata);
+    let mut retained = Vec::new();
+    for (table, expected) in [
+        ("dictionaries", 2u64),
+        ("events", 1),
+        ("archive_commits", 1),
+    ] {
+        let path = data.join(format!(
+            "main/{table}/prepared-{}/data.parquet",
+            "09".repeat(16)
+        ));
+        if path.exists() {
+            let count: u64 = engine
+                .connection
+                .query_row(
+                    &format!("SELECT count(*) FROM read_parquet('{}')", path.display()),
+                    [],
+                    |r| r.get(0),
+                )
+                .unwrap();
+            assert_eq!(count, expected);
+            retained.push((path.clone(), fs::read(&path).unwrap()));
+        }
+    }
+    assert!(
+        !retained.is_empty(),
+        "the injected fault follows completed COPY"
+    );
+    let (prepared, request) = prepare(engine, &facts(), &data);
+    assert_eq!(
+        prepared.publish_attached(&request),
+        Err(PublicationError::PreparedFiles)
+    );
+    drop(prepared);
+    for (path, bytes) in retained {
+        assert_eq!(
+            fs::read(path).unwrap(),
+            bytes,
+            "refused retry preserves original output"
+        );
+    }
+}

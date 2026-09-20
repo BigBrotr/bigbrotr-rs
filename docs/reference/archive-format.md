@@ -224,3 +224,26 @@ scientific rows, input expectations, publication outcomes and initial/terminal
 Rocks identities are independently checked. Selecting a snapshot is not acquiring
 its retention pin or authorizing the event; the caller still needs both through
 delivery.
+
+
+## Local prepared file persistence
+
+The current candidate holds each exclusively created output file open before
+native COPY and requires `USE_TMP_FILE false`, so COPY writes that inode instead
+of replacing it through a temporary. After regular-file, device/inode and single-link
+checks, it synchronizes the original descriptor and the held attempt/table/main/root
+directories before registering the file. It fails on any sync error, retaining
+completed files and refusing attempt reuse. Five descriptors coexist for this
+bounded preparation in addition to the engine's own descriptors; no full-file
+checksum pass is added. Existing intermediate directory modes remain compatible.
+
+At pinned DuckDB `d8cdaa33fd`, [COPY binding](https://raw.githubusercontent.com/duckdb/duckdb/d8cdaa33fd/src/planner/binder/statement/bind_copy.cpp)
+selects temporary replacement for existing local files; native Parquet close does
+not call its separate synchronization method. [Linux error cursors](https://www.kernel.org/doc/html/v6.8/core-api/errseq.html)
+make a descriptor held across the write preferable to reopening after native close.
+A completed COPY and matching bytes still do not prove a failure class. The root's
+own parent entry must already be durable, and qualified catalog/filesystem/device
+behavior plus reference closure remain prerequisites for protection/reclamation.
+Mac native identity/publication tests pass; exact-revision Linux sync-error and
+connected qualification are pending. Existing archives are not retroactively
+certified by this change.

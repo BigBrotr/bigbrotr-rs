@@ -3,8 +3,15 @@
 use crate::{catalog::BootstrapRequest, prepare::PreparedBatch, schema};
 use bigbrotr_model::{ArchiveBatch, Digest256, TopologyGeneration};
 use duckdb::{Connection, params};
+use rustix::fs::{Mode, OFlags, open};
 use serde::Deserialize;
-use std::{fmt, fs, io::Read, os::unix::fs::DirBuilderExt, path::Path};
+use std::{
+    fmt,
+    fs::{self, File, OpenOptions},
+    io::Read,
+    os::unix::fs::{DirBuilderExt, MetadataExt, OpenOptionsExt},
+    path::Path,
+};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum PublicationError {
@@ -146,39 +153,92 @@ fn prepare_and_register(
     // The scientific guard binds exactly these schema/table paths. Native path
     // relativization is lexical, so canonicalize the actual parent first. The
     // installation remains an operator-owned boundary against privileged races.
-    let mut table_root = Path::new(request.catalog.data_root()).to_path_buf();
-    for component in ["main", table] {
-        table_root.push(component);
-        match fs::create_dir(&table_root) {
-            Ok(()) => (),
-            Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => (),
-            Err(_) => return Err(PublicationError::PreparedFiles),
-        }
-        // Check each existing component before creating any descendant; a
-        // symlinked schema directory must not cause writes outside the root.
-        if table_root.canonicalize().ok().as_deref() != Some(table_root.as_path())
-            || !table_root.is_dir()
-        {
-            return Err(PublicationError::PreparedFiles);
-        }
-    }
+    let root = Path::new(request.catalog.data_root());
+    // Retain every parent before creating its child, including existing parents:
+    // an earlier interrupted attempt may not have synchronized their entries.
+    let root_handle = open_directory(root)?;
+    let main = root.join("main");
+    let main_handle = create_directory(&main)?;
+    let table_root = main.join(table);
+    let table_handle = create_directory(&table_root)?;
     let directory = table_root.join(format!("prepared-{attempt}"));
-    // Exclusive creation refuses reuse after partial/ambiguous work. Nothing in
-    // this worker unlinks caller-owned files, including after known rollback.
+    // Exclusive creation refuses reuse after partial/ambiguous work. Application
+    // error handling retains completed files, including after known rollback;
+    // a failed native COPY may remove its own incomplete output before returning.
     // Positive fencing and fresh receipt/file closure own later orphan cleanup.
     fs::DirBuilder::new()
         .mode(0o700)
         .create(&directory)
         .map_err(|_| PublicationError::PreparedFiles)?;
+    let directory_handle = open_directory(&directory)?;
     let file = directory.join("data.parquet");
+    // Keep the original descriptor from before native writes. Reopening only
+    // after COPY closes its writer can miss an already-observed writeback error.
+    let held = OpenOptions::new()
+        .read(true)
+        .write(true)
+        .create_new(true)
+        .mode(0o600)
+        .open(&file)
+        .map_err(|_| PublicationError::PreparedFiles)?;
     let text = file.to_str().ok_or(PublicationError::PreparedFiles)?;
     let literal = format!("'{}'", text.replace('\'', "''"));
-    c.execute_batch(&format!("COPY (SELECT * FROM stage.{table}) TO {literal} (FORMAT PARQUET, COMPRESSION ZSTD, COMPRESSION_LEVEL 3, ROW_GROUP_SIZE 64000)"))
+    // The native default replaces an existing destination with a temporary
+    // inode. Direct output preserves the exclusively created caller-owned file.
+    c.execute_batch(&format!("COPY (SELECT * FROM stage.{table}) TO {literal} (FORMAT PARQUET, COMPRESSION ZSTD, COMPRESSION_LEVEL 3, ROW_GROUP_SIZE 64000, USE_TMP_FILE false)"))
         .map_err(|_| PublicationError::Native)?;
+    require_same_file(&held, &file)?;
+    held.sync_all()
+        .map_err(|_| PublicationError::PreparedFiles)?;
+    for parent in [directory_handle, table_handle, main_handle, root_handle] {
+        parent
+            .sync_all()
+            .map_err(|_| PublicationError::PreparedFiles)?;
+    }
     // Both scientific and receipt files are registered as caller-owned. Normal
     // INSERT's native error cleanup can delete files after a lost PG COMMIT reply.
     c.execute_batch(&format!("CALL ducklake_add_data_files('archive','{table}',[{literal}],schema=>'main',hive_partitioning=>false,allow_missing=>false,ignore_extra_columns=>false)"))
         .map_err(|_| PublicationError::Native)
+}
+
+fn open_directory(path: &Path) -> Result<File, PublicationError> {
+    if path.canonicalize().ok().as_deref() != Some(path) {
+        return Err(PublicationError::PreparedFiles);
+    }
+    open(
+        path,
+        OFlags::RDONLY | OFlags::DIRECTORY | OFlags::NOFOLLOW | OFlags::CLOEXEC,
+        Mode::empty(),
+    )
+    .map(File::from)
+    .map_err(|_| PublicationError::PreparedFiles)
+}
+
+fn create_directory(path: &Path) -> Result<File, PublicationError> {
+    match fs::create_dir(path) {
+        Ok(()) => (),
+        Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => (),
+        Err(_) => return Err(PublicationError::PreparedFiles),
+    }
+    // Inspect before any child creation, including when the parent existed.
+    open_directory(path)
+}
+
+fn require_same_file(held: &File, path: &Path) -> Result<(), PublicationError> {
+    let original = held
+        .metadata()
+        .map_err(|_| PublicationError::PreparedFiles)?;
+    let named = fs::symlink_metadata(path).map_err(|_| PublicationError::PreparedFiles)?;
+    if !original.is_file()
+        || !named.is_file()
+        || original.nlink() != 1
+        || named.nlink() != 1
+        || original.len() == 0
+        || (original.dev(), original.ino()) != (named.dev(), named.ino())
+    {
+        return Err(PublicationError::PreparedFiles);
+    }
+    Ok(())
 }
 
 fn dictionary_closure(c: &Connection) -> Result<(), PublicationError> {

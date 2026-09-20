@@ -14877,6 +14877,43 @@
       "capture_sha256": "33dd24a24a8298a6cfffeddac16a3f76eac469b2e041f4c87e67a2914330bb24",
       "capture_files": 51,
       "qualification": "docs/implementation/evidence/p02-archive-snapshot-native-20260920.json"
+    },
+    "file_sync_baseline": {
+      "source": "e1852b8819b657ca2ec919dab2feff3716225056",
+      "tree": "fa342caeaa55881ce72e23dfa1fb97ce46a52bbf",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/file-sync-baseline-e1852b8",
+      "owner": "90c65f57a72a27d52ba757ceca185c3c",
+      "name": "bigbrotr-implementation-file-sync-baseline-e1852b8",
+      "started_at": "2026-09-20T02:55:09.236917+00:00",
+      "binary": "/home/tux/bigbrotr-implementation-20260917/runs/archive-snapshot-e1852b8/out/build/target/release/deps/bigbrotr_archive_worker-463fbc6bc6e7a4f3",
+      "binary_sha256": "fe537744fd5f0bd95f1e6d2b93e158961ef486797b436b35416af7145f18c3ef",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "state": "stopped-retained",
+      "command": [
+        "strace",
+        "-f",
+        "-yy",
+        "-ttt",
+        "-e",
+        "trace=fsync,fdatasync,openat,close,rename,renameat,unlink,unlinkat",
+        "-o",
+        "/out/trace.log",
+        "/probe",
+        "publication::tests::complete_rows_and_receipt_survive_fresh_native_read_and_duplicate_refuses",
+        "--exact",
+        "--nocapture"
+      ],
+      "container_id": "abdc3154fb504ca8710fa118d435b2b424c9647eb5ea14507519afb5da9459b2",
+      "local_raw": ".research/implementation/archive-file-persistence/baseline",
+      "purpose": "Exact qualified baseline native syscall discriminator before file synchronization implementation",
+      "result": "CONFIRMED_GAP",
+      "trace_sha256": "3e359d93296b8b2c6880ccf5e469037d6550d09e36f5a66fe14f80aadbd50782",
+      "preexisting_preserved": 391,
+      "unrelated_running": 8,
+      "bigbrotr_running": 0,
+      "limits": "2CPU/2GiB/256PIDs;network none,readonly root/assets/test executable;only fresh out writable",
+      "filesystem": "/dev/nvme0n1p2 ext4 rw,relatime,errors=remount-ro",
+      "terminal_inventory": ".research/implementation/archive-file-persistence/baseline/terminal-inventory.json"
     }
   },
   "implementation_monitor_corrections_20260918": {
