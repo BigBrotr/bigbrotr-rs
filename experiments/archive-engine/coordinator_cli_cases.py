@@ -7,6 +7,7 @@ reservations. All Control configuration/activation uses the actual executable.
 import argparse
 import hashlib
 import json
+import re
 from pathlib import Path
 import select
 import subprocess
@@ -38,11 +39,15 @@ print(json.dumps(dict(pid=int(p.name),start_ticks=start,pidfd=True,signal=sys.ar
 """
 
 
-def run(root):
+def run(root, namespace):
     source = Path(__file__).resolve().parents[2]
     resources = json.loads((root/'resources.json').read_text())
-    assert source == root/'source'
-    assert command('git', '-C', str(source), 'rev-parse', 'HEAD') == resources['source']
+    assert source in (root/'source', root/'harness-source')
+    assert command('git', '-C', str(root/'source'), 'rev-parse', 'HEAD') == resources['source']
+    harness_revision = command('git', '-C', str(source), 'rev-parse', 'HEAD')
+    changed = command('git', '-C', str(source), 'diff', '--name-only', resources['source'], harness_revision).splitlines()
+    assert all(name.startswith('docs/') or name == 'experiments/archive-engine/coordinator_cli_cases.py' for name in changed)
+    assert not namespace or re.fullmatch('[a-z]{1,12}', namespace)
     assert not command('git', '-C', str(source), 'status', '--porcelain', '--untracked-files=all')
     for key in ['container_id', 'postgres_id']:
         c = json.loads(command('docker', 'inspect', resources[key]))[0]
@@ -53,11 +58,14 @@ def run(root):
     for label, name in [('control', 'bigbrotr'), ('coordinator_probe', 'archive-coordinator-probe'),
                         ('attempt_probe', 'archive-attempt-probe')]:
         assert sha(root/'out/native-tests'/name) == ready[label]
-    directory = root/'out/coordinator-cli'
+    directory_name = 'coordinator-cli'+('-'+namespace if namespace else '')
+    directory = root/'out'/directory_name
     directory.mkdir(mode=0o700)
     report = dict(status='INCOMPLETE', source=resources['source'], tree=resources['tree'],
-                  artifacts=ready, harness_sha256=sha(Path(__file__)), cases=[], commands=[], processes=[])
-    report_path = root/'coordinator-cli-cases.json'
+                  artifacts=ready, harness_sha256=sha(Path(__file__)),
+                  harness=dict(source=harness_revision, changed_paths=changed, production_inputs_unchanged=True),
+                  namespace=namespace, cases=[], commands=[], processes=[])
+    report_path = root/('coordinator-cli-cases'+('-'+namespace if namespace else '')+'.json')
     assert not report_path.exists()
     processes = []
     runner, pg = resources['container_id'], resources['postgres_id']
@@ -89,7 +97,7 @@ def run(root):
         return json.loads(record['stdout']) if record['stdout'] else None
 
     def prepare(label, target=15, native=False, state=True):
-        database = 'bbcli_'+label
+        database = 'bbcli_'+(namespace+'_' if namespace else '')+label
         home = directory/label
         home.mkdir(mode=0o700)
         for name in ['data', 'state', 'scratch']:
@@ -98,7 +106,7 @@ def run(root):
             p = home/role
             p.write_bytes((root/'secrets'/role).read_bytes())
             p.chmod(0o600)
-        container_home = '/out/coordinator-cli/'+label
+        container_home = '/out/'+directory_name+'/'+label
         text = (source/'config/recipes/archive-only.toml').read_text()
         for section, key, value in [
             ('administration', 'enabled', False), ('topology', 'dataset_id', '01'*16),
@@ -187,11 +195,12 @@ def run(root):
 
     save()
     try:
-        assert sql('postgres', "SELECT count(*) FROM pg_roles WHERE rolname='CatalogManager'") == '0'
-        manager_password = (root/'secrets/CatalogManager').read_text()
-        assert len(manager_password) == 64 and all(c in '0123456789abcdef' for c in manager_password)
-        sql('postgres', 'CREATE ROLE "CatalogManager" LOGIN NOSUPERUSER CREATEROLE NOCREATEDB NOINHERIT NOREPLICATION NOBYPASSRLS PASSWORD '+"'"+manager_password+"'")
-        del manager_password
+        if sql('postgres', "SELECT count(*) FROM pg_roles WHERE rolname='CatalogManager'") == '0':
+            manager_password = (root/'secrets/CatalogManager').read_text()
+            assert len(manager_password) == 64 and all(c in '0123456789abcdef' for c in manager_password)
+            sql('postgres', 'CREATE ROLE "CatalogManager" LOGIN NOSUPERUSER CREATEROLE NOCREATEDB NOINHERIT NOREPLICATION NOBYPASSRLS PASSWORD '+"'"+manager_password+"'")
+            del manager_password
+        assert sql('postgres', "SELECT rolcanlogin AND rolcreaterole AND NOT(rolsuper OR rolcreatedb OR rolinherit OR rolreplication OR rolbypassrls) FROM pg_roles WHERE rolname='CatalogManager'") == 't'
         db, home, path = prepare('installed', native=True, state=False)
         # Missing local custody refuses before reading either backend credential.
         (home/'CatalogManager').rename(home/'CatalogManager.unavailable')
@@ -289,9 +298,11 @@ def run(root):
             assert len(after_retry['persistence']) == 1
             if phase == 'during_commit': assert after_retry == before_retry
             for operation in ['UPDATE control.archive_persistence SET protocol_version=1',
-                              'DELETE FROM control.archive_persistence', 'TRUNCATE control.archive_persistence']:
+                              'DELETE FROM control.archive_persistence', 'TRUNCATE control.archive_persistence CASCADE']:
                 denied = subprocess.run(['docker','exec','-i',pg,'psql','-XqAt','-v','ON_ERROR_STOP=1','-U','postgres','-d',fault_db],
                                         input=operation, text=True, capture_output=True, timeout=5)
+                report.setdefault('mutation_refusals', []).append(dict(phase=phase, operation=operation, exit=denied.returncode, stdout=denied.stdout, stderr=denied.stderr))
+                save()
                 assert denied.returncode != 0 and 'archive persistence participation is immutable' in denied.stderr
             assert rows(fault_db) == after_retry
             passed('manager-loss-'+phase+'-and-identical-retry', blocker=holder, blocked=blocked,
@@ -310,7 +321,7 @@ def run(root):
         previous_epoch = int(sql(db, "SELECT max(epoch) FROM control.owner_epochs WHERE role='control'"))
         observation = {}
         execute(['docker', 'exec', runner, 'python3', '-B', '/source/experiments/control-runtime/blocked_output.py',
-                 '--binary', binary, '--config', path, '--output', '/out/coordinator-cli/full-output.json',
+                 '--binary', binary, '--config', path, '--output', '/out/'+directory_name+'/full-output.json',
                  '--stream', 'stdout', '--command', 'coordinator-initialize'], 15, observation)
         assert observation['exit'] == 0 and not observation['stderr']
         full = json.loads(observation['stdout'])
@@ -345,7 +356,7 @@ def run(root):
         assert seeded['rows'] == 130
         old_rows = json.loads(sql(old_db, 'SELECT json_agg(t ORDER BY ordinal) FROM control.archive_attempts t'))
         cli('migrate', 'apply', '--file', old_path, '--target', '10', '--user', 'postgres',
-            '--password-ref', 'file:/out/coordinator-cli/old/postgres')
+            '--password-ref', 'file:/out/'+directory_name+'/old/postgres')
         sql(old_db, 'GRANT SELECT,INSERT ON control.archive_coordinators TO bigbrotr_control; GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA control TO bigbrotr_control')
         retained = rows(old_db)
         assert not retained['bindings'] and len(retained['attempts']) == 130
@@ -358,10 +369,11 @@ def run(root):
         assert rows(old_db) == retained
         passed('old130-attempt-history-preserved-and-not-adopted', rows=130, snapshot_sha256=hashlib.sha256(json.dumps(retained,sort_keys=True).encode()).hexdigest())
         cli('migrate', 'apply', '--file', old_path, '--target', '15', '--user', 'postgres',
-            '--password-ref', 'file:/out/coordinator-cli/old/postgres')
+            '--password-ref', 'file:/out/'+directory_name+'/old/postgres')
         sql(old_db, 'GRANT SELECT,INSERT ON control.archive_persistence TO bigbrotr_control; GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA control TO bigbrotr_control')
         after_persistence_upgrade = rows(old_db)
         assert after_persistence_upgrade['bindings'] == after_persistence_upgrade['persistence'] == []
+        assert len(after_persistence_upgrade['attempts']) == len(retained['attempts']) == 130
         for before, after in zip(retained['attempts'], after_persistence_upgrade['attempts']):
             assert after['persistence_protocol'] is None
             assert {k:v for k,v in after.items() if k != 'persistence_protocol'} == before
@@ -434,4 +446,6 @@ def run(root):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('root', type=Path)
-    run(parser.parse_args().root.resolve())
+    parser.add_argument('--namespace', default='')
+    args = parser.parse_args()
+    run(args.root.resolve(), args.namespace)

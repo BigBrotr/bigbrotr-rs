@@ -14973,6 +14973,28 @@
       "preexisting_preserved": 394,
       "unrelated_running": 8,
       "bigbrotr_running": 0
+    },
+    "cut_candidate": {
+      "source": "354de750ffbcda93e7784bfaaf17b801522caf0f",
+      "tree": "968bbf5ed67e5e1c2f87db3e1dddac7b1b9a1f1f",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-cut-354de75",
+      "owner": "1c4237068e5102b2efa2d758f35a5de3",
+      "container": "bigbrotr-implementation-archive-cut-354de75",
+      "postgres": "bigbrotr-implementation-archive-cut-354de75-pg",
+      "network": "bigbrotr-implementation-archive-cut-354de75",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "state": "running",
+      "source_files": 896,
+      "started_at": "2026-09-20T05:12:29.020549+00:00",
+      "network_id": "caa8eb3cd751b935327379327d955d58e76d64a5af8d30c203bc1021c95f8c07",
+      "postgres_id": "346132d1e89634963bfb18b5ce42acc7b79229ea2f2cc455739eefa42b25c5ed",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "f5977e933b2f74a1ea647f428e57670f6f523ee581c43e591ef3e36e32c4e1a1",
+      "local_raw": ".research/implementation/archive-cut",
+      "purpose": "P02-T04/T07 complete native cut, fresh persistence and actual installed initializer failure windows",
+      "qualification": "NOT_RUN: native build and selected tests active",
+      "limits": "runner2CPU/6GiB/512PIDs;PG1CPU/1GiB/128PIDs;internal network,nohostports,readonlysource,512MiBtmpfs"
     }
   },
   "implementation_monitor_corrections_20260918": {

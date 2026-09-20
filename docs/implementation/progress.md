@@ -20,18 +20,14 @@ Existing task files own the backlog. No checkbox closes from this prerequisite.
 
 ## Git and ownership
 
-Local main and private origin/main are freshly verified at
-0a1b6e9b68a7f6fcf3f9cfd44576df25a070cc3d, including the native qualification of
-3369091e572fc6344ccc3e363fc1f31ff4b44d42 (tree
-bfb4de117aab48a79264b99a0ce3594ad37109a9). The current root-owned dirty work adds archive_cut protocol,
-native cut inspection/reference closure, supervised parent observation and frozen
-fixtures; it refactors receipt/member scans to share one native transaction.
-It also adds CatalogCapture, fresh persistence migration0015/adapter and the
-expanded installed coordinator initializer, plus practical harness changes. These
-new PG/CLI behaviors are NOT_RUN. No PostgreSQL frontier/pin adapter or user-facing
-cut command exists yet. Verify
-actual HEAD/origin on resumption. No parallel writer, merge or rebase. All previous
-Mac/Tux qualification sessions are joined; current development runs are below.
+Local main is354de750ffbcda93e7784bfaaf17b801522caf0f (tree
+968bbf5ed67e5e1c2f87db3e1dddac7b1b9a1f1f), an unpublished exact-Git candidate.
+Private origin/main is freshly verified at0a1b6e9b68a7f6fcf3f9cfd44576df25a070cc3d.
+The candidate contains the native cut, catalog capture and persistence migration15,
+expanded initializer, fixtures/contracts and practical harness. Current dirty
+progress/inventory edits are root-owned observations after launch. No parallel
+writer, merge or rebase. Native Linux build and all selected checks passed in the owned lab below;
+local development sessions are joined. No frontier/pin adapter exists yet.
 
 The compatibility worktree .research/worktrees/producer-closing-old-writer was
 freshly verified clean at f899896b1207f5e71c4e39d9ab7814b293814735 on
@@ -41,7 +37,7 @@ final evidence reviews are complete. The evidence reviewer recomputed source,
 capture and input hashes, full CLI results and preserved container state without
 editing or executing engines; no additional discrepancy was found.
 
-## Current uncommitted cut work
+## Current cut candidate
 
 The private CutRead checks a complete contiguous prefix for every supplied stream,
 including zero, whole receipt ranges and publication ordinal gaps. A single native
@@ -64,7 +60,7 @@ The real native receive case failed before the correction; receive/provenance
 negative cases now pass, as do cross-shard and cross-epoch positive controls.
 Logs correction-order-red.log, correction-order-green.log and
 correction-cross-stream-green.log under .research/implementation/archive-cut
-record the exact scope. All sessions including6340 are joined. The current five-group Mac run is joined. No test is active.
+record the exact scope. All sessions including6340 are joined. The current five-group Mac run is joined. No local test is active.
 These are Mac dirty-source results, not Linux or complete bridge qualification.
 
 CatalogCapture now holds the installed owner-row barrier, exact native snapshot,
@@ -90,9 +86,7 @@ inspection, with the earlier qualification explicitly historical.
 The bridge remains incomplete: actual Archive ownership, complete sealed-topology
 frontier binding and PG-clock snapshot pins are next responsibilities. Control
 ownership is not Archive authority. Manager-session loss must refuse; postcommit
-loss may leave an immutable marker and must resolve by identical retry. No remote
-lab has been started for the current work. Last terminal Tux state below was not
-refreshed solely for this checkpoint.
+loss may leave an immutable marker and must resolve by identical retry. A new isolated native lab is active; identities and state follow below.
 
 ## Executed membership boundary
 
@@ -151,7 +145,29 @@ host/power-loss or arm64 qualification is claimed.
 
 ## Owned resources and evidence
 
-Latest lab /home/tux/bigbrotr-implementation-20260917/runs/archive-membership-3369091,
+Current lab /home/tux/bigbrotr-implementation-20260917/runs/archive-cut-354de75,
+owner1c4237068e5102b2efa2d758f35a5de3. Runner
+f5977e933b2f74a1ea647f428e57670f6f523ee581c43e591ef3e36e32c4e1a1 and PG
+346132d1e89634963bfb18b5ce42acc7b79229ea2f2cc455739eefa42b25c5ed are running.
+Networkcaa8eb3cd751b935327379327d955d58e76d64a5af8d30c203bc1021c95f8c07
+is owned/internal with no host ports. Source896 files, exact clean Git export;
+PG16.15/fsync/full_page_writes enabled. Preflight preserves396 prior containers.
+Ignored .research/implementation/archive-cut holds transfer/launch scripts,
+resources and sanitized preflight; lab inventory cut_candidate records ownership.
+Build native_initialization.py --archive-cut passed all selected groups. The
+installed coordinator matrix stopped at a fixture expectation: plain TRUNCATE was
+refused by PostgreSQL's foreign-key precheck before the immutable trigger. Actual
+UPDATE, DELETE and TRUNCATE CASCADE each hit that trigger; the diagnostic is saved
+as immutability-diagnosis.json. No product mutation was needed. The first manager
+loss and its retry ran before this assertion, but the matrix remains FAIL.
+The independent event_cases.py --capture-cut subsequently passes both complete
+signed normal/history cuts at354de75. Sessions54278/40715/9782 are joined.
+A corrected harness uses a separate Git checkout and namespace, preserving failed
+fixtures, unchanged product artifacts and initial raw reports. It also checks all
+130 historical rows rather than relying on a prefix zip. Rerun the corrected CLI
+matrix before terminal collection/exclusion; no final qualification is claimed.
+
+Previous lab /home/tux/bigbrotr-implementation-20260917/runs/archive-membership-3369091,
 owner6fc7bd6cc597c6218a2d47bad888737e. Runner
 6e1e9a0db3cb876794759788bc696e37e728c3f33e90ac42d5d57c92dd42eb68 and PG
 01bee00d0fa9e25c18cea03daf075e8dc3c0ae98113de08353b8fe79a207ebc0 are stopped,
@@ -189,9 +205,9 @@ immutable-marker retry and preserved old NULL history. These practical cases
 remain NOT_RUN. Diff review and example compilation are complete. Independent AI review found
 and corrected a fixture schema-width error (u16, not u32); its Python digest now
 matches the frozen literal protocol vector. The expanded initializer contract was
-also reconciled with its historical evidence. Create and transfer an
-unpublished clean candidate through Git to a newly inventoried
-Tux lab for actual PG/CLI/cut and fault verification. Continue the P02-T04/T07
+also reconciled with its historical evidence. Candidate354de75 is transferred. Transfer the reviewed harness-only correction through Git and run the complete
+CLI matrix with --namespace retry, keeping the354de75 artifacts and source export
+unchanged. Collect both raw outcomes, independently verify, and close the owned lab. Continue the P02-T04/T07
 frontier bridge: verified
 committed complete batches -> contiguous complete prefix for every topology
 stream (including zero) -> actual Archive consumer owner/frontier -> immutable
