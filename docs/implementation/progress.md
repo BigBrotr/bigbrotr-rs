@@ -21,185 +21,96 @@ another diagnostic command instead of the real read consumer.
 
 ## Git and ownership
 
-Local main/HEAD is `596d447f044907cd1f286d084feff730297ee174`;
-seven unpublished commits follow origin `b98426146c68caffcbf6822bdb956d1a8abbd30d`.
-Root owns the private build no-preload correction (new prerender hook and Vite
-option), browser assertions, owning contracts/task/dependency record, evidence,
-inventory and checkpoint. No other writer or merge/rebase was observed.
+Local main/HEAD is `b6d9d7edb0a322526b29d85ac5d4d412efc5401e`;
+eight unpublished commits follow freshly fetched origin
+`b98426146c68caffcbf6822bdb956d1a8abbd30d`. GitHub confirms the repository is private.
+Root owns qualification documentation/evidence/inventory and a separate new
+large-static-response test in management/tests.rs. That test is not part of the
+native qualified revision. No other writer or merge/rebase was observed.
 Private local
 session API production baseline5a4e0d1 and qualified COMMIT fixturee65116b remain
 unchanged history. Full candidate state is listed by Git, not this summary.
 
-[Local private-panel evidence](evidence/p09-private-panel-local-20260920.json)
-binds35 changed source hashes and30 raw files. Mac Node26.4.0/pnpm9.15.9,
-Rust1.98.1:10 client/8 model/25 config CLI/6 policy/17 management tests PASS;
-Svelte/TS0errors/0warnings, actual binary build and scoped bin/tests Clippy PASS.
-Latest native runs private-panel/assets-final-mac and assets-http-final-mac
-completed exit0; no compiler,
-browser or product process is owned/running. Root and/control bundles contain13
-files (128471/128505bytes), independently hash-verified in bundle-suspend-check.json.
-Their manifestSHA256 values begin af02d47c and9481850c. Earlier bundle-* artifacts
-remain historical and predate the suspend correction. Actual browser outcomes are below.
+The private panel implements a generated same-origin three-route session client
+and static login/self/logout UI, with bounded streaming, timeout, exact decimal
+integers, no mutation retry and in-memory observations. Rust loads one verified
+closed bundle before Control: no-follow descriptor traversal, 20 MiB lifetime
+reservation, 128 files/16 MiB total/2 MiB each/64 KiB manifest, root or /control,
+no request-driven disk IO. Deployment roots are restart-only; policy bytes and
+persistent formats are unchanged.
 
-The candidate implements a generated closed same-origin session client and thin
-login/self/logout panel, with bounded streaming/timeout, exact decimal integers,
-no mutation retry and one in-memory observation. Discriminating runtime REDs
-preceded terminal/teardown and idle-pagehide invalidation corrections. Closing
-an idle tab no longer cancels another tab's login. Form is POST and a static
-loading/reload notice survives unavailable bootstrap; browser proof NOT_RUN.
+[Local qualification](evidence/p09-private-panel-local-20260920.json) records Mac
+Rust/client/model/config checks and independently verified bundles. Historical
+native evidence preserves the [prerequisite failure](evidence/p09-private-panel-native-prerequisite-20260920.json),
+[first browser failures](evidence/p09-private-panel-browser-failures-20260920.json),
+[Origin/CDP diagnosis](evidence/p09-private-panel-browser-diagnostics-20260920.json),
+[referrer correction](evidence/p09-private-panel-referrer-native-20260920.json),
+[bootstrap diagnostics](evidence/p09-private-panel-bootstrap-diagnostics-20260920.json)
+and [actual missing-asset failure](evidence/p09-private-panel-bootstrap-real-native-20260920.json).
+All original failed artifacts/data are retained; their reports and inventory own
+exact roots, container IDs and capture hashes. No failed execution became PASS.
 
-The Rust listener now optionally preloads a closed SHA256 bundle before Control:
-20MiB shared lifetime reservation, no-follow descriptor walk,128files/16MiB total,
-2MiB each/64KiB manifest, exactroot/control mounts, no request-driven disk IO.
-Two restart-only deployment roots preserve existing policy bytes/digest. Tests
-cover literal payload, corrupt/missing retry, capacity, root/ancestor/leaf/manifest
-symlinks, actual FIFO, duplicate/count/aggregate bounds, shared Bytes custody,
-actual TCP headers/refusals and revocation with zero bytes. Read-only AI review
-found no further concrete bypass; actual large blocked-response and browser CSP/
-cookie/subpath/keyboard/missing-asset behavior remain unqualified.
+Actual Firefox/WebKit POSTs required same-origin Referrer-Policy to preserve
+Origin; foreign Origin/CSRF refusals remain. The bootstrap fixture now removes
+and restores the exact module and manifest in its private copy, restarting the
+real Rust listener without request interception. Firefox's two earlier 404s
+invalidated an exact-one assumption. Actual WebKit still failed reload at596d447;
+suppressing JS modulepreloads through the Kit CSS-only prerender filter and Vite
+modulePreload=false fixes the executed case below. WebKit bug270357 matches the
+observed failure; internal engine causality remains an inference. CSS, ordinary
+imports and CSP remain; no dependency version changed or latency gain claimed.
 
-Preserved failures: cancelled ambient Cargo build; controlled native errno28
-before tests; subsequent missing-API compilation RED; three initial Rust API/
-visibility compile errors; first revocation test helper incorrectly required FIN
-and rejected OS reset. Corrected test accepts FIN/reset within1s only with zero
-bytes. All logs retained under private-panel. The Mac cache-recovery record covers
-only8672696KiB of verified inactive owned incremental data; no source/evidence or
-linked/native artifact was removed.
+Verified owned cache retirements removed only .rlib/.rmeta from failed panel labs
+4593e37/8c19aa9/50185d3, cc4aa3a and6d663b7/596d447. All artifacts, sources,
+receipts and private data were retained and hash checked; unrelated resources
+were unchanged. These partial caches MUST NOT be reused. The three retirement
+receipts are under .research/implementation/private-panel/tux-*-cache-retirement.json
+and the laboratory inventory. Qualified e65116b and b6d9d7e caches remain intact.
 
-The experimental panel mode now compiles; panel-fixture-compile and
-panel-fixture-reviewed both passed actual example build/Clippy and JS syntax.
-Frozen strict-peer install with ignored scripts passed; only three exact Playwright
-packages were added, no previous dependency resolution changed. Eight browser
-journeys and independent SQL boundary/restart oracles are written; actual failures below.
-Read-only AI review corrected exact-action and logout-removal assertions, teardown
-failure accounting, SQL assertion redaction and binding actual executable/script/
-bundle hashes to the selected source. Separate browser process groups require a
-fresh container per pair, /proc observations and host terminal collection; no
-Node-only join claim.
+[Qualified initial browser slice](evidence/p09-private-panel-native-20260920.json)
+at b6d9d7e completes all eight journeys on Chromium/Firefox/WebKit at both mounts.
+Every missing-module case has one actual 404, zero premature 200s, one restored
+200, enabled login and hidden recovery notice, with no interception. Native
+17 management tests/Clippy and seven frontend checks pass; actual artifact, tool,
+lockfile and bundle identities are bound. All six independent terminal SQL checks
+match one revoked session, seven grants, config/policy 1, no active owner and zero
+backends. Capture 144 files and 987 source hashes verified against Mac Git archive.
+Independent read-only AI review verified all source/capture hashes, six browser/mount pairs,
+manifest transitions, terminal SQL projections and resource preservation; no
+discrepancy found. Full SQL before/after equality is asserted by the executed
+fixture, not retained as raw row snapshots. This is scoped P08/P09 evidence, not
+a complete task, M1, release or Safari claim.
 
-[First native attempt](evidence/p09-private-panel-native-prerequisite-20260920.json)
-at4593e37 is INCOMPLETE before frontend/browser/PG. The launcher incorrectly
-equated Docker image inspect Id with config digest; this host returned the pinned
-platform manifest digest. Direct registry bytes independently verify both selected
-manifest/config hashes. Cleanup interrupted the Rust build with exit143; its
-RUNNING receipt is not PASS. One owned container is stopped/PID0/noOOM, all426
-prior lifecycle records unchanged,8unrelated workloads remain; no network/PG.
-Twelve capture files and978 source hashes independently verified on Mac. Preserve
-private-panel/native and remote runs/private-panel-4593e37, owner
-bd3463465b16396b6f7d961067fc0613. Replacement launcher separates manifest/config
-checks, probes actual tool availability first, registers create before start and
-attempts collection of every owned container even after a cleanup error.
+Raw `private-panel/native-no-preload`; remote
+`runs/private-panel-no-preload-b6d9d7e`. Terminal resources.json owns exact owner
+and ten container IDs. All stopped/PID0/noOOM; empty owned network removed, all
+471 prior containers preserved and eight unrelated workloads remain. Last free
+space 9,246,089,216 bytes. No remote experiment or cleanup debt remains. Preserve
+all failed labs and partial-cache exclusions above; e65116b and b6d9d7e caches
+remain intact. More space must be inventoried before another copied native build.
 
-[First real browser matrix](evidence/p09-private-panel-browser-failures-20260920.json)
-at8c19aa9 is FAIL: all six browser/mount combinations executed. Native build,
-17management tests/Clippy, six frontend checks and both bundles PASS. Image
-Python3.12.3 and selected Node26.4.0 were actually executed. Chromium passes three
-journeys (startup/keyboard/mobile, invalid/wrong password, login/cookies) before
-cross-origin Response timeout. Firefox/WebKit pass startup but fail invalid/wrong
-password assertion; neither issued a session. No whole browser case is complete.
-All10owned containers stopped/PID0/noOOM; empty network removed; zero PG clients,
-427prior containers preserved,8unrelated running.95capture/979source hashes verified.
-Raw private-panel/native-platform; remote runs/private-panel-platform-8c19aa9,
-owner0fea57f8c203cf946e73dec27de263a6. Retain failed data/active owner rows; process
-termination is not a graceful Control release. No owned job is running.
+The next test uses the actual HTTP listener, a 2 MiB verified static body and
+small TCP buffers. It requires the connection/bundle grants to remain before
+revocation, bounded closure with a strict body prefix afterward and zero grants
+at stop. Final bounded Mac execution and scoped Clippy PASS; the isolated mutant
+with DeliveryGate::revoke disabled fails after delivering all2097152 bytes.
+Both runtime failures and the final PASS are retained under private-panel/
+large-static-{no-revoke,no-revoke-diagnostic,final}-mac. Mutant identity is
+large-static-negative.json; owned detached worktree
+.research/worktrees/private-panel-no-revoke remains intentionally dirty and must
+never be merged or pushed. Primary production delivery.rs is unchanged. The
+primary build was restored by the final check; caches remain non-authoritative.
+Native evidence for this test is NOT_RUN. Its only product-side dirty file is
+management/tests.rs, kept separate from qualified browser source.
 
-[Discriminating diagnostics](evidence/p09-private-panel-browser-diagnostics-20260920.json)
-at50185d3 confirm both causes: Firefox/WebKit actual wrong-password POST has
-Origin:null and403; Chromium cross-origin fetch has CDP403 but no Playwright
-Response. All three root cases remain FAIL; no bucket-state snapshot was taken
-for the Firefox/WebKit refusals.68capture/980source hashes verified on Mac.
-Sevenowned containers stopped/PID0/noOOM,437prior preserved,8unrelated running,
-zero PG clients; empty owned network removed. Raw private-panel/native-diagnostics,
-remote runs/private-panel-diagnostics-50185d3, owner is in resources.json/inventory.
-No remote/local job remains active. Last observed Tux free13,149,523,968bytes.
-
-The correction changes both private HTML meta and Rust header to same-origin,
-preserving exact Origin and CSRF refusal and suppressing cross-origin referrers.
-Mac actual TCP assertion failed RED before the fix; referrer-green has17management
-PASS, scopedClippyPASS and JSsyntaxPASS. Both rebuilt local bundles have13files
-128471/128505bytes, checked by bundle-referrer-check.json. The native correction
-was executed; its scoped result is below. The fixture retains cross-origin fetch
-(Chromium requires CDP403), adds
-actual HTML text/plain POST with observed403/exactforeignOrigin on every engine,
-and compares unchanged SQL rows/xmin across both attempts. No generic rejected
-fetch or timeout can satisfy that status oracle. Matching response+rebuilt bundle
-must deploy together; API/persistent format unchanged.
-
-[Corrected native matrix](evidence/p09-private-panel-referrer-native-20260920.json)
-at cc4aa3a completes the first seven journeys in all six browser/mount pairs.
-Chromium completes all eight, with independent terminal SQL and graceful Control
-release. Firefox fails the exact missing-bootstrap response count; its actual
-count was not captured. WebKit observes the real 404 but fails recovery after
-clicking the reload link. These remain unresolved failures, not product passes.
-All ten owned containers are stopped/PID0/noOOM; the empty network was removed,
-zero PG clients remain, all 444 prior containers were preserved. The capture's
-121 files and 981 source hashes were independently verified on Mac. Raw evidence:
-`.research/implementation/private-panel/native-referrer`; remote root
-`/home/tux/bigbrotr-implementation-20260917/runs/private-panel-referrer-cc4aa3a`,
-owner `32cfd51feba805906b7b447b4b0aff34`. Failed cases retain active owner rows;
-process termination is not graceful release. Current read-only host inspection
-shows only eight unrelated workloads and no owned native/browser/compiler job.
-
-Verified cache retirement removed only 3801 .rlib/.rmeta files (5,990,723,568
-logical bytes) from the three earlier failed private-panel Cargo targets.
-Artifacts, source, receipts and private data were retained and hash checked;
-all 454 container records were unchanged. These partial caches must not be reused.
-The intact cc4aa3a and e65116b caches remain. Receipt is inventoried under
-`implementation_private_panel_20260920.failed_native_cache_retirement`; raw
-`private-panel/tux-failed-cache-retirement.json`. Last observed Tux free space is
-15,145,680,896 bytes. No cleanup debt remains.
-
-[Bootstrap diagnostics](evidence/p09-private-panel-bootstrap-diagnostics-20260920.json)
-at 6d663b7 execute all three root cases. Chromium passes eight journeys;
-Firefox issues two real bootstrap 404s, invalidating the exact-one assumption.
-WebKit navigates after the link and explicit reload but never requests the module
-again. Playwright toggles resource caching with interception; this is a possible
-instrumentation interaction, not a proven product defect. The replacement fixture
-now removes/restores the actual module and manifest in a private bundle copy,
-with real Rust restarts and unchanged SQL assertions. No request interception.
-The first Mac compile failed on unsupported digest LowerHex; corrected build,
-Clippy and JS syntax passed. Read-only AI review then tightened the exact module
-URL and post-restoration 200 timing. The final reviewed build, Clippy and JS
-syntax all PASS; native execution remains pending.
-
-All seven diagnostic containers are stopped/PID0/noOOM; zero PG clients, 454 prior
-containers preserved, eight unrelated workloads remain. Capture 80 files and 984
-source hashes verified; raw `private-panel/native-bootstrap`; remote root
-`runs/private-panel-bootstrap-6d663b7`, owner `ae7efc0e61bc12224d45e0cbc07cabab`.
-A separate verified retirement removed only 1267 .rlib/.rmeta files (1,996,907,856
-logical bytes) from stopped cc4aa3a. Its partial Cargo cache must not be reused;
-artifacts/data retained. All 461 container records unchanged, free space
-13,212,532,736 bytes. The e65116b and 6d663b7 caches remain intact.
-
-[Actual asset deployment](evidence/p09-private-panel-bootstrap-real-native-20260920.json)
-at 596d447 completes eight journeys for Chromium/Firefox at both mounts.
-WebKit still fails both: real module 404, zero restored 200s, link and explicit
-reload ineffective. There is no request interception, ruling it out as a necessary
-trigger here. This matches WebKit bug 270357's retained failed modulepreload;
-internal engine causality remains an inference. The private build correction
-suppresses JS preload links during Kit prerendering and JS dependency preloads in
-Vite. CSS, ordinary imports and CSP remain. Mac type check, root/control builds
-and JS syntax PASS; both 13-file bundles have zero HTML modulepreloads and verified
-hashes (bundle-no-preload-reviewed-check.json). Read-only AI review restricted
-the filter to CSS only, preserving the existing no-font-preload default. The
-final reviewed type check and both builds PASS. Native correction remains NOT_RUN.
-
-All ten actual-fault containers are stopped/PID0/noOOM; 461 prior resources
-preserved, eight unrelated workloads remain, zero PG clients. Capture 148 files
-and 985 source hashes verified. Raw `private-panel/native-real-bootstrap`, remote
-`runs/private-panel-real-bootstrap-596d447`, owner
-`903756a322891a620c7530c936241e40`. Preserve the WebKit failed active-owner rows.
-Verified cache retirement then removed only 2534 .rlib/.rmeta files (3,993,815,712
-logical bytes) from the stopped 6d663b7/596d447 targets, preserving all actual
-artifacts, sources, receipts and data. All 471 containers unchanged; free space
-13,216,038,912 bytes. These two partial caches must not be reused. Baseline
-qualified e65116b remains intact. No owned job or cleanup debt is active.
-
-Next bounded action: commit the reviewed no-preload correction and repeat the
-same six actual browser/Rust/PG journeys in a fresh exact-source lab. Preserve
-all original failures and require exact module 404 -> restoration -> 200 plus
-usable UI. Large blocked response, forced detached-browser cleanup, frontend
-shared CI and wider P09/M1 remain open.
+Next bounded action: commit/push the reviewed browser evidence, then commit the
+reviewed large-response regression as an unpublished exact-Git candidate and
+qualify it in one isolated native Rust container. Fresh Tux inspection observes
+eight unrelated workloads, no owned job and9,238,757,376bytes free; inventory and
+reserve enough space for the scoped build before launch. No frontend/browser
+matrix rerun is needed for a Rust test-only addition.
+Forced detached-browser cleanup, late response/expiry races, frontend shared CI,
+authorized history read/export and all wider P09/M1/later product work remain open.
 
 Preserve `.research/worktrees/producer-closing-old-writer`, last verified clean at
 `f899896b1207f5e71c4e39d9ab7814b293814735` on
@@ -469,11 +380,9 @@ Read-only review corrected secret-printing assert, proxy guard before READY,
 specific revocation/other-row oracles and transient crash-observation deadlines.
 No product failure was found in these executed schedules.
 
-The local client, panel and bounded static listener now have scoped evidence above.
-Next qualify production bundles against actual
-Chromium/Firefox/WebKit and Rust/PG, including cookie/CSRF and same-host second-port
-controls. P08-T02 and P09-T01/T07 own this work; no alternate UI stack or diagnostic
-CLI. Browser failures above remain unresolved. Initial frontend candidate metadata, ten
+The local client, panel and bounded static listener now have scoped native browser
+evidence above. P08-T02 and P09-T01/T07 own the remaining work; no alternate UI
+stack or diagnostic CLI. Initial frontend candidate metadata, ten
 SHA512-verified npm archives and source inspection are retained under
 .research/implementation/private-panel/dependencies and inventoried. Selected
 Svelte5.57.1/Kit2.70.3/static3.0.10/Vite8.3.0/TS5.9.3, Playwright1.63.0 candidates
@@ -481,7 +390,7 @@ are not release-qualified. Latest TS7 was deliberately excluded by actual peer
 requirements. Matching native browser engines were downloaded and executed as recorded above. The first
 OpenAPI3.1 contract describes only the three existing session routes; standalone
 Ajv validation and generated TS avoid runtime schema compilation/eval. No P09
-step is complete. Static assets, browser tests, audit and actual data access remain.
+step is complete. Broader browser tests, audit and actual data access remain.
 Do not mock the API or bypass CSP merely to label a browser case PASS. Cookies
 remain host-scoped, not port-isolated; local profile assumes trusted same-host services.
 Continue login audit, reauthentication, scope-qualified grants and actual pinned

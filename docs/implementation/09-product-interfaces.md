@@ -61,9 +61,11 @@ refusals and zero-byte delivery after revocation; these are not browser evidence
 Independent AI review corrections have discriminating runtime regressions for
 cross-tab lifecycle. The [actual native browser matrix](evidence/p09-private-panel-bootstrap-real-native-20260920.json)
 executes eight session journeys on Chromium/Firefox at both mounts; WebKit passes
-seven and fails recovery from an absent bootstrap module. The selected correction
-omits speculative JS preloads while retaining ordinary imports and CSS. Qualify
-the same real 404/restoration/reload journey before closing this guarantee.
+seven and fails recovery from an absent bootstrap module. The [corrected native matrix](evidence/p09-private-panel-native-20260920.json)
+at b6d9d7e completes all eight journeys on all six browser/mount pairs. It omits
+speculative JS preloads while retaining ordinary imports and CSS; exact module
+404/restoration/200, browser recovery and independent SQL observations pass.
+This qualifies only the initial session and controlled bootstrap-fault slice.
 Public application separation, large blocked response, full accessible primitives
 and shared frontend CI/release assembly remain required. No task step is complete.
 

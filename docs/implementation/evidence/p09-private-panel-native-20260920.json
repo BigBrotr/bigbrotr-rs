@@ -1,0 +1,786 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "tasks": [
+    "P08-T02",
+    "P09-T01",
+    "P09-T07"
+  ],
+  "status": "PASS_SCOPED",
+  "source": {
+    "revision": "b6d9d7edb0a322526b29d85ac5d4d412efc5401e",
+    "tree": "333609f57431b2002fd47bfa0a662209f1ba7d79",
+    "clean": true,
+    "files_verified": 987
+  },
+  "scope": "Eight actual private session and bootstrap-recovery journeys on each of three native browsers at root and /control. Not complete administration, P09, M1 or release qualification.",
+  "prerequisites": {
+    "rust": {
+      "cargo_lock": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+      "pnpm_lock": "70f6e67f3f968c9f55236f563994c04413cf679a58da3ebbd1ebcfb5d089d1a4",
+      "status": "PASS",
+      "counts": {
+        "collected": 3,
+        "executed": 3,
+        "failed": 0,
+        "not_run": 0
+      },
+      "artifacts": {
+        "bigbrotr": "3203fbca2b3cd10967c997b27ed7e08868a7a1f427cf94ff4b3f8c0b9b8122c6",
+        "examples/browser_http_probe": "bad785b537013d5ed7c0b03dfe84b8f1e7c1dfc43c02cbe7a16d8426efbf4c9f"
+      }
+    },
+    "frontend": {
+      "cargo_lock": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+      "pnpm_lock": "70f6e67f3f968c9f55236f563994c04413cf679a58da3ebbd1ebcfb5d089d1a4",
+      "node_sha256": "4cfdaeec2e3689e4728b4bc98932a9147a3f98162bdc7955c03c0d7fa3b8aa94",
+      "pnpm_sha256": "98e6b99a881d64a1cc982c3e60aa260bf02160386b12e74475e06486dc74b090",
+      "status": "PASS",
+      "counts": {
+        "collected": 7,
+        "executed": 7,
+        "failed": 0,
+        "not_run": 0
+      },
+      "bundles": {
+        "root": {
+          "manifest_sha256": "cee689efba5ef4cc5b19122d481f1a6d5939663210d01ad43580f353ddbdd9fa",
+          "files": 13,
+          "bytes": 127963
+        },
+        "control": {
+          "manifest_sha256": "ea46de9a423c2e27b9eec81795f170f643341bb63d45fa242c287317c2398fe6",
+          "files": 13,
+          "bytes": 127997
+        }
+      }
+    }
+  },
+  "cases": {
+    "chromium-control": {
+      "status": "PASS",
+      "browser": "chromium",
+      "base": "/control/",
+      "version": "153.0.8010.12",
+      "launchedExecutables": [
+        {
+          "path": "/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell",
+          "sha256": "ded93a9c9a53a1ae040f08124badcca95c938e9d5015ff340c3b5538c41bf39e"
+        }
+      ],
+      "cases": [
+        {
+          "name": "initial-load-and-keyboard",
+          "status": "PASS",
+          "milliseconds": 100
+        },
+        {
+          "name": "invalid-and-wrong-password",
+          "status": "PASS",
+          "milliseconds": 139
+        },
+        {
+          "name": "login-cookie-boundaries",
+          "status": "PASS",
+          "milliseconds": 223
+        },
+        {
+          "name": "explicit-csrf-and-foreign-origin",
+          "status": "PASS",
+          "milliseconds": 140
+        },
+        {
+          "name": "same-cookie-process-restart",
+          "status": "PASS",
+          "milliseconds": 88
+        },
+        {
+          "name": "cross-tab-logout-and-forget",
+          "status": "PASS",
+          "milliseconds": 101
+        },
+        {
+          "name": "new-login-reload-and-logout",
+          "status": "PASS",
+          "milliseconds": 333
+        },
+        {
+          "name": "missing-bootstrap-recovery",
+          "status": "PASS",
+          "milliseconds": 229
+        }
+      ],
+      "teardown": [
+        {
+          "name": "context",
+          "status": "PASS"
+        },
+        {
+          "name": "browser",
+          "status": "PASS"
+        }
+      ],
+      "bootstrap": {
+        "interception": false,
+        "noStore": true,
+        "script404s": 1,
+        "early200s": 0,
+        "restored200s": 1,
+        "navigations": 3,
+        "beforeClick": 1,
+        "afterClick": 3
+      },
+      "foreign_wire_statuses": [
+        403,
+        403
+      ],
+      "foreign_wire_overflow": false
+    },
+    "chromium-root": {
+      "status": "PASS",
+      "browser": "chromium",
+      "base": "/",
+      "version": "153.0.8010.12",
+      "launchedExecutables": [
+        {
+          "path": "/ms-playwright/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell",
+          "sha256": "ded93a9c9a53a1ae040f08124badcca95c938e9d5015ff340c3b5538c41bf39e"
+        }
+      ],
+      "cases": [
+        {
+          "name": "initial-load-and-keyboard",
+          "status": "PASS",
+          "milliseconds": 95
+        },
+        {
+          "name": "invalid-and-wrong-password",
+          "status": "PASS",
+          "milliseconds": 138
+        },
+        {
+          "name": "login-cookie-boundaries",
+          "status": "PASS",
+          "milliseconds": 126
+        },
+        {
+          "name": "explicit-csrf-and-foreign-origin",
+          "status": "PASS",
+          "milliseconds": 171
+        },
+        {
+          "name": "same-cookie-process-restart",
+          "status": "PASS",
+          "milliseconds": 88
+        },
+        {
+          "name": "cross-tab-logout-and-forget",
+          "status": "PASS",
+          "milliseconds": 118
+        },
+        {
+          "name": "new-login-reload-and-logout",
+          "status": "PASS",
+          "milliseconds": 332
+        },
+        {
+          "name": "missing-bootstrap-recovery",
+          "status": "PASS",
+          "milliseconds": 228
+        }
+      ],
+      "teardown": [
+        {
+          "name": "context",
+          "status": "PASS"
+        },
+        {
+          "name": "browser",
+          "status": "PASS"
+        }
+      ],
+      "bootstrap": {
+        "interception": false,
+        "noStore": true,
+        "script404s": 1,
+        "early200s": 0,
+        "restored200s": 1,
+        "navigations": 3,
+        "beforeClick": 1,
+        "afterClick": 3
+      },
+      "foreign_wire_statuses": [
+        403,
+        403
+      ],
+      "foreign_wire_overflow": false
+    },
+    "firefox-control": {
+      "status": "PASS",
+      "browser": "firefox",
+      "base": "/control/",
+      "version": "155.0",
+      "launchedExecutables": [
+        {
+          "path": "/ms-playwright/firefox-1543/firefox/firefox",
+          "sha256": "062272ac4d851eade5b75db2dc7c14569d96cb3ca38f949337cdc1b74367e35b"
+        }
+      ],
+      "cases": [
+        {
+          "name": "initial-load-and-keyboard",
+          "status": "PASS",
+          "milliseconds": 311
+        },
+        {
+          "name": "invalid-and-wrong-password",
+          "status": "PASS",
+          "milliseconds": 257
+        },
+        {
+          "name": "login-cookie-boundaries",
+          "status": "PASS",
+          "milliseconds": 137
+        },
+        {
+          "name": "explicit-csrf-and-foreign-origin",
+          "status": "PASS",
+          "milliseconds": 231
+        },
+        {
+          "name": "same-cookie-process-restart",
+          "status": "PASS",
+          "milliseconds": 135
+        },
+        {
+          "name": "cross-tab-logout-and-forget",
+          "status": "PASS",
+          "milliseconds": 227
+        },
+        {
+          "name": "new-login-reload-and-logout",
+          "status": "PASS",
+          "milliseconds": 269
+        },
+        {
+          "name": "missing-bootstrap-recovery",
+          "status": "PASS",
+          "milliseconds": 352
+        }
+      ],
+      "teardown": [
+        {
+          "name": "context",
+          "status": "PASS"
+        },
+        {
+          "name": "browser",
+          "status": "PASS"
+        }
+      ],
+      "bootstrap": {
+        "interception": false,
+        "noStore": true,
+        "script404s": 1,
+        "early200s": 0,
+        "restored200s": 1,
+        "navigations": 3,
+        "beforeClick": 1,
+        "afterClick": 3
+      }
+    },
+    "firefox-root": {
+      "status": "PASS",
+      "browser": "firefox",
+      "base": "/",
+      "version": "155.0",
+      "launchedExecutables": [
+        {
+          "path": "/ms-playwright/firefox-1543/firefox/firefox",
+          "sha256": "062272ac4d851eade5b75db2dc7c14569d96cb3ca38f949337cdc1b74367e35b"
+        }
+      ],
+      "cases": [
+        {
+          "name": "initial-load-and-keyboard",
+          "status": "PASS",
+          "milliseconds": 305
+        },
+        {
+          "name": "invalid-and-wrong-password",
+          "status": "PASS",
+          "milliseconds": 239
+        },
+        {
+          "name": "login-cookie-boundaries",
+          "status": "PASS",
+          "milliseconds": 141
+        },
+        {
+          "name": "explicit-csrf-and-foreign-origin",
+          "status": "PASS",
+          "milliseconds": 244
+        },
+        {
+          "name": "same-cookie-process-restart",
+          "status": "PASS",
+          "milliseconds": 132
+        },
+        {
+          "name": "cross-tab-logout-and-forget",
+          "status": "PASS",
+          "milliseconds": 229
+        },
+        {
+          "name": "new-login-reload-and-logout",
+          "status": "PASS",
+          "milliseconds": 270
+        },
+        {
+          "name": "missing-bootstrap-recovery",
+          "status": "PASS",
+          "milliseconds": 320
+        }
+      ],
+      "teardown": [
+        {
+          "name": "context",
+          "status": "PASS"
+        },
+        {
+          "name": "browser",
+          "status": "PASS"
+        }
+      ],
+      "bootstrap": {
+        "interception": false,
+        "noStore": true,
+        "script404s": 1,
+        "early200s": 0,
+        "restored200s": 1,
+        "navigations": 3,
+        "beforeClick": 1,
+        "afterClick": 3
+      }
+    },
+    "webkit-control": {
+      "status": "PASS",
+      "browser": "webkit",
+      "base": "/control/",
+      "version": "26.6",
+      "launchedExecutables": [
+        {
+          "path": "/ms-playwright/webkit-2359/minibrowser-wpe/bin/MiniBrowser",
+          "sha256": "7c71efed38fb0d916f5edb7db9a98cdf218642dd8dce02375730eb9ad5510751"
+        },
+        {
+          "path": "/ms-playwright/webkit-2359/minibrowser-wpe/bin/WPENetworkProcess",
+          "sha256": "9a3d142a2b4f9869dc8de529d561db7ce4244c1da8442d9e9a48442c06be05d0"
+        },
+        {
+          "path": "/ms-playwright/webkit-2359/minibrowser-wpe/bin/WPEWebProcess",
+          "sha256": "70683ba57c05ce81d43601e1c89701e7016c76136ae810b000cd786085091b4a"
+        }
+      ],
+      "cases": [
+        {
+          "name": "initial-load-and-keyboard",
+          "status": "PASS",
+          "milliseconds": 96
+        },
+        {
+          "name": "invalid-and-wrong-password",
+          "status": "PASS",
+          "milliseconds": 227
+        },
+        {
+          "name": "login-cookie-boundaries",
+          "status": "PASS",
+          "milliseconds": 129
+        },
+        {
+          "name": "explicit-csrf-and-foreign-origin",
+          "status": "PASS",
+          "milliseconds": 208
+        },
+        {
+          "name": "same-cookie-process-restart",
+          "status": "PASS",
+          "milliseconds": 96
+        },
+        {
+          "name": "cross-tab-logout-and-forget",
+          "status": "PASS",
+          "milliseconds": 241
+        },
+        {
+          "name": "new-login-reload-and-logout",
+          "status": "PASS",
+          "milliseconds": 343
+        },
+        {
+          "name": "missing-bootstrap-recovery",
+          "status": "PASS",
+          "milliseconds": 333
+        }
+      ],
+      "teardown": [
+        {
+          "name": "context",
+          "status": "PASS"
+        },
+        {
+          "name": "browser",
+          "status": "PASS"
+        }
+      ],
+      "bootstrap": {
+        "interception": false,
+        "noStore": true,
+        "script404s": 1,
+        "early200s": 0,
+        "restored200s": 1,
+        "navigations": 3,
+        "beforeClick": 1,
+        "afterClick": 3
+      }
+    },
+    "webkit-root": {
+      "status": "PASS",
+      "browser": "webkit",
+      "base": "/",
+      "version": "26.6",
+      "launchedExecutables": [
+        {
+          "path": "/ms-playwright/webkit-2359/minibrowser-wpe/bin/MiniBrowser",
+          "sha256": "7c71efed38fb0d916f5edb7db9a98cdf218642dd8dce02375730eb9ad5510751"
+        },
+        {
+          "path": "/ms-playwright/webkit-2359/minibrowser-wpe/bin/WPENetworkProcess",
+          "sha256": "9a3d142a2b4f9869dc8de529d561db7ce4244c1da8442d9e9a48442c06be05d0"
+        },
+        {
+          "path": "/ms-playwright/webkit-2359/minibrowser-wpe/bin/WPEWebProcess",
+          "sha256": "70683ba57c05ce81d43601e1c89701e7016c76136ae810b000cd786085091b4a"
+        }
+      ],
+      "cases": [
+        {
+          "name": "initial-load-and-keyboard",
+          "status": "PASS",
+          "milliseconds": 93
+        },
+        {
+          "name": "invalid-and-wrong-password",
+          "status": "PASS",
+          "milliseconds": 212
+        },
+        {
+          "name": "login-cookie-boundaries",
+          "status": "PASS",
+          "milliseconds": 128
+        },
+        {
+          "name": "explicit-csrf-and-foreign-origin",
+          "status": "PASS",
+          "milliseconds": 210
+        },
+        {
+          "name": "same-cookie-process-restart",
+          "status": "PASS",
+          "milliseconds": 94
+        },
+        {
+          "name": "cross-tab-logout-and-forget",
+          "status": "PASS",
+          "milliseconds": 241
+        },
+        {
+          "name": "new-login-reload-and-logout",
+          "status": "PASS",
+          "milliseconds": 220
+        },
+        {
+          "name": "missing-bootstrap-recovery",
+          "status": "PASS",
+          "milliseconds": 331
+        }
+      ],
+      "teardown": [
+        {
+          "name": "context",
+          "status": "PASS"
+        },
+        {
+          "name": "browser",
+          "status": "PASS"
+        }
+      ],
+      "bootstrap": {
+        "interception": false,
+        "noStore": true,
+        "script404s": 1,
+        "early200s": 0,
+        "restored200s": 1,
+        "navigations": 3,
+        "beforeClick": 1,
+        "afterClick": 3
+      }
+    }
+  },
+  "independent_oracles": [
+    "Real migration, initialization, accepted activation and owner enrollment precede the actual Rust process and PostgreSQL 16.15 with fsync/full_page_writes on.",
+    "Short password issues no login POST; wrong password refuses. Successful login shows the exact seven stored grants, bounded generated client responses and real host-scoped cookie attributes.",
+    "Missing CSRF plus cross-origin fetch/form leave complete session/bucket rows and xmin unchanged. Every engine observes the foreign form 403 and exact Origin; Chromium additionally observes both wire 403s via bounded order-independent CDP correlation.",
+    "A process restart changes owner epoch while preserving complete session rows before browser /me; the same cookie remains usable. Cross-tab logout removes private facts and permissions from both tabs. Explicit new login/reload/logout succeeds.",
+    "With the real process stopped, omit only the start module and its manifest entry in the private bundle copy. Actual startup reports the altered manifest. Browser observes one exact-module 404 and visible recovery notice. Restore exact module and original manifest, restart, then click the real reload link. Every case observes one exact-module 200 only after restoration, enabled login and hidden recovery notice. Both replies carry no-store; no interception or CSP bypass.",
+    "Both asset restarts preserve session/bucket rows including xmin. The restored loaded bundle observation equals the original. All six terminal independent SQL observations report one revoked session, one active account, seven grants, config/policy 1, no active Control and zero backends."
+  ],
+  "review": [
+    "Read-only AI review of the fixture tightened exact module URL matching and separated pre/post-restoration 200 counts.",
+    "Read-only AI review of the mitigation preserved the Kit default exclusion of font preload by selecting CSS only.",
+    "Root reviewed the complete diff and actual captured journeys. The known native WebKit failure at 596d447 is the discriminating runtime predecessor; original failures remain retained.",
+    "Independent read-only AI evidence audit verified all 144 capture files, archive/identity hashes and 987 Git source files; six complete browser projections, actual manifest 13->12->13 transitions, independent terminal SQL and preserved resource records match. Full before/after SQL row equality is evidenced by executed fixture assertions, not retained raw snapshots."
+  ],
+  "resources": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/private-panel-no-preload-b6d9d7e",
+    "owner": "f062862798d1c5a5606e31e87618683e",
+    "state": "stopped-retained",
+    "containers": [
+      {
+        "name": "environment",
+        "id": "c19b69e1a4b5c3abf41ec6141cb64f86964ecc1363d06ab9fe04a45216d43eb9"
+      },
+      {
+        "name": "rust",
+        "id": "cfe00c520959f3608d368d26c3e6e80d0f90b117282edef92d8a44a3f55b3f7d"
+      },
+      {
+        "name": "frontend",
+        "id": "792ef80d22bd473daacc16c9e2f9996e739f3bb431844d48083267bd022cbcdf"
+      },
+      {
+        "name": "postgres",
+        "id": "52625245bf5be2c4d117012451f8ed848b358765b35ebc2241cf43f5da2f0481"
+      },
+      {
+        "name": "chromium-root",
+        "id": "61032b6e5c1e60b637eecc848816b7c127a42d96160b8c0741621c984ae64f8d"
+      },
+      {
+        "name": "chromium-control",
+        "id": "f3d01e6c93c26ab24cd58a76f9cf8d7de5bb3c3a62f1003e6bef91587b9c2cc0"
+      },
+      {
+        "name": "firefox-root",
+        "id": "944e8e2a9edf5797749fad68f677d57d4a923c40a0392d0a0bb842b1ba8a00c7"
+      },
+      {
+        "name": "firefox-control",
+        "id": "8487eafe530aa40b5d93e838947d920133c7b34b8d861ffb0de03392497acd4a"
+      },
+      {
+        "name": "webkit-root",
+        "id": "26096bd187240a1b3e05d51914680f360cd8d9a406b1334608e068a576e32d6c"
+      },
+      {
+        "name": "webkit-control",
+        "id": "2e018953d1b7a02127b085ad5071ef66eb766561ad8052a4253d88484d0ee844"
+      }
+    ],
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "network_state": "removed after owner/no-endpoint audit"
+  },
+  "terminal": {
+    "preexisting_preserved": 471,
+    "unrelated_running": 8,
+    "remaining_pg_clients": [],
+    "source_unchanged": true,
+    "source_checkout_clean": true,
+    "free_bytes": 9246089216,
+    "cases": {
+      "chromium-root": {
+        "container_ok": true,
+        "status": "PASS",
+        "independent_sql": {
+          "sessions": 1,
+          "revoked": 1,
+          "active_accounts": 1,
+          "grants": 7,
+          "no_active_control": true,
+          "heads": [
+            "1",
+            "1"
+          ],
+          "backends": 0
+        },
+        "sql_matches": true
+      },
+      "chromium-control": {
+        "container_ok": true,
+        "status": "PASS",
+        "independent_sql": {
+          "sessions": 1,
+          "revoked": 1,
+          "active_accounts": 1,
+          "grants": 7,
+          "no_active_control": true,
+          "heads": [
+            "1",
+            "1"
+          ],
+          "backends": 0
+        },
+        "sql_matches": true
+      },
+      "firefox-root": {
+        "container_ok": true,
+        "status": "PASS",
+        "independent_sql": {
+          "sessions": 1,
+          "revoked": 1,
+          "active_accounts": 1,
+          "grants": 7,
+          "no_active_control": true,
+          "heads": [
+            "1",
+            "1"
+          ],
+          "backends": 0
+        },
+        "sql_matches": true
+      },
+      "firefox-control": {
+        "container_ok": true,
+        "status": "PASS",
+        "independent_sql": {
+          "sessions": 1,
+          "revoked": 1,
+          "active_accounts": 1,
+          "grants": 7,
+          "no_active_control": true,
+          "heads": [
+            "1",
+            "1"
+          ],
+          "backends": 0
+        },
+        "sql_matches": true
+      },
+      "webkit-root": {
+        "container_ok": true,
+        "status": "PASS",
+        "independent_sql": {
+          "sessions": 1,
+          "revoked": 1,
+          "active_accounts": 1,
+          "grants": 7,
+          "no_active_control": true,
+          "heads": [
+            "1",
+            "1"
+          ],
+          "backends": 0
+        },
+        "sql_matches": true
+      },
+      "webkit-control": {
+        "container_ok": true,
+        "status": "PASS",
+        "independent_sql": {
+          "sessions": 1,
+          "revoked": 1,
+          "active_accounts": 1,
+          "grants": 7,
+          "no_active_control": true,
+          "heads": [
+            "1",
+            "1"
+          ],
+          "backends": 0
+        },
+        "sql_matches": true
+      }
+    }
+  },
+  "raw": {
+    "root": ".research/implementation/private-panel/native-no-preload",
+    "capture_sha256": "480d8b8eef67e1bf034b11b69f9e90284e0de3def0c6df645ced0692e801708d",
+    "capture_files": 144,
+    "identity_sha256": "6e46a9f33bf98f432566fcc95176e68615efb0a96e551f48855fa974c217dd4c",
+    "key_files": {
+      "out/build/source-manifest.json": {
+        "bytes": 122031,
+        "sha256": "6fb3cd960e4543e71e05356b34be8f2bcf69a261b176beab75196ee03f40192f"
+      },
+      "out/cases/chromium-control/checks/browser.log": {
+        "bytes": 765,
+        "sha256": "a0e653e8dcecaca8aa20839773f1cc62e8a6af58657c7a8e535737119a62c9d4"
+      },
+      "out/cases/chromium-control/fixture/browser-report.json": {
+        "bytes": 9917,
+        "sha256": "715b5bcced7a828ce2aa6e897805056f3269bb67a489d1e2cea94c0a79147c88"
+      },
+      "out/cases/chromium-root/checks/browser.log": {
+        "bytes": 757,
+        "sha256": "3ba13ed89a2d496b10c909d296a5566c32f302a63ce2e8a8bdb298bd7685ecfc"
+      },
+      "out/cases/chromium-root/fixture/browser-report.json": {
+        "bytes": 9908,
+        "sha256": "c2d4e621c2a390a62af70a4ada8e136e380cf9b94922b02d84eb5cf7fd531347"
+      },
+      "out/cases/firefox-control/checks/browser.log": {
+        "bytes": 764,
+        "sha256": "0154534dbd6aadb88598f893ee7a593a4617311f7071b2c2573c4a29bafcf9e6"
+      },
+      "out/cases/firefox-control/fixture/browser-report.json": {
+        "bytes": 9854,
+        "sha256": "38efeea3121c86b36bbd1bfc26e125af101c4e80e5f9fa7c5089ca37c6ca10b6"
+      },
+      "out/cases/firefox-root/checks/browser.log": {
+        "bytes": 756,
+        "sha256": "418b471a08898e04b65bdca64e347c1bbdc65615458f2357861e26c4237e2da6"
+      },
+      "out/cases/firefox-root/fixture/browser-report.json": {
+        "bytes": 9846,
+        "sha256": "6be1c032d309aa9c5a0b377981435efa7835304f3cfc169e3a7825c551cdb2f0"
+      },
+      "out/cases/webkit-control/checks/browser.log": {
+        "bytes": 763,
+        "sha256": "c1ae6fe987f21808b29e3de31ef12fc779f2fab32b7256645c54155cd10c7503"
+      },
+      "out/cases/webkit-control/fixture/browser-report.json": {
+        "bytes": 9763,
+        "sha256": "31025fb2327045cb1d265dd5146b5a50af5421d9a098e38baecc498a2faee422"
+      },
+      "out/cases/webkit-root/checks/browser.log": {
+        "bytes": 755,
+        "sha256": "4c87ba15d9c3e6518285a90a30385d4ce15a3692bf87f121c66f465566decd23"
+      },
+      "out/cases/webkit-root/fixture/browser-report.json": {
+        "bytes": 9755,
+        "sha256": "80e0bfb3a4fe2e44f0d1169677c6ee5ae9f1e7026639d49e27c9eb569215673b"
+      },
+      "out/frontend-result.json": {
+        "bytes": 3145,
+        "sha256": "803674433b9cd219cf42191dd65ab3fd486e248f85012c9b2f3fc4f1b4a6ac37"
+      },
+      "out/rust-result.json": {
+        "bytes": 3940,
+        "sha256": "c141e80020481677371739e81ca6b6c842793f54fe3a4ec6b0fceeea5b9d8bcd"
+      },
+      "terminal-audit.json": {
+        "bytes": 38035,
+        "sha256": "f9c0845bf2a51225ead3cc08f4b4102d2a7abf27ec0f5ac9cbe50a70160d4762"
+      }
+    }
+  },
+  "limitations": [
+    "Linux amd64 Chromium/Firefox/WebKit are not Safari on Apple hardware, Android, screen-reader or Linux arm64 evidence.",
+    "The missing-asset case is an intentional incomplete manifest deployment. It does not prove arbitrary rollout/upgrade sequences, previous poisoned browser contexts, every lazy route or loss of the whole document.",
+    "No startup performance improvement or universal latency bound is claimed; disabling speculative JS preloads can increase request waterfalls.",
+    "Large blocked static response, forced stopped-browser collection, actual late-response/expiry races, shared frontend CI, full administration and every wider selected product milestone remain open."
+  ]
+}

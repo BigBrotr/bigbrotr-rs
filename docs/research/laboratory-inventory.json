@@ -17321,7 +17321,7 @@
   "implementation_private_panel_20260920": {
     "local_root": ".research/implementation/private-panel",
     "owner": "root implementer",
-    "state": "Real missing-module WebKit failure reproduced; private no-preload correction pending native qualification.",
+    "state": "Initial private session/browser slice qualified within report scope at b6d9d7e. Large-response and broader P08/P09/M1 work remains.",
     "source_base": "b98426146c68caffcbf6822bdb956d1a8abbd30d",
     "dependency_manifest": ".research/implementation/private-panel/dependencies/selected-candidates.json",
     "contents": "Official registry metadata/verified archives/sources; local client and bundle checks; controlled native logs including failures and cache recovery; generated bundles are artifacts, not source authority.",
@@ -17696,6 +17696,80 @@
         "private-panel-real-bootstrap-596d447"
       ],
       "preserved": "Actual executables/shared libraries/source/receipts/private data hash checked. Baseline e65116b cache remains intact."
+    },
+    "no_preload_qualification": {
+      "source": "b6d9d7edb0a322526b29d85ac5d4d412efc5401e",
+      "tree": "333609f57431b2002fd47bfa0a662209f1ba7d79",
+      "owner": "f062862798d1c5a5606e31e87618683e",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/private-panel-no-preload-b6d9d7e",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "environment",
+          "id": "c19b69e1a4b5c3abf41ec6141cb64f86964ecc1363d06ab9fe04a45216d43eb9"
+        },
+        {
+          "name": "rust",
+          "id": "cfe00c520959f3608d368d26c3e6e80d0f90b117282edef92d8a44a3f55b3f7d"
+        },
+        {
+          "name": "frontend",
+          "id": "792ef80d22bd473daacc16c9e2f9996e739f3bb431844d48083267bd022cbcdf"
+        },
+        {
+          "name": "postgres",
+          "id": "52625245bf5be2c4d117012451f8ed848b358765b35ebc2241cf43f5da2f0481"
+        },
+        {
+          "name": "chromium-root",
+          "id": "61032b6e5c1e60b637eecc848816b7c127a42d96160b8c0741621c984ae64f8d"
+        },
+        {
+          "name": "chromium-control",
+          "id": "f3d01e6c93c26ab24cd58a76f9cf8d7de5bb3c3a62f1003e6bef91587b9c2cc0"
+        },
+        {
+          "name": "firefox-root",
+          "id": "944e8e2a9edf5797749fad68f677d57d4a923c40a0392d0a0bb842b1ba8a00c7"
+        },
+        {
+          "name": "firefox-control",
+          "id": "8487eafe530aa40b5d93e838947d920133c7b34b8d861ffb0de03392497acd4a"
+        },
+        {
+          "name": "webkit-root",
+          "id": "26096bd187240a1b3e05d51914680f360cd8d9a406b1334608e068a576e32d6c"
+        },
+        {
+          "name": "webkit-control",
+          "id": "2e018953d1b7a02127b085ad5071ef66eb766561ad8052a4253d88484d0ee844"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+      "started_at": "2026-09-20T14:04:50.693726+00:00",
+      "network_id": "2165b573dc2703cd32739d1b919e1f94f745c7969933b8d71c0a4b1baef6a282",
+      "postgres_id": "52625245bf5be2c4d117012451f8ed848b358765b35ebc2241cf43f5da2f0481",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json",
+      "local_root": ".research/implementation/private-panel/native-no-preload",
+      "evidence": "docs/implementation/evidence/p09-private-panel-native-20260920.json",
+      "capture_sha256": "480d8b8eef67e1bf034b11b69f9e90284e0de3def0c6df645ced0692e801708d",
+      "observation": "All six native browser/mount pairs pass eight journeys, including real 404/restoration/200 without interception. Independent SQL and complete terminal audit pass. Ten containers stopped/PID 0/no OOM; 471 prior preserved, eight unrelated workloads running, zero PG clients; empty network removed. 144 capture files and 987 source hashes verified."
+    },
+    "large_static_negative_control": {
+      "base": "b6d9d7edb0a322526b29d85ac5d4d412efc5401e",
+      "local_worktree": ".research/worktrees/private-panel-no-revoke",
+      "state": "retained intentional dirty mutant; no running process",
+      "scope": "DeliveryGate::revoke disabled only in isolated worktree; primary production unchanged. Actual Mac test refuses full2097152-byte delivery. Native NOT_RUN.",
+      "identity": ".research/implementation/private-panel/large-static-negative.json",
+      "results": [
+        ".research/implementation/private-panel/large-static-no-revoke-mac",
+        ".research/implementation/private-panel/large-static-no-revoke-diagnostic-mac",
+        ".research/implementation/private-panel/large-static-final-mac"
+      ]
     }
   }
 }

@@ -74,8 +74,10 @@ caching, so that instrumentation is not transparent. The [actual deployment faul
 subsequently reproduced WebKit's failure without interception, while Chromium
 and Firefox recovered on both mounts. The selected private build now omits
 speculative JavaScript preloads (Kit prerender links and Vite dynamic dependencies),
-consistent with the upstream modulepreload cache defect. Its corrected native
-matrix remains pending; ordinary imports, CSS and CSP remain in use.
+consistent with the upstream modulepreload cache defect. The [corrected native matrix](../../docs/implementation/evidence/p09-private-panel-native-20260920.json)
+at b6d9d7e passes all six pairs with the same real fault and restoration. Ordinary
+imports, CSS and CSP remain in use. All required broader qualifications below
+remain separate.
 Further diagnostics retain bounded request categories, status,
 navigation counts and numeric matcher results. An explicit browser reload
 after a failed link is diagnostic only: the original failure remains FAIL.

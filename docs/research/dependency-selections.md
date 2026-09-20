@@ -748,6 +748,7 @@ uses Kit2.70.3 `resolve`'s `preload` filter during static prerendering and Vite8
 `src/runtime/server/page/render.js` filters JS links/headers through this hook;
 Vite `dist/node/chunks/node.js` retains only CSS dependency preloads under this
 option. Ordinary imports and CSS remain. This may increase request waterfalls;
-no latency improvement is claimed. No dependency version changed. Native recovery
-qualification of the corrected bundle is pending; do not infer it from this
-source inspection or from Linux WebKit to Safari on Apple hardware.
+no latency improvement is claimed. No dependency version changed. The [corrected native matrix](../implementation/evidence/p09-private-panel-native-20260920.json)
+at b6d9d7e completes all eight initial session/recovery journeys on each browser
+at both mounts. This scoped runtime evidence does not qualify all browser
+capabilities or Safari on Apple hardware.
