@@ -14,16 +14,17 @@ sys.dont_write_bytecode = True
 SOURCE = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(SOURCE/'experiments/archive-engine'))
 sys.path.insert(0, str(SOURCE/'experiments/ingest-bootstrap'))
-from signed_publication_cases import command, execute, event, proxy_observation
+from signed_publication_cases import command, event, proxy_observation
 from fault_cases import Process
-from closing import sha, check_state, expected_native, same_window, check_recovery_control
-from import_originals import originals as expected_originals
+from closing import sha, check_state, same_window, check_recovery_control
+from recovery_outcomes import inputs as expected_originals, native as expected_case
 
 SCENARIOS = ['normal', 'pg-only', 'input-size', 'input-digest', 'input-manifest',
              'resource', 'cancelled', 'policy', 'expired', 'rollback', 'late-sql',
-             'before-forward', 'after-complete']
+             'before-forward', 'after-complete', 'already', 'rejected']
+SUCCESSES = ['normal', 'already', 'rejected']
 PERMANENT = ['pg-only', 'input-size', 'input-digest', 'input-manifest']
-ERRORS = dict(zip(SCENARIOS[1:], [
+ERRORS = dict(zip(SCENARIOS[1:13], [
     'Native(ProducerOpen)', 'Outcome(Conflict)', 'Native(Input(Codec(DigestMismatch)))',
     'Reservation(Conflict)', 'Native(Input(Codec(InputLimit)))',
     'Native(Native(AuthorityUnavailable))', 'Control(InvalidPolicy)', 'Control(Unavailable)',
@@ -32,17 +33,18 @@ ERRORS = dict(zip(SCENARIOS[1:], [
 
 def check_inputs(control, files, wanted, scenario):
     """Compare all originals and only the explicitly injected metadata mutation."""
-    originals = expected_originals(1)
+    originals = expected_originals(scenario)
+    sequences = list(originals)
     slot = bytes([66])*16
-    names = {n:slot.hex()+'-0000000000000001-'+f'{n:016x}'+'.cbor' for n in [1, 2]}
-    assert files == {names[n]: originals[n] for n in [1, 2]}
+    names = {n:slot.hex()+'-0000000000000001-'+f'{n:016x}'+'.cbor' for n in sequences}
+    assert files == {names[n]: originals[n] for n in sequences}
     manifest = next(v for cf, k, v in wanted if cf == 'default' and k == b'\x01\x01')
-    assert [r['request_sequence'] for r in control['requests']] == [1, 2]
+    assert [r['request_sequence'] for r in control['requests']] == sequences
     assert control['bindings'] == []
     for table in ['requests', 'outcomes']:
         for row in control[table]:
             n = row['request_sequence']
-            assert n in (1, 2)
+            assert n in sequences
             digest, manifest_sha = sha(originals[n]), sha(manifest)
             length = len(originals[n])
             if table == 'requests' and n == 2:
@@ -60,17 +62,19 @@ def check_inputs(control, files, wanted, scenario):
 
 
 def check_messages(messages, scenario, names, originals, control, seed_failure):
-    wanted = expected_native(False, scenario != 'pg-only')
+    wanted = expected_case(scenario, scenario != 'pg-only')
     def one(label):
         matches = [m['state'] for m in messages if m['event'] == label]
         assert len(matches) == 1, label
         return matches[0]
     closing, before = one('closing-before'), one('recovery-before')
-    ct = check_state(closing, expected_native(False, False), names, originals)
+    ct = check_state(closing, expected_case(scenario, False), names, originals)
     bt = check_state(before, wanted, names, originals)
     same_window(ct, bt, scenario != 'pg-only')
     assert before['sequence'] == closing['sequence']+int(scenario != 'pg-only')
-    assert len(bt['producer_outcomes']) == 1 and bt['producer_outcomes'][0]['request_sequence'] == 1
+    issued = 3 if scenario == 'already' else 2
+    before_rows = sorted(bt['producer_outcomes'], key=lambda r:r['request_sequence'])
+    assert [r['request_sequence'] for r in before_rows] == list(range(1, issued))
     original_owner = next(r for r in ct['owner_epochs'] if r['role'] == 'control' and r['epoch'] == 1)
     assert seed_failure['control_backend_pid'] == original_owner['control_backend_pid']
     assert seed_failure['control_backend_start'] == original_owner['control_backend_start']
@@ -83,12 +87,12 @@ def check_messages(messages, scenario, names, originals, control, seed_failure):
     assert any('function '+function in line and ' at RAISE' in line for line in failure)
     assert any('STATEMENT:  INSERT INTO control.producer_outcomes(' in line for line in failure)
     assert len([m for m in messages if m['event'] == 'recovery-seed-copy-rolled-back']) == 1
-    permanent, replaced = scenario in PERMANENT, scenario != 'normal' and scenario not in PERMANENT
+    permanent, replaced = scenario in PERMANENT, scenario not in SUCCESSES and scenario not in PERMANENT
     refused = [m for m in messages if m['event'] == 'recovery-refused']
-    assert refused == ([] if scenario == 'normal' else [dict(event='recovery-refused',
+    assert refused == ([] if scenario in SUCCESSES else [dict(event='recovery-refused',
         error=ERRORS[scenario], session_poison_checked=scenario != 'cancelled')])
     mid = None
-    if scenario != 'normal':
+    if scenario not in SUCCESSES:
         mid = one('recovery-interrupted')
         mt = check_state(mid, wanted, names, originals)
         assert mid['sequence'] == before['sequence']
@@ -109,13 +113,14 @@ def check_messages(messages, scenario, names, originals, control, seed_failure):
         if name == 'producer_outcomes' or replaced and name in ['owner_epochs', 'role_instances']: continue
         assert bt[name] == at[name], name
     rows = sorted(at['producer_outcomes'], key=lambda r:r['request_sequence'])
-    assert len(rows) == (1 if permanent else 2) and rows[0] == bt['producer_outcomes'][0]
+    assert len(rows) == (1 if permanent else issued) and rows[:issued-1] == before_rows
     if scenario == 'after-complete': assert mt['producer_outcomes'] == at['producer_outcomes']
     native = {(cf, k):v for cf, k, v in wanted}
     for n, row in enumerate(rows, 1):
         value = native['receipts', b'\x01\x30'+bytes([66])*16+(1).to_bytes(8, 'big')+n.to_bytes(8, 'big')]
-        recorder = 1 if n == 1 else 3 if replaced and scenario != 'after-complete' else 2
-        assert row['outcome_kind'] == 1 and row['policy_epoch'] == 1
+        recorder = 1 if n < issued else 3 if replaced and scenario != 'after-complete' else 2
+        kind = 3 if scenario == 'rejected' and n == 2 else 2 if n == 3 else 1
+        assert row['outcome_kind'] == kind and row['policy_epoch'] == 1
         assert row['outcome_bytes'] == '\\x'+value.hex() and row['outcome_sha256'] == '\\x'+sha(value)
         assert row['recorder_epoch'] == recorder
         assert row['recorder_incarnation'] == '\\x'+(bytes([{1:41, 2:43, 3:44}[recorder]])*16).hex()
@@ -124,18 +129,22 @@ def check_messages(messages, scenario, names, originals, control, seed_failure):
     for table, key in [('producer_requests', 'requests'), ('producer_outcomes', 'outcomes')]:
         assert [{k:v for k, v in r.items() if k != 'xmin'} for r in sorted(at[table], key=lambda r:r['request_sequence'])] == control[key]
     resolved = [m for m in messages if m['event'] == 'producer-resolved']
-    assert [m['request'] for m in resolved] == ([] if permanent else [2, 2, 1])
+    order = [] if permanent else [3, 3, 2, 1] if scenario == 'already' else [2, 2, 1]
+    assert [m['request'] for m in resolved] == order
     intermediate = [m for m in messages if m['event'] == 'recovery-observed']
-    assert [(m['attempt'], m['request']) for m in intermediate] == ([] if permanent else [(0, 2), (1, 2), (2, 1)])
+    assert [(m['attempt'], m['request']) for m in intermediate] == list(enumerate(order))
     assert all(m['state'] == after for m in intermediate)
     for message in resolved:
-        assert message['bytes'] == rows[message['request']-1]['outcome_bytes'][2:]
+        if scenario == 'rejected' and message['request'] == 2:
+            assert message['rejection'] == 'Signature' and 'bytes' not in message
+        else:
+            assert message['bytes'] == rows[message['request']-1]['outcome_bytes'][2:]
         assert message['current_control_epoch'] == (3 if replaced else 2) and message['historical_control_epoch'] == 1
     closes = [m for m in messages if m['event'] == 'producer-closed']
     assert len(closes) == (0 if scenario == 'pg-only' else 2)
-    assert all(m['issued'] == 2 and m['current_control_epoch'] == 2 and m['historical_control_epoch'] == 1 for m in closes)
+    assert all(m['issued'] == issued and m['current_control_epoch'] == 2 and m['historical_control_epoch'] == 1 for m in closes)
     assert at['producer_epochs'][0]['state'] == 'closing'
-    assert at['producer_epochs'][0]['reserved_through_request'] == 2
+    assert at['producer_epochs'][0]['reserved_through_request'] == issued
     assert at['source_streams'][0]['state'] == 'open'
     for table in ['jobs', 'producer_checkpoints', 'producer_input_bindings', 'import_record_closures', 'import_checkpoints']:
         assert at[table] == []
@@ -147,7 +156,7 @@ def main(root, tag, scenario, fixture_build):
     resources = json.loads((root/'resources.json').read_text())
     revision = command('git', '-C', str(SOURCE), 'rev-parse', 'HEAD')
     assert not command('git', '-C', str(SOURCE), 'status', '--porcelain', '--untracked-files=all')
-    exceptions = [':!apps/bigbrotr/examples/support/ingest_closing.rs', ':!apps/bigbrotr/examples/support/ingest_recovery.rs'] if fixture_build else []
+    exceptions = [':!apps/bigbrotr/examples/ingest_bootstrap_probe.rs', ':!apps/bigbrotr/examples/support/ingest_closing.rs', ':!apps/bigbrotr/examples/support/ingest_recovery.rs', ':!apps/bigbrotr/examples/support/ingest_recovery_process.rs'] if fixture_build else []
     assert not command('git', '-C', str(SOURCE), 'diff', resources['source'], revision, '--',
                        'apps', 'crates', 'migrations', 'Cargo.lock', 'Cargo.toml', 'rust-toolchain.toml', 'tools', *exceptions)
     location = 'out/recovery-probe' if fixture_build else 'out/native-tests'
@@ -165,7 +174,7 @@ def main(root, tag, scenario, fixture_build):
     target = root/('recovery-'+tag+'.json')
     assert not target.exists()
     report = dict(status='INCOMPLETE', source=resources['source'], harness_revision=revision,
-                  artifacts=ready, scenario=scenario, processes={}, sql=[])
+                  artifacts=ready, scenario=scenario, processes={}, sql=[], process_output_limit=512*1024)
     def save(): target.write_text(json.dumps(report, indent=2)+'\n')
     def sql(db, text):
         observation = dict(database=db, sql_sha256=sha(text.encode()), status='INCOMPLETE')
@@ -181,15 +190,21 @@ def main(root, tag, scenario, fixture_build):
     def run(label, args):
         observation = report['processes'][label] = {}
         save()
-        try: execute(binary+args, 45, observation)
-        finally: save()
+        process = Process(binary+args, limit=report['process_output_limit'])
+        observation.update(exit=None, remote_exclusion='UNKNOWN')
+        try: observation['exit'] = process.wait(45)
+        finally:
+            process.stop()
+            observation.update(stdout=process.stdout.decode(), stderr=process.stderr.decode(), overflow=process.overflow)
+            save()
         return observation
     db, directory = 'bbrecovery_'+tag, '/out/recovery-'+tag
     save()
     sql('postgres', 'CREATE DATABASE '+db)
     setup = run('setup', ['setup-14', db, '/secrets/postgres', 'unused'])
     assert setup['exit'] == 0 and not setup['stderr']
-    sql(db, "CREATE FUNCTION public.fixture_abort_original_copy() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'fixture rollback of original event outcome copy'; END $$; CREATE TRIGGER zz_fixture_abort_original_copy AFTER INSERT ON control.producer_outcomes FOR EACH ROW WHEN (NEW.recorder_epoch=1 AND NEW.request_sequence=2) EXECUTE FUNCTION public.fixture_abort_original_copy();")
+    failed_request = 3 if scenario == 'already' else 2
+    sql(db, "CREATE FUNCTION public.fixture_abort_original_copy() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'fixture rollback of original event outcome copy'; END $$; CREATE TRIGGER zz_fixture_abort_original_copy AFTER INSERT ON control.producer_outcomes FOR EACH ROW WHEN (NEW.recorder_epoch=1 AND NEW.request_sequence="+str(failed_request)+") EXECUTE FUNCTION public.fixture_abort_original_copy();")
     if scenario in ['input-size', 'input-digest', 'input-manifest']:
         field = {'input-size':'input_bytes', 'input-digest':'request_digest', 'input-manifest':'manifest_sha256'}[scenario]
         value = 'NEW.input_bytes+1' if scenario == 'input-size' else f'set_byte(NEW.{field},0,get_byte(NEW.{field},0)#1)'
@@ -245,10 +260,10 @@ def main(root, tag, scenario, fixture_build):
         current = next(r for r in owners if r['epoch'] == 2)
         report['copy_failure'] = [line for line in log.splitlines() if '['+str(current['control_backend_pid'])+']' in line]
     save()
-    wanted = expected_native(False, scenario != 'pg-only')
+    wanted = expected_case(scenario, scenario != 'pg-only')
     assert [(r['cf'], bytes.fromhex(r['key']), bytes.fromhex(r['value'])) for r in report['native']['rows']] == wanted
     check_inputs(control, files, wanted, scenario)
-    assert report['remaining_backends'] == 0 and result['exit'] == 0 and not result['stderr']
+    assert report['remaining_backends'] == 0 and result['exit'] == 0 and not result['stderr'] and not result['overflow']
     if scenario == 'rollback':
         assert sum('ERROR:  fixture rollback of recovered event outcome copy' in line for line in report['copy_failure']) == 1
         assert any('function public.fixture_abort_recovered_copy() line 1 at RAISE' in line for line in report['copy_failure'])

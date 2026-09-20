@@ -26,6 +26,13 @@ pub async fn run(
     let cancelled = AtomicBool::new(false);
     let empty = mode == "event-closing-empty";
     let recovering = mode.starts_with("event-recovery-");
+    let issued = if empty {
+        0
+    } else if mode == "event-recovery-already" {
+        3
+    } else {
+        2
+    };
     if !empty {
         drop(
             owner
@@ -49,63 +56,68 @@ pub async fn run(
                 .await
                 .unwrap(),
         );
-        let event = serde_json::from_slice(include_bytes!(
+        let mut event: bigbrotr_model::SignedEvent = serde_json::from_slice(include_bytes!(
             "../../../../tests/fixtures/ingest/import-event.jsonl"
         ))
         .unwrap();
-        let prepared = PreparedEvent::new(
-            ProducerRequestId {
-                producer_slot_id: spec.producer_slot_id,
-                producer_epoch: ProducerEpoch::new(1).unwrap(),
-                request_sequence: RequestSequence::new(2).unwrap(),
-            },
-            EventIntent::import(
-                1,
-                scope,
-                event,
-                QualifiedRef {
-                    dictionary_kind: DictionaryKind::DatasetLineage,
-                    allocation_domain: [69; 16].try_into().unwrap(),
-                    ..scope
+        if mode == "event-recovery-rejected" {
+            event.sig = bigbrotr_model::Signature::from_bytes([0; 64]);
+        }
+        for sequence in 2..=issued {
+            let prepared = PreparedEvent::new(
+                ProducerRequestId {
+                    producer_slot_id: spec.producer_slot_id,
+                    producer_epoch: ProducerEpoch::new(1).unwrap(),
+                    request_sequence: RequestSequence::new(sequence).unwrap(),
                 },
-            )
-            .unwrap(),
-            256 * 1024,
-            grant(budget, MIB, 0),
-        )
-        .unwrap();
-        let admitted = owner
-            .admit_initial_event(
-                &mut store,
-                bigbrotr::storage::postgres::control_owner::InitialEventRequest {
-                    ingest_root: path,
-                    registration: spec,
-                    event: prepared,
-                    provenance_enabled: true,
-                    recorded_at: ObservedTime::new(456),
-                    limits: AdmissionLimits {
-                        max_outstanding_requests: 2,
-                        ..AdmissionLimits::default()
+                EventIntent::import(
+                    1,
+                    scope,
+                    event.clone(),
+                    QualifiedRef {
+                        dictionary_kind: DictionaryKind::DatasetLineage,
+                        allocation_domain: [69; 16].try_into().unwrap(),
+                        ..scope
                     },
-                    policy_ttl: Duration::from_secs(2),
-                    cancelled: &cancelled,
-                },
-                grant(budget, 40 * MIB, 10 * MIB),
-                |d, h, _| validate(d, h),
-            )
-            .await;
-        if recovering {
-            assert!(matches!(
-                admitted,
-                Err(
-                    bigbrotr::storage::postgres::control_owner::InitialEventError::Outcome(
-                        bigbrotr::storage::postgres::producer_outcomes::OutcomeError::Backend
-                    )
                 )
-            ));
-            emit(serde_json::json!({"event":"recovery-seed-copy-rolled-back"}));
-        } else {
-            drop(admitted.unwrap());
+                .unwrap(),
+                256 * 1024,
+                grant(budget, MIB, 0),
+            )
+            .unwrap();
+            let admitted = owner
+                .admit_initial_event(
+                    &mut store,
+                    bigbrotr::storage::postgres::control_owner::InitialEventRequest {
+                        ingest_root: path,
+                        registration: spec,
+                        event: prepared,
+                        provenance_enabled: true,
+                        recorded_at: ObservedTime::new(if sequence == 2 { 456 } else { 1000 }),
+                        limits: AdmissionLimits {
+                            max_outstanding_requests: u64::from(spec.outstanding_request_limit),
+                            ..AdmissionLimits::default()
+                        },
+                        policy_ttl: Duration::from_secs(2),
+                        cancelled: &cancelled,
+                    },
+                    grant(budget, 40 * MIB, 10 * MIB),
+                    |d, h, _| validate(d, h),
+                )
+                .await;
+            if recovering && sequence == issued {
+                assert!(matches!(
+                    admitted,
+                    Err(
+                        bigbrotr::storage::postgres::control_owner::InitialEventError::Outcome(
+                            bigbrotr::storage::postgres::producer_outcomes::OutcomeError::Backend
+                        )
+                    )
+                ));
+                emit(serde_json::json!({"event":"recovery-seed-copy-rolled-back"}));
+            } else {
+                drop(admitted.unwrap());
+            }
         }
     }
     if mode == "event-recovery-hold-old" {
@@ -228,7 +240,7 @@ pub async fn run(
                 .unwrap();
         } else {
             let closed = result.unwrap_or_else(|e| panic!("unexpected closing error: {e:?}"));
-            assert_eq!(closed.issued_through(), if empty { 0 } else { 2 });
+            assert_eq!(closed.issued_through(), issued);
             assert_eq!(closed.manifest(), &manifest);
             assert_eq!(closed.producer_slot_id(), spec.producer_slot_id);
             emit(

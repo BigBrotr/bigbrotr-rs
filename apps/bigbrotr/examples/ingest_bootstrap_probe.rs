@@ -276,7 +276,8 @@ async fn run(mut config: Config, mode: &str, path: &Path) {
             )]
         },
         producer_slot_id: [66; 16].try_into().unwrap(),
-        outstanding_request_limit: if mode == "event-outcomes" || mode.starts_with("event-bindings")
+        outstanding_request_limit: if matches!(mode, "event-outcomes" | "event-recovery-already")
+            || mode.starts_with("event-bindings")
         {
             3
         } else {

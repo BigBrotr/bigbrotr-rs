@@ -55,7 +55,7 @@ pub async fn run(
         "event-recovery-rollback" => Some(ProducerResolveError::Outcome(OutcomeError::Backend)),
         "event-recovery-late-sql" => Some(ProducerResolveError::DeliveryUnknown),
         "event-recovery-commit-lost" => Some(ProducerResolveError::CommitUnknown),
-        "event-recovery-normal" => None,
+        "event-recovery-normal" | "event-recovery-already" | "event-recovery-rejected" => None,
         _ => panic!("unknown recovery fixture"),
     };
     if let Some(expected) = expected {
@@ -108,7 +108,12 @@ pub async fn run(
     let mut previous = None;
     // The event has no PG outcome after the deliberate original transaction
     // failure. Bootstrap already does; both exact retries must preserve xmin.
-    for (attempt, sequence) in [2, 2, 1].into_iter().enumerate() {
+    let requests: &[u64] = if mode == "event-recovery-already" {
+        &[3, 3, 2, 1]
+    } else {
+        &[2, 2, 1]
+    };
+    for (attempt, &sequence) in requests.iter().enumerate() {
         let resolved = resolve(
             &mut current,
             &recovery,
@@ -120,18 +125,21 @@ pub async fn run(
         )
         .await
         .unwrap();
-        let bigbrotr::storage::rocks::store::AdmissionOutcome::Durable(receipt) =
-            resolved.outcome()
-        else {
-            panic!()
-        };
-        assert_eq!(receipt.request_id().request_sequence.get(), sequence);
-        emit(
-            serde_json::json!({"event":"producer-resolved", "request":sequence,
-            "bytes":hex(&receipt.encode_persistent(65536).unwrap()),
+        let mut message = serde_json::json!({"event":"producer-resolved", "request":sequence,
             "current_control_epoch":current.identity().epoch.get(),
-            "historical_control_epoch":spec.control.epoch.get()}),
-        );
+            "historical_control_epoch":spec.control.epoch.get()});
+        match resolved.outcome() {
+            bigbrotr::storage::rocks::store::AdmissionOutcome::Durable(receipt) => {
+                assert_eq!(receipt.request_id().request_sequence.get(), sequence);
+                message["bytes"] = hex(&receipt.encode_persistent(65536).unwrap()).into();
+            }
+            bigbrotr::storage::rocks::store::AdmissionOutcome::Rejected(reason) => {
+                assert_eq!(mode, "event-recovery-rejected");
+                assert_eq!(sequence, 2);
+                message["rejection"] = format!("{reason:?}").into();
+            }
+        }
+        emit(message);
         let observed = crate::ingest_snapshot::state(observer, path).await;
         assert_eq!(observed["native_sha256"], before["native_sha256"]);
         assert_eq!(observed["sequence"], before["sequence"]);
@@ -195,7 +203,7 @@ async fn resolve(
                         max_batch_bytes: MIB as usize,
                     },
                     event: AdmissionLimits {
-                        max_outstanding_requests: 2,
+                        max_outstanding_requests: u64::from(spec.outstanding_request_limit),
                         ..AdmissionLimits::default()
                     },
                 },

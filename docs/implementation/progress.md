@@ -29,7 +29,7 @@ The native directory is never copied. This is not mid-FFI or power-loss evidence
 
 ## Git and integration state
 
-Mac main HEAD 05fb02d2d7e690ef8996123d94297ba06cd74c04 is unpublished. Product
+Mac main HEAD 9254b5ed20d67891de6a4f72d9931bbe1b949294 is unpublished. Product
 candidate d2959da61a54a89b6b4e1b4806aa3a819bdff778, tree
 45d8c742d032641b9579bfc3ae9bc0e2ef80ffa0, remains byte-identical in library,
 dependencies and migrations1..14. Fixture3135497 added finite fault cases;
@@ -37,8 +37,13 @@ observer2580fb2 fixed checks; observer3497cf5 injected manifest corruption after
 ordinary guards. Last read-only private origin/main verification:
 8931a0f611b718cfac845cda39211e9e8da59d8c. No merge/rebase or unexpected writer.
 
-The process fixture is committed at HEAD; product/dependencies remain unchanged.
-Root now owns only this checkpoint/inventory terminal updates. No unexpected writer.
+The process fixture is committed; product/dependencies remain unchanged. Root now
+owns only the connected Rejected/AlreadyDurable fixture and its independent
+observer plus this checkpoint. No unexpected writer. The new fixture compiles
+and scoped Mac Clippy passes. Its first build refused a u32/u64 bound mismatch,
+corrected with an explicit widening conversion; no native run used that source.
+The updated offline observer accepts all13 prior captures and refuses131 altered
+controls. New class engine cases are NOT_RUN. Independent AI review is in progress.
 Mac scoped fixture Clippy and Python syntax PASS; actual supervisor cleanup test
 PASS (1 test). Native process-fixture build/Clippy also PASS. Source863files match
 Mac Git; artifact a2f1b969b5c6966a8e8a2224c5ae2e37221b941ed75b02f285b56a507668d40a.
@@ -192,8 +197,10 @@ new Control. Reuse the independent existing_outcome.py and original-input CBOR
 oracles; event_oracle.py covers the base26rows. Native recovery tests already cover
 these classes, but those are not their connected PostgreSQL journey. Before new
 fixture code, finish reading ingest_event.rs and the rejection codec/oracle;
-then extend the finite client/oracle and export a clean candidate into a new
-inventoried native lab using the stopped current out/build cache.
+then export the new finite client/oracle candidate into a separately inventoried
+native lab using the stopped current out/build cache. Relevant source/oracle reads
+are now complete. Tux read-only resumption confirmed both previous owned containers
+stopped/noOOM with matching labels; eight unrelated workloads remain active.
 
 Also qualify conflicting existing copied outcomes and missing detail/reservation
 without manufacturing noncommit. Finish the scoped evidence report and private

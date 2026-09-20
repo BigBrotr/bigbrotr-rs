@@ -7,7 +7,7 @@ from pathlib import Path
 import sys
 
 sys.dont_write_bytecode = True
-from recovery import check_messages, check_inputs, expected_originals, expected_native, sha, PERMANENT
+from recovery import check_messages, check_inputs, expected_originals, expected_case, sha, PERMANENT
 from closing import compact
 
 
@@ -16,10 +16,10 @@ def check(report):
     result = report['processes']['recover']
     assert result['exit'] == 0 and not result['stderr'] and not result['overflow']
     scenario = report['scenario']
-    wanted = expected_native(False, scenario != 'pg-only')
+    wanted = expected_case(scenario, scenario != 'pg-only')
     assert report['native']['rows'] == [dict(cf=cf, key=k.hex(), value=v.hex()) for cf, k, v in wanted]
-    originals = expected_originals(1)
-    files = {bytes([66]*16).hex()+'-0000000000000001-'+f'{n:016x}'+'.cbor':originals[n] for n in [1, 2]}
+    originals = expected_originals(scenario)
+    files = {bytes([66]*16).hex()+'-0000000000000001-'+f'{n:016x}'+'.cbor':originals[n] for n in originals}
     assert report['originals'] == {name:dict(bytes=len(value), sha256=sha(value)) for name, value in files.items()}
     check_inputs(report['control'], files, wanted, scenario)
     messages = [json.loads(line) for line in result['stdout'].splitlines()]
@@ -69,6 +69,10 @@ def main(path, digest, output):
     if scenario not in PERMANENT:
         final = ['recovery-after', 'recovery-observed']
         reject('wrong-resolved-bytes', lambda r:messages(r, lambda ms:next(m for m in ms if m['event']=='producer-resolved').__setitem__('bytes', '00')))
+        if scenario in ['already', 'rejected']:
+            reject('wrong-outcome-kind', lambda r:r['control']['outcomes'][-1].__setitem__('outcome_kind', 1))
+        if scenario == 'rejected':
+            reject('wrong-rejection-reason', lambda r:messages(r, lambda ms:next(m for m in ms if m['event']=='producer-resolved').__setitem__('rejection', 'EventId')))
         reject('missing-intermediate-snapshot', lambda r:messages(r, lambda ms:ms.pop(next(i for i,m in enumerate(ms) if m['event']=='recovery-observed'))))
         for table, n in [('producer_outcomes', 1), ('producer_requests', 2)]:
             def change_rows(rows, n=n):
