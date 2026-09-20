@@ -157,6 +157,56 @@ an entire human browsing session for one unrelated expiration is unnecessarily
 costly. Snapshot semantics remain useful where reproducibility is part of the
 operation. Neither mode is relabeled as the other for a performance comparison.
 
+## Visibility allocation before a private grant
+
+A submitted `QualifiedRef` is a name, not evidence that the visibility mapping
+exists. Before activating a scope-qualified history grant, the management consumer
+resolves that exact mapping from the selected certified cut and retained native
+snapshot. The class label, including `public`, grants no permission. No event body
+is needed merely to establish the mapping, and no active grant may wait for a
+future allocation to make an otherwise nonexistent reference usable.
+
+The private native `read-visibility` boundary selects the complete qualified
+reference inside explicit ordered source prefixes, then hydrates by source ID
+alone in the same transaction. Both lookups reject multiple dictionary rows;
+the second also detects a conflicting reference that reused the source ID.
+Validate the full fact envelope/digest, schema and descriptor versions, visibility
+class syntax and all inactive descriptor fields. The parent independently verifies
+the canonical fact, complete reference, source membership, snapshot and request
+binding before constructing its opaque allocated-scope observation. It retains
+its memory reservation and actual catalog custody through the last consumer.
+This is allocation evidence; certification of the complete cut, cross-family
+source uniqueness, the live retention pin and principal/action authority remain
+separate prerequisites checked by the management/read consumer.
+
+The private wire is closed. `VisibilityRead` carries dataset, qualified scope,
+topology generation, ordered `CutBound` entries and an exact native snapshot ID.
+It shares the1024-stream structural ceiling; the complete credential-bearing
+request must also fit the existing32KiB private input bound before launch. Zero
+prefixes are retained and exclude every record. Native rows are clamped to4096
+UTF-8 bytes after SQL JSON construction; the worker's wider engine/native envelope
+still covers construction. The result contains at most512 canonical fact bytes
+encoded as lowercase hex, with a1536-byte complete response bound. These fixed
+limits cover a visibility descriptor's sole64-byte ASCII class, not arbitrary
+dictionary variants. They are allocation limits, not a measured process RSS cap.
+
+Response format `bigbrotr-native-visibility/1` binds `snapshot_id`, `fact_digest`,
+`preimage_hex` and `request_digest`. The request SHA-256 preimage is
+`bigbrotr/archive-visibility-read/1\0`, dataset bytes16, scope dataset bytes16,
+kind u16, allocation domain bytes16, ordinal u64, topology u64, snapshot u64,
+bound count u64, then each ordered `(shard u32, epoch u64, prefix u64)`;
+all integers are big-endian. The independent vector is
+[archive-visibility.json](../../tests/fixtures/protocol/archive-visibility.json).
+The digest correlates a response; it authenticates neither a user nor a cut.
+
+Missing/corrupt objects, ambiguous mappings, absent streams, unavailable engines
+or expired/cancelled work yield no allocated-scope result. No fallback to the
+latest snapshot or conversion of missing data into permission is allowed.
+The current parent reports native failures as `ObservationUnknown`; public typed
+absence/error outcomes and scanned-byte admission remain P06-T01/T02 work.
+`LIMIT 2` bounds each result, not the scan. This private boundary does not qualify
+the common64MiB read profile or advertise an HTTP endpoint.
+
 ## Search meaning after parsing
 
 P06-T06 owns the selected `unicode16-word-v1` analyzer and NIP-50 grammar. Parsing

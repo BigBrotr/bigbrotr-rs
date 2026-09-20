@@ -28,6 +28,8 @@ pub use worker::{Preparation, PreparationError, PreparationInspection, Preparati
 
 mod events;
 pub use events::{ArchiveEventError, ArchivedEvent};
+mod visibility;
+pub use visibility::ArchivedVisibility;
 mod membership;
 pub use membership::validate_membership_limits;
 

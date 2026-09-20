@@ -97,6 +97,18 @@ dataset/frontier separately from a mere unavailable socket.
 
 **Dependencies/interfaces:** use P01 principals/policy authorization and P07 purpose-scoped signer references. Private `/management/v1/` has bootstrap, session, principal, grant and token endpoints, entirely absent from public routers. Viewer reads allowed resources; operator controls permitted roles/budgets; administrator changes policy. Import, export, private export and signer administration are explicit additional grants. Tokens are hashed at rest; opaque browser sessions are server-side. Secrets use protected references, never config-history values.
 
+The next scope-grant consumer first needs the [exact allocated visibility
+observation](../specification/read-view-contract.md#visibility-allocation-before-a-private-grant).
+A caller-declared name cannot be preauthorized for a future allocation. Reuse
+the retained cut/snapshot and actual native reader; keep class labels separate
+from monotone per-principal/action/scope grant revisions. Then connect session/
+command-bound reauthentication, grant CAS/audit/retry and the actual private read.
+The initial proof can be a server-side ID requiring the same live session and
+CSRF, without introducing another bearer secret. Restrictive application remains
+pending until old delivery/work has actually drained under the authority clock;
+UTC plus five seconds or a historical command retry cannot mark it applied.
+These prerequisites do not complete any step below.
+
 - [ ] **Step 1:** implement atomic one-time owner enrollment using a random token in a new 0600 local file or explicit enrollment command output, ten-minute default expiry and single-use consume. Two concurrent enrollments can create only the intended initial owner. An unclaimed instance remains authenticated/locked; no first-visitor ownership shortcut exists.
 - [ ] **Step 2:** implement local account authentication, eight-hour maximum/thirty-minute idle defaults, revocation, logout, reauthentication before grants, CSRF tokens and exact Origin checks. Use Argon2id with a 16-byte random salt, 32-byte hash, 64 MiB memory, three iterations and one lane as the initial local-account baseline; version those parameters and rehash on successful login after a future policy update. Bound hashing concurrency through reserved memory/CPU grants and account/peer rate limits; a host unable to reserve one hash reports unavailable, never falls back to plaintext or a cheaper silent hash. Store only salt/hash/parameters; enrollment/session/CSRF tokens use 32 random bytes. Local loopback HTTP and remote HTTPS have explicit cookie modes; remote non-TLS refuses startup.
 - [ ] **Step 3:** implement action/resource authorization at the command handler, protected secret-reference write, and attributable append-only audit entries for accepted/rejected requests. Securely open supported regular secret files and reject pipe/device/disallowed symlink substitutions; enforce owner/mode/size on the opened descriptor. Never return stored secrets or permit arbitrary path browsing.

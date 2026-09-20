@@ -14,3 +14,8 @@ pub mod event;
 pub mod membership;
 
 pub mod cut;
+pub mod visibility;
+
+#[cfg(test)]
+#[path = "visibility/tests.rs"]
+mod visibility_tests;

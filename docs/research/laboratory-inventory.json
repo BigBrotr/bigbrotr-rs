@@ -17995,5 +17995,26 @@
       },
       "scope": "Root independent fresh read-only Tux inspection: complete terminal lifecycle for both owned containers; all488 prior stable lifecycle/mount/network records compared; actual three ELF files rehashed. Full safe metadata retained in ignored receipt."
     }
+  },
+  "implementation_archive_visibility_20260920": {
+    "status": "Mac implementation and native embedded tests; Tux qualification not started",
+    "base_revision": "d0443736755384cdadfa5649744f0ef023c8eecb",
+    "local_root": ".research/implementation/archive-visibility",
+    "cache_retirement": {
+      "status": "PASS",
+      "receipt": ".research/implementation/archive-visibility/tux-cache-retirement.json",
+      "sha256": "f334f0ae48d7c9a403df1e2755ca4355a540c234fa53c64a298844326c599b8c",
+      "remote_receipt": "/home/tux/bigbrotr-implementation-20260917/runs/archive-visibility-cache-retirement-20260920.json",
+      "removed_files": 4184,
+      "removed_logical_bytes": 4215748700,
+      "free_after": 9192001536,
+      "containers_unchanged": 490,
+      "unrelated_running": 8,
+      "retired_partial_caches": [
+        "/home/tux/bigbrotr-implementation-20260917/runs/archive-pin-recovery-51d35ae",
+        "/home/tux/bigbrotr-implementation-20260917/runs/browser-http-commits-e65116b"
+      ],
+      "preservation": "Actual executable/shared artifacts, source/receipts/data preserved and hash checked. Partial e65116b and51d35ae targets must not be reused. Qualified591c75f target remains intact; cache never establishes source identity."
+    }
   }
 }

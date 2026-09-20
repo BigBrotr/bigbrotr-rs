@@ -121,12 +121,12 @@ struct NativeEligibility {
     origin: String,
     import_lineage: Option<QualifiedRef>,
 }
-fn qualified(column: &str) -> String {
+pub(crate) fn qualified(column: &str) -> String {
     format!(
         "struct_pack(dataset_id:=lower(hex({column}.dataset_id)),dictionary_kind:={column}.dictionary_kind,allocation_domain:=lower(hex({column}.allocation_domain)),ordinal:={column}.ordinal::VARCHAR)"
     )
 }
-fn source(column: &str) -> String {
+pub(crate) fn source(column: &str) -> String {
     format!(
         "struct_pack(dataset_id:=lower(hex({column}.dataset_id)),shard_id:={column}.shard_id,owner_epoch:={column}.owner_epoch::VARCHAR,sequence:={column}.sequence::VARCHAR)"
     )

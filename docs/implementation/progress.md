@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-09-20 on Mac after qualifying accepted session mutation audit;
+Observed 2026-09-20 on Mac during the allocated visibility lookup prerequisite;
 previous owned labs remain stopped/retained. Navigation only: follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint)
 and verify Git, dirty files, evidence and resources before continuing.
 
@@ -21,13 +21,42 @@ another diagnostic command instead of the real read consumer.
 
 ## Git, current qualification and next action
 
-Observed main/HEAD `591c75fb48ffc738252cfc5e3906fcd0bf1aa92d`, tree
-`185c05a17fd5882dc7d9c65bd6a2fafba0bca9be`; origin last observed `9e3e44e`.
-Four unpublished commits contain the RED oracle, atomic audit implementation and
-two justified fixture corrections. Root owns only the qualification report,
-checkpoint/inventory and linked documentation follow-up. Product and migration
-bytes are unchanged fromf7b0443; final candidate591c75f was tested exactly.
-No other writer or merge/rebase. Inspect actual Git before resuming.
+Observed main/HEAD and origin/main `d0443736755384cdadfa5649744f0ef023c8eecb`.
+Root owns the dirty visibility protocol, native worker/parent adapter, existing
+archive_event_probe extension, independent fixtures, native driver and associated
+read-view/P08/checkpoint/inventory documentation. No migration/dependency changes,
+other writer or merge/rebase. catalog_guard_review supplied read-only AI review.
+Prior qualified audit lab remains stopped/PID0/noOOM. No Tux experiment is active.
+
+The exact visibility lookup now verifies the full mapping inside one native
+snapshot/source cut; parent result retains its memory grant and actual custody.
+Review found a SourceRecordId reused by two individually valid mappings. The
+native regression reproduced acceptance (FAIL), then the source-only uniqueness
+lookup made all four native tests PASS/0 ignored; two protocol cases also PASS.
+Raw `.research/implementation/archive-visibility/{source-duplicate-red,mac-reviewed}`.
+Earlier missing-API compile RED is separate from this executed counterexample.
+Parent build passed; scoped Clippy found fixture enum size after adding visibility.
+Both enum payloads are now boxed; final build/scoped Clippy PASS in mac-final. Structural
+artifact checks pass. PostgreSQL/child custody/restart cases are NOT_RUN yet. Static fixture review
+corrected the expected local wrong-catalog refusal and bounded recovery polling;
+neither is recorded as an executed failure.
+
+Next bounded action: finish the scoped Mac check/diff review, commit an unpublished
+exact candidate and execute visibility_cases.py in a fresh isolated Tux lab. The
+27 planned cases use actual publication/read processes, source prefixes/snapshots,
+missing/corrupt Parquet, capacity refusal/retry and PostgreSQL SIGQUIT/restart.
+No allocation observation is a read grant, certified cut or pin. After qualification,
+continue P08-T02 reauthentication/scoped grant CAS and actual retained history read.
+
+Verified cache retirement freed 4,215,748,700 logical bytes from 4,184 intermediate
+Cargo files in stopped archive-pin-recovery-51d35ae and browser-http-commits-e65116b.
+Both targets are now partial and MUST NOT be reused. Executable/shared artifact
+hashes, source/data/receipts and all 490 container lifecycle/mount records were
+preserved; eight unrelated workloads remain. Free space after:9,192,001,536bytes.
+Raw `archive-visibility/tux-cache-retirement.json` and inventory
+`implementation_archive_visibility_20260920` record ownership and hashes.
+The intact session-audit-591c75f cache is the next copy candidate; verify it before
+reuse. No cleanup debt or active native lab. Cache reuse is never source identity.
 
 [Session mutation audit evidence](evidence/p08-session-mutation-audit-native-20260920.json)
 qualifies additive0807 and the actual accepted issuance/explicit logout consumer.
@@ -101,8 +130,9 @@ All earlier lab reports/inventory retain exact roots and ownership. Verified
 retirement receipts under session-audit/tux-*-retirement.json removed only owned
 inactive intermediate Cargo files, preserving actual executable/shared artifact
 hashes. Partial RED/f7/62/eceab88 and panel caches MUST NOT be reused. Qualified
-591c75f cache is intact but not yet selected for reuse; baselinee65116b remains
-intact. Cache reuse never establishes source identity.
+591c75f cache remains intact. The later visibility retirement above made
+e65116b and51d35ae partial; neither may be reused. Cache reuse never establishes
+source identity.
 
 Prior browser slice [b6d9d7e](evidence/p09-private-panel-native-20260920.json)
 qualifies8journeys on Chromium/Firefox/WebKit ×root/control, real missing/restored
@@ -117,10 +147,20 @@ Primary Mac build has been restored to current source by the audit checks.
 Preserve `.research/worktrees/producer-closing-old-writer`, last cleanf899896b,
 and other historical worktrees. Applied0017/0018/0806/0807 bytes stay immutable.
 
-Remote fetch confirmed unchanged origin9e3e44e. Next bounded action: commit
-qualification documentation and push the verified slice. Then continue P08-T02
+The qualification documentation and verified slice are pushed. P08-T02 next needs
 reauthentication bound to the exact grant command, versioned scope-qualified grant
 CAS and principal/action/scope delivery authority for the first real history read.
+Boundary review found a concrete prerequisite: no existing public adapter result
+certifies allocation of a particular visibility QualifiedRef. A browser-supplied
+name cannot become an active grant awaiting future allocation. The current dirty slice implements the exact visibility dictionary lookup under
+the existing retained native snapshot/cut, returning a non-forgeable allocated-scope
+observation for the grant consumer; PostgreSQL qualification remains pending. Reuse native reader custody, finite work and full-fact
+validation; exercise absent/unallocated, wrong domain, duplicate, corrupt, excluded
+cut and snapshot cases. This supplies allocation evidence, never read permission.
+A later restrictive grant remains pending until actual affected work has drained;
+PG UTC plus five seconds alone is not proof against suspend-aware delivery leases.
+The finite first HTTP read can use a nonrenewable per-connection action window,
+checked at every actual socket write and never extended by global policy renewal.
 Initial data.read grants no history/export. Do not alter the closed seven-action
 bootstrap rows to invent history permission; ordinary self/session observations
 are not authority. Read the full owning interfaces/callers before defining the
@@ -181,7 +221,7 @@ Cargo targets. Their remaining partial caches must not be reused. Executable/sha
 artifact hashes, sources, receipts, native bundles, synthetic fixtures and databases
 are retained. Both audits PASS: all426 container lifecycle/mount records unchanged,
 8unrelated workloads still running; final free28,275,548,160bytes. Qualifiede65116b
-cache remains intact for copying into a new lab. Raw scripts/receipts are under
+was intact then; the later visibility retirement above makes it non-reusable. Raw scripts/receipts are under
 private-panel/tux-cache-retirement*, with remote receipts in the owned runs root.
 The subsequent first native panel attempt is stopped/retained as recorded above; no cleanup is pending.
 

@@ -4,15 +4,16 @@ use bigbrotr::{
     runtime::{ProcessEnvelope, ResourceBudget, ResourceLimits, WaiterLimits},
     storage::{
         archive::{
-            ArchiveEventError, ArtifactIdentity, CatalogReaderCredentials, CatalogRoute,
-            CatalogTls, LifetimeError, LocalCoordinator, Preparation, PreparationError,
-            PreparationLimits, WorkerInstallation,
+            ArchiveEventError, ArchivedEvent, ArchivedVisibility, ArtifactIdentity,
+            CatalogReaderCredentials, CatalogRoute, CatalogTls, LifetimeError, LocalCoordinator,
+            Preparation, PreparationError, PreparationLimits, WorkerInstallation,
         },
         postgres::{catalog_guard::CatalogIdentity, connection_settings::PlaintextBoundary},
     },
 };
 use bigbrotr_model::OwnerResourceId;
 use bigbrotr_protocol::archive_event::{EventQuery, EventRead};
+use bigbrotr_protocol::archive_visibility::VisibilityRead;
 use serde::Deserialize;
 use std::{
     fs,
@@ -38,6 +39,11 @@ struct Input {
 enum Expected {
     References(EventRead),
     Query(EventQuery),
+    Visibility(VisibilityRead),
+}
+enum Observation {
+    Event(Box<ArchivedEvent>),
+    Visibility(Box<ArchivedVisibility>),
 }
 fn main() {
     let args: Vec<_> = std::env::args_os().collect();
@@ -57,6 +63,7 @@ fn main() {
     let dataset = match &input.expected {
         Expected::References(read) => read.dataset,
         Expected::Query(query) => query.dataset,
+        Expected::Visibility(read) => read.dataset,
     };
     let identity = CatalogIdentity::local(dataset, input.catalog_id, &input.data_root).unwrap();
     let password = Zeroizing::new(fs::read_to_string("/secrets/bigbrotr_receipt_reader").unwrap());
@@ -91,7 +98,12 @@ fn main() {
         }
         let result = coordinator
             .as_ref()
-            .map_err(|e| ArchiveEventError::Preparation(PreparationError::Custody(*e)))
+            .map_err(|e| {
+                format!(
+                    "{:?}",
+                    ArchiveEventError::Preparation(PreparationError::Custody(*e))
+                )
+            })
             .and_then(|coordinator| {
                 let preparation = Preparation {
                     installation: &installation,
@@ -118,12 +130,18 @@ fn main() {
                     password: &password,
                 };
                 match &input.expected {
-                    Expected::References(read) => {
-                        preparation.read_event(read, coordinator, &route, credential, &budget)
-                    }
-                    Expected::Query(query) => {
-                        preparation.query_event(query, coordinator, &route, credential, &budget)
-                    }
+                    Expected::References(read) => preparation
+                        .read_event(read, coordinator, &route, credential, &budget)
+                        .map(|value| Observation::Event(Box::new(value)))
+                        .map_err(|e| format!("{e:?}")),
+                    Expected::Query(query) => preparation
+                        .query_event(query, coordinator, &route, credential, &budget)
+                        .map(|value| Observation::Event(Box::new(value)))
+                        .map_err(|e| format!("{e:?}")),
+                    Expected::Visibility(read) => preparation
+                        .read_visibility(read.clone(), coordinator, &route, credential, &budget)
+                        .map(|value| Observation::Visibility(Box::new(value)))
+                        .map_err(|e| format!("{e:?}")),
                 }
             });
         done.store(true, Ordering::Relaxed);
@@ -147,9 +165,16 @@ fn main() {
                 1,
                 "decoded body must retain its grant"
             );
-            serde_json::json!({"status":"observed","snapshot_id":observation.snapshot_id().to_string(),"event":observation.event().event()})
+            match observation {
+                Observation::Event(observation) => {
+                    serde_json::json!({"status":"observed","snapshot_id":observation.snapshot_id().to_string(),"event":observation.event().event()})
+                }
+                Observation::Visibility(observation) => {
+                    serde_json::json!({"status":"observed","snapshot_id":observation.read().snapshot_id.to_string(),"scope":observation.entry().reference(),"fact_ref":observation.fact_ref(),"class":match observation.entry().descriptor() { bigbrotr_model::DictionaryDescriptor::Visibility { class } => class.as_str(), _=>panic!() }})
+                }
+            }
         }
-        Err(error) => serde_json::json!({"status":"refused","error":format!("{error:?}")}),
+        Err(error) => serde_json::json!({"status":"refused","error":error}),
     };
     assert_eq!(budget.snapshot().active_permits(), 0);
     if observed {

@@ -14,3 +14,4 @@ pub mod endpoint;
 pub mod archive_cut;
 pub mod archive_event;
 pub mod archive_membership;
+pub mod archive_visibility;
