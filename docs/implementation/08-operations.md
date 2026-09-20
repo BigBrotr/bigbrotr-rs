@@ -107,7 +107,10 @@ The initial proof can be a server-side ID requiring the same live session and
 CSRF, without introducing another bearer secret. Restrictive application remains
 pending until old delivery/work has actually drained under the authority clock;
 UTC plus five seconds or a historical command retry cannot mark it applied.
-These prerequisites do not complete any step below.
+The [qualified allocation lookup](evidence/p02-archive-visibility-native-20260920.json)
+now has native/PG child and restart evidence. Live certified pin validation belongs
+in the grant transaction; a historical pin receipt is not authority. These
+prerequisites do not complete any step below.
 
 - [ ] **Step 1:** implement atomic one-time owner enrollment using a random token in a new 0600 local file or explicit enrollment command output, ten-minute default expiry and single-use consume. Two concurrent enrollments can create only the intended initial owner. An unclaimed instance remains authenticated/locked; no first-visitor ownership shortcut exists.
 - [ ] **Step 2:** implement local account authentication, eight-hour maximum/thirty-minute idle defaults, revocation, logout, reauthentication before grants, CSRF tokens and exact Origin checks. Use Argon2id with a 16-byte random salt, 32-byte hash, 64 MiB memory, three iterations and one lane as the initial local-account baseline; version those parameters and rehash on successful login after a future policy update. Bound hashing concurrency through reserved memory/CPU grants and account/peer rate limits; a host unable to reserve one hash reports unavailable, never falls back to plaintext or a cheaper silent hash. Store only salt/hash/parameters; enrollment/session/CSRF tokens use 32 random bytes. Local loopback HTTP and remote HTTPS have explicit cookie modes; remote non-TLS refuses startup.

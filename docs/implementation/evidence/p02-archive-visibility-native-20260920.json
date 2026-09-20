@@ -1,0 +1,506 @@
+{
+  "format": "bigbrotr-archive-visibility-evidence/1",
+  "status": "PASS",
+  "scope": "P02-T04/P06-T02/P08-T02 exact retained visibility allocation prerequisite; no principal grant, certified query admission, complete M1 or release qualification",
+  "source": {
+    "product_revision": "b5ff8abe4e4224604b2c1960232359d71e17ffa5",
+    "product_tree": "5941e13acbef87f790128620d1a68bee0aac9ba4",
+    "product_manifest": {
+      "path": ".research/implementation/archive-visibility/native/capture/out/build/source-manifest.json",
+      "bytes": 124391,
+      "sha256": "6f6a1ec127d421ff4f76e580d014fc7d21bb2be591e181bfdc0d64e8493aea30"
+    },
+    "workload_revision": "5dfa9784a7dd5cf3bcec6ba5034a349aa7d7ecfc",
+    "workload_tree": "d63286378b77e3f3b73af62ca77f6d80de2f70cf",
+    "workload_manifest": {
+      "path": ".research/implementation/archive-visibility/native-connect/capture/out/build/source-manifest.json",
+      "bytes": 124548,
+      "sha256": "9ca2f5e80bfdb86120a6b2a7f534a58d84122323fb7cb64ea5378e0b161c3a79"
+    },
+    "product_files": 1005,
+    "workload_files": 1006,
+    "product_sources_unchanged_outside_fixture_docs": true,
+    "lock_sha256": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122"
+  },
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "limits": "Runner2CPU6GiB512PIDs;PG2CPU1GiB128PIDs;internal network/no host ports;readonly source/root;no release credentials",
+    "native_bundle": {
+      "path": "contracts/release/archive-engine.json",
+      "bytes": 8159,
+      "sha256": "ae0069565ab9411928df0cf067822630c4f3a912919e61633b952f8077a5e2c1"
+    },
+    "dependencies": {
+      "path": "contracts/release/dependencies.json",
+      "bytes": 17254,
+      "sha256": "14bb6d43630ff5ad0eeaec28236ca138224d5e97603200f456536abbaa2c94c6"
+    }
+  },
+  "artifacts": {
+    "control": "347a4152f2692bb943dfaf20773a7f97be854061b83aba5c4d14aaa7f69f667f",
+    "worker": "bf10a4f4f20b92cdbd37263106d2125b84bb6f21f0403b17bec4d5c39b459fb1",
+    "publisher": "77f511241f83882528c863df04e1e4ceeef1d855eaaac386281e231d0aad0600",
+    "reader": "274515e75a2c5bc2712767ce4142ea9f581c39636a991992b235125ef5309b28",
+    "event_reader": "8526fb1ee142c3a39aac11d719b47377951fb83004c6eaeb31c8cc630008d293"
+  },
+  "implementation": [
+    "Exact full QualifiedRef lookup inside explicit source prefixes at one retained native snapshot; second source-only lookup in the same transaction detects a conflicting mapping reusing SourceRecordId.",
+    "Canonical full fact/digest, schema/descriptor versions, class syntax and22inactive fields validated. Parent independently binds request/snapshot/source and constructs opaque allocation observation after native join.",
+    "Result retains actual catalog custody and its memory grant through final consumer drop. Initial decoded success keeps flock occupied after coordinator drop; observation drop releases custody and capacity in the actual parent fixture.",
+    "512canonical bytes,1536response bytes,SQL4097character clamp followed by4096UTF8byte acceptance limit; wider native/OS envelope covers construction. LIMIT2 bounds result, not scan.",
+    "No migration, changed persistent scientific bytes, dependency selection, public endpoint or read/export permission. Class public is never authorization."
+  ],
+  "oracle": {
+    "driver": {
+      "path": "experiments/archive-engine/visibility_cases.py",
+      "bytes": 11320,
+      "sha256": "a66adc78ebedc44ecd546beaf052b6df1b453db76765e87f81d17a635165df88"
+    },
+    "corpus": {
+      "path": "experiments/archive-engine/signed_publication_oracle.py",
+      "bytes": 16215,
+      "sha256": "7ad4381bdc691d45245232d7cbdebeed039c6de0c182bcdc193b3479678917a4"
+    },
+    "signed_fixture": {
+      "path": "experiments/identity-contract/signed-fixture.json",
+      "bytes": 58802,
+      "sha256": "4c931ab34cb7adeb707fc2866f4a50b3ec8b694cbb2d4fb5e335f8f37a2d8875"
+    },
+    "dictionary_vector": {
+      "path": "crates/bigbrotr-model/tests/fixtures/dictionary-v1.json",
+      "bytes": 12014,
+      "sha256": "dbeabe7bc317d823c57f409e8e2f89abb4a4a0545ba32e20142d51a02a5286a9"
+    },
+    "wire_vector": {
+      "path": "tests/fixtures/protocol/archive-visibility.json",
+      "bytes": 864,
+      "sha256": "cb80499e6b857180c7e33f681e37c62905b880da7c222bbb61f504d19aef51fc"
+    },
+    "authority": "Trusted fixture owns complete scientific source files/cuts; not a live principal grant or certified retained pin consumer."
+  },
+  "linux": {
+    "build": {
+      "path": ".research/implementation/archive-visibility/native/capture/out/native-tests/result.json",
+      "bytes": 2811,
+      "sha256": "a3ca2beee90a2a8204bf695e5be7b8b9e87560c453b1773a3a93ca3063db0cbf"
+    },
+    "checks": {
+      "path": ".research/implementation/archive-visibility/native/capture/out/native-tests/checks/result.json",
+      "bytes": 4951,
+      "sha256": "e2e146cc3f1d128264f0b2f57e33dc33c91d38647450910e8c33815374aa1fbc"
+    },
+    "native_tests": {
+      "passed": 4,
+      "failed": 0,
+      "ignored": 0
+    },
+    "protocol_tests": {
+      "passed": 2,
+      "failed": 0,
+      "ignored": 0
+    },
+    "connected_cases": [
+      {
+        "name": "complete",
+        "status": "PASS",
+        "elapsed_ms": 357,
+        "active_permits": 0,
+        "outcome": "observed",
+        "snapshot_id": "3"
+      },
+      {
+        "name": "prefix-0",
+        "status": "PASS",
+        "elapsed_ms": 364,
+        "active_permits": 0,
+        "outcome": "refused",
+        "error": "ObservationUnknown"
+      },
+      {
+        "name": "prefix-1",
+        "status": "PASS",
+        "elapsed_ms": 420,
+        "active_permits": 0,
+        "outcome": "observed",
+        "snapshot_id": "3"
+      },
+      {
+        "name": "prefix-5",
+        "status": "PASS",
+        "elapsed_ms": 409,
+        "active_permits": 0,
+        "outcome": "observed",
+        "snapshot_id": "3"
+      },
+      {
+        "name": "prefix-10",
+        "status": "PASS",
+        "elapsed_ms": 410,
+        "active_permits": 0,
+        "outcome": "observed",
+        "snapshot_id": "3"
+      },
+      {
+        "name": "missing-stream",
+        "status": "PASS",
+        "elapsed_ms": 382,
+        "active_permits": 0,
+        "outcome": "refused",
+        "error": "ObservationUnknown"
+      },
+      {
+        "name": "foreign-epoch",
+        "status": "PASS",
+        "elapsed_ms": 391,
+        "active_permits": 0,
+        "outcome": "refused",
+        "error": "ObservationUnknown"
+      },
+      {
+        "name": "foreign-shard",
+        "status": "PASS",
+        "elapsed_ms": 352,
+        "active_permits": 0,
+        "outcome": "refused",
+        "error": "ObservationUnknown"
+      },
+      {
+        "name": "unrelated-zero",
+        "status": "PASS",
+        "elapsed_ms": 399,
+        "active_permits": 0,
+        "outcome": "observed",
+        "snapshot_id": "3"
+      },
+      {
+        "name": "unallocated",
+        "status": "PASS",
+        "elapsed_ms": 403,
+        "active_permits": 0,
+        "outcome": "refused",
+        "error": "ObservationUnknown"
+      },
+      {
+        "name": "domain",
+        "status": "PASS",
+        "elapsed_ms": 421,
+        "active_permits": 0,
+        "outcome": "refused",
+        "error": "ObservationUnknown"
+      },
+      {
+        "name": "scope-kind",
+        "status": "PASS",
+        "elapsed_ms": 6,
+        "active_permits": 0,
+        "outcome": "refused",
+        "error": "InvalidInput"
+      },
+      {
+        "name": "scope-dataset",
+        "status": "PASS",
+        "elapsed_ms": 7,
+        "active_permits": 0,
+        "outcome": "refused",
+        "error": "InvalidInput"
+      },
+      {
+        "name": "wrong-catalog",
+        "status": "PASS",
+        "elapsed_ms": 0,
+        "active_permits": 0,
+        "outcome": "refused",
+        "error": "Preparation(Custody(Identity))"
+      },
+      {
+        "name": "unavailable-database",
+        "status": "PASS",
+        "elapsed_ms": 373,
+        "active_permits": 0,
+        "outcome": "refused",
+        "error": "ObservationUnknown"
+      },
+      {
+        "name": "short-reservation",
+        "status": "PASS",
+        "elapsed_ms": 6,
+        "active_permits": 0,
+        "outcome": "refused",
+        "error": "ResourceLimit"
+      },
+      {
+        "name": "snapshot-0",
+        "status": "PASS",
+        "elapsed_ms": 368,
+        "active_permits": 0,
+        "outcome": "refused",
+        "error": "ObservationUnknown"
+      },
+      {
+        "name": "snapshot-1",
+        "status": "PASS",
+        "elapsed_ms": 414,
+        "active_permits": 0,
+        "outcome": "refused",
+        "error": "ObservationUnknown"
+      },
+      {
+        "name": "snapshot-2",
+        "status": "PASS",
+        "elapsed_ms": 411,
+        "active_permits": 0,
+        "outcome": "observed",
+        "snapshot_id": "2"
+      },
+      {
+        "name": "snapshot-3",
+        "status": "PASS",
+        "elapsed_ms": 423,
+        "active_permits": 0,
+        "outcome": "observed",
+        "snapshot_id": "3"
+      },
+      {
+        "name": "snapshot-4",
+        "status": "PASS",
+        "elapsed_ms": 369,
+        "active_permits": 0,
+        "outcome": "refused",
+        "error": "ObservationUnknown"
+      },
+      {
+        "name": "snapshot-9223372036854775808",
+        "status": "PASS",
+        "elapsed_ms": 6,
+        "active_permits": 0,
+        "outcome": "refused",
+        "error": "InvalidInput"
+      },
+      {
+        "name": "missing-dictionary",
+        "status": "PASS",
+        "elapsed_ms": 381,
+        "active_permits": 0,
+        "outcome": "refused",
+        "error": "ObservationUnknown"
+      },
+      {
+        "name": "missing-dictionary-restored",
+        "status": "PASS",
+        "elapsed_ms": 342,
+        "active_permits": 0,
+        "outcome": "observed",
+        "snapshot_id": "3"
+      },
+      {
+        "name": "corrupt-dictionary",
+        "status": "PASS",
+        "elapsed_ms": 399,
+        "active_permits": 0,
+        "outcome": "refused",
+        "error": "ObservationUnknown"
+      },
+      {
+        "name": "corrupt-dictionary-restored",
+        "status": "PASS",
+        "elapsed_ms": 420,
+        "active_permits": 0,
+        "outcome": "observed",
+        "snapshot_id": "3"
+      },
+      {
+        "name": "pg-restarted",
+        "status": "PASS",
+        "elapsed_ms": 362,
+        "active_permits": 0,
+        "outcome": "observed",
+        "snapshot_id": "3"
+      }
+    ],
+    "connected_capture": {
+      "path": ".research/implementation/archive-visibility/native-connect/capture/visibility-cases.json",
+      "bytes": 573953,
+      "sha256": "ff366f2485a910981a85fbd71e45469cfce32a1027614677d9c2895fdf1d7151"
+    },
+    "suite_reuse": "Unchanged Rust tests/build/Clippy executed atb5ff8ab. Fixture-only5dfa978 copies and rehashes those exact executables; no relabeling of embedded build source and no unnecessary suite rerun."
+  },
+  "durable_observations": {
+    "mapping_source_sequence": 1,
+    "prefix_0": "refused",
+    "prefixes_1_5_10": "same exact mapping",
+    "snapshot_2_3": "same exact mapping",
+    "snapshots_0_1_4": "refused; no latest fallback",
+    "metadata_tables": 28,
+    "metadata_unchanged": true,
+    "parquet_files": 8,
+    "all_hashes_unchanged": true,
+    "restart": {
+      "before": "2026-09-20 16:00:40.382385+00",
+      "after": "2026-09-20 16:01:04.477296+00",
+      "signal": "SIGQUIT",
+      "attempts": [
+        {
+          "exit": 2,
+          "start": ""
+        },
+        {
+          "exit": 2,
+          "start": ""
+        },
+        {
+          "exit": 2,
+          "start": ""
+        },
+        {
+          "exit": 2,
+          "start": ""
+        },
+        {
+          "exit": 2,
+          "start": ""
+        },
+        {
+          "exit": 2,
+          "start": ""
+        },
+        {
+          "exit": 2,
+          "start": ""
+        },
+        {
+          "exit": 2,
+          "start": ""
+        },
+        {
+          "exit": 2,
+          "start": ""
+        },
+        {
+          "exit": 2,
+          "start": ""
+        },
+        {
+          "exit": 2,
+          "start": ""
+        },
+        {
+          "exit": 2,
+          "start": ""
+        },
+        {
+          "exit": 2,
+          "start": ""
+        },
+        {
+          "exit": 0,
+          "start": "2026-09-20 16:01:04.477296+00"
+        }
+      ]
+    },
+    "remaining_database_backends": {
+      "bbpub_normal": {
+        "backends": 0
+      },
+      "bbpub_control_normal": {
+        "backends": 0
+      }
+    },
+    "terminal_independent": {
+      "path": ".research/implementation/archive-visibility/native-connect/capture/terminal-independent.json",
+      "bytes": 5949,
+      "sha256": "4f6550cbf5b5b4ab64ae632b5a8e139303ed0004b50e67b873902156e29bd36c"
+    },
+    "qualification": "Actual SIGQUIT postmaster restart, fresh parent/worker lookup and unchanged complete28table metadata/8file hashes. No host power-loss or capacity claim."
+  },
+  "mac": {
+    "native_tests": 4,
+    "protocol_tests": 2,
+    "native_and_protocol": {
+      "path": ".research/implementation/archive-visibility/mac-reviewed/result.json",
+      "bytes": 1905,
+      "sha256": "dc92a0e0f7aba98c1f98024b3317b7a11967b99905a609ba9a6a021650a7bb6e"
+    },
+    "final_build_clippy": {
+      "path": ".research/implementation/archive-visibility/mac-final/result.json",
+      "bytes": 1189,
+      "sha256": "74cd43fd58fa04bf0cb8232a45191be08230a5e4b8108775a38c434bf053b119"
+    },
+    "native_result_note": "mac-reviewed overall FAIL is the second fixture Clippy enum-size failure; its4native/2protocol/build checks pass. mac-final passes after boxing both fixture variants.",
+    "executed_source_collision_red": {
+      "path": ".research/implementation/archive-visibility/source-duplicate-red/result.json",
+      "bytes": 670,
+      "sha256": "fd90c8aa5967654c053a870bac1ea488a4f8ed0ae68964d3fe77f96b4af19687"
+    },
+    "red_log": {
+      "path": ".research/implementation/archive-visibility/source-duplicate-red/source-duplicate.log",
+      "bytes": 1770,
+      "sha256": "cfd029460bd8993a7d32aa32f3bcbcbadd62cda8065ad0e4ecb8f1985c26ef48"
+    },
+    "earlier_failures": "Missing APIs caused compile REDs; these are not runtime counterexamples. Two Clippy failures were fixture enum allocation layout, retained in mac-parent and mac-reviewed."
+  },
+  "review": {
+    "kind": "Independent read-only AI plus root complete diff/actual evidence review",
+    "corrections": [
+      "Source-only uniqueness: two individually valid mappings pass in their isolated snapshots but refuse together; native runtime RED reproduced then fixed.",
+      "Wrong-catalog case expects local custody identity refusal before child; restart poll uses one deadline and retains temporary connection failures.",
+      "SQL character clamp and Rust byte acceptance limit described separately."
+    ],
+    "boundary": "No cross-family uniqueness certification, current principal authority or live pin is minted by this lookup."
+  },
+  "resources": {
+    "state": "Both owned lab containers stopped/PID0/noOOM; own empty network removed; source/data retained",
+    "identities": {
+      "path": ".research/implementation/archive-visibility/native-connect/capture/resources.json",
+      "bytes": 1524,
+      "sha256": "b26631b5894bc6bb95fedf981446ce59daf5f0d94a3d499319cd0cc8c520d4e3"
+    },
+    "terminal": {
+      "path": ".research/implementation/archive-visibility/native-connect/capture/terminal-audit.json",
+      "bytes": 5010,
+      "sha256": "967a04bacd640d66df7fdbd9272f83b8ff787d00812d64f07ae233988fe3adc8"
+    },
+    "capture": {
+      "path": ".research/implementation/archive-visibility/native-connect/evidence-identity.json",
+      "bytes": 6987,
+      "sha256": "4e960db81e6ccd6773b5568865ceadb51a26c9e70f8a14aae0d1073d3c653d2f"
+    },
+    "capture_files": 44,
+    "capture_sha256": "32eed2f28651d45beced58bf5474e46b30424a2c2770a7a1cd6ee2d3381f03f7",
+    "offline_verification": {
+      "path": ".research/implementation/archive-visibility/native-connect/offline-verification.json",
+      "bytes": 201,
+      "sha256": "32edbe49e14bec0dda537c8d3daa7c6a819de2b7ec70e3b196efe2d4d583088c"
+    },
+    "preexisting_preserved": 492,
+    "unrelated_running": 8,
+    "cache_retirements": [
+      {
+        "path": ".research/implementation/archive-visibility/tux-cache-retirement.json",
+        "bytes": 1471168,
+        "sha256": "f334f0ae48d7c9a403df1e2755ca4355a540c234fa53c64a298844326c599b8c"
+      },
+      {
+        "path": ".research/implementation/archive-visibility/tux-retry-cache-retirement.json",
+        "bytes": 747177,
+        "sha256": "8ded42a2c822775c38491cdcb9857939777ba67c6b5721bcbe60fa0e8892e3ca"
+      }
+    ],
+    "free_at_preflight": 74791366656,
+    "free_at_terminal": 74454454272,
+    "free_space_note": "Observed free space grew between cache retirement and follow-up preflight beyond our recorded deletions. Cause not established or credited to this lab; owned run directory set unchanged. No disk-capacity claim."
+  },
+  "failures": {
+    "first_native": "docs/implementation/evidence/p02-archive-visibility-fixture-failure-20260920.json",
+    "collection": "An early fetch preceded terminal collector completion and found no files; no capture or result was overwritten. Final44-file collection and1006-source verification complete."
+  },
+  "remaining": [
+    "Bind visibility result to live certified retained pin/cut/catalog/current Control; implement reauth/session/command binding, scopedgrantCAS/retry/audit and actual authenticated history/export.",
+    "Public typed absent/corrupt/unavailable outcomes, scanned-byte admission and common64MiB profile remain unqualified.",
+    "Visibility-specific blocked-engine cancellation/parent death, mixed/aged workloads, actual GC, host suspend/power loss, installed/release journey and Linuxarm64 were NOT_RUN; prior shared-worker evidence is not relabeled as these scenarios.",
+    "Complete the selected product and all P06/P08/P09 and later task acceptance."
+  ]
+}

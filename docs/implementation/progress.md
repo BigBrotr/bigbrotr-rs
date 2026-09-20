@@ -21,50 +21,75 @@ another diagnostic command instead of the real read consumer.
 
 ## Git, current qualification and next action
 
-Observed main/HEAD `b5ff8abe4e4224604b2c1960232359d71e17ffa5`, one unpublished
-candidate ahead of origin/main d044373. Root owns the fixture-only CONNECT fix,
-explicit artifact-source identity, failure evidence/checkpoint/inventory and the
-reviewed character-versus-byte wording correction. No product/migration/dependency
-changes afterb5ff8ab; no other writer or merge/rebase.
+Observed main/HEAD `5dfa9784a7dd5cf3bcec6ba5034a349aa7d7ecfc`, two unpublished
+commits ahead of origin/main d044373. Root now owns only qualification evidence,
+inventory and this checkpoint. No other writer or merge/rebase. Product is exactly
+b5ff8ab;5dfa978 changes only the connected fixture and documentation. No migration
+or dependency changed. Inspect actual Git before continuing.
 
-The [first native attempt](evidence/p02-archive-visibility-fixture-failure-20260920.json)
-built the exact1005-file source; Linux4native visibility tests/2protocol tests,
-fixture build and Clippy PASS. All27connected cases are NOT_RUN: actual publisher
-failed before corpus emission because the Control database revoked PUBLIC CONNECT
-without granting its non-superuser Control role. PG explicitly reports the missing
-CONNECT privilege. Only the fixture grants that privilege; no product invariant
-changes. Full22-file failed capture and1005source hashes verified against Mac Git.
+[Visibility qualification](evidence/p02-archive-visibility-native-20260920.json)
+now PASS within its stated private allocation boundary. Actualb5ff8ab executable/
+worker, Linuxamd64/PG16.15 fsync/full_page_writes on; independently transferred
+fixture5dfa978. Product1005/workload1006source files matched Mac Git archives;
+source differences outside the explicit five fixture/doc paths were refused.
+All44capture hashes verified. No embedded source identity was relabeled.
 
-The source collision regression first failed natively then passed after the second
-same-snapshot source-only lookup. Mac4native/2protocol pass; finalparent build/
-Clippy pass after fixing fixture enum allocations. Earlier missing-API compilation
-and two Clippy failures remain separately recorded under archive-visibility.
-Read-only AI review covered lookup/native tests/complete driver and publisher oracles;
-corrected local wrong-catalog expectation and bounded PG restart polling before run.
+- Exact full QualifiedRef inside explicit source bounds, then source-only native
+  hydration in the same snapshot; full fact/digest/version/class/inactive fields
+  verified. Opaque parent result retains grant and actual custody until drop.
+-4native/2protocol tests, builds and scopedClippy PASS on Mac/Linux. Source collision
+  was an executed native RED: each mapping independently valid, both together
+  formerly accepted. Second source-only lookup makes both refuse. Missing-API
+  compilation RED and two fixture enum Clippy failures remain separately recorded.
+-27actual parent/worker cases PASS: literal mapping source1, prefix0 refuses,
+  prefixes1/5/10 succeed; absent/foreign/unallocated scope, wrong catalog, unavailable
+  PG and511-byte reservation refuse. Snapshots2/3 succeed,0/1/4 refuse. Missing/
+  corrupt dictionary files refuse, restored retries succeed. Actual assertions
+  hold flock after coordinator drop, retain one permit, then release both on drop.
+- Real PG SIGQUIT/restart changes start timestamp and fresh lookup succeeds. All28
+  metadata tables and8Parquet hashes unchanged; final independent SQL finds zero
+  backends in both fixture databases. Root independently rehashed five ELF/eight
+  Parquet files and verified complete owned terminal state. No capacity, public
+  authority, certified pin, new cancellation/parent-death or release claim.
 
-Lab `/home/tux/bigbrotr-implementation-20260917/runs/archive-visibility-b5ff8ab`,
-owner`895c8ccc683a05ee90df05b661c0aff1`, label`org.bigbrotr.archive-visibility`,
-runner`e0d7ac33217e031617a1edd3a65e7de2948d1d8777f8ed345da9717a3f96cc1c`
-and PG`faa4413f634218b3d957cc08f59e4241bebc2e5fbd9e0cc144698e7f2ae6e55f`
-are freshly exited/PID0/noOOM. Owned empty network removed;490prior containers
-preserved/eight unrelated running. No active experiment or cleanup debt. Retain
-used output and secret-bearing fixture directories remotely. Never restart/reuse.
+[Failed first attempt](evidence/p02-archive-visibility-fixture-failure-20260920.json)
+remains retained: missing explicit CONNECT on the isolated Control database made
+publisher fail before any connected lookup. PUBLIC stays revoked; the fixture
+adds only that required privilege. Final qualification reused verified unchanged
+ELFs, not another build/test-suite run. An early collection before terminal
+completion found no files; final capture succeeded without overwriting results.
 
-Next bounded action: commit the fixture correction, transfer its exact Git and run
-a fresh isolated qualification with unchanged actualb5ff8ab artifacts. Compare
-source manifests outside the explicit fixture/doc allowlist, preserve separate
-artifact/workload revisions, then execute all27actual lookup/Parquet/restart cases.
-No reason to rerun unchanged embedded suites. Independently collect effects,
-source/artifact identities and cleanup before pushing. Continue P08-T02 reauth/
-scopedgrantCAS and actual retained history read afterward; allocation is no grant.
+Qualified root `/home/tux/bigbrotr-implementation-20260917/runs/archive-visibility-5dfa978`,
+owner`ab0b4324f2e9d94dde25d075fa0eddb8`, label`org.bigbrotr.archive-visibility`.
+Runner`746c0a057df007bf3394882aa2067a34e3c3ecaca65999051cad828923071733`
+and PG`097a754b6689f54e1205c51e0ff54c41de0bad123af36d88c50351378d14d033`
+are freshly exited/PID0/noOOM; owned empty network removed. All492prior container
+records preserved/eight unrelated workloads running. Firstb5ff8ab lab is also
+stopped/retained under the failure report. No active experiment/cleanup debt.
+Raw `archive-visibility/native-connect`; capture SHA256
+`32eed2f28651d45beced58bf5474e46b30424a2c2770a7a1cd6ee2d3381f03f7`.
+Keep secret-bearing fixture directories remote; never restart/reuse used outputs.
 
-Two owned cache retirements are recorded under archive-visibility/tux-*-retirement.
-The first removed4,184intermediates/4,215,748,700bytes from51d35ae/e65116b. The retry
-retirement removed2,181intermediates/2,174,787,522bytes from stopped591c75f; actual
-executables/shared hashes, sources/data/receipts and492container records unchanged.
-Eight unrelated workloads remain; freeafter7,716,450,304bytes. Allthree caches are
-partial and MUST NOT be reused. b5ff8ab artifacts/source remain intact; copying
-an artifact never changes its embedded source identity.
+Next bounded action: review/commit/push qualification, then implement P08-T02
+session-and-command-bound reauthentication plus scope-grant CAS/audit/retry and
+its actual private history consumer. Read-only review found the precise live-pin
+check belongs inside that Control transaction: existing read_archive_pin is a
+historical public receipt, not authority; read_archive_frontier omits complete
+bounds. Under lock_archive_pins, load sealed frontier/topology+allbounds, active
+protocol1pin/claims/current holder, then match ArchivedVisibility read/catalog.
+Do not create another diagnostic/prerequisite-only consumer. Reauthentication
+proof is same-session/CSRF required, at most5minutes, consumed with accepted
+command; original accepted idempotent retry resolves before another consume.
+Restrictive changes require actual drain and suspend-aware action deadline; UTC
+plus5seconds or historical receipt alone cannot mark applied. No M1/P08 completion.
+
+Owned cache retirements under archive-visibility/tux-*-retirement removed only
+intermediates from51d35ae/e65116b/591c75f, preserving actual executable/shared
+hashes/source/data/receipts. Allthree caches are partial/non-reusable. Current
+b5ff8ab cache remains intact. Free space increased externally before follow-up
+preflight beyond our recorded deletions:74,791,366,656→74,454,454,272bytes during
+this run; cause not established or credited to our cleanup. Owned run directory
+set unchanged. Inventory again before future reuse; no disk-capacity claim.
 
 [Session mutation audit evidence](evidence/p08-session-mutation-audit-native-20260920.json)
 qualifies additive0807 and the actual accepted issuance/explicit logout consumer.

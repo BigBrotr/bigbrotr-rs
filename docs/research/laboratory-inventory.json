@@ -17997,7 +17997,7 @@
     }
   },
   "implementation_archive_visibility_20260920": {
-    "status": "First native build/tests PASS; connected fixture failed before lookup; owned lab stopped retained",
+    "status": "Qualified allocated visibility lookup; both native labs stopped retained; no live grant/read capability",
     "base_revision": "d0443736755384cdadfa5649744f0ef023c8eecb",
     "local_root": ".research/implementation/archive-visibility",
     "cache_retirement": {
@@ -18057,6 +18057,46 @@
       "unrelated_running": 8,
       "partial_nonreusable": "session-audit-591c75f",
       "preservation": "Executed/shared artifact hashes unchanged; source, metadata and data retained. See complete owned retirement receipt."
+    },
+    "qualification": {
+      "report": "docs/implementation/evidence/p02-archive-visibility-native-20260920.json",
+      "resources": {
+        "source": "5dfa9784a7dd5cf3bcec6ba5034a349aa7d7ecfc",
+        "tree": "d63286378b77e3f3b73af62ca77f6d80de2f70cf",
+        "owner": "ab0b4324f2e9d94dde25d075fa0eddb8",
+        "root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-visibility-5dfa978",
+        "state": "stopped-retained",
+        "containers": [
+          {
+            "name": "postgres",
+            "id": "097a754b6689f54e1205c51e0ff54c41de0bad123af36d88c50351378d14d033"
+          },
+          {
+            "name": "rust-visibility",
+            "id": "746c0a057df007bf3394882aa2067a34e3c3ecaca65999051cad828923071733"
+          }
+        ],
+        "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+        "owner_label": "org.bigbrotr.archive-visibility",
+        "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+        "artifact_source": "b5ff8abe4e4224604b2c1960232359d71e17ffa5",
+        "artifact_root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-visibility-b5ff8ab",
+        "started_at": "2026-09-20T16:00:38.691901+00:00",
+        "network_id": "6a4472793fddff95d8dd72ecbee9a44bdc05bbb32966b938435f00f35e1e47a6",
+        "postgres_id": "097a754b6689f54e1205c51e0ff54c41de0bad123af36d88c50351378d14d033",
+        "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+        "container_id": "746c0a057df007bf3394882aa2067a34e3c3ecaca65999051cad828923071733",
+        "network_state": "removed after owner/no-endpoint audit",
+        "terminal_audit": "terminal-audit.json"
+      },
+      "capture_sha256": "32eed2f28651d45beced58bf5474e46b30424a2c2770a7a1cd6ee2d3381f03f7",
+      "capture_files": 44,
+      "workload_source_files": 1006,
+      "artifact_source_files": 1005,
+      "preexisting_preserved": 492,
+      "unrelated_running": 8,
+      "owned_state": "Both exited/PID0/noOOM; empty owned network removed; data/artifacts retained",
+      "free_terminal": 74454454272
     }
   }
 }
