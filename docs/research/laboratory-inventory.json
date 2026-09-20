@@ -14724,7 +14724,8 @@
           "archive_sha256": "b60bddadce09666860c908b970759134bfd5f0b71f8c6621e5423328d9a38024"
         }
       },
-      "qualification": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json"
+      "qualification": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json",
+      "network_lifecycle": "Empty network 6d34130343922a501d5e9cfe74c52aeff9116601f69edfac49a5e41325fac4d8 removed after fresh owner-label/no-endpoint/stopped-container checks by archive-event lab; containers and all data preserved. Raw network-cleanup.json retained in new run."
     },
     "wal_recovery": {
       "source": "ec386ac26175339c5f990be75eef860d27887c60",
@@ -14765,7 +14766,7 @@
       "source_unchanged": true
     },
     "archive_event": {
-      "state": "local implementation and checks; native lab not yet created",
+      "state": "stopped-retained",
       "local_raw": ".research/implementation/archive-event",
       "purpose": "Exact-reference signed event hydration under a bounded supervised consumer; no public read authority",
       "local_evidence": [
@@ -14777,7 +14778,37 @@
         "mac-clippy-final.log"
       ],
       "native_recipe": "experiments/archive-engine/event_cases.py",
-      "native_qualification": "NOT_RUN"
+      "native_qualification": "INCOMPLETE: actual signed seed refused missing jobs UPDATE privilege before hydration",
+      "source": "730daa23dcdaa1ffe0b015bfb6feb7e382815fbc",
+      "tree": "c58ce40f11ef02a08f0e29e69b73ee81703664bd",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-event-730daa2",
+      "owner": "8aa8ac9f80646090772e8de0c51d3ba5",
+      "container": "bigbrotr-implementation-archive-event-730daa2",
+      "postgres": "bigbrotr-implementation-archive-event-730daa2-pg",
+      "network": "bigbrotr-implementation-archive-event-730daa2",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "source_files": 877,
+      "started_at": "2026-09-20T02:01:04.906879+00:00",
+      "released_empty_network": "6d34130343922a501d5e9cfe74c52aeff9116601f69edfac49a5e41325fac4d8",
+      "network_id": "2a0946d97e4dbfcb5ccd7061f1cedcc6ca2feb197502355e444e12298c40948c",
+      "postgres_id": "758d64694185015703e2a183a8e8cc348fc1bd6052e09a496fc63892dc996056",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "08549de70651bec7c303b37381103546ea6daf820bbd589a719fd343dbb31965",
+      "limits": "runner2CPU/6GiB/512PIDs;PG1CPU/1GiB/128PIDs;internal network,nohostports,readonlysource,512MiBtmpfs",
+      "cache_source": "/home/tux/bigbrotr-implementation-20260917/runs/wal-recovery-ec386ac/out/build",
+      "network_state": "removed after owner/no-endpoint audit; containers and data retained",
+      "terminal_audit": "terminal-audit.json",
+      "native_tests": 7,
+      "parent_tests": {
+        "passed": 50,
+        "ignored": 1,
+        "failed": 0
+      },
+      "evidence_identity": ".research/implementation/archive-event/first/evidence-identity.json",
+      "source_export_verified_against_mac_git": true,
+      "preexisting_preserved": 385,
+      "remaining_pg_clients": 0
     }
   },
   "implementation_monitor_corrections_20260918": {

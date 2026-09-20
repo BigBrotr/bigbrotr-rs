@@ -23,10 +23,11 @@ the report/inventory holds their identities instead of duplicating them here.
 
 ## Git and ownership
 
-Local main and private origin/main verified at published
-9c4c4a79721394515fb5d6c99da2af48f0e62a0f. WAL product candidate ec386ac and its
-qualification are committed/pushed; remote repository remains private. Root owns
-new archive hydration edits described below. No parallel writer, merge or rebase.
+Local main is at unpublished candidate730daa23dcdaa1ffe0b015bfb6feb7e382815fbc;
+private origin/main was last verified at published9c4c4a79721394515fb5d6c99da2af48f0e62a0f.
+WAL product ec386ac and its qualification are committed/pushed. Root owns dirty
+checkpoint/inventory updates during native hydration qualification. No parallel
+writer, merge or rebase. Reverify remote before publication.
 
 Separate compatibility worktree .research/worktrees/producer-closing-old-writer
 remains at published f899896b1207f5e71c4e39d9ab7814b293814735 on
@@ -137,15 +138,36 @@ output followed by a still-live child at cancellation/deadline; no body is deliv
 mac-clippy-candidate.log passes both libraries/binaries/tests and both connected
 probes. Artifact/handoff checks report no errors. All Mac sessions are joined.
 
-Next bounded action: finish scoped local checks and exact-Git Tux qualification of
+Next bounded action: finish exact-Git Tux qualification of
 PostgreSQL -> verified worker -> parent, using the existing actual signed publisher
-and a new independent94KiB signed fixture. New builder/harness edits are root-owned,
-uncommitted. AI harness review corrected obsolete fixture migration prerequisites
+and a new independent94KiB signed fixture. Candidate730daa2 binds all product and
+builder/harness sources. AI harness review corrected obsolete fixture migration prerequisites
 (installed Control now14), colliding global writer identities, holder cleanup,
 deadline discrimination and bounded restart polling. The old privileged-foundation
-fixture is not qualified by this slice. No new Tux run is active yet. Native qualification and eventual
+fixture is not qualified by this slice. Native qualification and eventual
 authority/pin/installed consumers remain required. Negative producer resolution
 remains unimplemented; the demonstrated WAL limitation stays open.
+
+New active lab /home/tux/bigbrotr-implementation-20260917/runs/archive-event-730daa2,
+owner8aa8ac9f80646090772e8de0c51d3ba5, runner08549de70651bec7c303b37381103546ea6daf820bbd589a719fd343dbb31965,
+PG758d64694185015703e2a183a8e8cc348fc1bd6052e09a496fc63892dc996056.
+Exact877-file Git export/tree c58ce40f11ef02a08f0e29e69b73ee81703664bd; build,
+7native tests,50parent tests and Clippy passed. One existing unrelated holder
+fixture is ignored; this is not a zero-skip broad qualification. Connected seed
+failed before hydration: PostgreSQL reports missing UPDATE on control.jobs for
+the real request-binding SELECT FOR UPDATE. Root added that single fixture ACL;
+mac-fixture-acl.log passes Clippy. No product guard changed.
+Initial launch refused Docker address-pool exhaustion before creating any engine.
+The verified empty stopped outcomes-efeb4e0 network was removed; both containers
+and data remain retained. Failed launch.py and separate resume-launch.py/cleanup
+record preserve that boundary. Terminal collector joined/stopped the owned runner
+and PG, removed its now-empty network and preserved385preexisting containers.
+Zero PG clients remained;8unrelated running and0BigBrotr running. The20-file
+capture and all877exported sources match Mac Git; first/evidence-identity.json
+binds tarSHA9df323590045588cbab31eba650af3b0fcae31c85faa7a8e6f4fa6ef68a9c3d2.
+All sessions joined, stopped containers/data retained. Outcome INCOMPLETE, not
+hydration PASS. Next: commit the fixture ACL correction and run the same scenario
+from a new exact-Git isolated lab. Never rerun initialization in the failed root.
 
 M1 still needs actual read, standalone export and restart. Proof/input checkpoint
 closure, ACK/GC/abandonment, source closure/topologyCAS, successor activation,
