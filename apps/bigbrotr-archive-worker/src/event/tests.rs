@@ -12,6 +12,36 @@ fn private_request_is_closed_bounded_and_checks_cross_fact_identity_before_io() 
     let input = serde_json::json!({"catalog":{"dsn":"hostaddr=127.0.0.1","data_root":"/not-opened/"},"catalog_id":"05050505050505050505050505050505","expected":read});
     let bytes = serde_json::to_vec(&input).unwrap();
     assert!(EventRequest::read(&bytes[..]).is_ok());
+    for snapshot in [0, 2, i64::MAX as u64] {
+        let mut selected = input.clone();
+        selected["expected"]["snapshot_id"] = serde_json::json!(snapshot);
+        assert!(EventRequest::read(&serde_json::to_vec(&selected).unwrap()[..]).is_ok());
+    }
+    for snapshot in [
+        serde_json::json!(-1),
+        serde_json::json!(u64::MAX),
+        serde_json::json!(1.5),
+        serde_json::json!("2"),
+    ] {
+        let mut selected = input.clone();
+        selected["expected"]["snapshot_id"] = snapshot;
+        assert!(matches!(
+            EventRequest::read(&serde_json::to_vec(&selected).unwrap()[..]),
+            Err(EventReadError::InvalidInput)
+        ));
+    }
+    let mut legacy = input.clone();
+    legacy["expected"]
+        .as_object_mut()
+        .unwrap()
+        .remove("snapshot_id");
+    assert_eq!(
+        EventRequest::read(&serde_json::to_vec(&legacy).unwrap()[..])
+            .unwrap()
+            .expected
+            .snapshot_id,
+        None
+    );
     for field in ["catalog", "catalog_id", "expected"] {
         let mut missing = input.clone();
         missing.as_object_mut().unwrap().remove(field);
@@ -111,10 +141,19 @@ fn facts(event: SignedEvent) -> (Fact, Fact, EventRead) {
         scope,
         payload: payload.fact_ref(),
         eligibility: eligibility.fact_ref(),
+        snapshot_id: None,
     };
     (payload, eligibility, read)
 }
 fn engine(temp: &std::path::Path, home: &std::path::Path, readonly: bool) -> Engine {
+    engine_at(temp, home, readonly, None).unwrap()
+}
+fn engine_at(
+    temp: &std::path::Path,
+    home: &std::path::Path,
+    readonly: bool,
+    snapshot: Option<u64>,
+) -> Result<Engine, crate::receipt::ReceiptError> {
     let e = Engine::open(
         &temp.canonicalize().unwrap(),
         EngineLimits {
@@ -128,8 +167,108 @@ fn engine(temp: &std::path::Path, home: &std::path::Path, readonly: bool) -> Eng
         &std::env::var_os("BIGBROTR_ARCHIVE_TEST_BUNDLE").expect("pinned native bundle"),
     ))
     .unwrap();
-    e.connection.execute_batch(&format!("ATTACH 'ducklake:{}' AS archive (DATA_PATH '{}', DATA_INLINING_ROW_LIMIT 0, AUTOMATIC_MIGRATION false{})",home.join("catalog.ducklake").display(),home.join("objects").display(),if readonly{", CREATE_IF_NOT_EXISTS false, READ_ONLY"}else{""})).unwrap();
-    e
+    let options = if readonly {
+        crate::receipt::readonly_archive_options(home.join("objects").to_str().unwrap(), snapshot)?
+    } else {
+        format!(
+            "DATA_PATH '{}', DATA_INLINING_ROW_LIMIT 0, AUTOMATIC_MIGRATION false",
+            home.join("objects").display()
+        )
+    };
+    e.connection
+        .execute_batch(&format!(
+            "ATTACH 'ducklake:{}' AS archive ({options})",
+            home.join("catalog.ducklake").display()
+        ))
+        .map_err(|_| crate::receipt::ReceiptError::Native)?;
+    Ok(e)
+}
+
+#[test]
+fn exact_snapshot_reads_original_pair_after_later_committed_deletion() {
+    let home = tempfile::tempdir().unwrap();
+    let expected = signed("timestamp-zero");
+    let mut read = seed(home.path(), expected.clone());
+    let temp = tempfile::tempdir().unwrap();
+    let writer = engine(temp.path(), home.path(), false);
+    writer
+        .connection
+        .execute_batch("DELETE FROM archive.event_eligibility_facts")
+        .unwrap();
+    drop(writer);
+    read.snapshot_id = Some(2);
+    let temp = tempfile::tempdir().unwrap();
+    let reader = engine_at(temp.path(), home.path(), true, read.snapshot_id).unwrap();
+    let actual = read_attached(&reader.connection, &read, 4 * 1024 * 1024).unwrap();
+    assert_eq!(actual.snapshot_id, 2);
+    assert_eq!(actual.event, expected);
+    drop(reader);
+    read.snapshot_id = None;
+    let temp = tempfile::tempdir().unwrap();
+    let reader = engine(temp.path(), home.path(), true);
+    assert!(matches!(
+        read_attached(&reader.connection, &read, 4 * 1024 * 1024),
+        Err(EventReadError::Missing)
+    ));
+}
+
+#[test]
+fn expired_future_and_wrong_actual_snapshots_never_fall_back_to_current() {
+    let home = tempfile::tempdir().unwrap();
+    let expected = signed("timestamp-zero");
+    let mut read = seed(home.path(), expected.clone());
+    let temp = tempfile::tempdir().unwrap();
+    let writer = engine(temp.path(), home.path(), false);
+    writer
+        .connection
+        .execute_batch("COMMENT ON TABLE archive.events IS 'snapshot fixture'")
+        .unwrap();
+    writer
+        .connection
+        .execute_batch("CALL ducklake_expire_snapshots('archive', versions => [2])")
+        .unwrap();
+    assert_eq!(
+        writer
+            .connection
+            .query_row(
+                "SELECT count(*) FROM ducklake_snapshots('archive') WHERE snapshot_id=2",
+                [],
+                |r| r.get::<_, u64>(0)
+            )
+            .unwrap(),
+        0
+    );
+    drop(writer);
+    for selected in [2, 999, i64::MAX as u64] {
+        read.snapshot_id = Some(selected);
+        let temp = tempfile::tempdir().unwrap();
+        match engine_at(temp.path(), home.path(), true, read.snapshot_id) {
+            Ok(reader) => assert!(matches!(
+                read_attached(&reader.connection, &read, 4 * 1024 * 1024),
+                Err(EventReadError::Native)
+            )),
+            Err(error) => assert_eq!(error, crate::receipt::ReceiptError::Native),
+        }
+    }
+    // Independently current data is still valid. A hidden latest fallback would
+    // return the event rather than refuse the expired/missing snapshot above.
+    read.snapshot_id = None;
+    let temp = tempfile::tempdir().unwrap();
+    let reader = engine(temp.path(), home.path(), true);
+    assert_eq!(
+        read_attached(&reader.connection, &read, 4 * 1024 * 1024)
+            .unwrap()
+            .event,
+        expected
+    );
+    drop(reader);
+    read.snapshot_id = Some(2);
+    let temp = tempfile::tempdir().unwrap();
+    let wrong = engine(temp.path(), home.path(), true);
+    assert!(matches!(
+        read_attached(&wrong.connection, &read, 4 * 1024 * 1024),
+        Err(EventReadError::Mismatch)
+    ));
 }
 fn seed(home: &std::path::Path, event: SignedEvent) -> EventRead {
     let temp = tempfile::tempdir().unwrap();

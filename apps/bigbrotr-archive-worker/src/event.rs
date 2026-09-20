@@ -56,6 +56,7 @@ impl crate::engine::Engine {
             &request.catalog,
             request.expected.dataset,
             request.catalog_id,
+            request.expected.snapshot_id,
         )
         .map_err(|_| EventReadError::Native)?;
         read_attached(&self.connection, &request.expected, max_bytes)
@@ -283,6 +284,12 @@ fn read_attached(
             |r| r.get(0),
         )
         .map_err(|_| EventReadError::Native)?;
+    if read
+        .snapshot_id
+        .is_some_and(|expected| expected != snapshot_id)
+    {
+        return Err(EventReadError::Mismatch);
+    }
     let payload = read_payload(c, read, max_bytes)?;
     let eligibility = read_eligibility(c, read, max_bytes)?;
     let event = join(&payload, &eligibility, read, max_bytes)?;

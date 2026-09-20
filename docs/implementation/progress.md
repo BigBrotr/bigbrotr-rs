@@ -12,25 +12,41 @@ runner billing exception. Preserve private bigbrotr-rs, unpublished Cargo packag
 and the read-only Go neighbor. No public release or Linux arm64 claim. No P02/P03
 or P06 task or M1 milestone is complete; all selected later work remains required.
 
-Current boundary: close scoped P02-T04 / P06-T02 step3 private exact-reference
-signed-event hydration qualification, then implement the positive archive frontier
-and actual pin prerequisite needed by M1 installed read/export. Existing task files
-own the backlog. No competing plan or new instruction file.
+Current boundary: P02-T07 step1 / P06-T02 step3 exact native snapshot selection,
+then the positive frontier/pin bridge needed by M1. Existing task files own the
+backlog. No task checkbox closes from this prerequisite.
 
 ## Git and ownership
 
-Local main is at unpublished fixture correction
-3f2995211bc8ea02b09e12e019d6e5d01bb55d9a, following product candidate
-730daa23dcdaa1ffe0b015bfb6feb7e382815fbc. Private origin/main was last verified at
-published9c4c4a79721394515fb5d6c99da2af48f0e62a0f. Root owns dirty evidence,
-checkpoint, inventory and owning-task/reference updates. No parallel writer,
-merge or rebase. Reverify remote before publication. All local/SSH build, harness,
-collector and capture sessions are joined.
+Local main and private origin/main were verified equal at
+9128ca8533a51012f4e24ab86ae3e3782c977419 after ordinary push. The hydration product,
+fixture correction and evidence commits are published. Root owns current dirty
+snapshot-selection changes in protocol/archive_event, worker event/receipt/tests,
+parent archive/events and event_cases harness plus these owning docs. No parallel
+writer, merge or rebase. Independent AI review is read-only.
+
+The connected fixture now publishes a real third admission batch11..12 correcting
+receive/provenance times, through the existing guarded path. It independently
+observes latest snapshot4, then requires exact3 through the full consumer before
+and after PG restart. This discriminates an ignored ATTACH selector. Independent
+AI review found and closed an oracle gap: history now also checks all reopened
+inputs, publication outcomes and identical initial/terminal Rocks rows/digest.
+Both normal/history compare all native families against literal CBOR/signed
+expected records. The planned connected run has31 cases; none yet executed for
+this candidate. The two changed fixture examples pass scoped Mac Clippy.
+
+The snapshot candidate adds an optional exact native snapshot selector. One Mac
+native regression first failed Missing after a later deletion while the selector
+was ignored; after the fix all9 event native tests and the1 parent response test
+pass, as does scoped Clippy. Raw sources/logs live under ignored
+.research/implementation/archive-snapshot. Fresh Linux qualification is pending;
+no experiment active yet. All prior execution sessions are joined.
 
 Separate compatibility worktree .research/worktrees/producer-closing-old-writer
 remains at publishedf899896b1207f5e71c4e39d9ab7814b293814735 on
-research/producer-closing-old-writer; preserve it and do not merge its old fixture.
-Build caches are not source authority.
+research/producer-closing-old-writer; preserve it. Build caches are not source
+authority. Both prior owned hydration containers freshly observed stopped/Pid0,
+noOOM, with8 unrelated running and0 BigBrotr running.
 
 ## Implemented and executed hydration boundary
 
@@ -117,14 +133,22 @@ archive_event_corrected own complete images, limits and lifecycle details.
 
 ## Next bounded action and open gates
 
-Evidence review is complete. Run affected artifact/handoff checks, inspect the
-complete diff and publish coherent private commits. Then read the complete
-owning archive-frontier/retention SQL and callers for the P02-T04/T07 bridge:
-verified committed batches -> contiguous complete prefix for every topology stream
-(including zero prefixes) -> archive consumer frontier -> actual snapshot lease
-and retention claims. Do not derive a SourceCut from two FactRefs, DuckLake max
-snapshot, or LocalCoordinator custody. A real archive owner/attestation consumer
-is still absent. This positive work does not need negative producer resolution.
+Finish the snapshot-selection diff review and checks, commit a clean unpublished
+candidate, transfer exact Git to a freshly inventoried isolated Tux run, execute
+the actual connected selected-snapshot/refusal/missing-file/restart consumer and
+collect/stop owned resources. Do not relaunch either old finite builder.
+
+Then implement the complete P02-T04/T07 frontier bridge: verified committed batches
+-> contiguous complete prefix for every topology stream (including zero) -> real
+Archive consumer owner/frontier -> actual snapshot lease and retention claims.
+Do not derive a SourceCut from two FactRefs, DuckLake max snapshot or coordinator
+custody. Positive work does not require negative producer resolution. Independent
+AI contract review confirms incremental receipt plus complete file/family membership
+and qualified protection are required; a full historical body/hash reread on every
+frontier is not. References must resolve inside the SAME cut: a dictionary visible
+in the native snapshot but above another stream's bound cannot certify closure.
+Preserve exclusion of reclamation across native observation and the PG binding/pin;
+a lost PG response resolves the identical immutable snapshot/cut identity.
 
 Independent read-only follow-on design review found existing snapshot_leases and
 retention_claims require a sealed consumer_frontier_revision; current publication
@@ -132,8 +156,8 @@ has no adapter producing that frontier. Historical read/export also needs actual
 principal/action/scope authorization, current policy and retained pins through
 output. AccountObservation is not reusable authentication, PolicyLeaseTracker is
 only local duration, and current administrative principal_grants omit history/export.
-EventRead currently selects a fresh snapshot; pinned consumers need an explicit
-snapshot binding. M1 acquisition metadata must come from authorized eligibility/
+The exact snapshot selector in the current candidate supplies no persistent
+snapshot binding or pin; those remain required. M1 acquisition metadata must come from authorized eligibility/
 receive facts, never the shared payload's recorded timestamp. LifecycleOutput's
 4096-byte diagnostic/post-Control-cleanup rules cannot carry served event data.
 

@@ -15,7 +15,7 @@ import time
 
 sys.dont_write_bytecode = True
 from signed_publication_cases import command, event, execute, send, sha
-from signed_publication_oracle import EVENT, corpus, expected, check, input_expectations
+from signed_publication_oracle import EVENT, corpus, check, input_expectations
 from fault_cases import Process
 
 
@@ -70,7 +70,10 @@ def main(root):
             assert observed['result']['status'] == ('observed' if wanted else 'refused')
             if wanted:
                 assert observed['result']['event'] == wanted
-                assert int(observed['result']['snapshot_id']) == int(sql(request['database'], 'SELECT max(snapshot_id) FROM ducklake_snapshot;'))
+                snapshot = request['expected'].get('snapshot_id')
+                if snapshot is None:
+                    snapshot = int(sql(request['database'], 'SELECT max(snapshot_id) FROM ducklake_snapshot;'))
+                assert int(observed['result']['snapshot_id']) == snapshot
             else:
                 assert 'event' not in observed['result'] and 'snapshot_id' not in observed['result']
             case['status'] = 'PASS'
@@ -96,12 +99,12 @@ def main(root):
                 for p in sorted(home.rglob('*.parquet'))}
     save()
     try:
-        for mode in ['normal', 'large']:
+        for mode in ['normal', 'large', 'history']:
             value = EVENT
             if mode == 'large':
                 recipe = json.loads((source/'tests/fixtures/protocol/archive-event-response.json').read_text())
                 value = dict(recipe['event'], content=recipe['content_repeat']*recipe['content_count'])
-            records, _ = corpus(value)
+            records, _ = corpus(value, history=mode == 'history')
             db = 'bbpub_'+mode
             sql('postgres', f'CREATE DATABASE {db}; CREATE DATABASE bbpub_control_{mode};')
             sql(db, f'REVOKE ALL ON DATABASE {db} FROM PUBLIC; REVOKE ALL ON SCHEMA public FROM PUBLIC;')
@@ -114,8 +117,8 @@ def main(root):
             assert parent['exit'] == 0 and not parent['stderr'] and not parent['overflow']
             values = [json.loads(line) for line in parent['stdout'].splitlines()]
             assert next(v['batches'] for v in values if v['event']=='retained-inputs') == records
-            if mode == 'normal':
-                reader = result['independent_readback'] = {}
+            if mode in ['normal', 'history']:
+                reader = result[mode+'_independent_readback'] = {}
                 try:
                     execute(binary+['/out/native-tests/archive-read-probe', mode], 45, reader)
                 finally:
@@ -125,14 +128,26 @@ def main(root):
                 # This slice consumes installed initialization/retained inputs;
                 # its dedicated mode omits previously qualified ACL fault races.
                 check(mode, [v for v in values if v['event']!='inputs-reopened'], json.loads(reader['stdout']))
-                assert json.loads(reader['stdout']) == expected(mode)
             request = identity(value, records, mode)
             before, original_files = metadata(db), files(mode)
             result[mode+'_metadata_before'] = before
-            assert len(original_files) == 8
+            assert len(original_files) == (11 if mode == 'history' else 8)
             result[mode+'_files'] = original_files
             run_case(mode+'-complete', request, value)
+            if mode == 'history':
+                assert int(sql(db, 'SELECT max(snapshot_id) FROM ducklake_snapshot;')) == 4
+                request['expected']['snapshot_id'] = 3
+                run_case('history-exact-previous', request, value)
             if mode == 'normal':
+                # Publication produced dictionary snapshot2 and signed-event
+                # snapshot3. The older snapshots MUST NOT fall back to current,
+                # whose complete signed body was independently observed above.
+                for snapshot in [0, 1, 2, 4, 2**63-1, 2**63, 2**64-1]:
+                    selected = copy.deepcopy(request)
+                    selected['expected']['snapshot_id'] = snapshot
+                    run_case('snapshot-'+str(snapshot), selected, None)
+                request['expected']['snapshot_id'] = 3
+                run_case('snapshot-exact', request, value)
                 for variant in ['scope', 'digest', 'event-id', 'missing', 'row-limit', 'zero-limit', 'wrong-catalog', 'unavailable-database']:
                     bad = copy.deepcopy(request)
                     if variant == 'scope': bad['expected']['scope']['ordinal'] = '2'

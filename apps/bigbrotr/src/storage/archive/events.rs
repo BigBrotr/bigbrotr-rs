@@ -114,20 +114,62 @@ impl Preparation<'_> {
             return Err(ArchiveEventError::ObservationUnknown);
         }
         let (bytes, permit) = result.map_err(|_| ArchiveEventError::ObservationUnknown)?;
-        let observation: EventObservation =
-            serde_json::from_slice(&bytes).map_err(|_| ArchiveEventError::ObservationUnknown)?;
-        if observation.event.id != expected.event_id {
-            return Err(ArchiveEventError::ObservationUnknown);
-        }
-        let event = bigbrotr_protocol::verify_owned(observation.event, maximum)
-            .map_err(|_| ArchiveEventError::ObservationUnknown)?;
+        let (event, snapshot_id) = decode_response(&bytes, expected, maximum)?;
         if self.cancelled.load(Ordering::Relaxed) || Instant::now() >= self.deadline {
             return Err(ArchiveEventError::ObservationUnknown);
         }
         Ok(ArchivedEvent {
             event,
-            snapshot_id: observation.snapshot_id,
+            snapshot_id,
             _permit: permit,
         })
+    }
+}
+
+fn decode_response(
+    bytes: &[u8],
+    expected: &EventRead,
+    maximum: usize,
+) -> Result<(VerifiedEvent, u64), ArchiveEventError> {
+    let observation: EventObservation =
+        serde_json::from_slice(bytes).map_err(|_| ArchiveEventError::ObservationUnknown)?;
+    if observation.event.id != expected.event_id
+        || expected
+            .snapshot_id
+            .is_some_and(|id| id != observation.snapshot_id)
+    {
+        return Err(ArchiveEventError::ObservationUnknown);
+    }
+    let event = bigbrotr_protocol::verify_owned(observation.event, maximum)
+        .map_err(|_| ArchiveEventError::ObservationUnknown)?;
+    Ok((event, observation.snapshot_id))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn complete_signed_response_requires_the_requested_snapshot() {
+        let fixtures: serde_json::Value = serde_json::from_str(include_str!(
+            "../../../../../tests/fixtures/protocol/signed-extremes.json"
+        ))
+        .unwrap();
+        let event = fixtures["events"]["timestamp-zero"]["event"].clone();
+        let reference = |sequence| serde_json::json!({"source_record_id":{"dataset_id":"01".repeat(16),"shard_id":0,"owner_epoch":"1","sequence":sequence},"payload_digest":"02".repeat(32)});
+        let mut request: EventRead = serde_json::from_value(serde_json::json!({
+            "dataset":"01".repeat(16),"event_id":event["id"],"scope":{"dataset_id":"01".repeat(16),"dictionary_kind":4,"allocation_domain":"03".repeat(16),"ordinal":"1"},"payload":reference("1"),"eligibility":reference("2"),"snapshot_id":2
+        })).unwrap();
+        let bytes =
+            serde_json::to_vec(&serde_json::json!({"snapshot_id":2,"event":event})).unwrap();
+        let (actual, snapshot) = decode_response(&bytes, &request, 4096).unwrap();
+        assert_eq!(serde_json::to_value(actual.event()).unwrap(), event);
+        assert_eq!(snapshot, 2);
+        request.snapshot_id = Some(3);
+        assert!(matches!(
+            decode_response(&bytes, &request, 4096),
+            Err(ArchiveEventError::ObservationUnknown)
+        ));
+        request.snapshot_id = None;
+        assert!(decode_response(&bytes, &request, 4096).is_ok());
     }
 }

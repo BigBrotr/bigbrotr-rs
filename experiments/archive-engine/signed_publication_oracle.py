@@ -41,7 +41,7 @@ def source(sequence):
     return [DATASET, 0, 1, sequence]
 
 
-def corpus(event=EVENT):
+def corpus(event=EVENT, history=False):
     body = [bytes.fromhex(event['id']), bytes.fromhex(event['pubkey']), event['created_at'],
             event['kind'], event['tags'], event['content']]
     body_digest = digest(b'bigbrotr/body/1\0', body)
@@ -66,10 +66,15 @@ def corpus(event=EVENT):
         ('event-receive', [body[0], 10_000_000, reference(2), clock, None]),
         ('provenance', [body[0], reference(1), reference(2), reference(3), 10_000_000, clock, reference(5), None]),
     ]
+    if history:
+        payloads += [
+            ('event-receive', [body[0], 5_000_000, reference(2), clock, source(9)]),
+            ('provenance', [body[0], reference(1), reference(2), reference(3), 5_000_000, clock, reference(5), source(10)]),
+        ]
     records, tables = [], {name: [] for name in TABLES}
     clock_row = dict(clock_id=ref_row(2), resolution_us=1, uncertainty_us=None, anomaly_flags=0)
     for sequence, (kind, payload) in enumerate(payloads, 1):
-        time = 0 if sequence <= 5 else 10_000_000
+        time = 0 if sequence <= 5 else (20_000_000 if sequence > 10 else 10_000_000)
         preimage = b'bigbrotr/fact/1\0' + cbor([source(sequence), kind, 1, reference(4), time, payload])
         fact_digest = hashlib.sha256(preimage).digest()
         records.append(dict(sequence=sequence, digest=fact_digest.hex(), preimage_hex=preimage.hex()))
@@ -96,15 +101,16 @@ def corpus(event=EVENT):
                        first_eligible_at=10_000_000, origin='network', import_lineage=None)
             table = 'event_eligibility_facts'
         else:
-            row.update(event_id=event['id'].upper(), received_at=10_000_000, observer_id=ref_row(2),
-                       clock_quality=clock_row, corrects=None)
+            corrects = dict(dataset_id=DATASET.hex().upper(), shard_id=0, owner_epoch=1, sequence=sequence-2) if sequence > 10 else None
+            row.update(event_id=event['id'].upper(), received_at=5_000_000 if sequence > 10 else 10_000_000, observer_id=ref_row(2),
+                       clock_quality=clock_row, corrects=corrects)
             table = 'event_receive_facts'
             if kind == 'provenance':
                 row.update(endpoint_id=ref_row(1), access_scope_id=ref_row(3), verification_method_id=ref_row(5))
                 table = 'provenance_facts'
         tables[table].append(row)
     batches = []
-    for first, last in [(1, 5), (6, 10)]:
+    for first, last in [(1, 5), (6, 10)] + ([(11, 12)] if history else []):
         facts = records[first - 1:last]
         references = [[source(r['sequence']), bytes.fromhex(r['digest'])] for r in facts]
         batches.append(dict(first=first, last=last, facts=facts,
@@ -114,30 +120,30 @@ def corpus(event=EVENT):
 
 
 def expected(mode, bootstrap_only=False):
-    assert mode in MODES
-    batches, tables = corpus()
+    assert mode in MODES or mode == 'history'
+    batches, tables = corpus(history=mode == 'history')
     empty_event = mode == 'before' or bootstrap_only
     if empty_event:
         for name in tables:
             tables[name] = [r for r in tables[name] if r['source_record_id']['sequence'] <= 5]
-    for index, batch in enumerate(batches[:1 if empty_event else 2]):
-        ordinal = 2 if index == 0 else 4 if mode in ('owner_first', 'held_rollback') else 3
-        n = 180 + MODES.index(mode) * 8 + ordinal
+    for index, batch in enumerate(batches[:1] if empty_event else batches):
+        ordinal = 2 if index == 0 else 5 if index == 2 else 4 if mode in ('owner_first', 'held_rollback') else 3
+        n = 180 + (8 if mode == 'history' else MODES.index(mode)) * 8 + ordinal
         tables['archive_commits'].append(dict(dataset_id=DATASET.hex().upper(), schema_version=1,
-            topology_generation=0, batch_digest=batch['archive_digest'].upper(), record_count=5,
+            topology_generation=0, batch_digest=batch['archive_digest'].upper(), record_count=batch['last']-batch['first']+1,
             input_ranges=[dict(shard_id=0, owner_epoch=1, first_sequence=batch['first'], last_sequence=batch['last'])],
             attempt_id=(bytes([n]) * 16).hex().upper(), publication_ordinal=ordinal))
     return dict(event='readback', mode=mode, tables=tables, signed_event=None if empty_event else EVENT)
 
 
 def input_expectations(mode):
-    batches, _ = corpus()
+    batches, _ = corpus(history=mode == 'history')
     result = []
-    for ordinal in range(1, 4 if mode in ('before', 'after') else 5):
-        batch = batches[0 if ordinal == 2 else 1]
-        n = 180 + MODES.index(mode) * 8 + ordinal
+    for ordinal in range(1, 6 if mode == 'history' else 4 if mode in ('before', 'after') else 5):
+        batch = batches[0 if ordinal == 2 else 2 if ordinal == 5 else 1]
+        n = 180 + (8 if mode == 'history' else MODES.index(mode)) * 8 + ordinal
         result.append(dict(dataset_id=DATASET.hex(), schema_version=1, topology_generation='0',
-            batch_digest=batch['archive_digest'], record_count=5,
+            batch_digest=batch['archive_digest'], record_count=batch['last']-batch['first']+1,
             input_ranges=[dict(shard_id=0, owner_epoch=1, first_sequence=batch['first'], last_sequence=batch['last'])],
             attempt_id=[n] * 16, publication_ordinal=ordinal))
     return result
@@ -235,7 +241,7 @@ def check(mode, parent, reader, installed=False):
         ]
         parent = parent[:2] + parent[6:]
     stages = ['signed-reopened', 'retained-inputs']
-    if MODES.index(mode) >= 3:
+    if mode in ('owner_first', 'held_commit', 'held_rollback'):
         stages += ['activation-begin', 'activation-complete', 'old-excluded']
         assert parent[2]['backend_pid'] > 0
         assert parent[3] == dict(event='activation-complete', ordinal=4)
@@ -245,14 +251,14 @@ def check(mode, parent, reader, installed=False):
     assert before['exact_admission_retry'] and before['rejections'] == ['Signature', 'EventId']
     assert before['rocks_rows'] > 10 and before['rocks_rows'] == terminal['rocks_rows']
     assert before['rocks_digest'] == terminal['rocks_digest'] and len(before['rocks_digest']) == 64
-    assert pending['batches'] == corpus()[0], 'independent retained fact/admission/archive identities'
+    assert pending['batches'] == corpus(history=mode == 'history')[0], 'independent retained fact/admission/archive identities'
     assert terminal['worker_active_permits'] == 0 and terminal['mode'] == mode
     outcomes = []
-    for ordinal, first in [(1, 6), (2, 1), (3, 6), (4, 6)][:3 if mode in ('before', 'after') else 4]:
-        n = 180 + MODES.index(mode) * 8 + ordinal
-        snapshots, files = ((2, 0) if ordinal == 1 else (3, 2) if ordinal == 2 or
+    for ordinal, first in [(1, 6), (2, 1), (3, 6), (4, 6), (5, 11)][:5 if mode == 'history' else 3 if mode in ('before', 'after') else 4]:
+        n = 180 + (8 if mode == 'history' else MODES.index(mode)) * 8 + ordinal
+        snapshots, files = ((5, 11) if ordinal == 5 else (2, 0) if ordinal == 1 else (3, 2) if ordinal == 2 or
                             ordinal == 3 and mode in ('before', 'owner_first', 'held_rollback') else (4, 8))
-        success = ordinal == 2 or ordinal == 3 and mode in ('normal', 'held_commit') or ordinal == 4 and mode in ('owner_first', 'held_rollback')
+        success = ordinal == 2 or ordinal == 3 and mode in ('normal', 'history', 'held_commit') or ordinal == 4 and mode in ('owner_first', 'held_rollback') or ordinal == 5
         receipt = ('conflict' if ordinal == 4 and not success else
                    'present' if success or ordinal == 3 and mode == 'after' else 'absent')
         outcomes.append(dict(ordinal=ordinal, first=first, success=success,

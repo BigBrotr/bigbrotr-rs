@@ -11,6 +11,10 @@ pub struct EventRead {
     pub scope: QualifiedRef,
     pub payload: FactRef,
     pub eligibility: FactRef,
+    /// Exact retained native snapshot, when selected by the caller's pin.
+    /// None preserves the private fresh-view observer; this field is not a pin.
+    #[serde(default)]
+    pub snapshot_id: Option<u64>,
 }
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum EventReadError {
@@ -39,6 +43,8 @@ impl EventRead {
             || self.payload.source_record_id.dataset_id != self.dataset
             || self.eligibility.source_record_id.dataset_id != self.dataset
             || self.payload.source_record_id == self.eligibility.source_record_id
+            // Native SNAPSHOT_VERSION is BIGINT, unlike unsigned source cuts.
+            || self.snapshot_id.is_some_and(|id| id > i64::MAX as u64)
         {
             return Err(EventReadError::InvalidInput);
         }

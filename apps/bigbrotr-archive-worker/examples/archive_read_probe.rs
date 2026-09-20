@@ -9,7 +9,7 @@ fn main() {
     let mode = &args[1];
     assert!(matches!(
         mode.as_str(),
-        "normal" | "before" | "after" | "owner_first" | "held_commit" | "held_rollback"
+        "normal" | "history" | "before" | "after" | "owner_first" | "held_commit" | "held_rollback"
     ));
     let bootstrap_only = args.len() == 3;
     if bootstrap_only {

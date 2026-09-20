@@ -169,8 +169,11 @@ pub async fn prepare(
     path: &Path,
     budget: &ResourceBudget,
     cancel: &AtomicBool,
-    large: bool,
+    mode: &str,
 ) -> IngestStore {
+    let large = mode == "large";
+    let history = mode == "history";
+    let outstanding = if history { 5 } else { 4 };
     let now: i64 = observer
         .query_one(
             "SELECT (EXTRACT(EPOCH FROM pg_catalog.clock_timestamp())*1000000)::bigint",
@@ -194,7 +197,7 @@ pub async fn prepare(
         previous_topology: None,
         allocation_domains: domains(),
         producer_slot_id: [66; 16].try_into().unwrap(),
-        outstanding_request_limit: 4,
+        outstanding_request_limit: outstanding,
         created_at_us: now,
         lease_expires_at_us: now + 60_000_000,
     };
@@ -272,7 +275,24 @@ pub async fn prepare(
         }),
     };
     let mut successful = None;
-    for (sequence, bad) in [(2, "signature"), (3, "id"), (4, "valid"), (4, "retry")] {
+    for (sequence, bad) in [
+        (2, "signature"),
+        (3, "id"),
+        (4, "valid"),
+        (4, "retry"),
+        (5, "earlier"),
+    ] {
+        if bad == "earlier" && !history {
+            continue;
+        }
+        let observation = if bad == "earlier" {
+            LocalObservation {
+                received_at: ObservedTime::new(5_000_000),
+                ..observation
+            }
+        } else {
+            observation
+        };
         let mut input = event(large);
         if bad == "signature" {
             input.sig = Signature::from_bytes([0; 64]);
@@ -299,9 +319,13 @@ pub async fn prepare(
                     registration: &spec,
                     event: prepared,
                     provenance_enabled: true,
-                    recorded_at: ObservedTime::new(if bad == "retry" { 99 } else { 10_000_000 }),
+                    recorded_at: ObservedTime::new(match bad {
+                        "retry" => 99,
+                        "earlier" => 20_000_000,
+                        _ => 10_000_000,
+                    }),
                     limits: AdmissionLimits {
-                        max_outstanding_requests: 4,
+                        max_outstanding_requests: u64::from(outstanding),
                         ..AdmissionLimits::default()
                     },
                     policy_ttl: Duration::from_secs(5),
@@ -319,7 +343,7 @@ pub async fn prepare(
                     {
                         return Err(OwnerError::InvalidPolicy);
                     }
-                    if matches!(bad, "valid" | "retry")
+                    if matches!(bad, "valid" | "retry" | "earlier")
                         && candidate
                             .verified_event()
                             .is_none_or(|v| v.event() != &event(large))
@@ -344,8 +368,17 @@ pub async fn prepare(
                 let AdmissionOutcome::Durable(receipt) = result.outcome() else {
                     panic!("signed fixture rejected")
                 };
-                assert_eq!(receipt.batch().unwrap().first().sequence.get(), 6);
-                assert_eq!(receipt.batch().unwrap().last().sequence.get(), 10);
+                assert_eq!(
+                    receipt.batch().unwrap().first().sequence.get(),
+                    if bad == "earlier" { 11 } else { 6 }
+                );
+                assert_eq!(
+                    receipt.batch().unwrap().last().sequence.get(),
+                    if bad == "earlier" { 12 } else { 10 }
+                );
+                if bad == "earlier" {
+                    continue;
+                }
                 let bytes = receipt.encode_persistent(8192).unwrap();
                 if let Some(previous) = &successful {
                     assert_eq!(&bytes, previous);

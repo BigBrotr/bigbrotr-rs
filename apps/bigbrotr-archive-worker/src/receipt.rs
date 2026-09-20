@@ -80,6 +80,21 @@ fn hex(value: &[u8]) -> String {
     value.iter().map(|v| format!("{v:02x}")).collect()
 }
 
+pub(crate) fn readonly_archive_options(
+    root: &str,
+    snapshot: Option<u64>,
+) -> Result<String, ReceiptError> {
+    let snapshot = match snapshot {
+        Some(id) if id <= i64::MAX as u64 => format!(", SNAPSHOT_VERSION {id}"),
+        Some(_) => return Err(ReceiptError::InvalidInput),
+        None => String::new(),
+    };
+    Ok(format!(
+        "DATA_PATH {}, DATA_INLINING_ROW_LIMIT 0, AUTOMATIC_MIGRATION false, CREATE_IF_NOT_EXISTS false, READ_ONLY{snapshot}",
+        literal(root)
+    ))
+}
+
 impl Engine {
     /// The caller separately establishes old-lifetime exclusion and full guard
     /// compatibility. Immutable binding checks here refuse a misrouted catalog;
@@ -93,6 +108,7 @@ impl Engine {
             &request.catalog,
             request.expected.dataset_id,
             request.catalog_id,
+            None,
         )?;
         inspect_attached(&self.connection, &request.expected, max_receipts)
         // Engine destruction closes every native client before the response.
@@ -105,7 +121,9 @@ impl Engine {
         catalog: &BootstrapRequest,
         dataset: DatasetId,
         catalog_id: OwnerResourceId,
+        snapshot: Option<u64>,
     ) -> Result<(), ReceiptError> {
+        let options = readonly_archive_options(catalog.data_root(), snapshot)?;
         let root = std::path::Path::new(catalog.data_root());
         if root.canonicalize().ok().as_deref() != Some(root) || !root.is_dir() {
             return Err(ReceiptError::InvalidInput);
@@ -149,7 +167,7 @@ impl Engine {
         self.connection
             .execute_batch("DETACH bigbrotr_receipt")
             .map_err(|_| ReceiptError::Native)?;
-        self.connection.execute_batch(&format!("ATTACH 'ducklake:postgres:' AS archive (DATA_PATH {}, DATA_INLINING_ROW_LIMIT 0, AUTOMATIC_MIGRATION false, CREATE_IF_NOT_EXISTS false, META_SECRET_STORAGE_TABLE '', META_SECRET 'bigbrotr_bootstrap', READ_ONLY)", literal(catalog.data_root())))
+        self.connection.execute_batch(&format!("ATTACH 'ducklake:postgres:' AS archive ({options}, META_SECRET_STORAGE_TABLE '', META_SECRET 'bigbrotr_bootstrap')"))
             .map_err(|_| ReceiptError::Configuration)?;
         Ok(())
     }

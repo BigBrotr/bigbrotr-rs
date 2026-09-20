@@ -197,3 +197,24 @@ The larger connected event is 94,577 JSON bytes (65,536 UTF-8 content bytes).
 Seven native unit cases additionally cover unsigned time extremes, a 2 MiB body,
 scope-specific alternate signatures and interleaved snapshot reads. No current
 query, source-cut certificate, installed pin/authority or capacity claim follows.
+
+The next pin-consumer prerequisite adds optional `snapshot_id` to the private
+EventRead. An exact value selects `SNAPSHOT_VERSION` at the readonly DuckLake
+attachment; both lookups and `ducklake_current_snapshot` therefore use that
+selection. The worker checks the actual snapshot before reading either fact, and
+the parent requires the same ID in the complete verified response. Missing or
+expired snapshots refuse; there is no fallback to the latest snapshot. Omission
+or null preserves the existing fresh-view observer. Snapshot IDs are native
+nonnegative BIGINT values (0 through i64::MAX), distinct from unsigned source
+sequences. The exact bundled parent/worker tuple changes together; applied SQL,
+scientific rows and earlier request meaning are unchanged.
+
+DuckLake1.0 [time travel](https://ducklake.select/docs/stable/duckdb/usage/time_travel)
+documents the attach option. At the pinned upstream commit
+`d8a1881e22516ea3d186d73e83c65fe5bd1a1dc4`, `ducklake_storage.cpp` parses it as
+BIGINT, `DuckLakeTransaction::GetSnapshot` applies the catalog selection, and
+`DuckLakeMetadataManager::GetSnapshot(BoundAtClause&)` requires the exact retained
+snapshot row. Actual native tests distinguish old-state reads after deletion,
+expiry with still-readable current data and future IDs; connected PG qualification
+is pending. Selecting a snapshot is not acquiring its retention pin or authorizing
+the event; the caller still needs both through delivery.

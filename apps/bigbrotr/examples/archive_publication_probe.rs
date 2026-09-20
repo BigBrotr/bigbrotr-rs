@@ -268,6 +268,7 @@ async fn run(mode: &str, port: u16, installed: bool, event_read: bool) {
     let index = match mode {
         "normal" => 0u8,
         "large" => 7,
+        "history" => 8,
         "before" => 1,
         "after" => 2,
         "owner_first" => 3,
@@ -409,18 +410,12 @@ async fn run(mode: &str, port: u16, installed: bool, event_read: bool) {
             .unwrap();
     }
     let path = home.join("rocks");
-    let store = ingest::prepare(
-        &mut owner,
-        policy,
-        &observer,
-        &path,
-        &budget,
-        &cancel,
-        mode == "large",
-    )
-    .await;
+    let store = ingest::prepare(&mut owner, policy, &observer, &path, &budget, &cancel, mode).await;
     let mut expected_pending = Vec::new();
-    for first in [1, 6] {
+    for first in [1, 6, 11]
+        .into_iter()
+        .filter(|first| *first != 11 || mode == "history")
+    {
         let p = ingest::pending(&store, first, &budget, &cancel);
         expected_pending.push(serde_json::json!({"first":first,"last":p.batch().last().sequence.get(),"admission_digest":p.batch().digest(),"archive_digest":ArchiveBatch::new(1,TopologyGeneration::new(0),std::slice::from_ref(p.batch())).unwrap().digest(),"facts":p.batch().records().iter().zip(p.records()).map(|(r,b)|serde_json::json!({"sequence":r.source_record_id.sequence.get(),"digest":r.payload_digest,"preimage_hex":b.iter().map(|v|format!("{v:02x}")).collect::<String>()})).collect::<Vec<_>>()}));
     }
@@ -457,7 +452,10 @@ async fn run(mode: &str, port: u16, installed: bool, event_read: bool) {
         catalog_guard::FreshWriter,
         LocalAttempt,
     )> = None;
-    for (ordinal, first) in [(1u8, 6), (2, 1), (3, 6), (4, 6)] {
+    for (ordinal, first) in [(1u8, 6), (2, 1), (3, 6), (4, 6), (5, 11)] {
+        if ordinal == 5 && mode != "history" {
+            break;
+        }
         if ordinal == 4 && matches!(mode, "before" | "after") {
             break;
         }
@@ -652,8 +650,9 @@ async fn run(mode: &str, port: u16, installed: bool, event_read: bool) {
             )
         };
         let success = ordinal == 2
-            || (ordinal == 3 && matches!(mode, "normal" | "large" | "held_commit"))
-            || (ordinal == 4 && matches!(mode, "owner_first" | "held_rollback"));
+            || (ordinal == 3 && matches!(mode, "normal" | "large" | "history" | "held_commit"))
+            || (ordinal == 4 && matches!(mode, "owner_first" | "held_rollback"))
+            || (ordinal == 5 && mode == "history");
         if success {
             assert_eq!(result.unwrap().batch_digest, expected_digest);
         } else {
@@ -735,6 +734,7 @@ async fn run(mode: &str, port: u16, installed: bool, event_read: bool) {
             3 => (4, 8),
             4 if success => (4, 8),
             4 => before,
+            5 => (5, 11),
             _ => unreachable!(),
         };
         assert_eq!(after, expected);
