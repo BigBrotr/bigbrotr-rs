@@ -56,6 +56,7 @@ enum Custody<'a> {
     None,
     Archive(&'a super::LocalAttempt),
     Initialization(&'a super::LocalInitialization),
+    Reader(&'a super::LocalCoordinator),
 }
 
 impl<'a> Preparation<'a> {
@@ -270,6 +271,18 @@ impl<'a> Preparation<'a> {
         .map(|(process, _)| process)
     }
 
+    pub(super) fn start_reader(
+        &self,
+        mode: &str,
+        extra: &[String],
+        budget: &ResourceBudget,
+        coordinator: &super::LocalCoordinator,
+        tls: Option<super::client_identity::NativeTlsHandoff>,
+    ) -> Result<super::process::Process<'a>, PreparationError> {
+        self.start_owned(mode, extra, budget, Custody::Reader(coordinator), tls)
+            .map(|(process, _)| process)
+    }
+
     fn start_owned(
         &self,
         mode: &str,
@@ -341,6 +354,12 @@ impl<'a> Preparation<'a> {
                     .inherit(&mut command)
                     .map_err(PreparationError::Custody)?,
             ),
+            Custody::Reader(coordinator) => {
+                coordinator
+                    .inherit_reader(&mut command)
+                    .map_err(PreparationError::Custody)?;
+                None
+            }
         };
         let tls = tls.map(|tls| tls.inherit(&mut command));
         let process = super::process::Process::spawn_with_tls(

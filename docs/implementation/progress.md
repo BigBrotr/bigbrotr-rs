@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed2026-09-20 on Mac after native frontier/recovery qualification.
+Observed 2026-09-20 on Mac after native frontier/recovery qualification.
 Navigation only: follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint)
 and verify Git, dirty files, evidence and resources before continuing.
 
@@ -20,16 +20,18 @@ own the backlog; do not create another plan or diagnostic public command.
 
 ## Git and ownership
 
-Private origin/main was last verified at988bc4a7f694d878736c825cba1f34e2220c4335.
-Local HEAD is1865da9 (harness-only correction), after product candidate
- e64ee8545436adf78ef4faf4cd46d188fb211660,
-tree8ca3cdded5f443b47fa008eae2d1da85d2b1f36c. Candidate9aa86b9 contains the SQL RED;
-163fc59/7758ce4 add/correct SQL fixtures. Native fault fixture4bdc20f has unchanged
-production/dependency inputs;1fb54dd/1865da9 correct only its Python oracle/harness
-and checkpoint. Current root-owned dirty files are the new qualification report,
-contract/task/schema documentation, inventory and this checkpoint. No parallel
-writer or merge/rebase. Next commit should record this qualified boundary and be
-pushed normally after clean/source/evidence/remote review; no candidate is pushed yet.
+Local main and private origin/main were freshly verified clean and equal at
+8a1d8ba43c44af1203ca1f17d9be043283db4616 after normal push. GitHub confirms
+BigBrotr/bigbrotr-rs remains private. Product source is e64ee85, tree
+8ca3cdded5f443b47fa008eae2d1da85d2b1f36c; qualified fixture4bdc20f and harness1865da9
+change no production/dependency input. No parallel writer or merge/rebase.
+Current root-owned dirty work adds coordinator read custody and its discriminating
+fixtures, plus this checkpoint. No other writer is active. The initial test compile failed on the missing inherit_reader API (preserved
+under .research/implementation/archive-reader-custody/red); this is not a runtime
+RED reproduction. After implementation, all15 scoped Mac custody/initialization
+cases and consumer Clippy pass in the adjacent green directory. Both child-held
+locks and the intentionally unbound negative control execute in the unit test.
+No native outcome or pin qualification is claimed; no local process remains.
 
 Preserve .research/worktrees/producer-closing-old-writer, last verified clean at
 f899896b1207f5e71c4e39d9ab7814b293814735 on research/producer-closing-old-writer,
@@ -38,7 +40,7 @@ and the other historical worktrees. Caches are not source authority.
 ## Executed current boundary
 
 [Frontier qualification](evidence/p02-archive-frontier-native-20260920.json) binds
-clean900-file Gite64ee85 export, exact locked dependencies and native artifacts.
+clean 900-file Git e64ee85 export, exact locked dependencies and native artifacts.
 Linux amd64/Rust1.98.1/PG16.15 passes16 schema tests, scoped Clippy, two signed
 normal/history native cuts,17 installed SQL/upgrade cases and15 restart/fault cases.
 Actual SQL migrator/checksum ledger is used. Schema15->16 preserves old values/xmin
@@ -132,18 +134,43 @@ their reports/inventory. No unrelated resource was changed or removed.
 
 ## Next bounded action and open gates
 
-First finish the current report/diff/remote checks, commit and push the qualified
-frontier boundary. Then address authoritative topology handoff before the pin
-consumer:0002 require_complete_frontier currently consults the old topology's
-handoff_last_complete_sequence. A topology created open retains NULL even after
-source closure, incorrectly refusing omission at the exact completed N in its
-successor. Reproduce on isolated real PG, read owning source/topology contracts,
-then implement an additive migration with ordered locks and both operation orders.
-Do not edit applied SQL bytes. Preserve complete topology and zero prefixes.
+Qualification/report/diff/remote checks and normal push are complete. The next
+boundary is the actual snapshot pin consumer. Before changing topology SQL, verify
+the proposed omission issue against scientific cut semantics:0002 rejects direct
+T0(open member/NULL)->T1(omitted) even after source closure. But the contracts require
+explicit predecessor cuts and forbid epochs disappearing from a complete prefix.
+CutRead currently covers only explicitly supplied streams; merely permitting SQL
+omission would not preserve historical native facts/reference closure. An explicit
+successor carrying the old closed N plus the new epoch's zero is compatible with
+current validators and needs practical qualification. Independent read-only AI
+review in catalog_guard_review confirms no implicit historical inheritance is
+specified; a closed-member intermediate topology would not repair native omission.
+No SQL change or new experiment has begun, and no direct-omission defect is confirmed. Preserve this distinction;
+controlled handoff remains required selected work, not an excuse to block the first
+single-topology pin/read path or silently drop handoff acceptance.
 
-Continue P02-T04/T07's actual snapshot lease/pin consumer with PG-clock expiry,
+Implemented inherited close-only coordinator custody in the actual read-event
+and inspect-cut children, retaining custody with a hydrated body until its consumer
+drops it. Two actual children and an unbound negative control discriminate the local
+lock test. The native harness adds actual worker FD identity, blocked cancellation/
+deadline and stopped-worker parent-death/reacquisition. Its retained old event-reader
+artifact3f29952 supplies the missing-FD negative control. Complete diff review and independent read-only AI review found two harness issues:
+the old closed decoder does not accept snapshot_id, and failed stopped-child tests
+needed pidfd cleanup. Both are corrected, with failure/cleanup recorded separately.
+The negative adapter uses independently verified latest3; current reads keep explicit
+selection. pidfd POLLIN is exit evidence, not orphan reap. Next commit a private
+candidate, transfer exact Git to a fresh inventoried Tux lab and execute
+--reader-custody, which includes both actual cut histories plus signed hydration. No new lab is running.
+Read-only Tux inspection reconfirmed e64 frontier/provisioned and3f29952 event labs
+stopped/Pid0 with matching owner labels; sources/data remain retained.
+
+Then continue P02-T04/T07's actual snapshot lease/pin consumer with PG-clock expiry,
 current holder identity and a stable catalog/local barrier shared with maintenance.
-Existing0002 shapes are not sufficient: caller-supplied timestamps are not current
+The independent static pin review recommends immutable new-protocol attribution,
+1:1 binding to0016, no historical adoption, current Control holder identity,
+PG-clock checks after waits and stable consumer locking shared with maintenance.
+Historical snapshot existence must be checked under the same catalog barrier;
+CatalogCapture currently observes latest only. Existing0002 shapes are not sufficient: caller-supplied timestamps are not current
 lease validation, and locking only existing lease rows cannot exclude a new pin.
 Zero/empty cuts still need native pins despite having no positive source claims.
 Do not take table SHARE after native owner FOR UPDATE; native DML takes table then

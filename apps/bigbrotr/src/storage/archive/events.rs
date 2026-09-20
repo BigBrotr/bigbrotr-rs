@@ -1,15 +1,12 @@
 //! Private historical hydration. Caller retains read authority and source pins.
 use super::{CatalogReaderCredentials, CatalogRoute, Preparation, PreparationError, ProcessError};
-use crate::{
-    runtime::{OwnedPermit, ResourceBudget, ResourceRequest},
-    storage::postgres::catalog_guard::CatalogIdentity,
-};
+use crate::runtime::{OwnedPermit, ResourceBudget, ResourceRequest};
 use bigbrotr_protocol::{
     VerifiedEvent,
     archive_event::{EventObservation, EventRead, EventReadError},
 };
 use serde::Serialize;
-use std::{sync::atomic::Ordering, time::Instant};
+use std::{fs::File, sync::atomic::Ordering, time::Instant};
 
 /// The grant covers the decoded body until its last consumer drops this value.
 /// Neither a caller-declared scope nor this read provides an access capability.
@@ -17,6 +14,9 @@ pub struct ArchivedEvent {
     event: VerifiedEvent,
     snapshot_id: u64,
     _permit: OwnedPermit,
+    // A decoded body can outlive its native job and originating coordinator.
+    // Delivery must retain local exclusion as well as its allocation grant.
+    _custody: File,
 }
 impl ArchivedEvent {
     pub fn event(&self) -> &VerifiedEvent {
@@ -48,12 +48,13 @@ impl Preparation<'_> {
     pub fn read_event(
         self,
         expected: &EventRead,
-        identity: &CatalogIdentity,
+        coordinator: &super::LocalCoordinator,
         route: &CatalogRoute<'_>,
         credential: CatalogReaderCredentials<'_>,
         budget: &ResourceBudget,
     ) -> Result<ArchivedEvent, ArchiveEventError> {
         let maximum = self.limits.max_encoded_bytes;
+        let identity = coordinator.identity();
         expected
             .validate(maximum)
             .map_err(ArchiveEventError::Input)?;
@@ -93,8 +94,18 @@ impl Preparation<'_> {
                     .map_err(|_| ArchiveEventError::ResourceLimit)?,
             )
             .map_err(|_| ArchiveEventError::ResourceLimit)?;
+        let custody = coordinator
+            .custody
+            .retain_custody()
+            .map_err(|e| ArchiveEventError::Preparation(PreparationError::Custody(e)))?;
         let mut process = self
-            .start_with_custody("read-event", &[maximum.to_string()], budget, None, tls)
+            .start_reader(
+                "read-event",
+                &[maximum.to_string()],
+                budget,
+                coordinator,
+                tls,
+            )
             .map_err(ArchiveEventError::Preparation)?;
         if process.reserve_data_output(output_bytes, grant).is_err() {
             // Allocation failure happens after spawn. Observe termination before
@@ -122,6 +133,7 @@ impl Preparation<'_> {
             event,
             snapshot_id,
             _permit: permit,
+            _custody: custody,
         })
     }
 }

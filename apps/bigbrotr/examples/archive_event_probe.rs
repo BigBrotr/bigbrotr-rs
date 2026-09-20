@@ -4,7 +4,8 @@ use bigbrotr::{
     runtime::{ProcessEnvelope, ResourceBudget, ResourceLimits, WaiterLimits},
     storage::{
         archive::{
-            ArtifactIdentity, CatalogReaderCredentials, CatalogRoute, CatalogTls, Preparation,
+            ArchiveEventError, ArtifactIdentity, CatalogReaderCredentials, CatalogRoute,
+            CatalogTls, LifetimeError, LocalCoordinator, Preparation, PreparationError,
             PreparationLimits, WorkerInstallation,
         },
         postgres::{catalog_guard::CatalogIdentity, connection_settings::PlaintextBoundary},
@@ -62,6 +63,11 @@ fn main() {
     let cancelled = AtomicBool::new(false);
     let done = AtomicBool::new(false);
     let started = Instant::now();
+    let state = Path::new(&input.data_root)
+        .parent()
+        .unwrap()
+        .join("archive-state");
+    let coordinator = LocalCoordinator::open(&identity, &state);
     let result = std::thread::scope(|scope| {
         if let Some(path) = &input.cancel_file {
             scope.spawn(|| {
@@ -74,38 +80,54 @@ fn main() {
                 }
             });
         }
-        let result = Preparation {
-            installation: &installation,
-            temp_root: Path::new(&args[2]),
-            limits: PreparationLimits {
-                memory_bytes: 128 << 20,
-                temp_bytes: 64 << 20,
-                threads: 1,
-                max_records: 2,
-                max_encoded_bytes: input.max_row_bytes,
-                native_reserve_bytes: 384 << 20,
-            },
-            deadline: started + Duration::from_millis(input.deadline_ms),
-            cancelled: &cancelled,
-        }
-        .read_event(
-            &input.expected,
-            &identity,
-            &CatalogRoute {
-                address: "127.0.0.1".parse().unwrap(),
-                port: 5432,
-                database: &input.database,
-                tls: CatalogTls::LocalPlaintext(PlaintextBoundary::Loopback),
-            },
-            CatalogReaderCredentials {
-                login: "bigbrotr_receipt_reader",
-                password: &password,
-            },
-            &budget,
-        );
+        let result = coordinator
+            .as_ref()
+            .map_err(|e| ArchiveEventError::Preparation(PreparationError::Custody(*e)))
+            .and_then(|coordinator| {
+                Preparation {
+                    installation: &installation,
+                    temp_root: Path::new(&args[2]),
+                    limits: PreparationLimits {
+                        memory_bytes: 128 << 20,
+                        temp_bytes: 64 << 20,
+                        threads: 1,
+                        max_records: 2,
+                        max_encoded_bytes: input.max_row_bytes,
+                        native_reserve_bytes: 384 << 20,
+                    },
+                    deadline: started + Duration::from_millis(input.deadline_ms),
+                    cancelled: &cancelled,
+                }
+                .read_event(
+                    &input.expected,
+                    coordinator,
+                    &CatalogRoute {
+                        address: "127.0.0.1".parse().unwrap(),
+                        port: 5432,
+                        database: &input.database,
+                        tls: CatalogTls::LocalPlaintext(PlaintextBoundary::Loopback),
+                    },
+                    CatalogReaderCredentials {
+                        login: "bigbrotr_receipt_reader",
+                        password: &password,
+                    },
+                    &budget,
+                )
+            });
         done.store(true, Ordering::Relaxed);
         result
     });
+    drop(coordinator);
+    let observed = result.is_ok();
+    if observed {
+        assert!(
+            matches!(
+                LocalCoordinator::open(&identity, &state),
+                Err(LifetimeError::Occupied)
+            ),
+            "decoded body must retain custody after the coordinator drops"
+        );
+    }
     let output = match result {
         Ok(observation) => {
             assert_eq!(
@@ -118,6 +140,9 @@ fn main() {
         Err(error) => serde_json::json!({"status":"refused","error":format!("{error:?}")}),
     };
     assert_eq!(budget.snapshot().active_permits(), 0);
+    if observed {
+        drop(LocalCoordinator::open(&identity, &state).unwrap());
+    }
     println!(
         "{}",
         serde_json::json!({"result":output,"elapsed_ms":started.elapsed().as_millis(),"cancelled":cancelled.load(Ordering::Relaxed),"active_permits":budget.snapshot().active_permits()})

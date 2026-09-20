@@ -3,6 +3,7 @@
 use super::{LifetimeError, LocalInitialization, lifetime};
 use crate::storage::postgres::catalog_guard::CatalogIdentity;
 use bigbrotr_model::Digest256;
+use command_fds::CommandFdExt;
 use rustix::fs::{Mode, OFlags, openat};
 use serde::Serialize;
 use sha2::{Digest, Sha256};
@@ -10,8 +11,9 @@ use std::{
     fs::{self, File},
     future::Future,
     io::{Read, Write},
-    os::unix::fs::MetadataExt,
+    os::{fd::AsRawFd, unix::fs::MetadataExt},
     path::{Path, PathBuf},
+    process::Command,
 };
 
 const BINDING: &str = "coordinator.json";
@@ -71,6 +73,19 @@ impl LocalCoordinator {
         future: F,
     ) -> Result<impl Future<Output = F::Output> + use<F>, LifetimeError> {
         self.custody.retain_catalog_connection(future)
+    }
+
+    /// Readers share the existing coordinator's open file description. This
+    /// permits no initialization/publication launch and supplies no read grant.
+    /// The trusted worker keeps the descriptor until actual exit, including
+    /// when its parent dies or cannot establish termination before its deadline.
+    pub(super) fn inherit_reader(&self, command: &mut Command) -> Result<(), LifetimeError> {
+        let fd = self.custody.retain_custody()?;
+        if fd.as_raw_fd() < 3 {
+            return Err(LifetimeError::Filesystem);
+        }
+        command.preserved_fds(vec![fd.into()]);
+        Ok(())
     }
 
     pub(super) fn from_custody(

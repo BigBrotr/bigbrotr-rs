@@ -68,13 +68,14 @@ impl Preparation<'_> {
     pub fn inspect_cut(
         self,
         expected: CutRead,
-        identity: &CatalogIdentity,
+        coordinator: &super::LocalCoordinator,
         route: &CatalogRoute<'_>,
         credential: CatalogReaderCredentials<'_>,
         budget: &ResourceBudget,
         max_facts: usize,
     ) -> Result<ObservedCut, ReceiptError> {
         let started = Instant::now();
+        let identity = coordinator.identity();
         validate_cut_limits(self.limits, &expected, max_facts)?;
         let grant = budget
             .try_acquire(
@@ -103,11 +104,11 @@ impl Preparation<'_> {
             .map_err(ReceiptError::Preparation)?;
         receipts::wire_fits(&input)?;
         let mut process = self
-            .start_with_custody(
+            .start_reader(
                 "inspect-cut",
                 &[self.limits.max_records.to_string(), max_facts.to_string()],
                 budget,
-                None,
+                coordinator,
                 tls,
             )
             .map_err(ReceiptError::Preparation)?;

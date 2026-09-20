@@ -5,6 +5,53 @@ const BOOT: &str = "01234567-89ab-cdef-0123-456789abcdef";
 mod inputs;
 
 #[test]
+fn coordinator_children_retain_custody_until_the_last_actual_exit() {
+    use std::{
+        io::{BufRead, BufReader},
+        process::Stdio,
+    };
+    for inherit in [false, true] {
+        let (_data, identity) = fixture();
+        let (state, _) = fixture();
+        let state = state.path().canonicalize().unwrap();
+        drop(LocalInitialization::create_for_boot(&identity, [3; 16], BOOT).unwrap());
+        let owner =
+            super::super::LocalCoordinator::from_custody(recover_released(&identity), &state, true)
+                .unwrap();
+        let mut children = Vec::new();
+        for _ in 0..2 {
+            let mut command = Command::new("/bin/sh");
+            command
+                .args(["-c", "printf 'ready\\n'; read ignored"])
+                .stdin(Stdio::piped())
+                .stdout(Stdio::piped());
+            if inherit {
+                owner.inherit_reader(&mut command).unwrap();
+            }
+            let mut child = command.spawn().unwrap();
+            let mut ready = String::new();
+            BufReader::new(child.stdout.take().unwrap())
+                .read_line(&mut ready)
+                .unwrap();
+            assert_eq!(ready, "ready\n");
+            children.push(child);
+        }
+        drop(owner);
+        let mut occupied = Vec::new();
+        for mut child in children {
+            occupied.push(matches!(
+                LocalInitialization::recover_for_boot(&identity, BOOT),
+                Err(LifetimeError::Occupied)
+            ));
+            child.kill().unwrap();
+            child.wait().unwrap();
+        }
+        drop(recover_released(&identity));
+        assert_eq!(occupied, [inherit, inherit]);
+    }
+}
+
+#[test]
 fn coordinator_state_requires_explicit_binding_and_excludes_other_roots() {
     let (_data, identity) = fixture();
     let (state, _) = fixture();

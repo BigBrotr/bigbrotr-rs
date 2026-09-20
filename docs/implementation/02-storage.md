@@ -755,6 +755,11 @@ cannot reclaim required evidence, pending data or readable generations.
   `e1852b8` passes31 connected cases and nine native tests. It supplies the reader
   prerequisite only; actual protected frontier and retained pin registration remain
   required before this step can close.
+  Native event/cut readers now require the local coordinator and inherit its
+  close-only custody; decoded event bodies retain custody through their consumer.
+  Fifteen Mac custody/initialization cases and scoped consumer Clippy pass. Native
+  FD, blocked-reader and parent-death qualification is pending; this is no pin or
+  policy grant and completes no step.
 - [ ] **Step 2:** Reclaim pending payload only after committed archive and safety policy;
   preserve identity/receipt metadata for its correctness horizon.
 - [ ] **Step 3:** Compact files without changing source identities or reference resolution;

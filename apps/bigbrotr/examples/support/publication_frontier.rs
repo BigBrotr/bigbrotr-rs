@@ -68,7 +68,7 @@ pub async fn inspect(
     )
     .inspect_cut(
         read,
-        coordinator.identity(),
+        coordinator,
         &CatalogRoute {
             address: "127.0.0.1".parse().unwrap(),
             port: 5432,

@@ -414,6 +414,18 @@ columns, protected frontiers, aged capacity or Linux arm64.
 
 ## Complete native cut observation candidate
 
+`Preparation::inspect_cut` and `read_event` require the actual `LocalCoordinator`,
+whose validated binding supplies catalog identity. Both native children inherit a
+duplicate of its permanently locked open file description. This close-only
+descriptor remains in the trusted worker until exit, including parent death or
+unknown termination; neither a path string nor the parent's continued existence
+substitutes for it. No fresh initializer or writer launch is authorized by this
+reader handoff. `ArchivedEvent` separately retains a custody clone and its data
+grant until the decoded body's consumer drops it. Current policy and a live
+snapshot pin remain separate requirements through delivery. This local mechanism
+does not block concurrent work performed by the same coordinator or establish
+PostgreSQL transaction resolution. Native reader qualification is pending.
+
 The P02-T04/T07 frontier bridge consumes a private `CutRead`, not another public
 diagnostic command. Its parent must resolve the sealed topology and authoritative
 closed-source bounds, and obtain each complete receipt expectation from retained

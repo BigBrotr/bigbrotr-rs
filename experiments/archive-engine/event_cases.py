@@ -55,7 +55,8 @@ def cut_expectation(mode, prefix=False):
                               request_digest=cut_digest(read)), pin='not-implemented')
 
 
-def main(root, capture_cut=False):
+def main(root, capture_cut=False, reader_custody=False):
+    assert not (capture_cut and reader_custody)
     if capture_cut:
         frozen = json.loads((Path(__file__).resolve().parents[2]/'tests/fixtures/protocol/archive-cut.json').read_text())
         assert cut_digest(frozen['read']) == frozen['request_digest']
@@ -84,6 +85,10 @@ def main(root, capture_cut=False):
                   artifacts=ready, harness_sha256=sha(Path(__file__)),
                   oracle_sha256=sha(source/'experiments/archive-engine/signed_publication_oracle.py'),
                   cases=[])
+    if reader_custody:
+        baseline = root/'out/native-tests/baseline-event-probe'
+        assert sha(baseline) == '20709525a4ac035583b2ce7feefa12c7c09dd4d54c78c1aadad77ada14a5181e'
+        result['negative_reader'] = dict(source='3f2995211bc8ea02b09e12e019d6e5d01bb55d9a', sha256=sha(baseline))
     def save():
         evidence.write_text(json.dumps(result, indent=2)+'\n')
     def sql(db, query):
@@ -92,7 +97,7 @@ def main(root, capture_cut=False):
     binary = ['docker', 'exec', '--env', 'LD_LIBRARY_PATH=/out/archive-worker/lib', runner]
     inputs = root/('out/cut-inputs' if capture_cut else 'out/event-inputs')
     inputs.mkdir()
-    def run_case(label, request, wanted, interact=None):
+    def run_case(label, request, wanted, interact=None, killed=False, executable='/out/native-tests/archive-event-probe'):
         case = dict(name=label, status='INCOMPLETE')
         result['cases'].append(case)
         request_path = inputs/(label+'.json')
@@ -102,9 +107,13 @@ def main(root, capture_cut=False):
         temporary.mkdir(mode=0o700)
         save()
         try:
-            execute(binary+['/out/native-tests/archive-event-probe', '/out/event-inputs/'+request_path.name,
+            execute(binary+[executable, '/out/event-inputs/'+request_path.name,
                             '/out/event-inputs/'+temporary.name], 35, case, interact)
             save()
+            if killed:
+                assert case['exit'] == 137 and not case['stdout'] and not case['stderr'] and not case['overflow']
+                case['status'] = 'PASS'
+                return
             assert case['exit'] == 0 and not case['stderr'] and not case['overflow']
             observed = json.loads(case['stdout'])
             assert observed['active_permits'] == 0
@@ -141,6 +150,7 @@ def main(root, capture_cut=False):
     save()
     try:
         for mode in (['normal', 'history'] if capture_cut else ['normal', 'large', 'history']):
+            capture_for_mode = capture_cut or (reader_custody and mode != 'large')
             value = EVENT
             if mode == 'large':
                 recipe = json.loads((source/'tests/fixtures/protocol/archive-event-response.json').read_text())
@@ -152,7 +162,7 @@ def main(root, capture_cut=False):
             parent = {}
             result[mode+'_publisher'] = parent
             try:
-                execute(binary+['/out/native-tests/archive-publication-probe', mode, '5432', '--capture-cut' if capture_cut else '--event-read'], 180, parent)
+                execute(binary+['/out/native-tests/archive-publication-probe', mode, '5432', '--capture-cut' if capture_for_mode else '--event-read'], 180, parent)
             finally:
                 save()
             assert parent['exit'] == 0 and not parent['stderr'] and not parent['overflow']
@@ -174,7 +184,7 @@ def main(root, capture_cut=False):
             result[mode+'_metadata_before'] = before
             assert len(original_files) == (11 if mode == 'history' else 8)
             result[mode+'_files'] = original_files
-            if capture_cut:
+            if capture_for_mode:
                 captured = [v for v in values if v['event'] == 'captured-cut']
                 assert captured == [cut_expectation(mode)], 'independent complete cut and request digest'
                 prefixes = [v for v in values if v['event'] == 'captured-prefix']
@@ -214,13 +224,16 @@ def main(root, capture_cut=False):
                     cut=captured[0], persistence=marker, attempt_protocols=protocols, frontier=frontier,
                     prefixes=prefixes, historical=historical))
                 save()
-                continue
+                if capture_cut:
+                    continue
             run_case(mode+'-complete', request, value)
             if mode == 'history':
                 assert int(sql(db, 'SELECT max(snapshot_id) FROM ducklake_snapshot;')) == 4
                 request['expected']['snapshot_id'] = 3
                 run_case('history-exact-previous', request, value)
             if mode == 'normal':
+                if reader_custody:
+                    run_case('baseline-complete', request, value, executable='/out/native-tests/baseline-event-probe')
                 # Publication produced dictionary snapshot2 and signed-event
                 # snapshot3. The older snapshots MUST NOT fall back to current,
                 # whose complete signed body was independently observed above.
@@ -256,14 +269,24 @@ def main(root, capture_cut=False):
                         retained.rename(path)
                     assert path.read_bytes() == original
                     run_case(fault+'-restored', request, value)
-                for cancellation in [True, False]:
+                for action in (['negative-no-custody', 'cancel', 'deadline', 'parent-death'] if reader_custody else ['cancel', 'deadline']):
+                    cancellation = action in ['cancel', 'negative-no-custody']
+                    executable = '/out/native-tests/baseline-event-probe' if action == 'negative-no-custody' else '/out/native-tests/archive-event-probe'
+                    if action == 'negative-no-custody':
+                        assert int(sql(db, 'SELECT max(snapshot_id) FROM ducklake_snapshot;')) == 3
                     holder = Process(['docker', 'exec', '-i', pg, 'psql', '-XAtq', '-v', 'ON_ERROR_STOP=1',
                                       '-U', 'postgres', '-d', db], input_pipe=True)
                     try:
                         send(holder, "BEGIN; LOCK TABLE public.ducklake_snapshot IN ACCESS EXCLUSIVE MODE; SELECT json_build_object('event','locked','pid',pg_backend_pid());\n")
                         pid = event(holder, 'locked')['pid']
-                        blocked = dict(request, deadline_ms=15000 if cancellation else 6000)
-                        label = 'cancel-blocked' if cancellation else 'deadline-blocked'
+                        blocked = copy.deepcopy(request)
+                        blocked['deadline_ms'] = 6000 if action == 'deadline' else 15000
+                        if action == 'negative-no-custody':
+                            # This retained pre-selector adapter accepts only
+                            # current reads. The immutable fixture is still at3;
+                            # do not send a field its closed old decoder rejects.
+                            blocked['expected'].pop('snapshot_id')
+                        label = action+'-blocked'
                         marker = inputs/(label+'.cancel')
                         if cancellation: blocked['cancel_file'] = '/out/event-inputs/'+marker.name
                         def interact(_parent):
@@ -274,15 +297,35 @@ def main(root, capture_cut=False):
                                     assert all(r['user']=='bigbrotr_receipt_reader' and r['wait_type']=='Lock' for r in rows)
                                     result['cases'][-1]['blocking'] = rows
                                     save()
+                                    if reader_custody:
+                                        observer = ['docker', 'exec', '-i', runner, 'python3', '-B',
+                                                    '/source/experiments/archive-engine/reader_custody_probe.py']
+                                        observed = json.loads(command(*observer, 'inspect', executable,
+                                            '/out/event-inputs/'+label+'.json', request['data_root']))
+                                        result['cases'][-1]['native_custody'] = observed
+                                        save()
+                                        if action == 'negative-no-custody':
+                                            assert observed['custody'] == [], 'negative reader unexpectedly retains custody'
+                                        else:
+                                            assert len(observed['custody']) == 1, 'native reader did not inherit the exact coordinator lock'
+                                            assert 'FLOCK' in observed['custody'][0]['info']
+                                        if action == 'parent-death':
+                                            result['cases'][-1]['termination'] = json.loads(command(*observer, 'terminate', input=json.dumps(observed)))
+                                            save()
+                                            termination = result['cases'][-1]['termination']
+                                            assert termination['status'] == 'PASS' and termination['cleanup'] == 'EXIT_OBSERVED' and not termination['cleanup_errors']
+                                            result['cases'][-1]['reacquisition'] = json.loads(command(*observer, 'reacquire', request['data_root']))
+                                            save()
                                     if cancellation: marker.touch(exist_ok=False)
                                     return
                                 time.sleep(.02)
                             raise AssertionError('actual blocked native reader was not observed')
-                        seen = run_case(label, blocked, None, interact)
-                        assert seen['cancelled'] is cancellation
-                        assert seen['elapsed_ms'] < (5000 if cancellation else 7000)
-                        if not cancellation:
-                            assert seen['elapsed_ms'] >= blocked['deadline_ms']
+                        seen = run_case(label, blocked, None, interact, killed=action == 'parent-death', executable=executable)
+                        if action != 'parent-death':
+                            assert seen['cancelled'] is cancellation
+                            assert seen['elapsed_ms'] < (5000 if cancellation else 7000)
+                            if not cancellation:
+                                assert seen['elapsed_ms'] >= blocked['deadline_ms']
                     finally:
                         primary_failure = sys.exc_info()[0] is not None
                         cleanup_error = None
@@ -350,5 +393,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('root', type=Path)
     parser.add_argument('--capture-cut', action='store_true')
+    parser.add_argument('--reader-custody', action='store_true')
     args = parser.parse_args()
-    main(args.root.resolve(), args.capture_cut)
+    main(args.root.resolve(), args.capture_cut, args.reader_custody)

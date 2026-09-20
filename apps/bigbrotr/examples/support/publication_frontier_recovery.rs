@@ -170,7 +170,7 @@ pub async fn run(mode: &str, path: &Path) {
                 receipts: inputs.iter().map(|i| i.expectation().clone()).collect(),
                 snapshot_id: Some(capture.snapshot_id()),
             },
-            &identity,
+            &coordinator,
             &CatalogRoute {
                 address: "127.0.0.1".parse().unwrap(),
                 port: 5432,
