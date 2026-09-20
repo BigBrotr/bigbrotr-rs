@@ -35,3 +35,13 @@ The fixture is not a browser UI test. Browser cookie-host behavior, active-hash
 shutdown, ambiguous session COMMIT, PostgreSQL crash with live cookies, account
 lifecycle/action grants, login audit, remote TLS, general drain and mixed/aged
 capacity qualification remain required. Do not label missing cases PASS.
+
+The subsequent `--faults-only` fixture mode waits for at least32MiB resident growth
+in a fresh actual Control process after a login request, stops that owned process,
+confirms the growth remains resident and no session has been issued, then queues
+TERM/CONT or kills the parent. It observes client closure, process/backend
+termination, no issuance and a successful explicit successor login. This Linux
+measurement does not identify an exact instruction inside Argon2 or establish a
+universal shutdown bound. Native execution/evidence is still required. The driver
+compares all source hashes against the qualified baseline except the explicit
+fixture/docs allowlist; no modified product implementation can pass that check.

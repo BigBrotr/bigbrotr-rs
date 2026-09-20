@@ -491,3 +491,92 @@ async fn expired_connection_leaves_queued_command_and_its_grant_until_collected(
     server.stop().await.unwrap();
     assert_eq!(budget.snapshot().active_permits(), 0);
 }
+
+#[tokio::test]
+async fn management_stop_cannot_finish_or_release_grants_before_blocking_worker_joins() {
+    use std::sync::{Arc, Condvar, Mutex};
+    // The controlled closure is a lifecycle discriminator, not substitute
+    // cryptographic evidence. Native fixtures separately execute actual Argon2.
+    struct ReleaseOnDrop(Arc<(Mutex<bool>, Condvar)>);
+    impl Drop for ReleaseOnDrop {
+        fn drop(&mut self) {
+            *self.0.0.lock().unwrap() = true;
+            self.0.1.notify_all();
+        }
+    }
+    let budget = ResourceBudget::new(
+        ProcessEnvelope::new(
+            256 << 20,
+            1 << 20,
+            ResourceLimits::new(128 << 20, 34, 0, 1 << 20),
+            WaiterLimits::new(0, 0),
+        )
+        .unwrap(),
+    );
+    let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let address = listener.local_addr().unwrap();
+    let delivery = delivery_gate(Duration::from_secs(5));
+    let server =
+        transport::Server::from_listener(listener, budget.clone(), delivery.clone()).unwrap();
+    let mut management = Management {
+        server,
+        hashes: JoinSet::new(),
+        budget: budget.clone(),
+        delivery,
+    };
+    let client = tokio::spawn(exchange(
+        address,
+        login_request(
+            address,
+            "",
+            r#"{"username":"owner","password":"retained until worker completion"}"#,
+        ),
+    ));
+    let transport::Command {
+        operation,
+        completion,
+    } = management.server.commands.recv().await.unwrap();
+    let grant = budget
+        .try_acquire(ResourceRequest::data(HASH_RESERVATION, 1, 0).unwrap())
+        .unwrap();
+    let barrier = Arc::new((Mutex::new(false), Condvar::new()));
+    let release = ReleaseOnDrop(Arc::clone(&barrier));
+    let (started, entered) = tokio::sync::oneshot::channel();
+    management.hashes.spawn_blocking(move || {
+        let _ = started.send(());
+        let (lock, wake) = &*barrier;
+        let mut released = lock.lock().unwrap();
+        while !*released {
+            released = wake.wait(released).unwrap();
+        }
+        drop(operation);
+        drop(grant);
+        (completion, Err(SessionError::Denied))
+    });
+    entered.await.unwrap();
+    let stopped = tokio::spawn(async move { management.stop(Duration::from_secs(2)).await });
+    assert_eq!(
+        tokio::time::timeout(Duration::from_millis(500), client)
+            .await
+            .unwrap()
+            .unwrap(),
+        ""
+    );
+    tokio::time::sleep(Duration::from_millis(30)).await;
+    assert!(
+        !stopped.is_finished(),
+        "stop returned while its worker was blocked"
+    );
+    assert_eq!(
+        budget.snapshot().active_permits(),
+        2,
+        "request/hash grants must survive closed HTTP"
+    );
+    drop(release);
+    tokio::time::timeout(Duration::from_secs(1), stopped)
+        .await
+        .unwrap()
+        .unwrap()
+        .unwrap();
+    assert_eq!(budget.snapshot().active_permits(), 0);
+}

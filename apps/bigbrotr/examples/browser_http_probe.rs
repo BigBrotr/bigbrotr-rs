@@ -100,11 +100,14 @@ impl Server {
         )
         .unwrap();
         self.terminal(0);
+        self.require_release();
+        start.elapsed().as_millis()
+    }
+    fn require_release(&self) {
         assert!(fs::read(&self.stderr).unwrap().is_empty());
         let output = fs::read_to_string(&self.stdout).unwrap();
         let last: Value = serde_json::from_str(output.lines().last().unwrap()).unwrap();
         assert_eq!(last["release"], "committed");
-        start.elapsed().as_millis()
     }
 }
 impl Drop for Server {
@@ -214,7 +217,142 @@ async fn count(admin: &Client, query: &str) -> i64 {
 async fn session_state(admin: &Client) -> String {
     admin.query_one("SELECT json_agg(s ORDER BY session_id)::text FROM (SELECT s.*,xmin::text AS xmin FROM control.browser_sessions s) s",&[]).await.unwrap().get(0)
 }
-async fn run(binary: PathBuf, home: PathBuf) {
+
+fn resident_kib(server: &Server) -> u64 {
+    let status = fs::read_to_string(format!("/proc/{}/status", server.child.id())).unwrap();
+    status
+        .lines()
+        .find_map(|line| line.strip_prefix("VmRSS:"))
+        .unwrap()
+        .split_whitespace()
+        .next()
+        .unwrap()
+        .parse()
+        .unwrap()
+}
+
+async fn faults(binary: &Path, config: &Path, home: &Path, admin: &Client) {
+    for terminate in [true, false] {
+        let name = if terminate {
+            "hash-signal"
+        } else {
+            "hash-parent-loss"
+        };
+        let mut server = Server::start(binary, config, home, name);
+        server.ready();
+        let baseline = resident_kib(&server);
+        let started = Instant::now();
+        let client = std::thread::spawn(|| {
+            let text = request_text(
+                "POST",
+                "/management/v1/sessions",
+                "",
+                &json!({"username":"alice","password":PASSWORD}).to_string(),
+                true,
+            );
+            let mut socket = socket();
+            socket.write_all(text.as_bytes()).unwrap();
+            let mut bytes = Vec::new();
+            let outcome = socket.read_to_end(&mut bytes);
+            assert!(
+                outcome.is_ok()
+                    || outcome.unwrap_err().kind() == std::io::ErrorKind::ConnectionReset
+            );
+            assert!(
+                bytes.is_empty(),
+                "signal/crash fixture received a completed issuance"
+            );
+        });
+        let resident = loop {
+            assert!(server.child.try_wait().unwrap().is_none());
+            let current = resident_kib(&server);
+            if current >= baseline + 32 * 1024 {
+                break current;
+            }
+            assert!(
+                started.elapsed() < Duration::from_secs(4),
+                "did not observe hash memory residency before deadline"
+            );
+            std::thread::sleep(Duration::from_millis(2));
+        };
+        let pid = rustix::process::Pid::from_child(&server.child);
+        rustix::process::kill_process(pid, rustix::process::Signal::STOP).unwrap();
+        let deadline = Instant::now() + Duration::from_secs(1);
+        loop {
+            let status = fs::read_to_string(format!("/proc/{}/status", server.child.id())).unwrap();
+            if status
+                .lines()
+                .find_map(|line| line.strip_prefix("State:"))
+                .unwrap()
+                .trim_start()
+                .starts_with('T')
+            {
+                break;
+            }
+            assert!(Instant::now() < deadline, "owned runtime did not stop");
+            std::thread::sleep(Duration::from_millis(1));
+        }
+        assert!(
+            resident_kib(&server) >= baseline + 32 * 1024,
+            "hash memory disappeared before the stopped-process observation"
+        );
+        assert_eq!(
+            count(admin, "SELECT count(*) FROM control.browser_sessions").await,
+            0
+        );
+        assert_eq!(
+            count(admin, "SELECT count(*) FROM control.login_buckets").await,
+            2
+        );
+        let signaled = Instant::now();
+        let terminal_observed_ms;
+        if terminate {
+            rustix::process::kill_process(pid, rustix::process::Signal::TERM).unwrap();
+            rustix::process::kill_process(pid, rustix::process::Signal::CONT).unwrap();
+            server.terminal(0);
+            terminal_observed_ms = signaled.elapsed().as_millis();
+            server.require_release();
+        } else {
+            server.child.kill().unwrap();
+            let status = server.child.wait().unwrap();
+            use std::os::unix::process::ExitStatusExt;
+            assert_eq!(status.signal(), Some(9));
+            assert!(TcpStream::connect(ADDRESS).is_err());
+            terminal_observed_ms = signaled.elapsed().as_millis();
+        }
+        client.join().unwrap();
+        let deadline = Instant::now() + Duration::from_secs(5);
+        while count(admin,"SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND usename='bigbrotr_control'").await!=0 {
+            assert!(Instant::now()<deadline,"owned Control backend retained after parent exit");
+            tokio::time::sleep(Duration::from_millis(10)).await;
+        }
+        assert_eq!(
+            count(admin, "SELECT count(*) FROM control.browser_sessions").await,
+            0
+        );
+        case(
+            name,
+            json!({"baseline_rss_kib":baseline,"observed_rss_kib":resident,"signal_to_terminal_observed_ms":terminal_observed_ms,"signal_to_cleanup_ms":signaled.elapsed().as_millis(),"session_rows":0,"remaining_control_backends":0}),
+        );
+    }
+    let mut server = Server::start(binary, config, home, "after-parent-loss");
+    server.ready();
+    let issued = login(PASSWORD);
+    assert_eq!(issued.status, 201);
+    let token = issued.cookie("BigBrotrLocalSession");
+    assert_eq!(me(&token).status, 200);
+    assert_eq!(
+        count(admin, "SELECT count(*) FROM control.browser_sessions").await,
+        1
+    );
+    server.stop();
+    case(
+        "explicit-successor-login-after-hash-parent-loss",
+        json!({"sessions":1}),
+    );
+}
+
+async fn run(binary: PathBuf, home: PathBuf, fault_cases: bool) {
     fs::create_dir(&home).unwrap();
     assert!(
         TcpStream::connect(ADDRESS).is_err(),
@@ -324,6 +462,27 @@ async fn run(binary: PathBuf, home: PathBuf) {
         ],
     );
     let principal = enrolled["principal_id"].as_str().unwrap().to_string();
+    if fault_cases {
+        cli(
+            &binary,
+            &config,
+            &[
+                "migrate",
+                "apply",
+                "--target",
+                "806",
+                "--user",
+                "postgres",
+                "--password-ref",
+                &admin_ref,
+            ],
+        );
+        admin.batch_execute("GRANT SELECT,INSERT,UPDATE ON control.browser_sessions,control.login_buckets TO bigbrotr_control; GRANT DELETE ON control.browser_sessions TO bigbrotr_control").await.unwrap();
+        faults(&binary, &config, &home, &admin).await;
+        drop(admin);
+        driver.await.unwrap().unwrap();
+        return;
+    }
     let mut missing = Server::start(&binary, &config, &home, "missing-migration");
     missing.terminal(3);
     assert!(fs::read(&missing.stdout).unwrap().is_empty());
@@ -646,10 +805,15 @@ fn main() {
     let mut args = std::env::args().skip(1);
     let binary = PathBuf::from(args.next().expect("actual product binary"));
     let home = PathBuf::from(args.next().expect("fresh isolated fixture directory"));
+    let faults = match args.next().as_deref() {
+        None => false,
+        Some("--faults-only") => true,
+        _ => panic!("unknown fixture mode"),
+    };
     assert!(args.next().is_none());
     tokio::runtime::Builder::new_current_thread()
         .enable_all()
         .build()
         .unwrap()
-        .block_on(run(binary, home));
+        .block_on(run(binary, home, faults));
 }

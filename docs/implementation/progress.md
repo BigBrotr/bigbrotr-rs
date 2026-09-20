@@ -1,7 +1,7 @@
 # Current execution checkpoint
 
-Observed 2026-09-20 on Mac after native private-session HTTP qualification and
-owned lab cleanup. Navigation only: follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint)
+Observed 2026-09-20 on Mac during the native private-session HTTP fault qualification follow-up;
+previous owned labs remain stopped/retained. Navigation only: follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint)
 and verify Git, dirty files, evidence and resources before continuing.
 
 ## Mandate and active boundary
@@ -21,16 +21,17 @@ another diagnostic command instead of the real read consumer.
 
 ## Git and ownership
 
-Local main is unpublished candidate `5a4e0d13b51f51d06f50252bf7644b68a83b5be5`,
-tree`140784712b5a2b6b7c015e1b088bbb64397e0139`; origin/main and remote
-refs/heads/main last freshly verified at pushed4b4daf1. Candidate was clean before
-Git-bundle transfer and matches the detached940-file Tux export. Root-owned dirty
-work now records qualification only: checkpoint, laboratory inventory, HTTP report,
-P08 task evidence link and experiment README. No product change after tested source.
-No parallel writer/merge/rebase. Root sole integrator; catalog_guard_review completed
-read-only code/fixture review. All tests terminal; all owned labs stopped/retained.
-Review this report/docs diff, verify remote/resource state, then commit/push verified
-candidate and evidence. No browser/API readiness or product completion claim.
+Local main, origin/main and remote refs/heads/main are freshly verified at pushed
+`8974fb85598fb4cf896dee2714ba7c0072d602dd`. Product/fixture candidate
+`5a4e0d13b51f51d06f50252bf7644b68a83b5be5`, tree
+`140784712b5a2b6b7c015e1b088bbb64397e0139`, retains its exact940-file identity
+in the HTTP report.8974fb8 adds qualification/docs only. Current root-owned dirty files are browser_http_probe.rs, management/tests.rs,
+experiments/browser-sessions/{http_native.py,README.md} and this checkpoint.
+They add fault fixtures and a cfg(test) join discriminator; no production change
+after the tested source. No parallel writer/merge/rebase. Root sole integrator;
+read-only catalog_guard_review reviewed this follow-up. All local tests terminal;
+no new remote lab yet. Fresh SSH confirms prior HTTP containers stopped/PID0/noOOM
+and eight unrelated workloads running. No browser/API readiness or product completion claim.
 
 Preserve `.research/worktrees/producer-closing-old-writer`, last verified clean at
 `f899896b1207f5e71c4e39d9ab7814b293814735` on
@@ -152,10 +153,9 @@ entry; finalfixture persists/asserts one marker, proves unchanged session rows,
 then performs fresh Controlpoll successfully. No P08-T02 step complete.
 
 Report/doc diff and21rawhash references were reviewed; verified commits pushed.
-Next connect actual private Axum listener and owned hash supervisor. Files:
+The actual private Axum listener and owned hash supervisor are connected below. Files:
 management/sessions.rs, storage/postgres/browser_sessions.rs, nativeprobe and
-experiments/browser-sessions/native.py. HTTP/audit/reauth/scopedgrant/streamdrain
-are not implemented. Do not replace the real consumer with another diagnosticCLI.
+experiments/browser-sessions/native.py. Audit/reauth/scopedgrant/streamdrain remain unimplemented. Do not replace the real consumer with another diagnosticCLI.
 
 The adapter preserves initial seven grants and accepted policy bytes. Two fenced
 transactions bracket Argon2: fixed persistent account/peer hash buckets charge
@@ -215,9 +215,22 @@ source/artifact/dependency identities. Exact axum0.8.9,hyper1.11.1,hyper-util0.1
 have defaults disabled;15 new packages, no old version/checksum change. Official
 archives were verified; raw Axum serve would detach unbounded connection tasks.
 
-Next bounded action after evidence commit/push: actual browser cookie/CSRF and
-active-hash shutdown qualification, then ambiguous COMMIT/PG crash with live
-cookies. Continue login audit, reauthentication and scope-qualified grants needed
+Next bounded action: commit the reviewed fixture candidate and run native
+active-hash shutdown/parent-loss qualification through the actual executable in a
+fresh exact-Git Tux lab, then ambiguous COMMIT/PG crash with live cookies and actual
+browser cookie/CSRF checks. The new fixture observes hash-sized resident growth,
+TERM/CONT or SIGKILL, no issuance and successor login. It does not trace an exact
+Argon2 instruction. A separate actual Management::stop test holds a controlled
+blocking worker: HTTP closes while stop stays pending and request/hash grants
+remain, then release permits join and zero grants. That test and scoped Clippy
+passed on Mac in .research/implementation/management-http/owned-hash-join; the
+probe build/Clippy passed in fault-fixture-first. No runtime RED is claimed. Review
+corrected the signal metric to capture terminal observation before SQL/client
+cleanup, and added an actual persistent count for successor issuance. Native
+cases are NOT_RUN. Ignored fault-native launch/transfer scripts are prepared;
+no resources created. Failed fixture assertions do not prove the TCP thread join.
+Tool discovery found no browser MCP capability; inspect selected browser tooling
+and use an isolated actual client rather than treating raw TCP as a browser. Continue login audit, reauthentication and scope-qualified grants needed
 by the real private history reader. P08-T02 owns these steps; no parallel plan or
 diagnostic CLI. Cookies are host scoped, never isolated by port; the trusted-host
 loopback profile assumes trusted services sharing that host. A browser second-port
