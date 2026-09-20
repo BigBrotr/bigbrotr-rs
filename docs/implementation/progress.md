@@ -21,15 +21,15 @@ another diagnostic command instead of the real read consumer.
 
 ## Git and ownership
 
-Local main/origin/main/remote main were freshly verified clean at pushed
-`48da158dbe1984b05df9913b0f04b5c963665594`. Candidate661b54b and its941-file
-native capture are qualified below; product remains5a4e0d1. Root now owns the
-COMMIT fixture follow-up: browser_http_probe.rs and its new commit.rs module,
-http_native.py, new http_crash.py/test_commit_targets.py, native_commit_proxy.py,
-experiment README and this checkpoint. No production or migration change. No
-parallel writer/merge/rebase; catalog_guard_review is read-only. Existing labs
-are all stopped/retained. No new remote resources yet. No session/API readiness
-or product completion claim.
+Local main is unpublished candidate `c98398bba9cb137d7589db62d8100c35f1eb7841`,
+tree`a9f0f00b1d8dfba2fa5dcc7aea269dab14372291`; origin/main/remote last verified
+at pushed48da158. Candidate has native FAIL before runtime ready: fixture added
+unsupported postgres.control.port instead of endpoint. No COMMIT/crash cases ran.
+Root-owned dirty correction is commit.rs endpoint construction plus this checkpoint
+and inventory. Actual Mac config validate reproduces old exit3 and corrected exit0;
+probe build/Clippy PASS in commit-fixture-endpoint. Product unchanged from5a4e0d1.
+No parallel writer/merge/rebase. All owned labs stopped/retained; failed capture
+verified. Next commit correction and transfer to a new isolated exact-Git lab.
 
 Preserve `.research/worktrees/producer-closing-old-writer`, last verified clean at
 `f899896b1207f5e71c4e39d9ab7814b293814735` on
@@ -80,6 +80,17 @@ holder files/413 preexisting lifecycle records. Main capture SHA256:
 `e16a91c279e51cbf6d3710efa226ecbc0a5712a66614ed657cc870d060ae2de7`.
 
 ## Resources
+
+Failed COMMIT lab `/home/tux/bigbrotr-implementation-20260917/runs/browser-http-commits-c98398b`
+is stopped/retained, owner`08ef161d9e5e73aee6b5d6c577915b5b`,
+runner`d17fcf6062a8a6c78ed71152a4f36c893be437659e41d3b3ac349ce2d178ec7b`,
+PG`dafcabdfad4b0fadafd7ca8c1f58f600d21dbba57145597e3d4f01074aeab9f0`.
+Terminal collector INCOMPLETE (native FAIL/SQL expectations unmet), cleanup verified:
+zero clients, both stopped/PID0/noOOM,422prior resources preserved,8unrelated running,
+owned empty network removed. All18capture entries/945source hashes verified;
+SHA256`71056d847ef6f8d6b9b21d27f846a34f3c21d1e466e1004aaaa591175a61794c`.
+Raw .research/implementation/management-http/commit-native; preserve failure.
+Replacement scripts prepared in commit-native-endpoint; no replacement lab yet.
 
 Fault lab `/home/tux/bigbrotr-implementation-20260917/runs/browser-http-faults-661b54b`
 is stopped/retained. Owner`89670549e4d93cd1cb2b6769427ab84e`,
@@ -253,7 +264,8 @@ corrected secret-bearing assert output, process guard before READY, target-speci
 logout and other-row/xmin preservation; issuance preserves previous rows/xmin.
 External controller retries transient replacement observations within one residual
 deadline; identity/owner/OOM mismatches remain fatal. It requires actual old/new postmaster
-identity, unchanged rows and only then marker release. Native cases NOT_RUN.
+identity, unchanged rows and only then marker release. First native candidate FAILED before cases for unsupported fixture configuration;
+corrected endpoint passes actual offline validation. Native cases remain NOT_RUN.
 Prepared ignored scripts under .research/implementation/management-http/commit-native
 inventory all previous resources and compare production inputs to5a4e0d1.
 After qualification, continue actual browser cookie/CSRF and the real read consumer.

@@ -67,7 +67,10 @@ impl Proxy {
             .unwrap()
             .as_table_mut()
             .unwrap()
-            .insert("port".into(), self.ready["port"].as_i64().unwrap().into());
+            .insert(
+                "endpoint".into(),
+                format!("127.0.0.1:{}", self.ready["port"].as_u64().unwrap()).into(),
+            );
         let path = home.join(format!("{name}.toml"));
         fs::write(&path, toml::to_string(&document).unwrap()).unwrap();
         path

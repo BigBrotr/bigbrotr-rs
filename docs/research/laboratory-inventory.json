@@ -17269,6 +17269,29 @@
       "observation": "Three actual executable/PG cases plus one controlled owned-worker join PASS. Independent SQL/audit PASS;21capture/941source hashes verified on Mac. Both containers stopped/PID0/noOOM,420previous resources unchanged,8unrelated running,owned empty network removed.",
       "evidence": "docs/implementation/evidence/p08-browser-http-faults-native-20260920.json",
       "capture_sha256": "22304a2d8bd3cf474e65abc82106ad824fd7ff21c7ae341c90fec0b23a53699c"
+    },
+    "commit_first_failure": {
+      "source": "c98398bba9cb137d7589db62d8100c35f1eb7841",
+      "tree": "a9f0f00b1d8dfba2fa5dcc7aea269dab14372291",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/browser-http-commits-c98398b",
+      "owner": "08ef161d9e5e73aee6b5d6c577915b5b",
+      "container": "bigbrotr-implementation-browser-http-commits-c98398b",
+      "postgres": "bigbrotr-implementation-browser-http-commits-c98398b-pg",
+      "network": "bigbrotr-implementation-browser-http-commits-c98398b",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "state": "stopped-retained",
+      "source_files": 945,
+      "started_at": "2026-09-20T11:32:02.160138+00:00",
+      "network_id": "348e11a49f0bd7b7f11421307b868d17c77084d7236861007393e05268d7e215",
+      "postgres_id": "dafcabdfad4b0fadafd7ca8c1f58f600d21dbba57145597e3d4f01074aeab9f0",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "d17fcf6062a8a6c78ed71152a4f36c893be437659e41d3b3ac349ce2d178ec7b",
+      "network_state": "removed after owner/no-endpoint audit; containers and data retained",
+      "terminal_audit": "terminal-audit.json",
+      "local_root": ".research/implementation/management-http/commit-native",
+      "observation": "Native fixture FAIL before ready: invented postgres.control.port key rejected. No COMMIT case or crash ran. Collector INCOMPLETE as required; zero clients,422prior resources unchanged,8unrelated running. Both containers stopped/PID0/noOOM; network removed. All18capture/945source files verified on Mac.",
+      "capture_sha256": "71056d847ef6f8d6b9b21d27f846a34f3c21d1e466e1004aaaa591175a61794c"
     }
   }
 }
