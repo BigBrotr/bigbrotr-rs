@@ -162,10 +162,13 @@ as immutability-diagnosis.json. No product mutation was needed. The first manage
 loss and its retry ran before this assertion, but the matrix remains FAIL.
 The independent event_cases.py --capture-cut subsequently passes both complete
 signed normal/history cuts at354de75. Sessions54278/40715/9782 are joined.
-A corrected harness uses a separate Git checkout and namespace, preserving failed
-fixtures, unchanged product artifacts and initial raw reports. It also checks all
-130 historical rows rather than relying on a prefix zip. Rerun the corrected CLI
-matrix before terminal collection/exclusion; no final qualification is claimed.
+The corrected b4c3a2e Python harness passes15 actual CLI cases in a separate Git
+checkout/namespace, preserving failed fixtures and unchanged354de75 artifacts. It also checks all
+130 historical rows rather than relying on a prefix zip. Its full matrix is joined (session23960). A separately executed Rust protocol
+fixture then hit the same FK-before-TRUNCATE-trigger assumption after six successful
+checks (session39417, joined). Correct its CASCADE control and use a separately
+identified rebuilt example over unchanged product sources; preserve its failed
+protocol-cases.json. Terminal collection/exclusion remains due.
 
 Previous lab /home/tux/bigbrotr-implementation-20260917/runs/archive-membership-3369091,
 owner6fc7bd6cc597c6218a2d47bad888737e. Runner
@@ -205,9 +208,10 @@ immutable-marker retry and preserved old NULL history. These practical cases
 remain NOT_RUN. Diff review and example compilation are complete. Independent AI review found
 and corrected a fixture schema-width error (u16, not u32); its Python digest now
 matches the frozen literal protocol vector. The expanded initializer contract was
-also reconciled with its historical evidence. Candidate354de75 is transferred. Transfer the reviewed harness-only correction through Git and run the complete
-CLI matrix with --namespace retry, keeping the354de75 artifacts and source export
-unchanged. Collect both raw outcomes, independently verify, and close the owned lab. Continue the P02-T04/T07
+also reconciled with its historical evidence. Candidate354de75 is transferred. Transfer the Rust protocol-fixture correction through Git, build only that
+example against the unchanged product sources, and run its fresh named fixture.
+Keep354de75 installed artifacts/export and b4c3a2e CLI evidence unchanged. Collect
+all outcomes, independently verify, and close the owned lab. Continue the P02-T04/T07
 frontier bridge: verified
 committed complete batches -> contiguous complete prefix for every topology
 stream (including zero) -> actual Archive consumer owner/frontier -> immutable

@@ -70,7 +70,7 @@ async fn prepare(database: &str, installed: bool) {
 }
 
 pub async fn run() {
-    let home = directory("/out/coordinator-protocol".into());
+    let home = directory("/out/persistence-protocol".into());
     let data = directory(home.join("data"));
     let identity = CatalogIdentity::local(
         dataset(),
@@ -78,16 +78,16 @@ pub async fn run() {
         &format!("{}/", data.display()),
     )
     .unwrap();
-    let catalog_database = "bbprotocol_catalog";
+    let catalog_database = "bbpersistence_catalog";
     let (admin, driver) = connect("postgres", "postgres").await;
     admin
-        .batch_execute("CREATE DATABASE bbprotocol_catalog")
+        .batch_execute("CREATE DATABASE bbpersistence_catalog")
         .await
         .unwrap();
     drop(admin);
     driver.await.unwrap().unwrap();
     let (admin, driver) = connect(catalog_database, "postgres").await;
-    admin.batch_execute("REVOKE ALL ON DATABASE bbprotocol_catalog FROM PUBLIC; REVOKE ALL ON SCHEMA public FROM PUBLIC").await.unwrap();
+    admin.batch_execute("REVOKE ALL ON DATABASE bbpersistence_catalog FROM PUBLIC; REVOKE ALL ON SCHEMA public FROM PUBLIC").await.unwrap();
     drop(admin);
     driver.await.unwrap().unwrap();
     installed_catalog::initialize(&home, catalog_database, &format!("{}/", data.display()));
@@ -121,10 +121,10 @@ pub async fn run() {
         &batch,
     )
     .unwrap();
-    for database in ["bbprotocol_current", "bbprotocol_old"] {
-        prepare(database, database == "bbprotocol_current").await;
+    for database in ["bbpersistence_current", "bbpersistence_old"] {
+        prepare(database, database == "bbpersistence_current").await;
     }
-    let database = "bbprotocol_current";
+    let database = "bbpersistence_current";
     let before = snapshot(database).await;
     assert_eq!(before, serde_json::json!({"bindings":[],"attempts":[]}));
     let (mut owner, driver) = claim(database, &local, 10).await;
@@ -271,7 +271,7 @@ pub async fn run() {
     for statement in [
         "UPDATE control.archive_coordinators SET protocol_version=1",
         "DELETE FROM control.archive_coordinators",
-        "TRUNCATE control.archive_coordinators",
+        "TRUNCATE control.archive_coordinators CASCADE",
     ] {
         let error = admin.batch_execute(statement).await.unwrap_err();
         assert_eq!(error.code().unwrap().code(), "23514");
@@ -283,7 +283,7 @@ pub async fn run() {
 
     // Complete old issuance first, then apply the actual additive migration.
     // Existing rows stay byte/logically intact; no NULL is filled in by inference.
-    let database = "bbprotocol_old";
+    let database = "bbpersistence_old";
     let (mut owner, driver) = claim(database, &local, 20).await;
     assert!(
         owner
