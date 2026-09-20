@@ -20,14 +20,17 @@ the backlog; do not create another plan or diagnostic public command.
 
 ## Git and ownership
 
-Main HEAD is2e0d50d566c481f5b0dcf92d50d11c73f12efb12. Product candidate
+Main HEAD and freshly checked private origin/main are
+988bc4a7f694d878736c825cba1f34e2220c4335, with a clean working tree before this
+checkpoint update. The four qualified commits were pushed normally after fetch;
+no remote work required reconciliation. Product candidate
 354de750ffbcda93e7784bfaaf17b801522caf0f has tree
 968bbf5ed67e5e1c2f87db3e1dddac7b1b9a1f1f. Follow-ups b4c3a2e and2e0d50d only
-correct practical fixtures/checkpoints. Private origin/main was freshly verified
-at0a1b6e9b68a7f6fcf3f9cfd44576df25a070cc3d before this run; candidates are not yet
-pushed. Current root-owned dirty work is the qualification JSON, owning contracts,
-user documentation, task prose, inventory and this checkpoint. No parallel writer,
-merge/rebase or live local tool session. Review/commit/push this outcome next.
+correct practical fixtures/checkpoints. Qualification988bc4a records the scoped
+results and preserved failures. Current root-owned work starts the connected
+frontier/pin consumer. No parallel writer or merge/rebase. Offline capture audit
+was rerun after resumption and passes all37 file hashes and recorded outcomes;
+the stopped Tux resources below are dated terminal observations, not a new run.
 
 Preserve .research/worktrees/producer-closing-old-writer, last verified clean at
 f899896b1207f5e71c4e39d9ab7814b293814735 on research/producer-closing-old-writer,
@@ -113,8 +116,7 @@ power/host-loss evidence and root/parent durable provisioning.
 
 ## Next bounded action and open gates
 
-Complete evidence/diff review and push the coherent qualification outcome. Then
-implement the connected P02-T04/T07 Archive-owner/frontier/snapshot/pin consumer.
+Implement the connected P02-T04/T07 Archive-owner/frontier/snapshot/pin consumer.
 Read complete owning contracts and relevant SQL/callers. Existing consumer_frontier_
 revisions, consumer_frontiers, snapshot_leases and retention_claims in0002 provide
 coordination shapes; current Control ownership and CatalogCapture are not Archive
