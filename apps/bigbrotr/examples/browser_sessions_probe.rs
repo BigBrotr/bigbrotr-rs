@@ -1,0 +1,409 @@
+//! Isolated real PostgreSQL adapter test. Never a product management command.
+use bigbrotr::{
+    management::{
+        credentials::HASH_RESERVATION,
+        sessions::{BrowserSecret, IssuedSession, SessionError, SessionLifetime},
+    },
+    runtime::{
+        OwnedPermit, ProcessEnvelope, ResourceBudget, ResourceLimits, ResourceRequest, WaiterLimits,
+    },
+    storage::postgres::{
+        control_owner::{ClaimRequest, ControlSession, OwnerError},
+        migration_runner,
+    },
+};
+use bigbrotr_model::{DatasetId, ProcessIncarnation};
+use sha2::{Digest, Sha256};
+use std::{cell::Cell, time::Duration};
+use tokio_postgres::{Client, Config, NoTls};
+
+const PASSWORD: &[u8] = b"Independent owner password 2026";
+const POLICY: &str = r#"{"fixture":"browser-session-storage-only"}"#;
+fn validate(document: &str, digest: [u8; 32]) -> Result<(), OwnerError> {
+    if serde_json::from_str::<serde_json::Value>(document).unwrap()
+        != serde_json::from_str::<serde_json::Value>(POLICY).unwrap()
+        || digest != <[u8; 32]>::from(Sha256::digest(POLICY))
+    {
+        return Err(OwnerError::InvalidPolicy);
+    }
+    Ok(())
+}
+fn permit() -> OwnedPermit {
+    ResourceBudget::new(
+        ProcessEnvelope::new(
+            HASH_RESERVATION,
+            0,
+            ResourceLimits::new(HASH_RESERVATION, 1, 0, 0),
+            WaiterLimits::new(0, 0),
+        )
+        .unwrap(),
+    )
+    .try_acquire(ResourceRequest::data(HASH_RESERVATION, 1, 0).unwrap())
+    .unwrap()
+}
+async fn login(owner: &mut ControlSession, lifetime: SessionLifetime) -> IssuedSession {
+    let challenge = owner
+        .begin_browser_login("alice", "127.0.0.1".parse().unwrap())
+        .await
+        .unwrap();
+    let verified = challenge.verify(PASSWORD, &mut permit()).unwrap();
+    owner
+        .finish_browser_login(verified, lifetime)
+        .await
+        .unwrap()
+}
+async fn reset_buckets(admin: &Client) {
+    admin
+        .batch_execute("DELETE FROM control.login_buckets")
+        .await
+        .unwrap();
+}
+fn case(name: &str) {
+    println!("{}", serde_json::json!({"case":name,"status":"PASS"}));
+}
+
+async fn run(mut config: Config) {
+    let (mut admin, driver) = config.connect(NoTls).await.unwrap();
+    let driver = tokio::spawn(driver);
+    migration_runner::run(&mut admin, 18, true, &Cell::new(false))
+        .await
+        .unwrap();
+    admin.batch_execute(r#"
+        INSERT INTO control.datasets(dataset_id,instance_id,created_at_us) VALUES(decode(repeat('01',16),'hex'),decode(repeat('02',16),'hex'),0);
+        INSERT INTO control.principals(principal_id,dataset_id,kind,created_at_us,database_role,local_os_uid)
+            VALUES(decode(repeat('10',16),'hex'),decode(repeat('01',16),'hex'),'local',0,'fixture',0);
+        INSERT INTO control.local_accounts(principal_id,dataset_id,username,initial_owner,active,credential_revision,grant_revision)
+            VALUES(decode(repeat('10',16),'hex'),decode(repeat('01',16),'hex'),'alice',true,true,1,1);
+        INSERT INTO control.local_credentials(principal_id,dataset_id,credential_revision,format,argon_version,memory_kib,passes,lanes,salt,password_hash)
+            VALUES(decode(repeat('10',16),'hex'),decode(repeat('01',16),'hex'),1,'argon2id-v1',19,65536,3,1,decode(repeat('02',16),'hex'),decode('a9f16b27ee4188b48954ee896ca04320bdbe34f4c2c0b9f4f332d9daffc892ff','hex'));
+        INSERT INTO control.principal_grants SELECT dataset_id,principal_id,action,'dataset',dataset_id FROM control.local_accounts,
+            unnest(ARRAY['data.read','status.read','roles.control','budgets.change','policy.change','principals.manage','audit.read']) action;
+    "#).await.unwrap();
+    let digest: [u8; 32] = Sha256::digest(POLICY).into();
+    admin.execute("INSERT INTO control.config_revisions(revision,dataset_id,schema_version,authority_mode,document,document_digest,accepted_source_digest,accepted_at_us,actor_id) VALUES(1,decode(repeat('01',16),'hex'),1,'managed',$1::text::jsonb,$2::bytea,$2::bytea,0,decode(repeat('10',16),'hex'))", &[&POLICY,&&digest[..]]).await.unwrap();
+    admin.execute("INSERT INTO control.policy_revisions(revision,dataset_id,config_revision,schema_version,document,document_digest,accepted_at_us,actor_id) VALUES(1,decode(repeat('01',16),'hex'),1,1,$1::text::jsonb,$2::bytea,0,decode(repeat('10',16),'hex'))", &[&POLICY,&&digest[..]]).await.unwrap();
+    admin
+        .batch_execute("UPDATE control.datasets SET config_revision=1,policy_revision=1")
+        .await
+        .unwrap();
+    let before: String = admin
+        .query_one(
+            "SELECT row_to_json(c)::text FROM control.local_credentials c",
+            &[],
+        )
+        .await
+        .unwrap()
+        .get(0);
+    assert_eq!(
+        migration_runner::run(&mut admin, 806, true, &Cell::new(false))
+            .await
+            .unwrap()
+            .applied,
+        1
+    );
+    assert_eq!(
+        before,
+        admin
+            .query_one(
+                "SELECT row_to_json(c)::text FROM control.local_credentials c",
+                &[]
+            )
+            .await
+            .unwrap()
+            .get::<_, String>(0)
+    );
+    assert_eq!(
+        admin
+            .query_one("SELECT count(*) FROM control.principal_grants", &[])
+            .await
+            .unwrap()
+            .get::<_, i64>(0),
+        7
+    );
+    admin.batch_execute("GRANT USAGE ON SCHEMA control TO bigbrotr_control; GRANT SELECT,INSERT,UPDATE ON ALL TABLES IN SCHEMA control TO bigbrotr_control; GRANT DELETE ON control.browser_sessions TO bigbrotr_control; GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA control TO bigbrotr_control").await.unwrap();
+    case("additive-upgrade-preserves-password-and-seven-grants");
+    config
+        .user("bigbrotr_control")
+        .password(std::fs::read("/secrets/bigbrotr_control").unwrap());
+    let (client, owner_driver) = config.connect(NoTls).await.unwrap();
+    let owner_driver = tokio::spawn(owner_driver);
+    let (mut owner, _) = ControlSession::acquire(
+        client,
+        ClaimRequest {
+            dataset: DatasetId::try_from([1; 16]).unwrap(),
+            instance: DatasetId::try_from([2; 16]).unwrap(),
+            authority_mode: "managed".into(),
+            role_instance_id: [31; 16],
+            incarnation: ProcessIncarnation::try_from([41; 16]).unwrap(),
+            lease_ttl: Duration::from_secs(60),
+        },
+        validate,
+        &Cell::new(false),
+    )
+    .await
+    .unwrap();
+
+    let first = login(&mut owner, SessionLifetime::default()).await;
+    let seen = owner
+        .inspect_browser_session(&first.session, true)
+        .await
+        .unwrap();
+    assert_eq!(seen.stored_actions.len(), 7);
+    assert!(!seen.stored_actions.iter().any(|a| a == "history.read"));
+    assert_eq!(seen.expires_at_us - first.observation.expires_at_us, 0);
+    let different = BrowserSecret::parse_hex(&[b'a'; 64]).unwrap();
+    assert_eq!(
+        owner
+            .revoke_browser_session(&first.session, &different)
+            .await,
+        Err(SessionError::Denied)
+    );
+    assert!(
+        owner
+            .inspect_browser_session(&first.session, false)
+            .await
+            .is_ok()
+    );
+    case("login-me-wrong-csrf-and-no-implicit-history-grant");
+    let challenge = owner
+        .begin_browser_login("alice", "127.0.0.1".parse().unwrap())
+        .await
+        .unwrap();
+    assert!(matches!(
+        challenge.verify(b"Independent owner password WRONG", &mut permit()),
+        Err(SessionError::Denied)
+    ));
+    owner.poll_policy(validate).await.unwrap();
+    case("wrong-password-does-not-poison-control");
+
+    let challenge = owner
+        .begin_browser_login("alice", "127.0.0.1".parse().unwrap())
+        .await
+        .unwrap();
+    let verified = challenge.verify(PASSWORD, &mut permit()).unwrap();
+    admin.batch_execute("UPDATE control.local_accounts SET active=false; UPDATE control.local_accounts SET active=true").await.unwrap();
+    assert!(matches!(
+        owner
+            .finish_browser_login(verified, SessionLifetime::default())
+            .await,
+        Err(SessionError::Denied)
+    ));
+    assert!(matches!(
+        owner.inspect_browser_session(&first.session, false).await,
+        Err(SessionError::Denied)
+    ));
+    owner.poll_policy(validate).await.unwrap();
+    case("deactivate-reactivate-invalidates-hash-and-old-session");
+
+    let challenge = owner
+        .begin_browser_login("alice", "127.0.0.1".parse().unwrap())
+        .await
+        .unwrap();
+    let verified = challenge.verify(PASSWORD, &mut permit()).unwrap();
+    admin.batch_execute("BEGIN; UPDATE control.local_accounts SET credential_revision=2; UPDATE control.local_credentials SET credential_revision=2; COMMIT").await.unwrap();
+    assert!(matches!(
+        owner
+            .finish_browser_login(verified, SessionLifetime::default())
+            .await,
+        Err(SessionError::Denied)
+    ));
+    let same_revision = admin
+        .batch_execute(
+            "UPDATE control.local_credentials SET password_hash=decode(repeat('ff',32),'hex')",
+        )
+        .await
+        .unwrap_err();
+    assert_eq!(same_revision.code().unwrap().code(), "23514");
+    case("reset-during-hash-refuses-and-same-revision-replacement-rejected");
+    reset_buckets(&admin).await;
+    let second = login(&mut owner, SessionLifetime::default()).await;
+    admin
+        .batch_execute("UPDATE control.local_accounts SET grant_revision=grant_revision+1")
+        .await
+        .unwrap();
+    assert_eq!(
+        owner
+            .inspect_browser_session(&second.session, false)
+            .await
+            .unwrap()
+            .grant_revision,
+        2
+    );
+    owner
+        .revoke_browser_session(&second.session, &second.csrf)
+        .await
+        .unwrap();
+    owner
+        .revoke_browser_session(&second.session, &second.csrf)
+        .await
+        .unwrap();
+    assert!(matches!(
+        owner.inspect_browser_session(&second.session, false).await,
+        Err(SessionError::Denied)
+    ));
+    let resurrection = admin
+        .batch_execute("UPDATE control.browser_sessions SET revoked_at_us=NULL")
+        .await
+        .unwrap_err();
+    assert_eq!(resurrection.code().unwrap().code(), "23514");
+    case("grant-edit-keeps-session-logout-terminal-idempotent");
+
+    let short = login(
+        &mut owner,
+        SessionLifetime::new(Duration::from_secs(10), Duration::from_secs(1)).unwrap(),
+    )
+    .await;
+    let blocker = admin.transaction().await.unwrap();
+    blocker
+        .query_one(
+            "SELECT principal_id FROM control.local_accounts FOR UPDATE",
+            &[],
+        )
+        .await
+        .unwrap();
+    let inspect = owner.inspect_browser_session(&short.session, true);
+    let release = async {
+        tokio::time::sleep(Duration::from_millis(1300)).await;
+        blocker.rollback().await.unwrap();
+    };
+    let (result, ()) = tokio::join!(inspect, release);
+    assert!(matches!(result, Err(SessionError::Denied)));
+    owner.poll_policy(validate).await.unwrap();
+    case("account-lock-held-beyond-idle-cannot-resurrect-by-touch");
+
+    reset_buckets(&admin).await;
+    let crossing = login(
+        &mut owner,
+        SessionLifetime::new(Duration::from_secs(10), Duration::from_secs(1)).unwrap(),
+    )
+    .await;
+    admin.batch_execute("CREATE FUNCTION public.delay_touch() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN PERFORM pg_sleep(1.3); RETURN NEW; END $$; CREATE TRIGGER a_delay_touch BEFORE UPDATE ON control.browser_sessions FOR EACH ROW WHEN (NEW.revoked_at_us IS NULL) EXECUTE FUNCTION public.delay_touch()").await.unwrap();
+    let before_touch: String = admin
+        .query_one(
+            "SELECT json_agg(s ORDER BY session_id)::text FROM control.browser_sessions s",
+            &[],
+        )
+        .await
+        .unwrap()
+        .get(0);
+    assert!(matches!(
+        owner.inspect_browser_session(&crossing.session, true).await,
+        Err(SessionError::Denied)
+    ));
+    assert_eq!(
+        before_touch,
+        admin
+            .query_one(
+                "SELECT json_agg(s ORDER BY session_id)::text FROM control.browser_sessions s",
+                &[]
+            )
+            .await
+            .unwrap()
+            .get::<_, String>(0)
+    );
+    owner.poll_policy(validate).await.unwrap();
+    admin.batch_execute("DROP TRIGGER a_delay_touch ON control.browser_sessions; DROP FUNCTION public.delay_touch()").await.unwrap();
+    case("expiry-crossing-between-clock-read-and-touch-is-normal-denial");
+
+    let isolation = admin
+        .build_transaction()
+        .isolation_level(tokio_postgres::IsolationLevel::RepeatableRead)
+        .start()
+        .await
+        .unwrap();
+    let refused = isolation.execute("INSERT INTO control.browser_sessions SELECT decode(repeat('fe',16),'hex'),dataset_id,principal_id,credential_revision,authentication_revision,decode(repeat('fe',32),'hex'),csrf_digest,issued_at_us,expires_at_us,idle_window_us,last_seen_at_us,idle_expires_at_us,NULL FROM control.browser_sessions LIMIT 1", &[]).await.unwrap_err();
+    assert_eq!(refused.code().unwrap().code(), "23514");
+    assert_eq!(
+        refused.as_db_error().unwrap().message(),
+        "browser session issuance requires read committed"
+    );
+    isolation.rollback().await.unwrap();
+    case("repeatable-read-issuance-refused-before-stale-capacity-snapshot");
+
+    reset_buckets(&admin).await;
+    for _ in 0..5 {
+        assert!(
+            owner
+                .begin_browser_login("alice", "127.0.0.1".parse().unwrap())
+                .await
+                .is_ok()
+        );
+    }
+    assert!(matches!(
+        owner
+            .begin_browser_login("alice", "127.0.0.2".parse().unwrap())
+            .await,
+        Err(SessionError::Throttled)
+    ));
+    owner.poll_policy(validate).await.unwrap();
+    case("persistent-account-quota-across-peer-change");
+    reset_buckets(&admin).await;
+    for n in 0..20 {
+        assert!(
+            owner
+                .begin_browser_login(&format!("unknown{n}"), "::ffff:127.0.0.1".parse().unwrap())
+                .await
+                .is_ok()
+        );
+    }
+    assert!(matches!(
+        owner
+            .begin_browser_login("alice", "127.0.0.1".parse().unwrap())
+            .await,
+        Err(SessionError::Throttled)
+    ));
+    case("peer-quota-canonicalizes-ipv4-mapped-ipv6");
+    reset_buckets(&admin).await;
+    for n in 0..8 {
+        if n == 4 {
+            reset_buckets(&admin).await;
+        }
+        let _ = login(&mut owner, SessionLifetime::default()).await;
+    }
+    reset_buckets(&admin).await;
+    let challenge = owner
+        .begin_browser_login("alice", "127.0.0.1".parse().unwrap())
+        .await
+        .unwrap();
+    let verified = challenge.verify(PASSWORD, &mut permit()).unwrap();
+    assert!(matches!(
+        owner
+            .finish_browser_login(verified, SessionLifetime::default())
+            .await,
+        Err(SessionError::Capacity)
+    ));
+    owner.poll_policy(validate).await.unwrap();
+    assert_eq!(
+        admin
+            .query_one("SELECT count(*) FROM control.browser_sessions", &[])
+            .await
+            .unwrap()
+            .get::<_, i64>(0),
+        8
+    );
+    case("eight-session-capacity-and-safe-terminal-cleanup");
+    owner.release().await.unwrap();
+    owner_driver.await.unwrap().unwrap();
+    drop(admin);
+    driver.await.unwrap().unwrap();
+}
+fn main() {
+    let database = std::env::args().nth(1).expect("fresh isolated database");
+    let mut config = Config::new();
+    config
+        .host("127.0.0.1")
+        .dbname(database)
+        .user("postgres")
+        .password(std::fs::read("/secrets/postgres").unwrap())
+        .connect_timeout(Duration::from_secs(5))
+        .application_name("bigbrotr-browser-session-test");
+    tokio::runtime::Builder::new_current_thread()
+        .enable_all()
+        .build()
+        .unwrap()
+        .block_on(async {
+            tokio::time::timeout(Duration::from_secs(120), run(config))
+                .await
+                .expect("bounded native scenarios");
+        });
+}

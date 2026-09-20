@@ -135,6 +135,29 @@ initial session maximum 8 hours and idle expiry 30 minutes, configurable. Remote
 management requires TLS and secure cookies. External identity and Nostr login
 can later authenticate an enrolled principal without changing authorization.
 
+The first browser-session storage profile uses the selected eight-hour/thirty-minute
+lifetimes, at most eight retained sessions per account and a twenty-second maximum
+between charging a login attempt and the final issuance credential check. This
+is not a maximum COMMIT latency. Password work runs
+outside SQL transactions; issuance rechecks the complete credential and a separate
+account authentication generation after hashing. Deactivation/reactivation and
+credential replacement advance that generation; ordinary grant changes do not.
+Session issuance generates fresh independent session/CSRF secrets. A lost issuance
+response cannot recover plaintext from their hashes: retry is an explicit new
+login, subject to the same limits, never an automatic credential reissue.
+
+The initial persistent attempt profile uses 256 account-name hash buckets and 256
+socket-peer hash buckets per dataset, with five and twenty attempts respectively
+per sixty-second window. IPv4-mapped IPv6 peers share the IPv4 bucket. Unknown names
+never create identities or unbounded counter keys. Hash collisions conservatively
+deny attempts; successful authentication does not reset the counters. These are
+explicit initial implementation limits, not a measured capacity claim. The
+configurable session/security profile still requires an explicit accepted-policy
+upgrade; adding registry defaults must not silently reinterpret stored documents.
+Internal refreshes do not count as browser activity. Revocation is terminal, and
+touching after an idle or absolute deadline cannot revive a session. A stored
+session observation is not a data-action lease or evidence of completed drain.
+
 | Action | Initial permission bundle | Additional requirement |
 |---|---|---|
 | Read allowed data/status | Viewer | Resource/input visibility permits that principal |

@@ -21,15 +21,18 @@ another diagnostic command instead of the real read consumer.
 
 ## Git and ownership
 
-Local main contains unpublished product candidate
-`eceab88b31a318203b0a104e4f0c02e48c0bf8b0`, tree
-`06a71bb804022f9a67761df28017cad20f75c491`; private origin/main was verified at
-`8f3c3c744710904fd9a4a1bd19440c4b301d1ddf` before this qualification. Candidate
-was clean when transferred through Git; Tux exported924 hashed files. Root's
-subsequent edits are the scoped evidence, task/reference documentation, this
-checkpoint and laboratory inventory, to be reviewed/committed/pushed next.
-No parallel writer, merge or rebase. Independent read-only query review finished;
-no reviewer engine execution. No local or remote build/test remains active.
+Base local main/private origin/main is pushed `34720bafb1c221089aec04ee4458994f07bfb6db`.
+Root is preparing one unpublished exact-Git candidate for browser session storage
+and native tests. Dirty files are root-owned: additive migration0806/catalog,
+management/session types, private Control adapter/wiring, native test probe/runner,
+focused tests and owning documentation. No existing published SQL was edited.
+No parallel writer, merge or rebase. Independent read-only review found expiry
+crossing, stale-isolation and post-lock clock boundaries; root added corrections
+and discriminatory native scenarios. Mac token/schema tests and scoped Clippy
+passed after review corrections (2 token/lifetime,16 schema tests). One recheck
+launcher refused an already-existing output directory before running commands;
+the distinct reviewed output then passed. No Tux lab yet.
+GitHub remains private bigbrotr-rs. HTTP has not been exposed.
 
 Preserve `.research/worktrees/producer-closing-old-writer`, last verified clean at
 `f899896b1207f5e71c4e39d9ab7814b293814735` on
@@ -107,44 +110,51 @@ one deliberately active original pin obligation after the negative COMMIT case.
 
 ## Next bounded product action
 
-Review the final report/doc diff and hash references, commit the evidence and push
-coherently. Then connect private selection and actual pin to authenticated history
-and export consumers. Do not treat this lookup or an AccountObservation as access
-capability. The query's topology is caller-declared, so derive bounds/snapshot/
-topology together from the certified retained pin. Public typed missing/unavailable/
-corrupt/resource outcomes remain required: current native Missing becomes parent
-ObservationUnknown. LIMIT2 bounds result count, not scanned bytes; implement the
-selected scan admission before public use. Existing native reservations do not
-qualify the shared public64MiB memory profile.
+Qualify the new additive0806 browser-session adapter on isolated PG16.15 before
+wiring its actual private listener. New files: management/sessions.rs,
+storage/postgres/browser_sessions.rs, browser_sessions_probe.rs and
+experiments/browser-sessions/native.py. Current Mac raw checks and the proposed
+exact-source launcher are under `.research/implementation/management-sessions/`.
+Initial RED was missing-API compilation, not runtime fault evidence. No native
+session case has executed yet. Do not call P08-T02 or any session journey complete.
 
-Focused owning reading already covered authentication.rs, credentials.rs,
-policy_authority.rs, control_owner.rs, serve.rs, activation.rs, configuration.rs,
-access/self_inspection,0801/0802/0805, private-administration/read-view contracts,
-P06-T01/T02/T03 and P08-T02 sections, full event protocol/native/parent/probe/harness.
-The next HTTP consumer's selected adapter is axum0.8.9/Hyper1/Tower0.5 from
-`docs/research/dependency-selections.md`; only its selected-set and HTTP sections
-were read for this next boundary (a whole-file read was truncated). Follow the
-linked exact official source/API evidence before adding dependencies/listeners.
-No HTTP/session/grant change exists yet.
+The adapter preserves initial seven grants and accepted policy bytes. Two fenced
+transactions bracket Argon2: fixed persistent account/peer hash buckets charge
+first; after hash, reread the full credential and account authentication generation.
+Deactivation/reactivation and credential replacement revoke old sessions; grant
+revision changes do not. Eight retained sessions/account,8h/30min defaults,
+20s maximum age at final credential check (not durable COMMIT), hash-only session/
+CSRF secrets. Expected denied/expired/throttled/capacity results complete the SQL
+transaction without poisoning Control. Expiry during touch suppresses the SQL row
+update; the adapter checks affected rows. INSERT requires READ COMMITTED and
+reads the clock after account locking. Review suggestions are statically addressed,
+not yet engine-qualified.
 
-Initial owner has data.read but no history/export grant. Add an explicit audited,
-reauthenticated additive history grant; never backfill or infer one from admin.
-0802 represents first activation only;0805 allows only seven initial actions.
-Any new action/schema is additive. Independent contract review found no requirement
-to bump global policy for a pure grant addition: doing so would stop the initial
-producer's immutable registration epoch (initial_batch.rs preflight), requiring
-explicit handoff. Use a monotonic account grant revision and fresh authorization;
-restrictions still require pending/applied authority loss plus bounded drain of
-affected work. grant_revision is not currently a live security generation.
+Next bounded command: finish scoped Mac checks/diff review, make an unpublished
+candidate, transfer clean exact source via Git, launch the inventoried native session
+lab and inspect all real cases. Then retain evidence/cleanup and continue P08-T02
+private Axum consumer. HTTP must use a bounded typed channel into the existing
+supervisor, shared process budget, owned connection tasks and owned/joined hash
+work; stop admission and join both before Control release. Do not put the Send,
+not Sync LocalCoordinator or its Cell-based operations in Axum State. Axum0.8.9
+selected; its raw serve helper has unbounded detached connection tasks, so use
+an explicitly owned Hyper loop. Exact dependency source/API reading remains before
+adding transport dependencies. No such dependencies were added yet.
 
-AccountObservation ends its SQL snapshot before Argon2 and is historical only.
-Fresh principal-active/credential revision/grant revision/action/scope checks are
-required after the bounded blocking hash. Control poll_policy alone sees no grant
-revocation. Bind any live lease to the actual principal/credential/action/scope/
-incarnation and current policy; response delay cannot extend its5s request-start
-validity. Previously admitted output cannot be relabeled with newer authority.
-LifecycleOutput's4096-byte post-cleanup diagnostics cannot carry served data;
-delivery must be bounded/interruptible and retain authority/custody until it ends.
+Read-only grant/session contract review completed: separate scope-qualified
+history-grant table, reauthentication bound to command digest, grant revision CAS,
+effective per-scope generation and persistent pending/applied restrictive drain.
+Initial owner data.read is not history/export authority. Cookie port separation
+is not a security boundary; first history reader belongs on private same-origin
+listener. New configurable session policy needs explicit accepted-policy upgrade,
+not silent registry default fill. Audit, HTTP, reauthentication, grant activation,
+read pin/action lease integration and all later selected product work remain.
+
+When connecting native lookup, derive bounds/snapshot/topology together from the
+certified retained pin. Native Missing still maps to parent ObservationUnknown;
+public typed outcomes and actual scanned-byte admission remain required. LIMIT2
+is only a result bound. Existing native memory budgets do not qualify common64MiB
+read profile. AccountObservation/SessionObservation are never access capabilities.
 
 ## Preserved storage and review boundaries
 

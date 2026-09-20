@@ -18,6 +18,8 @@ mod archive_coordinator;
 mod archive_frontier;
 #[path = "archive_persistence.rs"]
 mod archive_persistence;
+#[path = "browser_sessions.rs"]
+mod browser_sessions;
 pub use archive_frontier::ArchiveFrontierReceipt;
 #[path = "snapshot_leases.rs"]
 mod snapshot_leases;

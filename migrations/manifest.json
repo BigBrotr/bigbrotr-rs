@@ -69,6 +69,10 @@
     {
       "version": 18,
       "name": "0018_archive_pin_recovery.sql"
+    },
+    {
+      "version": 806,
+      "name": "0806_browser_sessions.sql"
     }
   ],
   "reserved": [
