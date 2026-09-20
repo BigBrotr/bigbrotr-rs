@@ -21,11 +21,10 @@ another diagnostic command instead of the real read consumer.
 
 ## Git and ownership
 
-Local main/HEAD is candidate `709656d295542b80490d7abb6129b080b076f759`;
-pushed origin is `4b688f3`. Root owns the native static-response evidence and
-checkpoint/inventory updates. No other writer or merge/rebase was observed.
-Candidate changes only tests and qualification tooling/documentation; browser
-product sources remain b6d9d7e. Verify actual status before resumption.
+Local main/HEAD and freshly pushed origin are `9e3e44e`. Root owns a new
+independent PG issuance-audit oracle in browser_sessions_probe.rs plus the
+checkpoint/inventory updates. No product code or schema changed yet. This is an
+unpublished RED candidate, not a qualified feature. No other writer/merge/rebase.
 Private local
 session API production baseline5a4e0d1 and qualified COMMIT fixturee65116b remain
 unchanged history. Full candidate state is listed by Git, not this summary.
@@ -64,7 +63,7 @@ Verified owned cache retirements removed only .rlib/.rmeta from failed panel lab
 receipts and private data were retained and hash checked; unrelated resources
 were unchanged. These partial caches MUST NOT be reused. The three retirement
 receipts are under .research/implementation/private-panel/tux-*-cache-retirement.json
-and the laboratory inventory. Qualified e65116b and b6d9d7e caches remain intact.
+and the laboratory inventory. Only baseline e65116b remains an intact reusable cache; later retirement is below.
 
 [Qualified initial browser slice](evidence/p09-private-panel-native-20260920.json)
 at b6d9d7e completes all eight journeys on Chromium/Firefox/WebKit at both mounts.
@@ -85,8 +84,8 @@ Raw `private-panel/native-no-preload`; remote
 and ten container IDs. All stopped/PID0/noOOM; empty owned network removed, all
 471 prior containers preserved and eight unrelated workloads remain. Last free
 space 9,246,089,216 bytes. No remote experiment or cleanup debt remains. Preserve
-all failed labs and partial-cache exclusions above; e65116b and b6d9d7e caches
-remain intact. More space must be inventoried before another copied native build.
+all failed labs and partial-cache exclusions above; only e65116b remains intact
+after the additional qualified-cache retirement below. More space must be inventoried before another copied native build.
 
 The next test uses the actual HTTP listener, a 2 MiB verified static body and
 small TCP buffers. It requires the connection/bundle grants to remain before
@@ -117,11 +116,28 @@ container records unchanged; eight unrelated workloads remain. Free space is
 5,873,979,392bytes: inventory and verified retirement of inactive owned caches
 are required before another copied native build. No job or cleanup debt remains.
 
-Next bounded action: commit/push the native static qualification, then implement
-the P08-T02 authentication-audit/reauthentication foundation needed by explicit
-scope-qualified history grants. Read-only prerequisite mapping is in progress;
-no new authority or schema has been implemented. Reuse existing session and
-Control transactions; ordinary owner data.read still grants no history/export.
+Verified subsequent retirement removed2563 .rlib/.rmeta files (3,993,815,712
+logical bytes) from stopped b6d9d7e/709656d caches. All482 container records
+unchanged; eight unrelated workloads remain. Actual executables/shared libraries,
+sources/receipts/data hash preserved. These partial caches MUST NOT be reused;
+e65116b remains intact. Free space9,850,245,120bytes; receipt/inventory under
+private-panel/tux-qualified-cache-retirement.json. No active job or cleanup debt.
+
+Next bounded action: commit the independent issuance-audit regression and run
+one isolated PG/native RED via .research/implementation/session-audit/native-red.
+Expected observation: one actually committed session but zero matching accepted
+issue audits; no product correction exists yet. Then implement additive0807 and
+atomic issue/logout audit in the existing fenced transactions. Audit accepted
+means durable mutation, not browser cookie receipt. Use a partial unique index
+only for these actions; append logout only on an actual transition; no FK from
+audit subject to removable session rows and no backfill of old revocations.
+Audit failure must rollback mutation; unchanged retry must preserve attribution.
+All broader denied-attempt audit, configurable retention/capacity, reauth, grants
+and drain remain P08-T02 work. Read-only review confirmed these boundaries.
+Ordinary owner data.read still grants no history/export. First history consumer
+requires scoped grant CAS + reauth + principal/action/scope delivery authority,
+then retained pin/worker ownership through actual completion. Existing task files
+own those later steps; this checkpoint is not another plan.
 Forced detached-browser cleanup, late response/expiry races, frontend shared CI,
 authorized history read/export and all wider P09/M1/later product work remain open.
 

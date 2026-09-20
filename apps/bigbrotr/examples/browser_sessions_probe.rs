@@ -144,6 +144,20 @@ async fn run(mut config: Config) {
     .unwrap();
 
     let first = login(&mut owner, SessionLifetime::default()).await;
+    // Independent durable oracle: an issued credential must have one immutable
+    // attributable receipt in the same database, even if its HTTP reply is lost.
+    let issuance_audits: i64 = admin
+        .query_one(
+            "SELECT count(*) FROM control.management_audit a JOIN control.browser_sessions s ON a.dataset_id=s.dataset_id AND a.actor_id=s.principal_id AND a.subject_id=s.session_id WHERE a.action='browser.session.issue' AND a.outcome='accepted' AND a.config_revision=1",
+            &[],
+        )
+        .await
+        .unwrap()
+        .get(0);
+    assert_eq!(
+        issuance_audits, 1,
+        "issued session lacks its atomic audit receipt"
+    );
     let seen = owner
         .inspect_browser_session(&first.session, true)
         .await

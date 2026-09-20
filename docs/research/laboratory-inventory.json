@@ -17793,6 +17793,28 @@
       "evidence": "docs/implementation/evidence/p09-large-static-native-20260920.json",
       "capture_sha256": "e8133143d9fe00420e49ad0ea5ff6bba2039c2a00317181b4d38703f803f9daa",
       "observation": "One network-none container stopped/PID0/noOOM. All18 management tests and Clippy pass. All481 prior container records unchanged, eight unrelated workloads running; no new PG/network/volume.15 capture files and990 source hashes verified."
+    },
+    "qualified_cache_retirement": {
+      "receipt": ".research/implementation/private-panel/tux-qualified-cache-retirement.json",
+      "sha256": "4e1c9167760b32675d16f17fc48948f0ce572d6ec56efbad5c9b5e87d69c48be",
+      "state": "PASS",
+      "removed_files": 2563,
+      "removed_logical_bytes": 3993815712,
+      "containers_unchanged": 482,
+      "unrelated_running": 8,
+      "free_after": 9850245120,
+      "retired": [
+        "private-panel-no-preload-b6d9d7e",
+        "private-panel-static-response-709656d"
+      ],
+      "preserved": "Qualified executables, shared libraries, sources, receipts and data retained and hash checked. These partial Cargo caches must never be reused; e65116b remains intact."
     }
+  },
+  "implementation_session_audit_20260920": {
+    "owner": "root implementer",
+    "local_root": ".research/implementation/session-audit",
+    "state": "Preparing first independent native RED for atomic accepted issuance audit; no production implementation yet",
+    "source_base": "9e3e44e",
+    "scope": "P08-T02 accepted session mutation audit. Rejected attempts, retention maintenance, reauth, scope grants and delivery authority remain separate required work."
   }
 }
