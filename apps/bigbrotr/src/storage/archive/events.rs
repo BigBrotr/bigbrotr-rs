@@ -3,7 +3,7 @@ use super::{CatalogReaderCredentials, CatalogRoute, Preparation, PreparationErro
 use crate::runtime::{OwnedPermit, ResourceBudget, ResourceRequest};
 use bigbrotr_protocol::{
     VerifiedEvent,
-    archive_event::{EventObservation, EventRead, EventReadError},
+    archive_event::{EventMatch, EventObservation, EventQuery, EventRead, EventReadError},
 };
 use serde::Serialize;
 use std::{fs::File, sync::atomic::Ordering, time::Instant};
@@ -39,7 +39,13 @@ pub enum ArchiveEventError {
 struct Input<'a> {
     catalog: super::bootstrap::Input<'a>,
     catalog_id: bigbrotr_model::OwnerResourceId,
-    expected: &'a EventRead,
+    expected: Selection<'a>,
+}
+#[derive(Clone, Copy, Serialize)]
+#[serde(untagged)]
+enum Selection<'a> {
+    References(&'a EventRead),
+    Query(&'a EventQuery),
 }
 impl Preparation<'_> {
     /// Read two exact immutable references in one fresh native transaction.
@@ -53,11 +59,54 @@ impl Preparation<'_> {
         credential: CatalogReaderCredentials<'_>,
         budget: &ResourceBudget,
     ) -> Result<ArchivedEvent, ArchiveEventError> {
+        self.read_selected(
+            Selection::References(expected),
+            coordinator,
+            route,
+            credential,
+            budget,
+        )
+    }
+
+    /// Look up an ID under one permitted scope, exact native snapshot and source
+    /// cut. The caller must bind these inputs to its live authority and pin.
+    pub fn query_event(
+        self,
+        expected: &EventQuery,
+        coordinator: &super::LocalCoordinator,
+        route: &CatalogRoute<'_>,
+        credential: CatalogReaderCredentials<'_>,
+        budget: &ResourceBudget,
+    ) -> Result<ArchivedEvent, ArchiveEventError> {
+        self.read_selected(
+            Selection::Query(expected),
+            coordinator,
+            route,
+            credential,
+            budget,
+        )
+    }
+
+    fn read_selected(
+        self,
+        expected: Selection<'_>,
+        coordinator: &super::LocalCoordinator,
+        route: &CatalogRoute<'_>,
+        credential: CatalogReaderCredentials<'_>,
+        budget: &ResourceBudget,
+    ) -> Result<ArchivedEvent, ArchiveEventError> {
         let maximum = self.limits.max_encoded_bytes;
         let identity = coordinator.identity();
-        expected
-            .validate(maximum)
-            .map_err(ArchiveEventError::Input)?;
+        let (dataset, command) = match expected {
+            Selection::References(read) => {
+                read.validate(maximum).map_err(ArchiveEventError::Input)?;
+                (read.dataset, "read-event")
+            }
+            Selection::Query(query) => {
+                query.validate(maximum).map_err(ArchiveEventError::Input)?;
+                (query.dataset, "query-event")
+            }
+        };
         let output_bytes = maximum + 1024;
         // Conservative allocation floor for two native rows, JSON/Arrow UTF-8
         // conversion, nested empty tags, reconstructed facts and signature work.
@@ -67,7 +116,7 @@ impl Preparation<'_> {
             return Err(ArchiveEventError::ResourceLimit);
         }
         let (dsn, tls) = super::receipts::reader_connection(
-            expected.dataset,
+            dataset,
             identity,
             route,
             credential,
@@ -99,13 +148,7 @@ impl Preparation<'_> {
             .retain_custody()
             .map_err(|e| ArchiveEventError::Preparation(PreparationError::Custody(e)))?;
         let mut process = self
-            .start_reader(
-                "read-event",
-                &[maximum.to_string()],
-                budget,
-                coordinator,
-                tls,
-            )
+            .start_reader(command, &[maximum.to_string()], budget, coordinator, tls)
             .map_err(ArchiveEventError::Preparation)?;
         if process.reserve_data_output(output_bytes, grant).is_err() {
             // Allocation failure happens after spawn. Observe termination before
@@ -125,7 +168,10 @@ impl Preparation<'_> {
             return Err(ArchiveEventError::ObservationUnknown);
         }
         let (bytes, permit) = result.map_err(|_| ArchiveEventError::ObservationUnknown)?;
-        let (event, snapshot_id) = decode_response(&bytes, expected, maximum)?;
+        let (event, snapshot_id) = match expected {
+            Selection::References(read) => decode_response(&bytes, read, maximum)?,
+            Selection::Query(query) => decode_match(&bytes, query, maximum)?,
+        };
         if self.cancelled.load(Ordering::Relaxed) || Instant::now() >= self.deadline {
             return Err(ArchiveEventError::ObservationUnknown);
         }
@@ -136,6 +182,26 @@ impl Preparation<'_> {
             _custody: custody,
         })
     }
+}
+
+fn decode_match(
+    bytes: &[u8],
+    expected: &EventQuery,
+    maximum: usize,
+) -> Result<(VerifiedEvent, u64), ArchiveEventError> {
+    let observation: EventMatch =
+        serde_json::from_slice(bytes).map_err(|_| ArchiveEventError::ObservationUnknown)?;
+    if observation.event.id != expected.event_id
+        || observation.snapshot_id != expected.snapshot_id
+        || !expected.contains(observation.payload.source_record_id)
+        || !expected.contains(observation.eligibility.source_record_id)
+        || observation.payload.source_record_id == observation.eligibility.source_record_id
+    {
+        return Err(ArchiveEventError::ObservationUnknown);
+    }
+    let event = bigbrotr_protocol::verify_owned(observation.event, maximum)
+        .map_err(|_| ArchiveEventError::ObservationUnknown)?;
+    Ok((event, observation.snapshot_id))
 }
 
 fn decode_response(
@@ -183,5 +249,50 @@ mod tests {
         ));
         request.snapshot_id = None;
         assert!(decode_response(&bytes, &request, 4096).is_ok());
+
+        let query = EventQuery {
+            dataset: request.dataset,
+            event_id: request.event_id,
+            scope: request.scope,
+            topology_generation: bigbrotr_model::TopologyGeneration::new(0),
+            bounds: vec![bigbrotr_protocol::archive_cut::CutBound {
+                shard_id: 0,
+                owner_epoch: 1,
+                complete_through: 2,
+            }],
+            snapshot_id: 2,
+        };
+        let selected = serde_json::json!({"snapshot_id":2,"event":event,"payload":request.payload,"eligibility":request.eligibility});
+        assert!(decode_match(&serde_json::to_vec(&selected).unwrap(), &query, 4096).is_ok());
+        for field in ["payload", "eligibility"] {
+            for (part, value) in [
+                ("sequence", "3"),
+                ("owner_epoch", "2"),
+                ("dataset_id", &"04".repeat(16)),
+            ] {
+                let mut outside = selected.clone();
+                outside[field]["source_record_id"][part] = serde_json::json!(value);
+                assert!(
+                    matches!(
+                        decode_match(&serde_json::to_vec(&outside).unwrap(), &query, 4096),
+                        Err(ArchiveEventError::ObservationUnknown)
+                    ),
+                    "{field}/{part}"
+                );
+            }
+        }
+        let mut duplicate = selected.clone();
+        duplicate["eligibility"] = duplicate["payload"].clone();
+        assert!(decode_match(&serde_json::to_vec(&duplicate).unwrap(), &query, 4096).is_err());
+        let mut wrong_snapshot = query.clone();
+        wrong_snapshot.snapshot_id = 3;
+        assert!(
+            decode_match(
+                &serde_json::to_vec(&selected).unwrap(),
+                &wrong_snapshot,
+                4096
+            )
+            .is_err()
+        );
     }
 }

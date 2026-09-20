@@ -20,20 +20,26 @@ plan or another diagnostic command instead of the real read consumer.
 
 ## Git and ownership
 
-At this checkpoint preparation, local main HEAD is unpublished
-`0b7609fc65aab2d12e9260de15e563156aa3d266`; private origin/main was last verified at
-`a91fdd51172c1c66e9d603278480410ae68cc8b9`. Product candidate is
+Local main and private origin/main are verified at pushed
+`8f3c3c744710904fd9a4a1bd19440c4b301d1ddf`. Product recovery candidate is
 `51d35aea1c44a0a884ed9595114de7da89a83ebd`, tree
 `80c50e15d3d49013474e23f923badd988e84f68d`; schema oraclec0674ae and claim-negative
-oracle0b7609f do not change production. Evidence/doc commit and verified private
-push are the next Git boundary. Root-owned dirty files are report/contracts/task,
-checkpoint/inventory and the claim-negative harness cleanup fix. No parallel writer,
-merge or rebase. Independent AI review was read-only and ran no engines.
+oracle0b7609f do not change production. Working tree was clean after push. Root's
+next unpublished exact-source candidate contains the private event query protocol,
+native lookup, parent adapter and connected fixture. Qualification is pending.
+No parallel writer, merge or rebase. Independent AI review is read-only and runs
+no engines; catalog_guard_review is investigating the grant/activation boundary.
 
 Preserve `.research/worktrees/producer-closing-old-writer`, last verified clean at
 `f899896b1207f5e71c4e39d9ab7814b293814735` on
 `research/producer-closing-old-writer`, and other historical worktrees.
-Caches are never source authority. No local or remote test/build remains active.
+Caches are never source authority. A focused Mac native event/protocol/parent/Clippy
+run is active under `.research/implementation/archive-event-query/integrated`:11
+native event cases,2 protocol tests and1 parent test PASS; Clippy is compiling
+the native dependency graph. Subsequent review strengthened the duplicate oracle
+(two individually valid exact reads), same-ordinal/different-domain scopes and
+missing scope before corrupt body. Those fixture updates still require execution.
+No remote test/build remains active.
 Applied migrations0017 and0018 must not be rewritten.
 
 ## Executed current boundary
@@ -107,15 +113,45 @@ retained under their reports/inventory. Never restart a used output root.
 
 ## Next bounded product action
 
-After committing this evidence and private push, connect the native pin and
+Next execute the reviewed Mac checks and a fresh exact-Git Tux `--archive-event`
+build followed by `event_cases.py ROOT --query-lookup`; retain raw results and
+verify owned cleanup before qualification. Then connect the native pin and
 explicit recovery to the actual bounded authenticated event/export consumer.
-Read the existing P06 task/contracts and real authentication, grant, policy,
-Control renewal and output callers before changes. AccountObservation is historical
+Current focused reading includes complete authentication.rs, policy_authority.rs,
+control_owner.rs, serve.rs, activation.rs, configuration.rs, access/self_inspection,
+0801/0802/0805, private-administration and read-view contract; P06-T01/T02/T03
+and P08-T02 task sections. Remaining native selection/output/auth callers and
+linked identity/scope contracts need their bounded reads before edits. No new
+public behavior is advertised after the recovery qualification. The private
+event-ID lookup now selects eligibility in an explicit scope/cut, then the shared
+body, re-verifies full facts/signature in the same exact native snapshot, and
+returns internal references for the parent to recheck. Its initial native Mac
+RED was a missing-API compile failure; the first actual lookup test passes, while
+expanded native/protocol/parent tests pass before the final review fixture
+strengthening; Clippy is running. The existing event probe/harness now selects
+query mode with no caller-supplied FactRefs; its real-PG journey has not run yet. It is not principal
+authorization or a scanned-byte guarantee; those are still required before public
+use. AccountObservation is historical
 inspection, not reusable authentication. Its snapshot ends before Argon2: require
 fresh active principal/credential revision/grant revision/action/scope afterward.
-Initial owner grants omit history/export: add an explicit audited grant transition,
+Initial owner grants include data.read but omit explicit history/export: add an
+explicit audited grant transition,
 not a backfill or implicit administrator read authority. Control poll_policy alone
-cannot observe credential/grant revocation.
+cannot observe credential/grant revocation. The next design choice is the narrow
+explicit history grant/update consumer and its pending/applied restrictive-change
+barrier. Existing0802 only represents first zero-participant activation, and0805
+allows seven initial actions. Any new action/schema is additive; do not infer
+history permission from data.read or promote AccountObservation. A read-only
+independent review found no requirement to bump global policy for pure grant
+addition. Doing so would stop the initial producer at its immutable registration
+epoch (initial_batch.rs preflight), requiring an explicit handoff. Select an
+audited, reauthenticated additive grant with monotonic account revision and
+fresh consumer authorization; restrictions still need pending/applied authority
+loss plus bounded drain for affected work. grant_revision is not currently a
+live authority generation. No grant schema/implementation or native evidence
+exists yet. The read-only reviewer found no concrete product bypass and proposed the
+three stronger fixtures above. The parent currently conservatively maps native
+Missing to ObservationUnknown; public typed refusal semantics remain required.
 
 EventRead verifies native snapshot/references but not SourceCut or principal scope;
 caller checks both FactRefs against its pin cut and permitted scope. Preserve local

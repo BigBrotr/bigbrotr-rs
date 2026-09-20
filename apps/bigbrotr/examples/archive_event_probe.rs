@@ -12,7 +12,7 @@ use bigbrotr::{
     },
 };
 use bigbrotr_model::OwnerResourceId;
-use bigbrotr_protocol::archive_event::EventRead;
+use bigbrotr_protocol::archive_event::{EventQuery, EventRead};
 use serde::Deserialize;
 use std::{
     fs,
@@ -25,13 +25,19 @@ use zeroize::Zeroizing;
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
 struct Input {
-    expected: EventRead,
+    expected: Expected,
     catalog_id: OwnerResourceId,
     data_root: String,
     database: String,
     max_row_bytes: usize,
     deadline_ms: u64,
     cancel_file: Option<PathBuf>,
+}
+#[derive(Deserialize)]
+#[serde(untagged)]
+enum Expected {
+    References(EventRead),
+    Query(EventQuery),
 }
 fn main() {
     let args: Vec<_> = std::env::args_os().collect();
@@ -48,8 +54,11 @@ fn main() {
             sha256: ready["worker"].as_str().unwrap().parse().unwrap(),
         },
     };
-    let identity =
-        CatalogIdentity::local(input.expected.dataset, input.catalog_id, &input.data_root).unwrap();
+    let dataset = match &input.expected {
+        Expected::References(read) => read.dataset,
+        Expected::Query(query) => query.dataset,
+    };
+    let identity = CatalogIdentity::local(dataset, input.catalog_id, &input.data_root).unwrap();
     let password = Zeroizing::new(fs::read_to_string("/secrets/bigbrotr_receipt_reader").unwrap());
     let budget = ResourceBudget::new(
         ProcessEnvelope::new(
@@ -84,7 +93,7 @@ fn main() {
             .as_ref()
             .map_err(|e| ArchiveEventError::Preparation(PreparationError::Custody(*e)))
             .and_then(|coordinator| {
-                Preparation {
+                let preparation = Preparation {
                     installation: &installation,
                     temp_root: Path::new(&args[2]),
                     limits: PreparationLimits {
@@ -97,22 +106,25 @@ fn main() {
                     },
                     deadline: started + Duration::from_millis(input.deadline_ms),
                     cancelled: &cancelled,
+                };
+                let route = CatalogRoute {
+                    address: "127.0.0.1".parse().unwrap(),
+                    port: 5432,
+                    database: &input.database,
+                    tls: CatalogTls::LocalPlaintext(PlaintextBoundary::Loopback),
+                };
+                let credential = CatalogReaderCredentials {
+                    login: "bigbrotr_receipt_reader",
+                    password: &password,
+                };
+                match &input.expected {
+                    Expected::References(read) => {
+                        preparation.read_event(read, coordinator, &route, credential, &budget)
+                    }
+                    Expected::Query(query) => {
+                        preparation.query_event(query, coordinator, &route, credential, &budget)
+                    }
                 }
-                .read_event(
-                    &input.expected,
-                    coordinator,
-                    &CatalogRoute {
-                        address: "127.0.0.1".parse().unwrap(),
-                        port: 5432,
-                        database: &input.database,
-                        tls: CatalogTls::LocalPlaintext(PlaintextBoundary::Loopback),
-                    },
-                    CatalogReaderCredentials {
-                        login: "bigbrotr_receipt_reader",
-                        password: &password,
-                    },
-                    &budget,
-                )
             });
         done.store(true, Ordering::Relaxed);
         result

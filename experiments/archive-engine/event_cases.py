@@ -55,8 +55,9 @@ def cut_expectation(mode, prefix=False):
                               request_digest=cut_digest(read)), pin='not-granted')
 
 
-def main(root, capture_cut=False, reader_custody=False):
+def main(root, capture_cut=False, reader_custody=False, query_lookup=False):
     assert not (capture_cut and reader_custody)
+    assert not (query_lookup and (capture_cut or reader_custody))
     if capture_cut:
         frozen = json.loads((Path(__file__).resolve().parents[2]/'tests/fixtures/protocol/archive-cut.json').read_text())
         assert cut_digest(frozen['read']) == frozen['request_digest']
@@ -79,7 +80,7 @@ def main(root, capture_cut=False, reader_custody=False):
         artifacts.append(('event_reader', out/'archive-event-probe'))
     for label, path in artifacts:
         assert sha(path) == ready[label]
-    evidence = root/('cut-cases.json' if capture_cut else 'event-cases.json')
+    evidence = root/('query-cases.json' if query_lookup else 'cut-cases.json' if capture_cut else 'event-cases.json')
     assert not evidence.exists()
     result = dict(source=resources['source'], tree=resources['tree'], status='INCOMPLETE',
                   artifacts=ready, harness_sha256=sha(Path(__file__)),
@@ -134,9 +135,15 @@ def main(root, capture_cut=False, reader_custody=False):
         def reference(sequence):
             row = next(r for b in records for r in b['facts'] if r['sequence'] == sequence)
             return dict(source_record_id=dict(dataset_id='01'*16, shard_id=0, owner_epoch='1', sequence=str(sequence)), payload_digest=row['digest'])
-        return dict(expected=dict(dataset='01'*16, event_id=event_value['id'],
+        expected = dict(dataset='01'*16, event_id=event_value['id'],
                     scope=dict(dataset_id='01'*16, dictionary_kind=4, allocation_domain='04'*16, ordinal='1'),
-                    payload=reference(7), eligibility=reference(8)),
+                    payload=reference(7), eligibility=reference(8))
+        if query_lookup:
+            del expected['payload'], expected['eligibility']
+            expected.update(topology_generation='0',
+                bounds=[dict(shard_id=0, owner_epoch=1, complete_through=12 if mode=='history' else 10)],
+                snapshot_id=4 if mode=='history' else 3)
+        return dict(expected=expected,
                     catalog_id='5a'*16, data_root=f'/out/signed_{mode}/kind=7/',
                     database='bbpub_'+mode, max_row_bytes=1024*1024, deadline_ms=15000, cancel_file=None)
     def metadata(db):
@@ -150,7 +157,7 @@ def main(root, capture_cut=False, reader_custody=False):
     save()
     try:
         for mode in (['normal', 'history'] if capture_cut else ['normal', 'large', 'history']):
-            capture_for_mode = capture_cut or (reader_custody and mode != 'large')
+            capture_for_mode = capture_cut or ((reader_custody or query_lookup) and mode != 'large')
             value = EVENT
             if mode == 'large':
                 recipe = json.loads((source/'tests/fixtures/protocol/archive-event-response.json').read_text())
@@ -236,6 +243,19 @@ def main(root, capture_cut=False, reader_custody=False):
                 request['expected']['snapshot_id'] = 3
                 run_case('history-exact-previous', request, value)
             if mode == 'normal':
+                if query_lookup:
+                    for bound in [0, 6, 7, 8, 10]:
+                        bounded = copy.deepcopy(request)
+                        bounded['expected']['bounds'][0]['complete_through'] = bound
+                        run_case('prefix-'+str(bound), bounded, value if bound >= 8 else None)
+                    for variant in ['missing-stream', 'foreign-epoch', 'foreign-shard', 'unrelated-zero']:
+                        bounded = copy.deepcopy(request)
+                        bounds = bounded['expected']['bounds']
+                        if variant == 'missing-stream': bounds.clear()
+                        elif variant == 'foreign-epoch': bounds[0]['owner_epoch'] = 2
+                        elif variant == 'foreign-shard': bounds[0]['shard_id'] = 1
+                        else: bounds.append(dict(shard_id=1, owner_epoch=1, complete_through=0))
+                        run_case(variant, bounded, value if variant=='unrelated-zero' else None)
                 if reader_custody:
                     run_case('baseline-complete', request, value, executable='/out/native-tests/baseline-event-probe')
                 # Publication produced dictionary snapshot2 and signed-event
@@ -247,12 +267,14 @@ def main(root, capture_cut=False, reader_custody=False):
                     run_case('snapshot-'+str(snapshot), selected, None)
                 request['expected']['snapshot_id'] = 3
                 run_case('snapshot-exact', request, value)
-                for variant in ['scope', 'digest', 'event-id', 'missing', 'row-limit', 'zero-limit', 'wrong-catalog', 'unavailable-database']:
+                for variant in ['scope', *([] if query_lookup else ['digest']), 'event-id', 'missing', 'row-limit', 'zero-limit', 'wrong-catalog', 'unavailable-database']:
                     bad = copy.deepcopy(request)
                     if variant == 'scope': bad['expected']['scope']['ordinal'] = '2'
                     elif variant == 'digest': bad['expected']['payload']['payload_digest'] = '00'*32
                     elif variant == 'event-id': bad['expected']['event_id'] = '00'*32
-                    elif variant == 'missing': bad['expected']['payload']['source_record_id']['sequence'] = '99'
+                    elif variant == 'missing':
+                        if query_lookup: bad['expected']['bounds'][0]['complete_through'] = 6
+                        else: bad['expected']['payload']['source_record_id']['sequence'] = '99'
                     elif variant == 'row-limit': bad['max_row_bytes'] = 32
                     elif variant == 'zero-limit': bad['max_row_bytes'] = 0
                     elif variant == 'wrong-catalog': bad['catalog_id'] = '5b'*16
@@ -398,5 +420,6 @@ if __name__ == '__main__':
     parser.add_argument('root', type=Path)
     parser.add_argument('--capture-cut', action='store_true')
     parser.add_argument('--reader-custody', action='store_true')
+    parser.add_argument('--query-lookup', action='store_true')
     args = parser.parse_args()
-    main(args.root.resolve(), args.capture_cut, args.reader_custody)
+    main(args.root.resolve(), args.capture_cut, args.reader_custody, args.query_lookup)

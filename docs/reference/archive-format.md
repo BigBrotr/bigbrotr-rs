@@ -225,6 +225,33 @@ Rocks identities are independently checked. Selecting a snapshot is not acquirin
 its retention pin or authorizing the event; the caller still needs both through
 delivery.
 
+The private `query-event` consumer accepts an event ID, one complete qualified
+scope, ordered explicit source bounds, topology generation and a mandatory exact
+native snapshot. It first selects eligibility in that scope and cut, then finds
+the shared payload in the same cut. Both reference selection and full hydration
+use one native transaction. Zero prefixes and absent streams admit no records;
+unsigned source epochs/sequences retain their complete domain. The topology
+generation is caller-declared binding data, not a native certification. The
+admitting consumer must obtain it, bounds and snapshot from its actual retained
+pin/frontier and independently maintain current action/scope authority.
+
+Each logical lookup requires exactly one reference. Conflicting alternatives
+refuse even when both full facts individually verify. Full hydration still
+selects by source identity without filtering by digest, so a conflicting source
+duplicate is not hidden. Shared payload scope/envelope never selects the scope's
+signature or becomes public attribution. The private response includes both
+references; the parent checks their source membership, exact snapshot and event
+signature again, retaining its data grant and actual local custody until the
+decoded body drops. Existing exact-reference requests remain supported.
+
+This lookup has bounded request/result size, native memory, scratch space,
+deadline and supervised cancellation. `LIMIT 2` does not bound scanned bytes.
+The P06 scan admission, public typed missing/unavailable distinctions and live
+authorization consumer are still required: worker failure currently reaches the
+parent as `ObservationUnknown`, never as a global absence certificate. No SQL
+migration, persistent row format or public resource is introduced by this private
+parent/worker change. Its practical qualification is pending.
+
 
 ## Local prepared file persistence
 

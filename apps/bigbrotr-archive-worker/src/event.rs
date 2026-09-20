@@ -11,6 +11,8 @@ use duckdb::{
 use serde::{Deserialize, de::DeserializeOwned};
 
 pub use bigbrotr_protocol::archive_event::{EventObservation, EventRead, EventReadError};
+pub use query::EventQueryRequest;
+mod query;
 
 // No Debug/Serialize: the catalog holds the private reader credential.
 #[derive(Deserialize)]
@@ -22,17 +24,7 @@ pub struct EventRequest {
 }
 impl EventRequest {
     pub fn read(input: impl std::io::Read) -> Result<Self, EventReadError> {
-        use std::io::Read;
-        let mut bytes = Vec::new();
-        input
-            .take(32769)
-            .read_to_end(&mut bytes)
-            .map_err(|_| EventReadError::InvalidInput)?;
-        if bytes.len() > 32768 {
-            return Err(EventReadError::ResourceLimit);
-        }
-        let request: Self =
-            serde_json::from_slice(&bytes).map_err(|_| EventReadError::InvalidInput)?;
+        let request: Self = read_input(input)?;
         request
             .catalog
             .validate()
@@ -42,6 +34,18 @@ impl EventRequest {
             .validate(bigbrotr_protocol::archive_event::MAX_EVENT_ROW_BYTES)?;
         Ok(request)
     }
+}
+fn read_input<T: DeserializeOwned>(input: impl std::io::Read) -> Result<T, EventReadError> {
+    use std::io::Read;
+    let mut bytes = Vec::new();
+    input
+        .take(32769)
+        .read_to_end(&mut bytes)
+        .map_err(|_| EventReadError::InvalidInput)?;
+    if bytes.len() > 32768 {
+        return Err(EventReadError::ResourceLimit);
+    }
+    serde_json::from_slice(&bytes).map_err(|_| EventReadError::InvalidInput)
 }
 impl crate::engine::Engine {
     /// The parent owns current read authority and retention. This finite private

@@ -1,3 +1,4 @@
+use super::query::lookup_attached;
 use super::*;
 use crate::{
     engine::{Engine, EngineLimits},
@@ -5,6 +6,58 @@ use crate::{
     schema,
 };
 use bigbrotr_model::*;
+
+#[test]
+fn event_id_lookup_obeys_both_source_prefixes_and_exact_scope() {
+    let expected = signed("unsigned-maximum");
+    let home = tempfile::tempdir().unwrap();
+    let references = seed(home.path(), expected.clone());
+    let query = bigbrotr_protocol::archive_event::EventQuery {
+        dataset: references.dataset,
+        event_id: expected.id,
+        scope: references.scope,
+        topology_generation: TopologyGeneration::new(0),
+        bounds: vec![bigbrotr_protocol::archive_cut::CutBound {
+            shard_id: u32::MAX,
+            owner_epoch: u64::MAX,
+            complete_through: 2,
+        }],
+        snapshot_id: 2,
+    };
+    for variant in [
+        "complete",
+        "zero",
+        "before-eligibility",
+        "missing-stream",
+        "foreign-epoch",
+        "scope",
+        "event",
+    ] {
+        let mut request = query.clone();
+        match variant {
+            "zero" => request.bounds[0].complete_through = 0,
+            "before-eligibility" => request.bounds[0].complete_through = 1,
+            "missing-stream" => request.bounds.clear(),
+            "foreign-epoch" => request.bounds[0].owner_epoch = 1,
+            "scope" => request.scope.ordinal = Ordinal::new(1).unwrap(),
+            "event" => request.event_id = EventId::from_bytes([0; 32]),
+            _ => (),
+        }
+        let temp = tempfile::tempdir().unwrap();
+        let reader = engine_at(temp.path(), home.path(), true, Some(2)).unwrap();
+        let actual = lookup_attached(&reader.connection, &request, 4 * 1024 * 1024);
+        if variant == "complete" {
+            let actual = actual.unwrap();
+            assert_eq!(actual.snapshot_id, 2);
+            assert_eq!(actual.event, expected);
+        } else {
+            assert!(
+                matches!(actual, Err(EventReadError::Missing)),
+                "{variant}: {actual:?}"
+            );
+        }
+    }
+}
 
 #[test]
 fn private_request_is_closed_bounded_and_checks_cross_fact_identity_before_io() {
@@ -573,14 +626,218 @@ fn two_scopes_return_their_own_valid_signature_not_a_global_first_representative
         eligibility: private_fact.fact_ref(),
         ..public_read.clone()
     };
+    let other_domain = Fact::new(
+        SourceRecordId {
+            sequence: Sequence::new(4).unwrap(),
+            ..eligibility.source_record_id()
+        },
+        QualifiedRef {
+            allocation_domain: [3; 16].try_into().unwrap(),
+            ..eligibility.visibility_scope_id()
+        },
+        eligibility.recorded_at(),
+        eligibility.payload().clone(),
+    )
+    .unwrap();
+    let domain_read = EventRead {
+        scope: other_domain.visibility_scope_id(),
+        eligibility: other_domain.fact_ref(),
+        ..public_read.clone()
+    };
     let temp = tempfile::tempdir().unwrap();
     let writer = engine(temp.path(), home.path(), false);
     writer.connection.execute_batch(&format!("INSERT INTO archive.event_eligibility_facts SELECT * REPLACE(struct_update(source_record_id,sequence:=3::UBIGINT) AS source_record_id,struct_update(visibility_scope_id,ordinal:=1::UBIGINT) AS visibility_scope_id,from_hex('{}') AS sig,from_hex('{}') AS payload_digest) FROM archive.event_eligibility_facts",private.sig,private_fact.payload_digest())).unwrap();
+    writer.connection.execute_batch(&format!("INSERT INTO archive.event_eligibility_facts SELECT * REPLACE(struct_update(source_record_id,sequence:=4::UBIGINT) AS source_record_id,struct_update(visibility_scope_id,allocation_domain:=from_hex('{}')) AS visibility_scope_id,from_hex('{}') AS sig,from_hex('{}') AS payload_digest) FROM archive.event_eligibility_facts WHERE source_record_id.sequence=2",other_domain.visibility_scope_id().allocation_domain,private.sig,other_domain.payload_digest())).unwrap();
     drop(writer);
-    for (request, expected) in [(&public_read, &public), (&private_read, &private)] {
+    for (request, expected) in [
+        (&public_read, &public),
+        (&private_read, &private),
+        (&domain_read, &private),
+    ] {
         let temp = tempfile::tempdir().unwrap();
         let reader = engine(temp.path(), home.path(), true);
         let actual = read_attached(&reader.connection, request, 4 * 1024 * 1024).unwrap();
         assert_eq!(&actual.event, expected);
+        drop(reader);
+        let query = bigbrotr_protocol::archive_event::EventQuery {
+            dataset: request.dataset,
+            event_id: request.event_id,
+            scope: request.scope,
+            topology_generation: TopologyGeneration::new(0),
+            bounds: vec![bigbrotr_protocol::archive_cut::CutBound {
+                shard_id: u32::MAX,
+                owner_epoch: u64::MAX,
+                complete_through: 4,
+            }],
+            snapshot_id: 4,
+        };
+        let temp = tempfile::tempdir().unwrap();
+        let reader = engine_at(temp.path(), home.path(), true, Some(4)).unwrap();
+        let selected = lookup_attached(&reader.connection, &query, 4 * 1024 * 1024).unwrap();
+        assert_eq!(&selected.event, expected);
+        assert_eq!(selected.payload, request.payload);
+        assert_eq!(selected.eligibility, request.eligibility);
+    }
+}
+
+#[test]
+fn lookup_cannot_cross_a_body_prefix_and_rejects_conflicting_logical_duplicates() {
+    for variant in [
+        "body-after-cut",
+        "body-other-stream",
+        "body-duplicate",
+        "eligibility-duplicate",
+        "body-corrupt",
+    ] {
+        let home = tempfile::tempdir().unwrap();
+        let expected = signed("timestamp-zero");
+        let original = seed(home.path(), expected.clone());
+        let (body, eligibility, _) = facts(expected.clone());
+        let mut alternate_read = None;
+        let temp = tempfile::tempdir().unwrap();
+        let writer = engine(temp.path(), home.path(), false);
+        let mutation = match variant {
+            "body-after-cut" | "body-other-stream" => {
+                let changed_source = if variant == "body-after-cut" {
+                    SourceRecordId {
+                        sequence: Sequence::new(3).unwrap(),
+                        ..body.source_record_id()
+                    }
+                } else {
+                    SourceRecordId {
+                        owner_epoch: OwnerEpoch::new(1).unwrap(),
+                        ..body.source_record_id()
+                    }
+                };
+                let changed = Fact::new(
+                    changed_source,
+                    body.visibility_scope_id(),
+                    body.recorded_at(),
+                    body.payload().clone(),
+                )
+                .unwrap();
+                format!(
+                    "UPDATE archive.events SET source_record_id=struct_update(source_record_id,owner_epoch:={}::UBIGINT,sequence:={}::UBIGINT),payload_digest=from_hex('{}')",
+                    changed_source.owner_epoch.get(),
+                    changed_source.sequence.get(),
+                    changed.payload_digest()
+                )
+            }
+            // Different source IDs catch an implementation that first hydrates
+            // one arbitrary representative and only checks source duplicates.
+            "body-duplicate" | "eligibility-duplicate" => {
+                let (fact, table) = if variant == "body-duplicate" {
+                    (&body, "events")
+                } else {
+                    (&eligibility, "event_eligibility_facts")
+                };
+                let changed = Fact::new(
+                    SourceRecordId {
+                        sequence: Sequence::new(3).unwrap(),
+                        ..fact.source_record_id()
+                    },
+                    fact.visibility_scope_id(),
+                    fact.recorded_at(),
+                    fact.payload().clone(),
+                )
+                .unwrap();
+                let mut read = original.clone();
+                if variant == "body-duplicate" {
+                    read.payload = changed.fact_ref();
+                } else {
+                    read.eligibility = changed.fact_ref();
+                }
+                alternate_read = Some(read);
+                format!(
+                    "INSERT INTO archive.{table} SELECT * REPLACE(struct_update(source_record_id,sequence:=3::UBIGINT) AS source_record_id,from_hex('{}') AS payload_digest) FROM archive.{table}",
+                    changed.payload_digest()
+                )
+            }
+            _ => "UPDATE archive.events SET content=content||'altered'".into(),
+        };
+        writer.connection.execute_batch(&mutation).unwrap();
+        drop(writer);
+        if let Some(alternate) = alternate_read {
+            // Both alternatives are independently valid. Refusal must come from
+            // ambiguity, not the signature or fact-integrity checks.
+            for read in [&original, &alternate] {
+                let temp = tempfile::tempdir().unwrap();
+                let reader = engine_at(temp.path(), home.path(), true, Some(3)).unwrap();
+                assert_eq!(
+                    read_attached(&reader.connection, read, 4 * 1024 * 1024)
+                        .unwrap()
+                        .event,
+                    expected
+                );
+            }
+        }
+        let mut query = bigbrotr_protocol::archive_event::EventQuery {
+            dataset: original.dataset,
+            event_id: original.event_id,
+            scope: original.scope,
+            topology_generation: TopologyGeneration::new(0),
+            bounds: vec![bigbrotr_protocol::archive_cut::CutBound {
+                shard_id: u32::MAX,
+                owner_epoch: u64::MAX,
+                complete_through: if variant.ends_with("duplicate") { 3 } else { 2 },
+            }],
+            snapshot_id: 3,
+        };
+        let temp = tempfile::tempdir().unwrap();
+        let reader = engine_at(temp.path(), home.path(), true, Some(3)).unwrap();
+        let error = lookup_attached(&reader.connection, &query, 4 * 1024 * 1024).unwrap_err();
+        assert_eq!(
+            error,
+            if variant.starts_with("body-")
+                && matches!(variant, "body-after-cut" | "body-other-stream")
+            {
+                EventReadError::Missing
+            } else {
+                EventReadError::Mismatch
+            },
+            "{variant}"
+        );
+        drop(reader);
+        if variant == "body-corrupt" {
+            let mut absent = query.clone();
+            absent.scope.ordinal = Ordinal::new(3).unwrap();
+            let temp = tempfile::tempdir().unwrap();
+            let reader = engine_at(temp.path(), home.path(), true, Some(3)).unwrap();
+            assert_eq!(
+                lookup_attached(&reader.connection, &absent, 4 * 1024 * 1024).unwrap_err(),
+                EventReadError::Missing,
+                "absent scope must not hydrate a corrupt body"
+            );
+        }
+        // Expanding the explicit cut makes the complete pair available. An
+        // unrelated zero stream neither admits records nor changes the result.
+        match variant {
+            "body-after-cut" => query.bounds[0].complete_through = 3,
+            "body-other-stream" => query.bounds.insert(
+                0,
+                bigbrotr_protocol::archive_cut::CutBound {
+                    shard_id: u32::MAX,
+                    owner_epoch: 1,
+                    complete_through: 1,
+                },
+            ),
+            _ => continue,
+        }
+        query.bounds.insert(
+            0,
+            bigbrotr_protocol::archive_cut::CutBound {
+                shard_id: 0,
+                owner_epoch: 1,
+                complete_through: 0,
+            },
+        );
+        let temp = tempfile::tempdir().unwrap();
+        let reader = engine_at(temp.path(), home.path(), true, Some(3)).unwrap();
+        assert_eq!(
+            lookup_attached(&reader.connection, &query, 4 * 1024 * 1024)
+                .unwrap()
+                .event,
+            expected
+        );
     }
 }

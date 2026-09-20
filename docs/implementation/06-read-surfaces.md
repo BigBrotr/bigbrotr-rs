@@ -157,6 +157,12 @@ is an explicit resource. An ID lookup is not an archive-policy bypass.
   at `e1852b8` passes31 connected cases and nine native tests, including actual
   latest4/exact3 reads before and after PG crash. A numeric selector is not a
   retention or authorization lease.
+  The private event-ID lookup now resolves eligibility in one exact qualified
+  scope and both facts inside explicit source bounds at the retained native
+  snapshot, with parent membership/signature checks. Practical qualification is
+  pending. It does not certify the caller's topology or supply live action/scope
+  authorization, scanned-byte admission or public missing/unavailable semantics;
+  those remain required by steps2/4/5 and P06-T01.
 - [ ] **Step 4:** distinguish temporarily unavailable, corrupt, absent and
   policy-withheld bodies. Enforce bounded cold lookup and scan cost. Return
   resource unavailability or the documented policy result, not a partial body
