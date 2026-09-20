@@ -84,7 +84,9 @@ and `consumer_frontiers`, SELECT/INSERT/UPDATE on `consumers` and
 `consumer_frontier_revisions`, plus the invoker functions and existing owner/role
 privileges. These permissions do not authorize native catalog or file access.
 The [frontier candidate](../specification/archive-storage-contract.md#native-frontier-binding-candidate)
-is still undergoing qualification and supplies no pin or public read capability.
+has [scoped native and migration evidence](../implementation/evidence/p02-archive-frontier-native-20260920.json),
+including unchanged old rows/xmin through15->16 and refusal of head-only adoption.
+It supplies no pin or public read capability.
 
 Output is bounded JSON with format `bigbrotr-control-migration/1`, version/count
 strings, exact pending SQL hashes and explicit absent version as null. Exit 0
@@ -311,8 +313,8 @@ The following engine cases are required, with externally inspected rows and exac
 source/engine identities. The evidence above records single-session SQL, CLI,
 role and crash cases, followed by migration lock concurrency, ambiguous COMMIT
 and TLS, then config/owner/job/topology races with independently observed lock
-barriers and expected durable rows. The Archive frontier candidate has its own
-pending native/fault gates; protected reads and reclamation remain unimplemented. Each trigger
+barriers and expected durable rows. The Archive frontier has separately recorded native/fault evidence; topology
+handoff, protected reads and reclamation remain implementation gates. Each trigger
 has a concrete invariant and corresponding negative control below; a passing
 parser or successful DDL execution alone does not qualify them.
 

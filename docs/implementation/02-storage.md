@@ -337,9 +337,12 @@ The next connected candidate consumes that observed cut in the existing Control
 owner: additive0016 binds the actual Archive owner, complete frontier, selected
 original input identities and native snapshot atomically. Identical retries preserve
 attribution; historical result resolution is independent of latest native snapshot.
-The signed fixture now exercises this consumer. Native frontier qualification,
-source handoff, actual pins and served read/export remain open; do not treat the
-SQL-only unbound-empty-cut RED or Mac schema/Clippy checks as their completion.
+[Native frontier qualification](evidence/p02-archive-frontier-native-20260920.json)
+at `e64ee85` passes two signed histories,17 installed SQL/upgrade cases and15
+restart/commit/manager-loss/cancellation cases using fixture `4bdc20f` and harness
+`1865da9`. Complete old rows/xmin and eight-relation publication transitions are
+checked independently. Preserved harness failures remain INCOMPLETE. Source
+handoff, actual pins and served read/export remain open; no checkbox closes.
 
 **Depends on:** P02-T01/T02/T03 and P01-T05/T06.
 **Files:** application `src/storage/archive/{publisher,receipts,worker}.rs`,

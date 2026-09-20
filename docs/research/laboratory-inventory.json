@@ -15076,7 +15076,7 @@
       "network": "bigbrotr-implementation-archive-frontier-e64ee85-provisioned",
       "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
       "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
-      "state": "running",
+      "state": "stopped-retained",
       "source_files": 900,
       "started_at": "2026-09-20T06:15:32.266788+00:00",
       "network_id": "f676e78bb866e6a08236cf1ccde9af0764108a3bf16bf2069af76d6db896db55",
@@ -15086,8 +15086,21 @@
       "container_id": "4d9372b7e8884e771f2cca23f2614eb8710b1f10d8c5d278c2fe928ed39bb194",
       "local_raw": ".research/implementation/archive-frontier/provisioned",
       "purpose": "Unchanged e64 artifacts with explicit manager provisioning; actual signed frontier and recovery qualification",
-      "limits": "runner2CPU/6GiB/512PIDs;PG1CPU/1GiB/128PIDs;internal network,no host ports,read-only source",
-      "native_matrix": "PASS: two signed complete frontier histories; fault qualification pending"
+      "limits": "runner2CPU/6GiB/512PIDs;PG1CPU/1GiB/128PIDs; stopped/Pid0/noOOM,network removed",
+      "native_matrix": "PASS: two signed complete frontier histories; fault qualification pending",
+      "network_state": "removed after owner/no-endpoint audit; containers and data retained",
+      "terminal_audit": "terminal-audit.json",
+      "report": "docs/implementation/evidence/p02-archive-frontier-native-20260920.json",
+      "qualification": "PASS in scoped native frontier binding/recovery;15 fault cases; no pin or M1 claim",
+      "capture_sha256": "11b9a56737f3e6778a775ded0098cfee9cf6675eceaf03828e3bf73ab54e001b",
+      "capture_files": 28,
+      "preexisting_preserved": 401,
+      "remaining_pg_clients": 0,
+      "unrelated_running": 8,
+      "bigbrotr_running": 0,
+      "fixture_source": "4bdc20f38db0f6b0bccad04793cc401d7629bd90",
+      "harness_source": "1865da92a4a4ecb66e8a5afcfafed3631af36b6b",
+      "failures": "Initial fast-client observation race and incomplete expected nullable column shape retained; complete synchronized matrix passes"
     }
   },
   "implementation_monitor_corrections_20260918": {

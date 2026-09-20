@@ -1,0 +1,307 @@
+{
+  "format": "bigbrotr-archive-frontier-evidence/1",
+  "status": "PASS",
+  "scope": "P02-T04/T07 actual immutable native frontier binding and restart/commit recovery prerequisite; source handoff, pins, served read/export and M1 remain open",
+  "source": {
+    "revision": "e64ee8545436adf78ef4faf4cd46d188fb211660",
+    "tree": "8ca3cdded5f443b47fa008eae2d1da85d2b1f36c",
+    "files": 900,
+    "archive_sha256": "82919e129773843a82a334f9cb106f966eb0c04a513bfdedf0e9a06a8a1f8e32",
+    "manifest": {
+      "path": ".research/implementation/archive-frontier/provisioned/capture/out/build/source-manifest.json",
+      "bytes": 111204,
+      "sha256": "35e338aac57c0f24b6747fde9eaccf41fd192211821c9a2834a01d56343fe115"
+    },
+    "clean_and_unchanged": true,
+    "matched_mac_git": true,
+    "lock_sha256": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215"
+  },
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "host": {
+      "kernel": "Linux 6.12.101+deb13-amd64 x86_64 GNU/Linux",
+      "filesystem": "/dev/nvme0n1p2 ext4 rw,relatime,errors=remount-ro"
+    },
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "limits": "Runner2CPU/6GiB/512PIDs;PG1CPU/1GiB/128PIDs;512MiBtmpfs;internalnetwork,nohostports,readonlyprimarysource; no release keys",
+    "engines": {
+      "path": "contracts/release/archive-engine.json",
+      "bytes": 8159,
+      "sha256": "ae0069565ab9411928df0cf067822630c4f3a912919e61633b952f8077a5e2c1"
+    },
+    "dependencies": {
+      "path": "contracts/release/dependencies.json",
+      "bytes": 16208,
+      "sha256": "9bea8c27908c680afc63ec9b74c481ea522c2b7a32232ab4dbca82b1920d7dd0"
+    }
+  },
+  "artifacts": {
+    "control": "1198fdbe8df6c4226fde393ddb895364c54298f91dd6be8126f891d190d453ff",
+    "worker": "b7049b1013846bf53d373defa6230a9483d84e4bf844c5956f48795701aad389",
+    "publisher": "dc73ce711bac50bc116a69196e56179928cae488254555bc985f067c7f82ba6e",
+    "reader": "937e78a3b291015c91dcf5b1623aacca1fdd4a8bfd231f98b155059a260b9989"
+  },
+  "implementation": [
+    "Additive0016 extends common consumer frontiers with immutable original input IDs, native snapshot/count/request binding and actual Archive owner attribution to the current fenced Control issuer.",
+    "The typed adapter validates original retained whole inputs, exact intents, sealed topology and authoritative source closure under ordered source locks; native capture/local custody survive the bounded PG transaction and actual driver joins.",
+    "Historical unqualified owners/frontiers remain unchanged and cannot be adopted. New empty frontiers still require binding. Complete revision, binding, bounds, inputs and head commit atomically.",
+    "Identical retries resolve before owner replacement and preserve all original rows/xmin. Separate historical lookup resolves an old snapshot after latest advances; neither result grants a read pin or reclamation."
+  ],
+  "linux": {
+    "build": {
+      "path": ".research/implementation/archive-frontier/native/capture/out/native-tests/result.json",
+      "bytes": 2801,
+      "sha256": "5e47e776aff6ad7404ce787f67be576d6f92b82405b0bfc14453ab05d1804268"
+    },
+    "checks": {
+      "path": ".research/implementation/archive-frontier/native/capture/out/native-tests/checks/result.json",
+      "bytes": 4453,
+      "sha256": "6f273e7e2936f40a2bbb834f4d871a442c607e23a2157d2ebb9559fe9120ce73"
+    },
+    "schema_tests": {
+      "passed": 16,
+      "failed": 0,
+      "ignored": 0
+    },
+    "clippy": "PASS for selected product targets and separately rebuilt fault fixture",
+    "artifact_reuse": {
+      "path": ".research/implementation/archive-frontier/provisioned/capture/artifact-reuse.json",
+      "bytes": 893,
+      "sha256": "ab2eda6a2001121e23308bc8cabc9e7a1b9a3071f10331396a581f8e81c33856"
+    },
+    "sql": {
+      "result": {
+        "path": ".research/implementation/archive-frontier/native/capture/frontier-schema-cases-retry.json",
+        "bytes": 32204,
+        "sha256": "4a5ac4d1ca6f25ba922d7fbfb67d01a46c919ee321392341786afd4a579db07f"
+      },
+      "harness_source": "7758ce424ff26539000a4fb454abd4ba2799354e",
+      "cases": 17,
+      "scope": "Actual installed migrator/checksum ledger, unbound empty negative,15 synthetic relational cases, preserved schema15->16 history and refused head-only adoption; no native truth inferred from synthetic SQL"
+    },
+    "native": {
+      "result": {
+        "path": ".research/implementation/archive-frontier/provisioned/capture/cut-cases.json",
+        "bytes": 635037,
+        "sha256": "af6e7e04b84b83da3f8b00782e4643b0a06877b3d6279aa43f8e60ecc2c0f843"
+      },
+      "cases": 2,
+      "snapshots": [
+        3,
+        4
+      ],
+      "facts": [
+        10,
+        12
+      ],
+      "committed_batches": [
+        2,
+        3
+      ],
+      "parquet_files": [
+        8,
+        11
+      ],
+      "scope": "Actual signed full-row oracle, historical snapshot3 frontier resolved after snapshot4, identical retry and independently observed durable owner/head/bounds/selected inputs"
+    },
+    "recovery": {
+      "result": {
+        "path": ".research/implementation/archive-frontier/provisioned/capture/frontier-fault-cases-qualified.json",
+        "bytes": 672462,
+        "sha256": "b2f2c8af20af8da0f3fa1e2a80a1d62ccf7622a24d69db18cef9da3abbd0a9ef"
+      },
+      "cases": 15,
+      "names": [
+        "qualified-historical",
+        "qualified-prior-interruption",
+        "qualified-manager-before",
+        "qualified-manager-before-lookup",
+        "qualified-manager-before-retry",
+        "qualified-commit-before",
+        "qualified-commit-before-lookup",
+        "qualified-commit-before-retry",
+        "qualified-commit-after",
+        "qualified-commit-after-lookup",
+        "qualified-commit-after-retry",
+        "qualified-manager-after",
+        "qualified-manager-after-retry",
+        "qualified-cancel-blocked",
+        "qualified-stale-head"
+      ],
+      "fixture_source": "4bdc20f38db0f6b0bccad04793cc401d7629bd90",
+      "artifact_sha256": "b842416079b7f9c5ac8ee858920a500eb851863823894df2a0a281cb3d8cb986",
+      "build": {
+        "path": ".research/implementation/archive-frontier/provisioned/capture/out/frontier-fault-build/checks/result.json",
+        "bytes": 3344,
+        "sha256": "374492f2fef725f0f219eee32048e20835d208dfad5b69ec06f29a978d897272"
+      },
+      "source_manifest": {
+        "path": ".research/implementation/archive-frontier/provisioned/capture/out/frontier-fault-source-manifest.json",
+        "bytes": 111727,
+        "sha256": "878562da48a356d21c2fc48302ee0842872b3d808688b9b02a9a4005050e1602"
+      },
+      "harness_source": "1865da92a4a4ecb66e8a5afcfafed3631af36b6b",
+      "unchanged_product_inputs": true,
+      "results": [
+        "Manager loss while real snapshot INSERT is blocked refuses before COMMIT and rolls back all eight frontier/owner/role relations.",
+        "Before-forward COMMIT loss returns CommitUnknown with no new frontier; fresh lookup is absent and identical retry creates one complete revision.",
+        "After-complete reply loss returns CommitUnknown with the complete durable revision; fresh lookup and identical retry preserve all original values/xmin and do not mint an Archive epoch.",
+        "Manager loss at a proxy-held COMMIT after final verify can commit a historical receipt while actual local custody remains retained. Capture/manager closure reports failure; this is not a pin or read grant. Retry preserves the original rows.",
+        "Cancellation drops the actual future while SQL is blocked; the fixture then releases that blocker and joins both transports. All durable frontier relations remain unchanged. This does not measure permanent-blocker cancellation latency.",
+        "Stale expected head refuses atomically. Interrupted earlier harness publications are resolved by their original operation identity in fresh Control processes."
+      ]
+    }
+  },
+  "oracle": {
+    "frozen_cut": {
+      "path": "tests/fixtures/protocol/archive-cut.json",
+      "bytes": 3173,
+      "sha256": "2b067f166926542aaf7642598322c65e64aa24b35a7cf04f302cde71ddc42570"
+    },
+    "signed": {
+      "path": "experiments/archive-engine/signed_publication_oracle.py",
+      "bytes": 16215,
+      "sha256": "7ad4381bdc691d45245232d7cbdebeed039c6de0c182bcdc193b3479678917a4"
+    },
+    "faults": {
+      "path": "experiments/archive-engine/frontier_fault_cases.py",
+      "bytes": 20755,
+      "sha256": "9c98b65e37a43d4004008cb0bce28379d16e595362e7fbb0d8b821ec4e2733de"
+    },
+    "offline": {
+      "path": ".research/implementation/archive-frontier/offline-verification.json",
+      "bytes": 349,
+      "sha256": "aa08a15feb67a76b1c3df39b3903678cd3ee0f9e798023012a8b07c66dee5d2e"
+    },
+    "verifier": {
+      "path": ".research/implementation/archive-frontier/verify_capture.py",
+      "bytes": 4009,
+      "sha256": "aa84ab2da2d3498a7c246a1c945197bb2472cb4e7993eda32e5bb2a498252e58"
+    },
+    "rule": "Expected signed facts/private digest and eight-relation transitions are independently constructed; complete old values/xmin are preserved except explicitly checked owner release/role retirement/head change."
+  },
+  "red": {
+    "result": {
+      "path": ".research/implementation/archive-frontier/red.json",
+      "bytes": 1928,
+      "sha256": "c118fa959775499f691d9f1037a403284559aea5af7293ac15b4cf9d3a0dede2"
+    },
+    "stderr": {
+      "path": ".research/implementation/archive-frontier/red.stderr",
+      "bytes": 143,
+      "sha256": "8e114eaac120004f5bfb91bc504fb4e1faa362fee7ab3a879f72f0d5f17efbee"
+    },
+    "source": "9aa86b970d02240aaf202ce9f7f11732a995a996",
+    "scope": "Actual PG schema15 accepts an unbound empty Archive frontier; exact same negative refuses atomically under installed schema16"
+  },
+  "failures": [
+    {
+      "result": {
+        "path": ".research/implementation/archive-frontier/native/capture/cut-cases.json",
+        "bytes": 6305,
+        "sha256": "4a9482da5e9d9823d731a97b3d058ec6283ad370517134d76681d0fa764ef2c0"
+      },
+      "status": "INCOMPLETE",
+      "reason": "Initializer exited101 before frontier publication; lab omitted CatalogManager. Original child stderr was not retained. Fresh lab with explicit role and unchanged artifact bytes passes."
+    },
+    {
+      "result": {
+        "path": ".research/implementation/archive-frontier/native/capture/frontier-schema-cases.json",
+        "bytes": 22227,
+        "sha256": "625df791271867de37e40a7222b2a5ee120efd0fc0079bfe48350675b2852613"
+      },
+      "status": "INCOMPLETE",
+      "reason": "Unbound and15 SQL cases executed, then harness parsed only last line of multiline JSON. Full parser/new namespace passes installed upgrade too."
+    },
+    {
+      "result": {
+        "path": ".research/implementation/archive-frontier/provisioned/capture/frontier-fault-cases-initial.json",
+        "bytes": 50920,
+        "sha256": "ebc131040438472b31af3c55661153afda5d0f5639311d1c275b8c8c3b2c2589"
+      },
+      "status": "INCOMPLETE",
+      "reason": "Harness inspected a successful fast retry after its backend exited. Revision2/op e1 committed; synchronized fixture barrier fixes the observation race; later fresh lookup resolves it."
+    },
+    {
+      "result": {
+        "path": ".research/implementation/archive-frontier/provisioned/capture/frontier-fault-cases-retry.json",
+        "bytes": 105209,
+        "sha256": "077566208d7bb0139f532a18f50b8c76998fba200840ad8297102b0a57bb4e11"
+      },
+      "status": "INCOMPLETE",
+      "reason": "Oracle omitted three existing nullable Control-fence columns in an Archive owner row. Revision3/op d1 committed; expected shape now explicitly requires all NULL, with complete preserved post-state check and fresh recovery."
+    }
+  ],
+  "review": {
+    "kind": "Independent read-only AI review plus integrating-owner source/contract/diff and executed evidence review",
+    "findings": [
+      "Fixed expiry checks, old-owner protocol adoption and head-only promotion before native qualification.",
+      "Corrected fixture data budget to account for two retained1MiB inputs plus native1MiB request.",
+      "Expanded creation oracle to all eight relations and exact exclusion digest, actual Control issuer and preserved history.",
+      "Correlated fault PID/backend_start/login/database and exact proxy COMMIT stage; bounded holder and preserved unresolved cleanup outcomes.",
+      "No confirmed new exclusion bypass. Same-issuer scheduling renewal after a pause does not transfer ownership; expiry-only no-revival was not an existing contract."
+    ],
+    "boundary": "AI reviewer ran no engine; source handoff and actual pin/maintenance consumer remain unaudited implementation gates."
+  },
+  "mac": {
+    "checks": {
+      "path": ".research/implementation/archive-frontier/recovery-fixture-checks/result.json",
+      "bytes": 655,
+      "sha256": "cf4d34287537dbdffa02524530a4b75b47b8c40c5abf2f237118c7f037fbcd87"
+    },
+    "scope": "Fixture Clippy PASS with selected native environment; earlier direct invocation interrupted exit143 during rebuild, not a test result or Mac release qualification"
+  },
+  "resources": {
+    "captures": [
+      {
+        "identity": {
+          "path": ".research/implementation/archive-frontier/native/evidence-identity.json",
+          "bytes": 3111,
+          "sha256": "c897108e1045f8ba8e8de1c167eb1a88ac8401a5c224fe3f36a6c5334b4c5178"
+        },
+        "archive_sha256": "82aa475ef3f60cfa4df2a6f2c69cd46a80a63cfdf5106cc94458cfd8ee83174b",
+        "files": 20
+      },
+      {
+        "identity": {
+          "path": ".research/implementation/archive-frontier/provisioned/evidence-identity.json",
+          "bytes": 4375,
+          "sha256": "f3c78c135571cc5d854dc147862b929876c3685309ee187043863044caea0aaa"
+        },
+        "archive_sha256": "11b9a56737f3e6778a775ded0098cfee9cf6675eceaf03828e3bf73ab54e001b",
+        "files": 28
+      }
+    ],
+    "audit": {
+      "path": ".research/implementation/archive-frontier/provisioned/capture/terminal-audit.json",
+      "bytes": 10546,
+      "sha256": "d6ae4b97335c7581d195008e5b2f07090b25089671f7b3f22db5e11692f4cd0a"
+    },
+    "identities": {
+      "path": ".research/implementation/archive-frontier/provisioned/capture/resources.json",
+      "bytes": 1337,
+      "sha256": "7f41b50b98914296a4b392cdeb651c1662552d383695d0001bdef8f02a5169ff"
+    },
+    "state": "stopped-retained",
+    "remaining_pg_clients": [],
+    "preexisting_preserved": 401,
+    "unrelated_running": 8,
+    "bigbrotr_running": 0,
+    "networks": "Only the empty owned networks removed; all containers/data retained",
+    "collector_exit_codes": {
+      "/archive-read-probe": 143,
+      "/bigbrotr-implementation-archive-frontier-e64ee85-provisioned-pg": 137
+    },
+    "note": "Provisioned launcher reused the artifact-loop name archive-read-probe for its runner; exact ID/owner labels and all prior resources were audited, and that runner is stopped/Pid0/noOOM."
+  },
+  "remaining": [
+    "Authoritative topology handoff after an old open topology retains NULL; implement/qualify additive correction without changing applied SQL checksums.",
+    "Actual read/export/backup native pins with PG-clock renewal/current holder and shared maintenance exclusion, including empty/zero and both GC lock orders; source retention and pending reclamation remain separate.",
+    "Read policy/action/scope authority retained through output; manager loss during native observation and complete protected read/export/restart journey.",
+    "Populated already-bound schema10/14 incompatible-history recovery, migration15 concurrency, producer negative outcomes and completely missing final WAL record remain separately open.",
+    "No mixed/aged-state capacity, peak RSS, throughput, power/host loss, Linux arm64, packaging/release or complete M1/product claim."
+  ]
+}

@@ -1081,7 +1081,20 @@ historical result lookup resolves the fixed identity after latest native snapsho
 advances, without rereading latest as the old snapshot. The receipt grants no
 principal authorization, read lease, source ACK or pending reclamation. Native pin
 registration and the served read/export consumer remain the next connected step;
-this candidate has no complete frontier/pin qualification yet.
+the pin/maintenance bridge has no complete qualification yet.
+
+[Native frontier evidence](../implementation/evidence/p02-archive-frontier-native-20260920.json)
+binds exact product `e64ee85` to two signed histories,17 installed SQL/upgrade cases,
+16 schema tests and15 restart/fault cases (fixture `4bdc20f`, harness `1865da9`).
+Before-forward COMMIT loss leaves no frontier; after-complete reply loss resolves
+the original rows/xmin without a new Archive epoch. Manager loss before final
+verification rolls back. Manager loss after final verification at a held COMMIT
+can retain the historical result under actual local custody; the failed capture
+is not a usable pin or read grant. Both transports remain retained through join.
+The cancellation fixture drops the future while SQL is blocked and then releases
+the test blocker; it does not establish permanent-blocker cancellation latency.
+Preserved fixture failures and scope limits are in the report. Authoritative
+source handoff, native pin/GC lock orders and protected read/export remain required.
 
 ## File formation, reads and cost
 
