@@ -97,4 +97,7 @@ The upgrade reports relation file identity/xmin separately: PostgreSQL16.15
 rewrites the audit heap when adding the constrained domain. Comparing xmin
 across that DDL incorrectly rejects valid preservation; ordinary retry/rollback
 comparisons still include xmin. The original failed runs remain retained.
-Native qualification of this new audit slice is pending.
+[Native audit evidence](../../docs/implementation/evidence/p08-session-mutation-audit-native-20260920.json)
+at591c75f records all17/12/8 cases plus8 proxy tests, independent terminal SQL and
+source/artifact/resource checks. No PG-crash/browser rerun or large-history
+migration/capacity claim is inferred from this scoped qualification.

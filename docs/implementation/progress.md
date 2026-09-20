@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-09-20 on Mac while connecting the first private browser consumer;
+Observed 2026-09-20 on Mac after qualifying accepted session mutation audit;
 previous owned labs remain stopped/retained. Navigation only: follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint)
 and verify Git, dirty files, evidence and resources before continuing.
 
@@ -19,205 +19,115 @@ qualification. They grant no principal/action authorization, source ACK or GC
 permission. Existing task files own the backlog; do not create another plan or
 another diagnostic command instead of the real read consumer.
 
-## Git and ownership
+## Git, current qualification and next action
 
-Local main/HEAD is unpublished `62abdbb`; origin remains `9e3e44e`.
-Root owns the fixture logical/physical comparison, source-based DDL cost notes,
-and failure/checkpoint/inventory evidence. Product/migration input remains exactly
-f7b0443. No other writer or merge/rebase. Full candidate state is listed by Git.
+Observed main/HEAD `591c75fb48ffc738252cfc5e3906fcd0bf1aa92d`, tree
+`185c05a17fd5882dc7d9c65bd6a2fafba0bca9be`; origin last observed `9e3e44e`.
+Four unpublished commits contain the RED oracle, atomic audit implementation and
+two justified fixture corrections. Root owns only the qualification report,
+checkpoint/inventory and linked documentation follow-up. Product and migration
+bytes are unchanged fromf7b0443; final candidate591c75f was tested exactly.
+No other writer or merge/rebase. Inspect actual Git before resuming.
 
-The private panel implements a generated same-origin three-route session client
-and static login/self/logout UI, with bounded streaming, timeout, exact decimal
-integers, no mutation retry and in-memory observations. Rust loads one verified
-closed bundle before Control: no-follow descriptor traversal, 20 MiB lifetime
-reservation, 128 files/16 MiB total/2 MiB each/64 KiB manifest, root or /control,
-no request-driven disk IO. Deployment roots are restart-only; policy bytes and
-persistent formats are unchanged.
+[Session mutation audit evidence](evidence/p08-session-mutation-audit-native-20260920.json)
+qualifies additive0807 and the actual accepted issuance/explicit logout consumer.
+Seventeen adapter,12actualHTTP and8COMMIT cases PASS on PG16.15/Linuxamd64;
+17schema+2token tests,8proxy tests, build and scoped Clippy also pass. Mac reviewed
+checks pass. No P08/P09 task, M1 or release is complete.
 
-[Local qualification](evidence/p09-private-panel-local-20260920.json) records Mac
-Rust/client/model/config checks and independently verified bundles. Historical
-native evidence preserves the [prerequisite failure](evidence/p09-private-panel-native-prerequisite-20260920.json),
-[first browser failures](evidence/p09-private-panel-browser-failures-20260920.json),
-[Origin/CDP diagnosis](evidence/p09-private-panel-browser-diagnostics-20260920.json),
-[referrer correction](evidence/p09-private-panel-referrer-native-20260920.json),
-[bootstrap diagnostics](evidence/p09-private-panel-bootstrap-diagnostics-20260920.json)
-and [actual missing-asset failure](evidence/p09-private-panel-bootstrap-real-native-20260920.json).
-All original failed artifacts/data are retained; their reports and inventory own
-exact roots, container IDs and capture hashes. No failed execution became PASS.
+- Accepted means durable session mutation, not browser receipt of cookies. Actor,
+  non-secret session ID and exact config/policy revisions commit atomically.
+- Audit INSERT failure rolls back mutation and terminal-session cleanup, then
+  poisons Control. Successor retry works. Actual logout appends once; identical
+  retry across Control incarnation preserves complete rows/xmin. Old/reset
+  revocations are never retroactively attributed as explicit logout.
+- No audit subject FK to removable credentials. Session cleanup retains audit;
+  UPDATE/DELETE refuse. Partial uniqueness covers only the two new accepted
+  actions; repeated rejected enrollment audit retains its meaning.
+- Missing807 is tested with all privileges present; missing audit INSERT is a
+  distinct refusal. Accepted policy, CSRF and other existing HTTP boundaries pass.
+- Pass/before-forward/after-complete COMMIT loss produces correct audit counts
+  and principal/session/revision bindings. Unknown responses emit no cookies/HTTP
+  bytes and exit4. The proxy now correlates exact Execute completion, so the audit
+  INSERT cannot masquerade as another session mutation.
+- Upgrade preserves all seven old logical receipts and leaves new policy NULL.
+  PostgreSQL rewrites the heap for this constrained-domain column: measured
+  relfilenode17195→17734, xmin751→752. Physical DDL identity is not product identity;
+  ordinary retries retain xmin assertions.807 checksum never changed. The storage
+  catalog records downtime/headroom and old-snapshot limitations; no large-history
+  upgrade qualification is claimed.
 
-Actual Firefox/WebKit POSTs required same-origin Referrer-Policy to preserve
-Origin; foreign Origin/CSRF refusals remain. The bootstrap fixture now removes
-and restores the exact module and manifest in its private copy, restarting the
-real Rust listener without request interception. Firefox's two earlier 404s
-invalidated an exact-one assumption. Actual WebKit still failed reload at596d447;
-suppressing JS modulepreloads through the Kit CSS-only prerender filter and Vite
-modulePreload=false fixes the executed case below. WebKit bug270357 matches the
-observed failure; internal engine causality remains an inference. CSS, ordinary
-imports and CSP remain; no dependency version changed or latency gain claimed.
+[Executed RED](evidence/p08-session-audit-red-20260920.json) atb7cb520 observed one
+committed session without its issue audit. [Failed qualification attempts](evidence/p08-session-audit-fixture-failure-20260920.json)
+remain retained: f7b0443 fixture omitted configuration predecessor;62abdbb expected
+xmin preservation across DDL. Neither completed a runtime case. Source inspection
+of official PG16.15 and independent read-only AI review justified separating
+logical/physical upgrade checks; no audit invariant was relaxed. Separate synthetic
+wire RED counted2 mutations and the corrected transcript counts1; early error
+before Execute/Sync also has an executed failing/passing regression.
 
-Verified owned cache retirements removed only .rlib/.rmeta from failed panel labs
-4593e37/8c19aa9/50185d3, cc4aa3a and6d663b7/596d447. All artifacts, sources,
-receipts and private data were retained and hash checked; unrelated resources
-were unchanged. These partial caches MUST NOT be reused. The three retirement
-receipts are under .research/implementation/private-panel/tux-*-cache-retirement.json
-and the laboratory inventory. Only baseline e65116b remains an intact reusable cache; later retirement is below.
+Independent terminal SQL on the qualified candidate matches:
 
-[Qualified initial browser slice](evidence/p09-private-panel-native-20260920.json)
-at b6d9d7e completes all eight journeys on Chromium/Firefox/WebKit at both mounts.
-Every missing-module case has one actual 404, zero premature 200s, one restored
-200, enabled login and hidden recovery notice, with no interception. Native
-17 management tests/Clippy and seven frontend checks pass; actual artifact, tool,
-lockfile and bundle identities are bound. All six independent terminal SQL checks
-match one revoked session, seven grants, config/policy 1, no active owner and zero
-backends. Capture 144 files and 987 source hashes verified against Mac Git archive.
-Independent read-only AI review verified all source/capture hashes, six browser/mount pairs,
-manifest transitions, terminal SQL projections and resource preservation; no
-discrepancy found. Full SQL before/after equality is asserted by the executed
-fixture, not retained as raw row snapshots. This is scoped P08/P09 evidence, not
-a complete task, M1, release or Safari claim.
+| Database | Sessions / revoked | Issue / logout audit | Active Control / backends |
+|---|---|---|---|
+| sessions |1/1|13/2|0/0|
+| http_sessions |2/1|2/1|0/0|
+| http_audit_commits |2/0|4/2|0/0|
 
-Raw `private-panel/native-no-preload`; remote
-`runs/private-panel-no-preload-b6d9d7e`. Terminal resources.json owns exact owner
-and ten container IDs. All stopped/PID0/noOOM; empty owned network removed, all
-471 prior containers preserved and eight unrelated workloads remain. Last free
-space 9,246,089,216 bytes. No remote experiment or cleanup debt remains. Preserve
-all failed labs and partial-cache exclusions above; only e65116b remains intact
-after the additional qualified-cache retirement below. More space must be inventoried before another copied native build.
+All keep the seven initial grants. Four clients completed4069 self requests in
+12011ms while renewal continued; incomplete-socket TERM took10ms in this run.
+These are fresh small workloads, not capacity or universal latency promises.
+PG crash/browser/arm64/release cases were NOT_RUN for this audit candidate.
 
-The next test uses the actual HTTP listener, a 2 MiB verified static body and
-small TCP buffers. It requires the connection/bundle grants to remain before
-revocation, bounded closure with a strict body prefix afterward and zero grants
-at stop. [Final Mac evidence](evidence/p09-large-static-local-20260920.json) records
-18 management tests and scoped bin/example/tests Clippy PASS; the isolated mutant
-with DeliveryGate::revoke disabled fails after delivering all2097152 bytes.
-Both runtime failures and the final PASS are retained under private-panel/
-large-static-{no-revoke,no-revoke-diagnostic,no-revoke-observed,observed}-mac.
-Review corrected a possible expiry false positive: an independent DeliveryWindow
-with the same deadline checks validity before revocation and after closure.
-The corrected positive and no-revoke negative were both executed. Mutant identity is
-large-static-negative.json; owned detached worktree
-.research/worktrees/private-panel-no-revoke remains intentionally dirty and must
-never be merged or pushed. Primary production delivery.rs is unchanged. The
-primary build was restored by the final check; caches remain non-authoritative.
-[Native qualification](evidence/p09-large-static-native-20260920.json) at709656d
-now passes all18 management tests plus compile/Clippy including tests. The runner
-identifies/hashes and executes the actual Cargo test binary. All15 capture files
-and990 source hashes verified against exact Mac Git archive. No product correction
-was needed; the scope is revocation and custody, not a universal latency promise.
+Raw `.research/implementation/session-audit/native-audit-rewrite`:56capture files,
+996source files independently hash-verified against Mac Git archive. Capture
+SHA256`13cc64a6f1464b49ec04878c97112002e96e5d5468b64670634ca7a67c641a1e`.
+Remote `/home/tux/bigbrotr-implementation-20260917/runs/session-audit-591c75f`,
+owner`ec944ae49c01a9e95fe45d188e4630a5`. Runner
+`b68bdc98cd0ee7a5c12e8c43201b7631bddd68acdb11430d3f53b0806790e1aa` and PG
+`e2327a58e30df36efcf8bd126ae1729d54864a3ad8325d6e34e3f0104cb807be`
+are stopped/PID0/noOOM; own empty network removed. All488preexisting containers
+preserved/eight unrelated workloads running. Free4,991,266,816bytes. No active
+experiment or cleanup debt; inventory headroom before another copied build.
+Secret-bearing private fixture directories remain remote, never copy wholesale.
+Independent read-only AI evidence review verified56capture/996source hashes and
+all case/SQL/proxy claims without discrepancy. Root supplemental read-only Tux
+inspection rehashed all three actual ELF files and retained complete terminal
+metadata for both owned and488previous containers; all matched. Raw
+native-audit-rewrite/terminal-independent.json, SHA256
+7f91b4543f5df8300a2f9c9aebc91fc62222c65b79f790b3f1ae774c55b1c5d7.
 
-Raw private-panel/native-static-response; remote
-runs/private-panel-static-response-709656d, owner e6ab997e0253454fd575284d83e8b135.
-Container e21ba0d3e36fe31db150a9aea46f433af26a4cd898b4d9354b9ec5d277471e74
-is stopped/PID0/noOOM. Network none; no new PG/network/volume. All481 previous
-container records unchanged; eight unrelated workloads remain. Free space is
-5,873,979,392bytes: inventory and verified retirement of inactive owned caches
-are required before another copied native build. No job or cleanup debt remains.
+All earlier lab reports/inventory retain exact roots and ownership. Verified
+retirement receipts under session-audit/tux-*-retirement.json removed only owned
+inactive intermediate Cargo files, preserving actual executable/shared artifact
+hashes. Partial RED/f7/62/eceab88 and panel caches MUST NOT be reused. Qualified
+591c75f cache is intact but not yet selected for reuse; baselinee65116b remains
+intact. Cache reuse never establishes source identity.
 
-Verified subsequent retirement removed2563 .rlib/.rmeta files (3,993,815,712
-logical bytes) from stopped b6d9d7e/709656d caches. All482 container records
-unchanged; eight unrelated workloads remain. Actual executables/shared libraries,
-sources/receipts/data hash preserved. These partial caches MUST NOT be reused;
-e65116b remains intact. Free space9,850,245,120bytes; receipt/inventory under
-private-panel/tux-qualified-cache-retirement.json. No active job or cleanup debt.
+Prior browser slice [b6d9d7e](evidence/p09-private-panel-native-20260920.json)
+qualifies8journeys on Chromium/Firefox/WebKit ×root/control, real missing/restored
+module404→200 without interception. Same-origin referrer and CSS-only prerender
+preload plus disabled JS modulepreload address measured WebKit recovery failure.
+[Large-response709656d](evidence/p09-large-static-native-20260920.json) qualifies
+actual2MiB static TCP revocation with a still-valid independent deadline observer;
+18management tests and native Clippy pass. Mac no-revoke mutant delivered the full
+body and failed. Preserve intentionally dirty detached
+`.research/worktrees/private-panel-no-revoke` atb6d9d7e; never merge/push it.
+Primary Mac build has been restored to current source by the audit checks.
+Preserve `.research/worktrees/producer-closing-old-writer`, last cleanf899896b,
+and other historical worktrees. Applied0017/0018/0806/0807 bytes stay immutable.
 
-[Independent native RED](evidence/p08-session-audit-red-20260920.json) atb7cb520
-confirmed one committed session and zero matching accepted issuance audits.
-Build/schema/token/Clippy passed; the actual adapter fixture failed its first
-issuance audit assertion (0 != 1). All15capture/991source hashes independently
-verified against Mac Git archive. Raw session-audit/native-red; remote
-runs/session-audit-red-b7cb520, owner67b7dee453380a9e3631a98f9fdc5c7d.
-Rust a2fc518a99ddb1fd1b190866212b87359a887f2d3bbe353445071d4e82ec9e8d and PG
-0fd62cac35bff150df9d9a93cd79164d63368befec64624e401c540f692b68da are stopped/PID0/noOOM;
-empty owned network removed,482prior resources preserved/eight unrelated running.
-The panicking fixture did not release Control; do not turn process death into a
-claimed graceful release. Free6,429,016,064bytes before the next cache inventory.
-
-Dirty0807 appends accepted issuance and actual logout audit in the same fenced
-transaction. Audit accepted means durable mutation, not browser cookie receipt.
-Partial uniqueness only for these actions; no FK to removable session rows and
-no backfill of historical revocations. Audit insertion failure rolls back both
-session write/cleanup; unchanged logout retry preserves attribution. The fixture
-now tests existing legacy shapes/xmin across migration, NULL/mixed revision refusal,
-audit failures and retries across separate Control incarnations. Actual HTTP
-prerequisites and targeted COMMIT ambiguity gain independent audit oracles.
-Read-only AI review found missing legacy/restart evidence; fixtures address it,
-but native execution is pending. Mac reviewed17schema+2token tests, build and Clippy
-passed under session-audit/mac-proxy-reviewed; native SQL cases remain NOT_RUN.
-
-Verified RED cache retirement removed1268 .rlib/.rmeta files (1,996,907,856
-logical bytes), preserving actual artifact hashes, sources, evidence and data.
-All484container records unchanged/eight unrelated running. Free8,415,055,872bytes;
-receipt session-audit/tux-red-cache-retirement.json. This partial cache MUST NOT
-be reused; e65116b remains the sole intact reusable cache.
-
-Further read-only review found a proxy count conflating the second audit INSERT,
-a missing807 refusal also missing unrelated privileges, and a logout count lacking
-subject attribution. Actual synthetic wire RED observed2 mutations versus expected1;
-corrected response correlation observes1. The early ErrorResponse/Sync interleaving also failed its independent regression
-and now passes. Focused proxy tests pass. The HTTP
-fixture now isolates privileges and joins each logout audit to the target digest,
-principal and revisions; native qualification is still pending.
-
-[First new audit run failed](evidence/p08-session-audit-fixture-failure-20260920.json)
-atf7b0443 before the first case: fixture revision2 omitted previous_revision1,
-refused by the existing PG config_revisions_check(23514). No0807 or session audit
-runtime case ran. Build,17schema+2token,Clippy and8proxy tests PASS; HTTP/COMMIT
-NOT_RUN. All16capture/995source hashes verified against Mac Git archive.
-Raw session-audit/native-audit; remote runs/session-audit-f7b0443,
-owner9b178a2463e22b321ac5c85cbee05142. Runnerb28787af30fbb38c36a469113004a6d0d2903f4df228b450f8c19e78439f2040
-and PG964c440f5969e7b5efd8151a187db66eb8c8e634814b6ad139c8d32acf12613f
-stopped/PID0/noOOM; own empty network removed,484previous records unchanged,
-eight unrelated workloads running. Zero Control backends/activeowners; one
-pre-upgrade revoked session and no audit. Original failure remains retained.
-
-Further verified cache retirement removed3066 .rlib/.rmeta/.o/.a from stopped
-RED/f7 caches and1664 .o/.a from stopped b6d9d7e/709656d caches. Artifact hashes,
-sources/evidence/data preserved; all486containers unchanged/eight unrelated
-running. Free7,673,692,160bytes. Receipts under session-audit/tux-{failed-cache,
-panel-object}-retirement.json. All these partial caches remain forbidden for reuse.
-Mac corrected fixture tests/build/Clippy PASS in session-audit/mac-predecessor.
-
-The corrected62abdbb run applied807, then FAILED its combined logical/xmin
-upgrade comparison before the first case. Build/schema/token/Clippy/8proxy checks
-passed; HTTP/COMMIT NOT_RUN. All16capture/996source hashes verified. Raw
-session-audit/native-audit-corrected; root runs/session-audit-62abdbb,
-owner5e70fe39915e032abb9e0aa4590c3ef0; runnerbe104298ba5cb4ac7d17a04a94a5cbb4591d8345392f97bb8877e00040fb1ef1
-and PG2bbabc595e88741ca4290190b010876ba9b86c5101bfcd89a88f7b74bca4df33
-stopped/PID0/noOOM; own empty network removed,486prior records preserved/eight
-unrelated running. Zero active Control/backends. Failure report above includes
-this attempt; it does not independently prove which field differed.
-
-Official PG REL_16_15 ATExecAddColumn/ATRewriteTable inspection and read-only AI
-review explain the constrained-domain heap rewrite. Required immutability covers
-logical fields/attribution, not physical xmin across DDL. Keep807 checksum fixed;
-compare all seven complete logical receipts separately and record physical
-relfilenode/xmin before/after. Ordinary retry/rollback xmin assertions remain.
-Owning storage catalog now records explicit rewrite/downtime/headroom cost; no
-large-history migration capacity claim. Actual logical preservation remains
-NOT_RUN until the corrected native fixture executes.
-
-Verified retirement removed4214 .rlib/.rmeta/.o/.a (4,216,205,404logicalbytes)
-only from stopped62abdbb/eceab88 Cargo caches. Artifact hashes preserved;488prior
-containers unchanged/eight unrelated running. Free8,453,083,136bytes. Receipt
-session-audit/tux-rewrite-cache-retirement.json. These caches MUST NOT be reused;
-e65116b remains intact. Mac rewrite fixture tests/build/Clippy PASS.
-
-Next bounded action: commit the corrected upgrade oracle and run
-native-audit-rewrite from fresh exact Git.
-Require17adapter/12HTTP/8COMMIT cases and independent terminal SQL; no new PG-crash
-or browser claim. Full denied audit/retention/capacity/reauth/grants/drain remain.
-
-Ordinary owner data.read still grants no history/export. First history consumer
-requires scoped grant CAS + reauth + principal/action/scope delivery authority,
-then retained pin/worker ownership through actual completion. Existing task files
-own those later steps; this checkpoint is not another plan.
-Forced detached-browser cleanup, late response/expiry races, frontend shared CI,
-authorized history read/export and all wider P09/M1/later product work remain open.
-
-Preserve `.research/worktrees/producer-closing-old-writer`, last verified clean at
-`f899896b1207f5e71c4e39d9ab7814b293814735` on
-`research/producer-closing-old-writer`, and other historical worktrees.
-Caches are never source authority. Applied migrations0017/0018/0806 must not be rewritten.
+Remote fetch confirmed unchanged origin9e3e44e. Next bounded action: commit
+qualification documentation and push the verified slice. Then continue P08-T02
+reauthentication bound to the exact grant command, versioned scope-qualified grant
+CAS and principal/action/scope delivery authority for the first real history read.
+Initial data.read grants no history/export. Do not alter the closed seven-action
+bootstrap rows to invent history permission; ordinary self/session observations
+are not authority. Read the full owning interfaces/callers before defining the
+new persistent boundary. P06-T01/T02 then connect the certified retained pin and
+owned native worker through actual read/export completion. No alternate plan or
+diagnostic CLI. Denied audit,365-day configurable retention/capacity, remote TLS,
+full administration/public/UI/site/packaging/release and all selected work remain.
 
 ## Executed current boundary
 
@@ -385,7 +295,7 @@ then performs fresh Controlpoll successfully. No P08-T02 step complete.
 Report/doc diff and21rawhash references were reviewed; verified commits pushed.
 The actual private Axum listener and owned hash supervisor are connected below. Files:
 management/sessions.rs, storage/postgres/browser_sessions.rs, nativeprobe and
-experiments/browser-sessions/native.py. Audit/reauth/scopedgrant/streamdrain remain unimplemented. Do not replace the real consumer with another diagnosticCLI.
+experiments/browser-sessions/native.py. General rejected audit/reauth/scopedgrant/streamdrain remain unimplemented. Do not replace the real consumer with another diagnosticCLI.
 
 The adapter preserves initial seven grants and accepted policy bytes. Two fenced
 transactions bracket Argon2: fixed persistent account/peer hash buckets charge

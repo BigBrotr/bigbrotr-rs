@@ -17813,7 +17813,7 @@
   "implementation_session_audit_20260920": {
     "owner": "root implementer",
     "local_root": ".research/implementation/session-audit",
-    "state": "62abdbb fixture FAIL at combined logical+xmin oracle after807; preserved stopped lab; corrected physical/logical comparison awaits execution",
+    "state": "591c75f scoped qualification PASS; all labs stopped/retained, empty owned networks removed",
     "source_base": "b7cb520a4666b419f55629aa0536227728e216b4",
     "scope": "P08-T02 accepted session mutation audit. Rejected attempts, retention maintenance, reauth, scope grants and delivery authority remain separate required work.",
     "red_evidence": "docs/implementation/evidence/p08-session-audit-red-20260920.json",
@@ -17943,6 +17943,57 @@
       "network": "removed after owner/no-endpoint audit",
       "preexisting_preserved": 486,
       "unrelated_running": 8
+    },
+    "qualified_source": "591c75fb48ffc738252cfc5e3906fcd0bf1aa92d",
+    "qualified_evidence": "docs/implementation/evidence/p08-session-mutation-audit-native-20260920.json",
+    "qualified_resources": {
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/session-audit-591c75f",
+      "owner": "ec944ae49c01a9e95fe45d188e4630a5",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "e2327a58e30df36efcf8bd126ae1729d54864a3ad8325d6e34e3f0104cb807be"
+        },
+        {
+          "name": "rust-audit",
+          "id": "b68bdc98cd0ee7a5c12e8c43201b7631bddd68acdb11430d3f53b0806790e1aa"
+        }
+      ],
+      "state": "stopped-retained",
+      "network_state": "removed after owner/no-endpoint audit",
+      "cleanup_errors": [],
+      "preexisting_preserved": 488,
+      "unrelated_running": 8,
+      "free_bytes": 4991266816
+    },
+    "qualified_capture": {
+      "local_root": ".research/implementation/session-audit/native-audit-rewrite",
+      "archive_sha256": "13cc64a6f1464b49ec04878c97112002e96e5d5468b64670634ca7a67c641a1e",
+      "files": 56,
+      "source_files": 996,
+      "source_archive_sha256": "16b04369940588eebf2ff88174ddf0b7cf28c3efdf00915654c7906e1fbae891",
+      "offline_verification": "PASS; every captured file and exact Mac Git archive member hash compared",
+      "raw_hashes": "See linked evidence report"
+    },
+    "terminal_recheck": {
+      "status": "PASS",
+      "observed_at": "2026-09-20T15:11:55.906314+00:00",
+      "raw": ".research/implementation/session-audit/native-audit-rewrite/terminal-independent.json",
+      "sha256": "7f91b4543f5df8300a2f9c9aebc91fc62222c65b79f790b3f1ae774c55b1c5d7",
+      "script": ".research/implementation/session-audit/native-audit-rewrite/verify_terminal.py",
+      "script_sha256": "a88e7276e155abd633c3b6d2d2a383ee174470340c7aa81a44203bb0b170dacf",
+      "preserved": 488,
+      "unrelated_running": 8,
+      "owned_containers": [
+        "e2327a58e30df36efcf8bd126ae1729d54864a3ad8325d6e34e3f0104cb807be",
+        "b68bdc98cd0ee7a5c12e8c43201b7631bddd68acdb11430d3f53b0806790e1aa"
+      ],
+      "actual_elf_hashes": {
+        "bigbrotr": "ca62025b7180d1a974c896ea71041115a768328fb93bb7dde3d971729c2215d3",
+        "examples/browser_sessions_probe": "7f8c0216aa0f4e5305517cccf6c8c8644a643e7c2ab2b337dbc78aed62099faa",
+        "examples/browser_http_probe": "abc4c206ae128e237a579c2fe91e55b9eafb6bc99014422d2cc6de2bdf6f3855"
+      },
+      "scope": "Root independent fresh read-only Tux inspection: complete terminal lifecycle for both owned containers; all488 prior stable lifecycle/mount/network records compared; actual three ELF files rehashed. Full safe metadata retained in ignored receipt."
     }
   }
 }

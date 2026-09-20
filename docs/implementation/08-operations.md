@@ -165,9 +165,13 @@ logout, in the same fenced transaction as the mutation. A partial unique index
 preserves logout retry identity without changing rejected bootstrap audit. There
 is no historical backfill or FK to removable session credentials. Startup requires
 807 and audit INSERT privilege. Independent PG regression first observed a real
-session without its receipt on the preceding product. New migration, rollback,
-legacy-revocation, cleanup and retry tests remain unqualified until actual native
-execution. General rejected-attempt audit, retention/capacity maintenance, reauth,
+session without its receipt on the preceding product.
+[Native audit evidence](evidence/p08-session-mutation-audit-native-20260920.json)
+at591c75f records17adapter/12HTTP/8COMMIT cases, independent terminal SQL and
+artifact/source/resource checks. The two fixture failures are retained. Upgrade
+preserves all logical legacy fields while PostgreSQL rewrites the heap; ordinary
+rollback/retry checks retain full row/xmin equality. General rejected-attempt
+audit, retention/capacity maintenance, reauth,
 grant CAS and restrictive application remain required; no T02 step is complete.
 
 **Failure states:** unavailable policy authority causes expiry/fail-closed, not anonymous fallback. Last-owner recovery is an explicit local, positively authorized CLI operation with an audit record; it cannot be triggered through an unauthenticated HTTP request. Enrollment output is never copied into CI evidence.

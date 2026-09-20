@@ -1,0 +1,588 @@
+{
+  "format": "bigbrotr-session-mutation-audit/1",
+  "status": "PASS_SCOPED",
+  "source": "591c75fb48ffc738252cfc5e3906fcd0bf1aa92d",
+  "tree": "185c05a17fd5882dc7d9c65bd6a2fafba0bca9be",
+  "product_unchanged_from": "f7b0443d7630cbcaa3b2d433367af491573f7be2",
+  "tasks": [
+    "P08-T02",
+    "P09-T01 consumer compatibility"
+  ],
+  "scope": "Atomic accepted issuance and explicit logout audit; explicit upgrade and startup prerequisites; actual HTTP COMMIT loss/restart/rollback",
+  "environment": {
+    "host": "Tux native Linux amd64",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "rust_toolchain": "1.98.1 from exact-source rust-toolchain.toml and pinned lab image",
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "native_toolchain": {
+      "os": "Linux",
+      "architecture": "x86_64",
+      "discovery": "llvm-config",
+      "environment": {
+        "CC": "/usr/lib/llvm-14/bin/clang",
+        "CXX": "/usr/lib/llvm-14/bin/clang++",
+        "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+        "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+        "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+      },
+      "tools": {
+        "CC": {
+          "path": "/usr/lib/llvm-14/bin/clang",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "CXX": {
+          "path": "/usr/lib/llvm-14/bin/clang++",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "AR": {
+          "path": "/usr/lib/llvm-14/bin/llvm-ar",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+          "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+          "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+        },
+        "LIBCLANG_PATH": {
+          "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+          "version": "Debian clang version 14.0.6"
+        },
+        "discovery": {
+          "path": "/usr/lib/llvm-14/bin/llvm-config",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+          "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+          "version": "14.0.6"
+        }
+      },
+      "sdk": null
+    },
+    "cargo_lock_sha256": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+    "budget": {
+      "runner_cpus": 2,
+      "runner_memory_bytes": 6442450944,
+      "runner_pids": 512,
+      "postgres_memory_bytes": 1073741824,
+      "postgres_pids": 128,
+      "network": "owned internal, no host ports; worker uses isolated PG namespace",
+      "source": "clean exact Git archive, read-only; no release keys or Docker socket"
+    }
+  },
+  "artifacts": {
+    "bigbrotr": "ca62025b7180d1a974c896ea71041115a768328fb93bb7dde3d971729c2215d3",
+    "examples/browser_sessions_probe": "7f8c0216aa0f4e5305517cccf6c8c8644a643e7c2ab2b337dbc78aed62099faa",
+    "examples/browser_http_probe": "abc4c206ae128e237a579c2fe91e55b9eafb6bc99014422d2cc6de2bdf6f3855"
+  },
+  "checks": [
+    {
+      "name": "build",
+      "command": [
+        "cargo",
+        "build",
+        "--locked",
+        "--offline",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--bin",
+        "bigbrotr",
+        "--example",
+        "browser_sessions_probe",
+        "--example",
+        "browser_http_probe"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 39.72614214383066
+    },
+    {
+      "name": "schema-and-tokens",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--offline",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--test",
+        "control_schema",
+        "--test",
+        "management_sessions"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 6.125114868860692
+    },
+    {
+      "name": "clippy",
+      "command": [
+        "cargo",
+        "clippy",
+        "--locked",
+        "--offline",
+        "--release",
+        "-p",
+        "bigbrotr",
+        "--lib",
+        "--bin",
+        "bigbrotr",
+        "--example",
+        "browser_sessions_probe",
+        "--example",
+        "browser_http_probe",
+        "--tests",
+        "--",
+        "-D",
+        "warnings"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 4.073046496137977
+    },
+    {
+      "name": "proxy-targets",
+      "command": [
+        "python3",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "experiments/browser-sessions",
+        "-p",
+        "test_commit*.py",
+        "-v"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 0.06401623878628016
+    },
+    {
+      "name": "native-sessions",
+      "command": [
+        "/out/build/target/release/examples/browser_sessions_probe",
+        "sessions"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 5.134994582738727
+    },
+    {
+      "name": "native-http",
+      "command": [
+        "/out/build/target/release/examples/browser_http_probe",
+        "/out/build/target/release/bigbrotr",
+        "/out/http-fixture"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 19.363797083031386
+    },
+    {
+      "name": "native-commits",
+      "command": [
+        "/out/build/target/release/examples/browser_http_probe",
+        "/out/build/target/release/bigbrotr",
+        "/out/commit-fixture",
+        "--audit-commits-only"
+      ],
+      "status": "PASS",
+      "executed": true,
+      "exit_code": 0,
+      "seconds": 2.1189410728402436
+    }
+  ],
+  "case_counts": {
+    "native-sessions": {
+      "executed": 17,
+      "passed": 17,
+      "failed": 0,
+      "not_run": 0
+    },
+    "native-http": {
+      "executed": 12,
+      "passed": 12,
+      "failed": 0,
+      "not_run": 0
+    },
+    "native-commits": {
+      "executed": 8,
+      "passed": 8,
+      "failed": 0,
+      "not_run": 0
+    }
+  },
+  "unit_counts": {
+    "control_schema": 17,
+    "management_sessions": 2,
+    "proxy": 8,
+    "ignored": 0
+  },
+  "observed": [
+    "Upgrade retains all seven legacy audit identities and every old logical field; new policy_revision NULL. NULL config or policy rejected23514, individually valid but mixed revisions rejected23503.",
+    "Actual PostgreSQL DDL rewrites audit heap: relfilenode17195\u219217734 and xmin751\u2192752, with identical logical rows. Applied807 checksum unchanged; ordinary retry/rollback xmins still compared.",
+    "One immutable issue receipt binds each successful session to its actual principal, session ID and validated config/policy. No session token/hash/password/peer/raw username is copied to audit.",
+    "Explicit logout appends once. Repeated logout after a new Control incarnation leaves complete session/audit rows and xmin unchanged. Legacy/reset revocation receives no invented logout attribution.",
+    "Injected audit INSERT refusal returns Backend and rolls back issuance plus terminal cleanup, or logout. New Control performs successful explicit retry. Unchanged retry preserves original audit.",
+    "Startup refuses missing807 with all other privileges present, and refuses missing audit INSERT independently. Existing missing806/DELETE, Origin/CSRF, policy drift and late-client scenarios also pass.",
+    "Actual session COMMIT pass/before-forward/after-complete yields issue audit counts1/1/2 and logout audit counts1/1/2, joined to exact session/principal/config/policy. Four unknown branches emit no HTTP bytes/cookies and exit4; same logout retry does not duplicate attribution.",
+    "Target proxy requires exactly one target Execute completion and selected COMMIT despite the additional audit INSERT. Synthetic wire RED counted2; corrected proxy counts1. Early error-before-Execute/Sync regression also has executed RED/green.",
+    "Four TCP clients completed4069 self requests in12011ms while policy renewed. SIGTERM with incomplete sockets took10ms in this run and left no Control clients. These are small-workload observations, not capacity or universal latency bounds."
+  ],
+  "independent_terminal_sql": {
+    "sessions": {
+      "sessions": 1,
+      "revoked": 1,
+      "issue_audits": 13,
+      "revoke_audits": 2,
+      "grants": 7,
+      "active_control": 0,
+      "backends": 0
+    },
+    "http_sessions": {
+      "sessions": 2,
+      "revoked": 1,
+      "issue_audits": 2,
+      "revoke_audits": 1,
+      "grants": 7,
+      "active_control": 0,
+      "backends": 0
+    },
+    "http_audit_commits": {
+      "sessions": 2,
+      "revoked": 0,
+      "issue_audits": 4,
+      "revoke_audits": 2,
+      "grants": 7,
+      "active_control": 0,
+      "backends": 0
+    }
+  },
+  "capture": {
+    "local_root": ".research/implementation/session-audit/native-audit-rewrite",
+    "archive_sha256": "13cc64a6f1464b49ec04878c97112002e96e5d5468b64670634ca7a67c641a1e",
+    "files": 56,
+    "source_files": 996,
+    "source_archive_sha256": "16b04369940588eebf2ff88174ddf0b7cf28c3efdf00915654c7906e1fbae891",
+    "offline_verification": "PASS; every captured file and exact Mac Git archive member hash compared",
+    "raw_hashes": {
+      "collect.py": {
+        "bytes": 2846,
+        "sha256": "7ce51ce668e7bcb7d2f5cb265962e930a28a69b3acf51b6352a2460f70bea674"
+      },
+      "launch.py": {
+        "bytes": 12304,
+        "sha256": "d55e9be2238f4425275c7be875360a288368a8ef15af00c5d432020bc1b5842f"
+      },
+      "orchestrator.log": {
+        "bytes": 161,
+        "sha256": "9c6bbe69bf817c0c85abb97a4d959bbafc74b13e107bc0cb1403fb501816e4e0"
+      },
+      "out/build/source-manifest.json": {
+        "bytes": 123240,
+        "sha256": "956a16fa9e58d7c0dde3ba2ac8fe0f5c5d80acf16b60fa5e67eee230be3589ca"
+      },
+      "out/commit-fixture/explicit-login-after-unknown.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/commit-fixture/explicit-login-after-unknown.stdout": {
+        "bytes": 786,
+        "sha256": "960df676bece913fec22ad5224303e62cf58b7521061e87fd82d4445b2901acc"
+      },
+      "out/commit-fixture/issuance-after-complete-proxy.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/commit-fixture/issuance-after-complete.stderr": {
+        "bytes": 61,
+        "sha256": "e047b8c01c6688f7f36902c89e1e2b4ab5683aa8ea2c382451f494ba3436b296"
+      },
+      "out/commit-fixture/issuance-after-complete.stdout": {
+        "bytes": 649,
+        "sha256": "e37921c6214ce6f8d642d1e5621e794afe98183236acafcef42596ab90daba3b"
+      },
+      "out/commit-fixture/issuance-before-forward-proxy.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/commit-fixture/issuance-before-forward.stderr": {
+        "bytes": 61,
+        "sha256": "e047b8c01c6688f7f36902c89e1e2b4ab5683aa8ea2c382451f494ba3436b296"
+      },
+      "out/commit-fixture/issuance-before-forward.stdout": {
+        "bytes": 649,
+        "sha256": "4de9e69fa8f13036044c5cbd635d60a8a06170942dd4c1ca65f67a774da65879"
+      },
+      "out/commit-fixture/issuance-pass-proxy.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/commit-fixture/issuance-pass.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/commit-fixture/issuance-pass.stdout": {
+        "bytes": 786,
+        "sha256": "0625258618b428ee372b11cd043269f89a41e733793a2579810451d17c2ce56b"
+      },
+      "out/commit-fixture/logout-after-complete-proxy.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/commit-fixture/logout-after-complete.stderr": {
+        "bytes": 61,
+        "sha256": "e047b8c01c6688f7f36902c89e1e2b4ab5683aa8ea2c382451f494ba3436b296"
+      },
+      "out/commit-fixture/logout-after-complete.stdout": {
+        "bytes": 649,
+        "sha256": "98cc8d2d9ad6176dddd70cf8583ed4808b8c1502bb892b191e80b880bacadef8"
+      },
+      "out/commit-fixture/logout-before-forward-proxy.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/commit-fixture/logout-before-forward.stderr": {
+        "bytes": 61,
+        "sha256": "e047b8c01c6688f7f36902c89e1e2b4ab5683aa8ea2c382451f494ba3436b296"
+      },
+      "out/commit-fixture/logout-before-forward.stdout": {
+        "bytes": 649,
+        "sha256": "397a258ad7e87207d0bb6943c0145929506be2dc627255d83c2dc1989f898c34"
+      },
+      "out/commit-fixture/logout-pass-proxy.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/commit-fixture/logout-pass.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/commit-fixture/logout-pass.stdout": {
+        "bytes": 786,
+        "sha256": "51572dba4d228461a69db54a33dba387811c84829380b1130153fec7a0da51c0"
+      },
+      "out/commit-fixture/logout-retry-after-unknown.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/commit-fixture/logout-retry-after-unknown.stdout": {
+        "bytes": 786,
+        "sha256": "61f4e61ff6047fd281924570419d2592d1e6ed3e2811b980c50067d2791942c4"
+      },
+      "out/http-fixture/initial.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/http-fixture/initial.stdout": {
+        "bytes": 786,
+        "sha256": "66f0aa5beda754d3e5d3538af623983b485a274a090e8aef79f24a7de520b625"
+      },
+      "out/http-fixture/missing-audit-insert.stderr": {
+        "bytes": 59,
+        "sha256": "6627b513ab3cb986d16e6ad13e45a8205af630bf6ebfbe95391995141d187454"
+      },
+      "out/http-fixture/missing-audit-insert.stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/http-fixture/missing-audit-migration.stderr": {
+        "bytes": 59,
+        "sha256": "6627b513ab3cb986d16e6ad13e45a8205af630bf6ebfbe95391995141d187454"
+      },
+      "out/http-fixture/missing-audit-migration.stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/http-fixture/missing-delete.stderr": {
+        "bytes": 59,
+        "sha256": "6627b513ab3cb986d16e6ad13e45a8205af630bf6ebfbe95391995141d187454"
+      },
+      "out/http-fixture/missing-delete.stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/http-fixture/missing-migration.stderr": {
+        "bytes": 59,
+        "sha256": "6627b513ab3cb986d16e6ad13e45a8205af630bf6ebfbe95391995141d187454"
+      },
+      "out/http-fixture/missing-migration.stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/http-fixture/new-policy-observed.stderr": {
+        "bytes": 61,
+        "sha256": "74c373e9a328bea62980647a3c268db886705003fff1e12e32009649b49c0572"
+      },
+      "out/http-fixture/new-policy-observed.stdout": {
+        "bytes": 649,
+        "sha256": "387fe3bc31fc33f397360736bcac7f065988cdf1cb99c4a723c1c4510ebaf801"
+      },
+      "out/http-fixture/new-policy-restart.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/http-fixture/new-policy-restart.stdout": {
+        "bytes": 786,
+        "sha256": "fffd6fa13bfe7283ef252777d839ebd8e6c9529c8748233f6e35823ecd348109"
+      },
+      "out/http-fixture/restart.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/http-fixture/restart.stdout": {
+        "bytes": 786,
+        "sha256": "79526ed4668ab286ecfe7afd249f8934a973eec9f203572f4649721b173ae98b"
+      },
+      "out/native-tests/audit-result.json": {
+        "bytes": 26904,
+        "sha256": "c50761decf7c65da5207875fabbf85ddc3572b31829e112b1f548fd241361d8a"
+      },
+      "out/native-tests/build.log": {
+        "bytes": 298,
+        "sha256": "2117be33a3ec847944dc58c3ecc76478696223c2d6763a2c9a3664400b7f18bc"
+      },
+      "out/native-tests/clippy.log": {
+        "bytes": 297,
+        "sha256": "4d516c1b46eb1271367e32b2fd26361053742d4a378495a73d59f9d0054f0c6e"
+      },
+      "out/native-tests/native-commits.log": {
+        "bytes": 9529,
+        "sha256": "56a0b9ec7e94cbd6d2cd740395dc77753a07042203b83c982c283cf96ebc3eb1"
+      },
+      "out/native-tests/native-http.log": {
+        "bytes": 1372,
+        "sha256": "eb3a10c7a984d41e066a936d6be247e67cdc1e0970f44b2364aed55ecdc93075"
+      },
+      "out/native-tests/native-sessions.log": {
+        "bytes": 1545,
+        "sha256": "f293f9fda5b47360a4753e00202a315235848c0a276eae7b2236c26a0a6c77b8"
+      },
+      "out/native-tests/proxy-targets.log": {
+        "bytes": 1241,
+        "sha256": "5bd3831895a038bbc806b0b238625de82bf08fb88ac1ee6ec649b3cd24903896"
+      },
+      "out/native-tests/result.json": {
+        "bytes": 5245,
+        "sha256": "b6cbfd56e7d32f68781063d0f494ee0798e1922f7a5786cc4e5dac58a1940c69"
+      },
+      "out/native-tests/schema-and-tokens.log": {
+        "bytes": 1985,
+        "sha256": "d60c528b31dab3d82099d372d78626de6dde6d38a356bb4021f489cf68351a2d"
+      },
+      "preflight.json": {
+        "bytes": 4035835,
+        "sha256": "91ad6c24ee1f993a0aec81ff56f5b9bffb72d22c2d721e03a3386da58e95d876"
+      },
+      "resources.json": {
+        "bytes": 1110,
+        "sha256": "aa278a6e48513620b8e747b5345c5ea4c69270800da8fc0c850cf766392ed3fb"
+      },
+      "rust-audit.container.log": {
+        "bytes": 323,
+        "sha256": "b251bdd680e2389abb87309b85334255e86c5165f33ac25d1b07f5ca92660859"
+      },
+      "rust-image.json": {
+        "bytes": 2024,
+        "sha256": "1d366c7f78c5a3ac323631b826e90d5c54e010cf32ff67e267877168f19befcb"
+      },
+      "terminal-audit.json": {
+        "bytes": 2861,
+        "sha256": "3e61b0db50bfd8af82ea95e65248bf81fe293e3db85a8de3e717acee3ff22aa4"
+      }
+    }
+  },
+  "local_checks": {
+    "status": "PASS",
+    "tests": "17schema+2token",
+    "build": "actual bin and both probes",
+    "clippy": "lib/bin/both probes/tests -Dwarnings",
+    "proxy_tests": 8,
+    "raw_sha256": {
+      ".research/implementation/session-audit/mac-rewrite/result.json": "91a840dca7756dfc30f65996398677b6b9c498c6dea6e331a5bb104a24689b08",
+      ".research/implementation/session-audit/mac-rewrite/tests.log": "181f14e8aad570c8e0090c311f957e0860b5dd62a107b75a586d306032ee1279",
+      ".research/implementation/session-audit/mac-rewrite/build.log": "35aac8ee1d93f25bb87a3e0cd659a26584e4e7c4a66cd49beeb5e1cdf7dfd5c8",
+      ".research/implementation/session-audit/mac-rewrite/clippy.log": "82cd5f0e49ff11ad1a3ebbe69cee697e980e479d1ba637b04f7de0ae973e43ff",
+      ".research/implementation/session-audit/proxy-red.log": "b47ea4640889ec457ccc367aa996a8ff16b5798047b0735da8fdb7d8791db0fc",
+      ".research/implementation/session-audit/proxy-green-reviewed.log": "ca49e0ed5f205fcf6f4958f63d6481b80ad2f4aa1001b5bae9eab46ae166c974",
+      ".research/implementation/session-audit/proxy-early-error-red.log": "d2cbfd3f84c9cf1920349a2dc3be5e6ba09af625a0a238111acf2653591fa475",
+      ".research/implementation/session-audit/proxy-final-tests.log": "69faa76a1ffd36d68a79456d3ed4570295850b1b26f9180154536b2d86939d67"
+    }
+  },
+  "resources": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/session-audit-591c75f",
+    "owner": "ec944ae49c01a9e95fe45d188e4630a5",
+    "containers": [
+      {
+        "name": "postgres",
+        "id": "e2327a58e30df36efcf8bd126ae1729d54864a3ad8325d6e34e3f0104cb807be"
+      },
+      {
+        "name": "rust-audit",
+        "id": "b68bdc98cd0ee7a5c12e8c43201b7631bddd68acdb11430d3f53b0806790e1aa"
+      }
+    ],
+    "state": "stopped-retained",
+    "network_state": "removed after owner/no-endpoint audit",
+    "cleanup_errors": [],
+    "preexisting_preserved": 488,
+    "unrelated_running": 8,
+    "free_bytes": 4991266816
+  },
+  "earlier_evidence": [
+    "p08-session-audit-red-20260920.json",
+    "p08-session-audit-fixture-failure-20260920.json"
+  ],
+  "review": {
+    "kind": "independent read-only AI code review plus root diff/source/capture review",
+    "corrections": [
+      "legacy seeded shapes and NULL/mixed FK controls",
+      "cross-incarnation logout retry",
+      "exact wire completion correlation and early error recovery",
+      "isolate missing807 from privileges",
+      "bind COMMIT logout audit to actual target",
+      "separate PostgreSQL DDL physical rewrite from immutable logical fields"
+    ],
+    "evidence_review": "PASS: independent read-only AI review verified56capture/996source hashes, eight local hashes,37native cases,27unit cases, exact proxy counters and terminal SQL; no discrepancy. Full row equality comes from executed fixture assertions, not copied private snapshots."
+  },
+  "limits": [
+    "No P08-T02/P09 task or M1/product completion claim.",
+    "Rejected-request audit, configurable retention/capacity admission, audit browsing, reauthentication, scoped grants and restrictive application remain required.",
+    "Small fresh audit history; no aged/mixed capacity, large-table upgrade downtime/disk qualification, power-loss or filesystem-fault claim.",
+    "PostgreSQL SIGQUIT, browser engines, remote TLS, Linux arm64 and release journeys NOT_RUN on this candidate. Earlier qualified cases remain historical, not implied reruns.",
+    "Missing-migration/privilege cases observe prerequisite refusal/no ready output and closed socket after exit; transient bind was not independently traced.",
+    "Full row equality is asserted inside the executed fixture; private row/credential snapshots are not copied to evidence."
+  ],
+  "supplemental_terminal_verification": {
+    "status": "PASS",
+    "observed_at": "2026-09-20T15:11:55.906314+00:00",
+    "raw": ".research/implementation/session-audit/native-audit-rewrite/terminal-independent.json",
+    "sha256": "7f91b4543f5df8300a2f9c9aebc91fc62222c65b79f790b3f1ae774c55b1c5d7",
+    "script": ".research/implementation/session-audit/native-audit-rewrite/verify_terminal.py",
+    "script_sha256": "a88e7276e155abd633c3b6d2d2a383ee174470340c7aa81a44203bb0b170dacf",
+    "preserved": 488,
+    "unrelated_running": 8,
+    "owned_containers": [
+      "e2327a58e30df36efcf8bd126ae1729d54864a3ad8325d6e34e3f0104cb807be",
+      "b68bdc98cd0ee7a5c12e8c43201b7631bddd68acdb11430d3f53b0806790e1aa"
+    ],
+    "actual_elf_hashes": {
+      "bigbrotr": "ca62025b7180d1a974c896ea71041115a768328fb93bb7dde3d971729c2215d3",
+      "examples/browser_sessions_probe": "7f8c0216aa0f4e5305517cccf6c8c8644a643e7c2ab2b337dbc78aed62099faa",
+      "examples/browser_http_probe": "abc4c206ae128e237a579c2fe91e55b9eafb6bc99014422d2cc6de2bdf6f3855"
+    },
+    "scope": "Root independent fresh read-only Tux inspection: complete terminal lifecycle for both owned containers; all488 prior stable lifecycle/mount/network records compared; actual three ELF files rehashed. Full safe metadata retained in ignored receipt."
+  }
+}
