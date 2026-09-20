@@ -229,9 +229,8 @@ barrier and custodied drivers. Identical retry preserves original rows and issue
 attribution. Successful output includes catalog inspection, persistence protocol1
 and separate creation flags, while retaining `ready:false`. A lost response is
 resolved by the same command under a fresh actual Control fence; preserve both
-local files and SQL history. Local `state-initialize` remains separate. The expanded
-operation is a development candidate; the5050999 matrix qualifies only its earlier
-coordinator-only behavior, not persistence initialization.
+local files and SQL history. Local `state-initialize` remains separate. The `5050999` matrix qualifies only its
+earlier coordinator-only behavior. The expanded operation has the separate scoped qualification linked below.
 
 Ordinary Control startup with Archive assigned locally now requires this exact
 SQL binding before it inventories attempts or emits idle, including `--roles
@@ -1047,8 +1046,15 @@ must also exclude every future local reclamation operation, including when the
 manager backend disappears. No table SHARE lock may be acquired after the owner
 row: native DML locks its table first and would invert that order.
 
-This is implementation work awaiting actual PostgreSQL/native and installed CLI
-qualification. The persistence marker and captured cut alone grant no read,
+The [native qualification](../implementation/evidence/p02-archive-cut-native-20260920.json)
+at `354de75` passes 54 selected Rust tests, two signed complete-cut journeys and15
+installed CLI cases (harness `b4c3a2e`). It observes manager loss before final verify
+and during Control COMMIT. Retry creates the missing marker after the first
+refusal, or preserves the original committed marker after the second. Eleven updated protocol cases pass with fixture `2e0d50d`;
+only that fixture was rebuilt over unchanged product sources. Initial plain-TRUNCATE
+fixture failures remain recorded. The 130-row upgrade test preserves schema9
+unbound history; already-bound populated 10/14 recovery remains unqualified.
+The persistence marker and captured cut alone grant no read,
 frontier, pending reclamation or source acknowledgement. P02-T04/T07 must still
 bind a real Archive consumer frontier and native snapshot atomically, retain its
 lease and positive source claims (zero streams retain the native pin), and resolve

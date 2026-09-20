@@ -412,7 +412,7 @@ recorded; the follow-up changes only that label variable, with no product/Tux
 source edit. This evidence does not qualify payload corruption outside inspected
 columns, protected frontiers, aged capacity or Linux arm64.
 
-## Complete native cut observation in progress
+## Complete native cut observation candidate
 
 The P02-T04/T07 frontier bridge consumes a private `CutRead`, not another public
 diagnostic command. Its parent must resolve the sealed topology and authoritative
@@ -453,7 +453,14 @@ order is retained. This private transport binding is not a new scientific cut
 identity, persisted manifest or protection certificate. The literal fixture is
 [independently assembled](../../tests/fixtures/protocol/archive-cut.json).
 
-This remains implementation work, with local native development tests only.
+[Native qualification](../implementation/evidence/p02-archive-cut-native-20260920.json)
+at `354de75` passes 54 selected Rust tests, two complete signed cuts at snapshots 3/4,
+and scoped Clippy. The expanded installed initializer passes 15 actual cases with
+harness `b4c3a2e`; the bound protocol fixture passes 11 with fixture `2e0d50d`. Both initial
+FK-before-TRUNCATE-trigger fixture failures remain recorded. Actual manager loss
+before final verification leaves no persistence marker; loss during Control COMMIT
+can leave the immutable marker, and identical retry preserves its original row.
+This is a prerequisite, not complete protected-read qualification.
 It compares stored digests and dependency columns; it does not reconstruct every
 typed descriptor or check all its intrinsic constraints. Typed reconstruction,
 full payload rehash and signature verification belong to hydration/scrub.

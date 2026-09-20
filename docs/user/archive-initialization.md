@@ -183,9 +183,14 @@ issuance requires migration0015 and matching persistence participation.
 Exit codes follow Control: 0 bound/released, 1 unavailable/output, 2 usage,
 3 prerequisite/configuration/conflict, 4 interrupted or unknown durable outcome.
 The earlier [native command/startup matrix](../implementation/evidence/p02-coordinator-cli-native-20260919.json)
-at5050999 tested the original coordinator-only behavior. The expanded persistence
-initialization is a development candidate awaiting actual PostgreSQL/CLI and
-failure qualification; those historical eleven scenarios do not qualify it.
+at `5050999` tested the original coordinator-only behavior. The expanded persistence
+initialization has its own
+[native evidence](../implementation/evidence/p02-archive-cut-native-20260920.json):
+15 actual CLI scenarios at `354de75` with harness `b4c3a2e`, including both manager-loss
+windows, identical retry, immutable markers, preserved orphans and blocked output/
+signals. The old 130-row fixture covers unbound history; it does not qualify an
+already-bound populated 10/14 archive or its explicit recovery. No complete Archive
+service, protected read or installed-product readiness follows from these cases.
 
 See the [owning archive contract](../specification/archive-storage-contract.md)
 and [current implementation checkpoint](../implementation/progress.md) for the

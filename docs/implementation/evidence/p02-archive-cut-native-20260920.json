@@ -1,0 +1,307 @@
+{
+  "format": "bigbrotr-archive-cut-evidence/1",
+  "status": "PASS",
+  "scope": "P02-T04/T07 complete native cut and explicit fresh local persistence participation prerequisite; no protected frontier, actual Archive owner, snapshot pin, M1 or release qualification",
+  "source": {
+    "revision": "354de750ffbcda93e7784bfaaf17b801522caf0f",
+    "tree": "968bbf5ed67e5e1c2f87db3e1dddac7b1b9a1f1f",
+    "files": 896,
+    "archive_sha256": "aebf1630c99866a8bb9646d937a845641eda3dcd81b7334a0b6ac7f919205658",
+    "manifest": {
+      "path": ".research/implementation/archive-cut/capture/collected/out/build/source-manifest.json",
+      "bytes": 110684,
+      "sha256": "58df0136ff5966da82a10ea99c3da1a83e64a5c70894fda471e119236bdac9ff"
+    },
+    "lock_sha256": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215",
+    "clean_and_unchanged": true,
+    "verified_against_mac_git_archive": true
+  },
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "host": {
+      "kernel": "Linux 6.12.101+deb13-amd64 x86_64 GNU/Linux",
+      "filesystem": "/dev/nvme0n1p2 ext4 rw,relatime,errors=remount-ro"
+    },
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "limits": "Runner2CPU/6GiB/512PIDs;PG1CPU/1GiB/128PIDs;512MiBtmpfs;internal network/no host ports;readonly primary source;no release credentials",
+    "engines": {
+      "path": "contracts/release/archive-engine.json",
+      "bytes": 8159,
+      "sha256": "ae0069565ab9411928df0cf067822630c4f3a912919e61633b952f8077a5e2c1"
+    },
+    "dependencies": {
+      "path": "contracts/release/dependencies.json",
+      "bytes": 16208,
+      "sha256": "9bea8c27908c680afc63ec9b74c481ea522c2b7a32232ab4dbca82b1920d7dd0"
+    },
+    "native_toolchain": {
+      "path": ".research/implementation/archive-cut/capture/collected/out/native-tests/ready.json",
+      "bytes": 5391,
+      "sha256": "26eaf2d0cb9cd35895206cb28637754c83ba897f4fbbe8eedd3da5d3edba23f0"
+    }
+  },
+  "artifacts": {
+    "control": "d6599919cdd281b15e8ab96b609d94a52aff89787902a35b39f3fb7198d25cda",
+    "worker": "b7049b1013846bf53d373defa6230a9483d84e4bf844c5956f48795701aad389",
+    "publisher": "99ed57b220a25a3d7ed8df269f4a3bd67c3e64d7b26865b44bf093e42d950490",
+    "reader": "937e78a3b291015c91dcf5b1623aacca1fdd4a8bfd231f98b155059a260b9989",
+    "coordinator_probe": "a7c6981e096c6d8231bac101d9f4de72d894edb999cc014e4588076780c4f0f1",
+    "attempt_probe": "39788e39996ba073cc1276c3508a11f275566207682acd6c96becac0c0c610cf"
+  },
+  "implementation": [
+    "Whole selected receipts partition exactly every supplied ordered stream prefix including zero; ordinal gaps remain legitimate. One actual snapshot contains complete receipt EOF, original file/source/digest census and same-cut references across five families.",
+    "Dictionary dependencies outside the cut refuse despite native visibility; equal repeated mappings are allowed and conflicts refuse. Receive/provenance corrections require matching keys and earlier observation time; source order is required only within the same shard/epoch.",
+    "CatalogCapture holds the actual disabled owner row, exact snapshot, live manager transaction and local coordinator custody. A prior observation or foreign snapshot/catalog cannot be accepted. The parent retains its grant through the downstream consumer.",
+    "Additive0015 stores immutable fresh-only local synchronization participation. Explicit installed coordinator initialization inspects the actual initial guarded catalog and both empty attempt histories. Bound issuance requires protocol1; historical NULL remains unchanged.",
+    "Before final verification, manager loss leaves no marker: retry creates it under the new issuer while preserving the existing coordinator. After the marker commits, retry preserves its original issuer/time/xmin. Unregistered orphans remain untouched and outside membership; exclusive publisher collisions refuse."
+  ],
+  "linux": {
+    "build": {
+      "path": ".research/implementation/archive-cut/capture/collected/out/native-tests/result.json",
+      "bytes": 2799,
+      "sha256": "6d79c431e1a834d16971dac400758b6a10fb32041029eb2ae78b15223fa94ba5"
+    },
+    "checks": {
+      "path": ".research/implementation/archive-cut/capture/collected/out/native-tests/checks/result.json",
+      "bytes": 7469,
+      "sha256": "cb07a729ecf8cd2eafedfb95734c9b12d8408eb8e2660a1c7896071937171a50"
+    },
+    "tests": {
+      "passed": 54,
+      "failed": 0,
+      "ignored": 0
+    },
+    "clippy": "PASS for selected product targets; corrected example separately rebuilt and checked",
+    "cli": {
+      "result": {
+        "path": ".research/implementation/archive-cut/capture/collected/coordinator-cli-cases-retry.json",
+        "bytes": 88095,
+        "sha256": "ec7cf6d3e4d34378cb98adb07ca458db2f801b5828ad1c7741d8b025d4cf1f3c"
+      },
+      "cases": 15,
+      "harness": {
+        "source": "b4c3a2ecce84eee7bccd339fc1ca439cd589cc02",
+        "tree": "a7eebba50758ff6ed8c220c7f8de9e53724a1269",
+        "changed_paths": [
+          "docs/implementation/progress.md",
+          "docs/research/laboratory-inventory.json",
+          "experiments/archive-engine/coordinator_cli_cases.py"
+        ],
+        "production_inputs_unchanged": true,
+        "script_sha256": "b8b9d6fd853b6c5883c4ba078a1c353800d741abf8febb556cb51fa2376a0662"
+      },
+      "names": [
+        "missing-local-state-refuses-before-control-claim",
+        "ordinary-missing-sql-binding-preserves-empty-history",
+        "explicit-binding-and-identical-retry",
+        "unregistered-orphan-preserved-outside-membership",
+        "manager-loss-before_verify-and-identical-retry",
+        "manager-loss-during_commit-and-identical-retry",
+        "start-requires-binding-and-preserves-history",
+        "restart-requires-binding-and-preserves-history",
+        "full-stdout-exits-with-committed-identical-binding",
+        "different-valid-local-binding-refused-without-repair",
+        "missing-migration-refused-without-runtime-ddl",
+        "old130-attempt-history-preserved-and-not-adopted",
+        "persistence-upgrade-preserves-old130-null-history-without-adoption",
+        "blocked-binding-int-preserves-fence-then-retries",
+        "blocked-binding-term-preserves-fence-then-retries"
+      ],
+      "faults": "BEFORE INSERT barrier versus deferred COMMIT trigger, actual PG blocking graph and manager PID/backend_start. Both refuse positive output. Before final verification: no marker. During COMMIT: marker retained; identical retry preserves the full row and xmin. Also blocked stdout and both blocked signal paths."
+    },
+    "cuts": {
+      "result": {
+        "path": ".research/implementation/archive-cut/capture/collected/cut-cases.json",
+        "bytes": 626167,
+        "sha256": "154f40c5f89c92e870348cfa1c6ec3dffb2abdc6b92b89dd9ed7d732f35aa3a6"
+      },
+      "cases": 2,
+      "snapshots": [
+        3,
+        4
+      ],
+      "facts": [
+        10,
+        12
+      ],
+      "committed_batches": [
+        2,
+        3
+      ],
+      "family_counts": [
+        [
+          6,
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          6,
+          1,
+          1,
+          2,
+          2
+        ]
+      ],
+      "parquet_files": [
+        8,
+        11
+      ],
+      "oracle": "Independent signed corpus, original admission/receipt expectations, complete native rows and private digest recipe; no expected result is derived with the Rust encoder."
+    },
+    "protocol": {
+      "result": {
+        "path": ".research/implementation/archive-cut/capture/collected/protocol-retry-cases.json",
+        "bytes": 13184,
+        "sha256": "544a15bf8b843494ac7665e463ccdd54a8d65976244180eb2708528a6afbee1d"
+      },
+      "cases": 11,
+      "harness_source": "2e0d50d566c481f5b0dcf92d50d11c73f12efb12",
+      "artifact_sha256": "7ec38ffc1eb914a4d8c1b97ece2e050083f213e1f5e106513971f3a2efacd08d",
+      "build": {
+        "path": ".research/implementation/archive-cut/capture/collected/out/protocol-retry/checks/result.json",
+        "bytes": 3334,
+        "sha256": "81dd18ab4004b7cb7c939138def611e3baa7e32c6b5a7b5585762162c554615a"
+      },
+      "source_manifest": {
+        "path": ".research/implementation/archive-cut/capture/collected/out/protocol-source-manifest.json",
+        "bytes": 110651,
+        "sha256": "2c1aafc2dc1b094cd80fa48caa802826909ace9eb665f4a20c73baea2e923099"
+      },
+      "unchanged_product_inputs": true,
+      "scope": "Fresh installed persistence consumed by bound issuance; identical retries, new Control epoch, conflicting local binding, immutable history, retained schema9-to10 upgrade/lock-order controls and cancellation. Migration15 concurrency is not qualified by those legacy controls. Only corrected example rebuilt; installed product artifacts remain354de75."
+    }
+  },
+  "oracle": {
+    "protocol_vector": {
+      "path": "tests/fixtures/protocol/archive-cut.json",
+      "bytes": 3173,
+      "sha256": "2b067f166926542aaf7642598322c65e64aa24b35a7cf04f302cde71ddc42570"
+    },
+    "signed_cut_vector": {
+      "path": "tests/fixtures/storage/archive-cut.json",
+      "bytes": 10126,
+      "sha256": "f804869f7a61fd292eab7f9b9462accb508fd3b9fbba4f43c25cc4a2f35de86b"
+    },
+    "signed_oracle": {
+      "path": "experiments/archive-engine/signed_publication_oracle.py",
+      "bytes": 16215,
+      "sha256": "7ad4381bdc691d45245232d7cbdebeed039c6de0c182bcdc193b3479678917a4"
+    },
+    "offline": {
+      "path": ".research/implementation/archive-cut/offline-verification.json",
+      "bytes": 330,
+      "sha256": "af6cbcbe6808811ba32389e74ee84370e32b4bba8903b54009e2bc13af0aa31d"
+    },
+    "verifier": {
+      "path": ".research/implementation/archive-cut/verify_capture.py",
+      "bytes": 4809,
+      "sha256": "2bd707cef753af3c85e0d845f566b656b3d52aa5bedb778d5571617981a17370"
+    }
+  },
+  "mac": {
+    "scope": "Pre-candidate dirty-source native development, not a Mac release qualification",
+    "checks": {
+      "path": ".research/implementation/archive-cut/bridge-current-checks/result.json",
+      "bytes": 2113,
+      "sha256": "80df7fdff202b9d259db3bd7754abfc09c8e68ca7bac614b3fcc3213da2dc119"
+    },
+    "correction_red": {
+      "path": ".research/implementation/archive-cut/correction-order-red.log",
+      "bytes": 1110,
+      "sha256": "e5f240b0a4ff3678179abc5d48900b2f6caa012b4ba80bc2125d1ea880e21acf"
+    },
+    "correction_green": {
+      "path": ".research/implementation/archive-cut/correction-cross-stream-green.log",
+      "bytes": 535,
+      "sha256": "f5d7d84fd2328da575f71f59b96380f68aa8f616eff120bed2e18269a6f4dde6"
+    },
+    "closure_mutant_red": {
+      "path": ".research/implementation/archive-cut/native-closure-bypass-red.log",
+      "bytes": 1604,
+      "sha256": "125826a3c06205777f2c8bafb6b003d485c8e50ed8765a694f08fb4d638d1bcf"
+    },
+    "note": "The semantic same-stream receive RED predates the fix; final native closure also checks provenance and cross-stream positive controls. Missing-module/API compilation failures are not semantic evidence."
+  },
+  "failures": [
+    {
+      "result": {
+        "path": ".research/implementation/archive-cut/capture/collected/coordinator-cli-cases.json",
+        "bytes": 32916,
+        "sha256": "ecc16450d885378e159a61251a8c6eec59776ce701168f9601c464b7c99ffe57"
+      },
+      "status": "FAIL",
+      "reason": "Plain TRUNCATE is refused by FK precheck0A000 before the intended trigger. Diagnostic actual UPDATE/DELETE/TRUNCATE CASCADE confirms23514; corrected Python harness reruns all15 cases in a fresh namespace."
+    },
+    {
+      "result": {
+        "path": ".research/implementation/archive-cut/capture/collected/protocol-cases.json",
+        "bytes": 5630,
+        "sha256": "9957046d96c0755bb119391b92454ec90f31b1ed396e4e6206227c633328889b"
+      },
+      "status": "FAIL",
+      "reason": "Old Rust protocol fixture makes the same plain-TRUNCATE expectation after six successful checks. Corrected example at2e0d50d uses CASCADE and passes11 fresh cases. No product mutation was required."
+    },
+    {
+      "result": {
+        "path": ".research/implementation/archive-cut/capture/collected/immutability-diagnosis.json",
+        "bytes": 1164,
+        "sha256": "2874949fbb901b5270e9b8b56528a037f8ab510223d739e2d7f7b2841bcf5c55"
+      },
+      "status": "EXECUTED",
+      "reason": "Independent actual PG refusal diagnostics; raw failed reports remain unchanged."
+    }
+  ],
+  "review": {
+    "kind": "Independent read-only AI plus integrating-owner code/contract/harness/evidence review",
+    "findings": [
+      "Missing same-stream correction order reproduced and fixed without imposing order across streams.",
+      "Removed unnecessary synchronous orphan scan; exclusive original-path publisher is the actual no-adoption boundary.",
+      "Corrected independent schema-version encoding from u32 to u16 and checked the frozen vector.",
+      "Reconciled current initialization contract with historical coordinator-only behavior.",
+      "Added exact130-row cardinality alongside complete row/xmin comparisons after additive migration."
+    ],
+    "boundary": "Reviewers did not execute engines. Intrinsic typed descriptor validation and full payload rehash belong to hydration/scrub."
+  },
+  "resources": {
+    "audit": {
+      "path": ".research/implementation/archive-cut/capture/collected/terminal-audit.json",
+      "bytes": 10311,
+      "sha256": "61ed264e47200ef2abef76bd4922961f4cc575d04818354d57949056055cfddd"
+    },
+    "identities": {
+      "path": ".research/implementation/archive-cut/capture/collected/resources.json",
+      "bytes": 1272,
+      "sha256": "ed55c89a01f23fb993f248cb8a9bf25d9e5357328a29106968a5784a1e9b7e5f"
+    },
+    "capture": {
+      "path": ".research/implementation/archive-cut/capture/evidence-identity.json",
+      "bytes": 5770,
+      "sha256": "ddb37b0bfc51bf7fba05c449d73d80de4985c2576296d3ea2bb6b6d25947b485"
+    },
+    "capture_sha256": "7ca216e23e647b9b77326c20412c167045e93c391b63b0f045b807982ae48f82",
+    "capture_files": 37,
+    "remaining_pg_clients": [],
+    "preexisting_preserved": 396,
+    "unrelated_running": 8,
+    "bigbrotr_running": 0,
+    "state": "stopped-retained",
+    "network_state": "removed after owner/no-endpoint audit; containers and data retained",
+    "collector_exit_codes": {
+      "/bigbrotr-implementation-archive-cut-354de75": 143,
+      "/bigbrotr-implementation-archive-cut-354de75-pg": 137
+    },
+    "exit_meaning": "Deliberate terminal shutdowns; Pid0/noOOM, all prior container lifecycle/mount/network identities preserved. Only the empty owned network removed."
+  },
+  "remaining": [
+    "Native private request bounds are structural; real sealed-topology authority, complete original admission grouping, actual Archive owner/frontier, immutable snapshot binding and PG-clock read pins remain required.",
+    "No per-body rehash/signature or intrinsic typed-descriptor validation by the cut census. No capacity/default-cap, mixed/aged state, RSS, throughput, power/host loss, Linux arm64 or full install/release claim.",
+    "The130-row upgrade fixture begins at schema9 with unbound history. It does not qualify an already-bound populated schema10/14 archive; that explicit incompatible-history recovery path remains required.",
+    "No new read-policy revocation, cut-manager loss during native observation, complete snapshot GC/lease concurrency or protected read/export/restart qualification. Local root durable provisioning remains separate.",
+    "Installed coordinator marker/cut observation alone does not authorize reads, pending ACK/reclamation, or complete M1. All remaining selected product work remains open."
+  ]
+}

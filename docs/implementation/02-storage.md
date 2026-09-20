@@ -326,9 +326,12 @@ The current P02-T04/T07 bridge adds a complete native cut (whole retained batche
 zero prefixes and same-cut reference closure), a live catalog capture barrier and
 [fresh-only local persistence participation](../specification/archive-storage-contract.md#qualified-local-persistence-participation)
 through additive0015. The installed coordinator initializer consumes the marker;
-new issuance requires it. Native/PG/CLI qualification and the actual Archive
-frontier/snapshot/lease binding remain open. The older command evidence above does
-not qualify this expanded initializer. No checkbox closes from development tests.
+new issuance requires it. [Scoped native qualification](evidence/p02-archive-cut-native-20260920.json)
+at `354de75` passes 54 selected tests, two signed full cuts, 15 installed CLI cases and 11
+updated protocol cases, with separate exact fixture revisions. Manager loss before
+final verify/during COMMIT and identical retry are exercised. Both failed initial
+TRUNCATE fixtures remain recorded. The actual Archive frontier/snapshot/lease
+binding and populated 10/14 history recovery remain open. No task checkbox closes.
 
 **Depends on:** P02-T01/T02/T03 and P01-T05/T06.
 **Files:** application `src/storage/archive/{publisher,receipts,worker}.rs`,

@@ -14984,7 +14984,7 @@
       "network": "bigbrotr-implementation-archive-cut-354de75",
       "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
       "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
-      "state": "running",
+      "state": "stopped-retained",
       "source_files": 896,
       "started_at": "2026-09-20T05:12:29.020549+00:00",
       "network_id": "caa8eb3cd751b935327379327d955d58e76d64a5af8d30c203bc1021c95f8c07",
@@ -14993,8 +14993,19 @@
       "container_id": "f5977e933b2f74a1ea647f428e57670f6f523ee581c43e591ef3e36e32c4e1a1",
       "local_raw": ".research/implementation/archive-cut",
       "purpose": "P02-T04/T07 complete native cut, fresh persistence and actual installed initializer failure windows",
-      "qualification": "NOT_RUN: native build and selected tests active",
-      "limits": "runner2CPU/6GiB/512PIDs;PG1CPU/1GiB/128PIDs;internal network,nohostports,readonlysource,512MiBtmpfs"
+      "qualification": "docs/implementation/evidence/p02-archive-cut-native-20260920.json",
+      "limits": "runner2CPU/6GiB/512PIDs;PG1CPU/1GiB/128PIDs;internal network,nohostports,readonlysource,512MiBtmpfs",
+      "network_state": "removed after owner/no-endpoint audit; containers and data retained",
+      "terminal_audit": "terminal-audit.json",
+      "capture_files": 37,
+      "capture_sha256": "7ca216e23e647b9b77326c20412c167045e93c391b63b0f045b807982ae48f82",
+      "source_export_verified_against_mac_git": true,
+      "preexisting_preserved": 396,
+      "remaining_pg_clients": 0,
+      "unrelated_running": 8,
+      "bigbrotr_running": 0,
+      "cli_harness_revision": "b4c3a2e",
+      "protocol_fixture_revision": "2e0d50d"
     }
   },
   "implementation_monitor_corrections_20260918": {
