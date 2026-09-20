@@ -167,9 +167,11 @@ is needed merely to establish the mapping, and no active grant may wait for a
 future allocation to make an otherwise nonexistent reference usable.
 
 The private native `read-visibility` boundary selects the complete qualified
-reference inside explicit ordered source prefixes, then hydrates by source ID
-alone in the same transaction. Both lookups reject multiple dictionary rows;
-the second also detects a conflicting reference that reused the source ID.
+reference inside explicit ordered source prefixes. It first requires exactly one
+complete mapping value, allowing equal repetitions at distinct source IDs as the
+certified cut does. It selects the lowest `(shard, epoch, sequence)` occurrence,
+then hydrates by source ID alone in the same transaction. That final lookup
+rejects multiple rows, including a different reference that reused the source ID.
 Validate the full fact envelope/digest, schema and descriptor versions, visibility
 class syntax and all inactive descriptor fields. The parent independently verifies
 the canonical fact, complete reference, source membership, snapshot and request

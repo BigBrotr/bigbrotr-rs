@@ -21,11 +21,47 @@ another diagnostic command instead of the real read consumer.
 
 ## Git, current qualification and next action
 
-Observed main/HEAD `5dfa9784a7dd5cf3bcec6ba5034a349aa7d7ecfc`, two unpublished
-commits ahead of origin/main d044373. Root now owns only qualification evidence,
-inventory and this checkpoint. No other writer or merge/rebase. Product is exactly
-b5ff8ab;5dfa978 changes only the connected fixture and documentation. No migration
-or dependency changed. Inspect actual Git before continuing.
+Observed main/HEAD and origin/main `aabbb80f2dbfb9df869b096ac94fd6314237459a`.
+The three visibility commits are pushed; private repository identity verified.
+Root owns the current equal-mapping lookup correction/test and read-view wording,
+archive_read_probe/support/visibility_fixture.rs and visibility_cases.py fixture
+extensions, plus this checkpoint. The prior qualified visibility slice is pushed.
+No other writer or merge/rebase. Last qualified product is
+b5ff8ab;5dfa978 changes fixture/documentation, aabbb80 records qualification.
+No migration/dependency changed. Inspect actual Git before continuing.
+
+New consumer review confirmed an availability defect after the scoped qualification:
+`docs/reference/archive-handoff.md` and worker cut.rs admit equal complete dictionary
+mappings at distinct SourceRecordId values; the lookup rejected any second row.
+Actual Mac native RED at `archive-visibility/equal-mapping-red` ran1test, failed
+with Mismatch on two valid equal mappings (not a compile failure). Root now counts
+distinct complete mapping values under the same cut, selects the lowest source
+occurrence, then preserves source-only uniqueness/full representative validation.
+The extended native regression adds a third conflicting value: it must refuse
+when included, while prefix2 still succeeds. Same-source duplicate tests remain.
+This is a correction to conform to the existing cut contract, no format/migration/
+dependency change. Native5tests/worker Clippy PASS; local exec session75031 finished,
+raw `archive-visibility/equal-mapping-green/result.json`. New quiescent lab-only
+append fixture builds/scoped Clippy PASS in `equal-mapping-fixture-reviewed`;
+six new actual PGchild repetition/conflict cases are NOT_RUN.
+They deliberately bypass publication and claim no certified cut/pin authority;
+independent Python CBOR and full readback expectations define both new facts.
+Independent AI review caught the administrative writer guard: only the fixture's
+postgres mutation sessions now use startup replication_role=replica, with complete
+guard/trigger/role-setting comparisons before/after. No persistent bypass or role
+privilege change. Earlier helper checks retain missing build environment, missing
+PATH, private schema import and Clippy chunk API failures; none was a PG run.
+No Tux experiment is active. Previous27PGchild cases qualifyb5ff8ab only, not this
+new correction. Next bounded action: finish these tests/review, qualify the actual
+PGchild mapping repetition/conflict behavior on an exact new candidate, then
+continue the integrated grant/live-pin consumer. Do not leave this availability
+finding open when consolidating grant activation.
+
+Fresh read-only Tux inspection:494retained container records, eight unrelated
+running, no BigBrotr process active;74,448,355,328bytes free. Full candidate launcher
+`archive-visibility/equal-mapping-native` will verify ownership and reuse only the
+intactb5ff8ab build cache, never the retired partial caches. New source goes through
+Git bundle; native5/protocol2 plus33actual lookup cases are the declared run.
 
 [Visibility qualification](evidence/p02-archive-visibility-native-20260920.json)
 now PASS within its stated private allocation boundary. Actualb5ff8ab executable/
@@ -70,7 +106,7 @@ Raw `archive-visibility/native-connect`; capture SHA256
 `32eed2f28651d45beced58bf5474e46b30424a2c2770a7a1cd6ee2d3381f03f7`.
 Keep secret-bearing fixture directories remote; never restart/reuse used outputs.
 
-Next bounded action: review/commit/push qualification, then implement P08-T02
+Next bounded action: implement P08-T02
 session-and-command-bound reauthentication plus scope-grant CAS/audit/retry and
 its actual private history consumer. Read-only review found the precise live-pin
 check belongs inside that Control transaction: existing read_archive_pin is a
@@ -82,6 +118,15 @@ proof is same-session/CSRF required, at most5minutes, consumed with accepted
 command; original accepted idempotent retry resolves before another consume.
 Restrictive changes require actual drain and suspend-aware action deadline; UTC
 plus5seconds or historical receipt alone cannot mark applied. No M1/P08 completion.
+Current reading: full private-administration/interface/authority/credential
+contracts,0801/0802/0805/0806 SQL, browser_sessions.rs, management/sessions.rs,
+management interface mod.rs, archive_frontier.rs and snapshot_leases.rs. Next owning
+files are0017/0018SQL and catalog_guard/capture.rs/retention callers. Completed
+read-only AI live-pin API review: exact archived frontier selection lacks bounds
+in public receipt; require active state in addition to require_archive_pin_holder
+(which itself does not test active), current holder/claims/PGclock and actual
+custody. Cross-family source uniqueness comes from complete cut membership; do
+not recapture latest or revive old Archive publisher to use a retained frontier. No reauthentication/grant code or808migration yet.
 
 Owned cache retirements under archive-visibility/tux-*-retirement removed only
 intermediates from51d35ae/e65116b/591c75f, preserving actual executable/shared

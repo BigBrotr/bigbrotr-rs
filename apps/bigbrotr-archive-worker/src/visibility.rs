@@ -168,14 +168,30 @@ pub(crate) fn lookup_attached(
     );
     // Result-bound only: full scan admission remains a separate read-core gate.
     // All interpolated input is closed typed hex/decimal, never caller SQL.
-    let sql = format!(
-        "SELECT left(to_json({fields}),{}) FROM archive.main.dictionaries WHERE reference.dataset_id=from_hex('{}') AND reference.dictionary_kind=4 AND reference.allocation_domain=from_hex('{}') AND reference.ordinal={} AND source_record_id.dataset_id=from_hex('{}') AND ({}) LIMIT 2",
-        MAX_NATIVE_ROW_BYTES + 1,
+    let predicate = format!(
+        "reference.dataset_id=from_hex('{}') AND reference.dictionary_kind=4 AND reference.allocation_domain=from_hex('{}') AND reference.ordinal={} AND source_record_id.dataset_id=from_hex('{}') AND ({})",
         read.scope.dataset_id,
         read.scope.allocation_domain,
         read.scope.ordinal.get(),
         read.dataset,
         prefixes.join(" OR ")
+    );
+    // Match the certified-cut contract: equal complete mappings may occur in
+    // distinct source facts. Count VALUES, not their occurrence envelopes, before
+    // choosing a deterministic representative. A later conflict cannot hide
+    // behind two earlier equal occurrences. All scans share this transaction.
+    let alternatives: u64 = c.query_row(
+        &format!("SELECT count(*) FROM (SELECT DISTINCT normalization_version,descriptor_schema,descriptor_version,descriptor_value FROM archive.main.dictionaries WHERE {predicate} LIMIT 2)"),
+        [], |row| row.get(0),
+    ).map_err(|_| Error::Native)?;
+    match alternatives {
+        0 => return Err(Error::Missing),
+        1 => {}
+        _ => return Err(Error::Mismatch),
+    }
+    let sql = format!(
+        "SELECT left(to_json({fields}),{}) FROM archive.main.dictionaries WHERE {predicate} ORDER BY source_record_id.shard_id,source_record_id.owner_epoch,source_record_id.sequence LIMIT 1",
+        MAX_NATIVE_ROW_BYTES + 1
     );
     let selected = one(c, &sql)?.fact(read)?;
     // A different mapping can illegally reuse this source identity. The first

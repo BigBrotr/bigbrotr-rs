@@ -6,6 +6,7 @@ principal grant or claim the installed HTTP/pin/reauthentication journey passed.
 """
 import argparse
 import copy
+import hashlib
 import json
 from pathlib import Path
 import subprocess
@@ -14,7 +15,7 @@ import time
 
 sys.dont_write_bytecode = True
 from signed_publication_cases import command, execute, sha
-from signed_publication_oracle import corpus, check, input_expectations
+from signed_publication_oracle import corpus, check, input_expectations, expected, cbor, reference, source as source_id
 from event_cases import cut_expectation
 
 
@@ -52,6 +53,17 @@ def main(root):
     def files():
         home=root/'out/signed_normal/kind=7'
         return {str(p.relative_to(home)):dict(bytes=p.stat().st_size,sha256=sha(p)) for p in sorted(home.rglob('*.parquet'))}
+    def guard():
+        return json.loads(sql('bbpub_normal', """SELECT jsonb_build_object(
+          'installation',(SELECT jsonb_agg(to_jsonb(t)) FROM bigbrotr_archive.installation t),
+          'scientific_schema',(SELECT jsonb_agg(to_jsonb(t)) FROM bigbrotr_archive.scientific_schema t),
+          'owner',(SELECT jsonb_agg(to_jsonb(t)) FROM bigbrotr_archive.owner t),
+          'attempts',(SELECT jsonb_agg(to_jsonb(t) ORDER BY ordinal) FROM bigbrotr_archive.attempts t),
+          'triggers',(SELECT jsonb_agg(jsonb_build_array(n.nspname,c.relname,t.tgname,t.tgenabled,pg_get_triggerdef(t.oid)) ORDER BY n.nspname,c.relname,t.tgname)
+             FROM pg_trigger t JOIN pg_class c ON c.oid=t.tgrelid JOIN pg_namespace n ON n.oid=c.relnamespace
+             WHERE n.nspname IN ('public','bigbrotr_archive')),
+          'role_settings',(SELECT coalesce(jsonb_agg(to_jsonb(t) ORDER BY setdatabase,setrole),'[]'::jsonb) FROM pg_db_role_setting t),
+          'parameter_acl',(SELECT coalesce(jsonb_agg(to_jsonb(t) ORDER BY parname),'[]'::jsonb) FROM pg_parameter_acl t));"""))
     binary=['docker','exec','--env','LD_LIBRARY_PATH=/out/archive-worker/lib',runner]
     inputs=root/'out/visibility-inputs';inputs.mkdir()
     batches,_=corpus();literal=batches[0]['facts'][0]
@@ -159,7 +171,60 @@ def main(root):
         assert after_start, 'postmaster restart not observed'
         run_case('pg-restarted',request,True)
         assert metadata()==before and files()==original
-        assert len(result['cases'])==27 and len({c['name'] for c in result['cases']})==27
+        # Deliberately bypass publication in this quiescent laboratory. These
+        # writes qualify lookup semantics, not admission/frontier/pin authority.
+        # Both complete preimages and full readback expectations are independent
+        # of the Rust codec/Arrow writer and observed native row renderer.
+        repeated=copy.deepcopy(request)
+        oracle=expected('normal')
+        guard_before=guard()
+        assert guard_before['owner']==[dict(singleton=True,ordinal=4,enabled=False)]
+        result['guard_before']=guard_before
+        mutations=result['quiescent_mutations']=[]
+        for mode,sequence,classification,snapshot in [
+                ('visibility-repeat',11,'public',4),
+                ('visibility-conflict',12,'private',5)]:
+            preimage=b'bigbrotr/fact/1\0'+cbor([source_id(sequence),'dictionary',1,reference(4),0,
+                        [reference(4),1,'visibility',1,{'class':classification}]])
+            digest=hashlib.sha256(preimage).hexdigest()
+            path=inputs/(mode+'.json')
+            path.write_text(json.dumps(dict(preimage_hex=preimage.hex(),digest=digest))+'\n')
+            row=copy.deepcopy(expected('normal')['tables']['dictionaries'][0])
+            row['source_record_id']['sequence']=sequence
+            row['payload_digest']=digest.upper()
+            row['descriptor_value']['class']=classification
+            oracle['tables']['dictionaries'].append(row)
+            mutation=dict(mode=mode,input_sha256=sha(path),status='INCOMPLETE')
+            mutations.append(mutation);save()
+            execute(binary+['/out/native-tests/archive-read-probe','normal',mode],45,mutation)
+            save()
+            assert mutation['exit']==0 and not mutation['stderr'] and not mutation['overflow']
+            assert json.loads(mutation['stdout'])==oracle, 'complete independent mutated readback'
+            assert sql('bbpub_normal','SELECT max(snapshot_id) FROM ducklake_snapshot;')==str(snapshot)
+            mutation['status']='PASS'
+            repeated['expected']['snapshot_id']=snapshot
+            repeated['expected']['bounds'][0]['complete_through']=sequence
+            run_case(mode,repeated,mode=='visibility-repeat')
+            repeated['expected']['bounds'][0]['complete_through']=sequence-1
+            run_case(mode+'-excluded',repeated,True)
+        repeated['expected']['snapshot_id']=4
+        repeated['expected']['bounds'][0]['complete_through']=11
+        run_case('equal-historical-under-conflicting-head',repeated,True)
+        run_case('original-historical-under-conflicting-head',request,True)
+        mutated_metadata=metadata();mutated_files=files()
+        assert all(mutated_files.get(name)==identity for name,identity in original.items())
+        assert len(mutated_files)>len(original)
+        result.update(metadata_mutated=mutated_metadata,files_mutated=mutated_files)
+        # A fresh native process must read the complete independently expected
+        # retained corpus; no current Control frontier is advanced by this probe.
+        readback=result['mutated_readback']={}
+        execute(binary+['/out/native-tests/archive-read-probe','normal'],45,readback);save()
+        assert readback['exit']==0 and not readback['stderr'] and not readback['overflow']
+        assert json.loads(readback['stdout'])==oracle
+        assert metadata()==mutated_metadata and files()==mutated_files
+        result['guard_after']=guard()
+        assert result['guard_after']==guard_before
+        assert len(result['cases'])==33 and len({c['name'] for c in result['cases']})==33
         assert all(c['status']=='PASS' for c in result['cases'])
         result['status']='PASS'
     except BaseException as error:

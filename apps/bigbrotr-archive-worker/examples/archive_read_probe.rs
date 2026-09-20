@@ -1,6 +1,8 @@
 //! Independent native readback oracle for the isolated signed publisher cases.
 //! Fixed queries only. This is not the product Read role or an export format.
 use bigbrotr_model::{NostrTime, SignedEvent};
+#[path = "support/visibility_fixture.rs"]
+mod visibility_fixture;
 use duckdb::{Config, Connection};
 use std::{collections::BTreeMap, fs};
 fn main() {
@@ -11,7 +13,13 @@ fn main() {
         mode.as_str(),
         "normal" | "history" | "before" | "after" | "owner_first" | "held_commit" | "held_rollback"
     ));
-    let bootstrap_only = args.len() == 3;
+    let mutation = args
+        .get(2)
+        .filter(|value| matches!(value.as_str(), "visibility-repeat" | "visibility-conflict"));
+    if mutation.is_some() {
+        assert_eq!(mode, "normal");
+    }
+    let bootstrap_only = args.len() == 3 && mutation.is_none();
     if bootstrap_only {
         assert_eq!(args[2], "bootstrap");
         assert!(matches!(mode.as_str(), "owner_first" | "held_rollback"));
@@ -44,10 +52,26 @@ fn main() {
     c.execute_batch("SET pg_pool_enable_reaper_thread=false; SET pg_use_ctid_scan=false; SET pg_pool_max_connections=8; SET pg_pool_acquire_mode='try'").unwrap();
     let password = fs::read_to_string("/secrets/postgres").unwrap();
     assert!(password.bytes().all(|v| v.is_ascii_hexdigit()));
-    // Administrative fixture reader has no publication token and attaches read-only.
+    // Administrative fixture readback stays read-only except the explicitly
+    // selected quiescent visibility test mutation. Neither is product authority.
+    // The mutation session alone bypasses triggers as postgres. Never alter the
+    // persistent writer guard/roles to plant an intentionally uncertified fact.
+    let fixture_options = if mutation.is_some() {
+        " options=''-c session_replication_role=replica''"
+    } else {
+        ""
+    };
     // Never echo native secret-bearing errors onto the evidence pipes.
-    assert!(c.execute_batch(&format!("CREATE TEMPORARY SECRET reader (TYPE postgres, URI 'hostaddr=127.0.0.1 port=5432 dbname=bbpub_{mode} user=postgres password={password} sslmode=disable connect_timeout=5')")).is_ok(),"private reader secret");
-    assert!(c.execute_batch(&format!("ATTACH 'ducklake:postgres:' AS archive (DATA_PATH '/out/signed_{mode}/kind=7/', DATA_INLINING_ROW_LIMIT 0, AUTOMATIC_MIGRATION false, CREATE_IF_NOT_EXISTS false, META_SECRET_STORAGE_TABLE '', META_SECRET 'reader', READ_ONLY)")).is_ok(),"read-only catalog attach");
+    assert!(c.execute_batch(&format!("CREATE TEMPORARY SECRET reader (TYPE postgres, URI 'hostaddr=127.0.0.1 port=5432 dbname=bbpub_{mode} user=postgres password={password} sslmode=disable connect_timeout=5{fixture_options}')")).is_ok(),"private reader secret");
+    let read_only = if mutation.is_some() {
+        ""
+    } else {
+        ", READ_ONLY"
+    };
+    assert!(c.execute_batch(&format!("ATTACH 'ducklake:postgres:' AS archive (DATA_PATH '/out/signed_{mode}/kind=7/', DATA_INLINING_ROW_LIMIT 0, AUTOMATIC_MIGRATION false, CREATE_IF_NOT_EXISTS false, META_SECRET_STORAGE_TABLE '', META_SECRET 'reader'{read_only})")).is_ok(),"read-only catalog attach");
+    if let Some(mutation) = mutation {
+        visibility_fixture::append(&c, mutation);
+    }
     // Explicit field normalization, independent of production Arrow/codec code.
     c.execute_batch("CREATE MACRO ref_value(r) AS CASE WHEN r IS NULL THEN NULL ELSE struct_pack(dataset_id:=hex(r.dataset_id),dictionary_kind:=r.dictionary_kind,allocation_domain:=hex(r.allocation_domain),ordinal:=r.ordinal) END; CREATE MACRO source_value(r) AS CASE WHEN r IS NULL THEN NULL ELSE struct_pack(dataset_id:=hex(r.dataset_id),shard_id:=r.shard_id,owner_epoch:=r.owner_epoch,sequence:=r.sequence) END; CREATE MACRO clock_value(r) AS struct_pack(clock_id:=ref_value(r.clock_id),resolution_us:=r.resolution_us,uncertainty_us:=r.uncertainty_us,anomaly_flags:=r.anomaly_flags)").unwrap();
     let common = "source_value(source_record_id) AS source_record_id,record_schema_version,record_kind,ref_value(visibility_scope_id) AS visibility_scope_id,hex(payload_digest) AS payload_digest,recorded_at";

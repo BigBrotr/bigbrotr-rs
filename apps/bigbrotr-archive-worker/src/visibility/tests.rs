@@ -280,3 +280,93 @@ fn visibility_lookup_rejects_one_source_identity_assigned_to_two_mappings() {
     alternate.snapshot_id = 4;
     assert_eq!(lookup(home.path(), &alternate), Err(Error::Mismatch));
 }
+
+#[test]
+fn visibility_lookup_accepts_equal_mappings_from_distinct_source_facts() {
+    let home = tempfile::tempdir().unwrap();
+    seed(home.path());
+    let original = fixture();
+    let repeated = Fact::new(
+        bigbrotr_model::SourceRecordId {
+            sequence: bigbrotr_model::Sequence::new(2).unwrap(),
+            ..original.source_record_id()
+        },
+        original.visibility_scope_id(),
+        original.recorded_at(),
+        original.payload().clone(),
+    )
+    .unwrap();
+    let temp = tempfile::tempdir().unwrap();
+    let e = engine(home.path(), temp.path(), None);
+    schema::create_stage(&e.connection).unwrap();
+    Rows::dictionaries(
+        &[&repeated],
+        RowLimits {
+            max_rows: 1,
+            max_text_bytes: 4096,
+            max_tag_nodes: 0,
+        },
+    )
+    .unwrap()
+    .append(
+        &mut e
+            .connection
+            .appender_to_db("dictionaries", "stage")
+            .unwrap(),
+    )
+    .unwrap();
+    e.connection
+        .execute_batch("INSERT INTO archive.dictionaries SELECT * FROM stage.dictionaries")
+        .unwrap();
+    drop(e);
+    let mut selected = request(3);
+    selected.bounds[0].complete_through = 2;
+    // The certified-cut contract admits an identical complete mapping under a
+    // different source identity. The reader must not confuse it with a conflict.
+    assert_eq!(lookup(home.path(), &selected).unwrap(), original);
+    let conflicting = Fact::new(
+        bigbrotr_model::SourceRecordId {
+            sequence: bigbrotr_model::Sequence::new(3).unwrap(),
+            ..original.source_record_id()
+        },
+        original.visibility_scope_id(),
+        original.recorded_at(),
+        FactPayload::Dictionary(
+            bigbrotr_model::DictionaryEntry::new(
+                selected.scope,
+                bigbrotr_model::DictionaryDescriptor::Visibility {
+                    class: bigbrotr_model::DescriptorLabel::new("private".into()).unwrap(),
+                },
+            )
+            .unwrap(),
+        ),
+    )
+    .unwrap();
+    let temp = tempfile::tempdir().unwrap();
+    let e = engine(home.path(), temp.path(), None);
+    schema::create_stage(&e.connection).unwrap();
+    Rows::dictionaries(
+        &[&conflicting],
+        RowLimits {
+            max_rows: 1,
+            max_text_bytes: 4096,
+            max_tag_nodes: 0,
+        },
+    )
+    .unwrap()
+    .append(
+        &mut e
+            .connection
+            .appender_to_db("dictionaries", "stage")
+            .unwrap(),
+    )
+    .unwrap();
+    e.connection
+        .execute_batch("INSERT INTO archive.dictionaries SELECT * FROM stage.dictionaries")
+        .unwrap();
+    drop(e);
+    selected.snapshot_id = 4;
+    assert_eq!(lookup(home.path(), &selected).unwrap(), original);
+    selected.bounds[0].complete_through = 3;
+    assert_eq!(lookup(home.path(), &selected), Err(Error::Mismatch));
+}
