@@ -21,11 +21,13 @@ another diagnostic command instead of the real read consumer.
 
 ## Git and ownership
 
-Local main/HEAD is `50185d35785fab0868159787ee06a019bae02dfd`;
-four unpublished commits follow origin`b98426146c68caffcbf6822bdb956d1a8abbd30d`.
-Root owns the referrer-policy correction: app.html, Rust transport and its TCP
-regression, browser fixture/README, interface contract, diagnostics evidence,
-inventory and this checkpoint. No other dirty work, parallel writer or merge/rebase.
+Local main/HEAD is `cc4aa3abc26301c252c7197c0d9a1b6057916b9b`;
+five unpublished commits follow origin `b98426146c68caffcbf6822bdb956d1a8abbd30d`.
+Root owns the current evidence/inventory update and browser diagnostic changes,
+including new wire-status helper/tests. No other dirty work, parallel writer or
+merge/rebase was observed on resumption. The CDP reordered-event regression has
+an executed RED and both reordered-event/capacity tests now PASS. JS syntax and
+Python parsing PASS; product source is unchanged since cc4aa3a.
 Private local
 session API production baseline5a4e0d1 and qualified COMMIT fixturee65116b remain
 unchanged history. Full candidate state is listed by Git, not this summary.
@@ -117,17 +119,42 @@ The correction changes both private HTML meta and Rust header to same-origin,
 preserving exact Origin and CSRF refusal and suppressing cross-origin referrers.
 Mac actual TCP assertion failed RED before the fix; referrer-green has17management
 PASS, scopedClippyPASS and JSsyntaxPASS. Both rebuilt local bundles have13files
-128471/128505bytes, checked by bundle-referrer-check.json. Native correction remains
-NOT_RUN. The fixture retains cross-origin fetch (Chromium requires CDP403), adds
+128471/128505bytes, checked by bundle-referrer-check.json. The native correction
+was executed; its scoped result is below. The fixture retains cross-origin fetch
+(Chromium requires CDP403), adds
 actual HTML text/plain POST with observed403/exactforeignOrigin on every engine,
 and compares unchanged SQL rows/xmin across both attempts. No generic rejected
 fetch or timeout can satisfy that status oracle. Matching response+rebuilt bundle
 must deploy together; API/persistent format unchanged.
 
-Next bounded action: commit this correction and execute the complete six-case
-native matrix in fresh private-panel/native-referrer resources. Preserve all failed
-labs and private data; do not reuse output roots. Exact-source build/PG/browser
-fixtures and source/artifact bindings remain required. Large blocked response,
+[Corrected native matrix](evidence/p09-private-panel-referrer-native-20260920.json)
+at cc4aa3a completes the first seven journeys in all six browser/mount pairs.
+Chromium completes all eight, with independent terminal SQL and graceful Control
+release. Firefox fails the exact missing-bootstrap response count; its actual
+count was not captured. WebKit observes the real 404 but fails recovery after
+clicking the reload link. These remain unresolved failures, not product passes.
+All ten owned containers are stopped/PID0/noOOM; the empty network was removed,
+zero PG clients remain, all 444 prior containers were preserved. The capture's
+121 files and 981 source hashes were independently verified on Mac. Raw evidence:
+`.research/implementation/private-panel/native-referrer`; remote root
+`/home/tux/bigbrotr-implementation-20260917/runs/private-panel-referrer-cc4aa3a`,
+owner `32cfd51feba805906b7b447b4b0aff34`. Failed cases retain active owner rows;
+process termination is not graceful release. Current read-only host inspection
+shows only eight unrelated workloads and no owned native/browser/compiler job.
+
+Verified cache retirement removed only 3801 .rlib/.rmeta files (5,990,723,568
+logical bytes) from the three earlier failed private-panel Cargo targets.
+Artifacts, source, receipts and private data were retained and hash checked;
+all 454 container records were unchanged. These partial caches must not be reused.
+The intact cc4aa3a and e65116b caches remain. Receipt is inventoried under
+`implementation_private_panel_20260920.failed_native_cache_retirement`; raw
+`private-panel/tux-failed-cache-retirement.json`. Last observed Tux free space is
+15,145,680,896 bytes. No cleanup debt remains.
+
+Next bounded action: commit the corrected CDP event-order observer and bounded
+missing-bootstrap diagnostics, then run all three root cases in a fresh
+exact-revision native lab. Preserve original failures and do not weaken the 404
+or recovery oracle before identifying their causes. Large blocked response,
 forced detached-browser cleanup, frontend shared CI and wider P09/M1 remain open.
 
 Preserve `.research/worktrees/producer-closing-old-writer`, last verified clean at

@@ -17321,7 +17321,7 @@
   "implementation_private_panel_20260920": {
     "local_root": ".research/implementation/private-panel",
     "owner": "root implementer",
-    "state": "Browser failure causes confirmed; product/header and form-oracle correction pending complete native qualification",
+    "state": "Referrer fix scoped nativePASS; missing-bootstrap Firefox/WebKitFAIL. All jobs stopped; diagnostics pending.",
     "source_base": "b98426146c68caffcbf6822bdb956d1a8abbd30d",
     "dependency_manifest": ".research/implementation/private-panel/dependencies/selected-candidates.json",
     "contents": "Official registry metadata/verified archives/sources; local client and bundle checks; controlled native logs including failures and cache recovery; generated bundles are artifacts, not source authority.",
@@ -17484,6 +17484,82 @@
       "evidence": "docs/implementation/evidence/p09-private-panel-browser-diagnostics-20260920.json",
       "capture_sha256": "5b170aa3a3b5c58d5fd37e07fdc18bf042d9cc83779631b61c37018a682fbcce",
       "observation": "ConfirmedFF/WebKitOrigin:null403 and ChromiumCORS wire403withoutPlaywrightResponse.3rootcasesFAIL.7containersstoppedPID0/noOOM;437priorpreserved,8unrelatedrunning,zeroPGclients;emptyownednetworkremoved.68capturefiles/980sourcehashesverified."
+    },
+    "referrer_qualification": {
+      "source": "cc4aa3abc26301c252c7197c0d9a1b6057916b9b",
+      "tree": "5beb8be7c806a9c89332ac1d302f07385fd64141",
+      "owner": "32cfd51feba805906b7b447b4b0aff34",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/private-panel-referrer-cc4aa3a",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "environment",
+          "id": "833ba9e5f49cd43f64dfac86398d155c5d0df4047df28347f7b8923dca8b4789"
+        },
+        {
+          "name": "rust",
+          "id": "da22775d38abc26a94dfebf746c46c43b44604521b495b046aa4887ef914b361"
+        },
+        {
+          "name": "frontend",
+          "id": "4cb18abd8b40a793f4645002df9f1777ba848a926a62716fc99a6ffc2e8c4223"
+        },
+        {
+          "name": "postgres",
+          "id": "e160480b36d4b20cd788efb1147d8a7b90e03e687365ef1249ac170129bcb0d5"
+        },
+        {
+          "name": "chromium-root",
+          "id": "764e469f7040022df16ccc53158fb8df5d0acc33af8e03a898435ec4ff87379b"
+        },
+        {
+          "name": "chromium-control",
+          "id": "77d0714aaa7275a40e7a1ccba13dc7bc5762e661de03eddd7c32f90ea502a8bb"
+        },
+        {
+          "name": "firefox-root",
+          "id": "7e75d6765de349a24ff3fd6099bdef69d2b6f9781bc8b957a4954b4813dc5645"
+        },
+        {
+          "name": "firefox-control",
+          "id": "561b9e282e8a1398a665baa97a7d7d17b893c6d27a03011ad922268d72570349"
+        },
+        {
+          "name": "webkit-root",
+          "id": "b74dea5810d085bdabfa41080692c3d3bc74205fc9fb1f0f2a0d27750cded71c"
+        },
+        {
+          "name": "webkit-control",
+          "id": "5fc2137e106452f34afd593545d830dd097ea20bbf450cf67ec58dbc0e735416"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "browser_image": "mcr.microsoft.com/playwright@sha256:bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7",
+      "started_at": "2026-09-20T13:34:32.918081+00:00",
+      "network_id": "3773fe76c76e482486e2f14417b26b112a7f70a81937e8f6b3524158fa53ef83",
+      "postgres_id": "e160480b36d4b20cd788efb1147d8a7b90e03e687365ef1249ac170129bcb0d5",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json",
+      "local_root": ".research/implementation/private-panel/native-referrer",
+      "evidence": "docs/implementation/evidence/p09-private-panel-referrer-native-20260920.json",
+      "capture_sha256": "0e534ad8e65e99674443ca3d5ab492877767818d83f34621ed32ed3bc8877049",
+      "observation": "Chromium both mounts8casesPASS;Firefox/WebKit first7PASS then missing-bootstrapFAIL. All10containersstopped/PID0/noOOM,444priorpreserved,8unrelatedrunning,zeroPGclients,emptyownednetworkremoved.121capture/981sourcehashesverified."
+    },
+    "failed_native_cache_retirement": {
+      "receipt": ".research/implementation/private-panel/tux-failed-cache-retirement.json",
+      "status": "PASS",
+      "removed_logical_bytes": 5990723568,
+      "containers_unchanged": 454,
+      "unrelated_running": 8,
+      "free_after_bytes": 15145988096,
+      "partial_caches_do_not_reuse": [
+        "private-panel-4593e37",
+        "private-panel-platform-8c19aa9",
+        "private-panel-diagnostics-50185d3"
+      ],
+      "preserved": "Actual executables/shared libraries/build receipts/source/tools/fixtures/PGdata/captures. Referrercc4aa3a and qualifiede65116b caches intact."
     }
   }
 }

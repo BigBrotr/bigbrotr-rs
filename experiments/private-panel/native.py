@@ -69,6 +69,7 @@ elif mode == 'frontend':
         ('client', pnpm + ['test:client']),
         ('admin-types', pnpm + ['--filter', '@bigbrotr/admin', 'check']),
         ('admin-unit', pnpm + ['--filter', '@bigbrotr/admin', 'test:unit']),
+        ('wire-observer', [node, '--test', 'experiments/private-panel/wire-status.test.mjs']),
     ], Path('/out/frontend-checks'), frontend, env, identity, 600)
     result['bundles'] = {}
     if result['status'] == 'PASS':

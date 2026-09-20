@@ -1,0 +1,882 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "tasks": [
+    "P08-T02",
+    "P09-T01",
+    "P09-T07"
+  ],
+  "status": "FAIL_WITH_SCOPED_PASSES",
+  "source": {
+    "revision": "cc4aa3abc26301c252c7197c0d9a1b6057916b9b",
+    "tree": "5beb8be7c806a9c89332ac1d302f07385fd64141",
+    "clean": true,
+    "files_verified": 981
+  },
+  "prerequisites": {
+    "rust": {
+      "source": "cc4aa3abc26301c252c7197c0d9a1b6057916b9b",
+      "tree": "5beb8be7c806a9c89332ac1d302f07385fd64141",
+      "stage": "rust",
+      "cargo_lock": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+      "pnpm_lock": "70f6e67f3f968c9f55236f563994c04413cf679a58da3ebbd1ebcfb5d089d1a4",
+      "native_toolchain": {
+        "os": "Linux",
+        "architecture": "x86_64",
+        "discovery": "llvm-config",
+        "environment": {
+          "CC": "/usr/lib/llvm-14/bin/clang",
+          "CXX": "/usr/lib/llvm-14/bin/clang++",
+          "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+          "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+          "CARGO_BUILD_JOBS": "2",
+          "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+        },
+        "tools": {
+          "CC": {
+            "path": "/usr/lib/llvm-14/bin/clang",
+            "realpath": "/usr/lib/llvm-14/bin/clang",
+            "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+            "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+          },
+          "CXX": {
+            "path": "/usr/lib/llvm-14/bin/clang++",
+            "realpath": "/usr/lib/llvm-14/bin/clang",
+            "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+            "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+          },
+          "AR": {
+            "path": "/usr/lib/llvm-14/bin/llvm-ar",
+            "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+            "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+            "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+          },
+          "LIBCLANG_PATH": {
+            "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+            "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+            "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+            "version": "Debian clang version 14.0.6"
+          },
+          "discovery": {
+            "path": "/usr/lib/llvm-14/bin/llvm-config",
+            "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+            "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+            "version": "14.0.6"
+          }
+        },
+        "sdk": null
+      },
+      "format": "bigbrotr-foundation-ci/1",
+      "status": "PASS",
+      "checks": [
+        {
+          "name": "build",
+          "command": [
+            "cargo",
+            "build",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr",
+            "--bin",
+            "bigbrotr",
+            "--example",
+            "browser_http_probe"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 34.26873667770997
+        },
+        {
+          "name": "management",
+          "command": [
+            "cargo",
+            "test",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr",
+            "--bin",
+            "bigbrotr",
+            "interfaces::management::"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 16.408989921677858
+        },
+        {
+          "name": "clippy",
+          "command": [
+            "cargo",
+            "clippy",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr",
+            "--bin",
+            "bigbrotr",
+            "--example",
+            "browser_http_probe",
+            "--",
+            "-D",
+            "warnings"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 2.567705838009715
+        }
+      ],
+      "counts": {
+        "collected": 3,
+        "executed": 3,
+        "failed": 0,
+        "not_run": 0
+      },
+      "artifacts": {
+        "bigbrotr": "b7fbca5257d2d5a836ae12d33ddb4ebda139db9b91533678782f396b45a0b08b",
+        "examples/browser_http_probe": "196d26df204fb7c402f75801edf153cda4991bc01b95fdab7816408181dc06c3"
+      },
+      "source_unchanged": true
+    },
+    "frontend": {
+      "source": "cc4aa3abc26301c252c7197c0d9a1b6057916b9b",
+      "tree": "5beb8be7c806a9c89332ac1d302f07385fd64141",
+      "stage": "frontend",
+      "cargo_lock": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+      "pnpm_lock": "70f6e67f3f968c9f55236f563994c04413cf679a58da3ebbd1ebcfb5d089d1a4",
+      "node_sha256": "4cfdaeec2e3689e4728b4bc98932a9147a3f98162bdc7955c03c0d7fa3b8aa94",
+      "pnpm_sha256": "98e6b99a881d64a1cc982c3e60aa260bf02160386b12e74475e06486dc74b090",
+      "format": "bigbrotr-foundation-ci/1",
+      "status": "PASS",
+      "checks": [
+        {
+          "name": "install",
+          "command": [
+            "/tools/node/bin/node",
+            "/tools/pnpm/bin/pnpm.cjs",
+            "install",
+            "--frozen-lockfile",
+            "--ignore-scripts",
+            "--strict-peer-dependencies",
+            "--store-dir",
+            "/out/pnpm-store"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 1.4164953669533134
+        },
+        {
+          "name": "contracts",
+          "command": [
+            "/tools/node/bin/node",
+            "/tools/pnpm/bin/pnpm.cjs",
+            "contracts:check"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 0.5157962418161333
+        },
+        {
+          "name": "client-types",
+          "command": [
+            "/tools/node/bin/node",
+            "/tools/pnpm/bin/pnpm.cjs",
+            "check:client"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 0.765253737103194
+        },
+        {
+          "name": "client",
+          "command": [
+            "/tools/node/bin/node",
+            "/tools/pnpm/bin/pnpm.cjs",
+            "test:client"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 6.325792819261551
+        },
+        {
+          "name": "admin-types",
+          "command": [
+            "/tools/node/bin/node",
+            "/tools/pnpm/bin/pnpm.cjs",
+            "--filter",
+            "@bigbrotr/admin",
+            "check"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 1.927683942951262
+        },
+        {
+          "name": "admin-unit",
+          "command": [
+            "/tools/node/bin/node",
+            "/tools/pnpm/bin/pnpm.cjs",
+            "--filter",
+            "@bigbrotr/admin",
+            "test:unit"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 1.3178642559796572
+        }
+      ],
+      "counts": {
+        "collected": 6,
+        "executed": 6,
+        "failed": 0,
+        "not_run": 0
+      },
+      "bundles": {
+        "root": {
+          "manifest_sha256": "8fdb2370b613c2fac94cd01ca138cbda60c1f188d6f9f4452eeda593a9f39fa0",
+          "files": 13,
+          "bytes": 128529
+        },
+        "control": {
+          "manifest_sha256": "a4bcbb3cdc757e6b7cd9a651538a1497734d99a9440cf293233ba27398b05e17",
+          "files": 13,
+          "bytes": 128563
+        }
+      },
+      "frontend_originals_unchanged": true,
+      "source_unchanged": true
+    }
+  },
+  "outcomes": {
+    "chromium": "Both root and /control complete all eight journeys; independent terminal SQL matches, with one revoked session and no active Control.",
+    "all_engines": "All six combinations complete the first seven journeys: startup/keyboard/mobile, short/wrong password, login/permissions/cookies, missing CSRF and foreign fetch/form with unchanged SQL rows/xmin, same-cookie Control restart, cross-tab logout, and new login/reload/logout.",
+    "firefox": "Both mounts fail the missing-bootstrap exact response-count assertion at line 235. The actual count was not retained; its cause remains unknown.",
+    "webkit": "Both mounts reach missing-bootstrap recovery but fail the enabled-login assertion after reload-link click at line 239. Its cause remains unknown."
+  },
+  "resources": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/private-panel-referrer-cc4aa3a",
+    "owner": "32cfd51feba805906b7b447b4b0aff34",
+    "state": "Ten owned containers stopped/PID 0/no OOM; empty owned network removed.",
+    "prior_containers_preserved": 444,
+    "unrelated_running": 8,
+    "remaining_pg_clients": [],
+    "independent_sql": {
+      "chromium-root": {
+        "container_ok": true,
+        "status": "PASS",
+        "independent_sql": {
+          "sessions": 1,
+          "revoked": 1,
+          "active_accounts": 1,
+          "grants": 7,
+          "no_active_control": true,
+          "heads": [
+            "1",
+            "1"
+          ],
+          "backends": 0
+        },
+        "sql_matches": true
+      },
+      "chromium-control": {
+        "container_ok": true,
+        "status": "PASS",
+        "independent_sql": {
+          "sessions": 1,
+          "revoked": 1,
+          "active_accounts": 1,
+          "grants": 7,
+          "no_active_control": true,
+          "heads": [
+            "1",
+            "1"
+          ],
+          "backends": 0
+        },
+        "sql_matches": true
+      },
+      "firefox-root": {
+        "container_ok": false,
+        "status": "FAIL",
+        "independent_sql": {
+          "sessions": 1,
+          "revoked": 1,
+          "active_accounts": 1,
+          "grants": 7,
+          "no_active_control": false,
+          "heads": [
+            "1",
+            "1"
+          ],
+          "backends": 0
+        },
+        "sql_matches": false
+      },
+      "firefox-control": {
+        "container_ok": false,
+        "status": "FAIL",
+        "independent_sql": {
+          "sessions": 1,
+          "revoked": 1,
+          "active_accounts": 1,
+          "grants": 7,
+          "no_active_control": false,
+          "heads": [
+            "1",
+            "1"
+          ],
+          "backends": 0
+        },
+        "sql_matches": false
+      },
+      "webkit-root": {
+        "container_ok": false,
+        "status": "FAIL",
+        "independent_sql": {
+          "sessions": 1,
+          "revoked": 1,
+          "active_accounts": 1,
+          "grants": 7,
+          "no_active_control": false,
+          "heads": [
+            "1",
+            "1"
+          ],
+          "backends": 0
+        },
+        "sql_matches": false
+      },
+      "webkit-control": {
+        "container_ok": false,
+        "status": "FAIL",
+        "independent_sql": {
+          "sessions": 1,
+          "revoked": 1,
+          "active_accounts": 1,
+          "grants": 7,
+          "no_active_control": false,
+          "heads": [
+            "1",
+            "1"
+          ],
+          "backends": 0
+        },
+        "sql_matches": false
+      }
+    }
+  },
+  "raw": {
+    "root": ".research/implementation/private-panel/native-referrer",
+    "capture_sha256": "0e534ad8e65e99674443ca3d5ab492877767818d83f34621ed32ed3bc8877049",
+    "files": {
+      "browser-config.json": {
+        "bytes": 6711,
+        "sha256": "2c1f4e0fd6450f43ddb46d60c2a6df30855a8588e165b1f2559fb0eda8d7ff35"
+      },
+      "browser-image-pull.log": {
+        "bytes": 440,
+        "sha256": "47c69d5d79d7d21ec4d0905e5a7443386ac1fe7f64d03e88e7a5be5b4343033a"
+      },
+      "browser-image.json": {
+        "bytes": 1818,
+        "sha256": "b033e1aecb626d0e52b32f56cd78cc9d50d026228b1e621cf6a37e77e49eb444"
+      },
+      "browser-manifest.json": {
+        "bytes": 1644,
+        "sha256": "bc6ab0d6d44ff4826e4cb8c1e6d801e185bfc42bb0753f8e2a30efc70db054c7"
+      },
+      "chromium-control.container.log": {
+        "bytes": 37,
+        "sha256": "97d001c06ca2d8cbafa1d5541d7fad56494ff38d4d4e59d59fa4fdc3ec048013"
+      },
+      "chromium-root.container.log": {
+        "bytes": 37,
+        "sha256": "97d001c06ca2d8cbafa1d5541d7fad56494ff38d4d4e59d59fa4fdc3ec048013"
+      },
+      "collect.py": {
+        "bytes": 2460,
+        "sha256": "16ce6d5f9369185d3908b274de163f909c7f63c2fcf3e14de227cdecf232662d"
+      },
+      "elf-needed.txt": {
+        "bytes": 3072,
+        "sha256": "5d0f459454e259afd9a588d3bb1e4bbfa77b44c3b5f9179cc33009e59d376033"
+      },
+      "environment.container.log": {
+        "bytes": 66,
+        "sha256": "9f2f87b76cb863e2356cc4381418b2e634ae9e106c122c0b630f7d206787a0ac"
+      },
+      "firefox-control.container.log": {
+        "bytes": 37,
+        "sha256": "e4b374967102fb9477f2f27bd68ee99ac937279f99ee64a9cadd21d0b2a3cdc1"
+      },
+      "firefox-root.container.log": {
+        "bytes": 37,
+        "sha256": "e4b374967102fb9477f2f27bd68ee99ac937279f99ee64a9cadd21d0b2a3cdc1"
+      },
+      "frontend.container.log": {
+        "bytes": 314,
+        "sha256": "7fc9b24581805256ff680ceb8c8a658c609a4e48b1a86572f5638b5225f8251b"
+      },
+      "launch.py": {
+        "bytes": 18206,
+        "sha256": "560de7fe85d9c6148c548e35d8f8b037a11bcfe8af9e01adb8be25089d331d0b"
+      },
+      "orchestrator.log": {
+        "bytes": 1503,
+        "sha256": "835b8707bbedb8187c795c7c5cbacb7ee49afe61fc672a7e1ed49bf3efc6eed1"
+      },
+      "out/build/source-manifest.json": {
+        "bytes": 121218,
+        "sha256": "9c0959d975022932f017bc6ba0e31714763236605cbb8b776a6325c4dc1dfce6"
+      },
+      "out/cases/chromium-control/checks/browser.log": {
+        "bytes": 173,
+        "sha256": "36c2fa006fdbfbef6d2ccbca248cf42b4bea9fcafa76eab0cafb69434fe402e1"
+      },
+      "out/cases/chromium-control/checks/result.json": {
+        "bytes": 1522,
+        "sha256": "047af6ec85cd8291896480afce0b636f78a9f71b746d8d2e8b971ee560f0da6f"
+      },
+      "out/cases/chromium-control/fixture/browser-report.json": {
+        "bytes": 5891,
+        "sha256": "d833faa718065298a2bd65481d42824527b388c8e1159932382668217f58afc0"
+      },
+      "out/cases/chromium-control/fixture/browser.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/chromium-control/fixture/browser.stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/chromium-control/fixture/missing-bootstrap.png": {
+        "bytes": 58313,
+        "sha256": "29e62d65bbb03abd023bfe511ec9f1f218af579c11bce6b24549082a1aa61db6"
+      },
+      "out/cases/chromium-control/fixture/panel-initial.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/chromium-control/fixture/panel-initial.stdout": {
+        "bytes": 918,
+        "sha256": "e27c6e572d9edde24cbb26ee8f6ce37f3d236b0868f18bb1daeaf9632898e888"
+      },
+      "out/cases/chromium-control/fixture/panel-restart.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/chromium-control/fixture/panel-restart.stdout": {
+        "bytes": 918,
+        "sha256": "3814f426695e40e4334c5ee927f82ad8a676641d1fd724e82f4eb367db422751"
+      },
+      "out/cases/chromium-control/fixture/signed-out-desktop.png": {
+        "bytes": 49815,
+        "sha256": "25049dfc62d59c30e5c99de2a9a63185ed2686bafa6b46f1c83b9725deabfa7d"
+      },
+      "out/cases/chromium-control/fixture/signed-out-mobile.png": {
+        "bytes": 32258,
+        "sha256": "d72565568a263a94583b24b915b20ac9348d2e2ae8c715a26b776ac1bbf54e11"
+      },
+      "out/cases/chromium-control/native-result.json": {
+        "bytes": 1601,
+        "sha256": "1779afefd9ecb58f5a4fded3633b6bb9ed31e0fc2736dbcdd246b8a7f1374966"
+      },
+      "out/cases/chromium-root/checks/browser.log": {
+        "bytes": 165,
+        "sha256": "94f0ddaf3331e652d00098822d979f7786c1a0078f348fd5d703ce6a0937e155"
+      },
+      "out/cases/chromium-root/checks/result.json": {
+        "bytes": 1512,
+        "sha256": "d03d2fa305edd0024a2f02c7d26ca208f13bb2df4b4da583a107f556ff2b0aed"
+      },
+      "out/cases/chromium-root/fixture/browser-report.json": {
+        "bytes": 5883,
+        "sha256": "d2ae739db5d4a1b7d913088495ee3ae7df5514638609f4adc135fb311066ea29"
+      },
+      "out/cases/chromium-root/fixture/browser.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/chromium-root/fixture/browser.stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/chromium-root/fixture/missing-bootstrap.png": {
+        "bytes": 58313,
+        "sha256": "29e62d65bbb03abd023bfe511ec9f1f218af579c11bce6b24549082a1aa61db6"
+      },
+      "out/cases/chromium-root/fixture/panel-initial.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/chromium-root/fixture/panel-initial.stdout": {
+        "bytes": 910,
+        "sha256": "0a0cfbf6787bf690a0b13674036ca01353562275422aeac7b8842516cc6aa28b"
+      },
+      "out/cases/chromium-root/fixture/panel-restart.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/chromium-root/fixture/panel-restart.stdout": {
+        "bytes": 910,
+        "sha256": "ba6b1c4a5da0a5eaf524bb5f76fa9998eae61c870635c12102db8b569cfdf392"
+      },
+      "out/cases/chromium-root/fixture/signed-out-desktop.png": {
+        "bytes": 49815,
+        "sha256": "25049dfc62d59c30e5c99de2a9a63185ed2686bafa6b46f1c83b9725deabfa7d"
+      },
+      "out/cases/chromium-root/fixture/signed-out-mobile.png": {
+        "bytes": 32258,
+        "sha256": "d72565568a263a94583b24b915b20ac9348d2e2ae8c715a26b776ac1bbf54e11"
+      },
+      "out/cases/chromium-root/native-result.json": {
+        "bytes": 1591,
+        "sha256": "e13b25c583e61196f27e51b5a44871c2266f57daaf45cc6dd43d1f53592e4675"
+      },
+      "out/cases/firefox-control/checks/browser.log": {
+        "bytes": 228,
+        "sha256": "531ca90c8c0a1edf3298c8de48b8e0d2e4d7857ac8debcddf98eefd11fea390d"
+      },
+      "out/cases/firefox-control/checks/result.json": {
+        "bytes": 1521,
+        "sha256": "8e8fc377c8c9b891bde2729ea98d7f1410d6bde100f90997c1b0ef57a6169ff4"
+      },
+      "out/cases/firefox-control/fixture/browser-report.json": {
+        "bytes": 5505,
+        "sha256": "dbe08b84e22eef5ca704dbfbad2f08995a1ec205b513a148c20c3082a104f922"
+      },
+      "out/cases/firefox-control/fixture/browser.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/firefox-control/fixture/browser.stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/firefox-control/fixture/failure.png": {
+        "bytes": 61545,
+        "sha256": "072ea008c4160485d047e8d94ef9f65c51fd5138ce229edbf03e2307755d3267"
+      },
+      "out/cases/firefox-control/fixture/panel-initial.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/firefox-control/fixture/panel-initial.stdout": {
+        "bytes": 918,
+        "sha256": "b3a5e71a164b02f6f2cda07d1f03a9916d2d6a52e65fa48995afbdc68be675ce"
+      },
+      "out/cases/firefox-control/fixture/panel-restart.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/firefox-control/fixture/panel-restart.stdout": {
+        "bytes": 781,
+        "sha256": "f4ef5fa400a39ab3ed70857943fd2dea5252d34a4a1bc713593be98f38e6934b"
+      },
+      "out/cases/firefox-control/fixture/signed-out-desktop.png": {
+        "bytes": 61545,
+        "sha256": "072ea008c4160485d047e8d94ef9f65c51fd5138ce229edbf03e2307755d3267"
+      },
+      "out/cases/firefox-control/fixture/signed-out-mobile.png": {
+        "bytes": 37127,
+        "sha256": "1d5a60ff2d6d854dd6a20cc0c9b01f3a17db64db0d258ce29a056a737a25c4f2"
+      },
+      "out/cases/firefox-control/native-result.json": {
+        "bytes": 1600,
+        "sha256": "4a9c989b0475fd0b708e11127d8f5e888ffe517ec6501c8b151ed1eca5e908bc"
+      },
+      "out/cases/firefox-root/checks/browser.log": {
+        "bytes": 228,
+        "sha256": "531ca90c8c0a1edf3298c8de48b8e0d2e4d7857ac8debcddf98eefd11fea390d"
+      },
+      "out/cases/firefox-root/checks/result.json": {
+        "bytes": 1512,
+        "sha256": "26483c344029d86741934b5a0783f6c99cb7d3c9968d791515f690930681f1ec"
+      },
+      "out/cases/firefox-root/fixture/browser-report.json": {
+        "bytes": 5496,
+        "sha256": "f674c945139a7a577c3d3bd72788959ca956ac3896fc35ea219e984baff8751c"
+      },
+      "out/cases/firefox-root/fixture/browser.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/firefox-root/fixture/browser.stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/firefox-root/fixture/failure.png": {
+        "bytes": 61545,
+        "sha256": "072ea008c4160485d047e8d94ef9f65c51fd5138ce229edbf03e2307755d3267"
+      },
+      "out/cases/firefox-root/fixture/panel-initial.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/firefox-root/fixture/panel-initial.stdout": {
+        "bytes": 910,
+        "sha256": "6c5fc22c3de41096da0dc2734e4ae0c2140dfdfb6b33e16131f4f07a0679146e"
+      },
+      "out/cases/firefox-root/fixture/panel-restart.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/firefox-root/fixture/panel-restart.stdout": {
+        "bytes": 773,
+        "sha256": "0616e7044b53d1f22e8fc9eb6a5b1d079841d0da8eff9587f3384f40fc21f3b4"
+      },
+      "out/cases/firefox-root/fixture/signed-out-desktop.png": {
+        "bytes": 61545,
+        "sha256": "072ea008c4160485d047e8d94ef9f65c51fd5138ce229edbf03e2307755d3267"
+      },
+      "out/cases/firefox-root/fixture/signed-out-mobile.png": {
+        "bytes": 37127,
+        "sha256": "1d5a60ff2d6d854dd6a20cc0c9b01f3a17db64db0d258ce29a056a737a25c4f2"
+      },
+      "out/cases/firefox-root/native-result.json": {
+        "bytes": 1591,
+        "sha256": "934ceaba5904bf555a9b7aa32598c0f1b0f64969b35f44880e178795f966de9d"
+      },
+      "out/cases/webkit-control/checks/browser.log": {
+        "bytes": 228,
+        "sha256": "531ca90c8c0a1edf3298c8de48b8e0d2e4d7857ac8debcddf98eefd11fea390d"
+      },
+      "out/cases/webkit-control/checks/result.json": {
+        "bytes": 1519,
+        "sha256": "eb3e25308fb8ed1b87228d758e21550bd0adf474906cf960d27121530b7b5c6e"
+      },
+      "out/cases/webkit-control/fixture/browser-report.json": {
+        "bytes": 5839,
+        "sha256": "006d5868e8ecbd447b136d8be8cca7908e553b4a337257922d9ec4e2ed9d97fc"
+      },
+      "out/cases/webkit-control/fixture/browser.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/webkit-control/fixture/browser.stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/webkit-control/fixture/failure.png": {
+        "bytes": 52238,
+        "sha256": "2fe3bd5a7ff5023b711ac2dc79ae874e75b14be95eafba0015c98958aff7dd96"
+      },
+      "out/cases/webkit-control/fixture/missing-bootstrap.png": {
+        "bytes": 61736,
+        "sha256": "3ef10ed6c9ddc804e7831f43be2b83efaf0e0d9ed25e968c95f73ba1d8726eb9"
+      },
+      "out/cases/webkit-control/fixture/panel-initial.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/webkit-control/fixture/panel-initial.stdout": {
+        "bytes": 918,
+        "sha256": "dcfcb2a2e954c60e81d52ff077e010017188669dface96e8af21929c4b216827"
+      },
+      "out/cases/webkit-control/fixture/panel-restart.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/webkit-control/fixture/panel-restart.stdout": {
+        "bytes": 781,
+        "sha256": "d6922653ee12ac84736f04380769fd5964981683c91683d5ba327876f956dfae"
+      },
+      "out/cases/webkit-control/fixture/signed-out-desktop.png": {
+        "bytes": 52238,
+        "sha256": "2fe3bd5a7ff5023b711ac2dc79ae874e75b14be95eafba0015c98958aff7dd96"
+      },
+      "out/cases/webkit-control/fixture/signed-out-mobile.png": {
+        "bytes": 35524,
+        "sha256": "d60d98cec30e41201495dfd7093a77805977a762466c114bb5dd2a2920ae5ec4"
+      },
+      "out/cases/webkit-control/native-result.json": {
+        "bytes": 1598,
+        "sha256": "907e39f3e09ce3f9cf7c68cb482307e146c66761235b1e706b872d8cfb7542d9"
+      },
+      "out/cases/webkit-root/checks/browser.log": {
+        "bytes": 228,
+        "sha256": "531ca90c8c0a1edf3298c8de48b8e0d2e4d7857ac8debcddf98eefd11fea390d"
+      },
+      "out/cases/webkit-root/checks/result.json": {
+        "bytes": 1509,
+        "sha256": "18caffd7e92c720bc7ce74c9ab822b592386d4d2ed5b3ca2d0029c02bfa866a8"
+      },
+      "out/cases/webkit-root/fixture/browser-report.json": {
+        "bytes": 5830,
+        "sha256": "0cafd49f0ea81bc0885a3c5c12ae9cdbcb45ee671bb844950369c464567f7596"
+      },
+      "out/cases/webkit-root/fixture/browser.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/webkit-root/fixture/browser.stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/webkit-root/fixture/failure.png": {
+        "bytes": 52238,
+        "sha256": "2fe3bd5a7ff5023b711ac2dc79ae874e75b14be95eafba0015c98958aff7dd96"
+      },
+      "out/cases/webkit-root/fixture/missing-bootstrap.png": {
+        "bytes": 61736,
+        "sha256": "3ef10ed6c9ddc804e7831f43be2b83efaf0e0d9ed25e968c95f73ba1d8726eb9"
+      },
+      "out/cases/webkit-root/fixture/panel-initial.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/webkit-root/fixture/panel-initial.stdout": {
+        "bytes": 910,
+        "sha256": "99902c73b3fdd62792aa68b3dfa836f56915e4bebf4bd2d07542dcd83b18a1a3"
+      },
+      "out/cases/webkit-root/fixture/panel-restart.stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "out/cases/webkit-root/fixture/panel-restart.stdout": {
+        "bytes": 773,
+        "sha256": "4c199ed791e1c993268c131cdbc2519cde3ea615be12c5bd1f50bf4c1be4c930"
+      },
+      "out/cases/webkit-root/fixture/signed-out-desktop.png": {
+        "bytes": 52238,
+        "sha256": "2fe3bd5a7ff5023b711ac2dc79ae874e75b14be95eafba0015c98958aff7dd96"
+      },
+      "out/cases/webkit-root/fixture/signed-out-mobile.png": {
+        "bytes": 35524,
+        "sha256": "d60d98cec30e41201495dfd7093a77805977a762466c114bb5dd2a2920ae5ec4"
+      },
+      "out/cases/webkit-root/native-result.json": {
+        "bytes": 1588,
+        "sha256": "2cf22811bea14d39bf4e2181ed6bc68d4a1ac22f2a64f2f352abb68200b79bee"
+      },
+      "out/frontend-checks/admin-types.log": {
+        "bytes": 280,
+        "sha256": "37ca03cf49ddd89c35e54d6f692c52f7eb8c9bec51aef8f6fd2ee3d60b4ba642"
+      },
+      "out/frontend-checks/admin-unit.log": {
+        "bytes": 972,
+        "sha256": "b025250a81733db34c4bef879d6ef065512f2cc48ff76e288cbfef39cda89e0c"
+      },
+      "out/frontend-checks/client-types.log": {
+        "bytes": 108,
+        "sha256": "8ae72dcf889df81bfde3d3c59d4846c89b886a6a37dc4d3b83f832d892aaed37"
+      },
+      "out/frontend-checks/client.log": {
+        "bytes": 1154,
+        "sha256": "d3fa2daec5a823b57a2662d01e89c24850bd9429b67c317b019fb3bb35ebb5de"
+      },
+      "out/frontend-checks/contracts.log": {
+        "bytes": 115,
+        "sha256": "d4205e5a960af071afcd9d65c48902c7380b105c6e55908064ba516b509b915d"
+      },
+      "out/frontend-checks/install.log": {
+        "bytes": 749,
+        "sha256": "2ff40a45da82d90278d49503417f5a9586e616ca8cfc5ff922cff414ac4b861a"
+      },
+      "out/frontend-checks/result.json": {
+        "bytes": 2457,
+        "sha256": "ae2ff0f1d148886c2aa56cd212ab82a058c2b78c7fa51e6c22653d7cccacdb20"
+      },
+      "out/frontend-control/build.log": {
+        "bytes": 3747,
+        "sha256": "f38491c2937cdbab7c039906918158e9a286b5fce25bd4c688c4a94d0b97ea08"
+      },
+      "out/frontend-control/result.json": {
+        "bytes": 944,
+        "sha256": "716d813fc430992126f79ac93229119b047e2775b72b838ffc601793abba5b26"
+      },
+      "out/frontend-result.json": {
+        "bytes": 2857,
+        "sha256": "ddbedbe1bfdba525a860fe4ee6297ef9d3966d3b41b27f843ceb69d2ea6cd8ee"
+      },
+      "out/frontend-root/build.log": {
+        "bytes": 3747,
+        "sha256": "f233d289178e99dfb55dbe652017c09c6c20cd8cb7b0252044df3f1a09e44ea8"
+      },
+      "out/frontend-root/result.json": {
+        "bytes": 944,
+        "sha256": "25d426fc1a9cbc15fb543f2a4baeccd7c011afa0e345da8cf0a84a2d2b02ef15"
+      },
+      "out/rust-checks/build.log": {
+        "bytes": 298,
+        "sha256": "bc692d7cd409a56e372fdd1c1a12cdffcf4066bb8ddd85c7e170922f57f5107f"
+      },
+      "out/rust-checks/clippy.log": {
+        "bytes": 297,
+        "sha256": "6e622cb1d299121f68607d35c09f2f6e0460e8688ca59465869bb7f8c2536837"
+      },
+      "out/rust-checks/management.log": {
+        "bytes": 2247,
+        "sha256": "24737e49a6f290a8a0a726137c1b8f6e3cf5a7345de673e042b87ac87859acd8"
+      },
+      "out/rust-checks/result.json": {
+        "bytes": 3704,
+        "sha256": "4fae8da261c6c43d5181f4a19d29e2a184d946f451668f741afa90ee457d7552"
+      },
+      "out/rust-result.json": {
+        "bytes": 3940,
+        "sha256": "64dc1ddb986218fdac222919a65eb40893018787503525efaec46a6ce98ffdca"
+      },
+      "preflight.json": {
+        "bytes": 3693775,
+        "sha256": "922e33f5d1b63f397bd75577cc3221d1d13da56ac40ba3e45a8e0a2710949c55"
+      },
+      "resources.json": {
+        "bytes": 2320,
+        "sha256": "186763038ca357617e07ab60d9a874688a8b5df448fab61c2c917879f3ce0528"
+      },
+      "running-audit.json": {
+        "bytes": 19131,
+        "sha256": "55c55908e79fd2e83c6aaf4cfb736d5bc68818210ee0505c350fb0acf1affaf8"
+      },
+      "rust.container.log": {
+        "bytes": 111,
+        "sha256": "5e22aebdf07588fd4a31c2d0c516aad9b11630aa75f559179b86cd75c1e8cc3f"
+      },
+      "terminal-audit.json": {
+        "bytes": 37909,
+        "sha256": "0d36dc91b9b6412d5fd1911d202c43b792a7f7b01c641e121e5eed2760179ec6"
+      },
+      "terminal-inventory.json": {
+        "bytes": 832577,
+        "sha256": "0f9dd637a585045c21d6d979e776d042dcb4a4668c6cefd2ccfc886086a42a98"
+      },
+      "tool-inputs.json": {
+        "bytes": 376,
+        "sha256": "652c4b0b906225c4d9ea5653b60d6cbb8828340c18a11f64a47bbabd120f5209"
+      },
+      "webkit-control.container.log": {
+        "bytes": 37,
+        "sha256": "e4b374967102fb9477f2f27bd68ee99ac937279f99ee64a9cadd21d0b2a3cdc1"
+      },
+      "webkit-root.container.log": {
+        "bytes": 37,
+        "sha256": "e4b374967102fb9477f2f27bd68ee99ac937279f99ee64a9cadd21d0b2a3cdc1"
+      }
+    }
+  },
+  "limitations": [
+    "The full browser matrix failed; missing-bootstrap recovery remains unqualified for Firefox/WebKit.",
+    "No graceful Control release is claimed for failed cases; process termination leaves retained active owner rows.",
+    "Read-only AI review found a CDP response-first correlation risk. A local discriminating regression failed before the observer correction and now passes; native execution of that fixture correction remains pending.",
+    "Large blocked static response, forced stopped-browser cleanup, remote TLS, complete P09/M1 and release journeys remain unqualified."
+  ],
+  "followup_observer": {
+    "red": "One runtime test failed with actual [] versus expected [403].",
+    "green": "Two reordered-event/capacity tests passed; browser JS syntax and native runner Python parsing passed.",
+    "review": "Read-only AI review prompted best-effort bounded screenshots, preserving the original reload failure.",
+    "raw": {
+      "cdp-order-red.log": "7d5b501a87926e768f3c7692c8ec10a5fde0ba13aec72006f874dce1b9cf1102",
+      "cdp-order-green.log": "50dd21d2c68eb45497d8e3daca5a8e256462f9e89d027440ba76e3cd1b2892fa"
+    }
+  }
+}

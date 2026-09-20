@@ -8,6 +8,7 @@ import { createHash } from 'node:crypto';
 import { join } from 'node:path';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { chromium, firefox, webkit, expect } from '@playwright/test';
+import { WireStatuses } from './wire-status.mjs';
 
 const [engine, base, home, principal] = process.argv.slice(2);
 assert.ok(['chromium', 'firefox', 'webkit'].includes(engine));
@@ -161,18 +162,19 @@ try {
     await new Promise(resolve => foreign.listen(0, '127.0.0.1', resolve));
     const other = await context.newPage();
     observe(other);
+    let wire;
     if (engine === 'chromium') {
       // CORS errors can omit CDP responseReceived (and Playwright Response).
       // Observe only the selected wire status, never raw headers or body.
       const cdp = await context.newCDPSession(other);
       await cdp.send('Network.enable');
-      const requests = new Set();
-      report.foreignWireStatuses = [];
+      wire = new WireStatuses();
+      report.foreignWireStatuses = wire.statuses;
       cdp.on('Network.requestWillBeSent', event => {
-        if (event.request.url === origin + '/management/v1/sessions' && event.request.method === 'POST') requests.add(event.requestId);
+        wire.request(event.requestId, event.request.url === origin + '/management/v1/sessions' && event.request.method === 'POST');
       });
       cdp.on('Network.responseReceivedExtraInfo', event => {
-        if (requests.has(event.requestId) && report.foreignWireStatuses.length < 8) report.foreignWireStatuses.push(event.statusCode);
+        wire.response(event.requestId, event.statusCode);
       });
     }
     await other.goto(`http://127.0.0.1:${foreign.address().port}/`);
@@ -186,6 +188,10 @@ try {
     const refused = await denied;
     assert.equal(refused.status(), 403);
     assert.equal((await refused.request().allHeaders()).origin, `http://127.0.0.1:${foreign.address().port}`);
+    if (wire) {
+      report.foreignWireOverflow = wire.overflow;
+      assert.equal(wire.overflow, false);
+    }
     await other.close();
     await new Promise(resolve => foreign.close(resolve));
     foreign = undefined;
@@ -226,18 +232,53 @@ try {
   });
   await step('missing-bootstrap-recovery', async () => {
     const missing = await context.newPage();
+    primaryPage = missing;
     let actualMissing = 0;
-    missing.on('response', response => { if (response.request().resourceType() === 'script' && response.status() === 404) actualMissing++; });
-    await missing.route('**/_app/immutable/entry/start.*.js', route => route.continue({ url: origin + '/__absent-panel-start.js' }));
+    const diagnostic = report.missingBootstrap = { rewrites: 0, script404s: 0, events: [], navigations: 0 };
+    const record = (request, event, status) => {
+      if (diagnostic.events.length >= 128) { diagnostic.overflow = true; return; }
+      const path = new URL(request.url()).pathname;
+      const kind = path.includes('/entry/start.') ? 'start' : path === '/__absent-panel-start.js' ? 'absent' : request.isNavigationRequest() ? 'document' : 'other';
+      diagnostic.events.push({ event, kind, type: request.resourceType(), status });
+    };
+    missing.on('request', request => record(request, 'request'));
+    missing.on('requestfailed', request => record(request, 'failed'));
+    missing.on('response', response => {
+      record(response.request(), 'response', response.status());
+      if (response.request().resourceType() === 'script' && response.status() === 404) actualMissing++;
+      diagnostic.script404s = actualMissing;
+    });
+    missing.on('framenavigated', frame => { if (frame === missing.mainFrame()) diagnostic.navigations++; });
+    await missing.route('**/_app/immutable/entry/start.*.js', route => {
+      diagnostic.rewrites++;
+      return route.continue({ url: origin + '/__absent-panel-start.js' });
+    });
     await missing.goto(origin + base);
     await expect(missing.locator('#startup-recovery')).toBeVisible();
     await expect(missing.getByRole('link', { name: 'Reload the panel' })).toBeVisible();
     await expect.poll(() => actualMissing).toBe(1);
     await missing.screenshot({ path: join(home, 'missing-bootstrap.png'), fullPage: true });
     await missing.unrouteAll();
+    diagnostic.beforeClick = diagnostic.navigations;
     await missing.getByRole('link', { name: 'Reload the panel' }).click();
-    await expect(missing.getByRole('button', { name: 'Sign in', exact: true })).toBeEnabled();
+    try {
+      await expect(missing.getByRole('button', { name: 'Sign in', exact: true })).toBeEnabled();
+    } catch (error) {
+      diagnostic.afterClick = diagnostic.navigations;
+      try { await missing.screenshot({ path: join(home, 'failed-reload-link.png'), fullPage: true, timeout: 3000 }); }
+      catch { diagnostic.failedLinkScreenshot = 'unavailable'; }
+      // Discriminate link navigation from a retained module failure. This
+      // additional observation must never turn the original failed journey green.
+      try {
+        await missing.reload();
+        await expect(missing.getByRole('button', { name: 'Sign in', exact: true })).toBeEnabled();
+        diagnostic.explicitReload = 'recovered';
+      } catch { diagnostic.explicitReload = 'failed'; }
+      throw error;
+    }
+    diagnostic.afterClick = diagnostic.navigations;
     await expect(missing.locator('#startup-recovery')).toBeHidden();
+    assert.equal(diagnostic.overflow, undefined);
     await missing.close();
   });
   assert.equal(report.observationLimit, undefined, 'browser observation limit');
@@ -247,6 +288,7 @@ try {
   // Call logs can contain filled credentials or headers. Keep only the stage
   // and exception class; SQL, wire data and arbitrary error text stay private.
   report.failure = { stage, kind: error?.constructor?.name ?? 'UnknownError' };
+  if (Number.isFinite(error?.matcherResult?.actual)) report.failure.actualNumber = error.matcherResult.actual;
   const location = String(error?.stack).match(/browser\.mjs:(\d+):(\d+)/);
   if (location) report.failure.location = { line: Number(location[1]), column: Number(location[2]) };
   if (primaryPage) {

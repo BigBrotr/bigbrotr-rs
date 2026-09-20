@@ -56,7 +56,15 @@ npm dependency package or selected Node version. Reference upstream
 The [initial native matrix](../../docs/implementation/evidence/p09-private-panel-browser-failures-20260920.json)
 failed. [Discriminating diagnostics](../../docs/implementation/evidence/p09-private-panel-browser-diagnostics-20260920.json)
 confirmed the document referrer-policy defect in Firefox/WebKit and the distinct
-Chromium CORS observation error. The corrected matrix still requires execution.
+Chromium CORS observation error. The [corrected matrix](../../docs/implementation/evidence/p09-private-panel-referrer-native-20260920.json)
+passes all eight journeys on Chromium and the first seven on Firefox/WebKit.
+The missing-bootstrap response count and reload-link recovery remain unresolved
+in those engines. Further diagnostics retain bounded request categories, status,
+rewrite/navigation counts and numeric matcher results. An explicit browser reload
+after a failed link is diagnostic only: the original failure remains FAIL.
+The Chromium wire observer correlates either CDP event order, with finite pending
+and output capacities; reordered-event and capacity regressions run in the frontend
+stage.
 Actual reports must bind source/tree, lockfiles,
 native/browser executables, image digests, bundle hashes, resource limits and
 terminal inventory. Compile/syntax checks do not execute browser journeys. Remote
