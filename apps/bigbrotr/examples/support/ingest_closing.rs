@@ -134,35 +134,6 @@ pub async fn run(
     }
     let manifest = *store.manifest();
     drop(store);
-    if mode == "event-recovery-missing-detail" {
-        // Deliberate lab corruption after exclusive writer shutdown, retaining
-        // the original input, issued counter and every scientific record.
-        emit(
-            serde_json::json!({"event":"recovery-corruption-before", "state":crate::ingest_snapshot::state(observer, path).await}),
-        );
-        let db = rocksdb::DB::open_cf(
-            &rocksdb::Options::default(),
-            path,
-            ["default", "facts", "receipts"],
-        )
-        .unwrap();
-        let key = [
-            b"\x01\x30".as_slice(),
-            spec.producer_slot_id.as_bytes(),
-            &1u64.to_be_bytes(),
-            &2u64.to_be_bytes(),
-        ]
-        .concat();
-        let cf = db.cf_handle("receipts").unwrap();
-        assert!(db.get_cf(cf, &key).unwrap().is_some());
-        let mut options = rocksdb::WriteOptions::default();
-        options.set_sync(true);
-        db.delete_cf_opt(cf, &key, &options).unwrap();
-        drop(db);
-        emit(
-            serde_json::json!({"event":"recovery-corruption-after", "state":crate::ingest_snapshot::state(observer, path).await}),
-        );
-    }
     // Closing is a fresh actor's operation. Join the old actual driver before
     // attempting its replacement; a scheduling sleep is not backend exclusion.
     if recovering {
@@ -286,6 +257,38 @@ pub async fn run(
             }
             previous = Some(observed);
         }
+    }
+    if mode == "event-recovery-missing-detail" {
+        // Deliberate lab corruption after the complete closing barrier, retaining
+        // the original input, issued counter and every scientific record.
+        drop(recovery);
+        emit(
+            serde_json::json!({"event":"recovery-corruption-before", "state":crate::ingest_snapshot::state(observer, path).await}),
+        );
+        let db = rocksdb::DB::open_cf(
+            &rocksdb::Options::default(),
+            path,
+            ["default", "facts", "receipts"],
+        )
+        .unwrap();
+        let key = [
+            b"\x01\x30".as_slice(),
+            spec.producer_slot_id.as_bytes(),
+            &1u64.to_be_bytes(),
+            &2u64.to_be_bytes(),
+        ]
+        .concat();
+        let cf = db.cf_handle("receipts").unwrap();
+        assert!(db.get_cf(cf, &key).unwrap().is_some());
+        let mut options = rocksdb::WriteOptions::default();
+        options.set_sync(true);
+        db.delete_cf_opt(cf, &key, &options).unwrap();
+        drop(db);
+        emit(
+            serde_json::json!({"event":"recovery-corruption-after", "state":crate::ingest_snapshot::state(observer, path).await}),
+        );
+        recovery =
+            IngestRecovery::open(path, manifest, limits(), grant(budget, 0, 128 * MIB)).unwrap();
     }
     if recovering {
         crate::ingest_recovery::run(

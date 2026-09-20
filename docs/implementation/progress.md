@@ -29,7 +29,7 @@ The native directory is never copied. This is not mid-FFI or power-loss evidence
 
 ## Git and integration state
 
-Mac main HEAD efeb4e0fc5254b856746d12d12c28cb929371080 is unpublished. Product
+Mac main HEAD afb2c2ec2b5a5d121b739ed039712f82adb269a5 is unpublished. Product
 candidate d2959da61a54a89b6b4e1b4806aa3a819bdff778, tree
 45d8c742d032641b9579bfc3ae9bc0e2ef80ffa0, remains byte-identical in library,
 dependencies and migrations1..14. Fixture3135497 added finite fault cases;
@@ -41,7 +41,12 @@ The process fixture and connected Rejected/AlreadyDurable fixture are committed.
 Root now owns finite missing-detail, unreserved-request3 and conflicting-copy
 fixture/observer plus this checkpoint/inventory. Product/dependencies unchanged.
 Mac scoped fixture Clippy PASS;16 earlier captured cases still pass the updated
-observer. The three new refusal engine cases are NOT_RUN. No unexpected writer.
+observer. Native afb2c2e build/Clippy PASS; absent1 and conf1 PASS, each26KV/37tables/2inputs,
+zero remaining backends and no resolved outcome. detail1 INCOMPLETE: deliberately
+deleting receipt2 before closing correctly triggered Native(StateMismatch),
+client101; all25remaining rows/originals retained,0backends. The fixture now
+moves corruption after complete closing with exact before/after snapshots; the
+corrected engine case is NOT_RUN. No unexpected writer.
 An initial outcome-class fixture compile refused a u32/u64 mismatch; explicit
 widening corrected it before any native run.
 
@@ -223,9 +228,10 @@ build/case sessions and stopping these exact resources after qualification.
 
 ## Next action and remaining gates
 
-Commit/export/build the bounded refusal fixture in the current idle lab's separate
-out/recovery-probe-refusals directory. Keep both earlier artifact identities intact.
-Run missing native receipt2 after deliberate exclusive synchronized deletion,
+Commit/export/build the corrected missing-detail fixture in the current idle lab's
+separate out/recovery-probe-detail directory. afb2c2e artifact
+311353481cbe315cf1a604fefe2cf81101f8e0855c69221f86ffef2fcc1cdf7c remains retained. Keep both earlier artifact identities intact.
+Run missing native receipt2 after closing and deliberate exclusive synchronized deletion,
 unreserved request3 (no deleted PG metadata), and an existing SQL copy whose bytes
 are deliberately corrupted after ordinary guards with a matching checksum.
 Compare the injected change explicitly, require Unresolved/Conflict and exact

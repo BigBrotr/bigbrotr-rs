@@ -69,10 +69,10 @@ def check_messages(messages, scenario, names, originals, control, seed_failure):
         assert len(matches) == 1, label
         return matches[0]
     closing, before = one('closing-before'), one('recovery-before')
-    ct = check_state(closing, expected_case(scenario, False), names, originals)
+    ct = check_state(closing, expected_case('normal' if scenario == 'missing-detail' else scenario, False), names, originals)
     bt = check_state(before, wanted, names, originals)
     same_window(ct, bt, scenario != 'pg-only')
-    assert before['sequence'] == closing['sequence']+int(scenario != 'pg-only')
+    assert before['sequence'] == closing['sequence']+int(scenario != 'pg-only')+int(scenario == 'missing-detail')
     issued = 3 if scenario == 'already' else 2
     before_rows = sorted(bt['producer_outcomes'], key=lambda r:r['request_sequence'])
     before_count = 2 if scenario == 'copy-conflict' else issued-1
@@ -81,10 +81,11 @@ def check_messages(messages, scenario, names, originals, control, seed_failure):
     if scenario == 'missing-detail':
         assert [m['event'] for m in corruption] == ['recovery-corruption-before', 'recovery-corruption-after']
         old, new = [m['state'] for m in corruption]
-        old_tables = check_state(old, expected_case('normal', False), names, originals)
-        new_tables = check_state(new, expected_case(scenario, False), names, originals)
+        old_tables = check_state(old, expected_case('normal', True), names, originals)
+        new_tables = check_state(new, expected_case(scenario, True), names, originals)
         assert old_tables == new_tables and new['sequence'] == old['sequence']+1
-        assert new['sequence'] == closing['sequence'] and new['native_sha256'] == closing['native_sha256']
+        assert new == before
+        assert old['sequence'] == closing['sequence']+1
     else:
         assert not corruption
     unreserved = [m for m in messages if m['event']=='recovery-unreserved-request']
@@ -309,6 +310,6 @@ if __name__ == '__main__':
     parser.add_argument('--run-tag', required=True)
     parser.add_argument('--scenario', choices=SCENARIOS, default='normal')
     parser.add_argument('--fixture-build', action='store_true')
-    parser.add_argument('--fixture-directory', choices=['recovery-probe', 'recovery-probe-refusals'], default='recovery-probe')
+    parser.add_argument('--fixture-directory', choices=['recovery-probe', 'recovery-probe-refusals', 'recovery-probe-detail'], default='recovery-probe')
     args = parser.parse_args()
     main(args.root.resolve(strict=True), args.run_tag, args.scenario, args.fixture_build, args.fixture_directory)

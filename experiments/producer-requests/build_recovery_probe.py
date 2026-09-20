@@ -17,7 +17,7 @@ from tools.archive_bundle import build_environment
 from tools.ci import execute
 
 work = SOURCE.parent
-assert work in [Path('/out/recovery-probe'), Path('/out/recovery-probe-process'), Path('/out/recovery-probe-refusals')]
+assert work in [Path('/out/recovery-probe'), Path('/out/recovery-probe-process'), Path('/out/recovery-probe-refusals'), Path('/out/recovery-probe-detail')]
 manifest = json.loads((work/'source-manifest.json').read_text())
 baseline = json.loads(Path('/out/build/source-manifest.json').read_text())
 assert baseline['revision'] == 'd2959da61a54a89b6b4e1b4806aa3a819bdff778'
