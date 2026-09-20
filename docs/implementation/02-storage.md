@@ -270,8 +270,10 @@ The current steps3/4/5 prerequisite is the bounded
 [native batch-membership observer](../reference/archive-handoff.md#bounded-native-batch-membership-candidate),
 wired to `archive batch-inspect`. It compares retained complete source/digest and
 original-file membership in one selected snapshot before the P02-T04/T07
-frontier/pin bridge. Native Linux CLI qualification is pending. No frontier,
-reference-closure, protection or task-completion claim follows from this census.
+frontier/pin bridge. [Native3369091 qualification](evidence/p02-archive-membership-native-20260920.json)
+passes23 CLI cases, two actual blocked-reader cases, two PG crashes/restarts and
+28 selected tests. No frontier, reference-closure, protection or task-completion
+claim follows from this census.
 
 The [private exact-reference hydration consumer](../reference/archive-format.md#exact-historical-signed-event-hydration)
 now reconstructs original signed events from payload/eligibility facts in one

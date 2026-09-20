@@ -14944,13 +14944,35 @@
       "bigbrotr_running": 0
     },
     "membership_candidate": {
-      "state": "Mac candidate checks complete; native Linux not run",
+      "state": "stopped-retained",
       "local_raw": ".research/implementation/archive-membership",
       "purpose": "P02-T04/T07 bounded native source/digest and original-file membership; actual administrative CLI qualification",
       "mac_anchor": "072bd806da27286da6ac40fcd0f09bfcea47b22c",
       "mac_checks": ".research/implementation/archive-membership/mac-checks/result.json",
       "mac_scope": "28 selected tests, including one thirteen-case native fixture, and scoped Clippy; dirty sources before candidate commit",
-      "remote_resources": "none created yet"
+      "source": "3369091e572fc6344ccc3e363fc1f31ff4b44d42",
+      "tree": "bfb4de117aab48a79264b99a0ce3594ad37109a9",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-membership-3369091",
+      "owner": "6fc7bd6cc597c6218a2d47bad888737e",
+      "container": "bigbrotr-implementation-archive-membership-3369091",
+      "postgres": "bigbrotr-implementation-archive-membership-3369091-pg",
+      "network": "bigbrotr-implementation-archive-membership-3369091",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "source_files": 886,
+      "started_at": "2026-09-20T04:02:15.304617+00:00",
+      "network_id": "7d33fe9bc11dafbe53e3706bf87c1ce308d22d6f83c3444b2fbe7832556ba9ff",
+      "postgres_id": "01bee00d0fa9e25c18cea03daf075e8dc3c0ae98113de08353b8fe79a207ebc0",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "6e1e9a0db3cb876794759788bc696e37e728c3f33e90ac42d5d57c92dd42eb68",
+      "qualification": "docs/implementation/evidence/p02-archive-membership-native-20260920.json",
+      "network_state": "removed after owner/no-endpoint audit; containers and data retained",
+      "terminal_audit": "terminal-audit.json",
+      "capture_sha256": "b0c618cb5dc3d760dd7897c63e3c5968632078c8c4b2a753443ccd66ce7024d0",
+      "capture_files": 23,
+      "preexisting_preserved": 394,
+      "unrelated_running": 8,
+      "bigbrotr_running": 0
     }
   },
   "implementation_monitor_corrections_20260918": {

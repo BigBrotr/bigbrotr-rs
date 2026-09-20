@@ -1,0 +1,527 @@
+{
+  "format": "bigbrotr-archive-membership-evidence/1",
+  "status": "PASS",
+  "scope": "P02-T04/T07 bounded stored source/digest/original-file membership and actual administrative CLI prerequisite; no scientific payload recomputation, same-cut reference closure, protection, frontier, pin, M1 or release qualification",
+  "source": {
+    "revision": "3369091e572fc6344ccc3e363fc1f31ff4b44d42",
+    "tree": "bfb4de117aab48a79264b99a0ce3594ad37109a9",
+    "files": 886,
+    "archive_sha256": "8d7c473da593ced57ebada4fdbb7ff0c7b5d8f7122d41a60511c389e6b34bb4a",
+    "manifest": {
+      "path": ".research/implementation/archive-membership/capture/collected/out/build/source-manifest.json",
+      "bytes": 109433,
+      "sha256": "839cc5a7273f107a403c6e44e0611561f299cb18f78aad999caaa7be6a246895"
+    },
+    "lock_sha256": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215",
+    "verified_against_mac_git_archive": true,
+    "clean_and_unchanged": true
+  },
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "host": {
+      "kernel": "Linux 6.12.101+deb13-amd64 x86_64 GNU/Linux",
+      "filesystem": "/dev/nvme0n1p2 ext4 rw,relatime,errors=remount-ro"
+    },
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "limits": "Runner2CPU/6GiB/512PIDs;PG1CPU/1GiB/128PIDs;512MiBtmpfs;internal network,no host ports,readonly root/source,no release credentials",
+    "engines": {
+      "path": "contracts/release/archive-engine.json",
+      "bytes": 8159,
+      "sha256": "ae0069565ab9411928df0cf067822630c4f3a912919e61633b952f8077a5e2c1"
+    },
+    "dependencies": {
+      "path": "contracts/release/dependencies.json",
+      "bytes": 16208,
+      "sha256": "9bea8c27908c680afc63ec9b74c481ea522c2b7a32232ab4dbca82b1920d7dd0"
+    },
+    "native_toolchain": {
+      "path": ".research/implementation/archive-membership/capture/collected/out/native-tests/ready.json",
+      "bytes": 5365,
+      "sha256": "47d91dde3d153f857adce43cf3a23459c2ee10765e8ad8b0bb6c80a688808686"
+    }
+  },
+  "artifacts": {
+    "control": "7042424e43e98f2b50a44e1099f627997462cfe8834ce8c6c6609c2cc45b3801",
+    "worker": "a3af7fcf7bf6813443c8cecf47a54e192613047765a8ad56b5045ccb13661afb",
+    "publisher": "d0e7ecf33640bfcbdd971a5ba4bf3ceaa993d0f99052175598921c5c5c8736e1",
+    "reader": "c691115bc069ef4cb1e7d8ffbfabacca6973099e2ad4f1f955e7d2d61348a3da"
+  },
+  "implementation": [
+    "One exact or current native read snapshot contains the full bounded receipt scan and every scientific family query. No fallback from unavailable snapshots and no successful Absent membership.",
+    "Queries include expected source ranges OR original filenames, validating actual dataset/schema/kind/path. Extra original-file rows, missing identities, duplicates, gaps and altered stored digests refuse. Canonical sorted references must match the original semantic archive digest.",
+    "Original receipt file contains one row; populated scientific families use original prepared paths. Canonical regular nonempty single-link checks include parent directories. This is not historical inode custody or a full-file byte/hash audit.",
+    "Parent admission charges bounded overlapping reference/vector buffers plus receipt scan, retains supervision through reap, and validates closed typed reply bindings. Invalid limits and resource insufficiency remain distinct.",
+    "Installed archive batch-inspect consumes retained complete .inputs and existing actual Control supervision/catalog manager inspection/SELECT-only reader. It emits bounded diagnostics after cleanup and committed owner release; it creates no source cut or protection authority."
+  ],
+  "upstream": {
+    "ducklake_commit": "d8a1881e22516ea3d186d73e83c65fe5bd1a1dc4",
+    "paths": [
+      "src/functions/ducklake_list_files.cpp",
+      "src/storage/ducklake_metadata_manager.cpp:GetFilesForTable",
+      "src/storage/ducklake_table_entry.cpp:GetVirtualColumns"
+    ],
+    "consequence": "ducklake_list_files materializes all files in binding even with SQL LIMIT. The selected reader uses actual native virtual filename columns; filename predicates and row caps do not establish bounded aged metadata/RSS cost."
+  },
+  "linux": {
+    "build": {
+      "path": ".research/implementation/archive-membership/capture/collected/out/native-tests/result.json",
+      "bytes": 2800,
+      "sha256": "13bb3e9a853fbb958f3766ff4283c7aefe632e6193711dd2a4d453a6fdf81263"
+    },
+    "checks": {
+      "path": ".research/implementation/archive-membership/capture/collected/out/native-tests/checks/result.json",
+      "bytes": 6641,
+      "sha256": "6b2150c472f9d60cac2742a7e50e122e7d4774a63f466bd4beceba9db5d550e6"
+    },
+    "tests": {
+      "passed": 28,
+      "failed": 0,
+      "ignored": 0
+    },
+    "native_membership": {
+      "path": ".research/implementation/archive-membership/capture/collected/out/native-tests/checks/native-membership.log",
+      "bytes": 2114,
+      "sha256": "92ca777c59aaf9d7458af24c9c6fea5c1838ad6384f097dcb9044009be08ee49"
+    },
+    "native_fixture_cases": 13,
+    "connected_result": {
+      "path": ".research/implementation/archive-membership/capture/collected/membership-cli-cases.json",
+      "bytes": 2187786,
+      "sha256": "7da1c46cd6a6238c89cab63753bae2cce7608698394114aa9f441ea6f6a52950"
+    },
+    "cli_cases": 23,
+    "blocked_cases": 2,
+    "cases": [
+      {
+        "index": 0,
+        "name": "normal-bootstrap",
+        "status": "PASS",
+        "exit": 0,
+        "elapsed_ms": 623
+      },
+      {
+        "index": 1,
+        "name": "normal-all-families",
+        "status": "PASS",
+        "exit": 0,
+        "elapsed_ms": 603
+      },
+      {
+        "index": 2,
+        "name": "normal-exact-3",
+        "status": "PASS",
+        "exit": 0,
+        "elapsed_ms": 643
+      },
+      {
+        "index": 3,
+        "name": "unavailable-snapshot-0",
+        "status": "PASS",
+        "exit": 4,
+        "elapsed_ms": 624
+      },
+      {
+        "index": 4,
+        "name": "unavailable-snapshot-1",
+        "status": "PASS",
+        "exit": 4,
+        "elapsed_ms": 643
+      },
+      {
+        "index": 5,
+        "name": "unavailable-snapshot-2",
+        "status": "PASS",
+        "exit": 4,
+        "elapsed_ms": 604
+      },
+      {
+        "index": 6,
+        "name": "unavailable-snapshot-4",
+        "status": "PASS",
+        "exit": 4,
+        "elapsed_ms": 603
+      },
+      {
+        "index": 7,
+        "name": "fact-limit",
+        "status": "PASS",
+        "exit": 3,
+        "elapsed_ms": 121
+      },
+      {
+        "index": 8,
+        "name": "receipt-limit",
+        "status": "PASS",
+        "exit": 4,
+        "elapsed_ms": 603
+      },
+      {
+        "index": 9,
+        "name": "allocation-limit",
+        "status": "PASS",
+        "exit": 3,
+        "elapsed_ms": 121
+      },
+      {
+        "index": 10,
+        "name": "missing-file",
+        "status": "PASS",
+        "exit": 4,
+        "elapsed_ms": 602
+      },
+      {
+        "index": 11,
+        "name": "missing-file-restored",
+        "status": "PASS",
+        "exit": 0,
+        "elapsed_ms": 626
+      },
+      {
+        "index": 12,
+        "name": "corrupt-file",
+        "status": "PASS",
+        "exit": 4,
+        "elapsed_ms": 603
+      },
+      {
+        "index": 13,
+        "name": "corrupt-file-restored",
+        "status": "PASS",
+        "exit": 0,
+        "elapsed_ms": 663
+      },
+      {
+        "index": 14,
+        "name": "proxy-retry",
+        "status": "PASS",
+        "exit": 0,
+        "elapsed_ms": 685
+      },
+      {
+        "index": 15,
+        "name": "proxy-retry",
+        "status": "PASS",
+        "exit": 0,
+        "elapsed_ms": 703
+      },
+      {
+        "index": 16,
+        "name": "normal-after-pg-crash",
+        "status": "PASS",
+        "exit": 0,
+        "elapsed_ms": 583
+      },
+      {
+        "index": 17,
+        "name": "history-bootstrap",
+        "status": "PASS",
+        "exit": 0,
+        "elapsed_ms": 602
+      },
+      {
+        "index": 18,
+        "name": "history-all-families",
+        "status": "PASS",
+        "exit": 0,
+        "elapsed_ms": 583
+      },
+      {
+        "index": 19,
+        "name": "history-exact-3",
+        "status": "PASS",
+        "exit": 0,
+        "elapsed_ms": 683
+      },
+      {
+        "index": 20,
+        "name": "history-corrections",
+        "status": "PASS",
+        "exit": 0,
+        "elapsed_ms": 686
+      },
+      {
+        "index": 21,
+        "name": "history-corrections-not-yet-visible",
+        "status": "PASS",
+        "exit": 4,
+        "elapsed_ms": 644
+      },
+      {
+        "index": 22,
+        "name": "history-after-pg-crash",
+        "status": "PASS",
+        "exit": 0,
+        "elapsed_ms": 625
+      }
+    ],
+    "blocked": [
+      {
+        "name": "blocked-signal",
+        "status": "PASS",
+        "exit": 4,
+        "elapsed_ms": 903,
+        "after_marker_ms": 75,
+        "watch_terminal": {
+          "event": "watch-terminal",
+          "native_exited": true,
+          "reaped": true
+        },
+        "blocking": [
+          {
+            "pid": 580,
+            "application": "bigbrotr-archive-membership",
+            "blockers": [
+              579
+            ]
+          }
+        ],
+        "cleanup_errors": []
+      },
+      {
+        "name": "blocked-deadline",
+        "status": "PASS",
+        "exit": 4,
+        "elapsed_ms": 120102,
+        "after_marker_ms": 119257,
+        "deadline_path": "supervisor",
+        "watch_terminal": {
+          "event": "watch-terminal",
+          "native_exited": true,
+          "reaped": true
+        },
+        "blocking": [
+          {
+            "pid": 623,
+            "application": "bigbrotr-archive-membership",
+            "blockers": [
+              622
+            ]
+          }
+        ],
+        "cleanup_errors": []
+      }
+    ],
+    "signal_timing": "75ms from harness marker before invoking verified pidfd SIGTERM through CLI return; includes signal-command overhead, not a kernel-delivery timestamp.",
+    "deadline_timing": "Actual120-second shared supervisor deadline returns exit4 after120102ms total client time while reader is blocked by a real PostgreSQL relation lock. pidfd observes native exit and reap; proxy remains healthy with a separately bounded180-second lifetime.",
+    "fixtures": {
+      "normal": {
+        "status": "PASS",
+        "parquet_files": 8,
+        "retained_inputs": 4,
+        "producer_inputs": 4,
+        "before_after_restart_equal": true,
+        "restart": {
+          "before": "2026-09-20 04:02:17.302788+00",
+          "after": "2026-09-20 04:08:41.303088+00",
+          "signal": "SIGQUIT"
+        }
+      },
+      "history": {
+        "status": "PASS",
+        "parquet_files": 11,
+        "retained_inputs": 5,
+        "producer_inputs": 5,
+        "before_after_restart_equal": true,
+        "restart": {
+          "before": "2026-09-20 04:08:41.303088+00",
+          "after": "2026-09-20 04:09:02.402495+00",
+          "signal": "SIGQUIT"
+        }
+      }
+    },
+    "signed_journey": "Actual signed Rocks admission with bad-signature/bad-ID controls, exact retries/reopen, installed catalog initialization and guarded publication. Independent complete native family rows and literal retained inputs/outcomes/Rocks identities match. CLI works with Rocks unreadable; normal/current3 and history/current4 versus exact3 are distinct, corrections11/12 are absent at3 and present at4.",
+    "preservation": "All8normal/11historical Parquet hashes, native metadata, retained input bytes and original Control binding/attempt rows including xmin are unchanged across CLI failures, restored retries and2real PostgreSQL SIGQUIT/restarts."
+  },
+  "oracle": {
+    "executed_harness_sha256": "726229fe627d4e1148912f0b49e2e9875d75796503f44566e0282f3008dc36bf",
+    "final_harness": {
+      "path": "experiments/archive-engine/membership_cli_cases.py",
+      "bytes": 19070,
+      "sha256": "b3363da3365ee1b06b2eeb2b29993b296c488eb1445f3ec659ed6daaf84f7cbf"
+    },
+    "signed_oracle": {
+      "path": "experiments/archive-engine/signed_publication_oracle.py",
+      "bytes": 16215,
+      "sha256": "7ad4381bdc691d45245232d7cbdebeed039c6de0c182bcdc193b3479678917a4"
+    },
+    "signed_fixture": {
+      "path": "experiments/identity-contract/signed-fixture.json",
+      "bytes": 58802,
+      "sha256": "4c931ab34cb7adeb707fc2866f4a50b3ec8b694cbb2d4fb5e335f8f37a2d8875"
+    },
+    "canonical_vector": {
+      "path": "tests/fixtures/protocol/archive-membership.json",
+      "bytes": 3213,
+      "sha256": "d056cd10205fd8e5099a182185cecf9987195430ecc38e9cd3463aff0bd151b8"
+    },
+    "offline": {
+      "path": ".research/implementation/archive-membership/offline-verification.json",
+      "bytes": 399,
+      "sha256": "6683c76277193e96be831cde921f84aff5a4f5e6a1f96b98f0ed5f0d1950cac6"
+    },
+    "verifier": {
+      "path": ".research/implementation/archive-membership/verify_capture.py",
+      "bytes": 5194,
+      "sha256": "7d2bea1d52e790d293d653505cacfc2adf9b10b0f092abe13b3a78dbf89b5833"
+    },
+    "harness_only_correction": "Executed3369091 cleanup loop shadows label, so raw CLI cases14/15 are both named proxy-retry. Their order, complete identical argv/output and associated blocked-signal/blocked-deadline observations independently identify both successful retries. Local follow-up changes only the cleanup loop variable; no product or Tux source edit and no engine rerun. Raw evidence is unchanged."
+  },
+  "mac": {
+    "environment": "Apple Silicon macOS/Rust1.98.1/pinned native bundle; pre-candidate development build",
+    "checks": {
+      "path": ".research/implementation/archive-membership/mac-checks/result.json",
+      "bytes": 3202,
+      "sha256": "2a01a01fd7b5bae17b6761579ca1247db6f43e721225e863bf82e26cb26157a5"
+    },
+    "tests": {
+      "passed": 28,
+      "failed": 0,
+      "ignored": 0
+    },
+    "logs": [
+      {
+        "path": ".research/implementation/archive-membership/mac-checks/canonical-membership.log",
+        "bytes": 537,
+        "sha256": "6fb111e6ce3ef167f440aafcd22a2c3a7ccf2cd28ba34b0eda0fbbfdac547a90"
+      },
+      {
+        "path": ".research/implementation/archive-membership/mac-checks/cli.log",
+        "bytes": 1507,
+        "sha256": "2949fb1a8ae520e2cfe17c9d185351cb76ba9938309d636a34a385fec6bf34c4"
+      },
+      {
+        "path": ".research/implementation/archive-membership/mac-checks/clippy.log",
+        "bytes": 432,
+        "sha256": "0cb1a733fc2c6fc0216c4824d3a8dc1af4431cc4e734beaeca96b4ebbd57106a"
+      },
+      {
+        "path": ".research/implementation/archive-membership/mac-checks/native-membership.log",
+        "bytes": 2271,
+        "sha256": "1ed312124f981990a8b388caf7a872e02bee9bf12dadc0ea2c0cf1f653761590"
+      },
+      {
+        "path": ".research/implementation/archive-membership/mac-checks/parent-membership.log",
+        "bytes": 742,
+        "sha256": "e90f8e42127192f62af7e23604ffe4e62fd6828d26044e8a555924cecb9c1296"
+      },
+      {
+        "path": ".research/implementation/archive-membership/mac-checks/parent-receipts.log",
+        "bytes": 629,
+        "sha256": "ae8d0696d45ff3d7110be0ebe36e89f006d14efe08c50039f2fa8afc6506731a"
+      },
+      {
+        "path": ".research/implementation/archive-membership/mac-checks/protocol.log",
+        "bytes": 635,
+        "sha256": "66a494ad119132e66c66315b53f0a7d1713fae38df3fb269e27ccf57d2d9b10f"
+      },
+      {
+        "path": ".research/implementation/archive-membership/mac-checks/receipt-regression.log",
+        "bytes": 819,
+        "sha256": "9f97b5ddcf156001ce9563ea8455fdb90576a73ad2a1d69e10c2ec621c5648df"
+      }
+    ],
+    "semantic_red": [
+      {
+        "case": "directory-symlink relocation accepted",
+        "log": {
+          "path": ".research/implementation/archive-membership/mac-symlink-red.log",
+          "bytes": 1346,
+          "sha256": "42b3e9744b97ed6b95f00c1ba465c59cdd61e321bf0da2a5a064a5c99f4d7dae"
+        }
+      },
+      {
+        "case": "readable original Parquet with additional sequence999 accepted by range-only query",
+        "log": {
+          "path": ".research/implementation/archive-membership/mac-extra-footer-red.log",
+          "bytes": 2282,
+          "sha256": "2071a4eb5f3b8e6379ce6d28a785ea661cef3b74c7afc5cf3f18c5eddeaa807f"
+        }
+      },
+      {
+        "case": "invalid receipt cap misclassified as ResourceLimit",
+        "log": {
+          "path": ".research/implementation/archive-membership/mac-parent-red.log",
+          "bytes": 1339,
+          "sha256": "90c5a21e5bbf5c46d368454e9ed8d48c7c83ee7dcd889706637cf4efcbbf8eec"
+        }
+      },
+      {
+        "case": "invalid scan opened a native transaction",
+        "log": {
+          "path": ".research/implementation/archive-membership/mac-transaction-red.log",
+          "bytes": 1194,
+          "sha256": "1c57dbd26a858ee972b29f13608d1896956c4b0d43960cd0af44d27a63e055ff"
+        }
+      }
+    ],
+    "red_boundaries": "These were defects in the uncommitted candidate, not failures of a published membership API. Initial missing-module compile RED is not semantic evidence. First extra-row rewrites refused at cached footer length; the discriminating fixture updates only private transport file/footer sizes and count, then independently reads altered columns before invoking the census. No production catalog metadata write was added.",
+    "red_sources": [
+      {
+        "path": ".research/implementation/archive-membership/red-source/sha256.json",
+        "bytes": 492,
+        "sha256": "b5a70a82670367bad300b15479181f3431af1f25ab4ab59bf15f9e03764166f8"
+      },
+      {
+        "path": ".research/implementation/archive-membership/extra-red-source/sha256.json",
+        "bytes": 250,
+        "sha256": "84d69cb1578bedb480fd691219df0d7caf62ae848bbaa6872fb0bb0bf703ee94"
+      }
+    ]
+  },
+  "review": {
+    "kind": "Independent read-only AI plus integrating owner code, contract, harness and evidence review",
+    "findings": [
+      "Include extra rows at original filenames and verify actual dataset; reject symlink parent relocation. Both reproduced before correction.",
+      "Use a fresh native engine and independently asserted snapshot before negative membership controls.",
+      "Restrict documentation claims to inspected columns and pathname/membership changes, not arbitrary payload corruption.",
+      "Correct independent historical input/spool recipe, extend bounded proxy beyond actual CLI deadline, retain failure process observations.",
+      "Preserve raw duplicated retry labels and identify both invocations from their order and complete commands/results."
+    ],
+    "boundary": "No independent reviewer engine execution. Same-cut reference closure, protection/pin bridge, reclamation and aged-state performance remain unimplemented or unqualified by this slice."
+  },
+  "resources": {
+    "audit": {
+      "path": ".research/implementation/archive-membership/capture/collected/terminal-audit.json",
+      "bytes": 10339,
+      "sha256": "d62ddb8b1c2c9b37ac4a25abdffcf0f399560b48f212902d37e4e1991eddb1a7"
+    },
+    "identities": {
+      "path": ".research/implementation/archive-membership/capture/collected/resources.json",
+      "bytes": 1300,
+      "sha256": "d946536fa5316e13c5ae63557f49b0e5e607228f8a2d194805288573ccb4584e"
+    },
+    "terminal_inventory": {
+      "path": ".research/implementation/archive-membership/capture/collected/terminal-inventory.json",
+      "bytes": 725543,
+      "sha256": "ee9b22ce013c13dd55203209e0dfc996e4692618d68b64f53b1093bc085bec04"
+    },
+    "capture": {
+      "path": ".research/implementation/archive-membership/capture/evidence-identity.json",
+      "bytes": 3657,
+      "sha256": "fae1b82fb7a7cb6065121ca486ec90d5690ff4ec30a752896a079840eed43005"
+    },
+    "capture_sha256": "b0c618cb5dc3d760dd7897c63e3c5968632078c8c4b2a753443ccd66ce7024d0",
+    "capture_files": 23,
+    "remaining_pg_clients": [],
+    "preexisting_preserved": 394,
+    "unrelated_running": 8,
+    "bigbrotr_running": 0,
+    "state": "stopped-retained",
+    "network_state": "removed after owner/no-endpoint audit; containers and data retained",
+    "collector_exit_codes": {
+      "/bigbrotr-implementation-archive-membership-3369091": 143,
+      "/bigbrotr-implementation-archive-membership-3369091-pg": 137
+    },
+    "exit_meaning": "Deliberate sleeping-runner/PG-wrapper shutdown143/137, Pid0/noOOM. Not test-process failures. Only the empty owned network removed; containers/data retained."
+  },
+  "remaining": [
+    "Functional corpus10/12facts in2/3committed batches; whole-catalog receipt scan remains finite. Default caps are not measured capacity. No mixed/aged load, RSS, throughput or Linux arm64 qualification.",
+    "Census compares stored digests and projected columns. It cannot certify untouched payload pages, historical inode identity or changed privileged namespace during observation. No power/host-loss durability claim.",
+    "No new policy-change or lease-loss fault scenario in this CLI matrix. Existing shared supervisor contracts remain required; this report does not requalify those cases.",
+    "Actual qualified persistence/root provisioning, complete topology prefixes including0, same-cut dictionary/reference closure, real Archive owner/frontier, immutable native snapshot binding and retention pins with reclamation exclusion remain required.",
+    "Installed current principal/action/scope/policy through output, standalone export, first complete M1 journey and all remaining selected product tasks remain open."
+  ]
+}

@@ -401,6 +401,17 @@ the existing stopped-coordinator custody, Control supervision, SELECT-only reade
 bounded diagnostic output and cleanup rules. No public data delivery or frontier
 authority follows from its report.
 
+[Native3369091 qualification](../implementation/evidence/p02-archive-membership-native-20260920.json)
+passes28 selected tests, including13 native membership controls, and23 actual CLI
+cases plus two blocked-reader signal/deadline cases with pidfd reap. Independent
+signed normal/history fixtures retain all8/11 Parquet files and native metadata
+across two PG crashes/restarts; current4 and exact3 differ for the later corrections.
+The executed harness labels both restored blocked-case retries `proxy-retry` due
+to a loop-variable error. Their order, complete commands and results remain
+recorded; the follow-up changes only that label variable, with no product/Tux
+source edit. This evidence does not qualify payload corruption outside inspected
+columns, protected frontiers, aged capacity or Linux arm64.
+
 ## Persistent local attempt custody candidate
 
 `LocalAttempt::create` takes the actual immutable Control attempt and scientific

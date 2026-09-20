@@ -174,11 +174,11 @@ def main(root):
             try: config.write_text(original)
             except OSError as error: cleanup_errors.append(dict(action='restore-config', error=type(error).__name__))
             observation['processes'] = {}
-            for label, process in [('client', client), ('watcher', watcher), ('holder', holder), ('proxy', proxy)]:
+            for process_label, process in [('client', client), ('watcher', watcher), ('holder', holder), ('proxy', proxy)]:
                 if process:
                     try: process.stop()
-                    except BaseException as error: cleanup_errors.append(dict(action='stop-'+label, error=type(error).__name__))
-                    observation['processes'][label] = dict(exit=process.process.poll(),
+                    except BaseException as error: cleanup_errors.append(dict(action='stop-'+process_label, error=type(error).__name__))
+                    observation['processes'][process_label] = dict(exit=process.process.poll(),
                         stdout=process.stdout.decode(errors='replace'), stderr=process.stderr.decode(errors='replace'),
                         overflow=process.overflow, remote_exclusion='UNKNOWN; requires owned terminal lab audit')
             observation['cleanup_errors'] = cleanup_errors

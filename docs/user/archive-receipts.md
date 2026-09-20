@@ -99,9 +99,12 @@ before worker launch.
 This compares stored digest columns. It does not recompute every payload, certify
 dictionary/reference closure, reserve a snapshot, authorize a read or advance a
 protected frontier. Preserve the original archive/state and scratch on failure.
-The same deadline, cancellation and exit-code rules apply. Native Linux CLI
-qualification for this new command is pending; the older receipt report below
-does not qualify it.
+The same deadline, cancellation and exit-code rules apply. The
+[Linux amd64 qualification at3369091](../implementation/evidence/p02-archive-membership-native-20260920.json)
+passes23 CLI cases and two actual blocked-reader cases over signed normal/history
+fixtures, including identical restored retries and two PG crashes/restarts.
+The120-second deadline returns after120102ms in that lab. This finite10/12-fact
+corpus does not qualify aged archives or capacity at the default limits.
 
 The [native CLI qualification](../implementation/evidence/p02-receipt-cli-native-20260919.json)
 at `d78bcc5` covers 22 retained attempts, refusal boundaries, real blocked-reader
