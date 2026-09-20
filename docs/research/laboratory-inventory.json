@@ -17768,8 +17768,11 @@
       "results": [
         ".research/implementation/private-panel/large-static-no-revoke-mac",
         ".research/implementation/private-panel/large-static-no-revoke-diagnostic-mac",
-        ".research/implementation/private-panel/large-static-final-mac"
-      ]
+        ".research/implementation/private-panel/large-static-final-mac",
+        ".research/implementation/private-panel/large-static-no-revoke-observed-mac",
+        ".research/implementation/private-panel/large-static-observed-mac"
+      ],
+      "evidence": "docs/implementation/evidence/p09-large-static-local-20260920.json"
     }
   }
 }

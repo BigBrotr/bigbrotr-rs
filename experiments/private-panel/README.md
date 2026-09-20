@@ -90,3 +90,16 @@ terminal inventory. Compile/syntax checks do not execute browser journeys. Remot
 TLS, large blocked static response, real expiry/late reply races, broad accessibility,
 full administration, installed history/export and release journeys remain separate
 requirements; this experiment does not mark P08/P09/M1 complete.
+
+The separate `static-response.py` stage qualifies actual bounded TCP delivery
+without another browser matrix. Run it only in a freshly inventoried, isolated
+Linux amd64 container with the exact Git export at `/out/build/source`, intact
+private Cargo caches and the verified native bundle at `/assets`. It uses the
+shared CI executor, identifies and hashes the actual Cargo test executable, then
+requires all18 management tests with zero ignored. The2MiB static response test
+requires retained bundle/connection grants, explicit revocation and a strict body
+prefix before both the lease and connection deadline; stop must release every
+grant. A separate identical lease window excludes natural expiry as the cause.
+The [Mac evidence](../../docs/implementation/evidence/p09-large-static-local-20260920.json)
+includes an isolated no-revoke runtime failure. Linux qualification is pending;
+this does not measure queued kernel bytes or a universal shutdown latency.

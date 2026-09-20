@@ -1,0 +1,78 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "tasks": [
+    "P08-T02",
+    "P09-T01"
+  ],
+  "status": "PASS_SCOPED",
+  "source": {
+    "base": "4b688f3ff6b09013650efd6d0c6870a87b18248c",
+    "clean": false,
+    "changed_files_sha256": {
+      "apps/bigbrotr/src/interfaces/management/tests.rs": "ee191fd8319d0b893097d4909ca60837d385750c1b79e2c6f7109bb8cc83f92b",
+      "experiments/private-panel/static-response.py": "f88575ab3c8c0b030067e09e357486a462667fd6615439861f06e3c7a008b91d"
+    }
+  },
+  "environment": "Mac arm64, Rust1.98.1; controlled native toolchain and previously verified archive-worker bundle; loopback TCP",
+  "positive": {
+    "tests": 18,
+    "ignored": 0,
+    "clippy": "PASS including bin/example/tests",
+    "result": ".research/implementation/private-panel/large-static-observed-mac/result.json"
+  },
+  "negative": {
+    "base": "b6d9d7edb0a322526b29d85ac5d4d412efc5401e",
+    "worktree": ".research/worktrees/private-panel-no-revoke",
+    "production_modified": false,
+    "variant": "DeliveryGate::revoke empty only in isolated worktree",
+    "outcome": "Expected runtime failure: delivered2097152/2097152 bytes despite revoke; identical separate lease window checks remain valid",
+    "result": ".research/implementation/private-panel/large-static-no-revoke-observed-mac/result.json"
+  },
+  "review": [
+    "Read-only AI review found a possible false PASS if the lease naturally expired. A second actual DeliveryWindow with identical deadline now checks before revocation and after closure. Final positive and isolated negative rerun.",
+    "Root and independent read-only AI review of corrected test/native stage found no further concrete issue. Tux orchestration remains root-owned."
+  ],
+  "limitations": [
+    "Requested small socket buffers and active permits establish an unfinished response; exact queued bytes at revocation are not measured.",
+    "Bundle/connection grants remain before revocation and reach zero after stop; independent clone custody is covered by the separate asset-clone regression.",
+    "No universal latency, Linux, host suspend or workload capacity qualification from these Mac runs. Native stage syntax checked but execution NOT_RUN."
+  ],
+  "raw": {
+    ".research/implementation/private-panel/large-static-observed.py": {
+      "bytes": 1100,
+      "sha256": "b4867688edd15ce7ff8b1eeda54c1eaa2367cc20f48458fefb3761f80b2252f7"
+    },
+    ".research/implementation/private-panel/large-static-negative-observed.py": {
+      "bytes": 1032,
+      "sha256": "ebb6ba96aba3367063fd0fdfc9947dcb9b33402daf1af301731e88f4b2434289"
+    },
+    ".research/implementation/private-panel/large-static-negative.json": {
+      "bytes": 1002,
+      "sha256": "1498ac73070575dfd234b06142f87bf03901844027d7ad0fcc6b775c94ff3cc5"
+    },
+    ".research/implementation/private-panel/large-static-observed-mac/result.json": {
+      "bytes": 1276,
+      "sha256": "e51586ae410649d189d6e36934bf814d049e6cbb78acc076ce0bbc2246112f6a"
+    },
+    ".research/implementation/private-panel/large-static-observed-mac/clippy.log": {
+      "bytes": 175,
+      "sha256": "e94b5df18b9853b2e0b7439195ae52116208f3b83b97b539f9b93ef3fa0fab04"
+    },
+    ".research/implementation/private-panel/large-static-observed-mac/management.log": {
+      "bytes": 2408,
+      "sha256": "0a0b7f95ce43fe4acc849f8c331ab3509b9955ef0c149db2e0d946d8fc8442f3"
+    },
+    ".research/implementation/private-panel/large-static-observed-mac/browser-syntax.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    ".research/implementation/private-panel/large-static-no-revoke-observed-mac/result.json": {
+      "bytes": 667,
+      "sha256": "31442efbc9069c967436d3332e41e2d77c49ff732a920cf6b6c988b265bd4407"
+    },
+    ".research/implementation/private-panel/large-static-no-revoke-observed-mac/management.log": {
+      "bytes": 1218,
+      "sha256": "5f5ef1c811685a76241199842a727f4fe0ae7ab755dceff0619708f08dfa4f85"
+    }
+  }
+}

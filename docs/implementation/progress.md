@@ -21,12 +21,11 @@ another diagnostic command instead of the real read consumer.
 
 ## Git and ownership
 
-Local main/HEAD is `b6d9d7edb0a322526b29d85ac5d4d412efc5401e`;
-eight unpublished commits follow freshly fetched origin
-`b98426146c68caffcbf6822bdb956d1a8abbd30d`. GitHub confirms the repository is private.
-Root owns qualification documentation/evidence/inventory and a separate new
-large-static-response test in management/tests.rs. That test is not part of the
-native qualified revision. No other writer or merge/rebase was observed.
+Local main/HEAD and pushed origin are `4b688f3` after the reviewed browser
+qualification commit. Root owns the separate large-static-response test,
+experiments/private-panel/static-response.py and associated documentation/evidence.
+No other writer or merge/rebase was observed. These are not part of qualified
+browser revision b6d9d7e; no product behavior or dependency version changes.
 Private local
 session API production baseline5a4e0d1 and qualified COMMIT fixturee65116b remain
 unchanged history. Full candidate state is listed by Git, not this summary.
@@ -92,19 +91,24 @@ remain intact. More space must be inventoried before another copied native build
 The next test uses the actual HTTP listener, a 2 MiB verified static body and
 small TCP buffers. It requires the connection/bundle grants to remain before
 revocation, bounded closure with a strict body prefix afterward and zero grants
-at stop. Final bounded Mac execution and scoped Clippy PASS; the isolated mutant
+at stop. [Final Mac evidence](evidence/p09-large-static-local-20260920.json) records
+18 management tests and scoped bin/example/tests Clippy PASS; the isolated mutant
 with DeliveryGate::revoke disabled fails after delivering all2097152 bytes.
 Both runtime failures and the final PASS are retained under private-panel/
-large-static-{no-revoke,no-revoke-diagnostic,final}-mac. Mutant identity is
+large-static-{no-revoke,no-revoke-diagnostic,no-revoke-observed,observed}-mac.
+Review corrected a possible expiry false positive: an independent DeliveryWindow
+with the same deadline checks validity before revocation and after closure.
+The corrected positive and no-revoke negative were both executed. Mutant identity is
 large-static-negative.json; owned detached worktree
 .research/worktrees/private-panel-no-revoke remains intentionally dirty and must
 never be merged or pushed. Primary production delivery.rs is unchanged. The
 primary build was restored by the final check; caches remain non-authoritative.
 Native evidence for this test is NOT_RUN. Its only product-side dirty file is
-management/tests.rs, kept separate from qualified browser source.
+management/tests.rs, kept separate from qualified browser source. The native
+stage records the exact Cargo test executable and requires18 executed passes.
 
-Next bounded action: commit/push the reviewed browser evidence, then commit the
-reviewed large-response regression as an unpublished exact-Git candidate and
+Next bounded action: commit the reviewed large-response regression as an
+unpublished exact-Git candidate and
 qualify it in one isolated native Rust container. Fresh Tux inspection observes
 eight unrelated workloads, no owned job and9,238,757,376bytes free; inventory and
 reserve enough space for the scoped build before launch. No frontend/browser

@@ -242,6 +242,15 @@ async fn actual_static_http_preserves_mount_headers_authority_and_held_bytes() {
 }
 
 fn delivery_gate(ttl: Duration) -> DeliveryGate {
+    delivery_gate_with_observer(ttl).0
+}
+
+fn delivery_gate_with_observer(
+    ttl: Duration,
+) -> (
+    DeliveryGate,
+    bigbrotr::runtime::policy_authority::DeliveryWindow,
+) {
     use bigbrotr::runtime::policy_authority::{LeaseResponse, PolicyLeaseTracker, PolicyLeaseTtl};
     let dataset = "01010101010101010101010101010101".parse().unwrap();
     let process = "02020202020202020202020202020202".parse().unwrap();
@@ -261,7 +270,90 @@ fn delivery_gate(ttl: Duration) -> DeliveryGate {
             },
         )
         .unwrap();
-    DeliveryGate::new(lease.delivery_window(epoch).unwrap())
+    (
+        DeliveryGate::new(lease.delivery_window(epoch).unwrap()),
+        lease.delivery_window(epoch).unwrap(),
+    )
+}
+
+#[tokio::test]
+async fn large_static_response_retains_custody_and_stops_after_revocation() {
+    use tokio::net::TcpSocket;
+    const LENGTH: usize = 2 * 1024 * 1024;
+    let directory = tempfile::tempdir().unwrap();
+    let root = directory.path().canonicalize().unwrap();
+    std::fs::write(root.join("index.html"), vec![b'A'; LENGTH]).unwrap();
+    // Independently frozen SHA256 of exactly 2 MiB of ASCII A.
+    std::fs::write(root.join("manifest.json"), r#"{"format":"bigbrotr-private-assets/1","base_path":"/","files":[{"path":"index.html","bytes":2097152,"sha256":"5b766f6d76a999636fd93b4e039d5a32187f84a19c0950449f0c721da0223914"}]}"#).unwrap();
+    let budget = ResourceBudget::new(
+        ProcessEnvelope::new(
+            64 << 20,
+            1 << 20,
+            ResourceLimits::new(32 << 20, 35, 0, 1 << 20),
+            WaiterLimits::new(0, 0),
+        )
+        .unwrap(),
+    );
+    let assets = Assets::load(&root, "/", &budget).unwrap();
+    // Bound both kernel queues below the body size. This is real TCP; no
+    // in-memory Pending implementation stands in for the slow consumer.
+    let socket = TcpSocket::new_v4().unwrap();
+    socket.set_send_buffer_size(4096).unwrap();
+    socket.bind("127.0.0.1:0".parse().unwrap()).unwrap();
+    let listener = socket.listen(8).unwrap();
+    let address = listener.local_addr().unwrap();
+    let (gate, mut observer) = delivery_gate_with_observer(Duration::from_secs(5));
+    let mut server =
+        transport::Server::from_listener(listener, budget.clone(), gate.clone(), Some(assets))
+            .unwrap();
+    let peer = TcpSocket::new_v4().unwrap();
+    peer.set_recv_buffer_size(16 * 1024).unwrap();
+    let mut peer = peer.connect(address).await.unwrap();
+    peer.write_all(format!("GET / HTTP/1.1\r\nHost: {address}\r\n\r\n").as_bytes())
+        .await
+        .unwrap();
+    let headers = tokio::time::timeout(Duration::from_secs(1), async {
+        let mut headers = Vec::new();
+        while !headers.ends_with(b"\r\n\r\n") {
+            headers.push(peer.read_u8().await.unwrap());
+            assert!(headers.len() < 8192);
+        }
+        headers
+    })
+    .await
+    .unwrap();
+    let headers = String::from_utf8(headers).unwrap();
+    assert!(headers.starts_with("HTTP/1.1 200 "));
+    assert!(headers.contains("content-length: 2097152\r\n"));
+    tokio::time::sleep(Duration::from_millis(100)).await;
+    // A fully queued response releases its connection grant. Require the
+    // unfinished response and retained immutable bundle before revoking.
+    assert_eq!(budget.snapshot().active_permits(), 2);
+    observer.check().unwrap();
+    gate.revoke();
+    let mut body = Vec::new();
+    let closed = tokio::time::timeout(
+        Duration::from_secs(2),
+        peer.take((LENGTH + 1) as u64).read_to_end(&mut body),
+    )
+    .await
+    .expect("revoked response did not close before the 5s connection deadline");
+    // This window has the gate's exact deadline, established before accept.
+    // Neither lease expiry (including suspend) nor the later connection timeout
+    // may substitute for revocation in this experiment.
+    observer.check().unwrap();
+    assert!(
+        closed.is_ok() || closed.is_err_and(|e| e.kind() == std::io::ErrorKind::ConnectionReset)
+    );
+    assert!(!body.is_empty(), "expected a previously queued body prefix");
+    assert!(
+        body.len() < LENGTH,
+        "revoked response delivered {} bytes of {LENGTH}",
+        body.len()
+    );
+    assert!(body.iter().all(|byte| *byte == b'A'));
+    server.stop().await.unwrap();
+    assert_eq!(budget.snapshot().active_permits(), 0);
 }
 
 #[tokio::test]
