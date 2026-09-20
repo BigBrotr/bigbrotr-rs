@@ -1,0 +1,86 @@
+{
+  "format": "bigbrotr-archive-visibility-fixture-failure/1",
+  "status": "FAIL",
+  "scope": "Preserved prerequisite failure before any connected visibility case; no product failure inferred",
+  "source": "b5ff8abe4e4224604b2c1960232359d71e17ffa5",
+  "tree": "5941e13acbef87f790128620d1a68bee0aac9ba4",
+  "source_files": 1005,
+  "linux_checks": {
+    "build": "PASS",
+    "fixtures": "PASS",
+    "native_tests": {
+      "passed": 4,
+      "failed": 0,
+      "ignored": 0
+    },
+    "protocol_tests": {
+      "passed": 2,
+      "failed": 0,
+      "ignored": 0
+    },
+    "clippy": "PASS"
+  },
+  "connected_cases": 0,
+  "failure": {
+    "component": "fixture database provisioning",
+    "observed": "PostgreSQL FATAL permission denied for database bbpub_control_normal; User does not have CONNECT privilege",
+    "consequence": "Publisher exits101 at actual transport::connect with Backend before emitting a corpus; visibility driver stops before all27planned lookup cases",
+    "correction": "Explicit CONNECT for bigbrotr_control in its isolated Control database; PUBLIC remains revoked. No product/migration/dependency change."
+  },
+  "capture": {
+    "identity": {
+      "path": ".research/implementation/archive-visibility/native/evidence-identity.json",
+      "bytes": 3474,
+      "sha256": "f57ac013c208f3d2c889f94fa001862b48dd748c0fe616d5d553f9232b00ab3d"
+    },
+    "sha256": "004bca743e587c92078b4bbcef69c8b613a7b7fe1385ba756020a1a8249de7ab",
+    "files": 22,
+    "verification": {
+      "path": ".research/implementation/archive-visibility/native/offline-verification.json",
+      "bytes": 191,
+      "sha256": "9765c184cbe6da8ba0c1e54d3c257ad90f7251e1ccae05665cd219f71b1c5305"
+    }
+  },
+  "evidence": [
+    {
+      "path": ".research/implementation/archive-visibility/native/capture/visibility-cases.json",
+      "bytes": 6405,
+      "sha256": "c0ff0e64934450cb40e7100d35cc081a5ee62641f11b6ea433709d2766596ae5"
+    },
+    {
+      "path": ".research/implementation/archive-visibility/native/capture/visibility-cases.log",
+      "bytes": 637,
+      "sha256": "fc75d814b65c26edc09f90a774f474216732ca82e2a4927bbc8986b72b941313"
+    },
+    {
+      "path": ".research/implementation/archive-visibility/native/capture/orchestrator.log",
+      "bytes": 1062,
+      "sha256": "2024b588c2a105131d7362bc70743ff491de68a854e7189d5eb6140fc6f05cde"
+    },
+    {
+      "path": ".research/implementation/archive-visibility/native/capture/terminal-audit.json",
+      "bytes": 4402,
+      "sha256": "3b23b2b5af85381287a140a7bfeaa6ba4307fbd67ee97080ec8d2b6bfd02b3e5"
+    },
+    {
+      "path": ".research/implementation/archive-visibility/native/capture/out/native-tests/result.json",
+      "bytes": 2811,
+      "sha256": "a3ca2beee90a2a8204bf695e5be7b8b9e87560c453b1773a3a93ca3063db0cbf"
+    },
+    {
+      "path": ".research/implementation/archive-visibility/native/capture/out/native-tests/checks/result.json",
+      "bytes": 4951,
+      "sha256": "e2e146cc3f1d128264f0b2f57e33dc33c91d38647450910e8c33815374aa1fbc"
+    }
+  ],
+  "resources": {
+    "state": "two owned containers exited/PID0/noOOM; empty owned network removed; source/data retained",
+    "preexisting_preserved": 490,
+    "unrelated_running": 8,
+    "cleanup_errors": []
+  },
+  "limitations": [
+    "None of the27connected visibility cases executed.",
+    "Initial Mac extraction verifier encountered Python3.9 unsupported tar filter argument. Extraction had not occurred; corrected verifier first rejects all non-regular/unsafe members, then verifies every capture/source hash. This was a collector compatibility error, not engine evidence."
+  ]
+}

@@ -31,7 +31,7 @@ def main(root):
         assert item['State']['Running'] and not item['State']['OOMKilled']
     out = root/'out/native-tests'
     ready = json.loads((out/'ready.json').read_text())
-    assert ready['source'] == resources['source'] and ready['source_unchanged']
+    assert ready['source'] == resources.get('artifact_source', resources['source']) and ready['source_unchanged']
     for label, path in [('worker', root/'out/archive-worker/bigbrotr-archive-worker'),
                         ('publisher', out/'archive-publication-probe'),
                         ('reader', out/'archive-read-probe'), ('event_reader', out/'archive-event-probe')]:
@@ -81,6 +81,10 @@ def main(root):
         for database in ['bbpub_normal','bbpub_control_normal']:
             sql('postgres',f'CREATE DATABASE {database};')
             sql(database,f'REVOKE ALL ON DATABASE {database} FROM PUBLIC; REVOKE ALL ON SCHEMA public FROM PUBLIC;')
+        # The Control fixture connects as its non-superuser after initialization.
+        # Keep PUBLIC revoked and provision only that required database privilege.
+        sql('bbpub_control_normal','GRANT CONNECT ON DATABASE bbpub_control_normal TO bigbrotr_control;')
+        assert sql('bbpub_control_normal',"SELECT has_database_privilege('bigbrotr_control','bbpub_control_normal','CONNECT');")=='t'
         publisher=result['publisher']={}
         execute(binary+['/out/native-tests/archive-publication-probe','normal','5432','--capture-cut'],180,publisher);save()
         assert publisher['exit']==0 and not publisher['stderr'] and not publisher['overflow']

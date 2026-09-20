@@ -21,42 +21,50 @@ another diagnostic command instead of the real read consumer.
 
 ## Git, current qualification and next action
 
-Observed main/HEAD and origin/main `d0443736755384cdadfa5649744f0ef023c8eecb`.
-Root owns the dirty visibility protocol, native worker/parent adapter, existing
-archive_event_probe extension, independent fixtures, native driver and associated
-read-view/P08/checkpoint/inventory documentation. No migration/dependency changes,
-other writer or merge/rebase. catalog_guard_review supplied read-only AI review.
-Prior qualified audit lab remains stopped/PID0/noOOM. No Tux experiment is active.
+Observed main/HEAD `b5ff8abe4e4224604b2c1960232359d71e17ffa5`, one unpublished
+candidate ahead of origin/main d044373. Root owns the fixture-only CONNECT fix,
+explicit artifact-source identity, failure evidence/checkpoint/inventory and the
+reviewed character-versus-byte wording correction. No product/migration/dependency
+changes afterb5ff8ab; no other writer or merge/rebase.
 
-The exact visibility lookup now verifies the full mapping inside one native
-snapshot/source cut; parent result retains its memory grant and actual custody.
-Review found a SourceRecordId reused by two individually valid mappings. The
-native regression reproduced acceptance (FAIL), then the source-only uniqueness
-lookup made all four native tests PASS/0 ignored; two protocol cases also PASS.
-Raw `.research/implementation/archive-visibility/{source-duplicate-red,mac-reviewed}`.
-Earlier missing-API compile RED is separate from this executed counterexample.
-Parent build passed; scoped Clippy found fixture enum size after adding visibility.
-Both enum payloads are now boxed; final build/scoped Clippy PASS in mac-final. Structural
-artifact checks pass. PostgreSQL/child custody/restart cases are NOT_RUN yet. Static fixture review
-corrected the expected local wrong-catalog refusal and bounded recovery polling;
-neither is recorded as an executed failure.
+The [first native attempt](evidence/p02-archive-visibility-fixture-failure-20260920.json)
+built the exact1005-file source; Linux4native visibility tests/2protocol tests,
+fixture build and Clippy PASS. All27connected cases are NOT_RUN: actual publisher
+failed before corpus emission because the Control database revoked PUBLIC CONNECT
+without granting its non-superuser Control role. PG explicitly reports the missing
+CONNECT privilege. Only the fixture grants that privilege; no product invariant
+changes. Full22-file failed capture and1005source hashes verified against Mac Git.
 
-Next bounded action: finish the scoped Mac check/diff review, commit an unpublished
-exact candidate and execute visibility_cases.py in a fresh isolated Tux lab. The
-27 planned cases use actual publication/read processes, source prefixes/snapshots,
-missing/corrupt Parquet, capacity refusal/retry and PostgreSQL SIGQUIT/restart.
-No allocation observation is a read grant, certified cut or pin. After qualification,
-continue P08-T02 reauthentication/scoped grant CAS and actual retained history read.
+The source collision regression first failed natively then passed after the second
+same-snapshot source-only lookup. Mac4native/2protocol pass; finalparent build/
+Clippy pass after fixing fixture enum allocations. Earlier missing-API compilation
+and two Clippy failures remain separately recorded under archive-visibility.
+Read-only AI review covered lookup/native tests/complete driver and publisher oracles;
+corrected local wrong-catalog expectation and bounded PG restart polling before run.
 
-Verified cache retirement freed 4,215,748,700 logical bytes from 4,184 intermediate
-Cargo files in stopped archive-pin-recovery-51d35ae and browser-http-commits-e65116b.
-Both targets are now partial and MUST NOT be reused. Executable/shared artifact
-hashes, source/data/receipts and all 490 container lifecycle/mount records were
-preserved; eight unrelated workloads remain. Free space after:9,192,001,536bytes.
-Raw `archive-visibility/tux-cache-retirement.json` and inventory
-`implementation_archive_visibility_20260920` record ownership and hashes.
-The intact session-audit-591c75f cache is the next copy candidate; verify it before
-reuse. No cleanup debt or active native lab. Cache reuse is never source identity.
+Lab `/home/tux/bigbrotr-implementation-20260917/runs/archive-visibility-b5ff8ab`,
+owner`895c8ccc683a05ee90df05b661c0aff1`, label`org.bigbrotr.archive-visibility`,
+runner`e0d7ac33217e031617a1edd3a65e7de2948d1d8777f8ed345da9717a3f96cc1c`
+and PG`faa4413f634218b3d957cc08f59e4241bebc2e5fbd9e0cc144698e7f2ae6e55f`
+are freshly exited/PID0/noOOM. Owned empty network removed;490prior containers
+preserved/eight unrelated running. No active experiment or cleanup debt. Retain
+used output and secret-bearing fixture directories remotely. Never restart/reuse.
+
+Next bounded action: commit the fixture correction, transfer its exact Git and run
+a fresh isolated qualification with unchanged actualb5ff8ab artifacts. Compare
+source manifests outside the explicit fixture/doc allowlist, preserve separate
+artifact/workload revisions, then execute all27actual lookup/Parquet/restart cases.
+No reason to rerun unchanged embedded suites. Independently collect effects,
+source/artifact identities and cleanup before pushing. Continue P08-T02 reauth/
+scopedgrantCAS and actual retained history read afterward; allocation is no grant.
+
+Two owned cache retirements are recorded under archive-visibility/tux-*-retirement.
+The first removed4,184intermediates/4,215,748,700bytes from51d35ae/e65116b. The retry
+retirement removed2,181intermediates/2,174,787,522bytes from stopped591c75f; actual
+executables/shared hashes, sources/data/receipts and492container records unchanged.
+Eight unrelated workloads remain; freeafter7,716,450,304bytes. Allthree caches are
+partial and MUST NOT be reused. b5ff8ab artifacts/source remain intact; copying
+an artifact never changes its embedded source identity.
 
 [Session mutation audit evidence](evidence/p08-session-mutation-audit-native-20260920.json)
 qualifies additive0807 and the actual accepted issuance/explicit logout consumer.
@@ -130,8 +138,8 @@ All earlier lab reports/inventory retain exact roots and ownership. Verified
 retirement receipts under session-audit/tux-*-retirement.json removed only owned
 inactive intermediate Cargo files, preserving actual executable/shared artifact
 hashes. Partial RED/f7/62/eceab88 and panel caches MUST NOT be reused. Qualified
-591c75f cache remains intact. The later visibility retirement above made
-e65116b and51d35ae partial; neither may be reused. Cache reuse never establishes
+The later visibility retirements above made591c75f, e65116b and51d35ae
+partial; none may be reused. Cache reuse never establishes
 source identity.
 
 Prior browser slice [b6d9d7e](evidence/p09-private-panel-native-20260920.json)

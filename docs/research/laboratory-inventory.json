@@ -17997,7 +17997,7 @@
     }
   },
   "implementation_archive_visibility_20260920": {
-    "status": "Mac implementation and native embedded tests; Tux qualification not started",
+    "status": "First native build/tests PASS; connected fixture failed before lookup; owned lab stopped retained",
     "base_revision": "d0443736755384cdadfa5649744f0ef023c8eecb",
     "local_root": ".research/implementation/archive-visibility",
     "cache_retirement": {
@@ -18015,6 +18015,48 @@
         "/home/tux/bigbrotr-implementation-20260917/runs/browser-http-commits-e65116b"
       ],
       "preservation": "Actual executable/shared artifacts, source/receipts/data preserved and hash checked. Partial e65116b and51d35ae targets must not be reused. Qualified591c75f target remains intact; cache never establishes source identity."
+    },
+    "native_candidate": {
+      "source": "b5ff8abe4e4224604b2c1960232359d71e17ffa5",
+      "tree": "5941e13acbef87f790128620d1a68bee0aac9ba4",
+      "owner": "895c8ccc683a05ee90df05b661c0aff1",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-visibility-b5ff8ab",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "postgres",
+          "id": "faa4413f634218b3d957cc08f59e4241bebc2e5fbd9e0cc144698e7f2ae6e55f"
+        },
+        {
+          "name": "rust-visibility",
+          "id": "e0d7ac33217e031617a1edd3a65e7de2948d1d8777f8ed345da9717a3f96cc1c"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "owner_label": "org.bigbrotr.archive-visibility",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "started_at": "2026-09-20T15:52:29.486893+00:00",
+      "network_id": "855bb5dd824d9a85c13968aca184d4bdb8409f3cea0757ec3c529177629c91e3",
+      "postgres_id": "faa4413f634218b3d957cc08f59e4241bebc2e5fbd9e0cc144698e7f2ae6e55f",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "e0d7ac33217e031617a1edd3a65e7de2948d1d8777f8ed345da9717a3f96cc1c",
+      "network_state": "removed after owner/no-endpoint audit",
+      "terminal_audit": "terminal-audit.json"
+    },
+    "failed_qualification": "docs/implementation/evidence/p02-archive-visibility-fixture-failure-20260920.json",
+    "retry_cache_retirement": {
+      "receipt": {
+        "path": ".research/implementation/archive-visibility/tux-retry-cache-retirement.json",
+        "bytes": 747177,
+        "sha256": "8ded42a2c822775c38491cdcb9857939777ba67c6b5721bcbe60fa0e8892e3ca"
+      },
+      "removed_files": 2181,
+      "removed_logical_bytes": 2174787522,
+      "free_after": 7716450304,
+      "containers_unchanged": 492,
+      "unrelated_running": 8,
+      "partial_nonreusable": "session-audit-591c75f",
+      "preservation": "Executed/shared artifact hashes unchanged; source, metadata and data retained. See complete owned retirement receipt."
     }
   }
 }

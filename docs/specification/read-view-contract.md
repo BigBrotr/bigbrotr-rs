@@ -183,8 +183,8 @@ The private wire is closed. `VisibilityRead` carries dataset, qualified scope,
 topology generation, ordered `CutBound` entries and an exact native snapshot ID.
 It shares the1024-stream structural ceiling; the complete credential-bearing
 request must also fit the existing32KiB private input bound before launch. Zero
-prefixes are retained and exclude every record. Native rows are clamped to4096
-UTF-8 bytes after SQL JSON construction; the worker's wider engine/native envelope
+prefixes are retained and exclude every record. SQL clamps each native row to4097 characters; Rust then refuses a rendered
+row above4096 UTF-8 bytes. The worker's wider engine/native envelope
 still covers construction. The result contains at most512 canonical fact bytes
 encoded as lowercase hex, with a1536-byte complete response bound. These fixed
 limits cover a visibility descriptor's sole64-byte ASCII class, not arbitrary
