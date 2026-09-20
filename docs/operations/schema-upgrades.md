@@ -4,8 +4,10 @@ Status: initial P02-T01 foundation. The checked-in catalog contains
 `0001_control.sql`, `0002_ingest.sql`, `0801_management_identity.sql`,
 `0805_owner_enrollment.sql`, `0802_management_commands.sql`,
 `0007_control_owner.sql`, `0008_job_bounds.sql`, `0009_archive_attempts.sql`,
-`0010_archive_coordinator.sql`, `0011_producer_requests.sql` and
-`0012_producer_outcomes.sql`. The executable includes explicit inspection, planning and
+`0010_archive_coordinator.sql`, `0011_producer_requests.sql`,
+`0012_producer_outcomes.sql`, `0013_input_bindings.sql`,
+`0014_import_checkpoints.sql`, `0015_archive_persistence.sql` and
+`0016_archive_frontiers.sql`. The executable includes explicit inspection, planning and
 application using the selected PostgreSQL driver. Its local planner, preparation
 and entrypoint tests pass. Native Linux amd64 PostgreSQL execution now covers
 the actual CLI, 104 independent SQL constraint cases, initial read-only runtime
@@ -43,7 +45,7 @@ require PostgreSQL 16.15, `fsync=on` and `full_page_writes=on`; apply forces
 transaction-local `synchronous_commit=on`. They do not initialize a dataset or
 qualify a complete installation or release upgrade.
 
-An omitted target selects the latest embedded migration, currently 12. An explicit
+An omitted target selects the latest embedded migration, currently 16. An explicit
 target 1 preserves the initial control-only boundary for its historical fixtures.
 Migration 2 refuses existing topology members with SQLSTATE `55000`: migration 1
 had no source registry, so their exact source authority cannot be inferred.
@@ -70,6 +72,19 @@ totals with55000, without modifying history or adopting native authority. See th
 compatibility and unresolved recovery gates. Runtime provisioning needs SELECT/
 INSERT on `control.producer_outcomes` and EXECUTE on its invoker guards; no UPDATE,
 DELETE, TRUNCATE or DDL privilege. Original migration bytes remain unchanged.
+
+Migration15 registers fresh-only local archive persistence participation; existing
+attempts retain NULL rather than being certified retrospectively. Migration16
+adds immutable Archive owner attribution and native snapshot bindings to the
+common frontier ledger. Existing owner/frontier rows remain unchanged and cannot
+be relabelled as qualified native publication. A new Archive head requires its
+binding even when the topology is empty. Runtime provisioning needs SELECT/INSERT
+on `archive_owner_sessions`, `archive_frontier_snapshots`, `archive_frontier_batches`
+and `consumer_frontiers`, SELECT/INSERT/UPDATE on `consumers` and
+`consumer_frontier_revisions`, plus the invoker functions and existing owner/role
+privileges. These permissions do not authorize native catalog or file access.
+The [frontier candidate](../specification/archive-storage-contract.md#native-frontier-binding-candidate)
+is still undergoing qualification and supplies no pin or public read capability.
 
 Output is bounded JSON with format `bigbrotr-control-migration/1`, version/count
 strings, exact pending SQL hashes and explicit absent version as null. Exit 0
@@ -296,8 +311,8 @@ The following engine cases are required, with externally inspected rows and exac
 source/engine identities. The evidence above records single-session SQL, CLI,
 role and crash cases, followed by migration lock concurrency, ambiguous COMMIT
 and TLS, then config/owner/job/topology races with independently observed lock
-barriers and expected durable rows. Runtime adapters and receipt-backed consumer
-frontiers remain unimplemented. Each trigger
+barriers and expected durable rows. The Archive frontier candidate has its own
+pending native/fault gates; protected reads and reclamation remain unimplemented. Each trigger
 has a concrete invariant and corresponding negative control below; a passing
 parser or successful DDL execution alone does not qualify them.
 

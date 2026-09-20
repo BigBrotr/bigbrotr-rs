@@ -21,13 +21,15 @@ the backlog; do not create another plan or diagnostic public command.
 ## Git and ownership
 
 Private origin/main was freshly checked at988bc4a7f694d878736c825cba1f34e2220c4335.
-Local HEAD is unpublished test candidate9aa86b970d02240aaf202ce9f7f11732a995a996. The four qualified commits were pushed normally after fetch;
+Local HEAD is unpublished product candidatee64ee8545436adf78ef4faf4cd46d188fb211660
+(tree8ca3cdded5f443b47fa008eae2d1da85d2b1f36c), after test candidate9aa86b9. The four qualified commits were pushed normally after fetch;
 no remote work required reconciliation. Product candidate
 354de750ffbcda93e7784bfaaf17b801522caf0f has tree
 968bbf5ed67e5e1c2f87db3e1dddac7b1b9a1f1f. Follow-ups b4c3a2e and2e0d50d only
 correct practical fixtures/checkpoints. Qualification988bc4a records the scoped
-results and preserved failures. Current root-owned dirty work adds0016/native frontier adapter, connected signed
-fixture/oracle/build selection, owning contracts, inventory and this checkpoint. No parallel writer or merge/rebase. Offline capture audit
+results and preserved failures. The candidate commits0016/native frontier adapter and connected signed fixture/oracle.
+Current root-owned dirty work is the new lab inventory/checkpoint and qualification
+follow-up documentation/fixtures. No product changes after candidate yet. No parallel writer or merge/rebase. Offline capture audit
 was rerun after resumption and passes all37 file hashes and recorded outcomes;
 the stopped Tux resources below are dated terminal observations, not a new run.
 
@@ -104,8 +106,9 @@ DDL produced the semantic RED. This is direct SQL, not CLI or native qualificati
 Mac16 schema tests and scoped library/example Clippy pass on the final candidate,
 including historical lookup/prefix fixture changes. Artifact/link checks pass
 structurally; they do not execute SQL or establish native correctness.
-No Linux GREEN yet. Next: finish candidate checks/review, commit exact source and
-run the connected native normal/history cuts plus discriminating SQL/fault cases.
+No Linux GREEN yet. Exact clean900-file candidatee64ee85 is building in a fresh
+Tux lab. Next: inspect ready/artifact manifests, run connected normal/history cuts
+and discriminating SQL/fault cases; record outputs before assertions.
 
 RED lab /home/tux/bigbrotr-implementation-20260917/runs/archive-frontier-9aa86b9,
 owner3bbfe3c27264f3024826a210cd758f72, PG
@@ -113,6 +116,18 @@ ce8cce0126368f9595963cd153b44eb7eb45543057b198ff38d80ad43a9814d0 is freshly
 stopped/Pid0/noOOM/exit0. Networknone, no host ports, read-only root,1CPU/1GiB/128PIDs.
 Retain its source/data/failures; no active experiment. Inventory frontier_candidate
 and ignored .research/implementation/archive-frontier own the resources/scripts.
+
+Active native lab /home/tux/bigbrotr-implementation-20260917/runs/archive-frontier-e64ee85,
+owner360298b0716d9c17f1bc0ca9d6c5357c, runner
+6bed32bfcaa497ba426938864d4f21906999f7e71a0e3ca2e544bf15da14a6c6 and PG
+c71a39691712b50ef58af256e5f7052bead68e5186e1d93e7024b4e4f144a073 are running.
+Owned internal network46157ea5f0a1b45969f7e052e12c11a1a4883c471ec2f9b1c350085386f5414c;
+no host ports; source/export read-only;2CPU/6GiB/512PIDs runner,1CPU/1GiB/128PIDs PG.
+Inventory frontier_native_candidate; ignored archive-frontier/native contains
+transfer/launch/preflight/resources. Transfer session58910 completed; build belongs
+to the actual runner. Never restart on the same output root. Inspect terminal logs
+and source/artifact identities before practical runs, and collect/stop only these
+owned resources afterward. Older stopped labs remain retained.
 
 ## Owned resources and evidence
 
