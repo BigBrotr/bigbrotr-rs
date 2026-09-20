@@ -26,6 +26,11 @@ real self request distinguish collected SQL from a poisoned Control connection.
 The independent PG collector still has to verify durable state and transport
 cleanup; successful exit alone is not acceptance.
 
+[Native HTTP evidence](../../docs/implementation/evidence/p08-browser-http-native-20260920.json)
+records ten actual executable/engine scenarios at5a4e0d1, independent terminal
+SQL and complete owned-resource cleanup. Its small fresh workload and precise
+failure schedules do not qualify the missing product journeys below.
+
 The fixture is not a browser UI test. Browser cookie-host behavior, active-hash
 shutdown, ambiguous session COMMIT, PostgreSQL crash with live cookies, account
 lifecycle/action grants, login audit, remote TLS, general drain and mixed/aged

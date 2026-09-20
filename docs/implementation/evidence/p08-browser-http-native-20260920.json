@@ -1,0 +1,410 @@
+{
+  "format": "bigbrotr-browser-http-native/1",
+  "status": "PASS",
+  "scope": "Bounded private session HTTP slice on actual executable/PostgreSQL; no P08-T02, browser UI, general administration, M1 or release completion",
+  "source": "5a4e0d13b51f51d06f50252bf7644b68a83b5be5",
+  "tree": "140784712b5a2b6b7c015e1b088bbb64397e0139",
+  "source_files": 940,
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "native_toolchain": {
+      "os": "Linux",
+      "architecture": "x86_64",
+      "discovery": "llvm-config",
+      "environment": {
+        "CC": "/usr/lib/llvm-14/bin/clang",
+        "CXX": "/usr/lib/llvm-14/bin/clang++",
+        "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+        "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+        "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+      },
+      "tools": {
+        "CC": {
+          "path": "/usr/lib/llvm-14/bin/clang",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "CXX": {
+          "path": "/usr/lib/llvm-14/bin/clang++",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "AR": {
+          "path": "/usr/lib/llvm-14/bin/llvm-ar",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+          "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+          "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+        },
+        "LIBCLANG_PATH": {
+          "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+          "version": "Debian clang version 14.0.6"
+        },
+        "discovery": {
+          "path": "/usr/lib/llvm-14/bin/llvm-config",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+          "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+          "version": "14.0.6"
+        }
+      },
+      "sdk": null
+    },
+    "runner": "2CPU/6GiB/512PIDs",
+    "postgres_limits": "1CPU/1GiB/128PIDs",
+    "network": "internal isolated network/shared namespace; no host-published ports",
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94"
+  },
+  "dependencies": {
+    "cargo_lock": {
+      "path": "Cargo.lock",
+      "sha256": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+      "bytes": 75668
+    },
+    "inventory": {
+      "path": "contracts/release/dependencies.json",
+      "sha256": "14bb6d43630ff5ad0eeaec28236ca138224d5e97603200f456536abbaa2c94c6",
+      "bytes": 17254
+    },
+    "migration806": {
+      "path": "migrations/postgres/0806_browser_sessions.sql",
+      "sha256": "3017bf28531655765ec9e09d10b1512532e8060681dac377e753119050e0b694",
+      "bytes": 8019
+    },
+    "cache_archive_sha256": "797533c19e7fe3cc72cf260211c17620a5c60ea57e6f04af3b26460bd3f744b0",
+    "cache_scope": "15 newly locked official crate archives verified against Cargo.lock and30 total registry cache/index files; no credentials/config; other versions/checksums unchanged"
+  },
+  "artifacts": {
+    "bigbrotr": "5cdc255879c6cfebc83bcaafa0f91e8378b86f63ad2e77e6f7d5c32de3a8846a",
+    "examples/browser_http_probe": "d1f83697b29b659b27769979ab4b9c9067cf00d7cd99e16c9d9056b02d43895a"
+  },
+  "mac": {
+    "clock_tests": 15,
+    "interface_tests": 11,
+    "cli_entrypoint_tests": 4,
+    "scoped_clippy": "PASS; lib/bin/probe",
+    "probe_build": "PASS; compilation alone not native execution",
+    "initial_red": "Missing boundary/delivery APIs failed compilation; not runtime negative controls",
+    "corrected_failures": [
+      "Fixture used nonexistent PrincipalId::new; changed to typed parse.",
+      "Clippy large Response error variants; helpers return StatusCode and construct response at boundary.",
+      "Local dependency-cache preparation lacked tomllib in default Python; verified preparation used Python3.11. No remote change occurred."
+    ]
+  },
+  "native": {
+    "checks": [
+      {
+        "name": "build",
+        "command": [
+          "cargo",
+          "build",
+          "--locked",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--bin",
+          "bigbrotr",
+          "--example",
+          "browser_http_probe"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 38.26893984619528
+      },
+      {
+        "name": "authority-clock",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--lib",
+          "runtime::policy_authority::tests"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 16.390753025189042
+      },
+      {
+        "name": "http-sockets",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--bin",
+          "bigbrotr",
+          "interfaces::"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 15.458784550894052
+      },
+      {
+        "name": "clippy",
+        "command": [
+          "cargo",
+          "clippy",
+          "--locked",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--lib",
+          "--bin",
+          "bigbrotr",
+          "--example",
+          "browser_http_probe",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 6.085515054408461
+      },
+      {
+        "name": "native-http",
+        "command": [
+          "/out/build/target/release/examples/browser_http_probe",
+          "/out/build/target/release/bigbrotr",
+          "/out/http-fixture"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 19.307938122656196
+      }
+    ],
+    "cases": [
+      {
+        "case": "missing-session-migration-refuses-before-bind",
+        "detail": {
+          "exit": 3
+        },
+        "status": "PASS"
+      },
+      {
+        "case": "one-missing-table-privilege-refuses-before-bind",
+        "detail": {
+          "missing": "DELETE"
+        },
+        "status": "PASS"
+      },
+      {
+        "case": "real-cli-enrollment-login-me-and-managed-drift",
+        "detail": {
+          "actions": 7,
+          "sessions": 1
+        },
+        "status": "PASS"
+      },
+      {
+        "case": "mixed-session-csrf-pairs-cannot-revoke",
+        "detail": {
+          "live_sessions": 2
+        },
+        "status": "PASS"
+      },
+      {
+        "case": "continuous-http-does-not-postpone-policy-renewal",
+        "detail": {
+          "clients": 4,
+          "elapsed_ms": 12011,
+          "requests": 4094
+        },
+        "status": "PASS"
+      },
+      {
+        "case": "actual-process-restart-preserves-existing-cookie",
+        "detail": {
+          "prior_stop_ms": 10
+        },
+        "status": "PASS"
+      },
+      {
+        "case": "slow-client-expiry-collects-admitted-sql-without-late-issuance",
+        "detail": {
+          "marker_rows": 1,
+          "sessions": 2
+        },
+        "status": "PASS"
+      },
+      {
+        "case": "confirmed-logout-clears-only-after-durable-revocation",
+        "detail": {
+          "live": 1,
+          "revoked": 1
+        },
+        "status": "PASS"
+      },
+      {
+        "case": "signal-joins-incomplete-http-and-control-before-release",
+        "detail": {
+          "remaining_pg_clients": 0,
+          "stop_ms": 10
+        },
+        "status": "PASS"
+      },
+      {
+        "case": "session-sql-observes-new-policy-before-effects-and-restart",
+        "detail": {
+          "policy_revision": "2",
+          "unchanged_session_rows": true
+        },
+        "status": "PASS"
+      }
+    ],
+    "clock_tests": 15,
+    "interface_tests": 11,
+    "discriminating_oracles": [
+      "Real migration18 -> initialization -> initial policy activation -> one-time owner enrollment -> migration806; protected Control credential, actual serve --roles control.",
+      "Missing migration and one missing DELETE privilege produce exact prerequisite refusal, no ready output and closed port after exit. Code order places checks before bind; no independent trace of transient bind was collected.",
+      "Missing Origin produces403 before any persistent attempt bucket. Wrong password401 followed by login201 and real self200 without Control poisoning.",
+      "Two independently issued session/CSRF pairs mixed both ways deny logout. Complete session snapshots including xmin remain unchanged; both sessions stay live.",
+      "Four actual TCP clients complete4094 authorized self requests in12011ms, spanning more than two5s authorization TTLs; Control remains alive. This small fresh workload is a scheduling regression, not measured general capacity.",
+      "Actual process stop/restart changes owner epoch and process incarnation while the previously issued cookie remains usable.",
+      "Body completes after4.4s of a5s connection. Lab trigger persists one marker before0.9s SQL delay. Client closes without response, both attempt buckets commit, no new session appears and later self query succeeds. This does not prove that no hash was started.",
+      "Known committed logout returns204 and two Max-Age0 headers; revoked cookie401, other cookie200, independent SQL one revoked/one live.",
+      "SIGTERM with8 incomplete HTTP requests closes listener and leaves zero Control PG clients/active owners; observed stop10ms. A separate ordinary stop also measured10ms; no universal bound claim.",
+      "Controlled immutable policy revision2 is installed between poll and session SQL. Specific PolicyChanged, no HTTP body and unchanged session values/xmin prove adapter path, not only later polling. Explicit successor observes2 and serves retained session.",
+      "Native TCP tests fill actual OS send buffer to WouldBlock, observe Pending with live writer, revoke gate, and drain exactly previously accepted bytes. Separate50ms expiry refuses further write without supervisor polling; no actual host suspend was performed."
+    ]
+  },
+  "review": {
+    "mode": "Independent read-only code/fixture review; root integration and actual execution",
+    "corrections": [
+      "Absolute refresh deadline survives ready HTTP work; relative rescheduling could postpone renewal.",
+      "Actual TCP poll_write and vectored writes recheck suspend-aware authority, not only oneshot delivery.",
+      "Same-policy window renewal retains transport clock high-water sample and permanently refuses failed/expired windows; manual104.2->104.1 regression discriminates discarded samples.",
+      "Every browser transaction compares config/policy head with fully validated Control snapshot before mutations.",
+      "Admitted SQL is bounded by authority, not a nearly expired client deadline; late responses are suppressed.",
+      "Blocked-write fixture loops to real Pending with finite bound; missing-prerequisite reasons and xmin oracles strengthened."
+    ]
+  },
+  "implemented_limits": [
+    "Trusted-host loopback HTTP only; exact canonical Host/Origin, no forwarded-header trust. Cookies are host scoped, not port isolated.",
+    "16 owned connections,16 queued commands,32 headers,16KiB parser buffer,8KiB body,5s total connection deadline; no keepalive/upgrades.",
+    "One65MiB reserved hash worker; Control/connection/request/hash memory shares one process envelope; request/hash grants survive client disconnection until work is collected.",
+    "Session cookiesHttpOnly; both cookiesSameSiteStrict,Path=/,8hMax-Age, noSecure in selected localHTTP profile; explicit session-bound CSRF header for logout.",
+    "Unknown logout does not clear credentials; lost issuance requires explicit new login. Self result is observation, never a reusable action grant.",
+    "Policy/config changes require explicit runtime restart in this slice; general pending/applied drain is not implemented."
+  ],
+  "not_run": [
+    "Actual browser cookie enforcement/second-port negative control and private frontend",
+    "Active-hash signal/join/capacity failures and actual host suspend/resume",
+    "Ambiguous issuance/logout COMMIT and PostgreSQL crash/recovery with live cookies",
+    "General accepted/rejected login audit, reauthentication, principal lifecycle, last-owner recovery and scoped action grants",
+    "Public-router separation, remote TLS/reverse-proxy cookie profile, configurable session-policy upgrade",
+    "Restrictive live data/stream drain, authenticated event/export/restart M1, full installation/release, Linux arm64, mixed/aged memory/IO/latency qualification"
+  ],
+  "cleanup": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/browser-http-5a4e0d1",
+    "owner": "a6a3064d79d5392e9fe7ceeeae248386",
+    "state": "stopped-retained",
+    "runner": "a686ed68fbedbf0e08f4682f8c498673586bce1877a7db0cd5fec303b5097a9b",
+    "postgres": "c6f9ddeedfd4dc912b72fba430b24c7c4e8242283ba9000ff1a48a5fb290bd84",
+    "remaining_pg_clients": [],
+    "independent_sql": {
+      "sessions": 2,
+      "live": 1,
+      "revoked": 1,
+      "bindings": true,
+      "account": true,
+      "grants": 7,
+      "no_active_control": true,
+      "bounded_counters": true,
+      "migration": 1,
+      "heads": [
+        "1",
+        "2"
+      ],
+      "probe_marker_removed": true
+    },
+    "preexisting_preserved": 418,
+    "unrelated_running": 8,
+    "network": "Owned empty network removed; stopped containers/data retained",
+    "capture_sha256": "c894483fe869bd59a43c4775e79bc70c688ff8e2e3adef3b1a9447db33310842",
+    "offline_verification": "All28 capture entries and940 exact Git source files verified on Mac, all418 preexisting resource lifecycle/image/mount/network records unchanged"
+  },
+  "evidence": [
+    {
+      "path": ".research/implementation/management-http/evidence-identity.json",
+      "sha256": "37f0ec467282de25199fbfbd6aaeb9c0161986905a06f77adcbb88bad69fb44c",
+      "bytes": 4383
+    },
+    {
+      "path": ".research/implementation/management-http/offline-verification.json",
+      "sha256": "09489d412f5e5158b73e207ec237a031723858321205bf9e4974c03fd18597d6",
+      "bytes": 259
+    },
+    {
+      "path": ".research/implementation/management-http/capture/resources.json",
+      "sha256": "77e144c47221549bf967aa89a56dc7ca7aa984844360a1f17e9eb5becd68056b",
+      "bytes": 1276
+    },
+    {
+      "path": ".research/implementation/management-http/capture/terminal-audit.json",
+      "sha256": "0c838e5e00f2bcf136d255e506e55170c579be5eb5ea6037ba7ae44e63b8e2c4",
+      "bytes": 10450
+    },
+    {
+      "path": ".research/implementation/management-http/capture/out/build/source-manifest.json",
+      "sha256": "b524160f833851ff52259f46b74920fffd11ea272fa3793308c3e6766e5e5598",
+      "bytes": 116396
+    },
+    {
+      "path": ".research/implementation/management-http/capture/out/native-tests/http-result.json",
+      "sha256": "18355126dccbb4c53d6880b41d89a487210a01d61269a1dd42e97a7125c8b22b",
+      "bytes": 4546
+    },
+    {
+      "path": ".research/implementation/management-http/capture/out/native-tests/native-http.log",
+      "sha256": "e0d6641b1e6f2b4396f8a5eeefbb113561c9d56e5a03de84176c14353a98d31c",
+      "bytes": 1167
+    },
+    {
+      "path": ".research/implementation/management-http/capture/out/native-tests/http-sockets.log",
+      "sha256": "0ec5353877615a42b8cf87caa9fc941d29e97705943dfcf426b4e6e2a799032b",
+      "bytes": 1492
+    },
+    {
+      "path": ".research/implementation/management-http/capture/out/native-tests/authority-clock.log",
+      "sha256": "cb377abafc7c09174a379e8740f8307110adf3d420224e04d3c0eb39c46cea43",
+      "bytes": 2041
+    },
+    {
+      "path": ".research/implementation/management-http/delivery-window-red/result.json",
+      "sha256": "df5b41fbd9ecc46a6a6c511937c7aebc065146383e7a46120ee8c0c501721c70",
+      "bytes": 625
+    },
+    {
+      "path": ".research/implementation/management-http/delivery-reviewed/result.json",
+      "sha256": "6ffaec7c5b6e16beffd158cec9677fb650eee63716827a68ac0a177ac6e54b68",
+      "bytes": 1327
+    },
+    {
+      "path": ".research/implementation/management-http/candidate-check/result.json",
+      "sha256": "139c84ebc8e0b6576350b4212084a6492526741a05ce8ffa0f2dd99fac894b88",
+      "bytes": 1386
+    },
+    {
+      "path": ".research/implementation/management-http/handoff-check.json",
+      "sha256": "8f47a4b4e0a50aa95a5e333e7215ae077087ebd583af91fb1f3bc6e759572f08",
+      "bytes": 58813
+    }
+  ]
+}

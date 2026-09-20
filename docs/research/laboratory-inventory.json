@@ -17221,5 +17221,30 @@
         }
       ]
     }
+  },
+  "implementation_browser_http_20260920": {
+    "source": "5a4e0d13b51f51d06f50252bf7644b68a83b5be5",
+    "tree": "140784712b5a2b6b7c015e1b088bbb64397e0139",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/browser-http-5a4e0d1",
+    "owner": "a6a3064d79d5392e9fe7ceeeae248386",
+    "container": "bigbrotr-implementation-browser-http-5a4e0d1",
+    "postgres": "bigbrotr-implementation-browser-http-5a4e0d1-pg",
+    "network": "bigbrotr-implementation-browser-http-5a4e0d1",
+    "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "state": "stopped-retained",
+    "source_files": 940,
+    "started_at": "2026-09-20T10:58:52.929380+00:00",
+    "network_id": "00736034f408b5938af8eed0ba7dc65dad7c45b7ae829cab145366c37a4673c1",
+    "postgres_id": "c6f9ddeedfd4dc912b72fba430b24c7c4e8242283ba9000ff1a48a5fb290bd84",
+    "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "container_id": "a686ed68fbedbf0e08f4682f8c498673586bce1877a7db0cd5fec303b5097a9b",
+    "local_root": ".research/implementation/management-http",
+    "dependency_cache_sha256": "797533c19e7fe3cc72cf260211c17620a5c60ea57e6f04af3b26460bd3f744b0",
+    "observation": "10 actual executable/PG cases,15 clock tests,11 interface tests,build and Clippy PASS. Independent SQL and terminal audit PASS;28capture entries/940source hashes verified on Mac;418prior resources unchanged,8unrelated running. Both owned containers stopped/PID0/noOOM; empty network removed; data retained.",
+    "network_state": "removed after owner/no-endpoint audit; containers and data retained",
+    "terminal_audit": "terminal-audit.json",
+    "evidence": "docs/implementation/evidence/p08-browser-http-native-20260920.json",
+    "capture_sha256": "c894483fe869bd59a43c4775e79bc70c688ff8e2e3adef3b1a9447db33310842"
   }
 }

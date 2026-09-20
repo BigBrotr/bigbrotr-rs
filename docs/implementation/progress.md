@@ -1,7 +1,7 @@
 # Current execution checkpoint
 
-Observed 2026-09-20 on Mac after native event-ID query qualification and owned
-lab cleanup. Navigation only: follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint)
+Observed 2026-09-20 on Mac after native private-session HTTP qualification and
+owned lab cleanup. Navigation only: follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint)
 and verify Git, dirty files, evidence and resources before continuing.
 
 ## Mandate and active boundary
@@ -21,19 +21,16 @@ another diagnostic command instead of the real read consumer.
 
 ## Git and ownership
 
-Local main, origin/main and remote refs/heads/main are verified at pushed
-`4b4daf1e8bfa0a7f572dcee5ce5f8d8e9f7ce2df`. Product source7a0f4b6 and
-qualified fixture d37e81f retain their exact identities in the session report;
-4b4daf1 adds qualification/docs only. Root-owned dirty HTTP work now includes
-exact dependencies/lock additions and release inventory; management
-{mod,boundary,transport,delivery,tests}.rs; serve.rs integration;
-ControlSession.validated_policy and browser session prerequisite/head checks;
-DeliveryWindow in runtime/policy_authority.rs with clock regressions; SessionError
-PolicyChanged; checkpoint/laboratory inventory. No parallel writer/merge/rebase.
-The listener is wired but has not yet been run with an actual Control executable
-and PostgreSQL. No HTTP native/browser qualification or API advertisement.
-All remote labs remain stopped (fresh SSH docker ps observed only the same8
-unrelated workloads). Local check results are below; no remote experiment started.
+Local main is unpublished candidate `5a4e0d13b51f51d06f50252bf7644b68a83b5be5`,
+tree`140784712b5a2b6b7c015e1b088bbb64397e0139`; origin/main and remote
+refs/heads/main last freshly verified at pushed4b4daf1. Candidate was clean before
+Git-bundle transfer and matches the detached940-file Tux export. Root-owned dirty
+work now records qualification only: checkpoint, laboratory inventory, HTTP report,
+P08 task evidence link and experiment README. No product change after tested source.
+No parallel writer/merge/rebase. Root sole integrator; catalog_guard_review completed
+read-only code/fixture review. All tests terminal; all owned labs stopped/retained.
+Review this report/docs diff, verify remote/resource state, then commit/push verified
+candidate and evidence. No browser/API readiness or product completion claim.
 
 Preserve `.research/worktrees/producer-closing-old-writer`, last verified clean at
 `f899896b1207f5e71c4e39d9ab7814b293814735` on
@@ -84,6 +81,23 @@ holder files/413 preexisting lifecycle records. Main capture SHA256:
 `e16a91c279e51cbf6d3710efa226ecbc0a5712a66614ed657cc870d060ae2de7`.
 
 ## Resources
+
+HTTP lab `/home/tux/bigbrotr-implementation-20260917/runs/browser-http-5a4e0d1`
+is stopped/retained. Owner`a6a3064d79d5392e9fe7ceeeae248386`, source5a4e0d1,
+tree1407847,940files. Runner`a686ed68fbedbf0e08f4682f8c498673586bce1877a7db0cd5fec303b5097a9b`,
+PG`c6f9ddeedfd4dc912b72fba430b24c7c4e8242283ba9000ff1a48a5fb290bd84`:
+both stopped/PID0/noOOM, zero PG clients; owned empty network removed. Independent
+SQL matched2sessions,1live/1revoked, credential/authentication/grant1,7grants,
+config1/policy2, bounded counters and no active Control. Terminal audit PASS,
+418prior resources unchanged,8unrelated workloads remain. All28capture files and
+940source hashes verified against Mac Git archive. Capture SHA256
+`c894483fe869bd59a43c4775e79bc70c688ff8e2e3adef3b1a9447db33310842`.
+Inventory`implementation_browser_http_20260920`; raw
+`.research/implementation/management-http/{capture,evidence-identity.json,offline-verification.json}`.
+Top-level localresources.json is stale launch state; capture/resources.json is
+terminal. Do not restart/reuse output. Retained out/http-fixture contains secrets;
+do not copy it wholesale. Runner2CPU6GiB512PIDs,PG1CPU1GiB128PIDs; pinned images,
+internal network/no host ports,readonly source/root,no releasekeys.
 
 Browser session labs7a0f4b6 andd37e81f are stopped/retained, with no active
 jobs or cleanup debt. Both terminal audits PASS: zero PG clients, no OOM, all
@@ -155,78 +169,60 @@ update; the adapter checks affected rows. INSERT requires READ COMMITTED and
 reads the clock after account locking. Review suggestions are statically addressed,
 engine-qualified within the report's stated scope.
 
-Continue P08-T02 actual private Axum consumer. Dirty implementation now selects
-accepted administration policy (including file drift), requires migration0806 and
-all individual table privileges before binding, and owns16 HTTP1 connections,
-32headers/16KiBbuffer/8KiBbody, no keepalive,5s total connection deadline. Axum0.8.9
-on explicitly owned Hyper1.11.1/hyper-util0.1.20 tasks; default Axum serve would
-spawn detached unbounded connections. Shared process envelope covers Control,
-connections, queued commands and one65MiB Argon2 worker. No new budget allowance.
-HTTP commands use a bounded typed queue into Control; caller cancellation does not
-drop request/hash grants. SQL admitted while a request is live now completes under
-its own remaining-authority duration, without client timeout cancelling healthy
-Control. Late hash/queued work does not start issuance. Expected denial keeps the
-backend usable; cancelled/unknown SQL terminates Control. Every exit after bind
-joins sockets/hash before ordinary owner release; hash join timeout requires process
-exit and cannot report graceful release. Finite initialization/receipt commands do
-not start a listener. Policy/config changes conservatively require restart until
-P08-T03 applied/draining transitions exist.
+[HTTP evidence](evidence/p08-browser-http-native-20260920.json) qualifies the bounded
+three-route consumer at5a4e0d1 on Linux amd64, PG16.15 and Rust1.98.1. Final Mac
+checks:15 clock tests,11 interface tests,4 CLI tests, product/probe builds and scoped
+Clippy PASS. Native build,15 clock tests,11 interface tests,Clippy and10 actual
+executable/PG scenarios PASS. Preliminary fixture compilation/Clippy failures and
+missing-API RED are recorded; no runtime counterexample is invented. No product
+input changed after the candidate.
 
-HTTP dependency archives under `.research/implementation/management-http/upstream`
-were verified against selected lock checksums and exact official sources read.
-Cargo.lock adds15packages without old version/checksum changes; direct Tokio io-util
-now records actual socket use. Inventory retains both source archive digests.
-Mac `integrated-first`5 tests and `tcp-corrected`9tests PASS. `tcp-first` failed on
-fixture PrincipalId::new misuse (corrected to typed parse). `tcp-and-clippy` tests
-passed but Clippy found128-byte response error variants; helpers now return compact
-StatusCode and materialize response only at boundary. `delivery-integrated`14policy
-clock tests+11interface tests+Clippy PASS. Initial delivery-window RED was a missing
-API compile error, not a runtime counterexample. Final `delivery-reviewed`15clock+11interface tests and Clippy PASS, including
-clock-renewal and TCP fixture corrections below. Raw paths under same HTTP root.
+Real CLI migration, initialization, activation and enrollment precede real serve.
+Missing806 or one missing DELETE privilege yields the exact prerequisite error,
+no ready output and a closed port after exit; transient bind was not independently
+traced. Accepted administration enablement wins over managed file drift. Missing
+Origin charges no attempt; wrong password keeps Control usable; login/me returns
+seven stored actions. Two mixed cookie/CSRF pairs deny with unchanged session
+values/xmin. Four TCP clients completed4094 requests in12011ms without losing
+renewal. Process restart preserves the cookie but changes owner epoch/incarnation.
+A slow body(4.4s of5s) and0.9s SQL trigger commit one marker/two buckets after HTTP
+expires; no new session appears and subsequent me succeeds. This does not prove
+that no late hash started. Confirmed logout leaves one live/one revoked session.
+SIGTERM with eight incomplete sockets took10ms in this run and left zero PG clients
+or active owners. Session SQL specifically reports PolicyChanged on a newly read
+immutable revision2 before touch/delivery; values/xmin remain unchanged and explicit
+restart works. No general capacity or universal shutdown latency claim.
 
-Read-only reviewer catalog_guard_review found two real static liveness/authority
-issues: relative refresh sleep reset under continuous HTTP work; lease check only
-before oneshot rather than actual socket write. Dirty corrections keep refresh_due
-absolute across commands and wrap raw TCP poll_write/vectored/flush with a shared
-DeliveryGate and sealed suspend-aware DeliveryWindow. Gate is revoked before stop,
-only same-policy windows can renew, clock failure/expiry permanently closes it.
-A later review found renew could discard a newer transport clock sample; new
-DeliveryWindow::renew conserves that sample and refuses expired/failed predecessor.
-Manual regression covers104.2 transport sample then104.1 Control response. The TCP
-fixture now loops to real Pending with explicit64MiB ceiling, avoiding a Pending
-without registered wake. The earlier actual Mac tests observed OS WouldBlock,
-retained the writer, revoked the gate, drained exactly previously accepted bytes;
-another observed50ms expiry without supervisor polling. No suspend/native claim.
+HTTP owns16 connections,16 queue slots,32 headers,16KiB parser buffer,8KiB body and
+5s connection deadline, with no keepalive. One65MiB hash worker and all Control,
+TCP/request grants share one process envelope. Admitted SQL completes within its
+remaining-authority budget despite client expiry. Late queued requests/hash results
+cannot initiate issuance. Every actual TCP write checks a suspend-aware delivery
+window; renewal preserves the highest clock sample. Expiry/failure cannot revive.
+Stop revokes that gate, then joins sockets/hash before ordinary owner release.
+Failed hash join requires process exit and cannot report graceful release. Accepted
+policy/config changes require restart until P08-T03 implements its barrier. Browser
+SQL compares current heads with the last fully validated Control snapshot. Self
+observation grants no data/action authority; finite CLI commands start no listener.
 
-All browser SQL operations now compare current config/policy heads with the last
-fully validated Control snapshot before charges/mutation/delivery; observed new
-policy cannot be ignored until polling. Review also identified client deadline
-cancelling SQL after a slow body; dirty SQL timeout uses authority budget only,
-with response suppression when client abandoned. Both still need real PG schedules.
-Origin/cookie rules: canonical exact root IP:port, default80 omitted in Origin,
-IPv6 brackets, no forwarding/Referer fallback. Cookies are host-scoped, never
-port-isolated: trusted-host loopback profile assumes trusted services on cookiehost.
-Actual browser second-port negative control remains needed. Explicit CSRF header
-must match this session's digest; unknown logout does not clear cookies; lost
-issuance requires explicit new login. /me returns observation, not action authority.
+Independent review corrected renewal postponement under ready HTTP work, a lease
+check only before oneshot delivery, ignored new SQL policy head, client timeout
+cancelling SQL, discarded clock high-water on renewal and a fixture Pending without
+wake. Tests cover104.2->104.1 clock regression, actual OS WouldBlock/Pending then
+revocation with exactly prior bytes drained, and50ms expiry without supervisor
+polling. No actual host suspend claim. Root reviewed code/captures and verified
+source/artifact/dependency identities. Exact axum0.8.9,hyper1.11.1,hyper-util0.1.20
+have defaults disabled;15 new packages, no old version/checksum change. Official
+archives were verified; raw Axum serve would detach unbounded connection tasks.
 
-Next bounded action: recheck final clock/socket corrections, create actual
-executable+PG native fixture (continuous requests >2TTLs, slow admitted request,
-head change, missing SQL privilege, login/cookies/restart/logout, actual blocked
-transport/hash stop), commit clean candidate for exact Git transfer, inventory and
-start fresh Tux lab. The actual executable fixture browser_http_probe and driver http_native.py now
-exist. `fixture-final`build+Clippy PASS. Its slow-body oracle proves collected SQL
-and no issuance, not that no hash was admitted. `candidate-check`also passed four CLI entrypoint tests and final probe build/Clippy.
-Reviewer checked both native fixture files; missing-prerequisite reasons and no
-ready output are asserted, and session snapshots include xmin for mixed-CSRF/head
-change schedules. No candidate or lab yet exists. A dependency cache archive contains
-only15 checksum-verified newly locked crates and30 total cache/index files, SHA256
-797533c19e7fe3cc72cf260211c17620a5c60ea57e6f04af3b26460bd3f744b0. Local
-prepare script initially used Python without tomllib; retried successfully with
-Homebrew Python3.11. No remote change occurred during that failed preparation.
-Artifact/link/handoff checks passed; these are documentation checks, not product
-acceptance. Ignored launch.py/transfer.py have been prepared and read, not executed.
-Native/browser/audit/reauthentication/grants/drain remain required. No new plan.
+Next bounded action after evidence commit/push: actual browser cookie/CSRF and
+active-hash shutdown qualification, then ambiguous COMMIT/PG crash with live
+cookies. Continue login audit, reauthentication and scope-qualified grants needed
+by the real private history reader. P08-T02 owns these steps; no parallel plan or
+diagnostic CLI. Cookies are host scoped, never isolated by port; the trusted-host
+loopback profile assumes trusted services sharing that host. A browser second-port
+negative control, remote TLS, configurable lifetimes, general drain and public
+router separation remain required.
 
 Read-only grant/session contract review completed: separate scope-qualified
 history-grant table, reauthentication bound to command digest, grant revision CAS,

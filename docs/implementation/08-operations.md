@@ -146,6 +146,12 @@ restart; it is not yet an application barrier or action-grant implementation.
 The native executable fixture is `browser_http_probe`, driven by
 `experiments/browser-sessions/http_native.py`. Its presence or compilation is not
 execution evidence. No T02 step is closed by these partial routes.
+[Native HTTP evidence](evidence/p08-browser-http-native-20260920.json) records
+ten actual executable/PG cases at5a4e0d1,15 clock and11 interface tests. Four TCP
+clients completed4094 self requests in12.011s without postponing Control renewal.
+The slow-client marker, session/xmin comparisons and independent terminal SQL
+qualify their named schedules only. Browser, active-hash shutdown, ambiguous
+COMMIT, general audit/grants and remote TLS remain required.
 
 **Failure states:** unavailable policy authority causes expiry/fail-closed, not anonymous fallback. Last-owner recovery is an explicit local, positively authorized CLI operation with an audit record; it cannot be triggered through an unauthenticated HTTP request. Enrollment output is never copied into CI evidence.
 
