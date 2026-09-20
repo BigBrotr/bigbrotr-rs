@@ -17773,6 +17773,26 @@
         ".research/implementation/private-panel/large-static-observed-mac"
       ],
       "evidence": "docs/implementation/evidence/p09-large-static-local-20260920.json"
+    },
+    "static_response_qualification": {
+      "source": "709656d295542b80490d7abb6129b080b076f759",
+      "tree": "62dee976aa0fc4ed2c47b22f423f55ddb7b0ff58",
+      "owner": "e6ab997e0253454fd575284d83e8b135",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/private-panel-static-response-709656d",
+      "state": "stopped-retained",
+      "containers": [
+        {
+          "name": "rust-static",
+          "id": "e21ba0d3e36fe31db150a9aea46f433af26a4cd898b4d9354b9ec5d277471e74"
+        }
+      ],
+      "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "started_at": "2026-09-20T14:22:59.843769+00:00",
+      "terminal_audit": "terminal-audit.json",
+      "local_root": ".research/implementation/private-panel/native-static-response",
+      "evidence": "docs/implementation/evidence/p09-large-static-native-20260920.json",
+      "capture_sha256": "e8133143d9fe00420e49ad0ea5ff6bba2039c2a00317181b4d38703f803f9daa",
+      "observation": "One network-none container stopped/PID0/noOOM. All18 management tests and Clippy pass. All481 prior container records unchanged, eight unrelated workloads running; no new PG/network/volume.15 capture files and990 source hashes verified."
     }
   }
 }

@@ -1,0 +1,139 @@
+{
+  "format": "bigbrotr-implementation-evidence/1",
+  "tasks": [
+    "P08-T02",
+    "P09-T01"
+  ],
+  "status": "PASS_SCOPED",
+  "source": {
+    "revision": "709656d295542b80490d7abb6129b080b076f759",
+    "tree": "62dee976aa0fc4ed2c47b22f423f55ddb7b0ff58",
+    "clean": true,
+    "files_verified": 990,
+    "cargo_lock": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122"
+  },
+  "scope": "Actual private HTTP large-response revocation and retained custody on Linux amd64; no product code change since qualified browser b6d9d7e.",
+  "execution": {
+    "compilation": "PASS",
+    "clippy": "PASS including tests",
+    "test_executable_sha256": "e278120d63f751be04d2b2f43019ddbdd0a286a5ca4817d1edfdb0d6a8b372ba",
+    "tests": 18,
+    "ignored": 0,
+    "receipt_counts": {
+      "collected": 1,
+      "executed": 1,
+      "failed": 0,
+      "not_run": 0
+    },
+    "test_seconds": 5.035761148203164
+  },
+  "oracles": [
+    "Exact2MiB literal ASCII payload and frozen SHA256 enter actual asset loader and TCP listener. HTTP200 and exact Content-Length precede withheld body reads.",
+    "Bundle and unfinished connection retain two grants before explicit revocation. Actual TCP closes within the2s read timeout with a nonempty strict prefix containing only expected bytes.",
+    "A second actual suspend-aware DeliveryWindow has the same deadline and remains valid before revocation and after closure. Lease expiry and later connection timeout cannot substitute for revocation.",
+    "Server stop joins connection work and releases all grants. Existing real WouldBlock/Pending and expiry cases also execute."
+  ],
+  "negative_control": "The separate Mac no-revoke mutant delivers all2097152 bytes and fails the strict-prefix oracle while the observer remains valid; see p09-large-static-local-20260920.json. No Linux mutant is claimed.",
+  "review": [
+    "Root reviewed the full test and native stage; independent read-only AI review corrected the expiry confound and reviewed the corrected runner.",
+    "Root independently verified every capture hash and990 source files against exact Mac Git archive; all18 actual test names/results are present."
+  ],
+  "resources": {
+    "source": "709656d295542b80490d7abb6129b080b076f759",
+    "tree": "62dee976aa0fc4ed2c47b22f423f55ddb7b0ff58",
+    "owner": "e6ab997e0253454fd575284d83e8b135",
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/private-panel-static-response-709656d",
+    "state": "stopped-retained",
+    "containers": [
+      {
+        "name": "rust-static",
+        "id": "e21ba0d3e36fe31db150a9aea46f433af26a4cd898b4d9354b9ec5d277471e74"
+      }
+    ],
+    "rust_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "started_at": "2026-09-20T14:22:59.843769+00:00",
+    "terminal_audit": "terminal-audit.json"
+  },
+  "terminal": {
+    "preexisting_preserved": true,
+    "preexisting_count": 481,
+    "unrelated_running": 8,
+    "source_unchanged": true,
+    "source_checkout_clean": true,
+    "cleanup_errors": [],
+    "free_bytes": 5873979392
+  },
+  "raw": {
+    "root": ".research/implementation/private-panel/native-static-response",
+    "capture_sha256": "e8133143d9fe00420e49ad0ea5ff6bba2039c2a00317181b4d38703f803f9daa",
+    "capture_files": 15,
+    "files": {
+      "collect.py": {
+        "bytes": 2426,
+        "sha256": "0b50b9860b16b98e582b14e0dd02bd400247b9cd865267c273fa9681bbd9efa7"
+      },
+      "launch.py": {
+        "bytes": 8831,
+        "sha256": "3452f40e09f5ee76c082952125868a03d7747e8b7df5cbe0b5479f83f58915b9"
+      },
+      "orchestrator.log": {
+        "bytes": 177,
+        "sha256": "1ff75e43e01c6d4f3bb37af3d47233375768b8ec76ae7487160f07b66624c7d2"
+      },
+      "out/build/source-manifest.json": {
+        "bytes": 122435,
+        "sha256": "b7b86da5b089530f2141030bf63d46d94882e138dbb0edcd907b8cdbad718cbb"
+      },
+      "out/compile-checks/clippy.log": {
+        "bytes": 297,
+        "sha256": "830723a5037747c5f1420e8b7773b6cf51cf1d556789ca2715ca814aa171e379"
+      },
+      "out/compile-checks/compile.log": {
+        "bytes": 179597,
+        "sha256": "72b8c9a12a996a589495562dfe258d9aa4f8868d64b4f6219e0af7b3db32989d"
+      },
+      "out/compile-checks/result.json": {
+        "bytes": 3344,
+        "sha256": "7774a1ad0ab44d43d3cad9bd38363df03bed3f7c2e079e9182e09ced6671a64f"
+      },
+      "out/socket-checks/management.log": {
+        "bytes": 2131,
+        "sha256": "c43a72601032eb707001d2e6c00c2db91961450351ca5fbdc3a1cc3e1e5c385b"
+      },
+      "out/socket-checks/result.json": {
+        "bytes": 2923,
+        "sha256": "44ad8c80e46b78d291cc8a69354546c9288bf09c6ff131889cd20b2e198b3e93"
+      },
+      "out/static-response-result.json": {
+        "bytes": 6556,
+        "sha256": "916e6066de716be3b7cffab6feafbbd2ce877a91755eb893bba54b70d3b6e52b"
+      },
+      "preflight.json": {
+        "bytes": 3979375,
+        "sha256": "ef8b0a2b12d78c7fc7b3a40be566359aaae00a8588bea7a1de894377718b7db3"
+      },
+      "resources.json": {
+        "bytes": 619,
+        "sha256": "3efe58ee10056a0867ae03369b5819921b4af92beee4ea7fb45fd10179b09d30"
+      },
+      "rust-image.json": {
+        "bytes": 2024,
+        "sha256": "1d366c7f78c5a3ac323631b826e90d5c54e010cf32ff67e267877168f19befcb"
+      },
+      "rust-static.container.log": {
+        "bytes": 115,
+        "sha256": "16ed62f7327ad8b42fae12cf215951ca28a37266be4923918eff3be4d33e9421"
+      },
+      "terminal-audit.json": {
+        "bytes": 2556,
+        "sha256": "8d0c82a00d9865af4db3d69ceb73792eb21d3f86ccd71e0a274a179258e407fd"
+      }
+    }
+  },
+  "limitations": [
+    "Requested socket buffer limits and retained grants establish an unfinished response; exact kernel queue occupancy at revoke was not measured.",
+    "Independent clone reservation custody is covered by the separate asset-clone test. This case verifies bundle/connection retention and final zero grants.",
+    "No universal shutdown latency, host-suspend, mixed/aged-load or Linux arm64 qualification.",
+    "The browser matrix remains at b6d9d7e; frontend sources unchanged. Forced detached-browser cleanup, late browser response races, frontend CI, full management/action authority and M1 remain open."
+  ]
+}

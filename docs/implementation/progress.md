@@ -21,11 +21,11 @@ another diagnostic command instead of the real read consumer.
 
 ## Git and ownership
 
-Local main/HEAD and pushed origin are `4b688f3` after the reviewed browser
-qualification commit. Root owns the separate large-static-response test,
-experiments/private-panel/static-response.py and associated documentation/evidence.
-No other writer or merge/rebase was observed. These are not part of qualified
-browser revision b6d9d7e; no product behavior or dependency version changes.
+Local main/HEAD is candidate `709656d295542b80490d7abb6129b080b076f759`;
+pushed origin is `4b688f3`. Root owns the native static-response evidence and
+checkpoint/inventory updates. No other writer or merge/rebase was observed.
+Candidate changes only tests and qualification tooling/documentation; browser
+product sources remain b6d9d7e. Verify actual status before resumption.
 Private local
 session API production baseline5a4e0d1 and qualified COMMIT fixturee65116b remain
 unchanged history. Full candidate state is listed by Git, not this summary.
@@ -103,16 +103,25 @@ large-static-negative.json; owned detached worktree
 .research/worktrees/private-panel-no-revoke remains intentionally dirty and must
 never be merged or pushed. Primary production delivery.rs is unchanged. The
 primary build was restored by the final check; caches remain non-authoritative.
-Native evidence for this test is NOT_RUN. Its only product-side dirty file is
-management/tests.rs, kept separate from qualified browser source. The native
-stage records the exact Cargo test executable and requires18 executed passes.
+[Native qualification](evidence/p09-large-static-native-20260920.json) at709656d
+now passes all18 management tests plus compile/Clippy including tests. The runner
+identifies/hashes and executes the actual Cargo test binary. All15 capture files
+and990 source hashes verified against exact Mac Git archive. No product correction
+was needed; the scope is revocation and custody, not a universal latency promise.
 
-Next bounded action: commit the reviewed large-response regression as an
-unpublished exact-Git candidate and
-qualify it in one isolated native Rust container. Fresh Tux inspection observes
-eight unrelated workloads, no owned job and9,238,757,376bytes free; inventory and
-reserve enough space for the scoped build before launch. No frontend/browser
-matrix rerun is needed for a Rust test-only addition.
+Raw private-panel/native-static-response; remote
+runs/private-panel-static-response-709656d, owner e6ab997e0253454fd575284d83e8b135.
+Container e21ba0d3e36fe31db150a9aea46f433af26a4cd898b4d9354b9ec5d277471e74
+is stopped/PID0/noOOM. Network none; no new PG/network/volume. All481 previous
+container records unchanged; eight unrelated workloads remain. Free space is
+5,873,979,392bytes: inventory and verified retirement of inactive owned caches
+are required before another copied native build. No job or cleanup debt remains.
+
+Next bounded action: commit/push the native static qualification, then implement
+the P08-T02 authentication-audit/reauthentication foundation needed by explicit
+scope-qualified history grants. Read-only prerequisite mapping is in progress;
+no new authority or schema has been implemented. Reuse existing session and
+Control transactions; ordinary owner data.read still grants no history/export.
 Forced detached-browser cleanup, late response/expiry races, frontend shared CI,
 authorized history read/export and all wider P09/M1/later product work remain open.
 

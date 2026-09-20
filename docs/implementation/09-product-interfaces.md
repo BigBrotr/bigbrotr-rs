@@ -66,8 +66,11 @@ at b6d9d7e completes all eight journeys on all six browser/mount pairs. It omits
 speculative JS preloads while retaining ordinary imports and CSS; exact module
 404/restoration/200, browser recovery and independent SQL observations pass.
 This qualifies only the initial session and controlled bootstrap-fault slice.
-Public application separation, large blocked response, full accessible primitives
-and shared frontend CI/release assembly remain required. No task step is complete.
+The [native large-response regression](evidence/p09-large-static-native-20260920.json)
+qualifies explicit revocation during an unfinished2MiB static TCP response with
+retained custody; a separate same-deadline observer excludes natural expiry.
+Public application separation, full accessible primitives and shared frontend
+CI/release assembly remain required. No task step is complete.
 
 ## P09-T02 — Public navigation, capabilities and first useful data
 

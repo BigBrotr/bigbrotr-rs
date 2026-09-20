@@ -101,5 +101,6 @@ requires retained bundle/connection grants, explicit revocation and a strict bod
 prefix before both the lease and connection deadline; stop must release every
 grant. A separate identical lease window excludes natural expiry as the cause.
 The [Mac evidence](../../docs/implementation/evidence/p09-large-static-local-20260920.json)
-includes an isolated no-revoke runtime failure. Linux qualification is pending;
-this does not measure queued kernel bytes or a universal shutdown latency.
+includes an isolated no-revoke runtime failure. [Native evidence](../../docs/implementation/evidence/p09-large-static-native-20260920.json)
+at709656d executes all18 tests on Linux amd64. This does not measure queued
+kernel bytes or a universal shutdown latency.
