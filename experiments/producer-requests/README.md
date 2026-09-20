@@ -158,7 +158,7 @@ contacting engines. It checks the entire allowed current-Control recovery
 transition and rejects fifteen altered captures, including a repeated PG update
 after committed-reply loss and reuse of the original Control incarnation.
 
-## Positive original-request recovery candidate
+## Positive original-request recovery qualification
 
 `recovery.py --root <owned-lab> --run-tag <tag>` uses a clean exact-source build
 from `native_initialization.py --producer-recovery`. Its first connected scenario
@@ -208,3 +208,26 @@ exclusion are checked. The larger seven-snapshot output has an explicit 512KiB
 collector bound; the old six/seven-snapshot fault capture came close to its
 256KiB limit. This is after-native process recovery, not a mid-FFI interruption,
 power-loss guarantee, general registration factory or successor admission.
+
+
+The [scoped report](../../docs/implementation/evidence/p02-producer-recovery-native-20260920.json)
+records actual d2959da product execution and each distinct fixture/observer source.
+`already` seeds a third request for the same signed event, rolls back only that
+copy, then recovers `[3,3,2,1]`. `rejected` uses an invalid signature, preserving
+its original rejection without scientific event facts. Both compare whole native
+bytes and all original PG copies/xmin; they reconnect Control in the same process.
+
+`missing-reservation` asks for request3 which was never reserved, without deleting
+PG metadata. `copy-conflict` deliberately corrupts the original copied bytes after
+ordinary guards while maintaining their SHA256. `missing-detail` closes first,
+drops the recovery handle, deletes only receipt2 through an exclusive synchronized
+raw fixture write, then reopens recovery. Complete snapshots bound the injected
+change. The earlier pre-closing deletion correctly failed the closing guard and
+remains an INCOMPLETE recovery setup. None of these faults is a legitimate writer
+operation or a proof of native noncommit.
+
+Use `--fixture-build --fixture-directory recovery-probe-refusals` for the separately
+retained afb2c2e client, or `recovery-probe-detail` for corrected7114401. All finite
+case collectors now allow512KiB with the bound recorded in the capture. Source,
+artifact, ownership and fresh database/path checks still precede execution. The
+terminal audits stop only verified owned resources and retain failed runs/data.

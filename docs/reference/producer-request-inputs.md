@@ -245,11 +245,13 @@ correction and terminal audit recovery rather than relabeling them as first-run 
 
 ## Positive original-request resolution
 
-The current P02-T02 step 4 candidate adds a bounded positive-only resolver after
-the [native producer barrier](ingest-bootstrap.md). Qualification is in progress;
-the [execution checkpoint](../implementation/progress.md) separates actual native
-results from unexecuted PostgreSQL, process and failure scenarios. It does not
-complete the drain/handoff protocol or grant successor authority.
+P02-T02 step 4 includes a bounded positive-only resolver after the
+[native producer barrier](ingest-bootstrap.md). The
+[scoped qualification](../implementation/evidence/p02-producer-recovery-native-20260920.json)
+records 46 native-store tests, 19 connected captures and actual separate-process
+recovery after backend loss and joined SIGKILL. Rejected and AlreadyDurable have
+connected fresh-Control evidence within the same process; the separate-process
+case covers NewFacts. Full drain/handoff and successor authority remain required.
 
 `ControlSession::resolve_initial_producer_request` takes an exclusively open
 `IngestRecovery` and the complete original registration. Its shared closing

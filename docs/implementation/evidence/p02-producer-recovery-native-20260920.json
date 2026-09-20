@@ -1,0 +1,796 @@
+{
+  "format": "bigbrotr-producer-recovery-evidence/1",
+  "status": "PASS",
+  "observed_at": "2026-09-20T00:38:19.710553+00:00",
+  "scope": "P02-T02 step4 bounded positive original-request resolution prerequisite after native closing; not complete drain, task, M1 or installed recovery qualification",
+  "source": {
+    "revision": "d2959da61a54a89b6b4e1b4806aa3a819bdff778",
+    "tree": "45d8c742d032641b9579bfc3ae9bc0e2ef80ffa0",
+    "lock_sha256": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215",
+    "product_unchanged_in_all_fixture_builds": true
+  },
+  "source_exports": {
+    "prior": {
+      "out/build": {
+        "revision": "d2959da61a54a89b6b4e1b4806aa3a819bdff778",
+        "tree": "45d8c742d032641b9579bfc3ae9bc0e2ef80ffa0",
+        "files": 859,
+        "source_manifest_sha256": "92e57bb1591555808c11948e8d6dc2765a362086a3a7b51fe530632665f2087b",
+        "archive_sha256": "8e4d33194efe2fd56c4e5e5a53471d7952e165b9d85e1e6ff4c477f9475b3fd7"
+      },
+      "out/recovery-probe": {
+        "revision": "313549724b1fce2926b9cdbd4cf32acf824c784e",
+        "tree": "20dc3d6f15611e5904305e097b338bccf192af43",
+        "files": 860,
+        "source_manifest_sha256": "a1c7f11853918acbf073e28b5cfb5f41a55818b8d7c7a23d0a7ecaab042a5f27",
+        "archive_sha256": "0765c10594ac9dd0f676baf1ca2494175ea526d82f756829cf12b185e421a283"
+      },
+      "out/recovery-probe-process": {
+        "revision": "05fb02d2d7e690ef8996123d94297ba06cd74c04",
+        "tree": "77bf9b50f15d6b1b461e06a4b5ab8bb465ebc27e",
+        "files": 863,
+        "source_manifest_sha256": "5d6dfd2408c95fd294329044372c6f44a804c73e8ae618e7f0547db76058a033",
+        "archive_sha256": "6683245413f1ab73df32c99f784403c26e535b7b8494160f83832d93008564d6"
+      }
+    },
+    "outcomes": {
+      "out/build": {
+        "revision": "d2959da61a54a89b6b4e1b4806aa3a819bdff778",
+        "tree": "45d8c742d032641b9579bfc3ae9bc0e2ef80ffa0",
+        "files": 859,
+        "source_manifest_sha256": "92e57bb1591555808c11948e8d6dc2765a362086a3a7b51fe530632665f2087b",
+        "archive_sha256": "8e4d33194efe2fd56c4e5e5a53471d7952e165b9d85e1e6ff4c477f9475b3fd7"
+      },
+      "out/recovery-probe": {
+        "revision": "efeb4e0fc5254b856746d12d12c28cb929371080",
+        "tree": "4492192945a87e4c829b03a42c5aae04fc90e565",
+        "files": 864,
+        "source_manifest_sha256": "ac14f1c9872a1ec47a568c495acad4a157cd97e966fb1b26e19377f89f7d0bf9",
+        "archive_sha256": "d505e5467e48f8a52f231dc7ef0958893752c057748cdef2002aaa4ccd26fe04"
+      },
+      "out/recovery-probe-refusals": {
+        "revision": "afb2c2ec2b5a5d121b739ed039712f82adb269a5",
+        "tree": "c09f330a560009824943b6c54b6444706fd068d0",
+        "files": 864,
+        "source_manifest_sha256": "de7eded32c12e2b95e542ce8efbbd396f6f41690b83404e14a808b8ec2d1b9a7",
+        "archive_sha256": "3fded60d2a70346d687fb3c3b9665388612dd5abf95b7855bfac585f358afb60"
+      },
+      "out/recovery-probe-detail": {
+        "revision": "7114401e7b5026ad014db69a0def7461b9d01ceb",
+        "tree": "940232ed3d296e255a81579e6fed407b25bcfb19",
+        "files": 864,
+        "source_manifest_sha256": "1e8271d4e5562b57dff54c572fedda9d660977303b0e6ce318a14c69c3dc3560",
+        "archive_sha256": "b60bddadce09666860c908b970759134bfd5f0b71f8c6621e5423328d9a38024"
+      }
+    }
+  },
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "rocksdb": "0.25.0",
+    "librocksdb_sys": "0.19.0+11.8.1",
+    "tokio_postgres": "0.7.18",
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "runner_limits": "2CPU/6GiB/512PIDs",
+    "postgres_limits": "1CPU/1GiB/128PIDs",
+    "isolation": "internal network, no host ports/socket/release secrets; exact Git inputs verified, bounded collectors and private lab data"
+  },
+  "artifacts": {
+    "prior": {
+      "main": {
+        "sha256": "8d3e6ab6a0f454423ac522cc07a9dab5204581e9a7f31201f524a673ec057c0b",
+        "bytes": 9214640,
+        "elf_machine": 62
+      },
+      "worker": {
+        "sha256": "4a8f8f37ec6dbf7b6e6def033966d21d116f027699cfd4c96ae6ff852f298f3c",
+        "bytes": 12608632,
+        "elf_machine": 62
+      },
+      "baseline_probe": {
+        "sha256": "3ccc6f556a9a933402a097c8bfe13e98ffb6a4be669efbd82918b03fee0affc5",
+        "bytes": 16025688,
+        "elf_machine": 62
+      },
+      "recovery-probe": {
+        "sha256": "9efd7d0d5293858b7aab7bd2de69fc3a3c619b9feb0c69b2d64cadbddb203d71",
+        "bytes": 16042640,
+        "elf_machine": 62
+      },
+      "recovery-probe-process": {
+        "sha256": "a2f1b969b5c6966a8e8a2224c5ae2e37221b941ed75b02f285b56a507668d40a",
+        "bytes": 16079512,
+        "elf_machine": 62
+      }
+    },
+    "outcomes": {
+      "main": {
+        "sha256": "8d3e6ab6a0f454423ac522cc07a9dab5204581e9a7f31201f524a673ec057c0b",
+        "bytes": 9214640,
+        "elf_machine": 62
+      },
+      "worker": {
+        "sha256": "4a8f8f37ec6dbf7b6e6def033966d21d116f027699cfd4c96ae6ff852f298f3c",
+        "bytes": 12608632,
+        "elf_machine": 62
+      },
+      "baseline_probe": {
+        "sha256": "3ccc6f556a9a933402a097c8bfe13e98ffb6a4be669efbd82918b03fee0affc5",
+        "bytes": 16025688,
+        "elf_machine": 62
+      },
+      "recovery-probe": {
+        "sha256": "8035de8de63d44e7fce602e9e0e7a5956550f78660999c82775bcce6469c5825",
+        "bytes": 16092240,
+        "elf_machine": 62
+      },
+      "recovery-probe-refusals": {
+        "sha256": "311353481cbe315cf1a604fefe2cf81101f8e0855c69221f86ffef2fcc1cdf7c",
+        "bytes": 16098648,
+        "elf_machine": 62
+      },
+      "recovery-probe-detail": {
+        "sha256": "d80b1cd1fa6bb03381958fa8782850d60a10ce88325d0eea97eaaf1c7e9b1168",
+        "bytes": 16099688,
+        "elf_machine": 62
+      }
+    }
+  },
+  "implementation": [
+    "Resolve exact retained original input and original native decision/dependency closure only under exclusive IngestRecovery and explicit native+PG closing; owner/producer1, ACK/retired0.",
+    "Current Control and complete policy/lease authorize bounded read/copy; retain historical Ingest/role SHARE and producer UPDATE locks. Native state, reservations, original inputs and logical progress remain unchanged.",
+    "New PG outcome copy names current recorder; exact existing copies retain every field, timestamp and xmin. Manifest, input digest/length, kind, policy and complete encoded bytes must agree.",
+    "No staging/admission/new mutation identity, absence proof, negative native outcome, ACK, retirement or successor authority follows from recovery. Missing detail or reservation is unresolved.",
+    "Shared replay checks include sufficient historical event effects and complete dictionary closure; historical rejection policy is preserved. No dependency or applied migration bytes changed."
+  ],
+  "build_and_tests": {
+    "status": "PASS",
+    "native_store_tests": 46,
+    "failed": 0,
+    "ignored": 0,
+    "filtered_out": 86,
+    "new_native_recovery_tests": 11,
+    "evidence": [
+      {
+        "path": ".research/implementation/producer-recovery/native/collected/out/native-tests/checks/result.json",
+        "bytes": 3717,
+        "sha256": "450c2bb4ed83bae08af2f925009512e7e612585985152c15b4bca15808c8e94f"
+      },
+      {
+        "path": ".research/implementation/producer-recovery/native/collected/out/native-tests/certification/result.json",
+        "bytes": 2922,
+        "sha256": "3c251150d5b40c34e3c53021f886598a887faad2ce5d4a1bcb65b8a1a85f1bc4"
+      }
+    ],
+    "scope": "Actual Linux native binding and packaged archive worker included. Mac45-store pass excluded absent packaged worker explicitly; not repeated on unchanged product for fixture-only extensions."
+  },
+  "connected_cases": [
+    {
+      "scenario": "normal",
+      "capture": {
+        "path": ".research/implementation/producer-recovery/native/collected/recovery-normal2.json",
+        "bytes": 292206,
+        "sha256": "ce93e3596aa217fcd7d7cf258a4ae55d920d320b23e2425d00ed0b008f7f0aff"
+      },
+      "fixture_source": "313549724b1fce2926b9cdbd4cf32acf824c784e",
+      "observer_source": "313549724b1fce2926b9cdbd4cf32acf824c784e",
+      "checked": {
+        "native_rows": 26,
+        "control_tables": 37,
+        "originals": 2,
+        "sequence": 30,
+        "resolved": [
+          2,
+          2,
+          1
+        ]
+      }
+    },
+    {
+      "scenario": "pg-only",
+      "capture": {
+        "path": ".research/implementation/producer-recovery/native/collected/recovery-pgonly1.json",
+        "bytes": 157180,
+        "sha256": "6423d89cb05799a98521813f8c408adb5c1cb87f90bbd388a25159c6a7352c42"
+      },
+      "fixture_source": "313549724b1fce2926b9cdbd4cf32acf824c784e",
+      "observer_source": "313549724b1fce2926b9cdbd4cf32acf824c784e",
+      "checked": {
+        "native_rows": 26,
+        "control_tables": 37,
+        "originals": 2,
+        "sequence": 29,
+        "resolved": []
+      }
+    },
+    {
+      "scenario": "input-size",
+      "capture": {
+        "path": ".research/implementation/producer-recovery/native/collected/recovery-size1.json",
+        "bytes": 157632,
+        "sha256": "53937610d6d57d13eb963b486b4b8765432d6f599e5c0cfdc4e4b7bc1f59f9cd"
+      },
+      "fixture_source": "313549724b1fce2926b9cdbd4cf32acf824c784e",
+      "observer_source": "313549724b1fce2926b9cdbd4cf32acf824c784e",
+      "checked": {
+        "native_rows": 26,
+        "control_tables": 37,
+        "originals": 2,
+        "sequence": 30,
+        "resolved": []
+      }
+    },
+    {
+      "scenario": "input-digest",
+      "capture": {
+        "path": ".research/implementation/producer-recovery/native/collected/recovery-digest2.json",
+        "bytes": 157659,
+        "sha256": "3a6eb19aa08bcef87ea3cca80c0992e6fb5ce207ed078256a6c54d7382203441"
+      },
+      "fixture_source": "313549724b1fce2926b9cdbd4cf32acf824c784e",
+      "observer_source": "2580fb267aaff455a7ae67276ebdb05d132ac77e",
+      "checked": {
+        "native_rows": 26,
+        "control_tables": 37,
+        "originals": 2,
+        "sequence": 30,
+        "resolved": []
+      }
+    },
+    {
+      "scenario": "input-manifest",
+      "capture": {
+        "path": ".research/implementation/producer-recovery/native/collected/recovery-manif2.json",
+        "bytes": 158606,
+        "sha256": "1c76e8dd93dda353510f8c41fc18ddbdabad3b5adf15833810a28658f2d388c4"
+      },
+      "fixture_source": "313549724b1fce2926b9cdbd4cf32acf824c784e",
+      "observer_source": "3497cf5cfb79a8c59300e804f16b78edbf480348",
+      "checked": {
+        "native_rows": 26,
+        "control_tables": 37,
+        "originals": 2,
+        "sequence": 30,
+        "resolved": []
+      }
+    },
+    {
+      "scenario": "resource",
+      "capture": {
+        "path": ".research/implementation/producer-recovery/native/collected/recovery-res1.json",
+        "bytes": 337254,
+        "sha256": "bd34c10afc35fb03506446643bb08106cd83e6bc685c9ca63ed1522d50fed823"
+      },
+      "fixture_source": "313549724b1fce2926b9cdbd4cf32acf824c784e",
+      "observer_source": "313549724b1fce2926b9cdbd4cf32acf824c784e",
+      "checked": {
+        "native_rows": 26,
+        "control_tables": 37,
+        "originals": 2,
+        "sequence": 30,
+        "resolved": [
+          2,
+          2,
+          1
+        ]
+      }
+    },
+    {
+      "scenario": "cancelled",
+      "capture": {
+        "path": ".research/implementation/producer-recovery/native/collected/recovery-cancel1.json",
+        "bytes": 337275,
+        "sha256": "680998beb11573ac09701b2c41a772c5d81ca6e92b2f61f6deeccfaa3098b021"
+      },
+      "fixture_source": "313549724b1fce2926b9cdbd4cf32acf824c784e",
+      "observer_source": "2580fb267aaff455a7ae67276ebdb05d132ac77e",
+      "checked": {
+        "native_rows": 26,
+        "control_tables": 37,
+        "originals": 2,
+        "sequence": 30,
+        "resolved": [
+          2,
+          2,
+          1
+        ]
+      }
+    },
+    {
+      "scenario": "policy",
+      "capture": {
+        "path": ".research/implementation/producer-recovery/native/collected/recovery-policy1.json",
+        "bytes": 337257,
+        "sha256": "985551712d48711fd8d0469415b69782f63ceec17f676ec09dfd76d212169cbd"
+      },
+      "fixture_source": "313549724b1fce2926b9cdbd4cf32acf824c784e",
+      "observer_source": "2580fb267aaff455a7ae67276ebdb05d132ac77e",
+      "checked": {
+        "native_rows": 26,
+        "control_tables": 37,
+        "originals": 2,
+        "sequence": 30,
+        "resolved": [
+          2,
+          2,
+          1
+        ]
+      }
+    },
+    {
+      "scenario": "expired",
+      "capture": {
+        "path": ".research/implementation/producer-recovery/native/collected/recovery-expired1.json",
+        "bytes": 337399,
+        "sha256": "081e372359f32ebd736c636ed5f0a11a8305e54f95c4ddee5b5f0e412180c5ef"
+      },
+      "fixture_source": "313549724b1fce2926b9cdbd4cf32acf824c784e",
+      "observer_source": "2580fb267aaff455a7ae67276ebdb05d132ac77e",
+      "checked": {
+        "native_rows": 26,
+        "control_tables": 37,
+        "originals": 2,
+        "sequence": 30,
+        "resolved": [
+          2,
+          2,
+          1
+        ]
+      }
+    },
+    {
+      "scenario": "rollback",
+      "capture": {
+        "path": ".research/implementation/producer-recovery/native/collected/recovery-roll1.json",
+        "bytes": 338553,
+        "sha256": "f8fdceb94d2373026413a99e52a24bef70c79b37fab8bb44b7ec8edc8f7bf772"
+      },
+      "fixture_source": "313549724b1fce2926b9cdbd4cf32acf824c784e",
+      "observer_source": "2580fb267aaff455a7ae67276ebdb05d132ac77e",
+      "checked": {
+        "native_rows": 26,
+        "control_tables": 37,
+        "originals": 2,
+        "sequence": 30,
+        "resolved": [
+          2,
+          2,
+          1
+        ]
+      }
+    },
+    {
+      "scenario": "late-sql",
+      "capture": {
+        "path": ".research/implementation/producer-recovery/native/collected/recovery-late1.json",
+        "bytes": 337736,
+        "sha256": "267cafa58528ccba22c4fd564c38616dd70220a63131a6599660ccd20fd37719"
+      },
+      "fixture_source": "313549724b1fce2926b9cdbd4cf32acf824c784e",
+      "observer_source": "2580fb267aaff455a7ae67276ebdb05d132ac77e",
+      "checked": {
+        "native_rows": 26,
+        "control_tables": 37,
+        "originals": 2,
+        "sequence": 30,
+        "resolved": [
+          2,
+          2,
+          1
+        ]
+      }
+    },
+    {
+      "scenario": "before-forward",
+      "capture": {
+        "path": ".research/implementation/producer-recovery/native/collected/recovery-before1.json",
+        "bytes": 339311,
+        "sha256": "c6dd3e5553e0b3816275208fe9e04d66fb4fd206e8668ff0ec7009b65142f927"
+      },
+      "fixture_source": "313549724b1fce2926b9cdbd4cf32acf824c784e",
+      "observer_source": "2580fb267aaff455a7ae67276ebdb05d132ac77e",
+      "checked": {
+        "native_rows": 26,
+        "control_tables": 37,
+        "originals": 2,
+        "sequence": 30,
+        "resolved": [
+          2,
+          2,
+          1
+        ]
+      }
+    },
+    {
+      "scenario": "after-complete",
+      "capture": {
+        "path": ".research/implementation/producer-recovery/native/collected/recovery-after1.json",
+        "bytes": 341373,
+        "sha256": "ccbe303255891af2e6c946a9b1d78369031eda54767c8aa61a01922e1d480139"
+      },
+      "fixture_source": "313549724b1fce2926b9cdbd4cf32acf824c784e",
+      "observer_source": "2580fb267aaff455a7ae67276ebdb05d132ac77e",
+      "checked": {
+        "native_rows": 26,
+        "control_tables": 37,
+        "originals": 2,
+        "sequence": 30,
+        "resolved": [
+          2,
+          2,
+          1
+        ]
+      }
+    },
+    {
+      "scenario": "rejected",
+      "capture": {
+        "path": ".research/implementation/producer-recovery/outcomes/terminal/recovery-reject1.json",
+        "bytes": 275342,
+        "sha256": "2738f44996a1578df29a9c467e2de65fc8ac7961520ba9ef5310baf5c37578cf"
+      },
+      "fixture_source": "efeb4e0fc5254b856746d12d12c28cb929371080",
+      "observer_source": "efeb4e0fc5254b856746d12d12c28cb929371080",
+      "checked": {
+        "native_rows": 17,
+        "control_tables": 37,
+        "originals": 2,
+        "sequence": 20,
+        "resolved": [
+          2,
+          2,
+          1
+        ]
+      }
+    },
+    {
+      "scenario": "already",
+      "capture": {
+        "path": ".research/implementation/producer-recovery/outcomes/terminal/recovery-already1.json",
+        "bytes": 360297,
+        "sha256": "1550ce3e6d893036d337f61a41251637262cba55808fa33d958f6a8cb0c3e5c7"
+      },
+      "fixture_source": "efeb4e0fc5254b856746d12d12c28cb929371080",
+      "observer_source": "efeb4e0fc5254b856746d12d12c28cb929371080",
+      "checked": {
+        "native_rows": 27,
+        "control_tables": 37,
+        "originals": 3,
+        "sequence": 32,
+        "resolved": [
+          3,
+          3,
+          2,
+          1
+        ]
+      }
+    },
+    {
+      "scenario": "normal",
+      "capture": {
+        "path": ".research/implementation/producer-recovery/outcomes/terminal/recovery-normal1.json",
+        "bytes": 292240,
+        "sha256": "78710e80a1895e815cd053ee46c09cd9df8a61148efb652b67123e177869d555"
+      },
+      "fixture_source": "efeb4e0fc5254b856746d12d12c28cb929371080",
+      "observer_source": "efeb4e0fc5254b856746d12d12c28cb929371080",
+      "checked": {
+        "native_rows": 26,
+        "control_tables": 37,
+        "originals": 2,
+        "sequence": 30,
+        "resolved": [
+          2,
+          2,
+          1
+        ]
+      }
+    },
+    {
+      "scenario": "missing-reservation",
+      "capture": {
+        "path": ".research/implementation/producer-recovery/outcomes/terminal/recovery-absent1.json",
+        "bytes": 157522,
+        "sha256": "0d7e13e5809d24da89aefdf2a1111b464cfe318c00995443d4ffe5a75c2ff41a"
+      },
+      "fixture_source": "afb2c2ec2b5a5d121b739ed039712f82adb269a5",
+      "observer_source": "afb2c2ec2b5a5d121b739ed039712f82adb269a5",
+      "checked": {
+        "native_rows": 26,
+        "control_tables": 37,
+        "originals": 2,
+        "sequence": 30,
+        "resolved": []
+      }
+    },
+    {
+      "scenario": "copy-conflict",
+      "capture": {
+        "path": ".research/implementation/producer-recovery/outcomes/terminal/recovery-conf1.json",
+        "bytes": 167345,
+        "sha256": "0605c3598f861f3c4045c1cfda1513909f53525a54b1e8c085c1b79e15483692"
+      },
+      "fixture_source": "afb2c2ec2b5a5d121b739ed039712f82adb269a5",
+      "observer_source": "afb2c2ec2b5a5d121b739ed039712f82adb269a5",
+      "checked": {
+        "native_rows": 26,
+        "control_tables": 37,
+        "originals": 2,
+        "sequence": 30,
+        "resolved": []
+      }
+    },
+    {
+      "scenario": "missing-detail",
+      "capture": {
+        "path": ".research/implementation/producer-recovery/outcomes/terminal/recovery-detail2.json",
+        "bytes": 234391,
+        "sha256": "1df6537e534d2fcc879f7acb2ab88f87626f1746ba2d6fc70ee105c90104cf7c"
+      },
+      "fixture_source": "7114401e7b5026ad014db69a0def7461b9d01ceb",
+      "observer_source": "7114401e7b5026ad014db69a0def7461b9d01ceb",
+      "checked": {
+        "native_rows": 25,
+        "control_tables": 37,
+        "originals": 2,
+        "sequence": 31,
+        "resolved": []
+      }
+    }
+  ],
+  "process_case": {
+    "capture": {
+      "path": ".research/implementation/producer-recovery/native/collected/process-recovery-held1.json",
+      "bytes": 499299,
+      "sha256": "90cb3fc1d8a7d69601281a1cacf16edc01d072518e68d8c53e93c1fb6fd462a7"
+    },
+    "fixture_source": "05fb02d2d7e690ef8996123d94297ba06cd74c04",
+    "checked": {
+      "native_rows": 26,
+      "control_tables": 37,
+      "originals": 2,
+      "sequence": 30,
+      "resolved": [
+        2,
+        2,
+        1
+      ]
+    },
+    "observations": "Actual old writer POSIX LOCK observed before/after exact PG backend kill and distinct failed open. SIGKILL old process group; positively joined exit-9; third process opens the same uncopied directory, claims Control2, closes and resolves[2,2,1]. Complete immutable data and old PG copies retained.",
+    "boundary": "NewFacts only; not mid-FFI, power loss or successor admission"
+  },
+  "interpretation": [
+    "Normal event copies had a real AFTER INSERT exception after native sync. PG logs are correlated with original Control backend PID/start; generic Backend alone is insufficient.",
+    "COMMIT4 before-forward leaves outcome2 absent; fresh Control3 inserts. After-complete leaves exact recorder2/xmin1130 already committed; fresh Control3 preserves that row across retries.",
+    "Rejected preserves original Signature/code4 bytes with17native rows and no scientific event fact. AlreadyDurable has27rows, exact request3/receipt/dependencies; earlier copies remain recorder1.",
+    "Missing-detail deletes only receipt2 with a synchronized exclusive raw fixture handle AFTER closing, then reopens recovery:25rows, unchanged issued2/facts/originals, Unresolved and no new copy.",
+    "Missing-reservation asks never-reserved request3 while original requests1/2 remain; Unresolved preserves all state. This is not lost PG metadata for a committed request.",
+    "Manifest and outcome conflicts deliberately inject privileged corrupt rows after ordinary guards; production guards stay enabled and the inserted outcome checksum matches its altered bytes. These are defensive-corruption tests, not legitimate producer writes.",
+    "Resource refusal uses a reduced decoder bound, cancellation is the initial flag, policy refusal is the trusted callback and expiry is a local deadline. These are not physical resource exhaustion, asynchronous cancellation or actual policy-head advancement."
+  ],
+  "offline_observation": {
+    "scope": "Captured evidence only; no new engine execution",
+    "prior_cases": 13,
+    "prior_negative_controls": 131,
+    "prior_receipt": {
+      "path": ".research/implementation/producer-recovery/native/faults-review/receipt.json",
+      "bytes": 348,
+      "sha256": "a169ebb72428e8749983b555bdc2573392587b2ba87644aa2e130c57280472f2"
+    },
+    "additional": [
+      {
+        "path": ".research/implementation/producer-recovery/outcomes/offline-reject1.json",
+        "bytes": 1226,
+        "sha256": "005d443ac34ebfa1ce74424f49439796f2c37de0f1c8aea882716d82f15f15df"
+      },
+      {
+        "path": ".research/implementation/producer-recovery/outcomes/offline-already1.json",
+        "bytes": 1204,
+        "sha256": "f307e7442670c877d1810324985cb89064129799fafa4cf487a81e6efb87ca1c"
+      },
+      {
+        "path": ".research/implementation/producer-recovery/outcomes/offline-normal1.json",
+        "bytes": 1077,
+        "sha256": "bb2a0291580327eb64eb26e734358fb8a2498828aeaaa890f79fe368b827cd91"
+      },
+      {
+        "path": ".research/implementation/producer-recovery/outcomes/offline-absent1.json",
+        "bytes": 936,
+        "sha256": "bf533261dd4d586abd2460e251160b57af4b5f15bb0ed163dd04987c90162d4e"
+      },
+      {
+        "path": ".research/implementation/producer-recovery/outcomes/offline-conf1.json",
+        "bytes": 898,
+        "sha256": "ae3bdffb1262d7c73b5aeb50dd55c47c4b6241e17c2104ceed8ee64fe5d2e28b"
+      },
+      {
+        "path": ".research/implementation/producer-recovery/outcomes/offline-detail2.json",
+        "bytes": 934,
+        "sha256": "614aea4b6bffb44548b6ff3d74d295b4a322d64fdee9bce9caf717979ddbe028"
+      }
+    ],
+    "additional_negative_controls": 57,
+    "row_order_regression": {
+      "path": ".research/implementation/producer-recovery/outcomes/row-order-red.log",
+      "bytes": 320,
+      "sha256": "357fb3df8211835cd549fca77fb3e378700292e0243978074ed99de705996bdd"
+    }
+  },
+  "review": {
+    "kind": "Independent AI read-only code/contract/capture review and integrating-owner complete diff review; not engine execution",
+    "findings": [
+      "Fixed shared-replay acceptance of an AlreadyDurable receipt with unrelated dictionary dependencies; discriminating native RED retained.",
+      "Fixed smaller verification-limit replay of valid signed2MiB original: encoded request is2MiB+78. Bound the owned input separately, preserve fact/grant bounds; discriminating native RED retained.",
+      "Rejected proposal to equate original rejection policy with manifest policy: full-width-u64 historical-policy counterexample must remain valid.",
+      "Strengthened full historical Ingest-row comparison and snapshot request-row ordering; altered old checker acceptance reproduced. New corruption snapshots are included in row-order positive control.",
+      "Moved deliberate missing-detail corruption after native closing: initial detail1 correctly failed the earlier boundary guard."
+    ],
+    "local_evidence": [
+      {
+        "path": ".research/implementation/producer-recovery/closure-red.log",
+        "bytes": 2673,
+        "sha256": "9419e67d41c3b40523e4e9736e478a7c629231f99455f3da972159f40d7dcf57"
+      },
+      {
+        "path": ".research/implementation/producer-recovery/closure-green.log",
+        "bytes": 1445,
+        "sha256": "19453245033cb601d35b22c78764474e85a97352bff0a62fd61416aaf4d328ee"
+      },
+      {
+        "path": ".research/implementation/producer-recovery/large-replay-red.log",
+        "bytes": 1178,
+        "sha256": "de7db4c7b6a8038bba94dc9a045a35dca0f76848a20d127d07bc988632942261"
+      },
+      {
+        "path": ".research/implementation/producer-recovery/large-replay-red2.log",
+        "bytes": 544,
+        "sha256": "d37e472ea87e83f682f18377b760fb0f01d8c358cb417ef532e7eb3f3b33a28d"
+      },
+      {
+        "path": ".research/implementation/producer-recovery/large-replay-red3.log",
+        "bytes": 1125,
+        "sha256": "1b854b075262ff8b26782cad139dd54d8640f939db50db23284b9e96fb3fa2a3"
+      },
+      {
+        "path": ".research/implementation/producer-recovery/native-full.log",
+        "bytes": 2005,
+        "sha256": "16b2b8a53e3437fe98e89826c682b706e2ca9fc021e50f5d49218c05f2b979e2"
+      },
+      {
+        "path": ".research/implementation/producer-recovery/store-first.log",
+        "bytes": 6686,
+        "sha256": "c09a9bd040ab7ae431d47be044b1e81235aeee4e712936383a2a332c7a640e2a"
+      },
+      {
+        "path": ".research/implementation/producer-recovery/store-policy-correction.log",
+        "bytes": 5999,
+        "sha256": "a49c68d342dfdae78115848701ca1318bc4ec1245ae76d98fe2e1e873121ca91"
+      },
+      {
+        "path": ".research/implementation/producer-recovery/store-local.log",
+        "bytes": 6597,
+        "sha256": "ed9397e51bfb2bad9cbf7e7ba7bad0adea3f96d263cdb2b2db10d1e285d58827"
+      }
+    ]
+  },
+  "preserved_failures": [
+    {
+      "capture": {
+        "path": ".research/implementation/producer-recovery/native/collected/recovery-digest1.json",
+        "bytes": 157537,
+        "sha256": "96bc66b7a0e4064fe52a994ba839cfe6da691c0cca014b1be270cda4147ec862"
+      },
+      "status": "INCOMPLETE",
+      "reason": "Observer expected qualified function name; actual DigestMismatch/client0/zero backends. Fresh digest2 passed corrected observer."
+    },
+    {
+      "capture": {
+        "path": ".research/implementation/producer-recovery/native/collected/recovery-manif1.json",
+        "bytes": 26418,
+        "sha256": "4eea0766751da29b70715116299c559a88603d2bc9394fd3ac9f553c4cc95a24"
+      },
+      "status": "INCOMPLETE",
+      "reason": "Existing migration0011 refused changed manifest before native admission; corrected privileged after-guard corruption reaches defensive resolver."
+    },
+    {
+      "capture": {
+        "path": ".research/implementation/producer-recovery/outcomes/terminal/recovery-detail1.json",
+        "bytes": 152444,
+        "sha256": "ab21df89cb91ab13dc2a4db7e802823ac0601c0e1e67813fdb29199d65ef1352"
+      },
+      "status": "INCOMPLETE",
+      "reason": "Receipt removed before closing; close correctly refuses Native(StateMismatch), client101,25rows and0backends. Corrected detail2 deletes only after completed barrier."
+    },
+    {
+      "reason": "Original terminal helper matched a Git bundle as a directory; first audit stopped before resource mutation. Corrected terminal audit PASS; both retained.",
+      "capture": {
+        "path": ".research/implementation/producer-recovery/native/collected/audit.json",
+        "bytes": 262,
+        "sha256": "6a25490aaba04372959fe2a213bdb693cc7098f0d6cc9cb8051c24571ad99ad5"
+      }
+    },
+    {
+      "reason": "Outcome terminal archive omitted two newer source/build directories despite successful audit verification. Ten-file supplemental collection restores exact records; original37-file tar retained.",
+      "capture": {
+        "path": ".research/implementation/producer-recovery/outcomes/supplemental-identity.json",
+        "bytes": 1958,
+        "sha256": "afdc016a06caa1050a021a468b8dd11a6418bc82cd0b9e887c2877b61abb7849"
+      }
+    },
+    {
+      "reason": "Local fixture initially failed u32/u64 compilation and Mac tar helper refused unsupported filter before extraction. Widened bound and allowlisted regular-file extraction corrected before claimed execution/inspection."
+    }
+  ],
+  "terminal": [
+    {
+      "capture": {
+        "path": ".research/implementation/producer-recovery/native/collected/audit-terminal.json",
+        "bytes": 7857,
+        "sha256": "866354e06e946b313b4474149b4f3e6301cfee35de2e97078aa11bcd62a88401"
+      },
+      "status": "PASS",
+      "observed_at": "2026-09-20T00:12:40.081561+00:00",
+      "preexisting_containers_unchanged": 380,
+      "unrelated_running": 8,
+      "bigbrotr_running": 0,
+      "pg_clients_before_stop": 0,
+      "resources": "owned containers stopped, data/artifacts retained; empty internal network retained at audit",
+      "later_network_lifecycle": "Only the verified empty network803f48ec was removed by the outcomes lab launch; prior stopped containers and data remain retained."
+    },
+    {
+      "capture": {
+        "path": ".research/implementation/producer-recovery/outcomes/terminal/audit-terminal.json",
+        "bytes": 6439,
+        "sha256": "5ebfeeb44e2e388434b833799f9889dc43ae469166f25e00cc04dec62c4d3567"
+      },
+      "status": "PASS",
+      "observed_at": "2026-09-20T00:38:19.710553+00:00",
+      "preexisting_containers_unchanged": 382,
+      "unrelated_running": 8,
+      "bigbrotr_running": 0,
+      "pg_clients_before_stop": 0,
+      "resources": "owned containers stopped, data/artifacts retained; empty internal network retained at audit"
+    }
+  ],
+  "captures": [
+    {
+      "identity": {
+        "path": ".research/implementation/producer-recovery/native/evidence-identity.json",
+        "bytes": 14982,
+        "sha256": "618b04ee111fba1c96825bba30e1b15c2dfdf82f23d3b5def3243c414debdb76"
+      },
+      "tar_sha256": "f13285843fbf722c8111db59f0fb865dc2b600aac9a80fa51be8508c93e0ef3c",
+      "files": 80,
+      "all_hashes_verified_on_mac": true
+    },
+    {
+      "identity": {
+        "path": ".research/implementation/producer-recovery/outcomes/evidence-identity.json",
+        "bytes": 6834,
+        "sha256": "14f76ebfec52d352e941f7a6bba707812cc3017adb7b5970b64e39244f5b999c"
+      },
+      "tar_sha256": "1f1be9c2a9aa8f19c9aac0fb5b197275de1fc3bd139270d4527b8addff7db9a3",
+      "files": 37,
+      "all_hashes_verified_on_mac": true
+    },
+    {
+      "identity": {
+        "path": ".research/implementation/producer-recovery/outcomes/supplemental-identity.json",
+        "bytes": 1958,
+        "sha256": "afdc016a06caa1050a021a468b8dd11a6418bc82cd0b9e887c2877b61abb7849"
+      },
+      "tar_sha256": "900e9931191506d481b44a1fc487ea8398bc739f9f3b67eb77bd4abda57fcb6a",
+      "files": 10,
+      "all_hashes_verified_on_mac": true
+    }
+  ],
+  "limitations": [
+    "Positive initial-owner recovery only. Complete original-request drain, reserved-but-uncommitted resolution, contiguous outcome/proof checkpoints, ACK/GC/abandonment, retirement, source closure/topology CAS and successor admission remain required.",
+    "No archive fallback, causal backup/restore qualification or reconstructed outcome after GC. Missing detail remains unresolved, never a noncommit witness.",
+    "NewFacts has actual separate-process/held-lock/backend-loss evidence; Rejected and AlreadyDurable use fresh Control within the same process.",
+    "No in-FFI crash, host/power loss, ENOSPC, physically exhausted budgets, aged mixed-workload capacity, RSS/I/O envelope or native Linuxarm64 claim.",
+    "No full installed M1 read/export/restart journey, ordinary Compose release journey, hosted Actions or Docker Hub promotion. All selected later product work remains active."
+  ]
+}

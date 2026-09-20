@@ -179,6 +179,14 @@ One owner serializes exact identity decisions for each writable directory.
   records 35 store tests, 12 connected scenarios and 11 old writer-library snapshots.
   Exact retries and SQL interruption preserve the barrier. Full outcome drain,
   ACK/GC, source closure and fresh-process successor activation remain required.
+  The [positive original-request resolver](../reference/producer-request-inputs.md#positive-original-request-resolution)
+  copies validated original outcomes under current Control without changing native
+  state or advancing logical progress. [Scoped evidence](evidence/p02-producer-recovery-native-20260920.json)
+  records 46 native-store tests, 19 connected captures including all three outcome
+  classes/refusals/ambiguous commits, and actual held-owner exclusion followed by
+  recovery in a distinct process. Missing receipt or reservation stays Unresolved;
+  corrupt existing copy stays Conflict. This does not complete drain, ACK/GC or
+  this step; reserved-but-uncommitted resolution remains separate work.
 - [ ] **Step 5:** Make provenance-off allocate no P inventory or event/endpoint side channel;
   retain scope eligibility and scoped first local receive/earlier corrections.
   Implement CertifyExisting against one committed inventory view, exact verified

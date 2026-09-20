@@ -57,7 +57,7 @@ def main(path, digest, output):
     reordered = copy.deepcopy(report)
     for table in ['producer_requests', 'producer_outcomes']:
         messages(reordered, lambda ms,t=table:tables(ms,
-            ['closing-before', 'recovery-before', 'recovery-interrupted', 'recovery-after', 'recovery-observed'],
+            ['closing-before', 'recovery-before', 'recovery-interrupted', 'recovery-after', 'recovery-observed', 'recovery-corruption-before', 'recovery-corruption-after'],
             t, lambda rows:rows.reverse()))
     assert check(reordered) == checked
     reject('missing-seed-engine-error', lambda r:r['seed_failure'].__setitem__('lines', []))
@@ -90,6 +90,10 @@ def main(path, digest, output):
                 next(row for row in rows if row['request_sequence']==2)['xmin'] = '999999'
             reject('rewritten-committed-copy-xmin', lambda r:messages(r, lambda ms:tables(ms, final, 'producer_outcomes', changed_copy)))
     else:
+        if scenario == 'missing-detail':
+            reject('missing-corruption-snapshot', lambda r:messages(r, lambda ms:ms.pop(next(i for i,m in enumerate(ms) if m['event']=='recovery-corruption-before'))))
+        if scenario == 'missing-reservation':
+            reject('wrong-unreserved-request', lambda r:messages(r, lambda ms:next(m for m in ms if m['event']=='recovery-unreserved-request').__setitem__('request', 2)))
         reject('wrong-refusal', lambda r:messages(r, lambda ms:next(m for m in ms if m['event']=='recovery-refused').__setitem__('error', 'Control(Backend)')))
     result = dict(status='PASS', scope='offline captured observations; no new engine run',
         source=report['source'], harness=report['harness_revision'], scenario=scenario,

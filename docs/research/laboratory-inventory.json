@@ -14614,7 +14614,7 @@
       "bigbrotr_running": 0,
       "free_bytes": 97201893376,
       "planned_remote_root_prefix": "/home/tux/bigbrotr-implementation-20260917/runs/producer-recovery-",
-      "scope": "Positive original-request resolution after explicit native closing; required PG/process/fault qualification remains NOT_RUN",
+      "scope": "Qualified bounded positive original-request resolution with actual PG fault and fresh-process evidence; full drain and successor admission remain open",
       "source": "d2959da61a54a89b6b4e1b4806aa3a819bdff778",
       "tree": "45d8c742d032641b9579bfc3ae9bc0e2ef80ffa0",
       "root": "/home/tux/bigbrotr-implementation-20260917/runs/producer-recovery-d2959da",
@@ -14656,7 +14656,8 @@
       "preexisting_containers_unchanged": 380,
       "unrelated_running_at_terminal": 8,
       "bigbrotr_running_at_terminal": 0,
-      "network_lifecycle": "Empty owned network803f48ec removed after fresh labels/endpoints/stopped-container checks by outcomes lab launch; data and containers retained."
+      "network_lifecycle": "Empty owned network803f48ec removed after fresh labels/endpoints/stopped-container checks by outcomes lab launch; data and containers retained.",
+      "qualification": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json"
     },
     "producer_recovery_outcomes": {
       "source": "d2959da61a54a89b6b4e1b4806aa3a819bdff778",
@@ -14670,7 +14671,7 @@
       "network": "bigbrotr-implementation-recovery-outcomes-efeb4e0",
       "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
       "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
-      "state": "native fixture build and Clippy PASS; first connected rejection case in progress",
+      "state": "stopped-retained; six connected class/refusal captures PASS, initial detail1 INCOMPLETE retained",
       "source_files": 864,
       "started_at": "2026-09-20T00:25:45.501083+00:00",
       "network_id": "6d34130343922a501d5e9cfe74c52aeff9116601f69edfac49a5e41325fac4d8",
@@ -14681,7 +14682,49 @@
       "purpose": "Connected Rejected and AlreadyDurable recovery; product byte-equivalent to d2959da",
       "artifact_sha256": "8035de8de63d44e7fce602e9e0e7a5956550f78660999c82775bcce6469c5825",
       "limits": "runner2CPU/6GiB/512PIDs,PG1CPU/1GiB/128PIDs;internal network,nohostports,readonlysource,512MiBtmpfs",
-      "cache_source": "/home/tux/bigbrotr-implementation-20260917/runs/producer-recovery-d2959da/out/build"
+      "cache_source": "/home/tux/bigbrotr-implementation-20260917/runs/producer-recovery-d2959da/out/build",
+      "completed_at": "2026-09-20T00:38:19.710553+00:00",
+      "terminal_audit": ".research/implementation/producer-recovery/outcomes/terminal/audit-terminal.json",
+      "remaining_pg_clients": 0,
+      "preexisting_containers_unchanged": 382,
+      "unrelated_running": 8,
+      "bigbrotr_running": 0,
+      "evidence_identity": ".research/implementation/producer-recovery/outcomes/evidence-identity.json",
+      "evidence_tar_sha256": "1f1be9c2a9aa8f19c9aac0fb5b197275de1fc3bd139270d4527b8addff7db9a3",
+      "evidence_files": 37,
+      "supplemental_identity": ".research/implementation/producer-recovery/outcomes/supplemental-identity.json",
+      "supplemental_files": 10,
+      "source_exports": {
+        "out/build": {
+          "revision": "d2959da61a54a89b6b4e1b4806aa3a819bdff778",
+          "tree": "45d8c742d032641b9579bfc3ae9bc0e2ef80ffa0",
+          "files": 859,
+          "source_manifest_sha256": "92e57bb1591555808c11948e8d6dc2765a362086a3a7b51fe530632665f2087b",
+          "archive_sha256": "8e4d33194efe2fd56c4e5e5a53471d7952e165b9d85e1e6ff4c477f9475b3fd7"
+        },
+        "out/recovery-probe": {
+          "revision": "efeb4e0fc5254b856746d12d12c28cb929371080",
+          "tree": "4492192945a87e4c829b03a42c5aae04fc90e565",
+          "files": 864,
+          "source_manifest_sha256": "ac14f1c9872a1ec47a568c495acad4a157cd97e966fb1b26e19377f89f7d0bf9",
+          "archive_sha256": "d505e5467e48f8a52f231dc7ef0958893752c057748cdef2002aaa4ccd26fe04"
+        },
+        "out/recovery-probe-refusals": {
+          "revision": "afb2c2ec2b5a5d121b739ed039712f82adb269a5",
+          "tree": "c09f330a560009824943b6c54b6444706fd068d0",
+          "files": 864,
+          "source_manifest_sha256": "de7eded32c12e2b95e542ce8efbbd396f6f41690b83404e14a808b8ec2d1b9a7",
+          "archive_sha256": "3fded60d2a70346d687fb3c3b9665388612dd5abf95b7855bfac585f358afb60"
+        },
+        "out/recovery-probe-detail": {
+          "revision": "7114401e7b5026ad014db69a0def7461b9d01ceb",
+          "tree": "940232ed3d296e255a81579e6fed407b25bcfb19",
+          "files": 864,
+          "source_manifest_sha256": "1e8271d4e5562b57dff54c572fedda9d660977303b0e6ce318a14c69c3dc3560",
+          "archive_sha256": "b60bddadce09666860c908b970759134bfd5f0b71f8c6621e5423328d9a38024"
+        }
+      },
+      "qualification": "docs/implementation/evidence/p02-producer-recovery-native-20260920.json"
     }
   },
   "implementation_monitor_corrections_20260918": {
