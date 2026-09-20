@@ -49,6 +49,8 @@ mod publication_frontier;
 mod publication_frontier_recovery;
 #[path = "support/publication_inputs.rs"]
 mod publication_inputs;
+#[path = "support/publication_pin_recovery.rs"]
+mod publication_pin_recovery;
 #[path = "support/publication_protocol.rs"]
 mod publication_protocol;
 const MIB: u64 = 1024 * 1024;
@@ -807,7 +809,7 @@ fn main() {
     assert!(
         args.len() == 3
             || args.len() == 4
-                && (matches!(args[2].as_str(), "resolve" | "frontier")
+                && (matches!(args[2].as_str(), "resolve" | "frontier" | "pin")
                     || matches!(
                         args[3].as_str(),
                         "--installed" | "--event-read" | "--capture-cut"
@@ -819,6 +821,15 @@ fn main() {
         .build()
         .unwrap()
         .block_on(async {
+            if args[2] == "pin" {
+                tokio::time::timeout(
+                    Duration::from_secs(90),
+                    publication_pin_recovery::run(&args[1], Path::new(&args[3])),
+                )
+                .await
+                .unwrap();
+                return;
+            }
             if args[2] == "frontier" {
                 tokio::time::timeout(
                     Duration::from_secs(90),

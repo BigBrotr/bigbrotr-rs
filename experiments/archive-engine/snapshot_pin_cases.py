@@ -7,6 +7,7 @@ SQL-only cases establish constraints, never native scientific truth or delivery.
 import argparse
 import json
 from pathlib import Path
+import re
 import sys
 
 sys.dont_write_bytecode = True
@@ -14,11 +15,19 @@ from signed_publication_cases import command, execute, sha
 from lab import change
 
 
-def main(root):
+def main(root, namespace):
     source = Path(__file__).resolve().parents[2]
     state = json.loads((root/'resources.json').read_text())
-    assert source == root/'source'
-    assert command('git', '-C', str(source), 'rev-parse', 'HEAD') == state['source']
+    assert source in (root/'source', root/'harness-source')
+    assert re.fullmatch('[a-z]{1,12}', namespace)
+    harness = command('git', '-C', str(source), 'rev-parse', 'HEAD')
+    changed = command('git','-C',str(source),'diff','--name-only',state['source'],harness).splitlines()
+    assert all(p.startswith('docs/') or p in (
+        'apps/bigbrotr/examples/archive_publication_probe.rs',
+        'apps/bigbrotr/examples/support/publication_pin_recovery.rs',
+        'experiments/archive-engine/native_commit_proxy.py',
+        'experiments/archive-engine/snapshot_pin_cases.py',
+        'experiments/archive-engine/pin_fault_cases.py') for p in changed)
     assert not command('git', '-C', str(source), 'status', '--porcelain', '--untracked-files=all')
     for key in ['container_id', 'postgres_id']:
         container = json.loads(command('docker', 'inspect', state[key]))[0]
@@ -27,11 +36,12 @@ def main(root):
     ready = json.loads((root/'out/native-tests/ready.json').read_text())
     assert ready['source'] == state['source']
     assert sha(root/'out/native-tests/bigbrotr') == ready['control']
-    directory = root/'out/pin-schema'
+    directory = root/('out/pin-schema-'+namespace)
     directory.mkdir(mode=0o700)
-    report_path = root/'pin-schema-cases.json'
+    report_path = root/('pin-schema-cases-'+namespace+'.json')
     assert not report_path.exists()
-    report = dict(status='INCOMPLETE', source=state['source'], artifact=ready['control'],
+    report = dict(status='INCOMPLETE', source=state['source'], harness=harness, changed_paths=changed,
+                  artifact=ready['control'],
                   fixtures={p.name: sha(p) for p in (source/'tests/fixtures/storage').glob('archive-pin*.sql')},
                   commands=[], cases=[])
 
@@ -47,16 +57,16 @@ def main(root):
         report['commands'].append(record)
         try:
             execute(['docker', 'exec', state['container_id'], '/out/native-tests/bigbrotr',
-                     'migrate', 'apply', '--file', '/out/pin-schema/'+label+'/instance.toml',
+                     'migrate', 'apply', '--file', '/out/'+directory.name+'/'+label+'/instance.toml',
                      '--target', str(target), '--user', 'postgres', '--password-ref',
-                     'file:/out/pin-schema/'+label+'/postgres'], 75, record)
+                     'file:/out/'+directory.name+'/'+label+'/postgres'], 75, record)
         finally:
             save()
         assert record['exit'] == 0 and not record['stderr'] and not record['overflow']
         assert json.loads(record['stdout'])['current_version'] == str(target)
         entries = json.loads((source/'migrations/manifest.json').read_text())['application_order']
         entries = entries[:next(i+1 for i, entry in enumerate(entries) if entry['version'] == target)]
-        ledger = json.loads(sql('bbpin_'+label, "SELECT json_agg(json_build_array(migration,name,encode(checksum,'hex')) ORDER BY migration) FROM control.schema_versions"))
+        ledger = json.loads(sql('bbpin_'+namespace+'_'+label, "SELECT json_agg(json_build_array(migration,name,encode(checksum,'hex')) ORDER BY migration) FROM control.schema_versions"))
         assert ledger == sorted([[e['version'], e['name'], sha(source/'migrations/postgres'/e['name'])] for e in entries])
         record['ledger'] = ledger
         save()
@@ -68,12 +78,13 @@ def main(root):
         secret.write_bytes((root/'secrets/postgres').read_bytes())
         secret.chmod(0o600)
         text = (source/'config/recipes/archive-only.toml').read_text()
-        for key, value in [('endpoint', '127.0.0.1:5432'), ('database', 'bbpin_'+label)]:
+        database = 'bbpin_'+namespace+'_'+label
+        for key, value in [('endpoint', '127.0.0.1:5432'), ('database', database)]:
             text = change(text, 'postgres.control', key, value)
         (home/'instance.toml').write_text(text)
-        sql('postgres', 'CREATE DATABASE bbpin_'+label)
+        sql('postgres', 'CREATE DATABASE '+database)
         migrate(label, target)
-        return 'bbpin_'+label
+        return database
 
     setup = (source/'tests/fixtures/storage/archive-frontier-constraints.sql').read_text()
     save()
@@ -87,7 +98,12 @@ def main(root):
             record['output'] = sql(database, text)
         finally:
             save()
-        observed = json.loads(record['output'].splitlines()[-1])
+        # PostgreSQL json_agg of composite rows may embed physical newlines.
+        # Decode each complete report rather than treating a line as a record.
+        objects = [json.JSONDecoder().raw_decode(record['output'][m.start():])[0]
+                   for m in re.finditer(r'(?m)^\{"status"\s*:', record['output'])]
+        assert len(objects) == 2
+        observed = objects[-1]
         expected = {'pin_missing_binding','pin_wrong_incarnation','pin_wrong_frontier',
                     'pin_empty_cut_with_retired_publisher','pin_binding_mutable','pin_binding_delete',
                     'pin_binding_truncate','pin_lease_truncate','pin_claim_truncate',
@@ -135,8 +151,12 @@ def main(root):
         lease, binding, claim = (before[key][0] for key in ['leases', 'bindings', 'claims'])
         assert lease['lease_id'] == binding['lease_id'] == claim['lease_id'] == '\\x'+'f2'*16
         assert lease['consumer_id'] == binding['consumer_id'] == '\\x'+'5a'*16
-        assert lease['dataset_id'] == binding['dataset_id'] == claim['dataset_id']
-        assert lease['holder_incarnation'] == binding['issuer_incarnation']
+        assert lease['dataset_id'] == binding['dataset_id'] == claim['dataset_id'] == '\\x'+'01'*16
+        assert lease['holder_incarnation'] == binding['issuer_incarnation'] == '\\x'+'29'*16
+        assert lease['holder_role_instance_id'] == '\\x'+'1f'*16
+        assert lease['holder_role'] == binding['issuer_role'] == 'control'
+        assert binding['issuer_epoch'] == 1 and binding['purpose'] == claim['purpose'] == 'reader'
+        assert lease['topology_generation'] == claim['topology_generation'] == 0
         assert lease['frontier_revision'] == binding['frontier_revision'] == 1
         assert [claim[k] for k in ['shard_id','owner_epoch','first_sequence','last_sequence','purpose']] == [0,1,1,10,'reader']
         assert lease['state'] == claim['state'] == 'active' and lease['lease_revision'] == 1
@@ -183,4 +203,6 @@ def main(root):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('root', type=Path)
-    main(parser.parse_args().root.resolve())
+    parser.add_argument('--namespace', default='initial')
+    args = parser.parse_args()
+    main(args.root.resolve(), args.namespace)

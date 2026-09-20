@@ -35,6 +35,7 @@ class Proxy:
                            owner_requests=0, owner_forwarded=0, owner_complete=0,
                            guard_rejections=0, serialization_rejections=0, rejection_sequence=[])
         self.report.update(auth_finals_omitted=0, frontend_queries=0, coordinator_inserts=0)
+        self.report.update(pin_claim_injections=0, pin_rejections=[])
 
     def emit(self, event, **extra):
         print(json.dumps(dict(event=event, mode=self.mode, target=self.target, **self.report, **extra)), flush=True)
@@ -122,16 +123,34 @@ class Proxy:
                     if self.mode == 'hold-reader-query' and receipt_reader:
                         if not await self.hold('reader-query', state['backend_pid']):
                             return
-                if frontend and tag == b'P' and self.target in ('control-coordinator', 'control-frontier'):
+                if frontend and tag == b'P' and self.target in ('control-coordinator', 'control-frontier', 'control-pin'):
                     # tokio-postgres prepares the fixed INSERT using extended
                     # protocol. Its subsequent transaction COMMIT is simple Q.
                     # Never confuse the earlier Control claim with this boundary.
-                    _, query, _ = body.split(b'\0', 2)
-                    table = (b'ARCHIVE_COORDINATORS' if self.target == 'control-coordinator'
-                             else b'ARCHIVE_FRONTIER_SNAPSHOTS')
+                    statement, query, tail = body.split(b'\0', 2)
+                    table = {'control-coordinator': b'ARCHIVE_COORDINATORS',
+                             'control-frontier': b'ARCHIVE_FRONTIER_SNAPSHOTS',
+                             'control-pin': b'ARCHIVE_SNAPSHOT_PINS'}[self.target]
                     if query.upper().startswith(b'INSERT INTO CONTROL.' + table + b'('):
                         state['data'] = True
                         self.report['data_queries'] += 1
+                    if self.target == 'control-pin' and query.startswith(b'INSERT INTO control.retention_claims(') and self.mode in ('omit-pin-claim', 'wrong-pin-prefix', 'wrong-pin-purpose'):
+                        # Deliberate negative controls in the authenticated real
+                        # transaction. Keep all parameter types and the owning
+                        # schema triggers; never log the wire's input values.
+                        assert self.report['pin_claim_injections'] == 0
+                        head, values = query.split(b' VALUES (', 1)
+                        assert values.endswith(b')') and b"'reader'" in values
+                        if self.mode == 'omit-pin-claim':
+                            query = head+b' SELECT '+values[:-1]+b' WHERE false'
+                        elif self.mode == 'wrong-pin-prefix':
+                            assert b',1,$7::text::numeric,' in values
+                            query = head+b' VALUES ('+values.replace(b',1,$7::text::numeric,', b',2,$7::text::numeric,')
+                        else:
+                            query = head+b' VALUES ('+values.replace(b"'reader'", b"'export'")
+                        body = statement+b'\0'+query+b'\0'+tail
+                        header = struct.pack('!I', len(body)+4)
+                        self.report['pin_claim_injections'] += 1
                 if not frontend and tag == b'C' and self.target == 'control-coordinator' and state['data'] and body == b'INSERT 0 1\0':
                     self.report['coordinator_inserts'] += 1
                 if frontend and self.mode == 'hold-manager-owner':
@@ -189,6 +208,13 @@ class Proxy:
                     state['backend_pid'] = struct.unpack('!I', body[:4])[0]
                 if not frontend and tag == b'E' and state['data']:
                     fields = body.split(b'\0')
+                    if self.target == 'control-pin' and b'C23514' in fields:
+                        for label, message in [('missing-prefix', b'native pin requires every positive source prefix atomically'),
+                                               ('wrong-prefix', b'native pin claim must retain its exact positive prefix'),
+                                               ('expired', b'native pin requires unexpired actual holder and lease')]:
+                            if b'M'+message in fields:
+                                assert len(self.report['pin_rejections']) < 4
+                                self.report['pin_rejections'].append(label)
                     if b'C55000' in fields and b'Marchive catalog writer excluded' in fields:
                         self.report['guard_rejections'] += 1
                         self.report['rejection_sequence'].append('guard')
@@ -288,8 +314,8 @@ class Proxy:
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--mode', choices=['pass', 'before-forward', 'after-complete', 'hold-data', 'hold-commit', 'hold-reply', 'hold-manager-commit', 'hold-manager-owner', 'hold-reader-query', 'omit-auth-final'], required=True)
-    parser.add_argument('--target', choices=['publication', 'native-schema', 'guard-install', 'control-coordinator', 'control-frontier'], default='publication')
+    parser.add_argument('--mode', choices=['pass', 'before-forward', 'after-complete', 'hold-data', 'hold-commit', 'hold-reply', 'hold-manager-commit', 'hold-manager-owner', 'hold-reader-query', 'omit-auth-final', 'omit-pin-claim', 'wrong-pin-prefix', 'wrong-pin-purpose'], required=True)
+    parser.add_argument('--target', choices=['publication', 'native-schema', 'guard-install', 'control-coordinator', 'control-frontier', 'control-pin'], default='publication')
     parser.add_argument('--lifetime-seconds', type=int, choices=[120, 180], default=120,
                         help='Use180 when observing the actual120-second CLI deadline plus setup/cleanup')
     try:

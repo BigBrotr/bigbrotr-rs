@@ -15163,6 +15163,29 @@
       "unrelated_running": 8,
       "bigbrotr_running": 0,
       "remaining_pg_clients": 0
+    },
+    "pin_ledger_candidate": {
+      "source": "27150f253f0fbcb72e2d25a9ebd082493acb8eba",
+      "tree": "e6888308cde125b0543338fef721b7978903c37e",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-pin-ledger-27150f2",
+      "owner": "73e92cac4c21b788b751aa4bd7c7a7ff",
+      "container": "bigbrotr-implementation-archive-pin-ledger-27150f2",
+      "postgres": "bigbrotr-implementation-archive-pin-ledger-27150f2-pg",
+      "network": "bigbrotr-implementation-archive-pin-ledger-27150f2",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "state": "running",
+      "source_files": 913,
+      "started_at": "2026-09-20T07:58:53.820452+00:00",
+      "network_id": "063ccdd077c2af186d18ccc4afdd3269674988eb15f2d56e8de51fc7dae0b299",
+      "postgres_id": "bbf73a48667bbe1d867883a15384251ba6af195a23bc49987f38c74c3467ff6e",
+      "catalog_manager_provisioned": true,
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "ab1b9197451d6fa5f94017a4cccc616c5fb603a16c827bf60cd030ca41c03288",
+      "local_raw": ".research/implementation/archive-pin-ledger",
+      "purpose": "Actual historical snapshot pin registration, retry and release with independent SQL state oracle",
+      "qualification": "Native build/16 schema tests/Clippy PASS; two signed cut journeys with pin PASS. SQL report parser FAIL after constraints completed; legacy/independent pin oracle NOT_RUN. New fixture-only exact-Git harness pending.",
+      "limits": "Runner2CPU/6GiB/512PIDs; PG1CPU/1GiB/128PIDs; internal network/no host ports; trusted exact source"
     }
   },
   "implementation_monitor_corrections_20260918": {

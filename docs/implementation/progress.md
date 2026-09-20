@@ -20,20 +20,22 @@ another administrative diagnostic command instead of the real read consumer.
 
 ## Git and ownership
 
-Local main is unpublished candidate `a670f03227866efaa98e05567339e6977f875ef5`,
-tree `023a950e61862ed1190152e5cb5700036e1337ef`; private origin/main remains
-`88e93678db830f08d22f49cfb6d234ee50fc40dc`. Root-owned dirty work implements the draft migration17, actual Control
-pin adapter and independent SQL/native fixtures, plus their documentation and the
-historical-capture evidence report. No parallel writer, merge or rebase. These
-pin changes are not yet engine-tested. Fresh Mac16 schema tests and consumer Clippy
-pass including the row/xmin fixture; artifact/link/syntax checks and the11 report
-file references also pass. This changeset is the next unpublished native candidate.
-Historical candidate a670f03 is qualified only for exact capture, not a live pin.
+Local main is unpublished candidate `27150f253f0fbcb72e2d25a9ebd082493acb8eba`,
+tree `e6888308cde125b0543338fef721b7978903c37e`; private origin/main remains
+`88e93678db830f08d22f49cfb6d234ee50fc40dc`. Root-owned dirty work adds the finite pin fault fixture, transport negative controls,
+independent fault oracle and SQL-report parser correction, plus this checkpoint
+and lab inventory. Candidate27150f2
+implements migration17, actual Control pin registration/retry/release, independent
+SQL/native fixtures and owning contracts. Mac16 schema tests, consumer Clippy and
+artifact/link/syntax checks pass; two native signed cut journeys pass. SQL constraints reach their final report,
+but the Python parser fails on multiline PG JSON; status remains INCOMPLETE and
+legacy/oracle cases did not run. No parallel
+writer, merge or rebase. Historical candidate a670f03 evidence is retained.
 
 Preserve `.research/worktrees/producer-closing-old-writer`, last verified clean at
 `f899896b1207f5e71c4e39d9ab7814b293814735` on
 `research/producer-closing-old-writer`, and other historical worktrees.
-Caches are not source authority. No local build remains. The a670f03 lab is
+Caches are not source authority. No local build remains. The new27150f2 lab is building on Tux; the a670f03 lab is
 stopped and retained; both container states were freshly checked after resumption.
 Do not reuse its output root. The terminal audit preserved eight unrelated workloads.
 
@@ -89,6 +91,18 @@ this collection-tool failure changed no native evidence. Raw files and the verif
 are under `.research/implementation/archive-reader-custody/`.
 
 ## Resources
+
+Active `implementation_archive_worker_20260918.pin_ledger_candidate` at
+`/home/tux/bigbrotr-implementation-20260917/runs/archive-pin-ledger-27150f2`, owner
+`73e92cac4c21b788b751aa4bd7c7a7ff`, runner `ab1b9197451d6fa5f94017a4cccc616c5fb603a16c827bf60cd030ca41c03288`,
+PG `bbf73a48667bbe1d867883a15384251ba6af195a23bc49987f38c74c3467ff6e`. Exact913-file Git source exported;
+native build/16 schema tests/Clippy PASS and two signed capture cases PASS.
+`pin-schema-cases.json` remains INCOMPLETE after the multiline parser failure;
+raw error is `.research/implementation/archive-pin-ledger/pin-schema.log`.
+No active test process; owned runner/PG remain running for the next bounded tests. Both containers and their owned
+network need terminal audit/cleanup. Scripts/resources/preflight under
+`.research/implementation/archive-pin-ledger/`. Do not restart or reuse output root.
+
 
 Historical capture lab `implementation_archive_worker_20260918.snapshot_pin_candidate`:
 root `/home/tux/bigbrotr-implementation-20260917/runs/archive-snapshot-pin-a670f03`,
@@ -166,10 +180,13 @@ The actual adapter registers, resolves identical retries without expiry extensio
 and explicitly releases after joined consumption. Receipts grant no live delivery.
 
 The independent rows/xmin oracle, owning contracts and scoped Mac checks are ready.
-Next commit the unpublished exact candidate, then create a fresh inventoried
-Tux build, `event_cases.py --capture-cut` and `snapshot_pin_cases.py`; preserve all
+Next build the exact-Git fixture-only revision over unchanged27150f2 production,
+run `snapshot_pin_cases.py --namespace qualified` in new databases and
+`pin_fault_cases.py` against retained signed normal state; preserve all
 outcomes and qualify both maintenance lock orders, expiry/positive claims and
-ambiguous commit before claiming the pin boundary. No engine pin cases executed yet.
+ambiguous commit before claiming the pin boundary. Only the positive native register/retry/release case has passed; fault/lock-order,
+legacy and omission cases are not yet qualified. The schema17 SQL bytes already
+installed on Tux must not be rewritten.
 
 Stable consumer prelocking precedes every lease/claim row update. Maintenance must
 lock the same consumer then scan in a fresh READ COMMITTED statement, including
