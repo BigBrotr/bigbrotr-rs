@@ -14603,7 +14603,7 @@
       "network_lifecycle": "empty owned network removed by recovery lab launch after verifying labels, no endpoints and both original containers stopped; historical data and containers retained"
     },
     "producer_recovery": {
-      "state": "running-retained; 13 fault cases collected; fresh-process fixture in preparation",
+      "state": "stopped-retained; native and positive recovery fault/process cases collected; broader recovery gate open",
       "editing_owner": "root / Mac main",
       "base_source": "8931a0f611b718cfac845cda39211e9e8da59d8c",
       "local_raw": ".research/implementation/producer-recovery/native",
@@ -14645,7 +14645,17 @@
       "fault_scenarios_pass": 13,
       "offline_altered_controls": 131,
       "last_idle_audit": "2026-09-19T23:56:52.553659+00:00",
-      "last_pg_clients": 0
+      "last_pg_clients": 0,
+      "completed_at": "2026-09-20T00:12:40.081561+00:00",
+      "terminal_audit": ".research/implementation/producer-recovery/native/collected/audit-terminal.json",
+      "evidence_identity": ".research/implementation/producer-recovery/native/evidence-identity.json",
+      "evidence_tar_sha256": "f13285843fbf722c8111db59f0fb865dc2b600aac9a80fa51be8508c93e0ef3c",
+      "evidence_files": 80,
+      "process_recovery": "PASS held1: backend kill, held LOCK refusal, SIGKILL/reap, distinct recovery process; not mid-FFI",
+      "process_fixture_source": "05fb02d2d7e690ef8996123d94297ba06cd74c04",
+      "preexisting_containers_unchanged": 380,
+      "unrelated_running_at_terminal": 8,
+      "bigbrotr_running_at_terminal": 0
     }
   },
   "implementation_monitor_corrections_20260918": {

@@ -1,6 +1,6 @@
 # Current execution checkpoint
 
-Observed 2026-09-20 (Mac; latest idle Tux audit 2026-09-19T23:56:52Z).
+Observed 2026-09-20 (Mac; terminal Tux audit 2026-09-20T00:12:40Z).
 Navigation only: follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint)
 and verify Git, dirty files, evidence and actual resource state.
 
@@ -21,7 +21,7 @@ requests remain unresolved. Reuse native replay validators and migration0012;
 no SQL migration was needed for positive copying. See the owning
 [producer input reference](../reference/producer-request-inputs.md).
 
-The next process fixture is now written and compiles, but is NOT_RUN. It holds the
+The process fixture is now built and executed at 05fb02d: held1 PASS. It holds the
 actual old native writer after signed sync/failed SQL copy, kills its exact PG
 backend, checks a second process cannot open the still-held native LOCK, then
 SIGKILLs/reaps the old child and recovers under a third process/current Control2.
@@ -29,7 +29,7 @@ The native directory is never copied. This is not mid-FFI or power-loss evidence
 
 ## Git and integration state
 
-Mac main HEAD 3497cf5cfb79a8c59300e804f16b78edbf480348 is unpublished. Product
+Mac main HEAD 05fb02d2d7e690ef8996123d94297ba06cd74c04 is unpublished. Product
 candidate d2959da61a54a89b6b4e1b4806aa3a819bdff778, tree
 45d8c742d032641b9579bfc3ae9bc0e2ef80ffa0, remains byte-identical in library,
 dependencies and migrations1..14. Fixture3135497 added finite fault cases;
@@ -37,13 +37,11 @@ observer2580fb2 fixed checks; observer3497cf5 injected manifest corruption after
 ordinary guards. Last read-only private origin/main verification:
 8931a0f611b718cfac845cda39211e9e8da59d8c. No merge/rebase or unexpected writer.
 
-Root owns current dirty process fixture changes: ingest_bootstrap_probe.rs,
-ingest_closing.rs, new support/ingest_recovery_process.rs; producer-requests
-build_recovery_probe.py, held_old_owner.py, new process_recovery.py and README;
-this checkpoint and laboratory inventory. Mac scoped fixture Clippy PASS,
-Python syntax PASS and the real supervisor cleanup test PASS (1 test).
-No engine run of these dirty files yet. Prior artifact checks PASS; affected
-checks and full diff review precede the next exact Git fixture commit/export.
+The process fixture is committed at HEAD; product/dependencies remain unchanged.
+Root now owns only this checkpoint/inventory terminal updates. No unexpected writer.
+Mac scoped fixture Clippy and Python syntax PASS; actual supervisor cleanup test
+PASS (1 test). Native process-fixture build/Clippy also PASS. Source863files match
+Mac Git; artifact a2f1b969b5c6966a8e8a2224c5ae2e37221b941ed75b02f285b56a507668d40a.
 
 The separate compatibility worktree .research/worktrees/producer-closing-old-writer
 is clean at f899896b1207f5e71c4e39d9ab7814b293814735, branch
@@ -155,34 +153,53 @@ secrets; pinned images in native/resources.json and the laboratory inventory.
 Actual Linuxamd64, Rust1.98.1, PG16.15, Rocks11.8.1. Noarm64 evidence.
 
 Fresh preflight found380existing containers,8unrelated running,0BigBrotr and
-97,201,893,376 free bytes. Launch started23:23:42Z. Last idle audit23:56:52Z:
-both running/noOOM, runner onlydocker-init/python3,0PGclients. No case currently
-executing. Local SSH/build/test sessions are joined; AI review completed.
-Runner sleeps3600s after the original native build; verify its actual state and
-remaining lifecycle before new work. Do not assume a recorded running state.
-Fresh process tests will use separate out/recovery-probe-process; no edit or
-replacement of the existing qualified source/artifacts is authorized by a cache.
+97,201,893,376 free bytes. Launch started23:23:42Z. Terminal audit at
+2026-09-20T00:12:40.081561+00:00 PASS:0ownedPGclients, runner only idle init/python
+before stop; both owned containers stopped/noOOM, PostgreSQL exit0. All380prior
+container identities/lifecycles/mounts/networks unchanged,8unrelated running,
+0BigBrotr running. Empty internal network and all data/artifacts retained.
+Local SSH/build/test sessions are joined; independent AI review completed.
+No active case or cleanup obligation remains for this stopped lab. Never restart
+its original entrypoint, which rebuilds into occupied output; a new required native
+run needs separately inventoried exact-source resources/cache transfer.
 
-Old closing lab containers/data remain stopped; only its exact empty owned network
-5aecbf2d was retired by the new launch after fresh label/endpoint/stopped checks.
-No other cleanup. All new lab resources still require terminal audit/cleanup after
-qualification. See producer_recovery in the [inventory](../research/laboratory-inventory.json).
+held1 actually observed PID12183/start324515137/device259:2/inode25841912 holding
+the same POSIX WRITE lock three times. Backend1374/start00:08:17.24955Z was killed
+by exact PID/start and observed absent. PID12233 failed native open without state
+changes. Old child SIGKILL/-9 was positively reaped; PID12332 then claimed Control2,
+closed and recovered[2,2,1]. Bootstrap xmin1191/event1204 survive exact retries.
+Native26rows,37Control tables and2inputs match. Independent AI review rechecked
+all fields, SQL query hashes/results, kernel/process identities and old/new Control
+transition. No mid-FFI, power loss or successor admission claim.
+
+Mac native/collected contains80 size/hash-verified files; detached evidence-identity.json
+and tar SHA f13285843fbf722c8111db59f0fb865dc2b600aac9a80fa51be8508c93e0ef3c.
+It includes source/build manifests, original bytes, all results, failed audit.json,
+and successful audit-terminal.json. The initial terminal helper glob also matched
+a harness Git bundle as a directory and stopped before resource mutation; corrected
+filter completed the audit and stop. audit.py/audit-corrected.py and both logs remain.
+The863file process export was independently compared with Mac Git archive05fb02d.
+
+Old closing containers/data remain stopped; only its exact empty owned network
+5aecbf2d was retired by the recovery launch after fresh label/endpoint checks.
+No global cleanup. See producer_recovery in the [inventory](../research/laboratory-inventory.json).
 
 ## Next action and remaining gates
 
-Review/commit the compiling process fixture, export exact Git to a new source
-folder, build out/recovery-probe-process with unchanged d2959da product inputs,
-and execute process_recovery.py on fresh tag/state. Expected: backend termination
-does not release the old POSIX LOCK; actual concurrent recovery EngineOpen refusal
-changes no native/PG/original state; after explicit SIGKILL/reap, a distinct process
-claims Control2 and resolves the original event/bootstrap exactly. Capture all
-process/lock/backend identities, full states and durable copies, then review.
+Implement the remaining connected outcome-class cases: Rejected original and
+AlreadyDurable request3, preserving the original decision and exact PG copy under
+new Control. Reuse the independent existing_outcome.py and original-input CBOR
+oracles; event_oracle.py covers the base26rows. Native recovery tests already cover
+these classes, but those are not their connected PostgreSQL journey. Before new
+fixture code, finish reading ingest_event.rs and the rejection codec/oracle;
+then extend the finite client/oracle and export a clean candidate into a new
+inventoried native lab using the stopped current out/build cache.
 
-Positive recovery still needs connected Rejected/AlreadyDurable, conflicting
-existing outcomes and missing detail/reservation scenarios. After that complete
-its scoped evidence/terminal audit and review before private publication. Never
-infer full drain, ACK/retirement, source closure or successor authority from it.
-Current recovery is no archive fallback or causally closed restore.
+Also qualify conflicting existing copied outcomes and missing detail/reservation
+without manufacturing noncommit. Finish the scoped evidence report and private
+publication after these bounded cases. No P02/M1 checkbox advances yet. Never
+infer full drain, ACK/retirement, source closure or successor authority from
+positive recovery. Archive fallback and causally closed restore remain required.
 
 Published prior [closing](evidence/p02-producer-closing-native-20260920.json),
 [certification](evidence/p02-certification-native-20260919.json) and
