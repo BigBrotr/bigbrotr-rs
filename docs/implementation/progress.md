@@ -21,10 +21,12 @@ another administrative diagnostic command instead of the real read consumer.
 ## Git and ownership
 
 Private origin/main remains at `a91fdd51172c1c66e9d603278480410ae68cc8b9`.
-Local main is unpublished candidate `51d35aea1c44a0a884ed9595114de7da89a83ebd`. Qualified product pin adapter is
+Local main is unpublished `c0674ae7a1a648b9403bddd04343c13727e8e0d9`, following
+product candidate `51d35aea1c44a0a884ed9595114de7da89a83ebd`. Qualified product pin adapter is
 `27150f253f0fbcb72e2d25a9ebd082493acb8eba`, fixture583f085/oraclee828eb6.
 The candidate contains recovery-only custody, migration0018, adapter and native
-fixtures. Root dirty work is continuity/inventory plus additional SQL negatives. No parallel writer, merge or rebase. Read-only
+fixtures. Root dirty work is one additional real-protocol claim-release negative and its
+proxy injection, plus this checkpoint. No parallel writer, merge or rebase. Read-only
 AI review found no concrete atomicity defect and clarified diagnostics/clock scope.
 
 Preserve `.research/worktrees/producer-closing-old-writer`, last verified clean at
@@ -156,6 +158,9 @@ actual COMMIT faults remain to add. Candidate51d35ae ran those14 native cases su
 FLOCK exclusion,17->18 unchanged rows/xmin, both lost-COMMIT outcomes and manager
 loss after held COMMIT. Linux16 schema/16 custody tests and Clippy pass. Next
 run the additional SQL constraint/legacy fixture from an exact Git revision,
+SQL11 recovery cases and separate16->18 legacy preservation now PASS at
+fixturec0674ae. Its expanded oracle checks the unrelated pin402 and all original
+bindings/xmin. Next execute the additional real positive-claim omission negative,
 then audit/stop/collect the owned lab. Do not restart the stopped pin-ledger lab.
 
 Actual delivery still needs fresh principal/action/scope and policy checks through

@@ -152,6 +152,13 @@ class Proxy:
                         body = statement+b'\0'+query+b'\0'+tail
                         header = struct.pack('!I', len(body)+4)
                         self.report['pin_claim_injections'] += 1
+                    if self.target == 'control-pin-recovery' and self.mode == 'omit-recovery-claim-release' and query.startswith(b'UPDATE control.retention_claims SET '):
+                        assert self.report['pin_claim_injections'] == 0
+                        assert query.endswith(b"WHERE lease_id=$1::bytea AND state='active'")
+                        query += b' AND false'
+                        body = statement+b'\0'+query+b'\0'+tail
+                        header = struct.pack('!I', len(body)+4)
+                        self.report['pin_claim_injections'] += 1
                 if not frontend and tag == b'C' and self.target == 'control-coordinator' and state['data'] and body == b'INSERT 0 1\0':
                     self.report['coordinator_inserts'] += 1
                 if frontend and self.mode == 'hold-manager-owner':
@@ -216,6 +223,9 @@ class Proxy:
                             if b'M'+message in fields:
                                 assert len(self.report['pin_rejections']) < 4
                                 self.report['pin_rejections'].append(label)
+                    if self.target == 'control-pin-recovery' and b'C23514' in fields:
+                        if b'Mpin recovery and every retained claim must release atomically' in fields:
+                            self.report['pin_rejections'].append('incomplete-recovery')
                     if b'C55000' in fields and b'Marchive catalog writer excluded' in fields:
                         self.report['guard_rejections'] += 1
                         self.report['rejection_sequence'].append('guard')
@@ -315,7 +325,7 @@ class Proxy:
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--mode', choices=['pass', 'before-forward', 'after-complete', 'hold-data', 'hold-commit', 'hold-reply', 'hold-manager-commit', 'hold-manager-owner', 'hold-reader-query', 'omit-auth-final', 'omit-pin-claim', 'wrong-pin-prefix', 'wrong-pin-purpose'], required=True)
+    parser.add_argument('--mode', choices=['pass', 'before-forward', 'after-complete', 'hold-data', 'hold-commit', 'hold-reply', 'hold-manager-commit', 'hold-manager-owner', 'hold-reader-query', 'omit-auth-final', 'omit-pin-claim', 'wrong-pin-prefix', 'wrong-pin-purpose', 'omit-recovery-claim-release'], required=True)
     parser.add_argument('--target', choices=['publication', 'native-schema', 'guard-install', 'control-coordinator', 'control-frontier', 'control-pin', 'control-pin-recovery'], default='publication')
     parser.add_argument('--lifetime-seconds', type=int, choices=[120, 180], default=120,
                         help='Use180 when observing the actual120-second CLI deadline plus setup/cleanup')
