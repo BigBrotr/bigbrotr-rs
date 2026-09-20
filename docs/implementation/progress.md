@@ -20,21 +20,21 @@ another administrative diagnostic command instead of the real read consumer.
 
 ## Git and ownership
 
-Local main and private origin/main are verified at pushed
-`a91fdd51172c1c66e9d603278480410ae68cc8b9`. Qualified product pin adapter is
+Private origin/main remains at `a91fdd51172c1c66e9d603278480410ae68cc8b9`.
+Local main is unpublished candidate `51d35aea1c44a0a884ed9595114de7da89a83ebd`. Qualified product pin adapter is
 `27150f253f0fbcb72e2d25a9ebd082493acb8eba`, fixture583f085/oraclee828eb6.
-Root-owned dirty work is now the recovery-only custody type and test, draft0018,
-ControlSession recovery adapter, native fixture/proxy extension, migration catalog
-and owning contract/task updates. No parallel writer, merge or rebase. Read-only
+The candidate contains recovery-only custody, migration0018, adapter and native
+fixtures. Root dirty work is continuity/inventory plus additional SQL negatives. No parallel writer, merge or rebase. Read-only
 AI review found no concrete atomicity defect and clarified diagnostics/clock scope.
 
 Preserve `.research/worktrees/producer-closing-old-writer`, last verified clean at
 `f899896b1207f5e71c4e39d9ab7814b293814735` on
 `research/producer-closing-old-writer`, and other historical worktrees.
-Caches are not source authority. No local build or remote test remains active.
+Caches are not source authority. The fresh exact-candidate Linux build passed; the lab remains active for schema negatives.
 The qualified pin slice is committed and pushed. The independent recovery harness is written but unexecuted; qualify the new
-transition below. No migration18 engine run
-or recovery product commit exists yet.
+transition below. Migration18 is now applied in the populated native fixture. Its bytes must remain
+unchanged. Two signed cuts and14 native recovery cases PASS; final collection/
+independent evidence audit remain pending.
 
 ## Executed current boundary
 
@@ -84,7 +84,13 @@ The reviewer ran no engines. Root offline verification checks26 capture hashes,
 
 ## Resources
 
-All BigBrotr labs are stopped/retained; no cleanup debt or active jobs. Latest
+Historical BigBrotr labs are stopped/retained. Active recovery candidate is
+`/home/tux/bigbrotr-implementation-20260917/runs/archive-pin-recovery-51d35ae`,
+owner `633d0b140f8327d8bdbf1df6fb961a99`, runner `dadc77d3d27b092ea75883647a3f4b614143c9ee485d384334f4fa75fd01d64d`,
+PG `1b4bc1d246973a59d576971ad7fbdb4eae21fcc3cf57fe2f84faa2c0c1b0363a`.
+Resources/preflight are under `.research/implementation/archive-pin-recovery/`.
+Fresh source919 files, internal network/no host ports; eventual owned cleanup due.
+Previous qualified pin lab:
 `implementation_archive_worker_20260918.pin_ledger_candidate` in the
 [laboratory inventory](../research/laboratory-inventory.json):
 
@@ -131,7 +137,7 @@ prelocks the consumer, verifies capture before/after COMMIT and poisons incomple
 Control operations. Historical released retry never rewrites attribution. Like
 ordinary release, scheduling expiry alone does not stop this closure: actual
 backend fence and positive descriptor exclusion still apply. Applied0017 bytes are
-unchanged. Additive18 is not yet applied anywhere.
+unchanged. Additive18 is applied on the isolated native fixture at51d35ae; do not rewrite it.
 
 Mac16 custody tests (including rewrap/driver lifetime),16 schema tests and fixture
 Clippy pass under `.research/implementation/archive-pin-recovery/fixture-green`.
@@ -146,8 +152,11 @@ checks exact returned receipts, joins, original issuer/recoverer identities and
 unchanged metadata/eight Parquet files. Read-only AI review strengthened manager
 exit observation and receipt/history comparisons. Python syntax initially found
 a missing bracket, fixed before execution. SQL constraint negatives beyond the
-actual COMMIT faults remain to add. Next scoped checks, an unpublished candidate
-commit, then an exact-Git fresh Tux lab. Do not restart the stopped pin-ledger lab.
+actual COMMIT faults remain to add. Candidate51d35ae ran those14 native cases successfully, including actual reader
+FLOCK exclusion,17->18 unchanged rows/xmin, both lost-COMMIT outcomes and manager
+loss after held COMMIT. Linux16 schema/16 custody tests and Clippy pass. Next
+run the additional SQL constraint/legacy fixture from an exact Git revision,
+then audit/stop/collect the owned lab. Do not restart the stopped pin-ledger lab.
 
 Actual delivery still needs fresh principal/action/scope and policy checks through
 output. AccountObservation is not reusable authentication; initial administration
