@@ -349,6 +349,58 @@ absence for an unrelated target. Same-input retry succeeds after exact restorati
 All source bytes remain retained. The two-receipt workload and bounded full scan
 do not establish aged capacity, persistent lifetime recovery or protection.
 
+## Bounded native batch membership candidate
+
+`Preparation::inspect_membership` extends the retained receipt observer with a
+source/digest census in one native read transaction. `MembershipRead` names the
+complete original receipt expectation and optionally an exact nonnegative BIGINT
+snapshot. Historical selection uses the existing READ_ONLY ATTACH path; the
+actual transaction snapshot must match before receipt or scientific reads. None
+selects the current transaction snapshot. There is no fallback from an unavailable
+or mismatching snapshot, and no successful Absent result.
+
+The same bounded full receipt scan must finish with Present. The reader then
+examines source identity, stored digest, schema/kind and native filename columns
+across all five scientific families. It includes both the expected source ranges
+and every row attributed to that attempt's original family filenames. Thus a
+target copied to another file and an extra foreign/out-of-range row in an original
+file both refuse. Total membership has one detection row beyond the expected
+count; sorting must yield exactly the retained maximal ranges, without duplicates
+or holes. The canonical archive digest over those references must equal the
+retained digest. Maximal ranges do not reconstruct complete admission boundaries;
+the original retained `.inputs` file remains that separate evidence.
+
+Each populated family must use its original
+`main/<family>/prepared-<attempt>/data.parquet`; the receipt must be the sole row
+in its original file. Paths must be canonical regular nonempty files with one
+link, including canonical parents. A compacted/replaced layout that changes those
+paths refuses until a replacement-membership path is separately qualified. It
+does not defend against
+privileged concurrent namespace changes or establish historical inode custody.
+Unregistered orphan files do not form native membership or protection evidence.
+
+The private response `bigbrotr-native-membership/1` binds snapshot, batch digest,
+attempt and ordinal and reports counts in dictionary/payload/eligibility/receive/
+provenance order, plus populated family files and one receipt file. Typed closed
+parent decoding checks those bindings and counts after positive worker reap.
+The input remains at most32KiB/1024 ranges. `max_facts` bounds complete membership;
+allocation admission charges two overlapping reference buffers, bounded native/
+Arrow path representations and the receipt scan floor. Filenames are capped at
+8192 bytes and native vectors at2048 rows. These are allocation/refusal bounds,
+not a measured whole-process RSS or aged-catalog capacity guarantee. The selected
+filename predicates avoid the all-files materialization of `ducklake_list_files`;
+native metadata costs remain subject to worker limits and later capacity evidence.
+
+This observer compares **stored digest columns**, not recomputed scientific
+payloads. Same-cut dictionary/reference closure, qualified persistence and root
+provisioning, exclusion of reclamation, actual Archive ownership, sealed complete
+frontiers and retention pins remain separate requirements. No receipt or census
+retroactively certifies archives written before file-sync qualification. The
+administrative `archive batch-inspect` command is its first consumer; it retains
+the existing stopped-coordinator custody, Control supervision, SELECT-only reader,
+bounded diagnostic output and cleanup rules. No public data delivery or frontier
+authority follows from its report.
+
 ## Persistent local attempt custody candidate
 
 `LocalAttempt::create` takes the actual immutable Control attempt and scientific

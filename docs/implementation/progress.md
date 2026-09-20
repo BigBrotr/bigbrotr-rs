@@ -12,27 +12,61 @@ runner billing exception. Preserve private bigbrotr-rs, unpublished Cargo packag
 and the read-only Go neighbor. No public release or Linux arm64 claim. No P02/P03
 or P06 task or M1 milestone is complete; all selected later work remains required.
 
-Current boundary: closing P02-T04 step8 local file-sync qualification, then the
-positive P02-T04/T07 frontier/pin bridge for M1.
+Current boundary: P02-T04/T07 bounded native source/digest and original-file
+membership observer, a prerequisite of the positive frontier/pin bridge for M1.
 Existing task files own the backlog. No task checkbox closes from this prerequisite.
 
 ## Git and ownership
 
-Git anchor inspected before this evidence/checkpoint commit: local main is
-qualified candidate b9ddd74782738e7a2c49f32b188cc244a653e736; private origin/main
-was5e4046fd02c4f4bb27c613372a80f086d0631e11. This commit contains final FD-only
-trace-oracle correction, qualification report and owning docs/inventory. Product
-sources are unchanged after native qualification. Ordinary push is authorized;
-verify actual HEAD/origin on resumption. No parallel writer/merge/rebase.
-Independent AI evidence review is complete without concrete discrepancy:880source
-files,58captures,37report references,9traces,31connected cases and392preserved
-containers agree. Scoped artifact/handoff checks pass; no additional engine run
-is justified solely by the oracle/documentation change.
+Git anchor before the membership candidate commit: local main and private
+origin/main are072bd806da27286da6ac40fcd0f09bfcea47b22c (remote freshly verified).
+Integrating-owner edits add protocol/worker/parent membership, the batch-inspect
+CLI, discriminating fixtures, owning docs and the exact-source Linux harness.
+Mac checks pass; this candidate will be committed for exact-Git transfer before
+Linux qualification, without a capability/release claim. No parallel writer,
+merge or rebase. No new Tux experiment has started. Independent AI code review
+found extra original-file rows and parent-directory symlinks could pass; both
+were reproduced and corrected. Harness review corrected historical input recipes
+and the proxy lifetime so it outlives the real120-second CLI deadline.
 
 Separate compatibility worktree .research/worktrees/producer-closing-old-writer
 remains at published f899896b1207f5e71c4e39d9ab7814b293814735 on
 research/producer-closing-old-writer; preserve it. Build caches are not source
-authority. All execution sessions are joined; no active experiment or cleanup debt.
+authority. The Mac native membership test session was joined with exit0 on
+resumption; no active experiment or cleanup debt is known. Tux stopped status
+below is the prior terminal inventory, not a new live inspection.
+
+## Membership observer in progress
+
+The candidate reads receipt and all five scientific families inside one selected
+native snapshot. It compares complete retained source ranges/stored digest columns,
+includes foreign/out-of-range rows in each original filename, and requires canonical
+regular single-link original paths. It does not recompute scientific payloads, prove
+reference closure, grant a pin, certify protection or advance a frontier. The CLI
+uses the existing retained input, Control supervision and SELECT-only reader.
+
+Ignored .research/implementation/archive-membership/mac-checks/result.json records
+all8 selected checks PASS:28 tests (one native fixture has13 controls), no ignored
+tests, and scoped all-target Clippy. Receipt regression, canonical multi-range
+unsigned-edge vector, parent reply/admission and actual CLI preflight are included.
+First mac-red.log was only missing-module compile RED. Semantic RED logs record
+accepted symlink relocation, accepted extra sequence999, lost InvalidInput and an
+opened transaction after invalid scan; source snapshots are retained beside logs.
+An initial extra-row rewrite failed at cached footer length, not membership; the
+fixture now updates only its private transport-size/count metadata and independently
+reads altered columns before testing the census. Do not present the masked failure
+as a discriminator. The fixed native13-case fixture passes.
+
+Owning reference/user docs and P02 task linkage describe this limited candidate;
+artifact/handoff checks pass. New native_initialization --archive-membership and
+membership_cli_cases.py are reviewed/syntax-checked but NOT_RUN. The latter plans
+actual signed normal/history publication, all-family/bootstrap/correction reports,
+exact/latest selection, missing/corrupt file restoration, resource refusals,
+real SELECT lock signal/deadline with pidfd reap, identical retries, unchanged
+inputs/native metadata/objects, and PostgreSQL SIGQUIT/restart. No new policy-change,
+lease-loss, power-loss, capacity, protected frontier or arm64 evidence is claimed.
+Ignored launch/transfer/run/collect recipes are ready; verify clean committed source
+and fresh resource inventory before creating a separately owned Tux lab.
 
 ## Executed local file-persistence boundary
 
@@ -129,8 +163,10 @@ reports own the evidence. Never rerun initialization over these roots.
 
 ## Next bounded action and open gates
 
-Commit/push the reviewed file-sync qualification, then implement the bounded
-native batch-membership observer feeding the complete frontier/pin bridge below:
+Commit the reviewed membership candidate and transfer exact clean Git source with
+.research/implementation/archive-membership/transfer.py. Join the native build,
+then execute run.py and the owner-verified collector; preserve every failed or
+unknown outcome before retry. This feeds the complete frontier/pin bridge below:
 compare retained complete source IDs/digests and required family/file membership
 in one exact native snapshot, with independent missing/duplicate/wrong-file and
 resource controls. Preserve actual protection-class/root-provisioning gates and

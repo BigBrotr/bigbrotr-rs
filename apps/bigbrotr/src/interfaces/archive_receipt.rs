@@ -25,6 +25,8 @@ pub(super) struct Options {
     pub attempt: [u8; 16],
     max_receipts: usize,
     worker_root: Option<PathBuf>,
+    max_facts: Option<usize>,
+    snapshot_id: Option<u64>,
 }
 impl Options {
     pub(super) fn parse(args: &ArgMatches) -> Result<Self> {
@@ -39,6 +41,16 @@ impl Options {
             attempt: *id.as_bytes(),
             max_receipts: *args.get_one::<u32>("max-receipts").unwrap() as usize,
             worker_root: args.get_one::<PathBuf>("worker-root").cloned(),
+            max_facts: args
+                .try_get_one::<u32>("max-facts")
+                .ok()
+                .flatten()
+                .map(|n| *n as usize),
+            snapshot_id: args
+                .try_get_one::<u64>("snapshot-id")
+                .ok()
+                .flatten()
+                .copied(),
         })
     }
     pub(super) fn validate_roots(config: &Resolved) -> Result<()> {
@@ -57,6 +69,18 @@ impl Options {
         }
         Ok(())
     }
+}
+
+pub(super) fn membership_command() -> Command {
+    command().name("batch-inspect")
+        .about("Verify a retained batch's source identities and original files in one native snapshot")
+        .arg(Arg::new("max-facts").long("max-facts").default_value("20000")
+            .value_parser(clap::value_parser!(u32).range(1..))
+            .help("Maximum complete batch membership; must fit the accepted native allowance"))
+        .arg(Arg::new("snapshot-id").long("snapshot-id")
+            .value_parser(clap::value_parser!(u64).range(..=i64::MAX as u64))
+            .help("Require this exact retained native snapshot; default: current transaction snapshot"))
+        .after_help("Requires the same stopped coordinator, retained input and SELECT-only reader as receipt-inspect. Verifies receipt, source ID/digest columns, family placement and original attempt files. Does not recompute full scientific payloads, certify reference closure or acquire a protection/retention pin. Missing, rewritten, duplicate or incomplete membership refuses; there is no absent success. Exit: 0 observed and Control released, 1 I/O, 2 usage, 3 preflight, 4 unresolved/cancelled. Scratch is retained.")
 }
 
 pub(super) fn command() -> Command {
@@ -107,6 +131,21 @@ pub(super) fn inspect(
                 "retained receipt inputs missing; observation unresolved".into(),
             )
         })?;
+    let membership_read =
+        options
+            .max_facts
+            .map(|_| bigbrotr_protocol::archive_membership::MembershipRead {
+                receipt: inputs.expectation().clone(),
+                snapshot_id: options.snapshot_id,
+            });
+    if let Some(read) = &membership_read {
+        bigbrotr::storage::archive::validate_membership_limits(
+            limits,
+            read,
+            options.max_facts.unwrap(),
+        )
+        .map_err(|e| (3, format!("batch membership allowance refused: {e:?}")))?;
+    }
     let tls = preflight::native_tls(&config, &budget)?;
     preflight::admit_native(&config, &budget)?;
     let (installation, scratch, _) = preflight::worker(
@@ -166,23 +205,44 @@ pub(super) fn inspect(
         .map_err(|_| (3, "cannot read protected receipt credential".into()))?;
     let password = std::str::from_utf8(password.as_bytes())
         .map_err(|_| (3, "invalid receipt credential encoding".into()))?;
-    let observation = Preparation {
+    let preparation = Preparation {
         installation: &installation,
         temp_root: &scratch,
         limits,
         deadline,
         cancelled,
+    };
+    let credential = CatalogReaderCredentials {
+        login: reader,
+        password,
+    };
+    let (observation, membership) = if let Some(read) = &membership_read {
+        preparation
+            .inspect_membership(
+                read,
+                identity,
+                &route.borrowed(),
+                credential,
+                &budget,
+                options.max_facts.unwrap(),
+            )
+            .map(|membership| {
+                (
+                    bigbrotr::storage::archive::ReceiptObservation::Present,
+                    Some(membership),
+                )
+            })
+    } else {
+        preparation
+            .inspect_receipt(
+                inputs.expectation(),
+                identity,
+                &route.borrowed(),
+                credential,
+                &budget,
+            )
+            .map(|observation| (observation, None))
     }
-    .inspect_receipt(
-        inputs.expectation(),
-        identity,
-        &route.borrowed(),
-        CatalogReaderCredentials {
-            login: reader,
-            password,
-        },
-        &budget,
-    )
     .map_err(|e| {
         (
             4,
@@ -194,13 +254,23 @@ pub(super) fn inspect(
         bigbrotr::storage::archive::ReceiptObservation::Absent => "absent",
     };
     let request = receipt.request();
-    Ok(json!({"format":"bigbrotr-archive-receipt/1", "state":state,
+    let mut result = json!({"format":"bigbrotr-archive-receipt/1", "state":state,
         "dataset_id":request.dataset(), "catalog_id":request.catalog(),
         "attempt_id":options.attempt.iter().map(|v|format!("{v:02x}")).collect::<String>(),
         "publication_ordinal":request.ordinal().to_string(), "batch_digest":request.batch_digest(),
         "max_receipts":options.max_receipts, "catalog_inspection":"verified", "reader_privileges":"select-only",
         "writer_exclusion":"not-performed", "replay_authority":"not-granted",
-        "source_protection":"not-granted", "ready":false}))
+        "source_protection":"not-granted", "ready":false});
+    if let Some(membership) = membership {
+        result["format"] = json!("bigbrotr-archive-batch-membership/1");
+        result["snapshot_id"] = json!(membership.snapshot_id.to_string());
+        result["family_counts"] = json!(membership.family_counts);
+        result["files"] = json!(membership.files);
+        result["max_facts"] = json!(options.max_facts.unwrap());
+        result["payload_recomputation"] = json!("not-performed");
+        result["reference_closure"] = json!("not-certified");
+    }
+    Ok(result)
 }
 
 async fn bounded<T>(

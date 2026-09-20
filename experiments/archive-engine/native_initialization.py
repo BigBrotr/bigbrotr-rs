@@ -20,7 +20,8 @@ if sys.argv[1:] == ['--build-binaries']:
     identity = build_binaries(SOURCE, os.environ)
     (out / 'worker-identity.json').write_text(json.dumps(identity, indent=2) + '\n')
     sys.exit(0)
-assert sys.argv[1:] in ([], ['--tls'], ['--publication'], ['--producer-inputs'], ['--producer-ledger'], ['--producer-ledger-fixture'], ['--import-source'], ['--input-bindings'], ['--certification'], ['--producer-closing'], ['--producer-recovery'], ['--archive-event'], ['--publication-sync'])
+assert sys.argv[1:] in ([], ['--tls'], ['--publication'], ['--producer-inputs'], ['--producer-ledger'], ['--producer-ledger-fixture'], ['--import-source'], ['--input-bindings'], ['--certification'], ['--producer-closing'], ['--producer-recovery'], ['--archive-event'], ['--publication-sync'], ['--archive-membership'])
+archive_membership = sys.argv[1:] == ['--archive-membership']
 publication_sync = sys.argv[1:] == ['--publication-sync']
 archive_event = publication_sync or sys.argv[1:] == ['--archive-event']
 producer_recovery = sys.argv[1:] == ['--producer-recovery']
@@ -32,7 +33,7 @@ tls = sys.argv[1:] == ['--tls']
 fixture_only = sys.argv[1:] == ['--producer-ledger-fixture']
 producer_inputs = certification or input_bindings or import_source or sys.argv[1:] in (['--producer-inputs'], ['--producer-ledger'], ['--producer-ledger-fixture'])
 producer_ledger = certification or input_bindings or import_source or sys.argv[1:] in (['--producer-ledger'], ['--producer-ledger-fixture'])
-publication = archive_event or producer_inputs or sys.argv[1:] == ['--publication']
+publication = archive_membership or archive_event or producer_inputs or sys.argv[1:] == ['--publication']
 manifest = json.loads((build / 'source-manifest.json').read_text())
 
 
@@ -106,6 +107,18 @@ if import_source:
         ('source-faults', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr', '--lib', 'acquisition::import']),
         ('source-lifetime', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr', '--doc', 'acquisition::import::jsonl::JsonlRecord']),
         ('source-clippy', ['cargo', 'clippy', '--locked', '--release', '-p', 'bigbrotr', '--lib', '--test', 'acquisition_import_jsonl', '--example', 'ingest_bootstrap_probe', '--', '-D', 'warnings'])]
+if archive_membership:
+    identity.update(scope='retained batch source/digest/original-file census and installed administrative CLI')
+    env.update(BIGBROTR_ARCHIVE_TEST_BUNDLE=str(bundle))
+    checks = [checks[0],
+        ('canonical-membership', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr-archive-worker', '--lib', 'membership::tests']),
+        ('native-membership', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr-archive-worker', '--lib', 'native_membership_requires_complete_source_and_original_files_in_one_snapshot', '--', '--nocapture']),
+        ('receipt-regression', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr-archive-worker', '--lib', 'receipt::tests', '--', '--nocapture']),
+        ('parent-membership', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr', '--lib', 'storage::archive::membership']),
+        ('parent-receipts', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr', '--lib', 'storage::archive::receipts']),
+        ('cli', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr', '--test', 'catalog_entrypoint']),
+        ('protocol', ['cargo', 'test', '--locked', '--release', '-p', 'bigbrotr-protocol', '--lib', 'archive_membership']),
+        checks[-1]]
 if input_bindings:
     identity.update(scope='atomic import position/original input binding prerequisite')
     checks = [checks[0],

@@ -8,6 +8,24 @@ fn expected() -> ReceiptExpectation {
         "record_count":3,"input_ranges":[{"shard_id":0,"owner_epoch":1,"first_sequence":1,"last_sequence":3}],
         "attempt_id":([9;16]),"publication_ordinal":u64::MAX})).unwrap()
 }
+#[test]
+fn invalid_scan_does_not_open_a_transaction() {
+    let connection = Connection::open_in_memory().unwrap();
+    for maximum in [0, usize::MAX] {
+        assert_eq!(
+            inspect_attached(&connection, &expected(), maximum),
+            Err(ReceiptError::InvalidInput)
+        );
+        connection.execute_batch("BEGIN; ROLLBACK").unwrap();
+    }
+    let mut invalid = expected();
+    invalid.record_count = 0;
+    assert_eq!(
+        inspect_attached(&connection, &invalid, 1),
+        Err(ReceiptError::InvalidInput)
+    );
+    connection.execute_batch("BEGIN; ROLLBACK").unwrap();
+}
 fn open(home: &Path, temp: &Path, readonly: bool) -> Engine {
     let engine = Engine::open(
         &temp.canonicalize().unwrap(),

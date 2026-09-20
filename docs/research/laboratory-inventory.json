@@ -14942,6 +14942,15 @@
       "preexisting_preserved": 392,
       "unrelated_running": 8,
       "bigbrotr_running": 0
+    },
+    "membership_candidate": {
+      "state": "Mac candidate checks complete; native Linux not run",
+      "local_raw": ".research/implementation/archive-membership",
+      "purpose": "P02-T04/T07 bounded native source/digest and original-file membership; actual administrative CLI qualification",
+      "mac_anchor": "072bd806da27286da6ac40fcd0f09bfcea47b22c",
+      "mac_checks": ".research/implementation/archive-membership/mac-checks/result.json",
+      "mac_scope": "28 selected tests, including one thirteen-case native fixture, and scoped Clippy; dirty sources before candidate commit",
+      "remote_resources": "none created yet"
     }
   },
   "implementation_monitor_corrections_20260918": {

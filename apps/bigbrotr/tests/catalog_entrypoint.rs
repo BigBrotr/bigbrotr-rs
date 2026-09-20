@@ -73,21 +73,50 @@ fn show(root: &Path, document: &toml::Table) -> Value {
 fn receipt_inspection_refuses_unselected_archive_before_work() {
     let dir = tempfile::tempdir().unwrap();
     write(dir.path(), &example(dir.path(), "serve-existing"));
-    let result = run(
-        dir.path(),
-        &[
-            "archive",
-            "receipt-inspect",
-            "--file",
-            "instance.toml",
-            "--attempt-id",
-            "11111111111111111111111111111111",
-        ],
-    );
-    assert_eq!(result.status.code(), Some(3), "{result:?}");
-    assert!(String::from_utf8_lossy(&result.stderr).contains("local Archive role"));
-    assert!(result.stdout.is_empty());
+    for name in ["receipt-inspect", "batch-inspect"] {
+        let result = run(
+            dir.path(),
+            &[
+                "archive",
+                name,
+                "--file",
+                "instance.toml",
+                "--attempt-id",
+                "11111111111111111111111111111111",
+            ],
+        );
+        assert_eq!(result.status.code(), Some(3), "{result:?}");
+        assert!(String::from_utf8_lossy(&result.stderr).contains("local Archive role"));
+        assert!(result.stdout.is_empty());
+    }
     assert_eq!(fs::read_dir(dir.path()).unwrap().count(), 1);
+}
+
+#[test]
+fn batch_inspection_rejects_impossible_limits_before_configuration_io() {
+    let dir = tempfile::tempdir().unwrap();
+    for (flag, value) in [
+        ("--max-facts", "0"),
+        ("--snapshot-id", "9223372036854775808"),
+    ] {
+        let result = run(
+            dir.path(),
+            &[
+                "archive",
+                "batch-inspect",
+                "--file",
+                "absent.toml",
+                "--attempt-id",
+                "11111111111111111111111111111111",
+                flag,
+                value,
+            ],
+        );
+        assert_eq!(result.status.code(), Some(2), "{result:?}");
+        assert!(String::from_utf8_lossy(&result.stderr).contains(flag));
+        assert!(result.stdout.is_empty());
+    }
+    assert_eq!(fs::read_dir(dir.path()).unwrap().count(), 0);
 }
 
 #[test]

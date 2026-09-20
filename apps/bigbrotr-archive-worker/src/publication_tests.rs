@@ -583,3 +583,217 @@ fn native_sync_refusal_prevents_committed_membership_and_attempt_reuse() {
         );
     }
 }
+
+#[test]
+fn native_membership_requires_complete_source_and_original_files_in_one_snapshot() {
+    use crate::membership::inspect_attached;
+    use bigbrotr_protocol::{
+        archive_membership::MembershipRead, archive_receipt::ReceiptExpectation,
+    };
+    for fault in [
+        "none",
+        "delete",
+        "duplicate",
+        "kind",
+        "extra-sequence",
+        "extra-dataset",
+        "altered-digest",
+        "extra-receipt",
+        "missing-file",
+        "corrupt-file",
+        "symlink-directory",
+        "limit",
+        "snapshot",
+    ] {
+        let home = tempfile::tempdir_in(std::env::temp_dir().canonicalize().unwrap()).unwrap();
+        let temp = tempfile::tempdir().unwrap();
+        let catalog = home.path().join("catalog.ducklake");
+        let data = home.path().join("objects");
+        let engine = open(temp.path(), &catalog, &data);
+        schema::initialize(&engine.connection).unwrap();
+        let (prepared, request) = prepare(engine, &facts(), &data);
+        let archive = ArchiveBatch::new(
+            1,
+            request.topology_generation,
+            std::slice::from_ref(prepared.batch()),
+        )
+        .unwrap();
+        let read = MembershipRead {
+            receipt: ReceiptExpectation::from_archive(
+                &archive,
+                request.attempt_id,
+                request.publication_ordinal,
+            )
+            .unwrap(),
+            snapshot_id: Some(if fault == "snapshot" { 1 } else { 2 }),
+        };
+        prepared.publish_attached(&request).unwrap();
+        drop(prepared);
+        let engine = open(temp.path(), &catalog, &data);
+        match fault {
+            "delete" => engine
+                .connection
+                .execute_batch("DELETE FROM archive.events")
+                .unwrap(),
+            "duplicate" => engine
+                .connection
+                .execute_batch("INSERT INTO archive.events SELECT * FROM archive.events")
+                .unwrap(),
+            "kind" => engine
+                .connection
+                .execute_batch("UPDATE archive.events SET record_kind='dictionary'")
+                .unwrap(),
+            "extra-sequence" | "extra-dataset" | "altered-digest" | "extra-receipt" => {
+                let table = if fault == "extra-receipt" {
+                    "archive_commits"
+                } else {
+                    "events"
+                };
+                let file = data.join(format!(
+                    "main/{table}/prepared-{}/data.parquet",
+                    "09".repeat(16)
+                ));
+                let replacement = file.with_extension("replacement");
+                let altered = match fault {
+                    "extra-sequence" => {
+                        "struct_update(source_record_id, sequence := 999::UBIGINT) AS source_record_id"
+                    }
+                    "extra-dataset" => {
+                        "struct_update(source_record_id, dataset_id := from_hex(repeat('02',16))) AS source_record_id"
+                    }
+                    "altered-digest" => "from_hex(repeat('ff',32)) AS payload_digest",
+                    "extra-receipt" => {
+                        "from_hex(repeat('ff',32)) AS batch_digest,from_hex(repeat('0a',16)) AS attempt_id,1::UBIGINT AS publication_ordinal"
+                    }
+                    _ => unreachable!(),
+                };
+                let extra = if fault == "altered-digest" {
+                    String::new()
+                } else {
+                    format!(
+                        "SELECT * FROM read_parquet('{}') UNION ALL ",
+                        file.display()
+                    )
+                };
+                engine.connection.execute_batch(&format!(
+                    "COPY ({extra}SELECT * REPLACE ({altered}) FROM read_parquet('{}')) TO '{}' (FORMAT PARQUET)",
+                    file.display(), replacement.display()
+                )).unwrap();
+                fs::rename(replacement, file).unwrap();
+            }
+            "missing-file" | "corrupt-file" => {
+                let file = data.join(format!(
+                    "main/events/prepared-{}/data.parquet",
+                    "09".repeat(16)
+                ));
+                if fault == "missing-file" {
+                    fs::rename(&file, file.with_extension("retained")).unwrap();
+                } else {
+                    fs::write(&file, b"not a parquet object").unwrap();
+                }
+            }
+            "symlink-directory" => {
+                let directory = data.join(format!("main/events/prepared-{}", "09".repeat(16)));
+                let relocated = home.path().join("relocated-attempt");
+                fs::rename(&directory, &relocated).unwrap();
+                std::os::unix::fs::symlink(&relocated, &directory).unwrap();
+            }
+            _ => (),
+        }
+        // A receipt-only observation still reports Present after deleting the
+        // event. The new census must not promote that into complete membership.
+        if fault == "delete" {
+            assert_eq!(
+                crate::receipt::inspect_attached(&engine.connection, &read.receipt, 4).unwrap(),
+                crate::receipt::ReceiptObservation::Present
+            );
+        }
+        let mut read = read;
+        if matches!(fault, "delete" | "duplicate" | "kind") {
+            read.snapshot_id = Some(3);
+        }
+        drop(engine);
+        if matches!(
+            fault,
+            "extra-sequence" | "extra-dataset" | "altered-digest" | "extra-receipt"
+        ) {
+            // Fixture-only corruption must remain natively readable. DuckLake
+            // supplies recorded file/footer sizes to the Parquet reader; repair
+            // transport metadata so a footer refusal cannot mask the census.
+            let table = if fault == "extra-receipt" {
+                "archive_commits"
+            } else {
+                "events"
+            };
+            let file = data.join(format!(
+                "main/{table}/prepared-{}/data.parquet",
+                "09".repeat(16)
+            ));
+            let bytes = fs::read(&file).unwrap();
+            let footer =
+                u32::from_le_bytes(bytes[bytes.len() - 8..bytes.len() - 4].try_into().unwrap());
+            let metadata = duckdb::Connection::open(&catalog).unwrap();
+            assert_eq!(metadata.execute(
+                "UPDATE ducklake_data_file SET file_size_bytes=?,footer_size=?,record_count=? WHERE table_id IN (SELECT table_id FROM ducklake_table WHERE table_name=?)",
+                duckdb::params![bytes.len() as u64, footer, if fault == "altered-digest" {1} else {2}, table]
+            ).unwrap(), 1);
+        }
+        let engine = open(temp.path(), &catalog, &data);
+        let actual_snapshot: u64 = engine
+            .connection
+            .query_row(
+                "SELECT id FROM ducklake_current_snapshot('archive')",
+                [],
+                |r| r.get(0),
+            )
+            .unwrap();
+        assert_eq!(
+            actual_snapshot,
+            if matches!(fault, "delete" | "duplicate" | "kind") {
+                3
+            } else {
+                2
+            }
+        );
+        if matches!(fault, "extra-sequence" | "extra-dataset" | "altered-digest") {
+            let actual: String = engine.connection.query_row(
+                "SELECT to_json(list(struct_pack(source:=source_record_id,digest:=hex(payload_digest)))) FROM archive.events", [], |r|r.get(0)
+            ).unwrap();
+            let rows: serde_json::Value = serde_json::from_str(&actual).unwrap();
+            assert_eq!(
+                rows.as_array().unwrap().len(),
+                if fault == "altered-digest" { 1 } else { 2 }
+            );
+            eprintln!("{fault} actual scientific columns: {actual}");
+        }
+        if fault == "extra-receipt" {
+            assert_eq!(
+                crate::receipt::inspect_attached(&engine.connection, &read.receipt, 4).unwrap(),
+                crate::receipt::ReceiptObservation::Present
+            );
+        }
+        let result = inspect_attached(
+            &engine.connection,
+            &read,
+            &data,
+            4,
+            if fault == "limit" { 2 } else { 3 },
+        );
+        if fault == "none" {
+            let observed = result.unwrap();
+            assert_eq!(observed.snapshot_id, 2);
+            assert_eq!(observed.family_counts, [2, 1, 0, 0, 0]);
+            assert_eq!(observed.files, 3);
+            observed.validate(&read).unwrap();
+        } else {
+            eprintln!("membership {fault}: {result:?}");
+            assert!(result.is_err(), "{fault}: {result:?}");
+            if fault == "limit" {
+                assert_eq!(
+                    result.unwrap_err(),
+                    crate::receipt::ReceiptError::ResourceLimit
+                );
+            }
+        }
+    }
+}

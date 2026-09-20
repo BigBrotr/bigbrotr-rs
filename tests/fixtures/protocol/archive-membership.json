@@ -1,0 +1,92 @@
+{
+  "format": "bigbrotr-membership-vector/1",
+  "authoring": "Literal existing archive-multiple-ranges CBOR preimage with schema head 19ffff replaced by 01 at byte 43; independent Python hashlib SHA-256. Synthetic references; no native commit, signature or protection claim.",
+  "read": {
+    "receipt": {
+      "dataset_id": "01010101010101010101010101010101",
+      "schema_version": 1,
+      "topology_generation": "18446744073709551615",
+      "batch_digest": "b3b622d21e432abfd95314a13ecc8feea6e7597b30540d4b3e62dcd91f754fa0",
+      "record_count": 4,
+      "input_ranges": [
+        {
+          "shard_id": 0,
+          "owner_epoch": 1,
+          "first_sequence": 23,
+          "last_sequence": 24
+        },
+        {
+          "shard_id": 0,
+          "owner_epoch": 1,
+          "first_sequence": 30,
+          "last_sequence": 30
+        },
+        {
+          "shard_id": 4294967295,
+          "owner_epoch": 18446744073709551615,
+          "first_sequence": 18446744073709551615,
+          "last_sequence": 18446744073709551615
+        }
+      ],
+      "attempt_id": [
+        9,
+        9,
+        9,
+        9,
+        9,
+        9,
+        9,
+        9,
+        9,
+        9,
+        9,
+        9,
+        9,
+        9,
+        9,
+        9
+      ],
+      "publication_ordinal": 1
+    },
+    "snapshot_id": 2
+  },
+  "records": [
+    {
+      "source_record_id": {
+        "dataset_id": "01010101010101010101010101010101",
+        "shard_id": 0,
+        "owner_epoch": "1",
+        "sequence": "23"
+      },
+      "payload_digest": "1111111111111111111111111111111111111111111111111111111111111111"
+    },
+    {
+      "source_record_id": {
+        "dataset_id": "01010101010101010101010101010101",
+        "shard_id": 0,
+        "owner_epoch": "1",
+        "sequence": "24"
+      },
+      "payload_digest": "2222222222222222222222222222222222222222222222222222222222222222"
+    },
+    {
+      "source_record_id": {
+        "dataset_id": "01010101010101010101010101010101",
+        "shard_id": 0,
+        "owner_epoch": "1",
+        "sequence": "30"
+      },
+      "payload_digest": "3333333333333333333333333333333333333333333333333333333333333333"
+    },
+    {
+      "source_record_id": {
+        "dataset_id": "01010101010101010101010101010101",
+        "shard_id": 4294967295,
+        "owner_epoch": "18446744073709551615",
+        "sequence": "18446744073709551615"
+      },
+      "payload_digest": "4444444444444444444444444444444444444444444444444444444444444444"
+    }
+  ],
+  "preimage_hex": "62696762726f74722f617263686976652d62617463682f3100855001010101010101010101010101010101011bffffffffffffffff83840001171818840001181e181e841affffffff1bffffffffffffffff1bffffffffffffffff1bffffffffffffffff848284500101010101010101010101010101010100011758201111111111111111111111111111111111111111111111111111111111111111828450010101010101010101010101010101010001181858202222222222222222222222222222222222222222222222222222222222222222828450010101010101010101010101010101010001181e58203333333333333333333333333333333333333333333333333333333333333333828450010101010101010101010101010101011affffffff1bffffffffffffffff1bffffffffffffffff58204444444444444444444444444444444444444444444444444444444444444444"
+}

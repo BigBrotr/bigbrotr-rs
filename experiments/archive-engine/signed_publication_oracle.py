@@ -168,12 +168,12 @@ def input_files(home, mode):
     # Original initialization bytes have host-specific inode/path fields. All
     # source, request and header fields below come from the independent corpus.
     initialization = hashlib.sha256((home/'kind=7/.bigbrotr-initialization/intent.json').read_bytes()).digest()
-    batches, _ = corpus()
+    batches, _ = corpus(history=mode == 'history')
     result = []
     for expected in input_expectations(mode):
         ordinal = expected['publication_ordinal']
         n = expected['attempt_id'][0]
-        batch = batches[0 if ordinal == 2 else 1]
+        batch = batches[0 if ordinal == 2 else 2 if ordinal == 5 else 1]
         body = (b'BBINPUT\x01' + initialization + bytes([n])*16 + DATASET + bytes([90])*16
                 + bytes([80])*16 + bytes([n+1])*16 + struct.pack('>QQ', ordinal, 0)
                 + bytes.fromhex(batch['archive_digest']) + struct.pack('>I', 1)
@@ -188,7 +188,7 @@ def input_files(home, mode):
     return result
 
 
-def producer_input_files(home):
+def producer_input_files(home, *, history=False):
     """Exact original mutation bytes, independently authored from the fixed corpus."""
     descriptors = [
         (4, 'visibility', {'class': 'public'}),
@@ -205,12 +205,12 @@ def producer_input_files(home):
                     for k, schema, value in descriptors]
     inputs = [('admit-evidence', [1, reference(4), dictionaries])]
     event = EVENT
-    for sequence in [2, 3, 4]:
+    for sequence in ([2, 3, 4, 5] if history else [2, 3, 4]):
         signed = [bytes(32) if sequence == 3 else bytes.fromhex(event['id']),
                   bytes.fromhex(event['pubkey']), event['created_at'], event['kind'],
                   event['tags'], event['content'],
                   bytes(64) if sequence == 2 else bytes.fromhex(event['sig'])]
-        observation = [10_000_000, reference(2), [reference(2), 1, None, 0],
+        observation = [5_000_000 if sequence == 5 else 10_000_000, reference(2), [reference(2), 1, None, 0],
                        [reference(1), reference(3), reference(5)]]
         inputs.append(('admit', [1, reference(4), signed, 'network', None, observation]))
     spool = home / 'rocks/producer-inputs-v1'

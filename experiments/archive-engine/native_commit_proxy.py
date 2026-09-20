@@ -20,9 +20,11 @@ SCHEMA_INSERT = re.compile(rb'\bINSERT\s+INTO\s+(?:(?:"[^"]+"|[A-Z_][A-Z_0-9]*)\
 
 
 class Proxy:
-    def __init__(self, mode, target='publication'):
+    def __init__(self, mode, target='publication', lifetime_seconds=120):
         self.mode = mode
         self.target = target
+        assert lifetime_seconds in (120, 180)
+        self.lifetime_seconds = lifetime_seconds
         self.writers = []
         self.tasks = []
         self.held = False
@@ -253,7 +255,7 @@ class Proxy:
         transport, _ = await asyncio.get_running_loop().connect_read_pipe(
             lambda: asyncio.StreamReaderProtocol(control), sys.stdin.buffer)
         try:
-            async with asyncio.timeout(120):
+            async with asyncio.timeout(self.lifetime_seconds):
                 for _ in range(3):
                     action = await control.readline()
                     if action == b'stop\n':
@@ -286,9 +288,11 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--mode', choices=['pass', 'before-forward', 'after-complete', 'hold-data', 'hold-commit', 'hold-reply', 'hold-manager-commit', 'hold-manager-owner', 'hold-reader-query', 'omit-auth-final'], required=True)
     parser.add_argument('--target', choices=['publication', 'native-schema', 'guard-install', 'control-coordinator'], default='publication')
+    parser.add_argument('--lifetime-seconds', type=int, choices=[120, 180], default=120,
+                        help='Use180 when observing the actual120-second CLI deadline plus setup/cleanup')
     try:
         args = parser.parse_args()
-        sys.exit(asyncio.run(Proxy(args.mode, args.target).run()))
+        sys.exit(asyncio.run(Proxy(args.mode, args.target, args.lifetime_seconds).run()))
     except Exception:
         print('native commit proxy failed', file=sys.stderr)
         sys.exit(3)

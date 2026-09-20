@@ -50,6 +50,9 @@ impl Write for Size {
         Ok(())
     }
 }
+pub(super) fn wire_fits(input: &impl Serialize) -> Result<(), ReceiptError> {
+    serde_json::to_writer(&mut Size(0), input).map_err(|_| ReceiptError::ResourceLimit)
+}
 impl CatalogRoute<'_> {
     /// Validate the exact complete reader request before issuing an Archive
     /// attempt. No filesystem or network I/O and no credential persistence.
@@ -100,7 +103,7 @@ fn prepare_input(
         .catalog
         .validate()
         .map_err(ReceiptError::Preparation)?;
-    serde_json::to_writer(&mut Size(0), &input).map_err(|_| ReceiptError::ResourceLimit)?;
+    wire_fits(&input)?;
     Ok((dsn, tls))
 }
 pub(super) fn reader_connection(
@@ -143,17 +146,21 @@ pub(super) fn reader_connection(
 }
 /// Pure bounded scan admission shared by operator preflight and actual launch.
 pub fn validate_receipt_limits(limits: super::PreparationLimits) -> Result<(), ReceiptError> {
+    if limits.native_reserve_bytes < receipt_allocation_floor(limits)? {
+        return Err(ReceiptError::ResourceLimit);
+    }
+    Ok(())
+}
+pub(super) fn receipt_allocation_floor(
+    limits: super::PreparationLimits,
+) -> Result<u64, ReceiptError> {
     if limits.max_records == 0 || limits.max_records.checked_add(1).is_none() {
         return Err(ReceiptError::InvalidInput);
     }
     // One native vector plus Arrow/string conversion can coexist. This is
     // an application allocation floor, not an engine/whole-process RSS cap.
     let rows = limits.max_records.saturating_add(1).min(MAX_CHUNK_ROWS) as u64;
-    let floor = 16 * 1024 * 1024 + rows * 3 * (MAX_ROW_BYTES as u64 + 128);
-    if limits.native_reserve_bytes < floor {
-        return Err(ReceiptError::ResourceLimit);
-    }
-    Ok(())
+    Ok(16 * 1024 * 1024 + rows * 3 * (MAX_ROW_BYTES as u64 + 128))
 }
 impl Preparation<'_> {
     /// A new native process/transaction observes the original retained attempt.

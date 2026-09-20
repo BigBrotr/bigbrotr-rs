@@ -12,3 +12,4 @@ pub mod archive_receipt;
 pub mod endpoint;
 
 pub mod archive_event;
+pub mod archive_membership;

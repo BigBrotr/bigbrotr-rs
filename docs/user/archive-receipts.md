@@ -68,6 +68,41 @@ or preflight,4 cancelled/unresolved. A blocked stdout may cause exit1 after a
 completed observation/release. Repeating inspection creates a fresh observation.
 No readiness or full recovery guarantee follows from a successful command.
 
+## Check the complete batch membership
+
+The candidate also provides a stronger inspection using the same prerequisites:
+
+```sh
+bigbrotr archive batch-inspect --file /etc/bigbrotr/instance.toml \
+  --attempt-id 0123456789abcdef0123456789abcdef \
+  --max-receipts 128 --max-facts 20000
+```
+
+This requires the receipt, every retained source ID/digest and its original family
+file in one native snapshot. Missing, duplicate, extra or misplaced records refuse.
+Directory symlinks, missing objects, unreadable inspected columns and layouts
+that change the original paths refuse too. A payload page outside those columns
+or a rewrite preserving the inspected values is not checked by this census.
+The default inspects the current transaction snapshot. Add
+`--snapshot-id N` to require exactly that retained native snapshot; missing or
+expired snapshots never fall back to current data.
+
+Exit0 emits `bigbrotr-archive-batch-membership/1`, the actual `snapshot_id`, five
+`family_counts` (dictionaries, payloads, eligibility, receive, provenance) and
+`files` (populated family files plus the receipt). It also reports the original
+identity, policy revision and committed Control release. There is no successful
+Absent state. `max-facts` is a complete-batch cap; it does not truncate the batch.
+Its additional allocation allowance means the receipt-only maximum489 above does
+not describe this command's capacity. Insufficient accepted resources refuse
+before worker launch.
+
+This compares stored digest columns. It does not recompute every payload, certify
+dictionary/reference closure, reserve a snapshot, authorize a read or advance a
+protected frontier. Preserve the original archive/state and scratch on failure.
+The same deadline, cancellation and exit-code rules apply. Native Linux CLI
+qualification for this new command is pending; the older receipt report below
+does not qualify it.
+
 The [native CLI qualification](../implementation/evidence/p02-receipt-cli-native-20260919.json)
 at `d78bcc5` covers 22 retained attempts, refusal boundaries, real blocked-reader
 supervision and cancellation, and Present/Absent through readonly data/state bind

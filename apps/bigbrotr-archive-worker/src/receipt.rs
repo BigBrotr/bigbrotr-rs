@@ -205,18 +205,27 @@ impl NativeReceipt {
         Ok(expected)
     }
 }
-fn inspect_attached(
+pub(crate) fn inspect_attached(
     c: &Connection,
     expected: &ReceiptExpectation,
     max_receipts: usize,
 ) -> Result<ReceiptObservation, ReceiptError> {
-    let maximum = max_receipts
-        .checked_add(1)
-        .filter(|_| max_receipts > 0)
-        .ok_or(ReceiptError::InvalidInput)?;
-    expected.validate()?;
+    scan_limit(expected, max_receipts)?;
     c.execute_batch("BEGIN TRANSACTION")
         .map_err(|_| ReceiptError::Native)?;
+    let result = scan_attached(c, expected, max_receipts)?;
+    c.execute_batch("COMMIT")
+        .map_err(|_| ReceiptError::Native)?;
+    Ok(result)
+}
+
+/// The caller owns the surrounding transaction and its exact snapshot.
+pub(crate) fn scan_attached(
+    c: &Connection,
+    expected: &ReceiptExpectation,
+    max_receipts: usize,
+) -> Result<ReceiptObservation, ReceiptError> {
+    let maximum = scan_limit(expected, max_receipts)?;
     // No target predicate: count/existence and filtered scans can skip missing
     // receipt objects using catalog statistics. Consume actual receipt fields
     // through EOF, including after a match, to detect late duplicates/failures.
@@ -273,13 +282,20 @@ fn inspect_attached(
         }
     }
     drop(statement);
-    c.execute_batch("COMMIT")
-        .map_err(|_| ReceiptError::Native)?;
     Ok(if found {
         ReceiptObservation::Present
     } else {
         ReceiptObservation::Absent
     })
+}
+
+fn scan_limit(expected: &ReceiptExpectation, max_receipts: usize) -> Result<usize, ReceiptError> {
+    let maximum = max_receipts
+        .checked_add(1)
+        .filter(|_| max_receipts > 0)
+        .ok_or(ReceiptError::InvalidInput)?;
+    expected.validate()?;
+    Ok(maximum)
 }
 
 #[cfg(test)]
