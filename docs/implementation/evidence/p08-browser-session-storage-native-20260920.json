@@ -1,0 +1,398 @@
+{
+  "format": "bigbrotr-browser-session-storage-native/1",
+  "status": "PASS",
+  "scope": "Fenced browser session storage, actual Argon2 verification and PostgreSQL transitions; no HTTP, action lease or P08-T02 acceptance claim",
+  "product_source": "7a0f4b692d90f6af0f31cdb21bb76fac34401ebd",
+  "qualified_fixture_source": "d37e81fb1ce36d2f42962878d565b87cd7d4fdee",
+  "qualified_tree": "52ebc81531a384f04b605309eb8c93e5ceeb799d",
+  "product_unchanged_between_candidates": true,
+  "source_files": 931,
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "postgres": "16.15; fsync=on; full_page_writes=on",
+    "toolchain": "Repository-pinned Rust1.98.1; Linux clang14 exact identities in native result",
+    "runner": "2CPU/6GiB/512PIDs",
+    "postgres_limits": "1CPU/1GiB/128PIDs",
+    "network": "internal isolated bridge; no host ports; no release credentials"
+  },
+  "dependencies": {
+    "cargo_lock": {
+      "path": "Cargo.lock",
+      "sha256": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215",
+      "bytes": 71612
+    },
+    "migration806": {
+      "path": "migrations/postgres/0806_browser_sessions.sql",
+      "sha256": "3017bf28531655765ec9e09d10b1512532e8060681dac377e753119050e0b694",
+      "bytes": 8019
+    }
+  },
+  "artifacts": {
+    "initial_probe_sha256": "d1deec5e5550ab44d6de7ec46ca9d81e3d3575b31477ce0c479d28bd9f507403",
+    "qualified_probe_sha256": "cb21b2aeb11fecda9f94aa27602f2cabca23b8e70a79ce4e1cfcb317551172f6"
+  },
+  "mac": {
+    "initial_red": "Expected missing sessions API compilation error; not an executed runtime negative control",
+    "initial_green": "2 browser-token/lifetime tests",
+    "integrated": "2 browser-token/lifetime tests,16 migration schema tests,scoped Clippy PASS after product review",
+    "fixture_followup": "Scoped probe Clippy PASS",
+    "harness_refusal": "One attempted recheck refused an existing output directory before executing checks; a fresh reviewed directory passed"
+  },
+  "native": {
+    "initial_checks": [
+      {
+        "name": "build",
+        "command": [
+          "cargo",
+          "build",
+          "--locked",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--example",
+          "browser_sessions_probe"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 10.68023437494412
+      },
+      {
+        "name": "schema-and-tokens",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--test",
+          "control_schema",
+          "--test",
+          "management_sessions"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 24.351027444936335
+      },
+      {
+        "name": "clippy",
+        "command": [
+          "cargo",
+          "clippy",
+          "--locked",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--lib",
+          "--example",
+          "browser_sessions_probe",
+          "--test",
+          "management_sessions",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 2.2171305711381137
+      },
+      {
+        "name": "native-sessions",
+        "command": [
+          "/out/build/target/release/examples/browser_sessions_probe",
+          "sessions"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 5.039119747001678
+      }
+    ],
+    "fixture_checks": [
+      {
+        "name": "build",
+        "command": [
+          "cargo",
+          "build",
+          "--locked",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--example",
+          "browser_sessions_probe"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 10.629577167332172
+      },
+      {
+        "name": "fixture-clippy",
+        "command": [
+          "cargo",
+          "clippy",
+          "--locked",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--example",
+          "browser_sessions_probe",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 2.1666486603207886
+      },
+      {
+        "name": "native-sessions",
+        "command": [
+          "/out/build/target/release/examples/browser_sessions_probe",
+          "sessions"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 5.132531635928899
+      }
+    ],
+    "cases": [
+      {
+        "case": "additive-upgrade-preserves-password-and-seven-grants",
+        "status": "PASS"
+      },
+      {
+        "case": "login-me-wrong-csrf-and-no-implicit-history-grant",
+        "status": "PASS"
+      },
+      {
+        "case": "wrong-password-does-not-poison-control",
+        "status": "PASS"
+      },
+      {
+        "case": "deactivate-reactivate-invalidates-hash-and-old-session",
+        "status": "PASS"
+      },
+      {
+        "case": "reset-during-hash-refuses-and-same-revision-replacement-rejected",
+        "status": "PASS"
+      },
+      {
+        "case": "grant-edit-keeps-session-logout-terminal-idempotent",
+        "status": "PASS"
+      },
+      {
+        "case": "account-lock-held-beyond-idle-cannot-resurrect-by-touch",
+        "status": "PASS"
+      },
+      {
+        "case": "expiry-crossing-between-clock-read-and-touch-is-normal-denial",
+        "status": "PASS"
+      },
+      {
+        "case": "repeatable-read-issuance-refused-before-stale-capacity-snapshot",
+        "status": "PASS"
+      },
+      {
+        "case": "persistent-account-quota-across-peer-change",
+        "status": "PASS"
+      },
+      {
+        "case": "peer-quota-canonicalizes-ipv4-mapped-ipv6",
+        "status": "PASS"
+      },
+      {
+        "case": "eight-session-capacity-and-safe-terminal-cleanup",
+        "status": "PASS"
+      }
+    ],
+    "discriminating_oracles": [
+      "Independent fixed PHC C-reference password hash; real Argon2id19 65536KiB/3pass/1lane verification.",
+      "Upgrade18->806 preserves exact existing password tuple and seven grants.",
+      "Deactivation then reactivation and credential replacement between hash and issuance deny old proof; old sessions cannot return.",
+      "Expired touch after actual account-lock wait preserves expiry; delayed trigger entry has a committed fixture marker, all session rows remain unchanged, subsequent Control policy operation succeeds.",
+      "Explicit REPEATABLE READ INSERT returns the specific isolation refusal before stale count; no claim of a multi-session RR race executed.",
+      "Eight durable rows independently observed, credential_revision2/authentication_revision4, current account/grant_revision2, seven initial grants, bounded counters, released Control."
+    ]
+  },
+  "review": {
+    "mode": "Independent read-only review, root integration and actual engine execution",
+    "findings": [
+      "Expiry between Rust check and SQL touch became backend poison; corrected to zero-row update and normal Denied.",
+      "INSERT isolation restricted to READ COMMITTED to preserve count-after-lock guarantee.",
+      "INSERT clock read after account lock.",
+      "20-second wording scoped to final credential check rather than COMMIT latency."
+    ],
+    "fixture_correction": "Initial delayed-trigger scenario did not prove entry rather than early expiry. Second candidate adds a persistent fixture marker; actual native repeat passed. No product input changed."
+  },
+  "limits": [
+    "8 retained sessions/account; expired/revoked rows collected at next issuance under account lock.",
+    "256 account and256 peer buckets/dataset;5/20 attempts per60s; collisions deny conservatively; IPv4-mapped IPv6 canonicalized.",
+    "Default maximum8h,idle30min;20s hash-proof age at final credential check.",
+    "Explicit lost-issuance reply means no plaintext recovery or automatic reissue; new login consumes attempt/session capacity."
+  ],
+  "not_run": [
+    "Actual private HTTP/router/browser/Origin/cookie/CSRF header journey",
+    "Blocking-hash supervisor, socket backpressure, signal and hard-drain behavior",
+    "General login audit, reauthentication, principal lifecycle management and last-owner protection",
+    "Scope-qualified history grants, live action leases, restrictive pending/applied barrier",
+    "Ambiguous issuance COMMIT/restart with live browser credentials/PG crash",
+    "Hash admission pressure/cancel/exhaustion and unknown-account timing population",
+    "Concurrent capacity schedules and direct SQL blocked INSERT expiry",
+    "Configured session policy compatibility upgrade, full installation/release, Linux arm64, M1 or complete product"
+  ],
+  "evidence": [
+    {
+      "path": ".research/implementation/management-sessions/evidence-identity.json",
+      "sha256": "28df4d453d52bc572ecdc49ed04fc0f4b589cbbf8a800c53299d3481d76a641e",
+      "bytes": 2213
+    },
+    {
+      "path": ".research/implementation/management-sessions/offline-verification.json",
+      "sha256": "2bd77e33c2be2c6e7a50e6be8e3d18070312cb64d165975405acc652851467b9",
+      "bytes": 259
+    },
+    {
+      "path": ".research/implementation/management-sessions/capture/resources.json",
+      "sha256": "3ed103b53c2c5e34e4d3c1c5bb542697329b15c4e6b2daacd4fa6802f2e77082",
+      "bytes": 1331
+    },
+    {
+      "path": ".research/implementation/management-sessions/capture/terminal-audit.json",
+      "sha256": "0c405d1b0c381fac7a67517dbaccb439fd8e9b1e97478566e0828aaf0bad8213",
+      "bytes": 10393
+    },
+    {
+      "path": ".research/implementation/management-sessions/capture/out/build/source-manifest.json",
+      "sha256": "c0d8a707a11e78463018a1d84776710460dcf858cc28c16445e6953647866f7d",
+      "bytes": 115262
+    },
+    {
+      "path": ".research/implementation/management-sessions/capture/out/native-tests/session-result.json",
+      "sha256": "ea4303340dee2227589a550d4a0333b771fdbd7747c7bf78d0500bcb0d11b7a9",
+      "bytes": 4018
+    },
+    {
+      "path": ".research/implementation/management-sessions/capture/out/native-tests/native-sessions.log",
+      "sha256": "b1c00fd916c15ccfdcac4f336f377768938744cff02f438d5617b811064d2fd3",
+      "bytes": 955
+    },
+    {
+      "path": ".research/implementation/management-sessions/marker-native/evidence-identity.json",
+      "sha256": "bf816383bf37e828b36e6dd11335ddc055b3f9f8991b476e481da14ee27479d2",
+      "bytes": 2224
+    },
+    {
+      "path": ".research/implementation/management-sessions/marker-native/offline-verification.json",
+      "sha256": "ae41c6d302f4ff930e863d536f681eb9fa701497314a7cc6c501c9662e45c8e7",
+      "bytes": 331
+    },
+    {
+      "path": ".research/implementation/management-sessions/marker-native/capture/resources.json",
+      "sha256": "6ed0f5ab3be6c3ae88013ef765259c0c74e55e55548e96b3f33fb32f5bbdd77f",
+      "bytes": 1331
+    },
+    {
+      "path": ".research/implementation/management-sessions/marker-native/capture/terminal-audit.json",
+      "sha256": "48db972b6cd34e028d50040db467fd9d6d6ad5501677911e77fbe96fa7f13074",
+      "bytes": 10394
+    },
+    {
+      "path": ".research/implementation/management-sessions/marker-native/capture/out/build/source-manifest.json",
+      "sha256": "7d10955ae0162e31f04d347b79f87c84fced52621bc956d4e6796c70823ad973",
+      "bytes": 115262
+    },
+    {
+      "path": ".research/implementation/management-sessions/marker-native/capture/out/native-tests/session-result.json",
+      "sha256": "7df1c8f4a2fcd01d48e8f74c25126abe6e885b57b4e16052161a7d006b0dbd89",
+      "bytes": 3579
+    },
+    {
+      "path": ".research/implementation/management-sessions/marker-native/capture/out/native-tests/native-sessions.log",
+      "sha256": "b1c00fd916c15ccfdcac4f336f377768938744cff02f438d5617b811064d2fd3",
+      "bytes": 955
+    },
+    {
+      "path": ".research/implementation/management-sessions/red/result.json",
+      "sha256": "2fddb863b658aab2b315a61f35c7beb9c6ab1b86532064e0ab774079f555d3fd",
+      "bytes": 566
+    },
+    {
+      "path": ".research/implementation/management-sessions/red/sessions.log",
+      "sha256": "424b89d3ebc4a5b8fb3df7442c3cf8aa31c3b373782be76890d0975d5c76a1c7",
+      "bytes": 597
+    },
+    {
+      "path": ".research/implementation/management-sessions/reviewed/clippy.log",
+      "sha256": "fcf7fe9df43e44002a71c64a575f80e8b7afbddd7549f3f7c01496389e78ef1e",
+      "bytes": 175
+    },
+    {
+      "path": ".research/implementation/management-sessions/reviewed/result.json",
+      "sha256": "0afd533f51c7fe1cf14df05f41bad4622c5d4e452c6d792af28395f33b7fc987",
+      "bytes": 1054
+    },
+    {
+      "path": ".research/implementation/management-sessions/reviewed/sessions.log",
+      "sha256": "5c7db6a0e4204668847bbed36d8a67beee92736741529a6aa6630763c318084a",
+      "bytes": 1971
+    },
+    {
+      "path": ".research/implementation/management-sessions/marker/fixture-clippy.log",
+      "sha256": "f29bbfb9aae01dd02a9ed3a3faf0a6a93518c5a628685ae4779692a0bbafa936",
+      "bytes": 175
+    },
+    {
+      "path": ".research/implementation/management-sessions/marker/result.json",
+      "sha256": "0a9062bea041f2ce9995935729de7456634a5b0c80b0af37a32b85628c614fd2",
+      "bytes": 630
+    }
+  ],
+  "cleanup": [
+    {
+      "source": "7a0f4b692d90f6af0f31cdb21bb76fac34401ebd",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/browser-sessions-7a0f4b6",
+      "owner": "695522a33d2a299ac7e5f768b6f3435c",
+      "state": "stopped-retained",
+      "preexisting_preserved": 414,
+      "unrelated_running": 8,
+      "remaining_pg_clients": [],
+      "independent_sql": {
+        "sessions": 8,
+        "bindings": true,
+        "account": true,
+        "grants": 7,
+        "controls_released": true,
+        "bounded_counters": true,
+        "migration": 1
+      },
+      "network": "Owned empty network removed; stopped containers/data retained",
+      "capture_sha256": "deb09289f6a862bcf53f67d6edb7f918908d5b81e0dbe310ad091b3e2824f0cb"
+    },
+    {
+      "source": "d37e81fb1ce36d2f42962878d565b87cd7d4fdee",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/browser-sessions-d37e81f",
+      "owner": "80e662fc86b4986713e39cb960c161e9",
+      "state": "stopped-retained",
+      "preexisting_preserved": 416,
+      "unrelated_running": 8,
+      "remaining_pg_clients": [],
+      "independent_sql": {
+        "sessions": 8,
+        "bindings": true,
+        "account": true,
+        "grants": 7,
+        "controls_released": true,
+        "bounded_counters": true,
+        "migration": 1
+      },
+      "network": "Owned empty network removed; stopped containers/data retained",
+      "capture_sha256": "ac2da91cd92d5b46f460566884bca3e9dc3fbbc746556f187807f8e65374d54c"
+    }
+  ]
+}

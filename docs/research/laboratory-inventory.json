@@ -17181,6 +17181,29 @@
     "network_state": "removed after owner/no-endpoint audit; containers and data retained",
     "terminal_audit": "terminal-audit.json",
     "observed": "12 native cases passed; terminal audit PASS, zero clients, both stopped/PID0/noOOM,414 preexisting containers preserved. Touch crossing oracle requires trigger marker before claiming that specific race; fixture follow-up in progress.",
-    "evidence": ".research/implementation/management-sessions/capture/"
+    "evidence": "docs/implementation/evidence/p08-browser-session-storage-native-20260920.json",
+    "marker_followup": {
+      "source": "d37e81fb1ce36d2f42962878d565b87cd7d4fdee",
+      "tree": "52ebc81531a384f04b605309eb8c93e5ceeb799d",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/browser-sessions-d37e81f",
+      "owner": "80e662fc86b4986713e39cb960c161e9",
+      "container": "bigbrotr-implementation-browser-sessions-d37e81f",
+      "postgres": "bigbrotr-implementation-browser-sessions-d37e81f-pg",
+      "network": "bigbrotr-implementation-browser-sessions-d37e81f",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "state": "stopped-retained",
+      "source_files": 931,
+      "started_at": "2026-09-20T10:06:57.022580+00:00",
+      "network_id": "660c7eae7f9b0e1fe0cd53dbaa18d4472d214ab23740b2fc51ce35b9465547fa",
+      "postgres_id": "17845da0ae8ce3db51f8e37f55e98d587f4f124cf40f497c8390868b90d3c9e8",
+      "catalog_manager_provisioned": true,
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "0d1c3e9267d82407a04a0e294aac100f8e754b9e639dbd9554cc0e390b1851fa",
+      "network_state": "removed after owner/no-endpoint audit; containers and data retained",
+      "terminal_audit": "terminal-audit.json",
+      "observed": "12 real PG cases PASS with committed touch-trigger marker; unchanged product inputs versus7a0f4b6. Terminal audit PASS, zero clients,416 preexisting resources preserved,8 unrelated running,network removed.",
+      "evidence": "docs/implementation/evidence/p08-browser-session-storage-native-20260920.json"
+    }
   }
 }

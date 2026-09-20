@@ -129,7 +129,10 @@ expiry/capacity refusal from a poisoned backend. Existing policy documents and
 the seven initial dataset grants are unchanged. The private HTTP supervisor,
 Origin/cookie profiles, login audit, reauthentication, scoped grants and restrictive
 delivery barrier remain subsequent parts of this same task, not completed by
-storage-only tests. Do not advertise the session API until the listener journey
+storage-only tests. [Native session evidence](evidence/p08-browser-session-storage-native-20260920.json)
+records 12 actual PG16.15 cases at `d37e81f` with unchanged product `7a0f4b6`,
+including an observed delayed-touch trigger and subsequent usable Control.
+Do not advertise the session API until the listener journey
 and its resource/transport lifetimes are exercised.
 
 **Failure states:** unavailable policy authority causes expiry/fail-closed, not anonymous fallback. Last-owner recovery is an explicit local, positively authorized CLI operation with an audit record; it cannot be triggered through an unauthenticated HTTP request. Enrollment output is never copied into CI evidence.

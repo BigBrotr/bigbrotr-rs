@@ -21,23 +21,21 @@ another diagnostic command instead of the real read consumer.
 
 ## Git and ownership
 
-Base local main/private origin/main is pushed `34720bafb1c221089aec04ee4458994f07bfb6db`.
-Local main is unpublished candidate `7a0f4b692d90f6af0f31cdb21bb76fac34401ebd`,
-tree`6b24f429152ef369a18a93f9207c695fd47d6fd0`, transferred clean via Git with931 files.
-Only subsequent dirty files are this checkpoint and the laboratory inventory.
-Candidate adds migration0806, private Control/session adapter, regressions and docs. No existing published SQL was edited.
-No parallel writer, merge or rebase. Independent read-only review found expiry
-crossing, stale-isolation and post-lock clock boundaries; root added corrections
-and discriminatory native scenarios. Mac token/schema tests and scoped Clippy
-passed after review corrections (2 token/lifetime,16 schema tests). One recheck
-launcher refused an already-existing output directory before running commands;
-the distinct reviewed output then passed. Tux lab is now active; see resources below.
+Local main is `d37e81fb1ce36d2f42962878d565b87cd7d4fdee` (unpublished),
+tree`52ebc81531a384f04b605309eb8c93e5ceeb799d`. Product source is
+`7a0f4b692d90f6af0f31cdb21bb76fac34401ebd`, unchanged by the fixture-only follow-up.
+Both clean931-file revisions were transferred through Git and verified on Tux.
+Private origin/main remains`34720bafb1c221089aec04ee4458994f07bfb6db` until the
+qualification/docs commit is pushed. Root-only dirty changes are evidence,
+P08 task prose, laboratory inventory and this checkpoint. No parallel writer,
+merge or rebase. No local/remote build/test remains active. Independent read-only
+review completed; review suggestions and stronger fixture were engine-qualified.
 GitHub remains private bigbrotr-rs. HTTP has not been exposed.
 
 Preserve `.research/worktrees/producer-closing-old-writer`, last verified clean at
 `f899896b1207f5e71c4e39d9ab7814b293814735` on
 `research/producer-closing-old-writer`, and other historical worktrees.
-Caches are never source authority. Applied migrations0017/0018 must not be rewritten.
+Caches are never source authority. Applied migrations0017/0018/0806 must not be rewritten.
 
 ## Executed current boundary
 
@@ -84,15 +82,21 @@ holder files/413 preexisting lifecycle records. Main capture SHA256:
 
 ## Resources
 
-Browser sessions7a0f4b6 lab is stopped/retained after12 native cases PASS and
-independent SQL checks (8 sessions,credential2/authentication4,7 grants,released
-Control). Zero PG clients, no OOM,414 preexisting resources preserved; owned empty
-network removed. Raw capture14files SHA256
-`deb09289f6a862bcf53f67d6edb7f918908d5b81e0dbe310ad091b3e2824f0cb`.
-Root verified all hashes and931 source files against Mac Git archive. A follow-up
-fixture adds a persistent trigger-entry marker: original crossing case did not
-independently prove entry rather than earlier expiry. No production change.
-Next candidate reruns this bounded fixture in a fresh lab; no active Tux job yet.
+Browser session labs7a0f4b6 andd37e81f are stopped/retained, with no active
+jobs or cleanup debt. Both terminal audits PASS: zero PG clients, no OOM, all
+414/416 preexisting resources preserved respectively;8 unrelated workloads remain.
+Owned empty networks removed. Sources/captures independently verified on Mac.
+Current follow-up root
+`/home/tux/bigbrotr-implementation-20260917/runs/browser-sessions-d37e81f`,
+owner`80e662fc86b4986713e39cb960c161e9`, runner
+`0d1c3e9267d82407a04a0e294aac100f8e754b9e639dbd9554cc0e390b1851fa`, PG
+`17845da0ae8ce3db51f8e37f55e98d587f4f124cf40f497c8390868b90d3c9e8`.
+Inventory`implementation_browser_sessions_20260920`, raw
+`.research/implementation/management-sessions/{capture,marker-native/capture}`.
+Capture SHA256 initial`deb09289f6a862bcf53f67d6edb7f918908d5b81e0dbe310ad091b3e2824f0cb`,
+qualified`ac2da91cd92d5b46f460566884bca3e9dc3fbbc746556f187807f8e65374d54c`;
+each14files and931-source hashes verified. Original localresources.json is stale;
+use capture/resources.json. Do not restart used output roots.
 All older BigBrotr labs remain stopped/retained. Previous
 `implementation_archive_worker_20260918.event_query_candidate` is recorded in the
 [laboratory inventory](../research/laboratory-inventory.json).
@@ -119,13 +123,22 @@ one deliberately active original pin obligation after the negative COMMIT case.
 
 ## Next bounded product action
 
-Qualify the new additive0806 browser-session adapter on isolated PG16.15 before
-wiring its actual private listener. New files: management/sessions.rs,
-storage/postgres/browser_sessions.rs, browser_sessions_probe.rs and
-experiments/browser-sessions/native.py. Current Mac raw checks and the proposed
-exact-source launcher are under `.research/implementation/management-sessions/`.
-Initial RED was missing-API compilation, not runtime fault evidence. Native build has passed; all12 native cases passed; crossing-specific oracle is being strengthened before
-claiming that particular race. Do not call P08-T02 or any session journey complete.
+[Session storage evidence](evidence/p08-browser-session-storage-native-20260920.json)
+records12 actual nativePG cases PASS atd37e81f, unchanged product7a0f4b6. Independent
+SQL confirms8sessions,credential2/authentication4,7grants,boundedcounters,released
+Control. Mac2token/lifetime+16schema and scoped ClippyPASS; Linux equivalents plus
+actualadapterPASS. Review corrections cover ordinary expiry without poisoning,
+READCOMMITTED-only cap and post-lockclock. Initial RED was a missingAPI compilation
+error, not a runtime negative control. A failed local recheck only refused reused
+output; newdirectory checks passed. First crossing oracle lacked proof of trigger
+entry; finalfixture persists/asserts one marker, proves unchanged session rows,
+then performs fresh Controlpoll successfully. No P08-T02 step complete.
+
+Next review report/doc diff and21rawhash references, commit/push verified work, then
+connect actual private Axum listener and owned hash supervisor. Files:
+management/sessions.rs, storage/postgres/browser_sessions.rs, nativeprobe and
+experiments/browser-sessions/native.py. HTTP/audit/reauth/scopedgrant/streamdrain
+are not implemented. Do not replace the real consumer with another diagnosticCLI.
 
 The adapter preserves initial seven grants and accepted policy bytes. Two fenced
 transactions bracket Argon2: fixed persistent account/peer hash buckets charge
@@ -137,18 +150,18 @@ CSRF secrets. Expected denied/expired/throttled/capacity results complete the SQ
 transaction without poisoning Control. Expiry during touch suppresses the SQL row
 update; the adapter checks affected rows. INSERT requires READ COMMITTED and
 reads the clock after account locking. Review suggestions are statically addressed,
-not yet engine-qualified.
+engine-qualified within the report's stated scope.
 
-Next bounded command: finish scoped Mac checks/diff review, make an unpublished
-candidate, transfer clean exact source via Git, launch the inventoried native session
-lab and inspect all real cases. Then retain evidence/cleanup and continue P08-T02
-private Axum consumer. HTTP must use a bounded typed channel into the existing
+Continue P08-T02 actual private Axum consumer. HTTP must use a bounded typed channel into the existing
 supervisor, shared process budget, owned connection tasks and owned/joined hash
 work; stop admission and join both before Control release. Do not put the Send,
 not Sync LocalCoordinator or its Cell-based operations in Axum State. Axum0.8.9
 selected; its raw serve helper has unbounded detached connection tasks, so use
 an explicitly owned Hyper loop. Exact dependency source/API reading remains before
-adding transport dependencies. No such dependencies were added yet.
+adding transport dependencies. Retained resolution lock is
+`.research/dependency-selections/resolution/Cargo.lock`:axum0.8.9,hyper1.11.1,
+hyper-util0.1.20,tower0.5.3,http1.5.0,http-body-util0.1.5; tower-http not resolved
+there. No need to add unused HTTP middleware. No such dependencies were added yet.
 
 Read-only grant/session contract review completed: separate scope-qualified
 history-grant table, reauthentication bound to command digest, grant revision CAS,
