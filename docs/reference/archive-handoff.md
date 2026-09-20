@@ -424,7 +424,14 @@ reader handoff. `ArchivedEvent` separately retains a custody clone and its data
 grant until the decoded body's consumer drops it. Current policy and a live
 snapshot pin remain separate requirements through delivery. This local mechanism
 does not block concurrent work performed by the same coordinator or establish
-PostgreSQL transaction resolution. Native reader qualification is pending.
+PostgreSQL transaction resolution. [Native qualification at `5ba3051`](../implementation/evidence/p02-archive-reader-custody-native-20260920.json)
+passes 38 connected cases and 17 scoped Rust tests. Actual FD identity discriminates
+an unbound old reader; cancellation, deadline, stopped-worker parent death and
+lock reacquisition pass. Complete signed small/large/history objects and both
+frontiers remain unchanged across three PostgreSQL crashes/restarts. A decoded
+body still excludes another coordinator after the originating owner drops.
+`pidfd` exit observation is not a claim of orphan reap. These cases do not qualify
+public delivery policy, a snapshot pin or concurrent maintenance by the same owner.
 
 The P02-T04/T07 frontier bridge consumes a private `CutRead`, not another public
 diagnostic command. Its parent must resolve the sealed topology and authoritative

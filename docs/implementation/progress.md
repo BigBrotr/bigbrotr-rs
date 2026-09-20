@@ -1,202 +1,173 @@
 # Current execution checkpoint
 
-Observed 2026-09-20 on Mac after native frontier/recovery qualification.
+Observed 2026-09-20 on Mac after native reader custody qualification.
 Navigation only: follow the [resumption procedure](agent-handoff.md#resume-from-one-verified-checkpoint)
 and verify Git, dirty files, evidence and resources before continuing.
 
 ## Mandate and active boundary
 
-Complete owner-authorized product implementation remains active. Mac is the primary
-editing/Git workspace; Tux executes trusted exact-Git Linux work under the hosted
+Complete owner-authorized implementation remains active. Mac is the primary
+editing/Git workspace; Tux runs trusted exact-Git Linux work under the hosted
 runner billing exception. Preserve private bigbrotr-rs, unpublished Cargo packages
 and the read-only Go neighbor. No public release or Linux arm64 claim. No P02/P03,
 P06 task or M1 milestone is complete; all selected later work remains required.
 
-Current boundary is P02-T04/T07: complete topology prefix -> actual Archive owner/
-frontier -> immutable native snapshot binding -> retained read pin. Native cut,
-fresh persistence and native frontier/recovery now have scoped qualification.
-They are not protected read/export or source ACK/reclamation authority. Task files
-own the backlog; do not create another plan or diagnostic public command.
+Active boundary: P02-T04/T07, actual snapshot pin -> protected read/export/restart.
+Native cuts, persistence, actual Archive frontiers and reader custody have scoped
+qualification. They grant no principal/action authorization, source ACK or GC
+permission. Existing task files own the backlog; do not create another plan or
+another administrative diagnostic command instead of the real read consumer.
 
 ## Git and ownership
 
-Local main and private origin/main were freshly verified clean and equal at
-8a1d8ba43c44af1203ca1f17d9be043283db4616 after normal push. GitHub confirms
-BigBrotr/bigbrotr-rs remains private. Product source is e64ee85, tree
-8ca3cdded5f443b47fa008eae2d1da85d2b1f36c; qualified fixture4bdc20f and harness1865da9
-change no production/dependency input. No parallel writer or merge/rebase.
-Current root-owned dirty work adds coordinator read custody and its discriminating
-fixtures, plus this checkpoint. No other writer is active. The initial test compile failed on the missing inherit_reader API (preserved
-under .research/implementation/archive-reader-custody/red); this is not a runtime
-RED reproduction. After implementation, all15 scoped Mac custody/initialization
-cases and consumer Clippy pass in the adjacent green directory. Both child-held
-locks and the intentionally unbound negative control execute in the unit test.
-No native outcome or pin qualification is claimed; no local process remains.
+Local main is candidate `5ba30517244de213d68d68fbcf465ddf9465156c`, tree
+`3192ebffab309e9b8db9b00a7d4bfa0b8e380755`. Private origin/main was last verified
+at `8a1d8ba43c44af1203ca1f17d9be043283db4616`. Repository privacy was confirmed
+there. No push of the new candidate yet. Current root-owned dirty work: new reader
+custody evidence, task/reference documentation, lab inventory and this checkpoint.
+No parallel writer, merge or rebase. Finish report/diff/remote checks, commit this
+qualified boundary and push normally before advancing product edits.
 
-Preserve .research/worktrees/producer-closing-old-writer, last verified clean at
-f899896b1207f5e71c4e39d9ab7814b293814735 on research/producer-closing-old-writer,
-and the other historical worktrees. Caches are not source authority.
+Preserve `.research/worktrees/producer-closing-old-writer`, last verified clean at
+`f899896b1207f5e71c4e39d9ab7814b293814735` on
+`research/producer-closing-old-writer`, and other historical worktrees.
+Caches are not source authority. No local build or SSH session remains running.
 
-## Executed current boundary
+## Executed reader custody boundary
 
-[Frontier qualification](evidence/p02-archive-frontier-native-20260920.json) binds
-clean 900-file Git e64ee85 export, exact locked dependencies and native artifacts.
-Linux amd64/Rust1.98.1/PG16.15 passes16 schema tests, scoped Clippy, two signed
-normal/history native cuts,17 installed SQL/upgrade cases and15 restart/fault cases.
-Actual SQL migrator/checksum ledger is used. Schema15->16 preserves old values/xmin
-and refuses head-only adoption; synthetic empty-cut SQL is not native truth.
-Native histories have10/12facts,2/3committed groups,snapshots3/4 and8/11Parquetfiles.
-Older frontier identity remains unchanged after latest snapshot advances.
+[Reader custody evidence](evidence/p02-archive-reader-custody-native-20260920.json)
+binds the clean 906-file Git export at `5ba3051`, exact locked dependencies and
+native artifact identities. Linux amd64/Rust 1.98.1/PG 16.15 passes 17 scoped Rust
+tests, Clippy and 38 connected cases. Mac passes 15 custody/initialization tests
+and consumer Clippy. The initial missing-method compile failure is retained;
+it is not a runtime RED. No dependency or persistent schema/format changed.
 
-0016 extends the common ledger with immutable native snapshot/count/request and
-original selected attempt bindings. ControlSession checks retained complete input
-handles, exact intents, sealed topology, ordered authoritative source locks and
-live native/local custody before its atomic Archive owner/frontier/head commit.
-Owner protocol attribution is immutable; historical unqualified rows are not
-adopted. Scheduling lease age is not old-writer exclusion. The receipt is not a
-pin, principal/action grant, source ACK or GC permission.
+`read_event` and `inspect_cut` now require actual LocalCoordinator custody and
+use its validated catalog identity. The native child inherits the same locked
+open file description. `ArchivedEvent` keeps another custody clone and its data
+grant through its consumer. Fresh initializer/writer launch permissions remain
+separate. Two actual children retain exclusion until the last exit; the unbound
+unit control does not. Native FD inspection discriminates the old artifact at
+`3f29952`; its closed decoder predates snapshot selection, so only that negative
+request omits snapshot_id while the fixture independently checks latest=3.
 
-Native fault fixture4bdc20f (artifactb842416079b7f9c5ac8ee858920a500eb851863823894df2a0a281cb3d8cb986)
-uses the unchanged product with a fresh Control process per operation. Exact
-harness1865da9 passes15 cases in namespacequalified/base revision3/op c1..c6:
-COMMIT before-forward is unknown with no frontier; after-complete is unknown with
-all rows committed. Fresh lookup/identical retry preserves original values/xmin
-without minting another Archive epoch. Real blocked INSERT + manager loss rolls
-back all eight frontier/owner/role relations. Manager loss at proxy-held COMMIT
-after final verification can commit a historical receipt under retained local
-custody; capture/manager closure reports failure and grants no pin. Cancellation
-drops the future while blocked, then the fixture releases its blocker and joins
-both transports; permanent-blocker cancellation latency is not measured. Stale
-head refuses atomically. Expected complete rows and exclusion digest are independent.
+The native matrix includes two complete frontier histories, 15 complete signed
+read results, 20 refusals and one parent-death case. Normal/large/history retain
+8/8/11 Parquet files and snapshots 3/3/4; history also reads exact snapshot 3.
+The large signed fixture's declared encoding is 94,577 bytes. Three SIGQUIT
+postmaster crashes/restarts preserve full metadata, file hashes and signed objects.
+Actual blocked native readers retain the correct FD; cancellation at 478 ms and
+a six-second deadline at 6004 ms refuse and permit fresh retries. These times
+include fixture startup and are not capacity or universal latency guarantees.
 
-Both source exports match Mac Git archives. Offline verification checks48 captured
-file hashes, full signed rows and all eight-relation transitions. Ignored root
-.research/implementation/archive-frontier contains verifier, reports, exact bundles,
-launch/build/collector scripts and Mac checks. Mac fixture Clippy passes; an initial
-direct invocation omitted the selected native environment and was deliberately
-terminated exit143 during rebuild, not a test outcome. All local sessions are joined.
+The actual stopped worker exits when its parent is killed; identified pidfds
+observe both exits, then the original lock is reacquired. POLLIN is exit evidence,
+not orphan reap. Native PG client disappearance is checked separately after the
+blocker releases. Failure cleanup uses identified pidfds and retains failure
+separately; no successful cleanup can turn a failed scenario into PASS.
 
-## Preserved failures and review
+Independent read-only AI/source review corrected that cleanup and the old decoder
+request before execution. It found no additional concrete custody bypass in the
+inspected adapters. Independent read-only evidence review in `catalog_guard_review` also verifies
+19 capture hashes, 14 report references, all 906 Git source files, five artifact
+identities and 403 preserved container states. It corrected the large fixture
+wording: 94,577 bytes is the signed event, not its response envelope. The reviewer
+runs no engines. The fixture serializes the
+body and releases it before printing: public delivery with policy/pin is unqualified.
+Custody excludes other coordinators, not concurrent work under the same owner.
 
-Schema15 SQL RED9aa86b9 accepts an unbound empty Archive frontier; the same fixture
-refuses atomically under16. First direct-DDL harness failed at migration8 LOCK TABLE
-outside a transaction; fresh transaction-wrapped DB reproduced the semantic RED.
-Original stdout/stderr are retained. This does not qualify a CLI/native publication.
+Offline verification checks all 19 capture files, the Mac Git archive, complete
+signed rows, native FD observations and every preexisting container's retained
+identity/lifecycle/mount/network state. Mac Python 3.9 initially rejected tarfile's
+filter parameter; no extraction occurred and the dependent check did not run.
+Exclusive per-file extraction after archive/membership/hash verification succeeded;
+this collection-tool failure changed no native evidence. Raw files and the verifier
+are under `.research/implementation/archive-reader-custody/`.
 
-Original e64 native lab omitted CatalogManager, normally created by the coordinator
-CLI matrix. Initializer exited101 before frontier work; original child stderr was
-not retained. Fresh provisioned lab reused unchanged artifacts and passes. Original
-SQL harness parsed only the last line of multiline JSON after executing15 cases;
-that INCOMPLETE report stays unchanged, and a fresh full-parser retry passes.
+## Resources
 
-Fault matrixinitial passed three cases then inspected a successful fast client's
-already-exited backend. Revision2/op e1 committed; later fresh lookup resolves it.
-Synchronized retry1fb54dd passed four cases, then its oracle omitted three existing
-nullable Control-fence fields in an Archive owner. Revision3/op d1 committed.
-Corrected oracle requires those fields NULL and checks the complete preserved
-post-state; qualified matrix resolves d1 and passes all15. Both raw matrices remain
-INCOMPLETE. No product change was needed for these fixture corrections.
+The new lab is stopped and retained, under
+[the laboratory inventory](../research/laboratory-inventory.json),
+`implementation_archive_worker_20260918.reader_custody_candidate`:
 
-Independent read-only AI review plus integrating-owner review addressed lease
-checks, historical-owner adoption, head-only promotion, fixture allocation overlap,
-complete durable oracle, backend identities and cleanup. No further concrete
-exclusion bypass was found. A suggested no-revival scheduling rule was not an
-existing contract; same current issuer/fence and local/native custody can refresh
-scheduling, with final unexpired checks mandatory. AI reviewers ran no engines.
+- Root `/home/tux/bigbrotr-implementation-20260917/runs/archive-reader-custody-5ba3051`;
+  owner `a7a94f1d495fc680bb99b0ab489c4871`.
+- Runner `0a95169911a604ce4f8100dee22c49c7f974a68b02ee12b1196955661c6e515d`;
+  PG `b3bc5e5ffc2228bb61171a59dc888530cc760c365278f5271fc947862f0bc350`.
+- Both stopped/PID 0/no OOM. Collector exits 143/137 occurred after passing cases;
+  they are not test exits. No PG clients remained. All 403 preexisting containers
+  are unchanged, eight unrelated containers remain running, no BigBrotr lab runs.
+- Only the empty owned network was removed. Containers, artifacts, sources and
+  data remain. Capture SHA256:
+  `dd54c04084b8d49bae15fb9f1a1b53a0b1cb30f4f62dd4cf453de7b15fe40ca0`.
 
-## Owned resources and evidence
-
-All three frontier labs are stopped and retained; no unfinished writes or active
-BigBrotr experiment remain at the terminal audit. Never restart on the same output
-roots. Exact resources and prior inventories are in
-[the laboratory inventory](../research/laboratory-inventory.json), under
-implementation_archive_worker_20260918:
-
-- frontier_candidate: root/home/tux/bigbrotr-implementation-20260917/runs/archive-frontier-9aa86b9,
-  owner3bbfe3c27264f3024826a210cd758f72; SQL RED only, no network/ports, PG stopped/Pid0/noOOM.
-- frontier_native_candidate: root/home/tux/bigbrotr-implementation-20260917/runs/archive-frontier-e64ee85,
-  owner360298b0716d9c17f1bc0ca9d6c5357c; stopped/Pid0/noOOM, no PG clients,
- 399 prior containers preserved, empty owned network removed.20 captured files,
- SHA25682aa475ef3f60cfa4df2a6f2c69cd46a80a63cfdf5106cc94458cfd8ee83174b.
-- frontier_provisioned_candidate: root/home/tux/bigbrotr-implementation-20260917/runs/archive-frontier-e64ee85-provisioned,
-  owner81f9b263cd386d23bbbb6f0bb6b0a672; runner4d9372b7e8884e771f2cca23f2614eb8710b1f10d8c5d278c2fe928ed39bb194,
- PG e7f918f2c5bf7f20aaf07ad10c76624b8851abf203a2cb2e7adcd50423be0e5d.
- Stopped/Pid0/noOOM, no PG clients,401 prior containers preserved, eight unrelated
- running, zero BigBrotr running; only empty owned network removed.28files capture
- SHA25611b9a56737f3e6778a775ded0098cfee9cf6675eceaf03828e3bf73ab54e001b.
- The launcher's artifact-loop variable named its runner archive-read-probe; actual
- container ID/owner labels were verified throughout and that runner is stopped.
-
-Runner2CPU/6GiB/512PIDs;PG1CPU/1GiB/128PIDs;internal networks/no host ports; retained
-sources/artifacts/data. Earlier cut354de75, membership3369091, file-syncb9ddd74,
+Runner: 2 CPU/6 GiB/512 PIDs; PG: 1 CPU/1 GiB/128 PIDs; 512 MiB tmpfs;
+internal network/no host ports, read-only exact source/root, no release credentials.
+Earlier frontier e64 labs, cut354de75, membership3369091, file-syncb9ddd74,
 snapshote1852b8, event3f29952 and producer/WAL labs remain stopped/retained under
-their reports/inventory. No unrelated resource was changed or removed.
+their reports/inventory. Never restart a used output root. No cleanup debt remains.
 
-## Next bounded action and open gates
+## Previous prerequisite evidence and remaining boundaries
 
-Qualification/report/diff/remote checks and normal push are complete. The next
-boundary is the actual snapshot pin consumer. Before changing topology SQL, verify
-the proposed omission issue against scientific cut semantics:0002 rejects direct
-T0(open member/NULL)->T1(omitted) even after source closure. But the contracts require
-explicit predecessor cuts and forbid epochs disappearing from a complete prefix.
-CutRead currently covers only explicitly supplied streams; merely permitting SQL
-omission would not preserve historical native facts/reference closure. An explicit
-successor carrying the old closed N plus the new epoch's zero is compatible with
-current validators and needs practical qualification. Independent read-only AI
-review in catalog_guard_review confirms no implicit historical inheritance is
-specified; a closed-member intermediate topology would not repair native omission.
-No SQL change or new experiment has begun, and no direct-omission defect is confirmed. Preserve this distinction;
-controlled handoff remains required selected work, not an excuse to block the first
-single-topology pin/read path or silently drop handoff acceptance.
+[Frontier qualification](evidence/p02-archive-frontier-native-20260920.json) at
+e64ee85 passes two signed native histories, 17 SQL/upgrade cases and 15 restart/
+fault cases. Migration 16 adds immutable native snapshot/count/request/input
+bindings and actual Archive owner attribution. Unknown COMMIT is explicit;
+identical lookup/retry preserves original rows/xmin. Manager loss at held COMMIT
+can leave a historical receipt under local custody but grants no pin. Cancellation
+qualification releases its blocker before joining: permanent-blocker driver-join
+latency is not measured. Initial lab provisioning/parser/oracle failures remain
+in that report. Schema 15->16 preserves old unbound values and rejects head-only
+adoption; it does not qualify already-bound populated schema10/14 recovery.
 
-Implemented inherited close-only coordinator custody in the actual read-event
-and inspect-cut children, retaining custody with a hydrated body until its consumer
-drops it. Two actual children and an unbound negative control discriminate the local
-lock test. The native harness adds actual worker FD identity, blocked cancellation/
-deadline and stopped-worker parent-death/reacquisition. Its retained old event-reader
-artifact3f29952 supplies the missing-FD negative control. Complete diff review and independent read-only AI review found two harness issues:
-the old closed decoder does not accept snapshot_id, and failed stopped-child tests
-needed pidfd cleanup. Both are corrected, with failure/cleanup recorded separately.
-The negative adapter uses independently verified latest3; current reads keep explicit
-selection. pidfd POLLIN is exit evidence, not orphan reap. Next commit a private
-candidate, transfer exact Git to a fresh inventoried Tux lab and execute
---reader-custody, which includes both actual cut histories plus signed hydration. No new lab is running.
-Read-only Tux inspection reconfirmed e64 frontier/provisioned and3f29952 event labs
-stopped/Pid0 with matching owner labels; sources/data remain retained.
+[Cut qualification](evidence/p02-archive-cut-native-20260920.json) retains its
+initial TRUNCATE/FK fixture failures; corrected tests exercise the actual bound
+protocol. No host/power-loss, arm64, complete installation or release evidence.
+The full receipt scan is finite; 10/12 facts in 2/3 groups is not default-capacity
+qualification. DuckLake list-files still materializes all metadata in native
+binding. Aged/mixed load, native RSS and maintenance costs remain unmeasured.
+Strict WAL reopen cannot detect removal of a complete final record; negative
+noncommit resolution remains unimplemented. Never infer noncommit from a missing
+PG row or successful local reopen.
 
-Then continue P02-T04/T07's actual snapshot lease/pin consumer with PG-clock expiry,
-current holder identity and a stable catalog/local barrier shared with maintenance.
-The independent static pin review recommends immutable new-protocol attribution,
-1:1 binding to0016, no historical adoption, current Control holder identity,
-PG-clock checks after waits and stable consumer locking shared with maintenance.
-Historical snapshot existence must be checked under the same catalog barrier;
-CatalogCapture currently observes latest only. Existing0002 shapes are not sufficient: caller-supplied timestamps are not current
-lease validation, and locking only existing lease rows cannot exclude a new pin.
-Zero/empty cuts still need native pins despite having no positive source claims.
-Do not take table SHARE after native owner FOR UPDATE; native DML takes table then
-row. Any new served native child must retain actual custody until join/positive
-exclusion, including parent death. Current private cut inspection alone does not
-qualify that future GC/read interaction.
+## Next bounded product action
 
-Historical read/export must retain real principal/action/scope authorization,
-current policy and pins through output. AccountObservation is not reusable auth,
-PolicyLeaseTracker is local duration, and administration grants omit history/export.
-LifecycleOutput's4096-byte post-cleanup diagnostic path cannot carry scientific
-served data. M1 metadata comes from eligibility/receive facts, not payload timestamps.
-Complete read/export/restart and all later selected product work remain required.
+Implement the real snapshot pin consumer under P02-T04/T07. The existing 0002
+lease shapes need additive qualification: immutable protocol attribution and a
+1:1 binding to the 0016 frontier, no adoption of old rows, actual current Control
+holder/role/incarnation and PostgreSQL clock checks after blocking work. The
+historical publisher need not remain alive. Old unqualified retention claims
+remain obligations and cannot be ignored. Zero/empty cuts still require native
+snapshot protection despite having no positive source ranges.
 
-The full receipt scan is finite;10/12facts in2/3groups is not capacity at default
-caps. Exact DuckLake list-files materializes all metadata during binding despite
-LIMIT. Predicate/aged-state/mixed-load/RSS costs remain unmeasured; preserved
-checkout.research/checkouts/ducklake-s3-review is reference. No power/host-loss,
-Linux arm64 or full install/release qualification. Already-bound populated10/14
-history recovery and migration15 concurrency remain separate gates. Strict WAL
-reopen cannot detect a completely removed final record; negative noncommit
-resolution is unimplemented. Never infer noncommit from reopen or a missing PG row.
+Use a stable catalog/consumer lock shared with maintenance before scanning pins;
+locking only existing leases cannot exclude a new insertion. Preserve the order
+local custody -> catalog barrier -> short Control transaction. Never take native
+table SHARE after the native owner FOR UPDATE: native DML takes table then row.
+Verify actual historical snapshot existence under that barrier; CatalogCapture
+currently selects latest. Do not substitute latest for an older frontier.
 
-External monitor findings remain scoped closed with practical evidence:
+Connect the pin to an actual bounded event/export consumer. Keep current
+principal/action/scope and policy authority through output; AccountObservation is
+not reusable authentication and administration grants omit history/export.
+LifecycleOutput's 4096-byte post-cleanup diagnostics cannot carry served data.
+Native work must not block Control supervision: LocalCoordinator contains Cell
+state and is not Sync, so inspect the ownership needed to dispatch a retained
+read job to its supervised worker thread without broadening writer authority.
+Snapshot expiry stops delivery; it is not proof that the worker exited. Source
+claims and local custody must survive unresolved work until positive exclusion.
+
+Topology review found no contract allowing implicit inheritance of omitted old
+epochs. The safe representable transition is T0 -> T1 {old:N,new:0}, then new:M;
+old membership stays immutable. Merely permitting direct omission in 0002 would
+exclude old native facts. Even an intermediate topology followed by omission can
+lose those facts from the view. Qualify cross-epoch correction/reference closure
+and disjoint new data before completing handoff guarantees. No SQL omission fix
+has been applied and no direct-omission defect is claimed as reproduced.
+
+Monitor findings remain scoped closed with practical evidence:
 [MON001/002/004/006](evidence/p01-monitor-corrections-native-20260918.json),
 [MON005](evidence/p01-jsonb-limit-native-20260918.json),
 [MON009](evidence/p02-job-bounds-native-20260918.json),
 [MON010](evidence/p01-tls-presence-20260918.json),
-[MON007](evidence/p01-archive-cache-retry-20260918.json). No new contrary evidence.
+[MON007](evidence/p01-archive-cache-retry-20260918.json). No contrary evidence.

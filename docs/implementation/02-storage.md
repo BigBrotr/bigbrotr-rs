@@ -757,9 +757,12 @@ cannot reclaim required evidence, pending data or readable generations.
   required before this step can close.
   Native event/cut readers now require the local coordinator and inherit its
   close-only custody; decoded event bodies retain custody through their consumer.
-  Fifteen Mac custody/initialization cases and scoped consumer Clippy pass. Native
-  FD, blocked-reader and parent-death qualification is pending; this is no pin or
-  policy grant and completes no step.
+  [Native qualification at `5ba3051`](evidence/p02-archive-reader-custody-native-20260920.json)
+  passes 38 actual signed cut/read/refusal/restart cases and 17 scoped Rust tests.
+  Native FD inspection, the unbound old-reader control, blocked cancellation and
+  deadline, stopped-child parent death and lock reacquisition pass. Fifteen Mac
+  custody tests and consumer Clippy also pass. No pin/policy grant or step closure
+  follows; concurrent maintenance by the same coordinator remains a separate gate.
 - [ ] **Step 2:** Reclaim pending payload only after committed archive and safety policy;
   preserve identity/receipt metadata for its correctness horizon.
 - [ ] **Step 3:** Compact files without changing source identities or reference resolution;

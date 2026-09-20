@@ -1,0 +1,523 @@
+{
+  "format": "bigbrotr-archive-reader-custody-evidence/1",
+  "status": "PASS",
+  "observed_at": "2026-09-20T07:19:14.851684+00:00",
+  "scope": "P02-T04/T07 native reader custody prerequisite only; no snapshot pin, public read policy/delivery, export, M1 or release qualification",
+  "source": {
+    "revision": "5ba30517244de213d68d68fbcf465ddf9465156c",
+    "tree": "3192ebffab309e9b8db9b00a7d4bfa0b8e380755",
+    "files": 906,
+    "archive_sha256": "9e8de6ff36b223c8f540a262926f97bf7c405768fd48b6155232037d7a661c0c",
+    "manifest": {
+      "path": ".research/implementation/archive-reader-custody/capture/out/build/source-manifest.json",
+      "bytes": 111999,
+      "sha256": "d6c086cff9c81eedb786fcdfafb101ced116102c973d5c835b8fc2855fb9c2b9"
+    },
+    "verified_against_mac_git_archive": true,
+    "unchanged_after_execution": true,
+    "lock_sha256": "343cf962fd7594d7569b9a5715e97457af7eb55df40186c42f7ebcd1fc104215"
+  },
+  "implementation": [
+    "Event and complete-cut readers require the actual validated LocalCoordinator; catalog identity cannot be substituted independently.",
+    "The trusted native child inherits a clone of the same locked open file description; initialization and publication launch permissions remain separate and unchanged.",
+    "ArchivedEvent owns a separate close-only custody clone alongside its data grant. A fixture drops the originating coordinator and observes Occupied until the actual body consumer drops.",
+    "Unknown termination still retains the native/control/TLS/data allowances, while the live child retains custody; no uninterruptible kernel task was manufactured.",
+    "No dependency, persistent format, applied migration, public capability or release target changed."
+  ],
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+    "native_toolchain": {
+      "os": "Linux",
+      "architecture": "x86_64",
+      "discovery": "llvm-config",
+      "environment": {
+        "CC": "/usr/lib/llvm-14/bin/clang",
+        "CXX": "/usr/lib/llvm-14/bin/clang++",
+        "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+        "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+        "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+      },
+      "tools": {
+        "CC": {
+          "path": "/usr/lib/llvm-14/bin/clang",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "CXX": {
+          "path": "/usr/lib/llvm-14/bin/clang++",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "AR": {
+          "path": "/usr/lib/llvm-14/bin/llvm-ar",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+          "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+          "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+        },
+        "LIBCLANG_PATH": {
+          "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+          "version": "Debian clang version 14.0.6"
+        },
+        "discovery": {
+          "path": "/usr/lib/llvm-14/bin/llvm-config",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+          "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+          "version": "14.0.6"
+        }
+      },
+      "sdk": null
+    },
+    "limits": "runner2CPU/6GiB/512PIDs;PG1CPU/1GiB/128PIDs;512MiBtmpfs;internal network;no host ports;nonroot runner;readonly exact Git source/root;no release keys",
+    "host": {
+      "kernel": "Linux 6.12.101+deb13-amd64 x86_64 GNU/Linux",
+      "filesystem": "/dev/nvme0n1p2 ext4 rw,relatime,errors=remount-ro"
+    }
+  },
+  "artifacts": {
+    "control": "46ea67be23443e49a43fde7ab7f4ee03bf25556fb09c722f04a09ec5e3626413",
+    "worker": "b7049b1013846bf53d373defa6230a9483d84e4bf844c5956f48795701aad389",
+    "publisher": "aa6c68087719973528196bd870a74f5c41ab5e1fd4dc9428a068b4ebc973a7ce",
+    "reader": "937e78a3b291015c91dcf5b1623aacca1fdd4a8bfd231f98b155059a260b9989",
+    "event_reader": "6725bb4b4d5104b64746290243cb043a92aa803157a64cf8359f51d418ad4280"
+  },
+  "dependencies": [
+    {
+      "path": "contracts/release/archive-engine.json",
+      "bytes": 8159,
+      "sha256": "ae0069565ab9411928df0cf067822630c4f3a912919e61633b952f8077a5e2c1"
+    },
+    {
+      "path": "contracts/release/dependencies.json",
+      "bytes": 16208,
+      "sha256": "9bea8c27908c680afc63ec9b74c481ea522c2b7a32232ab4dbca82b1920d7dd0"
+    }
+  ],
+  "upstream": {
+    "dependency": "command-fds0.3.3",
+    "lock_checksum": "1b60b5124979fccd9addd89d8b97a1d6eebb4950694520c75ddd722535ea443f",
+    "inspected": "src/lib.rs::CommandFdExt::preserved_fds and preserve_fds in the exact Cargo registry source",
+    "consequence": "preserved_fds appends a pre_exec callback over owned descriptors; the following TLS handoff does not replace custody. New read/cut native mTLS was not executed."
+  },
+  "checks": {
+    "mac": {
+      "scope": "new coordinator custody API test; native execution pending",
+      "format": "bigbrotr-foundation-ci/1",
+      "status": "PASS",
+      "checks": [
+        {
+          "name": "custody-tests",
+          "command": [
+            "cargo",
+            "test",
+            "--locked",
+            "--offline",
+            "-p",
+            "bigbrotr",
+            "--lib",
+            "storage::archive::initialization::tests",
+            "--",
+            "--test-threads=1"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 8.888064708
+        },
+        {
+          "name": "consumer-clippy",
+          "command": [
+            "cargo",
+            "clippy",
+            "--locked",
+            "--offline",
+            "-p",
+            "bigbrotr",
+            "--lib",
+            "--example",
+            "archive_event_probe",
+            "--example",
+            "archive_publication_probe",
+            "--",
+            "-D",
+            "warnings"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 3.0163072080000006
+        }
+      ],
+      "counts": {
+        "collected": 2,
+        "executed": 2,
+        "failed": 0,
+        "not_run": 0
+      }
+    },
+    "linux": {
+      "source": "5ba30517244de213d68d68fbcf465ddf9465156c",
+      "source_manifest_sha256": "d6c086cff9c81eedb786fcdfafb101ced116102c973d5c835b8fc2855fb9c2b9",
+      "native_toolchain": {
+        "os": "Linux",
+        "architecture": "x86_64",
+        "discovery": "llvm-config",
+        "environment": {
+          "CC": "/usr/lib/llvm-14/bin/clang",
+          "CXX": "/usr/lib/llvm-14/bin/clang++",
+          "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+          "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+          "CARGO_BUILD_JOBS": "2",
+          "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+        },
+        "tools": {
+          "CC": {
+            "path": "/usr/lib/llvm-14/bin/clang",
+            "realpath": "/usr/lib/llvm-14/bin/clang",
+            "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+            "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+          },
+          "CXX": {
+            "path": "/usr/lib/llvm-14/bin/clang++",
+            "realpath": "/usr/lib/llvm-14/bin/clang",
+            "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+            "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+          },
+          "AR": {
+            "path": "/usr/lib/llvm-14/bin/llvm-ar",
+            "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+            "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+            "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+          },
+          "LIBCLANG_PATH": {
+            "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+            "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+            "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+            "version": "Debian clang version 14.0.6"
+          },
+          "discovery": {
+            "path": "/usr/lib/llvm-14/bin/llvm-config",
+            "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+            "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+            "version": "14.0.6"
+          }
+        },
+        "sdk": null
+      },
+      "scope": "actual coordinator custody inherited by native readers; no pin or read authority",
+      "format": "bigbrotr-foundation-ci/1",
+      "status": "PASS",
+      "checks": [
+        {
+          "name": "fixture",
+          "command": [
+            "cargo",
+            "build",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr",
+            "--example",
+            "catalog_schema_probe",
+            "--example",
+            "catalog_initialization_probe",
+            "--example",
+            "archive_receipt_probe",
+            "--example",
+            "archive_event_probe",
+            "-p",
+            "bigbrotr-archive-worker",
+            "--example",
+            "archive_publication_probe",
+            "--example",
+            "archive_read_probe",
+            "--example",
+            "archive_coordinator_probe",
+            "--example",
+            "archive_attempt_probe"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 56.219233114272356
+        },
+        {
+          "name": "coordinator-custody",
+          "command": [
+            "cargo",
+            "test",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr",
+            "--lib",
+            "storage::archive::initialization::tests",
+            "--",
+            "--test-threads=1"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 14.887812810018659
+        },
+        {
+          "name": "reader-parent",
+          "command": [
+            "cargo",
+            "test",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr",
+            "--lib",
+            "storage::archive::events"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 0.1139948321506381
+        },
+        {
+          "name": "cut-parent",
+          "command": [
+            "cargo",
+            "test",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr",
+            "--lib",
+            "storage::archive::cut"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 0.11403917521238327
+        },
+        {
+          "name": "clippy",
+          "command": [
+            "cargo",
+            "clippy",
+            "--locked",
+            "--release",
+            "-p",
+            "bigbrotr",
+            "-p",
+            "bigbrotr-archive-worker",
+            "--lib",
+            "--example",
+            "catalog_schema_probe",
+            "--example",
+            "catalog_initialization_probe",
+            "--example",
+            "archive_receipt_probe",
+            "--example",
+            "archive_event_probe",
+            "--example",
+            "archive_publication_probe",
+            "--example",
+            "archive_read_probe",
+            "--example",
+            "archive_coordinator_probe",
+            "--example",
+            "archive_attempt_probe",
+            "--bin",
+            "bigbrotr",
+            "--bin",
+            "bigbrotr-archive-worker",
+            "--",
+            "-D",
+            "warnings"
+          ],
+          "status": "PASS",
+          "executed": true,
+          "exit_code": 0,
+          "seconds": 2.8707704432308674
+        }
+      ],
+      "counts": {
+        "collected": 5,
+        "executed": 5,
+        "failed": 0,
+        "not_run": 0
+      }
+    },
+    "ordered_build": {
+      "path": ".research/implementation/archive-reader-custody/capture/out/native-tests/ordered-build.log",
+      "bytes": 626,
+      "sha256": "622071f83b5a45189dbc79f036618fecf5f4d96668b2af43c23b14dfe3827ad7"
+    },
+    "offline": {
+      "status": "PASS",
+      "source": "5ba30517244de213d68d68fbcf465ddf9465156c",
+      "scope": "offline source/capture/complete signed rows, actual FD and terminal resource oracle; no new engine execution",
+      "files": 19,
+      "cases": 38,
+      "successful_signed_reads": 15,
+      "refused_reads": 20,
+      "source_files": 906,
+      "preexisting_preserved": 403
+    }
+  },
+  "scenarios": {
+    "cases": 38,
+    "status": "PASS",
+    "histories": [
+      "normal:10 facts / snapshot3 / eight Parquet files",
+      "large:full 94,577-byte signed event / snapshot3 / eight Parquet files",
+      "history:12 facts / exact snapshot3 and later4 / eleven Parquet files"
+    ],
+    "full_signed_reads": 15,
+    "refused_reads": 20,
+    "cut_histories": 2,
+    "parent_death_cases": 1,
+    "source_oracle": {
+      "path": "experiments/archive-engine/signed_publication_oracle.py",
+      "bytes": 16215,
+      "sha256": "7ad4381bdc691d45245232d7cbdebeed039c6de0c182bcdc193b3479678917a4"
+    },
+    "signed_small": {
+      "path": "experiments/identity-contract/signed-fixture.json",
+      "bytes": 58802,
+      "sha256": "4c931ab34cb7adeb707fc2866f4a50b3ec8b694cbb2d4fb5e335f8f37a2d8875"
+    },
+    "signed_large": {
+      "path": "tests/fixtures/protocol/archive-event-response.json",
+      "bytes": 962,
+      "sha256": "815bf9e7e0fbcda73a77fbc3f91bebe0ec5c5f356e01bd665f695a8edb5af963"
+    },
+    "native_matrix": {
+      "path": ".research/implementation/archive-reader-custody/capture/event-cases.json",
+      "bytes": 2950754,
+      "sha256": "44fd159dd5d7af73d7c4b7d39e5ff5e178dcb9bd3d8c472c10dd6eaf1ea04290"
+    },
+    "details": [
+      "Complete independent signed objects, source facts and all five families; actual frontier bindings and original snapshot identities checked independently.",
+      "Invalid/missing snapshots, scope, digest, event ID, fact identity, row limit, catalog and database refuse. Missing and corrupt Parquet files refuse; exact restoration permits retry.",
+      "Three SIGQUIT postmaster crashes/restarts preserve complete native metadata and all scientific file hashes; fresh readers return the original exact signed objects.",
+      "Actual PG snapshot-table lock blocks the native SELECT-only reader before cancellation/deadline/parent death. /proc verifies parent/child start identity and the inherited exact custody device/inode plus FLOCK.",
+      "Stop the actual native worker, observe state T, kill its exact parent through pidfd, observe both exits and reacquire the original local lock. pidfd POLLIN establishes exit, not orphan reap. PG reader disappearance is checked separately after the blocker releases.",
+      "Cancel/deadline cases observe native custody before refusal and then execute successful fresh retries. The two-child unit case requires custody until the last actual child exit; its unbound branch has no such protection."
+    ],
+    "measured_ms": {
+      "negative-no-custody-blocked": 422,
+      "cancel-blocked": 478,
+      "deadline-blocked": 6004
+    },
+    "measured_limits": "Small isolated workload only. Observed478ms cancellation and6004ms six-second deadline include fixture startup; no throughput, universal latency or aged-state/RSS claim."
+  },
+  "negative_control": {
+    "source": "3f2995211bc8ea02b09e12e019d6e5d01bb55d9a",
+    "sha256": "20709525a4ac035583b2ce7feefa12c7c09dd4d54c78c1aadad77ada14a5181e",
+    "meaning": "Actual retained old parent successfully reads the same current signed event; while its native worker is blocked, that worker has no custody FD. This is the expected missing protection, not loss of scientific data.",
+    "compatibility": "The old closed decoder predates snapshot_id. Only its request omits that field; the fixture independently verifies latest3 before taking the blocker. The candidate keeps explicit snapshot selection."
+  },
+  "failures": [
+    {
+      "scope": "initial new API compile only",
+      "evidence": {
+        "path": ".research/implementation/archive-reader-custody/red/result.json",
+        "bytes": 661,
+        "sha256": "ba32c7f212aa0bf9ea1cd765efc6264914aadd4a23db360b45941f39871e23f8"
+      },
+      "meaning": "Missing inherit_reader method; no runtime RED or engine scenario ran. After implementation, the discriminating bound/unbound local lock case passes."
+    },
+    {
+      "scope": "Mac capture extraction only",
+      "evidence": {
+        "path": ".research/implementation/archive-reader-custody/extraction-failure.json",
+        "bytes": 334,
+        "sha256": "a71effe8416b4bc3083cbb60ad4e6591c3757bd64d09b93bc9686a3eeb5b895b"
+      },
+      "meaning": "Python3.9 rejects tarfile filter. No files were extracted; subsequent offline check did not run. Exclusive per-file extraction after archive/membership/hash verification succeeded; raw native outcomes were unchanged."
+    }
+  ],
+  "review": {
+    "kind": "independent read-only AI plus integrating owner review",
+    "findings": [
+      "Corrected the old baseline closed-decoder request before execution.",
+      "Added identified-pidfd finally cleanup and separate failure/cleanup outcomes before execution."
+    ],
+    "boundaries": "Reviewer ran no engines. Custody excludes other coordinators, not operations sharing the same owner. Fixture serializes then releases its body before printing; it does not qualify public delivery authority."
+  },
+  "resource_closure": {
+    "audit": {
+      "path": ".research/implementation/archive-reader-custody/capture/terminal-audit.json",
+      "bytes": 10455,
+      "sha256": "d4ec49a0537dfd8ae98e5cfc5898b8f4f23a44018935c831b80703239eb54c7b"
+    },
+    "inventory": {
+      "path": ".research/implementation/archive-reader-custody/capture/terminal-inventory.json",
+      "bytes": 742837,
+      "sha256": "d8224d256850496ef20f7e86e6a5abada51de688824ef88b2384690536b526d8"
+    },
+    "resources": {
+      "path": ".research/implementation/archive-reader-custody/capture/resources.json",
+      "bytes": 1355,
+      "sha256": "651252a6c8f30f79447c92923badf91fdd50898a5a56de8635af660b03f9e9e6"
+    },
+    "state": "stopped-retained; empty owned network removed; all data/artifacts/containers retained",
+    "preexisting_preserved": 403,
+    "unrelated_running": 8,
+    "bigbrotr_running": 0,
+    "remaining_pg_clients": 0,
+    "terminal_states": [
+      {
+        "name": "/bigbrotr-implementation-archive-reader-custody-5ba3051",
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 143,
+        "Error": "",
+        "StartedAt": "2026-09-20T07:07:46.632184986Z",
+        "FinishedAt": "2026-09-20T07:12:24.610892882Z"
+      },
+      {
+        "name": "/bigbrotr-implementation-archive-reader-custody-5ba3051-pg",
+        "Status": "exited",
+        "Running": false,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 0,
+        "ExitCode": 137,
+        "Error": "",
+        "StartedAt": "2026-09-20T07:07:44.515090002Z",
+        "FinishedAt": "2026-09-20T07:12:34.696872936Z"
+      }
+    ],
+    "exit_meaning": "Collector stops the sleeping runner143 and PG wrapper137; neither was OOM. These exits follow all passing cases and are not test process results."
+  },
+  "capture": {
+    "identity": {
+      "path": ".research/implementation/archive-reader-custody/evidence-identity.json",
+      "bytes": 2999,
+      "sha256": "e119c62b210676bff62556b8d3c3f72bf4b0aa104d33a78ff0650e0fee6c09a3"
+    },
+    "sha256": "dd54c04084b8d49bae15fb9f1a1b53a0b1cb30f4f62dd4cf453de7b15fe40ca0",
+    "files": 19
+  },
+  "remaining": [
+    "Actual immutable native snapshot lease binding, current-holder and PG-clock validation, renewal/expiry/release/ambiguous commit, maintenance serialization and retained source claims including zero cuts.",
+    "Historical snapshot capture without substituting latest; concurrent same-coordinator read/maintenance behavior remains unqualified.",
+    "Installed principal/action/scope authority and policy revocation through delivery; async Control supervision while native work runs.",
+    "Controlled topology handoff retains old closed epochN plus new0 explicitly; native omission is not implicit inheritance and remains unqualified.",
+    "Standalone export, M1, full selected services/UI/site/packaging/release remain required.",
+    "Native reader mTLS with the new handoff, kernel-uninterruptible termination, cross-boot/host/power loss, object-store reads, mixed aged load/RSS and Linux arm64 are not qualified."
+  ]
+}
