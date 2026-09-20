@@ -21,15 +21,16 @@ the backlog; do not create another plan or diagnostic public command.
 ## Git and ownership
 
 Private origin/main was freshly checked at988bc4a7f694d878736c825cba1f34e2220c4335.
-Local HEAD is unpublished product candidatee64ee8545436adf78ef4faf4cd46d188fb211660
+Local HEAD was freshly verified clean at7758ce4 (fixture parser correction), after
+163fc59 (SQL fixtures/docs). Product candidate remainse64ee8545436adf78ef4faf4cd46d188fb211660
 (tree8ca3cdded5f443b47fa008eae2d1da85d2b1f36c), after test candidate9aa86b9. The four qualified commits were pushed normally after fetch;
 no remote work required reconciliation. Product candidate
 354de750ffbcda93e7784bfaaf17b801522caf0f has tree
 968bbf5ed67e5e1c2f87db3e1dddac7b1b9a1f1f. Follow-ups b4c3a2e and2e0d50d only
 correct practical fixtures/checkpoints. Qualification988bc4a records the scoped
 results and preserved failures. The candidate commits0016/native frontier adapter and connected signed fixture/oracle.
-Current root-owned dirty work is the new lab inventory/checkpoint and qualification
-follow-up documentation/fixtures. No product changes after candidate yet. No parallel writer or merge/rebase. Offline capture audit
+Current root-owned dirty work is this checkpoint refresh. No product changes after
+the candidate; fixture-only harness changes are committed. No parallel writer or merge/rebase. Offline capture audit
 was rerun after resumption and passes all37 file hashes and recorded outcomes;
 the stopped Tux resources below are dated terminal observations, not a new run.
 
@@ -61,7 +62,8 @@ and verifies the live barrier before downstream persistence. Additive0015 stores
 immutable fresh-only local synchronization participation, preserving historical NULL
 attempts and requiring protocol1 for new bound issuance. The existing coordinator
 initializer now consumes actual catalog-manager credentials and this marker.
-There is no actual Archive owner/frontier or pin yet.
+That qualified revision has no actual Archive owner/frontier or pin; the new
+frontier implementation below is a separately tested candidate.
 
 Practical manager loss is observed with real PostgreSQL blocking graphs: before
 final verify, no marker commits; during Control COMMIT, the marker can commit but
@@ -106,9 +108,24 @@ DDL produced the semantic RED. This is direct SQL, not CLI or native qualificati
 Mac16 schema tests and scoped library/example Clippy pass on the final candidate,
 including historical lookup/prefix fixture changes. Artifact/link checks pass
 structurally; they do not execute SQL or establish native correctness.
-No Linux GREEN yet. Exact clean900-file candidatee64ee85 is building in a fresh
-Tux lab. Next: inspect ready/artifact manifests, run connected normal/history cuts
-and discriminating SQL/fault cases; record outputs before assertions.
+Linux build e64ee85 is READY: actual artifacts,16 schema tests and scoped Clippy
+pass. Native signed matrix is INCOMPLETE: installed initializer exited101 before
+frontier publication. Read-only inspection found CatalogManager absent, normally
+provisioned by the preceding coordinator CLI matrix; the child CLI stderr was not
+retained, so the exact original refusal is unknown. Preserve signed_normal/DBs.
+
+Initial SQL harness163fc59 executed the unbound negative and15 constraint cases,
+then failed parsing PostgreSQL's multiline JSON as its last line. That raw report
+stays INCOMPLETE; upgrade was NOT_RUN there. Corrected exact harness7758ce4 parses
+the full JSON and supports fresh namespaces. Actual retry in new databases passes
+unbound,15 constraints and installed15->16 upgrade: old rows/xmin preserved and
+head-only promotion refused atomically. Report frontier-schema-cases-retry.json.
+Next: capture and stop this lab; create a separately inventoried fresh lab with
+unchanged hash-verified e64 artifacts and explicit CatalogManager provisioning,
+then execute the signed normal/history matrix. Two signed native normal/history cuts now PASS in the separately provisioned
+lab below with unchanged e64 artifact hashes. COMMIT/manager-loss and cancellation
+faults remain pending. A new fixture-only restart consumer is being compiled locally;
+no product adapter change was required.
 
 RED lab /home/tux/bigbrotr-implementation-20260917/runs/archive-frontier-9aa86b9,
 owner3bbfe3c27264f3024826a210cd758f72, PG
@@ -117,17 +134,45 @@ stopped/Pid0/noOOM/exit0. Networknone, no host ports, read-only root,1CPU/1GiB/1
 Retain its source/data/failures; no active experiment. Inventory frontier_candidate
 and ignored .research/implementation/archive-frontier own the resources/scripts.
 
-Active native lab /home/tux/bigbrotr-implementation-20260917/runs/archive-frontier-e64ee85,
+Original native lab /home/tux/bigbrotr-implementation-20260917/runs/archive-frontier-e64ee85,
 owner360298b0716d9c17f1bc0ca9d6c5357c, runner
 6bed32bfcaa497ba426938864d4f21906999f7e71a0e3ca2e544bf15da14a6c6 and PG
-c71a39691712b50ef58af256e5f7052bead68e5186e1d93e7024b4e4f144a073 are running.
-Owned internal network46157ea5f0a1b45969f7e052e12c11a1a4883c471ec2f9b1c350085386f5414c;
+c71a39691712b50ef58af256e5f7052bead68e5186e1d93e7024b4e4f144a073 are stopped/Pid0/noOOM.
+Removed empty owned internal network46157ea5f0a1b45969f7e052e12c11a1a4883c471ec2f9b1c350085386f5414c;
 no host ports; source/export read-only;2CPU/6GiB/512PIDs runner,1CPU/1GiB/128PIDs PG.
 Inventory frontier_native_candidate; ignored archive-frontier/native contains
-transfer/launch/preflight/resources. Transfer session58910 completed; build belongs
-to the actual runner. Never restart on the same output root. Inspect terminal logs
-and source/artifact identities before practical runs, and collect/stop only these
-owned resources afterward. Older stopped labs remain retained.
+transfer/launch/preflight/resources. Transfer/build completed. SQL retry session50704
+completed exit0. Collector then stopped both with no PG clients, preserving399 prior containers and
+eight unrelated running workloads. Capture20files SHA256
+82aa475ef3f60cfa4df2a6f2c69cd46a80a63cfdf5106cc94458cfd8ee83174b
+passes full offline hashes; source archive matches Mac Git. Never restart
+on the same output root. Inspect terminal logs
+and source/artifact identities before practical runs, and preserve these stopped resources. Older stopped labs remain retained.
+
+The separately inventoried provisioned lab is
+/home/tux/bigbrotr-implementation-20260917/runs/archive-frontier-e64ee85-provisioned.
+See frontier_provisioned_candidate for exact container/PG/network IDs and owner.
+It reuses verified original e64 native artifacts and an exact clean900-file Git
+export, provisioning the omitted CatalogManager prerequisite before execution.
+Both actual signed normal/history matrices PASS, including immutable historical
+lookup after snapshot advancement. Native build was not repeated. Runner and PG
+remain active for the pending targeted fault matrix; no source edit on Tux.
+
+Root-owned current edits: new restart/fault-only fixture and bounded proxy/harness,
+plus this checkpoint/inventory. Restart fixture uses3MiB data for two retained
+inputs plus the native cut request; independent durable oracle covers all eight
+relations, exact original history/xmin, new owner attribution and allowed release.
+PID/start/database/login bind fault targets; proxy stages distinguish COMMIT.
+Mac Clippy is still compiling native dependencies (session97239); an earlier direct
+invocation was deliberately terminated as group63684 after omitting the selected
+native build environment, exit143, not a test outcome. Python syntax, formatting,
+diff and structural artifact checks pass. Candidate commits may precede native
+execution; no qualification is claimed from them.
+Independent read-only AI review found no further
+concrete exclusion bypass. A proposed no-revival lease rule was not an existing
+contract: same current Control issuer/fence and retained native/local custody can
+refresh scheduling, and final unexpired checks remain mandatory. Do not label
+that scheduling observation a reproduced product bug.
 
 ## Owned resources and evidence
 
@@ -149,8 +194,8 @@ outcomes and complete resource identities; offline-verification.json passes.
 The [inventory](../research/laboratory-inventory.json) cut_candidate owns the lab.
 All sessions54278/40715/9782/23960/39417/44623/2255/74459 are joined. The first local
 capture extraction failed because Mac Python3.9 lacks tarfile filter; retry verified
-all regular relative entries before extraction and all hashes afterward. No lab
-remains active and no cleanup debt remains.
+all regular relative entries before extraction and all hashes afterward. That earlier lab has no active work or cleanup debt; the frontier lab above is
+separate and still needs collection/stop.
 
 Previous membership3369091, file-syncb9ddd74, snapshote1852b8, event3f29952 and
 producer/WAL labs remain stopped/retained under their reports and inventory.

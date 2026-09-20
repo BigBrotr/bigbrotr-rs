@@ -45,6 +45,8 @@ mod ingest;
 mod installed_catalog;
 #[path = "support/publication_frontier.rs"]
 mod publication_frontier;
+#[path = "support/publication_frontier_recovery.rs"]
+mod publication_frontier_recovery;
 #[path = "support/publication_inputs.rs"]
 mod publication_inputs;
 #[path = "support/publication_protocol.rs"]
@@ -805,7 +807,7 @@ fn main() {
     assert!(
         args.len() == 3
             || args.len() == 4
-                && (args[2] == "resolve"
+                && (matches!(args[2].as_str(), "resolve" | "frontier")
                     || matches!(
                         args[3].as_str(),
                         "--installed" | "--event-read" | "--capture-cut"
@@ -817,6 +819,15 @@ fn main() {
         .build()
         .unwrap()
         .block_on(async {
+            if args[2] == "frontier" {
+                tokio::time::timeout(
+                    Duration::from_secs(90),
+                    publication_frontier_recovery::run(&args[1], Path::new(&args[3])),
+                )
+                .await
+                .unwrap();
+                return;
+            }
             if args[1] == "protocol" && args[2] == "check" {
                 tokio::time::timeout(Duration::from_secs(120), publication_protocol::run())
                     .await

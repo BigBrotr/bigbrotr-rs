@@ -15046,7 +15046,7 @@
       "network": "bigbrotr-implementation-archive-frontier-e64ee85",
       "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
       "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
-      "state": "running",
+      "state": "stopped-retained",
       "source_files": 900,
       "started_at": "2026-09-20T05:59:47.448348+00:00",
       "network_id": "46157ea5f0a1b45969f7e052e12c11a1a4883c471ec2f9b1c350085386f5414c",
@@ -15055,7 +15055,39 @@
       "container_id": "6bed32bfcaa497ba426938864d4f21906999f7e71a0e3ca2e544bf15da14a6c6",
       "local_raw": ".research/implementation/archive-frontier/native",
       "purpose": "P02-T04 native cut to durable frontier candidate; no pin grant",
-      "limits": "runner2CPU/6GiB/512PIDs;PG1CPU/1GiB/128PIDs;internalnetwork,nohostports,readonlysource; scoped native build in progress"
+      "limits": "runner2CPU/6GiB/512PIDs;PG1CPU/1GiB/128PIDs; stopped and retained; internal network removed",
+      "network_state": "removed after owner/no-endpoint audit; containers and data retained",
+      "terminal_audit": "terminal-audit.json",
+      "capture_sha256": "82aa475ef3f60cfa4df2a6f2c69cd46a80a63cfdf5106cc94458cfd8ee83174b",
+      "capture_files": 20,
+      "outcomes": {
+        "native": "INCOMPLETE: missing CatalogManager setup; original initializer child stderr unavailable",
+        "sql_first": "INCOMPLETE: multiline JSON harness parse failure",
+        "sql_retry": "PASS: actual installed migrations, unbound negative,15 constraints, preserved15-to16 upgrade"
+      }
+    },
+    "frontier_provisioned_candidate": {
+      "source": "e64ee8545436adf78ef4faf4cd46d188fb211660",
+      "tree": "8ca3cdded5f443b47fa008eae2d1da85d2b1f36c",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/archive-frontier-e64ee85-provisioned",
+      "owner": "81f9b263cd386d23bbbb6f0bb6b0a672",
+      "container": "archive-read-probe",
+      "postgres": "bigbrotr-implementation-archive-frontier-e64ee85-provisioned-pg",
+      "network": "bigbrotr-implementation-archive-frontier-e64ee85-provisioned",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "state": "running",
+      "source_files": 900,
+      "started_at": "2026-09-20T06:15:32.266788+00:00",
+      "network_id": "f676e78bb866e6a08236cf1ccde9af0764108a3bf16bf2069af76d6db896db55",
+      "postgres_id": "e7f918f2c5bf7f20aaf07ad10c76624b8851abf203a2cb2e7adcd50423be0e5d",
+      "catalog_manager_provisioned": true,
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "4d9372b7e8884e771f2cca23f2614eb8710b1f10d8c5d278c2fe928ed39bb194",
+      "local_raw": ".research/implementation/archive-frontier/provisioned",
+      "purpose": "Unchanged e64 artifacts with explicit manager provisioning; actual signed frontier and recovery qualification",
+      "limits": "runner2CPU/6GiB/512PIDs;PG1CPU/1GiB/128PIDs;internal network,no host ports,read-only source",
+      "native_matrix": "PASS: two signed complete frontier histories; fault qualification pending"
     }
   },
   "implementation_monitor_corrections_20260918": {

@@ -122,12 +122,14 @@ class Proxy:
                     if self.mode == 'hold-reader-query' and receipt_reader:
                         if not await self.hold('reader-query', state['backend_pid']):
                             return
-                if frontend and tag == b'P' and self.target == 'control-coordinator':
+                if frontend and tag == b'P' and self.target in ('control-coordinator', 'control-frontier'):
                     # tokio-postgres prepares the fixed INSERT using extended
                     # protocol. Its subsequent transaction COMMIT is simple Q.
                     # Never confuse the earlier Control claim with this boundary.
                     _, query, _ = body.split(b'\0', 2)
-                    if query.upper().startswith(b'INSERT INTO CONTROL.ARCHIVE_COORDINATORS('):
+                    table = (b'ARCHIVE_COORDINATORS' if self.target == 'control-coordinator'
+                             else b'ARCHIVE_FRONTIER_SNAPSHOTS')
+                    if query.upper().startswith(b'INSERT INTO CONTROL.' + table + b'('):
                         state['data'] = True
                         self.report['data_queries'] += 1
                 if not frontend and tag == b'C' and self.target == 'control-coordinator' and state['data'] and body == b'INSERT 0 1\0':
@@ -287,7 +289,7 @@ class Proxy:
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--mode', choices=['pass', 'before-forward', 'after-complete', 'hold-data', 'hold-commit', 'hold-reply', 'hold-manager-commit', 'hold-manager-owner', 'hold-reader-query', 'omit-auth-final'], required=True)
-    parser.add_argument('--target', choices=['publication', 'native-schema', 'guard-install', 'control-coordinator'], default='publication')
+    parser.add_argument('--target', choices=['publication', 'native-schema', 'guard-install', 'control-coordinator', 'control-frontier'], default='publication')
     parser.add_argument('--lifetime-seconds', type=int, choices=[120, 180], default=120,
                         help='Use180 when observing the actual120-second CLI deadline plus setup/cleanup')
     try:
