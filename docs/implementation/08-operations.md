@@ -154,7 +154,11 @@ qualify their named schedules only. [Hash lifecycle evidence](evidence/p08-brows
 at661b54b adds actual TERM/CONT and SIGKILL during observed hash-sized RSS growth,
 no issuance and successor login, plus a distinct controlled worker join test.
 It does not trace an exact Argon2 instruction or qualify a universal shutdown bound.
-Browser, ambiguous COMMIT, general audit/grants and remote TLS remain required.
+[COMMIT/recovery evidence](evidence/p08-browser-http-commits-native-20260920.json)
+at e65116b adds nine actual login/logout pass/before/after-COMMIT, explicit retry
+and PostgreSQL SIGQUIT/live-cookie cases. The initial fixture configuration failure
+is retained separately. Specific revocation and other-row/xmin checks distinguish
+these outcomes. Browser, general audit/grants and remote TLS remain required.
 
 **Failure states:** unavailable policy authority causes expiry/fail-closed, not anonymous fallback. Last-owner recovery is an explicit local, positively authorized CLI operation with an audit record; it cannot be triggered through an unauthenticated HTTP request. Enrollment output is never copied into CI evidence.
 

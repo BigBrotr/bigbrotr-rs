@@ -21,15 +21,15 @@ another diagnostic command instead of the real read consumer.
 
 ## Git and ownership
 
-Local main is unpublished candidate `c98398bba9cb137d7589db62d8100c35f1eb7841`,
-tree`a9f0f00b1d8dfba2fa5dcc7aea269dab14372291`; origin/main/remote last verified
-at pushed48da158. Candidate has native FAIL before runtime ready: fixture added
-unsupported postgres.control.port instead of endpoint. No COMMIT/crash cases ran.
-Root-owned dirty correction is commit.rs endpoint construction plus this checkpoint
-and inventory. Actual Mac config validate reproduces old exit3 and corrected exit0;
-probe build/Clippy PASS in commit-fixture-endpoint. Product unchanged from5a4e0d1.
-No parallel writer/merge/rebase. All owned labs stopped/retained; failed capture
-verified. Next commit correction and transfer to a new isolated exact-Git lab.
+Local main is tested unpublished candidate`e65116b0981d3f9e0a42e84f79911c13e72a36ae`,
+tree`17eee4d781f9ad1f4bece060b9c15820f3eb2076`; origin/main/remote last verified
+at pushed48da158. Native945-file source matches Mac Git archive. Product remains
+5a4e0d1; the candidate only corrects the COMMIT fixture endpoint. Its predecessor
+c98398b remains recorded FAIL before readiness; no history rewritten. Root-owned
+dirty work records qualification only: report, checkpoint, inventory, P08 and
+fixture README. No parallel writer/merge/rebase. Independent read-only review
+completed; all tests terminal and owned labs stopped/retained. Review evidence,
+commit/push verified slice, then connect the first actual private browser consumer.
 
 Preserve `.research/worktrees/producer-closing-old-writer`, last verified clean at
 `f899896b1207f5e71c4e39d9ab7814b293814735` on
@@ -81,6 +81,19 @@ holder files/413 preexisting lifecycle records. Main capture SHA256:
 
 ## Resources
 
+Qualified COMMIT lab `/home/tux/bigbrotr-implementation-20260917/runs/browser-http-commits-e65116b`
+is stopped/retained, owner`a8097700cc8d5106d17363121a470c2b`,
+runner`ad36dc3f12a144abd6cce56df06b7c5fdf9f17a943fcda67ce1146887a022020`,
+PG`a52ec11d82c6edfc4936a9850092cef9a88ffb24537de0a19edf3ef1d438e14b`.
+Terminal audit PASS: zero clients/active Control, two live sessions, config1/policy1,
+both stopped/PID0/noOOM,424prior records unchanged,8unrelated workloads running.
+Owned empty network removed. All42capture entries/945source hashes verified on Mac.
+Capture SHA256`abf01906850e98699635e2248d7755b803eac36c1ee70996dc993c37cad5c815`.
+Raw .research/implementation/management-http/commit-native-endpoint; inventory
+nested under implementation_browser_http_20260920.commit_qualification. Keep
+secret-bearing out/http-fixture remote; local resources.json is stale launch
+state, capture/resources.json is terminal. Do not reuse used output roots.
+
 Failed COMMIT lab `/home/tux/bigbrotr-implementation-20260917/runs/browser-http-commits-c98398b`
 is stopped/retained, owner`08ef161d9e5e73aee6b5d6c577915b5b`,
 runner`d17fcf6062a8a6c78ed71152a4f36c893be437659e41d3b3ac349ce2d178ec7b`,
@@ -90,7 +103,7 @@ zero clients, both stopped/PID0/noOOM,422prior resources preserved,8unrelated ru
 owned empty network removed. All18capture entries/945source hashes verified;
 SHA256`71056d847ef6f8d6b9b21d27f846a34f3c21d1e466e1004aaaa591175a61794c`.
 Raw .research/implementation/management-http/commit-native; preserve failure.
-Replacement scripts prepared in commit-native-endpoint; no replacement lab yet.
+The separately qualified replacement is recorded above; preserve this failure.
 
 Fault lab `/home/tux/bigbrotr-implementation-20260917/runs/browser-http-faults-661b54b`
 is stopped/retained. Owner`89670549e4d93cd1cb2b6769427ab84e`,
@@ -253,29 +266,43 @@ no-join runtime RED or universal latency bound is claimed. Independent review
 corrected the timestamp boundary and successor count; failed-path client join
 is not claimed. Terminal SQL/audit/source/capture verification PASS.
 
-Next bounded action: finish review/commit the COMMIT fixture candidate, transfer
-its exact Git revision to a fresh Tux lab and run actual issuance/logout pass,
-before-forward and after-complete cases, explicit retry and PG SIGQUIT/recovery
-with a live cookie. The existing bounded native wire proxy gains two exact SQL
-targets and a completed-mutation counter; no product fault hooks. Two target unit
-tests failed initially for missing helper, then passed. Mac probe build/Clippy
-passed in commit-fixture-first and commit-fixture-reviewed. Independent review
-corrected secret-bearing assert output, process guard before READY, target-specific
-logout and other-row/xmin preservation; issuance preserves previous rows/xmin.
-External controller retries transient replacement observations within one residual
-deadline; identity/owner/OOM mismatches remain fatal. It requires actual old/new postmaster
-identity, unchanged rows and only then marker release. First native candidate FAILED before cases for unsupported fixture configuration;
-corrected endpoint passes actual offline validation. Native cases remain NOT_RUN.
-Prepared ignored scripts under .research/implementation/management-http/commit-native
-inventory all previous resources and compare production inputs to5a4e0d1.
-After qualification, continue actual browser cookie/CSRF and the real read consumer.
-Tool discovery found no browser MCP capability; inspect selected browser tooling
-and use an isolated actual client rather than treating raw TCP as a browser. Continue login audit, reauthentication and scope-qualified grants needed
-by the real private history reader. P08-T02 owns these steps; no parallel plan or
-diagnostic CLI. Cookies are host scoped, never isolated by port; the trusted-host
-loopback profile assumes trusted services sharing that host. A browser second-port
-negative control, remote TLS, configurable lifetimes, general drain and public
-router separation remain required.
+[COMMIT/recovery evidence](evidence/p08-browser-http-commits-native-20260920.json)
+qualifiese65116b with no production change. Nine actual executable/PG cases,
+two proxy target tests, build and Clippy PASS. Fixed targets observe exactly one
+session mutation and COMMIT rather than counting unrelated owner/renewal COMMITs.
+Pass/before-forward/after-complete independently distinguish issuance1/1/2 rows,
+then explicit new login yields3 distinct session rows. Existing rows/xmin remain.
+Both unknown branches return no HTTP bytes/cookies, exit4 with exact CommitUnknown,
+then no Control backend. Logout binds the requested credential digest, preserves
+other rows/xmin, and yields correct revocation only for pass/after-complete. Known
+revocation retry204 preserves rows/xmin; new login cleans terminal rows, leaves2.
+Actual PG SIGQUIT changes postmaster PID7->197 and start time; independent complete
+rows/xmin hash remains unchanged. Recovery observation1719ms includes polling/SQL,
+not a universal bound. Old Control exits1/Backend; successor serves retained cookie.
+This is immediate engine shutdown/WAL recovery, not host power loss/fsync failure.
+Initial c98398b fixture wrongly used unsupported port key: native FAIL before ready,
+no cases ran. Corrected endpoint reproduced Mac old exit3/new exit0 before fresh
+native run. Original failed18-file capture and qualified42-file capture both verified.
+Read-only review corrected secret-printing assert, proxy guard before READY,
+specific revocation/other-row oracles and transient crash-observation deadlines.
+No product failure was found in these executed schedules.
+
+Next bounded action after evidence commit/push: connect a thin real private browser
+login/self/logout consumer and its versioned generated HTTP contract, then run
+actual Chromium/Firefox/WebKit cookie/CSRF and same-host second-port controls.
+P08-T02 and P09-T01/T07 own this work; no alternate UI stack or diagnostic CLI.
+No browser MCP was discovered. Mac has Node/pnpm and Chrome/Firefox/Safari; no
+browser was launched. Playwright's official browser/library docs were inspected:
+versions need matching browser builds; branded browser installation can overwrite
+a user's installation, so use isolated pinned bundles. No exact frontend/browser
+version selected or downloaded yet. P09 selects SvelteKit/TypeScript/static apps,
+generated API types, bounded fetch, explicit identity invalidation and accessible
+forms. contracts/management does not yet exist; define only actual routes first.
+Do not mock the API or bypass CSP merely to label a browser case PASS. Cookies
+remain host-scoped, not port-isolated; local profile assumes trusted same-host services.
+Continue login audit, reauthentication, scope-qualified grants and actual pinned
+history read/export needed for M1. Remote TLS, configurable accepted-policy session
+lifetimes, public-router separation and general restrictive drain remain required.
 
 Read-only grant/session contract review completed: separate scope-qualified
 history-grant table, reauthentication bound to command digest, grant revision CAS,

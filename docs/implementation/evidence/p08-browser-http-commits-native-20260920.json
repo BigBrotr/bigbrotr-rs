@@ -1,0 +1,499 @@
+{
+  "format": "bigbrotr-browser-http-commits-native/1",
+  "status": "PASS",
+  "scope": "Actual private login/logout COMMIT ambiguity, explicit retries and PostgreSQL crash with retained live cookie. No full P08-T02, browser UI, M1 or release claim.",
+  "source": "e65116b0981d3f9e0a42e84f79911c13e72a36ae",
+  "tree": "17eee4d781f9ad1f4bece060b9c15820f3eb2076",
+  "source_files": 945,
+  "product_unchanged_from": "5a4e0d13b51f51d06f50252bf7644b68a83b5be5",
+  "environment": {
+    "target": "x86_64-unknown-linux-gnu",
+    "postgres": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+    "native_toolchain": {
+      "os": "Linux",
+      "architecture": "x86_64",
+      "discovery": "llvm-config",
+      "environment": {
+        "CC": "/usr/lib/llvm-14/bin/clang",
+        "CXX": "/usr/lib/llvm-14/bin/clang++",
+        "AR": "/usr/lib/llvm-14/bin/llvm-ar",
+        "LIBCLANG_PATH": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+        "CLANG_PATH": "/usr/lib/llvm-14/bin/clang",
+        "CARGO_BUILD_JOBS": "2",
+        "LLVM_CONFIG_PATH": "/usr/lib/llvm-14/bin/llvm-config"
+      },
+      "tools": {
+        "CC": {
+          "path": "/usr/lib/llvm-14/bin/clang",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "CXX": {
+          "path": "/usr/lib/llvm-14/bin/clang++",
+          "realpath": "/usr/lib/llvm-14/bin/clang",
+          "sha256": "71b0de1b06b1ffe3a68f1b15f3bfff1f80ba3351ac679be346fb515327494157",
+          "version": "Debian clang version 14.0.6\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/lib/llvm-14/bin"
+        },
+        "AR": {
+          "path": "/usr/lib/llvm-14/bin/llvm-ar",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-ar",
+          "sha256": "ffb90b245b24c214cd66a31c3631e50e29068f2df95c596be741d1937afdb3fd",
+          "version": "Debian LLVM version 14.0.6\n  Optimized build.\n  Default target: x86_64-pc-linux-gnu\n  Host CPU: znver3"
+        },
+        "LIBCLANG_PATH": {
+          "path": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "realpath": "/usr/lib/x86_64-linux-gnu/libclang-14.so.14.0.6",
+          "sha256": "0cc4d7f6f260c66859041072c336b954940ff9ea84f3fec8f7110f977fc1b5ea",
+          "version": "Debian clang version 14.0.6"
+        },
+        "discovery": {
+          "path": "/usr/lib/llvm-14/bin/llvm-config",
+          "realpath": "/usr/lib/llvm-14/bin/llvm-config",
+          "sha256": "2a7496e915b79d5f6c6bdc02a226196d2ce84ed86491e01dbc7735d87efb131e",
+          "version": "14.0.6"
+        }
+      },
+      "sdk": null
+    },
+    "runner": "2CPU/6GiB/512PIDs",
+    "postgres_limits": "1CPU/1GiB/128PIDs",
+    "network": "isolated internal network/shared namespace; no host-published ports",
+    "runner_image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+    "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94"
+  },
+  "dependencies": {
+    "Cargo.lock": {
+      "path": "Cargo.lock",
+      "sha256": "8984426c9b387e3af6572ea0ef8b7a523c64c22c6246a40335c067c0ff08a122",
+      "bytes": 75668
+    },
+    "contracts/release/dependencies.json": {
+      "path": "contracts/release/dependencies.json",
+      "sha256": "14bb6d43630ff5ad0eeaec28236ca138224d5e97603200f456536abbaa2c94c6",
+      "bytes": 17254
+    },
+    "migrations/postgres/0806_browser_sessions.sql": {
+      "path": "migrations/postgres/0806_browser_sessions.sql",
+      "sha256": "3017bf28531655765ec9e09d10b1512532e8060681dac377e753119050e0b694",
+      "bytes": 8019
+    }
+  },
+  "artifacts": {
+    "bigbrotr": "76fea3bfd7ad2c6a98f5f29b41bf192737c814e98520ca798f21f72c7de252e3",
+    "examples/browser_http_probe": "b002bf7f0f9b17ce28b6dc830637ce28664ab94a3c9e3e45aec628523caa0b43"
+  },
+  "native": {
+    "checks": [
+      {
+        "name": "build",
+        "command": [
+          "cargo",
+          "build",
+          "--locked",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--bin",
+          "bigbrotr",
+          "--example",
+          "browser_http_probe"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 33.12041583005339
+      },
+      {
+        "name": "proxy-targets",
+        "command": [
+          "python3",
+          "-B",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "experiments/browser-sessions",
+          "-p",
+          "test_commit_targets.py",
+          "-v"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 0.0637768181040883
+      },
+      {
+        "name": "fixture-clippy",
+        "command": [
+          "cargo",
+          "clippy",
+          "--locked",
+          "--release",
+          "-p",
+          "bigbrotr",
+          "--example",
+          "browser_http_probe",
+          "--",
+          "-D",
+          "warnings"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 2.368026352021843
+      },
+      {
+        "name": "native-http-commits",
+        "command": [
+          "/out/build/target/release/examples/browser_http_probe",
+          "/out/build/target/release/bigbrotr",
+          "/out/http-fixture",
+          "--commits-only"
+        ],
+        "status": "PASS",
+        "executed": true,
+        "exit_code": 0,
+        "seconds": 4.673619983717799
+      }
+    ],
+    "cases": [
+      {
+        "case": "issuance-pass",
+        "detail": {
+          "previous_rows_and_xmin_unchanged": true,
+          "proxy": {
+            "mode": "pass",
+            "target": "control-session-issue",
+            "connections": 1,
+            "data_queries": 1,
+            "session_mutations_complete": 1,
+            "data_commits": 1,
+            "server_complete": 1,
+            "client_complete": 1,
+            "faults": 0,
+            "unexpected": 0
+          },
+          "remaining_control_backends": 0,
+          "sessions": 1
+        },
+        "status": "PASS"
+      },
+      {
+        "case": "issuance-before-forward",
+        "detail": {
+          "previous_rows_and_xmin_unchanged": true,
+          "proxy": {
+            "mode": "before-forward",
+            "target": "control-session-issue",
+            "connections": 1,
+            "data_queries": 1,
+            "session_mutations_complete": 1,
+            "data_commits": 1,
+            "server_complete": 0,
+            "client_complete": 0,
+            "faults": 1,
+            "unexpected": 0
+          },
+          "remaining_control_backends": 0,
+          "sessions": 1
+        },
+        "status": "PASS"
+      },
+      {
+        "case": "issuance-after-complete",
+        "detail": {
+          "previous_rows_and_xmin_unchanged": true,
+          "proxy": {
+            "mode": "after-complete",
+            "target": "control-session-issue",
+            "connections": 1,
+            "data_queries": 1,
+            "session_mutations_complete": 1,
+            "data_commits": 1,
+            "server_complete": 1,
+            "client_complete": 0,
+            "faults": 1,
+            "unexpected": 0
+          },
+          "remaining_control_backends": 0,
+          "sessions": 2
+        },
+        "status": "PASS"
+      },
+      {
+        "case": "explicit-new-login-after-unknown-issuance",
+        "detail": {
+          "new_distinct_credential": true,
+          "sessions": 3
+        },
+        "status": "PASS"
+      },
+      {
+        "case": "logout-pass",
+        "detail": {
+          "other_rows_and_xmin_unchanged": true,
+          "proxy": {
+            "mode": "pass",
+            "target": "control-session-revoke",
+            "connections": 1,
+            "data_queries": 1,
+            "session_mutations_complete": 1,
+            "data_commits": 1,
+            "server_complete": 1,
+            "client_complete": 1,
+            "faults": 0,
+            "unexpected": 0
+          },
+          "remaining_control_backends": 0,
+          "revoked": 1,
+          "target_revoked": true
+        },
+        "status": "PASS"
+      },
+      {
+        "case": "logout-before-forward",
+        "detail": {
+          "other_rows_and_xmin_unchanged": true,
+          "proxy": {
+            "mode": "before-forward",
+            "target": "control-session-revoke",
+            "connections": 1,
+            "data_queries": 1,
+            "session_mutations_complete": 1,
+            "data_commits": 1,
+            "server_complete": 0,
+            "client_complete": 0,
+            "faults": 1,
+            "unexpected": 0
+          },
+          "remaining_control_backends": 0,
+          "revoked": 1,
+          "target_revoked": false
+        },
+        "status": "PASS"
+      },
+      {
+        "case": "logout-after-complete",
+        "detail": {
+          "other_rows_and_xmin_unchanged": true,
+          "proxy": {
+            "mode": "after-complete",
+            "target": "control-session-revoke",
+            "connections": 1,
+            "data_queries": 1,
+            "session_mutations_complete": 1,
+            "data_commits": 1,
+            "server_complete": 1,
+            "client_complete": 0,
+            "faults": 1,
+            "unexpected": 0
+          },
+          "remaining_control_backends": 0,
+          "revoked": 2,
+          "target_revoked": true
+        },
+        "status": "PASS"
+      },
+      {
+        "case": "confirmed-idempotent-logout-after-unknown",
+        "detail": {
+          "new_login_sessions": 2,
+          "same_rows_and_xmin": true
+        },
+        "status": "PASS"
+      },
+      {
+        "case": "pg-crash-retains-session-and-live-cookie",
+        "detail": {
+          "same_persisted_rows_before_touch": true,
+          "sessions": 2,
+          "successor_self": 200
+        },
+        "status": "PASS"
+      }
+    ],
+    "engine_crash": {
+      "status": "PASS",
+      "source": "e65116b0981d3f9e0a42e84f79911c13e72a36ae",
+      "owner": "a8097700cc8d5106d17363121a470c2b",
+      "container": "a52ec11d82c6edfc4936a9850092cef9a88ffb24537de0a19edf3ef1d438e14b",
+      "signal": "SIGQUIT",
+      "before_pid": "7",
+      "after_pid": "197",
+      "before_start": "2026-09-20 11:35:01.248616+00",
+      "after_start": "2026-09-20 11:35:40.476572+00",
+      "recovery_observed_ms": 1719,
+      "rows_sha256": "c2221463309dfde77c79b8ffae550e5c61af53b033ec32acfc5b2a80ebf35b27",
+      "live_sessions": 2,
+      "scope": "Actual immediate PostgreSQL shutdown/restart; retained rows/xmin unchanged. Not host power loss or filesystem fault."
+    }
+  },
+  "mac": {
+    "proxy_targets": "Two tests PASS; initial RED was missing helper AttributeError, not a runtime product counterexample.",
+    "probe": "Build and Clippy PASS before native run and after endpoint correction.",
+    "offline_configuration": "Actual CLI old postgres.control.port exit3; corrected endpoint exit0, without engine/secret access."
+  },
+  "oracles": [
+    "Fresh actual CLI migrations18/806, initialization, activation and enrollment precede actual serve/HTTP clients. No production fault hook.",
+    "Existing bounded PostgreSQL wire proxy classifies the exact session INSERT or revocation UPDATE, not commit ordinal. Each case requires one selected SQL mutation completion and one selected COMMIT.",
+    "Pass controls observe actual201 issuance or204 logout with two clearing headers, one server and client COMMIT completion and no fault.",
+    "Before-forward closes both transports without forwarding selected COMMIT: no issuance row or revocation remains. After-complete suppresses COMMIT CommandComplete and subsequent reply: the mutation remains. Both yield empty HTTP/no cookies, exact CommitUnknown and product exit4, then zero Control backends.",
+    "Issuance preserves every prior complete session row/xmin; independent counts1/1/2 distinguish pass/before/after. Explicit new login adds a distinct credential and third row; there is no automatic reissue.",
+    "Logout derives the requested session digest independently, checks that exact revoked flag and preserves all other rows/xmin. Pre-forward preserves the complete table. Revoked successor self401, confirmed logout retry204 and unchanged rows/xmin.",
+    "External owned controller observes one Control backend and two live sessions, sends SIGQUIT to verified PostgreSQL postmaster, requires different PID/start time and identical rows/xmin. Actual old Control exits1 with Backend; successor self200 accepts the retained cookie.",
+    "Source map matches qualified5a4e0d1 except explicit cfg(test)/fixture/docs allowlist. Product code, lock and build tools are unchanged."
+  ],
+  "failures": [
+    {
+      "source": "c98398bba9cb137d7589db62d8100c35f1eb7841",
+      "status": "FAIL",
+      "cause": "Fixture used nonexistent postgres.control.port; actual runtime rejected before ready. No COMMIT/crash case executed.",
+      "correction": "Use supported endpoint string; offline old/new negative control and fresh native lab.",
+      "capture_sha256": "71056d847ef6f8d6b9b21d27f846a34f3c21d1e466e1004aaaa591175a61794c",
+      "cleanup": "Collector INCOMPLETE as required; zero clients,422prior resources preserved,8unrelated running,owned containers stopped/network removed. All18capture/945source hashes verified; original failure retained."
+    }
+  ],
+  "review": {
+    "mode": "Independent read-only AI review; root implementation, complete fixture diff and actual native evidence review",
+    "corrections": [
+      "Boolean credential comparison cannot print tokens on failure.",
+      "Proxy process guard owns kill/reap and reader join before READY is awaited.",
+      "Logout is bound to requested credential, with complete other-row/xmin preservation; issuance preserves prior rows.",
+      "PG replacement observations retry transient connection/process-file errors within a shrinking recovery deadline; identity/owner/OOM mismatch remains fatal."
+    ]
+  },
+  "limits": [
+    "The measured1719ms PG recovery observation includes controller polls and SQL checks; no universal bound.",
+    "SIGQUIT exercises immediate engine shutdown/WAL recovery, not host power loss, filesystem failure or arbitrary instruction-level crash.",
+    "Retained hashes do not make lost plaintext credentials recoverable. Unknown HTTP response is not proof of absent transaction.",
+    "Fresh small session workload only; no mixed/aged performance qualification."
+  ],
+  "not_run": [
+    "Actual browser cookie enforcement, same-host second-port negative control and private frontend",
+    "General login audit, reauthentication, account lifecycle/last-owner protection and scoped grants",
+    "Live action leases, restrictive delivery drain, public router separation, remote TLS and configurable accepted session policy",
+    "Full M1 authenticated event/export/restart, installation/release, Linux arm64 and mixed/aged memory/IO qualification"
+  ],
+  "cleanup": {
+    "root": "/home/tux/bigbrotr-implementation-20260917/runs/browser-http-commits-e65116b",
+    "owner": "a8097700cc8d5106d17363121a470c2b",
+    "state": "stopped-retained",
+    "runner": "ad36dc3f12a144abd6cce56df06b7c5fdf9f17a943fcda67ce1146887a022020",
+    "postgres": "a52ec11d82c6edfc4936a9850092cef9a88ffb24537de0a19edf3ef1d438e14b",
+    "remaining_pg_clients": [],
+    "independent_sql": {
+      "sessions": 2,
+      "live": 2,
+      "revoked": 0,
+      "bindings": true,
+      "account": true,
+      "grants": 7,
+      "no_active_control": true,
+      "bounded_counters": true,
+      "migration": 1,
+      "heads": [
+        "1",
+        "1"
+      ],
+      "probe_marker_removed": true
+    },
+    "preexisting_preserved": 424,
+    "unrelated_running": 8,
+    "network": "Owned empty network removed; stopped containers/data retained",
+    "capture_sha256": "abf01906850e98699635e2248d7755b803eac36c1ee70996dc993c37cad5c815",
+    "offline_verification": "All42 capture entries and945 exact Git source hashes verified on Mac; all424 previous lifecycle/image/mount/network records preserved"
+  },
+  "evidence": [
+    {
+      "path": ".research/implementation/management-http/commit-native-endpoint/evidence-identity.json",
+      "sha256": "2f6bf0952ed646227535d25174a105ea980259ad4d24e692ba3ab8e6d3aa9bab",
+      "bytes": 6782
+    },
+    {
+      "path": ".research/implementation/management-http/commit-native-endpoint/offline-verification.json",
+      "sha256": "6350ebb4e891a52f76ab911d29080acc6d08efdc821e3c48285f903e170ab637",
+      "bytes": 258
+    },
+    {
+      "path": ".research/implementation/management-http/commit-native-endpoint/capture/resources.json",
+      "sha256": "c1f3b31dd69db02b703bf4b9fea1c73d35e33e8a96b9d77063886f6fc5cfe9a6",
+      "bytes": 1308
+    },
+    {
+      "path": ".research/implementation/management-http/commit-native-endpoint/capture/terminal-audit.json",
+      "sha256": "7204f483c724b9aa8112ffc07d73ee29d845a84efb836d28c1b7023ed4b56af5",
+      "bytes": 10620
+    },
+    {
+      "path": ".research/implementation/management-http/commit-native-endpoint/capture/engine-crash.json",
+      "sha256": "71a8ebfc9b51a087555da279c16848444bb1f37d12162fe5a263ed15e31a6ab5",
+      "bytes": 646
+    },
+    {
+      "path": ".research/implementation/management-http/commit-native-endpoint/capture/out/build/source-manifest.json",
+      "sha256": "ba5ab6a111fb0ba553902e79ba812167759f9bea3315fc9354423c20edfba601",
+      "bytes": 117059
+    },
+    {
+      "path": ".research/implementation/management-http/commit-native-endpoint/capture/out/build/baseline-source-manifest.json",
+      "sha256": "b524160f833851ff52259f46b74920fffd11ea272fa3793308c3e6766e5e5598",
+      "bytes": 116396
+    },
+    {
+      "path": ".research/implementation/management-http/commit-native-endpoint/capture/out/native-tests/http-result.json",
+      "sha256": "cbb95d456d8d3b26c2abf0299187873a5fe6a15f653945c39edaa4ce214edf7e",
+      "bytes": 4292
+    },
+    {
+      "path": ".research/implementation/management-http/commit-native-endpoint/capture/out/native-tests/native-http-commits.log",
+      "sha256": "8f9e75bbc43b11781107537cd15d244825bb8cb169e6db580902d6e2a9671b48",
+      "bytes": 9682
+    },
+    {
+      "path": ".research/implementation/management-http/commit-native-endpoint/capture/out/native-tests/proxy-targets.log",
+      "sha256": "55f6774798b01afbc4d926669d683dcb5cd38e7b7ca54a46b754f739e5fda563",
+      "bytes": 296
+    },
+    {
+      "path": ".research/implementation/management-http/commit-fixture-reviewed/result.json",
+      "sha256": "ccae12d7f966e97bacaa41aaadd98f76822d7ea27c3a0d4cb3a9ec95c7808095",
+      "bytes": 1008
+    },
+    {
+      "path": ".research/implementation/management-http/commit-fixture-endpoint/result.json",
+      "sha256": "2de238da0f9c7b31389f40cf272267e6257d5c10639bf8c50e9f3bc3101d38b4",
+      "bytes": 1007
+    },
+    {
+      "path": ".research/implementation/management-http/commit-endpoint-check/result.json",
+      "sha256": "b64efd3a5c2e76b25491b1526a44745bce9556403e706dbd16b2eb1fac741f0c",
+      "bytes": 93
+    },
+    {
+      "path": ".research/implementation/management-http/commit-targets-red.log",
+      "sha256": "5c9810330e482889e1c1af7609e998bcb681b2d1dac79abe5c463b0d3eb7ff7d",
+      "bytes": 1412
+    },
+    {
+      "path": ".research/implementation/management-http/commit-native/evidence-identity.json",
+      "sha256": "0254912f2047fe45bad7c31a2c2599fd54aadd23d1ef820cc05f17f1c9aca08b",
+      "bytes": 2851
+    },
+    {
+      "path": ".research/implementation/management-http/commit-native/offline-verification.json",
+      "sha256": "5d3497deb5a17f188b5b02813608eae3812e96863c36f295244dfec199427823",
+      "bytes": 277
+    },
+    {
+      "path": ".research/implementation/management-http/commit-native/capture/out/native-tests/http-result.json",
+      "sha256": "ba7d892583728f98a77f634899795517c24d28aeebb1389938c17f24d6348830",
+      "bytes": 4298
+    },
+    {
+      "path": ".research/implementation/management-http/commit-native/capture/out/native-tests/native-http-commits.log",
+      "sha256": "55806965ccc092f81607b75159f4c2d41cce2709e67f7ef109da793c3a889817",
+      "bytes": 192
+    }
+  ]
+}

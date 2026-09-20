@@ -17292,6 +17292,30 @@
       "local_root": ".research/implementation/management-http/commit-native",
       "observation": "Native fixture FAIL before ready: invented postgres.control.port key rejected. No COMMIT case or crash ran. Collector INCOMPLETE as required; zero clients,422prior resources unchanged,8unrelated running. Both containers stopped/PID0/noOOM; network removed. All18capture/945source files verified on Mac.",
       "capture_sha256": "71056d847ef6f8d6b9b21d27f846a34f3c21d1e466e1004aaaa591175a61794c"
+    },
+    "commit_qualification": {
+      "source": "e65116b0981d3f9e0a42e84f79911c13e72a36ae",
+      "tree": "17eee4d781f9ad1f4bece060b9c15820f3eb2076",
+      "root": "/home/tux/bigbrotr-implementation-20260917/runs/browser-http-commits-e65116b",
+      "owner": "a8097700cc8d5106d17363121a470c2b",
+      "container": "bigbrotr-implementation-browser-http-commits-e65116b",
+      "postgres": "bigbrotr-implementation-browser-http-commits-e65116b-pg",
+      "network": "bigbrotr-implementation-browser-http-commits-e65116b",
+      "image": "sha256:7e946a0c0aa4a5d357c3ae517fe9830f675cfc98fd26a9cba79b2bc957928b9d",
+      "postgres_image": "postgres@sha256:f1c3376c26f2609ab9f29f71f824103fe2fcd8ee0346485cb6122a4f93df6f94",
+      "state": "stopped-retained",
+      "source_files": 945,
+      "started_at": "2026-09-20T11:34:59.250335+00:00",
+      "network_id": "56bdfa21381913415b40bf37203dd26fac0205d973b7449150d57b5e0b5e9862",
+      "postgres_id": "a52ec11d82c6edfc4936a9850092cef9a88ffb24537de0a19edf3ef1d438e14b",
+      "server": "PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit fsync=on full_page_writes=on",
+      "container_id": "ad36dc3f12a144abd6cce56df06b7c5fdf9f17a943fcda67ce1146887a022020",
+      "network_state": "removed after owner/no-endpoint audit; containers and data retained",
+      "terminal_audit": "terminal-audit.json",
+      "local_root": ".research/implementation/management-http/commit-native-endpoint",
+      "observation": "Nine actual executable/PG cases,2proxy target tests,build/Clippy PASS; SIGQUIT new postmaster and unchanged rows/xmin. Independent SQL/audit PASS;42capture/945source hashes verified. Both containers stopped/PID0/noOOM,424prior resources preserved,8unrelated running,empty network removed.",
+      "evidence": "docs/implementation/evidence/p08-browser-http-commits-native-20260920.json",
+      "capture_sha256": "abf01906850e98699635e2248d7755b803eac36c1ee70996dc993c37cad5c815"
     }
   }
 }

@@ -66,4 +66,8 @@ PostgreSQL's [immediate shutdown](https://www.postgresql.org/docs/16/server-shut
 which requires recovery on restart; it is not a host power-loss or filesystem-fault
 claim. The actual old Control must fail closed, and a successor must accept the
 retained cookie. Markers alone and compile-only checks do not qualify this case.
-Native execution of this new mode is pending until linked revision-bound evidence.
+[Native COMMIT/recovery evidence](../../docs/implementation/evidence/p08-browser-http-commits-native-20260920.json)
+records nine cases at e65116b, including the actual owned PostgreSQL SIGQUIT.
+The initial c98398b fixture failed before readiness because it used an unsupported
+configuration key. That failure and its untouched catalog remain retained; the
+corrected endpoint was qualified in a new lab.
